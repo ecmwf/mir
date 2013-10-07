@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+#export BILINEAR2=1
+#export MARS_AREA=1
+
+export DISABLE_LSM=1
+
+export AURESOL=1
+
+export ECREGRID_DEBUG=1
+
+./ecregrid_mars ../data/xup_rg vvv 

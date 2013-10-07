@@ -1,0 +1,597 @@
+
+11-7-2013
+	* GridToGridTransformer.cpp, PartialDerivatives.cpp: extraction of meridional and zonal partial derivatives #REGRID-27
+	* HandleRequest.cpp: added keywords meridionalderivativ and zonalderivativ for -j option for extraction of meridional and zonal partial derivatives
+12-6-2013
+	* added env variable ECREGRID_GTOPO_TEMP to allow flexibility for extraction of gtopo lsm. Further coding improvent for gtopo #REGRID-128
+11-6-2013
+	* added regresion tests anisotropy.sh, stddev.sh, orientation.sh, slope.sh. Tests to be run on requests on c2b #REGRID-142
+7-6-2013
+	* added regresion test spectral2list_of_points.sh and data_ref y_spectral.grib-list.txt #REGRID-149
+25-3-2013
+	* added data_ref and test script for SubArea extraction #REGRID-61 #REGRID-131
+22-3-2013
+	* implementation of SubArea extraction for both Regular and Reduced  grids #REGRID-61 #REGRID-131
+06-3-2013
+	* BUG FIX to representation of increments within LSM filenames #REGRID-129
+19-2-2013
+	* BUG FIX - Adjustment of area for unrealistic request #REGRID-14
+19-2-2013
+	* HandleRequest.cpp, ecregrid_api.cpp: Creation and Implementation of ecregrid_list_of_points_point -lat lon value print list of points #REGRID-117
+18-2-2013
+	* Minor adjustment of parameters for ecregrid tool, for example interpolation methods. Run 'ecregrid -h' for details
+14-2-2013
+	* MAKE CHECK - added cellcentred LL as output cases #REGRID-125
+10-2-2013
+1.7.0
+	* number of points for average and Nearest Neighbour added. Available through API and tool option #REGRID-120
+	* AsciiOutput.cpp: changing of output format #REGRID-119
+	* bug fix fail if latlon spec can not be find without output #REGRID-119
+08-2-2013
+	* AverageLsm.cpp: Bug fix creation of artifical missing values when all of sourriunding points differ from target. in case that all surrounding points differ take all of them into account 
+	* GridToGridTransformer.cpp: added env variable ECREGRID_FORCE_INTERPOLATION to force interpolation
+06-2-2013
+	* Major revision to options of the ecregrid command-line tool
+25-1-2013
+	* Updating names of several env variables: ECREGRID_PRINT_LATLON_REGULAR, ECREGRID_PRINT_LATLON_REDUCED, ECREGRID_LINEAR_DERIVATIVES, ECREGRID_EMOSLIB_MARS_AREA,ECREGRID_EMOSLIB_PRECISION
+	* InverseFastFourierTransform::getUsefulPart  Bug fix - Calculation number of points along latitute - rounding error
+24-1-2013
+	* ENV - Applied new env variables ECREGRID_LEGENDRE_POLYNOMIALS_METHOD ECREGRID_LSM_SOURCE to allow flexibility using Mars client #REGRID-108
+	* Improved print for Legendre Polynomials Method
+	* Factory.cpp: avoid having the options case sensitive
+21-1-2013
+	* Factory.cpp change of keyname for polinomials methodto be the same as for emoslib
+17-1-2013
+	* InterpolatorLsm.cpp: interpolate from Input to Output Lsm for List of points using bilinear interpolation #REGRID-106
+	* InterpolatorLsm.cpp: improved logic output lsm is recreated as soon as subarea is changed #REGRID-40
+	* table resolutions updated by Nils #REGRID-104
+	* Allow separate processing of wind parameters through -d command line option  #REGRID-51
+	* Factory.cpp set bilinear as default interpolation method for list of points output #REGRID-105
+	* tools/HandleRequest.cpp: Improved clean up within catch
+	* coeffMethod replaced everywhere with legendrePolynomialsMethod 
+08-01-2013
+	* Added caching of definition/ configuration files
+
+27-11-2012
+1.6.1
+	* added ECREGRID_LSM_INPUT_PATH, ECREGRID_LSM_OUTPUT_PATH to support Nils request for differnt lsm sources
+	* GribApiInput.cpp: fix for open of lsm files
+26-11-2012
+	* tests/tool/multigribmessagesinfile.sh data_in/spectral.grib t2m.grib added for mulit grib mesage in a file support
+21-11-2012
+	* replace grid spec vector<long> instead of long*
+	* improved memory managmnent
+	* aviding static for grid spec
+15-11-2012
+	* InterpolatorLsm.cpp fix for rotation case #REGRID-40
+	* LegendreTransformSpectralToCoefficients.cpp : chold = chold + polinoms[k+imp] * dataComplex[k+imn]; 
+	* LegendrePolynomials and LegendreTransform method getPolynoms for speed and efitiency in case of memory map and Shared memory
+5-11-2012
+	* configure.ac: AC_CHECK_LIB(grib_api) just if path for grib_api is not set
+1-11-2012
+	* tools/HandleRequest.cpp #include <unistd.h> to satisfy c2a
+1-11-2012
+	* Reduced.cpp : added generateLongitudes2 to support subarea extractionfor Gaussian grid #REGRID-61
+	* Reduced.cpp : added generateLongitudes2 to support subarea extractionfor Gaussian grid #REGRID-61
+19-10-2012
+	* Environment varaibles such as ECREGRID_DEBUG are now handled
+	* correctly to perform actions at run-time such as show debug info.
+18-10-2012
+	* definitions/resolutions updated
+17-10-2012
+	* Added caching mechanism to the Factory class for memory-mapped Legendre
+	* polyomials for REGRID-60
+	* Reduced.cpp REGRID-61 updated method to secure subarea extraction and List of points extraction from Reduced grid
+16-10-2012
+	* Area.cpp : added isOnePoint #REGRID-22
+10-10-2012
+	* added LegendrePolynomialsSharedMemory.cpp
+	* ListOfPoints.cpp: bug fix for negative longitudes
+27-9-2012
+	* Rotation.cpp, RotatedRegularLatLon.cpp, GridToGridTransformer.cpp: bug fixes for rotated wind #REGRID-20
+24-9-2012
+	* more optimisation of code for spectral to grid transformation
+	* bug fix spectral to grid wind for reduced gaussian case
+14-9-2012
+1.5.9
+	* new api scin_list_of_points scin_one_point to support list of point extraction request #REGRID-22
+	* added examples scin_to_one_point.c scin_to_of_list_points.c
+13-9-2012
+	* added getGridAsLatLonList to support API scin_list_of_points #REGRID-22
+12-9-2012
+	* RegularLatLonCellCentered.cpp : calculateWest bug fix for the case ogfnumber of points initialisation
+10-9-2012
+	* Grid.cpp : Grid::areaFix Area contain 
+7-9-2012
+	* RegularLatLonCellCentered.cpp,FieldDescription.cpp: Updates constructors for RegularLatLonCellCentered. Added RegularLatLonCellCentered(const Area& other, long nsNpts, long weNpts);
+7-8-2012
+	* added SpectralToListOfPointsTransformer.cpp to support spectral to list of points transformation
+30-7-2012
+	* InverseFastFourierTransform.cpp: jumpCalculation instead of jump for calculation of next. Subarea extraction
+	fixed
+27-7-2012
+	InverseFastFourierTransform.cpp: important bug fix for getuseful part
+24-7-2012
+	* created DoubleLinearBitmapAdjusted,NearestNeigbourAdjusted to simulate wave interpolation in Emos
+23-7-2012
+	* created number of Bitmap interpolation method related to bitmaped fields
+	* added NearestNeigbourAdjusted DoubleLinearAdjusted to simulate reduce -latlon - wave processing from Emos
+17-7-2012
+	* definitions/constrains: double linear reduced_ll to regular_ll
+13-7-2012
+	* InterpolatorLsm.cpp : interpolate to output lsm from input lsm when the output is rotated
+	* Input.cpp : added RotatedRegularLatLon
+	* GridField : set out as rotated as neccassary
+	* -enable-emos-simulation SCIN_EMOS_PRECISION=1 to set just for case reduced gaussian to regular latlon
+9-7-2012
+	* definitions/constrains: added predefines from emos for interpoation and lsm method
+6-7-2012
+	* GridField::makeOutput : set to reduced  if output not defined
+	* GridToGridTransformer.cpp: disable lsm if predefined from Contrains is off
+
+2-7-2012
+	* Reduced.cpp : hardcoded if(numberOfPoints == 2500)increment = 0.144; to have similar results as Emos because rounding error apeared after precision cuted in the same maner as Emos
+26-6-2012
+	* Reduced.cpp added findNorthSouthNeighboursFast, findWestEastNeighboursFast to speed up rotation processing
+	* Regular.cpp generate Unrotated - Emos one point more on lat for global Rotated latlon
+25-6-2012
+	* Regular.h : added temporary emosRotateGlobal_ to support emos simulation of global rotated latlon
+21-6-2012
+	* Cubic12pts, Cubic12ptsLsm < 4 switch to NN < 12 switch to Double Linear according to Emos spec
+	* Cubic12pts, Cubic12ptsLsm DoubleLinear instead of Bilinear
+	* Regular.cpp generateGrid EMOS_ROTATE_GLOBAL enabled for global grids
+	* BiLinear.h : interpolatedValue is public now
+	* BiLinearLsm: added empty constructor
+19-6-2012
+	* machine.h, Regular.cpp::generateUnrotated added SCIN_ROTATE_GLOBAL to get one extra point along latitude in order to simulate Emos rotation
+18-6-2012
+	* InterpolatorLsm.h LsmPreDefined  land if >= 0.5 Nils claimed lsm > 0 adjustment for Emos applied with SCIN_EMOS_TRIGGER_LSM
+	* iInterpolatorLsm.cpp added emosTrigger_
+15-6-2012
+	* Cubic12ptsLsm.cpp bug fix - adjust
+	* separated env variables for emos simulation. 
+	    - SCIN_EMOS_PRECISION to be used for reduced to regular tans
+		- SCIN_EMOS_LSM for roatition
+		- SCIN_EMOS_MARS_AREA simualte mars subarea
+		- SCIN_EMOS_ROTATION to get one more popint for global rotated field
+		- SCIN_EMOS_GAUSS simulate gaussian lats precision
+12-6-2012
+1.5.5
+	* GribApiOutput.cpp: full implementation of writeToFileGribInChunks
+29-5-2012
+	* LatLon.cpp: bug fix for northern latitudes - imprtant for spectral to grid trans
+	* Gaussian::gaussianLatitudes while(fabs(conv) > precision ) instead of while(fabs(conv) >= precision )
+25-5-2012
+	* bug fix BiLinearLsm - imprtant fix
+	* mange to produce same output from 10min file as Emos - fix LsmEmos10minute.cpp
+23-5-2012
+	* scin_api.cpp - improved handling of input unpacked fields - scin_process_unpacked_to_grib_handle
+	* Updated FieldDescription,FieldFeatures with paramId,table 
+	* added new api functions for paramId,table
+	* Input.cpp improved creation of Input fields expecialy for case of global fields
+16-5-2012
+	* GridField.cpp: updated dump2file according to Johannes Fleming request
+	* added Emos predefined lsm ReducedGaussian_640,ReducedGaussian_400,RegularLatLon_0.25_0.25,RegularLatLon_0.5_0.5
+15-5-2012
+	* 1.5.4
+11-5-2012
+	* added grib_ls min,max for make check
+	* updated definition rgauss_4000  by Nils
+	* configure.ac tools/scin.cpp added macro SCIN_TIMER
+10-5-2012
+	* Regular, Reduced : bug fixes for AverageWeighted near the poles. It has to be selected first point out of the cell in each direction. Min and Max used for detection. Buf fix for Reduced latlon as well
+4-5-2012
+	* PartialDerivatives -  return missingvalue instead of through
+	* Reduced - bug fix PartialDerivatives for latlon reduced case 
+	* tests/tool/derived_params.sh : cover all cases
+3-5-2012
+	* Sinisa's and Paul's lsm gribs defined from Emos
+	* Area -  updated intersection and intersect
+	* Regular, Reduced - bug fix: area sell for poles
+	* make check - added average_weighted.sh, pseudo_regular_gaussian2grids.sh
+	* Regular - cell for both modes. Colecting point inside or outside of cell to support both FluxConserving and AverageWeighted
+	* Reduced - cell for FluxConserving cellNs for AverageWeighted
+2-5-2012
+	* improved make check. Input latlon and regular gaussian  with the highest resol
+27-4-2012
+	* added cellsAreas,fluxConserving
+26-4-2012
+	* DerivedSubgridParameters instead of statistic,
+	* added FluxConservingRegular.cpp FluxConservingReduced.cpp
+20-4-2012
+	* released 1.5.3
+	* AverageWeightedReduced.cpp: statistic bug fix
+18-4-2012
+	* GridToGridTransformer.cpp: missing value output = input if input has a bitmap
+17-4-2012
+	* Area.cpp : added calculation of area surface
+	* Interpolator.cpp : fix for missingNeoghbours
+30-3-2012
+	* scin_api: added scin_set_missing_value for input fields
+	* FieldDescription, Interpolator,GridToGridTransformer,FieldFeatures,Factory: added missingValue 
+26-3-2012
+	* GribApiOutput.cpp set paramId just in case on wind params
+21-3-2012
+	* released 1.5.2
+	* Reduced,Regular: restructuring of code for method averageWeighted. Added averageWeightedLsm weight multiplied by FACTOR_LSM = 0.2 according to Interpo for differenet type of lsm for input and output
+	* added classes AverageWeightedRegularLsm AverageWeightedRegularLsm
+	* implemented averageWeightedLsm
+20-3-2012
+	* LatLon, Regular: adjusted weights for AverageWeighted
+	* Gaussian : Applied calculation of gaussian weights from RD Interpo package. It gives much better global budgest
+	* Interpolator: check for conserving in Interpolator. Writen new method checkConserving which
+	 checks global budget
+19-3-2012
+	* Restructing of code for AverageWeighted, Conserving, StandardDeviation, Statistic to provide more flexibility and optimize code. PartialDertivates changed as well to secure more flexibility for Nils testing. Standard deviation and statistisic are now part of Interpolator to allow full implementation of different interpolation methods
+8-3-2012
+	* released 1.5.1
+	* scin_api.cpp: scin_process_read_from_file_to_grib_handle added to handle ascii input
+8-3-2012
+	* Gaussian.cpp: westEastNumberOfPoints = 4 * gaussianNumber_ for global west-east;
+6-3-2012
+	* Regular, Reduced, AverageWeighted: bug fix for average weighted for case when sum = 0
+5-3-2012
+	* GridToGridTransformer.cpp: improved check of input and output area
+2-3-2012
+	* LegendrePolynomialsReadFromFile.cpp : bug fix for big coeff file including replace of fseek with  fseeko64 and ftell64. speed up avoiding call of fseek for each read
+	* SpectralToRotatedGridTransformer.cpp : setting auresol off as default 
+	* LegendrePolynomialsRead.cpp: fopen64 instead of fopen
+	* SpectralField : added matchGaussian
+	* SpectralToGridTransformer.cpp : virtualSouthIndex bug fix
+	* InverseFastFourierTransform.cpp : Rounding error adjustments with same
+29-2-2012
+	* FieldFeatures.cpp: default for auto resolution changed to false
+	* Reduced.cpp Regular.cpp: more optimization
+	* LegendreTransformSpectralToCoefficients.cpp: significant optimisation of code
+17-2-2012
+	* AverageWeigted optimised and updated
+13-2-2012
+	* Regular, Reduced added static to reOrderData
+10-2-2012
+	Further development and adapdation of code for Conserving and AverageWeighted
+	Conserving calculated on followinf style
+	Sum up from the left to the right
+Interpolate in the E-W direction to the left and right boundaries of the cell-to-interpolate to.
+Do this for at least 4 of the rows surrounding the cell.
+Differentiate the interpolated values (on each row), right minus left.
+You end up with one value for each of the four rows.
+Sum up (accumulate) the four values from top to bottom.
+Interpolate this to the N and S boundaries of the cell.
+Differentiate the two numbers.
+The result is the interpolated value (valid at the centre of the cell) and it can be interpreted as cell average. 
+
+8-2-2012
+	* AverageWeighted::interpolate  adjusted ratio for each latitude in order to isolate interpolation cell
+7-2-2012
+	* Improved memory management of reduced grids definitions
+6-2-2012
+	* Regular::addWeigtsAlongLatitude : amended after discussion with Nils
+	* Gaussian::weightsY adjusted based on  Nils and Luke formulation
+3-2-2012
+	* Factory::interpolationMethod - nearest_neighbour instead of nearest
+2-2-2012
+	* Reduced.cpp::nearestPtsForAverage  Improved selection of points over the area
+	* AverageWeighted::interpolate added env variable SCIN_INTERPOLATOR to trigger 64 nearest points selection
+	* tool/HandleRequest.cpp : added option for ratio used by averageweighted
+6-1-2012
+	* SpectralToGridTransformer.cpp 
+	* InverseFastFourierTransform.cpp bug fix getUsefulPartWind
+30-12-2011
+	* Regular.cpp: getLatitudeOffset ROUNDING_FACTOR
+16-12-2011
+	* GridToGridTransformer.cpp, scin_api.cpp : seting handles to 0 for vector processing if input and output are the same
+	* SpectralToSpectralTransformer.cpp: more adjusting for vector - wind
+12-12-2011
+	* Parameter.cpp, definitions/parameters : added vertical interpolation type 
+9-12-2011
+1.4.9
+	* GribApiInput.cpp SCIN_CELL_CENTER env variable into force
+	* Interpolator.cpp more options for generate1D
+6-12-2011
+1.4.9
+	* PolarStereographic predefined grids
+	* FieldDescription.cpp grid predefined for PolarStereographic
+	* GribApiOutput.cpp: avoid to set paramId for case = 0
+23-11-2011
+	* FieldDescription.cpp, FieldIdentity.cpp : update to support Projections
+	* definitions/constrains : added regular_ll, regular_gg to polar_stereograhic
+	* added Projection, PolarStereographic
+14-11-2011
+	* Gaussian, ReducedGaussian : moved isValidGaussianNumber
+14-11-2011
+	* Area.cpp Case Input west 0 east < for global field east = east +360
+10-11-2011
+	* RegularGaussian: added westEastNumberOfPoints_ because of NCEP N47 pseudoGaussian grid - regular N48 in longitude direction, N47 in latitude direction
+9-11-2011
+	* FieldDescription.cpp, Frame.cpp: bug fix passing number of rows for Frame
+31-10-2011
+1.4.8
+	* Nils updates for Anisotropy
+28-10-2011
+	* default interpolation method for values on Poles is NN for Cubic 12 points
+	* added extrapolateOnPole as key word in order choose between: linear, NN and average
+1.4.7
+25-10-2011
+	* move lib to src
+	* bug fix for rotation Point.cpp Rotation.cpp
+	* Factory , Grid removed prefered interpolator
+21-10-2011
+	* definitions/reduced_gaussian/rgauss_4000: Nils forgot to put 500 values for 1600
+20-10-2011
+	* lib/GribApiOutput.cpp: set table 2 version
+11-10-2011
+	* rescturing grid to grid code to distinguish lsm, found bug for rotation in Rotation::rotateLatitude wrong contructor called
+5-10-2011
+1.4.6
+	* Regular.cpp: if(fabs(lon - 360.0) < ROUNDING_FACTOR)lon = 0;
+	* AsciiInput.cpp AsciiOutput.cpp, machine.h: added /t for Tokenizer and env SCIN_SMALL_NUMBERS to print nicely small num
+26-9-2011
+1.4.5
+	* ratio for average waigted to be more adjusted- ratioNs, ratioWe
+	* PartialDerivatives.cpp : geir added deg2rad
+	* Anisotropy.cpp, PartialDerivatives.cpp, Statistic.cpp: applied a few minor Geir bug fixes
+	* Interpolator.cpp, AverageWeighted.cpp:  splited interpoleWitLsm in two parts
+	* ReducedDataHelper.h, Regular.cpp, RegularDataHelper.h: i >= 0 j >= 0
+	* Grid.cpp: bug fix adjust west east
+	* LatLon.cpp: bug fix number of points north-south west-east
+	* machine.h: exponential notation for AREA_FACTOR and ROUNDING_FACTOR
+19-9-2011
+1.4.4
+	* Reduced.cpp, Regular.cpp: added nearestPtsForAverage to collect point over the selected area
+	* AverageWeighted.cpp: Overridden methods interpolate to implement nearestPtsForAverage
+	* Interpolator.cpp : interpolate splited in two methods interpolate and interpolatelsm
+19-9-2011
+1.4.4
+	* GridType.cpp, Interpolator.cpp,machine.h: ROUNDING_FACTOR for all machines
+14-9-2011
+	* RegularLatLonCellCentered.cpp: cell centered is always global
+	* GridToGridTransformer.cpp bug fix for standard deviation
+1.4.3
+9-9-2011
+	* scin_api.cpp, HandleRequest.cpp: fiting to return the same field in case of same spec
+	* added sameAs.sh for amke check to return field with same spec
+	* Regular.cpp : generateLongitudes longitude = increment * (i+1) + west ; to minimize rounding error but longitude += increment ; works better for ibm
+	* SpectralToRotatedGridTransformer.cpp LatLon.cpp bug fix for truncate
+19-8-2011
+	* GridType::findWestEastNeighbours : inportant bugs fix for RERR wlon += ROUNDING_FACTOR_MANDATORY
+15-8-2011
+	* Point, FieldPoint, Interpolator update debug printing for nearests points
+10-8-2011
+	* AREA_FACTOR instead of GRIB_FACTOR everywhere
+	* Grid::adjustAreaWestEastMars  adjust area to be inside west-east boundary
+	* scin_api.cpp : slight change of the base api functions to scin_process_grib_handle_to_grib_handle
+9-8-2011
+	 * RERR InverseFastFourierTransform::getUsefulPart , getUsefulPartWind  set env SCIN_ROUNDING_ERROR=1
+8-8-2011
+	* Regular::generateLongitudes 32bit machine Unexpected behaviour it reports < 0 intead of 0 without print bellow and longitude value is 360.0
+5-8-2011
+1.4.0
+	* scin_api.cpp: added env variable SCIN_DUMP_TO_FILE
+02-8-2011
+	* SpectralToRotatedGridTransformer.cpp: optimisation
+28-7-2011
+	* FieldDescription::defineField : added RegularLatLonCellCentered
+26-7-2011
+	* SpectralToGridTransformer.cpp, SpectralToSpectralTransformer.cpp, spectral to grid wind optimisation and improved memory menagement
+22-7-2011
+1.3.5
+	* Tranform.h : restucturing of transform to optimase calculation and allow allocation fro both u,v
+	* Grid.cpp : put back BiLinear to be default inter method insstead of DoubleLinear. DoubleLinear had a plenty of problems with the fields provided by Patricia. To be investigated
+21-7-2011
+1.3.5
+	* Reduced.cpp: void Reduced::nearestPts  bug fix for point 30 indexOfLastLonSSS intaed of indexOflastLonSSS Johannes Kaiser reported
+	* GribApiOutput.cpp : setting of the bitmapPresent on the end works now Patricia de Rosnay reported
+		 strange but grib_api has a problem with schedule of setting
+	* LatLon.cpp : Area LatLon::setGlobalArea(double west) setenv SCIN_SHIFTED_GLOBAL_AREA=1 for shifted global area
+11-7-2011
+	* HandleRequest.cpp: use only scin_api.h functions
+	* scin_api.cpp static double* passed from here. Check if no interpolation has been done
+	* GribApiInput.cpp: static double* from outside
+30-6-2011
+1.3.5
+	* HandleRequest.cpp: call scin_process_vector_grib_handle_to_grib_handle_2 fpr wind processing
+30-6-2011
+1.3.4
+	* GridType.cpp  to avoid missing last point // from Subarea Input case
+	        if(wlon == longitudes[lastLon]){
+27-6-2011
+1.3.4
+	* Lsm.cpp :  added env variable SCIN_LSM_PATH to support users lan-sea masks
+	* scin_api.h, machine.h, : Added SCIN versioning
+	* GribApiOutput.cpp: env SCIN_IGNORE_PARAM to avoid error in grib_api if paramID is not set 
+21-6-2011
+	* Reduced.cpp : if(n != -1 && allLons_[n].size() ) Because of Reduced Lat-Lon . It is possible to have 0 points on lat
+	* LatLon.cpp :     if(!we) we = ns_; Because of Reduced Lat-Lon
+20-6-2011
+	* Grid.cpp: sameAs bug fix
+	* LsmPreDefined.cpp: getLsmValuesDouble proper check
+	* ListOfPoints.cpp : adjusted constructor for output field
+	* tools/HandleRequest.cpp : allow binary and ascii output
+	* SpectralToSpectralTransformer.cpp : adjust size of output
+15-6-2011
+	* GridType::findWestEastNeighbours  added because rotated grid could have 360.0
+	        if(wlon == 360.0) wlon = 0;
+14-6-2011
+	* SpectralToSpectralTransformer.cpp::tranform outsize without /2
+	* InverseFastFourierTransform.cpp::getUsefulPart without ASSERT(offsize == latsize)
+13-6-2011
+	* GridType.cpp: bug fix // Longitude point found between 0 and longitudes[i+1]
+	            if(wlon < upLon)ainstead of if(wlon <=upLon)
+8-6-2011
+1.3.3
+7-6-2011
+	* FieldPoint.cpp: bug fix for copy constructor
+	* Interpolator.h: interpolatedValue, interpolatedValueWithLsm,missingNeighbours,missingNeighboursLsm  added constsness const vector<FieldPoint>& nearests
+24-5-2011
+	* Gaussian.cpp: env SCIN_EMOS_GAUSS emos has precision up to 5 decimals
+	* Reduced.cpp: ssp emos has less precision for increment  irdiwe.F ISTRIDE = JP360 / IILON
+	         env SCIN_EMOS
+19-5-2011
+1.3.2	
+18-5-2011
+	* SpectralToGridTransformer.cpp, Interpolator.cpp GribApiInput.cpp: improved memory management
+	* SpectralField GridField : data_ is const double*
+17-5-2011
+	* RotatedRegularLatLon.cpp: according to EMOS for this grid 0 is repeated for global grids
+	* GribApiInput.cpp: input handle is now in control of caller
+	* HandleRequest.cpp : input and output grib messages only
+13-5-2011
+	* optimisation of code - Interpolation methods , Regular.cpp 2 times faster.
+	* Interpolator.cpp : load lsm file only first time
+10-5-2011
+	* Gaussian::northIndex : GERR bug fix north + AREA_FACTOR
+1-4-2011
+	* GridField.cpp: add dataSum() sum over whole field
+	* moved generateLongitudesR() to Reduced.h
+31-3-2011
+	* Gaussian.cpp: Bug fix for generateLongitudesR() consider global case
+	* RegularLatLonCellCentered.cpp : allways shifted
+	* LsmPreDefined.cpp , LsmFromGrid.cpp : only > 0.5 is land fix based on interpo - Nils Wedi
+28-3-2011
+	* Gaussian.cpp: Bug fix for northSouthNumberOfPoints() consider global case
+	* Regular.cpp , Reduced.cpp :n method nearestPts extend number of neighbouring points to 64
+2-3-2011
+1.3.0	
+	* Geir GribApiOutput: writeToFileGribInChunks and writeToFileGribInChunks
+16-2-2011
+1.3.0	
+	* added RegularLatLonCellCentered.cpp
+	* FieldFeatures.h added bool cellCentered bool shifted
+7-2-2011
+1.3.0	
+	* amenden rgaus_320 and rgauss_1024
+11-1-2011
+1.2.9	
+	* added AreaWeighted
+23-12-2010
+1.2.8	
+	* added methos in Grid predefinedLsmFileName. lsmFile is not member anymore of class GridField, 
+	     name of Lsm is always built 
+	* LatLon, RegularLatLon added constructors with number of points north-south, west-east		 	
+	* Average interpolatedValueWithLasm added
+13-12-2010
+1.2.7	
+	* added constructors for LatLon with number of points to allow calculation of increments 
+	in order to resolve limited precicion of Grib
+07-12-2010
+1.2.6	
+	* create ReducedDataHelperBool.h RegularDataHelperBool.h
+	* bug fix and create right method seaPointBool
+	* added void  nearestPoints(GridContext*,const Point& where, vector<FieldPoint>& result, const double* data, int scMode, int howMany, const double* lsmData)  const;
+	*  added generateGrid(vector<Point>& llgrid, const double* lsmData)
+01-12-2010
+1.2.5	
+	* fix for areaFix considering case when is global west-east but not north-south
+		to apply changes setenv SCIN_NEW_AREA_FIX 1
+29-11-2010
+1.2.4
+	* LatLon.cp :bug fix for northSouthNumberOfPoints and westEastNumberOfPoints same as emos with NINT
+	* GridToGridTransformer.cpp : move intepolator decision to Factory.cpp
+29-11-2010
+1.2.2
+	* added LsmFromGrid.cpp LsmFromGrid.h to handle regular lat-lon 1km land/sea mask from 
+	    provided by Nils and Gear
+	* bug fix for env variable SCIN_NEW_NUMBER_OF_POINTS
+22-11-2010
+1.2.2
+	* bug fix seting pl (reduced grid definition) for  grib2 messages
+	* added new features for scin binary:
+	               -e edition_number  for output grib message
+				   -q Bits per Value  for output grib message
+16-11-2010
+1.2.1
+	* main/lib : GribApiInput: set missing value if bitmap section present
+	* main/  more changes for proper handling fields with bitmap and for output frame or bitmap required
+11-11-2010
+	* new release 1.2.0 Statistic - Slope, Anisotropy, Orientation, StandardDeviation and PartialDerivatives
+		adedd method nearestIndexed for Reduced and Regular
+08-11-2010
+	* new release 1.1.2 adedd indexed neigbours  release before change of Reduced neighbours
+12-10-2010
+	* new release 1.1.1
+12-10-2010
+	* Bug fix for redgauss to anything in Reduced::mappedLatitudes assuming global field on Input
+	* env variable SCIN_NEW_NUMBER_OF_POINTS trying to solve problem with int()westEastNumberOfPoints and  northSouthNumberOfPoints
+27-09-2010
+	* Bug fix for handling input grids from -180 to 180 
+29-07-2010
+	* new release 1.1.0
+	* command line tool changed name from go_scin to scin
+	* GridType::findWestEastNeighbours bug fix for wrap around case
+	* Bug fix finding 16 points neighbours for both Reduced and Regular
+	* allocation of double* data from SCIN instead of user for to_unpack functions
+	* added interpolation methods LinearFit3Times, Average
+	* average on pole latitude for Gaussian to LatLon transformation,  for wind parameters is Linear interpolation
+	* handling of Scanning mode west-east south-north for Input Grids
+	* possiblity to deliver Output grids for various scanning modes
+	* copy of all Grib input heraders to the output
+	* further optimisation of code in order to get more speed in processing
+
+28-07-2010
+	* GridType::findWestEastNeighbours bug fix for wrap around case
+	* Reduced Regular bug fix finding 16 points neighbours
+19-07-2010
+	* scin_api.cpp allocation of double* data from SCIN for to_unpack functions
+16-07-2010
+	* added interpolation methods LinearFit3Times, Average
+	* average on pole latitude Gaussian to LatLon for wind parameters is Linear int
+	*  handling of Scanning mode west-east south-north
+20-04-2010
+1.0.1
+	* bug fix LsmEmos10minute desctructor,
+	* Lsm::seaPoint now return double
+	* Reduced::nearestPts more optimisation: avoid search for lattude with lower_bound if current latitude is unchanged
+30-03-2010
+1.0.0
+	* bug fix for LSM proccessing
+24-03-2010
+0.7.7
+	* InverseFastFourierTransform.cpp::getUsefulPart jump - 1 to finish on time for multiFactor = 1 it used to be jump
+23-03-2010
+0.7.6
+	* go_scin operate now with tranformVector
+	* bug fix - finding nighbours for Reduced grid
+	* go_scin set paramID and copy grib information from input
+	* wind can do rotation as well GridToRotatedGridTransform class for Vectors
+16-03-2010
+0.7.5
+	* lib/ added class Wind
+	* added transformUV for all transformation
+	* big fix for area
+09-03-2010
+0.7.5
+	* lib/Reduced.cpp/void mappedLatitudes: east = 360.0 for global grids
+	* lib/gaussian.cpp/bool isGlobalWestEast: added factor because grib has precision for 3 dec places. 
+	    For instance east for N640 is 359.8593750 intstead of 359.859
+21-01-2010
+0.7.4
+	* lib/scin_api.h scin_api.cpp: change name of functions some of them commneted 
+20-01-2010
+0.7.4
+	* lib/Gaussian.cpp, Parameter.cpp: lexical_cast replaced with atof
+	* lib/added classes for extraction of data without interpolation: Extract SubArea SubGrid 
+	* added class FieldDescriptionGribApi return FieldDescription* from grib_api handle
+	* tools/HandleRequest.cpp: lexical_cast replaced with atof to support Miha's installation in Meteo France
+	* scin_api.h changed name of api functions
+15-09-2009
+0.7.3
+	* lib/scin_api.cpp: changed signature for process functions - no more external grib_api arrays const grib_values* grib_set, int grib_set_count
+	* scin_process_unpacked now assumes that memory management is controlled and done by application
+14-09-2009
+0.7.2
+	* lib/scin_api.cpp: added functions scin_process_unpacked and scin_process_unpacked_to_grib_handle
+	* examples/ added : scin_unpacked_to_grib.c scin_dissemination.c
+10-09-2009
+0.7.1
+	* lib/scin_api.cpp: added output handle as functiom argument to 	
+	int scin_process_grib_handle(field_description* output, grib_handle* input, grib_handle* output, const grib_values* grib_set, int grib_set_count);
+06-12-2009
+
+		
+22-11-2008
+	* lib/ReducedGaussian.cpp-> sameAs(const ReducedGaussian& other) : Check if Reduced Gaussian definitions are the same
+21-11-2008
+	* lib/GribApiInput.cpp : Read grid Spec from Grib rather than from Definition file
+01-11-2008
+	* read ascii data input
+	i19 read matrix on input

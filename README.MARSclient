@@ -1,0 +1,68 @@
+#
+#  How to compile the MARS client with ecRegrid for debugging
+#
+#
+
+0) Assuming your Perforce home is "/tmp/Perforce" and your MARS request 
+   is in a file called "test.mars"
+
+
+1) add the ecRegrid source and the MARS client to your 
+   Perforce repositry ('p4 client')
+
+  View:
+   ...
+	//depot/ecregrid/main/... //???/ecregrid/...
+	//depot/mars/client/dev/ecregrid/... //???/mars.ecregrid/...
+
+
+2) Compile ecRegrid
+
+   Assume you will be building ecRegrid to the local folder /my/ecregrid/folder
+
+   cd /tmp/Perforce/ecregrid
+   ./autogen.sh
+ * ./configure --prefix=/my/ecregrid/folder CXXFLAGS="-g -O2" --with-grib_api=/usr/local/lib/metaps/lib/grib_api/1.9.14
+   make clean
+   make
+   make check                        (not always required)
+   make install
+
+* Note that the latest working configure statement is held in the script "build_work.sh". You might need to add execute permission to run it.
+  When running this script, note the value of "--prefix" that it uses, and then use this as DIRecRegrid when building the MARS client below.
+
+3) Compile MARS client
+
+   cd /tmp/Perforce/mars.ecregrid/src
+   touch make.dep                    (only at first time)
+   make DIRECREGRID=/my/ecregrid/folder
+
+
+4) Run MARS retrievals
+
+   cd /where/ever/your/requests/are
+   env MARS_HOME=/var/tmp/Perforce/mars.ecregrid mars < test.mars
+
+
+5) Debug MARS client
+
+   use tv8910
+   export MARS_DEBUG=1
+   export MARS_DEBUGGER=tv8
+   export MARS_HOME=/var/tmp/Perforce/mars.ecregrid
+   mars test.mars
+
+     Interesting files for debugging:
+         /var/tmp/Perforce/mars.ecregrid/src/pproc.c
+         /var/tmp/Perforce/mars.ecregrid/src/wind.c
+
+
+6) Call-Profiling with valgrind
+
+   export MARS_DEBUGGER="valgrind --tool=callgrind --callgrind-out-file=callgrind.out --dump-instr=yes --trace-jump=yes"
+   mars test.mars
+   kcachegrind callgrind.out &
+
+
+
+

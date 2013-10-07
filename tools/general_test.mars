@@ -1,0 +1,18 @@
+#!/bin/sh
+
+#export MARS_DEBUGGER=valgrind
+MARS_TEST_PATH=/vol/marsdev/data/build/linux/ia32/opensuse103/mars/client
+export MARS_TEST_PATH
+
+in=$1
+out=$2
+gr=$3
+
+mars -t <<@@
+read,
+#	style=dissemination,
+	$gr
+	source="$in",
+	target="$out"
+@@
+

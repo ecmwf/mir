@@ -1,0 +1,19 @@
+ecRegrid
+========
+
+Copyright 2012 ECMWF
+
+This product mainly includes software developed by the 
+
+  Meteorological Visualisation Section
+
+at the 
+
+  "European Centre for Medium-Range Weather Forecasts" 
+           (ECMWF - http://www.ecmwf.int ).
+
+
+Below is a list of software packages which are used inside ecRegrid:
+
+  No external package used at the moment ...
+

@@ -1,0 +1,83 @@
+
+f = output(  
+	FORMAT                   :  'POSTSCRIPT', 
+	DESTINATION              :  'FILE', 
+	PRINT_OPTION             :  'VISIBLE', 
+	NCOPIES                  :  1, 
+	PRINTER                  :  'ps_floor3', 
+	PRINTER_CUSTOMIZE        :  'NO', 
+	PRINT_COMMAND            :  'lpr -P%p -#%n %f' 
+	) 
+
+setoutput(f)
+
+x = read("ecregrid.grib")
+y = read("emos.grib")
+plot(build_layout(),x-y)
+
+function build_layout()
+
+    #PageDescription  
+    COASTLINES1 = pcoast(  
+    	MAP_COASTLINE_COLOUR     :  'CHARCOAL', 
+    	MAP_GRID_COLOUR          :  'BLACK', 
+    	MAP_LABEL_COLOUR         :  'BLACK' 
+    	) 
+    _MapView_ = mapview(  
+    	MAP_PROJECTION           :  'CYLINDRICAL', 
+    	AREA                     :  [ -90,-180,90,180 ], 
+    	MAP_VERTICAL_LONGITUDE   :  0, 
+    	SUBPAGE_X_POSITION       :  7.5, 
+    	SUBPAGE_Y_POSITION       :  5, 
+    	SUBPAGE_X_LENGTH         :  85, 
+    	SUBPAGE_Y_LENGTH         :  85, 
+    	PAGE_FRAME               :  'ON', 
+    	PAGE_FRAME_COLOUR        :  'BLUE', 
+    	PAGE_FRAME_LINE_STYLE    :  'SOLID', 
+    	PAGE_FRAME_THICKNESS     :  2, 
+    	PAGE_ID_LINE             :  'OFF', 
+    	PAGE_ID_LINE_TYPE        :  'BOTH', 
+    	PAGE_ID_LINE_COLOUR      :  'BLUE', 
+    	PAGE_ID_LINE_SYSTEM_PLOT :  'OFF', 
+    	PAGE_ID_LINE_DATE_PLOT   :  'OFF', 
+    	PAGE_ID_LINE_USER_TEXT_PLOT:  'ON', 
+    	PAGE_ID_LINE_ERRORS_PLOT :  'OFF', 
+    	PAGE_ID_LINE_LOGO_PLOT   :  'OFF', 
+    	PAGE_ID_LINE_HEIGHT      :  0.25, 
+    	PAGE_ID_LINE_QUALITY     :  'MEDIUM', 
+    	SUBPAGE_FRAME            :  'ON', 
+    	SUBPAGE_FRAME_COLOUR     :  'BLACK', 
+    	SUBPAGE_FRAME_LINE_STYLE :  'SOLID', 
+    	SUBPAGE_FRAME_THICKNESS  :  2, 
+    	SUBPAGE_BACKGROUND_COLOUR:  'WHITE', 
+    	COASTLINES               :  COASTLINES1 
+    	) 
+    Page6 = plot_page(  
+    	TOP                      :  0, 
+    	BOTTOM                   :  100, 
+    	LEFT                     :  0, 
+    	RIGHT                    :  100, 
+    	ROWS                     :  1, 
+    	COLUMNS                  :  1, 
+    	PAGE_X_GAP               :  0, 
+    	PAGE_Y_GAP               :  0, 
+    	VIEW                     :  _MapView_ 
+    	)  
+      
+      
+    # SuperPageDescription 
+      
+    _Display_Window_ = plot_superpage(  
+    	LAYOUT_SIZE              :  'A4', 
+    	LAYOUT_ORIENTATION       :  'LANDSCAPE', 
+    	CUSTOM_WIDTH             :  29.7, 
+    	CUSTOM_HEIGHT            :  21.0, 
+    	PAGES                    :  [ Page6 ] 
+    	) 
+    # plot_superpage returns a list of drop identifiers. 
+    # Index 1 is for first page, and so on. 
+    # end of superpage definition  
+      
+    return _Display_Window_ 
+
+end build_layout

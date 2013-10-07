@@ -1,0 +1,6 @@
+ecRegrid Python bindings
+
+In order to enable the Python bindings in the build,
+use the --enable-python configure flag.
+
+./configure --enable-python
