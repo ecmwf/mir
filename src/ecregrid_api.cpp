@@ -76,7 +76,7 @@ void writeLog(const std::string &interface)
 		else inter = "?";
 */
 		ostringstream stream;
-		stream << ECREGRID_MAJOR_VERSION << "." << ECREGRID_MINOR_VERSION << "." << ECREGRID_REVISION_VERSION;
+		stream << MIR_MAJOR_VERSION << "." << MIR_MINOR_VERSION << "." << MIR_REVISION_VERSION;
 		string logline = "-" + id + " " +  smytime + " - "+ stream.str() + " " + host + "-" + arch + " " + interface;
 		fprintf(filePtr_,"%s\n",logline.c_str());
 
@@ -1745,7 +1745,7 @@ catch(...){
 }
 
 long ecregrid_get_version(){
-	return ECREGRID_VERSION;
+	return MIR_VERSION;
 }
 
 int ecregrid_one_point(grib_handle* inHandle, double* lat, double* lon , double* value)
