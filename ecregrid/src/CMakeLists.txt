@@ -166,16 +166,12 @@ LsmEmos10minute.cpp
 LsmEmos10minute.h
 LsmFromGrid.cpp
 LsmFromGrid.h
-#LsmLatLon1km.cpp
-#LsmLatLon1km.h
 LsmPreDefined.cpp
 LsmPreDefined.h
 NearestNeigbour.cpp
 NearestNeigbour.h
 NearestNeigbourAdjusted.cpp
 NearestNeigbourAdjusted.h
-#NearestNeigbourBitmap.cpp
-#NearestNeigbourBitmap.h
 NearestNeigbourLsm.cpp
 NearestNeigbourLsm.h
 Orientation.cpp
@@ -214,8 +210,6 @@ RegularLatLon.cpp
 RegularLatLon.h
 RegularLatLonCellCentered.cpp
 RegularLatLonCellCentered.h
-#RotatedRegularGaussian.cpp
-#RotatedRegularGaussian.h
 RotatedRegularLatLon.cpp
 RotatedRegularLatLon.h
 Rotation.cpp
