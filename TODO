@@ -7,4 +7,10 @@ Refactoring
     - exceptions
     - tokenizer
 
+* code a minimal maths core for handling the dgemm
+   - with dense x dense
+   - sparse x dense
+
+* weight generator
+
 * change factories to use self-registration ( see Factory.cpp )

@@ -16,3 +16,8 @@ ecbuild_add_test(TARGET multigribmessagesinfile            TYPE SCRIPT COMMAND $
 ecbuild_add_test(TARGET subarea_extraction                 TYPE SCRIPT COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/subarea_extraction.sh)
 ecbuild_add_test(TARGET spectral2list_of_points            TYPE SCRIPT COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/spectral2list_of_points.sh)
 ecbuild_add_test(TARGET sameAs                             TYPE SCRIPT COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/sameAs.sh)
+
+
+#ecbuild_add_test( TARGET sameAs
+#				  TYPE SCRIPT COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/sameAs.sh
+#				  TEST_DATA blabla.grib:60c873c06d1040cfc8ace9b5f5570366 )
