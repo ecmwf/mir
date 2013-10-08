@@ -268,7 +268,7 @@ void HandleRequest::usage() const
 
 void HandleRequest::showVersionInfo() const
 {
-	cout << "  - ecRegrid library version " << MIR_MAJOR_VERSION << "." << MIR_MINOR_VERSION << "." << MIR_REVISION_VERSION << endl;
+    cout << "  - ecRegrid library version " << ECREGRID_MAJOR_VERSION << "." << ECREGRID_MINOR_VERSION << "." << ECREGRID_REVISION_VERSION << endl;
 	long grib_api_version = grib_get_api_version();	
 	cout << "  - Using grib_api version " << grib_api_version  / 10000 << "." << (grib_api_version / 100) % 100 << "." << grib_api_version % 100 <<  endl;
 }

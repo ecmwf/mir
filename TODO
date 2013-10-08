@@ -1,0 +1,14 @@
+Refactoring
+===========
+
+* remove references to ecregrid
+
+* remove code that does not compile
+
+* use ecKit for 'basic' functions
+    - configurations
+    - threading (?)
+    - exceptions
+    - tokenizer
+
+* change factories to use self-registration ( see Factory.cpp )

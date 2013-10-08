@@ -16,7 +16,7 @@
 
 using namespace std;
 
-#include "mir_config.h"
+#include "ecregrid_config.h"
 
 static const double MISSING_VALUE = 9999.0;
 static const long UNDEF = 9999;
@@ -45,7 +45,7 @@ inline bool iszero(const double v) { return fabs(v) < ROUNDING_FACTOR; }
 inline bool same(const double a, const double b) { return iszero(a-b); } 
 
 // Macros
-#define MIR_VERSION (MIR_MAJOR_VERSION*10000+MIR_MINOR_VERSION*100+MIR_REVISION_VERSION)
+#define ECREGRID_VERSION (ECREGRID_MAJOR_VERSION*10000+ECREGRID_MINOR_VERSION*100+ECREGRID_REVISION_VERSION)
 
 #ifndef NUMBER
 #define NUMBER(x) (sizeof(x)/sizeof(x[0]))
@@ -54,18 +54,18 @@ inline bool same(const double a, const double b) { return iszero(a-b); }
 // checks if env var is not equal to "0" or ""
 #define IS_SET(x) (getenv(x) ? (string(getenv(x)).compare("0")!=0 && string(getenv(x)).length()>0 ) : false)
 
-#define DEBUG IS_SET("MIR_DEBUG")
-#define SHARED_DEBUG IS_SET("MIR_SHARED_DEBUG")
+#define DEBUG IS_SET("ECREGRID_DEBUG")
+#define SHARED_DEBUG IS_SET("ECREGRID_SHARED_DEBUG")
 
-#define DUMP_NEAREST IS_SET("MIR_JUST_DUMP_NEAREST_POINTS")
-#define CHECK_DUMP_NEAREST IS_SET("MIR_DUMP_NEAREST_POINTS")
+#define DUMP_NEAREST IS_SET("ECREGRID_JUST_DUMP_NEAREST_POINTS")
+#define CHECK_DUMP_NEAREST IS_SET("ECREGRID_DUMP_NEAREST_POINTS")
 
-#define EMOSLIB_PRECISION IS_SET("MIR_EMOSLIB_PRECISION")
-#define EMOSLIB_MARS_AREA IS_SET("MIR_EMOSLIB_MARS_AREA")
+#define EMOSLIB_PRECISION IS_SET("ECREGRID_EMOSLIB_PRECISION")
+#define EMOSLIB_MARS_AREA IS_SET("ECREGRID_EMOSLIB_MARS_AREA")
 
-#define SMALL_NUMBERS IS_SET("MIR_SMALL_NUMBERS")
-#define DISABLE_LSM IS_SET("MIR_DISABLE_LSM")
-#define GTOPO_TEMP IS_SET("MIR_GTOPO_TEMP")
+#define SMALL_NUMBERS IS_SET("ECREGRID_SMALL_NUMBERS")
+#define DISABLE_LSM IS_SET("ECREGRID_DISABLE_LSM")
+#define GTOPO_TEMP IS_SET("ECREGRID_GTOPO_TEMP")
 
 #include <map>
 #include <vector>
@@ -82,18 +82,18 @@ typedef map<double,vector<double>,greater<double> > mapLats;
 //
 inline string getShareDir()
 {
-    char* pPath = getenv("MIR_SHARE_DIR");
+    char* pPath = getenv("ECREGRID_SHARE_DIR");
     if (pPath)
     	return string(pPath);
-    return string(MIR_SHARE_DIR);
+    return string(ECREGRID_SHARE_DIR);
 }
 
 inline string getDataDir()
 {
-    char* pPath = getenv("MIR_DATA_DIR");
+    char* pPath = getenv("ECREGRID_DATA_DIR");
     if (pPath)
         return string(pPath);
-    return string(MIR_DATA_DIR);
+    return string(ECREGRID_DATA_DIR);
 }
 
 static const int MAX_INCREMENTS_DISPLAY_PRECISION = 8;

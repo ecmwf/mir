@@ -53,6 +53,8 @@ if( SWIG_FOUND )
     include( ${SWIG_USE_FILE} )
 endif()
 
+find_package( Eigen3 3.2 )
+
 ###############################################################################
 # contents
 
@@ -66,18 +68,16 @@ include_directories( ${GRIB_API_INCLUDE_DIRS} )
 
 ### config header
 
-configure_file( src/cmake_config.h.in src/mir_config.h )
-
-add_definitions( -DHAVE_MIR_CONFIG_H )
-
 set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${GRIB_API_DEFINITIONS}" )
 
-add_subdirectory( src )
-add_subdirectory( tools )
-add_subdirectory( python )
-add_subdirectory( tests )
+add_subdirectory( ecregrid )
 
 install( DIRECTORY share DESTINATION ${CMAKE_INSTALL_PREFIX} )
+
+ecbuild_add_resources( TARGET top_files SOURCES
+											 TODO AUTHORS README NOTICE LICENSE INSTALL ChangeLog COPYING
+										DONT_PACK
+											 BUGS )
 
 ############################################################################################
 # packaging and installation

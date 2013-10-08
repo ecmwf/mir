@@ -740,18 +740,25 @@ Transformer* Factory::getTransformer(const Field& in, const Field& out, const Fi
 		cout << "Factory::getTransformer from " << inName << " to " << outName << endl;
 	
 	if(inName == "sh" && outName == "sh")
+    {
 		return new SpectralToSpectralTransformer(conversion);
-	else if(inName != "sh" && outName != "sh") {
+    }
+    else
+        if(inName != "sh" && outName != "sh") {
         if (IS_SET("ECREGRID_EXPERIMENTAL"))
         {
+#ifdef EIGEN3_FOUND
             return new GridToGridMatrixTransformer(intMethod,lsmMethod,numberOfNearestPoints,transType,extrapolate);
+#else
+            ASSERT( "Eigen3 not found" != 0 );
+#endif
         }
         else
         {
             return new GridToGridTransformer(intMethod,lsmMethod,numberOfNearestPoints,transType,extrapolate);
         }
 		}
-	else if(inName == "sh" && outName != "sh"){
+    else if(inName == "sh" && outName != "sh"){
 		if(out.isRotated()){
 			return new SpectralToRotatedGridTransformer(legendrePolynomialsMethod,fftMax,auresol,conversion);
 		}
