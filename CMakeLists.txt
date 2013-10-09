@@ -56,6 +56,8 @@ endif()
 
 find_package( Eigen3 3.2 )
 
+find_package( Trilinos )
+
 ###############################################################################
 # contents
 
