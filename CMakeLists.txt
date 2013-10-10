@@ -62,16 +62,32 @@ find_package( Trilinos )
 # contents
 
 # for package export to other ecbuild packages
+# define also TPL's (third party libraries)
+
 set( MIR_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
 set( MIR_LIBRARIES      ${CMAKE_PROJECT_NAME} )
 set( MIR_TPLS           grib_api )
 
-include_directories( ${MIR_INCLUDE_DIRS}  )
-include_directories( ${GRIB_API_INCLUDE_DIRS} )
+if( EIGEN3_FOUND )
+	list( APPEND MIR_TPLS  Eigen3 )
+endif()
 
-### config header
+### define include dirs
+
+include_directories( ${MIR_INCLUDE_DIRS}  )
+
+foreach( _tpl ${MIR_TPLS} )
+	string( TOUPPER ${_tpl} TPL )
+	if( ${TPL}_INCLUDE_DIRS )
+		include_directories( ${${TPL}_INCLUDE_DIRS} )
+	endif()
+endforeach()
+
+### compile definitions
 
 set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${GRIB_API_DEFINITIONS}" )
+
+### build contents
 
 add_subdirectory( ecregrid )
 
