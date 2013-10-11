@@ -131,16 +131,16 @@ long Interpolator::ratio(double nsIn, double nsOut) const
 
 void Interpolator::missingNeighbourWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const
 {
-    weights.resize(nearests.size(), 0.0);
     if (nearests.size() == 0)
         return;
 
+    weights.resize(nearests.size(), 0.0);
     // TODO interpolate on pole needs handling
     //
     if (nearests.size() <= neighbour_)
     {
         NearestNeigbour nn;
-        interpolationWeights(where, nearests, weights);
+        nn.interpolationWeights(where, nearests, weights);
         stringstream ss;
         for (unsigned int i = 0; i < weights.size(); i++)
             ss << " " << weights[i] << endl;
