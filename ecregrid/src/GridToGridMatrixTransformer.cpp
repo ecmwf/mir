@@ -205,7 +205,6 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
         bool useBitmap = false;  // TODO handle this
         auto_ptr<Interpolator> method(factory.interpolationMethod(interpolationMethod_, pointsForInterpolation_,input,output.grid(),useLsm,"off",extrapolate_,missingValue_,useBitmap));
 
-
         vector<FieldPoint> nearests;
         nearests.reserve(pointsForInterpolation_);
         auto_ptr<GridContext> ctx(input.grid().getGridContext());
@@ -222,7 +221,6 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
             // weights and write them to the correct position in the current row
             vector<double> w(nearests.size(), 0.0);
             method->interpolationWeights(outPts[i], nearests, w);
-
             // now find the linear index corresponding to the i,j grid index
             // of each nearest point, and write the relevant weight to this
             // index
@@ -230,7 +228,6 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
             {
                 FieldPoint& pt = nearests[j];
                 long row_index = input.grid().getIndex(pt.iIndex(), pt.jIndex());
-                std::cout << "index " << row_index << " for i = " << pt.iIndex() << " j = " << pt.jIndex() << endl;
                 insertions.push_back(Eigen::Triplet<double>(i, row_index, w[j]));
             }
         }   
@@ -295,6 +292,7 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
     }
 
 
+    /*
     // debug - output the calculation that we will do
     for (unsigned int iout = 0; iout < output_point_count; iout++)
     {    
@@ -325,6 +323,7 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
         cout << "Output pt " << iout << " = " << ss.str() << endl;
 
     }
+    */
 
     // use existing ecregrid code to handle this data as required:
     {
