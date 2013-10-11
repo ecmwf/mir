@@ -8,4 +8,5 @@ ecbuild_add_executable( TARGET  eigen_sparse
 
 ecbuild_add_executable( TARGET  trilinos_sparse
 						SOURCES trilinos_sparse.cpp utils.h
+						LIBS    ${TRILINOS_LIBRARIES}
 						CONDITION TRILINOS_FOUND )
