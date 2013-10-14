@@ -69,6 +69,10 @@ set( MIR_LIBRARIES      ${CMAKE_PROJECT_NAME} )
 set( MIR_TPLS           grib_api )
 
 if( EIGEN3_FOUND )
+	list( APPEND MIR_TPLS  Trilinos )
+endif()
+
+if( TRILINOS_FOUND )
 	list( APPEND MIR_TPLS  Eigen3 )
 endif()
 
@@ -91,7 +95,15 @@ set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${GRIB_API_DEFINITIONS
 
 ### build contents
 
-add_subdirectory( ecregrid )
+add_subdirectory( ecregrid ) # eventually get rid of this :S
+
+add_subdirectory( src )
+
+add_subdirectory( tools )
+
+add_subdirectory( tests )
+
+### installation
 
 install( DIRECTORY share DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
