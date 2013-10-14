@@ -26,7 +26,7 @@
 #endif
 
 #ifndef Tokenizer_H
-#include "Tokenizer.h"
+#include <eckit/utils/Tokenizer.h>
 #endif
 
 #include <sstream>
@@ -228,7 +228,7 @@ void PolarStereographic::generateGrid(vector<Point>& llgrid) const
 
 void PolarStereographic::standardAreaDefinitions(int areaNumber)
 {
-	Tokenizer tokens(" ");
+	eckit::Tokenizer tokens(" ");
     string path = getShareDir() + "/definitions";
 
 	stringstream s;

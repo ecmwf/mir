@@ -54,7 +54,7 @@
 #endif
 
 #ifndef Timer_H
-#include "Timer.h"
+#include <eckit/utils/Timer.h>
 #endif
 
 #include "Extraction.h"
@@ -229,7 +229,7 @@ void SpectralToGridTransformer::transform(int truncation, bool  windParameter, c
 	mapBlox::const_iterator iter = blox.begin(), stop = blox.end();
 	unsigned long count = 0;
 #if ECREGRID_TIMER
-	Timer("SpectralToGridTransformer");
+    eckit::Timer("SpectralToGridTransformer");
 #endif
 	for ( ; iter != stop; ++iter) {
 		// Legendre

@@ -14,7 +14,7 @@
 #endif
 
 #ifndef Tokenizer_H
-#include "Tokenizer.h"
+#include <eckit/utils/Tokenizer.h>
 #endif
 
 #ifndef GridField_H
@@ -44,11 +44,11 @@ void Bitmap::setBitmap(vector<bool>& bitmap, long offset, int firstColumn, int l
 
 void Bitmap::extract(const Grid& output, vector<double>& values) const
 {
-	Tokenizer comma(",");
-	Tokenizer slash("/");
-	Tokenizer dash("-");
-	Tokenizer colon(":");
-	Tokenizer equal("=");
+	eckit::Tokenizer comma(",");
+	eckit::Tokenizer slash("/");
+	eckit::Tokenizer dash("-");
+	eckit::Tokenizer colon(":");
+	eckit::Tokenizer equal("=");
 	string buffer;
 
 	bool defaultValue = false;

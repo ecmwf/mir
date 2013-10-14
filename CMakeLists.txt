@@ -74,6 +74,8 @@ endif()
 
 ### define include dirs
 
+include_directories( ${ECKIT_INCLUDE_DIRS}  )
+
 include_directories( ${MIR_INCLUDE_DIRS}  )
 
 foreach( _tpl ${MIR_TPLS} )

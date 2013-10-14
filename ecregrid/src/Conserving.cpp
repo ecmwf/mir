@@ -26,7 +26,7 @@
 #endif
 
 #ifndef Timer_H
-#include "Timer.h"
+#include <eckit/utils/Timer.h>
 #endif
 
 #ifndef GridContext_H
@@ -54,7 +54,7 @@ double Conserving::interpolatedValue(const Point& where, const vector<FieldPoint
 
 void Conserving::interpolate(const GridField& input, const Grid& output, double* values, unsigned long valuesSize) const
 {
-	Timer time("interpolation loop conserving");
+    eckit::Timer time("interpolation loop conserving");
 	if(DEBUG){
 		cout << "****************************************************" << endl;
 		cout << "*** Conserving::interpolate - " << *this <<   endl;
@@ -63,7 +63,7 @@ void Conserving::interpolate(const GridField& input, const Grid& output, double*
 	}
 
 //	if(DEBUG)
-//		Timer timer("Interpolator::interpolate => Generate Output Grid & Interpolate");
+//		eckit::Timer timer("Interpolator::interpolate => Generate Output Grid & Interpolate");
 	vector<Point> outputPoints;
 	outputPoints.reserve(valuesSize);
 	output.generateGrid1D(outputPoints);

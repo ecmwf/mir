@@ -50,7 +50,7 @@
 #endif
 
 #ifndef Timer_H
-#include "Timer.h"
+#include <eckit/utils/Timer.h>
 #endif
 
 typedef map<double,vector<Point>,greater<double> > mappedPoints;
@@ -67,7 +67,7 @@ SpectralToListOfPointsTransformer::~SpectralToListOfPointsTransformer()
 Field* SpectralToListOfPointsTransformer::transform(const Field& in, const Field& out) const
 {
 #if ECREGRID_TIMER
-	Timer("SpectralToListOfPointsTransformer");
+    eckit::Timer("SpectralToListOfPointsTransformer");
 #endif
 	const SpectralField& input = dynamic_cast<const SpectralField&>(in);
 	const GridField&    output = dynamic_cast<const GridField&>(out);

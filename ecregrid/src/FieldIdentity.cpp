@@ -14,7 +14,7 @@
 #endif
 
 #ifndef Tokenizer_H
-#include "Tokenizer.h"
+#include <eckit/utils/Tokenizer.h>
 #endif
 
 #include "DefinitionsCache.h"
@@ -48,7 +48,7 @@ void FieldIdentity::setFromTypeOfGrid(const string& name)
 {
 	const string fileName = getShareDir() + "/definitions/identity_table" ;
 
-    Tokenizer tokens(" ");
+    eckit::Tokenizer tokens(" ");
 	bool found = false;
 
     ref_counted_ptr< const vector<string> > identityTable = DefinitionsCache::get(fileName);
@@ -81,7 +81,7 @@ void FieldIdentity::setFromTypeOfGrid(const string& name)
 
 void FieldIdentity::isAvailable()
 {
-    Tokenizer tokens(" ");
+    eckit::Tokenizer tokens(" ");
 	bool found = false;
 
     const string fileName = getShareDir() + "/definitions/identity_table";

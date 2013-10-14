@@ -14,7 +14,7 @@
 #endif
 
 #ifndef Tokenizer_H
-#include "Tokenizer.h"
+#include <eckit/utils/Tokenizer.h>
 #endif
 
 #include "DefinitionsCache.h"
@@ -94,7 +94,7 @@ int  Parameter::marsParam() const
 
 void Parameter::peculiarParameters()
 {
-	Tokenizer tokens(" ");
+	eckit::Tokenizer tokens(" ");
 
 	stringstream s;
 	s << getShareDir() << "/definitions/parameters" ;

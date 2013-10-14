@@ -57,7 +57,7 @@
 #include "PartialDerivatives.h"
 #endif
 
-#include "Timer.h"
+#include <eckit/utils/Timer.h>
 
 #include <Eigen/Sparse>
 #include <Eigen/Dense>
@@ -82,7 +82,7 @@ GridToGridMatrixTransformer::~GridToGridMatrixTransformer()
 
 Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out) const
 {
-    Timer t1("GridToGridMatrixTransformer::transform");
+    eckit::Timer t1("GridToGridMatrixTransformer::transform");
 	const GridField& input  = dynamic_cast<const GridField&>(in);
 	const GridField& output = dynamic_cast<const GridField&>(out);
 
@@ -162,7 +162,7 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
         double val;
 
         {
-            Timer triplet_timer("loading of triplets");
+            eckit::Timer triplet_timer("loading of triplets");
             insertions.resize(total_size);
         
             double val;
@@ -181,7 +181,7 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
     }
     else
     {
-        Timer t3("Weight generation");
+        eckit::Timer t3("Weight generation");
         // Generate a set of triplets according to your
         // interpolation scheme and then filling the matrix accordingly.
         //
@@ -275,7 +275,7 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
     // Now insert the triplets into the SparseMatrix. Unfortunately this
     // appears to be necessary even when caching
     {
-        Timer t4("Setting weights from triplets");
+        eckit::Timer t4("Setting weights from triplets");
         weights.setFromTriplets(insertions.begin(), insertions.end());
     }
 
@@ -287,7 +287,7 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
     Eigen::MatrixXd B(1, output_point_count);
     
     {
-        Timer t4("Matrix multiplication");
+        eckit::Timer t4("Matrix multiplication");
         B = weights * A;
     }
 

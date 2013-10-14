@@ -235,10 +235,6 @@ SubGrid.cpp
 SubGrid.h
 ThreadSafeMap.cpp
 ThreadSafeMap.h
-Timer.cpp
-Timer.h
-Tokenizer.cpp
-Tokenizer.h
 Transformer.cpp
 Transformer.h
 VerticalInterpolator.cpp

@@ -17,7 +17,7 @@
 #include "Linear.h"
 #include "NearestNeigbour.h"
 #include "GridContext.h"
-#include <Timer.h>
+#include <eckit/utils/Timer.h>
 
 #include <queue>
 
@@ -44,7 +44,7 @@ ListOfPoints::ListOfPoints(const vector<Point>& points, double tolerance) :
 	Grid(), points_(points), tolerance_(tolerance)
 {
 	{
-		Timer timer("ListOfPoints -> sort");
+		eckit::Timer timer("ListOfPoints -> sort");
 		std::sort(points_.begin(), points_.end(),north_south);
 		if(points_.size() > 4) {
 		cout << "ListOfPoints::ListOfPoints: First: " 
@@ -57,7 +57,7 @@ ListOfPoints::ListOfPoints(const vector<Point>& points, double tolerance) :
 	}
 
 	{
-		Timer timer("ListOfPoints -> area");
+		eckit::Timer timer("ListOfPoints -> area");
 		Point upper_right = *(max_element(points_.begin(), points_.end()));
 		Point lower_left  = *(min_element(points_.begin(), points_.end()));
 		area_ = Area(upper_right.latitude(),lower_left.longitude(),lower_left.latitude(),upper_right.longitude());

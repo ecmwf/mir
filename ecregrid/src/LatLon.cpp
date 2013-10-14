@@ -26,7 +26,7 @@
 #endif
 
 #ifndef Tokenizer_H
-#include "Tokenizer.h"
+#include <eckit/utils/Tokenizer.h>
 #endif
 
 #include "DefinitionsCache.h"
@@ -456,7 +456,7 @@ string LatLon::coeffInfo() const
 
 size_t LatLon::loadGridSpec(vector<long>& rgSpec) const
 {
-	Tokenizer tokens("  ");
+	eckit::Tokenizer tokens("  ");
 	string buffer;
 	ifstream rgSource;
 

@@ -19,7 +19,7 @@
 #endif
 
 #ifndef Timer_H
-#include "Timer.h"
+#include <eckit/utils/Timer.h>
 #endif
 
 
@@ -38,7 +38,7 @@ LegendreTransformSpectralToCoefficients::~LegendreTransformSpectralToCoefficient
 int LegendreTransformSpectralToCoefficients::transform(mapLats& mappedCoeff, const vector<comp>& dataComplex, int northIndex, int southIndex) const
 {
 
-//	Timer time("Legendre Transformation");
+	eckit::Timer time("Legendre Transformation");
 
 	long lsize = (truncation_ + 1) * (truncation_+ 4) / 2;
 	int  ilim  = truncation_ + 1;

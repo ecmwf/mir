@@ -53,7 +53,7 @@
 #endif
 
 #ifndef Timer_H
-#include "Timer.h"
+#include <eckit/utils/Timer.h>
 #endif
 
 #ifndef PartialDerivatives_H
@@ -266,7 +266,7 @@ void Interpolator::interpolate(const GridField& input, const Grid& output, vecto
 	}
 
 #if ECREGRID_TIMER
-	Timer timer("Interpolator::interpolate => Generate Output Grid & Interpolate");
+	eckit::Timer timer("Interpolator::interpolate => Generate Output Grid & Interpolate");
 #endif
 
 	vector<Point> outputPoints;
@@ -287,7 +287,7 @@ void Interpolator::interpolate(const GridField& input, const Grid& output, vecto
     const vector<double>& data = input.data();
     ASSERT(data.size() > 0);
 
-//	Timer time("interpolation loop");
+//	eckit::Timer time("interpolation loop");
 	interpolate(input.grid(),data,inScMode,inMissingValue,outputPoints,values);
 
 	if(getenv("ECREGRID_CHECK_CONSERVING")){

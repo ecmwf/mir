@@ -14,7 +14,7 @@
 #endif
 
 #ifndef Tokenizer_H
-#include "Tokenizer.h"
+#include <eckit/utils/Tokenizer.h>
 #endif
 
 #ifndef GribApiInput_H
@@ -318,7 +318,7 @@ int HandleRequest::request(int argc, char* argv[])
 
 #endif // HAVE_LONG_OPTS
 
-	Tokenizer tokens("/");
+    eckit::Tokenizer tokens("/");
 
 	if( argc < 2 ) {
 		usage();

@@ -17,7 +17,7 @@
 #endif
 
 #ifndef Tokenizer_H
-#include "Tokenizer.h"
+#include <eckit/utils/Tokenizer.h>
 #endif
 
 #ifndef FieldDescription_H
@@ -37,7 +37,7 @@
 #endif
 
 #ifndef Timer_H
-#include "Timer.h"
+#include <eckit/utils/Timer.h>
 #endif
 
 #include <fstream>
@@ -127,7 +127,7 @@ void AsciiInput::getLatLonAndValues(vector<Point>& points, vector<double>& value
 
 void AsciiInput::getLatLonValues(vector<Point>& points) const
 {
-	Tokenizer tokens(" \t");
+	eckit::Tokenizer tokens(" \t");
 	ifstream in(fileName_.c_str());
     if(!in)
 		throw CantOpenFile("AsciiInput::getLatLonValues " + fileName_);
@@ -152,7 +152,7 @@ void AsciiInput::getLatLonValues(vector<Point>& points) const
 
 void AsciiInput::getDoubleValues(const string& name, vector<double>& values)  const
 {
-	Tokenizer tokens(" ");
+	eckit::Tokenizer tokens(" ");
 	fstream in((name+fileName_).c_str(), ios::in);
 	    if(!in)
 			throw CantOpenFile("AsciiInput::getLatLonValues " + name+fileName_);

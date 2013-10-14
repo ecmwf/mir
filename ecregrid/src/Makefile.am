@@ -22,8 +22,8 @@ noinst_HEADERS = \
          GribApiOutputSpectral.h \
          BinaryOutput.h \
          AsciiOutput.h \
-         Tokenizer.h \
-         Timer.h \
+         eckit/utils/Tokenizer.h \
+         eckit/utils/Timer.h \
          Seconds.h \
          FieldIdentity.h \
          FieldFeatures.h \

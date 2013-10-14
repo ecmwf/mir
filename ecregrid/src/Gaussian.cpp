@@ -22,7 +22,7 @@
 #endif
 
 #ifndef Tokenizer_H
-#include "Tokenizer.h"
+#include <eckit/utils/Tokenizer.h>
 #endif
 
 #include "DefinitionsCache.h"
@@ -131,7 +131,7 @@ int Gaussian::truncate(int truncationIn) const
 
 size_t Gaussian::loadGridSpec(vector<long>& rgSpec) const
 {
-	Tokenizer tokens("  ");
+	eckit::Tokenizer tokens("  ");
 	
 	stringstream s;
 	s << getShareDir() << "/definitions/reduced_gaussian/rgauss_" << gaussianNumber_;

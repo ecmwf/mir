@@ -10,7 +10,7 @@
 #include "Constrains.h"
 
 #ifndef Tokenizer_H
-#include "Tokenizer.h"
+#include <eckit/utils/Tokenizer.h>
 #endif
 
 #ifndef Exception_H
@@ -37,7 +37,7 @@ Constrains::~Constrains()
 
 void Constrains::isPossible(FieldDescription* methods, bool global_output) const
 {
-	Tokenizer tokens("  ");
+	eckit::Tokenizer tokens("  ");
 
 	stringstream s;
 	s << getShareDir() << "/definitions/constrains" ;

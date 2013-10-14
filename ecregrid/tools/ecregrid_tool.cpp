@@ -15,12 +15,12 @@
 #include "HandleRequest.h"
 #endif
 
-#include "Timer.h"
+//#include <eckit/utils/Timer.h>
 
 int main (int argc, char* argv[]) {
 
 #ifdef ECREGRID_TIMER
-	Timer timer("time");
+    //eckit::Timer timer("time");
 #endif
 
 	try{

@@ -18,7 +18,7 @@
 #endif
 
 #ifndef Timer_H
-#include "Timer.h"
+#include <eckit/utils/Timer.h>
 #endif
 
 #include <algorithm>
@@ -43,7 +43,7 @@ InverseFastFourierTransform::~InverseFastFourierTransform()
 long InverseFastFourierTransform::transform(vector<double>& values, const mapLats& mapped, const Grid& grid) const
 {
 
-//	Timer time("Inverse FFT");
+//	eckit::Timer time("Inverse FFT");
 
 	int multiFactor = 1;
 	int needed = adjustNumberOfPointsAlongLatitude(&multiFactor);
