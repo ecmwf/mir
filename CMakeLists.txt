@@ -28,8 +28,8 @@ endif()
 ###############################################################################
 # local project
 
-ecbuild_use_package( PROJECT eckit    VERSION  0.4.0 REQUIRED )
-ecbuild_use_package( PROJECT grib_api VERSION 1.10.0 REQUIRED )
+ecbuild_use_package( PROJECT eckit    VERSION  0.6  REQUIRED )
+ecbuild_use_package( PROJECT grib_api VERSION 1.10  REQUIRED )
 
 ecbuild_declare_project()
 
