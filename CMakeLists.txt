@@ -17,13 +17,11 @@ cmake_minimum_required( VERSION 2.8.4 FATAL_ERROR )
 
 project( mir C CXX )
 
-set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} )
+set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
 
 include( ecbuild_system )
 
-if( ECBUILD_MACRO_VERSION VERSION_LESS 1.1 )
-    message( FATAL_ERROR "${PROJECT_NAME} needs ecbuild >= 1.1" )
-endif()
+ecbuild_requires_macro_version( 1.2 )
 
 ###############################################################################
 # local project
