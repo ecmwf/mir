@@ -29,7 +29,7 @@ endif()
 # local project
 
 ecbuild_use_package( PROJECT eckit    VERSION  0.6  REQUIRED )
-ecbuild_use_package( PROJECT grib_api VERSION 1.10  REQUIRED )
+#ecbuild_use_package( PROJECT grib_api VERSION 1.10  REQUIRED )
 
 ecbuild_declare_project()
 
@@ -69,11 +69,11 @@ set( MIR_LIBRARIES      ${CMAKE_PROJECT_NAME} )
 set( MIR_TPLS           grib_api )
 
 if( EIGEN3_FOUND )
-	list( APPEND MIR_TPLS  Trilinos )
+	list( APPEND MIR_TPLS  Eigen3 )
 endif()
 
 if( TRILINOS_FOUND )
-	list( APPEND MIR_TPLS  Eigen3 )
+	list( APPEND MIR_TPLS  Trilinos )
 endif()
 
 ### define include dirs
@@ -95,7 +95,7 @@ set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${GRIB_API_DEFINITIONS
 
 ### build contents
 
-add_subdirectory( ecregrid ) # eventually get rid of this :S
+#add_subdirectory( ecregrid ) # eventually get rid of this :S
 
 add_subdirectory( src )
 
