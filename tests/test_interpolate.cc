@@ -47,11 +47,13 @@ void TestInterpolate::test_constructor()
 
     // standard case
 
-    int n = 4;
+    const size_t n = 4;
+    const size_t npts =  (n + 1) * (n + 1);
+
     g = new LatLon( n, n, earth );
 
     ASSERT( g );
-    ASSERT( g->dataSize() == (n + 1) * (n + 1) );
+    ASSERT( g->coordinates().size() == npts );
 
     ASSERT( g->boundingBox().bottom_left_.lat_ == -90. );
     ASSERT( g->boundingBox().bottom_left_.lon_ ==   0. );
@@ -69,25 +71,28 @@ void TestInterpolate::test_constructor()
         raw_data->push_back((double)i);
     }
 
-    ASSERT(raw_data->size() == g->dataSize());
-    const std::vector<Point2D>& outputGridData = g->gridData();
+    ASSERT(raw_data->size() == g->coordinates().size());
+
+    const std::vector<Point2D>& coords = g->coordinates();
+
+    ASSERT( coords.size() == npts );
 
     eckit::grid::Field::MetaData* m = new eckit::grid::Field::MetaData();
 
     Field::Vector fv;
-    eckit::grid::Field* f = new eckit::grid::Field(m, raw_data);
+    eckit::grid::Field* f = new eckit::grid::Field(g, m, raw_data);
     fv.push_back(f);
 
     // put it all into an INPUT field set
-    eckit::grid::FieldSet input(g, fv);
+    eckit::grid::FieldSet input(fv);
 
     for (Field::Vector::iterator it = input.fields().begin(); it != input.fields().end(); ++it)
     {
         // test the data that is in the grid
-        Field::Data* pData = (*it)->data();
+        const Field::Data& d = (*it)->data();
         for (unsigned int i = 0; i < raw_data->size(); i++)
         {
-            ASSERT((*raw_data)[i] == (*pData)[i]);
+            ASSERT((*raw_data)[i] == d[i]);
         }
     }
 
@@ -98,12 +103,12 @@ void TestInterpolate::test_constructor()
     Grid* g1 = new LatLon( n1, n1, earth );
 
     ASSERT( g1 );
-    ASSERT( g1->dataSize() == (n1 + 1) * (n1 + 1) );
+    ASSERT( g1->coordinates().size() == (n1 + 1) * (n1 + 1) );
 
     eckit::grid::Field::MetaData* m1 = new eckit::grid::Field::MetaData();
 
     // put it all into an OUTPUT field set
-    eckit::grid::FieldSet output(g1, fv1);
+    eckit::grid::FieldSet output(fv1);
  
     // construct a bilinear interpolator
     mir::Bilinear b;
@@ -119,8 +124,8 @@ void TestInterpolate::test_constructor()
     for (Field::Vector::iterator it = output.fields().begin(); it != output.fields().end(); ++it)
     {
         // extract and test the data
-        Field::Data* pData = (*it)->data();
-        for (unsigned int i = 0; i < pData->size(); i++)
+        const Field::Data& d = (*it)->data();
+        for (unsigned int i = 0; i < d.size(); i++)
         {
             // @todo we need to test the output data here
             // once the result is correct
