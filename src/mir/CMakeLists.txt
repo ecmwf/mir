@@ -5,6 +5,8 @@ Interpolator.cc
 Interpolator.h
 PointSearch.cc
 PointSearch.h
+Weights.cc
+Weights.h
  )
 
 

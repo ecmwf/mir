@@ -27,7 +27,7 @@ namespace mir {
   
 PointSearch::PointSearch(const std::vector<Point2D>& points)
 {
-    eckit::Log::info() << "Building a PointSearch" << std::endl;
+    eckit::Log::info() << "Build a PointSearch" << std::endl;
 
     /// @todo the kd tree might be stored in shared memory ?
 
@@ -46,6 +46,7 @@ PointSearch::PointSearch(const std::vector<Point2D>& points)
 
 PointSearch::~PointSearch()
 {
+    eckit::Log::info() << "Destroy a PointSearch" << std::endl;
 }
 
 void PointSearch::closestNPoints(const Point2D& pt, size_t n, std::vector<Point2D>& closest, std::vector<unsigned int>& indices)

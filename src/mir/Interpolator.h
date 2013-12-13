@@ -12,10 +12,11 @@
 /// @author Tiago Quintino
 /// @date Oct 2013
 
-#ifndef eckit_grid_Interpolator_H
-#define eckit_grid_Interpolator_H
+#ifndef mir_Interpolator_H
+#define mir_Interpolator_H
 
 #include "eckit/memory/NonCopyable.h"
+#include "Weights.h"
 
 //-----------------------------------------------------------------------------
 
@@ -35,29 +36,18 @@ class Interpolator : private eckit::NonCopyable {
 
 public: // methods
 
-    Interpolator();
+    Interpolator(WeightEngine* engine = new InverseSquare());
 
     virtual ~Interpolator();
 
-    virtual void interpolate(const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output) = 0;
+    void interpolate(const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output);
 
 protected:
     
+    WeightEngine* engine_;
 
 };
 
-//-----------------------------------------------------------------------------
-
-class Bilinear : public Interpolator {
-
-public:
-    Bilinear();
-    virtual ~Bilinear();
-
-    virtual void interpolate(const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output);
-protected:
-    double unnormalisedWeight(const eckit::grid::Point2D& p, const eckit::grid::Point2D& o) const;
-};
 
 } // namespace mir
 

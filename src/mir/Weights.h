@@ -12,41 +12,44 @@
 /// @author Tiago Quintino
 /// @date Oct 2013
 
-#ifndef mir_PointSearch_H
-#define mir_PointSearch_H
+#ifndef mir_Weights_H
+#define mir_Weights_H
 
-#include "eckit/container/KDPoint.h"
-#include "eckit/container/KDTree.h"
 #include "eckit/memory/NonCopyable.h"
-#include "eckit/grid/Grid.h"
 
 //-----------------------------------------------------------------------------
+
+namespace eckit {
+namespace grid {
+    class Point2D;
+}
+}
 
 
 namespace mir {
 
 //-----------------------------------------------------------------------------
 
-typedef eckit::KDPoint<unsigned int> IndexPoint;
+class WeightEngine : private eckit::NonCopyable {
+public:
+    WeightEngine() {};
+    virtual ~WeightEngine() {};
 
-class PointSearch : private eckit::NonCopyable {
-
-public: // methods
-
-    PointSearch(const std::vector<eckit::grid::Point2D>& points);
-
-    virtual ~PointSearch();
-
-    /// Finds closts N points to an input point
-    void closestNPoints(const eckit::grid::Point2D& pt, size_t n, std::vector<eckit::grid::Point2D>& closest, std::vector<unsigned int>& indices);
-
-
-protected:
-    
-    eckit::KDTree<IndexPoint> kd_;
-
+    virtual void generate(const eckit::grid::Point2D& ref, const std::vector<eckit::grid::Point2D>& closests, std::vector<double>& weights) const = 0;
 
 };
+
+
+class InverseSquare: public WeightEngine {
+
+public:
+    InverseSquare();
+    virtual ~InverseSquare();
+
+    virtual void generate(const eckit::grid::Point2D& ref, const std::vector<eckit::grid::Point2D>& closests, std::vector<double>& weights) const;
+protected:
+};
+
 
 } // namespace mir
 

@@ -60,6 +60,7 @@ void TestInterpolate::test_constructor()
     ASSERT( g->boundingBox().top_right_.lat_ ==  90. );
     ASSERT( g->boundingBox().top_right_.lon_ == 360. );
 
+    
     // make up some data for this field
     eckit::grid::Field::Data* raw_data = new eckit::grid::Field::Data;
     for (unsigned int i = 0; i <= 4; i++)
@@ -106,29 +107,35 @@ void TestInterpolate::test_constructor()
     ASSERT( g1->coordinates().size() == (n1 + 1) * (n1 + 1) );
 
     eckit::grid::Field::MetaData* m1 = new eckit::grid::Field::MetaData();
+    
+    eckit::grid::Field* f1 = new eckit::grid::Field(g1, m1, new std::vector<double>);
+    fv1.push_back(f1);
 
     // put it all into an OUTPUT field set
     eckit::grid::FieldSet output(fv1);
  
     // construct a bilinear interpolator
-    mir::Bilinear b;
+    mir::Interpolator interp;
 
-    // we have no fields in the output field set as yet
-    ASSERT(output.fields().size() != input.fields().size());
+    interp.interpolate(input, output);
 
-    b.interpolate(input, output);
-
-    // check the interpolator did something
     ASSERT(output.fields().size() == input.fields().size());
     
     for (Field::Vector::iterator it = output.fields().begin(); it != output.fields().end(); ++it)
     {
+
         // extract and test the data
+        if (!*it)
+            continue;
+
         const Field::Data& d = (*it)->data();
+        
+        // check the interpolator added data
+        ASSERT(d.size() > 0);
         for (unsigned int i = 0; i < d.size(); i++)
         {
-            // @todo we need to test the output data here
-            // once the result is correct
+            /// @todo we need to test the output data here
+            //std::cout << "output point " << i << " = " << d[i] << std::endl;
         }
     }
 

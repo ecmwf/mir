@@ -28,33 +28,27 @@ namespace mir {
 
 //-----------------------------------------------------------------------------
 
-Interpolator::Interpolator()
+Interpolator::Interpolator(WeightEngine* engine /*=InverseSquare()*/)
+: engine_(engine)
 {
-    eckit::Log::info() << "Build a Interpolator" << std::endl;
+    ASSERT(engine_);
+    eckit::Log::info() << "Build an Interpolator" << std::endl;
 }
 
 Interpolator::~Interpolator()
 {
+    eckit::Log::info() << "Destroy an Interpolator" << std::endl;
+    delete engine_; engine_ = 0;
 }
 
-//-----------------------------------------------------------------------------
-Bilinear::Bilinear() 
+void Interpolator::interpolate(const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output)
 {
-}
+    /// @todo refactor required here: most of this code is irrelevant to
+    // the type of interpolation in place.
+    //
 
-Bilinear::~Bilinear() 
-{
-}
-
-double Bilinear::unnormalisedWeight(const Point2D& p, const Point2D& o) const
-{
-    return fabs(o.lat_ - p.lat_) * fabs(o.lon_ - p.lon_); 
-}
-
-
-void Bilinear::interpolate(const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output)
-{
     ASSERT( input.fields().size() == output.fields().size() );
+
 
     for( size_t i = 0; i < input.fields().size(); ++i )
     {
@@ -90,10 +84,12 @@ void Bilinear::interpolate(const eckit::grid::FieldSet& input, eckit::grid::Fiel
 
         const size_t n = 4;
     
+        // we should always have a means to generate weights
+        ASSERT(engine_);
+
         // loop over the output grid points and find the closest ones
         std::vector<Point2D> closests;
         std::vector<unsigned int> indices;
-
         for (unsigned int i = 0; i < out_coords.size(); ++i)
         {
             const Point2D& o_pt = out_coords[i];
@@ -107,30 +103,17 @@ void Bilinear::interpolate(const eckit::grid::FieldSet& input, eckit::grid::Fiel
             ASSERT(closests.size() <= n);
             ASSERT(closests.size() == indices.size());
 
-            std::vector<double> weights(n, 0.0);
-            double sum = 0.0;
+            std::vector<double> weights;
 
-            for (unsigned int j = 0; j < closests.size(); j++)
-            {
-                // @todo this is not correct - we need to find the opposite
-                // points to a particular point in order to determine its weight
-                // -- this might form a requirement on the pointsearch class
-                weights[j] = unnormalisedWeight(o_pt, closests[j]);
-                sum += weights[j];
-            }
-
-            // now normalise these
-            for (unsigned int j = 0; j < closests.size(); j++)
-            {
-                if (sum != 0.0)
-                    weights[j] /= sum;
-            }
-
+            engine_->generate(o_pt, closests, weights);    
+            
             // write the locations in the IndexPoints to the matrix at location i
             for (unsigned int j = 0; j < weights.size(); j++)
             {
                 long pt_index = indices[j];
 
+                ASSERT(weights[j] <= 1.0);
+                ASSERT(weights[j] >= 0.0);
                 insertions.push_back(Eigen::Triplet<double>(i, pt_index, weights[j]));
             }
 
@@ -154,8 +137,9 @@ void Bilinear::interpolate(const eckit::grid::FieldSet& input, eckit::grid::Fiel
 
         // Write the output values from B to this vector
         Eigen::Map<Eigen::VectorXd>(out.data().data(), B.rows()) = B.col(0);
+      
 
     }
- }
-	
+
+}
 } // namespace mir

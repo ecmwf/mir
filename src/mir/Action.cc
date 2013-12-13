@@ -36,7 +36,8 @@ Interpolate::Interpolate(eckit::StringDict& config)
         eckit::Log::info() << "Interpolate config " << it->first << " = " << it->second << std::endl;
     
     /// @todo react to config parameters
-    interpolator_ = new mir::Bilinear(); 
+    /// @todo and pass a different weight engine here
+    interpolator_ = new mir::Interpolator(); 
 }
 
 Interpolate::~Interpolate()
