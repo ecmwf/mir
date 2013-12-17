@@ -17,11 +17,13 @@
 
 #include "eckit/memory/NonCopyable.h"
 #include "Weights.h"
+#include <Eigen/Sparse>
 
 //-----------------------------------------------------------------------------
 
 namespace eckit {
 namespace grid {
+    class Field;
     class FieldSet;
     class Point2D;
 }
@@ -40,12 +42,13 @@ public: // methods
 
     virtual ~Interpolator();
 
-    void interpolate(const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output);
+    void interpolate(const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output) const;
 
 protected:
     
     WeightEngine* engine_;
 
+    void weights(const eckit::grid::Field& inp, const eckit::grid::Field& out, Eigen::SparseMatrix<double>& weights) const;
 };
 
 

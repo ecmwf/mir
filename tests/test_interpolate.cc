@@ -87,13 +87,16 @@ void TestInterpolate::test_constructor()
     // put it all into an INPUT field set
     eckit::grid::FieldSet input(fv);
 
+    int count = 0;
     for (Field::Vector::iterator it = input.fields().begin(); it != input.fields().end(); ++it)
     {
+        std::cout << "Input field " << count++ << std::endl;
         // test the data that is in the grid
         const Field::Data& d = (*it)->data();
         for (unsigned int i = 0; i < raw_data->size(); i++)
         {
             ASSERT((*raw_data)[i] == d[i]);
+            std::cout << " input point " << i << " = " << d[i] << std::endl;
         }
     }
 
@@ -121,9 +124,11 @@ void TestInterpolate::test_constructor()
 
     ASSERT(output.fields().size() == input.fields().size());
     
+    count = 0;
     for (Field::Vector::iterator it = output.fields().begin(); it != output.fields().end(); ++it)
     {
 
+        std::cout << "Output Field " << count++ << std::endl;
         // extract and test the data
         if (!*it)
             continue;
@@ -135,7 +140,7 @@ void TestInterpolate::test_constructor()
         for (unsigned int i = 0; i < d.size(); i++)
         {
             /// @todo we need to test the output data here
-            //std::cout << "output point " << i << " = " << d[i] << std::endl;
+           std::cout << "output point " << i << " = " << d[i] << std::endl;
         }
     }
 
