@@ -13,15 +13,12 @@
 #include <string>
 #include "Weights.h"
 
+//-----------------------------------------------------------------------------
 
 using eckit::grid::Point2D;
 
-//-----------------------------------------------------------------------------
-
 namespace mir {
 
-
-//-----------------------------------------------------------------------------
 InverseSquare::InverseSquare() 
 {
     eckit::Log::info() << "Build a InverseSquare" << std::endl;
@@ -34,14 +31,16 @@ InverseSquare::~InverseSquare()
 
 void InverseSquare::generate(const Point2D& ref, const std::vector<Point2D>& closests, std::vector<double>& weights) const
 {
+    /// @todo take epsilon from some general config
+	const double epsilon = 1e-08;
+	
     weights.resize(closests.size(), 0.0);
     double sum = 0.0;
 
     for (unsigned int j = 0; j < closests.size(); j++)
     {
-        double delta = Point2D::distance(ref, closests[j]);
-        /// @todo take epsilon from some general config
-        weights[j] = 1.0 / (Point2D::EPSILON + (delta * delta));
+        const double d2 = Point2D::distance2(ref, closests[j]);
+        weights[j] = 1.0 / ( epsilon + d2 );
         sum += weights[j];
     }
 
@@ -51,6 +50,6 @@ void InverseSquare::generate(const Point2D& ref, const std::vector<Point2D>& clo
         ASSERT(sum != 0.0);
         weights[j] /= sum;
     }
-
 }
+
 } // namespace mir
