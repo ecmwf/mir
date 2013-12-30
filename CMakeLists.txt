@@ -103,7 +103,7 @@ add_subdirectory( tests )
 
 ### installation
 
-install( DIRECTORY share DESTINATION ${CMAKE_INSTALL_PREFIX} )
+# install( DIRECTORY share DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
 ecbuild_add_resources( TARGET top_files SOURCES
 											 TODO AUTHORS README NOTICE LICENSE INSTALL ChangeLog COPYING
