@@ -15,7 +15,8 @@
 #ifndef mir_PointSearch_H
 #define mir_PointSearch_H
 
-#include "eckit/container/KDPoint.h"
+#include "eckit/container/sptree/SPPoint.h"
+#include "eckit/container/KDMemory.h"
 #include "eckit/container/KDTree.h"
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/grid/Grid.h"
@@ -27,9 +28,18 @@ namespace mir {
 
 //-----------------------------------------------------------------------------
 
-typedef eckit::KDPoint<unsigned int> IndexPoint;
-
 class PointSearch : private eckit::NonCopyable {
+
+    struct TreeTrait {
+        typedef eckit::KDMemory   Alloc;
+        typedef eckit::SPPoint<2> Point;
+        typedef unsigned int      Payload;
+    };
+
+    typedef eckit::KDTree<TreeTrait> TreeType;
+    typedef eckit::KDTree<TreeTrait>::PointType PointType;
+    typedef eckit::KDTree<TreeTrait>::NodeInfo  NodeInfo;
+    typedef eckit::KDTree<TreeTrait>::PayloadType PayloadType;
 
 public: // methods
 
@@ -43,8 +53,7 @@ public: // methods
 
 protected:
     
-    eckit::KDTree<IndexPoint> kd_;
-
+    TreeType kd_;
 
 };
 
