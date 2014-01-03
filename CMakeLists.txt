@@ -21,7 +21,7 @@ set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} 
 
 include( ecbuild_system )
 
-ecbuild_requires_macro_version( 1.2 )
+ecbuild_requires_macro_version( 1.3 )
 
 ###############################################################################
 # local project
@@ -44,6 +44,11 @@ option( MIR_PYTHON "whether or not to build the MIR python interface" OFF )
 
 ###############################################################################
 # find external dependencies
+
+# check for C++11 support
+
+ecbuild_add_cxx11_flags()
+ecbuild_check_cxx11( PRINT )
 
 find_package( Threads )
 
