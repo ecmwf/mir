@@ -31,15 +31,15 @@ namespace mir {
 class PointSearch : private eckit::NonCopyable {
 
     struct TreeTrait {
-        typedef eckit::KDMemory   Alloc;
-        typedef eckit::SPPoint<2> Point;
-        typedef unsigned int      Payload;
+        typedef eckit::SPPoint<2>    Point;
+        typedef unsigned int         Payload;
     };
 
-    typedef eckit::KDTree<TreeTrait> TreeType;
-    typedef eckit::KDTree<TreeTrait>::PointType PointType;
-    typedef eckit::KDTree<TreeTrait>::NodeInfo  NodeInfo;
-    typedef eckit::KDTree<TreeTrait>::PayloadType PayloadType;
+    typedef eckit::KDTreeMemory<TreeTrait> TreeType;
+
+    typedef typename TreeType::PointType   PointType;
+    typedef typename TreeType::NodeInfo    NodeInfo;
+    typedef typename TreeType::PayloadType PayloadType;
 
 public: // methods
 
@@ -49,7 +49,6 @@ public: // methods
 
     /// Finds closts N points to an input point
     void closestNPoints(const eckit::grid::Point2D& pt, size_t n, std::vector<eckit::grid::Point2D>& closest, std::vector<unsigned int>& indices);
-
 
 protected:
     
