@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2013 ECMWF.
+ * (C) Copyright 1996-2014 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -49,7 +49,8 @@ public: // methods
     virtual ~PointSearch();
 
     /// Finds closts N points to an input point
-    void closestNPoints(const eckit::grid::Point2D& pt, size_t n, std::vector<eckit::grid::Point2D>& closest, std::vector<size_t>& indices);
+    void closestNPoints(const eckit::grid::Point2D& pt, size_t n, std::vector<eckit::grid::Point2D>& closest, std::vector<PayloadType>& indices);
+    void closestNPoints(const eckit::grid::Point2D& pt, size_t n, std::vector<ValueType>& closest);
 
 protected:
     

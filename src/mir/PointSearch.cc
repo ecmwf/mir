@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2013 ECMWF.
+ * (C) Copyright 1996-2014 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -50,6 +50,21 @@ PointSearch::PointSearch(const std::vector<Point2D>& points)
 PointSearch::~PointSearch()
 {
     eckit::Log::info() << "Destroy a PointSearch" << std::endl;
+}
+
+void PointSearch::closestNPoints( const Point2D& pt,
+                                  size_t n,
+                                  std::vector< ValueType >& closest)
+{
+    TreeType::NodeList nn = kd_.kNearestNeighbours(PointType(pt.lat_, pt.lon_), n);
+    
+    closest.clear(); closest.reserve(n);
+
+    for( TreeType::NodeList::iterator it = nn.begin(); it != nn.end(); ++it )
+    {
+        closest.push_back(it->value());
+    }
+
 }
 
 void PointSearch::closestNPoints( const Point2D& pt,

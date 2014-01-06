@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2013 ECMWF.
+ * (C) Copyright 1996-2014 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -28,7 +28,7 @@ namespace mir {
 
 //-----------------------------------------------------------------------------
 
-Interpolator::Interpolator(WeightEngine* engine /*=InverseSquare()*/)
+Interpolator::Interpolator(WeightEngine* engine/* = new InverseSquare()*/)
 : engine_(engine)
 {
     ASSERT(engine_);
@@ -43,12 +43,7 @@ Interpolator::~Interpolator()
 
 void Interpolator::interpolate(const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output) const
 {
-    /// @todo refactor required here: most of this code is irrelevant to
-    // the type of interpolation in place.
-    //
-
     ASSERT( input.fields().size() == output.fields().size() );
-
 
     for( size_t i = 0; i < input.fields().size(); ++i )
     {
@@ -121,6 +116,7 @@ void Interpolator::weights(const Field& inp, const Field& out, Eigen::SparseMatr
     // loop over the output grid points and find the closest ones
     std::vector<Point2D> closests;
     std::vector<size_t> indices;
+
     for (size_t i = 0; i < out_coords.size(); ++i)
     {
         const Point2D& o_pt = out_coords[i];

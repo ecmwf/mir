@@ -80,14 +80,14 @@ void TestInterpolate::test_constructor()
 
     ASSERT( coords.size() == npts );
 
-    eckit::grid::Field::MetaData* m = new eckit::grid::Field::MetaData();
+    eckit::grid::Field::MetaData* md = new eckit::grid::Field::MetaData();
 
     Field::Vector fv;
-    eckit::grid::Field* f = new eckit::grid::Field(g, m, raw_data);
+    eckit::grid::Field* f = new eckit::grid::Field(g, md, raw_data);
     fv.push_back(f);
 
     // check it's the same object
-    ASSERT(&(f->metadata()) == m);
+    ASSERT(&(f->metadata()) == md);
 
     // put it all into an INPUT field set
     eckit::grid::FieldSet input(fv);
@@ -112,9 +112,9 @@ void TestInterpolate::test_constructor()
     ASSERT( g1 );
     ASSERT( g1->coordinates().size() == (n1 + 1) * (n1 + 1) );
 
-    eckit::grid::Field::MetaData* m1 = new eckit::grid::Field::MetaData();
+    eckit::grid::Field::MetaData* md1 = new eckit::grid::Field::MetaData();
     
-    eckit::grid::Field* f1 = new eckit::grid::Field(g1, m1, new std::vector<double>);
+    eckit::grid::Field* f1 = new eckit::grid::Field(g1, md1, new std::vector<double>);
     fv1.push_back(f1);
 
     // put it all into an OUTPUT field set
@@ -165,10 +165,10 @@ void TestInterpolate::test_values()
 
     const std::vector<Point2D>& coords = g->coordinates();
 
-    eckit::grid::Field::MetaData* m = new eckit::grid::Field::MetaData();
+    eckit::grid::Field::MetaData* md = new eckit::grid::Field::MetaData();
 
     Field::Vector fv;
-    eckit::grid::Field* f = new eckit::grid::Field(g, m, raw_data);
+    eckit::grid::Field* f = new eckit::grid::Field(g, md, raw_data);
     fv.push_back(f);
 
     // put it all into an INPUT field set
@@ -178,7 +178,8 @@ void TestInterpolate::test_values()
     //
     Field::Vector fv1;
     // test the same sized grid - should get the same answer as the input grid
-    Grid* g1 = new LatLon( n, n, earth );
+    const size_t m = n;
+    Grid* g1 = new LatLon( m, m, earth );
 
     eckit::grid::Field::MetaData* m1 = new eckit::grid::Field::MetaData();
     
@@ -201,6 +202,7 @@ void TestInterpolate::test_values()
         for (unsigned int i = 0; i < d.size(); i++)
         {
             /// @todo use standard epsilon value here
+            std::cout << "value " << i << " compare " << d[i] << " with " << (*raw_data)[i] << std::endl;
             ASSERT(std::fabs(d[i] - (*raw_data)[i]) < 1.0e-10);
         }
     }
