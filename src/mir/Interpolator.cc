@@ -120,8 +120,8 @@ void Interpolator::weights(const Field& inp, const Field& out, Eigen::SparseMatr
 
     // loop over the output grid points and find the closest ones
     std::vector<Point2D> closests;
-    std::vector<unsigned int> indices;
-    for (unsigned int i = 0; i < out_coords.size(); ++i)
+    std::vector<size_t> indices;
+    for (size_t i = 0; i < out_coords.size(); ++i)
     {
         const Point2D& o_pt = out_coords[i];
 
@@ -139,7 +139,7 @@ void Interpolator::weights(const Field& inp, const Field& out, Eigen::SparseMatr
         engine_->generate(o_pt, closests, w);    
         
         // write the locations in the IndexPoints to the matrix at location i
-        for (unsigned int j = 0; j < w.size(); j++)
+        for (size_t j = 0; j < w.size(); j++)
         {
             long pt_index = indices[j];
 

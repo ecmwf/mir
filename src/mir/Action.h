@@ -17,11 +17,14 @@
 
 #include <map>
 #include <string>
+
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/types/Types.h"
 
-// @todo move me
-#include "Interpolator.h"
+#include "mir/mir.h"
+
+/// @todo move me
+#include "mir/Interpolator.h"
 
 //-----------------------------------------------------------------------------
 

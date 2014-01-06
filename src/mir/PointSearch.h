@@ -15,7 +15,8 @@
 #ifndef mir_PointSearch_H
 #define mir_PointSearch_H
 
-#include "eckit/container/KDPoint.h"
+#include "eckit/container/sptree/SPPoint.h"
+#include "eckit/container/KDMemory.h"
 #include "eckit/container/KDTree.h"
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/grid/Grid.h"
@@ -27,9 +28,19 @@ namespace mir {
 
 //-----------------------------------------------------------------------------
 
-typedef eckit::KDPoint<unsigned int> IndexPoint;
-
 class PointSearch : private eckit::NonCopyable {
+
+    struct TreeTrait {
+        typedef eckit::SPPoint<2>    Point;
+        typedef size_t         Payload;
+    };
+
+    typedef eckit::KDTreeMemory<TreeTrait> TreeType;
+
+    typedef typename TreeType::PointType   PointType;
+    typedef typename TreeType::NodeInfo    NodeInfo;
+    typedef typename TreeType::PayloadType PayloadType;
+    typedef typename TreeType::Value       ValueType;
 
 public: // methods
 
@@ -38,13 +49,11 @@ public: // methods
     virtual ~PointSearch();
 
     /// Finds closts N points to an input point
-    void closestNPoints(const eckit::grid::Point2D& pt, size_t n, std::vector<eckit::grid::Point2D>& closest, std::vector<unsigned int>& indices);
-
+    void closestNPoints(const eckit::grid::Point2D& pt, size_t n, std::vector<eckit::grid::Point2D>& closest, std::vector<size_t>& indices);
 
 protected:
     
-    eckit::KDTree<IndexPoint> kd_;
-
+    TreeType kd_;
 
 };
 

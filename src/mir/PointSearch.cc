@@ -8,13 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/log/Log.h"
-
-#include "PointSearch.h"
 #include <string>
 #include <algorithm>
-#include <functional> 
+#include <functional>
 #include <math.h>
+
+#include "eckit/log/Log.h"
+
+#include "mir/PointSearch.h"
  
 
 using eckit::grid::Point2D;
@@ -31,13 +32,15 @@ PointSearch::PointSearch(const std::vector<Point2D>& points)
 
     /// @todo the kd tree might be stored in shared memory ?
 
-    std::vector<IndexPoint> kd_points;
-    for (unsigned int i = 0; i < points.size(); i++)
+    std::vector<ValueType> kd_points;
+    kd_points.reserve(points.size());
+
+    for (size_t i = 0; i < points.size(); i++)
     {
         const Point2D& rpt = points[i];
         // we use the index of the point in the orignal array as the payload
         // as we need to know this in the results of searches
-        kd_points.push_back(IndexPoint((double)rpt.lat_, (double)rpt.lon_, i)); 
+        kd_points.push_back(ValueType(PointType(double(rpt.lat_), double(rpt.lon_)), i));
     }
 
     kd_.build(kd_points.begin(), kd_points.end());
@@ -49,7 +52,10 @@ PointSearch::~PointSearch()
     eckit::Log::info() << "Destroy a PointSearch" << std::endl;
 }
 
-void PointSearch::closestNPoints(const Point2D& pt, size_t n, std::vector<Point2D>& closest, std::vector<unsigned int>& indices)
+void PointSearch::closestNPoints( const Point2D& pt,
+                                  size_t n,
+                                  std::vector< Point2D >& closest,
+                                  std::vector< PayloadType >& indices )
 {
     /// @todo fix the signature here by defining an IndexPoint type?
 
@@ -65,17 +71,18 @@ void PointSearch::closestNPoints(const Point2D& pt, size_t n, std::vector<Point2
     //            x           x
     //
 
-    eckit::KDTree<IndexPoint>::NodeList nn = kd_.kNearestNeighbours(IndexPoint(pt.lat_, pt.lon_, 0), n);
+    TreeType::NodeList nn = kd_.kNearestNeighbours(PointType(pt.lat_, pt.lon_), n);
     
     //std::sort (nn.begin(), nn.end());
 
-    closest.resize(0);
-    indices.resize(0);
+    closest.clear(); closest.reserve(n);
+    indices.clear(); indices.reserve(n);
 
-    for (eckit::KDTree<IndexPoint>::NodeList::iterator it = nn.begin(); it != nn.end(); ++it)
+    for( TreeType::NodeList::iterator it = nn.begin(); it != nn.end(); ++it )
     {
-        closest.push_back(Point2D(it->point().x(0), it->point().x(1)));
-        indices.push_back(it->point().payload_);
+        const TreeType::Point& p = it->point();
+        closest.push_back( Point2D( p.x(0), p.x(1) ) );
+        indices.push_back( it->payload() );
     }
 
 }
