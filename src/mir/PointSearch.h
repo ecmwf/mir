@@ -32,7 +32,7 @@ class PointSearch : private eckit::NonCopyable {
 
     struct TreeTrait {
         typedef eckit::SPPoint<2>    Point;
-        typedef unsigned int         Payload;
+        typedef size_t         Payload;
     };
 
     typedef eckit::KDTreeMemory<TreeTrait> TreeType;
@@ -40,6 +40,7 @@ class PointSearch : private eckit::NonCopyable {
     typedef typename TreeType::PointType   PointType;
     typedef typename TreeType::NodeInfo    NodeInfo;
     typedef typename TreeType::PayloadType PayloadType;
+    typedef typename TreeType::Value       ValueType;
 
 public: // methods
 
@@ -48,7 +49,7 @@ public: // methods
     virtual ~PointSearch();
 
     /// Finds closts N points to an input point
-    void closestNPoints(const eckit::grid::Point2D& pt, size_t n, std::vector<eckit::grid::Point2D>& closest, std::vector<unsigned int>& indices);
+    void closestNPoints(const eckit::grid::Point2D& pt, size_t n, std::vector<eckit::grid::Point2D>& closest, std::vector<size_t>& indices);
 
 protected:
     

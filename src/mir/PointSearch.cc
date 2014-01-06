@@ -32,13 +32,15 @@ PointSearch::PointSearch(const std::vector<Point2D>& points)
 
     /// @todo the kd tree might be stored in shared memory ?
 
-    std::vector<PointType> kd_points;
-    for (unsigned int i = 0; i < points.size(); i++)
+    std::vector<ValueType> kd_points;
+    kd_points.reserve(points.size());
+
+    for (size_t i = 0; i < points.size(); i++)
     {
         const Point2D& rpt = points[i];
         // we use the index of the point in the orignal array as the payload
         // as we need to know this in the results of searches
-        kd_points.push_back(PointType((double)rpt.lat_, (double)rpt.lon_, i));
+        kd_points.push_back(ValueType(PointType(double(rpt.lat_), double(rpt.lon_)), i));
     }
 
     kd_.build(kd_points.begin(), kd_points.end());
@@ -69,12 +71,12 @@ void PointSearch::closestNPoints( const Point2D& pt,
     //            x           x
     //
 
-    TreeType::NodeList nn = kd_.kNearestNeighbours(PointType(pt.lat_, pt.lon_, 0), n);
+    TreeType::NodeList nn = kd_.kNearestNeighbours(PointType(pt.lat_, pt.lon_), n);
     
     //std::sort (nn.begin(), nn.end());
 
-    closest.resize(0);
-    indices.resize(0);
+    closest.clear(); closest.reserve(n);
+    indices.clear(); indices.reserve(n);
 
     for( TreeType::NodeList::iterator it = nn.begin(); it != nn.end(); ++it )
     {
