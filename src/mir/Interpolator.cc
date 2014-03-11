@@ -8,16 +8,17 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/log/Log.h"
-#include "eckit/grid/Grid.h"
-#include "eckit/grid/Field.h"
 #include <string>
-#include "Interpolator.h"
-#include "PointSearch.h"
 
 #include <Eigen/Sparse>
 #include <Eigen/Dense>
 
+#include "eckit/log/Log.h"
+#include "eckit/grid/Grid.h"
+#include "eckit/grid/Field.h"
+
+#include "Interpolator.h"
+#include "PointSearch.h"
 
 using eckit::grid::Point2D;
 using eckit::grid::Field;
