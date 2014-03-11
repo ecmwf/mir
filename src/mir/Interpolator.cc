@@ -81,8 +81,6 @@ void Interpolator::interpolate(const eckit::grid::FieldSet& input, eckit::grid::
 
         // Write the output values from B to this vector
         Eigen::Map<Eigen::VectorXd>(out.data().data(), B.rows()) = B.col(0);
-      
-
     }
 
 }
