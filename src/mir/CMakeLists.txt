@@ -26,6 +26,8 @@ PointSearch.cc
 PointSearch.h
 Weights.cc
 Weights.h
+WeightCache.cc
+WeightCache.h
  )
 
 

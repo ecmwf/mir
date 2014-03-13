@@ -12,43 +12,38 @@
 /// @author Tiago Quintino
 /// @date Oct 2013
 
-#ifndef mir_Weights_H
-#define mir_Weights_H
+#ifndef mir_WeightCache_H
+#define mir_WeightCache_H
 
 #include "eckit/memory/NonCopyable.h"
+#include "eckit/thread/Mutex.h"
+#include <Eigen/Sparse>
 
 //-----------------------------------------------------------------------------
-
-namespace eckit {
-namespace grid {
-    class Point2D;
-}
-}
-
 
 namespace mir {
 
 //-----------------------------------------------------------------------------
 
-class WeightEngine : private eckit::NonCopyable {
-public:
-    WeightEngine() {};
-    virtual ~WeightEngine() {};
+class WeightCache : private eckit::NonCopyable {
 
-    /// @todo is there a "point with payload" type that we can use here with double for the weight of the point
-    virtual void generate(const eckit::grid::Point2D& ref, const std::vector<eckit::grid::Point2D>& closests, std::vector<double>& weights) const = 0;
+public: // methods
 
-};
+    WeightCache();
 
+    virtual ~WeightCache();
 
-class InverseSquare: public WeightEngine {
+    // fills passed matrix with cached values and returns true if found cache
+    bool get(const std::string& key, Eigen::SparseMatrix<double>& W) const;
+    bool add(const std::string& key, Eigen::SparseMatrix<double>& W ) const;
 
-public:
-    InverseSquare();
-    virtual ~InverseSquare();
-
-    virtual void generate(const eckit::grid::Point2D& ref, const std::vector<eckit::grid::Point2D>& closests, std::vector<double>& weights) const;
 protected:
+
+    std::string generateFilename(const std::string& key) const;
+
+    mutable eckit::Mutex mutex_;
+
+
 };
 
 
