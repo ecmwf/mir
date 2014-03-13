@@ -16,6 +16,7 @@
 
 #include "mir/WeightCache.h"
 #include <Eigen/Sparse>
+#include <stdio.h>
 
 
 using namespace eckit;
@@ -46,6 +47,10 @@ void TestWeightCache::test_values()
 
     mir::WeightCache wc;
     
+    // We delete the cache file before we test
+    char key[] = "test_matrix";
+    ::remove(wc.filename(key).c_str());
+
     int n = 100, m = 200;
     // create a sparse matrix
     Eigen::SparseMatrix<double> M(n, m);
@@ -68,12 +73,18 @@ void TestWeightCache::test_values()
 
     M.setFromTriplets(insertions.begin(), insertions.end());
 
-    wc.add("test_matrix", M); 
+    bool added = wc.add(key, M); 
+    assert(added);
+
+    // assert that any additional adds fail
+    assert(!wc.add(key, M));
+    assert(!wc.add(key, M));
 
 
     // now get the data back again
     Eigen::SparseMatrix<double> W(n, m);
-    wc.get("test_matrix", W);
+    bool got = wc.get(key, W);
+    assert(got);
 
     // now get the triplets from W and check them against M
     std::vector<Eigen::Triplet<double> > triplets;
@@ -98,7 +109,17 @@ void TestWeightCache::test_values()
         assert(triplets[i].row() == insertions[i].row());
         assert(triplets[i].value() == insertions[i].value());
     }
+
+    // test that additional gets succeed
+    assert(wc.get(key, W));
+    assert(wc.get(key, W));
     
+    // remove the file and assert that get fails
+    ::remove(wc.filename(key).c_str());
+    assert(!wc.get(key, W));
+    assert(!wc.get(key, W));
+
+
 
 }
 
