@@ -17,14 +17,11 @@
 
 #include "eckit/log/Log.h"
 #include "eckit/grid/Grid.h"
-#include "eckit/grid/Field.h"
 #include "eckit/thread/AutoLock.h"
 
 #include "WeightCache.h"
 #include "PointSearch.h"
 
-using eckit::grid::Point2D;
-using eckit::grid::Field;
 using eckit::Mutex;
 using eckit::AutoLock;
 
@@ -44,7 +41,7 @@ WeightCache::~WeightCache()
     eckit::Log::info() << "Destroy a WeightCache" << std::endl;
 }
 
-std::string WeightCache::generateFilename(const std::string& key) const
+std::string WeightCache::filename(const std::string& key) const
 {
     std::stringstream ss;
     ss << key << ".cache";
@@ -58,7 +55,7 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     
     AutoLock<Mutex> lock(mutex_);
     
-    std::string fn = generateFilename(key);
+    std::string fn = filename(key);
     
     std::ofstream ofs;
     ofs.open(fn.c_str(), std::ios::binary);
@@ -110,7 +107,7 @@ bool WeightCache::get(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     
 
 
-    std::string fn = generateFilename(key);
+    std::string fn = filename(key);
     
     std::ifstream ifs(fn, std::ios::binary);
     if (!ifs.good())

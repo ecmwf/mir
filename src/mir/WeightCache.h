@@ -37,15 +37,13 @@ public: // methods
     bool get(const std::string& key, Eigen::SparseMatrix<double>& W) const;
     bool add(const std::string& key, Eigen::SparseMatrix<double>& W ) const;
 
-protected:
+    std::string filename(const std::string& key) const;
 
-    std::string generateFilename(const std::string& key) const;
+protected:
 
     mutable eckit::Mutex mutex_;
 
-
 };
-
 
 } // namespace mir
 
