@@ -15,13 +15,15 @@
 #ifndef mir_Interpolator_H
 #define mir_Interpolator_H
 
-#include "eckit/memory/NonCopyable.h"
-#include "Weights.h"
 #include <Eigen/Sparse>
+
+#include "eckit/memory/NonCopyable.h"
+
+#include "Weights.h"
 
 //-----------------------------------------------------------------------------
 
-namespace eckit {
+namespace atlas {
 namespace grid {
     class Field;
     class FieldSet;

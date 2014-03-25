@@ -73,7 +73,7 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     std::vector<Eigen::Triplet<double> > trips;
     for (unsigned int i = 0; i < W.outerSize(); ++i) 
     {
-        for (typename Eigen::SparseMatrix<double>::InnerIterator it(W,i); it; ++it) 
+        for ( Eigen::SparseMatrix<double>::InnerIterator it(W,i); it; ++it)
         {
             trips.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
         }
@@ -105,8 +105,6 @@ bool WeightCache::get(const std::string& key, Eigen::SparseMatrix<double>& W ) c
 {
     AutoLock<Mutex> lock(mutex_);
     
-
-
     std::string fn = filename(key);
     
     std::ifstream ifs(fn, std::ios::binary);

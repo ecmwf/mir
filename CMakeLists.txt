@@ -32,79 +32,39 @@ ecbuild_use_package( PROJECT atlas  VERSION  0.1  REQUIRED )
 ecbuild_declare_project()
 
 ###############################################################################
-# setting paths
+# some variables/options of this project
 
 set( MIR_SHARE_DIR "${CMAKE_INSTALL_PREFIX}/share/mir"     ${MIR_SHARE_PATH} )
 set( MIR_DATA_DIR  "${CMAKE_INSTALL_PREFIX}/share/mir/lsm" ${MIR_LSM_PATH} )
 
 ###############################################################################
-# some variables/options of this project
-
-option( MIR_PYTHON "whether or not to build the MIR python interface" OFF )
-
-###############################################################################
-# find external dependencies
-
-# check for C++11 support
-
-ecbuild_add_cxx11_flags()
-ecbuild_check_cxx11( PRINT )
-
-find_package( Threads )
-
-find_package( SWIG )
-if( SWIG_FOUND )
-    include( ${SWIG_USE_FILE} )
-endif()
-
-find_package( Eigen3 3.2 )
-
-find_package( Trilinos )
-
-###############################################################################
 # contents
 
-# for package export to other ecbuild packages
-# define also TPL's (third party libraries)
+### export package to other ecbuild packages
 
 set( MIR_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
 set( MIR_LIBRARIES      ${CMAKE_PROJECT_NAME} )
-set( MIR_TPLS           grib_api )
+set( MIR_TPLS           atlas eckit )
 
-if( EIGEN3_FOUND )
-	list( APPEND MIR_TPLS  Eigen3 )
-endif()
-
-if( TRILINOS_FOUND )
-	list( APPEND MIR_TPLS  Trilinos )
-endif()
-
-### define include dirs
-
-include_directories( ${ECKIT_INCLUDE_DIRS}  )
-
-include_directories( ${MIR_INCLUDE_DIRS}  )
+get_directory_property( COMPILE_DEFINITIONS MIR_DEFINITIONS )
 
 foreach( _tpl ${MIR_TPLS} )
 	string( TOUPPER ${_tpl} TPL )
-	if( ${TPL}_INCLUDE_DIRS )
-		include_directories( ${${TPL}_INCLUDE_DIRS} )
+	if( ${TPL}_FOUND )
+		list( APPEND MIR_EXTRA_DEFINITIONS   ${${TPL}_DEFINITIONS} )
+		list( APPEND MIR_EXTRA_INCLUDE_DIRS  ${${TPL}_INCLUDE_DIRS} )
+		list( APPEND MIR_EXTRA_LIBRARIES     ${${TPL}_LIBRARIES} )
 	endif()
 endforeach()
 
-### compile definitions
+### include directories
 
-set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${GRIB_API_DEFINITIONS}" )
+include_directories( ${MIR_INCLUDE_DIRS} ${MIR_EXTRA_INCLUDE_DIRS}  )
 
-### build contents
-
-#add_subdirectory( ecregrid ) # eventually get rid of this :S
+debug_var( MIR_TPLS )
+debug_var( MIR_EXTRA_INCLUDE_DIRS )
 
 add_subdirectory( src )
-
-add_subdirectory( tools )
-
-add_subdirectory( tests )
 
 ### installation
 

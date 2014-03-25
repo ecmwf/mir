@@ -90,7 +90,7 @@ void TestWeightCache::test_values()
     std::vector<Eigen::Triplet<double> > triplets;
     for (unsigned int i = 0; i < W.outerSize(); ++i) 
     {
-        for (typename Eigen::SparseMatrix<double>::InnerIterator it(W,i); it; ++it) 
+        for (Eigen::SparseMatrix<double>::InnerIterator it(W,i); it; ++it)
         {
             triplets.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
         }

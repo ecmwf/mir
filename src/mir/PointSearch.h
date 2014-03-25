@@ -37,10 +37,10 @@ class PointSearch : private eckit::NonCopyable {
 
     typedef eckit::KDTreeMemory<TreeTrait> TreeType;
 
-    typedef typename TreeType::PointType   PointType;
-    typedef typename TreeType::NodeInfo    NodeInfo;
-    typedef typename TreeType::PayloadType PayloadType;
-    typedef typename TreeType::Value       ValueType;
+    typedef TreeType::PointType   PointType;
+    typedef TreeType::NodeInfo    NodeInfo;
+    typedef TreeType::PayloadType PayloadType;
+    typedef TreeType::Value       ValueType;
 
 public: // methods
 

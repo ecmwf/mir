@@ -37,6 +37,6 @@ ecbuild_add_library(TARGET		mir
 						${INSTALL_INCLUDE_DIR}/mir
 					SOURCES		${mir_srcs}
 					GENERATED	mir_version.cc
-					LIBS		eckit )
+					LIBS		${ATLAS_LIBRARIES} ${ECKIT_LIBRARIES} )
 
 

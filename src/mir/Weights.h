@@ -15,11 +15,13 @@
 #ifndef mir_Weights_H
 #define mir_Weights_H
 
+#include "atlas/grid/Grid.h"
+
 #include "eckit/memory/NonCopyable.h"
 
 //-----------------------------------------------------------------------------
 
-namespace eckit {
+namespace atlas {
 namespace grid {
     class Point2D;
 }
@@ -32,8 +34,8 @@ namespace mir {
 
 class WeightEngine : private eckit::NonCopyable {
 public:
-    WeightEngine() {};
-    virtual ~WeightEngine() {};
+    WeightEngine() {}
+    virtual ~WeightEngine() {}
 
     /// @todo is there a "point with payload" type that we can use here with double for the weight of the point
     virtual void generate(const atlas::grid::Point2D& ref, const std::vector<atlas::grid::Point2D>& closests, std::vector<double>& weights) const = 0;
