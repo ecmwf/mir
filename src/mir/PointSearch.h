@@ -19,7 +19,7 @@
 #include "eckit/container/KDMemory.h"
 #include "eckit/container/KDTree.h"
 #include "eckit/memory/NonCopyable.h"
-#include "eckit/grid/Grid.h"
+#include "atlas/grid/Grid.h"
 
 //-----------------------------------------------------------------------------
 
@@ -44,13 +44,13 @@ class PointSearch : private eckit::NonCopyable {
 
 public: // methods
 
-    PointSearch(const std::vector<eckit::grid::Point2D>& points);
+    PointSearch(const std::vector<atlas::grid::Point2D>& points);
 
     virtual ~PointSearch();
 
     /// Finds closts N points to an input point
-    void closestNPoints(const eckit::grid::Point2D& pt, size_t n, std::vector<eckit::grid::Point2D>& closest, std::vector<PayloadType>& indices);
-    void closestNPoints(const eckit::grid::Point2D& pt, size_t n, std::vector<ValueType>& closest);
+    void closestNPoints(const atlas::grid::Point2D& pt, size_t n, std::vector<atlas::grid::Point2D>& closest, std::vector<PayloadType>& indices);
+    void closestNPoints(const atlas::grid::Point2D& pt, size_t n, std::vector<ValueType>& closest);
 
 protected:
     

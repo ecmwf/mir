@@ -16,7 +16,7 @@
 #include <Eigen/Dense>
 
 #include "eckit/log/Log.h"
-#include "eckit/grid/Grid.h"
+#include "atlas/grid/Grid.h"
 #include "eckit/thread/AutoLock.h"
 
 #include "WeightCache.h"

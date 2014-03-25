@@ -8,14 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/grid/Grid.h"
+#include "atlas/grid/Grid.h"
 #include "eckit/log/Log.h"
 #include <string>
 #include "Weights.h"
 
 //-----------------------------------------------------------------------------
 
-using eckit::grid::Point2D;
+using atlas::grid::Point2D;
 
 namespace mir {
 

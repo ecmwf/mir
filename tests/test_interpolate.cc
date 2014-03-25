@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/grid/Field.h"
-#include "eckit/grid/Grid.h"
-#include "eckit/grid/LatLon.h"
+#include "atlas/grid/Field.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/LatLon.h"
 #include "eckit/log/Log.h"
 #include "eckit/runtime/Tool.h"
 
@@ -42,7 +42,7 @@ public:
 void TestInterpolate::test_constructor()
 {
     // test the integrity of the objects not the values
-    using namespace eckit::grid;
+    using namespace atlas::grid;
 
     BoundBox2D earth ( Point2D(-90.,0.), Point2D(90.,360.) );
     Grid* g = NULL;
@@ -64,7 +64,7 @@ void TestInterpolate::test_constructor()
 
     
     // make up some data for this field
-    eckit::grid::Field::Data* raw_data = new eckit::grid::Field::Data;
+    atlas::grid::Field::Data* raw_data = new atlas::grid::Field::Data;
     for (unsigned int i = 0; i <= 4; i++)
     {
         raw_data->push_back((double)i);
@@ -80,17 +80,17 @@ void TestInterpolate::test_constructor()
 
     ASSERT( coords.size() == npts );
 
-    eckit::grid::Field::MetaData* md = new eckit::grid::Field::MetaData();
+    atlas::grid::Field::MetaData* md = new atlas::grid::Field::MetaData();
 
     Field::Vector fv;
-    eckit::grid::Field* f = new eckit::grid::Field(g, md, raw_data);
+    atlas::grid::Field* f = new atlas::grid::Field(g, md, raw_data);
     fv.push_back(f);
 
     // check it's the same object
     ASSERT(&(f->metadata()) == md);
 
     // put it all into an INPUT field set
-    eckit::grid::FieldSet input(fv);
+    atlas::grid::FieldSet input(fv);
 
     int count = 0;
     for (Field::Vector::iterator it = input.fields().begin(); it != input.fields().end(); ++it)
@@ -112,13 +112,13 @@ void TestInterpolate::test_constructor()
     ASSERT( g1 );
     ASSERT( g1->coordinates().size() == (n1 + 1) * (n1 + 1) );
 
-    eckit::grid::Field::MetaData* md1 = new eckit::grid::Field::MetaData();
+    atlas::grid::Field::MetaData* md1 = new atlas::grid::Field::MetaData();
     
-    eckit::grid::Field* f1 = new eckit::grid::Field(g1, md1, new std::vector<double>);
+    atlas::grid::Field* f1 = new atlas::grid::Field(g1, md1, new std::vector<double>);
     fv1.push_back(f1);
 
     // put it all into an OUTPUT field set
-    eckit::grid::FieldSet output(fv1);
+    atlas::grid::FieldSet output(fv1);
  
     // construct a bilinear interpolator
     mir::Interpolator interp;
@@ -142,7 +142,7 @@ void TestInterpolate::test_constructor()
 
 void TestInterpolate::test_values()
 {
-    using namespace eckit::grid;
+    using namespace atlas::grid;
 
     BoundBox2D earth ( Point2D(-90.,0.), Point2D(90.,360.) );
 
@@ -153,7 +153,7 @@ void TestInterpolate::test_values()
     Grid* g = new LatLon( n, n, earth );
 
     // make up some data for this field
-    eckit::grid::Field::Data* raw_data = new eckit::grid::Field::Data;
+    atlas::grid::Field::Data* raw_data = new atlas::grid::Field::Data;
     for (unsigned int i = 0; i <= 4; i++)
     {
         raw_data->push_back((double)i);
@@ -165,14 +165,14 @@ void TestInterpolate::test_values()
 
     const std::vector<Point2D>& coords = g->coordinates();
 
-    eckit::grid::Field::MetaData* md = new eckit::grid::Field::MetaData();
+    atlas::grid::Field::MetaData* md = new atlas::grid::Field::MetaData();
 
     Field::Vector fv;
-    eckit::grid::Field* f = new eckit::grid::Field(g, md, raw_data);
+    atlas::grid::Field* f = new atlas::grid::Field(g, md, raw_data);
     fv.push_back(f);
 
     // put it all into an INPUT field set
-    eckit::grid::FieldSet input(fv);
+    atlas::grid::FieldSet input(fv);
 
     // now assemble and output field set
     //
@@ -181,13 +181,13 @@ void TestInterpolate::test_values()
     const size_t m = n;
     Grid* g1 = new LatLon( m, m, earth );
 
-    eckit::grid::Field::MetaData* m1 = new eckit::grid::Field::MetaData();
+    atlas::grid::Field::MetaData* m1 = new atlas::grid::Field::MetaData();
     
-    eckit::grid::Field* f1 = new eckit::grid::Field(g1, m1, new std::vector<double>);
+    atlas::grid::Field* f1 = new atlas::grid::Field(g1, m1, new std::vector<double>);
     fv1.push_back(f1);
 
     // put it all into an OUTPUT field set
-    eckit::grid::FieldSet output(fv1);
+    atlas::grid::FieldSet output(fv1);
  
     // construct a bilinear interpolator
     mir::Interpolator interp;

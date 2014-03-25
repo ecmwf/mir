@@ -42,13 +42,13 @@ public: // methods
 
     virtual ~Interpolator();
 
-    void interpolate(const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output) const;
+    void interpolate(const atlas::grid::FieldSet& input, atlas::grid::FieldSet& output) const;
 
 protected:
     
     WeightEngine* engine_;
 
-    void weights(const eckit::grid::Field& inp, const eckit::grid::Field& out, Eigen::SparseMatrix<double>& weights) const;
+    void weights(const atlas::grid::Field& inp, const atlas::grid::Field& out, Eigen::SparseMatrix<double>& weights) const;
 };
 
 

@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/grid/Field.h"
-#include "eckit/grid/Grid.h"
-#include "eckit/grid/LatLon.h"
+#include "atlas/grid/Field.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/LatLon.h"
 #include "eckit/log/Log.h"
 #include "eckit/runtime/Tool.h"
 
@@ -43,7 +43,7 @@ public:
 
 void TestWeightCache::test_values()
 {
-    using namespace eckit::grid;
+    using namespace atlas::grid;
 
     mir::WeightCache wc;
     

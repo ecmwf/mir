@@ -50,7 +50,7 @@ Interpolate::~Interpolate()
 }
 
 
-void Interpolate::operator() (const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output)
+void Interpolate::operator() (const atlas::grid::FieldSet& input, atlas::grid::FieldSet& output)
 {
     ASSERT(interpolator_);
     interpolator_->interpolate(input, output);

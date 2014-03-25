@@ -14,14 +14,14 @@
 #include <Eigen/Dense>
 
 #include "eckit/log/Log.h"
-#include "eckit/grid/Grid.h"
-#include "eckit/grid/Field.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/Field.h"
 
 #include "Interpolator.h"
 #include "PointSearch.h"
 
-using eckit::grid::Point2D;
-using eckit::grid::Field;
+using atlas::grid::Point2D;
+using atlas::grid::Field;
 
 //-----------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ Interpolator::~Interpolator()
     delete engine_; engine_ = 0;
 }
 
-void Interpolator::interpolate(const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output) const
+void Interpolator::interpolate(const atlas::grid::FieldSet& input, atlas::grid::FieldSet& output) const
 {
     ASSERT( input.fields().size() == output.fields().size() );
 

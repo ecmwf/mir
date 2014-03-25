@@ -18,7 +18,7 @@
 #include "mir/PointSearch.h"
  
 
-using eckit::grid::Point2D;
+using atlas::grid::Point2D;
 
 //-----------------------------------------------------------------------------
 

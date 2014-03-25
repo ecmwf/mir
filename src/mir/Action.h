@@ -51,7 +51,7 @@ public: // methods
 
     virtual ~Action();
 
-    virtual void operator() (const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output) = 0;
+    virtual void operator() (const atlas::grid::FieldSet& input, atlas::grid::FieldSet& output) = 0;
 
 protected:
 
@@ -64,7 +64,7 @@ public:
     Interpolate(eckit::StringDict& config);
     virtual ~Interpolate();
 
-    virtual void operator() (const eckit::grid::FieldSet& input, eckit::grid::FieldSet& output) ;
+    virtual void operator() (const atlas::grid::FieldSet& input, atlas::grid::FieldSet& output) ;
 protected:
     mir::Interpolator* interpolator_;
 
