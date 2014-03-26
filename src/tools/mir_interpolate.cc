@@ -54,40 +54,19 @@ static GribAccessor<std::string> md5Section3("md5Section3");
 
 std::string grib_hash( grib_handle* h )
 {
-    DBG;
     ASSERT(h);
 
-    char buf[1024];
-    size_t s = sizeof(buf);
-    buf[0] = 0;
+    /// @todo create a 'geographyMd5'  accessor
 
     std::string md5;
-    int err;
 
-    // TODO: create a 'geographiyMd5'  accessor
     switch( edition(h) )
     {
     case 1:
-        DBG;
-        err = grib_get_string( h, "md5Section2", buf, &s );
-        DBGX(err);
-        if(err)
-            eckit::Log::error() << "md5Section2" << ": " << grib_get_error_message(err) << std::endl;
-        DBGX(buf);
-        md5 = buf;
-        DBGX(md5);
-//        get_value(h,"md5Section2",md5);
+        md5 = md5Section2(h);
         break;
     case 2:
-        DBG;
-        err = grib_get_string( h, "md5Section3", buf, &s );
-        DBGX(err);
-        if(err)
-            eckit::Log::error() << "md5Section3" << ": " << grib_get_error_message(err) << std::endl;
-        DBGX(buf);
-        md5 = std::string(buf);
-        DBGX(md5);
-//        get_value(h,"md5Section3",md5);
+        md5 = md5Section3(h);
         break;
 
     default:
@@ -111,23 +90,19 @@ std::string grib_hash( const std::string& fname )
         throw ReadError( std::string("error reading grib file ") + fname );
 
     std::string md5 = grib_hash(h);
-DBG;
+
     grib_handle_delete(h);
-DBG;
+
     if( ::fclose(fh) == -1 )
         throw ReadError( std::string("error closing file ") + fname );
-DBG;
 
     return md5;
 }
 
 std::string weights_hash( const std::string& in, const std::string& out )
 {
-    DBG;
     std::string in_md5  = grib_hash(in);
-    DBGX(in_md5);
     std::string out_md5 = grib_hash(out);
-    DBGX(out_md5);
     return in_md5 + std::string(".") + out_md5;
 }
 
@@ -400,25 +375,15 @@ void MirInterpolate::run()
 
     Eigen::SparseMatrix<double> W( nb_o_nodes, nb_i_nodes );
 
-    DBG;
-
     WeightCache cache;
-
-    DBG;
     std::string md5 = weights_hash(in_filename,clone_grid);
-    DBG;
-
     if( ! cache.get( md5, W ) )
     {
-        DBG;
         std::cout << ">>> computing weights ..." << std::endl;
         compute_weights( *in_mesh, *out_mesh, W );
-        DBG;
         std::cout << ">>> caching weights for later ..." << std::endl;
         cache.add( md5, W );
     }
-
-    DBG;
 
     // interpolation -- multiply interpolant matrix with field vector
 
@@ -435,10 +400,12 @@ void MirInterpolate::run()
 
     // output mesh --> gmsh
 
-    std::cout << ">>> output to gmsh" << std::endl;
-
-    Tesselation::tesselate( *out_mesh );
-    atlas::Gmsh::write3dsurf( *out_mesh, std::string("output.msh") );
+    if(0)
+    {
+        std::cout << ">>> output to gmsh" << std::endl;
+        Tesselation::tesselate( *out_mesh );
+        atlas::Gmsh::write3dsurf( *out_mesh, std::string("output.msh") );
+    }
 
     // output mesh --> grib
 
