@@ -118,10 +118,6 @@ void compute_weights( atlas::Mesh& i_mesh,
 
     Tesselation::tesselate( i_mesh );
 
-    // input mesh --> gmsh
-
-    atlas::Gmsh::write3dsurf( i_mesh, "input.msh" );
-
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
 
     atlas::MeshGen::create_cell_centres( i_mesh );
@@ -326,6 +322,8 @@ void MirInterpolate::grib_load( const std::string& fname, atlas::Mesh& mesh, boo
 
 void MirInterpolate::run()
 {    
+    bool gmsh = Resource<bool>("-gmsh",false);
+
     std::string in_filename = Resource<std::string>("-i","");
     if( in_filename.empty() )
         throw UserError(Here(),"missing input filename, parameter -i");
@@ -377,7 +375,8 @@ void MirInterpolate::run()
 
     WeightCache cache;
     std::string md5 = weights_hash(in_filename,clone_grid);
-    if( ! cache.get( md5, W ) )
+    bool wcached = cache.get( md5, W );
+    if( ! wcached )
     {
         std::cout << ">>> computing weights ..." << std::endl;
         compute_weights( *in_mesh, *out_mesh, W );
@@ -399,13 +398,20 @@ void MirInterpolate::run()
     }
 
     // output mesh --> gmsh
-
-    if(0)
+    if(gmsh)
     {
         std::cout << ">>> output to gmsh" << std::endl;
+
+        if(wcached)
+            Tesselation::tesselate( *in_mesh );
+
+        atlas::Gmsh::write3dsurf( *in_mesh, "input.msh" );
+
         Tesselation::tesselate( *out_mesh );
+
         atlas::Gmsh::write3dsurf( *out_mesh, std::string("output.msh") );
     }
+
 
     // output mesh --> grib
 
