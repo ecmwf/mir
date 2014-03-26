@@ -12,7 +12,10 @@
 #include "atlas/Gmsh.hpp"
 #include "atlas/Mesh.hpp"
 
+#include "eckit/exception/Exceptions.h"
+#include "eckit/config/Resource.h"
 #include "eckit/log/Timer.h"
+#include "eckit/runtime/Tool.h"
 
 #include "atlas/grid/GribRead.h"
 #include "atlas/grid/GribWrite.h"
@@ -22,6 +25,16 @@
 #include "atlas/grid/Tesselation.h"
 
 //------------------------------------------------------------------------------------------------------
+
+//#define NLATS 1440
+//#define NLONG 2880
+
+#define NLATS 30
+#define NLONG 60
+
+//#define NLATS 180
+//#define NLONG 360
+
 
 #if 1
 #define DBG     std::cout << Here() << std::endl;
@@ -205,16 +218,15 @@ void compute_weights( atlas::Mesh& i_mesh,
 
 //------------------------------------------------------------------------------------------------------
 
-//#define NLATS 1440
-//#define NLONG 2880
+class MirInterpolate : public eckit::Tool {
+    virtual void run();
+public:
+    MirInterpolate(int argc,char **argv): eckit::Tool(argc,argv) {}
+};
 
-#define NLATS 30
-#define NLONG 60
+//------------------------------------------------------------------------------------------------------
 
-//#define NLATS 180
-//#define NLONG 360
-
-int main()
+void MirInterpolate::run()
 {    
     typedef std::numeric_limits< double > dbl;
     std::cout.precision(dbl::digits10);
@@ -237,7 +249,9 @@ int main()
 
     std::unique_ptr< atlas::Mesh > in_mesh ( new Mesh() );
 
-    std::string filename ("data.grib");
+    std::string filename = Resource<std::string>("-in","");
+    if( filename.empty() )
+        throw UserError(Here(),"missing input filename, parameter -in");
 
     FILE* fh = ::fopen( filename.c_str(), "r" );
     if( fh == 0 )
@@ -303,6 +317,14 @@ int main()
 
     if( ::fclose(fh) == -1 )
         throw std::string("error closing file");
+}
 
+//------------------------------------------------------------------------------------------------------
+
+int main( int argc, char **argv )
+{
+    MirInterpolate tool(argc,argv);
+    tool.start();
     return 0;
 }
+
