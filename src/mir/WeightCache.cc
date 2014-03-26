@@ -16,11 +16,12 @@
 #include <Eigen/Dense>
 
 #include "eckit/log/Log.h"
-#include "atlas/grid/Grid.h"
+#include "eckit/filesystem/LocalPathName.h"
 #include "eckit/thread/AutoLock.h"
 
-#include "WeightCache.h"
-#include "PointSearch.h"
+#include "atlas/grid/Grid.h"
+
+#include "mir/WeightCache.h"
 
 using eckit::Mutex;
 using eckit::AutoLock;
@@ -33,12 +34,12 @@ namespace mir {
 
 WeightCache::WeightCache()
 {
-    eckit::Log::info() << "Build a WeightCache" << std::endl;
+//    eckit::Log::info() << "Build a WeightCache" << std::endl;
 }
 
 WeightCache::~WeightCache()
 {
-    eckit::Log::info() << "Destroy a WeightCache" << std::endl;
+//    eckit::Log::info() << "Destroy a WeightCache" << std::endl;
 }
 
 std::string WeightCache::filename(const std::string& key) const
@@ -56,7 +57,11 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     AutoLock<Mutex> lock(mutex_);
     
     std::string fn = filename(key);
-    
+
+    eckit::LocalPathName fpath(fn);
+    if(fpath.exists())
+        return false;
+
     std::ofstream ofs;
     ofs.open(fn.c_str(), std::ios::binary);
     
@@ -99,6 +104,8 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     }
     
     ofs.close();
+
+    return true;
 }
 
 bool WeightCache::get(const std::string& key, Eigen::SparseMatrix<double>& W ) const
@@ -106,6 +113,10 @@ bool WeightCache::get(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     AutoLock<Mutex> lock(mutex_);
     
     std::string fn = filename(key);
+
+    eckit::LocalPathName fpath(fn);
+    if(!fpath.exists())
+        return false;
     
     std::ifstream ifs(fn.c_str(), std::ios::binary);
     if (!ifs.good())

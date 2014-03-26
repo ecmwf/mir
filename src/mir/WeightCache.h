@@ -34,8 +34,8 @@ public: // methods
     virtual ~WeightCache();
 
     // fills passed matrix with cached values and returns true if found cache
-    bool get(const std::string& key, Eigen::SparseMatrix<double>& W) const;
-    bool add(const std::string& key, Eigen::SparseMatrix<double>& W ) const;
+    bool get( const std::string& key, Eigen::SparseMatrix<double>& W ) const;
+    bool add( const std::string& key, Eigen::SparseMatrix<double>& W ) const;
 
     std::string filename(const std::string& key) const;
 

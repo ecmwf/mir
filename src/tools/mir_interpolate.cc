@@ -16,6 +16,7 @@
 #include "eckit/config/Resource.h"
 #include "eckit/log/Timer.h"
 #include "eckit/runtime/Tool.h"
+#include "eckit/grib/GribAccessor.h"
 
 #include "atlas/grid/GribRead.h"
 #include "atlas/grid/GribWrite.h"
@@ -23,6 +24,8 @@
 #include "atlas/grid/PointSet.h"
 #include "atlas/grid/TriangleIntersection.h"
 #include "atlas/grid/Tesselation.h"
+
+#include "mir/WeightCache.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -37,8 +40,96 @@
 //------------------------------------------------------------------------------------------------------
 
 using namespace Eigen;
-using namespace atlas;
 using namespace eckit;
+using namespace atlas;
+using namespace mir;
+
+//------------------------------------------------------------------------------------------------------
+
+static GribAccessor<long> edition("edition");
+static GribAccessor<std::string> md5Section2("md5Section2");
+static GribAccessor<std::string> md5Section3("md5Section3");
+
+//------------------------------------------------------------------------------------------------------
+
+std::string grib_hash( grib_handle* h )
+{
+    DBG;
+    ASSERT(h);
+
+    char buf[1024];
+    size_t s = sizeof(buf);
+    buf[0] = 0;
+
+    std::string md5;
+    int err;
+
+    // TODO: create a 'geographiyMd5'  accessor
+    switch( edition(h) )
+    {
+    case 1:
+        DBG;
+        err = grib_get_string( h, "md5Section2", buf, &s );
+        DBGX(err);
+        if(err)
+            eckit::Log::error() << "md5Section2" << ": " << grib_get_error_message(err) << std::endl;
+        DBGX(buf);
+        md5 = buf;
+        DBGX(md5);
+//        get_value(h,"md5Section2",md5);
+        break;
+    case 2:
+        DBG;
+        err = grib_get_string( h, "md5Section3", buf, &s );
+        DBGX(err);
+        if(err)
+            eckit::Log::error() << "md5Section3" << ": " << grib_get_error_message(err) << std::endl;
+        DBGX(buf);
+        md5 = std::string(buf);
+        DBGX(md5);
+//        get_value(h,"md5Section3",md5);
+        break;
+
+    default:
+        ASSERT( !md5.empty() );
+        break;
+    }
+
+    return md5;
+}
+
+std::string grib_hash( const std::string& fname )
+{
+    FILE* fh = ::fopen( fname.c_str(), "r" );
+    if( fh == 0 )
+        throw ReadError( std::string("error opening file ") + fname );
+
+    int err = 0;
+    grib_handle* h = grib_handle_new_from_file(0,fh,&err);
+
+    if( h == 0 || err != 0 )
+        throw ReadError( std::string("error reading grib file ") + fname );
+
+    std::string md5 = grib_hash(h);
+DBG;
+    grib_handle_delete(h);
+DBG;
+    if( ::fclose(fh) == -1 )
+        throw ReadError( std::string("error closing file ") + fname );
+DBG;
+
+    return md5;
+}
+
+std::string weights_hash( const std::string& in, const std::string& out )
+{
+    DBG;
+    std::string in_md5  = grib_hash(in);
+    DBGX(in_md5);
+    std::string out_md5 = grib_hash(out);
+    DBGX(out_md5);
+    return in_md5 + std::string(".") + out_md5;
+}
 
 //------------------------------------------------------------------------------------------------------
 
@@ -47,6 +138,14 @@ void compute_weights( atlas::Mesh& i_mesh,
                       Eigen::SparseMatrix<double>& W )
 {
     Timer t("compute weights");
+
+    // generate mesh ...
+
+    Tesselation::tesselate( i_mesh );
+
+    // input mesh --> gmsh
+
+    atlas::Gmsh::write3dsurf( i_mesh, "input.msh" );
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
 
@@ -252,17 +351,17 @@ void MirInterpolate::grib_load( const std::string& fname, atlas::Mesh& mesh, boo
 
 void MirInterpolate::run()
 {    
-    std::string in_filename = Resource<std::string>("-in","");
+    std::string in_filename = Resource<std::string>("-i","");
     if( in_filename.empty() )
-        throw UserError(Here(),"missing input filename, parameter -in");
+        throw UserError(Here(),"missing input filename, parameter -i");
 
-    std::string out_filename = Resource<std::string>("-out","");
+    std::string out_filename = Resource<std::string>("-o","");
     if( out_filename.empty() )
-        throw UserError(Here(),"missing output filename, parameter -out");
+        throw UserError(Here(),"missing output filename, parameter -o");
 
-    std::string clone_grid = Resource<std::string>("-grid","");
+    std::string clone_grid = Resource<std::string>("-g","");
     if( clone_grid.empty() )
-        throw UserError(Here(),"missing clone grid filename, parameter -grid");
+        throw UserError(Here(),"missing clone grid filename, parameter -g");
 
     std::cout.precision(std::numeric_limits< double >::digits10);
     std::cout << std::fixed;
@@ -288,7 +387,7 @@ void MirInterpolate::run()
 
     std::unique_ptr< atlas::Mesh > out_mesh ( new Mesh() );
 
-    grib_load( out_filename, *out_mesh, false );
+    grib_load( clone_grid, *out_mesh, false );
 
     FunctionSpace&  o_nodes = out_mesh->function_space( "nodes" );
     FieldT<double>& ofield = o_nodes.create_field<double>("field",1);
@@ -297,21 +396,29 @@ void MirInterpolate::run()
 
     std::cout << "points " << nb_o_nodes << std::endl;
 
-    // generate mesh ...
-
-    Tesselation::tesselate( *in_mesh );
-
-    // input mesh --> gmsh
-
-    atlas::Gmsh::write3dsurf( *in_mesh, "input.msh" );
-
     // compute weights for each point in output grid
-
-    std::cout << ">>> computing weights ..." << std::endl;
 
     Eigen::SparseMatrix<double> W( nb_o_nodes, nb_i_nodes );
 
-    compute_weights( *in_mesh, *out_mesh, W );
+    DBG;
+
+    WeightCache cache;
+
+    DBG;
+    std::string md5 = weights_hash(in_filename,clone_grid);
+    DBG;
+
+    if( ! cache.get( md5, W ) )
+    {
+        DBG;
+        std::cout << ">>> computing weights ..." << std::endl;
+        compute_weights( *in_mesh, *out_mesh, W );
+        DBG;
+        std::cout << ">>> caching weights for later ..." << std::endl;
+        cache.add( md5, W );
+    }
+
+    DBG;
 
     // interpolation -- multiply interpolant matrix with field vector
 
