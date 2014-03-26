@@ -26,16 +26,6 @@
 
 //------------------------------------------------------------------------------------------------------
 
-//#define NLATS 1440
-//#define NLONG 2880
-
-#define NLATS 30
-#define NLONG 60
-
-//#define NLATS 180
-//#define NLONG 360
-
-
 #if 1
 #define DBG     std::cout << Here() << std::endl;
 #define DBGX(x) std::cout << #x << " -> " << x << std::endl;
@@ -219,29 +209,63 @@ void compute_weights( atlas::Mesh& i_mesh,
 //------------------------------------------------------------------------------------------------------
 
 class MirInterpolate : public eckit::Tool {
+
     virtual void run();
+
+    void grib_load( const std::string& fname, atlas::Mesh& mesh, bool read_field = true );
+
 public:
+
     MirInterpolate(int argc,char **argv): eckit::Tool(argc,argv) {}
+
 };
+
+//------------------------------------------------------------------------------------------------------
+
+/// @todo this will become an expression object
+void MirInterpolate::grib_load( const std::string& fname, atlas::Mesh& mesh, bool read_field )
+{
+    FILE* fh = ::fopen( fname.c_str(), "r" );
+    if( fh == 0 )
+        throw ReadError( std::string("error opening file ") + fname );
+
+    int err = 0;
+    grib_handle* h = grib_handle_new_from_file(0,fh,&err);
+
+    if( h == 0 || err != 0 )
+        throw ReadError( std::string("error reading grib file ") + fname );
+
+    GribRead::read_nodes_from_grib( h, mesh );
+
+    if( read_field )
+        GribRead::read_field_from_grib( h, mesh, "field" );
+
+    grib_handle_delete(h);
+
+    // close file handle
+
+    if( ::fclose(fh) == -1 )
+        throw ReadError( std::string("error closing file ") + fname );
+}
 
 //------------------------------------------------------------------------------------------------------
 
 void MirInterpolate::run()
 {    
-    typedef std::numeric_limits< double > dbl;
-    std::cout.precision(dbl::digits10);
+    std::string in_filename = Resource<std::string>("-in","");
+    if( in_filename.empty() )
+        throw UserError(Here(),"missing input filename, parameter -in");
+
+    std::string out_filename = Resource<std::string>("-out","");
+    if( out_filename.empty() )
+        throw UserError(Here(),"missing output filename, parameter -out");
+
+    std::string clone_grid = Resource<std::string>("-grid","");
+    if( clone_grid.empty() )
+        throw UserError(Here(),"missing clone grid filename, parameter -grid");
+
+    std::cout.precision(std::numeric_limits< double >::digits10);
     std::cout << std::fixed;
-
-    // output grid + field
-
-    std::unique_ptr< atlas::Mesh > out_mesh ( new Mesh() );
-
-    Tesselation::generate_latlon_points( *out_mesh, NLATS, NLONG );
-
-    FunctionSpace&  o_nodes = out_mesh->function_space( "nodes" );
-    FieldT<double>& ofield = o_nodes.create_field<double>("field",1);
-
-    const size_t nb_o_nodes = o_nodes.bounds()[1];
 
     // input grid + field
 
@@ -249,27 +273,29 @@ void MirInterpolate::run()
 
     std::unique_ptr< atlas::Mesh > in_mesh ( new Mesh() );
 
-    std::string filename = Resource<std::string>("-in","");
-    if( filename.empty() )
-        throw UserError(Here(),"missing input filename, parameter -in");
-
-    FILE* fh = ::fopen( filename.c_str(), "r" );
-    if( fh == 0 )
-        throw std::string("error opening file");
-
-    int err = 0;
-    grib_handle* input_h = grib_handle_new_from_file(0,fh,&err);
-
-    if( input_h == 0 || err != 0 )
-        throw std::string("error reading grib");
-
-    GribRead::read_nodes_from_grib( input_h, *in_mesh );
-    GribRead::read_field_from_grib( input_h, *in_mesh, "field" );
+    grib_load( in_filename, *in_mesh );
 
     FunctionSpace&  i_nodes = in_mesh->function_space( "nodes" );
     FieldT<double>& ifield = i_nodes.field<double>("field");
 
     const size_t nb_i_nodes = i_nodes.bounds()[1];
+
+    std::cout << "points " << nb_i_nodes << std::endl;
+
+    // output grid + field
+
+    std::cout << ">>> reading output grid ..." << std::endl;
+
+    std::unique_ptr< atlas::Mesh > out_mesh ( new Mesh() );
+
+    grib_load( out_filename, *out_mesh, false );
+
+    FunctionSpace&  o_nodes = out_mesh->function_space( "nodes" );
+    FieldT<double>& ofield = o_nodes.create_field<double>("field",1);
+
+    const size_t nb_o_nodes = o_nodes.bounds()[1];
+
+    std::cout << "points " << nb_o_nodes << std::endl;
 
     // generate mesh ...
 
@@ -309,14 +335,10 @@ void MirInterpolate::run()
 
     // output mesh --> grib
 
-//    std::cout << ">>> output to grib" << std::endl;
+    std::cout << ">>> output to grib" << std::endl;
 
-//    GribWrite::write(*out_mesh,input_h);
+    GribWrite::clone(*out_mesh,clone_grid,out_filename);
 
-    // close file handle
-
-    if( ::fclose(fh) == -1 )
-        throw std::string("error closing file");
 }
 
 //------------------------------------------------------------------------------------------------------

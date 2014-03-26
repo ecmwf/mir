@@ -37,6 +37,9 @@ ecbuild_declare_project()
 set( MIR_SHARE_DIR "${CMAKE_INSTALL_PREFIX}/share/mir"     ${MIR_SHARE_PATH} )
 set( MIR_DATA_DIR  "${CMAKE_INSTALL_PREFIX}/share/mir/lsm" ${MIR_LSM_PATH} )
 
+ecbuild_add_cxx11_flags()
+ecbuild_check_cxx11( PRINT )
+
 ###############################################################################
 # contents
 
@@ -60,9 +63,6 @@ endforeach()
 ### include directories
 
 include_directories( ${MIR_INCLUDE_DIRS} ${MIR_EXTRA_INCLUDE_DIRS}  )
-
-debug_var( MIR_TPLS )
-debug_var( MIR_EXTRA_INCLUDE_DIRS )
 
 add_subdirectory( src )
 

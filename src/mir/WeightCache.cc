@@ -107,7 +107,7 @@ bool WeightCache::get(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     
     std::string fn = filename(key);
     
-    std::ifstream ifs(fn, std::ios::binary);
+    std::ifstream ifs(fn.c_str(), std::ios::binary);
     if (!ifs.good())
         return false;
         
