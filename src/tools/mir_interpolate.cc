@@ -108,9 +108,117 @@ std::string weights_hash( const std::string& in, const std::string& out )
 
 //------------------------------------------------------------------------------------------------------
 
-void compute_weights( atlas::Mesh& i_mesh,
-                      atlas::Mesh& o_mesh,
-                      Eigen::SparseMatrix<double>& W )
+#define DUMP_PROJ
+#ifdef DUMP_PROJ
+    static std::ofstream of("found.txt");
+#endif
+
+class FEInterpol {
+public: // methods
+
+    void compute_weights( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W );
+
+private: // methods
+
+    bool project_point_to_triangle(KPoint3 &p, Vector3d& phi, int idx[3], const size_t k );
+
+private: // members
+
+    std::unique_ptr<PointIndex3> ptree;
+
+    size_t ip_;
+
+    size_t nb_triags;
+    size_t inp_npts;
+
+    FieldT<double>* picoords;
+    FieldT<int>* ptriag_nodes;
+};
+
+bool FEInterpol::project_point_to_triangle(  KPoint3& p, Vector3d& phi, int idx[3], const size_t k )
+{
+    bool found = false;
+
+    FieldT<int>& triag_nodes = *ptriag_nodes;
+    FieldT<double>& icoords = *picoords;
+
+    PointIndex3::NodeList cs = ptree->kNearestNeighbours(p,k);
+
+#if 0
+    std::cout << p << std::endl;
+    for( size_t i = 0; i < cs.size(); ++i )
+    {
+        std::cout << cs[i] << std::endl;
+    }
+#endif
+
+    // find in which triangle the point is contained
+    // by computing the intercetion of the point with each nearest triangle
+
+    Isect uvt;
+    Ray ray( p.data() );
+
+    size_t tid = std::numeric_limits<size_t>::max();
+
+    for( size_t i = 0; i < cs.size(); ++i )
+    {
+        tid = cs[i].value().payload();
+
+        KPoint3 tc = cs[i].value().point();
+
+        ASSERT( tid < nb_triags );
+
+        idx[0] = triag_nodes(0,tid);
+        idx[1] = triag_nodes(1,tid);
+        idx[2] = triag_nodes(2,tid);
+
+        ASSERT( idx[0] < inp_npts && idx[1] < inp_npts && idx[2] < inp_npts );
+
+        Triag triag( icoords.slice(idx[0]), icoords.slice(idx[1]), icoords.slice(idx[2]) );
+
+        found = triag_intersection( triag, ray, uvt );
+
+#ifdef DUMP_PROJ
+        if(found)
+            of << "[SUCCESS]" << std::endl;
+//        else
+//            of << "[FAILED]" << std::endl;
+
+        if(found)
+        of << "   i    " << i << std::endl
+           << "   ip   " << ip_ << std::endl
+           << "   p    " << p << std::endl
+           << "   tc   " << tc << std::endl
+           << "   d    " << KPoint3::distance(tc,p) << std::endl
+           << "   tid  " << tid << std::endl
+           << "   nidx " << idx[0] << " " << idx[1] << " " << idx[2] << std::endl
+           << "   "
+           << KPoint3(icoords.slice(idx[0])) << " / "
+           << KPoint3(icoords.slice(idx[1])) << " / "
+           << KPoint3(icoords.slice(idx[2])) << std::endl
+           << "   uvwt " << uvt << std::endl;
+#endif
+        if(found) // weights are the baricentric cooridnates u,v
+        {
+            phi[0] = uvt.w();
+            phi[1] = uvt.u;
+            phi[2] = uvt.v;
+            break;
+        }
+
+    } // loop over nearest triangles
+
+    return found;
+}
+
+//------------------------------------------------------------------------------------------------------
+
+// static size_t factorial[12] = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800 };
+static size_t factorial[10] = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880 };
+
+void FEInterpol::compute_weights( atlas::Mesh& i_mesh,
+                                  atlas::Mesh& o_mesh,
+                                  Eigen::SparseMatrix<double>& W )
 {
     Timer t("compute weights");
 
@@ -122,20 +230,19 @@ void compute_weights( atlas::Mesh& i_mesh,
 
     atlas::MeshGen::create_cell_centres( i_mesh );
 
-    std::unique_ptr<PointIndex3> ptree ( create_cell_centre_index<PointIndex3>( i_mesh ) );
-    PointIndex3& tree = *ptree;
+    ptree.reset( create_cell_centre_index<PointIndex3>( i_mesh ) );
 
     // input mesh
 
     FunctionSpace&  i_nodes  = i_mesh.function_space( "nodes" );
-    FieldT<double>& icoords  = i_nodes.field<double>( "coordinates" );
+    picoords = &i_nodes.field<double>( "coordinates" );
 
-    const size_t inp_npts = i_nodes.bounds()[1];
+    FunctionSpace& triags = i_mesh.function_space( "triags" );
 
-    FunctionSpace& triags      = i_mesh.function_space( "triags" );
-    FieldT<int>& triag_nodes   = triags.field<int>( "nodes" );
+    ptriag_nodes = &triags.field<int>( "nodes" );
 
-    const size_t nb_triags = triags.bounds()[1];
+    nb_triags = triags.bounds()[1];
+    inp_npts = i_nodes.bounds()[1];
 
     // output mesh
 
@@ -152,123 +259,30 @@ void compute_weights( atlas::Mesh& i_mesh,
 
     /* search nearest k cell centres */
 
-//    const size_t k = 4;
-    const size_t k = 4 + ( inp_npts / 100 );
-//    const size_t k = 100;
-
-    std::ofstream of;
-    of.open("found.txt");
-
     boost::progress_display show_progress( out_npts );
 
-    for( size_t ip = 0; ip < out_npts; ++ip )
+    for( ip_ = 0; ip_ < out_npts; ++ip_ )
     {
         std::ostringstream os;
 
-        KPoint3 p ( ocoords.slice(ip) ); // lookup point
-
-#if 0
-        std::cout << p << std::endl;
-#endif
-
-        // search the nearest 4 triangles
-
-        PointIndex3::NodeList cs = tree.kNearestNeighbours(p,k);
-
-#if 0
-        for( size_t i = 0; i < cs.size(); ++i )
-        {
-            std::cout << cs[i] << std::endl;
-        }
-#endif
-
-        // find in which triangle the point is contained
-        // by computing the intercetion of the point with each nearest triangle
-
         int idx[3]; /* indexes of the triangle that will contain the point*/
-
         Vector3d phi;
-        Isect uvt;
-        Ray ray( p.data() );
+        KPoint3 p ( ocoords.slice(ip_) ); // lookup point
 
-        size_t tid = std::numeric_limits<size_t>::max();
-
-        bool found = false;
-        for( size_t i = 0; i < cs.size(); ++i )
+        size_t k = 1;
+        while( ! project_point_to_triangle( p, phi, idx, factorial[k] ) )
         {
-            tid = cs[i].value().payload();
-
-            KPoint3 tc = cs[i].value().point();
-
-            ASSERT( tid < nb_triags );
-
-            idx[0] = triag_nodes(0,tid);
-            idx[1] = triag_nodes(1,tid);
-            idx[2] = triag_nodes(2,tid);
-
-            ASSERT( idx[0] < inp_npts && idx[1] < inp_npts && idx[2] < inp_npts );
-
-            Triag triag( icoords.slice(idx[0]), icoords.slice(idx[1]), icoords.slice(idx[2]) );
-
-            if( triag_intersection( triag, ray, uvt ) )
-            {
-                found = true;
-#if 1
-                of << "[SUCCESS]" << std::endl
-                   << "   i    " << i << std::endl
-                   << "   ip   " << ip << std::endl
-                   << "   p    " << p << std::endl
-                   << "   tc   " << tc << std::endl
-                   << "   d    " << KPoint3::distance(tc,p) << std::endl
-                   << "   tid  " << tid << std::endl
-                   << "   nidx " << idx[0] << " " << idx[1] << " " << idx[2] << std::endl
-                   << "   " << KPoint3(icoords.slice(idx[0])) << " / "
-                            << KPoint3(icoords.slice(idx[1])) << " / "
-                            << KPoint3(icoords.slice(idx[2])) << std::endl
-                   << "   uvwt " << uvt << std::endl;
-#endif
-                // weights are the baricentric cooridnates u,v
-
-                phi[0] = uvt.w();
-                phi[1] = uvt.u;
-                phi[2] = uvt.v;
-
-                break;
-            }
-            else
-            {
-                os << "[FAILED] projection on triangle:" << std::endl
-                   << "   i    " << i << std::endl
-                   << "   ip   " << ip << std::endl
-                   << "   p    " << p << std::endl
-                   << "   tc   " << tc << std::endl
-                   << "   d    " << KPoint3::distance(tc,p) << std::endl
-                   << "   tid  " << tid << std::endl
-                   << "   nidx " << idx[0] << " " << idx[1] << " " << idx[2] << std::endl
-                   << "   " << KPoint3(icoords.slice(idx[0])) << " / "
-                            << KPoint3(icoords.slice(idx[1])) << " / "
-                            << KPoint3(icoords.slice(idx[2])) << std::endl
-                   << "   uvwt " << uvt << std::endl;
-            }
+            ++k;
+            if( k > (sizeof(factorial)/ sizeof(*factorial)) )
+                throw eckit::TooManyRetries(k,"projecting point into tesselation");
         }
 
         ++show_progress;
 
-#if 0
-        if( found ) { std::cout << os.str() << std::endl; }
-#endif
-
-        if( !found )
-        {
-            std::cout << os.str() << std::endl;
-            throw SeriousBug("Could not project point into nearest triangles");
-        }
-
         // insert the interpolant weights into the global (sparse) interpolant matrix
 
         for(int i = 0; i < 3; ++i)
-            weights_triplets.push_back( Eigen::Triplet<double>( ip, idx[i], phi[i] ) );
-
+            weights_triplets.push_back( Eigen::Triplet<double>( ip_, idx[i], phi[i] ) );
     }
 
     // fill-in sparse matrix
@@ -379,8 +393,9 @@ void MirInterpolate::run()
     if( ! wcached )
     {
         std::cout << ">>> computing weights ..." << std::endl;
-        compute_weights( *in_mesh, *out_mesh, W );
-        std::cout << ">>> caching weights for later ..." << std::endl;
+
+        FEInterpol interpol;
+        interpol.compute_weights( *in_mesh, *out_mesh, W );
         cache.add( md5, W );
     }
 
@@ -397,7 +412,7 @@ void MirInterpolate::run()
         fo = W * fi;
     }
 
-    // output mesh --> gmsh
+    // output to gmsh
     if(gmsh)
     {
         std::cout << ">>> output to gmsh" << std::endl;
@@ -413,7 +428,7 @@ void MirInterpolate::run()
     }
 
 
-    // output mesh --> grib
+    // output to grib
 
     std::cout << ">>> output to grib" << std::endl;
 

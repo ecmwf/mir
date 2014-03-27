@@ -37,7 +37,7 @@ void InverseSquare::generate(const Point2D& ref, const std::vector<Point2D>& clo
     weights.resize(closests.size(), 0.0);
     double sum = 0.0;
 
-    for (unsigned int j = 0; j < closests.size(); j++)
+    for( size_t j = 0; j < closests.size(); j++)
     {
         const double d2 = Point2D::distance2(ref, closests[j]);
         weights[j] = 1.0 / ( epsilon + d2 );
@@ -45,7 +45,7 @@ void InverseSquare::generate(const Point2D& ref, const std::vector<Point2D>& clo
     }
 
     // now normalise these
-    for (unsigned int j = 0; j < closests.size(); j++)
+    for( size_t j = 0; j < closests.size(); j++)
     {
         ASSERT(sum != 0.0);
         weights[j] /= sum;
