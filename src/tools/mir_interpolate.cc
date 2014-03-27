@@ -263,8 +263,6 @@ void FEInterpol::compute_weights( atlas::Mesh& i_mesh,
 
     for( ip_ = 0; ip_ < out_npts; ++ip_ )
     {
-        std::ostringstream os;
-
         int idx[3]; /* indexes of the triangle that will contain the point*/
         Vector3d phi;
         KPoint3 p ( ocoords.slice(ip_) ); // lookup point

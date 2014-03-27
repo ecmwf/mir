@@ -1,17 +1,15 @@
 ############################################################################################
-# cmake options:
 #
-#       -DCMAKE_BUILD_TYPE=Debug|RelWithDebInfo|Release|Production
-#       -DCMAKE_INSTALL_PREFIX=/path/to/install
+#   mir - ECMWF Meterological Interpolation and Regriding
 #
-#       -DCMAKE_MODULE_PATH=/path/to/ecbuild/cmake
+############################################################################################
+### TODO
 #
-#       -DCMAKE_C_COMPILER=gcc
-#       -DCMAKE_C_COMPILER=g++
-#
-#       -DCMAKE_PREFIX_PATH=/path/to/jasper:/path/to/any/package/out/of/place
-#
-#       -DGRIB_API_PATH=/path/to/grib
+#   * cache weights based also on algorithm
+#   * define a MIR_HOME and resource file to store configurations
+#   * define a MIR_DATA_CACHE
+#   * cache mesh generation
+#   * when in and out grid hashes match we should immedietly return identity matrix
 
 cmake_minimum_required( VERSION 2.8.4 FATAL_ERROR )
 
