@@ -108,7 +108,7 @@ std::string weights_hash( const std::string& in, const std::string& out )
 
 //------------------------------------------------------------------------------------------------------
 
-//#define DUMP_PROJ
+#define DUMP_PROJ
 #ifdef DUMP_PROJ
     static std::ofstream of("found.txt");
 #endif

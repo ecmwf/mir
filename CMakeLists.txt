@@ -12,7 +12,7 @@
 #   * when in and out grid hashes match we should immedietly return identity matrix
 #
 ### BUG
-#   * ./mir_interpolate -i spectral-rg.grib -o output.grib -g ll55.grib
+#   * ./mir_interpolate -i spectral-rg.grib -o output.grib -g ll55.grib ???
 #     - bug in input.gmsh (-1 vertice)
 #     - output field has weird feature
 
