@@ -10,6 +10,11 @@
 #   * define a MIR_DATA_CACHE
 #   * cache mesh generation
 #   * when in and out grid hashes match we should immedietly return identity matrix
+#
+### BUG
+#   * ./mir_interpolate -i spectral-rg.grib -o output.grib -g ll55.grib
+#     - bug in input.gmsh (-1 vertice)
+#     - output field has weird feature
 
 cmake_minimum_required( VERSION 2.8.4 FATAL_ERROR )
 

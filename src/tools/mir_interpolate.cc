@@ -298,8 +298,29 @@ class MirInterpolate : public eckit::Tool {
 
 public:
 
-    MirInterpolate(int argc,char **argv): eckit::Tool(argc,argv) {}
+    MirInterpolate(int argc,char **argv): eckit::Tool(argc,argv)
+    {
+        gmsh = Resource<bool>("-gmsh",false);
 
+        in_filename = Resource<std::string>("-i","");
+        if( in_filename.empty() )
+            throw UserError(Here(),"missing input filename, parameter -i");
+
+        out_filename = Resource<std::string>("-o","");
+        if( out_filename.empty() )
+            throw UserError(Here(),"missing output filename, parameter -o");
+
+        clone_grid = Resource<std::string>("-g","");
+        if( clone_grid.empty() )
+            throw UserError(Here(),"missing clone grid filename, parameter -g");
+    }
+
+private:
+
+    bool gmsh;
+    std::string in_filename;
+    std::string out_filename;
+    std::string clone_grid;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -334,20 +355,6 @@ void MirInterpolate::grib_load( const std::string& fname, atlas::Mesh& mesh, boo
 
 void MirInterpolate::run()
 {    
-    bool gmsh = Resource<bool>("-gmsh",false);
-
-    std::string in_filename = Resource<std::string>("-i","");
-    if( in_filename.empty() )
-        throw UserError(Here(),"missing input filename, parameter -i");
-
-    std::string out_filename = Resource<std::string>("-o","");
-    if( out_filename.empty() )
-        throw UserError(Here(),"missing output filename, parameter -o");
-
-    std::string clone_grid = Resource<std::string>("-g","");
-    if( clone_grid.empty() )
-        throw UserError(Here(),"missing clone grid filename, parameter -g");
-
     std::cout.precision(std::numeric_limits< double >::digits10);
     std::cout << std::fixed;
 
