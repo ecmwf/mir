@@ -20,6 +20,8 @@ list( APPEND mir_srcs mir.h mir_version.cc )
 list( APPEND mir_srcs
 Action.cc
 Action.h
+FEInterpolator.h
+FEInterpolator.cc
 Interpolator.cc
 Interpolator.h
 PointSearch.cc

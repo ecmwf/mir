@@ -5,6 +5,7 @@
 ############################################################################################
 ### TODO
 #
+#   * create the cache files atomically
 #   * cache weights based also on algorithm
 #   * define a MIR_HOME and resource file to store configurations
 #   * define a MIR_DATA_CACHE

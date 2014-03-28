@@ -45,7 +45,7 @@ WeightCache::~WeightCache()
 std::string WeightCache::filename(const std::string& key) const
 {
     std::stringstream ss;
-    ss << key << ".cache";
+    ss << "cache/" << key << ".cache";
     return ss.str();
 }
 
