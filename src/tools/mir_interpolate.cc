@@ -180,7 +180,10 @@ void MirInterpolate::run()
 
     std::unique_ptr< atlas::Mesh > in_mesh ( new Mesh() );
 
-    grib_load( in_filename, *in_mesh );
+    {
+        Timer t("grib read");
+        grib_load( in_filename, *in_mesh );
+    }
 
     FunctionSpace&  i_nodes = in_mesh->function_space( "nodes" );
     FieldT<double>& ifield = i_nodes.field<double>("field");
@@ -251,10 +254,11 @@ void MirInterpolate::run()
 
     // output to grib
 
-    std::cout << ">>> output to grib" << std::endl;
-
-    GribWrite::clone(*out_mesh,clone_grid,out_filename);
-
+    {
+        Timer t("grib write");
+        std::cout << ">>> output to grib" << std::endl;
+        GribWrite::clone(*out_mesh,clone_grid,out_filename);
+    }
 }
 
 //------------------------------------------------------------------------------------------------------

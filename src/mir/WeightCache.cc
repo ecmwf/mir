@@ -12,10 +12,12 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+
 #include <Eigen/Sparse>
 #include <Eigen/Dense>
 
 #include "eckit/log/Log.h"
+#include "eckit/log/Timer.h"
 #include "eckit/filesystem/LocalPathName.h"
 #include "eckit/thread/AutoLock.h"
 
@@ -23,6 +25,7 @@
 
 #include "mir/WeightCache.h"
 
+using eckit::Timer;
 using eckit::Mutex;
 using eckit::AutoLock;
 
@@ -121,7 +124,9 @@ bool WeightCache::get(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     std::ifstream ifs(fn.c_str(), std::ios::binary);
     if (!ifs.good())
         return false;
-        
+
+    Timer t("loading cached weights");
+
     // read inpts, outpts sizes of matrix
     long inner, outer;
     //ifs >> inner >> outer;
