@@ -27,7 +27,7 @@ namespace atlas {
 namespace grid {
     class Field;
     class FieldSet;
-    class Point2D;
+    class Point2;
 }
 }
 

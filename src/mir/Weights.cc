@@ -15,7 +15,7 @@
 
 //-----------------------------------------------------------------------------
 
-using atlas::grid::Point2D;
+using atlas::grid::Point2;
 
 namespace mir {
 
@@ -29,7 +29,7 @@ InverseSquare::~InverseSquare()
     eckit::Log::info() << "Destroy a InverseSquare" << std::endl;
 }
 
-void InverseSquare::generate(const Point2D& ref, const std::vector<Point2D>& closests, std::vector<double>& weights) const
+void InverseSquare::generate(const Point2& ref, const std::vector<Point2>& closests, std::vector<double>& weights) const
 {
     /// @todo take epsilon from some general config
 	const double epsilon = 1e-08;
@@ -39,7 +39,7 @@ void InverseSquare::generate(const Point2D& ref, const std::vector<Point2D>& clo
 
     for( size_t j = 0; j < closests.size(); j++)
     {
-        const double d2 = Point2D::distance2(ref, closests[j]);
+        const double d2 = Point2::distance2(ref, closests[j]);
         weights[j] = 1.0 / ( epsilon + d2 );
         sum += weights[j];
     }

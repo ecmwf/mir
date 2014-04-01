@@ -44,7 +44,7 @@ void TestInterpolate::test_constructor()
     // test the integrity of the objects not the values
     using namespace atlas::grid;
 
-    BoundBox2D earth ( Point2D(-90.,0.), Point2D(90.,360.) );
+    BoundBox2D earth ( Point2(-90.,0.), Point2(90.,360.) );
     Grid* g = NULL;
 
     // standard case
@@ -76,7 +76,7 @@ void TestInterpolate::test_constructor()
 
     ASSERT(raw_data->size() == g->coordinates().size());
 
-    const std::vector<Point2D>& coords = g->coordinates();
+    const std::vector<Point2>& coords = g->coordinates();
 
     ASSERT( coords.size() == npts );
 
@@ -144,7 +144,7 @@ void TestInterpolate::test_values()
 {
     using namespace atlas::grid;
 
-    BoundBox2D earth ( Point2D(-90.,0.), Point2D(90.,360.) );
+    BoundBox2D earth ( Point2(-90.,0.), Point2(90.,360.) );
 
     // standard case
     const size_t n = 4;
@@ -163,7 +163,7 @@ void TestInterpolate::test_values()
         raw_data->push_back((double)i);
     }
 
-    const std::vector<Point2D>& coords = g->coordinates();
+    const std::vector<Point2>& coords = g->coordinates();
 
     atlas::grid::Field::MetaData* md = new atlas::grid::Field::MetaData();
 

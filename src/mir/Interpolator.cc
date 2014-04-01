@@ -20,7 +20,7 @@
 #include "Interpolator.h"
 #include "PointSearch.h"
 
-using atlas::grid::Point2D;
+using atlas::grid::Point2;
 using atlas::grid::Field;
 
 //-----------------------------------------------------------------------------
@@ -102,7 +102,7 @@ void Interpolator::weights(const Field& inp, const Field& out, Eigen::SparseMatr
     // for each point in the output grid, for bilinear we find the 4 nearest points in the
     // input grid and generate a set of weights from them
 
-    const std::vector<Point2D>& out_coords = out.grid().coordinates();
+    const std::vector<Point2>& out_coords = out.grid().coordinates();
 
     // set up an optimised point locator from the input grid
     PointSearch ps(inp.grid().coordinates());
@@ -113,12 +113,12 @@ void Interpolator::weights(const Field& inp, const Field& out, Eigen::SparseMatr
     ASSERT(engine_);
 
     // loop over the output grid points and find the closest ones
-    std::vector<Point2D> closests;
+    std::vector<Point2> closests;
     std::vector<size_t> indices;
 
     for (size_t i = 0; i < out_coords.size(); ++i)
     {
-        const Point2D& o_pt = out_coords[i];
+        const Point2& o_pt = out_coords[i];
 
         // this function resizes the closests vector
         // @todo for bilinear interpolation we used to have edge cases

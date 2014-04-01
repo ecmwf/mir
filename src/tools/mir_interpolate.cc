@@ -18,7 +18,7 @@
 #include "atlas/grid/GribRead.h"
 #include "atlas/grid/GribWrite.h"
 #include "atlas/grid/PointIndex3.h"
-#include "atlas/grid/PointSet.h"
+#include "eckit/geometry/PointSet.h"
 #include "atlas/grid/TriangleIntersection.h"
 #include "atlas/grid/Tesselation.h"
 
@@ -149,15 +149,26 @@ void MirInterpolate::grib_load( const std::string& fname, atlas::Mesh& mesh, boo
         throw ReadError( std::string("error opening file ") + fname );
 
     int err = 0;
-    grib_handle* h = grib_handle_new_from_file(0,fh,&err);
+    grib_handle* h;
+
+    {
+        Timer t("grib_handle_new_from_file");
+        h = grib_handle_new_from_file(0,fh,&err);
+    }
 
     if( h == 0 || err != 0 )
         throw ReadError( std::string("error reading grib file ") + fname );
 
-    GribRead::read_nodes_from_grib( h, mesh );
+    {
+        Timer t("read_nodes_from_grib");
+        GribRead::read_nodes_from_grib( h, mesh );
+    }
 
     if( read_field )
+    {
+        Timer t("read_field_from_grib");
         GribRead::read_field_from_grib( h, mesh, "field" );
+    }
 
     grib_handle_delete(h);
 

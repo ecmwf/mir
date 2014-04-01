@@ -18,7 +18,7 @@
 #include "mir/PointSearch.h"
  
 
-using atlas::grid::Point2D;
+using atlas::grid::Point2;
 
 //-----------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ namespace mir {
 
 //-----------------------------------------------------------------------------
   
-PointSearch::PointSearch(const std::vector<Point2D>& points)
+PointSearch::PointSearch(const std::vector<Point2>& points)
 {
     eckit::Log::info() << "Build a PointSearch" << std::endl;
 
@@ -37,7 +37,7 @@ PointSearch::PointSearch(const std::vector<Point2D>& points)
 
     for (size_t i = 0; i < points.size(); i++)
     {
-        const Point2D& rpt = points[i];
+        const Point2& rpt = points[i];
         // we use the index of the point in the orignal array as the payload
         // as we need to know this in the results of searches
         kd_points.push_back(ValueType(PointType(double(rpt.lat_), double(rpt.lon_)), i));
@@ -52,7 +52,7 @@ PointSearch::~PointSearch()
     eckit::Log::info() << "Destroy a PointSearch" << std::endl;
 }
 
-void PointSearch::closestNPoints( const Point2D& pt,
+void PointSearch::closestNPoints( const Point2& pt,
                                   size_t n,
                                   std::vector< ValueType >& closest)
 {
@@ -67,9 +67,9 @@ void PointSearch::closestNPoints( const Point2D& pt,
 
 }
 
-void PointSearch::closestNPoints( const Point2D& pt,
+void PointSearch::closestNPoints( const Point2& pt,
                                   size_t n,
-                                  std::vector< Point2D >& closest,
+                                  std::vector< Point2 >& closest,
                                   std::vector< PayloadType >& indices )
 {
     /// @todo fix the signature here by defining an IndexPoint type?
@@ -96,7 +96,7 @@ void PointSearch::closestNPoints( const Point2D& pt,
     for( TreeType::NodeList::iterator it = nn.begin(); it != nn.end(); ++it )
     {
         const TreeType::Point& p = it->point();
-        closest.push_back( Point2D( p.x(0), p.x(1) ) );
+        closest.push_back( Point2( p.x(0), p.x(1) ) );
         indices.push_back( it->payload() );
     }
 
