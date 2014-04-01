@@ -32,11 +32,13 @@ class FEInterpolator : private eckit::NonCopyable {
 
 public: // methods
 
+    typedef eckit::geometry::Point3 Point;
+
     void compute_weights( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W );
 
 private: // methods
 
-    bool project_point_to_triangle( atlas::Point3 &p, Eigen::Vector3d& phi, int idx[3], const size_t k );
+    bool project_point_to_triangle( Point &p, Eigen::Vector3d& phi, int idx[3], const size_t k );
 
 private: // members
 

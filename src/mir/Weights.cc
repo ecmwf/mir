@@ -8,14 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
+#include <string>
+
 #include "atlas/grid/Grid.h"
 #include "eckit/log/Log.h"
-#include <string>
 #include "Weights.h"
 
 //-----------------------------------------------------------------------------
-
-using atlas::grid::Point2;
 
 namespace mir {
 
@@ -29,7 +28,7 @@ InverseSquare::~InverseSquare()
     eckit::Log::info() << "Destroy a InverseSquare" << std::endl;
 }
 
-void InverseSquare::generate(const Point2& ref, const std::vector<Point2>& closests, std::vector<double>& weights) const
+void InverseSquare::generate(const Point& ref, const std::vector<Point>& closests, std::vector<double>& weights) const
 {
     /// @todo take epsilon from some general config
 	const double epsilon = 1e-08;
@@ -39,7 +38,7 @@ void InverseSquare::generate(const Point2& ref, const std::vector<Point2>& close
 
     for( size_t j = 0; j < closests.size(); j++)
     {
-        const double d2 = Point2::distance2(ref, closests[j]);
+        const double d2 = Point::distance2(ref, closests[j]);
         weights[j] = 1.0 / ( epsilon + d2 );
         sum += weights[j];
     }

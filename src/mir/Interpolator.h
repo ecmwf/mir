@@ -25,12 +25,10 @@
 
 namespace atlas {
 namespace grid {
-    class Field;
+    class FieldH;
     class FieldSet;
-    class Point2;
 }
 }
-
 
 namespace mir {
 
@@ -50,7 +48,7 @@ protected:
     
     WeightEngine* engine_;
 
-    void weights(const atlas::grid::Field& inp, const atlas::grid::Field& out, Eigen::SparseMatrix<double>& weights) const;
+    void weights(const atlas::grid::FieldH& inp, const atlas::grid::FieldH& out, Eigen::SparseMatrix<double>& weights) const;
 };
 
 

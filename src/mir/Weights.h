@@ -34,11 +34,14 @@ namespace mir {
 
 class WeightEngine : private eckit::NonCopyable {
 public:
+
+    typedef atlas::grid::Grid::Point Point;
+
     WeightEngine() {}
     virtual ~WeightEngine() {}
 
     /// @todo is there a "point with payload" type that we can use here with double for the weight of the point
-    virtual void generate(const atlas::grid::Point2& ref, const std::vector<atlas::grid::Point2>& closests, std::vector<double>& weights) const = 0;
+    virtual void generate(const Point& ref, const std::vector<Point>& closests, std::vector<double>& weights) const = 0;
 
 };
 
@@ -49,7 +52,7 @@ public:
     InverseSquare();
     virtual ~InverseSquare();
 
-    virtual void generate(const atlas::grid::Point2& ref, const std::vector<atlas::grid::Point2>& closests, std::vector<double>& weights) const;
+    virtual void generate(const Point& ref, const std::vector<Point>& closests, std::vector<double>& weights) const;
 protected:
 };
 

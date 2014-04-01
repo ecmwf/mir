@@ -34,7 +34,7 @@ namespace mir {
     static std::ofstream of("found.txt");
 #endif
 
-bool FEInterpolator::project_point_to_triangle(  Point3& p, Vector3d& phi, int idx[3], const size_t k )
+bool FEInterpolator::project_point_to_triangle(  Point& p, Vector3d& phi, int idx[3], const size_t k )
 {
     bool found = false;
 
@@ -63,7 +63,7 @@ bool FEInterpolator::project_point_to_triangle(  Point3& p, Vector3d& phi, int i
     {
         tid = cs[i].value().payload();
 
-        Point3 tc = cs[i].value().point();
+        Point tc = cs[i].value().point();
 
         ASSERT( tid < nb_triags );
 
@@ -88,13 +88,13 @@ bool FEInterpolator::project_point_to_triangle(  Point3& p, Vector3d& phi, int i
            << "   ip   " << ip_ << std::endl
            << "   p    " << p << std::endl
            << "   tc   " << tc << std::endl
-           << "   d    " << Point3::distance(tc,p) << std::endl
+           << "   d    " << Point::distance(tc,p) << std::endl
            << "   tid  " << tid << std::endl
            << "   nidx " << idx[0] << " " << idx[1] << " " << idx[2] << std::endl
            << "   "
-           << Point3(icoords.slice(idx[0])) << " / "
-           << Point3(icoords.slice(idx[1])) << " / "
-           << Point3(icoords.slice(idx[2])) << std::endl
+           << Point(icoords.slice(idx[0])) << " / "
+           << Point(icoords.slice(idx[1])) << " / "
+           << Point(icoords.slice(idx[2])) << std::endl
            << "   uvwt " << uvt << std::endl;
 #endif
         if(found) // weights are the baricentric cooridnates u,v
@@ -164,7 +164,7 @@ void FEInterpolator::compute_weights( atlas::Mesh& i_mesh,
     {
         int idx[3]; /* indexes of the triangle that will contain the point*/
         Vector3d phi;
-        Point3 p ( ocoords.slice(ip_) ); // lookup point
+        Point p ( ocoords.slice(ip_) ); // lookup point
 
         size_t k = 1;
         while( ! project_point_to_triangle( p, phi, idx, factorial[k] ) )

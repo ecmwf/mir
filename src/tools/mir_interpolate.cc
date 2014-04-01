@@ -18,7 +18,7 @@
 #include "atlas/grid/GribRead.h"
 #include "atlas/grid/GribWrite.h"
 #include "atlas/grid/PointIndex3.h"
-#include "eckit/geometry/PointSet.h"
+#include "atlas/grid/PointSet.h"
 #include "atlas/grid/TriangleIntersection.h"
 #include "atlas/grid/Tesselation.h"
 

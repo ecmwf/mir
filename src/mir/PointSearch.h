@@ -31,8 +31,8 @@ namespace mir {
 class PointSearch : private eckit::NonCopyable {
 
     struct TreeTrait {
-        typedef eckit::geometry::KPoint<2>    Point;
-        typedef size_t         Payload;
+        typedef eckit::geometry::LLPoint Point;
+        typedef size_t                   Payload;
     };
 
     typedef eckit::KDTreeMemory<TreeTrait> TreeType;
@@ -44,13 +44,13 @@ class PointSearch : private eckit::NonCopyable {
 
 public: // methods
 
-    PointSearch(const std::vector<atlas::grid::Point2>& points);
+    PointSearch(const std::vector< PointType >& points);
 
     virtual ~PointSearch();
 
     /// Finds closts N points to an input point
-    void closestNPoints(const atlas::grid::Point2& pt, size_t n, std::vector<atlas::grid::Point2>& closest, std::vector<PayloadType>& indices);
-    void closestNPoints(const atlas::grid::Point2& pt, size_t n, std::vector<ValueType>& closest);
+    void closestNPoints(const PointType& pt, size_t n, std::vector<PointType>& closest, std::vector<PayloadType>& indices);
+    void closestNPoints(const PointType& pt, size_t n, std::vector<ValueType>& closest);
 
 protected:
     

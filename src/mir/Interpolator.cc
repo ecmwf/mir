@@ -20,8 +20,9 @@
 #include "Interpolator.h"
 #include "PointSearch.h"
 
-using atlas::grid::Point2;
-using atlas::grid::Field;
+using eckit::geometry::LLPoint;
+using atlas::grid::Grid;
+using atlas::grid::FieldH;
 
 //-----------------------------------------------------------------------------
 
@@ -51,15 +52,15 @@ void Interpolator::interpolate(const atlas::grid::FieldSet& input, atlas::grid::
         ASSERT( input.fields()[i] );
         ASSERT( output.fields()[i] );
 
-        const Field& inp = *(input.fields()[i]);
-        Field& out = *(output.fields()[i]);
+        const FieldH& inp = *(input.fields()[i]);
+        FieldH& out = *(output.fields()[i]);
 
         /// @todo generate unique name from src grid and tgt grid and options
         ///       use here Grid::hash()
         std::string name = "todo";
 
-        const size_t inp_npts = inp.grid().coordinates().size();
-        const size_t out_npts = out.grid().coordinates().size();
+        const size_t inp_npts = inp.grid().nbPoints();
+        const size_t out_npts = out.grid().nbPoints();
 
         Eigen::SparseMatrix<double> W(out_npts, inp_npts);
         weights(inp, out, W);
@@ -68,7 +69,7 @@ void Interpolator::interpolate(const atlas::grid::FieldSet& input, atlas::grid::
         Eigen::MatrixXd B(1, out_npts);
 
         // get the input data into matrix A
-        const Field::Data& fdata = inp.data();
+        const FieldH::Data& fdata = inp.data();
 
         ASSERT(fdata.size() > 0);
 
@@ -85,11 +86,11 @@ void Interpolator::interpolate(const atlas::grid::FieldSet& input, atlas::grid::
 
 }
 
-void Interpolator::weights(const Field& inp, const Field& out, Eigen::SparseMatrix<double>& W) const
+void Interpolator::weights(const FieldH& inp, const FieldH& out, Eigen::SparseMatrix<double>& W) const
 {
-    const size_t inp_npts = inp.grid().coordinates().size();
-    const size_t out_npts = out.grid().coordinates().size();
-    
+    const size_t inp_npts = inp.grid().nbPoints();
+    const size_t out_npts = out.grid().nbPoints();
+
     W = Eigen::SparseMatrix<double>(out_npts, inp_npts);
     std::vector<Eigen::Triplet<double> > insertions;
 
@@ -102,7 +103,7 @@ void Interpolator::weights(const Field& inp, const Field& out, Eigen::SparseMatr
     // for each point in the output grid, for bilinear we find the 4 nearest points in the
     // input grid and generate a set of weights from them
 
-    const std::vector<Point2>& out_coords = out.grid().coordinates();
+    const std::vector<Grid::Point>& out_coords = out.grid().coordinates();
 
     // set up an optimised point locator from the input grid
     PointSearch ps(inp.grid().coordinates());
@@ -113,12 +114,12 @@ void Interpolator::weights(const Field& inp, const Field& out, Eigen::SparseMatr
     ASSERT(engine_);
 
     // loop over the output grid points and find the closest ones
-    std::vector<Point2> closests;
+    std::vector<Grid::Point> closests;
     std::vector<size_t> indices;
 
     for (size_t i = 0; i < out_coords.size(); ++i)
     {
-        const Point2& o_pt = out_coords[i];
+        const Grid::Point& o_pt = out_coords[i];
 
         // this function resizes the closests vector
         // @todo for bilinear interpolation we used to have edge cases

@@ -44,7 +44,7 @@ void TestInterpolate::test_constructor()
     // test the integrity of the objects not the values
     using namespace atlas::grid;
 
-    BoundBox2D earth ( Point2(-90.,0.), Point2(90.,360.) );
+    Grid::BoundBox earth ( Grid::Point(-90.,0.), Grid::Point(90.,360.) );
     Grid* g = NULL;
 
     // standard case
@@ -57,14 +57,14 @@ void TestInterpolate::test_constructor()
     ASSERT( g );
     ASSERT( g->coordinates().size() == npts );
 
-    ASSERT( g->boundingBox().bottom_left_.lat_ == -90. );
-    ASSERT( g->boundingBox().bottom_left_.lon_ ==   0. );
-    ASSERT( g->boundingBox().top_right_.lat_ ==  90. );
-    ASSERT( g->boundingBox().top_right_.lon_ == 360. );
+    ASSERT( g->boundingBox().bottom_left_.lat() == -90. );
+    ASSERT( g->boundingBox().bottom_left_.lon() ==   0. );
+    ASSERT( g->boundingBox().top_right_.lat() ==  90. );
+    ASSERT( g->boundingBox().top_right_.lon() == 360. );
 
     
     // make up some data for this field
-    atlas::grid::Field::Data* raw_data = new atlas::grid::Field::Data;
+    atlas::grid::FieldH::Data* raw_data = new atlas::grid::FieldH::Data;
     for (unsigned int i = 0; i <= 4; i++)
     {
         raw_data->push_back((double)i);
@@ -76,14 +76,14 @@ void TestInterpolate::test_constructor()
 
     ASSERT(raw_data->size() == g->coordinates().size());
 
-    const std::vector<Point2>& coords = g->coordinates();
+    const std::vector<Grid::Point>& coords = g->coordinates();
 
     ASSERT( coords.size() == npts );
 
-    atlas::grid::Field::MetaData* md = new atlas::grid::Field::MetaData();
+    atlas::grid::FieldH::MetaData* md = new atlas::grid::FieldH::MetaData();
 
-    Field::Vector fv;
-    atlas::grid::Field* f = new atlas::grid::Field(g, md, raw_data);
+    FieldH::Vector fv;
+    atlas::grid::FieldH* f = new atlas::grid::FieldH(g, md, raw_data);
     fv.push_back(f);
 
     // check it's the same object
@@ -93,10 +93,10 @@ void TestInterpolate::test_constructor()
     atlas::grid::FieldSet input(fv);
 
     int count = 0;
-    for (Field::Vector::iterator it = input.fields().begin(); it != input.fields().end(); ++it)
+    for (FieldH::Vector::iterator it = input.fields().begin(); it != input.fields().end(); ++it)
     {
         // test the data that is in the grid
-        const Field::Data& d = (*it)->data();
+        const FieldH::Data& d = (*it)->data();
         for (unsigned int i = 0; i < raw_data->size(); i++)
         {
             ASSERT((*raw_data)[i] == d[i]);
@@ -105,16 +105,16 @@ void TestInterpolate::test_constructor()
 
     // now assemble and output field set
     //
-    Field::Vector fv1;
+    FieldH::Vector fv1;
     int n1 = 4;
     Grid* g1 = new LatLon( n1, n1, earth );
 
     ASSERT( g1 );
     ASSERT( g1->coordinates().size() == (n1 + 1) * (n1 + 1) );
 
-    atlas::grid::Field::MetaData* md1 = new atlas::grid::Field::MetaData();
+    atlas::grid::FieldH::MetaData* md1 = new atlas::grid::FieldH::MetaData();
     
-    atlas::grid::Field* f1 = new atlas::grid::Field(g1, md1, new std::vector<double>);
+    atlas::grid::FieldH* f1 = new atlas::grid::FieldH(g1, md1, new std::vector<double>);
     fv1.push_back(f1);
 
     // put it all into an OUTPUT field set
@@ -128,12 +128,12 @@ void TestInterpolate::test_constructor()
     ASSERT(output.fields().size() == input.fields().size());
     
     count = 0;
-    for (Field::Vector::iterator it = output.fields().begin(); it != output.fields().end(); ++it)
+    for (FieldH::Vector::iterator it = output.fields().begin(); it != output.fields().end(); ++it)
     {
 
         ASSERT(*it);
 
-        const Field::Data& d = (*it)->data();
+        const FieldH::Data& d = (*it)->data();
         // check the interpolator added data
         ASSERT(d.size() > 0);
     }
@@ -144,7 +144,7 @@ void TestInterpolate::test_values()
 {
     using namespace atlas::grid;
 
-    BoundBox2D earth ( Point2(-90.,0.), Point2(90.,360.) );
+    Grid::BoundBox earth ( Grid::Point(-90.,0.), Grid::Point(90.,360.) );
 
     // standard case
     const size_t n = 4;
@@ -153,7 +153,7 @@ void TestInterpolate::test_values()
     Grid* g = new LatLon( n, n, earth );
 
     // make up some data for this field
-    atlas::grid::Field::Data* raw_data = new atlas::grid::Field::Data;
+    atlas::grid::FieldH::Data* raw_data = new atlas::grid::FieldH::Data;
     for (unsigned int i = 0; i <= 4; i++)
     {
         raw_data->push_back((double)i);
@@ -163,12 +163,12 @@ void TestInterpolate::test_values()
         raw_data->push_back((double)i);
     }
 
-    const std::vector<Point2>& coords = g->coordinates();
+    const std::vector<Grid::Point>& coords = g->coordinates();
 
-    atlas::grid::Field::MetaData* md = new atlas::grid::Field::MetaData();
+    atlas::grid::FieldH::MetaData* md = new atlas::grid::FieldH::MetaData();
 
-    Field::Vector fv;
-    atlas::grid::Field* f = new atlas::grid::Field(g, md, raw_data);
+    FieldH::Vector fv;
+    atlas::grid::FieldH* f = new atlas::grid::FieldH(g, md, raw_data);
     fv.push_back(f);
 
     // put it all into an INPUT field set
@@ -176,14 +176,14 @@ void TestInterpolate::test_values()
 
     // now assemble and output field set
     //
-    Field::Vector fv1;
+    FieldH::Vector fv1;
     // test the same sized grid - should get the same answer as the input grid
     const size_t m = n;
     Grid* g1 = new LatLon( m, m, earth );
 
-    atlas::grid::Field::MetaData* m1 = new atlas::grid::Field::MetaData();
+    atlas::grid::FieldH::MetaData* m1 = new atlas::grid::FieldH::MetaData();
     
-    atlas::grid::Field* f1 = new atlas::grid::Field(g1, m1, new std::vector<double>);
+    atlas::grid::FieldH* f1 = new atlas::grid::FieldH(g1, m1, new std::vector<double>);
     fv1.push_back(f1);
 
     // put it all into an OUTPUT field set
@@ -194,9 +194,9 @@ void TestInterpolate::test_values()
 
     interp.interpolate(input, output);
 
-    for (Field::Vector::iterator it = output.fields().begin(); it != output.fields().end(); ++it)
+    for (FieldH::Vector::iterator it = output.fields().begin(); it != output.fields().end(); ++it)
     {
-        const Field::Data& d = (*it)->data();
+        const FieldH::Data& d = (*it)->data();
         
         // check the interpolator added data
         for (unsigned int i = 0; i < d.size(); i++)
