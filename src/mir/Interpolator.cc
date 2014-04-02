@@ -59,8 +59,8 @@ void Interpolator::interpolate(const atlas::grid::FieldSet& input, atlas::grid::
         ///       use here Grid::hash()
         std::string name = "todo";
 
-        const size_t inp_npts = inp.grid().nbPoints();
-        const size_t out_npts = out.grid().nbPoints();
+        const size_t inp_npts = inp.grid().nPoints();
+        const size_t out_npts = out.grid().nPoints();
 
         Eigen::SparseMatrix<double> W(out_npts, inp_npts);
         weights(inp, out, W);
@@ -88,8 +88,8 @@ void Interpolator::interpolate(const atlas::grid::FieldSet& input, atlas::grid::
 
 void Interpolator::weights(const FieldH& inp, const FieldH& out, Eigen::SparseMatrix<double>& W) const
 {
-    const size_t inp_npts = inp.grid().nbPoints();
-    const size_t out_npts = out.grid().nbPoints();
+    const size_t inp_npts = inp.grid().nPoints();
+    const size_t out_npts = out.grid().nPoints();
 
     W = Eigen::SparseMatrix<double>(out_npts, inp_npts);
     std::vector<Eigen::Triplet<double> > insertions;
