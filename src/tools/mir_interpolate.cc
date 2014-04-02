@@ -44,59 +44,6 @@ using namespace mir;
 
 //------------------------------------------------------------------------------------------------------
 
-static GribAccessor<long> edition("edition");
-static GribAccessor<std::string> md5Section2("md5Section2");
-static GribAccessor<std::string> md5Section3("md5Section3");
-
-//------------------------------------------------------------------------------------------------------
-
-std::string grib_hash( grib_handle* h )
-{
-    ASSERT(h);
-
-    /// @todo create a 'geographyMd5'  accessor
-
-    std::string md5;
-
-    switch( edition(h) )
-    {
-    case 1:
-        md5 = md5Section2(h);
-        break;
-    case 2:
-        md5 = md5Section3(h);
-        break;
-
-    default:
-        ASSERT( !md5.empty() );
-        break;
-    }
-
-    return md5;
-}
-
-std::string grib_hash( const std::string& fname )
-{
-    FILE* fh = ::fopen( fname.c_str(), "r" );
-    if( fh == 0 )
-        throw ReadError( std::string("error opening file ") + fname );
-
-    int err = 0;
-    grib_handle* h = grib_handle_new_from_file(0,fh,&err);
-
-    if( h == 0 || err != 0 )
-        throw ReadError( std::string("error reading grib file ") + fname );
-
-    std::string md5 = grib_hash(h);
-
-    grib_handle_delete(h);
-
-    if( ::fclose(fh) == -1 )
-        throw ReadError( std::string("error closing file ") + fname );
-
-    return md5;
-}
-
 std::string weights_hash( const std::string& in, const std::string& out )
 {
     std::string in_md5  = grib_hash(in);
