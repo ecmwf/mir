@@ -31,8 +31,8 @@ namespace mir {
 class PointSearch : private eckit::NonCopyable {
 
     struct TreeTrait {
-        typedef eckit::geometry::LLPoint Point;
-        typedef size_t                   Payload;
+        typedef eckit::geometry::LLPoint2 Point;
+        typedef size_t                    Payload;
     };
 
     typedef eckit::KDTreeMemory<TreeTrait> TreeType;

@@ -20,7 +20,7 @@
 #include "Interpolator.h"
 #include "PointSearch.h"
 
-using eckit::geometry::LLPoint;
+using eckit::geometry::LLPoint2;
 using atlas::grid::Grid;
 using atlas::grid::FieldH;
 
