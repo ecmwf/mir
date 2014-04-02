@@ -10,28 +10,26 @@
 
 /// @author Peter Bispham
 /// @author Tiago Quintino
-/// @date Oct 2013
+/// @date   Mar 2014
 
 #ifndef mir_WeightCache_H
 #define mir_WeightCache_H
 
+#include "eckit/maths/Eigen.h"
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/thread/Mutex.h"
-#include <Eigen/Sparse>
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 namespace mir {
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 class WeightCache : private eckit::NonCopyable {
 
 public: // methods
 
     WeightCache();
-
-    virtual ~WeightCache();
 
     // fills passed matrix with cached values and returns true if found cache
     bool get( const std::string& key, Eigen::SparseMatrix<double>& W ) const;
@@ -44,6 +42,8 @@ protected:
     mutable eckit::Mutex mutex_;
 
 };
+
+//------------------------------------------------------------------------------------------------------
 
 } // namespace mir
 

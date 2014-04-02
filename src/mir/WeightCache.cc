@@ -37,12 +37,6 @@ namespace mir {
 
 WeightCache::WeightCache()
 {
-//    eckit::Log::info() << "Build a WeightCache" << std::endl;
-}
-
-WeightCache::~WeightCache()
-{
-//    eckit::Log::info() << "Destroy a WeightCache" << std::endl;
 }
 
 std::string WeightCache::filename(const std::string& key) const
@@ -59,7 +53,7 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     
     AutoLock<Mutex> lock(mutex_);
     
-    std::string fn = filename(key);
+    const std::string fn = filename(key);
 
     eckit::LocalPathName fpath(fn);
     if(fpath.exists())

@@ -21,6 +21,7 @@
 #include "atlas/grid/PointSet.h"
 #include "atlas/grid/TriangleIntersection.h"
 #include "atlas/grid/Tesselation.h"
+#include "atlas/grid/MeshCache.h"
 
 #include "mir/FEInterpolator.h"
 #include "mir/WeightCache.h"
@@ -57,7 +58,7 @@ class MirInterpolate : public eckit::Tool {
 
     virtual void run();
 
-    void grib_load( const std::string& fname, atlas::Mesh& mesh, bool read_field = true );
+    atlas::Mesh* grib_load( const std::string& fname, bool read_field = true );
 
 public:
 
@@ -89,8 +90,11 @@ private:
 //------------------------------------------------------------------------------------------------------
 
 /// @todo this will become an expression object
-void MirInterpolate::grib_load( const std::string& fname, atlas::Mesh& mesh, bool read_field )
+atlas::Mesh* MirInterpolate::grib_load( const std::string& fname, bool read_field )
 {
+    MeshCache mcache;
+    atlas::Mesh* mesh = NULL;
+
     FILE* fh = ::fopen( fname.c_str(), "r" );
     if( fh == 0 )
         throw ReadError( std::string("error opening file ") + fname );
@@ -106,15 +110,24 @@ void MirInterpolate::grib_load( const std::string& fname, atlas::Mesh& mesh, boo
     if( h == 0 || err != 0 )
         throw ReadError( std::string("error reading grib file ") + fname );
 
+    const std::string hash = grib_hash(h);
+
+    if( !(mesh = mcache.get(hash)) )
     {
-        Timer t("read_nodes_from_grib");
-        GribRead::read_nodes_from_grib( h, mesh );
+        mesh = new Mesh();
+
+        GribRead::read_nodes_from_grib( h, *mesh );
+
+        Tesselation::tesselate(*mesh);
+
+        mcache.add(hash,*mesh);
     }
+
+    ASSERT( mesh );
 
     if( read_field )
     {
-        Timer t("read_field_from_grib");
-        GribRead::read_field_from_grib( h, mesh, "field" );
+        GribRead::read_field_from_grib( h, *mesh, "field" );
     }
 
     grib_handle_delete(h);
@@ -136,16 +149,10 @@ void MirInterpolate::run()
 
     std::cout << ">>> reading input grid + field ..." << std::endl;
 
-    std::unique_ptr< atlas::Mesh > in_mesh ( new Mesh() );
-
-    {
-        Timer t("grib read");
-        grib_load( in_filename, *in_mesh );
-    }
+    std::unique_ptr< atlas::Mesh > in_mesh(  grib_load( in_filename ) );
 
     FunctionSpace&  i_nodes = in_mesh->function_space( "nodes" );
     FieldT<double>& ifield = i_nodes.field<double>("field");
-
     const size_t nb_i_nodes = i_nodes.bounds()[1];
 
     std::cout << "points " << nb_i_nodes << std::endl;
@@ -154,9 +161,7 @@ void MirInterpolate::run()
 
     std::cout << ">>> reading output grid ..." << std::endl;
 
-    std::unique_ptr< atlas::Mesh > out_mesh ( new Mesh() );
-
-    grib_load( clone_grid, *out_mesh, false );
+    std::unique_ptr< atlas::Mesh > out_mesh ( grib_load( clone_grid, false ) );
 
     FunctionSpace&  o_nodes = out_mesh->function_space( "nodes" );
     FieldT<double>& ofield = o_nodes.create_field<double>("field",1);
