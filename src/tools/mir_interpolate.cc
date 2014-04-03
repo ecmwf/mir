@@ -215,8 +215,13 @@ void MirInterpolate::run()
     {
         Timer t("grib write");
         std::cout << ">>> output to grib" << std::endl;
-        GribWrite::clone( out_field->grid().mesh(), clone_grid, out_filename );
+        GribWrite::clone( *out_field, clone_grid, out_filename );
     }
+
+//    std::cout << ">>> deleting input field" << std::endl;
+//    in_field.reset();
+//    std::cout << ">>> deleting output field" << std::endl;
+//    out_field.reset();
 }
 
 //------------------------------------------------------------------------------------------------------
