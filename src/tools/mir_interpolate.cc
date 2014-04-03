@@ -15,13 +15,14 @@
 #include "eckit/runtime/Tool.h"
 #include "eckit/grib/GribAccessor.h"
 
+#include "atlas/grid/Field.h"
 #include "atlas/grid/GribRead.h"
 #include "atlas/grid/GribWrite.h"
 #include "atlas/grid/PointIndex3.h"
 #include "atlas/grid/PointSet.h"
 #include "atlas/grid/TriangleIntersection.h"
 #include "atlas/grid/Tesselation.h"
-#include "atlas/grid/MeshCache.h"
+#include "atlas/grid/Unstructured.h"
 
 #include "mir/FEInterpolator.h"
 #include "mir/WeightCache.h"
@@ -41,24 +42,25 @@
 using namespace Eigen;
 using namespace eckit;
 using namespace atlas;
+using namespace atlas::grid;
 using namespace mir;
 
 //------------------------------------------------------------------------------------------------------
 
-std::string weights_hash( const std::string& in, const std::string& out )
+std::string weights_hash( const Grid& in, const Grid& out )
 {
-    std::string in_md5  = grib_hash(in);
-    std::string out_md5 = grib_hash(out);
-    return in_md5 + std::string(".") + out_md5;
+    return in.hash() + std::string(".") + out.hash();
 }
 
 //------------------------------------------------------------------------------------------------------
 
 class MirInterpolate : public eckit::Tool {
 
+    typedef std::unique_ptr< Mesh > MeshPtr;
+
     virtual void run();
 
-    atlas::Mesh* grib_load( const std::string& fname, bool read_field = true );
+    FieldH::Ptr make_field( const std::string& filename, bool read_field = true );
 
 public:
 
@@ -89,53 +91,46 @@ private:
 
 //------------------------------------------------------------------------------------------------------
 
-/// @todo this will become an expression object
-atlas::Mesh* MirInterpolate::grib_load( const std::string& fname, bool read_field )
-{
-    MeshCache mcache;
-    atlas::Mesh* mesh = NULL;
+static GribAccessor<std::string> grib_shortName("shortName");
 
-    FILE* fh = ::fopen( fname.c_str(), "r" );
+FieldH::Ptr MirInterpolate::make_field( const std::string& filename, bool read_field )
+{
+    FILE* fh = ::fopen( filename.c_str(), "r" );
     if( fh == 0 )
-        throw ReadError( std::string("error opening file ") + fname );
+        throw ReadError( std::string("error opening file ") + filename );
 
     int err = 0;
     grib_handle* h;
 
-    {
-        Timer t("grib_handle_new_from_file");
-        h = grib_handle_new_from_file(0,fh,&err);
-    }
+    h = grib_handle_new_from_file(0,fh,&err);
 
     if( h == 0 || err != 0 )
-        throw ReadError( std::string("error reading grib file ") + fname );
+        throw ReadError( std::string("error reading grib file ") + filename );
 
-    const std::string hash = grib_hash(h);
+    Grid::Ptr g ( GribRead::create_grid_from_grib(h) );
 
-    if( !(mesh = mcache.get(hash)) )
-    {
-        mesh = new Mesh();
+    const std::string sname = grib_shortName(h);
 
-        GribRead::read_nodes_from_grib( h, *mesh );
+    Mesh& mesh = g->mesh();
 
-        Tesselation::tesselate(*mesh);
-
-        mcache.add(hash,*mesh);
-    }
-
-    ASSERT( mesh );
+    FunctionSpace&  nodes  = mesh.function_space( "nodes" );
 
     if( read_field )
-    {
-        GribRead::read_field_from_grib( h, *mesh, "field" );
-    }
+        GribRead::read_field_from_grib(h,mesh,sname);
+    else
+        nodes.create_field<double>(sname,1);
 
     grib_handle_delete(h);
-
-    // close file handle
-
     if( ::fclose(fh) == -1 )
-        throw ReadError( std::string("error closing file ") + fname );
+        throw ReadError( std::string("error closing file ") + filename );
+
+    // finalize FieldHandle
+
+    MetaData::Ptr md( new MetaData() );
+
+    FieldH::Ptr hf( new FieldH( g, std::move(md), nodes.field<double>( sname ) ) );
+
+    return hf;
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -145,50 +140,51 @@ void MirInterpolate::run()
     std::cout.precision(std::numeric_limits< double >::digits10);
     std::cout << std::fixed;
 
+    FieldH::Ptr in_field;
+    FieldH::Ptr out_field;
+
     // input grid + field
 
     std::cout << ">>> reading input grid + field ..." << std::endl;
 
-    std::unique_ptr< atlas::Mesh > in_mesh(  grib_load( in_filename ) );
+    in_field = make_field( in_filename );
 
-    FunctionSpace&  i_nodes = in_mesh->function_space( "nodes" );
-    FieldT<double>& ifield = i_nodes.field<double>("field");
-    const size_t nb_i_nodes = i_nodes.bounds()[1];
-
-    std::cout << "points " << nb_i_nodes << std::endl;
+    std::cout << "points " << in_field->grid().nPoints() << std::endl;
 
     // output grid + field
 
     std::cout << ">>> reading output grid ..." << std::endl;
 
-    std::unique_ptr< atlas::Mesh > out_mesh ( grib_load( clone_grid, false ) );
+    out_field = make_field( clone_grid, false );
 
-    FunctionSpace&  o_nodes = out_mesh->function_space( "nodes" );
-    FieldT<double>& ofield = o_nodes.create_field<double>("field",1);
-
-    const size_t nb_o_nodes = o_nodes.bounds()[1];
-
-    std::cout << "points " << nb_o_nodes << std::endl;
+    std::cout << "points " << out_field->grid().nPoints() << std::endl;
 
     // compute weights for each point in output grid
 
-    Eigen::SparseMatrix<double> W( nb_o_nodes, nb_i_nodes );
+    Eigen::SparseMatrix<double> W( out_field->grid().nPoints(), in_field->grid().nPoints() );
 
     WeightCache cache;
-    std::string md5 = weights_hash(in_filename,clone_grid);
-    bool wcached = cache.get( md5, W );
+    std::string whash = weights_hash(in_field->grid(),out_field->grid());
+    bool wcached = cache.get( whash, W );
     if( ! wcached )
     {
         std::cout << ">>> computing weights ..." << std::endl;
 
         FEInterpolator interpolator;
-        interpolator.compute_weights( *in_mesh, *out_mesh, W );
-        cache.add( md5, W );
+
+        Tesselation::tesselate( in_field->grid() );
+
+        interpolator.compute_weights( in_field->grid().mesh(), out_field->grid().mesh(), W );
+
+        cache.add( whash, W );
     }
 
     // interpolation -- multiply interpolant matrix with field vector
 
     std::cout << ">>> interpolating ..." << std::endl;
+
+    FieldT<double>& ifield = in_field->data();
+    FieldT<double>& ofield = out_field->data();
 
     {
         Timer t("interpolation");
@@ -200,27 +196,26 @@ void MirInterpolate::run()
     }
 
     // output to gmsh
-    if(gmsh)
+
+    if( gmsh )
     {
         std::cout << ">>> output to gmsh" << std::endl;
 
-        if(wcached)
-            atlas::Tesselation::tesselate( *in_mesh );
+        Tesselation::tesselate( in_field->grid() );
 
-        atlas::Gmsh::write3dsurf( *in_mesh, "input.msh" );
+        atlas::Gmsh::write3dsurf( in_field->grid().mesh(), "input.msh" );
 
-        atlas::Tesselation::tesselate( *out_mesh );
+        Tesselation::tesselate( out_field->grid() );
 
-        atlas::Gmsh::write3dsurf( *out_mesh, std::string("output.msh") );
+        atlas::Gmsh::write3dsurf( out_field->grid().mesh(), std::string("output.msh") );
     }
-
 
     // output to grib
 
     {
         Timer t("grib write");
         std::cout << ">>> output to grib" << std::endl;
-        GribWrite::clone(*out_mesh,clone_grid,out_filename);
+        GribWrite::clone( out_field->grid().mesh(), clone_grid, out_filename );
     }
 }
 

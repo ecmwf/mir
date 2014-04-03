@@ -24,6 +24,7 @@
 using namespace Eigen;
 using namespace eckit;
 using namespace atlas;
+using namespace atlas::grid;
 
 namespace mir {
 
@@ -123,11 +124,11 @@ void FEInterpolator::compute_weights( atlas::Mesh& i_mesh,
 
     // generate mesh ...
 
-    atlas::Tesselation::tesselate( i_mesh );
+    Tesselation::tesselate( i_mesh );
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
 
-    atlas::Tesselation::create_cell_centres( i_mesh );
+    Tesselation::create_cell_centres( i_mesh );
 
     ptree.reset( create_cell_centre_index( i_mesh ) );
 
