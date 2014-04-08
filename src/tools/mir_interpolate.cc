@@ -26,6 +26,7 @@
 
 #include "mir/FEInterpolator.h"
 #include "mir/WeightCache.h"
+#include "mir/Weights.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -162,6 +163,8 @@ void MirInterpolate::run()
     // compute weights for each point in output grid
 
     Eigen::SparseMatrix<double> W( out_field->grid().nPoints(), in_field->grid().nPoints() );
+
+//    WeightEngine::weights( in_field->grid(), out_field->grid(), W );
 
     WeightCache cache;
     std::string whash = weights_hash(in_field->grid(),out_field->grid());
