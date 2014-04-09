@@ -30,36 +30,30 @@ namespace mir {
 
 //-----------------------------------------------------------------------------
 
-WeightCache::WeightCache()
-{
-    Log::info() << "Build a WeightCache" << std::endl;
-}
-
-WeightCache::~WeightCache()
-{
-    Log::info() << "Destroy a WeightCache" << std::endl;
-}
-
-std::string WeightCache::filename(const std::string& key) const
+std::string WeightCache::filename(const std::string& key)
 {
     std::stringstream ss;
-    ss << key << ".cache";
+    ss << "cache/mesh/" << key << ".cache";
     return ss.str();
 }
 
-bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) const
+bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W )
 {
     LocalPathName file( filename(key) );
 
     if( file.exists() )
     {
-        Log::debug() << "WeightCache::add file " << file << " already exists. Returning." << std::endl;
+        Log::debug() << "WeightCache entry " << file << " already exists..." << std::endl;
         return false;
     }
 
-    // unique file name where to save the weights -- avoids race conditions on the file from multiple processes
+    file.dirName().mkdir(); // ensure directory exists
+
+    // unique file name avoids race conditions on the file from multiple processes
 
     LocalPathName tmpfile ( LocalPathName::unique(file) );
+
+    Log::info() << "inserting weights in cache (" << file << ")" << std::endl;
 
     std::ofstream ofs;
     ofs.open( tmpfile.c_str(), std::ios::binary );
@@ -107,26 +101,28 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) c
 
     // now try to rename the file to its file pathname
 
-    try {
+    try
+    {
         LocalPathName::rename( tmpfile, file );
     }
-    catch( FailedSystemCall& e )
+    catch( FailedSystemCall& e ) // ignore failed system call -- another process nay have created the file meanwhile
     {
-        // ignore failed system call -- another process nay have created the file meanwhile
         Log::debug() << "Failed rename of cache file -- " << e.what() << std::endl;
     }
 
+    return true;
 }
 
-bool WeightCache::get(const std::string& key, Eigen::SparseMatrix<double>& W ) const
+bool WeightCache::get(const std::string& key, Eigen::SparseMatrix<double>& W )
 {
     LocalPathName file( filename(key) );
 
-    if( file.exists() )
+    if( ! file.exists() )
     {
-        Log::info() << "WeightCache::get File " << file << " doesn't exist. Returning." << std::endl;
         return false;
     }
+
+    Log::info() << "found weights in cache (" << file << ")" << std::endl;
 
     FileHandle fh( file );
 

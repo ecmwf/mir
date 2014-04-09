@@ -22,6 +22,7 @@
 #include "mir/WeightCache.h"
 
 using namespace eckit;
+using namespace mir;
 
 //-----------------------------------------------------------------------------
 
@@ -35,7 +36,6 @@ public:
     TestWeightCache(int argc,char **argv): Tool(argc,argv) {}
 
     ~TestWeightCache() {}
-
     virtual void run();
 
     void test_constructor();
@@ -46,12 +46,10 @@ public:
 void TestWeightCache::test_values()
 {
     using namespace atlas::grid;
-
-    mir::WeightCache wc;
     
     // We delete the cache file before we test
     char key[] = "test_matrix";
-    ::remove(wc.filename(key).c_str());
+    ::remove(WeightCache::filename(key).c_str());
 
     int n = 100, m = 200;
     // create a sparse matrix
@@ -75,17 +73,17 @@ void TestWeightCache::test_values()
 
     M.setFromTriplets(insertions.begin(), insertions.end());
 
-    bool added = wc.add(key, M); 
+    bool added = WeightCache::add(key, M);
     ASSERT(added);
 
     // ASSERT that any additional adds fail
-    ASSERT(!wc.add(key, M));
-    ASSERT(!wc.add(key, M));
+    ASSERT(!WeightCache::add(key, M));
+    ASSERT(!WeightCache::add(key, M));
 
 
     // now get the data back again
     Eigen::SparseMatrix<double> W(n, m);
-    bool got = wc.get(key, W);
+    bool got = WeightCache::get(key, W);
     ASSERT(got);
 
     // now get the triplets from W and check them against M
@@ -113,13 +111,13 @@ void TestWeightCache::test_values()
     }
 
     // test that additional gets succeed
-    ASSERT(wc.get(key, W));
-    ASSERT(wc.get(key, W));
+    ASSERT(WeightCache::get(key, W));
+    ASSERT(WeightCache::get(key, W));
     
     // remove the file and ASSERT that get fails
-    ::remove(wc.filename(key).c_str());
-    ASSERT(!wc.get(key, W));
-    ASSERT(!wc.get(key, W));
+    ::remove(WeightCache::filename(key).c_str());
+    ASSERT(!WeightCache::get(key, W));
+    ASSERT(!WeightCache::get(key, W));
 
 
 
