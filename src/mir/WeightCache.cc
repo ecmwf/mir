@@ -44,7 +44,7 @@ WeightCache::~WeightCache()
     eckit::Log::info() << "Destroy a WeightCache" << std::endl;
 }
 
-std::string WeightCache::generateFilename(const std::string& key) const
+std::string WeightCache::filename(const std::string& key) const
 {
     std::stringstream ss;
     ss << key << ".cache";
@@ -58,7 +58,18 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     
     AutoLock<Mutex> lock(mutex_);
     
-    std::string fn = generateFilename(key);
+
+    std::string fn = filename(key);
+   
+    // check the file exists
+    std::ifstream ifs(fn, std::ios::binary);
+    if (ifs.good())
+    {
+        eckit::Log::info() << "WeightCache::add File " << fn << " already exists. Returning." << std::endl;
+        return false;
+    }
+
+    ifs.close();
     
     std::ofstream ofs;
     ofs.open(fn.c_str(), std::ios::binary);
@@ -107,14 +118,15 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) c
 bool WeightCache::get(const std::string& key, Eigen::SparseMatrix<double>& W ) const
 {
     AutoLock<Mutex> lock(mutex_);
-    
 
-
-    std::string fn = generateFilename(key);
+    std::string fn = filename(key);
     
     std::ifstream ifs(fn, std::ios::binary);
     if (!ifs.good())
+    {
+        eckit::Log::info() << "WeightCache::get File " << fn << " doesn't exist. Returning." << std::endl;
         return false;
+    }
         
     // read inpts, outpts sizes of matrix
     long inner, outer;
