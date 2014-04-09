@@ -16,8 +16,8 @@
 #define mir_WeightCache_H
 
 #include "eckit/memory/NonCopyable.h"
-#include "eckit/thread/Mutex.h"
-#include <Eigen/Sparse>
+
+#include  "eckit/maths/Eigen.h" // always include Eigen via eckit
 
 //-----------------------------------------------------------------------------
 
@@ -38,11 +38,6 @@ public: // methods
     bool add(const std::string& key, Eigen::SparseMatrix<double>& W ) const;
 
     std::string filename(const std::string& key) const;
-protected:
-
-
-    mutable eckit::Mutex mutex_;
-
 
 };
 

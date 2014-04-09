@@ -12,21 +12,17 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
-#include <Eigen/Sparse>
-#include <Eigen/Dense>
 
 #include "eckit/log/Log.h"
-#include "eckit/grid/Grid.h"
-#include "eckit/grid/Field.h"
 #include "eckit/thread/AutoLock.h"
+#include "eckit/filesystem/LocalPathName.h"
+#include "eckit/io/FileHandle.h"
 
-#include "WeightCache.h"
-#include "PointSearch.h"
+#include  "eckit/maths/Eigen.h" // always include Eigen via eckit
 
-using eckit::grid::Point2D;
-using eckit::grid::Field;
-using eckit::Mutex;
-using eckit::AutoLock;
+#include "mir/WeightCache.h"
+
+using namespace eckit;
 
 //-----------------------------------------------------------------------------
 
@@ -36,12 +32,12 @@ namespace mir {
 
 WeightCache::WeightCache()
 {
-    eckit::Log::info() << "Build a WeightCache" << std::endl;
+    Log::info() << "Build a WeightCache" << std::endl;
 }
 
 WeightCache::~WeightCache()
 {
-    eckit::Log::info() << "Destroy a WeightCache" << std::endl;
+    Log::info() << "Destroy a WeightCache" << std::endl;
 }
 
 std::string WeightCache::filename(const std::string& key) const
@@ -53,30 +49,23 @@ std::string WeightCache::filename(const std::string& key) const
 
 bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) const
 {
-    // @todo need proper locking against multiple threads creating files.
-    // @todo use file rename perhaps
-    
-    AutoLock<Mutex> lock(mutex_);
-    
+    LocalPathName file( filename(key) );
 
-    std::string fn = filename(key);
-   
-    // check the file exists
-    std::ifstream ifs(fn, std::ios::binary);
-    if (ifs.good())
+    if( file.exists() )
     {
-        eckit::Log::info() << "WeightCache::add File " << fn << " already exists. Returning." << std::endl;
+        Log::debug() << "WeightCache::add file " << file << " already exists. Returning." << std::endl;
         return false;
     }
 
-    ifs.close();
-    
+    // unique file name where to save the weights -- avoids race conditions on the file from multiple processes
+
+    LocalPathName tmpfile ( LocalPathName::unique(file) );
+
     std::ofstream ofs;
-    ofs.open(fn.c_str(), std::ios::binary);
+    ofs.open( tmpfile.c_str(), std::ios::binary );
     
     // write nominal size of matrix
-    //ofs << (long)W.innerSize() << (long)W.outerSize();
-    //
+
     long innerSize = W.innerSize();
     long outerSize = W.outerSize();
     
@@ -84,6 +73,7 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     ofs.write(reinterpret_cast<const char*>(&outerSize), sizeof(outerSize));
     
     // find all the non-zero values (aka triplets) 
+
     std::vector<Eigen::Triplet<double> > trips;
     for (unsigned int i = 0; i < W.outerSize(); ++i) 
     {
@@ -94,11 +84,12 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     }    
     
     // save the number of triplets 
-    //ofs << (long)trips.size();
+
     long ntrips = trips.size();
     ofs.write(reinterpret_cast<const char*>(&ntrips), sizeof(ntrips));
     
     // now save the triplets themselves
+
     for (unsigned int i = 0; i < trips.size(); i++)
     {
         Eigen::Triplet<double>& rt = trips[i];
@@ -113,50 +104,72 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W ) c
     }
     
     ofs.close();
+
+    // now try to rename the file to its file pathname
+
+    try {
+        LocalPathName::rename( tmpfile, file );
+    }
+    catch( FailedSystemCall& e )
+    {
+        // ignore failed system call -- another process nay have created the file meanwhile
+        Log::debug() << "Failed rename of cache file -- " << e.what() << std::endl;
+    }
+
 }
 
 bool WeightCache::get(const std::string& key, Eigen::SparseMatrix<double>& W ) const
 {
-    AutoLock<Mutex> lock(mutex_);
+    LocalPathName file( filename(key) );
 
-    std::string fn = filename(key);
-    
-    std::ifstream ifs(fn, std::ios::binary);
-    if (!ifs.good())
+    if( file.exists() )
     {
-        eckit::Log::info() << "WeightCache::get File " << fn << " doesn't exist. Returning." << std::endl;
+        Log::info() << "WeightCache::get File " << file << " doesn't exist. Returning." << std::endl;
         return false;
     }
+
+    FileHandle fh( file );
+
+    fh.openForRead();
         
     // read inpts, outpts sizes of matrix
+
     long inner, outer;
-    //ifs >> inner >> outer;
-    ifs.read(reinterpret_cast<char*>(&inner), sizeof(inner));
-    ifs.read(reinterpret_cast<char*>(&outer), sizeof(outer));
+
+    fh.read(reinterpret_cast<char*>(&inner), sizeof(inner));
+    fh.read(reinterpret_cast<char*>(&outer), sizeof(outer));
 
     long npts;
-    ifs.read(reinterpret_cast<char*>(&npts), sizeof(npts));
+    fh.read(reinterpret_cast<char*>(&npts), sizeof(npts));
     
     // read total sparse points of matrix (so we can reserve)
+
     std::vector<Eigen::Triplet<double> > insertions;
     
     insertions.reserve(npts);
     
     // read the values
+
     for (unsigned int i = 0; i < npts; i++)
     {
         long x, y;
         double w;
-        //ifs >> x >> y >> w;
-        ifs.read(reinterpret_cast<char*>(&x), sizeof(x));
-        ifs.read(reinterpret_cast<char*>(&y), sizeof(y));
-        ifs.read(reinterpret_cast<char*>(&w), sizeof(w));
+        //fh >> x >> y >> w;
+        fh.read(reinterpret_cast<char*>(&x), sizeof(x));
+        fh.read(reinterpret_cast<char*>(&y), sizeof(y));
+        fh.read(reinterpret_cast<char*>(&w), sizeof(w));
         insertions.push_back(Eigen::Triplet<double>(x, y, w));
     }
+
+    fh.close();
     
-    // modify the matrix only when we have enough values
-    W = Eigen::SparseMatrix<double>(inner, outer);
+    // check matrix is correctly sized
+
+    ASSERT( W.rows() == inner );
+    ASSERT( W.cols() == outer );
+
     // set the weights from the triplets
+
     W.setFromTriplets(insertions.begin(), insertions.end());
     
     return true;
