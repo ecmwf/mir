@@ -8,16 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/grid/Field.h"
-#include "eckit/grid/Grid.h"
-#include "eckit/grid/LatLon.h"
+#include <cstdio>
+
+#include <Eigen/Sparse>
+
 #include "eckit/log/Log.h"
 #include "eckit/runtime/Tool.h"
 
-#include "mir/WeightCache.h"
-#include <Eigen/Sparse>
-#include <stdio.h>
+#include "atlas/grid/Field.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/LatLon.h"
 
+#include "mir/WeightCache.h"
 
 using namespace eckit;
 
@@ -43,7 +45,7 @@ public:
 
 void TestWeightCache::test_values()
 {
-    using namespace eckit::grid;
+    using namespace atlas::grid;
 
     mir::WeightCache wc;
     
@@ -74,50 +76,50 @@ void TestWeightCache::test_values()
     M.setFromTriplets(insertions.begin(), insertions.end());
 
     bool added = wc.add(key, M); 
-    assert(added);
+    ASSERT(added);
 
-    // assert that any additional adds fail
-    assert(!wc.add(key, M));
-    assert(!wc.add(key, M));
+    // ASSERT that any additional adds fail
+    ASSERT(!wc.add(key, M));
+    ASSERT(!wc.add(key, M));
 
 
     // now get the data back again
     Eigen::SparseMatrix<double> W(n, m);
     bool got = wc.get(key, W);
-    assert(got);
+    ASSERT(got);
 
     // now get the triplets from W and check them against M
     std::vector<Eigen::Triplet<double> > triplets;
     for (unsigned int i = 0; i < W.outerSize(); ++i) 
     {
-        for (typename Eigen::SparseMatrix<double>::InnerIterator it(W,i); it; ++it) 
+        for (Eigen::SparseMatrix<double>::InnerIterator it(W,i); it; ++it)
         {
             triplets.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
         }
     }    
 
     // check construction of the matrix
-    assert(triplets.size() == insertions.size());
-    assert(W.size() == M.size());
-    assert(W.outerSize() == M.outerSize());
-    assert(W.innerSize() == M.innerSize());
+    ASSERT(triplets.size() == insertions.size());
+    ASSERT(W.size() == M.size());
+    ASSERT(W.outerSize() == M.outerSize());
+    ASSERT(W.innerSize() == M.innerSize());
     
     // check the values
     for (unsigned int i = 0; i < triplets.size(); i++)
     {
-        assert(triplets[i].col() == insertions[i].col());
-        assert(triplets[i].row() == insertions[i].row());
-        assert(triplets[i].value() == insertions[i].value());
+        ASSERT(triplets[i].col() == insertions[i].col());
+        ASSERT(triplets[i].row() == insertions[i].row());
+        ASSERT(triplets[i].value() == insertions[i].value());
     }
 
     // test that additional gets succeed
-    assert(wc.get(key, W));
-    assert(wc.get(key, W));
+    ASSERT(wc.get(key, W));
+    ASSERT(wc.get(key, W));
     
-    // remove the file and assert that get fails
+    // remove the file and ASSERT that get fails
     ::remove(wc.filename(key).c_str());
-    assert(!wc.get(key, W));
-    assert(!wc.get(key, W));
+    ASSERT(!wc.get(key, W));
+    ASSERT(!wc.get(key, W));
 
 
 

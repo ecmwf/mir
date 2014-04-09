@@ -18,10 +18,8 @@ configure_file( mir_version.cc.in  mir_version.cc )
 list( APPEND mir_srcs mir.h mir_version.cc )
 
 list( APPEND mir_srcs
-Action.cc
-Action.h
-Interpolator.cc
-Interpolator.h
+FEInterpolator.h
+FEInterpolator.cc
 PointSearch.cc
 PointSearch.h
 Weights.cc
@@ -37,6 +35,6 @@ ecbuild_add_library(TARGET		mir
 						${INSTALL_INCLUDE_DIR}/mir
 					SOURCES		${mir_srcs}
 					GENERATED	mir_version.cc
-					LIBS		eckit )
+					LIBS		${ATLAS_LIBRARIES} ${ECKIT_LIBRARIES} )
 
 

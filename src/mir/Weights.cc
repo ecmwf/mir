@@ -8,14 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/grid/Grid.h"
-#include "eckit/log/Log.h"
 #include <string>
+
+#include "atlas/grid/Grid.h"
+#include "eckit/log/Log.h"
 #include "Weights.h"
 
 //-----------------------------------------------------------------------------
-
-using eckit::grid::Point2D;
 
 namespace mir {
 
@@ -29,7 +28,7 @@ InverseSquare::~InverseSquare()
     eckit::Log::info() << "Destroy a InverseSquare" << std::endl;
 }
 
-void InverseSquare::generate(const Point2D& ref, const std::vector<Point2D>& closests, std::vector<double>& weights) const
+void InverseSquare::generate(const Point& ref, const std::vector<Point>& closests, std::vector<double>& weights) const
 {
     /// @todo take epsilon from some general config
 	const double epsilon = 1e-08;
@@ -37,15 +36,15 @@ void InverseSquare::generate(const Point2D& ref, const std::vector<Point2D>& clo
     weights.resize(closests.size(), 0.0);
     double sum = 0.0;
 
-    for (unsigned int j = 0; j < closests.size(); j++)
+    for( size_t j = 0; j < closests.size(); j++)
     {
-        const double d2 = Point2D::distance2(ref, closests[j]);
+        const double d2 = Point::distance2(ref, closests[j]);
         weights[j] = 1.0 / ( epsilon + d2 );
         sum += weights[j];
     }
 
     // now normalise these
-    for (unsigned int j = 0; j < closests.size(); j++)
+    for( size_t j = 0; j < closests.size(); j++)
     {
         ASSERT(sum != 0.0);
         weights[j] /= sum;

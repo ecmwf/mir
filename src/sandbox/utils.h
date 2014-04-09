@@ -66,4 +66,4 @@ int verify(const std::string& s1, const std::string& s2 )
 
 //-------------------------------------------------------------------------------------------
 
-#endif // kronos_eigen_utils
+#endif 

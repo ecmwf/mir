@@ -17,16 +17,13 @@
 
 #include "mir/PointSearch.h"
  
-
-using eckit::grid::Point2D;
-
 //-----------------------------------------------------------------------------
 
 namespace mir {
 
 //-----------------------------------------------------------------------------
   
-PointSearch::PointSearch(const std::vector<Point2D>& points)
+PointSearch::PointSearch(const std::vector<PointType>& points)
 {
     eckit::Log::info() << "Build a PointSearch" << std::endl;
 
@@ -37,10 +34,10 @@ PointSearch::PointSearch(const std::vector<Point2D>& points)
 
     for (size_t i = 0; i < points.size(); i++)
     {
-        const Point2D& rpt = points[i];
+        const PointType& rpt = points[i];
         // we use the index of the point in the orignal array as the payload
         // as we need to know this in the results of searches
-        kd_points.push_back(ValueType(PointType(double(rpt.lat_), double(rpt.lon_)), i));
+        kd_points.push_back(ValueType(PointType(double(rpt.lat()), double(rpt.lon())), i));
     }
 
     kd_.build(kd_points.begin(), kd_points.end());
@@ -52,11 +49,11 @@ PointSearch::~PointSearch()
     eckit::Log::info() << "Destroy a PointSearch" << std::endl;
 }
 
-void PointSearch::closestNPoints( const Point2D& pt,
+void PointSearch::closestNPoints( const PointType& pt,
                                   size_t n,
                                   std::vector< ValueType >& closest)
 {
-    TreeType::NodeList nn = kd_.kNearestNeighbours(PointType(pt.lat_, pt.lon_), n);
+    TreeType::NodeList nn = kd_.kNearestNeighbours(PointType(pt.lat(), pt.lon()), n);
     
     closest.clear(); closest.reserve(n);
 
@@ -67,9 +64,9 @@ void PointSearch::closestNPoints( const Point2D& pt,
 
 }
 
-void PointSearch::closestNPoints( const Point2D& pt,
+void PointSearch::closestNPoints( const PointType& pt,
                                   size_t n,
-                                  std::vector< Point2D >& closest,
+                                  std::vector< PointType >& closest,
                                   std::vector< PayloadType >& indices )
 {
     /// @todo fix the signature here by defining an IndexPoint type?
@@ -86,7 +83,7 @@ void PointSearch::closestNPoints( const Point2D& pt,
     //            x           x
     //
 
-    TreeType::NodeList nn = kd_.kNearestNeighbours(PointType(pt.lat_, pt.lon_), n);
+    TreeType::NodeList nn = kd_.kNearestNeighbours(PointType(pt.lat(), pt.lon()), n);
     
     //std::sort (nn.begin(), nn.end());
 
@@ -96,7 +93,7 @@ void PointSearch::closestNPoints( const Point2D& pt,
     for( TreeType::NodeList::iterator it = nn.begin(); it != nn.end(); ++it )
     {
         const TreeType::Point& p = it->point();
-        closest.push_back( Point2D( p.x(0), p.x(1) ) );
+        closest.push_back( PointType( p.x(0), p.x(1) ) );
         indices.push_back( it->payload() );
     }
 
