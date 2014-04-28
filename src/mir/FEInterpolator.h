@@ -35,7 +35,8 @@ public: // methods
 
     typedef eckit::geometry::Point3 Point;
 
-    // WeightEngine impl
+    virtual std::string classname() const { return "FE"; }
+
     virtual void compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const;
 
 private: // methods

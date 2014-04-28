@@ -30,7 +30,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-#define DUMP_PROJ
+//#define DUMP_PROJ
 #ifdef DUMP_PROJ
     static std::ofstream of("found.txt");
 #endif

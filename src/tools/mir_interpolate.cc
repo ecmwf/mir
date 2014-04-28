@@ -25,6 +25,7 @@
 #include "atlas/grid/Unstructured.h"
 
 #include "mir/FEInterpolator.h"
+#include "mir/InverseSquare.h"
 #include "mir/WeightCache.h"
 #include "mir/Weights.h"
 
@@ -72,15 +73,17 @@ public:
 
         in_filename = Resource<std::string>("-i","");
         if( in_filename.empty() )
-            throw UserError(Here(),"missing input filename, parameter -i");
+            throw UserError( "missing input filename, parameter -i", Here());
 
         out_filename = Resource<std::string>("-o","");
         if( out_filename.empty() )
-            throw UserError(Here(),"missing output filename, parameter -o");
+            throw UserError( "missing output filename, parameter -o", Here());
 
         clone_grid = Resource<std::string>("-g","");
         if( clone_grid.empty() )
-            throw UserError(Here(),"missing clone grid filename, parameter -g");
+            throw UserError( "missing clone grid filename, parameter -g", Here());
+
+        method = Resource<std::string>("-m;$MIR_METHOD","fe");
     }
 
 private:
@@ -89,6 +92,7 @@ private:
     std::string in_filename;
     std::string out_filename;
     std::string clone_grid;
+    std::string method;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -165,28 +169,19 @@ void MirInterpolate::run()
 
     Eigen::SparseMatrix<double> W( out_field->grid().nPoints(), in_field->grid().nPoints() );
 
-    //WeightEngine w;
-    FEInterpolator w;
-    w.weights( in_field->grid(), out_field->grid(), W );
+    WeightEngine* w;
 
-        /*
-    WeightCache cache;
+    /// @todo make this into a factory
+    if( method == std::string("fe") )
+        w = new FEInterpolator();
+    if( method == std::string("invsq") )
+        w = new InverseSquare();
 
-    std::string whash = weights_hash(in_field->grid(),out_field->grid());
-    bool wcached = WeightCache::get( whash, W );
-    if( ! wcached )
-    {
-        std::cout << ">>> computing weights ..." << std::endl;
+    if( !w )
+        throw UserError( std::string("Unknown Interpolator type ") + method , Here() );
 
-        FEInterpolator interpolator;
+    w->weights( in_field->grid(), out_field->grid(), W );
 
-        Tesselation::tesselate( in_field->grid() );
-
-        interpolator.compute_weights( in_field->grid().mesh(), out_field->grid().mesh(), W );
-
-        WeightCache::add( whash, W );
-    }
-    */
     // interpolation -- multiply interpolant matrix with field vector
 
     std::cout << ">>> interpolating ..." << std::endl;

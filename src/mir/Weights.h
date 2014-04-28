@@ -15,10 +15,12 @@
 #ifndef mir_Weights_H
 #define mir_Weights_H
 
-#include "atlas/grid/Grid.h"
-#include "eckit/memory/NonCopyable.h"
-#include <Eigen/Sparse>
 #include <string>
+#include <Eigen/Sparse>
+
+#include "eckit/memory/NonCopyable.h"
+
+#include "atlas/grid/Grid.h"
 
 //-----------------------------------------------------------------------------
 
@@ -39,18 +41,18 @@ public:
     typedef atlas::grid::Grid::Point Point;
 
     WeightEngine() {}
+
     virtual ~WeightEngine() {}
+
+    virtual std::string classname() const = 0;
+
+    virtual void compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const = 0;
 
     // @todo make the input and output const surely
     void weights( atlas::grid::Grid& in, atlas::grid::Grid& out, Eigen::SparseMatrix<double>& W ) const;
 
+    std::string weights_hash( const atlas::grid::Grid& in, const atlas::grid::Grid& out ) const;
 
-    static std::string weights_hash( const atlas::grid::Grid& in, const atlas::grid::Grid& out )
-    {
-        return in.hash() + std::string(".") + out.hash();
-    }
-
-    virtual void compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const = 0;
 };
 
 

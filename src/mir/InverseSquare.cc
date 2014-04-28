@@ -9,49 +9,52 @@
  */
 
 #include <string>
-#include "InverseSquare.h"
-#include "eckit/log/Log.h"
-#include "PointSearch.h"
+
 #include <boost/progress.hpp>
 
+#include "eckit/log/Log.h"
+#include "eckit/config/Resource.h"
+#include "eckit/utils/Translator.h"
 
-//-----------------------------------------------------------------------------
+#include "InverseSquare.h"
+#include "PointSearch.h"
+
+//------------------------------------------------------------------------------------------------------
+
 using Eigen::SparseMatrix;
+
+using eckit::Resource;
+
 using atlas::FunctionSpace;
 using atlas::FieldT;
 
 namespace mir {
 
+//------------------------------------------------------------------------------------------------------
+
 InverseSquare::InverseSquare() 
 {
-    eckit::Log::info() << "Build a InverseSquare" << std::endl;
+    nclosest_ = Resource<unsigned>( "InverseSquareNClosest;$MIR_INVERSESQUARE_NCLOSEST", 4 );
+    if( nclosest_ == 0 )
+        throw eckit::UserError( "InverseSquare N closest points cannot be 0", Here() );
 }
 
 InverseSquare::~InverseSquare() 
 {
-    eckit::Log::info() << "Destroy a InverseSquare" << std::endl;
+//    eckit::Log::info() << "Destroy a InverseSquare" << std::endl;
 }
 
 void InverseSquare::compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const
 {
-
-    // input points
-    FunctionSpace&  i_nodes  = i_mesh.function_space( "nodes" );
-    FieldT<double>& icoords = i_nodes.field<double>( "coordinates" );
-    
-
     // output points
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
     FieldT<double>& ocoords  = o_nodes.field<double>( "coordinates" );
 
     const size_t out_npts = o_nodes.bounds()[1];
 
-    // Number of closest points to consider
-    const size_t nclosest = 4;
-
     // init structure used to fill in sparse matrix
     std::vector< Eigen::Triplet<double> > weights_triplets; 
-    weights_triplets.reserve( out_npts * nclosest ); 
+    weights_triplets.reserve( out_npts * nclosest_ );
 
     // initialise progress bar
     boost::progress_display show_progress( out_npts );
@@ -62,7 +65,7 @@ void InverseSquare::compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::Sp
     std::vector<atlas::PointIndex3::Value> closest;
     
     /// @todo take epsilon from some general config
-    const double epsilon = 1e-08;
+    const double epsilon = Resource<double>( "InverseSquareEpsilon", std::numeric_limits<double>::epsilon() );
 
     for( size_t ip = 0; ip < out_npts; ++ip)
     {
@@ -70,7 +73,7 @@ void InverseSquare::compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::Sp
         eckit::geometry::Point3 p ( ocoords.slice(ip) ); 
         
         // find the closest input points to this output
-        ps.closestNPoints(p, nclosest, closest);
+        ps.closestNPoints(p, nclosest_, closest);
         
         // then calculate the nearest neighbour weights
         std::vector<double> weights;
@@ -79,7 +82,7 @@ void InverseSquare::compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::Sp
         // sum all calculated weights for normalisation
         double sum = 0.0;
 
-        for( size_t j = 0; j < closest.size(); j++)
+        for( size_t j = 0; j < closest.size(); ++j )
         {
             // one of the closest points
             eckit::geometry::Point3 np  = closest[j].point();
@@ -92,10 +95,11 @@ void InverseSquare::compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::Sp
             sum += weights[j];
         }
 
+        ASSERT( sum > 0.0 );
+
         // now normalise all weights according to the total
         for( size_t j = 0; j < weights.size(); j++)
         {
-            ASSERT(sum != 0.0);
             weights[j] /= sum;
         }
 
@@ -113,4 +117,14 @@ void InverseSquare::compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::Sp
     W.setFromTriplets(weights_triplets.begin(), weights_triplets.end());
     
 }
+
+std::string InverseSquare::classname() const
+{
+    std::string ret ("InverseSquare");
+    ret += eckit::Translator<size_t,std::string>()(nclosest_);
+    return ret;
+}
+
+//------------------------------------------------------------------------------------------------------
+
 } // namespace mir

@@ -33,7 +33,7 @@ namespace mir {
 std::string WeightCache::filename(const std::string& key)
 {
     std::stringstream ss;
-    ss << "cache/mesh/" << key << ".cache";
+    ss << "cache/mir/weights/" << key << ".cache";
     return ss.str();
 }
 

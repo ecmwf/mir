@@ -11,8 +11,9 @@
 #ifndef mir_InverseSquare_H
 #define mir_InverseSquare_H
 
-#include "Weights.h"
 #include <Eigen/Sparse>
+
+#include "mir/Weights.h"
 
 //-----------------------------------------------------------------------------
 
@@ -22,20 +23,28 @@ namespace grid {
 }
 }
 
-
 namespace mir {
 
+//-----------------------------------------------------------------------------
 
 class InverseSquare: public WeightEngine {
 
 public:
+
     InverseSquare();
     virtual ~InverseSquare();
 
     virtual void compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const;
-protected:
+
+    virtual std::string classname() const;
+
+private:
+
+    size_t nclosest_; ///< number of closest points to search for
+
 };
 
+//-----------------------------------------------------------------------------
 
 } // namespace mir
 
