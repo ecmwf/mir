@@ -15,11 +15,14 @@
 #ifndef mir_PointSearch_H
 #define mir_PointSearch_H
 
-#include "eckit/geometry/KPoint.h"
+
 #include "eckit/container/KDMemory.h"
 #include "eckit/container/KDTree.h"
 #include "eckit/memory/NonCopyable.h"
+#include "eckit/geometry/Point3.h"
 #include "atlas/grid/Grid.h"
+#include "atlas/grid/PointIndex3.h"
+
 
 //-----------------------------------------------------------------------------
 
@@ -30,32 +33,35 @@ namespace mir {
 
 class PointSearch : private eckit::NonCopyable {
 
-    struct TreeTrait {
-        typedef eckit::geometry::LLPoint2 Point;
-        typedef size_t                    Payload;
-    };
 
-    typedef eckit::KDTreeMemory<TreeTrait> TreeType;
+    typedef atlas::PointIndex3::Point Point;
+    typedef atlas::PointIndex3::Value ValueType;
 
-    typedef TreeType::PointType   PointType;
-    typedef TreeType::NodeInfo    NodeInfo;
-    typedef TreeType::PayloadType PayloadType;
-    typedef TreeType::Value       ValueType;
+    typedef atlas::PointIndex3::iterator iterator;
+    typedef eckit::geometry::Point3 PointType;
+
+public:
+
+    PointSearch( const std::vector< Point >& ipts ); 
+ 
+    PointSearch( atlas::Mesh& mesh ); 
+ 
+    virtual ~PointSearch(){ delete tree_; } 
 
 public: // methods
 
-    PointSearch(const std::vector< PointType >& points);
 
-    virtual ~PointSearch();
-
-    /// Finds closts N points to an input point
-    void closestNPoints(const PointType& pt, size_t n, std::vector<PointType>& closest, std::vector<PayloadType>& indices);
+    /// Finds closest N points to an input point
     void closestNPoints(const PointType& pt, size_t n, std::vector<ValueType>& closest);
-
+  
 protected:
     
-    TreeType kd_;
+    atlas::PointIndex3* tree_;
 
+
+private:
+
+    void init(const std::vector<PointType>& points);
 };
 
 } // namespace mir

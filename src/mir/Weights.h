@@ -16,8 +16,9 @@
 #define mir_Weights_H
 
 #include "atlas/grid/Grid.h"
-
 #include "eckit/memory/NonCopyable.h"
+#include <Eigen/Sparse>
+#include <string>
 
 //-----------------------------------------------------------------------------
 
@@ -40,20 +41,16 @@ public:
     WeightEngine() {}
     virtual ~WeightEngine() {}
 
-    /// @todo is there a "point with payload" type that we can use here with double for the weight of the point
-    virtual void generate(const Point& ref, const std::vector<Point>& closests, std::vector<double>& weights) const = 0;
-
-};
+    // @todo make the input and output const surely
+    void weights( atlas::grid::Grid& in, atlas::grid::Grid& out, Eigen::SparseMatrix<double>& W ) const;
 
 
-class InverseSquare: public WeightEngine {
+    static std::string weights_hash( const atlas::grid::Grid& in, const atlas::grid::Grid& out )
+    {
+        return in.hash() + std::string(".") + out.hash();
+    }
 
-public:
-    InverseSquare();
-    virtual ~InverseSquare();
-
-    virtual void generate(const Point& ref, const std::vector<Point>& closests, std::vector<double>& weights) const;
-protected:
+    virtual void compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const = 0;
 };
 
 

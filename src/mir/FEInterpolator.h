@@ -21,6 +21,7 @@
 #include "atlas/Mesh.hpp"
 #include "atlas/Field.hpp"
 #include "atlas/grid/PointIndex3.h"
+#include "Weights.h"
 
 //-----------------------------------------------------------------------------
 
@@ -28,29 +29,30 @@ namespace mir {
 
 //-----------------------------------------------------------------------------
 
-class FEInterpolator : private eckit::NonCopyable {
+class FEInterpolator : public WeightEngine {
 
 public: // methods
 
     typedef eckit::geometry::Point3 Point;
 
-    void compute_weights( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W );
+    // WeightEngine impl
+    virtual void compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const;
 
 private: // methods
 
-    bool project_point_to_triangle( Point &p, Eigen::Vector3d& phi, int idx[3], const size_t k );
+    bool project_point_to_triangle( Point &p, Eigen::Vector3d& phi, int idx[3], const size_t k ) const;
 
 private: // members
 
-    std::unique_ptr<atlas::PointIndex3> ptree;
+    mutable std::unique_ptr<atlas::PointIndex3> ptree;
 
-    size_t ip_;
+    mutable size_t ip_;
 
-    size_t nb_triags;
-    size_t inp_npts;
+    mutable size_t nb_triags;
+    mutable size_t inp_npts;
 
-    atlas::FieldT<double>* picoords;
-    atlas::FieldT<int>* ptriag_nodes;
+    mutable atlas::FieldT<double>* picoords;
+    mutable atlas::FieldT<int>* ptriag_nodes;
 };
 
 //-----------------------------------------------------------------------------

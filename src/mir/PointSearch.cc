@@ -17,84 +17,74 @@
 
 #include "mir/PointSearch.h"
  
+using atlas::FunctionSpace;
+using atlas::FieldT;
+using atlas::PointIndex3;
+
 //-----------------------------------------------------------------------------
 
 namespace mir {
 
 //-----------------------------------------------------------------------------
-  
+
+PointSearch::PointSearch(atlas::Mesh& mesh)
+{
+    ASSERT( mesh.has_function_space("nodes") );
+
+    FunctionSpace& nodes = mesh.function_space( "nodes" );
+
+    size_t npts = nodes.bounds()[1];
+
+    ASSERT( npts > 0 );
+
+    ASSERT( nodes.has_field("coordinates") );
+
+    FieldT<double>& coords  = nodes.field<double>("coordinates");
+
+    std::vector< PointType > points;
+    points.reserve(npts);
+
+    for( size_t ip = 0; ip < npts; ++ip )
+        points.push_back( coords.slice(ip) );
+
+    init(points);
+
+}
+
 PointSearch::PointSearch(const std::vector<PointType>& points)
+{
+    init(points);
+}
+
+
+void PointSearch::init(const std::vector<PointType>& points)
 {
     eckit::Log::info() << "Build a PointSearch" << std::endl;
 
     /// @todo the kd tree might be stored in shared memory ?
 
-    std::vector<ValueType> kd_points;
-    kd_points.reserve(points.size());
+    std::vector< PointIndex3::Value > pidx;
+    pidx.reserve(points.size());
 
-    for (size_t i = 0; i < points.size(); i++)
-    {
-        const PointType& rpt = points[i];
-        // we use the index of the point in the orignal array as the payload
-        // as we need to know this in the results of searches
-        kd_points.push_back(ValueType(PointType(double(rpt.lat()), double(rpt.lon())), i));
-    }
+    for( size_t ip = 0; ip < points.size(); ++ip )
+        pidx.push_back( PointIndex3::Value( PointIndex3::Point( points[ip] ), ip ) );
 
-    kd_.build(kd_points.begin(), kd_points.end());
+    tree_ = new PointIndex3();
 
-}
-
-PointSearch::~PointSearch()
-{
-    eckit::Log::info() << "Destroy a PointSearch" << std::endl;
+    tree_->build(pidx.begin(), pidx.end());
 }
 
 void PointSearch::closestNPoints( const PointType& pt,
                                   size_t n,
                                   std::vector< ValueType >& closest)
 {
-    TreeType::NodeList nn = kd_.kNearestNeighbours(PointType(pt.lat(), pt.lon()), n);
+    PointIndex3::NodeList nn = tree_->kNearestNeighbours(pt, n);
     
     closest.clear(); closest.reserve(n);
 
-    for( TreeType::NodeList::iterator it = nn.begin(); it != nn.end(); ++it )
+    for( PointIndex3::NodeList::iterator it = nn.begin(); it != nn.end(); ++it )
     {
         closest.push_back(it->value());
-    }
-
-}
-
-void PointSearch::closestNPoints( const PointType& pt,
-                                  size_t n,
-                                  std::vector< PointType >& closest,
-                                  std::vector< PayloadType >& indices )
-{
-    /// @todo fix the signature here by defining an IndexPoint type?
-
-    // @todo we need to be able to be more fussy about the points we request
-    // e.g.          x x x x
-    //
-    //                  x  <-- closest 4 points to this point are the 4 above
-    //                         but we need to know about points at lower lats
-    //                         in order to do an interpolation
-    //
-    //
-    //
-    //            x           x
-    //
-
-    TreeType::NodeList nn = kd_.kNearestNeighbours(PointType(pt.lat(), pt.lon()), n);
-    
-    //std::sort (nn.begin(), nn.end());
-
-    closest.clear(); closest.reserve(n);
-    indices.clear(); indices.reserve(n);
-
-    for( TreeType::NodeList::iterator it = nn.begin(); it != nn.end(); ++it )
-    {
-        const TreeType::Point& p = it->point();
-        closest.push_back( PointType( p.x(0), p.x(1) ) );
-        indices.push_back( it->payload() );
     }
 
 }

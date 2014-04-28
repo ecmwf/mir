@@ -48,11 +48,12 @@ using namespace mir;
 
 //------------------------------------------------------------------------------------------------------
 
+/*
 std::string weights_hash( const Grid& in, const Grid& out )
 {
     return in.hash() + std::string(".") + out.hash();
 }
-
+*/
 //------------------------------------------------------------------------------------------------------
 
 class MirInterpolate : public eckit::Tool {
@@ -164,8 +165,11 @@ void MirInterpolate::run()
 
     Eigen::SparseMatrix<double> W( out_field->grid().nPoints(), in_field->grid().nPoints() );
 
-//    WeightEngine::weights( in_field->grid(), out_field->grid(), W );
+    //WeightEngine w;
+    FEInterpolator w;
+    w.weights( in_field->grid(), out_field->grid(), W );
 
+        /*
     WeightCache cache;
     std::string whash = weights_hash(in_field->grid(),out_field->grid());
     bool wcached = cache.get( whash, W );
@@ -181,7 +185,7 @@ void MirInterpolate::run()
 
         cache.add( whash, W );
     }
-
+    */
     // interpolation -- multiply interpolant matrix with field vector
 
     std::cout << ">>> interpolating ..." << std::endl;

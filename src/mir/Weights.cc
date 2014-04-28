@@ -9,46 +9,37 @@
  */
 
 #include <string>
-
 #include "atlas/grid/Grid.h"
-#include "eckit/log/Log.h"
 #include "Weights.h"
+#include "WeightCache.h"
+#include "atlas/grid/Tesselation.h"
+
 
 //-----------------------------------------------------------------------------
+using atlas::grid::Grid;
+using Eigen::SparseMatrix;
+using atlas::grid::Tesselation;
 
 namespace mir {
 
-InverseSquare::InverseSquare() 
+void WeightEngine::weights( Grid& in, Grid& out, SparseMatrix<double>& W ) const
 {
-    eckit::Log::info() << "Build a InverseSquare" << std::endl;
-}
-
-InverseSquare::~InverseSquare() 
-{
-    eckit::Log::info() << "Destroy a InverseSquare" << std::endl;
-}
-
-void InverseSquare::generate(const Point& ref, const std::vector<Point>& closests, std::vector<double>& weights) const
-{
-    /// @todo take epsilon from some general config
-	const double epsilon = 1e-08;
-	
-    weights.resize(closests.size(), 0.0);
-    double sum = 0.0;
-
-    for( size_t j = 0; j < closests.size(); j++)
+    
+    WeightCache cache;
+    std::string whash = WeightEngine::weights_hash(in, out);
+    bool wcached = cache.get( whash, W );
+    if( ! wcached )
     {
-        const double d2 = Point::distance2(ref, closests[j]);
-        weights[j] = 1.0 / ( epsilon + d2 );
-        sum += weights[j];
-    }
+        std::cout << ">>> computing weights ..." << std::endl;
 
-    // now normalise these
-    for( size_t j = 0; j < closests.size(); j++)
-    {
-        ASSERT(sum != 0.0);
-        weights[j] /= sum;
+        Tesselation::tesselate( in );
+
+        compute( in.mesh(), out.mesh(), W );
+
+        cache.add( whash, W );
     }
+    
 }
+
 
 } // namespace mir

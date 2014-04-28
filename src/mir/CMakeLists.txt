@@ -20,6 +20,8 @@ list( APPEND mir_srcs mir.h mir_version.cc )
 list( APPEND mir_srcs
 FEInterpolator.h
 FEInterpolator.cc
+InverseSquare.h
+InverseSquare.cc
 PointSearch.cc
 PointSearch.h
 Weights.cc
