@@ -171,8 +171,9 @@ void MirInterpolate::run()
 
         /*
     WeightCache cache;
+
     std::string whash = weights_hash(in_field->grid(),out_field->grid());
-    bool wcached = cache.get( whash, W );
+    bool wcached = WeightCache::get( whash, W );
     if( ! wcached )
     {
         std::cout << ">>> computing weights ..." << std::endl;
@@ -183,7 +184,7 @@ void MirInterpolate::run()
 
         interpolator.compute_weights( in_field->grid().mesh(), out_field->grid().mesh(), W );
 
-        cache.add( whash, W );
+        WeightCache::add( whash, W );
     }
     */
     // interpolation -- multiply interpolant matrix with field vector

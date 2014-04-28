@@ -19,28 +19,27 @@
 
 #include  "eckit/maths/Eigen.h" // always include Eigen via eckit
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 namespace mir {
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 class WeightCache : private eckit::NonCopyable {
 
 public: // methods
 
-    WeightCache();
+    /// @returns true if found cache
+    static bool get(const std::string& key, Eigen::SparseMatrix<double>& W);
 
-    virtual ~WeightCache();
+    /// @returns true if addition was succcessful
+    static bool add(const std::string& key, Eigen::SparseMatrix<double>& W );
 
-    // fills passed matrix with cached values and returns true if found cache
-    bool get(const std::string& key, Eigen::SparseMatrix<double>& W) const;
-    bool add(const std::string& key, Eigen::SparseMatrix<double>& W ) const;
-
-    std::string filename(const std::string& key) const;
+    static std::string filename(const std::string& key);
 
 };
 
+//------------------------------------------------------------------------------------------------------
 
 } // namespace mir
 
