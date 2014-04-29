@@ -24,8 +24,8 @@
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/Unstructured.h"
 
-#include "mir/FEInterpolator.h"
-#include "mir/InverseSquare.h"
+#include "mir/FiniteElement.h"
+#include "mir/KNearest.h"
 #include "mir/WeightCache.h"
 #include "mir/Weights.h"
 
@@ -169,18 +169,18 @@ void MirInterpolate::run()
 
     Eigen::SparseMatrix<double> W( out_field->grid().nPoints(), in_field->grid().nPoints() );
 
-    WeightEngine* w;
+    Weights* w;
 
     /// @todo make this into a factory
     if( method == std::string("fe") )
-        w = new FEInterpolator();
-    if( method == std::string("invsq") )
-        w = new InverseSquare();
+        w = new FiniteElement();
+    if( method == std::string("kn") )
+        w = new KNearest();
 
     if( !w )
         throw UserError( std::string("Unknown Interpolator type ") + method , Here() );
 
-    w->weights( in_field->grid(), out_field->grid(), W );
+    w->assemble( in_field->grid(), out_field->grid(), W );
 
     // interpolation -- multiply interpolant matrix with field vector
 

@@ -18,18 +18,24 @@
 
 //------------------------------------------------------------------------------------------------------
 
-using atlas::grid::Grid;
-using Eigen::SparseMatrix;
-using atlas::grid::Tesselation;
+using namespace atlas::grid;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-void WeightEngine::weights( Grid& in, Grid& out, SparseMatrix<double>& W ) const
+Weights::Weights()
+{
+}
+
+Weights::~Weights()
+{
+}
+
+void Weights::assemble( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) const
 {
     WeightCache cache;
-    std::string whash = weights_hash(in, out);
+    std::string whash = hash(in, out);
     bool wcached = cache.get( whash, W );
     if( ! wcached )
     {
@@ -44,7 +50,7 @@ void WeightEngine::weights( Grid& in, Grid& out, SparseMatrix<double>& W ) const
     
 }
 
-std::string WeightEngine::weights_hash(const atlas::grid::Grid &in, const atlas::grid::Grid &out) const
+std::string Weights::hash(const Grid &in, const Grid &out) const
 {
     return classname() + std::string(".") +
            in.hash() + std::string(".") +

@@ -14,10 +14,10 @@
 
 #include "eckit/log/Timer.h"
 
-#include "mir/FEInterpolator.h"
-
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/PointIndex3.h"
+
+#include "mir/FiniteElement.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ namespace mir {
     static std::ofstream of("found.txt");
 #endif
 
-bool FEInterpolator::project_point_to_triangle(  Point& p, Vector3d& phi, int idx[3], const size_t k ) const
+bool FiniteElement::project_point_to_triangle(  Point& p, Vector3d& phi, int idx[3], const size_t k ) const
 {
     bool found = false;
 
@@ -116,7 +116,7 @@ bool FEInterpolator::project_point_to_triangle(  Point& p, Vector3d& phi, int id
 // static size_t factorial[12] = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800 };
 static size_t factorial[10] = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880 };
 
-void FEInterpolator::compute( atlas::Mesh& i_mesh,
+void FiniteElement::compute( atlas::Mesh& i_mesh,
                                       atlas::Mesh& o_mesh,
                                       Eigen::SparseMatrix<double>& W ) const
 {
@@ -186,6 +186,11 @@ void FEInterpolator::compute( atlas::Mesh& i_mesh,
     // fill-in sparse matrix
 
     W.setFromTriplets(weights_triplets.begin(), weights_triplets.end());
+}
+
+std::string FiniteElement::classname() const
+{
+    return "FiniteElement";
 }
 
 //------------------------------------------------------------------------------------------------------

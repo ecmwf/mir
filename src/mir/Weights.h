@@ -24,34 +24,29 @@
 
 //-----------------------------------------------------------------------------
 
-namespace atlas {
-namespace grid {
-    class Point2;
-}
-}
-
-
 namespace mir {
 
 //-----------------------------------------------------------------------------
 
-class WeightEngine : private eckit::NonCopyable {
+class Weights : private eckit::NonCopyable {
 public:
 
+    typedef atlas::grid::Grid        Grid;
     typedef atlas::grid::Grid::Point Point;
 
-    WeightEngine() {}
+    Weights();
 
-    virtual ~WeightEngine() {}
+    virtual ~Weights();
 
     virtual std::string classname() const = 0;
 
+    void assemble( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) const;
+
+protected:
+
     virtual void compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const = 0;
 
-    // @todo make the input and output const surely
-    void weights( atlas::grid::Grid& in, atlas::grid::Grid& out, Eigen::SparseMatrix<double>& W ) const;
-
-    std::string weights_hash( const atlas::grid::Grid& in, const atlas::grid::Grid& out ) const;
+    std::string hash( const Grid& in, const Grid& out ) const;
 
 };
 

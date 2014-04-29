@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef mir_InverseSquare_H
-#define mir_InverseSquare_H
+#ifndef mir_KNearest_H
+#define mir_KNearest_H
 
 #include <Eigen/Sparse>
 
@@ -27,12 +27,12 @@ namespace mir {
 
 //-----------------------------------------------------------------------------
 
-class InverseSquare: public WeightEngine {
+class KNearest: public Weights {
 
 public:
 
-    InverseSquare();
-    virtual ~InverseSquare();
+    KNearest();
+    virtual ~KNearest();
 
     virtual void compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const;
 

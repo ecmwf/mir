@@ -18,10 +18,10 @@ configure_file( mir_version.cc.in  mir_version.cc )
 list( APPEND mir_srcs mir.h mir_version.cc )
 
 list( APPEND mir_srcs
-FEInterpolator.h
-FEInterpolator.cc
-InverseSquare.h
-InverseSquare.cc
+FiniteElement.h
+FiniteElement.cc
+KNearest.h
+KNearest.cc
 PointSearch.cc
 PointSearch.h
 Weights.cc

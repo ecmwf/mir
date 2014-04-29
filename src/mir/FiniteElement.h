@@ -11,8 +11,8 @@
 /// @author Tiago Quintino
 /// @date Mar 2014
 
-#ifndef mir_FEInterpolator_H
-#define mir_FEInterpolator_H
+#ifndef mir_FiniteElement_H
+#define mir_FiniteElement_H
 
 #include <memory>
 
@@ -29,13 +29,13 @@ namespace mir {
 
 //-----------------------------------------------------------------------------
 
-class FEInterpolator : public WeightEngine {
+class FiniteElement : public Weights {
 
 public: // methods
 
     typedef eckit::geometry::Point3 Point;
 
-    virtual std::string classname() const { return "FE"; }
+    virtual std::string classname() const;
 
     virtual void compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const;
 

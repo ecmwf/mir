@@ -16,8 +16,8 @@
 #include "eckit/config/Resource.h"
 #include "eckit/utils/Translator.h"
 
-#include "InverseSquare.h"
-#include "PointSearch.h"
+#include "mir/KNearest.h"
+#include "mir/PointSearch.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -32,18 +32,18 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-InverseSquare::InverseSquare() 
+KNearest::KNearest() 
 {
-    nclosest_ = Resource<unsigned>( "InverseSquareNClosest;$MIR_INVERSESQUARE_NCLOSEST", 4 );
+    nclosest_ = Resource<unsigned>( "KNearest;$MIR_KNEAREST", 4 );
     if( nclosest_ == 0 )
-        throw eckit::UserError( "InverseSquare N closest points cannot be 0", Here() );
+        throw eckit::UserError( "KNearest k closest points cannot be 0", Here() );
 }
 
-InverseSquare::~InverseSquare() 
+KNearest::~KNearest() 
 {
 }
 
-void InverseSquare::compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const
+void KNearest::compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const
 {
     // output points
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
@@ -64,7 +64,7 @@ void InverseSquare::compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::Sp
     std::vector<atlas::PointIndex3::Value> closest;
     
     /// @todo take epsilon from some general config
-    const double epsilon = Resource<double>( "InverseSquareEpsilon", std::numeric_limits<double>::epsilon() );
+    const double epsilon = Resource<double>( "KNearestEpsilon", std::numeric_limits<double>::epsilon() );
 
     for( size_t ip = 0; ip < out_npts; ++ip)
     {
@@ -117,9 +117,9 @@ void InverseSquare::compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::Sp
     
 }
 
-std::string InverseSquare::classname() const
+std::string KNearest::classname() const
 {
-    std::string ret ("InverseSquare");
+    std::string ret ("KNearest");
     ret += eckit::Translator<size_t,std::string>()(nclosest_);
     return ret;
 }
