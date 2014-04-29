@@ -41,7 +41,6 @@ InverseSquare::InverseSquare()
 
 InverseSquare::~InverseSquare() 
 {
-//    eckit::Log::info() << "Destroy a InverseSquare" << std::endl;
 }
 
 void InverseSquare::compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const
