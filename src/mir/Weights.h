@@ -44,7 +44,7 @@ public:
 
 protected:
 
-    virtual void compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const = 0;
+    virtual void compute( Grid& i_mesh, Grid& o_mesh, Eigen::SparseMatrix<double>& W ) const = 0;
 
     std::string hash( const Grid& in, const Grid& out ) const;
 

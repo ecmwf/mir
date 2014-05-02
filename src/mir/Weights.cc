@@ -35,15 +35,13 @@ Weights::~Weights()
 void Weights::assemble( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) const
 {
     WeightCache cache;
-    std::string whash = hash(in, out);
+    const std::string whash = hash(in, out);
     bool wcached = cache.get( whash, W );
     if( ! wcached )
     {
         std::cout << ">>> computing weights ..." << std::endl;
 
-        Tesselation::tesselate( in );
-
-        compute( in.mesh(), out.mesh(), W );
+        compute( in, out, W );
 
         cache.add( whash, W );
     }

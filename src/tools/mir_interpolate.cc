@@ -49,14 +49,6 @@ using namespace mir;
 
 //------------------------------------------------------------------------------------------------------
 
-/*
-std::string weights_hash( const Grid& in, const Grid& out )
-{
-    return in.hash() + std::string(".") + out.hash();
-}
-*/
-//------------------------------------------------------------------------------------------------------
-
 class MirInterpolate : public eckit::Tool {
 
     typedef std::unique_ptr< Mesh > MeshPtr;

@@ -37,7 +37,7 @@ public: // methods
 
     virtual std::string classname() const;
 
-    virtual void compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const;
+    virtual void compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) const;
 
 private: // methods
 

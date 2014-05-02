@@ -12,8 +12,8 @@
 
 #include <boost/progress.hpp>
 
-#include "eckit/log/Log.h"
 #include "eckit/config/Resource.h"
+#include "eckit/log/Log.h"
 #include "eckit/utils/Translator.h"
 
 #include "mir/KNearest.h"
@@ -43,8 +43,11 @@ KNearest::~KNearest()
 {
 }
 
-void KNearest::compute( atlas::Mesh& i_mesh, atlas::Mesh& o_mesh, Eigen::SparseMatrix<double>& W ) const
+void KNearest::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) const
 {
+    atlas::Mesh& i_mesh = in.mesh();
+    atlas::Mesh& o_mesh = out.mesh();
+
     // output points
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
     FieldT<double>& ocoords  = o_nodes.field<double>( "coordinates" );
