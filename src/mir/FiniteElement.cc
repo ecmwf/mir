@@ -142,15 +142,15 @@ void FiniteElement::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W
 
     ptriag_nodes = &triags.field<int>( "nodes" );
 
-    nb_triags = triags.bounds()[1];
-    inp_npts = i_nodes.bounds()[1];
+    nb_triags = triags.extents()[0];
+    inp_npts = i_nodes.extents()[0];
 
     // output mesh
 
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
     FieldT<double>& ocoords  = o_nodes.field<double>( "coordinates" );
 
-    const size_t out_npts = o_nodes.bounds()[1];
+    const size_t out_npts = o_nodes.extents()[0];
 
     // weights
 

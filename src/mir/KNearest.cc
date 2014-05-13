@@ -52,7 +52,7 @@ void KNearest::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
     FieldT<double>& ocoords  = o_nodes.field<double>( "coordinates" );
 
-    const size_t out_npts = o_nodes.bounds()[1];
+    const size_t out_npts = o_nodes.extents()[0];
 
     // init structure used to fill in sparse matrix
     std::vector< Eigen::Triplet<double> > weights_triplets; 

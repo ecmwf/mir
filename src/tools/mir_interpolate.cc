@@ -7,8 +7,8 @@
 #include <vector>
 #include <memory>
 
-#include "atlas/Gmsh.hpp"
-#include "atlas/Mesh.hpp"
+#include "atlas/io/Gmsh.hpp"
+#include "atlas/mesh/Mesh.hpp"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/config/Resource.h"
