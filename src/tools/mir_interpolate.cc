@@ -15,7 +15,7 @@
 #include "eckit/runtime/Tool.h"
 #include "eckit/grib/GribAccessor.h"
 
-#include "atlas/grid/Field.h"
+#include "atlas/grid/FieldSet.h"
 #include "atlas/grid/GribRead.h"
 #include "atlas/grid/GribWrite.h"
 #include "atlas/grid/PointIndex3.h"
@@ -55,7 +55,7 @@ class MirInterpolate : public eckit::Tool {
 
     virtual void run();
 
-    FieldH::Ptr make_field( const std::string& filename, bool read_field = true );
+    FieldHandle::Ptr make_field( const std::string& filename, bool read_field = true );
 
 public:
 
@@ -91,7 +91,7 @@ private:
 
 static GribAccessor<std::string> grib_shortName("shortName");
 
-FieldH::Ptr MirInterpolate::make_field( const std::string& filename, bool read_field )
+FieldHandle::Ptr MirInterpolate::make_field( const std::string& filename, bool read_field )
 {
     FILE* fh = ::fopen( filename.c_str(), "r" );
     if( fh == 0 )
@@ -126,7 +126,7 @@ FieldH::Ptr MirInterpolate::make_field( const std::string& filename, bool read_f
 
     MetaData::Ptr md( new MetaData() );
 
-    FieldH::Ptr hf( new FieldH( g, std::move(md), nodes.field<double>( sname ) ) );
+    FieldHandle::Ptr hf( new FieldHandle( g, std::move(md), nodes.field<double>( sname ) ) );
 
     return hf;
 }
@@ -138,8 +138,8 @@ void MirInterpolate::run()
     std::cout.precision(std::numeric_limits< double >::digits10);
     std::cout << std::fixed;
 
-    FieldH::Ptr in_field;
-    FieldH::Ptr out_field;
+    FieldHandle::Ptr in_field;
+    FieldHandle::Ptr out_field;
 
     // input grid + field
 
@@ -202,7 +202,7 @@ void MirInterpolate::run()
 
         Tesselation::tesselate( out_field->grid() );
 
-        atlas::Gmsh::write3dsurf( out_field->grid().mesh(), std::string("output.msh") );
+        atlas::Gmsh::write3dsurf( out_field->grid().mesh(), "output.msh" );
     }
 
     // output to grib

@@ -15,7 +15,7 @@
 #include "eckit/log/Log.h"
 #include "eckit/runtime/Tool.h"
 
-#include "atlas/grid/Field.h"
+#include "atlas/grid/FieldSet.h"
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/LatLon.h"
 
