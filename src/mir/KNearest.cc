@@ -10,8 +10,6 @@
 
 #include <string>
 
-#include <boost/progress.hpp>
-
 #include "eckit/config/Resource.h"
 #include "eckit/log/Log.h"
 #include "eckit/utils/Translator.h"
@@ -59,7 +57,7 @@ void KNearest::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
     weights_triplets.reserve( out_npts * nclosest_ );
 
     // initialise progress bar
-    boost::progress_display show_progress( out_npts );
+//    boost::progress_display show_progress( out_npts );
 
     // this baby forms a kd-tree of the input mesh
     PointSearch ps(i_mesh);
@@ -105,7 +103,7 @@ void KNearest::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
             weights[j] /= sum;
         }
 
-        ++show_progress;
+//        ++show_progress;
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
         for(int i = 0; i < closest.size(); ++i)

@@ -51,8 +51,6 @@ using namespace mir;
 
 class MirInterpolate : public eckit::Tool {
 
-    typedef std::unique_ptr< Mesh > MeshPtr;
-
     virtual void run();
 
     FieldHandle::Ptr make_field( const std::string& filename, bool read_field = true );
@@ -124,9 +122,7 @@ FieldHandle::Ptr MirInterpolate::make_field( const std::string& filename, bool r
 
     // finalize FieldHandle
 
-    MetaData::Ptr md( new MetaData() );
-
-    FieldHandle::Ptr hf( new FieldHandle( g, std::move(md), nodes.field<double>( sname ) ) );
+    FieldHandle::Ptr hf( new FieldHandle( g, nodes.field<double>( sname ) ) );
 
     return hf;
 }

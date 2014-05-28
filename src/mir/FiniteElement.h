@@ -14,14 +14,15 @@
 #ifndef mir_FiniteElement_H
 #define mir_FiniteElement_H
 
-#include <memory>
+#include "eckit/memory/ScopedPtr.h"
 
 #include "eckit/maths/Eigen.h"
 
 #include "atlas/mesh/Mesh.hpp"
 #include "atlas/mesh/Field.hpp"
 #include "atlas/grid/PointIndex3.h"
-#include "Weights.h"
+
+#include "mir/Weights.h"
 
 //-----------------------------------------------------------------------------
 
@@ -45,7 +46,7 @@ private: // methods
 
 private: // members
 
-    mutable std::unique_ptr<atlas::PointIndex3> ptree;
+    mutable eckit::ScopedPtr<atlas::PointIndex3> ptree;
 
     mutable size_t ip_;
 

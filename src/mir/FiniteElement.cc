@@ -10,8 +10,6 @@
 
 #include <string>
 
-#include <boost/progress.hpp>
-
 #include "eckit/log/Timer.h"
 
 #include "atlas/grid/Tesselation.h"
@@ -160,7 +158,7 @@ void FiniteElement::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W
 
     /* search nearest k cell centres */
 
-    boost::progress_display show_progress( out_npts );
+    // boost::progress_display show_progress( out_npts );
 
     for( ip_ = 0; ip_ < out_npts; ++ip_ )
     {
@@ -176,7 +174,7 @@ void FiniteElement::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W
                 throw eckit::TooManyRetries(k,"projecting point into tesselation");
         }
 
-        ++show_progress;
+//        ++show_progress;
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
 
