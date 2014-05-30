@@ -15,10 +15,12 @@
 
 #include "eckit/log/Log.h"
 
+#include "atlas/mesh/ArrayView.hpp"
+
 #include "mir/PointSearch.h"
  
 using atlas::FunctionSpace;
-using atlas::FieldT;
+using atlas::ArrayView;
 using atlas::PointIndex3;
 
 //-----------------------------------------------------------------------------
@@ -39,13 +41,13 @@ PointSearch::PointSearch(atlas::Mesh& mesh)
 
     ASSERT( nodes.has_field("coordinates") );
 
-    FieldT<double>& coords  = nodes.field<double>("coordinates");
+    ArrayView<double,2> coords ( nodes.field<double>("coordinates") );
 
     std::vector< PointType > points;
     points.reserve(npts);
 
     for( size_t ip = 0; ip < npts; ++ip )
-        points.push_back( coords.slice(ip) );
+        points.push_back( coords[ip].data() );
 
     init(points);
 

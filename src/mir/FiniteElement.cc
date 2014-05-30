@@ -12,6 +12,8 @@
 
 #include "eckit/log/Timer.h"
 
+#include "atlas/mesh/ArrayView.hpp"
+#include "atlas/mesh/IndexView.hpp"
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/PointIndex3.h"
 #include "atlas/grid/TriangleIntersection.h"
@@ -38,8 +40,8 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Vector3d& phi, int idx
 {
     bool found = false;
 
-    FieldT<int>& triag_nodes = *ptriag_nodes;
-    FieldT<double>& icoords = *picoords;
+    IndexView<int,   2> triag_nodes ( *ptriag_nodes );
+    ArrayView<double,2> icoords     ( *picoords     );
 
     PointIndex3::NodeList cs = ptree->kNearestNeighbours(p,k);
 
@@ -67,13 +69,13 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Vector3d& phi, int idx
 
         ASSERT( tid < nb_triags );
 
-        idx[0] = triag_nodes(0,tid);
-        idx[1] = triag_nodes(1,tid);
-        idx[2] = triag_nodes(2,tid);
+        idx[0] = triag_nodes(tid,0);
+        idx[1] = triag_nodes(tid,1);
+        idx[2] = triag_nodes(tid,2);
 
         ASSERT( idx[0] < inp_npts && idx[1] < inp_npts && idx[2] < inp_npts );
 
-        Triag triag( icoords.slice(idx[0]), icoords.slice(idx[1]), icoords.slice(idx[2]) );
+        Triag triag( icoords[idx[0]].data() , icoords[idx[1]].data(), icoords[idx[2]].data() );
 
         found = triag_intersection( triag, ray, uvt );
 
@@ -92,9 +94,9 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Vector3d& phi, int idx
            << "   tid  " << tid << std::endl
            << "   nidx " << idx[0] << " " << idx[1] << " " << idx[2] << std::endl
            << "   "
-           << Point(icoords.slice(idx[0])) << " / "
-           << Point(icoords.slice(idx[1])) << " / "
-           << Point(icoords.slice(idx[2])) << std::endl
+           << Point(icoords[idx[0]].data()) << " / "
+           << Point(icoords[idx[1]].data()) << " / "
+           << Point(icoords[idx[2]].data()) << std::endl
            << "   uvwt " << uvt << std::endl;
 #endif
         if(found) // weights are the baricentric cooridnates u,v
@@ -147,7 +149,7 @@ void FiniteElement::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W
     // output mesh
 
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
-    FieldT<double>& ocoords  = o_nodes.field<double>( "coordinates" );
+    ArrayView<double,2> ocoords ( o_nodes.field( "coordinates" ) );
 
     const size_t out_npts = o_nodes.extents()[0];
 
@@ -165,7 +167,7 @@ void FiniteElement::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W
     {
         int idx[3]; /* indexes of the triangle that will contain the point*/
         Vector3d phi;
-        Point p ( ocoords.slice(ip_) ); // lookup point
+        Point p ( ocoords[ip_].data() ); // lookup point
 
         size_t k = 1;
         while( ! project_point_to_triangle( p, phi, idx, factorial[k] ) )

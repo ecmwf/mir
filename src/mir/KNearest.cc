@@ -14,6 +14,8 @@
 #include "eckit/log/Log.h"
 #include "eckit/utils/Translator.h"
 
+#include "atlas/mesh/ArrayView.hpp"
+
 #include "mir/KNearest.h"
 #include "mir/PointSearch.h"
 
@@ -24,7 +26,7 @@ using Eigen::SparseMatrix;
 using eckit::Resource;
 
 using atlas::FunctionSpace;
-using atlas::FieldT;
+using atlas::ArrayView;
 
 namespace mir {
 
@@ -48,7 +50,7 @@ void KNearest::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
 
     // output points
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
-    FieldT<double>& ocoords  = o_nodes.field<double>( "coordinates" );
+    ArrayView<double,2> ocoords ( o_nodes.field( "coordinates" ) );
 
     const size_t out_npts = o_nodes.extents()[0];
 
@@ -70,7 +72,7 @@ void KNearest::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
     for( size_t ip = 0; ip < out_npts; ++ip)
     {
         // get the reference output point
-        eckit::geometry::Point3 p ( ocoords.slice(ip) ); 
+        eckit::geometry::Point3 p ( ocoords[ip].data() );
         
         // find the closest input points to this output
         ps.closestNPoints(p, nclosest_, closest);
