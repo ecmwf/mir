@@ -14,6 +14,7 @@
 
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/PointIndex3.h"
+#include "atlas/grid/TriangleIntersection.h"
 
 #include "mir/FiniteElement.h"
 

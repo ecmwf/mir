@@ -180,8 +180,8 @@ void MirInterpolate::run()
     {
         Timer t("interpolation");
 
-        VectorXd::MapType fi = VectorXd::Map( &(ifield.data())[0], ifield.data().size() );
-        VectorXd::MapType fo = VectorXd::Map( &(ofield.data())[0], ofield.data().size() );
+        VectorXd::MapType fi = VectorXd::Map( ifield.data(), ifield.size() );
+        VectorXd::MapType fo = VectorXd::Map( ofield.data(), ofield.size() );
 
         fo = W * fi;
     }
