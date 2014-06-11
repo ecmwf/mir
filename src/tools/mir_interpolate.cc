@@ -135,10 +135,10 @@ void MirInterpolate::run()
     if( fs_inp->empty() )
         throw UserError("Input fieldset is empty", Here());
 
-    // input to grib
-    {
-        GribWrite::clone( *fs_inp, path_in, path_out.asString() + "_in" );
-    }
+// input to grib
+//    {
+//        GribWrite::clone( *fs_inp, path_in, path_in.asString() + ".input" );
+//    }
 
     // output grid + field
 
@@ -182,8 +182,11 @@ void MirInterpolate::run()
 
     for( size_t n = 0; n < nfields; ++n )
     {
-        FieldT<double>& ifield = fs_inp->fields()[n]->data();
-        FieldT<double>& ofield = fs_out->fields()[n]->data();
+        FieldHandle& fi = *(fs_inp->fields()[n]);
+        FieldHandle& fo = *(fs_out->fields()[n]);
+
+        FieldT<double>& ifield = fi.data();
+        FieldT<double>& ofield = fo.data();
 
         // interpolation
         {
@@ -195,7 +198,9 @@ void MirInterpolate::run()
             fo = W * fi;
         }
 
-        // metadata transfer
+        /// @todo this must be abstracted out, so GRIB is not exposed
+        // metadata transfer by cloning the grib handle
+        fo.grib( fi.grib().clone() );
     }
 
     // output to gmsh
@@ -217,7 +222,7 @@ void MirInterpolate::run()
 
     {
         Timer t("grib output write");
-//        GribWrite::write( *fs_out, path_out );
+        // GribWrite::write( *fs_out, path_out ); ///< @todo remove need for clone() with GridSpec's
         GribWrite::clone( *fs_out, clone_path, path_out );
     }
 }
