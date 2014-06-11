@@ -178,7 +178,7 @@ void MirInterpolate::run()
     if( nfields != fs_out->size() )
         throw SeriousBug( "Number of fields in input does not match number of fields in ouput", Here() );
 
-    std::cout << ">>> interpolating " << nfields << " ... " << std::endl;
+    std::cout << ">>> interpolating " << nfields << " fields ... " << std::endl;
 
     for( size_t n = 0; n < nfields; ++n )
     {
@@ -187,7 +187,7 @@ void MirInterpolate::run()
 
         // interpolation
         {
-            Timer t("interpolation");
+            Timer t( "interpolating field " + Translator<size_t,std::string>()(n) );
 
             VectorXd::MapType fi = VectorXd::Map( ifield.data(), ifield.size() );
             VectorXd::MapType fo = VectorXd::Map( ofield.data(), ofield.size() );

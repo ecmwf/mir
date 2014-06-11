@@ -61,17 +61,13 @@ PointSearch::PointSearch(const std::vector<PointType>& points)
 
 void PointSearch::init(const std::vector<PointType>& points)
 {
-    eckit::Log::info() << "Build a PointSearch" << std::endl;
-
-    /// @todo the kd tree might be stored in shared memory ?
-
     std::vector< PointIndex3::Value > pidx;
     pidx.reserve(points.size());
 
     for( size_t ip = 0; ip < points.size(); ++ip )
         pidx.push_back( PointIndex3::Value( PointIndex3::Point( points[ip] ), ip ) );
 
-    tree_ = new PointIndex3();
+    tree_.reset( new PointIndex3() );
 
     tree_->build(pidx.begin(), pidx.end());
 }
@@ -88,7 +84,6 @@ void PointSearch::closestNPoints( const PointType& pt,
     {
         closest.push_back(it->value());
     }
-
 }
 
 } // namespace mir
