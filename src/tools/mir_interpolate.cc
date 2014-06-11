@@ -14,6 +14,7 @@
 #include "eckit/config/Resource.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/grib/GribAccessor.h"
+#include "eckit/grib/GribHandle.h"
 
 #include "atlas/grid/FieldSet.h"
 #include "atlas/grid/GribRead.h"
@@ -53,7 +54,7 @@ class MirInterpolate : public eckit::Tool {
 
     virtual void run();
 
-    FieldHandle::Ptr make_field( const std::string& filename, bool read_field = true );
+    Grid::Ptr make_grid( const std::string& filename );
 
 public:
 
@@ -61,16 +62,16 @@ public:
     {
         gmsh = Resource<bool>("-gmsh",false);
 
-        in_filename = Resource<std::string>("-i","");
-        if( in_filename.empty() )
+        path_in = Resource<std::string>("-i","");
+        if( path_in.asString().empty() )
             throw UserError( "missing input filename, parameter -i", Here());
 
-        out_filename = Resource<std::string>("-o","");
-        if( out_filename.empty() )
+        path_out = Resource<std::string>("-o","");
+        if( path_out.asString().empty() )
             throw UserError( "missing output filename, parameter -o", Here());
 
-        clone_grid = Resource<std::string>("-g","");
-        if( clone_grid.empty() )
+        clone_path = Resource<std::string>("-g","");
+        if( clone_path.asString().empty() )
             throw UserError( "missing clone grid filename, parameter -g", Here());
 
         method = Resource<std::string>("-m;$MIR_METHOD","fe");
@@ -79,9 +80,11 @@ public:
 private:
 
     bool gmsh;
-    std::string in_filename;
-    std::string out_filename;
-    std::string clone_grid;
+
+    PathName path_in;
+    PathName path_out;
+    PathName clone_path;
+
     std::string method;
 };
 
@@ -89,7 +92,7 @@ private:
 
 static GribAccessor<std::string> grib_shortName("shortName");
 
-FieldHandle::Ptr MirInterpolate::make_field( const std::string& filename, bool read_field )
+Grid::Ptr MirInterpolate::make_grid( const std::string& filename )
 {
     FILE* fh = ::fopen( filename.c_str(), "r" );
     if( fh == 0 )
@@ -103,28 +106,15 @@ FieldHandle::Ptr MirInterpolate::make_field( const std::string& filename, bool r
     if( h == 0 || err != 0 )
         throw ReadError( std::string("error reading grib file ") + filename );
 
-    Grid::Ptr g ( GribRead::create_grid_from_grib(h) );
-
-    const std::string sname = grib_shortName(h);
-
-    Mesh& mesh = g->mesh();
-
-    FunctionSpace&  nodes  = mesh.function_space( "nodes" );
-
-    if( read_field )
-        GribRead::read_field_from_grib(h,mesh,sname);
-    else
-        nodes.create_field<double>(sname,1);
+    Grid::Ptr g ( GribRead::create_grid_from_grib( h ) );
+    ASSERT( g );
 
     grib_handle_delete(h);
+
     if( ::fclose(fh) == -1 )
         throw ReadError( std::string("error closing file ") + filename );
 
-    // finalize FieldHandle
-
-    FieldHandle::Ptr hf( new FieldHandle( g, nodes.field<double>( sname ) ) );
-
-    return hf;
+    return g;
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -134,28 +124,39 @@ void MirInterpolate::run()
     std::cout.precision(std::numeric_limits< double >::digits10);
     std::cout << std::fixed;
 
-    FieldHandle::Ptr in_field;
-    FieldHandle::Ptr out_field;
+    FieldSet::Ptr fs_inp;
+    FieldSet::Ptr fs_out;
 
     // input grid + field
 
-    std::cout << ">>> reading input grid + field ..." << std::endl;
+    std::cout << ">>> assembling input fields ..." << std::endl;
 
-    in_field = make_field( in_filename );
+    fs_inp.reset( new FieldSet( path_in ) );
+    if( fs_inp->empty() )
+        throw UserError("Input fieldset is empty", Here());
 
-    std::cout << "points " << in_field->grid().nPoints() << std::endl;
+    // input to grib
+    {
+        GribWrite::clone( *fs_inp, path_in, path_out.asString() + "_in" );
+    }
 
     // output grid + field
 
-    std::cout << ">>> reading output grid ..." << std::endl;
+    std::cout << ">>> assembling output fields ..." << std::endl;
 
-    out_field = make_field( clone_grid, false );
+    Grid::Ptr clone_grid = make_grid( clone_path );
 
-    std::cout << "points " << out_field->grid().nPoints() << std::endl;
+    fs_out.reset( new FieldSet( clone_grid, fs_inp->field_names() ) );
+
+    size_t npts_inp = fs_inp->grid().nPoints();
+    size_t npts_out = fs_out->grid().nPoints();
+
+    std::cout << "input  points " << npts_inp << std::endl;
+    std::cout << "output points " << npts_out << std::endl;
 
     // compute weights for each point in output grid
 
-    Eigen::SparseMatrix<double> W( out_field->grid().nPoints(), in_field->grid().nPoints() );
+    Eigen::SparseMatrix<double> W( npts_out, npts_inp );
 
     Weights* w;
 
@@ -168,22 +169,33 @@ void MirInterpolate::run()
     if( !w )
         throw UserError( std::string("Unknown Interpolator type ") + method , Here() );
 
-    w->assemble( in_field->grid(), out_field->grid(), W );
+    w->assemble( fs_inp->grid(), fs_out->grid(), W );
 
     // interpolation -- multiply interpolant matrix with field vector
 
-    std::cout << ">>> interpolating ..." << std::endl;
+    size_t nfields = fs_inp->size();
 
-    FieldT<double>& ifield = in_field->data();
-    FieldT<double>& ofield = out_field->data();
+    if( nfields != fs_out->size() )
+        throw SeriousBug( "Number of fields in input does not match number of fields in ouput", Here() );
 
+    std::cout << ">>> interpolating " << nfields << " ... " << std::endl;
+
+    for( size_t n = 0; n < nfields; ++n )
     {
-        Timer t("interpolation");
+        FieldT<double>& ifield = fs_inp->fields()[n]->data();
+        FieldT<double>& ofield = fs_out->fields()[n]->data();
 
-        VectorXd::MapType fi = VectorXd::Map( ifield.data(), ifield.size() );
-        VectorXd::MapType fo = VectorXd::Map( ofield.data(), ofield.size() );
+        // interpolation
+        {
+            Timer t("interpolation");
 
-        fo = W * fi;
+            VectorXd::MapType fi = VectorXd::Map( ifield.data(), ifield.size() );
+            VectorXd::MapType fo = VectorXd::Map( ofield.data(), ofield.size() );
+
+            fo = W * fi;
+        }
+
+        // metadata transfer
     }
 
     // output to gmsh
@@ -192,27 +204,22 @@ void MirInterpolate::run()
     {
         std::cout << ">>> output to gmsh" << std::endl;
 
-        Tesselation::tesselate( in_field->grid() );
+        Tesselation::tesselate( fs_inp->grid() );
 
-        atlas::Gmsh::write3dsurf( in_field->grid().mesh(), "input.msh" );
+        atlas::Gmsh::write3dsurf( fs_inp->grid().mesh(), "input.msh" );
 
-        Tesselation::tesselate( out_field->grid() );
+        Tesselation::tesselate( fs_out->grid() );
 
-        atlas::Gmsh::write3dsurf( out_field->grid().mesh(), "output.msh" );
+        atlas::Gmsh::write3dsurf( fs_out->grid().mesh(), "output.msh" );
     }
 
     // output to grib
 
     {
-        Timer t("grib write");
-        std::cout << ">>> output to grib" << std::endl;
-        GribWrite::clone( *out_field, clone_grid, out_filename );
+        Timer t("grib output write");
+//        GribWrite::write( *fs_out, path_out );
+        GribWrite::clone( *fs_out, clone_path, path_out );
     }
-
-//    std::cout << ">>> deleting input field" << std::endl;
-//    in_field.reset();
-//    std::cout << ">>> deleting output field" << std::endl;
-//    out_field.reset();
 }
 
 //------------------------------------------------------------------------------------------------------

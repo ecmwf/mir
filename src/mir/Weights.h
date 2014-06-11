@@ -40,7 +40,7 @@ public:
 
     virtual std::string classname() const = 0;
 
-    void assemble( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) const;
+    void assemble( const Grid& in, const Grid& out, Eigen::SparseMatrix<double>& W ) const;
 
 protected:
 
