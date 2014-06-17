@@ -38,6 +38,13 @@ ecbuild_declare_project()
 ###############################################################################
 # some variables/options of this project
 
+ecbuild_add_option( FEATURE EIGEN
+                    DESCRIPTION "Eigen support"
+                    REQUIRED_PACKAGES Eigen3 )
+if( NOT HAVE_EIGEN )
+  message( FATAL_ERROR "Eigen is required to build mir" )
+endif()
+
 set( MIR_SHARE_DIR "${CMAKE_INSTALL_PREFIX}/share/mir"     ${MIR_SHARE_PATH} )
 set( MIR_DATA_DIR  "${CMAKE_INSTALL_PREFIX}/share/mir/lsm" ${MIR_LSM_PATH} )
 
@@ -51,7 +58,7 @@ ecbuild_check_cxx11( PRINT )
 
 set( MIR_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
 set( MIR_LIBRARIES      ${CMAKE_PROJECT_NAME} )
-set( MIR_TPLS           atlas atlas_grid eckit )
+set( MIR_TPLS           atlas atlas_grid eckit Eigen3 )
 
 get_directory_property( COMPILE_DEFINITIONS MIR_DEFINITIONS )
 
