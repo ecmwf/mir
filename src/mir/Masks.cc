@@ -13,7 +13,7 @@
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Tesselation.h"
 
-#include "mir/Weights.h"
+#include "mir/Masks.h"
 #include "mir/WeightCache.h"
 
 //------------------------------------------------------------------------------------------------------
@@ -24,36 +24,14 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-Weights::Weights()
+Masks::Masks()
 {
 }
 
-Weights::~Weights()
+Masks::~Masks()
 {
 }
 
-void Weights::assemble(const Grid &in, const Grid &out, Eigen::SparseMatrix<double>& W ) const
-{
-    WeightCache cache;
-    const std::string whash = hash(in, out);
-    bool wcached = cache.get( whash, W );
-    if( ! wcached )
-    {
-        std::cout << ">>> computing weights ..." << std::endl;
-
-        compute( const_cast<Grid&>(in), const_cast<Grid&>(out), W );
-
-        cache.add( whash, W );
-    }
-    
-}
-
-std::string Weights::hash(const Grid &in, const Grid &out) const
-{
-    return classname() + std::string(".") +
-           in.hash() + std::string(".") +
-           out.hash();
-}
 
 //------------------------------------------------------------------------------------------------------
 
