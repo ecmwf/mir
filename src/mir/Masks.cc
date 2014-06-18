@@ -15,9 +15,11 @@
 
 #include "mir/Masks.h"
 #include "mir/WeightCache.h"
+#include "mir/KNearest.h"
 
 //------------------------------------------------------------------------------------------------------
 
+using namespace atlas;
 using namespace atlas::grid;
 
 namespace mir {
@@ -32,6 +34,14 @@ Masks::~Masks()
 {
 }
 
+void Masks::assemble(const FieldHandle& mask, const Grid& inp, const Grid& out, Masks::WeightMatrix& W) const
+{
+//    Mesh& mask_mesh = mask.grid().mesh();
+
+    KNearest k4(4);
+
+
+}
 
 //------------------------------------------------------------------------------------------------------
 

@@ -45,19 +45,17 @@ public: // methods
 
     virtual ~Masks();
 
-    virtual std::string classname() const = 0;
+//    virtual std::string classname() const = 0;
 
-    WeightMatrix assemble( const FieldHandle& mask,
-                           const Grid& inp,
-                           const Grid& out,
-                           WeightMatrix& W ) const;
+    void assemble( const FieldHandle& mask, const Grid& inp, const Grid& out, WeightMatrix& W ) const;
 
 protected: // methods
 
-    virtual void compute( const FieldHandle& mask,
-                          const Grid& inp,
-                          const Grid& out,
-                          WeightMatrix& W ) const = 0;
+//    virtual void compute( const FieldHandle& mask,
+//                          const Grid& inp,
+//                          const Grid& out,
+//                          WeightMatrix& W ) const = 0;
+
 };
 
 //------------------------------------------------------------------------------------------------------

@@ -32,6 +32,8 @@ class KNearest: public Weights {
 public:
 
     KNearest();
+    KNearest( const size_t& k );
+
     virtual ~KNearest();
 
     virtual void compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) const;

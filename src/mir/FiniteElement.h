@@ -38,7 +38,7 @@ public: // methods
 
     virtual std::string classname() const;
 
-    virtual void compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) const;
+    virtual void compute( Grid& in, Grid& out, WeightMatrix& W ) const;
 
 private: // methods
 

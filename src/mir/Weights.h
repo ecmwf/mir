@@ -29,10 +29,15 @@ namespace mir {
 //------------------------------------------------------------------------------------------------------
 
 class Weights : private eckit::NonCopyable {
-public:
+
+public: // types
 
     typedef atlas::grid::Grid        Grid;
     typedef atlas::grid::Grid::Point Point;
+
+    typedef Eigen::SparseMatrix<double> WeightMatrix;
+
+public: // methods
 
     Weights();
 
@@ -40,11 +45,11 @@ public:
 
     virtual std::string classname() const = 0;
 
-    void assemble( const Grid& in, const Grid& out, Eigen::SparseMatrix<double>& W ) const;
+    void assemble( const Grid& in, const Grid& out, WeightMatrix& W ) const;
 
-protected:
+protected: // methods
 
-    virtual void compute( Grid& i_mesh, Grid& o_mesh, Eigen::SparseMatrix<double>& W ) const = 0;
+    virtual void compute( Grid& i_mesh, Grid& o_mesh, WeightMatrix& W ) const = 0;
 
     std::string hash( const Grid& in, const Grid& out ) const;
 

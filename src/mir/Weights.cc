@@ -32,7 +32,7 @@ Weights::~Weights()
 {
 }
 
-void Weights::assemble(const Grid &in, const Grid &out, Eigen::SparseMatrix<double>& W ) const
+void Weights::assemble(const Grid &in, const Grid &out, WeightMatrix& W ) const
 {
     WeightCache cache;
     const std::string whash = hash(in, out);

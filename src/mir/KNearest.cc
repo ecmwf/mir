@@ -39,6 +39,10 @@ KNearest::KNearest()
         throw eckit::UserError( "KNearest k closest points cannot be 0", Here() );
 }
 
+KNearest::KNearest(const size_t& k) : nclosest_(k)
+{
+}
+
 KNearest::~KNearest() 
 {
 }
