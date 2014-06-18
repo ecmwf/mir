@@ -28,6 +28,8 @@ Interpolate.cc
 Interpolate.h
 KNearest.cc
 KNearest.h
+Masks.cc
+Masks.h
 PointSearch.cc
 PointSearch.h
 WeightCache.cc
