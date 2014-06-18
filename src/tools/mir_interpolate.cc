@@ -24,6 +24,7 @@
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/Unstructured.h"
 
+#include "mir/Bilinear.h"
 #include "mir/FiniteElement.h"
 #include "mir/KNearest.h"
 #include "mir/WeightCache.h"
@@ -164,6 +165,8 @@ void MirInterpolate::run()
         w = new FiniteElement();
     if( method == std::string("kn") )
         w = new KNearest();
+    if( method == std::string("bi") )
+        w = new Bilinear();
 
     if( !w )
         throw UserError( std::string("Unknown Interpolator type ") + method , Here() );

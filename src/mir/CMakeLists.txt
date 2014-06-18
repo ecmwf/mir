@@ -20,6 +20,8 @@ list( APPEND mir_srcs mir.h mir_version.cc )
 list( APPEND mir_srcs
 FiniteElement.h
 FiniteElement.cc
+Bilinear.h
+Bilinear.cc
 KNearest.h
 KNearest.cc
 PointSearch.cc
