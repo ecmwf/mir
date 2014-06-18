@@ -8,50 +8,37 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Peter Bispham
-/// @author Tiago Quintino
-/// @date Oct 2013
-
-#ifndef mir_Weights_H
-#define mir_Weights_H
-
-#include <string>
-#include <Eigen/Sparse>
-
-#include "eckit/memory/NonCopyable.h"
-
-#include "atlas/grid/Grid.h"
+#include "mir/FieldSource.h"
 
 //------------------------------------------------------------------------------------------------------
+
+using namespace eckit;
+using namespace atlas;
+using namespace atlas::grid;
+using namespace mir;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class Weights : private eckit::NonCopyable {
-public:
+FieldSource::FieldSource(const eckit::Properties& context) : context_(context)
+{
+}
 
-    typedef atlas::grid::Grid        Grid;
-    typedef atlas::grid::Grid::Point Point;
+FieldSource::~FieldSource()
+{
+}
 
-    Weights();
+FieldSet::Ptr FieldSource::eval() const
+{
+    FieldSet::Ptr fs_inp( new FieldSet( context_.get("PathIn") ) );
 
-    virtual ~Weights();
+    if( fs_inp->empty() )
+        throw UserError("Input fieldset is empty", Here());
 
-    virtual std::string classname() const = 0;
-
-    void assemble( const Grid& in, const Grid& out, Eigen::SparseMatrix<double>& W ) const;
-
-protected:
-
-    virtual void compute( Grid& i_mesh, Grid& o_mesh, Eigen::SparseMatrix<double>& W ) const = 0;
-
-    std::string hash( const Grid& in, const Grid& out ) const;
-
-};
+    return fs_inp;
+}
 
 //------------------------------------------------------------------------------------------------------
 
 } // namespace mir
-
-#endif

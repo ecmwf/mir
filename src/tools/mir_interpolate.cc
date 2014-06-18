@@ -7,15 +7,13 @@
 #include <vector>
 #include <memory>
 
-#include "atlas/io/Gmsh.hpp"
-#include "atlas/mesh/Mesh.hpp"
-
 #include "eckit/exception/Exceptions.h"
+#include "eckit/filesystem/PathName.h"
 #include "eckit/config/Resource.h"
 #include "eckit/runtime/Tool.h"
-#include "eckit/grib/GribAccessor.h"
 
 #include "atlas/grid/FieldSet.h"
+<<<<<<< HEAD
 #include "atlas/grid/GribRead.h"
 #include "atlas/grid/GribWrite.h"
 #include "atlas/grid/PointIndex3.h"
@@ -29,20 +27,17 @@
 #include "mir/KNearest.h"
 #include "mir/WeightCache.h"
 #include "mir/Weights.h"
+=======
+>>>>>>> 56da7bc9ed4290226573da769b307f875726839e
+
+#include "mir/mir_config.h"
+
+#include "mir/FieldSink.h"
+#include "mir/FieldSource.h"
+#include "mir/Interpolate.h"
 
 //------------------------------------------------------------------------------------------------------
 
-#if 1
-#define DBG     std::cout << Here() << std::endl;
-#define DBGX(x) std::cout << #x << " -> " << x << std::endl;
-#else
-#define DBG
-#define DBGX(x)
-#endif
-
-//------------------------------------------------------------------------------------------------------
-
-using namespace Eigen;
 using namespace eckit;
 using namespace atlas;
 using namespace atlas::grid;
@@ -54,79 +49,43 @@ class MirInterpolate : public eckit::Tool {
 
     virtual void run();
 
-    FieldHandle::Ptr make_field( const std::string& filename, bool read_field = true );
+    Grid::Ptr make_grid( const std::string& filename );
 
 public:
 
     MirInterpolate(int argc,char **argv): eckit::Tool(argc,argv)
     {
-        gmsh = Resource<bool>("-gmsh",false);
-
-        in_filename = Resource<std::string>("-i","");
-        if( in_filename.empty() )
+        PathName path_in;
+        path_in = Resource<std::string>("-i","");
+        if( path_in.asString().empty() )
             throw UserError( "missing input filename, parameter -i", Here());
 
-        out_filename = Resource<std::string>("-o","");
-        if( out_filename.empty() )
+        context_.set( "PathIn", Value(path_in) );
+
+        PathName path_out;
+        path_out = Resource<std::string>("-o","");
+        if( path_out.asString().empty() )
             throw UserError( "missing output filename, parameter -o", Here());
 
-        clone_grid = Resource<std::string>("-g","");
-        if( clone_grid.empty() )
+        context_.set( "PathOut", Value(path_out) );
+
+        PathName clone_path;
+        clone_path = Resource<std::string>("-g","");
+        if( clone_path.asString().empty() )
             throw UserError( "missing clone grid filename, parameter -g", Here());
 
-        method = Resource<std::string>("-m;$MIR_METHOD","fe");
+        context_.set( "TargetGrid", Value(clone_path) );
+
+        std::string method = Resource<std::string>("-m;$MIR_METHOD","fe");
+
+        context_.set( "InterpolationMethod", method );
     }
 
 private:
 
-    bool gmsh;
-    std::string in_filename;
-    std::string out_filename;
-    std::string clone_grid;
-    std::string method;
+    Properties context_;
+
 };
-
-//------------------------------------------------------------------------------------------------------
-
-static GribAccessor<std::string> grib_shortName("shortName");
-
-FieldHandle::Ptr MirInterpolate::make_field( const std::string& filename, bool read_field )
-{
-    FILE* fh = ::fopen( filename.c_str(), "r" );
-    if( fh == 0 )
-        throw ReadError( std::string("error opening file ") + filename );
-
-    int err = 0;
-    grib_handle* h;
-
-    h = grib_handle_new_from_file(0,fh,&err);
-
-    if( h == 0 || err != 0 )
-        throw ReadError( std::string("error reading grib file ") + filename );
-
-    Grid::Ptr g ( GribRead::create_grid_from_grib(h) );
-
-    const std::string sname = grib_shortName(h);
-
-    Mesh& mesh = g->mesh();
-
-    FunctionSpace&  nodes  = mesh.function_space( "nodes" );
-
-    if( read_field )
-        GribRead::read_field_from_grib(h,mesh,sname);
-    else
-        nodes.create_field<double>(sname,1);
-
-    grib_handle_delete(h);
-    if( ::fclose(fh) == -1 )
-        throw ReadError( std::string("error closing file ") + filename );
-
-    // finalize FieldHandle
-
-    FieldHandle::Ptr hf( new FieldHandle( g, nodes.field<double>( sname ) ) );
-
-    return hf;
-}
 
 //------------------------------------------------------------------------------------------------------
 
@@ -135,17 +94,13 @@ void MirInterpolate::run()
     std::cout.precision(std::numeric_limits< double >::digits10);
     std::cout << std::fixed;
 
-    FieldHandle::Ptr in_field;
-    FieldHandle::Ptr out_field;
+    FieldSource source( context_ );
+    Interpolate interpolator( context_ );
+    FieldSink   sink( context_ );
 
-    // input grid + field
+    FieldSet::Ptr fs_inp = source.eval(); ASSERT( fs_inp );
 
-    std::cout << ">>> reading input grid + field ..." << std::endl;
-
-    in_field = make_field( in_filename );
-
-    std::cout << "points " << in_field->grid().nPoints() << std::endl;
-
+<<<<<<< HEAD
     // output grid + field
 
     std::cout << ">>> reading output grid ..." << std::endl;
@@ -211,11 +166,11 @@ void MirInterpolate::run()
         std::cout << ">>> output to grib" << std::endl;
         GribWrite::clone( *out_field, clone_grid, out_filename );
     }
+=======
+    FieldSet::Ptr fs_out = interpolator.eval( fs_inp ); ASSERT( fs_out );
+>>>>>>> 56da7bc9ed4290226573da769b307f875726839e
 
-//    std::cout << ">>> deleting input field" << std::endl;
-//    in_field.reset();
-//    std::cout << ">>> deleting output field" << std::endl;
-//    out_field.reset();
+    sink.eval( fs_out );
 }
 
 //------------------------------------------------------------------------------------------------------

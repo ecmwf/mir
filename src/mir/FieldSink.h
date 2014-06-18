@@ -8,19 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Peter Bispham
 /// @author Tiago Quintino
-/// @date Oct 2013
+/// @date Jun 2014
 
-#ifndef mir_Weights_H
-#define mir_Weights_H
+#ifndef mir_FieldSink_H
+#define mir_FieldSink_H
 
-#include <string>
-#include <Eigen/Sparse>
+#include "eckit/value/Properties.h"
 
-#include "eckit/memory/NonCopyable.h"
-
-#include "atlas/grid/Grid.h"
+#include "atlas/grid/FieldSet.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -28,25 +24,23 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class Weights : private eckit::NonCopyable {
-public:
+/// @todo this class will become an eckit::maths::Expression
 
-    typedef atlas::grid::Grid        Grid;
-    typedef atlas::grid::Grid::Point Point;
+class FieldSink : private eckit::NonCopyable {
 
-    Weights();
+    typedef atlas::grid::FieldSet FieldSet;
 
-    virtual ~Weights();
+public: // methods
 
-    virtual std::string classname() const = 0;
+    FieldSink( const eckit::Properties& );
 
-    void assemble( const Grid& in, const Grid& out, Eigen::SparseMatrix<double>& W ) const;
+    virtual ~FieldSink();
 
-protected:
+    void eval( const FieldSet::Ptr& ) const;
 
-    virtual void compute( Grid& i_mesh, Grid& o_mesh, Eigen::SparseMatrix<double>& W ) const = 0;
+private: // members
 
-    std::string hash( const Grid& in, const Grid& out ) const;
+    eckit::Properties context_;
 
 };
 

@@ -8,50 +8,41 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Peter Bispham
-/// @author Tiago Quintino
-/// @date Oct 2013
+#include "atlas/grid/GribWrite.h"
 
-#ifndef mir_Weights_H
-#define mir_Weights_H
-
-#include <string>
-#include <Eigen/Sparse>
-
-#include "eckit/memory/NonCopyable.h"
-
-#include "atlas/grid/Grid.h"
+#include "mir/mir_config.h"
+#include "mir/FieldSink.h"
 
 //------------------------------------------------------------------------------------------------------
+
+using namespace eckit;
+using namespace atlas;
+using namespace atlas::grid;
+using namespace mir;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class Weights : private eckit::NonCopyable {
-public:
+FieldSink::FieldSink(const eckit::Properties& context) : context_(context)
+{
+}
 
-    typedef atlas::grid::Grid        Grid;
-    typedef atlas::grid::Grid::Point Point;
+FieldSink::~FieldSink()
+{
+}
 
-    Weights();
+void FieldSink::eval(const FieldSet::Ptr& fs_out) const
+{
+    //   Timer t("grib output write");
 
-    virtual ~Weights();
+    // GribWrite::write( *fs_out, path_out ); ///< @todo remove need for clone() with GridSpec's
 
-    virtual std::string classname() const = 0;
-
-    void assemble( const Grid& in, const Grid& out, Eigen::SparseMatrix<double>& W ) const;
-
-protected:
-
-    virtual void compute( Grid& i_mesh, Grid& o_mesh, Eigen::SparseMatrix<double>& W ) const = 0;
-
-    std::string hash( const Grid& in, const Grid& out ) const;
-
-};
+    GribWrite::clone( *fs_out,
+                      context_.get("TargetGrid"),
+                      context_.get("PathOut") );
+}
 
 //------------------------------------------------------------------------------------------------------
 
 } // namespace mir
-
-#endif

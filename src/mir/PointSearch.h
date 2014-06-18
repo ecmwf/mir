@@ -15,24 +15,27 @@
 #ifndef mir_PointSearch_H
 #define mir_PointSearch_H
 
-
 #include "eckit/container/KDMemory.h"
 #include "eckit/container/KDTree.h"
 #include "eckit/memory/NonCopyable.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "eckit/geometry/Point3.h"
+
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/PointIndex3.h"
 
-
 //-----------------------------------------------------------------------------
-
 
 namespace mir {
 
 //-----------------------------------------------------------------------------
 
+/// Class for fast searches in point clouds following kd-tree algorithms
+/// @todo test kd-tree stored in shared memory ?
+
 class PointSearch : private eckit::NonCopyable {
 
+    typedef atlas::PointIndex3 TreeType;
 
     typedef atlas::PointIndex3::Point Point;
     typedef atlas::PointIndex3::Value ValueType;
@@ -46,23 +49,21 @@ public:
  
     PointSearch( atlas::Mesh& mesh ); 
  
-    virtual ~PointSearch(){ delete tree_; } 
-
 public: // methods
-
 
     /// Finds closest N points to an input point
     void closestNPoints(const PointType& pt, size_t n, std::vector<ValueType>& closest);
   
 protected:
     
-    atlas::PointIndex3* tree_;
-
+    eckit::ScopedPtr<TreeType> tree_;
 
 private:
 
     void init(const std::vector<PointType>& points);
 };
+
+//-----------------------------------------------------------------------------
 
 } // namespace mir
 

@@ -18,19 +18,25 @@ configure_file( mir_version.cc.in  mir_version.cc )
 list( APPEND mir_srcs mir.h mir_version.cc )
 
 list( APPEND mir_srcs
-FiniteElement.h
-FiniteElement.cc
 Bilinear.h
 Bilinear.cc
-KNearest.h
+FieldSink.cc
+FieldSink.h
+FieldSource.cc
+FieldSource.h
+FiniteElement.cc
+FiniteElement.h
+Interpolate.cc
+Interpolate.h
 KNearest.cc
+KNearest.h
 PointSearch.cc
 PointSearch.h
-Weights.cc
-Weights.h
 WeightCache.cc
 WeightCache.h
- )
+Weights.cc
+Weights.h
+)
 
 
 ecbuild_add_library(TARGET		mir
