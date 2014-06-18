@@ -116,7 +116,7 @@ void Bilinear::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
 
     /// @todo we only handle these at the moment
     if (!igg)
-        return;
+        throw eckit::UserError("Bilinear currently only supports Reduced Gaussian Grids as input");
 
     // get the longitudes from
     const std::vector<long>& lons = igg->pointsPerLatitude();
