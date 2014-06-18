@@ -10,14 +10,19 @@
 
 #include <string>
 
+#include "eckit/maths/Eigen.h"
+
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Tesselation.h"
+#include "atlas/mesh/FunctionSpace.hpp"
 
 #include "mir/Masks.h"
 #include "mir/WeightCache.h"
 #include "mir/KNearest.h"
 
 //------------------------------------------------------------------------------------------------------
+
+using namespace Eigen;
 
 using namespace atlas;
 using namespace atlas::grid;
@@ -36,10 +41,38 @@ Masks::~Masks()
 
 void Masks::assemble(const FieldHandle& mask, const Grid& inp, const Grid& out, Masks::WeightMatrix& W) const
 {
-//    Mesh& mask_mesh = mask.grid().mesh();
+    Grid& gi = const_cast<Grid&>(inp);
 
-    KNearest k4(4);
+    Mesh& inp_mesh = gi.mesh();
 
+    KNearest k4(4,gi);
+
+    WeightMatrix wm;
+    k4.assemble( mask.grid(), inp, wm ); // interpolate the input on the mask grid
+
+    FieldHandle::Ptr mask_in( new FieldHandle( Grid::Ptr(&gi), inp_mesh.function_space("nodes").create_field<double>("mask_in",1) ) );
+    {
+        FieldT<double>& ifield = const_cast<FieldHandle&>(mask).data();
+        FieldT<double>& ofield = mask_in->data();
+
+        VectorXd::MapType fi = VectorXd::Map( ifield.data(), ifield.size() );
+        VectorXd::MapType fo = VectorXd::Map( ofield.data(), ofield.size() );
+
+        fo = wm * fi;
+    }
+
+//    k4.assemble( mask.grid(), inp, wm ); // interpolate the output on the mask grid
+
+//    FieldHandle::Ptr mask_in( new FieldHandle( Grid::Ptr(&gi), inp_mesh.function_space("nodes").create_field<double>("mask_in",1) ) );
+//    {
+//        FieldT<double>& ifield = const_cast<FieldHandle&>(mask).data();
+//        FieldT<double>& ofield = mask_in->data();
+
+//        VectorXd::MapType fi = VectorXd::Map( ifield.data(), ifield.size() );
+//        VectorXd::MapType fo = VectorXd::Map( ofield.data(), ofield.size() );
+
+//        fo = wm * fi;
+//    }
 
 }
 

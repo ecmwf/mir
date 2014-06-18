@@ -17,7 +17,6 @@
 #include "atlas/util/ArrayView.hpp"
 
 #include "mir/KNearest.h"
-#include "mir/PointSearch.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -43,13 +42,19 @@ KNearest::KNearest(const size_t& k) : nclosest_(k)
 {
 }
 
+KNearest::KNearest(const size_t &k, Weights::Grid &in) : nclosest_(k)
+{
+
+}
+
 KNearest::~KNearest() 
 {
 }
 
 void KNearest::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) const
 {
-    atlas::Mesh& i_mesh = in.mesh();
+    build_sptree(in);
+
     atlas::Mesh& o_mesh = out.mesh();
 
     // output points
@@ -62,12 +67,6 @@ void KNearest::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
     std::vector< Eigen::Triplet<double> > weights_triplets; 
     weights_triplets.reserve( out_npts * nclosest_ );
 
-    // initialise progress bar
-//    boost::progress_display show_progress( out_npts );
-
-    // this baby forms a kd-tree of the input mesh
-    PointSearch ps(i_mesh);
-
     std::vector<atlas::PointIndex3::Value> closest;
     
     /// @todo take epsilon from some general config
@@ -79,7 +78,7 @@ void KNearest::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
         eckit::geometry::Point3 p ( ocoords[ip].data() );
         
         // find the closest input points to this output
-        ps.closestNPoints(p, nclosest_, closest);
+        sptree_->closestNPoints(p, nclosest_, closest);
         
         // then calculate the nearest neighbour weights
         std::vector<double> weights;
@@ -109,8 +108,6 @@ void KNearest::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
             weights[j] /= sum;
         }
 
-//        ++show_progress;
-
         // insert the interpolant weights into the global (sparse) interpolant matrix
         for(int i = 0; i < closest.size(); ++i)
         {
@@ -129,6 +126,17 @@ std::string KNearest::classname() const
     std::string ret ("KNearest");
     ret += eckit::Translator<size_t,std::string>()(nclosest_);
     return ret;
+}
+
+void KNearest::build_sptree( Grid& in ) const
+{
+    atlas::Mesh& i_mesh = in.mesh();
+
+    std::string inhash = in.hash();
+    if( inhash != hash_ )
+        sptree_.reset( new PointSearch(i_mesh) );
+
+    hash_ = inhash;
 }
 
 //------------------------------------------------------------------------------------------------------

@@ -14,13 +14,12 @@
 #include <Eigen/Sparse>
 
 #include "mir/Weights.h"
+#include "mir/PointSearch.h"
 
 //-----------------------------------------------------------------------------
 
 namespace atlas {
-namespace grid {
-    class Point2;
-}
+namespace grid { class Point2; }
 }
 
 namespace mir {
@@ -33,6 +32,7 @@ public:
 
     KNearest();
     KNearest( const size_t& k );
+    KNearest( const size_t& k, Grid& in );
 
     virtual ~KNearest();
 
@@ -40,9 +40,16 @@ public:
 
     virtual std::string classname() const;
 
-private:
+protected: // methods
+
+    void build_sptree( Grid& in ) const;
+
+private: // members
 
     size_t nclosest_; ///< number of closest points to search for
+
+    mutable std::string hash_;
+    mutable eckit::ScopedPtr<PointSearch> sptree_;
 
 };
 

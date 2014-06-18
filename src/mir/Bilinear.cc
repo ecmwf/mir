@@ -28,12 +28,6 @@
 
 //------------------------------------------------------------------------------------------------------
 
-//#define assert assert
-
-//#ifndef assert
-//#define assert(x) ((void)sizeof(x))
-//#endif
-
 using Eigen::SparseMatrix;
 
 using eckit::Resource;
@@ -42,11 +36,10 @@ using eckit::geometry::Point3;
 using atlas::FunctionSpace;
 using atlas::FieldT;
 
-
 namespace mir {
 
 
-//----------------------------------------------------------------------------eckit::geometry::Point3u--------------------------
+//------------------------------------------------------------------------------------------------------
 
 Bilinear::Bilinear()
 {
@@ -67,7 +60,7 @@ bool eq(const double& a, const double& b)
 }
 
 
-bool left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, size_t start, size_t end, size_t& left, size_t& right)
+void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, size_t start, size_t end, size_t& left, size_t& right)
 {
 
     double right_lon = 360.0;
@@ -157,14 +150,14 @@ void Bilinear::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
             double top_lat = icoords[top_i].data()[0];
 
             double bot_lat = icoords[bot_i].data()[0];
-            assert(top_lat != bot_lat);
+            ASSERT(top_lat != bot_lat);
 
             // check output point is on or below the hi latitude
             if (bot_lat < lat && (top_lat > lat || eq(top_lat, lat)))
             {
-                assert(top_lat > lat || eq(top_lat, lat));
-                assert(bot_lat < lat);
-                assert(!eq(bot_lat, lat));
+                ASSERT(top_lat > lat || eq(top_lat, lat));
+                ASSERT(bot_lat < lat);
+                ASSERT(!eq(bot_lat, lat));
 
                 break;
             }
@@ -172,9 +165,9 @@ void Bilinear::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
 
         double top_lat = icoords[top_i].data()[0];
         double bot_lat = icoords[bot_i].data()[0];
-        assert(top_lat > lat || eq(top_lat, lat));
-        assert(bot_lat < lat);
-        assert(!eq(bot_lat, lat));
+        ASSERT(top_lat > lat || eq(top_lat, lat));
+        ASSERT(bot_lat < lat);
+        ASSERT(!eq(bot_lat, lat));
 
 
         // now get indeces to the left and right points on each of the data sectors
@@ -183,14 +176,14 @@ void Bilinear::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
 
         left_right_lon_indexes(lon, icoords, top_i, top_i + top_n, top_i_lft, top_i_rgt);
         //left_right_lon_indexes(lon, icoords,  hi_data, tl, tr);
-        assert(top_i_lft >= top_i);
-        assert(top_i_lft < bot_i);
-        assert(top_i_rgt >= top_i);
-        assert(top_i_rgt < bot_i);
-        assert(top_i_rgt != top_i_lft);
+        ASSERT(top_i_lft >= top_i);
+        ASSERT(top_i_lft < bot_i);
+        ASSERT(top_i_rgt >= top_i);
+        ASSERT(top_i_rgt < bot_i);
+        ASSERT(top_i_rgt != top_i_lft);
 
         // check the data is the same
-        assert(eq(icoords[top_i_lft].data()[0],  icoords[top_i_rgt].data()[0]));
+        ASSERT(eq(icoords[top_i_lft].data()[0],  icoords[top_i_rgt].data()[0]));
 
         // now get indeces to the left and right points on each of the data sectors
         // on the lower longitude
@@ -199,12 +192,12 @@ void Bilinear::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
         size_t bot_i_end = bot_i + bot_n;
 
         left_right_lon_indexes(lon, icoords, bot_i, bot_i_end , bot_i_lft, bot_i_rgt);
-        assert(bot_i_lft >= bot_i);
-        assert(bot_i_lft < bot_i_end);
-        assert(bot_i_rgt >= bot_i);
-        assert(bot_i_rgt < bot_i_end);
-        assert(bot_i_rgt != bot_i_lft);
-        assert(eq(icoords[bot_i_lft].data()[0],  icoords[bot_i_rgt].data()[0]));
+        ASSERT(bot_i_lft >= bot_i);
+        ASSERT(bot_i_lft < bot_i_end);
+        ASSERT(bot_i_rgt >= bot_i);
+        ASSERT(bot_i_rgt < bot_i_end);
+        ASSERT(bot_i_rgt != bot_i_lft);
+        ASSERT(eq(icoords[bot_i_lft].data()[0],  icoords[bot_i_rgt].data()[0]));
 
         // we now have the indices of tl, tr, bl, br points around the output point
 
