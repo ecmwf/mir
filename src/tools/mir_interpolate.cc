@@ -13,7 +13,6 @@
 #include "eckit/runtime/Tool.h"
 
 #include "atlas/grid/FieldSet.h"
-
 #include "mir/mir_config.h"
 
 #include "mir/FieldSink.h"
