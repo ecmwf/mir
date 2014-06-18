@@ -13,23 +13,6 @@
 #include "eckit/runtime/Tool.h"
 
 #include "atlas/grid/FieldSet.h"
-<<<<<<< HEAD
-#include "atlas/grid/GribRead.h"
-#include "atlas/grid/GribWrite.h"
-#include "atlas/grid/PointIndex3.h"
-#include "atlas/grid/PointSet.h"
-#include "atlas/grid/TriangleIntersection.h"
-#include "atlas/grid/Tesselation.h"
-#include "atlas/grid/Unstructured.h"
-
-#include "mir/Bilinear.h"
-#include "mir/FiniteElement.h"
-#include "mir/KNearest.h"
-#include "mir/WeightCache.h"
-#include "mir/Weights.h"
-=======
->>>>>>> 56da7bc9ed4290226573da769b307f875726839e
-
 #include "mir/mir_config.h"
 
 #include "mir/FieldSink.h"
@@ -100,75 +83,7 @@ void MirInterpolate::run()
 
     FieldSet::Ptr fs_inp = source.eval(); ASSERT( fs_inp );
 
-<<<<<<< HEAD
-    // output grid + field
-
-    std::cout << ">>> reading output grid ..." << std::endl;
-
-    out_field = make_field( clone_grid, false );
-
-    std::cout << "points " << out_field->grid().nPoints() << std::endl;
-
-    // compute weights for each point in output grid
-
-    Eigen::SparseMatrix<double> W( out_field->grid().nPoints(), in_field->grid().nPoints() );
-
-    Weights* w;
-
-    /// @todo make this into a factory
-    if( method == std::string("fe") )
-        w = new FiniteElement();
-    if( method == std::string("kn") )
-        w = new KNearest();
-    if( method == std::string("bi") )
-        w = new Bilinear();
-
-    if( !w )
-        throw UserError( std::string("Unknown Interpolator type ") + method , Here() );
-
-    w->assemble( in_field->grid(), out_field->grid(), W );
-
-    // interpolation -- multiply interpolant matrix with field vector
-
-    std::cout << ">>> interpolating ..." << std::endl;
-
-    FieldT<double>& ifield = in_field->data();
-    FieldT<double>& ofield = out_field->data();
-
-    {
-        Timer t("interpolation");
-
-        VectorXd::MapType fi = VectorXd::Map( ifield.data(), ifield.size() );
-        VectorXd::MapType fo = VectorXd::Map( ofield.data(), ofield.size() );
-
-        fo = W * fi;
-    }
-
-    // output to gmsh
-
-    if( gmsh )
-    {
-        std::cout << ">>> output to gmsh" << std::endl;
-
-        Tesselation::tesselate( in_field->grid() );
-
-        atlas::Gmsh::write3dsurf( in_field->grid().mesh(), "input.msh" );
-
-        Tesselation::tesselate( out_field->grid() );
-
-        atlas::Gmsh::write3dsurf( out_field->grid().mesh(), "output.msh" );
-    }
-
-    // output to grib
-
-    {
-        Timer t("grib write");
-        std::cout << ">>> output to grib" << std::endl;
-        GribWrite::clone( *out_field, clone_grid, out_filename );
-    }
-=======
     FieldSet::Ptr fs_out = interpolator.eval( fs_inp ); ASSERT( fs_out );
->>>>>>> 56da7bc9ed4290226573da769b307f875726839e
 
     sink.eval( fs_out );
 }

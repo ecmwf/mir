@@ -22,6 +22,7 @@
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/GribRead.h"
 
+#include "mir/Bilinear.h"
 #include "mir/FiniteElement.h"
 #include "mir/Interpolate.h"
 #include "mir/KNearest.h"
@@ -104,6 +105,8 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
         w = new FiniteElement();
     if( method == std::string("kn") )
         w = new KNearest();
+    if( method == std::string("bi") )
+        w = new Bilinear();
 
     if( !w )
         throw UserError( std::string("Unknown Interpolator type ") + method , Here() );
