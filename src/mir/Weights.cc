@@ -37,7 +37,6 @@ void Weights::assemble( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) co
     WeightCache cache;
     const std::string whash = hash(in, out);
     bool wcached = cache.get( whash, W );
-    wcached = false;
     if( ! wcached )
     {
         std::cout << ">>> computing weights ..." << std::endl;
