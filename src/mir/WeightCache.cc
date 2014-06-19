@@ -37,7 +37,7 @@ std::string WeightCache::filename(const std::string& key)
     return ss.str();
 }
 
-bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W )
+bool WeightCache::add(const std::string& key, Weights::Matrix& W )
 {
     LocalPathName file( filename(key) );
 
@@ -71,7 +71,7 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W )
     std::vector<Eigen::Triplet<double> > trips;
     for (unsigned int i = 0; i < W.outerSize(); ++i) 
     {
-        for (typename Eigen::SparseMatrix<double>::InnerIterator it(W,i); it; ++it) 
+        for (typename Weights::Matrix::InnerIterator it(W,i); it; ++it)
         {
             trips.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
         }
@@ -113,7 +113,7 @@ bool WeightCache::add(const std::string& key, Eigen::SparseMatrix<double>& W )
     return true;
 }
 
-bool WeightCache::get(const std::string& key, Eigen::SparseMatrix<double>& W )
+bool WeightCache::get(const std::string& key, Weights::Matrix& W )
 {
     LocalPathName file( filename(key) );
 

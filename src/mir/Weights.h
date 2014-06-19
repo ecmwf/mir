@@ -16,7 +16,8 @@
 #define mir_Weights_H
 
 #include <string>
-#include <Eigen/Sparse>
+
+#include "eckit/maths/Eigen.h"
 
 #include "eckit/memory/NonCopyable.h"
 
@@ -35,7 +36,7 @@ public: // types
     typedef atlas::grid::Grid        Grid;
     typedef atlas::grid::Grid::Point Point;
 
-    typedef Eigen::SparseMatrix<double> WeightMatrix;
+    typedef Eigen::SparseMatrix<double,Eigen::RowMajor> Matrix;
 
 public: // methods
 
@@ -45,11 +46,11 @@ public: // methods
 
     virtual std::string classname() const = 0;
 
-    void assemble( const Grid& in, const Grid& out, WeightMatrix& W ) const;
+    void assemble( const Grid& in, const Grid& out, Weights::Matrix& W ) const;
 
 protected: // methods
 
-    virtual void compute( Grid& i_mesh, Grid& o_mesh, WeightMatrix& W ) const = 0;
+    virtual void compute( Grid& i_mesh, Grid& o_mesh, Weights::Matrix& W ) const = 0;
 
     std::string hash( const Grid& in, const Grid& out ) const;
 

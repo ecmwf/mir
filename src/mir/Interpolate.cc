@@ -28,6 +28,7 @@
 #include "mir/KNearest.h"
 #include "mir/WeightCache.h"
 #include "mir/Weights.h"
+#include "mir/Masks.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -83,9 +84,7 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
     Grid::Ptr clone_grid = make_grid( context_.get("TargetGrid") );
     ASSERT( clone_grid );
 
-    FieldSet::Ptr fs_out;
-
-    fs_out.reset( new FieldSet( clone_grid, fs_inp->field_names() ) );
+    FieldSet::Ptr fs_out( new FieldSet( clone_grid, fs_inp->field_names() ) );
     ASSERT( fs_out );
 
     size_t npts_inp = fs_inp->grid().nPoints();
@@ -95,7 +94,7 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 
     // compute weights for each point in output grid
 
-    Eigen::SparseMatrix<double> W( npts_out, npts_inp );
+    Weights::Matrix W( npts_out, npts_inp );
 
     Weights* w;
 
@@ -112,6 +111,19 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
         throw UserError( std::string("Unknown Interpolator type ") + method , Here() );
 
     w->assemble( fs_inp->grid(), fs_out->grid(), W );
+
+    // apply mask if necessary
+    PathName mask_path = context_.get("Mask");
+    if( ! mask_path.asString().empty() )
+    {
+        FieldSet::Ptr fmask( new FieldSet( mask_path ) ); ASSERT( fmask );
+
+        if( fmask->size() != 1 )
+            throw UserError( "User provided mask file with multiple fields", Here() );
+
+        Masks m;
+        m.assemble( (*fmask)[0], fs_inp->grid(), fs_out->grid(), W);
+    }
 
     // interpolation -- multiply interpolant matrix with field vector
 

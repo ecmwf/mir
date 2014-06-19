@@ -53,7 +53,7 @@ void TestWeightCache::test_values()
 
     int n = 100, m = 200;
     // create a sparse matrix
-    Eigen::SparseMatrix<double> M(n, m);
+    Weights::Matrix M(n, m);
 
     // generate some sparse data
     std::vector<Eigen::Triplet<double> > insertions;
@@ -82,7 +82,7 @@ void TestWeightCache::test_values()
 
 
     // now get the data back again
-    Eigen::SparseMatrix<double> W(n, m);
+    Weights::Matrix W(n, m);
     bool got = WeightCache::get(key, W);
     ASSERT(got);
 
@@ -90,7 +90,7 @@ void TestWeightCache::test_values()
     std::vector<Eigen::Triplet<double> > triplets;
     for (unsigned int i = 0; i < W.outerSize(); ++i) 
     {
-        for (Eigen::SparseMatrix<double>::InnerIterator it(W,i); it; ++it)
+        for (Weights::Matrix::InnerIterator it(W,i); it; ++it)
         {
             triplets.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
         }

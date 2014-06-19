@@ -17,7 +17,7 @@
 
 #include "eckit/memory/NonCopyable.h"
 
-#include  "eckit/maths/Eigen.h" // always include Eigen via eckit
+#include  "mir/Weights.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -30,10 +30,10 @@ class WeightCache : private eckit::NonCopyable {
 public: // methods
 
     /// @returns true if found cache
-    static bool get(const std::string& key, Eigen::SparseMatrix<double>& W);
+    static bool get(const std::string& key, Weights::Matrix& W);
 
     /// @returns true if addition was succcessful
-    static bool add(const std::string& key, Eigen::SparseMatrix<double>& W );
+    static bool add(const std::string& key, Weights::Matrix& W );
 
     static std::string filename(const std::string& key);
 

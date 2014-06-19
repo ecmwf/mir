@@ -117,7 +117,7 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Vector3d& phi, int idx
 // static size_t factorial[12] = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800 };
 static size_t factorial[10] = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880 };
 
-void FiniteElement::compute( Grid& in, Grid& out, WeightMatrix& W ) const
+void FiniteElement::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
 {
     atlas::Mesh& i_mesh = in.mesh();
     atlas::Mesh& o_mesh = out.mesh();

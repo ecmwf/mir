@@ -20,8 +20,6 @@
 
 //------------------------------------------------------------------------------------------------------
 
-using Eigen::SparseMatrix;
-
 using eckit::Resource;
 
 using atlas::FunctionSpace;
@@ -51,7 +49,7 @@ KNearest::~KNearest()
 {
 }
 
-void KNearest::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) const
+void KNearest::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
 {
     build_sptree(in);
 

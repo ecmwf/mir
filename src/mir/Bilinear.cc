@@ -28,8 +28,6 @@
 
 //------------------------------------------------------------------------------------------------------
 
-using Eigen::SparseMatrix;
-
 using eckit::Resource;
 using eckit::geometry::Point3;
 
@@ -89,7 +87,7 @@ void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, 
     }
 }
 
-void Bilinear::compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) const
+void Bilinear::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
 {
     std::cout << "Bilinear:: compute called " << std::endl;
 

@@ -59,6 +59,13 @@ public:
 
         context_.set( "TargetGrid", Value(clone_path) );
 
+        PathName mask_path;
+        mask_path = Resource<std::string>("-mask","");
+        if( clone_path.asString().empty() )
+            throw UserError( "missing maks field grid filename, parameter -mask", Here());
+
+        context_.set( "Mask", Value(mask_path) );
+
         std::string method = Resource<std::string>("-m;$MIR_METHOD","fe");
 
         context_.set( "InterpolationMethod", method );

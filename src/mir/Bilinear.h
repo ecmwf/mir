@@ -41,7 +41,7 @@ public:
     Bilinear();
     virtual ~Bilinear();
 
-    virtual void compute( Grid& in, Grid& out, Eigen::SparseMatrix<double>& W ) const;
+    virtual void compute( Grid& in, Grid& out, Weights::Matrix& W ) const;
 
     virtual std::string classname() const;
 
