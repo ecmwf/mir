@@ -15,7 +15,6 @@
 #define mir_Masks_H
 
 #include <string>
-#include <Eigen/Sparse>
 
 #include "eckit/memory/NonCopyable.h"
 

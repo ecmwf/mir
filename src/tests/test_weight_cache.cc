@@ -10,8 +10,6 @@
 
 #include <cstdio>
 
-#include <Eigen/Sparse>
-
 #include "eckit/log/Log.h"
 #include "eckit/runtime/Tool.h"
 

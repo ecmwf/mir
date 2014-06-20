@@ -34,6 +34,8 @@ Masks.cc
 Masks.h
 PointSearch.cc
 PointSearch.h
+PseudoLaplace.cc
+PseudoLaplace.h
 WeightCache.cc
 WeightCache.h
 Weights.cc

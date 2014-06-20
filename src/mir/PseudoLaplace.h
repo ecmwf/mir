@@ -8,42 +8,32 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef mir_KNearest_H
-#define mir_KNearest_H
+#ifndef mir_PseudoLaplace_H
+#define mir_PseudoLaplace_H
 
-#include "mir/Weights.h"
-#include "mir/PointSearch.h"
+#include "mir/KNearest.h"
 
 //-----------------------------------------------------------------------------
 
-namespace atlas { namespace grid { class Point2; } }
+namespace atlas {
+namespace grid { class Point2; }
+}
 
 namespace mir {
 
 //-----------------------------------------------------------------------------
 
-class KNearest: public Weights {
+class PseudoLaplace: public KNearest {
 
 public:
 
-    KNearest();
-    KNearest( const size_t& k );
-    KNearest( const size_t& k, Grid& in );
+    PseudoLaplace();
 
-    virtual ~KNearest();
+    virtual ~PseudoLaplace();
 
     virtual void compute( Grid& in, Grid& out, Weights::Matrix& W ) const;
 
     virtual std::string classname() const;
-
-protected: // methods
-
-    void build_sptree( Grid& in ) const;
-
-    size_t nclosest_; ///< number of closest points to search for
-
-    mutable std::string hash_;
-    mutable eckit::ScopedPtr<PointSearch> sptree_;
 
 };
 

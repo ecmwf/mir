@@ -10,46 +10,34 @@
 
 #include <string>
 
+#include "eckit/maths/Eigen.h"
 #include "eckit/config/Resource.h"
 #include "eckit/log/Log.h"
 #include "eckit/utils/Translator.h"
 
 #include "atlas/util/ArrayView.hpp"
+#include "atlas/mesh/Parameters.hpp"
 
-#include "mir/KNearest.h"
+#include "mir/PseudoLaplace.h"
 
 //------------------------------------------------------------------------------------------------------
 
-using eckit::Resource;
-
-using atlas::FunctionSpace;
-using atlas::ArrayView;
+using namespace Eigen;
+using namespace atlas;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-KNearest::KNearest() 
-{
-    nclosest_ = Resource<unsigned>( "KNearest;$MIR_KNEAREST", 4 );
-    if( nclosest_ == 0 )
-        throw eckit::UserError( "KNearest k closest points cannot be 0", Here() );
-}
-
-KNearest::KNearest(const size_t& k) : nclosest_(k)
+PseudoLaplace::PseudoLaplace() : KNearest()
 {
 }
 
-KNearest::KNearest(const size_t &k, Weights::Grid &in) : nclosest_(k)
-{
-
-}
-
-KNearest::~KNearest() 
+PseudoLaplace::~PseudoLaplace()
 {
 }
 
-void KNearest::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
+void PseudoLaplace::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
 {
     build_sptree(in);
 
@@ -66,12 +54,13 @@ void KNearest::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
     weights_triplets.reserve( out_npts * nclosest_ );
 
     std::vector<atlas::PointIndex3::Value> closest;
+    
+    VectorXd Dx(nclosest_);
+    VectorXd Dy(nclosest_);
+    VectorXd Dz(nclosest_);
 
     std::vector<double> weights;
     weights.reserve(nclosest_);
-
-    /// @todo take epsilon from some general config
-    const double epsilon = Resource<double>( "KNearestEpsilon", std::numeric_limits<double>::epsilon() );
 
     for( size_t ip = 0; ip < out_npts; ++ip)
     {
@@ -80,35 +69,54 @@ void KNearest::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
         
         // find the closest input points to this output
         sptree_->closestNPoints(p, nclosest_, closest);
-        
+
         const size_t npts = closest.size();
 
         // then calculate the nearest neighbour weights
         weights.resize(npts, 0.0);
 
-        // sum all calculated weights for normalisation
-        double sum = 0.0;
+        double Ixx(0),Ixy(0),Ixz(0),Iyy(0),Iyz(0),Izz(0), Rx(0),Ry(0),Rz(0), Lx,Ly,Lz, dx,dy,dz;
 
-        for( size_t j = 0; j < npts; ++j )
+        for( size_t j = 0; j < npts; ++j)
         {
-            // one of the closest points
             eckit::geometry::Point3 np  = closest[j].point();
 
-            // calculate distance squared and weight
-            const double d2 = eckit::geometry::Point3::distance2(p, np);
-            weights[j] = 1.0 / ( epsilon + d2 );
+            dx = np[XX] - p[XX];
+            dy = np[YY] - p[YY];
+            dz = np[ZZ] - p[ZZ];
 
-            // also work out the total
-            sum += weights[j];
+            Ixx += dx*dx;
+            Ixy += dx*dy;
+            Ixz += dx*dz;
+            Iyy += dy*dy;
+            Iyz += dy*dz;
+            Izz += dz*dz;
+
+            Rx += dx;
+            Ry += dy;
+            Rz += dz;
+
+            Dx[j]=dx;
+            Dy[j]=dy;
+            Dz[j]=dz;
         }
 
-        ASSERT( sum > 0.0 );
+        Lx =  (-(Iyz*Iyz*Rx) + Iyy*Izz*Rx + Ixz*Iyz*Ry - Ixy*Izz*Ry - Ixz*Iyy*Rz + Ixy*Iyz*Rz)/
+                (Ixz*Ixz*Iyy - 2.*Ixy*Ixz*Iyz + Ixy*Ixy*Izz + Ixx*(Iyz*Iyz - Iyy*Izz));
+        Ly =  (Ixz*Iyz*Rx - Ixy*Izz*Rx - Ixz*Ixz*Ry + Ixx*Izz*Ry + Ixy*Ixz*Rz - Ixx*Iyz*Rz)/
+                (Ixz*Ixz*Iyy - 2.*Ixy*Ixz*Iyz + Ixx*Iyz*Iyz + Ixy*Ixy*Izz - Ixx*Iyy*Izz);
+        Lz =  (-(Ixz*Iyy*Rx) + Ixy*Iyz*Rx + Ixy*Ixz*Ry - Ixx*Iyz*Ry - Ixy*Ixy*Rz + Ixx*Iyy*Rz)/
+                (Ixz*Ixz*Iyy - 2.*Ixy*Ixz*Iyz + Ixy*Ixy*Izz + Ixx*(Iyz*Iyz - Iyy*Izz));
 
-        // now normalise all weights according to the total
-        for( size_t j = 0; j < npts; j++)
+        double S = 0;
+        for( size_t j = 0; j < npts; ++j )
         {
-            weights[j] /= sum;
+            weights[j] = 1.0 + Lx*Dx[j] + Ly*Dy[j] + Lz*Dz[j];
+            S += weights[j];
         }
+
+        for( size_t j = 0; j < npts; ++j )
+            weights[j] /= S;
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
         for(int i = 0; i < npts; ++i)
@@ -123,22 +131,11 @@ void KNearest::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
     
 }
 
-std::string KNearest::classname() const
+std::string PseudoLaplace::classname() const
 {
-    std::string ret ("KNearest");
+    std::string ret ("PseudoLaplace");
     ret += eckit::Translator<size_t,std::string>()(nclosest_);
     return ret;
-}
-
-void KNearest::build_sptree( Grid& in ) const
-{
-    atlas::Mesh& i_mesh = in.mesh();
-
-    std::string inhash = in.hash();
-    if( inhash != hash_ )
-        sptree_.reset( new PointSearch(i_mesh) );
-
-    hash_ = inhash;
 }
 
 //------------------------------------------------------------------------------------------------------

@@ -11,8 +11,6 @@
 #ifndef mir_Bilinear_H
 #define mir_Bilinear_H
 
-#include <Eigen/Sparse>
-
 #include "mir/Weights.h"
 
 //-----------------------------------------------------------------------------

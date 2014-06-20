@@ -88,7 +88,8 @@ bool WeightCache::add(const std::string& key, Weights::Matrix& W )
     {
         Eigen::Triplet<double>& rt = trips[i];
         //ofs << (long)rt.row() << (long)rt.col() << (double)rt.value();
-        long x = rt.row(), y = rt.col();
+        long x = rt.row();
+        long y = rt.col();
         double w = rt.value();
 
         ofs.write(reinterpret_cast<const char*>(&x), sizeof(x));
@@ -160,9 +161,10 @@ bool WeightCache::get(const std::string& key, Weights::Matrix& W )
     fh.close();
     
     // check matrix is correctly sized
+    // note that Weigths::Matrix is row-major, so rows are outer size
 
-    ASSERT( W.rows() == inner );
-    ASSERT( W.cols() == outer );
+    ASSERT( W.rows() == outer );
+    ASSERT( W.cols() == inner );
 
     // set the weights from the triplets
 

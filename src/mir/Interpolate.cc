@@ -26,6 +26,7 @@
 #include "mir/FiniteElement.h"
 #include "mir/Interpolate.h"
 #include "mir/KNearest.h"
+#include "mir/PseudoLaplace.h"
 #include "mir/WeightCache.h"
 #include "mir/Weights.h"
 #include "mir/Masks.h"
@@ -79,7 +80,7 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 {
     ASSERT( fs_inp );
 
-    Log::info() << fs_inp->field_names() << std::endl;
+//    Log::info() << fs_inp->field_names() << std::endl;
 
     Grid::Ptr clone_grid = make_grid( context_.get("TargetGrid") );
     ASSERT( clone_grid );
@@ -104,6 +105,8 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
         w = new FiniteElement();
     if( method == std::string("kn") )
         w = new KNearest();
+    if( method == std::string("plap") )
+        w = new PseudoLaplace();
     if( method == std::string("bi") )
         w = new Bilinear();
 
