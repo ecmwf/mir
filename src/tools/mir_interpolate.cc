@@ -81,9 +81,6 @@ private:
 
 void MirInterpolate::run()
 {    
-    std::cout.precision(std::numeric_limits< double >::digits10);
-    std::cout << std::fixed;
-
     FieldSource source( context_ );
     Interpolate interpolator( context_ );
     FieldSink   sink( context_ );

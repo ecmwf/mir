@@ -15,7 +15,7 @@ configure_file( mir_version.cc.in  mir_version.cc )
 
 ### mir sources
 
-list( APPEND mir_srcs mir.h mir_version.cc )
+list( APPEND mir_srcs mir.h mir_version.cc mars_api.h mars_api.cc )
 
 list( APPEND mir_srcs
 Bilinear.h
