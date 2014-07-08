@@ -11,6 +11,7 @@
 #include <string>
 
 #include "eckit/value/Properties.h"
+#include "eckit/io/Buffer.h"
 
 #include "atlas/grid/FieldSet.h"
 
@@ -24,27 +25,18 @@ using namespace eckit;
 
 //------------------------------------------------------------------------------------------------------
 
-class MarsContext : private NonCopyable {
+class MarsContext : public eckit::Properties {
 
 public: // methods
 
     MarsContext() : frozen_(false) {}
 
-    void set( const std::string& k, const std::string& v)
-    {
-        props_.set(k,v);
-    }
-
     bool frozen() const { return frozen_; }
     void freeze() { frozen_ = true; }
-
-    const eckit::Properties& props() const { return props_; }
 
 private: // members
 
     bool frozen_;
-
-    eckit::Properties props_;
 
 };
 
@@ -58,7 +50,7 @@ mir_err mir_create_context( mir_context_ptr* ctxt )
     return MIR_SUCCESS;
 }
 
-mir_err mir_set_context_logger(mir_context_ptr, logger_proc)
+mir_err mir_set_context_logger(mir_context_ptr ctxt, logger_proc logger )
 {
     ///< @todo regist the logger for the library
     NOTIMP;
@@ -87,15 +79,21 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
 
     if(!mctxt->frozen()) mctxt->freeze();
 
+    bool shared = false;
+
     try
     {
-        FieldSet::Ptr fs_inp; ///< @todo create a fieldset from a buffer
+        Buffer b(const_cast<void*>(buffin), sin, shared);
 
-        Interpolate interpolator( mctxt->props() );
+        FieldSet::Ptr fs_inp( new FieldSet(b) ); ///< @todo create a fieldset from a buffer
+
+        Interpolate interpolator( *mctxt );
 
         FieldSet::Ptr fs_out = interpolator.eval( fs_inp );
 
-        (*buffout) = NULL; ///< @todo fill in the output buffer from the fieldset
+        FieldHandle::Data& f = fs_out->fields().at(0)->data();  // NOTE: we assume only one field as output
+        (*buffout) = f.data();
+        (*sout)    = f.extent(0);                               // NOTE: we assume that the array is with 1 rank (single column vector)
 
         ASSERT( fs_out );
     }
