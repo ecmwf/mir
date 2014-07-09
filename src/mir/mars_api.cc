@@ -41,6 +41,9 @@ private: // members
 };
 
 //------------------------------------------------------------------------------------------------------
+//
+
+extern "C" {
 
 mir_err mir_create_context( mir_context_ptr* ctxt )
 {
@@ -71,7 +74,7 @@ mir_err mir_set_context_value(mir_context_ptr ctxt, const char* key, const char*
     return MIR_SUCCESS;
 }
 
-mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, void **const buffout, size_t* sout)
+mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, void ** buffout, size_t* sout)
 {
     if(!ctxt) return MIR_INVALID_CONTEXT;
 
@@ -114,5 +117,7 @@ mir_err mir_destroy_context(mir_context_ptr ctxt)
     delete mctxt;
     return MIR_SUCCESS;
 }
+
+};
 
 //------------------------------------------------------------------------------------------------------

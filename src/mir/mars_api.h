@@ -37,7 +37,7 @@ mir_err mir_set_context_logger( mir_context_ptr, logger_proc );
 
 mir_err mir_set_context_value( mir_context_ptr, const char*, const char* );
 
-mir_err mir_interpolate( mir_context_ptr, const void *, size_t, void *const *, size_t* );
+mir_err mir_interpolate( mir_context_ptr, const void *, size_t, void **, size_t* );
 
 mir_err mir_destroy_context( mir_context_ptr );
 
