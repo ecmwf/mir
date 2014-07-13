@@ -32,6 +32,8 @@ KNearest.cc
 KNearest.h
 Masks.cc
 Masks.h
+Params.cc
+Params.h
 PointSearch.cc
 PointSearch.h
 PseudoLaplace.cc
