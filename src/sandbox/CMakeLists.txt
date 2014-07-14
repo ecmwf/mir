@@ -10,3 +10,8 @@ ecbuild_add_executable( TARGET  trilinos_sparse
 						SOURCES trilinos_sparse.cpp utils.h
 						LIBS    ${TRILINOS_LIBRARIES}
 						CONDITION TRILINOS_FOUND AND SANDBOX )
+
+ecbuild_add_executable( TARGET  params
+						SOURCES params.cpp 
+						CONDITION ECKIT_FOUND AND HAVE_SANDBOX )
+
