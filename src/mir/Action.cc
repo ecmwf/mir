@@ -8,14 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Tiago Quintino
-/// @date Jun 2014
-
-#ifndef mir_FieldSource_H
-#define mir_FieldSource_H
-
-#include "atlas/grid/FieldSet.h"
-
 #include "mir/Action.h"
 
 //------------------------------------------------------------------------------------------------------
@@ -24,22 +16,14 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class FieldSource : public Action {
+mir::Action::Action(const Params::Ptr& p) : params_(p)
+{   
+}
 
-    typedef atlas::grid::FieldSet FieldSet;
-
-public: // methods
-
-    FieldSource( const mir::Params::Ptr& );
-
-    virtual ~FieldSource();
-
-    FieldSet::Ptr eval() const;
-
-};
+Action::~Action()
+{
+}
 
 //------------------------------------------------------------------------------------------------------
 
 } // namespace mir
-
-#endif

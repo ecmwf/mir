@@ -9,14 +9,14 @@
  */
 
 /// @author Tiago Quintino
-/// @date Jun 2014
+/// @date July 2014
 
-#ifndef mir_FieldSource_H
-#define mir_FieldSource_H
+#ifndef mir_FieldContext_H
+#define mir_FieldContext_H
 
 #include "atlas/grid/FieldSet.h"
 
-#include "mir/Action.h"
+#include "mir/Params.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -24,17 +24,24 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class FieldSource : public Action {
+class FieldContext : public DispatchParams<FieldContext> {
+
+public: // types
 
     typedef atlas::grid::FieldSet FieldSet;
 
 public: // methods
 
-    FieldSource( const mir::Params::Ptr& );
+    FieldContext( const FieldSet::Ptr& );
+    virtual ~FieldContext();
 
-    virtual ~FieldSource();
+protected: // methods
 
-    FieldSet::Ptr eval() const;
+    value_t getBoundBox( const key_t& k, Params* r ) const;
+
+private: // members
+
+    FieldSet::Ptr fieldset_;
 
 };
 

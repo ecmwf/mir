@@ -11,12 +11,12 @@
 /// @author Tiago Quintino
 /// @date Jun 2014
 
-#ifndef mir_FieldSource_H
-#define mir_FieldSource_H
+#ifndef mir_Action_H
+#define mir_Action_H
 
-#include "atlas/grid/FieldSet.h"
+// #include "eckit/maths/Expression.h"
 
-#include "mir/Action.h"
+#include "mir/Params.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -24,17 +24,22 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class FieldSource : public Action {
+/// @todo this class will become an eckit::maths::Expression
 
-    typedef atlas::grid::FieldSet FieldSet;
+class Action : private eckit::NonCopyable {
 
 public: // methods
 
-    FieldSource( const mir::Params::Ptr& );
+    Action( const mir::Params::Ptr& );
 
-    virtual ~FieldSource();
+    virtual ~Action();
 
-    FieldSet::Ptr eval() const;
+    const mir::Params& params() const { return *params_; }
+    mir::Params& params() { return *params_; }
+
+private: // members
+
+    mir::Params::Ptr params_;
 
 };
 

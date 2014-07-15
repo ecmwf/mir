@@ -8,38 +8,36 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Tiago Quintino
-/// @date Jun 2014
+#include "atlas/grid/Grid.h"
 
-#ifndef mir_FieldSource_H
-#define mir_FieldSource_H
-
-#include "atlas/grid/FieldSet.h"
-
-#include "mir/Action.h"
+#include "mir/FieldContext.h"
 
 //------------------------------------------------------------------------------------------------------
+
+using namespace eckit;
+using namespace atlas::grid;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class FieldSource : public Action {
+FieldContext::FieldContext(const atlas::grid::FieldSet::Ptr& f) :
+    fieldset_(f)
+{
+    dispatch_["BoundBox"] = &FieldContext::getBoundBox;
+}
 
-    typedef atlas::grid::FieldSet FieldSet;
+FieldContext::~FieldContext()
+{
+}
 
-public: // methods
+Params::value_t FieldContext::getBoundBox(const Params::key_t& k, Params* r) const
+{
+    Grid::BoundBox bbox = fieldset_->grid().boundingBox();
 
-    FieldSource( const mir::Params::Ptr& );
-
-    virtual ~FieldSource();
-
-    FieldSet::Ptr eval() const;
-
-};
+    return Value( bbox );
+}
 
 //------------------------------------------------------------------------------------------------------
 
 } // namespace mir
-
-#endif

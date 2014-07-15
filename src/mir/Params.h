@@ -14,7 +14,8 @@
 #ifndef mir_Params_H
 #define mir_Params_H
 
-#include "eckit/memory/NonCopyable.h"
+#include "eckit/memory/Owned.h"
+#include "eckit/memory/SharedPtr.h"
 #include "eckit/value/Value.h"
 #include "eckit/value/Properties.h"
 
@@ -24,20 +25,24 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class Params : public eckit::NonCopyable {
+class Params : public eckit::Owned {
 
 public: // types
 
-    typedef std::shared_ptr<Params> Ptr;
+    typedef eckit::SharedPtr<Params> Ptr;
+
     typedef std::list< Params::Ptr > List;
+
     typedef std::string  key_t;
     typedef eckit::Value value_t;
 
 public: // methods
 
-    virtual bool exists( const key_t& key ) const = 0;
+    virtual ~Params();
 
-    virtual value_t get( const key_t& key ) const = 0;
+    Ptr self() { return Params::Ptr(this); }
+
+    virtual value_t get( const key_t& key,  Params* r = NULL ) const = 0;
 
 };
 
@@ -47,15 +52,17 @@ class CompositeParams : public Params {
 
 public: // methods
 
-    CompositeParams( const Params::List& plist );
+    CompositeParams();
+    CompositeParams( const Params::List& );
 
-    virtual bool exists( const key_t& key ) const;
+    virtual value_t get( const key_t& key,  Params* r = NULL ) const;
 
-    virtual value_t get( const key_t& key ) const;
+    void push_front( const Params::Ptr& p );
+    void push_back( const Params::Ptr& p );
 
 private: // members
 
-    Params::List params_;
+    Params::List plist_;
 
 };
 
@@ -67,23 +74,22 @@ public: // methods
 
     UserParams();
 
-    virtual bool exists( const key_t& key ) const;
-
-    virtual value_t get( const key_t& key ) const;
+    virtual value_t get( const key_t& key,  Params* r = NULL ) const;
 
 };
 
 //------------------------------------------------------------------------------------------------------
 
 class ValueParams : public Params {
+
 public: // methods
 
     ValueParams() : props_() {}
     ValueParams( const eckit::Properties& p ) : props_(p) {}
 
-    virtual bool exists( const key_t& key ) const;
+    virtual value_t get( const key_t& key,  Params* r = NULL ) const;
 
-    virtual value_t get( const key_t& key ) const;
+    void set( const key_t& k, const value_t& v );
 
 protected: // members
 
@@ -102,19 +108,14 @@ public: // methods
 
 public: // methods
 
-    virtual bool exists( const key_t& key ) const
+    virtual value_t get( const key_t& key,  Params* r = NULL ) const
     {
-        return ( parametrizations_.find(key) != parametrizations_.end() );
-    }
-
-    virtual value_t get( const key_t& key ) const
-    {
-        typename store_t::const_iterator i = parametrizations_.find(key);
-        if( i != parametrizations_.end() )
+        typename store_t::const_iterator i = dispatch_.find(key);
+        if( i != dispatch_.end() )
         {
             parametrizer_t fptr = i->second;
             const Derived* pobj = static_cast<const Derived*>(this);
-            return (pobj->*fptr)( key );
+            return (pobj->*fptr)( key, r );
         }
         else
             return Params::value_t();
@@ -122,26 +123,38 @@ public: // methods
 
 protected: // members
 
-    typedef Params::value_t ( Derived::* parametrizer_t ) ( const key_t& ) const ;
+    typedef Params::value_t ( Derived::* parametrizer_t ) ( const key_t&, Params* ) const ;
     typedef std::map< std::string, parametrizer_t > store_t;
 
-    store_t parametrizations_;
+    store_t dispatch_;
 
 };
 
 //-------------------------------------------------------------------------------------------
 
-class MarsParams : public DispatchParams<MarsParams> {
-public:
+class ScopedParams : public Params {
 
-    /// this will be build with a request
+public: // methods
 
-    value_t getUser( const key_t& ) const { return "rdx"; }
+    ScopedParams( const key_t& scope_key, const Params::Ptr& p );
 
-    MarsParams()
-    {
-        parametrizations_["mars.user"] = &MarsParams::getUser;
-    }
+    virtual value_t get( const key_t& key,  Params* r = NULL ) const;
+
+private: // members
+
+    key_t scope_;
+    Params::Ptr p_;
+
+};
+
+//-------------------------------------------------------------------------------------------
+
+class RuntimeParams : public Params {
+
+public: // methods
+
+    virtual value_t get( const key_t& key,  Params* r = NULL ) const;
+
 };
 
 //-------------------------------------------------------------------------------------------
@@ -155,6 +168,15 @@ public:
         props_.set( "grid", "1/1" );
         props_.set( "lsm", "hres.grib" );
     }
+};
+
+//-------------------------------------------------------------------------------------------
+
+class MirContext : public CompositeParams {
+public:
+
+    MirContext();
+
 };
 
 //------------------------------------------------------------------------------------------------------

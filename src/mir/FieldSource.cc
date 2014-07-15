@@ -21,7 +21,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-FieldSource::FieldSource(const eckit::Properties& context) : context_(context)
+FieldSource::FieldSource(const mir::Params::Ptr& p) : Action(p)
 {
 }
 
@@ -31,7 +31,7 @@ FieldSource::~FieldSource()
 
 FieldSet::Ptr FieldSource::eval() const
 {
-    FieldSet::Ptr fs_inp( new FieldSet( context_.get("PathIn") ) );
+    FieldSet::Ptr fs_inp( new FieldSet( params().get("Input.Path") ) );
 
     if( fs_inp->empty() )
         throw UserError("Input fieldset is empty", Here());

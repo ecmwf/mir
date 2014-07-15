@@ -24,7 +24,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-FieldSink::FieldSink(const eckit::Properties& context) : context_(context)
+FieldSink::FieldSink(const mir::Params::Ptr& p) : Action(p)
 {
 }
 
@@ -39,8 +39,8 @@ void FieldSink::eval(const FieldSet::Ptr& fs_out) const
     // GribWrite::write( *fs_out, path_out ); ///< @todo remove need for clone() with GridSpec's
 
     GribWrite::clone( *fs_out,
-                      context_.get("TargetGrid"),
-                      context_.get("PathOut") );
+                      params().get("Target.Grid"),
+                      params().get("Target.Path") );
 }
 
 //------------------------------------------------------------------------------------------------------

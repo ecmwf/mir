@@ -14,9 +14,9 @@
 #ifndef mir_FieldSink_H
 #define mir_FieldSink_H
 
-#include "eckit/value/Properties.h"
-
 #include "atlas/grid/FieldSet.h"
+
+#include "mir/Action.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -24,23 +24,17 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-/// @todo this class will become an eckit::maths::Expression
-
-class FieldSink : private eckit::NonCopyable {
+class FieldSink : public Action {
 
     typedef atlas::grid::FieldSet FieldSet;
 
 public: // methods
 
-    FieldSink( const eckit::Properties& );
+    FieldSink( const mir::Params::Ptr& );
 
     virtual ~FieldSink();
 
     void eval( const FieldSet::Ptr& ) const;
-
-private: // members
-
-    eckit::Properties context_;
 
 };
 

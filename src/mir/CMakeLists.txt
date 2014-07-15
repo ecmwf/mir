@@ -18,8 +18,12 @@ configure_file( mir_version.cc.in  mir_version.cc )
 list( APPEND mir_srcs mir.h mir_version.cc mars_api.h mars_api.cc )
 
 list( APPEND mir_srcs
+Action.h
+Action.cc
 Bilinear.h
 Bilinear.cc
+FieldContext.cc
+FieldContext.h
 FieldSink.cc
 FieldSink.h
 FieldSource.cc

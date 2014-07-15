@@ -30,6 +30,7 @@
 #include "mir/WeightCache.h"
 #include "mir/Weights.h"
 #include "mir/Masks.h"
+#include "mir/FieldContext.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -43,7 +44,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-Interpolate::Interpolate(const eckit::Properties& context) : context_(context)
+Interpolate::Interpolate(const mir::Params::Ptr& p) : Action(p)
 {
 }
 
@@ -80,9 +81,9 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 {
     ASSERT( fs_inp );
 
-//    Log::info() << fs_inp->field_names() << std::endl;
+    Params::Ptr rctxt( new FieldContext( fs_inp ) );
 
-    Grid::Ptr clone_grid = make_grid( context_.get("TargetGrid") );
+    Grid::Ptr clone_grid = make_grid( params().get("Target.Grid") );
     ASSERT( clone_grid );
 
     FieldSet::Ptr fs_out( new FieldSet( clone_grid, fs_inp->field_names() ) );
@@ -100,7 +101,7 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
     Weights* w;
 
     /// @todo make this into a factory
-    std::string method = context_.get("InterpolationMethod");
+    std::string method = params().get("InterpolationMethod");
     if( method == std::string("fe") )
         w = new FiniteElement();
     if( method == std::string("kn") )
@@ -116,7 +117,7 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
     w->assemble( fs_inp->grid(), fs_out->grid(), W );
 
     // apply mask if necessary
-    PathName mask_path = context_.get("Mask");
+    PathName mask_path = params().get("Mask");
     if( ! mask_path.asString().empty() )
     {
         FieldSet::Ptr fmask( new FieldSet( mask_path ) ); ASSERT( fmask );
