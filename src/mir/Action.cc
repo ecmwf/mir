@@ -16,7 +16,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-mir::Action::Action(const Params::Ptr& p) : params_(p)
+mir::Action::Action(const eckit::Params::Ptr& p) : params_(p)
 {   
 }
 

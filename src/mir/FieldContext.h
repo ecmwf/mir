@@ -24,7 +24,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class FieldContext : public DispatchParams<FieldContext> {
+class FieldContext : public eckit::DispatchParams<FieldContext> {
 
 public: // types
 
@@ -37,7 +37,7 @@ public: // methods
 
 protected: // methods
 
-    value_t getBoundBox( const key_t& k, Params* r ) const;
+    value_t getBoundBox( const key_t& k ) const;
 
 private: // members
 

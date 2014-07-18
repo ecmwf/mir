@@ -30,7 +30,7 @@ class FieldSource : public Action {
 
 public: // methods
 
-    FieldSource( const mir::Params::Ptr& );
+    FieldSource( const eckit::Params::Ptr& );
 
     virtual ~FieldSource();
 

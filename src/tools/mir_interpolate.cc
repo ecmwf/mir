@@ -61,12 +61,12 @@ public:
         if( clone_path.asString().empty() )
             throw UserError( "missing clone grid filename, parameter -g", Here());
 
-        user->set( "Target.Grid", Value(clone_path) );
+        user->set( "Target.GridPath", Value(clone_path) );
 
         PathName mask_path;
         mask_path = Resource<std::string>("-mask","");
         if( clone_path.asString().empty() )
-            throw UserError( "missing maks field grid filename, parameter -mask", Here());
+            throw UserError( "missing mask field grid filename, parameter -mask", Here());
 
         user->set( "Mask", Value(mask_path) );
 
@@ -81,7 +81,7 @@ public:
 
 private:
 
-    mir::Params::Ptr ctxt_;
+    eckit::Params::Ptr ctxt_;
 
 };
 

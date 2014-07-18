@@ -13,6 +13,9 @@
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/value/Properties.h"
 #include "eckit/io/Buffer.h"
+#include "eckit/log/CallbackChannel.h"
+#include "eckit/runtime/LibBehavior.h"
+#include "eckit/runtime/Context.h"
 
 #include "atlas/grid/FieldSet.h"
 
@@ -20,6 +23,7 @@
 
 #include "mir/Interpolate.h"
 #include "mir/Params.h"
+#include "mir/FieldContext.h"
 
 using namespace mir;
 using namespace atlas::grid;
@@ -31,22 +35,38 @@ class MarsParams : public DispatchParams<MarsParams> {
 
 public: // methods
 
-    MarsParams( const Params::Ptr& p) : values_(p)
+    MarsParams( const Params& p) : values_(p)
     {
+        dispatch_["Target.Grid"] = &MarsParams::getGrid; // examples
+        dispatch_["Target.Area"] = &MarsParams::getGrid;
     }
 
     /// this will be build with a request
 
-    value_t getUser( const key_t&, Params* ) const { return "rdx"; }
-
-    MarsParams()
+    value_t getGrid( const key_t& ) const
     {
-        dispatch_["mars.user"] = &MarsParams::getUser;
+        /// translate from GRID=1/1 to ValueMap( GridType = "regular_ll", LatInc = 1, LonInc = 1 )
+
+
+    }
+
+    value_t getArea( const key_t& ) const
+    {
+        /// translate from AREA=1/1/1/1 to ValueMap( GridType = "regular_ll", LatInc = 1, LonInc = 1 )
+    }
+
+    virtual value_t get( const key_t& k ) const
+    {
+        value_t v = values_.get(k);
+        if( !v.isNil() )
+            return v;
+        else
+            return DispatchParams<MarsParams>::get(k);
     }
 
 private: // members
 
-    Params::Ptr values_;
+    const Params& values_;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -55,11 +75,11 @@ class MarsContext : public MirContext {
 
 public: // methods
 
-    MarsContext() : frozen_(false)
+    MarsContext() :
+        MirContext( &runtime_ ),
+        frozen_(false)
     {
-        ValueParams* mars_values_ = new ValueParams(); ASSERT( mars_values_ );
-
-        Params::Ptr mars( new MarsParams( mars_values_->self() ) );
+        Params::Ptr mars( new MarsParams( mars_values_ ) );
 
         push_front( mars->self() );
     }
@@ -67,14 +87,16 @@ public: // methods
     bool frozen() const { return frozen_; }
     void freeze() { frozen_ = true; }
 
-    ValueParams& mars_values() { return *mars_values_; }
+    ValueParams& mars_values() { return mars_values_; }
+
+    void set_runtime( Params::Ptr p ) { runtime_ = p.get(); }
 
 private: // members
 
     bool frozen_;
 
-    ValueParams* mars_values_;
-
+    ValueParams mars_values_;
+    Params* runtime_;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -84,35 +106,55 @@ extern "C" {
 
 mir_err mir_create_context( mir_context_ptr* ctxt )
 {
+    DEBUG_HERE;
+
+    LibBehavior* b = new LibBehavior();
+
+    Context::instance().behavior( b );
+
     MarsContext* mctxt = new MarsContext();
     ASSERT( mctxt );
     *ctxt = reinterpret_cast<mir_context_ptr>(mctxt);
+
+    DEBUG_HERE;
+
     return MIR_SUCCESS;
 }
 
 mir_err mir_set_context_logger(mir_context_ptr ctxt, logger_proc logger )
 {
-    ///< @todo regist the logger for the library
-    NOTIMP;
+    dynamic_cast<CallbackChannel&>(Log::info()).register_callback( logger, &ctxt );
+
     return MIR_SUCCESS;
 }
 
 mir_err mir_set_context_value(mir_context_ptr ctxt, const char* key, const char* value)
 {
+    DEBUG_HERE;
+
     if(!ctxt) return MIR_INVALID_CONTEXT;
 
     MarsContext* mctxt = reinterpret_cast<MarsContext*>(ctxt);
 
+    DEBUG_VAR(mctxt->frozen());
+
     if( mctxt->frozen() )
         return MIR_CONTEXT_FROZEN;
 
-    mctxt->mars_values().set(key,value);
+    DEBUG_VAR(key);
+    DEBUG_VAR(value);
+
+    mctxt->mars_values().set( key, eckit::Value(value) );
+
+    DEBUG_HERE;
 
     return MIR_SUCCESS;
 }
 
 mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, void ** buffout, size_t* sout)
 {
+    DEBUG_HERE;
+
     if(!ctxt) return MIR_INVALID_CONTEXT;
 
     MarsContext* mctxt = reinterpret_cast<MarsContext*>(ctxt);
@@ -126,6 +168,9 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
         Buffer b(const_cast<void*>(buffin), sin, shared);
 
         FieldSet::Ptr fs_inp( new FieldSet(b) );                ///< @todo create a fieldset from a buffer
+
+        Params::Ptr inparams( new FieldContext(fs_inp) );
+        mctxt->set_runtime( inparams );
 
         Interpolate interpolator( mctxt->self() );
 
@@ -143,15 +188,22 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
         return MIR_FAILED;
     }
 
+    DEBUG_HERE;
+
     return MIR_SUCCESS;
 }
 
 mir_err mir_destroy_context(mir_context_ptr ctxt)
 {
+    DEBUG_HERE;
+
     if(!ctxt) return MIR_INVALID_CONTEXT;
 
     MarsContext* mctxt = reinterpret_cast<MarsContext*>(ctxt);
     delete mctxt;
+
+    DEBUG_HERE;
+
     return MIR_SUCCESS;
 }
 

@@ -30,16 +30,16 @@ class Action : private eckit::NonCopyable {
 
 public: // methods
 
-    Action( const mir::Params::Ptr& );
+    Action( const eckit::Params::Ptr& );
 
     virtual ~Action();
 
-    const mir::Params& params() const { return *params_; }
-    mir::Params& params() { return *params_; }
+    const eckit::Params& params() const { return *params_; }
+    eckit::Params& params() { return *params_; }
 
 private: // members
 
-    mir::Params::Ptr params_;
+    eckit::Params::Ptr params_;
 
 };
 

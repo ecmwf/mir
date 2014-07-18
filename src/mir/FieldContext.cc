@@ -31,7 +31,7 @@ FieldContext::~FieldContext()
 {
 }
 
-Params::value_t FieldContext::getBoundBox(const Params::key_t& k, Params* r) const
+Params::value_t FieldContext::getBoundBox(const Params::key_t& k ) const
 {
     Grid::BoundBox bbox = fieldset_->grid().boundingBox();
 

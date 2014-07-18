@@ -21,7 +21,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-FieldSource::FieldSource(const mir::Params::Ptr& p) : Action(p)
+FieldSource::FieldSource(const eckit::Params::Ptr& p) : Action(p)
 {
 }
 

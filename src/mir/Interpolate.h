@@ -32,7 +32,7 @@ class Interpolate : public Action {
 
 public: // methods
 
-    Interpolate( const mir::Params::Ptr& );
+    Interpolate( const eckit::Params::Ptr& );
 
     virtual ~Interpolate();
 

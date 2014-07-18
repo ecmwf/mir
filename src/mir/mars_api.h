@@ -29,7 +29,7 @@ typedef mir_context*        mir_context_ptr;
 
 typedef int         mir_err;
 
-typedef void ( *logger_proc ) ( mir_context_ptr*, int, const char * );
+typedef void ( *logger_proc ) ( void*, const char * );
 
 mir_err mir_create_context( mir_context_ptr* );
 
@@ -40,7 +40,6 @@ mir_err mir_set_context_value( mir_context_ptr, const char*, const char* );
 mir_err mir_interpolate( mir_context_ptr, const void *, size_t, void **, size_t* );
 
 mir_err mir_destroy_context( mir_context_ptr );
-
 
 #define MIR_SUCCESS                         0
 #define MIR_FAILED                         -1

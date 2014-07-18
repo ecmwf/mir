@@ -33,12 +33,4 @@
 #cmakedefine HAS_CXX11_TYPE_TRAITS
 #cmakedefine HAS_CXX11_UNIQUE_PTR
 
-#ifndef NDEBUG
-#define DBG     std::cout << Here() << std::endl;
-#define DBGX(x) std::cout << #x << " -> " << x << std::endl;
-#else
-#define DBG
-#define DBGX(x)
-#endif
-
 #endif // mir_config_h

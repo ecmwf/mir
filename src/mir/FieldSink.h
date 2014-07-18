@@ -30,7 +30,7 @@ class FieldSink : public Action {
 
 public: // methods
 
-    FieldSink( const mir::Params::Ptr& );
+    FieldSink( const eckit::Params::Ptr& );
 
     virtual ~FieldSink();
 

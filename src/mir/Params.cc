@@ -18,98 +18,28 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-Params::~Params()
-{
-
-}
-
-//------------------------------------------------------------------------------------------------------
-
-CompositeParams::CompositeParams() : plist_() {}
-
-CompositeParams::CompositeParams(const Params::List& plist) : plist_(plist) {}
-
-CompositeParams::value_t CompositeParams::get( const key_t& key,  Params* r ) const
-{
-    for( Params::List::const_iterator citr = plist_.begin(); citr != plist_.end(); ++citr )
-    {
-        Value v = (*citr)->get(key,r);
-        if( !v.isNil() )
-            return v;
-    }
-    return Value();
-}
-
-void CompositeParams::push_front(const Params::Ptr& p)
-{
-    plist_.push_front(p);
-}
-
-void CompositeParams::push_back(const Params::Ptr& p)
-{
-    plist_.push_back(p);
-}
-
-//------------------------------------------------------------------------------------------------------
-
-Params::value_t ValueParams::get(const key_t& key, Params* r) const
-{
-    return props_.get(key); // returns Value Nil if doesn't exist
-}
-
-void ValueParams::set(const Params::key_t& k, const Params::value_t& v)
-{
-    props_.set(k,v);
-}
-
-//------------------------------------------------------------------------------------------------------
-
 UserParams::UserParams()
 {
 }
 
 
-Params::value_t UserParams::get(const Params::key_t& key, Params* r) const
+Params::value_t UserParams::get(const  key_t& key) const
 {
     NOTIMP;
 }
 
 //------------------------------------------------------------------------------------------------------
 
-Params::value_t RuntimeParams::get(const Params::key_t& key, Params* r) const
+MirContext::MirContext( Params** r )
 {
-    if( r )
-        return r->get(key,r);
-    else
-        return value_t();
-}
-
-//------------------------------------------------------------------------------------------------------
-
-MirContext::MirContext()
-{
-    Params::Ptr runtime( new RuntimeParams() );
-    Params::Ptr input( new ScopedParams( "Input", runtime ) );
+    Params::Ptr runtime( new RuntimeParams(r) );
+    Params::Ptr input( new ScopeParams( "Input", runtime ) );
 
     push_back( input );
 
-    Params::Ptr ecmwf( new ECMWFParams() );
+    Params::Ptr ecmwf( new ProfileParams() );
 
     push_back( ecmwf );
-}
-
-//------------------------------------------------------------------------------------------------------
-
-ScopedParams::ScopedParams(const Params::key_t& scope_key, const Params::Ptr& p ) :
-    scope_(scope_key),
-    p_(p)
-{
-    ASSERT(p_);
-}
-
-Params::value_t ScopedParams::get(const Params::key_t& key, Params *r) const
-{
-    return p_->get( scope_ + "." + key , r);
 }
 
 //------------------------------------------------------------------------------------------------------

@@ -21,6 +21,7 @@
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/GribRead.h"
+#include "atlas/grid/GridFactory.h"
 
 #include "mir/Bilinear.h"
 #include "mir/FiniteElement.h"
@@ -44,7 +45,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-Interpolate::Interpolate(const mir::Params::Ptr& p) : Action(p)
+Interpolate::Interpolate(const eckit::Params::Ptr& p) : Action(p)
 {
 }
 
@@ -83,10 +84,22 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 
     Params::Ptr rctxt( new FieldContext( fs_inp ) );
 
-    Grid::Ptr clone_grid = make_grid( params().get("Target.Grid") );
-    ASSERT( clone_grid );
+    // clone grid
 
-    FieldSet::Ptr fs_out( new FieldSet( clone_grid, fs_inp->field_names() ) );
+    Grid::Ptr target_grid;
+
+    if( params().get("Target.GridPath").isNil() )
+    {
+        target_grid = GridFactory::create( eckit::UnScopeParams( "Target", params().self() ) );
+    }
+    else
+    {
+        target_grid = make_grid( params().get("Target.GridPath") );
+    }
+
+    ASSERT( target_grid );
+
+    FieldSet::Ptr fs_out( new FieldSet( target_grid, fs_inp->field_names() ) );
     ASSERT( fs_out );
 
     size_t npts_inp = fs_inp->grid().nPoints();
