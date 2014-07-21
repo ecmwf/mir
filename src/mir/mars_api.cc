@@ -87,6 +87,8 @@ public: // methods
         push_front( mars->self() );
     }
 
+    virtual ~MarsContext() { std::cout << "Destroying MarsContext" << std::endl; }
+
     bool frozen() const { return frozen_; }
     void freeze() { frozen_ = true; }
 
@@ -145,12 +147,14 @@ mir_err mir_set_context_value(mir_context_ptr ctxt, const char* key, const char*
     return MIR_SUCCESS;
 }
 
-mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, void *buffout, size_t* sout)
+mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, void **buffout, size_t* sout)
 {
     DEBUG_HERE;
 
     if(!ctxt) return MIR_INVALID_CONTEXT;
 
+    ASSERT( buffout );
+    ASSERT( *buffout == NULL );
     ASSERT( sout );
 
     MarsContext* mctxt = reinterpret_cast<MarsContext*>(ctxt);
@@ -161,44 +165,27 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
 
     try
     {
-        DEBUG_HERE;
-
         Buffer b(const_cast<void*>(buffin), sin, shared);
 
         FieldSet::Ptr fs_inp( new FieldSet(b) );                ///< @todo create a fieldset from a buffer
 
-        DEBUG_HERE;
-
         Params::Ptr inparams( new FieldContext(fs_inp) );
         mctxt->set_runtime( inparams );
-
-        DEBUG_HERE;
 
         Interpolate interpolator( mctxt->self() );
 
         FieldSet::Ptr fs_out( interpolator.eval( fs_inp ) );
         ASSERT( fs_out );
 
-        DEBUG_VAR( fs_out->size() );
-
-        DEBUG_HERE;
-
         FieldHandle& f = (*fs_out)[0];  // NOTE: we assume only one field as output
-
-        DEBUG_HERE;
 
         GribHandle::Ptr gh = GribWrite::write(f);
 
-        DEBUG_HERE;
         *sout = gh->write( mctxt->buffer() );
 
-        DEBUG_HERE;
+        *buffout = mctxt->buffer();
 
-        buffout = mctxt->buffer();
-
-        ASSERT( buffout );
-
-        DEBUG_HERE;
+        ASSERT( *buffout );
     }
     catch( eckit::Exception& e )
     {
@@ -206,21 +193,18 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
         return MIR_FAILED;
     }
 
-    DEBUG_HERE;
-
     return MIR_SUCCESS;
 }
 
 mir_err mir_destroy_context(mir_context_ptr ctxt)
 {
-    DEBUG_HERE;
-
     if(!ctxt) return MIR_INVALID_CONTEXT;
 
     MarsContext* mctxt = reinterpret_cast<MarsContext*>(ctxt);
-    delete mctxt;
 
-    DEBUG_HERE;
+/// @todo this fails with memory fault, we probably have memory corruption somewhere...
+//    if(mctxt)
+//        delete mctxt;
 
     return MIR_SUCCESS;
 }
