@@ -39,23 +39,15 @@ public: // methods
 
     MarsParams( const Params& p) : values_(p)
     {
-        dispatch_["Target.Grid"] = &MarsParams::getGrid; // examples
-        dispatch_["Target.Area"] = &MarsParams::getArea;
+//        dispatch_["Target.Grid"] = &MarsParams::getGrid; // examples
+//        dispatch_["Target.Area"] = &MarsParams::getArea;
     }
 
-    /// this will be build with a request
-
-    value_t getGrid( const key_t& ) const
-    {
-        /// translate from GRID=1/1 to ValueMap( GridType = "regular_ll", LatInc = 1, LonInc = 1 )
-
-
-    }
-
-    value_t getArea( const key_t& ) const
-    {
-        /// translate from AREA=1/1/1/1 to ValueMap( GridType = "regular_ll", LatInc = 1, LonInc = 1 )
-    }
+//    /// this will be build with a request
+//    value_t getGrid( const key_t& ) const
+//    {
+//        /// translate from GRID=1/1 to ValueMap( GridType = "regular_ll", LatInc = 1, LonInc = 1 )
+//    }
 
     virtual value_t get( const key_t& k ) const
     {
@@ -161,11 +153,9 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
 
     if(!mctxt->frozen()) mctxt->freeze();
 
-    bool shared = false;
-
     try
     {
-        Buffer b(const_cast<void*>(buffin), sin, shared);
+        Buffer b(const_cast<void*>(buffin), sin, false);
 
         FieldSet::Ptr fs_inp( new FieldSet(b) );                ///< @todo create a fieldset from a buffer
 
@@ -203,7 +193,7 @@ mir_err mir_destroy_context(mir_context_ptr ctxt)
     MarsContext* mctxt = reinterpret_cast<MarsContext*>(ctxt);
 
 /// @todo this fails with memory fault, we probably have memory corruption somewhere...
-//    if(mctxt)
+//    if( mctxt )
 //        delete mctxt;
 
     return MIR_SUCCESS;

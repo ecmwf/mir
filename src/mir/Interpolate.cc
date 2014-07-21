@@ -83,11 +83,7 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 {
     ASSERT( fs_inp );
 
-    DEBUG_HERE;
-
-    GribWrite::write( *fs_inp, "inp.grib" );
-
-    DEBUG_HERE;
+//    GribWrite::write( *fs_inp, "inp.grib" );
 
 //    Params::Ptr rctxt( new FieldContext( fs_inp ) );
 
@@ -115,7 +111,6 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 
     DEBUG_VAR( npts_inp );
     DEBUG_VAR( npts_out );
-
     DEBUG_VAR( params() );
 
     std::cout << ">>> interpolation points " << npts_inp << " -> " << npts_out << std::endl;
@@ -137,8 +132,6 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
     if( method == std::string("bi") )
         w = new Bilinear();
 
-    DEBUG_HERE;
-
     if( !w )
         throw UserError( std::string("Unknown Interpolator type ") + method , Here() );
 
@@ -158,8 +151,6 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
         Masks m;
         m.assemble( (*fmask)[0], fs_inp->grid(), fs_out->grid(), W);
     }
-
-    DEBUG_HERE;
 
     // interpolation -- multiply interpolant matrix with field vector
 
@@ -193,12 +184,7 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
         fo.grib( fi.grib().clone() );
     }
 
-
-    DEBUG_HERE;
-
-    GribWrite::write( *fs_out, "out.grib" );
-
-    DEBUG_VAR( fs_out->size() );
+//    GribWrite::write( *fs_out, "out.grib" );
 
     return fs_out;
 }
