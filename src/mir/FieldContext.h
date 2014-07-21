@@ -35,10 +35,6 @@ public: // methods
     FieldContext( const FieldSet::Ptr& );
     virtual ~FieldContext();
 
-protected: // methods
-
-    value_t getBoundBox( const key_t& k ) const;
-
 private: // members
 
     FieldSet::Ptr fieldset_;

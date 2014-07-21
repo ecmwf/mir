@@ -8,6 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/filesystem/PathName.h"
+#include "eckit/config/Resource.h"
+
 #include "mir/Params.h"
 
 //------------------------------------------------------------------------------------------------------
@@ -20,12 +23,17 @@ namespace mir {
 
 UserParams::UserParams()
 {
+    dispatch_["MaskPath"] = &UserParams::getMask;
 }
 
-
-Params::value_t UserParams::get(const  key_t& key) const
+Params::value_t UserParams::getMask(const Params::key_t &) const
 {
-    NOTIMP;
+    std::string mpath = Resource<std::string>("-mask",""); // mask may be empty
+
+    if( !mpath.empty() )
+        return value_t( mpath );
+    else
+        return value_t();
 }
 
 //------------------------------------------------------------------------------------------------------

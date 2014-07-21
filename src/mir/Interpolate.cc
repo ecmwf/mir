@@ -21,6 +21,7 @@
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/GribRead.h"
+#include "atlas/grid/GribWrite.h"
 #include "atlas/grid/GridFactory.h"
 
 #include "mir/Bilinear.h"
@@ -82,7 +83,13 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 {
     ASSERT( fs_inp );
 
-    Params::Ptr rctxt( new FieldContext( fs_inp ) );
+    DEBUG_HERE;
+
+    GribWrite::write( *fs_inp, "inp.grib" );
+
+    DEBUG_HERE;
+
+//    Params::Ptr rctxt( new FieldContext( fs_inp ) );
 
     // clone grid
 
@@ -94,16 +101,22 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
     }
     else
     {
-        target_grid = make_grid( params().get("Target.GridPath") );
+        target_grid = make_grid( params()["Target.GridPath"] );
     }
 
     ASSERT( target_grid );
 
     FieldSet::Ptr fs_out( new FieldSet( target_grid, fs_inp->field_names() ) );
+
     ASSERT( fs_out );
 
     size_t npts_inp = fs_inp->grid().nPoints();
     size_t npts_out = fs_out->grid().nPoints();
+
+    DEBUG_VAR( npts_inp );
+    DEBUG_VAR( npts_out );
+
+    DEBUG_VAR( params() );
 
     std::cout << ">>> interpolation points " << npts_inp << " -> " << npts_out << std::endl;
 
@@ -114,7 +127,7 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
     Weights* w;
 
     /// @todo make this into a factory
-    std::string method = params().get("InterpolationMethod");
+    std::string method = params()["InterpolationMethod"];
     if( method == std::string("fe") )
         w = new FiniteElement();
     if( method == std::string("kn") )
@@ -124,15 +137,19 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
     if( method == std::string("bi") )
         w = new Bilinear();
 
+    DEBUG_HERE;
+
     if( !w )
         throw UserError( std::string("Unknown Interpolator type ") + method , Here() );
 
     w->assemble( fs_inp->grid(), fs_out->grid(), W );
 
     // apply mask if necessary
-    PathName mask_path = params().get("Mask");
-    if( ! mask_path.asString().empty() )
+
+    if( ! params().get("MaskPath").isNil() )
     {
+        PathName mask_path = params()["MaskPath"];
+
         FieldSet::Ptr fmask( new FieldSet( mask_path ) ); ASSERT( fmask );
 
         if( fmask->size() != 1 )
@@ -141,6 +158,8 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
         Masks m;
         m.assemble( (*fmask)[0], fs_inp->grid(), fs_out->grid(), W);
     }
+
+    DEBUG_HERE;
 
     // interpolation -- multiply interpolant matrix with field vector
 
@@ -173,6 +192,13 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
         // metadata transfer by cloning the grib handle
         fo.grib( fi.grib().clone() );
     }
+
+
+    DEBUG_HERE;
+
+    GribWrite::write( *fs_out, "out.grib" );
+
+    DEBUG_VAR( fs_out->size() );
 
     return fs_out;
 }

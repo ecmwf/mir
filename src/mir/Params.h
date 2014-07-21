@@ -24,13 +24,15 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class UserParams : public eckit::Params {
+class UserParams : public eckit::DispatchParams<UserParams> {
 
 public: // methods
 
     UserParams();
 
-    virtual value_t get( const key_t& key ) const;
+private: // methods
+
+    value_t getMask( const key_t& ) const;
 
 };
 
@@ -41,8 +43,8 @@ public:
 
     ProfileParams()
     {
-        props_.set( "resol", "auto" );
-        props_.set( "lsm", "hres.grib" );
+        props_.set( "InterpolationMethod", "fe" );
+//        props_.set( "lsm", "hres.grib" );
     }
 };
 

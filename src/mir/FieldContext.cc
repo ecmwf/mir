@@ -24,18 +24,10 @@ namespace mir {
 FieldContext::FieldContext(const atlas::grid::FieldSet::Ptr& f) :
     fieldset_(f)
 {
-    dispatch_["BoundBox"] = &FieldContext::getBoundBox;
 }
 
 FieldContext::~FieldContext()
 {
-}
-
-Params::value_t FieldContext::getBoundBox(const Params::key_t& k ) const
-{
-    Grid::BoundBox bbox = fieldset_->grid().boundingBox();
-
-    return Value( bbox );
 }
 
 //------------------------------------------------------------------------------------------------------

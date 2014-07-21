@@ -63,13 +63,6 @@ public:
 
         user->set( "Target.GridPath", Value(clone_path) );
 
-        PathName mask_path;
-        mask_path = Resource<std::string>("-mask","");
-        if( clone_path.asString().empty() )
-            throw UserError( "missing mask field grid filename, parameter -mask", Here());
-
-        user->set( "Mask", Value(mask_path) );
-
         std::string method = Resource<std::string>("-m;$MIR_METHOD","fe");
 
         user->set( "InterpolationMethod", method );

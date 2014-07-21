@@ -18,6 +18,7 @@
 #include "eckit/runtime/Context.h"
 
 #include "atlas/grid/FieldSet.h"
+#include "atlas/grid/GribWrite.h"
 
 #include "mir/mars_api.h"
 
@@ -26,6 +27,7 @@
 #include "mir/FieldContext.h"
 
 using namespace mir;
+using namespace atlas;
 using namespace atlas::grid;
 using namespace eckit;
 
@@ -38,7 +40,7 @@ public: // methods
     MarsParams( const Params& p) : values_(p)
     {
         dispatch_["Target.Grid"] = &MarsParams::getGrid; // examples
-        dispatch_["Target.Area"] = &MarsParams::getGrid;
+        dispatch_["Target.Area"] = &MarsParams::getArea;
     }
 
     /// this will be build with a request
@@ -77,7 +79,8 @@ public: // methods
 
     MarsContext() :
         MirContext( &runtime_ ),
-        frozen_(false)
+        frozen_(false),
+        buffer_( Resource<size_t>( "MirFieldBufferSize;$MIR_FIELD_BUFFER_SIZE", 60*1024*1024) )
     {
         Params::Ptr mars( new MarsParams( mars_values_ ) );
 
@@ -91,12 +94,16 @@ public: // methods
 
     void set_runtime( Params::Ptr p ) { runtime_ = p.get(); }
 
+    Buffer& buffer() { return buffer_; }
+
 private: // members
 
     bool frozen_;
 
     ValueParams mars_values_;
     Params* runtime_;
+
+    Buffer buffer_;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -106,8 +113,6 @@ extern "C" {
 
 mir_err mir_create_context( mir_context_ptr* ctxt )
 {
-    DEBUG_HERE;
-
     LibBehavior* b = new LibBehavior();
 
     Context::instance().behavior( b );
@@ -115,8 +120,6 @@ mir_err mir_create_context( mir_context_ptr* ctxt )
     MarsContext* mctxt = new MarsContext();
     ASSERT( mctxt );
     *ctxt = reinterpret_cast<mir_context_ptr>(mctxt);
-
-    DEBUG_HERE;
 
     return MIR_SUCCESS;
 }
@@ -130,32 +133,25 @@ mir_err mir_set_context_logger(mir_context_ptr ctxt, logger_proc logger )
 
 mir_err mir_set_context_value(mir_context_ptr ctxt, const char* key, const char* value)
 {
-    DEBUG_HERE;
-
     if(!ctxt) return MIR_INVALID_CONTEXT;
 
     MarsContext* mctxt = reinterpret_cast<MarsContext*>(ctxt);
 
-    DEBUG_VAR(mctxt->frozen());
-
     if( mctxt->frozen() )
         return MIR_CONTEXT_FROZEN;
 
-    DEBUG_VAR(key);
-    DEBUG_VAR(value);
-
     mctxt->mars_values().set( key, eckit::Value(value) );
-
-    DEBUG_HERE;
 
     return MIR_SUCCESS;
 }
 
-mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, void ** buffout, size_t* sout)
+mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, void *buffout, size_t* sout)
 {
     DEBUG_HERE;
 
     if(!ctxt) return MIR_INVALID_CONTEXT;
+
+    ASSERT( sout );
 
     MarsContext* mctxt = reinterpret_cast<MarsContext*>(ctxt);
 
@@ -165,22 +161,44 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
 
     try
     {
+        DEBUG_HERE;
+
         Buffer b(const_cast<void*>(buffin), sin, shared);
 
         FieldSet::Ptr fs_inp( new FieldSet(b) );                ///< @todo create a fieldset from a buffer
 
+        DEBUG_HERE;
+
         Params::Ptr inparams( new FieldContext(fs_inp) );
         mctxt->set_runtime( inparams );
 
+        DEBUG_HERE;
+
         Interpolate interpolator( mctxt->self() );
 
-        FieldSet::Ptr fs_out = interpolator.eval( fs_inp );
-
-        FieldHandle::Data& f = fs_out->fields().at(0)->data();  // NOTE: we assume only one field as output
-        (*buffout) = f.data();
-        (*sout)    = f.extent(0);                               // NOTE: we assume that the array is with 1 rank (single column vector)
-
+        FieldSet::Ptr fs_out( interpolator.eval( fs_inp ) );
         ASSERT( fs_out );
+
+        DEBUG_VAR( fs_out->size() );
+
+        DEBUG_HERE;
+
+        FieldHandle& f = (*fs_out)[0];  // NOTE: we assume only one field as output
+
+        DEBUG_HERE;
+
+        GribHandle::Ptr gh = GribWrite::write(f);
+
+        DEBUG_HERE;
+        *sout = gh->write( mctxt->buffer() );
+
+        DEBUG_HERE;
+
+        buffout = mctxt->buffer();
+
+        ASSERT( buffout );
+
+        DEBUG_HERE;
     }
     catch( eckit::Exception& e )
     {
