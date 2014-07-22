@@ -21,6 +21,8 @@
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/GribRead.h"
+#include "atlas/grid/GribWrite.h"
+
 
 #include "mir/Bilinear.h"
 #include "mir/FiniteElement.h"
@@ -30,6 +32,7 @@
 #include "mir/WeightCache.h"
 #include "mir/Weights.h"
 #include "mir/Masks.h"
+#include "mir/FieldContext.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -43,7 +46,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-Interpolate::Interpolate(const eckit::Properties& context) : context_(context)
+Interpolate::Interpolate(const eckit::Params::Ptr& p) : Action(p)
 {
 }
 
@@ -80,16 +83,35 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 {
     ASSERT( fs_inp );
 
-//    Log::info() << fs_inp->field_names() << std::endl;
+//    GribWrite::write( *fs_inp, "inp.grib" );
 
-    Grid::Ptr clone_grid = make_grid( context_.get("TargetGrid") );
-    ASSERT( clone_grid );
+//    Params::Ptr rctxt( new FieldContext( fs_inp ) );
 
-    FieldSet::Ptr fs_out( new FieldSet( clone_grid, fs_inp->field_names() ) );
+    // clone grid
+
+    Grid::Ptr target_grid;
+
+    if( params().get("Target.GridPath").isNil() )
+    {
+        target_grid = GridFactory::create( eckit::UnScopeParams( "Target", params().self() ) );
+    }
+    else
+    {
+        target_grid = make_grid( params()["Target.GridPath"] );
+    }
+
+    ASSERT( target_grid );
+
+    FieldSet::Ptr fs_out( new FieldSet( target_grid, fs_inp->field_names() ) );
+
     ASSERT( fs_out );
 
     size_t npts_inp = fs_inp->grid().nPoints();
     size_t npts_out = fs_out->grid().nPoints();
+
+    DEBUG_VAR( npts_inp );
+    DEBUG_VAR( npts_out );
+    DEBUG_VAR( params() );
 
     std::cout << ">>> interpolation points " << npts_inp << " -> " << npts_out << std::endl;
 
@@ -100,7 +122,7 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
     Weights* w;
 
     /// @todo make this into a factory
-    std::string method = context_.get("InterpolationMethod");
+    std::string method = params()["InterpolationMethod"];
     if( method == std::string("fe") )
         w = new FiniteElement();
     if( method == std::string("kn") )
@@ -116,9 +138,11 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
     w->assemble( fs_inp->grid(), fs_out->grid(), W );
 
     // apply mask if necessary
-    PathName mask_path = context_.get("Mask");
-    if( ! mask_path.asString().empty() )
+
+    if( ! params().get("MaskPath").isNil() )
     {
+        PathName mask_path = params()["MaskPath"];
+
         FieldSet::Ptr fmask( new FieldSet( mask_path ) ); ASSERT( fmask );
 
         if( fmask->size() != 1 )
@@ -159,6 +183,8 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
         // metadata transfer by cloning the grib handle
         fo.grib( fi.grib().clone() );
     }
+
+//    GribWrite::write( *fs_out, "out.grib" );
 
     return fs_out;
 }

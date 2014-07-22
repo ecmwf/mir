@@ -14,9 +14,9 @@
 #ifndef mir_Interpolate_H
 #define mir_Interpolate_H
 
-#include "eckit/value/Properties.h"
-
 #include "atlas/grid/FieldSet.h"
+
+#include "mir/Action.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -26,21 +26,17 @@ namespace mir {
 
 /// @todo this class will become an eckit::maths::Expression
 
-class Interpolate : private eckit::NonCopyable {
+class Interpolate : public Action {
 
     typedef atlas::grid::FieldSet FieldSet;
 
 public: // methods
 
-    Interpolate( const eckit::Properties& );
+    Interpolate( const eckit::Params::Ptr& );
 
     virtual ~Interpolate();
 
     FieldSet::Ptr eval( const FieldSet::Ptr& in ) const;
-
-private: // members
-
-    eckit::Properties context_;
 
 };
 

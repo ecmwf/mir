@@ -8,35 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-#include "mir/FieldSource.h"
+#include "mir/Action.h"
 
 //------------------------------------------------------------------------------------------------------
-
-using namespace eckit;
-using namespace atlas;
-using namespace atlas::grid;
-using namespace mir;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-FieldSource::FieldSource(const eckit::Params::Ptr& p) : Action(p)
-{
+mir::Action::Action(const eckit::Params::Ptr& p) : params_(p)
+{   
 }
 
-FieldSource::~FieldSource()
+Action::~Action()
 {
-}
-
-FieldSet::Ptr FieldSource::eval() const
-{
-	FieldSet::Ptr fs_inp( new FieldSet( params()["Input.Path"] ) );
-
-    if( fs_inp->empty() )
-        throw UserError("Input fieldset is empty", Here());
-
-    return fs_inp;
 }
 
 //------------------------------------------------------------------------------------------------------

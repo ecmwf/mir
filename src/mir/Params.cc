@@ -8,35 +8,46 @@
  * does it submit to any jurisdiction.
  */
 
-#include "mir/FieldSource.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/config/Resource.h"
+
+#include "mir/Params.h"
 
 //------------------------------------------------------------------------------------------------------
 
 using namespace eckit;
-using namespace atlas;
-using namespace atlas::grid;
-using namespace mir;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-FieldSource::FieldSource(const eckit::Params::Ptr& p) : Action(p)
+UserParams::UserParams()
 {
+    dispatch_["MaskPath"] = &UserParams::getMask;
 }
 
-FieldSource::~FieldSource()
+Params::value_t UserParams::getMask(const Params::key_t &) const
 {
+    std::string mpath = Resource<std::string>("-mask",""); // mask may be empty
+
+    if( !mpath.empty() )
+        return value_t( mpath );
+    else
+        return value_t();
 }
 
-FieldSet::Ptr FieldSource::eval() const
+//------------------------------------------------------------------------------------------------------
+
+MirContext::MirContext( Params** r )
 {
-	FieldSet::Ptr fs_inp( new FieldSet( params()["Input.Path"] ) );
+    Params::Ptr runtime( new RuntimeParams(r) );
+    Params::Ptr input( new ScopeParams( "Input", runtime ) );
 
-    if( fs_inp->empty() )
-        throw UserError("Input fieldset is empty", Here());
+    push_back( input );
 
-    return fs_inp;
+    Params::Ptr ecmwf( new ProfileParams() );
+
+    push_back( ecmwf );
 }
 
 //------------------------------------------------------------------------------------------------------

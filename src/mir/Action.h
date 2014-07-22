@@ -8,37 +8,43 @@
  * does it submit to any jurisdiction.
  */
 
-#include "mir/FieldSource.h"
+/// @author Tiago Quintino
+/// @date Jun 2014
+
+#ifndef mir_Action_H
+#define mir_Action_H
+
+// #include "eckit/maths/Expression.h"
+
+#include "mir/Params.h"
 
 //------------------------------------------------------------------------------------------------------
-
-using namespace eckit;
-using namespace atlas;
-using namespace atlas::grid;
-using namespace mir;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-FieldSource::FieldSource(const eckit::Params::Ptr& p) : Action(p)
-{
-}
+/// @todo this class will become an eckit::maths::Expression
 
-FieldSource::~FieldSource()
-{
-}
+class Action : private eckit::NonCopyable {
 
-FieldSet::Ptr FieldSource::eval() const
-{
-	FieldSet::Ptr fs_inp( new FieldSet( params()["Input.Path"] ) );
+public: // methods
 
-    if( fs_inp->empty() )
-        throw UserError("Input fieldset is empty", Here());
+    Action( const eckit::Params::Ptr& );
 
-    return fs_inp;
-}
+    virtual ~Action();
+
+    const eckit::Params& params() const { return *params_; }
+    eckit::Params& params() { return *params_; }
+
+private: // members
+
+    eckit::Params::Ptr params_;
+
+};
 
 //------------------------------------------------------------------------------------------------------
 
 } // namespace mir
+
+#endif

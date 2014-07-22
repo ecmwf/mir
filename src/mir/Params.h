@@ -9,14 +9,14 @@
  */
 
 /// @author Tiago Quintino
-/// @date Jun 2014
+/// @date July 2014
 
-#ifndef mir_FieldSource_H
-#define mir_FieldSource_H
+#ifndef mir_Params_H
+#define mir_Params_H
 
-#include "atlas/grid/FieldSet.h"
-
-#include "mir/Action.h"
+#include "eckit/memory/Owned.h"
+#include "eckit/memory/SharedPtr.h"
+#include "eckit/value/Params.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -24,17 +24,36 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class FieldSource : public Action {
-
-    typedef atlas::grid::FieldSet FieldSet;
+class UserParams : public eckit::DispatchParams<UserParams> {
 
 public: // methods
 
-    FieldSource( const eckit::Params::Ptr& );
+    UserParams();
 
-    virtual ~FieldSource();
+private: // methods
 
-    FieldSet::Ptr eval() const;
+    value_t getMask( const key_t& ) const;
+
+};
+
+//-------------------------------------------------------------------------------------------
+
+class ProfileParams : public eckit::ValueParams {
+public:
+
+    ProfileParams()
+    {
+        props_.set( "InterpolationMethod", "fe" );
+//        props_.set( "lsm", "hres.grib" );
+    }
+};
+
+//-------------------------------------------------------------------------------------------
+
+class MirContext : public eckit::CompositeParams {
+public:
+
+    MirContext( Params** r = NULL );
 
 };
 

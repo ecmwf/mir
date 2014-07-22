@@ -8,37 +8,41 @@
  * does it submit to any jurisdiction.
  */
 
-#include "mir/FieldSource.h"
+/// @author Tiago Quintino
+/// @date July 2014
+
+#ifndef mir_FieldContext_H
+#define mir_FieldContext_H
+
+#include "atlas/grid/FieldSet.h"
+
+#include "mir/Params.h"
 
 //------------------------------------------------------------------------------------------------------
-
-using namespace eckit;
-using namespace atlas;
-using namespace atlas::grid;
-using namespace mir;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-FieldSource::FieldSource(const eckit::Params::Ptr& p) : Action(p)
-{
-}
+class FieldContext : public eckit::DispatchParams<FieldContext> {
 
-FieldSource::~FieldSource()
-{
-}
+public: // types
 
-FieldSet::Ptr FieldSource::eval() const
-{
-	FieldSet::Ptr fs_inp( new FieldSet( params()["Input.Path"] ) );
+    typedef atlas::grid::FieldSet FieldSet;
 
-    if( fs_inp->empty() )
-        throw UserError("Input fieldset is empty", Here());
+public: // methods
 
-    return fs_inp;
-}
+    FieldContext( const FieldSet::Ptr& );
+    virtual ~FieldContext();
+
+private: // members
+
+    FieldSet::Ptr fieldset_;
+
+};
 
 //------------------------------------------------------------------------------------------------------
 
 } // namespace mir
+
+#endif

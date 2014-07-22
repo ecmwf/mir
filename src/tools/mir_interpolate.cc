@@ -38,42 +38,43 @@ public:
 
     MirInterpolate(int argc,char **argv): eckit::Tool(argc,argv)
     {
+        MirContext* mir_ctxt = new MirContext();
+
+        ValueParams* user( new ValueParams() );
+
         PathName path_in;
         path_in = Resource<std::string>("-i","");
         if( path_in.asString().empty() )
             throw UserError( "missing input filename, parameter -i", Here());
 
-        context_.set( "PathIn", Value(path_in) );
+        user->set( "Input.Path", Value(path_in) );
 
         PathName path_out;
         path_out = Resource<std::string>("-o","");
         if( path_out.asString().empty() )
             throw UserError( "missing output filename, parameter -o", Here());
 
-        context_.set( "PathOut", Value(path_out) );
+        user->set( "Target.Path", Value(path_out) );
 
         PathName clone_path;
         clone_path = Resource<std::string>("-g","");
         if( clone_path.asString().empty() )
             throw UserError( "missing clone grid filename, parameter -g", Here());
 
-        context_.set( "TargetGrid", Value(clone_path) );
-
-        PathName mask_path;
-        mask_path = Resource<std::string>("-mask","");
-        if( clone_path.asString().empty() )
-            throw UserError( "missing maks field grid filename, parameter -mask", Here());
-
-        context_.set( "Mask", Value(mask_path) );
+        user->set( "Target.GridPath", Value(clone_path) );
 
         std::string method = Resource<std::string>("-m;$MIR_METHOD","fe");
 
-        context_.set( "InterpolationMethod", method );
+        user->set( "InterpolationMethod", method );
+
+        mir_ctxt->push_front( Params::Ptr(user) );
+
+        ctxt_.reset( mir_ctxt );
     }
 
 private:
 
-    Properties context_;
+    eckit::Params::Ptr ctxt_;
 
 };
 
@@ -81,12 +82,9 @@ private:
 
 void MirInterpolate::run()
 {    
-    std::cout.precision(std::numeric_limits< double >::digits10);
-    std::cout << std::fixed;
-
-    FieldSource source( context_ );
-    Interpolate interpolator( context_ );
-    FieldSink   sink( context_ );
+    FieldSource source( ctxt_ );
+    Interpolate interpolator( ctxt_ );
+    FieldSink   sink( ctxt_ );
 
     FieldSet::Ptr fs_inp = source.eval(); ASSERT( fs_inp );
 
