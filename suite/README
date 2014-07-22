@@ -1,0 +1,31 @@
+To use the suite please do the following:
+
+
+1. Initialise ecflow
+
+use ecflow
+
+2. Start the ecflow server.
+
+- Choose which settings file you will be using, e.g. local.settings
+- Start an appropriate server for this file with:
+
+./start_server.sh -c local.settings
+
+3. Run the suite
+
+- NB at present if the output folder already exists, new results will be added to what is there.
+- To change this behaviour, remove / rename the output folder before executing the following command:
+
+./setup.py -f --config-file=local.settings
+
+(the -f flag causes any pre-existing suites to be overwritten)
+
+4. Watch the suite running
+
+ecflowview
+
+- Browse to the server and port on which ecflow is running.
+
+
+5. Visualise the results in the web application.
