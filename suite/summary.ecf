@@ -1,0 +1,69 @@
+%include <head.h>
+
+today=%RUN_DATE%
+# TODO move this 
+# The location of the output folder for this test
+# (in fact this is already made in fetch_data)
+output_root=%OUTPUT_FOLDER%/${today}
+mkdir -p $output_root
+
+# list all the test xml files and cat them into a single index.xml
+
+. %ECF_HOME%/xml.sh
+. %ECF_HOME%/error_codes.sh
+. %ECF_HOME%/utils.sh
+
+# get finish date and time for the run
+datestr=`date`
+
+set -A statuses
+let number_of_codes=${#codes[@]}
+for i in $(seq 0 $number_of_codes); do
+  statuses[$i]=0
+done
+
+total=0
+
+# at the same time, concatenate all the xml files into a single index.xml
+#
+xml_file=${output_root}/index.xml
+
+set_xml_output $xml_file
+
+start
+comment "Created on ${datestr}"
+open_tag "Suite"
+
+count=0
+for file in `find ${output_root} -maxdepth 1 -name "*test_*.xml"`; do
+ 
+  # do the concatenation
+  cat $file >> $xml_file
+
+  status=$(xpath_values $file  '//Test/@Status')
+
+  
+  ((count=count+1))
+  mymod=$(( count %% 1000 ))
+  if [[ $mymod -eq 0 ]]; then
+  	# give user something to look at
+	echo "Processed $count records"
+  fi
+done
+
+# finalise the xml file writing
+close_tag
+
+
+mv $xml_file ${xml_file}.bak
+xmllint --format ${xml_file}.bak --output $xml_file
+
+# if it worked then delete the working copy
+if [[ -f $xml_file ]]; then
+   rm -f ${xml_file}.bak
+fi
+
+
+
+%include <tail.h>
+

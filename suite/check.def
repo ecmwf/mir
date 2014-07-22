@@ -1,0 +1,78 @@
+# 4.0.3
+suite local
+  edit ECF_INCLUDE '/tmp/maf/bigtest'
+  edit ECF_HOME '/tmp/maf/bigtest'
+  edit ECF_FILES '/tmp/maf/bigtest'
+  edit RUN_DATE '20140722'
+  edit OUTPUT_FOLDER '/tmp/maf/bigtest/output'
+  edit RUN_COMPARISON '1'
+  edit DUMMY_RUN '0'
+  family MARS
+    edit CLIENT 'MARS'
+    limit simultaneous_platforms 10
+    inlimit simultaneous_platforms
+    family linux
+      edit PLATFORM 'linux'
+      limit simultaneous_machines 10
+      inlimit simultaneous_machines
+      family cumal
+        edit MACHINE 'cumal'
+        family sh
+          edit SOURCE_GRID 'sh'
+          family vo_d
+            edit SOURCE_REQUEST 'class=od,type=an,stream=oper,repres=sh,levtype=pl,levelist=1000,param=vo/d,step=00,'
+            edit SOURCE_TAG 'vo_d'
+            edit RUN_MEMORY_CHECKS '0'
+            limit subtasks 1
+            inlimit subtasks
+            task fetch_data
+            family red_gg
+              trigger fetch_data == complete
+              edit TARGET_GRID 'red_gg'
+              family run_48_requests
+                edit REQUESTS_FILE '/var/tmp/maf/test_suite/suite/requests/sh_vo_d_red_gg.reqs'
+                edit INTERPOLATOR0 'emos392'
+                edit INTERPOLATOR1 'emos395'
+                edit MARS_PATH0 '/usr/local/lib/metaps'
+                edit MARS_PATH1 '/tmp/maf/p4/mars/client/dev/grib_api'
+                edit MARS_CMD0 'mars'
+                edit MARS_CMD1 'mars'
+                edit INTERPOLATION_METHOD ''
+                edit LEGENDRE_POLYNOMIALS_METHOD ''
+                edit LSM_SOURCE ''
+                task run
+              endfamily
+            endfamily
+          endfamily
+          family t850
+            edit SOURCE_REQUEST 'stream=oper,step=0,levtype=pl,class=od,type=fc,param=130.128,levelist=850,'
+            edit SOURCE_TAG 't850'
+            edit RUN_MEMORY_CHECKS '0'
+            limit subtasks 1
+            inlimit subtasks
+            task fetch_data
+            family red_gg
+              trigger fetch_data == complete
+              edit TARGET_GRID 'red_gg'
+              family run_48_requests
+                edit REQUESTS_FILE '/var/tmp/maf/test_suite/suite/requests/sh_t850_red_gg.reqs'
+                edit INTERPOLATOR0 'emos392'
+                edit INTERPOLATOR1 'emos395'
+                edit MARS_PATH0 '/usr/local/lib/metaps'
+                edit MARS_PATH1 '/tmp/maf/p4/mars/client/dev/grib_api'
+                edit MARS_CMD0 'mars'
+                edit MARS_CMD1 'mars'
+                edit INTERPOLATION_METHOD ''
+                edit LEGENDRE_POLYNOMIALS_METHOD ''
+                edit LSM_SOURCE ''
+                task run
+              endfamily
+            endfamily
+          endfamily
+        endfamily
+      endfamily
+    endfamily
+  endfamily
+  task summary
+    trigger MARS == complete
+endsuite

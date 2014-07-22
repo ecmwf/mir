@@ -1,0 +1,647 @@
+%include <head.h>
+
+############################
+# Include utility scripts
+
+. %ECF_HOME%/xml.sh
+. %ECF_HOME%/utils.sh
+. %ECF_HOME%/error_codes.sh
+
+chmod 755 %ECF_HOME%/get_source_parameters.sh
+
+###################################################
+#
+# CONSTRUCT THE OUTPUT FILES
+#
+
+# Get date in yyyymmdd format
+today=%RUN_DATE%
+# TODO move this 
+# The location of the output folder for this test
+# (in fact this is already made in fetch_data)
+output_root=%OUTPUT_FOLDER%/${today}
+mkdir -p $output_root
+
+# where we should read all of our tests from
+requests_file=%REQUESTS_FILE%
+
+echo "CLIENT IS " %CLIENT%
+echo "PLATFORM IS " %PLATFORM%
+
+GRIB_SCALE_FACTOR=1000000
+
+#TODO make this general or pass in via setup.py
+mkdir -p ${output_root}/%CLIENT%
+mkdir -p ${output_root}/%CLIENT%/%PLATFORM%
+mkdir -p ${output_root}/%CLIENT%/%PLATFORM%/%MACHINE%
+output_src_root=${output_root}/%CLIENT%/%PLATFORM%/%MACHINE%/%SOURCE_GRID%
+mkdir -p $output_src_root
+
+# the name of the source input data we are considering
+src_tag=%SOURCE_TAG%
+# now the output folder for the input data we are considering
+output_folder=${output_src_root}/${src_tag}
+
+set -A interpolators "%INTERPOLATOR0%" "%INTERPOLATOR1%"
+set -A mars_paths  "%MARS_PATH0%" "%MARS_PATH1%"
+set -A mars_cmds  "%MARS_CMD0%" "%MARS_CMD1%"
+
+echo "mars_cmds " ${mars_cmds[@]}
+
+count=0
+
+# Add any special handling required here
+# TODO this is valid only for EMOS_SIMULATION
+if [[ %SOURCE_GRID% == "red_gg" ]]; then
+   if [[ %TARGET_GRID% == "reg_ll" ]]; then
+       echo "REDUCING ECREGRID PRECISION FOR REDUCED GAUSSIAN TO REG LATLON TO MATCH EMOS"
+       export ECREGRID_EMOSLIB_PRECISION=1
+    fi
+fi
+
+
+lp_method="%LEGENDRE_POLYNOMIALS_METHOD%"
+if [[ $lp_method != "" ]]; then
+   export ECREGRID_LEGENDRE_POLYNOMIALS_METHOD=$lp_method
+fi
+
+lsm_source="%LSM_SOURCE%"
+if [[ $lsm_source != "" ]]; then
+   export ECREGRID_LSM_SOURCE=$lsm_source
+fi
+
+
+xml_stub=%SOURCE_GRID%_${src_tag}_%TARGET_GRID%
+
+# remove all xml files there already
+rm -f ${xml_stub}*.xml
+
+# get details of the source grib file
+the_src_request=${output_folder}/source.mars
+the_src_grib=${output_folder}/source.grib
+
+# make sure it's there
+ls -l $the_src_grib
+
+# get its parameter details
+param=`grib_get -p shortName ${the_src_grib}`
+echo param is $param
+
+{ while read req; do
+
+	#################################################
+	##
+	## OPEN THE RESULTS XML FILE FOR THIS TEST
+	##
+	#
+	# Each test has a unique ID for traceability
+	# NB We use Type 1 "time-based" uuids so we can extract the test date from the UID
+	#
+
+	tar_tag=$count  # will probably use index rather than info
+
+	target_filename=to_%TARGET_GRID%_${tar_tag}
+	echo "Target filename is " $target_filename
+
+	test_name=%SOURCE_GRID%_${src_tag}_${target_filename}
+
+	echo "Test name is" $test_name
+	#filename=`get_test_temp_filename $count`
+	
+	# name the xml output filename here
+	# needs to be unique to this loop... src / tgt grids and param name
+	filename=${xml_stub}_${count}.xml
+
+	#file=%ECF_HOME%/${filename}
+	xml_file=$output_src_root/${filename}
+	echo "xml filename is " $xml_file
+
+	# get the human-readable names for the grids, e.g. sh as "Spherical Harmonic" from tils.sh
+	src_name=`full_name %SOURCE_GRID%`
+	tar_name=`full_name %TARGET_GRID%`
+
+
+
+	# Start writing xml data to local variable
+	start
+	open_tag "Test" "Name='${test_name}' Status='STATUS_CODE' StatusLine='STATUS_LINE' StatusFailed='STATUS_FAILED_TEST' Client='%CLIENT%' Date='${today}' Time='N/A' Uuid='TEST_UUID' Folder='FOLDER_PATH'"
+	  write_tag "Hardware" "Platform='%PLATFORM%' Machine='%MACHINE%'"
+	  open_tag "SourceGrid" "ShortName='%SOURCE_GRID%'"
+	    PRINT "${src_name}"
+	  close_tag
+	  open_tag "TargetGrid" "ShortName='%TARGET_GRID%'"
+	    PRINT "${tar_name}"
+	  close_tag
+
+
+	  # Write output to the log file
+	  mars_src_logfile=${the_src_request}.log
+
+	  # write the output to output xml file
+
+	  open_tag "Parameter"
+	    PRINT "${param}"
+	  close_tag
+	  open_tag "RawData"
+	    write_tag "Input" "Class='Script' Type='MARS' Label='Source' File='`relpath ${the_src_request}`'"
+	    write_tag "Output" "Class='Data' Type='GRIB' Label='Source' File='`relpath ${the_src_grib}`'"
+	    write_tag "Output" "Class='Log' Type='MARS' Label='Source' File='`relpath ${mars_src_logfile}`'"
+	  close_tag
+	
+
+	  ##################################
+	  # Now we perform the interpolation
+	
+	  interp_index=0
+
+	  for interp in ${interpolators[@]}; do
+		echo "handling interpolator " ${interp}
+
+		###################################
+		# Set up this interpolator
+
+		# Set the target folder from the interpolator name
+		target_folder=${output_folder}/$interp/%TARGET_GRID%
+		mkdir -p $target_folder
+
+		export ARCH=%PLATFORM%
+		#MARS_TO_USE="mars"
+		MARS_TO_USE="${mars_cmds[$interp_index]}"
+		echo "##############################################"
+		echo "MARS TO USE " $MARS_TO_USE
+		echo "##############################################"
+
+		typeset -u interp_uppercase
+		interp_uppercase=${interp}
+
+		# Here call a script to set the MARS environment
+		. %ECF_HOME%/../go_${interp}.sh "${mars_paths[$interp_index]}"
+
+
+		# Target request file we will build
+		request_file=${target_folder}/${target_filename}.mars
+
+		# Put the source grib definition into the mars request
+		# and run "retrieve" rather than read (MF)
+		echo "retrieve," > $request_file
+		echo "Running command %ECF_HOME%/get_source_parameters.sh ${the_src_grib} $request_file"
+		%ECF_HOME%/get_source_parameters.sh ${the_src_grib} $request_file
+
+		###########################################
+		# WIND TEST
+		###########################################
+		# We test if we're converting from vo/d 
+		# in which case we need to do a little extra
+		# when constructing the request
+
+		# the "echo" is to stop $? returning 1
+		# TODO we can do this in setup.py
+		vo_d_check=`cat ${the_src_request} | grep -i 'vo/d' || echo ""`
+		
+		if [[ ${vo_d_check} != "" ]]; then
+		        echo "############################################################"
+		        echo "############################################################"
+		        echo "############################################################"
+		        echo "############################################################"
+		        echo "#################                        ###################"
+		        echo "#################  conversion from vo/d  ###################"
+		        echo "#################                        ###################"
+		        echo "############################################################"
+		        echo "############################################################"
+		        echo "############################################################"
+		        echo "############################################################"
+		        # we need to repeat the initial specification
+			#echo "retrieve" > $request_file
+		        #cat ${the_src_request} > $request_file
+		        # and override the parameter to convert to u/v
+		        echo "param=u/v," >> $request_file
+		  else
+		        # otherwise it is a simple read-from-file
+		        echo "NON WIND FIELD"
+		        #echo "read," > $request_file
+		  fi
+
+		  echo "source='${the_src_grib}'," >> $request_file
+
+		  # if using ecregrid mars client we set the interpolation method
+		  # NB this option is to ensure compatibility with emoslib and
+		  # is the default for emoslib. we therefore don't need to set it,
+		  # and emoslib is likely to barf if it doesn't recognise it.
+		  # TODO do we need this now? We pass in interpolation method
+		  # via the testing framework
+
+		  if [[ ${interp_uppercase} == "ECREGRID" ]]; then
+		     interpolation_method="%INTERPOLATION_METHOD%"
+		     if [[ $interpolation_method != "" ]]; then
+		         echo "INTERPOLATION=$interpolation_method," >> $request_file
+		     fi
+		  fi
+
+
+		  # append the "to" grib def file
+		  echo ${req} >> $request_file
+
+
+  		 target_grib=${target_folder}/${target_filename}.grib
+		 # finally append a target name
+                 echo "target='${target_grib}'" >> $request_file
+
+		 echo "Content of request_file is:"
+		 cat $request_file
+
+		
+     		 # Now we run the request
+                 mars_logfile=${request_file}.log
+		 massif_logfile=${request_file}.massif
+		 memory_logfile=${request_file}.mem
+		 
+		 touch $massif_logfile
+		 touch $memory_logfile
+		 touch $mars_logfile
+
+		 #export MARS_DEBUG=0
+
+		 echo "request file is " $request_file
+		 echo `cat $request_file`
+		 echo "logfile is " $mars_logfile
+		 elapsed="0"
+		 memory_bytes="Unknown"
+
+
+	         if [[ %DUMMY_RUN% -eq 1 ]]; then
+			touch $mars_logfile
+			touch $target_grib
+		 else
+
+			 if [[ %RUN_MEMORY_CHECKS% -eq 1 ]]; then
+
+				  which valgrind
+				  if [[ $? -eq 0 ]]; then
+				      export MARS_DEBUGGER="valgrind --tool=massif --massif-out-file=$massif_logfile --time-unit=ms"
+				  fi
+
+				  ######################################################################
+				  # M A R S   C A L L   H E R E
+
+				  elapsed=`timed_call_ms "$MARS_TO_USE < $request_file > $mars_logfile"`
+
+				  ######################################################################
+
+
+				  # this part is temperamental, hence accept any errors here
+				  set +e
+				  which ms_print
+				  if [[ $? -eq 0 ]]; then
+				    ms_print $massif_logfile > $memory_logfile
+				    memory_bytes=`get_peak_from_massif_output $massif_logfile`
+				  else
+				    cp $massif_logfile  $memory_logfile
+				  fi
+				  set -e
+
+			 else
+			       echo "Not running valgrind"
+			       # plain and simple run of the mars request
+			       #
+			       elapsed=`timed_call_ms "$MARS_TO_USE < $request_file > $mars_logfile"`
+			       echo "Memory profiling not requested for this grid" > $memory_logfile
+
+			 fi
+			 
+
+			 if [[ ! -f $target_grib ]]; then
+			    echo "THE INTERPOLATION RESULT " $target_grib " DOES NOT EXIST"
+			 fi
+		
+		 fi
+
+		 echo "trying to get version for " $interp
+		 echo "from this:"
+		 echo $mars_logfile
+		 echo "contents:"
+		 cat $mars_logfile
+		 #version=`get_version_from_mars_output $interp $mars_logfile`
+		 version=$interp # use the tag they chose to use
+		 #version="0.0"
+
+		 env_logfile=${request_file}.env
+		 env > ${env_logfile}
+
+		 echo "interp"  ${interp}
+		 echo "Version=" ${version}
+		 echo "MemoryBytes=" ${memory_bytes}
+		 echo "TimerMs="${elapsed}
+		 echo "request file "  ${request_file}
+		 echo "target grib " ${target_grib}
+		 echo "mars logfile" ${mars_logfile}
+	 	 echo "memory logfile" ${memory_logfile}
+		 echo "env variable dump" ${env_logfile}
+
+
+		 # Continue writing to xml
+
+		 open_tag "Interpolation" "Name='${interp}' Version='${version}' MemoryBytes='${memory_bytes}' TimerMs='${elapsed}'"
+		 #open_tag "Interpolation" "Name='${interp}' Version='${version}' MemoryBytes='0' TimerMs='0'"
+		 write_tag "Input" "Class='Script' Type='MARS' Label='Target' File='`relpath ${request_file}`'"
+		 write_tag "Output" "Class='Data' Type='GRIB' Label='Target' File='`relpath ${target_grib}`'"
+		 write_tag "Output" "Class='Log' Type='MARS' Label='Target' File='`relpath ${mars_logfile}`'"
+		 write_tag "Output" "Class='Log' Type='Memory' Label='Target' File='`relpath ${memory_logfile}`'"
+		 write_tag "Output" "Class='Log' Type='Environment' Label='Target' File='`relpath ${env_logfile}`'"
+		 write_tag "LSM"
+		 write_tag "Precision"
+		 close_tag
+
+		(( interp_index=interp_index+1 ))
+
+	  done
+
+	  # Comparison done here
+	
+	  if [[ %RUN_COMPARISON% -eq 1 ]]; then
+
+		  both_files_exist=1
+		  set -A output_grib_files
+		  index=0
+		  for interp in ${interpolators[@]}; do
+			interp_result_folder=${output_folder}/$interp/%TARGET_GRID%
+			target_grib=${interp_result_folder}/${target_filename}.grib
+			if [[ ! -f $target_grib ]]; then
+				both_files_exist=0
+			fi
+			output_grib_files[$index]=$target_grib
+			(( index=index+1 ))
+		  done
+
+		  echo "Both files exist? " $both_files_exist
+
+		  # If both files exist, check they're not identical
+		  if [[ $both_files_exist -eq 1 ]]; then
+			echo "both files exist. performing diff using the command:"
+			echo "diff ${output_grib_files[0]} ${output_grib_files[1]}"
+			#
+			diff=`diff ${output_grib_files[0]} ${output_grib_files[1]}  || echo ""`
+			#diff="diff"
+			echo "result from diff is " $diff
+			if [[ $diff != "" ]]; then
+			    echo "about to run grib_compare..."
+			    #
+			    diff=`grib_compare ${output_grib_files[0]} ${output_grib_files[1]} || echo ""`
+			    echo "result from grib_compare is " $diff
+			    if [[ $diff != "" ]]; then
+
+
+				  # need to guard against different point counts in each file
+				  # - this will be raised as an error case later on.
+				  #
+				  typeset -i points0
+				  typeset -i points1
+
+				  # we check the first message for brevity
+				  points0=`grib_get  -w count=1 -p numberOfDataPoints ${output_folder}/%INTERPOLATOR0%/%TARGET_GRID%/${target_filename}.grib`
+				  points1=`grib_get  -w count=1 -p numberOfDataPoints ${output_folder}/%INTERPOLATOR1%/%TARGET_GRID%/${target_filename}.grib`
+
+				  echo "we have counts of $points0 and $points1 for %INTERPOLATOR0% and %INTERPOLATOR1%"
+					
+				  if [[ $points0 == $points1 ]]; then
+
+
+					  # perform a difference 
+					  echo "Performing difference calculation"
+					
+					  ###################################
+					  # Iterate through the interpolators
+
+					  comp_folder=${output_folder}/comp/%TARGET_GRID%
+					  mkdir -p $comp_folder
+
+					  compare_request_file=${comp_folder}/${target_filename}_diff.mars
+					  rm -f $compare_request_file
+					  touch $compare_request_file
+
+					  rel_compare_request_file=${comp_folder}/${target_filename}_reldiff.mars
+					  rm -f $rel_compare_request_file
+					  touch $rel_compare_request_file
+
+					  for i in 0 1; do
+						  echo "read,"  >> $compare_request_file
+						  echo "source='${output_grib_files[$i]}',"  >> $compare_request_file
+						  echo "fieldset=${interpolators[$i]}" >> $compare_request_file
+
+						  echo "read,"  >> $rel_compare_request_file
+						  echo "source='${output_grib_files[$i]}',"  >> $rel_compare_request_file
+						  echo "fieldset=${interpolators[$i]}" >> $rel_compare_request_file
+					  done
+					  echo "made the request files"
+
+
+
+					  mkdir -p ${comp_folder}
+		#
+		#			  # run code to produce a grib difference file.
+		#			  # product a compute command in a mars request
+		#			  #
+					  echo "compute," >> $compare_request_file
+					  echo "formula='$GRIB_SCALE_FACTOR*(%INTERPOLATOR1%-%INTERPOLATOR0%)'," >> $compare_request_file
+					  echo "target='${comp_folder}/${target_filename}_diff.grib'" >> $compare_request_file
+					  compare_request_logfile=${compare_request_file}.log
+					  diff_label="Diff"
+		#
+					  echo "THE REQUEST FILE CONTAINS:"
+					  cat $compare_request_file
+
+					  echo "about to run mars request"
+					  mars < $compare_request_file > ${compare_request_logfile}
+					  echo "have run request"
+					  #else
+					  #	touch ${comp_folder}/${target_filename}_diff.grib
+					  #	echo "have touched output file"
+					  #	echo "Different point counts found for input files ($points0 and $points1). Diff not computed." > ${compare_request_logfile}
+					  #fi
+		###
+		###
+					  ###############################################
+					  ## 
+					  ##  COMPUTE RELATIVE DIFF HERE
+					  ##
+		#
+		#
+		#			  # run code to produce a grib RELATIVE difference file.
+		#			  # product a compute command in a mars request
+		#			  #
+					  echo "compute," >> $rel_compare_request_file
+					  echo "formula='$GRIB_SCALE_FACTOR*((%INTERPOLATOR1%-%INTERPOLATOR0%)/ maxvalue(%INTERPOLATOR0%))*100'," >> $rel_compare_request_file
+					  echo "target='${comp_folder}/${target_filename}_reldiff.grib'" >> $rel_compare_request_file
+					  rel_compare_request_logfile=${rel_compare_request_file}.log
+					  rel_diff_label="Relative Diff"
+		###
+					  #if [[ $points0 == $points1 ]]; then
+					  cat $rel_compare_request_file
+					  mars < $rel_compare_request_file > ${rel_compare_request_logfile}
+					  #else
+					  #	touch ${comp_folder}/${target_filename}_reldiff.grib
+					  #	echo "Different point counts found for input files ($points0 and $points1). Diff not computed." > ${rel_compare_request_logfile}
+					  #fi
+		#
+
+					  ###############################################
+					  echo "updating xml file"
+
+
+					  open_tag "Comparison"
+					  if [[ -f ${comp_folder}/${target_filename}_reldiff.grib ]]; then
+					     write_tag "Output" "Class='Data' Type='GRIB' Label='${rel_diff_label}' File='`relpath ${comp_folder}/${target_filename}_reldiff.grib`'"
+					  fi
+					  write_tag "Input" "Class='Script' Type='MARS' Label='${rel_diff_label}' File='`relpath ${rel_compare_request_file}`'"
+					  write_tag "Output" "Class='Log' Type='MARS' Label='${rel_diff_label}' File='`relpath ${rel_compare_request_logfile}`'"
+
+					  if [[ -f ${comp_folder}/${target_filename}_diff.grib ]]; then
+					     write_tag "Output" "Class='Data' Type='GRIB' Label='${diff_label}' File='`relpath ${comp_folder}/${target_filename}_diff.grib`'"
+					  fi
+					  write_tag "Input" "Class='Script' Type='MARS' Label='${diff_label}' File='`relpath ${compare_request_file}`'"
+					  write_tag "Output" "Class='Log' Type='MARS' Label='${diff_label}' File='`relpath ${compare_request_logfile}`'"
+
+					  # MISSING DATA can be generated and writting as below
+					  #if [[ -f ${comp_folder}/${target_filename}_missing.grib ]]; then
+					  #   write_tag "Output" "Class='Data' Type='GRIB' Label='${missing_label}' File='`relpath ${comp_folder}/${target_filename}_missing.grib`'"
+					  #fi
+					  #write_tag "Input" "Class='Script' Type='Metview' Label='${missing_label}' File='`relpath ${missing_request_file}`'"
+					  #write_tag "Output" "Class='Log' Type='Metview' Label='${missing_label}' File='`relpath ${missing_request_logfile}`'"
+
+		#			  close_tag
+
+			    fi
+
+			fi
+                    fi
+		fi
+	  fi
+
+
+
+	
+        #done
+
+        # TODO here delete the source grib file ?
+
+        (( count=count+1 ))
+
+ 	# close the xml file
+	close_tag   #Test
+	finish
+        echo "Writing xml file " ${xml_file}
+	flush_buffer_to_file $xml_file
+	echo "done"
+
+	######
+	# Integrity checking done here
+
+	# cd into the folder containing the check script files
+	cd %ECF_HOME%/checks
+
+	retcode=$TEST_PASS
+	file_full_path=`readlink -f $xml_file`
+
+	# make a copy of the script and update the Folder path
+	# so the tests can see the files
+
+	check_file=${file_full_path}.check
+	rm -f $check_file
+
+	echo "Changing the folder path for file " $file_full_path
+	echo "to " ${output_root}
+
+	# change the folder path
+	xml ed -O -u "//Test/@Folder" -v "${output_root}" $file_full_path > $check_file
+
+	# here we send the xml file for further testing... 
+	# 
+	# 
+
+	failed_test="None"
+	return_codes=0
+	status_line=""
+
+	for i in `ls`; do
+	    echo "running test $i on $file_full_path"
+	    retcode=$TEST_PASS
+	    ksh $i $check_file || retcode=$?
+
+	    echo "return code $retcode"
+	    if [[ $retcode == "" ]]; then
+	      # something went wrong 
+	      retcode=$TEST_FAIL
+	      status_line=$codes[$retcode]
+	    fi
+	    echo "Reason ${codes[$retcode]}"
+
+	    # exit if test has failed (no output files)
+	    if [[ $retcode == $TEST_FAIL ]]; then
+		echo "failed test was $i"
+		failed_test=$i
+		return_codes=$retcode
+		break
+	    fi
+	    # build up a return value here
+	    echo "OR-ing return code $retcode with bit " $return_codes " to make..."
+	    return_codes=$((return_codes |= (1 << $retcode)))
+	    if [[ $retcode != $TEST_PASS ]]; then	    
+	            if [[ $status_line == "" ]]; then
+		      status_line=${codes[$retcode]}
+		    else
+         	      status_line="${status_line} / ${codes[$retcode]}"
+		    fi
+	    fi
+	    echo "return_codes now " $return_codes
+	done
+	
+	if [[ $status_line == "" ]]; then
+	    echo "No fail codes. Setting status to PASS"
+	    status_line=$codes[$TEST_PASS]
+	    # we add a status to the file itself to aid
+	    # searching for warn cases in long file lists without requiring introspection
+	    out_file_stub="pass"
+	else
+	    out_file_stub="warn"
+	fi
+
+	rm -f $check_file
+
+	# go back to where we were
+	cd - > /dev/null
+
+	tmpfile=${file_full_path}.tmp
+	cp $file_full_path $tmpfile
+	# Update the relevant fields within the xml file:
+	xml ed -O -u "//Test/@Folder" -v "." -u "//Test/@Status" -v "${return_codes}" -u "//Test/@StatusLine" -v "$status_line" -u "//Test/@StatusFailed" -v "${failed_test}" $tmpfile > ${file_full_path}
+	rm -f $tmpfile
+
+	###################
+	# now put it in the right place
+	uuid=`uuidgen -t`
+	dest_file=${output_root}/${out_file_stub}_test_${uuid}.xml
+
+
+	sed -i "s/TEST_UUID/${uuid}/g" $xml_file
+	echo "done sed call"
+
+	echo "file is " $xml_file
+	echo "file exists:"
+	ls -l $xml_file
+
+	echo "dest file is " $dest_file
+	rm -f $dest_file
+
+	# Put the file in its correct place,
+	mv $xml_file $dest_file
+	echo "done file move"
+
+
+done } < $requests_file 
+
+
+############################################################
+# MARS
+
+
+
+%include <tail.h>

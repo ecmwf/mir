@@ -1,0 +1,48 @@
+%include <head.h>
+
+# Get date in yyyymmdd format
+today=%RUN_DATE%
+# TODO move this 
+# The location of the output folder for this test
+# (in fact this is already made in fetch_data)
+output_root=%OUTPUT_FOLDER%/${today}
+mkdir -p $output_root
+
+# list all the test xml files and cat them into a single index.xml
+
+. %ECF_HOME%/xml.sh
+
+file=${output_root}/index.xml
+
+set_xml_output $file
+
+datestr=`date`
+
+start
+comment "Created on ${datestr}"
+open_tag "Suite"
+
+#for i in `ls ${output_root}/test*.xml`; do
+#  cat $i >> $file
+#done
+
+#cat ${output_root}/test*.xml >> $file
+
+for file in `find ${output_root} -type f -name "test_*.xml" -exec ls {} \;`; do
+  cat $i >> $file
+done
+
+
+close_tag
+
+mv $file ${file}.bak
+xmllint --format ${file}.bak --output $file
+
+# if it worked then delete the working copy
+if [[ -f $file ]]; then
+  rm -f ${file}.bak
+fi
+
+
+
+%include <tail.h>
