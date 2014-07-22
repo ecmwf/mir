@@ -22,7 +22,7 @@
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/GribRead.h"
 #include "atlas/grid/GribWrite.h"
-#include "atlas/grid/GridFactory.h"
+
 
 #include "mir/Bilinear.h"
 #include "mir/FiniteElement.h"

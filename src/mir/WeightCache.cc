@@ -17,21 +17,21 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/filesystem/LocalPathName.h"
 #include "eckit/io/FileHandle.h"
-
-#include  "eckit/maths/Eigen.h" // always include Eigen via eckit
+#include "eckit/config/Resource.h"
+#include "eckit/maths/Eigen.h" // always include Eigen via eckit
 
 #include "mir/WeightCache.h"
 
 using namespace eckit;
 
-//-----------------------------------------------------------------------------
-
 namespace mir {
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 std::string WeightCache::filename(const std::string& key)
 {
+    PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir","/tmp");
+
     std::stringstream ss;
     ss << "cache/mir/weights/" << key << ".cache";
     return ss.str();
@@ -172,5 +172,7 @@ bool WeightCache::get(const std::string& key, Weights::Matrix& W )
     
     return true;
 }
+
+//------------------------------------------------------------------------------------------------------
 
 } // namespace mir

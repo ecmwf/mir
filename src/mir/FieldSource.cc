@@ -31,7 +31,7 @@ FieldSource::~FieldSource()
 
 FieldSet::Ptr FieldSource::eval() const
 {
-    FieldSet::Ptr fs_inp( new FieldSet( params().get("Input.Path") ) );
+	FieldSet::Ptr fs_inp( new FieldSet( params()["Input.Path"] ) );
 
     if( fs_inp->empty() )
         throw UserError("Input fieldset is empty", Here());
