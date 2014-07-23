@@ -20,7 +20,6 @@
 
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Tesselation.h"
-#include "atlas/grid/GribRead.h"
 #include "atlas/grid/GribWrite.h"
 
 
@@ -38,6 +37,7 @@
 
 using namespace Eigen;
 using namespace eckit;
+using namespace eckit::grib;
 using namespace atlas;
 using namespace atlas::grid;
 using namespace mir;
@@ -68,7 +68,8 @@ static Grid::Ptr make_grid( const std::string& filename )
     if( h == 0 || err != 0 )
         throw ReadError( std::string("error reading grib file ") + filename );
 
-    Grid::Ptr g ( GribRead::create_grid_from_grib( h ) );
+	GribHandle gh(h);
+	Grid::Ptr g ( GribWrite::create_grid( gh ) );
     ASSERT( g );
 
     grib_handle_delete(h);
@@ -87,13 +88,15 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 
 //    Params::Ptr rctxt( new FieldContext( fs_inp ) );
 
+	/// @todo somewhere here we should use the GribParams* to pass to target_grid create...
+
     // clone grid
 
     Grid::Ptr target_grid;
 
     if( params().get("Target.GridPath").isNil() )
     {
-        target_grid = GridFactory::create( eckit::UnScopeParams( "Target", params().self() ) );
+		target_grid = Grid::create( eckit::UnScopeParams( "Target", params().self() ) );
     }
     else
     {

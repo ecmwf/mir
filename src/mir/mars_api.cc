@@ -26,10 +26,11 @@
 #include "mir/Params.h"
 #include "mir/FieldContext.h"
 
-using namespace mir;
+using namespace eckit;
+using namespace eckit::grib;
 using namespace atlas;
 using namespace atlas::grid;
-using namespace eckit;
+using namespace mir;
 
 //------------------------------------------------------------------------------------------------------
 

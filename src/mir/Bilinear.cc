@@ -13,7 +13,7 @@
 
 #include <boost/progress.hpp>
 
-#include "atlas/grid/ReducedGaussianGrid.h"
+#include "atlas/grid/ReducedGG.h"
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/Unstructured.h"
 #include "atlas/util/ArrayView.hpp"
@@ -103,7 +103,7 @@ void Bilinear::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
     atlas::ArrayView<double,2> icoords     ( ilatlon );
     atlas::ArrayView<double,2> ocoords     ( olatlon );
 
-    atlas::grid::ReducedGaussianGrid* igg = dynamic_cast<atlas::grid::ReducedGaussianGrid*>(&in);
+    atlas::grid::ReducedGG* igg = dynamic_cast<atlas::grid::ReducedGG*>(&in);
 
     /// @todo we only handle these at the moment
     if (!igg)
