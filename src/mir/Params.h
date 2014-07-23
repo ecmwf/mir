@@ -43,8 +43,8 @@ public:
 
     ProfileParams()
     {
-        props_.set( "InterpolationMethod", "fe" );
-//        props_.set( "lsm", "hres.grib" );
+		props().set( "InterpolationMethod", "fe" );
+//      props().set( "lsm", "hres.grib" );
     }
 };
 
