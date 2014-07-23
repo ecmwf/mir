@@ -8,21 +8,32 @@ if [[ $# -ne 1 ]]; then
 fi
 file=$1
 
-typeset -i ecregrid_time
-typeset -i emos_time
+typeset -i interpol_time_0
+typeset -i interpol_time_1
 
-ecregrid_time=$(xpath_values $file '//Test/Interpolation[@Name="ecregrid"]/@TimerMs')
-emos_time=$(xpath_values $file '//Test/Interpolation[@Name="emos"]/@TimerMs')
+set -A interpol_times $(xpath_values $file '//Test/Interpolation/@TimerMs')
+# do comparisons between the two execution times
 
-# do comparisons between ecregrid and emos execution times
+if [ ${#interpol_times[@]} -eq 2 ]; then
 
-if [[ $ecregrid_time -gt 1.05*$emos_time ]]; then
-  exit $TEST_RESOURCE_MAJOR
+  interpol_time_0=${interpol_times[0]}
+  interpol_time_1=${interpol_times[1]}
+
+  if [[ $interpol_time_0 -gt 1.5*$interpol_time_1 ]]; then
+    exit $TEST_RESOURCE_MAJOR
+  fi
+
+  if [[ $interpol_time_1 -gt 1.5*$interpol_time_0 ]]; then
+    exit $TEST_RESOURCE_MAJOR
+  fi
+
+  if [[ $interpol_time_0 -gt 1.1*$interpol_time_1 ]]; then
+    exit $TEST_RESOURCE_MINOR
+  fi
+
+  if [[ $interpol_time_1 -gt 1.1*$interpol_time_0 ]]; then
+    exit $TEST_RESOURCE_MINOR
+  fi
 fi
-
-if [[ $ecregrid_time -gt $emos_time ]]; then
-  exit $TEST_RESOURCE_MINOR
-fi
-
 exit $TEST_PASS
 
