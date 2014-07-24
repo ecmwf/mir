@@ -9,23 +9,30 @@ fi
 
 file=$1
 
-typeset -i ecregrid_mem
-typeset -i emos_mem
+typeset -i interpol_mem_0
+typeset -i interpol_mem_1
 
-ecregrid_mem=$(xpath_values $file '//Test/Interpolation[@Name="ecregrid"]/@MemoryBytes')
-emos_mem=$(xpath_values $file '//Test/Interpolation[@Name="emos"]/@MemoryBytes')
+set -A interpol_mems $(xpath_values $file '//Test/Interpolation/@MemoryBytes')
+# do comparisons between the two memory usages
 
-# do comparisons between ecregrid and emos memory checks
-# ANY increase in memory over emos considered bad
 
-echo "ecregrid memory is $ecregrid_mem"
-echo "emos memory" $emos_mem
+if [ ${#interpol_mems[@]} -eq 2 ]; then
 
-if [[ $ecregrid_mem -gt $emos_mem ]]; then
-  exit $TEST_RESOURCE_MAJOR
+  interpol_mem_0=${interpol_mems[0]}
+  interpol_mem_1=${interpol_mems[1]}
+
+  # do comparisons between the two memory measurements
+  # increase in memory over would be considered bad
+
+  if [[ $interpol_mem_1 -gt 1.1*$interpol_mem_0 ]]; then
+    exit $TEST_RESOURCE_MAJOR
+  fi
+
+  if [[ $interpol_mem_0 -gt 1.1*$interpol_mem_1 ]]; then
+    exit $TEST_RESOURCE_MAJOR
+  fi
+
 fi
 
 exit $TEST_PASS
-
-exit
 

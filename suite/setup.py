@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''
-    Submits ecRegrid testing to ecflow
+    Submits mars client testing to ecflow
 
     The following arguments may be specified:
 
@@ -337,41 +337,8 @@ for client in client_list:
                         
                     
 
-                        # add a variable for the interpolation method
-                        interpolation_method=""
-                        try: 
-                            interpolation_method=combinations.emoslib_interpolation_methods[grid][tgrid]
-                        except: 
-                            print "WARNING: Interpolation method not \
-                                    %s to %s. Taking default from both \
-                                    interpolators" % (grid, tgrid)
-                        
-                        dfamily.add_variable("INTERPOLATION_METHOD", interpolation_method)
 
                         
-                        # add a variable for the polynomials method
-                        lp_method=""
-                        try: 
-                            lp_method=combinations.emoslib_lp_methods[grid][tgrid]
-                        except: 
-                            print "WARNING: LP method not \
-                                    %s to %s. Taking default from both \
-                                    interpolators" % (grid, tgrid)
-                        
-                        dfamily.add_variable("LEGENDRE_POLYNOMIALS_METHOD", lp_method)
-                        
-
-                        
-                        # add a variable for the lsm source
-                        lsm_source = ""
-                        try: 
-                            lsm_source=combinations.emoslib_lsm_source[grid][tgrid]
-                        except: 
-                            print "WARNING: LSM source not \
-                                    %s to %s. Taking default from both \
-                                    interpolators" % (grid, tgrid)
-                        
-                        dfamily.add_variable("LSM_SOURCE", lsm_source)
 
                         task="run"
                         print "adding task %s" % task

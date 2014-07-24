@@ -40,7 +40,7 @@ function COPY {
 
 function get_version_from_mars_output {
     # examines output from mars request and gets the 
-    # version of emos or ecRegrid
+    # version of the mars client 
     # usage: $1 = interpolator name 
     #        $2 = mars output file dump
 

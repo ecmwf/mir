@@ -51,25 +51,6 @@ echo "mars_cmds " ${mars_cmds[@]}
 count=0
 
 # Add any special handling required here
-# TODO this is valid only for EMOS_SIMULATION
-if [[ %SOURCE_GRID% == "red_gg" ]]; then
-   if [[ %TARGET_GRID% == "reg_ll" ]]; then
-       echo "REDUCING ECREGRID PRECISION FOR REDUCED GAUSSIAN TO REG LATLON TO MATCH EMOS"
-       export ECREGRID_EMOSLIB_PRECISION=1
-    fi
-fi
-
-
-lp_method="%LEGENDRE_POLYNOMIALS_METHOD%"
-if [[ $lp_method != "" ]]; then
-   export ECREGRID_LEGENDRE_POLYNOMIALS_METHOD=$lp_method
-fi
-
-lsm_source="%LSM_SOURCE%"
-if [[ $lsm_source != "" ]]; then
-   export ECREGRID_LSM_SOURCE=$lsm_source
-fi
-
 
 xml_stub=%SOURCE_GRID%_${src_tag}_%TARGET_GRID%
 
@@ -223,21 +204,6 @@ echo param is $param
 
 		  echo "source='${the_src_grib}'," >> $request_file
 
-		  # if using ecregrid mars client we set the interpolation method
-		  # NB this option is to ensure compatibility with emoslib and
-		  # is the default for emoslib. we therefore don't need to set it,
-		  # and emoslib is likely to barf if it doesn't recognise it.
-		  # TODO do we need this now? We pass in interpolation method
-		  # via the testing framework
-
-		  if [[ ${interp_uppercase} == "ECREGRID" ]]; then
-		     interpolation_method="%INTERPOLATION_METHOD%"
-		     if [[ $interpolation_method != "" ]]; then
-		         echo "INTERPOLATION=$interpolation_method," >> $request_file
-		     fi
-		  fi
-
-
 		  # append the "to" grib def file
 		  echo ${req} >> $request_file
 
@@ -347,7 +313,6 @@ echo param is $param
 		 write_tag "Output" "Class='Log' Type='MARS' Label='Target' File='`relpath ${mars_logfile}`'"
 		 write_tag "Output" "Class='Log' Type='Memory' Label='Target' File='`relpath ${memory_logfile}`'"
 		 write_tag "Output" "Class='Log' Type='Environment' Label='Target' File='`relpath ${env_logfile}`'"
-		 write_tag "LSM"
 		 write_tag "Precision"
 		 close_tag
 
