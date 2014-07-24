@@ -51,8 +51,8 @@ void Weights::assemble(const Grid &in, const Grid &out, Weights::Matrix& W ) con
 std::string Weights::hash(const Grid &in, const Grid &out) const
 {
     return classname() + std::string(".") +
-           in.hash() + std::string(".") +
-           out.hash();
+           in.uid() + std::string(".") +
+           out.uid();
 }
 
 //------------------------------------------------------------------------------------------------------
