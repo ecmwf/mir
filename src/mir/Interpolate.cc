@@ -68,15 +68,16 @@ static Grid::Ptr make_grid( const std::string& filename )
     if( h == 0 || err != 0 )
         throw ReadError( std::string("error reading grib file ") + filename );
 
+	if( ::fclose(fh) == -1 )
+		throw ReadError( std::string("error closing file ") + filename );
+
+	DEBUG_HERE;
+
 	GribHandle gh(h);
 	Grid::Ptr g ( GribWrite::create_grid( gh ) );
     ASSERT( g );
 
-    grib_handle_delete(h);
-
-    if( ::fclose(fh) == -1 )
-        throw ReadError( std::string("error closing file ") + filename );
-
+	DEBUG_HERE;
     return g;
 }
 
@@ -90,18 +91,24 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 
 	/// @todo somewhere here we should use the GribParams* to pass to target_grid create...
 
+	DEBUG_HERE;
+
     // clone grid
 
     Grid::Ptr target_grid;
 
     if( params().get("Target.GridPath").isNil() )
     {
+		DEBUG_HERE;
 		target_grid = Grid::create( eckit::UnScopeParams( "Target", params().self() ) );
-    }
+		DEBUG_HERE;
+	}
     else
     {
         target_grid = make_grid( params()["Target.GridPath"] );
     }
+
+	DEBUG_HERE;
 
     ASSERT( target_grid );
 
