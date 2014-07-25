@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ project_name }} Verification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+            
+  <script>
+
+    function showIssueError(text)
+    {
+        $("#form_group").addClass("error");
+        $("#error").text(text);
+        $("#error").show();
+
+    }
+
+    function hideIssueError()
+    {
+        $("#form_group").removeClass("error");
+        $("#error").hide();
+        $("#error").text("");
+    }
+
+    function sendComment()
+    {
+        // check for non-whitespace, non-newline-only comments...
+        var comments=$("#new_comment").val();
+        
+        var teststr=comments.replace(/(\r\n|\n|\r)/gm,"").split(" ").join("");
+        if (teststr == "")
+        {
+            $("#form_group").addClass("error");
+            return;
+        }
+
+        var id=dict_get("selected_issue_id");
+        $.ajax({
+            type: "POST",
+            url: "/viewer/add_jira_comment",
+            data: { comment: comments,
+                    selected_issue_id: id },
+            success: function (data) {
+
+                if (data.length > 0)
+                {
+                    // we got an error message
+                    showIssueError(data);
+                }
+                else
+                {
+                    onChangeIssue(dict_get("selected_issue_id"));
+                    hideIssueError();
+
+                }
+            },
+            error: function(data) {
+                 showIssueError("An internal error occurred when sending the issue");
+
+            }
+        });
+    }
+
+    $(function() {
+                    hideIssueError();
+     });
+
+
+
+
+  </script>
+
+
+                
+  </head>
+
+  <body >
+
+    <div class="row">
+        <div class="span12">
+            <legend><a href="{{ issue_url }}" title="Open this issue in Jira" target="_blank">{{ issue_title }}</a>&nbsp;<i class="icon-share"></i></legend>
+            <p>{{ issue_id }}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span6" >
+            <dl class="dl-horizontal">
+                <dt>Created 
+                <dd><i class="icon-calendar"></i>&nbsp;{{ issue_created }}
+                <dt>Updated
+                <dd><i class="icon-calendar"></i>&nbsp;{{ issue_updated }}
+            </dl>
+        </div>
+        <div class="span6">
+            <dl class="dl-horizontal">
+                <dt>Reporter
+                <dd><img class="icon" src="{{ issue_reporter.icon }}"/>&nbsp;{{ issue_reporter.text }}
+                <dt>Assignee
+                <dd><img class="icon" src="{{ issue_assignee.icon }}"/>&nbsp;{{ issue_assignee.text }}
+                <dt>Priority
+                <dd><img class="icon" src="{{ issue_priority.icon }}"/>&nbsp;{{ issue_priority.text }}
+            </dl>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12">
+                <pre>{{ issue_description }}</pre>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12">
+            {% ifequal issue_comments|length 0 %}
+            <h2><small>There are no comments yet on this issue.</small></h2>            
+            {% endifequal %}
+            <table class="table">
+            {% for c in issue_comments %}
+                <tr>
+                    <td class="span1"><img class="icon" src="{{ c.author.avatarUrls.48x48 }}"/></td>
+                    <td>
+                        <p><a title="Email this person" href="mailto:{{ c.author.emailAddress }}">{{ c.author.displayName }}</a> added a comment - {{ c.created }}</p>
+                        <p><pre>{{ c.body }}</pre></p>
+
+                    </td>
+                </tr>
+            {% endfor %}
+            </table>
+
+        </div>
+    </div>
+    <div class="row">
+        <div id="form_group" class="span12 control-group ">
+            <span  class="help-inline pull-left">Add Comment:</span>
+            <div id="error" class="help-inline pull-right error"></div>
+            <textarea rows="3" id="new_comment" class="input-xlarge span12 focused" ></textarea>
+            <a id="submit_button" class="btn btn-primary pull-right" onClick="sendComment();">
+                <i class="icon-comment icon-white"></i>
+                Submit
+            </a>
+        </div>
+    </div>
+        
+    
+
+
+
+</body>
+</html>

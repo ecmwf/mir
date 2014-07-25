@@ -1,0 +1,26 @@
+{
+    "data": {
+        "lower_left_latitude": "0", 
+        "lower_left_longitude": -45, 
+        "map_hemisphere": "north", 
+        "projection": "polar_stereographic", 
+        "upper_right_latitude": "0", 
+        "upper_right_longitude": "135"
+    }, 
+    "description": "North hemisphere 0/45W (Lower left), 0/135E centered over the North pole in polar steogprahic projection", 
+    "enabled": true, 
+    "in_production": true, 
+    "in_product_catalogue": false, 
+    "initial_set": true, 
+    "name": "north_hemisphere", 
+    "order": 5, 
+    "owner": "ecmwf", 
+    "spatial_reference": "EPSG:32661", 
+    "thumbnail": {
+        "service": "make_projection_thumbnail"
+    }, 
+    "title": "North hemisphere", 
+    "type": "projection", 
+    "values": {}, 
+    "variables": []
+}

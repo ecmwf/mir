@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ project_name }} Verification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+            
+  <script>
+        function onChangeVersion(crackme)
+        {
+            var vals=crackme.split("_", 2)
+            var interp="All";
+            var version="All";  
+            if (vals.length >=2) {
+                interp=vals[0];
+                version=vals[1];
+            }
+
+            dict_store("selected_interpolator", interp);
+            dict_store("selected_version", version);
+
+            $("#source_frame").load("/viewer/serve_source_grids", {
+                page_data: dict_as_json()
+            },
+            function (data) {
+            });
+
+        }
+
+            $(function() {
+
+                  $("#version_list").find("li.active").each(function(i) {   
+                    onChangeVersion($(this).attr("id"));
+                  });
+            });
+  </script>
+
+
+                
+  </head>
+
+  <body >
+
+
+    <div class="page-header">
+        <nav><a title="Back to the top of the page" href="#top" class="pull-right">To the top</a></nav>
+        <h2>Test Configuration 
+        <small>Platforms and software versions available for selected dates</small></h2>
+    </div>
+
+    <div class="row">
+        <div class="span6 ">
+            <div id="hardware_list" class="well">
+                <ul class="nav nav-list">
+                    <li class="nav-header">Platforms</li>
+                    {% for p in platforms %}
+                    <li id="{{ p }}" {% ifequal selection p %} class="active"{% endifequal %} >
+                    <a onclick="javascript:onChangePlatform('{{ p }}');" data-toggle="nav-list">
+                    <i class="icon-cog"></i>
+                    {{ p }}
+                    </a>
+                    </li>
+                    {% endfor %}
+                    <li class="nav-header">Machines</li>
+                    {% for m in machines %}
+                    <li id="{{ m }}" {% ifequal selection m %} class="active" {% endifequal %}>
+                    <a onclick="javascript:onChangeMachine('{{ m }}');" data-toggle="nav-list">
+                    <i class="icon-cog"></i>
+                    {{ m }}
+                    </a>
+                    </li>
+                    {% endfor %}
+                    </ul>
+                    </div>
+        </div>
+        <div class="span6 ">
+            <div id="version_list" class="well">
+                <ul class="nav nav-list">
+                    {% for interp, versions in interpolators.items %}
+                    <li class="nav-header">{% ifnotequal all_ interp %}{{ interp }}{% else %}Contains Version{% endifnotequal %}</li>
+                      {% for v in versions %}
+                        <li id="{{ interp }}_{{ v }}" {% ifequal selected_interpolator interp %}{% ifequal selected_version v %} class="active"{% endifequal %}{% endifequal %} >
+                        <a onclick="javascript:onChangeVersion('{{ interp }}_{{  v }}');" data-toggle="nav-list">
+                        <i class="icon-map-marker"></i>
+                        {{ v }}
+                        </a>
+                        </li>                        
+                         {% endfor %}
+                    {% endfor %}
+                    </ul>
+                    </div>
+        </div>
+    </div>
+
+
+
+
+</body>
+</html>

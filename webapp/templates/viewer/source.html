@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ project_name }} Verification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script>
+            $(function() {
+
+                  $("#source_grid_tabs").find(".active").each(function(i) {   
+                    // we should only have one selected but guard against multiple
+                    onChangeSource($(this).attr("id"), $(this).attr("value"));
+                  });
+
+
+            });
+    </script>
+  </head>
+
+  <body >
+            <div class="page-header">
+                <nav><a title="Back to the top of the page" href="#top" class="pull-right">To the top</a></nav>
+                <h2>Source Grid
+                <small>Availability for tests run on {{ hardware }} {{ hardware_type }}</small></h2>
+            </div>
+            <div class="row">
+                <div class="span10">
+                    <div id="source_grids" class="tabbable">
+                        <ul id="source_grids_tabs" class="nav nav-pills">
+                            {% for key, value in grid_dict.items %}
+                            <li class="{% ifequal key selection %}active{% endifequal %}">
+                            <a data-toggle="tab" value="{{ key }}" href="#{{ key }}" onclick="javascript:onChangeSource('{{ key }}', '{{ value.name }}');">{{ value.name }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>   
+                        <div id="source_grid_tabs" class="tab-content">
+                            {% for key, value in grid_dict.items %}
+                                <div id="{{ key }}" value="{{ value.name }}" class="tab-pane {% ifequal key selection %}active{% endifequal %}">
+                                    <div class="row">
+                                        <div class="span6">
+                                            <table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Target Grid</th><th>Tests</th><th>Passes</th><th>Warnings</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                  {% for target, status in value.targets.items %}
+                                                  <tr>
+                                                    <td>{{ target }}</td>
+                                                    <td>{{ status.tests }}</td>
+                                                    <td>{{ status.passes }}</td>        
+                                                    <td>{{ status.fails }}</td>
+                                                  </tr>
+                                                  {% endfor %}
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row"><div class="span6">
+                                    {% ifequal value.fails 0 %}
+                                        <div class="alert alert-success">
+                                            <a class="close" data-dismiss="alert">×</a>
+                                            <i class="icon-glass"></i>
+                                            All of the tests have passed
+                                        </div>
+                                    {% endifequal %}                
+                            </div></div>
+                                            
+
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+
+
+</body>
+</html>

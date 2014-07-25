@@ -1,0 +1,24 @@
+{
+    "data": {
+        "lower_left_latitude": 15, 
+        "lower_left_longitude": -40, 
+        "map_hemisphere": "north", 
+        "projection": "polar_stereographic", 
+        "upper_right_latitude": 50, 
+        "upper_right_longitude": 70
+    }, 
+    "description": "Atlantic 15E/40W (Lower left), 50N/70E (Upper right) in polar steographic projection", 
+    "enabled": true, 
+    "in_production": true, 
+    "group": "000 Europe", 
+    "name": "euro_atlantic", 
+    "order": 10, 
+    "owner": "ecmwf", 
+    "thumbnail": {
+        "service": "make_projection_thumbnail"
+    }, 
+    "title": "Euro atlantic", 
+    "type": "projection", 
+    "values": {}, 
+    "variables": []
+}

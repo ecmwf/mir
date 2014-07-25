@@ -1,0 +1,24 @@
+{
+    "data": {
+        "lower_left_latitude": -70, 
+        "lower_left_longitude": -90, 
+        "projection": "mercator", 
+        "upper_right_latitude": -20, 
+        "upper_right_longitude": 50
+    }, 
+    "description": "South atlantic 70S/90W (Lower left), 20W/50N (Upper right) in mercator projection", 
+    "enabled": true, 
+    "in_production": true, 
+    "group": "005 Continents and Oceans", 
+    "in_product_catalogue": true, 
+    "name": "south_atlantic", 
+    "order": 40, 
+    "owner": "ecmwf", 
+    "thumbnail": {
+        "service": "make_projection_thumbnail"
+    }, 
+    "title": "South Atlantic", 
+    "type": "projection", 
+    "values": {}, 
+    "variables": []
+}
