@@ -1,0 +1,26 @@
+{
+    "data": {
+        "lower_left_latitude": "0", 
+        "lower_left_longitude": 45, 
+        "map_hemisphere": "south", 
+        "projection": "polar_stereographic", 
+        "upper_right_latitude": "0", 
+        "upper_right_longitude": "-135"
+    }, 
+    "description": "South hemisphere 0/45E (Lower left), 0/135W (Upper right) centred on South pole  in polar steographic projection", 
+    "enabled": true, 
+    "in_production": true, 
+    "in_product_catalogue": false, 
+    "initial_set": true, 
+    "name": "south_hemisphere", 
+    "order": 5, 
+    "owner": "ecmwf", 
+    "spatial_reference": "EPSG:32761", 
+    "thumbnail": {
+        "service": "make_projection_thumbnail"
+    }, 
+    "title": "South hemisphere", 
+    "type": "projection", 
+    "values": {}, 
+    "variables": []
+}

@@ -1,0 +1,69 @@
+{
+    "drivers": [
+        {
+            "format": "png", 
+	    "fullname": "${path=map.png}",
+            "output_cairo_transparent_background": "off", 
+            "output_name_first_page_number": "off", 
+	    "output_width": "${width=800}"
+        }
+    ], 
+    "height": "${height=400}",
+    "width": "${width=800}",
+    "method": "wrep",
+    "version": "3.0", 
+    "page": {
+
+
+        "map": {
+            "border": "off", 
+            "lower_left_latitude": "-90", 
+            "lower_left_longitude": "-180", 
+            "projection": "${proj=cylindrical}", 
+            "margin_bottom": "10%", 
+	    "margin_left": "10%",
+            "upper_right_latitude": "90", 
+            "upper_right_longitude": "180", 
+            "plot": {
+                "contour": {
+					"contour_shade": "${shade=off}",
+					"contour_shade_technique": "grid_shading",
+					"contour_shade_method": "area_fill",
+					"contour_level_selection_type": "level_list",
+				"contour_level_list": "1/2/3/4",
+					"contour_shade_colour_method": "list",
+					"contour_shade_colour_list": "RED/BLUE/GREEN",
+					"contour": "${contour=off}",
+					"contour_highlight" : "off",
+					"legend": "${legend=off}",
+					"contour_hilo": "${hilo=off}",
+                                        "contour_grid_value_plot": "${values=off}",
+                                        "contour_grid_value_lat_frequency": "${fval=90}",
+                                        "contour_grid_value_lon_frequency": "${fval=90}",					
+					"contour_label" : "${label=off}"
+					}, 
+                "grib": {
+                    "input_file_name": "${data=data.grib}",
+                    "automatic_scaling": "off",		    
+		    "grib_scaling_factor": "${scale=1}",
+		    "grib_field_position":  "${message=1}"
+                }
+            }, 
+
+            "legend": {
+	        "legend_box_x_position": "1.00",
+	        "legend_box_mode": "positional",
+                "legend_display_type": "continuous", 
+                "height": "90%", 
+		"bottom": "5%",
+		"border": "off",
+                "legend_text_colour": "grey", 
+                "left": "0%" ,
+		"width": "5%"
+            }, 
+
+	    "coastlines":{}
+        }, 
+        "page_id": "off"
+    } 
+}

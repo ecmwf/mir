@@ -1,0 +1,23 @@
+{
+    "data": {
+        "lower_left_latitude": -5, 
+        "lower_left_longitude": -140, 
+        "projection": "cylindrical", 
+        "upper_right_latitude": 80, 
+        "upper_right_longitude": -15
+    }, 
+    "description": "North America 5S/140W, 80N/15W in cylindrical projection", 
+    "enabled": true, 
+    "in_production": true, 
+    "group": "005 Continents and Oceans", 
+    "name": "north_america1", 
+    "order": 30, 
+    "owner": "ecmwf", 
+    "thumbnail": {
+        "service": "make_projection_thumbnail"
+    }, 
+    "title": "North America (Cylindrical)", 
+    "type": "projection", 
+    "values": {}, 
+    "variables": []
+}

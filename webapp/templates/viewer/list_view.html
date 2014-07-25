@@ -1,0 +1,37 @@
+<p>Please give full path to your results folder:<br>
+<form action="set_folder_path" method="post">
+    <input name="folder_path" size="40" value="{{results_folder}}">
+<input type="submit" value="set"/>
+</form>
+
+</p>
+<div>
+<input type="submit" value="Send">
+</div>
+
+<p><b>{{ msg }}</b></p>
+<form name="input" action="list_view" method="post">
+<select name="folder_selected">
+{% for folder in folders %}
+<option value="{{ folder }}"{% if folder_selected = folder %} selected{% endif %}>{{ folder }}</option>
+{% endfor %}
+<p>
+<input id="warnings_only" name="warnings_only" type="checkbox" {% if warnings_only %}checked{% endif %} >Warnings only</input>
+</p> 
+<input type="submit" value="show"/>
+</select>
+</form>
+    {% if item_list %}
+    <h2>Showing first {% if item_list|length < 1000 %}{{ item_list|length }}{% else %}1000{% endif %} links (links open in new tab)</h2>
+    {% for item in item_list|slice:":1000" %}
+    <p>{{ forloop.counter }}
+    <a target="_blank" href="/viewer/search?id={{ item }}">test {{ item }}</a> {% endfor %}
+    {% else %}
+    <h2>No tests found matching search data</h2>
+    {% endif %}
+<script>
+    function onChange(input) {
+
+        alert("selected "+input.value);
+     }
+</script>

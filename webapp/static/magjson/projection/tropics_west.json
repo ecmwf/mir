@@ -1,0 +1,24 @@
+{
+    "data": {
+        "lower_left_latitude": -35, 
+        "lower_left_longitude": "-180", 
+        "projection": "cylindrical", 
+        "upper_right_latitude": 35, 
+        "upper_right_longitude": "0"
+    }, 
+    "description": "West tropics 35S/180W (Lower left), 35N/0 (Upper right) in cylindrical projection", 
+    "enabled": true, 
+    "in_production": true, 
+    "group": "004 Tropics", 
+    "in_product_catalogue": false, 
+    "name": "tropics_west", 
+    "order": 80, 
+    "owner": "ecmwf", 
+    "thumbnail": {
+        "service": "make_projection_thumbnail"
+    }, 
+    "title": "Tropics west", 
+    "type": "projection", 
+    "values": {}, 
+    "variables": []
+}

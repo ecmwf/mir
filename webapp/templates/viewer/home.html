@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ project_name }} Verification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="{{ MEDIA_URL }}/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="{{ MEDIA_URL }}/jquery-ui/development-bundle/themes/base/jquery.ui.all.css" rel="stylesheet">
+    <link href="{{ MEDIA_URL }}/jquery-ui/css/ui-lightness/jquery-ui-1.8.18.custom.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        padding-bottom: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        background-color: #fcfcfc
+      }
+
+      .hilite {
+          color: #0088cc;
+      }
+
+       {% if debug_mode %}
+      .control {
+          visibility: hidden;
+          height: 0px;
+        }
+        {% else %}
+        .control {}
+       {% endif %}
+    
+
+
+      .test {
+            background-color: #EEEEEE;
+      }
+
+      .bookmark {
+          padding: 30px;
+      }
+       
+       .footer {
+            padding-top: 60px;
+      }
+
+      .scrollarea {
+          overflow:auto;
+          height:500px;        
+          }
+
+        pre {
+          overflow: auto;
+          word-wrap: normal;
+          white-space: pre;
+        }
+
+    </style>
+    <link href="{{ MEDIA_URL }}/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <script src="{{ MEDIA_URL }}/jquery/jquery-1.7.1.min.js"></script>
+    <script src="{{ MEDIA_URL }}/jquery-ui/js/jquery-ui-1.8.18.custom.min.js"></script>
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="{{ MEDIA_URL }}/favicon.ico">
+
+    <script>
+        var processes = 0;
+        function incProcessCount()
+        {
+            processes += 1;
+        }
+
+        function decProcessCount()
+        {
+          processes -= 1;
+          processes = Math.max(processes, 0);
+          
+        }
+            jQuery.ajaxSetup({
+              beforeSend: function() {
+                  $('#loader').show()
+                  $('#ajax_error').hide();
+                  processes=0;
+                  incProcessCount();
+              },
+              complete: function(){
+                  
+                decProcessCount();
+                
+
+                if (processes == 0)
+                {
+                    $('#loader').hide()
+                }
+              },
+              success: function() {
+
+                decProcessCount();
+
+                
+                if (processes == 0)
+                {
+                    $('#loader').hide()
+                }
+              },
+              error: function() {
+                $('#ajax_error').show();
+                processes = 0;
+                $('#loader').hide()
+              }
+            });
+
+            function dict_store(key, value)
+            {
+                dict_erase(key);
+                $("#dict").append("<input class='dict_item' type='hidden' id='"+key+"' value='"+value+"'/>")
+            }
+
+            function dict_get(key)
+            {
+                var rtn = null;
+                $(".dict_item").each(function(i) {
+                    if ($(this).attr("id") == key) {
+                        rtn = $(this).attr("value");
+                    }
+                });
+
+                return rtn;
+            }
+
+
+
+                
+            function dict_erase(key)
+            {
+                $("#dict").find("#"+key).remove();
+            }
+
+            function dict_as_json()
+            {
+                // get all items of class dict_item"
+                var rtn = {};
+                $(".dict_item").each(function(i) {                        
+                   rtn[$(this).attr("id")] = $(this).attr("value");
+                });
+               
+                return JSON.stringify(rtn);
+            }
+
+            function load_view_into_div(view, div)
+            {
+                $("#"+div).load(view, {
+                    page_data: dict_as_json()
+                });
+            }
+                
+            {% if not debug_mode %}
+
+            function handleMonthChange(year, month, inst)
+            {
+                updateDateCache(year, month, $(this).attr("id"));
+            }
+             
+            function updateDateCache(year, month, target)
+            {
+                // prevent double-click
+                $("#"+target).datepicker("enable");
+
+                // clear the list of dates and refill it
+                date_dict[target] = []   //.length=0;
+
+                // request list of dates
+                $.post("/viewer/get_test_dates", {
+                    month: month,
+                    year: year,
+                    target: target
+                },
+                function (data) {
+
+                    var response = JSON.parse(data);
+
+                    target = response["target"];
+                    date_dict[target] = response["dates"];
+
+                   var currentDate = new Date($("#datefrom").datepicker("getDate"));
+                   // replace with new month and year
+                   currentDate.setMonth(month-1);
+                   currentDate.setFullYear(year);
+                   // refresh the control - this fires beforeShowDay
+                   $("#"+target).datepicker("setDate",currentDate); 
+                   // allow user to use it 
+                   $("#"+target).datepicker("enable");
+                   
+                });
+            }
+            
+            function forceMonthRefresh(input, inst)
+            {
+                var id = $(this).attr("id");
+                var d = new Date($(this).datepicker("getDate"));
+                var month_1_indexed = d.getMonth() + 1;
+                var year = d.getFullYear();
+
+                updateDateCache(year, month_1_indexed, id); 
+            }
+
+            function limitDates(date)
+            {
+                // this function is called a lot of times - once for each day
+                // in the month. to ensure we always see the latest state of
+                // the disk data we force refresh if first time through
+
+                var keep = $.inArray(date.getDate(), date_dict[$(this).attr("id")]) > -1;
+                return [keep, ""];
+            }
+
+            var date_dict = {};
+
+            {% endif %}
+
+
+            $(function() {
+
+                $( "#progressbar" ).hide();
+                $( "#progressbar" ).progressbar({ value: 0 });
+
+                $('#loader').hide();
+
+                {% for key, value in init_dict.items %}
+                dict_store('{{ key }}', '{{ value }}');
+                {% endfor %}
+
+
+                {% if not debug_mode %}
+
+                $( "#datefrom" ).datepicker({
+                    beforeShowDay: limitDates,
+                    onChangeMonthYear: handleMonthChange,
+                    dateFormat: "yy-mm-dd",
+                    beforeShow: forceMonthRefresh
+                } );
+    
+                $( "#dateto" ).datepicker({
+                    beforeShowDay: limitDates,
+                    onChangeMonthYear: handleMonthChange,
+                    dateFormat: "yy-mm-dd",
+                    beforeShow: forceMonthRefresh
+                   } );
+
+
+
+                var today = new Date();
+
+                datefrom = today;
+                dateto = today;
+
+                if (dict_get("start_date") != null)
+                    datefrom = new Date(dict_get("start_date"));
+                if (dict_get("end_date") != null)
+                    datefrom = new Date(dict_get("end_date"));
+
+
+                $("#datefrom").datepicker("setDate", datefrom); 
+                $("#dateto").datepicker("setDate", dateto); 
+
+                {% endif %}
+
+                updateMachines();
+    
+            });
+
+            var updateIntervalId;
+            
+            function updateMachines()
+            {
+                var start_date = new Date($("#datefrom").datepicker("getDate"));
+                var end_date = new Date($("#dateto").datepicker("getDate"));
+
+                start_str = $.datepicker.formatDate("yy/mm/dd", start_date)
+                end_str = $.datepicker.formatDate("yy/mm/dd", end_date)
+
+                dict_store("start_date", start_str);
+                dict_store("end_date", end_str);
+
+
+                updateIntervalId = setInterval ( "updateProgressBar()", 500 );
+
+                // request list of dates
+                $("#machine_frame").load("/viewer/serve_hardware", {
+                    page_data: dict_as_json(),
+                    start_date: start_str,
+                    end_date: end_str
+                    }, 
+                    function() {
+                        clearInterval( updateIntervalId );
+                        updateProgressBar(); // to get reset value
+                        $("#progressbar").hide();
+                    });
+            }
+
+            function updateProgressBar()
+            {
+
+                $("#progressbar").show();
+
+                $.ajax({
+                url: "/viewer/get_load_progress",
+                context: document.body
+                }).done(function(data) {
+                    $( "#progressbar" ).progressbar({ value: parseInt(data) });
+                });
+            }
+
+
+            function onChangePlatform(platform)
+            {
+                dict_store("hardware", platform);
+                dict_store("type", "platform");
+
+                $("#source_frame").load("/viewer/serve_source_grids", {
+                    page_data: dict_as_json(),
+                    hardware: platform,
+                    type: "platform",
+                },
+                function (data) {
+                });
+
+            }
+
+            function onChangeMachine(machine)
+            {
+                dict_store("hardware", machine);
+                dict_store("type", "machine");
+
+                $("#source_frame").load("/viewer/serve_source_grids", {
+                    page_data: dict_as_json(),
+                    hardware: machine,
+                    type: "machine"
+                },
+                function () {
+                });
+            }
+
+            function onChangeSource(source_grid, full_name)
+            {
+                dict_store("source_grid", source_grid);
+                dict_store("source_grid_full", full_name);
+
+                $("#target_frame").load("/viewer/serve_target_grids", {
+                    page_data: dict_as_json(),
+                    //source_grid: source_grid
+                },
+                function (data) {
+                });
+            }
+    </script>
+  </head>
+
+  <!--   <body onload="prettyPrint()">-->
+      <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#" title="{{ project_tooltip }}">{{ project_name }} {% if debug_mode %}Development Mode{% endif %}</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                {% if not debug_mode %}
+                <li><a href="#date_area" title="Select the test date and plaform.">Select Tests</a></li>
+              <li><a href="#source" title="Overview of results for individual source grids">Source Grid</a></li>
+              <li><a href="#target" title="Examine results for various target grids">Target Grid</a></li>
+              <li><a href="#detail" title="Examine individual test results">Test Detail</a></li>
+              <li><a href="#comment" title="Submit comments to JIRA">Comment</a></li>
+              {% else %}
+              <li><a href="#" title="Development mode">Only MetVis developers should see this page</a></li>
+              {% endif %}
+            </ul>
+            <ul class="nav pull-right inactive">
+                <li><a title="An error occurred when processing some content"><div id='ajax_error'><img class="icon" src="{{ MEDIA_URL }}/warning.gif" /></div> </a></li>
+            </ul>
+            <ul class="nav pull-right inactive">
+              <li><a><div id='loader'><img class="icon" src="{{ MEDIA_URL }}/ajax-loader-fb.gif"/></div> </a></li>
+              <li><a><div class="bar" id="progressbar" style="width:200px;height:16px;"></div></a></li>
+              <li><a>{{ login_status }}</a></li>
+                
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div id="dict">
+    </div>
+
+    <div class="container ">
+        <a name="top" class="bookmark"></a>
+            {% if not debug_mode %}
+        <a name="date_area" class="bookmark"></a>
+        <section>
+            <div class="page-header">
+                <h2>Select Tests
+                   <small>Date range and machines to examine<small>
+                </h2>
+            </div>
+            <div class="row">
+              <div class="span12">
+                <form class="well form-inline">
+                    <label for="datefrom">From</label>
+                    <input id="datefrom" ></input>
+                    <label for="dateto">To</label>
+                    <input id="dateto" ></input>
+                    
+                    <a class="btn btn-primary" onClick="updateMachines();">
+                        <i class="icon-refresh icon-white"></i>
+                        Update page
+                    </a>
+                </form>
+              </div>
+          </div>
+          {% endif %}
+            <div id="debug"></div>
+                <div class="row">
+                    <div class="span12 control" name="machine_frame" id="machine_frame" > </div>
+                </div>
+      
+        </section>
+        <a name="source" class="bookmark"><br></a>
+        <section>
+            <div class="row">
+                <div class="span12 control" name="source_frame" id="source_frame">
+                </div>
+            </div>
+            </section>
+
+      <a name="target" class="bookmark"></a>
+        <section>
+            <div class="row">
+                <div class="span12 control" name="target_frame" id="target_frame">
+                </div>
+            </div>
+        </section>
+
+        <a name="detail" class="bookmark"></a>
+        <section>
+            <div class="row">
+                <div class="span12" name="detail_frame" id="detail_frame" >
+                </div>
+            </div>
+        </section>
+
+        {% if not debug_mode %}
+        <a name="comment" class="bookmark"></a>
+        <section>
+            <div class="row">
+                <div class="span12" name="jira_frame" id="jira_frame" >
+                </div>
+            </div>
+            </section>
+        {% endif %}
+
+     <!-- Footer
+      ================================================== -->
+
+      <footer class="footer">
+        <p class="pull-right"><a href="#">To the top</a></p>
+        <p>Built on <a href="http://twitter.github.com/bootstrap/index.html" target="_blank">Twitter Bootstrap</a>, licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>. Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+
+        <p>Icons from <a href="http://glyphicons.com">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-transition.js"></script>
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-alert.js"></script>
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-modal.js"></script>
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-navlist.js"></script>
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-dropdown.js"></script>
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-scrollspy.js"></script>
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-tab.js"></script>
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-tooltip.js"></script>
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-popover.js"></script>
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-button.js"></script>
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-collapse.js"></script>
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-carousel.js"></script>
+    <script src="{{ MEDIA_URL }}/bootstrap/js/bootstrap-typeahead.js"></script>
+    <script src="{{ MEDIA_URL }}/datatables/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}/bootstrap-datatables.js"></script>
+
+
+
+
+
+</body>
+</html>

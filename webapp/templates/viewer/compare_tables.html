@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{{ project_name }} Verification</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+    </head>
+
+    <body>
+
+        <div class="row">
+            <div class="span4 ">
+                <h3>{{ left_label|capfirst }}</h3>
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            {% for lname in headers %}
+                                <th>{{ lname }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for k, v in left_dict.items %}
+                                <tr>
+                                    <td>{{ k }}</td>
+                                    <td>{{ v|urlizetrunc:15 }}</td>
+                                </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="span4">
+                <h3>{{ diff_label|capfirst }}</h3>
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            {% for cname in headers %}
+                                <th>{{ cname }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                                {% for k0, v0 in centre_dict.items %}
+                                <tr>
+                                    <td>{{ k0 }}</td>
+                                    <td {% if equalvals|contains:v0 %}
+                                        style="color: #999999;"
+                                        {% else %}
+                                        style="color: #0088cc;"
+                                        {% endif %}>
+                                        {{ v0 }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="span4 ">
+                <h3>{{ right_label|capfirst }}</h3>
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            {% for rname in headers %}
+                                <th>{{ rname }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                                {% for k1, v1 in right_dict.items %}
+                                <tr>
+                                    <td>{{ k1 }}</td>
+                                    <td>{{ v1|urlizetrunc:15 }}</td>
+                                </tr>
+                                {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+
+    </body>
+</html>
