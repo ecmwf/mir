@@ -10,8 +10,9 @@
 
 #include <string>
 
+#include "grib_api.h"
+
 #include "eckit/exception/Exceptions.h"
-#include "eckit/grib/GribAccessor.h"
 #include "eckit/grib/GribHandle.h"
 #include "eckit/log/Timer.h"
 #include "eckit/log/Plural.h"
@@ -21,7 +22,6 @@
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/GribWrite.h"
-
 
 #include "mir/Bilinear.h"
 #include "mir/FiniteElement.h"
@@ -71,13 +71,10 @@ static Grid::Ptr make_grid( const std::string& filename )
 	if( ::fclose(fh) == -1 )
 		throw ReadError( std::string("error closing file ") + filename );
 
-	DEBUG_HERE;
-
 	GribHandle gh(h);
 	Grid::Ptr g ( GribWrite::create_grid( gh ) );
     ASSERT( g );
 
-	DEBUG_HERE;
     return g;
 }
 
@@ -90,8 +87,6 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 //    Params::Ptr rctxt( new FieldContext( fs_inp ) );
 
 	/// @todo somewhere here we should use the GribParams* to pass to target_grid create...
-
-	DEBUG_HERE;
 
     // clone grid
 
@@ -108,8 +103,6 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
         target_grid = make_grid( params()["Target.GridPath"] );
     }
 
-	DEBUG_HERE;
-
     ASSERT( target_grid );
 
     FieldSet::Ptr fs_out( new FieldSet( target_grid, fs_inp->field_names() ) );
@@ -119,8 +112,6 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
     size_t npts_inp = fs_inp->grid().nPoints();
     size_t npts_out = fs_out->grid().nPoints();
 
-    DEBUG_VAR( npts_inp );
-    DEBUG_VAR( npts_out );
     DEBUG_VAR( params() );
 
     std::cout << ">>> interpolation points " << npts_inp << " -> " << npts_out << std::endl;
