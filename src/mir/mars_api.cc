@@ -18,7 +18,7 @@
 #include "eckit/runtime/Context.h"
 
 #include "atlas/grid/FieldSet.h"
-#include "atlas/grid/GribWrite.h"
+#include "atlas/grid/Grib.h"
 
 #include "mir/mars_api.h"
 
@@ -170,7 +170,7 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
 
         FieldHandle& f = (*fs_out)[0];  // NOTE: we assume only one field as output
 
-        GribHandle::Ptr gh = GribWrite::write(f);
+        GribHandle::Ptr gh = Grib::write(f);
 
         *sout = gh->write( mctxt->buffer() );
 

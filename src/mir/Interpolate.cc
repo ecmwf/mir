@@ -21,7 +21,7 @@
 
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Tesselation.h"
-#include "atlas/grid/GribWrite.h"
+#include "atlas/grid/Grib.h"
 
 #include "mir/Bilinear.h"
 #include "mir/FiniteElement.h"
@@ -72,7 +72,7 @@ static Grid::Ptr make_grid( const std::string& filename )
 		throw ReadError( std::string("error closing file ") + filename );
 
 	GribHandle gh(h);
-	Grid::Ptr g ( GribWrite::create_grid( gh ) );
+	Grid::Ptr g ( Grib::create_grid( gh ) );
     ASSERT( g );
 
     return g;
@@ -82,7 +82,7 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 {
     ASSERT( fs_inp );
 
-//    GribWrite::write( *fs_inp, "inp.grib" );
+//    Grib::write( *fs_inp, "inp.grib" );
 
 //    Params::Ptr rctxt( new FieldContext( fs_inp ) );
 
@@ -94,9 +94,7 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 
     if( params().get("Target.GridPath").isNil() )
     {
-		DEBUG_HERE;
 		target_grid = Grid::create( eckit::UnScopeParams( "Target", params().self() ) );
-		DEBUG_HERE;
 	}
     else
     {
@@ -185,7 +183,7 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
         fo.grib( fi.grib().clone() );
     }
 
-//    GribWrite::write( *fs_out, "out.grib" );
+//    Grib::write( *fs_out, "out.grib" );
 
     return fs_out;
 }

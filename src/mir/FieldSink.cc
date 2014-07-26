@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "atlas/grid/GribWrite.h"
+#include "atlas/grid/Grib.h"
 
 #include "mir/mir_config.h"
 #include "mir/FieldSink.h"
@@ -36,9 +36,9 @@ void FieldSink::eval(const FieldSet::Ptr& fs_out) const
 {
     //   Timer t("grib output write");
 
-    // GribWrite::write( *fs_out, path_out ); ///< @todo remove need for clone() with GridSpec's
+    // Grib::write( *fs_out, path_out ); ///< @todo remove need for clone() with GridSpec's
 
-    GribWrite::clone( *fs_out,
+    Grib::clone( *fs_out,
                       params()["Target.GridPath"],
                       params()["Target.Path"] );
 }
