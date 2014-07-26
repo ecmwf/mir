@@ -142,8 +142,6 @@ mir_err mir_set_context_value(mir_context_ptr ctxt, const char* key, const char*
 
 mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, void **buffout, size_t* sout)
 {
-    DEBUG_HERE;
-
     if(!ctxt) return MIR_INVALID_CONTEXT;
 
     ASSERT( buffout );
