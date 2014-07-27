@@ -16,6 +16,7 @@
 #define mir_WeightCache_H
 
 #include "eckit/memory/NonCopyable.h"
+#include "eckit/filesystem/LocalPathName.h"
 
 #include  "mir/Weights.h"
 
@@ -35,7 +36,7 @@ public: // methods
     /// @returns true if addition was succcessful
     static bool add(const std::string& key, Weights::Matrix& W );
 
-    static std::string filename(const std::string& key);
+    static eckit::LocalPathName filename(const std::string& key);
 
 };
 

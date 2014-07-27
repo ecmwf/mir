@@ -15,7 +15,6 @@
 
 #include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
-#include "eckit/filesystem/LocalPathName.h"
 #include "eckit/io/FileHandle.h"
 #include "eckit/config/Resource.h"
 #include "eckit/maths/Eigen.h" // always include Eigen via eckit
@@ -28,13 +27,13 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-std::string WeightCache::filename(const std::string& key)
+LocalPathName WeightCache::filename(const std::string& key)
 {
-    PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir","/tmp");
+    PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir","/tmp/cache/mir");
 
-    std::stringstream ss;
-    ss << "cache/mir/weights/" << key << ".cache";
-    return ss.str();
+    PathName f = base_path / "weights" / PathName( key + ".cache" );
+
+    return f.asString();
 }
 
 bool WeightCache::add(const std::string& key, Weights::Matrix& W )
