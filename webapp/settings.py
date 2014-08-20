@@ -41,6 +41,8 @@ SESSION_ENGINE = "django.contrib.sessions.backends.file"
 # default results folder
 RESULTS_FOLDER="/tmp/maf/bigtest/output"
 #RESULTS_FOLDER="/scratch/ma/maf/scratchdir/ecRegrid/bigtest/output"
+SHOW_JIRA_SECTION=False
+
 
 SESSION_COOKIE_DOMAIN = ".ecmwf.int"
 
@@ -62,8 +64,6 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    #"django_tools.middlewares.ThreadLocal.ThreadLocalMiddleware",
-    #"django.contrib.auth.middleware.AuthenticationMiddleware",
 )
 
 ROOT_URLCONF = "urls"

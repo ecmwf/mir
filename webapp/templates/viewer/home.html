@@ -459,7 +459,7 @@
             </div>
         </section>
 
-        {% if not debug_mode %}
+        {% if not debug_mode and show_jira %}
         <a name="comment" class="bookmark"></a>
         <section>
             <div class="row">
@@ -467,6 +467,8 @@
                 </div>
             </div>
             </section>
+        {% else %}
+        <hr>
         {% endif %}
 
      <!-- Footer

@@ -511,7 +511,7 @@ def extract_username(request):
 def show_home(init_dict, request):
 
     init_dict = init_dict
-    project_name="ecRegrid"
+    project_name="Interpolation"
     project_tooltip="ECMWF's new package for spectral transformation and regridding"
 
 
@@ -531,6 +531,7 @@ def show_home(init_dict, request):
 
     # set a flag that states whether we're looking at "official" results
     debug_mode = "debug" in init_dict.keys()
+    show_jira = settings.SHOW_JIRA_SECTION
     return render_to_response("viewer/home.html",
                               locals(),
                               context_instance=RequestContext(request))
@@ -556,8 +557,6 @@ def search(request):
     idstr = request.GET.get("id", "")
     filestr = request.GET.get("file", "")
 
-    print "*************** SEARCH idstr=%s filestr=%s" % (idstr,filestr)
-
 
     # clear the cache for sanity's sake
     test_cache.clear()
@@ -572,6 +571,7 @@ def search(request):
 
             date = uuid_to_datetime(my_uuid)
             datestr=date.strftime("%Y/%m/%d")
+            print "datestre from uuid is %s" % datestr
 
             try:
                 default_image_layout = image_layout_options[0]
@@ -619,9 +619,12 @@ def search(request):
     # the days after the date of the folder. Never before though.
     # today's date...
 
-    # assume tests run over a period less than a month
+    # assume tests run over a period less than a month TODO perhaps change
+    # this
     search_start_date = date - datetime.timedelta(30)
 
+
+    print "search start_date is %s" % search_start_date
 
     print "start search %s [%s] end search %s [%s]" % (search_start_date,
                                                        type(search_start_date),
@@ -632,18 +635,15 @@ def search(request):
 
     search_dates.reverse()
 
-    print "search_dates reversed %s" % search_dates
 
     found = False
 
     # get dates on disk between these ranges
     for d in search_dates:
-        print "considering date %s" % d
         if found:
             break
         
         folder = test_folder(request, d)
-        print "folder is %s" % folder
         if contains_tests(folder):
 
             # now open the relevant files and read the xml
@@ -663,14 +663,12 @@ def search(request):
             filename = ""
             for prefix in ["", "warn_", "test_", "pass_"]:
                 testname = "%s/%stest_%s.xml" % (folder, prefix, idstr)
-                print "testing name %s" % testname
                 if os.path.isfile(testname):
                     filename = testname
                     break
 
             #filename="%s/test_%s.xml" % (folder, idstr)
             tests=parse_test_file(filename)
-            print "length of tests is %s" % len(tests)
             for t in tests:
                 if t['Uuid'] == idstr:
                     found = True
@@ -688,7 +686,6 @@ def search(request):
     if not found:
         return HttpResponse("Could not find UUD %s in test results for dates after %s" % (idstr, date))
 
-    print "we are about to run show_home found=%s" % found
     return show_home(init_dict, request)
 
 
@@ -793,7 +790,6 @@ def grib_count_differences(file1, file2, one_indexed_message_index, atol):
     for inp in (file1, file2):
         f = open(inp)
         mcount = grib_count_in_file(f)
-        print "mcount is %s for file %s " % (mcount, file1)
         if one_indexed_message_index > mcount:            
             raise
         if one_indexed_message_index <= 0:
@@ -811,35 +807,26 @@ def grib_count_differences(file1, file2, one_indexed_message_index, atol):
         gids.append(g)
 
     count = 0
-    print "and we are here"
 
     if len(gids) == 2:
 
         vals0 = grib_get_values(gids[0])
         vals1 = grib_get_values(gids[1])
         
-        print "len of gids was 2"
 
         arr0 = numpy.array(vals0)
         arr1 = numpy.array(vals1)
         #count = numpy.sum(vals0!=vals1)
-        print "we are here"
         count = numpy.sum(abs(vals1-vals0)>=atol)
-        print "and here"
         arrd=vals1-vals0
-        print "and here2"
         mindiff = numpy.min(arrd)
-        print "again"
         maxdiff = numpy.max(arrd)
-        print "finally"
 
     for g in gids:
         grib_release(g)
     for f in files:
         f.close()
 
-    print " we counted %s differences in %s seconds" % (count,
-                                                      time.time()-start)
     return count, mindiff, maxdiff
 
 
@@ -948,7 +935,6 @@ def get_results_folder(request):
     if "results_folder" in request.session:
         results_folder = request.session["results_folder"]
     
-    print "results folder is %s" % results_folder
     return results_folder
 
 def test_folder(request, test_date):
@@ -958,7 +944,6 @@ def test_folder(request, test_date):
     #results_folder="/tmp/maf/bigtest/output"
     
     results_folder=get_results_folder(request)
-    print "using results_folder %s" % results_folder
 
     datestr=test_date.strftime("%Y%m%d")
     test_folder="%s/%s" % (results_folder, datestr)
@@ -1032,6 +1017,7 @@ def test_dates_in_range(request, start_date, end_date):
     # get dates on disk between these ranges
     tests = []
     for d in daterange(start_date, end_date):
+        print "test folder for date %s is %s" % (d, test_folder(request, d))
         if contains_tests(test_folder(request, d)):
             tests.append(d)
 
@@ -1097,7 +1083,8 @@ def serve_hardware(request):
         machines = []
 
         # also get information on the versions discovered in the test file
-        interpolators = {}
+        #interpolators = {}
+        interpolators = OrderedDict()
 
         tests = get_selected_tests(request, page_data, request.session)
         test_count = len(tests)
@@ -1137,6 +1124,8 @@ def serve_hardware(request):
                 print "ERROR: Interpolation not found in test"
     
         platforms.sort()
+
+        print "interpolators has keys %s" % interpolators.keys()
 
         # remove the progress key
         del request.session["progress"]
@@ -1345,7 +1334,6 @@ def serve_target_grids(request):
 
         test_header_titles = [t.title() for t in test_headers]
         hidden_uuid_column = test_header_titles.index("Uuid")
-        print "we are hiding table column %d" % hidden_uuid_column
 
         return render_to_response("viewer/target.html",
                                   locals(),
@@ -1486,7 +1474,6 @@ def serve_detail(request):
                             if active_message >= grib_message_count:
                                 active_message = 0
 
-        print " we are here"
                         
         diff_labels = diff_types
 
@@ -1983,7 +1970,6 @@ def serve_data_frame(request):
             diff_tolerance = 0.0
 
         
-        print "we are here"
 
         folder, out_dict = get_test_data(request, page_data, "Output")
 
@@ -2014,8 +2000,6 @@ def serve_data_frame(request):
             if selected_data_type != "Differences":
                 diff_tolerance = 0.0
 
-            print "bout to get count differences"
-            print "grb files %s" % grib_files
             
             #numberOfPoints, mindiff, maxdiff = (0,0,0) # grib_count_differences(grib_files[0],
             try:
@@ -2024,12 +2008,10 @@ def serve_data_frame(request):
                                                         active_message+1,
                                                         diff_tolerance)
             except:
-                print "exception caught"
                 # return the length.... it will be because the files are
                 # different lengths and so all values will be different anyway
                 numberOfPoints, mindiff, maxdiff = (get_grib_length(grib_files[0],1),-1,-1) # grib_count_differences(grib_files[0],
 
-            print "number of differences %s mindiff %s maxdiff %s" % (numberOfPoints, mindiff, maxdiff)
 
 
             
@@ -2407,17 +2389,12 @@ def serve_image(request):
     _diff=request.POST.get("diff", "0")
     is_diff=_diff!="0"
     
-    print "WE HAVE A DIFFERENCE IMAGE: %s" % is_diff
 
     diff_type = request.POST.get("diff_type", None)
 
     diff_lo = request.POST.get("diff_lo", None)
     diff_hi = request.POST.get("diff_hi", None)
 
-    if diff_lo:
-        print "WE HAVE A DIFF_LO OF %s" % diff_lo
-    if diff_hi:
-        print "WE HAVE A DIFF_HI OF %s" % diff_hi
     
     ## generate unique name using uuid to protect against multiple users
     # overwriting each other
@@ -2442,7 +2419,6 @@ def serve_image(request):
         try: 
             msg = int(msg)
         except:
-            print "EXCEPTION"
             msg = 0
 
         p = param_list[msg]
@@ -2527,7 +2503,6 @@ def serve_image(request):
         os.remove(tmpfile)
 
     except:
-        print "EXCEPTION"
         msg = "Image could not be generated" 
         cmd = "convert -background lightblue -gravity center -size %sx%s -fill blue -pointsize 48 label:'%s' %s" % (w,h,msg,target)
         res = run_command(cmd)
@@ -2543,7 +2518,6 @@ def serve_image(request):
     except:
         pass
     
-    print "We are about to generate image data for difference = %s" % is_diff
     import base64
     image_data64 = base64.b64encode(image_data)
 
@@ -2594,12 +2568,6 @@ def serve_images(request):
         contour_labels=page_data.get("contour_labels", "off") 
         values=page_data.get("values", "off")
         
-        print "contour %s" % contour
-        print "shading %s" % shading
-        print "legend %s" % legend
-        print "labels %s" % contour_labels
-        print "values %s" % values
-        print "value frequency %s" % value_frequency
 
         data_diff_type=page_data.get("data_diff_type", None)
 
