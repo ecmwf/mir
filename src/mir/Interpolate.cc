@@ -160,18 +160,15 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 
     for( size_t n = 0; n < nfields; ++n )
     {
-        FieldHandle& fi = *(fs_inp->fields()[n]);
-        FieldHandle& fo = *(fs_out->fields()[n]);
-
-        FieldT<double>& ifield = fi.data();
-        FieldT<double>& ofield = fo.data();
+		Field& fi = fs_inp[n];
+		Field& fo = fs_out[n];
 
         // interpolation
         {
             Timer t( "interpolating field " + Translator<size_t,std::string>()(n) );
 
-            VectorXd::MapType fi = VectorXd::Map( ifield.data(), ifield.size() );
-            VectorXd::MapType fo = VectorXd::Map( ofield.data(), ofield.size() );
+			VectorXd::MapType fi = VectorXd::Map( fi.data<double>(), ifield.size() );
+			VectorXd::MapType fo = VectorXd::Map( fo.data<double>(), ofield.size() );
 
             fo = W * fi;
         }

@@ -35,7 +35,7 @@ public: // types
 
     typedef atlas::grid::Grid        Grid;
     typedef atlas::grid::Grid::Point Point;
-    typedef atlas::grid::FieldHandle FieldHandle;
+	typedef atlas::Field             Field;
     typedef atlas::grid::FieldSet    FieldSet;
 
     typedef Weights::Matrix Matrix;
@@ -48,14 +48,9 @@ public: // methods
 
 //    virtual std::string classname() const = 0;
 
-    void assemble( const FieldHandle& mask, const Grid& inp, const Grid& out, Weights::Matrix& W ) const;
+	void assemble( const Field& mask, const Grid& inp, const Grid& out, Weights::Matrix& W ) const;
 
 protected: // methods
-
-//    virtual void compute( const FieldHandle& mask,
-//                          const Grid& inp,
-//                          const Grid& out,
-//                          Weights::Matrix& W ) const = 0;
 
 };
 

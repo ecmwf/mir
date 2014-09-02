@@ -39,7 +39,7 @@ Masks::~Masks()
 {
 }
 
-void Masks::assemble(const FieldHandle& mask, const Grid& inp, const Grid& out, Weights::Matrix& W) const
+void Masks::assemble(const Field& mask, const Grid& inp, const Grid& out, Weights::Matrix& W) const
 {
     Grid& gm = const_cast<Grid&>(mask.grid());
 
@@ -48,9 +48,9 @@ void Masks::assemble(const FieldHandle& mask, const Grid& inp, const Grid& out, 
     // interpolate the input on the mask grid
     Grid& gi = const_cast<Grid&>(inp);
     Mesh& inp_mesh = gi.mesh();
-    FieldHandle::Ptr mask_inp( new FieldHandle( Grid::Ptr(&gi), inp_mesh.function_space("nodes").create_field<double>("mask_inp",1) ) );
+	Field::Ptr mask_inp( new Field( Grid::Ptr(&gi), inp_mesh.function_space("nodes").create_field<double>("mask_inp",1) ) );
     {
-        FieldT<double>& ifield = const_cast<FieldHandle&>(mask).data();
+		FieldT<double>& ifield = const_cast<Field&>(mask).data();
         FieldT<double>& ofield = mask_inp->data();
 
         Weights::Matrix wm( ofield.size(), ifield.size() );
@@ -65,9 +65,9 @@ void Masks::assemble(const FieldHandle& mask, const Grid& inp, const Grid& out, 
     // interpolate the output on the mask grid
     Grid& go = const_cast<Grid&>(out);
     Mesh& out_mesh = go.mesh();
-    FieldHandle::Ptr mask_out( new FieldHandle( Grid::Ptr(&go), out_mesh.function_space("nodes").create_field<double>("mask_out",1) ) );
+	Field::Ptr mask_out( new Field( Grid::Ptr(&go), out_mesh.function_space("nodes").create_field<double>("mask_out",1) ) );
     {
-        FieldT<double>& ifield = const_cast<FieldHandle&>(mask).data();
+		FieldT<double>& ifield = const_cast<Field&>(mask).data();
         FieldT<double>& ofield = mask_out->data();
 
         Weights::Matrix wm( ofield.size(), ifield.size() );
