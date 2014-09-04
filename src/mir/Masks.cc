@@ -48,35 +48,38 @@ void Masks::assemble(const Field& mask, const Grid& inp, const Grid& out, Weight
     // interpolate the input on the mask grid
     Grid& gi = const_cast<Grid&>(inp);
     Mesh& inp_mesh = gi.mesh();
-	Field::Ptr mask_inp( new Field( Grid::Ptr(&gi), inp_mesh.function_space("nodes").create_field<double>("mask_inp",1) ) );
+	Field::Ptr mask_inp( &inp_mesh.function_space("nodes").create_field<double>("mask_inp",1) );
     {
-		FieldT<double>& ifield = const_cast<Field&>(mask).data();
-        FieldT<double>& ofield = mask_inp->data();
+		Field& fi = const_cast<Field&>(mask);
+		Field& fo = *mask_inp;
 
-        Weights::Matrix wm( ofield.size(), ifield.size() );
+		Weights::Matrix wm( fo.size(), fi.size() );
         k4.assemble( mask.grid(), inp, wm );
 
-        VectorXd::MapType fi = VectorXd::Map( ifield.data(), ifield.size() );
-        VectorXd::MapType fo = VectorXd::Map( ofield.data(), ofield.size() );
+		VectorXd::MapType vi = VectorXd::Map( fi.data<double>(), fi.size() );
+		VectorXd::MapType vo = VectorXd::Map( fo.data<double>(), fo.size() );
 
-        fo = wm * fi;
+		vo = wm * vi;
     }
 
     // interpolate the output on the mask grid
     Grid& go = const_cast<Grid&>(out);
     Mesh& out_mesh = go.mesh();
-	Field::Ptr mask_out( new Field( Grid::Ptr(&go), out_mesh.function_space("nodes").create_field<double>("mask_out",1) ) );
-    {
-		FieldT<double>& ifield = const_cast<Field&>(mask).data();
-        FieldT<double>& ofield = mask_out->data();
 
-        Weights::Matrix wm( ofield.size(), ifield.size() );
+	FieldT<double>& omask = out_mesh.function_space("nodes").create_field<double>("mask_out",1);
+
+	Field::Ptr mask_out( &omask );
+    {
+		Field& fi = const_cast<Field&>(mask);
+		Field& fo = *mask_out;
+
+		Weights::Matrix wm( fo.size(), fi.size() );
         k4.assemble( mask.grid(), out, wm );
 
-        VectorXd::MapType fi = VectorXd::Map( ifield.data(), ifield.size() );
-        VectorXd::MapType fo = VectorXd::Map( ofield.data(), ofield.size() );
+		VectorXd::MapType vi = VectorXd::Map( fi.data<double>(), fi.size() );
+		VectorXd::MapType vo = VectorXd::Map( fo.data<double>(), fo.size() );
 
-        fo = wm * fi;
+		vo = wm * vi;
     }
 
     VectorXd ws;    //< inneficient
@@ -86,8 +89,8 @@ void Masks::assemble(const Field& mask, const Grid& inp, const Grid& out, Weight
     {
 //        std::cout << "-----------------------" << std::endl;
 
-        double omask = (*mask_out).data()[k];
-        bool mask1 = ( omask >= 0.5 );
+		double ov = omask[k];
+		bool   mask1 = ( ov >= 0.5 );
 
         /// @todo this probably can be done better -- how can we know how many cols() in a row() without iterating
         size_t ncols = 0;
@@ -108,7 +111,7 @@ void Masks::assemble(const Field& mask, const Grid& inp, const Grid& out, Weight
         for( Weights::Matrix::InnerIterator it(W,k); it; ++it, ++j )
         {
             ws[j] =  it.value();
-            imask[j] = (*mask_inp).data()[it.col()];
+			imask[j] = mask_inp->data<double>()[it.col()];
         }
 
 //        std::cout << ws.transpose() << std::endl;

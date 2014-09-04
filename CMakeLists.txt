@@ -28,7 +28,7 @@ include( ecbuild_system )
 ecbuild_requires_macro_version( 1.3 )
 
 ###############################################################################
-# local project
+# project
 
 ecbuild_use_package( PROJECT eckit  VERSION  0.6  REQUIRED )
 ecbuild_use_package( PROJECT atlas  VERSION  0.1  REQUIRED )
@@ -50,6 +50,26 @@ set( MIR_DATA_DIR  "${CMAKE_INSTALL_PREFIX}/share/mir/lsm" ${MIR_LSM_PATH} )
 
 ecbuild_add_cxx11_flags()
 ecbuild_check_cxx11( PRINT )
+
+### MPI
+
+ecbuild_add_option( FEATURE MPI
+					DEFAULT OFF
+					DESCRIPTION "support for MPI distributed parallelism" )
+
+if( ENABLE_MPI )
+
+  ecbuild_find_mpi()
+
+  if( MPI_CXX_FOUND )
+	cmake_add_c_flags( " ${MPI_C_COMPILE_FLAGS}" )
+	cmake_add_cxx_flags( " ${MPI_CXX_COMPILE_FLAGS}" )
+	include_directories( "${MPI_CXX_INCLUDE_PATH}" )
+  else()
+	set( HAVE_MPI 0 )
+  endif()
+
+endif()
 
 ###############################################################################
 # contents

@@ -160,17 +160,17 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 
     for( size_t n = 0; n < nfields; ++n )
     {
-		Field& fi = fs_inp[n];
-		Field& fo = fs_out[n];
+		Field& fi = (*fs_inp)[n];
+		Field& fo = (*fs_out)[n];
 
         // interpolation
         {
             Timer t( "interpolating field " + Translator<size_t,std::string>()(n) );
 
-			VectorXd::MapType fi = VectorXd::Map( fi.data<double>(), ifield.size() );
-			VectorXd::MapType fo = VectorXd::Map( fo.data<double>(), ofield.size() );
+			VectorXd::MapType vi = VectorXd::Map( fi.data<double>(), fi.size() );
+			VectorXd::MapType vo = VectorXd::Map( fo.data<double>(), fo.size() );
 
-            fo = W * fi;
+			vo = W * vi;
         }
 
         /// @todo this must be abstracted out, so GRIB is not exposed
