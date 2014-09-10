@@ -115,7 +115,7 @@ void Bilinear::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
     std::vector< Eigen::Triplet<double> > weights_triplets; /* structure to fill-in sparse matrix */
 
     // determing the number of output points required
-    const size_t out_npts = onodes.boundsf()[1];
+    const size_t out_npts = onodes.shape(0);
     weights_triplets.reserve( out_npts );
 
     for (unsigned int i = 0; i < out_npts; i++)

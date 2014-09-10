@@ -35,7 +35,7 @@ PointSearch::PointSearch(atlas::Mesh& mesh)
 
     FunctionSpace& nodes = mesh.function_space( "nodes" );
 
-    size_t npts = nodes.extents()[0];
+    size_t npts = nodes.shape(0);
 
     ASSERT( npts > 0 );
 

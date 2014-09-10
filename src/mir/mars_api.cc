@@ -166,7 +166,7 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
         FieldSet::Ptr fs_out( interpolator.eval( fs_inp ) );
         ASSERT( fs_out );
 
-		Field& f = (*fs_out)[0];  // NOTE: we assume only one field as output
+        Field& f = (*fs_out)[0];  // NOTE: we assume only one field as output
 
         GribHandle::Ptr gh = Grib::write(f);
 

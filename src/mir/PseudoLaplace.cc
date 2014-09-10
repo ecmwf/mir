@@ -47,7 +47,7 @@ void PseudoLaplace::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
     ArrayView<double,2> ocoords ( o_nodes.field( "coordinates" ) );
 
-    const size_t out_npts = o_nodes.extents()[0];
+    const size_t out_npts = o_nodes.shape(0);
 
     // init structure used to fill in sparse matrix
     std::vector< Eigen::Triplet<double> > weights_triplets; 

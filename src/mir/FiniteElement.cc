@@ -143,15 +143,15 @@ void FiniteElement::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
 
     ptriag_nodes = &triags.field<int>( "nodes" );
 
-    nb_triags = triags.extents()[0];
-    inp_npts = i_nodes.extents()[0];
+    nb_triags = triags.shape(0);
+    inp_npts = i_nodes.shape(0);
 
     // output mesh
 
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
     ArrayView<double,2> ocoords ( o_nodes.field( "coordinates" ) );
 
-    const size_t out_npts = o_nodes.extents()[0];
+    const size_t out_npts = o_nodes.shape(0);
 
     // weights
 
