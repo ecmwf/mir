@@ -15,7 +15,7 @@
 
 #include "eckit/log/Log.h"
 
-#include "atlas/util/ArrayView.hpp"
+#include "atlas/util/ArrayView.h"
 
 #include "mir/PointSearch.h"
  

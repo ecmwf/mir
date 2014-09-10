@@ -16,7 +16,7 @@
 #include "atlas/grid/ReducedGG.h"
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/Unstructured.h"
-#include "atlas/util/ArrayView.hpp"
+#include "atlas/util/ArrayView.h"
 
 #include "eckit/config/Resource.h"
 #include "eckit/log/Log.h"

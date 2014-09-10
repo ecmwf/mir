@@ -14,7 +14,7 @@
 #include "eckit/log/Log.h"
 #include "eckit/utils/Translator.h"
 
-#include "atlas/util/ArrayView.hpp"
+#include "atlas/util/ArrayView.h"
 
 #include "mir/KNearest.h"
 

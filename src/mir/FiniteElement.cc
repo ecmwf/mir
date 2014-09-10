@@ -12,8 +12,8 @@
 
 #include "eckit/log/Timer.h"
 
-#include "atlas/util/ArrayView.hpp"
-#include "atlas/util/IndexView.hpp"
+#include "atlas/util/ArrayView.h"
+#include "atlas/util/IndexView.h"
 #include "atlas/grid/Tesselation.h"
 #include "atlas/grid/PointIndex3.h"
 #include "atlas/grid/TriangleIntersection.h"

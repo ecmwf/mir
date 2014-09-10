@@ -14,7 +14,7 @@
 
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Tesselation.h"
-#include "atlas/mesh/FunctionSpace.hpp"
+#include "atlas/mesh/FunctionSpace.h"
 
 #include "mir/Masks.h"
 #include "mir/WeightCache.h"

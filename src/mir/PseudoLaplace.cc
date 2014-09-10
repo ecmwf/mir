@@ -15,8 +15,8 @@
 #include "eckit/log/Log.h"
 #include "eckit/utils/Translator.h"
 
-#include "atlas/util/ArrayView.hpp"
-#include "atlas/mesh/Parameters.hpp"
+#include "atlas/util/ArrayView.h"
+#include "atlas/mesh/Parameters.h"
 
 #include "mir/PseudoLaplace.h"
 

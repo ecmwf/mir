@@ -18,8 +18,8 @@
 
 #include "eckit/maths/Eigen.h"
 
-#include "atlas/mesh/Mesh.hpp"
-#include "atlas/mesh/Field.hpp"
+#include "atlas/mesh/Mesh.h"
+#include "atlas/mesh/Field.h"
 #include "atlas/grid/PointIndex3.h"
 
 #include "mir/Weights.h"

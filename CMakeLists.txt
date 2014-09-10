@@ -42,7 +42,7 @@ ecbuild_add_option( FEATURE EIGEN
                     DESCRIPTION "Eigen support"
                     REQUIRED_PACKAGES Eigen3 )
 if( NOT HAVE_EIGEN )
-  message( FATAL_ERROR "Eigen is required to build mir" )
+  message( WARNING "Eigen is required to build mir" )
 endif()
 
 set( MIR_SHARE_DIR "${CMAKE_INSTALL_PREFIX}/share/mir"     ${MIR_SHARE_PATH} )
