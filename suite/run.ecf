@@ -148,6 +148,7 @@ echo param is $param
 		export ARCH=%PLATFORM%
 		#MARS_TO_USE="mars"
 		MARS_TO_USE="${mars_cmds[$interp_index]}"
+		#MARS_TO_USE="ssh %MACHINE% \"$MARS_TO_USE\""
 		echo "##############################################"
 		echo "MARS TO USE " $MARS_TO_USE
 		echo "##############################################"
@@ -174,32 +175,38 @@ echo param is $param
 		# We test if we're converting from vo/d 
 		# in which case we need to do a little extra
 		# when constructing the request
-
-		# the "echo" is to stop $? returning 1
-		# TODO we can do this in setup.py
-		vo_d_check=`cat ${the_src_request} | grep -i 'vo/d' || echo ""`
+		target_short=%TARGET_GRID%
+		if [[ ${target_short} != "sh" ]]; then
 		
-		if [[ ${vo_d_check} != "" ]]; then
-		        echo "############################################################"
-		        echo "############################################################"
-		        echo "############################################################"
-		        echo "############################################################"
-		        echo "#################                        ###################"
-		        echo "#################  conversion from vo/d  ###################"
-		        echo "#################                        ###################"
-		        echo "############################################################"
-		        echo "############################################################"
-		        echo "############################################################"
-		        echo "############################################################"
-		        # we need to repeat the initial specification
-			#echo "retrieve" > $request_file
-		        #cat ${the_src_request} > $request_file
-		        # and override the parameter to convert to u/v
-		        echo "param=u/v," >> $request_file
-		  else
-		        # otherwise it is a simple read-from-file
-		        echo "NON WIND FIELD"
-		        #echo "read," > $request_file
+			# if we're not doing sh->sh and we have a wind field, then 
+			# enforce a vo/d -> u/v conversion for testing
+
+			# the "echo" is to stop $? returning 1
+			# TODO we can do this in setup.py
+			vo_d_check=`cat ${the_src_request} | grep -i 'vo/d' || echo ""`
+			
+			if [[ ${vo_d_check} != "" ]]; then
+				echo "############################################################"
+				echo "############################################################"
+				echo "############################################################"
+				echo "############################################################"
+				echo "#################                        ###################"
+				echo "#################  conversion from vo/d  ###################"
+				echo "#################                        ###################"
+				echo "############################################################"
+				echo "############################################################"
+				echo "############################################################"
+				echo "############################################################"
+				# we need to repeat the initial specification
+				#echo "retrieve" > $request_file
+				#cat ${the_src_request} > $request_file
+				# and override the parameter to convert to u/v
+				echo "param=u/v," >> $request_file
+			  else
+				# otherwise it is a simple read-from-file
+				echo "NON WIND FIELD"
+				#echo "read," > $request_file
+			  fi
 		  fi
 
 		  echo "source='${the_src_grib}'," >> $request_file
@@ -249,7 +256,7 @@ echo param is $param
 				  ######################################################################
 				  # M A R S   C A L L   H E R E
 
-				  elapsed=`timed_call_ms "$MARS_TO_USE < $request_file > $mars_logfile"`
+				  elapsed=`timed_call_ms "$MARS_TO_USE < $request_file > $mars_logfile 2> $mars_logfile"`
 
 				  ######################################################################
 
@@ -269,7 +276,7 @@ echo param is $param
 			       echo "Not running valgrind"
 			       # plain and simple run of the mars request
 			       #
-			       elapsed=`timed_call_ms "$MARS_TO_USE < $request_file > $mars_logfile"`
+			       elapsed=`timed_call_ms "$MARS_TO_USE < $request_file > $mars_logfile 2> $mars_logfile"`
 			       echo "Memory profiling not requested for this grid" > $memory_logfile
 
 			 fi
@@ -535,7 +542,7 @@ echo param is $param
 	    if [[ $retcode == "" ]]; then
 	      # something went wrong 
 	      retcode=$TEST_FAIL
-	      status_line=$codes[$retcode]
+	      status_line=${codes[$retcode]}
 	    fi
 	    echo "Reason ${codes[$retcode]}"
 
@@ -543,7 +550,9 @@ echo param is $param
 	    if [[ $retcode == $TEST_FAIL ]]; then
 		echo "failed test was $i"
 		failed_test=$i
-		return_codes=$retcode
+	    	return_codes=$((1 << $retcode))
+		status_line=${codes[$retcode]}
+		echo "Set status line to " $status_line
 		break
 	    fi
 	    # build up a return value here
@@ -561,13 +570,18 @@ echo param is $param
 	
 	if [[ $status_line == "" ]]; then
 	    echo "No fail codes. Setting status to PASS"
-	    status_line=$codes[$TEST_PASS]
+	    status_line=${codes[$TEST_PASS]}
 	    # we add a status to the file itself to aid
 	    # searching for warn cases in long file lists without requiring introspection
 	    out_file_stub="pass"
 	else
-	    out_file_stub="warn"
+	    if [[ $retcode == $TEST_FAIL ]]; then
+	        out_file_stub="fail"
+	    else
+	    	out_file_stub="warn"
+	    fi
 	fi
+
 
 	rm -f $check_file
 

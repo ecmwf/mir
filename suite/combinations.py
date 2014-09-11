@@ -4,7 +4,8 @@
 # visible to all machines
 #
 #platform_dict={"linux": ["pepe"], "rs6000": ["ecgate"]}
-platform_dict={"linux": ["cumal"]}
+platform_dict={"linux": ["skadi"]}
+#platform_dict={"linux": ["cumal"]}
 
 
 ##################################################################################
@@ -13,12 +14,14 @@ platform_dict={"linux": ["cumal"]}
 #
 # NB It is important that these are DIFFERENT so use e.g. emos392 and emos394
 # and not emos and emos for example
-comparisons=["emos392", "emos395"]
+comparisons=["emos395", "emos396"]
 
 
 # these options specficy exactly the mars client to use
-mars_folders=["/usr/local/lib/metaps", "/tmp/maf/p4/mars/client/dev/grib_api"]
-mars_commands=["mars", "mars"]
+#mars_folders=["/usr/local/lib/metaps", "/home/ma/maf/build/mars_client/debug"]
+#mars_folders=["/usr/local/lib/metaps", "/tmp/maf/p4/mars/client/dev/grib_api"]
+mars_folders=["", ""]
+mars_commands=["mars", "mars -n"]
 
 
 # Whether to compare the files and produce difference plots if diffs are found
@@ -84,11 +87,12 @@ grid_dict = {
     
 }
 
-grid_dict = {"sh": ["red_gg"] }
+#grid_dict = {"sh": ["red_gg"] }
 
 #grid_dict = {
-#    "red_gg": [ "reg_gg", "reg_ll" ]
-#        }
+#    "reg_gg": [ "reg_ll" ],
+#    "reg_ll": [ "reg_ll" ]
+#    }
 
 
 ##################################################################################
@@ -111,18 +115,18 @@ src_requests = {
             # name also for reference. Format is "name": "stub mars request"
 
             "t850": "stream=oper,step=0,levtype=pl,class=od,type=fc,param=130.128,levelist=850,",
-            #"z1000": "step=0,param=z,levelist=1000,",
+            "z1000": "step=0,param=z,levelist=1000,",
             #"uv_multilevel": "type=forecast,param=u/v,levtype=model level,levelist=1/to/45,step=48,",
-            "vo_d": "class=od,type=an,stream=oper,repres=sh,levtype=pl,levelist=1000,param=vo/d,step=00,"
+             "vo_d": "class=od,type=an,stream=oper,repres=sh,levtype=pl,levelist=1000,param=vo/d,step=00,"
         },
        "red_gg":
         {
             #"10uv_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=10u/10v,",
             "2t_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=2t,",
-            #"t850": "stream=oper,step=0,levelist=850,param=t,gaussian=reduced,grid=400,",
-            #"z_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=z,",
+            "t850": "stream=oper,step=0,levelist=850,param=t,gaussian=reduced,grid=400,",
+            "z_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=z,",
             "z1000": "stream=oper,step=0,levelist=1000,class=od,type=fc,param=z,gaussian=reduced,grid=400,",
-            #"z850": "stream=oper,step=0,levelist=850,class=od,type=fc,param=z,gaussian=reduced,grid=1280,",
+            #"z850_1280": "stream=oper,step=0,levelist=850,class=od,type=fc,param=z,gaussian=reduced,grid=1280,",
             "q": "class=od,type=an,stream=oper,levtype=ml,levelist=5,param=q,domain=g,",
         },
         "red_ll":
@@ -133,18 +137,18 @@ src_requests = {
         },
         "reg_gg":
         {
-            #"10uv_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=10u/10v,gaussian=regular,grid=400,",
+            "10uv_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=10u/10v,gaussian=regular,grid=400,",
             "2t_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=2t,gaussian=regular,grid=400,",
             "t850": "stream=oper,step=0,levelist=850,param=t,gaussian=regular,grid=400,",
             "z_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=z,gaussian=regular,grid=400,",
-            #"z1000": "stream=oper,step=0,levelist=1000,class=od,type=fc,param=z,gaussian=regular,grid=400,",
+            "z1000": "stream=oper,step=0,levelist=1000,class=od,type=fc,param=z,gaussian=regular,grid=400,",
         },
         "reg_ll":
         {
             "10uv_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=10u/10v,grid=0.25/0.25,",
             "2t_sfc": "stream=oper,step=0,levtype=sfc,param=2t,grid=0.25/0.25,",
-            #"t850": "stream=oper,step=0,levelist=850,param=t,grid=0.25/0.25,",
-            #"z_sfc": "stream=oper,step=0,levtype=sfc,param=z,grid=0.25/0.25,",
+            "t850": "stream=oper,step=0,levelist=850,param=t,grid=0.25/0.25,",
+            "z_sfc": "stream=oper,step=0,levtype=sfc,param=z,grid=0.25/0.25,",
             "z1000": "stream=oper,step=0,levelist=1000,param=z,grid=0.25/0.25,",
         },
 }
@@ -173,22 +177,22 @@ ll_grids.extend(["5/5", "2/2", "1.5/1.5"])
 # the spectral resolutions we will use
 resol         = ["63", "95", "106", "160", "128", "200", "213", "511", "639", "799", "1279"]
 
-#rotation      = ["39/39", "1/1", "-40/22", "80/-10", "90/0"]
-rotation      = ["80/-10", "90/0"]
+rotation      = ["39/39", "1/1", "-40/22", "80/-10", "90/0"]
+#rotation      = ["80/-10", "90/0"]
 
 # sub areas to be defined
 #area          = ("off", "90/10/-10/9","35.073/-50.975/-23.427/17.025")
 
 ll_areas          = [ "off" , 
-                     #"75/60/10/90", 
-                     #"90/10/-10/200", 
+                     "75/60/10/90", 
+                     "90/10/-10/200", 
                      #"70/-20/10/60",  
                      #"-40/0/-80/90",
                      #"0/90/-30/10",
                      #"75/10/30/40",  
                      #"40/-20/-40/60",
                      #"50/-135/-60/-35",
-                     #"40/-110/-10/-60",
+                     "40/-110/-10/-60",
                      "40/60/-60/180",
                      "80/115/-5/180",
                 ]
@@ -199,9 +203,9 @@ gg_areas          = [ "off" ,
                      #"-40/0/-80/90",
                      #"0/90/-30/11.25",
                      #"75/22.5/30/45",  
-                     #"40/-22.5/-40/60",
-                     #"50/-135/-60/-22.5",
-                     #"40/-112.5/-10/-45",
+                     "40/-22.5/-40/60",
+                     "50/-135/-60/-22.5",
+                     "40/-112.5/-10/-45",
                      #"40/67.5/-60/180",
                      #"80/90/-5/180",
                 ]
@@ -209,12 +213,26 @@ gg_areas          = [ "off" ,
 #style         = ["off", "dissemination"]
 frame         = ["off", "10", ]
 packing       = ["off", "av", "si", "co"]
+sh_packing       = ["off", "av", "co"]
 accuracy      = ["off", "av", "12", "16", "24", "8"]
 gauss_grids   = [48, 80, 100, 128, 160, 200, 256, 320, 400, 512, 640]
 predefined_regular_gauss_grids = [160, 200,400,640]
 
-reduced_gauss_grids   = [32, 48, 80, 128, 160, 200, 256, 320, 400, 512, 640, 1024, 1280]
+#reduced_gauss_grids   = [32, 48, 80, 128, 160, 200, 256, 320, 400, 512, 640, 1024, 1280]
+reduced_gauss_grids   = [32, 48, 80, 128, 160, 200, 256, 320, 400, 512, 640, 1024]
 
+# to massively reduce test counts uncomment here
+"""
+gauss_grids = [200]
+reduced_gauss_grids = gauss_grids
+predefined_regular_gauss_grids = gauss_grids
+gg_areas = ["off", "75/62/10/90"]
+ll_areas = gg_areas
+rotation = ["10/10"]
+predefined_ll_grids = [ "1.125/1.125"]
+ll_grids = predefined_ll_grids
+resol         = ["63"]
+"""
 
 ##################################################################################
 # "adjust" specifies which parameters are to be adjusted for which target grid
@@ -231,33 +249,39 @@ reduced_gauss_grids   = [32, 48, 80, 128, 160, 200, 256, 320, 400, 512, 640, 102
 
 adjust = {
     
-    "sh": { "resol": resol, },
+    "sh": { "resol": resol,
+                "packing": sh_packing, 
+          },
 
-    "reg_ll": {   "area": ll_areas, 
-                  "frame": frame, 
+    "reg_ll": {   #"area": ll_areas, 
+               #"frame": frame, 
                   "grid": ll_grids,
+               #"packing": packing, 
                 },
 
     "rot_reg_ll": { "rotation": rotation, 
                     "grid": predefined_ll_grids, 
+                "packing": packing, 
                   },
     "reg_gg": { "area": gg_areas, 
                 "frame": frame, 
                 "grid": gauss_grids, 
+                "packing": packing, 
               },
     "red_ll": { "area": ll_areas, 
                 "grid": ll_grids, 
+                "packing": packing, 
                },
-    "red_gg": { #"grid": reduced_gauss_grids, 
-                "grid": [80, 1024],
+    "red_gg": { "grid": reduced_gauss_grids, 
                 "gaussian": ["reduced"], 
+                "packing": packing, 
               },
 
     # the following to be applied to all target represenations
 
     "all": { 
-                 "packing": packing, 
-                 "accuracy": accuracy, 
+        # "accuracy": accuracy, 
            },
 }
+
 
