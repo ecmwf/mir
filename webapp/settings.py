@@ -29,11 +29,11 @@ DATABASE_HOST = ""
 DATABASE_PORT = ""
 
 MEDIA_ROOT = os.path.join(site_dir, "static")
-MEDIA_URL = "/static"
+MEDIA_URL = "/static/"
 ADMIN_MEDIA_PREFIX = "/media/"
 
 STATIC_ROOT = os.path.join(site_dir, "static")
-STATIC_URL= "/output"
+STATIC_URL= "/output/"
 
 SESSION_COOKIE_NAME = "mir-development"
 SESSION_ENGINE = "django.contrib.sessions.backends.file" 
@@ -43,6 +43,8 @@ RESULTS_FOLDER="/tmp/maf/bigtest/output"
 #RESULTS_FOLDER="/scratch/ma/maf/scratchdir/ecRegrid/bigtest/output"
 SHOW_JIRA_SECTION=False
 
+# path to magjson (including trailing slash)
+MAGJSON_PATH="/usr/local/apps/Magics/current/bin/"
 
 SESSION_COOKIE_DOMAIN = ".ecmwf.int"
 

@@ -23,7 +23,8 @@ from collections import OrderedDict
 
 from PIL import Image
 
-from servicelib import encoding as json
+#from servicelib import encoding as json
+import json
 from gribapi import *
 
 #from django_tools.middlewares import ThreadLocal
@@ -2474,9 +2475,11 @@ def serve_image(request):
             # the resolution of the grib file makes all values zero
             scale=DIFF_FILE_SCALE
 
-        cmd = "magjson %s -data=%s -width=%s -height=%s -path=%s -proj=%s \
+        cmd = "%smagjson %s -data=%s -width=%s -height=%s -path=%s -proj=%s \
               -contour=%s -shade=%s -legend=%s -label=%s -message=%s \
-              -scale=%s -values=%s -fval=%s" % ( filename, 
+              -scale=%s -values=%s -fval=%s" % (
+                                               settings.MAGJSON_PATH,
+                                               filename, 
                                                grib, 
                                                w,h, 
                                                target, 
