@@ -16,6 +16,8 @@ module load ecflow/4.0.4
 
 ./start_server.sh -c local.settings
 
+NB the new.settings has been shown to work on the new desktop (tested on skadi)
+
 3. Run the suite
 
 - NB at present if the output folder already exists, new results will be added to what is there.
