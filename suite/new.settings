@@ -3,8 +3,6 @@ ECFLOW_SERVER_HOSTNAME=skadi
 ECFLOW_SERVER_PORT=4266
 #ECFLOW_RUNTIME=02:00
 
-#ECF_HOME=/scratch/ma/maf/scratchdir/bigtest
-#ECF_INCLUDE=/scratch/ma/maf/scratchdir/bigtest
 ECF_HOME=/tmp/maf/bigtest
 ECF_INCLUDE=/tmp/maf/bigtest
 

@@ -14,7 +14,7 @@ module load ecflow/4.0.4
 - Choose which settings file you will be using, e.g. local.settings
 - Start an appropriate server for this file with:
 
-./start_server.sh -c local.settings
+./start_server.sh -c new.settings
 
 NB the new.settings has been shown to work on the new desktop (tested on skadi)
 
