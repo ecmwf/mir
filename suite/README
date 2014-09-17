@@ -3,14 +3,20 @@ To use the suite please do the following:
 
 1. Initialise ecflow
 
-use ecflow
+//use ecflow
+use module ecflow
+
+// on new desktops
+module load ecflow/4.0.4
 
 2. Start the ecflow server.
 
 - Choose which settings file you will be using, e.g. local.settings
 - Start an appropriate server for this file with:
 
-./start_server.sh -c local.settings
+./start_server.sh -c new.settings
+
+NB the new.settings has been shown to work on the new desktop (tested on skadi)
 
 3. Run the suite
 
@@ -29,3 +35,28 @@ ecflowview
 
 
 5. Visualise the results in the web application.
+
+See the README in the web application folder.
+
+
+Configuring the script
+======================
+
+The file combinations.py is where the suite is configured. The file is commented with information and should be clear, but there are some key aspects:
+
+platform_dict: The machine on which the jobs should be run. At the moment these are run on the same machine on which the suite runs. An attempt was made to run jobs on other machines using an rsh command (see run.ecf) but the configuration of MARS when starting a shell in this way was incomplete and the remote job didn't run.
+
+comparison: These are the human-readable name tags given to each interpolator. It is wise not to include spaces in the names (underscores are okay)
+
+mars_folder (a)
+mars_commands (b)
+
+These are (a) the path to which to set MARS_HOME before running the corresponding mars command. For example, if your mars client is in /tmp/home/mars/ and the command to run it is "mars -n" then set these variables accordingly. They are both vectors of length 2 - one for each interpolator being tested.
+
+grid_dict: This is where you specify the grids to be interpolated to/from. It's a Python dict where the key is the source grid, and the value is a list of target grids.
+
+For example { "sh": ["red_gg", "reg_ll"] }
+will transform from Spherical (sh) to reduced Gaussian and regular Lat/Lon grids.
+
+
+
