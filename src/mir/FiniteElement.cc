@@ -77,7 +77,7 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Vector3d& phi, int idx
 
         Triag triag( icoords[idx[0]].data() , icoords[idx[1]].data(), icoords[idx[2]].data() );
 
-        found = triag_intersection( triag, ray, uvt );
+		found = triag.intersects( ray, uvt );
 
 #ifdef DUMP_PROJ
         if(found)
