@@ -173,9 +173,11 @@ Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& 
 			vo = W * vi;
         }
 
+#ifdef ECKIT_HAVE_GRIB
         /// @todo this must be abstracted out, so GRIB is not exposed
         // metadata transfer by cloning the grib handle
         fo.grib( fi.grib().clone() );
+#endif
     }
 
 //    Grib::write( *fs_out, "out.grib" );
