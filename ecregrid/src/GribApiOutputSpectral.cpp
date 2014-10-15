@@ -42,9 +42,9 @@ grib_handle* GribApiOutputSpectral::setGrib(const Field& output, const grib_valu
 {
 	grib_handle* h;
     if( output.editionNumber() == 1)
-        h = grib_handle_new_from_template(NULL,"sh_pl_grib1");
+        h = grib_handle_new_from_samples(NULL,"sh_pl_grib1");
     else
-        h = grib_handle_new_from_template(NULL,"sh_pl_grib2");
+        h = grib_handle_new_from_samples(NULL,"sh_pl_grib2");
 
 	setGrib(h,output,grib_set,grib_set_count);
 

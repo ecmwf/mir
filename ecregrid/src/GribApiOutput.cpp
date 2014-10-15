@@ -250,9 +250,9 @@ grib_handle* GribApiOutput::setGrib(const Field& output, const grib_values* grib
 {
 	grib_handle* h;
 	if( output.editionNumber() == 1 || output.editionNumber() == 0)
-        h = grib_handle_new_from_template(NULL,"GRIB1");
+        h = grib_handle_new_from_samples(NULL,"GRIB1");
     else
-       h = grib_handle_new_from_template(NULL,"GRIB2");
+       h = grib_handle_new_from_samples(NULL,"GRIB2");
 
 	ASSERT(h);
 
