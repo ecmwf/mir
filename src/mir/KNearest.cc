@@ -22,6 +22,7 @@
 
 using eckit::Resource;
 
+using atlas::Grid;
 using atlas::FunctionSpace;
 using atlas::ArrayView;
 
@@ -40,7 +41,7 @@ KNearest::KNearest(const size_t& k) : nclosest_(k)
 {
 }
 
-KNearest::KNearest(const size_t &k, Weights::Grid &in) : nclosest_(k)
+KNearest::KNearest(const size_t &k, Grid &in) : nclosest_(k)
 {
 
 }

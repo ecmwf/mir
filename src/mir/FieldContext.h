@@ -14,7 +14,7 @@
 #ifndef mir_FieldContext_H
 #define mir_FieldContext_H
 
-#include "atlas/grid/FieldSet.h"
+#include "atlas/FieldSet.h"
 
 #include "mir/Params.h"
 
@@ -26,18 +26,15 @@ namespace mir {
 
 class FieldContext : public eckit::DispatchParams<FieldContext> {
 
-public: // types
-
-    typedef atlas::grid::FieldSet FieldSet;
-
 public: // methods
 
-    FieldContext( const FieldSet::Ptr& );
-    virtual ~FieldContext();
+	FieldContext( const atlas::FieldSet::Ptr& );
+
+	virtual ~FieldContext();
 
 private: // members
 
-    FieldSet::Ptr fieldset_;
+	atlas::FieldSet::Ptr fieldset_;
 
 };
 

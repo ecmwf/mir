@@ -14,9 +14,9 @@
 
 #include "atlas/util/ArrayView.h"
 #include "atlas/util/IndexView.h"
-#include "atlas/grid/Tesselation.h"
-#include "atlas/grid/PointIndex3.h"
-#include "atlas/grid/TriangleIntersection.h"
+#include "atlas/Tesselation.h"
+#include "atlas/PointIndex3.h"
+#include "atlas/TriangleIntersection.h"
 
 #include "mir/FiniteElement.h"
 
@@ -25,7 +25,6 @@
 using namespace Eigen;
 using namespace eckit;
 using namespace atlas;
-using namespace atlas::grid;
 
 namespace mir {
 

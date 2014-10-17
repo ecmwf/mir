@@ -18,9 +18,9 @@
 
 #include "eckit/maths/Eigen.h"
 
-#include "atlas/mesh/Mesh.h"
-#include "atlas/mesh/Field.h"
-#include "atlas/grid/PointIndex3.h"
+#include "atlas/Mesh.h"
+#include "atlas/Field.h"
+#include "atlas/PointIndex3.h"
 
 #include "mir/Weights.h"
 
@@ -38,7 +38,7 @@ public: // methods
 
     virtual std::string classname() const;
 
-    virtual void compute( Grid& in, Grid& out, Weights::Matrix& W ) const;
+	virtual void compute( atlas::Grid& in, atlas::Grid& out, Weights::Matrix& W ) const;
 
 private: // methods
 

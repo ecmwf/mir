@@ -14,7 +14,6 @@
 
 using namespace eckit;
 using namespace atlas;
-using namespace atlas::grid;
 using namespace mir;
 
 namespace mir {

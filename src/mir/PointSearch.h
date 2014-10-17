@@ -21,8 +21,8 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/geometry/Point3.h"
 
-#include "atlas/grid/Grid.h"
-#include "atlas/grid/PointIndex3.h"
+#include "atlas/Grid.h"
+#include "atlas/PointIndex3.h"
 
 //-----------------------------------------------------------------------------
 

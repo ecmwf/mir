@@ -12,7 +12,7 @@
 #include "eckit/config/Resource.h"
 #include "eckit/runtime/Tool.h"
 
-#include "atlas/grid/FieldSet.h"
+#include "atlas/FieldSet.h"
 #include "mir/mir_config.h"
 
 #include "mir/FieldSink.h"
@@ -23,7 +23,6 @@
 
 using namespace eckit;
 using namespace atlas;
-using namespace atlas::grid;
 using namespace mir;
 
 //------------------------------------------------------------------------------------------------------

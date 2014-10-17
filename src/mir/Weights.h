@@ -21,7 +21,7 @@
 
 #include "eckit/memory/NonCopyable.h"
 
-#include "atlas/grid/Grid.h"
+#include "atlas/Grid.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -33,9 +33,6 @@ class Weights : private eckit::NonCopyable {
 
 public: // types
 
-    typedef atlas::grid::Grid        Grid;
-    typedef atlas::grid::Grid::Point Point;
-
     typedef Eigen::SparseMatrix<double,Eigen::RowMajor> Matrix;
 
 public: // methods
@@ -46,13 +43,13 @@ public: // methods
 
     virtual std::string classname() const = 0;
 
-    void assemble( const Grid& in, const Grid& out, Weights::Matrix& W ) const;
+	void assemble( const atlas::Grid& in, const atlas::Grid& out, Weights::Matrix& W ) const;
 
 protected: // methods
 
-    virtual void compute( Grid& i_mesh, Grid& o_mesh, Weights::Matrix& W ) const = 0;
+	virtual void compute( atlas::Grid& i_mesh, atlas::Grid& o_mesh, Weights::Matrix& W ) const = 0;
 
-    std::string hash( const Grid& in, const Grid& out ) const;
+	std::string hash( const atlas::Grid& in, const atlas::Grid& out ) const;
 
 };
 

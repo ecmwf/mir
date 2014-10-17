@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "atlas/grid/Grib.h"
+#include "atlas/io/Grib.h"
 
 #include "mir/mir_config.h"
 #include "mir/FieldSink.h"
@@ -17,7 +17,7 @@
 
 using namespace eckit;
 using namespace atlas;
-using namespace atlas::grid;
+using namespace atlas::io;
 using namespace mir;
 
 namespace mir {
