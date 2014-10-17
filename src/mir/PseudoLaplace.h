@@ -31,7 +31,7 @@ public:
 
     virtual ~PseudoLaplace();
 
-    virtual void compute( Grid& in, Grid& out, Weights::Matrix& W ) const;
+	virtual void compute( atlas::Grid& in, atlas::Grid& out, Weights::Matrix& W ) const;
 
     virtual std::string classname() const;
 

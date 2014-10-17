@@ -14,7 +14,7 @@
 #ifndef mir_FieldSource_H
 #define mir_FieldSource_H
 
-#include "atlas/grid/FieldSet.h"
+#include "atlas/FieldSet.h"
 
 #include "mir/Action.h"
 
@@ -26,15 +26,13 @@ namespace mir {
 
 class FieldSource : public Action {
 
-    typedef atlas::grid::FieldSet FieldSet;
-
 public: // methods
 
     FieldSource( const eckit::Params::Ptr& );
 
     virtual ~FieldSource();
 
-    FieldSet::Ptr eval() const;
+	atlas::FieldSet::Ptr eval() const;
 
 };
 

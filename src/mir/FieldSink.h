@@ -14,7 +14,7 @@
 #ifndef mir_FieldSink_H
 #define mir_FieldSink_H
 
-#include "atlas/grid/FieldSet.h"
+#include "atlas/FieldSet.h"
 
 #include "mir/Action.h"
 
@@ -26,15 +26,13 @@ namespace mir {
 
 class FieldSink : public Action {
 
-    typedef atlas::grid::FieldSet FieldSet;
-
 public: // methods
 
     FieldSink( const eckit::Params::Ptr& );
 
     virtual ~FieldSink();
 
-    void eval( const FieldSet::Ptr& ) const;
+	void eval( const atlas::FieldSet::Ptr& ) const;
 
 };
 

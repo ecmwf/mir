@@ -8,20 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-#include "atlas/grid/Grid.h"
+#include "atlas/Grid.h"
 
 #include "mir/FieldContext.h"
 
 //------------------------------------------------------------------------------------------------------
 
 using namespace eckit;
-using namespace atlas::grid;
+using namespace atlas;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-FieldContext::FieldContext(const atlas::grid::FieldSet::Ptr& f) :
+FieldContext::FieldContext(const atlas::FieldSet::Ptr& f) :
     fieldset_(f)
 {
 }

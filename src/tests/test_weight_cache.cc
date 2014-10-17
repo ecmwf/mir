@@ -20,7 +20,6 @@
 #include "mir/WeightCache.h"
 
 using namespace eckit;
-using namespace atlas::grid;
 using namespace mir;
 
 //-----------------------------------------------------------------------------

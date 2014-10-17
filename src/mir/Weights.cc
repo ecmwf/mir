@@ -10,15 +10,15 @@
 
 #include <string>
 
-#include "atlas/grid/Grid.h"
-#include "atlas/grid/Tesselation.h"
+#include "atlas/Grid.h"
+#include "atlas/Tesselation.h"
 
 #include "mir/Weights.h"
 #include "mir/WeightCache.h"
 
 //------------------------------------------------------------------------------------------------------
 
-using namespace atlas::grid;
+using namespace atlas;
 
 namespace mir {
 

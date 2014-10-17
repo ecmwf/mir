@@ -18,8 +18,8 @@
 
 #include "eckit/memory/NonCopyable.h"
 
-#include "atlas/grid/Grid.h"
-#include "atlas/grid/FieldSet.h"
+#include "atlas/Grid.h"
+#include "atlas/FieldSet.h"
 
 #include "mir/Weights.h"
 
@@ -31,15 +31,6 @@ namespace mir {
 
 class Masks : private eckit::NonCopyable {
 
-public: // types
-
-    typedef atlas::grid::Grid        Grid;
-    typedef atlas::grid::Grid::Point Point;
-	typedef atlas::Field             Field;
-    typedef atlas::grid::FieldSet    FieldSet;
-
-    typedef Weights::Matrix Matrix;
-
 public: // methods
 
     Masks();
@@ -48,7 +39,7 @@ public: // methods
 
 //    virtual std::string classname() const = 0;
 
-	void assemble( const Field& mask, const Grid& inp, const Grid& out, Weights::Matrix& W ) const;
+	void assemble( const atlas::Field& mask, const atlas::Grid& inp, const atlas::Grid& out, Weights::Matrix& W ) const;
 
 protected: // methods
 

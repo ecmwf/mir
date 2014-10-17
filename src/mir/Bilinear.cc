@@ -13,9 +13,9 @@
 
 #include <boost/progress.hpp>
 
-#include "atlas/grid/ReducedGG.h"
-#include "atlas/grid/Tesselation.h"
-#include "atlas/grid/Unstructured.h"
+#include "atlas/ReducedGG.h"
+#include "atlas/Tesselation.h"
+#include "atlas/Unstructured.h"
 #include "atlas/util/ArrayView.h"
 
 #include "eckit/config/Resource.h"
@@ -31,6 +31,7 @@
 using eckit::Resource;
 using eckit::geometry::Point3;
 
+using atlas::Grid;
 using atlas::FunctionSpace;
 using atlas::FieldT;
 
@@ -103,7 +104,7 @@ void Bilinear::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
     atlas::ArrayView<double,2> icoords     ( ilatlon );
     atlas::ArrayView<double,2> ocoords     ( olatlon );
 
-    atlas::grid::ReducedGG* igg = dynamic_cast<atlas::grid::ReducedGG*>(&in);
+	atlas::ReducedGG* igg = dynamic_cast<atlas::ReducedGG*>(&in);
 
     /// @todo we only handle these at the moment
     if (!igg)

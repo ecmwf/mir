@@ -19,9 +19,9 @@
 #include "eckit/utils/Translator.h"
 #include "eckit/maths/Eigen.h"
 
-#include "atlas/grid/Grid.h"
-#include "atlas/grid/Tesselation.h"
-#include "atlas/grid/Grib.h"
+#include "atlas/Grid.h"
+#include "atlas/io/Grib.h"
+#include "atlas/Tesselation.h"
 
 #include "mir/Bilinear.h"
 #include "mir/FiniteElement.h"
@@ -39,7 +39,7 @@ using namespace Eigen;
 using namespace eckit;
 using namespace eckit::grib;
 using namespace atlas;
-using namespace atlas::grid;
+using namespace atlas::io;
 using namespace mir;
 
 namespace mir {
@@ -78,7 +78,7 @@ static Grid::Ptr make_grid( const std::string& filename )
     return g;
 }
 
-Interpolate::FieldSet::Ptr Interpolate::eval( const Interpolate::FieldSet::Ptr& fs_inp ) const
+atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) const
 {
     ASSERT( fs_inp );
 

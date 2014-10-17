@@ -12,9 +12,9 @@
 
 #include "eckit/maths/Eigen.h"
 
-#include "atlas/grid/Grid.h"
-#include "atlas/grid/Tesselation.h"
-#include "atlas/mesh/FunctionSpace.h"
+#include "atlas/Grid.h"
+#include "atlas/Tesselation.h"
+#include "atlas/FunctionSpace.h"
 
 #include "mir/Masks.h"
 #include "mir/WeightCache.h"
@@ -25,7 +25,6 @@
 using namespace Eigen;
 
 using namespace atlas;
-using namespace atlas::grid;
 
 namespace mir {
 

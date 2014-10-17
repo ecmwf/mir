@@ -28,21 +28,22 @@ public:
 
     KNearest();
     KNearest( const size_t& k );
-    KNearest( const size_t& k, Grid& in );
+	KNearest( const size_t& k, atlas::Grid& in );
 
     virtual ~KNearest();
 
-    virtual void compute( Grid& in, Grid& out, Weights::Matrix& W ) const;
+	virtual void compute( atlas::Grid& in, atlas::Grid& out, Weights::Matrix& W ) const;
 
     virtual std::string classname() const;
 
 protected: // methods
 
-    void build_sptree( Grid& in ) const;
+	void build_sptree( atlas::Grid& in ) const;
 
     size_t nclosest_; ///< number of closest points to search for
 
     mutable std::string hash_;
+
     mutable eckit::ScopedPtr<PointSearch> sptree_;
 
 };

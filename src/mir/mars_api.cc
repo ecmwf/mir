@@ -17,8 +17,8 @@
 #include "eckit/runtime/LibBehavior.h"
 #include "eckit/runtime/Context.h"
 
-#include "atlas/grid/FieldSet.h"
-#include "atlas/grid/Grib.h"
+#include "atlas/FieldSet.h"
+#include "atlas/io/Grib.h"
 
 #include "mir/mars_api.h"
 
@@ -29,7 +29,7 @@
 using namespace eckit;
 using namespace eckit::grib;
 using namespace atlas;
-using namespace atlas::grid;
+using namespace atlas::io;
 using namespace mir;
 
 //------------------------------------------------------------------------------------------------------
