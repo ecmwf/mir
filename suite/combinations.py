@@ -4,8 +4,7 @@
 # visible to all machines
 #
 #platform_dict={"linux": ["pepe"], "rs6000": ["ecgate"]}
-platform_dict={"linux": ["skadi"]}
-#platform_dict={"linux": ["cumal"]}
+platform_dict={"linux": ["igraine"]}
 
 
 ##################################################################################
