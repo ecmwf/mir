@@ -4,13 +4,13 @@ python manage.py runserver PORT
 
 where PORT=8001 for example
 
-This will run the server at http://127.0.0.1:8001/
+This will run the server at http://127.0.0.1:8001/viewer
 
 alternatively, to see the server from other machines
 
 python manage.py runserver <machinename>.ecmwf.int:PORT
 
-http://<machinename>.ecmwf.int:8001/
+http://<machinename>.ecmwf.int:8001/viewer
 
 
 

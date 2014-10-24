@@ -53,34 +53,34 @@ memcheck_grids=[]
 grid_dict = {
     
     "sh":     [
-                    "reg_ll", 
-                    "reg_gg",
-                    "red_gg", 
-                    "sh",   
-                    "rot_reg_ll", 
+                    # "reg_ll", 
+                    # "reg_gg",
+                    # "red_gg", 
+                    # "sh",   
+                    # "rot_reg_ll", 
                ],
 
      "red_gg": [
-                    "red_gg",
-                    "reg_gg",
+                    # "red_gg",
+                    # "reg_gg",
                     "reg_ll",
-                    "rot_reg_ll"
+                    # "rot_reg_ll"
                ],
 
      "reg_gg": [
-                    "reg_gg",
-                    "reg_ll",
+                    # "reg_gg",
+                    # "reg_ll",
                      #"rot_reg_ll"   # emos fails for sfc params
                ],
 
      "reg_ll": [
-                     "reg_gg",
-                     "reg_ll",
+                     # "reg_gg",
+                     # "reg_ll",
                      #"rot_reg_ll"    # emos fails for all parameters
                 ],
 
      "red_ll":  [ 
-                      "reg_ll", 
+                      # "reg_ll", 
                      #  "reg_gg" # removed as not required in verification yet acc to Sinisa 20130124
                 ]
     

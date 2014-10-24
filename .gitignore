@@ -1,4 +1,7 @@
 CMakeLists.txt.user*
 *.swp
 *.sublime-workspace
+*.pyc
 suite/requests
+suite/check.def
+suite/combinations.pyc
