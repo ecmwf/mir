@@ -70,7 +70,7 @@ bool WeightCache::add(const std::string& key, Weights::Matrix& W )
     std::vector<Eigen::Triplet<double> > trips;
     for (unsigned int i = 0; i < W.outerSize(); ++i) 
     {
-        for (typename Weights::Matrix::InnerIterator it(W,i); it; ++it)
+        for ( Weights::Matrix::InnerIterator it(W,i); it; ++it)
         {
             trips.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
         }
