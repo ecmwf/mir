@@ -39,7 +39,7 @@ SESSION_COOKIE_NAME = "mir-development"
 SESSION_ENGINE = "django.contrib.sessions.backends.file" 
 
 # default results folder
-RESULTS_FOLDER="/tmp/maf/bigtest/output"
+RESULTS_FOLDER="/tmp/matq/testcases/mir/suite/output"
 #RESULTS_FOLDER="/scratch/ma/maf/scratchdir/ecRegrid/bigtest/output"
 SHOW_JIRA_SECTION=False
 

@@ -4,8 +4,7 @@
 # visible to all machines
 #
 #platform_dict={"linux": ["pepe"], "rs6000": ["ecgate"]}
-platform_dict={"linux": ["skadi"]}
-#platform_dict={"linux": ["cumal"]}
+platform_dict={"linux": ["igraine"]}
 
 
 ##################################################################################
@@ -14,14 +13,14 @@ platform_dict={"linux": ["skadi"]}
 #
 # NB It is important that these are DIFFERENT so use e.g. emos392 and emos394
 # and not emos and emos for example
-comparisons=["emos395", "emos396"]
+comparisons=["emos395", "emos401"]
 
 
 # these options specficy exactly the mars client to use
 #mars_folders=["/usr/local/lib/metaps", "/home/ma/maf/build/mars_client/debug"]
 #mars_folders=["/usr/local/lib/metaps", "/tmp/maf/p4/mars/client/dev/grib_api"]
 mars_folders=["", ""]
-mars_commands=["mars", "mars -n"]
+mars_commands=["mars", "mars -b /home/ma/matq/builds/mars_client/debug/bin/mars.bin"]
 
 
 # Whether to compare the files and produce difference plots if diffs are found
@@ -57,8 +56,8 @@ grid_dict = {
                     "reg_ll", 
                     "reg_gg",
                     "red_gg", 
-                    "sh",   
-                    "rot_reg_ll", 
+                    # "sh",   
+                    # "rot_reg_ll", 
                ],
 
      "red_gg": [
@@ -75,8 +74,8 @@ grid_dict = {
                ],
 
      "reg_ll": [
-                     "reg_gg",
-                     "reg_ll",
+                     # "reg_gg",
+                     # "reg_ll",
                      #"rot_reg_ll"    # emos fails for all parameters
                 ],
 
@@ -88,11 +87,6 @@ grid_dict = {
 }
 
 #grid_dict = {"sh": ["red_gg"] }
-
-#grid_dict = {
-#    "reg_gg": [ "reg_ll" ],
-#    "reg_ll": [ "reg_ll" ]
-#    }
 
 
 ##################################################################################
@@ -116,17 +110,17 @@ src_requests = {
 
             "t850": "stream=oper,step=0,levtype=pl,class=od,type=fc,param=130.128,levelist=850,",
             "z1000": "step=0,param=z,levelist=1000,",
-            #"uv_multilevel": "type=forecast,param=u/v,levtype=model level,levelist=1/to/45,step=48,",
-             "vo_d": "class=od,type=an,stream=oper,repres=sh,levtype=pl,levelist=1000,param=vo/d,step=00,"
+            "uv_multilevel": "type=forecast,param=u/v,levtype=model level,levelist=1/to/45,step=48,",
+            "vo_d": "class=od,type=an,stream=oper,repres=sh,levtype=pl,levelist=1000,param=vo/d,step=00,"
         },
        "red_gg":
         {
-            #"10uv_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=10u/10v,",
+            "10uv_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=10u/10v,",
             "2t_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=2t,",
             "t850": "stream=oper,step=0,levelist=850,param=t,gaussian=reduced,grid=400,",
             "z_sfc": "stream=oper,step=0,levtype=sfc,class=od,type=fc,param=z,",
             "z1000": "stream=oper,step=0,levelist=1000,class=od,type=fc,param=z,gaussian=reduced,grid=400,",
-            #"z850_1280": "stream=oper,step=0,levelist=850,class=od,type=fc,param=z,gaussian=reduced,grid=1280,",
+            "z850_1280": "stream=oper,step=0,levelist=850,class=od,type=fc,param=z,gaussian=reduced,grid=1280,",
             "q": "class=od,type=an,stream=oper,levtype=ml,levelist=5,param=q,domain=g,",
         },
         "red_ll":
@@ -186,12 +180,12 @@ rotation      = ["39/39", "1/1", "-40/22", "80/-10", "90/0"]
 ll_areas          = [ "off" , 
                      "75/60/10/90", 
                      "90/10/-10/200", 
-                     #"70/-20/10/60",  
-                     #"-40/0/-80/90",
-                     #"0/90/-30/10",
-                     #"75/10/30/40",  
-                     #"40/-20/-40/60",
-                     #"50/-135/-60/-35",
+                     "70/-20/10/60",  
+                     "-40/0/-80/90",
+                     "0/90/-30/10",
+                     "75/10/30/40",  
+                     "40/-20/-40/60",
+                     "50/-135/-60/-35",
                      "40/-110/-10/-60",
                      "40/60/-60/180",
                      "80/115/-5/180",
@@ -199,27 +193,26 @@ ll_areas          = [ "off" ,
 gg_areas          = [ "off" , 
                       "75/62/10/90", 
                       "90/45/-10/180", 
-                     #"70/-90/10/67.5",  
-                     #"-40/0/-80/90",
-                     #"0/90/-30/11.25",
-                     #"75/22.5/30/45",  
+                     "70/-90/10/67.5",  
+                     "-40/0/-80/90",
+                     "0/90/-30/11.25",
+                     "75/22.5/30/45",  
                      "40/-22.5/-40/60",
                      "50/-135/-60/-22.5",
                      "40/-112.5/-10/-45",
-                     #"40/67.5/-60/180",
-                     #"80/90/-5/180",
+                     "40/67.5/-60/180",
+                     "80/90/-5/180",
                 ]
 
 #style         = ["off", "dissemination"]
 frame         = ["off", "10", ]
 packing       = ["off", "av", "si", "co"]
-sh_packing       = ["off", "av", "co"]
+sh_packing    = ["off", "av", "co"]
 accuracy      = ["off", "av", "12", "16", "24", "8"]
 gauss_grids   = [48, 80, 100, 128, 160, 200, 256, 320, 400, 512, 640]
 predefined_regular_gauss_grids = [160, 200,400,640]
 
-#reduced_gauss_grids   = [32, 48, 80, 128, 160, 200, 256, 320, 400, 512, 640, 1024, 1280]
-reduced_gauss_grids   = [32, 48, 80, 128, 160, 200, 256, 320, 400, 512, 640, 1024]
+reduced_gauss_grids   = [32, 48, 80, 128, 160, 200, 256, 320, 400, 512, 640, 1024, 1280]
 
 # to massively reduce test counts uncomment here
 """
@@ -254,8 +247,8 @@ adjust = {
           },
 
     "reg_ll": {   #"area": ll_areas, 
-               #"frame": frame, 
-                  "grid": ll_grids,
+               "frame": frame, 
+               "grid": ll_grids,
                #"packing": packing, 
                 },
 

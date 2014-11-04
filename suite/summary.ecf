@@ -34,22 +34,9 @@ start
 comment "Created on ${datestr}"
 open_tag "Suite"
 
-count=0
-for file in `find ${output_root} -maxdepth 1 -name "*test_*.xml"`; do
- 
-  # do the concatenation
-  cat $file >> $xml_file
 
-  status=$(xpath_values $file  '//Test/@Status')
+find ${output_root} -maxdepth 1 -name "*test_*.xml" -exec cat {} >> $xml_file \;
 
-  
-  ((count=count+1))
-  mymod=$(( count %% 1000 ))
-  if [[ $mymod -eq 0 ]]; then
-  	# give user something to look at
-	echo "Processed $count records"
-  fi
-done
 
 # finalise the xml file writing
 close_tag
