@@ -13,8 +13,8 @@
 #include "eckit/runtime/Tool.h"
 
 #include "atlas/FieldSet.h"
-#include "mir/mir_config.h"
 
+#include "mir/mir_config.h"
 #include "mir/FieldSink.h"
 #include "mir/FieldSource.h"
 #include "mir/Interpolate.h"
@@ -29,9 +29,18 @@ using namespace mir;
 
 class MirInterpolate : public eckit::Tool {
 
-    virtual void run();
+	void run()
+	{
+		FieldSource source( ctxt_ );
+		Interpolate interpolator( ctxt_ );
+		FieldSink   sink( ctxt_ );
 
-    Grid::Ptr make_grid( const std::string& filename );
+		FieldSet::Ptr fs_inp = source.eval(); ASSERT( fs_inp );
+
+		FieldSet::Ptr fs_out = interpolator.eval( fs_inp ); ASSERT( fs_out );
+
+		sink.eval( fs_out );
+	}
 
 public:
 
@@ -76,21 +85,6 @@ private:
     eckit::Params::Ptr ctxt_;
 
 };
-
-//------------------------------------------------------------------------------------------------------
-
-void MirInterpolate::run()
-{    
-    FieldSource source( ctxt_ );
-    Interpolate interpolator( ctxt_ );
-    FieldSink   sink( ctxt_ );
-
-    FieldSet::Ptr fs_inp = source.eval(); ASSERT( fs_inp );
-
-    FieldSet::Ptr fs_out = interpolator.eval( fs_inp ); ASSERT( fs_out );
-
-    sink.eval( fs_out );
-}
 
 //------------------------------------------------------------------------------------------------------
 
