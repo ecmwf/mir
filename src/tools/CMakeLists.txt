@@ -7,6 +7,7 @@ ecbuild_add_executable(
 ecbuild_add_executable(
 		TARGET      mir_transform
 		SOURCES     mir_transform.cc
+		CONDITION   ATLAS_HAVE_TRANS
 		INCLUDES    ${ATLAS_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS}
 		LIBS        mir ${ATLAS_LIBRARIES} ${ECKIT_LIBRARIES} )
 

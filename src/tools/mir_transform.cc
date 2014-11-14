@@ -81,7 +81,10 @@ class MirTransform : public eckit::Tool {
 
 		trans.ndgl  = nloen.size();
 		trans.nloen = nloen.data();
-		trans.nsmax = (2*trans.ndgl-1)/2; // assumption: linear grid
+
+		long maxtr = params()["MaxTruncation"];
+
+		trans.nsmax = maxtr ? maxtr : (2*trans.ndgl-1)/2; // assumption: linear grid
 
 		DEBUG_VAR( trans.ndgl );
 //		DEBUG_VAR( nloen );
@@ -109,9 +112,14 @@ class MirTransform : public eckit::Tool {
 
 			rspecg.resize( nfld * trans.nspec2g ); // Global spectral array
 
-			ASSERT( gh.getDataValuesSize() == trans.nspec2g ); // assumes 1 field
-
-			gh.getDataValues(rspecg.data(),trans.nspec2g);
+			if( gh.getDataValuesSize() == trans.nspec2g ) // full resolution
+				gh.getDataValues(rspecg.data(),trans.nspec2g);
+			else
+			{
+				std::vector<double> full( gh.getDataValuesSize() );
+				gh.getDataValues(full.data(),full.size());
+				NOTIMP;
+			}
 		}
 
 		// Distribute data to all procs
@@ -192,8 +200,13 @@ public:
 
 		user->set( "Target.Path", Value(path_out) );
 
-		mir_ctxt->push_front( Params::Ptr(user) );
+		long maxtr = Resource<long>("-t",0);
+		if( maxtr < 0 )
+			throw UserError( "Max truncation cannot be negative", Here() );
 
+		user->set( "MaxTruncation", maxtr );
+
+		mir_ctxt->push_front( Params::Ptr(user) );
 		ctxt_.reset( mir_ctxt );
 	}
 

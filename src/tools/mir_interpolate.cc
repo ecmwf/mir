@@ -76,7 +76,6 @@ public:
         user->set( "InterpolationMethod", method );
 
         mir_ctxt->push_front( Params::Ptr(user) );
-
         ctxt_.reset( mir_ctxt );
     }
 
