@@ -7,17 +7,21 @@
 #include <vector>
 #include <memory>
 
+#include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/config/Resource.h"
+#include "eckit/grib/GribAccessor.h"
+#include "eckit/grib/GribMutator.h"
+#include "eckit/grib/GribHandle.h"
+#include "eckit/io/DataHandle.h"
 #include "eckit/log/Timer.h"
 #include "eckit/runtime/Tool.h"
-#include "eckit/grib/GribHandle.h"
-#include "eckit/grib/GribAccessor.h"
 
 #include "atlas/atlas.h"
 #include "atlas/FieldSet.h"
 #include "atlas/meshgen/RGG.h"
+#include "atlas/ReducedGG.h"
+#include "atlas/io/Grib.h"
 
 #include "trans_api.h"
 
@@ -30,6 +34,7 @@ using namespace eckit;
 using namespace eckit::grib;
 using namespace atlas;
 using namespace atlas::meshgen;
+using namespace atlas::io;
 using namespace mir;
 
 //------------------------------------------------------------------------------------------------------
@@ -40,36 +45,46 @@ class MirTransform : public eckit::Tool {
 	{
 		Params& p = *ctxt_;
 
-		GribHandle gh( params()["Input.Path"] );
+		GribHandle in_grib( params()["Input.Path"] );
 
-		ASSERT( gh.gridType() == "sh" );
+		DEBUG_VAR( in_grib.gridType() );
 
-		long trunc = GribAccessor<long>("pentagonalResolutionParameterJ")(gh);
+//		std::vector<long> pl = GribAccessor< std::vector<long> >("pl")(gh);
+//		DEBUG_VAR( pl );
+
+
+		ASSERT( in_grib.gridType() == "sh" );
+
+		long trunc = GribAccessor<long>("pentagonalResolutionParameterJ")(in_grib);
 
 		DEBUG_VAR( trunc );
-		DEBUG_VAR( gh.getDataValuesSize() );
+		DEBUG_VAR( in_grib.getDataValuesSize() );
 
 		/// @todo temporary until Willem finishes the Grid factories in Atlas
 
 		ASSERT( trunc > 0 );
 
-		RGG* rgg = 0;
+		eckit::ScopedPtr<RGG> rgg;
 
 		// will be change to use factories
 		switch( trunc ) {
-			case 63:	rgg = new T63(); break;
-			case 95:	rgg = new T95(); break;
-			case 159:	rgg = new T159(); break;
-			case 255:	rgg = new T255(); break;
-			case 511:	rgg = new T511(); break;
-			case 1279:	rgg = new T1279(); break;
-			case 3999:	rgg = new T3999(); break;
-			case 7999:	rgg = new T7999(); break;
+			case 63:	rgg.reset(  new T63() ); break;
+			case 95:	rgg.reset(  new T95() ); break;
+			case 159:	rgg.reset(  new T159() ); break;
+			case 255:	rgg.reset(  new T255() ); break;
+			case 511:	rgg.reset(  new T511() ); break;
+			case 1279:	rgg.reset(  new T1279() ); break;
+			case 3999:	rgg.reset(  new T3999() ); break;
+			case 7999:	rgg.reset(  new T7999() ); break;
 
 			default:
 				NOTIMP;
 			break;
 		}
+
+		long gaussN = (trunc + 1) / 2;  // assumption: linear grid
+
+		DEBUG_VAR( gaussN );
 
 		ASSERT( rgg );
 
@@ -112,12 +127,12 @@ class MirTransform : public eckit::Tool {
 
 			rspecg.resize( nfld * trans.nspec2g ); // Global spectral array
 
-			if( gh.getDataValuesSize() == trans.nspec2g ) // full resolution
-				gh.getDataValues(rspecg.data(),trans.nspec2g);
+			if( in_grib.getDataValuesSize() == trans.nspec2g ) // full resolution
+				in_grib.getDataValues(rspecg.data(),trans.nspec2g);
 			else
 			{
-				std::vector<double> full( gh.getDataValuesSize() );
-				gh.getDataValues(full.data(),full.size());
+				std::vector<double> full( in_grib.getDataValuesSize() );
+				in_grib.getDataValues(full.data(),full.size());
 				NOTIMP;
 			}
 		}
@@ -169,9 +184,55 @@ class MirTransform : public eckit::Tool {
 			trans_gathgrid(&gathgrid);
 		}
 
+		// create the Grid & Field
+
+		Grid::Ptr grid ( new ReducedGG( gaussN ) );
+
+		std::cout << grid->boundingBox() << std::endl;
+
+		std::vector<std::string> fnames;
+
+		fnames.push_back( "theone" );
+
+		FieldSet fset( grid, fnames );
+
+		Field& f = fset[0];
+
+		DEBUG_VAR( f.size() );
+		DEBUG_VAR( trans.ngptotg );
+
+		ASSERT( f.size() == trans.ngptotg );
+
+//		for( size_t i = 0; i < trans.ngptotg; ++i )
+//			std::cout << i << " " << gathgrid.rgpg[i] << std::endl;
+
+		::memcpy( f.data<double>(), gathgrid.rgpg, sizeof(double)*trans.ngptotg );
+
+//		for( size_t i = 0; i < f.size(); ++i )
+//			std::cout << i << " " << f.data<double>()[i] << std::endl;
+
+		/// out put to Grib
+
+		GribHandle::Ptr good_grid = io::Grib::create_handle( *grid, in_grib.edition() ); // correct grid
+		f.grib( io::Grib::copy_metadata( in_grib, *good_grid ) ); // copy metadata
+		ASSERT( f.size() == f.grib().getDataValuesSize() );
+		f.grib().setDataValues( f.data<double>(), f.size() );
+
+		// f.grib( in_grib.clone() ); // gets the correct metadata
+		// GribHandle::Ptr ogh ( Grib::clone(f, *io::Grib::create_handle( *grid, in_grib.edition() ) ) ); // clones into the correct grid
+
+		// dump the GRIB to the DataHandle
+
+		PathName fpath( params()["Target.Path"].as<std::string>() );
+		DataHandle* dh = fpath.fileHandle();
+
+		dh->openForWrite(0);
+
+		f.grib().write(*dh);
+
+		dh->close();
+
 		trans_finalize();
-
-
 	}
 
 public:
