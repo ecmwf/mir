@@ -92,6 +92,8 @@ class MirTransform : public eckit::Tool {
 
 		std::vector<int> nloen = rgg->nlon();
 
+        DEBUG_VAR( nloen );
+
 		Trans trans;
 
 		trans.ndgl  = nloen.size();
