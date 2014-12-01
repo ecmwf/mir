@@ -30,8 +30,8 @@ ecbuild_requires_macro_version( 1.3 )
 ###############################################################################
 # project
 
-ecbuild_use_package( PROJECT eckit  VERSION  0.6  REQUIRED )
-ecbuild_use_package( PROJECT atlas  VERSION  0.1  REQUIRED )
+ecbuild_use_package( PROJECT eckit  VERSION  0.8  REQUIRED )
+ecbuild_use_package( PROJECT atlas  VERSION  0.3  REQUIRED )
 
 # this will be replaced once ecbuild exports subcomponents between packages
 
