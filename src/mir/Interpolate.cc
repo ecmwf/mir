@@ -107,8 +107,8 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 
     ASSERT( fs_out );
 
-    size_t npts_inp = fs_inp->grid().nPoints();
-    size_t npts_out = fs_out->grid().nPoints();
+    size_t npts_inp = fs_inp->grid().npts();
+    size_t npts_out = fs_out->grid().npts();
 
     std::cout << ">>> interpolation points " << npts_inp << " -> " << npts_out << std::endl;
 
