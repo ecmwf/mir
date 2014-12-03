@@ -30,8 +30,8 @@ ecbuild_requires_macro_version( 1.3 )
 ###############################################################################
 # project
 
-ecbuild_use_package( PROJECT eckit  VERSION  0.6  REQUIRED )
-ecbuild_use_package( PROJECT atlas  VERSION  0.1  REQUIRED )
+ecbuild_use_package( PROJECT eckit  VERSION  0.8  REQUIRED )
+ecbuild_use_package( PROJECT atlas  VERSION  0.3  REQUIRED )
 
 # this will be replaced once ecbuild exports subcomponents between packages
 
@@ -78,16 +78,16 @@ endif()
 
 set( MIR_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
 set( MIR_LIBRARIES      ${CMAKE_PROJECT_NAME} )
-set( MIR_TPLS           atlas atlas_grid eckit )
+set( MIR_TPLS           atlas eckit )
 
 get_directory_property( COMPILE_DEFINITIONS MIR_DEFINITIONS )
 
 foreach( _tpl ${MIR_TPLS} )
 	string( TOUPPER ${_tpl} TPL )
 	if( ${TPL}_FOUND )
-		list( APPEND MIR_EXTRA_DEFINITIONS   ${${TPL}_DEFINITIONS} )
-		list( APPEND MIR_EXTRA_INCLUDE_DIRS  ${${TPL}_INCLUDE_DIRS} )
-		list( APPEND MIR_EXTRA_LIBRARIES     ${${TPL}_LIBRARIES} )
+		list( APPEND MIR_EXTRA_DEFINITIONS   ${${TPL}_DEFINITIONS} ${${TPL}_TPL_DEFINITIONS})
+		list( APPEND MIR_EXTRA_INCLUDE_DIRS  ${${TPL}_INCLUDE_DIRS} ${${TPL}_TPL_INCLUDE_DIRS} )
+		list( APPEND MIR_EXTRA_LIBRARIES     ${${TPL}_LIBRARIES} ${${TPL}_TPL_LIBRARIES})
 	endif()
 endforeach()
 
