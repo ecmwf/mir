@@ -18,10 +18,12 @@
 #include "eckit/log/Plural.h"
 #include "eckit/utils/Translator.h"
 #include "eckit/maths/Eigen.h"
+#include "eckit/config/Resource.h"
 
 #include "atlas/Grid.h"
 #include "atlas/io/Grib.h"
 #include "atlas/Tesselation.h"
+#include "atlas/io/Gmsh.h"
 
 #include "mir/Bilinear.h"
 #include "mir/FiniteElement.h"
@@ -179,6 +181,19 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
         fo.grib( fi.grib().clone() );
 #endif
     }
+
+	// output to gmsh
+	bool mirInterpolateDumpGmsh = Resource<bool>("mirInterpolateDumpGmsh;$MIR_INTERPOLATE_DUMP_GMSH");
+	if( mirInterpolateDumpGmsh )
+	{
+		Grid& go = fs_out->grid();
+		Tesselation::tesselate( go );
+
+		std::cout << go.boundingBox() << std::endl;
+
+		/* std::cout << go.mesh() << std::endl; */
+		Gmsh::write3dsurf( go.mesh(), std::string("result.msh") );
+	}
 
 //    Grib::write( *fs_out, "out.grib" );
 
