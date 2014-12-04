@@ -183,13 +183,11 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
     }
 
 	// output to gmsh
-	bool mirInterpolateDumpGmsh = Resource<bool>("mirInterpolateDumpGmsh;$MIR_INTERPOLATE_DUMP_GMSH");
+	bool mirInterpolateDumpGmsh = Resource<bool>("mirInterpolateDumpGmsh;$MIR_INTERPOLATE_DUMP_GMSH",false);
 	if( mirInterpolateDumpGmsh )
 	{
 		Grid& go = fs_out->grid();
 		Tesselation::tesselate( go );
-
-		std::cout << go.boundingBox() << std::endl;
 
 		/* std::cout << go.mesh() << std::endl; */
 		Gmsh::write3dsurf( go.mesh(), std::string("result.msh") );

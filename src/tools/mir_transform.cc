@@ -20,7 +20,7 @@
 #include "atlas/atlas.h"
 #include "atlas/FieldSet.h"
 #include "atlas/meshgen/RGG.h"
-#include "atlas/ReducedGG.h"
+#include "atlas/grids/reduced_gg/reduced_gg.h"
 #include "atlas/io/Grib.h"
 
 #include "trans_api.h"
@@ -64,18 +64,18 @@ class MirTransform : public eckit::Tool {
 
 		ASSERT( trunc > 0 );
 
-		eckit::ScopedPtr<RGG> rgg;
+		eckit::ScopedPtr<grids::ReducedGaussianGrid> rgg;
 
 		// will be change to use factories
 		switch( trunc ) {
-			case 63:	rgg.reset(  new T63() ); break;
-			case 95:	rgg.reset(  new T95() ); break;
-			case 159:	rgg.reset(  new T159() ); break;
-			case 255:	rgg.reset(  new T255() ); break;
-			case 511:	rgg.reset(  new T511() ); break;
-			case 1279:	rgg.reset(  new T1279() ); break;
-			case 3999:	rgg.reset(  new T3999() ); break;
-			case 7999:	rgg.reset(  new T7999() ); break;
+			case 63:	rgg.reset(  new grids::reduced_gg::N32() ); break;
+			case 95:	rgg.reset(  new grids::reduced_gg::N48() ); break;
+			case 159:	rgg.reset(  new grids::reduced_gg::N80() ); break;
+			case 255:	rgg.reset(  new grids::reduced_gg::N128() ); break;
+			case 511:	rgg.reset(  new grids::reduced_gg::N256() ); break;
+			case 1279:	rgg.reset(  new grids::reduced_gg::N640() ); break;
+			case 3999:	rgg.reset(  new grids::reduced_gg::N2000() ); break;
+			case 7999:	rgg.reset(  new grids::reduced_gg::N4000() ); break;
 
 			default:
 				NOTIMP;
@@ -90,7 +90,7 @@ class MirTransform : public eckit::Tool {
 
 		// prepare Trans object
 
-		std::vector<int> nloen = rgg->nlon();
+		std::vector<int> nloen = rgg->npts_per_lat();
 
         DEBUG_VAR( nloen );
 
@@ -188,9 +188,11 @@ class MirTransform : public eckit::Tool {
 
 		// create the Grid & Field
 
-		Grid::Ptr grid ( new ReducedGG( gaussN ) );
+		std::string grid_uid = "reduced_gg.N" + eckit::Translator<long,std::string>()(gaussN);
 
-		std::cout << grid->boundingBox() << std::endl;
+		Grid::Ptr grid( Grid::create(grid_uid) );
+
+		std::cout << grid->bounding_box() << std::endl;
 
 		std::vector<std::string> fnames;
 
