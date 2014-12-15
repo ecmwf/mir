@@ -19,8 +19,7 @@
 
 #include "atlas/atlas.h"
 #include "atlas/FieldSet.h"
-#include "atlas/meshgen/RGG.h"
-#include "atlas/grids/reduced_gg/reduced_gg.h"
+#include "atlas/grids/grids.h"
 #include "atlas/io/Grib.h"
 
 #include "trans_api.h"
@@ -68,14 +67,14 @@ class MirTransform : public eckit::Tool {
 
 		// will be change to use factories
 		switch( trunc ) {
-			case 63:	rgg.reset(  new grids::reduced_gg::N32() ); break;
-			case 95:	rgg.reset(  new grids::reduced_gg::N48() ); break;
-			case 159:	rgg.reset(  new grids::reduced_gg::N80() ); break;
-			case 255:	rgg.reset(  new grids::reduced_gg::N128() ); break;
-			case 511:	rgg.reset(  new grids::reduced_gg::N256() ); break;
-			case 1279:	rgg.reset(  new grids::reduced_gg::N640() ); break;
-			case 3999:	rgg.reset(  new grids::reduced_gg::N2000() ); break;
-			case 7999:	rgg.reset(  new grids::reduced_gg::N4000() ); break;
+			case 63:	rgg.reset(  new grids::rgg::N32() ); break;
+			case 95:	rgg.reset(  new grids::rgg::N48() ); break;
+			case 159:	rgg.reset(  new grids::rgg::N80() ); break;
+			case 255:	rgg.reset(  new grids::rgg::N128() ); break;
+			case 511:	rgg.reset(  new grids::rgg::N256() ); break;
+			case 1279:	rgg.reset(  new grids::rgg::N640() ); break;
+			case 3999:	rgg.reset(  new grids::rgg::N2000() ); break;
+			case 7999:	rgg.reset(  new grids::rgg::N4000() ); break;
 
 			default:
 				NOTIMP;
