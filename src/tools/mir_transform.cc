@@ -32,7 +32,6 @@
 using namespace eckit;
 using namespace eckit::grib;
 using namespace atlas;
-using namespace atlas::meshgen;
 using namespace atlas::io;
 using namespace mir;
 
