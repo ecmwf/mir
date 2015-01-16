@@ -51,6 +51,19 @@ set( MIR_DATA_DIR  "${CMAKE_INSTALL_PREFIX}/share/mir/lsm" ${MIR_LSM_PATH} )
 ecbuild_add_cxx11_flags()
 ecbuild_check_cxx11( PRINT )
 
+### OMP
+
+ecbuild_add_option( FEATURE OMP 
+                    DESCRIPTION "support for OpenMP shared memory parallelism"
+                    DEFAULT ON )
+
+if( ENABLE_OMP )
+  ecbuild_enable_omp()
+else()
+  ecbuild_enable_ompstubs()
+endif()
+
+
 ### MPI
 
 ecbuild_add_option( FEATURE MPI
@@ -59,13 +72,9 @@ ecbuild_add_option( FEATURE MPI
 
 if( ENABLE_MPI )
 
-  ecbuild_find_mpi()
+  ecbuild_enable_mpi()
 
-  if( MPI_CXX_FOUND )
-	cmake_add_c_flags( " ${MPI_C_COMPILE_FLAGS}" )
-	cmake_add_cxx_flags( " ${MPI_CXX_COMPILE_FLAGS}" )
-	include_directories( "${MPI_CXX_INCLUDE_PATH}" )
-  else()
+  if( NOT MPI_CXX_FOUND )
 	set( HAVE_MPI 0 )
   endif()
 
