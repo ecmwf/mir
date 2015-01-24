@@ -35,11 +35,6 @@ ecbuild_use_package( PROJECT atlas  VERSION  0.3  REQUIRED )
 
 # this will be replaced once ecbuild exports subcomponents between packages
 
-list( FIND ATLAS_PACKAGES "ATLAS_TRANS" RESULT )
-if( NOT RESULT EQUAL -1  )
-  set( ATLAS_HAVE_TRANS 1 )
-endif()
-
 ecbuild_declare_project()
 
 ###############################################################################
