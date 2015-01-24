@@ -70,11 +70,11 @@ static Grid::Ptr make_grid( const std::string& filename )
     if( h == 0 || err != 0 )
         throw ReadError( std::string("error reading grib file ") + filename );
 
-	if( ::fclose(fh) == -1 )
-		throw ReadError( std::string("error closing file ") + filename );
+    if( ::fclose(fh) == -1 )
+        throw ReadError( std::string("error closing file ") + filename );
 
-	GribHandle gh(h);
-	Grid::Ptr g ( Grib::create_grid( gh ) );
+    GribHandle gh(h);
+    Grid::Ptr g ( Grib::create_grid( gh ) );
     ASSERT( g );
 
     return g;
@@ -88,7 +88,7 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 
 //    Params::Ptr rctxt( new FieldContext( fs_inp ) );
 
-	/// @todo somewhere here we should use the GribParams* to pass to target_grid create...
+    /// @todo somewhere here we should use the GribParams* to pass to target_grid create...
 
     // clone grid
 
@@ -96,8 +96,8 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 
     if( params().get("Target.GridPath").isNil() )
     {
-		target_grid = Grid::create( eckit::UnScopeParams( "Target", params().self() ) );
-	}
+        target_grid = Grid::create( eckit::UnScopeParams( "Target", params().self() ) );
+    }
     else
     {
         target_grid = make_grid( params()["Target.GridPath"] );
@@ -118,19 +118,13 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 
     Weights::Matrix W( npts_out, npts_inp );
 
-    Weights* w;
-
     /// @todo make this into a factory
     std::string method = params()["InterpolationMethod"];
-    if( method == std::string("fe") )
-        w = new FiniteElement();
-    if( method == std::string("kn") )
-        w = new KNearest();
-    if( method == std::string("plap") )
-        w = new PseudoLaplace();
-    if( method == std::string("bi") )
-        w = new Bilinear();
-
+    Weights* w = method=="fe"?   new FiniteElement() :
+                 method=="kn"?   new KNearest() :
+                 method=="plap"? new PseudoLaplace() :
+                 method=="bi"?   new Bilinear() :
+                                 (Weights*) NULL;
     if( !w )
         throw UserError( std::string("Unknown Interpolator type ") + method , Here() );
 
@@ -162,17 +156,17 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 
     for( size_t n = 0; n < nfields; ++n )
     {
-		Field& fi = (*fs_inp)[n];
-		Field& fo = (*fs_out)[n];
+        Field& fi = (*fs_inp)[n];
+        Field& fo = (*fs_out)[n];
 
         // interpolation
         {
             Timer t( "interpolating field " + Translator<size_t,std::string>()(n) );
 
-			VectorXd::MapType vi = VectorXd::Map( fi.data<double>(), fi.size() );
-			VectorXd::MapType vo = VectorXd::Map( fo.data<double>(), fo.size() );
+            VectorXd::MapType vi = VectorXd::Map( fi.data<double>(), fi.size() );
+            VectorXd::MapType vo = VectorXd::Map( fo.data<double>(), fo.size() );
 
-			vo = W * vi;
+            vo = W * vi;
         }
 
 #ifdef ECKIT_HAVE_GRIB
@@ -182,16 +176,16 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 #endif
     }
 
-	// output to gmsh
-	bool mirInterpolateDumpGmsh = Resource<bool>("mirInterpolateDumpGmsh;$MIR_INTERPOLATE_DUMP_GMSH",false);
-	if( mirInterpolateDumpGmsh )
-	{
-		Grid& go = fs_out->grid();
-		Tesselation::tesselate( go );
+    // output to gmsh
+    bool mirInterpolateDumpGmsh = Resource<bool>("mirInterpolateDumpGmsh;$MIR_INTERPOLATE_DUMP_GMSH",false);
+    if( mirInterpolateDumpGmsh )
+    {
+        Grid& go = fs_out->grid();
+        Tesselation::tesselate( go );
 
-		/* std::cout << go.mesh() << std::endl; */
-		Gmsh::write3dsurf( go.mesh(), std::string("result.msh") );
-	}
+        /* std::cout << go.mesh() << std::endl; */
+        Gmsh::write3dsurf( go.mesh(), std::string("result.msh") );
+    }
 
 //    Grib::write( *fs_out, "out.grib" );
 

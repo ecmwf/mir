@@ -22,7 +22,7 @@
 #include "atlas/grids/grids.h"
 #include "atlas/io/Grib.h"
 
-#include "trans_api.h"
+#include "trans_api/trans_api.h"
 
 #include "mir/mir_config.h"
 #include "mir/FieldSource.h"
@@ -32,7 +32,6 @@
 using namespace eckit;
 using namespace eckit::grib;
 using namespace atlas;
-using namespace atlas::meshgen;
 using namespace atlas::io;
 using namespace mir;
 
