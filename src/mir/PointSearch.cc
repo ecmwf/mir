@@ -39,9 +39,9 @@ PointSearch::PointSearch(atlas::Mesh& mesh)
 
     ASSERT( npts > 0 );
 
-    ASSERT( nodes.has_field("coordinates") );
+	ASSERT( nodes.has_field("xyz") );
 
-    ArrayView<double,2> coords ( nodes.field<double>("coordinates") );
+	ArrayView<double,2> coords ( nodes.field<double>("xyz") );
 
     std::vector< PointType > points;
     points.reserve(npts);
