@@ -8,15 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Tiago Quintino
-/// @date Jun 2014
-
-#ifndef mir_Action_H
-#define mir_Action_H
-
-#include "eckit/xpr/Function.h"
-
-#include "mir/Params.h"
+#include "mir/Field.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -24,27 +16,10 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-typedef eckit::xpr::ExpPtr ExpPtr;
-
-class Action : public eckit::xpr::Function {
-
-public: // methods
-
-    Action( const eckit::Params::Ptr& );
-
-    virtual ~Action();
-
-    const eckit::Params& params() const { return *params_; }
-    eckit::Params& params() { return *params_; }
-
-private: // members
-
-    eckit::Params::Ptr params_;
-
-};
+mir::Field::Field()
+{   
+}
 
 //------------------------------------------------------------------------------------------------------
 
 } // namespace mir
-
-#endif

@@ -43,6 +43,11 @@ void FieldSink::eval(const FieldSet::Ptr& fs_out) const
                       params()["Target.Path"] );
 }
 
+ExpPtr field_sink(const ExpPtr& e)
+{
+	return ExpPtr( new FieldSink( e ) );
+}
+
 //------------------------------------------------------------------------------------------------------
 
 } // namespace mir

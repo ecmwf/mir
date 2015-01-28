@@ -11,18 +11,18 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/config/Resource.h"
 #include "eckit/runtime/Tool.h"
-
-#include "atlas/FieldSet.h"
+#include "eckit/xpr/Xpr.h"
+#include "eckit/xpr/Map.h"
 
 #include "mir/mir_config.h"
 #include "mir/FieldSink.h"
 #include "mir/FieldSource.h"
+#include "mir/FieldSet.h"
 #include "mir/Interpolate.h"
 
 //------------------------------------------------------------------------------------------------------
 
 using namespace eckit;
-using namespace atlas;
 using namespace mir;
 
 //------------------------------------------------------------------------------------------------------
@@ -31,22 +31,60 @@ class MirInterpolate : public eckit::Tool {
 
 	void run()
 	{
+		using eckit;
+
+		MIRFactory
+
+
 		FieldSource source( ctxt_ );
 		Interpolate interpolator( ctxt_ );
 		FieldSink   sink( ctxt_ );
+
+
+		Xpr f1 = sink( interpolator( source() ));
+
+		f1.eval();
 
 		FieldSet::Ptr fs_inp = source.eval(); ASSERT( fs_inp );
 
 		FieldSet::Ptr fs_out = interpolator.eval( fs_inp ); ASSERT( fs_out );
 
 		sink.eval( fs_out );
+
+		////----------------------------------------------------
+
+		Xpr f1 = sink( interpolator( source() )) << c;
+			f1 << c2;
+
+		f1.bind(c);
+
+		f1.eval();
+
+		////----------------------------------------------------
+
+
+		xpr::Xpr f = field_sink( ctxt_,
+						xpr::map( interpolate(ctxt_), field_source( ctxt_ ) )
+					);
+
+		auto fs = field_sink(c);
+
+		xpr::Xpr f2 = fs( xpr::map(c)( interpolate(c), field_source(c) ));
+
+		std::cout << f << std::endl;
+
+		std::cout << f << std::endl;
+
+		f.eval();
 	}
 
 public:
 
-    MirInterpolate(int argc,char **argv): eckit::Tool(argc,argv)
+	MirInterpolate(int argc,char **argv) :
+		eckit::Tool(argc,argv),
+		ctxt_( new MirContext() )
     {
-        MirContext* mir_ctxt = new MirContext();
+		MirContext* mir_ctxt = ctxt_.get();
 
         ValueParams* user( new ValueParams() );
 

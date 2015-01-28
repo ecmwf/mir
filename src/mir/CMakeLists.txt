@@ -22,8 +22,12 @@ Action.h
 Action.cc
 Bilinear.h
 Bilinear.cc
+Field.cc
+Field.h
 FieldContext.cc
 FieldContext.h
+FieldSet.cc
+FieldSet.h
 FieldSink.cc
 FieldSink.h
 FieldSource.cc

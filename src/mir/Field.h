@@ -11,12 +11,10 @@
 /// @author Tiago Quintino
 /// @date Jun 2014
 
-#ifndef mir_Action_H
-#define mir_Action_H
+#ifndef mir_Field_H
+#define mir_Field_H
 
-#include "eckit/xpr/Function.h"
-
-#include "mir/Params.h"
+#include "eckit/xpr/Value.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -24,22 +22,13 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-typedef eckit::xpr::ExpPtr ExpPtr;
-
-class Action : public eckit::xpr::Function {
+class Field : public eckit::xpr::Value {
 
 public: // methods
 
-    Action( const eckit::Params::Ptr& );
-
-    virtual ~Action();
-
-    const eckit::Params& params() const { return *params_; }
-    eckit::Params& params() { return *params_; }
+	Field();
 
 private: // members
-
-    eckit::Params::Ptr params_;
 
 };
 

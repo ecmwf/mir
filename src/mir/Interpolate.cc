@@ -40,8 +40,6 @@
 using namespace Eigen;
 using namespace eckit;
 using namespace eckit::grib;
-using namespace atlas;
-using namespace atlas::io;
 using namespace mir;
 
 namespace mir {
@@ -189,7 +187,12 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 
 //    Grib::write( *fs_out, "out.grib" );
 
-    return fs_out;
+	return fs_out;
+}
+
+ExpPtr interpolate(const ExpPtr& e)
+{
+	return ExpPtr( new Interpolate( e ) );
 }
 
 //------------------------------------------------------------------------------------------------------

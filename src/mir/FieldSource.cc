@@ -33,6 +33,10 @@ atlas::FieldSet::Ptr FieldSource::eval() const
   return fs_inp;
 }
 
+ExpPtr field_source(const ExpPtr& e)
+{
+	return ExpPtr( new FieldSource( e ) );
+}
 
 } // namespace mir
 
