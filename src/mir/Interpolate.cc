@@ -56,30 +56,6 @@ Interpolate::~Interpolate()
 {
 }
 
-static Grid::Ptr make_grid( const std::string& filename )
-{
-    FILE* fh = ::fopen( filename.c_str(), "r" );
-    if( fh == 0 )
-        throw ReadError( std::string("error opening file ") + filename );
-
-    int err = 0;
-    grib_handle* h;
-
-    h = grib_handle_new_from_file(0,fh,&err);
-
-    if( h == 0 || err != 0 )
-        throw ReadError( std::string("error reading grib file ") + filename );
-
-    if( ::fclose(fh) == -1 )
-        throw ReadError( std::string("error closing file ") + filename );
-
-    GribHandle gh(h);
-    Grid::Ptr g ( Grib::create_grid( gh ) );
-    ASSERT( g );
-
-    return g;
-}
-
 void Interpolate::applyMask(const Grid& grid_inp, const Grid& grid_out, Weights::Matrix& W ) const
 {
   if( ! params().get("MaskPath").isNil() )
@@ -177,7 +153,8 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 #ifdef ECKIT_HAVE_GRIB
       /// @todo this must be abstracted out, so GRIB is not exposed
       ///       here the metadata is transfered by cloning the grib handle
-      fo.grib( fi.grib().clone() );
+      if( fi.grib() )
+        fo.grib( fi.grib()->clone() );
 #endif
 
     }

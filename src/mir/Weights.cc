@@ -41,7 +41,10 @@ void Weights::assemble(const Grid &in, const Grid &out, Weights::Matrix& W ) con
     {
         std::cout << ">>> computing weights ..." << std::endl;
 
-        compute( const_cast<Grid&>(in), const_cast<Grid&>(out), W );
+        if( in.uid() == out.uid() && in.same(out) )
+          W.setIdentity();
+        else
+          compute( const_cast<Grid&>(in), const_cast<Grid&>(out), W );
 
         cache.add( whash, W );
     }
