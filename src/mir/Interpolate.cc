@@ -101,7 +101,7 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
     {
       const Field& f_in = (*fs_inp)[n];
       Field& f = nodes_out.create_field<double>(f_in.name(),1);
-      fs_out->add_field(f);
+      fs_out->add_field(f.self());
     }
 
     ASSERT( fs_inp->size() == fs_out->size() );
