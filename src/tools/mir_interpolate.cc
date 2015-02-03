@@ -95,6 +95,12 @@ public:
 
         user->set( "Input.Path", Value(path_in) );
 
+        std::string oformat = Resource<std::string>("-oformat","grib");
+        if( oformat.empty() )
+            throw UserError( "bad output format, parameter -oformat", Here());
+
+        user->set( "Target.OutputFormat", Value(oformat) );
+
         PathName path_out;
         path_out = Resource<std::string>("-o","");
         if( path_out.asString().empty() )

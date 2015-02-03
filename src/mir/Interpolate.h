@@ -17,6 +17,7 @@
 #include "atlas/FieldSet.h"
 
 #include "mir/Action.h"
+#include "mir/Weights.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -30,11 +31,15 @@ class Interpolate : public Action {
 
 public: // methods
 
-    Interpolate( const eckit::Params::Ptr& );
+  Interpolate( const eckit::Params::Ptr& );
 
-    virtual ~Interpolate();
+  virtual ~Interpolate();
 
-	atlas::FieldSet::Ptr eval( const atlas::FieldSet::Ptr& in ) const;
+  atlas::FieldSet::Ptr eval( const atlas::FieldSet::Ptr& in ) const;
+
+private: // methods
+
+  void applyMask(const atlas::Grid& grid_inp, const atlas::Grid& grid_out, Weights::Matrix& W) const;
 
 };
 

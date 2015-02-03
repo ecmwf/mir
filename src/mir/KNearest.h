@@ -42,7 +42,7 @@ protected: // methods
 
     size_t nclosest_; ///< number of closest points to search for
 
-    mutable std::string hash_;
+    mutable atlas::Grid::uid_t uid_;
 
     mutable eckit::ScopedPtr<PointSearch> sptree_;
 
