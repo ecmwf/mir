@@ -23,6 +23,7 @@
 //------------------------------------------------------------------------------------------------------
 
 using namespace eckit;
+using namespace atlas;
 using namespace mir;
 
 //------------------------------------------------------------------------------------------------------
@@ -31,6 +32,16 @@ class MirInterpolate : public eckit::Tool {
 
 	void run()
 	{
+		FieldSource source( ctxt_ );
+		Interpolate interpolator( ctxt_ );
+		FieldSink   sink( ctxt_ );
+
+		FieldSet::Ptr fs_inp = source.eval(); ASSERT( fs_inp );
+
+		FieldSet::Ptr fs_out = interpolator.eval( fs_inp ); ASSERT( fs_out );
+
+		sink.eval( fs_out );
+#if 0
 		using eckit;
 
 		MIRFactory
@@ -76,6 +87,7 @@ class MirInterpolate : public eckit::Tool {
 		std::cout << f << std::endl;
 
 		f.eval();
+#endif
 	}
 
 public:
@@ -84,8 +96,6 @@ public:
 		eckit::Tool(argc,argv),
 		ctxt_( new MirContext() )
     {
-		MirContext* mir_ctxt = ctxt_.get();
-
         ValueParams* user( new ValueParams() );
 
         PathName path_in;
@@ -119,8 +129,7 @@ public:
 
         user->set( "InterpolationMethod", method );
 
-        mir_ctxt->push_front( Params::Ptr(user) );
-        ctxt_.reset( mir_ctxt );
+        static_cast<MirContext*>(ctxt_.get())->push_front( Params::Ptr(user) );
     }
 
 private:

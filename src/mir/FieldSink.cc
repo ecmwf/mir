@@ -61,7 +61,8 @@ void FieldSink::eval(const FieldSet::Ptr& fs_out) const
 
 ExpPtr field_sink(const ExpPtr& e)
 {
-	return ExpPtr( new FieldSink( e ) );
+  NOTIMP;
+//	return ExpPtr( new FieldSink( e ) );
 }
 
 //------------------------------------------------------------------------------------------------------

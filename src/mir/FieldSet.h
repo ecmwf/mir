@@ -22,11 +22,11 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class FieldSet : public eckit::xpr::Value {
+class Fields : public eckit::xpr::Value {
 
 public: // methods
 
-	FieldSet();
+  Fields();
 
 private: // members
 

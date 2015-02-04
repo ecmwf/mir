@@ -70,8 +70,7 @@ class MarsContext : public MirContext {
 
 public: // methods
 
-    MarsContext() :
-        MirContext( &runtime_ ),
+    MarsContext() : MirContext(),
         frozen_(false),
         buffer_( Resource<size_t>( "MirFieldBufferSize;$MIR_FIELD_BUFFER_SIZE", 60*1024*1024) )
     {
@@ -87,8 +86,6 @@ public: // methods
 
     ValueParams& mars_values() { return mars_values_; }
 
-    void set_runtime( Params::Ptr p ) { runtime_ = p.get(); }
-
     Buffer& buffer() { return buffer_; }
 
 private: // members
@@ -96,7 +93,6 @@ private: // members
     bool frozen_;
 
     ValueParams mars_values_;
-    Params* runtime_;
 
     Buffer buffer_;
 };
@@ -158,8 +154,11 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
 
         FieldSet::Ptr fs_inp( new FieldSet(b) );                ///< @todo create a fieldset from a buffer
 
-        Params::Ptr inparams( new FieldContext(fs_inp) );
-        mctxt->set_runtime( inparams );
+        Params::Ptr params_f( new FieldContext(fs_inp) );
+
+        Params::Ptr params_inp( new ScopeParams( "Input", params_f) );
+
+        mctxt->push_front( params_inp );
 
         Interpolate interpolator( mctxt->self() );
 
@@ -173,6 +172,8 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
         *sout = gh->write( mctxt->buffer() );
 
         *buffout = mctxt->buffer();
+
+        mctxt->pop_front();
 
         ASSERT( *buffout );
     }

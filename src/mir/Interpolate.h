@@ -25,7 +25,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-/// @todo this class will become an eckit::maths::Expression
+/// @todo this class will become an eckit::xpr::Expression
 
 class Interpolate : public Action {
 

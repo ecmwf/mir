@@ -32,7 +32,7 @@ public: // methods
 
 private: // methods
 
-    value_t getMask( const key_t& ) const;
+    value_t getMaskPath( const key_t& ) const;
 
 };
 
@@ -53,7 +53,7 @@ public:
 class MirContext : public eckit::CompositeParams {
 public:
 
-    MirContext( Params** r = NULL );
+    MirContext();
 
 };
 

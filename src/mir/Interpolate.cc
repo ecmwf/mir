@@ -39,6 +39,7 @@
 
 using namespace Eigen;
 using namespace eckit;
+using namespace atlas;
 using namespace eckit::grib;
 using namespace mir;
 
@@ -54,7 +55,7 @@ Interpolate::~Interpolate()
 {
 }
 
-void Interpolate::applyMask(const Grid& grid_inp, const Grid& grid_out, Weights::Matrix& W ) const
+void Interpolate::applyMask(const atlas::Grid& grid_inp, const atlas::Grid& grid_out, Weights::Matrix& W ) const
 {
   if( ! params().get("MaskPath").isNil() )
   {
@@ -85,7 +86,7 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
     Grid::Ptr target_grid(
           params().get("Target.GridPath").isNil() ?
             Grid::create( eckit::UnScopeParams( "Target", params().self() ) ) :
-            make_grid( params()["Target.GridPath"] ).get() );
+            atlas::io::make_grid( params()["Target.GridPath"] ).get() );
 
     ASSERT( target_grid );
 
@@ -164,7 +165,7 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
         Tesselation::tesselate( *target_grid );
 
         /* std::cout << go.mesh() << std::endl; */
-        Gmsh::write3dsurf( target_grid->mesh(), std::string("result.msh") );
+        atlas::io::Gmsh::write3dsurf( target_grid->mesh(), std::string("result.msh") );
     }
 
 //    Grib::write( *fs_out, "out.grib" );
@@ -174,7 +175,8 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 
 ExpPtr interpolate(const ExpPtr& e)
 {
-	return ExpPtr( new Interpolate( e ) );
+	NOTIMP;
+//	return ExpPtr( new Interpolate( e ) );
 }
 
 //------------------------------------------------------------------------------------------------------

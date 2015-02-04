@@ -26,7 +26,8 @@ namespace mir {
 
 typedef eckit::xpr::ExpPtr ExpPtr;
 
-class Action : public eckit::xpr::Function {
+//class Action : public eckit::xpr::Function {
+class Action {
 
 public: // methods
 

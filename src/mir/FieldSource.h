@@ -32,7 +32,7 @@ public: // methods
 
     virtual ~FieldSource();
 
-	atlas::FieldSet::Ptr eval() const;
+    atlas::FieldSet::Ptr eval() const;
 
 };
 
