@@ -190,15 +190,10 @@ class MirTransform : public eckit::Tool {
 
 		Grid::Ptr grid( Grid::create(grid_uid) );
 
+		FunctionSpace& nodes_out = grid->mesh().function_space( "nodes" );
+		Field& f = nodes_out.create_field<double>("theone",1);
+
 		std::cout << grid->bounding_box() << std::endl;
-
-		std::vector<std::string> fnames;
-
-		fnames.push_back( "theone" );
-
-		FieldSet fset( grid, fnames );
-
-		Field& f = fset[0];
 
 		DEBUG_VAR( f.size() );
 		DEBUG_VAR( trans.ngptotg );
@@ -217,8 +212,8 @@ class MirTransform : public eckit::Tool {
 
 		GribHandle::Ptr good_grid = io::Grib::create_handle( *grid, in_grib.edition() ); // correct grid
 		f.grib( io::Grib::copy_metadata( in_grib, *good_grid ) ); // copy metadata
-		ASSERT( f.size() == f.grib().getDataValuesSize() );
-		f.grib().setDataValues( f.data<double>(), f.size() );
+		ASSERT( f.size() == f.grib()->getDataValuesSize() );
+		f.grib()->setDataValues( f.data<double>(), f.size() );
 
 		// f.grib( in_grib.clone() ); // gets the correct metadata
 		// GribHandle::Ptr ogh ( Grib::clone(f, *io::Grib::create_handle( *grid, in_grib.edition() ) ) ); // clones into the correct grid
@@ -230,7 +225,7 @@ class MirTransform : public eckit::Tool {
 
 		dh->openForWrite(0);
 
-		f.grib().write(*dh);
+		f.grib()->write(*dh);
 
 		dh->close();
 
