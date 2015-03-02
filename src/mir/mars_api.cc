@@ -10,12 +10,13 @@
 
 #include <string>
 
-#include "eckit/memory/NonCopyable.h"
-#include "eckit/value/Properties.h"
+#include "eckit/config/Resource.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/log/CallbackChannel.h"
-#include "eckit/runtime/LibBehavior.h"
+#include "eckit/memory/NonCopyable.h"
 #include "eckit/runtime/Context.h"
+#include "eckit/runtime/LibBehavior.h"
+#include "eckit/value/Properties.h"
 
 #include "atlas/FieldSet.h"
 #include "atlas/io/Grib.h"
