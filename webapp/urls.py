@@ -1,8 +1,8 @@
-# Copyright (C) 2012 ECMWF
+# Copyright (C) 2015 ECMWF
 
 from django.conf import settings
 from django.contrib import admin
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
 
 admin.autodiscover()

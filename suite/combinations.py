@@ -4,7 +4,7 @@
 # visible to all machines
 #
 #platform_dict={"linux": ["pepe"], "rs6000": ["ecgate"]}
-platform_dict={"linux": ["igraine"]}
+platform_dict={"linux": ["localhost"]}
 
 
 ##################################################################################
@@ -20,7 +20,7 @@ comparisons=["emos395", "emos401"]
 #mars_folders=["/usr/local/lib/metaps", "/home/ma/maf/build/mars_client/debug"]
 #mars_folders=["/usr/local/lib/metaps", "/tmp/maf/p4/mars/client/dev/grib_api"]
 mars_folders=["", ""]
-mars_commands=["mars", "mars -b /home/ma/matq/builds/mars_client/debug/bin/mars.bin"]
+mars_commands=["mars", "mars -b ~/builds/mars-client/bin/mars.bin"]
 
 
 # Whether to compare the files and produce difference plots if diffs are found
@@ -45,7 +45,6 @@ dummy_run=False
 memcheck_grids=[]       
 
 
-
 ##################################################################################
 # "grid_dict" defines the transformations that we wish to test
 # in the suite. For each key (source grid), a list of target grids is defined.
@@ -56,8 +55,8 @@ grid_dict = {
                     "reg_ll", 
                     "reg_gg",
                     "red_gg", 
-                    # "sh",   
-                    # "rot_reg_ll", 
+                    "sh",   
+                    "rot_reg_ll", 
                ],
 
      "red_gg": [
@@ -70,23 +69,21 @@ grid_dict = {
      "reg_gg": [
                     "reg_gg",
                     "reg_ll",
-                     #"rot_reg_ll"   # emos fails for sfc params
+                    #"rot_reg_ll"   # emos fails for sfc params
                ],
 
      "reg_ll": [
-                     # "reg_gg",
-                     # "reg_ll",
+                     "reg_gg",
+                     "reg_ll",
                      #"rot_reg_ll"    # emos fails for all parameters
                 ],
 
      "red_ll":  [ 
-                      "reg_ll", 
-                     #  "reg_gg" # removed as not required in verification yet acc to Sinisa 20130124
+                     "reg_ll", 
+                     #"reg_gg" # removed as not required in verification yet acc to Sinisa 20130124
                 ]
     
 }
-
-#grid_dict = {"sh": ["red_gg"] }
 
 
 ##################################################################################
@@ -166,7 +163,7 @@ predefined_ll_grids = [ "1.125/1.125", "1/1","0.5/0.5","0.4/0.4","0.25/0.25","0.
 
 ll_grids      = predefined_ll_grids   
 # and some more...
-ll_grids.extend(["5/5", "2/2", "1.5/1.5"])
+ll_grids.extend(["5/5", "2/2", "1.5/1.5", "0.05/0.05" ])
 
 # the spectral resolutions we will use
 resol         = ["63", "95", "106", "160", "128", "200", "213", "511", "639", "799", "1279"]
@@ -214,18 +211,6 @@ predefined_regular_gauss_grids = [160, 200,400,640]
 
 reduced_gauss_grids   = [32, 48, 80, 128, 160, 200, 256, 320, 400, 512, 640, 1024, 1280]
 
-# to massively reduce test counts uncomment here
-"""
-gauss_grids = [200]
-reduced_gauss_grids = gauss_grids
-predefined_regular_gauss_grids = gauss_grids
-gg_areas = ["off", "75/62/10/90"]
-ll_areas = gg_areas
-rotation = ["10/10"]
-predefined_ll_grids = [ "1.125/1.125"]
-ll_grids = predefined_ll_grids
-resol         = ["63"]
-"""
 
 ##################################################################################
 # "adjust" specifies which parameters are to be adjusted for which target grid
@@ -246,10 +231,10 @@ adjust = {
                 "packing": sh_packing, 
           },
 
-    "reg_ll": {   #"area": ll_areas, 
+    "reg_ll": {   "area": ll_areas, 
                "frame": frame, 
                "grid": ll_grids,
-               #"packing": packing, 
+               "packing": packing, 
                 },
 
     "rot_reg_ll": { "rotation": rotation, 
