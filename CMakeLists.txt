@@ -33,6 +33,11 @@ ecbuild_requires_macro_version( 1.6 )
 ecbuild_use_package( PROJECT eckit  VERSION  0.8  REQUIRED )
 ecbuild_use_package( PROJECT atlas  VERSION  0.3  REQUIRED )
 
+# Eigen support in eckit is required
+if( NOT ECKIT_HAVE_EIGEN )
+  message( FATAL_ERROR "Eigen support in eckit is required" )
+endif()
+
 # this will be replaced once ecbuild exports subcomponents between packages
 
 ecbuild_declare_project()
