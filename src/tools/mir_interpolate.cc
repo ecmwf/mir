@@ -32,9 +32,9 @@ class MirInterpolate : public eckit::Tool {
 
 	void run()
 	{
-		FieldSource source( ctxt_ );
-		Interpolate interpolator( ctxt_ );
-		FieldSink   sink( ctxt_ );
+		FieldSource source = Params(ctxt_);
+		Interpolate interpolator = Params(ctxt_);
+		FieldSink   sink = Params(ctxt_);
 
 		FieldSet::Ptr fs_inp = source.eval(); ASSERT( fs_inp );
 
@@ -94,47 +94,47 @@ public:
 
 	MirInterpolate(int argc,char **argv) :
 		eckit::Tool(argc,argv),
-		ctxt_( new MirContext() )
+		ctxt_(MirParams())
     {
-        ValueParams* user( new ValueParams() );
+        ValueParams user;
 
         PathName path_in;
         path_in = Resource<std::string>("-i","");
         if( path_in.asString().empty() )
             throw UserError( "missing input filename, parameter -i", Here());
 
-        user->set( "Input.Path", Value(path_in) );
+        user.set( "Input.Path", Value(path_in) );
 
         std::string oformat = Resource<std::string>("-oformat","grib");
         if( oformat.empty() )
             throw UserError( "bad output format, parameter -oformat", Here());
 
-        user->set( "Target.OutputFormat", Value(oformat) );
+        user.set( "Target.OutputFormat", Value(oformat) );
 
         PathName path_out;
         path_out = Resource<std::string>("-o","");
         if( path_out.asString().empty() )
             throw UserError( "missing output filename, parameter -o", Here());
 
-        user->set( "Target.Path", Value(path_out) );
+        user.set( "Target.Path", Value(path_out) );
 
         PathName clone_path;
         clone_path = Resource<std::string>("-g","");
         if( clone_path.asString().empty() )
             throw UserError( "missing clone grid filename, parameter -g", Here());
 
-        user->set( "Target.GridPath", Value(clone_path) );
+        user.set( "Target.GridPath", Value(clone_path) );
 
         std::string method = Resource<std::string>("-m;$MIR_METHOD","fe");
 
-        user->set( "InterpolationMethod", method );
+        user.set( "InterpolationMethod", method );
 
-        static_cast<MirContext*>(ctxt_.get())->push_front( Params::Ptr(user) );
+        ctxt_.push_front( Params(user) );
     }
 
 private:
 
-    eckit::Params::Ptr ctxt_;
+    MirParams ctxt_;
 
 };
 

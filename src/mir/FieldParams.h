@@ -11,12 +11,12 @@
 /// @author Tiago Quintino
 /// @date July 2014
 
-#ifndef mir_Params_H
-#define mir_Params_H
+#ifndef mir_FieldParams_H
+#define mir_FieldParams_H
 
-#include "eckit/memory/Owned.h"
-#include "eckit/memory/SharedPtr.h"
-#include "eckit/value/Params.h"
+#include "atlas/FieldSet.h"
+
+#include "mir/Params.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -24,36 +24,17 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class UserParams : public eckit::DispatchParams<UserParams> {
+class FieldParams : public eckit::DispatchParams<FieldParams> {
 
 public: // methods
 
-    UserParams();
+	FieldParams( const atlas::FieldSet::Ptr& );
 
-private: // methods
+	virtual ~FieldParams();
 
-    eckit::Params::value_t getMaskPath( const eckit::Params::key_t& ) const;
+private: // members
 
-};
-
-//-------------------------------------------------------------------------------------------
-
-class ProfileParams : public eckit::ValueParams {
-public:
-
-    ProfileParams()
-    {
-		set( "InterpolationMethod", "fe" );
-//      set( "lsm", "hres.grib" );
-    }
-};
-
-//-------------------------------------------------------------------------------------------
-
-class MirParams : public eckit::CompositeParams {
-public:
-
-    MirParams();
+	atlas::FieldSet::Ptr fieldset_;
 
 };
 

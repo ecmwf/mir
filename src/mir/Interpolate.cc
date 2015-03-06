@@ -33,7 +33,7 @@
 #include "mir/WeightCache.h"
 #include "mir/Weights.h"
 #include "mir/Masks.h"
-#include "mir/FieldContext.h"
+#include "mir/FieldParams.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-Interpolate::Interpolate(const eckit::Params::Ptr& p) : Action(p)
+Interpolate::Interpolate(const Params & p) : Action(p)
 {
 }
 
@@ -57,7 +57,7 @@ Interpolate::~Interpolate()
 
 void Interpolate::applyMask(const atlas::Grid& grid_inp, const atlas::Grid& grid_out, Weights::Matrix& W ) const
 {
-  if( ! params().get("MaskPath").isNil() )
+  if( params().has("MaskPath") )
   {
       PathName mask_path = params()["MaskPath"];
 
@@ -77,15 +77,15 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 
 //    Grib::write( *fs_inp, "inp.grib" );
 
-//    Params::Ptr rctxt( new FieldContext( fs_inp ) );
+//    Params::Ptr rctxt( new FieldParams( fs_inp ) );
 
     /// @todo somewhere here we should use the GribParams* to pass to create grid_out ...
 
     // clone grid
 
     Grid::Ptr target_grid(
-          params().get("Target.GridPath").isNil() ?
-            Grid::create( eckit::UnScopeParams( "Target", params().self() ) ) :
+          !params().has("Target.GridPath") ?
+            Grid::create( Params( UnScopeParams( "Target", params() ) ) ) :
             atlas::io::make_grid( params()["Target.GridPath"] ).get() );
 
     ASSERT( target_grid );

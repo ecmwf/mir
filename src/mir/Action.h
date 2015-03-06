@@ -31,16 +31,16 @@ class Action {
 
 public: // methods
 
-    Action( const eckit::Params::Ptr& );
+    Action( const eckit::Params& );
 
     virtual ~Action();
 
-    const eckit::Params& params() const { return *params_; }
-    eckit::Params& params() { return *params_; }
+    const eckit::Params& params() const { return params_; }
+    eckit::Params& params() { return params_; }
 
 private: // members
 
-    eckit::Params::Ptr params_;
+    eckit::Params params_;
 
 };
 

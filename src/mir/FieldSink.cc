@@ -25,7 +25,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-FieldSink::FieldSink(const eckit::Params::Ptr& p) : Action(p)
+FieldSink::FieldSink(const Params & p) : Action(p)
 {
 }
 
