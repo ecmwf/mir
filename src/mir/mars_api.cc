@@ -23,6 +23,7 @@
 
 #include "mir/mars_api.h"
 
+#include "mir/Context.h"
 #include "mir/Interpolate.h"
 #include "mir/Params.h"
 #include "mir/FieldParams.h"
@@ -77,12 +78,13 @@ public: // methods
 
     MarsContext() :
         frozen_(false),
+        mirContext_( new MirContext() ),
         buffer_( Resource<size_t>( "MirFieldBufferSize;$MIR_FIELD_BUFFER_SIZE",
                                    60*1024*1024) )
     {
         MarsParams mars( (Params( mars_values_ )) ); // Most Vexing Parse
 
-        params_.push_front( Params(mars) );
+        mirContext_->params().push_front( Params(mars) );
     }
 
     virtual ~MarsContext()
@@ -94,7 +96,7 @@ public: // methods
     void freeze() { frozen_ = true; }
 
     ValueParams& mars_values() { return mars_values_; }
-    MirParams& mir_params() { return params_; }
+    MirParams& mir_params() { return mirContext_->params(); }
 
     Buffer& buffer() { return buffer_; }
 
@@ -104,7 +106,7 @@ private: // members
 
     ValueParams mars_values_;
 
-    MirParams params_;
+    ScopedPtr<MirContext> mirContext_;
 
     Buffer buffer_;
 };
