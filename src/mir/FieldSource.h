@@ -28,7 +28,7 @@ class FieldSource : public Action {
 
 public: // methods
 
-    FieldSource( const eckit::Params::Ptr& );
+    FieldSource( const eckit::Params& );
 
     virtual ~FieldSource();
 

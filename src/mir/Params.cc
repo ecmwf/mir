@@ -31,18 +31,16 @@ Params::value_t UserParams::getMaskPath(const Params::key_t &) const
     std::string mpath = Resource<std::string>("-mask",""); // mask may be empty
 
     if( !mpath.empty() )
-        return value_t( mpath );
+        return Params::value_t( mpath );
     else
-        return value_t();
+        return Params::value_t();
 }
 
 //------------------------------------------------------------------------------------------------------
 
-MirContext::MirContext()
+MirParams::MirParams()
 {
-    Params::Ptr ecmwf( new ProfileParams() );
-
-    push_back( ecmwf );
+    push_back( Params( ProfileParams() ) );
 }
 
 //------------------------------------------------------------------------------------------------------

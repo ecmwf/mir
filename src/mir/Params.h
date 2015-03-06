@@ -32,7 +32,7 @@ public: // methods
 
 private: // methods
 
-    value_t getMaskPath( const key_t& ) const;
+    eckit::Params::value_t getMaskPath( const eckit::Params::key_t& ) const;
 
 };
 
@@ -43,17 +43,17 @@ public:
 
     ProfileParams()
     {
-		props().set( "InterpolationMethod", "fe" );
-//      props().set( "lsm", "hres.grib" );
+		set( "InterpolationMethod", "fe" );
+//      set( "lsm", "hres.grib" );
     }
 };
 
 //-------------------------------------------------------------------------------------------
 
-class MirContext : public eckit::CompositeParams {
+class MirParams : public eckit::CompositeParams {
 public:
 
-    MirContext();
+    MirParams();
 
 };
 

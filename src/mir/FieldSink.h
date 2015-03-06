@@ -28,7 +28,7 @@ class FieldSink : public Action {
 
 public: // methods
 
-    FieldSink( const eckit::Params::Ptr& );
+    FieldSink( const eckit::Params& );
 
     virtual ~FieldSink();
 

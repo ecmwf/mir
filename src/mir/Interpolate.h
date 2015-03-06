@@ -31,7 +31,7 @@ class Interpolate : public Action {
 
 public: // methods
 
-  Interpolate( const eckit::Params::Ptr& );
+  Interpolate( const eckit::Params& );
 
   virtual ~Interpolate();
 

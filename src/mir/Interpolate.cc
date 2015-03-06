@@ -47,7 +47,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-Interpolate::Interpolate(const eckit::Params::Ptr& p) : Action(p)
+Interpolate::Interpolate(const Params & p) : Action(p)
 {
 }
 
@@ -57,7 +57,7 @@ Interpolate::~Interpolate()
 
 void Interpolate::applyMask(const atlas::Grid& grid_inp, const atlas::Grid& grid_out, Weights::Matrix& W ) const
 {
-  if( ! params().get("MaskPath").isNil() )
+  if( params().has("MaskPath") )
   {
       PathName mask_path = params()["MaskPath"];
 
@@ -84,8 +84,8 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
     // clone grid
 
     Grid::Ptr target_grid(
-          params().get("Target.GridPath").isNil() ?
-            Grid::create( eckit::UnScopeParams( "Target", params().self() ) ) :
+          !params().has("Target.GridPath") ?
+            Grid::create( Params( UnScopeParams( "Target", params() ) ) ) :
             atlas::io::make_grid( params()["Target.GridPath"] ).get() );
 
     ASSERT( target_grid );
