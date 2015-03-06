@@ -24,8 +24,8 @@ Bilinear.h
 Bilinear.cc
 Field.cc
 Field.h
-FieldContext.cc
-FieldContext.h
+FieldParams.cc
+FieldParams.h
 FieldSet.cc
 FieldSet.h
 FieldSink.cc

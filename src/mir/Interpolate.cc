@@ -33,7 +33,7 @@
 #include "mir/WeightCache.h"
 #include "mir/Weights.h"
 #include "mir/Masks.h"
-#include "mir/FieldContext.h"
+#include "mir/FieldParams.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 
 //    Grib::write( *fs_inp, "inp.grib" );
 
-//    Params::Ptr rctxt( new FieldContext( fs_inp ) );
+//    Params::Ptr rctxt( new FieldParams( fs_inp ) );
 
     /// @todo somewhere here we should use the GribParams* to pass to create grid_out ...
 

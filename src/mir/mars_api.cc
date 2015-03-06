@@ -25,7 +25,7 @@
 
 #include "mir/Interpolate.h"
 #include "mir/Params.h"
-#include "mir/FieldContext.h"
+#include "mir/FieldParams.h"
 
 using namespace eckit;
 using namespace eckit::grib;
@@ -155,7 +155,7 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
 
         FieldSet::Ptr fs_inp( new FieldSet(b) );                ///< @todo create a fieldset from a buffer
 
-        Params::Ptr params_f( new FieldContext(fs_inp) );
+        Params::Ptr params_f( new FieldParams(fs_inp) );
 
         Params::Ptr params_inp( new ScopeParams( "Input", params_f) );
 
