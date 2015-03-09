@@ -33,6 +33,12 @@ ecbuild_requires_macro_version( 1.6 )
 ecbuild_use_package( PROJECT eckit  VERSION  0.8  REQUIRED )
 ecbuild_use_package( PROJECT atlas  VERSION  0.3  REQUIRED )
 
+# BUG: For some reason, in bundles this does not get propagated, unless
+# following lines are defined
+foreach( _feature ${ECKIT_FEATURES};${ATLAS_FEATURES} )
+  set( ${_feature} 1 )
+endforeach()
+
 # Eigen support in eckit is required
 if( NOT ECKIT_HAVE_EIGEN )
   message( FATAL_ERROR "Eigen support in eckit is required" )
@@ -53,7 +59,7 @@ ecbuild_check_cxx11( PRINT )
 
 ### OMP
 
-ecbuild_add_option( FEATURE OMP 
+ecbuild_add_option( FEATURE OMP
                     DESCRIPTION "support for OpenMP shared memory parallelism"
                     DEFAULT ON )
 

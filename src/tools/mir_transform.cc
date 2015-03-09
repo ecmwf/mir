@@ -17,12 +17,12 @@
 #include "eckit/log/Timer.h"
 #include "eckit/runtime/Tool.h"
 
-#include "atlas/atlas.h"
+#include "atlas/atlas_config.h"
 #include "atlas/FieldSet.h"
 #include "atlas/grids/grids.h"
 #include "atlas/io/Grib.h"
 
-#include "trans_api/trans_api.h"
+#include "transi/trans.h"
 
 #include "mir/mir_config.h"
 #include "mir/FieldSource.h"
@@ -41,9 +41,9 @@ class MirTransform : public eckit::Tool {
 
 	void run()
 	{
-		Params& p = *ctxt_;
+		Params p(ctxt_);
 
-		GribHandle in_grib( params()["Input.Path"] );
+		GribHandle in_grib( p["Input.Path"] );
 
 		DEBUG_VAR( in_grib.gridType() );
 
@@ -92,12 +92,12 @@ class MirTransform : public eckit::Tool {
 
         DEBUG_VAR( nloen );
 
-		Trans trans;
+		struct Trans_t trans = new_trans();
 
 		trans.ndgl  = nloen.size();
 		trans.nloen = nloen.data();
 
-		long maxtr = params()["MaxTruncation"];
+		long maxtr = p["MaxTruncation"];
 
 		trans.nsmax = maxtr ? maxtr : (2*trans.ndgl-1)/2; // assumption: linear grid
 
@@ -141,7 +141,7 @@ class MirTransform : public eckit::Tool {
 
 		std::vector<double> rspec ( nfld * trans.nspec2  );
 
-		DistSpec distspec = new_distspec(&trans);
+		struct DistSpec_t distspec = new_distspec(&trans);
 		distspec.nfrom  = nfrom.data();
 		distspec.rspecg = rspecg.data();
 		distspec.rspec  = rspec.data();
@@ -155,7 +155,7 @@ class MirTransform : public eckit::Tool {
 
 		std::vector<double> rgp ( nfld * trans.ngptot );
 
-		InvTrans invtrans = new_invtrans(&trans);
+		struct InvTrans_t invtrans = new_invtrans(&trans);
 		invtrans.nscalar   = nfld;
 		invtrans.rspscalar = rspec.data();
 		invtrans.rgp       = rgp.data();
@@ -174,7 +174,7 @@ class MirTransform : public eckit::Tool {
 		for( int jfld=0; jfld<nfld; ++jfld )
 		  nto[jfld] = 1;
 
-		GathGrid gathgrid = new_gathgrid(&trans);
+		struct GathGrid_t gathgrid = new_gathgrid(&trans);
 		gathgrid.rgp  = rgp.data();
 		gathgrid.rgpg = rgpg.data();
 		gathgrid.nfld = nfld;
@@ -220,7 +220,7 @@ class MirTransform : public eckit::Tool {
 
 		// dump the GRIB to the DataHandle
 
-		PathName fpath( params()["Target.Path"].as<std::string>() );
+		PathName fpath( p["Target.Path"].as<std::string>() );
 		DataHandle* dh = fpath.fileHandle();
 
 		dh->openForWrite(0);
@@ -229,6 +229,7 @@ class MirTransform : public eckit::Tool {
 
 		dh->close();
 
+		trans_delete(&trans);
 		trans_finalize();
 	}
 
@@ -239,8 +240,6 @@ public:
 		trans_init();
 
 //		atlas::atlas_init(argc,argv);
-
-		MirContext* mir_ctxt = new MirContext();
 
 		ValueParams* user( new ValueParams() );
 
@@ -264,15 +263,13 @@ public:
 
 		user->set( "MaxTruncation", maxtr );
 
-		mir_ctxt->push_front( Params::Ptr(user) );
-		ctxt_.reset( mir_ctxt );
-	}
+        trans_finalize();
 
-	Params& params() const { return *ctxt_; }
+	}
 
 private:
 
-	eckit::Params::Ptr ctxt_;
+  MirParams ctxt_;
 
 };
 
