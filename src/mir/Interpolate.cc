@@ -12,13 +12,14 @@
 
 #include "grib_api.h"
 
+#include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/grib/GribHandle.h"
 #include "eckit/log/Timer.h"
 #include "eckit/log/Plural.h"
-#include "eckit/utils/Translator.h"
 #include "eckit/maths/Eigen.h"
-#include "eckit/config/Resource.h"
+#include "eckit/utils/Translator.h"
+#include "eckit/value/UnScopeParams.h"
 
 #include "atlas/Grid.h"
 #include "atlas/io/Grib.h"

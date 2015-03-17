@@ -16,7 +16,9 @@
 
 #include "eckit/memory/Owned.h"
 #include "eckit/memory/SharedPtr.h"
-#include "eckit/value/Params.h"
+#include "eckit/value/CompositeParams.h"
+#include "eckit/value/DispatchParams.h"
+#include "eckit/value/ValueParams.h"
 
 //------------------------------------------------------------------------------------------------------
 

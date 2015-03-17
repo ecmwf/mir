@@ -17,6 +17,7 @@
 #include "eckit/runtime/Context.h"
 #include "eckit/runtime/LibBehavior.h"
 #include "eckit/value/Properties.h"
+#include "eckit/value/ScopeParams.h"
 
 #include "atlas/FieldSet.h"
 #include "atlas/io/Grib.h"
