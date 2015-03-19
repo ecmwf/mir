@@ -19,7 +19,6 @@
 #include "eckit/log/Plural.h"
 #include "eckit/maths/Eigen.h"
 #include "eckit/utils/Translator.h"
-#include "eckit/value/UnScopeParams.h"
 
 #include "atlas/Grid.h"
 #include "atlas/io/Grib.h"
@@ -86,7 +85,7 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 
     Grid::Ptr target_grid(
           !params().has("Target.GridPath") ?
-            Grid::create( Params( UnScopeParams( "Target", params() ) ) ) :
+            Grid::create( params() ) :
             atlas::io::make_grid( params()["Target.GridPath"] ).get() );
 
     ASSERT( target_grid );
