@@ -96,7 +96,7 @@ public:
 		eckit::Tool(argc,argv),
 		ctxt_(MirParams())
     {
-        ValueParams user;
+        Properties user;
 
         PathName path_in;
         path_in = Resource<std::string>("-i","");
