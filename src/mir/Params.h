@@ -18,7 +18,7 @@
 #include "eckit/memory/SharedPtr.h"
 #include "eckit/value/CompositeParams.h"
 #include "eckit/value/DispatchParams.h"
-#include "eckit/value/ValueParams.h"
+#include "eckit/value/Properties.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ private: // methods
 
 //-------------------------------------------------------------------------------------------
 
-class ProfileParams : public eckit::ValueParams {
+class ProfileParams : public eckit::Properties {
 public:
 
     ProfileParams()

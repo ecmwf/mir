@@ -241,7 +241,7 @@ public:
 
 //		atlas::atlas_init(argc,argv);
 
-		ValueParams* user( new ValueParams() );
+		Properties* user( new Properties() );
 
 		PathName path_in;
 		path_in = Resource<std::string>("-i","");

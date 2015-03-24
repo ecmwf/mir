@@ -96,7 +96,7 @@ public: // methods
     bool frozen() const { return frozen_; }
     void freeze() { frozen_ = true; }
 
-    ValueParams& mars_values() { return mars_values_; }
+    Properties& mars_values() { return mars_values_; }
     MirParams& mir_params() { return mirContext_->params(); }
 
     Buffer& buffer() { return buffer_; }
@@ -105,7 +105,7 @@ private: // members
 
     bool frozen_;
 
-    ValueParams mars_values_;
+    Properties mars_values_;
 
     ScopedPtr<MirContext> mirContext_;
 
