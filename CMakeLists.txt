@@ -124,6 +124,6 @@ ecbuild_add_resources( TARGET top_files SOURCES
 ############################################################################################
 # packaging and installation
 
-ecbuild_install_project( NAME ${CMAKE_PROJECT_NAME} )
+ecbuild_install_project( NAME ${PROJECT_NAME} )
 
 ecbuild_print_summary()
