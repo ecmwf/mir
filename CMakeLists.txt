@@ -92,7 +92,7 @@ endif()
 ### export package to other ecbuild packages
 
 set( MIR_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
-set( MIR_LIBRARIES      ${CMAKE_PROJECT_NAME} )
+set( MIR_LIBRARIES      mir )
 set( MIR_TPLS           atlas eckit )
 
 get_directory_property( COMPILE_DEFINITIONS MIR_DEFINITIONS )
