@@ -1,4 +1,4 @@
-set( _mir_test_environment MIR_CACHE_DIR=${CMAKE_CURRENT_LIST_DIR}/cache )
+set( _mir_test_environment MIR_CACHE_DIR=${CMAKE_CURRENT_BINARY_DIR}/cache )
 
 ecbuild_add_test( TARGET      test_weight_cache
 				  BOOST
