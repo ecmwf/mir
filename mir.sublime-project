@@ -1,9 +1,18 @@
 {
-	"folders":
-	[
-		{
-			"follow_symlinks": true,
-			"path": "."
-		}
-	]
+    "folders": [
+        {
+            "path": ".",
+            "follow_symlinks": true
+        }
+    ],
+    "build_systems": [
+        {
+            "working_dir": "${project_path}/../../build/mars-client",
+            "cmd": [
+                "make"
+            ],
+            "file_regex": "([/\\w\\-\\.]+):(\\d+):(\\d+:)?",
+            "name": "ecbuild"
+        }
+    ]
 }
