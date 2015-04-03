@@ -8,11 +8,11 @@ class MirOutline : public eckit::Tool {
 	{
 	}
 
+public:
 	MirOutline(int argc,char **argv) :
 		eckit::Tool(argc,argv)
     {
     }
-
 
 };
 
