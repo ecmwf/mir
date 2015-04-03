@@ -7,7 +7,7 @@
     ],
     "build_systems": [
         {
-            "working_dir": "${project_path}/../../build/mars-client",
+            "working_dir": "${project_path}/../../build/mir",
             "cmd": [
                 "make"
             ],
