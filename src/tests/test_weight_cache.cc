@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2012 ECMWF.
+ * (C) Copyright 1996-2015 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE( test_read_write )
 {
     // We delete the cache file before we test
     char key[] = "test_matrix";
-    ::remove(WeightCache::filename(key).c_str());
+    ::remove(WeightCache::filename(key).asString().c_str());
 
     int n = 100, m = 200;
     // create a sparse matrix
@@ -53,17 +53,17 @@ BOOST_AUTO_TEST_CASE( test_read_write )
     M.setFromTriplets(insertions.begin(), insertions.end());
 
     bool added = WeightCache::add(key, M);
-	BOOST_CHECK(added);
+    BOOST_CHECK(added);
 
     // chck that any additional adds fail
-	BOOST_CHECK(!WeightCache::add(key, M));
-	BOOST_CHECK(!WeightCache::add(key, M));
+    BOOST_CHECK(!WeightCache::add(key, M));
+    BOOST_CHECK(!WeightCache::add(key, M));
 
 
     // now get the data back again
     Weights::Matrix W(n, m);
     bool got = WeightCache::get(key, W);
-	BOOST_CHECK(got);
+    BOOST_CHECK(got);
 
     // now get the triplets from W and check them against M
     std::vector<Eigen::Triplet<double> > triplets;
@@ -76,25 +76,26 @@ BOOST_AUTO_TEST_CASE( test_read_write )
     }
 
     // check construction of the matrix
-	BOOST_CHECK(triplets.size() == insertions.size());
-	BOOST_CHECK(W.size() == M.size());
-	BOOST_CHECK(W.outerSize() == M.outerSize());
-	BOOST_CHECK(W.innerSize() == M.innerSize());
+    BOOST_CHECK(triplets.size() == insertions.size());
+    BOOST_CHECK(W.size() == M.size());
+    BOOST_CHECK(W.outerSize() == M.outerSize());
+    BOOST_CHECK(W.innerSize() == M.innerSize());
 
     // check the values
     for (unsigned int i = 0; i < triplets.size(); i++)
     {
-		BOOST_CHECK(triplets[i].col() == insertions[i].col());
-		BOOST_CHECK(triplets[i].row() == insertions[i].row());
-		BOOST_CHECK(triplets[i].value() == insertions[i].value());
+      BOOST_CHECK(triplets[i].col() == insertions[i].col());
+      BOOST_CHECK(triplets[i].row() == insertions[i].row());
+      BOOST_CHECK(triplets[i].value() == insertions[i].value());
     }
 
     // test that additional gets succeed
-	BOOST_CHECK(WeightCache::get(key, W));
-	BOOST_CHECK(WeightCache::get(key, W));
+    BOOST_CHECK(WeightCache::get(key, W));
+    BOOST_CHECK(WeightCache::get(key, W));
 
-	// remove the file and BOOST_CHECK that get fails
-    ::remove(WeightCache::filename(key).c_str());
-	BOOST_CHECK(!WeightCache::get(key, W));
-	BOOST_CHECK(!WeightCache::get(key, W));
+    // remove the file and BOOST_CHECK that get fails
+    ::remove(WeightCache::filename(key).asString().c_str());
+    BOOST_CHECK(!WeightCache::get(key, W));
+    BOOST_CHECK(!WeightCache::get(key, W));
 }
+

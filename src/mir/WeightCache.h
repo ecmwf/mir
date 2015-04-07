@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2014 ECMWF.
+ * (C) Copyright 1996-2015 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -15,8 +15,8 @@
 #ifndef mir_WeightCache_H
 #define mir_WeightCache_H
 
+#include "eckit/filesystem/PathName.h"
 #include "eckit/memory/NonCopyable.h"
-#include "eckit/filesystem/LocalPathName.h"
 
 #include  "mir/Weights.h"
 
@@ -36,7 +36,7 @@ public: // methods
     /// @returns true if addition was succcessful
     static bool add(const std::string& key, Weights::Matrix& W );
 
-    static eckit::LocalPathName filename(const std::string& key);
+    static eckit::PathName filename(const std::string& key);
 
 };
 
@@ -45,3 +45,4 @@ public: // methods
 } // namespace mir
 
 #endif
+

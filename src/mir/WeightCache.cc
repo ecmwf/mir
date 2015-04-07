@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2014 ECMWF.
+ * (C) Copyright 1996-2015 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,16 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-#include <string>
-#include <sstream>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
 
-#include "eckit/log/Log.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/io/FileHandle.h"
 #include "eckit/config/Resource.h"
+#include "eckit/io/FileHandle.h"
+#include "eckit/log/Log.h"
 #include "eckit/maths/Eigen.h" // always include Eigen via eckit
+#include "eckit/thread/AutoLock.h"
 
 #include "mir/WeightCache.h"
 
@@ -27,18 +27,18 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-LocalPathName WeightCache::filename(const std::string& key)
+PathName WeightCache::filename(const std::string& key)
 {
     PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir","/tmp/cache/mir");
 
     PathName f = base_path / "weights" / PathName( key + ".cache" );
 
-    return f.asString();
+    return f;
 }
 
 bool WeightCache::add(const std::string& key, Weights::Matrix& W )
 {
-    LocalPathName file( filename(key) );
+    PathName file( filename(key) );
 
     if( file.exists() )
     {
@@ -50,37 +50,37 @@ bool WeightCache::add(const std::string& key, Weights::Matrix& W )
 
     // unique file name avoids race conditions on the file from multiple processes
 
-    LocalPathName tmpfile ( LocalPathName::unique(file) );
+    PathName tmpfile ( PathName::unique(file) );
 
     Log::info() << "inserting weights in cache (" << file << ")" << std::endl;
 
     std::ofstream ofs;
-    ofs.open( tmpfile.c_str(), std::ios::binary );
-    
+    ofs.open( tmpfile.asString().c_str(), std::ios::binary );
+
     // write nominal size of matrix
 
     long innerSize = W.innerSize();
     long outerSize = W.outerSize();
-    
+
     ofs.write(reinterpret_cast<const char*>(&innerSize), sizeof(innerSize));
     ofs.write(reinterpret_cast<const char*>(&outerSize), sizeof(outerSize));
-    
-    // find all the non-zero values (aka triplets) 
+
+    // find all the non-zero values (aka triplets)
 
     std::vector<Eigen::Triplet<double> > trips;
-    for (unsigned int i = 0; i < W.outerSize(); ++i) 
+    for (unsigned int i = 0; i < W.outerSize(); ++i)
     {
         for ( Weights::Matrix::InnerIterator it(W,i); it; ++it)
         {
             trips.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
         }
-    }    
-    
-    // save the number of triplets 
+    }
+
+    // save the number of triplets
 
     long ntrips = trips.size();
     ofs.write(reinterpret_cast<const char*>(&ntrips), sizeof(ntrips));
-    
+
     // now save the triplets themselves
 
     for (unsigned int i = 0; i < trips.size(); i++)
@@ -96,14 +96,14 @@ bool WeightCache::add(const std::string& key, Weights::Matrix& W )
         ofs.write(reinterpret_cast<const char*>(&w), sizeof(w));
 
     }
-    
+
     ofs.close();
 
     // now try to rename the file to its file pathname
 
     try
     {
-        LocalPathName::rename( tmpfile, file );
+        PathName::rename( tmpfile, file );
     }
     catch( FailedSystemCall& e ) // ignore failed system call -- another process nay have created the file meanwhile
     {
@@ -115,7 +115,7 @@ bool WeightCache::add(const std::string& key, Weights::Matrix& W )
 
 bool WeightCache::get(const std::string& key, Weights::Matrix& W )
 {
-    LocalPathName file( filename(key) );
+    PathName file( filename(key) );
 
     if( ! file.exists() )
     {
@@ -127,7 +127,7 @@ bool WeightCache::get(const std::string& key, Weights::Matrix& W )
     FileHandle fh( file );
 
     fh.openForRead();
-        
+
     // read inpts, outpts sizes of matrix
 
     long inner, outer;
@@ -137,13 +137,13 @@ bool WeightCache::get(const std::string& key, Weights::Matrix& W )
 
     long npts;
     fh.read(reinterpret_cast<char*>(&npts), sizeof(npts));
-    
+
     // read total sparse points of matrix (so we can reserve)
 
     std::vector<Eigen::Triplet<double> > insertions;
-    
+
     insertions.reserve(npts);
-    
+
     // read the values
 
     for (unsigned int i = 0; i < npts; i++)
@@ -158,7 +158,7 @@ bool WeightCache::get(const std::string& key, Weights::Matrix& W )
     }
 
     fh.close();
-    
+
     // check matrix is correctly sized
     // note that Weigths::Matrix is row-major, so rows are outer size
 
@@ -168,10 +168,11 @@ bool WeightCache::get(const std::string& key, Weights::Matrix& W )
     // set the weights from the triplets
 
     W.setFromTriplets(insertions.begin(), insertions.end());
-    
+
     return true;
 }
 
 //------------------------------------------------------------------------------------------------------
 
 } // namespace mir
+
