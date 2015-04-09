@@ -1,0 +1,105 @@
+#include "eckit/runtime/Tool.h"
+
+#include "MIRJob.h"
+#include "GribFileInput.h"
+#include "NetcdfFileInput.h"
+#include "DummyInput.h"
+#include "DummyOutput.h"
+
+#include "GribFileOutput.h"
+
+//------------------------------------------------------------------------------------------------------
+
+class MIRDemo : public eckit::Tool {
+
+    virtual void run();
+
+  public:
+    MIRDemo(int argc, char **argv) :
+        eckit::Tool(argc, argv) {
+    }
+
+};
+
+
+void MIRDemo::run() {
+
+    if (0) {
+        MIRJob job;
+
+        job.set("area", "80/0/35/45");
+        job.set("bitmap", "test.bitmap");
+        job.set("accuracy", "8");
+        job.set("frame", "3");
+
+        GribFileInput input("test.grib");
+        GribFileOutput output("result.grib");
+
+        while (input.next()) {
+            job.execute(input, output);
+        }
+    }
+
+    if (0) {
+        MIRJob job;
+
+        job.set("accuracy", "24");
+        job.set("frame", "10");
+
+        NetcdfFileInput input("test.nc", "z");
+        GribFileOutput output("netcdf.grib");
+
+        job.execute(input, output);
+
+    }
+
+    if (0) {
+        MIRJob job;
+
+        job.set("accuracy", "24");
+        job.set("frame", "10");
+
+        DummyInput input;
+        DummyOutput output;
+
+        job.execute(input, output);
+
+    }
+
+    if (0) {
+        MIRJob job;
+
+        job.set("accuracy", "24");
+        job.set("frame", "10");
+
+        DummyInput input;
+        GribFileOutput output("dummy.grib");
+
+        job.execute(input, output);
+
+    }
+
+    if (1) {
+        MIRJob job;
+
+        job.set("resol", "63");
+
+        GribFileInput input("/tmp/z500.grib");
+        GribFileOutput output("/tmp/t63.grib");
+
+        while (input.next()) {
+            job.execute(input, output);
+        }
+
+    }
+
+}
+
+//------------------------------------------------------------------------------------------------------
+
+int main( int argc, char **argv ) {
+    MIRDemo tool(argc, argv);
+    tool.start();
+    return 0;
+}
+

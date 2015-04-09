@@ -1,0 +1,155 @@
+// File GribInput.cc
+// Baudouin Raoult - (c) ECMWF Apr 15
+
+#include "GribInput.h"
+#include "MIRField.h"
+
+#include "eckit/exception/Exceptions.h"
+#include "eckit/io/BufferedHandle.h"
+
+#include "Grib.h"
+
+
+GribInput::GribInput() {
+}
+
+GribInput::~GribInput() {
+}
+
+
+const MIRParametrisation &GribInput::parametrisation() const {
+    return *this;
+}
+
+MIRField *GribInput::field() const {
+    ASSERT(grib_.get());
+
+    size_t count;
+    GRIB_CALL(grib_get_size(grib_.get(), "values", &count));
+
+    size_t size = count;
+    std::vector<double> values(count);
+    GRIB_CALL(grib_get_double_array(grib_.get(), "values", &values[0], &size));
+    ASSERT(count == size);
+
+    long bitmap;
+    GRIB_CALL(grib_get_long(grib_.get(), "bitmapPresent", &bitmap));
+
+    double missing;
+    GRIB_CALL(grib_get_double(grib_.get(), "missingValue", &missing));
+
+    MIRField *field = new MIRField(bitmap != 0, missing);
+    field->values(values);
+    return field;
+}
+
+
+grib_handle *GribInput::gribHandle() const {
+    return grib_.get();
+}
+
+
+static struct {
+    const char *name;
+    const char *key;
+} mappings[] = {
+    {"west_east_increment", "iDirectionIncrementInDegrees"},
+    {"north_south_increment", "jDirectionIncrementInDegrees"},
+    {"west", "longitudeOfFirstGridPointInDegrees"},
+    {"east", "longitudeOfLastGridPointInDegrees"},
+    {"north", "latitudeOfFirstGridPointInDegrees"},
+    {"south", "latitudeOfLastGridPointInDegrees"},
+    {"resol", "pentagonalResolutionParameterJ"}, // Assumes triangular truncation
+    {"truncation", "pentagonalResolutionParameterJ"},
+    {0, 0},
+};
+
+
+bool GribInput::get(const std::string &name, std::string &value) const {
+
+    ASSERT(grib_.get());
+
+    // Assumes LL grid, and scanning mode
+
+    if (name == "area") {
+        double latitudeOfFirstGridPointInDegrees;
+        double longitudeOfFirstGridPointInDegrees;
+        double latitudeOfLastGridPointInDegrees;
+        double longitudeOfLastGridPointInDegrees;
+        double jDirectionIncrementInDegrees;
+        double iDirectionIncrementInDegrees;
+
+        GRIB_CALL(grib_get_double(grib_.get(), "latitudeOfFirstGridPointInDegrees", &latitudeOfFirstGridPointInDegrees));
+        GRIB_CALL(grib_get_double(grib_.get(), "longitudeOfFirstGridPointInDegrees", &longitudeOfFirstGridPointInDegrees));
+        GRIB_CALL(grib_get_double(grib_.get(), "latitudeOfLastGridPointInDegrees", &latitudeOfLastGridPointInDegrees));
+        GRIB_CALL(grib_get_double(grib_.get(), "longitudeOfLastGridPointInDegrees", &longitudeOfLastGridPointInDegrees));
+        GRIB_CALL(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees));
+        GRIB_CALL(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees));
+
+        double v = latitudeOfFirstGridPointInDegrees - latitudeOfLastGridPointInDegrees;
+        double h = (longitudeOfLastGridPointInDegrees + iDirectionIncrementInDegrees) - longitudeOfFirstGridPointInDegrees;
+
+        if (v == 180 && h == 360) {
+            value = "global";
+        } else {
+            eckit::StrStream os;
+            os << latitudeOfFirstGridPointInDegrees
+               << "/"
+               << longitudeOfFirstGridPointInDegrees
+               << "/"
+               << latitudeOfLastGridPointInDegrees
+               << "/"
+               << longitudeOfLastGridPointInDegrees
+               << eckit::StrStream::ends;
+
+            value = std::string(os);
+        }
+
+        return true;
+    }
+
+    if (name == "area") {
+
+        double jDirectionIncrementInDegrees;
+        double iDirectionIncrementInDegrees;
+
+        GRIB_CALL(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees));
+        GRIB_CALL(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees));
+
+        eckit::StrStream os;
+        os << iDirectionIncrementInDegrees
+           << "/"
+           << jDirectionIncrementInDegrees
+           << eckit::StrStream::ends;
+
+        value = std::string(os);
+
+        return true;
+    }
+
+    const char* key = name.c_str();
+    size_t i = 0;
+    while(mappings[i].name) {
+        if(name == mappings[i].name) {
+            key = mappings[i].key;
+            break;
+        }
+        i++;
+    }
+
+    char buffer[1024];
+    size_t size = sizeof(buffer);
+    int err = grib_get_string(grib_.get(), key, buffer, &size);
+
+    if (err == GRIB_SUCCESS) {
+        value = buffer;
+        return true;
+    }
+
+    if (err != GRIB_NOT_FOUND) {
+        GRIB_ERROR(err, name.c_str());
+    }
+
+    return false;
+}
+
