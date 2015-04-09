@@ -132,6 +132,14 @@ extern "C" void intlogm_(fortint (*)(char *, fortint)) {
     }
 }
 
+extern "C" void intlogs(void (*)(char *)) {
+    try {
+        NOTIMP;
+    } catch (std::exception &e) {
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+    }
+}
+
 extern "C" fortint areachk_(fortfloat *, fortfloat *, fortfloat *, fortfloat *, fortfloat *,
                             fortfloat *) {
     try {
