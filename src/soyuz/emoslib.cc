@@ -2,7 +2,7 @@
 #include "eckit/log/Log.h"
 #include "eckit/runtime/Context.h"
 
-typedef long fortint;
+typedef int fortint;
 typedef double fortfloat;
 
 #include "MIRJob.h"
