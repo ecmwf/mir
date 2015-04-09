@@ -73,7 +73,7 @@ private:
 
 // -- Methods
 
-	virtual eckit::DataHandle& dataHandle() = 0;
+	virtual void out(const void* message, size_t length, bool iterpolated) = 0;
 
 // -- Overridden methods
 	// From MIROutput

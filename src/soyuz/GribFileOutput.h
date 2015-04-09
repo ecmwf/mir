@@ -6,11 +6,11 @@
 
 // namespace outline;
 
-#include "GribOutput.h"
+#include "GribStreamOutput.h"
 #include "eckit/filesystem/PathName.h"
 
 
-class GribFileOutput : public GribOutput {
+class GribFileOutput : public GribStreamOutput {
 public:
 
 // -- Exceptions

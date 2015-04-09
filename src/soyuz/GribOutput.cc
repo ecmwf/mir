@@ -41,7 +41,8 @@ void GribOutput::copy(const MIRParametrisation &param, MIRInput &input) { // Not
 
     GRIB_CALL(grib_get_message(h, &message, &size));
 
-    dataHandle().write(message, size);
+    out(message, size, false);
+
 }
 
 void GribOutput::save(const MIRParametrisation &param, MIRInput &input, MIRField &field) {
@@ -127,6 +128,6 @@ void GribOutput::save(const MIRParametrisation &param, MIRInput &input, MIRField
 
     GRIB_CALL(grib_get_message(result, &message, &size));
 
-    dataHandle().write(message, size);
+    out(message, size, true);
 
 }

@@ -24,7 +24,7 @@ class MIRDemo : public eckit::Tool {
 
 void MIRDemo::run() {
 
-    if (0) {
+    if (1) {
         MIRJob job;
 
         job.set("area", "80/0/35/45");
@@ -40,7 +40,7 @@ void MIRDemo::run() {
         }
     }
 
-    if (0) {
+    if (1) {
         MIRJob job;
 
         job.set("accuracy", "24");
@@ -53,7 +53,7 @@ void MIRDemo::run() {
 
     }
 
-    if (0) {
+    if (1) {
         MIRJob job;
 
         job.set("accuracy", "24");
@@ -66,7 +66,7 @@ void MIRDemo::run() {
 
     }
 
-    if (0) {
+    if (1) {
         MIRJob job;
 
         job.set("accuracy", "24");
@@ -76,20 +76,6 @@ void MIRDemo::run() {
         GribFileOutput output("dummy.grib");
 
         job.execute(input, output);
-
-    }
-
-    if (1) {
-        MIRJob job;
-
-        job.set("resol", "63");
-
-        GribFileInput input("/tmp/z500.grib");
-        GribFileOutput output("/tmp/t63.grib");
-
-        while (input.next()) {
-            job.execute(input, output);
-        }
 
     }
 

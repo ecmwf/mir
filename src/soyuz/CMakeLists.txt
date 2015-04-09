@@ -22,10 +22,16 @@ GribFileOutput.cc
 GribFileOutput.h
 GribInput.cc
 GribInput.h
+GribMemoryInput.cc
+GribMemoryInput.h
+GribMemoryOutput.cc
+GribMemoryOutput.h
 GribOutput.cc
 GribOutput.h
 GribStreamInput.cc
 GribStreamInput.h
+GribStreamOutput.cc
+GribStreamOutput.h
 MARSLogic.cc
 MARSLogic.h
 MIRCombinedParametrisation.cc

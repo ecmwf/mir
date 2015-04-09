@@ -6,6 +6,9 @@ typedef long fortint;
 typedef double fortfloat;
 
 #include "MIRJob.h"
+#include "GribMemoryInput.h"
+#include "GribMemoryOutput.h"
+
 
 #include <memory>
 
@@ -135,9 +138,23 @@ extern "C" fortint intf_(char *, fortint *, fortfloat *, char *, fortint *, fort
 extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fortint *length_out) {
     try {
 
-        // job->execute(input, output);
+        if(!job.get()) {
+            job.reset(new MIRJob());
+        }
 
-        *length_out = 0; // Not interpolation performed
+        GribMemoryInput input(grib_in, *length_in);
+        GribMemoryOutput output(grib_out, *length_out);
+
+        job->execute(input, output);
+
+        ASSERT(output.interpolated() + output.saved() == 1);
+
+        if(output.saved() == 1) {
+            *length_out = 0; // Not interpolation performed
+        }
+        else {
+            *length_out = output.length();
+        }
 
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
