@@ -8,16 +8,23 @@
 
 #include <grib_api.h>
 
-static void grib_call(int e, const char *call) {
+static bool grib_call(int e, const char *call, bool missingOK = false) {
     if (e) {
+        if(missingOK && (e == GRIB_NOT_FOUND)) {
+            return false;
+        }
+
         eckit::StrStream os;
         os << call << ": " << grib_get_error_message(e) << eckit::StrStream::ends;
         throw eckit::SeriousBug(std::string(os));
     }
+    return true;
 }
 
 #define GRIB_CALL(a) grib_call(a, #a)
 #define GRIB_ERROR(a, b) grib_call(a, b)
+
+#define GRIB_GET(a) grib_call(a, #a, true)
 
 struct grib_spec
 {

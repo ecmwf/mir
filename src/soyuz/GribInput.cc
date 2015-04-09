@@ -86,12 +86,30 @@ bool GribInput::get(const std::string &name, std::string &value) const {
         double jDirectionIncrementInDegrees;
         double iDirectionIncrementInDegrees;
 
-        GRIB_CALL(grib_get_double(grib_.get(), "latitudeOfFirstGridPointInDegrees", &latitudeOfFirstGridPointInDegrees));
-        GRIB_CALL(grib_get_double(grib_.get(), "longitudeOfFirstGridPointInDegrees", &longitudeOfFirstGridPointInDegrees));
-        GRIB_CALL(grib_get_double(grib_.get(), "latitudeOfLastGridPointInDegrees", &latitudeOfLastGridPointInDegrees));
-        GRIB_CALL(grib_get_double(grib_.get(), "longitudeOfLastGridPointInDegrees", &longitudeOfLastGridPointInDegrees));
-        GRIB_CALL(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees));
-        GRIB_CALL(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees));
+        if(!GRIB_GET(grib_get_double(grib_.get(), "latitudeOfFirstGridPointInDegrees", &latitudeOfFirstGridPointInDegrees))) {
+            return false;
+        }
+
+        if(!GRIB_GET(grib_get_double(grib_.get(), "longitudeOfFirstGridPointInDegrees", &longitudeOfFirstGridPointInDegrees))) {
+            return false;
+        }
+
+        if(!GRIB_GET(grib_get_double(grib_.get(), "latitudeOfLastGridPointInDegrees", &latitudeOfLastGridPointInDegrees))) {
+            return false;
+        }
+
+        if(!GRIB_GET(grib_get_double(grib_.get(), "longitudeOfLastGridPointInDegrees", &longitudeOfLastGridPointInDegrees))) {
+            return false;
+        }
+
+        if(!GRIB_GET(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees))) {
+            return false;
+        }
+
+        if(!GRIB_GET(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees))) {
+            return false;
+        }
+
 
         double v = latitudeOfFirstGridPointInDegrees - latitudeOfLastGridPointInDegrees;
         double h = (longitudeOfLastGridPointInDegrees + iDirectionIncrementInDegrees) - longitudeOfFirstGridPointInDegrees;
@@ -123,8 +141,14 @@ bool GribInput::get(const std::string &name, std::string &value) const {
         double jDirectionIncrementInDegrees;
         double iDirectionIncrementInDegrees;
 
-        GRIB_CALL(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees));
-        GRIB_CALL(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees));
+        if(!GRIB_GET(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees))){
+            return false;
+        }
+
+        if(!GRIB_GET(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees))){
+            return false;
+        }
+
 
         eckit::StrStream os;
         os << iDirectionIncrementInDegrees
