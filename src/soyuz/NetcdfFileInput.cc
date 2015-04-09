@@ -11,7 +11,6 @@
 // Assumes that netcdf is single 2D variable, that dimensions are called "latitude" and "longitude"
 // ... and many more assumptions.
 
-#if 0
 #include <netcdf.h>
 
 inline int _nc_call(int e, const char *call, const std::string &path) {
@@ -189,4 +188,3 @@ bool NetcdfFileInput::get(const std::string &name, std::string &value) const {
     return false;
 }
 
-#endif
