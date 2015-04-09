@@ -1,12 +1,13 @@
-// File NullFilter.h
+
+// File Mercator.h
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#ifndef NullFilter_H
-#define NullFilter_H
+#ifndef Mercator_H
+#define Mercator_H
 
-#include "Action.h"
+#include "Gridded.h"
 
-class NullFilter : public Action {
+class Mercator : public Gridded {
 public:
 
 // -- Exceptions
@@ -14,11 +15,11 @@ public:
 
 // -- Contructors
 
-	NullFilter(const MIRParametrisation&);
+	Mercator(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~NullFilter(); // Change to virtual if base class
+	virtual ~Mercator(); // Change to virtual if base class
 
 // -- Convertors
 	// None
@@ -27,7 +28,6 @@ public:
 	// None
 
 // -- Methods
-	// None
 
 // -- Overridden methods
 	// None
@@ -58,21 +58,23 @@ protected:
 
 private:
 
+	Mercator();
+
 // No copy allowed
 
-	NullFilter(const NullFilter&);
-	NullFilter& operator=(const NullFilter&);
+	Mercator(const Mercator&);
+	Mercator& operator=(const Mercator&);
 
 // -- Members
-	// None
+
 
 // -- Methods
 	// None
 
+
 // -- Overridden methods
 
-    virtual void execute(MIRField&) const;
-
+    virtual void fill(grib_spec&) const;
 
 // -- Class members
 	// None
@@ -82,7 +84,7 @@ private:
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const NullFilter& p)
+	//friend ostream& operator<<(ostream& s,const Mercator& p)
 	//	{ p.print(s); return s; }
 
 };

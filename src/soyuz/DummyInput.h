@@ -8,13 +8,13 @@
 
 
 #include "MIRInput.h"
-#include "MIRParametrisation.h"
+#include "FieldParametrisation.h"
 
 #include <map>
 #include <string>
 
 
-class DummyInput : public MIRInput, public MIRParametrisation {
+class DummyInput : public MIRInput, public FieldParametrisation {
   public:
 
     // -- Exceptions
@@ -85,8 +85,8 @@ class DummyInput : public MIRInput, public MIRParametrisation {
     virtual const MIRParametrisation &parametrisation() const;
     virtual MIRField *field() const;
 
-    // Form MIRParametrisation
-    virtual bool get(const std::string&, std::string&) const;
+    // From FieldParametrisation
+    virtual bool lowLevelGet(const std::string&, std::string&) const;
 
     // -- Class members
     // None

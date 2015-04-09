@@ -22,7 +22,7 @@ void ECMWFLogic::prepare(std::vector<std::auto_ptr<Action> > &actions) const {
         }
     }
 
-    add(actions, "interpolate.noop"); // For the sake of the example
+    add(actions, "action.noop"); // For the sake of the example
 
     if (parametrisation_.get("user.area", ignore)) {
         add(actions, "crop.area");

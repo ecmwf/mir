@@ -64,8 +64,10 @@ static struct {
 };
 
 
-bool GribInput::get(const std::string &name, std::string &value) const {
 
+bool GribInput::lowLevelGet(const std::string &name, std::string &value) const {
+
+    // WARNING: Make sure the cache is cleared
     std::map<std::string, std::string>::const_iterator j = cache_.find(name);
     if (j != cache_.end()) {
         value = (*j).second;
@@ -86,27 +88,27 @@ bool GribInput::get(const std::string &name, std::string &value) const {
         double jDirectionIncrementInDegrees;
         double iDirectionIncrementInDegrees;
 
-        if(!GRIB_GET(grib_get_double(grib_.get(), "latitudeOfFirstGridPointInDegrees", &latitudeOfFirstGridPointInDegrees))) {
+        if (!GRIB_GET(grib_get_double(grib_.get(), "latitudeOfFirstGridPointInDegrees", &latitudeOfFirstGridPointInDegrees))) {
             return false;
         }
 
-        if(!GRIB_GET(grib_get_double(grib_.get(), "longitudeOfFirstGridPointInDegrees", &longitudeOfFirstGridPointInDegrees))) {
+        if (!GRIB_GET(grib_get_double(grib_.get(), "longitudeOfFirstGridPointInDegrees", &longitudeOfFirstGridPointInDegrees))) {
             return false;
         }
 
-        if(!GRIB_GET(grib_get_double(grib_.get(), "latitudeOfLastGridPointInDegrees", &latitudeOfLastGridPointInDegrees))) {
+        if (!GRIB_GET(grib_get_double(grib_.get(), "latitudeOfLastGridPointInDegrees", &latitudeOfLastGridPointInDegrees))) {
             return false;
         }
 
-        if(!GRIB_GET(grib_get_double(grib_.get(), "longitudeOfLastGridPointInDegrees", &longitudeOfLastGridPointInDegrees))) {
+        if (!GRIB_GET(grib_get_double(grib_.get(), "longitudeOfLastGridPointInDegrees", &longitudeOfLastGridPointInDegrees))) {
             return false;
         }
 
-        if(!GRIB_GET(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees))) {
+        if (!GRIB_GET(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees))) {
             return false;
         }
 
-        if(!GRIB_GET(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees))) {
+        if (!GRIB_GET(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees))) {
             return false;
         }
 
@@ -141,11 +143,11 @@ bool GribInput::get(const std::string &name, std::string &value) const {
         double jDirectionIncrementInDegrees;
         double iDirectionIncrementInDegrees;
 
-        if(!GRIB_GET(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees))){
+        if (!GRIB_GET(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees))) {
             return false;
         }
 
-        if(!GRIB_GET(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees))){
+        if (!GRIB_GET(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees))) {
             return false;
         }
 
@@ -166,8 +168,8 @@ bool GribInput::get(const std::string &name, std::string &value) const {
 
     if (name == "regular") {
         std::string type;
-        if(get("gridType",type)) {
-            if(type == "regular_gg") {
+        if (get("gridType", type)) {
+            if (type == "regular_gg") {
 
                 long N;
 
@@ -183,14 +185,14 @@ bool GribInput::get(const std::string &name, std::string &value) const {
 
                 cache_[name] = value;
                 return true;
-          }
+            }
         }
     }
 
-     if (name == "reduced") {
+    if (name == "reduced") {
         std::string type;
-        if(get("gridType",type)) {
-            if(type == "reduced_gg") {
+        if (get("gridType", type)) {
+            if (type == "reduced_gg") {
 
                 long N;
 
@@ -206,14 +208,14 @@ bool GribInput::get(const std::string &name, std::string &value) const {
 
                 cache_[name] = value;
                 return true;
-          }
+            }
         }
     }
 
-    const char* key = name.c_str();
+    const char *key = name.c_str();
     size_t i = 0;
-    while(mappings[i].name) {
-        if(name == mappings[i].name) {
+    while (mappings[i].name) {
+        if (name == mappings[i].name) {
             key = mappings[i].key;
             break;
         }
@@ -238,3 +240,8 @@ bool GribInput::get(const std::string &name, std::string &value) const {
     return false;
 }
 
+bool GribInput::handle(grib_handle *h) {
+    grib_.reset(h);
+    cache_.clear();
+    return h != 0;
+}

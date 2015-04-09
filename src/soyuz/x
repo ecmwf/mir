@@ -1,0 +1,172 @@
+x = ["reduced_ll",
+"rotated_ll",
+"stretched_ll",
+"stretched_rotated_ll",
+"mercator",
+"transverse_mercator",
+"polar_stereographic",
+"lambert",
+"albers",
+"regular_gg",
+"reduced_gg",
+"rotated_gg",
+"stretched_gg",
+"stretched_rotated_gg",
+"rotated_sh",
+"stretched_sh",
+"stretched_rotated_sh",
+"space_view",
+"triangular_grid",
+"unstructured_grid",
+"equatorial_azimuthal_equidistant",
+"azimuth_range",
+"irregular_latlon",
+"lambert_azimuthal_equal_area",]
+
+H = """
+// File {NAME}.h
+// Baudouin Raoult - (c) ECMWF Apr 15
+
+#ifndef {NAME}_H
+#define {NAME}_H
+
+#include "Gridded.h"
+
+class {NAME} : public Gridded {B}
+public:
+
+// -- Exceptions
+	// None
+
+// -- Contructors
+
+	{NAME}(const MIRParametrisation&);
+
+// -- Destructor
+
+	virtual ~{NAME}(); // Change to virtual if base class
+
+// -- Convertors
+	// None
+
+// -- Operators
+	// None
+
+// -- Methods
+
+// -- Overridden methods
+	// None
+
+// -- Class members
+	// None
+
+// -- Class methods
+	// None
+
+protected:
+
+// -- Members
+	// None
+
+// -- Methods
+
+	void print(std::ostream&) const; // Change to virtual if base class
+
+// -- Overridden methods
+	// None
+
+// -- Class members
+	// None
+
+// -- Class methods
+	// None
+
+private:
+
+	{NAME}();
+
+// No copy allowed
+
+	{NAME}(const {NAME}&);
+	{NAME}& operator=(const {NAME}&);
+
+// -- Members
+
+
+// -- Methods
+	// None
+
+
+// -- Overridden methods
+
+    virtual void fill(grib_spec&) const;
+
+// -- Class members
+	// None
+
+// -- Class methods
+	// None
+
+// -- Friends
+
+	//friend ostream& operator<<(ostream& s,const {NAME}& p)
+	//	{B} p.print(s); return s; {K}
+
+{K};
+
+#endif
+"""
+
+C = """
+// File {NAME}.cc
+// Baudouin Raoult - (c) ECMWF Apr 15
+
+#include "{NAME}.h"
+#include "MIRParametrisation.h"
+#include "eckit/exception/Exceptions.h"
+
+#include <iostream>
+
+{NAME}::{NAME}(const MIRParametrisation &parametrisation) {B}
+{K}
+
+{NAME}::{NAME}()
+{B}
+{K}
+
+
+{NAME}::~{NAME}() {B}
+{K}
+
+
+void {NAME}::print(std::ostream &out) const {B}
+    out << "{NAME}["
+        << "]";
+{K}
+
+
+void {NAME}::fill(grib_spec &spec) const  {B}
+    NOTIMP;
+{K}
+
+
+
+static RepresentationBuilder<{NAME}> {nAME}("{name}"); // Name is what is returned by grib_api
+"""
+
+def s(z):
+	if len(z) < 3:
+		return z.upper()
+	else:
+		return z[0].upper() + z[1:]
+
+for n in x:
+	print n
+	p = [s(x) for x in n.split("_")]
+	NAME = "".join(p)
+	nAME = "".join([p[0].lower()] + p[1:])
+	name = n
+	with open("%s.h" % NAME, "w") as f:
+		f.write(H.format(NAME=NAME, nAME=nAME, name=name, B='{', K='}'))
+	with open("%s.cc" % NAME, "w") as f:
+		f.write(C.format(NAME=NAME, nAME=nAME, name=name, B='{', K='}'))

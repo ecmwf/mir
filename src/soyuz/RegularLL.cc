@@ -1,7 +1,7 @@
-// File RegularLatLon.cc
+// File RegularLL.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "RegularLatLon.h"
+#include "RegularLL.h"
 
 #include "MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
@@ -12,7 +12,7 @@
 #include <iostream>
 #include "Grib.h"
 
-RegularLatLon::RegularLatLon(const MIRParametrisation &parametrisation) {
+RegularLL::RegularLL(const MIRParametrisation &parametrisation) {
 
     eckit::Translator<std::string, double> s2d;
     std::string value;
@@ -38,7 +38,7 @@ RegularLatLon::RegularLatLon(const MIRParametrisation &parametrisation) {
     setNiNj();
 }
 
-RegularLatLon::RegularLatLon(double north,
+RegularLL::RegularLL(double north,
                        double west,
                        double south,
                        double east,
@@ -54,10 +54,10 @@ RegularLatLon::RegularLatLon(double north,
 }
 
 
-RegularLatLon::~RegularLatLon() {
+RegularLL::~RegularLL() {
 }
 
-void RegularLatLon::setNiNj() {
+void RegularLL::setNiNj() {
     double ni = (east_ - west_) / west_east_increment_;
     ASSERT(ni > 0);
     ASSERT(long(ni) == ni);
@@ -69,8 +69,8 @@ void RegularLatLon::setNiNj() {
     nj_ = nj + 1;
 }
 
-void RegularLatLon::print(std::ostream &out) const {
-    out << "RegularLatLon["
+void RegularLL::print(std::ostream &out) const {
+    out << "RegularLL["
 
         << "north=" << north_
         << ",west=" << west_
@@ -87,7 +87,7 @@ void RegularLatLon::print(std::ostream &out) const {
 }
 
 
-void RegularLatLon::fill(grib_spec &spec) const  {
+void RegularLL::fill(grib_spec &spec) const  {
 
     // Warning: scanning mode not considered
 
@@ -106,7 +106,7 @@ void RegularLatLon::fill(grib_spec &spec) const  {
     spec.grid.latitudeOfLastGridPointInDegrees = south_;
 }
 
-Representation *RegularLatLon::crop(double north, double west, double south, double east, const std::vector<double> &in, std::vector<double> &out) const {
+Representation *RegularLL::crop(double north, double west, double south, double east, const std::vector<double> &in, std::vector<double> &out) const {
     // TODO: An Area class and Increments class
     double n = std::min(north_, north);
     double s = std::max(south_, south);
@@ -123,7 +123,7 @@ Representation *RegularLatLon::crop(double north, double west, double south, dou
     ASSERT( (e - w) >= west_east_increment_ );
 
 
-    RegularLatLon *cropped = new RegularLatLon(n, w, s, e, north_south_increment_, north_south_increment_);
+    RegularLL *cropped = new RegularLL(n, w, s, e, north_south_increment_, north_south_increment_);
     out = std::vector<double>(cropped->ni() * cropped->ni());
 
     ASSERT((ni() * nj()) == in.size());
@@ -148,7 +148,7 @@ Representation *RegularLatLon::crop(double north, double west, double south, dou
     return cropped;
 }
 
-size_t RegularLatLon::frame(std::vector<double> &values, size_t size, double missingValue) const {
+size_t RegularLL::frame(std::vector<double> &values, size_t size, double missingValue) const {
 
     // Could be done better, just a demo
     ASSERT((ni() * nj()) == values.size());
@@ -171,4 +171,4 @@ size_t RegularLatLon::frame(std::vector<double> &values, size_t size, double mis
 }
 
 
-static RepresentationBuilder<RegularLatLon> regularLatLon("regular_ll"); // Name is what is returned by grib_api
+static RepresentationBuilder<RegularLL> regularLL("regular_ll"); // Name is what is returned by grib_api

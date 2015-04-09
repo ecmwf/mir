@@ -1,12 +1,13 @@
-// File NullCropper.h
+
+// File StretchedLL.h
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#ifndef NullCropper_H
-#define NullCropper_H
+#ifndef StretchedLL_H
+#define StretchedLL_H
 
-#include "Action.h"
+#include "Gridded.h"
 
-class NullCropper : public Action {
+class StretchedLL : public Gridded {
 public:
 
 // -- Exceptions
@@ -14,11 +15,11 @@ public:
 
 // -- Contructors
 
-	NullCropper(const MIRParametrisation&);
+	StretchedLL(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~NullCropper(); // Change to virtual if base class
+	virtual ~StretchedLL(); // Change to virtual if base class
 
 // -- Convertors
 	// None
@@ -27,7 +28,6 @@ public:
 	// None
 
 // -- Methods
-	// None
 
 // -- Overridden methods
 	// None
@@ -58,20 +58,23 @@ protected:
 
 private:
 
+	StretchedLL();
+
 // No copy allowed
 
-	NullCropper(const NullCropper&);
-	NullCropper& operator=(const NullCropper&);
+	StretchedLL(const StretchedLL&);
+	StretchedLL& operator=(const StretchedLL&);
 
 // -- Members
-	// None
+
 
 // -- Methods
 	// None
 
+
 // -- Overridden methods
 
-    virtual void execute(MIRField&) const;
+    virtual void fill(grib_spec&) const;
 
 // -- Class members
 	// None
@@ -81,7 +84,7 @@ private:
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const NullCropper& p)
+	//friend ostream& operator<<(ostream& s,const StretchedLL& p)
 	//	{ p.print(s); return s; }
 
 };

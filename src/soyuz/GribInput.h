@@ -8,13 +8,13 @@
 
 
 #include "MIRInput.h"
-#include "MIRParametrisation.h"
+#include "FieldParametrisation.h"
 
 #include <memory>
 #include <map>
 #include <string>
 
-class GribInput : public MIRInput, public MIRParametrisation {
+class GribInput : public MIRInput, public FieldParametrisation {
   public:
 
     // -- Exceptions
@@ -53,10 +53,11 @@ class GribInput : public MIRInput, public MIRParametrisation {
 
     // -- Members
 
-    std::auto_ptr<grib_handle> grib_;
 
 
     // -- Methods
+
+    bool handle(grib_handle*);
 
 
     // -- Overridden methods
@@ -77,6 +78,7 @@ class GribInput : public MIRInput, public MIRParametrisation {
 
     // -- Members
 
+    std::auto_ptr<grib_handle> grib_;
     mutable std::map<std::string, std::string> cache_;
 
     // -- Methods
@@ -89,8 +91,8 @@ class GribInput : public MIRInput, public MIRParametrisation {
     virtual MIRField *field() const;
     virtual grib_handle *gribHandle() const;
 
-    // From MIRParametrisation
-    bool get(const std::string &name, std::string &value) const;
+    // From FieldParametrisation
+    bool lowLevelGet(const std::string &name, std::string &value) const;
 
     // -- Class members
     // None

@@ -26,15 +26,13 @@ GribStreamInput::~GribStreamInput() {
 }
 
 bool GribStreamInput::next() {
-    grib_.reset(0);
-
+    handle(0);
 
     size_t len = buffer_.size();
     int e    = wmo_read_any_from_stream(&dataHandle(), &readcb, buffer_, &len);
 
     if (e == GRIB_SUCCESS)  {
-        grib_.reset(grib_handle_new_from_message(0, buffer_, len));
-        ASSERT(grib_.get());
+        ASSERT(handle(grib_handle_new_from_message(0, buffer_, len)));
         return true;
     }
 

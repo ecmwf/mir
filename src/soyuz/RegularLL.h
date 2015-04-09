@@ -1,12 +1,12 @@
-// File RegularLatLon.h
+// File RegularLL.h
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#ifndef RegularLatLon_H
-#define RegularLatLon_H
+#ifndef RegularLL_H
+#define RegularLL_H
 
 #include "Gridded.h"
 
-class RegularLatLon : public Gridded {
+class RegularLL : public Gridded {
 public:
 
 // -- Exceptions
@@ -14,11 +14,11 @@ public:
 
 // -- Contructors
 
-	RegularLatLon(const MIRParametrisation&);
+	RegularLL(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~RegularLatLon(); // Change to virtual if base class
+	virtual ~RegularLL(); // Change to virtual if base class
 
 // -- Convertors
 	// None
@@ -60,12 +60,12 @@ protected:
 
 private:
 
-	RegularLatLon(double north, double west, double south, double east, double north_south_increment, double west_east_increment);
+	RegularLL(double north, double west, double south, double east, double north_south_increment, double west_east_increment);
 
 // No copy allowed
 
-	RegularLatLon(const RegularLatLon&);
-	RegularLatLon& operator=(const RegularLatLon&);
+	RegularLL(const RegularLL&);
+	RegularLL& operator=(const RegularLL&);
 
 // -- Members
 
@@ -99,7 +99,7 @@ private:
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const RegularLatLon& p)
+	//friend ostream& operator<<(ostream& s,const RegularLL& p)
 	//	{ p.print(s); return s; }
 
 };

@@ -131,7 +131,7 @@ MIRField *NetcdfFileInput::field() const {
 }
 
 
-bool NetcdfFileInput::get(const std::string &name, std::string &value) const {
+bool NetcdfFileInput::lowLevelGet(const std::string &name, std::string &value) const {
 
     if (name == "gridType") {
         value = "regular_ll";

@@ -1,12 +1,13 @@
-// File NullInterpolator.h
+
+// File PolarStereographic.h
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#ifndef NullInterpolator_H
-#define NullInterpolator_H
+#ifndef PolarStereographic_H
+#define PolarStereographic_H
 
-#include "Action.h"
+#include "Gridded.h"
 
-class NullInterpolator : public Action {
+class PolarStereographic : public Gridded {
 public:
 
 // -- Exceptions
@@ -14,11 +15,11 @@ public:
 
 // -- Contructors
 
-	NullInterpolator(const MIRParametrisation&);
+	PolarStereographic(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~NullInterpolator(); // Change to virtual if base class
+	virtual ~PolarStereographic(); // Change to virtual if base class
 
 // -- Convertors
 	// None
@@ -27,7 +28,6 @@ public:
 	// None
 
 // -- Methods
-	// None
 
 // -- Overridden methods
 	// None
@@ -58,20 +58,23 @@ protected:
 
 private:
 
+	PolarStereographic();
+
 // No copy allowed
 
-	NullInterpolator(const NullInterpolator&);
-	NullInterpolator& operator=(const NullInterpolator&);
+	PolarStereographic(const PolarStereographic&);
+	PolarStereographic& operator=(const PolarStereographic&);
 
 // -- Members
-	// None
+
 
 // -- Methods
 	// None
 
+
 // -- Overridden methods
 
-    virtual void execute(MIRField&) const;
+    virtual void fill(grib_spec&) const;
 
 // -- Class members
 	// None
@@ -81,7 +84,7 @@ private:
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const NullInterpolator& p)
+	//friend ostream& operator<<(ostream& s,const PolarStereographic& p)
 	//	{ p.print(s); return s; }
 
 };

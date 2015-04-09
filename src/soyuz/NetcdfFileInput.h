@@ -8,14 +8,14 @@
 
 
 #include "MIRInput.h"
-#include "MIRParametrisation.h"
+#include "FieldParametrisation.h"
 
 #include "eckit/filesystem/PathName.h"
 
 
 #include <string>
 
-class NetcdfFileInput : public MIRInput, public MIRParametrisation {
+class NetcdfFileInput : public MIRInput, public FieldParametrisation {
 public:
 
     // -- Exceptions
@@ -92,9 +92,8 @@ public:
     virtual const MIRParametrisation &parametrisation() const;
     virtual MIRField *field() const;
 
-    // From MIRParametrisation
-
-    virtual bool get(const std::string&, std::string&) const;
+    // From FieldParametrisation
+    virtual bool lowLevelGet(const std::string&, std::string&) const;
 
     // -- Class members
     // None

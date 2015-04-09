@@ -1,12 +1,13 @@
-// File NullTransformer.h
+
+// File StretchedRotatedGG.h
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#ifndef NullTransformer_H
-#define NullTransformer_H
+#ifndef StretchedRotatedGG_H
+#define StretchedRotatedGG_H
 
-#include "Action.h"
+#include "Gridded.h"
 
-class NullTransformer : public Action {
+class StretchedRotatedGG : public Gridded {
 public:
 
 // -- Exceptions
@@ -14,11 +15,11 @@ public:
 
 // -- Contructors
 
-	NullTransformer(const MIRParametrisation&);
+	StretchedRotatedGG(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~NullTransformer(); // Change to virtual if base class
+	virtual ~StretchedRotatedGG(); // Change to virtual if base class
 
 // -- Convertors
 	// None
@@ -27,7 +28,6 @@ public:
 	// None
 
 // -- Methods
-	// None
 
 // -- Overridden methods
 	// None
@@ -58,21 +58,23 @@ protected:
 
 private:
 
+	StretchedRotatedGG();
+
 // No copy allowed
 
-	NullTransformer(const NullTransformer&);
-	NullTransformer& operator=(const NullTransformer&);
+	StretchedRotatedGG(const StretchedRotatedGG&);
+	StretchedRotatedGG& operator=(const StretchedRotatedGG&);
 
 // -- Members
-	// None
+
 
 // -- Methods
 	// None
 
+
 // -- Overridden methods
 
-    virtual void execute(MIRField&) const;
-
+    virtual void fill(grib_spec&) const;
 
 // -- Class members
 	// None
@@ -82,7 +84,7 @@ private:
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const NullTransformer& p)
+	//friend ostream& operator<<(ostream& s,const StretchedRotatedGG& p)
 	//	{ p.print(s); return s; }
 
 };

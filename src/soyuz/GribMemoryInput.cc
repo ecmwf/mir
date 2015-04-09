@@ -13,8 +13,7 @@
 
 GribMemoryInput::GribMemoryInput(const char* message, size_t length)
 {
-        grib_.reset(grib_handle_new_from_message(0, const_cast<char*>(message), length));
-        ASSERT(grib_.get());
+    ASSERT(handle(grib_handle_new_from_message(0, const_cast<char*>(message), length)));
 }
 
 GribMemoryInput::~GribMemoryInput() {

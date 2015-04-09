@@ -43,7 +43,7 @@ void DummyInput::print(std::ostream &out) const {
     out << "DummyInput[...]";
 }
 
-bool DummyInput::get(const std::string &name, std::string &value) const {
+bool DummyInput::lowLevelGet(const std::string &name, std::string &value) const {
     std::map<std::string, std::string>::const_iterator j = settings_.find(name);
     if (j != settings_.end()) {
         value = (*j).second;
