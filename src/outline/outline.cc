@@ -1,26 +1,41 @@
 #include "eckit/runtime/Tool.h"
 
+#include "MIRJob.h"
+#include "GribFileInput.h"
+#include "GribFileOutput.h"
+
 //------------------------------------------------------------------------------------------------------
 
-class MirOutline : public eckit::Tool {
+class Outline : public eckit::Tool {
 
-	void run()
-	{
-	}
+	virtual void run();
 
 public:
-	MirOutline(int argc,char **argv) :
+	Outline(int argc,char **argv) :
 		eckit::Tool(argc,argv)
     {
     }
 
 };
 
+
+void Outline::run() {
+
+    MIRJob job;
+
+    job.set("grid", "1/1");
+
+    GribFileInput input("in.grib");
+    GribFileOutput output("out.grib");
+
+    job.execute(input, output);
+}
+
 //------------------------------------------------------------------------------------------------------
 
 int main( int argc, char **argv )
 {
-    MirOutline tool(argc,argv);
+    Outline tool(argc,argv);
     tool.start();
     return 0;
 }

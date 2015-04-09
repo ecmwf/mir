@@ -59,8 +59,7 @@ static struct {
     {"east", "longitudeOfLastGridPointInDegrees"},
     {"north", "latitudeOfFirstGridPointInDegrees"},
     {"south", "latitudeOfLastGridPointInDegrees"},
-    {"resol", "pentagonalResolutionParameterJ"}, // Assumes triangular truncation
-    {"truncation", "pentagonalResolutionParameterJ"},
+    {"truncation", "pentagonalResolutionParameterJ"},// Assumes triangular truncation
     {0, 0},
 };
 

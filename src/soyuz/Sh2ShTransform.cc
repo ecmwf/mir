@@ -17,7 +17,7 @@ Sh2ShTransform::Sh2ShTransform(const MIRParametrisation &parametrisation):
     Action(parametrisation),
     truncation_(0) {
     std::string value;
-    ASSERT(parametrisation.get("user.resol", value));
+    ASSERT(parametrisation.get("user.truncation", value));
 
     truncation_ = eckit::Translator<std::string, size_t>()(value);
 }

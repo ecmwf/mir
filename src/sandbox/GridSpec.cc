@@ -12,6 +12,7 @@ GridSpecFactory::GridSpecFactory(const std::string& name)
 
 GridSpec* GridSpecFactory::build(const Params& params)
 {
+    std::string name = params.get("gridspec");
 
     std::map<std::string,GridSpecFactory*>::iterator j = theMap.find(name);
 

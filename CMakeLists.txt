@@ -40,9 +40,9 @@ foreach( _feature ${ECKIT_FEATURES};${ATLAS_FEATURES} )
 endforeach()
 
 # Eigen support in eckit is required
-if( NOT ECKIT_HAVE_EIGEN )
-  message( FATAL_ERROR "Eigen support in eckit is required" )
-endif()
+# if( NOT ECKIT_HAVE_EIGEN )
+# message( FATAL_ERROR "Eigen support in eckit is required" )
+# endif()
 
 # this will be replaced once ecbuild exports subcomponents between packages
 
@@ -85,6 +85,12 @@ if( ENABLE_MPI )
   endif()
 
 endif()
+
+ecbuild_add_option( FEATURE NETCDF
+	  DEFAULT ON
+	  DESCRIPTION "support for NetCDF4"
+	  REQUIRED_PACKAGES NetCDF4 )
+
 
 ###############################################################################
 # contents

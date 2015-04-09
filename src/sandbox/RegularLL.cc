@@ -12,7 +12,19 @@ RegularLL::RegularLL(const Params& p):
 
 void RegularLL::print(std::ostream& s) const
 {
-    s << "RegularLL[north="  << north_ <<
+    s << "RegularLL[north="  << north_ <<jx
+        s << ",west="  << west_ <<
+        s << ",south="  << south_ <<
+        s << ",east="  << east_ <<
+        s << ",ew="  <<  westEastIncrement_<<
+        s << ",ns="  <<  northSouthIncrement_<< "]";
+
+}
+
+
+void RegularLL::spec(std::ostream& s) const
+{
+    s << "{ tyoe=[north="  << north_ <<jx
         s << ",west="  << west_ <<
         s << ",south="  << south_ <<
         s << ",east="  << east_ <<
