@@ -2,6 +2,8 @@ list( APPEND mir_srcs
 Action.cc
 Action.h
 AreaCropper.cc
+Gridded.cc
+Gridded.h
 AreaCropper.h
 Bitmap.cc
 Bitmap.h
