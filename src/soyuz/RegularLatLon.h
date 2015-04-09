@@ -4,9 +4,9 @@
 #ifndef RegularLatLon_H
 #define RegularLatLon_H
 
-#include "Representation.h"
+#include "Gridded.h"
 
-class RegularLatLon : public Representation {
+class RegularLatLon : public Gridded {
 public:
 
 // -- Exceptions
