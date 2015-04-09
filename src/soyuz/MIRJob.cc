@@ -121,11 +121,12 @@ bool MIRJob::matches(const MIRParametrisation& metadata) const {
 
     for(std::map<std::string, std::string>::const_iterator j = settings_.begin(); j != settings_.end(); ++j)
     {
-
+        eckit::Log::info() << "Check if " << (*j).first << "=" << (*j).second << " triggers interpolation" << std::endl;
         // Check for keywords that triggers
         size_t i = 0;
         while(force[i]) {
             if((*j).first == force[i]) {
+                eckit::Log::info() << "    Yes. (Forced)" << std::endl;
                 return false;
             }
             i++;
@@ -135,10 +136,12 @@ bool MIRJob::matches(const MIRParametrisation& metadata) const {
         std::string value;
         if(metadata.get((*j).first, value)) {
             if(value != (*j).second) {
+                eckit::Log::info() << "    Yes. Field is " << value << std::endl;
                 return false;
             }
         }
 
+        eckit::Log::info() << "-"<< std::endl;
 
     }
 

@@ -66,6 +66,14 @@ static struct {
 
 bool GribInput::get(const std::string &name, std::string &value) const {
 
+    std::map<std::string, std::string>::const_iterator j = cache_.find(name);
+    if (j != cache_.end()) {
+        value = (*j).second;
+        return true;
+    }
+
+    eckit::Log::info() << "GribInput::get " << name << std::endl;
+
     ASSERT(grib_.get());
 
     // Assumes LL grid, and scanning mode
@@ -104,10 +112,13 @@ bool GribInput::get(const std::string &name, std::string &value) const {
             value = std::string(os);
         }
 
+        eckit::Log::info() << "GribInput::get " << name << " is " << value << std::endl;
+
+        cache_[name] = value;
         return true;
     }
 
-    if (name == "area") {
+    if (name == "grid") {
 
         double jDirectionIncrementInDegrees;
         double iDirectionIncrementInDegrees;
@@ -123,7 +134,56 @@ bool GribInput::get(const std::string &name, std::string &value) const {
 
         value = std::string(os);
 
+        eckit::Log::info() << "GribInput::get " << name << " is " << value << std::endl;
+
+        cache_[name] = value;
         return true;
+    }
+
+    if (name == "regular") {
+        std::string type;
+        if(get("gridType",type)) {
+            if(type == "regular_gg") {
+
+                long N;
+
+                GRIB_CALL(grib_get_long(grib_.get(), "N", &N));
+                // GRIB_CALL(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees));
+
+                eckit::StrStream os;
+                os << N << eckit::StrStream::ends;
+
+                value = std::string(os);
+
+                eckit::Log::info() << "GribInput::get " << name << " is " << value << std::endl;
+
+                cache_[name] = value;
+                return true;
+          }
+        }
+    }
+
+     if (name == "reduced") {
+        std::string type;
+        if(get("gridType",type)) {
+            if(type == "reduced_gg") {
+
+                long N;
+
+                GRIB_CALL(grib_get_long(grib_.get(), "N", &N));
+                // GRIB_CALL(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees));
+
+                eckit::StrStream os;
+                os << N << eckit::StrStream::ends;
+
+                value = std::string(os);
+
+                eckit::Log::info() << "GribInput::get " << name << " is " << value << std::endl;
+
+                cache_[name] = value;
+                return true;
+          }
+        }
     }
 
     const char* key = name.c_str();
@@ -142,6 +202,8 @@ bool GribInput::get(const std::string &name, std::string &value) const {
 
     if (err == GRIB_SUCCESS) {
         value = buffer;
+        eckit::Log::info() << "GribInput::get " << name << " is " << value << " (as " << key << ")" << std::endl;
+        cache_[name] = value;
         return true;
     }
 

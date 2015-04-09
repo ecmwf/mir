@@ -11,6 +11,8 @@
 #include "MIRParametrisation.h"
 
 #include <memory>
+#include <map>
+#include <string>
 
 class GribInput : public MIRInput, public MIRParametrisation {
   public:
@@ -75,6 +77,7 @@ class GribInput : public MIRInput, public MIRParametrisation {
 
     // -- Members
 
+    mutable std::map<std::string, std::string> cache_;
 
     // -- Methods
 
