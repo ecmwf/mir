@@ -2,7 +2,7 @@
 
 #include "MIRJob.h"
 #include "GribFileInput.h"
-#include "NetcdfFileInput.h"
+//#include "NetcdfFileInput.h"
 #include "DummyInput.h"
 #include "DummyOutput.h"
 
@@ -40,6 +40,7 @@ void MIRDemo::run() {
         }
     }
 
+#if 0
     if (1) {
         MIRJob job;
 
@@ -52,6 +53,7 @@ void MIRDemo::run() {
         job.execute(input, output);
 
     }
+#endif
 
     if (1) {
         MIRJob job;

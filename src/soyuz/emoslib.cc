@@ -1,5 +1,6 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
+#include "eckit/runtime/LibBehavior.h"
 #include "eckit/runtime/Context.h"
 
 typedef long fortint;
@@ -247,9 +248,32 @@ extern "C" void intlogm_(fortint (*)(char *, fortint)) {
     }
 }
 
-extern "C" void intlogs(void (*)(char *)) {
-    // TODO: Register call back
-    // Context::instance().behavior(
+typedef void (*emos_cb_proc)(char *);
+
+struct emos_cb_ctx {
+    emos_cb_proc proc;
+};
+
+static emos_cb_ctx emos_ctx;
+
+static void callback(void* ctxt, const char* msg) {
+    emos_cb_ctx* c = reinterpret_cast<emos_cb_ctx*>(ctxt);
+    c->proc(const_cast<char*>(msg));
+}
+
+extern "C" void intlogs(emos_cb_proc proc) {
+
+    emos_ctx.proc = proc;
+
+    eckit::ContextBehavior& behavior = eckit::Context::instance().behavior();
+    try {
+        eckit::LibBehavior& libbehavior = dynamic_cast<eckit::LibBehavior&>(behavior);
+        libbehavior.default_callback(&callback, &emos_ctx);
+    }
+    catch(std::bad_cast&)
+    {
+        eckit::Log::warning() << "INTLOGS: ContextBehavior is not a LibBehavior" << std::endl;
+    }
 }
 
 extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fortfloat *west, fortfloat *south,

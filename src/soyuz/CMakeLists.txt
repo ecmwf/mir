@@ -84,7 +84,7 @@ ecbuild_add_library(TARGET		mir
 
 ecbuild_add_test(
 		TARGET    soyuz
-		SOURCES   mir.cc
+		SOURCES   soyuz.cc
 		RESOURCES test.bitmap test.grib 10.grib test.nc
 		INCLUDES  ${ECKIT_INCLUDE_DIRS} ${NETCDF_INCLUDE_DIRS}
 		LIBS      mir ${ECKIT_LIBRARIES}    ${NETCDF_LIBRARIES}
