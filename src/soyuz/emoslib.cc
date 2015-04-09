@@ -3,7 +3,7 @@
 #include "eckit/runtime/LibBehavior.h"
 #include "eckit/runtime/Context.h"
 
-typedef long fortint;
+typedef int fortint;
 typedef double fortfloat;
 
 #include "MIRJob.h"
