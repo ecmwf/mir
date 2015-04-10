@@ -88,5 +88,21 @@ bool FieldParametrisation::get(const std::string &name, std::string &value) cons
         return true;
     }
 
+    // These two return true of false only
+    if(name == "gridded") {
+        // TODO: something better, this is just a hack
+        std::string ignore;
+        if(!get("truncation", ignore)) {
+            return true;
+        }
+    }
+
+    if(name == "spherical") {
+        std::string ignore;
+        if(get("truncation", ignore)) {
+            return true;
+        }
+    }
+
     return lowLevelGet(name, value);
 }

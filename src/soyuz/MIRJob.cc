@@ -68,7 +68,7 @@ void MIRJob::execute(MIRInput& input, MIROutput& output) const
     logic->prepare(actions);
 
     eckit::Log::info() << "Actions are: " << std::endl;
-    std::string arrow;
+    std::string arrow = "   ";
     for(std::vector<std::auto_ptr<Action> >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
         eckit::Log::info() << arrow << *(*j);
         arrow = " => ";

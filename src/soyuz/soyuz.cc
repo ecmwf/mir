@@ -31,6 +31,8 @@ void MIRDemo::run() {
         GribFileInput input(eckit::Context::instance().argv(1));
         GribFileOutput output(eckit::Context::instance().argv(2));
 
+        job.set("grid", "2/2");
+
         while (input.next()) {
             job.execute(input, output);
         }

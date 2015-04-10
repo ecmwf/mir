@@ -26,4 +26,4 @@ void Sh2GriddedTransform::execute(MIRField&) const
     NOTIMP;
 }
 
-static ActionBuilder<Sh2GriddedTransform> nullCropper("action.noop");
+static ActionBuilder<Sh2GriddedTransform> sh2grid("transform.sh2grid");

@@ -9,7 +9,7 @@ MIRDefaults::MIRDefaults()
     // For demo only:
 
     defaults_["logic"] = "mars";
-
+    defaults_["method"] = "bilinear";
 
 }
 

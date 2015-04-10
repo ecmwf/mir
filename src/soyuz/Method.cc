@@ -58,8 +58,8 @@ Method *MethodFactory::build(const MIRParametrisation &params) {
 
     std::string name;
 
-    if (!params.get("gridType", name)) {
-        throw eckit::SeriousBug("MethodFactory cannot get gridType");
+    if (!params.get("method", name)) {
+        throw eckit::SeriousBug("MethodFactory cannot get method");
     }
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);

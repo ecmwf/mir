@@ -16,13 +16,23 @@ void ECMWFLogic::prepare(std::vector<std::auto_ptr<Action> > &actions) const {
 
     std::string ignore;
 
-    if (parametrisation_.get("user.truncation", ignore)) {
+    if (parametrisation_.get("user.spherical", ignore)) {
         if (parametrisation_.get("field.truncation", ignore)) {
             add(actions, "transform.sh2sh");
         }
     }
 
-    add(actions, "action.noop"); // For the sake of the example
+    if (parametrisation_.get("field.spherical", ignore)) {
+        if (parametrisation_.get("user.grid", ignore)) {
+            add(actions, "transform.sh2grid");
+        }
+    }
+
+    if (parametrisation_.get("field.gridded", ignore)) {
+        if (parametrisation_.get("user.grid", ignore)) {
+            add(actions, "interpolate.grid2grid");
+        }
+    }
 
     if (parametrisation_.get("user.area", ignore)) {
         add(actions, "crop.area");
