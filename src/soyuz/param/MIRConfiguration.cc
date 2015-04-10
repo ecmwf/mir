@@ -6,6 +6,7 @@
 
 MIRConfiguration::MIRConfiguration()
 {
+    // TODO: Read a file
 }
 
 MIRConfiguration::~MIRConfiguration()

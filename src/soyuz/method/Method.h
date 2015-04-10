@@ -8,6 +8,7 @@
 #include <iosfwd>
 
 class MIRParametrisation;
+class MIRField;
 
 class Method {
 public:
@@ -31,6 +32,7 @@ public:
 
 // -- Methods
 
+    virtual void execute(MIRField&) const = 0;
 
 // -- Overridden methods
 	// None
@@ -98,7 +100,7 @@ protected:
     virtual ~MethodFactory();
 
 public:
-    static Method* build(const MIRParametrisation&);
+    static Method* build(const std::string&, const MIRParametrisation&);
 
 };
 

@@ -51,16 +51,9 @@ MethodFactory::~MethodFactory() {
 
 }
 
-Method *MethodFactory::build(const MIRParametrisation &params) {
+Method *MethodFactory::build(const std::string &name, const MIRParametrisation& params) {
 
     pthread_once(&once, init);
-
-
-    std::string name;
-
-    if (!params.get("method", name)) {
-        throw eckit::SeriousBug("MethodFactory cannot get method");
-    }
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, MethodFactory *>::const_iterator j = m->find(name);
