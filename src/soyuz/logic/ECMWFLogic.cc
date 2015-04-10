@@ -17,7 +17,7 @@ void ECMWFLogic::prepare(std::vector<std::auto_ptr<Action> > &actions) const {
     std::string ignore;
 
     if (parametrisation_.get("field.spherical", ignore)) {
-        if (parametrisation_.get("field.truncation", ignore)) {
+        if (parametrisation_.get("user.truncation", ignore)) {
             add(actions, "transform.sh2sh");
         }
     }
