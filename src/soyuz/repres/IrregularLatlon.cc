@@ -2,7 +2,7 @@
 // File IrregularLatlon.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "IrregularLatlon.h"
+#include "soyuz/repres/IrregularLatlon.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

@@ -2,7 +2,7 @@
 // File PolarStereographic.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "PolarStereographic.h"
+#include "soyuz/repres/PolarStereographic.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

@@ -2,7 +2,7 @@
 // File AzimuthRange.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "AzimuthRange.h"
+#include "soyuz/repres/AzimuthRange.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

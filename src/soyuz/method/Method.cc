@@ -1,7 +1,7 @@
 // File Method.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "Method.h"
+#include "soyuz/method/Method.h"
 #include "soyuz/param/MIRParametrisation.h"
 
 

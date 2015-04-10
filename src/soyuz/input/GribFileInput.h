@@ -1,19 +1,16 @@
-// File DummyOutput.h
+// File GribFileInput.h
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#ifndef DummyOutput_H
-#define DummyOutput_H
+#ifndef GribFileInput_H
+#define GribFileInput_H
 
 // namespace outline;
 
-#include "soyuz/inout/MIROutput.h"
+#include "soyuz/input/GribStreamInput.h"
+#include "eckit/filesystem/PathName.h"
 
 
-namespace eckit {
-class DataHandle;
-}
-
-class DummyOutput : public MIROutput {
+class GribFileInput : public GribStreamInput {
 public:
 
 // -- Exceptions
@@ -21,11 +18,11 @@ public:
 
 // -- Contructors
 
-	DummyOutput();
+	GribFileInput(const eckit::PathName&);
 
 // -- Destructor
 
-	~DummyOutput(); // Change to virtual if base class
+	~GribFileInput(); // Change to virtual if base class
 
 // -- Convertors
 	// None
@@ -35,6 +32,8 @@ public:
 
 // -- Methods
 	// None
+
+
 
 // -- Overridden methods
 	// None
@@ -66,21 +65,25 @@ private:
 
 // No copy allowed
 
-	DummyOutput(const DummyOutput&);
-	DummyOutput& operator=(const DummyOutput&);
+	GribFileInput(const GribFileInput&);
+	GribFileInput& operator=(const GribFileInput&);
 
 // -- Members
+
+    eckit::PathName path_;
+    eckit::DataHandle* handle_;
 
 // -- Methods
 	// None
 
-
 // -- Overridden methods
-	// From MIROutput
+	// From MIRInput
+
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
-	virtual void copy(const MIRParametrisation&, MIRInput&); // Not iterpolation performed
-	virtual void save(const MIRParametrisation&, MIRInput&, MIRField&);
+    // From GribInput
+
+    virtual eckit::DataHandle& dataHandle();
 
 
 // -- Class members
@@ -91,7 +94,7 @@ private:
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const DummyOutput& p)
+	//friend ostream& operator<<(ostream& s,const GribFileInput& p)
 	//	{ p.print(s); return s; }
 
 };

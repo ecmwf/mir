@@ -2,7 +2,7 @@
 // File StretchedSH.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "StretchedSH.h"
+#include "soyuz/repres/StretchedSH.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

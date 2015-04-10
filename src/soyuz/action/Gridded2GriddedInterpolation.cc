@@ -1,7 +1,7 @@
 // File Gridded2GriddedInterpolation.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "Gridded2GriddedInterpolation.h"
+#include "soyuz/action/Gridded2GriddedInterpolation.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "soyuz/method/Method.h"

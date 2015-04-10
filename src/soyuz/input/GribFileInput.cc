@@ -1,7 +1,7 @@
 // File GribFileInput.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "GribFileInput.h"
+#include "soyuz/input/GribFileInput.h"
 #include "eckit/io/BufferedHandle.h"
 
 GribFileInput::GribFileInput(const eckit::PathName &path):

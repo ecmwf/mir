@@ -1,8 +1,8 @@
 // File DummyInput.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "DummyInput.h"
-#include "soyuz/util/MIRField.h"
+#include "soyuz/input/DummyInput.h"
+#include "soyuz/data/MIRField.h"
 
 #include <cmath>
 #include <iostream>

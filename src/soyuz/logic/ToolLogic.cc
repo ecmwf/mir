@@ -1,7 +1,7 @@
 // File MIRInput.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "ToolLogic.h"
+#include "soyuz/logic/ToolLogic.h"
 #include "soyuz/param/MIRParametrisation.h"
 
 #include "eckit/runtime/Context.h"

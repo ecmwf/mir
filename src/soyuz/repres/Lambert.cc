@@ -2,7 +2,7 @@
 // File Lambert.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "Lambert.h"
+#include "soyuz/repres/Lambert.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

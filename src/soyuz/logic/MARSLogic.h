@@ -4,10 +4,10 @@
 #ifndef MARSLogic_H
 #define MARSLogic_H
 
-#include "ECMWFLogic.h"
+#include "soyuz/logic/MIRLogic.h"
 
 
-class MARSLogic : public ECMWFLogic {
+class MARSLogic : public MIRLogic {
 public:
 
 // -- Exceptions
@@ -71,7 +71,8 @@ private:
 	// None
 
 // -- Overridden methods
-	// None
+
+    virtual void prepare(std::vector<std::auto_ptr<Action> >&) const;
 
 // -- Class members
 	// None

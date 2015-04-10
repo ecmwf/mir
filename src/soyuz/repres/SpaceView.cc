@@ -2,7 +2,7 @@
 // File SpaceView.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "SpaceView.h"
+#include "soyuz/repres/SpaceView.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

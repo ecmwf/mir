@@ -2,7 +2,7 @@
 // File RotatedGG.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "RotatedGG.h"
+#include "soyuz/repres/RotatedGG.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

@@ -1,7 +1,7 @@
 // File NullAction.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "NullAction.h"
+#include "soyuz/action/NullAction.h"
 
 #include <iostream>
 

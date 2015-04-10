@@ -1,22 +1,15 @@
-// File GribMemoryInput.h
+// File GribMemoryOutput.h
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#ifndef GribMemoryInput_H
-#define GribMemoryInput_H
+#ifndef GribMemoryOutput_H
+#define GribMemoryOutput_H
 
 // namespace outline;
 
 
-#include "GribInput.h"
+#include "soyuz/output/GribOutput.h"
 
-#include "eckit/io/Buffer.h"
-
-
-namespace eckit {
-class DataHandle;
-}
-
-class GribMemoryInput : public GribInput {
+class GribMemoryOutput : public GribOutput {
   public:
 
     // -- Exceptions
@@ -24,11 +17,11 @@ class GribMemoryInput : public GribInput {
 
     // -- Contructors
 
-    GribMemoryInput(const char* message, size_t length);
+    GribMemoryOutput(void *message, size_t size);
 
     // -- Destructor
 
-    virtual ~GribMemoryInput(); // Change to virtual if base class
+    virtual ~GribMemoryOutput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -38,6 +31,11 @@ class GribMemoryInput : public GribInput {
 
     // -- Methods
     // None
+
+    size_t interpolated() const { return interpolated_; }
+    size_t saved() const { return saved_; }
+    size_t length() const { return length_; }
+
 
     // -- Overridden methods
     // None
@@ -69,16 +67,23 @@ class GribMemoryInput : public GribInput {
 
     // No copy allowed
 
-    GribMemoryInput(const GribMemoryInput &);
-    GribMemoryInput &operator=(const GribMemoryInput &);
+    GribMemoryOutput(const GribMemoryOutput &);
+    GribMemoryOutput &operator=(const GribMemoryOutput &);
 
     // -- Members
 
+    size_t saved_;
+    size_t interpolated_;
+
+    void* message_;
+    size_t size_;
+    size_t length_;
 
     // -- Methods
 
     // -- Overridden methods
 
+    virtual void out(const void* message, size_t length, bool iterpolated);
     virtual void print(std::ostream&) const;
 
     // -- Class members
@@ -89,7 +94,7 @@ class GribMemoryInput : public GribInput {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribMemoryInput& p)
+    //friend ostream& operator<<(ostream& s,const GribMemoryOutput& p)
     //  { p.print(s); return s; }
 
 };

@@ -1,16 +1,16 @@
-// File GribFileInput.h
+// File GribFileOutput.h
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#ifndef GribFileInput_H
-#define GribFileInput_H
+#ifndef GribFileOutput_H
+#define GribFileOutput_H
 
 // namespace outline;
 
-#include "GribStreamInput.h"
+#include "soyuz/output/GribStreamOutput.h"
 #include "eckit/filesystem/PathName.h"
 
 
-class GribFileInput : public GribStreamInput {
+class GribFileOutput : public GribStreamOutput {
 public:
 
 // -- Exceptions
@@ -18,11 +18,11 @@ public:
 
 // -- Contructors
 
-	GribFileInput(const eckit::PathName&);
+	GribFileOutput(const eckit::PathName&);
 
 // -- Destructor
 
-	~GribFileInput(); // Change to virtual if base class
+	~GribFileOutput(); // Change to virtual if base class
 
 // -- Convertors
 	// None
@@ -32,8 +32,6 @@ public:
 
 // -- Methods
 	// None
-
-
 
 // -- Overridden methods
 	// None
@@ -65,26 +63,25 @@ private:
 
 // No copy allowed
 
-	GribFileInput(const GribFileInput&);
-	GribFileInput& operator=(const GribFileInput&);
+	GribFileOutput(const GribFileOutput&);
+	GribFileOutput& operator=(const GribFileOutput&);
 
 // -- Members
 
-    eckit::PathName path_;
+	eckit::PathName path_;
     eckit::DataHandle* handle_;
 
 // -- Methods
 	// None
 
 // -- Overridden methods
-	// From MIRInput
+	// From MIROutput
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
     // From GribInput
 
     virtual eckit::DataHandle& dataHandle();
-
 
 // -- Class members
 	// None
@@ -94,7 +91,7 @@ private:
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const GribFileInput& p)
+	//friend ostream& operator<<(ostream& s,const GribFileOutput& p)
 	//	{ p.print(s); return s; }
 
 };

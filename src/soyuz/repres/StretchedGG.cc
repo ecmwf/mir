@@ -2,7 +2,7 @@
 // File StretchedGG.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "StretchedGG.h"
+#include "soyuz/repres/StretchedGG.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

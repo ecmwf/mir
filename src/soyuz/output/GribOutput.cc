@@ -1,9 +1,11 @@
 // File GribOutput.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "GribOutput.h"
-#include "GribInput.h"
-#include "soyuz/util/MIRField.h"
+#include "soyuz/output/GribOutput.h"
+
+#include "soyuz/data/MIRField.h"
+#include "soyuz/input/MIRInput.h"
+
 #include "soyuz/param/MIRParametrisation.h"
 
 #include <istream>

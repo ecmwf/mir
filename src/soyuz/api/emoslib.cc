@@ -7,8 +7,8 @@ typedef int fortint;
 typedef double fortfloat;
 
 #include "soyuz/api/MIRJob.h"
-#include "soyuz/inout/GribMemoryInput.h"
-#include "soyuz/inout/GribMemoryOutput.h"
+#include "soyuz/input/GribMemoryInput.h"
+#include "soyuz/output/GribMemoryOutput.h"
 
 
 #include <memory>

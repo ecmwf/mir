@@ -1,7 +1,7 @@
 // File MIRInput.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "ECMWFLogic.h"
+#include "soyuz/logic/ECMWFLogic.h"
 #include "soyuz/param/MIRParametrisation.h"
 
 ECMWFLogic::ECMWFLogic(const MIRParametrisation &parametrisation):

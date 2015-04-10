@@ -2,7 +2,7 @@
 // File StretchedRotatedLL.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "StretchedRotatedLL.h"
+#include "soyuz/repres/StretchedRotatedLL.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

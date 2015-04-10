@@ -1,15 +1,22 @@
-// File GribMemoryOutput.h
+// File GribMemoryInput.h
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#ifndef GribMemoryOutput_H
-#define GribMemoryOutput_H
+#ifndef GribMemoryInput_H
+#define GribMemoryInput_H
 
 // namespace outline;
 
 
-#include "GribOutput.h"
+#include "soyuz/input/GribInput.h"
 
-class GribMemoryOutput : public GribOutput {
+#include "eckit/io/Buffer.h"
+
+
+namespace eckit {
+class DataHandle;
+}
+
+class GribMemoryInput : public GribInput {
   public:
 
     // -- Exceptions
@@ -17,11 +24,11 @@ class GribMemoryOutput : public GribOutput {
 
     // -- Contructors
 
-    GribMemoryOutput(void *message, size_t size);
+    GribMemoryInput(const char* message, size_t length);
 
     // -- Destructor
 
-    virtual ~GribMemoryOutput(); // Change to virtual if base class
+    virtual ~GribMemoryInput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -31,11 +38,6 @@ class GribMemoryOutput : public GribOutput {
 
     // -- Methods
     // None
-
-    size_t interpolated() const { return interpolated_; }
-    size_t saved() const { return saved_; }
-    size_t length() const { return length_; }
-
 
     // -- Overridden methods
     // None
@@ -67,23 +69,16 @@ class GribMemoryOutput : public GribOutput {
 
     // No copy allowed
 
-    GribMemoryOutput(const GribMemoryOutput &);
-    GribMemoryOutput &operator=(const GribMemoryOutput &);
+    GribMemoryInput(const GribMemoryInput &);
+    GribMemoryInput &operator=(const GribMemoryInput &);
 
     // -- Members
 
-    size_t saved_;
-    size_t interpolated_;
-
-    void* message_;
-    size_t size_;
-    size_t length_;
 
     // -- Methods
 
     // -- Overridden methods
 
-    virtual void out(const void* message, size_t length, bool iterpolated);
     virtual void print(std::ostream&) const;
 
     // -- Class members
@@ -94,7 +89,7 @@ class GribMemoryOutput : public GribOutput {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribMemoryOutput& p)
+    //friend ostream& operator<<(ostream& s,const GribMemoryInput& p)
     //  { p.print(s); return s; }
 
 };

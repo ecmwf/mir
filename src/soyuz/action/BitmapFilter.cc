@@ -3,7 +3,7 @@
 
 #include "soyuz/action/BitmapFilter.h"
 #include "soyuz/param/MIRParametrisation.h"
-#include "soyuz/util/MIRField.h"
+#include "soyuz/data/MIRField.h"
 #include "soyuz/util/Bitmap.h"
 
 #include <iostream>

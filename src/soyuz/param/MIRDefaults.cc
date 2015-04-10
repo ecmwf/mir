@@ -1,7 +1,7 @@
 // File MIRDefaults.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "MIRDefaults.h"
+#include "soyuz/param/MIRDefaults.h"
 #include <iostream>
 
 MIRDefaults::MIRDefaults()

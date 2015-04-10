@@ -1,8 +1,8 @@
 // File GribInput.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "GribInput.h"
-#include "soyuz/util/MIRField.h"
+#include "soyuz/input/GribInput.h"
+#include "soyuz/data/MIRField.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/BufferedHandle.h"

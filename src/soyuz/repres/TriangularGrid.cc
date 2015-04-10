@@ -2,7 +2,7 @@
 // File TriangularGrid.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "TriangularGrid.h"
+#include "soyuz/repres/TriangularGrid.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

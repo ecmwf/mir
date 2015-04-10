@@ -1,7 +1,7 @@
 // File MIRConfiguration.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "MIRConfiguration.h"
+#include "soyuz/param/MIRConfiguration.h"
 #include <iostream>
 
 MIRConfiguration::MIRConfiguration()

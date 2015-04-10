@@ -1,9 +1,9 @@
 // File AreaCropper.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "AreaCropper.h"
+#include "soyuz/action/AreaCropper.h"
 #include "soyuz/param/MIRParametrisation.h"
-#include "soyuz/util/MIRField.h"
+#include "soyuz/data/MIRField.h"
 #include "soyuz/repres/Representation.h"
 
 #include <iostream>

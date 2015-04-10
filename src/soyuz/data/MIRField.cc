@@ -1,7 +1,7 @@
 // File MIRField.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "soyuz/util/MIRField.h"
+#include "soyuz/data/MIRField.h"
 #include "soyuz/repres/Representation.h"
 
 #include "eckit/exception/Exceptions.h"

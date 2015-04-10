@@ -1,7 +1,7 @@
 // File MIRInput.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "soyuz/inout/MIRInput.h"
+#include "soyuz/input/MIRInput.h"
 #include "eckit/exception/Exceptions.h"
 #include "soyuz/util/Grib.h"
 
