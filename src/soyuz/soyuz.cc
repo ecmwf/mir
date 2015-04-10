@@ -95,6 +95,18 @@ void MIRDemo::run() {
 
     }
 
+    if (1) {
+        MIRJob job;
+
+        job.set("logic", "tool");
+
+        DummyInput input;
+        GribFileOutput output("dummy.grib");
+
+        job.execute(input, output);
+
+    }
+
 }
 
 //------------------------------------------------------------------------------------------------------

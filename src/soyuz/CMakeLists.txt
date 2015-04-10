@@ -50,6 +50,8 @@ logic/MARSLogic.cc
 logic/MARSLogic.h
 logic/MIRLogic.cc
 logic/MIRLogic.h
+logic/ToolLogic.h
+logic/ToolLogic.cc
 method/Method.cc
 method/Method.h
 param/FieldParametrisation.cc
