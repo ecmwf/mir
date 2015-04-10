@@ -4,7 +4,7 @@
 #include "soyuz/api/MIRJob.h"
 #include "soyuz/input/GribFileInput.h"
 #include "soyuz/input/NetcdfFileInput.h"
-#include "soyuz/inputDummyInput.h"
+#include "soyuz/input/DummyInput.h"
 #include "soyuz/output/DummyOutput.h"
 #include "soyuz/output/GribFileOutput.h"
 

@@ -22,38 +22,36 @@ void MARSLogic::print(std::ostream &out) const {
 void MARSLogic::prepare(std::vector<std::auto_ptr<Action> > &actions) const {
     // All the nasty logic goes there
 
-    std::string ignore;
-
-    if (parametrisation_.get("field.spherical", ignore)) {
-        if (parametrisation_.get("user.truncation", ignore)) {
+    if (parametrisation_.has("field.spherical")) {
+        if (parametrisation_.has("user.truncation")) {
             add(actions, "transform.sh2sh");
         }
     }
 
-    if (parametrisation_.get("field.spherical", ignore)) {
-        if (parametrisation_.get("user.grid", ignore)) {
+    if (parametrisation_.has("field.spherical")) {
+        if (parametrisation_.has("user.grid")) {
             add(actions, "transform.sh2grid");
         }
     }
 
-    if (parametrisation_.get("field.gridded", ignore)) {
-        if (parametrisation_.get("user.grid", ignore)) {
+    if (parametrisation_.has("field.gridded")) {
+        if (parametrisation_.has("user.grid")) {
             add(actions, "interpolate.grid2grid");
         }
     }
 
-    if (parametrisation_.get("user.area", ignore)) {
+    if (parametrisation_.has("user.area")) {
         add(actions, "crop.area");
     }
 
-    if (parametrisation_.get("user.bitmap", ignore)) {
+    if (parametrisation_.has("user.bitmap")) {
         add(actions, "filter.bitmap");
     }
 
-    if (parametrisation_.get("user.frame", ignore)) {
+    if (parametrisation_.has("user.frame")) {
         add(actions, "filter.frame");
     }
 }
 
 
-static MIRLogicBuilder<MARSLogic> marsGrid("mars");
+static MIRLogicBuilder<MARSLogic> mars("mars");

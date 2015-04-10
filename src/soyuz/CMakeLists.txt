@@ -34,8 +34,6 @@ input/MIRInput.cc
 input/MIRInput.h
 input/NetcdfFileInput.cc
 input/NetcdfFileInput.h
-logic/ECMWFLogic.cc
-logic/ECMWFLogic.h
 logic/MARSLogic.cc
 logic/MARSLogic.h
 logic/MIRLogic.cc

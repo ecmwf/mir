@@ -30,6 +30,7 @@ public:
 // -- Methods
 	// None
 
+	virtual bool has(const std::string& name) const;
     virtual bool get(const std::string& name, std::string& value) const = 0;
 
 // -- Overridden methods
