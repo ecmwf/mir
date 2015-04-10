@@ -7,8 +7,8 @@ typedef int fortint;
 typedef double fortfloat;
 
 #include "soyuz/api/MIRJob.h"
-#include "soyuz/inout/GribMemoryInput.h"
-#include "soyuz/inout/GribMemoryOutput.h"
+#include "soyuz/input/GribMemoryInput.h"
+#include "soyuz/output/GribMemoryOutput.h"
 
 
 #include <memory>
@@ -36,10 +36,10 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
             return 0;
         }
 
-        if(strcasecmp(name, "gaussian") == 0) {
-             // TODO:
-            return 0;
-        }
+        // if(strcasecmp(name, "gaussian") == 0) {
+        //      // TODO:
+        //     return 0;
+        // }
 
         if(strcasecmp(name, "reduced") == 0) {
             eckit::StrStream os;
@@ -86,6 +86,11 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
 
         if(strcasecmp(name, "bitmap") == 0) {
             job->set("bitmap", value);
+            return 0;
+        }
+
+        if(strcasecmp(name, "accuracy") == 0) {
+            job->set("accuracy", value);
             return 0;
         }
 

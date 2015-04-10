@@ -1,7 +1,7 @@
 // File MIRCombinedParametrisation.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "MIRCombinedParametrisation.h"
+#include "soyuz/param/MIRCombinedParametrisation.h"
 #include <iostream>
 
 MIRCombinedParametrisation::MIRCombinedParametrisation(const MIRParametrisation& user,

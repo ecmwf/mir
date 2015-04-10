@@ -1,7 +1,7 @@
 // File GribMemoryOutput.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "GribMemoryOutput.h"
+#include "soyuz/output/GribMemoryOutput.h"
 
 #include "eckit/exception/Exceptions.h"
 

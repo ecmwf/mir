@@ -1,7 +1,7 @@
 // File Sh2GriddedTransform.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "Sh2GriddedTransform.h"
+#include "soyuz/action/Sh2GriddedTransform.h"
 
 #include "eckit/exception/Exceptions.h"
 

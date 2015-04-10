@@ -2,7 +2,7 @@
 // File TransverseMercator.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "TransverseMercator.h"
+#include "soyuz/repres/TransverseMercator.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

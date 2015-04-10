@@ -2,7 +2,7 @@
 // File RegularGG.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "RegularGG.h"
+#include "soyuz/repres/RegularGG.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

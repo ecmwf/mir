@@ -2,7 +2,7 @@
 // File StretchedLL.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "StretchedLL.h"
+#include "soyuz/repres/StretchedLL.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

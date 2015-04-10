@@ -2,7 +2,7 @@
 // File RotatedLL.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "RotatedLL.h"
+#include "soyuz/repres/RotatedLL.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

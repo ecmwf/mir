@@ -2,7 +2,7 @@
 // File ReducedLL.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "ReducedLL.h"
+#include "soyuz/repres/ReducedLL.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

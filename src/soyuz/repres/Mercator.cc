@@ -2,7 +2,7 @@
 // File Mercator.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "Mercator.h"
+#include "soyuz/repres/Mercator.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

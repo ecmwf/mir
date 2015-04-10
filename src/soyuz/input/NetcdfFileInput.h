@@ -7,7 +7,7 @@
 // namespace outline;
 
 
-#include "soyuz/inout/MIRInput.h"
+#include "soyuz/input/MIRInput.h"
 #include "soyuz/param/FieldParametrisation.h"
 #include "eckit/filesystem/PathName.h"
 

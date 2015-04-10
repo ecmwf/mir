@@ -1,12 +1,13 @@
 // File MARSLogic.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "MARSLogic.h"
+#include "soyuz/logic/MARSLogic.h"
+#include "soyuz/param/MIRParametrisation.h"
 
 #include <iostream>
 
 MARSLogic::MARSLogic(const MIRParametrisation &parametrisation):
-    ECMWFLogic(parametrisation)
+    MIRLogic(parametrisation)
 {
 
 }
@@ -18,5 +19,42 @@ void MARSLogic::print(std::ostream &out) const {
     out << "MARSLogic[]";
 }
 
+void MARSLogic::prepare(std::vector<std::auto_ptr<Action> > &actions) const {
+    // All the nasty logic goes there
 
-static MIRLogicBuilder<MARSLogic> marsGrid("mars");
+    if (parametrisation_.has("field.spherical")) {
+        if (parametrisation_.has("user.truncation")) {
+            add(actions, "transform.sh2sh");
+        }
+    }
+
+    if (parametrisation_.has("field.spherical")) {
+        if (parametrisation_.has("user.grid") ||
+            parametrisation_.has("user.reduced") ||
+            parametrisation_.has("user.regular"))
+        {
+            add(actions, "transform.sh2grid");
+        }
+    }
+
+    if (parametrisation_.has("field.gridded")) {
+        if (parametrisation_.has("user.grid")) {
+            add(actions, "interpolate.grid2grid");
+        }
+    }
+
+    if (parametrisation_.has("user.area")) {
+        add(actions, "crop.area");
+    }
+
+    if (parametrisation_.has("user.bitmap")) {
+        add(actions, "filter.bitmap");
+    }
+
+    if (parametrisation_.has("user.frame")) {
+        add(actions, "filter.frame");
+    }
+}
+
+
+static MIRLogicBuilder<MARSLogic> mars("mars");

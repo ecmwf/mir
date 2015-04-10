@@ -12,7 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "Method.h"
+#include "soyuz/method/Method.h"
 #include "soyuz/param/MIRParametrisation.h"
 
 

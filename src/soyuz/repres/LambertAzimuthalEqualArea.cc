@@ -2,7 +2,7 @@
 // File LambertAzimuthalEqualArea.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "LambertAzimuthalEqualArea.h"
+#include "soyuz/repres/LambertAzimuthalEqualArea.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 

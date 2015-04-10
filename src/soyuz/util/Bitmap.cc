@@ -1,7 +1,7 @@
 // File Bitmap.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "Bitmap.h"
+#include "soyuz/util/Bitmap.h"
 
 #include <iostream>
 

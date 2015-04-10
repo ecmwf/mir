@@ -1,19 +1,19 @@
-// File GribOutput.h
+// File DummyOutput.h
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#ifndef GribOutput_H
-#define GribOutput_H
+#ifndef DummyOutput_H
+#define DummyOutput_H
 
 // namespace outline;
 
-#include "soyuz/inout/MIROutput.h"
+#include "soyuz/output/MIROutput.h"
 
 
 namespace eckit {
 class DataHandle;
 }
 
-class GribOutput : public MIROutput {
+class DummyOutput : public MIROutput {
 public:
 
 // -- Exceptions
@@ -21,11 +21,11 @@ public:
 
 // -- Contructors
 
-	GribOutput();
+	DummyOutput();
 
 // -- Destructor
 
-	~GribOutput(); // Change to virtual if base class
+	~DummyOutput(); // Change to virtual if base class
 
 // -- Convertors
 	// None
@@ -66,17 +66,18 @@ private:
 
 // No copy allowed
 
-	GribOutput(const GribOutput&);
-	GribOutput& operator=(const GribOutput&);
+	DummyOutput(const DummyOutput&);
+	DummyOutput& operator=(const DummyOutput&);
 
 // -- Members
 
 // -- Methods
+	// None
 
-	virtual void out(const void* message, size_t length, bool iterpolated) = 0;
 
 // -- Overridden methods
 	// From MIROutput
+    virtual void print(std::ostream&) const; // Change to virtual if base class
 
 	virtual void copy(const MIRParametrisation&, MIRInput&); // Not iterpolation performed
 	virtual void save(const MIRParametrisation&, MIRInput&, MIRField&);
@@ -90,7 +91,7 @@ private:
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const GribOutput& p)
+	//friend ostream& operator<<(ostream& s,const DummyOutput& p)
 	//	{ p.print(s); return s; }
 
 };

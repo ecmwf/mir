@@ -1,7 +1,7 @@
 // File DummyOutput.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "DummyOutput.h"
+#include "soyuz/output/DummyOutput.h"
 
 #include <istream>
 

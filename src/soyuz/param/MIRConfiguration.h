@@ -6,6 +6,8 @@
 
 #include "soyuz/param/MIRParametrisation.h"
 
+#include <string>
+#include <map>
 
 class MIRConfiguration : public MIRParametrisation {
 public:
@@ -65,7 +67,8 @@ private:
 	MIRConfiguration& operator=(const MIRConfiguration&);
 
 // -- Members
-	// None
+
+	std::map<std::string, std::string> settings_;
 
 // -- Methods
 	// None

@@ -11,4 +11,7 @@ MIRParametrisation::~MIRParametrisation()
 {
 }
 
-
+bool MIRParametrisation::has(const std::string& name) const {
+    std::string ignore;
+    return get(name, ignore);
+}

@@ -7,7 +7,7 @@
 // namespace outline;
 
 
-#include "GribInput.h"
+#include "soyuz/input/GribInput.h"
 
 #include "eckit/io/Buffer.h"
 

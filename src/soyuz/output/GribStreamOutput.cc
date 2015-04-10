@@ -1,7 +1,7 @@
 // File GribStreamOutput.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "GribStreamOutput.h"
+#include "soyuz/output/GribStreamOutput.h"
 #include "eckit/io/DataHandle.h"
 
 

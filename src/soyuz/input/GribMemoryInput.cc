@@ -1,7 +1,7 @@
 // File GribMemoryInput.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "GribMemoryInput.h"
+#include "soyuz/input/GribMemoryInput.h"
 
 #include "eckit/exception/Exceptions.h"
 

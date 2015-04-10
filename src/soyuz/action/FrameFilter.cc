@@ -3,7 +3,7 @@
 
 #include "soyuz/action/FrameFilter.h"
 #include "soyuz/param/MIRParametrisation.h"
-#include "soyuz/util/MIRField.h"
+#include "soyuz/data/MIRField.h"
 #include "soyuz/repres/Representation.h"
 
 #include <iostream>

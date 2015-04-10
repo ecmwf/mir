@@ -18,34 +18,22 @@ list( APPEND mir_srcs
   api/MIRJob.cc
   api/MIRJob.h
   api/emoslib.cc
-  inout/DummyInput.cc
-  inout/DummyInput.h
-  inout/DummyOutput.cc
-  inout/DummyOutput.h
-  inout/GribFileInput.cc
-  inout/GribFileInput.h
-  inout/GribFileOutput.cc
-  inout/GribFileOutput.h
-  inout/GribInput.cc
-  inout/GribInput.h
-  inout/GribMemoryInput.cc
-  inout/GribMemoryInput.h
-  inout/GribMemoryOutput.cc
-  inout/GribMemoryOutput.h
-  inout/GribOutput.cc
-  inout/GribOutput.h
-  inout/GribStreamInput.cc
-  inout/GribStreamInput.h
-  inout/GribStreamOutput.cc
-  inout/GribStreamOutput.h
-  inout/MIRInput.cc
-  inout/MIRInput.h
-  inout/MIROutput.cc
-  inout/MIROutput.h
-  inout/NetcdfFileInput.cc
-  inout/NetcdfFileInput.h
-  logic/ECMWFLogic.cc
-  logic/ECMWFLogic.h
+  data/MIRField.cc
+  data/MIRField.h
+  input/DummyInput.cc
+  input/DummyInput.h
+  input/GribFileInput.cc
+  input/GribFileInput.h
+  input/GribInput.cc
+  input/GribInput.h
+  input/GribMemoryInput.cc
+  input/GribMemoryInput.h
+  input/GribStreamInput.cc
+  input/GribStreamInput.h
+  input/MIRInput.cc
+  input/MIRInput.h
+  input/NetcdfFileInput.cc
+  input/NetcdfFileInput.h
   logic/MARSLogic.cc
   logic/MARSLogic.h
   logic/MIRLogic.cc
@@ -68,6 +56,18 @@ list( APPEND mir_srcs
   method/PseudoLaplace.h
   method/WeightCache.cc
   method/WeightCache.h
+  output/DummyOutput.cc
+  output/DummyOutput.h
+  output/GribFileOutput.cc
+  output/GribFileOutput.h
+  output/GribMemoryOutput.cc
+  output/GribMemoryOutput.h
+  output/GribOutput.cc
+  output/GribOutput.h
+  output/GribStreamOutput.cc
+  output/GribStreamOutput.h
+  output/MIROutput.cc
+  output/MIROutput.h
   param/FieldParametrisation.cc
   param/FieldParametrisation.h
   param/MIRCombinedParametrisation.cc
@@ -137,8 +137,6 @@ list( APPEND mir_srcs
   util/Bitmap.cc
   util/Bitmap.h
   util/Grib.h
-  util/MIRField.cc
-  util/MIRField.h
 )
 
 

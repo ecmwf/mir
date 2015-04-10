@@ -1,8 +1,8 @@
 // File NetcdfFileInput.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "NetcdfFileInput.h"
-#include "soyuz/util/MIRField.h"
+#include "soyuz/input/NetcdfFileInput.h"
+#include "soyuz/data/MIRField.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/Translator.h"

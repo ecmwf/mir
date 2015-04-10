@@ -4,8 +4,8 @@
 #include "soyuz/api/MIRJob.h"
 #include "soyuz/logic/MIRLogic.h"
 
-#include "soyuz/inout/MIRInput.h"
-#include "soyuz/inout/MIROutput.h"
+#include "soyuz/input/MIRInput.h"
+#include "soyuz/output/MIROutput.h"
 
 #include "soyuz/action/Action.h"
 #include "soyuz/repres/Representation.h"
@@ -13,7 +13,7 @@
 #include "soyuz/param/MIRConfiguration.h"
 #include "soyuz/param/MIRCombinedParametrisation.h"
 #include "soyuz/param/MIRDefaults.h"
-#include "soyuz/util/MIRField.h"
+#include "soyuz/data/MIRField.h"
 
 #include <iostream>
 

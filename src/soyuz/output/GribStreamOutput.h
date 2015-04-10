@@ -6,7 +6,7 @@
 
 // namespace outline;
 
-#include "GribOutput.h"
+#include "soyuz/output/GribOutput.h"
 
 
 namespace eckit {

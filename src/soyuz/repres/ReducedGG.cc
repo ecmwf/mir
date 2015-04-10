@@ -2,7 +2,7 @@
 // File ReducedGG.cc
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#include "ReducedGG.h"
+#include "soyuz/repres/ReducedGG.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 
