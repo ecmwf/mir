@@ -1,13 +1,13 @@
 #include "eckit/runtime/Tool.h"
 #include "eckit/runtime/Context.h"
 
-#include "MIRJob.h"
-#include "GribFileInput.h"
-#include "NetcdfFileInput.h"
-#include "DummyInput.h"
-#include "DummyOutput.h"
+#include "soyuz/api/MIRJob.h"
+#include "soyuz/inout/GribFileInput.h"
+#include "soyuz/inout/NetcdfFileInput.h"
+#include "soyuz/inout/DummyInput.h"
+#include "soyuz/inout/DummyOutput.h"
 
-#include "GribFileOutput.h"
+#include "soyuz/inout/GribFileOutput.h"
 
 //------------------------------------------------------------------------------------------------------
 
