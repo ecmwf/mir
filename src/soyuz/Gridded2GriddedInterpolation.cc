@@ -25,12 +25,14 @@ void Gridded2GriddedInterpolation::print(std::ostream& out) const
 
 void Gridded2GriddedInterpolation::execute(MIRField&) const
 {
+    NOTIMP;
+
     std::auto_ptr<Method> method(MethodFactory::build(parametrisation_));
 
     // TODO: Use Representation and MIRfield to create Atlas structures
     // TODO: Connect "Methods" and "mir/Weigths"
 
-    NOTIMP;
+
 }
 
 static ActionBuilder<Gridded2GriddedInterpolation> grid2grid("interpolate.grid2grid");
