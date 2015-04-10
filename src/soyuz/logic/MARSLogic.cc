@@ -29,7 +29,10 @@ void MARSLogic::prepare(std::vector<std::auto_ptr<Action> > &actions) const {
     }
 
     if (parametrisation_.has("field.spherical")) {
-        if (parametrisation_.has("user.grid")) {
+        if (parametrisation_.has("user.grid") ||
+            parametrisation_.has("user.reduced") ||
+            parametrisation_.has("user.regular"))
+        {
             add(actions, "transform.sh2grid");
         }
     }
