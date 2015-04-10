@@ -1,13 +1,12 @@
-
-// File Mercator.h
+// File Gridded2GriddedInterpolation.h
 // Baudouin Raoult - (c) ECMWF Apr 15
 
-#ifndef Mercator_H
-#define Mercator_H
+#ifndef Gridded2GriddedInterpolation_H
+#define Gridded2GriddedInterpolation_H
 
-#include "Gridded.h"
+#include "Action.h"
 
-class Mercator : public Gridded {
+class Gridded2GriddedInterpolation : public Action {
 public:
 
 // -- Exceptions
@@ -15,11 +14,11 @@ public:
 
 // -- Contructors
 
-	Mercator(const MIRParametrisation&);
+	Gridded2GriddedInterpolation(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~Mercator(); // Change to virtual if base class
+	virtual ~Gridded2GriddedInterpolation(); // Change to virtual if base class
 
 // -- Convertors
 	// None
@@ -28,6 +27,7 @@ public:
 	// None
 
 // -- Methods
+	// None
 
 // -- Overridden methods
 	// None
@@ -58,23 +58,20 @@ protected:
 
 private:
 
-	Mercator();
-
 // No copy allowed
 
-	Mercator(const Mercator&);
-	Mercator& operator=(const Mercator&);
+	Gridded2GriddedInterpolation(const Gridded2GriddedInterpolation&);
+	Gridded2GriddedInterpolation& operator=(const Gridded2GriddedInterpolation&);
 
 // -- Members
-
+	// None
 
 // -- Methods
 	// None
 
-
 // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
+    virtual void execute(MIRField&) const;
 
 // -- Class members
 	// None
@@ -84,7 +81,7 @@ private:
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const Mercator& p)
+	//friend ostream& operator<<(ostream& s,const Gridded2GriddedInterpolation& p)
 	//	{ p.print(s); return s; }
 
 };

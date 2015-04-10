@@ -26,7 +26,7 @@ void Lambert::print(std::ostream &out) const {
 }
 
 
-void Lambert::fill(grib_spec &spec) const  {
+void Lambert::fill(grib_info &info) const  {
     NOTIMP;
 }
 

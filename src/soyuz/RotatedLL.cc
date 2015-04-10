@@ -26,7 +26,7 @@ void RotatedLL::print(std::ostream &out) const {
 }
 
 
-void RotatedLL::fill(grib_spec &spec) const  {
+void RotatedLL::fill(grib_info &info) const  {
     NOTIMP;
 }
 

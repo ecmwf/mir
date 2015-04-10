@@ -26,7 +26,7 @@ void TransverseMercator::print(std::ostream &out) const {
 }
 
 
-void TransverseMercator::fill(grib_spec &spec) const  {
+void TransverseMercator::fill(grib_info &info) const  {
     NOTIMP;
 }
 

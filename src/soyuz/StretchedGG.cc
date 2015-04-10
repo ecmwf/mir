@@ -26,7 +26,7 @@ void StretchedGG::print(std::ostream &out) const {
 }
 
 
-void StretchedGG::fill(grib_spec &spec) const  {
+void StretchedGG::fill(grib_info &info) const  {
     NOTIMP;
 }
 

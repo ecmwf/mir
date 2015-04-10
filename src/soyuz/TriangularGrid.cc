@@ -26,7 +26,7 @@ void TriangularGrid::print(std::ostream &out) const {
 }
 
 
-void TriangularGrid::fill(grib_spec &spec) const  {
+void TriangularGrid::fill(grib_info &info) const  {
     NOTIMP;
 }
 

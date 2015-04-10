@@ -87,23 +87,23 @@ void RegularLL::print(std::ostream &out) const {
 }
 
 
-void RegularLL::fill(grib_spec &spec) const  {
+void RegularLL::fill(grib_info &info) const  {
 
     // Warning: scanning mode not considered
 
-    spec.grid.grid_type = GRIB_UTIL_GRID_SPEC_REGULAR_LL;
+    info.grid.grid_type = GRIB_UTIL_GRID_SPEC_REGULAR_LL;
 
-    spec.grid.Ni = ni_;
-    spec.grid.Nj = nj_;
+    info.grid.Ni = ni_;
+    info.grid.Nj = nj_;
 
-    spec.grid.iDirectionIncrementInDegrees = west_east_increment_;
-    spec.grid.jDirectionIncrementInDegrees = north_south_increment_;
+    info.grid.iDirectionIncrementInDegrees = west_east_increment_;
+    info.grid.jDirectionIncrementInDegrees = north_south_increment_;
 
-    spec.grid.longitudeOfFirstGridPointInDegrees = west_;
-    spec.grid.longitudeOfLastGridPointInDegrees = east_;
+    info.grid.longitudeOfFirstGridPointInDegrees = west_;
+    info.grid.longitudeOfLastGridPointInDegrees = east_;
 
-    spec.grid.latitudeOfFirstGridPointInDegrees = north_;
-    spec.grid.latitudeOfLastGridPointInDegrees = south_;
+    info.grid.latitudeOfFirstGridPointInDegrees = north_;
+    info.grid.latitudeOfLastGridPointInDegrees = south_;
 }
 
 Representation *RegularLL::crop(double north, double west, double south, double east, const std::vector<double> &in, std::vector<double> &out) const {

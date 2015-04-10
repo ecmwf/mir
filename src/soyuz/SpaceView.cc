@@ -26,7 +26,7 @@ void SpaceView::print(std::ostream &out) const {
 }
 
 
-void SpaceView::fill(grib_spec &spec) const  {
+void SpaceView::fill(grib_info &info) const  {
     NOTIMP;
 }
 

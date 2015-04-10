@@ -26,7 +26,7 @@ void RotatedGG::print(std::ostream &out) const {
 }
 
 
-void RotatedGG::fill(grib_spec &spec) const  {
+void RotatedGG::fill(grib_info &info) const  {
     NOTIMP;
 }
 

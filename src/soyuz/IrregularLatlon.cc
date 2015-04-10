@@ -26,7 +26,7 @@ void IrregularLatlon::print(std::ostream &out) const {
 }
 
 
-void IrregularLatlon::fill(grib_spec &spec) const  {
+void IrregularLatlon::fill(grib_info &info) const  {
     NOTIMP;
 }
 

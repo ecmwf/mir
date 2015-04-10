@@ -26,7 +26,7 @@ void UnstructuredGrid::print(std::ostream &out) const {
 }
 
 
-void UnstructuredGrid::fill(grib_spec &spec) const  {
+void UnstructuredGrid::fill(grib_info &info) const  {
     NOTIMP;
 }
 

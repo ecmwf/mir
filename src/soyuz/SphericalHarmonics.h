@@ -76,7 +76,7 @@ private:
 
 // -- Overridden methods
 
-    virtual void fill(grib_spec&) const;
+    virtual void fill(grib_info&) const;
  	virtual Representation* truncate(size_t truncation,
             const std::vector<double>&, std::vector<double>&) const;
 

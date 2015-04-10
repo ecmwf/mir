@@ -26,7 +26,7 @@ void AzimuthRange::print(std::ostream &out) const {
 }
 
 
-void AzimuthRange::fill(grib_spec &spec) const  {
+void AzimuthRange::fill(grib_info &info) const  {
     NOTIMP;
 }
 

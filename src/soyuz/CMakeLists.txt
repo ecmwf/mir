@@ -42,6 +42,8 @@ GribStreamOutput.cc
 GribStreamOutput.h
 Gridded.cc
 Gridded.h
+Gridded2GriddedInterpolation.cc
+Gridded2GriddedInterpolation.h
 IrregularLatlon.cc
 IrregularLatlon.h
 Lambert.cc
@@ -70,6 +72,8 @@ MIRParametrisation.cc
 MIRParametrisation.h
 Mercator.cc
 Mercator.h
+Method.cc
+Method.h
 NetcdfFileInput.cc
 NetcdfFileInput.h
 NullAction.cc
@@ -92,6 +96,8 @@ RotatedLL.cc
 RotatedLL.h
 RotatedSH.cc
 RotatedSH.h
+Sh2GriddedTransform.cc
+Sh2GriddedTransform.h
 Sh2ShTransform.cc
 Sh2ShTransform.h
 SpaceView.cc

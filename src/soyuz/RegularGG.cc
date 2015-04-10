@@ -26,7 +26,7 @@ void RegularGG::print(std::ostream &out) const {
 }
 
 
-void RegularGG::fill(grib_spec &spec) const  {
+void RegularGG::fill(grib_info &info) const  {
     NOTIMP;
 }
 

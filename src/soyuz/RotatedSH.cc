@@ -26,7 +26,7 @@ void RotatedSH::print(std::ostream &out) const {
 }
 
 
-void RotatedSH::fill(grib_spec &spec) const  {
+void RotatedSH::fill(grib_info &info) const  {
     NOTIMP;
 }
 

@@ -26,7 +26,7 @@ void StretchedLL::print(std::ostream &out) const {
 }
 
 
-void StretchedLL::fill(grib_spec &spec) const  {
+void StretchedLL::fill(grib_info &info) const  {
     NOTIMP;
 }
 

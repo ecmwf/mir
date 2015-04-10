@@ -26,7 +26,7 @@ void ReducedGG::print(std::ostream &out) const {
 }
 
 
-void ReducedGG::fill(grib_spec &spec) const  {
+void ReducedGG::fill(grib_info &info) const  {
     NOTIMP;
 }
 

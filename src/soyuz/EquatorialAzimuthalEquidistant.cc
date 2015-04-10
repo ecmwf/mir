@@ -26,7 +26,7 @@ void EquatorialAzimuthalEquidistant::print(std::ostream &out) const {
 }
 
 
-void EquatorialAzimuthalEquidistant::fill(grib_spec &spec) const  {
+void EquatorialAzimuthalEquidistant::fill(grib_info &info) const  {
     NOTIMP;
 }
 

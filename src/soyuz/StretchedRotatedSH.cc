@@ -26,7 +26,7 @@ void StretchedRotatedSH::print(std::ostream &out) const {
 }
 
 
-void StretchedRotatedSH::fill(grib_spec &spec) const  {
+void StretchedRotatedSH::fill(grib_info &info) const  {
     NOTIMP;
 }
 

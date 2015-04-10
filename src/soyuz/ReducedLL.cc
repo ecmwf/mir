@@ -26,7 +26,7 @@ void ReducedLL::print(std::ostream &out) const {
 }
 
 
-void ReducedLL::fill(grib_spec &spec) const  {
+void ReducedLL::fill(grib_info &info) const  {
     NOTIMP;
 }
 

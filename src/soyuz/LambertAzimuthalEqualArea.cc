@@ -26,7 +26,7 @@ void LambertAzimuthalEqualArea::print(std::ostream &out) const {
 }
 
 
-void LambertAzimuthalEqualArea::fill(grib_spec &spec) const  {
+void LambertAzimuthalEqualArea::fill(grib_info &info) const  {
     NOTIMP;
 }
 

@@ -50,66 +50,66 @@ void GribOutput::save(const MIRParametrisation &param, MIRInput &input, MIRField
     grib_handle *h = input.gribHandle(); // Base class will throw an exception is input cannot provide a grib_handle
 
 
-    grib_spec spec = {0,};
+    grib_info info = {0,};
 
 
 
     /* bitmap */
-    spec.grid.bitmapPresent = field.hasMissing() ? 1 : 0;
-    spec.grid.missingValue = field.missingValue();
+    info.grid.bitmapPresent = field.hasMissing() ? 1 : 0;
+    info.grid.missingValue = field.missingValue();
 
     /* Packing options */
 
-    spec.packing.packing = GRIB_UTIL_PACKING_SAME_AS_INPUT;
-    spec.packing.accuracy = GRIB_UTIL_ACCURACY_SAME_BITS_PER_VALUES_AS_INPUT;
+    info.packing.packing = GRIB_UTIL_PACKING_SAME_AS_INPUT;
+    info.packing.accuracy = GRIB_UTIL_ACCURACY_SAME_BITS_PER_VALUES_AS_INPUT;
 
     std::string value;
     if (param.get("accuracy", value)) {
         long bits = eckit::Translator<std::string, long>()(value);
-        spec.packing.accuracy = GRIB_UTIL_ACCURACY_USE_PROVIDED_BITS_PER_VALUES;
-        spec.packing.bitsPerValue = bits;
+        info.packing.accuracy = GRIB_UTIL_ACCURACY_USE_PROVIDED_BITS_PER_VALUES;
+        info.packing.bitsPerValue = bits;
     }
 
-    // Ask last representation to update spec
+    // Ask last representation to update info
 
-    field.representation()->fill(spec);
+    field.representation()->fill(info);
 
 
-    X(spec.grid.grid_type);
-    X(spec.grid.Ni);
-    X(spec.grid.Nj);
-    X(spec.grid.iDirectionIncrementInDegrees);
-    X(spec.grid.jDirectionIncrementInDegrees);
-    X(spec.grid.longitudeOfFirstGridPointInDegrees);
-    X(spec.grid.longitudeOfLastGridPointInDegrees);
-    X(spec.grid.latitudeOfFirstGridPointInDegrees);
-    X(spec.grid.latitudeOfLastGridPointInDegrees);
-    X(spec.grid.uvRelativeToGrid);
-    X(spec.grid.latitudeOfSouthernPoleInDegrees);
-    X(spec.grid.longitudeOfSouthernPoleInDegrees);
-    X(spec.grid.iScansNegatively);
-    X(spec.grid.jScansPositively);
-    X(spec.grid.N);
-    X(spec.grid.bitmapPresent);
-    X(spec.grid.missingValue);
-    X(spec.grid.pl_size);
-    X(spec.grid.truncation);
-    X(spec.grid.orientationOfTheGridInDegrees);
-    X(spec.grid.DyInMetres);
-    X(spec.grid.DxInMetres);
-    X(spec.packing.packing_type);
-    X(spec.packing.packing);
-    X(spec.packing.boustrophedonic);
-    X(spec.packing.editionNumber);
-    X(spec.packing.accuracy);
-    X(spec.packing.bitsPerValue);
-    X(spec.packing.decimalScaleFactor);
-    X(spec.packing.computeLaplacianOperator);
-    X(spec.packing.truncateLaplacian);
-    X(spec.packing.laplacianOperator);
-    X(spec.packing.deleteLocalDefinition);
-    // X(spec.packing.extra_settings);
-    X(spec.packing.extra_settings_count);
+    X(info.grid.grid_type);
+    X(info.grid.Ni);
+    X(info.grid.Nj);
+    X(info.grid.iDirectionIncrementInDegrees);
+    X(info.grid.jDirectionIncrementInDegrees);
+    X(info.grid.longitudeOfFirstGridPointInDegrees);
+    X(info.grid.longitudeOfLastGridPointInDegrees);
+    X(info.grid.latitudeOfFirstGridPointInDegrees);
+    X(info.grid.latitudeOfLastGridPointInDegrees);
+    X(info.grid.uvRelativeToGrid);
+    X(info.grid.latitudeOfSouthernPoleInDegrees);
+    X(info.grid.longitudeOfSouthernPoleInDegrees);
+    X(info.grid.iScansNegatively);
+    X(info.grid.jScansPositively);
+    X(info.grid.N);
+    X(info.grid.bitmapPresent);
+    X(info.grid.missingValue);
+    X(info.grid.pl_size);
+    X(info.grid.truncation);
+    X(info.grid.orientationOfTheGridInDegrees);
+    X(info.grid.DyInMetres);
+    X(info.grid.DxInMetres);
+    X(info.packing.packing_type);
+    X(info.packing.packing);
+    X(info.packing.boustrophedonic);
+    X(info.packing.editionNumber);
+    X(info.packing.accuracy);
+    X(info.packing.bitsPerValue);
+    X(info.packing.decimalScaleFactor);
+    X(info.packing.computeLaplacianOperator);
+    X(info.packing.truncateLaplacian);
+    X(info.packing.laplacianOperator);
+    X(info.packing.deleteLocalDefinition);
+    // X(info.packing.extra_settings);
+    X(info.packing.extra_settings_count);
 
 
 
@@ -118,7 +118,7 @@ void GribOutput::save(const MIRParametrisation &param, MIRInput &input, MIRField
 
     const std::vector<double> values = field.values();
 
-    grib_handle *result = grib_util_set_spec(h, &spec.grid, &spec.packing, flags, &values[0], values.size(), &err);
+    grib_handle *result = grib_util_set_spec(h, &info.grid, &info.packing, flags, &values[0], values.size(), &err);
     HandleFree hf(result); // Make sure handle deleted even in case of exception
 
     GRIB_CALL(err);

@@ -67,10 +67,13 @@ void MIRJob::execute(MIRInput& input, MIROutput& output) const
     std::vector<std::auto_ptr<Action> > actions;
     logic->prepare(actions);
 
-    eckit::Log::info() << "Actions are:" << std::endl;
+    eckit::Log::info() << "Actions are: " << std::endl;
+    std::string arrow;
     for(std::vector<std::auto_ptr<Action> >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
-        eckit::Log::info() << "   " << *(*j) << std::endl;
+        eckit::Log::info() << arrow << *(*j);
+        arrow = " => ";
     }
+    eckit::Log::info() << std::endl;
 
     std::auto_ptr<MIRField> field(input.field());
     eckit::Log::info() << "Field is " << *field << std::endl;

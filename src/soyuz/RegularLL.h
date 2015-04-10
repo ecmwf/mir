@@ -87,7 +87,7 @@ private:
 
 // -- Overridden methods
 
-    virtual void fill(grib_spec&) const;
+    virtual void fill(grib_info&) const;
     virtual Representation* crop(double north, double west, double south, double east, const std::vector<double>&, std::vector<double>&) const;
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 

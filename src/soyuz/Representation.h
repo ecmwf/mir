@@ -10,7 +10,7 @@
 
 class MIRParametrisation;
 
-struct grib_spec;
+struct grib_info;
 
 class Representation {
 public:
@@ -34,7 +34,7 @@ public:
 
 // -- Methods
 
-    virtual void fill(grib_spec&) const;
+    virtual void fill(grib_info&) const;
 
     virtual Representation* crop(double north, double west, double south, double east,
             const std::vector<double>&, std::vector<double>&) const;

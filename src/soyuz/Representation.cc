@@ -32,7 +32,7 @@ Representation::Representation() {
 Representation::~Representation() {
 }
 
-void Representation::fill(grib_spec &) const {
+void Representation::fill(grib_info &) const {
     eckit::StrStream os;
     os << "Representation::fill() not implemented for " << *this << eckit::StrStream::ends;
     throw eckit::SeriousBug(std::string(os));

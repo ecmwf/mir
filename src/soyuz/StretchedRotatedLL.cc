@@ -26,7 +26,7 @@ void StretchedRotatedLL::print(std::ostream &out) const {
 }
 
 
-void StretchedRotatedLL::fill(grib_spec &spec) const  {
+void StretchedRotatedLL::fill(grib_info &info) const  {
     NOTIMP;
 }
 

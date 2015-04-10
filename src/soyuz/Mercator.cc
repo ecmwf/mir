@@ -26,7 +26,7 @@ void Mercator::print(std::ostream &out) const {
 }
 
 
-void Mercator::fill(grib_spec &spec) const  {
+void Mercator::fill(grib_info &info) const  {
     NOTIMP;
 }
 

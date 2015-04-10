@@ -26,7 +26,7 @@ void Albers::print(std::ostream &out) const {
 }
 
 
-void Albers::fill(grib_spec &spec) const  {
+void Albers::fill(grib_info &info) const  {
     NOTIMP;
 }
 

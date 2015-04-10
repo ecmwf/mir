@@ -1,4 +1,5 @@
 #include "eckit/runtime/Tool.h"
+#include "eckit/runtime/Context.h"
 
 #include "MIRJob.h"
 #include "GribFileInput.h"
@@ -23,6 +24,19 @@ class MIRDemo : public eckit::Tool {
 
 
 void MIRDemo::run() {
+
+    if(eckit::Context::instance().argc() > 2 ) {
+
+        MIRJob job;
+        GribFileInput input(eckit::Context::instance().argv(1));
+        GribFileOutput output(eckit::Context::instance().argv(2));
+
+        while (input.next()) {
+            job.execute(input, output);
+        }
+
+        return;
+    }
 
     if (1) {
         MIRJob job;

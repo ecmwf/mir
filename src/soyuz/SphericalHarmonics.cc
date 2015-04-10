@@ -38,13 +38,13 @@ void SphericalHarmonics::print(std::ostream &out) const {
 }
 
 
-void SphericalHarmonics::fill(grib_spec &spec) const  {
-    spec.grid.grid_type = GRIB_UTIL_GRID_SPEC_SH;
-    spec.grid.truncation = truncation_;
-    // spec.packing.computeLaplacianOperator = 1;
-    // spec.packing.truncateLaplacian = 1;
-    // spec.packing.laplacianOperator = 0;
-    spec.packing.packing_type = GRIB_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX; // Check if this is needed, why does grib_api not copy input?
+void SphericalHarmonics::fill(grib_info &info) const  {
+    info.grid.grid_type = GRIB_UTIL_GRID_SPEC_SH;
+    info.grid.truncation = truncation_;
+    // info.packing.computeLaplacianOperator = 1;
+    // info.packing.truncateLaplacian = 1;
+    // info.packing.laplacianOperator = 0;
+    info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX; // Check if this is needed, why does grib_api not copy input?
 }
 
 Representation *SphericalHarmonics::truncate(size_t truncation,
