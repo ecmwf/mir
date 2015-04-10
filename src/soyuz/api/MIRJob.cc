@@ -105,7 +105,7 @@ void MIRJob::print(std::ostream& out) const
 }
 
 void MIRJob::set(const std::string& name, const std::string& value) {
-    eckit::Log::info() << "************* MIRJob::set [" << name << "] =  [" << value << << "]" << std::endl;
+    eckit::Log::info() << "************* MIRJob::set [" << name << "] =  [" << value << "]" << std::endl;
     settings_[name] = value;
 }
 
