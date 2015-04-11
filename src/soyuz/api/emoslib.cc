@@ -338,9 +338,7 @@ extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fort
 
 extern "C" fortint emosnum_(fortint *value) {
 
-    eckit::Log::info() << "++++++ aremosnum" << std::endl;
-
-
-    *value = 12345;
-    return 0;
+    eckit::Log::info() << "++++++ emosnum" << std::endl;
+    *value = 0;
+    return 42424242;
 }
