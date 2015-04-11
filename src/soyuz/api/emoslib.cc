@@ -16,6 +16,9 @@ typedef double fortfloat;
 std::auto_ptr<MIRJob> job(0);
 
 extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const char *value, fortint, fortint) {
+
+    eckit::Log::info() << "++++++ intout " << name << std::endl;
+
     try {
 
         if(!job.get()) {
@@ -70,7 +73,7 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
         }
 
         if(strcasecmp(name, "autoresol") == 0) {
-            job->set("autoresol", "1");
+            job->set("autoresol", value);
             return 0;
         }
 
@@ -122,6 +125,9 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
 }
 
 extern "C" fortint intin_(char *name, fortint *ints, fortfloat *reals, const char *value, fortint, fortint) {
+
+    eckit::Log::info() << "++++++ intin " << name << std::endl;
+
     try {
         eckit::Log::warning() << "INTIN not implemenent (ignored), name=" << name << std::endl;
     } catch (std::exception &e) {
@@ -132,6 +138,9 @@ extern "C" fortint intin_(char *name, fortint *ints, fortfloat *reals, const cha
 }
 
 extern "C" fortint intf_(char *, fortint *, fortfloat *, char *, fortint *, fortfloat *) {
+
+    eckit::Log::info() << "++++++ intf" << std::endl;
+
     try {
         NOTIMP;
     } catch (std::exception &e) {
@@ -142,6 +151,9 @@ extern "C" fortint intf_(char *, fortint *, fortfloat *, char *, fortint *, fort
 }
 
 extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fortint *length_out) {
+
+    eckit::Log::info() << "++++++ intf2" << std::endl;
+
     try {
 
         if(!job.get()) {
@@ -170,6 +182,9 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
 }
 
 extern "C" fortint intuvs2_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *vort_grib_out, char *div_grib_out, fortint *length_out) {
+
+    eckit::Log::info() << "++++++ intuvs2" << std::endl;
+
     try {
         NOTIMP;
     } catch (std::exception &e) {
@@ -180,6 +195,9 @@ extern "C" fortint intuvs2_(char *vort_grib_in, char *div_grib_in, fortint *leng
 }
 
 extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *vort_grib_out, char *div_grib_out, fortint *length_out) {
+
+    eckit::Log::info() << "++++++ intuvp2" << std::endl;
+
     try {
         NOTIMP;
     } catch (std::exception &e) {
@@ -190,6 +208,9 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
 }
 
 extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_in, char *u_grib_out, char *v_grib_out, fortint *length_out) {
+
+    eckit::Log::info() << "++++++ intvect2" << std::endl;
+
     try {
         NOTIMP;
     } catch (std::exception &e) {
@@ -200,6 +221,9 @@ extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_i
 }
 
 extern "C" fortint intuvs_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *vort_grib_out, char *div_grib_out, fortint *length_out) {
+
+    eckit::Log::info() << "++++++ intuvs" << std::endl;
+
     try {
         NOTIMP;
     } catch (std::exception &e) {
@@ -210,6 +234,9 @@ extern "C" fortint intuvs_(char *vort_grib_in, char *div_grib_in, fortint *lengt
 }
 
 extern "C" fortint intuvp_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *vort_grib_out, char *div_grib_out, fortint *length_out) {
+
+    eckit::Log::info() << "++++++ intuvp" << std::endl;
+
     try {
         NOTIMP;
     } catch (std::exception &e) {
@@ -220,6 +247,9 @@ extern "C" fortint intuvp_(char *vort_grib_in, char *div_grib_in, fortint *lengt
 }
 
 extern "C" fortint intvect_(char *u_grib_in, char *v_grib_in, fortint *length_in, char *u_grib_out, char *v_grib_out, fortint *length_out) {
+
+    eckit::Log::info() << "++++++ intvect" << std::endl;
+
     try {
         NOTIMP;
     } catch (std::exception &e) {
@@ -230,6 +260,9 @@ extern "C" fortint intvect_(char *u_grib_in, char *v_grib_in, fortint *length_in
 }
 
 extern "C" fortint iscrsz_() {
+
+    eckit::Log::info() << "++++++ iscrsz" << std::endl;
+
     try {
         NOTIMP;
     } catch (std::exception &e) {
@@ -240,12 +273,18 @@ extern "C" fortint iscrsz_() {
 }
 
 extern "C" fortint ibasini_(fortint *force) {
+
+    eckit::Log::info() << "++++++ ibasini" << std::endl;
+
     // Init interpolation package
     job.reset(0);
     return 0;
 }
 
 extern "C" void intlogm_(fortint (*)(char *, fortint)) {
+
+    eckit::Log::info() << "++++++ intlogm" << std::endl;
+
     try {
         NOTIMP;
     } catch (std::exception &e) {
@@ -268,6 +307,8 @@ static void callback(void* ctxt, const char* msg) {
 
 extern "C" void intlogs(emos_cb_proc proc) {
 
+    eckit::Log::info() << "++++++ intlogs" << std::endl;
+
     emos_ctx.proc = proc;
 
     eckit::ContextBehavior& behavior = eckit::Context::instance().behavior();
@@ -283,6 +324,9 @@ extern "C" void intlogs(emos_cb_proc proc) {
 
 extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fortfloat *west, fortfloat *south,
                             fortfloat *east) {
+
+    eckit::Log::info() << "++++++ areachk" << std::endl;
+
     try {
         eckit::Log::warning() << "AREACHK not implemenent (ignored)" << std::endl;
     } catch (std::exception &e) {
@@ -293,6 +337,10 @@ extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fort
 }
 
 extern "C" fortint emosnum_(fortint *value) {
+
+    eckit::Log::info() << "++++++ aremosnum" << std::endl;
+
+
     *value = 12345;
     return 0;
 }
