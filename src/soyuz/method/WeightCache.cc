@@ -27,6 +27,44 @@ using namespace eckit;
 namespace mir {
 namespace method {
 
+/*
+I was asked to review that code, so there it is:
+
+1 - We discussed having a generic caching class in eckit, from which we derive, this is not the case.
+    There is also a need to cache legendre coefficients, and we want code reuse.
+2 - The code does not ensure that the created directories (mkdir) are world readable/writable/executable
+    so that other users can access them and create new files in them (umask? chmod?)
+3 - The code does not ensure that the created files (*.cache) are world readable
+    so that other users can access them (umask?)
+4 - Writting is done with std::fstream which does not throw exception unless asked explicitally
+    like so: ofs.exceptions ( std::ofstream::failbit | std::ofstream::badbit );
+    this means that no error checking is done on writting, this will lead the truncated files
+    when file systems become full
+5 - Reading and writting code are not symetrical (write uses std::fstream, read uses DataHandle)
+6 - One should AutoClose<FileHandle> to ensure that handles are closed in case of
+    exception (same for std::ftream), so we don't leak file descriptors
+7 - DataHandle reads into a void*, not a char*, so there is not need for reinterpret_cast<const char*>
+8 - File names do not take compiler, number of bits, architecture, etc... in account. In certain cases
+    we will have to put these files in shared filesytems (e.g. $SCRATCH).
+9 - There is no check done that the code used to read the file matched the code used to right the file.
+    Old and new version of MIR (i.e. of MARS clients) will coexists. This should be refelected in the file
+    name, e.g. adding a version number of the encoding code (no need for fancy SHA1, just 1, 2, 3...)
+
+The last two points could be addressed externally, i.e. having different cache directories
+for different architecture, compilers, etc, but:
+
+a - Doing so will make it more difficult to share cache files between different applications (MARS, mir tool,
+    PRODGEN, ...)
+b - Code should ASSERT() that what their are decoding looks correct. This can be done by sticking a header
+    in front of the files, and cheching that the decoder can understand the header correctly.
+
+TODO:
+1 - Create a generic file caching class in eckit that takes care of management of directories and files,
+    ensuring proper permission settings.
+2 - This class provide DataHandles to its subclasses to read/write their stuff
+3 - Code must ensure that no resource are lost in case of exception  (e.g. using AutoClose<T>)
+*/
+
 
 PathName WeightCache::filename(const std::string& key)
 {
