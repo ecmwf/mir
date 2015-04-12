@@ -21,18 +21,18 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
 
     try {
 
-        if(!job.get()) {
+        if (!job.get()) {
             job.reset(new MIRJob());
         }
 
-        if(strcasecmp(name, "grid") == 0) {
+        if (strcasecmp(name, "grid") == 0) {
             eckit::StrStream os;
             os << reals[0] << "/" << reals[1] << eckit::StrStream::ends;
             job->set("grid", std::string(os));
             return 0;
         }
 
-        if(strcasecmp(name, "area") == 0) {
+        if (strcasecmp(name, "area") == 0) {
             eckit::StrStream os;
             os << reals[0] << "/" << reals[1] << "/" << reals[2] << "/" << reals[3] << eckit::StrStream::ends;
             job->set("area", std::string(os));
@@ -44,35 +44,35 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
         //     return 0;
         // }
 
-        if(strcasecmp(name, "reduced") == 0) {
+        if (strcasecmp(name, "reduced") == 0) {
             eckit::StrStream os;
             os << ints[0] << eckit::StrStream::ends;
             job->set("reduced", std::string(os));
             return 0;
         }
 
-        if(strcasecmp(name, "truncation") == 0) {
+        if (strcasecmp(name, "truncation") == 0) {
             eckit::StrStream os;
             os << ints[0] << eckit::StrStream::ends;
             job->set("truncation", std::string(os));
             return 0;
         }
 
-        if(strcasecmp(name, "regular") == 0) {
+        if (strcasecmp(name, "regular") == 0) {
             eckit::StrStream os;
             os << ints[0] << eckit::StrStream::ends;
             job->set("regular", std::string(os));
             return 0;
         }
 
-        if(strcasecmp(name, "rotation") == 0) {
+        if (strcasecmp(name, "rotation") == 0) {
             eckit::StrStream os;
             os << reals[0] << "/" << reals[1] << eckit::StrStream::ends;
             job->set("rotation", std::string(os));
             return 0;
         }
 
-        if(strcasecmp(name, "autoresol") == 0) {
+        if (strcasecmp(name, "autoresol") == 0) {
             job->set("autoresol", value);
             return 0;
         }
@@ -82,32 +82,32 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
         //     return 0;
         // }
 
-        if(strcasecmp(name, "style") == 0) {
+        if (strcasecmp(name, "style") == 0) {
             job->set("style", value);
             return 0;
         }
 
-        if(strcasecmp(name, "bitmap") == 0) {
+        if (strcasecmp(name, "bitmap") == 0) {
             job->set("bitmap", value);
             return 0;
         }
 
-        if(strcasecmp(name, "accuracy") == 0) {
+        if (strcasecmp(name, "accuracy") == 0) {
             job->set("accuracy", value);
             return 0;
         }
 
-        if(strcasecmp(name, "frame") == 0) {
+        if (strcasecmp(name, "frame") == 0) {
             eckit::StrStream os;
             os << ints[0] << eckit::StrStream::ends;
             job->set("frame", std::string(os));
             return 0;
         }
 
-        if(strcasecmp(name, "interpolation") == 0) {
+        if (strcasecmp(name, "interpolation") == 0) {
             std::string low;
-            const char* p = value;
-            while(*p) {
+            const char *p = value;
+            while (*p) {
                 low += tolower(*p);
                 p++;
             }
@@ -157,7 +157,7 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
 
     try {
 
-        if(!job.get()) {
+        if (!job.get()) {
             job.reset(new MIRJob());
         }
 
@@ -168,10 +168,9 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
 
         ASSERT(output.interpolated() + output.saved() == 1);
 
-        if(output.saved() == 1) {
+        if (output.saved() == 1) {
             *length_out = 0; // Not interpolation performed
-        }
-        else {
+        } else {
             *length_out = output.length();
         }
 
@@ -301,9 +300,9 @@ struct emos_cb_ctx {
 
 static emos_cb_ctx emos_ctx;
 
-static void callback(void* ctxt, const char* msg) {
-    emos_cb_ctx* c = reinterpret_cast<emos_cb_ctx*>(ctxt);
-    c->proc(const_cast<char*>(msg));
+static void callback(void *ctxt, const char *msg) {
+    emos_cb_ctx *c = reinterpret_cast<emos_cb_ctx *>(ctxt);
+    c->proc(const_cast<char *>(msg));
 }
 
 extern "C" void intlogs(emos_cb_proc proc) {
@@ -312,13 +311,11 @@ extern "C" void intlogs(emos_cb_proc proc) {
 
     emos_ctx.proc = proc;
 
-    eckit::ContextBehavior& behavior = eckit::Context::instance().behavior();
+    eckit::ContextBehavior &behavior = eckit::Context::instance().behavior();
     try {
-        eckit::LibBehavior& libbehavior = dynamic_cast<eckit::LibBehavior&>(behavior);
+        eckit::LibBehavior &libbehavior = dynamic_cast<eckit::LibBehavior &>(behavior);
         libbehavior.default_callback(&callback, &emos_ctx);
-    }
-    catch(std::bad_cast&)
-    {
+    } catch (std::bad_cast &) {
         eckit::Log::warning() << "INTLOGS: ContextBehavior is not a LibBehavior" << std::endl;
     }
 }
@@ -326,40 +323,40 @@ extern "C" void intlogs(emos_cb_proc proc) {
 extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fortfloat *west, fortfloat *south,
                             fortfloat *east) {
 
-/* FROM EMOSLIB:
-C     Input
-C     -----
-C
-C     For latitude/longitude grids:
-C     EW    =  East-west grid interval (degrees)
-C     NS    =  North-south grid interval (degrees)
-C
-C     For gaussian grids:
-C     EW    =  gaussian grid number
-C     NS    =  0
-C
-C     NORTH =  North latitude (degrees)
-C     WEST  =  West longitude (degrees)
-C     SOUTH =  South latitude (degrees)
-C     EAST  =  East longitude (degrees)
-C
-C     For spherical harmonics:
-C     EW    =  0
-C     NS    =  0
-C     NORTH =  0
-C     WEST  =  0
-C     SOUTH =  0
-C     EAST  =  0
-C
-C
-C     Output
-C     ------
-C
-C     NORTH =  North latitude, adjusted if necessary (degrees)
-C     WEST  =  West longitude, adjusted if necessary (degrees)
-C     SOUTH =  South latitude, adjusted if necessary (degrees)
-C     EAST  =  East longitude, adjusted if necessary (degrees)
-*/
+    /* FROM EMOSLIB:
+    C     Input
+    C     -----
+    C
+    C     For latitude/longitude grids:
+    C     EW    =  East-west grid interval (degrees)
+    C     NS    =  North-south grid interval (degrees)
+    C
+    C     For gaussian grids:
+    C     EW    =  gaussian grid number
+    C     NS    =  0
+    C
+    C     NORTH =  North latitude (degrees)
+    C     WEST  =  West longitude (degrees)
+    C     SOUTH =  South latitude (degrees)
+    C     EAST  =  East longitude (degrees)
+    C
+    C     For spherical harmonics:
+    C     EW    =  0
+    C     NS    =  0
+    C     NORTH =  0
+    C     WEST  =  0
+    C     SOUTH =  0
+    C     EAST  =  0
+    C
+    C
+    C     Output
+    C     ------
+    C
+    C     NORTH =  North latitude, adjusted if necessary (degrees)
+    C     WEST  =  West longitude, adjusted if necessary (degrees)
+    C     SOUTH =  South latitude, adjusted if necessary (degrees)
+    C     EAST  =  East longitude, adjusted if necessary (degrees)
+    */
 
     eckit::Log::info() << "++++++ areachk" << std::endl;
 
@@ -367,11 +364,47 @@ C     EAST  =  East longitude, adjusted if necessary (degrees)
 
         ASSERT(*ew > 0 && *ns > 0); // Only regular LL for now
         // This is not the code in EMOSLIB, just a guess
-        *north = long(*north / *ns) * *ns;
-        *south = long(*south / *ns) * *ns;
+        double n = long(*north / *ns) * *ns;
+        double s = long(*south / *ns) * *ns;
+        double w = long(*west / *ew) * *ew;
+        double e = long(*east / *ew) * *ew;
 
-        *west = long(*west / *ew) * *ew;
-        *east = long(*east / *ew) * *ew;
+        if (*north != n) {
+            n += *ns;
+            if (n > 90) {
+                n = 90;
+            }
+        }
+
+        if (*south != s) {
+            s += *ns;
+            if (s < -90) {
+                s = -90;
+            }
+        }
+
+        if (*west != w) {
+            w -= *ew;
+        }
+
+        if (*east != e) {
+            e += *ew;
+        }
+
+        while (e > 360) {
+            e -= 360;
+            w -= 360;
+        }
+
+        while (e < -180) {
+            e += 360;
+            w += 360;
+        }
+
+        *north = n;
+        *south = s;
+        *west = w;
+        *east = e;
 
 
     } catch (std::exception &e) {
