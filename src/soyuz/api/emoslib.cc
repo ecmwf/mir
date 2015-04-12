@@ -101,6 +101,7 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
             eckit::StrStream os;
             os << ints[0] << eckit::StrStream::ends;
             job->set("frame", std::string(os));
+            return 0;
         }
 
         if(strcasecmp(name, "interpolation") == 0) {
@@ -325,10 +326,54 @@ extern "C" void intlogs(emos_cb_proc proc) {
 extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fortfloat *west, fortfloat *south,
                             fortfloat *east) {
 
+/* FROM EMOSLIB:
+C     Input
+C     -----
+C
+C     For latitude/longitude grids:
+C     EW    =  East-west grid interval (degrees)
+C     NS    =  North-south grid interval (degrees)
+C
+C     For gaussian grids:
+C     EW    =  gaussian grid number
+C     NS    =  0
+C
+C     NORTH =  North latitude (degrees)
+C     WEST  =  West longitude (degrees)
+C     SOUTH =  South latitude (degrees)
+C     EAST  =  East longitude (degrees)
+C
+C     For spherical harmonics:
+C     EW    =  0
+C     NS    =  0
+C     NORTH =  0
+C     WEST  =  0
+C     SOUTH =  0
+C     EAST  =  0
+C
+C
+C     Output
+C     ------
+C
+C     NORTH =  North latitude, adjusted if necessary (degrees)
+C     WEST  =  West longitude, adjusted if necessary (degrees)
+C     SOUTH =  South latitude, adjusted if necessary (degrees)
+C     EAST  =  East longitude, adjusted if necessary (degrees)
+*/
+
     eckit::Log::info() << "++++++ areachk" << std::endl;
 
     try {
-        eckit::Log::warning() << "AREACHK not implemenent (ignored)" << std::endl;
+
+        ASSERT(*ew > 0 && *ns > 0); // Only regular LL for now
+        // This is not the code in EMOSLIB, just a guess
+        *north = long(*north / *ns) * *ns;
+        *south = long(*south / *ns) * *ns;
+
+        *west = long(*west / *ew) * *ew;
+        *east = long(*east / *ew) * *ew;
+
+
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
