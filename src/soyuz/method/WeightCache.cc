@@ -49,6 +49,8 @@ I was asked to review that code, so there it is:
 9 - There is no check done that the code used to read the file matched the code used to right the file.
     Old and new version of MIR (i.e. of MARS clients) will coexists. This should be refelected in the file
     name, e.g. adding a version number of the encoding code (no need for fancy SHA1, just 1, 2, 3...)
+10- Use size_t instead of unsigned int
+11- Use camelCase: filename() => fileName()
 
 The last two points could be addressed externally, i.e. having different cache directories
 for different architecture, compilers, etc, but:
