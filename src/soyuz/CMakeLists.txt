@@ -134,6 +134,8 @@ list( APPEND mir_srcs
   repres/TriangularGrid.h
   repres/UnstructuredGrid.cc
   repres/UnstructuredGrid.h
+  util/Arguments.cc
+  util/Arguments.h
   util/Bitmap.cc
   util/Bitmap.h
   util/Grib.h
