@@ -318,569 +318,503 @@
 /*static*/ LegendrePolynomialsCollection Factory::memoryMapCache_;
 /*static*/ LegendrePolynomialsCollection Factory::sharedMemoryCache_;
 
-Factory::Factory() 
-{
+Factory::Factory() {
 }
 
-Factory::~Factory()
-{
+Factory::~Factory() {
 }
 
 
-Interpolator* Factory::interpolationMethod(const string& method, int pointsForInterpolation, const GridField& input, const Grid& gridout, bool lsm, const string& lsmMethod, const string& extrapolate, double missingValue, bool bitmap) const
-{
-	if(DEBUG)
-		cout << "Factory::interpolationMethod => " << method << endl;
-    if(method != "default"){
+Interpolator* Factory::interpolationMethod(const string& method, int pointsForInterpolation, const GridField& input, const Grid& gridout, bool lsm, const string& lsmMethod, const string& extrapolate, double missingValue, bool bitmap) const {
+    if(DEBUG)
+        cout << "Factory::interpolationMethod => " << method << endl;
+    if(method != "default") {
         if(method == "bilinear" || method == "BILINEAR") {
-        	if(extrapolate == "nearest") {
-				if(bitmap){
-					if(lsm)
-            			return new BiLinearLsmBitmap(input.grid(),gridout,lsmMethod,missingValue);
-					else			
-            			return new BiLinearBitmap(missingValue);
-				}
-				else{
-					if(lsm)
-            			return new BiLinearLsm(input.grid(),gridout,lsmMethod);
-					else			
-            			return new BiLinear;
-				}
-			}
-        	else if(extrapolate == "linear") {
-				if(bitmap){
-					if(lsm)
-            			return new BiLinearLsmBitmap(true,false,0,0,input.grid(),gridout,lsmMethod,missingValue);
-					else			
-            			return new BiLinearBitmap(true,false,0,0,missingValue);
-				}
-				else{
-					if(lsm)
-            			return new BiLinearLsm(true,false,0,0,input.grid(),gridout,lsmMethod);
-					else			
-            			return new BiLinear(true,false,0,0);
-				}
-			}
-			
-			double northPoleValue = 0;
-            double southPoleValue = 0;
-        	bool extrapolateAverage = input.extrapolateAverageOnPole(northPoleValue,southPoleValue);
-        	bool extrapolateLinear  = input.extrapolateLinearOnPole();
-			if(bitmap){
-				if(lsm)
-            		return new BiLinearLsmBitmap(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod, missingValue);
-				else			
-            		return new BiLinearBitmap(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue, missingValue);
-			}
-			else{
-				if(lsm)
-            		return new BiLinearLsm(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod);
-				else			
-            		return new BiLinear(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue);
-			}
-		}
-        else if(method == "bilinearinteger" || method == "BILINEARINTEGER") {
-            		return new BiLinearLsmInteger;
-		}
-        else if(method == "linear" || method == "LINEAR"){
-			if(lsm)
-            	throw UserError("Factory::interpolationMethod This interpolation method is not supported -> Lsm +  ", method);
-        	if(extrapolate == "nearest") {
-				if(bitmap)
-            		return new LinearBitmap(missingValue);
-				else
-            		return new Linear;
-			}
-        	else if(extrapolate == "linear") {
-				if(bitmap)
-            		return new LinearBitmap(true,false,0,0,missingValue);
-				else
-            		return new Linear(true,false,0,0);
-			}
-			double northPoleValue = 0;
-            double southPoleValue = 0;
-        	bool extrapolateAverage = input.extrapolateAverageOnPole(northPoleValue,southPoleValue);
-        	bool extrapolateLinear  = input.extrapolateLinearOnPole();
-            return  new Linear(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue);
-		}
-        else if(method == "linear-fit" || method == "LINEAR-FIT" || method == "LINEARFIT" || method == "linearfit"){
-        	if(extrapolate == "nearest") {
-				if(bitmap){
-					if(lsm)
-            			return new LinearFit3TimesLsmBitmap(input.grid(),gridout,lsmMethod,missingValue);
-					else			
-            			return new LinearFit3TimesBitmap(missingValue);
-				}
-				else{
-					if(lsm)
-            			return new LinearFit3TimesLsm(input.grid(),gridout,lsmMethod);
-					else			
-            			return new LinearFit3Times;
-				}
-			}
-        	else if(extrapolate == "linear") {
-				if(bitmap){
-					if(lsm)
-            			return new LinearFit3TimesLsmBitmap(true,false,0,0,input.grid(),gridout,lsmMethod,missingValue);
-					else			
-            			return new LinearFit3TimesBitmap(true,false,0,0,missingValue);
-				}
-				else{
-					if(lsm)
-            			return new LinearFit3TimesLsm(true,false,0,0,input.grid(),gridout,lsmMethod);
-					else			
-            			return new LinearFit3Times(true,false,0,0);
-				}
-			}
-			double northPoleValue = 0;
-            double southPoleValue = 0;
-        	bool extrapolateAverage = input.extrapolateAverageOnPole(northPoleValue,southPoleValue);
-        	bool extrapolateLinear  = input.extrapolateLinearOnPole();
-			if(lsm)
-            	return  new LinearFit3TimesLsm(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod);
-			else			
-            	return  new LinearFit3Times(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue);
-		}
-        else if(method == "nearest-neighbour" || method == "NEAREST-NEIGHBOUR" ||
-                method == "nearestneighbour"  || method == "NEARESTNEIGHBOUR")
-			if(lsm)
-            	return  new NearestNeigbourLsm(pointsForInterpolation,input.grid(),gridout,lsmMethod);
-			else			
-            	return  new NearestNeigbour(pointsForInterpolation);
-        else if(method == "cubic"){
-        	if(extrapolate == "average") {
-				double northPoleValue = 0;
-            	double southPoleValue = 0;
-        		bool extrapolateAverage = input.extrapolateAverageOnPole(northPoleValue,southPoleValue);
-        		bool extrapolateLinear  = input.extrapolateLinearOnPole();
-				if(bitmap){
-					if(lsm)
-            			return  new Cubic12ptsLsmBitmap(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod,missingValue);
-					else			
-            			return  new Cubic12ptsBitmap(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,missingValue);
-				}
-				else{
-					if(lsm)
-            			return  new Cubic12ptsLsm(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod);
-					else			
-            			return  new Cubic12pts(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue);
-				}
-			}
-        	else if(extrapolate == "linear") {
-				if(bitmap){
-					if(lsm)
-            			return new Cubic12ptsLsmBitmap(true,false,0,0,input.grid(),gridout,lsmMethod,missingValue);
-					else			
-            			return new Cubic12ptsBitmap(true,false,0,0,missingValue);
-				}
-				else{
-					if(lsm)
-            			return new Cubic12ptsLsm(true,false,0,0,input.grid(),gridout,lsmMethod);
-					else			
-            			return new Cubic12pts(true,false,0,0);
-				}
-			}
-			if(bitmap){
-				if(lsm)
-           			return new Cubic12ptsLsmBitmap(input.grid(),gridout,lsmMethod,missingValue);
-				else			
-           			return new Cubic12ptsBitmap(missingValue);
-			}
-			else{
-				if(lsm)
-           			return new Cubic12ptsLsm(input.grid(),gridout,lsmMethod);
-				else			
-           			return new Cubic12pts;
-			}
-		}
-        else if(method == "average" || method == "AVERAGE"){
-// ssp to be finished for bitmap
-			if(lsm)
-            	return new AverageLsm(pointsForInterpolation,input.grid(),gridout,lsmMethod);
-			else			
-            	return new Average(pointsForInterpolation);
-		}
-        else if(method == "double-linear" || method == "DOUBLE-LINEAR" || method == "DOUBLELINEAR" || method == "doublelinear"){
-			if(bitmap){
-				if(lsm)
-            		return new DoubleLinearLsmBitmap(input.grid(),gridout,lsmMethod,missingValue);
-				else			
-					return new DoubleLinearBitmap(missingValue);
-			}
-			else{
-				if(lsm)
-            		return new DoubleLinearLsm(input.grid(),gridout,lsmMethod);
-				else			
-					return new DoubleLinear;
-			}
-		}
-        else if(method == "double-linear-adjusted" || method == "DOUBLE-LINEAR-ADJUSTED" 
-               || method == "doublelinearadjusted" || method == "DOUBLELINEARADJUSTED"){
-				return new DoubleLinearBitmapAdjusted(missingValue);
-		}
-		else if(method == "average-weighted" || method == "AVERAGE-WEIGHTED" ||
-                method == "averageweighted" || method == "AVERAGEWEIGHTED"){
-			if(lsm){
-				if(gridout.reduced())
-					return new AverageWeightedReducedLsm(input.grid(),gridout,lsmMethod);
-				else			
-					return new AverageWeightedRegularLsm(input.grid(),gridout,lsmMethod);
-			}
-			else{			
-				if(gridout.reduced())
-					return new AverageWeightedReduced(input.grid(),gridout);
-				else			
-					return new AverageWeightedRegular(input.grid(),gridout);
-			}
-		}
-		else if(method == "flux-conserving" || method == "FLUX-CONSERVING" ||
-                method == "fluxconserving" || method == "FLUXCONSERVING"){
-				if(gridout.reduced())
-					return new FluxConservingReduced(input.grid(),gridout);
-				else			
-					return new FluxConservingRegular(input.grid(),gridout);
-		}
-		else if(method == "conserving"){
-				return new Conserving();
-		}
-		else
-			throw UserError("Factory::interpolationMethod This interpolation method is not supported -> ", method);
-	}
-	else {
-		if (gridout.gridType() == "list"){
-			if(lsm)
-				return new BiLinearLsm(input.grid(),gridout,lsmMethod);
-			else			
-           		return new BiLinear;
-		}
+            if(extrapolate == "nearest") {
+                if(bitmap) {
+                    if(lsm)
+                        return new BiLinearLsmBitmap(input.grid(),gridout,lsmMethod,missingValue);
+                    else
+                        return new BiLinearBitmap(missingValue);
+                } else {
+                    if(lsm)
+                        return new BiLinearLsm(input.grid(),gridout,lsmMethod);
+                    else
+                        return new BiLinear;
+                }
+            } else if(extrapolate == "linear") {
+                if(bitmap) {
+                    if(lsm)
+                        return new BiLinearLsmBitmap(true,false,0,0,input.grid(),gridout,lsmMethod,missingValue);
+                    else
+                        return new BiLinearBitmap(true,false,0,0,missingValue);
+                } else {
+                    if(lsm)
+                        return new BiLinearLsm(true,false,0,0,input.grid(),gridout,lsmMethod);
+                    else
+                        return new BiLinear(true,false,0,0);
+                }
+            }
 
-		if (input.conservation()){
-			return new BiLinearPrecipitation;
-			/*
-			if(lsm){
-				if(gridout.reduced())
-					return new AverageWeightedReducedLsm(input.grid(),gridout,lsmMethod);
-				else			
-					return new AverageWeightedRegularLsm(input.grid(),gridout,lsmMethod);
-			}
-			else{			
-				if(gridout.reduced())
-					return new AverageWeightedReduced(input.grid(),gridout);
-				else			
-					return new AverageWeightedRegular(input.grid(),gridout);
-			}
-			*/
-		}
-		else if (input.nearest())
-			if(lsm)
-				return  new NearestNeigbourLsm(pointsForInterpolation,input.grid(),gridout,lsmMethod);
-			else			
-				return new NearestNeigbour;
-		else {
-			if(extrapolate == "nearest") {
-				if(bitmap){
-					if(lsm)
-						return new BiLinearLsmBitmap(input.grid(),gridout,lsmMethod,missingValue);
-					else			
-           				return new BiLinearBitmap(missingValue);
-				}
-				else{
-					if(lsm)
-						return new BiLinearLsm(input.grid(),gridout,lsmMethod);
-					else			
-           				return new BiLinear;
-				}
-		}
-       	else if(extrapolate == "linear") {
-			if(bitmap){
-				if(lsm)
-           			return new BiLinearLsmBitmap(true,false,0,0,input.grid(),gridout,lsmMethod,missingValue);
-				else			
-           			return new BiLinearBitmap(true,false,0,0,missingValue);
-			}
-			else{
-				if(lsm)
-           			return new BiLinearLsm(true,false,0,0,input.grid(),gridout,lsmMethod);
-				else			
-           			return new BiLinear(true,false,0,0);
-			}
-		}
-			double northPoleValue = 0;
+            double northPoleValue = 0;
             double southPoleValue = 0;
-        	bool extrapolateAverage = input.extrapolateAverageOnPole(northPoleValue,southPoleValue);
-        	bool extrapolateLinear  = input.extrapolateLinearOnPole();
-			if(bitmap){
-				if(lsm)
-            		return new BiLinearLsmBitmap(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod,missingValue);
-				else			
-            		return new BiLinearBitmap(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,missingValue);
-			}
-			else{
-				if(lsm)
-            		return new BiLinearLsm(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod);
-				else			
-            		return new BiLinear(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue);
-			}
-		}
+            bool extrapolateAverage = input.extrapolateAverageOnPole(northPoleValue,southPoleValue);
+            bool extrapolateLinear  = input.extrapolateLinearOnPole();
+            if(bitmap) {
+                if(lsm)
+                    return new BiLinearLsmBitmap(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod, missingValue);
+                else
+                    return new BiLinearBitmap(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue, missingValue);
+            } else {
+                if(lsm)
+                    return new BiLinearLsm(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod);
+                else
+                    return new BiLinear(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue);
+            }
+        } else if(method == "bilinearinteger" || method == "BILINEARINTEGER") {
+            return new BiLinearLsmInteger;
+        } else if(method == "linear" || method == "LINEAR") {
+            if(lsm)
+                throw UserError("Factory::interpolationMethod This interpolation method is not supported -> Lsm +  ", method);
+            if(extrapolate == "nearest") {
+                if(bitmap)
+                    return new LinearBitmap(missingValue);
+                else
+                    return new Linear;
+            } else if(extrapolate == "linear") {
+                if(bitmap)
+                    return new LinearBitmap(true,false,0,0,missingValue);
+                else
+                    return new Linear(true,false,0,0);
+            }
+            double northPoleValue = 0;
+            double southPoleValue = 0;
+            bool extrapolateAverage = input.extrapolateAverageOnPole(northPoleValue,southPoleValue);
+            bool extrapolateLinear  = input.extrapolateLinearOnPole();
+            return  new Linear(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue);
+        } else if(method == "linear-fit" || method == "LINEAR-FIT" || method == "LINEARFIT" || method == "linearfit") {
+            if(extrapolate == "nearest") {
+                if(bitmap) {
+                    if(lsm)
+                        return new LinearFit3TimesLsmBitmap(input.grid(),gridout,lsmMethod,missingValue);
+                    else
+                        return new LinearFit3TimesBitmap(missingValue);
+                } else {
+                    if(lsm)
+                        return new LinearFit3TimesLsm(input.grid(),gridout,lsmMethod);
+                    else
+                        return new LinearFit3Times;
+                }
+            } else if(extrapolate == "linear") {
+                if(bitmap) {
+                    if(lsm)
+                        return new LinearFit3TimesLsmBitmap(true,false,0,0,input.grid(),gridout,lsmMethod,missingValue);
+                    else
+                        return new LinearFit3TimesBitmap(true,false,0,0,missingValue);
+                } else {
+                    if(lsm)
+                        return new LinearFit3TimesLsm(true,false,0,0,input.grid(),gridout,lsmMethod);
+                    else
+                        return new LinearFit3Times(true,false,0,0);
+                }
+            }
+            double northPoleValue = 0;
+            double southPoleValue = 0;
+            bool extrapolateAverage = input.extrapolateAverageOnPole(northPoleValue,southPoleValue);
+            bool extrapolateLinear  = input.extrapolateLinearOnPole();
+            if(lsm)
+                return  new LinearFit3TimesLsm(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod);
+            else
+                return  new LinearFit3Times(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue);
+        } else if(method == "nearest-neighbour" || method == "NEAREST-NEIGHBOUR" ||
+                  method == "nearestneighbour"  || method == "NEARESTNEIGHBOUR")
+            if(lsm)
+                return  new NearestNeigbourLsm(pointsForInterpolation,input.grid(),gridout,lsmMethod);
+            else
+                return  new NearestNeigbour(pointsForInterpolation);
+        else if(method == "cubic") {
+            if(extrapolate == "average") {
+                double northPoleValue = 0;
+                double southPoleValue = 0;
+                bool extrapolateAverage = input.extrapolateAverageOnPole(northPoleValue,southPoleValue);
+                bool extrapolateLinear  = input.extrapolateLinearOnPole();
+                if(bitmap) {
+                    if(lsm)
+                        return  new Cubic12ptsLsmBitmap(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod,missingValue);
+                    else
+                        return  new Cubic12ptsBitmap(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,missingValue);
+                } else {
+                    if(lsm)
+                        return  new Cubic12ptsLsm(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod);
+                    else
+                        return  new Cubic12pts(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue);
+                }
+            } else if(extrapolate == "linear") {
+                if(bitmap) {
+                    if(lsm)
+                        return new Cubic12ptsLsmBitmap(true,false,0,0,input.grid(),gridout,lsmMethod,missingValue);
+                    else
+                        return new Cubic12ptsBitmap(true,false,0,0,missingValue);
+                } else {
+                    if(lsm)
+                        return new Cubic12ptsLsm(true,false,0,0,input.grid(),gridout,lsmMethod);
+                    else
+                        return new Cubic12pts(true,false,0,0);
+                }
+            }
+            if(bitmap) {
+                if(lsm)
+                    return new Cubic12ptsLsmBitmap(input.grid(),gridout,lsmMethod,missingValue);
+                else
+                    return new Cubic12ptsBitmap(missingValue);
+            } else {
+                if(lsm)
+                    return new Cubic12ptsLsm(input.grid(),gridout,lsmMethod);
+                else
+                    return new Cubic12pts;
+            }
+        } else if(method == "average" || method == "AVERAGE") {
+// ssp to be finished for bitmap
+            if(lsm)
+                return new AverageLsm(pointsForInterpolation,input.grid(),gridout,lsmMethod);
+            else
+                return new Average(pointsForInterpolation);
+        } else if(method == "double-linear" || method == "DOUBLE-LINEAR" || method == "DOUBLELINEAR" || method == "doublelinear") {
+            if(bitmap) {
+                if(lsm)
+                    return new DoubleLinearLsmBitmap(input.grid(),gridout,lsmMethod,missingValue);
+                else
+                    return new DoubleLinearBitmap(missingValue);
+            } else {
+                if(lsm)
+                    return new DoubleLinearLsm(input.grid(),gridout,lsmMethod);
+                else
+                    return new DoubleLinear;
+            }
+        } else if(method == "double-linear-adjusted" || method == "DOUBLE-LINEAR-ADJUSTED"
+                  || method == "doublelinearadjusted" || method == "DOUBLELINEARADJUSTED") {
+            return new DoubleLinearBitmapAdjusted(missingValue);
+        } else if(method == "average-weighted" || method == "AVERAGE-WEIGHTED" ||
+                  method == "averageweighted" || method == "AVERAGEWEIGHTED") {
+            if(lsm) {
+                if(gridout.reduced())
+                    return new AverageWeightedReducedLsm(input.grid(),gridout,lsmMethod);
+                else
+                    return new AverageWeightedRegularLsm(input.grid(),gridout,lsmMethod);
+            } else {
+                if(gridout.reduced())
+                    return new AverageWeightedReduced(input.grid(),gridout);
+                else
+                    return new AverageWeightedRegular(input.grid(),gridout);
+            }
+        } else if(method == "flux-conserving" || method == "FLUX-CONSERVING" ||
+                  method == "fluxconserving" || method == "FLUXCONSERVING") {
+            if(gridout.reduced())
+                return new FluxConservingReduced(input.grid(),gridout);
+            else
+                return new FluxConservingRegular(input.grid(),gridout);
+        } else if(method == "conserving") {
+            return new Conserving();
+        } else
+            throw UserError("Factory::interpolationMethod This interpolation method is not supported -> ", method);
+    } else {
+        if (gridout.gridType() == "list") {
+            if(lsm)
+                return new BiLinearLsm(input.grid(),gridout,lsmMethod);
+            else
+                return new BiLinear;
+        }
+
+        if (input.conservation()) {
+            return new BiLinearPrecipitation;
+            /*
+            if(lsm){
+            	if(gridout.reduced())
+            		return new AverageWeightedReducedLsm(input.grid(),gridout,lsmMethod);
+            	else
+            		return new AverageWeightedRegularLsm(input.grid(),gridout,lsmMethod);
+            }
+            else{
+            	if(gridout.reduced())
+            		return new AverageWeightedReduced(input.grid(),gridout);
+            	else
+            		return new AverageWeightedRegular(input.grid(),gridout);
+            }
+            */
+        } else if (input.nearest())
+            if(lsm)
+                return  new NearestNeigbourLsm(pointsForInterpolation,input.grid(),gridout,lsmMethod);
+            else
+                return new NearestNeigbour;
+        else {
+            if(extrapolate == "nearest") {
+                if(bitmap) {
+                    if(lsm)
+                        return new BiLinearLsmBitmap(input.grid(),gridout,lsmMethod,missingValue);
+                    else
+                        return new BiLinearBitmap(missingValue);
+                } else {
+                    if(lsm)
+                        return new BiLinearLsm(input.grid(),gridout,lsmMethod);
+                    else
+                        return new BiLinear;
+                }
+            } else if(extrapolate == "linear") {
+                if(bitmap) {
+                    if(lsm)
+                        return new BiLinearLsmBitmap(true,false,0,0,input.grid(),gridout,lsmMethod,missingValue);
+                    else
+                        return new BiLinearBitmap(true,false,0,0,missingValue);
+                } else {
+                    if(lsm)
+                        return new BiLinearLsm(true,false,0,0,input.grid(),gridout,lsmMethod);
+                    else
+                        return new BiLinear(true,false,0,0);
+                }
+            }
+            double northPoleValue = 0;
+            double southPoleValue = 0;
+            bool extrapolateAverage = input.extrapolateAverageOnPole(northPoleValue,southPoleValue);
+            bool extrapolateLinear  = input.extrapolateLinearOnPole();
+            if(bitmap) {
+                if(lsm)
+                    return new BiLinearLsmBitmap(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod,missingValue);
+                else
+                    return new BiLinearBitmap(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,missingValue);
+            } else {
+                if(lsm)
+                    return new BiLinearLsm(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue,input.grid(),gridout,lsmMethod);
+                else
+                    return new BiLinear(extrapolateLinear,extrapolateAverage,northPoleValue,southPoleValue);
+            }
+        }
     }
 
-	throw UserError("Factory::interpolationMethod Unknown Method -> ", method);
+    throw UserError("Factory::interpolationMethod Unknown Method -> ", method);
 
-	return 0;
+    return 0;
 }
 
-DerivedSubgridParameters* Factory::selectDerivedSubgridParameter(const string& param) const
-{
-	if(DEBUG)
-		cout << "Factory::selectDerivedSubgridParameter => " << param << endl;
+DerivedSubgridParameters* Factory::selectDerivedSubgridParameter(const string& param) const {
+    if(DEBUG)
+        cout << "Factory::selectDerivedSubgridParameter => " << param << endl;
 
-	if(param == "anisotropy")
-		return new Anisotropy;
-	else if(param == "orientation")
-		return new Orientation;
-	else if(param == "slope")
-		return new Slope;
+    if(param == "anisotropy")
+        return new Anisotropy;
+    else if(param == "orientation")
+        return new Orientation;
+    else if(param == "slope")
+        return new Slope;
 
-	throw UserError("Factory::selectDerivedSubgridParameter Unknown parameter -> ", param);
+    throw UserError("Factory::selectDerivedSubgridParameter Unknown parameter -> ", param);
 
-	return 0;
+    return 0;
 }
 
-ref_counted_ptr<const LegendrePolynomials> Factory::polynomialsMethod(const string& method, int truncation, const Grid& grid) const
-{
-	if(DEBUG)
-		cout << "Factory::polynomialsMethod => " << method << endl;
-	if(method == "fileio" ||  method == "FILEIO")
-		return ref_counted_ptr<const LegendrePolynomials>(new LegendrePolynomialsReadFromFile(truncation,grid));
-	else if(method == "mapped" || method == "MAPPED" || method == "default") 
-    {
+ref_counted_ptr<const LegendrePolynomials> Factory::polynomialsMethod(const string& method, int truncation, const Grid& grid) const {
+    if(DEBUG)
+        cout << "Factory::polynomialsMethod => " << method << endl;
+    if(method == "fileio" ||  method == "FILEIO")
+        return ref_counted_ptr<const LegendrePolynomials>(new LegendrePolynomialsReadFromFile(truncation,grid));
+    else if(method == "mapped" || method == "MAPPED" || method == "default") {
         // check for cached value
-         
+
         ref_counted_ptr<const LegendrePolynomials> ptr = Factory::memoryMapCache_.polynomials(truncation, grid);
 
-        if (DEBUG)            
+        if (DEBUG)
             cout << "Factory::polynomialsMethod returning " << (ptr.get() ? "CACHED" : "NEW") << " polynomials for memmap" << endl;
 
         if (!ptr.get())
-           ptr = Factory::memoryMapCache_.addPolynomials(truncation, grid, new LegendrePolynomialsMemoryMap(truncation, grid));
-        
+            ptr = Factory::memoryMapCache_.addPolynomials(truncation, grid, new LegendrePolynomialsMemoryMap(truncation, grid));
+
         return ptr;
-        
-    }
-	else if(method == "shared" || method == "SHARED") 
-    {
+
+    } else if(method == "shared" || method == "SHARED") {
         // check for cached value
-         
+
         ref_counted_ptr<const LegendrePolynomials> ptr = Factory::sharedMemoryCache_.polynomials(truncation, grid);
 
-        if (DEBUG)            
+        if (DEBUG)
             cout << "Factory::polynomialsMethod returning " << (ptr.get() ? "CACHED" : "NEW") << " polynomials for shared" << endl;
 
         if (!ptr.get())
-           ptr = Factory::sharedMemoryCache_.addPolynomials(truncation, grid, new LegendrePolynomialsSharedMemory(truncation, grid));
-        
+            ptr = Factory::sharedMemoryCache_.addPolynomials(truncation, grid, new LegendrePolynomialsSharedMemory(truncation, grid));
+
         return ptr;
-        
+
+    } else if(method == "on_fly" || method == "ON_FLY" || method == "on-fly" || method == "ON-FLY")
+        return ref_counted_ptr<const LegendrePolynomials>(new LegendrePolynomialsOnFly(truncation));
+    else // unknown method
+        throw UserError("Factory::polynomialsMethod Unknown method requested -> ", method);
+}
+
+Extraction* Factory::multiExtraction(const GridField& out, double missingValue)  const {
+    if(DEBUG)
+        cout << "Factory::multiExtraction frame " << out.frame() << "   bitmap " << out.bitmap() << endl;
+
+    if(out.frame()) {
+        return new Frame(out.frame(), missingValue);
+    } else if(out.bitmap()) {
+        return new Bitmap(out.bitmapFile(), missingValue);
     }
-	else if(method == "on_fly" || method == "ON_FLY" || method == "on-fly" || method == "ON-FLY")
-		return ref_counted_ptr<const LegendrePolynomials>(new LegendrePolynomialsOnFly(truncation));
-	else // unknown method
-	    throw UserError("Factory::polynomialsMethod Unknown method requested -> ", method);
-}
-
-Extraction* Factory::multiExtraction(const GridField& out, double missingValue)  const
-{
-	if(DEBUG)
-		cout << "Factory::multiExtraction frame " << out.frame() << "   bitmap " << out.bitmap() << endl;
-
-	if(out.frame())
-    {
-		  return new Frame(out.frame(), missingValue);
-	}
-	else if(out.bitmap())
-    {
-		return new Bitmap(out.bitmapFile(), missingValue);
-	}
 //	throw UserError("Factory::multiExtraction  there isn't frame or bitmap");
-	return 0;
+    return 0;
 }
 
-Extraction* Factory::multiExtractionWithoutSubArea(const GridField& out, double missingValue)  const
-{
-	if(out.frame()){
-		return new Frame(out.frame(), missingValue);
-	}
-	else if(out.bitmap()){
-		return new Bitmap(out.bitmapFile(), missingValue);
-	}
-	//throw UserError("Factory::multiExtractionWithoutSubArea  there isn't frame or bitmap  ");
-	return 0;
+Extraction* Factory::multiExtractionWithoutSubArea(const GridField& out, double missingValue)  const {
+    if(out.frame()) {
+        return new Frame(out.frame(), missingValue);
+    } else if(out.bitmap()) {
+        return new Bitmap(out.bitmapFile(), missingValue);
+    }
+    //throw UserError("Factory::multiExtractionWithoutSubArea  there isn't frame or bitmap  ");
+    return 0;
 
 //ssp recursion ?
 // multiExtractionWithoutSubArea(ext)
 }
 
 
-Transformer* Factory::getTransformer(const Field& in, const Field& out, const FieldDescription& fd) const
-{
-	string legendrePolynomialsMethod = fd.ft_.legendrePolynomialsMethod_;
-	int    fftMax      = fd.ft_.fftMax_;
-	bool   auresol     = fd.ft_.auresol_;
-	string intMethod   = fd.ft_.interpolationMethod_;
-	string lsmMethod   = fd.ft_.lsmMethod_;
-	bool   conversion  = fd.ft_.vdConversion_;
-	int    numberOfNearestPoints = fd.ft_.numberOfNearestPoints_; 
-	string transType        = fd.ft_.grid2gridTransformationType_;
-	string extrapolate      = fd.ft_.extrapolateOnPole_;
+Transformer* Factory::getTransformer(const Field& in, const Field& out, const FieldDescription& fd) const {
+    string legendrePolynomialsMethod = fd.ft_.legendrePolynomialsMethod_;
+    int    fftMax      = fd.ft_.fftMax_;
+    bool   auresol     = fd.ft_.auresol_;
+    string intMethod   = fd.ft_.interpolationMethod_;
+    string lsmMethod   = fd.ft_.lsmMethod_;
+    bool   conversion  = fd.ft_.vdConversion_;
+    int    numberOfNearestPoints = fd.ft_.numberOfNearestPoints_;
+    string transType        = fd.ft_.grid2gridTransformationType_;
+    string extrapolate      = fd.ft_.extrapolateOnPole_;
 
-	string inName  = in.nameOfField();
-	string outName = out.nameOfField();
+    string inName  = in.nameOfField();
+    string outName = out.nameOfField();
 
-	if(DEBUG)
-		cout << "Factory::getTransformer from " << inName << " to " << outName << endl;
-	
-	if(inName == "sh" && outName == "sh")
-    {
-		return new SpectralToSpectralTransformer(conversion);
-    }
-    else
-        if(inName != "sh" && outName != "sh") {
-        if (IS_SET("ECREGRID_EXPERIMENTAL"))
-        {
+    if(DEBUG)
+        cout << "Factory::getTransformer from " << inName << " to " << outName << endl;
+
+    if(inName == "sh" && outName == "sh") {
+        return new SpectralToSpectralTransformer(conversion);
+    } else if(inName != "sh" && outName != "sh") {
+        if (IS_SET("ECREGRID_EXPERIMENTAL")) {
 #ifdef EIGEN3_FOUND
             return new GridToGridMatrixTransformer(intMethod,lsmMethod,numberOfNearestPoints,transType,extrapolate);
 #else
             ASSERT( "Eigen3 not found" != 0 );
 #endif
-        }
-        else
-        {
+        } else {
             return new GridToGridTransformer(intMethod,lsmMethod,numberOfNearestPoints,transType,extrapolate);
         }
-		}
-    else if(inName == "sh" && outName != "sh"){
-		if(out.isRotated()){
-			return new SpectralToRotatedGridTransformer(legendrePolynomialsMethod,fftMax,auresol,conversion);
-		}
-		else{
-			if(outName == "list"){
-				return new SpectralToListOfPointsTransformer(legendrePolynomialsMethod,fftMax,auresol,conversion);
-			}
-			else{
-				return new SpectralToGridTransformer(legendrePolynomialsMethod,fftMax,auresol,conversion);
-			}
-		}
-	}
-	else if(inName != "sh" && outName == "sh")
-		return new GridToSpectralTransformer(legendrePolynomialsMethod,fftMax);
+    } else if(inName == "sh" && outName != "sh") {
+        if(out.isRotated()) {
+            return new SpectralToRotatedGridTransformer(legendrePolynomialsMethod,fftMax,auresol,conversion);
+        } else {
+            if(outName == "list") {
+                return new SpectralToListOfPointsTransformer(legendrePolynomialsMethod,fftMax,auresol,conversion);
+            } else {
+                return new SpectralToGridTransformer(legendrePolynomialsMethod,fftMax,auresol,conversion);
+            }
+        }
+    } else if(inName != "sh" && outName == "sh")
+        return new GridToSpectralTransformer(legendrePolynomialsMethod,fftMax);
 
 
-	throw UserError("Factory::getTransformer  Tranform from "+inName+" to "+outName," is not supported -> ");
+    throw UserError("Factory::getTransformer  Tranform from "+inName+" to "+outName," is not supported -> ");
 
 }
 
-Input* Factory::getInput(const string& fileName,const string& kind)  const
-{
-	if(kind == "binary")
-		return new BinaryInput(fileName);
-	else if(kind == "grib")
-		return new GribApiInput(fileName);
-	else if(kind == "ascii")
-		return new AsciiInput(fileName);
-	else
-		throw UserError("Factory::getInput This Input is not supported -> ", kind);
+Input* Factory::getInput(const string& fileName,const string& kind)  const {
+    if(kind == "binary")
+        return new BinaryInput(fileName);
+    else if(kind == "grib")
+        return new GribApiInput(fileName);
+    else if(kind == "ascii")
+        return new AsciiInput(fileName);
+    else
+        throw UserError("Factory::getInput This Input is not supported -> ", kind);
 
-	return 0;
+    return 0;
 }
 
-GribApiOutput* Factory::getGribApiOutput(const string& name)  const
-{
-	if(name == "sh")
-		return new GribApiOutputSpectral;
-	else
-		return new GribApiOutputGrid;
+GribApiOutput* Factory::getGribApiOutput(const string& name)  const {
+    if(name == "sh")
+        return new GribApiOutputSpectral;
+    else
+        return new GribApiOutputGrid;
 
-	return 0;
+    return 0;
 }
 
-Output* Factory::getOutput(const string& fileName, const string& kind, const string& name)  const
-{
-	if(kind == "binary")
-		return  new BinaryOutput(fileName);
-	else if(kind == "grib") {
-		if(DEBUG)
-			cout << "Factory::getOutput field name: " << name << endl;
-			if(name == "sh")
-				return new GribApiOutputSpectral(fileName);
-			else
-				return new GribApiOutputGrid(fileName);
-	}
-	else if(kind == "ascii")
-		return new AsciiOutput(fileName);
+Output* Factory::getOutput(const string& fileName, const string& kind, const string& name)  const {
+    if(kind == "binary")
+        return  new BinaryOutput(fileName);
+    else if(kind == "grib") {
+        if(DEBUG)
+            cout << "Factory::getOutput field name: " << name << endl;
+        if(name == "sh")
+            return new GribApiOutputSpectral(fileName);
+        else
+            return new GribApiOutputGrid(fileName);
+    } else if(kind == "ascii")
+        return new AsciiOutput(fileName);
 
-	throw UserError("Factory::getOutput This Output is not supported -> ", kind);
+    throw UserError("Factory::getOutput This Output is not supported -> ", kind);
 
-	return 0;
+    return 0;
 }
 
-Output* Factory::getOutputBinTxt(const string& fileName, const string& kind)  const
-{
-	if(kind == "binary")
-		return new BinaryOutput(fileName);
-	else if(kind == "ascii")
-		return new AsciiOutput(fileName);
+Output* Factory::getOutputBinTxt(const string& fileName, const string& kind)  const {
+    if(kind == "binary")
+        return new BinaryOutput(fileName);
+    else if(kind == "ascii")
+        return new AsciiOutput(fileName);
 
-	throw UserError("Factory::getOutput This Output is not supported -> ", kind);
+    throw UserError("Factory::getOutput This Output is not supported -> ", kind);
 
-	return 0;
+    return 0;
 }
 
-GribApiOutput* Factory::getGribApiOutput(const string& fileName, const string& name)  const
-{
-	if(DEBUG)
-		cout << "Factory::getOutput field name: " << name << endl;
-	if(name == "sh")
-		return new GribApiOutputSpectral(fileName);
-	else
-		return new GribApiOutputGrid(fileName);
+GribApiOutput* Factory::getGribApiOutput(const string& fileName, const string& name)  const {
+    if(DEBUG)
+        cout << "Factory::getOutput field name: " << name << endl;
+    if(name == "sh")
+        return new GribApiOutputSpectral(fileName);
+    else
+        return new GribApiOutputGrid(fileName);
 
-	throw UserError("Factory::getOutput This Output is not supported -> ", name);
+    throw UserError("Factory::getOutput This Output is not supported -> ", name);
 
-	return 0;
+    return 0;
 }
 
-Lsm* Factory::getLsm(const string& fileName, const string& lsmMethod, const string& lsmFileType, bool user, const string& userPath) const
-{
-	if(DEBUG)
-      		cout << "Factory::getLsm lsmMethod: ((( " << lsmMethod << " ))) fileName: " << fileName << " lsmFileType: " << lsmFileType << endl;
+Lsm* Factory::getLsm(const string& fileName, const string& lsmMethod, const string& lsmFileType, bool user, const string& userPath) const {
+    if(DEBUG)
+        cout << "Factory::getLsm lsmMethod: ((( " << lsmMethod << " ))) fileName: " << fileName << " lsmFileType: " << lsmFileType << endl;
 
-	Input* in = getInput(fileName, lsmFileType);
+    Input* in = getInput(fileName, lsmFileType);
 
-    if(lsmMethod == "predefined" || lsmMethod == "PREDEFINED"){
-		if(user)
-        	return new LsmPreDefined(in,userPath);
-		else	
-        	return new LsmPreDefined(in);
-	}
-    else if(lsmMethod == "10min" || lsmMethod == "10MIN")
+    if(lsmMethod == "predefined" || lsmMethod == "PREDEFINED") {
+        if(user)
+            return new LsmPreDefined(in,userPath);
+        else
+            return new LsmPreDefined(in);
+    } else if(lsmMethod == "10min" || lsmMethod == "10MIN")
         return new LsmEmos10minute(in);
-    else if(lsmMethod == "ll1km" || lsmMethod == "LL1KM"){
-			Interpolator* method = new NearestNeigbour(4);
-			double ns = 180/21600;
-			double we = 180/21600;
-			Grid* grid = new RegularLatLon(ns,we);
-        	return new LsmFromGrid(in,grid,method);
-	}
-    else if(lsmMethod == "gtopo" || lsmMethod == "gtopo")
+    else if(lsmMethod == "ll1km" || lsmMethod == "LL1KM") {
+        Interpolator* method = new NearestNeigbour(4);
+        double ns = 180/21600;
+        double we = 180/21600;
+        Grid* grid = new RegularLatLon(ns,we);
+        return new LsmFromGrid(in,grid,method);
+    } else if(lsmMethod == "gtopo" || lsmMethod == "gtopo")
         return new GTopo30(in);
-    else{
-		if(user)
-        	return new LsmPreDefined(in,userPath);
-		else	
-        	return new LsmPreDefined(in);
-	}
+    else {
+        if(user)
+            return new LsmPreDefined(in,userPath);
+        else
+            return new LsmPreDefined(in);
+    }
 
-   throw UserError("Interpolator::getLsm This Lsm method is not supported -> ", lsmMethod);
+    throw UserError("Interpolator::getLsm This Lsm method is not supported -> ", lsmMethod);
 
     return 0;
 }

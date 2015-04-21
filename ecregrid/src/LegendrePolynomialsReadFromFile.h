@@ -16,33 +16,33 @@
 
 // Forward declarations
 
-// 
+//
 
 class LegendrePolynomialsReadFromFile : public LegendrePolynomialsRead {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	LegendrePolynomialsReadFromFile(int truncation, const Grid& grid);
+    LegendrePolynomialsReadFromFile(int truncation, const Grid& grid);
 
 // -- Destructor
 
-	~LegendrePolynomialsReadFromFile(); // Change to virtual if base class
+    ~LegendrePolynomialsReadFromFile(); // Change to virtual if base class
 
-protected:
+  protected:
 
 // Overriden methods
-	void print(ostream&) const;
+    void print(ostream&) const;
 
-private:
+  private:
 
 // No copy allowed
 
-	LegendrePolynomialsReadFromFile(const LegendrePolynomialsReadFromFile&);
-	LegendrePolynomialsReadFromFile& operator=(const LegendrePolynomialsReadFromFile&);
+    LegendrePolynomialsReadFromFile(const LegendrePolynomialsReadFromFile&);
+    LegendrePolynomialsReadFromFile& operator=(const LegendrePolynomialsReadFromFile&);
 
 // -- Members
 
@@ -51,19 +51,23 @@ private:
     // we have const access to Legendre data in those classes. For this class
     // (which holds its own non-thread-safe-cached set of data) to use the
     // same methods we must make its data mutable
-	mutable vector<double> polynoms_;
+    mutable vector<double> polynoms_;
     mutable size_t filePositionPreserve_;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	const double* getOneLatitude(double lat, int rowOffset) const;
-	const double* getPolynoms() const { return 0; }
+    const double* getOneLatitude(double lat, int rowOffset) const;
+    const double* getPolynoms() const {
+        return 0;
+    }
 
 // -- Friends
-	friend ostream& operator<<(ostream& s,const LegendrePolynomialsReadFromFile& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const LegendrePolynomialsReadFromFile& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

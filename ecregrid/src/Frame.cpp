@@ -22,48 +22,44 @@
 #endif
 
 Frame::Frame(int number, double missingValue) :
-	Extraction(), numberOfPointsAcrossTheFrame_(number), missingValue_(missingValue)
-{
-	if(DEBUG)
-		cout << "Frame::Frame " << number << endl;;
-}
-	
-
-Frame::~Frame()
-{
+    Extraction(), numberOfPointsAcrossTheFrame_(number), missingValue_(missingValue) {
+    if (DEBUG)
+        cout << "Frame::Frame " << number << endl;;
 }
 
-void Frame::extract(const Grid& output, vector<double>& values) const
-{
+
+Frame::~Frame() {
+}
+
+void Frame::extract(const Grid &output, vector<double> &values) const {
     const size_t valuesSize = values.size();
 
-	int northSouthNumberOfPoints = output.northSouthNumberOfPoints();
-	int westEastNumberOfPoints   = output.westEastNumberOfPoints();
+    int northSouthNumberOfPoints = output.northSouthNumberOfPoints();
+    int westEastNumberOfPoints   = output.westEastNumberOfPoints();
 
-	ASSERT(westEastNumberOfPoints * northSouthNumberOfPoints == (long)valuesSize);
-	if(DEBUG){
-		cout << "------------------------------------------------------------------" << endl;
-		cout << "Frame::extract westEastNumberOfPoints*northSouthNumberOfPoints " << westEastNumberOfPoints*northSouthNumberOfPoints << " valuesSize " << valuesSize <<  endl;
-		cout << "Number Of Points Across The Frame: " << numberOfPointsAcrossTheFrame_ << endl;
-		cout << "------------------------------------------------------------------" << endl;
-	}
+    ASSERT(westEastNumberOfPoints * northSouthNumberOfPoints == (long)valuesSize);
+    if (DEBUG) {
+        cout << "------------------------------------------------------------------" << endl;
+        cout << "Frame::extract westEastNumberOfPoints*northSouthNumberOfPoints " << westEastNumberOfPoints *northSouthNumberOfPoints << " valuesSize " << valuesSize <<  endl;
+        cout << "Number Of Points Across The Frame: " << numberOfPointsAcrossTheFrame_ << endl;
+        cout << "------------------------------------------------------------------" << endl;
+    }
 
-	int top    = numberOfPointsAcrossTheFrame_;
-	int bottom = northSouthNumberOfPoints - numberOfPointsAcrossTheFrame_;
-	int left   = numberOfPointsAcrossTheFrame_;
-	int right  = westEastNumberOfPoints - numberOfPointsAcrossTheFrame_;
+    int top    = numberOfPointsAcrossTheFrame_;
+    int bottom = northSouthNumberOfPoints - numberOfPointsAcrossTheFrame_;
+    int left   = numberOfPointsAcrossTheFrame_;
+    int right  = westEastNumberOfPoints - numberOfPointsAcrossTheFrame_;
 
-	long next = 0;
+    long next = 0;
     for (int i = top ; i < bottom ; i++) {
-		next = i * westEastNumberOfPoints + left - 1;
-    	for (int j = left ; j < right ; j++) {
-			++next;
-			values[next] = missingValue_;
-		}
-	}
+        next = i * westEastNumberOfPoints + left - 1;
+        for (int j = left ; j < right ; j++) {
+            ++next;
+            values[next] = missingValue_;
+        }
+    }
 }
 
-void Frame::print(ostream& out) const
-{
-	out << "Frame{ Number of points across the Frame =[" << numberOfPointsAcrossTheFrame_ << "] }";
+void Frame::print(ostream &out) const {
+    out << "Frame{ Number of points across the Frame =[" << numberOfPointsAcrossTheFrame_ << "] }";
 }

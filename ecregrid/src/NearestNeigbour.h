@@ -12,27 +12,27 @@
 #include "Interpolator.h"
 
 class NearestNeigbour : public Interpolator {
-public:
+  public:
 
-	NearestNeigbour();
-	NearestNeigbour(int n);
+    NearestNeigbour();
+    NearestNeigbour(int n);
 
-	~NearestNeigbour();
+    ~NearestNeigbour();
 
 //  Methods
-	void findNearestPoints(const Grid& input, const vector<Point>& outputPoints, vector<Point>& newOutputPoints) const;
+    void findNearestPoints(const Grid& input, const vector<Point>& outputPoints, vector<Point>& newOutputPoints) const;
     long findNearestPointIndex(const Point& where, const vector<FieldPoint>& nearests) const;
 
 // Overriden methods
     virtual void interpolationWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const;
-	double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
+    double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
 
 
-protected:
-	Point findNearestPoint(const Point& where, const vector<Point>& nearests) const;
-	void print(ostream&) const;
+  protected:
+    Point findNearestPoint(const Point& where, const vector<Point>& nearests) const;
+    void print(ostream&) const;
 
-private:
+  private:
 
 };
 #endif

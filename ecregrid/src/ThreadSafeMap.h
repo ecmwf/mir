@@ -15,12 +15,11 @@
 #include <pthread.h>
 #include "ref_counted_ptr.h"
 
-template <class T> class ThreadSafeMap
-{
-    // Manages a set of objects 
-    // in a thread-safe manner. 
-    
-public:
+template <class T> class ThreadSafeMap {
+    // Manages a set of objects
+    // in a thread-safe manner.
+
+  public:
 
     ThreadSafeMap(unsigned int maxLength=5);
     virtual ~ThreadSafeMap();
@@ -31,7 +30,7 @@ public:
     ref_counted_ptr<const T> addItem(const std::string& name, const T* item);
     bool removeItem(const std::string& name);
 
-private:
+  private:
 
     // attributes
     typedef std::map< std::string, ref_counted_ptr<const T> > map;

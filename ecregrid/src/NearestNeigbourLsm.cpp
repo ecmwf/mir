@@ -27,64 +27,58 @@
 
 #include <map>
 #include <algorithm>
- 
+
 NearestNeigbourLsm::NearestNeigbourLsm(const Grid& input, const Grid& output, const string& lsmMethod) :
-	InterpolatorLsm(4,input,output,lsmMethod)
-{
+    InterpolatorLsm(4,input,output,lsmMethod) {
 }
 
 NearestNeigbourLsm::NearestNeigbourLsm(int n, const Grid& input, const Grid& output, const string& lsmMethod) :
-	InterpolatorLsm(n,input,output,lsmMethod)
-{
+    InterpolatorLsm(n,input,output,lsmMethod) {
 }
 
-NearestNeigbourLsm::~NearestNeigbourLsm()
-{ 
+NearestNeigbourLsm::~NearestNeigbourLsm() {
 }
 
-typedef	map<unsigned int,double> mapDistance;	
+typedef	map<unsigned int,double> mapDistance;
 
 
-/*static*/ double NearestNeigbourLsm::calculateInterpolatedValue(const Point& where, const vector<FieldPoint>& nearests, const vector<double>& inLsmData, const vector<double>& outLsmData)
-{
+/*static*/ double NearestNeigbourLsm::calculateInterpolatedValue(const Point& where, const vector<FieldPoint>& nearests, const vector<double>& inLsmData, const vector<double>& outLsmData) {
     ASSERT(where.k1dIndex() < (int)outLsmData.size());
-	const bool lsm = isLand( outLsmData[where.k1dIndex()] );
+    const bool lsm = isLand( outLsmData[where.k1dIndex()] );
 
-	mapDistance d;
+    mapDistance d;
 
-	bool matchTheSame = false;
+    bool matchTheSame = false;
 
-	for (int k = 0; k < (int)nearests.size(); k++) {
-		// ssp Check if it is neighbour same sort of point as interpolate one
+    for (int k = 0; k < (int)nearests.size(); k++) {
+        // ssp Check if it is neighbour same sort of point as interpolate one
         ASSERT(nearests[k].k1dIndex() < (int)inLsmData.size());
-		if(lsm == isLand( inLsmData[nearests[k].k1dIndex()] )){
-			d.insert( pair<int,double>(k,where.quickDistance( nearests[k] )) );
-			matchTheSame = true;
-		}
-	}	
-	// if none of nearest points has the same land-sea mask 
-	if(!matchTheSame){
-		for (int k = 0; k < (int)nearests.size(); k++)
-			d.insert( pair<int,double>(k,where.quickDistance( nearests[k] )) );
-	}
+        if(lsm == isLand( inLsmData[nearests[k].k1dIndex()] )) {
+            d.insert( pair<int,double>(k,where.quickDistance( nearests[k] )) );
+            matchTheSame = true;
+        }
+    }
+    // if none of nearest points has the same land-sea mask
+    if(!matchTheSame) {
+        for (int k = 0; k < (int)nearests.size(); k++)
+            d.insert( pair<int,double>(k,where.quickDistance( nearests[k] )) );
+    }
 
-	int index = min_element(d.begin(), d.end(), Interpolator::comparer)->first;
+    int index = min_element(d.begin(), d.end(), Interpolator::comparer)->first;
 
-	return nearests[index].value();
+    return nearests[index].value();
 
 }
 
-double NearestNeigbourLsm::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
+double NearestNeigbourLsm::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const {
     // NB we can pass dereferenced lsm data ojects here as we hold ref_counted_ptr for
     // them as class members. hence they are guaranteed to exist while this
     // call completes
     return NearestNeigbourLsm::calculateInterpolatedValue(where, nearests, *inLsmData_, *outLsmData_);
 }
 
-void NearestNeigbourLsm::print(ostream& out) const
-{
-	Interpolator::print(out);
-	out << "NearestNeigbourLsm" ;
+void NearestNeigbourLsm::print(ostream& out) const {
+    Interpolator::print(out);
+    out << "NearestNeigbourLsm" ;
 }
 

@@ -67,42 +67,38 @@
 #include <sys/shm.h>
 
 GridToGridMatrixTransformer::GridToGridMatrixTransformer(const string& intMethod, const string& lsmMethod, int nptsInt, const string& type, const string& extrapolate, double missingValue) :
-    interpolationMethod_(intMethod), 
-    lsmMethod_(lsmMethod), 
-    pointsForInterpolation_(nptsInt), 
-    type_(type), 
-    extrapolate_(extrapolate), 
-    missingValue_(missingValue)
-{
+    interpolationMethod_(intMethod),
+    lsmMethod_(lsmMethod),
+    pointsForInterpolation_(nptsInt),
+    type_(type),
+    extrapolate_(extrapolate),
+    missingValue_(missingValue) {
 }
 
-GridToGridMatrixTransformer::~GridToGridMatrixTransformer()
-{
+GridToGridMatrixTransformer::~GridToGridMatrixTransformer() {
 }
 
-Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out) const
-{
+Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out) const {
     eckit::Timer t1("GridToGridMatrixTransformer::transform");
-	const GridField& input  = dynamic_cast<const GridField&>(in);
-	const GridField& output = dynamic_cast<const GridField&>(out);
+    const GridField& input  = dynamic_cast<const GridField&>(in);
+    const GridField& output = dynamic_cast<const GridField&>(out);
 
-	if ((input == output) ) {
-		cout << "---------------------------------------------------"  <<  endl;
-		cout << "||| GridToGridMatrixTransformer::transform Input and Output field are the SAME! |||"  <<  endl;
-		cout << "---------------------------------------------------"  <<  endl;
-		if(IS_SET("ECREGRID_FORCE_INTERPOLATION")){
-			cout << "GridToGridMatrixTransformer::transform FORCE INTERPOLATION" << endl;
-		}
-		else{
-			return 0;
-		}
-	}
+    if ((input == output) ) {
+        cout << "---------------------------------------------------"  <<  endl;
+        cout << "||| GridToGridMatrixTransformer::transform Input and Output field are the SAME! |||"  <<  endl;
+        cout << "---------------------------------------------------"  <<  endl;
+        if(IS_SET("ECREGRID_FORCE_INTERPOLATION")) {
+            cout << "GridToGridMatrixTransformer::transform FORCE INTERPOLATION" << endl;
+        } else {
+            return 0;
+        }
+    }
     int inScMode = input.scanningMode();
     double inMissingValue = input.missingValue();
 
-	double missingValue = output.missingValue();
-	if(input.bitmap())
-		missingValue = input.missingValue();
+    double missingValue = output.missingValue();
+    if(input.bitmap())
+        missingValue = input.missingValue();
 
     // reference to input data
     const vector<double>& data = input.data();
@@ -124,14 +120,14 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
 
     // need input field size N and output field size M so we can build sparse
     // NxM matrix
-   
+
     const size_t output_point_count = output.grid().calculatedNumberOfPoints();
     const size_t input_point_count = input.grid().calculatedNumberOfPoints();
 
     // Look for this matrix and see whether it is cached.
     //
     Eigen::SparseMatrix<double> weights = Eigen::SparseMatrix<double>(output_point_count, input_point_count);
-    
+
     // this is the set of (i,j,value) triplets that we either load from shm or generate
     // NB This appears to be how one serialises an Eigen SparseMatrix
     std::vector<Eigen::Triplet<double> > insertions;
@@ -144,19 +140,19 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
     int shmid = shmget(key, 0, 0600);
     bool available = (shmid != -1);
 
-    if (available)
-    {
+    if (available) {
         // get pointer to the shm memory
         char* shmptr = (char*)shmat(shmid, NULL, 0);
-        
+
         // running pointer to read from it
         char* ptr = shmptr;
 
         // read out the triplets into vector
-        // The first entry is the number of triplets (long). Then the 
+        // The first entry is the number of triplets (long). Then the
         // triplets are written as int, int, double values
         long total_size = 0;
-        total_size = *(long*)&ptr[0]; ptr += sizeof(long);
+        total_size = *(long*)&ptr[0];
+        ptr += sizeof(long);
 
         int row, col;
         double val;
@@ -164,34 +160,34 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
         {
             eckit::Timer triplet_timer("loading of triplets");
             insertions.resize(total_size);
-        
+
             double val;
             int row, col;
-            for (unsigned int i = 0; i < total_size; i++)
-            {
-                memcpy(&row, ptr, sizeof(row)); ptr += sizeof(row);
-                memcpy(&col, ptr, sizeof(col)); ptr += sizeof(col);
-                memcpy(&val, ptr, sizeof(val)); ptr += sizeof(val);
+            for (unsigned int i = 0; i < total_size; i++) {
+                memcpy(&row, ptr, sizeof(row));
+                ptr += sizeof(row);
+                memcpy(&col, ptr, sizeof(col));
+                ptr += sizeof(col);
+                memcpy(&val, ptr, sizeof(val));
+                ptr += sizeof(val);
                 insertions[i] = Eigen::Triplet<double>(row,col,val);
             }
 
         }
         // done with shared memory now
         shmdt(shmptr);
-    }
-    else
-    {
+    } else {
         eckit::Timer t3("Weight generation");
         // Generate a set of triplets according to your
         // interpolation scheme and then filling the matrix accordingly.
         //
         // for each lat / lon in target grid B we find the relevant points in grid
         // A and assign a weight to each of these in the matrix
-        // 
+        //
         // NB This part of the code is not particularly optimal
         //
-        
-        
+
+
         // Generate input and output grids
         vector<Point> inPts;
         input.grid().generateGrid1D(inPts);
@@ -212,11 +208,10 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
 
         // for each output point, get the set of input weights to use for its
         // calculation
-        for (unsigned int i = 0; i < outPts.size(); i++)
-        {
+        for (unsigned int i = 0; i < outPts.size(); i++) {
             // find nearest points:
             input.grid().nearestPoints(ctx.get(),outPts[i],nearests,data,inScMode,nearests.size());
-        
+
             // we now have N nearest points. For each of these, generate
             // weights and write them to the correct position in the current row
             vector<double> w(nearests.size(), 0.0);
@@ -224,13 +219,12 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
             // now find the linear index corresponding to the i,j grid index
             // of each nearest point, and write the relevant weight to this
             // index
-            for (unsigned int j = 0; j < nearests.size(); j++)
-            {
+            for (unsigned int j = 0; j < nearests.size(); j++) {
                 FieldPoint& pt = nearests[j];
                 long row_index = input.grid().getIndex(pt.iIndex(), pt.jIndex());
                 insertions.push_back(Eigen::Triplet<double>(i, row_index, w[j]));
             }
-        }   
+        }
 
         // Store in shared memory
 
@@ -239,7 +233,7 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
         // store in a shared memory segment
         // Total size == all the triplets plus the number of triplets written
         // as a long
-        // 
+        //
         long shm_size =  sizeof(long) + trip_size * insertions.size();
 
         // create the shared memory
@@ -247,8 +241,7 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
         // get its address
         const char* shmptr = (char*)shmat(id, NULL, 0);
 
-        if (shmptr > 0)
-        {
+        if (shmptr > 0) {
             long total_size = insertions.size();
             cout << "Writing " << total_size << " weights to shared memory" << endl;
 
@@ -256,21 +249,24 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
             // memory
             long ind = 0;
             // write total size
-            *(long*)&shmptr[0] = total_size; ind += sizeof(long);
+            *(long*)&shmptr[0] = total_size;
+            ind += sizeof(long);
 
             // write all insertions
-            for (unsigned int j = 0; j < insertions.size(); j++)
-            {
+            for (unsigned int j = 0; j < insertions.size(); j++) {
                 Eigen::Triplet<double>& ins = insertions[j];
-                *(int*)&shmptr[ind] = ins.row(); ind += sizeof(int);
-                *(int*)&shmptr[ind] = ins.col(); ind += sizeof(int);
-                *(double*)&shmptr[ind] = ins.value(); ind += sizeof(double);
+                *(int*)&shmptr[ind] = ins.row();
+                ind += sizeof(int);
+                *(int*)&shmptr[ind] = ins.col();
+                ind += sizeof(int);
+                *(double*)&shmptr[ind] = ins.value();
+                ind += sizeof(double);
             }
-        
+
         }
         // done with shared memory now
         shmdt(shmptr);
-    }   
+    }
 
     // Now insert the triplets into the SparseMatrix. Unfortunately this
     // appears to be necessary even when caching
@@ -285,7 +281,7 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
 
     // Create output matrix of correct size
     Eigen::MatrixXd B(1, output_point_count);
-    
+
     {
         eckit::Timer t4("Matrix multiplication");
         B = weights * A;
@@ -295,7 +291,7 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
     /*
     // debug - output the calculation that we will do
     for (unsigned int iout = 0; iout < output_point_count; iout++)
-    {    
+    {
         vector<double> inner_values(input_point_count, 0.0);
         Eigen::VectorXf tmp = weights.col(iout);
         ///std::copy(tmp.data(), tmp.data() + input_point_count, inner_values.begin());
@@ -308,7 +304,7 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
         //for (std::vector<double>::iterator it = inner_values.begin(); it != inner_values.end(); it++)
         for (unsigned int iin = 0; iin < tmp.size(); iin++)
         {
-        
+
         //for (unsigned int iin = 0; iin < input_point_count; iin++)
        // {
             //double w = weights.coeffRef(iout, iin);
@@ -333,14 +329,13 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
         Grid* possibleGrid   = output.grid().newGrid(input.grid());
 
         if( *possibleGrid == output.grid() && !output.grid().area().empty()) {
-            if(DEBUG){
+            if(DEBUG) {
                 cout << "************************************************************************************************************" << endl;
                 cout << "*** GridToGridMatrixTransformer::transform - Required  Output Area is NOT changed => "  << output.grid().area() <<   endl;
                 cout << "************************************************************************************************************" << endl;
             }
-        }
-        else {
-            if(DEBUG){
+        } else {
+            if(DEBUG) {
                 cout << "************************************************************************************************************" << endl;
                 cout << "*** GridToGridMatrixTransformer::transform  - Output Area changed to => "  << possibleGrid->area() <<   endl;
                 cout << "************************************************************************************************************" << endl;
@@ -360,16 +355,16 @@ Field* GridToGridMatrixTransformer::transform(const Field& in, const Field& out)
             cout << "GridToGridMatrixTransformer::transform possible Grid " << *possibleGrid << endl;
 
         bool bitmap = input.bitmap();
-        if(input.grid().equals(*possibleGrid) && (type_ != "zonalderivativ" && type_ != "meridionalderivativ")){
+        if(input.grid().equals(*possibleGrid) && (type_ != "zonalderivativ" && type_ != "meridionalderivativ")) {
             SubArea subarea(possibleGrid->area());
-    //		SubArea subarea(output.grid().area());
-            subarea.extract(input,values);		
-            if(DEBUG){
+            //		SubArea subarea(output.grid().area());
+            subarea.extract(input,values);
+            if(DEBUG) {
                 cout << "****************************************************" << endl;
                 cout << "GridToGridMatrixTransformer::transform Sub Area extraction " << endl;
                 cout << "****************************************************" << endl;
             }
-            if(extraction.get()){	
+            if(extraction.get()) {
                 bitmap = true;
                 extraction->extract(*possibleGrid, values);
                 if(DEBUG)
@@ -394,7 +389,7 @@ bool GridToGridMatrixTransformer::transform(const GridField& input, const Grid& 
         const vector<double>& data = input.data();
         values = data;
 
-		if(extraction){	
+		if(extraction){
 			bitmap = true;
             extraction->extract(input.grid(), values);
 			if(DEBUG)
@@ -449,8 +444,7 @@ bool GridToGridMatrixTransformer::transform(const GridField& input, const Grid& 
 }
 */
 
-Wind* GridToGridMatrixTransformer::transformVector(const Field& inU, const Field& inV, const Field& out) const
-{
+Wind* GridToGridMatrixTransformer::transformVector(const Field& inU, const Field& inV, const Field& out) const {
     throw NotImplementedFeature("GridToGridMatrixTransformer::transformVector");
 }
 

@@ -24,30 +24,26 @@
 #include <algorithm>
 
 VerticalQuadratic::VerticalQuadratic() :
-	VerticalInterpolator()
-{
+    VerticalInterpolator() {
 }
 
-VerticalQuadratic::~VerticalQuadratic()
-{ 
+VerticalQuadratic::~VerticalQuadratic() {
 }
- 
+
 //double VerticalQuadratic::alongParalel(const Point& where, const FieldPoint& left, const FieldPoint& right) const
 
-void VerticalQuadratic::interpolate(const GridField& inputUp, const GridField& inputDown, double* values, unsigned long valuesSize) const
-{
-/*
-	double leftW  = fabs(left.longitude() - where.longitude());
-	double rightW = fabs(where.longitude() - right.longitude());
-	double low   = rightW/(rightW + leftW);
+void VerticalQuadratic::interpolate(const GridField& inputUp, const GridField& inputDown, double* values, unsigned long valuesSize) const {
+    /*
+    	double leftW  = fabs(left.longitude() - where.longitude());
+    	double rightW = fabs(where.longitude() - right.longitude());
+    	double low   = rightW/(rightW + leftW);
 
-	return     low * left.value() + (1-low) * right.value();
-*/
+    	return     low * left.value() + (1-low) * right.value();
+    */
 
 }
 
-void VerticalQuadratic::print(ostream& out) const
-{
+void VerticalQuadratic::print(ostream& out) const {
 //	VerticalInterpolator::print(out);
-	out << "VerticalQuadratic" ;
+    out << "VerticalQuadratic" ;
 }

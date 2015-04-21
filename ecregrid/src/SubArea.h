@@ -27,64 +27,66 @@ class GridField;
 */
 
 class SubArea {
-public:
+  public:
 
-// -- Exceptions
-	// None
+    // -- Exceptions
+    // None
 
-// -- Contructors
+    // -- Contructors
 
-	SubArea(double north, double west, double south, double east);
-	SubArea(const Area& other);
+    SubArea(double north, double west, double south, double east);
+    SubArea(const Area &other);
 
-// -- Destructor
+    // -- Destructor
 
-	~SubArea(); // Change to virtual if base class
+    ~SubArea(); // Change to virtual if base class
 
-// -- Convertors
-	// None
+    // -- Convertors
+    // None
 
-// -- Operators
-	// None
+    // -- Operators
+    // None
 
-// -- Methods
-	// None
+    // -- Methods
+    // None
 
-	void extract(const GridField& input, vector<double>& values) const;
+    void extract(const GridField &input, vector<double> &values) const;
 
 
-protected:
+  protected:
 
-// -- Members
-	// None
+    // -- Members
+    // None
 
-// -- Methods
-	
-	 void print(ostream&) const; // Change to virtual if base class	
+    // -- Methods
 
-// -- Overridden methods
-	// None
+    void print(ostream &) const; // Change to virtual if base class
 
-// -- Class members
-	// None
+    // -- Overridden methods
+    // None
 
-// -- Class methods
-	// None
+    // -- Class members
+    // None
 
-private:
+    // -- Class methods
+    // None
 
-// No copy allowed
-	SubArea(const SubArea&);
-	SubArea& operator=(const SubArea&);
+  private:
 
-// -- Members
-	Area area_; ///< sub Area boundaries
-	
+    // No copy allowed
+    SubArea(const SubArea &);
+    SubArea &operator=(const SubArea &);
 
-// -- Friends
+    // -- Members
+    Area area_; ///< sub Area boundaries
 
-	friend ostream& operator<<(ostream& s,const SubArea& p)
-		{ p.print(s); return s; }
+
+    // -- Friends
+
+    friend ostream &operator<<(ostream &s, const SubArea &p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

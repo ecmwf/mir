@@ -17,9 +17,13 @@
 #ifdef HAS_STRINGSTREAM
 
 class StrStream : public ostringstream {
-public:
-	operator string() { return str(); }
-	static ostream&  ends(ostream& os)  { return os; }
+  public:
+    operator string() {
+        return str();
+    }
+    static ostream  &ends(ostream &os)  {
+        return os;
+    }
 };
 
 #else
@@ -30,33 +34,38 @@ public:
 // it exist
 
 class StrStream : public ostrstream {
-public:
+  public:
 
-	enum { size = 1024 }; // Should be enough
+    enum { size = 1024 }; // Should be enough
 
-// -- Contructors
+    // -- Contructors
 
-	// Use this to prevent a warning because buffer_ 
-	// is yet not initalised. (It does not have to be)
+    // Use this to prevent a warning because buffer_
+    // is yet not initalised. (It does not have to be)
 
-	StrStream() : ostrstream(this->buffer_,size) {}
+    StrStream() : ostrstream(this->buffer_, size) {}
 
-// -- Convertors
+    // -- Convertors
 
-	operator const char*()      { return buffer_ ; }
+    operator const char *()      {
+        return buffer_ ;
+    }
 
-	static ostream&  ends(ostream& os)  { os << std::ends ; return os; }
+    static ostream  &ends(ostream &os)  {
+        os << std::ends ;
+        return os;
+    }
 
-private:
+  private:
 
-// No copy allowed
+    // No copy allowed
 
-	StrStream(const StrStream&);
-	StrStream& operator=(const StrStream&);
+    StrStream(const StrStream &);
+    StrStream &operator=(const StrStream &);
 
-// -- Members
+    // -- Members
 
-	char buffer_[size]; 
+    char buffer_[size];
 };
 
 #endif

@@ -15,14 +15,12 @@
 #endif
 
 LegendreTransform::LegendreTransform(const ref_counted_ptr<const LegendrePolynomials>& poly, int truncation, const vector<double>& lats):
-    truncation_(truncation), 
-	polynomials_(poly), 
-    globalLatitudes_(lats)
-{
+    truncation_(truncation),
+    polynomials_(poly),
+    globalLatitudes_(lats) {
 }
 
-LegendreTransform::~LegendreTransform()
-{
+LegendreTransform::~LegendreTransform() {
 }
 
 

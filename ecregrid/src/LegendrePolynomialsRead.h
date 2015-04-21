@@ -17,43 +17,43 @@
 class Grid;
 
 class LegendrePolynomialsRead : public LegendrePolynomials {
-public:
+  public:
 
 // -- Contructors
 
-	LegendrePolynomialsRead(int truncation, const Grid& grid);
+    LegendrePolynomialsRead(int truncation, const Grid& grid);
 
 // -- Destructor
 
-	virtual ~LegendrePolynomialsRead(); // Change to virtual if base class
+    virtual ~LegendrePolynomialsRead(); // Change to virtual if base class
 
 // -- Methods
-	void createWholeGlobeAndWriteToFile(const Grid& grid) const;
-	bool checkFileSize(FILE* f, int globalLatNumber );
-	virtual void checkAndPossiblyCreate(const Grid& grid);
+    void createWholeGlobeAndWriteToFile(const Grid& grid) const;
+    bool checkFileSize(FILE* f, int globalLatNumber );
+    virtual void checkAndPossiblyCreate(const Grid& grid);
 
-protected:
+  protected:
 
 // -- Members
-	string  gridInfo_;
-	long    latLength_;
-	string  path_;
-	long    latSize_ ;
+    string  gridInfo_;
+    long    latLength_;
+    string  path_;
+    long    latSize_ ;
     mutable int fd_;
 
 // -- Overridden methods
-	 void print(ostream&) const; // Change to virtual if base class	
-     string constructCoefficientsFilename() const;
-     string constructFilename(const string& stub) const;
-     bool openCoefficientsFile(int flags=0) const; 
-     void closeFile() const;
+    void print(ostream&) const; // Change to virtual if base class
+    string constructCoefficientsFilename() const;
+    string constructFilename(const string& stub) const;
+    bool openCoefficientsFile(int flags=0) const;
+    void closeFile() const;
 
-private:
+  private:
 
 // No copy allowed
 
-	LegendrePolynomialsRead(const LegendrePolynomialsRead&);
-	LegendrePolynomialsRead& operator=(const LegendrePolynomialsRead&);
+    LegendrePolynomialsRead(const LegendrePolynomialsRead&);
+    LegendrePolynomialsRead& operator=(const LegendrePolynomialsRead&);
 };
 
 #endif

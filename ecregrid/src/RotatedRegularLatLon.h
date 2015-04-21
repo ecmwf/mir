@@ -29,141 +29,167 @@
 */
 
 class RotatedRegularLatLon : public LatLon, public Regular {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
 //	RotatedRegularLatLon();
-	RotatedRegularLatLon(double north, double west, double south, double east, double ns, double we, double latPole = 0, double lonPole = 0);
-	RotatedRegularLatLon(double ns, double we, double latPole = 0, double lonPole = 0);
-	RotatedRegularLatLon(const Area& other, double ns, double we, double latPole = 0, double lonPole = 0);
+    RotatedRegularLatLon(double north, double west, double south, double east, double ns, double we, double latPole = 0, double lonPole = 0);
+    RotatedRegularLatLon(double ns, double we, double latPole = 0, double lonPole = 0);
+    RotatedRegularLatLon(const Area& other, double ns, double we, double latPole = 0, double lonPole = 0);
 
 // -- Destructor
 
-	~RotatedRegularLatLon(); // Change to virtual if base class
+    ~RotatedRegularLatLon(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	double latPole() const;
-	double lonPole() const;
+    double latPole() const;
+    double lonPole() const;
 
 // -- Overridden methods
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	 void print(ostream&) const; // Change to virtual if base class	
+
+    void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	RotatedRegularLatLon(const RotatedRegularLatLon&);
-	RotatedRegularLatLon& operator=(const RotatedRegularLatLon&);
+    RotatedRegularLatLon(const RotatedRegularLatLon&);
+    RotatedRegularLatLon& operator=(const RotatedRegularLatLon&);
 
 // -- Members
-	Rotation rotation_;	///< Rotation 
+    Rotation rotation_;	///< Rotation
 
 // -- Methods
-	virtual GridContext* getGridContext() const { return Regular::getGridContext(); }
+    virtual GridContext* getGridContext() const {
+        return Regular::getGridContext();
+    }
 
 // -- Overridden methods
-	Grid* newGrid(const Grid& other) const;
-	Grid* newGrid(const Area& other) const;
-	Grid* getGlobalGrid()            const;
+    Grid* newGrid(const Grid& other) const;
+    Grid* newGrid(const Area& other) const;
+    Grid* getGlobalGrid()            const;
 
-	void generateGrid1D(vector<Point>& p)    const ;
-	void generateGrid1D(vector<Point>& ll, const Grid& grid) const;
+    void generateGrid1D(vector<Point>& p)    const ;
+    void generateGrid1D(vector<Point>& ll, const Grid& grid) const;
 
-	void nearest4pts(GridContext* ctx,const Point& where, vector<Point>& result) const;
-	void nearestPoints(GridContext*,const Point& where, vector<FieldPoint>& nearests, const vector<double>& data, int scMode, int npts) const;
+    void nearest4pts(GridContext* ctx,const Point& where, vector<Point>& result) const;
+    void nearestPoints(GridContext*,const Point& where, vector<FieldPoint>& nearests, const vector<double>& data, int scMode, int npts) const;
 
-	double conserving(GridContext* ctx, const Point& where, const vector<double>& data, int scMode, double missingValue, double incNs, double incWe)  const;
+    double conserving(GridContext* ctx, const Point& where, const vector<double>& data, int scMode, double missingValue, double incNs, double incWe)  const;
 
-	void cellsAreas(vector<Area>& areas, vector<double>& areasSize)  const; 
-	double fluxConserving(GridContext* ctx, const Point& where, const vector<Area>& areas, const vector<double>& inputCellSize, const double* data, int scMode, double missingValue, double outNSincrement, double outWEincrement)  const;
-	double averageWeighted(GridContext* ctx, const Point& where, const vector<double>& weights, const vector<double>& data, int scMode, double missingValue, const vector<double>& outLats, double incWe)  const;
-	double averageWeightedLsm(GridContext* ctx, const Point& where, const vector<double>& weights, const vector<double>& data,const vector<double>& dataLsmIn, const vector<double>& dataLsmOut, int scMode, double missingValue, const vector<double>& outLats, double incWe)  const;
+    void cellsAreas(vector<Area>& areas, vector<double>& areasSize)  const;
+    double fluxConserving(GridContext* ctx, const Point& where, const vector<Area>& areas, const vector<double>& inputCellSize, const double* data, int scMode, double missingValue, double outNSincrement, double outWEincrement)  const;
+    double averageWeighted(GridContext* ctx, const Point& where, const vector<double>& weights, const vector<double>& data, int scMode, double missingValue, const vector<double>& outLats, double incWe)  const;
+    double averageWeightedLsm(GridContext* ctx, const Point& where, const vector<double>& weights, const vector<double>& data,const vector<double>& dataLsmIn, const vector<double>& dataLsmOut, int scMode, double missingValue, const vector<double>& outLats, double incWe)  const;
 
-	void nearestsByIndex(const Point& where, vector<FieldPoint>& nearest, const vector<double>& data, int scMode, double missingValue, int howMany) const;
+    void nearestsByIndex(const Point& where, vector<FieldPoint>& nearest, const vector<double>& data, int scMode, double missingValue, int howMany) const;
 
-	unsigned long calculatedNumberOfPoints() const;
-	bool rotated() const { return true; }
+    unsigned long calculatedNumberOfPoints() const;
+    bool rotated() const {
+        return true;
+    }
 
-	size_t  getGridDefinition(vector<long>& v) const;
+    size_t  getGridDefinition(vector<long>& v) const;
 
-	string   composedName()  const { return "rotated_ll"; }
-	int      getLatitudeOffset(double lat) const;
-	long   getLatitudeOffset(double lat, long& current) const;
-	void   getOffsets(vector<int>& offsets) const;
-	void     angularChange(vector <double>& angles) const;
-	int      match(int truncation) const;
+    string   composedName()  const {
+        return "rotated_ll";
+    }
+    int      getLatitudeOffset(double lat) const;
+    long   getLatitudeOffset(double lat, long& current) const;
+    void   getOffsets(vector<int>& offsets) const;
+    void     angularChange(vector <double>& angles) const;
+    int      match(int truncation) const;
 
-	virtual bool sameAs(const RegularLatLon& other)   const  { return LatLon::sameAs(other); }
-	virtual bool sameAs(const RegularLatLonCellCentered& other)   const  { return LatLon::sameAs(other); }
-	virtual bool sameAs(const ReducedLatLon& other)   const  { return LatLon::sameAs(other); }
-	virtual bool sameAs(const RotatedRegularLatLon&) const ;
-	virtual bool sameAs(const ReducedGaussian& other) const  { return LatLon::sameAs(other); }
-	virtual bool sameAs(const RegularGaussian& other) const  { return LatLon::sameAs(other); }
-	virtual bool sameAs(const PseudoRegularGaussian& other) const  { return LatLon::sameAs(other); }
-	virtual bool sameAs(const PolarStereographic& other) const  { return LatLon::sameAs(other); }
-	virtual bool sameAs(const ListOfPoints& other)    const  { return LatLon::sameAs(other); }
-	virtual bool equals(const Grid& other) const { return other.sameAs(*this); }
+    virtual bool sameAs(const RegularLatLon& other)   const  {
+        return LatLon::sameAs(other);
+    }
+    virtual bool sameAs(const RegularLatLonCellCentered& other)   const  {
+        return LatLon::sameAs(other);
+    }
+    virtual bool sameAs(const ReducedLatLon& other)   const  {
+        return LatLon::sameAs(other);
+    }
+    virtual bool sameAs(const RotatedRegularLatLon&) const ;
+    virtual bool sameAs(const ReducedGaussian& other) const  {
+        return LatLon::sameAs(other);
+    }
+    virtual bool sameAs(const RegularGaussian& other) const  {
+        return LatLon::sameAs(other);
+    }
+    virtual bool sameAs(const PseudoRegularGaussian& other) const  {
+        return LatLon::sameAs(other);
+    }
+    virtual bool sameAs(const PolarStereographic& other) const  {
+        return LatLon::sameAs(other);
+    }
+    virtual bool sameAs(const ListOfPoints& other)    const  {
+        return LatLon::sameAs(other);
+    }
+    virtual bool equals(const Grid& other) const {
+        return other.sameAs(*this);
+    }
 
-	void reOrderNewData(const vector<double>& data_in, vector<double>& data_out, int scMode) const; 
+    void reOrderNewData(const vector<double>& data_in, vector<double>& data_out, int scMode) const;
 
-	string   predefinedLsmFileName() const;
-	void addWeightsAlongLatitude(vector<double>& weights, double weightY, long i) const;
-	long getIndex(int i, int j) const;
+    string   predefinedLsmFileName() const;
+    void addWeightsAlongLatitude(vector<double>& weights, double weightY, long i) const;
+    long getIndex(int i, int j) const;
 
-	void accumulatedDataWE(const double* data, unsigned long dataLength, vector<double>& newData) const;
+    void accumulatedDataWE(const double* data, unsigned long dataLength, vector<double>& newData) const;
     int westEastNumberOfPoints()  const;
-	void setGlobalWestEast( double& west, double& east, double increment) const;
+    void setGlobalWestEast( double& west, double& east, double increment) const;
 
     Area  setGlobalArea()          const;
     Area  setGlobalArea(double west)  const;
 
-	void getGridAsLatLonList(double* lats, double* lons, long* length) const;
+    void getGridAsLatLonList(double* lats, double* lons, long* length) const;
 
-	void findWestAndEastIndex(GridContext* ctx, long j, double west, double east, int& westLongitudeIndex, int& eastLongitudeIndex ) const;
+    void findWestAndEastIndex(GridContext* ctx, long j, double west, double east, int& westLongitudeIndex, int& eastLongitudeIndex ) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const RotatedRegularLatLon& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const RotatedRegularLatLon& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

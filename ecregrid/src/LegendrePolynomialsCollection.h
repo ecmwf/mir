@@ -7,7 +7,7 @@
 
  ***************************** LICENSE END *************************************/
 
-#ifndef LegendrePolynomialsCollection_H 
+#ifndef LegendrePolynomialsCollection_H
 #define LegendrePolynomialsCollection_H
 
 #include "ThreadSafeMap.h"
@@ -17,20 +17,19 @@
 
 class Grid;
 
-#define DEFAULT_MAX_COLLECTION_SIZE 12 
+#define DEFAULT_MAX_COLLECTION_SIZE 12
 
-class LegendrePolynomialsCollection
-{
-public:
-    
+class LegendrePolynomialsCollection {
+  public:
+
     LegendrePolynomialsCollection(unsigned int maxCollectionSize = DEFAULT_MAX_COLLECTION_SIZE);
     virtual ~LegendrePolynomialsCollection();
 
     ref_counted_ptr<const LegendrePolynomials> polynomials(int truncation, const Grid& grid) const;
-    
+
     ref_counted_ptr<const LegendrePolynomials> addPolynomials(int truncation, const Grid& grid, LegendrePolynomials* newItem);
 
-private:
+  private:
 
     std::string generateKey(int truncation, const Grid& grid) const;
 

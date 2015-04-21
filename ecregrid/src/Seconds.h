@@ -3,7 +3,7 @@
 
 #ifndef Seconds_H
 #define Seconds_H
- 
+
 #ifndef machine_H
 #include "machine.h"
 #endif
@@ -11,26 +11,28 @@
 class Bless;
 
 class Seconds {
-public:
+  public:
 
 // -- Contructors
 
-	Seconds(double);
-	Seconds(const struct timeval&);
+    Seconds(double);
+    Seconds(const struct timeval&);
 
 // -- Operators
 
-	operator string() const;
-	operator double() const { return seconds_; }
+    operator string() const;
+    operator double() const {
+        return seconds_;
+    }
 
-	friend ostream& operator<<(ostream&,const Seconds&);
+    friend ostream& operator<<(ostream&,const Seconds&);
 
-private:
+  private:
 
 
 // -- Members
 
-	double seconds_;
+    double seconds_;
 
 };
 

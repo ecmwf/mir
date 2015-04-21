@@ -21,28 +21,28 @@ class Point;
 class FieldPoint;
 
 class PartialDerivatives {
-public:
+  public:
 
 // -- Contructors
-	PartialDerivatives();
+    PartialDerivatives();
 
 // -- Destructor
-	~PartialDerivatives();
+    ~PartialDerivatives();
 
-	void klm(const vector<Point> gridPoints, const Grid& grid, int scMode, const vector<double>& data, vector<double>& k, vector<double>& l, vector<double>& m, double missingValue) const;
+    void klm(const vector<Point> gridPoints, const Grid& grid, int scMode, const vector<double>& data, vector<double>& k, vector<double>& l, vector<double>& m, double missingValue) const;
 
-	void zonalDerivatives(const vector<Point> gridPoints, const Grid& grid, int scMode, const vector<double>& data, vector<double>& derivatives, double missingValue) const;
-	void meridionalDerivatives(const vector<Point> gridPoints, const Grid& grid, int scMode, const vector<double>& data, vector<double>& derivatives, double missingValue) const;
+    void zonalDerivatives(const vector<Point> gridPoints, const Grid& grid, int scMode, const vector<double>& data, vector<double>& derivatives, double missingValue) const;
+    void meridionalDerivatives(const vector<Point> gridPoints, const Grid& grid, int scMode, const vector<double>& data, vector<double>& derivatives, double missingValue) const;
 
-	double meridional(double targetLat, double targetValue, const vector<FieldPoint>& nearest, double missingValue) const;
+    double meridional(double targetLat, double targetValue, const vector<FieldPoint>& nearest, double missingValue) const;
 
-	double zonal(double targetLat, double targetLon, double targetValue, const vector<FieldPoint>& nearest, double missingValue) const;
+    double zonal(double targetLat, double targetLon, double targetValue, const vector<FieldPoint>& nearest, double missingValue) const;
 
-private:
+  private:
 
 // No copy allowed
-	PartialDerivatives(const PartialDerivatives&);
-	PartialDerivatives& operator=(const PartialDerivatives&);
+    PartialDerivatives(const PartialDerivatives&);
+    PartialDerivatives& operator=(const PartialDerivatives&);
 
 // -- Members
 

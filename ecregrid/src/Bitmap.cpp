@@ -26,109 +26,100 @@
 #endif
 
 Bitmap::Bitmap(const string& fileName, double missingValue) :
-	Extraction(), fileName_(fileName), missingValue_(missingValue)
-{
+    Extraction(), fileName_(fileName), missingValue_(missingValue) {
 }
 
-Bitmap::~Bitmap()
-{
+Bitmap::~Bitmap() {
 }
 
-void Bitmap::setBitmap(vector<bool>& bitmap, long offset, int firstColumn, int lastColumn, bool value) const
-{
+void Bitmap::setBitmap(vector<bool>& bitmap, long offset, int firstColumn, int lastColumn, bool value) const {
     for(int columnNumber=firstColumn; columnNumber<=lastColumn; columnNumber++) {
         long next = offset + columnNumber;
         bitmap[next] = value;
     }
 }
 
-void Bitmap::extract(const Grid& output, vector<double>& values) const
-{
-	eckit::Tokenizer comma(",");
-	eckit::Tokenizer slash("/");
-	eckit::Tokenizer dash("-");
-	eckit::Tokenizer colon(":");
-	eckit::Tokenizer equal("=");
-	string buffer;
+void Bitmap::extract(const Grid& output, vector<double>& values) const {
+    eckit::Tokenizer comma(",");
+    eckit::Tokenizer slash("/");
+    eckit::Tokenizer dash("-");
+    eckit::Tokenizer colon(":");
+    eckit::Tokenizer equal("=");
+    string buffer;
 
-	bool defaultValue = false;
-	bool        value = true;
+    bool defaultValue = false;
+    bool        value = true;
 
-	int weNumber, nsNumber;
+    int weNumber, nsNumber;
 
     const size_t valuesSize = values.size();
     vector<bool> bitmap(valuesSize, defaultValue);
 
-	ifstream is;
-	is.open(fileName_.c_str());
-	if (!is)
-	        throw CantOpenFile("Bitmap::extract " + fileName_);
+    ifstream is;
+    is.open(fileName_.c_str());
+    if (!is)
+        throw CantOpenFile("Bitmap::extract " + fileName_);
 
-	while( getline(is,buffer) ) {
+    while( getline(is,buffer) ) {
 //		cout << buffer << endl;
-		vector<string> v;
-		comma(buffer,v);
+        vector<string> v;
+        comma(buffer,v);
 
-		int size = v.size();
+        int size = v.size();
 
-		if (size >= 1) {
-			for(int i = 0; i < size ; i++) {
-				vector<string> n;
-				equal(v[i],n);
-				if(DEBUG)
-					cout << " Bitmap::extract => comma  " << v[i] << endl;
-			
-				if(n[0] == "SPEC"){
-					if(DEBUG)
-						cout << " Bitmap::extract => SPEC is present" << endl;
-				}
-				else if(n[0] == "SIZE") {
-					vector<string> s;
-					colon(n[1],s);
-					weNumber = atoi(s[0].c_str());
-					nsNumber = atoi(s[1].c_str());
-				}
-				else if(n[0] == "VALUES") {
-					if(n[1] == "ON")
-						defaultValue = true;
-						       value = false;
-    				for (int j = 0 ; j < size ; j++)
-						bitmap[j] = defaultValue;
-				}
-				else if(n[0] == "POINTS") {
-					vector<string> s;
-					colon(n[1],s);
-					int ssize = s.size();
-					if(DEBUG){
-						for(int j = 0; j < ssize ; j++)
-							cout << " Bitmap::extract => colon POINTS  " << s[i] << endl;
-					}
-				}
-				else {
-					vector<string> s;
-					colon(v[i],s);
-					int ssize = s.size();
-					if(DEBUG){
-						for(int j = 0; j < ssize ; j++)
-							cout << " Bitmap::extract => colon  " << s[i] << endl;
-					}
-				}
-			}
-		}
-				
-	}
-	is.close();
+        if (size >= 1) {
+            for(int i = 0; i < size ; i++) {
+                vector<string> n;
+                equal(v[i],n);
+                if(DEBUG)
+                    cout << " Bitmap::extract => comma  " << v[i] << endl;
 
-	setBitmap(bitmap,3,7,14,value);
+                if(n[0] == "SPEC") {
+                    if(DEBUG)
+                        cout << " Bitmap::extract => SPEC is present" << endl;
+                } else if(n[0] == "SIZE") {
+                    vector<string> s;
+                    colon(n[1],s);
+                    weNumber = atoi(s[0].c_str());
+                    nsNumber = atoi(s[1].c_str());
+                } else if(n[0] == "VALUES") {
+                    if(n[1] == "ON")
+                        defaultValue = true;
+                    value = false;
+                    for (int j = 0 ; j < size ; j++)
+                        bitmap[j] = defaultValue;
+                } else if(n[0] == "POINTS") {
+                    vector<string> s;
+                    colon(n[1],s);
+                    int ssize = s.size();
+                    if(DEBUG) {
+                        for(int j = 0; j < ssize ; j++)
+                            cout << " Bitmap::extract => colon POINTS  " << s[i] << endl;
+                    }
+                } else {
+                    vector<string> s;
+                    colon(v[i],s);
+                    int ssize = s.size();
+                    if(DEBUG) {
+                        for(int j = 0; j < ssize ; j++)
+                            cout << " Bitmap::extract => colon  " << s[i] << endl;
+                    }
+                }
+            }
+        }
 
-   	for (unsigned int j = 0 ; j < valuesSize ; j++)
-		if(bitmap[j] != defaultValue)
-			values[j] = missingValue_;
+    }
+    is.close();
+
+    setBitmap(bitmap,3,7,14,value);
+
+    for (unsigned int j = 0 ; j < valuesSize ; j++)
+        if(bitmap[j] != defaultValue)
+            values[j] = missingValue_;
 
 }
 
-void Bitmap::print(ostream& out) const
-{
-	out << "Bitmap file name " << fileName_ ;
+void Bitmap::print(ostream& out) const {
+    out << "Bitmap file name " << fileName_ ;
 }
 

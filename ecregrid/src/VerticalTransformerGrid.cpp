@@ -22,17 +22,14 @@
 #endif
 
 VerticalTransformerGrid::VerticalTransformerGrid(const string& typeOfLevel, int level) :
-	VerticalTransformer(typeOfLevel,level)
-{
+    VerticalTransformer(typeOfLevel,level) {
 }
 
-VerticalTransformerGrid::~VerticalTransformerGrid()
-{
+VerticalTransformerGrid::~VerticalTransformerGrid() {
 }
 
 
-Field* VerticalTransformerGrid::transform(const Field& inUp, const Field& inDown) const
-{
+Field* VerticalTransformerGrid::transform(const Field& inUp, const Field& inDown) const {
     /*
     const GridField& inputUp   = dynamic_cast<const GridField&>(inUp);
 

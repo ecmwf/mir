@@ -29,86 +29,77 @@
 
 #include <map>
 #include <algorithm>
- 
+
 NearestNeigbour::NearestNeigbour() :
-	Interpolator(4)
-{
+    Interpolator(4) {
 }
 
 NearestNeigbour::NearestNeigbour(int n) :
-	Interpolator(n)
-{
+    Interpolator(n) {
 }
 
 
-NearestNeigbour::~NearestNeigbour()
-{ 
-//cout << "NearestNeigbour: cleaning up." << endl; 
+NearestNeigbour::~NearestNeigbour() {
+//cout << "NearestNeigbour: cleaning up." << endl;
 }
 
-typedef	map<unsigned int,double> mapDistance;	
+typedef	map<unsigned int,double> mapDistance;
 
 
-void NearestNeigbour::interpolationWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const
-{
+void NearestNeigbour::interpolationWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const {
     cout << "NearestNeigbour::interpolationWeights" << endl;
     weights.assign(weights.size(), 0.0);
     int index = findNearestPointIndex(where, nearests);
     if (index < weights.size())
         weights[index] = 1.0;
     else
-		throw WrongValue("NearestNeigbour::interpolationWeights index out of range:", index );
+        throw WrongValue("NearestNeigbour::interpolationWeights index out of range:", index );
 
 
 }
 
-double NearestNeigbour::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
-	int index = findNearestPointIndex(where, nearests);
-	return nearests[index].value();
+double NearestNeigbour::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const {
+    int index = findNearestPointIndex(where, nearests);
+    return nearests[index].value();
 }
 
-void NearestNeigbour::findNearestPoints(const Grid& input, const vector<Point>& outputPoints, vector<Point>& newOutputPoints) const
-{
-	vector<Point> nearests;
-	nearests.reserve(4);
+void NearestNeigbour::findNearestPoints(const Grid& input, const vector<Point>& outputPoints, vector<Point>& newOutputPoints) const {
+    vector<Point> nearests;
+    nearests.reserve(4);
 
-	auto_ptr<GridContext> ctx(input.getGridContext());
+    auto_ptr<GridContext> ctx(input.getGridContext());
 
-	vector<Point>::const_iterator it = outputPoints.begin(), end = outputPoints.end();
-	for( ; it != end; it++){
-		input.nearest4pts(ctx.get(),*it,nearests);        
-		newOutputPoints.push_back(findNearestPoint(*it,nearests));
-	}
+    vector<Point>::const_iterator it = outputPoints.begin(), end = outputPoints.end();
+    for( ; it != end; it++) {
+        input.nearest4pts(ctx.get(),*it,nearests);
+        newOutputPoints.push_back(findNearestPoint(*it,nearests));
+    }
 }
 
-Point NearestNeigbour::findNearestPoint(const Point& where, const vector<Point>& nearests) const
-{
+Point NearestNeigbour::findNearestPoint(const Point& where, const vector<Point>& nearests) const {
     std::vector<FieldPoint> pts;
     for (unsigned int i = 0; i < nearests.size(); i++)
         pts.push_back(FieldPoint(nearests[i], 0.0));
     long index = findNearestPointIndex(where, pts);
-	return Point(nearests[index].latitude(), nearests[index].longitude(),nearests[index].iIndex(),nearests[index].jIndex(),nearests[index].k1dIndex());
+    return Point(nearests[index].latitude(), nearests[index].longitude(),nearests[index].iIndex(),nearests[index].jIndex(),nearests[index].k1dIndex());
 }
 
-long NearestNeigbour::findNearestPointIndex(const Point& where, const vector<FieldPoint>& nearests) const
-{
-	int size = nearests.size();
-	if(size == 0)
-		throw WrongValue("NearestNeigbour::findNearestPoint Point out of Scope - latitude:  ", where.latitude() );
+long NearestNeigbour::findNearestPointIndex(const Point& where, const vector<FieldPoint>& nearests) const {
+    int size = nearests.size();
+    if(size == 0)
+        throw WrongValue("NearestNeigbour::findNearestPoint Point out of Scope - latitude:  ", where.latitude() );
 
-	mapDistance d;
+    mapDistance d;
 
-	for (int k = 0; k < size; k++) {
-		d.insert( pair<int,double>(k,where.quickDistance( nearests[k])) );
-	}
+    for (int k = 0; k < size; k++) {
+        d.insert( pair<int,double>(k,where.quickDistance( nearests[k])) );
+    }
 
-	return min_element(d.begin(), d.end(), Interpolator::comparer)->first;
+    return min_element(d.begin(), d.end(), Interpolator::comparer)->first;
 }
 
-void NearestNeigbour::print(ostream& out) const
-{
-	Interpolator::print(out);
-	out << "NearestNeigbour" ;
+void NearestNeigbour::print(ostream& out) const {
+    Interpolator::print(out);
+    out << "NearestNeigbour" ;
 }
 

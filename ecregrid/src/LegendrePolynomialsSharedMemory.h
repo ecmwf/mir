@@ -20,50 +20,54 @@
 
 
 class LegendrePolynomialsSharedMemory : public LegendrePolynomialsRead {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	LegendrePolynomialsSharedMemory(int truncation, const Grid& grid);
+    LegendrePolynomialsSharedMemory(int truncation, const Grid& grid);
 
 // -- Destructor
 
-	~LegendrePolynomialsSharedMemory(); // Change to virtual if base class
+    ~LegendrePolynomialsSharedMemory(); // Change to virtual if base class
 
-protected:
+  protected:
 
 // Overriden methods
-	void print(ostream&) const;
+    void print(ostream&) const;
 
-private:
+  private:
 
 // No copy allowed
 
-	LegendrePolynomialsSharedMemory(const LegendrePolynomialsSharedMemory&);
-	LegendrePolynomialsSharedMemory& operator=(const LegendrePolynomialsSharedMemory&);
+    LegendrePolynomialsSharedMemory(const LegendrePolynomialsSharedMemory&);
+    LegendrePolynomialsSharedMemory& operator=(const LegendrePolynomialsSharedMemory&);
 
 // -- Members
-	int     sem_;
-	void*   ptr_;
+    int     sem_;
+    void*   ptr_;
 
     std::vector<void*> segments_;
-	size_t  length_;
-	double* next_;
+    size_t  length_;
+    double* next_;
 
 // -- Overridden methods
-	const double* getOneLatitude(double lat, int rowOffset) const;
+    const double* getOneLatitude(double lat, int rowOffset) const;
 
-	const double* getPolynoms() const { return next_; }
+    const double* getPolynoms() const {
+        return next_;
+    }
 
 // -- Class members
-	void detachSegments();
+    void detachSegments();
 
 // -- Friends
-	friend ostream& operator<<(ostream& s,const LegendrePolynomialsSharedMemory& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const LegendrePolynomialsSharedMemory& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

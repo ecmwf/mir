@@ -19,43 +19,38 @@
 
 
 Cubic12ptsBitmap::Cubic12ptsBitmap(double missingValue) :
-	Cubic12pts(), missingValue_(missingValue)
-{
+    Cubic12pts(), missingValue_(missingValue) {
 }
 
 Cubic12ptsBitmap::Cubic12ptsBitmap(bool w, bool a, double nPole, double sPole, double missingValue) :
-	Cubic12pts(w,a,nPole,sPole), missingValue_(missingValue)
-{
+    Cubic12pts(w,a,nPole,sPole), missingValue_(missingValue) {
 }
 
-Cubic12ptsBitmap::~Cubic12ptsBitmap()
-{
+Cubic12ptsBitmap::~Cubic12ptsBitmap() {
 }
 
 
-double Cubic12ptsBitmap::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
+double Cubic12ptsBitmap::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const {
 //	cout << "Cubic12ptsBitmap::interpolatedValue  " << nearests.size() << endl;
 
-	int size = nearests.size();
+    int size = nearests.size();
 
-	if(size < 4){
-		return missingNeighbours(where,nearests,size,missingValue_);
-	}
+    if(size < 4) {
+        return missingNeighbours(where,nearests,size,missingValue_);
+    }
 
-	vector<FieldPoint>::const_iterator it = nearests.begin(), end = nearests.end();
-	for( ; it != end; it++){
-		if(same(it->value(),missingValue_))
-			return useNearestNeigbour(where,nearests,size,missingValue_);
-	}
+    vector<FieldPoint>::const_iterator it = nearests.begin(), end = nearests.end();
+    for( ; it != end; it++) {
+        if(same(it->value(),missingValue_))
+            return useNearestNeigbour(where,nearests,size,missingValue_);
+    }
 
-	
-	return Cubic12pts::interpolatedValue(where,nearests);
+
+    return Cubic12pts::interpolatedValue(where,nearests);
 }
 
-void Cubic12ptsBitmap::print(ostream& out) const
-{
-	Interpolator::print(out);
-	out << "Cubic12ptsBitmap" ;
+void Cubic12ptsBitmap::print(ostream& out) const {
+    Interpolator::print(out);
+    out << "Cubic12ptsBitmap" ;
 }
 

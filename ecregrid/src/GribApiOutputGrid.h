@@ -15,24 +15,24 @@
 #endif
 
 class GribApiOutputGrid : public GribApiOutput {
-public:
+  public:
 
 // -- Contructors
 
-	GribApiOutputGrid();
-	GribApiOutputGrid(const string& name);
+    GribApiOutputGrid();
+    GribApiOutputGrid(const string& name);
 
 // -- Destructor
 
-	~GribApiOutputGrid();
+    ~GribApiOutputGrid();
 
 // --  Methods
 
-private:
+  private:
 
 // No copy allowed
-	GribApiOutputGrid(const GribApiOutputGrid&);
-	GribApiOutputGrid& operator=(const GribApiOutputGrid&);
+    GribApiOutputGrid(const GribApiOutputGrid&);
+    GribApiOutputGrid& operator=(const GribApiOutputGrid&);
 
 // -- Members
 

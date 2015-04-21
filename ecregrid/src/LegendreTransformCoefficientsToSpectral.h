@@ -14,85 +14,85 @@
 #ifndef LegendreTransform_H
 #include "LegendreTransform.h"
 #endif
-// 
+//
 #include <vector>
 
 class LegendreTransformCoefficientsToSpectral : public LegendreTransform {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	LegendreTransformCoefficientsToSpectral(const ref_counted_ptr<const LegendrePolynomials>& poly, int truncation, const vector<double>& lats);
+    LegendreTransformCoefficientsToSpectral(const ref_counted_ptr<const LegendrePolynomials>& poly, int truncation, const vector<double>& lats);
 
 // -- Destructor
 
-	~LegendreTransformCoefficientsToSpectral(); // Change to virtual if base class
+    ~LegendreTransformCoefficientsToSpectral(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	int transform(double* coeff, double* data, int latNumber) const;
+    int transform(double* coeff, double* data, int latNumber) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	// void print(ostream&) const; // Change to virtual if base class	
+
+    // void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	LegendreTransformCoefficientsToSpectral(const LegendreTransformCoefficientsToSpectral&);
-	LegendreTransformCoefficientsToSpectral& operator=(const LegendreTransformCoefficientsToSpectral&);
+    LegendreTransformCoefficientsToSpectral(const LegendreTransformCoefficientsToSpectral&);
+    LegendreTransformCoefficientsToSpectral& operator=(const LegendreTransformCoefficientsToSpectral&);
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const LegendreTransformCoefficientsToSpectral& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const LegendreTransformCoefficientsToSpectral& p)
+    //	{ p.print(s); return s; }
 
 };
 

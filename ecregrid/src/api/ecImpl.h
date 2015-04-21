@@ -19,20 +19,19 @@ class DFO;
 // Implementation of the API Interfaces using ecRegrid's internal classes
 //
 
-class FieldRepresentationImpl : public ecregrid::IFieldRepresentation
-{
+class FieldRepresentationImpl : public ecregrid::IFieldRepresentation {
     friend class ecregrid::FieldRepresentationFactory;
     FieldRepresentationImpl(const ecregrid::DFO& opts);
     virtual ~FieldRepresentationImpl();
-    
+
     // IFieldRepresentation implementation
     virtual size_t numberOfDataValues() const;
-    
-public:
+
+  public:
     const Field* field() const;
     const FieldDescription& description() const;
 
-private:
+  private:
     void makeWrappedObjects(const ecregrid::DFO& opts);
 
     // the wrapped objects

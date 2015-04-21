@@ -12,21 +12,21 @@
 #include "InterpolatorLsm.h"
 
 class AverageLsm : public InterpolatorLsm {
-public:
+  public:
 
-// -- Contructors
-	AverageLsm(const Grid& input, const Grid& output, const string& lsmMethod);
-	AverageLsm(int n, const Grid& input, const Grid& output, const string& lsmMethod);
+    // -- Contructors
+    AverageLsm(const Grid &input, const Grid &output, const string &lsmMethod);
+    AverageLsm(int n, const Grid &input, const Grid &output, const string &lsmMethod);
 
-// -- Destructor
-	~AverageLsm();
+    // -- Destructor
+    ~AverageLsm();
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream &) const;
 
-private:
+  private:
 
-// -- Overridden methods
-	double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    // -- Overridden methods
+    double interpolatedValue(const Point &point, const vector<FieldPoint> &nearests) const;
 };
 #endif

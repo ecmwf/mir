@@ -16,46 +16,50 @@
 
 // Forward declarations
 
-// 
+//
 
 class LegendrePolynomialsOnFly : public LegendrePolynomials {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
-	LegendrePolynomialsOnFly(int truncation);
+    LegendrePolynomialsOnFly(int truncation);
 // -- Destructor
-	~LegendrePolynomialsOnFly(); // Change to virtual if base class
+    ~LegendrePolynomialsOnFly(); // Change to virtual if base class
 
 
-protected:
+  protected:
 
 // Overriden methods
-	void print(ostream&) const;
+    void print(ostream&) const;
 
-private:
+  private:
 
     // NB To allow other Legendre polynomial classes to hold pointers to
     // thread-safe cached objects, which obviously must not then be modified,
     // we have const access to Legendre data in those classes. For this class
     // (which holds its own non-thread-safe-cached set of data) to use the
     // same methods we must make its data mutable
-	mutable vector<double> polynoms_;
-	mutable vector<double> work_;
+    mutable vector<double> polynoms_;
+    mutable vector<double> work_;
 
 // No copy allowed
-	LegendrePolynomialsOnFly(const LegendrePolynomialsOnFly&);
-	LegendrePolynomialsOnFly& operator=(const LegendrePolynomialsOnFly&);
+    LegendrePolynomialsOnFly(const LegendrePolynomialsOnFly&);
+    LegendrePolynomialsOnFly& operator=(const LegendrePolynomialsOnFly&);
 
 // -- Overridden methods
-	const double* getOneLatitude(double lat, int rowOffset) const;
-	const double* getPolynoms() const { return 0; }
+    const double* getOneLatitude(double lat, int rowOffset) const;
+    const double* getPolynoms() const {
+        return 0;
+    }
 
 // -- Friends
-	friend ostream& operator<<(ostream& s,const LegendrePolynomialsOnFly& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const LegendrePolynomialsOnFly& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 #endif

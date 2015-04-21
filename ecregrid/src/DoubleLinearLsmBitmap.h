@@ -14,28 +14,28 @@
 #include "DoubleLinearLsm.h"
 #endif
 
-// 
+//
 
 class DoubleLinearLsmBitmap : public DoubleLinearLsm {
-public:
+  public:
 
 // -- Contructors
 
-	DoubleLinearLsmBitmap(const Grid& input, const Grid& output, const string& lsmMethod, double missingValue);
-	DoubleLinearLsmBitmap(bool w, bool a, double nPole, double sPole, const Grid& input, const Grid& output, const string& lsmMethod, double missingValue);
+    DoubleLinearLsmBitmap(const Grid& input, const Grid& output, const string& lsmMethod, double missingValue);
+    DoubleLinearLsmBitmap(bool w, bool a, double nPole, double sPole, const Grid& input, const Grid& output, const string& lsmMethod, double missingValue);
 
 // -- Overridden methods
-	virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
 
 // -- Destructor
 
-	~DoubleLinearLsmBitmap(); // Change to virtual if base class
+    ~DoubleLinearLsmBitmap(); // Change to virtual if base class
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
-	double missingValue_;
+  private:
+    double missingValue_;
 
 };
 

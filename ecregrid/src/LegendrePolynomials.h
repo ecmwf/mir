@@ -17,49 +17,51 @@
 
 
 class LegendrePolynomials {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	LegendrePolynomials(int truncation);
+    LegendrePolynomials(int truncation);
 
 // -- Destructor
 
-	virtual ~LegendrePolynomials(); // Change to virtual if base class
+    virtual ~LegendrePolynomials(); // Change to virtual if base class
 
 
 // -- Methods
 
-	void calculateLegendrePoly(double* leg, double* work, double lat) const;
+    void calculateLegendrePoly(double* leg, double* work, double lat) const;
 
-	virtual const double* getOneLatitude(double lat, int rowOffset) const  = 0;
-	virtual const double* getPolynoms() const = 0;
+    virtual const double* getOneLatitude(double lat, int rowOffset) const  = 0;
+    virtual const double* getPolynoms() const = 0;
 
-protected:
-	
+  protected:
+
 // -- Members
-	int    truncation_;
+    int    truncation_;
 
 // -- Methods
 
     virtual void print(ostream&) const; // Change to virtual if base class
 
-private:
+  private:
 
 // No copy allowed
 
-	LegendrePolynomials(const LegendrePolynomials&);
-	LegendrePolynomials& operator=(const LegendrePolynomials&);
+    LegendrePolynomials(const LegendrePolynomials&);
+    LegendrePolynomials& operator=(const LegendrePolynomials&);
 
 
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const LegendrePolynomials& p)
-	{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const LegendrePolynomials& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

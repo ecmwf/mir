@@ -11,8 +11,8 @@
 // Description of the field object passed to factory
 // Possibly reusing code from grib api
 //
-// Would contain all relevant data taken 
-// from grib files but can be used by 
+// Would contain all relevant data taken
+// from grib files but can be used by
 // non-grib users also
 
 namespace ecregrid {
@@ -21,29 +21,30 @@ class DFOReader;
 
 class DFO {
 
-public:
+  public:
     enum Representation { RegularLatLon,   RotatedRegularLatLon, ReducedLatLon,
-                          RegularGaussian, ReducedGaussian,  
-                          SphericalHarmonic, 
-                          PolarStereographic, 
-                          ListOfPoints };
+                          RegularGaussian, ReducedGaussian,
+                          SphericalHarmonic,
+                          PolarStereographic,
+                          ListOfPoints
+                        };
 
     enum ScanMode {     NSEW,      // i scans positively, j scans negatively
                         SNEW,      // i scans positively, j scans positively
                         NSWE,      // i scans negatively, j scans negatively
                         SNWE       // i scans negatively, j scans positively
-                  };     
+                  };
 
     // constructors to give self-consistent objects with our chosen defaults
     // that can be modified using methods below
     DFO(Representation rep);
 
 
-    // The following methods will throw an exception should the 
+    // The following methods will throw an exception should the
     // parameter being set be irrelevant to the Representation specified
     // in the constructor (e.g. setting Gaussian Number of SphericalHarmonic
     // representation)
-    
+
     // for spherical representations
     void setTruncation(int truncation);
 
@@ -67,13 +68,13 @@ public:
 
     void setBitmapFile(const std::string& file);
     void clearBitmapFile();
-    
+
     void setMissingValue(double val);
 
     void setCellCentred(bool cellCentred);
     void setShifted(bool shifted);
 
-private:
+  private:
 
     Representation representation_;
 
@@ -97,7 +98,7 @@ private:
     eckit::Area subArea_;
     std::pair<double, double> southPoleOfRotation_;
 
-    // Bitmap 
+    // Bitmap
     std::string    bitmapFile_;
     double    missingValue_;
 
@@ -108,11 +109,10 @@ private:
 };
 
 
-class DFOReader
-{
-public:
+class DFOReader {
+  public:
     DFOReader(const DFO& dfo) : dfo_(dfo) {};
-    
+
     long numberOfPointsNorthSouth() const;
     long numberOfPointsWestEast() const;
 
@@ -137,7 +137,7 @@ public:
     bool usingBitmap() const;
     int frameNumber() const;
 
-private:
+  private:
     const DFO& dfo_;
 };
 

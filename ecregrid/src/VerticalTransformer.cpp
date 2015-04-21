@@ -10,10 +10,8 @@
 #include "VerticalTransformer.h"
 
 VerticalTransformer::VerticalTransformer(const string& typeOfLevel, int level) :
-	typeOfLevel_(typeOfLevel), level_(level)
-{
+    typeOfLevel_(typeOfLevel), level_(level) {
 }
 
-VerticalTransformer::~VerticalTransformer()
-{
+VerticalTransformer::~VerticalTransformer() {
 }

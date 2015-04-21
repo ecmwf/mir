@@ -10,17 +10,14 @@
 #include "Wind.h"
 
 Wind::Wind() :
-	u_(0), v_(0)	
-{
+    u_(0), v_(0) {
 }
 
-Wind::Wind(Field* u, Field* v) :
-	u_(u), v_(v)	
-{
+Wind::Wind(Field *u, Field *v) :
+    u_(u), v_(v) {
 }
 
-Wind::~Wind()
-{
+Wind::~Wind() {
 }
 
 

@@ -20,18 +20,15 @@
 #include "NearestNeigbour.h"
 
 BiLinear::BiLinear() :
-	Interpolator(4)
-{
+    Interpolator(4) {
 }
 
 BiLinear::BiLinear(bool w, bool a, double nPole, double sPole) :
-	Interpolator(w,a,nPole,sPole,4)
-{
+    Interpolator(w,a,nPole,sPole,4) {
 }
 
-BiLinear::~BiLinear()
-{ 
-//cout << "BiLinear: cleaning up." << endl; 
+BiLinear::~BiLinear() {
+//cout << "BiLinear: cleaning up." << endl;
 }
 
 /*
@@ -41,21 +38,19 @@ BiLinear::~BiLinear()
 				    I
                 2       3
 */
-void BiLinear::interpolationWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const
-{
-    if (nearests.size() < neighbour_)
-    {
+void BiLinear::interpolationWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const {
+    if (nearests.size() < neighbour_) {
         missingNeighbourWeights(where, nearests, weights);
         return;
     }
 
-	/* The unnormalised weights are the sizes of the opposing rectangles. */
-	double weight0 = unnormalisedWeight(where, nearests[3]);
-	double weight1 = unnormalisedWeight(where, nearests[2]);
-	double weight2 = unnormalisedWeight(where, nearests[1]);
-	double weight3 = unnormalisedWeight(where, nearests[0]);
+    /* The unnormalised weights are the sizes of the opposing rectangles. */
+    double weight0 = unnormalisedWeight(where, nearests[3]);
+    double weight1 = unnormalisedWeight(where, nearests[2]);
+    double weight2 = unnormalisedWeight(where, nearests[1]);
+    double weight3 = unnormalisedWeight(where, nearests[0]);
 
-	double sum = weight0 + weight1 + weight2 + weight3;
+    double sum = weight0 + weight1 + weight2 + weight3;
 
     weights[0] = (weight0/sum);
     weights[1] = (weight1/sum);
@@ -64,10 +59,9 @@ void BiLinear::interpolationWeights(const Point& where, const vector<FieldPoint>
 
 }
 
-double BiLinear::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
-	if(nearests.size() < neighbour_)
-		return missingNeighbours(where,nearests, nearests.size());
+double BiLinear::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const {
+    if(nearests.size() < neighbour_)
+        return missingNeighbours(where,nearests, nearests.size());
 
     std::vector<double> weights(nearests.size(), 0.0);
     BiLinear::interpolationWeights(where, nearests, weights);
@@ -79,8 +73,7 @@ double BiLinear::interpolatedValue(const Point& where, const vector<FieldPoint>&
     return sum;
 }
 
-void BiLinear::print(ostream& out) const
-{
-	Interpolator::print(out);
-	out << "BiLinear" ;
+void BiLinear::print(ostream& out) const {
+    Interpolator::print(out);
+    out << "BiLinear" ;
 }

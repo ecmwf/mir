@@ -20,18 +20,15 @@
 /*static*/ const double BiLinearPrecipitation::TRIGGER = 0.00005;
 
 BiLinearPrecipitation::BiLinearPrecipitation() :
-	Interpolator(4)
-{
+    Interpolator(4) {
 }
 
 BiLinearPrecipitation::BiLinearPrecipitation(bool w, bool a, double nPole, double sPole) :
-	Interpolator(w,a,nPole,sPole,4)
-{
+    Interpolator(w,a,nPole,sPole,4) {
 }
 
-BiLinearPrecipitation::~BiLinearPrecipitation()
-{ 
-//cout << "BiLinearPrecipitation: cleaning up." << endl; 
+BiLinearPrecipitation::~BiLinearPrecipitation() {
+//cout << "BiLinearPrecipitation: cleaning up." << endl;
 }
 
 /*
@@ -42,36 +39,34 @@ BiLinearPrecipitation::~BiLinearPrecipitation()
                 2       3
 */
 
-double BiLinearPrecipitation::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
-	int size = nearests.size();
-	if(size < neighbour_)
-		return missingNeighbours(where,nearests,size);
+double BiLinearPrecipitation::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const {
+    int size = nearests.size();
+    if(size < neighbour_)
+        return missingNeighbours(where,nearests,size);
 
 // eliminate output precipitation based on "nearest" point.
-	if(same(useNearestNeigbour(where,nearests,size),TRIGGER))
-		return 0;
+    if(same(useNearestNeigbour(where,nearests,size),TRIGGER))
+        return 0;
 
-	/* The unnormalised weights are the sizes of the opposing rectangles. */
-	double weight0 = unnormalisedWeight(where, nearests[3]);
-	double weight1 = unnormalisedWeight(where, nearests[2]);
-	double weight2 = unnormalisedWeight(where, nearests[1]);
-	double weight3 = unnormalisedWeight(where, nearests[0]);
+    /* The unnormalised weights are the sizes of the opposing rectangles. */
+    double weight0 = unnormalisedWeight(where, nearests[3]);
+    double weight1 = unnormalisedWeight(where, nearests[2]);
+    double weight2 = unnormalisedWeight(where, nearests[1]);
+    double weight3 = unnormalisedWeight(where, nearests[0]);
 
-	double sum = weight0 + weight1 + weight2 + weight3;
+    double sum = weight0 + weight1 + weight2 + weight3;
 
-	double temp = nearests[0].value() * (weight0/sum) 
-	     + nearests[1].value() * (weight1/sum)
-		 + nearests[2].value() * (weight2/sum)
-		 + nearests[3].value() * (weight3/sum);
-	 if(temp < TRIGGER)
-	 	return 0;
+    double temp = nearests[0].value() * (weight0/sum)
+                  + nearests[1].value() * (weight1/sum)
+                  + nearests[2].value() * (weight2/sum)
+                  + nearests[3].value() * (weight3/sum);
+    if(temp < TRIGGER)
+        return 0;
 
-	 return temp;
+    return temp;
 }
 
-void BiLinearPrecipitation::print(ostream& out) const
-{
-	Interpolator::print(out);
-	out << "BiLinearPrecipitation" ;
+void BiLinearPrecipitation::print(ostream& out) const {
+    Interpolator::print(out);
+    out << "BiLinearPrecipitation" ;
 }

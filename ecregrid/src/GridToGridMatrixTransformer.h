@@ -22,60 +22,60 @@ class Grid;
 class Extraction;
 
 class GridToGridMatrixTransformer : public Transformer {
-public:
+  public:
 
 // -- Contructors
 
-	GridToGridMatrixTransformer(const string& intMethod = "default", const string& lsmMethod = "10min", int npts = 16, const string& type = "interpolation", const string& extrapolate = "default", double missingValue = MISSING_VALUE);
+    GridToGridMatrixTransformer(const string& intMethod = "default", const string& lsmMethod = "10min", int npts = 16, const string& type = "interpolation", const string& extrapolate = "default", double missingValue = MISSING_VALUE);
 
 // -- Destructor
 
-	~GridToGridMatrixTransformer(); // Change to virtual if base class
+    ~GridToGridMatrixTransformer(); // Change to virtual if base class
 
 // -- Methods
-	//bool   transform(const GridField& in, const Grid& outGrid, const Extraction* extraction, vector<double>& values) const;
+    //bool   transform(const GridField& in, const Grid& outGrid, const Extraction* extraction, vector<double>& values) const;
 
 // -- Overridden methods
-	Field* transform(const Field& input, const Field& output ) const;
-	Wind*  transformVector(const Field& inU, const Field& inV, const Field& req) const;
+    Field* transform(const Field& input, const Field& output ) const;
+    Wind*  transformVector(const Field& inU, const Field& inV, const Field& req) const;
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
+
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	GridToGridMatrixTransformer(const GridToGridMatrixTransformer&);
-	GridToGridMatrixTransformer& operator=(const GridToGridMatrixTransformer&);
+    GridToGridMatrixTransformer(const GridToGridMatrixTransformer&);
+    GridToGridMatrixTransformer& operator=(const GridToGridMatrixTransformer&);
 
 // -- Members
-	string interpolationMethod_;
-	string lsmMethod_;
-	int    pointsForInterpolation_;
-	string type_;
-	string extrapolate_;
+    string interpolationMethod_;
+    string lsmMethod_;
+    int    pointsForInterpolation_;
+    string type_;
+    string extrapolate_;
 
-	double missingValue_;
+    double missingValue_;
 
 // -- Methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 
 };

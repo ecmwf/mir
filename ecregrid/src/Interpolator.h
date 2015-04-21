@@ -31,77 +31,81 @@ class DerivedSubgridParameters;
 #ifndef FieldPoint_H
 #include "FieldPoint.h"
 #endif
-// 
+//
 
 class Interpolator {
-public:
+  public:
 
 // -- Contructors
-	Interpolator();
-	Interpolator(int n);
-	Interpolator(bool w, bool a, double nPole, double sPole, int n);
+    Interpolator();
+    Interpolator(int n);
+    Interpolator(bool w, bool a, double nPole, double sPole, int n);
 
 // -- Destructor
-	virtual ~Interpolator();
+    virtual ~Interpolator();
 
 // -- Methods
 
-	virtual void  interpolate(const GridField& input, const Grid& output, vector<double>& values) const;
+    virtual void  interpolate(const GridField& input, const Grid& output, vector<double>& values) const;
 
-	virtual void interpolate(const Grid& input, const vector<double>& data, int inScMode, double inMissingValue, const vector<Point>& outputPoints, vector<double>& values) const;
+    virtual void interpolate(const Grid& input, const vector<double>& data, int inScMode, double inMissingValue, const vector<Point>& outputPoints, vector<double>& values) const;
 
-	virtual double interpolate(const Grid& input, GridContext* ctx, vector<FieldPoint>& nearests, const vector<double>& data, int inScMode, double inMissingValue, const Point& outputPoint) const;
+    virtual double interpolate(const Grid& input, GridContext* ctx, vector<FieldPoint>& nearests, const vector<double>& data, int inScMode, double inMissingValue, const Point& outputPoint) const;
 
     virtual void interpolationWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const;
-    
-	virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const = 0;
 
-	double missingNeighbours(const Point& where, const vector<FieldPoint>& nearests, int size, double missingValue) const;
-	double missingNeighbours(const Point& where, const vector<FieldPoint>& nearests, int size) const;
+    virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const = 0;
+
+    double missingNeighbours(const Point& where, const vector<FieldPoint>& nearests, int size, double missingValue) const;
+    double missingNeighbours(const Point& where, const vector<FieldPoint>& nearests, int size) const;
 
     void missingNeighbourWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const;
 
-	double useNearestNeigbour(const Point& where, const vector<FieldPoint>& nearests, int size) const;
-	double useNearestNeigbour(const Point& where, const vector<FieldPoint>& nearests, int size, double missingValue) const;
+    double useNearestNeigbour(const Point& where, const vector<FieldPoint>& nearests, int size) const;
+    double useNearestNeigbour(const Point& where, const vector<FieldPoint>& nearests, int size, double missingValue) const;
 
-	int numberOfNeighbours() const { return neighbour_; }
+    int numberOfNeighbours() const {
+        return neighbour_;
+    }
 
 //	void checkConservation(const double* values, unsigned long valuesSize, const GridField& input, double missingValue) const;
 
-	double checkConservation(const vector<double>& values, const vector<double>& weights, double missingValue) const;
+    double checkConservation(const vector<double>& values, const vector<double>& weights, double missingValue) const;
 
-	void checkValues(const vector<double>& values) const;
-	void checkDumpNearest(const Point& target, long tIndex, const vector<FieldPoint>& nearests) const;
+    void checkValues(const vector<double>& values) const;
+    void checkDumpNearest(const Point& target, long tIndex, const vector<FieldPoint>& nearests) const;
 
-	void extrapolateOnPole(const GridField& input);
+    void extrapolateOnPole(const GridField& input);
 
-	virtual void standardDeviation(const GridField& input, const Grid& output, vector<double>& values) const;
+    virtual void standardDeviation(const GridField& input, const Grid& output, vector<double>& values) const;
 
-	virtual void standardDeviation(const Grid& input, const vector<double>& data, const vector<double>& dataSquared,  int inScMode, double inMissingValue, const vector<Point>& outputPoints, vector<double>& values) const;
+    virtual void standardDeviation(const Grid& input, const vector<double>& data, const vector<double>& dataSquared,  int inScMode, double inMissingValue, const vector<Point>& outputPoints, vector<double>& values) const;
 
-	virtual void derivedSubgridParameters(const GridField& input, const Grid& output, vector<double>& values, const DerivedSubgridParameters& stat) const;
+    virtual void derivedSubgridParameters(const GridField& input, const Grid& output, vector<double>& values, const DerivedSubgridParameters& stat) const;
 
-	virtual void derivedSubgridParameters(const Grid& input, const vector<double>& K, const vector<double>& L, const vector<double>& M, int inScMode, double inMissingValue, const vector<Point>& outputPoints, vector<double>& values, const DerivedSubgridParameters& stat) const;
+    virtual void derivedSubgridParameters(const Grid& input, const vector<double>& K, const vector<double>& L, const vector<double>& M, int inScMode, double inMissingValue, const vector<Point>& outputPoints, vector<double>& values, const DerivedSubgridParameters& stat) const;
 
     static bool comparer(const pair<unsigned int,double>& a, const pair<unsigned int,double>& b);
-protected:
+  protected:
 // -- Methods
-	long neighboursNeeded(double nsIn, double nsOut) const;
-	long ratio(double nsIn, double nsOut) const;
-	virtual void print(ostream&) const;
+    long neighboursNeeded(double nsIn, double nsOut) const;
+    long ratio(double nsIn, double nsOut) const;
+    virtual void print(ostream&) const;
 
 // Members
-	int    neighbour_;
-	bool   extrapolateLinearOnPole_;
-	bool   extrapolateAverageOnPole_;
-	double averageForNorthPole_;
-	double averageForSouthPole_;
+    int    neighbour_;
+    bool   extrapolateLinearOnPole_;
+    bool   extrapolateAverageOnPole_;
+    double averageForNorthPole_;
+    double averageForSouthPole_;
 
-private:
+  private:
 
 // -- Friends
-    friend ostream& operator<<(ostream& s,const Interpolator& p)
-	        { p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const Interpolator& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 

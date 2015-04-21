@@ -24,54 +24,50 @@
 #include <cstring>
 
 
-LegendrePolynomialsMemoryMap::LegendrePolynomialsMemoryMap(int truncation, const Grid& grid) : 
-	LegendrePolynomialsRead(truncation,grid)
-{
+LegendrePolynomialsMemoryMap::LegendrePolynomialsMemoryMap(int truncation, const Grid& grid) :
+    LegendrePolynomialsRead(truncation,grid) {
 //	checkAndPossiblyCreate(grid);
 
     openCoefficientsFile();
 
-	auto_ptr<Grid>globalGrid( grid.getGlobalGrid() );
-	int nshalf = (1 + globalGrid->northSouthNumberOfPoints())/2;
+    auto_ptr<Grid>globalGrid( grid.getGlobalGrid() );
+    int nshalf = (1 + globalGrid->northSouthNumberOfPoints())/2;
 
-	length_ = latLength_ * nshalf * sizeof(double);
+    length_ = latLength_ * nshalf * sizeof(double);
 
-	addr_ = mmap64(0, length_, PROT_READ, MAP_SHARED, fd_, 0);
+    addr_ = mmap64(0, length_, PROT_READ, MAP_SHARED, fd_, 0);
 
-	if(addr_ == MAP_FAILED)
-	  	throw ReadError("LegendrePolynomialsMemoryMap::LegendrePolynomialsMemoryMap" + constructCoefficientsFilename());
+    if(addr_ == MAP_FAILED)
+        throw ReadError("LegendrePolynomialsMemoryMap::LegendrePolynomialsMemoryMap" + constructCoefficientsFilename());
 
-	next_ = (double*)addr_;
+    next_ = (double*)addr_;
 
-		
-	if(DEBUG)
-		cout << "LegendrePolynomialsMemoryMap::LegendrePolynomialsMemoryMap ||||||||" << latLength_ * nshalf << " " << length_ <<  endl;
+
+    if(DEBUG)
+        cout << "LegendrePolynomialsMemoryMap::LegendrePolynomialsMemoryMap ||||||||" << latLength_ * nshalf << " " << length_ <<  endl;
 
     closeFile();
 }
-	
 
-LegendrePolynomialsMemoryMap::~LegendrePolynomialsMemoryMap()
-{
+
+LegendrePolynomialsMemoryMap::~LegendrePolynomialsMemoryMap() {
 // Unmap here...
 
     if (DEBUG)
         cout << "LegendrePolynomialsMemoryMap::~LegendrePolynomialsMemoryMap destructor called" << endl;
 
-	munmap(addr_,length_);
+    munmap(addr_,length_);
 
     closeFile();
 
 }
 
-const double* LegendrePolynomialsMemoryMap::getOneLatitude(double lat, int rowOffset) const 
-{
-	return 0;
+const double* LegendrePolynomialsMemoryMap::getOneLatitude(double lat, int rowOffset) const {
+    return 0;
 }
 
 
-void LegendrePolynomialsMemoryMap::print(ostream& out) const
-{
-	LegendrePolynomialsRead::print(out);
-	out << "Memory Map";
+void LegendrePolynomialsMemoryMap::print(ostream& out) const {
+    LegendrePolynomialsRead::print(out);
+    out << "Memory Map";
 }

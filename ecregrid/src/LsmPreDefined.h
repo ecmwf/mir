@@ -17,36 +17,38 @@
 
 class LsmPreDefined : public Lsm {
 
-public:
+  public:
 // -- Contructors
 
-	LsmPreDefined(Input* input);
-	LsmPreDefined(Input* input, const string& predefined);
+    LsmPreDefined(Input* input);
+    LsmPreDefined(Input* input, const string& predefined);
 
 // -- Destructor
 
-	virtual ~LsmPreDefined(); // Change to virtual if base class
+    virtual ~LsmPreDefined(); // Change to virtual if base class
 
 
 // Overriden methods
     ref_counted_ptr< const vector<double> > getLsmValuesDouble(const Grid& gridSpec);
-	void   getLsmValues(const Grid& grid, vector<bool>& generatedLsm) ;
+    void   getLsmValues(const Grid& grid, vector<bool>& generatedLsm) ;
 
-private:
+  private:
 
 // No copy allowed
 
-	LsmPreDefined(const LsmPreDefined&);
-	LsmPreDefined& operator=(const LsmPreDefined&);
+    LsmPreDefined(const LsmPreDefined&);
+    LsmPreDefined& operator=(const LsmPreDefined&);
 
 // Overriden methods
-	double  seaPoint(double latitude,double longitude) const;
-	bool  seaPointBool(double latitude,double longitude) const;
+    double  seaPoint(double latitude,double longitude) const;
+    bool  seaPointBool(double latitude,double longitude) const;
 
-	bool  isAvailablePredefinedLsm();
-	string  directoryOfPredefined() const { return directoryOfPredefined_; }
+    bool  isAvailablePredefinedLsm();
+    string  directoryOfPredefined() const {
+        return directoryOfPredefined_;
+    }
 
-	string directoryOfPredefined_;
+    string directoryOfPredefined_;
 
 
 

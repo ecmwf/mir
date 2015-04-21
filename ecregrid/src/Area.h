@@ -20,118 +20,120 @@ class Point;
 
 // class ostream;
 
-// 
+//
 
 class Area {
-public:
+  public:
 
-// -- Exceptions
-	// None
+    // -- Exceptions
+    // None
 
-// -- Contructors
- 
-//	Area();
-	Area(double north,double west,double south,double east,int scMode);
-	Area(double north,double west,double south,double east);
-	Area(const Area& other);
+    // -- Contructors
 
-// -- Destructor
+    //	Area();
+    Area(double north, double west, double south, double east, int scMode);
+    Area(double north, double west, double south, double east);
+    Area(const Area &other);
 
-	~Area(); // Change to virtual if base class
+    // -- Destructor
 
-// -- Convertors
-	// None
+    ~Area(); // Change to virtual if base class
 
-// -- Operators
-	bool operator==(const Area& other) const;
-	Area& operator=(const Area& other);
+    // -- Convertors
+    // None
 
-// -- Methods
-	bool isCellCentered(double ns, double we) const;
-// ----  Accessors
-	double north() const;
-	double west()  const;
-	double east()  const;
-	double south() const;
+    // -- Operators
+    bool operator==(const Area &other) const;
+    Area &operator=(const Area &other);
 
-	bool northernHemisphereOnly()    const;
-	bool southernHemisphereOnly()    const;
-	bool symmetricalAboutEquator()   const;
-	bool moreNorthThanSouth()        const;
-	bool moreSouthThanNorth()        const;
+    // -- Methods
+    bool isCellCentered(double ns, double we) const;
+    // ----  Accessors
+    double north() const;
+    double west()  const;
+    double east()  const;
+    double south() const;
 
-	void reOrderBoundaries(int scMode);
+    bool northernHemisphereOnly()    const;
+    bool southernHemisphereOnly()    const;
+    bool symmetricalAboutEquator()   const;
+    bool moreNorthThanSouth()        const;
+    bool moreSouthThanNorth()        const;
+
+    void reOrderBoundaries(int scMode);
     void check();
-	bool empty() const;
+    bool empty() const;
 
-	Area join(const Area& other) const;
-	Area intersection(const Area& other) const;
+    Area join(const Area &other) const;
+    Area intersection(const Area &other) const;
 
-	bool intersect(const Area& other) const;
-	bool contain(const Area& other) const;
-	bool contain(const Area& other,bool globalWestEast, bool globalNorthSouth) const;
-	bool issame(const Area& other) const;
-	bool withinWestEast(const Area& other) const;
-	bool withinNorthSouth(const Area& other) const;
+    bool intersect(const Area &other) const;
+    bool contain(const Area &other) const;
+    bool contain(const Area &other, bool globalWestEast, bool globalNorthSouth) const;
+    bool issame(const Area &other) const;
+    bool withinWestEast(const Area &other) const;
+    bool withinNorthSouth(const Area &other) const;
 
-	bool isPointWithinArea(const Point& p) const;
-	bool isGlobalWestEast(double step) const;
-	bool isOnePoint() const; 
+    bool isPointWithinArea(const Point &p) const;
+    bool isGlobalWestEast(double step) const;
+    bool isOnePoint() const;
 
-	double size() const;
+    double size() const;
 
-// -- Overridden methods
-	// None
+    // -- Overridden methods
+    // None
 
-// -- Class members
-	// None
+    // -- Class members
+    // None
 
-// -- Class methods
-	// None
+    // -- Class methods
+    // None
 
-protected:
+  protected:
 
-// -- Members
-	// None
+    // -- Members
+    // None
 
-// -- Methods
-	
-	void print(ostream&) const; // Change to virtual if base class	
+    // -- Methods
 
-// -- Overridden methods
-	// None
+    void print(ostream &) const; // Change to virtual if base class
 
-// -- Class members
-	// None
+    // -- Overridden methods
+    // None
 
-// -- Class methods
-	// None
+    // -- Class members
+    // None
 
-private:
+    // -- Class methods
+    // None
+
+  private:
 
 
-// -- Members
-	double north_;
-	double west_;
-	double south_;
-	double east_;
+    // -- Members
+    double north_;
+    double west_;
+    double south_;
+    double east_;
 
-// -- Methods
-	// None
+    // -- Methods
+    // None
 
-// -- Overridden methods
-	// None
+    // -- Overridden methods
+    // None
 
-// -- Class members
-	// None
+    // -- Class members
+    // None
 
-// -- Class methods
-	// None
+    // -- Class methods
+    // None
 
-// -- Friends
+    // -- Friends
 
-	friend ostream& operator<<(ostream& s,const Area& p)
-		{ p.print(s); return s; }
+    friend ostream &operator<<(ostream &s, const Area &p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

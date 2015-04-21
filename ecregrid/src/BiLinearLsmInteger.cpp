@@ -20,18 +20,15 @@
 /*static*/ const double BiLinearLsmInteger::TRIGGER = 0.5;
 
 BiLinearLsmInteger::BiLinearLsmInteger() :
-	Interpolator(4)
-{
+    Interpolator(4) {
 }
 
 BiLinearLsmInteger::BiLinearLsmInteger(bool w, bool a, double nPole, double sPole) :
-	Interpolator(w,a,nPole,sPole,4)
-{
+    Interpolator(w,a,nPole,sPole,4) {
 }
 
-BiLinearLsmInteger::~BiLinearLsmInteger()
-{ 
-//cout << "BiLinearLsmInteger: cleaning up." << endl; 
+BiLinearLsmInteger::~BiLinearLsmInteger() {
+//cout << "BiLinearLsmInteger: cleaning up." << endl;
 }
 
 /*
@@ -42,32 +39,30 @@ BiLinearLsmInteger::~BiLinearLsmInteger()
                 2       3
 */
 
-double BiLinearLsmInteger::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
-	int size = nearests.size();
-	if(size < neighbour_)
-		return missingNeighbours(where,nearests,size);
+double BiLinearLsmInteger::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const {
+    int size = nearests.size();
+    if(size < neighbour_)
+        return missingNeighbours(where,nearests,size);
 
-	/* The unnormalised weights are the sizes of the opposing rectangles. */
-	double weight0 = unnormalisedWeight(where, nearests[3]);
-	double weight1 = unnormalisedWeight(where, nearests[2]);
-	double weight2 = unnormalisedWeight(where, nearests[1]);
-	double weight3 = unnormalisedWeight(where, nearests[0]);
+    /* The unnormalised weights are the sizes of the opposing rectangles. */
+    double weight0 = unnormalisedWeight(where, nearests[3]);
+    double weight1 = unnormalisedWeight(where, nearests[2]);
+    double weight2 = unnormalisedWeight(where, nearests[1]);
+    double weight3 = unnormalisedWeight(where, nearests[0]);
 
-	double sum = weight0 + weight1 + weight2 + weight3;
+    double sum = weight0 + weight1 + weight2 + weight3;
 
-	double temp = nearests[0].value() * (weight0/sum) 
-	     + nearests[1].value() * (weight1/sum)
-		 + nearests[2].value() * (weight2/sum)
-		 + nearests[3].value() * (weight3/sum);
-	 if(temp < TRIGGER)
-	 	return 0;
+    double temp = nearests[0].value() * (weight0/sum)
+                  + nearests[1].value() * (weight1/sum)
+                  + nearests[2].value() * (weight2/sum)
+                  + nearests[3].value() * (weight3/sum);
+    if(temp < TRIGGER)
+        return 0;
 
-	 return 1;
+    return 1;
 }
 
-void BiLinearLsmInteger::print(ostream& out) const
-{
-	Interpolator::print(out);
-	out << "BiLinearLsmInteger" ;
+void BiLinearLsmInteger::print(ostream& out) const {
+    Interpolator::print(out);
+    out << "BiLinearLsmInteger" ;
 }

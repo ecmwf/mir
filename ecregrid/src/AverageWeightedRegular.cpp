@@ -40,98 +40,91 @@
 #include <algorithm>
 
 AverageWeightedRegular::AverageWeightedRegular(const Grid& in, const Grid& out) :
-	Interpolator(64), northSouthNumberOfPoints_(out.northSouthNumberOfPoints()), westEastNumberOfPoints_(out.westEastNumberOfPoints()), northSouthIncrement_(out.northSouthIncrement()), westEastIncrement_(out.westEastIncrement())
-{
-	weights_.reserve(in.calculatedNumberOfPoints());
-	in.aWeights(weights_);
+    Interpolator(64), northSouthNumberOfPoints_(out.northSouthNumberOfPoints()), westEastNumberOfPoints_(out.westEastNumberOfPoints()), northSouthIncrement_(out.northSouthIncrement()), westEastIncrement_(out.westEastIncrement()) {
+    weights_.reserve(in.calculatedNumberOfPoints());
+    in.aWeights(weights_);
 
-	out.latitudes(outLats_);
+    out.latitudes(outLats_);
 }
 
-AverageWeightedRegular::~AverageWeightedRegular()
-{ 
-//cout << "AverageWeightedRegular: cleaning up." << endl; 
+AverageWeightedRegular::~AverageWeightedRegular() {
+//cout << "AverageWeightedRegular: cleaning up." << endl;
 }
 
 
 
-void AverageWeightedRegular::interpolate(const Grid& input, const vector<double>& data, int inScMode, double missingValue, const vector<Point>& outputPoints, vector<double>& values) const
-{
-	auto_ptr<GridContext> ctx(input.getGridContext());
+void AverageWeightedRegular::interpolate(const Grid& input, const vector<double>& data, int inScMode, double missingValue, const vector<Point>& outputPoints, vector<double>& values) const {
+    auto_ptr<GridContext> ctx(input.getGridContext());
 // ssp northSouthIncrement_ could be more precise for gaussian grid
 
-	if(DEBUG)
-		cout << " AverageWeightedRegular::interpolate START ---> " << endl;
+    if(DEBUG)
+        cout << " AverageWeightedRegular::interpolate START ---> " << endl;
 
-	unsigned long count = 0;
-   	for (int j = 0 ; j < northSouthNumberOfPoints_ ; j++) {
-   		for (int i = 0 ; i < westEastNumberOfPoints_ ; i++) {
-			values[count] = input.averageWeighted(ctx.get(),outputPoints[count],weights_,data,inScMode,missingValue,outLats_,westEastIncrement_);
-			count++;
-		}
-	}
+    unsigned long count = 0;
+    for (int j = 0 ; j < northSouthNumberOfPoints_ ; j++) {
+        for (int i = 0 ; i < westEastNumberOfPoints_ ; i++) {
+            values[count] = input.averageWeighted(ctx.get(),outputPoints[count],weights_,data,inScMode,missingValue,outLats_,westEastIncrement_);
+            count++;
+        }
+    }
 
-	if(DEBUG)
-		cout << " AverageWeightedRegular::interpolate END <--- " << endl;
+    if(DEBUG)
+        cout << " AverageWeightedRegular::interpolate END <--- " << endl;
 
-	ASSERT(values.size() == count);
+    ASSERT(values.size() == count);
 }
 
 
 
-void AverageWeightedRegular::standardDeviation(const Grid& input, const vector<double>& data, const vector<double>& dataSquared,  int inScMode, double missingValue, const vector<Point>& outputPoints, vector<double>& values) const
-{
-	auto_ptr<GridContext> ctx(input.getGridContext());
+void AverageWeightedRegular::standardDeviation(const Grid& input, const vector<double>& data, const vector<double>& dataSquared,  int inScMode, double missingValue, const vector<Point>& outputPoints, vector<double>& values) const {
+    auto_ptr<GridContext> ctx(input.getGridContext());
 
-	if(DEBUG)
-		cout << " AverageWeightedRegular::standardDeviation START ---> " << endl;
+    if(DEBUG)
+        cout << " AverageWeightedRegular::standardDeviation START ---> " << endl;
 
-   	for (unsigned int i = 0 ; i < values.size() ; i++) {
-		double Linter = input.averageWeighted(ctx.get(),outputPoints[i],weights_,data,inScMode,missingValue,outLats_,westEastIncrement_); 
-		double Kinter = input.averageWeighted(ctx.get(),outputPoints[i],weights_,dataSquared,inScMode,missingValue,outLats_,westEastIncrement_); 
+    for (unsigned int i = 0 ; i < values.size() ; i++) {
+        double Linter = input.averageWeighted(ctx.get(),outputPoints[i],weights_,data,inScMode,missingValue,outLats_,westEastIncrement_);
+        double Kinter = input.averageWeighted(ctx.get(),outputPoints[i],weights_,dataSquared,inScMode,missingValue,outLats_,westEastIncrement_);
 
-		if(same(Linter,missingValue) || same(Kinter,missingValue))
-			values[i] = missingValue;
-		else
-			values[i] = sqrt(max(0.0,(Kinter - Linter*Linter))) ; 
-	}
+        if(same(Linter,missingValue) || same(Kinter,missingValue))
+            values[i] = missingValue;
+        else
+            values[i] = sqrt(max(0.0,(Kinter - Linter*Linter))) ;
+    }
 
-	if(DEBUG)
-		cout << " AverageWeightedRegular::standardDeviation END <--- " << endl;
+    if(DEBUG)
+        cout << " AverageWeightedRegular::standardDeviation END <--- " << endl;
 }
 
-void AverageWeightedRegular::derivedSubgridParameters(const Grid& input, const vector<double>& K, const vector<double>& L, const vector<double>& M, int inScMode, double missingValue, const vector<Point>& outputPoints, vector<double>& values, const DerivedSubgridParameters& derived) const
-{
+void AverageWeightedRegular::derivedSubgridParameters(const Grid& input, const vector<double>& K, const vector<double>& L, const vector<double>& M, int inScMode, double missingValue, const vector<Point>& outputPoints, vector<double>& values, const DerivedSubgridParameters& derived) const {
     vector<FieldPoint> nearests;
     nearests.reserve(neighbour_);
 
     auto_ptr<GridContext> ctx(input.getGridContext());
 
-	if(DEBUG)
-		cout << " AverageWeightedRegular::derivedSubgridParameters START ---> " << derived << endl;
+    if(DEBUG)
+        cout << " AverageWeightedRegular::derivedSubgridParameters START ---> " << derived << endl;
 
-   	for (unsigned int i = 0 ; i < values.size() ; i++){
-		double Kinter = input.averageWeighted(ctx.get(),outputPoints[i],weights_,K,inScMode,missingValue,outLats_,westEastIncrement_); 
-		double Linter = input.averageWeighted(ctx.get(),outputPoints[i],weights_,L,inScMode,missingValue,outLats_,westEastIncrement_); 
-		double Minter = input.averageWeighted(ctx.get(),outputPoints[i],weights_,M,inScMode,missingValue,outLats_,westEastIncrement_); 
-		if(same(Linter,missingValue) || same(Kinter,missingValue) || same(Minter,missingValue))
-			values[i] = missingValue;
-		else
-			values[i] = derived.calculate(Kinter,Linter,Minter); 
-	}
+    for (unsigned int i = 0 ; i < values.size() ; i++) {
+        double Kinter = input.averageWeighted(ctx.get(),outputPoints[i],weights_,K,inScMode,missingValue,outLats_,westEastIncrement_);
+        double Linter = input.averageWeighted(ctx.get(),outputPoints[i],weights_,L,inScMode,missingValue,outLats_,westEastIncrement_);
+        double Minter = input.averageWeighted(ctx.get(),outputPoints[i],weights_,M,inScMode,missingValue,outLats_,westEastIncrement_);
+        if(same(Linter,missingValue) || same(Kinter,missingValue) || same(Minter,missingValue))
+            values[i] = missingValue;
+        else
+            values[i] = derived.calculate(Kinter,Linter,Minter);
+    }
 
-	if(DEBUG)
-		cout << " AverageWeightedRegular::derivedSubgridParameters END <--- " << endl;
+    if(DEBUG)
+        cout << " AverageWeightedRegular::derivedSubgridParameters END <--- " << endl;
 }
 
-double AverageWeightedRegular::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
-	throw NotImplementedFeature("AverageWeightedRegular::interpolatedValue");
-	return 0;
+double AverageWeightedRegular::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const {
+    throw NotImplementedFeature("AverageWeightedRegular::interpolatedValue");
+    return 0;
 }
 
-void AverageWeightedRegular::print(ostream& out) const
-{
-	Interpolator::print(out);
-	out << "AverageWeightedRegular";
+void AverageWeightedRegular::print(ostream& out) const {
+    Interpolator::print(out);
+    out << "AverageWeightedRegular";
 }

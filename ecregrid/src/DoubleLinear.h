@@ -16,23 +16,23 @@
 
 
 class DoubleLinear : public Interpolator {
-public:
+  public:
 
 // -- Contructors
-	DoubleLinear();
-	DoubleLinear(bool w, bool a, double nPole, double sPole);
+    DoubleLinear();
+    DoubleLinear(bool w, bool a, double nPole, double sPole);
 
 // -- Destructor
-	~DoubleLinear();
+    ~DoubleLinear();
 
 // -- Overridden methods
     virtual void interpolationWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const;
-	virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
 
-protected:
+  protected:
     void print(ostream&) const;
 
-private:
+  private:
 
 };
 

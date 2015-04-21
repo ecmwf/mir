@@ -52,83 +52,73 @@
 #include <fstream>
 
 BinaryOutput::BinaryOutput():
-	Output()
-{
+    Output() {
 }
 
 BinaryOutput::BinaryOutput(const string& name):
-	Output(name)
-{
+    Output(name) {
 }
 
-BinaryOutput::~BinaryOutput()
-{
+BinaryOutput::~BinaryOutput() {
 }
 
 
-void BinaryOutput::write(const Field& field) const
-{
- 	/* Open output file */
-	FILE* out = fopen(fileName_.c_str(),"w");
-	if (! out) {
-		throw CantOpenFile(fileName_);
-	}
+void BinaryOutput::write(const Field& field) const {
+    /* Open output file */
+    FILE* out = fopen(fileName_.c_str(),"w");
+    if (! out) {
+        throw CantOpenFile(fileName_);
+    }
 
-	size_t size = (size_t)field.dataLength()*sizeof(double);
-
-	cout << "HandleRequest::writeToFile -- size = "  << size << endl;
-
-    const double* pData = 0;
-    if (field.data().size() > 0)
-        pData = (const double*)&field.data()[0];
-
-	/* Write the buffer in a file */
-	if(fwrite(pData,1,size,out) != size)
-	{
-		fclose(out);
-		throw WriteError("HandleRequest::writeToFile -- write error");
-	}
-}
-
-void BinaryOutput::write(FILE* out, const Field& field) const
-{
-	size_t size = (size_t)field.dataLength()*sizeof(double);
+    size_t size = (size_t)field.dataLength()*sizeof(double);
 
     cout << "HandleRequest::writeToFile -- size = "  << size << endl;
-        return;
 
     const double* pData = 0;
     if (field.data().size() > 0)
         pData = (const double*)&field.data()[0];
 
-	/* Write the buffer in a file */
-	if(fwrite(pData,1,size,out) != size)
-	{
-		fclose(out);
-		throw WriteError("HandleRequest::writeToFile -- write error");
-	}
+    /* Write the buffer in a file */
+    if(fwrite(pData,1,size,out) != size) {
+        fclose(out);
+        throw WriteError("HandleRequest::writeToFile -- write error");
+    }
 }
 
-void BinaryOutput::write(FILE* out, const vector<double>& values) const
-{
-	size_t size = (size_t)values.size()*sizeof(double);
-	cout << "HandleRequest::writeToFile -- values Size = "  << values.size() << endl;
+void BinaryOutput::write(FILE* out, const Field& field) const {
+    size_t size = (size_t)field.dataLength()*sizeof(double);
+
+    cout << "HandleRequest::writeToFile -- size = "  << size << endl;
+    return;
+
+    const double* pData = 0;
+    if (field.data().size() > 0)
+        pData = (const double*)&field.data()[0];
+
+    /* Write the buffer in a file */
+    if(fwrite(pData,1,size,out) != size) {
+        fclose(out);
+        throw WriteError("HandleRequest::writeToFile -- write error");
+    }
+}
+
+void BinaryOutput::write(FILE* out, const vector<double>& values) const {
+    size_t size = (size_t)values.size()*sizeof(double);
+    cout << "HandleRequest::writeToFile -- values Size = "  << values.size() << endl;
 
     const double* pData = 0;
     if (values.size() > 0)
         pData = (const double*)&values[0];
 
-	/* Write the buffer in a file */
-	if(fwrite(pData,1,size,out) != size)
-	{
-		fclose(out);
-		throw WriteError("HandleRequest::write -- write error");
-	}
+    /* Write the buffer in a file */
+    if(fwrite(pData,1,size,out) != size) {
+        fclose(out);
+        throw WriteError("HandleRequest::write -- write error");
+    }
 }
 
-void BinaryOutput::write(const char* buffer,long length) const
-{
-	fstream  file;
+void BinaryOutput::write(const char* buffer,long length) const {
+    fstream  file;
     file.open(fileName_.c_str(), ios::out|ios::binary);
 
     if (!file.is_open())
@@ -136,8 +126,8 @@ void BinaryOutput::write(const char* buffer,long length) const
 
     file.write(buffer, length);
     if (file.fail())
-		throw WriteError(fileName_);
+        throw WriteError(fileName_);
 
-	file.close();
+    file.close();
 }
 

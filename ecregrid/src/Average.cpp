@@ -20,23 +20,19 @@
 #include <algorithm>
 
 Average::Average() :
-	Interpolator(16)
-{
+    Interpolator(16) {
 }
 
 Average::Average(int npts) :
-	Interpolator(npts)
-{
+    Interpolator(npts) {
 }
 
 Average::Average(bool w, bool a, double nPole, double sPole) :
-	Interpolator(w,a,nPole,sPole,16)
-{
+    Interpolator(w, a, nPole, sPole, 16) {
 }
 
-Average::~Average()
-{ 
-//cout << "Average: cleaning up." << endl; 
+Average::~Average() {
+    //cout << "Average: cleaning up." << endl;
 }
 
 /*
@@ -47,33 +43,31 @@ Average::~Average()
                 2       3
 */
 
-double Average::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
-	int size = nearests.size();
+double Average::interpolatedValue(const Point &where, const vector<FieldPoint> &nearests) const {
+    int size = nearests.size();
 
-/*
-	vector<double> distance(size);
-		
-    for (int j = 0; j < size; j++) {
-		distance.push_back(where.sphericalDistance( nearests[j] ));
-//		distance.push_back(where.earthDistance( nearests[j] ));
-//		distance.push_back(where.quickDistance( nearests[j] ));
-	}
-	sort(distance.begin(),distance.end());
-*/
+    /*
+    	vector<double> distance(size);
 
-	double sum = 0;
+        for (int j = 0; j < size; j++) {
+    		distance.push_back(where.sphericalDistance( nearests[j] ));
+    //		distance.push_back(where.earthDistance( nearests[j] ));
+    //		distance.push_back(where.quickDistance( nearests[j] ));
+    	}
+    	sort(distance.begin(),distance.end());
+    */
+
+    double sum = 0;
     for (int k = 0; k < size; k++) {
 
-		sum += nearests[k].value();
-	}
-	
-//			cout << "Average::interpolatedValue !!!!!!!!!!!!!!! VALUE " << value << endl;
-	return sum / size;
+        sum += nearests[k].value();
+    }
+
+    //			cout << "Average::interpolatedValue !!!!!!!!!!!!!!! VALUE " << value << endl;
+    return sum / size;
 }
 
-void Average::print(ostream& out) const
-{
-	Interpolator::print(out);
-	out << "Average" ;
+void Average::print(ostream &out) const {
+    Interpolator::print(out);
+    out << "Average" ;
 }

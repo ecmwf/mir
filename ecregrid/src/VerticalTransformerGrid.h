@@ -17,38 +17,38 @@
 class Field;
 
 class VerticalTransformerGrid : public VerticalTransformer {
-public:
+  public:
 
 // -- Contructors
 
-	VerticalTransformerGrid(const string& typeOfLevel, int level);
+    VerticalTransformerGrid(const string& typeOfLevel, int level);
 
 // -- Destructor
 
-	~VerticalTransformerGrid(); // Change to virtual if base class
+    ~VerticalTransformerGrid(); // Change to virtual if base class
 
 // -- Overridden methods
-	Field* transform(const Field& inputUp, const Field& inputDown) const;
+    Field* transform(const Field& inputUp, const Field& inputDown) const;
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
+
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	VerticalTransformerGrid(const VerticalTransformerGrid&);
-	VerticalTransformerGrid& operator=(const VerticalTransformerGrid&);
+    VerticalTransformerGrid(const VerticalTransformerGrid&);
+    VerticalTransformerGrid& operator=(const VerticalTransformerGrid&);
 
 };
 

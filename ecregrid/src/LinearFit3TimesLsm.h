@@ -16,21 +16,21 @@
 
 
 class LinearFit3TimesLsm : public InterpolatorLsm {
-public:
+  public:
 
 // -- Contructors
-	LinearFit3TimesLsm(const Grid& input, const Grid& output, const string& lsmMethod);
-	LinearFit3TimesLsm(bool w, bool a, double nPole, double sPole, const Grid& input, const Grid& output, const string& lsmMethod);
+    LinearFit3TimesLsm(const Grid& input, const Grid& output, const string& lsmMethod);
+    LinearFit3TimesLsm(bool w, bool a, double nPole, double sPole, const Grid& input, const Grid& output, const string& lsmMethod);
 
 // -- Destructor
-	~LinearFit3TimesLsm();
+    ~LinearFit3TimesLsm();
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 // -- Overridden methods
-	virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
 
-private:
+  private:
 
 
 };

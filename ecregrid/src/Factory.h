@@ -32,44 +32,44 @@ class DerivedSubgridParameters;
 class Interpolator;
 class Extraction;
 class FieldDescription;
-// 
+//
 
 class Factory {
-public:
+  public:
 
 // -- Contructors
 
-	Factory();
+    Factory();
 
 // -- Destructor
 
-	~Factory(); // Change to virtual if base class
+    ~Factory(); // Change to virtual if base class
 
 // -- Methods
-	DerivedSubgridParameters* selectDerivedSubgridParameter(const string& param) const;
+    DerivedSubgridParameters* selectDerivedSubgridParameter(const string& param) const;
 
-	Transformer* getTransformer(const Field& in,const Field& out, const FieldDescription& fd) const;
+    Transformer* getTransformer(const Field& in,const Field& out, const FieldDescription& fd) const;
 
-	Input*       getInput(const string& fileName, const string& kind = "grib")   const;
+    Input*       getInput(const string& fileName, const string& kind = "grib")   const;
 
-	GribApiOutput* getGribApiOutput(const string& n)  const;
-	GribApiOutput* getGribApiOutput(const string& fileName,const string& n)  const;
-	Output*        getOutput(const string& fileName, const string& kind, const string& name)  const;
-	Output*        getOutputBinTxt(const string& fileName, const string& kind)  const;
+    GribApiOutput* getGribApiOutput(const string& n)  const;
+    GribApiOutput* getGribApiOutput(const string& fileName,const string& n)  const;
+    Output*        getOutput(const string& fileName, const string& kind, const string& name)  const;
+    Output*        getOutputBinTxt(const string& fileName, const string& kind)  const;
 
-	Lsm*         getLsm(const string& fileName, const string& lsmMethod, const string& lsmFileType, bool user, const string& userPath) const;
-	ref_counted_ptr<const LegendrePolynomials> polynomialsMethod(const string& method, int truncation, const Grid& grid) const;
-	Extraction*   multiExtraction(const GridField& out, double missingValue)  const;
-	Extraction*   multiExtractionWithoutSubArea(const GridField& out, double missingValue)  const;
+    Lsm*         getLsm(const string& fileName, const string& lsmMethod, const string& lsmFileType, bool user, const string& userPath) const;
+    ref_counted_ptr<const LegendrePolynomials> polynomialsMethod(const string& method, int truncation, const Grid& grid) const;
+    Extraction*   multiExtraction(const GridField& out, double missingValue)  const;
+    Extraction*   multiExtractionWithoutSubArea(const GridField& out, double missingValue)  const;
 
-	Interpolator* interpolationMethod(const string& method, int pointsForInterpolation, const GridField& input, const Grid& gridout, bool lsm, const string& lsmMethod, const string& extrapolate, double missingValue, bool bitmap) const;
+    Interpolator* interpolationMethod(const string& method, int pointsForInterpolation, const GridField& input, const Grid& gridout, bool lsm, const string& lsmMethod, const string& extrapolate, double missingValue, bool bitmap) const;
 
-private:
+  private:
 
 // No copy allowed
 
-	Factory(const Factory&);
-	Factory& operator=(const Factory&);
+    Factory(const Factory&);
+    Factory& operator=(const Factory&);
 
     static LegendrePolynomialsCollection memoryMapCache_;
     static LegendrePolynomialsCollection sharedMemoryCache_;

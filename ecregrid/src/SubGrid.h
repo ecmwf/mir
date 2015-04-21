@@ -27,43 +27,45 @@ class GridField;
 */
 
 class SubGrid : public Extraction {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	SubGrid(double ns, double we);
+    SubGrid(double ns, double we);
 
 // -- Destructor
 
-	~SubGrid();
+    ~SubGrid();
 
 
 // -- Methods
 
 // -- Overridden methods
-	GridField* extract(GridField& g) const;
+    GridField* extract(GridField& g) const;
 
-protected:
+  protected:
 
 // -- Methods
-	 void print(ostream&) const;
+    void print(ostream&) const;
 
-private:
+  private:
 
 // No copy allowed
-	SubGrid(const SubGrid&);
-	SubGrid& operator=(const SubGrid&);
+    SubGrid(const SubGrid&);
+    SubGrid& operator=(const SubGrid&);
 
-	double ns_; ///< Nort-South Increment of Subgrid 
-	double we_; ///< West-East  Increment of Subgrid
+    double ns_; ///< Nort-South Increment of Subgrid
+    double we_; ///< West-East  Increment of Subgrid
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const SubGrid& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const SubGrid& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

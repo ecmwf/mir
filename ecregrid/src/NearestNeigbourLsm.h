@@ -12,23 +12,23 @@
 #include "InterpolatorLsm.h"
 
 class NearestNeigbourLsm : public InterpolatorLsm {
-public:
+  public:
 
-	NearestNeigbourLsm(const Grid& input, const Grid& output, const string& lsmMethod);
-	NearestNeigbourLsm(int n, const Grid& input, const Grid& output, const string& lsmMethod);
+    NearestNeigbourLsm(const Grid& input, const Grid& output, const string& lsmMethod);
+    NearestNeigbourLsm(int n, const Grid& input, const Grid& output, const string& lsmMethod);
 
-	~NearestNeigbourLsm();
+    ~NearestNeigbourLsm();
 
 // Overriden methods
-	virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
 
     // provide access to calculation algorithm where lsm data is known
     static double calculateInterpolatedValue(const Point& where, const vector<FieldPoint>& nearests, const vector<double>& inLsmData, const vector<double>& outLsmData);
-    
-protected:
-	void print(ostream&) const;
 
-private:
+  protected:
+    void print(ostream&) const;
+
+  private:
 
 };
 #endif

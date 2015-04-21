@@ -20,25 +20,23 @@
 #include <iterator>
 #include <algorithm>
 
-inline bool comparer(const Point& a, const Point& b) { return a < b; }
+inline bool comparer(const Point& a, const Point& b) {
+    return a < b;
+}
 
 GridType::GridType(bool isGlobalwe, bool isGlobalns) :
-	globalWestEast_(isGlobalwe), globalNorthSouth_(isGlobalns)
-{
+    globalWestEast_(isGlobalwe), globalNorthSouth_(isGlobalns) {
 }
 
-GridType::~GridType()
-{
+GridType::~GridType() {
 }
 
-long GridType::findNorthSouthNeighbours(double wlat, int& last_j, const vector<double>& latitudes, double& north, double& south, int& n, int& s) const
-{
-	long lastLat = latitudes.size() - 1;
-	ASSERT(lastLat);
+long GridType::findNorthSouthNeighbours(double wlat, int& last_j, const vector<double>& latitudes, double& north, double& south, int& n, int& s) const {
+    long lastLat = latitudes.size() - 1;
+    ASSERT(lastLat);
 
 //	long lastLat = indexOfLastLat_;
-    for ( int jj = 0 ; jj < lastLat ;  jj++ )
-    {
+    for ( int jj = 0 ; jj < lastLat ;  jj++ ) {
         int j = (jj + last_j) % lastLat;
 //        if((wlat < latitudes[j] || same(wlat,latitudes[j])) && wlat > latitudes[j+1]) {
         if((wlat < latitudes[j] || same(wlat,latitudes[j])) && wlat > latitudes[j+1] ) {
@@ -56,14 +54,14 @@ long GridType::findNorthSouthNeighbours(double wlat, int& last_j, const vector<d
                        If any of those two cases occur value of
                        output point will be determine by two nearest points
         */
-       // North pole
+        // North pole
         if ( j == 0) {
             if(wlat > latitudes[j] || same(wlat,latitudes[j])) {
                 n = -1;
                 s = 0;
                 north = -1;
                 south = latitudes[0];
-            	return lastLat;
+                return lastLat;
             }
         }
 
@@ -74,43 +72,41 @@ long GridType::findNorthSouthNeighbours(double wlat, int& last_j, const vector<d
                 s = -1;
                 north = latitudes[lastLat];
                 south = -1;
-            	return lastLat;
+                return lastLat;
             }
         }
     }
-	if(DEBUG){
-		cout << "GridType::findNorthSouthNeighbours wlat  " << wlat << "  last latitude " << latitudes[lastLat] << endl;
-		cout << "GridType::findNorthSouthNeighbours  last Lat index " << lastLat << endl;
-	}
+    if(DEBUG) {
+        cout << "GridType::findNorthSouthNeighbours wlat  " << wlat << "  last latitude " << latitudes[lastLat] << endl;
+        cout << "GridType::findNorthSouthNeighbours  last Lat index " << lastLat << endl;
+    }
 
-	throw WrongValue("GridType::findNorthSouthNeighbours LAT can NOT be found ", wlat);
-	return -1;
+    throw WrongValue("GridType::findNorthSouthNeighbours LAT can NOT be found ", wlat);
+    return -1;
 }
 
-long GridType::findWestEastNeighbours(double wlon, int& last_i, const vector<double>& longitudes, double& west, double& east, int& w, int& e) const
-{
-	long lastLon = longitudes.size() - 1;
-	ASSERT(lastLon);
+long GridType::findWestEastNeighbours(double wlon, int& last_i, const vector<double>& longitudes, double& west, double& east, int& w, int& e) const {
+    long lastLon = longitudes.size() - 1;
+    ASSERT(lastLon);
     // ssp added because rotated grid can have 360.0
-	if(same(wlon,360.0))
-		wlon = 0.;
+    if(same(wlon,360.0))
+        wlon = 0.;
 
 // ssp to secure right selection of neighbours
- 	wlon += ROUNDING_FACTOR;
-/*
-      0       1                   0      1
-      
-	  x               rather than        x
+    wlon += ROUNDING_FACTOR;
+    /*
+          0       1                   0      1
 
-	  2       3                   2      3
+    	  x               rather than        x
 
-*/
+    	  2       3                   2      3
 
-    for ( int ii = 0 ; ii < lastLon ; ii++ ) 
-	{
-		int i = (ii + last_i) % lastLon;
-		double lowLon = longitudes[i];
-		double upLon  = longitudes[i+1];
+    */
+
+    for ( int ii = 0 ; ii < lastLon ; ii++ ) {
+        int i = (ii + last_i) % lastLon;
+        double lowLon = longitudes[i];
+        double upLon  = longitudes[i+1];
 //		cout << "))) wlon  " << wlon << " lowLon " << lowLon << "  upLon "  <<  upLon << endl;
 
         if((wlon > lowLon || same(wlon,lowLon)) && wlon < upLon) {
@@ -118,84 +114,82 @@ long GridType::findWestEastNeighbours(double wlon, int& last_i, const vector<dou
             east = upLon;
             w    = i;
             e    = i + 1;
-			last_i = i;
+            last_i = i;
             return lastLon;
         }
-		if(upLon < lowLon){
-			// Wrap around cases
-			// Longitude point found between longitudes[i] and 3600000
-			if(wlon >= lowLon) {
-				west = lowLon;
-				east = upLon + 360.0;
-				w    = i;
-				e    = i + 1;
-				last_i = i;
-				return lastLon;
-			}
-			// Longitude point found between 0 and longitudes[i+1]
-        	if(wlon < upLon) {
-				west = lowLon - 360.0;
-				east = upLon;
-				w    = i;
-				e    = i + 1;
-				last_i = i;
-				return lastLon;
-			}
-		}
+        if(upLon < lowLon) {
+            // Wrap around cases
+            // Longitude point found between longitudes[i] and 3600000
+            if(wlon >= lowLon) {
+                west = lowLon;
+                east = upLon + 360.0;
+                w    = i;
+                e    = i + 1;
+                last_i = i;
+                return lastLon;
+            }
+            // Longitude point found between 0 and longitudes[i+1]
+            if(wlon < upLon) {
+                west = lowLon - 360.0;
+                east = upLon;
+                w    = i;
+                e    = i + 1;
+                last_i = i;
+                return lastLon;
+            }
+        }
     }
-/*
- If grid is Global  the West-East has LAST element set EQUAL to first 
- to help with recognising where an output grid "wraps around" the 
- break in the input grid.
- coarser to finer grid
-*/
-	if(globalWestEast_){
-		if((wlon > longitudes[lastLon] || same(wlon,longitudes[lastLon])) && wlon < 360.0){
-			w    = lastLon ;
-			west = longitudes[lastLon];
-			e = 0;
-			east = 360.0;
-			return lastLon;
-		}
-	// Input field start shifted from 0 Nils-Gear for lsm 1km
-   		if(wlon < longitudes[0] || same(wlon,longitudes[0])) {
+    /*
+     If grid is Global  the West-East has LAST element set EQUAL to first
+     to help with recognising where an output grid "wraps around" the
+     break in the input grid.
+     coarser to finer grid
+    */
+    if(globalWestEast_) {
+        if((wlon > longitudes[lastLon] || same(wlon,longitudes[lastLon])) && wlon < 360.0) {
+            w    = lastLon ;
+            west = longitudes[lastLon];
+            e = 0;
+            east = 360.0;
+            return lastLon;
+        }
+        // Input field start shifted from 0 Nils-Gear for lsm 1km
+        if(wlon < longitudes[0] || same(wlon,longitudes[0])) {
 //			if(DEBUG)
 //				cout << "GridType::findWestEastNeighbours SPECIAL CASE^^^^^^^^^^^^^^^^^^  " << wlon << endl;
-			west = longitudes[lastLon] - 360.0;
-			east = longitudes[0];
-			w    = lastLon;
-			e    = 0;
-			return lastLon;
-		}
-	}
-	else{
-		// from Subarea Input case
-		if(same(wlon,longitudes[lastLon])){
-			west = longitudes[lastLon-1];
-			east = longitudes[lastLon];
-			w    = lastLon-1;
-			e    = lastLon;
-			return lastLon;
-		}
-	}
+            west = longitudes[lastLon] - 360.0;
+            east = longitudes[0];
+            w    = lastLon;
+            e    = 0;
+            return lastLon;
+        }
+    } else {
+        // from Subarea Input case
+        if(same(wlon,longitudes[lastLon])) {
+            west = longitudes[lastLon-1];
+            east = longitudes[lastLon];
+            w    = lastLon-1;
+            e    = lastLon;
+            return lastLon;
+        }
+    }
 
-	if(DEBUG){
-		cout << "GridType::findWestEastNeighbours wlon  " << wlon << "  last longitude " << longitudes[lastLon] << endl;
-		cout << "GridType::findWestEastNeighbours  last Lon index " << lastLon << endl;
-	}
+    if(DEBUG) {
+        cout << "GridType::findWestEastNeighbours wlon  " << wlon << "  last longitude " << longitudes[lastLon] << endl;
+        cout << "GridType::findWestEastNeighbours  last Lon index " << lastLon << endl;
+    }
 
-	throw WrongValue("GridType::findWestEastNeighbours LON can NOT be found ", wlon);
-	return -1;
+    throw WrongValue("GridType::findWestEastNeighbours LON can NOT be found ", wlon);
+    return -1;
 }
 
-void GridType::unRotatedArea(const vector<Point>& grid) const
-{
-	if (getenv("UNROTATED_AREA")) {
-		vector<Point>::const_iterator start = grid.begin(), end = grid.end(), ne, sw;
-		ne = max_element(start,end,comparer);
-		sw = min_element(start,end,comparer);
-		cout << "Regular::generateGrid -- Unrotated boundaries: ne -> " << *ne << "   sw -> " << *sw << endl;
-	}
+void GridType::unRotatedArea(const vector<Point>& grid) const {
+    if (getenv("UNROTATED_AREA")) {
+        vector<Point>::const_iterator start = grid.begin(), end = grid.end(), ne, sw;
+        ne = max_element(start,end,comparer);
+        sw = min_element(start,end,comparer);
+        cout << "Regular::generateGrid -- Unrotated boundaries: ne -> " << *ne << "   sw -> " << *sw << endl;
+    }
 }
 
 /*

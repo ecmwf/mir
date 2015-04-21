@@ -10,27 +10,23 @@
 #include "Orientation.h"
 
 
-Orientation::Orientation() 
-{
+Orientation::Orientation() {
 }
 
-Orientation::~Orientation()
-{
+Orientation::~Orientation() {
 }
 
-double Orientation::calculate(double k, double l, double m) const
-{
-	/* 
-	if(atan2(m,l) == 0)
-		return 0;
-	 */
-	//if (fabs(m)  <=  1.e-10) return 0.5*atan2((1.e-10*(m>=0 ? 1 : -1)),l);
+double Orientation::calculate(double k, double l, double m) const {
+    /*
+    if(atan2(m,l) == 0)
+    	return 0;
+     */
+    //if (fabs(m)  <=  1.e-10) return 0.5*atan2((1.e-10*(m>=0 ? 1 : -1)),l);
 
-	return 0.5 * atan2(m,l);
+    return 0.5 * atan2(m,l);
 }
 
-void Orientation::print(ostream& out) const
-{
-	DerivedSubgridParameters::print(out);
-	out << "Orientation" ;
+void Orientation::print(ostream& out) const {
+    DerivedSubgridParameters::print(out);
+    out << "Orientation" ;
 }

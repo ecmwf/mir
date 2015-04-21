@@ -15,35 +15,35 @@ class Grid;
 class Area;
 
 class FluxConservingRegular : public Interpolator {
-public:
+  public:
 
-// -- Contructors
-	FluxConservingRegular(const Grid& in, const Grid& out);
+    // -- Contructors
+    FluxConservingRegular(const Grid &in, const Grid &out);
 
-// -- Destructor
-	~FluxConservingRegular();
+    // -- Destructor
+    ~FluxConservingRegular();
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream &) const;
 
-private:
-	vector<Area> cellArea_;
-	vector<double> cellAreaSize_;
+  private:
+    vector<Area> cellArea_;
+    vector<double> cellAreaSize_;
 
-	int northSouthNumberOfPoints_;
-	int westEastNumberOfPoints_;
+    int northSouthNumberOfPoints_;
+    int westEastNumberOfPoints_;
 
-	double northSouthIncrement_;
-	double westEastIncrement_;
+    double northSouthIncrement_;
+    double westEastIncrement_;
 
-// -- Methods
-// -- Overridden methods
-	virtual void interpolate(const Grid& input, const double* data, int inScMode, double missingValue, const vector<Point>& outputPoints, double* values, unsigned long valuesSize) const;
+    // -- Methods
+    // -- Overridden methods
+    virtual void interpolate(const Grid &input, const double *data, int inScMode, double missingValue, const vector<Point> &outputPoints, double *values, unsigned long valuesSize) const;
 
-	double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    double interpolatedValue(const Point &point, const vector<FieldPoint> &nearests) const;
 
-	void standardDeviation(const Grid& input, const double* data,const double* dataSquared,  int inScMode, double missingValue, const vector<Point>& outputPoints, double* values, unsigned long valuesSize) const;
+    void standardDeviation(const Grid &input, const double *data, const double *dataSquared,  int inScMode, double missingValue, const vector<Point> &outputPoints, double *values, unsigned long valuesSize) const;
 
-	void derivedSubgridParameters(const Grid& input, const double* K, const double* L, const double* M, int inScMode, double missingValue, const vector<Point>& outputPoints, double* values, unsigned long valuesSize, const DerivedSubgridParameters& derived) const;
+    void derivedSubgridParameters(const Grid &input, const double *K, const double *L, const double *M, int inScMode, double missingValue, const vector<Point> &outputPoints, double *values, unsigned long valuesSize, const DerivedSubgridParameters &derived) const;
 };
 #endif

@@ -20,88 +20,88 @@
 // Forward declarations
 class Grid;
 
-// 
+//
 static const double sin36 = 0.587785252292473;
 static const double sin60 = 0.866025403784437;
 static const double sin72 = 0.951056516295154;
 static const double qrt5  = 0.559016994374947;
 
 class FastFourierTransform {
-public:
+  public:
 
-// -- Exceptions
-	// None
+    // -- Exceptions
+    // None
 
-// -- Contructors
+    // -- Contructors
 
-	FastFourierTransform(int truncation, int lonNuber, int latsProcess, int maxBloxSize=64);
+    FastFourierTransform(int truncation, int lonNuber, int latsProcess, int maxBloxSize = 64);
 
-// -- Destructor
+    // -- Destructor
 
-	virtual ~FastFourierTransform(); // Change to virtual if base class
+    virtual ~FastFourierTransform(); // Change to virtual if base class
 
-// -- Convertors
-	// None
+    // -- Convertors
+    // None
 
-// -- Operators
-	// None
+    // -- Operators
+    // None
 
-// -- Methods
-//	virtual void transform(double* values, const mapLats& mapped, const Grid& grid) const = 0;
-//	virtual void transform(const vector<int>& offsets, double* values, const double* legendreCoeff) const = 0;
+    // -- Methods
+    //	virtual void transform(double* values, const mapLats& mapped, const Grid& grid) const = 0;
+    //	virtual void transform(const vector<int>& offsets, double* values, const double* legendreCoeff) const = 0;
 
-	void setSinesAndCosinesFromZeroToPi(vector<double>& trigs, int n) const;
-	void factorize(vector<int>& f, int n) const;
-	int  adjustNumberOfPointsAlongLatitude(int* factor) const;
+    void setSinesAndCosinesFromZeroToPi(vector<double> &trigs, int n) const;
+    void factorize(vector<int> &f, int n) const;
+    int  adjustNumberOfPointsAlongLatitude(int *factor) const;
 
-// -- Overridden methods
+    // -- Overridden methods
 
 
-protected:
+  protected:
 
-// -- Members
-	int truncation_;
-	int longitudeNumber_;
-	int latsProcess_;
-	int maxBloxSize_;
+    // -- Members
+    int truncation_;
+    int longitudeNumber_;
+    int latsProcess_;
+    int maxBloxSize_;
 
-// -- Methods
-	
-	// void print(ostream&) const; // Change to virtual if base class	
+    // -- Methods
 
-// -- Overridden methods
-	// None
+    // void print(ostream&) const; // Change to virtual if base class
 
-// -- Class members
-	// None
+    // -- Overridden methods
+    // None
 
-// -- Class methods
-	// None
+    // -- Class members
+    // None
 
-private:
+    // -- Class methods
+    // None
 
-// No copy allowed
+  private:
 
-	FastFourierTransform(const FastFourierTransform&);
-	FastFourierTransform& operator=(const FastFourierTransform&);
+    // No copy allowed
 
-// -- Members
+    FastFourierTransform(const FastFourierTransform &);
+    FastFourierTransform &operator=(const FastFourierTransform &);
 
-// -- Methods
+    // -- Members
 
-// -- Overridden methods
-	// None
+    // -- Methods
 
-// -- Class members
-	// None
+    // -- Overridden methods
+    // None
 
-// -- Class methods
-	// None
+    // -- Class members
+    // None
 
-// -- Friends
+    // -- Class methods
+    // None
 
-	//friend ostream& operator<<(ostream& s,const FastFourierTransform& p)
-	//	{ p.print(s); return s; }
+    // -- Friends
+
+    //friend ostream& operator<<(ostream& s,const FastFourierTransform& p)
+    //	{ p.print(s); return s; }
 
 };
 

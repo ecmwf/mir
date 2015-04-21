@@ -20,36 +20,38 @@
 
 // Forward declarations
 
-// 
+//
 
 struct FieldIdentity {
 
-// -- Contructors
+    // -- Contructors
 
-	FieldIdentity();
-	FieldIdentity(const string& composedName);
-	FieldIdentity(bool gridOrSpectral, const string& gridType, bool reduced, bool stretched, bool rotated );
+    FieldIdentity();
+    FieldIdentity(const string &composedName);
+    FieldIdentity(bool gridOrSpectral, const string &gridType, bool reduced, bool stretched, bool rotated );
 
-	FieldIdentity(const FieldIdentity&);
+    FieldIdentity(const FieldIdentity &);
 
-	void isAvailable();
+    void isAvailable();
 
-// -- Destructor
+    // -- Destructor
 
-	~FieldIdentity(); // Change to virtual if base class
+    ~FieldIdentity(); // Change to virtual if base class
 
-// -- Convertors
-	// None
+    // -- Convertors
+    // None
 
-// -- Operators
-	FieldIdentity& operator=(const FieldIdentity&);
-	bool operator==(const FieldIdentity&) const;
-	bool operator|(const FieldIdentity& id) const;
+    // -- Operators
+    FieldIdentity &operator=(const FieldIdentity &);
+    bool operator==(const FieldIdentity &) const;
+    bool operator|(const FieldIdentity &id) const;
 
-	string gridType() const { return gridType_; }
-	void   setFromTypeOfGrid(const string& name);
+    string gridType() const {
+        return gridType_;
+    }
+    void   setFromTypeOfGrid(const string &name);
 
-// -- Members
+    // -- Members
     string  composedName_;
     bool    gridOrSpectral_;
     string  gridType_;
@@ -57,18 +59,20 @@ struct FieldIdentity {
     bool    stretched_;
     bool    rotated_;
 
-protected:
+  protected:
 
-// -- Methods
-	 void print(ostream&) const; // Change to virtual if base class	
+    // -- Methods
+    void print(ostream &) const; // Change to virtual if base class
 
-private:
+  private:
 
 
-// -- Friends
+    // -- Friends
 
-	friend ostream& operator<<(ostream& s,const FieldIdentity& p)
-		{ p.print(s); return s; }
+    friend ostream &operator<<(ostream &s, const FieldIdentity &p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

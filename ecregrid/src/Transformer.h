@@ -19,27 +19,27 @@
 class Field;
 class Wind;
 
-// 
+//
 
 class Transformer {
-public:
+  public:
 
 // -- Contructors
 
-	Transformer();
+    Transformer();
 
 // -- Destructor
 
-	virtual ~Transformer(); // Change to virtual if base class
+    virtual ~Transformer(); // Change to virtual if base class
 
 // -- Methods
-	virtual Field* transform(const Field& inputField, const Field& outputField) const = 0;
+    virtual Field* transform(const Field& inputField, const Field& outputField) const = 0;
 
-	virtual Wind* transformVector(const Field& inU, const Field& inV, const Field& req) const = 0;
+    virtual Wind* transformVector(const Field& inU, const Field& inV, const Field& req) const = 0;
 
-private:
-	Transformer(const Transformer&);
-	Transformer& operator=(const Transformer&);
+  private:
+    Transformer(const Transformer&);
+    Transformer& operator=(const Transformer&);
 };
 
 #endif

@@ -21,37 +21,47 @@
 
 
 class Wind {
-public:
+  public:
 
-// -- Exceptions
-	// None
+    // -- Exceptions
+    // None
 
-// -- Contructors
+    // -- Contructors
 
-	Wind();
-	Wind(Field* u, Field* v);
+    Wind();
+    Wind(Field *u, Field *v);
 
-// -- Destructor
+    // -- Destructor
 
-	~Wind(); // Change to virtual if base class
+    ~Wind(); // Change to virtual if base class
 
-// -- Convertors
-	// None
+    // -- Convertors
+    // None
 
-// -- Operators
-	// None
+    // -- Operators
+    // None
 
-// -- Methods
+    // -- Methods
 
-	bool   isSame() const { return !u_.get() && !v_.get(); } 
-	Field& getU() const       { return *u_; }
-	Field& getV()  const      { return *v_; }
-	bool isVoDiv() const { return u_->number() == 138 && v_->number() == 155; }
-	bool isRotated() const { return u_->isRotated() && v_->isRotated(); }
+    bool   isSame() const {
+        return !u_.get() && !v_.get();
+    }
+    Field &getU() const       {
+        return *u_;
+    }
+    Field &getV()  const      {
+        return *v_;
+    }
+    bool isVoDiv() const {
+        return u_->number() == 138 && v_->number() == 155;
+    }
+    bool isRotated() const {
+        return u_->isRotated() && v_->isRotated();
+    }
 
-// -- Class members
-	auto_ptr<Field> u_;
-	auto_ptr<Field> v_;
+    // -- Class members
+    auto_ptr<Field> u_;
+    auto_ptr<Field> v_;
 };
 
 #endif

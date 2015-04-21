@@ -22,34 +22,29 @@
 #endif
 
 DoubleLinearBitmap::DoubleLinearBitmap(double missingValue) :
-	DoubleLinear(), missingValue_(missingValue)
-{
+    DoubleLinear(), missingValue_(missingValue) {
 }
 
 DoubleLinearBitmap::DoubleLinearBitmap(bool w, bool a, double nPole, double sPole, double missingValue) :
-	DoubleLinear(w,a,nPole,sPole), missingValue_(missingValue)
-{
+    DoubleLinear(w,a,nPole,sPole), missingValue_(missingValue) {
 }
 
-DoubleLinearBitmap::~DoubleLinearBitmap()
-{ 
-//cout << "DoubleLinear: cleaning up." << endl; 
+DoubleLinearBitmap::~DoubleLinearBitmap() {
+//cout << "DoubleLinear: cleaning up." << endl;
 }
- 
-double DoubleLinearBitmap::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
-	int size = nearests.size();
-	if(size < neighbour_)
-		return missingNeighbours(where,nearests,size,missingValue_);
 
-	if(same(nearests[0].value(),missingValue_) || same(nearests[1].value(),missingValue_) || same(nearests[2].value(),missingValue_) || same(nearests[3].value(),missingValue_) )
-		return useNearestNeigbour(where,nearests,size,missingValue_);
+double DoubleLinearBitmap::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const {
+    int size = nearests.size();
+    if(size < neighbour_)
+        return missingNeighbours(where,nearests,size,missingValue_);
 
-	return DoubleLinear::interpolatedValue(where,nearests);
+    if(same(nearests[0].value(),missingValue_) || same(nearests[1].value(),missingValue_) || same(nearests[2].value(),missingValue_) || same(nearests[3].value(),missingValue_) )
+        return useNearestNeigbour(where,nearests,size,missingValue_);
+
+    return DoubleLinear::interpolatedValue(where,nearests);
 }
-void DoubleLinearBitmap::print(ostream& out) const
-{
-	Interpolator::print(out);
-	out << "DoubleLinearBitmap" ;
+void DoubleLinearBitmap::print(ostream& out) const {
+    Interpolator::print(out);
+    out << "DoubleLinearBitmap" ;
 }
 

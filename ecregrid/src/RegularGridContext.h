@@ -12,8 +12,8 @@
 #include "GridContext.h"
 
 struct RegularGridContext : public GridContext {
-	int last_i_;
-	int last_j_;
-	RegularGridContext() : last_i_(0),last_j_(0) {}
+    int last_i_;
+    int last_j_;
+    RegularGridContext() : last_i_(0),last_j_(0) {}
 };
 #endif

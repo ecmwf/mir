@@ -21,12 +21,12 @@
 
 // class ostream;
 
-// 
+//
 
 class GridContext {
-public:
+  public:
 
-	virtual ~GridContext() {}; // Change to virtual if base class
+    virtual ~GridContext() {}; // Change to virtual if base class
 
 };
 

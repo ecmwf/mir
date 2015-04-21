@@ -23,81 +23,81 @@ class LegendrePolynomials;
 
 
 class LegendreTransform {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	LegendreTransform(const ref_counted_ptr<const LegendrePolynomials>& poly, int truncation, const vector<double>& lats);
+    LegendreTransform(const ref_counted_ptr<const LegendrePolynomials>& poly, int truncation, const vector<double>& lats);
 
 // -- Destructor
 
-	virtual ~LegendreTransform(); // Change to virtual if base class
+    virtual ~LegendreTransform(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 //	virtual int transform(mapLats& mapped, const vector<comp>& dataComplex, int northIndex, int southIndex) const = 0 ;
 //	virtual int transform(double* coeff, const double* data, int latNumber) const = 0;
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	int    truncation_;
-	ref_counted_ptr<const LegendrePolynomials> polynomials_;
-	vector<double> globalLatitudes_;
+    int    truncation_;
+    ref_counted_ptr<const LegendrePolynomials> polynomials_;
+    vector<double> globalLatitudes_;
 
 // -- Methods
-	
-	// void print(ostream&) const; // Change to virtual if base class	
+
+    // void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	LegendreTransform(const LegendreTransform&);
-	LegendreTransform& operator=(const LegendreTransform&);
+    LegendreTransform(const LegendreTransform&);
+    LegendreTransform& operator=(const LegendreTransform&);
 
 // -- Members
 
 // -- Methods
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const LegendreTransform& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const LegendreTransform& p)
+    //	{ p.print(s); return s; }
 
 };
 

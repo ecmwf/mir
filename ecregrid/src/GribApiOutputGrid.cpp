@@ -10,16 +10,13 @@
 #include "GribApiOutputGrid.h"
 
 GribApiOutputGrid::GribApiOutputGrid():
-	GribApiOutput()
-{
+    GribApiOutput() {
 }
 
-GribApiOutputGrid::GribApiOutputGrid(const string& name):
-	GribApiOutput(name)
-{
+GribApiOutputGrid::GribApiOutputGrid(const string &name):
+    GribApiOutput(name) {
 }
 
-GribApiOutputGrid::~GribApiOutputGrid()
-{
+GribApiOutputGrid::~GribApiOutputGrid() {
 }
 

@@ -17,31 +17,33 @@
 #include "DerivedSubgridParameters.h"
 #endif
 
-// 
+//
 
 class Anisotropy : public DerivedSubgridParameters {
-public:
+  public:
 
-// -- Contructors
-	Anisotropy();
+    // -- Contructors
+    Anisotropy();
 
-// -- Destructor
-	virtual ~Anisotropy();
+    // -- Destructor
+    virtual ~Anisotropy();
 
-// -- Methods
+    // -- Methods
 
 
-protected:
-    virtual void print(ostream&) const;
+  protected:
+    virtual void print(ostream &) const;
 
-private:
+  private:
 
-// -- Methods
-	double calculate(double k, double l, double m)  const;
+    // -- Methods
+    double calculate(double k, double l, double m)  const;
 
-// -- Friends
-    friend ostream& operator<<(ostream& s,const Anisotropy& p)
-            { p.print(s); return s; }
+    // -- Friends
+    friend ostream &operator<<(ostream &s, const Anisotropy &p) {
+        p.print(s);
+        return s;
+    }
 
 
 };

@@ -14,28 +14,28 @@
 #include "InterpolatorLsm.h"
 #endif
 
-// 
+//
 
 class DoubleLinearLsm : public InterpolatorLsm {
-public:
+  public:
 
 // -- Contructors
 
-	DoubleLinearLsm(const Grid& input, const Grid& output, const string& lsmMethod);
-	DoubleLinearLsm(bool w, bool a, double nPole, double sPole, const Grid& input, const Grid& output, const string& lsmMethod);
+    DoubleLinearLsm(const Grid& input, const Grid& output, const string& lsmMethod);
+    DoubleLinearLsm(bool w, bool a, double nPole, double sPole, const Grid& input, const Grid& output, const string& lsmMethod);
 
 // -- Overridden methods
-	virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
 
     static double calculateInterpolatedValue(const Point& where, const vector<FieldPoint>& nearests, const vector<double>& inLsmData, const vector<double>& outLsmData);
 // -- Destructor
 
-	virtual ~DoubleLinearLsm(); // Change to virtual if base class
+    virtual ~DoubleLinearLsm(); // Change to virtual if base class
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
+  private:
 
 };
 

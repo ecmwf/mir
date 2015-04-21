@@ -29,148 +29,208 @@ class Point;
 class Area;
 class Field;
 class Parameter;
-// 
+//
 
 struct FieldDescription {
 
-// -- Contructors
-	FieldDescription();
-	FieldDescription(const string& composedName);
+    // -- Contructors
+    FieldDescription();
+    FieldDescription(const string &composedName);
 
-// -- Destructor
+    // -- Destructor
 
-	virtual ~FieldDescription(); // Change to virtual if base class
+    virtual ~FieldDescription(); // Change to virtual if base class
 
-// -- Methods
+    // -- Methods
 
-	double  north()         const { return ft_.area_.north(); }
-	double  south()         const { return ft_.area_.south(); }
-	double  west()          const { return ft_.area_.west(); }
-	double  east()          const { return ft_.area_.east(); }
-	int  parameterNumber()  const { return ft_.parameterNumber(); }
-	int  parameterTable()   const { return ft_.parameterTable(); }
+    double  north()         const {
+        return ft_.area_.north();
+    }
+    double  south()         const {
+        return ft_.area_.south();
+    }
+    double  west()          const {
+        return ft_.area_.west();
+    }
+    double  east()          const {
+        return ft_.area_.east();
+    }
+    int  parameterNumber()  const {
+        return ft_.parameterNumber();
+    }
+    int  parameterTable()   const {
+        return ft_.parameterTable();
+    }
 
-	int  date()             const { return ft_.date(); }
-	int  time()             const { return ft_.time(); }
-	  
-	int scanningMode()      const { return ft_.scanningMode_; }
-	int gaussianNumber()    const { return ft_.gaussianNumber_; }
-	int truncation()        const { return ft_.truncation_; }
+    int  date()             const {
+        return ft_.date();
+    }
+    int  time()             const {
+        return ft_.time();
+    }
 
-	double westEastInc()    const { return ft_.we_; }
-	double northSouthInc()  const { return ft_.ns_; }
+    int scanningMode()      const {
+        return ft_.scanningMode_;
+    }
+    int gaussianNumber()    const {
+        return ft_.gaussianNumber_;
+    }
+    int truncation()        const {
+        return ft_.truncation_;
+    }
 
-	long northSouthNumberOfPoints() const { return ft_.nptsNS_; }
-	long westEastNumberOfPoints()   const { return ft_.nptsWE_; }
+    double westEastInc()    const {
+        return ft_.we_;
+    }
+    double northSouthInc()  const {
+        return ft_.ns_;
+    }
 
-	bool isGlobalWestEast() const { return ft_.globalWestEast_; }
+    long northSouthNumberOfPoints() const {
+        return ft_.nptsNS_;
+    }
+    long westEastNumberOfPoints()   const {
+        return ft_.nptsWE_;
+    }
 
-	double southPoleLat()   const { return ft_.southPole_.latitude(); }
-	double southPoleLon()   const { return ft_.southPole_.longitude(); }
+    bool isGlobalWestEast() const {
+        return ft_.globalWestEast_;
+    }
 
-	bool   isRotated()      const { return ft_.southPole_.latitude() != 0 || ft_.southPole_.longitude() !=0; }
+    double southPoleLat()   const {
+        return ft_.southPole_.latitude();
+    }
+    double southPoleLon()   const {
+        return ft_.southPole_.longitude();
+    }
 
-	bool decide()           const { return ft_.decide_; }
+    bool   isRotated()      const {
+        return ft_.southPole_.latitude() != 0 || ft_.southPole_.longitude() != 0;
+    }
 
-	bool   bitmap()         const { return ft_.bitmap_; }
-	string bitmapFile()     const { return ft_.bitmapFile_; }
-	bool   frame()          const { return ft_.frame_; }
-	int    frameNumber()    const { return ft_.frameNumber_; }
+    bool decide()           const {
+        return ft_.decide_;
+    }
 
-	bool   cellCentered()   const { return ft_.cellCentered_; }
-	bool   shifted()        const { return ft_.shifted_; }
+    bool   bitmap()         const {
+        return ft_.bitmap_;
+    }
+    string bitmapFile()     const {
+        return ft_.bitmapFile_;
+    }
+    bool   frame()          const {
+        return ft_.frame_;
+    }
+    int    frameNumber()    const {
+        return ft_.frameNumber_;
+    }
 
-	bool   vdConversion()   const { return ft_.vdConversion_; }
+    bool   cellCentered()   const {
+        return ft_.cellCentered_;
+    }
+    bool   shifted()        const {
+        return ft_.shifted_;
+    }
 
-	string fileType()       const { return ft_.fileType_; }
-	double missingValue()   const { return ft_.missingValue_; }
+    bool   vdConversion()   const {
+        return ft_.vdConversion_;
+    }
 
-	Field* defineField() const;
+    string fileType()       const {
+        return ft_.fileType_;
+    }
+    double missingValue()   const {
+        return ft_.missingValue_;
+    }
+
+    Field *defineField() const;
 
 
-// -- API functions
-	void missingValue(double value);
-	void grid2gridTransformationType(const string& s);
-	void parameter(const Parameter& param);
-	void gridType(const string& type);
+    // -- API functions
+    void missingValue(double value);
+    void grid2gridTransformationType(const string &s);
+    void parameter(const Parameter &param);
+    void gridType(const string &type);
 
-	void area(double north, double west, double south, double east);
-	void increments(double we, double ns);
-	void gaussianNumber(int number);
-	void truncation(int number);
+    void area(double north, double west, double south, double east);
+    void increments(double we, double ns);
+    void gaussianNumber(int number);
+    void truncation(int number);
 
-	void numberOfPoints(long ns, long we);
+    void numberOfPoints(long ns, long we);
 
-	void globalWestEast(const string& str);
+    void globalWestEast(const string &str);
 
-	void southPole(double lat, double lon);
-	void scanningMode(int scanningMode);
+    void southPole(double lat, double lon);
+    void scanningMode(int scanningMode);
 
-	void isAvailable();
-	void ifAvailableCopyBasics(const FieldDescription& other);
+    void isAvailable();
+    void ifAvailableCopyBasics(const FieldDescription &other);
 
-	void isReduced(const bool isReduced);
-	void levelType(const string& level);
-	void level(int level);
+    void isReduced(const bool isReduced);
+    void levelType(const string &level);
+    void level(int level);
 
-	void units(const string& units);
-	void centre(int centre);
-	void editionNumber(int editionNumber);
+    void units(const string &units);
+    void centre(int centre);
+    void editionNumber(int editionNumber);
 
-	void stepUnits(const string& stepUnits);
-	void startStep(int startStep);
-	void endStep(int endStep);
+    void stepUnits(const string &stepUnits);
+    void startStep(int startStep);
+    void endStep(int endStep);
 
-	void date(int date);
-	void time(int time);
+    void date(int date);
+    void time(int time);
 
-	void reducedGridDefinition(long* rgridDef, size_t size);
+    void reducedGridDefinition(long *rgridDef, size_t size);
 
-	void frameNumber(int number);
-	void bitmapFile(const string& file);
+    void frameNumber(int number);
+    void bitmapFile(const string &file);
 
-	void listOfPointsFileType(const string& fileType);
-	void listOfPointsFile(const string& file);
+    void listOfPointsFileType(const string &fileType);
+    void listOfPointsFile(const string &file);
 
-	void interpolationMethod(const string& method);
-	void lsmMethod(const string& method);
-	void legendrePolynomialsMethod(const string& method);
+    void interpolationMethod(const string &method);
+    void lsmMethod(const string &method);
+    void legendrePolynomialsMethod(const string &method);
 
-	void auresol(const string& method);
-	void fftMax(int b);
+    void auresol(const string &method);
+    void fftMax(int b);
 
-	void numberOfNearestPoints(int b);
+    void numberOfNearestPoints(int b);
 
-	void bitsPerValue(int b);
-	void vdConversion(const bool conv);
+    void bitsPerValue(int b);
+    void vdConversion(const bool conv);
 
-	void cellCentered(bool a, bool b);
-	void gridSpec(const string& spec);
+    void cellCentered(bool a, bool b);
+    void gridSpec(const string &spec);
 
-	void shifted(bool b);
+    void shifted(bool b);
 
-	void extrapolateOnPole(const string& method);
-	void projectionPredefines(int number);
+    void extrapolateOnPole(const string &method);
+    void projectionPredefines(int number);
 
-	void fileType(const string& type);
+    void fileType(const string &type);
 
-	void global(bool b);
-	void parameterId(int b);
-	void table(int b);
-	void pseudoGaussian(bool b);
-	
-	 virtual void print(ostream&) const; // Change to virtual if base class	
+    void global(bool b);
+    void parameterId(int b);
+    void table(int b);
+    void pseudoGaussian(bool b);
 
-	FieldDescription& operator=(const FieldDescription&);
+    virtual void print(ostream &) const; // Change to virtual if base class
 
-// -- Class members
-	FieldIdentity  id_;
-	FieldFeatures  ft_;
+    FieldDescription &operator=(const FieldDescription &);
 
-// -- Friends
+    // -- Class members
+    FieldIdentity  id_;
+    FieldFeatures  ft_;
 
-	friend ostream& operator<<(ostream& s,const FieldDescription& p)
-		{ p.print(s); return s; }
+    // -- Friends
+
+    friend ostream &operator<<(ostream &s, const FieldDescription &p) {
+        p.print(s);
+        return s;
+    }
 };
 
 #endif

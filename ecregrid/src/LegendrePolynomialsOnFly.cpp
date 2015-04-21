@@ -10,26 +10,22 @@
 #include "LegendrePolynomialsOnFly.h"
 
 LegendrePolynomialsOnFly::LegendrePolynomialsOnFly(int truncation) :
-	LegendrePolynomials(truncation)
-{
-	long latLength = (truncation + 1) * (truncation + 4) / 2;
-	polynoms_.reserve(latLength);	
-	work_.reserve(latLength);	
+    LegendrePolynomials(truncation) {
+    long latLength = (truncation + 1) * (truncation + 4) / 2;
+    polynoms_.reserve(latLength);
+    work_.reserve(latLength);
 }
 
-LegendrePolynomialsOnFly::~LegendrePolynomialsOnFly()
-{
+LegendrePolynomialsOnFly::~LegendrePolynomialsOnFly() {
 }
 
-const double* LegendrePolynomialsOnFly::getOneLatitude(double lat, int rowOffset) const
-{
-	calculateLegendrePoly(&polynoms_[0],&work_[0],lat);
-	return &polynoms_[0];
+const double* LegendrePolynomialsOnFly::getOneLatitude(double lat, int rowOffset) const {
+    calculateLegendrePoly(&polynoms_[0],&work_[0],lat);
+    return &polynoms_[0];
 }
 
-void LegendrePolynomialsOnFly::print(ostream& out) const
-{
-	LegendrePolynomials::print(out);
-	out << "On Fly";
+void LegendrePolynomialsOnFly::print(ostream& out) const {
+    LegendrePolynomials::print(out);
+    out << "On Fly";
 //	- Calculation for each Latitude";
 }

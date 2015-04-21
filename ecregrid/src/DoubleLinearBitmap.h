@@ -15,23 +15,23 @@
 #endif
 
 class DoubleLinearBitmap : public DoubleLinear {
-public:
+  public:
 
 // -- Contructors
-	DoubleLinearBitmap(double missingValue);
-	DoubleLinearBitmap(bool w, bool a, double nPole, double sPole, double missingValue);
+    DoubleLinearBitmap(double missingValue);
+    DoubleLinearBitmap(bool w, bool a, double nPole, double sPole, double missingValue);
 
 // -- Destructor
-	~DoubleLinearBitmap();
+    ~DoubleLinearBitmap();
 
 // -- Overridden methods
-	double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
 
-protected:
+  protected:
     void print(ostream&) const;
 
-private:
-	double missingValue_;
+  private:
+    double missingValue_;
 
 };
 

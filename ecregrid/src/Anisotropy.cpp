@@ -10,31 +10,27 @@
 #include "Anisotropy.h"
 
 
-Anisotropy::Anisotropy() 
-{
+Anisotropy::Anisotropy() {
 }
 
-Anisotropy::~Anisotropy()
-{
+Anisotropy::~Anisotropy() {
 }
 
-double Anisotropy::calculate(double k, double l, double m) const
-{
-	double x = sqrt(l*l + m*m);
+double Anisotropy::calculate(double k, double l, double m) const {
+    double x = sqrt(l * l + m * m);
     if ( k + x == 0)
-          return 0.01;
+        return 0.01;
 
     if ( (k - x) < 1.e-8 )
-          return 0;
+        return 0;
 
-    if( fabs(k + x) < 1.e-8 )
+    if ( fabs(k + x) < 1.e-8 )
         return sqrt(1.e8 * (k - x));
     else
-        return sqrt((k - x)/(k + x)); 	
+        return sqrt((k - x) / (k + x));
 }
 
-void Anisotropy::print(ostream& out) const
-{
-	DerivedSubgridParameters::print(out);
-	out << "Anisotropy" ;
+void Anisotropy::print(ostream &out) const {
+    DerivedSubgridParameters::print(out);
+    out << "Anisotropy" ;
 }

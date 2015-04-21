@@ -18,62 +18,64 @@
 class Point;
 
 class SpectralToListOfPointsTransformer : public SpectralToGridTransformer {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	SpectralToListOfPointsTransformer(const string& coeffMethod, int fftMax, bool auresol, bool conversion);
+    SpectralToListOfPointsTransformer(const string& coeffMethod, int fftMax, bool auresol, bool conversion);
 
 // -- Destructor
 
-	~SpectralToListOfPointsTransformer(); // Change to virtual if base class
+    ~SpectralToListOfPointsTransformer(); // Change to virtual if base class
 
 // -- Methods
 
 // -- Overridden methods
-	Field* transform(const Field& in, const Field& out) const;
+    Field* transform(const Field& in, const Field& out) const;
 
-protected:
+  protected:
 
 // -- Members
 
 // -- Methods
-	
-	void print(ostream&) const; // Change to virtual if base class	
+
+    void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	SpectralToListOfPointsTransformer(const SpectralToListOfPointsTransformer&);
-	SpectralToListOfPointsTransformer& operator=(const SpectralToListOfPointsTransformer&);
+    SpectralToListOfPointsTransformer(const SpectralToListOfPointsTransformer&);
+    SpectralToListOfPointsTransformer& operator=(const SpectralToListOfPointsTransformer&);
 
 // -- Members
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const SpectralToListOfPointsTransformer& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const SpectralToListOfPointsTransformer& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

@@ -20,70 +20,72 @@
 #endif
 
 class AsciiInput : public Input {
-public:
+  public:
 
-// -- Contructors
+    // -- Contructors
 
-	AsciiInput();
-	AsciiInput(const string& name);
+    AsciiInput();
+    AsciiInput(const string &name);
 
-// -- Destructor
+    // -- Destructor
 
-	~AsciiInput(); // Change to virtual if base class
+    ~AsciiInput(); // Change to virtual if base class
 
-// -- Operators
-	// None
-
-
-// -- Overridden methods
-	bool       next(FILE* fp);
-
-	Input*  newInput(const string& name)  const;
-
-	bool*   getLsmBoolValues(size_t* valuesLength)            const;
-	Field* defineField(const FieldDescription& dc) const;
-
-// -- Methods
-	void getLatLonAndValues(vector<Point>& points, vector<double>& values)      const;
-	void    getLatLonValues(vector<Point>& points)            const;
+    // -- Operators
+    // None
 
 
-protected:
+    // -- Overridden methods
+    bool       next(FILE *fp);
 
-// -- Members
-	// None
+    Input  *newInput(const string &name)  const;
 
-// -- Methods
-	
-// -- Overridden methods
-	// None
+    bool   *getLsmBoolValues(size_t *valuesLength)            const;
+    Field *defineField(const FieldDescription &dc) const;
 
-// -- Class members
-	// None
+    // -- Methods
+    void getLatLonAndValues(vector<Point> &points, vector<double> &values)      const;
+    void    getLatLonValues(vector<Point> &points)            const;
 
-// -- Class methods
-	// None
 
-private:
+  protected:
 
-// No copy allowed
+    // -- Members
+    // None
 
-	AsciiInput(const AsciiInput&);
-	AsciiInput& operator=(const AsciiInput&);
+    // -- Methods
 
-// -- Members
-	FieldDescription  id_;
-	bool              triger_;
+    // -- Overridden methods
+    // None
 
-// -- Methods
-	// None
+    // -- Class members
+    // None
 
-// -- Overridden methods
-	Grid* defineGridForCheck(const string& path) const;
+    // -- Class methods
+    // None
 
-	long*   getReducedGridSpecification(size_t* valuesLength) const;
-	virtual void getDoubleValues(const string& name, vector<double>& values)  const;
-	string       typeOf()  const { return "ascii"; }
+  private:
+
+    // No copy allowed
+
+    AsciiInput(const AsciiInput &);
+    AsciiInput &operator=(const AsciiInput &);
+
+    // -- Members
+    FieldDescription  id_;
+    bool              triger_;
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    Grid *defineGridForCheck(const string &path) const;
+
+    long   *getReducedGridSpecification(size_t *valuesLength) const;
+    virtual void getDoubleValues(const string &name, vector<double> &values)  const;
+    string       typeOf()  const {
+        return "ascii";
+    }
 
 };
 

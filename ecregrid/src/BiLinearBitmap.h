@@ -17,23 +17,23 @@
 
 
 class BiLinearBitmap : public BiLinear {
-public:
+  public:
 
 // -- Contructors
-	BiLinearBitmap(double missingValue);
-	BiLinearBitmap(bool w, bool a, double nPole, double sPole, double missingValue);
+    BiLinearBitmap(double missingValue);
+    BiLinearBitmap(bool w, bool a, double nPole, double sPole, double missingValue);
 
 // -- Destructor
-	~BiLinearBitmap();
+    ~BiLinearBitmap();
 
 // -- Overridden methods
-	virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
-	double missingValue_;
+  private:
+    double missingValue_;
 
 };
 

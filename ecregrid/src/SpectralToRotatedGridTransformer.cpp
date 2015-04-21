@@ -43,115 +43,110 @@
 
 
 SpectralToRotatedGridTransformer::SpectralToRotatedGridTransformer(const string& coeffMethod, int fftMax, bool auresol, bool conversion) :
-    SpectralToGridTransformer(coeffMethod,fftMax,auresol,conversion)
-{
+    SpectralToGridTransformer(coeffMethod,fftMax,auresol,conversion) {
 }
 
-SpectralToRotatedGridTransformer::~SpectralToRotatedGridTransformer()
-{
+SpectralToRotatedGridTransformer::~SpectralToRotatedGridTransformer() {
 }
 
-Field* SpectralToRotatedGridTransformer::transform(const Field& in, const Field& out) const
-{
-	const SpectralField& input = dynamic_cast<const SpectralField&>(in);
-	const GridField&    output = dynamic_cast<const GridField&>(out);
+Field* SpectralToRotatedGridTransformer::transform(const Field& in, const Field& out) const {
+    const SpectralField& input = dynamic_cast<const SpectralField&>(in);
+    const GridField&    output = dynamic_cast<const GridField&>(out);
 
-	int reqGauss = input.matchGaussian();
-	if(auresol_)
-		reqGauss = output.grid().matchGaussian();
-	auto_ptr<ReducedGaussian> bridge( new ReducedGaussian(reqGauss));
-	Grid* globalReducedGaussian = bridge->getGlobalGrid();
+    int reqGauss = input.matchGaussian();
+    if(auresol_)
+        reqGauss = output.grid().matchGaussian();
+    auto_ptr<ReducedGaussian> bridge( new ReducedGaussian(reqGauss));
+    Grid* globalReducedGaussian = bridge->getGlobalGrid();
 
     long calculatedLength   = globalReducedGaussian->calculatedNumberOfPoints();
     if(DEBUG)
         cout << "SpectralToGridTransformer::transform  output values length: " << calculatedLength <<  endl;
-    
+
     // CACHING OPPORTUNITY:
     vector<double> values(calculatedLength);
 
-	int truncation = input.truncation();
-	if(auresol_)
-		truncation = globalReducedGaussian->truncate(truncation);
+    int truncation = input.truncation();
+    if(auresol_)
+        truncation = globalReducedGaussian->truncate(truncation);
 
-	SpectralToSpectralTransformer sp2sp;
-	vector<comp> newComp;
+    SpectralToSpectralTransformer sp2sp;
+    vector<comp> newComp;
     sp2sp.transform(input,truncation,newComp);
 
     SpectralToGridTransformer::transform(truncation,input.wind(),newComp,*globalReducedGaussian,*globalReducedGaussian,values);
 
-	bool bitmap = false;
-	GridField bridgeField(globalReducedGaussian,input,output.bitsPerValue(),output.editionNumber(), output.scanningMode(),bitmap, values,output.missingValue());
+    bool bitmap = false;
+    GridField bridgeField(globalReducedGaussian,input,output.bitsPerValue(),output.editionNumber(), output.scanningMode(),bitmap, values,output.missingValue());
 
 //	cout << "SpectralToRotatedGridTransformer::transform " <<  *reducedGaussian << endl;
 //	cout << "SpectralToRotatedGridTransformer::transform " <<  output << endl;
 //	reducedGaussian->dump2file("./values");
 
-	GridToGridTransformer gr2gr("cubic");
+    GridToGridTransformer gr2gr("cubic");
 
-	return gr2gr.transform(bridgeField,output);
+    return gr2gr.transform(bridgeField,output);
 }
 
-Wind* SpectralToRotatedGridTransformer::transformVector(const Field& inU, const Field& inV, const Field& req) const
-{
-	if(DEBUG)
-		cout << "((((( SpectralToRotatedGridTransformer::transformVector ((((( U " << inU.number() << " V " << inV.number() << endl ;
+Wind* SpectralToRotatedGridTransformer::transformVector(const Field& inU, const Field& inV, const Field& req) const {
+    if(DEBUG)
+        cout << "((((( SpectralToRotatedGridTransformer::transformVector ((((( U " << inU.number() << " V " << inV.number() << endl ;
 
-	const SpectralField& inputU = dynamic_cast<const SpectralField&>(inU);
-	const SpectralField& inputV = dynamic_cast<const SpectralField&>(inV);
+    const SpectralField& inputU = dynamic_cast<const SpectralField&>(inU);
+    const SpectralField& inputV = dynamic_cast<const SpectralField&>(inV);
     const GridField&     output = dynamic_cast<const GridField&>(req);
 //	cout <<"SpectralToRotatedGridTransformer::transformVector input U " << inputU << endl;
 
-	int reqGauss = inputU.matchGaussian();
-	if(auresol_)
-		reqGauss  = output.grid().matchGaussian();
+    int reqGauss = inputU.matchGaussian();
+    if(auresol_)
+        reqGauss  = output.grid().matchGaussian();
     auto_ptr<ReducedGaussian> bridge( new ReducedGaussian(reqGauss));
-	Grid* globalReducedGaussian = bridge->getGlobalGrid();
-	Grid* globalReducedGaussianV = bridge->getGlobalGrid();
+    Grid* globalReducedGaussian = bridge->getGlobalGrid();
+    Grid* globalReducedGaussianV = bridge->getGlobalGrid();
 
     long calculatedLengthPossible = globalReducedGaussian->calculatedNumberOfPoints();
     if(DEBUG)
         cout << "SpectralToRotatedGridTransformer::transform  output values length: " << calculatedLengthPossible <<  endl;
-    
+
     // CACHING OPPORTUNITY:
     vector<double> valuesU(calculatedLengthPossible);
     vector<double> valuesV(calculatedLengthPossible);
 
-	
-	int truncation = inputU.truncation();
-	if(auresol_)
-		truncation = output.grid().truncate(truncation);
-	SpectralToSpectralTransformer sp2sp;
 
-	if(inU.number() == 138 && inV.number() == 155 && vdConversion_) {
-		if(DEBUG){
-			cout << "SpectralToRotatedGridTransformer::transformVector VORT,DIV TO U,V" << endl ;
-		}
-		vector<comp> vort;
-		vector<comp> dive;
-		sp2sp.transform(inputU, truncation - 1, vort);
-		sp2sp.transform(inputV, truncation - 1, dive);
-		vector<comp> ucomp;
+    int truncation = inputU.truncation();
+    if(auresol_)
+        truncation = output.grid().truncate(truncation);
+    SpectralToSpectralTransformer sp2sp;
+
+    if(inU.number() == 138 && inV.number() == 155 && vdConversion_) {
+        if(DEBUG) {
+            cout << "SpectralToRotatedGridTransformer::transformVector VORT,DIV TO U,V" << endl ;
+        }
+        vector<comp> vort;
+        vector<comp> dive;
+        sp2sp.transform(inputU, truncation - 1, vort);
+        sp2sp.transform(inputV, truncation - 1, dive);
+        vector<comp> ucomp;
         vector<comp> vcomp;
         sp2sp.vorticityDivergenceToUV(vort,dive,truncation,ucomp,vcomp);
-		SpectralToGridTransformer::transform(truncation,inputU.wind(),ucomp,*globalReducedGaussian,*globalReducedGaussian,valuesU);
-		SpectralToGridTransformer::transform(truncation,inputV.wind(),vcomp,*globalReducedGaussian,*globalReducedGaussian,valuesV);
+        SpectralToGridTransformer::transform(truncation,inputU.wind(),ucomp,*globalReducedGaussian,*globalReducedGaussian,valuesU);
+        SpectralToGridTransformer::transform(truncation,inputV.wind(),vcomp,*globalReducedGaussian,*globalReducedGaussian,valuesV);
 
-	}
-	else{
+    } else {
 // Input is spectral u,v
-		vector<comp> ucomp;
-		vector<comp> vcomp;
-		sp2sp.transform(inputU, truncation, ucomp);
-		sp2sp.transform(inputV, truncation, vcomp);
-		SpectralToGridTransformer::transform(truncation,inputU.wind(),ucomp,*globalReducedGaussian,*globalReducedGaussian,valuesU);
-		SpectralToGridTransformer::transform(truncation,inputV.wind(),vcomp,*globalReducedGaussian,*globalReducedGaussian,valuesV);
-	}
+        vector<comp> ucomp;
+        vector<comp> vcomp;
+        sp2sp.transform(inputU, truncation, ucomp);
+        sp2sp.transform(inputV, truncation, vcomp);
+        SpectralToGridTransformer::transform(truncation,inputU.wind(),ucomp,*globalReducedGaussian,*globalReducedGaussian,valuesU);
+        SpectralToGridTransformer::transform(truncation,inputV.wind(),vcomp,*globalReducedGaussian,*globalReducedGaussian,valuesV);
+    }
 
-	GridField bridgeU(Parameter(131,128,inputU.levelType()), globalReducedGaussian, inputU,inputU.bitsPerValue(),inputU.editionNumber(), 1,false, valuesU,output.missingValue());
+    GridField bridgeU(Parameter(131,128,inputU.levelType()), globalReducedGaussian, inputU,inputU.bitsPerValue(),inputU.editionNumber(), 1,false, valuesU,output.missingValue());
 //	cout <<"SpectralToRotatedGridTransformer::transformVector bridge(Reduced Gaussian) U " << bridgeU << endl;
-	GridField bridgeV(Parameter(132,128,inputV.levelType()), globalReducedGaussianV, inputV,inputV.bitsPerValue(),inputV.editionNumber(), 1,false, valuesV,output.missingValue());
+    GridField bridgeV(Parameter(132,128,inputV.levelType()), globalReducedGaussianV, inputV,inputV.bitsPerValue(),inputV.editionNumber(), 1,false, valuesV,output.missingValue());
 
-	GridToGridTransformer gr2gr("cubic");
+    GridToGridTransformer gr2gr("cubic");
 
-	return gr2gr.transformVector(bridgeU,bridgeV,output);
+    return gr2gr.transformVector(bridgeU,bridgeV,output);
 }

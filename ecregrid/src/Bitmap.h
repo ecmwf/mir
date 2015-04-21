@@ -20,41 +20,43 @@
 class GridField;
 
 class Bitmap : public Extraction {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Bitmap(const string& number, double missingValue);
+    Bitmap(const string& number, double missingValue);
 
 // -- Destructor
 
-	~Bitmap();
+    ~Bitmap();
 
 
 // -- Methods
-	void extract(const Grid& output, vector<double>& values) const;
-	void setBitmap(vector<bool>& bm, long offset, int firstColumn, int lastColumn, bool value) const;
+    void extract(const Grid& output, vector<double>& values) const;
+    void setBitmap(vector<bool>& bm, long offset, int firstColumn, int lastColumn, bool value) const;
 
-protected:
-	 void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
+  private:
 
 // No copy allowed
 
-	Bitmap(const Bitmap&);
-	Bitmap& operator=(const Bitmap&);
+    Bitmap(const Bitmap&);
+    Bitmap& operator=(const Bitmap&);
 
-	string fileName_;
-	double missingValue_;
+    string fileName_;
+    double missingValue_;
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const Bitmap& p)
-	{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const Bitmap& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

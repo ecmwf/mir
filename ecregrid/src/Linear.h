@@ -16,28 +16,28 @@
 
 
 class Linear : public Interpolator {
-public:
+  public:
 
 // -- Contructors
-	Linear();
-	Linear(bool w, bool a, double nPole, double sPole);
+    Linear();
+    Linear(bool w, bool a, double nPole, double sPole);
 
 // -- Destructor
-	~Linear();
+    ~Linear();
 
 // -- Overridden methods
     void interpolationWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const;
-	virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
+  private:
 
 
 // -- Methods
-	double alongParalel(const Point& where, const FieldPoint& up, const FieldPoint& down) const;
-	double alongMeridian(const Point& where, const FieldPoint& up, const FieldPoint& down) const;
+    double alongParalel(const Point& where, const FieldPoint& up, const FieldPoint& down) const;
+    double alongMeridian(const Point& where, const FieldPoint& up, const FieldPoint& down) const;
 
     void parallelWeights(const Point& where, const FieldPoint& left, const FieldPoint& right, double& left_weight, double& right_weight) const;
     void meridianWeights(const Point& where, const FieldPoint& left, const FieldPoint& right, double& left_weight, double& right_weight) const;

@@ -22,41 +22,36 @@
 #endif
 
 LinearBitmap::LinearBitmap(double missingValue) :
-	Linear(), missingValue_(missingValue)
-{
+    Linear(), missingValue_(missingValue) {
 }
 
 LinearBitmap::LinearBitmap(bool w, bool a, double nPole, double sPole, double missingValue) :
-	Linear(w,a,nPole,sPole), missingValue_(missingValue)
-{
+    Linear(w,a,nPole,sPole), missingValue_(missingValue) {
 }
 
-LinearBitmap::~LinearBitmap()
-{ 
-}
- 
-double LinearBitmap::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
-	int size = nearests.size();
-
-	if(size < 2){
-		if(size == 0)
-			return missingValue_;
-		return nearests[0].value();
-	}
-	vector<FieldPoint>::const_iterator it = nearests.begin(), end = nearests.end();
-	for( ; it != end; it++){
-		if(same(it->value(),missingValue_))
-			return useNearestNeigbour(where,nearests,size,missingValue_);
-	}
-
-
-	return Linear::interpolatedValue(where,nearests);
+LinearBitmap::~LinearBitmap() {
 }
 
-void LinearBitmap::print(ostream& out) const
-{
-	Interpolator::print(out);
-	out << "LinearBitmap" ;
+double LinearBitmap::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const {
+    int size = nearests.size();
+
+    if(size < 2) {
+        if(size == 0)
+            return missingValue_;
+        return nearests[0].value();
+    }
+    vector<FieldPoint>::const_iterator it = nearests.begin(), end = nearests.end();
+    for( ; it != end; it++) {
+        if(same(it->value(),missingValue_))
+            return useNearestNeigbour(where,nearests,size,missingValue_);
+    }
+
+
+    return Linear::interpolatedValue(where,nearests);
+}
+
+void LinearBitmap::print(ostream& out) const {
+    Interpolator::print(out);
+    out << "LinearBitmap" ;
 }
 

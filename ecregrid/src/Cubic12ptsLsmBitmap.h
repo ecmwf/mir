@@ -14,28 +14,28 @@
 #include "Cubic12ptsLsm.h"
 #endif
 
-// 
+//
 
 class Cubic12ptsLsmBitmap : public Cubic12ptsLsm {
-public:
+  public:
 
 // -- Contructors
 
-	Cubic12ptsLsmBitmap(const Grid& input, const Grid& output, const string& lsmMethod, double missingValue);
-	Cubic12ptsLsmBitmap(bool w, bool a, double nPole, double sPole, const Grid& input, const Grid& output, const string& lsmMethod, double missingValue);
+    Cubic12ptsLsmBitmap(const Grid& input, const Grid& output, const string& lsmMethod, double missingValue);
+    Cubic12ptsLsmBitmap(bool w, bool a, double nPole, double sPole, const Grid& input, const Grid& output, const string& lsmMethod, double missingValue);
 
 // -- Destructor
 
-	~Cubic12ptsLsmBitmap(); // Change to virtual if base class
+    ~Cubic12ptsLsmBitmap(); // Change to virtual if base class
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
+  private:
 // -- Overridden methods
-	double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
+    double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
 
-	double missingValue_;
+    double missingValue_;
 
 };
 

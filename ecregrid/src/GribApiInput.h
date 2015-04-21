@@ -18,76 +18,78 @@
 #include <stdio.h>
 
 #include "grib_api.h"
-// 
+//
 
 class GribApiInput : public Input {
-public:
+  public:
 
-// -- Contructors
+    // -- Contructors
 
-	GribApiInput(const string& name);
-	GribApiInput();
+    GribApiInput(const string &name);
+    GribApiInput();
 
-// -- Destructor
+    // -- Destructor
 
-	~GribApiInput(); // Change to virtual if base class
+    ~GribApiInput(); // Change to virtual if base class
 
-// -- Operators
-	// None
+    // -- Operators
+    // None
 
-// -- Methods
+    // -- Methods
 
-	// unlike the other "defineField" methods, which take a set of values
-    // this one assumes the value vector is merely allocated, but not filled. 
+    // unlike the other "defineField" methods, which take a set of values
+    // this one assumes the value vector is merely allocated, but not filled.
     // This method fills them from the grib handle.
-    Field* defineField(grib_handle* handle, vector<double>& values)  const;
-	int    scanningMode(long iScansNegatively, long jScansPositively) const;
-	size_t   getReducedGridSpecification(vector<long>& values) const;
+    Field *defineField(grib_handle *handle, vector<double> &values)  const;
+    int    scanningMode(long iScansNegatively, long jScansPositively) const;
+    size_t   getReducedGridSpecification(vector<long> &values) const;
 
-// -- Overridden methods
-	grib_handle*  next(FILE* fp);
+    // -- Overridden methods
+    grib_handle  *next(FILE *fp);
 
-	Input*  newInput( const string& name)  const;
+    Input  *newInput( const string &name)  const;
 
 
 
-protected:
+  protected:
 
-// -- Members
-	// None
+    // -- Members
+    // None
 
-// -- Methods
-	
-// -- Class members
-	// None
+    // -- Methods
 
-// -- Class methods
-	// None
+    // -- Class members
+    // None
 
-private:
+    // -- Class methods
+    // None
 
-// No copy allowed
+  private:
 
-	GribApiInput(const GribApiInput&);
-	GribApiInput& operator=(const GribApiInput&);
+    // No copy allowed
 
-// -- Members
+    GribApiInput(const GribApiInput &);
+    GribApiInput &operator=(const GribApiInput &);
 
-// -- Methods
-//	bool next(FILE* fp)   = 0;
-	// None
+    // -- Members
 
-// -- Overridden methods
-	Grid* defineGridForCheck(const string& path) const;
+    // -- Methods
+    //	bool next(FILE* fp)   = 0;
+    // None
 
-	//double* getDoubleValues(size_t* valuesLength)             const;
-	//virtual double* getDoubleValues(const string& path, size_t* valuesLength)  const;
-	virtual void getDoubleValues(const string& name, vector<double>& values)  const;
-	//double* getDoubleValues(const string& path, size_t  valuesLength)  const;
-	virtual bool*   getLsmBoolValues(size_t* valuesLength)            const;
-//	long*   getReducedGridSpecification(size_t* valuesLength) const;
-	virtual void    getLatLonValues(vector<Point>& points)            const;
-	string       typeOf()  const { return "grib"; }
+    // -- Overridden methods
+    Grid *defineGridForCheck(const string &path) const;
+
+    //double* getDoubleValues(size_t* valuesLength)             const;
+    //virtual double* getDoubleValues(const string& path, size_t* valuesLength)  const;
+    virtual void getDoubleValues(const string &name, vector<double> &values)  const;
+    //double* getDoubleValues(const string& path, size_t  valuesLength)  const;
+    virtual bool   *getLsmBoolValues(size_t *valuesLength)            const;
+    //	long*   getReducedGridSpecification(size_t* valuesLength) const;
+    virtual void    getLatLonValues(vector<Point> &points)            const;
+    string       typeOf()  const {
+        return "grib";
+    }
 
 
 };

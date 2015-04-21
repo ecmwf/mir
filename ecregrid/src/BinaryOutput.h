@@ -18,28 +18,30 @@
 class GridField;
 
 class BinaryOutput : public Output {
-public:
+  public:
 
 // -- Contructors
 
-	BinaryOutput();
-	BinaryOutput(const string& name);
+    BinaryOutput();
+    BinaryOutput(const string& name);
 
 // -- Destructor
 
-	~BinaryOutput();
+    ~BinaryOutput();
 
 // --  Methods
-	virtual void write(FILE* out, const vector<double>& values) const;
-	void write(const char* buffer,long length) const;
+    virtual void write(FILE* out, const vector<double>& values) const;
+    void write(const char* buffer,long length) const;
 
 
 // Overriden methods
-	void write(const Field& field) const;
-	void write(FILE* out, const Field& field) const;
-	string typeOf()  const { return "binary"; }
+    void write(const Field& field) const;
+    void write(FILE* out, const Field& field) const;
+    string typeOf()  const {
+        return "binary";
+    }
 
-private:
+  private:
 
 // -- Members
 

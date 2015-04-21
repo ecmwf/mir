@@ -16,30 +16,30 @@
 // Forward declarations
 class Field;
 
-// 
+//
 
 class VerticalTransformer {
-public:
+  public:
 
 // -- Contructors
 
-	VerticalTransformer(const string& typeOfLevel, int level);
+    VerticalTransformer(const string& typeOfLevel, int level);
 
 // -- Destructor
 
-	virtual ~VerticalTransformer(); // Change to virtual if base class
+    virtual ~VerticalTransformer(); // Change to virtual if base class
 
 // -- Methods
-	virtual Field* transform(const Field& inputUp, const Field& inputDown) const = 0;
+    virtual Field* transform(const Field& inputUp, const Field& inputDown) const = 0;
 
-private:
+  private:
 
-	VerticalTransformer(const VerticalTransformer&);
-	VerticalTransformer& operator=(const VerticalTransformer&);
+    VerticalTransformer(const VerticalTransformer&);
+    VerticalTransformer& operator=(const VerticalTransformer&);
 
-	string typeOfLevel_;
-	int    level_;
-	
+    string typeOfLevel_;
+    int    level_;
+
 };
 
 #endif

@@ -28,139 +28,167 @@ class FieldPoint;
 class Area;
 class FieldDescription;
 
-// 
+//
 
 class GridField : public Field {
-public:
+  public:
 
 
 // -- Contructors
 
-	GridField( Grid* grid, int scan, int frame, bool bitmap, const string& bitmapFile, int bitsPerValue, int editionNumber, double missingValue);
+    GridField( Grid* grid, int scan, int frame, bool bitmap, const string& bitmapFile, int bitsPerValue, int editionNumber, double missingValue);
 
-	GridField( Grid* grid, const Parameter& param, int scan, int frame = 0, bool bitmap = false, const string& bitmapFile = "none", double missingValue = MISSING_VALUE);
+    GridField( Grid* grid, const Parameter& param, int scan, int frame = 0, bool bitmap = false, const string& bitmapFile = "none", double missingValue = MISSING_VALUE);
 
 // Input
-	GridField( Grid* grid, const Parameter& param, const string& units, int editionNumber, int centre, const string& levType, int level,int date, int time, const string& stepUnits, int startStep, int endStep, int bitsPerValue, int scan, bool bitmap, const vector<double>& values, double missingValue);
+    GridField( Grid* grid, const Parameter& param, const string& units, int editionNumber, int centre, const string& levType, int level,int date, int time, const string& stepUnits, int startStep, int endStep, int bitsPerValue, int scan, bool bitmap, const vector<double>& values, double missingValue);
 
 // Output
-	GridField(Grid* grid, const Field& f, int bitsPerValue, int editionNumber, int scan, bool bitmap, const vector<double>& values, double missingValue); 
-	GridField(const Parameter& param, Grid* grid, const Field& f, int bitsPerValue, int editionNumber, int scan, bool bitmap, const vector<double>& values, double missingValue) ;
+    GridField(Grid* grid, const Field& f, int bitsPerValue, int editionNumber, int scan, bool bitmap, const vector<double>& values, double missingValue);
+    GridField(const Parameter& param, Grid* grid, const Field& f, int bitsPerValue, int editionNumber, int scan, bool bitmap, const vector<double>& values, double missingValue) ;
 
 // -- Destructor
 
-	virtual ~GridField(); // Change to virtual if base class
+    virtual ~GridField(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	bool operator==(const GridField& other) const;
+    bool operator==(const GridField& other) const;
 
 // -- Methods
 
-	Grid&          grid() const; 
+    Grid&          grid() const;
 
-	string         nameOfField()   const { return grid_->composedName(); }
-	int            scanningMode()  const { return scanningMode_; }
+    string         nameOfField()   const {
+        return grid_->composedName();
+    }
+    int            scanningMode()  const {
+        return scanningMode_;
+    }
 
-	bool           isRotated()     const { return grid_->rotated(); }
-	long           frame()         const { return frame_; }
-	bool           bitmap()        const { return bitmap_; }
-	string         bitmapFile()    const { return bitmapFile_; }
-	double         missingValue()  const { return missingValue_; }
+    bool           isRotated()     const {
+        return grid_->rotated();
+    }
+    long           frame()         const {
+        return frame_;
+    }
+    bool           bitmap()        const {
+        return bitmap_;
+    }
+    string         bitmapFile()    const {
+        return bitmapFile_;
+    }
+    double         missingValue()  const {
+        return missingValue_;
+    }
 
 // pole proccesssing
-	bool   extrapolateLinearOnPole() const;
-	bool   extrapolateAverageOnPole(double& northValue, double& southValue) const;
-	double average(long offset, long end) const;
-	double averageForPole(const string& pole) const;
+    bool   extrapolateLinearOnPole() const;
+    bool   extrapolateAverageOnPole(double& northValue, double& southValue) const;
+    double average(long offset, long end) const;
+    double averageForPole(const string& pole) const;
 // --------------------------------------------------------
-	GridField*     gridFieldForOtherScanningMode() const;
+    GridField*     gridFieldForOtherScanningMode() const;
 
-	Grid*          releaseGrid()         { return grid_.release(); }
+    Grid*          releaseGrid()         {
+        return grid_.release();
+    }
 
-	void dump2file(const string& name) const;
-	void dump() const;
+    void dump2file(const string& name) const;
+    void dump() const;
 
 // -- Overridden methods
-	void              resetOutput(FieldDescription* out) const;
-	FieldDescription* makeOutput(const FieldDescription& out)  const;
+    void              resetOutput(FieldDescription* out) const;
+    FieldDescription* makeOutput(const FieldDescription& out)  const;
 
-    size_t dataLength()    const { return data_.size(); }
+    size_t dataLength()    const {
+        return data_.size();
+    }
 
-    const vector<double>& data() const { return data_; }
+    const vector<double>& data() const {
+        return data_;
+    }
 
-	double  dataAverage() const;
-	bool isMissingValue(double value) const {return same(value,missingValue_); }
-	void  outputArea(double* a)      const;
-	void  setOutputAreaAndBasics(FieldDescription& out) const;
-	unsigned long  calculatedLength() const  { return grid_->calculatedNumberOfPoints(); }
+    double  dataAverage() const;
+    bool isMissingValue(double value) const {
+        return same(value,missingValue_);
+    }
+    void  outputArea(double* a)      const;
+    void  setOutputAreaAndBasics(FieldDescription& out) const;
+    unsigned long  calculatedLength() const  {
+        return grid_->calculatedNumberOfPoints();
+    }
 
-	void accumulatedData(vector<double>& newData) const { if (dataLength() > 0)
-                                                              grid_->accumulatedDataWE(&data_[0], dataLength(), newData); }
+    void accumulatedData(vector<double>& newData) const {
+        if (dataLength() > 0)
+            grid_->accumulatedDataWE(&data_[0], dataLength(), newData);
+    }
     void squaredData(vector<double>& data) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	virtual void print(ostream&) const; // Change to virtual if base class	
+
+    virtual void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	GridField(const GridField&);
-	GridField& operator=(const GridField&);
+    GridField(const GridField&);
+    GridField& operator=(const GridField&);
 
 // -- Members
 
-	auto_ptr<Grid> grid_;
+    auto_ptr<Grid> grid_;
 
     const vector<double> data_;
-	int            scanningMode_;
+    int            scanningMode_;
 
-	int       	   frame_;
-	bool           bitmap_;
-	string         bitmapFile_;
+    int       	   frame_;
+    bool           bitmap_;
+    string         bitmapFile_;
 
-	double         missingValue_;
+    double         missingValue_;
 
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const GridField& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const GridField& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

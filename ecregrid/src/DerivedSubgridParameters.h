@@ -23,27 +23,29 @@ class Interpolator;
 class GridField;
 class Grid;
 
-// 
+//
 
 class DerivedSubgridParameters {
-public:
+  public:
 
 // -- Contructors
-	DerivedSubgridParameters();
+    DerivedSubgridParameters();
 
 // -- Destructor
-	virtual ~DerivedSubgridParameters();
+    virtual ~DerivedSubgridParameters();
 
 // -- Methods
-	virtual double calculate(double k, double l, double m) const = 0;
+    virtual double calculate(double k, double l, double m) const = 0;
 
-protected:
+  protected:
     virtual void print(ostream&) const;
 
-private:
+  private:
 // -- Friends
-    friend ostream& operator<<(ostream& s,const DerivedSubgridParameters& p)
-            { p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const DerivedSubgridParameters& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

@@ -14,31 +14,31 @@
 #include "Cubic12pts.h"
 #endif
 
-// 
+//
 
 class Cubic12ptsBitmap : public Cubic12pts {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Cubic12ptsBitmap(double missingValue);
-	Cubic12ptsBitmap(bool w, bool a, double nPole, double sPole, double missingValue);
+    Cubic12ptsBitmap(double missingValue);
+    Cubic12ptsBitmap(bool w, bool a, double nPole, double sPole, double missingValue);
 
 // -- Destructor
 
-	~Cubic12ptsBitmap(); // Change to virtual if base class
+    ~Cubic12ptsBitmap(); // Change to virtual if base class
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
+  private:
 // -- Overridden methods
-	virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
 
-	double missingValue_;
+    double missingValue_;
 
 };
 

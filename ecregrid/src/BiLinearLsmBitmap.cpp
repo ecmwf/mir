@@ -22,18 +22,15 @@
 #endif
 
 BiLinearLsmBitmap::BiLinearLsmBitmap(const Grid& input, const Grid& output, const string& lsmMethod, double missingValue) :
-	BiLinearLsm(input,output,lsmMethod), missingValue_(missingValue)
-{
+    BiLinearLsm(input,output,lsmMethod), missingValue_(missingValue) {
 }
 
 BiLinearLsmBitmap::BiLinearLsmBitmap(bool w, bool a, double nPole, double sPole, const Grid& input, const Grid& output, const string& lsmMethod, double missingValue) :
-	BiLinearLsm(w,a,nPole,sPole,input,output,lsmMethod), missingValue_(missingValue)
-{
+    BiLinearLsm(w,a,nPole,sPole,input,output,lsmMethod), missingValue_(missingValue) {
 }
 
-BiLinearLsmBitmap::~BiLinearLsmBitmap()
-{ 
-//cout << "BiLinear: cleaning up." << endl; 
+BiLinearLsmBitmap::~BiLinearLsmBitmap() {
+//cout << "BiLinear: cleaning up." << endl;
 }
 
 /*
@@ -44,22 +41,20 @@ BiLinearLsmBitmap::~BiLinearLsmBitmap()
                 2       3
 */
 
-double BiLinearLsmBitmap::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
-	int size = nearests.size();
+double BiLinearLsmBitmap::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const {
+    int size = nearests.size();
 
-	if(size < 4)
-		return missingNeighbours(where,nearests,size,missingValue_);
+    if(size < 4)
+        return missingNeighbours(where,nearests,size,missingValue_);
 
-	if(same(nearests[0].value(),missingValue_) || same(nearests[1].value(),missingValue_) || same(nearests[2].value(),missingValue_) || same(nearests[3].value(),missingValue_) )
-		return useNearestNeigbour(where,nearests,size,missingValue_);
+    if(same(nearests[0].value(),missingValue_) || same(nearests[1].value(),missingValue_) || same(nearests[2].value(),missingValue_) || same(nearests[3].value(),missingValue_) )
+        return useNearestNeigbour(where,nearests,size,missingValue_);
 
-	return BiLinearLsm::interpolatedValue(where,nearests);
+    return BiLinearLsm::interpolatedValue(where,nearests);
 }
- 
 
-void BiLinearLsmBitmap::print(ostream& out) const
-{
-	InterpolatorLsm::print(out);
-	out << "BiLinearLsmBitmap" ;
+
+void BiLinearLsmBitmap::print(ostream& out) const {
+    InterpolatorLsm::print(out);
+    out << "BiLinearLsmBitmap" ;
 }

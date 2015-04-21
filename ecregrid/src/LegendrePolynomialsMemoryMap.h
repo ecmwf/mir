@@ -17,41 +17,45 @@
 
 
 class LegendrePolynomialsMemoryMap : public LegendrePolynomialsRead {
-public:
+  public:
 
 // -- Contructors
 
-	LegendrePolynomialsMemoryMap(int truncation, const Grid& grid);
+    LegendrePolynomialsMemoryMap(int truncation, const Grid& grid);
 
 // -- Destructor
 
-	~LegendrePolynomialsMemoryMap(); // Change to virtual if base class
+    ~LegendrePolynomialsMemoryMap(); // Change to virtual if base class
 
-protected:
+  protected:
 
 // Overriden methods
-	void print(ostream&) const;
+    void print(ostream&) const;
 
-private:
+  private:
 
 // No copy allowed
 
-	LegendrePolynomialsMemoryMap(const LegendrePolynomialsMemoryMap&);
-	LegendrePolynomialsMemoryMap& operator=(const LegendrePolynomialsMemoryMap&);
+    LegendrePolynomialsMemoryMap(const LegendrePolynomialsMemoryMap&);
+    LegendrePolynomialsMemoryMap& operator=(const LegendrePolynomialsMemoryMap&);
 
 // -- Members
-	size_t  length_;
-	void*   addr_;
-	double* next_;
+    size_t  length_;
+    void*   addr_;
+    double* next_;
 
 // -- Overridden methods
-	const double* getOneLatitude(double lat, int rowOffset) const;
-	const double* getPolynoms() const { return next_; }
+    const double* getOneLatitude(double lat, int rowOffset) const;
+    const double* getPolynoms() const {
+        return next_;
+    }
 
 
 // -- Friends
-	friend ostream& operator<<(ostream& s,const LegendrePolynomialsMemoryMap& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const LegendrePolynomialsMemoryMap& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

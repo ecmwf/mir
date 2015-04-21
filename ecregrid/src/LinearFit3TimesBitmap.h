@@ -16,24 +16,24 @@
 
 
 class LinearFit3TimesBitmap : public LinearFit3Times {
-public:
+  public:
 
 // -- Contructors
-	LinearFit3TimesBitmap(double missingValue);
-	LinearFit3TimesBitmap(bool w, bool a, double nPole, double sPole, double missingValue);
+    LinearFit3TimesBitmap(double missingValue);
+    LinearFit3TimesBitmap(bool w, bool a, double nPole, double sPole, double missingValue);
 
 // -- Destructor
-	~LinearFit3TimesBitmap();
+    ~LinearFit3TimesBitmap();
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
+  private:
 
 // -- Overridden methods
-	double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
 
-	double missingValue_;
+    double missingValue_;
 
 };
 

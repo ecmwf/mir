@@ -22,62 +22,62 @@ class Grid;
 class Extraction;
 
 class GridToGridTransformer : public Transformer {
-public:
+  public:
 
 // -- Contructors
 
-	GridToGridTransformer(const string& intMethod = "default", const string& lsmMethod = "10min", int npts = 16, const string& type = "interpolation", const string& extrapolate = "default", double missingValue = MISSING_VALUE);
+    GridToGridTransformer(const string& intMethod = "default", const string& lsmMethod = "10min", int npts = 16, const string& type = "interpolation", const string& extrapolate = "default", double missingValue = MISSING_VALUE);
 
 // -- Destructor
 
-	~GridToGridTransformer(); // Change to virtual if base class
+    ~GridToGridTransformer(); // Change to virtual if base class
 
 // -- Methods
-	bool   transform(const GridField& in, const Grid& outGrid, const Extraction* extraction, vector<double>& values) const;
+    bool   transform(const GridField& in, const Grid& outGrid, const Extraction* extraction, vector<double>& values) const;
 
 // -- Overridden methods
-	Field* transform(const Field& input, const Field& output ) const;
-	Wind*  transformVector(const Field& inU, const Field& inV, const Field& req) const;
+    Field* transform(const Field& input, const Field& output ) const;
+    Wind*  transformVector(const Field& inU, const Field& inV, const Field& req) const;
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
+
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	GridToGridTransformer(const GridToGridTransformer&);
-	GridToGridTransformer& operator=(const GridToGridTransformer&);
+    GridToGridTransformer(const GridToGridTransformer&);
+    GridToGridTransformer& operator=(const GridToGridTransformer&);
 
 // -- Members
-	string interpolationMethod_;
-	string lsmMethod_;
-	int    pointsForInterpolation_;
-	string type_;
-	string extrapolate_;
+    string interpolationMethod_;
+    string lsmMethod_;
+    int    pointsForInterpolation_;
+    string type_;
+    string extrapolate_;
 
-	double missingValue_;
+    double missingValue_;
 
 // -- Methods
-	void meridionalPartialDerivatives(const GridField& input, vector<double>& values) const;
+    void meridionalPartialDerivatives(const GridField& input, vector<double>& values) const;
     void zonalPartialDerivatives(const GridField& input, vector<double>& values) const;
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 
 };

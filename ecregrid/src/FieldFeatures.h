@@ -27,127 +27,151 @@
 #include "Parameter.h"
 #endif
 
-// 
+//
 
 struct FieldFeatures {
 
-public:
+  public:
 
-// -- Contructors
-	FieldFeatures();
+    // -- Contructors
+    FieldFeatures();
 
-// -- Destructor
+    // -- Destructor
 
-	~FieldFeatures();
+    ~FieldFeatures();
 
-// -- Operators
-	FieldFeatures& operator=(const FieldFeatures& other);
+    // -- Operators
+    FieldFeatures &operator=(const FieldFeatures &other);
 
-	int       scanningMode_;
-	bool      isReduced_;
-	bool      decide_;
+    int       scanningMode_;
+    bool      isReduced_;
+    bool      decide_;
 
-	int       parameterId_;
-	int       table_;
+    int       parameterId_;
+    int       table_;
 
-	string    levelType_;
-	int       level_;
+    string    levelType_;
+    int       level_;
 
-	string    units_;
-	int       centre_;
-	int       editionNumber_;
+    string    units_;
+    int       centre_;
+    int       editionNumber_;
 
-	int       date_;
-	int       time_;
+    int       date_;
+    int       time_;
 
-	string    stepUnits_;
-	int       startStep_;
-	int       endStep_;
+    string    stepUnits_;
+    int       startStep_;
+    int       endStep_;
 
-	int       bitsPerValue_;
+    int       bitsPerValue_;
 
-	int       gaussianNumber_;
-	int       truncation_;
-	double    we_;
-	double    ns_;
+    int       gaussianNumber_;
+    int       truncation_;
+    double    we_;
+    double    ns_;
 
-	long      nptsNS_;
-	long      nptsWE_;
+    long      nptsNS_;
+    long      nptsWE_;
 
-	bool      globalWestEast_;
-	bool      isSetglobalWestEast_;
-	bool      global_;
+    bool      globalWestEast_;
+    bool      isSetglobalWestEast_;
+    bool      global_;
 
-	Point     southPole_;
-	Area      area_;
+    Point     southPole_;
+    Area      area_;
 
-	Parameter parameter_;
+    Parameter parameter_;
 
-    long* reducedGridDefinition_;
-	size_t      reducedGridLatNumber_;
+    long *reducedGridDefinition_;
+    size_t      reducedGridLatNumber_;
 
-	bool      frame_;
-	int       frameNumber_;
-	bool      bitmap_;
-	string    bitmapFile_;
+    bool      frame_;
+    int       frameNumber_;
+    bool      bitmap_;
+    string    bitmapFile_;
 
-	string    listOfPointsFileType_;
-	string    listOfPointsFile_;
+    string    listOfPointsFileType_;
+    string    listOfPointsFile_;
 
-	bool      auresol_;
-	int       fftMax_;
+    bool      auresol_;
+    int       fftMax_;
 
-	int       numberOfNearestPoints_;
+    int       numberOfNearestPoints_;
 
-	string    grid2gridTransformationType_;
+    string    grid2gridTransformationType_;
 
-	string    interpolationMethod_;
-	string    lsmMethod_;
-	string    legendrePolynomialsMethod_;
-	
-	string    extrapolateOnPole_;
+    string    interpolationMethod_;
+    string    lsmMethod_;
+    string    legendrePolynomialsMethod_;
 
-	bool      vdConversion_;
+    string    extrapolateOnPole_;
 
-	bool      pseudoGaussian_;
-	bool      cellCentered_;
-	bool      shifted_;
+    bool      vdConversion_;
 
-	int       projectionPredefines_;
+    bool      pseudoGaussian_;
+    bool      cellCentered_;
+    bool      shifted_;
 
-	string    fileType_;
+    int       projectionPredefines_;
 
-	double    missingValue_;
+    string    fileType_;
 
-// -- Methods
-	double  north()           const { return area_.north(); }
-    double  south()           const { return area_.south(); }
-    double  west()            const { return area_.west(); }
-    double  east()            const { return area_.east(); }
+    double    missingValue_;
 
-    int     date()            const { return date_ ; }
-    int     time()            const { return time_ ; }
+    // -- Methods
+    double  north()           const {
+        return area_.north();
+    }
+    double  south()           const {
+        return area_.south();
+    }
+    double  west()            const {
+        return area_.west();
+    }
+    double  east()            const {
+        return area_.east();
+    }
 
-    double  poleLat()         const { return southPole_.latitude(); }
-    double  poleLon()         const { return southPole_.longitude(); }
+    int     date()            const {
+        return date_ ;
+    }
+    int     time()            const {
+        return time_ ;
+    }
+
+    double  poleLat()         const {
+        return southPole_.latitude();
+    }
+    double  poleLon()         const {
+        return southPole_.longitude();
+    }
 
 
-	const Parameter& parameter()   const { return parameter_; }
-    int     parameterNumber() const { return parameter_.number() ; }
-    int     parameterTable()  const { return parameter_.table() ; }
+    const Parameter &parameter()   const {
+        return parameter_;
+    }
+    int     parameterNumber() const {
+        return parameter_.number() ;
+    }
+    int     parameterTable()  const {
+        return parameter_.table() ;
+    }
 
-	void copyBasics(const FieldFeatures& f);
+    void copyBasics(const FieldFeatures &f);
 
 
 
-protected:
-// -- Methods
-	virtual void print(ostream&) const;
+  protected:
+    // -- Methods
+    virtual void print(ostream &) const;
 
-// -- Friends
+    // -- Friends
 
-	friend ostream& operator<<(ostream& s,const FieldFeatures& p)
-		{ p.print(s); return s; }
+    friend ostream &operator<<(ostream &s, const FieldFeatures &p) {
+        p.print(s);
+        return s;
+    }
 };
 
 #endif

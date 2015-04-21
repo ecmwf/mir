@@ -18,61 +18,65 @@
 // Forward declarations
 class Grid;
 class Interpolator;
-// 
+//
 
 class LsmFromGrid : public Lsm {
-public:
+  public:
 
 // -- Contructors
 
-	LsmFromGrid(Input* input, Grid* grid, Interpolator* method);
+    LsmFromGrid(Input* input, Grid* grid, Interpolator* method);
 
 // -- Destructor
 
-	~LsmFromGrid(); // Change to virtual if base class
+    ~LsmFromGrid(); // Change to virtual if base class
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	void print(ostream&) const; // Change to virtual if base class	
 
-private:
+    void print(ostream&) const; // Change to virtual if base class
+
+  private:
 
 // No copy allowed
 
-	LsmFromGrid(const LsmFromGrid&);
-	LsmFromGrid& operator=(const LsmFromGrid&);
+    LsmFromGrid(const LsmFromGrid&);
+    LsmFromGrid& operator=(const LsmFromGrid&);
 
 // -- Members
-	auto_ptr<Grid> grid_;
-	auto_ptr<Interpolator> method_;
-	string  directoryOfPredefined_;
+    auto_ptr<Grid> grid_;
+    auto_ptr<Interpolator> method_;
+    string  directoryOfPredefined_;
 
 // -- Methods
-	void   createGlobalLsmAndWriteToFileAsGrib(const Grid&, const vector<double>& data) const;
-	string  directoryOfPredefined() const { return directoryOfPredefined_; }
+    void   createGlobalLsmAndWriteToFileAsGrib(const Grid&, const vector<double>& data) const;
+    string  directoryOfPredefined() const {
+        return directoryOfPredefined_;
+    }
 
 // -- Overridden methods
-	void getLsmValues(const Grid& grid, vector<bool>& values) ;
-	bool  isAvailablePredefinedLsm();
-	long  value(double latitude,double longitude)    const;
-	double  seaPoint(double latitude,double longitude) const;
-	bool  seaPointBool(double latitude,double longitude) const;
+    void getLsmValues(const Grid& grid, vector<bool>& values) ;
+    bool  isAvailablePredefinedLsm();
+    long  value(double latitude,double longitude)    const;
+    double  seaPoint(double latitude,double longitude) const;
+    bool  seaPointBool(double latitude,double longitude) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const LsmFromGrid& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const LsmFromGrid& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

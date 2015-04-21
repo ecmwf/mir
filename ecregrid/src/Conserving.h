@@ -12,23 +12,23 @@
 #include "Interpolator.h"
 
 class Conserving : public Interpolator {
-public:
+  public:
 
 // -- Contructors
-	Conserving();
+    Conserving();
 
 // -- Destructor
-	~Conserving();
+    ~Conserving();
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
+  private:
 
 // -- Methods
 // -- Overridden methods
-	void  interpolate(const GridField& input, const Grid& output, double* values, unsigned long valuesSize) const;
+    void  interpolate(const GridField& input, const Grid& output, double* values, unsigned long valuesSize) const;
 
-	double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
 };
 #endif

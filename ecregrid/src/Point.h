@@ -19,80 +19,94 @@ static const double FACTOR1 = 0.017453293;
 static const double FACTOR2 = 57.2957763671875;
 
 class Point {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	explicit Point(double latitude, double longitude, int i = 0, int j = 0, long k = 0);
-	explicit Point(double x, double y, double z, int i = 0, int j = 0, long k = 0);
-	Point(const Point& p);
+    explicit Point(double latitude, double longitude, int i = 0, int j = 0, long k = 0);
+    explicit Point(double x, double y, double z, int i = 0, int j = 0, long k = 0);
+    Point(const Point& p);
 
 // -- Destructor
 
-	  virtual ~Point();  // Change to virtual if base class
+    virtual ~Point();  // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
 
-	bool operator ==(const Point& other) const
-		{ return latitude_ == other.latitude_ && longitude_ == other.longitude_; }
+    bool operator ==(const Point& other) const {
+        return latitude_ == other.latitude_ && longitude_ == other.longitude_;
+    }
 
-	bool operator <(const Point& other) const
-		{ return latitude_ == other.latitude_ ? longitude_ < other.longitude_ : latitude_ < other.latitude_; }
+    bool operator <(const Point& other) const {
+        return latitude_ == other.latitude_ ? longitude_ < other.longitude_ : latitude_ < other.latitude_;
+    }
 
-	Point& operator=(const Point& p);
+    Point& operator=(const Point& p);
 
 // -- Methods
-	double latitude()  const  { return latitude_; }
-	double longitude() const  { return longitude_; }
-	double x() const;
-	double y() const;
-	double z() const;
+    double latitude()  const  {
+        return latitude_;
+    }
+    double longitude() const  {
+        return longitude_;
+    }
+    double x() const;
+    double y() const;
+    double z() const;
 
-	double quickDistance(const Point& other) const;
-	double unnormalisedWeight(const Point& other) const;
-	double euclidianDistance(const Point& other) const;
-	double earthDistanceInKM(const Point& other) const;
-	double earthDistance(const Point& other) const;
+    double quickDistance(const Point& other) const;
+    double unnormalisedWeight(const Point& other) const;
+    double euclidianDistance(const Point& other) const;
+    double earthDistanceInKM(const Point& other) const;
+    double earthDistance(const Point& other) const;
 
-	double sphericalDistance(const Point& other) const;
+    double sphericalDistance(const Point& other) const;
 
-	double angle(const Point& other) const; // Earth angle between 2 points (in radian)
+    double angle(const Point& other) const; // Earth angle between 2 points (in radian)
 
-	double longitudesDistance(const Point& other) const;
+    double longitudesDistance(const Point& other) const;
 
-	int    iIndex()    const  { return iIndex_; }
-	int    jIndex()    const  { return jIndex_; }
-	long   k1dIndex()   const  { return k1dIndex_; }
+    int    iIndex()    const  {
+        return iIndex_;
+    }
+    int    jIndex()    const  {
+        return jIndex_;
+    }
+    long   k1dIndex()   const  {
+        return k1dIndex_;
+    }
 
-	Point  checkup() const;
+    Point  checkup() const;
 
-protected:
+  protected:
 
 // -- Members
-	double latitude_;
-	double longitude_;
+    double latitude_;
+    double longitude_;
 
-	int    iIndex_;
-	int    jIndex_;
-	long   k1dIndex_;
+    int    iIndex_;
+    int    jIndex_;
+    long   k1dIndex_;
 
 // -- Methods
-	
-	 void print(ostream&) const; // Change to virtual if base class	
+
+    void print(ostream&) const; // Change to virtual if base class
 
 
-private:
+  private:
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const Point& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const Point& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 #endif

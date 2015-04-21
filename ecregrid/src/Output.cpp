@@ -79,17 +79,14 @@
 
 
 Output::Output():
-	fileName_("none")
-{
+    fileName_("none") {
 }
 
 Output::Output(const string& name) :
-	fileName_(name)
-{
+    fileName_(name) {
 }
 
-Output::~Output()
-{
+Output::~Output() {
 }
 /*
 Field* Output::defineField(const FieldDescription& dc) const
@@ -115,7 +112,7 @@ Field* Output::defineField(const FieldDescription& dc) const
 					if(ft.cellCentered_){
 						if(ft.nptsNS_ > 0 && ft.nptsWE_ > 0)
 							grid = new RegularLatLonCellCentered(ft.area_,ft.nptsNS_,ft.nptsWE_);
-						else			
+						else
 							if(ft.nptsNS_ > 0 && ft.nptsWE_ > 0){
 								grid = new RegularLatLonCellCentered(ft.area_,ft.ns_,ft.we_);
 							}
@@ -126,7 +123,7 @@ Field* Output::defineField(const FieldDescription& dc) const
 					else {
 						if(ft.nptsNS_ > 0 && ft.nptsWE_ > 0)
 							grid = new RegularLatLon(ft.area_,ft.nptsNS_,ft.nptsWE_,ft.globalWestEast_);
-						else			
+						else
 							grid = new RegularLatLon(ft.area_,ft.ns_,ft.we_);
 					}
 				}
@@ -189,36 +186,31 @@ Field* Output::defineField(const FieldDescription& dc) const
 }
 */
 
-void Output::deliverData(const Field& field, std::vector<double>& data) const
-{
-	if(field.nameOfField() == "sh"){
-		const SpectralField& sf  = dynamic_cast<const SpectralField&>(field);
+void Output::deliverData(const Field& field, std::vector<double>& data) const {
+    if(field.nameOfField() == "sh") {
+        const SpectralField& sf  = dynamic_cast<const SpectralField&>(field);
         data = sf.data();
         return;
-	}
-	else {
-		  const GridField& gf   = dynamic_cast<const GridField&>(field);
-		  int scanningMode      = gf.scanningMode();
-		if(scanningMode == 1)
-        {
+    } else {
+        const GridField& gf   = dynamic_cast<const GridField&>(field);
+        int scanningMode      = gf.scanningMode();
+        if(scanningMode == 1) {
             data = gf.data();
             return;
-		}
-		else {
-			if(DEBUG)
-				cout << "Output::deliverData Different Scanning Mode " << scanningMode << endl;
+        } else {
+            if(DEBUG)
+                cout << "Output::deliverData Different Scanning Mode " << scanningMode << endl;
 
             gf.grid().reOrderNewData(gf.data(), data, scanningMode);
             return;
-		}
-		throw WrongValue("Output::deliverData scanning Mode ", scanningMode);
-	}
+        }
+        throw WrongValue("Output::deliverData scanning Mode ", scanningMode);
+    }
 
-	throw BadParameter("Output::deliverData");
+    throw BadParameter("Output::deliverData");
 }
 
 
-void Output::print(ostream& out) const
-{
-	out << "Output[ file = "<< fileName_ << ']';
+void Output::print(ostream& out) const {
+    out << "Output[ file = "<< fileName_ << ']';
 }

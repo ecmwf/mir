@@ -11,160 +11,138 @@
 
 #include <sstream>
 
-Exception::Exception() 
-{
+Exception::Exception() {
 }
 
 Exception::Exception(const string& w):
-	what_(w)
-{
+    what_(w) {
 }
 
-Exception::~Exception() throw()
-{
+Exception::~Exception() throw() {
 }
 
 
-void Exception::print(ostream& out) const
-{
-	out << "Exception: " << what_ << endl;
+void Exception::print(ostream& out) const {
+    out << "Exception: " << what_ << endl;
 }
 
 AssertionFailed::AssertionFailed(const string& w) :
-	Exception("Assertion failed: " + w)
-{
+    Exception("Assertion failed: " + w) {
 }
 
 AssertionFailed::AssertionFailed(const char* msg, int line, const char* file, const char* proc) :
-	Exception("Assertion failed: ")
-{
-	stringstream s;
+    Exception("Assertion failed: ") {
+    stringstream s;
 
-	s << "Assertion failed: " << msg << " in " << proc
-	<< ", line " << line << " of " << file ;
+    s << "Assertion failed: " << msg << " in " << proc
+      << ", line " << line << " of " << file ;
 
-	reason(s.str());
+    reason(s.str());
 
-	cout << *this << endl;
+    cout << *this << endl;
 }
 
 BadParameter::BadParameter(const string& w):
-    Exception(("Bad parameter: ") + w)
-{
+    Exception(("Bad parameter: ") + w) {
 }
 
 Failed::Failed(const string& w):
-    Exception(w + (" FAILED!"))
-{
+    Exception(w + (" FAILED!")) {
 }
 
 WrongGaussianNumber::WrongGaussianNumber(int n):
-    Exception(("Wrong Gaussian: "))
-{
-	stringstream s;
+    Exception(("Wrong Gaussian: ")) {
+    stringstream s;
 
-	s << "Gaussian Number " << n << " is Not Valid ";
+    s << "Gaussian Number " << n << " is Not Valid ";
 
-	reason(s.str());
+    reason(s.str());
 }
 
 WrongIncrements::WrongIncrements(double we, double ns):
-    Exception(("Wrong Increments: "))
-{
-	stringstream s;
+    Exception(("Wrong Increments: ")) {
+    stringstream s;
 
-	s << "Wrong Increments West-East " << we << " North-South " << ns;
+    s << "Wrong Increments West-East " << we << " North-South " << ns;
 
-	reason(s.str());
+    reason(s.str());
 }
 
 FactorHandled::FactorHandled(int la, int factor, int n ):
-    Exception(("Factor Handled: "))
-{
-	stringstream s;
+    Exception(("Factor Handled: ")) {
+    stringstream s;
 
-	s << "Factor only handled if la * factor = numberOfPoints  la: " << la << "* factor: " << factor << " != numberOfPoints: " << n ;
+    s << "Factor only handled if la * factor = numberOfPoints  la: " << la << "* factor: " << factor << " != numberOfPoints: " << n ;
 
-	reason(s.str());
+    reason(s.str());
 }
 
 WrongArea::WrongArea(const string& side, double b):
-    Exception(("Wrong Boundary: "))
-{
-	stringstream s;
+    Exception(("Wrong Boundary: ")) {
+    stringstream s;
 
-	s << "Wrong " << side << " Boundary: " << b;
+    s << "Wrong " << side << " Boundary: " << b;
 
-	reason(s.str());
+    reason(s.str());
 }
 
 WrongValue::WrongValue(const string& st, double a):
-    Exception(("Wrong Value: "))
-{
-	stringstream s;
+    Exception(("Wrong Value: ")) {
+    stringstream s;
 
-	s << st << ": " << a;
+    s << st << ": " << a;
 
-	reason(s.str());
+    reason(s.str());
 }
 
 NotImplemented::NotImplemented(const string& in, const string& out, const string& info/*=""*/) :
-	Exception("Not Implemented Transformation: ")
-{
-	stringstream s;
+    Exception("Not Implemented Transformation: ") {
+    stringstream s;
 
-	s << "Transformation  from " << in << " To " << out << " is Not Implemented " << info;
+    s << "Transformation  from " << in << " To " << out << " is Not Implemented " << info;
 
-	reason(s.str());
+    reason(s.str());
 }
 
 NotImplementedFeature::NotImplementedFeature(const string& r) :
-	Exception("Not Implemented Feature for : " + r)
-{
+    Exception("Not Implemented Feature for : " + r) {
 }
 
 WrongFunctionCall::WrongFunctionCall(const string& r) :
-	Exception("Wrong Function Call : " + r)
-{
+    Exception("Wrong Function Call : " + r) {
 }
 
 UserError::UserError(const string& x, const string& y):
-	Exception("UserError: " + x + y)
-{
+    Exception("UserError: " + x + y) {
 //	stringstream s;
 //	s << "UserError: " << x << " To " << y ;
 //	reason(s.str());
 }
 
 OutOfArea::OutOfArea(double lat, double lon):
-	Exception("OutOfArea: ")
-{
-	stringstream s;
+    Exception("OutOfArea: ") {
+    stringstream s;
     s << "Pair of Latitude: " << lat
       << ", longitude " << lon << " is out of Area ";
     reason(s.str());
 }
 
 OutOfRange::OutOfRange(unsigned long long index, unsigned long long max):
-	Exception("OutOfRange: ")
-{
-	stringstream s;
+    Exception("OutOfRange: ") {
+    stringstream s;
     s << "Out of range accessing element " << index
       << ", but maximum is " << max - 1 ;
     reason(s.str());
 }
 
 CantOpenFile::CantOpenFile(const string& file):
-	Exception("Can't Open File: " + file)
-{
+    Exception("Can't Open File: " + file) {
 }
 
 WriteError::WriteError(const string& file):
-    Exception("Write error on " + file)
-{
+    Exception("Write error on " + file) {
 }
 
 ReadError::ReadError(const string& file):
-    Exception("Read error on " + file)
-{
+    Exception("Read error on " + file) {
 }

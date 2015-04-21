@@ -24,112 +24,112 @@ using namespace std;
 
 // class ostream;
 
-// 
+//
 
 class GTopo30Dem {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	GTopo30Dem(const string& path,const string& name,double minLatitude,double maxLatitude,double minLongitude,double maxLongitude);
+    GTopo30Dem(const string& path,const string& name,double minLatitude,double maxLatitude,double minLongitude,double maxLongitude);
 
 // -- Destructor
 
-	~GTopo30Dem(); // Change to virtual if base class
+    ~GTopo30Dem(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	
-	bool contains(double latitude,double longitude) const
-		{ return latitude >= minLatitude_ && latitude <= maxLatitude_ && 
-		         longitude >= minLongitude_ && longitude <= maxLongitude_; 
-     	 }
 
-	long value(double latitude,double longitude) const;
-		
+    bool contains(double latitude,double longitude) const {
+        return latitude >= minLatitude_ && latitude <= maxLatitude_ &&
+               longitude >= minLongitude_ && longitude <= maxLongitude_;
+    }
+
+    long value(double latitude,double longitude) const;
+
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	// void print(ostream&) const; // Change to virtual if base class	
+
+    // void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	GTopo30Dem(const GTopo30Dem&);
-	GTopo30Dem& operator=(const GTopo30Dem&);
+    GTopo30Dem(const GTopo30Dem&);
+    GTopo30Dem& operator=(const GTopo30Dem&);
 
 // -- Members
 
-	string path_;
-	string name_;
+    string path_;
+    string name_;
 
-	int fd_;
-
-
-	double minLatitude_;
-	double maxLatitude_;
-	double minLongitude_;
-	double maxLongitude_;
+    int fd_;
 
 
-	double ulxmap_;
-	double ulymap_;
+    double minLatitude_;
+    double maxLatitude_;
+    double minLongitude_;
+    double maxLongitude_;
 
-	double xdim_;
-	double ydim_;
 
-	long ncols_;
+    double ulxmap_;
+    double ulymap_;
+
+    double xdim_;
+    double ydim_;
+
+    long ncols_;
 
 
 // -- Methods
 
-	void open();
+    void open();
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const GTopo30Dem& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const GTopo30Dem& p)
+    //	{ p.print(s); return s; }
 
 };
 

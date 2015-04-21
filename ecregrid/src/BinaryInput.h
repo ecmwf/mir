@@ -17,69 +17,71 @@
 
 
 class BinaryInput : public Input {
-public:
+  public:
 
 // -- Contructors
 
-	BinaryInput();
-	BinaryInput(const string& fileName);
+    BinaryInput();
+    BinaryInput(const string& fileName);
 
 // -- Destructor
 
-	virtual ~BinaryInput(); // Change to virtual if base class
+    virtual ~BinaryInput(); // Change to virtual if base class
 
 // -- Operators
-	// None
+    // None
 
 
 // -- Overridden methods
-	bool       next(FILE* fp);
+    bool       next(FILE* fp);
 
-	virtual Input*  newInput(const string& name)  const;
+    virtual Input*  newInput(const string& name)  const;
 
 
 // -- Methods
-	void read(char* buffer, size_t length) const;
+    void read(char* buffer, size_t length) const;
 
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
+
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	BinaryInput(const BinaryInput&);
-	BinaryInput& operator=(const BinaryInput&);
+    BinaryInput(const BinaryInput&);
+    BinaryInput& operator=(const BinaryInput&);
 
 // -- Methods
-	// None
+    // None
 
 // -- Class members
-	bool         triger_;
+    bool         triger_;
 
 // -- Overridden methods
-	Grid* defineGridForCheck(const string& path) const;
+    Grid* defineGridForCheck(const string& path) const;
 
-	virtual void getDoubleValues(const string& path, vector<double>& values)  const;
-	virtual bool*   getLsmBoolValues(size_t* valuesLength)            const;
-	virtual long*   getReducedGridSpecification(size_t* valuesLength) const;
-	virtual void    getLatLonValues(vector<Point>& points)            const;
-	string typeOf()  const { return "binary"; }
-	// None
+    virtual void getDoubleValues(const string& path, vector<double>& values)  const;
+    virtual bool*   getLsmBoolValues(size_t* valuesLength)            const;
+    virtual long*   getReducedGridSpecification(size_t* valuesLength) const;
+    virtual void    getLatLonValues(vector<Point>& points)            const;
+    string typeOf()  const {
+        return "binary";
+    }
+    // None
 
 };
 

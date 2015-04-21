@@ -15,27 +15,27 @@
 #endif
 
 class GribApiOutputSpectral : public GribApiOutput {
-public:
+  public:
 
 // -- Contructors
 
-	GribApiOutputSpectral();
-	GribApiOutputSpectral(const string& name);
+    GribApiOutputSpectral();
+    GribApiOutputSpectral(const string& name);
 
 // -- Destructor
 
-	~GribApiOutputSpectral();
+    ~GribApiOutputSpectral();
 
 // --  Methods
 
-private:
+  private:
 
 // No copy allowed
-	GribApiOutputSpectral(const GribApiOutputSpectral&);
-	GribApiOutputSpectral& operator=(const GribApiOutputSpectral&);
+    GribApiOutputSpectral(const GribApiOutputSpectral&);
+    GribApiOutputSpectral& operator=(const GribApiOutputSpectral&);
 
-	void setGrib(grib_handle* h, const Field& out, const grib_values* grib_set, int grib_set_count) const;
-	grib_handle* setGrib(const Field& out, const grib_values* grib_set, int grib_set_count) const;
+    void setGrib(grib_handle* h, const Field& out, const grib_values* grib_set, int grib_set_count) const;
+    grib_handle* setGrib(const Field& out, const grib_values* grib_set, int grib_set_count) const;
 
 // -- Friends
 

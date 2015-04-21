@@ -15,26 +15,23 @@
 // within the current scope (typically within functions)
 //
 class ScopeLock {
-public:
+  public:
 
-    inline ScopeLock(pthread_mutex_t& mutex) : mutex_(mutex) 
-    { 
+    inline ScopeLock(pthread_mutex_t& mutex) : mutex_(mutex) {
         pthread_mutex_lock(&mutex_);
     }
-    inline ~ScopeLock() 
-    {
+    inline ~ScopeLock() {
         pthread_mutex_unlock(&mutex_);
     }
 
-private:
+  private:
     pthread_mutex_t& mutex_;
 };
 
 
-template <class T> 
-ThreadSafeMap<T>::ThreadSafeMap(unsigned int maxLength/* has default */) 
-: maxLength_(maxLength)
-{
+template <class T>
+ThreadSafeMap<T>::ThreadSafeMap(unsigned int maxLength/* has default */)
+    : maxLength_(maxLength) {
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
     //pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE_NP);
@@ -43,9 +40,8 @@ ThreadSafeMap<T>::ThreadSafeMap(unsigned int maxLength/* has default */)
     pthread_mutexattr_destroy(&attr);
 }
 
-template <class T> 
-ThreadSafeMap<T>::~ThreadSafeMap() 
-{
+template <class T>
+ThreadSafeMap<T>::~ThreadSafeMap() {
     {
         ScopeLock l(mutex_);
 
@@ -58,13 +54,11 @@ ThreadSafeMap<T>::~ThreadSafeMap()
 }
 
 template <class T>
-ref_counted_ptr<const T> ThreadSafeMap<T>::getItem(const std::string& name) const
-{
+ref_counted_ptr<const T> ThreadSafeMap<T>::getItem(const std::string& name) const {
     ScopeLock l(mutex_);
-    
+
     typename ThreadSafeMap<T>::map::const_iterator it = items_.find(name);
-    if (it != items_.end())
-    {
+    if (it != items_.end()) {
         return it->second;
     }
 
@@ -73,24 +67,21 @@ ref_counted_ptr<const T> ThreadSafeMap<T>::getItem(const std::string& name) cons
 }
 
 template <class T>
-ref_counted_ptr<const T> ThreadSafeMap<T>::addItem(const std::string& name, const T* item)
-{
+ref_counted_ptr<const T> ThreadSafeMap<T>::addItem(const std::string& name, const T* item) {
     ScopeLock l(mutex_);
 
     typename ThreadSafeMap<T>::map::iterator it = items_.find(name);
-    if (it != items_.end())
-    {
+    if (it != items_.end()) {
         // It is already in the collection so return ref to existing item
         // Delete passed object.
         delete item;
         return it->second;
     }
-    
+
     // now check we will not breach max size
     it = items_.begin();
 
-    while (items_.size() >= maxLength_ && it != items_.end())
-    {
+    while (items_.size() >= maxLength_ && it != items_.end()) {
         // we would rather get rid of one not currently used
         // but if we're on the final iteration we delete the last one
         // NB any smart pointers that exist will still be valid
@@ -111,10 +102,9 @@ ref_counted_ptr<const T> ThreadSafeMap<T>::addItem(const std::string& name, cons
 }
 
 template <class T>
-bool ThreadSafeMap<T>::removeItem(const std::string& name)
-{
+bool ThreadSafeMap<T>::removeItem(const std::string& name) {
     ScopeLock l(mutex_);
-    
+
     typename ThreadSafeMap<T>::map::iterator it = items_.find(name);
     if (it == items_.end())
         return false;
@@ -145,7 +135,7 @@ template ThreadSafeMap< vector<double> >::~ThreadSafeMap();
 template ref_counted_ptr< const vector<double> > ThreadSafeMap< vector<double> >::getItem(const std::string&) const;
 template ref_counted_ptr< const vector<double> > ThreadSafeMap< vector<double> >::addItem(const std::string&, const vector<double>*);
 template bool ThreadSafeMap< vector<double> >::removeItem(const std::string&);
-     
+
 
 
 

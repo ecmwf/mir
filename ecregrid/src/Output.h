@@ -24,78 +24,78 @@ class Input;
 
 
 class Output {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Output();
-	Output(const string& name);
+    Output();
+    Output(const string& name);
 
 // -- Destructor
 
-	virtual ~Output(); // Change to virtual if base class
+    virtual ~Output(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 //	Field* defineField(const FieldDescription& dc)          const;
 
-	void deliverData(const Field& field, vector<double>& values) const;
-	virtual void      write(FILE* out, const vector<double>& values) const = 0;
-	virtual void      write(const Field& field)                       const = 0;
-	virtual void      write(FILE* out, const Field& field)            const = 0;
-	virtual string    typeOf()  const = 0;
+    void deliverData(const Field& field, vector<double>& values) const;
+    virtual void      write(FILE* out, const vector<double>& values) const = 0;
+    virtual void      write(const Field& field)                       const = 0;
+    virtual void      write(FILE* out, const Field& field)            const = 0;
+    virtual string    typeOf()  const = 0;
 
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	string        fileName_;
+    string        fileName_;
 
 // -- Methods
-	
-	 virtual void print(ostream&) const; // Change to virtual if base class	
+
+    virtual void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	Output(const Output&);
-	Output& operator=(const Output&);
+    Output(const Output&);
+    Output& operator=(const Output&);
 
 // -- Members
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
 

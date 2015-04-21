@@ -10,17 +10,14 @@
 #include "DerivedSubgridParameters.h"
 
 
-DerivedSubgridParameters::DerivedSubgridParameters()
-{
+DerivedSubgridParameters::DerivedSubgridParameters() {
 }
 
-DerivedSubgridParameters::~DerivedSubgridParameters()
-{
+DerivedSubgridParameters::~DerivedSubgridParameters() {
 }
 
 
-void DerivedSubgridParameters::print(ostream& out) const
-{
-	out << "Derived Subgrid Parameter is: " ;
+void DerivedSubgridParameters::print(ostream& out) const {
+    out << "Derived Subgrid Parameter is: " ;
 }
 

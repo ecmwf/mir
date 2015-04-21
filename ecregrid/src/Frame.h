@@ -20,39 +20,41 @@ class GridField;
 class Grid;
 
 class Frame : public Extraction {
-public:
+  public:
 
-// -- Exceptions
-	// None
+    // -- Exceptions
+    // None
 
-// -- Contructors
+    // -- Contructors
 
-	Frame(int number, double missingValue);
+    Frame(int number, double missingValue);
 
-// -- Destructor
+    // -- Destructor
 
-	~Frame();
+    ~Frame();
 
 
-// -- Methods
-	void extract(const Grid& output, vector<double>& values) const;
+    // -- Methods
+    void extract(const Grid &output, vector<double> &values) const;
 
-protected:
-	 void print(ostream&) const;
+  protected:
+    void print(ostream &) const;
 
-private:
-// No copy allowed
+  private:
+    // No copy allowed
 
-	Frame(const Frame&);
-	Frame& operator=(const Frame&);
+    Frame(const Frame &);
+    Frame &operator=(const Frame &);
 
-	int numberOfPointsAcrossTheFrame_;
-	double missingValue_;
+    int numberOfPointsAcrossTheFrame_;
+    double missingValue_;
 
-// -- Friends
+    // -- Friends
 
-	friend ostream& operator<<(ostream& s,const Frame& p)
-		{ p.print(s); return s; }
+    friend ostream &operator<<(ostream &s, const Frame &p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

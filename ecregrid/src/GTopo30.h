@@ -21,45 +21,47 @@ class GTopo30Dem;
 
 
 class GTopo30 : public Lsm {
-public:
+  public:
 
 // -- Contructors
 
-	GTopo30(Input* file);
+    GTopo30(Input* file);
 
 // -- Destructor
 
-	~GTopo30(); // Change to virtual if base class
+    ~GTopo30(); // Change to virtual if base class
 
 
 
-private:
+  private:
 
 // No copy allowed
 
-	GTopo30(const GTopo30&);
-	GTopo30& operator=(const GTopo30&);
+    GTopo30(const GTopo30&);
+    GTopo30& operator=(const GTopo30&);
 
 // -- Members
 
-	vector<GTopo30Dem*> dems_;
-	string  directoryOfPredefined_;
+    vector<GTopo30Dem*> dems_;
+    string  directoryOfPredefined_;
 
 // Overriden methods
-	double seaPoint(double latitude,double longitude) const;
-	bool seaPointBool(double latitude,double longitude) const;
+    double seaPoint(double latitude,double longitude) const;
+    bool seaPointBool(double latitude,double longitude) const;
 
-	bool  isAvailablePredefinedLsm();
-	virtual	string  directoryOfPredefined() const { return directoryOfPredefined_; }
+    bool  isAvailablePredefinedLsm();
+    virtual	string  directoryOfPredefined() const {
+        return directoryOfPredefined_;
+    }
 
 // Methods
-	long  value(double latitude,double longitude)    const;
+    long  value(double latitude,double longitude)    const;
 
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const GTopo30& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const GTopo30& p)
+    //	{ p.print(s); return s; }
 
 };
 

@@ -14,26 +14,26 @@
 #include "InterpolatorLsm.h"
 #endif
 
-// 
+//
 
 class Cubic12ptsLsm : public InterpolatorLsm {
-public:
+  public:
 
 // -- Contructors
 
-	Cubic12ptsLsm(const Grid& input, const Grid& output, const string& lsmMethod);
-	Cubic12ptsLsm(bool w, bool a, double nPole, double sPole, const Grid& input, const Grid& output, const string& lsmMethod);
+    Cubic12ptsLsm(const Grid& input, const Grid& output, const string& lsmMethod);
+    Cubic12ptsLsm(bool w, bool a, double nPole, double sPole, const Grid& input, const Grid& output, const string& lsmMethod);
 
 // -- Destructor
 
-	virtual ~Cubic12ptsLsm(); // Change to virtual if base class
+    virtual ~Cubic12ptsLsm(); // Change to virtual if base class
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 // -- Overridden methods
-	virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
 
-private:
+  private:
 
 };
 

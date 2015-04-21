@@ -18,30 +18,32 @@
 
 
 class VerticalLinear : public VerticalInterpolator {
-public:
+  public:
 
 // -- Contructors
-	VerticalLinear();
+    VerticalLinear();
 
 // -- Destructor
-	virtual ~VerticalLinear();
+    virtual ~VerticalLinear();
 
 // -- Methods
 
-	void interpolate(const GridField& inputUp, const GridField& inputDown, double* values, unsigned long valuesSize) const;
+    void interpolate(const GridField& inputUp, const GridField& inputDown, double* values, unsigned long valuesSize) const;
 
 
-protected:
+  protected:
 // -- Methods
-	virtual void print(ostream&) const;
+    virtual void print(ostream&) const;
 
 // Members
 
-private:
+  private:
 
 // -- Friends
-    friend ostream& operator<<(ostream& s,const VerticalLinear& p)
-	        { p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const VerticalLinear& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 #endif

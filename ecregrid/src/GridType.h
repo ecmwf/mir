@@ -24,125 +24,129 @@ class GridContext;
 
 
 class GridType {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	GridType(bool isGlobalwe, bool isGlobalns);
+    GridType(bool isGlobalwe, bool isGlobalns);
 
 // -- Destructor
 
-	virtual ~GridType(); // Change to virtual if base class
+    virtual ~GridType(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	virtual bool rounding() const { return false; }
+    virtual bool rounding() const {
+        return false;
+    }
 
-	virtual void reOrderData(const vector<double>& data_in, vector<double>& data_out, int scMode) const = 0;
-	virtual void generateGrid(vector<Point>& llgrid)  const = 0;
-	virtual void generateUnrotatedGrid(vector<Point>& llgrid, const Rotation& rot)  const = 0;
-	virtual void generateRotatedGrid(vector<Point>& llgrid, const Rotation& rot)  const = 0;
+    virtual void reOrderData(const vector<double>& data_in, vector<double>& data_out, int scMode) const = 0;
+    virtual void generateGrid(vector<Point>& llgrid)  const = 0;
+    virtual void generateUnrotatedGrid(vector<Point>& llgrid, const Rotation& rot)  const = 0;
+    virtual void generateRotatedGrid(vector<Point>& llgrid, const Rotation& rot)  const = 0;
 
-	virtual void nearestPts(GridContext*,const Point& where, vector<FieldPoint>& nearests, const vector<double>& data, int scMode, int howMany) const = 0;
+    virtual void nearestPts(GridContext*,const Point& where, vector<FieldPoint>& nearests, const vector<double>& data, int scMode, int howMany) const = 0;
 
-	virtual void nearestIndexed(const Point& where, vector<FieldPoint>& nearest, const vector<double>& data, int scMode, double missingValue, int howMany) const = 0;
+    virtual void nearestIndexed(const Point& where, vector<FieldPoint>& nearest, const vector<double>& data, int scMode, double missingValue, int howMany) const = 0;
 
-	long findWestEastNeighbours(double wlon, int& last_i, const vector<double>& longitudes, double& west, double& east, int& w, int& e) const;
+    long findWestEastNeighbours(double wlon, int& last_i, const vector<double>& longitudes, double& west, double& east, int& w, int& e) const;
 
-	long findNorthSouthNeighbours(double wlat, int& last_j, const vector<double>& latitudes, double& north, double& south, int& n, int& s) const;
+    long findNorthSouthNeighbours(double wlat, int& last_j, const vector<double>& latitudes, double& north, double& south, int& n, int& s) const;
 
-	void  unRotatedArea(const vector<Point>& grid) const;
+    void  unRotatedArea(const vector<Point>& grid) const;
 
-	virtual long getIndex(int i, int j) const = 0;
+    virtual long getIndex(int i, int j) const = 0;
 
 
-protected:
+  protected:
 
 // -- Members
-	bool globalWestEast_;
-	bool globalNorthSouth_;
+    bool globalWestEast_;
+    bool globalNorthSouth_;
 
 // -- Methods
-	double linear(double ll, double leftL, double leftValue, double rightL, double rightValue, double missingValue) const {
-			if (same(leftValue,missingValue)){	
-				if(same(rightValue,missingValue))
-					return missingValue;
-				else
-					return rightValue;
-			}
+    double linear(double ll, double leftL, double leftValue, double rightL, double rightValue, double missingValue) const {
+        if (same(leftValue,missingValue)) {
+            if(same(rightValue,missingValue))
+                return missingValue;
+            else
+                return rightValue;
+        }
 
-			if (same(rightValue,missingValue))
-					return leftValue;
-				
-			double l = fabs(leftL - ll);
-	        double r = fabs(ll - rightL);
-			double w = r / (r + l);
+        if (same(rightValue,missingValue))
+            return leftValue;
 
-			return w * leftValue + (1 - w) * rightValue; 
-			}
+        double l = fabs(leftL - ll);
+        double r = fabs(ll - rightL);
+        double w = r / (r + l);
 
-	long ifIndexFirstLon(long i, long lastLon) const{
-										if( i > lastLon ){
-										if(globalWestEast_)
-											return 0; 
-										else 
-											return -1; 
-										} 
-										return i; }
+        return w * leftValue + (1 - w) * rightValue;
+    }
 
-	long ifIndexLastLon(long i, long lastLon) const { 
-										if( i < 0 ){
-										if(globalWestEast_)
-											return lastLon; 
-										else 
-											return -1; 
-										} 
-										return i; }
-	
-	// void print(ostream&) const; // Change to virtual if base class	
+    long ifIndexFirstLon(long i, long lastLon) const {
+        if( i > lastLon ) {
+            if(globalWestEast_)
+                return 0;
+            else
+                return -1;
+        }
+        return i;
+    }
+
+    long ifIndexLastLon(long i, long lastLon) const {
+        if( i < 0 ) {
+            if(globalWestEast_)
+                return lastLon;
+            else
+                return -1;
+        }
+        return i;
+    }
+
+    // void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	GridType(const GridType&);
-	GridType& operator=(const GridType&);
+    GridType(const GridType&);
+    GridType& operator=(const GridType&);
 
 // -- Members
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const GridType& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const GridType& p)
+    //	{ p.print(s); return s; }
 
 };
 

@@ -21,36 +21,38 @@ class GridField;
 class Grid;
 
 class Extraction {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Extraction();
+    Extraction();
 
 // -- Destructor
 
-	virtual ~Extraction(); // Change to virtual if base class
+    virtual ~Extraction(); // Change to virtual if base class
 
 // -- Methods
-	virtual void extract(const Grid& output, vector<double>& values) const = 0;
+    virtual void extract(const Grid& output, vector<double>& values) const = 0;
 
-protected:
-	virtual void print(ostream&) const; // Change to virtual if base class	
+  protected:
+    virtual void print(ostream&) const; // Change to virtual if base class
 
-private:
+  private:
 
 // No copy allowed
 
-	Extraction(const Extraction&);
-	Extraction& operator=(const Extraction&);
+    Extraction(const Extraction&);
+    Extraction& operator=(const Extraction&);
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const Extraction& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const Extraction& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

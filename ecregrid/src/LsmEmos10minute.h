@@ -17,36 +17,38 @@
 
 class LsmEmos10minute : public Lsm {
 
-public:
+  public:
 // -- Contructors
 
-	LsmEmos10minute( Input* file);
+    LsmEmos10minute( Input* file);
 
 // -- Destructor
 
-	virtual ~LsmEmos10minute(); // Change to virtual if base class
+    virtual ~LsmEmos10minute(); // Change to virtual if base class
 
 
-private:
+  private:
 
 // No copy allowed
 
-	LsmEmos10minute(const LsmEmos10minute&);
-	LsmEmos10minute& operator=(const LsmEmos10minute&);
+    LsmEmos10minute(const LsmEmos10minute&);
+    LsmEmos10minute& operator=(const LsmEmos10minute&);
 
 // -- Members
 
-	vector<double> lsm10min_;
-	string  directoryOfPredefined_;
+    vector<double> lsm10min_;
+    string  directoryOfPredefined_;
 
 // Overriden methods
-	double  seaPoint(double latitude,double longitude) const;
-	bool  seaPointBool(double latitude,double longitude) const;
+    double  seaPoint(double latitude,double longitude) const;
+    bool  seaPointBool(double latitude,double longitude) const;
 
-	bool  isAvailablePredefinedLsm();
+    bool  isAvailablePredefinedLsm();
 
 // Methods
-	string  directoryOfPredefined() const { return directoryOfPredefined_; }
+    string  directoryOfPredefined() const {
+        return directoryOfPredefined_;
+    }
 
 };
 

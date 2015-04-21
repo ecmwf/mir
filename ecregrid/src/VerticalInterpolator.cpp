@@ -9,10 +9,8 @@
 
 #include "VerticalInterpolator.h"
 
-VerticalInterpolator::VerticalInterpolator()
-{
+VerticalInterpolator::VerticalInterpolator() {
 }
 
-VerticalInterpolator::~VerticalInterpolator()
-{
+VerticalInterpolator::~VerticalInterpolator() {
 }

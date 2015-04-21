@@ -22,119 +22,124 @@
 class Exception : public exception {
 //class Exception {
 
-public:
-	Exception(const string& w);
-	virtual ~Exception() throw();
+  public:
+    Exception(const string& w);
+    virtual ~Exception() throw();
 
-	virtual const char* what() const throw() {  return what_.c_str(); }
+    virtual const char* what() const throw() {
+        return what_.c_str();
+    }
 
-protected:
-	void reason(const string& w) { what_ = w;}
-	void print(ostream&) const;
-	Exception();
+  protected:
+    void reason(const string& w) {
+        what_ = w;
+    }
+    void print(ostream&) const;
+    Exception();
 
-private:
-	string what_;
+  private:
+    string what_;
 
 // -- Friends
-	friend ostream& operator<<(ostream& s,const Exception& e)
-	        { e.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const Exception& e) {
+        e.print(s);
+        return s;
+    }
 };
 
 
 class AssertionFailed : public Exception {
-public:
-	AssertionFailed(const string& w);
+  public:
+    AssertionFailed(const string& w);
     AssertionFailed(const char* msg,int line, const char* file, const char* proc);
 };
 
 class BadParameter : public Exception {
-public:
-	BadParameter(const string& w);
+  public:
+    BadParameter(const string& w);
 };
 
 class Failed : public Exception {
-public:
-	Failed(const string& w);
+  public:
+    Failed(const string& w);
 };
 
 class WrongGaussianNumber : public Exception {
-public:
-	WrongGaussianNumber(int n);
+  public:
+    WrongGaussianNumber(int n);
 };
 
 class WrongIncrements : public Exception {
-public:
-	WrongIncrements(double we, double ns);
+  public:
+    WrongIncrements(double we, double ns);
 };
 
 class FactorHandled: public Exception {
-public:
-	FactorHandled(int la, int factor, int n);
+  public:
+    FactorHandled(int la, int factor, int n);
 };
 
 class WrongArea : public Exception {
-public:
-	WrongArea(const string& side, double b);
+  public:
+    WrongArea(const string& side, double b);
 };
 
 class WrongValue : public Exception {
-public:
-	WrongValue(const string& side, double b);
+  public:
+    WrongValue(const string& side, double b);
 };
 
 class NotImplemented : public Exception {
-public:
-	NotImplemented(const string& in, const string& out, const string& info="");
+  public:
+    NotImplemented(const string& in, const string& out, const string& info="");
 };
 
 class NotImplementedFeature : public Exception {
-public:
-	NotImplementedFeature(const string&);
+  public:
+    NotImplementedFeature(const string&);
 };
 
 class WrongFunctionCall : public Exception {
-public:
-	WrongFunctionCall(const string&);
+  public:
+    WrongFunctionCall(const string&);
 };
 
 class UserError : public Exception {
-public:
-	UserError(const string& x, const string& y="\n");
+  public:
+    UserError(const string& x, const string& y="\n");
 };
 
 class OutOfArea : public Exception {
-public:
-	OutOfArea(double lat, double lon);
+  public:
+    OutOfArea(double lat, double lon);
 };
 
 class OutOfRange : public Exception {
-public:
-	OutOfRange(unsigned long long index, unsigned long long max);
+  public:
+    OutOfRange(unsigned long long index, unsigned long long max);
 };
 
 class CantOpenFile : public Exception {
-public:
+  public:
     CantOpenFile(const string&);
 };
 
 class WriteError : public Exception {
-public:
+  public:
     WriteError(const string&);
 };
 
 class ReadError : public Exception {
-public:
+  public:
     ReadError(const string&);
 };
 
 // =======================================
 
 inline void Assert(int code,const char *msg,int line,const char *file,
-	const char *proc)
-{
-	if(code != 0)
-		throw AssertionFailed(msg,line,file,proc);
+                   const char *proc) {
+    if(code != 0)
+        throw AssertionFailed(msg,line,file,proc);
 }
 
 

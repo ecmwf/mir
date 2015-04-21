@@ -30,17 +30,14 @@
 #endif
 
 SubArea::SubArea(double north, double west, double south, double east) :
-	area_(north, west, south, east)
-{
+    area_(north, west, south, east) {
 }
 
-SubArea::SubArea(const Area& area) :
-	area_(area)
-{
+SubArea::SubArea(const Area &area) :
+    area_(area) {
 }
 
-SubArea::~SubArea()
-{
+SubArea::~SubArea() {
 }
 /*
 void SubArea::extract(const GridField& input, double* values, unsigned long valuesSize) const
@@ -83,17 +80,17 @@ void SubArea::extract(const GridField& input, double* values, unsigned long valu
 		}
 		if(wrap){
 			for ( size_t i = westLongitudeIndex ; i < prev; i++ ) {
-				long dataIndex = input.grid().getIndex(i,j);	
+				long dataIndex = input.grid().getIndex(i,j);
 				values[count++] = inputData[dataIndex];
 			}
 			for ( size_t i = 0 ; i <= eastLongitudeIndex ; i++ ) {
-				long dataIndex = input.grid().getIndex(i,j);	
+				long dataIndex = input.grid().getIndex(i,j);
 				values[count++] = inputData[dataIndex];
 			}
 		}
 		else{
 			for ( size_t i = westLongitudeIndex ; i <= eastLongitudeIndex ; i++ ) {
-				long dataIndex = input.grid().getIndex(i,j);	
+				long dataIndex = input.grid().getIndex(i,j);
 				values[count++] = inputData[dataIndex];
 			}
 		}
@@ -106,98 +103,93 @@ void SubArea::extract(const GridField& input, double* values, unsigned long valu
 }
 */
 
-void SubArea::extract(const GridField& input, vector<double>& values) const
-{
+void SubArea::extract(const GridField &input, vector<double> &values) const {
     size_t valuesSize = values.size();
 
-	const vector<double>&  inputData = input.data();
-	long count = 0;
+    const vector<double>  &inputData = input.data();
+    long count = 0;
 
-	auto_ptr<GridContext> ctx(input.grid().getGridContext());
+    auto_ptr<GridContext> ctx(input.grid().getGridContext());
 
-	vector<long> gridSpec;
+    vector<long> gridSpec;
     /*size_t size_lats = */ input.grid().getGridDefinition(gridSpec);
 
 
-	int northLatitudeIndex = input.grid().northIndex(area_.north());
-	int southLatitudeIndex = input.grid().southIndex(area_.south());
+    int northLatitudeIndex = input.grid().northIndex(area_.north());
+    int southLatitudeIndex = input.grid().southIndex(area_.south());
 
-	double west = area_.west();
-	double east = area_.east();
+    double west = area_.west();
+    double east = area_.east();
 
-	long prev = 0;
+    long prev = 0;
 
     // condition west and east so they are both
     // greater than zero as required by code below
 
     while (west < 0)
-        west+=360;
+        west += 360;
 
     while (east < 0)
-        east+=360;
+        east += 360;
 
-	ASSERT(west >= 0.0);
+    ASSERT(west >= 0.0);
     ASSERT(east >= 0.0);
 
     // we wrap if, with both values > 0, east is not greater than west
     bool wrap = (east < west);
 
-	if(DEBUG)
-		cout << "SubArea::extract wrap " << wrap << " west " << west << ", east = " << east << endl;
+    if (DEBUG)
+        cout << "SubArea::extract wrap " << wrap << " west " << west << ", east = " << east << endl;
 
-	double increment = 0;
+    double increment = 0;
 
     for ( int j = northLatitudeIndex ; j <= southLatitudeIndex ; j++ ) {
-		if(gridSpec[j] != prev){
-			prev = gridSpec[j];
-			increment = 360.0 / prev;
-		}
-		double longitude = 0;
-		if(wrap){
+        if (gridSpec[j] != prev) {
+            prev = gridSpec[j];
+            increment = 360.0 / prev;
+        }
+        double longitude = 0;
+        if (wrap) {
             // do the west --> zero chunk first
-		    longitude = 0;
-			for ( int i = 0 ; i < prev; i++ ) {                
-                if(((longitude > west || same(longitude,west)) && longitude < 360.0))
-                {
-		            long dataIndex = input.grid().getIndex(i,j);    
-		            values[count++] = inputData[dataIndex];
-				 }
+            longitude = 0;
+            for ( int i = 0 ; i < prev; i++ ) {
+                if (((longitude > west || same(longitude, west)) && longitude < 360.0)) {
+                    long dataIndex = input.grid().getIndex(i, j);
+                    values[count++] = inputData[dataIndex];
+                }
 
-				 longitude += increment;
-                        
+                longitude += increment;
+
             }
             // now fill in the zero --> east chunk
-		    longitude = 0;
-			for ( int i = 0 ; i < prev; i++ ) {
-				if( ( (longitude > 0 || iszero(longitude)) && (longitude < east || same(longitude,east))))
-                {                    
-		            long dataIndex = input.grid().getIndex(i,j);    
-		            values[count++] = inputData[dataIndex];
-				 }
-				
-                 longitude += increment;
-			}
-		}
-		else{
-			for(int i = 0 ; i < prev ; i++) {
-			    if((longitude > west || same(longitude,west)) && (longitude < east || same(longitude,east))){
-		         	long dataIndex = input.grid().getIndex(i,j);    
-		         	values[count++] = inputData[dataIndex];
-				 }
-				longitude += increment;
-			}
+            longitude = 0;
+            for ( int i = 0 ; i < prev; i++ ) {
+                if ( ( (longitude > 0 || iszero(longitude)) && (longitude < east || same(longitude, east)))) {
+                    long dataIndex = input.grid().getIndex(i, j);
+                    values[count++] = inputData[dataIndex];
+                }
 
-		}
-	}
+                longitude += increment;
+            }
+        } else {
+            for (int i = 0 ; i < prev ; i++) {
+                if ((longitude > west || same(longitude, west)) && (longitude < east || same(longitude, east))) {
+                    long dataIndex = input.grid().getIndex(i, j);
+                    values[count++] = inputData[dataIndex];
+                }
+                longitude += increment;
+            }
 
-	if(DEBUG)
-		cout << "SubArea::extract calculated: " << valuesSize << " counted: " << count << endl;
+        }
+    }
 
-	ASSERT((int)valuesSize == count);
+    if (DEBUG)
+        cout << "SubArea::extract calculated: " << valuesSize << " counted: " << count << endl;
+
+    ASSERT((int)valuesSize == count);
 }
 
 
-void SubArea::print(ostream& out) const
-{
-	out << "SubArea{ Area=[" << area_ << "] }";
+void SubArea::print(ostream &out) const {
+    out << "SubArea{ Area=[" << area_ << "] }";
 }

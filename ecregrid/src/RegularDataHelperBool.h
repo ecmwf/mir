@@ -24,61 +24,61 @@
 template <class T>
 
 class RegularDataHelperBool {
-public:
+  public:
 
 // -- Contructors
 
-	RegularDataHelperBool(const vector<T>& values, int scMode, int nlat, int nlon, long npts) : values_(values), scanningMode_(scMode), nlat_(nlat), nlon_(nlon) {}
+    RegularDataHelperBool(const vector<T>& values, int scMode, int nlat, int nlon, long npts) : values_(values), scanningMode_(scMode), nlat_(nlat), nlon_(nlon) {}
 
 // -- Destructor
-	~RegularDataHelperBool() { } 
+    ~RegularDataHelperBool() { }
 
 
-	const bool operator()(int i,int j) const { 
+    const bool operator()(int i,int j) const {
 
-		if(values_.size() == 0)
-			return false;
+        if(values_.size() == 0)
+            return false;
 
-		ASSERT(i >= 0);
+        ASSERT(i >= 0);
 
-		int jj;
+        int jj;
 
-		if(j == -1)
-			return false;
-		if(scanningMode_ == 1)
-			jj = j;
-		else if(scanningMode_ == 2)
-			jj = nlat_ - 1 - j;
-		else
-			throw NotImplementedFeature("RegularDataHelperBool - scanning mode not available ");
+        if(j == -1)
+            return false;
+        if(scanningMode_ == 1)
+            jj = j;
+        else if(scanningMode_ == 2)
+            jj = nlat_ - 1 - j;
+        else
+            throw NotImplementedFeature("RegularDataHelperBool - scanning mode not available ");
 
 //		cout << "RegularDataHelperBool::operator() index " << i + jj * nlon_ << " scMode " << scanningMode_ << endl;
         long t = i + jj * nlon_;
 
-        if(t >= npts_){
+        if(t >= npts_) {
             throw OutOfRange(t,npts_);
         }
 
-		if(values_[t] > 0.5)
-			return true;
-		return false;
-	}
+        if(values_[t] > 0.5)
+            return true;
+        return false;
+    }
 
-private:
+  private:
 
 // No copy allowed
 
-	RegularDataHelperBool(const RegularDataHelperBool&);
-	RegularDataHelperBool& operator=(const RegularDataHelperBool&);
+    RegularDataHelperBool(const RegularDataHelperBool&);
+    RegularDataHelperBool& operator=(const RegularDataHelperBool&);
 
 // -- Members
 //
 // We assume object referred to exists for the lifetime of this helper
-	const vector<T>& values_;
-	int scanningMode_;
-	int nlat_;
-	int nlon_;
-	long npts_;
+    const vector<T>& values_;
+    int scanningMode_;
+    int nlat_;
+    int nlon_;
+    long npts_;
 
 
 };

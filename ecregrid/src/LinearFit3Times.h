@@ -16,23 +16,23 @@
 
 
 class LinearFit3Times : public Interpolator {
-public:
+  public:
 
 // -- Contructors
-	LinearFit3Times();
-	LinearFit3Times(bool w, bool a, double nPole, double sPole);
+    LinearFit3Times();
+    LinearFit3Times(bool w, bool a, double nPole, double sPole);
 
 // -- Destructor
-	~LinearFit3Times();
+    ~LinearFit3Times();
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
+  private:
 
 // -- Overridden methods
     virtual void interpolationWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const;
-	double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
 
 };
 

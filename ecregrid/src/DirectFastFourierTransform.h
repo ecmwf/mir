@@ -20,84 +20,84 @@
 class Grid;
 
 class DirectFastFourierTransform : public FastFourierTransform {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	DirectFastFourierTransform(int truncation, int lonNuber, int latsProcess, int index1, int index2);
+    DirectFastFourierTransform(int truncation, int lonNuber, int latsProcess, int index1, int index2);
 
 // -- Destructor
 
-	~DirectFastFourierTransform(); // Change to virtual if base class
+    ~DirectFastFourierTransform(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	void transform(const vector<int>& offsets, vector<double>& values, const vector<double>& coeff) const;
-	// None
+    void transform(const vector<int>& offsets, vector<double>& values, const vector<double>& coeff) const;
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	// void print(ostream&) const; // Change to virtual if base class	
+
+    // void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	DirectFastFourierTransform(const DirectFastFourierTransform&);
-	DirectFastFourierTransform& operator=(const DirectFastFourierTransform&);
+    DirectFastFourierTransform(const DirectFastFourierTransform&);
+    DirectFastFourierTransform& operator=(const DirectFastFourierTransform&);
 
 // -- Members
-	int index1_;
-	int index2_;
+    int index1_;
+    int index2_;
 
 // -- Methods
 //	void getUsefulPart(double* values, const vector<int> offsets, const double* group, int jump, int multiFactor) const;
-	void passThroughData(double* a, double* b, double* c, double* d, const vector<double>& trigs, int inInc, int outInc, int lot, int nLon, int factor, int productOfFactors) const;
+    void passThroughData(double* a, double* b, double* c, double* d, const vector<double>& trigs, int inInc, int outInc, int lot, int nLon, int factor, int productOfFactors) const;
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const DirectFastFourierTransform& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const DirectFastFourierTransform& p)
+    //	{ p.print(s); return s; }
 
 };
 

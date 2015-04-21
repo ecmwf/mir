@@ -18,30 +18,32 @@
 
 
 class VerticalQuadratic : public VerticalInterpolator {
-public:
+  public:
 
 // -- Contructors
-	VerticalQuadratic();
+    VerticalQuadratic();
 
 // -- Destructor
-	virtual ~VerticalQuadratic();
+    virtual ~VerticalQuadratic();
 
 // -- Methods
 
-	void interpolate(const GridField& inputUp, const GridField& inputDown, double* values, unsigned long valuesSize) const;
+    void interpolate(const GridField& inputUp, const GridField& inputDown, double* values, unsigned long valuesSize) const;
 
 
-protected:
+  protected:
 // -- Methods
-	virtual void print(ostream&) const;
+    virtual void print(ostream&) const;
 
 // Members
 
-private:
+  private:
 
 // -- Friends
-    friend ostream& operator<<(ostream& s,const VerticalQuadratic& p)
-	        { p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const VerticalQuadratic& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 

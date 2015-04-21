@@ -12,22 +12,22 @@
 #include "Interpolator.h"
 
 class Average : public Interpolator {
-public:
+  public:
 
-// -- Contructors
-	Average();
-	Average(int n);
-	Average(bool w, bool a, double nPole, double sPole);
+    // -- Contructors
+    Average();
+    Average(int n);
+    Average(bool w, bool a, double nPole, double sPole);
 
-// -- Destructor
-	~Average();
+    // -- Destructor
+    ~Average();
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream &) const;
 
-private:
+  private:
 
-// -- Overridden methods
-	double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    // -- Overridden methods
+    double interpolatedValue(const Point &point, const vector<FieldPoint> &nearests) const;
 };
 #endif

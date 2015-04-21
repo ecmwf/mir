@@ -24,58 +24,58 @@
 template <class T>
 
 class RegularDataHelper {
-public:
+  public:
 
 // -- Contructors
 
-	RegularDataHelper(const vector<T>& values, int scMode, double missingValue, int nlat, int nlon, long npts) : values_(values), scanningMode_(scMode), missingValue_(missingValue), nlat_(nlat), nlon_(nlon), npts_(npts) {}
+    RegularDataHelper(const vector<T>& values, int scMode, double missingValue, int nlat, int nlon, long npts) : values_(values), scanningMode_(scMode), missingValue_(missingValue), nlat_(nlat), nlon_(nlon), npts_(npts) {}
 
 // -- Destructor
 
-	~RegularDataHelper() { } 
+    ~RegularDataHelper() { }
 
 
-	const T operator()(int i,int j) const { 
+    const T operator()(int i,int j) const {
 
-		if(values_.size() == 0)
-			return missingValue_;
+        if(values_.size() == 0)
+            return missingValue_;
 
-		ASSERT(i >= 0);
-		ASSERT(j >= 0);
+        ASSERT(i >= 0);
+        ASSERT(j >= 0);
 
-		int jj;
-		if(scanningMode_ == 1)
-			jj = j;
-		else if(scanningMode_ == 2)
-			jj = nlat_ - 1 - j;
-		else
-			throw NotImplementedFeature("RegularDataHelper - scanning mode not available ");
+        int jj;
+        if(scanningMode_ == 1)
+            jj = j;
+        else if(scanningMode_ == 2)
+            jj = nlat_ - 1 - j;
+        else
+            throw NotImplementedFeature("RegularDataHelper - scanning mode not available ");
 
 //		cout << "RegularDataHelper::operator() index " << i + jj * nlon_ << " scMode " << scanningMode_ << endl;
-		long t = i + jj * nlon_;
+        long t = i + jj * nlon_;
 
-		if(t >= npts_){
-			throw OutOfRange(t,npts_);
-		}
+        if(t >= npts_) {
+            throw OutOfRange(t,npts_);
+        }
 
-		return values_[t]; 
-	}
+        return values_[t];
+    }
 
-private:
+  private:
 
 // No copy allowed
 
-	RegularDataHelper(const RegularDataHelper&);
-	RegularDataHelper& operator=(const RegularDataHelper&);
+    RegularDataHelper(const RegularDataHelper&);
+    RegularDataHelper& operator=(const RegularDataHelper&);
 
 // -- Members
 //  We assume the object referred to exists for the lifetime of this helper
-	const vector<T>& values_;
-	int scanningMode_;
-	double missingValue_;
-	int nlat_;
-	int nlon_;
-	long npts_;
+    const vector<T>& values_;
+    int scanningMode_;
+    double missingValue_;
+    int nlat_;
+    int nlon_;
+    long npts_;
 
 
 };

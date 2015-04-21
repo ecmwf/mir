@@ -17,37 +17,37 @@
 class Field;
 
 class VerticalTransformerSpectral : public VerticalTransformer {
-public:
+  public:
 
-// -- Contructors
+    // -- Contructors
 
-	VerticalTransformerSpectral(const string& typeOfLevel, int level);
+    VerticalTransformerSpectral(const string &typeOfLevel, int level);
 
-// -- Destructor
+    // -- Destructor
 
-	~VerticalTransformerSpectral(); // Change to virtual if base class
+    ~VerticalTransformerSpectral(); // Change to virtual if base class
 
-// -- Overridden methods
-	Field* transform(const Field& inputUp, const Field& inputDown) const;
+    // -- Overridden methods
+    Field *transform(const Field &inputUp, const Field &inputDown) const;
 
-protected:
+  protected:
 
-// -- Members
-	// None
+    // -- Members
+    // None
 
-// -- Methods
-	
-// -- Class members
-	// None
+    // -- Methods
 
-// -- Class methods
-	// None
+    // -- Class members
+    // None
 
-private:
+    // -- Class methods
+    // None
 
-// No copy allowed
-	VerticalTransformerSpectral(const VerticalTransformerSpectral&);
-	VerticalTransformerSpectral& operator=(const VerticalTransformerSpectral&);
+  private:
+
+    // No copy allowed
+    VerticalTransformerSpectral(const VerticalTransformerSpectral &);
+    VerticalTransformerSpectral &operator=(const VerticalTransformerSpectral &);
 
 };
 

@@ -24,69 +24,71 @@ class wind;
 
 
 class SpectralToGridTransformer : public Transformer {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	SpectralToGridTransformer(const string& legendrePolynomialsMethod, int fftMax, bool auresol, bool conversion);
+    SpectralToGridTransformer(const string& legendrePolynomialsMethod, int fftMax, bool auresol, bool conversion);
 
 // -- Destructor
 
-	virtual ~SpectralToGridTransformer(); // Change to virtual if base class
+    virtual ~SpectralToGridTransformer(); // Change to virtual if base class
 
 
 // -- Overridden methods
-	virtual Field* transform(const Field& in, const Field& out) const;
-	virtual Wind* transformVector(const Field& inU, const Field& inV, const Field& req) const;
+    virtual Field* transform(const Field& in, const Field& out) const;
+    virtual Wind* transformVector(const Field& inU, const Field& inV, const Field& req) const;
 
-protected:
+  protected:
 
 // -- Members
-	bool   vdConversion_;
-	bool   auresol_;
+    bool   vdConversion_;
+    bool   auresol_;
 // -- Methods
-	void transform(int truncation, bool  windParameter, const vector<comp>& dataComplex, const Grid& output, const Grid& outputGlobal, vector<double>& values) const;
+    void transform(int truncation, bool  windParameter, const vector<comp>& dataComplex, const Grid& output, const Grid& outputGlobal, vector<double>& values) const;
 
 // -- Methods
-	
-	void print(ostream&) const; // Change to virtual if base class	
+
+    void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	SpectralToGridTransformer(const SpectralToGridTransformer&);
-	SpectralToGridTransformer& operator=(const SpectralToGridTransformer&);
+    SpectralToGridTransformer(const SpectralToGridTransformer&);
+    SpectralToGridTransformer& operator=(const SpectralToGridTransformer&);
 
 // -- Members
-	string legendrePolynomialsMethod_;
-	int    fftMaxBlockSize_;
+    string legendrePolynomialsMethod_;
+    int    fftMaxBlockSize_;
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const SpectralToGridTransformer& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const SpectralToGridTransformer& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

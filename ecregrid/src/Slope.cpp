@@ -10,21 +10,17 @@
 #include "Slope.h"
 
 
-Slope::Slope() 
-{
+Slope::Slope() {
 }
 
-Slope::~Slope()
-{
+Slope::~Slope() {
 }
 
-double Slope::calculate(double k, double l, double m) const
-{
-	return sqrt(k + sqrt(l*l + m*m));
+double Slope::calculate(double k, double l, double m) const {
+    return sqrt(k + sqrt(l*l + m*m));
 }
 
-void Slope::print(ostream& out) const
-{
-	DerivedSubgridParameters::print(out);
-	out << "Slope" ;
+void Slope::print(ostream& out) const {
+    DerivedSubgridParameters::print(out);
+    out << "Slope" ;
 }

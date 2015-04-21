@@ -15,32 +15,34 @@
 class GridField;
 
 class AsciiOutput : public Output {
-public:
+  public:
 
-// -- Contructors
+    // -- Contructors
 
-	AsciiOutput();
-	AsciiOutput(const string& name);
+    AsciiOutput();
+    AsciiOutput(const string &name);
 
-// -- Destructor
+    // -- Destructor
 
-	~AsciiOutput();
+    ~AsciiOutput();
 
-// --  Methods
-
-
-// Overriden methods
-	void     write(FILE* out, const vector<double>& values) const;
-	void     write(const Field& field) const;
-	void     write(FILE* out, const Field& field) const;
-	string   typeOf()  const { return "ascii"; }
-
-private:
-
-// -- Members
+    // --  Methods
 
 
-// -- Friends
+    // Overriden methods
+    void     write(FILE *out, const vector<double> &values) const;
+    void     write(const Field &field) const;
+    void     write(FILE *out, const Field &field) const;
+    string   typeOf()  const {
+        return "ascii";
+    }
+
+  private:
+
+    // -- Members
+
+
+    // -- Friends
 
 };
 

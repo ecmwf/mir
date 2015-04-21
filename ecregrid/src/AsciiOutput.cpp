@@ -35,36 +35,30 @@
 
 #include <fstream>
 
-AsciiOutput::AsciiOutput(const string& name):
-	Output(name)
-{
+AsciiOutput::AsciiOutput(const string &name):
+    Output(name) {
 }
 
 AsciiOutput::AsciiOutput():
-	Output()
-{
+    Output() {
 }
 
-AsciiOutput::~AsciiOutput()
-{
+AsciiOutput::~AsciiOutput() {
 }
 
-void AsciiOutput::write(const Field& f) const
-{
-	f.dump2file(fileName_);
+void AsciiOutput::write(const Field &f) const {
+    f.dump2file(fileName_);
 }
 
-void AsciiOutput::write(FILE* out, const vector<double>& values) const
-{
-	for(unsigned long i = 0; i < values.size(); i++){
-		if(SMALL_NUMBERS)
-			fprintf(out,"%8.15f \n",values[i]);
-		else
-			fprintf(out,"%f \n",values[i]);
-	}
+void AsciiOutput::write(FILE *out, const vector<double> &values) const {
+    for (unsigned long i = 0; i < values.size(); i++) {
+        if (SMALL_NUMBERS)
+            fprintf(out, "%8.15f \n", values[i]);
+        else
+            fprintf(out, "%f \n", values[i]);
+    }
 }
 
-void AsciiOutput::write(FILE* out, const Field& f) const
-{
-	f.dump2file(fileName_);
+void AsciiOutput::write(FILE *out, const Field &f) const {
+    f.dump2file(fileName_);
 }

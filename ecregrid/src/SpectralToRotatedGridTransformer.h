@@ -15,82 +15,82 @@
 #endif
 
 class SpectralToRotatedGridTransformer : public SpectralToGridTransformer {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	SpectralToRotatedGridTransformer(const string& coeffMethod, int fftMax, bool auresol, bool conversion);
+    SpectralToRotatedGridTransformer(const string& coeffMethod, int fftMax, bool auresol, bool conversion);
 
 // -- Destructor
 
-	~SpectralToRotatedGridTransformer(); // Change to virtual if base class
+    ~SpectralToRotatedGridTransformer(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	Field* transform(const Field& in, const Field& out) const;
-	Wind*  transformVector(const Field& inU, const Field& inV, const Field& req) const;
+    Field* transform(const Field& in, const Field& out) const;
+    Wind*  transformVector(const Field& inU, const Field& inV, const Field& req) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	// void print(ostream&) const; // Change to virtual if base class	
+
+    // void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	SpectralToRotatedGridTransformer(const SpectralToRotatedGridTransformer&);
-	SpectralToRotatedGridTransformer& operator=(const SpectralToRotatedGridTransformer&);
+    SpectralToRotatedGridTransformer(const SpectralToRotatedGridTransformer&);
+    SpectralToRotatedGridTransformer& operator=(const SpectralToRotatedGridTransformer&);
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const SpectralToRotatedGridTransformer& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const SpectralToRotatedGridTransformer& p)
+    //	{ p.print(s); return s; }
 
 };
 

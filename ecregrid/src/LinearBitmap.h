@@ -16,24 +16,24 @@
 
 
 class LinearBitmap : public Linear {
-public:
+  public:
 
 // -- Contructors
-	LinearBitmap(double missingValue);
-	LinearBitmap(bool w, bool a, double nPole, double sPole, double missingValue);
+    LinearBitmap(double missingValue);
+    LinearBitmap(bool w, bool a, double nPole, double sPole, double missingValue);
 
 // -- Destructor
-	~LinearBitmap();
+    ~LinearBitmap();
 
 // -- Overridden methods
-	 virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
+  private:
 
-	double missingValue_;
+    double missingValue_;
 
 };
 

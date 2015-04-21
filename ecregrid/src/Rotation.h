@@ -16,89 +16,97 @@
 class Point;
 
 class Rotation {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Rotation(double lat = 0, double lon = 0);
+    Rotation(double lat = 0, double lon = 0);
 
 // -- Destructor
 
-	~Rotation(); // Change to virtual if base class
+    ~Rotation(); // Change to virtual if base class
 
 // -- Operators
-	bool operator==(const Rotation&) const;
+    bool operator==(const Rotation&) const;
 
 // -- Methods
-	double latPole() const { return latPole_; }
-	double lonPole() const { return lonPole_; }
-	bool   isRotated() const { return latPole_ > 0 || lonPole_ > 0 ; }
+    double latPole() const {
+        return latPole_;
+    }
+    double lonPole() const {
+        return lonPole_;
+    }
+    bool   isRotated() const {
+        return latPole_ > 0 || lonPole_ > 0 ;
+    }
 
-	int    match(int truncation)         const;
+    int    match(int truncation)         const;
 
-	Point  rotate(const Point& p)        const;
-	Point  unRotate(const Point& p)      const;
-	void   angularChange(const vector<Point>& gridPoints, vector<double>& angularChange) const;
+    Point  rotate(const Point& p)        const;
+    Point  unRotate(const Point& p)      const;
+    void   angularChange(const vector<Point>& gridPoints, vector<double>& angularChange) const;
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	 void print(ostream&) const; // Change to virtual if base class	
+
+    void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	Rotation(const Rotation&);
-	Rotation& operator=(const Rotation&);
+    Rotation(const Rotation&);
+    Rotation& operator=(const Rotation&);
 
 // -- Members
-	double latPole_;
-	double lonPole_;
+    double latPole_;
+    double lonPole_;
 
 // -- Methods
-	Point rotateLatitude(const Point& p, const string& what)  const;
-	Point rotateLongitude(const Point& p, const string& what) const;
-	// None
+    Point rotateLatitude(const Point& p, const string& what)  const;
+    Point rotateLongitude(const Point& p, const string& what) const;
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const Rotation& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const Rotation& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 #endif

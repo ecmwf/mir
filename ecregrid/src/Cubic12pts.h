@@ -14,31 +14,31 @@
 #include "Interpolator.h"
 #endif
 
-// 
+//
 
 class Cubic12pts : public Interpolator {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Cubic12pts();
-	Cubic12pts(bool w, bool a, double nPole, double sPole);
+    Cubic12pts();
+    Cubic12pts(bool w, bool a, double nPole, double sPole);
 
 // -- Destructor
 
-	virtual ~Cubic12pts(); // Change to virtual if base class
+    virtual ~Cubic12pts(); // Change to virtual if base class
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 // -- Overridden methods
     virtual void interpolationWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const;
 
-	virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
 
-private:
+  private:
 
 };
 

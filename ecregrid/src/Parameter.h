@@ -17,95 +17,111 @@
 #include "machine.h"
 #endif
 
-// 
+//
 
 class Parameter {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Parameter(int param, int table, const string& levType);
-	Parameter();
-	Parameter(const Parameter&);
+    Parameter(int param, int table, const string& levType);
+    Parameter();
+    Parameter(const Parameter&);
 
 // -- Destructor
 
-	~Parameter(); // Change to virtual if base class
+    ~Parameter(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 
 // -- Methods
-	int  number()       const { return number_; }	
-	int  table()        const { return table_; }	
-//	int  marsParam()    const { return number_ * 1000 + table_; }	
-	int  marsParam()    const;
-	bool lsm()          const { return lsm_; }	
-	bool conservation() const { return conservation_; }	
-	bool wind()         const { return wind_; }	
-	bool nearest()      const { return nearest_; }	
+    int  number()       const {
+        return number_;
+    }
+    int  table()        const {
+        return table_;
+    }
+//	int  marsParam()    const { return number_ * 1000 + table_; }
+    int  marsParam()    const;
+    bool lsm()          const {
+        return lsm_;
+    }
+    bool conservation() const {
+        return conservation_;
+    }
+    bool wind()         const {
+        return wind_;
+    }
+    bool nearest()      const {
+        return nearest_;
+    }
 
-	int  vertical()     const { return vertical_; }	
+    int  vertical()     const {
+        return vertical_;
+    }
 
-	void peculiarParameters();
+    void peculiarParameters();
 
-	Parameter& operator=(const Parameter&);
+    Parameter& operator=(const Parameter&);
 
 // -- Overridden methods
-	// None
+    // None
 
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	 void print(ostream&) const; // Change to virtual if base class	
+
+    void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	int  number_;
-	int  table_;
-	bool lsm_;
-	bool conservation_;
-	bool nearest_;
-	bool wind_;
-	int  vertical_;
+    int  number_;
+    int  table_;
+    bool lsm_;
+    bool conservation_;
+    bool nearest_;
+    bool wind_;
+    int  vertical_;
 
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const Parameter& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const Parameter& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

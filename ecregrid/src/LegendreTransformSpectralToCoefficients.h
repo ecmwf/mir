@@ -19,85 +19,87 @@
 typedef complex<double> comp;
 
 class LegendreTransformSpectralToCoefficients : public LegendreTransform {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	LegendreTransformSpectralToCoefficients(const ref_counted_ptr<const LegendrePolynomials>& poly, int truncation,const vector<double>& lats, bool wind, double north, double south);
+    LegendreTransformSpectralToCoefficients(const ref_counted_ptr<const LegendrePolynomials>& poly, int truncation,const vector<double>& lats, bool wind, double north, double south);
 
 // -- Destructor
 
-	~LegendreTransformSpectralToCoefficients(); // Change to virtual if base class
+    ~LegendreTransformSpectralToCoefficients(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	int transform(mapLats& mapped, const vector<comp>& dataComplex, int northIndex, int southIndex) const ;
-	int transform(double* coeff, const double* data, int latNumber) const;
+    int transform(mapLats& mapped, const vector<comp>& dataComplex, int northIndex, int southIndex) const ;
+    int transform(double* coeff, const double* data, int latNumber) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	void print(ostream&) const; // Change to virtual if base class	
+
+    void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	LegendreTransformSpectralToCoefficients(const LegendreTransformSpectralToCoefficients&);
-	LegendreTransformSpectralToCoefficients& operator=(const LegendreTransformSpectralToCoefficients&);
+    LegendreTransformSpectralToCoefficients(const LegendreTransformSpectralToCoefficients&);
+    LegendreTransformSpectralToCoefficients& operator=(const LegendreTransformSpectralToCoefficients&);
 
 // -- Members
-	double north_;
-	double south_;
-	bool   wind_;
+    double north_;
+    double south_;
+    bool   wind_;
 
 // -- Methods
-	comp firstHarmonic(const vector<comp>& dataComplex, bool pole) const;
-	int  uvAtPole(mapLats& mappedCoeff,const vector<comp>& dataComplex) const;
+    comp firstHarmonic(const vector<comp>& dataComplex, bool pole) const;
+    int  uvAtPole(mapLats& mappedCoeff,const vector<comp>& dataComplex) const;
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const LegendreTransformSpectralToCoefficients& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const LegendreTransformSpectralToCoefficients& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

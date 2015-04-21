@@ -39,7 +39,7 @@
 #include <cstring>
 
 /* buffer for loading from file */
-#define LOAD_BUFFER_SIZE 10485760 
+#define LOAD_BUFFER_SIZE 10485760
 #define MAGIC_VALUE      1234567890
 
 struct sembuf _lock[] = {
@@ -59,10 +59,9 @@ struct info {
     char path[INFO_PATH];
 };
 
-LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation, const Grid& grid) : 
-	LegendrePolynomialsRead(truncation,grid)
-{
-	string file = constructCoefficientsFilename();
+LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation, const Grid& grid) :
+    LegendrePolynomialsRead(truncation,grid) {
+    string file = constructCoefficientsFilename();
 
     char path[1024];
     struct  stat64 stat1;
@@ -73,34 +72,34 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
     int pageSize = getpagesize();
 
     if(pageSize < 0)
-	  	throw BadParameter("LegendrePolynomialsSharedMemory::shareFile getpagesize fail: " + file);
+        throw BadParameter("LegendrePolynomialsSharedMemory::shareFile getpagesize fail: " + file);
 
     if(file.size() > INFO_PATH)
-	  	throw WrongValue("LegendrePolynomialsSharedMemory::shareFile path too long: ", file.size());
+        throw WrongValue("LegendrePolynomialsSharedMemory::shareFile path too long: ", file.size());
 
-	if(realpath(file.c_str(),path) == 0)
-	  	throw BadParameter("LegendrePolynomialsSharedMemory::shareFile realpath: " + file);
-		
+    if(realpath(file.c_str(),path) == 0)
+        throw BadParameter("LegendrePolynomialsSharedMemory::shareFile realpath: " + file);
+
     if(sizeof(stat1.st_size) < 8)
-	  	throw WrongValue("LegendrePolynomialsSharedMemory::shareFile stat.st_size is to small for 64bits files: ", stat1.st_size);
+        throw WrongValue("LegendrePolynomialsSharedMemory::shareFile stat.st_size is to small for 64bits files: ", stat1.st_size);
 
 
     key = ftok(path,1);
 
     if(key ==  (key_t)-1)
-	  	throw BadParameter("LegendrePolynomialsSharedMemory::shareFile ftok: " + file);
+        throw BadParameter("LegendrePolynomialsSharedMemory::shareFile ftok: " + file);
 
 
     sem_ = semget(key,1,IPC_CREAT|0600);
 
     if(sem_ < 0)
-	  	throw BadParameter("LegendrePolynomialsSharedMemory::shareFile semget: " + file);
+        throw BadParameter("LegendrePolynomialsSharedMemory::shareFile semget: " + file);
 
-	if(SHARED_DEBUG) 
-		gettimeofday( &start, NULL );
+    if(SHARED_DEBUG)
+        gettimeofday( &start, NULL );
 
     if(semop(sem_,_lock, 2 ) < 0)
-	  	throw BadParameter("LegendrePolynomialsSharedMemory::shareFile semop lock: " + file);
+        throw BadParameter("LegendrePolynomialsSharedMemory::shareFile semop lock: " + file);
 
     if (SHARED_DEBUG) {
         gettimeofday( &end, NULL );
@@ -108,8 +107,7 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
         diff.tv_sec  = end.tv_sec  - start.tv_sec;
         diff.tv_usec = end.tv_usec - start.tv_usec;
 
-        if (diff.tv_usec < 0)
-        {
+        if (diff.tv_usec < 0) {
             diff.tv_sec--;
             diff.tv_sec--;
             diff.tv_usec += 1000000;
@@ -121,11 +119,11 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
 
     openCoefficientsFile(O_LARGEFILE);
 
-    if(stat64(path,&stat1)) 
-	  	throw BadParameter("LegendrePolynomialsSharedMemory::shareFile stat64 fail: " + file);
+    if(stat64(path,&stat1))
+        throw BadParameter("LegendrePolynomialsSharedMemory::shareFile stat64 fail: " + file);
 
     size_t baseSizeRequired = ((stat1.st_size + pageSize-1)/pageSize)*pageSize + sizeof(struct info);
-    
+
     size_t sizeRequired = pageSize * (1 + baseSizeRequired/pageSize);
 
 #ifdef linux
@@ -139,7 +137,7 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
 
     //int nsegs = 1 + (sizeRequired / shmmax);
     int segshift = (sizeRequired / shmmax);
-#else 
+#else
     // on AIX we can assume we can allocate entire segment
     unsigned long shmmax = sizeRequired;
     int nsegs = 1;
@@ -156,8 +154,7 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
     int counter = 0;
     segments_.clear();
 
-    while (sizeMapped < sizeRequired)
-    {
+    while (sizeMapped < sizeRequired) {
 #ifdef linux
         key_t seg_key = ftok(path, counter);
 #else
@@ -169,8 +166,7 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
         // try to connect to existing segment
         int shmid = shmget(seg_key, sizeSegment, 0600);
 
-        if(shmid  < 0)
-        {
+        if(shmid  < 0) {
             // if it doesn't exist, try allocating
             if (ENOENT == errno)
                 shmid = shmget(seg_key, sizeSegment, IPC_CREAT|0600);
@@ -179,8 +175,8 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
                 throw BadParameter("LegendrePolynomialsSharedMemory::shareFile shmget fail (memory error): " + file);
 
 #ifdef SHM_PAGESIZE
-            // Use 64K pages to back the shared memory region 
-            // NB This can only be set immediately after creation of a segment 
+            // Use 64K pages to back the shared memory region
+            // NB This can only be set immediately after creation of a segment
             // and before it has ever been attached to a process
             // Hence don't use on segments we didn't create in this process
             size_t shm_size;
@@ -206,8 +202,7 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
 
         /* attach shared memory */
         void* ptr = shmat( shmid, next_seg_loc, 0 );
-        if (ptr == (void*)-1) 
-        {
+        if (ptr == (void*)-1) {
             throw BadParameter("LegendrePolynomialsSharedMemory::shareFile shmat fail: " + file);
         }
 
@@ -215,21 +210,19 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
         // out where to move it to such that all segments are mapped
         // to available areas (i.e. at lower memory addresses)
         //
-        if (0 == counter )
-        {
+        if (0 == counter ) {
             // we have requested automatic map address the first time
             //
-            if (segshift > 0)
-            {
+            if (segshift > 0) {
                 // if we need to detatch and move to lower addresses, do it
                 // here
                 shmdt( ptr );
-                
+
                 next_seg_loc = (void*)((long)ptr - (segshift * shmmax));
 
                 // reattach to this lower position
                 ptr = shmat( shmid, next_seg_loc, 0 );
-                if (ptr == (void*)-1) 
+                if (ptr == (void*)-1)
                     throw BadParameter("LegendrePolynomialsSharedMemory::shareFile shmat fail: " + file);
 
             }
@@ -238,16 +231,15 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
             // contiguous memory block we will form from the multiple segments
             ptr_ = ptr;
 
-        } 
-        if (counter == segshift)
-        {
+        }
+        if (counter == segshift) {
             // if the last time through, we need to write the below to the end
             // of the entire memory block
             //
             addr = (char*)ptr_;
             nfo = (struct info*)(addr + (((stat1.st_size + pageSize - 1) / pageSize) * pageSize));
 
-            if(nfo->ready) { 
+            if(nfo->ready) {
                 loadfile = 0;
                 if(nfo->magic != MAGIC_VALUE) {
                     throw WrongValue("LegendrePolynomialsSharedMemory::shareFile bad magic: ", nfo->magic);
@@ -256,25 +248,24 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
                 if(strcmp(nfo->path,path) != 0)
                     throw BadParameter("LegendrePolynomialsSharedMemory::shareFile invalid path: ");
             }
-            
+
         }
 
         // store seg pointer so we can detach in dtor
         segments_.push_back(ptr);
-        
+
         // work out where we put the next one
         next_seg_loc = (void*)((long)ptr + sizeSegment);
         counter++;
     }
 
-    
+
     // here we read info from the loaded memory to see whether we should read
     // from the file into the memory
     addr = (char*)ptr_;
     nfo = (struct info*)(addr + (((stat1.st_size + pageSize - 1) / pageSize) * pageSize));
 
-    if(nfo->ready) 
-    { 
+    if(nfo->ready) {
         loadfile = 0;
         if(nfo->magic != MAGIC_VALUE) {
             throw WrongValue("LegendrePolynomialsSharedMemory::shareFile bad magic: ", nfo->magic);
@@ -283,63 +274,57 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
         if(strcmp(nfo->path,path) != 0)
             throw BadParameter("LegendrePolynomialsSharedMemory::shareFile invalid path: ");
     }
-    
+
     if(loadfile) {
 
         stat2.st_size =  stat1.st_size;
 
-        if (SHARED_DEBUG) 
-			gettimeofday( &start, NULL );
+        if (SHARED_DEBUG)
+            gettimeofday( &start, NULL );
 
-        while(stat1.st_size > 0) 
-        {
+        while(stat1.st_size > 0) {
             ssize_t len = stat1.st_size > LOAD_BUFFER_SIZE ? LOAD_BUFFER_SIZE : stat1.st_size;
             if(read(fd_, addr, len) != len) {
-	  			throw ReadError("LegendrePolynomialsSharedMemory::shareFile: " + file);
+                throw ReadError("LegendrePolynomialsSharedMemory::shareFile: " + file);
             }
             stat1.st_size -= len;
             addr      += len;
         }
 
-        if (SHARED_DEBUG)
-    	{
+        if (SHARED_DEBUG) {
             gettimeofday( &end, NULL );
 
             diff.tv_sec  = end.tv_sec  - start.tv_sec;
             diff.tv_usec = end.tv_usec - start.tv_usec;
 
-            if (diff.tv_usec < 0)
-            {
+            if (diff.tv_usec < 0) {
                 diff.tv_sec--;
                 diff.tv_usec += 1000000;
             }
             double time = (double)diff.tv_sec + ((double)diff.tv_usec / 1000000.);
 
-        	cout<< "LegendrePolynomialsSharedMemory::shareFile:read " << stat2.st_size << " bytes in " << time << " secs" << endl;
+            cout<< "LegendrePolynomialsSharedMemory::shareFile:read " << stat2.st_size << " bytes in " << time << " secs" << endl;
         }
 
         nfo->magic = MAGIC_VALUE;
         strcpy(nfo->path,path);
         nfo->ready = 1;
-    }
-    else
-    {
+    } else {
         if (SHARED_DEBUG)
-        	cout<< "LegendrePolynomialsSharedMemory::shareFile:read file already loaded" << endl;
+            cout<< "LegendrePolynomialsSharedMemory::shareFile:read file already loaded" << endl;
     }
 
     closeFile();
 
     next_ = (double*)ptr_;
 
-    if(semop(sem_,_unlock,1) < 0){
-	  	throw BadParameter("LegendrePolynomialsSharedMemory::shareFile semop unlock fail");
+    if(semop(sem_,_unlock,1) < 0) {
+        throw BadParameter("LegendrePolynomialsSharedMemory::shareFile semop unlock fail");
     }
 }
-	
 
-LegendrePolynomialsSharedMemory::~LegendrePolynomialsSharedMemory()
-{
+
+LegendrePolynomialsSharedMemory::~LegendrePolynomialsSharedMemory() {
     if (DEBUG)
         cout << "LegendrePolynomialsSharedMemory::~LegendrePolynomialsSharedMemory destructor called" << endl;
 
@@ -348,10 +333,10 @@ LegendrePolynomialsSharedMemory::~LegendrePolynomialsSharedMemory()
 // Detach here...
 
     /*
-	if(ptr_){
+    if(ptr_){
     	shmdt(ptr_);
         ptr_ = NULL;
-	}
+    }
     */
     ptr_ = NULL;
     next_ = NULL;
@@ -359,29 +344,25 @@ LegendrePolynomialsSharedMemory::~LegendrePolynomialsSharedMemory()
 
     //struct sembuf data;
     int count = semctl(sem_, 0, GETVAL);
-    if( count > 0 && semop(sem_,_unlock,1) < 0){
-	  	throw BadParameter("LegendrePolynomialsSharedMemory::~LegendrePolynomialsSharedMemory semop unlock fail");
+    if( count > 0 && semop(sem_,_unlock,1) < 0) {
+        throw BadParameter("LegendrePolynomialsSharedMemory::~LegendrePolynomialsSharedMemory semop unlock fail");
     }
 }
 
-void LegendrePolynomialsSharedMemory::detachSegments()
-{
-    for (unsigned int i = 0; i < segments_.size(); i++)
-    {
+void LegendrePolynomialsSharedMemory::detachSegments() {
+    for (unsigned int i = 0; i < segments_.size(); i++) {
         shmdt(segments_[i]);
     }
     segments_.clear();
 }
 
-const double* LegendrePolynomialsSharedMemory::getOneLatitude(double lat, int rowOffset) const
-{
+const double* LegendrePolynomialsSharedMemory::getOneLatitude(double lat, int rowOffset) const {
 //	memcpy(polynoms, next_ + latLength_ * rowOffset, latSize_);
 //	return polynoms;
-	return 0;
+    return 0;
 }
 
-void LegendrePolynomialsSharedMemory::print(ostream& out) const
-{
-	LegendrePolynomialsRead::print(out);
-	out << "Shared Memory";
+void LegendrePolynomialsSharedMemory::print(ostream& out) const {
+    LegendrePolynomialsRead::print(out);
+    out << "Shared Memory";
 }

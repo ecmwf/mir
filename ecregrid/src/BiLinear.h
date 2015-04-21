@@ -12,28 +12,27 @@
 #include "Interpolator.h"
 
 class BiLinear : public Interpolator {
-public:
+  public:
 
 // -- Contructors
-	BiLinear();
-	BiLinear(bool w, bool a, double nPole, double sPole);
+    BiLinear();
+    BiLinear(bool w, bool a, double nPole, double sPole);
 
 // -- Destructor
-	virtual ~BiLinear();
+    virtual ~BiLinear();
 
 // -- Overridden methods
-	virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
     virtual void interpolationWeights(const Point& where, const vector<FieldPoint>& nearests, vector<double>& weights) const;
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
+  private:
 
 // Methods
-	virtual double unnormalisedWeight(const Point& p, const FieldPoint& oposite) const
-	{
-		return fabs(oposite.latitude() - p.latitude()) * fabs(oposite.longitude() - p.longitude()); 
-	}
+    virtual double unnormalisedWeight(const Point& p, const FieldPoint& oposite) const {
+        return fabs(oposite.latitude() - p.latitude()) * fabs(oposite.longitude() - p.longitude());
+    }
 };
 #endif

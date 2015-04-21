@@ -18,16 +18,16 @@
 
 struct FieldDescriptionGribApi : public FieldDescription {
 
-// -- Contructors
-	FieldDescriptionGribApi();
-	FieldDescriptionGribApi(grib_handle* h);
+    // -- Contructors
+    FieldDescriptionGribApi();
+    FieldDescriptionGribApi(grib_handle *h);
 
-// -- Destructor
-	~FieldDescriptionGribApi(); // Change to virtual if base class
+    // -- Destructor
+    ~FieldDescriptionGribApi(); // Change to virtual if base class
 
-	FieldDescriptionGribApi& operator=(const FieldDescriptionGribApi&);
+    FieldDescriptionGribApi &operator=(const FieldDescriptionGribApi &);
 
-	void extractListOfPoints(grib_handle* inHandle, vector<Point>& points, const FieldDescription& output, vector<double>& outValues) const;
+    void extractListOfPoints(grib_handle *inHandle, vector<Point> &points, const FieldDescription &output, vector<double> &outValues) const;
 
 };
 

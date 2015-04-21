@@ -20,132 +20,158 @@
 
 /*! \class PseudoRegularGaussian
     \brief Regular Gaussian Grid
-	
+
 */
 
-class PseudoRegularGaussian : public Gaussian, public Regular{
-public:
+class PseudoRegularGaussian : public Gaussian, public Regular {
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	PseudoRegularGaussian(double north, double west, double south, double east, int n, int we = 0);
-	PseudoRegularGaussian(const Area& other,int n, int we = 0);
-	PseudoRegularGaussian(int n, int we = 0);
+    PseudoRegularGaussian(double north, double west, double south, double east, int n, int we = 0);
+    PseudoRegularGaussian(const Area& other,int n, int we = 0);
+    PseudoRegularGaussian(int n, int we = 0);
 
 // -- Destructor
 
-	~PseudoRegularGaussian(); // Change to virtual if base class
+    ~PseudoRegularGaussian(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Overridden methods
 
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	 void print(ostream&) const; // Change to virtual if base class	
+
+    void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	PseudoRegularGaussian(const PseudoRegularGaussian&);
-	PseudoRegularGaussian& operator=(const PseudoRegularGaussian&);
+    PseudoRegularGaussian(const PseudoRegularGaussian&);
+    PseudoRegularGaussian& operator=(const PseudoRegularGaussian&);
 
-// added because of NCEP N47 pseudoGaussian grid 
+// added because of NCEP N47 pseudoGaussian grid
 // regular N48 in longitude direction, N47 in latitude direction
 // -- Members
-	int westEastNumberOfPoints_;
+    int westEastNumberOfPoints_;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	Grid* newGrid(const Grid& input) const ;
-	Grid* newGrid(const Area& other) const;
-	Grid* getGlobalGrid()            const ;
+    Grid* newGrid(const Grid& input) const ;
+    Grid* newGrid(const Area& other) const;
+    Grid* getGlobalGrid()            const ;
 
-	void nearest4pts(GridContext* ctx, const Point& where, vector<Point>& result) const;
-	void  nearestPoints(GridContext*,const Point& where, vector<FieldPoint>& nearests, const vector<double>& data, int scMode, int npts) const;
+    void nearest4pts(GridContext* ctx, const Point& where, vector<Point>& result) const;
+    void  nearestPoints(GridContext*,const Point& where, vector<FieldPoint>& nearests, const vector<double>& data, int scMode, int npts) const;
 
-	double conserving(GridContext* ctx, const Point& where, const vector<double>& data, int scMode, double missingValue, double incNs, double incWe)  const;
+    double conserving(GridContext* ctx, const Point& where, const vector<double>& data, int scMode, double missingValue, double incNs, double incWe)  const;
 
-	void cellsAreas(vector<Area>& areas, vector<double>& areasSize)  const; 
-	double fluxConserving(GridContext* ctx, const Point& where, const vector<Area>& areas, const vector<double>& inputCellSize, const double* data, int scMode, double missingValue, double outNSincrement, double outWEincrement)  const;
+    void cellsAreas(vector<Area>& areas, vector<double>& areasSize)  const;
+    double fluxConserving(GridContext* ctx, const Point& where, const vector<Area>& areas, const vector<double>& inputCellSize, const double* data, int scMode, double missingValue, double outNSincrement, double outWEincrement)  const;
 
-	double averageWeighted(GridContext* ctx, const Point& where, const vector<double>& weights, const vector<double>& data, int scMode, double missingValue, const vector<double>& outLats, double incWe)  const;
-	double averageWeightedLsm(GridContext* ctx, const Point& where, const vector<double>& weights, const vector<double>& data, const vector<double>& dataLsmIn, const vector<double>& dataLsmOut, int scMode, double missingValue, const vector<double>& outLats, double incWe)  const;
-	void nearestsByIndex(const Point& where, vector<FieldPoint>& nearest, const vector<double>& data, int scMode, double missingValue, int howMany) const;
+    double averageWeighted(GridContext* ctx, const Point& where, const vector<double>& weights, const vector<double>& data, int scMode, double missingValue, const vector<double>& outLats, double incWe)  const;
+    double averageWeightedLsm(GridContext* ctx, const Point& where, const vector<double>& weights, const vector<double>& data, const vector<double>& dataLsmIn, const vector<double>& dataLsmOut, int scMode, double missingValue, const vector<double>& outLats, double incWe)  const;
+    void nearestsByIndex(const Point& where, vector<FieldPoint>& nearest, const vector<double>& data, int scMode, double missingValue, int howMany) const;
 
-	virtual void  generateGrid1D(vector<Point>& p)   const ;
-	void generateGrid1D(vector<Point>& ll, const Grid& grid)    const ;
+    virtual void  generateGrid1D(vector<Point>& p)   const ;
+    void generateGrid1D(vector<Point>& ll, const Grid& grid)    const ;
 
-	unsigned long  calculatedNumberOfPoints()  const ;
+    unsigned long  calculatedNumberOfPoints()  const ;
 
-	size_t  getGridDefinition(vector<long>& v) const;
+    size_t  getGridDefinition(vector<long>& v) const;
 
-	string   composedName()  const { return "regular_gg"; }
+    string   composedName()  const {
+        return "regular_gg";
+    }
 
-	int    getLatitudeOffset(double lat) const;
-	long   getLatitudeOffset(double lat, long& current) const;
-	void   getOffsets(vector<int>& offsets) const;
+    int    getLatitudeOffset(double lat) const;
+    long   getLatitudeOffset(double lat, long& current) const;
+    void   getOffsets(vector<int>& offsets) const;
 
-	virtual GridContext* getGridContext() const { return Regular::getGridContext(); }
+    virtual GridContext* getGridContext() const {
+        return Regular::getGridContext();
+    }
 
-	virtual bool sameAs(const RegularLatLon& other)   const  { return Gaussian::sameAs(other); }
-	virtual bool sameAs(const RegularLatLonCellCentered& other)   const  { return Gaussian::sameAs(other); }
-	virtual bool sameAs(const ReducedLatLon& other)   const  { return Gaussian::sameAs(other); }
-	virtual bool sameAs(const RotatedRegularLatLon& other)   const  { return Gaussian::sameAs(other); }
-	virtual bool sameAs(const ReducedGaussian& other) const  { return Gaussian::sameAs(other); }
-	virtual bool sameAs(const RegularGaussian& other) const  { return Gaussian::sameAs(other); }
-	virtual bool sameAs(const PseudoRegularGaussian&) const ;
-	virtual bool sameAs(const PolarStereographic& other) const  { return Gaussian::sameAs(other); }
-	virtual bool sameAs(const ListOfPoints& other)    const  { return Gaussian::sameAs(other); }
-	virtual bool equals(const Grid& other) const { return other.sameAs(*this); }
+    virtual bool sameAs(const RegularLatLon& other)   const  {
+        return Gaussian::sameAs(other);
+    }
+    virtual bool sameAs(const RegularLatLonCellCentered& other)   const  {
+        return Gaussian::sameAs(other);
+    }
+    virtual bool sameAs(const ReducedLatLon& other)   const  {
+        return Gaussian::sameAs(other);
+    }
+    virtual bool sameAs(const RotatedRegularLatLon& other)   const  {
+        return Gaussian::sameAs(other);
+    }
+    virtual bool sameAs(const ReducedGaussian& other) const  {
+        return Gaussian::sameAs(other);
+    }
+    virtual bool sameAs(const RegularGaussian& other) const  {
+        return Gaussian::sameAs(other);
+    }
+    virtual bool sameAs(const PseudoRegularGaussian&) const ;
+    virtual bool sameAs(const PolarStereographic& other) const  {
+        return Gaussian::sameAs(other);
+    }
+    virtual bool sameAs(const ListOfPoints& other)    const  {
+        return Gaussian::sameAs(other);
+    }
+    virtual bool equals(const Grid& other) const {
+        return other.sameAs(*this);
+    }
 
     virtual void reOrderNewData(const vector<double>& data_in, vector<double>& data_out, int scMode) const;
 
-	string   predefinedLsmFileName() const;
-	void addWeightsAlongLatitude(vector<double>& weights, double weightY, long i) const;
-	long getIndex(int i, int j) const;
+    string   predefinedLsmFileName() const;
+    void addWeightsAlongLatitude(vector<double>& weights, double weightY, long i) const;
+    long getIndex(int i, int j) const;
 
-	void accumulatedDataWE(const double* data, unsigned long dataLength, vector<double>& newData) const;
+    void accumulatedDataWE(const double* data, unsigned long dataLength, vector<double>& newData) const;
 //
     Area  setGlobalArea()                     const ;
     Area  setGlobalArea(double west)          const;
 //	bool  isGlobalWestEast()                  const ;
-	int westEastNumberOfPoints() const { return westEastNumberOfPoints_; }
-	Area  adjustArea(const Area& area, bool globalWE, bool globalNS) const;
-	
-	void getGridAsLatLonList(double* lats, double* lons, long* length) const;
+    int westEastNumberOfPoints() const {
+        return westEastNumberOfPoints_;
+    }
+    Area  adjustArea(const Area& area, bool globalWE, bool globalNS) const;
 
-	void findWestAndEastIndex(GridContext* ctx, long j, double west, double east, int& westLongitudeIndex, int& eastLongitudeIndex ) const;
+    void getGridAsLatLonList(double* lats, double* lons, long* length) const;
+
+    void findWestAndEastIndex(GridContext* ctx, long j, double west, double east, int& westLongitudeIndex, int& eastLongitudeIndex ) const;
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const PseudoRegularGaussian& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const PseudoRegularGaussian& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

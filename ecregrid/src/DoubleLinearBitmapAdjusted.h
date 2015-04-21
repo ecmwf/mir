@@ -16,24 +16,24 @@
 
 
 class DoubleLinearBitmapAdjusted : public Interpolator {
-public:
+  public:
 
 // -- Contructors
-	DoubleLinearBitmapAdjusted(double missingValue);
-	DoubleLinearBitmapAdjusted(bool w, bool a, double nPole, double sPole, double missingValue);
+    DoubleLinearBitmapAdjusted(double missingValue);
+    DoubleLinearBitmapAdjusted(bool w, bool a, double nPole, double sPole, double missingValue);
 
 // -- Destructor
-	~DoubleLinearBitmapAdjusted();
+    ~DoubleLinearBitmapAdjusted();
 
 // -- Overridden methods
-	virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
+    virtual double interpolatedValue(const Point& point, const vector<FieldPoint>& nearests) const;
 
-protected:
+  protected:
     void print(ostream&) const;
 
-private:
-	double missingValue_;
-	bool   direction_;
+  private:
+    double missingValue_;
+    bool   direction_;
 
 };
 

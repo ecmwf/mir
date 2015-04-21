@@ -31,65 +31,65 @@ class Point;
 class Grid;
 
 // global function not ideal
-inline bool isLand(double lsm) 
-{ 
+inline bool isLand(double lsm) {
     if(lsm > 0.5 )
-        return true; 
+        return true;
 #if ECREGRID_EMOS_SIMULATION
     if (same(lsm,0.5))
-        return true; 
+        return true;
 #endif
-    return false; 
+    return false;
 }
-// 
+//
 
 class InterpolatorLsm : public Interpolator {
-public:
+  public:
 
 // -- Contructors
-	InterpolatorLsm(const Grid& input, const Grid& output, const string& lsmMethod);
-	InterpolatorLsm(int n, const Grid& input, const Grid& output, const string& lsmMethod);
-	InterpolatorLsm(bool w, bool a, double nPole, double sPole, int n, const Grid& input, const Grid& output, const string& lsmMethod);
+    InterpolatorLsm(const Grid& input, const Grid& output, const string& lsmMethod);
+    InterpolatorLsm(int n, const Grid& input, const Grid& output, const string& lsmMethod);
+    InterpolatorLsm(bool w, bool a, double nPole, double sPole, int n, const Grid& input, const Grid& output, const string& lsmMethod);
 
 // -- Destructor
-	virtual ~InterpolatorLsm();
+    virtual ~InterpolatorLsm();
 
 // -- Methods
 
-	void lsm(const Grid& input, const Grid& output, const string& lsmMethod);
+    void lsm(const Grid& input, const Grid& output, const string& lsmMethod);
 
-	double useNearestNeigbour(const Point& where, const vector<FieldPoint>& nearests, int size, double missingValue) const;
-	double useNearestNeigbour(const Point& where, const vector<FieldPoint>& nearests, int size) const;
+    double useNearestNeigbour(const Point& where, const vector<FieldPoint>& nearests, int size, double missingValue) const;
+    double useNearestNeigbour(const Point& where, const vector<FieldPoint>& nearests, int size) const;
 
-protected:
+  protected:
 // -- Methods
-	virtual void print(ostream&) const;
+    virtual void print(ostream&) const;
 
-	double adjustWeight(bool where, bool neighbour, double weight) const
-	{
-		if(where != neighbour){
-			return weight * LSM_FACTOR;
-		}
-		return weight;
-	}
+    double adjustWeight(bool where, bool neighbour, double weight) const {
+        if(where != neighbour) {
+            return weight * LSM_FACTOR;
+        }
+        return weight;
+    }
 
     ref_counted_ptr<const vector<double> > inLsmData_;
     string inLsmFilePreserve_;
     bool firstInput_;
-    
+
     ref_counted_ptr<const vector<double> > outLsmData_;
     string outLsmFilePreserve_;
     bool firstOutput_;
 
-	bool emosTrigger_;
+    bool emosTrigger_;
 
 
 
-private:
+  private:
 
 // -- Friends
-    friend ostream& operator<<(ostream& s,const InterpolatorLsm& p)
-	        { p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const InterpolatorLsm& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 

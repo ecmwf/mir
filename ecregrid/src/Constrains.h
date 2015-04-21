@@ -22,54 +22,56 @@ class FieldDescription;
 
 
 class Constrains {
-public:
+  public:
 
 
 // -- Contructors
 
-	Constrains(const string& in, const string& out);
+    Constrains(const string& in, const string& out);
 
 // -- Destructor
 
-	~Constrains(); // Change to virtual if base class
+    ~Constrains(); // Change to virtual if base class
 
 // -- Operators
 
-	// None
+    // None
 
 // -- Methods
-	void isPossible(FieldDescription* methods, bool global_output) const ; 
-	void print(ostream&) const; // Change to virtual if base class	
+    void isPossible(FieldDescription* methods, bool global_output) const ;
+    void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 
-private:
+  private:
 
 // No copy allowed
 
-	Constrains(const Constrains&);
-	Constrains& operator=(const Constrains&);
+    Constrains(const Constrains&);
+    Constrains& operator=(const Constrains&);
 
 // -- Members
-	string in_;
-	string out_;
+    string in_;
+    string out_;
 
 // -- Methods
-	// None
+    // None
 
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const Constrains& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const Constrains& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

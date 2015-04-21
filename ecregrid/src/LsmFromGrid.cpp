@@ -56,41 +56,35 @@
 #include <sys/stat.h>
 
 LsmFromGrid::LsmFromGrid(Input* input, Grid* grid, Interpolator* method) :
-	Lsm( input), grid_(grid), method_(method), directoryOfPredefined_("/latlon1km")
-{
+    Lsm( input), grid_(grid), method_(method), directoryOfPredefined_("/latlon1km") {
 }
 
-LsmFromGrid::~LsmFromGrid()
-{
+LsmFromGrid::~LsmFromGrid() {
 }
 
-long LsmFromGrid::value(double lat, double lon) const
-{
-	throw NotImplementedFeature("LsmFromGrid::value()");
+long LsmFromGrid::value(double lat, double lon) const {
+    throw NotImplementedFeature("LsmFromGrid::value()");
 }
 
-double LsmFromGrid::seaPoint(double lat, double lon) const
-{
-	throw NotImplementedFeature("LsmFromGrid::seaPoint");
+double LsmFromGrid::seaPoint(double lat, double lon) const {
+    throw NotImplementedFeature("LsmFromGrid::seaPoint");
 }
 
-bool LsmFromGrid::seaPointBool(double lat, double lon) const
-{
-	throw NotImplementedFeature("LsmFromGrid::seaPoint");
+bool LsmFromGrid::seaPointBool(double lat, double lon) const {
+    throw NotImplementedFeature("LsmFromGrid::seaPoint");
 }
 
-void LsmFromGrid::getLsmValues( const Grid& gridSpec, vector<bool>& generatedLsm )
-{
+void LsmFromGrid::getLsmValues( const Grid& gridSpec, vector<bool>& generatedLsm ) {
     if(DEBUG)
         cout << "LsmPreDefined::getLsmValues ----- PREDEFINED ----- " << path_ + directoryOfPredefined_ + input_->fileName() << endl;
 
-    if(isAvailablePredefinedLsm()){
-		LsmPreDefined l(input_->newInput(input_->fileName()), directoryOfPredefined());
+    if(isAvailablePredefinedLsm()) {
+        LsmPreDefined l(input_->newInput(input_->fileName()), directoryOfPredefined());
         l.getLsmValues(gridSpec, generatedLsm);
         return;
     }
-	//180/21600 == .00833333333333333333
-	//RegularLatLon ll(180/21600,180/21600);
+    //180/21600 == .00833333333333333333
+    //RegularLatLon ll(180/21600,180/21600);
 
     vector<double> data;
     input_->getDoubleValues(path_, data);
@@ -99,7 +93,7 @@ void LsmFromGrid::getLsmValues( const Grid& gridSpec, vector<bool>& generatedLsm
 
 
 //    if(DEBUG)
- //       cout << "LsmPreDefined::getLsmValues -- globalGridSizeCalclulated " << globalGridSizeCalclulated << endl;
+//       cout << "LsmPreDefined::getLsmValues -- globalGridSizeCalclulated " << globalGridSizeCalclulated << endl;
 
 
     vector<Point> gridRequired;
@@ -107,50 +101,49 @@ void LsmFromGrid::getLsmValues( const Grid& gridSpec, vector<bool>& generatedLsm
 
     size_t requiredGridSize = gridRequired.size();
 
-	auto_ptr<GridContext> ctx(grid_->getGridContext());
+    auto_ptr<GridContext> ctx(grid_->getGridContext());
 
     generatedLsm.resize(requiredGridSize);
-	vector<FieldPoint> nearests;
+    vector<FieldPoint> nearests;
 
 // ssp supposed to be
-	int inScMode = 1;
+    int inScMode = 1;
 
-	for (size_t i = 0 ; i < requiredGridSize ; i++) {
-		grid_->nearestPoints(ctx.get(),gridRequired[i],nearests,data,inScMode,method_->numberOfNeighbours());
-		double temp = method_->interpolatedValue(gridRequired[i],nearests);
-		if (temp > 0.5)
-			generatedLsm[i] = true;
-		else
-           	generatedLsm[i] = false;
-	}
+    for (size_t i = 0 ; i < requiredGridSize ; i++) {
+        grid_->nearestPoints(ctx.get(),gridRequired[i],nearests,data,inScMode,method_->numberOfNeighbours());
+        double temp = method_->interpolatedValue(gridRequired[i],nearests);
+        if (temp > 0.5)
+            generatedLsm[i] = true;
+        else
+            generatedLsm[i] = false;
+    }
 
-	createGlobalLsmAndWriteToFileAsGrib(gridSpec, data);
+    createGlobalLsmAndWriteToFileAsGrib(gridSpec, data);
 
 }
 
-void LsmFromGrid::createGlobalLsmAndWriteToFileAsGrib(const Grid& gridSpec, const vector<double>& data) const
-{
+void LsmFromGrid::createGlobalLsmAndWriteToFileAsGrib(const Grid& gridSpec, const vector<double>& data) const {
     Grid* globalGrid = gridSpec.getGlobalGrid();
     long globalGridSizeCalclulated = globalGrid->calculatedNumberOfPoints();
 
     vector<Point> gridRequired;
     globalGrid->generateGrid1D(gridRequired);
-	vector<FieldPoint> nearests;
+    vector<FieldPoint> nearests;
 
     vector<double> generatedLsm(globalGridSizeCalclulated);
-	auto_ptr<GridContext> ctx(globalGrid->getGridContext());
+    auto_ptr<GridContext> ctx(globalGrid->getGridContext());
 
 // ssp supposed to be
-	int inScMode = 1;
+    int inScMode = 1;
 
-	for (int i = 0 ; i < globalGridSizeCalclulated ; i++) {
-		grid_->nearestPoints(ctx.get(),gridRequired[i],nearests,data,inScMode,method_->numberOfNeighbours());
-		generatedLsm[i] = method_->interpolatedValue(gridRequired[i],nearests);
-	}
+    for (int i = 0 ; i < globalGridSizeCalclulated ; i++) {
+        grid_->nearestPoints(ctx.get(),gridRequired[i],nearests,data,inScMode,method_->numberOfNeighbours());
+        generatedLsm[i] = method_->interpolatedValue(gridRequired[i],nearests);
+    }
 
 
 //////////////////////////////////////////////////////////////////////
-	string levelType = "sfc";
+    string levelType = "sfc";
 // Scanning mode always north-south , west-east
     int scanMode = 1;
     int bitsPerValue = 12;
@@ -162,23 +155,21 @@ void LsmFromGrid::createGlobalLsmAndWriteToFileAsGrib(const Grid& gridSpec, cons
         cout << "LsmFromGrid::createGlobalLsmAndWriteToFileAsGrib - file name: " << path_ + directoryOfPredefined() + input_->fileName() << endl;
     o.write(*f);
     if(chmod( (path_ + directoryOfPredefined() + input_->fileName()).c_str(), (mode_t) 0444 ))
-            throw CantOpenFile("LsmFromGrid::createWholeGlobeAndWriteToFile cannot change mode to 444" + input_->fileName());
+        throw CantOpenFile("LsmFromGrid::createWholeGlobeAndWriteToFile cannot change mode to 444" + input_->fileName());
 
 //////////////////////////////////////////////////////////////////////
 
 }
 
 
-bool LsmFromGrid::isAvailablePredefinedLsm()
-{
+bool LsmFromGrid::isAvailablePredefinedLsm() {
     if(DEBUG)
         cout << "LsmFromGrid::isAvailablePredefinedLsm " << path_ + directoryOfPredefined_ << endl;
 
     if(input_->exist(path_ + directoryOfPredefined_))
         return true;
-	return false;
+    return false;
 }
 
-void LsmFromGrid::print(ostream&) const
-{
+void LsmFromGrid::print(ostream&) const {
 }

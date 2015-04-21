@@ -24,45 +24,51 @@ class Grid;
 
 class Lsm {
 
-public:
+  public:
 // -- Contructors
 
-	Lsm( Input* input);
+    Lsm( Input* input);
 
 // -- Destructor
 
-	virtual ~Lsm(); // Change to virtual if base class
+    virtual ~Lsm(); // Change to virtual if base class
 
-	virtual double  seaPoint(double latitude,double longitude) const = 0;
-	virtual bool    seaPointBool(double latitude,double longitude) const = 0;
+    virtual double  seaPoint(double latitude,double longitude) const = 0;
+    virtual bool    seaPointBool(double latitude,double longitude) const = 0;
 
-	virtual	bool    isAvailablePredefinedLsm()                       = 0;
-	virtual	string  directoryOfPredefined()                    const = 0;
+    virtual	bool    isAvailablePredefinedLsm()                       = 0;
+    virtual	string  directoryOfPredefined()                    const = 0;
 
     virtual ref_counted_ptr< const vector<double> > getLsmValuesDouble(const Grid& gridSpec);
 
-	virtual void   createGlobalLsmAndWriteToFileAsGrib(const Grid&) const;
-	Input*          releaseInput()  { return input_.release(); }
+    virtual void   createGlobalLsmAndWriteToFileAsGrib(const Grid&) const;
+    Input*          releaseInput()  {
+        return input_.release();
+    }
 
-	string          path() const    { return path_; }
-	string          pathForGeneratedFiles() const    { return pathForGeneratedFiles_; }
+    string          path() const    {
+        return path_;
+    }
+    string          pathForGeneratedFiles() const    {
+        return pathForGeneratedFiles_;
+    }
 
-protected:
+  protected:
 
 // -- Members
-	auto_ptr<Input> input_;
-	string path_;
-	string pathForGeneratedFiles_;
+    auto_ptr<Input> input_;
+    string path_;
+    string pathForGeneratedFiles_;
 
     static ThreadSafeMap<std::vector<double> > cache_;
     static string cacheKey(const Input& in, const Grid& grid);
 
-private:
+  private:
 
 // No copy allowed
 
-	Lsm(const Lsm&);
-	Lsm& operator=(const Lsm&);
+    Lsm(const Lsm&);
+    Lsm& operator=(const Lsm&);
 
 // -- Members
 

@@ -17,31 +17,33 @@
 #include "DerivedSubgridParameters.h"
 #endif
 
-// 
+//
 
 class Orientation : public DerivedSubgridParameters {
-public:
+  public:
 
 // -- Contructors
-	Orientation();
+    Orientation();
 
 // -- Destructor
-	virtual ~Orientation();
+    virtual ~Orientation();
 
 // -- Methods
 
 
-protected:
+  protected:
     virtual void print(ostream&) const;
 
-private:
+  private:
 
 // -- Methods
-	double calculate(double k, double l, double m)  const;
+    double calculate(double k, double l, double m)  const;
 
 // -- Friends
-    friend ostream& operator<<(ostream& s,const Orientation& p)
-            { p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const Orientation& p) {
+        p.print(s);
+        return s;
+    }
 
 
 };

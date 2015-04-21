@@ -21,72 +21,65 @@
 #include <fstream>
 
 GTopo30::GTopo30(Input* input):
-	Lsm(input), directoryOfPredefined_(pathForGeneratedFiles_ + "/gtopo/")
-{
+    Lsm(input), directoryOfPredefined_(pathForGeneratedFiles_ + "/gtopo/") {
 
 }
 
-GTopo30::~GTopo30()
-{
-	for(vector<GTopo30Dem*>::iterator j = dems_.begin(); j != dems_.end(); ++j)
-		delete *j;
+GTopo30::~GTopo30() {
+    for(vector<GTopo30Dem*>::iterator j = dems_.begin(); j != dems_.end(); ++j)
+        delete *j;
 }
 
-double GTopo30::seaPoint(double latitude,double longitude) const
-{
-		if(value(latitude,longitude) == -9999)
-			return 0.0;
-		return 1.0;			
+double GTopo30::seaPoint(double latitude,double longitude) const {
+    if(value(latitude,longitude) == -9999)
+        return 0.0;
+    return 1.0;
 }
 
-bool GTopo30::seaPointBool(double latitude,double longitude) const
-{
-		if(value(latitude,longitude) == -9999)
-			return false;
-		return true;			
+bool GTopo30::seaPointBool(double latitude,double longitude) const {
+    if(value(latitude,longitude) == -9999)
+        return false;
+    return true;
 }
 
-bool GTopo30::isAvailablePredefinedLsm()
-{
-	if(DEBUG)
-		cout << "GTopo30::isAvailablePredefinedLsm " << directoryOfPredefined_ << endl;
-	if(input_->exist(directoryOfPredefined_))
-		return true;
+bool GTopo30::isAvailablePredefinedLsm() {
+    if(DEBUG)
+        cout << "GTopo30::isAvailablePredefinedLsm " << directoryOfPredefined_ << endl;
+    if(input_->exist(directoryOfPredefined_))
+        return true;
 
-	 string lsmPath = "/gtopo/gtopo30/";
+    string lsmPath = "/gtopo/gtopo30/";
 
-	 string demsPath = path_ + lsmPath;
+    string demsPath = path_ + lsmPath;
 
-	 if(GTOPO_TEMP)
-	 	demsPath = pathForGeneratedFiles_ + lsmPath;
+    if(GTOPO_TEMP)
+        demsPath = pathForGeneratedFiles_ + lsmPath;
 
-	 string dems =  demsPath + "dems";
-	 ifstream in(dems.c_str());
-	 if(!in)
-	 	throw CantOpenFile("GTopo30::isAvailablePredefinedLsm " + dems);
+    string dems =  demsPath + "dems";
+    ifstream in(dems.c_str());
+    if(!in)
+        throw CantOpenFile("GTopo30::isAvailablePredefinedLsm " + dems);
 
 
-	string name;
-	double minLat,maxLat,minLon,maxLon,ignore;
-	
+    string name;
+    double minLat,maxLat,minLon,maxLon,ignore;
+
 //	dems_.clear();
 
-	while(in >> name >> minLat >> maxLat >> minLon >> maxLon >> ignore >> ignore >> ignore >> ignore)
-	{
-		dems_.push_back(new GTopo30Dem(demsPath,name,minLat,maxLat,minLon,maxLon));	
-	}
+    while(in >> name >> minLat >> maxLat >> minLon >> maxLon >> ignore >> ignore >> ignore >> ignore) {
+        dems_.push_back(new GTopo30Dem(demsPath,name,minLat,maxLat,minLon,maxLon));
+    }
 
-	return false;
+    return false;
 }
 
-long GTopo30::value(double latitude,double longitude) const
-{
-	while(longitude < -180) longitude += 360;
-	while(longitude >  180) longitude -= 360;
+long GTopo30::value(double latitude,double longitude) const {
+    while(longitude < -180) longitude += 360;
+    while(longitude >  180) longitude -= 360;
 
-	for(vector<GTopo30Dem*>::const_iterator j = dems_.begin(); j != dems_.end(); ++j)
-		if((*j)->contains(latitude,longitude))
-			return (*j)->value(latitude,longitude);
-	 throw OutOfArea(latitude,longitude);
+    for(vector<GTopo30Dem*>::const_iterator j = dems_.begin(); j != dems_.end(); ++j)
+        if((*j)->contains(latitude,longitude))
+            return (*j)->value(latitude,longitude);
+    throw OutOfArea(latitude,longitude);
 
 }

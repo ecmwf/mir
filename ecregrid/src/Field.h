@@ -23,137 +23,175 @@
 // Forward declarations
 class FieldDescription;
 
-// 
+//
 
 class Field {
-public:
+  public:
 
-// -- Exceptions
-	// None
+    // -- Exceptions
+    // None
 
-// -- Contructors
+    // -- Contructors
 
-	Field();
-	Field(int bitsPerValue, int editionNumber);
-	Field(const Parameter& param);
+    Field();
+    Field(int bitsPerValue, int editionNumber);
+    Field(const Parameter &param);
 
-// Input Field
-	Field(const Parameter& param, const string& units, int editionNumber, int centre, const string& levType, int level, int date, int time, const string& stepUnits, int startStep, int endStep, int bitsPerValue);
+    // Input Field
+    Field(const Parameter &param, const string &units, int editionNumber, int centre, const string &levType, int level, int date, int time, const string &stepUnits, int startStep, int endStep, int bitsPerValue);
 
-// copy general information to output
-// to be del
-	Field(const Field&);
-	Field(const Field& f, int bitsPerValue, int editionNumber);
-	Field(const Parameter& param, const Field&);
-	Field(const Parameter& param, const Field& f, int bitsPerValue, int editionNumber) ;
+    // copy general information to output
+    // to be del
+    Field(const Field &);
+    Field(const Field &f, int bitsPerValue, int editionNumber);
+    Field(const Parameter &param, const Field &);
+    Field(const Parameter &param, const Field &f, int bitsPerValue, int editionNumber) ;
 
-// Vertical Interpolation
-//	Field(const string& levType, int level, const Field&);
+    // Vertical Interpolation
+    //	Field(const string& levType, int level, const Field&);
 
-// -- Destructor
+    // -- Destructor
 
-	virtual ~Field(); // Change to virtual if base class
+    virtual ~Field(); // Change to virtual if base class
 
-// -- Convertors
-	// None
+    // -- Convertors
+    // None
 
-// -- Operators
-	bool operator==(const Field& other) const;
+    // -- Operators
+    bool operator==(const Field &other) const;
 
-// -- Methods
-	string         levelType()     const { return levelType_; }
-	int            level()         const { return level_; }
+    // -- Methods
+    string         levelType()     const {
+        return levelType_;
+    }
+    int            level()         const {
+        return level_;
+    }
 
-	Parameter      parameter()     const { return parameter_; }
-	string         units()         const { return units_; }
-	int            centre()        const { return centre_; }
+    Parameter      parameter()     const {
+        return parameter_;
+    }
+    string         units()         const {
+        return units_;
+    }
+    int            centre()        const {
+        return centre_;
+    }
 
-	int            editionNumber() const { return editionNumber_; }
+    int            editionNumber() const {
+        return editionNumber_;
+    }
 
-	int            date()          const { return date_; }
-	int            time()          const { return time_; }
+    int            date()          const {
+        return date_;
+    }
+    int            time()          const {
+        return time_;
+    }
 
-	string         stepUnits()     const { return stepUnits_; }
-	int            startStep()     const { return startStep_; }
-	int            endStep()       const { return endStep_; }
-	int            bitsPerValue()  const { return bitsPerValue_; }
+    string         stepUnits()     const {
+        return stepUnits_;
+    }
+    int            startStep()     const {
+        return startStep_;
+    }
+    int            endStep()       const {
+        return endStep_;
+    }
+    int            bitsPerValue()  const {
+        return bitsPerValue_;
+    }
 
-	bool           isSameLevelType( const string& lt) const;
-	bool           isSameLevel(int level)             const;
+    bool           isSameLevelType( const string &lt) const;
+    bool           isSameLevel(int level)             const;
 
-	int           number()        const { return parameter_.number(); }
-	int           table()         const { return parameter_.table(); }
-	bool           lsm()           const { return parameter_.lsm(); }
-	bool           wind()          const { return parameter_.wind(); }
-	bool           conservation()  const { return parameter_.conservation(); }
-	bool           nearest()       const { return parameter_.nearest(); }
+    int           number()        const {
+        return parameter_.number();
+    }
+    int           table()         const {
+        return parameter_.table();
+    }
+    bool           lsm()           const {
+        return parameter_.lsm();
+    }
+    bool           wind()          const {
+        return parameter_.wind();
+    }
+    bool           conservation()  const {
+        return parameter_.conservation();
+    }
+    bool           nearest()       const {
+        return parameter_.nearest();
+    }
 
-	virtual bool           isRotated()                        const = 0;
-	virtual string         nameOfField()                      const = 0;
-	virtual void           resetOutput(FieldDescription* out) const = 0;
-	virtual FieldDescription* makeOutput(const FieldDescription& out) const = 0;
-	virtual const vector<double>& data()                             const = 0;
-	virtual size_t dataLength()                       const = 0;
-	virtual void   	       dump2file(const string& name)      const = 0;
-	virtual void   	       outputArea(double* a)      const = 0;
-	virtual void           setOutputAreaAndBasics(FieldDescription& out) const;
-	virtual unsigned long           calculatedLength()         const = 0;
+    virtual bool           isRotated()                        const = 0;
+    virtual string         nameOfField()                      const = 0;
+    virtual void           resetOutput(FieldDescription *out) const = 0;
+    virtual FieldDescription *makeOutput(const FieldDescription &out) const = 0;
+    virtual const vector<double> &data()                             const = 0;
+    virtual size_t dataLength()                       const = 0;
+    virtual void   	       dump2file(const string &name)      const = 0;
+    virtual void   	       outputArea(double *a)      const = 0;
+    virtual void           setOutputAreaAndBasics(FieldDescription &out) const;
+    virtual unsigned long           calculatedLength()         const = 0;
 
 
-protected:
+  protected:
 
-// -- Members
-	// None
+    // -- Members
+    // None
 
-// -- Methods
-	
-	virtual void print(ostream&) const; // Change to virtual if base class	
+    // -- Methods
 
-private:
+    virtual void print(ostream &) const; // Change to virtual if base class
 
-// No copy allowed
+  private:
 
-	Field& operator=(const Field&);
+    // No copy allowed
 
-// -- Members
+    Field &operator=(const Field &);
 
-	Parameter  parameter_;
-	string     units_;
-	int        centre_;
-	int        editionNumber_;
+    // -- Members
 
-	string     levelType_;
-	int        level_;
+    Parameter  parameter_;
+    string     units_;
+    int        centre_;
+    int        editionNumber_;
 
-	int        date_;
-	int        time_;
+    string     levelType_;
+    int        level_;
 
-	string     stepUnits_;
-	int        startStep_;
-	int        endStep_;
+    int        date_;
+    int        time_;
 
-	int        bitsPerValue_;
+    string     stepUnits_;
+    int        startStep_;
+    int        endStep_;
 
-	/*
-	int        localDefinitionNumber_;
-	*/
+    int        bitsPerValue_;
 
-// -- Methods
-	// None
+    /*
+    int        localDefinitionNumber_;
+    */
 
-// -- Overridden methods
-	// None
+    // -- Methods
+    // None
 
-// -- Class members
-	// None
+    // -- Overridden methods
+    // None
 
-// -- Class methods
-	// None
+    // -- Class members
+    // None
 
-// -- Friends
+    // -- Class methods
+    // None
 
-	friend ostream& operator<<(ostream& s,const Field& p)
-		{ p.print(s); return s; }
+    // -- Friends
+
+    friend ostream &operator<<(ostream &s, const Field &p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

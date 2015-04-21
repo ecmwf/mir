@@ -21,60 +21,55 @@
 #include "Grid.h"
 #endif
 
-AverageLsm::AverageLsm(const Grid& input, const Grid& output, const string& lsmMethod) :
-	InterpolatorLsm(16,input,output,lsmMethod)
-{
+AverageLsm::AverageLsm(const Grid &input, const Grid &output, const string &lsmMethod) :
+    InterpolatorLsm(16, input, output, lsmMethod) {
 }
 
-AverageLsm::AverageLsm(int n, const Grid& input, const Grid& output, const string& lsmMethod) :
-	InterpolatorLsm(n,input,output,lsmMethod)
-{
+AverageLsm::AverageLsm(int n, const Grid &input, const Grid &output, const string &lsmMethod) :
+    InterpolatorLsm(n, input, output, lsmMethod) {
 }
 
-AverageLsm::~AverageLsm()
-{ 
-//cout << "AverageLsm: cleaning up." << endl; 
+AverageLsm::~AverageLsm() {
+    //cout << "AverageLsm: cleaning up." << endl;
 }
 
 /*
-	Numbering of the points (I is the interpolation point):
+    Numbering of the points (I is the interpolation point):
 
                 0       1
-				    I
+                    I
                 2       3
 */
 
-double AverageLsm::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
-	int size = nearests.size();
+double AverageLsm::interpolatedValue(const Point &where, const vector<FieldPoint> &nearests) const {
+    int size = nearests.size();
 
     // NB We can dereference the lsm data objects here as there are class-level
     // ref counted pointers to them
-	bool lsm = isLand( (*outLsmData_)[where.k1dIndex()] );
-	int count = 0;
-	double sum = 0;
+    bool lsm = isLand( (*outLsmData_)[where.k1dIndex()] );
+    int count = 0;
+    double sum = 0;
 
     for (int k = 0; k < size; k++) {
         // ssp Check if it is neighbour same sort of point as interpolated one
-        if(lsm == isLand((*inLsmData_)[nearests[k].k1dIndex()])){
-			sum += nearests[k].value();
-			++count;
+        if (lsm == isLand((*inLsmData_)[nearests[k].k1dIndex()])) {
+            sum += nearests[k].value();
+            ++count;
         }
     }
     // if none of nearest points has the same land-sea mask
-    if(!count){
-    	for (int k = 0; k < size; k++) {
-			sum += nearests[k].value();
-			++count;
-    	}
+    if (!count) {
+        for (int k = 0; k < size; k++) {
+            sum += nearests[k].value();
+            ++count;
+        }
     }
 
-	return sum / count;
+    return sum / count;
 }
- 
 
-void AverageLsm::print(ostream& out) const
-{
-	Interpolator::print(out);
-	out << "Average - Lsm" ;
+
+void AverageLsm::print(ostream &out) const {
+    Interpolator::print(out);
+    out << "Average - Lsm" ;
 }

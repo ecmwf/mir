@@ -13,38 +13,43 @@
 #include "Point.h"
 
 class FieldPoint : public Point {
-public:
+  public:
 
-	FieldPoint(double latitude, double longitude, int i, int j, long k, double value);
-	FieldPoint(double latitude, double longitude, int i, int j, double value);
-	FieldPoint(const Point& p, double value);
-	FieldPoint(const FieldPoint&);
+    FieldPoint(double latitude, double longitude, int i, int j, long k, double value);
+    FieldPoint(double latitude, double longitude, int i, int j, double value);
+    FieldPoint(const Point &p, double value);
+    FieldPoint(const FieldPoint &);
 
-	~FieldPoint();
+    ~FieldPoint();
 
-	FieldPoint& operator=(const FieldPoint&);
-	bool operator ==(const FieldPoint& other) const;
+    FieldPoint &operator=(const FieldPoint &);
+    bool operator ==(const FieldPoint &other) const;
 
-	double value() const { return value_; }
-	bool operator <(const FieldPoint& other) const
-		{ return latitude_ == other.latitude_ ? longitude_ < other.longitude_ : latitude_ > other.latitude_; }
+    double value() const {
+        return value_;
+    }
+    bool operator <(const FieldPoint &other) const {
+        return latitude_ == other.latitude_ ? longitude_ < other.longitude_ : latitude_ > other.latitude_;
+    }
 
 
-private:
+  private:
 
-// No copy allowed
-//  ssp why has to be commented
-//	FieldPoint(const FieldPoint&);
-//	FieldPoint& operator=(const FieldPoint&);
+    // No copy allowed
+    //  ssp why has to be commented
+    //	FieldPoint(const FieldPoint&);
+    //	FieldPoint& operator=(const FieldPoint&);
 
-	void print(ostream&) const;
+    void print(ostream &) const;
 
-	double value_;
+    double value_;
 
-// -- Friends	
+    // -- Friends
 
-	friend ostream& operator<<(ostream& s,const FieldPoint& p)
-	{ p.print(s); return s; }
+    friend ostream &operator<<(ostream &s, const FieldPoint &p) {
+        p.print(s);
+        return s;
+    }
 };
 
 

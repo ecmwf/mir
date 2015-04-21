@@ -20,31 +20,31 @@
 // Forward declarations
 class GridField;
 
-// 
+//
 
 class VerticalInterpolator {
-public:
+  public:
 
 // -- Contructors
-	VerticalInterpolator();
+    VerticalInterpolator();
 
 // -- Destructor
-	virtual ~VerticalInterpolator();
+    virtual ~VerticalInterpolator();
 
 // -- Methods
 
-	virtual void  interpolate(const GridField& inputUp, const GridField& inputDown, double* values, unsigned long valuesSize) const = 0;
+    virtual void  interpolate(const GridField& inputUp, const GridField& inputDown, double* values, unsigned long valuesSize) const = 0;
 
-protected:
+  protected:
 // -- Methods
 //	virtual void print(ostream&) const;
 
 // Members
 
-private:
+  private:
 
 // -- Friends
- //   friend ostream& operator<<(ostream& s,const VerticalInterpolator& p)
+//   friend ostream& operator<<(ostream& s,const VerticalInterpolator& p)
 //	        { p.print(s); return s; }
 };
 

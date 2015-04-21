@@ -18,18 +18,15 @@
 #endif
 
 BiLinearBitmap::BiLinearBitmap(double missingValue) :
-	BiLinear(), missingValue_(missingValue)
-{
+    BiLinear(), missingValue_(missingValue) {
 }
 
 BiLinearBitmap::BiLinearBitmap(bool w, bool a, double nPole, double sPole, double missingValue) :
-	BiLinear(w,a,nPole,sPole), missingValue_(missingValue)
-{
+    BiLinear(w,a,nPole,sPole), missingValue_(missingValue) {
 }
 
-BiLinearBitmap::~BiLinearBitmap()
-{ 
-//cout << "BiLinear: cleaning up." << endl; 
+BiLinearBitmap::~BiLinearBitmap() {
+//cout << "BiLinear: cleaning up." << endl;
 }
 
 /*
@@ -40,20 +37,18 @@ BiLinearBitmap::~BiLinearBitmap()
                 2       3
 */
 
-double BiLinearBitmap::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const
-{
-	int size = nearests.size();
-	if(size < neighbour_)
-		return missingNeighbours(where,nearests,size,missingValue_);
+double BiLinearBitmap::interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const {
+    int size = nearests.size();
+    if(size < neighbour_)
+        return missingNeighbours(where,nearests,size,missingValue_);
 
-	if(same(nearests[0].value(),missingValue_) || same(nearests[1].value(),missingValue_) || same(nearests[2].value(),missingValue_) || same(nearests[3].value(),missingValue_) )
-		return useNearestNeigbour(where,nearests,size,missingValue_);
+    if(same(nearests[0].value(),missingValue_) || same(nearests[1].value(),missingValue_) || same(nearests[2].value(),missingValue_) || same(nearests[3].value(),missingValue_) )
+        return useNearestNeigbour(where,nearests,size,missingValue_);
 
-	return BiLinear::interpolatedValue(where,nearests);
+    return BiLinear::interpolatedValue(where,nearests);
 }
 
-void BiLinearBitmap::print(ostream& out) const
-{
-	Interpolator::print(out);
-	out << "BiLinearBitmap" ;
+void BiLinearBitmap::print(ostream& out) const {
+    Interpolator::print(out);
+    out << "BiLinearBitmap" ;
 }

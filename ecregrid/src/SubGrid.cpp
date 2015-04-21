@@ -26,80 +26,76 @@
 #endif
 
 SubGrid::SubGrid(double ns, double we) :
-	Extraction(), ns_(ns), we_(we)
-{
+    Extraction(), ns_(ns), we_(we) {
 }
 
-SubGrid::~SubGrid()
-{
+SubGrid::~SubGrid() {
 }
 
-GridField* SubGrid::extract(GridField& field) const
-{
-	string name = field.nameOfField(); 
-	if(name != "regular_ll")
-		throw UserError("SubGrid::extract -- SubGrid Can be extract only from Regular LatLon Field. Required Grid to be extracted is: " + name);
+GridField *SubGrid::extract(GridField &field) const {
+    string name = field.nameOfField();
+    if (name != "regular_ll")
+        throw UserError("SubGrid::extract -- SubGrid Can be extract only from Regular LatLon Field. Required Grid to be extracted is: " + name);
 
-	int northSouthNumberOfPoints = field.grid().northSouthNumberOfPoints();
+    int northSouthNumberOfPoints = field.grid().northSouthNumberOfPoints();
     int westEastNumberOfPoints   = field.grid().westEastNumberOfPoints();
     long dataSize                = field.dataLength();
 
-	ASSERT(westEastNumberOfPoints*northSouthNumberOfPoints == dataSize);
-	const vector<double>& data = field.data();
+    ASSERT(westEastNumberOfPoints * northSouthNumberOfPoints == dataSize);
+    const vector<double> &data = field.data();
 
-	double northSouthIncrement = field.grid().northSouthIncrement();
-	double westEastIncrement   = field.grid().westEastIncrement();
+    double northSouthIncrement = field.grid().northSouthIncrement();
+    double westEastIncrement   = field.grid().westEastIncrement();
 
-	
-	int factorNS = northSouthIncrement / ns_;
-	if(northSouthIncrement != ns_*factorNS)
-		throw UserError("SubGrid::extract -- Output north-south step not multiple of input ");
 
-	int factorWE = westEastIncrement / we_;
-	if(westEastIncrement != we_*factorWE)
-		throw UserError("SubGrid::extract -- Output west-east step not multiple of input ");
-	
-	double north = field.grid().north();
-	double south = field.grid().south();
-	double west  = field.grid().west();
-	double east  = field.grid().east();
+    int factorNS = northSouthIncrement / ns_;
+    if (northSouthIncrement != ns_ * factorNS)
+        throw UserError("SubGrid::extract -- Output north-south step not multiple of input ");
 
-	int skipedNumberNS = 0;
-	if(northSouthNumberOfPoints % factorNS)
-		skipedNumberNS = northSouthNumberOfPoints / factorNS + 1;
-	else {
-		skipedNumberNS = northSouthNumberOfPoints / factorNS;
-		south = south - northSouthIncrement;
-	}
+    int factorWE = westEastIncrement / we_;
+    if (westEastIncrement != we_ * factorWE)
+        throw UserError("SubGrid::extract -- Output west-east step not multiple of input ");
 
-	int skipedNumberWE = 0;
-	if(westEastNumberOfPoints % factorWE)
-		skipedNumberWE = westEastNumberOfPoints / factorWE + 1;
-	else {
-		skipedNumberWE = westEastNumberOfPoints / factorWE; 
-		east = east - westEastIncrement;
-	}
+    double north = field.grid().north();
+    double south = field.grid().south();
+    double west  = field.grid().west();
+    double east  = field.grid().east();
 
-	long valuesSize = skipedNumberNS * skipedNumberWE;
+    int skipedNumberNS = 0;
+    if (northSouthNumberOfPoints % factorNS)
+        skipedNumberNS = northSouthNumberOfPoints / factorNS + 1;
+    else {
+        skipedNumberNS = northSouthNumberOfPoints / factorNS;
+        south = south - northSouthIncrement;
+    }
+
+    int skipedNumberWE = 0;
+    if (westEastNumberOfPoints % factorWE)
+        skipedNumberWE = westEastNumberOfPoints / factorWE + 1;
+    else {
+        skipedNumberWE = westEastNumberOfPoints / factorWE;
+        east = east - westEastIncrement;
+    }
+
+    long valuesSize = skipedNumberNS * skipedNumberWE;
     vector<double> values(valuesSize);
     std::copy(data.begin(), data.end(), values.begin());
 
-//	cout << "SubGrid::extract westEastNumberOfPoints*northSouthNumberOfPoints " << westEastNumberOfPoints*northSouthNumberOfPoints << " valuesSize " << valuesSize <<  endl;
+    //	cout << "SubGrid::extract westEastNumberOfPoints*northSouthNumberOfPoints " << westEastNumberOfPoints*northSouthNumberOfPoints << " valuesSize " << valuesSize <<  endl;
 
-	long next = 0, count = 0;
+    long next = 0, count = 0;
     for (int i = 0 ; i < northSouthNumberOfPoints ; i += factorNS) {
-		next = i * westEastNumberOfPoints;
-    	for (int j = 0 ; j < westEastNumberOfPoints ; j +=factorWE)
-			values[count++] = data[next+j];
-	}
+        next = i * westEastNumberOfPoints;
+        for (int j = 0 ; j < westEastNumberOfPoints ; j += factorWE)
+            values[count++] = data[next + j];
+    }
 
-	RegularLatLon* llgrid = new RegularLatLon(north, west, south, east, ns_, we_);
+    RegularLatLon *llgrid = new RegularLatLon(north, west, south, east, ns_, we_);
 
-	return new GridField(llgrid,field,field.bitsPerValue(),field.editionNumber(),field.scanningMode(),field.bitmap(),values,field.missingValue());
+    return new GridField(llgrid, field, field.bitsPerValue(), field.editionNumber(), field.scanningMode(), field.bitmap(), values, field.missingValue());
 }
 
 
-void SubGrid::print(ostream& out) const
-{
-	out << "SubGrid{ NS increment=[" << ns_ << "], WE increment=[" << we_ << "] }";
+void SubGrid::print(ostream &out) const {
+    out << "SubGrid{ NS increment=[" << ns_ << "], WE increment=[" << we_ << "] }";
 }

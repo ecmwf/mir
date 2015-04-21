@@ -17,20 +17,17 @@
 #include "SpectralField.h"
 #endif
 
-VerticalTransformerSpectral::VerticalTransformerSpectral(const string& typeOfLevel, int level) : 
-	VerticalTransformer(typeOfLevel,level)
-{
+VerticalTransformerSpectral::VerticalTransformerSpectral(const string &typeOfLevel, int level) :
+    VerticalTransformer(typeOfLevel, level) {
 }
 
-VerticalTransformerSpectral::~VerticalTransformerSpectral()
-{
+VerticalTransformerSpectral::~VerticalTransformerSpectral() {
 }
 
 
-Field* VerticalTransformerSpectral::transform(const Field& inUp, const Field& inDown) const
-{
-	//const SpectralField& inputUp   = dynamic_cast<const SpectralField&>(inUp);
-	//const SpectralField& inputDown = dynamic_cast<const SpectralField&>(inDown);
+Field *VerticalTransformerSpectral::transform(const Field &inUp, const Field &inDown) const {
+    //const SpectralField& inputUp   = dynamic_cast<const SpectralField&>(inUp);
+    //const SpectralField& inputDown = dynamic_cast<const SpectralField&>(inDown);
 
-	return 0;
+    return 0;
 }

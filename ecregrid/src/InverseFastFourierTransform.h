@@ -19,79 +19,79 @@
 class Grid;
 
 class InverseFastFourierTransform : public FastFourierTransform {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	InverseFastFourierTransform(int truncation, int lonNumber, int latsNumProc, double west, double east, bool wind);
-	InverseFastFourierTransform(int truncation, int lonNumber, int latsNumProc, int maxBloxSize, double west, double east);
+    InverseFastFourierTransform(int truncation, int lonNumber, int latsNumProc, double west, double east, bool wind);
+    InverseFastFourierTransform(int truncation, int lonNumber, int latsNumProc, int maxBloxSize, double west, double east);
 
 // -- Destructor
 
-	~InverseFastFourierTransform(); // Change to virtual if base class
+    ~InverseFastFourierTransform(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 // -- Overridden methods
-	long transform(vector<double>& values,  const mapLats& mapped, const Grid& grid) const;
+    long transform(vector<double>& values,  const mapLats& mapped, const Grid& grid) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-//	 void print(ostream&) const; // Change to virtual if base class	
+
+//	 void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	InverseFastFourierTransform(const InverseFastFourierTransform&);
-	InverseFastFourierTransform& operator=(const InverseFastFourierTransform&);
+    InverseFastFourierTransform(const InverseFastFourierTransform&);
+    InverseFastFourierTransform& operator=(const InverseFastFourierTransform&);
 
 // -- Members
 
 // -- Methods
-	long getUsefulPart(vector<double>& values, const vector<int>& offsets, const vector<double>& group, int jump, int multiFactor) const;
-	long getUsefulPartWind(vector<double>& values, const vector<int>& offsets, const vector<double>& group, int jump, int multiFactor, const vector<double>& lats) const;
+    long getUsefulPart(vector<double>& values, const vector<int>& offsets, const vector<double>& group, int jump, int multiFactor) const;
+    long getUsefulPartWind(vector<double>& values, const vector<int>& offsets, const vector<double>& group, int jump, int multiFactor, const vector<double>& lats) const;
 
 // -- Overridden methods
-	void passThroughData(double* a, double* b, double* c, double* d, const vector<double>& trigs, int inInc, int outInc, int lot, int nLon, int factor, int productOfFactors) const;
+    void passThroughData(double* a, double* b, double* c, double* d, const vector<double>& trigs, int inInc, int outInc, int lot, int nLon, int factor, int productOfFactors) const;
 
 // -- Class members
-	double west_;
-	double east_;
+    double west_;
+    double east_;
 
-	bool wind_;
+    bool wind_;
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 

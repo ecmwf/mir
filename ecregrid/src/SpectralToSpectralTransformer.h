@@ -25,72 +25,72 @@ class SpectralField;
 
 
 class SpectralToSpectralTransformer : public Transformer {
-public:
+  public:
 
 // -- Contructors
 
-	SpectralToSpectralTransformer(bool conversion=true);
+    SpectralToSpectralTransformer(bool conversion=true);
 
 // -- Destructor
 
-	~SpectralToSpectralTransformer(); // Change to virtual if base class
+    ~SpectralToSpectralTransformer(); // Change to virtual if base class
 
 
 // -- Methods
 //	Wind* vorticityDivergenceToUV(const Field& inU, const Field& inV, int trunc=0) const;
-	void transform(const SpectralField& input, int outTrunc, vector<comp>& compOut) const;
-	bool transform(const SpectralField& input, int outTrunc, vector<double>& compOut) const;
-	void vorticityDivergenceToUV(const vector<comp>& vor, const vector<comp>& div, int toup, vector<comp>& uu, vector<comp>& vv) const;
+    void transform(const SpectralField& input, int outTrunc, vector<comp>& compOut) const;
+    bool transform(const SpectralField& input, int outTrunc, vector<double>& compOut) const;
+    void vorticityDivergenceToUV(const vector<comp>& vor, const vector<comp>& div, int toup, vector<comp>& uu, vector<comp>& vv) const;
 
 // -- Overridden methods
-	Field* transform(const Field& input, const Field& output) const;
-	Wind*  transformVector(const Field& inU, const Field& inV, const Field& req) const;
+    Field* transform(const Field& input, const Field& output) const;
+    Wind*  transformVector(const Field& inU, const Field& inV, const Field& req) const;
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	// void print(ostream&) const; // Change to virtual if base class	
+
+    // void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	SpectralToSpectralTransformer(const SpectralToSpectralTransformer&);
-	SpectralToSpectralTransformer& operator=(const SpectralToSpectralTransformer&);
+    SpectralToSpectralTransformer(const SpectralToSpectralTransformer&);
+    SpectralToSpectralTransformer& operator=(const SpectralToSpectralTransformer&);
 
 // -- Members
-	bool vdConversion_;
-	// None
+    bool vdConversion_;
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const SpectralToSpectralTransformer& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const SpectralToSpectralTransformer& p)
+    //	{ p.print(s); return s; }
 
 };
 

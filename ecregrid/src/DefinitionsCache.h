@@ -16,13 +16,11 @@
 #include <string>
 #include <fstream>
 
-class DefinitionsCache
-{
-    
-public:
+class DefinitionsCache {
 
-    static ref_counted_ptr< const vector<string> > get(const string& name)
-    { 
+  public:
+
+    static ref_counted_ptr< const vector<string> > get(const string& name) {
         // Do we already have it?
         ref_counted_ptr< const vector<string> > config = configData.getItem(name);
 
@@ -37,16 +35,16 @@ public:
         // Read line-by-line from file
         vector<string>* newItem = new vector<string>();
         string buffer;
-        while( getline(in, buffer) ) 
+        while( getline(in, buffer) )
             newItem->push_back(buffer);
         in.close();
-        
+
         // Add new item to the cache. Ref-counted pointer returned
         return configData.addItem(name, newItem);
-        
+
     }
 
-protected:
+  protected:
 
     // the cache itself
     static ThreadSafeMap< vector<string> > configData;

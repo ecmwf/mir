@@ -1,24 +1,24 @@
 #ifndef ECTRANSFORMER_H
 #define ECTRANSFORMER_H
 
-// Factory classes to produce concrete instantiations of interfaces 
+// Factory classes to produce concrete instantiations of interfaces
 #include <vector>
 
 namespace ecregrid {
-    class IFieldRepresentation;
-    class ITransformer;
-    class DFO;
+class IFieldRepresentation;
+class ITransformer;
+class DFO;
 }
 
 namespace ecregrid {
 
 // Holds options for LSM, Legendre, interpolation methods etc
-// relating to the transformation process rather than the 
-// field descriptions themselves	
+// relating to the transformation process rather than the
+// field descriptions themselves
 
 
 class TransformerOptions {
-public:
+  public:
 
     enum InterpolationMethod { NoInterpolation, Bilinear, NearestNeighbour, Cubic, Linear, LinearFit, Average, AverageWeighted };
     enum LSMMethod { NoLSM, Predefined, TenMin, GTOPO };
@@ -33,7 +33,7 @@ public:
     void setPoleExtrapolationMethod(PoleExtrapolationMethod method);
     void setAutoResolution(bool set);
 
-private:
+  private:
 
     InterpolationMethod interpolationMethod_;
     LSMMethod lsmMethod_;
@@ -46,9 +46,8 @@ private:
 };
 
 
-class TransformerOptionsReader
-{
-public:
+class TransformerOptionsReader {
+  public:
     TransformerOptionsReader(const TransformerOptions& opts) : opts_(opts) { };
 
     TransformerOptions::InterpolationMethod interpolationMethod() const;
@@ -58,30 +57,30 @@ public:
 
     bool autoResolution() const;
 
-private:
+  private:
     const TransformerOptions& opts_;
 
 };
 
 // Returns interface to object performing transformations between fields
 class TransformerFactory {
-public:
+  public:
     // Output field description deliberately left non-const
     // as it may need to be adjusted by the interpolator (area etc)
-	ITransformer* make(const IFieldRepresentation& in, IFieldRepresentation& out, const TransformerOptions& opts);
+    ITransformer* make(const IFieldRepresentation& in, IFieldRepresentation& out, const TransformerOptions& opts);
 };
 
 // Returns interface to field representation objects
 class FieldRepresentationFactory {
-public:	
+  public:
     // Have included methods for both C struct and string arguments
     // NB it is likely that string will not contain sufficient information
     // for us to proceed
-	IFieldRepresentation* make(const ecregrid::DFO& opts); 
+    IFieldRepresentation* make(const ecregrid::DFO& opts);
 };
 
 class TransformerUtils {
-public:
+  public:
 
     // Have included a helper function to return the reduced gaussian grid
     // definition for a given resolution.

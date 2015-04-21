@@ -12,20 +12,20 @@
 #include "Interpolator.h"
 
 class NearestNeigbourAdjusted : public Interpolator {
-public:
+  public:
 
-	NearestNeigbourAdjusted();
-	NearestNeigbourAdjusted(int n);
+    NearestNeigbourAdjusted();
+    NearestNeigbourAdjusted(int n);
 
-	~NearestNeigbourAdjusted();
+    ~NearestNeigbourAdjusted();
 
 // Overriden methods
-	double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
+    double interpolatedValue(const Point& where, const vector<FieldPoint>& nearests) const;
 
-protected:
-	void print(ostream&) const;
+  protected:
+    void print(ostream&) const;
 
-private:
+  private:
 
 };
 #endif

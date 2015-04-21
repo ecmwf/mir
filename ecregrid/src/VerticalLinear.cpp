@@ -24,32 +24,29 @@
 #include <algorithm>
 
 VerticalLinear::VerticalLinear() :
-	VerticalInterpolator()
-{
+    VerticalInterpolator() {
 }
 
-VerticalLinear::~VerticalLinear()
-{ 
+VerticalLinear::~VerticalLinear() {
 }
- 
+
 //double VerticalLinear::alongParalel(const Point& where, const FieldPoint& left, const FieldPoint& right) const
 
-void VerticalLinear::interpolate(const GridField& inputUp, const GridField& inputDown, double* values, unsigned long valuesSize) const
-{
-/*
-	double leftW  = fabs(left.longitude() - where.longitude());
-	double rightW = fabs(where.longitude() - right.longitude());
-	double low   = rightW/(rightW + leftW);
+void VerticalLinear::interpolate(const GridField& inputUp, const GridField& inputDown, double* values, unsigned long valuesSize) const {
+    /*
+    	double leftW  = fabs(left.longitude() - where.longitude());
+    	double rightW = fabs(where.longitude() - right.longitude());
+    	double low   = rightW/(rightW + leftW);
 
-	return     low * left.value() + (1-low) * right.value();
-	*/
-	
+    	return     low * left.value() + (1-low) * right.value();
+    	*/
+
     /*
     const double* dataUp   = inputUp.data();
-	const double* dataDown = inputDown.data();
-	int pressureDown =  inputDown.level();
-	*/
-	/*
+    const double* dataDown = inputDown.data();
+    int pressureDown =  inputDown.level();
+    */
+    /*
     DO JL=KSTART,KPROF
       IAB=KLEVB(JL,JLEVP,KSLCT)-1
       PFLDO(JL,JLEVP)=PFLDI(JL,IAB)+ &
@@ -57,16 +54,15 @@ void VerticalLinear::interpolate(const GridField& inputUp, const GridField& inpu
        & (PRPRESC(JL,JLEVP)-PRXP(JL,IAB,KSLCT))*PRXPD(JL,IAB,KSLCT)
     ENDDO
 
-	for (int i = 0 ; i < valuesSize ; i++) {
-		data[i] = dataDown[i] + (dataUp[i] - dataDown[i]) * (outPressure_ - pressureDown) * (1 /D(pressureDown)) ;
-	}
-	*/
+    for (int i = 0 ; i < valuesSize ; i++) {
+    	data[i] = dataDown[i] + (dataUp[i] - dataDown[i]) * (outPressure_ - pressureDown) * (1 /D(pressureDown)) ;
+    }
+    */
 
 }
 
-void VerticalLinear::print(ostream& out) const
-{
+void VerticalLinear::print(ostream& out) const {
 //	VerticalInterpolator::print(out);
-	out << "VerticalLinear" ;
+    out << "VerticalLinear" ;
 }
 

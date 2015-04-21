@@ -9,15 +9,12 @@
 
 #include "Extraction.h"
 
-Extraction::Extraction() 
-{
+Extraction::Extraction() {
 }
 
-Extraction::~Extraction()
-{
+Extraction::~Extraction() {
 }
 
-void Extraction::print(ostream& out) const
-{
-	out << "Extraction type is: " ;
+void Extraction::print(ostream& out) const {
+    out << "Extraction type is: " ;
 }

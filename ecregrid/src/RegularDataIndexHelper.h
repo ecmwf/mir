@@ -23,45 +23,45 @@
 
 
 class RegularDataIndexHelper {
-public:
+  public:
 
 // -- Contructors
 
-	RegularDataIndexHelper(int scMode, int nlat, int nlon) : scanningMode_(scMode), nlat_(nlat), nlon_(nlon) {}
+    RegularDataIndexHelper(int scMode, int nlat, int nlon) : scanningMode_(scMode), nlat_(nlat), nlon_(nlon) {}
 
 // -- Destructor
 
-	~RegularDataIndexHelper() { } 
+    ~RegularDataIndexHelper() { }
 
 
-	long operator()(int i,int j) const { 
+    long operator()(int i,int j) const {
 
 
-		ASSERT(i >= 0 && j >= 0);
+        ASSERT(i >= 0 && j >= 0);
 
-		if(scanningMode_ == 1)
-			return i + j * nlon_;
-		else if(scanningMode_ == 2)
-			return i + (nlat_ - 1 - j) * nlon_;
+        if(scanningMode_ == 1)
+            return i + j * nlon_;
+        else if(scanningMode_ == 2)
+            return i + (nlat_ - 1 - j) * nlon_;
 
-		throw NotImplementedFeature("RegularDataHelper - scanning mode not available ");
+        throw NotImplementedFeature("RegularDataHelper - scanning mode not available ");
 
 //		cout << "RegularDataIndexHelper::operator() index " << i + jj * nlon_ << " scMode " << scanningMode_ << endl;
 
-		return 0; 
-	}
+        return 0;
+    }
 
-private:
+  private:
 
 // No copy allowed
 
-	RegularDataIndexHelper(const RegularDataIndexHelper&);
-	RegularDataIndexHelper& operator=(const RegularDataIndexHelper&);
+    RegularDataIndexHelper(const RegularDataIndexHelper&);
+    RegularDataIndexHelper& operator=(const RegularDataIndexHelper&);
 
 // -- Members
-	int scanningMode_;
-	int nlat_;
-	int nlon_;
+    int scanningMode_;
+    int nlat_;
+    int nlon_;
 };
 
 #endif

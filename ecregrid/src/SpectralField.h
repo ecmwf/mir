@@ -24,92 +24,106 @@ typedef complex<double> comp;
 class Parameter;
 class FieldDescription;
 
-// 
+//
 
 class SpectralField : public Field {
-public:
+  public:
 
 // -- Contructors
 
-	SpectralField( int truncation );
+    SpectralField( int truncation );
 
-	SpectralField(int truncation, const Parameter& param, const string& units, int editionNumber, int centre, const string& levType, int level,int date, int time, const string& stepUnits, int startStep, int endStep, int bitsPerValue, const vector<double>& values); 
+    SpectralField(int truncation, const Parameter& param, const string& units, int editionNumber, int centre, const string& levType, int level,int date, int time, const string& stepUnits, int startStep, int endStep, int bitsPerValue, const vector<double>& values);
 
-	SpectralField(int truncation, const Field& f, const vector<double>& values);
-	SpectralField(int truncation, const Parameter& param, const Field& f, const vector<double>& values);
+    SpectralField(int truncation, const Field& f, const vector<double>& values);
+    SpectralField(int truncation, const Parameter& param, const Field& f, const vector<double>& values);
 
 // -- Destructor
 
-	~SpectralField(); // Change to virtual if base class
+    ~SpectralField(); // Change to virtual if base class
 
 
 // -- Operators
-	bool operator==(const SpectralField& other) const;
+    bool operator==(const SpectralField& other) const;
 
 // -- Methods
-	bool           isRotated()                        const { return false; }
-	unsigned long  calculatedLength()                 const { return (truncation_ + 1) * (truncation_ + 2); }
-	string         nameOfField()                      const { return "sh"; }
-	int            truncation()                       const { return truncation_; }
-	
-	void           getDataAsComplex(vector<comp>& comp) const;
-	size_t dataLengthComplex() const;
-	int matchGaussian() const;
-	double matchLatLon() const;
+    bool           isRotated()                        const {
+        return false;
+    }
+    unsigned long  calculatedLength()                 const {
+        return (truncation_ + 1) * (truncation_ + 2);
+    }
+    string         nameOfField()                      const {
+        return "sh";
+    }
+    int            truncation()                       const {
+        return truncation_;
+    }
+
+    void           getDataAsComplex(vector<comp>& comp) const;
+    size_t dataLengthComplex() const;
+    int matchGaussian() const;
+    double matchLatLon() const;
 
 // -- Overridden methods
-	void              resetOutput(FieldDescription* out) const;
-	FieldDescription* makeOutput(const FieldDescription& out)  const;
-	const vector<double>&  data()                             const { return data_; }
-	size_t dataLength()                       const { return data_.size(); }
-	void           dump2file(const string& name)      const;
-	void  outputArea(double* a)      const;
-	void  setOutputAreaAndBasics(FieldDescription& out) const;
+    void              resetOutput(FieldDescription* out) const;
+    FieldDescription* makeOutput(const FieldDescription& out)  const;
+    const vector<double>&  data()                             const {
+        return data_;
+    }
+    size_t dataLength()                       const {
+        return data_.size();
+    }
+    void           dump2file(const string& name)      const;
+    void  outputArea(double* a)      const;
+    void  setOutputAreaAndBasics(FieldDescription& out) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	
-	 void print(ostream&) const; // Change to virtual if base class	
 
-private:
+    void print(ostream&) const; // Change to virtual if base class
+
+  private:
 
 // No copy allowed
 
-	SpectralField(const SpectralField&);
-	SpectralField& operator=(const SpectralField&);
+    SpectralField(const SpectralField&);
+    SpectralField& operator=(const SpectralField&);
 
 // -- Members
-	int      truncation_;
+    int      truncation_;
 
     //const vector<double>& data_;
     const vector<double> data_;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const SpectralField& p)
-		{ p.print(s); return s; }
+    friend ostream& operator<<(ostream& s,const SpectralField& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

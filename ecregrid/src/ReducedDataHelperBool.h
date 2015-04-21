@@ -23,75 +23,74 @@
 template <class T>
 
 class ReducedDataHelperBool {
-public:
+  public:
 
 // -- Contructors
 
-	ReducedDataHelperBool(const vector<T>& values, int scMode, const vector<long>&  offsets, int nlat): 
-		values_(values),
-		scanningMode_(scMode), 
-		offsets_(offsets),
-		nlat_(nlat)
-		{}
+    ReducedDataHelperBool(const vector<T>& values, int scMode, const vector<long>&  offsets, int nlat):
+        values_(values),
+        scanningMode_(scMode),
+        offsets_(offsets),
+        nlat_(nlat) {
+    }
 
 // -- Destructor
 
-	~ReducedDataHelperBool() {
+    ~ReducedDataHelperBool() {
 //		if(DEBUG)
 //			cout << "~ReducedDataHelperBool Yes: " << yes_ << ", No: " << no_ << endl;
-	} // Change to virtual if base class
+    } // Change to virtual if base class
 
 
-	const bool operator()(int i, int j) const 
-	{ 
+    const bool operator()(int i, int j) const {
 
-		if(values_.size() == 0)
-			return false;
+        if(values_.size() == 0)
+            return false;
 
 
-		int jj;
+        int jj;
 
         if(j == -1)
             return false;
 
-		ASSERT(i >= 0);
+        ASSERT(i >= 0);
 
         if(scanningMode_ == 1)
             jj = j;
         else if(scanningMode_ == 2)
             jj = nlat_ - 1 - j;
         else
-            throw NotImplementedFeature("ReducedDataHelperBool - scanning mode not available ");				
+            throw NotImplementedFeature("ReducedDataHelperBool - scanning mode not available ");
 
 //		cout << "ReducedDataHelperBool offset_ " << offset_ << " i " << i << " value " << data[offset_ + i ] << endl;
 
-		if(values_[offsets_[jj] + i ] >= 0.5)
-			return true;
+        if(values_[offsets_[jj] + i ] >= 0.5)
+            return true;
 
-		return false;
-	}
+        return false;
+    }
 
 
 
-private:
+  private:
 
 // No copy allowed
 
-	ReducedDataHelperBool(const ReducedDataHelperBool&);
-	ReducedDataHelperBool& operator=(const ReducedDataHelperBool&);
+    ReducedDataHelperBool(const ReducedDataHelperBool&);
+    ReducedDataHelperBool& operator=(const ReducedDataHelperBool&);
 
 // -- Members
 // We assume the object referred to exists for the lifetime of this helper
-	const vector<T>& values_;
+    const vector<T>& values_;
 
-	int          scanningMode_;
-	long         lastJ_;
-	long         offset_;
-	int          nlat_;
-	const        vector<long>&  offsets_;
+    int          scanningMode_;
+    long         lastJ_;
+    long         offset_;
+    int          nlat_;
+    const        vector<long>&  offsets_;
 
-	long yes_;
-	long no_;
+    long yes_;
+    long no_;
 
 };
 
