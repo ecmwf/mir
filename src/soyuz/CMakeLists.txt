@@ -154,7 +154,7 @@ ecbuild_add_test(
     TARGET    soyuz
     SOURCES   soyuz.cc
     RESOURCES test.bitmap test.grib test.nc
-    INCLUDES  $ {ECKIT_INCLUDE_DIRS} $ {NETCDF_INCLUDE_DIRS}
+    INCLUDES  ${ECKIT_INCLUDE_DIRS} ${NETCDF_INCLUDE_DIRS}
     LIBS      mir
 )
 
