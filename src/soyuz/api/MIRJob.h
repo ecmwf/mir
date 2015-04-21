@@ -25,11 +25,9 @@
 
 
 namespace mir {
-namespace input {
-class MIRInput;
+namespace input { class MIRInput; }
+namespace output { class MIROutput; }
 }
-}
-class MIROutput;
 
 
 class MIRJob : public MIRParametrisation, public eckit::NonCopyable {
@@ -54,7 +52,7 @@ class MIRJob : public MIRParametrisation, public eckit::NonCopyable {
 
 // -- Methods
 
-    void execute(mir::input::MIRInput&, MIROutput&) const;
+    void execute(mir::input::MIRInput&, mir::output::MIROutput&) const;
 
     void set(const std::string&, const std::string&);
 
@@ -111,8 +109,8 @@ class MIRJob : public MIRParametrisation, public eckit::NonCopyable {
 
 // -- Friends
 
-
 };
+
 
 #endif
 

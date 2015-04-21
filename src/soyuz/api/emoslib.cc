@@ -178,7 +178,7 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
         }
 
         mir::input::GribMemoryInput input(grib_in, *length_in);
-        GribMemoryOutput output(grib_out, *length_out);
+        mir::output::GribMemoryOutput output(grib_out, *length_out);
 
         job->execute(input, output);
 

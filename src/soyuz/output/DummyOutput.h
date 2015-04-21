@@ -24,6 +24,10 @@ class DataHandle;
 }
 
 
+namespace mir {
+namespace output {
+
+
 class DummyOutput : public MIROutput {
   public:
 
@@ -108,5 +112,7 @@ class DummyOutput : public MIROutput {
 };
 
 
+}  // namespace output
+}  // namespace mir
 #endif
 

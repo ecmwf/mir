@@ -19,13 +19,13 @@
 #include <iosfwd>
 
 
-namespace mir {
-namespace input {
-class MIRInput;
-}
-}
 class MIRParametrisation;
 class MIRField;
+
+
+namespace mir {
+namespace input { class MIRInput; }
+namespace output {
 
 
 class MIROutput {
@@ -112,5 +112,7 @@ class MIROutput {
 };
 
 
+}  // namespace output
+}  // namespace mir
 #endif
 

@@ -18,6 +18,10 @@
 #include "soyuz/output/DummyOutput.h"
 
 
+namespace mir {
+namespace output {
+
+
 DummyOutput::DummyOutput() {
 }
 
@@ -37,4 +41,8 @@ void DummyOutput::save(const MIRParametrisation &param, mir::input::MIRInput &in
 void DummyOutput::print(std::ostream &out) const {
     out << "DummyOutput[...]";
 }
+
+
+}  // namespace output
+}  // namespace mir
 

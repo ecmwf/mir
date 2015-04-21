@@ -26,6 +26,11 @@
 
 #include "soyuz/output/GribOutput.h"
 
+
+namespace mir {
+namespace output {
+
+
 #define X(a) std::cout << #a << " = " << a << std::endl
 
 
@@ -147,4 +152,11 @@ void GribOutput::save(const MIRParametrisation &param, mir::input::MIRInput &inp
     out(message, size, true);
 
 }
+
+
+#undef X
+
+
+}  // namespace output
+}  // namespace mir
 

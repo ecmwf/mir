@@ -24,6 +24,10 @@ class DataHandle;
 }
 
 
+namespace mir {
+namespace output {
+
+
 class GribOutput : public MIROutput {
   public:
 
@@ -107,5 +111,7 @@ class GribOutput : public MIROutput {
 };
 
 
+}  // namespace output
+}  // namespace mir
 #endif
 

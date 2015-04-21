@@ -42,7 +42,7 @@ void MIRDemo::run() {
 
         MIRJob job;
         mir::input::GribFileInput input(eckit::Context::instance().argv(1));
-        GribFileOutput output(eckit::Context::instance().argv(2));
+        mir::output::GribFileOutput output(eckit::Context::instance().argv(2));
 
         job.set("grid", "2/2");
 
@@ -62,7 +62,7 @@ void MIRDemo::run() {
         job.set("frame", "3");
 
         mir::input::GribFileInput input("test.grib");
-        GribFileOutput output("result.grib");
+        mir::output::GribFileOutput output("result.grib");
 
         while (input.next()) {
             job.execute(input, output);
@@ -76,7 +76,7 @@ void MIRDemo::run() {
         job.set("frame", "10");
 
         mir::input::NetcdfFileInput input("test.nc", "z");
-        GribFileOutput output("netcdf.grib");
+        mir::output::GribFileOutput output("netcdf.grib");
 
         job.execute(input, output);
 
@@ -89,7 +89,7 @@ void MIRDemo::run() {
         job.set("frame", "10");
 
         mir::input::DummyInput input;
-        DummyOutput output;
+        mir::output::DummyOutput output;
 
         job.execute(input, output);
 
@@ -102,7 +102,7 @@ void MIRDemo::run() {
         job.set("frame", "10");
 
         mir::input::DummyInput input;
-        GribFileOutput output("dummy.grib");
+        mir::output::GribFileOutput output("dummy.grib");
 
         job.execute(input, output);
 
@@ -114,7 +114,7 @@ void MIRDemo::run() {
         job.set("logic", "tool");
 
         mir::input::DummyInput input;
-        GribFileOutput output("dummy.grib");
+        mir::output::GribFileOutput output("dummy.grib");
 
         job.execute(input, output);
 
