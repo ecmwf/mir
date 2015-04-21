@@ -88,7 +88,7 @@ void MIRJob::execute(mir::input::MIRInput& input, mir::output::MIROutput& output
     eckit::Log::info() << "Field is " << *field << std::endl;
 
     // Add Grid to field
-    field->representation(RepresentationFactory::build(metadata));
+    field->representation(mir::repres::RepresentationFactory::build(metadata));
     eckit::Log::info() << "Representation is " << *(field->representation()) << std::endl;
 
     for(std::vector<std::auto_ptr< mir::action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {

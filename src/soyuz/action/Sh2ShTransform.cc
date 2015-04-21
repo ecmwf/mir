@@ -55,8 +55,8 @@ void Sh2ShTransform::execute(MIRField &field) const {
     const std::vector<double> &values = field.values();
     std::vector<double> result;
 
-    const Representation *representation = field.representation();
-    Representation *repres = representation->truncate(truncation_, values, result);
+    const mir::repres::Representation *representation = field.representation();
+    mir::repres::Representation *repres = representation->truncate(truncation_, values, result);
 
     if (repres) { // NULL if nothing happend
         field.representation(repres);

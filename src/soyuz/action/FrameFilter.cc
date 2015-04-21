@@ -20,8 +20,8 @@
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/utils/Translator.h"
 
-#include "soyuz/param/MIRParametrisation.h"
 #include "soyuz/data/MIRField.h"
+#include "soyuz/param/MIRParametrisation.h"
 #include "soyuz/repres/Representation.h"
 
 #include "soyuz/action/FrameFilter.h"
@@ -55,7 +55,7 @@ void FrameFilter::execute(MIRField &field) const {
     double missingValue = field.missingValue();
     std::vector<double> &values = field.values();
 
-    const Representation *representation = field.representation();
+    const mir::repres::Representation *representation = field.representation();
     size_t count = representation->frame(values, size_, missingValue);
 
     if (count) {

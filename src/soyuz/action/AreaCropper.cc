@@ -70,8 +70,8 @@ void AreaCropper::execute(MIRField& field) const {
     const std::vector<double> &values = field.values();
     std::vector<double> result;
 
-    const Representation* representation = field.representation();
-    Representation* cropped = representation->crop(north_, west_, south_, east_, values, result);
+    const repres::Representation* representation = field.representation();
+    repres::Representation* cropped = representation->crop(north_, west_, south_, east_, values, result);
 
     if(cropped) { // NULL if nothing happend
         field.representation(cropped);
