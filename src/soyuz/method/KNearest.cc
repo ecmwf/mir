@@ -133,5 +133,5 @@ void KNearest::build_sptree( Grid& in ) const {
 
 
 namespace {
-static MethodBuilder< mir::method::KNearest > __knearest("method.knearest");
+static mir::method::MethodBuilder< mir::method::KNearest > __knearest("method.knearest");
 }

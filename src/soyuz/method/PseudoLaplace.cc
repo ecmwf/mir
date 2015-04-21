@@ -139,5 +139,5 @@ void PseudoLaplace::assemble(MethodWeighted::Matrix& W) const {
 
 
 namespace {
-static MethodBuilder< mir::method::PseudoLaplace > __pseudolaplace("method.pseudolaplace");
+static mir::method::MethodBuilder< mir::method::PseudoLaplace > __pseudolaplace("method.pseudolaplace");
 }

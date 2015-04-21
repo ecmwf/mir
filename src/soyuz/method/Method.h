@@ -23,6 +23,10 @@ class MIRParametrisation;
 class MIRField;
 
 
+namespace mir {
+namespace method {
+
+
 class Method {
   public:
 
@@ -143,4 +147,7 @@ class MethodBuilder : public MethodFactory {
 };
 
 
+}  // namespace method
+}  // namespace mir
 #endif
+

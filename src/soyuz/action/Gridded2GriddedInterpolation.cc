@@ -10,16 +10,20 @@
 #include <iostream>
 #include <memory>
 
+
 Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const MIRParametrisation& parametrisation):
     Action(parametrisation) {
 }
 
+
 Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 }
+
 
 void Gridded2GriddedInterpolation::print(std::ostream& out) const {
     out << "Gridded2GriddedInterpolation[]";
 }
+
 
 void Gridded2GriddedInterpolation::execute(MIRField& field) const {
     NOTIMP;
@@ -35,7 +39,7 @@ void Gridded2GriddedInterpolation::execute(MIRField& field) const {
         }
     }
 
-    std::auto_ptr<Method> method(MethodFactory::build(name, parametrisation_));
+    std::auto_ptr< mir::method::Method > method(mir::method::MethodFactory::build(name, parametrisation_));
     method->execute(field);
 
     // TODO: Use Representation and MIRfield to create Atlas structures
@@ -43,5 +47,6 @@ void Gridded2GriddedInterpolation::execute(MIRField& field) const {
 
 
 }
+
 
 static ActionBuilder<Gridded2GriddedInterpolation> grid2grid("interpolate.grid2grid");
