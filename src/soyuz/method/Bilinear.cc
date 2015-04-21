@@ -227,10 +227,10 @@ void Bilinear::assemble(MethodWeighted::Matrix& W) const {
 }
 
 
+namespace {
+static MethodBuilder< Bilinear > __bilinear("method.bilinear");
+}
+
+
 }  // namespace method
 }  // namespace mir
-
-
-namespace {
-static mir::method::MethodBuilder< mir::method::Bilinear > __bilinear("method.bilinear");
-}

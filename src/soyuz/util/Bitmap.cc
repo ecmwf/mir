@@ -12,6 +12,12 @@
 
 // TODO: Cache bitmaps
 
+
+namespace mir {
+namespace util {
+namespace {
+
+
 static void out(const std::vector<std::vector<bool> > &bitmap) {
     for (int i = 0; i < bitmap.size() ; i++ ) {
         const std::vector<bool> &v = bitmap[i];
@@ -21,6 +27,7 @@ static void out(const std::vector<std::vector<bool> > &bitmap) {
         std::cout << std::endl;
     }
 }
+
 
 static void out(std::vector<std::vector<bool> > &bitmap, int row, const std::string &line, bool on, long &prev) {
 
@@ -73,9 +80,11 @@ static void out(std::vector<std::vector<bool> > &bitmap, int row, const std::str
             }
         }
     }
-
-
 }
+
+
+}  // (unnamed namespace)
+
 
 Bitmap::Bitmap(const eckit::PathName& path):
     path_(path),
@@ -177,12 +186,17 @@ Bitmap::Bitmap(const eckit::PathName& path):
     out(bitmap);
 
     std::swap(bitmap, bitmap_);
-
 }
+
 
 Bitmap::~Bitmap() {
 }
 
+
 void Bitmap::print(std::ostream &out) const {
     out << "Bitmap[path=" << path_ << "]";
 }
+
+
+}  // namespace util
+}  // namespace mir

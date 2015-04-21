@@ -302,11 +302,11 @@ std::vector< Arguments::argument_option_t > Arguments::get_long_options(
 }
 
 
-}  // namespace util
-}  // namespace mir
-
-
 // register default mode
 namespace {
 eckit::ConcreteBuilderT0< mir::util::Arguments::argmode_t, mir::util::Arguments::argmode_t > __Arguments_argmode;
 }
+
+
+}  // namespace util
+}  // namespace mir

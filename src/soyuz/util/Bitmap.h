@@ -8,6 +8,10 @@
 #include "eckit/filesystem/PathName.h"
 
 
+namespace mir {
+namespace util {
+
+
 class Bitmap {
   public:
 
@@ -103,4 +107,7 @@ class Bitmap {
 
 };
 
+
+}  // namespace util
+}  // namespace mir
 #endif

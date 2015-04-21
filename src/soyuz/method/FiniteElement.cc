@@ -207,10 +207,10 @@ void FiniteElement::print(std::ostream&) const {
 }
 
 
+namespace {
+static MethodBuilder< FiniteElement > __finiteelement("method.finiteelement");
+}
+
+
 }  // namespace method
 }  // namespace mir
-
-
-namespace {
-static mir::method::MethodBuilder< mir::method::FiniteElement > __finiteelement("method.finiteelement");
-}
