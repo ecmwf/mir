@@ -1,16 +1,33 @@
-// File AreaCropper.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "soyuz/action/AreaCropper.h"
-#include "soyuz/param/MIRParametrisation.h"
-#include "soyuz/data/MIRField.h"
-#include "soyuz/repres/Representation.h"
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
 
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/utils/Translator.h"
+
+#include "soyuz/data/MIRField.h"
+#include "soyuz/param/MIRParametrisation.h"
+#include "soyuz/repres/Representation.h"
+
+#include "soyuz/action/AreaCropper.h"
+
+
+namespace mir {
+namespace action {
 
 
 AreaCropper::AreaCropper(const MIRParametrisation& parametrisation):
@@ -34,8 +51,10 @@ AreaCropper::AreaCropper(const MIRParametrisation& parametrisation):
     east_ = eckit::Translator<std::string, double>()(result[3]);
 }
 
+
 AreaCropper::~AreaCropper() {
 }
+
 
 void AreaCropper::print(std::ostream& out) const {
     out << "AreaCropper[";
@@ -45,6 +64,7 @@ void AreaCropper::print(std::ostream& out) const {
     out << ",east=" << east_;
     out << "]";
 }
+
 
 void AreaCropper::execute(MIRField& field) const {
     const std::vector<double> &values = field.values();
@@ -59,4 +79,12 @@ void AreaCropper::execute(MIRField& field) const {
     }
 }
 
-static ActionBuilder<AreaCropper> subAreaCropper("crop.area");
+
+namespace {
+static ActionBuilder< AreaCropper > subAreaCropper("crop.area");
+}
+
+
+}  // namespace action
+}  // namespace mir
+

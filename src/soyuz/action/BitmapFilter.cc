@@ -12,15 +12,17 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include <iostream>
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "soyuz/action/BitmapFilter.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "soyuz/data/MIRField.h"
 #include "soyuz/util/Bitmap.h"
+
+#include "soyuz/action/BitmapFilter.h"
 
 
 namespace mir {
@@ -91,9 +93,10 @@ void BitmapFilter::execute(MIRField &field) const {
 
 
 namespace {
-static ActionBuilder<BitmapFilter> bitmapFilter("filter.bitmap");
+static ActionBuilder< BitmapFilter > bitmapFilter("filter.bitmap");
 }
 
 
 }  // namespace action
 }  // namespace mir
+

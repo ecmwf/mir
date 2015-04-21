@@ -12,11 +12,12 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
+#include "eckit/runtime/Context.h"
+
 #include "soyuz/logic/ToolLogic.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "soyuz/util/Arguments.h"
-
-#include "eckit/runtime/Context.h"
 
 
 ToolLogic::ToolLogic(const MIRParametrisation &parametrisation):
@@ -33,7 +34,7 @@ void ToolLogic::print(std::ostream &out) const {
 }
 
 
-void ToolLogic::prepare(std::vector<std::auto_ptr<Action> > &actions) const {
+void ToolLogic::prepare(std::vector<std::auto_ptr< mir::action::Action > > &actions) const {
     // All the nasty logic goes there
 
     size_t argc = eckit::Context::instance().argc();
@@ -103,3 +104,4 @@ eckit::ConcreteBuilderT0< util::Arguments::argmode_t, argmode_interpolate_t > __
 
 }  // namespace logic
 }  // namespace mir
+

@@ -1,9 +1,16 @@
-// File MIRLogic.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "soyuz/logic/MIRLogic.h"
-#include "soyuz/param/MIRParametrisation.h"
-#include "soyuz/action/Action.h"
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 
 #include "eckit/thread/AutoLock.h"
@@ -11,8 +18,12 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
 
+#include "soyuz/logic/MIRLogic.h"
+#include "soyuz/param/MIRParametrisation.h"
+#include "soyuz/action/Action.h"
 
-//-----------------------------------------------------------------------------
+
+namespace {
 
 
 static eckit::Mutex *local_mutex = 0;
@@ -25,20 +36,26 @@ static void init() {
     m = new std::map<std::string,MIRLogicFactory*>();
 }
 
-//-----------------------------------------------------------------------------
+
+}  // (anonymous namespace)
+
 
 MIRLogic::MIRLogic(const MIRParametrisation &parametrisation):
     parametrisation_(parametrisation) {
 }
 
+
 MIRLogic::~MIRLogic() {
 }
 
-void MIRLogic::add(std::vector<std::auto_ptr<Action> >& actions, const std::string& name) const {
-    actions.push_back(std::auto_ptr<Action>(ActionFactory::build(name, parametrisation_)));
+
+void MIRLogic::add(std::vector<std::auto_ptr< mir::action::Action > >& actions, const std::string& name) const {
+    actions.push_back(std::auto_ptr< mir::action::Action >(mir::action::ActionFactory::build(name, parametrisation_)));
 }
 
+
 //-----------------------------------------------------------------------------
+
 
 MIRLogicFactory::MIRLogicFactory(const std::string& name):
     name_(name) {
@@ -51,11 +68,13 @@ MIRLogicFactory::MIRLogicFactory(const std::string& name):
     (*m)[name] = this;
 }
 
+
 MIRLogicFactory::~MIRLogicFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
 
 }
+
 
 MIRLogic* MIRLogicFactory::build(const MIRParametrisation& params) {
 

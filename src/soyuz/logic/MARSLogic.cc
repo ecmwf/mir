@@ -1,24 +1,40 @@
-// File MARSLogic.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
+
+#include <iostream>
 
 #include "soyuz/logic/MARSLogic.h"
 #include "soyuz/param/MIRParametrisation.h"
 
-#include <iostream>
 
 MARSLogic::MARSLogic(const MIRParametrisation &parametrisation):
     MIRLogic(parametrisation) {
 
 }
 
+
 MARSLogic::~MARSLogic() {
 }
+
 
 void MARSLogic::print(std::ostream &out) const {
     out << "MARSLogic[]";
 }
 
-void MARSLogic::prepare(std::vector<std::auto_ptr<Action> > &actions) const {
+
+void MARSLogic::prepare(std::vector<std::auto_ptr< mir::action::Action > > &actions) const {
     // All the nasty logic goes there
 
     if (parametrisation_.has("field.spherical")) {
@@ -60,3 +76,4 @@ void MARSLogic::prepare(std::vector<std::auto_ptr<Action> > &actions) const {
 
 
 static MIRLogicBuilder<MARSLogic> mars("mars");
+
