@@ -27,8 +27,8 @@ inline int _nc_call(int e, const char *call, const std::string &path) {
 
 
 NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path, const std::string &variable):
-    variable_(variable),
     path_(path),
+    variable_(variable),
     nc_(-1) {
 }
 

@@ -52,7 +52,7 @@ void GribOutput::save(const MIRParametrisation &param, MIRInput &input, MIRField
     grib_handle *h = input.gribHandle(); // Base class will throw an exception is input cannot provide a grib_handle
 
 
-    grib_info info = {0,};
+    grib_info info = {{0},};
 
 
 
