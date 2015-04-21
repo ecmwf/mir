@@ -11,8 +11,7 @@
 IrregularLatlon::IrregularLatlon(const MIRParametrisation &parametrisation) {
 }
 
-IrregularLatlon::IrregularLatlon()
-{
+IrregularLatlon::IrregularLatlon() {
 }
 
 

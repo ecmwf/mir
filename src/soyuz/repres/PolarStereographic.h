@@ -8,68 +8,68 @@
 #include "soyuz/repres/Gridded.h"
 
 class PolarStereographic : public Gridded {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	PolarStereographic(const MIRParametrisation&);
+    PolarStereographic(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~PolarStereographic(); // Change to virtual if base class
+    virtual ~PolarStereographic(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
-	PolarStereographic();
+    PolarStereographic();
 
 // No copy allowed
 
-	PolarStereographic(const PolarStereographic&);
-	PolarStereographic& operator=(const PolarStereographic&);
+    PolarStereographic(const PolarStereographic&);
+    PolarStereographic& operator=(const PolarStereographic&);
 
 // -- Members
 
 
 // -- Methods
-	// None
+    // None
 
 
 // -- Overridden methods
@@ -77,15 +77,15 @@ private:
     virtual void fill(grib_info&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const PolarStereographic& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const PolarStereographic& p)
+    //	{ p.print(s); return s; }
 
 };
 

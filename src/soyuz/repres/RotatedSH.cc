@@ -11,8 +11,7 @@
 RotatedSH::RotatedSH(const MIRParametrisation &parametrisation) {
 }
 
-RotatedSH::RotatedSH()
-{
+RotatedSH::RotatedSH() {
 }
 
 

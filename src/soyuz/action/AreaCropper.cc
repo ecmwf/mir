@@ -18,8 +18,7 @@ AreaCropper::AreaCropper(const MIRParametrisation& parametrisation):
     north_(0),
     west_(0),
     south_(0),
-    east_(0)
-{
+    east_(0) {
     std::string value;
     ASSERT(parametrisation.get("user.area", value));
 
@@ -35,12 +34,10 @@ AreaCropper::AreaCropper(const MIRParametrisation& parametrisation):
     east_ = eckit::Translator<std::string, double>()(result[3]);
 }
 
-AreaCropper::~AreaCropper()
-{
+AreaCropper::~AreaCropper() {
 }
 
-void AreaCropper::print(std::ostream& out) const
-{
+void AreaCropper::print(std::ostream& out) const {
     out << "AreaCropper[";
     out << "north=" << north_;
     out << ",west=" << west_;
@@ -49,8 +46,7 @@ void AreaCropper::print(std::ostream& out) const
     out << "]";
 }
 
-void AreaCropper::execute(MIRField& field) const
-{
+void AreaCropper::execute(MIRField& field) const {
     const std::vector<double> &values = field.values();
     std::vector<double> result;
 

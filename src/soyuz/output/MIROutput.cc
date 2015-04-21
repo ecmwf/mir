@@ -3,11 +3,9 @@
 
 #include "soyuz/output/MIROutput.h"
 
-MIROutput::MIROutput()
-{
+MIROutput::MIROutput() {
 }
 
-MIROutput::~MIROutput()
-{
+MIROutput::~MIROutput() {
 }
 

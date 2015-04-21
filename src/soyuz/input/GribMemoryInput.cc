@@ -11,8 +11,7 @@
 
 
 
-GribMemoryInput::GribMemoryInput(const char* message, size_t length)
-{
+GribMemoryInput::GribMemoryInput(const char* message, size_t length) {
     ASSERT(handle(grib_handle_new_from_message(0, const_cast<char*>(message), length)));
 }
 

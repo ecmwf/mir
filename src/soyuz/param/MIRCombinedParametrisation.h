@@ -7,73 +7,73 @@
 #include "soyuz/param/MIRParametrisation.h"
 
 class MIRCombinedParametrisation : public MIRParametrisation {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	MIRCombinedParametrisation(const MIRParametrisation& user,
-                              const MIRParametrisation& metadata,
-                              const MIRParametrisation& configuration,
-                              const MIRParametrisation& defaults);
+    MIRCombinedParametrisation(const MIRParametrisation& user,
+                               const MIRParametrisation& metadata,
+                               const MIRParametrisation& configuration,
+                               const MIRParametrisation& defaults);
 
 // -- Destructor
 
-	~MIRCombinedParametrisation(); // Change to virtual if base class
+    ~MIRCombinedParametrisation(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	// void print(ostream&) const; // Change to virtual if base class
+    // void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	MIRCombinedParametrisation(const MIRCombinedParametrisation&);
-	MIRCombinedParametrisation& operator=(const MIRCombinedParametrisation&);
+    MIRCombinedParametrisation(const MIRCombinedParametrisation&);
+    MIRCombinedParametrisation& operator=(const MIRCombinedParametrisation&);
 
 // -- Members
-	const MIRParametrisation& user_;
+    const MIRParametrisation& user_;
     const MIRParametrisation& metadata_;
     const MIRParametrisation& configuration_;
     const MIRParametrisation& defaults_;
 
 // -- Methods
-	// None
+    // None
 
     template<class T>
     bool _get(const std::string&, T&) const;
@@ -81,19 +81,19 @@ private:
 // -- Overridden methods
 
     // From MIRParametrisation
-	virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const;
     virtual bool get(const std::string&, std::string&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const MIRCombinedParametrisation& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const MIRCombinedParametrisation& p)
+    //	{ p.print(s); return s; }
 
 };
 

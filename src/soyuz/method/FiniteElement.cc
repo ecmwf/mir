@@ -36,25 +36,22 @@ static size_t factorial[10] = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880 };
 
 //#define DUMP_PROJ
 #ifdef DUMP_PROJ
-    static std::ofstream of("found.txt");
+static std::ofstream of("found.txt");
 #endif
 
 
 }  // (utilities namespace)
 
 
-FiniteElement::FiniteElement(const MIRParametrisation& param)
-{
+FiniteElement::FiniteElement(const MIRParametrisation& param) {
 }
 
 
-FiniteElement::~FiniteElement()
-{
+FiniteElement::~FiniteElement() {
 }
 
 
-bool FiniteElement::project_point_to_triangle(  Point& p, Eigen::Vector3d& phi, int idx[3], const size_t k ) const
-{
+bool FiniteElement::project_point_to_triangle(  Point& p, Eigen::Vector3d& phi, int idx[3], const size_t k ) const {
     using namespace eckit;
 
     bool found = false;
@@ -66,8 +63,7 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Eigen::Vector3d& phi, 
 
 #if 0
     std::cout << p << std::endl;
-    for( size_t i = 0; i < cs.size(); ++i )
-    {
+    for( size_t i = 0; i < cs.size(); ++i ) {
         std::cout << cs[i] << std::endl;
     }
 #endif
@@ -80,8 +76,7 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Eigen::Vector3d& phi, 
 
     size_t tid = std::numeric_limits<size_t>::max();
 
-    for( size_t i = 0; i < cs.size(); ++i )
-    {
+    for( size_t i = 0; i < cs.size(); ++i ) {
         tid = cs[i].value().payload();
 
         Point tc = cs[i].value().point();
@@ -105,21 +100,20 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Eigen::Vector3d& phi, 
 //            of << "[FAILED]" << std::endl;
 
         if(found)
-        of << "   i    " << i << std::endl
-           << "   ip   " << ip_ << std::endl
-           << "   p    " << p << std::endl
-           << "   tc   " << tc << std::endl
-           << "   d    " << Point::distance(tc,p) << std::endl
-           << "   tid  " << tid << std::endl
-           << "   nidx " << idx[0] << " " << idx[1] << " " << idx[2] << std::endl
-           << "   "
-           << Point(icoords[idx[0]].data()) << " / "
-           << Point(icoords[idx[1]].data()) << " / "
-           << Point(icoords[idx[2]].data()) << std::endl
-           << "   uvwt " << uvt << std::endl;
+            of << "   i    " << i << std::endl
+               << "   ip   " << ip_ << std::endl
+               << "   p    " << p << std::endl
+               << "   tc   " << tc << std::endl
+               << "   d    " << Point::distance(tc,p) << std::endl
+               << "   tid  " << tid << std::endl
+               << "   nidx " << idx[0] << " " << idx[1] << " " << idx[2] << std::endl
+               << "   "
+               << Point(icoords[idx[0]].data()) << " / "
+               << Point(icoords[idx[1]].data()) << " / "
+               << Point(icoords[idx[2]].data()) << std::endl
+               << "   uvwt " << uvt << std::endl;
 #endif
-        if(found) // weights are the baricentric cooridnates u,v
-        {
+        if(found) { // weights are the baricentric cooridnates u,v
             phi[0] = uvt.w();
             phi[1] = uvt.u;
             phi[2] = uvt.v;
@@ -132,8 +126,7 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Eigen::Vector3d& phi, 
 }
 
 
-void FiniteElement::assemble(MethodWeighted::Matrix& W) const
-{
+void FiniteElement::assemble(MethodWeighted::Matrix& W) const {
     // FIXME arguments:
     atlas::Grid*      dummy_grid = 0;
     atlas::Grid& in  (*dummy_grid);
@@ -184,15 +177,13 @@ void FiniteElement::assemble(MethodWeighted::Matrix& W) const
 
     // boost::progress_display show_progress( out_npts );
 
-    for( ip_ = 0; ip_ < out_npts; ++ip_ )
-    {
+    for( ip_ = 0; ip_ < out_npts; ++ip_ ) {
         int idx[3]; /* indexes of the triangle that will contain the point*/
         Eigen::Vector3d phi;
         Point p ( ocoords[ip_].data() ); // lookup point
 
         size_t k = 1;
-        while( ! project_point_to_triangle( p, phi, idx, factorial[k] ) )
-        {
+        while( ! project_point_to_triangle( p, phi, idx, factorial[k] ) ) {
             ++k;
             if( k > (sizeof(factorial)/ sizeof(*factorial)) )
                 throw eckit::TooManyRetries(k,"projecting point into tesselation");
@@ -212,8 +203,8 @@ void FiniteElement::assemble(MethodWeighted::Matrix& W) const
 }
 
 
-void FiniteElement::print(std::ostream&) const
-{}
+void FiniteElement::print(std::ostream&) const {
+}
 
 
 }  // namespace method

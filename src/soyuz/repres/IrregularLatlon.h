@@ -8,68 +8,68 @@
 #include "soyuz/repres/Gridded.h"
 
 class IrregularLatlon : public Gridded {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	IrregularLatlon(const MIRParametrisation&);
+    IrregularLatlon(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~IrregularLatlon(); // Change to virtual if base class
+    virtual ~IrregularLatlon(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
-	IrregularLatlon();
+    IrregularLatlon();
 
 // No copy allowed
 
-	IrregularLatlon(const IrregularLatlon&);
-	IrregularLatlon& operator=(const IrregularLatlon&);
+    IrregularLatlon(const IrregularLatlon&);
+    IrregularLatlon& operator=(const IrregularLatlon&);
 
 // -- Members
 
 
 // -- Methods
-	// None
+    // None
 
 
 // -- Overridden methods
@@ -77,15 +77,15 @@ private:
     virtual void fill(grib_info&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const IrregularLatlon& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const IrregularLatlon& p)
+    //	{ p.print(s); return s; }
 
 };
 

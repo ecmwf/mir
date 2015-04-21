@@ -7,69 +7,73 @@
 #include "soyuz/repres/Gridded.h"
 
 class RegularLL : public Gridded {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	RegularLL(const MIRParametrisation&);
+    RegularLL(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~RegularLL(); // Change to virtual if base class
+    virtual ~RegularLL(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
-	size_t ni() const { return ni_; }
-	size_t nj() const { return nj_; }
+    size_t ni() const {
+        return ni_;
+    }
+    size_t nj() const {
+        return nj_;
+    }
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
-	RegularLL(double north, double west, double south, double east, double north_south_increment, double west_east_increment);
+    RegularLL(double north, double west, double south, double east, double north_south_increment, double west_east_increment);
 
 // No copy allowed
 
-	RegularLL(const RegularLL&);
-	RegularLL& operator=(const RegularLL&);
+    RegularLL(const RegularLL&);
+    RegularLL& operator=(const RegularLL&);
 
 // -- Members
 
-	double north_;
+    double north_;
     double west_;
     double south_;
     double east_;
@@ -81,9 +85,9 @@ private:
     size_t nj_;
 
 // -- Methods
-	// None
+    // None
 
-	void setNiNj();
+    void setNiNj();
 
 // -- Overridden methods
 
@@ -92,15 +96,15 @@ private:
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const RegularLL& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const RegularLL& p)
+    //	{ p.print(s); return s; }
 
 };
 

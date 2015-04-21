@@ -11,8 +11,7 @@
 AzimuthRange::AzimuthRange(const MIRParametrisation &parametrisation) {
 }
 
-AzimuthRange::AzimuthRange()
-{
+AzimuthRange::AzimuthRange() {
 }
 
 

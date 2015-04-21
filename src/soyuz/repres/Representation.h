@@ -13,90 +13,92 @@ class MIRParametrisation;
 struct grib_info;
 
 class Representation {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Representation();
+    Representation();
 
 // -- Destructor
 
-	virtual ~Representation(); // Change to virtual if base class
+    virtual ~Representation(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
     virtual void fill(grib_info&) const;
 
     virtual Representation* crop(double north, double west, double south, double east,
-            const std::vector<double>&, std::vector<double>&) const;
+                                 const std::vector<double>&, std::vector<double>&) const;
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
     virtual Representation* truncate(size_t truncation,
-            const std::vector<double>&, std::vector<double>&) const;
+                                     const std::vector<double>&, std::vector<double>&) const;
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
 
 
 // -- Methods
 
-	virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	Representation(const Representation&);
-	Representation& operator=(const Representation&);
+    Representation(const Representation&);
+    Representation& operator=(const Representation&);
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend std::ostream& operator<<(std::ostream& s,const Representation& p)
-		{ p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const Representation& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
@@ -104,20 +106,22 @@ class RepresentationFactory {
     std::string name_;
     virtual Representation* make(const MIRParametrisation&) = 0 ;
 
-protected:
+  protected:
 
     RepresentationFactory(const std::string&);
     virtual ~RepresentationFactory();
 
-public:
+  public:
     static Representation* build(const MIRParametrisation&);
 
 };
 
 template<class T>
 class RepresentationBuilder : public RepresentationFactory {
-    virtual Representation* make(const MIRParametrisation& param) { return new T(param); }
-public:
+    virtual Representation* make(const MIRParametrisation& param) {
+        return new T(param);
+    }
+  public:
     RepresentationBuilder(const std::string& name) : RepresentationFactory(name) {}
 };
 

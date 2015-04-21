@@ -35,15 +35,13 @@ namespace method {
 namespace {
 
 
-bool eq(const double& a, const double& b)
-{
+bool eq(const double& a, const double& b) {
     // @todo use the one in eckit once it stops giving you gip
     return fabs(a-b) < 10e-10;
 }
 
 
-void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, size_t start, size_t end, size_t& left, size_t& right)
-{
+void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, size_t start, size_t end, size_t& left, size_t& right) {
     using eckit::geometry::LON;
 
     double right_lon = 360.0;
@@ -52,19 +50,14 @@ void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, 
     right = start; // take the first if there's a wrap
     left = start;
 
-    for (unsigned int i = start; i < end; i++)
-    {
+    for (unsigned int i = start; i < end; i++) {
         const double& val = data[i].data()[LON];
 
-        if (val < in || eq(val, in))
-        {
+        if (val < in || eq(val, in)) {
             left_lon = val;
             left = i;
-        }
-        else
-        {
-            if (val < right_lon)
-            {
+        } else {
+            if (val < right_lon) {
                 right_lon = val;
                 right = i;
             }
@@ -76,16 +69,15 @@ void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, 
 }  // (utilities namespace)
 
 
-Bilinear::Bilinear(const MIRParametrisation& param)
-{}
+Bilinear::Bilinear(const MIRParametrisation& param) {
+}
 
 
-Bilinear::~Bilinear()
-{}
+Bilinear::~Bilinear() {
+}
 
 
-void Bilinear::assemble(MethodWeighted::Matrix& W) const
-{
+void Bilinear::assemble(MethodWeighted::Matrix& W) const {
     // FIXME arguments:
     atlas::Grid*      dummy_grid = 0;
     atlas::Grid& in  (*dummy_grid);
@@ -125,8 +117,7 @@ void Bilinear::assemble(MethodWeighted::Matrix& W) const
     const size_t out_npts = onodes.shape(0);
     weights_triplets.reserve( out_npts );
 
-    for (unsigned int i = 0; i < out_npts; i++)
-    {
+    for (unsigned int i = 0; i < out_npts; i++) {
         // get the lat, lon of the output data point required
         double lat = ocoords[i].data()[LAT];
         double lon = ocoords[i].data()[LON];
@@ -141,8 +132,7 @@ void Bilinear::assemble(MethodWeighted::Matrix& W) const
         // we will need the number of points on the top and bottom latitudes later. store them
         size_t top_n, bot_n;
 
-        for (unsigned int n = 0; n < lons.size() - 1; n++)
-        {
+        for (unsigned int n = 0; n < lons.size() - 1; n++) {
             top_i = bot_i;
             bot_i += lons[n];
 
@@ -158,8 +148,7 @@ void Bilinear::assemble(MethodWeighted::Matrix& W) const
             ASSERT(top_lat != bot_lat);
 
             // check output point is on or below the hi latitude
-            if (bot_lat < lat && (top_lat > lat || eq(top_lat, lat)))
-            {
+            if (bot_lat < lat && (top_lat > lat || eq(top_lat, lat))) {
                 ASSERT(top_lat > lat || eq(top_lat, lat));
                 ASSERT(bot_lat < lat);
                 ASSERT(!eq(bot_lat, lat));

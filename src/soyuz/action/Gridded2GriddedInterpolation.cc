@@ -11,21 +11,17 @@
 #include <memory>
 
 Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const MIRParametrisation& parametrisation):
-    Action(parametrisation)
-{
+    Action(parametrisation) {
 }
 
-Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation()
-{
+Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 }
 
-void Gridded2GriddedInterpolation::print(std::ostream& out) const
-{
+void Gridded2GriddedInterpolation::print(std::ostream& out) const {
     out << "Gridded2GriddedInterpolation[]";
 }
 
-void Gridded2GriddedInterpolation::execute(MIRField& field) const
-{
+void Gridded2GriddedInterpolation::execute(MIRField& field) const {
     NOTIMP;
 
     std::string name = "bilinear";

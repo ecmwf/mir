@@ -8,21 +8,17 @@
 #include <iostream>
 
 Sh2GriddedTransform::Sh2GriddedTransform(const MIRParametrisation& parametrisation):
-    Action(parametrisation)
-{
+    Action(parametrisation) {
 }
 
-Sh2GriddedTransform::~Sh2GriddedTransform()
-{
+Sh2GriddedTransform::~Sh2GriddedTransform() {
 }
 
-void Sh2GriddedTransform::print(std::ostream& out) const
-{
+void Sh2GriddedTransform::print(std::ostream& out) const {
     out << "Sh2GriddedTransform[]";
 }
 
-void Sh2GriddedTransform::execute(MIRField&) const
-{
+void Sh2GriddedTransform::execute(MIRField&) const {
     NOTIMP;
 }
 

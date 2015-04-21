@@ -11,8 +11,7 @@
 EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant(const MIRParametrisation &parametrisation) {
 }
 
-EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant()
-{
+EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant() {
 }
 
 

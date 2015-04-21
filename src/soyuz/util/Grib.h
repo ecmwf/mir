@@ -26,8 +26,7 @@ static bool grib_call(int e, const char *call, bool missingOK = false) {
 
 #define GRIB_GET(a) grib_call(a, #a, true)
 
-struct grib_info
-{
+struct grib_info {
     grib_util_grid_spec grid;
     grib_util_packing_spec packing;
 };

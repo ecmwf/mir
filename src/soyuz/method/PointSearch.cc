@@ -24,8 +24,7 @@ namespace mir {
 namespace method {
 
 
-PointSearch::PointSearch(atlas::Mesh& mesh)
-{
+PointSearch::PointSearch(atlas::Mesh& mesh) {
     ASSERT( mesh.has_function_space("nodes") );
 
     atlas::FunctionSpace& nodes = mesh.function_space( "nodes" );
@@ -49,14 +48,12 @@ PointSearch::PointSearch(atlas::Mesh& mesh)
 }
 
 
-PointSearch::PointSearch(const std::vector<PointType>& points)
-{
+PointSearch::PointSearch(const std::vector<PointType>& points) {
     init(points);
 }
 
 
-void PointSearch::init(const std::vector<PointType>& points)
-{
+void PointSearch::init(const std::vector<PointType>& points) {
     using atlas::PointIndex3;
 
     std::vector< PointIndex3::Value > pidx;
@@ -73,8 +70,7 @@ void PointSearch::init(const std::vector<PointType>& points)
 
 void PointSearch::closestNPoints( const PointType& pt,
                                   size_t n,
-                                  std::vector< ValueType >& closest)
-{
+                                  std::vector< ValueType >& closest) {
     using atlas::PointIndex3;
 
     PointIndex3::NodeList nn = tree_->kNearestNeighbours(pt, n);

@@ -11,8 +11,7 @@
 StretchedLL::StretchedLL(const MIRParametrisation &parametrisation) {
 }
 
-StretchedLL::StretchedLL()
-{
+StretchedLL::StretchedLL() {
 }
 
 

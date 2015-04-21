@@ -11,8 +11,7 @@
 ReducedLL::ReducedLL(const MIRParametrisation &parametrisation) {
 }
 
-ReducedLL::ReducedLL()
-{
+ReducedLL::ReducedLL() {
 }
 
 

@@ -19,7 +19,9 @@
 
 
 namespace eckit {
-namespace geometry { class Point3; }
+namespace geometry {
+class Point3;
+}
 }
 
 
@@ -28,7 +30,7 @@ namespace method {
 
 
 class Bilinear: public MethodWeighted {
-public:
+  public:
 
 // -- Exceptions
     // None
@@ -59,7 +61,7 @@ public:
 // -- Class methods
     // None
 
-protected:
+  protected:
 
 // -- Members
 
@@ -77,7 +79,7 @@ protected:
 // -- Class methods
     // None
 
-private:
+  private:
 
 // -- Methods
     double crossProduct(const eckit::geometry::Point3& a, const eckit::geometry::Point3& b) const;
@@ -95,8 +97,10 @@ private:
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const Bilinear& p)
-    { p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const Bilinear& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

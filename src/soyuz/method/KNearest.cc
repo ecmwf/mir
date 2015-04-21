@@ -30,16 +30,15 @@ namespace method {
 
 
 KNearest::KNearest(const MIRParametrisation& param) :
-    nclosest_(4)  // FIXME
-{}
+    nclosest_(4) { // FIXME
+}
 
 
-KNearest::~KNearest()
-{}
+KNearest::~KNearest() {
+}
 
 
-void KNearest::assemble(MethodWeighted::Matrix& W) const
-{
+void KNearest::assemble(MethodWeighted::Matrix& W) const {
     // FIXME arguments:
     atlas::Grid*      dummy_grid = 0;
     atlas::Grid& in  (*dummy_grid);
@@ -68,8 +67,7 @@ void KNearest::assemble(MethodWeighted::Matrix& W) const
     /// @todo take epsilon from some general config
     const double epsilon = eckit::Resource<double>( "KNearestEpsilon", std::numeric_limits<double>::epsilon() );
 
-    for( size_t ip = 0; ip < out_npts; ++ip)
-    {
+    for( size_t ip = 0; ip < out_npts; ++ip) {
         // get the reference output point
         eckit::geometry::Point3 p ( ocoords[ip].data() );
 
@@ -84,8 +82,7 @@ void KNearest::assemble(MethodWeighted::Matrix& W) const
         // sum all calculated weights for normalisation
         double sum = 0.0;
 
-        for( size_t j = 0; j < npts; ++j )
-        {
+        for( size_t j = 0; j < npts; ++j ) {
             // one of the closest points
             eckit::geometry::Point3 np  = closest[j].point();
 
@@ -100,14 +97,12 @@ void KNearest::assemble(MethodWeighted::Matrix& W) const
         ASSERT( sum > 0.0 );
 
         // now normalise all weights according to the total
-        for( size_t j = 0; j < npts; j++)
-        {
+        for( size_t j = 0; j < npts; j++) {
             weights[j] /= sum;
         }
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
-        for(int i = 0; i < npts; ++i)
-        {
+        for(int i = 0; i < npts; ++i) {
             size_t index = closest[i].payload();
             weights_triplets.push_back( Eigen::Triplet<double>( ip, index, weights[i] ) );
         }
@@ -118,12 +113,11 @@ void KNearest::assemble(MethodWeighted::Matrix& W) const
 }
 
 
-void KNearest::print(std::ostream&) const
-{}
+void KNearest::print(std::ostream&) const {
+}
 
 
-void KNearest::build_sptree( Grid& in ) const
-{
+void KNearest::build_sptree( Grid& in ) const {
     atlas::Mesh& i_mesh = in.mesh();
 
     std::string uidIn = in.uid();

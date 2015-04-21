@@ -8,68 +8,68 @@
 #include "soyuz/repres/Gridded.h"
 
 class AzimuthRange : public Gridded {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	AzimuthRange(const MIRParametrisation&);
+    AzimuthRange(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~AzimuthRange(); // Change to virtual if base class
+    virtual ~AzimuthRange(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
-	AzimuthRange();
+    AzimuthRange();
 
 // No copy allowed
 
-	AzimuthRange(const AzimuthRange&);
-	AzimuthRange& operator=(const AzimuthRange&);
+    AzimuthRange(const AzimuthRange&);
+    AzimuthRange& operator=(const AzimuthRange&);
 
 // -- Members
 
 
 // -- Methods
-	// None
+    // None
 
 
 // -- Overridden methods
@@ -77,15 +77,15 @@ private:
     virtual void fill(grib_info&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const AzimuthRange& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const AzimuthRange& p)
+    //	{ p.print(s); return s; }
 
 };
 

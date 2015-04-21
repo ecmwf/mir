@@ -17,24 +17,24 @@ class MIRInput;
 class MIROutput;
 
 class MIRJob : public MIRParametrisation, public eckit::NonCopyable {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	MIRJob();
+    MIRJob();
 
 // -- Destructor
 
-	virtual ~MIRJob();
+    virtual ~MIRJob();
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
@@ -43,18 +43,18 @@ public:
     void set(const std::string&, const std::string&);
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
@@ -64,12 +64,12 @@ protected:
 
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 
 // -- Members
@@ -85,13 +85,13 @@ private:
     // From MIRParametrisation
 
     virtual void print(std::ostream&) const;
-	virtual bool get(const std::string&, std::string&) const;
+    virtual bool get(const std::string&, std::string&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 

@@ -10,68 +10,68 @@
 
 
 class FrameFilter : public Action {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	FrameFilter(const MIRParametrisation&);
+    FrameFilter(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~FrameFilter(); // Change to virtual if base class
+    virtual ~FrameFilter(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	FrameFilter(const FrameFilter&);
-	FrameFilter& operator=(const FrameFilter&);
+    FrameFilter(const FrameFilter&);
+    FrameFilter& operator=(const FrameFilter&);
 
 // -- Members
 
-	size_t size_;
+    size_t size_;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
 
@@ -79,15 +79,15 @@ private:
 
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const FrameFilter& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const FrameFilter& p)
+    //	{ p.print(s); return s; }
 
 };
 

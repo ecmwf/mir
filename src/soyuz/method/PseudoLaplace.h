@@ -19,7 +19,7 @@ namespace method {
 
 
 class PseudoLaplace: public KNearest {
-public:
+  public:
 
 // -- Exceptions
     // None
@@ -50,7 +50,7 @@ public:
 // -- Class methods
     // None
 
-protected:
+  protected:
 
 // -- Members
 
@@ -68,7 +68,7 @@ protected:
 // -- Class methods
     // None
 
-private:
+  private:
 
 // -- Methods
     // None
@@ -84,8 +84,10 @@ private:
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const PseudoLaplace& p)
-    { p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const PseudoLaplace& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

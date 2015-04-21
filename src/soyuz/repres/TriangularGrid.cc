@@ -11,8 +11,7 @@
 TriangularGrid::TriangularGrid(const MIRParametrisation &parametrisation) {
 }
 
-TriangularGrid::TriangularGrid()
-{
+TriangularGrid::TriangularGrid() {
 }
 
 

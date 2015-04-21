@@ -4,8 +4,7 @@
 #include "soyuz/param/MIRDefaults.h"
 #include <iostream>
 
-MIRDefaults::MIRDefaults()
-{
+MIRDefaults::MIRDefaults() {
     // For demo only:
 
     defaults_["logic"] = "mars";
@@ -13,17 +12,14 @@ MIRDefaults::MIRDefaults()
 
 }
 
-MIRDefaults::~MIRDefaults()
-{
+MIRDefaults::~MIRDefaults() {
 }
 
 
-void MIRDefaults::print(std::ostream& out) const
-{
-     out << "MIRDefaults[";
+void MIRDefaults::print(std::ostream& out) const {
+    out << "MIRDefaults[";
     const char* sep = "";
-    for(std::map<std::string, std::string>::const_iterator j = defaults_.begin(); j != defaults_.end(); ++j)
-    {
+    for(std::map<std::string, std::string>::const_iterator j = defaults_.begin(); j != defaults_.end(); ++j) {
         out << sep;
         out << (*j).first << "=" << (*j).second;
         sep = ",";

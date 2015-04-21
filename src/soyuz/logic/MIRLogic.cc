@@ -28,8 +28,7 @@ static void init() {
 //-----------------------------------------------------------------------------
 
 MIRLogic::MIRLogic(const MIRParametrisation &parametrisation):
-    parametrisation_(parametrisation)
-{
+    parametrisation_(parametrisation) {
 }
 
 MIRLogic::~MIRLogic() {
@@ -42,8 +41,7 @@ void MIRLogic::add(std::vector<std::auto_ptr<Action> >& actions, const std::stri
 //-----------------------------------------------------------------------------
 
 MIRLogicFactory::MIRLogicFactory(const std::string& name):
-        name_(name)
-{
+    name_(name) {
 
     pthread_once(&once,init);
 
@@ -53,15 +51,13 @@ MIRLogicFactory::MIRLogicFactory(const std::string& name):
     (*m)[name] = this;
 }
 
-MIRLogicFactory::~MIRLogicFactory()
-{
+MIRLogicFactory::~MIRLogicFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
 
 }
 
-MIRLogic* MIRLogicFactory::build(const MIRParametrisation& params)
-{
+MIRLogic* MIRLogicFactory::build(const MIRParametrisation& params) {
 
     std::string name;
 
@@ -74,8 +70,7 @@ MIRLogic* MIRLogicFactory::build(const MIRParametrisation& params)
 
     eckit::Log::info() << "Looking for MIRLogicFactory [" << name << "]" << std::endl;
 
-    if (j == m->end())
-    {
+    if (j == m->end()) {
         eckit::Log::error() << "No MIRLogicFactory for [" << name << "]" << std::endl;
         eckit::Log::error() << "MIRLogicFactories are:" << std::endl;
         for(j = m->begin() ; j != m->end() ; ++j)

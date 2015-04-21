@@ -7,83 +7,83 @@
 #include "soyuz/action/Action.h"
 
 class Sh2ShTransform : public Action {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Sh2ShTransform(const MIRParametrisation&);
+    Sh2ShTransform(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~Sh2ShTransform(); // Change to virtual if base class
+    virtual ~Sh2ShTransform(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	Sh2ShTransform(const Sh2ShTransform&);
-	Sh2ShTransform& operator=(const Sh2ShTransform&);
+    Sh2ShTransform(const Sh2ShTransform&);
+    Sh2ShTransform& operator=(const Sh2ShTransform&);
 
 // -- Members
 
-	size_t truncation_;
+    size_t truncation_;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
 
     virtual void execute(MIRField&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const Sh2ShTransform& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const Sh2ShTransform& p)
+    //	{ p.print(s); return s; }
 
 };
 

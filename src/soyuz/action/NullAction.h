@@ -7,82 +7,82 @@
 #include "soyuz/action/Action.h"
 
 class NullAction : public Action {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	NullAction(const MIRParametrisation&);
+    NullAction(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~NullAction(); // Change to virtual if base class
+    virtual ~NullAction(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	NullAction(const NullAction&);
-	NullAction& operator=(const NullAction&);
+    NullAction(const NullAction&);
+    NullAction& operator=(const NullAction&);
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
 
     virtual void execute(MIRField&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const NullAction& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const NullAction& p)
+    //	{ p.print(s); return s; }
 
 };
 

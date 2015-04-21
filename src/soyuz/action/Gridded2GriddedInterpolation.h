@@ -7,82 +7,82 @@
 #include "soyuz/action/Action.h"
 
 class Gridded2GriddedInterpolation : public Action {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Gridded2GriddedInterpolation(const MIRParametrisation&);
+    Gridded2GriddedInterpolation(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~Gridded2GriddedInterpolation(); // Change to virtual if base class
+    virtual ~Gridded2GriddedInterpolation(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	Gridded2GriddedInterpolation(const Gridded2GriddedInterpolation&);
-	Gridded2GriddedInterpolation& operator=(const Gridded2GriddedInterpolation&);
+    Gridded2GriddedInterpolation(const Gridded2GriddedInterpolation&);
+    Gridded2GriddedInterpolation& operator=(const Gridded2GriddedInterpolation&);
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
 
     virtual void execute(MIRField&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const Gridded2GriddedInterpolation& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const Gridded2GriddedInterpolation& p)
+    //	{ p.print(s); return s; }
 
 };
 

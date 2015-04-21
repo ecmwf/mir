@@ -9,89 +9,97 @@
 
 
 class Bitmap {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Bitmap(const eckit::PathName&);
+    Bitmap(const eckit::PathName&);
 
 // -- Destructor
 
-	~Bitmap(); // Change to virtual if base class
+    ~Bitmap(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
-	const size_t width() const { return width_; }
-	const size_t height() const { return height_; }
+    const size_t width() const {
+        return width_;
+    }
+    const size_t height() const {
+        return height_;
+    }
 
-	bool on(size_t i, size_t j) const { return bitmap_[i][j]; }
+    bool on(size_t i, size_t j) const {
+        return bitmap_[i][j];
+    }
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	Bitmap(const Bitmap&);
-	Bitmap& operator=(const Bitmap&);
+    Bitmap(const Bitmap&);
+    Bitmap& operator=(const Bitmap&);
 
 // -- Members
 
-	eckit::PathName path_;
-	std::vector<std::vector<bool> > bitmap_;
-	size_t width_;
-	size_t height_;
+    eckit::PathName path_;
+    std::vector<std::vector<bool> > bitmap_;
+    size_t width_;
+    size_t height_;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
 
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend std::ostream& operator<<(std::ostream& s,const Bitmap& p)
-		{ p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const Bitmap& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

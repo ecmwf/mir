@@ -11,8 +11,7 @@
 Lambert::Lambert(const MIRParametrisation &parametrisation) {
 }
 
-Lambert::Lambert()
-{
+Lambert::Lambert() {
 }
 
 

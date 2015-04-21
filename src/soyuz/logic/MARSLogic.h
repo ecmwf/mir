@@ -8,82 +8,82 @@
 
 
 class MARSLogic : public MIRLogic {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	MARSLogic(const MIRParametrisation&);
+    MARSLogic(const MIRParametrisation&);
 
 // -- Destructor
 
-	~MARSLogic(); // Change to virtual if base class
+    ~MARSLogic(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	MARSLogic(const MARSLogic&);
-	MARSLogic& operator=(const MARSLogic&);
+    MARSLogic(const MARSLogic&);
+    MARSLogic& operator=(const MARSLogic&);
 
 // -- Members
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
 
     virtual void prepare(std::vector<std::auto_ptr<Action> >&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	// friend std::ostream& operator<<(std::ostream& s, const MARSLogic& p)
-	// { p.print(s); return s; }
+    // friend std::ostream& operator<<(std::ostream& s, const MARSLogic& p)
+    // { p.print(s); return s; }
 
 };
 

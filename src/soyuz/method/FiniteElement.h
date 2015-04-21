@@ -29,7 +29,7 @@ namespace method {
 
 
 class FiniteElement: public MethodWeighted {
-public:
+  public:
 
 // -- Exceptions
     // None
@@ -60,7 +60,7 @@ public:
 // -- Class methods
     // None
 
-protected:
+  protected:
 
 // -- Members
 
@@ -78,7 +78,7 @@ protected:
 // -- Class methods
     // None
 
-private:
+  private:
 
 // -- Members
     mutable eckit::ScopedPtr<atlas::PointIndex3> ptree;
@@ -105,8 +105,10 @@ private:
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const FiniteElement& p)
-    { p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const FiniteElement& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

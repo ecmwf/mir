@@ -6,13 +6,11 @@
 
 
 GribFileOutput::GribFileOutput(const eckit::PathName &path):
-    path_(path), handle_(0)
-{
+    path_(path), handle_(0) {
 }
 
-GribFileOutput::~GribFileOutput()
-{
-     if(handle_) {
+GribFileOutput::~GribFileOutput() {
+    if(handle_) {
         handle_->close();
         delete handle_;
     }

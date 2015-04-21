@@ -7,89 +7,91 @@
 #include "soyuz/repres/Representation.h"
 
 class SphericalHarmonics : public Representation {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	SphericalHarmonics(const MIRParametrisation&);
+    SphericalHarmonics(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~SphericalHarmonics(); // Change to virtual if base class
+    virtual ~SphericalHarmonics(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
-	size_t truncation() const { return truncation_; }
+    size_t truncation() const {
+        return truncation_;
+    }
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
-	SphericalHarmonics(size_t truncation);
+    SphericalHarmonics(size_t truncation);
 
 // No copy allowed
 
-	SphericalHarmonics(const SphericalHarmonics&);
-	SphericalHarmonics& operator=(const SphericalHarmonics&);
+    SphericalHarmonics(const SphericalHarmonics&);
+    SphericalHarmonics& operator=(const SphericalHarmonics&);
 
 // -- Members
 
     size_t truncation_;
 
 // -- Methods
-	// None
+    // None
 
 
 // -- Overridden methods
 
     virtual void fill(grib_info&) const;
- 	virtual Representation* truncate(size_t truncation,
-            const std::vector<double>&, std::vector<double>&) const;
+    virtual Representation* truncate(size_t truncation,
+                                     const std::vector<double>&, std::vector<double>&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const SphericalHarmonics& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const SphericalHarmonics& p)
+    //	{ p.print(s); return s; }
 
 };
 

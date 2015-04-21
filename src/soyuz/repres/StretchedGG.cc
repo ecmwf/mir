@@ -11,8 +11,7 @@
 StretchedGG::StretchedGG(const MIRParametrisation &parametrisation) {
 }
 
-StretchedGG::StretchedGG()
-{
+StretchedGG::StretchedGG() {
 }
 
 

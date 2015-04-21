@@ -8,68 +8,68 @@
 #include "soyuz/repres/Gridded.h"
 
 class StretchedGG : public Gridded {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	StretchedGG(const MIRParametrisation&);
+    StretchedGG(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~StretchedGG(); // Change to virtual if base class
+    virtual ~StretchedGG(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
-	StretchedGG();
+    StretchedGG();
 
 // No copy allowed
 
-	StretchedGG(const StretchedGG&);
-	StretchedGG& operator=(const StretchedGG&);
+    StretchedGG(const StretchedGG&);
+    StretchedGG& operator=(const StretchedGG&);
 
 // -- Members
 
 
 // -- Methods
-	// None
+    // None
 
 
 // -- Overridden methods
@@ -77,15 +77,15 @@ private:
     virtual void fill(grib_info&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const StretchedGG& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const StretchedGG& p)
+    //	{ p.print(s); return s; }
 
 };
 

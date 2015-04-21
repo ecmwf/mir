@@ -24,88 +24,94 @@ class MIRField;
 
 
 class Method {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Method();
+    Method();
 
 // -- Destructor
 
-	virtual ~Method(); // Change to virtual if base class
+    virtual ~Method(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
     virtual void execute(MIRField&) const = 0;
 
-    const std::string& name() const { return name_; }
+    const std::string& name() const {
+        return name_;
+    }
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
 
 
 // -- Methods
 
-	virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	Method(const Method&);
-	Method& operator=(const Method&);
+    Method(const Method&);
+    Method& operator=(const Method&);
 
 // -- Members
 
     // name created methods, allowing builder to name them
     std::string name_;
-    std::string& name() { return name_; }
+    std::string& name() {
+        return name_;
+    }
     template< class T > friend class MethodBuilder;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const Method& p)
-    { p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const Method& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
@@ -114,12 +120,12 @@ class MethodFactory {
     std::string name_;
     virtual Method* make(const std::string&, const MIRParametrisation&) = 0 ;
 
-protected:
+  protected:
 
     MethodFactory(const std::string&);
     virtual ~MethodFactory();
 
-public:
+  public:
     static Method* build(const std::string&, const MIRParametrisation&);
 
 };
@@ -127,13 +133,12 @@ public:
 
 template<class T>
 class MethodBuilder : public MethodFactory {
-    virtual Method* make(const std::string& name, const MIRParametrisation& param)
-    {
+    virtual Method* make(const std::string& name, const MIRParametrisation& param) {
         T* baby = new T(param);
         baby->name() = name;
         return baby;
     }
-public:
+  public:
     MethodBuilder(const std::string& name) : MethodFactory(name) {}
 };
 

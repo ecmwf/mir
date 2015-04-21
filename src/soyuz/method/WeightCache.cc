@@ -74,8 +74,7 @@ TODO:
 */
 
 
-PathName WeightCache::filename(const std::string& key)
-{
+PathName WeightCache::filename(const std::string& key) {
     PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir","/tmp/cache/mir");
 
     PathName f = base_path / "weights" / PathName( key + ".cache" );
@@ -84,12 +83,10 @@ PathName WeightCache::filename(const std::string& key)
 }
 
 
-bool WeightCache::add(const std::string& key, MethodWeighted::Matrix& W )
-{
+bool WeightCache::add(const std::string& key, MethodWeighted::Matrix& W ) {
     PathName file( filename(key) );
 
-    if( file.exists() )
-    {
+    if( file.exists() ) {
         Log::debug() << "WeightCache entry " << file << " already exists..." << std::endl;
         return false;
     }
@@ -116,10 +113,8 @@ bool WeightCache::add(const std::string& key, MethodWeighted::Matrix& W )
     // find all the non-zero values (aka triplets)
 
     std::vector<Eigen::Triplet<double> > trips;
-    for (unsigned int i = 0; i < W.outerSize(); ++i)
-    {
-        for ( MethodWeighted::Matrix::InnerIterator it(W,i); it; ++it)
-        {
+    for (unsigned int i = 0; i < W.outerSize(); ++i) {
+        for ( MethodWeighted::Matrix::InnerIterator it(W,i); it; ++it) {
             trips.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
         }
     }
@@ -131,8 +126,7 @@ bool WeightCache::add(const std::string& key, MethodWeighted::Matrix& W )
 
     // now save the triplets themselves
 
-    for (unsigned int i = 0; i < trips.size(); i++)
-    {
+    for (unsigned int i = 0; i < trips.size(); i++) {
         Eigen::Triplet<double>& rt = trips[i];
         //ofs << (long)rt.row() << (long)rt.col() << (double)rt.value();
         long x = rt.row();
@@ -149,12 +143,9 @@ bool WeightCache::add(const std::string& key, MethodWeighted::Matrix& W )
 
     // now try to rename the file to its file pathname
 
-    try
-    {
+    try {
         PathName::rename( tmpfile, file );
-    }
-    catch( FailedSystemCall& e ) // ignore failed system call -- another process nay have created the file meanwhile
-    {
+    } catch( FailedSystemCall& e ) { // ignore failed system call -- another process nay have created the file meanwhile
         Log::debug() << "Failed rename of cache file -- " << e.what() << std::endl;
     }
 
@@ -162,12 +153,10 @@ bool WeightCache::add(const std::string& key, MethodWeighted::Matrix& W )
 }
 
 
-bool WeightCache::get(const std::string& key, MethodWeighted::Matrix& W )
-{
+bool WeightCache::get(const std::string& key, MethodWeighted::Matrix& W ) {
     PathName file( filename(key) );
 
-    if( ! file.exists() )
-    {
+    if( ! file.exists() ) {
         return false;
     }
 
@@ -195,8 +184,7 @@ bool WeightCache::get(const std::string& key, MethodWeighted::Matrix& W )
 
     // read the values
 
-    for (unsigned int i = 0; i < npts; i++)
-    {
+    for (unsigned int i = 0; i < npts; i++) {
         long x, y;
         double w;
         //fh >> x >> y >> w;

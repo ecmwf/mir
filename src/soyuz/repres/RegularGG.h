@@ -8,68 +8,68 @@
 #include "soyuz/repres/Gridded.h"
 
 class RegularGG : public Gridded {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	RegularGG(const MIRParametrisation&);
+    RegularGG(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~RegularGG(); // Change to virtual if base class
+    virtual ~RegularGG(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
-	RegularGG();
+    RegularGG();
 
 // No copy allowed
 
-	RegularGG(const RegularGG&);
-	RegularGG& operator=(const RegularGG&);
+    RegularGG(const RegularGG&);
+    RegularGG& operator=(const RegularGG&);
 
 // -- Members
 
 
 // -- Methods
-	// None
+    // None
 
 
 // -- Overridden methods
@@ -77,15 +77,15 @@ private:
     virtual void fill(grib_info&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const RegularGG& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const RegularGG& p)
+    //	{ p.print(s); return s; }
 
 };
 

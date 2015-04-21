@@ -11,8 +11,7 @@
 Mercator::Mercator(const MIRParametrisation &parametrisation) {
 }
 
-Mercator::Mercator()
-{
+Mercator::Mercator() {
 }
 
 

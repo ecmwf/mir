@@ -4,18 +4,15 @@
 #include "soyuz/param/MIRConfiguration.h"
 #include <iostream>
 
-MIRConfiguration::MIRConfiguration()
-{
+MIRConfiguration::MIRConfiguration() {
     // TODO: Read a file
 }
 
-MIRConfiguration::~MIRConfiguration()
-{
+MIRConfiguration::~MIRConfiguration() {
 }
 
 
-void MIRConfiguration::print(std::ostream& out) const
-{
+void MIRConfiguration::print(std::ostream& out) const {
     out << "MIRConfiguration[...]";
 }
 

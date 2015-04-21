@@ -11,8 +11,7 @@
 RotatedGG::RotatedGG(const MIRParametrisation &parametrisation) {
 }
 
-RotatedGG::RotatedGG()
-{
+RotatedGG::RotatedGG() {
 }
 
 

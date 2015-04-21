@@ -11,8 +11,7 @@
 SpaceView::SpaceView(const MIRParametrisation &parametrisation) {
 }
 
-SpaceView::SpaceView()
-{
+SpaceView::SpaceView() {
 }
 
 

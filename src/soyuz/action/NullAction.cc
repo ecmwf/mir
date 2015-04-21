@@ -6,21 +6,17 @@
 #include <iostream>
 
 NullAction::NullAction(const MIRParametrisation& parametrisation):
-    Action(parametrisation)
-{
+    Action(parametrisation) {
 }
 
-NullAction::~NullAction()
-{
+NullAction::~NullAction() {
 }
 
-void NullAction::print(std::ostream& out) const
-{
+void NullAction::print(std::ostream& out) const {
     out << "NullAction[]";
 }
 
-void NullAction::execute(MIRField&) const
-{
+void NullAction::execute(MIRField&) const {
     // Nothing to do
 }
 

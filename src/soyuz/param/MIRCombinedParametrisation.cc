@@ -5,28 +5,25 @@
 #include <iostream>
 
 MIRCombinedParametrisation::MIRCombinedParametrisation(const MIRParametrisation& user,
-                              const MIRParametrisation& metadata,
-                              const MIRParametrisation& configuration,
-                              const MIRParametrisation& defaults):
+        const MIRParametrisation& metadata,
+        const MIRParametrisation& configuration,
+        const MIRParametrisation& defaults):
     user_(user),
     metadata_(metadata),
     configuration_(configuration),
-    defaults_(defaults)
-{
+    defaults_(defaults) {
 }
 
-MIRCombinedParametrisation::~MIRCombinedParametrisation()
-{
+MIRCombinedParametrisation::~MIRCombinedParametrisation() {
 }
 
 
-void MIRCombinedParametrisation::print(std::ostream& out) const
-{
+void MIRCombinedParametrisation::print(std::ostream& out) const {
     out << "MIRCombinedParametrisation[user="
-     << user_ <<
-     ",metadata=" << metadata_ <<
-     ",configuration=" << configuration_ <<
-     ",defaults=" << defaults_ <<"]";
+        << user_ <<
+        ",metadata=" << metadata_ <<
+        ",configuration=" << configuration_ <<
+        ",defaults=" << defaults_ <<"]";
 }
 
 bool MIRCombinedParametrisation::get(const std::string& name, std::string& value) const {

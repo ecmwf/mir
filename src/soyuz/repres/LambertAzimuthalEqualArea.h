@@ -8,68 +8,68 @@
 #include "soyuz/repres/Gridded.h"
 
 class LambertAzimuthalEqualArea : public Gridded {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	LambertAzimuthalEqualArea(const MIRParametrisation&);
+    LambertAzimuthalEqualArea(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~LambertAzimuthalEqualArea(); // Change to virtual if base class
+    virtual ~LambertAzimuthalEqualArea(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
-	LambertAzimuthalEqualArea();
+    LambertAzimuthalEqualArea();
 
 // No copy allowed
 
-	LambertAzimuthalEqualArea(const LambertAzimuthalEqualArea&);
-	LambertAzimuthalEqualArea& operator=(const LambertAzimuthalEqualArea&);
+    LambertAzimuthalEqualArea(const LambertAzimuthalEqualArea&);
+    LambertAzimuthalEqualArea& operator=(const LambertAzimuthalEqualArea&);
 
 // -- Members
 
 
 // -- Methods
-	// None
+    // None
 
 
 // -- Overridden methods
@@ -77,15 +77,15 @@ private:
     virtual void fill(grib_info&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const LambertAzimuthalEqualArea& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const LambertAzimuthalEqualArea& p)
+    //	{ p.print(s); return s; }
 
 };
 

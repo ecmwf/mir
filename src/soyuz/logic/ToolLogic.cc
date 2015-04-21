@@ -59,7 +59,9 @@ namespace logic {
 struct argmode_interpolate_t : public util::Arguments::argmode_t {
 
     /// Argument mode identifier
-    static std::string className() { return "interpolate"; }
+    static std::string className() {
+        return "interpolate";
+    }
 
     /// Argument mode options
     argmode_interpolate_t() {
@@ -80,7 +82,9 @@ struct argmode_interpolate_t : public util::Arguments::argmode_t {
 struct argmode_transform_t : public util::Arguments::argmode_t {
 
     /// Argument mode identifier
-    static std::string className() { return "transform"; }
+    static std::string className() {
+        return "transform";
+    }
 
     /// Argument mode options
     argmode_transform_t() {

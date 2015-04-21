@@ -7,8 +7,7 @@
 #include <iostream>
 
 MARSLogic::MARSLogic(const MIRParametrisation &parametrisation):
-    MIRLogic(parametrisation)
-{
+    MIRLogic(parametrisation) {
 
 }
 
@@ -34,9 +33,8 @@ void MARSLogic::prepare(std::vector<std::auto_ptr<Action> > &actions) const {
     // user.regular => transform.sh2regular
     if (parametrisation_.has("field.spherical")) {
         if (parametrisation_.has("user.grid") ||
-            parametrisation_.has("user.reduced") ||
-            parametrisation_.has("user.regular"))
-        {
+                parametrisation_.has("user.reduced") ||
+                parametrisation_.has("user.regular")) {
             add(actions, "transform.sh2grid");
         }
     }

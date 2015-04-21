@@ -7,82 +7,82 @@
 #include "soyuz/action/Action.h"
 
 class Sh2GriddedTransform : public Action {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Sh2GriddedTransform(const MIRParametrisation&);
+    Sh2GriddedTransform(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~Sh2GriddedTransform(); // Change to virtual if base class
+    virtual ~Sh2GriddedTransform(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	Sh2GriddedTransform(const Sh2GriddedTransform&);
-	Sh2GriddedTransform& operator=(const Sh2GriddedTransform&);
+    Sh2GriddedTransform(const Sh2GriddedTransform&);
+    Sh2GriddedTransform& operator=(const Sh2GriddedTransform&);
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
 
     virtual void execute(MIRField&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const Sh2GriddedTransform& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const Sh2GriddedTransform& p)
+    //	{ p.print(s); return s; }
 
 };
 

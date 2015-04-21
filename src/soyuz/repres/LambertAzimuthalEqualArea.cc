@@ -11,8 +11,7 @@
 LambertAzimuthalEqualArea::LambertAzimuthalEqualArea(const MIRParametrisation &parametrisation) {
 }
 
-LambertAzimuthalEqualArea::LambertAzimuthalEqualArea()
-{
+LambertAzimuthalEqualArea::LambertAzimuthalEqualArea() {
 }
 
 

@@ -11,8 +11,7 @@
 TransverseMercator::TransverseMercator(const MIRParametrisation &parametrisation) {
 }
 
-TransverseMercator::TransverseMercator()
-{
+TransverseMercator::TransverseMercator() {
 }
 
 

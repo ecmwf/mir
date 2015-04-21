@@ -20,7 +20,7 @@ namespace method {
 
 
 class KNearest: public MethodWeighted {
-public:
+  public:
 
 // -- Exceptions
     // None
@@ -51,7 +51,7 @@ public:
 // -- Class methods
     // None
 
-protected:
+  protected:
 
 // -- Members
     size_t nclosest_;  ///< Number of closest points to search for
@@ -72,7 +72,7 @@ protected:
 // -- Class methods
     // None
 
-private:
+  private:
 
 // -- Members
     mutable atlas::Grid::uid_t uid_;
@@ -91,8 +91,10 @@ private:
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const KNearest& p)
-    { p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const KNearest& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

@@ -10,84 +10,84 @@
 #include <map>
 
 class MIRDefaults : public MIRParametrisation {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	MIRDefaults();
+    MIRDefaults();
 
 // -- Destructor
 
-	~MIRDefaults(); // Change to virtual if base class
+    ~MIRDefaults(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	// void print(ostream&) const; // Change to virtual if base class
+    // void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	MIRDefaults(const MIRDefaults&);
-	MIRDefaults& operator=(const MIRDefaults&);
+    MIRDefaults(const MIRDefaults&);
+    MIRDefaults& operator=(const MIRDefaults&);
 
 // -- Members
-	std::map<std::string, std::string> defaults_;
+    std::map<std::string, std::string> defaults_;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
 
-	// From MIRParametrisation
+    // From MIRParametrisation
     virtual void print(std::ostream&) const;
     virtual bool get(const std::string&, std::string&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const MIRDefaults& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const MIRDefaults& p)
+    //	{ p.print(s); return s; }
 
 };
 

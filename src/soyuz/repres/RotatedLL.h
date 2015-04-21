@@ -8,68 +8,68 @@
 #include "soyuz/repres/Gridded.h"
 
 class RotatedLL : public Gridded {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	RotatedLL(const MIRParametrisation&);
+    RotatedLL(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~RotatedLL(); // Change to virtual if base class
+    virtual ~RotatedLL(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
-	RotatedLL();
+    RotatedLL();
 
 // No copy allowed
 
-	RotatedLL(const RotatedLL&);
-	RotatedLL& operator=(const RotatedLL&);
+    RotatedLL(const RotatedLL&);
+    RotatedLL& operator=(const RotatedLL&);
 
 // -- Members
 
 
 // -- Methods
-	// None
+    // None
 
 
 // -- Overridden methods
@@ -77,15 +77,15 @@ private:
     virtual void fill(grib_info&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const RotatedLL& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const RotatedLL& p)
+    //	{ p.print(s); return s; }
 
 };
 

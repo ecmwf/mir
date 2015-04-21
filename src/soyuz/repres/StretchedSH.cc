@@ -11,8 +11,7 @@
 StretchedSH::StretchedSH(const MIRParametrisation &parametrisation) {
 }
 
-StretchedSH::StretchedSH()
-{
+StretchedSH::StretchedSH() {
 }
 
 

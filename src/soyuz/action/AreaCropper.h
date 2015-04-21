@@ -7,86 +7,86 @@
 #include "soyuz/action/Action.h"
 
 class AreaCropper : public Action {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	AreaCropper(const MIRParametrisation&);
+    AreaCropper(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~AreaCropper(); // Change to virtual if base class
+    virtual ~AreaCropper(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	AreaCropper(const AreaCropper&);
-	AreaCropper& operator=(const AreaCropper&);
+    AreaCropper(const AreaCropper&);
+    AreaCropper& operator=(const AreaCropper&);
 
 // -- Members
 
-	double north_;
-	double west_;
-	double south_;
-	double east_;
+    double north_;
+    double west_;
+    double south_;
+    double east_;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
 
     virtual void execute(MIRField&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const AreaCropper& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const AreaCropper& p)
+    //	{ p.print(s); return s; }
 
 };
 

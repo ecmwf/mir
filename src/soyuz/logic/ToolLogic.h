@@ -8,83 +8,83 @@
 #include "soyuz/logic/MIRLogic.h"
 
 class ToolLogic : public MIRLogic {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	ToolLogic(const MIRParametrisation&);
+    ToolLogic(const MIRParametrisation&);
 
 // -- Destructor
 
-	~ToolLogic(); // Change to virtual if base class
+    ~ToolLogic(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	ToolLogic(const ToolLogic&);
-	ToolLogic& operator=(const ToolLogic&);
+    ToolLogic(const ToolLogic&);
+    ToolLogic& operator=(const ToolLogic&);
 
 // -- Members
 
     virtual void prepare(std::vector<std::auto_ptr<Action> >&) const;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	// friend std::ostream& operator<<(std::ostream& s, const ToolLogic& p)
-	// { p.print(s); return s; }
+    // friend std::ostream& operator<<(std::ostream& s, const ToolLogic& p)
+    // { p.print(s); return s; }
 
 };
 

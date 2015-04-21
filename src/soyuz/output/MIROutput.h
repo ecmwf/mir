@@ -11,83 +11,85 @@ class MIRInput;
 class MIRField;
 
 class MIROutput {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	MIROutput();
+    MIROutput();
 
 // -- Destructor
 
-	virtual ~MIROutput(); // Change to virtual if base class
+    virtual ~MIROutput(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
-	virtual void copy(const MIRParametrisation&, MIRInput&) = 0; // Not iterpolation performed
-	virtual void save(const MIRParametrisation&, MIRInput&, MIRField&) = 0;
+    virtual void copy(const MIRParametrisation&, MIRInput&) = 0; // Not iterpolation performed
+    virtual void save(const MIRParametrisation&, MIRInput&, MIRField&) = 0;
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	MIROutput(const MIROutput&);
-	MIROutput& operator=(const MIROutput&);
+    MIROutput(const MIROutput&);
+    MIROutput& operator=(const MIROutput&);
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend std::ostream& operator<<(std::ostream& s,const MIROutput& p)
-		{ p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const MIROutput& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

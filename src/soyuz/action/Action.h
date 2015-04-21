@@ -10,24 +10,24 @@ class MIRField;
 class MIRParametrisation;
 
 class Action {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Action(const MIRParametrisation& parametrisation);
+    Action(const MIRParametrisation& parametrisation);
 
 // -- Destructor
 
-	virtual ~Action(); // Change to virtual if base class
+    virtual ~Action(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
@@ -35,15 +35,15 @@ public:
 
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
 
@@ -51,43 +51,45 @@ protected:
 
 // -- Methods
 
-	virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	Action(const Action&);
-	Action& operator=(const Action&);
+    Action(const Action&);
+    Action& operator=(const Action&);
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend std::ostream& operator<<(std::ostream& s,const Action& p)
-		{ p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const Action& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
@@ -95,20 +97,22 @@ class ActionFactory {
     std::string name_;
     virtual Action* make(const MIRParametrisation&) = 0 ;
 
-protected:
+  protected:
 
     ActionFactory(const std::string&);
     virtual ~ActionFactory();
 
-public:
+  public:
     static Action* build(const std::string&, const MIRParametrisation&);
 
 };
 
 template<class T>
 class ActionBuilder : public ActionFactory {
-    virtual Action* make(const MIRParametrisation& param) { return new T(param); }
-public:
+    virtual Action* make(const MIRParametrisation& param) {
+        return new T(param);
+    }
+  public:
     ActionBuilder(const std::string& name) : ActionFactory(name) {}
 };
 

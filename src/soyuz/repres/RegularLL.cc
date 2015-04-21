@@ -39,11 +39,11 @@ RegularLL::RegularLL(const MIRParametrisation &parametrisation) {
 }
 
 RegularLL::RegularLL(double north,
-                       double west,
-                       double south,
-                       double east,
-                       double north_south_increment,
-                       double west_east_increment):
+                     double west,
+                     double south,
+                     double east,
+                     double north_south_increment,
+                     double west_east_increment):
     north_(north),
     west_(west),
     south_(south),
@@ -129,7 +129,8 @@ Representation *RegularLL::crop(double north, double west, double south, double 
     ASSERT((ni() * nj()) == in.size());
     ASSERT((cropped->ni() * cropped->ni()) == out.size());
 
-    size_t k = 0; size_t p = 0;
+    size_t k = 0;
+    size_t p = 0;
     double lat = north_;
     for (size_t i = 0; i < ni_; i++, lat -= north_south_increment_) {
         double lon = west_;

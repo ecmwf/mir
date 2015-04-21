@@ -32,9 +32,15 @@ class GribMemoryOutput : public GribOutput {
     // -- Methods
     // None
 
-    size_t interpolated() const { return interpolated_; }
-    size_t saved() const { return saved_; }
-    size_t length() const { return length_; }
+    size_t interpolated() const {
+        return interpolated_;
+    }
+    size_t saved() const {
+        return saved_;
+    }
+    size_t length() const {
+        return length_;
+    }
 
 
     // -- Overridden methods
@@ -75,7 +81,7 @@ class GribMemoryOutput : public GribOutput {
     void* message_;
     size_t size_;
     size_t length_;
-    
+
     size_t saved_;
     size_t interpolated_;
 

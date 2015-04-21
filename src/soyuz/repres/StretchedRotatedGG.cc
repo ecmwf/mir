@@ -11,8 +11,7 @@
 StretchedRotatedGG::StretchedRotatedGG(const MIRParametrisation &parametrisation) {
 }
 
-StretchedRotatedGG::StretchedRotatedGG()
-{
+StretchedRotatedGG::StretchedRotatedGG() {
 }
 
 

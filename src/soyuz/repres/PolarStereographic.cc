@@ -11,8 +11,7 @@
 PolarStereographic::PolarStereographic(const MIRParametrisation &parametrisation) {
 }
 
-PolarStereographic::PolarStereographic()
-{
+PolarStereographic::PolarStereographic() {
 }
 
 

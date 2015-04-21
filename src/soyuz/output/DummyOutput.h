@@ -14,85 +14,85 @@ class DataHandle;
 }
 
 class DummyOutput : public MIROutput {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	DummyOutput();
+    DummyOutput();
 
 // -- Destructor
 
-	~DummyOutput(); // Change to virtual if base class
+    ~DummyOutput(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	DummyOutput(const DummyOutput&);
-	DummyOutput& operator=(const DummyOutput&);
+    DummyOutput(const DummyOutput&);
+    DummyOutput& operator=(const DummyOutput&);
 
 // -- Members
 
 // -- Methods
-	// None
+    // None
 
 
 // -- Overridden methods
-	// From MIROutput
+    // From MIROutput
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
-	virtual void copy(const MIRParametrisation&, MIRInput&); // Not iterpolation performed
-	virtual void save(const MIRParametrisation&, MIRInput&, MIRField&);
+    virtual void copy(const MIRParametrisation&, MIRInput&); // Not iterpolation performed
+    virtual void save(const MIRParametrisation&, MIRInput&, MIRField&);
 
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const DummyOutput& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const DummyOutput& p)
+    //	{ p.print(s); return s; }
 
 };
 

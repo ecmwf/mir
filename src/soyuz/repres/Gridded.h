@@ -7,76 +7,76 @@
 #include "soyuz/repres/Representation.h"
 
 class Gridded : public Representation {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	Gridded(const MIRParametrisation&);
+    Gridded(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~Gridded(); // Change to virtual if base class
+    virtual ~Gridded(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-  Gridded();
+    Gridded();
 
 // -- Methods
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-  Gridded(const Gridded&);
-  Gridded& operator=(const Gridded&);
+    Gridded(const Gridded&);
+    Gridded& operator=(const Gridded&);
 
 // -- Members
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const Gridded& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const Gridded& p)
+    //	{ p.print(s); return s; }
 
 };
 

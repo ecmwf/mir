@@ -14,82 +14,82 @@ class DataHandle;
 }
 
 class GribStreamOutput : public GribOutput {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	GribStreamOutput();
+    GribStreamOutput();
 
 // -- Destructor
 
-	~GribStreamOutput(); // Change to virtual if base class
+    ~GribStreamOutput(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	GribStreamOutput(const GribStreamOutput&);
-	GribStreamOutput& operator=(const GribStreamOutput&);
+    GribStreamOutput(const GribStreamOutput&);
+    GribStreamOutput& operator=(const GribStreamOutput&);
 
 // -- Members
 
 // -- Methods
 
-	virtual eckit::DataHandle& dataHandle() = 0;
+    virtual eckit::DataHandle& dataHandle() = 0;
 
 // -- Overridden methods
-	// From MIROutput
+    // From MIROutput
 
-	void out(const void* message, size_t length, bool iterpolated);
+    void out(const void* message, size_t length, bool iterpolated);
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const GribStreamOutput& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const GribStreamOutput& p)
+    //	{ p.print(s); return s; }
 
 };
 

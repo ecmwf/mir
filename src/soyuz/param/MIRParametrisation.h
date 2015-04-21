@@ -8,84 +8,86 @@
 #include <iosfwd>
 
 class MIRParametrisation {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	MIRParametrisation();
+    MIRParametrisation();
 
 // -- Destructor
 
-	virtual ~MIRParametrisation(); // Change to virtual if base class
+    virtual ~MIRParametrisation(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
-	virtual bool has(const std::string& name) const;
+    virtual bool has(const std::string& name) const;
     virtual bool get(const std::string& name, std::string& value) const = 0;
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	MIRParametrisation(const MIRParametrisation&);
-	MIRParametrisation& operator=(const MIRParametrisation&);
+    MIRParametrisation(const MIRParametrisation&);
+    MIRParametrisation& operator=(const MIRParametrisation&);
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend std::ostream& operator<<(std::ostream& s,const MIRParametrisation& p)
-		{ p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const MIRParametrisation& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

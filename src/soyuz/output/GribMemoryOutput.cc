@@ -12,8 +12,7 @@ GribMemoryOutput::GribMemoryOutput(void *message, size_t size):
     size_(size),
     length_(0),
     saved_(0),
-    interpolated_(0)
-{
+    interpolated_(0) {
 }
 
 GribMemoryOutput::~GribMemoryOutput() {
@@ -26,8 +25,7 @@ void GribMemoryOutput::out(const void* message, size_t length, bool iterpolated)
 
     if(iterpolated) {
         interpolated_++;
-    }
-    else {
+    } else {
         saved_ ++;
     }
 }

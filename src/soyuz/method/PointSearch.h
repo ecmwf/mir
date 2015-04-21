@@ -42,22 +42,22 @@ class PointSearch : private eckit::NonCopyable {
     typedef atlas::PointIndex3::iterator iterator;
     typedef eckit::geometry::Point3 PointType;
 
-public:
+  public:
 
     PointSearch( const std::vector< Point >& ipts );
 
     PointSearch( atlas::Mesh& mesh );
 
-public: // methods
+  public: // methods
 
     /// Finds closest N points to an input point
     void closestNPoints(const PointType& pt, size_t n, std::vector<ValueType>& closest);
 
-protected:
+  protected:
 
     eckit::ScopedPtr<TreeType> tree_;
 
-private:
+  private:
 
     void init(const std::vector<PointType>& points);
 

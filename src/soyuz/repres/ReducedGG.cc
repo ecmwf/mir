@@ -11,8 +11,7 @@
 ReducedGG::ReducedGG(const MIRParametrisation &parametrisation) {
 }
 
-ReducedGG::ReducedGG()
-{
+ReducedGG::ReducedGG() {
 }
 
 

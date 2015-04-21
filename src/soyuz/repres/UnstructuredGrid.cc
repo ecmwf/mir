@@ -11,8 +11,7 @@
 UnstructuredGrid::UnstructuredGrid(const MIRParametrisation &parametrisation) {
 }
 
-UnstructuredGrid::UnstructuredGrid()
-{
+UnstructuredGrid::UnstructuredGrid() {
 }
 
 

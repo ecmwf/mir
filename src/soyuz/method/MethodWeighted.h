@@ -32,9 +32,9 @@ namespace method {
 
 
 class MethodWeighted :
-        public Method,
-        private eckit::NonCopyable {
-public:
+    public Method,
+    private eckit::NonCopyable {
+  public:
 
 // -- Definitions
 
@@ -69,7 +69,7 @@ public:
 // -- Class methods
     // None
 
-protected:
+  protected:
 
 // -- Members
     // None
@@ -93,7 +93,7 @@ protected:
 // -- Class methods
     // None
 
-private:
+  private:
 
 // -- Methods
     // None
@@ -109,8 +109,10 @@ private:
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const MethodWeighted& p)
-    { p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const MethodWeighted& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

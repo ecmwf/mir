@@ -10,85 +10,85 @@
 #include <map>
 
 class MIRConfiguration : public MIRParametrisation {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	MIRConfiguration();
+    MIRConfiguration();
 
 // -- Destructor
 
-	~MIRConfiguration(); // Change to virtual if base class
+    ~MIRConfiguration(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	// void print(ostream&) const; // Change to virtual if base class
+    // void print(ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	MIRConfiguration(const MIRConfiguration&);
-	MIRConfiguration& operator=(const MIRConfiguration&);
+    MIRConfiguration(const MIRConfiguration&);
+    MIRConfiguration& operator=(const MIRConfiguration&);
 
 // -- Members
 
-	std::map<std::string, std::string> settings_;
+    std::map<std::string, std::string> settings_;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
 
-	// From MIRParametrisation
+    // From MIRParametrisation
     virtual void print(std::ostream&) const;
     virtual bool get(const std::string&, std::string&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const MIRConfiguration& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const MIRConfiguration& p)
+    //	{ p.print(s); return s; }
 
 };
 

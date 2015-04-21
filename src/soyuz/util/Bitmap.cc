@@ -23,7 +23,7 @@ static void out(const std::vector<std::vector<bool> > &bitmap) {
 }
 
 static void out(std::vector<std::vector<bool> > &bitmap, int row, const std::string &line, bool on, long &prev) {
-    
+
     ASSERT(row >= 0);
 
     if (prev >= 0) {
@@ -80,8 +80,7 @@ static void out(std::vector<std::vector<bool> > &bitmap, int row, const std::str
 Bitmap::Bitmap(const eckit::PathName& path):
     path_(path),
     width_(0),
-    height_(0)
-{
+    height_(0) {
 
     eckit::StdFile file(path_);
     int c;
@@ -108,7 +107,8 @@ Bitmap::Bitmap(const eckit::PathName& path):
 
     bool on = s.find("values=on") == s.npos;
 
-    int pos = s.find("size="); ASSERT(pos != s.npos);
+    int pos = s.find("size=");
+    ASSERT(pos != s.npos);
     pos += 5;
     int  n = 0;
     while (pos < s.size()) {
@@ -134,7 +134,8 @@ Bitmap::Bitmap(const eckit::PathName& path):
 
     // std::cout << "w=" << w << ",h=" << h << std::endl;
 
-    pos = s.find("points="); ASSERT(pos != s.npos);
+    pos = s.find("points=");
+    ASSERT(pos != s.npos);
     pos += 7;
 
     // std::cout << "ON " << on << std::endl;

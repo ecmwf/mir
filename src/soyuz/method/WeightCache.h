@@ -27,7 +27,7 @@ namespace method {
 
 class WeightCache : private eckit::NonCopyable {
 
-public: // methods
+  public: // methods
 
     /// @returns true if found cache
     static bool get(const std::string& key, MethodWeighted::Matrix& W);

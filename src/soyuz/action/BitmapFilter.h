@@ -11,68 +11,68 @@
 class Bitmap;
 
 class BitmapFilter : public Action {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	BitmapFilter(const MIRParametrisation&);
+    BitmapFilter(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~BitmapFilter(); // Change to virtual if base class
+    virtual ~BitmapFilter(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	BitmapFilter(const BitmapFilter&);
-	BitmapFilter& operator=(const BitmapFilter&);
+    BitmapFilter(const BitmapFilter&);
+    BitmapFilter& operator=(const BitmapFilter&);
 
 // -- Members
 
-	const Bitmap* bitmap_;
+    const Bitmap* bitmap_;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
 
@@ -80,15 +80,15 @@ private:
 
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const BitmapFilter& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const BitmapFilter& p)
+    //	{ p.print(s); return s; }
 
 };
 

@@ -11,8 +11,7 @@ GribStreamOutput::GribStreamOutput() {
 GribStreamOutput::~GribStreamOutput() {
 }
 
-void GribStreamOutput::out(const void* message, size_t length, bool iterpolated)
-{
+void GribStreamOutput::out(const void* message, size_t length, bool iterpolated) {
     dataHandle().write(message, length);
 }
 

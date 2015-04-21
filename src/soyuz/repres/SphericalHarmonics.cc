@@ -87,8 +87,7 @@ Representation *SphericalHarmonics::truncate(size_t truncation,
 
         for (size_t m = 0; m < t1; m++) {
             for (size_t n = m ; n < t1; n++) {
-                if (m > t_ || n > t_)
-                {
+                if (m > t_ || n > t_) {
                     out[i++] = 0;
                     out[i++] = 0;
                 } else {

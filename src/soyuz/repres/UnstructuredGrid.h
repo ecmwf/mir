@@ -8,68 +8,68 @@
 #include "soyuz/repres/Gridded.h"
 
 class UnstructuredGrid : public Gridded {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	UnstructuredGrid(const MIRParametrisation&);
+    UnstructuredGrid(const MIRParametrisation&);
 
 // -- Destructor
 
-	virtual ~UnstructuredGrid(); // Change to virtual if base class
+    virtual ~UnstructuredGrid(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
-	UnstructuredGrid();
+    UnstructuredGrid();
 
 // No copy allowed
 
-	UnstructuredGrid(const UnstructuredGrid&);
-	UnstructuredGrid& operator=(const UnstructuredGrid&);
+    UnstructuredGrid(const UnstructuredGrid&);
+    UnstructuredGrid& operator=(const UnstructuredGrid&);
 
 // -- Members
 
 
 // -- Methods
-	// None
+    // None
 
 
 // -- Overridden methods
@@ -77,15 +77,15 @@ private:
     virtual void fill(grib_info&) const;
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const UnstructuredGrid& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const UnstructuredGrid& p)
+    //	{ p.print(s); return s; }
 
 };
 

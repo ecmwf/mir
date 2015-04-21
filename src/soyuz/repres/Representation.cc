@@ -47,7 +47,7 @@ Representation *Representation::crop(double north, double west, double south, do
 }
 
 Representation *Representation::truncate(size_t truncation,
-                                     const std::vector<double> &, std::vector<double> &) const {
+        const std::vector<double> &, std::vector<double> &) const {
     eckit::StrStream os;
     os << "Representation::truncate() not implemented for " << *this << eckit::StrStream::ends;
     throw eckit::SeriousBug(std::string(os));

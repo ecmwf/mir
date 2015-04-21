@@ -3,12 +3,10 @@
 
 #include "soyuz/param/MIRParametrisation.h"
 
-MIRParametrisation::MIRParametrisation()
-{
+MIRParametrisation::MIRParametrisation() {
 }
 
-MIRParametrisation::~MIRParametrisation()
-{
+MIRParametrisation::~MIRParametrisation() {
 }
 
 bool MIRParametrisation::has(const std::string& name) const {

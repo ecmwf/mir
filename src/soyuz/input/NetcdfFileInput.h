@@ -15,7 +15,7 @@
 #include <string>
 
 class NetcdfFileInput : public MIRInput, public FieldParametrisation {
-public:
+  public:
 
     // -- Exceptions
     // None

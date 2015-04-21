@@ -11,8 +11,7 @@
 StretchedRotatedLL::StretchedRotatedLL(const MIRParametrisation &parametrisation) {
 }
 
-StretchedRotatedLL::StretchedRotatedLL()
-{
+StretchedRotatedLL::StretchedRotatedLL() {
 }
 
 

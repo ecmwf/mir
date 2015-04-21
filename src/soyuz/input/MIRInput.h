@@ -14,84 +14,86 @@ typedef struct grib_handle grib_handle;
 
 
 class MIRInput {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	MIRInput();
+    MIRInput();
 
 // -- Destructor
 
-	virtual ~MIRInput(); // Change to virtual if base class
+    virtual ~MIRInput(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
 
     virtual const MIRParametrisation& parametrisation() const = 0;
     virtual MIRField* field() const = 0;
-	virtual grib_handle* gribHandle() const;
+    virtual grib_handle* gribHandle() const;
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
-	virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	MIRInput(const MIRInput&);
-	MIRInput& operator=(const MIRInput&);
+    MIRInput(const MIRInput&);
+    MIRInput& operator=(const MIRInput&);
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	friend std::ostream& operator<<(std::ostream& s,const MIRInput& p)
-		{ p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const MIRInput& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

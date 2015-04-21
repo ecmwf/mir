@@ -25,8 +25,7 @@ static void init() {
 //-----------------------------------------------------------------------------
 
 Action::Action(const MIRParametrisation& parametrisation):
-    parametrisation_(parametrisation)
-{
+    parametrisation_(parametrisation) {
 }
 
 Action::~Action() {
@@ -35,8 +34,7 @@ Action::~Action() {
 //-----------------------------------------------------------------------------
 
 ActionFactory::ActionFactory(const std::string& name):
-        name_(name)
-{
+    name_(name) {
 
     pthread_once(&once,init);
 
@@ -46,15 +44,13 @@ ActionFactory::ActionFactory(const std::string& name):
     (*m)[name] = this;
 }
 
-ActionFactory::~ActionFactory()
-{
+ActionFactory::~ActionFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
 
 }
 
-Action* ActionFactory::build(const std::string& name, const MIRParametrisation& params)
-{
+Action* ActionFactory::build(const std::string& name, const MIRParametrisation& params) {
 
     pthread_once(&once,init);
 
@@ -63,8 +59,7 @@ Action* ActionFactory::build(const std::string& name, const MIRParametrisation& 
 
     eckit::Log::info() << "Looking for ActionFactory [" << name << "]" << std::endl;
 
-    if (j == m->end())
-    {
+    if (j == m->end()) {
         eckit::Log::error() << "No ActionFactory for [" << name << "]" << std::endl;
         eckit::Log::error() << "ActionFactories are:" << std::endl;
         for(j = m->begin() ; j != m->end() ; ++j)

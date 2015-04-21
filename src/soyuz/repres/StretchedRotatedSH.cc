@@ -11,8 +11,7 @@
 StretchedRotatedSH::StretchedRotatedSH(const MIRParametrisation &parametrisation) {
 }
 
-StretchedRotatedSH::StretchedRotatedSH()
-{
+StretchedRotatedSH::StretchedRotatedSH() {
 }
 
 

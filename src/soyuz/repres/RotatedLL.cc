@@ -11,8 +11,7 @@
 RotatedLL::RotatedLL(const MIRParametrisation &parametrisation) {
 }
 
-RotatedLL::RotatedLL()
-{
+RotatedLL::RotatedLL() {
 }
 
 

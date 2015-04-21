@@ -11,8 +11,7 @@
 Albers::Albers(const MIRParametrisation &parametrisation) {
 }
 
-Albers::Albers()
-{
+Albers::Albers() {
 }
 
 

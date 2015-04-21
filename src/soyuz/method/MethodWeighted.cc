@@ -23,12 +23,11 @@ namespace mir {
 namespace method {
 
 
-MethodWeighted::~MethodWeighted()
-{}
+MethodWeighted::~MethodWeighted() {
+}
 
 
-void MethodWeighted::execute(MIRField& field) const
-{
+void MethodWeighted::execute(MIRField& field) const {
     // FIXME arguments:
     atlas::Grid*       dummy_grid = 0;
     atlas::Grid& in  (*dummy_grid);
@@ -41,8 +40,7 @@ void MethodWeighted::execute(MIRField& field) const
 
     WeightCache cache;
     const std::string whash = hash();
-    if (!cache.get( whash, W ))
-    {
+    if (!cache.get( whash, W )) {
         if (in.uid() == out.uid() && in.same(out))
             W.setIdentity();
         else {
@@ -66,8 +64,7 @@ void MethodWeighted::execute(MIRField& field) const
 }
 
 
-void MethodWeighted::applyMask(MethodWeighted::Matrix& W) const
-{
+void MethodWeighted::applyMask(MethodWeighted::Matrix& W) const {
 #if 0
 //FIXME
     // FIXME arguments:
@@ -75,11 +72,11 @@ void MethodWeighted::applyMask(MethodWeighted::Matrix& W) const
     atlas::Grid& in  (*dummy_grid);
     atlas::Grid& out (*dummy_grid);
 
-    if( params().has("MaskPath") )
-    {
+    if( params().has("MaskPath") ) {
         PathName mask_path = params()["MaskPath"];
 
-        FieldSet::Ptr fmask( new FieldSet( mask_path ) ); ASSERT( fmask );
+        FieldSet::Ptr fmask( new FieldSet( mask_path ) );
+        ASSERT( fmask );
 
         if( fmask->size() != 1 )
             throw UserError( "User provided mask file with multiple fields", Here() );
@@ -91,8 +88,7 @@ void MethodWeighted::applyMask(MethodWeighted::Matrix& W) const
 }
 
 
-std::string MethodWeighted::hash() const
-{
+std::string MethodWeighted::hash() const {
     // FIXME arguments:
     atlas::Grid*       dummy_grid = 0;
     atlas::Grid& in  (*dummy_grid);

@@ -12,23 +12,19 @@ MIRField::MIRField(bool hasMissing, double missingValue):
     values_(),
     hasMissing_(hasMissing),
     missingValue_(missingValue),
-    representation_(0)
-{
+    representation_(0) {
 }
 
 // Warning: take ownership of values
-void MIRField::values(std::vector<double>& values)
-{
+void MIRField::values(std::vector<double>& values) {
     std::swap(values_, values);
 }
 
-MIRField::~MIRField()
-{
+MIRField::~MIRField() {
     delete representation_;
 }
 
-void MIRField::print(std::ostream& out) const
-{
+void MIRField::print(std::ostream& out) const {
     out << "MIRField[values=" << values_.size();
     if(hasMissing_) {
         out << ",missingValue" << missingValue_;

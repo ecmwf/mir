@@ -11,8 +11,7 @@
 RegularGG::RegularGG(const MIRParametrisation &parametrisation) {
 }
 
-RegularGG::RegularGG()
-{
+RegularGG::RegularGG() {
 }
 
 

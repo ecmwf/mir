@@ -14,84 +14,84 @@ class DataHandle;
 }
 
 class GribOutput : public MIROutput {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	GribOutput();
+    GribOutput();
 
 // -- Destructor
 
-	~GribOutput(); // Change to virtual if base class
+    ~GribOutput(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	GribOutput(const GribOutput&);
-	GribOutput& operator=(const GribOutput&);
+    GribOutput(const GribOutput&);
+    GribOutput& operator=(const GribOutput&);
 
 // -- Members
 
 // -- Methods
 
-	virtual void out(const void* message, size_t length, bool iterpolated) = 0;
+    virtual void out(const void* message, size_t length, bool iterpolated) = 0;
 
 // -- Overridden methods
-	// From MIROutput
+    // From MIROutput
 
-	virtual void copy(const MIRParametrisation&, MIRInput&); // Not iterpolation performed
-	virtual void save(const MIRParametrisation&, MIRInput&, MIRField&);
+    virtual void copy(const MIRParametrisation&, MIRInput&); // Not iterpolation performed
+    virtual void save(const MIRParametrisation&, MIRInput&, MIRField&);
 
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const GribOutput& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const GribOutput& p)
+    //	{ p.print(s); return s; }
 
 };
 

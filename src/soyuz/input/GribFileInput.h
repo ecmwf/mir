@@ -11,62 +11,62 @@
 
 
 class GribFileInput : public GribStreamInput {
-public:
+  public:
 
 // -- Exceptions
-	// None
+    // None
 
 // -- Contructors
 
-	GribFileInput(const eckit::PathName&);
+    GribFileInput(const eckit::PathName&);
 
 // -- Destructor
 
-	~GribFileInput(); // Change to virtual if base class
+    ~GribFileInput(); // Change to virtual if base class
 
 // -- Convertors
-	// None
+    // None
 
 // -- Operators
-	// None
+    // None
 
 // -- Methods
-	// None
+    // None
 
 
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-protected:
+  protected:
 
 // -- Members
-	// None
+    // None
 
 // -- Methods
 
 
 // -- Overridden methods
-	// None
+    // None
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
-private:
+  private:
 
 // No copy allowed
 
-	GribFileInput(const GribFileInput&);
-	GribFileInput& operator=(const GribFileInput&);
+    GribFileInput(const GribFileInput&);
+    GribFileInput& operator=(const GribFileInput&);
 
 // -- Members
 
@@ -74,10 +74,10 @@ private:
     eckit::DataHandle* handle_;
 
 // -- Methods
-	// None
+    // None
 
 // -- Overridden methods
-	// From MIRInput
+    // From MIRInput
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
@@ -87,15 +87,15 @@ private:
 
 
 // -- Class members
-	// None
+    // None
 
 // -- Class methods
-	// None
+    // None
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const GribFileInput& p)
-	//	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const GribFileInput& p)
+    //	{ p.print(s); return s; }
 
 };
 

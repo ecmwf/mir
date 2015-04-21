@@ -31,16 +31,15 @@ namespace method {
 
 
 PseudoLaplace::PseudoLaplace(const MIRParametrisation& param) :
-    KNearest(param)
-{}
+    KNearest(param) {
+}
 
 
-PseudoLaplace::~PseudoLaplace()
-{}
+PseudoLaplace::~PseudoLaplace() {
+}
 
 
-void PseudoLaplace::assemble(MethodWeighted::Matrix& W) const
-{
+void PseudoLaplace::assemble(MethodWeighted::Matrix& W) const {
     // FIXME arguments:
     atlas::Grid*      dummy_grid = 0;
     atlas::Grid& in  (*dummy_grid);
@@ -70,8 +69,7 @@ void PseudoLaplace::assemble(MethodWeighted::Matrix& W) const
     std::vector<double> weights;
     weights.reserve(nclosest_);
 
-    for( size_t ip = 0; ip < out_npts; ++ip)
-    {
+    for( size_t ip = 0; ip < out_npts; ++ip) {
         // get the reference output point
         eckit::geometry::Point3 p ( ocoords[ip].data() );
 
@@ -85,8 +83,7 @@ void PseudoLaplace::assemble(MethodWeighted::Matrix& W) const
 
         double Ixx(0),Ixy(0),Ixz(0),Iyy(0),Iyz(0),Izz(0), Rx(0),Ry(0),Rz(0), Lx,Ly,Lz, dx,dy,dz;
 
-        for( size_t j = 0; j < npts; ++j)
-        {
+        for( size_t j = 0; j < npts; ++j) {
             eckit::geometry::Point3 np  = closest[j].point();
 
             dx = np[XX] - p[XX];
@@ -110,15 +107,14 @@ void PseudoLaplace::assemble(MethodWeighted::Matrix& W) const
         }
 
         Lx =  (-(Iyz*Iyz*Rx) + Iyy*Izz*Rx + Ixz*Iyz*Ry - Ixy*Izz*Ry - Ixz*Iyy*Rz + Ixy*Iyz*Rz)/
-                (Ixz*Ixz*Iyy - 2.*Ixy*Ixz*Iyz + Ixy*Ixy*Izz + Ixx*(Iyz*Iyz - Iyy*Izz));
+              (Ixz*Ixz*Iyy - 2.*Ixy*Ixz*Iyz + Ixy*Ixy*Izz + Ixx*(Iyz*Iyz - Iyy*Izz));
         Ly =  (Ixz*Iyz*Rx - Ixy*Izz*Rx - Ixz*Ixz*Ry + Ixx*Izz*Ry + Ixy*Ixz*Rz - Ixx*Iyz*Rz)/
-                (Ixz*Ixz*Iyy - 2.*Ixy*Ixz*Iyz + Ixx*Iyz*Iyz + Ixy*Ixy*Izz - Ixx*Iyy*Izz);
+              (Ixz*Ixz*Iyy - 2.*Ixy*Ixz*Iyz + Ixx*Iyz*Iyz + Ixy*Ixy*Izz - Ixx*Iyy*Izz);
         Lz =  (-(Ixz*Iyy*Rx) + Ixy*Iyz*Rx + Ixy*Ixz*Ry - Ixx*Iyz*Ry - Ixy*Ixy*Rz + Ixx*Iyy*Rz)/
-                (Ixz*Ixz*Iyy - 2.*Ixy*Ixz*Iyz + Ixy*Ixy*Izz + Ixx*(Iyz*Iyz - Iyy*Izz));
+              (Ixz*Ixz*Iyy - 2.*Ixy*Ixz*Iyz + Ixy*Ixy*Izz + Ixx*(Iyz*Iyz - Iyy*Izz));
 
         double S = 0;
-        for( size_t j = 0; j < npts; ++j )
-        {
+        for( size_t j = 0; j < npts; ++j ) {
             weights[j] = 1.0 + Lx*Dx[j] + Ly*Dy[j] + Lz*Dz[j];
             S += weights[j];
         }
@@ -127,8 +123,7 @@ void PseudoLaplace::assemble(MethodWeighted::Matrix& W) const
             weights[j] /= S;
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
-        for(int i = 0; i < npts; ++i)
-        {
+        for(int i = 0; i < npts; ++i) {
             size_t index = closest[i].payload();
             weights_triplets.push_back( Eigen::Triplet<double>( ip, index, weights[i] ) );
         }
