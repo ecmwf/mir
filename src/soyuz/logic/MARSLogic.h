@@ -19,6 +19,10 @@
 #include "soyuz/logic/MIRLogic.h"
 
 
+namespace mir {
+namespace logic {
+
+
 class MARSLogic : public MIRLogic {
   public:
 
@@ -84,7 +88,7 @@ class MARSLogic : public MIRLogic {
 
 // -- Overridden methods
 
-    virtual void prepare(std::vector<std::auto_ptr< mir::action::Action > >&) const;
+    virtual void prepare(std::vector<std::auto_ptr< action::Action > >&) const;
 
 // -- Class members
     // None
@@ -100,5 +104,7 @@ class MARSLogic : public MIRLogic {
 };
 
 
+}  // namespace logic
+}  // namespace mir
 #endif
 

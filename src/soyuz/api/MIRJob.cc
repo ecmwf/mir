@@ -69,7 +69,7 @@ void MIRJob::execute(mir::input::MIRInput& input, MIROutput& output) const {
     MIRCombinedParametrisation combined(*this, metadata, configuration, defaults);
     eckit::Log::info() << "        Combined: " << combined << std::endl;
 
-    std::auto_ptr<MIRLogic> logic(MIRLogicFactory::build(combined));
+    std::auto_ptr< mir::logic::MIRLogic > logic(mir::logic::MIRLogicFactory::build(combined));
 
     eckit::Log::info() << "Logic: " << *logic << std::endl;
 

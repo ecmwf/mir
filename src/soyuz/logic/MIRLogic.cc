@@ -23,6 +23,8 @@
 #include "soyuz/action/Action.h"
 
 
+namespace mir {
+namespace logic {
 namespace {
 
 
@@ -49,8 +51,8 @@ MIRLogic::~MIRLogic() {
 }
 
 
-void MIRLogic::add(std::vector<std::auto_ptr< mir::action::Action > >& actions, const std::string& name) const {
-    actions.push_back(std::auto_ptr< mir::action::Action >(mir::action::ActionFactory::build(name, parametrisation_)));
+void MIRLogic::add(std::vector<std::auto_ptr< action::Action > >& actions, const std::string& name) const {
+    actions.push_back(std::auto_ptr< action::Action >(action::ActionFactory::build(name, parametrisation_)));
 }
 
 
@@ -99,4 +101,8 @@ MIRLogic* MIRLogicFactory::build(const MIRParametrisation& params) {
 
     return (*j).second->make(params);
 }
+
+
+}  // namespace logic
+}  // namespace mir
 

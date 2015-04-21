@@ -19,6 +19,10 @@
 #include "soyuz/param/MIRParametrisation.h"
 
 
+namespace mir {
+namespace logic {
+
+
 MARSLogic::MARSLogic(const MIRParametrisation &parametrisation):
     MIRLogic(parametrisation) {
 
@@ -34,7 +38,7 @@ void MARSLogic::print(std::ostream &out) const {
 }
 
 
-void MARSLogic::prepare(std::vector<std::auto_ptr< mir::action::Action > > &actions) const {
+void MARSLogic::prepare(std::vector<std::auto_ptr< action::Action > > &actions) const {
     // All the nasty logic goes there
 
     if (parametrisation_.has("field.spherical")) {
@@ -75,5 +79,11 @@ void MARSLogic::prepare(std::vector<std::auto_ptr< mir::action::Action > > &acti
 }
 
 
+// register MARS-specialized logic
+namespace {
 static MIRLogicBuilder<MARSLogic> mars("mars");
+}
 
+
+}  // namespace logic
+}  // namespace mir

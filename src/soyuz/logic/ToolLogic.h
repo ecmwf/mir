@@ -19,6 +19,10 @@
 #include "soyuz/logic/MIRLogic.h"
 
 
+namespace mir {
+namespace logic {
+
+
 class ToolLogic : public MIRLogic {
   public:
 
@@ -79,7 +83,7 @@ class ToolLogic : public MIRLogic {
 
 // -- Members
 
-    virtual void prepare(std::vector<std::auto_ptr< mir::action::Action > >&) const;
+    virtual void prepare(std::vector<std::auto_ptr< action::Action > >&) const;
 
 // -- Methods
     // None
@@ -101,5 +105,7 @@ class ToolLogic : public MIRLogic {
 };
 
 
+}  // namespace logic
+}  // namespace mir
 #endif
 

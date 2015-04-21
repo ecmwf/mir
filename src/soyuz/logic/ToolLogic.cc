@@ -20,6 +20,10 @@
 #include "soyuz/util/Arguments.h"
 
 
+namespace mir {
+namespace logic {
+
+
 ToolLogic::ToolLogic(const MIRParametrisation &parametrisation):
     MIRLogic(parametrisation) {
 }
@@ -34,7 +38,7 @@ void ToolLogic::print(std::ostream &out) const {
 }
 
 
-void ToolLogic::prepare(std::vector<std::auto_ptr< mir::action::Action > > &actions) const {
+void ToolLogic::prepare(std::vector<std::auto_ptr< action::Action > > &actions) const {
     // All the nasty logic goes there
 
     size_t argc = eckit::Context::instance().argc();
@@ -43,10 +47,6 @@ void ToolLogic::prepare(std::vector<std::auto_ptr< mir::action::Action > > &acti
     }
 
 }
-
-
-namespace mir {
-namespace logic {
 
 
 /**
@@ -94,7 +94,7 @@ struct argmode_transform_t : public util::Arguments::argmode_t {
 };
 
 
-// register specialized modes
+// register command-line tool specialized logic (and associated parsing modes)
 namespace {
 static MIRLogicBuilder< ToolLogic > __tool("tool");
 eckit::ConcreteBuilderT0< util::Arguments::argmode_t, argmode_transform_t   > __Arguments_argmode_transform;

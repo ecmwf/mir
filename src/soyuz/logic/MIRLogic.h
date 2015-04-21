@@ -23,9 +23,11 @@
 
 
 class MIRParametrisation;
+
+
 namespace mir {
 namespace action { class Action; }
-}
+namespace logic {
 
 
 class MIRLogic {
@@ -50,7 +52,7 @@ class MIRLogic {
 
 // -- Methods
 
-    virtual void prepare(std::vector<std::auto_ptr< mir::action::Action > >&) const = 0;
+    virtual void prepare(std::vector<std::auto_ptr< action::Action > >&) const = 0;
 
 // -- Overridden methods
     // None
@@ -69,7 +71,7 @@ class MIRLogic {
 
 // -- Methods
 
-    void add(std::vector<std::auto_ptr< mir::action::Action > >& actions, const std::string& name) const;
+    void add(std::vector<std::auto_ptr< action::Action > >& actions, const std::string& name) const;
 
 
     virtual void print(std::ostream&) const = 0; // Change to virtual if base class
@@ -114,6 +116,7 @@ class MIRLogic {
 
 };
 
+
 class MIRLogicFactory {
     std::string name_;
     virtual MIRLogic* make(const MIRParametrisation&) = 0 ;
@@ -128,6 +131,7 @@ class MIRLogicFactory {
 
 };
 
+
 template<class T>
 class MIRLogicBuilder : public MIRLogicFactory {
     virtual MIRLogic* make(const MIRParametrisation& param) {
@@ -138,5 +142,7 @@ class MIRLogicBuilder : public MIRLogicFactory {
 };
 
 
+}  // namespace logic
+}  // namespace mir
 #endif
 
