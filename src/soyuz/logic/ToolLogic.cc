@@ -96,7 +96,7 @@ struct argmode_transform_t : public util::Arguments::argmode_t {
 
 // register specialized modes
 namespace {
-static MIRLogicBuilder<ToolLogic> tool("tool");
+static MIRLogicBuilder< ToolLogic > __tool("tool");
 eckit::ConcreteBuilderT0< util::Arguments::argmode_t, argmode_transform_t   > __Arguments_argmode_transform;
 eckit::ConcreteBuilderT0< util::Arguments::argmode_t, argmode_interpolate_t > __Arguments_argmode_interpolate;
 }

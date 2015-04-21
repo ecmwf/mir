@@ -1,25 +1,40 @@
-// File DummyOutput.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "soyuz/output/DummyOutput.h"
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
 
 #include <istream>
+
+#include "soyuz/output/DummyOutput.h"
 
 
 DummyOutput::DummyOutput() {
 }
 
+
 DummyOutput::~DummyOutput() {
 }
 
 
-void DummyOutput::copy(const MIRParametrisation &param, MIRInput &input) {
-
+void DummyOutput::copy(const MIRParametrisation &param, mir::input::MIRInput &input) {
 }
 
-void DummyOutput::save(const MIRParametrisation &param, MIRInput &input, MIRField &field) {
+
+void DummyOutput::save(const MIRParametrisation &param, mir::input::MIRInput &input, MIRField &field) {
 }
+
 
 void DummyOutput::print(std::ostream &out) const {
     out << "DummyOutput[...]";
 }
+

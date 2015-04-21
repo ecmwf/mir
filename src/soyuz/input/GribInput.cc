@@ -1,17 +1,53 @@
-// File GribInput.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "soyuz/input/GribInput.h"
-#include "soyuz/data/MIRField.h"
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/BufferedHandle.h"
 
+#include "soyuz/data/MIRField.h"
 #include "soyuz/util/Grib.h"
+
+#include "soyuz/input/GribInput.h"
+
+
+namespace mir {
+namespace input {
+namespace {
+
+
+static struct {
+    const char *name;
+    const char *key;
+} mappings[] = {
+    {"west_east_increment", "iDirectionIncrementInDegrees"},
+    {"north_south_increment", "jDirectionIncrementInDegrees"},
+    {"west", "longitudeOfFirstGridPointInDegrees"},
+    {"east", "longitudeOfLastGridPointInDegrees"},
+    {"north", "latitudeOfFirstGridPointInDegrees"},
+    {"south", "latitudeOfLastGridPointInDegrees"},
+    {"truncation", "pentagonalResolutionParameterJ"},// Assumes triangular truncation
+    {0, 0},
+};
+
+
+}  // (anonymous namespace)
 
 
 GribInput::GribInput() {
 }
+
 
 GribInput::~GribInput() {
 }
@@ -20,6 +56,7 @@ GribInput::~GribInput() {
 const MIRParametrisation &GribInput::parametrisation() const {
     return *this;
 }
+
 
 MIRField *GribInput::field() const {
     ASSERT(grib_.get());
@@ -47,22 +84,6 @@ MIRField *GribInput::field() const {
 grib_handle *GribInput::gribHandle() const {
     return grib_.get();
 }
-
-
-static struct {
-    const char *name;
-    const char *key;
-} mappings[] = {
-    {"west_east_increment", "iDirectionIncrementInDegrees"},
-    {"north_south_increment", "jDirectionIncrementInDegrees"},
-    {"west", "longitudeOfFirstGridPointInDegrees"},
-    {"east", "longitudeOfLastGridPointInDegrees"},
-    {"north", "latitudeOfFirstGridPointInDegrees"},
-    {"south", "latitudeOfLastGridPointInDegrees"},
-    {"truncation", "pentagonalResolutionParameterJ"},// Assumes triangular truncation
-    {0, 0},
-};
-
 
 
 bool GribInput::lowLevelGet(const std::string &name, std::string &value) const {
@@ -240,8 +261,14 @@ bool GribInput::lowLevelGet(const std::string &name, std::string &value) const {
     return false;
 }
 
+
 bool GribInput::handle(grib_handle *h) {
     grib_.reset(h);
     cache_.clear();
     return h != 0;
 }
+
+
+}  // namespace input
+}  // namespace mir
+

@@ -40,7 +40,7 @@ MIRJob::~MIRJob() {
 }
 
 
-void MIRJob::execute(MIRInput& input, MIROutput& output) const {
+void MIRJob::execute(mir::input::MIRInput& input, MIROutput& output) const {
     // Optimisation: nothing to do, usefull for MARS
     if(settings_.size() == 0) {
         eckit::Log::info() << "Nothing to do (no request)" << std::endl;

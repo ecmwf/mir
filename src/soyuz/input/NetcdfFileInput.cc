@@ -1,17 +1,36 @@
-// File NetcdfFileInput.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "soyuz/input/NetcdfFileInput.h"
-#include "soyuz/data/MIRField.h"
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/Translator.h"
+
+#include "soyuz/data/MIRField.h"
+
+#include "soyuz/input/NetcdfFileInput.h"
 
 // JUST A DEMO !!!!
 // Assumes that netcdf is single 2D variable, that dimensions are called "latitude" and "longitude"
 // ... and many more assumptions.
 
 #include <netcdf.h>
+
+
+namespace mir {
+namespace input {
+namespace {
+
 
 inline int _nc_call(int e, const char *call, const std::string &path) {
     if (e) {
@@ -26,11 +45,15 @@ inline int _nc_call(int e, const char *call, const std::string &path) {
 #define NC_CALL(a, path) _nc_call(a, #a, path)
 
 
+}  // (anonymous namespace)
+
+
 NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path, const std::string &variable):
     path_(path),
     variable_(variable),
     nc_(-1) {
 }
+
 
 NetcdfFileInput::~NetcdfFileInput() {
     if (nc_ != -1) {
@@ -38,13 +61,16 @@ NetcdfFileInput::~NetcdfFileInput() {
     }
 }
 
+
 void NetcdfFileInput::print(std::ostream &out) const {
     out << "NetcdfFileInput[path=" << path_ << ",variable=" << variable_ << "]";
 }
 
+
 const MIRParametrisation &NetcdfFileInput::parametrisation() const {
     return *this;
 }
+
 
 void NetcdfFileInput::getVariable(const std::string &variable, std::vector<double> &values) const {
     if (nc_ == -1) {
@@ -113,6 +139,7 @@ void NetcdfFileInput::getVariable(const std::string &variable, std::vector<doubl
     os <<  "NetcdfFileInput: cannot find variable " << variable << eckit::StrStream::ends;
     throw eckit::SeriousBug(std::string(os));
 }
+
 
 MIRField *NetcdfFileInput::field() const {
 
@@ -187,4 +214,11 @@ bool NetcdfFileInput::lowLevelGet(const std::string &name, std::string &value) c
 
     return false;
 }
+
+
+#undef NC_CALL
+
+
+}  // namespace input
+}  // namespace mir
 

@@ -1,22 +1,33 @@
-// File GribOutput.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "soyuz/output/GribOutput.h"
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
-#include "soyuz/data/MIRField.h"
-#include "soyuz/input/MIRInput.h"
-
-#include "soyuz/param/MIRParametrisation.h"
 
 #include <istream>
-#include "soyuz/util/Grib.h"
-#include "soyuz/repres/Representation.h"
 
 #include "eckit/utils/Translator.h"
 #include "eckit/io/DataHandle.h"
 
+#include "soyuz/data/MIRField.h"
+#include "soyuz/input/MIRInput.h"
+#include "soyuz/param/MIRParametrisation.h"
+#include "soyuz/repres/Representation.h"
+#include "soyuz/util/Grib.h"
+
+#include "soyuz/output/GribOutput.h"
 
 #define X(a) std::cout << #a << " = " << a << std::endl
+
 
 class HandleFree {
     grib_handle *h_;
@@ -27,14 +38,16 @@ class HandleFree {
     }
 };
 
+
 GribOutput::GribOutput() {
 }
+
 
 GribOutput::~GribOutput() {
 }
 
 
-void GribOutput::copy(const MIRParametrisation &param, MIRInput &input) { // Not iterpolation performed
+void GribOutput::copy(const MIRParametrisation &param, mir::input::MIRInput &input) { // Not iterpolation performed
 
     grib_handle *h = input.gribHandle(); // Base class will throw an exception is input cannot provide a grib_handle
 
@@ -47,7 +60,8 @@ void GribOutput::copy(const MIRParametrisation &param, MIRInput &input) { // Not
 
 }
 
-void GribOutput::save(const MIRParametrisation &param, MIRInput &input, MIRField &field) {
+
+void GribOutput::save(const MIRParametrisation &param, mir::input::MIRInput &input, MIRField &field) {
 
     grib_handle *h = input.gribHandle(); // Base class will throw an exception is input cannot provide a grib_handle
 
@@ -133,3 +147,4 @@ void GribOutput::save(const MIRParametrisation &param, MIRInput &input, MIRField
     out(message, size, true);
 
 }
+
