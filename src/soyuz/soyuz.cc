@@ -40,7 +40,7 @@ void MIRDemo::run() {
 
     if(eckit::Context::instance().argc() > 2 ) {
 
-        MIRJob job;
+        mir::api::MIRJob job;
         mir::input::GribFileInput input(eckit::Context::instance().argv(1));
         mir::output::GribFileOutput output(eckit::Context::instance().argv(2));
 
@@ -54,7 +54,7 @@ void MIRDemo::run() {
     }
 
     if (1) {
-        MIRJob job;
+        mir::api::MIRJob job;
 
         job.set("area", "80/0/35/45");
         job.set("bitmap", "test.bitmap");
@@ -70,7 +70,7 @@ void MIRDemo::run() {
     }
 
     if (1) {
-        MIRJob job;
+        mir::api::MIRJob job;
 
         job.set("accuracy", "24");
         job.set("frame", "10");
@@ -83,7 +83,7 @@ void MIRDemo::run() {
     }
 
     if (1) {
-        MIRJob job;
+        mir::api::MIRJob job;
 
         job.set("accuracy", "24");
         job.set("frame", "10");
@@ -96,7 +96,7 @@ void MIRDemo::run() {
     }
 
     if (1) {
-        MIRJob job;
+        mir::api::MIRJob job;
 
         job.set("accuracy", "24");
         job.set("frame", "10");
@@ -109,7 +109,7 @@ void MIRDemo::run() {
     }
 
     if (1) {
-        MIRJob job;
+        mir::api::MIRJob job;
 
         job.set("logic", "tool");
 

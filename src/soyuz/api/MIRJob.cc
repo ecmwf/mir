@@ -32,6 +32,10 @@
 #include "soyuz/api/MIRJob.h"
 
 
+namespace mir {
+namespace api {
+
+
 MIRJob::MIRJob() {
 }
 
@@ -40,7 +44,7 @@ MIRJob::~MIRJob() {
 }
 
 
-void MIRJob::execute(mir::input::MIRInput& input, mir::output::MIROutput& output) const {
+void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
     // Optimisation: nothing to do, usefull for MARS
     if(settings_.size() == 0) {
         eckit::Log::info() << "Nothing to do (no request)" << std::endl;
@@ -49,8 +53,8 @@ void MIRJob::execute(mir::input::MIRInput& input, mir::output::MIROutput& output
     }
 
     // Static so it is inited once (mutex?)
-    static mir::param::MIRConfiguration configuration;
-    static mir::param::MIRDefaults defaults;
+    static param::MIRConfiguration configuration;
+    static param::MIRDefaults defaults;
 
     eckit::Timer timer("MIRJob::execute");
 
@@ -58,7 +62,7 @@ void MIRJob::execute(mir::input::MIRInput& input, mir::output::MIROutput& output
     eckit::Log::info() << "          Input: " << input << std::endl;
     eckit::Log::info() << "         Output: " << output << std::endl;
 
-    const mir::param::MIRParametrisation& metadata = input.parametrisation();
+    const param::MIRParametrisation& metadata = input.parametrisation();
 
     if (matches(metadata)) {
         eckit::Log::info() << "Nothing to do (field matches)" << std::endl;
@@ -66,32 +70,32 @@ void MIRJob::execute(mir::input::MIRInput& input, mir::output::MIROutput& output
         return;
     }
 
-    mir::param::MIRCombinedParametrisation combined(*this, metadata, configuration, defaults);
+    param::MIRCombinedParametrisation combined(*this, metadata, configuration, defaults);
     eckit::Log::info() << "        Combined: " << combined << std::endl;
 
-    std::auto_ptr< mir::logic::MIRLogic > logic(mir::logic::MIRLogicFactory::build(combined));
+    std::auto_ptr< logic::MIRLogic > logic(logic::MIRLogicFactory::build(combined));
 
     eckit::Log::info() << "Logic: " << *logic << std::endl;
 
-    std::vector<std::auto_ptr< mir::action::Action > > actions;
+    std::vector<std::auto_ptr< action::Action > > actions;
     logic->prepare(actions);
 
     eckit::Log::info() << "Actions are: " << std::endl;
     std::string arrow = "   ";
-    for(std::vector<std::auto_ptr< mir::action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
+    for(std::vector<std::auto_ptr< action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
         eckit::Log::info() << arrow << *(*j);
         arrow = " => ";
     }
     eckit::Log::info() << std::endl;
 
-    std::auto_ptr< mir::data::MIRField > field(input.field());
+    std::auto_ptr< data::MIRField > field(input.field());
     eckit::Log::info() << "Field is " << *field << std::endl;
 
     // Add Grid to field
-    field->representation(mir::repres::RepresentationFactory::build(metadata));
+    field->representation(repres::RepresentationFactory::build(metadata));
     eckit::Log::info() << "Representation is " << *(field->representation()) << std::endl;
 
-    for(std::vector<std::auto_ptr< mir::action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
+    for(std::vector<std::auto_ptr< action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
         eckit::Log::info() << "Execute: " << *(*j) << std::endl;
         (*j)->execute(*field);
     }
@@ -129,7 +133,7 @@ bool MIRJob::get(const std::string& name, std::string& value) const {
 }
 
 
-bool MIRJob::matches(const mir::param::MIRParametrisation& metadata) const {
+bool MIRJob::matches(const param::MIRParametrisation& metadata) const {
 
     static const char* force[] = { "bitmap", "frame", "packing", "accuracy", 0 }; // More to add
 
@@ -160,4 +164,8 @@ bool MIRJob::matches(const mir::param::MIRParametrisation& metadata) const {
 
     return true;
 }
+
+
+}  // namespace api
+}  // namespace mir
 

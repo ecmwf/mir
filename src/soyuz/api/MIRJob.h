@@ -27,10 +27,10 @@
 namespace mir {
 namespace input { class MIRInput; }
 namespace output { class MIROutput; }
-}
+namespace api {
 
 
-class MIRJob : public mir::param::MIRParametrisation, public eckit::NonCopyable {
+class MIRJob : public param::MIRParametrisation, public eckit::NonCopyable {
   public:
 
 // -- Exceptions
@@ -52,7 +52,7 @@ class MIRJob : public mir::param::MIRParametrisation, public eckit::NonCopyable 
 
 // -- Methods
 
-    void execute(mir::input::MIRInput&, mir::output::MIROutput&) const;
+    void execute(input::MIRInput&, output::MIROutput&) const;
 
     void set(const std::string&, const std::string&);
 
@@ -92,7 +92,7 @@ class MIRJob : public mir::param::MIRParametrisation, public eckit::NonCopyable 
 
 // -- Methods
 
-    bool matches(const mir::param::MIRParametrisation&) const;
+    bool matches(const param::MIRParametrisation&) const;
 
 // -- Overridden methods
 
@@ -112,5 +112,7 @@ class MIRJob : public mir::param::MIRParametrisation, public eckit::NonCopyable 
 };
 
 
+}  // namespace api
+}  // namespace mir
 #endif
 

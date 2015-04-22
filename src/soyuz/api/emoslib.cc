@@ -20,12 +20,18 @@
 #include "eckit/runtime/LibBehavior.h"
 #include "eckit/runtime/Context.h"
 
-typedef int fortint;
-typedef double fortfloat;
-
 #include "soyuz/api/MIRJob.h"
 #include "soyuz/input/GribMemoryInput.h"
 #include "soyuz/output/GribMemoryOutput.h"
+
+
+namespace mir {
+namespace api {
+namespace {
+
+
+typedef int fortint;
+typedef double fortfloat;
 
 
 std::auto_ptr<MIRJob> job(0);
@@ -437,4 +443,9 @@ extern "C" fortint emosnum_(fortint *value) {
     *value = 0;
     return 42424242;
 }
+
+
+}  // (anonymous namespace)
+}  // namespace api
+}  // namespace mir
 
