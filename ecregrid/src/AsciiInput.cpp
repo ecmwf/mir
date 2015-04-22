@@ -17,7 +17,7 @@
 #endif
 
 #ifndef Tokenizer_H
-#include <eckit/utils/Tokenizer.h>
+#include <eckit/parser/Tokenizer.h>
 #endif
 
 #ifndef FieldDescription_H
@@ -37,7 +37,7 @@
 #endif
 
 #ifndef Timer_H
-#include <eckit/utils/Timer.h>
+#include <eckit/log/Timer.h>
 #endif
 
 #include <fstream>

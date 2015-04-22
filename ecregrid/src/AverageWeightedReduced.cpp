@@ -13,7 +13,7 @@
 #include "FieldPoint.h"
 #include "Grid.h"
 #include "GridField.h"
-#include <eckit/utils/Timer.h>
+#include <eckit/log/Timer.h>
 #include "GridContext.h"
 #include "DerivedSubgridParameters.h"
 

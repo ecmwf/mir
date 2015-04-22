@@ -269,7 +269,7 @@ if( EIGEN3_FOUND )
     list( APPEND ecregrid_srcs GridToGridMatrixTransformer.cpp GridToGridMatrixTransformer.h )
     endif()
 
-    include_directories( api $ {GribAPI_INCLUDE_DIRS} )
+    include_directories( api ${GribAPI_INCLUDE_DIRS}  ${eckit_INCLUDE_DIRS} )
 
     ecbuild_add_library( TARGET    ecregrid
-                         SOURCES   $ {ecregrid_srcs}  )
+                         SOURCES   ${ecregrid_srcs}  )

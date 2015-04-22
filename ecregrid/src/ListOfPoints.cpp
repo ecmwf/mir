@@ -17,7 +17,7 @@
 #include "Linear.h"
 #include "NearestNeigbour.h"
 #include "GridContext.h"
-#include <eckit/utils/Timer.h>
+#include <eckit/log/Timer.h>
 
 #include <queue>
 

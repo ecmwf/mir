@@ -15,7 +15,7 @@
 #include "HandleRequest.h"
 #endif
 
-//#include <eckit/utils/Timer.h>
+//#include <eckit/log/Timer.h>
 
 int main (int argc, char* argv[]) {
 
@@ -31,7 +31,7 @@ int main (int argc, char* argv[]) {
 			return 1;
 		request.processing();
 		cout << " - || - || - || - || - || -" << endl;
-		return 0;	
+		return 0;
 	}
 	catch(Exception& e){
 		cout << e ;

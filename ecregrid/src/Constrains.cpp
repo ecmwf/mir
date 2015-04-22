@@ -10,7 +10,7 @@
 #include "Constrains.h"
 
 #ifndef Tokenizer_H
-#include <eckit/utils/Tokenizer.h>
+#include <eckit/parser/Tokenizer.h>
 #endif
 
 #ifndef Exception_H

@@ -22,8 +22,8 @@ AM_CFLAGS =  @WARN_PEDANTIC@ @WERROR@ @FORCE_32_CFLAGS@
                                                   GribApiOutputSpectral.h \
                                                   BinaryOutput.h \
                                                   AsciiOutput.h \
-                                                  eckit/utils/Tokenizer.h \
-                                                  eckit/utils/Timer.h \
+                                                  eckit/parser/Tokenizer.h \
+                                                  eckit/log/Timer.h \
                                                   Seconds.h \
                                                   FieldIdentity.h \
                                                   FieldFeatures.h \

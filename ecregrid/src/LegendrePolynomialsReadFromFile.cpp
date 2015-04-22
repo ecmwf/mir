@@ -30,20 +30,20 @@ LegendrePolynomialsReadFromFile::~LegendrePolynomialsReadFromFile() {
 }
 
 const double* LegendrePolynomialsReadFromFile::getOneLatitude(double lat, int rowOffset) const {
-    off64_t latSize = latLength_ * sizeof(double);
-    off64_t filePosition  = latSize * rowOffset;
+    off_t latSize = latLength_ * sizeof(double);
+    off_t filePosition  = latSize * rowOffset;
 
 //	if(DEBUG)
 //		cout << "LegendrePolynomialsReadFromFile::getOneLatitude row: " <<  rowOffset << " latLength: " << latLength_ << " filePosition: " << filePosition << endl;
 
-    if((off64_t)filePositionPreserve_ != filePosition) {
-        if(lseek64(fd_, filePosition, SEEK_SET) == -1) {
+    if((off_t)filePositionPreserve_ != filePosition) {
+        if(lseek(fd_, filePosition, SEEK_SET) == -1) {
             stringstream pos;
             pos << filePosition << " in " << constructCoefficientsFilename();
             throw ReadError("LegendrePolynomialsReadFromFile::getOneLatitude  cannot seek to " + pos.str());
         }
     }
-    ASSERT(lseek64(fd_, 0, SEEK_CUR) == filePosition);
+    ASSERT(lseek(fd_, 0, SEEK_CUR) == filePosition);
 
     if( read( fd_, &polynoms_[0], latSize) != latSize) {
         throw ReadError("LegendrePolynomialsReadFromFile::getOneLatitude " + constructCoefficientsFilename());

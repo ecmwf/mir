@@ -14,7 +14,7 @@
 #endif
 
 #ifndef Tokenizer_H
-#include <eckit/utils/Tokenizer.h>
+#include <eckit/parser/Tokenizer.h>
 #endif
 
 #ifndef GribApiInput_H
@@ -64,8 +64,8 @@
 // for clarity, introduce a new define to show whether we have long options
 // available
 #ifdef HAVE_GETOPT_H
-#define HAVE_LONG_OPTS 
-#endif 
+#define HAVE_LONG_OPTS
+#endif
 
 /* define various command-line arguments  */
 #ifdef KEEP_ALL_SHORT_OPTS
@@ -80,7 +80,7 @@
 #define ARG_NUMBER_OF_NEAREST_POINTS 'k'
 #define ARG_AUTO_RESOLUTION          'z'
 #define ARG_GRIB_ACCURACY            'q'
-#define ARG_GRIB_EDITION             'e' 
+#define ARG_GRIB_EDITION             'e'
 #define ARG_SCANNING_MODE            's'
 #define ARG_DERIVED_PARAMETER_METHOD 'j'
 #define ARG_DISABLE_VECTORS          'd'
@@ -105,12 +105,12 @@
 
 #endif // #ifdef KEEP_ALL_SHORT_OPTS
 
-#define THROW_IF_NOT_OF_LENGTH(vec, len, msg) { if (vec.size() != len) { throw BadParameter(msg);} } 
-#define THROW_IF_NOT_INT(x) { stringstream ss(x), oss; int d; ss >> d; oss << d; if (!ss || oss.str() != x) { throw BadParameter(x);} } 
+#define THROW_IF_NOT_OF_LENGTH(vec, len, msg) { if (vec.size() != len) { throw BadParameter(msg);} }
+#define THROW_IF_NOT_INT(x) { stringstream ss(x), oss; int d; ss >> d; oss << d; if (!ss || oss.str() != x) { throw BadParameter(x);} }
 
 HandleRequest::HandleRequest():
     output_(new FieldDescription),
-	inFile_("x"), 
+	inFile_("x"),
     outFile_("y"),
     outFileType_("grib")
 {
@@ -124,7 +124,7 @@ HandleRequest::~HandleRequest()
 
 \section intro Overview
 
-ecRegrid offers simple for usage ecregrid UNIX command line tool which has plenty of options. It performs tranformation between spectral or grid fields from spectral or grid on input. 
+ecRegrid offers simple for usage ecregrid UNIX command line tool which has plenty of options. It performs tranformation between spectral or grid fields from spectral or grid on input.
 \note Input must be grib messages
 
 \note Output could be GRIB messages or arrays of numbers in binary or ascii format.
@@ -134,7 +134,7 @@ USAGE:
 
 Full list of possible options could be obtained typing just ecregrid in command line or ecregrid -h
 
-\example ecregrid -i in.grib -o out.grib -l 0.5/0.5 -a 80.0/-40.0/20.0/60.0 
+\example ecregrid -i in.grib -o out.grib -l 0.5/0.5 -a 80.0/-40.0/20.0/60.0
 
 */
 void HandleRequest::usage() const
@@ -152,7 +152,7 @@ void HandleRequest::usage() const
 
     cout << endl   << "DESCRIPTION:" << endl
 	     << "\t"   <<     "Transforms spectral, regular and reduced lat/lon and Gaussian grids." << endl
-         << "\t"   <<     "Input grid description is read from the GRIB header. Handles multiple GRIB messages." << endl 
+         << "\t"   <<     "Input grid description is read from the GRIB header. Handles multiple GRIB messages." << endl
 	     << endl   << "USAGE:" << endl
 	     << "\t"   <<     "ecregrid -i input_file -o output_file [OPTIONS]" << endl
          << endl   << "OPTIONS:" << endl;
@@ -207,15 +207,15 @@ void HandleRequest::usage() const
 	     << "\t\t\t" <<         "off             - Disable lsm processing " << endl;
 
     SHORT_OPT('m'); LONG_OPT("interpolation-method"); cout << "method" << endl;
-	cout << "\t\t"   <<         "Interpolation methods:" << endl    
-	     << "\t\t\t" <<         "bilinear         - Bilinear (default)," << endl   
-	   //  << "\t\t\t" <<         "doublelinear   - Double Linear," << endl 
+	cout << "\t\t"   <<         "Interpolation methods:" << endl
+	     << "\t\t\t" <<         "bilinear         - Bilinear (default)," << endl
+	   //  << "\t\t\t" <<         "doublelinear   - Double Linear," << endl
 	     << "\t\t\t" <<         "nearestneighbour - Nearest Neighbour," << endl
 	     << "\t\t\t" <<         "cubic            - Cubic with 12 points (default for interpolation to rotated grids), " << endl
-	     << "\t\t\t" <<         "linear           - Linear" << endl 
-	     << "\t\t\t" <<         "linearfit        - Linear fit along the two lines of latitudes then linear fit along the line of meridian" << endl 
-	     << "\t\t\t" <<         "average          - Average of nearest points" << endl  
-         << "\t\t\t" <<         "averageweighted  - Area Weighted Average" << endl; 
+	     << "\t\t\t" <<         "linear           - Linear" << endl
+	     << "\t\t\t" <<         "linearfit        - Linear fit along the two lines of latitudes then linear fit along the line of meridian" << endl
+	     << "\t\t\t" <<         "average          - Average of nearest points" << endl
+         << "\t\t\t" <<         "averageweighted  - Area Weighted Average" << endl;
 
     SHORT_OPT(ARG_NUMBER_OF_NEAREST_POINTS); LONG_OPT("number-of-nearest-points"); cout << "N" << endl;
     cout << "\t\t"   <<         "Number of nearest points for Average or Nearest Neighbour  - 4 (default), 16, 36, 64" << endl;
@@ -225,11 +225,11 @@ void HandleRequest::usage() const
 
     SHORT_OPT('c'); LONG_OPT("coefficient-method"); cout << "method" << endl;
     cout << "\t\t"   <<         "Preferred handling of Legendre polynomials:" << endl
-         << "\t\t\t" <<             "on-fly      - Recalculate each time (default)" << endl 
-         << "\t\t\t" <<             "fileio      - Read pre-calculated values from named file" << endl 
-         << "\t\t\t" <<             "shared      - Shared memory" << endl 
+         << "\t\t\t" <<             "on-fly      - Recalculate each time (default)" << endl
+         << "\t\t\t" <<             "fileio      - Read pre-calculated values from named file" << endl
+         << "\t\t\t" <<             "shared      - Shared memory" << endl
          << "\t\t\t" <<             "mapped      - From memory map" << endl;
-	 
+
 
     SHORT_OPT(ARG_DISABLE_VECTORS); LONG_OPT("disable-vectors"); cout << endl;
     cout << "\t\t"   <<         "Disable vorticity/divergence to u/v conversion" << endl;
@@ -238,25 +238,25 @@ void HandleRequest::usage() const
     cout << "\t\t"   <<         "Bits per value in the output GRIB message" << endl;
 
     SHORT_OPT(ARG_SCANNING_MODE); LONG_OPT("scanning-mode"); cout << "mode" << endl;
-    cout << "\t\t"   <<         "1 - north-south, east-west /  i scans positively, j scans negatively (default)" << endl 
-         << "\t\t"   <<         "2 - south-north, east-west /  i scans positively, j scans positively" << endl 
-         << "\t\t"   <<         "3 - north-south, west-east /  i scans negatively, j scans negatively " << endl 
+    cout << "\t\t"   <<         "1 - north-south, east-west /  i scans positively, j scans negatively (default)" << endl
+         << "\t\t"   <<         "2 - south-north, east-west /  i scans positively, j scans positively" << endl
+         << "\t\t"   <<         "3 - north-south, west-east /  i scans negatively, j scans negatively " << endl
          << "\t\t"   <<         "4 - south-north, west-east /  i scans negatively, j scans positively" << endl ;
 
     SHORT_OPT('p'); LONG_OPT("projection"); cout << "name" << endl;
-    cout << "\t\t"   <<         "Projection type:" << endl 
+    cout << "\t\t"   <<         "Projection type:" << endl
          <<	"\t\t\t" <<             "polar_stereographic" << endl;
-     //    << "\t\t\t" <<             "lambert_conformal" << endl 
+     //    << "\t\t\t" <<             "lambert_conformal" << endl
      //    << "\t\t\t" <<             "lambert_azimuthal_equal_area" << endl;
-     
+
     SHORT_OPT(ARG_GRIB_EDITION); LONG_OPT("grib-edition"); cout << "N" << endl;
 	cout << "\t\t"   <<         "GRIB edition" << endl;
 
     SHORT_OPT(ARG_DERIVED_PARAMETER_METHOD); LONG_OPT("derived-parameter-method"); cout << "method" << endl;
-    cout << "\t\t"   <<         "Standard Deviation and derived parameters:" << endl 
-         <<	"\t\t\t" <<             "stddev              - Standard Deviation" << endl 
-         << "\t\t\t" <<             "anisotropy          - Anisotropy" << endl 
-         << "\t\t\t" <<             "orientation         - Orientation" << endl 
+    cout << "\t\t"   <<         "Standard Deviation and derived parameters:" << endl
+         <<	"\t\t\t" <<             "stddev              - Standard Deviation" << endl
+         << "\t\t\t" <<             "anisotropy          - Anisotropy" << endl
+         << "\t\t\t" <<             "orientation         - Orientation" << endl
          << "\t\t\t" <<             "slope               - Slope" << endl
          << "\t\t\t" <<             "meridionalderivativ - Meridional Derivatives" << endl
          << "\t\t\t" <<             "zonalderivativ      - Zonal Derivatives" << endl;
@@ -269,7 +269,7 @@ void HandleRequest::usage() const
 void HandleRequest::showVersionInfo() const
 {
     cout << "  - ecRegrid library version " << ECREGRID_MAJOR_VERSION << "." << ECREGRID_MINOR_VERSION << "." << ECREGRID_REVISION_VERSION << endl;
-	long grib_api_version = grib_get_api_version();	
+	long grib_api_version = grib_get_api_version();
 	cout << "  - Using grib_api version " << grib_api_version  / 10000 << "." << (grib_api_version / 100) % 100 << "." << grib_api_version % 100 <<  endl;
 }
 
@@ -280,7 +280,7 @@ int HandleRequest::request(int argc, char* argv[])
 
     static struct option long_options[] =
      {
-       /* We set up long names for options with a short name.        
+       /* We set up long names for options with a short name.
           NB Where the long name is given, getopt_long will return
              the short name for use in our switch statement */
        {"format",                            required_argument,     0, 'x'},
@@ -324,7 +324,7 @@ int HandleRequest::request(int argc, char* argv[])
 		usage();
 		return 1;
 	}
-	
+
     showVersionInfo();
 
 	int c;
@@ -353,7 +353,7 @@ int HandleRequest::request(int argc, char* argv[])
 #else
 	while ((c=getopt(argc, argv, optstring)) != -1)
 #endif
-	{        
+	{
 		switch(c)
 		{
 		 case 'h':
@@ -553,7 +553,7 @@ void HandleRequest::processing() const
         int count1 = 1;
         int count2 = 1;
         bool windProcess = false;
-        int windNumber = 0;	
+        int windNumber = 0;
 		bool windPairFind = false;
 
         while((inputHandle = in.next(infile)) ) {
@@ -646,7 +646,7 @@ void HandleRequest::processing() const
                         out.writeToFileGribInChunks(outfile,outputHandle);
                     else
                         out.writeToFileGrib(outfile,outputHandle);
-                }			
+                }
                 else{
                     if(getenv("ECREGRID_WRITE_CHUNKS"))
                         out.writeToFileGribInChunks(outfile,inputHandle);
@@ -680,9 +680,9 @@ void HandleRequest::processing() const
                 if(err)
                     throw Failed("ECREGRID: Processing grib_handle  to unpacked failed");
                 auto_ptr<Output> out_diff(factory.getOutputBinTxt(outFile_,outFileType_));
-                
+
                 // need to copy to stl vector to write
-                // 
+                //
                 vector<double> dat(outputSize);
                 std::copy(temp.get(), temp.get() + outputSize, dat.begin());
                 out_diff->write(outfile, dat);
@@ -731,7 +731,7 @@ void HandleRequest::processing() const
            // otherwise, leave any existing files as they are
            remove(outFile_.c_str());
        }
-       throw; // to caller 
+       throw; // to caller
     }
 
 }

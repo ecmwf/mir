@@ -14,7 +14,7 @@
 #endif
 
 #ifndef Tokenizer_H
-#include <eckit/utils/Tokenizer.h>
+#include <eckit/parser/Tokenizer.h>
 #endif
 
 #ifndef GridField_H

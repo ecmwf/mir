@@ -57,7 +57,7 @@
 #include "PartialDerivatives.h"
 #endif
 
-#include <eckit/utils/Timer.h>
+#include <eckit/log/Timer.h>
 
 #include <Eigen/Sparse>
 #include <Eigen/Dense>

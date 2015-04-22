@@ -64,8 +64,8 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
     string file = constructCoefficientsFilename();
 
     char path[1024];
-    struct  stat64 stat1;
-    struct  stat64 stat2;
+    struct  stat stat1;
+    struct  stat stat2;
     key_t key;
     struct timeval start, end, diff;
     int loadfile = 1;
@@ -117,10 +117,10 @@ LegendrePolynomialsSharedMemory::LegendrePolynomialsSharedMemory(int truncation,
         cout<< "LegendrePolynomialsSharedMemory::shareFile:semop:lock wait " << time << " secs" << endl;
     }
 
-    openCoefficientsFile(O_LARGEFILE);
+    openCoefficientsFile(/*O_LARGEFILE*/0);
 
-    if(stat64(path,&stat1))
-        throw BadParameter("LegendrePolynomialsSharedMemory::shareFile stat64 fail: " + file);
+    if(stat(path,&stat1))
+        throw BadParameter("LegendrePolynomialsSharedMemory::shareFile stat fail: " + file);
 
     size_t baseSizeRequired = ((stat1.st_size + pageSize-1)/pageSize)*pageSize + sizeof(struct info);
 

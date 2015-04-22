@@ -22,7 +22,7 @@
 #endif
 
 #ifndef Tokenizer_H
-#include <eckit/utils/Tokenizer.h>
+#include <eckit/parser/Tokenizer.h>
 #endif
 
 #include "DefinitionsCache.h"

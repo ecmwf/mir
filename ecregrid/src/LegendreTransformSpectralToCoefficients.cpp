@@ -19,7 +19,7 @@
 #endif
 
 #ifndef Timer_H
-#include <eckit/utils/Timer.h>
+#include <eckit/log/Timer.h>
 #endif
 
 

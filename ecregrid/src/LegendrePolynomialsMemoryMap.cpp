@@ -35,7 +35,7 @@ LegendrePolynomialsMemoryMap::LegendrePolynomialsMemoryMap(int truncation, const
 
     length_ = latLength_ * nshalf * sizeof(double);
 
-    addr_ = mmap64(0, length_, PROT_READ, MAP_SHARED, fd_, 0);
+    addr_ = mmap(0, length_, PROT_READ, MAP_SHARED, fd_, 0);
 
     if(addr_ == MAP_FAILED)
         throw ReadError("LegendrePolynomialsMemoryMap::LegendrePolynomialsMemoryMap" + constructCoefficientsFilename());

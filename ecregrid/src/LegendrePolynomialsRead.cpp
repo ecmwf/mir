@@ -34,7 +34,7 @@ void LegendrePolynomialsRead::checkAndPossiblyCreate(const Grid& grid) {
     string fileName = constructCoefficientsFilename();
     if(DEBUG)
         cout <<"LegendrePolynomialsRead::checkAndPossiblyCreate filename " << fileName << endl;
-    FILE* f = ::fopen64(fileName.c_str(), "r");
+    FILE* f = ::fopen(fileName.c_str(), "r");
     if (f) {
         auto_ptr<Grid>globalGrid( grid.getGlobalGrid() );
         vector<double> globalLatitudes;
@@ -57,7 +57,7 @@ void LegendrePolynomialsRead::createWholeGlobeAndWriteToFile(const Grid& grid) c
     string fileNameTemp = constructFilename("/xecregrid_cf_t");
     string fileName = constructCoefficientsFilename();
 
-    FILE* file = ::fopen64(fileNameTemp.c_str(), "wa");
+    FILE* file = ::fopen(fileNameTemp.c_str(), "wa");
     if (!file)
         throw CantOpenFile("LegendrePolynomialsRead::createWholeGlobeAndWriteToFile " + fileName);
 
@@ -121,7 +121,7 @@ string LegendrePolynomialsRead::constructCoefficientsFilename() const {
 
 bool LegendrePolynomialsRead::openCoefficientsFile(int flags/*=0*/) const {
     string fileName = constructCoefficientsFilename();
-    fd_ = open64(fileName.c_str(),O_RDONLY|flags);
+    fd_ = open(fileName.c_str(),O_RDONLY|flags);
 
     if (fd_ < 0)
         throw CantOpenFile("LegendrePolynomialsRead::openCoefficientsFile " + fileName);
