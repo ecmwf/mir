@@ -58,7 +58,7 @@ const MIRParametrisation &GribInput::parametrisation() const {
 }
 
 
-MIRField *GribInput::field() const {
+data::MIRField *GribInput::field() const {
     ASSERT(grib_.get());
 
     size_t count;
@@ -75,7 +75,7 @@ MIRField *GribInput::field() const {
     double missing;
     GRIB_CALL(grib_get_double(grib_.get(), "missingValue", &missing));
 
-    MIRField *field = new MIRField(bitmap != 0, missing);
+    data::MIRField *field = new data::MIRField(bitmap != 0, missing);
     field->values(values);
     return field;
 }

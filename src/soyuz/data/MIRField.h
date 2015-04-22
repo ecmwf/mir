@@ -13,19 +13,19 @@
 /// @date Apr 2015
 
 
+#ifndef MIRField_H
+#define MIRField_H
+
+#include "eckit/exception/Exceptions.h"
+
 #include <iosfwd>
 #include <iostream>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-
-#ifndef MIRField_H
-#define MIRField_H
-
 
 namespace mir {
 namespace repres { class Representation; }
-}
+namespace data {
 
 
 class MIRField {
@@ -79,8 +79,8 @@ class MIRField {
     }
 
 
-    const mir::repres::Representation* representation() const;
-    void representation(mir::repres::Representation*);
+    const repres::Representation* representation() const;
+    void representation(repres::Representation*);
 
     //
 
@@ -121,7 +121,7 @@ class MIRField {
     std::vector<double> values_;
     bool hasMissing_;
     double missingValue_;
-    mir::repres::Representation* representation_;
+    repres::Representation* representation_;
 
 // -- Methods
     // None
@@ -145,5 +145,7 @@ class MIRField {
 };
 
 
+}  // namespace data
+}  // namespace mir
 #endif
 

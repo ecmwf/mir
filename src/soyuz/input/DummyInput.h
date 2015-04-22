@@ -96,7 +96,7 @@ class DummyInput : public MIRInput, public FieldParametrisation {
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
     virtual const MIRParametrisation &parametrisation() const;
-    virtual MIRField *field() const;
+    virtual data::MIRField *field() const;
 
     // From FieldParametrisation
     virtual bool lowLevelGet(const std::string&, std::string&) const;

@@ -24,7 +24,7 @@ MethodWeighted::~MethodWeighted() {
 }
 
 
-void MethodWeighted::execute(MIRField& field) const {
+void MethodWeighted::execute(data::MIRField& field) const {
     // FIXME arguments:
     atlas::Grid*       dummy_grid = 0;
     atlas::Grid& in  (*dummy_grid);

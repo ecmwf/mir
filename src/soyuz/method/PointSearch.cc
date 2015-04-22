@@ -13,7 +13,6 @@
 #include <string>
 #include <algorithm>
 #include <functional>
-#include <math.h>
 
 
 

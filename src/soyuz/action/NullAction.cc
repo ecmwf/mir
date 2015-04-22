@@ -36,7 +36,7 @@ void NullAction::print(std::ostream& out) const {
 }
 
 
-void NullAction::execute(MIRField&) const {
+void NullAction::execute(data::MIRField&) const {
     // Nothing to do
 }
 

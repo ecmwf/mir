@@ -84,7 +84,7 @@ void MIRJob::execute(mir::input::MIRInput& input, mir::output::MIROutput& output
     }
     eckit::Log::info() << std::endl;
 
-    std::auto_ptr<MIRField> field(input.field());
+    std::auto_ptr< mir::data::MIRField > field(input.field());
     eckit::Log::info() << "Field is " << *field << std::endl;
 
     // Add Grid to field

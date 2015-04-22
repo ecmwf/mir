@@ -21,6 +21,10 @@
 #include "soyuz/repres/Representation.h"
 
 
+namespace mir {
+namespace data {
+
+
 MIRField::MIRField(bool hasMissing, double missingValue):
     values_(),
     hasMissing_(hasMissing),
@@ -49,14 +53,18 @@ void MIRField::print(std::ostream& out) const {
 }
 
 
-const mir::repres::Representation* MIRField::representation() const {
+const repres::Representation* MIRField::representation() const {
     ASSERT(representation_);
     return representation_;
 }
 
 
-void MIRField::representation(mir::repres::Representation* representation) {
+void MIRField::representation(repres::Representation* representation) {
     delete representation_;
     representation_ = representation;
 }
+
+
+}  // namespace data
+}  // namespace mir
 

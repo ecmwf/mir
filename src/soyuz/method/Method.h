@@ -20,10 +20,10 @@
 
 
 class MIRParametrisation;
-class MIRField;
 
 
 namespace mir {
+namespace data { class MIRField; }
 namespace method {
 
 
@@ -49,7 +49,7 @@ class Method {
 
 // -- Methods
 
-    virtual void execute(MIRField&) const = 0;
+    virtual void execute(data::MIRField&) const = 0;
 
     const std::string& name() const {
         return name_;

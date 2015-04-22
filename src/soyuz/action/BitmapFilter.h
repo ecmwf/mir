@@ -85,14 +85,14 @@ class BitmapFilter : public Action {
 
 // -- Members
 
-    const mir::util::Bitmap* bitmap_;
+    const util::Bitmap* bitmap_;
 
 // -- Methods
     // None
 
 // -- Overridden methods
 
-    virtual void execute(MIRField&) const;
+    virtual void execute(data::MIRField&) const;
 
 
 // -- Class members
@@ -112,3 +112,4 @@ class BitmapFilter : public Action {
 }  // namespace action
 }  // namespace mir
 #endif
+

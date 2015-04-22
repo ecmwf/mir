@@ -20,10 +20,10 @@
 
 
 class MIRParametrisation;
-class MIRField;
 
 
 namespace mir {
+namespace data { class MIRField; }
 namespace input { class MIRInput; }
 namespace output {
 
@@ -50,8 +50,8 @@ class MIROutput {
 
 // -- Methods
 
-    virtual void copy(const MIRParametrisation&, mir::input::MIRInput&) = 0; // Not iterpolation performed
-    virtual void save(const MIRParametrisation&, mir::input::MIRInput&, MIRField&) = 0;
+    virtual void copy(const MIRParametrisation&, input::MIRInput&) = 0; // Not iterpolation performed
+    virtual void save(const MIRParametrisation&, input::MIRInput&, data::MIRField&) = 0;
 
 // -- Overridden methods
     // None

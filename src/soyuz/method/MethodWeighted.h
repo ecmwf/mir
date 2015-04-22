@@ -61,7 +61,7 @@ class MethodWeighted :
     // None
 
 // -- Overridden methods
-    virtual void execute(MIRField& field) const;
+    virtual void execute(data::MIRField& field) const;
 
 // -- Class members
     // None

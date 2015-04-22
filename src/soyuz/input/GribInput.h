@@ -102,7 +102,7 @@ class GribInput : public MIRInput, public FieldParametrisation {
     // From MIRInput
 
     virtual const MIRParametrisation &parametrisation() const;
-    virtual MIRField *field() const;
+    virtual data::MIRField *field() const;
     virtual grib_handle *gribHandle() const;
 
     // From FieldParametrisation

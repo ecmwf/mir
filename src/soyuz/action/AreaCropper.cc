@@ -66,7 +66,7 @@ void AreaCropper::print(std::ostream& out) const {
 }
 
 
-void AreaCropper::execute(MIRField& field) const {
+void AreaCropper::execute(data::MIRField& field) const {
     const std::vector<double> &values = field.values();
     std::vector<double> result;
 

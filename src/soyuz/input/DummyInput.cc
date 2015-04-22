@@ -44,8 +44,8 @@ const MIRParametrisation &DummyInput::parametrisation() const {
 }
 
 
-MIRField *DummyInput::field() const {
-    MIRField *field = new MIRField(false, 999.);
+data::MIRField *DummyInput::field() const {
+    data::MIRField *field = new data::MIRField(false, 999.);
 
     std::vector< double > values(51 * 51, 42);
     size_t k = 0;

@@ -88,7 +88,7 @@ class Sh2GriddedTransform : public Action {
 
 // -- Overridden methods
 
-    virtual void execute(MIRField&) const;
+    virtual void execute(data::MIRField&) const;
 
 // -- Class members
     // None

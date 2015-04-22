@@ -42,21 +42,21 @@ void Gridded2GriddedInterpolation::print(std::ostream& out) const {
 }
 
 
-void Gridded2GriddedInterpolation::execute(MIRField& field) const {
+void Gridded2GriddedInterpolation::execute(data::MIRField& field) const {
     NOTIMP;
 
     std::string name = "bilinear";
 
-    // Here we need some ugnly logic again
+    // Here we need some ugly logic again
     if(0) {
         std::string param;
         ASSERT(parametrisation_.get("param", param));
-        if(param == "large_scale_precipitiaon") { // Thisshould be a lookup in a config file somewhere
+        if(param == "large_scale_precipitation") { // This should be a lookup in a config file somewhere
             name = "mass_conserving";
         }
     }
 
-    std::auto_ptr< mir::method::Method > method(mir::method::MethodFactory::build(name, parametrisation_));
+    std::auto_ptr< method::Method > method(method::MethodFactory::build(name, parametrisation_));
     method->execute(field);
 
     // TODO: Use Representation and MIRfield to create Atlas structures

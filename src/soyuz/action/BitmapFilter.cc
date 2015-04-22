@@ -61,7 +61,7 @@ void BitmapFilter::print(std::ostream &out) const {
 }
 
 
-void BitmapFilter::execute(MIRField &field) const {
+void BitmapFilter::execute(data::MIRField &field) const {
 
     double missingValue = field.missingValue();
     std::vector<double> &values = field.values();

@@ -18,11 +18,11 @@
 
 #include <string>
 
-class MIRField;
 class MIRParametrisation;
 
 
 namespace mir {
+namespace data { class MIRField; }
 namespace action {
 
 
@@ -48,7 +48,7 @@ class Action {
 
 // -- Methods
 
-    virtual void execute(MIRField&) const = 0;
+    virtual void execute(data::MIRField&) const = 0;
 
 
 // -- Overridden methods

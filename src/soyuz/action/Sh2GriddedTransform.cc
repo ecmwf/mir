@@ -38,7 +38,7 @@ void Sh2GriddedTransform::print(std::ostream& out) const {
 }
 
 
-void Sh2GriddedTransform::execute(MIRField&) const {
+void Sh2GriddedTransform::execute(data::MIRField&) const {
     NOTIMP;
 }
 

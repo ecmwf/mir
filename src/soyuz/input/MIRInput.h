@@ -20,13 +20,13 @@
 
 
 class MIRParametrisation;
-class MIRField;
 
 // Forward declaration only, not need for grib_api
 typedef struct grib_handle grib_handle;
 
 
 namespace mir {
+namespace data { class MIRField; }
 namespace input {
 
 
@@ -53,7 +53,7 @@ class MIRInput {
 // -- Methods
 
     virtual const MIRParametrisation& parametrisation() const = 0;
-    virtual MIRField* field() const = 0;
+    virtual data::MIRField* field() const = 0;
     virtual grib_handle* gribHandle() const;
 
 // -- Overridden methods
