@@ -31,7 +31,7 @@ class ReducedLL : public Gridded {
 
 // -- Contructors
 
-    ReducedLL(const MIRParametrisation&);
+    ReducedLL(const param::MIRParametrisation&);
 
 // -- Destructor
 

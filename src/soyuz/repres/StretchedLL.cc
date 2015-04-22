@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-StretchedLL::StretchedLL(const MIRParametrisation &parametrisation) {
+StretchedLL::StretchedLL(const param::MIRParametrisation &parametrisation) {
 }
 
 

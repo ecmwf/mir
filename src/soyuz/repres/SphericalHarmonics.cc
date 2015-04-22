@@ -29,7 +29,7 @@ namespace mir {
 namespace repres {
 
 
-SphericalHarmonics::SphericalHarmonics(const MIRParametrisation &parametrisation) {
+SphericalHarmonics::SphericalHarmonics(const param::MIRParametrisation &parametrisation) {
 
     eckit::Translator<std::string, size_t> s2d;
     std::string value;

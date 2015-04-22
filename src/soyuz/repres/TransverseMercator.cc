@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-TransverseMercator::TransverseMercator(const MIRParametrisation &parametrisation) {
+TransverseMercator::TransverseMercator(const param::MIRParametrisation &parametrisation) {
 }
 
 

@@ -31,7 +31,7 @@ class Sh2ShTransform : public Action {
 
 // -- Contructors
 
-    Sh2ShTransform(const MIRParametrisation&);
+    Sh2ShTransform(const param::MIRParametrisation&);
 
 // -- Destructor
 

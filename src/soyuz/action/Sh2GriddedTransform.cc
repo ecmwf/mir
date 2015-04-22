@@ -24,7 +24,7 @@ namespace mir {
 namespace action {
 
 
-Sh2GriddedTransform::Sh2GriddedTransform(const MIRParametrisation& parametrisation):
+Sh2GriddedTransform::Sh2GriddedTransform(const param::MIRParametrisation& parametrisation):
     Action(parametrisation) {
 }
 

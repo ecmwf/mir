@@ -31,7 +31,7 @@ class LambertAzimuthalEqualArea : public Gridded {
 
 // -- Contructors
 
-    LambertAzimuthalEqualArea(const MIRParametrisation&);
+    LambertAzimuthalEqualArea(const param::MIRParametrisation&);
 
 // -- Destructor
 

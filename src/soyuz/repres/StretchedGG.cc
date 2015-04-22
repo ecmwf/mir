@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-StretchedGG::StretchedGG(const MIRParametrisation &parametrisation) {
+StretchedGG::StretchedGG(const param::MIRParametrisation &parametrisation) {
 }
 
 

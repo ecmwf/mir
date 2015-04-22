@@ -31,7 +31,7 @@ class SpaceView : public Gridded {
 
 // -- Contructors
 
-    SpaceView(const MIRParametrisation&);
+    SpaceView(const param::MIRParametrisation&);
 
 // -- Destructor
 

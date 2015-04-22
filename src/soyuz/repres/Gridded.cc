@@ -23,7 +23,7 @@ namespace repres {
 Gridded::Gridded() {}
 
 
-Gridded::Gridded(const MIRParametrisation &parametrisation) {}
+Gridded::Gridded(const param::MIRParametrisation &parametrisation) {}
 
 
 Gridded::~Gridded() {}

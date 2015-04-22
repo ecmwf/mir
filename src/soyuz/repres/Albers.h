@@ -31,7 +31,7 @@ class Albers : public Gridded {
 
 // -- Contructors
 
-    Albers(const MIRParametrisation&);
+    Albers(const param::MIRParametrisation&);
 
 // -- Destructor
 

@@ -31,7 +31,7 @@ class RotatedSH : public Gridded {
 
 // -- Contructors
 
-    RotatedSH(const MIRParametrisation&);
+    RotatedSH(const param::MIRParametrisation&);
 
 // -- Destructor
 

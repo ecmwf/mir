@@ -49,8 +49,8 @@ void MIRJob::execute(mir::input::MIRInput& input, mir::output::MIROutput& output
     }
 
     // Static so it is inited once (mutex?)
-    static MIRConfiguration configuration;
-    static MIRDefaults defaults;
+    static mir::param::MIRConfiguration configuration;
+    static mir::param::MIRDefaults defaults;
 
     eckit::Timer timer("MIRJob::execute");
 
@@ -58,7 +58,7 @@ void MIRJob::execute(mir::input::MIRInput& input, mir::output::MIROutput& output
     eckit::Log::info() << "          Input: " << input << std::endl;
     eckit::Log::info() << "         Output: " << output << std::endl;
 
-    const MIRParametrisation& metadata = input.parametrisation();
+    const mir::param::MIRParametrisation& metadata = input.parametrisation();
 
     if (matches(metadata)) {
         eckit::Log::info() << "Nothing to do (field matches)" << std::endl;
@@ -66,7 +66,7 @@ void MIRJob::execute(mir::input::MIRInput& input, mir::output::MIROutput& output
         return;
     }
 
-    MIRCombinedParametrisation combined(*this, metadata, configuration, defaults);
+    mir::param::MIRCombinedParametrisation combined(*this, metadata, configuration, defaults);
     eckit::Log::info() << "        Combined: " << combined << std::endl;
 
     std::auto_ptr< mir::logic::MIRLogic > logic(mir::logic::MIRLogicFactory::build(combined));
@@ -129,7 +129,7 @@ bool MIRJob::get(const std::string& name, std::string& value) const {
 }
 
 
-bool MIRJob::matches(const MIRParametrisation& metadata) const {
+bool MIRJob::matches(const mir::param::MIRParametrisation& metadata) const {
 
     static const char* force[] = { "bitmap", "frame", "packing", "accuracy", 0 }; // More to add
 

@@ -39,7 +39,7 @@ static std::ofstream of("found.txt");
 }  // (utilities namespace)
 
 
-FiniteElement::FiniteElement(const MIRParametrisation& param) {
+FiniteElement::FiniteElement(const param::MIRParametrisation& param) {
 }
 
 
@@ -210,3 +210,4 @@ static MethodBuilder< FiniteElement > __finiteelement("method.finiteelement");
 
 }  // namespace method
 }  // namespace mir
+

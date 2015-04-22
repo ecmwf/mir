@@ -22,11 +22,9 @@
 #include <vector>
 
 
-class MIRParametrisation;
-
-
 namespace mir {
 namespace action { class Action; }
+namespace param { class MIRParametrisation; }
 namespace logic {
 
 
@@ -38,7 +36,7 @@ class MIRLogic {
 
 // -- Contructors
 
-    MIRLogic(const MIRParametrisation& parametrisation);
+    MIRLogic(const param::MIRParametrisation& parametrisation);
 
 // -- Destructor
 
@@ -67,7 +65,7 @@ class MIRLogic {
 
 // -- Members
 
-    const MIRParametrisation& parametrisation_;
+    const param::MIRParametrisation& parametrisation_;
 
 // -- Methods
 
@@ -119,7 +117,7 @@ class MIRLogic {
 
 class MIRLogicFactory {
     std::string name_;
-    virtual MIRLogic* make(const MIRParametrisation&) = 0 ;
+    virtual MIRLogic* make(const param::MIRParametrisation&) = 0 ;
 
   protected:
 
@@ -127,14 +125,14 @@ class MIRLogicFactory {
     virtual ~MIRLogicFactory();
 
   public:
-    static MIRLogic* build(const MIRParametrisation&);
+    static MIRLogic* build(const param::MIRParametrisation&);
 
 };
 
 
 template<class T>
 class MIRLogicBuilder : public MIRLogicFactory {
-    virtual MIRLogic* make(const MIRParametrisation& param) {
+    virtual MIRLogic* make(const param::MIRParametrisation& param) {
         return new T(param);
     }
   public:

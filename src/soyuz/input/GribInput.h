@@ -28,7 +28,7 @@ namespace mir {
 namespace input {
 
 
-class GribInput : public MIRInput, public FieldParametrisation {
+class GribInput : public MIRInput, public param::FieldParametrisation {
   public:
 
     // -- Exceptions
@@ -101,7 +101,7 @@ class GribInput : public MIRInput, public FieldParametrisation {
     // -- Overridden methods
     // From MIRInput
 
-    virtual const MIRParametrisation &parametrisation() const;
+    virtual const param::MIRParametrisation &parametrisation() const;
     virtual data::MIRField *field() const;
     virtual grib_handle *gribHandle() const;
 

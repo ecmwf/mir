@@ -31,7 +31,7 @@ class StretchedGG : public Gridded {
 
 // -- Contructors
 
-    StretchedGG(const MIRParametrisation&);
+    StretchedGG(const param::MIRParametrisation&);
 
 // -- Destructor
 

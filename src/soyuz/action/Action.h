@@ -18,11 +18,10 @@
 
 #include <string>
 
-class MIRParametrisation;
-
 
 namespace mir {
 namespace data { class MIRField; }
+namespace param { class MIRParametrisation; }
 namespace action {
 
 
@@ -34,7 +33,7 @@ class Action {
 
 // -- Contructors
 
-    Action(const MIRParametrisation& parametrisation);
+    Action(const param::MIRParametrisation& parametrisation);
 
 // -- Destructor
 
@@ -64,7 +63,7 @@ class Action {
 
 // -- Members
 
-    const MIRParametrisation& parametrisation_;
+    const param::MIRParametrisation& parametrisation_;
 
 // -- Methods
 
@@ -113,7 +112,7 @@ class Action {
 
 class ActionFactory {
     std::string name_;
-    virtual Action* make(const MIRParametrisation&) = 0 ;
+    virtual Action* make(const param::MIRParametrisation&) = 0 ;
 
   protected:
 
@@ -121,14 +120,14 @@ class ActionFactory {
     virtual ~ActionFactory();
 
   public:
-    static Action* build(const std::string&, const MIRParametrisation&);
+    static Action* build(const std::string&, const param::MIRParametrisation&);
 
 };
 
 
 template<class T>
 class ActionBuilder : public ActionFactory {
-    virtual Action* make(const MIRParametrisation& param) {
+    virtual Action* make(const param::MIRParametrisation& param) {
         return new T(param);
     }
   public:

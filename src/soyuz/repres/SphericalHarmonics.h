@@ -31,7 +31,7 @@ class SphericalHarmonics : public Representation {
 
 // -- Contructors
 
-    SphericalHarmonics(const MIRParametrisation&);
+    SphericalHarmonics(const param::MIRParametrisation&);
 
 // -- Destructor
 

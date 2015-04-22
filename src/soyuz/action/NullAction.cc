@@ -22,7 +22,7 @@ namespace mir {
 namespace action {
 
 
-NullAction::NullAction(const MIRParametrisation& parametrisation):
+NullAction::NullAction(const param::MIRParametrisation& parametrisation):
     Action(parametrisation) {
 }
 

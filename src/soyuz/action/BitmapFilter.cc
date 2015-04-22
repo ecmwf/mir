@@ -35,7 +35,7 @@ static std::map< std::string, util::Bitmap *> cache;
 }
 
 
-BitmapFilter::BitmapFilter(const MIRParametrisation &parametrisation):
+BitmapFilter::BitmapFilter(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 
     std::string path;

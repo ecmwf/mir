@@ -31,7 +31,7 @@ class RotatedGG : public Gridded {
 
 // -- Contructors
 
-    RotatedGG(const MIRParametrisation&);
+    RotatedGG(const param::MIRParametrisation&);
 
 // -- Destructor
 

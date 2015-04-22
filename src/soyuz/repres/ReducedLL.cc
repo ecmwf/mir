@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-ReducedLL::ReducedLL(const MIRParametrisation &parametrisation) {
+ReducedLL::ReducedLL(const param::MIRParametrisation &parametrisation) {
 }
 
 

@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-RegularGG::RegularGG(const MIRParametrisation &parametrisation) {
+RegularGG::RegularGG(const param::MIRParametrisation &parametrisation) {
 }
 
 

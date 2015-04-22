@@ -31,7 +31,7 @@ class TriangularGrid : public Gridded {
 
 // -- Contructors
 
-    TriangularGrid(const MIRParametrisation&);
+    TriangularGrid(const param::MIRParametrisation&);
 
 // -- Destructor
 

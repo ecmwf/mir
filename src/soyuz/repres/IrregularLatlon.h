@@ -31,7 +31,7 @@ class IrregularLatlon : public Gridded {
 
 // -- Contructors
 
-    IrregularLatlon(const MIRParametrisation&);
+    IrregularLatlon(const param::MIRParametrisation&);
 
 // -- Destructor
 

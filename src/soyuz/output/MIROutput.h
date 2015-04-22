@@ -19,12 +19,10 @@
 #include <iosfwd>
 
 
-class MIRParametrisation;
-
-
 namespace mir {
 namespace data { class MIRField; }
 namespace input { class MIRInput; }
+namespace param { class MIRParametrisation; }
 namespace output {
 
 
@@ -50,8 +48,8 @@ class MIROutput {
 
 // -- Methods
 
-    virtual void copy(const MIRParametrisation&, input::MIRInput&) = 0; // Not iterpolation performed
-    virtual void save(const MIRParametrisation&, input::MIRInput&, data::MIRField&) = 0;
+    virtual void copy(const param::MIRParametrisation&, input::MIRInput&) = 0; // Not iterpolation performed
+    virtual void save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&) = 0;
 
 // -- Overridden methods
     // None

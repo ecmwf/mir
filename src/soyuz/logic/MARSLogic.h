@@ -31,7 +31,7 @@ class MARSLogic : public MIRLogic {
 
 // -- Contructors
 
-    MARSLogic(const MIRParametrisation&);
+    MARSLogic(const param::MIRParametrisation&);
 
 // -- Destructor
 

@@ -28,7 +28,7 @@ namespace mir {
 namespace action {
 
 
-Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const MIRParametrisation& parametrisation):
+Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation& parametrisation):
     Action(parametrisation) {
 }
 

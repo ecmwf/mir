@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-AzimuthRange::AzimuthRange(const MIRParametrisation &parametrisation) {
+AzimuthRange::AzimuthRange(const param::MIRParametrisation &parametrisation) {
 }
 
 

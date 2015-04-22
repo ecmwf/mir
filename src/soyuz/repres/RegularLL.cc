@@ -29,7 +29,7 @@ namespace mir {
 namespace repres {
 
 
-RegularLL::RegularLL(const MIRParametrisation &parametrisation) {
+RegularLL::RegularLL(const param::MIRParametrisation &parametrisation) {
 
     eckit::Translator<std::string, double> s2d;
     std::string value;

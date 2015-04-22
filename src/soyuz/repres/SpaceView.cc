@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-SpaceView::SpaceView(const MIRParametrisation &parametrisation) {
+SpaceView::SpaceView(const param::MIRParametrisation &parametrisation) {
 }
 
 

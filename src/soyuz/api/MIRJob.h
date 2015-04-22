@@ -30,7 +30,7 @@ namespace output { class MIROutput; }
 }
 
 
-class MIRJob : public MIRParametrisation, public eckit::NonCopyable {
+class MIRJob : public mir::param::MIRParametrisation, public eckit::NonCopyable {
   public:
 
 // -- Exceptions
@@ -92,7 +92,7 @@ class MIRJob : public MIRParametrisation, public eckit::NonCopyable {
 
 // -- Methods
 
-    bool matches(const MIRParametrisation&) const;
+    bool matches(const mir::param::MIRParametrisation&) const;
 
 // -- Overridden methods
 

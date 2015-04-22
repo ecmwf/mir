@@ -21,12 +21,11 @@
 #include <vector>
 
 
-class MIRParametrisation;
-
 struct grib_info;
 
 
 namespace mir {
+namespace param { class MIRParametrisation; }
 namespace repres {
 
 
@@ -123,7 +122,7 @@ class Representation {
 
 class RepresentationFactory {
     std::string name_;
-    virtual Representation* make(const MIRParametrisation&) = 0 ;
+    virtual Representation* make(const param::MIRParametrisation&) = 0 ;
 
   protected:
 
@@ -131,14 +130,14 @@ class RepresentationFactory {
     virtual ~RepresentationFactory();
 
   public:
-    static Representation* build(const MIRParametrisation&);
+    static Representation* build(const param::MIRParametrisation&);
 
 };
 
 
 template<class T>
 class RepresentationBuilder : public RepresentationFactory {
-    virtual Representation* make(const MIRParametrisation& param) {
+    virtual Representation* make(const param::MIRParametrisation& param) {
         return new T(param);
     }
   public:

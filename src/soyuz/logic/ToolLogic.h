@@ -31,7 +31,7 @@ class ToolLogic : public MIRLogic {
 
 // -- Contructors
 
-    ToolLogic(const MIRParametrisation&);
+    ToolLogic(const param::MIRParametrisation&);
 
 // -- Destructor
 

@@ -31,7 +31,7 @@ class RegularLL : public Gridded {
 
 // -- Contructors
 
-    RegularLL(const MIRParametrisation&);
+    RegularLL(const param::MIRParametrisation&);
 
 // -- Destructor
 

@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-TriangularGrid::TriangularGrid(const MIRParametrisation &parametrisation) {
+TriangularGrid::TriangularGrid(const param::MIRParametrisation &parametrisation) {
 }
 
 

@@ -31,7 +31,7 @@ class Gridded2GriddedInterpolation : public Action {
 
 // -- Contructors
 
-    Gridded2GriddedInterpolation(const MIRParametrisation&);
+    Gridded2GriddedInterpolation(const param::MIRParametrisation&);
 
 // -- Destructor
 

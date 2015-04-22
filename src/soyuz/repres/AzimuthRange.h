@@ -31,7 +31,7 @@ class AzimuthRange : public Gridded {
 
 // -- Contructors
 
-    AzimuthRange(const MIRParametrisation&);
+    AzimuthRange(const param::MIRParametrisation&);
 
 // -- Destructor
 

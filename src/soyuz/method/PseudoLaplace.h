@@ -26,7 +26,7 @@ class PseudoLaplace: public KNearest {
 
 // -- Contructors
 
-    PseudoLaplace(const MIRParametrisation& param);
+    PseudoLaplace(const param::MIRParametrisation& param);
 
 // -- Destructor
 

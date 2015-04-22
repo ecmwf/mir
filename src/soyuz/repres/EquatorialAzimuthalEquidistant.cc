@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant(const MIRParametrisation &parametrisation) {
+EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant(const param::MIRParametrisation &parametrisation) {
 }
 
 

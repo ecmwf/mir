@@ -23,7 +23,7 @@ namespace mir {
 namespace logic {
 
 
-MARSLogic::MARSLogic(const MIRParametrisation &parametrisation):
+MARSLogic::MARSLogic(const param::MIRParametrisation &parametrisation):
     MIRLogic(parametrisation) {
 
 }
@@ -87,3 +87,4 @@ static MIRLogicBuilder<MARSLogic> mars("mars");
 
 }  // namespace logic
 }  // namespace mir
+

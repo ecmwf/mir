@@ -59,7 +59,7 @@ void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, 
 }  // (utilities namespace)
 
 
-Bilinear::Bilinear(const MIRParametrisation& param) {
+Bilinear::Bilinear(const param::MIRParametrisation& param) {
 }
 
 
@@ -224,3 +224,4 @@ static MethodBuilder< Bilinear > __bilinear("method.bilinear");
 
 }  // namespace method
 }  // namespace mir
+

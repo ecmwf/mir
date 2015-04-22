@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-IrregularLatlon::IrregularLatlon(const MIRParametrisation &parametrisation) {
+IrregularLatlon::IrregularLatlon(const param::MIRParametrisation &parametrisation) {
 }
 
 

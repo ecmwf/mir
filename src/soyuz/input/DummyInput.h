@@ -27,7 +27,7 @@ namespace mir {
 namespace input {
 
 
-class DummyInput : public MIRInput, public FieldParametrisation {
+class DummyInput : public MIRInput, public param::FieldParametrisation {
   public:
 
     // -- Exceptions
@@ -95,7 +95,7 @@ class DummyInput : public MIRInput, public FieldParametrisation {
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
-    virtual const MIRParametrisation &parametrisation() const;
+    virtual const param::MIRParametrisation &parametrisation() const;
     virtual data::MIRField *field() const;
 
     // From FieldParametrisation

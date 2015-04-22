@@ -30,7 +30,7 @@ namespace mir {
 namespace action {
 
 
-AreaCropper::AreaCropper(const MIRParametrisation& parametrisation):
+AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation):
     Action(parametrisation),
     north_(0),
     west_(0),

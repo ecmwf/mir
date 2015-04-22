@@ -99,7 +99,7 @@ RepresentationFactory::~RepresentationFactory() {
 }
 
 
-Representation *RepresentationFactory::build(const MIRParametrisation &params) {
+Representation *RepresentationFactory::build(const param::MIRParametrisation &params) {
 
     pthread_once(&once, init);
 

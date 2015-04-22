@@ -31,7 +31,7 @@ class Gridded : public Representation {
 
 // -- Contructors
 
-    Gridded(const MIRParametrisation&);
+    Gridded(const param::MIRParametrisation&);
 
 // -- Destructor
 

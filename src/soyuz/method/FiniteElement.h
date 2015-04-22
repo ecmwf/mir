@@ -36,7 +36,7 @@ class FiniteElement: public MethodWeighted {
 
 // -- Contructors
 
-    FiniteElement(const MIRParametrisation& param);
+    FiniteElement(const param::MIRParametrisation& param);
 
 // -- Destructor
 

@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-Mercator::Mercator(const MIRParametrisation &parametrisation) {
+Mercator::Mercator(const param::MIRParametrisation &parametrisation) {
 }
 
 

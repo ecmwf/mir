@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-UnstructuredGrid::UnstructuredGrid(const MIRParametrisation &parametrisation) {
+UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation &parametrisation) {
 }
 
 

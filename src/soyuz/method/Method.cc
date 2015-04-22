@@ -68,7 +68,7 @@ MethodFactory::~MethodFactory() {
 }
 
 
-Method *MethodFactory::build(const std::string &name, const MIRParametrisation& params) {
+Method *MethodFactory::build(const std::string &name, const param::MIRParametrisation& params) {
 
     pthread_once(&once, init);
 
@@ -91,3 +91,4 @@ Method *MethodFactory::build(const std::string &name, const MIRParametrisation& 
 
 }  // namespace method
 }  // namespace mir
+

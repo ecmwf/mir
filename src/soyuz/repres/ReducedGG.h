@@ -31,7 +31,7 @@ class ReducedGG : public Gridded {
 
 // -- Contructors
 
-    ReducedGG(const MIRParametrisation&);
+    ReducedGG(const param::MIRParametrisation&);
 
 // -- Destructor
 

@@ -30,7 +30,7 @@ namespace mir {
 namespace action {
 
 
-Sh2ShTransform::Sh2ShTransform(const MIRParametrisation &parametrisation):
+Sh2ShTransform::Sh2ShTransform(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
     truncation_(0) {
     std::string value;

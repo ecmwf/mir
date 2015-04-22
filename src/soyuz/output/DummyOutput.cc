@@ -30,11 +30,11 @@ DummyOutput::~DummyOutput() {
 }
 
 
-void DummyOutput::copy(const MIRParametrisation &param, input::MIRInput &input) {
+void DummyOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
 }
 
 
-void DummyOutput::save(const MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+void DummyOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
 }
 
 

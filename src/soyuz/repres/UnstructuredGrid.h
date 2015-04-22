@@ -31,7 +31,7 @@ class UnstructuredGrid : public Gridded {
 
 // -- Contructors
 
-    UnstructuredGrid(const MIRParametrisation&);
+    UnstructuredGrid(const param::MIRParametrisation&);
 
 // -- Destructor
 

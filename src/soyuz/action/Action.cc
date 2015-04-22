@@ -40,7 +40,7 @@ static void init() {
 }  // (anonymous namespace)
 
 
-Action::Action(const MIRParametrisation& parametrisation):
+Action::Action(const param::MIRParametrisation& parametrisation):
     parametrisation_(parametrisation) {
 }
 
@@ -68,7 +68,7 @@ ActionFactory::~ActionFactory() {
 }
 
 
-Action* ActionFactory::build(const std::string& name, const MIRParametrisation& params) {
+Action* ActionFactory::build(const std::string& name, const param::MIRParametrisation& params) {
 
     pthread_once(&once,init);
 

@@ -67,7 +67,7 @@ void NetcdfFileInput::print(std::ostream &out) const {
 }
 
 
-const MIRParametrisation &NetcdfFileInput::parametrisation() const {
+const param::MIRParametrisation &NetcdfFileInput::parametrisation() const {
     return *this;
 }
 

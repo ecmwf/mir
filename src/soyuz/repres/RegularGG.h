@@ -31,7 +31,7 @@ class RegularGG : public Gridded {
 
 // -- Contructors
 
-    RegularGG(const MIRParametrisation&);
+    RegularGG(const param::MIRParametrisation&);
 
 // -- Destructor
 

@@ -31,7 +31,7 @@ class Lambert : public Gridded {
 
 // -- Contructors
 
-    Lambert(const MIRParametrisation&);
+    Lambert(const param::MIRParametrisation&);
 
 // -- Destructor
 

@@ -31,7 +31,7 @@ class EquatorialAzimuthalEquidistant : public Gridded {
 
 // -- Contructors
 
-    EquatorialAzimuthalEquidistant(const MIRParametrisation&);
+    EquatorialAzimuthalEquidistant(const param::MIRParametrisation&);
 
 // -- Destructor
 

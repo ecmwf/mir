@@ -31,7 +31,7 @@ namespace mir {
 namespace action {
 
 
-FrameFilter::FrameFilter(const MIRParametrisation &parametrisation):
+FrameFilter::FrameFilter(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
     size_(0) {
 

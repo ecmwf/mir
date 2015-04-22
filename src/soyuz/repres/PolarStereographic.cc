@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-PolarStereographic::PolarStereographic(const MIRParametrisation &parametrisation) {
+PolarStereographic::PolarStereographic(const param::MIRParametrisation &parametrisation) {
 }
 
 

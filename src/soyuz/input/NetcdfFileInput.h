@@ -28,7 +28,7 @@ namespace mir {
 namespace input {
 
 
-class NetcdfFileInput : public MIRInput, public FieldParametrisation {
+class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
   public:
 
     // -- Exceptions
@@ -102,7 +102,7 @@ class NetcdfFileInput : public MIRInput, public FieldParametrisation {
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
-    virtual const MIRParametrisation &parametrisation() const;
+    virtual const param::MIRParametrisation &parametrisation() const;
     virtual data::MIRField *field() const;
 
     // From FieldParametrisation

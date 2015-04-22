@@ -21,7 +21,7 @@ namespace mir {
 namespace method {
 
 
-PseudoLaplace::PseudoLaplace(const MIRParametrisation& param) :
+PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
     KNearest(param) {
 }
 
@@ -132,3 +132,4 @@ static MethodBuilder< PseudoLaplace > __pseudolaplace("method.pseudolaplace");
 
 }  // namespace method
 }  // namespace mir
+

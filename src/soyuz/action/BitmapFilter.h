@@ -34,7 +34,7 @@ class BitmapFilter : public Action {
 
 // -- Contructors
 
-    BitmapFilter(const MIRParametrisation&);
+    BitmapFilter(const param::MIRParametrisation&);
 
 // -- Destructor
 

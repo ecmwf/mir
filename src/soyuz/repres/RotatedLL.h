@@ -31,7 +31,7 @@ class RotatedLL : public Gridded {
 
 // -- Contructors
 
-    RotatedLL(const MIRParametrisation&);
+    RotatedLL(const param::MIRParametrisation&);
 
 // -- Destructor
 

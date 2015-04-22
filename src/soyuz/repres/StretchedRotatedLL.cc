@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-StretchedRotatedLL::StretchedRotatedLL(const MIRParametrisation &parametrisation) {
+StretchedRotatedLL::StretchedRotatedLL(const param::MIRParametrisation &parametrisation) {
 }
 
 

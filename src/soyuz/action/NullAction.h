@@ -31,7 +31,7 @@ class NullAction : public Action {
 
 // -- Contructors
 
-    NullAction(const MIRParametrisation&);
+    NullAction(const param::MIRParametrisation&);
 
 // -- Destructor
 

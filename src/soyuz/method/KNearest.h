@@ -27,7 +27,7 @@ class KNearest: public MethodWeighted {
 
 // -- Contructors
 
-    KNearest(const MIRParametrisation& param);
+    KNearest(const param::MIRParametrisation& param);
 
 // -- Destructor
 
@@ -102,3 +102,4 @@ class KNearest: public MethodWeighted {
 }  // namespace method
 }  // namespace mir
 #endif
+

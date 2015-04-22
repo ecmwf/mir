@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-Lambert::Lambert(const MIRParametrisation &parametrisation) {
+Lambert::Lambert(const param::MIRParametrisation &parametrisation) {
 }
 
 

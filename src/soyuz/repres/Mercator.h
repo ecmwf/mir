@@ -31,7 +31,7 @@ class Mercator : public Gridded {
 
 // -- Contructors
 
-    Mercator(const MIRParametrisation&);
+    Mercator(const param::MIRParametrisation&);
 
 // -- Destructor
 

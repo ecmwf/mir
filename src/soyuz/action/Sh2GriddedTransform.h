@@ -31,7 +31,7 @@ class Sh2GriddedTransform : public Action {
 
 // -- Contructors
 
-    Sh2GriddedTransform(const MIRParametrisation&);
+    Sh2GriddedTransform(const param::MIRParametrisation&);
 
 // -- Destructor
 

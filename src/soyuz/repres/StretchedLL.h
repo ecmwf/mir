@@ -31,7 +31,7 @@ class StretchedLL : public Gridded {
 
 // -- Contructors
 
-    StretchedLL(const MIRParametrisation&);
+    StretchedLL(const param::MIRParametrisation&);
 
 // -- Destructor
 

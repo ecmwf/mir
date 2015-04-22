@@ -12,18 +12,17 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #ifndef soyuz_method_Method_H
 #define soyuz_method_Method_H
 
-#include <string>
 #include <iosfwd>
-
-
-class MIRParametrisation;
+#include <string>
 
 
 namespace mir {
 namespace data { class MIRField; }
+namespace param { class MIRParametrisation; }
 namespace method {
 
 
@@ -122,7 +121,7 @@ class Method {
 
 class MethodFactory {
     std::string name_;
-    virtual Method* make(const std::string&, const MIRParametrisation&) = 0 ;
+    virtual Method* make(const std::string&, const param::MIRParametrisation&) = 0 ;
 
   protected:
 
@@ -130,14 +129,14 @@ class MethodFactory {
     virtual ~MethodFactory();
 
   public:
-    static Method* build(const std::string&, const MIRParametrisation&);
+    static Method* build(const std::string&, const param::MIRParametrisation&);
 
 };
 
 
-template<class T>
+template< class T >
 class MethodBuilder : public MethodFactory {
-    virtual Method* make(const std::string& name, const MIRParametrisation& param) {
+    virtual Method* make(const std::string& name, const param::MIRParametrisation& param) {
         T* baby = new T(param);
         baby->name() = name;
         return baby;

@@ -24,7 +24,7 @@ namespace mir {
 namespace repres {
 
 
-Albers::Albers(const MIRParametrisation &parametrisation) {
+Albers::Albers(const param::MIRParametrisation &parametrisation) {
 }
 
 

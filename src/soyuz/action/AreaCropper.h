@@ -31,7 +31,7 @@ class AreaCropper : public Action {
 
 // -- Contructors
 
-    AreaCropper(const MIRParametrisation&);
+    AreaCropper(const param::MIRParametrisation&);
 
 // -- Destructor
 

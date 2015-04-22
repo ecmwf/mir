@@ -39,7 +39,7 @@ DummyInput::DummyInput() {
 DummyInput::~DummyInput() {}
 
 
-const MIRParametrisation &DummyInput::parametrisation() const {
+const param::MIRParametrisation &DummyInput::parametrisation() const {
     return *this;
 }
 

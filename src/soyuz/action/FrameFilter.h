@@ -33,7 +33,7 @@ class FrameFilter : public Action {
 
 // -- Contructors
 
-    FrameFilter(const MIRParametrisation&);
+    FrameFilter(const param::MIRParametrisation&);
 
 // -- Destructor
 

@@ -31,7 +31,7 @@ class PolarStereographic : public Gridded {
 
 // -- Contructors
 
-    PolarStereographic(const MIRParametrisation&);
+    PolarStereographic(const param::MIRParametrisation&);
 
 // -- Destructor
 

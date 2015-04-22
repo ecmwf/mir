@@ -53,7 +53,7 @@ GribInput::~GribInput() {
 }
 
 
-const MIRParametrisation &GribInput::parametrisation() const {
+const param::MIRParametrisation &GribInput::parametrisation() const {
     return *this;
 }
 

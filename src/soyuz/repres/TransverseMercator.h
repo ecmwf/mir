@@ -31,7 +31,7 @@ class TransverseMercator : public Gridded {
 
 // -- Contructors
 
-    TransverseMercator(const MIRParametrisation&);
+    TransverseMercator(const param::MIRParametrisation&);
 
 // -- Destructor
 

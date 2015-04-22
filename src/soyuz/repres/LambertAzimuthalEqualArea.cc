@@ -26,7 +26,7 @@ namespace mir {
 namespace repres {
 
 
-LambertAzimuthalEqualArea::LambertAzimuthalEqualArea(const MIRParametrisation &parametrisation) {
+LambertAzimuthalEqualArea::LambertAzimuthalEqualArea(const param::MIRParametrisation &parametrisation) {
 }
 
 

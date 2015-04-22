@@ -31,7 +31,7 @@ class StretchedRotatedSH : public Gridded {
 
 // -- Contructors
 
-    StretchedRotatedSH(const MIRParametrisation&);
+    StretchedRotatedSH(const param::MIRParametrisation&);
 
 // -- Destructor
 
