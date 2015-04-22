@@ -8,24 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
+#include "soyuz/method/Bilinear.h"
+
 #include <string>
 #include <algorithm>
 
-#include <boost/progress.hpp>
-#include "eckit/geometry/KPoint.h"
-
 #include "atlas/grids/ReducedGaussianGrid.h"
-#include "atlas/Tesselation.h"
-#include "atlas/grids/Unstructured.h"
-#include "atlas/util/ArrayView.h"
 
 #include "eckit/log/Log.h"
-#include "eckit/types/FloatCompare.h"
-#include "eckit/utils/Translator.h"
-
-#include "soyuz/method/MethodWeighted.h"
-#include "soyuz/method/Bilinear.h"
-#include "soyuz/method/PointSearch.h"
 
 
 namespace mir {

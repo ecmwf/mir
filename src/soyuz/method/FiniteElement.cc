@@ -8,19 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
+#include "soyuz/method/FiniteElement.h"
+
 #include <string>
 
-#include "eckit/log/Timer.h"
-
-#include "atlas/Grid.h"
-#include "atlas/util/ArrayView.h"
-#include "atlas/util/IndexView.h"
 #include "atlas/Tesselation.h"
-#include "atlas/PointIndex3.h"
 #include "atlas/TriangleIntersection.h"
+#include "atlas/util/IndexView.h"
 
-#include "soyuz/method/MethodWeighted.h"
-#include "soyuz/method/FiniteElement.h"
+#include "eckit/log/Timer.h"
 
 
 namespace mir {

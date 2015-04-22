@@ -8,14 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
+#include "soyuz/method/MethodWeighted.h"
+
 #include <string>
 
-#include "atlas/Grid.h"
-
 #include "eckit/log/Timer.h"
-#include "eckit/utils/Translator.h"
-
-#include "soyuz/method/MethodWeighted.h"
 #include "soyuz/method/WeightCache.h"
 
 

@@ -8,16 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
+#include "soyuz/method/PointSearch.h"
+
 #include <string>
 #include <algorithm>
 #include <functional>
 #include <math.h>
 
-#include "eckit/log/Log.h"
-
-#include "atlas/util/ArrayView.h"
-
-#include "soyuz/method/PointSearch.h"
 
 
 namespace mir {

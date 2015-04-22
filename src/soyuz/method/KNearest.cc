@@ -8,16 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
+#include "soyuz/method/KNearest.h"
+
 #include <string>
 
 #include "eckit/config/Resource.h"
-#include "eckit/log/Log.h"
-#include "eckit/utils/Translator.h"
-
-#include "atlas/util/ArrayView.h"
-
-#include "soyuz/method/MethodWeighted.h"
-#include "soyuz/method/KNearest.h"
 
 
 using atlas::Grid;

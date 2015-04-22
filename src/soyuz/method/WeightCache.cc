@@ -8,6 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
+#include "soyuz/method/WeightCache.h"
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -15,11 +17,7 @@
 
 #include "eckit/config/Resource.h"
 #include "eckit/io/FileHandle.h"
-#include "eckit/log/Log.h"
-#include "eckit/maths/Eigen.h" // always include Eigen via eckit
-#include "eckit/thread/AutoLock.h"
 
-#include "soyuz/method/WeightCache.h"
 
 using namespace eckit;
 
