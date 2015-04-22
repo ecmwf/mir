@@ -1,10 +1,17 @@
-// File FrameFilter.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "soyuz/action/FrameFilter.h"
-#include "soyuz/param/MIRParametrisation.h"
-#include "soyuz/data/MIRField.h"
-#include "soyuz/repres/Representation.h"
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
 
 #include <iostream>
 
@@ -12,6 +19,16 @@
 #include "eckit/io/StdFile.h"
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/utils/Translator.h"
+
+#include "soyuz/data/MIRField.h"
+#include "soyuz/param/MIRParametrisation.h"
+#include "soyuz/repres/Representation.h"
+
+#include "soyuz/action/FrameFilter.h"
+
+
+namespace mir {
+namespace action {
 
 
 FrameFilter::FrameFilter(const MIRParametrisation &parametrisation):
@@ -23,19 +40,22 @@ FrameFilter::FrameFilter(const MIRParametrisation &parametrisation):
     size_ = eckit::Translator<std::string, long>()(size);
 }
 
+
 FrameFilter::~FrameFilter() {
 }
+
 
 void FrameFilter::print(std::ostream &out) const {
     out << "FrameFilter[size=" << size_ << "]";
 }
+
 
 void FrameFilter::execute(MIRField &field) const {
 
     double missingValue = field.missingValue();
     std::vector<double> &values = field.values();
 
-    const Representation *representation = field.representation();
+    const mir::repres::Representation *representation = field.representation();
     size_t count = representation->frame(values, size_, missingValue);
 
     if (count) {
@@ -46,4 +66,12 @@ void FrameFilter::execute(MIRField &field) const {
 
 }
 
-static ActionBuilder<FrameFilter> bitmapFilter("filter.frame");
+
+namespace {
+static ActionBuilder< FrameFilter > bitmapFilter("filter.frame");
+}
+
+
+}  // namespace action
+}  // namespace mir
+

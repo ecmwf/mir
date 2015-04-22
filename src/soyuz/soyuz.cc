@@ -1,3 +1,18 @@
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
+
 #include "eckit/runtime/Tool.h"
 #include "eckit/runtime/Context.h"
 
@@ -8,7 +23,6 @@
 #include "soyuz/output/DummyOutput.h"
 #include "soyuz/output/GribFileOutput.h"
 
-//------------------------------------------------------------------------------------------------------
 
 class MIRDemo : public eckit::Tool {
 
@@ -27,8 +41,8 @@ void MIRDemo::run() {
     if(eckit::Context::instance().argc() > 2 ) {
 
         MIRJob job;
-        GribFileInput input(eckit::Context::instance().argv(1));
-        GribFileOutput output(eckit::Context::instance().argv(2));
+        mir::input::GribFileInput input(eckit::Context::instance().argv(1));
+        mir::output::GribFileOutput output(eckit::Context::instance().argv(2));
 
         job.set("grid", "2/2");
 
@@ -47,8 +61,8 @@ void MIRDemo::run() {
         job.set("accuracy", "8");
         job.set("frame", "3");
 
-        GribFileInput input("test.grib");
-        GribFileOutput output("result.grib");
+        mir::input::GribFileInput input("test.grib");
+        mir::output::GribFileOutput output("result.grib");
 
         while (input.next()) {
             job.execute(input, output);
@@ -61,8 +75,8 @@ void MIRDemo::run() {
         job.set("accuracy", "24");
         job.set("frame", "10");
 
-        NetcdfFileInput input("test.nc", "z");
-        GribFileOutput output("netcdf.grib");
+        mir::input::NetcdfFileInput input("test.nc", "z");
+        mir::output::GribFileOutput output("netcdf.grib");
 
         job.execute(input, output);
 
@@ -74,8 +88,8 @@ void MIRDemo::run() {
         job.set("accuracy", "24");
         job.set("frame", "10");
 
-        DummyInput input;
-        DummyOutput output;
+        mir::input::DummyInput input;
+        mir::output::DummyOutput output;
 
         job.execute(input, output);
 
@@ -87,8 +101,8 @@ void MIRDemo::run() {
         job.set("accuracy", "24");
         job.set("frame", "10");
 
-        DummyInput input;
-        GribFileOutput output("dummy.grib");
+        mir::input::DummyInput input;
+        mir::output::GribFileOutput output("dummy.grib");
 
         job.execute(input, output);
 
@@ -99,8 +113,8 @@ void MIRDemo::run() {
 
         job.set("logic", "tool");
 
-        DummyInput input;
-        GribFileOutput output("dummy.grib");
+        mir::input::DummyInput input;
+        mir::output::GribFileOutput output("dummy.grib");
 
         job.execute(input, output);
 
@@ -108,7 +122,6 @@ void MIRDemo::run() {
 
 }
 
-//------------------------------------------------------------------------------------------------------
 
 int main( int argc, char **argv ) {
     MIRDemo tool(argc, argv);

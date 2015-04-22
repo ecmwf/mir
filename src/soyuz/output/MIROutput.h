@@ -1,14 +1,32 @@
-// File MIROutput.h
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
 
 #ifndef MIROutput_H
 #define MIROutput_H
 
 #include <iosfwd>
 
+
 class MIRParametrisation;
-class MIRInput;
 class MIRField;
+
+
+namespace mir {
+namespace input { class MIRInput; }
+namespace output {
+
 
 class MIROutput {
   public:
@@ -32,8 +50,8 @@ class MIROutput {
 
 // -- Methods
 
-    virtual void copy(const MIRParametrisation&, MIRInput&) = 0; // Not iterpolation performed
-    virtual void save(const MIRParametrisation&, MIRInput&, MIRField&) = 0;
+    virtual void copy(const MIRParametrisation&, mir::input::MIRInput&) = 0; // Not iterpolation performed
+    virtual void save(const MIRParametrisation&, mir::input::MIRInput&, MIRField&) = 0;
 
 // -- Overridden methods
     // None
@@ -93,4 +111,8 @@ class MIROutput {
 
 };
 
+
+}  // namespace output
+}  // namespace mir
 #endif
+

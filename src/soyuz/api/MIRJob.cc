@@ -1,19 +1,17 @@
-// File MIRJob.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "soyuz/api/MIRJob.h"
-#include "soyuz/logic/MIRLogic.h"
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
-#include "soyuz/input/MIRInput.h"
-#include "soyuz/output/MIROutput.h"
-
-#include "soyuz/action/Action.h"
-#include "soyuz/repres/Representation.h"
-
-#include "soyuz/param/MIRConfiguration.h"
-#include "soyuz/param/MIRCombinedParametrisation.h"
-#include "soyuz/param/MIRDefaults.h"
-#include "soyuz/data/MIRField.h"
 
 #include <iostream>
 
@@ -21,14 +19,28 @@
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
 
+#include "soyuz/action/Action.h"
+#include "soyuz/data/MIRField.h"
+#include "soyuz/input/MIRInput.h"
+#include "soyuz/logic/MIRLogic.h"
+#include "soyuz/output/MIROutput.h"
+#include "soyuz/param/MIRCombinedParametrisation.h"
+#include "soyuz/param/MIRConfiguration.h"
+#include "soyuz/param/MIRDefaults.h"
+#include "soyuz/repres/Representation.h"
+
+#include "soyuz/api/MIRJob.h"
+
 
 MIRJob::MIRJob() {
 }
 
+
 MIRJob::~MIRJob() {
 }
 
-void MIRJob::execute(MIRInput& input, MIROutput& output) const {
+
+void MIRJob::execute(mir::input::MIRInput& input, mir::output::MIROutput& output) const {
     // Optimisation: nothing to do, usefull for MARS
     if(settings_.size() == 0) {
         eckit::Log::info() << "Nothing to do (no request)" << std::endl;
@@ -57,16 +69,16 @@ void MIRJob::execute(MIRInput& input, MIROutput& output) const {
     MIRCombinedParametrisation combined(*this, metadata, configuration, defaults);
     eckit::Log::info() << "        Combined: " << combined << std::endl;
 
-    std::auto_ptr<MIRLogic> logic(MIRLogicFactory::build(combined));
+    std::auto_ptr< mir::logic::MIRLogic > logic(mir::logic::MIRLogicFactory::build(combined));
 
     eckit::Log::info() << "Logic: " << *logic << std::endl;
 
-    std::vector<std::auto_ptr<Action> > actions;
+    std::vector<std::auto_ptr< mir::action::Action > > actions;
     logic->prepare(actions);
 
     eckit::Log::info() << "Actions are: " << std::endl;
     std::string arrow = "   ";
-    for(std::vector<std::auto_ptr<Action> >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
+    for(std::vector<std::auto_ptr< mir::action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
         eckit::Log::info() << arrow << *(*j);
         arrow = " => ";
     }
@@ -76,10 +88,10 @@ void MIRJob::execute(MIRInput& input, MIROutput& output) const {
     eckit::Log::info() << "Field is " << *field << std::endl;
 
     // Add Grid to field
-    field->representation(RepresentationFactory::build(metadata));
+    field->representation(mir::repres::RepresentationFactory::build(metadata));
     eckit::Log::info() << "Representation is " << *(field->representation()) << std::endl;
 
-    for(std::vector<std::auto_ptr<Action> >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
+    for(std::vector<std::auto_ptr< mir::action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
         eckit::Log::info() << "Execute: " << *(*j) << std::endl;
         (*j)->execute(*field);
     }
@@ -87,6 +99,7 @@ void MIRJob::execute(MIRInput& input, MIROutput& output) const {
     output.save(*this, input, *field);
 
 }
+
 
 void MIRJob::print(std::ostream& out) const {
     out << "MIRJob[";
@@ -99,10 +112,12 @@ void MIRJob::print(std::ostream& out) const {
     out << "]";
 }
 
+
 void MIRJob::set(const std::string& name, const std::string& value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] =  [" << value << "]" << std::endl;
     settings_[name] = value;
 }
+
 
 bool MIRJob::get(const std::string& name, std::string& value) const {
     std::map<std::string, std::string>::const_iterator j = settings_.find(name);
@@ -112,6 +127,7 @@ bool MIRJob::get(const std::string& name, std::string& value) const {
     }
     return false;
 }
+
 
 bool MIRJob::matches(const MIRParametrisation& metadata) const {
 
@@ -144,3 +160,4 @@ bool MIRJob::matches(const MIRParametrisation& metadata) const {
 
     return true;
 }
+

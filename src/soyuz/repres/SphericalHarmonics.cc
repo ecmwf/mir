@@ -1,16 +1,33 @@
-// File SphericalHarmonics.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "soyuz/repres/SphericalHarmonics.h"
-
-#include "soyuz/param/MIRParametrisation.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/utils/Translator.h"
-#include "eckit/log/Log.h"
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 
 #include <iostream>
+
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
+#include "eckit/utils/Translator.h"
+
+#include "soyuz/param/MIRParametrisation.h"
 #include "soyuz/util/Grib.h"
+
+#include "soyuz/repres/SphericalHarmonics.h"
+
+
+namespace mir {
+namespace repres {
+
 
 SphericalHarmonics::SphericalHarmonics(const MIRParametrisation &parametrisation) {
 
@@ -21,6 +38,7 @@ SphericalHarmonics::SphericalHarmonics(const MIRParametrisation &parametrisation
     truncation_ = s2d(value);
 
 }
+
 
 SphericalHarmonics::SphericalHarmonics(size_t truncation):
     truncation_(truncation) {
@@ -46,6 +64,7 @@ void SphericalHarmonics::fill(grib_info &info) const  {
     // info.packing.laplacianOperator = 0;
     info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX; // Check if this is needed, why does grib_api not copy input?
 }
+
 
 Representation *SphericalHarmonics::truncate(size_t truncation,
         const std::vector<double> &in, std::vector<double> &out) const {
@@ -110,4 +129,11 @@ Representation *SphericalHarmonics::truncate(size_t truncation,
 }
 
 
+namespace {
 static RepresentationBuilder<SphericalHarmonics> sphericalHarmonics("sh"); // Name is what is returned by grib_api
+}
+
+
+}  // namespace repres
+}  // namespace mir
+

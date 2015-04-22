@@ -116,6 +116,7 @@ class MethodWeighted :
 
 };
 
+
 }  // namespace method
 }  // namespace mir
 #endif

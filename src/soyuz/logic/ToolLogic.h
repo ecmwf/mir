@@ -1,11 +1,27 @@
-// File ToolLogic.h
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
 
 #ifndef ToolLogic_H
 #define ToolLogic_H
 
-
 #include "soyuz/logic/MIRLogic.h"
+
+
+namespace mir {
+namespace logic {
+
 
 class ToolLogic : public MIRLogic {
   public:
@@ -67,7 +83,7 @@ class ToolLogic : public MIRLogic {
 
 // -- Members
 
-    virtual void prepare(std::vector<std::auto_ptr<Action> >&) const;
+    virtual void prepare(std::vector<std::auto_ptr< action::Action > >&) const;
 
 // -- Methods
     // None
@@ -88,4 +104,8 @@ class ToolLogic : public MIRLogic {
 
 };
 
+
+}  // namespace logic
+}  // namespace mir
 #endif
+

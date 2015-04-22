@@ -1,17 +1,31 @@
-// File Representation.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "soyuz/repres/Representation.h"
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
+
+#include "eckit/exception/Exceptions.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/thread/Once.h"
+
 #include "soyuz/param/MIRParametrisation.h"
 
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Once.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/exception/Exceptions.h"
+#include "soyuz/repres/Representation.h"
 
 
-//-----------------------------------------------------------------------------
+namespace mir {
+namespace repres {
+namespace {
 
 
 static eckit::Mutex *local_mutex = 0;
@@ -24,13 +38,17 @@ static void init() {
     m = new std::map<std::string, RepresentationFactory *>();
 }
 
-//-----------------------------------------------------------------------------
+
+}  // (anonymous namespace)
+
 
 Representation::Representation() {
 }
 
+
 Representation::~Representation() {
 }
+
 
 void Representation::fill(grib_info &) const {
     eckit::StrStream os;
@@ -46,6 +64,7 @@ Representation *Representation::crop(double north, double west, double south, do
     throw eckit::SeriousBug(std::string(os));
 }
 
+
 Representation *Representation::truncate(size_t truncation,
         const std::vector<double> &, std::vector<double> &) const {
     eckit::StrStream os;
@@ -53,13 +72,13 @@ Representation *Representation::truncate(size_t truncation,
     throw eckit::SeriousBug(std::string(os));
 }
 
+
 size_t Representation::frame(std::vector<double> &values, size_t size, double missingValue) const {
     eckit::StrStream os;
     os << "Representation::frame() not implemented for " << *this << eckit::StrStream::ends;
     throw eckit::SeriousBug(std::string(os));
 }
 
-//-----------------------------------------------------------------------------
 
 RepresentationFactory::RepresentationFactory(const std::string &name):
     name_(name) {
@@ -72,11 +91,13 @@ RepresentationFactory::RepresentationFactory(const std::string &name):
     (*m)[name] = this;
 }
 
+
 RepresentationFactory::~RepresentationFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
 
 }
+
 
 Representation *RepresentationFactory::build(const MIRParametrisation &params) {
 
@@ -105,4 +126,7 @@ Representation *RepresentationFactory::build(const MIRParametrisation &params) {
     return (*j).second->make(params);
 }
 
+
+}  // namespace repres
+}  // namespace mir
 

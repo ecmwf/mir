@@ -1,3 +1,20 @@
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
+
+#include <memory>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/runtime/LibBehavior.h"
@@ -11,9 +28,8 @@ typedef double fortfloat;
 #include "soyuz/output/GribMemoryOutput.h"
 
 
-#include <memory>
-
 std::auto_ptr<MIRJob> job(0);
+
 
 extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const char *value, fortint, fortint) {
 
@@ -161,8 +177,8 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
             job.reset(new MIRJob());
         }
 
-        GribMemoryInput input(grib_in, *length_in);
-        GribMemoryOutput output(grib_out, *length_out);
+        mir::input::GribMemoryInput input(grib_in, *length_in);
+        mir::output::GribMemoryOutput output(grib_out, *length_out);
 
         job->execute(input, output);
 
@@ -414,9 +430,11 @@ extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fort
     return 0;
 }
 
+
 extern "C" fortint emosnum_(fortint *value) {
 
     eckit::Log::info() << "++++++ emosnum" << std::endl;
     *value = 0;
     return 42424242;
 }
+

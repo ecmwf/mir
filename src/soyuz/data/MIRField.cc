@@ -1,12 +1,25 @@
-// File MIRField.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
+
+#include <iostream>
+
+#include "eckit/exception/Exceptions.h"
 
 #include "soyuz/data/MIRField.h"
 #include "soyuz/repres/Representation.h"
 
-#include "eckit/exception/Exceptions.h"
-
-#include <iostream>
 
 MIRField::MIRField(bool hasMissing, double missingValue):
     values_(),
@@ -15,14 +28,17 @@ MIRField::MIRField(bool hasMissing, double missingValue):
     representation_(0) {
 }
 
+
 // Warning: take ownership of values
 void MIRField::values(std::vector<double>& values) {
     std::swap(values_, values);
 }
 
+
 MIRField::~MIRField() {
     delete representation_;
 }
+
 
 void MIRField::print(std::ostream& out) const {
     out << "MIRField[values=" << values_.size();
@@ -32,12 +48,15 @@ void MIRField::print(std::ostream& out) const {
     out << "]";
 }
 
-const Representation* MIRField::representation() const {
+
+const mir::repres::Representation* MIRField::representation() const {
     ASSERT(representation_);
     return representation_;
 }
 
-void MIRField::representation(Representation* representation) {
+
+void MIRField::representation(mir::repres::Representation* representation) {
     delete representation_;
     representation_ = representation;
 }
+

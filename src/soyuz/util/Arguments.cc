@@ -11,14 +11,15 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include <string>
 
-#include "eckit/parser/Tokenizer.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/parser/StringTools.h"
-#include "eckit/utils/Translator.h"
 #include "eckit/memory/Factory.h"
+#include "eckit/parser/StringTools.h"
+#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Translator.h"
 
 #include "soyuz/util/Arguments.h"
 
@@ -302,11 +303,12 @@ std::vector< Arguments::argument_option_t > Arguments::get_long_options(
 }
 
 
+// register default mode
+namespace {
+eckit::ConcreteBuilderT0< Arguments::argmode_t, Arguments::argmode_t > __Arguments_argmode;
+}
+
+
 }  // namespace util
 }  // namespace mir
 
-
-// register default mode
-namespace {
-eckit::ConcreteBuilderT0< mir::util::Arguments::argmode_t, mir::util::Arguments::argmode_t > __Arguments_argmode;
-}

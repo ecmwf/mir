@@ -22,7 +22,9 @@
 #include "eckit/exception/Exceptions.h"
 
 
-//-----------------------------------------------------------------------------
+namespace mir {
+namespace method {
+namespace {
 
 
 static eckit::Mutex *local_mutex = 0;
@@ -35,15 +37,17 @@ static void init() {
     m = new std::map<std::string, MethodFactory *>();
 }
 
-//-----------------------------------------------------------------------------
+
+}  // (unnamed namespace)
+
 
 Method::Method() {
 }
 
+
 Method::~Method() {
 }
 
-//-----------------------------------------------------------------------------
 
 MethodFactory::MethodFactory(const std::string &name):
     name_(name) {
@@ -56,11 +60,13 @@ MethodFactory::MethodFactory(const std::string &name):
     (*m)[name] = this;
 }
 
+
 MethodFactory::~MethodFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
 
 }
+
 
 Method *MethodFactory::build(const std::string &name, const MIRParametrisation& params) {
 
@@ -83,3 +89,5 @@ Method *MethodFactory::build(const std::string &name, const MIRParametrisation& 
 }
 
 
+}  // namespace method
+}  // namespace mir

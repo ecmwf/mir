@@ -1,16 +1,33 @@
-// File RegularLL.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "soyuz/repres/RegularLL.h"
-
-#include "soyuz/param/MIRParametrisation.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/utils/Translator.h"
-#include "eckit/log/Log.h"
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 
 #include <iostream>
+
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
+#include "eckit/utils/Translator.h"
+
+#include "soyuz/param/MIRParametrisation.h"
 #include "soyuz/util/Grib.h"
+
+#include "soyuz/repres/RegularLL.h"
+
+
+namespace mir {
+namespace repres {
+
 
 RegularLL::RegularLL(const MIRParametrisation &parametrisation) {
 
@@ -38,6 +55,7 @@ RegularLL::RegularLL(const MIRParametrisation &parametrisation) {
     setNiNj();
 }
 
+
 RegularLL::RegularLL(double north,
                      double west,
                      double south,
@@ -57,6 +75,7 @@ RegularLL::RegularLL(double north,
 RegularLL::~RegularLL() {
 }
 
+
 void RegularLL::setNiNj() {
     double ni = (east_ - west_) / west_east_increment_;
     ASSERT(ni > 0);
@@ -68,6 +87,7 @@ void RegularLL::setNiNj() {
     ASSERT(long(nj) == nj);
     nj_ = nj + 1;
 }
+
 
 void RegularLL::print(std::ostream &out) const {
     out << "RegularLL["
@@ -105,6 +125,7 @@ void RegularLL::fill(grib_info &info) const  {
     info.grid.latitudeOfFirstGridPointInDegrees = north_;
     info.grid.latitudeOfLastGridPointInDegrees = south_;
 }
+
 
 Representation *RegularLL::crop(double north, double west, double south, double east, const std::vector<double> &in, std::vector<double> &out) const {
     // TODO: An Area class and Increments class
@@ -149,6 +170,7 @@ Representation *RegularLL::crop(double north, double west, double south, double 
     return cropped;
 }
 
+
 size_t RegularLL::frame(std::vector<double> &values, size_t size, double missingValue) const {
 
     // Could be done better, just a demo
@@ -172,4 +194,11 @@ size_t RegularLL::frame(std::vector<double> &values, size_t size, double missing
 }
 
 
+namespace {
 static RepresentationBuilder<RegularLL> regularLL("regular_ll"); // Name is what is returned by grib_api
+}
+
+
+}  // namespace repres
+}  // namespace mir
+

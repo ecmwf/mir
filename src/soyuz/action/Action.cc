@@ -1,7 +1,16 @@
-// File Action.cc
-// Baudouin Raoult - (c) ECMWF Apr 15
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "soyuz/action/Action.h"
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 
 #include "eckit/thread/AutoLock.h"
@@ -9,7 +18,12 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
 
-//-----------------------------------------------------------------------------
+#include "soyuz/action/Action.h"
+
+
+namespace mir {
+namespace action {
+namespace {
 
 
 static eckit::Mutex *local_mutex = 0;
@@ -22,16 +36,18 @@ static void init() {
     m = new std::map<std::string,ActionFactory*>();
 }
 
-//-----------------------------------------------------------------------------
+
+}  // (anonymous namespace)
+
 
 Action::Action(const MIRParametrisation& parametrisation):
     parametrisation_(parametrisation) {
 }
 
+
 Action::~Action() {
 }
 
-//-----------------------------------------------------------------------------
 
 ActionFactory::ActionFactory(const std::string& name):
     name_(name) {
@@ -44,11 +60,13 @@ ActionFactory::ActionFactory(const std::string& name):
     (*m)[name] = this;
 }
 
+
 ActionFactory::~ActionFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
 
 }
+
 
 Action* ActionFactory::build(const std::string& name, const MIRParametrisation& params) {
 
@@ -69,4 +87,8 @@ Action* ActionFactory::build(const std::string& name, const MIRParametrisation& 
 
     return (*j).second->make(params);
 }
+
+
+}  // namespace action
+}  // namespace mir
 
