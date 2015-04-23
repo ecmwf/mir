@@ -23,8 +23,12 @@
 
 
 namespace mir {
-namespace action { class Action; }
-namespace param { class MIRParametrisation; }
+namespace action {
+class Action;
+}
+namespace param {
+class MIRParametrisation;
+}
 namespace logic {
 
 

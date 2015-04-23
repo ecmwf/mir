@@ -29,7 +29,9 @@ struct grib_info;
 
 
 namespace mir {
-namespace param { class MIRParametrisation; }
+namespace param {
+class MIRParametrisation;
+}
 namespace repres {
 
 

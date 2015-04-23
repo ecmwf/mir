@@ -17,15 +17,18 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Translator.h"
 
-#include "atlas/GridSpec.h"
+#include "soyuz/repres/RegularLL.h"
+#include "soyuz/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace action {
 
 
-Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametrisation):
+Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation &parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
 }
 
@@ -34,14 +37,28 @@ Gridded2RegularLL::~Gridded2RegularLL() {
 }
 
 
-void Gridded2RegularLL::print(std::ostream& out) const {
+void Gridded2RegularLL::print(std::ostream &out) const {
     out << "Gridded2RegularLL[]";
 }
 
 
-atlas::GridSpec Gridded2RegularLL::outputGridSpec(const atlas::GridSpec& inputGridSpec) const {
-   atlas::GridSpec result(inputGridSpec);
-   return result;
+repres::Representation *Gridded2RegularLL::outputRepresentation(const repres::Representation *inputRepres) const {
+    eckit::Translator<std::string, double> s2d;
+    std::string value;
+
+    ASSERT(parametrisation_.get("grid", value));
+
+    eckit::Tokenizer parse("/");
+
+    std::vector<std::string> s;
+    parse(value, s);
+
+    ASSERT(s.size() == 2);
+
+    double we = s2d(s[0]);
+    double ns = s2d(s[1]);
+
+    return new repres::RegularLL(90, 0, -90, 360 - we, ns, we);
 }
 
 

@@ -24,8 +24,12 @@ typedef struct grib_handle grib_handle;
 
 
 namespace mir {
-namespace data { class MIRField; }
-namespace param { class MIRParametrisation; }
+namespace data {
+class MIRField;
+}
+namespace param {
+class MIRParametrisation;
+}
 namespace input {
 
 

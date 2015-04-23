@@ -18,8 +18,6 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "atlas/GridSpec.h"
-
 
 namespace mir {
 namespace action {
@@ -39,8 +37,8 @@ void Gridded2RegularGG::print(std::ostream& out) const {
 }
 
 
-atlas::GridSpec Gridded2RegularGG::outputGridSpec(const atlas::GridSpec& inputGridSpec) const {
-   NOTIMP;
+repres::Representation* Gridded2RegularGG::outputRepresentation(const repres::Representation* inputRepres) const {
+    NOTIMP;
 }
 
 

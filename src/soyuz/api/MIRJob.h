@@ -25,8 +25,12 @@
 
 
 namespace mir {
-namespace input { class MIRInput; }
-namespace output { class MIROutput; }
+namespace input {
+class MIRInput;
+}
+namespace output {
+class MIROutput;
+}
 namespace api {
 
 

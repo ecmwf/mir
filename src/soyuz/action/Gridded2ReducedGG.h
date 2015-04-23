@@ -88,7 +88,7 @@ class Gridded2ReducedGG : public Gridded2GriddedInterpolation {
 // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual atlas::GridSpec outputGridSpec(const atlas::GridSpec& inputGridSpec) const;
+    virtual repres::Representation* outputRepresentation(const repres::Representation* inputRepres) const;
 
 // -- Class members
     // None

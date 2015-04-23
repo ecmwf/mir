@@ -26,24 +26,29 @@ namespace repres {
 class RegularLL : public Gridded {
   public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
-    RegularLL(const param::MIRParametrisation&);
+    RegularLL(const param::MIRParametrisation &);
 
-// -- Destructor
+    RegularLL(double north, double west, double south, double east,
+              double north_south_increment,
+              double west_east_increment);
+
+
+    // -- Destructor
 
     virtual ~RegularLL(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
     size_t ni() const {
         return ni_;
@@ -52,43 +57,42 @@ class RegularLL : public Gridded {
         return nj_;
     }
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream &) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   private:
 
-    RegularLL(double north, double west, double south, double east, double north_south_increment, double west_east_increment);
 
-// No copy allowed
+    // No copy allowed
 
-    RegularLL(const RegularLL&);
-    RegularLL& operator=(const RegularLL&);
+    RegularLL(const RegularLL &);
+    RegularLL &operator=(const RegularLL &);
 
-// -- Members
+    // -- Members
 
     double north_;
     double west_;
@@ -101,28 +105,28 @@ class RegularLL : public Gridded {
     size_t ni_;
     size_t nj_;
 
-// -- Methods
+    // -- Methods
     // None
 
     void setNiNj();
 
-// -- Overridden methods
+    // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual Representation* crop(double north, double west, double south, double east, const std::vector<double>&, std::vector<double>&) const;
+    virtual void fill(grib_info &) const;
+    virtual Representation *crop(double north, double west, double south, double east, const std::vector<double> &, std::vector<double> &) const;
     virtual atlas::GridSpec gridSpec() const;
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const RegularLL& p)
-    //	{ p.print(s); return s; }
+    //  { p.print(s); return s; }
 
 };
 

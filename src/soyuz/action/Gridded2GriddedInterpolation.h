@@ -18,11 +18,12 @@
 
 #include "soyuz/action/Action.h"
 
-namespace atlas {
-class GridSpec;
+namespace mir {
+
+namespace repres {
+class Representation;
 }
 
-namespace mir {
 namespace action {
 
 
@@ -88,7 +89,7 @@ class Gridded2GriddedInterpolation : public Action {
 
 // -- Methods
 
-    virtual atlas::GridSpec outputGridSpec(const atlas::GridSpec& inputGridSpec) const = 0;
+    virtual repres::Representation* outputRepresentation(const repres::Representation* inputRepres) const = 0;
 
 // -- Overridden methods
 

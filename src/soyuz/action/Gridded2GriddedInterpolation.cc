@@ -12,11 +12,9 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "soyuz/action/Gridded2GriddedInterpolation.h"
 
-#include <iostream>
 #include <memory>
-
-#include "eckit/exception/Exceptions.h"
 
 #include "atlas/GridSpec.h"
 
@@ -25,14 +23,13 @@
 #include "soyuz/param/MIRParametrisation.h"
 #include "soyuz/repres/Representation.h"
 
-#include "soyuz/action/Gridded2GriddedInterpolation.h"
 
 
 namespace mir {
 namespace action {
 
 
-Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation& parametrisation):
+Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 }
 
@@ -41,16 +38,16 @@ Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 }
 
 
-void Gridded2GriddedInterpolation::execute(data::MIRField& field) const {
-//    NOTIMP;
+void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
+    //    NOTIMP;
 
     std::string name = "method.finite-element";
 
     // Here we need some ugly logic again
-    if(0) {
+    if (0) {
         std::string param;
         ASSERT(parametrisation_.get("param", param));
-        if(param == "large_scale_precipitation") { // This should be a lookup in a config file somewhere
+        if (param == "large_scale_precipitation") { // This should be a lookup in a config file somewhere
             name = "method.mass-conserving";
         }
     }
@@ -58,14 +55,26 @@ void Gridded2GriddedInterpolation::execute(data::MIRField& field) const {
     std::auto_ptr< method::Method > method(method::MethodFactory::build(name, parametrisation_));
     eckit::Log::info() << "method is " << *method << std::endl;
 
-    // TODO: We should not copy those things around
-    atlas::GridSpec inspec  = field.representation()->gridSpec();
-    atlas::GridSpec outspec = outputGridSpec(inspec);
+    const repres::Representation *in = field.representation();
+    repres::Representation *out = outputRepresentation(field.representation());
 
-    eckit::Log::info() << "ingrid  = " << inspec  << std::endl;
-    eckit::Log::info() << "outgrid = " << outspec << std::endl;
+    try {
+        // TODO: We should not copy those things around
 
-    method->execute(field, inspec, outspec);
+        atlas::GridSpec inspec  = in->gridSpec();
+        atlas::GridSpec outspec = out->gridSpec();
+
+        eckit::Log::info() << "ingrid  = " << inspec  << std::endl;
+        eckit::Log::info() << "outgrid = " << outspec << std::endl;
+
+        method->execute(field, inspec, outspec);
+
+    } catch (...) {
+        delete out;
+        throw;
+    }
+
+    field.representation(out);
 
 }
 

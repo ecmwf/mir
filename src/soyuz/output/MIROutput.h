@@ -20,9 +20,15 @@
 
 
 namespace mir {
-namespace data { class MIRField; }
-namespace input { class MIRInput; }
-namespace param { class MIRParametrisation; }
+namespace data {
+class MIRField;
+}
+namespace input {
+class MIRInput;
+}
+namespace param {
+class MIRParametrisation;
+}
 namespace output {
 
 
