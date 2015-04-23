@@ -22,7 +22,9 @@
 
 
 namespace mir {
-namespace util { class Bitmap; }
+namespace util {
+class Bitmap;
+}
 namespace action {
 
 

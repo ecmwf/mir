@@ -9,6 +9,14 @@ list( APPEND mir_srcs
       action/FrameFilter.h
       action/Gridded2GriddedInterpolation.cc
       action/Gridded2GriddedInterpolation.h
+      action/Gridded2ReducedGG.cc
+      action/Gridded2ReducedGG.h
+      action/Gridded2ReducedLL.cc
+      action/Gridded2ReducedLL.h
+      action/Gridded2RegularGG.cc
+      action/Gridded2RegularGG.h
+      action/Gridded2RegularLL.cc
+      action/Gridded2RegularLL.h
       action/NullAction.cc
       action/NullAction.h
       action/Sh2GriddedTransform.cc
@@ -138,8 +146,7 @@ list( APPEND mir_srcs
       util/Arguments.h
       util/Bitmap.cc
       util/Bitmap.h
-      util/Grib.h
-    )
+      util/Grib.h)
 
 
 ecbuild_add_library(

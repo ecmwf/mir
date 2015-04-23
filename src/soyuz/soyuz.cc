@@ -53,7 +53,7 @@ void MIRDemo::run() {
         return;
     }
 
-    if (1) {
+    if (0) {
         mir::api::MIRJob job;
 
         job.set("area", "80/0/35/45");
@@ -72,6 +72,19 @@ void MIRDemo::run() {
     if (1) {
         mir::api::MIRJob job;
 
+        job.set("grid", "10/10");
+
+        mir::input::GribFileInput input("test.grib");
+        mir::output::GribFileOutput output("ll.grib");
+
+        while (input.next()) {
+            job.execute(input, output);
+        }
+    }
+
+    if (0) {
+        mir::api::MIRJob job;
+
         job.set("accuracy", "24");
         job.set("frame", "10");
 
@@ -82,7 +95,7 @@ void MIRDemo::run() {
 
     }
 
-    if (1) {
+    if (0) {
         mir::api::MIRJob job;
 
         job.set("accuracy", "24");
@@ -95,7 +108,7 @@ void MIRDemo::run() {
 
     }
 
-    if (1) {
+    if (0) {
         mir::api::MIRJob job;
 
         job.set("accuracy", "24");
@@ -108,7 +121,7 @@ void MIRDemo::run() {
 
     }
 
-    if (1) {
+    if (0) {
         mir::api::MIRJob job;
 
         job.set("logic", "tool");

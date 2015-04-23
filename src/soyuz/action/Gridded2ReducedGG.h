@@ -13,20 +13,16 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded2GriddedInterpolation_H
-#define Gridded2GriddedInterpolation_H
+#ifndef Gridded2ReducedGG_H
+#define Gridded2ReducedGG_H
 
-#include "soyuz/action/Action.h"
-
-namespace atlas {
-class GridSpec;
-}
+#include "soyuz/action/Gridded2GriddedInterpolation.h"
 
 namespace mir {
 namespace action {
 
 
-class Gridded2GriddedInterpolation : public Action {
+class Gridded2ReducedGG : public Gridded2GriddedInterpolation {
   public:
 
 // -- Exceptions
@@ -34,11 +30,11 @@ class Gridded2GriddedInterpolation : public Action {
 
 // -- Contructors
 
-    Gridded2GriddedInterpolation(const param::MIRParametrisation&);
+    Gridded2ReducedGG(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~Gridded2GriddedInterpolation(); // Change to virtual if base class
+    virtual ~Gridded2ReducedGG(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -65,7 +61,7 @@ class Gridded2GriddedInterpolation : public Action {
 
 // -- Methods
 
-    // void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
     // None
@@ -80,19 +76,19 @@ class Gridded2GriddedInterpolation : public Action {
 
 // No copy allowed
 
-    Gridded2GriddedInterpolation(const Gridded2GriddedInterpolation&);
-    Gridded2GriddedInterpolation& operator=(const Gridded2GriddedInterpolation&);
+    Gridded2ReducedGG(const Gridded2ReducedGG&);
+    Gridded2ReducedGG& operator=(const Gridded2ReducedGG&);
 
 // -- Members
     // None
 
 // -- Methods
-
-    virtual atlas::GridSpec outputGridSpec(const atlas::GridSpec& inputGridSpec) const = 0;
+    // None
 
 // -- Overridden methods
 
-    virtual void execute(data::MIRField&) const;
+    // From Gridded2GriddedInterpolation
+    virtual atlas::GridSpec outputGridSpec(const atlas::GridSpec& inputGridSpec) const;
 
 // -- Class members
     // None
@@ -102,7 +98,7 @@ class Gridded2GriddedInterpolation : public Action {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Gridded2GriddedInterpolation& p)
+    //friend ostream& operator<<(ostream& s,const Gridded2ReducedGG& p)
     //	{ p.print(s); return s; }
 
 };

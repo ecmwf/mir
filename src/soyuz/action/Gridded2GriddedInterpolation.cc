@@ -41,11 +41,6 @@ Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 }
 
 
-void Gridded2GriddedInterpolation::print(std::ostream& out) const {
-    out << "Gridded2GriddedInterpolation[]";
-}
-
-
 void Gridded2GriddedInterpolation::execute(data::MIRField& field) const {
 //    NOTIMP;
 
@@ -56,33 +51,22 @@ void Gridded2GriddedInterpolation::execute(data::MIRField& field) const {
         std::string param;
         ASSERT(parametrisation_.get("param", param));
         if(param == "large_scale_precipitation") { // This should be a lookup in a config file somewhere
-            name = "mass_conserving";
+            name = "method.mass-conserving";
         }
     }
 
     std::auto_ptr< method::Method > method(method::MethodFactory::build(name, parametrisation_));
-    eckit::Log::info() << "method is '" << *method << "'" << std::endl;
+    eckit::Log::info() << "method is " << *method << std::endl;
 
+    // TODO: We should not copy those things around
+    atlas::GridSpec inspec  = field.representation()->gridSpec();
+    atlas::GridSpec outspec = outputGridSpec(inspec);
 
-    atlas::GridSpec
-            inspec  = field.representation()->gridSpec(),
-            outspec = inspec;
     eckit::Log::info() << "ingrid  = " << inspec  << std::endl;
     eckit::Log::info() << "outgrid = " << outspec << std::endl;
 
+    method->execute(field, inspec, outspec);
 
-
-    method->execute(field,inspec,outspec);
-
-    // TODO: Use Representation and MIRfield to create Atlas structures
-    // TODO: Connect "Methods" and "mir/Weigths"
-
-
-}
-
-
-namespace {
-static ActionBuilder< Gridded2GriddedInterpolation > grid2grid("interpolate.grid2grid");
 }
 
 

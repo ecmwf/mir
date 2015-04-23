@@ -61,7 +61,7 @@ void MARSLogic::prepare(std::vector<std::auto_ptr< action::Action > > &actions) 
 
     if (parametrisation_.has("field.gridded")) {
         if (parametrisation_.has("user.grid")) {
-            add(actions, "interpolate.grid2grid");
+            add(actions, "interpolate.grid2regular-ll");
         }
     }
 

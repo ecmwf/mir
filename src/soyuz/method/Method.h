@@ -25,8 +25,12 @@ class GridSpec;
 }
 
 namespace mir {
-namespace data { class MIRField; }
-namespace param { class MIRParametrisation; }
+namespace data {
+class MIRField;
+}
+namespace param {
+class MIRParametrisation;
+}
 namespace method {
 
 
