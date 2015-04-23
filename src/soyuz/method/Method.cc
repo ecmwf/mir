@@ -12,9 +12,9 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "soyuz/method/Method.h"
 #include "soyuz/param/MIRParametrisation.h"
-
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Once.h"
@@ -41,7 +41,8 @@ static void init() {
 }  // (unnamed namespace)
 
 
-Method::Method() {
+Method::Method(const param::MIRParametrisation& params) :
+    parametrisation_(params) {
 }
 
 
@@ -85,7 +86,7 @@ Method *MethodFactory::build(const std::string &name, const param::MIRParametris
         throw eckit::SeriousBug(std::string("No MethodFactory called ") + name);
     }
 
-    return (*j).second->make(name,params);
+    return (*j).second->make(params);
 }
 
 

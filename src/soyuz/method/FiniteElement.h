@@ -9,7 +9,9 @@
  */
 
 /// @author Tiago Quintino
-/// @date Mar 2014
+/// @author Pedro Maciel
+/// @date Apr 2015
+
 
 #ifndef soyuz_method_FiniteElement_H
 #define soyuz_method_FiniteElement_H
@@ -35,11 +37,9 @@ class FiniteElement: public MethodWeighted {
     // None
 
 // -- Contructors
-
-    FiniteElement(const param::MIRParametrisation& param);
+    FiniteElement(const param::MIRParametrisation&);
 
 // -- Destructor
-
     virtual ~FiniteElement();
 
 // -- Convertors

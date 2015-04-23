@@ -20,6 +20,10 @@
 #include <string>
 
 
+namespace atlas {
+class GridSpec;
+}
+
 namespace mir {
 namespace data { class MIRField; }
 namespace param { class MIRParametrisation; }
@@ -33,12 +37,10 @@ class Method {
     // None
 
 // -- Contructors
-
-    Method();
+    Method(const param::MIRParametrisation&);
 
 // -- Destructor
-
-    virtual ~Method(); // Change to virtual if base class
+    virtual ~Method();
 
 // -- Convertors
     // None
@@ -47,12 +49,7 @@ class Method {
     // None
 
 // -- Methods
-
-    virtual void execute(data::MIRField&) const = 0;
-
-    const std::string& name() const {
-        return name_;
-    }
+    virtual void execute(data::MIRField&, const atlas::GridSpec&, const atlas::GridSpec&) const = 0;
 
 // -- Overridden methods
     // None
@@ -66,6 +63,7 @@ class Method {
   protected:
 
 // -- Members
+    const param::MIRParametrisation& parametrisation_;
 
 
 // -- Methods
@@ -89,13 +87,7 @@ class Method {
     Method& operator=(const Method&);
 
 // -- Members
-
-    // name created methods, allowing builder to name them
-    std::string name_;
-    std::string& name() {
-        return name_;
-    }
-    template< class T > friend class MethodBuilder;
+    // None
 
 // -- Methods
     // None
@@ -121,7 +113,7 @@ class Method {
 
 class MethodFactory {
     std::string name_;
-    virtual Method* make(const std::string&, const param::MIRParametrisation&) = 0 ;
+    virtual Method* make(const param::MIRParametrisation&) = 0;
 
   protected:
 
@@ -129,17 +121,16 @@ class MethodFactory {
     virtual ~MethodFactory();
 
   public:
+
     static Method* build(const std::string&, const param::MIRParametrisation&);
 
 };
 
 
-template< class T >
+template< class T>
 class MethodBuilder : public MethodFactory {
-    virtual Method* make(const std::string& name, const param::MIRParametrisation& param) {
-        T* baby = new T(param);
-        baby->name() = name;
-        return baby;
+    virtual Method* make(const param::MIRParametrisation& param) {
+        return new T(param);
     }
   public:
     MethodBuilder(const std::string& name) : MethodFactory(name) {}

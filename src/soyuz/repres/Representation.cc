@@ -18,6 +18,8 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 
+#include "atlas/GridSpec.h"
+
 #include "soyuz/param/MIRParametrisation.h"
 
 #include "soyuz/repres/Representation.h"
@@ -69,6 +71,13 @@ Representation *Representation::truncate(size_t truncation,
         const std::vector<double> &, std::vector<double> &) const {
     eckit::StrStream os;
     os << "Representation::truncate() not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
+
+
+atlas::GridSpec Representation::gridSpec() const {
+    eckit::StrStream os;
+    os << "Representation::gridSpec() not implemented for " << *this << eckit::StrStream::ends;
     throw eckit::SeriousBug(std::string(os));
 }
 

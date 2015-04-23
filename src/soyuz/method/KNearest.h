@@ -8,11 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date Apr 2015
+
+
 #ifndef soyuz_method_KNearest_H
 #define soyuz_method_KNearest_H
 
 #include "soyuz/method/MethodWeighted.h"
-#include "soyuz/method/PointSearch.h"
 
 
 namespace mir {
@@ -26,11 +30,9 @@ class KNearest: public MethodWeighted {
     // None
 
 // -- Contructors
-
-    KNearest(const param::MIRParametrisation& param);
+    KNearest(const param::MIRParametrisation&);
 
 // -- Destructor
-
     virtual ~KNearest();
 
 // -- Convertors
@@ -54,14 +56,10 @@ class KNearest: public MethodWeighted {
   protected:
 
 // -- Members
-    size_t nclosest_;  ///< Number of closest points to search for
-    mutable eckit::ScopedPtr<PointSearch> sptree_;
+    // None
 
 // -- Methods
-
-    virtual void print(std::ostream&) const;
-
-    void build_sptree( atlas::Grid& in ) const;
+    // None
 
 // -- Overridden methods
     // None
@@ -74,17 +72,15 @@ class KNearest: public MethodWeighted {
 
   private:
 
-// -- Members
-    mutable atlas::Grid::uid_t uid_;
-
 // -- Methods
-    // None
+    virtual void print(std::ostream&) const;
 
 // -- Overridden methods
     // None
 
 // -- Class members
-    // None
+    size_t nclosest_;  ///< Number of closest points to search for
+    double epsilon_;
 
 // -- Class methods
     // None

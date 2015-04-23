@@ -36,11 +36,9 @@ class Bilinear: public MethodWeighted {
     // None
 
 // -- Contructors
-
-    Bilinear(const param::MIRParametrisation& param);
+    Bilinear(const param::MIRParametrisation&);
 
 // -- Destructor
-
     virtual ~Bilinear();
 
 // -- Convertors

@@ -17,7 +17,10 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
+#include "eckit/parser/JSON.h"
 #include "eckit/utils/Translator.h"
+
+#include "atlas/GridSpec.h"
 
 #include "soyuz/param/MIRParametrisation.h"
 #include "soyuz/util/Grib.h"
@@ -168,6 +171,18 @@ Representation *RegularLL::crop(double north, double west, double south, double 
     ASSERT(p == in.size());
 
     return cropped;
+}
+
+
+atlas::GridSpec RegularLL::gridSpec() const {
+    atlas::GridSpec gs("regular_ll");
+    gs.set("nlat",ni_);
+    gs.set("nlon",nj_);
+    gs.set("bbox_s",south_);
+    gs.set("bbox_n",north_);
+    gs.set("bbox_e",east_);
+    gs.set("bbox_w",west_);
+    return gs;
 }
 
 

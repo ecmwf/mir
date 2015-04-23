@@ -18,8 +18,12 @@
 
 #include "eckit/exception/Exceptions.h"
 
+#include "atlas/GridSpec.h"
+
+#include "soyuz/data/MIRField.h"
 #include "soyuz/method/Method.h"
 #include "soyuz/param/MIRParametrisation.h"
+#include "soyuz/repres/Representation.h"
 
 #include "soyuz/action/Gridded2GriddedInterpolation.h"
 
@@ -43,9 +47,9 @@ void Gridded2GriddedInterpolation::print(std::ostream& out) const {
 
 
 void Gridded2GriddedInterpolation::execute(data::MIRField& field) const {
-    NOTIMP;
+//    NOTIMP;
 
-    std::string name = "bilinear";
+    std::string name = "method.finite-element";
 
     // Here we need some ugly logic again
     if(0) {
@@ -57,7 +61,18 @@ void Gridded2GriddedInterpolation::execute(data::MIRField& field) const {
     }
 
     std::auto_ptr< method::Method > method(method::MethodFactory::build(name, parametrisation_));
-    method->execute(field);
+    eckit::Log::info() << "method is '" << *method << "'" << std::endl;
+
+
+    atlas::GridSpec
+            inspec  = field.representation()->gridSpec(),
+            outspec = inspec;
+    eckit::Log::info() << "ingrid  = " << inspec  << std::endl;
+    eckit::Log::info() << "outgrid = " << outspec << std::endl;
+
+
+
+    method->execute(field,inspec,outspec);
 
     // TODO: Use Representation and MIRfield to create Atlas structures
     // TODO: Connect "Methods" and "mir/Weigths"

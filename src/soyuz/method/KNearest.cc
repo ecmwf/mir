@@ -8,11 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-#include "soyuz/method/KNearest.h"
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date Apr 2015
+
 
 #include <string>
 
 #include "eckit/config/Resource.h"
+
+#include "soyuz/method/KNearest.h"
 
 
 using atlas::Grid;
@@ -25,7 +30,10 @@ namespace method {
 
 
 KNearest::KNearest(const param::MIRParametrisation& param) :
-    nclosest_(4) { // FIXME
+    MethodWeighted(param,"method.k-nearest"),
+    nclosest_(4),
+    epsilon_(eckit::Resource<double>( "KNearestEpsilon", std::numeric_limits<double>::epsilon() )) {
+    // FIXME  all these construction-time parameters (should come from param)
 }
 
 
@@ -59,9 +67,6 @@ void KNearest::assemble(MethodWeighted::Matrix& W) const {
     std::vector<double> weights;
     weights.reserve(nclosest_);
 
-    /// @todo take epsilon from some general config
-    const double epsilon = eckit::Resource<double>( "KNearestEpsilon", std::numeric_limits<double>::epsilon() );
-
     for( size_t ip = 0; ip < out_npts; ++ip) {
         // get the reference output point
         eckit::geometry::Point3 p ( ocoords[ip].data() );
@@ -83,7 +88,7 @@ void KNearest::assemble(MethodWeighted::Matrix& W) const {
 
             // calculate distance squared and weight
             const double d2 = eckit::geometry::Point3::distance2(p, np);
-            weights[j] = 1.0 / ( epsilon + d2 );
+            weights[j] = 1.0 / ( epsilon_ + d2 );
 
             // also work out the total
             sum += weights[j];
@@ -112,19 +117,8 @@ void KNearest::print(std::ostream&) const {
 }
 
 
-void KNearest::build_sptree( Grid& in ) const {
-    atlas::Mesh& i_mesh = in.mesh();
-
-    std::string uidIn = in.uid();
-    if( uidIn != uid_ )
-        sptree_.reset( new PointSearch(i_mesh) );
-
-    uid_ = uidIn;
-}
-
-
 namespace {
-static MethodBuilder< KNearest > __knearest("method.knearest");
+static MethodBuilder< KNearest > __knearest("method.k-nearest");
 }
 
 

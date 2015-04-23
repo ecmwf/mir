@@ -8,23 +8,40 @@
  * does it submit to any jurisdiction.
  */
 
-#include "soyuz/method/MethodWeighted.h"
+/// @author Peter Bispham
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date Apr 2015
+
 
 #include <string>
-
 #include "eckit/log/Timer.h"
+#include "atlas/Grid.h"
+#include "atlas/GridSpec.h"
+#include "soyuz/data/MIRField.h"
+#include "soyuz/repres/Representation.h"
 #include "soyuz/method/WeightCache.h"
+
+#include "soyuz/method/MethodWeighted.h"
 
 
 namespace mir {
 namespace method {
 
 
+MethodWeighted::MethodWeighted(const param::MIRParametrisation& param, const std::string& name) :
+    Method(param),
+    name_(name) {
+}
+
+
 MethodWeighted::~MethodWeighted() {
 }
 
 
-void MethodWeighted::execute(data::MIRField& field) const {
+void MethodWeighted::execute(data::MIRField& field, const atlas::GridSpec& inspec, const atlas::GridSpec& outspec) const {
+    eckit::Log::info() << "MethodWeighted::execute" << std::endl;
+
     // FIXME arguments:
     atlas::Grid*       dummy_grid = 0;
     atlas::Grid& in  (*dummy_grid);
@@ -36,7 +53,7 @@ void MethodWeighted::execute(data::MIRField& field) const {
     MethodWeighted::Matrix W(npts_out,npts_inp);
 
     WeightCache cache;
-    const std::string whash = hash();
+    const std::string whash = hash(inspec,outspec);
     if (!cache.get( whash, W )) {
         if (in.uid() == out.uid() && in.same(out))
             W.setIdentity();
@@ -85,14 +102,25 @@ void MethodWeighted::applyMask(MethodWeighted::Matrix& W) const {
 }
 
 
-std::string MethodWeighted::hash() const {
-    // FIXME arguments:
-    atlas::Grid*       dummy_grid = 0;
-    atlas::Grid& in  (*dummy_grid);
-    atlas::Grid& out (*dummy_grid);
-
+std::string MethodWeighted::hash(const atlas::GridSpec& inspec, const atlas::GridSpec& outspec) const {
     const std::string dot(".");
-    return name() + dot + in.uid() + dot + out.uid();
+    return name_ + dot + inspec.uid() + dot + outspec.uid();
+}
+
+
+void MethodWeighted::print(std::ostream&) const {
+
+}
+
+
+void MethodWeighted::build_sptree(atlas::Grid& in) const {
+    atlas::Mesh& i_mesh = in.mesh();
+
+    std::string uidIn = in.uid();
+    if( uidIn != uid_ )
+        sptree_.reset( new PointSearch(i_mesh) );
+
+    uid_ = uidIn;
 }
 
 

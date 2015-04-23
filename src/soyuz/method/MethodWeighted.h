@@ -10,7 +10,8 @@
 
 /// @author Peter Bispham
 /// @author Tiago Quintino
-/// @date Oct 2013
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 #ifndef soyuz_method_MethodWeighted_H
 #define soyuz_method_MethodWeighted_H
@@ -20,11 +21,15 @@
 
 #include "eckit/maths/Eigen.h"
 #include "atlas/PointIndex3.h"
+#include "soyuz/method/PointSearch.h"
+
 #include "eckit/memory/NonCopyable.h"
-
-#include "atlas/Grid.h"
-
 #include "soyuz/method/Method.h"
+
+
+namespace atlas {
+class Grid;
+}
 
 
 namespace mir {
@@ -45,10 +50,9 @@ class MethodWeighted :
     // None
 
 // -- Contructors
-    // None
+    MethodWeighted(const param::MIRParametrisation&, const std::string&);
 
 // -- Destructor
-
     virtual ~MethodWeighted();
 
 // -- Convertors
@@ -61,7 +65,7 @@ class MethodWeighted :
     // None
 
 // -- Overridden methods
-    virtual void execute(data::MIRField& field) const;
+    virtual void execute(data::MIRField& field, const atlas::GridSpec& inspec, const atlas::GridSpec& outspec) const;
 
 // -- Class members
     // None
@@ -72,7 +76,7 @@ class MethodWeighted :
   protected:
 
 // -- Members
-    // None
+    mutable eckit::ScopedPtr< PointSearch > sptree_;
 
 // -- Methods
 
@@ -80,15 +84,18 @@ class MethodWeighted :
 
     void applyMask(Matrix& W) const;
 
-    std::string hash() const;
+    std::string hash(const atlas::GridSpec& inspec, const atlas::GridSpec& outspec) const;
 
-    virtual void print(std::ostream&) const {}
+    virtual void print(std::ostream&) const;
+
+    void build_sptree(atlas::Grid& in) const;
 
 // -- Overridden methods
     // None
 
 // -- Class members
-    // None
+    const std::string name_;
+    mutable atlas::Grid::uid_t uid_;
 
 // -- Class methods
     // None

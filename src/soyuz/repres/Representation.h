@@ -21,6 +21,10 @@
 #include <vector>
 
 
+namespace atlas {
+class GridSpec;
+}
+
 struct grib_info;
 
 
@@ -60,6 +64,8 @@ class Representation {
 
     virtual Representation* truncate(size_t truncation,
                                      const std::vector<double>&, std::vector<double>&) const;
+
+    virtual atlas::GridSpec gridSpec() const;
 
 // -- Overridden methods
     // None

@@ -8,8 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date Apr 2015
+
+
 #include "soyuz/method/FiniteElement.h"
 
+#include <iostream>
 #include <string>
 
 #include "atlas/Tesselation.h"
@@ -39,7 +45,8 @@ static std::ofstream of("found.txt");
 }  // (utilities namespace)
 
 
-FiniteElement::FiniteElement(const param::MIRParametrisation& param) {
+FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
+    MethodWeighted(param,"method.finite-element") {
 }
 
 
@@ -124,6 +131,7 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Eigen::Vector3d& phi, 
 
 void FiniteElement::assemble(MethodWeighted::Matrix& W) const {
     // FIXME arguments:
+    eckit::Log::info() << "FiniteElement::assemble" << std::endl;
     atlas::Grid*      dummy_grid = 0;
     atlas::Grid& in  (*dummy_grid);
     atlas::Grid& out (*dummy_grid);
@@ -199,12 +207,13 @@ void FiniteElement::assemble(MethodWeighted::Matrix& W) const {
 }
 
 
-void FiniteElement::print(std::ostream&) const {
+void FiniteElement::print(std::ostream& out) const {
+    out << "FiniteElement[]";
 }
 
 
 namespace {
-static MethodBuilder< FiniteElement > __finiteelement("method.finiteelement");
+static MethodBuilder< FiniteElement > __finiteelement("method.finite-element");
 }
 
 

@@ -8,6 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date Apr 2015
+
+
 #include <string>
 
 #include "soyuz/method/PseudoLaplace.h"
@@ -22,7 +27,7 @@ namespace method {
 
 
 PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
-    KNearest(param) {
+    MethodWeighted(param,"method.pseudo-laplace") {
 }
 
 
@@ -125,8 +130,12 @@ void PseudoLaplace::assemble(MethodWeighted::Matrix& W) const {
 }
 
 
+void PseudoLaplace::print(std::ostream&) const {
+}
+
+
 namespace {
-static MethodBuilder< PseudoLaplace > __pseudolaplace("method.pseudolaplace");
+static MethodBuilder< PseudoLaplace > __pseudolaplace("method.pseudo-laplace");
 }
 
 

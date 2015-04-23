@@ -8,6 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date Apr 2015
+
+
 #include "soyuz/method/Bilinear.h"
 
 #include <string>
@@ -59,7 +64,8 @@ void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, 
 }  // (utilities namespace)
 
 
-Bilinear::Bilinear(const param::MIRParametrisation& param) {
+Bilinear::Bilinear(const param::MIRParametrisation& param) :
+    MethodWeighted(param,"method.bilinear") {
 }
 
 

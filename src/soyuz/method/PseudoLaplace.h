@@ -8,28 +8,31 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date Apr 2015
+
+
 #ifndef soyuz_method_PseudoLaplace_H
 #define soyuz_method_PseudoLaplace_H
 
-#include "soyuz/method/KNearest.h"
+#include "soyuz/method/MethodWeighted.h"
 
 
 namespace mir {
 namespace method {
 
 
-class PseudoLaplace: public KNearest {
+class PseudoLaplace: public MethodWeighted {
   public:
 
 // -- Exceptions
     // None
 
 // -- Contructors
-
-    PseudoLaplace(const param::MIRParametrisation& param);
+    PseudoLaplace(const param::MIRParametrisation&);
 
 // -- Destructor
-
     virtual ~PseudoLaplace();
 
 // -- Convertors
@@ -53,11 +56,10 @@ class PseudoLaplace: public KNearest {
   protected:
 
 // -- Members
-
+    // None
 
 // -- Methods
-
-    virtual void print(std::ostream&) const {}
+    // None
 
 // -- Overridden methods
     // None
@@ -71,13 +73,13 @@ class PseudoLaplace: public KNearest {
   private:
 
 // -- Methods
-    // None
+    virtual void print(std::ostream&) const;
 
 // -- Overridden methods
     // None
 
 // -- Class members
-    // None
+    size_t nclosest_;  ///< Number of closest points to search for
 
 // -- Class methods
     // None
