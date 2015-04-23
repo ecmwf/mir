@@ -33,6 +33,7 @@ static bool grib_call(int e, const char *call, bool missingOK = false) {
     return true;
 }
 
+#undef GRIB_CALL
 #define GRIB_CALL(a) grib_call(a, #a)
 #define GRIB_ERROR(a, b) grib_call(a, b)
 

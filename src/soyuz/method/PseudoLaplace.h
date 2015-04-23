@@ -45,7 +45,7 @@ class PseudoLaplace: public MethodWeighted {
     // None
 
 // -- Overridden methods
-    virtual void assemble(MethodWeighted::Matrix& W) const;
+    virtual void assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
 
 // -- Class members
     // None

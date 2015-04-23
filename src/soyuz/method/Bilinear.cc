@@ -73,11 +73,7 @@ Bilinear::~Bilinear() {
 }
 
 
-void Bilinear::assemble(MethodWeighted::Matrix& W) const {
-    // FIXME arguments:
-    atlas::Grid*      dummy_grid = 0;
-    atlas::Grid& in  (*dummy_grid);
-    atlas::Grid& out (*dummy_grid);
+void Bilinear::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
 
 
     using eckit::geometry::LON;
@@ -85,8 +81,8 @@ void Bilinear::assemble(MethodWeighted::Matrix& W) const {
 
     std::cout << "Bilinear:: compute called " << std::endl;
 
-    atlas::Mesh& i_mesh = in.mesh();
-    atlas::Mesh& o_mesh = out.mesh();
+    const atlas::Mesh& i_mesh = in.mesh();
+    const atlas::Mesh& o_mesh = out.mesh();
 
     atlas::FunctionSpace& inodes = i_mesh.function_space( "nodes" );
     atlas::FunctionSpace& onodes = o_mesh.function_space( "nodes" );
@@ -98,7 +94,7 @@ void Bilinear::assemble(MethodWeighted::Matrix& W) const {
     atlas::ArrayView<double,2> ocoords     ( olonlat );
 
     // ReducedGrid involves all grids that can be represented with latitudes and npts_per_lat
-    atlas::grids::ReducedGrid* igg = dynamic_cast<atlas::grids::ReducedGrid*>(&in);
+    const atlas::grids::ReducedGrid* igg = dynamic_cast<const atlas::grids::ReducedGrid*>(&in);
 
     /// @todo we only handle these at the moment
     if (!igg)

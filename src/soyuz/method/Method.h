@@ -21,7 +21,7 @@
 
 
 namespace atlas {
-class GridSpec;
+class Grid;
 }
 
 namespace mir {
@@ -53,7 +53,7 @@ class Method {
     // None
 
 // -- Methods
-    virtual void execute(data::MIRField&, const atlas::GridSpec&, const atlas::GridSpec&) const = 0;
+    virtual void execute(data::MIRField&, const atlas::Grid&, const atlas::Grid&) const = 0;
 
 // -- Overridden methods
     // None

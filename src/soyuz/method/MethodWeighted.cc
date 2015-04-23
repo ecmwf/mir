@@ -41,26 +41,23 @@ MethodWeighted::~MethodWeighted() {
 }
 
 
-void MethodWeighted::execute(data::MIRField& field, const atlas::GridSpec& inspec, const atlas::GridSpec& outspec) const {
+void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const atlas::Grid& out) const {
     eckit::Log::info() << "MethodWeighted::execute" << std::endl;
 
-    
-    atlas::Grid::Ptr in(atlas::Grid::create(eckit::Params(inspec)));
-    atlas::Grid::Ptr out(atlas::Grid::create(eckit::Params(outspec)));
 
     // calculate weights matrix, apply mask if necessary
-    size_t npts_inp = in->npts();
-    size_t npts_out = out->npts();
+    size_t npts_inp = in.npts();
+    size_t npts_out = out.npts();
     MethodWeighted::Matrix W(npts_out,npts_inp);
 
     WeightCache cache;
-    const std::string whash = hash(inspec, outspec);
+    const std::string whash = hash(in.spec(), out.spec());
     if (!cache.get( whash, W )) {
-        if (in->uid() == out->uid() && in->same(*out))
+        if (in.uid() == out.uid() && in.same(out))
             W.setIdentity();
         else {
             eckit::Timer t("calculating interpolation weights");
-            assemble(W);
+            assemble(W, in, out);
         }
         cache.add( whash, W );
     }

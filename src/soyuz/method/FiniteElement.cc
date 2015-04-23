@@ -130,28 +130,26 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Eigen::Vector3d& phi, 
 }
 
 
-void FiniteElement::assemble(MethodWeighted::Matrix& W) const {
+void FiniteElement::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
     // FIXME arguments:
     eckit::Log::info() << "FiniteElement::assemble" << std::endl;
-    atlas::Grid*      dummy_grid = 0;
-    atlas::Grid& in  (*dummy_grid);
-    atlas::Grid& out (*dummy_grid);
 
 
-    atlas::Mesh& i_mesh = in.mesh();
-    atlas::Mesh& o_mesh = out.mesh();
+
+    const atlas::Mesh& i_mesh = in.mesh();
+    const atlas::Mesh& o_mesh = out.mesh();
 
     eckit::Timer t("compute weights");
 
     // generate mesh ...
 
-    atlas::Tesselation::tesselate( in );
+    atlas::Tesselation::tesselate( const_cast<atlas::Grid&>(in) ); // OOPS!
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
 
-    atlas::Tesselation::create_cell_centres( i_mesh );
+    atlas::Tesselation::create_cell_centres( const_cast<atlas::Mesh&>(i_mesh) );
 
-    ptree.reset( create_cell_centre_index( i_mesh ) );
+    ptree.reset( create_cell_centre_index( const_cast<atlas::Mesh&>(i_mesh) ) );
 
     // input mesh
 

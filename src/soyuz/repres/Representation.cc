@@ -75,9 +75,9 @@ Representation *Representation::truncate(size_t truncation,
 }
 
 
-atlas::GridSpec Representation::gridSpec() const {
+atlas::Grid* Representation::atlasGrid() const {
     eckit::StrStream os;
-    os << "Representation::gridSpec() not implemented for " << *this << eckit::StrStream::ends;
+    os << "Representation::atlasGrid() not implemented for " << *this << eckit::StrStream::ends;
     throw eckit::SeriousBug(std::string(os));
 }
 

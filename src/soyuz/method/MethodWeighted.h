@@ -65,7 +65,7 @@ class MethodWeighted :
     // None
 
 // -- Overridden methods
-    virtual void execute(data::MIRField& field, const atlas::GridSpec& inspec, const atlas::GridSpec& outspec) const;
+    virtual void execute(data::MIRField& field, const atlas::Grid& in, const atlas::Grid& out) const;
 
 // -- Class members
     // None
@@ -80,7 +80,7 @@ class MethodWeighted :
 
 // -- Methods
 
-    virtual void assemble(Matrix& W) const = 0;
+    virtual void assemble(Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const = 0;
 
     void applyMask(Matrix& W) const;
 

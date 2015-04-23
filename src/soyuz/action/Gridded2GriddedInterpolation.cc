@@ -61,13 +61,13 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     try {
         // TODO: We should not copy those things around
 
-        atlas::GridSpec inspec  = in->gridSpec();
-        atlas::GridSpec outspec = out->gridSpec();
+        std::auto_ptr<atlas::Grid> gin(in->atlasGrid());
+        std::auto_ptr<atlas::Grid> gout(out->atlasGrid());
 
-        eckit::Log::info() << "ingrid  = " << inspec  << std::endl;
-        eckit::Log::info() << "outgrid = " << outspec << std::endl;
+        // eckit::Log::info() << "ingrid  = " << *gin  << std::endl;
+        // eckit::Log::info() << "outgrid = " << *gout << std::endl;
 
-        method->execute(field, inspec, outspec);
+        method->execute(field, *gin, *gout);
 
     } catch (...) {
         delete out;

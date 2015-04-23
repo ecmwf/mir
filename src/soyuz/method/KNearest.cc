@@ -41,16 +41,12 @@ KNearest::~KNearest() {
 }
 
 
-void KNearest::assemble(MethodWeighted::Matrix& W) const {
-    // FIXME arguments:
-    atlas::Grid*      dummy_grid = 0;
-    atlas::Grid& in  (*dummy_grid);
-    atlas::Grid& out (*dummy_grid);
+void KNearest::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
 
 
-    build_sptree(in);
+    build_sptree(const_cast<atlas::Grid&>(in));
 
-    atlas::Mesh& o_mesh = out.mesh();
+    const atlas::Mesh& o_mesh = out.mesh();
 
     // output points
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );

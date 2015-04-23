@@ -20,7 +20,10 @@
 #include "eckit/parser/JSON.h"
 #include "eckit/utils/Translator.h"
 
+#include "atlas/Grid.h"
 #include "atlas/GridSpec.h"
+
+#include "atlas/grids/LonLatGrid.h"
 
 #include "soyuz/param/MIRParametrisation.h"
 #include "soyuz/util/Grib.h"
@@ -174,15 +177,13 @@ Representation *RegularLL::crop(double north, double west, double south, double 
 }
 
 
-atlas::GridSpec RegularLL::gridSpec() const {
-    atlas::GridSpec gs("regular_ll");
-    gs.set("nlat",ni_);
-    gs.set("nlon",nj_);
-    gs.set("bbox_s",south_);
-    gs.set("bbox_n",north_);
-    gs.set("bbox_e",east_);
-    gs.set("bbox_w",west_);
-    return gs;
+atlas::Grid* RegularLL::atlasGrid() const {
+    // TODO: Don't jump in hoops like that
+    atlas::Grid *g = atlas::Grid::create(
+        atlas::grids::LonLatGrid(west_east_increment_,
+            north_south_increment_,
+            atlas::grids::LonLatGrid::INCLUDES_POLES).spec());
+    return g;
 }
 
 
