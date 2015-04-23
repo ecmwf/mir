@@ -122,8 +122,6 @@ void Bilinear::assemble(MethodWeighted::Matrix& W) const {
         size_t top_i = 0;
         size_t bot_i = 0;
 
-        // iterator over longitudes
-        size_t ilon = 0;
 
         // we will need the number of points on the top and bottom latitudes later. store them
         size_t top_n, bot_n;

@@ -21,6 +21,8 @@
 #include "soyuz/data/MIRField.h"
 #include "soyuz/repres/Representation.h"
 #include "soyuz/method/WeightCache.h"
+#include <eckit/value/Params.h>
+
 
 #include "soyuz/method/MethodWeighted.h"
 
@@ -42,20 +44,19 @@ MethodWeighted::~MethodWeighted() {
 void MethodWeighted::execute(data::MIRField& field, const atlas::GridSpec& inspec, const atlas::GridSpec& outspec) const {
     eckit::Log::info() << "MethodWeighted::execute" << std::endl;
 
-    // FIXME arguments:
-    atlas::Grid*       dummy_grid = 0;
-    atlas::Grid& in  (*dummy_grid);
-    atlas::Grid& out (*dummy_grid);
+    
+    atlas::Grid::Ptr in(atlas::Grid::create(eckit::Params(inspec)));
+    atlas::Grid::Ptr out(atlas::Grid::create(eckit::Params(outspec)));
 
     // calculate weights matrix, apply mask if necessary
-    size_t npts_inp = in.npts();
-    size_t npts_out = out.npts();
+    size_t npts_inp = in->npts();
+    size_t npts_out = out->npts();
     MethodWeighted::Matrix W(npts_out,npts_inp);
 
     WeightCache cache;
-    const std::string whash = hash(inspec,outspec);
+    const std::string whash = hash(inspec, outspec);
     if (!cache.get( whash, W )) {
-        if (in.uid() == out.uid() && in.same(out))
+        if (in->uid() == out->uid() && in->same(*out))
             W.setIdentity();
         else {
             eckit::Timer t("calculating interpolation weights");

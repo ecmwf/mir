@@ -74,7 +74,7 @@ void MIRDemo::run() {
 
         job.set("grid", "10/10");
 
-        mir::input::GribFileInput input("test.grib");
+        mir::input::GribFileInput input("/tmp/test.grib");
         mir::output::GribFileOutput output("ll.grib");
 
         while (input.next()) {

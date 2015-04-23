@@ -82,7 +82,6 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Eigen::Vector3d& phi, 
     for( size_t i = 0; i < cs.size(); ++i ) {
         tid = cs[i].value().payload();
 
-        Point tc = cs[i].value().point();
 
         ASSERT( tid < nb_triags );
 
@@ -97,6 +96,8 @@ bool FiniteElement::project_point_to_triangle(  Point& p, Eigen::Vector3d& phi, 
         found = triag.intersects( ray, uvt );
 
 #ifdef DUMP_PROJ
+        Point tc = cs[i].value().point();
+
         if(found)
             of << "[SUCCESS]" << std::endl;
 //        else
