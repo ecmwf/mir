@@ -182,7 +182,7 @@ void Sh2GriddedTransform::print(std::ostream &out) const {
 void Sh2GriddedTransform::execute(data::MIRField &field) const {
 
     std::string value;
-    ASSERT(parametrisation_.get("user.truncation", value));
+    ASSERT(parametrisation_.get("field.truncation", value));
 
     size_t truncation = eckit::Translator<std::string, size_t>()(value);
 
@@ -208,7 +208,7 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
         throw;
     }
 
-    field.representation(out);
+    // field.representation(out);
 }
 
 

@@ -53,6 +53,19 @@ void MIRDemo::run() {
         return;
     }
 
+    if (1) {
+        mir::api::MIRJob job;
+
+        job.set("reduced", "48");
+
+        mir::input::GribFileInput input("sh.grib");
+        mir::output::GribFileOutput output("result.grib");
+
+        while (input.next()) {
+            job.execute(input, output);
+        }
+    }
+
     if (0) {
         mir::api::MIRJob job;
 
@@ -69,7 +82,7 @@ void MIRDemo::run() {
         }
     }
 
-    if (1) {
+    if (0) {
         mir::api::MIRJob job;
 
         // job.set("grid", "10/10");

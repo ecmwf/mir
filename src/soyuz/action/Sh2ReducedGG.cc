@@ -38,7 +38,7 @@ void Sh2ReducedGG::print(std::ostream& out) const {
 
 
 repres::Representation* Sh2ReducedGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    NOTIMP;
+    return 0;
 }
 
 

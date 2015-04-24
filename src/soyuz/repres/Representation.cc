@@ -81,6 +81,11 @@ atlas::Grid* Representation::atlasGrid() const {
     throw eckit::SeriousBug(std::string(os));
 }
 
+size_t Representation::truncation() const {
+    eckit::StrStream os;
+    os << "Representation::truncation() not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
 
 size_t Representation::frame(std::vector<double> &values, size_t size, double missingValue) const {
     eckit::StrStream os;

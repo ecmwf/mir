@@ -45,9 +45,6 @@ class SphericalHarmonics : public Representation {
 
 // -- Methods
 
-    size_t truncation() const {
-        return truncation_;
-    }
 
 // -- Overridden methods
     // None
@@ -98,6 +95,7 @@ class SphericalHarmonics : public Representation {
     virtual void fill(grib_info&) const;
     virtual Representation* truncate(size_t truncation,
                                      const std::vector<double>&, std::vector<double>&) const;
+    virtual size_t truncation() const;
 
 // -- Class members
     // None

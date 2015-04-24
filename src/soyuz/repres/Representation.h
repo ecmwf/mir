@@ -73,6 +73,7 @@ class Representation {
                                      const std::vector<double>&, std::vector<double>&) const;
 
     virtual atlas::Grid* atlasGrid() const;
+    virtual size_t truncation() const;
 
 // -- Overridden methods
     // None

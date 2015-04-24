@@ -65,6 +65,9 @@ void SphericalHarmonics::fill(grib_info &info) const  {
     info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX; // Check if this is needed, why does grib_api not copy input?
 }
 
+size_t SphericalHarmonics::truncation() const {
+    return truncation_;
+}
 
 Representation *SphericalHarmonics::truncate(size_t truncation,
         const std::vector<double> &in, std::vector<double> &out) const {
