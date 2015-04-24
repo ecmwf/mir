@@ -37,6 +37,7 @@ BoundingBox::BoundingBox(double north,
     west_(west),
     south_(south),
     east_(east) {
+    normalise();
 }
 
 BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
@@ -55,6 +56,8 @@ BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
 
     ASSERT(parametrisation.get("east", value));
     east_ = s2d(value);
+
+    normalise();
 }
 
 BoundingBox::~BoundingBox() {
@@ -89,6 +92,27 @@ BoundingBox BoundingBox::intersection(const BoundingBox &other) const {
     return BoundingBox(n, w, s, e);
 }
 
+void BoundingBox::normalise() {
+    while (east_ >= 360) {
+        east_ -= 360;
+        west_ -= 360;
+    }
+
+    while (east_ < -180) {
+        east_ += 360;
+        west_ += 360;
+    }
+}
+
+bool BoundingBox::contains(double lat, double lon) const {
+    while (lat >= 360) {
+        lat -= 360;
+    }
+    while (lat < -180) {
+        lat += 360;
+    }
+    return (lat <= north_) && (lat >= south_) && (lon >= west_) && (lon <= east_);
+}
 
 }  // namespace data
 }  // namespace mir

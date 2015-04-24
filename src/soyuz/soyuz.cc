@@ -69,7 +69,7 @@ void MIRDemo::run() {
         }
     }
 
-    if (1) {
+    if (0) {
         mir::api::MIRJob job;
 
         job.set("grid", "10/10");

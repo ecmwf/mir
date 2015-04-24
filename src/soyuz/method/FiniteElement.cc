@@ -54,7 +54,7 @@ FiniteElement::~FiniteElement() {
 }
 
 
-bool FiniteElement::project_point_to_triangle(  Point& p, Eigen::Vector3d& phi, int idx[3], const size_t k ) const {
+bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, int idx[3], const size_t k) const {
     using namespace eckit;
 
     bool found = false;

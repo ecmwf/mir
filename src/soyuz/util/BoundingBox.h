@@ -58,9 +58,7 @@ class BoundingBox {
         return (north_ != other.north_) || (south_ != other.south_) || (west_ != other.west_) || (east_ != other.east_);
     }
 
-    bool contains(double lat, double lon) const {
-        return (lat <= north_) && (lat >= south_) && (lon >= west_) && (lon <= east_);
-    }
+    bool contains(double lat, double lon) const;
 
     BoundingBox intersection(const BoundingBox& other) const;
 
@@ -126,7 +124,8 @@ class BoundingBox {
     double east_;
 
     // -- Methods
-    // None
+
+    void normalise();
 
     // -- Overridden methods
     // None
