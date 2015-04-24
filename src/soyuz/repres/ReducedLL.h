@@ -83,6 +83,7 @@ class ReducedLL : public Gridded {
 
 // -- Members
 
+    std::vector<int> pl_;
 
 // -- Methods
     // None
@@ -91,6 +92,7 @@ class ReducedLL : public Gridded {
 // -- Overridden methods
 
     virtual void fill(grib_info&) const;
+    atlas::Grid* atlasGrid() const;
 
 // -- Class members
     // None
