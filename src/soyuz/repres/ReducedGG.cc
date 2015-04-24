@@ -39,7 +39,7 @@ ReducedGG::ReducedGG(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("N", value));
     n_ = s2i(value);
 
-    // Not the most efficient
+    // FIXME: Not the most efficient
 
     ASSERT(parametrisation.get("pl", value));
 

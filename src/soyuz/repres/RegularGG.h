@@ -83,6 +83,7 @@ class RegularGG : public Gridded {
 
 // -- Members
 
+    int n_;
 
 // -- Methods
     // None
@@ -91,6 +92,7 @@ class RegularGG : public Gridded {
 // -- Overridden methods
 
     virtual void fill(grib_info&) const;
+    atlas::Grid* atlasGrid() const;
 
 // -- Class members
     // None

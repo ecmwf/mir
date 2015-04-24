@@ -12,6 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "soyuz/repres/RegularGG.h"
 
 #include <iostream>
 
@@ -19,14 +20,22 @@
 
 #include "soyuz/param/MIRParametrisation.h"
 
-#include "soyuz/repres/RegularGG.h"
 
+
+#include "atlas/Grid.h"
+#include "atlas/GridSpec.h"
+#include "atlas/grids/GaussianGrid.h"
 
 namespace mir {
 namespace repres {
 
 
 RegularGG::RegularGG(const param::MIRParametrisation &parametrisation) {
+    eckit::Translator<std::string, int> s2i;
+    std::string value;
+
+    ASSERT(parametrisation.get("N", value));
+    n_ = s2i(value);
 }
 
 
@@ -48,6 +57,13 @@ void RegularGG::fill(grib_info &info) const  {
     NOTIMP;
 }
 
+atlas::Grid* RegularGG::atlasGrid() const {
+    // TODO: Don't jump in hoops like that
+    atlas::Grid *g = atlas::Grid::create(
+        atlas::grids::GaussianGrid(n_).spec()
+        );
+    return g;
+}
 
 namespace {
 static RepresentationBuilder<RegularGG> regularGG("regular_gg"); // Name is what is returned by grib_api
