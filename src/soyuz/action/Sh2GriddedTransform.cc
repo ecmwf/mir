@@ -75,7 +75,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
         break;
     }
 
-    long gaussN = (truncation + 1) / 2;  // assumption: linear grid
+    //long gaussN = (truncation + 1) / 2;  // assumption: linear grid
 
 
     // prepare Trans object
@@ -103,14 +103,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
     int number_of_fields = 1; // number of fields
 
-
     std::vector<int> nfrom(number_of_fields, 1); // processors responsible for distributing each field
-
-    // std::vector<double> rspecg;
-
-
-
-    // Distribute data to all procs
 
     std::vector<double> rspec ( number_of_fields * trans.nspec2  );
 

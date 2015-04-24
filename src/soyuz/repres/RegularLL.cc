@@ -120,7 +120,6 @@ Representation *RegularLL::crop(const util::BoundingBox &bbox, const std::vector
     double e = 0;
     double w = 0;
 
-    size_t k = 0;
     size_t p = 0;
     double lat = bbox_.north();
     for (size_t i = 0; i < ni_; i++, lat -= north_south_increment_) {
