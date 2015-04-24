@@ -32,6 +32,11 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
+
+namespace util {
+class BoundingBox;
+}
+
 namespace repres {
 
 
@@ -59,7 +64,7 @@ class Representation {
 
     virtual void fill(grib_info&) const;
 
-    virtual Representation* crop(double north, double west, double south, double east,
+    virtual Representation* crop(const util::BoundingBox&,
                                  const std::vector<double>&, std::vector<double>&) const;
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;

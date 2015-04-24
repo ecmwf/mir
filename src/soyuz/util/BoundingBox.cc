@@ -19,7 +19,11 @@
 
 #include "soyuz/util/BoundingBox.h"
 #include "soyuz/repres/Representation.h"
+#include "soyuz/util/Grib.h"
+#include "soyuz/param/MIRParametrisation.h"
 
+#include "eckit/exception/Exceptions.h"
+#include "eckit/utils/Translator.h"
 
 namespace mir {
 namespace util {
@@ -35,7 +39,26 @@ BoundingBox::BoundingBox(double north,
     east_(east) {
 }
 
+BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
 
+    eckit::Translator<std::string, double> s2d;
+    std::string value;
+
+    ASSERT(parametrisation.get("north", value));
+    north_ = s2d(value);
+
+    ASSERT(parametrisation.get("west", value));
+    west_ = s2d(value);
+
+    ASSERT(parametrisation.get("south", value));
+    south_ = s2d(value);
+
+    ASSERT(parametrisation.get("east", value));
+    east_ = s2d(value);
+}
+
+BoundingBox::~BoundingBox() {
+}
 
 void BoundingBox::print(std::ostream &out) const {
     out << "BoundingBox["
@@ -47,7 +70,16 @@ void BoundingBox::print(std::ostream &out) const {
         << "]";
 }
 
+void BoundingBox::fill(grib_info &info) const  {
 
+    // Warning: scanning mode not considered
+
+    info.grid.longitudeOfFirstGridPointInDegrees = west_;
+    info.grid.longitudeOfLastGridPointInDegrees = east_;
+
+    info.grid.latitudeOfFirstGridPointInDegrees = north_;
+    info.grid.latitudeOfLastGridPointInDegrees = south_;
+}
 
 
 }  // namespace data

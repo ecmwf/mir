@@ -22,6 +22,7 @@
 #include "soyuz/data/MIRField.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "soyuz/repres/Representation.h"
+#include "soyuz/util/BoundingBox.h"
 
 #include "soyuz/action/AreaCropper.h"
 
@@ -71,7 +72,7 @@ void AreaCropper::execute(data::MIRField& field) const {
     std::vector<double> result;
 
     const repres::Representation* representation = field.representation();
-    repres::Representation* cropped = representation->crop(north_, west_, south_, east_, values, result);
+    repres::Representation* cropped = representation->crop(util::BoundingBox(north_, west_, south_, east_), values, result);
 
     if(cropped) { // NULL if nothing happend
         field.representation(cropped);

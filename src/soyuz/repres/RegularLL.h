@@ -17,6 +17,7 @@
 #define RegularLL_H
 
 #include "soyuz/repres/Gridded.h"
+#include "soyuz/util/BoundingBox.h"
 
 
 namespace mir {
@@ -94,10 +95,7 @@ class RegularLL : public Gridded {
 
     // -- Members
 
-    double north_;
-    double west_;
-    double south_;
-    double east_;
+    util::BoundingBox bbox_;
 
     double north_south_increment_;
     double west_east_increment_;
@@ -113,7 +111,7 @@ class RegularLL : public Gridded {
     // -- Overridden methods
 
     virtual void fill(grib_info &) const;
-    virtual Representation *crop(double north, double west, double south, double east, const std::vector<double> &, std::vector<double> &) const;
+    virtual Representation *crop(const util::BoundingBox& bbox, const std::vector<double> &, std::vector<double> &) const;
     virtual atlas::Grid* atlasGrid() const;
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 

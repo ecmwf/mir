@@ -19,6 +19,14 @@
 
 #include <iosfwd>
 
+struct grib_info;
+
+namespace mir {
+namespace param {
+    class MIRParametrisation;
+}
+}
+
 namespace mir {
 namespace util {
 
@@ -30,7 +38,7 @@ class BoundingBox {
 
     // -- Contructors
 
-    //
+    BoundingBox(const param::MIRParametrisation &);
     BoundingBox(double north, double west, double south, double east);
 
     // -- Destructor
@@ -62,6 +70,8 @@ class BoundingBox {
     }
 
     //
+    virtual void fill(grib_info &) const;
+
 
     // -- Overridden methods
     // None

@@ -59,7 +59,7 @@ void Representation::fill(grib_info &) const {
 }
 
 
-Representation *Representation::crop(double north, double west, double south, double east,
+Representation *Representation::crop(const util::BoundingBox& bbox,
                                      const std::vector<double> &, std::vector<double> &) const {
     eckit::StrStream os;
     os << "Representation::crop() not implemented for " << *this << eckit::StrStream::ends;

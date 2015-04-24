@@ -17,7 +17,6 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/parser/JSON.h"
 #include "eckit/utils/Translator.h"
 
 #include "atlas/Grid.h"
@@ -34,22 +33,11 @@ namespace mir {
 namespace repres {
 
 
-RegularLL::RegularLL(const param::MIRParametrisation &parametrisation) {
+RegularLL::RegularLL(const param::MIRParametrisation &parametrisation):
+bbox_(parametrisation) {
 
     eckit::Translator<std::string, double> s2d;
     std::string value;
-
-    ASSERT(parametrisation.get("north", value));
-    north_ = s2d(value);
-
-    ASSERT(parametrisation.get("west", value));
-    west_ = s2d(value);
-
-    ASSERT(parametrisation.get("south", value));
-    south_ = s2d(value);
-
-    ASSERT(parametrisation.get("east", value));
-    east_ = s2d(value);
 
     ASSERT(parametrisation.get("north_south_increment", value));
     north_south_increment_ = s2d(value);
@@ -67,10 +55,7 @@ RegularLL::RegularLL(double north,
                      double east,
                      double north_south_increment,
                      double west_east_increment):
-    north_(north),
-    west_(west),
-    south_(south),
-    east_(east),
+    bbox_(north, west, south, east),
     north_south_increment_(north_south_increment),
     west_east_increment_(west_east_increment) {
     setNiNj();
@@ -82,12 +67,12 @@ RegularLL::~RegularLL() {
 
 
 void RegularLL::setNiNj() {
-    double ni = (east_ - west_) / west_east_increment_;
+    double ni = (bbox_.east() - bbox_.west()) / west_east_increment_;
     ASSERT(ni > 0);
     ASSERT(long(ni) == ni);
     ni_ = ni + 1;
 
-    double nj = (north_ - south_) / north_south_increment_;
+    double nj = (bbox_.north() - bbox_.south()) / north_south_increment_;
     ASSERT(nj > 0);
     ASSERT(long(nj) == nj);
     nj_ = nj + 1;
@@ -97,11 +82,7 @@ void RegularLL::setNiNj() {
 void RegularLL::print(std::ostream &out) const {
     out << "RegularLL["
 
-        << "north=" << north_
-        << ",west=" << west_
-        << ",south=" << south_
-        << ",east=" << east_
-
+        << "bbox=" << bbox_
         << ",north_south_increment=" << north_south_increment_
         << ",west_east_increment=" << west_east_increment_
 
@@ -124,25 +105,22 @@ void RegularLL::fill(grib_info &info) const  {
     info.grid.iDirectionIncrementInDegrees = west_east_increment_;
     info.grid.jDirectionIncrementInDegrees = north_south_increment_;
 
-    info.grid.longitudeOfFirstGridPointInDegrees = west_;
-    info.grid.longitudeOfLastGridPointInDegrees = east_;
+    bbox_.fill(info);
 
-    info.grid.latitudeOfFirstGridPointInDegrees = north_;
-    info.grid.latitudeOfLastGridPointInDegrees = south_;
 }
 
 
-Representation *RegularLL::crop(double north, double west, double south, double east, const std::vector<double> &in, std::vector<double> &out) const {
+Representation *RegularLL::crop(const util::BoundingBox& bbox, const std::vector<double> &in, std::vector<double> &out) const {
     // TODO: An Area class and Increments class
-    double n = std::min(north_, north);
-    double s = std::max(south_, south);
-    double w = std::max(west_, west);
-    double e = std::min(east_, east);
+    double n = std::min(bbox_.north(), bbox.north());
+    double s = std::max(bbox_.south(), bbox.south());
+    double w = std::max(bbox_.west(), bbox.west());
+    double e = std::min(bbox_.east(), bbox.east());
 
-    if ( (n != north) && (s != south) && (w != west) && (e != east) ) {
+    if ( (n != bbox.north()) && (s != bbox.south()) && (w != bbox.west()) && (e != bbox.east()) ) {
         eckit::Log::warning() << "Crop area not included in field area." << std::endl;
-        eckit::Log::warning() << "    Crop request: " << north << "/" << west << "/" << south << "/" << east << std::endl;
-        eckit::Log::warning() << "     Actual crop: " << n << "/" << w << "/" << s << "/" << e << std::endl;
+        eckit::Log::warning() << "    Crop request: " << bbox << std::endl;
+        eckit::Log::warning() << "     Actual crop: " << util::BoundingBox(n, w, s, e) << std::endl;
     }
 
     ASSERT( (n - s) >= north_south_increment_ );
@@ -157,9 +135,9 @@ Representation *RegularLL::crop(double north, double west, double south, double 
 
     size_t k = 0;
     size_t p = 0;
-    double lat = north_;
+    double lat = bbox_.north();
     for (size_t i = 0; i < ni_; i++, lat -= north_south_increment_) {
-        double lon = west_;
+        double lon = bbox_.west();
         for (size_t j = 0; j < nj_; j++, lon += west_east_increment_) {
             if ( (lat <= n) && (lat >= s) && (lon >= w) && (lon <= e)) {
                 ASSERT(k < out.size());
