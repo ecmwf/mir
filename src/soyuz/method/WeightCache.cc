@@ -15,6 +15,9 @@
 #include <sstream>
 #include <string>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include "eckit/config/Resource.h"
 #include "eckit/io/FileHandle.h"
 
@@ -72,6 +75,13 @@ TODO:
 */
 
 
+class AutoUmask {
+    mode_t umask_;
+public:
+    AutoUmask(mode_t u = 0): umask_(::umask(u); }
+    ~AutoUmask() { ::umask(umask_); }
+}
+
 PathName WeightCache::filename(const std::string& key) {
     PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir","/tmp/cache/mir");
 
@@ -89,7 +99,9 @@ bool WeightCache::add(const std::string& key, MethodWeighted::Matrix& W ) {
         return false;
     }
 
-    file.dirName().mkdir(); // ensure directory exists
+    AutoUmask umask(0);
+
+    file.dirName().mkdir(0777); // ensure directory exists
 
     // unique file name avoids race conditions on the file from multiple processes
 
@@ -98,7 +110,10 @@ bool WeightCache::add(const std::string& key, MethodWeighted::Matrix& W ) {
     Log::info() << "Inserting weights in cache (" << file << ")" << std::endl;
 
     std::ofstream ofs;
+    ofs.exceptions ( std::ofstream::failbit | std::ofstream::badbit );
     ofs.open( tmpfile.asString().c_str(), std::ios::binary );
+
+    SYSCALL(::chmod(tmpfile.asString().c_str(), 0444));
 
     // write nominal size of matrix
 
