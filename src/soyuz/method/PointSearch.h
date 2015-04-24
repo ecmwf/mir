@@ -44,9 +44,9 @@ class PointSearch : private eckit::NonCopyable {
 
   public:
 
-    PointSearch( const std::vector< Point >& ipts );
+    PointSearch(const std::vector< Point >& ipts);
 
-    PointSearch( atlas::Mesh& mesh );
+    PointSearch(const atlas::Mesh& mesh);
 
   public: // methods
 

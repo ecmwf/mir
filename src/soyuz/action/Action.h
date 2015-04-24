@@ -116,7 +116,7 @@ class Action {
 
 class ActionFactory {
     std::string name_;
-    virtual Action* make(const param::MIRParametrisation&) = 0 ;
+    virtual Action* make(const param::MIRParametrisation&) = 0;
 
   protected:
 
@@ -124,6 +124,7 @@ class ActionFactory {
     virtual ~ActionFactory();
 
   public:
+
     static Action* build(const std::string&, const param::MIRParametrisation&);
 
 };

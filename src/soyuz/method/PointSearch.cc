@@ -20,7 +20,7 @@ namespace mir {
 namespace method {
 
 
-PointSearch::PointSearch(atlas::Mesh& mesh) {
+PointSearch::PointSearch(const atlas::Mesh& mesh) {
     ASSERT( mesh.has_function_space("nodes") );
 
     atlas::FunctionSpace& nodes = mesh.function_space( "nodes" );
