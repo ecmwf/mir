@@ -108,26 +108,17 @@ void RegularLL::fill(grib_info &info) const  {
 
 
 Representation *RegularLL::crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const {
-    // TODO: An Area class and Increments class
-
-    util::BoundingBox common(bbox_.intersection(bbox));
-
-    if ( common != bbox ) {
-        eckit::Log::warning() << "Crop area not included in field area." << std::endl;
-        eckit::Log::warning() << "    Crop request: " << bbox << std::endl;
-        eckit::Log::warning() << "           Field: " << bbox_ << std::endl;
-        eckit::Log::warning() << "     Actual crop: " << common << std::endl;
-    }
-
-    ASSERT( (common.north() - common.south()) >= north_south_increment_ );
-    ASSERT( (common.east() - common.west()) >= west_east_increment_ );
 
 
-    RegularLL *cropped = new RegularLL(common, north_south_increment_, north_south_increment_);
-    out = std::vector<double>(cropped->ni() * cropped->ni());
+    out.clear();
+    out.reserve(in.size()); // Over-estimation
 
     ASSERT((ni() * nj()) == in.size());
-    ASSERT((cropped->ni() * cropped->ni()) == out.size());
+
+    double n = 0;
+    double s = 0;
+    double e = 0;
+    double w = 0;
 
     size_t k = 0;
     size_t p = 0;
@@ -135,15 +126,28 @@ Representation *RegularLL::crop(const util::BoundingBox &bbox, const std::vector
     for (size_t i = 0; i < ni_; i++, lat -= north_south_increment_) {
         double lon = bbox_.west();
         for (size_t j = 0; j < nj_; j++, lon += west_east_increment_) {
-            if ( common.contains( lat, lon)) {
-                ASSERT(k < out.size());
-                out[k++] = in[p];
+            if ( bbox.contains( lat, lon)) {
+
+                if(out.size() == 0) {
+                    n = s = lat;
+                    w = e = lon;
+                } else {
+                    n = std::max(n, lat);
+                    s = std::min(s, lat);
+                    e = std::max(e, lon);
+                    w = std::min(w, lon);
+                }
+
+                out.push_back(in[p]);
             }
             p++;
         }
     }
 
-    ASSERT(k == out.size());
+    RegularLL *cropped = new RegularLL(util::BoundingBox(n, w, s, e), north_south_increment_, north_south_increment_);
+
+    ASSERT(out.size() > 0);
+    ASSERT(cropped->ni() * cropped->nj() == out.size());
     ASSERT(p == in.size());
 
     return cropped;
@@ -153,8 +157,8 @@ Representation *RegularLL::crop(const util::BoundingBox &bbox, const std::vector
 atlas::Grid *RegularLL::atlasGrid() const {
 
     return new atlas::grids::LonLatGrid(west_east_increment_,
-                                 north_south_increment_,
-                                 atlas::grids::LonLatGrid::INCLUDES_POLES);
+                                        north_south_increment_,
+                                        atlas::grids::LonLatGrid::INCLUDES_POLES);
 }
 
 

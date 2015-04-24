@@ -39,7 +39,7 @@ class BoundingBox {
     // -- Contructors
 
     BoundingBox(const param::MIRParametrisation &);
-    BoundingBox(double north, double west, double south, double east);
+    BoundingBox(double north=90, double west=0, double south=-90, double east=360);
 
     // -- Destructor
 
@@ -59,8 +59,6 @@ class BoundingBox {
     }
 
     bool contains(double lat, double lon) const;
-
-    BoundingBox intersection(const BoundingBox& other) const;
 
     // -- Methods
 

@@ -53,10 +53,10 @@ void MIRDemo::run() {
         return;
     }
 
-    if (1) {
+    if (0) {
         mir::api::MIRJob job;
 
-        job.set("area", "80/0/35/45");
+        job.set("area", "80/-20/35/45");
         job.set("bitmap", "test.bitmap");
         job.set("accuracy", "8");
         job.set("frame", "3");
@@ -69,10 +69,11 @@ void MIRDemo::run() {
         }
     }
 
-    if (0) {
+    if (1) {
         mir::api::MIRJob job;
 
-        job.set("grid", "10/10");
+        // job.set("grid", "10/10");
+        job.set("area", "80/-20/35/45");
         // job.set("frame", "3");
         // job.set("regular", "80");
         // job.set("reduced", "80");

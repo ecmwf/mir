@@ -84,17 +84,6 @@ void BoundingBox::fill(grib_info &info) const  {
     info.grid.latitudeOfLastGridPointInDegrees = south_;
 }
 
-BoundingBox BoundingBox::intersection(const BoundingBox &other) const {
-    double n = std::min(north_, other.north_);
-    double s = std::max(south_, other.south_);
-
-    // FIXME: implement proper code for median/date line
-    double w = std::max(west_, other.west_);
-    double e = std::min(east_, other.east_);
-
-    return BoundingBox(n, w, s, e);
-}
-
 void BoundingBox::normalise() {
     while (east_ >= 360) {
         east_ -= 360;

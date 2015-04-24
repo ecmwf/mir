@@ -77,9 +77,11 @@ TODO:
 
 class AutoUmask {
     mode_t umask_;
-public:
+  public:
     AutoUmask(mode_t u = 0): umask_(::umask(u)) { }
-    ~AutoUmask() { ::umask(umask_); }
+    ~AutoUmask() {
+        ::umask(umask_);
+    }
 };
 
 PathName WeightCache::filename(const std::string& key) {

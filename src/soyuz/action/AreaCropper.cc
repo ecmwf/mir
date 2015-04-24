@@ -31,12 +31,9 @@ namespace mir {
 namespace action {
 
 
-AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation):
+AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
-    north_(0),
-    west_(0),
-    south_(0),
-    east_(0) {
+    bbox_() {
     std::string value;
     ASSERT(parametrisation.get("user.area", value));
 
@@ -46,10 +43,12 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation):
     parse(value, result);
     ASSERT(result.size() == 4);
 
-    north_ = eckit::Translator<std::string, double>()(result[0]);
-    west_ = eckit::Translator<std::string, double>()(result[1]);
-    south_ = eckit::Translator<std::string, double>()(result[2]);
-    east_ = eckit::Translator<std::string, double>()(result[3]);
+    bbox_ = util::BoundingBox(
+                eckit::Translator<std::string, double>()(result[0]),
+                eckit::Translator<std::string, double>()(result[1]),
+                eckit::Translator<std::string, double>()(result[2]),
+                eckit::Translator<std::string, double>()(result[3])
+            );
 }
 
 
@@ -57,24 +56,19 @@ AreaCropper::~AreaCropper() {
 }
 
 
-void AreaCropper::print(std::ostream& out) const {
-    out << "AreaCropper[";
-    out << "north=" << north_;
-    out << ",west=" << west_;
-    out << ",south=" << south_;
-    out << ",east=" << east_;
-    out << "]";
+void AreaCropper::print(std::ostream &out) const {
+    out << "AreaCropper[bbox=" << bbox_ << "]";
 }
 
 
-void AreaCropper::execute(data::MIRField& field) const {
+void AreaCropper::execute(data::MIRField &field) const {
     const std::vector<double> &values = field.values();
     std::vector<double> result;
 
-    const repres::Representation* representation = field.representation();
-    repres::Representation* cropped = representation->crop(util::BoundingBox(north_, west_, south_, east_), values, result);
+    const repres::Representation *representation = field.representation();
+    repres::Representation *cropped = representation->crop(bbox_, values, result);
 
-    if(cropped) { // NULL if nothing happend
+    if (cropped) { // NULL if nothing happend
         field.representation(cropped);
         field.values(result);
     }

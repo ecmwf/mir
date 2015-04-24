@@ -17,6 +17,8 @@
 #define AreaCropper_H
 
 #include "soyuz/action/Action.h"
+#include "soyuz/util/BoundingBox.h"
+
 
 
 namespace mir {
@@ -82,11 +84,7 @@ class AreaCropper : public Action {
 
 // -- Members
 
-    double north_;
-    double west_;
-    double south_;
-    double east_;
-
+    util::BoundingBox bbox_;
 // -- Methods
     // None
 
