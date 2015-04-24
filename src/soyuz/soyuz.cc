@@ -53,7 +53,7 @@ void MIRDemo::run() {
         return;
     }
 
-    if (0) {
+    if (1) {
         mir::api::MIRJob job;
 
         job.set("area", "80/0/35/45");
@@ -69,7 +69,7 @@ void MIRDemo::run() {
         }
     }
 
-    if (1) {
+    if (0) {
         mir::api::MIRJob job;
 
         job.set("grid", "10/10");
