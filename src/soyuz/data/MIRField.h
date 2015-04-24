@@ -66,6 +66,7 @@ class MIRField {
     bool hasMissing() const {
         return hasMissing_;
     }
+
     double missingValue() const {
         return missingValue_;
     }
@@ -73,13 +74,22 @@ class MIRField {
 
     // Warning Takes ownership of the vector
     void values(std::vector<double>&);
+
     void hasMissing(bool on) {
         hasMissing_ = on;
     }
+
     void missingValue(double value)  {
         missingValue_ = value;
     }
 
+    void dimensions(size_t dimensions) {
+        dimensions_ = dimensions;
+    }
+
+    size_t dimensions() const  {
+        return dimensions_;
+    }
 
     const repres::Representation* representation() const;
     void representation(repres::Representation*);
@@ -124,6 +134,7 @@ class MIRField {
     bool hasMissing_;
     double missingValue_;
     repres::Representation* representation_;
+    size_t dimensions_; // 1 = Scalar, 2 = vector, erx
 
 // -- Methods
     // None
