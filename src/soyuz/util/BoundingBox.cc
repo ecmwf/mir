@@ -88,17 +88,9 @@ BoundingBox BoundingBox::intersection(const BoundingBox &other) const {
     double n = std::min(north_, other.north_);
     double s = std::max(south_, other.south_);
 
-    double w1 = std::max(west_, other.west_);
-    double e1 = std::min(east_, other.east_);
-
-    double w2 = std::max(west_ + 360, other.west_);
-    double e2 = std::min(east_ + 360, other.east_);
-
-    double w3 = std::max(west_, other.west_ + 360);
-    double e3 = std::min(east_, other.east_ + 360);
-
-    double w = std::min(w1, std::min(w2, w3));
-    double e = std::max(e1, std::max(e2, e3));
+    // FIXME: implement proper code for median/date line
+    double w = std::max(west_, other.west_);
+    double e = std::min(east_, other.east_);
 
     return BoundingBox(n, w, s, e);
 }
