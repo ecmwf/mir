@@ -73,6 +73,8 @@ void MIRDemo::run() {
         mir::api::MIRJob job;
 
         job.set("grid", "10/10");
+        // job.set("regular", "80");
+        // job.set("reduced", "80");
 
         mir::input::GribFileInput input("/tmp/test.grib");
         mir::output::GribFileOutput output("ll.grib");

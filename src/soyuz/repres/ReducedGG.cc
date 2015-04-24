@@ -76,7 +76,7 @@ void ReducedGG::fill(grib_info &info) const  {
 atlas::Grid* ReducedGG::atlasGrid() const {
     // TODO: Don't jump in hoops like that
     atlas::Grid *g = atlas::Grid::create(
-        atlas::grids::ReducedGaussianGrid(n_, &pl_[0]).spec());
+                         atlas::grids::ReducedGaussianGrid(n_, &pl_[0]).spec());
     return g;
 }
 

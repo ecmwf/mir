@@ -243,7 +243,9 @@ bool GribInput::lowLevelGet(const std::string &name, std::string &value) const {
             return false;
         }
 
-        if(err) { GRIB_ERROR(err, "pl"); }
+        if(err) {
+            GRIB_ERROR(err, "pl");
+        }
 
         size_t size = count;
         std::vector<long> values(count);

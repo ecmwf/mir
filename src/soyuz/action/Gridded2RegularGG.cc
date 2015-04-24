@@ -17,6 +17,10 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/utils/Translator.h"
+#include "soyuz/param/MIRParametrisation.h"
+
+#include "soyuz/repres/RegularGG.h"
 
 
 namespace mir {
@@ -38,7 +42,12 @@ void Gridded2RegularGG::print(std::ostream& out) const {
 
 
 repres::Representation* Gridded2RegularGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    NOTIMP;
+    eckit::Translator<std::string, int> s2i;
+    std::string value;
+
+    ASSERT(parametrisation_.get("regular", value));
+
+    return new repres::RegularGG(s2i(value));
 }
 
 

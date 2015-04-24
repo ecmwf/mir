@@ -38,6 +38,9 @@ RegularGG::RegularGG(const param::MIRParametrisation &parametrisation) {
     n_ = s2i(value);
 }
 
+RegularGG::RegularGG(int n):
+    n_(n) {
+}
 
 RegularGG::RegularGG() {
 }
@@ -60,8 +63,8 @@ void RegularGG::fill(grib_info &info) const  {
 atlas::Grid* RegularGG::atlasGrid() const {
     // TODO: Don't jump in hoops like that
     atlas::Grid *g = atlas::Grid::create(
-        atlas::grids::GaussianGrid(n_).spec()
-        );
+                         atlas::grids::GaussianGrid(n_).spec()
+                     );
     return g;
 }
 

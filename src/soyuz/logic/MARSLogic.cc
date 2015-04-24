@@ -63,6 +63,12 @@ void MARSLogic::prepare(std::vector<std::auto_ptr< action::Action > > &actions) 
         if (parametrisation_.has("user.grid")) {
             add(actions, "interpolate.grid2regular-ll");
         }
+        if (parametrisation_.has("user.reduced")) {
+            add(actions, "interpolate.grid2reduced-gg");
+        }
+        if (parametrisation_.has("user.regular")) {
+            add(actions, "interpolate.grid2regular-gg");
+        }
     }
 
     if (parametrisation_.has("user.area")) {
