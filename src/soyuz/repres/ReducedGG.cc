@@ -12,6 +12,8 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "soyuz/repres/ReducedGG.h"
+
 
 #include <iostream>
 
@@ -19,7 +21,11 @@
 
 #include "soyuz/param/MIRParametrisation.h"
 
-#include "soyuz/repres/ReducedGG.h"
+
+#include "atlas/Grid.h"
+#include "atlas/GridSpec.h"
+#include "atlas/grids/ReducedGaussianGrid.h"
+#include <eckit/parser/Tokenizer.h>
 
 
 namespace mir {
@@ -27,6 +33,25 @@ namespace repres {
 
 
 ReducedGG::ReducedGG(const param::MIRParametrisation &parametrisation) {
+    eckit::Translator<std::string, int> s2i;
+    std::string value;
+
+    ASSERT(parametrisation.get("N", value));
+    n_ = s2i(value);
+
+    // Not the most efficient
+
+    ASSERT(parametrisation.get("pl", value));
+
+    eckit::Tokenizer parse("/");
+    std::vector<std::string> pl;
+    parse(value, pl);
+
+    pl_.reserve(pl.size());
+    for(size_t i = 0; i < pl.size(); i++) {
+        pl_.push_back(s2i(pl[i]));
+    }
+
 }
 
 
@@ -48,6 +73,12 @@ void ReducedGG::fill(grib_info &info) const  {
     NOTIMP;
 }
 
+atlas::Grid* ReducedGG::atlasGrid() const {
+    // TODO: Don't jump in hoops like that
+    atlas::Grid *g = atlas::Grid::create(
+        atlas::grids::ReducedGaussianGrid(n_, &pl_[0]).spec());
+    return g;
+}
 
 namespace {
 static RepresentationBuilder<ReducedGG> reducedGG("reduced_gg"); // Name is what is returned by grib_api

@@ -22,7 +22,6 @@
 
 #include "atlas/Grid.h"
 #include "atlas/GridSpec.h"
-
 #include "atlas/grids/LonLatGrid.h"
 
 #include "soyuz/param/MIRParametrisation.h"

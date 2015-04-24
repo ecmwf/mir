@@ -233,6 +233,40 @@ bool GribInput::lowLevelGet(const std::string &name, std::string &value) const {
         }
     }
 
+    // Special case for PL, FIXME when we have a better way
+
+    if(name == "pl") {
+        size_t count = 0;
+        int err = grib_get_size(grib_.get(), "pl", &count);
+
+        if (err == GRIB_NOT_FOUND) {
+            return false;
+        }
+
+        if(err) { GRIB_ERROR(err, "pl"); }
+
+        size_t size = count;
+        std::vector<long> values(count);
+        GRIB_CALL(grib_get_long_array(grib_.get(), "pl", &values[0], &size));
+        ASSERT(count == size);
+
+        ASSERT(values.size());
+
+        eckit::StrStream os;
+
+        const char *sep = "";
+        for(size_t i = 0; i < count; i++) {
+            os << sep << values[i];
+            sep = "/";
+        }
+
+        os << eckit::StrStream::ends;
+
+        value = std::string(os);
+        return true;
+
+    }
+
     const char *key = name.c_str();
     size_t i = 0;
     while (mappings[i].name) {
