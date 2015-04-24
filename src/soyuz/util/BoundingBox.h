@@ -23,7 +23,7 @@ struct grib_info;
 
 namespace mir {
 namespace param {
-    class MIRParametrisation;
+class MIRParametrisation;
 }
 }
 
@@ -59,7 +59,7 @@ class BoundingBox {
     }
 
     bool contains(double lat, double lon) const {
-return (lat <= north_) && (lat >= south_) && (lon >= west_) && (lon <= east_);
+        return (lat <= north_) && (lat >= south_) && (lon >= west_) && (lon <= east_);
     }
 
     BoundingBox intersection(const BoundingBox& other) const;
