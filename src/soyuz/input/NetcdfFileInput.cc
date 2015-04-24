@@ -154,7 +154,6 @@ data::MIRField *NetcdfFileInput::field() const {
     field->values(values);
     return field;
 
-    return 0;
 }
 
 

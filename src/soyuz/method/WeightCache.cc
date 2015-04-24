@@ -78,9 +78,9 @@ TODO:
 class AutoUmask {
     mode_t umask_;
 public:
-    AutoUmask(mode_t u = 0): umask_(::umask(u); }
+    AutoUmask(mode_t u = 0): umask_(::umask(u)) { }
     ~AutoUmask() { ::umask(umask_); }
-}
+};
 
 PathName WeightCache::filename(const std::string& key) {
     PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir","/tmp/cache/mir");

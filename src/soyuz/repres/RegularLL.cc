@@ -150,12 +150,10 @@ Representation *RegularLL::crop(const util::BoundingBox &bbox, const std::vector
 
 
 atlas::Grid *RegularLL::atlasGrid() const {
-    // TODO: Don't jump in hoops like that
-    atlas::Grid *g = atlas::Grid::create(
-                         atlas::grids::LonLatGrid(west_east_increment_,
+
+    return new atlas::grids::LonLatGrid(west_east_increment_,
                                  north_south_increment_,
-                                 atlas::grids::LonLatGrid::INCLUDES_POLES).spec());
-    return g;
+                                 atlas::grids::LonLatGrid::INCLUDES_POLES);
 }
 
 
