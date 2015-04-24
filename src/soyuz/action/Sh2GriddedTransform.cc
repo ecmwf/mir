@@ -31,7 +31,7 @@
 namespace mir {
 namespace action {
 
-static void tranform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
+static void transform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
 
 
     std::auto_ptr<atlas::grids::ReducedGaussianGrid> rgg;
@@ -180,17 +180,10 @@ void Sh2GriddedTransform::print(std::ostream &out) const {
 
 
 void Sh2GriddedTransform::execute(data::MIRField &field) const {
-
-    std::string value;
-    ASSERT(parametrisation_.get("field.truncation", value));
-
-    size_t truncation = eckit::Translator<std::string, size_t>()(value);
-
-    // static void tranform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
     const std::vector<double> &values = field.values();
     std::vector<double> result;
 
-    // const repres::Representation *representation = field.representation();
+    const repres::Representation *in = field.representation();
     // repres::Representation *repres = representation->truncate(truncation_, values, result);
 
     // if (repres) { // NULL if nothing happend
@@ -201,8 +194,9 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
     repres::Representation *out = outputRepresentation(field.representation());
 
     try {
-
-
+        std::auto_ptr<atlas::Grid> grid(0);
+        // std::auto_ptr<atlas::Grid> grid(out->atlasGrid());
+        transform(in->truncation(), values, result, *grid);
     } catch (...) {
         delete out;
         throw;
