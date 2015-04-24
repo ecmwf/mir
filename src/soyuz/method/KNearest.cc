@@ -44,7 +44,7 @@ KNearest::~KNearest() {
 void KNearest::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
 
 
-    build_sptree(const_cast<atlas::Grid&>(in));
+    build_sptree(const_cast<atlas::Grid&>(in)); // OOPS!
 
     const atlas::Mesh& o_mesh = out.mesh();
 

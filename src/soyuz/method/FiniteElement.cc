@@ -147,9 +147,9 @@ void FiniteElement::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, c
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
 
-    atlas::Tesselation::create_cell_centres( const_cast<atlas::Mesh&>(i_mesh) );
+    atlas::Tesselation::create_cell_centres( const_cast<atlas::Mesh&>(i_mesh) ); // OOPS!
 
-    ptree.reset( create_cell_centre_index( const_cast<atlas::Mesh&>(i_mesh) ) );
+    ptree.reset( create_cell_centre_index( const_cast<atlas::Mesh&>(i_mesh) ) ); // OOPS!
 
     // input mesh
 
