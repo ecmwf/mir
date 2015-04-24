@@ -48,7 +48,7 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
     // calculate weights matrix, apply mask if necessary
     size_t npts_inp = in.npts();
     size_t npts_out = out.npts();
-    MethodWeighted::Matrix W(npts_out,npts_inp);
+    MethodWeighted::Matrix W(npts_out, npts_inp);
 
     WeightCache cache;
     const std::string whash = hash(in.spec(), out.spec());
@@ -56,7 +56,7 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
         if (in.uid() == out.uid() && in.same(out))
             W.setIdentity();
         else {
-            eckit::Timer t("calculating interpolation weights");
+            eckit::Timer t("Calculating interpolation weights");
             assemble(W, in, out);
         }
         cache.add( whash, W );
@@ -66,12 +66,20 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
 
     // multiply interpolant matrix with field vector
     {
-        eckit::Timer t("interpolating field (" + eckit::Translator< size_t, std::string >()(npts_inp) + " -> " + eckit::Translator< size_t, std::string >()(npts_out) + ")");
-#if 0
-        VectorXd::MapType vi = VectorXd::Map( fi.data<double>(), fi.size() );
-        VectorXd::MapType vo = VectorXd::Map( fo.data<double>(), fo.size() );
+        eckit::Timer t("Interpolating field (" + eckit::Translator< size_t, std::string >()(npts_inp) + " -> " + eckit::Translator< size_t, std::string >()(npts_out) + ")");
+
+        ASSERT(field.values().size() == npts_inp);
+        eckit::Log::info() << "Input field is " << field.values().size() << std::endl;
+
+        std::vector<double>& data_in = field.values();
+        std::vector<double> data_out(npts_out);
+
+        Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &data_in[0], npts_inp );
+        Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &data_out[0], npts_out );
         vo = W * vi;
-#endif
+
+        // Update field, the called with update the field representation
+        field.values(data_out);
     }
 }
 

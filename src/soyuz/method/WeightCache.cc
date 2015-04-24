@@ -95,7 +95,7 @@ bool WeightCache::add(const std::string& key, MethodWeighted::Matrix& W ) {
 
     PathName tmpfile ( PathName::unique(file) );
 
-    Log::info() << "inserting weights in cache (" << file << ")" << std::endl;
+    Log::info() << "Inserting weights in cache (" << file << ")" << std::endl;
 
     std::ofstream ofs;
     ofs.open( tmpfile.asString().c_str(), std::ios::binary );
@@ -158,7 +158,7 @@ bool WeightCache::get(const std::string& key, MethodWeighted::Matrix& W ) {
         return false;
     }
 
-    Log::info() << "found weights in cache (" << file << ")" << std::endl;
+    Log::info() << "Found weights in cache (" << file << ")" << std::endl;
 
     FileHandle fh( file );
 
