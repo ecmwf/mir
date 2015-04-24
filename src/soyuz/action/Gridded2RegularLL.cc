@@ -58,7 +58,7 @@ repres::Representation *Gridded2RegularLL::outputRepresentation(const repres::Re
     double we = s2d(s[0]);
     double ns = s2d(s[1]);
 
-    return new repres::RegularLL(90, 0, -90, 360 - we, ns, we);
+    return new repres::RegularLL(util::BoundingBox(90, 0, -90, 360 - we), ns, we);
 }
 
 

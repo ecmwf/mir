@@ -34,7 +34,7 @@ class RegularLL : public Gridded {
 
     RegularLL(const param::MIRParametrisation &);
 
-    RegularLL(double north, double west, double south, double east,
+    RegularLL(const util::BoundingBox& bbox,
               double north_south_increment,
               double west_east_increment);
 

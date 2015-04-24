@@ -34,7 +34,7 @@ namespace repres {
 
 
 RegularLL::RegularLL(const param::MIRParametrisation &parametrisation):
-bbox_(parametrisation) {
+    bbox_(parametrisation) {
 
     eckit::Translator<std::string, double> s2d;
     std::string value;
@@ -49,13 +49,10 @@ bbox_(parametrisation) {
 }
 
 
-RegularLL::RegularLL(double north,
-                     double west,
-                     double south,
-                     double east,
+RegularLL::RegularLL(const util::BoundingBox &bbox,
                      double north_south_increment,
                      double west_east_increment):
-    bbox_(north, west, south, east),
+    bbox_(bbox),
     north_south_increment_(north_south_increment),
     west_east_increment_(west_east_increment) {
     setNiNj();
@@ -110,24 +107,22 @@ void RegularLL::fill(grib_info &info) const  {
 }
 
 
-Representation *RegularLL::crop(const util::BoundingBox& bbox, const std::vector<double> &in, std::vector<double> &out) const {
+Representation *RegularLL::crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const {
     // TODO: An Area class and Increments class
-    double n = std::min(bbox_.north(), bbox.north());
-    double s = std::max(bbox_.south(), bbox.south());
-    double w = std::max(bbox_.west(), bbox.west());
-    double e = std::min(bbox_.east(), bbox.east());
 
-    if ( (n != bbox.north()) && (s != bbox.south()) && (w != bbox.west()) && (e != bbox.east()) ) {
+    util::BoundingBox common(bbox_.intersection(bbox));
+
+    if ( common != bbox ) {
         eckit::Log::warning() << "Crop area not included in field area." << std::endl;
         eckit::Log::warning() << "    Crop request: " << bbox << std::endl;
-        eckit::Log::warning() << "     Actual crop: " << util::BoundingBox(n, w, s, e) << std::endl;
+        eckit::Log::warning() << "     Actual crop: " << common << std::endl;
     }
 
-    ASSERT( (n - s) >= north_south_increment_ );
-    ASSERT( (e - w) >= west_east_increment_ );
+    ASSERT( (common.north() - common.south()) >= north_south_increment_ );
+    ASSERT( (common.east() - common.west()) >= west_east_increment_ );
 
 
-    RegularLL *cropped = new RegularLL(n, w, s, e, north_south_increment_, north_south_increment_);
+    RegularLL *cropped = new RegularLL(common, north_south_increment_, north_south_increment_);
     out = std::vector<double>(cropped->ni() * cropped->ni());
 
     ASSERT((ni() * nj()) == in.size());
@@ -139,7 +134,7 @@ Representation *RegularLL::crop(const util::BoundingBox& bbox, const std::vector
     for (size_t i = 0; i < ni_; i++, lat -= north_south_increment_) {
         double lon = bbox_.west();
         for (size_t j = 0; j < nj_; j++, lon += west_east_increment_) {
-            if ( (lat <= n) && (lat >= s) && (lon >= w) && (lon <= e)) {
+            if ( common.contains( lat, lon)) {
                 ASSERT(k < out.size());
                 out[k++] = in[p];
             }
@@ -154,7 +149,7 @@ Representation *RegularLL::crop(const util::BoundingBox& bbox, const std::vector
 }
 
 
-atlas::Grid* RegularLL::atlasGrid() const {
+atlas::Grid *RegularLL::atlasGrid() const {
     // TODO: Don't jump in hoops like that
     atlas::Grid *g = atlas::Grid::create(
                          atlas::grids::LonLatGrid(west_east_increment_,
