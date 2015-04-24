@@ -23,6 +23,12 @@ list( APPEND mir_srcs
       action/Sh2GriddedTransform.h
       action/Sh2ShTransform.cc
       action/Sh2ShTransform.h
+      action/Sh2ReducedGG.cc
+      action/Sh2ReducedGG.h
+      action/Sh2RegularGG.cc
+      action/Sh2RegularGG.h
+      action/Sh2RegularLL.cc
+      action/Sh2RegularLL.h
       api/MIRJob.cc
       api/MIRJob.h
       api/emoslib.cc
@@ -162,7 +168,7 @@ ecbuild_add_library(
 ecbuild_add_test(
     TARGET    soyuz
     SOURCES   soyuz.cc
-    RESOURCES test.bitmap test.grib test.nc
+    RESOURCES test.bitmap test.grib test.nc sh.grib
     INCLUDES  ${ECKIT_INCLUDE_DIRS} ${NETCDF_INCLUDE_DIRS}
     LIBS      mir
 )

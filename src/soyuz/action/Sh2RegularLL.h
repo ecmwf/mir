@@ -13,23 +13,16 @@
 /// @date Apr 2015
 
 
-#ifndef Sh2GriddedTransform_H
-#define Sh2GriddedTransform_H
+#ifndef Sh2RegularLL_H
+#define Sh2RegularLL_H
 
-#include "soyuz/action/Action.h"
-
-
+#include "soyuz/action/Sh2GriddedTransform.h"
 
 namespace mir {
-
-namespace repres {
-class Representation;
-}
-
 namespace action {
 
 
-class Sh2GriddedTransform : public Action {
+class Sh2RegularLL : public Sh2GriddedTransform {
   public:
 
 // -- Exceptions
@@ -37,11 +30,11 @@ class Sh2GriddedTransform : public Action {
 
 // -- Contructors
 
-    Sh2GriddedTransform(const param::MIRParametrisation&);
+    Sh2RegularLL(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~Sh2GriddedTransform(); // Change to virtual if base class
+    virtual ~Sh2RegularLL(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -83,19 +76,19 @@ class Sh2GriddedTransform : public Action {
 
 // No copy allowed
 
-    Sh2GriddedTransform(const Sh2GriddedTransform&);
-    Sh2GriddedTransform& operator=(const Sh2GriddedTransform&);
+    Sh2RegularLL(const Sh2RegularLL&);
+    Sh2RegularLL& operator=(const Sh2RegularLL&);
 
 // -- Members
     // None
 
 // -- Methods
-
-    virtual repres::Representation* outputRepresentation(const repres::Representation* inputRepres) const = 0;
+    // None
 
 // -- Overridden methods
 
-    virtual void execute(data::MIRField&) const;
+    // From Gridded2GriddedInterpolation
+    virtual repres::Representation* outputRepresentation(const repres::Representation* inputRepres) const;
 
 // -- Class members
     // None
@@ -105,7 +98,7 @@ class Sh2GriddedTransform : public Action {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Sh2GriddedTransform& p)
+    //friend ostream& operator<<(ostream& s,const Sh2RegularLL& p)
     //	{ p.print(s); return s; }
 
 };

@@ -41,7 +41,7 @@ MethodWeighted::~MethodWeighted() {
 }
 
 
-void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const atlas::Grid& out) const {
+void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const atlas::Grid& out, std::vector<double>& result) const {
     eckit::Log::info() << "MethodWeighted::execute" << std::endl;
 
 
@@ -71,15 +71,13 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
         ASSERT(field.values().size() == npts_inp);
         eckit::Log::info() << "Input field is " << field.values().size() << std::endl;
 
-        std::vector<double>& data_in = field.values();
-        std::vector<double> data_out(npts_out);
+        std::vector<double>& values = field.values();
+        result.resize(npts_out);
 
-        Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &data_in[0], npts_inp );
-        Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &data_out[0], npts_out );
+        Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &values[0], npts_inp );
+        Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &result[0], npts_out );
         vo = W * vi;
 
-        // Update field, the called with update the field representation
-        field.values(data_out);
     }
 }
 

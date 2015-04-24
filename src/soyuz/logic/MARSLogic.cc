@@ -47,15 +47,22 @@ void MARSLogic::prepare(std::vector<std::auto_ptr< action::Action > > &actions) 
         }
     }
 
-    // Maybe we need different actions
-    // user.grid => transform.sh2grid
-    // user.reduced => transform.sh2reduced
-    // user.regular => transform.sh2regular
     if (parametrisation_.has("field.spherical")) {
-        if (parametrisation_.has("user.grid") ||
-                parametrisation_.has("user.reduced") ||
-                parametrisation_.has("user.regular")) {
-            add(actions, "transform.sh2grid");
+        if (parametrisation_.has("user.grid")) {
+#if 0
+            add(actions, "transform.grid2regular-ll");
+#else
+            // For now, thar's what we do
+            add(actions, "transform.grid2reduced-gg");
+            add(actions, "interpolate.grid2regular-ll");
+#endif
+        }
+        if (parametrisation_.has("user.reduced")) {
+            add(actions, "transform.grid2reduced-gg");
+
+        }
+        if (parametrisation_.has("user.regular")) {
+            add(actions, "transform.grid2regular-gg");
         }
     }
 

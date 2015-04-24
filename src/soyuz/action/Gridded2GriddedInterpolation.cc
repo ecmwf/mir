@@ -58,6 +58,8 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     const repres::Representation *in = field.representation();
     repres::Representation *out = outputRepresentation(field.representation());
 
+    std::vector<double> result;
+
     try {
         // TODO: We should not copy those things around
 
@@ -67,13 +69,14 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
         // eckit::Log::info() << "ingrid  = " << *gin  << std::endl;
         // eckit::Log::info() << "outgrid = " << *gout << std::endl;
 
-        method->execute(field, *gin, *gout);
+        method->execute(field, *gin, *gout, result);
 
     } catch (...) {
         delete out;
         throw;
     }
 
+    field.values(result);
     field.representation(out);
 
 }
