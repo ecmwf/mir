@@ -71,10 +71,7 @@ void ReducedLL::fill(grib_info &info) const  {
 }
 
 atlas::Grid* ReducedLL::atlasGrid() const {
-    // TODO: Don't jump in hoops like that
-    atlas::Grid *g = atlas::Grid::create(
-                         atlas::grids::ReducedLonLatGrid(pl_.size(), &pl_[0], atlas::grids::ReducedLonLatGrid::INCLUDES_POLES).spec());
-    return g;
+    return new atlas::grids::ReducedLonLatGrid(pl_.size(), &pl_[0], atlas::grids::ReducedLonLatGrid::INCLUDES_POLES);
 }
 
 namespace {

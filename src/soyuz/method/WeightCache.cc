@@ -101,6 +101,7 @@ bool WeightCache::add(const std::string& key, MethodWeighted::Matrix& W ) {
 
     AutoUmask umask(0);
 
+    // FIXME: mask does not seem to affect first level directory
     file.dirName().mkdir(0777); // ensure directory exists
 
     // unique file name avoids race conditions on the file from multiple processes

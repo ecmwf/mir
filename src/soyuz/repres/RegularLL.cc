@@ -115,6 +115,7 @@ Representation *RegularLL::crop(const util::BoundingBox &bbox, const std::vector
     if ( common != bbox ) {
         eckit::Log::warning() << "Crop area not included in field area." << std::endl;
         eckit::Log::warning() << "    Crop request: " << bbox << std::endl;
+        eckit::Log::warning() << "           Field: " << bbox_ << std::endl;
         eckit::Log::warning() << "     Actual crop: " << common << std::endl;
     }
 
