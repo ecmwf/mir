@@ -16,10 +16,7 @@
 #ifndef MIRField_H
 #define MIRField_H
 
-#include "eckit/exception/Exceptions.h"
-
 #include <iosfwd>
-#include <iostream>
 #include <vector>
 
 
