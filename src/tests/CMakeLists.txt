@@ -10,7 +10,7 @@ set( _mir_test_environment MIR_CACHE_DIR=$ {CMAKE_CURRENT_BINARY_DIR}/cache )
 # )
 
 ecbuild_add_test(
-    TARGET    spherical_to_gaussian.
+    TARGET    spherical_to_gaussian
     SOURCES   spherical_to_gaussian.cc
     RESOURCES sh.grib
     INCLUDES  ${ECKIT_INCLUDE_DIRS}
