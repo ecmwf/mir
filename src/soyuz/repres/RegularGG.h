@@ -17,6 +17,7 @@
 #define RegularGG_H
 
 #include "soyuz/repres/Gridded.h"
+#include "soyuz/util/BoundingBox.h"
 
 
 namespace mir {
@@ -32,7 +33,7 @@ class RegularGG : public Gridded {
 // -- Contructors
 
     RegularGG(const param::MIRParametrisation&);
-    RegularGG(int n);
+    RegularGG(size_t);
 
 // -- Destructor
 
@@ -84,7 +85,8 @@ class RegularGG : public Gridded {
 
 // -- Members
 
-    int n_;
+    size_t N_;
+    util::BoundingBox bbox_;
 
 // -- Methods
     // None

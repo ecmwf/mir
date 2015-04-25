@@ -79,7 +79,9 @@ class BoundingBox {
     }
 
     //
-    virtual void fill(grib_info &) const;
+    void fill(grib_info &) const;
+    bool global() const;
+
 
 
     // -- Overridden methods

@@ -17,6 +17,7 @@
 #define ReducedGG_H
 
 #include "soyuz/repres/Gridded.h"
+#include "soyuz/util/BoundingBox.h"
 
 
 namespace mir {
@@ -32,7 +33,7 @@ class ReducedGG : public Gridded {
 // -- Contructors
 
     ReducedGG(const param::MIRParametrisation&);
-    ReducedGG(int);
+    ReducedGG(size_t);
 
 // -- Destructor
 
@@ -84,8 +85,9 @@ class ReducedGG : public Gridded {
 
 // -- Members
 
-    int n_;
+    size_t N_;
     std::vector<int> pl_;
+    util::BoundingBox bbox_;
 
 // -- Methods
     // None

@@ -18,6 +18,11 @@
 
 #include "eckit/exception/Exceptions.h"
 
+#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Translator.h"
+
+#include "soyuz/repres/ReducedGG.h"
+#include "soyuz/param/MIRParametrisation.h"
 
 namespace mir {
 namespace action {
@@ -38,7 +43,13 @@ void Gridded2ReducedGG::print(std::ostream& out) const {
 
 
 repres::Representation* Gridded2ReducedGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    NOTIMP;
+    eckit::Translator<std::string, size_t> s2i;
+    std::string value;
+
+    ASSERT(parametrisation_.get("user.reduced", value));
+    size_t N = s2i(value);
+
+    return new repres::ReducedGG(N);
 }
 
 

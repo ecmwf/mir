@@ -28,17 +28,18 @@
 #include <eckit/parser/Tokenizer.h>
 
 #include "atlas/grids/grids.h"
+#include "soyuz/util/Grib.h"
 
 namespace mir {
 namespace repres {
 
 
 ReducedGG::ReducedGG(const param::MIRParametrisation &parametrisation) {
-    eckit::Translator<std::string, int> s2i;
+    eckit::Translator<std::string, size_t> s2i;
     std::string value;
 
     ASSERT(parametrisation.get("N", value));
-    n_ = s2i(value);
+    N_ = s2i(value);
 
     // FIXME: Not the most efficient
 
@@ -55,8 +56,8 @@ ReducedGG::ReducedGG(const param::MIRParametrisation &parametrisation) {
 
 }
 
-ReducedGG::ReducedGG(int n):
-    n_(n) {
+ReducedGG::ReducedGG(size_t N_):
+    N_(N_) {
 
 }
 
@@ -69,26 +70,47 @@ ReducedGG::~ReducedGG() {
 
 
 void ReducedGG::print(std::ostream &out) const {
-    out << "ReducedGG["
-        << "]";
+    out << "ReducedGG[N" << N_ << "]";
 }
 
-
 void ReducedGG::fill(grib_info &info) const  {
-    NOTIMP;
+
+    // See copy_spec_from_ksec.c in libemos for info
+
+    info.grid.grid_type = GRIB_UTIL_GRID_SPEC_REDUCED_GG;
+    info.grid.Nj = N_ * 2; // Should be PL.size()
+    info.grid.N = N_;
+
+    bbox_.fill(info);
+
+    /*
+        Comment in libemos is:
+
+        "grib_api to set global area in full precision for gaussian grid"
+
+        TODO: check and document
+
+    */
+
+    size_t j = info.packing.extra_settings_count++;
+    info.packing.extra_settings[j].type = GRIB_TYPE_LONG;
+    info.packing.extra_settings[j].name = "global";
+    info.packing.extra_settings[j].long_value = bbox_.global() ? 1 : 0;
+
+    // FIXME: Where are the PL set? Looks like grib_api has its own list
 }
 
 atlas::Grid *ReducedGG::atlasGrid() const {
     if (pl_.size() > 0) {
-        return new atlas::grids::ReducedGaussianGrid(n_, &pl_[0]);
+        return new atlas::grids::ReducedGaussianGrid(N_, &pl_[0]);
     } else {
 #if 0
         eckit::StrStream os;
-        os << "reduced_gg.N" << n_ << eckit::StrStream::ends;
+        os << "reduced_gg.N" << N_ << eckit::StrStream::ends;
         return atlas::Grid::create(std::string(os));
 #else
 
-        switch (n_) {
+        switch (N_) {
         case 32:
             return new atlas::grids::rgg::N32();
             break;
@@ -123,7 +145,7 @@ atlas::Grid *ReducedGG::atlasGrid() const {
         }
 
         eckit::StrStream os;
-        os << "Unsupported reduced Gaussian grid: N" << n_ << eckit::StrStream::ends;
+        os << "Unsupported reduced Gaussian grid: N" << N_ << eckit::StrStream::ends;
         throw eckit::SeriousBug(os);
 #endif
 

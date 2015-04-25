@@ -46,7 +46,7 @@ repres::Representation *Gridded2RegularLL::outputRepresentation(const repres::Re
     eckit::Translator<std::string, double> s2d;
     std::string value;
 
-    ASSERT(parametrisation_.get("grid", value));
+    ASSERT(parametrisation_.get("user.grid", value));
 
     eckit::Tokenizer parse("/");
 

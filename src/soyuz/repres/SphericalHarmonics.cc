@@ -57,6 +57,8 @@ void SphericalHarmonics::print(std::ostream &out) const {
 
 
 void SphericalHarmonics::fill(grib_info &info) const  {
+    // See copy_spec_from_ksec.c in libemos for info
+
     info.grid.grid_type = GRIB_UTIL_GRID_SPEC_SH;
     info.grid.truncation = truncation_;
     // info.packing.computeLaplacianOperator = 1;

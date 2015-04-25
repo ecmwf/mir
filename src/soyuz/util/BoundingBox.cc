@@ -106,6 +106,11 @@ bool BoundingBox::contains(double lat, double lon) const {
     return (lat <= north_) && (lat >= south_) && (lon >= west_) && (lon <= east_);
 }
 
+bool BoundingBox::global() const {
+    // This is not supposed to be modified (e.g. don't add an epsilon in the comparaisons)
+    return (north_ - south_) == 180 && (east_ - west_) == 360;
+}
+
 }  // namespace data
 }  // namespace mir
 
