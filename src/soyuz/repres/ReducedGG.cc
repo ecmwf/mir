@@ -35,25 +35,8 @@ namespace repres {
 
 
 ReducedGG::ReducedGG(const param::MIRParametrisation &parametrisation) {
-    eckit::Translator<std::string, size_t> s2i;
-    std::string value;
-
-    ASSERT(parametrisation.get("N", value));
-    N_ = s2i(value);
-
-    // FIXME: Not the most efficient
-
-    ASSERT(parametrisation.get("pl", value));
-
-    eckit::Tokenizer parse("/");
-    std::vector<std::string> pl;
-    parse(value, pl);
-
-    pl_.reserve(pl.size());
-    for (size_t i = 0; i < pl.size(); i++) {
-        pl_.push_back(s2i(pl[i]));
-    }
-
+    ASSERT(parametrisation.get("N", N_));
+    ASSERT(parametrisation.get("pl", pl_));
 }
 
 ReducedGG::ReducedGG(size_t N_):
@@ -102,7 +85,12 @@ void ReducedGG::fill(grib_info &info) const  {
 
 atlas::Grid *ReducedGG::atlasGrid() const {
     if (pl_.size() > 0) {
-        return new atlas::grids::ReducedGaussianGrid(N_, &pl_[0]);
+        // FIXME: ask atlas to support long instead of int
+        std::vector<int> pl(pl_.size());
+        for(size_t i= 0; i < pl_.size(); i++) {
+            pl[i] = pl_[i];
+        }
+        return new atlas::grids::ReducedGaussianGrid(N_, &pl[0]);
     } else {
 #if 0
         eckit::StrStream os;

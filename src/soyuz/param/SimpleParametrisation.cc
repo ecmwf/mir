@@ -20,11 +20,10 @@
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/utils/Translator.h"
 
- #include "eckit/types/Types.h"
+#include "eckit/types/Types.h"
 
 template<class T>
-inline std::ostream& operator<<(std::ostream& s,const std::vector<T>& v)
-{
+inline std::ostream& operator<<(std::ostream& s,const std::vector<T>& v) {
     return eckit::__print_list(s,v);
 }
 
@@ -59,7 +58,7 @@ class TSettings : public Setting {
 //==========================================================
 
 class CannotConvert : public eckit::Exception {
-public:
+  public:
     CannotConvert(const char* from, const char* to, const std::string& name) {
         eckit::StrStream os;
         os << "Cannot convert from " << from << " to " << to << " (requesting " << name << ")" << eckit::StrStream::ends;

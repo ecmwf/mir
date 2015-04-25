@@ -83,7 +83,7 @@ class ReducedLL : public Gridded {
 
 // -- Members
 
-    std::vector<int> pl_;
+    std::vector<long> pl_;
 
 // -- Methods
     // None

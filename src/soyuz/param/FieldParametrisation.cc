@@ -128,7 +128,7 @@ bool FieldParametrisation::get(const std::string &name, std::string &value) cons
 
 template<class T>
 bool FieldParametrisation::_get(const std::string& name, T& value) const {
-    NOTIMP;
+    return lowLevelGet(name, value);
 }
 
 bool FieldParametrisation::get(const std::string& name, bool& value) const {

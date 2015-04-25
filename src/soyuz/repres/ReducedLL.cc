@@ -33,22 +33,7 @@ namespace repres {
 
 
 ReducedLL::ReducedLL(const param::MIRParametrisation &parametrisation) {
-    eckit::Translator<std::string, int> s2i;
-    std::string value;
-
-
-    // FIXME: Not the most efficient
-
-    ASSERT(parametrisation.get("pl", value));
-
-    eckit::Tokenizer parse("/");
-    std::vector<std::string> pl;
-    parse(value, pl);
-
-    pl_.reserve(pl.size());
-    for (size_t i = 0; i < pl.size(); i++) {
-        pl_.push_back(s2i(pl[i]));
-    }
+    ASSERT(parametrisation.get("pl", pl_));
 }
 
 
@@ -71,7 +56,12 @@ void ReducedLL::fill(grib_info &info) const  {
 }
 
 atlas::Grid* ReducedLL::atlasGrid() const {
-    return new atlas::grids::ReducedLonLatGrid(pl_.size(), &pl_[0], atlas::grids::ReducedLonLatGrid::INCLUDES_POLES);
+    // FIXME: ask atlas to support long instead of int
+    std::vector<int> pl(pl_.size());
+    for(size_t i= 0; i < pl_.size(); i++) {
+        pl[i] = pl_[i];
+    }
+    return new atlas::grids::ReducedLonLatGrid(pl.size(), &pl[0], atlas::grids::ReducedLonLatGrid::INCLUDES_POLES);
 }
 
 namespace {

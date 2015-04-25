@@ -239,7 +239,7 @@ bool GribInput::lowLevelGet(const std::string &name, std::string &value) const {
 
     // Special case for PL, FIXME when we have a better way
 
-    if(name == "pl") {
+    if (name == "pl") {
         size_t count = 0;
         int err = grib_get_size(grib_.get(), "pl", &count);
 
@@ -247,7 +247,7 @@ bool GribInput::lowLevelGet(const std::string &name, std::string &value) const {
             return false;
         }
 
-        if(err) {
+        if (err) {
             GRIB_ERROR(err, "pl");
         }
 
@@ -261,7 +261,7 @@ bool GribInput::lowLevelGet(const std::string &name, std::string &value) const {
         eckit::StrStream os;
 
         const char *sep = "";
-        for(size_t i = 0; i < count; i++) {
+        for (size_t i = 0; i < count; i++) {
             os << sep << values[i];
             sep = "/";
         }
@@ -305,15 +305,51 @@ bool GribInput::lowLevelGet(const std::string &name, std::string &value) const {
 bool GribInput::lowLevelGet(const std::string& name, bool& value) const {
     NOTIMP;
 }
+
 bool GribInput::lowLevelGet(const std::string& name, long& value) const {
-    NOTIMP;
+
+    int err = grib_get_long(grib_.get(), name.c_str(), &value);
+
+    if (err == GRIB_NOT_FOUND) {
+        return false;
+    }
+
+    if (err) {
+        GRIB_ERROR(err, name.c_str());
+    }
+
+eckit::Log::info() << "grib_get_long(" << name <<") " << value << std::endl;
+    return true;
 }
+
 bool GribInput::lowLevelGet(const std::string& name, double& value) const {
     NOTIMP;
 }
+
 bool GribInput::lowLevelGet(const std::string& name, std::vector<long>& value) const {
-    NOTIMP;
+    size_t count = 0;
+    int err = grib_get_size(grib_.get(), name.c_str(), &count);
+
+    if (err == GRIB_NOT_FOUND) {
+        return false;
+    }
+
+    if (err) {
+        GRIB_ERROR(err, name.c_str());
+    }
+
+    size_t size = count;
+
+    value.resize(count);
+
+    GRIB_CALL(grib_get_long_array(grib_.get(), name.c_str(), &value[0], &size));
+    ASSERT(count == size);
+
+    ASSERT(value.size());
+
+    return true;
 }
+
 bool GribInput::lowLevelGet(const std::string& name, std::vector<double>& value) const {
     NOTIMP;
 }
