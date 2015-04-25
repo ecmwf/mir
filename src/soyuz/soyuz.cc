@@ -56,10 +56,11 @@ void MIRDemo::run() {
     if (1) {
         mir::api::MIRJob job;
 
-        job.set("regular", "48");
+        // job.set("regular", "48");
                 // job.set("reduced", "640");
+        job.set("grid", "2/2");
 
-        mir::input::GribFileInput input("test.grib");
+        mir::input::GribFileInput input("sh.grib");
         mir::output::GribFileOutput output("result.grib");
 
         while (input.next()) {

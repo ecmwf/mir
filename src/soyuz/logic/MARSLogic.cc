@@ -49,7 +49,7 @@ void MARSLogic::prepare(std::vector<std::auto_ptr< action::Action > > &actions) 
 
     if (parametrisation_.has("field.spherical")) {
         if (parametrisation_.has("user.grid")) {
-#if 1
+#if 0
             add(actions, "transform.sh2regular-ll");
 #else
             // For now, thar's what we do
