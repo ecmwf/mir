@@ -48,12 +48,16 @@ ReducedGG::ReducedGG(const param::MIRParametrisation &parametrisation) {
     parse(value, pl);
 
     pl_.reserve(pl.size());
-    for(size_t i = 0; i < pl.size(); i++) {
+    for (size_t i = 0; i < pl.size(); i++) {
         pl_.push_back(s2i(pl[i]));
     }
 
 }
 
+ReducedGG::ReducedGG(int n):
+    n_(n) {
+
+}
 
 ReducedGG::ReducedGG() {
 }
@@ -73,8 +77,15 @@ void ReducedGG::fill(grib_info &info) const  {
     NOTIMP;
 }
 
-atlas::Grid* ReducedGG::atlasGrid() const {
-    return new atlas::grids::ReducedGaussianGrid(n_, &pl_[0]);
+atlas::Grid *ReducedGG::atlasGrid() const {
+    atlas::grids::load();
+    if (pl_.size() > 0) {
+        return new atlas::grids::ReducedGaussianGrid(n_, &pl_[0]);
+    } else {
+        eckit::StrStream os;
+        os << "reduced_gg.N" << n_ << eckit::StrStream::ends;
+        return atlas::Grid::create(std::string(os));
+    }
 }
 
 namespace {

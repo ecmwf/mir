@@ -31,62 +31,23 @@
 namespace mir {
 namespace action {
 
-static void transform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
+static void transform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid& grid) {
 
-
-    std::auto_ptr<atlas::grids::ReducedGaussianGrid> rgg;
-
-    // will be change to use factories
-    switch ( truncation ) {
-    case 63:
-        rgg.reset(  new atlas::grids::rgg::N32() );
-        break;
-
-    case 95:
-        rgg.reset(  new atlas::grids::rgg::N48() );
-        break;
-
-    case 159:
-        rgg.reset(  new atlas::grids::rgg::N80() );
-        break;
-
-    case 255:
-        rgg.reset(  new atlas::grids::rgg::N128() );
-        break;
-
-    case 511:
-        rgg.reset(  new atlas::grids::rgg::N256() );
-        break;
-
-    case 1279:
-        rgg.reset(  new atlas::grids::rgg::N640() );
-        break;
-
-    case 3999:
-        rgg.reset(  new atlas::grids::rgg::N2000() );
-        break;
-
-    case 7999:
-        rgg.reset(  new atlas::grids::rgg::N4000() );
-        break;
-
-    default:
+    const atlas::grids::ReducedGaussianGrid* rgg = dynamic_cast<const atlas::grids::ReducedGaussianGrid*>(&grid);
+    if(!rgg) {
         NOTIMP;
-        break;
     }
 
-    //long gaussN = (truncation + 1) / 2;  // assumption: linear grid
-
-
-    // prepare Trans object
 
     std::vector<int> nloen(rgg->npts_per_lat());
-
+    for(int i = 0; i < nloen.size(); i++) {
+        std::cout << i << " " << nloen[i] << std::endl;
+    }
 
     struct Trans_t trans = new_trans();
 
     trans.ndgl  = nloen.size();
-    trans.nloen = nloen.data();
+    trans.nloen = &nloen[0];
 
     long maxtr = 0; // p["MaxTruncation"];
 
@@ -152,9 +113,10 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     }
 
 
+    // FIXME: double memory free happening
 
-    trans_delete(&trans);
-    trans_finalize();
+    //trans_delete(&trans);
+    //trans_finalize();
 }
 
 
@@ -187,14 +149,19 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
     repres::Representation *out = outputRepresentation(field.representation());
 
     try {
-        std::auto_ptr<atlas::Grid> grid(0);
-        // std::auto_ptr<atlas::Grid> grid(out->atlasGrid());
+        std::auto_ptr<atlas::Grid> grid(out->atlasGrid());
         transform(in->truncation(), values, result, *grid);
     } catch (...) {
         delete out;
         throw;
     }
 
+    for(size_t i = 0; i < result.size(); ++i) {
+        std::cout << result[i] << std::endl;
+        if(i > 10) {
+            break;
+        }
+    }
     // field.representation(out);
 }
 

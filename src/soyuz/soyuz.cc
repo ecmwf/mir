@@ -57,6 +57,7 @@ void MIRDemo::run() {
         mir::api::MIRJob job;
 
         job.set("reduced", "48");
+                // job.set("reduced", "640");
 
         mir::input::GribFileInput input("/tmp/sh.grib");
         mir::output::GribFileOutput output("result.grib");

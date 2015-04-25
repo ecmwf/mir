@@ -17,6 +17,9 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/utils/Translator.h"
+#include "soyuz/param/MIRParametrisation.h"
+#include "soyuz/repres/ReducedGG.h"
 
 
 namespace mir {
@@ -38,7 +41,11 @@ void Sh2ReducedGG::print(std::ostream& out) const {
 
 
 repres::Representation* Sh2ReducedGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    return 0;
+    eckit::Translator<std::string, int> s2i;
+    std::string value;
+
+    ASSERT(parametrisation_.get("user.reduced", value));
+    return new repres::ReducedGG(s2i(value));
 }
 
 
