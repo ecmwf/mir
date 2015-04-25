@@ -298,6 +298,22 @@ bool GribInput::lowLevelGet(const std::string &name, std::string &value) const {
 }
 
 
+bool GribInput::lowLevelGet(const std::string& name, bool& value) const {
+    NOTIMP;
+}
+bool GribInput::lowLevelGet(const std::string& name, long& value) const {
+    NOTIMP;
+}
+bool GribInput::lowLevelGet(const std::string& name, double& value) const {
+    NOTIMP;
+}
+bool GribInput::lowLevelGet(const std::string& name, std::vector<long>& value) const {
+    NOTIMP;
+}
+bool GribInput::lowLevelGet(const std::string& name, std::vector<double>& value) const {
+    NOTIMP;
+}
+
 bool GribInput::handle(grib_handle *h) {
     grib_.reset(h);
     cache_.clear();

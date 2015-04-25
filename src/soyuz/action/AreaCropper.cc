@@ -34,21 +34,12 @@ namespace action {
 AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
     bbox_() {
-    std::string value;
+
+    std::vector<double> value;
     ASSERT(parametrisation.get("user.area", value));
+    ASSERT(value.size() == 4);
 
-    std::vector<std::string> result;
-    eckit::Tokenizer parse("/");
-
-    parse(value, result);
-    ASSERT(result.size() == 4);
-
-    bbox_ = util::BoundingBox(
-                eckit::Translator<std::string, double>()(result[0]),
-                eckit::Translator<std::string, double>()(result[1]),
-                eckit::Translator<std::string, double>()(result[2]),
-                eckit::Translator<std::string, double>()(result[3])
-            );
+    bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
 }
 
 

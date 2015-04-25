@@ -122,6 +122,52 @@ bool FieldParametrisation::get(const std::string &name, std::string &value) cons
     return lowLevelGet(name, value);
 }
 
+template<class T>
+bool FieldParametrisation::_get(const std::string& name, T& value) const {
+    NOTIMP;
+}
+
+bool FieldParametrisation::get(const std::string& name, bool& value) const {
+    return _get(name, value);
+}
+
+bool FieldParametrisation::get(const std::string& name, long& value) const {
+    return _get(name, value);
+}
+
+bool FieldParametrisation::get(const std::string& name, double& value) const {
+    return _get(name, value);
+}
+
+bool FieldParametrisation::get(const std::string& name, std::vector<long>& value) const {
+    return _get(name, value);
+}
+
+bool FieldParametrisation::get(const std::string& name, std::vector<double>& value) const {
+    return _get(name, value);
+}
+
+bool FieldParametrisation::lowLevelGet(const std::string& name, bool& value) const {
+    NOTIMP;
+}
+
+bool FieldParametrisation::lowLevelGet(const std::string& name, long& value) const {
+    NOTIMP;
+}
+
+bool FieldParametrisation::lowLevelGet(const std::string& name, double& value) const {
+    NOTIMP;
+}
+
+bool FieldParametrisation::lowLevelGet(const std::string& name, std::vector<long>& value) const {
+    NOTIMP;
+}
+
+bool FieldParametrisation::lowLevelGet(const std::string& name, std::vector<double>& value) const {
+    NOTIMP;
+}
+
+
 
 }  // namespace param
 }  // namespace mir

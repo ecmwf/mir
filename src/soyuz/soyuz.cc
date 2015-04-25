@@ -60,7 +60,7 @@ void MIRDemo::run() {
                 // job.set("reduced", "640");
         job.set("grid", "2/2");
 
-        mir::input::GribFileInput input("sh.grib");
+        mir::input::GribFileInput input("test.grib");
         mir::output::GribFileOutput output("result.grib");
 
         while (input.next()) {

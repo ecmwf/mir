@@ -15,6 +15,8 @@
 
 #include <iostream>
 
+#include "eckit/exception/Exceptions.h"
+
 #include "soyuz/param/MIRCombinedParametrisation.h"
 
 
@@ -42,27 +44,52 @@ void MIRCombinedParametrisation::print(std::ostream& out) const {
         << user_ <<
         ",metadata=" << metadata_ <<
         ",configuration=" << configuration_ <<
-        ",defaults=" << defaults_ <<"]";
+        ",defaults=" << defaults_ << "]";
 }
 
 
-bool MIRCombinedParametrisation::get(const std::string& name, std::string& value) const {
+template<class T>
+bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
 
-    if(name.find("user.") == 0) {
+    if (name.find("user.") == 0) {
         return user_.get(name.substr(5), value);
     }
 
-    if(name.find("field.") == 0) {
+    if (name.find("field.") == 0) {
         return metadata_.get(name.substr(6), value);
     }
 
     // This could be a loop
-    if(user_.get(name, value)) return true;
-    if(metadata_.get(name, value)) return true;
-    if(configuration_.get(name, value)) return true;
-    if(defaults_.get(name, value)) return true;
+    if (user_.get(name, value)) return true;
+    if (metadata_.get(name, value)) return true;
+    if (configuration_.get(name, value)) return true;
+    if (defaults_.get(name, value)) return true;
 
     return false;
+}
+
+bool MIRCombinedParametrisation::get(const std::string& name, std::string& value) const {
+    return _get(name, value);
+}
+
+bool MIRCombinedParametrisation::get(const std::string& name, bool& value) const {
+    return _get(name, value);
+}
+
+bool MIRCombinedParametrisation::get(const std::string& name, long& value) const {
+    return _get(name, value);
+}
+
+bool MIRCombinedParametrisation::get(const std::string& name, double& value) const {
+    return _get(name, value);
+}
+
+bool MIRCombinedParametrisation::get(const std::string& name, std::vector<long>& value) const {
+    return _get(name, value);
+}
+
+bool MIRCombinedParametrisation::get(const std::string& name, std::vector<double>& value) const {
+    return _get(name, value);
 }
 
 

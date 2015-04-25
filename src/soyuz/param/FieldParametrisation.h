@@ -68,7 +68,11 @@ class FieldParametrisation : public MIRParametrisation {
 // -- Overridden methods
     // From MIRParametrisation
     virtual bool get(const std::string& name, std::string& value) const;
-
+    virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, double& value) const;
+    virtual bool get(const std::string& name, std::vector<long>& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
 // -- Class members
     // None
 
@@ -86,8 +90,19 @@ class FieldParametrisation : public MIRParametrisation {
     // None
 
 // -- Methods
-    virtual bool lowLevelGet(const std::string& name, std::string& value) const = 0;
 
+    template<class T>
+    bool _get(const std::string&, T&) const;
+
+    template<class T>
+    bool _low(const std::string&, T&) const;
+
+    virtual bool lowLevelGet(const std::string& name, std::string& value) const = 0;
+    virtual bool lowLevelGet(const std::string& name, bool& value) const;
+    virtual bool lowLevelGet(const std::string& name, long& value) const;
+    virtual bool lowLevelGet(const std::string& name, double& value) const;
+    virtual bool lowLevelGet(const std::string& name, std::vector<long>& value) const;
+    virtual bool lowLevelGet(const std::string& name, std::vector<double>& value) const;
 // -- Overridden methods
 
 // -- Class members

@@ -17,8 +17,7 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/utils/Translator.h"
+
 
 #include "soyuz/repres/RegularLL.h"
 #include "soyuz/param/MIRParametrisation.h"
@@ -43,20 +42,12 @@ void Gridded2RegularLL::print(std::ostream &out) const {
 
 
 repres::Representation *Gridded2RegularLL::outputRepresentation(const repres::Representation *inputRepres) const {
-    eckit::Translator<std::string, double> s2d;
-    std::string value;
+    std::vector<double> value;
 
     ASSERT(parametrisation_.get("user.grid", value));
 
-    eckit::Tokenizer parse("/");
-
-    std::vector<std::string> s;
-    parse(value, s);
-
-    ASSERT(s.size() == 2);
-
-    double we = s2d(s[0]);
-    double ns = s2d(s[1]);
+    double we = value[0];
+    double ns = value[1];
 
     return new repres::RegularLL(util::BoundingBox(90, 0, -90, 360 - we), ns, we);
 }

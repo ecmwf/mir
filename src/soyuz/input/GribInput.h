@@ -106,7 +106,12 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     virtual grib_handle *gribHandle() const;
 
     // From FieldParametrisation
-    bool lowLevelGet(const std::string &name, std::string &value) const;
+    virtual bool lowLevelGet(const std::string &name, std::string &value) const;
+    virtual bool lowLevelGet(const std::string& name, bool& value) const;
+    virtual bool lowLevelGet(const std::string& name, long& value) const;
+    virtual bool lowLevelGet(const std::string& name, double& value) const;
+    virtual bool lowLevelGet(const std::string& name, std::vector<long>& value) const;
+    virtual bool lowLevelGet(const std::string& name, std::vector<double>& value) const;
 
     // -- Class members
     // None

@@ -100,7 +100,11 @@ class MIRCombinedParametrisation : public MIRParametrisation {
     // From MIRParametrisation
     virtual void print(std::ostream&) const;
     virtual bool get(const std::string&, std::string&) const;
-
+    virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, double& value) const;
+    virtual bool get(const std::string& name, std::vector<long>& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
 // -- Class members
     // None
 
