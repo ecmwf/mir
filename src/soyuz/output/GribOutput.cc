@@ -84,9 +84,8 @@ void GribOutput::save(const param::MIRParametrisation &param, input::MIRInput &i
     info.packing.packing = GRIB_UTIL_PACKING_SAME_AS_INPUT;
     info.packing.accuracy = GRIB_UTIL_ACCURACY_SAME_BITS_PER_VALUES_AS_INPUT;
 
-    std::string value;
-    if (param.get("accuracy", value)) {
-        long bits = eckit::Translator<std::string, long>()(value);
+    long bits;
+    if (param.get("accuracy", bits)) {
         info.packing.accuracy = GRIB_UTIL_ACCURACY_USE_PROVIDED_BITS_PER_VALUES;
         info.packing.bitsPerValue = bits;
     }

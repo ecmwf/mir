@@ -34,10 +34,7 @@ namespace action {
 FrameFilter::FrameFilter(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
     size_(0) {
-
-    std::string size;
-    ASSERT(parametrisation.get("frame", size));
-    size_ = eckit::Translator<std::string, long>()(size);
+    ASSERT(parametrisation.get("frame", size_));
 }
 
 

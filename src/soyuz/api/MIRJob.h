@@ -16,12 +16,10 @@
 #ifndef MIRJob_H
 #define MIRJob_H
 
-#include <map>
 #include <string>
 
-#include "eckit/memory/NonCopyable.h"
 
-#include "soyuz/param/MIRParametrisation.h"
+#include "soyuz/param/SimpleParametrisation.h"
 
 
 namespace mir {
@@ -34,7 +32,7 @@ class MIROutput;
 namespace api {
 
 
-class MIRJob : public param::MIRParametrisation, public eckit::NonCopyable {
+class MIRJob : public param::SimpleParametrisation {
   public:
 
 // -- Exceptions
@@ -58,7 +56,13 @@ class MIRJob : public param::MIRParametrisation, public eckit::NonCopyable {
 
     void execute(input::MIRInput&, output::MIROutput&) const;
 
-    void set(const std::string&, const std::string&);
+    void set(const std::string& name, const char* value);
+    void set(const std::string& name, const std::string& value);
+    void set(const std::string& name, bool value);
+    void set(const std::string& name, long value);
+    void set(const std::string& name, double value);
+    void set(const std::string& name, double v1, double v2);
+    void set(const std::string& name, double v1, double v2, double v3, double v4);
 
 // -- Overridden methods
     // None
@@ -92,7 +96,6 @@ class MIRJob : public param::MIRParametrisation, public eckit::NonCopyable {
 
 // -- Members
 
-    std::map<std::string, std::string> settings_;
 
 // -- Methods
 
@@ -103,7 +106,6 @@ class MIRJob : public param::MIRParametrisation, public eckit::NonCopyable {
     // From MIRParametrisation
 
     virtual void print(std::ostream&) const;
-    virtual bool get(const std::string&, std::string&) const;
 
 // -- Class members
     // None

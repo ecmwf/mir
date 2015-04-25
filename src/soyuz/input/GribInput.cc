@@ -85,6 +85,10 @@ grib_handle *GribInput::gribHandle() const {
     return grib_.get();
 }
 
+bool GribInput::lowLevelHas(const std::string &name) const {
+    std::string dummy;
+    return get(name, dummy);
+}
 
 bool GribInput::lowLevelGet(const std::string &name, std::string &value) const {
 

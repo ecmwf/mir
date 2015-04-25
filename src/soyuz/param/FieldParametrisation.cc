@@ -30,6 +30,10 @@ FieldParametrisation::~FieldParametrisation() {
 }
 
 
+bool FieldParametrisation::has(const std::string &name) const {
+    return lowLevelHas(name);
+}
+
 bool FieldParametrisation::get(const std::string &name, std::string &value) const {
 
     // This are the keywork that must be replied to

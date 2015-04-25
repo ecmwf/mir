@@ -44,7 +44,7 @@ void MIRDemo::run() {
         mir::input::GribFileInput input(eckit::Context::instance().argv(1));
         mir::output::GribFileOutput output(eckit::Context::instance().argv(2));
 
-        job.set("grid", "2/2");
+        job.set("grid", 2, 2);
 
         while (input.next()) {
             job.execute(input, output);
@@ -53,12 +53,28 @@ void MIRDemo::run() {
         return;
     }
 
-    if (1) {
+    if (0) {
         mir::api::MIRJob job;
 
         // job.set("regular", "48");
                 // job.set("reduced", "640");
-        job.set("grid", "2/2");
+        job.set("grid", 2, 2);
+
+        mir::input::GribFileInput input("test.grib");
+        mir::output::GribFileOutput output("result.grib");
+
+        while (input.next()) {
+            job.execute(input, output);
+        }
+    }
+
+    if (1) {
+        mir::api::MIRJob job;
+// job.set("grid", "6/6");
+        job.set("area", 80, -20, 35, 45);
+        // job.set("bitmap", "test.bitmap");
+        job.set("accuracy", 8L);
+        job.set("frame", 3L);
 
         mir::input::GribFileInput input("test.grib");
         mir::output::GribFileOutput output("result.grib");
@@ -71,27 +87,11 @@ void MIRDemo::run() {
     if (0) {
         mir::api::MIRJob job;
 
-        job.set("area", "80/-20/35/45");
-        job.set("bitmap", "test.bitmap");
-        job.set("accuracy", "8");
-        job.set("frame", "3");
-
-        mir::input::GribFileInput input("test.grib");
-        mir::output::GribFileOutput output("result.grib");
-
-        while (input.next()) {
-            job.execute(input, output);
-        }
-    }
-
-    if (0) {
-        mir::api::MIRJob job;
-
-        // job.set("grid", "10/10");
-        job.set("area", "80/-20/35/45");
-        // job.set("frame", "3");
-        // job.set("regular", "80");
-        // job.set("reduced", "80");
+        // job.set("grid", 10, 10);
+        job.set("area", 80, -20, 35, 45);
+        // job.set("frame", 3);
+        // job.set("regular", 80);
+        // job.set("reduced", 80);
 
         mir::input::GribFileInput input("/tmp/test.grib");
         mir::output::GribFileOutput output("ll.grib");
@@ -104,8 +104,8 @@ void MIRDemo::run() {
     if (0) {
         mir::api::MIRJob job;
 
-        job.set("accuracy", "24");
-        job.set("frame", "10");
+        job.set("accuracy", 24L);
+        job.set("frame", 10L);
 
         mir::input::NetcdfFileInput input("test.nc", "z");
         mir::output::GribFileOutput output("netcdf.grib");
@@ -117,8 +117,8 @@ void MIRDemo::run() {
     if (0) {
         mir::api::MIRJob job;
 
-        job.set("accuracy", "24");
-        job.set("frame", "10");
+        job.set("accuracy", 24L);
+        job.set("frame", 10L);
 
         mir::input::DummyInput input;
         mir::output::DummyOutput output;
@@ -130,8 +130,8 @@ void MIRDemo::run() {
     if (0) {
         mir::api::MIRJob job;
 
-        job.set("accuracy", "24");
-        job.set("frame", "10");
+        job.set("accuracy", 24L);
+        job.set("frame", 10L);
 
         mir::input::DummyInput input;
         mir::output::GribFileOutput output("dummy.grib");

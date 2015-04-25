@@ -84,7 +84,7 @@ class FrameFilter : public Action {
 
 // -- Members
 
-    size_t size_;
+    long size_;
 
 // -- Methods
     // None

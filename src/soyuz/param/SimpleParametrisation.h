@@ -13,17 +13,22 @@
 /// @date Apr 2015
 
 
-#ifndef MIRCombinedParametrisation_H
-#define MIRCombinedParametrisation_H
+#ifndef SimpleParametrisation_H
+#define SimpleParametrisation_H
 
 #include "soyuz/param/MIRParametrisation.h"
+#include <string>
+#include <map>
+#include <set>
 
 
 namespace mir {
 namespace param {
 
 
-class MIRCombinedParametrisation : public MIRParametrisation {
+class Setting;
+
+class SimpleParametrisation : public MIRParametrisation {
   public:
 
 // -- Exceptions
@@ -31,14 +36,11 @@ class MIRCombinedParametrisation : public MIRParametrisation {
 
 // -- Contructors
 
-    MIRCombinedParametrisation(const MIRParametrisation& user,
-                               const MIRParametrisation& metadata,
-                               const MIRParametrisation& configuration,
-                               const MIRParametrisation& defaults);
+    SimpleParametrisation();
 
 // -- Destructor
 
-    ~MIRCombinedParametrisation(); // Change to virtual if base class
+    virtual ~SimpleParametrisation(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -48,6 +50,8 @@ class MIRCombinedParametrisation : public MIRParametrisation {
 
 // -- Methods
     // None
+
+
 
 // -- Overridden methods
     // None
@@ -61,11 +65,21 @@ class MIRCombinedParametrisation : public MIRParametrisation {
   protected:
 
 // -- Members
-    // None
+
 
 // -- Methods
 
-    // void print(ostream&) const; // Change to virtual if base class
+    // virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+
+    void set(const std::string& name, const char* value);
+    void set(const std::string& name, const std::string& value);
+    void set(const std::string& name, bool value);
+    void set(const std::string& name, long value);
+    void set(const std::string& name, double value);
+    void set(const std::string& name, std::vector<long>& value);
+    void set(const std::string& name, std::vector<double>& value);
+
+    size_t size() const;
 
 // -- Overridden methods
     // None
@@ -80,33 +94,35 @@ class MIRCombinedParametrisation : public MIRParametrisation {
 
 // No copy allowed
 
-    MIRCombinedParametrisation(const MIRCombinedParametrisation&);
-    MIRCombinedParametrisation& operator=(const MIRCombinedParametrisation&);
+    SimpleParametrisation(const SimpleParametrisation&);
+    SimpleParametrisation& operator=(const SimpleParametrisation&);
 
 // -- Members
-    const MIRParametrisation& user_;
-    const MIRParametrisation& metadata_;
-    const MIRParametrisation& configuration_;
-    const MIRParametrisation& defaults_;
+
+    std::map<std::string, Setting*> settings_;
+
 
 // -- Methods
     // None
 
-    template<class T>
-    bool _get(const std::string&, T&) const;
-
 // -- Overridden methods
+    // None
 
-    // From MIRParametrisation
-    virtual void print(std::ostream&) const;
-    virtual bool get(const std::string&, std::string&) const;
+
+    virtual bool has(const std::string& name) const;
+
+    template<class T>
+    bool _get(const std::string& name, T& value) const;
+
+    template<class T>
+    void _set(const std::string& name, const T& value);
+
+    virtual bool get(const std::string& name, std::string& value) const;
     virtual bool get(const std::string& name, bool& value) const;
     virtual bool get(const std::string& name, long& value) const;
     virtual bool get(const std::string& name, double& value) const;
     virtual bool get(const std::string& name, std::vector<long>& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
-
-    virtual bool has(const std::string& name) const;
 
 // -- Class members
     // None
@@ -116,8 +132,10 @@ class MIRCombinedParametrisation : public MIRParametrisation {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const MIRCombinedParametrisation& p)
-    //	{ p.print(s); return s; }
+    // friend std::ostream& operator<<(std::ostream& s,const SimpleParametrisation& p) {
+    //     p.print(s);
+    //     return s;
+    // }
 
 };
 

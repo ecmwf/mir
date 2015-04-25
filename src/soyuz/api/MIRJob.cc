@@ -46,7 +46,7 @@ MIRJob::~MIRJob() {
 
 void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
     // Optimisation: nothing to do, usefull for MARS
-    if(settings_.size() == 0) {
+    if (size() == 0) {
         eckit::Log::info() << "Nothing to do (no request)" << std::endl;
         output.copy(*this, input);
         return;
@@ -82,7 +82,7 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
     eckit::Log::info() << "Actions are: " << std::endl;
     std::string arrow = "   ";
-    for(std::vector<std::auto_ptr< action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
+    for (std::vector<std::auto_ptr< action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
         eckit::Log::info() << arrow << *(*j);
         arrow = " => ";
     }
@@ -95,7 +95,7 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
     field->representation(repres::RepresentationFactory::build(metadata));
     eckit::Log::info() << "Representation is " << *(field->representation()) << std::endl;
 
-    for(std::vector<std::auto_ptr< action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
+    for (std::vector<std::auto_ptr< action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
         eckit::Log::info() << "Execute: " << *(*j) << std::endl;
         (*j)->execute(*field);
     }
@@ -107,42 +107,72 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
 void MIRJob::print(std::ostream& out) const {
     out << "MIRJob[";
-    const char* sep = "";
-    for(std::map<std::string, std::string>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-        out << sep;
-        out << (*j).first << "=" << (*j).second;
-        sep = ",";
-    }
+    // const char* sep = "";
+    // for(std::set<std::string>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+    //     out << sep;
+    //     out << (*j).first << "=" << (*j).second;
+    //     sep = ",";
+    // }
     out << "]";
 }
 
-
 void MIRJob::set(const std::string& name, const std::string& value) {
-    eckit::Log::info() << "************* MIRJob::set [" << name << "] =  [" << value << "]" << std::endl;
-    settings_[name] = value;
+    eckit::Log::info() << "************* MIRJob::set [" << name << "] =  [" << value << "] (string)" << std::endl;
+    SimpleParametrisation::set(name, value);
+}
+
+void MIRJob::set(const std::string& name, const char* value) {
+    eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (char)" << std::endl;
+    SimpleParametrisation::set(name, value);
+}
+
+void MIRJob::set(const std::string& name, bool value) {
+    eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (bool)" << std::endl;
+    SimpleParametrisation::set(name, value);
 }
 
 
-bool MIRJob::get(const std::string& name, std::string& value) const {
-    std::map<std::string, std::string>::const_iterator j = settings_.find(name);
-    if(j != settings_.end()) {
-        value = (*j).second;
-        return true;
-    }
-    return false;
+void MIRJob::set(const std::string& name, long value) {
+    eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (long)" << std::endl;
+    SimpleParametrisation::set(name, value);
+}
+
+
+void MIRJob::set(const std::string& name, double value) {
+    eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (double)" << std::endl;
+    SimpleParametrisation::set(name, value);
+}
+
+void MIRJob::set(const std::string& name, double v1, double v2) {
+    eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << v1 << ", "  << v2 << "] (double)" << std::endl;
+    std::vector<double> v(2);
+    v[0] = v1;
+    v[1] = v2;
+    SimpleParametrisation::set(name, v);
+}
+
+void MIRJob::set(const std::string& name, double v1, double v2, double v3, double v4) {
+    eckit::Log::info() << "************* MIRJob::set [" << name << "] =  [" << v1
+                       << ", "  << v2 << ", "  << v3 << ", "  << v4 << "] (double)" << std::endl;
+    std::vector<double> v(4);
+    v[0] = v1;
+    v[1] = v2;
+    v[2] = v3;
+    v[3] = v4;
+    SimpleParametrisation::set(name, v);
 }
 
 
 bool MIRJob::matches(const param::MIRParametrisation& metadata) const {
 
     static const char* force[] = { "bitmap", "frame", "packing", "accuracy", 0 }; // More to add
-
-    for(std::map<std::string, std::string>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+#if 0
+    for (std::map<std::string, std::string>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
         eckit::Log::info() << "Check if " << (*j).first << "=" << (*j).second << " triggers interpolation" << std::endl;
         // Check for keywords that triggers
         size_t i = 0;
-        while(force[i]) {
-            if((*j).first == force[i]) {
+        while (force[i]) {
+            if ((*j).first == force[i]) {
                 eckit::Log::info() << "    Yes. (Forced)" << std::endl;
                 return false;
             }
@@ -151,18 +181,21 @@ bool MIRJob::matches(const param::MIRParametrisation& metadata) const {
 
         // Check if same a field
         std::string value;
-        if(metadata.get((*j).first, value)) {
-            if(value != (*j).second) {
+        if (metadata.get((*j).first, value)) {
+            if (value != (*j).second) {
                 eckit::Log::info() << "    Yes. Field is " << value << std::endl;
                 return false;
             }
         }
 
-        eckit::Log::info() << "-"<< std::endl;
+        eckit::Log::info() << "-" << std::endl;
 
     }
 
     return true;
+#else
+    return false;
+#endif
 }
 
 

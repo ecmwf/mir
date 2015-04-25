@@ -48,16 +48,12 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
         }
 
         if (strcasecmp(name, "grid") == 0) {
-            eckit::StrStream os;
-            os << reals[0] << "/" << reals[1] << eckit::StrStream::ends;
-            job->set("grid", std::string(os));
+            job->set("grid", reals[0], reals[1]);
             return 0;
         }
 
         if (strcasecmp(name, "area") == 0) {
-            eckit::StrStream os;
-            os << reals[0] << "/" << reals[1] << "/" << reals[2] << "/" << reals[3] << eckit::StrStream::ends;
-            job->set("area", std::string(os));
+            job->set("area", reals[0] ,  reals[1] ,reals[2] , reals[3]);
             return 0;
         }
 
@@ -67,30 +63,22 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
         // }
 
         if (strcasecmp(name, "reduced") == 0) {
-            eckit::StrStream os;
-            os << ints[0] << eckit::StrStream::ends;
-            job->set("reduced", std::string(os));
+            job->set("reduced",long(ints[0]));
             return 0;
         }
 
         if (strcasecmp(name, "truncation") == 0) {
-            eckit::StrStream os;
-            os << ints[0] << eckit::StrStream::ends;
-            job->set("truncation", std::string(os));
+            job->set("truncation", long(ints[0]));
             return 0;
         }
 
         if (strcasecmp(name, "regular") == 0) {
-            eckit::StrStream os;
-            os << ints[0] << eckit::StrStream::ends;
-            job->set("regular", std::string(os));
+            job->set("regular", long(ints[0]));
             return 0;
         }
 
         if (strcasecmp(name, "rotation") == 0) {
-            eckit::StrStream os;
-            os << reals[0] << "/" << reals[1] << eckit::StrStream::ends;
-            job->set("rotation", std::string(os));
+            job->set("rotation", double(reals[0]) , double(reals[1]));
             return 0;
         }
 
@@ -120,9 +108,7 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
         }
 
         if (strcasecmp(name, "frame") == 0) {
-            eckit::StrStream os;
-            os << ints[0] << eckit::StrStream::ends;
-            job->set("frame", std::string(os));
+            job->set("frame", long(ints[0]));
             return 0;
         }
 

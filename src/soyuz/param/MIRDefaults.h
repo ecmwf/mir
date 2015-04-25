@@ -16,17 +16,16 @@
 #ifndef MIRDefaults_H
 #define MIRDefaults_H
 
-#include <map>
 #include <string>
 
-#include "soyuz/param/MIRParametrisation.h"
+#include "soyuz/param/SimpleParametrisation.h"
 
 
 namespace mir {
 namespace param {
 
 
-class MIRDefaults : public MIRParametrisation {
+class MIRDefaults : public SimpleParametrisation {
   public:
 
 // -- Exceptions
@@ -84,7 +83,6 @@ class MIRDefaults : public MIRParametrisation {
     MIRDefaults& operator=(const MIRDefaults&);
 
 // -- Members
-    std::map<std::string, std::string> defaults_;
 
 // -- Methods
     // None
@@ -93,7 +91,6 @@ class MIRDefaults : public MIRParametrisation {
 
     // From MIRParametrisation
     virtual void print(std::ostream&) const;
-    virtual bool get(const std::string&, std::string&) const;
 
 // -- Class members
     // None

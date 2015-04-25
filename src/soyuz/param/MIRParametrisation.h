@@ -48,7 +48,7 @@ class MIRParametrisation {
 // -- Methods
     // None
 
-    virtual bool has(const std::string& name) const;
+    virtual bool has(const std::string& name) const = 0;
     virtual bool get(const std::string& name, std::string& value) const = 0;
     virtual bool get(const std::string& name, bool& value) const;
     virtual bool get(const std::string& name, long& value) const;

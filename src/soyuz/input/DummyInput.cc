@@ -63,6 +63,9 @@ void DummyInput::print(std::ostream &out) const {
     out << "DummyInput[...]";
 }
 
+bool DummyInput::lowLevelHas(const std::string& name) const {
+    return settings_.find(name) != settings_.end();
+}
 
 bool DummyInput::lowLevelGet(const std::string &name, std::string &value) const {
     std::map<std::string, std::string>::const_iterator j = settings_.find(name);

@@ -48,6 +48,25 @@ void MIRCombinedParametrisation::print(std::ostream& out) const {
 }
 
 
+bool MIRCombinedParametrisation::has(const std::string& name) const {
+
+    if (name.find("user.") == 0) {
+        return user_.has(name.substr(5));
+    }
+
+    if (name.find("field.") == 0) {
+        return metadata_.has(name.substr(6));
+    }
+
+    // This could be a loop
+    if (user_.has(name)) return true;
+    if (metadata_.has(name)) return true;
+    if (configuration_.has(name)) return true;
+    if (defaults_.has(name)) return true;
+
+    return false;
+}
+
 template<class T>
 bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
 

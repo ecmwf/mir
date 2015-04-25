@@ -157,6 +157,10 @@ data::MIRField *NetcdfFileInput::field() const {
 }
 
 
+bool NetcdfFileInput::lowLevelHas(const std::string& name) const {
+    return false;
+}
+
 bool NetcdfFileInput::lowLevelGet(const std::string &name, std::string &value) const {
 
     if (name == "gridType") {

@@ -23,7 +23,7 @@ namespace param {
 
 
 MIRConfiguration::MIRConfiguration() {
-    // TODO: Read a file
+    // TODO: Read a file and call 'set(name, value)'
 }
 
 
@@ -35,15 +35,6 @@ void MIRConfiguration::print(std::ostream& out) const {
     out << "MIRConfiguration[...]";
 }
 
-
-bool MIRConfiguration::get(const std::string& name, std::string& value) const {
-    std::map<std::string, std::string>::const_iterator j = settings_.find(name);
-    if(j != settings_.end()) {
-        value = (*j).second;
-        return true;
-    }
-    return false;
-}
 
 
 }  // namespace param

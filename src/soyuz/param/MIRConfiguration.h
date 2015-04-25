@@ -19,14 +19,14 @@
 #include <map>
 #include <string>
 
-#include "soyuz/param/MIRParametrisation.h"
+#include "soyuz/param/SimpleParametrisation.h"
 
 
 namespace mir {
 namespace param {
 
 
-class MIRConfiguration : public MIRParametrisation {
+class MIRConfiguration : public SimpleParametrisation {
   public:
 
 // -- Exceptions
@@ -85,8 +85,6 @@ class MIRConfiguration : public MIRParametrisation {
 
 // -- Members
 
-    std::map<std::string, std::string> settings_;
-
 // -- Methods
     // None
 
@@ -94,7 +92,6 @@ class MIRConfiguration : public MIRParametrisation {
 
     // From MIRParametrisation
     virtual void print(std::ostream&) const;
-    virtual bool get(const std::string&, std::string&) const;
 
 // -- Class members
     // None

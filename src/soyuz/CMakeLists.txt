@@ -92,6 +92,8 @@ list( APPEND mir_srcs
       param/MIRDefaults.h
       param/MIRParametrisation.cc
       param/MIRParametrisation.h
+      param/SimpleParametrisation.cc
+      param/SimpleParametrisation.h
       repres/Albers.cc
       repres/Albers.h
       repres/AzimuthRange.cc
@@ -152,7 +154,7 @@ list( APPEND mir_srcs
       util/Arguments.h
       util/Bitmap.cc
       util/Bitmap.h
-      util/BoundingBox.cc 
+      util/BoundingBox.cc
       util/BoundingBox.h
       util/Grib.h)
 
