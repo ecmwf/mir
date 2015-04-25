@@ -125,7 +125,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     //trans_finalize();
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported."
-        " Please recompile ATLAS was not compiled with TRANS support.");
+                            " Please recompile ATLAS was not compiled with TRANS support.");
 #endif
 }
 

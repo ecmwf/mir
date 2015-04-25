@@ -134,16 +134,16 @@ void GribOutput::save(const param::MIRParametrisation &param, input::MIRInput &i
     for(size_t i = 0; i < info.packing.extra_settings_count; i++) {
         X(info.packing.extra_settings[i].name);
         switch(info.packing.extra_settings[i].type) {
-            case GRIB_TYPE_LONG:
-                X(info.packing.extra_settings[i].long_value);
-                break;
-                case GRIB_TYPE_DOUBLE:
-                X(info.packing.extra_settings[i].double_value);
-                break;
-                case GRIB_TYPE_STRING:
-                X(info.packing.extra_settings[i].string_value);
-                break;
-            }
+        case GRIB_TYPE_LONG:
+            X(info.packing.extra_settings[i].long_value);
+            break;
+        case GRIB_TYPE_DOUBLE:
+            X(info.packing.extra_settings[i].double_value);
+            break;
+        case GRIB_TYPE_STRING:
+            X(info.packing.extra_settings[i].string_value);
+            break;
+        }
 
     }
 
