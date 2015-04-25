@@ -1,0 +1,15 @@
+#ifndef mir_config_h
+#define mir_config_h
+
+#include "mir/mir_ecbuild_config.h"
+
+#include "mir/mir_version.h"
+
+// dependencies
+
+#cmakedefine ATLAS_HAVE_TRANS
+
+// C++11 support
+
+
+#endif // mir_config_h
