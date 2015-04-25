@@ -41,12 +41,8 @@ void Sh2ReducedGG::print(std::ostream& out) const {
 
 
 repres::Representation* Sh2ReducedGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    eckit::Translator<std::string, size_t> s2i;
-    std::string value;
-
-    ASSERT(parametrisation_.get("user.reduced", value));
-    size_t N = s2i(value);
-
+    long N;
+    ASSERT(parametrisation_.get("user.reduced", N));
     return new repres::ReducedGG(N);
 }
 
