@@ -78,7 +78,6 @@ void ReducedGG::fill(grib_info &info) const  {
 }
 
 atlas::Grid *ReducedGG::atlasGrid() const {
-    atlas::grids::load();
     if (pl_.size() > 0) {
         return new atlas::grids::ReducedGaussianGrid(n_, &pl_[0]);
     } else {
