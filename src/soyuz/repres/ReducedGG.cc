@@ -90,35 +90,35 @@ atlas::Grid *ReducedGG::atlasGrid() const {
 
         switch (n_) {
         case 32:
-            return new atlas::grids::rgg::N32() ;
+            return new atlas::grids::rgg::N32();
             break;
 
         case 48:
-            return new atlas::grids::rgg::N48() ;
+            return new atlas::grids::rgg::N48();
             break;
 
         case 80:
-            return new atlas::grids::rgg::N80() ;
+            return new atlas::grids::rgg::N80();
             break;
 
         case 128:
-            return new atlas::grids::rgg::N128() ;
+            return new atlas::grids::rgg::N128();
             break;
 
         case 256:
-            return new atlas::grids::rgg::N256() ;
+            return new atlas::grids::rgg::N256();
             break;
 
         case 640:
-            return new atlas::grids::rgg::N640() ;
+            return new atlas::grids::rgg::N640();
             break;
 
         case 2000:
-            return new atlas::grids::rgg::N2000() ;
+            return new atlas::grids::rgg::N2000();
             break;
 
         case 4000:
-            return new atlas::grids::rgg::N4000() ;
+            return new atlas::grids::rgg::N4000();
             break;
         }
 
