@@ -26,12 +26,18 @@
 #include "soyuz/data/MIRField.h"
 #include "soyuz/param/MIRParametrisation.h"
 #include "soyuz/repres/Representation.h"
+
+#include "atlas/atlas_config.h"
+
+#ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
+#endif
 
 namespace mir {
 namespace action {
 
 static void transform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid& grid) {
+#ifdef ATLAS_HAVE_TRANS
 
     const atlas::grids::ReducedGaussianGrid* rgg = dynamic_cast<const atlas::grids::ReducedGaussianGrid*>(&grid);
     if(!rgg) {
@@ -117,7 +123,13 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
     //trans_delete(&trans);
     //trans_finalize();
+#else
+    throw eckit::SeriousBug("Spherical harmonics transforms are not supported."
+        " Please recompile ATLAS was not compiled with TRANS support.");
+#endif
 }
+
+
 
 
 Sh2GriddedTransform::Sh2GriddedTransform(const param::MIRParametrisation &parametrisation):

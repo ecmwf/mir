@@ -59,7 +59,7 @@ void MIRDemo::run() {
         job.set("reduced", "48");
                 // job.set("reduced", "640");
 
-        mir::input::GribFileInput input("/tmp/sh.grib");
+        mir::input::GribFileInput input("sh.grib");
         mir::output::GribFileOutput output("result.grib");
 
         while (input.next()) {

@@ -23,10 +23,11 @@
 
 
 #include "atlas/Grid.h"
-#include "atlas/GridSpec.h"
+// #include "atlas/GridSpec.h"
 #include "atlas/grids/ReducedGaussianGrid.h"
 #include <eckit/parser/Tokenizer.h>
 
+#include "atlas/grids/grids.h"
 
 namespace mir {
 namespace repres {
@@ -81,9 +82,51 @@ atlas::Grid *ReducedGG::atlasGrid() const {
     if (pl_.size() > 0) {
         return new atlas::grids::ReducedGaussianGrid(n_, &pl_[0]);
     } else {
+#if 0
         eckit::StrStream os;
         os << "reduced_gg.N" << n_ << eckit::StrStream::ends;
         return atlas::Grid::create(std::string(os));
+#else
+
+        switch (n_) {
+        case 32:
+            return new atlas::grids::rgg::N32() ;
+            break;
+
+        case 48:
+            return new atlas::grids::rgg::N48() ;
+            break;
+
+        case 80:
+            return new atlas::grids::rgg::N80() ;
+            break;
+
+        case 128:
+            return new atlas::grids::rgg::N128() ;
+            break;
+
+        case 256:
+            return new atlas::grids::rgg::N256() ;
+            break;
+
+        case 640:
+            return new atlas::grids::rgg::N640() ;
+            break;
+
+        case 2000:
+            return new atlas::grids::rgg::N2000() ;
+            break;
+
+        case 4000:
+            return new atlas::grids::rgg::N4000() ;
+            break;
+        }
+
+        eckit::StrStream os;
+        os << "Unsupported reduced Gaussian grid: N" << n_ << eckit::StrStream::ends;
+        throw eckit::SeriousBug(os);
+#endif
+
     }
 }
 
