@@ -42,12 +42,9 @@ void Gridded2RegularGG::print(std::ostream& out) const {
 
 
 repres::Representation* Gridded2RegularGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    eckit::Translator<std::string, int> s2i;
-    std::string value;
-
-    ASSERT(parametrisation_.get("regular", value));
-
-    return new repres::RegularGG(s2i(value));
+    long N;
+    ASSERT(parametrisation_.get("regular", N));
+    return new repres::RegularGG(N);
 }
 
 
