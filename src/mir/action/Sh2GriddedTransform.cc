@@ -48,8 +48,6 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
         std::cout << i << " " << rgg->npts_per_lat()[i] << std::endl;
     }
 
-    trans_init();
-
     struct Trans_t trans = new_trans();
 
     trans.ndgl  = rgg->npts_per_lat().size();
@@ -120,11 +118,8 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
         trans_gathgrid(&gathgrid);
     }
 
-
-    // FIXME: double memory free happening
-
     trans_delete(&trans);
-    trans_finalize();
+
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported."
                             " Please recompile ATLAS was not compiled with TRANS support.");
@@ -136,10 +131,16 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
 Sh2GriddedTransform::Sh2GriddedTransform(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
+
+    trans_init();
+
 }
 
 
 Sh2GriddedTransform::~Sh2GriddedTransform() {
+
+    trans_finalize();
+
 }
 
 
