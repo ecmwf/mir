@@ -13,15 +13,16 @@
 /// @date Apr 2015
 
 
+#include "mir/api/mir_config.h"
+#ifdef HAVE_NETCDF
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/Translator.h"
 
 #include "mir/data/MIRField.h"
 
 #include "mir/input/NetcdfFileInput.h"
-#include "mir/api/mir_config.h"
 
-#ifdef HAVE_NETCDF
 // JUST A DEMO !!!!
 // Assumes that netcdf is single 2D variable, that dimensions are called "latitude" and "longitude"
 // ... and many more assumptions.
@@ -230,9 +231,9 @@ bool NetcdfFileInput::get(const std::string &name, double &value) const {
 
 
 #undef NC_CALL
-#else
-#endif
+
 
 }  // namespace input
 }  // namespace mir
 
+#endif

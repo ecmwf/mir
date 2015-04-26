@@ -16,6 +16,9 @@
 #ifndef NetcdfFileInput_H
 #define NetcdfFileInput_H
 
+#include "mir/api/mir_config.h"
+#ifdef HAVE_NETCDF
+
 #include <string>
 
 #include "eckit/filesystem/PathName.h"
@@ -126,5 +129,6 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
 
 }  // namespace input
 }  // namespace mir
+#endif
 #endif
 
