@@ -12,18 +12,14 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "mir/util/BoundingBox.h"
 
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-
-#include "mir/util/BoundingBox.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
-#include "mir/param/MIRParametrisation.h"
-
-#include "eckit/exception/Exceptions.h"
-#include "eckit/utils/Translator.h"
 
 namespace mir {
 namespace util {
@@ -42,20 +38,10 @@ BoundingBox::BoundingBox(double north,
 
 BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
 
-    eckit::Translator<std::string, double> s2d;
-    std::string value;
-
-    ASSERT(parametrisation.get("north", value));
-    north_ = s2d(value);
-
-    ASSERT(parametrisation.get("west", value));
-    west_ = s2d(value);
-
-    ASSERT(parametrisation.get("south", value));
-    south_ = s2d(value);
-
-    ASSERT(parametrisation.get("east", value));
-    east_ = s2d(value);
+    ASSERT(parametrisation.get("north", north_));
+    ASSERT(parametrisation.get("west", west_));
+    ASSERT(parametrisation.get("south", south_));
+    ASSERT(parametrisation.get("east", east_));
 
     normalise();
 }

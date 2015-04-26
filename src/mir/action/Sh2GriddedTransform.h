@@ -68,7 +68,7 @@ class Sh2GriddedTransform : public Action {
 
 // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    // void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
     // None

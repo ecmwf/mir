@@ -12,18 +12,15 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "mir/action/Sh2ShTransform.h"
 
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-
-#include "mir/action/Sh2ShTransform.h"
 
 
 namespace mir {
@@ -33,10 +30,7 @@ namespace action {
 Sh2ShTransform::Sh2ShTransform(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
     truncation_(0) {
-    std::string value;
-    ASSERT(parametrisation.get("user.truncation", value));
-
-    truncation_ = eckit::Translator<std::string, size_t>()(value);
+    ASSERT(parametrisation.get("user.truncation", truncation_));
 }
 
 

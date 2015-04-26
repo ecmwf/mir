@@ -20,6 +20,8 @@ configure_file( api/mir_version.cc.in  api/mir_version.cc )
 list( APPEND mir_srcs
       action/Action.cc
       action/Action.h
+      action/ActionPlan.cc
+      action/ActionPlan.h
       action/AreaCropper.cc
       action/AreaCropper.h
       action/BitmapFilter.cc
@@ -177,7 +179,9 @@ list( APPEND mir_srcs
       util/Bitmap.h
       util/BoundingBox.cc
       util/BoundingBox.h
-      util/Grib.h
+      util/Grib.h 
+      util/Increments.cc 
+      util/Increments.h
     )
 
 

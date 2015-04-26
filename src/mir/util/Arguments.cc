@@ -19,7 +19,6 @@
 #include "eckit/memory/Factory.h"
 #include "eckit/parser/StringTools.h"
 #include "eckit/parser/Tokenizer.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/util/Arguments.h"
 
@@ -44,9 +43,9 @@ Arguments::argument_option_t::argument_option_t(
         return;
 
     // append (non-variadic) option/default value pair
-    if (_nparams>0) {
-        ASSERT(_param_name !=NULL);
-        ASSERT(_param_value!=NULL);
+    if (_nparams > 0) {
+        ASSERT(_param_name != NULL);
+        ASSERT(_param_value != NULL);
         if (std::string(_param_name).length())
             params_.insert(value_t(
                                _param_name,
@@ -55,12 +54,12 @@ Arguments::argument_option_t::argument_option_t(
 
     // append (variadic) subsequent options/default values pairs
     va_list ap;
-    va_start(ap,_param_value);
-    for (unsigned i=1; i<_nparams; ++i) {
-        _param_name  = va_arg(ap,const char*);
-        _param_value = va_arg(ap,const char*);
-        ASSERT(_param_name !=NULL);
-        ASSERT(_param_value!=NULL);
+    va_start(ap, _param_value);
+    for (unsigned i = 1; i < _nparams; ++i) {
+        _param_name  = va_arg(ap, const char*);
+        _param_value = va_arg(ap, const char*);
+        ASSERT(_param_name != NULL);
+        ASSERT(_param_value != NULL);
         if (std::string(_param_name).length())
             params_.insert(value_t(
                                _param_name,
@@ -73,8 +72,10 @@ Arguments::argument_option_t::argument_option_t(
 void Arguments::argument_option_t::process(
     const std::string& _param,
     const std::string& _value ) {
-    if (params_.find(_param)==params_.end()) {
-        warnings_.push_back("option \"" + option + "\" does not have parameter \"" + _param + "\"");
+    if (params_.find(_param) == params_.end()) {
+        eckit::StrStream os;
+        os << "option '" << option << "' does not have parameter '" << _param << "'" << eckit::StrStream::ends;
+        warnings_.push_back(std::string(os));
         return;
     }
     params_[_param] = _value;
@@ -85,17 +86,19 @@ void Arguments::argument_option_t::process(
     const argument_option_t::params_t& param,
     const argument_option_t::warnings_t& warn ) {
     // append all "inherited" warnings
-    for (warnings_t::const_iterator w=warn.begin(); w!=warn.end(); ++w) {
+    for (warnings_t::const_iterator w = warn.begin(); w != warn.end(); ++w) {
         warnings_.push_back(*w);
     }
 
     // overwrite keys as passed in, but do not recognize keys not in map
-    for (params_t::const_iterator p=param.begin(); p!=param.end(); ++p) {
+    for (params_t::const_iterator p = param.begin(); p != param.end(); ++p) {
         params_t::iterator q;
-        if ((q = params_.find(p->first))!=params_.end()) {
+        if ((q = params_.find(p->first)) != params_.end()) {
             q->second = p->second;
         } else {
-            warnings_.push_back("option \"" + option + "\" does not have parameter \"" + p->first + "\"");
+            eckit::StrStream os;
+            os << "Option '" << option << "' does not have parameter '" << p->first + "'" << eckit::StrStream::ends;
+            warnings_.push_back(std::string(os));
         }
     }
 }
@@ -115,32 +118,31 @@ Arguments::argument_shortoption_t::argument_shortoption_t(
       positional_counter_(0) {
     if (!_nparams)
         return;
-    std::string
-    p,  // parameter name
-    v;  // parameter value
+    std::string p;  // parameter name
+    std::string v;  // parameter value
 
     // append (non-variadic) option/default value pair
-    if (_nparams>0) {
-        ASSERT(_param_name !=NULL);
-        ASSERT(_param_value!=NULL);
+    if (_nparams > 0) {
+        ASSERT(_param_name != NULL);
+        ASSERT(_param_value != NULL);
         p = eckit::StringTools::trim(_param_name);
         v = eckit::StringTools::trim(_param_value);
         if (p.length())
-            positional_params_.push_back(v.length()? p+'='+v : p);
+            positional_params_.push_back(v.length() ? p + '=' + v : p);
     }
 
     // append (variadic) subsequent options/default values pairs
     va_list ap;
-    va_start(ap,_param_value);
-    for (unsigned i=1; i<_nparams; ++i) {
-        _param_name  = va_arg(ap,const char*);
-        _param_value = va_arg(ap,const char*);
-        ASSERT(_param_name !=NULL);
-        ASSERT(_param_value!=NULL);
+    va_start(ap, _param_value);
+    for (unsigned i = 1; i < _nparams; ++i) {
+        _param_name  = va_arg(ap, const char*);
+        _param_value = va_arg(ap, const char*);
+        ASSERT(_param_name != NULL);
+        ASSERT(_param_value != NULL);
         p = eckit::StringTools::trim(_param_name);
         v = eckit::StringTools::trim(_param_value);
         if (p.length())
-            positional_params_.push_back(v.length()? p+'='+v : p);
+            positional_params_.push_back(v.length() ? p + '=' + v : p);
     }
     va_end(ap);
 }
@@ -151,22 +153,31 @@ void Arguments::argument_shortoption_t::process(const std::string& _value) {
     eckit::Tokenizer parse_equal('=');
 
     // check if position is within bounds
-    if (positional_counter_>=positional_params_.size()) {
-        warnings_.push_back("option \""+shortoption+"\": \"" + _value + " exceeds the number of expected parameters (" + eckit::Translator< size_t, std::string >()(positional_params_.size()) + ")");
+    if (positional_counter_ >= positional_params_.size()) {
+        eckit::StrStream os;
+        os << "Option '" << shortoption << "': '" << _value
+           << " exceeds the number of expected parameters ("
+           << positional_params_.size() << ")" << eckit::StrStream::ends;
+
+        warnings_.push_back(std::string(os));
         return;
     }
 
     // look for the parameter name (increment position), checking if a default
     // parameter is set (param=value)
     std::vector< std::string > pv;
-    parse_equal(positional_params_[positional_counter_++],pv);
-    if (pv.size()!=1 && pv.size()!=2) {
-        warnings_.push_back("option \""+shortoption+"\": could not find parameter to assign value \"" + _value + "\" to");
+    parse_equal(positional_params_[positional_counter_++], pv);
+    if (pv.size() != 1 && pv.size() != 2) {
+        eckit::StrStream os;
+        os << "Option '" << shortoption << "': could not find parameter to assign value '" << _value + "' to" << eckit::StrStream::ends;
+        warnings_.push_back(std::string(os));
         return;
     }
     const std::string param = eckit::StringTools::trim(pv[0]);
     if (!param.length() || !_value.length()) {
-        warnings_.push_back("option \""+shortoption+"\": could not assign \"" + param + "\"=\"" + _value + "\"");
+        eckit::StrStream os;
+        os << "Option '" << shortoption << "': could not assign '" << param << "'='" << _value << "'" << eckit::StrStream::ends;
+        warnings_.push_back(std::string(os));
         return;
     }
 
@@ -183,14 +194,14 @@ const Arguments::argument_option_t::params_t Arguments::argument_shortoption_t::
     // if a default value hasn't been (positionally) assigned, do it
     std::vector< std::string > pv;
     std::vector< std::string >::const_iterator p;
-    for (p=positional_params_.begin(); p!=positional_params_.end(); ++p) {
+    for (p = positional_params_.begin(); p != positional_params_.end(); ++p) {
         pv.clear();
-        parse_equal(*p,pv);
-        if (pv.size()==2) {
+        parse_equal(*p, pv);
+        if (pv.size() == 2) {
             const std::string
             param = eckit::StringTools::trim(pv[0]),
             value = eckit::StringTools::trim(pv[1]);
-            if (value.length() && params_.find(param)==params_.end())
+            if (value.length() && params_.find(param) == params_.end())
                 params_[param] = value;
         }
     }
@@ -200,19 +211,19 @@ const Arguments::argument_option_t::params_t Arguments::argument_shortoption_t::
 
 
 Arguments::argmode_t::argmode_t() {
-    push_back(argument_shortoption_t("h","help","this help"));
-    push_back(argument_shortoption_t("v","verbose","produce verbose messages"));
+    push_back(argument_shortoption_t("h", "help", "this help"));
+    push_back(argument_shortoption_t("v", "verbose", "produce verbose messages"));
 }
 
 
 Arguments::Arguments(int argc, char** argv) {
     // general assumptions on shell-provided options
-    ASSERT(argc>0);
-    ASSERT(argv!=NULL);
+    ASSERT(argc > 0);
+    ASSERT(argv != NULL);
 
 
     // 0. store original options (for future reference)
-    for (int c=0; c<argc; c++)
+    for (int c = 0; c < argc; c++)
         argv_.push_back(argv[c]);
 
 
@@ -220,7 +231,7 @@ Arguments::Arguments(int argc, char** argv) {
     int mode_argposition = 0;
     argmode_t& argmode = get_argument_mode(
                              /* $0 */ eckit::PathName(argv_[0]).baseName().asString(),
-                             /* $1 */ argv_.size()>1? argv_[1] : "",
+                             /* $1 */ argv_.size() > 1 ? argv_[1] : "",
                              mode_argposition );
 
 
@@ -232,7 +243,7 @@ Arguments::Arguments(int argc, char** argv) {
                 argmode.end() ),
             // user arguments
             std::vector< std::string >(
-                argv_.begin()+mode_argposition,
+                argv_.begin() + mode_argposition,
                 argv_.end() ));
 
 
@@ -245,9 +256,9 @@ Arguments::Arguments(int argc, char** argv) {
 
 
 #if 0
-    argument_option_t la("help1","this help1",1,"xs");
-    argument_option_t lo("help2","this help2",1,"option","optionparam");
-    argument_option_t lc("help3","this help3");
+    argument_option_t la("help1", "this help1", 1, "xs");
+    argument_option_t lo("help2", "this help2", 1, "option", "optionparam");
+    argument_option_t lc("help3", "this help3");
     /*
          General procedure:
          - build short options mapping based on mode
@@ -268,11 +279,11 @@ Arguments::argmode_t& Arguments::get_argument_mode(
 
     // 1. check 1st argument (busybox-style)
     const std::string::size_type uscore = _basename.find_first_of("_");
-    if (uscore!=std::string::npos && fmodes.exists(_basename.substr(uscore+1))) {
-        std::string a(_basename.substr(uscore+1));
+    if (uscore != std::string::npos && fmodes.exists(_basename.substr(uscore + 1))) {
+        std::string a(_basename.substr(uscore + 1));
         _modearg = 1;
         DEBUG_VAR(a);
-        return *(fmodes.get( _basename.substr(uscore+1) ).create());
+        return *(fmodes.get( _basename.substr(uscore + 1) ).create());
     }
 
     // 2. check 2nd argument ($1) (git-style)
@@ -294,7 +305,7 @@ std::vector< Arguments::argument_option_t > Arguments::get_long_options(
     const std::vector< std::string >& _args ) const {
     std::vector< argument_option_t > opt;
     std::vector< std::string >::const_iterator a;
-    for (a=_args.begin(); a!=_args.end(); ++a) {
+    for (a = _args.begin(); a != _args.end(); ++a) {
 
 
 

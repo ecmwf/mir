@@ -29,6 +29,12 @@ namespace action {
 
 Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation &parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
+    std::vector<double> value;
+
+    ASSERT(parametrisation_.get("user.grid", value));
+    ASSERT(value.size() == 2);
+
+    increments_ = util::Increments(value[0], value[1]);
 }
 
 
@@ -37,19 +43,14 @@ Gridded2RegularLL::~Gridded2RegularLL() {
 
 
 void Gridded2RegularLL::print(std::ostream &out) const {
-    out << "Gridded2RegularLL[]";
+    out << "Gridded2RegularLL[increments=" << increments_ << "]";
 }
 
 
 repres::Representation *Gridded2RegularLL::outputRepresentation(const repres::Representation *inputRepres) const {
-    std::vector<double> value;
-
-    ASSERT(parametrisation_.get("user.grid", value));
-
-    double we = value[0];
-    double ns = value[1];
-
-    return new repres::RegularLL(util::BoundingBox(90, 0, -90, 360 - we), ns, we);
+    return new repres::RegularLL(
+               util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
+               increments_);
 }
 
 

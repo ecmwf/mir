@@ -33,7 +33,7 @@ class RuntimeParametrisation : public SimpleParametrisation {
 
 // -- Contructors
 
-    RuntimeParametrisation();
+    RuntimeParametrisation(const param::MIRParametrisation& owner);
 
 // -- Destructor
 
@@ -47,15 +47,21 @@ class RuntimeParametrisation : public SimpleParametrisation {
 
 // -- Methods
 
-// void set(const std::string& name, const char* value);
-//     void set(const std::string& name, const std::string& value);
-    // void set(const std::string& name, bool value);
-    void set(const std::string& name, long value);
-    // void set(const std::string& name, double value);
-    // void set(const std::string& name, double v1, double v2);
-    // void set(const std::string& name, double v1, double v2, double v3, double v4);
+    RuntimeParametrisation& set(const std::string& name, const char* value);
+    RuntimeParametrisation& set(const std::string& name, const std::string& value);
+    RuntimeParametrisation& set(const std::string& name, bool value);
+    RuntimeParametrisation& set(const std::string& name, long value);
+    RuntimeParametrisation& set(const std::string& name, double value);
+
 // -- Overridden methods
-    // None
+
+    virtual bool has(const std::string& name) const;
+    virtual bool get(const std::string& name, std::string& value) const;
+    virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, double& value) const;
+    virtual bool get(const std::string& name, std::vector<long>& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
 
 // -- Class members
     // None
@@ -89,9 +95,15 @@ class RuntimeParametrisation : public SimpleParametrisation {
     RuntimeParametrisation& operator=(const RuntimeParametrisation&);
 
 // -- Members
+    const param::MIRParametrisation& owner_;
 
 // -- Methods
-    // None
+
+    template<class T>
+    void _set(const std::string&, const T&);
+
+    template<class T>
+    bool _get(const std::string&, T&) const;
 
 // -- Overridden methods
 
@@ -107,7 +119,7 @@ class RuntimeParametrisation : public SimpleParametrisation {
 // -- Friends
 
     //friend ostream& operator<<(ostream& s,const RuntimeParametrisation& p)
-    //	{ p.print(s); return s; }
+    //  { p.print(s); return s; }
 
 };
 

@@ -17,10 +17,6 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/utils/Translator.h"
-
 #include "mir/repres/ReducedGG.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -30,6 +26,7 @@ namespace action {
 
 Gridded2ReducedGG::Gridded2ReducedGG(const param::MIRParametrisation& parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
+    ASSERT(parametrisation_.get("user.reduced", N_));
 }
 
 
@@ -38,14 +35,12 @@ Gridded2ReducedGG::~Gridded2ReducedGG() {
 
 
 void Gridded2ReducedGG::print(std::ostream& out) const {
-    out << "Gridded2ReducedGG[]";
+    out << "Gridded2ReducedGG[N=" << N_ << "]";
 }
 
 
 repres::Representation* Gridded2ReducedGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    long N;
-    ASSERT(parametrisation_.get("user.reduced", N));
-    return new repres::ReducedGG(N);
+    return new repres::ReducedGG(N_);
 }
 
 

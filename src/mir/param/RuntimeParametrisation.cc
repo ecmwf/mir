@@ -24,7 +24,8 @@ namespace mir {
 namespace param {
 
 
-RuntimeParametrisation::RuntimeParametrisation() {
+RuntimeParametrisation::RuntimeParametrisation(const MIRParametrisation& owner):
+    owner_(owner) {
 }
 
 
@@ -35,14 +36,91 @@ RuntimeParametrisation::~RuntimeParametrisation() {
 void RuntimeParametrisation::print(std::ostream& out) const {
     out << "RuntimeParametrisation[";
     SimpleParametrisation::print(out);
-    out << "]";
+    out << ",owner=[";
+    out << owner_;
+    out << "]]";
 }
 
-
-void RuntimeParametrisation::set(const std::string& name, long value) {
-    eckit::Log::info() << "************* RuntimeParametrisation::set [" << name << "] = [" << value << "] (long)" << std::endl;
+template<class T>
+void RuntimeParametrisation::_set(const std::string& name, const T& value) {
+    eckit::Log::info() << "************* RuntimeParametrisation::set [" << name << "] = [" << value << "]" << std::endl;
     SimpleParametrisation::set(name, value);
 }
+
+RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, const char* value) {
+    _set(name, value);
+    return *this;
+}
+
+RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, const std::string& value) {
+    _set(name, value);
+    return *this;
+}
+
+RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, bool value) {
+    _set(name, value);
+    return *this;
+}
+
+RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, long value) {
+    _set(name, value);
+    return *this;
+}
+
+RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, double value) {
+    _set(name, value);
+    return *this;
+}
+
+
+
+bool RuntimeParametrisation::has(const std::string& name) const {
+    if(SimpleParametrisation::has(name)) {
+        return true;
+    }
+    return owner_.has(name);
+}
+
+
+
+template<class T>
+bool RuntimeParametrisation::_get(const std::string& name,  T& value) const {
+
+    if (name.find("user.") == 0) {
+        return _get(name.substr(5), value);
+    }
+
+    if(SimpleParametrisation::get(name, value)) {
+        return true;
+    }
+    return owner_.get(name, value);
+}
+
+bool RuntimeParametrisation::get(const std::string& name, std::string& value) const {
+    return _get(name, value);
+}
+
+bool RuntimeParametrisation::get(const std::string& name, bool& value) const {
+    return _get(name, value);
+}
+
+bool RuntimeParametrisation::get(const std::string& name, long& value) const {
+    return _get(name, value);
+}
+
+bool RuntimeParametrisation::get(const std::string& name, double& value) const {
+    return _get(name, value);
+}
+
+bool RuntimeParametrisation::get(const std::string& name, std::vector<long>& value) const {
+    return _get(name, value);
+}
+
+bool RuntimeParametrisation::get(const std::string& name, std::vector<double>& value) const {
+    return _get(name, value);
+}
+
+
 
 }  // namespace param
 }  // namespace mir

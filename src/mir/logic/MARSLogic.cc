@@ -17,7 +17,7 @@
 
 #include "mir/logic/MARSLogic.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/param/RuntimeParametrisation.h"
+#include "mir/action/ActionPlan.h"
 
 
 namespace mir {
@@ -39,57 +39,57 @@ void MARSLogic::print(std::ostream &out) const {
 }
 
 
-void MARSLogic::prepare(param::RuntimeParametrisation& runtime, std::vector<std::auto_ptr< action::Action > > &actions) const {
+void MARSLogic::prepare(action::ActionPlan &plan) const {
     // All the nasty logic goes there
 
     if (parametrisation_.has("field.spherical")) {
         if (parametrisation_.has("user.truncation")) {
-            add(actions, "transform.sh2sh");
+            plan.add("transform.sh2sh");
         }
     }
 
     if (parametrisation_.has("field.spherical")) {
         if (parametrisation_.has("user.grid")) {
 #if 0
-            add(actions, "transform.sh2regular-ll");
+            plan.add("transform.sh2regular-ll");
 #else
             // For now, thar's what we do
-            runtime.set("reduced", 48L);
-            add(actions, "transform.sh2reduced-gg");
-            add(actions, "interpolate.grid2regular-ll");
+            // runtime.set("reduced", 48L);
+            plan.add("transform.sh2reduced-gg", "reduced", 48L);
+            plan.add("interpolate.grid2regular-ll");
 #endif
         }
         if (parametrisation_.has("user.reduced")) {
-            add(actions, "transform.sh2reduced-gg");
+            plan.add("transform.sh2reduced-gg");
 
         }
         if (parametrisation_.has("user.regular")) {
-            add(actions, "transform.sh2regular-gg");
+            plan.add("transform.sh2regular-gg");
         }
     }
 
     if (parametrisation_.has("field.gridded")) {
         if (parametrisation_.has("user.grid")) {
-            add(actions, "interpolate.grid2regular-ll");
+            plan.add("interpolate.grid2regular-ll");
         }
         if (parametrisation_.has("user.reduced")) {
-            add(actions, "interpolate.grid2reduced-gg");
+            plan.add("interpolate.grid2reduced-gg");
         }
         if (parametrisation_.has("user.regular")) {
-            add(actions, "interpolate.grid2regular-gg");
+            plan.add("interpolate.grid2regular-gg");
         }
     }
 
     if (parametrisation_.has("user.area")) {
-        add(actions, "crop.area");
+        plan.add("crop.area");
     }
 
     if (parametrisation_.has("user.bitmap")) {
-        add(actions, "filter.bitmap");
+        plan.add("filter.bitmap");
     }
 
     if (parametrisation_.has("user.frame")) {
-        add(actions, "filter.frame");
+        plan.add("filter.frame");
     }
 }
 

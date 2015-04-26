@@ -88,6 +88,12 @@ class SimpleParametrisation : public MIRParametrisation {
 // -- Overridden methods
     virtual bool has(const std::string& name) const;
 
+    virtual bool get(const std::string& name, std::string& value) const;
+    virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, double& value) const;
+    virtual bool get(const std::string& name, std::vector<long>& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
 
 // -- Class members
     // None
@@ -121,12 +127,7 @@ class SimpleParametrisation : public MIRParametrisation {
     template<class T>
     void _set(const std::string& name, const T& value);
 
-    virtual bool get(const std::string& name, std::string& value) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, double& value) const;
-    virtual bool get(const std::string& name, std::vector<long>& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
+
 
 // -- Class members
     // None

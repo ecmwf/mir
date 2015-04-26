@@ -17,9 +17,8 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/utils/Translator.h"
-#include "mir/param/MIRParametrisation.h"
 
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/RegularGG.h"
 
 
@@ -29,6 +28,7 @@ namespace action {
 
 Sh2RegularGG::Sh2RegularGG(const param::MIRParametrisation& parametrisation):
     Sh2GriddedTransform(parametrisation) {
+    ASSERT(parametrisation_.get("user.regular", N_));
 }
 
 
@@ -37,14 +37,12 @@ Sh2RegularGG::~Sh2RegularGG() {
 
 
 void Sh2RegularGG::print(std::ostream& out) const {
-    out << "Sh2RegularGG[]";
+    out << "Sh2RegularGG[N=" << N_ << "]";
 }
 
 
 repres::Representation* Sh2RegularGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    long N;
-    ASSERT(parametrisation_.get("regular", N));
-    return new repres::RegularGG(N);
+    return new repres::RegularGG(N_);
 }
 
 

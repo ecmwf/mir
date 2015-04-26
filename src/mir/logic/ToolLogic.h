@@ -83,7 +83,7 @@ class ToolLogic : public MIRLogic {
 
 // -- Members
 
-    virtual void prepare(param::RuntimeParametrisation&, std::vector<std::auto_ptr< action::Action > >&) const;
+    virtual void prepare(action::ActionPlan&) const;
 
 // -- Methods
     // None

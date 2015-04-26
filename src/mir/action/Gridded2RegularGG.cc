@@ -17,10 +17,8 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/utils/Translator.h"
-#include "mir/param/MIRParametrisation.h"
-
 #include "mir/repres/RegularGG.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -29,6 +27,7 @@ namespace action {
 
 Gridded2RegularGG::Gridded2RegularGG(const param::MIRParametrisation& parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
+    ASSERT(parametrisation_.get("user.regular", N_));
 }
 
 
@@ -37,14 +36,12 @@ Gridded2RegularGG::~Gridded2RegularGG() {
 
 
 void Gridded2RegularGG::print(std::ostream& out) const {
-    out << "Gridded2RegularGG[]";
+    out << "Gridded2RegularGG[N=" << N_ << "]";
 }
 
 
 repres::Representation* Gridded2RegularGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    long N;
-    ASSERT(parametrisation_.get("regular", N));
-    return new repres::RegularGG(N);
+    return new repres::RegularGG(N_);
 }
 
 

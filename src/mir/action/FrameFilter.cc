@@ -12,20 +12,14 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "mir/action/FrameFilter.h"
 
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/StdFile.h"
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/utils/Translator.h"
-
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-
-#include "mir/action/FrameFilter.h"
-
 
 namespace mir {
 namespace action {
@@ -34,7 +28,7 @@ namespace action {
 FrameFilter::FrameFilter(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
     size_(0) {
-    ASSERT(parametrisation.get("frame", size_));
+    ASSERT(parametrisation.get("user.frame", size_));
 }
 
 

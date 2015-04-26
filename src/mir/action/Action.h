@@ -20,12 +20,15 @@
 
 
 namespace mir {
+
 namespace data {
 class MIRField;
 }
+
 namespace param {
 class MIRParametrisation;
 }
+
 namespace action {
 
 
@@ -106,7 +109,7 @@ class Action {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const Action& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Action& p) {
         p.print(s);
         return s;
     }

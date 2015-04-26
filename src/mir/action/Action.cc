@@ -48,7 +48,6 @@ Action::Action(const param::MIRParametrisation& parametrisation):
 Action::~Action() {
 }
 
-
 ActionFactory::ActionFactory(const std::string& name):
     name_(name) {
 

@@ -18,17 +18,16 @@
 #include <iostream>
 #include <vector>
 
+#include "atlas/atlas_config.h"
 #include "atlas/Grid.h"
 #include "atlas/grids/grids.h"
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Timer.h"
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/utils/Translator.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-
-#include "atlas/atlas_config.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
@@ -72,7 +71,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
     // register resolution in trans library
     {
-        eckit::Timer t("setup");
+        eckit::Timer t("Sh2GriddedTransform: setup");
         trans_setup( &trans );
     }
 
@@ -91,7 +90,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     distspec.nfld   = number_of_fields;
 
     {
-        eckit::Timer t("distribute");
+        eckit::Timer t("Sh2GriddedTransform: distribute");
         trans_distspec(&distspec);
     }
 
@@ -105,7 +104,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     invtrans.rgp       = &rgp[0];
 
     {
-        eckit::Timer t("transform");
+        eckit::Timer t("Sh2GriddedTransform: transform");
         trans_invtrans(&invtrans);
     }
 
@@ -123,7 +122,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     gathgrid.nto  = &nto[0];
 
     {
-        eckit::Timer t("gather");
+        eckit::Timer t("Sh2GriddedTransform: gather");
         trans_gathgrid(&gathgrid);
     }
 
@@ -147,11 +146,6 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 }
 
 
-void Sh2GriddedTransform::print(std::ostream &out) const {
-    out << "Sh2GriddedTransform[]";
-}
-
-
 void Sh2GriddedTransform::execute(data::MIRField &field) const {
     const std::vector<double> &values = field.values();
     std::vector<double> result;
@@ -167,12 +161,12 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
         throw;
     }
 
-    for (size_t i = 0; i < result.size(); ++i) {
-        std::cout << result[i] << std::endl;
-        if (i > 10) {
-            break;
-        }
-    }
+    // for (size_t i = 0; i < result.size(); ++i) {
+    //     std::cout << result[i] << std::endl;
+    //     if (i > 10) {
+    //         break;
+    //     }
+    // }
     field.representation(out);
 }
 

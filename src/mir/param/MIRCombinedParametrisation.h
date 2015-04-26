@@ -32,7 +32,6 @@ class MIRCombinedParametrisation : public MIRParametrisation {
 // -- Contructors
 
     MIRCombinedParametrisation(const MIRParametrisation& user,
-                               const MIRParametrisation& runtime,
                                const MIRParametrisation& metadata,
                                const MIRParametrisation& configuration,
                                const MIRParametrisation& defaults);
@@ -86,7 +85,6 @@ class MIRCombinedParametrisation : public MIRParametrisation {
 
 // -- Members
     const MIRParametrisation& user_;
-    const MIRParametrisation& runtime_;
     const MIRParametrisation& metadata_;
     const MIRParametrisation& configuration_;
     const MIRParametrisation& defaults_;

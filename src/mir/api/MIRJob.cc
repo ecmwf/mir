@@ -20,6 +20,8 @@
 #include "eckit/log/Timer.h"
 
 #include "mir/action/Action.h"
+#include "mir/action/ActionPlan.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 #include "mir/logic/MIRLogic.h"
@@ -27,7 +29,6 @@
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRConfiguration.h"
 #include "mir/param/MIRDefaults.h"
-#include "mir/param/RuntimeParametrisation.h"
 
 #include "mir/repres/Representation.h"
 
@@ -75,25 +76,17 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
         return;
     }
 
-    param::RuntimeParametrisation runtime; // This will be modified internally
-
-    param::MIRCombinedParametrisation combined(*this, runtime, metadata, configuration, defaults);
+    param::MIRCombinedParametrisation combined(*this, metadata, configuration, defaults);
     eckit::Log::info() << "Combined parametrisation: " << combined << std::endl;
 
     std::auto_ptr< logic::MIRLogic > logic(logic::MIRLogicFactory::build(combined));
 
     eckit::Log::info() << "Logic: " << *logic << std::endl;
 
-    std::vector<std::auto_ptr< action::Action > > actions;
-    logic->prepare(runtime, actions);
+    action::ActionPlan plan(combined);
+    logic->prepare(plan);
 
-    eckit::Log::info() << "Actions are: " << std::endl;
-    std::string arrow = "   ";
-    for (std::vector<std::auto_ptr< action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
-        eckit::Log::info() << arrow << *(*j);
-        arrow = " => ";
-    }
-    eckit::Log::info() << std::endl;
+    eckit::Log::info() << "Action plan is: " << plan << std::endl;
 
     std::auto_ptr< data::MIRField > field(input.field());
     eckit::Log::info() << "Field is " << *field << std::endl;
@@ -102,15 +95,9 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
     field->representation(repres::RepresentationFactory::build(metadata));
     eckit::Log::info() << "Representation is " << *(field->representation()) << std::endl;
 
-    for (std::vector<std::auto_ptr< action::Action > >::const_iterator j = actions.begin(); j != actions.end(); ++j) {
-        eckit::Log::info() << "Execute: " << *(*j) << std::endl;
-        (*j)->execute(*field);
-    }
+    plan.execute(*field);
 
     output.save(*this, input, *field);
-
-    eckit::Log::info() << "Runtime parametrisation: " << runtime << std::endl;
-
 }
 
 
@@ -120,42 +107,48 @@ void MIRJob::print(std::ostream& out) const {
     out << "]";
 }
 
-void MIRJob::set(const std::string& name, const std::string& value) {
+MIRJob& MIRJob::set(const std::string& name, const std::string& value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (string)" << std::endl;
     SimpleParametrisation::set(name, value);
+    return *this;
 }
 
-void MIRJob::set(const std::string& name, const char* value) {
+MIRJob& MIRJob::set(const std::string& name, const char* value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (char)" << std::endl;
     SimpleParametrisation::set(name, value);
+    return *this;
 }
 
-void MIRJob::set(const std::string& name, bool value) {
+MIRJob& MIRJob::set(const std::string& name, bool value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (bool)" << std::endl;
     SimpleParametrisation::set(name, value);
+    return *this;
 }
 
 
-void MIRJob::set(const std::string& name, long value) {
+MIRJob& MIRJob::set(const std::string& name, long value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (long)" << std::endl;
     SimpleParametrisation::set(name, value);
+    return *this;
 }
 
 
-void MIRJob::set(const std::string& name, double value) {
+MIRJob& MIRJob::set(const std::string& name, double value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (double)" << std::endl;
     SimpleParametrisation::set(name, value);
+    return *this;
 }
 
-void MIRJob::set(const std::string& name, double v1, double v2) {
+MIRJob& MIRJob::set(const std::string& name, double v1, double v2) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << v1 << ", "  << v2 << "] (double)" << std::endl;
     std::vector<double> v(2);
     v[0] = v1;
     v[1] = v2;
     SimpleParametrisation::set(name, v);
+    return *this;
 }
 
-void MIRJob::set(const std::string& name, double v1, double v2, double v3, double v4) {
+MIRJob& MIRJob::set(const std::string& name, double v1, double v2, double v3, double v4) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] =  [" << v1
                        << ", "  << v2 << ", "  << v3 << ", "  << v4 << "] (double)" << std::endl;
     std::vector<double> v(4);
@@ -164,6 +157,7 @@ void MIRJob::set(const std::string& name, double v1, double v2, double v3, doubl
     v[2] = v3;
     v[3] = v4;
     SimpleParametrisation::set(name, v);
+    return *this;
 }
 
 

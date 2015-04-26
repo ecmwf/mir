@@ -13,19 +13,18 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-
-#include <string>
-#include "eckit/log/Timer.h"
-#include "atlas/Grid.h"
-#include "atlas/GridSpec.h"
-#include "mir/data/MIRField.h"
-#include "mir/repres/Representation.h"
-#include "mir/method/WeightCache.h"
-#include <eckit/value/Params.h>
-
-
 #include "mir/method/MethodWeighted.h"
 
+#include <string>
+
+#include "atlas/Grid.h"
+#include "atlas/GridSpec.h"
+
+#include "eckit/log/Timer.h"
+
+#include "mir/data/MIRField.h"
+#include "mir/method/WeightCache.h"
+#include "mir/repres/Representation.h"
 
 namespace mir {
 namespace method {
@@ -66,7 +65,10 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
 
     // multiply interpolant matrix with field vector
     {
-        eckit::Timer t("Interpolating field (" + eckit::Translator< size_t, std::string >()(npts_inp) + " -> " + eckit::Translator< size_t, std::string >()(npts_out) + ")");
+        eckit::StrStream os;
+        os << "Interpolating field ("  << npts_inp << " -> " << npts_out << ")" << eckit::StrStream::ends;
+        std::string msg(os);
+        eckit::Timer t(msg);
 
         ASSERT(field.values().size() == npts_inp);
         eckit::Log::info() << "Input field is " << field.values().size() << std::endl;

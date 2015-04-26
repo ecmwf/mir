@@ -40,8 +40,13 @@ static struct {
     {"truncation", "pentagonalResolutionParameterJ"},// Assumes triangular truncation
 
     // This will be just called for has()
-    {"gridded", "Nj"}, // Is that always true?
+    {"gridded", "numberOfPointsAlongAMeridian"}, // Is that always true?
     {"spherical", "pentagonalResolutionParameterJ"},
+
+    /// FIXME: Find something that does no clash
+    {"reduced", "pl"},
+    {"regular", "Ni"},
+
     {0, 0},
 };
 

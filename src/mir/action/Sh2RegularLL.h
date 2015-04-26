@@ -17,6 +17,7 @@
 #define Sh2RegularLL_H
 
 #include "mir/action/Sh2GriddedTransform.h"
+#include "mir/util/Increments.h"
 
 namespace mir {
 namespace action {
@@ -80,7 +81,7 @@ class Sh2RegularLL : public Sh2GriddedTransform {
     Sh2RegularLL& operator=(const Sh2RegularLL&);
 
 // -- Members
-    // None
+    util::Increments grid_;
 
 // -- Methods
     // None

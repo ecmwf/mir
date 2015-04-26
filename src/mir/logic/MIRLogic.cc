@@ -20,7 +20,6 @@
 
 #include "mir/logic/MIRLogic.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/action/Action.h"
 
 
 namespace mir {
@@ -49,12 +48,6 @@ MIRLogic::MIRLogic(const param::MIRParametrisation &parametrisation):
 
 MIRLogic::~MIRLogic() {
 }
-
-
-void MIRLogic::add(std::vector<std::auto_ptr< action::Action > >& actions, const std::string& name) const {
-    actions.push_back(std::auto_ptr< action::Action >(action::ActionFactory::build(name, parametrisation_)));
-}
-
 
 //-----------------------------------------------------------------------------
 

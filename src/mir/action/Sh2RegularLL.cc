@@ -17,11 +17,9 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/utils/Translator.h"
 
-#include "mir/repres/RegularLL.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/RegularLL.h"
 
 
 namespace mir {
@@ -30,6 +28,12 @@ namespace action {
 
 Sh2RegularLL::Sh2RegularLL(const param::MIRParametrisation &parametrisation):
     Sh2GriddedTransform(parametrisation) {
+    std::vector<double> value;
+
+    ASSERT(parametrisation_.get("user.grid", value));
+    ASSERT(value.size() == 2);
+
+    grid_ = util::Increments(value[0], value[1]);
 }
 
 
@@ -38,27 +42,14 @@ Sh2RegularLL::~Sh2RegularLL() {
 
 
 void Sh2RegularLL::print(std::ostream &out) const {
-    out << "Sh2RegularLL[]";
+    out << "Sh2RegularLL[grib=" << grid_ << "]";
 }
 
 
 repres::Representation *Sh2RegularLL::outputRepresentation(const repres::Representation *inputRepres) const {
-    eckit::Translator<std::string, double> s2d;
-    std::string value;
-
-    ASSERT(parametrisation_.get("grid", value));
-
-    eckit::Tokenizer parse("/");
-
-    std::vector<std::string> s;
-    parse(value, s);
-
-    ASSERT(s.size() == 2);
-
-    double we = s2d(s[0]);
-    double ns = s2d(s[1]);
-
-    return new repres::RegularLL(util::BoundingBox(90, 0, -90, 360 - we), ns, we);
+    return new repres::RegularLL(
+               util::BoundingBox(90, 0, -90, 360 - grid_.west_east()),
+               grid_);
 }
 
 

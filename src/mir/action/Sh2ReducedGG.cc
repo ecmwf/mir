@@ -17,7 +17,6 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/utils/Translator.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/ReducedGG.h"
 
@@ -28,6 +27,9 @@ namespace action {
 
 Sh2ReducedGG::Sh2ReducedGG(const param::MIRParametrisation& parametrisation):
     Sh2GriddedTransform(parametrisation) {
+
+    ASSERT(parametrisation_.get("user.reduced", N_));
+
 }
 
 
@@ -36,14 +38,12 @@ Sh2ReducedGG::~Sh2ReducedGG() {
 
 
 void Sh2ReducedGG::print(std::ostream& out) const {
-    out << "Sh2ReducedGG[]";
+    out << "Sh2ReducedGG[N=" << N_ << "]";
 }
 
 
 repres::Representation* Sh2ReducedGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    long N;
-    ASSERT(parametrisation_.get("user.reduced", N));
-    return new repres::ReducedGG(N);
+    return new repres::ReducedGG(N_);
 }
 
 

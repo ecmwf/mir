@@ -39,7 +39,7 @@ BitmapFilter::BitmapFilter(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 
     std::string path;
-    ASSERT(parametrisation.get("bitmap", path));
+    ASSERT(parametrisation.get("user.bitmap", path));
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, util::Bitmap *>::iterator j = cache.find(path);

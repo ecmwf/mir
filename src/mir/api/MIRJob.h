@@ -56,13 +56,13 @@ class MIRJob : public param::SimpleParametrisation {
 
     void execute(input::MIRInput&, output::MIROutput&) const;
 
-    void set(const std::string& name, const char* value);
-    void set(const std::string& name, const std::string& value);
-    void set(const std::string& name, bool value);
-    void set(const std::string& name, long value);
-    void set(const std::string& name, double value);
-    void set(const std::string& name, double v1, double v2);
-    void set(const std::string& name, double v1, double v2, double v3, double v4);
+    MIRJob& set(const std::string& name, const char* value);
+    MIRJob& set(const std::string& name, const std::string& value);
+    MIRJob& set(const std::string& name, bool value);
+    MIRJob& set(const std::string& name, long value);
+    MIRJob& set(const std::string& name, double value);
+    MIRJob& set(const std::string& name, double v1, double v2);
+    MIRJob& set(const std::string& name, double v1, double v2, double v3, double v4);
 
 // -- Overridden methods
     // None

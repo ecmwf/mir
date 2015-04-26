@@ -26,6 +26,7 @@ namespace mir {
 
 namespace action {
 class Action;
+class ActionPlan;
 }
 
 namespace param {
@@ -58,7 +59,7 @@ class MIRLogic {
 
 // -- Methods
 
-    virtual void prepare(param::RuntimeParametrisation&, std::vector<std::auto_ptr< action::Action > >&) const = 0;
+    virtual void prepare(action::ActionPlan &) const = 0;
 
 // -- Overridden methods
     // None
@@ -76,8 +77,6 @@ class MIRLogic {
     const param::MIRParametrisation& parametrisation_;
 
 // -- Methods
-
-    void add(std::vector<std::auto_ptr< action::Action > >& actions, const std::string& name) const;
 
 
     virtual void print(std::ostream&) const = 0; // Change to virtual if base class

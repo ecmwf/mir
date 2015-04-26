@@ -88,7 +88,7 @@ class MARSLogic : public MIRLogic {
 
 // -- Overridden methods
 
-    virtual void prepare(param::RuntimeParametrisation&, std::vector<std::auto_ptr< action::Action > >&) const;
+    virtual void prepare(action::ActionPlan&) const;
 
 // -- Class members
     // None

@@ -12,20 +12,15 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "mir/action/AreaCropper.h"
 
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/utils/Translator.h"
-
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
-
-#include "mir/action/AreaCropper.h"
-
 
 namespace mir {
 namespace action {
