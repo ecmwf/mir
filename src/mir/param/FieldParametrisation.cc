@@ -33,7 +33,7 @@ FieldParametrisation::~FieldParametrisation() {
 bool FieldParametrisation::has(const std::string &name) const {
 
     // FIXME: not very elegant
-    if(name == "spherical") {
+    if (name == "spherical") {
         long dummy;
         return get("truncation", dummy);
     }
@@ -70,6 +70,33 @@ bool FieldParametrisation::get(const std::string& name, std::vector<long>& value
 }
 
 bool FieldParametrisation::get(const std::string& name, std::vector<double>& value) const {
+
+// Special case
+
+    if (name == "grid") {
+        double west_east_increment, north_south_increment;
+
+        if (get("west_east_increment", west_east_increment) && get("north_south_increment", north_south_increment)) {
+            value.resize(2);
+            value[0] = west_east_increment;
+            value[1] = north_south_increment;
+            return true;
+        }
+    }
+
+    if (name == "area") {
+        double north, west, south, east;
+
+        if (get("north", north) && get("west", west) && get("south", south) && get("east", east)) {
+            value.resize(4);
+            value[0] = north;
+            value[1] = west;
+            value[2] = south;
+            value[3] = east;
+            return true;
+        }
+    }
+
     return _get(name, value);
 }
 
