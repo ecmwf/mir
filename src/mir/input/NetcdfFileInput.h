@@ -105,9 +105,10 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
     virtual const param::MIRParametrisation &parametrisation() const;
     virtual data::MIRField *field() const;
 
-    // From FieldParametrisation
-    virtual bool lowLevelHas(const std::string& name) const;
-    virtual bool lowLevelGet(const std::string&, std::string&) const;
+    // From MIRParametrisation
+    virtual bool has(const std::string& name) const;
+    virtual bool get(const std::string&, std::string&) const;
+    virtual bool get(const std::string &name, double &value) const;
 
     // -- Class members
     // None

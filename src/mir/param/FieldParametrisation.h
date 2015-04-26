@@ -63,8 +63,6 @@ class FieldParametrisation : public MIRParametrisation {
 
 // -- Methods
 
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
-
 // -- Overridden methods
     // From MIRParametrisation
     virtual bool get(const std::string& name, std::string& value) const;
@@ -97,16 +95,7 @@ class FieldParametrisation : public MIRParametrisation {
     template<class T>
     bool _get(const std::string&, T&) const;
 
-    template<class T>
-    bool _low(const std::string&, T&) const;
 
-    virtual bool lowLevelHas(const std::string& name) const = 0;
-    virtual bool lowLevelGet(const std::string& name, std::string& value) const = 0;
-    virtual bool lowLevelGet(const std::string& name, bool& value) const;
-    virtual bool lowLevelGet(const std::string& name, long& value) const;
-    virtual bool lowLevelGet(const std::string& name, double& value) const;
-    virtual bool lowLevelGet(const std::string& name, std::vector<long>& value) const;
-    virtual bool lowLevelGet(const std::string& name, std::vector<double>& value) const;
 // -- Overridden methods
 
 // -- Class members
@@ -117,10 +106,6 @@ class FieldParametrisation : public MIRParametrisation {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const FieldParametrisation& p) {
-        p.print(s);
-        return s;
-    }
 
 };
 

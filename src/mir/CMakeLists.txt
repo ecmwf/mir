@@ -110,8 +110,8 @@ list( APPEND mir_srcs
       param/MIRDefaults.cc
       param/MIRDefaults.h
       param/MIRParametrisation.cc
-      param/MIRParametrisation.h 
-      param/RuntimeParametrisation.cc 
+      param/MIRParametrisation.h
+      param/RuntimeParametrisation.cc
       param/RuntimeParametrisation.h
       param/SimpleParametrisation.cc
       param/SimpleParametrisation.h

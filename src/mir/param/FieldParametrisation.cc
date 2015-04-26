@@ -31,104 +31,26 @@ FieldParametrisation::~FieldParametrisation() {
 
 
 bool FieldParametrisation::has(const std::string &name) const {
-    return lowLevelHas(name);
-}
 
-bool FieldParametrisation::get(const std::string &name, std::string &value) const {
-
-    // This are the keywork that must be replied to
-    // to make sure they can be compared to the user request
-
-    if (name == "area") {
-
-        std::string north;
-        std::string west;
-        std::string south;
-        std::string east;
-
-        if (get("north", north) && get("west", west) && get("south", south) && get("east", east)) {
-            eckit::StrStream os;
-            os << north
-               << "/"
-               << west
-               << "/"
-               << south
-               << "/"
-               << east
-               << eckit::StrStream::ends;
-
-            value = std::string(os);
-        } else {
-            value = "unknown";
-        }
-        return true;
-    }
-
-    if (name == "grid") {
-
-        std::string west_east_increment;
-        std::string north_south_increment;
-
-        if (get("west_east_increment", west_east_increment) && get("north_south_increment", north_south_increment) ) {
-            eckit::StrStream os;
-            os << west_east_increment
-               << "/"
-               << north_south_increment
-               << eckit::StrStream::ends;
-
-            value = std::string(os);
-        } else {
-            value = "unknown";
-        }
-        return true;
-    }
-
-    if (name == "regular") {
-        value = "unknown";
-        std::string type;
-        if (get("gridType", type)) {
-            if (type == "regular_gg") {
-                if (get("N", value)) {
-                    return true;
-                }
-            }
-        }
-        return true;
-    }
-
-    if (name == "reduced") {
-        value = "unknown";
-        std::string type;
-        if (get("gridType", type)) {
-            if (type == "reduced_gg") {
-                if (get("N", value)) {
-                    return true;
-                }
-            }
-        }
-        return true;
-    }
-
-    // These two return true of false only
-    if(name == "gridded") {
-        // TODO: something better, this is just a hack
-        if(!has("truncation")) {
-            return true;
-        }
-    }
-
+    // FIXME: not very elegant
     if(name == "spherical") {
-        if(has("truncation")) {
-            return true;
-        }
+        long dummy;
+        return get("truncation", dummy);
     }
 
-    return lowLevelGet(name, value);
+    eckit::Log::info() << "FieldParametrisation::has(" << name << ") " << *this << std::endl;
+    return false;
 }
+
 
 template<class T>
 bool FieldParametrisation::_get(const std::string& name, T& value) const {
-    return lowLevelGet(name, value);
+    eckit::Log::info() << "FieldParametrisation::_get(" << name << ") " <<  *this << std::endl;
+    return false;
+}
+
+bool FieldParametrisation::get(const std::string &name, std::string &value) const {
+    return _get(name, value);
 }
 
 bool FieldParametrisation::get(const std::string& name, bool& value) const {
@@ -151,26 +73,174 @@ bool FieldParametrisation::get(const std::string& name, std::vector<double>& val
     return _get(name, value);
 }
 
-bool FieldParametrisation::lowLevelGet(const std::string& name, bool& value) const {
-    NOTIMP;
-}
+// bool GribInput::get(const std::string &name, std::string &value) const {
 
-bool FieldParametrisation::lowLevelGet(const std::string& name, long& value) const {
-    NOTIMP;
-}
+//     eckit::Log::info() << "GribInput::get " << name << std::endl;
 
-bool FieldParametrisation::lowLevelGet(const std::string& name, double& value) const {
-    NOTIMP;
-}
+//     ASSERT(grib_.get());
 
-bool FieldParametrisation::lowLevelGet(const std::string& name, std::vector<long>& value) const {
-    NOTIMP;
-}
+//     // Assumes LL grid, and scanning mode
 
-bool FieldParametrisation::lowLevelGet(const std::string& name, std::vector<double>& value) const {
-    NOTIMP;
-}
+//     if (name == "area") {
+//         double latitudeOfFirstGridPointInDegrees;
+//         double longitudeOfFirstGridPointInDegrees;
+//         double latitudeOfLastGridPointInDegrees;
+//         double longitudeOfLastGridPointInDegrees;
+//         double jDirectionIncrementInDegrees;
+//         double iDirectionIncrementInDegrees;
 
+//         if (!GRIB_GET(grib_get_double(grib_.get(), "latitudeOfFirstGridPointInDegrees", &latitudeOfFirstGridPointInDegrees))) {
+//             return false;
+//         }
+
+//         if (!GRIB_GET(grib_get_double(grib_.get(), "longitudeOfFirstGridPointInDegrees", &longitudeOfFirstGridPointInDegrees))) {
+//             return false;
+//         }
+
+//         if (!GRIB_GET(grib_get_double(grib_.get(), "latitudeOfLastGridPointInDegrees", &latitudeOfLastGridPointInDegrees))) {
+//             return false;
+//         }
+
+//         if (!GRIB_GET(grib_get_double(grib_.get(), "longitudeOfLastGridPointInDegrees", &longitudeOfLastGridPointInDegrees))) {
+//             return false;
+//         }
+
+//         if (!GRIB_GET(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees))) {
+//             return false;
+//         }
+
+//         if (!GRIB_GET(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees))) {
+//             return false;
+//         }
+
+
+//         double v = latitudeOfFirstGridPointInDegrees - latitudeOfLastGridPointInDegrees;
+//         double h = (longitudeOfLastGridPointInDegrees + iDirectionIncrementInDegrees) - longitudeOfFirstGridPointInDegrees;
+
+//         if (v == 180 && h == 360) {
+//             value = "global";
+//         } else {
+//             eckit::StrStream os;
+//             os << latitudeOfFirstGridPointInDegrees
+//                << "/"
+//                << longitudeOfFirstGridPointInDegrees
+//                << "/"
+//                << latitudeOfLastGridPointInDegrees
+//                << "/"
+//                << longitudeOfLastGridPointInDegrees
+//                << eckit::StrStream::ends;
+
+//             value = std::string(os);
+//         }
+
+//         eckit::Log::info() << "GribInput::get " << name << " is " << value << std::endl;
+
+//         cache_[name] = value;
+//         return true;
+//     }
+
+//     if (name == "grid") {
+
+//         double jDirectionIncrementInDegrees;
+//         double iDirectionIncrementInDegrees;
+
+//         if (!GRIB_GET(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees))) {
+//             return false;
+//         }
+
+//         if (!GRIB_GET(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees))) {
+//             return false;
+//         }
+
+
+//         eckit::StrStream os;
+//         os << iDirectionIncrementInDegrees
+//            << "/"
+//            << jDirectionIncrementInDegrees
+//            << eckit::StrStream::ends;
+
+//         value = std::string(os);
+
+//         eckit::Log::info() << "GribInput::get " << name << " is " << value << std::endl;
+
+//         cache_[name] = value;
+//         return true;
+//     }
+
+//     if (name == "regular") {
+//         std::string type;
+//         if (get("gridType", type)) {
+//             if (type == "regular_gg") {
+
+//                 long N;
+
+//                 GRIB_CALL(grib_get_long(grib_.get(), "N", &N));
+//                 // GRIB_CALL(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees));
+
+//                 eckit::StrStream os;
+//                 os << N << eckit::StrStream::ends;
+
+//                 value = std::string(os);
+
+//                 eckit::Log::info() << "GribInput::get " << name << " is " << value << std::endl;
+
+//                 cache_[name] = value;
+//                 return true;
+//             }
+//         }
+//     }
+
+//     if (name == "reduced") {
+//         std::string type;
+//         if (get("gridType", type)) {
+//             if (type == "reduced_gg") {
+
+//                 long N;
+
+//                 GRIB_CALL(grib_get_long(grib_.get(), "N", &N));
+//                 // GRIB_CALL(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees));
+
+//                 eckit::StrStream os;
+//                 os << N << eckit::StrStream::ends;
+
+//                 value = std::string(os);
+
+//                 eckit::Log::info() << "GribInput::get " << name << " is " << value << std::endl;
+
+//                 cache_[name] = value;
+//                 return true;
+//             }
+//         }
+//     }
+
+
+//     const char *key = name.c_str();
+//     size_t i = 0;
+//     while (mappings[i].name) {
+//         if (name == mappings[i].name) {
+//             key = mappings[i].key;
+//             break;
+//         }
+//         i++;
+//     }
+
+//     char buffer[1024];
+//     size_t size = sizeof(buffer);
+//     int err = grib_get_string(grib_.get(), key, buffer, &size);
+
+//     if (err == GRIB_SUCCESS) {
+//         value = buffer;
+//         eckit::Log::info() << "GribInput::get " << name << " is " << value << " (as " << key << ")" << std::endl;
+//         cache_[name] = value;
+//         return true;
+//     }
+
+//     if (err != GRIB_NOT_FOUND) {
+//         GRIB_ERROR(err, name.c_str());
+//     }
+
+//     return FieldParametrisation::get(name, value);
+// }
 
 
 }  // namespace param

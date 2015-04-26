@@ -157,18 +157,26 @@ data::MIRField *NetcdfFileInput::field() const {
 }
 
 
-bool NetcdfFileInput::lowLevelHas(const std::string& name) const {
-    return false;
+bool NetcdfFileInput::has(const std::string& name) const {
+    if(name == "gridded") {
+        return true;
+    }
+    if(name == "spherical") {
+        return false;
+    }
+    return FieldParametrisation::has(name);
 }
 
-bool NetcdfFileInput::lowLevelGet(const std::string &name, std::string &value) const {
+bool NetcdfFileInput::get(const std::string &name, std::string &value) const {
 
     if (name == "gridType") {
         value = "regular_ll";
         return true;
     }
+    return FieldParametrisation::get(name, value);
+}
 
-    eckit::Translator<double, std::string> d2s;
+bool NetcdfFileInput::get(const std::string &name, double &value) const {
 
     // Extremly inefficient code:
 
@@ -185,37 +193,37 @@ bool NetcdfFileInput::lowLevelGet(const std::string &name, std::string &value) c
     }
 
     if (name == "north") {
-        value = d2s(latitude_[0]);
+        value = latitude_[0];
         return true;
     }
 
     if (name == "south") {
-        value = d2s(latitude_[latitude_.size() - 1]);
+        value = latitude_[latitude_.size() - 1];
         return true;
     }
 
     if (name == "west") {
-        value = d2s(longitude_[0]);
+        value = longitude_[0];
         return true;
     }
 
     if (name == "east") {
-        value = d2s(longitude_[longitude_.size() - 1]);
+        value = longitude_[longitude_.size() - 1];
         return true;
     }
 
     if (name == "west_east_increment") {
-        value = d2s(longitude_[1] - longitude_[0]);
+        value = longitude_[1] - longitude_[0];
         return true;
     }
 
     if (name == "north_south_increment") {
-        value = d2s(latitude_[0] - latitude_[1]);
+        value = latitude_[0] - latitude_[1];
         return true;
     }
 
 
-    return false;
+    return FieldParametrisation::get(name, value);
 }
 
 

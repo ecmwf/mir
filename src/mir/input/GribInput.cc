@@ -38,11 +38,30 @@ static struct {
     {"north", "latitudeOfFirstGridPointInDegrees"},
     {"south", "latitudeOfLastGridPointInDegrees"},
     {"truncation", "pentagonalResolutionParameterJ"},// Assumes triangular truncation
+
+    // This will be just called for has()
+    {"gridded", "Nj"}, // Is that always true?
+    {"spherical", "pentagonalResolutionParameterJ"},
     {0, 0},
 };
 
 
+static const char* get_key(const std::string& name) {
+    const char *key = name.c_str();
+    size_t i = 0;
+    while (mappings[i].name) {
+        if (name == mappings[i].name) {
+            key = mappings[i].key;
+            break;
+        }
+        i++;
+    }
+    return key;
+}
+
 }  // (anonymous namespace)
+
+
 
 
 GribInput::GribInput() {
@@ -85,244 +104,95 @@ grib_handle *GribInput::gribHandle() const {
     return grib_.get();
 }
 
-bool GribInput::lowLevelHas(const std::string &name) const {
-    std::string dummy;
-    std::cout << "GribInput::lowLevelHas " << name << std::endl;
-    return get(name, dummy);
+bool GribInput::has(const std::string &name) const {
+    const char *key = get_key(name);
+    bool ok = grib_is_defined(grib_.get(), key);
+    eckit::Log::info() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes": "no") << std::endl;
+    return ok;
 }
 
-bool GribInput::lowLevelGet(const std::string &name, std::string &value) const {
-
-    // WARNING: Make sure the cache is cleared
-    std::map<std::string, std::string>::const_iterator j = cache_.find(name);
-    if (j != cache_.end()) {
-        value = (*j).second;
-        return true;
-    }
-
-    eckit::Log::info() << "GribInput::get " << name << std::endl;
-
-    ASSERT(grib_.get());
-
-    // Assumes LL grid, and scanning mode
-
-    if (name == "area") {
-        double latitudeOfFirstGridPointInDegrees;
-        double longitudeOfFirstGridPointInDegrees;
-        double latitudeOfLastGridPointInDegrees;
-        double longitudeOfLastGridPointInDegrees;
-        double jDirectionIncrementInDegrees;
-        double iDirectionIncrementInDegrees;
-
-        if (!GRIB_GET(grib_get_double(grib_.get(), "latitudeOfFirstGridPointInDegrees", &latitudeOfFirstGridPointInDegrees))) {
-            return false;
-        }
-
-        if (!GRIB_GET(grib_get_double(grib_.get(), "longitudeOfFirstGridPointInDegrees", &longitudeOfFirstGridPointInDegrees))) {
-            return false;
-        }
-
-        if (!GRIB_GET(grib_get_double(grib_.get(), "latitudeOfLastGridPointInDegrees", &latitudeOfLastGridPointInDegrees))) {
-            return false;
-        }
-
-        if (!GRIB_GET(grib_get_double(grib_.get(), "longitudeOfLastGridPointInDegrees", &longitudeOfLastGridPointInDegrees))) {
-            return false;
-        }
-
-        if (!GRIB_GET(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees))) {
-            return false;
-        }
-
-        if (!GRIB_GET(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees))) {
-            return false;
-        }
-
-
-        double v = latitudeOfFirstGridPointInDegrees - latitudeOfLastGridPointInDegrees;
-        double h = (longitudeOfLastGridPointInDegrees + iDirectionIncrementInDegrees) - longitudeOfFirstGridPointInDegrees;
-
-        if (v == 180 && h == 360) {
-            value = "global";
-        } else {
-            eckit::StrStream os;
-            os << latitudeOfFirstGridPointInDegrees
-               << "/"
-               << longitudeOfFirstGridPointInDegrees
-               << "/"
-               << latitudeOfLastGridPointInDegrees
-               << "/"
-               << longitudeOfLastGridPointInDegrees
-               << eckit::StrStream::ends;
-
-            value = std::string(os);
-        }
-
-        eckit::Log::info() << "GribInput::get " << name << " is " << value << std::endl;
-
-        cache_[name] = value;
-        return true;
-    }
-
-    if (name == "grid") {
-
-        double jDirectionIncrementInDegrees;
-        double iDirectionIncrementInDegrees;
-
-        if (!GRIB_GET(grib_get_double(grib_.get(), "jDirectionIncrementInDegrees", &jDirectionIncrementInDegrees))) {
-            return false;
-        }
-
-        if (!GRIB_GET(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees))) {
-            return false;
-        }
-
-
-        eckit::StrStream os;
-        os << iDirectionIncrementInDegrees
-           << "/"
-           << jDirectionIncrementInDegrees
-           << eckit::StrStream::ends;
-
-        value = std::string(os);
-
-        eckit::Log::info() << "GribInput::get " << name << " is " << value << std::endl;
-
-        cache_[name] = value;
-        return true;
-    }
-
-    if (name == "regular") {
-        std::string type;
-        if (get("gridType", type)) {
-            if (type == "regular_gg") {
-
-                long N;
-
-                GRIB_CALL(grib_get_long(grib_.get(), "N", &N));
-                // GRIB_CALL(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees));
-
-                eckit::StrStream os;
-                os << N << eckit::StrStream::ends;
-
-                value = std::string(os);
-
-                eckit::Log::info() << "GribInput::get " << name << " is " << value << std::endl;
-
-                cache_[name] = value;
-                return true;
-            }
-        }
-    }
-
-    if (name == "reduced") {
-        std::string type;
-        if (get("gridType", type)) {
-            if (type == "reduced_gg") {
-
-                long N;
-
-                GRIB_CALL(grib_get_long(grib_.get(), "N", &N));
-                // GRIB_CALL(grib_get_double(grib_.get(), "iDirectionIncrementInDegrees", &iDirectionIncrementInDegrees));
-
-                eckit::StrStream os;
-                os << N << eckit::StrStream::ends;
-
-                value = std::string(os);
-
-                eckit::Log::info() << "GribInput::get " << name << " is " << value << std::endl;
-
-                cache_[name] = value;
-                return true;
-            }
-        }
-    }
-
-
-    const char *key = name.c_str();
-    size_t i = 0;
-    while (mappings[i].name) {
-        if (name == mappings[i].name) {
-            key = mappings[i].key;
-            break;
-        }
-        i++;
-    }
-
-    char buffer[1024];
-    size_t size = sizeof(buffer);
-    int err = grib_get_string(grib_.get(), key, buffer, &size);
-
-    if (err == GRIB_SUCCESS) {
-        value = buffer;
-        eckit::Log::info() << "GribInput::get " << name << " is " << value << " (as " << key << ")" << std::endl;
-        cache_[name] = value;
-        return true;
-    }
-
-    if (err != GRIB_NOT_FOUND) {
-        GRIB_ERROR(err, name.c_str());
-    }
-
-    return false;
-}
-
-
-bool GribInput::lowLevelGet(const std::string& name, bool& value) const {
+bool GribInput::get(const std::string& name, bool& value) const {
     NOTIMP;
 }
 
-bool GribInput::lowLevelGet(const std::string& name, long& value) const {
-
-    int err = grib_get_long(grib_.get(), name.c_str(), &value);
+bool GribInput::get(const std::string& name, long& value) const {
+const char *key = get_key(name);
+    int err = grib_get_long(grib_.get(), key, &value);
 
     if (err == GRIB_NOT_FOUND) {
-        return false;
+        return FieldParametrisation::get(name, value);
     }
 
     if (err) {
-        GRIB_ERROR(err, name.c_str());
+        GRIB_ERROR(err, key);
     }
 
-    eckit::Log::info() << "grib_get_long(" << name <<") " << value << std::endl;
+    eckit::Log::info() << "grib_get_long(" << name << ",key=" << key << ") " << value << std::endl;
     return true;
 }
 
-bool GribInput::lowLevelGet(const std::string& name, double& value) const {
+bool GribInput::get(const std::string& name, double& value) const {
     NOTIMP;
 }
 
-bool GribInput::lowLevelGet(const std::string& name, std::vector<long>& value) const {
+bool GribInput::get(const std::string& name, std::vector<long>& value) const {
+    const char *key = get_key(name);
+
     size_t count = 0;
-    int err = grib_get_size(grib_.get(), name.c_str(), &count);
+    int err = grib_get_size(grib_.get(), key, &count);
 
     if (err == GRIB_NOT_FOUND) {
-        return false;
+        return FieldParametrisation::get(name, value);
     }
 
     if (err) {
-        GRIB_ERROR(err, name.c_str());
+        GRIB_ERROR(err, key);
     }
 
     size_t size = count;
 
     value.resize(count);
 
-    GRIB_CALL(grib_get_long_array(grib_.get(), name.c_str(), &value[0], &size));
+    GRIB_CALL(grib_get_long_array(grib_.get(), key, &value[0], &size));
     ASSERT(count == size);
 
     ASSERT(value.size());
 
+        eckit::Log::info() << "grib_get_long_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
+
+
     return true;
 }
 
-bool GribInput::lowLevelGet(const std::string& name, std::vector<double>& value) const {
+bool GribInput::get(const std::string& name, std::string& value) const {
+    const char *key = get_key(name);
+
+    char buffer[10240];
+    size_t size = sizeof(buffer);
+    int err = grib_get_string(grib_.get(), key, buffer, &size);
+
+    if (err == GRIB_NOT_FOUND) {
+        return FieldParametrisation::get(name, value);
+    }
+
+    if (err) {
+        GRIB_ERROR(err, key);
+    }
+
+    ASSERT(size < sizeof(buffer) - 1);
+    value = buffer;
+
+    eckit::Log::info() << "grib_get_string(" << name << ",key=" << key << ") " << value << std::endl;
+
+    return true;
+}
+
+bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     NOTIMP;
 }
 
 bool GribInput::handle(grib_handle *h) {
     grib_.reset(h);
-    cache_.clear();
     return h != 0;
 }
 

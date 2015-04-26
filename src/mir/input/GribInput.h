@@ -16,9 +16,7 @@
 #ifndef GribInput_H
 #define GribInput_H
 
-#include <map>
 #include <memory>
-#include <string>
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/FieldParametrisation.h"
@@ -93,7 +91,6 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     // -- Members
 
     std::auto_ptr<grib_handle> grib_;
-    mutable std::map<std::string, std::string> cache_;
 
     // -- Methods
 
@@ -105,14 +102,15 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     virtual data::MIRField *field() const;
     virtual grib_handle *gribHandle() const;
 
-    // From FieldParametrisation
-    virtual bool lowLevelHas(const std::string &name) const;
-    virtual bool lowLevelGet(const std::string &name, std::string &value) const;
-    virtual bool lowLevelGet(const std::string& name, bool& value) const;
-    virtual bool lowLevelGet(const std::string& name, long& value) const;
-    virtual bool lowLevelGet(const std::string& name, double& value) const;
-    virtual bool lowLevelGet(const std::string& name, std::vector<long>& value) const;
-    virtual bool lowLevelGet(const std::string& name, std::vector<double>& value) const;
+    /// From MIRParametrisation
+    virtual bool get(const std::string& name, std::string& value) const;
+    virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, double& value) const;
+    virtual bool get(const std::string& name, std::vector<long>& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
+
+    virtual bool has(const std::string& name) const;
 
     // -- Class members
     // None

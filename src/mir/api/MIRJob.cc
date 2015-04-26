@@ -56,7 +56,10 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
     // Static so it is inited once (mutex?)
     static param::MIRConfiguration configuration;
+    eckit::Log::info() << "Configuration: " << configuration << std::endl;
+
     static param::MIRDefaults defaults;
+    eckit::Log::info() << "Defaults: " << defaults << std::endl;
 
     eckit::Timer timer("MIRJob::execute");
 
@@ -75,7 +78,7 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
     param::RuntimeParametrisation runtime; // This will be modified internally
 
     param::MIRCombinedParametrisation combined(*this, runtime, metadata, configuration, defaults);
-    eckit::Log::info() << "        Combined: " << combined << std::endl;
+    eckit::Log::info() << "Combined parametrisation: " << combined << std::endl;
 
     std::auto_ptr< logic::MIRLogic > logic(logic::MIRLogicFactory::build(combined));
 
@@ -106,12 +109,14 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
     output.save(*this, input, *field);
 
+    eckit::Log::info() << "Runtime parametrisation: " << runtime << std::endl;
+
 }
 
 
 void MIRJob::print(std::ostream& out) const {
     out << "MIRJob[";
-        SimpleParametrisation::print(out);
+    SimpleParametrisation::print(out);
     out << "]";
 }
 

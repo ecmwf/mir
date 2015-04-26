@@ -16,8 +16,6 @@
 #ifndef DummyInput_H
 #define DummyInput_H
 
-#include <map>
-#include <string>
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/FieldParametrisation.h"
@@ -85,8 +83,6 @@ class DummyInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Members
 
-    std::map<std::string, std::string> settings_;
-
 
     // -- Methods
 
@@ -98,9 +94,10 @@ class DummyInput : public MIRInput, public param::FieldParametrisation {
     virtual const param::MIRParametrisation &parametrisation() const;
     virtual data::MIRField *field() const;
 
-    // From FieldParametrisation
-    virtual bool lowLevelHas(const std::string& name) const;
-    virtual bool lowLevelGet(const std::string&, std::string&) const;
+    // From MIRParametrisation
+    virtual bool has(const std::string& name) const;
+    virtual bool get(const std::string&, std::string&) const;
+    virtual bool get(const std::string&, double&) const;
 
     // -- Class members
     // None

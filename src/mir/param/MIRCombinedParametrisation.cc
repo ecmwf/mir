@@ -42,11 +42,14 @@ MIRCombinedParametrisation::~MIRCombinedParametrisation() {
 
 
 void MIRCombinedParametrisation::print(std::ostream& out) const {
-    out << "MIRCombinedParametrisation[user="
-        << user_ <<
-        ",metadata=" << metadata_ <<
-        ",configuration=" << configuration_ <<
-        ",defaults=" << defaults_ << "]";
+    out << "MIRCombinedParametrisation["
+        // << "user="
+        // << user_ <<
+        // ",runtime=" << runtime_ <<
+        // ",metadata=" << metadata_ <<
+        // ",configuration=" << configuration_ <<
+        // ",defaults=" << defaults_
+        << "]";
 }
 
 
@@ -69,6 +72,7 @@ bool MIRCombinedParametrisation::has(const std::string& name) const {
     if (configuration_.has(name)) return true;
     if (defaults_.has(name)) return true;
 
+    eckit::Log::warning() << "**** MIRCombinedParametrisation::has(" << name << ") unanswered" << std::endl;
     return false;
 }
 
@@ -91,6 +95,8 @@ bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
     if (metadata_.get(name, value)) return true;
     if (configuration_.get(name, value)) return true;
     if (defaults_.get(name, value)) return true;
+
+    eckit::Log::warning() << "**** MIRCombinedParametrisation::get(" << name << ") unanswered" << std::endl;
 
     return false;
 }

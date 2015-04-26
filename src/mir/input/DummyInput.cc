@@ -26,13 +26,6 @@ namespace input {
 
 
 DummyInput::DummyInput() {
-    settings_["gridType"] = "regular_ll";
-    settings_["north"] = "50";
-    settings_[ "west"] = "0";
-    settings_["south"] = "0";
-    settings_["east"] = "50";
-    settings_["north_south_increment"] = "1";
-    settings_["west_east_increment"] = "1";
 }
 
 
@@ -63,18 +56,60 @@ void DummyInput::print(std::ostream &out) const {
     out << "DummyInput[...]";
 }
 
-bool DummyInput::lowLevelHas(const std::string& name) const {
-    return settings_.find(name) != settings_.end();
-}
-
-bool DummyInput::lowLevelGet(const std::string &name, std::string &value) const {
-    std::map<std::string, std::string>::const_iterator j = settings_.find(name);
-    if (j != settings_.end()) {
-        value = (*j).second;
+bool DummyInput::has(const std::string& name) const {
+    if(name == "gridded") {
         return true;
     }
-    return false;
+    if(name == "spherical") {
+        return false;
+    }
+    return FieldParametrisation::has(name);
 }
+
+bool DummyInput::get(const std::string &name, std::string &value) const {
+
+    if (name == "gridType") {
+        value = "regular_ll";
+        return true;
+    }
+    return FieldParametrisation::get(name, value);
+}
+
+bool DummyInput::get(const std::string &name, double &value) const {
+
+    if (name == "north") {
+        value = 50;
+        return true;
+    }
+
+    if (name == "south") {
+        value = 0;
+        return true;
+    }
+
+    if (name == "west") {
+        value = 0;
+        return true;
+    }
+
+    if (name == "east") {
+        value = 50;
+        return true;
+    }
+
+    if (name == "west_east_increment") {
+        value = 1;
+        return true;
+    }
+
+    if (name == "north_south_increment") {
+        value = 1;
+        return true;
+    }
+
+    return FieldParametrisation::get(name, value);
+}
+
 
 
 }  // namespace input
