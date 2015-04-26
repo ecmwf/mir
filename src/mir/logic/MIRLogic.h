@@ -23,12 +23,16 @@
 
 
 namespace mir {
+
 namespace action {
 class Action;
 }
+
 namespace param {
 class MIRParametrisation;
+class RuntimeParametrisation;
 }
+
 namespace logic {
 
 
@@ -54,7 +58,7 @@ class MIRLogic {
 
 // -- Methods
 
-    virtual void prepare(std::vector<std::auto_ptr< action::Action > >&) const = 0;
+    virtual void prepare(param::RuntimeParametrisation&, std::vector<std::auto_ptr< action::Action > >&) const = 0;
 
 // -- Overridden methods
     // None

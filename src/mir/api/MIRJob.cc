@@ -27,6 +27,8 @@
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRConfiguration.h"
 #include "mir/param/MIRDefaults.h"
+#include "mir/param/RuntimeParametrisation.h"
+
 #include "mir/repres/Representation.h"
 
 #include "mir/api/MIRJob.h"
@@ -70,7 +72,9 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
         return;
     }
 
-    param::MIRCombinedParametrisation combined(*this, metadata, configuration, defaults);
+    param::RuntimeParametrisation runtime; // This will be modified internally
+
+    param::MIRCombinedParametrisation combined(*this, runtime, metadata, configuration, defaults);
     eckit::Log::info() << "        Combined: " << combined << std::endl;
 
     std::auto_ptr< logic::MIRLogic > logic(logic::MIRLogicFactory::build(combined));
@@ -78,7 +82,7 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
     eckit::Log::info() << "Logic: " << *logic << std::endl;
 
     std::vector<std::auto_ptr< action::Action > > actions;
-    logic->prepare(actions);
+    logic->prepare(runtime, actions);
 
     eckit::Log::info() << "Actions are: " << std::endl;
     std::string arrow = "   ";

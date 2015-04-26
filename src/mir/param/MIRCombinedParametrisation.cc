@@ -25,10 +25,12 @@ namespace param {
 
 
 MIRCombinedParametrisation::MIRCombinedParametrisation(const MIRParametrisation& user,
+        const MIRParametrisation& runtime,
         const MIRParametrisation& metadata,
         const MIRParametrisation& configuration,
         const MIRParametrisation& defaults):
     user_(user),
+    runtime_(runtime),
     metadata_(metadata),
     configuration_(configuration),
     defaults_(defaults) {
@@ -52,15 +54,17 @@ bool MIRCombinedParametrisation::has(const std::string& name) const {
     // eckit::Log::info() << "MIRCombinedParametrisation::has(" << name << ")" << std::endl;
 
     if (name.find("user.") == 0) {
-        return user_.has(name.substr(5));
+        if (user_.has(name.substr(5))) return true;
+        return runtime_.has(name.substr(5));
     }
 
     if (name.find("field.") == 0) {
         return metadata_.has(name.substr(6));
     }
 
-    // This could be a loop
+// This could be a loop
     if (user_.has(name)) return true;
+    if (runtime_.has(name)) return true;
     if (metadata_.has(name)) return true;
     if (configuration_.has(name)) return true;
     if (defaults_.has(name)) return true;
@@ -73,7 +77,8 @@ bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
     // eckit::Log::info() << "MIRCombinedParametrisation::get(" << name << ")" << std::endl;
 
     if (name.find("user.") == 0) {
-        return user_.get(name.substr(5), value);
+        if (user_.get(name.substr(5), value)) return true;
+        return runtime_.get(name.substr(5), value);
     }
 
     if (name.find("field.") == 0) {
@@ -82,6 +87,7 @@ bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
 
     // This could be a loop
     if (user_.get(name, value)) return true;
+    if (runtime_.get(name, value)) return true;
     if (metadata_.get(name, value)) return true;
     if (configuration_.get(name, value)) return true;
     if (defaults_.get(name, value)) return true;

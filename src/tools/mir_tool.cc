@@ -50,7 +50,7 @@ void MIRTool::usage(const std::string& tool) {
 
 void MIRTool::run() {
 
-    eckit::Context::Context& ctx = eckit::Context::instance();
+    eckit::Context& ctx = eckit::Context::instance();
     const std::string& tool = ctx.runName();
     size_t argc = ctx.argc();
 

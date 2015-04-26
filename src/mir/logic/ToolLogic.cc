@@ -38,7 +38,7 @@ void ToolLogic::print(std::ostream &out) const {
 }
 
 
-void ToolLogic::prepare(std::vector<std::auto_ptr< action::Action > > &actions) const {
+void ToolLogic::prepare(param::RuntimeParametrisation& runtime, std::vector<std::auto_ptr< action::Action > > &actions) const {
     // All the nasty logic goes there
 
     size_t argc = eckit::Context::instance().argc();

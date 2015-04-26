@@ -17,6 +17,7 @@
 
 #include "mir/logic/MARSLogic.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/param/RuntimeParametrisation.h"
 
 
 namespace mir {
@@ -38,7 +39,7 @@ void MARSLogic::print(std::ostream &out) const {
 }
 
 
-void MARSLogic::prepare(std::vector<std::auto_ptr< action::Action > > &actions) const {
+void MARSLogic::prepare(param::RuntimeParametrisation& runtime, std::vector<std::auto_ptr< action::Action > > &actions) const {
     // All the nasty logic goes there
 
     if (parametrisation_.has("field.spherical")) {
@@ -53,6 +54,7 @@ void MARSLogic::prepare(std::vector<std::auto_ptr< action::Action > > &actions) 
             add(actions, "transform.sh2regular-ll");
 #else
             // For now, thar's what we do
+            runtime.set("reduced", 48L);
             add(actions, "transform.sh2reduced-gg");
             add(actions, "interpolate.grid2regular-ll");
 #endif
