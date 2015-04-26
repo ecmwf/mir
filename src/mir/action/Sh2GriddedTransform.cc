@@ -31,6 +31,13 @@
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
+
+class TransInitor {
+public:
+    TransInitor() { trans_init(); }
+    ~TransInitor() { trans_finalize(); }
+};
+
 #endif
 
 namespace mir {
@@ -39,9 +46,11 @@ namespace action {
 static void transform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid& grid) {
 #ifdef ATLAS_HAVE_TRANS
 
+    static TransInitor initor; // Will init trans if needed
+
     const atlas::grids::ReducedGaussianGrid* rgg = dynamic_cast<const atlas::grids::ReducedGaussianGrid*>(&grid);
     if(!rgg) {
-        NOTIMP;
+        throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG.");
     }
 
     for(int i = 0; i < rgg->npts_per_lat().size(); i++) {
@@ -52,7 +61,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
     trans.ndgl  = rgg->npts_per_lat().size();
     trans.nloen = (int*) malloc( trans.ndgl * sizeof(int) ); ///< allocate array to be freed in trans_delete()
-
+ASSERT(trans.nloen);
     ::memcpy( trans.nloen, &(rgg->npts_per_lat()[0]), sizeof(int)*trans.ndgl );
 
     long maxtr = 0; // p["MaxTruncation"];
@@ -131,16 +140,10 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
 Sh2GriddedTransform::Sh2GriddedTransform(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
-
-    trans_init();
-
 }
 
 
 Sh2GriddedTransform::~Sh2GriddedTransform() {
-
-    trans_finalize();
-
 }
 
 
