@@ -36,7 +36,7 @@ ecbuild_add_test(
 ecbuild_add_test(
     TARGET    reduced_gg_to_regular_ll
     SOURCES   reduced_gg_to_regular_ll.cc
-    RESOURCES reduced_ll.grib
+    RESOURCES reduced_gg.grib
     INCLUDES  ${ECKIT_INCLUDE_DIRS}
     LIBS      mir
 )

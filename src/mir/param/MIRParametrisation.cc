@@ -58,7 +58,8 @@ bool MIRParametrisation::_sget(const std::string& name, T& value) const {
         return false;
     }
 
-    eckit::Log::warning() << " ++++ WARNING MIRParametrisation::get(" << name << "), want " << name_of(value) << " from string" << std::endl;
+    eckit::Log::warning() << " ++++ WARNING MIRParametrisation::get(" << name << "), want "
+                          << name_of(value) << " from string (" << *this << ")" << std::endl;
     value = translate(s);
 
     return true;
@@ -73,7 +74,8 @@ bool MIRParametrisation::_vget(const std::string& name, std::vector<T>& value) c
         return false;
     }
 
-    eckit::Log::warning() << " ++++  WARNING MIRParametrisation::get(" << name << "), want std::vector<" << name_of(T()) << "> from string" << std::endl;
+    eckit::Log::warning() << " ++++  WARNING MIRParametrisation::get(" << name << "), want std::vector<"
+                          << name_of(T()) << "> from string (" << *this << ")" << std::endl;
 
     eckit::Tokenizer parse("/");
 
