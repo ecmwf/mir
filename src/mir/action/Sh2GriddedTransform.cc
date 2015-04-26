@@ -44,16 +44,18 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
         NOTIMP;
     }
 
-
-    std::vector<int> nloen(rgg->npts_per_lat());
-    for(int i = 0; i < nloen.size(); i++) {
-        std::cout << i << " " << nloen[i] << std::endl;
+    for(int i = 0; i < rgg->npts_per_lat().size(); i++) {
+        std::cout << i << " " << rgg->npts_per_lat()[i] << std::endl;
     }
+
+    trans_init();
 
     struct Trans_t trans = new_trans();
 
-    trans.ndgl  = nloen.size();
-    trans.nloen = &nloen[0];
+    trans.ndgl  = rgg->npts_per_lat().size();
+    trans.nloen = (int*) malloc( trans.ndgl * sizeof(int) ); ///< allocate array to be freed in trans_delete()
+
+    ::memcpy( trans.nloen, &(rgg->npts_per_lat()[0]), sizeof(int)*trans.ndgl );
 
     long maxtr = 0; // p["MaxTruncation"];
 

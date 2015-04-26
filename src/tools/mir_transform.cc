@@ -88,15 +88,13 @@ class MirTransform : public eckit::Tool {
 
 		// prepare Trans object
 
-		std::vector<int> nloen = rgg->npts_per_lat();
-
-        DEBUG_VAR( nloen );
-
 		struct Trans_t trans = new_trans();
 
-		trans.ndgl  = nloen.size();
-		trans.nloen = nloen.data();
+	    trans.ndgl  = rgg->npts_per_lat().size();
+    	trans.nloen = (int*) malloc( trans.ndgl * sizeof(int) ); ///< allocate array to be freed in trans_delete()
 
+    	::memcpy( trans.nloen, &(rgg->npts_per_lat()[0]), sizeof(int)*trans.ndgl );
+    	
 		long maxtr = p["MaxTruncation"];
 
 		trans.nsmax = maxtr ? maxtr : (2*trans.ndgl-1)/2; // assumption: linear grid
