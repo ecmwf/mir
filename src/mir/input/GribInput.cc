@@ -188,7 +188,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
 }
 
 bool GribInput::get(const std::string& name, std::vector<double>& value) const {
-    NOTIMP;
+    return FieldParametrisation::get(name, value);
 }
 
 bool GribInput::handle(grib_handle *h) {
