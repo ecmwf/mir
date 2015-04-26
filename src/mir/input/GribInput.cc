@@ -284,7 +284,7 @@ bool GribInput::lowLevelGet(const std::string& name, long& value) const {
         GRIB_ERROR(err, name.c_str());
     }
 
-eckit::Log::info() << "grib_get_long(" << name <<") " << value << std::endl;
+    eckit::Log::info() << "grib_get_long(" << name <<") " << value << std::endl;
     return true;
 }
 

@@ -16,6 +16,7 @@
 #include "mir/action/Sh2GriddedTransform.h"
 
 #include <iostream>
+#include <vector>
 
 #include "atlas/Grid.h"
 #include "atlas/grids/grids.h"
@@ -33,9 +34,13 @@
 #include "transi/trans.h"
 
 class TransInitor {
-public:
-    TransInitor() { trans_init(); }
-    ~TransInitor() { trans_finalize(); }
+  public:
+    TransInitor() {
+        trans_init();
+    }
+    ~TransInitor() {
+        trans_finalize();
+    }
 };
 
 #endif
@@ -49,19 +54,15 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     static TransInitor initor; // Will init trans if needed
 
     const atlas::grids::ReducedGaussianGrid* rgg = dynamic_cast<const atlas::grids::ReducedGaussianGrid*>(&grid);
-    if(!rgg) {
+    if (!rgg) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG.");
-    }
-
-    for(int i = 0; i < rgg->npts_per_lat().size(); i++) {
-        std::cout << i << " " << rgg->npts_per_lat()[i] << std::endl;
     }
 
     struct Trans_t trans = new_trans();
 
     trans.ndgl  = rgg->npts_per_lat().size();
     trans.nloen = (int*) malloc( trans.ndgl * sizeof(int) ); ///< allocate array to be freed in trans_delete()
-ASSERT(trans.nloen);
+    ASSERT(trans.nloen);
     ::memcpy( trans.nloen, &(rgg->npts_per_lat()[0]), sizeof(int)*trans.ndgl );
 
     long maxtr = 0; // p["MaxTruncation"];
@@ -96,7 +97,7 @@ ASSERT(trans.nloen);
 
     // Transform sp to gp fields
 
-    std::vector<double> rgp ( number_of_fields * trans.ngptot );
+    std::vector<double> rgp (number_of_fields * trans.ngptot);
 
     struct InvTrans_t invtrans = new_invtrans(&trans);
     invtrans.nscalar   = number_of_fields;
@@ -110,11 +111,10 @@ ASSERT(trans.nloen);
 
     // Gather all gridpoint fields
 
-    output.resize( number_of_fields * trans.ngptotg );
+    output.resize(number_of_fields * trans.ngptotg);
 
-    std::vector<int> nto ( number_of_fields , 1 );
-    // for ( int jfld = 0; jfld < number_of_fields; ++jfld )
-    //     nto[jfld] = 1;
+    std::vector<int> nto (number_of_fields, 1);
+
 
     struct GathGrid_t gathgrid = new_gathgrid(&trans);
     gathgrid.rgp  = &rgp[0];
@@ -157,13 +157,6 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
     std::vector<double> result;
 
     const repres::Representation *in = field.representation();
-    // repres::Representation *repres = representation->truncate(truncation_, values, result);
-
-    // if (repres) { // NULL if nothing happend
-    //     field.representation(repres);
-    //     field.values(result);
-    // }
-
     repres::Representation *out = outputRepresentation(field.representation());
 
     try {
@@ -174,13 +167,13 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
         throw;
     }
 
-    for(size_t i = 0; i < result.size(); ++i) {
+    for (size_t i = 0; i < result.size(); ++i) {
         std::cout << result[i] << std::endl;
-        if(i > 10) {
+        if (i > 10) {
             break;
         }
     }
-    // field.representation(out);
+    field.representation(out);
 }
 
 
