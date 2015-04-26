@@ -168,38 +168,21 @@ void MIRJob::set(const std::string& name, double v1, double v2, double v3, doubl
 
 
 bool MIRJob::matches(const param::MIRParametrisation& metadata) const {
-
     static const char* force[] = { "bitmap", "frame", "packing", "accuracy", 0 }; // More to add
-#if 0
-    for (std::map<std::string, std::string>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-        eckit::Log::info() << "Check if " << (*j).first << "=" << (*j).second << " triggers interpolation" << std::endl;
-        // Check for keywords that triggers
-        size_t i = 0;
-        while (force[i]) {
-            if ((*j).first == force[i]) {
-                eckit::Log::info() << "    Yes. (Forced)" << std::endl;
-                return false;
-            }
-            i++;
+    size_t i = 0;
+    while (force[i]) {
+        if (has(force[i])) {
+            eckit::Log::info() << "MIRJob will preform transformation/interpolation ('" << force[i] << "'' specified)" << std::endl;
+            return false;
         }
-
-        // Check if same a field
-        std::string value;
-        if (metadata.get((*j).first, value)) {
-            if (value != (*j).second) {
-                eckit::Log::info() << "    Yes. Field is " << value << std::endl;
-                return false;
-            }
-        }
-
-        eckit::Log::info() << "-" << std::endl;
-
+        i++;
     }
 
-    return true;
-#else
-    return false;
-#endif
+    bool ok = SimpleParametrisation::matches(metadata);
+    if (!ok) {
+        eckit::Log::info() << "MIRJob will preform transformation/interpolation" << std::endl;
+    }
+    return ok;
 }
 
 

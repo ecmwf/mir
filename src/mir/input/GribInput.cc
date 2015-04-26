@@ -116,7 +116,7 @@ bool GribInput::get(const std::string& name, bool& value) const {
 }
 
 bool GribInput::get(const std::string& name, long& value) const {
-const char *key = get_key(name);
+    const char *key = get_key(name);
     int err = grib_get_long(grib_.get(), key, &value);
 
     if (err == GRIB_NOT_FOUND) {
@@ -158,7 +158,7 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
 
     ASSERT(value.size());
 
-        eckit::Log::info() << "grib_get_long_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
+    eckit::Log::info() << "grib_get_long_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
 
 
     return true;

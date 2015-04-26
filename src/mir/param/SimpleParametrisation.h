@@ -67,6 +67,7 @@ class SimpleParametrisation : public MIRParametrisation {
 // -- Members
 
 
+
 // -- Methods
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
@@ -79,10 +80,14 @@ class SimpleParametrisation : public MIRParametrisation {
     void set(const std::string& name, std::vector<long>& value);
     void set(const std::string& name, std::vector<double>& value);
 
+
+    bool matches(const param::MIRParametrisation& metadata) const;
+
     size_t size() const;
 
 // -- Overridden methods
-    // None
+    virtual bool has(const std::string& name) const;
+
 
 // -- Class members
     // None
@@ -109,7 +114,6 @@ class SimpleParametrisation : public MIRParametrisation {
     // None
 
 
-    virtual bool has(const std::string& name) const;
 
     template<class T>
     bool _get(const std::string& name, T& value) const;

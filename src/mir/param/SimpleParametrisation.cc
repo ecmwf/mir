@@ -40,7 +40,15 @@ class Setting {
     virtual void get(const std::string& name, double& value) const = 0;
     virtual void get(const std::string& name, std::vector<long>& value) const = 0;
     virtual void get(const std::string& name, std::vector<double>& value) const = 0;
+
+    virtual bool match(const std::string& name, const MIRParametrisation&) const = 0;
+
     virtual void print(std::ostream&) const = 0;
+
+    friend std::ostream& operator<<(std::ostream& s, const Setting& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 template<class T>
@@ -48,12 +56,22 @@ class TSettings : public Setting {
     T value_;
   public:
     TSettings(const T& value): value_(value) {}
+
     virtual void get(const std::string& name, std::string& value) const;
     virtual void get(const std::string& name, bool& value) const;
     virtual void get(const std::string& name, long& value) const;
     virtual void get(const std::string& name, double& value) const;
     virtual void get(const std::string& name, std::vector<long>& value) const;
     virtual void get(const std::string& name, std::vector<double>& value) const;
+
+    virtual bool match(const std::string& name, const MIRParametrisation& other) const {
+        T value;
+        if(other.get(name, value)) {
+            return value_ == value;
+        }
+        return false;
+    }
+
     virtual void print(std::ostream& out) const {
         out << value_;
     }
@@ -96,6 +114,7 @@ template<> void TSettings<bool>::get(const std::string& name, std::vector<long>&
 template<> void TSettings<bool>::get(const std::string& name, std::vector<double>& value) const {
     throw CannotConvert("bool", "vector<double>", name, value_);
 }
+
 //==========================================================
 
 template<> void TSettings<long>::get(const std::string& name, std::string& value) const {
@@ -164,7 +183,7 @@ template<> void TSettings<std::string>::get(const std::string& name, std::vector
     parse(value_, v);
     value.clear();
     value.reserve(v.size());
-    for(std::vector<std::string>::const_iterator j = v.begin(); j != v.end(); ++j) {
+    for (std::vector<std::string>::const_iterator j = v.begin(); j != v.end(); ++j) {
         value.push_back(translate(*j));
     }
 }
@@ -304,10 +323,22 @@ void SimpleParametrisation::print(std::ostream& out) const {
     const char* sep = "";
     for (std::map<std::string, Setting*>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
         out << sep;
-        out << (*j).first << "=" ;
-        (*j).second->print(out);
+        out << (*j).first << "=" << *((*j).second);
         sep = ",";
     }
+}
+
+bool SimpleParametrisation::matches(const MIRParametrisation& other) const {
+    for (std::map<std::string, Setting*>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+
+        if ((*j).second->match((*j).first, other)) {
+            eckit::Log::info() << "Matching parametrisation: " << (*j).first << "="
+                               << *((*j).second) << std::endl;
+            return true;
+        }
+
+    }
+    return false;
 }
 
 }  // namespace param
