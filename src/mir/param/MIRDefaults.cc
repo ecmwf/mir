@@ -35,6 +35,7 @@ MIRDefaults::~MIRDefaults() {
 
 void MIRDefaults::print(std::ostream& out) const {
     out << "MIRDefaults[";
+    SimpleParametrisation::print(out);
     out << "]";
 }
 

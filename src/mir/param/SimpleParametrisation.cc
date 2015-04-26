@@ -23,8 +23,8 @@
 #include "eckit/types/Types.h"
 
 template<class T>
-inline std::ostream& operator<<(std::ostream& s,const std::vector<T>& v) {
-    return eckit::__print_list(s,v);
+inline std::ostream& operator<<(std::ostream& s, const std::vector<T>& v) {
+    return eckit::__print_list(s, v);
 }
 
 
@@ -40,6 +40,7 @@ class Setting {
     virtual void get(const std::string& name, double& value) const = 0;
     virtual void get(const std::string& name, std::vector<long>& value) const = 0;
     virtual void get(const std::string& name, std::vector<double>& value) const = 0;
+    virtual void print(std::ostream&) const = 0;
 };
 
 template<class T>
@@ -53,78 +54,87 @@ class TSettings : public Setting {
     virtual void get(const std::string& name, double& value) const;
     virtual void get(const std::string& name, std::vector<long>& value) const;
     virtual void get(const std::string& name, std::vector<double>& value) const;
+    virtual void print(std::ostream& out) const {
+        out << value_;
+    }
 };
 
 //==========================================================
 
 class CannotConvert : public eckit::Exception {
   public:
-    CannotConvert(const char* from, const char* to, const std::string& name) {
+    template<class T>
+    CannotConvert(const char* from, const char* to, const std::string& name, const T& value) {
         eckit::StrStream os;
-        os << "Cannot convert from " << from << " to " << to << " (requesting " << name << ")" << eckit::StrStream::ends;
+        os << "Cannot convert " << value << " from " << from << " to " << to << " (requesting " << name << ")" << eckit::StrStream::ends;
         reason(std::string(os));
     }
 };
 
+template<class T>
+static void convertion_warning(const char* from, const char* to, const std::string& name, const T& value) {
+    eckit::Log::warning() << "   +++ WARNING: Converting " << value << " from " << from << " to " << to << " (requesting " << name << ")" << std::endl;
+}
+
 // We will implement convertion as needed
 
 template<> void TSettings<bool>::get(const std::string& name, std::string& value) const {
-    throw CannotConvert("bool", "string", name);
+    throw CannotConvert("bool", "string", name, value_);
 }
 template<> void TSettings<bool>::get(const std::string& name, bool& value) const {
     value = value_;
 }
 template<> void TSettings<bool>::get(const std::string& name, long& value) const {
-    throw CannotConvert("bool", "long", name);
+    throw CannotConvert("bool", "long", name, value_);
 }
 template<> void TSettings<bool>::get(const std::string& name, double& value) const {
-    throw CannotConvert("bool", "value", name);
+    throw CannotConvert("bool", "double", name, value_);
 }
 template<> void TSettings<bool>::get(const std::string& name, std::vector<long>& value) const {
-    throw CannotConvert("bool", "vector<long>", name);
+    throw CannotConvert("bool", "vector<long>", name, value_);
 }
 template<> void TSettings<bool>::get(const std::string& name, std::vector<double>& value) const {
-    throw CannotConvert("bool", "vector<double>", name);
+    throw CannotConvert("bool", "vector<double>", name, value_);
 }
 //==========================================================
 
 template<> void TSettings<long>::get(const std::string& name, std::string& value) const {
-    throw CannotConvert("long", "string", name);
+    throw CannotConvert("long", "string", name, value_);
 }
 template<> void TSettings<long>::get(const std::string& name, bool& value) const {
-    throw CannotConvert("long", "bool", name);
+    throw CannotConvert("long", "bool", name, value_);
 }
 template<> void TSettings<long>::get(const std::string& name, long& value) const {
     value = value_;
 }
 template<> void TSettings<long>::get(const std::string& name, double& value) const {
-    throw CannotConvert("long", "double", name);
+    throw CannotConvert("long", "double", name, value_);
 }
 template<> void TSettings<long>::get(const std::string& name, std::vector<long>& value) const {
-    throw CannotConvert("long", "vector<long>", name);
+    throw CannotConvert("long", "vector<long>", name, value_);
 }
 template<> void TSettings<long>::get(const std::string& name, std::vector<double>& value) const {
-    throw CannotConvert("long", "vector<double>", name);
+    throw CannotConvert("long", "vector<double>", name, value_);
 }
 //==========================================================
 
 template<> void TSettings<double>::get(const std::string& name, std::string& value) const {
-    throw CannotConvert("double", "string", name);
+    throw CannotConvert("double", "string", name, value_);
 }
 template<> void TSettings<double>::get(const std::string& name, bool& value) const {
-    throw CannotConvert("double", "bool", name);
+    throw CannotConvert("double", "bool", name, value_);
 }
 template<> void TSettings<double>::get(const std::string& name, long& value) const {
-    throw CannotConvert("double", "long", name);
+    throw CannotConvert("double", "long", name, value_);
 }
 template<> void TSettings<double>::get(const std::string& name, double& value) const {
     value = value_;
 }
 template<> void TSettings<double>::get(const std::string& name, std::vector<long>& value) const {
-    throw CannotConvert("double", "vector<long>", name);
+    throw CannotConvert("double", "vector<long>", name, value_);
 }
 template<> void TSettings<double>::get(const std::string& name, std::vector<double>& value) const {
-    throw CannotConvert("double", "vector<double>", name);
+    throw CannotConvert("double", "vector<double>", name, value_);
 }
 //==========================================================
 
@@ -132,56 +142,68 @@ template<> void TSettings<std::string>::get(const std::string& name, std::string
     value = value_;
 }
 template<> void TSettings<std::string>::get(const std::string& name, bool& value) const {
-    throw CannotConvert("string", "bool", name);
+    throw CannotConvert("string", "bool", name, value_);
 }
 template<> void TSettings<std::string>::get(const std::string& name, long& value) const {
-    throw CannotConvert("string", "value", name);
+    convertion_warning("string", "long", name, value_);
+    eckit::Translator<std::string, long> translate;
+    value = translate(value_);
 }
 template<> void TSettings<std::string>::get(const std::string& name, double& value) const {
-    throw CannotConvert("string", "double", name);
+    throw CannotConvert("string", "double", name, value_);
 }
 template<> void TSettings<std::string>::get(const std::string& name, std::vector<long>& value) const {
-    throw CannotConvert("string", "vector<long>", name);
+    throw CannotConvert("string", "vector<long>", name, value_);
 }
 template<> void TSettings<std::string>::get(const std::string& name, std::vector<double>& value) const {
-    throw CannotConvert("string", "vector<double>", name);
+    convertion_warning("string", "vector<double>", name, value_);
+    eckit::Translator<std::string, double> translate;
+    eckit::Tokenizer parse("/");
+
+    std::vector<std::string> v;
+    parse(value_, v);
+    value.clear();
+    value.reserve(v.size());
+    for(std::vector<std::string>::const_iterator j = v.begin(); j != v.end(); ++j) {
+        value.push_back(translate(*j));
+    }
 }
 //==========================================================
 
 template<> void TSettings<std::vector<long> >::get(const std::string& name, std::string& value) const {
-    throw CannotConvert("vector<long>", "string", name);
+    throw CannotConvert("vector<long>", "string", name, value_);
 }
 template<> void TSettings<std::vector<long> >::get(const std::string& name, bool& value) const {
-    throw CannotConvert("vector<long>", "bool", name);
+    throw CannotConvert("vector<long>", "bool", name, value_);
 }
 template<> void TSettings<std::vector<long> >::get(const std::string& name, long& value) const {
-    throw CannotConvert("vector<long>", "long", name);
+    throw CannotConvert("vector<long>", "long", name, value_);
 }
 template<> void TSettings<std::vector<long> >::get(const std::string& name, double& value) const {
-    throw CannotConvert("vector<long>", "double", name);
+    throw CannotConvert("vector<long>", "double", name, value_);
 }
 template<> void TSettings<std::vector<long> >::get(const std::string& name, std::vector<long>& value) const {
     value = value_;
 }
 template<> void TSettings<std::vector<long> >::get(const std::string& name, std::vector<double>& value) const {
-    throw CannotConvert("vector<long>", "vector<double>", name);
+    throw CannotConvert("vector<long>", "vector<double>", name, value_);
 }
 
 //==========================================================
 template<> void TSettings<std::vector<double> >::get(const std::string& name, std::string& value) const {
-    throw CannotConvert("vector<double>", "string", name);
+    throw CannotConvert("vector<double>", "string", name, value_);
 }
 template<> void TSettings<std::vector<double> >::get(const std::string& name, bool& value) const {
-    throw CannotConvert("vector<double>", "yyy", name);
+    throw CannotConvert("vector<double>", "yyy", name, value_);
 }
 template<> void TSettings<std::vector<double> >::get(const std::string& name, long& value) const {
-    throw CannotConvert("vector<double>", "yyy", name);
+    throw CannotConvert("vector<double>", "yyy", name, value_);
 }
 template<> void TSettings<std::vector<double> >::get(const std::string& name, double& value) const {
-    throw CannotConvert("vector<double>", "yyy", name);
+    throw CannotConvert("vector<double>", "yyy", name, value_);
 }
 template<> void TSettings<std::vector<double> >::get(const std::string& name, std::vector<long>& value) const {
-    throw CannotConvert("vector<double>", "vector<long>", name);
+    throw CannotConvert("vector<double>", "vector<long>", name, value_);
 }
 template<> void TSettings<std::vector<double> >::get(const std::string& name, std::vector<double>& value) const {
     value = value_;
@@ -278,6 +300,15 @@ void SimpleParametrisation::set(const std::string& name, std::vector<double>& va
     _set(name, value);
 }
 
+void SimpleParametrisation::print(std::ostream& out) const {
+    const char* sep = "";
+    for (std::map<std::string, Setting*>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+        out << sep;
+        out << (*j).first << "=" ;
+        (*j).second->print(out);
+        sep = ",";
+    }
+}
 
 }  // namespace param
 }  // namespace mir

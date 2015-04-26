@@ -107,17 +107,12 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
 void MIRJob::print(std::ostream& out) const {
     out << "MIRJob[";
-    // const char* sep = "";
-    // for(std::set<std::string>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-    //     out << sep;
-    //     out << (*j).first << "=" << (*j).second;
-    //     sep = ",";
-    // }
+        SimpleParametrisation::print(out);
     out << "]";
 }
 
 void MIRJob::set(const std::string& name, const std::string& value) {
-    eckit::Log::info() << "************* MIRJob::set [" << name << "] =  [" << value << "] (string)" << std::endl;
+    eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (string)" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 

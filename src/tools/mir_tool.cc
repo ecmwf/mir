@@ -19,9 +19,6 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/input/NetcdfFileInput.h"
-#include "mir/input/DummyInput.h"
-#include "mir/output/DummyOutput.h"
 #include "mir/output/GribFileOutput.h"
 
 
@@ -44,7 +41,10 @@ void MIRTool::usage(const std::string& tool) {
             << std::endl << "Usage: " << tool << " [key1=value key2=value ...] input output" << std::endl
             << std::endl << "Examples: " << std::endl
             << "% " << tool << " grid=2/2 area=90/-8/12/80 input.grib output.grib" << std::endl
-            << "% " << tool << " reduced=80 input.grib output.grib" << std::endl << std::endl;
+            << "% " << tool << " reduced=80 input.grib output.grib" << std::endl << std::endl
+            << "% " << tool << " regular=80 input.grib output.grib" << std::endl << std::endl
+            << "% " << tool << " truncation=63 input.grib output.grib" << std::endl << std::endl;
+
     ::exit(1);
 }
 
@@ -63,10 +63,10 @@ void MIRTool::run() {
     mir::output::GribFileOutput output(ctx.argv(argc - 1));
 
     eckit::Tokenizer parse("=");
-    for (size_t i=1; i< argc-2; i++) {
+    for (size_t i = 1; i < argc - 2; i++) {
         std::vector<std::string> v;
         parse(ctx.argv(i), v);
-        if(v.size() != 2) {
+        if (v.size() != 2) {
             usage(tool);
         }
         job.set(v[0], v[1]);

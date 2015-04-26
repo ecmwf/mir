@@ -69,7 +69,7 @@ class SimpleParametrisation : public MIRParametrisation {
 
 // -- Methods
 
-    // virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const; // Change to virtual if base class
 
     void set(const std::string& name, const char* value);
     void set(const std::string& name, const std::string& value);
