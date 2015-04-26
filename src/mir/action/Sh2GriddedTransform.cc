@@ -123,8 +123,8 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
     // FIXME: double memory free happening
 
-    // trans_delete(&trans);
-    // trans_finalize();
+    trans_delete(&trans);
+    trans_finalize();
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported."
                             " Please recompile ATLAS was not compiled with TRANS support.");
