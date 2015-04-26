@@ -2,6 +2,9 @@ CMakeLists.txt.user*
 *.swp
 *.sublime-workspace
 *.pyc
+*.back
+*.old
+*.orig
 suite/requests
 suite/check.def
 suite/combinations.pyc
