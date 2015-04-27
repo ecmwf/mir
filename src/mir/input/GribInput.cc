@@ -117,7 +117,22 @@ bool GribInput::has(const std::string &name) const {
 }
 
 bool GribInput::get(const std::string& name, bool& value) const {
-    return FieldParametrisation::get(name, value);
+    long temp;
+    const char *key = get_key(name);
+    int err = grib_get_long(grib_.get(), key, &temp);
+
+    if (err == GRIB_NOT_FOUND) {
+        return FieldParametrisation::get(name, value);
+    }
+
+    if (err) {
+        GRIB_ERROR(err, key);
+    }
+
+    value = temp != 0;
+
+    eckit::Log::info() << "grib_get_bool(" << name << ",key=" << key << ") " << value << std::endl;
+    return true;
 }
 
 bool GribInput::get(const std::string& name, long& value) const {
