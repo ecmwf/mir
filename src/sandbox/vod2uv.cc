@@ -59,7 +59,9 @@ void VOD2UVTool::run() {
     field.values(vof->values(), 0);
     field.values(df->values(), 1);
 
-    field.representation(vof->representation()->clone());
+
+    const mir::param::MIRParametrisation& metadata = mvo.parametrisation();
+    field.representation(mir::repres::RepresentationFactory::build(metadata));
 
     std::unique_ptr<mir::action::Action> action(new mir::action::VOD2UVTransform(job));
     action->execute(field);
