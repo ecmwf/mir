@@ -14,6 +14,7 @@
 
 
 #include "mir/param/DelayedParametrisation.h"
+#include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
@@ -26,6 +27,42 @@ DelayedParametrisation::DelayedParametrisation() {
 
 DelayedParametrisation::~DelayedParametrisation() {
 
+}
+
+void DelayedParametrisation::get(const std::string &name, std::string &value) const {
+    eckit::StrStream os;
+    os << "DelayedParametrisation::get(" << name << ") [string] not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
+
+void DelayedParametrisation::get(const std::string &name, bool &value) const {
+    eckit::StrStream os;
+    os << "DelayedParametrisation::get(" << name << ") [bool] not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
+
+void DelayedParametrisation::get(const std::string &name, long &value) const {
+    eckit::StrStream os;
+    os << "DelayedParametrisation::get(" << name << ") [long] not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
+
+void DelayedParametrisation::get(const std::string &name, double &value) const {
+    eckit::StrStream os;
+    os << "DelayedParametrisation::get(" << name << ") [double] not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
+
+void DelayedParametrisation::get(const std::string &name, std::vector<long> &value) const {
+    eckit::StrStream os;
+    os << "DelayedParametrisation::get(" << name << ") [vector<long>] not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
+
+void DelayedParametrisation::get(const std::string &name, std::vector<double> &value) const {
+    eckit::StrStream os;
+    os << "DelayedParametrisation::get(" << name << ") [vector<double] not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
 }
 
 

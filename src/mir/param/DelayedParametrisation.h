@@ -46,7 +46,12 @@ class DelayedParametrisation  {
 // -- Methods
     // None
 
-
+virtual void get(const std::string& name, std::string& value) const;
+    virtual void get(const std::string& name, bool& value) const;
+    virtual void get(const std::string& name, long& value) const;
+    virtual void get(const std::string& name, double& value) const;
+    virtual void get(const std::string& name, std::vector<long>& value) const;
+    virtual void get(const std::string& name, std::vector<double>& value) const;
 
 // -- Overridden methods
     // None
@@ -71,12 +76,7 @@ class DelayedParametrisation  {
 // -- Overridden methods
     // virtual bool has(const std::string& name) const;
 
-    virtual bool get(const std::string& name, std::string& value) const = 0;
-    virtual bool get(const std::string& name, bool& value) const = 0;
-    virtual bool get(const std::string& name, long& value) const = 0;
-    virtual bool get(const std::string& name, double& value) const = 0;
-    virtual bool get(const std::string& name, std::vector<long>& value) const = 0;
-    virtual bool get(const std::string& name, std::vector<double>& value) const = 0;
+
 
 // -- Class members
     // None

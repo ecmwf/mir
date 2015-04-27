@@ -71,6 +71,8 @@ list( APPEND mir_srcs
       input/MIRInput.h
       input/NetcdfFileInput.cc
       input/NetcdfFileInput.h
+      logic/AutoResol.cc
+      logic/AutoResol.h
       logic/MARSLogic.cc
       logic/MARSLogic.h
       logic/MIRLogic.cc

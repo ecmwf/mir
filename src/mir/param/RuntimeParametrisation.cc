@@ -18,6 +18,7 @@
 #include "eckit/log/Log.h"
 
 #include "mir/param/RuntimeParametrisation.h"
+#include "mir/param/DelayedParametrisation.h"
 
 
 namespace mir {
@@ -73,7 +74,8 @@ RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, dou
 }
 
 RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, DelayedParametrisation* value) {
-    _set(name, value);
+    eckit::Log::info() << "************* RuntimeParametrisation::set [" << name << "] = [" << *value << "]" << std::endl;
+    SimpleParametrisation::set(name, value);
     return *this;
 }
 

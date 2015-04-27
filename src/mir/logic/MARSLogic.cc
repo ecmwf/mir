@@ -18,6 +18,7 @@
 #include "mir/logic/MARSLogic.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/action/ActionPlan.h"
+#include "mir/logic/AutoResol.h"
 
 
 namespace mir {
@@ -42,6 +43,10 @@ void MARSLogic::print(std::ostream &out) const {
 void MARSLogic::prepare(action::ActionPlan &plan) const {
     // All the nasty logic goes there
 
+    bool autoresol = false;
+
+    parametrisation_.get("autoresol", autoresol);
+
     if (parametrisation_.has("field.spherical")) {
         if (parametrisation_.has("user.truncation")) {
             plan.add("transform.sh2sh");
@@ -55,15 +60,26 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
 #else
             // For now, thar's what we do
             // runtime.set("reduced", 48L);
-            plan.add("transform.sh2reduced-gg", "reduced", 48L);
+
+            if (autoresol) {
+                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            }
+
+            plan.add("transform.sh2reduced-gg", "reduced", 48);
             plan.add("interpolate.grid2regular-ll");
 #endif
         }
         if (parametrisation_.has("user.reduced")) {
+            if (autoresol) {
+                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            }
             plan.add("transform.sh2reduced-gg");
 
         }
         if (parametrisation_.has("user.regular")) {
+            if (autoresol) {
+                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            }
             plan.add("transform.sh2regular-gg");
         }
     }

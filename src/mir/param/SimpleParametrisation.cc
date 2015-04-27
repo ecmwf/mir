@@ -70,7 +70,7 @@ class DelayedSetting : public Setting {
     }
 
     virtual void get(const std::string &name, long &value) const {
-        NOTIMP;
+         delayed_->get(name, value);
     }
 
     virtual void get(const std::string &name, double &value) const {
@@ -209,8 +209,10 @@ template<> void TSettings<std::string>::get(const std::string &name, std::string
     value = value_;
 }
 template<> void TSettings<std::string>::get(const std::string &name, bool &value) const {
-    throw CannotConvert("string", "bool", name, value_);
+    eckit::Translator<std::string, long> translate;
+    value = translate(value_) != 0;
 }
+
 template<> void TSettings<std::string>::get(const std::string &name, long &value) const {
     convertion_warning("string", "long", name, value_);
     eckit::Translator<std::string, long> translate;

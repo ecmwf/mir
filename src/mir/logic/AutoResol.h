@@ -13,25 +13,23 @@
 /// @date Apr 2015
 
 
-#ifndef ActionPlan_H
-#define ActionPlan_H
+#ifndef AutoResol_H
+#define AutoResol_H
 
-#include <string>
+#include "mir/param/DelayedParametrisation.h"
+#include <vector>
 
-
-#include "mir/param/RuntimeParametrisation.h"
 
 namespace mir {
 
-namespace data {
-class MIRField;
+namespace param {
+class MIRParametrisation;
 }
 
-namespace action {
+namespace logic {
 
-class Action;
 
-class ActionPlan {
+class AutoResol : public param::DelayedParametrisation {
   public:
 
 // -- Exceptions
@@ -39,11 +37,11 @@ class ActionPlan {
 
 // -- Contructors
 
-    ActionPlan(const param::MIRParametrisation& parametrisation);
+    AutoResol(const param::MIRParametrisation &parametrisation);
 
 // -- Destructor
 
-    ~ActionPlan(); // Change to virtual if base class
+    virtual ~AutoResol(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -52,12 +50,9 @@ class ActionPlan {
     // None
 
 // -- Methods
+    // None
 
-    void add(const std::string& name);
-    void add(const std::string& name, const std::string&, long);
-    void add(const std::string& name, const std::string&, param::DelayedParametrisation*);
 
-    void execute(data::MIRField&) const;
 
 // -- Overridden methods
     // None
@@ -72,16 +67,17 @@ class ActionPlan {
 
 // -- Members
 
-    const param::MIRParametrisation& parametrisation_;
-    std::vector<Action*> actions_;
-    std::vector<param::MIRParametrisation*> runtimes_;
+
 
 // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const; // Change to virtual if base class
+
 
 // -- Overridden methods
-    // None
+    // virtual bool has(const std::string& name) const;
+
+    virtual void get(const std::string& name, long& value) const;
 
 // -- Class members
     // None
@@ -93,17 +89,19 @@ class ActionPlan {
 
 // No copy allowed
 
-    ActionPlan(const ActionPlan&);
-    ActionPlan& operator=(const ActionPlan&);
+    AutoResol(const AutoResol&);
+    AutoResol& operator=(const AutoResol&);
 
 // -- Members
-    // None
+
+    const param::MIRParametrisation &parametrisation_;
 
 // -- Methods
     // None
 
 // -- Overridden methods
     // None
+
 
 // -- Class members
     // None
@@ -113,7 +111,7 @@ class ActionPlan {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const ActionPlan& p) {
+    friend std::ostream& operator<<(std::ostream& s,const AutoResol& p) {
         p.print(s);
         return s;
     }
@@ -121,8 +119,7 @@ class ActionPlan {
 };
 
 
-
-}  // namespace action
+}  // namespace param
 }  // namespace mir
 #endif
 
