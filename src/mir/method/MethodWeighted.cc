@@ -13,10 +13,10 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/method/MethodWeighted.h"
 
 #include <string>
-
 #include "atlas/Grid.h"
 #include "atlas/GridSpec.h"
 
@@ -25,6 +25,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/method/WeightCache.h"
 #include "mir/repres/Representation.h"
+
 
 namespace mir {
 namespace method {
@@ -116,17 +117,6 @@ std::string MethodWeighted::hash(const atlas::GridSpec& inspec, const atlas::Gri
 
 void MethodWeighted::print(std::ostream&) const {
 
-}
-
-
-void MethodWeighted::build_sptree(atlas::Grid& in) const {
-    atlas::Mesh& i_mesh = in.mesh();
-
-    std::string uidIn = in.uid();
-    if( uidIn != uid_ )
-        sptree_.reset( new PointSearch(i_mesh) );
-
-    uid_ = uidIn;
 }
 
 

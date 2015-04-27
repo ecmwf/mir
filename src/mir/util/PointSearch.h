@@ -10,7 +10,9 @@
 
 /// @author Peter Bispham
 /// @author Tiago Quintino
-/// @date Oct 2013
+/// @author Pedro Maciel
+/// @date Apr 2015
+
 
 #ifndef soyuz_method_PointSearch_H
 #define soyuz_method_PointSearch_H
@@ -26,7 +28,7 @@
 
 
 namespace mir {
-namespace method {
+namespace util {
 
 
 /// Class for fast searches in point clouds following kd-tree algorithms
@@ -51,20 +53,27 @@ class PointSearch : private eckit::NonCopyable {
   public: // methods
 
     /// Finds closest N points to an input point
-    void closestNPoints(const PointType& pt, size_t n, std::vector<ValueType>& closest);
+    void closestNPoints(const PointType& pt, size_t n, std::vector< ValueType >& closest);
+
+    /// Build the
+    void build_sptree(const atlas::Grid& in);
 
   protected:
 
-    eckit::ScopedPtr<TreeType> tree_;
+    eckit::ScopedPtr< TreeType > tree_;
 
   private:
 
-    void init(const std::vector<PointType>& points);
+    void init(const std::vector< PointType >& points);
+
+    void init(const atlas::Mesh& mesh);
+
+    mutable atlas::Grid::uid_t uid_;
 
 };
 
 
-}  // namespace method
+}  // namespace util
 }  // namespace mir
 #endif
 

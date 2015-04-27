@@ -14,12 +14,13 @@
 
 
 #include <string>
+#include "mir/util/PointSearch.h"
 
 #include "mir/method/PseudoLaplace.h"
 
 
 using namespace Eigen;
-using namespace atlas;
+//using namespace atlas;
 
 
 namespace mir {
@@ -37,14 +38,13 @@ PseudoLaplace::~PseudoLaplace() {
 
 void PseudoLaplace::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
 
-
-    build_sptree(const_cast<atlas::Grid&>(in)); // OOPS!
+    sptree_->build_sptree(in);
 
     const atlas::Mesh& o_mesh = out.mesh();
 
     // output points
-    FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
-    ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
+    atlas::FunctionSpace& o_nodes  = o_mesh.function_space( "nodes" );
+    atlas::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
 
     const size_t out_npts = o_nodes.shape(0);
 
@@ -77,6 +77,9 @@ void PseudoLaplace::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, c
 
         for( size_t j = 0; j < npts; ++j) {
             eckit::geometry::Point3 np  = closest[j].point();
+            using atlas::XX;
+            using atlas::YY;
+            using atlas::ZZ;
 
             dx = np[XX] - p[XX];
             dy = np[YY] - p[YY];

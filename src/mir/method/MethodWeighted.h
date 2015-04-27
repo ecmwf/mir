@@ -21,9 +21,7 @@
 
 #include "eckit/maths/Eigen.h"
 #include "atlas/PointIndex3.h"
-#include "mir/method/PointSearch.h"
 
-#include "eckit/memory/NonCopyable.h"
 #include "mir/method/Method.h"
 
 
@@ -36,9 +34,7 @@ namespace mir {
 namespace method {
 
 
-class MethodWeighted :
-    public Method,
-    private eckit::NonCopyable {
+class MethodWeighted : public Method {
   public:
 
 // -- Definitions
@@ -76,7 +72,7 @@ class MethodWeighted :
   protected:
 
 // -- Members
-    mutable eckit::ScopedPtr< PointSearch > sptree_;
+    // None
 
 // -- Methods
 
@@ -88,14 +84,11 @@ class MethodWeighted :
 
     virtual void print(std::ostream&) const;
 
-    void build_sptree(atlas::Grid& in) const;
-
 // -- Overridden methods
     // None
 
 // -- Class members
     const std::string name_;
-    mutable atlas::Grid::uid_t uid_;
 
 // -- Class methods
     // None

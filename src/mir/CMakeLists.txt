@@ -87,8 +87,6 @@ list( APPEND mir_srcs
       method/Method.h
       method/MethodWeighted.cc
       method/MethodWeighted.h
-      method/PointSearch.cc
-      method/PointSearch.h
       method/PseudoLaplace.cc
       method/PseudoLaplace.h
       method/WeightCache.cc
@@ -184,6 +182,8 @@ list( APPEND mir_srcs
       util/Grib.h
       util/Increments.cc
       util/Increments.h
+      util/PointSearch.cc
+      util/PointSearch.h
     )
 
 
