@@ -16,13 +16,9 @@
 #include <string>
 
 #include "eckit/config/Resource.h"
+#include "mir/util/PointSearch.h"
 
 #include "mir/method/KNearest.h"
-
-
-using atlas::Grid;
-using atlas::FunctionSpace;
-using atlas::ArrayView;
 
 
 namespace mir {
@@ -43,14 +39,13 @@ KNearest::~KNearest() {
 
 void KNearest::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
 
-
-    build_sptree(const_cast<atlas::Grid&>(in)); // OOPS!
+    sptree_->build_sptree(in);
 
     const atlas::Mesh& o_mesh = out.mesh();
 
     // output points
-    FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
-    ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
+    atlas::FunctionSpace& o_nodes  = o_mesh.function_space( "nodes" );
+    atlas::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
 
     const size_t out_npts = o_nodes.shape(0);
 
