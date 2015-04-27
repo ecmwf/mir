@@ -47,12 +47,12 @@ class TransInitor {
 namespace mir {
 namespace action {
 
-static void transform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid& grid) {
+static void transform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
 #ifdef ATLAS_HAVE_TRANS
 
     static TransInitor initor; // Will init trans if needed
 
-    const atlas::grids::ReducedGaussianGrid* rgg = dynamic_cast<const atlas::grids::ReducedGaussianGrid*>(&grid);
+    const atlas::grids::ReducedGaussianGrid *rgg = dynamic_cast<const atlas::grids::ReducedGaussianGrid *>(&grid);
     if (!rgg) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG.");
     }
@@ -60,7 +60,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     struct Trans_t trans = new_trans();
 
     trans.ndgl  = rgg->npts_per_lat().size();
-    trans.nloen = (int*) malloc( trans.ndgl * sizeof(int) ); ///< allocate array to be freed in trans_delete()
+    trans.nloen = (int *) malloc( trans.ndgl * sizeof(int) ); ///< allocate array to be freed in trans_delete()
     ASSERT(trans.nloen);
     ::memcpy( trans.nloen, &(rgg->npts_per_lat()[0]), sizeof(int)*trans.ndgl );
 
@@ -161,12 +161,21 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
         throw;
     }
 
-    // for (size_t i = 0; i < result.size(); ++i) {
-    //     std::cout << result[i] << std::endl;
-    //     if (i > 10) {
-    //         break;
-    //     }
-    // }
+    double mn = result[0];
+    double mx = result[0];
+    double sum = 0;
+    for (size_t i = 0; i < result.size(); ++i) {
+        sum += result[i];
+        if (result[i] > mx) {
+            mx = result[i];
+        }
+        if (result[i] < mn) {
+            mn = result[i];
+        }
+    }
+
+    eckit::Log::info() << "Sh2GriddedTransform min=" << mn << ", max=" << mx << ", average=" << (sum / result.size()) << std::endl;
+    field.values(result);
     field.representation(out);
 }
 
