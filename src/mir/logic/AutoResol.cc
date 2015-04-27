@@ -94,7 +94,15 @@ void AutoResol::get(const std::string &name, long &value) const {
 else
    { value = 2047;}
 
-    eckit::Log::info() << "AutoResol: step is " << step << ", selecting truncation: " << value << std::endl;
+    eckit::Log::info() << "AutoResol: step is " << step << ", selecting truncation T" << value << std::endl;
+
+    long truncation;
+    if(parametrisation_.get("field.truncation", truncation)) {
+        if(truncation < value) {
+            value = truncation;
+            eckit::Log::info() << "AutoResol: field is T" << truncation << ", selecting truncation T" << value << std::endl;
+        }
+    }
 
 }
 

@@ -209,6 +209,7 @@ template<> void TSettings<std::string>::get(const std::string &name, std::string
     value = value_;
 }
 template<> void TSettings<std::string>::get(const std::string &name, bool &value) const {
+    convertion_warning("string", "bool", name, value_);
     eckit::Translator<std::string, long> translate;
     value = translate(value_) != 0;
 }
