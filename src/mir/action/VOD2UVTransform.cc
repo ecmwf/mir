@@ -43,11 +43,11 @@ void VOD2UVTransform::print(std::ostream &out) const {
 }
 
 inline double dd(double pm, double pn) {
-    return -sqrt((pn*pn - pm*pm) / (4.*pn*pn - 1)) / pn;
+    return -sqrt((pn * pn - pm * pm) / (4.*pn * pn - 1)) / pn;
 }
 
 inline double ss(double pm, double pn) {
-    return -pm / (pn*(pn + 1));
+    return -pm / (pn * (pn + 1));
 }
 
 void VOD2UVTransform::execute(data::MIRField &field) const {
@@ -60,10 +60,10 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     // size_t truncation_minus_1 = truncation-1;
     // size_t size_1 = repres::SphericalHarmonics::number_of_complex_coefficients(truncation_minus_1) * 2;
 
-    ASSERT(sizeof(std::complex<double>) == 2*sizeof(double));
+    ASSERT(sizeof(std::complex<double>) == 2 * sizeof(double));
 
-    const std::vector<double>& field_vo = field.values(0);
-    const std::vector<double>& field_d = field.values(1);
+    const std::vector<double> &field_vo = field.values(0);
+    const std::vector<double> &field_d = field.values(1);
 
     eckit::Log::info() << "VOD2UVTransform truncation=" << truncation
                        << ", size=" << size
@@ -78,82 +78,95 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     std::vector<double> temp_vo;
     std::vector<double> temp_d;
 
-    repres::SphericalHarmonics::truncate(truncation, truncation-1, field_vo, temp_vo);
-    repres::SphericalHarmonics::truncate(truncation, truncation-1, field_d, temp_d);
+#define Z
+
+
+#ifdef Z
+    temp_vo = field_vo;
+    temp_d = field_d;
+#else
+
+     repres::SphericalHarmonics::truncate(truncation, truncation - 1, field_vo, temp_vo);
+    repres::SphericalHarmonics::truncate(truncation, truncation - 1, field_d, temp_d);
+#endif
+
 
 
     typedef std::vector<std::complex<double> > veccomp;
-    const veccomp& vorticity = reinterpret_cast<const veccomp&>(temp_vo);
-    const veccomp& divergence = reinterpret_cast<const veccomp&>(temp_d);
+    const veccomp &vorticity = reinterpret_cast<const veccomp &>(temp_vo);
+    const veccomp &divergence = reinterpret_cast<const veccomp &>(temp_d);
 
-    veccomp& u_component = reinterpret_cast<veccomp&>(result_u);
-    veccomp& v_component = reinterpret_cast<veccomp&>(result_v);
+    veccomp &u_component = reinterpret_cast<veccomp &>(result_u);
+    veccomp &v_component = reinterpret_cast<veccomp &>(result_v);
 
 
-    std::complex<double> zi (0.0,1.0);
+    std::complex<double> zi (0.0, 1.0);
     const double kRadiusOfTheEarth = 6.371e6; // Seriously?
     size_t        k = 0;
     size_t      imn = 0;
 
     size_t count = truncation;
-// truncation--;
+    // truncation--;
     /* Handle coefficients for m < truncation; n = m */
     for ( size_t j = 0 ; j < count ;  j++ ) {
         double zm = j ;
         double zn = zm;
         if (j) {
-            u_component[k] =  (-dd(zm , zn+1.)*vorticity[imn+1] + zi*ss(zm, zn)*divergence[imn]) * kRadiusOfTheEarth ;
-            v_component[k] =  ( dd(zm , zn+1.)*divergence[imn+1] + zi*ss(zm, zn)*vorticity[imn]) * kRadiusOfTheEarth ;
+            u_component[k] =  (-dd(zm , zn + 1.) * vorticity[imn + 1] + zi * ss(zm, zn) * divergence[imn]) * kRadiusOfTheEarth ;
+            v_component[k] =  ( dd(zm , zn + 1.) * divergence[imn + 1] + zi * ss(zm, zn) * vorticity[imn]) * kRadiusOfTheEarth ;
 
         } else {
-            u_component[k] =  (-dd(zm, zn+1) * vorticity[imn+1]) * kRadiusOfTheEarth  ;
-            v_component[k] =  ( dd(zm, zn+1) * divergence[imn+1]) * kRadiusOfTheEarth ;
+            u_component[k] =  (-dd(zm, zn + 1) * vorticity[imn + 1]) * kRadiusOfTheEarth  ;
+            v_component[k] =  ( dd(zm, zn + 1) * divergence[imn + 1]) * kRadiusOfTheEarth ;
         }
         ++imn;
         ++k;
         size_t  jmp = j + 1;
 
         /* When n < count - 1 */
-        if (jmp < count - 1 ) {
+        if (jmp < count /*- 1*/ ) {
             for ( int i = jmp ; i < count - 1 ;  i++ ) {
                 zn = i;
-                u_component[k] =  ( dd(zm, zn)*vorticity[imn-1] - dd(zm, zn+1)*vorticity[imn+1] + zi*ss(zm,zn)*divergence[imn]) * kRadiusOfTheEarth ;
-                v_component[k] =  (-dd(zm, zn)*divergence[imn-1] + dd(zm, zn+1)*divergence[imn+1] + zi*ss(zm,zn)*vorticity[imn]) * kRadiusOfTheEarth ;
+                u_component[k] =  ( dd(zm, zn) * vorticity[imn - 1] - dd(zm, zn + 1) * vorticity[imn + 1] + zi * ss(zm, zn) * divergence[imn]) * kRadiusOfTheEarth ;
+                v_component[k] =  (-dd(zm, zn) * divergence[imn - 1] + dd(zm, zn + 1) * divergence[imn + 1] + zi * ss(zm, zn) * vorticity[imn]) * kRadiusOfTheEarth ;
                 ++k;
                 ++imn;
             }
             /* When n == count - 1 */
             zn = count - 1;
-            u_component[k] =  ( dd(zm, zn)*vorticity[imn-1] + zi*ss(zm, zn)*divergence[imn]) * kRadiusOfTheEarth ;
-            v_component[k] =  (-dd(zm, zn)*divergence[imn-1] + zi*ss(zm, zn)*vorticity[imn]) * kRadiusOfTheEarth ;
+            u_component[k] =  ( dd(zm, zn) * vorticity[imn - 1] + zi * ss(zm, zn) * divergence[imn]) * kRadiusOfTheEarth ;
+            v_component[k] =  (-dd(zm, zn) * divergence[imn - 1] + zi * ss(zm, zn) * vorticity[imn]) * kRadiusOfTheEarth ;
             ++k;
             ++imn;
         }
         /* When n == count */
         zn = count;
-        u_component[k] =  dd(zm, zn)*vorticity[imn-1] * kRadiusOfTheEarth ;
-        v_component[k] =   -dd(zm, zn)*divergence[imn-1] * kRadiusOfTheEarth ;
+        u_component[k] =  dd(zm, zn) * vorticity[imn - 1] * kRadiusOfTheEarth ;
+        v_component[k] =   -dd(zm, zn) * divergence[imn - 1] * kRadiusOfTheEarth ;
         ++k;
         /* When n == count + 1 */
         /* IMN  = IMN + 1 + KTIN-ITOUT */
         /* KTIN-ITOUT = -1 */
-        // imn = imn;
-        // ++imn;
+        // imn = i
+#ifdef Z
+
+        imn += 1;
+#endif
     }
 
 
-    eckit::Log::info() << "At end of loop: 2k=" << 2*k << " " << (size - 2*k) << std::endl;
+    eckit::Log::info() << "At end of loop: 2k=" << 2 * k << " " << (size - 2 * k) << std::endl;
 
     /* Handle coefficients for m = truncation */
     /* When n == truncation */
     u_component[k] = 0;
     v_component[k] = 0;
     k++;
-    u_component[k] = 0;
-    v_component[k] = 0;
-    k++;
+    // u_component[k] = 0;
+    // v_component[k] = 0;
+    // k++;
 
-    eckit::Log::info() << "At end of loop: " << k << " 2k=" << 2*k  << std::endl;
+    eckit::Log::info() << "At end of loop: " << k << " 2k=" << 2 * k  << std::endl;
 
 
     // ASSERT(2*k == size);
