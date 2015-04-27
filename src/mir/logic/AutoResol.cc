@@ -62,43 +62,29 @@ void AutoResol::get(const std::string &name, long &value) const {
     // From emoslib
     // TODO: put in config file
 
-
-    if ( step >= 2.5 ) {
+    if (step >= 2.5) {
         value = 63;
-    }
-
-    else if ( step >= 1.5 ) {
+    } else if (step >= 1.5) {
         value = 106;
-    }
-
-    else if ( step >= 0.6 ) {
+    } else if (step >= 0.6) {
         value = 213;
-    }
-
-    else if ( step >= 0.4 ) {
+    } else if (step >= 0.4) {
         value = 319;
-    }
-
-    else if ( step >= 0.3 ) {
+    } else if (step >= 0.3) {
         value = 511;
-    }
-
-    else if ( step >= 0.15 ) {
+    } else if (step >= 0.15) {
         value = 799;
-    }
-
-
-    else if ( step >= 0.09 ) {
+    } else if (step >= 0.09) {
         value = 1279;
+    } else {
+        value = 2047;
     }
-else
-   { value = 2047;}
 
     eckit::Log::info() << "AutoResol: step is " << step << ", selecting truncation T" << value << std::endl;
 
     long truncation;
-    if(parametrisation_.get("field.truncation", truncation)) {
-        if(truncation < value) {
+    if (parametrisation_.get("field.truncation", truncation)) {
+        if (truncation < value) {
             value = truncation;
             eckit::Log::info() << "AutoResol: field is T" << truncation << ", selecting truncation T" << value << std::endl;
         }

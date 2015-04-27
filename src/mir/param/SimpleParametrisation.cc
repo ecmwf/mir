@@ -70,7 +70,7 @@ class DelayedSetting : public Setting {
     }
 
     virtual void get(const std::string &name, long &value) const {
-         delayed_->get(name, value);
+        delayed_->get(name, value);
     }
 
     virtual void get(const std::string &name, double &value) const {

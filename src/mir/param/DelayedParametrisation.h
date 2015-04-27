@@ -46,7 +46,7 @@ class DelayedParametrisation  {
 // -- Methods
     // None
 
-virtual void get(const std::string& name, std::string& value) const;
+    virtual void get(const std::string& name, std::string& value) const;
     virtual void get(const std::string& name, bool& value) const;
     virtual void get(const std::string& name, long& value) const;
     virtual void get(const std::string& name, double& value) const;

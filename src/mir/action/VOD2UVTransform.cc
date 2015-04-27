@@ -86,7 +86,7 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     temp_d = field_d;
 #else
 
-     repres::SphericalHarmonics::truncate(truncation, truncation - 1, field_vo, temp_vo);
+    repres::SphericalHarmonics::truncate(truncation, truncation - 1, field_vo, temp_vo);
     repres::SphericalHarmonics::truncate(truncation, truncation - 1, field_d, temp_d);
 #endif
 
