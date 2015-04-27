@@ -77,6 +77,12 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
             return 0;
         }
 
+        // TODO: Check that gaussian == regular in all cases
+        if (strcasecmp(name, "gaussian") == 0) {
+            job->set("regular", long(ints[0]));
+            return 0;
+        }
+
         if (strcasecmp(name, "rotation") == 0) {
             job->set("rotation", double(reals[0]) , double(reals[1]));
             return 0;
