@@ -67,23 +67,23 @@ void VOD2UVTool::run() {
 
     std::vector<double> uu;
     std::vector<double> vv;
-    {
+    // {
 
-        const mir::param::MIRParametrisation &metadata = mvo.parametrisation();
-        field.representation(mir::repres::RepresentationFactory::build(metadata));
+    //     const mir::param::MIRParametrisation &metadata = mvo.parametrisation();
+    //     field.representation(mir::repres::RepresentationFactory::build(metadata));
 
-        int KTIN = field.representation()->truncation();
-        int KTOUT = field.representation()->truncation();
+    //     int KTIN = field.representation()->truncation();
+    //     int KTOUT = field.representation()->truncation();
 
-        std::vector<double> VOR(mvo.field()->values());
-        std::vector<double> DIV(md.field()->values());
-        std::vector<double> U(mvo.field()->values());
-        std::vector<double> V(md.field()->values());
-        vod2uv_(& VOR[0], & DIV[0], &KTIN, & U[0], &V[0], &KTOUT);
+    //     std::vector<double> VOR(mvo.field()->values());
+    //     std::vector<double> DIV(md.field()->values());
+    //     std::vector<double> U(mvo.field()->values());
+    //     std::vector<double> V(md.field()->values());
+    //     vod2uv_(& VOR[0], & DIV[0], &KTIN, & U[0], &V[0], &KTOUT);
 
-        uu = U;
-        vv = V;
-    }
+    //     uu = U;
+    //     vv = V;
+    // }
 
     field.values(vof->values(), 0);
     field.values(df->values(), 1);

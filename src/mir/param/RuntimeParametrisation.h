@@ -52,6 +52,7 @@ class RuntimeParametrisation : public SimpleParametrisation {
     RuntimeParametrisation& set(const std::string& name, bool value);
     RuntimeParametrisation& set(const std::string& name, long value);
     RuntimeParametrisation& set(const std::string& name, double value);
+    RuntimeParametrisation& set(const std::string& name, Delayed* value);
 
 // -- Overridden methods
 

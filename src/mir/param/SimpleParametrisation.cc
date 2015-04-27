@@ -76,6 +76,8 @@ class TSettings : public Setting {
     }
 };
 
+
+
 //==========================================================
 
 class CannotConvert : public eckit::Exception {
@@ -212,19 +214,46 @@ template<> void TSettings<std::vector<double> >::get(const std::string& name, st
     throw CannotConvert("vector<double>", "string", name, value_);
 }
 template<> void TSettings<std::vector<double> >::get(const std::string& name, bool& value) const {
-    throw CannotConvert("vector<double>", "yyy", name, value_);
+    throw CannotConvert("vector<double>", "bool", name, value_);
 }
 template<> void TSettings<std::vector<double> >::get(const std::string& name, long& value) const {
-    throw CannotConvert("vector<double>", "yyy", name, value_);
+    throw CannotConvert("vector<double>", "long", name, value_);
 }
 template<> void TSettings<std::vector<double> >::get(const std::string& name, double& value) const {
-    throw CannotConvert("vector<double>", "yyy", name, value_);
+    throw CannotConvert("vector<double>", "double", name, value_);
 }
 template<> void TSettings<std::vector<double> >::get(const std::string& name, std::vector<long>& value) const {
     throw CannotConvert("vector<double>", "vector<long>", name, value_);
 }
 template<> void TSettings<std::vector<double> >::get(const std::string& name, std::vector<double>& value) const {
     value = value_;
+}
+
+
+//==========================================================
+
+template<>
+bool TSettings<Delayed*>::match(const std::string& name, const MIRParametrisation& other) const {
+    return false;
+}
+
+template<> void TSettings<Delayed* >::get(const std::string& name, std::string& value) const {
+    throw CannotConvert("Delayed", "string", name, value_);
+}
+template<> void TSettings<Delayed* >::get(const std::string& name, bool& value) const {
+    throw CannotConvert("Delayed", "bool", name, value_);
+}
+template<> void TSettings<Delayed* >::get(const std::string& name, long& value) const {
+    throw CannotConvert("Delayed", "long", name, value_);
+}
+template<> void TSettings<Delayed* >::get(const std::string& name, double& value) const {
+    throw CannotConvert("Delayed", "double", name, value_);
+}
+template<> void TSettings<Delayed* >::get(const std::string& name, std::vector<long>& value) const {
+    throw CannotConvert("Delayed", "vector<long>", name, value_);
+}
+template<> void TSettings<Delayed* >::get(const std::string& name, std::vector<double>& value) const {
+    throw CannotConvert("Delayed", "vector<double>", name, value_);
 }
 
 //==========================================================
@@ -307,6 +336,10 @@ void SimpleParametrisation::set(const std::string& name, long value) {
 }
 
 void SimpleParametrisation::set(const std::string& name, double value) {
+    _set(name, value);
+}
+
+void SimpleParametrisation::set(const std::string& name, Delayed* value) {
     _set(name, value);
 }
 
