@@ -19,6 +19,8 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/action/VOD2UVTransform.h"
+#include "mir/action/Sh2ShTransform.h"
+
 #include "mir/input/GribFileInput.h"
 #include "mir/output/GribFileOutput.h"
 #include "mir/data/MIRField.h"
@@ -47,11 +49,16 @@ void VOD2UVTool::run() {
     mir::input::GribFileInput vo("/tmp/vo.grib");
     mir::input::GribFileInput d("/tmp/d.grib");
 
+    mir::output::GribFileOutput u("/tmp/u.grib");
+    mir::output::GribFileOutput v("/tmp/v.grib");
+
     vo.next();
     d.next();
 
     mir::input::MIRInput& mvo = vo;
     mir::input::MIRInput& md = d;
+    mir::output::MIROutput& mu = u;
+    mir::output::MIROutput& mv = v;
 
     std::unique_ptr<mir::data::MIRField> vof(mvo.field());
     std::unique_ptr<mir::data::MIRField> df(md.field());
@@ -63,8 +70,21 @@ void VOD2UVTool::run() {
     const mir::param::MIRParametrisation& metadata = mvo.parametrisation();
     field.representation(mir::repres::RepresentationFactory::build(metadata));
 
-    std::unique_ptr<mir::action::Action> action(new mir::action::VOD2UVTransform(job));
-    action->execute(field);
+    size_t truncation = field.representation()->truncation();
+
+    std::unique_ptr<mir::action::Action> a2(new mir::action::VOD2UVTransform(job));
+    a2->execute(field);
+
+    mir::data::MIRField uf(false, 0);
+    uf.values(field.values(0));
+    uf.representation(mir::repres::RepresentationFactory::build(metadata));
+
+    mir::data::MIRField vf(false, 0);
+    vf.values(field.values(1));
+    vf.representation(mir::repres::RepresentationFactory::build(metadata));
+
+    mu.save(job, mvo, uf);
+    mv.save(job, mvo, vf);
 
 }
 

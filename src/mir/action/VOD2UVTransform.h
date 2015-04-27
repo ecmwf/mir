@@ -18,6 +18,7 @@
 
 #include "mir/action/Action.h"
 
+#include <vector>
 
 namespace mir {
 namespace action {
@@ -83,7 +84,8 @@ class VOD2UVTransform : public Action {
 // -- Members
 
 // -- Methods
-    // None
+
+    void truncate(size_t truncation, const std::vector<double>&, std::vector<double>&);
 
 // -- Overridden methods
 

@@ -49,6 +49,27 @@ inline double ss(double pm, double pn) {
     return -pm / (pn*(pn + 1));
 }
 
+void VOD2UVTransform::truncate(size_t truncation, const std::vector<double>& in, std::vector<double>& out) {
+    // Truncate VO/D by one wave
+    int delta = 1;
+    size_t i = 0;
+    size_t j = 0;
+
+    size_t truncation_minus_1 = truncation-1;
+
+    out.resize((truncation_minus_1+1)*(truncation_minus_1+2));
+
+        for (size_t m = 0; m < truncation; m++) {
+            for (size_t n = m ; n < truncation; n++) {
+                out[i++] = in[j++];
+                out[i++] = in[j++];
+            }
+            j += 2;
+        }
+
+    ASSERT(out.size() == j);
+}
+
 
 void VOD2UVTransform::execute(data::MIRField &field) const {
     ASSERT(field.dimensions() == 2);
@@ -56,6 +77,9 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
 
     size_t truncation = field.representation()->truncation();
     size_t size = ((truncation+1)*(truncation+2));
+    size_t truncation_minus_1 = truncation-1;
+    size_t size_1 = ((truncation_minus_1+1)*(truncation_minus_1+2));
+
 
     eckit::Log::info() << "VOD2UVTransform truncation=" << truncation << ", size=" << size << ", values=" << field.values(0).size() << std::endl;
 
@@ -65,8 +89,11 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     std::vector<double> result_u(size);
     std::vector<double> result_v(size);
 
-    typedef std::vector<std::complex<double> > veccomp;
+    std::vector<double> temp_vo(size_1);
+    std::vector<double> temp_d(size_1);
 
+
+    typedef std::vector<std::complex<double> > veccomp;
     const veccomp& vorticity = reinterpret_cast<const veccomp&>(field.values(0));
     const veccomp& divergence = reinterpret_cast<const veccomp&>(field.values(1));
 
@@ -77,7 +104,7 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     std::complex<double> zi (0.0,1.0);
     const double kRadiusOfTheEarth = 6.371e6; // Seriously?
     size_t        k = 0;
-    long      imn = 0;
+    size_t      imn = 0;
 
     /* Handle coefficients for m < truncation; n = m */
     for ( size_t j = 0 ; j < truncation ;  j++ ) {
@@ -93,7 +120,7 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
         }
         ++imn;
         ++k;
-        int  jmp = j + 1;
+        size_t  jmp = j + 1;
 
         /* When n < truncation - 1 */
         if (jmp < truncation - 1 ) {
@@ -120,6 +147,7 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
         /* IMN  = IMN + 1 + KTIN-ITOUT */
         /* KTIN-ITOUT = -1 */
         // imn = imn;
+        // ++imn;
     }
 
 
