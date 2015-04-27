@@ -328,7 +328,7 @@ extern "C" void intlogs(emos_cb_proc proc) {
     }
 }
 
-extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fortfloat *west, fortfloat *south,
+extern "C" fortint areachk_(fortfloat *we, fortfloat *ns, fortfloat *north, fortfloat *west, fortfloat *south,
                             fortfloat *east) {
 
     /* FROM EMOSLIB:
@@ -374,12 +374,12 @@ extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fort
             return 0;
         }
 
-        ASSERT(*ew > 0 && *ns > 0); // Only regular LL for now
+        ASSERT(*we > 0 && *ns > 0); // Only regular LL for now
         // This is not the code in EMOSLIB, just a guess
         double n = long(*north / *ns) * *ns;
         double s = long(*south / *ns) * *ns;
-        double w = long(*west / *ew) * *ew;
-        double e = long(*east / *ew) * *ew;
+        double w = long(*west / *we) * *we;
+        double e = long(*east / *we) * *we;
 
         if (*north != n) {
             n += *ns;
@@ -396,11 +396,11 @@ extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fort
         }
 
         if (*west != w) {
-            w -= *ew;
+            w -= *we;
         }
 
         if (*east != e) {
-            e += *ew;
+            e += *we;
         }
 
         while (e > 360) {
