@@ -44,7 +44,7 @@ static struct {
     {"spherical", "pentagonalResolutionParameterJ"},
 
     /// FIXME: Find something that does no clash
-    {"reduced", "pl"},
+    {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator"},
     {"regular", "Ni"},
 
     {0, 0},
