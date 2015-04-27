@@ -16,7 +16,6 @@
 #ifndef GribInput_H
 #define GribInput_H
 
-#include <memory>
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/FieldParametrisation.h"
@@ -90,7 +89,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Members
 
-    std::auto_ptr<grib_handle> grib_;
+    grib_handle* grib_;
 
     // -- Methods
 

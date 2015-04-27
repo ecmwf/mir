@@ -74,6 +74,7 @@ GribInput::GribInput() {
 
 
 GribInput::~GribInput() {
+    handle(0); // Will delete handle
 }
 
 
@@ -83,21 +84,21 @@ const param::MIRParametrisation &GribInput::parametrisation() const {
 
 
 data::MIRField *GribInput::field() const {
-    ASSERT(grib_.get());
+    ASSERT(grib_);
 
     size_t count;
-    GRIB_CALL(grib_get_size(grib_.get(), "values", &count));
+    GRIB_CALL(grib_get_size(grib_, "values", &count));
 
     size_t size = count;
     std::vector<double> values(count);
-    GRIB_CALL(grib_get_double_array(grib_.get(), "values", &values[0], &size));
+    GRIB_CALL(grib_get_double_array(grib_, "values", &values[0], &size));
     ASSERT(count == size);
 
     long bitmap;
-    GRIB_CALL(grib_get_long(grib_.get(), "bitmapPresent", &bitmap));
+    GRIB_CALL(grib_get_long(grib_, "bitmapPresent", &bitmap));
 
     double missing;
-    GRIB_CALL(grib_get_double(grib_.get(), "missingValue", &missing));
+    GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
 
     data::MIRField *field = new data::MIRField(bitmap != 0, missing);
     field->values(values);
@@ -106,12 +107,12 @@ data::MIRField *GribInput::field() const {
 
 
 grib_handle *GribInput::gribHandle() const {
-    return grib_.get();
+    return grib_;
 }
 
 bool GribInput::has(const std::string &name) const {
     const char *key = get_key(name);
-    bool ok = grib_is_defined(grib_.get(), key);
+    bool ok = grib_is_defined(grib_, key);
     eckit::Log::info() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") << std::endl;
     return ok;
 }
@@ -119,7 +120,7 @@ bool GribInput::has(const std::string &name) const {
 bool GribInput::get(const std::string& name, bool& value) const {
     long temp;
     const char *key = get_key(name);
-    int err = grib_get_long(grib_.get(), key, &temp);
+    int err = grib_get_long(grib_, key, &temp);
 
     if (err == GRIB_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
@@ -138,7 +139,7 @@ bool GribInput::get(const std::string& name, bool& value) const {
 
 bool GribInput::get(const std::string& name, long& value) const {
     const char *key = get_key(name);
-    int err = grib_get_long(grib_.get(), key, &value);
+    int err = grib_get_long(grib_, key, &value);
 
     if (err == GRIB_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
@@ -155,7 +156,7 @@ bool GribInput::get(const std::string& name, long& value) const {
 
 bool GribInput::get(const std::string& name, double& value) const {
     const char *key = get_key(name);
-    int err = grib_get_double(grib_.get(), key, &value);
+    int err = grib_get_double(grib_, key, &value);
 
     if (err == GRIB_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
@@ -174,7 +175,7 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     const char *key = get_key(name);
 
     size_t count = 0;
-    int err = grib_get_size(grib_.get(), key, &count);
+    int err = grib_get_size(grib_, key, &count);
 
     if (err == GRIB_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
@@ -189,7 +190,7 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
 
     value.resize(count);
 
-    GRIB_CALL(grib_get_long_array(grib_.get(), key, &value[0], &size));
+    GRIB_CALL(grib_get_long_array(grib_, key, &value[0], &size));
     ASSERT(count == size);
 
     ASSERT(value.size());
@@ -205,7 +206,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
 
     char buffer[10240];
     size_t size = sizeof(buffer);
-    int err = grib_get_string(grib_.get(), key, buffer, &size);
+    int err = grib_get_string(grib_, key, buffer, &size);
 
     if (err == GRIB_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
@@ -228,7 +229,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     const char *key = get_key(name);
 
     size_t count = 0;
-    int err = grib_get_size(grib_.get(), key, &count);
+    int err = grib_get_size(grib_, key, &count);
 
     if (err == GRIB_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
@@ -243,7 +244,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
 
     value.resize(count);
 
-    GRIB_CALL(grib_get_double_array(grib_.get(), key, &value[0], &size));
+    GRIB_CALL(grib_get_double_array(grib_, key, &value[0], &size));
     ASSERT(count == size);
 
     ASSERT(value.size());
@@ -255,7 +256,10 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
 }
 
 bool GribInput::handle(grib_handle *h) {
-    grib_.reset(h);
+    if(grib_) {
+        grib_handle_delete(grib_);
+    }
+    grib_ = h;
     return h != 0;
 }
 
