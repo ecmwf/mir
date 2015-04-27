@@ -160,6 +160,7 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 
 
 void Sh2GriddedTransform::execute(data::MIRField &field) const {
+    ASSERT(field.dimensions() == 1); // For now
     const std::vector<double> &values = field.values();
     std::vector<double> result;
 

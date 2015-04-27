@@ -39,6 +39,7 @@ Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 
 
 void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
+    ASSERT(field.dimensions() == 1); // For now
     //    NOTIMP;
 
     std::string name = "method.finite-element";

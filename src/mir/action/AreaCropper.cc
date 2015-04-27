@@ -48,6 +48,7 @@ void AreaCropper::print(std::ostream &out) const {
 
 
 void AreaCropper::execute(data::MIRField &field) const {
+    ASSERT(field.dimensions() == 1); // For now
     const std::vector<double> &values = field.values();
     std::vector<double> result;
 

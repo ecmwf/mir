@@ -46,6 +46,7 @@ void Sh2ShTransform::print(std::ostream &out) const {
 
 
 void Sh2ShTransform::execute(data::MIRField &field) const {
+    ASSERT(field.dimensions() == 1); // For now
     const repres::Representation *representation = field.representation();
     repres::Representation *new_representation = 0;
 
