@@ -46,22 +46,22 @@ void Sh2ShTransform::print(std::ostream &out) const {
 
 
 void Sh2ShTransform::execute(data::MIRField &field) const {
-        const repres::Representation *representation = field.representation();
-repres::Representation *new_representation = 0;
+    const repres::Representation *representation = field.representation();
+    repres::Representation *new_representation = 0;
 
     for(size_t i = 0; i < field.dimensions(); i++) {
-    const std::vector<double> &values = field.values(i);
-    std::vector<double> result;
+        const std::vector<double> &values = field.values(i);
+        std::vector<double> result;
 
-    repres::Representation *repres = representation->truncate(truncation_, values, result);
+        repres::Representation *repres = representation->truncate(truncation_, values, result);
 
-    if (repres) { // NULL if nothing happend
-        delete new_representation;
-        new_representation = repres; // Assumes representation will be the same
-        field.values(result, i);
+        if (repres) { // NULL if nothing happend
+            delete new_representation;
+            new_representation = repres; // Assumes representation will be the same
+            field.values(result, i);
+        }
     }
-}
-if(new_representation) {
+    if(new_representation) {
         field.representation(new_representation);
     }
 

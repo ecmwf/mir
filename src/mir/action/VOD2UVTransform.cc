@@ -22,6 +22,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/repres/SphericalHarmonics.h"
 
 
 namespace mir {
@@ -49,51 +50,37 @@ inline double ss(double pm, double pn) {
     return -pm / (pn*(pn + 1));
 }
 
-void VOD2UVTransform::truncate(size_t truncation, const std::vector<double>& in, std::vector<double>& out) const {
-    // Truncate VO/D by one wave
-    // int delta = 1;
-    size_t i = 0;
-    size_t j = 0;
-
-    size_t truncation_minus_1 = truncation-1;
-
-    out.resize((truncation_minus_1+1)*(truncation_minus_1+2));
-
-        for (size_t m = 0; m < truncation; m++) {
-            for (size_t n = m ; n < truncation; n++) {
-                out[i++] = in[j++];
-                out[i++] = in[j++];
-            }
-            j += 2;
-        }
-
-    ASSERT(out.size() == i);
-}
-
 
 void VOD2UVTransform::execute(data::MIRField &field) const {
     ASSERT(field.dimensions() == 2);
 
 
     size_t truncation = field.representation()->truncation();
-    size_t size = ((truncation+1)*(truncation+2));
-    size_t truncation_minus_1 = truncation-1;
-    size_t size_1 = ((truncation_minus_1+1)*(truncation_minus_1+2));
+    size_t size = repres::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
 
+    // size_t truncation_minus_1 = truncation-1;
+    // size_t size_1 = repres::SphericalHarmonics::number_of_complex_coefficients(truncation_minus_1) * 2;
 
-    eckit::Log::info() << "VOD2UVTransform truncation=" << truncation << ", size=" << size << ", values=" << field.values(0).size() << std::endl;
+    ASSERT(sizeof(std::complex<double>) == 2*sizeof(double));
 
-    ASSERT(field.values(0).size() == size);
-    ASSERT(field.values(1).size() == size);
+    const std::vector<double>& field_vo = field.values(0);
+    const std::vector<double>& field_d = field.values(1);
 
-    std::vector<double> result_u(size);
-    std::vector<double> result_v(size);
+    eckit::Log::info() << "VOD2UVTransform truncation=" << truncation
+                       << ", size=" << size
+                       << ", values=" << field_vo.size() << std::endl;
 
-    std::vector<double> temp_vo(size_1);
-    std::vector<double> temp_d(size_1);
+    ASSERT(field_vo.size() == size);
+    ASSERT(field_d.size() == size);
 
-    truncate(truncation, field.values(0), temp_vo);
-    truncate(truncation, field.values(1), temp_d);
+    std::vector<double> result_u(size, 0);
+    std::vector<double> result_v(size, 0);
+
+    std::vector<double> temp_vo;
+    std::vector<double> temp_d;
+
+    repres::SphericalHarmonics::truncate(truncation, truncation-1, field_vo, temp_vo);
+    repres::SphericalHarmonics::truncate(truncation, truncation-1, field_d, temp_d);
 
 
     typedef std::vector<std::complex<double> > veccomp;
@@ -109,9 +96,10 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     size_t        k = 0;
     size_t      imn = 0;
 
+    size_t count = truncation;
 // truncation--;
     /* Handle coefficients for m < truncation; n = m */
-    for ( size_t j = 0 ; j < truncation ;  j++ ) {
+    for ( size_t j = 0 ; j < count ;  j++ ) {
         double zm = j ;
         double zn = zm;
         if (j) {
@@ -126,34 +114,36 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
         ++k;
         size_t  jmp = j + 1;
 
-        /* When n < truncation - 1 */
-        if (jmp < truncation - 1 ) {
-            for ( int i = jmp ; i < truncation - 1 ;  i++ ) {
+        /* When n < count - 1 */
+        if (jmp < count - 1 ) {
+            for ( int i = jmp ; i < count - 1 ;  i++ ) {
                 zn = i;
                 u_component[k] =  ( dd(zm, zn)*vorticity[imn-1] - dd(zm, zn+1)*vorticity[imn+1] + zi*ss(zm,zn)*divergence[imn]) * kRadiusOfTheEarth ;
                 v_component[k] =  (-dd(zm, zn)*divergence[imn-1] + dd(zm, zn+1)*divergence[imn+1] + zi*ss(zm,zn)*vorticity[imn]) * kRadiusOfTheEarth ;
                 ++k;
                 ++imn;
             }
-            /* When n == truncation - 1 */
-            zn = truncation - 1;
+            /* When n == count - 1 */
+            zn = count - 1;
             u_component[k] =  ( dd(zm, zn)*vorticity[imn-1] + zi*ss(zm, zn)*divergence[imn]) * kRadiusOfTheEarth ;
             v_component[k] =  (-dd(zm, zn)*divergence[imn-1] + zi*ss(zm, zn)*vorticity[imn]) * kRadiusOfTheEarth ;
             ++k;
             ++imn;
         }
-        /* When n == truncation */
-        zn = truncation;
+        /* When n == count */
+        zn = count;
         u_component[k] =  dd(zm, zn)*vorticity[imn-1] * kRadiusOfTheEarth ;
         v_component[k] =   -dd(zm, zn)*divergence[imn-1] * kRadiusOfTheEarth ;
         ++k;
-        /* When n == truncation + 1 */
+        /* When n == count + 1 */
         /* IMN  = IMN + 1 + KTIN-ITOUT */
         /* KTIN-ITOUT = -1 */
         // imn = imn;
         // ++imn;
     }
 
+
+    eckit::Log::info() << "At end of loop: 2k=" << 2*k << " " << (size - 2*k) << std::endl;
 
     /* Handle coefficients for m = truncation */
     /* When n == truncation */
@@ -164,7 +154,7 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     v_component[k] = 0;
     k++;
 
-    eckit::Log::info() << "At end of loop: " << k << " 2k=" << 2*k << " " << size_1 << std::endl;
+    eckit::Log::info() << "At end of loop: " << k << " 2k=" << 2*k  << std::endl;
 
 
     // ASSERT(2*k == size);

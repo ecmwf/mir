@@ -32,9 +32,9 @@ PointSearch::PointSearch(const atlas::Mesh& mesh) {
 
 
 void PointSearch::closestNPoints(
-        const PointType& pt,
-        size_t n,
-        std::vector< ValueType >& closest) {
+    const PointType& pt,
+    size_t n,
+    std::vector< ValueType >& closest) {
     using atlas::PointIndex3;
 
     PointIndex3::NodeList nn = tree_->kNearestNeighbours(pt, n);
@@ -68,8 +68,7 @@ void PointSearch::init(const std::vector< PointType >& points) {
 }
 
 
-void PointSearch::init(const atlas::Mesh& mesh)
-{
+void PointSearch::init(const atlas::Mesh& mesh) {
     ASSERT( mesh.has_function_space("nodes") );
 
     atlas::FunctionSpace& nodes = mesh.function_space( "nodes" );

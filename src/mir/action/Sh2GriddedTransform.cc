@@ -175,7 +175,7 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
     }
 
     eckit::Log::info() << "Sh2GriddedTransform min=" << mn << ", max=" << mx << ", average="
-        << (sum / result.size()) << ", count=" << result.size() << std::endl;
+                       << (sum / result.size()) << ", count=" << result.size() << std::endl;
     field.values(result);
     field.representation(out);
 }
