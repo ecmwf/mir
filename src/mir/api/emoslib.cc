@@ -370,6 +370,10 @@ extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fort
 
     try {
 
+        if(*we == 0 || *ns == 0) { // Looks like mars call areachk for gaussian grids as well
+            return 0;
+        }
+
         ASSERT(*ew > 0 && *ns > 0); // Only regular LL for now
         // This is not the code in EMOSLIB, just a guess
         double n = long(*north / *ns) * *ns;
