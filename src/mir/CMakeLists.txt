@@ -50,6 +50,8 @@ list( APPEND mir_srcs
       action/Sh2RegularLL.h
       action/Sh2ShTransform.cc
       action/Sh2ShTransform.h
+      action/VOD2UVTransform.cc
+      action/VOD2UVTransform.h
       api/MIRJob.cc
       api/MIRJob.h
       api/emoslib.cc
@@ -179,8 +181,8 @@ list( APPEND mir_srcs
       util/Bitmap.h
       util/BoundingBox.cc
       util/BoundingBox.h
-      util/Grib.h 
-      util/Increments.cc 
+      util/Grib.h
+      util/Increments.cc
       util/Increments.h
     )
 
