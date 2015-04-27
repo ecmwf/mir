@@ -52,53 +52,44 @@ inline double ss(double pm, double pn) {
 
 void VOD2UVTransform::execute(data::MIRField &field) const {
     ASSERT(field.dimensions() == 2);
-    const std::vector<double> &values = field.values();
-    std::vector<double> result;
+
 
     size_t truncation = field.representation()->truncation();
-    size_t size = ((truncation+1)*(truncation+2))/2;
-    size_t half = values.size()/4;
-    ASSERT(half == size*2);
+    size_t size = ((truncation+1)*(truncation+2));
 
+    ASSERT(field.values(0).size() == size);
+    ASSERT(field.values(1).size() == size);
 
+    std::vector<double> result_u(size);
+    std::vector<double> result_v(size);
 
-    std::vector<std::complex<double> > vorticity;
-    vorticity.reserve(size);
-    for(size_t j = 0, k = 0; j < half; j++) {
-        double re = values[k++];
-        double im = values[k++];
-        vorticity.push_back(std::complex<double>(re, im));
-    }
+    typedef std::vector<std::complex<double> > veccomp;
 
-    std::vector<std::complex<double> > divergence;
-    divergence.reserve(size);
-    for(size_t j = 0, k = half; j < half; j++) {
-        double re = values[k++];
-        double im = values[k++];
-        divergence.push_back(std::complex<double>(re, im));
-    }
+    const veccomp& vorticity = reinterpret_cast<const veccomp&>(field.values(0));
+    const veccomp& divergence = reinterpret_cast<const veccomp&>(field.values(1));
 
-    std::vector<std::complex<double> > u_component;
-    u_component.reserve(size);
-    std::vector<std::complex<double> > v_component;
-    v_component.reserve(size);
+     veccomp& u_component = reinterpret_cast<veccomp&>(result_u);
+     veccomp& v_component = reinterpret_cast<veccomp&>(result_v);
+
 
     std::complex<double> zi (0.0,1.0);
     const double kRadiusOfTheEarth = 6.371e6; // Seriously?
     long        k = 0;
     long      imn = 0;
 
+    size_t i = 0;
+
     /* Handle coefficients for m < truncation; n = m */
     for ( size_t j = 0 ; j < truncation ;  j++ ) {
         double zm = j ;
         double zn = zm;
         if (j) {
-            u_component.push_back( (-dd(zm,zn+1.)*vorticity[imn+1] + zi*ss(zm,zn)*divergence[imn]) * kRadiusOfTheEarth );
-            v_component.push_back( ( dd(zm,zn+1.)*divergence[imn+1] + zi*ss(zm,zn)*vorticity[imn]) * kRadiusOfTheEarth );
+            u_component[i++] =  (-dd(zm , zn+1.)*vorticity[imn+1] + zi*ss(zm, zn)*divergence[imn]) * kRadiusOfTheEarth ;
+            v_component[i++] =  ( dd(zm , zn+1.)*divergence[imn+1] + zi*ss(zm, zn)*vorticity[imn]) * kRadiusOfTheEarth ;
 
         } else {
-            u_component.push_back( (-dd(zm,zn+1) * vorticity[imn+1]) * kRadiusOfTheEarth ) ;
-            v_component.push_back( ( dd(zm,zn+1) * divergence[imn+1]) * kRadiusOfTheEarth );
+            u_component[i++] =  (-dd(zm, zn+1) * vorticity[imn+1]) * kRadiusOfTheEarth  ;
+            v_component[i++] =  ( dd(zm, zn+1) * divergence[imn+1]) * kRadiusOfTheEarth ;
         }
         ++imn;
         ++k;
@@ -108,38 +99,40 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
         if (jmp < truncation - 1 ) {
             for ( int i = jmp ; i < truncation - 1 ;  i++ ) {
                 zn = i;
-                u_component.push_back( ( dd(zm,zn)*vorticity[imn-1] - dd(zm,zn+1)*vorticity[imn+1] + zi*ss(zm,zn)*divergence[imn]) * kRadiusOfTheEarth );
-                v_component.push_back( (-dd(zm,zn)*divergence[imn-1] + dd(zm,zn+1)*divergence[imn+1] + zi*ss(zm,zn)*vorticity[imn]) * kRadiusOfTheEarth );
+                u_component[i++] =  ( dd(zm, zn)*vorticity[imn-1] - dd(zm, zn+1)*vorticity[imn+1] + zi*ss(zm,zn)*divergence[imn]) * kRadiusOfTheEarth ;
+                v_component[i++] =  (-dd(zm, zn)*divergence[imn-1] + dd(zm, zn+1)*divergence[imn+1] + zi*ss(zm,zn)*vorticity[imn]) * kRadiusOfTheEarth ;
                 ++k;
                 ++imn;
             }
             /* When n == truncation - 1 */
             zn = truncation - 1;
-            u_component.push_back( ( dd(zm,zn)*vorticity[imn-1] + zi*ss(zm,zn)*divergence[imn]) * kRadiusOfTheEarth );
-            v_component.push_back( (-dd(zm,zn)*divergence[imn-1] + zi*ss(zm,zn)*vorticity[imn]) * kRadiusOfTheEarth );
+            u_component[i++] =  ( dd(zm, zn)*vorticity[imn-1] + zi*ss(zm, zn)*divergence[imn]) * kRadiusOfTheEarth ;
+            v_component[i++] =  (-dd(zm, zn)*divergence[imn-1] + zi*ss(zm, zn)*vorticity[imn]) * kRadiusOfTheEarth ;
             ++k;
             ++imn;
         }
         /* When n == truncation */
         zn = truncation;
-        u_component.push_back( ( dd(zm,zn)*vorticity[imn-1]) * kRadiusOfTheEarth );
-        v_component.push_back( ( -dd(zm,zn)*divergence[imn-1]) * kRadiusOfTheEarth );
+        u_component[i++] =  dd(zm, zn)*vorticity[imn-1] * kRadiusOfTheEarth ;
+        v_component[i++] =   -dd(zm, zn)*divergence[imn-1] * kRadiusOfTheEarth ;
         ++k;
         /* When n == truncation + 1 */
         /* IMN  = IMN + 1 + KTIN-ITOUT */
         /* KTIN-ITOUT = -1 */
-        imn = imn;
+        // imn = imn;
     }
 
     /* Handle coefficients for m = truncation */
     /* When n == truncation */
-    u_component.push_back(0);
-    v_component.push_back(0);
-    u_component.push_back(0);
-    v_component.push_back(0);
+    u_component[i++] = 0;
+    v_component[i++] = 0;
+    u_component[i++] = 0;
+    v_component[i++] = 0;
 
-    ASSERT(u_component.size() == size && v_component.size() == size);
+    ASSERT(i == size);
 
+    field.values(result_u, 0);
+    field.values(result_v, 1);
 
 }
 
