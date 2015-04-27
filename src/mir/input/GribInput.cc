@@ -126,6 +126,7 @@ bool GribInput::get(const std::string& name, bool& value) const {
     }
 
     if (err) {
+        eckit::Log::info() << "grib_get_bool(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -144,6 +145,7 @@ bool GribInput::get(const std::string& name, long& value) const {
     }
 
     if (err) {
+        eckit::Log::info() << "grib_get_long(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -160,6 +162,7 @@ bool GribInput::get(const std::string& name, double& value) const {
     }
 
     if (err) {
+        eckit::Log::info() << "grib_get_double(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -173,15 +176,12 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     size_t count = 0;
     int err = grib_get_size(grib_.get(), key, &count);
 
-    eckit::Log::info() << "grib_get_size(" << name << ",key=" << key << ") = " << count <<
-
-    " err=" << err << std::endl;
-
     if (err == GRIB_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
     }
 
     if (err) {
+        eckit::Log::info() << "grib_get_long_array(" << name << ",key=" << key << ") failed " << err << " count=" << count << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -212,6 +212,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     }
 
     if (err) {
+        eckit::Log::info() << "grib_get_string(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -234,6 +235,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     }
 
     if (err) {
+        eckit::Log::info() << "grib_get_double_array(" << name << ",key=" << key << ") failed " << err << " count=" << count << std::endl;
         GRIB_ERROR(err, key);
     }
 
