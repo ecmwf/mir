@@ -34,8 +34,15 @@ MIRField::MIRField(bool hasMissing, double missingValue):
 
 
 // Warning: take ownership of values
-void MIRField::values(std::vector<double>& values) {
-    std::swap(values_, values);
+void MIRField::values(std::vector<double>& values, int which) {
+    if(values_.size() <= which) {
+        values_.resize(which+1);
+    }
+    std::swap(values_[which], values);
+}
+
+size_t MIRField::dimensions() const {
+    return values_.size();
 }
 
 

@@ -50,13 +50,13 @@ class MIRField {
 
 // -- Methods
 
-    const std::vector<double>& values() const {
-        return values_;
+    const std::vector<double>& values(int which=0) const {
+        return values_[which];
     }
 
     // Non-const version for direct update (Filter)
-    std::vector<double>& values()  {
-        return values_;
+    std::vector<double>& values(int which=0)  {
+        return values_[which];
     }
 
 
@@ -70,7 +70,7 @@ class MIRField {
 
 
     // Warning Takes ownership of the vector
-    void values(std::vector<double>&);
+    void values(std::vector<double>&, int which=0);
 
     void hasMissing(bool on) {
         hasMissing_ = on;
@@ -80,13 +80,7 @@ class MIRField {
         missingValue_ = value;
     }
 
-    void dimensions(size_t dimensions) {
-        dimensions_ = dimensions;
-    }
-
-    size_t dimensions() const  {
-        return dimensions_;
-    }
+    size_t dimensions() const ;
 
     const repres::Representation* representation() const;
     void representation(repres::Representation*);
@@ -127,11 +121,10 @@ class MIRField {
 
 // -- Members
 
-    std::vector<double> values_;
+    std::vector<std::vector<double> > values_;
     bool hasMissing_;
     double missingValue_;
     repres::Representation* representation_;
-    size_t dimensions_; // 1 = Scalar, 2 = vector, erx
 
 // -- Methods
     // None

@@ -75,6 +75,8 @@ class Representation {
     virtual atlas::Grid* atlasGrid() const;
     virtual size_t truncation() const;
 
+    virtual Representation* clone() const;
+
 // -- Overridden methods
     // None
 
