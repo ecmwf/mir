@@ -83,7 +83,7 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
         }
 
         if (strcasecmp(name, "autoresol") == 0) {
-            job->set("autoresol", value);
+            job->set("autoresol", ints[0] != 0);
             return 0;
         }
 
