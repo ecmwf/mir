@@ -89,7 +89,7 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
         }
 
         if (strcasecmp(name, "autoresol") == 0) {
-            job->set("autoresol", value);
+            job->set("autoresol", ints[0] != 0);
             return 0;
         }
 
@@ -334,7 +334,7 @@ extern "C" void intlogs(emos_cb_proc proc) {
     }
 }
 
-extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fortfloat *west, fortfloat *south,
+extern "C" fortint areachk_(fortfloat *we, fortfloat *ns, fortfloat *north, fortfloat *west, fortfloat *south,
                             fortfloat *east) {
 
     /* FROM EMOSLIB:
@@ -376,12 +376,16 @@ extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fort
 
     try {
 
-        ASSERT(*ew > 0 && *ns > 0); // Only regular LL for now
+        if(*we == 0 || *ns == 0) { // Looks like mars call areachk for gaussian grids as well
+            return 0;
+        }
+
+        ASSERT(*we > 0 && *ns > 0); // Only regular LL for now
         // This is not the code in EMOSLIB, just a guess
         double n = long(*north / *ns) * *ns;
         double s = long(*south / *ns) * *ns;
-        double w = long(*west / *ew) * *ew;
-        double e = long(*east / *ew) * *ew;
+        double w = long(*west / *we) * *we;
+        double e = long(*east / *we) * *we;
 
         if (*north != n) {
             n += *ns;
@@ -398,11 +402,11 @@ extern "C" fortint areachk_(fortfloat *ew, fortfloat *ns, fortfloat *north, fort
         }
 
         if (*west != w) {
-            w -= *ew;
+            w -= *we;
         }
 
         if (*east != e) {
-            e += *ew;
+            e += *we;
         }
 
         while (e > 360) {
