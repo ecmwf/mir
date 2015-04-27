@@ -158,6 +158,10 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     size_t count = 0;
     int err = grib_get_size(grib_.get(), key, &count);
 
+    eckit::Log::info() << "grib_get_size(" << name << ",key=" << key << ") = " << count <<
+
+    " err=" << err << std::endl;
+
     if (err == GRIB_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
     }
