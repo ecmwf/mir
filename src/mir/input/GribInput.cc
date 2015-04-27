@@ -117,7 +117,7 @@ bool GribInput::has(const std::string &name) const {
 }
 
 bool GribInput::get(const std::string& name, bool& value) const {
-    NOTIMP;
+    return FieldParametrisation::get(name, value);
 }
 
 bool GribInput::get(const std::string& name, long& value) const {
