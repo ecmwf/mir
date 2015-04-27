@@ -69,7 +69,7 @@ static const char* get_key(const std::string& name) {
 
 
 
-GribInput::GribInput() {
+GribInput::GribInput(): grib_(0) {
 }
 
 

@@ -1,7 +1,7 @@
 ecbuild_add_executable( TARGET  vod2uv
                         SOURCES  vod2uv.cc
                         INCLUDES ${ECKIT_INCLUDE_DIRS}
-                        LIBS     mir ${ECKIT_LIBRARIES})
+                        LIBS     mir ${LIBEMOS_LIBRARIES} ${ECKIT_LIBRARIES})
 
 # ecbuild_add_executable( TARGET  eigen_sparse
 # 						SOURCES eigen_sparse.cpp utils.h

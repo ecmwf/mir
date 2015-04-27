@@ -28,6 +28,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/repres/SphericalHarmonics.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
@@ -47,6 +48,9 @@ class TransInitor {
 namespace mir {
 namespace action {
 
+#define X(a) std::cout << "  TRANS: " << #a << " = " << a << std::endl
+
+
 static void transform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
 #ifdef ATLAS_HAVE_TRANS
 
@@ -59,40 +63,55 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
     struct Trans_t trans = new_trans();
 
-    trans.ndgl  = rgg->npts_per_lat().size();
-    trans.nloen = (int *) malloc( trans.ndgl * sizeof(int) ); ///< allocate array to be freed in trans_delete()
+    // Initialise grid ===============================================
+
+    const std::vector<int>& points_per_latitudes = rgg->npts_per_lat();
+
+    trans.ndgl  = points_per_latitudes.size();
+    trans.nloen = reinterpret_cast<int*>(malloc(trans.ndgl*sizeof(int))); ///< allocate array to be freed in trans_delete()
     ASSERT(trans.nloen);
-    ::memcpy( trans.nloen, &(rgg->npts_per_lat()[0]), sizeof(int)*trans.ndgl );
-
-    long maxtr = 0; // p["MaxTruncation"];
-
-    trans.nsmax = maxtr ? maxtr : (2 * trans.ndgl - 1) / 2; // assumption: linear grid
-
-
-    // register resolution in trans library
-    {
-        eckit::Timer t("Sh2GriddedTransform: setup");
-        trans_setup( &trans );
+    for(size_t i =  0; i < points_per_latitudes.size(); i++) {
+        trans.nloen[i] = points_per_latitudes[i];
     }
 
+    // assumption: linear grid
+    trans.nsmax = truncation;;
+
+    size_t size = repres::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
+
+
+    X(truncation);
+    X(input.size());
+    X(size);
+    X(trans.ndgl);
+    X(trans.nsmax);
+
+    // Initialise grid ===============================================
+
+    // Register resolution in trans library
+    trans_setup(&trans);
+
+    X(trans.myproc);
+    X(trans.nspec2);
+    X(trans.nspec2g);
+
     ASSERT(trans.myproc == 1);
+    ASSERT(trans.nspec2g == input.size());
 
     int number_of_fields = 1; // number of fields
 
     std::vector<int> nfrom(number_of_fields, 1); // processors responsible for distributing each field
+    std::vector<double> rspec(number_of_fields * trans.nspec2 );
 
-    std::vector<double> rspec ( number_of_fields * trans.nspec2  );
+    //==============================================================================
 
     struct DistSpec_t distspec = new_distspec(&trans);
     distspec.nfrom  = &nfrom[0];
     distspec.rspecg = const_cast<double *>(&input[0]);
     distspec.rspec  = &rspec[0];
     distspec.nfld   = number_of_fields;
+    trans_distspec(&distspec);
 
-    {
-        eckit::Timer t("Sh2GriddedTransform: distribute");
-        trans_distspec(&distspec);
-    }
 
     // Transform sp to gp fields
 
@@ -102,11 +121,8 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     invtrans.nscalar   = number_of_fields;
     invtrans.rspscalar = &rspec[0];
     invtrans.rgp       = &rgp[0];
+    trans_invtrans(&invtrans);
 
-    {
-        eckit::Timer t("Sh2GriddedTransform: transform");
-        trans_invtrans(&invtrans);
-    }
 
     // Gather all gridpoint fields
 
@@ -120,11 +136,8 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     gathgrid.rgpg = &output[0];
     gathgrid.nfld = number_of_fields;
     gathgrid.nto  = &nto[0];
+    trans_gathgrid(&gathgrid);
 
-    {
-        eckit::Timer t("Sh2GriddedTransform: gather");
-        trans_gathgrid(&gathgrid);
-    }
 
     trans_delete(&trans);
 

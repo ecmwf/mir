@@ -32,6 +32,7 @@ ecbuild_requires_macro_version( 1.6 )
 
 ecbuild_use_package( PROJECT eckit  VERSION  0.8  REQUIRED )
 ecbuild_use_package( PROJECT atlas  VERSION  0.3  REQUIRED )
+#ecbuild_use_package( PROJECT libemos  )
 
 # BUG: For some reason, in bundles this does not get propagated, unless
 # following lines are defined
@@ -117,7 +118,6 @@ endforeach()
 include_directories( ${MIR_INCLUDE_DIRS} ${MIR_EXTRA_INCLUDE_DIRS}  )
 
 add_subdirectory( src )
-# add_subdirectory( ecregrid )
 
 ### installation
 

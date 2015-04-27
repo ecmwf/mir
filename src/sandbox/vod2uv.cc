@@ -40,6 +40,8 @@ class VOD2UVTool : public eckit::Tool {
 
 };
 
+extern "C" void  vod2uv_(double* VOR,double* DIV,int *KTIN, double* U, double*V, int*KTOUT);
+
 
 void VOD2UVTool::run() {
 
@@ -63,6 +65,21 @@ void VOD2UVTool::run() {
     std::unique_ptr<mir::data::MIRField> vof(mvo.field());
     std::unique_ptr<mir::data::MIRField> df(md.field());
 
+    // {
+
+    //     const mir::param::MIRParametrisation& metadata = mvo.parametrisation();
+    // field.representation(mir::repres::RepresentationFactory::build(metadata));
+
+    // int KTIN = field.representation()->truncation();
+    // int KTOUT = field.representation()->truncation();
+
+    //     std::vector<double> VOR(field.values(0));
+    //     std::vector<double> DIV(field.values(1));
+    //     std::vector<double> U(field.values(0));
+    //     std::vector<double> V(field.values(1));
+    // vod2uv_(& VOR[0],& DIV[0],&KTIN, & U[0], &V[0], &KTOUT);
+    // }
+
     field.values(vof->values(), 0);
     field.values(df->values(), 1);
 
@@ -85,6 +102,7 @@ void VOD2UVTool::run() {
 
     mu.save(job, mvo, uf);
     mv.save(job, mvo, vf);
+
 
 }
 
