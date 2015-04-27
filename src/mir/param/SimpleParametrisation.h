@@ -27,7 +27,7 @@ namespace param {
 
 
 class Setting;
-class Delayed;
+class DelayedParametrisation;
 
 class SimpleParametrisation : public MIRParametrisation {
   public:
@@ -78,7 +78,7 @@ class SimpleParametrisation : public MIRParametrisation {
     void set(const std::string& name, bool value);
     void set(const std::string& name, long value);
     void set(const std::string& name, double value);
-    void set(const std::string& name, Delayed* value);
+    void set(const std::string& name, DelayedParametrisation* value);
 
     void set(const std::string& name, std::vector<long>& value);
     void set(const std::string& name, std::vector<double>& value);

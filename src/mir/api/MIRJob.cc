@@ -139,7 +139,7 @@ MIRJob& MIRJob::set(const std::string& name, double value) {
     return *this;
 }
 
-MIRJob& MIRJob::set(const std::string& name, param::Delayed* value) {
+MIRJob& MIRJob::set(const std::string& name, param::DelayedParametrisation* value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (delayed)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;

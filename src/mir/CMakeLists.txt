@@ -103,6 +103,8 @@ list( APPEND mir_srcs
       output/GribStreamOutput.h
       output/MIROutput.cc
       output/MIROutput.h
+      param/DelayedParametrisation.cc
+      param/DelayedParametrisation.h
       param/FieldParametrisation.cc
       param/FieldParametrisation.h
       param/MIRCombinedParametrisation.cc

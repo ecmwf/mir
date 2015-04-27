@@ -72,7 +72,7 @@ RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, dou
     return *this;
 }
 
-RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, Delayed* value) {
+RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, DelayedParametrisation* value) {
     _set(name, value);
     return *this;
 }

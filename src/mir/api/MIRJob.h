@@ -61,7 +61,7 @@ class MIRJob : public param::SimpleParametrisation {
     MIRJob& set(const std::string& name, bool value);
     MIRJob& set(const std::string& name, long value);
     MIRJob& set(const std::string& name, double value);
-    MIRJob& set(const std::string& name, param::Delayed* value);
+    MIRJob& set(const std::string& name, param::DelayedParametrisation* value);
     MIRJob& set(const std::string& name, double v1, double v2);
     MIRJob& set(const std::string& name, double v1, double v2, double v3, double v4);
 

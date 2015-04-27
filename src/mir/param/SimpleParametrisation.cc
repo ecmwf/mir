@@ -16,62 +16,109 @@
 #include "mir/param/SimpleParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
-
 #include "eckit/parser/Tokenizer.h"
+#include "eckit/types/Types.h"
 #include "eckit/utils/Translator.h"
 
-#include "eckit/types/Types.h"
+#include "mir/param/DelayedParametrisation.h"
 
 namespace mir {
 namespace param {
 
 template<class T>
-inline std::ostream& operator<<(std::ostream& s, const std::vector<T>& v) {
+inline std::ostream &operator<<(std::ostream &s, const std::vector<T> &v) {
     return eckit::__print_list(s, v);
 }
 
 class Setting {
   public:
     virtual ~Setting() {};
-    virtual void get(const std::string& name, std::string& value) const = 0;
-    virtual void get(const std::string& name, bool& value) const = 0;
-    virtual void get(const std::string& name, long& value) const = 0;
-    virtual void get(const std::string& name, double& value) const = 0;
-    virtual void get(const std::string& name, std::vector<long>& value) const = 0;
-    virtual void get(const std::string& name, std::vector<double>& value) const = 0;
+    virtual void get(const std::string &name, std::string &value) const = 0;
+    virtual void get(const std::string &name, bool &value) const = 0;
+    virtual void get(const std::string &name, long &value) const = 0;
+    virtual void get(const std::string &name, double &value) const = 0;
+    virtual void get(const std::string &name, std::vector<long> &value) const = 0;
+    virtual void get(const std::string &name, std::vector<double> &value) const = 0;
 
-    virtual bool match(const std::string& name, const MIRParametrisation&) const = 0;
+    virtual bool match(const std::string &name, const MIRParametrisation &) const = 0;
 
-    virtual void print(std::ostream&) const = 0;
+    virtual void print(std::ostream &) const = 0;
 
-    friend std::ostream& operator<<(std::ostream& s, const Setting& p) {
+    friend std::ostream &operator<<(std::ostream &s, const Setting &p) {
         p.print(s);
         return s;
     }
 };
 
+//================================================================================
+
+class DelayedSetting : public Setting {
+    DelayedParametrisation *delayed_;
+  public:
+    DelayedSetting(DelayedParametrisation *delayed): delayed_(delayed) {}
+
+    virtual ~DelayedSetting() {
+        delete delayed_;
+    };
+
+    virtual void get(const std::string &name, std::string &value) const {
+        NOTIMP;
+    }
+
+    virtual void get(const std::string &name, bool &value) const {
+        NOTIMP;
+    }
+
+    virtual void get(const std::string &name, long &value) const {
+        NOTIMP;
+    }
+
+    virtual void get(const std::string &name, double &value) const {
+        NOTIMP;
+    }
+
+    virtual void get(const std::string &name, std::vector<long> &value) const {
+        NOTIMP;
+    }
+
+    virtual void get(const std::string &name, std::vector<double> &value) const {
+        NOTIMP;
+    }
+
+    virtual bool match(const std::string &name, const MIRParametrisation &) const {
+        NOTIMP;
+    }
+
+    virtual void print(std::ostream &out) const {
+        out << "<DELAYED>";
+    }
+
+};
+
+//================================================================================
+
 template<class T>
 class TSettings : public Setting {
     T value_;
   public:
-    TSettings(const T& value): value_(value) {}
+    TSettings(const T &value): value_(value) {}
 
-    virtual void get(const std::string& name, std::string& value) const;
-    virtual void get(const std::string& name, bool& value) const;
-    virtual void get(const std::string& name, long& value) const;
-    virtual void get(const std::string& name, double& value) const;
-    virtual void get(const std::string& name, std::vector<long>& value) const;
-    virtual void get(const std::string& name, std::vector<double>& value) const;
+    virtual void get(const std::string &name, std::string &value) const;
+    virtual void get(const std::string &name, bool &value) const;
+    virtual void get(const std::string &name, long &value) const;
+    virtual void get(const std::string &name, double &value) const;
+    virtual void get(const std::string &name, std::vector<long> &value) const;
+    virtual void get(const std::string &name, std::vector<double> &value) const;
 
-    virtual bool match(const std::string& name, const MIRParametrisation& other) const {
+    virtual bool match(const std::string &name, const MIRParametrisation &other) const {
         T value;
-        if(other.get(name, value)) {
+        if (other.get(name, value)) {
             return value_ == value;
         }
         return false;
     }
 
-    virtual void print(std::ostream& out) const {
+    virtual void print(std::ostream &out) const {
         out << value_;
     }
 };
@@ -83,7 +130,7 @@ class TSettings : public Setting {
 class CannotConvert : public eckit::Exception {
   public:
     template<class T>
-    CannotConvert(const char* from, const char* to, const std::string& name, const T& value) {
+    CannotConvert(const char *from, const char *to, const std::string &name, const T &value) {
         eckit::StrStream os;
         os << "Cannot convert " << value << " from " << from << " to " << to << " (requesting " << name << ")" << eckit::StrStream::ends;
         reason(std::string(os));
@@ -91,91 +138,91 @@ class CannotConvert : public eckit::Exception {
 };
 
 template<class T>
-static void convertion_warning(const char* from, const char* to, const std::string& name, const T& value) {
+static void convertion_warning(const char *from, const char *to, const std::string &name, const T &value) {
     eckit::Log::warning() << "   +++ WARNING: Converting " << value << " from " << from << " to " << to << " (requesting " << name << ")" << std::endl;
 }
 
 // We will implement convertion as needed
 
-template<> void TSettings<bool>::get(const std::string& name, std::string& value) const {
+template<> void TSettings<bool>::get(const std::string &name, std::string &value) const {
     throw CannotConvert("bool", "string", name, value_);
 }
-template<> void TSettings<bool>::get(const std::string& name, bool& value) const {
+template<> void TSettings<bool>::get(const std::string &name, bool &value) const {
     value = value_;
 }
-template<> void TSettings<bool>::get(const std::string& name, long& value) const {
+template<> void TSettings<bool>::get(const std::string &name, long &value) const {
     throw CannotConvert("bool", "long", name, value_);
 }
-template<> void TSettings<bool>::get(const std::string& name, double& value) const {
+template<> void TSettings<bool>::get(const std::string &name, double &value) const {
     throw CannotConvert("bool", "double", name, value_);
 }
-template<> void TSettings<bool>::get(const std::string& name, std::vector<long>& value) const {
+template<> void TSettings<bool>::get(const std::string &name, std::vector<long> &value) const {
     throw CannotConvert("bool", "vector<long>", name, value_);
 }
-template<> void TSettings<bool>::get(const std::string& name, std::vector<double>& value) const {
+template<> void TSettings<bool>::get(const std::string &name, std::vector<double> &value) const {
     throw CannotConvert("bool", "vector<double>", name, value_);
 }
 
 //==========================================================
 
-template<> void TSettings<long>::get(const std::string& name, std::string& value) const {
+template<> void TSettings<long>::get(const std::string &name, std::string &value) const {
     throw CannotConvert("long", "string", name, value_);
 }
-template<> void TSettings<long>::get(const std::string& name, bool& value) const {
+template<> void TSettings<long>::get(const std::string &name, bool &value) const {
     throw CannotConvert("long", "bool", name, value_);
 }
-template<> void TSettings<long>::get(const std::string& name, long& value) const {
+template<> void TSettings<long>::get(const std::string &name, long &value) const {
     value = value_;
 }
-template<> void TSettings<long>::get(const std::string& name, double& value) const {
+template<> void TSettings<long>::get(const std::string &name, double &value) const {
     throw CannotConvert("long", "double", name, value_);
 }
-template<> void TSettings<long>::get(const std::string& name, std::vector<long>& value) const {
+template<> void TSettings<long>::get(const std::string &name, std::vector<long> &value) const {
     throw CannotConvert("long", "vector<long>", name, value_);
 }
-template<> void TSettings<long>::get(const std::string& name, std::vector<double>& value) const {
+template<> void TSettings<long>::get(const std::string &name, std::vector<double> &value) const {
     throw CannotConvert("long", "vector<double>", name, value_);
 }
 //==========================================================
 
-template<> void TSettings<double>::get(const std::string& name, std::string& value) const {
+template<> void TSettings<double>::get(const std::string &name, std::string &value) const {
     throw CannotConvert("double", "string", name, value_);
 }
-template<> void TSettings<double>::get(const std::string& name, bool& value) const {
+template<> void TSettings<double>::get(const std::string &name, bool &value) const {
     throw CannotConvert("double", "bool", name, value_);
 }
-template<> void TSettings<double>::get(const std::string& name, long& value) const {
+template<> void TSettings<double>::get(const std::string &name, long &value) const {
     throw CannotConvert("double", "long", name, value_);
 }
-template<> void TSettings<double>::get(const std::string& name, double& value) const {
+template<> void TSettings<double>::get(const std::string &name, double &value) const {
     value = value_;
 }
-template<> void TSettings<double>::get(const std::string& name, std::vector<long>& value) const {
+template<> void TSettings<double>::get(const std::string &name, std::vector<long> &value) const {
     throw CannotConvert("double", "vector<long>", name, value_);
 }
-template<> void TSettings<double>::get(const std::string& name, std::vector<double>& value) const {
+template<> void TSettings<double>::get(const std::string &name, std::vector<double> &value) const {
     throw CannotConvert("double", "vector<double>", name, value_);
 }
 //==========================================================
 
-template<> void TSettings<std::string>::get(const std::string& name, std::string& value) const {
+template<> void TSettings<std::string>::get(const std::string &name, std::string &value) const {
     value = value_;
 }
-template<> void TSettings<std::string>::get(const std::string& name, bool& value) const {
+template<> void TSettings<std::string>::get(const std::string &name, bool &value) const {
     throw CannotConvert("string", "bool", name, value_);
 }
-template<> void TSettings<std::string>::get(const std::string& name, long& value) const {
+template<> void TSettings<std::string>::get(const std::string &name, long &value) const {
     convertion_warning("string", "long", name, value_);
     eckit::Translator<std::string, long> translate;
     value = translate(value_);
 }
-template<> void TSettings<std::string>::get(const std::string& name, double& value) const {
+template<> void TSettings<std::string>::get(const std::string &name, double &value) const {
     throw CannotConvert("string", "double", name, value_);
 }
-template<> void TSettings<std::string>::get(const std::string& name, std::vector<long>& value) const {
+template<> void TSettings<std::string>::get(const std::string &name, std::vector<long> &value) const {
     throw CannotConvert("string", "vector<long>", name, value_);
 }
-template<> void TSettings<std::string>::get(const std::string& name, std::vector<double>& value) const {
+template<> void TSettings<std::string>::get(const std::string &name, std::vector<double> &value) const {
     convertion_warning("string", "vector<double>", name, value_);
     eckit::Translator<std::string, double> translate;
     eckit::Tokenizer parse("/");
@@ -190,71 +237,45 @@ template<> void TSettings<std::string>::get(const std::string& name, std::vector
 }
 //==========================================================
 
-template<> void TSettings<std::vector<long> >::get(const std::string& name, std::string& value) const {
+template<> void TSettings<std::vector<long> >::get(const std::string &name, std::string &value) const {
     throw CannotConvert("vector<long>", "string", name, value_);
 }
-template<> void TSettings<std::vector<long> >::get(const std::string& name, bool& value) const {
+template<> void TSettings<std::vector<long> >::get(const std::string &name, bool &value) const {
     throw CannotConvert("vector<long>", "bool", name, value_);
 }
-template<> void TSettings<std::vector<long> >::get(const std::string& name, long& value) const {
+template<> void TSettings<std::vector<long> >::get(const std::string &name, long &value) const {
     throw CannotConvert("vector<long>", "long", name, value_);
 }
-template<> void TSettings<std::vector<long> >::get(const std::string& name, double& value) const {
+template<> void TSettings<std::vector<long> >::get(const std::string &name, double &value) const {
     throw CannotConvert("vector<long>", "double", name, value_);
 }
-template<> void TSettings<std::vector<long> >::get(const std::string& name, std::vector<long>& value) const {
+template<> void TSettings<std::vector<long> >::get(const std::string &name, std::vector<long> &value) const {
     value = value_;
 }
-template<> void TSettings<std::vector<long> >::get(const std::string& name, std::vector<double>& value) const {
+template<> void TSettings<std::vector<long> >::get(const std::string &name, std::vector<double> &value) const {
     throw CannotConvert("vector<long>", "vector<double>", name, value_);
 }
 
 //==========================================================
-template<> void TSettings<std::vector<double> >::get(const std::string& name, std::string& value) const {
+template<> void TSettings<std::vector<double> >::get(const std::string &name, std::string &value) const {
     throw CannotConvert("vector<double>", "string", name, value_);
 }
-template<> void TSettings<std::vector<double> >::get(const std::string& name, bool& value) const {
+template<> void TSettings<std::vector<double> >::get(const std::string &name, bool &value) const {
     throw CannotConvert("vector<double>", "bool", name, value_);
 }
-template<> void TSettings<std::vector<double> >::get(const std::string& name, long& value) const {
+template<> void TSettings<std::vector<double> >::get(const std::string &name, long &value) const {
     throw CannotConvert("vector<double>", "long", name, value_);
 }
-template<> void TSettings<std::vector<double> >::get(const std::string& name, double& value) const {
+template<> void TSettings<std::vector<double> >::get(const std::string &name, double &value) const {
     throw CannotConvert("vector<double>", "double", name, value_);
 }
-template<> void TSettings<std::vector<double> >::get(const std::string& name, std::vector<long>& value) const {
+template<> void TSettings<std::vector<double> >::get(const std::string &name, std::vector<long> &value) const {
     throw CannotConvert("vector<double>", "vector<long>", name, value_);
 }
-template<> void TSettings<std::vector<double> >::get(const std::string& name, std::vector<double>& value) const {
+template<> void TSettings<std::vector<double> >::get(const std::string &name, std::vector<double> &value) const {
     value = value_;
 }
 
-
-//==========================================================
-
-template<>
-bool TSettings<Delayed*>::match(const std::string& name, const MIRParametrisation& other) const {
-    return false;
-}
-
-template<> void TSettings<Delayed* >::get(const std::string& name, std::string& value) const {
-    throw CannotConvert("Delayed", "string", name, value_);
-}
-template<> void TSettings<Delayed* >::get(const std::string& name, bool& value) const {
-    throw CannotConvert("Delayed", "bool", name, value_);
-}
-template<> void TSettings<Delayed* >::get(const std::string& name, long& value) const {
-    throw CannotConvert("Delayed", "long", name, value_);
-}
-template<> void TSettings<Delayed* >::get(const std::string& name, double& value) const {
-    throw CannotConvert("Delayed", "double", name, value_);
-}
-template<> void TSettings<Delayed* >::get(const std::string& name, std::vector<long>& value) const {
-    throw CannotConvert("Delayed", "vector<long>", name, value_);
-}
-template<> void TSettings<Delayed* >::get(const std::string& name, std::vector<double>& value) const {
-    throw CannotConvert("Delayed", "vector<double>", name, value_);
-}
 
 //==========================================================
 SimpleParametrisation::SimpleParametrisation() {
@@ -262,12 +283,12 @@ SimpleParametrisation::SimpleParametrisation() {
 
 
 SimpleParametrisation::~SimpleParametrisation() {
-    for (std::map<std::string, Setting*>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+    for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
         delete (*j).second;
     }
 }
 
-bool SimpleParametrisation::has(const std::string& name) const {
+bool SimpleParametrisation::has(const std::string &name) const {
     return settings_.find(name) != settings_.end();
 }
 
@@ -276,8 +297,8 @@ size_t SimpleParametrisation::size() const {
 }
 
 template<class T>
-bool SimpleParametrisation::_get(const std::string& name, T& value) const {
-    std::map<std::string, Setting*>::const_iterator j = settings_.find(name);
+bool SimpleParametrisation::_get(const std::string &name, T &value) const {
+    std::map<std::string, Setting *>::const_iterator j = settings_.find(name);
     if (j == settings_.end()) {
         return false;
     }
@@ -286,82 +307,86 @@ bool SimpleParametrisation::_get(const std::string& name, T& value) const {
     return true;
 }
 
-bool SimpleParametrisation::get(const std::string& name, std::string& value) const {
+bool SimpleParametrisation::get(const std::string &name, std::string &value) const {
     return _get(name, value);
 }
 
-bool SimpleParametrisation::get(const std::string& name, bool& value) const {
+bool SimpleParametrisation::get(const std::string &name, bool &value) const {
     return _get(name, value);
 }
 
-bool SimpleParametrisation::get(const std::string& name, long& value) const {
+bool SimpleParametrisation::get(const std::string &name, long &value) const {
     return _get(name, value);
 }
 
-bool SimpleParametrisation::get(const std::string& name, double& value) const {
+bool SimpleParametrisation::get(const std::string &name, double &value) const {
     return _get(name, value);
 }
 
-bool SimpleParametrisation::get(const std::string& name, std::vector<long>& value) const {
+bool SimpleParametrisation::get(const std::string &name, std::vector<long> &value) const {
     return _get(name, value);
 }
 
-bool SimpleParametrisation::get(const std::string& name, std::vector<double>& value) const {
+bool SimpleParametrisation::get(const std::string &name, std::vector<double> &value) const {
     return _get(name, value);
 }
 
 template<class T>
-void SimpleParametrisation::_set(const std::string& name, const T& value) {
-    std::map<std::string, Setting*>::iterator j = settings_.find(name);
+void SimpleParametrisation::_set(const std::string &name, const T &value) {
+    std::map<std::string, Setting *>::iterator j = settings_.find(name);
     if (j != settings_.end()) {
         delete (*j).second;
     }
     settings_[name] = new TSettings<T>(value);
 }
 
-void SimpleParametrisation::set(const std::string& name, const char* value) {
+void SimpleParametrisation::set(const std::string &name, const char *value) {
     _set(name, std::string(value));
 }
 
-void SimpleParametrisation::set(const std::string& name, const std::string& value) {
+void SimpleParametrisation::set(const std::string &name, const std::string &value) {
     _set(name, value);
 }
 
-void SimpleParametrisation::set(const std::string& name, bool value) {
+void SimpleParametrisation::set(const std::string &name, bool value) {
     _set(name, value);
 }
 
-void SimpleParametrisation::set(const std::string& name, long value) {
+void SimpleParametrisation::set(const std::string &name, long value) {
     _set(name, value);
 }
 
-void SimpleParametrisation::set(const std::string& name, double value) {
+void SimpleParametrisation::set(const std::string &name, double value) {
     _set(name, value);
 }
 
-void SimpleParametrisation::set(const std::string& name, Delayed* value) {
+void SimpleParametrisation::set(const std::string &name, DelayedParametrisation *value) {
+    std::map<std::string, Setting *>::iterator j = settings_.find(name);
+    if (j != settings_.end()) {
+        delete (*j).second;
+    }
+    settings_[name] = new DelayedSetting(value);
+}
+
+void SimpleParametrisation::set(const std::string &name, std::vector<long> &value) {
     _set(name, value);
 }
 
-void SimpleParametrisation::set(const std::string& name, std::vector<long>& value) {
+void SimpleParametrisation::set(const std::string &name, std::vector<double> &value) {
     _set(name, value);
 }
 
-void SimpleParametrisation::set(const std::string& name, std::vector<double>& value) {
-    _set(name, value);
-}
-
-void SimpleParametrisation::print(std::ostream& out) const {
-    const char* sep = "";
-    for (std::map<std::string, Setting*>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+void SimpleParametrisation::print(std::ostream &out) const {
+    const char *sep = "";
+    for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
         out << sep;
         out << (*j).first << "=" << *((*j).second);
         sep = ",";
     }
 }
 
-bool SimpleParametrisation::matches(const MIRParametrisation& other) const {
-    for (std::map<std::string, Setting*>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
+    for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
 
         if ((*j).second->match((*j).first, other)) {
             eckit::Log::info() << "Matching parametrisation: " << (*j).first << "="
