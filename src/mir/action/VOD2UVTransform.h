@@ -85,7 +85,7 @@ class VOD2UVTransform : public Action {
 
 // -- Methods
 
-    void truncate(size_t truncation, const std::vector<double>&, std::vector<double>&);
+    void truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
 // -- Overridden methods
 

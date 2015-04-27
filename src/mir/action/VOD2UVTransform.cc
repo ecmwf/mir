@@ -49,9 +49,9 @@ inline double ss(double pm, double pn) {
     return -pm / (pn*(pn + 1));
 }
 
-void VOD2UVTransform::truncate(size_t truncation, const std::vector<double>& in, std::vector<double>& out) {
+void VOD2UVTransform::truncate(size_t truncation, const std::vector<double>& in, std::vector<double>& out) const {
     // Truncate VO/D by one wave
-    int delta = 1;
+    // int delta = 1;
     size_t i = 0;
     size_t j = 0;
 
@@ -67,7 +67,7 @@ void VOD2UVTransform::truncate(size_t truncation, const std::vector<double>& in,
             j += 2;
         }
 
-    ASSERT(out.size() == j);
+    ASSERT(out.size() == i);
 }
 
 
@@ -92,10 +92,13 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     std::vector<double> temp_vo(size_1);
     std::vector<double> temp_d(size_1);
 
+    truncate(truncation, field.values(0), temp_vo);
+    truncate(truncation, field.values(1), temp_d);
+
 
     typedef std::vector<std::complex<double> > veccomp;
-    const veccomp& vorticity = reinterpret_cast<const veccomp&>(field.values(0));
-    const veccomp& divergence = reinterpret_cast<const veccomp&>(field.values(1));
+    const veccomp& vorticity = reinterpret_cast<const veccomp&>(temp_vo);
+    const veccomp& divergence = reinterpret_cast<const veccomp&>(temp_d);
 
     veccomp& u_component = reinterpret_cast<veccomp&>(result_u);
     veccomp& v_component = reinterpret_cast<veccomp&>(result_v);
@@ -106,6 +109,7 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     size_t        k = 0;
     size_t      imn = 0;
 
+// truncation--;
     /* Handle coefficients for m < truncation; n = m */
     for ( size_t j = 0 ; j < truncation ;  j++ ) {
         double zm = j ;
@@ -160,10 +164,10 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     v_component[k] = 0;
     k++;
 
-    eckit::Log::info() << "At end of loop: " << k << " 2k=" << 2*k << std::endl;
+    eckit::Log::info() << "At end of loop: " << k << " 2k=" << 2*k << " " << size_1 << std::endl;
 
 
-    ASSERT(2*k == size);
+    // ASSERT(2*k == size);
 
     field.values(result_u, 0);
     field.values(result_v, 1);
