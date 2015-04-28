@@ -38,7 +38,7 @@ GribMemoryOutput::~GribMemoryOutput() {
 
 
 void GribMemoryOutput::out(const void* message, size_t length, bool iterpolated) {
-    ASSERT(length < size_);
+    ASSERT(length <= size_);
     length_ = length;
     ::memcpy(message_, message, length);
 

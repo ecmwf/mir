@@ -94,6 +94,8 @@ class VODInput : public MIRInput {
     virtual void print(std::ostream&) const;
     virtual const param::MIRParametrisation& parametrisation() const;
     virtual data::MIRField* field() const;
+    virtual grib_handle* gribHandle() const;
+
 
     // -- Class members
     // None
