@@ -13,14 +13,10 @@
 /// @date Apr 2015
 
 
-#include <string>
-#include "mir/util/PointSearch.h"
-
 #include "mir/method/PseudoLaplace.h"
 
-
-using namespace Eigen;
-//using namespace atlas;
+#include <string>
+#include "mir/util/PointSearch.h"
 
 
 namespace mir {
@@ -54,9 +50,10 @@ void PseudoLaplace::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, c
 
     std::vector<atlas::PointIndex3::Value> closest;
 
-    VectorXd Dx(nclosest_);
-    VectorXd Dy(nclosest_);
-    VectorXd Dz(nclosest_);
+    Eigen::VectorXd
+            Dx(nclosest_),
+            Dy(nclosest_),
+            Dz(nclosest_);
 
     std::vector<double> weights;
     weights.reserve(nclosest_);
@@ -96,9 +93,9 @@ void PseudoLaplace::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, c
             Ry += dy;
             Rz += dz;
 
-            Dx[j]=dx;
-            Dy[j]=dy;
-            Dz[j]=dz;
+            Dx[j] = dx;
+            Dy[j] = dy;
+            Dz[j] = dz;
         }
 
         Lx =  (-(Iyz*Iyz*Rx) + Iyy*Izz*Rx + Ixz*Iyz*Ry - Ixy*Izz*Ry - Ixz*Iyy*Rz + Ixy*Iyz*Rz)/
