@@ -43,7 +43,19 @@ void MIRTool::usage(const std::string& tool) {
             << "% " << tool << " grid=2/2 area=90/-8/12/80 input.grib output.grib" << std::endl
             << "% " << tool << " reduced=80 input.grib output.grib" << std::endl << std::endl
             << "% " << tool << " regular=80 input.grib output.grib" << std::endl << std::endl
-            << "% " << tool << " truncation=63 input.grib output.grib" << std::endl << std::endl;
+            << "% " << tool << " truncation=63 input.grib output.grib" << std::endl << std::endl
+            << "Option are:" << std::endl
+            << "===========" << std::endl << std::endl
+
+            << "   area=north/west/south/east" << std::endl
+            << "   autoresol=0/1" << std::endl
+            << "   bitmap=path" << std::endl
+            << "   frame=n" << std::endl
+            << "   grid=west_east/north_south" << std::endl
+            << "   reduced=N" << std::endl
+            << "   regular=N" << std::endl
+            << "   truncation=T" << std::endl
+            ;
 
     ::exit(1);
 }

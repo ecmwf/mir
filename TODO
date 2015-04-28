@@ -6,6 +6,12 @@ MIR
 - Vo/D to U/V
 - Rotated winds?
 
+EMOSLIB
+- Find out about all intuv* functions
+
+* Behaviour to reproduce
+  - Specifying AREA on a SH field is ignored
+
 ECKIT
 - ?
 
