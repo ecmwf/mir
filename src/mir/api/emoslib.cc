@@ -233,8 +233,8 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
         mir::output::GribMemoryOutput u_output(u_grib_out, *length_out);
         mir::output::GribMemoryOutput v_output(v_grib_out, *length_out);
 
-                mir::input::VODInput input(vort_input, div_input);
-                mir::output::UVOutput output(u_output, v_output);
+        mir::input::VODInput input(vort_input, div_input);
+        mir::output::UVOutput output(u_output, v_output);
 
         job->set("vod2uv", true);
 

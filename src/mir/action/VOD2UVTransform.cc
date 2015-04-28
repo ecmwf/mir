@@ -53,12 +53,9 @@ inline double ss(double pm, double pn) {
 void VOD2UVTransform::execute(data::MIRField &field) const {
     ASSERT(field.dimensions() == 2);
 
-
     size_t truncation = field.representation()->truncation();
     size_t size = repres::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
 
-    // size_t truncation_minus_1 = truncation-1;
-    // size_t size_1 = repres::SphericalHarmonics::number_of_complex_coefficients(truncation_minus_1) * 2;
 
     ASSERT(sizeof(std::complex<double>) == 2 * sizeof(double));
 
@@ -78,18 +75,9 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     std::vector<double> temp_vo;
     std::vector<double> temp_d;
 
-#define Z
-
-
-#ifdef Z
-    temp_vo = field_vo;
-    temp_d = field_d;
-#else
 
     repres::SphericalHarmonics::truncate(truncation, truncation - 1, field_vo, temp_vo);
     repres::SphericalHarmonics::truncate(truncation, truncation - 1, field_d, temp_d);
-#endif
-
 
 
     typedef std::vector<std::complex<double> > veccomp;
@@ -101,13 +89,13 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
 
 
     std::complex<double> zi (0.0, 1.0);
-    const double kRadiusOfTheEarth = 6.371e6; // Seriously?
+    const double kRadiusOfTheEarth = 6.371e6;  // Seriously?
     size_t        k = 0;
     size_t      imn = 0;
 
     size_t count = truncation;
-    // truncation--;
-    /* Handle coefficients for m < truncation; n = m */
+
+
     for ( size_t j = 0 ; j < count ;  j++ ) {
         double zm = j ;
         double zn = zm;
@@ -119,57 +107,37 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
             u_component[k] =  (-dd(zm, zn + 1) * vorticity[imn + 1]) * kRadiusOfTheEarth  ;
             v_component[k] =  ( dd(zm, zn + 1) * divergence[imn + 1]) * kRadiusOfTheEarth ;
         }
-        ++imn;
-        ++k;
+        imn++;
+        k++;
         size_t  jmp = j + 1;
 
-        /* When n < count - 1 */
-        if (jmp < count /*- 1*/ ) {
+        if (jmp < count - 1 ) {
             for ( int i = jmp ; i < count - 1 ;  i++ ) {
                 zn = i;
                 u_component[k] =  ( dd(zm, zn) * vorticity[imn - 1] - dd(zm, zn + 1) * vorticity[imn + 1] + zi * ss(zm, zn) * divergence[imn]) * kRadiusOfTheEarth ;
                 v_component[k] =  (-dd(zm, zn) * divergence[imn - 1] + dd(zm, zn + 1) * divergence[imn + 1] + zi * ss(zm, zn) * vorticity[imn]) * kRadiusOfTheEarth ;
-                ++k;
-                ++imn;
+                k++;
+                imn++;
             }
-            /* When n == count - 1 */
+
             zn = count - 1;
             u_component[k] =  ( dd(zm, zn) * vorticity[imn - 1] + zi * ss(zm, zn) * divergence[imn]) * kRadiusOfTheEarth ;
             v_component[k] =  (-dd(zm, zn) * divergence[imn - 1] + zi * ss(zm, zn) * vorticity[imn]) * kRadiusOfTheEarth ;
-            ++k;
-            ++imn;
+            k++;
+            imn++;
         }
-        /* When n == count */
+
         zn = count;
         u_component[k] =  dd(zm, zn) * vorticity[imn - 1] * kRadiusOfTheEarth ;
-        v_component[k] =   -dd(zm, zn) * divergence[imn - 1] * kRadiusOfTheEarth ;
-        ++k;
-        /* When n == count + 1 */
-        /* IMN  = IMN + 1 + KTIN-ITOUT */
-        /* KTIN-ITOUT = -1 */
-        // imn = i
-#ifdef Z
+        v_component[k] =  -dd(zm, zn) * divergence[imn - 1] * kRadiusOfTheEarth ;
+        k++;
 
-        imn += 1;
-#endif
     }
 
-
-    eckit::Log::info() << "At end of loop: 2k=" << 2 * k << " " << (size - 2 * k) << std::endl;
-
-    /* Handle coefficients for m = truncation */
-    /* When n == truncation */
     u_component[k] = 0;
     v_component[k] = 0;
     k++;
-    // u_component[k] = 0;
-    // v_component[k] = 0;
-    // k++;
 
-    eckit::Log::info() << "At end of loop: " << k << " 2k=" << 2 * k  << std::endl;
-
-
-    // ASSERT(2*k == size);
 
     field.values(result_u, 0);
     field.values(result_v, 1);

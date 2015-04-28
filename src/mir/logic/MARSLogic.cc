@@ -45,12 +45,12 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
     // All the nasty logic goes there
 
     bool autoresol = false;
-        bool vod2uv = false;
+    bool vod2uv = false;
 
     long intermediate_gaussian = 0;
 
     parametrisation_.get("autoresol", autoresol);
-        parametrisation_.get("vod2uv", vod2uv);
+    parametrisation_.get("vod2uv", vod2uv);
 
     parametrisation_.get("intermediate_gaussian", intermediate_gaussian);
 

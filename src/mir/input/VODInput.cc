@@ -41,13 +41,13 @@ const param::MIRParametrisation &VODInput::parametrisation() const {
     return vorticity_.parametrisation();
 }
 
-     grib_handle* VODInput::gribHandle() const {
-            // Assumes that VO and D are both the same parametrisation
-return vorticity_.gribHandle();
-    }
+grib_handle* VODInput::gribHandle() const {
+    // Assumes that VO and D are both the same parametrisation
+    return vorticity_.gribHandle();
+}
 
 data::MIRField *VODInput::field() const {
-     // Assumes that VO and D are both the same parametrisation
+    // Assumes that VO and D are both the same parametrisation
     data::MIRField *field = vorticity_.field();
     data::MIRField *d = divergence_.field();
     field->values(d->values(), 1);
