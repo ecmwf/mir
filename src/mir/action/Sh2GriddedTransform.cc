@@ -47,7 +47,7 @@ class TransInitor {
 };
 
 static eckit::Mutex amutex;
-static std::map<size_t, struct Trans_t> trans_handles;
+static std::map<std::string, struct Trans_t> trans_handles;
 
 #endif
 
@@ -72,29 +72,28 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     }
 
 
-    util::MD5 md5;
+    eckit::MD5 md5;
     const std::vector<int>& points_per_latitudes = reduced->npts_per_lat();
-    md5.add();
 
-        reduced->N();
-
-
-    if(trans_handles.find(truncation) == trans_handles.end()) {
-        eckit::Log::info() << "Creating a new TRANS handle for T" << truncation << std::endl;
-        trans_handles[truncation] = new_trans();
+    for(size_t i =  0; i < points_per_latitudes.size(); i++) {
+        int l = points_per_latitudes[i];
+        md5.add(&l, sizeof(l));
     }
 
-    struct Trans_t& trans = trans_handles[truncation];
+    eckit::StrStream os;
+    os << "T" << truncation << ":N" << reduced->N() << ":PL" << md5.digest() << eckit::StrStream::ends;
 
-    // Initialise grid ===============================================
+    std::string key(os);
 
-    const std::vector<int>* points_per_latitudes = reduced ? &reduced->npts_per_lat() : &regular->npts_per_lat();
 
-    trans.ndgl  = points_per_latitudes->size();
+    if(trans_handles.find(key) == trans_handles.end()) {
+        eckit::Log::info() << "Creating a new TRANS handle for " << key<< std::endl;
+        struct Trans_t& trans = trans_handles[key] = new_trans();
+         trans.ndgl  = points_per_latitudes.size();
     trans.nloen = reinterpret_cast<int*>(malloc(trans.ndgl*sizeof(int))); ///< allocate array to be freed in trans_delete()
     ASSERT(trans.nloen);
-    for(size_t i =  0; i < points_per_latitudes->size(); i++) {
-        trans.nloen[i] = (*points_per_latitudes)[i];
+    for(size_t i =  0; i < points_per_latitudes.size(); i++) {
+        trans.nloen[i] = points_per_latitudes[i];
     }
 
     // assumption: linear grid
@@ -118,7 +117,16 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     X(trans.nspec2);
     X(trans.nspec2g);
 
+    }
+
+    struct Trans_t& trans = trans_handles[key];
+
+    // Initialise grid ===============================================
+
+
+
     ASSERT(trans.myproc == 1);
+
     ASSERT(trans.nspec2g == input.size());
 
     int number_of_fields = 1; // number of fields
