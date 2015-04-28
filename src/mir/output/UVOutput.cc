@@ -17,6 +17,9 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "mir/data/MIRField.h"
+#include "mir/param/RuntimeParametrisation.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir {
@@ -36,12 +39,28 @@ void UVOutput::print(std::ostream &out) const {
     out << "UVOutput[u_component=" << u_component_ << ", v_component=" << v_component_ << "]";
 }
 
-void UVOutput::copy(mir::param::MIRParametrisation const &, mir::input::MIRInput &) {
+void UVOutput::copy(const param::MIRParametrisation &, input::MIRInput &input) {
     NOTIMP;
 }
 
-void UVOutput::save(mir::param::MIRParametrisation const &, mir::input::MIRInput &, mir::data::MIRField &) {
-    NOTIMP;
+void UVOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+    ASSERT(field.dimensions() == 2);
+
+    data::MIRField u(field.hasMissing(), field.missingValue());
+    u.representation(field.representation()->clone());
+    u.values(field.values(0));
+
+    data::MIRField v(field.hasMissing(), field.missingValue());
+    v.representation(field.representation()->clone());
+    v.values(field.values(1));
+
+    param::RuntimeParametrisation u_runtime(param);
+    u_runtime.set("u-component", true);
+    u_component_.save(u_runtime, input, u);
+
+    param::RuntimeParametrisation v_runtime(param);
+    v_runtime.set("v-component", true);
+    v_component_.save(v_runtime, input, v);
 }
 
 }  // namespace output

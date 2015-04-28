@@ -168,7 +168,7 @@ MIRJob& MIRJob::set(const std::string& name, double v1, double v2, double v3, do
 
 
 bool MIRJob::matches(const param::MIRParametrisation& metadata) const {
-    static const char* force[] = { "bitmap", "frame", "packing", "accuracy", 0 }; // More to add
+    static const char* force[] = { "vod2uv", "bitmap", "frame", "packing", "accuracy", 0 }; // Move to MIRLogic
     size_t i = 0;
     while (force[i]) {
         if (has(force[i])) {

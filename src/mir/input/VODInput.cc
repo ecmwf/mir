@@ -16,6 +16,7 @@
 
 #include <iostream>
 
+#include "mir/data/MIRField.h"
 #include "eckit/exception/Exceptions.h"
 
 namespace mir {
@@ -36,11 +37,18 @@ void VODInput::print(std::ostream &out) const {
 }
 
 const param::MIRParametrisation &VODInput::parametrisation() const {
-    NOTIMP;
+    // Assumes that VO and D are both the same parametrisation
+    return vorticity_.parametrisation();
 }
 
 data::MIRField *VODInput::field() const {
-    NOTIMP;
+     // Assumes that VO and D are both the same parametrisation
+    data::MIRField *field = vorticity_.field();
+    data::MIRField *d = divergence_.field();
+    field->values(d->values(), 1);
+    delete d;
+
+    return field;
 }
 
 }  // namespace input
