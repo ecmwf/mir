@@ -17,11 +17,8 @@
 #ifndef soyuz_method_PointSearch_H
 #define soyuz_method_PointSearch_H
 
-#include "eckit/container/KDMemory.h"
-#include "eckit/container/KDTree.h"
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "eckit/geometry/Point3.h"
 
 #include "atlas/Grid.h"
 #include "atlas/PointIndex3.h"
