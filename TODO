@@ -1,1 +1,2 @@
-A lot
+- Check if tansi can be called with a regular gaussian as output
+- Get transi to print an erro if memory allocation fails

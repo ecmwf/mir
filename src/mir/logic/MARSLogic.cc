@@ -19,6 +19,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/action/ActionPlan.h"
 #include "mir/logic/AutoResol.h"
+#include "mir/logic/AutoReduced.h"
 
 
 namespace mir {
@@ -65,7 +66,7 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
                 plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
             }
 
-            plan.add("transform.sh2reduced-gg", "reduced", 48);
+            plan.add("transform.sh2reduced-gg", "reduced", new AutoReduced(parametrisation_));
             plan.add("interpolate.grid2regular-ll");
 #endif
         }
