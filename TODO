@@ -1,4 +1,4 @@
-REMOVE LINES AS THINGS ARE IMPLEMENTED
+MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
 MIR
 - Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh
@@ -24,3 +24,8 @@ PRODGEN:
 
 MARS:
 - Is intermediate_gaussian reduced?
+
+
+--------------------------------------------------------------------------------------------------
+
+DONE:
