@@ -118,6 +118,11 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
             return 0;
         }
 
+        if (strcasecmp(name, "intermediate_gaussian") == 0) {
+            job->set("intermediate_gaussian", long(ints[0]));
+            return 0;
+        }
+
         if (strcasecmp(name, "interpolation") == 0) {
             std::string low;
             const char *p = value;

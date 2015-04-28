@@ -45,8 +45,10 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
     // All the nasty logic goes there
 
     bool autoresol = false;
+    long intermediate_gaussian = 0;
 
     parametrisation_.get("autoresol", autoresol);
+    parametrisation_.get("intermediate_gaussian", intermediate_gaussian);
 
     if (parametrisation_.has("field.spherical")) {
         if (parametrisation_.has("user.truncation")) {
@@ -66,7 +68,13 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
                 plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
             }
 
+            if(intermediate_gaussian) {
+                plan.add("transform.sh2reduced-gg", "reduced", intermediate_gaussian);
+            }
+            else
+            {
             plan.add("transform.sh2reduced-gg", "reduced", new AutoReduced(parametrisation_));
+        }
             plan.add("interpolate.grid2regular-ll");
 #endif
         }

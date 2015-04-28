@@ -47,14 +47,17 @@ void MIRTool::usage(const std::string& tool) {
             << "Option are:" << std::endl
             << "===========" << std::endl << std::endl
 
+            << "   accuracy=n" << std::endl
             << "   area=north/west/south/east" << std::endl
             << "   autoresol=0/1" << std::endl
             << "   bitmap=path" << std::endl
             << "   frame=n" << std::endl
             << "   grid=west_east/north_south" << std::endl
+            << "   intermediate_gaussian=N" << std::endl
             << "   reduced=N" << std::endl
             << "   regular=N" << std::endl
             << "   truncation=T" << std::endl
+
             ;
 
     ::exit(1);
