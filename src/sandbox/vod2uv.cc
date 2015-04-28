@@ -71,6 +71,12 @@ void VOD2UVTool::run() {
     eckit::Buffer ub(size);
     eckit::Buffer vb(size);
 
+    int ints[] = {1,};
+    double reals[] = { 1, 1};
+
+    intout_("autoresol", ints, reals, 0, 0, 0);
+    intout_("grid", ints, reals, 0, 0, 0);
+
     intuvp2_((char *)vo_buffer, (char *)d_buffer, &size, (char *)ub, (char *)vb, &size);
     eckit::StdFile fu("/tmp/uv.grib", "w");
     fwrite(ub, 1, size, fu);

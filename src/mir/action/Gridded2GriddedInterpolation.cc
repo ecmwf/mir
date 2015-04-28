@@ -39,7 +39,7 @@ Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 
 
 void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
-    ASSERT(field.dimensions() == 1); // For now
+    // ASSERT(field.dimensions() == 1); // For now
     //    NOTIMP;
 
     std::string name = "method.finite-element";
@@ -61,23 +61,28 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
 
     std::vector<double> result;
 
-    try {
-        // TODO: We should not copy those things around
+    for (size_t i = 0; i < field.dimensions(); i++) {
 
-        std::auto_ptr<atlas::Grid> gin(in->atlasGrid());
-        std::auto_ptr<atlas::Grid> gout(out->atlasGrid());
 
-        // eckit::Log::info() << "ingrid  = " << *gin  << std::endl;
-        // eckit::Log::info() << "outgrid = " << *gout << std::endl;
+        try {
+            // TODO: We should not copy those things around
 
-        method->execute(field, *gin, *gout, result);
+            std::auto_ptr<atlas::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respec constness
+            std::auto_ptr<atlas::Grid> gout(out->atlasGrid());
 
-    } catch (...) {
-        delete out;
-        throw;
+            // eckit::Log::info() << "ingrid  = " << *gin  << std::endl;
+            // eckit::Log::info() << "outgrid = " << *gout << std::endl;
+
+            method->execute(field, i, *gin, *gout, result);
+
+        } catch (...) {
+            delete out;
+            throw;
+        }
+
+
+        field.values(result);
     }
-
-    field.values(result);
     field.representation(out);
 
 }

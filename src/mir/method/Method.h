@@ -54,7 +54,7 @@ class Method {
     // None
 
 // -- Methods
-    virtual void execute(data::MIRField&, const atlas::Grid&, const atlas::Grid&, std::vector<double>& result) const = 0;
+    virtual void execute(data::MIRField&, size_t which, const atlas::Grid&, const atlas::Grid&, std::vector<double>& result) const = 0;
 
 // -- Overridden methods
     // None

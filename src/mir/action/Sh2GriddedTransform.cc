@@ -193,6 +193,7 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 void Sh2GriddedTransform::execute(data::MIRField &field) const {
     // ASSERT(field.dimensions() == 1); // For now
 
+    repres::Representation *out = outputRepresentation(field.representation());
 
     // TODO: Transform all the fields together
     for (size_t i = 0; i < field.dimensions(); i++) {
@@ -202,7 +203,6 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
         std::vector<double> result;
 
         const repres::Representation *in = field.representation();
-        repres::Representation *out = outputRepresentation(field.representation());
 
         try {
             std::auto_ptr<atlas::Grid> grid(out->atlasGrid());
@@ -214,8 +214,10 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
 
 
         field.values(result, i);
-        field.representation(out);
+
     }
+
+    field.representation(out);
 }
 
 
