@@ -6,6 +6,9 @@ MIR
 - Vo/D to U/V
 - Rotated winds?
 
+TESTING:
+- Test mir_tool with valgrind
+
 EMOSLIB
 - Find out about all intuv* functions
 

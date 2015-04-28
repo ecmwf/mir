@@ -51,9 +51,9 @@ void PseudoLaplace::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, c
     std::vector<atlas::PointIndex3::Value> closest;
 
     Eigen::VectorXd
-            Dx(nclosest_),
-            Dy(nclosest_),
-            Dz(nclosest_);
+    Dx(nclosest_),
+    Dy(nclosest_),
+    Dz(nclosest_);
 
     std::vector<double> weights;
     weights.reserve(nclosest_);

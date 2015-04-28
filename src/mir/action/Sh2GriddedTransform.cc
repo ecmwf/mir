@@ -90,33 +90,33 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     if(trans_handles.find(key) == trans_handles.end()) {
         eckit::Log::info() << "Creating a new TRANS handle for " << key<< std::endl;
         struct Trans_t& trans = trans_handles[key] = new_trans();
-         trans.ndgl  = points_per_latitudes.size();
-    trans.nloen = reinterpret_cast<int*>(malloc(trans.ndgl*sizeof(int))); ///< allocate array to be freed in trans_delete()
-    ASSERT(trans.nloen);
-    for(size_t i =  0; i < points_per_latitudes.size(); i++) {
-        trans.nloen[i] = points_per_latitudes[i];
-    }
+        trans.ndgl  = points_per_latitudes.size();
+        trans.nloen = reinterpret_cast<int*>(malloc(trans.ndgl*sizeof(int))); ///< allocate array to be freed in trans_delete()
+        ASSERT(trans.nloen);
+        for(size_t i =  0; i < points_per_latitudes.size(); i++) {
+            trans.nloen[i] = points_per_latitudes[i];
+        }
 
-    // assumption: linear grid
-    trans.nsmax = truncation;;
+        // assumption: linear grid
+        trans.nsmax = truncation;;
 
-    size_t size = repres::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
+        size_t size = repres::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
 
 
-    X(truncation);
-    X(input.size());
-    X(size);
-    X(trans.ndgl);
-    X(trans.nsmax);
+        X(truncation);
+        X(input.size());
+        X(size);
+        X(trans.ndgl);
+        X(trans.nsmax);
 
-    // Initialise grid ===============================================
+        // Initialise grid ===============================================
 
-    // Register resolution in trans library
-    trans_setup(&trans);
+        // Register resolution in trans library
+        trans_setup(&trans);
 
-    X(trans.myproc);
-    X(trans.nspec2);
-    X(trans.nspec2g);
+        X(trans.myproc);
+        X(trans.nspec2);
+        X(trans.nspec2g);
 
     }
 
