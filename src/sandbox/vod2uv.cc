@@ -14,17 +14,22 @@
 
 
 #include "eckit/runtime/Tool.h"
-#include "eckit/runtime/Context.h"
-#include "eckit/parser/Tokenizer.h"
+// #include "eckit/runtime/Context.h"
+// #include "eckit/parser/Tokenizer.h"
 
-#include "mir/api/MIRJob.h"
-#include "mir/action/VOD2UVTransform.h"
-#include "mir/action/Sh2ShTransform.h"
+// #include "mir/api/MIRJob.h"
+// #include "mir/action/VOD2UVTransform.h"
+// #include "mir/action/Sh2ShTransform.h"
 
-#include "mir/input/GribFileInput.h"
-#include "mir/output/GribFileOutput.h"
-#include "mir/data/MIRField.h"
-#include "mir/repres/Representation.h"
+// #include "mir/input/GribFileInput.h"
+// #include "mir/output/GribFileOutput.h"
+// #include "mir/data/MIRField.h"
+// #include "mir/repres/Representation.h"
+
+#include "mir/api/emoslib.h"
+#include "eckit/io/StdFile.h"
+#include "mir/util/Grib.h"
+#include "eckit/io/Buffer.h"
 
 
 class VOD2UVTool : public eckit::Tool {
@@ -40,83 +45,36 @@ class VOD2UVTool : public eckit::Tool {
 
 };
 
-extern "C" void  vod2uv_(double *VOR, double *DIV, int *KTIN, double *U, double *V, int *KTOUT);
-
 
 void VOD2UVTool::run() {
 
-    mir::data::MIRField field(false, 0);
-    mir::api::MIRJob job;
+    int err;
+    size_t size_vo, size_d;
+    const void *vo_buffer, *d_buffer;
 
-    mir::input::GribFileInput vo("/tmp/vo.grib");
-    mir::input::GribFileInput d("/tmp/d.grib");
+    eckit::StdFile fvo("/tmp/vo.grib");
+    grib_handle *hvo = grib_handle_new_from_file(0, fvo, &err);
+    ASSERT(hvo);
+    grib_get_message(hvo, &vo_buffer, &size_vo);
 
-    mir::output::GribFileOutput u("/tmp/u.grib");
-    mir::output::GribFileOutput v("/tmp/v.grib");
+    eckit::StdFile fd("/tmp/d.grib");
+    grib_handle *hd = grib_handle_new_from_file(0, fd, &err);
+    ASSERT(hd);
+    grib_get_message(hd, &d_buffer, &size_d);
 
-    vo.next();
-    d.next();
+    ASSERT(size_d == size_vo);
 
-    mir::input::MIRInput &mvo = vo;
-    mir::input::MIRInput &md = d;
-    mir::output::MIROutput &mu = u;
-    mir::output::MIROutput &mv = v;
+    int size = size_d;
 
-    std::unique_ptr<mir::data::MIRField> vof(mvo.field());
-    std::unique_ptr<mir::data::MIRField> df(md.field());
+    eckit::Log::info() << "Size " << size << std::endl;
 
-    std::vector<double> uu;
-    std::vector<double> vv;
-    // {
+    eckit::Buffer ub(size);
+    eckit::Buffer vb(size);
 
-    //     const mir::param::MIRParametrisation &metadata = mvo.parametrisation();
-    //     field.representation(mir::repres::RepresentationFactory::build(metadata));
-
-    //     int KTIN = field.representation()->truncation();
-    //     int KTOUT = field.representation()->truncation();
-
-    //     std::vector<double> VOR(mvo.field()->values());
-    //     std::vector<double> DIV(md.field()->values());
-    //     std::vector<double> U(mvo.field()->values());
-    //     std::vector<double> V(md.field()->values());
-    //     vod2uv_(& VOR[0], & DIV[0], &KTIN, & U[0], &V[0], &KTOUT);
-
-    //     uu = U;
-    //     vv = V;
-    // }
-
-    field.values(vof->values(), 0);
-    field.values(df->values(), 1);
-
-
-    const mir::param::MIRParametrisation &metadata = mvo.parametrisation();
-    field.representation(mir::repres::RepresentationFactory::build(metadata));
-
-    size_t truncation = field.representation()->truncation();
-
-    std::unique_ptr<mir::action::Action> a2(new mir::action::VOD2UVTransform(job));
-    a2->execute(field);
-
-    mir::data::MIRField uf(false, 0);
-    uf.values(field.values(0));
-    uf.representation(mir::repres::RepresentationFactory::build(metadata));
-
-    mir::data::MIRField vf(false, 0);
-    vf.values(field.values(1));
-    vf.representation(mir::repres::RepresentationFactory::build(metadata));
-
-    mu.save(job, mvo, uf);
-    mv.save(job, mvo, vf);
-
-    for (size_t i = 0; i < uu.size(); i++) {
-        if (uu[i] != uf.values()[i]) {
-            std::cout << i << " u -> " << uu[i] - uf.values()[i] << std::endl;
-        }
-        if (vv[i] != vf.values()[i]) {
-            std::cout << i << " v -> " << vv[i] - vf.values()[i] << std::endl;
-        }
-    }
-
+    intuvp2_((char *)vo_buffer, (char *)d_buffer, &size, (char *)ub, (char *)vb, &size);
+    eckit::StdFile fu("/tmp/uv.grib", "w");
+    fwrite(ub, 1, size, fu);
+    fwrite(vb, 1, size, fu);
 
 }
 

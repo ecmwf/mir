@@ -31,7 +31,7 @@ class UVOutput : public MIROutput {
 
     // -- Contructors
 
-    UVOutput(MIROutput& u_component, MIROutput& v_component);
+    UVOutput(MIROutput &u_component, MIROutput &v_component);
 
     // -- Destructor
 
@@ -82,14 +82,16 @@ class UVOutput : public MIROutput {
 
     // -- Members
 
-    MIROutput& u_component_;
-    MIROutput& v_component_;
+    MIROutput &u_component_;
+    MIROutput &v_component_;
 
     // -- Methods
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream &) const;
+    virtual void copy(const param::MIRParametrisation &, input::MIRInput &) ; // Not iterpolation performed
+    virtual void save(const param::MIRParametrisation &, input::MIRInput &, data::MIRField &);
 
     // -- Class members
     // None

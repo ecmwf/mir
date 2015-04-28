@@ -92,6 +92,8 @@ class VODInput : public MIRInput {
     // -- Overridden methods
 
     virtual void print(std::ostream&) const;
+    virtual const param::MIRParametrisation& parametrisation() const;
+    virtual data::MIRField* field() const;
 
     // -- Class members
     // None

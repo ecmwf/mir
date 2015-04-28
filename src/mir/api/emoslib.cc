@@ -26,6 +26,8 @@
 #include "mir/input/GribMemoryInput.h"
 #include "mir/output/GribMemoryOutput.h"
 
+#include "mir/input/VODInput.h"
+#include "mir/output/UVOutput.h"
 
 namespace mir {
 namespace api {
@@ -202,7 +204,7 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
     return 0;
 }
 
-extern "C" fortint intuvs2_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *vort_grib_out, char *div_grib_out, fortint *length_out) {
+extern "C" fortint intuvs2_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *u_grib_out, char *v_grib_out, fortint *length_out) {
 
     eckit::Log::info() << "++++++ intuvs2" << std::endl;
 
@@ -215,7 +217,7 @@ extern "C" fortint intuvs2_(char *vort_grib_in, char *div_grib_in, fortint *leng
     return 0;
 }
 
-extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *vort_grib_out, char *div_grib_out, fortint *length_out) {
+extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *u_grib_out, char *v_grib_out, fortint *length_out) {
 
     eckit::Log::info() << "++++++ intuvp2" << std::endl;
 
@@ -228,10 +230,15 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
         mir::input::GribMemoryInput vort_input(vort_grib_in, *length_in);
         mir::input::GribMemoryInput div_input(div_grib_in, *length_in);
 
-        mir::output::GribMemoryOutput vort_output(vort_grib_out, *length_out);
-        mir::output::GribMemoryOutput div_output(div_grib_out, *length_out);
+        mir::output::GribMemoryOutput u_output(u_grib_out, *length_out);
+        mir::output::GribMemoryOutput v_output(v_grib_out, *length_out);
 
-        // job->execute(input, output);
+                mir::input::VODInput input(vort_input, div_input);
+                mir::output::UVOutput output(u_output, v_output);
+
+        job->set("vod2uv", true);
+
+        job->execute(input, output);
 
         // ASSERT(output.interpolated() + output.saved() == 1);
 
@@ -261,7 +268,7 @@ extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_i
     return 0;
 }
 
-extern "C" fortint intuvs_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *vort_grib_out, char *div_grib_out, fortint *length_out) {
+extern "C" fortint intuvs_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *u_grib_out, char *v_grib_out, fortint *length_out) {
 
     eckit::Log::info() << "++++++ intuvs" << std::endl;
 
@@ -274,7 +281,7 @@ extern "C" fortint intuvs_(char *vort_grib_in, char *div_grib_in, fortint *lengt
     return 0;
 }
 
-extern "C" fortint intuvp_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *vort_grib_out, char *div_grib_out, fortint *length_out) {
+extern "C" fortint intuvp_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *u_grib_out, char *v_grib_out, fortint *length_out) {
 
     eckit::Log::info() << "++++++ intuvp" << std::endl;
 

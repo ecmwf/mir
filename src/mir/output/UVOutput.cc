@@ -16,14 +16,16 @@
 
 #include <iostream>
 
+#include "eckit/exception/Exceptions.h"
+
 
 namespace mir {
 namespace output {
 
 
-UVOutput::UVOutput(MIROutput& u_component, MIROutput& v_component):
-   u_component_(u_component),
-   v_component_(v_component) {
+UVOutput::UVOutput(MIROutput &u_component, MIROutput &v_component):
+    u_component_(u_component),
+    v_component_(v_component) {
 }
 
 
@@ -31,7 +33,15 @@ UVOutput::~UVOutput() {
 }
 
 void UVOutput::print(std::ostream &out) const {
-    out << "UVOutput[u_component=" << u_component_ << ", v_component" << v_component_ << "]";
+    out << "UVOutput[u_component=" << u_component_ << ", v_component=" << v_component_ << "]";
+}
+
+void UVOutput::copy(mir::param::MIRParametrisation const &, mir::input::MIRInput &) {
+    NOTIMP;
+}
+
+void UVOutput::save(mir::param::MIRParametrisation const &, mir::input::MIRInput &, mir::data::MIRField &) {
+    NOTIMP;
 }
 
 }  // namespace output

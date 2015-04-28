@@ -16,6 +16,7 @@
 
 #include <iostream>
 
+#include "eckit/exception/Exceptions.h"
 
 namespace mir {
 namespace input {
@@ -30,11 +31,17 @@ VODInput::VODInput(MIRInput &vorticity, MIRInput &divergence):
 VODInput::~VODInput() {
 }
 
-
 void VODInput::print(std::ostream &out) const {
-    out << "VODInput[vorticity=" << vorticity_ << ", divergence" << divergence_ << "]";
+    out << "VODInput[vorticity=" << vorticity_ << ", divergence=" << divergence_ << "]";
 }
 
+const param::MIRParametrisation &VODInput::parametrisation() const {
+    NOTIMP;
+}
+
+data::MIRField *VODInput::field() const {
+    NOTIMP;
+}
 
 }  // namespace input
 }  // namespace mir
