@@ -99,12 +99,12 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
         // assumption: linear grid
         trans.nsmax = truncation;;
 
-        size_t size = repres::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
+        //size_t size = repres::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
 
 
         X(truncation);
         X(input.size());
-        X(size);
+        //X(size);
         X(trans.ndgl);
         X(trans.nsmax);
 

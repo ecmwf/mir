@@ -12,6 +12,8 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "mir/api/emoslib.h"
+
 
 #include <memory>
 
@@ -218,7 +220,27 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
     eckit::Log::info() << "++++++ intuvp2" << std::endl;
 
     try {
-        NOTIMP;
+
+        if (!job.get()) {
+            job.reset(new MIRJob());
+        }
+
+        mir::input::GribMemoryInput vort_input(vort_grib_in, *length_in);
+        mir::input::GribMemoryInput div_input(div_grib_in, *length_in);
+
+        mir::output::GribMemoryOutput vort_output(vort_grib_out, *length_out);
+        mir::output::GribMemoryOutput div_output(div_grib_out, *length_out);
+
+        // job->execute(input, output);
+
+        // ASSERT(output.interpolated() + output.saved() == 1);
+
+        // if (output.saved() == 1) {
+        //     *length_out = 0; // Not interpolation performed
+        // } else {
+        //     *length_out = output.length();
+        // }
+
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;

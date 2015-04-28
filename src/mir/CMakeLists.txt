@@ -38,8 +38,6 @@ list( APPEND mir_srcs
       action/Gridded2RegularGG.h
       action/Gridded2RegularLL.cc
       action/Gridded2RegularLL.h
-      action/NullAction.cc
-      action/NullAction.h
       action/Sh2GriddedTransform.cc
       action/Sh2GriddedTransform.h
       action/Sh2ReducedGG.cc
@@ -56,7 +54,9 @@ list( APPEND mir_srcs
       api/MIRJob.h
       api/emoslib.cc
       data/MIRField.cc
-      data/MIRField.h
+      data/MIRField.h 
+      input/VODInput.cc 
+      input/VODInput.h
       input/DummyInput.cc
       input/DummyInput.h
       input/GribFileInput.cc
@@ -94,7 +94,9 @@ list( APPEND mir_srcs
       method/PseudoLaplace.cc
       method/PseudoLaplace.h
       method/WeightCache.cc
-      method/WeightCache.h
+      method/WeightCache.h 
+      output/UVOutput.cc 
+      output/UVOutput.h
       output/DummyOutput.cc
       output/DummyOutput.h
       output/GribFileOutput.cc

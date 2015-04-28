@@ -12,40 +12,28 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "mir/output/UVOutput.h"
 
 #include <iostream>
 
-#include "mir/action/NullAction.h"
-
 
 namespace mir {
-namespace action {
+namespace output {
 
 
-NullAction::NullAction(const param::MIRParametrisation& parametrisation):
-    Action(parametrisation) {
+UVOutput::UVOutput(MIROutput& u_component, MIROutput& v_component):
+   u_component_(u_component),
+   v_component_(v_component) {
 }
 
 
-NullAction::~NullAction() {
+UVOutput::~UVOutput() {
 }
 
-
-void NullAction::print(std::ostream& out) const {
-    out << "NullAction[]";
+void UVOutput::print(std::ostream &out) const {
+    out << "UVOutput[u_component=" << u_component_ << ", v_component" << v_component_ << "]";
 }
 
-
-void NullAction::execute(data::MIRField&) const {
-    // Nothing to do
-}
-
-
-namespace {
-static ActionBuilder< NullAction > nullCropper("action.noop");
-}
-
-
-}  // namespace action
+}  // namespace output
 }  // namespace mir
 

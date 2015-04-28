@@ -54,7 +54,7 @@ MIRField::~MIRField() {
 void MIRField::print(std::ostream& out) const {
     out << "MIRField[dimensions=" << values_.size();
     if(hasMissing_) {
-        out << ",missingValue" << missingValue_;
+        out << ",missingValue=" << missingValue_;
     }
     out << "]";
 }
