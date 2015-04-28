@@ -65,7 +65,6 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     static TransInitor initor; // Will init trans if needed
 
     const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
-    const atlas::grids::GaussianGrid *regular = dynamic_cast<const atlas::grids::GaussianGrid *>(&grid);
 
     if (!reduced) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG.");
