@@ -88,48 +88,59 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     veccomp &v_component = reinterpret_cast<veccomp &>(result_v);
 
 
-    std::complex<double> zi (0.0, 1.0);
+    std::complex<double> zi(0.0, 1.0);
     const double kRadiusOfTheEarth = 6.371e6;  // Seriously?
-    size_t        k = 0;
-    size_t      imn = 0;
+    size_t k = 0;
+    size_t imn = 0;
 
     size_t count = truncation;
 
 
-    for ( size_t j = 0 ; j < count ;  j++ ) {
-        double zm = j ;
+    for (size_t j = 0 ; j < count ;  j++) {
+        double zm = j;
         double zn = zm;
+
+        double ddmn1 = dd(zm, zn + 1.);
+        double ssmn = ss(zm, zn);
         if (j) {
-            u_component[k] =  (-dd(zm , zn + 1.) * vorticity[imn + 1] + zi * ss(zm, zn) * divergence[imn]) * kRadiusOfTheEarth ;
-            v_component[k] =  ( dd(zm , zn + 1.) * divergence[imn + 1] + zi * ss(zm, zn) * vorticity[imn]) * kRadiusOfTheEarth ;
+            u_component[k] = (-ddmn1 * vorticity[imn + 1] + zi * ssmn * divergence[imn]) * kRadiusOfTheEarth;
+            v_component[k] = ( ddmn1 * divergence[imn + 1] + zi * ssmn * vorticity[imn]) * kRadiusOfTheEarth;
 
         } else {
-            u_component[k] =  (-dd(zm, zn + 1) * vorticity[imn + 1]) * kRadiusOfTheEarth  ;
-            v_component[k] =  ( dd(zm, zn + 1) * divergence[imn + 1]) * kRadiusOfTheEarth ;
+            u_component[k] = (-ddmn1 * vorticity[imn + 1]) * kRadiusOfTheEarth ;
+            v_component[k] = ( ddmn1 * divergence[imn + 1]) * kRadiusOfTheEarth;
         }
+
         imn++;
         k++;
         size_t  jmp = j + 1;
 
-        if (jmp < count - 1 ) {
-            for ( int i = jmp ; i < count - 1 ;  i++ ) {
+        if (jmp < count - 1) {
+            for (size_t i = jmp; i < count - 1;  i++) {
                 zn = i;
-                u_component[k] =  ( dd(zm, zn) * vorticity[imn - 1] - dd(zm, zn + 1) * vorticity[imn + 1] + zi * ss(zm, zn) * divergence[imn]) * kRadiusOfTheEarth ;
-                v_component[k] =  (-dd(zm, zn) * divergence[imn - 1] + dd(zm, zn + 1) * divergence[imn + 1] + zi * ss(zm, zn) * vorticity[imn]) * kRadiusOfTheEarth ;
+
+                double ddzmn = dd(zm, zn);
+                double ddmn1 = dd(zm, zn + 1.);
+                double ssmn = ss(zm, zn);
+                u_component[k] =  ( ddzmn * vorticity[imn - 1] - ddmn1 * vorticity[imn + 1] + zi * ssmn * divergence[imn]) * kRadiusOfTheEarth;
+                v_component[k] =  (-ddzmn * divergence[imn - 1] + ddmn1 * divergence[imn + 1] + zi * ssmn * vorticity[imn]) * kRadiusOfTheEarth;
                 k++;
                 imn++;
             }
 
             zn = count - 1;
-            u_component[k] =  ( dd(zm, zn) * vorticity[imn - 1] + zi * ss(zm, zn) * divergence[imn]) * kRadiusOfTheEarth ;
-            v_component[k] =  (-dd(zm, zn) * divergence[imn - 1] + zi * ss(zm, zn) * vorticity[imn]) * kRadiusOfTheEarth ;
+            double ddzmn = dd(zm, zn);
+            double ssmn = ss(zm, zn);
+            u_component[k] =  ( ddzmn * vorticity[imn - 1] + zi * ssmn * divergence[imn]) * kRadiusOfTheEarth;
+            v_component[k] =  (-ddzmn * divergence[imn - 1] + zi * ssmn * vorticity[imn]) * kRadiusOfTheEarth;
             k++;
             imn++;
         }
 
         zn = count;
-        u_component[k] =  dd(zm, zn) * vorticity[imn - 1] * kRadiusOfTheEarth ;
-        v_component[k] =  -dd(zm, zn) * divergence[imn - 1] * kRadiusOfTheEarth ;
+        double ddzmn = dd(zm, zn);
+        u_component[k] =  ddzmn * vorticity[imn - 1] * kRadiusOfTheEarth;
+        v_component[k] =  -ddzmn * divergence[imn - 1] * kRadiusOfTheEarth;
         k++;
 
     }
