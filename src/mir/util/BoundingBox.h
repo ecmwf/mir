@@ -59,6 +59,7 @@ class BoundingBox {
     }
 
     bool contains(double lat, double lon) const;
+    double normalise(double lon) const;
 
     // -- Methods
 

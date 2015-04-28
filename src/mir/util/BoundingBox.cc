@@ -82,13 +82,19 @@ void BoundingBox::normalise() {
     }
 }
 
+double BoundingBox::normalise(double lon) const {
+    while (lon > west_) {
+        lon -= 360;
+    }
+
+    while (lon < west_) {
+        lon += 360;
+    }
+    return lon;
+}
+
 bool BoundingBox::contains(double lat, double lon) const {
-    while (lat >= 360) {
-        lat -= 360;
-    }
-    while (lat < -180) {
-        lat += 360;
-    }
+    lon = normalise(lon);
     return (lat <= north_) && (lat >= south_) && (lon >= west_) && (lon <= east_);
 }
 
