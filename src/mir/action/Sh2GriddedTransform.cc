@@ -26,6 +26,7 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Timer.h"
+#include "eckit/utils/MD5.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -63,14 +64,20 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
     static TransInitor initor; // Will init trans if needed
 
-    const atlas::grids::ReducedGaussianGrid *reduced = dynamic_cast<const atlas::grids::ReducedGaussianGrid *>(&grid);
+    const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
     const atlas::grids::GaussianGrid *regular = dynamic_cast<const atlas::grids::GaussianGrid *>(&grid);
 
-    if (!reduced && !regular) {
-        throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG.");
+    if (!reduced) {
+        throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG.");
     }
 
-    ASSERT((reduced == 0) != ( regular == 0)); // Make sure ATLAS class hierarchy hasn't changed
+
+    util::MD5 md5;
+    const std::vector<int>& points_per_latitudes = reduced->npts_per_lat();
+    md5.add();
+
+        reduced->N();
+
 
     if(trans_handles.find(truncation) == trans_handles.end()) {
         eckit::Log::info() << "Creating a new TRANS handle for T" << truncation << std::endl;
