@@ -1,2 +1,20 @@
+REMOVE LINES AS THINGS ARE IMPLEMENTED
+
+MIR
+- Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh
+- Rotated fields
+- Vo/D to U/V
+- Rotated winds?
+
+ECKIT
+- ?
+
+IN TRANS
 - Check if tansi can be called with a regular gaussian as output
 - Get transi to print an erro if memory allocation fails
+
+PRODGEN:
+- ?
+
+MARS:
+- ?
