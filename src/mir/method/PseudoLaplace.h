@@ -20,6 +20,11 @@
 
 
 namespace mir {
+
+namespace util {
+class PointSearch;
+}
+
 namespace method {
 
 
