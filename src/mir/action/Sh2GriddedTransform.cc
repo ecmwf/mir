@@ -22,6 +22,8 @@
 #include "atlas/Grid.h"
 #include "atlas/grids/grids.h"
 
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Timer.h"
 
@@ -43,6 +45,9 @@ class TransInitor {
     }
 };
 
+static eckit::Mutex amutex;
+static std::map<size_t, struct Trans_t> trans_handles;
+
 #endif
 
 namespace mir {
@@ -54,24 +59,35 @@ namespace action {
 static void transform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
 #ifdef ATLAS_HAVE_TRANS
 
+    eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
+
     static TransInitor initor; // Will init trans if needed
 
-    const atlas::grids::ReducedGaussianGrid *rgg = dynamic_cast<const atlas::grids::ReducedGaussianGrid *>(&grid);
-    if (!rgg) {
+    const atlas::grids::ReducedGaussianGrid *reduced = dynamic_cast<const atlas::grids::ReducedGaussianGrid *>(&grid);
+    const atlas::grids::GaussianGrid *regular = dynamic_cast<const atlas::grids::GaussianGrid *>(&grid);
+
+    if (!reduced && !regular) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG.");
     }
 
-    struct Trans_t trans = new_trans();
+    ASSERT((reduced == 0) != ( regular == 0)); // Make sure ATLAS class hierarchy hasn't changed
+
+    if(trans_handles.find(truncation) == trans_handles.end()) {
+        eckit::Log::info() << "Creating a new TRANS handle for T" << truncation << std::endl;
+        trans_handles[truncation] = new_trans();
+    }
+
+    struct Trans_t& trans = trans_handles[truncation];
 
     // Initialise grid ===============================================
 
-    const std::vector<int>& points_per_latitudes = rgg->npts_per_lat();
+    const std::vector<int>* points_per_latitudes = reduced ? &reduced->npts_per_lat() : &regular->npts_per_lat();
 
-    trans.ndgl  = points_per_latitudes.size();
+    trans.ndgl  = points_per_latitudes->size();
     trans.nloen = reinterpret_cast<int*>(malloc(trans.ndgl*sizeof(int))); ///< allocate array to be freed in trans_delete()
     ASSERT(trans.nloen);
-    for(size_t i =  0; i < points_per_latitudes.size(); i++) {
-        trans.nloen[i] = points_per_latitudes[i];
+    for(size_t i =  0; i < points_per_latitudes->size(); i++) {
+        trans.nloen[i] = (*points_per_latitudes)[i];
     }
 
     // assumption: linear grid
@@ -139,7 +155,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     trans_gathgrid(&gathgrid);
 
 
-    trans_delete(&trans);
+    // trans_delete(&trans);
 
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported."

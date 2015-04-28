@@ -87,7 +87,9 @@ void MIRTool::run() {
         job.set(v[0], v[1]);
     }
 
+    size_t i = 0;
     while (input.next()) {
+        eckit::Log::info() << "FIELD: " << (++i) << std::endl;
         job.execute(input, output);
     }
 
