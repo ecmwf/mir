@@ -34,9 +34,9 @@ MIRField::MIRField(bool hasMissing, double missingValue):
 
 
 // Warning: take ownership of values
-void MIRField::values(std::vector<double>& values, int which) {
-    if(values_.size() <= which) {
-        values_.resize(which+1);
+void MIRField::values(std::vector<double> &values, size_t which) {
+    if (values_.size() <= which) {
+        values_.resize(which + 1);
     }
     std::swap(values_[which], values);
 }
@@ -47,30 +47,56 @@ size_t MIRField::dimensions() const {
 
 
 MIRField::~MIRField() {
-    delete representation_;
+        delete representation_;
 }
 
 
-void MIRField::print(std::ostream& out) const {
+void MIRField::print(std::ostream &out) const {
     out << "MIRField[dimensions=" << values_.size();
-    if(hasMissing_) {
+    if (hasMissing_) {
         out << ",missingValue=" << missingValue_;
     }
     out << "]";
 }
 
 
-const repres::Representation* MIRField::representation() const {
+const repres::Representation *MIRField::representation() const {
     ASSERT(representation_);
     return representation_;
 }
 
 
-void MIRField::representation(repres::Representation* representation) {
+void MIRField::representation(repres::Representation *representation) {
     delete representation_;
     representation_ = representation;
 }
 
+const std::vector<double> &MIRField::values(size_t which) const {
+    ASSERT(which < values_.size());
+    return values_[which];
+}
+
+std::vector<double> &MIRField::values(size_t which)  {
+    ASSERT(which < values_.size());
+    return values_[which];
+}
+
+bool MIRField::hasMissing() const {
+    return hasMissing_;
+}
+
+double MIRField::missingValue() const {
+    return missingValue_;
+}
+
+
+void MIRField::hasMissing(bool on) {
+    hasMissing_ = on;
+}
+
+void MIRField::missingValue(double value)  {
+    missingValue_ = value;
+}
 
 }  // namespace data
 }  // namespace mir

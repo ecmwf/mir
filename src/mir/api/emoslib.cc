@@ -221,7 +221,7 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
 
     eckit::Log::info() << "++++++ intuvp2" << std::endl;
 
-    try {
+    // try {
 
         if (!job.get()) {
             job.reset(new MIRJob());
@@ -248,10 +248,10 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
         //     *length_out = output.length();
         // }
 
-    } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
-        return -2;
-    }
+    // } catch (std::exception &e) {
+    //     eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+    //     return -2;
+    // }
     return 0;
 }
 

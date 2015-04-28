@@ -30,117 +30,99 @@ namespace data {
 class MIRField {
   public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     //
     MIRField(bool hasMissing, double missingValue);
 
-// -- Destructor
+    // -- Destructor
 
     ~MIRField(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-    const std::vector<double>& values(int which=0) const {
-        return values_[which];
-    }
-
-    // Non-const version for direct update (Filter)
-    std::vector<double>& values(int which=0)  {
-        return values_[which];
-    }
+    size_t dimensions() const;
 
 
-    bool hasMissing() const {
-        return hasMissing_;
-    }
+    void representation(repres::Representation *);
+    const repres::Representation *representation() const;
 
-    double missingValue() const {
-        return missingValue_;
-    }
+    void values(std::vector<double> &, size_t which = 0);  // Warning Takes ownership of the vector
 
+    const std::vector<double> &values(size_t which = 0) const;
+    std::vector<double> &values(size_t which = 0);   // Non-const version for direct update (Filter)
 
-    // Warning Takes ownership of the vector
-    void values(std::vector<double>&, int which=0);
+    void missingValue(double value);
+    double missingValue() const;
 
-    void hasMissing(bool on) {
-        hasMissing_ = on;
-    }
-
-    void missingValue(double value)  {
-        missingValue_ = value;
-    }
-
-    size_t dimensions() const ;
-
-    const repres::Representation* representation() const;
-    void representation(repres::Representation*);
+    void hasMissing(bool on);
+    bool hasMissing() const ;
 
     //
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream &) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   private:
 
-// No copy allowed
+    // No copy allowed
 
 
-// -- Members
+    // -- Members
 
     std::vector<std::vector<double> > values_;
     bool hasMissing_;
     double missingValue_;
     repres::Representation* representation_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const MIRField& p) {
+    friend std::ostream &operator<<(std::ostream &s, const MIRField &p) {
         p.print(s);
         return s;
     }
