@@ -72,9 +72,9 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
 
     eckit::MD5 md5;
-    const std::vector<int>& points_per_latitudes = reduced->npts_per_lat();
+    const std::vector<int> &points_per_latitudes = reduced->npts_per_lat();
 
-    for(size_t i =  0; i < points_per_latitudes.size(); i++) {
+    for (size_t i =  0; i < points_per_latitudes.size(); i++) {
         int l = points_per_latitudes[i];
         md5.add(&l, sizeof(l));
     }
@@ -86,13 +86,13 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
 
     // Warning: we keep the coefficient in memory for all the resolution used
-    if(trans_handles.find(key) == trans_handles.end()) {
-        eckit::Log::info() << "Creating a new TRANS handle for " << key<< std::endl;
-        struct Trans_t& trans = trans_handles[key] = new_trans();
+    if (trans_handles.find(key) == trans_handles.end()) {
+        eckit::Log::info() << "Creating a new TRANS handle for " << key << std::endl;
+        struct Trans_t &trans = trans_handles[key] = new_trans();
         trans.ndgl  = points_per_latitudes.size();
-        trans.nloen = reinterpret_cast<int*>(malloc(trans.ndgl*sizeof(int))); ///< allocate array to be freed in trans_delete()
+        trans.nloen = reinterpret_cast<int *>(malloc(trans.ndgl * sizeof(int))); ///< allocate array to be freed in trans_delete()
         ASSERT(trans.nloen);
-        for(size_t i =  0; i < points_per_latitudes.size(); i++) {
+        for (size_t i =  0; i < points_per_latitudes.size(); i++) {
             trans.nloen[i] = points_per_latitudes[i];
         }
 
@@ -119,7 +119,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
     }
 
-    struct Trans_t& trans = trans_handles[key];
+    struct Trans_t &trans = trans_handles[key];
 
     // Initialise grid ===============================================
 
@@ -191,38 +191,31 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 
 
 void Sh2GriddedTransform::execute(data::MIRField &field) const {
-    ASSERT(field.dimensions() == 1); // For now
-    const std::vector<double> &values = field.values();
-    std::vector<double> result;
+    // ASSERT(field.dimensions() == 1); // For now
 
-    const repres::Representation *in = field.representation();
-    repres::Representation *out = outputRepresentation(field.representation());
 
-    try {
-        std::auto_ptr<atlas::Grid> grid(out->atlasGrid());
-        transform(in->truncation(), values, result, *grid);
-    } catch (...) {
-        delete out;
-        throw;
-    }
+    // TODO: Transform all the fields together
+    for (size_t i = 0; i < field.dimensions(); i++) {
 
-    double mn = result[0];
-    double mx = result[0];
-    double sum = 0;
-    for (size_t i = 0; i < result.size(); ++i) {
-        sum += result[i];
-        if (result[i] > mx) {
-            mx = result[i];
+
+        const std::vector<double> &values = field.values(i);
+        std::vector<double> result;
+
+        const repres::Representation *in = field.representation();
+        repres::Representation *out = outputRepresentation(field.representation());
+
+        try {
+            std::auto_ptr<atlas::Grid> grid(out->atlasGrid());
+            transform(in->truncation(), values, result, *grid);
+        } catch (...) {
+            delete out;
+            throw;
         }
-        if (result[i] < mn) {
-            mn = result[i];
-        }
-    }
 
-    eckit::Log::info() << "Sh2GriddedTransform min=" << mn << ", max=" << mx << ", average="
-                       << (sum / result.size()) << ", count=" << result.size() << std::endl;
-    field.values(result);
-    field.representation(out);
+
+        field.values(result, i);
+        field.representation(out);
+    }
 }
 
 
