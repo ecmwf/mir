@@ -49,6 +49,7 @@ BitmapFilter::BitmapFilter(const param::MIRParametrisation &parametrisation):
         bitmap_ = (*j).second;
     }
 
+    ASSERT(bitmap_);
 }
 
 
@@ -63,10 +64,10 @@ void BitmapFilter::print(std::ostream &out) const {
 
 void BitmapFilter::execute(data::MIRField &field) const {
 
-    for (size_t i = 0; i < field.dimensions() ; i++) {
+    for (size_t f = 0; f < field.dimensions() ; f++) {
 
         double missingValue = field.missingValue();
-        std::vector<double> &values = field.values(i);
+        std::vector<double> &values = field.values(f);
 
         if (values.size() != bitmap_->width() * bitmap_->height()) {
             eckit::StrStream os;
@@ -79,10 +80,11 @@ void BitmapFilter::execute(data::MIRField &field) const {
 
 
         size_t k = 0;
+                for (size_t j = 0; j < bitmap_->height() ; j++ ) {
 
-        for (size_t h = 0; h < bitmap_->height() ; h++ ) {
-            for (size_t w = 0; w < bitmap_->width() ; w++ ) {
-                if (!bitmap_->on(w, h)) {
+            for (size_t i = 0; i < bitmap_->width() ; i++ ) {
+
+                if (!bitmap_->on(j, i)) {
                     values[k] = missingValue;
                 }
                 k++;
