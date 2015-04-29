@@ -41,7 +41,7 @@ MethodWeighted::~MethodWeighted() {
 }
 
 
-void MethodWeighted::execute(data::MIRField& field, size_t which, const atlas::Grid& in, const atlas::Grid& out, std::vector<double>& result) const {
+void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const atlas::Grid& out) const {
     eckit::Log::info() << "MethodWeighted::execute" << std::endl;
 
 
@@ -65,22 +65,24 @@ void MethodWeighted::execute(data::MIRField& field, size_t which, const atlas::G
     applyMask(W);
 
     // multiply interpolant matrix with field vector
+    for(size_t i = 0; i < field.dimensions(); i++)
     {
         eckit::StrStream os;
         os << "Interpolating field ("  << npts_inp << " -> " << npts_out << ")" << eckit::StrStream::ends;
         std::string msg(os);
         eckit::Timer t(msg);
 
-        ASSERT(field.values(which).size() == npts_inp);
-        eckit::Log::info() << "Input field is " << field.values(which).size() << std::endl;
+        ASSERT(field.values(i).size() == npts_inp);
+        eckit::Log::info() << "Input field is " << field.values(i).size() << std::endl;
 
-        std::vector<double>& values = field.values(which);
-        result.resize(npts_out);
+        std::vector<double>& values = field.values(i);
+        std::vector<double> result(npts_out);
 
         Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &values[0], npts_inp );
         Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &result[0], npts_out );
         vo = W * vi;
 
+        field.values(result, i); // Update field with result
     }
 }
 

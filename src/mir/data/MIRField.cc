@@ -47,7 +47,7 @@ size_t MIRField::dimensions() const {
 
 
 MIRField::~MIRField() {
-        delete representation_;
+    delete representation_;
 }
 
 

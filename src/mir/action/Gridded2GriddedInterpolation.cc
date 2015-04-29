@@ -59,30 +59,22 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     const repres::Representation *in = field.representation();
     repres::Representation *out = outputRepresentation(field.representation());
 
-    std::vector<double> result;
+    try {
+        // TODO: We should not copy those things around
 
-    for (size_t i = 0; i < field.dimensions(); i++) {
+        std::auto_ptr<atlas::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respec constness
+        std::auto_ptr<atlas::Grid> gout(out->atlasGrid());
 
+        // eckit::Log::info() << "ingrid  = " << *gin  << std::endl;
+        // eckit::Log::info() << "outgrid = " << *gout << std::endl;
 
-        try {
-            // TODO: We should not copy those things around
+        method->execute(field, *gin, *gout);
 
-            std::auto_ptr<atlas::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respec constness
-            std::auto_ptr<atlas::Grid> gout(out->atlasGrid());
-
-            // eckit::Log::info() << "ingrid  = " << *gin  << std::endl;
-            // eckit::Log::info() << "outgrid = " << *gout << std::endl;
-
-            method->execute(field, i, *gin, *gout, result);
-
-        } catch (...) {
-            delete out;
-            throw;
-        }
-
-
-        field.values(result, i);
+    } catch (...) {
+        delete out;
+        throw;
     }
+
     field.representation(out);
 
 }

@@ -61,7 +61,7 @@ class MethodWeighted : public Method {
     // None
 
 // -- Overridden methods
-    virtual void execute(data::MIRField& field, size_t which, const atlas::Grid& in, const atlas::Grid& out, std::vector<double>& result) const;
+    virtual void execute(data::MIRField& field, const atlas::Grid& in, const atlas::Grid& out) const;
 
 // -- Class members
     // None
