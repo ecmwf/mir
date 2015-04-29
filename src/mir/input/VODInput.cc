@@ -49,8 +49,8 @@ grib_handle* VODInput::gribHandle() const {
 data::MIRField *VODInput::field() const {
     // Assumes that VO and D are both the same parametrisation
     data::MIRField *field = vorticity_.field();
-    data::MIRField *d = divergence_.field();
-    field->values(d->values(), 1);
+    data::MIRField *d = divergence_.field(); ASSERT(d->dimensions() == 1);
+    field->values(d->values(0), 1);
     delete d;
 
     return field;

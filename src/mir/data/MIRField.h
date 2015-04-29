@@ -56,10 +56,10 @@ class MIRField {
     void representation(repres::Representation *);
     const repres::Representation *representation() const;
 
-    void values(std::vector<double> &, size_t which = 0);  // Warning Takes ownership of the vector
+    void values(std::vector<double> &, size_t which /*=0*/);  // Warning Takes ownership of the vector
 
-    const std::vector<double> &values(size_t which = 0) const;
-    std::vector<double> &values(size_t which = 0);   // Non-const version for direct update (Filter)
+    const std::vector<double> &values(size_t which /*=0*/) const;
+    std::vector<double> &values(size_t which /*=0*/);   // Non-const version for direct update (Filter)
 
     void missingValue(double value);
     double missingValue() const;

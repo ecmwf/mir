@@ -62,34 +62,35 @@ void BitmapFilter::print(std::ostream &out) const {
 
 
 void BitmapFilter::execute(data::MIRField &field) const {
-    ASSERT(field.dimensions() == 1); // For now
 
-    double missingValue = field.missingValue();
-    std::vector<double> &values = field.values();
+    for (size_t i = 0; i < field.dimensions() ; i++) {
 
-    if (values.size() != bitmap_->width() * bitmap_->height()) {
-        eckit::StrStream os;
-        os << "BitmapFilter::execute size mismatch: values=" << values.size()
-           << ", bitmap=" << bitmap_->width() << "x" << bitmap_->height()
-           << eckit::StrStream::ends;
+        double missingValue = field.missingValue();
+        std::vector<double> &values = field.values(i);
 
-        throw eckit::UserError(std::string(os));
-    }
+        if (values.size() != bitmap_->width() * bitmap_->height()) {
+            eckit::StrStream os;
+            os << "BitmapFilter::execute size mismatch: values=" << values.size()
+               << ", bitmap=" << bitmap_->width() << "x" << bitmap_->height()
+               << eckit::StrStream::ends;
 
-
-    size_t k = 0;
-
-    for (size_t j = 0; j < bitmap_->height() ; j++ ) {
-        for (size_t i = 0; i < bitmap_->width() ; i++ ) {
-            if (!bitmap_->on(i, j)) {
-                values[k] = missingValue;
-            }
-            k++;
+            throw eckit::UserError(std::string(os));
         }
+
+
+        size_t k = 0;
+
+        for (size_t h = 0; h < bitmap_->height() ; h++ ) {
+            for (size_t w = 0; w < bitmap_->width() ; w++ ) {
+                if (!bitmap_->on(w, h)) {
+                    values[k] = missingValue;
+                }
+                k++;
+            }
+        }
+
+        field.hasMissing(true);
     }
-
-    field.hasMissing(true);
-
 }
 
 

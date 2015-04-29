@@ -81,7 +81,7 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
         }
 
 
-        field.values(result);
+        field.values(result, i);
     }
     field.representation(out);
 

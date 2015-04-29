@@ -152,7 +152,7 @@ data::MIRField *NetcdfFileInput::field() const {
     double missingValue = 9999; // Read from file
 
     data::MIRField *field = new data::MIRField(hasMissing, missingValue);
-    field->values(values);
+    field->values(values, 0);
     return field;
 
 }

@@ -42,20 +42,20 @@ void FrameFilter::print(std::ostream &out) const {
 
 
 void FrameFilter::execute(data::MIRField &field) const {
-    ASSERT(field.dimensions() == 1); // For now
+    for (size_t i = 0; i < field.dimensions(); i++ ) {
 
-    double missingValue = field.missingValue();
-    std::vector<double> &values = field.values();
+        double missingValue = field.missingValue();
+        std::vector<double> &values = field.values(i);
 
-    const repres::Representation *representation = field.representation();
-    size_t count = representation->frame(values, size_, missingValue);
+        const repres::Representation *representation = field.representation();
+        size_t count = representation->frame(values, size_, missingValue);
 
-    if (count) {
-        field.hasMissing(true);
-    } else {
-        eckit::Log::warning() << "Frame " << size_ << " has no effect" << std::endl;
+        if (count) {
+            field.hasMissing(true);
+        } else {
+            eckit::Log::warning() << "Frame " << size_ << " has no effect" << std::endl;
+        }
     }
-
 }
 
 

@@ -48,11 +48,11 @@ void UVOutput::save(const param::MIRParametrisation &param, input::MIRInput &inp
 
     data::MIRField u(field.hasMissing(), field.missingValue());
     u.representation(field.representation()->clone());
-    u.values(field.values(0));
+    u.values(field.values(0), 0);
 
     data::MIRField v(field.hasMissing(), field.missingValue());
     v.representation(field.representation()->clone());
-    v.values(field.values(1));
+    v.values(field.values(1), 0);
 
     param::RuntimeParametrisation u_runtime(param);
     u_runtime.set("u-component", true);

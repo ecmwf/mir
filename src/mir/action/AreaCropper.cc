@@ -48,16 +48,17 @@ void AreaCropper::print(std::ostream &out) const {
 
 
 void AreaCropper::execute(data::MIRField &field) const {
-    ASSERT(field.dimensions() == 1); // For now
-    const std::vector<double> &values = field.values();
-    std::vector<double> result;
+    for (size_t i = 0; i < field.dimensions(); i++) {
+        const std::vector<double> &values = field.values(i);
+        std::vector<double> result;
 
-    const repres::Representation *representation = field.representation();
-    repres::Representation *cropped = representation->crop(bbox_, values, result);
+        const repres::Representation *representation = field.representation();
+        repres::Representation *cropped = representation->crop(bbox_, values, result);
 
-    if (cropped) { // NULL if nothing happend
-        field.representation(cropped);
-        field.values(result);
+        if (cropped) { // NULL if nothing happend
+            field.representation(cropped);
+            field.values(result, i);
+        }
     }
 }
 
