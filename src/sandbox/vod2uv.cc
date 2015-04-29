@@ -72,7 +72,7 @@ void VOD2UVTool::run() {
     eckit::Buffer vb(size);
 
     int ints[] = {1,};
-    double reals[] = { 1, 1};
+    double reals[] = { 5, 5};
 
     intout_("autoresol", ints, reals, 0, 0, 0);
     intout_("grid", ints, reals, 0, 0, 0);
