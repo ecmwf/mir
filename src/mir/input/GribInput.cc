@@ -30,6 +30,7 @@ namespace {
 static struct {
     const char *name;
     const char *key;
+    grib_values values;
 } mappings[] = {
     {"west_east_increment", "iDirectionIncrementInDegrees"},
     {"north_south_increment", "jDirectionIncrementInDegrees"},
@@ -37,31 +38,39 @@ static struct {
     {"east", "longitudeOfLastGridPointInDegrees"},
     {"north", "latitudeOfFirstGridPointInDegrees"},
     {"south", "latitudeOfLastGridPointInDegrees"},
-    {"truncation", "pentagonalResolutionParameterJ"},// Assumes triangular truncation
+    {"truncation", "pentagonalResolutionParameterJ", 0},// Assumes triangular truncation
 
     // This will be just called for has()
     {"gridded", "numberOfPointsAlongAMeridian"}, // Is that always true?
-    {"spherical", "pentagonalResolutionParameterJ"},
+    {"spherical", "pentagonalResolutionParameterJ", 0},
 
     /// FIXME: Find something that does no clash
-    {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator"},
+    {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator", {"isOctahedral", GRIB_TYPE_LONG, 0 }},
     {"regular", "Ni"},
+    {"octahedral", "numberOfParallelsBetweenAPoleAndTheEquator", {"isOctahedral", GRIB_TYPE_LONG, 1 }},
+
 
     {0, 0},
 };
 
 
-static const char* get_key(const std::string& name) {
+static const char *get_key(const std::string &name, grib_values *&values) {
     const char *key = name.c_str();
     size_t i = 0;
     while (mappings[i].name) {
         if (name == mappings[i].name) {
             key = mappings[i].key;
+            values = &mappings[i].values;
             break;
         }
         i++;
     }
     return key;
+}
+
+static const char *get_key(const std::string &name) {
+    grib_values *ignore;
+    return get_key(name, ignore);
 }
 
 }  // (anonymous namespace)
@@ -111,13 +120,52 @@ grib_handle *GribInput::gribHandle() const {
 }
 
 bool GribInput::has(const std::string &name) const {
-    const char *key = get_key(name);
-    bool ok = grib_is_defined(grib_, key);
+    grib_values *values = 0;
+    const char *key = get_key(name, values);
+
+    eckit::Log::info() << "GribInput::has(" << name << ") " << values << std::endl;
+
+    bool ok = false;
+
+    if (values->name) {
+
+        switch (values->type) {
+        case GRIB_TYPE_LONG: {
+            long value;
+            if (GribInput::get(values->name, value)) {
+                ok = value == values->long_value;
+            }
+        }
+        break;
+
+        case GRIB_TYPE_DOUBLE: {
+            double value;
+            if (GribInput::get(values->name, value)) {
+                ok = value == values->double_value;
+            }
+        }
+        break;
+
+        case GRIB_TYPE_STRING: {
+            std::string value;
+            if (GribInput::get(values->name, value)) {
+                ok = value == values->string_value;
+            }
+        }
+        break;
+
+        default:
+            ASSERT(false);
+        }
+
+    } else {
+        ok = grib_is_defined(grib_, key);
+    }
     eckit::Log::info() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") << std::endl;
     return ok;
 }
 
-bool GribInput::get(const std::string& name, bool& value) const {
+bool GribInput::get(const std::string &name, bool &value) const {
     long temp;
     const char *key = get_key(name);
     int err = grib_get_long(grib_, key, &temp);
@@ -137,7 +185,7 @@ bool GribInput::get(const std::string& name, bool& value) const {
     return true;
 }
 
-bool GribInput::get(const std::string& name, long& value) const {
+bool GribInput::get(const std::string &name, long &value) const {
     const char *key = get_key(name);
     int err = grib_get_long(grib_, key, &value);
 
@@ -154,7 +202,7 @@ bool GribInput::get(const std::string& name, long& value) const {
     return true;
 }
 
-bool GribInput::get(const std::string& name, double& value) const {
+bool GribInput::get(const std::string &name, double &value) const {
     const char *key = get_key(name);
     int err = grib_get_double(grib_, key, &value);
 
@@ -171,7 +219,7 @@ bool GribInput::get(const std::string& name, double& value) const {
     return true;
 }
 
-bool GribInput::get(const std::string& name, std::vector<long>& value) const {
+bool GribInput::get(const std::string &name, std::vector<long> &value) const {
     const char *key = get_key(name);
 
     size_t count = 0;
@@ -201,7 +249,7 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     return true;
 }
 
-bool GribInput::get(const std::string& name, std::string& value) const {
+bool GribInput::get(const std::string &name, std::string &value) const {
     const char *key = get_key(name);
 
     char buffer[10240];
@@ -219,7 +267,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
 
     ASSERT(size < sizeof(buffer) - 1);
 
-    if(::strcmp(buffer, "MISSING") == 0) {
+    if (::strcmp(buffer, "MISSING") == 0) {
         return false;
     }
 
@@ -230,7 +278,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     return true;
 }
 
-bool GribInput::get(const std::string& name, std::vector<double>& value) const {
+bool GribInput::get(const std::string &name, std::vector<double> &value) const {
     const char *key = get_key(name);
 
     size_t count = 0;
@@ -261,7 +309,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
 }
 
 bool GribInput::handle(grib_handle *h) {
-    if(grib_) {
+    if (grib_) {
         grib_handle_delete(grib_);
     }
     grib_ = h;

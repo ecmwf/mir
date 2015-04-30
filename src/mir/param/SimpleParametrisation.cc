@@ -389,12 +389,16 @@ void SimpleParametrisation::print(std::ostream &out) const {
 }
 
 bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
+    eckit::Log::info() << "SimpleParametrisation::matches " << other << std::endl;
     for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
 
         if ((*j).second->match((*j).first, other)) {
             eckit::Log::info() << "Matching parametrisation: " << (*j).first << "="
                                << *((*j).second) << std::endl;
             return true;
+        } else {
+            eckit::Log::info() << "Not matching parametrisation: " << (*j).first << "="
+                               << *((*j).second) << std::endl;
         }
 
     }

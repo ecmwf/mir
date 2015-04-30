@@ -40,6 +40,8 @@ list( APPEND mir_srcs
       action/Gridded2RegularLL.h
       action/Sh2GriddedTransform.cc
       action/Sh2GriddedTransform.h
+      action/Sh2Octahedral.cc
+      action/Sh2Octahedral.h
       action/Sh2ReducedGG.cc
       action/Sh2ReducedGG.h
       action/Sh2RegularGG.cc
@@ -54,8 +56,8 @@ list( APPEND mir_srcs
       api/MIRJob.h
       api/emoslib.cc
       data/MIRField.cc
-      data/MIRField.h 
-      input/VODInput.cc 
+      data/MIRField.h
+      input/VODInput.cc
       input/VODInput.h
       input/DummyInput.cc
       input/DummyInput.h
@@ -94,8 +96,8 @@ list( APPEND mir_srcs
       method/PseudoLaplace.cc
       method/PseudoLaplace.h
       method/WeightCache.cc
-      method/WeightCache.h 
-      output/UVOutput.cc 
+      method/WeightCache.h
+      output/UVOutput.cc
       output/UVOutput.h
       output/DummyOutput.cc
       output/DummyOutput.h
@@ -143,8 +145,12 @@ list( APPEND mir_srcs
       repres/Mercator.h
       repres/PolarStereographic.cc
       repres/PolarStereographic.h
-      repres/ReducedGG.cc
-      repres/ReducedGG.h
+      repres/ReducedGGClassic.cc
+      repres/ReducedGGClassic.h
+      repres/ReducedGGFromPL.cc
+      repres/ReducedGGFromPL.h
+      repres/ReducedGGOctahedral.cc
+      repres/ReducedGGOctahedral.h
       repres/ReducedLL.cc
       repres/ReducedLL.h
       repres/RegularGG.cc

@@ -17,7 +17,7 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/repres/ReducedGG.h"
+#include "mir/repres/ReducedGGClassic.h"
 #include "mir/param/MIRParametrisation.h"
 
 namespace mir {
@@ -40,7 +40,7 @@ void Gridded2ReducedGG::print(std::ostream& out) const {
 
 
 repres::Representation* Gridded2ReducedGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    return new repres::ReducedGG(N_);
+    return new repres::ReducedGGClassic(N_);
 }
 
 

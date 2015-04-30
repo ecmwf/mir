@@ -97,6 +97,12 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
             }
             plan.add("transform.sh2regular-gg");
         }
+        if (parametrisation_.has("user.octahedral")) {
+            if (autoresol) {
+                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            }
+            plan.add("transform.sh2octahedral-gg");
+        }
     }
 
     if (parametrisation_.has("field.gridded")) {
