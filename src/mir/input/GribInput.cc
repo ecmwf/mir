@@ -218,6 +218,11 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     }
 
     ASSERT(size < sizeof(buffer) - 1);
+
+    if(::strcmp(buffer, "MISSING") == 0) {
+        return false;
+    }
+
     value = buffer;
 
     eckit::Log::info() << "grib_get_string(" << name << ",key=" << key << ") " << value << std::endl;
