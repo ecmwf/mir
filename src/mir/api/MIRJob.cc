@@ -172,7 +172,7 @@ bool MIRJob::matches(const param::MIRParametrisation& metadata) const {
     size_t i = 0;
     while (force[i]) {
         if (has(force[i])) {
-            eckit::Log::info() << "MIRJob will preform transformation/interpolation ('" << force[i] << "'' specified)" << std::endl;
+            eckit::Log::info() << "MIRJob will perform transformation/interpolation ('" << force[i] << "'' specified)" << std::endl;
             return false;
         }
         i++;
@@ -180,7 +180,7 @@ bool MIRJob::matches(const param::MIRParametrisation& metadata) const {
 
     bool ok = SimpleParametrisation::matches(metadata);
     if (!ok) {
-        eckit::Log::info() << "MIRJob will preform transformation/interpolation" << std::endl;
+        eckit::Log::info() << "MIRJob will perform transformation/interpolation" << std::endl;
     }
     return ok;
 }

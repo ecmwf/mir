@@ -52,8 +52,6 @@ class PointSearch : private eckit::NonCopyable {
     /// Finds closest N points to an input point
     void closestNPoints(const PointType& pt, size_t n, std::vector< ValueType >& closest);
 
-    /// Build the
-    void build_sptree(const atlas::Grid& in);
 
   protected:
 

@@ -21,10 +21,6 @@
 
 namespace mir {
 
-namespace util {
-class PointSearch;
-}
-
 namespace method {
 
 
@@ -60,7 +56,6 @@ class PseudoLaplace: public MethodWeighted {
   protected:
 
 // -- Members
-    eckit::ScopedPtr< util::PointSearch > sptree_;
 
 // -- Methods
     // None

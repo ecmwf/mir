@@ -46,14 +46,6 @@ void PointSearch::closestNPoints(
 }
 
 
-void PointSearch::build_sptree(const atlas::Grid& in) {
-    const atlas::Grid::uid_t uidIn = in.uid();
-    if (uidIn != uid_)
-        init(in.mesh());
-    uid_ = uidIn;
-}
-
-
 void PointSearch::init(const std::vector< PointType >& points) {
     using atlas::PointIndex3;
 

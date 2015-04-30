@@ -56,7 +56,6 @@ class KNearest: public MethodWeighted {
   protected:
 
 // -- Members
-    eckit::ScopedPtr< util::PointSearch > sptree_;
 
 // -- Methods
     // None

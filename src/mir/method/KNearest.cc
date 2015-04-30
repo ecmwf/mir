@@ -45,7 +45,7 @@ const char *KNearest::name() const {
 
 void KNearest::assemble(MethodWeighted::Matrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
-    sptree_->build_sptree(in);
+    util::PointSearch sptree(in.mesh());
 
     const atlas::Mesh &o_mesh = out.mesh();
 
@@ -69,7 +69,7 @@ void KNearest::assemble(MethodWeighted::Matrix &W, const atlas::Grid &in, const 
         eckit::geometry::Point3 p ( ocoords[ip].data() );
 
         // find the closest input points to this output
-        sptree_->closestNPoints(p, nclosest_, closest);
+        sptree.closestNPoints(p, nclosest_, closest);
 
         const size_t npts = closest.size();
 
