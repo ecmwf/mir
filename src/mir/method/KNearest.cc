@@ -26,16 +26,21 @@ namespace method {
 
 
 KNearest::KNearest(const param::MIRParametrisation& param) :
-    MethodWeighted(param,"method.k-nearest"),
+    MethodWeighted(param),
     nclosest_(4),
-    epsilon_(eckit::Resource<double>( "KNearestEpsilon", std::numeric_limits<double>::epsilon() )) {
+    epsilon_(std::numeric_limits<double>::epsilon()) {
     // FIXME  all these construction-time parameters (should come from param)
+        static double epsilon = eckit::Resource<double>( "KNearestEpsilon", std::numeric_limits<double>::epsilon() );
+        epsilon_ = epsilon;
 }
 
 
 KNearest::~KNearest() {
 }
 
+const char* KNearest::name() const {
+    return  "k-nearest";
+}
 
 void KNearest::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
 
@@ -109,7 +114,7 @@ void KNearest::print(std::ostream&) const {
 
 
 namespace {
-static MethodBuilder< KNearest > __knearest("method.k-nearest");
+static MethodBuilder< KNearest > __knearest("k-nearest");
 }
 
 

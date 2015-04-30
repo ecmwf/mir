@@ -116,7 +116,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
     struct DistSpec_t distspec = new_distspec(&trans);
     distspec.nfrom  = &nfrom[0];
-    distspec.rspecg = const_cast<double *>(&input[0]);
+    distspec.rspecg = &input[0];
     distspec.rspec  = &rspec[0];
     distspec.nfld   = number_of_fields;
     trans_distspec(&distspec);

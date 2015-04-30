@@ -46,13 +46,16 @@ static std::ofstream of("found.txt");
 
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
-    MethodWeighted(param,"method.finite-element") {
+    MethodWeighted(param) {
 }
 
 
 FiniteElement::~FiniteElement() {
 }
 
+const char* FiniteElement::name() const {
+    return  "finite-element";
+}
 
 bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, int idx[3], const size_t k) const {
     using namespace eckit;
@@ -212,7 +215,7 @@ void FiniteElement::print(std::ostream& out) const {
 
 
 namespace {
-static MethodBuilder< FiniteElement > __finiteelement("method.finite-element");
+static MethodBuilder< FiniteElement > __finiteelement("finite-element");
 }
 
 

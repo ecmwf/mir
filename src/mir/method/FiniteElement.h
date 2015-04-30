@@ -52,7 +52,6 @@ class FiniteElement: public MethodWeighted {
     // None
 
 // -- Overridden methods
-    virtual void assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
 
 // -- Class members
     // None
@@ -67,7 +66,6 @@ class FiniteElement: public MethodWeighted {
 
 // -- Methods
 
-    virtual void print(std::ostream&) const;
 
 // -- Overridden methods
     // None
@@ -95,7 +93,11 @@ class FiniteElement: public MethodWeighted {
     bool project_point_to_triangle( Point &p, Eigen::Vector3d& phi, int idx[3], const size_t k ) const;
 
 // -- Overridden methods
-    // None
+
+    virtual void assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+    virtual void print(std::ostream&) const;
+    virtual const char* name() const;
+
 
 // -- Class members
     // None

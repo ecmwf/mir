@@ -5,6 +5,7 @@ MIR
 - Rotated fields
 - Vo/D to U/V
 - Rotated winds?
+- Make sure we don't need to cast constness away
 
 TESTING:
 - Test mir_tool with valgrind

@@ -42,15 +42,15 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     // ASSERT(field.dimensions() == 1); // For now
     //    NOTIMP;
 
-    std::string name = "method.finite-element";
-    name = "method.biliear";
+    std::string name = "finite-element";
+    name = "biliear";
 
     // Here we need some ugly logic again
     if (0) {
         std::string param;
         ASSERT(parametrisation_.get("param", param));
         if (param == "large_scale_precipitation") { // This should be a lookup in a config file somewhere
-            name = "method.mass-conserving";
+            name = "mass-conserving";
         }
     }
 
@@ -63,7 +63,7 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     try {
         // TODO: We should not copy those things around
 
-        std::auto_ptr<atlas::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respec constness
+        std::auto_ptr<atlas::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respect constness
         std::auto_ptr<atlas::Grid> gout(out->atlasGrid());
 
         // eckit::Log::info() << "ingrid  = " << *gin  << std::endl;

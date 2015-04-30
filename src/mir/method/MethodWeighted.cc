@@ -31,9 +31,8 @@ namespace mir {
 namespace method {
 
 
-MethodWeighted::MethodWeighted(const param::MIRParametrisation& param, const std::string& name) :
-    Method(param),
-    name_(name) {
+MethodWeighted::MethodWeighted(const param::MIRParametrisation& param) :
+    Method(param) {
 }
 
 
@@ -112,8 +111,9 @@ void MethodWeighted::applyMask(MethodWeighted::Matrix& W) const {
 
 
 std::string MethodWeighted::hash(const atlas::GridSpec& inspec, const atlas::GridSpec& outspec) const {
-    const std::string dot(".");
-    return name_ + dot + inspec.uid() + dot + outspec.uid();
+    eckit::StrStream os;
+    os << name() << "." << inspec.uid() << "." << outspec.uid() << eckit::StrStream::ends;
+    return std::string(os);
 }
 
 

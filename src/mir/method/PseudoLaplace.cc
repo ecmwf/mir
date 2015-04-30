@@ -24,13 +24,16 @@ namespace method {
 
 
 PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
-    MethodWeighted(param,"method.pseudo-laplace") {
+    MethodWeighted(param) {
 }
 
 
 PseudoLaplace::~PseudoLaplace() {
 }
 
+const char* PseudoLaplace::name() const {
+    return  "pseudo-laplace";
+}
 
 void PseudoLaplace::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
 
@@ -131,7 +134,7 @@ void PseudoLaplace::print(std::ostream&) const {
 
 
 namespace {
-static MethodBuilder< PseudoLaplace > __pseudolaplace("method.pseudo-laplace");
+static MethodBuilder< PseudoLaplace > __pseudolaplace("pseudo-laplace");
 }
 
 

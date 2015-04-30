@@ -46,7 +46,7 @@ class MethodWeighted : public Method {
     // None
 
 // -- Contructors
-    MethodWeighted(const param::MIRParametrisation&, const std::string&);
+    MethodWeighted(const param::MIRParametrisation&);
 
 // -- Destructor
     virtual ~MethodWeighted();
@@ -76,6 +76,7 @@ class MethodWeighted : public Method {
 
 // -- Methods
 
+    virtual const char* name() const = 0;
     virtual void assemble(Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const = 0;
 
     void applyMask(Matrix& W) const;
@@ -88,7 +89,6 @@ class MethodWeighted : public Method {
     // None
 
 // -- Class members
-    const std::string name_;
 
 // -- Class methods
     // None

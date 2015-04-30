@@ -65,13 +65,16 @@ void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, 
 
 
 Bilinear::Bilinear(const param::MIRParametrisation& param) :
-    MethodWeighted(param,"method.bilinear") {
+    MethodWeighted(param) {
 }
 
 
 Bilinear::~Bilinear() {
 }
 
+const char* Bilinear::name() const {
+    return  "bilinear";
+}
 
 void Bilinear::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
 
@@ -217,8 +220,13 @@ void Bilinear::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const 
 }
 
 
+void Bilinear::print(std::ostream& out) const {
+    out << "Bilinear[]";
+}
+
+
 namespace {
-static MethodBuilder< Bilinear > __bilinear("method.bilinear");
+static MethodBuilder< Bilinear > __bilinear("bilinear");
 }
 
 

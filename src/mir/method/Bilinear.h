@@ -51,7 +51,6 @@ class Bilinear: public MethodWeighted {
     // None
 
 // -- Overridden methods
-    virtual void assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
 
 // -- Class members
     // None
@@ -66,7 +65,6 @@ class Bilinear: public MethodWeighted {
 
 // -- Methods
 
-    virtual void print(std::ostream&) const {}
 
 // -- Overridden methods
     // None
@@ -85,7 +83,10 @@ class Bilinear: public MethodWeighted {
     void sort4Clockwise(std::vector<eckit::geometry::Point3>& points) const ;
 
 // -- Overridden methods
-    // None
+
+    virtual void assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+    virtual void print(std::ostream&) const;
+    virtual const char* name() const;
 
 // -- Class members
     // None

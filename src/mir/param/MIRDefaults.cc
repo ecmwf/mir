@@ -26,6 +26,7 @@ MIRDefaults::MIRDefaults() {
     // For demo only:
 
     set("logic", "mars");
+    set("method", "finite-element");
 }
 
 
