@@ -504,6 +504,10 @@ extern "C" fortint areachk_(fortfloat *we, fortfloat *ns, fortfloat *north, fort
             w += 360;
         }
 
+        while(w > e) {
+            w -= 360;
+        }
+
         *north = n;
         *south = s;
         *west = w;
