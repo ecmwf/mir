@@ -39,20 +39,9 @@ Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 
 
 void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
-    // ASSERT(field.dimensions() == 1); // For now
-    //    NOTIMP;
 
-    std::string name = "finite-element";
-    name = "biliear";
-
-    // Here we need some ugly logic again
-    if (0) {
-        std::string param;
-        ASSERT(parametrisation_.get("param", param));
-        if (param == "large_scale_precipitation") { // This should be a lookup in a config file somewhere
-            name = "mass-conserving";
-        }
-    }
+    std::string name;
+    ASSERT(parametrisation_.get("method", name));
 
     std::auto_ptr< method::Method > method(method::MethodFactory::build(name, parametrisation_));
     eckit::Log::info() << "Method is " << *method << std::endl;
