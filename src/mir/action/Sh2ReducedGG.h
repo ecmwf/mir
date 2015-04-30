@@ -80,7 +80,7 @@ class Sh2ReducedGG : public Sh2GriddedTransform {
     Sh2ReducedGG& operator=(const Sh2ReducedGG&);
 
 // -- Members
-    long N_;
+    size_t N_;
 
 // -- Methods
     // None

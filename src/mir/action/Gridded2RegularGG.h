@@ -80,7 +80,7 @@ class Gridded2RegularGG : public Gridded2GriddedInterpolation {
     Gridded2RegularGG& operator=(const Gridded2RegularGG&);
 
 // -- Members
-    long N_;
+    size_t N_;
 
 // -- Methods
     // None

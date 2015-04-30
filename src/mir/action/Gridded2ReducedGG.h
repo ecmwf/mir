@@ -81,7 +81,7 @@ class Gridded2ReducedGG : public Gridded2GriddedInterpolation {
 
 // -- Members
 
-    long N_;
+    size_t N_;
 
 // -- Methods
     // None

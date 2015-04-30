@@ -64,8 +64,7 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
     applyMask(W);
 
     // multiply interpolant matrix with field vector
-    for(size_t i = 0; i < field.dimensions(); i++)
-    {
+    for(size_t i = 0; i < field.dimensions(); i++) {
         eckit::StrStream os;
         os << "Interpolating field ("  << npts_inp << " -> " << npts_out << ")" << eckit::StrStream::ends;
         std::string msg(os);

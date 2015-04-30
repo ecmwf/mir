@@ -14,6 +14,7 @@
 
 
 #include "mir/param/MIRParametrisation.h"
+#include "eckit/exception/Exceptions.h"
 
 namespace mir {
 namespace param {
@@ -26,6 +27,15 @@ MIRParametrisation::MIRParametrisation() {
 MIRParametrisation::~MIRParametrisation() {
 }
 
+bool MIRParametrisation::get(const std::string &name, size_t &value) const {
+    long v;
+    if (get(name, v)) {
+        ASSERT(v >= 0);
+        value = v;
+        return true;
+    }
+    return false;
+}
 
 
 }  // namespace param

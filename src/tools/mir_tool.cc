@@ -51,6 +51,7 @@ void MIRTool::usage(const std::string& tool) {
             << "   area=north/west/south/east" << std::endl
             << "   autoresol=0/1" << std::endl
             << "   bitmap=path" << std::endl
+            << "   epsilon=e" << std::endl
             << "   frame=n" << std::endl
             << "   grid=west_east/north_south" << std::endl
             << "   intermediate_gaussian=N" << std::endl

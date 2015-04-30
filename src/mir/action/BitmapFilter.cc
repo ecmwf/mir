@@ -80,7 +80,7 @@ void BitmapFilter::execute(data::MIRField &field) const {
 
 
         size_t k = 0;
-                for (size_t j = 0; j < bitmap_->height() ; j++ ) {
+        for (size_t j = 0; j < bitmap_->height() ; j++ ) {
 
             for (size_t i = 0; i < bitmap_->width() ; i++ ) {
 

@@ -82,7 +82,7 @@ class KNearest: public MethodWeighted {
     // None
 
 // -- Class members
-    long nclosest_;  ///< Number of closest points to search for
+    size_t nclosest_;  ///< Number of closest points to search for
     double epsilon_;
 
 // -- Class methods

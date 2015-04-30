@@ -25,13 +25,13 @@ namespace mir {
 namespace method {
 
 
-KNearest::KNearest(const param::MIRParametrisation& param) :
+KNearest::KNearest(const param::MIRParametrisation &param) :
     MethodWeighted(param),
     nclosest_(4),
     epsilon_(std::numeric_limits<double>::epsilon()) {
 
-        param.get("nclosest",nclosest_);
-                param.get("epsilon",epsilon_);
+    param.get("nclosest", nclosest_);
+    param.get("epsilon", epsilon_);
 
 }
 
@@ -39,19 +39,19 @@ KNearest::KNearest(const param::MIRParametrisation& param) :
 KNearest::~KNearest() {
 }
 
-const char* KNearest::name() const {
+const char *KNearest::name() const {
     return  "k-nearest";
 }
 
-void KNearest::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
+void KNearest::assemble(MethodWeighted::Matrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
     sptree_->build_sptree(in);
 
-    const atlas::Mesh& o_mesh = out.mesh();
+    const atlas::Mesh &o_mesh = out.mesh();
 
     // output points
-    atlas::FunctionSpace& o_nodes  = o_mesh.function_space( "nodes" );
-    atlas::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
+    atlas::FunctionSpace &o_nodes  = o_mesh.function_space( "nodes" );
+    atlas::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
 
     const size_t out_npts = o_nodes.shape(0);
 
@@ -64,7 +64,7 @@ void KNearest::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const 
     std::vector<double> weights;
     weights.reserve(nclosest_);
 
-    for( size_t ip = 0; ip < out_npts; ++ip) {
+    for ( size_t ip = 0; ip < out_npts; ++ip) {
         // get the reference output point
         eckit::geometry::Point3 p ( ocoords[ip].data() );
 
@@ -79,7 +79,7 @@ void KNearest::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const 
         // sum all calculated weights for normalisation
         double sum = 0.0;
 
-        for( size_t j = 0; j < npts; ++j ) {
+        for ( size_t j = 0; j < npts; ++j ) {
             // one of the closest points
             eckit::geometry::Point3 np  = closest[j].point();
 
@@ -94,12 +94,12 @@ void KNearest::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const 
         ASSERT( sum > 0.0 );
 
         // now normalise all weights according to the total
-        for( size_t j = 0; j < npts; j++) {
+        for ( size_t j = 0; j < npts; j++) {
             weights[j] /= sum;
         }
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
-        for(int i = 0; i < npts; ++i) {
+        for (int i = 0; i < npts; ++i) {
             size_t index = closest[i].payload();
             weights_triplets.push_back( Eigen::Triplet<double>( ip, index, weights[i] ) );
         }
@@ -110,7 +110,7 @@ void KNearest::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const 
 }
 
 
-void KNearest::print(std::ostream& out) const {
+void KNearest::print(std::ostream &out) const {
     out << "KNearest[nclosest=" << nclosest_ << ",epsilon=" << epsilon_ << "]";
 }
 

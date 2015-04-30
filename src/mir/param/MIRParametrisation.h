@@ -56,6 +56,8 @@ class MIRParametrisation {
     virtual bool get(const std::string& name, std::vector<long>& value) const = 0;
     virtual bool get(const std::string& name, std::vector<double>& value) const = 0;
 
+    virtual bool get(const std::string& name, size_t& value) const;
+
 // -- Overridden methods
     // None
 
