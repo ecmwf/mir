@@ -29,15 +29,15 @@ namespace util {
 namespace {
 
 
-static void out(const std::vector<std::vector<bool> > &bitmap) {
-    for (int i = 0; i < bitmap.size() ; i++ ) {
-        const std::vector<bool> &v = bitmap[i];
-        for (int j = 0; j < v.size() ; j++ ) {
-            std::cout << (v[j] ? '1' : '0');
-        }
-        std::cout << std::endl;
-    }
-}
+// static void out(const std::vector<std::vector<bool> > &bitmap) {
+//     for (int i = 0; i < bitmap.size() ; i++ ) {
+//         const std::vector<bool> &v = bitmap[i];
+//         for (int j = 0; j < v.size() ; j++ ) {
+//             std::cout << (v[j] ? '1' : '0');
+//         }
+//         std::cout << std::endl;
+//     }
+// }
 
 
 static void out(std::vector<std::vector<bool> > &bitmap, int row, const std::string &line, bool on, long &prev) {
@@ -61,13 +61,11 @@ static void out(std::vector<std::vector<bool> > &bitmap, int row, const std::str
 
     t1(line, r);
 
-    // std::cout << row << std::endl;
 
     ASSERT(row >= 0 && row < bitmap.size());
     std::vector<bool> &v = bitmap[row];
 
     for (int i = 0; i < r.size() ; i++) {
-        // std::cout << "  ===> " << r[i] << std::endl;
 
         std::vector<std::string> s;
         t2(r[i], s);
@@ -81,7 +79,6 @@ static void out(std::vector<std::vector<bool> > &bitmap, int row, const std::str
 
         if (a >= 0) {
 
-            // std::cout << a << " - " << b <<  std::endl;
 
             ASSERT(a >= 0 && a < v.size());
             ASSERT(b >= 0 && b < v.size());
@@ -123,8 +120,6 @@ Bitmap::Bitmap(const eckit::PathName& path):
         }
     }
 
-    std::cout << s << std::endl;
-
     bool on = s.find("values=on") == s.npos;
 
     int pos = s.find("size=");
@@ -152,15 +147,11 @@ Bitmap::Bitmap(const eckit::PathName& path):
     ASSERT(width_);
     ASSERT(height_);
 
-    // std::cout << "w=" << w << ",h=" << h << std::endl;
-
     pos = s.find("points=");
     ASSERT(pos != s.npos);
     pos += 7;
 
-    // std::cout << "ON " << on << std::endl;
     std::vector<std::vector<bool> > bitmap(height_, std::vector<bool>(width_, !on));
-    // out(bitmap);
 
     std::string t;
     long row = -1;
@@ -194,7 +185,7 @@ Bitmap::Bitmap(const eckit::PathName& path):
     out(bitmap, row, t, on, prev);
     out(bitmap, height_ - 1, t, on, prev);
 
-    out(bitmap);
+    // out(bitmap);
 
     std::swap(bitmap, bitmap_);
 }

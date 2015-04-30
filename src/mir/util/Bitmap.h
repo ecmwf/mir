@@ -53,8 +53,8 @@ class Bitmap {
         return height_;
     }
 
-    bool on(size_t i, size_t j) const {
-        return bitmap_[i][j];
+    bool on(size_t j, size_t i) const {
+        return bitmap_[j][i];
     }
 
 // -- Overridden methods

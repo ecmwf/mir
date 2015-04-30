@@ -43,6 +43,7 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     //    NOTIMP;
 
     std::string name = "method.finite-element";
+    name = "method.biliear";
 
     // Here we need some ugly logic again
     if (0) {
