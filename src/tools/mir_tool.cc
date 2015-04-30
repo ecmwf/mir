@@ -54,6 +54,8 @@ void MIRTool::usage(const std::string& tool) {
             << "   frame=n" << std::endl
             << "   grid=west_east/north_south" << std::endl
             << "   intermediate_gaussian=N" << std::endl
+            << "   interpolation=method (e.g. bilinear)" << std::endl
+            << "   nclosest=n (e.g. for k-nearest)" << std::endl
             << "   reduced=N" << std::endl
             << "   regular=N" << std::endl
             << "   truncation=T" << std::endl

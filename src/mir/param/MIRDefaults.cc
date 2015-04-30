@@ -14,7 +14,7 @@
 
 
 #include <iostream>
-
+#include <limits>
 #include "mir/param/MIRDefaults.h"
 
 
@@ -27,6 +27,8 @@ MIRDefaults::MIRDefaults() {
 
     set("logic", "mars");
     set("interpolation", "finite-element"); // The word 'method' is used in grib
+    set("epsilon", std::numeric_limits<double>::epsilon());
+    set("nclosest", 4L);
 }
 
 

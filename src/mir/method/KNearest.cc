@@ -15,10 +15,10 @@
 
 #include <string>
 
-#include "eckit/config/Resource.h"
 #include "mir/util/PointSearch.h"
 
 #include "mir/method/KNearest.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -29,9 +29,10 @@ KNearest::KNearest(const param::MIRParametrisation& param) :
     MethodWeighted(param),
     nclosest_(4),
     epsilon_(std::numeric_limits<double>::epsilon()) {
-    // FIXME  all these construction-time parameters (should come from param)
-        static double epsilon = eckit::Resource<double>( "KNearestEpsilon", std::numeric_limits<double>::epsilon() );
-        epsilon_ = epsilon;
+
+        param.get("nclosest",nclosest_);
+                param.get("epsilon",epsilon_);
+
 }
 
 
@@ -109,7 +110,8 @@ void KNearest::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const 
 }
 
 
-void KNearest::print(std::ostream&) const {
+void KNearest::print(std::ostream& out) const {
+    out << "KNearest[nclosest=" << nclosest_ << ",epsilon=" << epsilon_ << "]";
 }
 
 
