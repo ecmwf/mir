@@ -41,7 +41,7 @@ Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
 
     std::string name;
-    ASSERT(parametrisation_.get("method", name));
+    ASSERT(parametrisation_.get("interpolation", name));
 
     std::auto_ptr< method::Method > method(method::MethodFactory::build(name, parametrisation_));
     eckit::Log::info() << "Method is " << *method << std::endl;
