@@ -38,11 +38,11 @@ static struct {
     {"east", "longitudeOfLastGridPointInDegrees"},
     {"north", "latitudeOfFirstGridPointInDegrees"},
     {"south", "latitudeOfLastGridPointInDegrees"},
-    {"truncation", "pentagonalResolutionParameterJ", 0},// Assumes triangular truncation
+    {"truncation", "pentagonalResolutionParameterJ", {0}},// Assumes triangular truncation
 
     // This will be just called for has()
     {"gridded", "numberOfPointsAlongAMeridian"}, // Is that always true?
-    {"spherical", "pentagonalResolutionParameterJ", 0},
+    {"spherical", "pentagonalResolutionParameterJ", {0}},
 
     /// FIXME: Find something that does no clash
     {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator", {"isOctahedral", GRIB_TYPE_LONG, 0 }},
