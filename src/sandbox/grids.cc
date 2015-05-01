@@ -26,39 +26,107 @@
 // #include "mir/data/MIRField.h"
 // #include "mir/repres/Representation.h"
 
-#include "mir/api/emoslib.h"
-#include "eckit/io/StdFile.h"
-#include "mir/util/Grib.h"
-#include "eckit/io/Buffer.h"
 
 #include "atlas/grids/grids.h"
 #include "atlas/grids/rgg/OctahedralRGG.h"
-#include "eckit/util/MD5.h"
-#include "eckit/util/RLE.h"
+#include "atlas/GridSpec.h"
+
+#include "eckit/utils/MD5.h"
+#include "eckit/utils/RLE.h"
 
 
-class VOD2UVTool : public eckit::Tool {
+class Grids : public eckit::Tool {
 
     virtual void run();
 
     void usage(const std::string &tool);
+    void grid(const atlas::grids::ReducedGrid &);
 
   public:
-    VOD2UVTool(int argc, char **argv) :
+    Grids(int argc, char **argv) :
         eckit::Tool(argc, argv) {
     }
 
 };
 
+void Grids::grid(const atlas::grids::ReducedGrid &grid) {
 
-void VOD2UVTool::run() {
+    eckit::MD5 md5;
+    const std::vector<int> &points_per_latitudes = grid.npts_per_lat();
+    size_t half = points_per_latitudes.size() / 2;
+
+    for (size_t i =  0; i < half; i++) {
+        int l = points_per_latitudes[i];
+        md5.add(&l, sizeof(l));
+    }
+
+    std::vector<int> diff; diff.reserve(half);
+    eckit::DIFFencode(points_per_latitudes.begin(), points_per_latitudes.begin() + half, std::back_inserter(diff));
+
+    std::vector<int> rle;
+    eckit::RLEencode2(diff.begin(), diff.end(), std::back_inserter(rle), 1000);
 
 
+    eckit::Log::info() << "uid " << grid.uid() << " md5 " << md5.digest() << " rle ";
+    eckit::RLEprint(eckit::Log::info(), rle.begin(), rle.end());
+    eckit::Log::info() << std::endl;
+
+}
+
+void Grids::run() {
+
+    grid(atlas::grids::rgg::N16());
+    grid(atlas::grids::rgg::N24());
+    grid(atlas::grids::rgg::N32());
+    grid(atlas::grids::rgg::N48());
+    grid(atlas::grids::rgg::N64());
+    grid(atlas::grids::rgg::N80());
+    grid(atlas::grids::rgg::N96());
+    grid(atlas::grids::rgg::N128());
+    grid(atlas::grids::rgg::N160());
+    grid(atlas::grids::rgg::N200());
+    grid(atlas::grids::rgg::N256());
+    grid(atlas::grids::rgg::N320());
+    grid(atlas::grids::rgg::N400());
+    grid(atlas::grids::rgg::N512());
+    grid(atlas::grids::rgg::N576());
+    grid(atlas::grids::rgg::N640());
+    grid(atlas::grids::rgg::N800());
+    grid(atlas::grids::rgg::N1024());
+    grid(atlas::grids::rgg::N1280());
+    grid(atlas::grids::rgg::N1600());
+    grid(atlas::grids::rgg::N2000());
+    grid(atlas::grids::rgg::N4000());
+    grid(atlas::grids::rgg::N8000());
+
+    grid(atlas::grids::rgg::OctahedralRGG(16));
+    grid(atlas::grids::rgg::OctahedralRGG(24));
+    grid(atlas::grids::rgg::OctahedralRGG(32));
+    grid(atlas::grids::rgg::OctahedralRGG(48));
+    grid(atlas::grids::rgg::OctahedralRGG(64));
+    grid(atlas::grids::rgg::OctahedralRGG(80));
+    grid(atlas::grids::rgg::OctahedralRGG(96));
+    grid(atlas::grids::rgg::OctahedralRGG(128));
+    grid(atlas::grids::rgg::OctahedralRGG(160));
+    grid(atlas::grids::rgg::OctahedralRGG(200));
+    grid(atlas::grids::rgg::OctahedralRGG(256));
+    grid(atlas::grids::rgg::OctahedralRGG(320));
+    grid(atlas::grids::rgg::OctahedralRGG(400));
+    grid(atlas::grids::rgg::OctahedralRGG(512));
+    grid(atlas::grids::rgg::OctahedralRGG(576));
+    grid(atlas::grids::rgg::OctahedralRGG(640));
+    grid(atlas::grids::rgg::OctahedralRGG(800));
+    grid(atlas::grids::rgg::OctahedralRGG(1024));
+    grid(atlas::grids::rgg::OctahedralRGG(1280));
+    grid(atlas::grids::rgg::OctahedralRGG(1600));
+    grid(atlas::grids::rgg::OctahedralRGG(2000));
+    grid(atlas::grids::rgg::OctahedralRGG(4000));
+    grid(atlas::grids::rgg::OctahedralRGG(8000));
 }
 
 
 int main( int argc, char **argv ) {
-    VOD2UVTool tool(argc, argv);
+    Grids tool(argc, argv);
     tool.start();
     return 0;
 }
