@@ -47,7 +47,7 @@ void Sh2ShTransform::print(std::ostream &out) const {
 
 void Sh2ShTransform::execute(data::MIRField &field) const {
 
-    const repres::Representation *representation = field.representation();
+    std::auto_ptr<const repres::Representation> representation(field.representation()->clone());
 
     for(size_t i = 0; i < field.dimensions(); i++) {
         const std::vector<double> &values = field.values(i);
