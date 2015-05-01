@@ -46,7 +46,7 @@ static struct {
 
     /// FIXME: Find something that does no clash
     {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator", {"isOctahedral", GRIB_TYPE_LONG, 0 }},
-    {"regular", "numberOfParallelsBetweenAPoleAndTheEquator", {"gridType", GRIB_TYPE_STRING, 0, 0.0, "regular_gg"}},
+    {"regular", "N", {"gridType", GRIB_TYPE_STRING, 0, 0.0, "regular_gg"}},
     {"octahedral", "numberOfParallelsBetweenAPoleAndTheEquator", {"isOctahedral", GRIB_TYPE_LONG, 1 }},
 
 
