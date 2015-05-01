@@ -83,8 +83,6 @@ class MethodWeighted : public Method {
 
     std::string hash(const atlas::GridSpec& inspec, const atlas::GridSpec& outspec) const;
 
-    virtual void print(std::ostream&) const;
-
 // -- Overridden methods
     // None
 

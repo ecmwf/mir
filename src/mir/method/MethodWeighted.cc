@@ -116,10 +116,6 @@ std::string MethodWeighted::hash(const atlas::GridSpec& inspec, const atlas::Gri
 }
 
 
-void MethodWeighted::print(std::ostream&) const {
-
-}
-
 
 }  // namespace method
 }  // namespace mir
