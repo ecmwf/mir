@@ -262,6 +262,8 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
 
         job->execute(input, output);
 
+        job->clear("vod2uv");
+
         // ASSERT(output.interpolated() + output.saved() == 1);
 
         // if (output.saved() == 1) {

@@ -65,6 +65,8 @@ class MIRJob : public param::SimpleParametrisation {
     MIRJob& set(const std::string& name, double v1, double v2);
     MIRJob& set(const std::string& name, double v1, double v2, double v3, double v4);
 
+    MIRJob& clear(const std::string& name);
+
 // -- Overridden methods
     // None
 

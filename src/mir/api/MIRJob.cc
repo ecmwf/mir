@@ -107,6 +107,11 @@ void MIRJob::print(std::ostream& out) const {
     out << "]";
 }
 
+MIRJob& MIRJob::clear(const std::string& name) {
+    eckit::Log::info() << "************* MIRJob::clear [" << name << "]" << std::endl;
+    SimpleParametrisation::clear(name);
+    return *this;
+}
 MIRJob& MIRJob::set(const std::string& name, const std::string& value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (string)" << std::endl;
     SimpleParametrisation::set(name, value);

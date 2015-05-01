@@ -83,6 +83,8 @@ class SimpleParametrisation : public MIRParametrisation {
     void set(const std::string& name, std::vector<long>& value);
     void set(const std::string& name, std::vector<double>& value);
 
+    void clear(const std::string& name);
+
 
     bool matches(const param::MIRParametrisation& metadata) const;
 

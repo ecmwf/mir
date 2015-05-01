@@ -371,6 +371,14 @@ void SimpleParametrisation::set(const std::string &name, DelayedParametrisation 
     settings_[name] = new DelayedSetting(value);
 }
 
+void SimpleParametrisation::clear(const std::string &name) {
+    std::map<std::string, Setting *>::iterator j = settings_.find(name);
+    if (j != settings_.end()) {
+        delete (*j).second;
+        settings_.erase(j);
+    }
+}
+
 void SimpleParametrisation::set(const std::string &name, std::vector<long> &value) {
     _set(name, value);
 }
