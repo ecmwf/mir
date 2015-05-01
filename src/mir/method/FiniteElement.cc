@@ -83,28 +83,6 @@ bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, in
 
         found = triag.intersects( ray, uvt );
 
-#ifdef DUMP_PROJ
-        Point tc = cs[i].value().point();
-
-        if(found)
-            of << "[SUCCESS]" << std::endl;
-//        else
-//            of << "[FAILED]" << std::endl;
-
-        if(found)
-            of << "   i    " << i << std::endl
-               << "   ip   " << ip_ << std::endl
-               << "   p    " << p << std::endl
-               << "   tc   " << tc << std::endl
-               << "   d    " << Point::distance(tc,p) << std::endl
-               << "   tid  " << tid << std::endl
-               << "   nidx " << idx[0] << " " << idx[1] << " " << idx[2] << std::endl
-               << "   "
-               << Point(icoords[idx[0]].data()) << " / "
-               << Point(icoords[idx[1]].data()) << " / "
-               << Point(icoords[idx[2]].data()) << std::endl
-               << "   uvwt " << uvt << std::endl;
-#endif
         if(found) { // weights are the baricentric cooridnates u,v
             phi[0] = uvt.w();
             phi[1] = uvt.u;

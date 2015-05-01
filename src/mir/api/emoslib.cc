@@ -288,7 +288,21 @@ extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_i
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
 #endif
-        NOTIMP;
+        if (!job.get()) {
+            job.reset(new MIRJob());
+        }
+
+        mir::input::GribMemoryInput vort_input(u_grib_in, *length_in);
+        mir::input::GribMemoryInput div_input(v_grib_in, *length_in);
+
+        mir::output::GribMemoryOutput u_output(u_grib_out, *length_out);
+        mir::output::GribMemoryOutput v_output(v_grib_out, *length_out);
+
+        mir::input::VODInput input(vort_input, div_input);
+        mir::output::UVOutput output(u_output, v_output);
+
+        job->execute(input, output);
+
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
