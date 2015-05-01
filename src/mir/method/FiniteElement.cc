@@ -29,22 +29,6 @@ namespace mir {
 namespace method {
 
 
-namespace {
-
-
-// static size_t factorial[12] = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800 };
-static size_t factorial[10] = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880 };
-
-
-//#define DUMP_PROJ
-#ifdef DUMP_PROJ
-static std::ofstream of("found.txt");
-#endif
-
-
-}  // (utilities namespace)
-
-
 FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
     MethodWeighted(param) {
 }
@@ -65,6 +49,7 @@ bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, in
     atlas::IndexView<int,   2> triag_nodes ( *ptriag_nodes );
     atlas::ArrayView<double,2> icoords     ( *picoords     );
 
+    eckit::Log::info() << "FiniteElement::project_point_to_triangle " << k << std::endl;
     atlas::PointIndex3::NodeList cs = ptree->kNearestNeighbours(p,k);
 
 #if 0
@@ -188,11 +173,10 @@ void FiniteElement::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, c
         Eigen::Vector3d phi;
         Point p ( ocoords[ip_].data() ); // lookup point
 
-        size_t k = 1;
-        while( ! project_point_to_triangle( p, phi, idx, factorial[k] ) ) {
-            ++k;
-            if( k > (sizeof(factorial)/ sizeof(*factorial)) )
-                throw eckit::TooManyRetries(k,"projecting point into tesselation");
+        size_t factorial = 1;
+        size_t n = 1;
+        while( ! project_point_to_triangle( p, phi, idx, factorial ) ) {
+            factorial *= ++n;
         }
 
 //        ++show_progress;
