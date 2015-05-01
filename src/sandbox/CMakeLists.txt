@@ -3,6 +3,10 @@ ecbuild_add_executable( TARGET  vod2uv
                         INCLUDES ${ECKIT_INCLUDE_DIRS}
                         LIBS     mir ${LIBEMOS_LIBRARIES} ${ECKIT_LIBRARIES})
 
+ecbuild_add_executable( TARGET  grids
+                        SOURCES  grids.cc
+                        INCLUDES ${ECKIT_INCLUDE_DIRS}
+                        LIBS     mir ${LIBEMOS_LIBRARIES} ${ECKIT_LIBRARIES})
 # ecbuild_add_executable( TARGET  eigen_sparse
 # 						SOURCES eigen_sparse.cpp utils.h
 # 						CONDITION ECKIT_FOUND AND HAVE_SANDBOX )
