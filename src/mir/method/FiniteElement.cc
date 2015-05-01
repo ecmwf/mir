@@ -49,7 +49,9 @@ bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, in
     atlas::IndexView<int,   2> triag_nodes ( *ptriag_nodes );
     atlas::ArrayView<double,2> icoords     ( *picoords     );
 
+    if(k > 1000000) {
     eckit::Log::info() << "FiniteElement::project_point_to_triangle " << k << std::endl;
+}
     atlas::PointIndex3::NodeList cs = ptree->kNearestNeighbours(p,k);
 
 #if 0

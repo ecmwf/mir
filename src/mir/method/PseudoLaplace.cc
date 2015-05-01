@@ -37,7 +37,7 @@ const char* PseudoLaplace::name() const {
 
 void PseudoLaplace::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
 
-util::PointSearch  sptree(in.mesh());
+    util::PointSearch  sptree(in.mesh());
 
     const atlas::Mesh& o_mesh = out.mesh();
 
