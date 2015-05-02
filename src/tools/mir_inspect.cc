@@ -26,7 +26,7 @@ class MIRInspect : public eckit::Tool {
 
     virtual void run();
 
-    void usage(const std::string& tool);
+    void usage(const std::string &tool);
 
   public:
     MIRInspect(int argc, char **argv) :
@@ -35,7 +35,7 @@ class MIRInspect : public eckit::Tool {
 
 };
 
-void MIRInspect::usage(const std::string& tool) {
+void MIRInspect::usage(const std::string &tool) {
 
     eckit::Log::info()
             << std::endl << "Usage: " << tool << " [key1 key2 ...] file.grib" << std::endl
@@ -53,8 +53,8 @@ void MIRInspect::usage(const std::string& tool) {
 
 void MIRInspect::run() {
 
-    eckit::Context& ctx = eckit::Context::instance();
-    const std::string& tool = ctx.runName();
+    eckit::Context &ctx = eckit::Context::instance();
+    const std::string &tool = ctx.runName();
     size_t argc = ctx.argc();
 
     if (argc <= 2) {
@@ -63,27 +63,26 @@ void MIRInspect::run() {
 
     mir::input::GribFileInput file(ctx.argv(argc - 1));
 
-    while(file.next()) {
-    mir::input::MIRInput& input = file;
+    while (file.next()) {
+        mir::input::MIRInput &input = file;
 
-    const mir::param::MIRParametrisation& parametrisation = input.parametrisation();
+        const mir::param::MIRParametrisation &parametrisation = input.parametrisation();
 
-    const char* sep = "";
-    std::string value;
+        const char *sep = "";
+        std::string value;
 
-    for (size_t i = 1; i < argc - 1; i++) {
-        std::cout << sep << ctx.argv(i) << "=";
-        if(parametrisation.get(ctx.argv(i), value)) {
-            std::cout << value;
+        for (size_t i = 1; i < argc - 1; i++) {
+            std::cout << sep << ctx.argv(i) << "=";
+            if (parametrisation.get(ctx.argv(i), value)) {
+                std::cout << value;
+            } else {
+                std::cout << "<not found>";
+            }
+            sep = ", ";
         }
-        else {
-            std::cout << "<not found>";
-        }
-        sep = ", ";
+
+        std::cout << std::endl;
     }
-
-    std::cout << std::endl;
-}
 
 }
 
