@@ -229,7 +229,9 @@ template<> void TSettings<std::string>::get(const std::string &name, long &value
     value = translate(value_);
 }
 template<> void TSettings<std::string>::get(const std::string &name, double &value) const {
-    throw CannotConvert("string", "double", name, value_);
+    convertion_warning("string", "double", name, value_);
+    eckit::Translator<std::string, double> translate;
+    value = translate(value_);
 }
 template<> void TSettings<std::string>::get(const std::string &name, std::vector<long> &value) const {
     throw CannotConvert("string", "vector<long>", name, value_);
