@@ -78,8 +78,10 @@ void MIRCompare::usage(const std::string &tool) const {
 
 
 
-double maxAbsoluteError = 1e-6;
-double maxRelativeError = 1e-6;
+// double maxAbsoluteError = 1e-6;
+// double maxRelativeError = 1e-6;
+double maxAbsoluteError = 1e-3;
+double maxRelativeError = 1e-3;
 
 static double err(double A, double B) {
     double relativeError;
