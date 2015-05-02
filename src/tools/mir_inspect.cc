@@ -14,8 +14,8 @@
 
 
 #include "eckit/runtime/Tool.h"
-#include "eckit/runtime/Context.h"
 #include "eckit/parser/Tokenizer.h"
+#include "eckit/runtime/Context.h"
 
 // #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
@@ -55,6 +55,7 @@ void MIRInspect::run() {
 
     eckit::Context &ctx = eckit::Context::instance();
     const std::string &tool = ctx.runName();
+
     size_t argc = ctx.argc();
 
     if (argc <= 2) {

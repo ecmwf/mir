@@ -50,10 +50,20 @@ class SimpleParametrisation : public MIRParametrisation {
     // None
 
 // -- Methods
-    // None
 
+    void copyValuesTo(SimpleParametrisation& other) const;
 
+    void set(const std::string& name, const char* value);
+    void set(const std::string& name, const std::string& value);
+    void set(const std::string& name, bool value);
+    void set(const std::string& name, long value);
+    void set(const std::string& name, double value);
+    void set(const std::string& name, DelayedParametrisation* value);
 
+    void set(const std::string& name, const std::vector<long>& value);
+    void set(const std::string& name, const std::vector<double>& value);
+
+    void clear(const std::string& name);
 // -- Overridden methods
     // None
 
@@ -73,17 +83,7 @@ class SimpleParametrisation : public MIRParametrisation {
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
-    void set(const std::string& name, const char* value);
-    void set(const std::string& name, const std::string& value);
-    void set(const std::string& name, bool value);
-    void set(const std::string& name, long value);
-    void set(const std::string& name, double value);
-    void set(const std::string& name, DelayedParametrisation* value);
 
-    void set(const std::string& name, std::vector<long>& value);
-    void set(const std::string& name, std::vector<double>& value);
-
-    void clear(const std::string& name);
 
 
     bool matches(const param::MIRParametrisation& metadata) const;
@@ -99,6 +99,8 @@ class SimpleParametrisation : public MIRParametrisation {
     virtual bool get(const std::string& name, double& value) const;
     virtual bool get(const std::string& name, std::vector<long>& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
+
+
 
 // -- Class members
     // None
@@ -141,6 +143,7 @@ class SimpleParametrisation : public MIRParametrisation {
     // None
 
 // -- Friends
+
 
     // friend std::ostream& operator<<(std::ostream& s,const SimpleParametrisation& p) {
     //     p.print(s);

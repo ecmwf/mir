@@ -14,24 +14,25 @@
 
 
 #include "eckit/runtime/Tool.h"
-#include "eckit/runtime/Context.h"
-#include "eckit/parser/Tokenizer.h"
+// #include "eckit/runtime/Context.h"
+// #include "eckit/parser/Tokenizer.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 
 #include <cmath>
 
-#include "mir/api/MIRJob.h"
+// #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/output/GribFileOutput.h"
+// #include "mir/output/GribFileOutput.h"
 #include "mir/data/MIRField.h"
+#include "mir/param/MIRArgs.h"
 
 
 class MIRCompare : public eckit::Tool {
 
     virtual void run();
 
-    void usage(const std::string &tool) const;
+    static void usage(const std::string &tool);
     void compare(size_t n, mir::data::MIRField &field1, mir::data::MIRField &field2) const;
 
     static bool compare( double,  double);
@@ -44,7 +45,7 @@ class MIRCompare : public eckit::Tool {
 
 };
 
-void MIRCompare::usage(const std::string &tool) const {
+void MIRCompare::usage(const std::string &tool) {
 
     eckit::Log::info()
             << std::endl << "Usage: " << tool << " file1.grib file2.grib" << std::endl
@@ -173,19 +174,13 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
 
 void MIRCompare::run() {
 
-    eckit::Context &ctx = eckit::Context::instance();
-    const std::string &tool = ctx.runName();
-    size_t argc = ctx.argc();
+    mir::param::MIRArgs args(&usage, 2);
 
-    if (argc != 3) {
-        usage(tool);
-    }
 
     // std::cout << std::numeric_limits<float>::min() << std::endl;
 
-    mir::api::MIRJob job;
-    mir::input::GribFileInput file1(ctx.argv(argc - 2));
-    mir::input::GribFileInput file2(ctx.argv(argc - 1));
+    mir::input::GribFileInput file1(args.args(0));
+    mir::input::GribFileInput file2(args.args(1));
 
     mir::input::MIRInput &input1 = file1;
     mir::input::MIRInput &input2 = file2;

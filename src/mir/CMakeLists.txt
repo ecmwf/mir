@@ -115,6 +115,8 @@ list( APPEND mir_srcs
       param/DelayedParametrisation.h
       param/FieldParametrisation.cc
       param/FieldParametrisation.h
+      param/MIRArgs.cc
+      param/MIRArgs.h
       param/MIRCombinedParametrisation.cc
       param/MIRCombinedParametrisation.h
       param/MIRConfiguration.cc
