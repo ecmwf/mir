@@ -127,6 +127,8 @@ bool MIRCompare::compare(const double *a, const double *b, size_t size) {
 
         eckit::Log::error() << "Max difference is element " << m + 1 << " v1=" << a[m] << " v2=" << b[m]
         << " diff=" << fabs(a[m] - b[m]) << " err=" << err(a[m], b[m]) << std::endl;
+
+         eckit::Log::error() << "maxAbsoluteError=" << maxAbsoluteError << " maxRelativeError=" << maxRelativeError << std::endl;
         // << "Value " << i + 1 << " are different: " << a[i]
         //                           << " and " << b[i] << " diff=" << fabs(a[i] - b[i]) << " err=" << err(a[i], b[i]) << std::endl;
         //       return false;
@@ -199,8 +201,8 @@ void MIRCompare::run() {
         std::auto_ptr<mir::data::MIRField> field1(input1.field());
         std::auto_ptr<mir::data::MIRField> field2(input2.field());
 
-        ASSERT(metadata1.get("packingError", packing_error1));
-        ASSERT(metadata2.get("packingError", packing_error2));
+        // ASSERT(metadata1.get("packingError", packing_error1));
+        // ASSERT(metadata2.get("packingError", packing_error2));
 
         // ASSERT(packing_error1 == packing_error2);
 
