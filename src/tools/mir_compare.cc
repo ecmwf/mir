@@ -202,6 +202,8 @@ void MIRCompare::run() {
 
         ASSERT(paramId1 == paramId2);
 
+        eckit::Log::info() << "Field " << n << ": paramId is " << paramId1 << std::endl;
+
         size_t i = 0;
         while (thresholds[i].paramId_) {
             if (thresholds[i].paramId_ == paramId1) {
