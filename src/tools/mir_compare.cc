@@ -153,7 +153,8 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
 
 
     if (field1.missingValue() != field2.missingValue()) {
-        eckit::Log::error() << "Field " << n << ": missing value mismatch" <<  field1.missingValue() << " and " << field2.missingValue() << std::endl;
+        eckit::Log::error() << "Field " << n << ": missing value mismatch " <<  field1.missingValue()
+                            << " and " << field2.missingValue() << std::endl;
         ::exit(1);
     }
 
@@ -161,7 +162,8 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
     const std::vector<double> &v2 = field2.values(0);
 
     if (v1.size() != v2.size()) {
-        eckit::Log::error() << "Field " << n << ": values count mismatch" <<  v1.size() << " and " << v2.size() << std::endl;
+        eckit::Log::error() << "Field " << n << ": values count mismatch " <<  eckit::BigNum(v1.size())
+        << " and " << eckit::BigNum(v2.size()) << std::endl;
         ::exit(1);
     }
     if (!compare(&v1[0], &v2[0], v1.size())) {
@@ -212,9 +214,9 @@ void MIRCompare::run() {
         maxAbsoluteError = std::max(absolute, packing_error);
         maxRelativeError = relative;
 
-        if(maxAbsoluteError != absolute) {
+        if (maxAbsoluteError != absolute) {
             eckit::Log::warning() << "Packing error " << packing_error
-            << " is more than requested absolute error " << absolute << std::endl;
+                                  << " is more than requested absolute error " << absolute << std::endl;
             eckit::Log::warning() << "Using packing error as absolute error" << std::endl;
         }
 
