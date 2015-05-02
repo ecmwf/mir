@@ -198,7 +198,7 @@ bool GribInput::get(const std::string &name, long &value) const {
         GRIB_ERROR(err, key);
     }
 
-    eckit::Log::info() << "grib_get_long(" << name << ",key=" << key << ") " << value << std::endl;
+    // eckit::Log::info() << "grib_get_long(" << name << ",key=" << key << ") " << value << std::endl;
     return true;
 }
 
