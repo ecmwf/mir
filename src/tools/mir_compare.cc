@@ -27,6 +27,14 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRArgs.h"
 
+static struct {
+    size_t paramId_;
+    double absolute_; // -1 means use default
+    double relative_; // -1 means use default
+} thresholds [] = {
+    {0, 0, 0}
+};
+
 
 class MIRCompare : public eckit::Tool {
 
@@ -49,29 +57,6 @@ void MIRCompare::usage(const std::string &tool) {
 
     eckit::Log::info()
             << std::endl << "Usage: " << tool << " [--absolute a] [--relative r] file1.grib file2.grib" << std::endl
-            // << std::endl << "Examples: " << std::endl
-            // << "% " << tool << " grid=2/2 area=90/-8/12/80 input.grib output.grib" << std::endl
-            // << "% " << tool << " reduced=80 input.grib output.grib" << std::endl << std::endl
-            // << "% " << tool << " regular=80 input.grib output.grib" << std::endl << std::endl
-            // << "% " << tool << " truncation=63 input.grib output.grib" << std::endl << std::endl
-            // << "Option are:" << std::endl
-            // << "===========" << std::endl << std::endl
-
-            // << "   accuracy=n" << std::endl
-            // << "   area=north/west/south/east" << std::endl
-            // << "   autoresol=0/1" << std::endl
-            // << "   bitmap=path" << std::endl
-            // << "   epsilon=e" << std::endl
-            // << "   frame=n" << std::endl
-            // << "   grid=west_east/north_south" << std::endl
-            // << "   intermediate_gaussian=N" << std::endl
-            // << "   interpolation=method (e.g. bilinear)" << std::endl
-            // << "   nclosest=n (e.g. for k-nearest)" << std::endl
-            // << "   octahedral=N" << std::endl
-            // << "   reduced=N" << std::endl
-            // << "   regular=N" << std::endl
-            // << "   truncation=T" << std::endl
-
             ;
 
     ::exit(1);
@@ -109,11 +94,11 @@ bool MIRCompare::compare(const double *a, const double *b, size_t size) {
 
     size_t m = 0;
     size_t count = 0;
-    double max = std::numeric_limits<double>::max();
+    double max = -std::numeric_limits<double>::max();
     for (size_t i = 0; i < size; i++  ) {
         if (!compare(a[i], b[i])) {
             count++;
-            if (fabs(a[i] - b[i]) < max) {
+            if (fabs(a[i] - b[i]) > max) {
                 max = fabs(a[i] - b[i]);
                 m = i;
             }
@@ -163,7 +148,7 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
 
     if (v1.size() != v2.size()) {
         eckit::Log::error() << "Field " << n << ": values count mismatch " <<  eckit::BigNum(v1.size())
-        << " and " << eckit::BigNum(v2.size()) << std::endl;
+                            << " and " << eckit::BigNum(v2.size()) << std::endl;
         ::exit(1);
     }
     if (!compare(&v1[0], &v2[0], v1.size())) {
@@ -174,12 +159,12 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
 
 void MIRCompare::run() {
 
-    double absolute = 1e-9;
-    double relative = 1e-9;
+    double user_absolute = 1e-9;
+    double user_relative = 1e-9;
 
     mir::param::MIRArgs args(&usage, 2);
-    args.get("absolute", absolute);
-    args.get("relative", relative);
+    args.get("absolute", user_absolute);
+    args.get("relative", user_relative);
 
 
     // std::cout << std::numeric_limits<float>::min() << std::endl;
@@ -205,6 +190,35 @@ void MIRCompare::run() {
 
         std::auto_ptr<mir::data::MIRField> field1(input1.field());
         std::auto_ptr<mir::data::MIRField> field2(input2.field());
+
+        double absolute = user_absolute;
+        double relative = user_relative;
+
+        size_t paramId1 = 0;
+        ASSERT(metadata1.get("paramId", paramId1));
+
+        size_t paramId2 = 0;
+        ASSERT(metadata2.get("paramId", paramId2));
+
+        ASSERT(paramId1 == paramId2);
+
+        size_t i = 0;
+        while (thresholds[i].paramId_) {
+            if (thresholds[i].paramId_ == paramId1) {
+                if (thresholds[i].absolute_ >= 0) {
+                    absolute = thresholds[i].absolute_;
+                }
+                if (thresholds[i].relative_ >= 0) {
+                    relative = thresholds[i].relative_;
+                }
+                eckit::Log::info() << "Field " << n << ": thresholds changed for paramId " << paramId1
+                                   << " to absolute=" << absolute << ", relative=" << relative << std::endl;
+                break;
+            }
+            i++;
+        }
+
+        //================================
 
         packing_error1 = absolute;
         ASSERT(metadata1.get("packingError", packing_error1));
