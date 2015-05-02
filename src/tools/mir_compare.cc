@@ -107,15 +107,15 @@ bool MIRCompare::compare(const double *a, const double *b, size_t size) {
     }
     if (count) {
         double p = double(count) / double(size) * 100;
-        eckit::Log::error() << eckit::Plural(count, "value")
+        eckit::Log::info() << eckit::Plural(count, "value")
                             << " out of " << eckit::BigNum(size)
                             << (count > 1 ? " are " : " is ") << "different (" << p << "%)" << std::endl;
 
-        eckit::Log::error() << "Max difference is element " << m + 1 << " v1=" << a[m] << " v2=" << b[m]
+        eckit::Log::info() << "Max difference is element " << m + 1 << " v1=" << a[m] << " v2=" << b[m]
                             << " diff=" << fabs(a[m] - b[m]) << " err=" << err(a[m], b[m]) << std::endl;
 
-        eckit::Log::error() << "maxAbsoluteError=" << maxAbsoluteError << " maxRelativeError=" << maxRelativeError << std::endl;
-        eckit::Log::error() << "packing_error1=" << packing_error1 << " packing_error2=" << packing_error2 << std::endl;
+        eckit::Log::info() << "maxAbsoluteError=" << maxAbsoluteError << " maxRelativeError=" << maxRelativeError << std::endl;
+        eckit::Log::info() << "packing_error1=" << packing_error1 << " packing_error2=" << packing_error2 << std::endl;
 
         // << "Value " << i + 1 << " are different: " << a[i]
         //                           << " and " << b[i] << " diff=" << fabs(a[i] - b[i]) << " err=" << err(a[i], b[i]) << std::endl;
@@ -131,14 +131,14 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
     ASSERT(field2.dimensions() == 1);
 
     if (field1.hasMissing() != field2.hasMissing()) {
-        eckit::Log::error() << "Field " << n << ": " << (field1.hasMissing() ? "file 1 has missing values" : "file 1 has not missing values") << " "
+        eckit::Log::info() << "Field " << n << ": " << (field1.hasMissing() ? "file 1 has missing values" : "file 1 has not missing values") << " "
                             << (field2.hasMissing() ? "file 2 has missing values" : "file 2 has not missing values") << std::endl;
         ::exit(1);
     }
 
 
     if (field1.missingValue() != field2.missingValue()) {
-        eckit::Log::error() << "Field " << n << ": missing value mismatch " <<  field1.missingValue()
+        eckit::Log::info() << "Field " << n << ": missing value mismatch " <<  field1.missingValue()
                             << " and " << field2.missingValue() << std::endl;
         ::exit(1);
     }
@@ -147,12 +147,12 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
     const std::vector<double> &v2 = field2.values(0);
 
     if (v1.size() != v2.size()) {
-        eckit::Log::error() << "Field " << n << ": values count mismatch " <<  eckit::BigNum(v1.size())
+        eckit::Log::info() << "Field " << n << ": values count mismatch " <<  eckit::BigNum(v1.size())
                             << " and " << eckit::BigNum(v2.size()) << std::endl;
         ::exit(1);
     }
     if (!compare(&v1[0], &v2[0], v1.size())) {
-        eckit::Log::error() << "Field " << n << " values comparaison failed" << std::endl;
+        eckit::Log::info() << "Field " << n << " values comparaison failed" << std::endl;
         ::exit(1);
     }
 }
@@ -248,11 +248,11 @@ void MIRCompare::run() {
 
     if (ok1 != ok2) {
         if (ok1)  {
-            eckit::Log::error() << input1 << " has more fields than " << input2 << std::endl;
+            eckit::Log::info() << input1 << " has more fields than " << input2 << std::endl;
             ::exit(1);
         }
         if (ok2)  {
-            eckit::Log::error() << input2 << " has more fields than " << input1 << std::endl;
+            eckit::Log::info() << input2 << " has more fields than " << input1 << std::endl;
             ::exit(1);
         }
     }
