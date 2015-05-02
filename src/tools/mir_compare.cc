@@ -202,7 +202,7 @@ void MIRCompare::run() {
         ASSERT(metadata1.get("packingError", packing_error1));
         ASSERT(metadata2.get("packingError", packing_error2));
 
-        ASSERT(packing_error1 == packing_error2);
+        // ASSERT(packing_error1 == packing_error2);
 
 
 
