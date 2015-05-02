@@ -48,7 +48,7 @@ class MIRCompare : public eckit::Tool {
 void MIRCompare::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " file1.grib file2.grib" << std::endl
+            << std::endl << "Usage: " << tool << " [--absolute a] [--relative r] file1.grib file2.grib" << std::endl
             // << std::endl << "Examples: " << std::endl
             // << "% " << tool << " grid=2/2 area=90/-8/12/80 input.grib output.grib" << std::endl
             // << "% " << tool << " reduced=80 input.grib output.grib" << std::endl << std::endl
@@ -79,10 +79,8 @@ void MIRCompare::usage(const std::string &tool) {
 
 
 
-// double maxAbsoluteError = 1e-6;
-// double maxRelativeError = 1e-6;
-double maxAbsoluteError = 1e-3;
-double maxRelativeError = 1e-3;
+double maxAbsoluteError = 1e-9;
+double maxRelativeError = 1e-9;
 double packing_error1 = 0;
 double packing_error2 = 0;
 
@@ -174,7 +172,12 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
 
 void MIRCompare::run() {
 
+    double absolute = 1e-9;
+    double relative = 1e-9;
+
     mir::param::MIRArgs args(&usage, 2);
+    args.get("absolute", absolute);
+    args.get("relative", relative);
 
 
     // std::cout << std::numeric_limits<float>::min() << std::endl;
@@ -199,11 +202,21 @@ void MIRCompare::run() {
         std::auto_ptr<mir::data::MIRField> field1(input1.field());
         std::auto_ptr<mir::data::MIRField> field2(input2.field());
 
+        packing_error1 = absolute;
         ASSERT(metadata1.get("packingError", packing_error1));
+
+        packing_error2 = absolute;
         ASSERT(metadata2.get("packingError", packing_error2));
 
-        // ASSERT(packing_error1 == packing_error2);
+        double packing_error = std::min(packing_error1, packing_error2);
+        maxAbsoluteError = std::max(absolute, packing_error);
+        maxRelativeError = relative;
 
+        if(maxAbsoluteError != absolute) {
+            eckit::Log::warning() << "Packing error " << packing_error
+            << " is more than requested absolute error " << absolute << std::endl;
+            eckit::Log::warning() << "Using packing error as absolute error" << std::endl;
+        }
 
 
         compare(++n, *field1, *field2);
