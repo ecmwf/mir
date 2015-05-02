@@ -204,8 +204,8 @@ void MIRCompare::run() {
         std::auto_ptr<mir::data::MIRField> field1(input1.field());
         std::auto_ptr<mir::data::MIRField> field2(input2.field());
 
-        // ASSERT(metadata1.get("packingError", packing_error1));
-        // ASSERT(metadata2.get("packingError", packing_error2));
+        ASSERT(metadata1.get("packingError", packing_error1));
+        ASSERT(metadata2.get("packingError", packing_error2));
 
         // ASSERT(packing_error1 == packing_error2);
 
