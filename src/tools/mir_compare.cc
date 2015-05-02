@@ -82,6 +82,8 @@ void MIRCompare::usage(const std::string &tool) const {
 // double maxRelativeError = 1e-6;
 double maxAbsoluteError = 1e-3;
 double maxRelativeError = 1e-3;
+double packing_error1 = 0;
+double packing_error2 = 0;
 
 static double err(double A, double B) {
     double relativeError;
@@ -121,14 +123,16 @@ bool MIRCompare::compare(const double *a, const double *b, size_t size) {
     }
     if (count) {
         double p = double(count) / double(size) * 100;
-        eckit::Log::error() << eckit::BigNum(count) << " " << eckit::Plural(count, "value")
+        eckit::Log::error() << eckit::Plural(count, "value")
                             << " out of " << eckit::BigNum(size)
                             << (count > 1 ? " are " : " is ") << "different (" << p << "%)" << std::endl;
 
         eckit::Log::error() << "Max difference is element " << m + 1 << " v1=" << a[m] << " v2=" << b[m]
-        << " diff=" << fabs(a[m] - b[m]) << " err=" << err(a[m], b[m]) << std::endl;
+                            << " diff=" << fabs(a[m] - b[m]) << " err=" << err(a[m], b[m]) << std::endl;
 
-         eckit::Log::error() << "maxAbsoluteError=" << maxAbsoluteError << " maxRelativeError=" << maxRelativeError << std::endl;
+        eckit::Log::error() << "maxAbsoluteError=" << maxAbsoluteError << " maxRelativeError=" << maxRelativeError << std::endl;
+        eckit::Log::error() << "packing_error1=" << packing_error1 << " packing_error2=" << packing_error2 << std::endl;
+
         // << "Value " << i + 1 << " are different: " << a[i]
         //                           << " and " << b[i] << " diff=" << fabs(a[i] - b[i]) << " err=" << err(a[i], b[i]) << std::endl;
         //       return false;
@@ -186,14 +190,13 @@ void MIRCompare::run() {
     mir::input::MIRInput &input1 = file1;
     mir::input::MIRInput &input2 = file2;
 
-    const mir::param::MIRParametrisation& metadata1 = input1.parametrisation();
-    const mir::param::MIRParametrisation& metadata2 = input2.parametrisation();
+    const mir::param::MIRParametrisation &metadata1 = input1.parametrisation();
+    const mir::param::MIRParametrisation &metadata2 = input2.parametrisation();
 
     bool ok1 = file1.next();
     bool ok2 = file2.next();
 
-    double packing_error1 = 0;
-    double packing_error2 = 0;
+
 
     size_t n = 0;
     while ( ok1 && ok2 ) {
