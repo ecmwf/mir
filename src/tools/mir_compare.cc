@@ -201,6 +201,8 @@ void MIRCompare::run() {
     size_t n = 0;
     while ( ok1 && ok2 ) {
 
+        ++n;
+
         std::auto_ptr<mir::data::MIRField> field1(input1.field());
         std::auto_ptr<mir::data::MIRField> field2(input2.field());
 
@@ -215,13 +217,13 @@ void MIRCompare::run() {
         maxRelativeError = relative;
 
         if (maxAbsoluteError != absolute) {
-            eckit::Log::warning() << "Packing error " << packing_error
+            eckit::Log::warning() << "Field " << n << ": packing error " << packing_error
                                   << " is more than requested absolute error " << absolute << std::endl;
-            eckit::Log::warning() << "Using packing error as absolute error" << std::endl;
+            eckit::Log::warning() << "Field " << n << ": using packing error as absolute error" << std::endl;
         }
 
 
-        compare(++n, *field1, *field2);
+        compare(n, *field1, *field2);
 
         ok1 = file1.next();
         ok2 = file2.next();
