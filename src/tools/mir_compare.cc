@@ -19,6 +19,9 @@
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 
+#include "eckit/memory/ScopedPtr.h"
+#include "eckit/types/FloatCompare.h"
+
 #include <cmath>
 
 // #include "mir/api/MIRJob.h"
@@ -41,22 +44,35 @@ class MIRCompare : public eckit::Tool {
     virtual void run();
 
     static void usage(const std::string &tool);
+
     void compare(size_t n, mir::data::MIRField &field1, mir::data::MIRField &field2) const;
 
-    static bool compare( double,  double);
-    static bool compare(const double *, const double *, size_t);
+    bool compare( double,  double) const;
+    bool compare(const double *, const double *, size_t) const;
 
   public:
     MIRCompare(int argc, char **argv) :
-        eckit::Tool(argc, argv) {
+        eckit::Tool(argc, argv),
+        user_absolute_(1e-9),
+        user_relative_(1e-9),
+        user_ulps_(0)
+    {
     }
+
+private: // members
+
+    double user_absolute_;
+    double user_relative_;
+    long   user_ulps_;
+
+    eckit::ScopedPtr< eckit::RealCompare<double> > real_same_;
 
 };
 
 void MIRCompare::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " [--absolute a] [--relative r] file1.grib file2.grib" << std::endl
+            << std::endl << "Usage: " << tool << " [--absolute a] [--relative r] [--ulps u]  file1.grib file2.grib" << std::endl
             ;
 
     ::exit(1);
@@ -86,11 +102,15 @@ static bool same(double A, double B) {
     return err(A, B) < maxRelativeError;
 }
 
-bool MIRCompare::compare(double a, double b) {
-    return same(a, b);
+bool MIRCompare::compare(double a, double b) const {
+
+    if(real_same_)
+        return (*real_same_)(a,b);
+    else
+        return same(a, b);
 }
 
-bool MIRCompare::compare(const double *a, const double *b, size_t size) {
+bool MIRCompare::compare(const double *a, const double *b, size_t size) const {
 
     size_t m = 0;
     size_t count = 0;
@@ -159,12 +179,20 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
 
 void MIRCompare::run() {
 
-    double user_absolute = 1e-9;
-    double user_relative = 1e-9;
+    using eckit::RealCompare;
 
     mir::param::MIRArgs args(&usage, 2);
-    args.get("absolute", user_absolute);
-    args.get("relative", user_relative);
+
+    args.get("absolute", user_absolute_);
+    args.get("relative", user_relative_);
+
+
+    /// TODO Test this code
+    args.get("ulps",     user_ulps_);
+    if(user_ulps_) {
+        eckit::Log::info() << "Comparing with ULPS " << user_ulps_ << std::endl;
+        real_same_.reset( new RealCompare<double>(0,user_ulps_) );
+    }
 
 
     // std::cout << std::numeric_limits<float>::min() << std::endl;
@@ -181,8 +209,6 @@ void MIRCompare::run() {
     bool ok1 = file1.next();
     bool ok2 = file2.next();
 
-
-
     size_t n = 0;
     while ( ok1 && ok2 ) {
 
@@ -191,8 +217,8 @@ void MIRCompare::run() {
         std::auto_ptr<mir::data::MIRField> field1(input1.field());
         std::auto_ptr<mir::data::MIRField> field2(input2.field());
 
-        double absolute = user_absolute;
-        double relative = user_relative;
+        double absolute = user_absolute_;
+        double relative = user_relative_;
 
         size_t paramId1 = 0;
         ASSERT(metadata1.get("paramId", paramId1));
