@@ -16,6 +16,8 @@
 #include "eckit/runtime/Tool.h"
 #include "eckit/runtime/Context.h"
 #include "eckit/parser/Tokenizer.h"
+#include "eckit/log/BigNum.h"
+#include "eckit/log/Plural.h"
 
 #include <cmath>
 
@@ -32,8 +34,8 @@ class MIRCompare : public eckit::Tool {
     void usage(const std::string &tool) const;
     void compare(size_t n, mir::data::MIRField &field1, mir::data::MIRField &field2) const;
 
-static bool compare( double,  double);
-    static bool compare(const double*, const double*, size_t);
+    static bool compare( double,  double);
+    static bool compare(const double *, const double *, size_t);
 
   public:
     MIRCompare(int argc, char **argv) :
@@ -76,15 +78,14 @@ void MIRCompare::usage(const std::string &tool) const {
 
 
 
-const double maxAbsoluteError = 1e-9;
-const double maxRelativeError = 1e-9;
+double maxAbsoluteError = 1e-6;
+double maxRelativeError = 1e-6;
 
-static double err(double A, double B)
-{
+static double err(double A, double B) {
     double relativeError;
 
-    if(fabs(A) <= maxAbsoluteError || fabs(B) <= maxAbsoluteError)
-        relativeError = fabs(A-B);
+    if (fabs(A) <= maxAbsoluteError || fabs(B) <= maxAbsoluteError)
+        relativeError = fabs(A - B);
     else if (fabs(B) > fabs(A))
         relativeError = fabs((A - B) / B);
     else
@@ -93,25 +94,43 @@ static double err(double A, double B)
     return relativeError;
 }
 
-static bool same(double A,double B)
-{
-    return err(A,B) < maxRelativeError;
+static bool same(double A, double B) {
+    return err(A, B) < maxRelativeError;
 }
 
 bool MIRCompare::compare(double a, double b) {
     return same(a, b);
 }
 
-bool MIRCompare::compare(const double* a, const double* b, size_t size) {
+bool MIRCompare::compare(const double *a, const double *b, size_t size) {
 
-    for(size_t i = 0; i < size; i++  ) {
-        if(!compare(a[i], b[i])) {
-            eckit::Log::error() << "Value " << i+1 << " are different: " << a[i]
-            << " and " << b[i] << " diff=" << fabs(a[i]-b[i]) << " err=" << err(a[i], b[i]) << std::endl;
-            return false;
+    size_t m = 0;
+    size_t count = 0;
+    double max = std::numeric_limits<double>::max();
+    for (size_t i = 0; i < size; i++  ) {
+        if (!compare(a[i], b[i])) {
+            count++;
+            if (fabs(a[i] - b[i]) < max) {
+                max = fabs(a[i] - b[i]);
+                m = i;
+            }
+
         }
     }
-    return true;
+    if (count) {
+        double p = double(count) / double(size) * 100;
+        eckit::Log::error() << eckit::BigNum(count) << " " << eckit::Plural(count, "value")
+                            << " out of " << eckit::BigNum(size)
+                            << (count > 1 ? " are " : " is ") << "different (" << p << "%)" << std::endl;
+
+        eckit::Log::error() << "Max difference is element " << m + 1 << " v1=" << a[m] << " v2=" << b[m]
+        << " diff=" << fabs(a[m] - b[m]) << " err=" << err(a[m], b[m]) << std::endl;
+        // << "Value " << i + 1 << " are different: " << a[i]
+        //                           << " and " << b[i] << " diff=" << fabs(a[i] - b[i]) << " err=" << err(a[i], b[i]) << std::endl;
+        //       return false;
+        //   }
+    }
+    return count == 0;
 }
 
 void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRField &field2) const {
@@ -121,7 +140,7 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
 
     if (field1.hasMissing() != field2.hasMissing()) {
         eckit::Log::error() << "Field " << n << ": " << (field1.hasMissing() ? "file 1 has missing values" : "file 1 has not missing values") << " "
-           << (field2.hasMissing() ? "file 2 has missing values" : "file 2 has not missing values") << std::endl;
+                            << (field2.hasMissing() ? "file 2 has missing values" : "file 2 has not missing values") << std::endl;
         ::exit(1);
     }
 
@@ -131,14 +150,14 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
         ::exit(1);
     }
 
-    const std::vector<double>& v1 = field1.values(0);
-    const std::vector<double>& v2 = field2.values(0);
+    const std::vector<double> &v1 = field1.values(0);
+    const std::vector<double> &v2 = field2.values(0);
 
-if (v1.size() != v2.size()) {
+    if (v1.size() != v2.size()) {
         eckit::Log::error() << "Field " << n << ": values count mismatch" <<  v1.size() << " and " << v2.size() << std::endl;
         ::exit(1);
     }
-    if(!compare(&v1[0], &v2[0], v1.size())) {
+    if (!compare(&v1[0], &v2[0], v1.size())) {
         eckit::Log::error() << "Field " << n << " values comparaison failed" << std::endl;
         ::exit(1);
     }
@@ -154,6 +173,8 @@ void MIRCompare::run() {
         usage(tool);
     }
 
+    // std::cout << std::numeric_limits<float>::min() << std::endl;
+
     mir::api::MIRJob job;
     mir::input::GribFileInput file1(ctx.argv(argc - 2));
     mir::input::GribFileInput file2(ctx.argv(argc - 1));
@@ -161,14 +182,27 @@ void MIRCompare::run() {
     mir::input::MIRInput &input1 = file1;
     mir::input::MIRInput &input2 = file2;
 
+    const mir::param::MIRParametrisation& metadata1 = input1.parametrisation();
+    const mir::param::MIRParametrisation& metadata2 = input2.parametrisation();
+
     bool ok1 = file1.next();
     bool ok2 = file2.next();
+
+    double packing_error1 = 0;
+    double packing_error2 = 0;
 
     size_t n = 0;
     while ( ok1 && ok2 ) {
 
         std::auto_ptr<mir::data::MIRField> field1(input1.field());
         std::auto_ptr<mir::data::MIRField> field2(input2.field());
+
+        ASSERT(metadata1.get("packingError", packing_error1));
+        ASSERT(metadata2.get("packingError", packing_error2));
+
+        ASSERT(packing_error1 == packing_error2);
+
+
 
         compare(++n, *field1, *field2);
 
