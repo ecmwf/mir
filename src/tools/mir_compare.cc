@@ -106,7 +106,8 @@ bool MIRCompare::compare(const double* a, const double* b, size_t size) {
 
     for(size_t i = 0; i < size; i++  ) {
         if(!compare(a[i], b[i])) {
-            eckit::Log::error() << "Value " << i+1 << " are different: " << a[i] << " and " << b[i] << " diff=" << fabs(a[i]-b[i]) << std::endl;
+            eckit::Log::error() << "Value " << i+1 << " are different: " << a[i]
+            << " and " << b[i] << " diff=" << fabs(a[i]-b[i]) << " err=" << err(a[i], b[i]) << std::endl;
             return false;
         }
     }
@@ -138,7 +139,7 @@ if (v1.size() != v2.size()) {
         ::exit(1);
     }
     if(!compare(&v1[0], &v2[0], v1.size())) {
-        eckit::Log::error() << "Field " << n << " values compaison failed" << std::endl;
+        eckit::Log::error() << "Field " << n << " values comparaison failed" << std::endl;
         ::exit(1);
     }
 }
