@@ -100,6 +100,8 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
     virtual void set(const std::string& name, long value);
     virtual void set(const std::string& name, double value);
 
+    virtual void scope(const std::string& name);
+
 // -- Class members
     // None
 

@@ -51,6 +51,8 @@ class ParserConsumer  {
     virtual void set(const std::string& name, long value) = 0;
     virtual void set(const std::string& name, double value) = 0;
 
+    virtual void scope(const std::string& name) = 0;
+
 // -- Overridden methods
     // None
 

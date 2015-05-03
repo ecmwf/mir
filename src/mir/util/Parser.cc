@@ -43,7 +43,7 @@ Parser::~Parser() {
     in_.close();
 }
 
-
+// TODO: Some lex/yacc, I am not pround of that
 void Parser::fill(ParserConsumer& consumer) {
     char c;
     std::string name;
@@ -52,6 +52,7 @@ void Parser::fill(ParserConsumer& consumer) {
     long lvalue = 0;
     bool key = true;
     bool value = false;
+    bool word = false;
 
     for (;;) {
         c = peek();
@@ -73,7 +74,7 @@ void Parser::fill(ParserConsumer& consumer) {
         case '7':
         case '8':
         case '9':
-            if (key) {
+            if (key || word) {
                 tmp += next();
 
             } else {
@@ -90,13 +91,19 @@ void Parser::fill(ParserConsumer& consumer) {
                 value = false;
                 name = "";
                 tmp = "";
+                word = false;
             }
             break;
 
+        case ':':
+            consumer.scope(eckit::StringTools::trim(tmp));
+            tmp = ""; word = false;
+            next();
+            break;
 
         case '=':
             name = tmp;
-            tmp = "";
+            tmp = ""; word = false;
             next();
             key = false;
             value = true;
@@ -123,10 +130,11 @@ void Parser::fill(ParserConsumer& consumer) {
                     consumer.set(name, eckit::StringTools::trim(tmp));
                 }
             }
+            word = false;
             key = true;
             value = false;
             name = "";
-            tmp = "";
+            tmp = ""; word = false;
             if (c == 0) {
                 return;
             }
@@ -137,6 +145,7 @@ void Parser::fill(ParserConsumer& consumer) {
             if (isalpha(c) || (c == '_') || (c == '.') || (c == '-'))  {
                 c = next();
                 tmp += c;
+                word = true;
                 // std::cout << tmp << std::endl;
             } else {
                 eckit::StrStream os;

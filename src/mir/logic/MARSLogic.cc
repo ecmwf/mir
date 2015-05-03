@@ -21,6 +21,7 @@
 #include "mir/logic/AutoResol.h"
 #include "mir/logic/AutoReduced.h"
 #include "mir/param/MIRConfiguration.h"
+#include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
@@ -47,6 +48,14 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
 
     // Accroding to c++11, this should be thread safe (assuming contructors are thread safe as well)
     static param::MIRConfiguration configuration;
+
+    long paramId = 0;
+    ASSERT(parametrisation_.get("paramId", paramId));
+
+    const param::SimpleParametrisation* param = configuration.lookup(paramId);
+    if(param) {
+        eckit::Log::info() << "Parametrisation for paramId " << paramId << " is " << *param << std::endl;
+    }
 
     bool autoresol = false;
     bool vod2uv = false;

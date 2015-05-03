@@ -17,13 +17,17 @@
 #define MIRConfiguration_H
 
 #include <iosfwd>
+#include <map>
+#include <string>
 
+#include "mir/util/ParserConsumer.h"
+#include "mir/param/SimpleParametrisation.h"
 
 namespace mir {
 namespace param {
 
 
-class MIRConfiguration {
+class MIRConfiguration : public util::ParserConsumer {
   public:
 
 // -- Exceptions
@@ -44,7 +48,8 @@ class MIRConfiguration {
     // None
 
 // -- Methods
-    // None
+
+    const SimpleParametrisation* lookup(long paramId) const;
 
 // -- Overridden methods
     // None
@@ -82,11 +87,23 @@ class MIRConfiguration {
 
 // -- Members
 
+    long current_;
+    SimpleParametrisation* scope_;
+    std::map<long, SimpleParametrisation*> settings_;
+
 // -- Methods
     // None
 
 // -- Overridden methods
 
+    // From ParserConsumer
+    virtual void set(const std::string& name, const char* value);
+    virtual void set(const std::string& name, const std::string& value);
+    virtual void set(const std::string& name, bool value);
+    virtual void set(const std::string& name, long value);
+    virtual void set(const std::string& name, double value);
+
+    virtual void scope(const std::string& name);
 
 // -- Class members
     // None

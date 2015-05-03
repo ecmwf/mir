@@ -82,6 +82,10 @@ void MIRDefaults::set(const std::string& name, double value) {
     SimpleParametrisation::set(name, value);
 }
 
+void MIRDefaults::scope(const std::string& name)
+{
+    NOTIMP;
+}
 
 }  // namespace param
 }  // namespace mir
