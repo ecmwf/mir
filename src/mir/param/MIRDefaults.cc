@@ -12,10 +12,13 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "mir/param/MIRDefaults.h"
+
 
 #include <iostream>
 #include <limits>
-#include "mir/param/MIRDefaults.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/io/StdFile.h"
 
 
 namespace mir {
@@ -29,6 +32,20 @@ MIRDefaults::MIRDefaults() {
     set("interpolation", "finite-element"); // The word 'method' is used in grib
     set("epsilon", std::numeric_limits<double>::epsilon());
     set("nclosest", 4L);
+
+    // Read the rest for the file
+    eckit::PathName path("~mir/etc/defaults.cfg");
+    if(!path.exists())  {
+        return;
+    }
+
+    eckit::Log::info() << "Loading MIR defaults from " << path << std::endl;
+    eckit::StdFile file(path);
+    int c;
+    while((c = fgetc(file))!= EOF) {
+        // EMPTY
+    }
+
 }
 
 

@@ -20,6 +20,7 @@
 #include "mir/action/ActionPlan.h"
 #include "mir/logic/AutoResol.h"
 #include "mir/logic/AutoReduced.h"
+#include "mir/param/MIRConfiguration.h"
 
 
 namespace mir {
@@ -44,11 +45,13 @@ void MARSLogic::print(std::ostream &out) const {
 void MARSLogic::prepare(action::ActionPlan &plan) const {
     // All the nasty logic goes there
 
+    // Accroding to c++11, this should be thread safe (assuming contructors are thread safe as well)
+    static param::MIRConfiguration configuration;
+
     bool autoresol = false;
     bool vod2uv = false;
 
     long intermediate_gaussian = 0;
-
     parametrisation_.get("autoresol", autoresol);
     parametrisation_.get("vod2uv", vod2uv);
 

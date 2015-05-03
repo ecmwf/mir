@@ -16,17 +16,14 @@
 #ifndef MIRConfiguration_H
 #define MIRConfiguration_H
 
-#include <map>
-#include <string>
-
-#include "mir/param/SimpleParametrisation.h"
+#include <iosfwd>
 
 
 namespace mir {
 namespace param {
 
 
-class MIRConfiguration : public SimpleParametrisation {
+class MIRConfiguration {
   public:
 
 // -- Exceptions
@@ -65,7 +62,7 @@ class MIRConfiguration : public SimpleParametrisation {
 
 // -- Methods
 
-    // void print(ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
     // None
@@ -90,8 +87,6 @@ class MIRConfiguration : public SimpleParametrisation {
 
 // -- Overridden methods
 
-    // From MIRParametrisation
-    virtual void print(std::ostream&) const;
 
 // -- Class members
     // None
@@ -101,8 +96,8 @@ class MIRConfiguration : public SimpleParametrisation {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const MIRConfiguration& p)
-    //	{ p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const MIRConfiguration& p)
+    	{ p.print(s); return s; }
 
 };
 

@@ -26,11 +26,9 @@ namespace param {
 
 MIRCombinedParametrisation::MIRCombinedParametrisation(const MIRParametrisation& user,
         const MIRParametrisation& metadata,
-        const MIRParametrisation& configuration,
         const MIRParametrisation& defaults):
     user_(user),
     metadata_(metadata),
-    configuration_(configuration),
     defaults_(defaults) {
 }
 
@@ -64,7 +62,6 @@ bool MIRCombinedParametrisation::has(const std::string& name) const {
 // This could be a loop
     if (user_.has(name)) return true;
     if (metadata_.has(name)) return true;
-    if (configuration_.has(name)) return true;
     if (defaults_.has(name)) return true;
 
     eckit::Log::warning() << "**** MIRCombinedParametrisation::has(" << name << ") unanswered" << std::endl;
@@ -86,7 +83,6 @@ bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
     // This could be a loop
     if (user_.get(name, value)) return true;
     if (metadata_.get(name, value)) return true;
-    if (configuration_.get(name, value)) return true;
     if (defaults_.get(name, value)) return true;
 
     eckit::Log::warning() << "**** MIRCombinedParametrisation::get(" << name << ") unanswered" << std::endl;

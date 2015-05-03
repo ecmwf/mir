@@ -16,14 +16,23 @@
 #include <iostream>
 
 #include "mir/param/MIRConfiguration.h"
-
+#include "eckit/filesystem/PathName.h"
+#include "eckit/io/StdFile.h"
 
 namespace mir {
 namespace param {
 
 
 MIRConfiguration::MIRConfiguration() {
-    // TODO: Read a file and call 'set(name, value)'
+
+    eckit::PathName path("~mir/etc/interpolation-methods.cfg");
+    eckit::Log::info() << "Loading MIR configuration from " << path << std::endl;
+
+    eckit::StdFile file(path);
+    int c;
+    while((c = fgetc(file))!= EOF) {
+        // EMPTY
+    }
 }
 
 
