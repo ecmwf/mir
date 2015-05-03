@@ -18,6 +18,9 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
+#include "eckit/runtime/Context.h"
+
+#include "mir/api/mir_config.h"
 
 #include "mir/action/Action.h"
 #include "mir/action/ActionPlan.h"
@@ -190,6 +193,12 @@ bool MIRJob::matches(const param::MIRParametrisation& metadata) const {
     return ok;
 }
 
+// This comes grom eckit::Context
+static eckit::RegisterConfigHome configs("mir",
+                                 MIR_INSTALL_BIN_DIR,
+                                 MIR_DEVELOPER_BIN_DIR,
+                                 MIR_DATA_DIR,
+                                 MIR_DEVELOPER_SRC_DIR);
 
 }  // namespace api
 }  // namespace mir

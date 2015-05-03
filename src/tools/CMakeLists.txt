@@ -15,3 +15,9 @@ ecbuild_add_executable(
 		SOURCES     mir_compare.cc
 		INCLUDES    ${ECKIT_INCLUDE_DIRS}
 		LIBS        mir ${ECKIT_LIBRARIES} )
+
+ecbuild_add_executable(
+		TARGET      mir_config
+		SOURCES     mir_config.cc
+		INCLUDES    ${ECKIT_INCLUDE_DIRS}
+		LIBS        mir ${ECKIT_LIBRARIES} )
