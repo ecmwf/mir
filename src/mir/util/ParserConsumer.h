@@ -13,20 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef MIRDefaults_H
-#define MIRDefaults_H
+#ifndef ParserConsumer_H
+#define ParserConsumer_H
 
 #include <string>
 
-#include "mir/param/SimpleParametrisation.h"
-#include "mir/util/ParserConsumer.h"
 
 
 namespace mir {
-namespace param {
+namespace util {
 
-
-class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
+class ParserConsumer  {
   public:
 
 // -- Exceptions
@@ -34,11 +31,11 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
 
 // -- Contructors
 
-    MIRDefaults();
+    ParserConsumer();
 
 // -- Destructor
 
-    ~MIRDefaults(); // Change to virtual if base class
+    virtual ~ParserConsumer(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -47,7 +44,12 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
     // None
 
 // -- Methods
-    // None
+
+    virtual void set(const std::string& name, const char* value) = 0;
+    virtual void set(const std::string& name, const std::string& value) = 0;
+    virtual void set(const std::string& name, bool value) = 0;
+    virtual void set(const std::string& name, long value) = 0;
+    virtual void set(const std::string& name, double value) = 0;
 
 // -- Overridden methods
     // None
@@ -61,14 +63,16 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
   protected:
 
 // -- Members
-    // None
+
+
 
 // -- Methods
 
-    // void print(ostream&) const; // Change to virtual if base class
+    // virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+
 
 // -- Overridden methods
-    // None
+
 
 // -- Class members
     // None
@@ -80,25 +84,19 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
 
 // No copy allowed
 
-    MIRDefaults(const MIRDefaults&);
-    MIRDefaults& operator=(const MIRDefaults&);
+    ParserConsumer(const ParserConsumer&);
+    ParserConsumer& operator=(const ParserConsumer&);
 
 // -- Members
+
 
 // -- Methods
     // None
 
 // -- Overridden methods
+    // None
 
-    // From MIRParametrisation
-    virtual void print(std::ostream&) const;
 
-    // From MIRParametrisation and ParserConsumer
-    virtual void set(const std::string& name, const char* value);
-    virtual void set(const std::string& name, const std::string& value);
-    virtual void set(const std::string& name, bool value);
-    virtual void set(const std::string& name, long value);
-    virtual void set(const std::string& name, double value);
 
 // -- Class members
     // None
@@ -108,8 +106,11 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const MIRDefaults& p)
-    //  { p.print(s); return s; }
+
+    // friend std::ostream& operator<<(std::ostream& s,const ParserConsumer& p) {
+    //     p.print(s);
+    //     return s;
+    // }
 
 };
 

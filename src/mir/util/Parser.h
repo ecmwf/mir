@@ -13,20 +13,20 @@
 /// @date Apr 2015
 
 
-#ifndef MIRDefaults_H
-#define MIRDefaults_H
+#ifndef Parser_H
+#define Parser_H
 
-#include <string>
 
-#include "mir/param/SimpleParametrisation.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/parser/StreamParser.h"
+#include <fstream>
 #include "mir/util/ParserConsumer.h"
 
-
 namespace mir {
-namespace param {
+namespace util {
 
 
-class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
+class Parser  {
   public:
 
 // -- Exceptions
@@ -34,11 +34,11 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
 
 // -- Contructors
 
-    MIRDefaults();
+    Parser(const eckit::PathName&);
 
 // -- Destructor
 
-    ~MIRDefaults(); // Change to virtual if base class
+    ~Parser(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -47,7 +47,8 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
     // None
 
 // -- Methods
-    // None
+
+    void fill(ParserConsumer&);
 
 // -- Overridden methods
     // None
@@ -65,7 +66,7 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
 
 // -- Methods
 
-    // void print(ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
     // None
@@ -80,25 +81,24 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
 
 // No copy allowed
 
-    MIRDefaults(const MIRDefaults&);
-    MIRDefaults& operator=(const MIRDefaults&);
+    Parser(const Parser&);
+    Parser& operator=(const Parser&);
 
 // -- Members
 
-// -- Methods
-    // None
+    eckit::PathName path_;
+    std::ifstream in_;
+    eckit::StreamParser parser_;
 
+// -- Methods
+
+    void consumeComment();
+    bool readNumber(long& lvalue, double& dvalue);
+
+    char peek();
+    char next();
 // -- Overridden methods
 
-    // From MIRParametrisation
-    virtual void print(std::ostream&) const;
-
-    // From MIRParametrisation and ParserConsumer
-    virtual void set(const std::string& name, const char* value);
-    virtual void set(const std::string& name, const std::string& value);
-    virtual void set(const std::string& name, bool value);
-    virtual void set(const std::string& name, long value);
-    virtual void set(const std::string& name, double value);
 
 // -- Class members
     // None
@@ -108,13 +108,15 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const MIRDefaults& p)
-    //  { p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s, const Parser& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
 
-}  // namespace param
+}  // namespace util
 }  // namespace mir
 #endif
 
