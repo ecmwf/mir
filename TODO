@@ -1,11 +1,15 @@
 MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
+SHOWSTOPPERS
+- Caching of meshed and weights must take PL array into account when naming files
+
 MIR
 - Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
 - Rotated fields
-- Vo/D to U/V
 - Rotated winds?
 - Make sure we don't need to cast constness away
+- Make sure cached weight files are not loaded for every field
+- Wind interpolation
 
 TESTING:
 - Test mir_tool with valgrind
@@ -17,7 +21,10 @@ EMOSLIB
   - Specifying AREA on a SH field is ignored
 
 ECKIT
-- ?
+- Implement general purpose file caching class
+
+IN ATLAS:
+- Make sure cached mesh files are not loaded for every field
 
 IN TRANS
 - Check if tansi can be called with a regular gaussian as output
@@ -33,3 +40,4 @@ MARS:
 --------------------------------------------------------------------------------------------------
 
 DONE:
+- Vo/D to U/V: Dropping one coefficient

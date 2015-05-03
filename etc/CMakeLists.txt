@@ -1,0 +1,5 @@
+file( GLOB config_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cfg" )
+
+install( FILES ${config_files} 
+         DESTINATION share/${PROJECT_NAME}/etc
+	 PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
