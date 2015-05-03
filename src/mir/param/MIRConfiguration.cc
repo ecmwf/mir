@@ -51,30 +51,30 @@ void MIRConfiguration::print(std::ostream& out) const {
 }
 
 
-void MIRConfiguration::set(const std::string& name, const char* value) {
-    set(name, std::string(name));
+void MIRConfiguration::store(const std::string& name, const char* value) {
+    store(name, std::string(name));
 }
 
-void MIRConfiguration::set(const std::string& name, const std::string& value) {
+void MIRConfiguration::store(const std::string& name, const std::string& value) {
     ASSERT(scope_);
     eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (string) paramId=" << current_ << std::endl;
     scope_->set(name, value);
 }
 
-void MIRConfiguration::set(const std::string& name, bool value) {
+void MIRConfiguration::store(const std::string& name, bool value) {
     ASSERT(scope_);
     eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (bool) paramId=" << current_ << std::endl;
     scope_->set(name, value);
 }
 
-void MIRConfiguration::set(const std::string& name, long value) {
+void MIRConfiguration::store(const std::string& name, long value) {
     ASSERT(scope_);
     eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (long) paramId=" << current_ << std::endl;
     scope_->set(name, value);
 
 }
 
-void MIRConfiguration::set(const std::string& name, double value) {
+void MIRConfiguration::store(const std::string& name, double value) {
     ASSERT(scope_);
     eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (double) paramId=" << current_ << std::endl;
     scope_->set(name, value);

@@ -41,7 +41,7 @@ class Setting {
     virtual void get(const std::string &name, std::vector<double> &value) const = 0;
 
     virtual bool match(const std::string &name, const MIRParametrisation &) const = 0;
-    virtual void copyValueTo(const std::string &name, SimpleParametrisation &) const = 0;
+    virtual void copyValueTo(const std::string &name, MIRParametrisation &) const = 0;
 
     virtual void print(std::ostream &) const = 0;
 
@@ -94,7 +94,7 @@ class DelayedSetting : public Setting {
         out << "<DELAYED>";
     }
 
-    void copyValueTo(const std::string &name, SimpleParametrisation &param) const  {
+    void copyValueTo(const std::string &name, MIRParametrisation &param) const  {
         NOTIMP;
     }
 
@@ -123,7 +123,7 @@ class TSettings : public Setting {
         return false;
     }
 
-    void copyValueTo(const std::string &name, SimpleParametrisation &param) const  {
+    void copyValueTo(const std::string &name, MIRParametrisation &param) const  {
         param.set(name, value_);
     }
 
@@ -354,48 +354,57 @@ void SimpleParametrisation::_set(const std::string &name, const T &value) {
     settings_[name] = new TSettings<T>(value);
 }
 
-void SimpleParametrisation::set(const std::string &name, const char *value) {
+MIRParametrisation& SimpleParametrisation::set(const std::string &name, const char *value) {
     _set(name, std::string(value));
+    return *this;
 }
 
-void SimpleParametrisation::set(const std::string &name, const std::string &value) {
+MIRParametrisation& SimpleParametrisation::set(const std::string &name, const std::string &value) {
     _set(name, value);
+    return *this;
 }
 
-void SimpleParametrisation::set(const std::string &name, bool value) {
+MIRParametrisation& SimpleParametrisation::set(const std::string &name, bool value) {
     _set(name, value);
+    return *this;
 }
 
-void SimpleParametrisation::set(const std::string &name, long value) {
+MIRParametrisation& SimpleParametrisation::set(const std::string &name, long value) {
     _set(name, value);
+    return *this;
 }
 
-void SimpleParametrisation::set(const std::string &name, double value) {
+MIRParametrisation& SimpleParametrisation::set(const std::string &name, double value) {
     _set(name, value);
+    return *this;
 }
 
-void SimpleParametrisation::set(const std::string &name, DelayedParametrisation *value) {
+MIRParametrisation& SimpleParametrisation::set(const std::string &name, DelayedParametrisation *value) {
     std::map<std::string, Setting *>::iterator j = settings_.find(name);
     if (j != settings_.end()) {
         delete (*j).second;
     }
     settings_[name] = new DelayedSetting(value);
+    return *this;
 }
 
-void SimpleParametrisation::clear(const std::string &name) {
+MIRParametrisation& SimpleParametrisation::clear(const std::string &name) {
     std::map<std::string, Setting *>::iterator j = settings_.find(name);
     if (j != settings_.end()) {
         delete (*j).second;
         settings_.erase(j);
     }
+    return *this;
 }
 
-void SimpleParametrisation::set(const std::string &name, const std::vector<long> &value) {
+MIRParametrisation& SimpleParametrisation::set(const std::string &name, const std::vector<long> &value) {
     _set(name, value);
+    return *this;
 }
 
-void SimpleParametrisation::set(const std::string &name, const std::vector<double> &value) {
+MIRParametrisation& SimpleParametrisation::set(const std::string &name, const std::vector<double> &value) {
     _set(name, value);
+    return *this;
 }
 
 void SimpleParametrisation::print(std::ostream &out) const {
@@ -424,7 +433,7 @@ bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
     return false;
 }
 
-void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other) const {
+void SimpleParametrisation::copyValuesTo(MIRParametrisation& other) const {
     for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
         (*j).second->copyValueTo((*j).first, other);
     }

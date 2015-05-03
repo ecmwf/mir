@@ -37,6 +37,35 @@ bool MIRParametrisation::get(const std::string &name, size_t &value) const {
     return false;
 }
 
+MIRParametrisation& MIRParametrisation::set(const std::string& name, const char* value) {
+    NOTIMP;
+}
+MIRParametrisation& MIRParametrisation::set(const std::string& name, const std::string& value) {
+    NOTIMP;
+}
+MIRParametrisation& MIRParametrisation::set(const std::string& name, bool value) {
+    NOTIMP;
+}
+MIRParametrisation& MIRParametrisation::set(const std::string& name, long value) {
+    NOTIMP;
+}
+MIRParametrisation& MIRParametrisation::set(const std::string& name, double value) {
+    NOTIMP;
+}
+
+MIRParametrisation& MIRParametrisation::set(const std::string& name, const std::vector<long>& value) {
+    NOTIMP;
+}
+MIRParametrisation& MIRParametrisation::set(const std::string& name, const std::vector<double>& value) {
+    NOTIMP;
+}
+
+MIRParametrisation& MIRParametrisation::clear(const std::string& name) {
+    NOTIMP;
+}
+void MIRParametrisation::copyValuesTo(MIRParametrisation&) const {
+    NOTIMP;
+}
 
 }  // namespace param
 }  // namespace mir

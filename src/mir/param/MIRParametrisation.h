@@ -48,6 +48,18 @@ class MIRParametrisation {
 // -- Methods
     // None
 
+    virtual MIRParametrisation& set(const std::string& name, const char* value);
+    virtual MIRParametrisation& set(const std::string& name, const std::string& value);
+    virtual MIRParametrisation& set(const std::string& name, bool value);
+    virtual MIRParametrisation& set(const std::string& name, long value);
+    virtual MIRParametrisation& set(const std::string& name, double value);
+    // virtual MIRParametrisation& set(const std::string& name, DelayedParametrisation* value);
+
+    virtual MIRParametrisation& set(const std::string& name, const std::vector<long>& value);
+    virtual MIRParametrisation& set(const std::string& name, const std::vector<double>& value);
+
+    virtual MIRParametrisation& clear(const std::string& name);
+
     virtual bool has(const std::string& name) const = 0;
     virtual bool get(const std::string& name, std::string& value) const = 0;
     virtual bool get(const std::string& name, bool& value) const = 0;
@@ -57,6 +69,8 @@ class MIRParametrisation {
     virtual bool get(const std::string& name, std::vector<double>& value) const = 0;
 
     virtual bool get(const std::string& name, size_t& value) const;
+
+    virtual void copyValuesTo(MIRParametrisation& other) const;
 
 // -- Overridden methods
     // None
@@ -109,7 +123,7 @@ class MIRParametrisation {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const MIRParametrisation& p) {
+    friend std::ostream& operator<<(std::ostream& s, const MIRParametrisation& p) {
         p.print(s);
         return s;
     }

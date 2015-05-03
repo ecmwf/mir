@@ -96,11 +96,11 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
     virtual void print(std::ostream&) const;
 
     // From MIRParametrisation and ParserConsumer
-    virtual void set(const std::string& name, const char* value);
-    virtual void set(const std::string& name, const std::string& value);
-    virtual void set(const std::string& name, bool value);
-    virtual void set(const std::string& name, long value);
-    virtual void set(const std::string& name, double value);
+    virtual void store(const std::string& name, const char* value);
+    virtual void store(const std::string& name, const std::string& value);
+    virtual void store(const std::string& name, bool value);
+    virtual void store(const std::string& name, long value);
+    virtual void store(const std::string& name, double value);
 
     virtual void scope(const std::string& name);
 

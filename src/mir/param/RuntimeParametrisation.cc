@@ -48,32 +48,32 @@ void RuntimeParametrisation::_set(const std::string& name, const T& value) {
     SimpleParametrisation::set(name, value);
 }
 
-RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, const char* value) {
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, const char* value) {
     _set(name, value);
     return *this;
 }
 
-RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, const std::string& value) {
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, const std::string& value) {
     _set(name, value);
     return *this;
 }
 
-RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, bool value) {
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, bool value) {
     _set(name, value);
     return *this;
 }
 
-RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, long value) {
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, long value) {
     _set(name, value);
     return *this;
 }
 
-RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, double value) {
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, double value) {
     _set(name, value);
     return *this;
 }
 
-RuntimeParametrisation& RuntimeParametrisation::set(const std::string& name, DelayedParametrisation* value) {
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, DelayedParametrisation* value) {
     eckit::Log::info() << "************* RuntimeParametrisation::set [" << name << "] = [" << *value << "]" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
