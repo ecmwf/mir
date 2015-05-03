@@ -80,9 +80,9 @@ void Parser::fill(ParserConsumer& consumer) {
             } else {
                 if (value) {
                     if (readNumber(lvalue, dvalue)) {
-                        consumer.set(name, dvalue);
+                        consumer.store(name, dvalue);
                     } else {
-                        consumer.set(name, lvalue);
+                        consumer.store(name, lvalue);
                     }
                 } else {
                     throw eckit::SeriousBug("Parser: no current name");
@@ -125,9 +125,9 @@ void Parser::fill(ParserConsumer& consumer) {
             if (value) {
                 tmp = eckit::StringTools::trim(tmp);
                 if (tmp == "false" || tmp == "true") {
-                    consumer.set(name, tmp[0] == 't');
+                    consumer.store(name, tmp[0] == 't');
                 } else {
-                    consumer.set(name, eckit::StringTools::trim(tmp));
+                    consumer.store(name, eckit::StringTools::trim(tmp));
                 }
             }
             word = false;

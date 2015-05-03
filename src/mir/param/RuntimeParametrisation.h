@@ -47,12 +47,12 @@ class RuntimeParametrisation : public SimpleParametrisation {
 
 // -- Methods
 
-    RuntimeParametrisation& set(const std::string& name, const char* value);
-    RuntimeParametrisation& set(const std::string& name, const std::string& value);
-    RuntimeParametrisation& set(const std::string& name, bool value);
-    RuntimeParametrisation& set(const std::string& name, long value);
-    RuntimeParametrisation& set(const std::string& name, double value);
-    RuntimeParametrisation& set(const std::string& name, DelayedParametrisation* value);
+    MIRParametrisation& set(const std::string& name, const char* value);
+    MIRParametrisation& set(const std::string& name, const std::string& value);
+    MIRParametrisation& set(const std::string& name, bool value);
+    MIRParametrisation& set(const std::string& name, long value);
+    MIRParametrisation& set(const std::string& name, double value);
+    MIRParametrisation& set(const std::string& name, DelayedParametrisation* value);
 
 // -- Overridden methods
 
@@ -110,6 +110,7 @@ class RuntimeParametrisation : public SimpleParametrisation {
 
     // From MIRParametrisation
     virtual void print(std::ostream&) const;
+
 
 // -- Class members
     // None

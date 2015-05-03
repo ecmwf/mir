@@ -51,21 +51,21 @@ class SimpleParametrisation : public MIRParametrisation {
 
 // -- Methods
 
-    void copyValuesTo(SimpleParametrisation& other) const;
 
-    void set(const std::string& name, const char* value);
-    void set(const std::string& name, const std::string& value);
-    void set(const std::string& name, bool value);
-    void set(const std::string& name, long value);
-    void set(const std::string& name, double value);
-    void set(const std::string& name, DelayedParametrisation* value);
+    virtual MIRParametrisation& set(const std::string& name, const char* value);
+    virtual MIRParametrisation& set(const std::string& name, const std::string& value);
+    virtual MIRParametrisation& set(const std::string& name, bool value);
+    virtual MIRParametrisation& set(const std::string& name, long value);
+    virtual MIRParametrisation& set(const std::string& name, double value);
+    virtual MIRParametrisation& set(const std::string& name, DelayedParametrisation* value);
 
-    void set(const std::string& name, const std::vector<long>& value);
-    void set(const std::string& name, const std::vector<double>& value);
+    virtual MIRParametrisation& set(const std::string& name, const std::vector<long>& value);
+    virtual MIRParametrisation& set(const std::string& name, const std::vector<double>& value);
 
-    void clear(const std::string& name);
+    virtual MIRParametrisation& clear(const std::string& name);
 // -- Overridden methods
-    // None
+
+    virtual void copyValuesTo(MIRParametrisation& other) const;
 
 // -- Class members
     // None
