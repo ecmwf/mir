@@ -5,6 +5,7 @@ CMakeLists.txt.user*
 *.back
 *.old
 *.orig
+.tag*
 suite/requests
 suite/check.def
 suite/combinations.pyc
