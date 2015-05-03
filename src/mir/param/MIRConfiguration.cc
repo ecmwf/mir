@@ -41,6 +41,10 @@ MIRConfiguration::~MIRConfiguration() {
     }
 }
 
+const MIRConfiguration& MIRConfiguration::instance() {
+    static MIRConfiguration instance_;
+    return instance_;
+}
 
 void MIRConfiguration::print(std::ostream& out) const {
     out << "MIRConfiguration[...]";

@@ -84,11 +84,13 @@ class MARSLogic : public MIRLogic {
 // -- Members
 
 // -- Methods
-    // None
+
+    void prepare(action::ActionPlan &plan, const param::MIRParametrisation &parametrisation) const;
 
 // -- Overridden methods
 
     virtual void prepare(action::ActionPlan&) const;
+
 
 // -- Class members
     // None

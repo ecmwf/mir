@@ -50,6 +50,10 @@ MIRDefaults::MIRDefaults() {
 MIRDefaults::~MIRDefaults() {
 }
 
+const MIRDefaults& MIRDefaults::instance() {
+    static MIRDefaults instance_;
+    return instance_;
+}
 
 void MIRDefaults::print(std::ostream& out) const {
     out << "MIRDefaults[";

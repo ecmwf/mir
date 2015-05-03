@@ -34,11 +34,7 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
 
 // -- Contructors
 
-    MIRDefaults();
 
-// -- Destructor
-
-    ~MIRDefaults(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -56,10 +52,16 @@ class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
     // None
 
 // -- Class methods
-    // None
+
+    static const MIRDefaults& instance();
 
   protected:
 
+    MIRDefaults();
+
+// -- Destructor
+
+    ~MIRDefaults(); // Change to virtual if base class
 // -- Members
     // None
 

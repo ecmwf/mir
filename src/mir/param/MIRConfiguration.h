@@ -35,11 +35,9 @@ class MIRConfiguration : public util::ParserConsumer {
 
 // -- Contructors
 
-    MIRConfiguration();
 
 // -- Destructor
 
-    ~MIRConfiguration(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -58,10 +56,17 @@ class MIRConfiguration : public util::ParserConsumer {
     // None
 
 // -- Class methods
-    // None
+
+    static const MIRConfiguration& instance();
 
   protected:
+    // -- Contructors
 
+    MIRConfiguration();
+
+// -- Destructor
+
+    ~MIRConfiguration();
 // -- Members
     // None
 
@@ -113,8 +118,8 @@ class MIRConfiguration : public util::ParserConsumer {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const MIRConfiguration& p)
-    	{ p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s, const MIRConfiguration& p)
+    { p.print(s); return s; }
 
 };
 

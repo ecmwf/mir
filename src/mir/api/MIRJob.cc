@@ -59,7 +59,7 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
     // Accroding to c++11, this should be thread safe (assuming contructors are thread safe as well)
 
-    static param::MIRDefaults defaults;
+    const param::MIRParametrisation& defaults = param::MIRDefaults::instance();
     eckit::Log::info() << "Defaults: " << defaults << std::endl;
 
     eckit::Timer timer("MIRJob::execute");
