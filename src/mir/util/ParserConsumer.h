@@ -13,17 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef MARSLogic_H
-#define MARSLogic_H
+#ifndef ParserConsumer_H
+#define ParserConsumer_H
 
-#include "mir/logic/MIRLogic.h"
+#include <string>
+
 
 
 namespace mir {
-namespace logic {
+namespace util {
 
-
-class MARSLogic : public MIRLogic {
+class ParserConsumer  {
   public:
 
 // -- Exceptions
@@ -31,11 +31,11 @@ class MARSLogic : public MIRLogic {
 
 // -- Contructors
 
-    MARSLogic(const param::MIRParametrisation&);
+    ParserConsumer();
 
 // -- Destructor
 
-    ~MARSLogic(); // Change to virtual if base class
+    virtual ~ParserConsumer(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -45,7 +45,13 @@ class MARSLogic : public MIRLogic {
 
 // -- Methods
 
+    virtual void set(const std::string& name, const char* value) = 0;
+    virtual void set(const std::string& name, const std::string& value) = 0;
+    virtual void set(const std::string& name, bool value) = 0;
+    virtual void set(const std::string& name, long value) = 0;
+    virtual void set(const std::string& name, double value) = 0;
 
+    virtual void scope(const std::string& name) = 0;
 
 // -- Overridden methods
     // None
@@ -59,14 +65,16 @@ class MARSLogic : public MIRLogic {
   protected:
 
 // -- Members
-    // None
+
+
 
 // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    // virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+
 
 // -- Overridden methods
-    // None
+
 
 // -- Class members
     // None
@@ -78,18 +86,18 @@ class MARSLogic : public MIRLogic {
 
 // No copy allowed
 
-    MARSLogic(const MARSLogic&);
-    MARSLogic& operator=(const MARSLogic&);
+    ParserConsumer(const ParserConsumer&);
+    ParserConsumer& operator=(const ParserConsumer&);
 
 // -- Members
 
-// -- Methods
 
-    void prepare(action::ActionPlan &plan, const param::MIRParametrisation &parametrisation) const;
+// -- Methods
+    // None
 
 // -- Overridden methods
+    // None
 
-    virtual void prepare(action::ActionPlan&) const;
 
 
 // -- Class members
@@ -100,13 +108,16 @@ class MARSLogic : public MIRLogic {
 
 // -- Friends
 
-    // friend std::ostream& operator<<(std::ostream& s, const MARSLogic& p)
-    // { p.print(s); return s; }
+
+    // friend std::ostream& operator<<(std::ostream& s,const ParserConsumer& p) {
+    //     p.print(s);
+    //     return s;
+    // }
 
 };
 
 
-}  // namespace logic
+}  // namespace param
 }  // namespace mir
 #endif
 

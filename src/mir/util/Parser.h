@@ -13,17 +13,20 @@
 /// @date Apr 2015
 
 
-#ifndef MARSLogic_H
-#define MARSLogic_H
+#ifndef Parser_H
+#define Parser_H
 
-#include "mir/logic/MIRLogic.h"
 
+#include "eckit/filesystem/PathName.h"
+#include "eckit/parser/StreamParser.h"
+#include <fstream>
+#include "mir/util/ParserConsumer.h"
 
 namespace mir {
-namespace logic {
+namespace util {
 
 
-class MARSLogic : public MIRLogic {
+class Parser  {
   public:
 
 // -- Exceptions
@@ -31,11 +34,11 @@ class MARSLogic : public MIRLogic {
 
 // -- Contructors
 
-    MARSLogic(const param::MIRParametrisation&);
+    Parser(const eckit::PathName&);
 
 // -- Destructor
 
-    ~MARSLogic(); // Change to virtual if base class
+    ~Parser(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -45,7 +48,7 @@ class MARSLogic : public MIRLogic {
 
 // -- Methods
 
-
+    void fill(ParserConsumer&);
 
 // -- Overridden methods
     // None
@@ -78,18 +81,23 @@ class MARSLogic : public MIRLogic {
 
 // No copy allowed
 
-    MARSLogic(const MARSLogic&);
-    MARSLogic& operator=(const MARSLogic&);
+    Parser(const Parser&);
+    Parser& operator=(const Parser&);
 
 // -- Members
 
+    eckit::PathName path_;
+    std::ifstream in_;
+    eckit::StreamParser parser_;
+
 // -- Methods
 
-    void prepare(action::ActionPlan &plan, const param::MIRParametrisation &parametrisation) const;
+    void consumeComment();
+    bool readNumber(long& lvalue, double& dvalue);
 
+    char peek();
+    char next();
 // -- Overridden methods
-
-    virtual void prepare(action::ActionPlan&) const;
 
 
 // -- Class members
@@ -100,13 +108,15 @@ class MARSLogic : public MIRLogic {
 
 // -- Friends
 
-    // friend std::ostream& operator<<(std::ostream& s, const MARSLogic& p)
-    // { p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s, const Parser& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
 
-}  // namespace logic
+}  // namespace util
 }  // namespace mir
 #endif
 

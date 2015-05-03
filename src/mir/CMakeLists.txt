@@ -198,6 +198,10 @@ list( APPEND mir_srcs
       util/Grib.h
       util/Increments.cc
       util/Increments.h
+      util/Parser.cc
+      util/Parser.h
+      util/ParserConsumer.cc
+      util/ParserConsumer.h
       util/PointSearch.cc
       util/PointSearch.h
     )

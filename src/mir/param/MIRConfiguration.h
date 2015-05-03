@@ -16,17 +16,18 @@
 #ifndef MIRConfiguration_H
 #define MIRConfiguration_H
 
+#include <iosfwd>
 #include <map>
 #include <string>
 
+#include "mir/util/ParserConsumer.h"
 #include "mir/param/SimpleParametrisation.h"
-
 
 namespace mir {
 namespace param {
 
 
-class MIRConfiguration : public SimpleParametrisation {
+class MIRConfiguration : public util::ParserConsumer {
   public:
 
 // -- Exceptions
@@ -34,11 +35,9 @@ class MIRConfiguration : public SimpleParametrisation {
 
 // -- Contructors
 
-    MIRConfiguration();
 
 // -- Destructor
 
-    ~MIRConfiguration(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -47,7 +46,8 @@ class MIRConfiguration : public SimpleParametrisation {
     // None
 
 // -- Methods
-    // None
+
+    const SimpleParametrisation* lookup(long paramId) const;
 
 // -- Overridden methods
     // None
@@ -56,16 +56,23 @@ class MIRConfiguration : public SimpleParametrisation {
     // None
 
 // -- Class methods
-    // None
+
+    static const MIRConfiguration& instance();
 
   protected:
+    // -- Contructors
 
+    MIRConfiguration();
+
+// -- Destructor
+
+    ~MIRConfiguration();
 // -- Members
     // None
 
 // -- Methods
 
-    // void print(ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
     // None
@@ -85,13 +92,23 @@ class MIRConfiguration : public SimpleParametrisation {
 
 // -- Members
 
+    long current_;
+    SimpleParametrisation* scope_;
+    std::map<long, SimpleParametrisation*> settings_;
+
 // -- Methods
     // None
 
 // -- Overridden methods
 
-    // From MIRParametrisation
-    virtual void print(std::ostream&) const;
+    // From ParserConsumer
+    virtual void set(const std::string& name, const char* value);
+    virtual void set(const std::string& name, const std::string& value);
+    virtual void set(const std::string& name, bool value);
+    virtual void set(const std::string& name, long value);
+    virtual void set(const std::string& name, double value);
+
+    virtual void scope(const std::string& name);
 
 // -- Class members
     // None
@@ -101,8 +118,8 @@ class MIRConfiguration : public SimpleParametrisation {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const MIRConfiguration& p)
-    //	{ p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s, const MIRConfiguration& p)
+    { p.print(s); return s; }
 
 };
 

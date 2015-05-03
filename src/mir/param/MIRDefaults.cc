@@ -12,10 +12,14 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "mir/param/MIRDefaults.h"
+
 
 #include <iostream>
 #include <limits>
-#include "mir/param/MIRDefaults.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/io/StdFile.h"
+#include "mir/util/Parser.h"
 
 
 namespace mir {
@@ -29,12 +33,27 @@ MIRDefaults::MIRDefaults() {
     set("interpolation", "finite-element"); // The word 'method' is used in grib
     set("epsilon", std::numeric_limits<double>::epsilon());
     set("nclosest", 4L);
+
+    // Read the rest for the file
+    eckit::PathName path("~mir/etc/defaults.cfg");
+    if (!path.exists())  {
+        return;
+    }
+
+    eckit::Log::info() << "Loading MIR defaults from " << path << std::endl;
+    util::Parser parser(path);
+    parser.fill(*this);
+
 }
 
 
 MIRDefaults::~MIRDefaults() {
 }
 
+const MIRDefaults& MIRDefaults::instance() {
+    static MIRDefaults instance_;
+    return instance_;
+}
 
 void MIRDefaults::print(std::ostream& out) const {
     out << "MIRDefaults[";
@@ -42,6 +61,35 @@ void MIRDefaults::print(std::ostream& out) const {
     out << "]";
 }
 
+void MIRDefaults::set(const std::string& name, const char* value) {
+    eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (string)" << std::endl;
+    SimpleParametrisation::set(name, value);
+}
+
+void MIRDefaults::set(const std::string& name, const std::string& value) {
+    eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (string)" << std::endl;
+    SimpleParametrisation::set(name, value);
+}
+
+void MIRDefaults::set(const std::string& name, bool value) {
+    eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (bool)" << std::endl;
+    SimpleParametrisation::set(name, value);
+}
+
+void MIRDefaults::set(const std::string& name, long value) {
+    eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (long)" << std::endl;
+    SimpleParametrisation::set(name, value);
+}
+
+void MIRDefaults::set(const std::string& name, double value) {
+    eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (double)" << std::endl;
+    SimpleParametrisation::set(name, value);
+}
+
+void MIRDefaults::scope(const std::string& name)
+{
+    NOTIMP;
+}
 
 }  // namespace param
 }  // namespace mir

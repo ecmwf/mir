@@ -19,13 +19,14 @@
 #include <string>
 
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/ParserConsumer.h"
 
 
 namespace mir {
 namespace param {
 
 
-class MIRDefaults : public SimpleParametrisation {
+class MIRDefaults : public SimpleParametrisation, public util::ParserConsumer {
   public:
 
 // -- Exceptions
@@ -33,11 +34,7 @@ class MIRDefaults : public SimpleParametrisation {
 
 // -- Contructors
 
-    MIRDefaults();
 
-// -- Destructor
-
-    ~MIRDefaults(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -55,10 +52,16 @@ class MIRDefaults : public SimpleParametrisation {
     // None
 
 // -- Class methods
-    // None
+
+    static const MIRDefaults& instance();
 
   protected:
 
+    MIRDefaults();
+
+// -- Destructor
+
+    ~MIRDefaults(); // Change to virtual if base class
 // -- Members
     // None
 
@@ -92,6 +95,15 @@ class MIRDefaults : public SimpleParametrisation {
     // From MIRParametrisation
     virtual void print(std::ostream&) const;
 
+    // From MIRParametrisation and ParserConsumer
+    virtual void set(const std::string& name, const char* value);
+    virtual void set(const std::string& name, const std::string& value);
+    virtual void set(const std::string& name, bool value);
+    virtual void set(const std::string& name, long value);
+    virtual void set(const std::string& name, double value);
+
+    virtual void scope(const std::string& name);
+
 // -- Class members
     // None
 
@@ -101,7 +113,7 @@ class MIRDefaults : public SimpleParametrisation {
 // -- Friends
 
     //friend ostream& operator<<(ostream& s,const MIRDefaults& p)
-    //	{ p.print(s); return s; }
+    //  { p.print(s); return s; }
 
 };
 

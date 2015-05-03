@@ -30,7 +30,6 @@
 #include "mir/logic/MIRLogic.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRCombinedParametrisation.h"
-#include "mir/param/MIRConfiguration.h"
 #include "mir/param/MIRDefaults.h"
 
 #include "mir/repres/Representation.h"
@@ -58,11 +57,9 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
         return;
     }
 
-    // Static so it is inited once (mutex?)
-    static param::MIRConfiguration configuration;
-    eckit::Log::info() << "Configuration: " << configuration << std::endl;
+    // Accroding to c++11, this should be thread safe (assuming contructors are thread safe as well)
 
-    static param::MIRDefaults defaults;
+    const param::MIRParametrisation& defaults = param::MIRDefaults::instance();
     eckit::Log::info() << "Defaults: " << defaults << std::endl;
 
     eckit::Timer timer("MIRJob::execute");
@@ -79,7 +76,7 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
         return;
     }
 
-    param::MIRCombinedParametrisation combined(*this, metadata, configuration, defaults);
+    param::MIRCombinedParametrisation combined(*this, metadata, defaults);
     eckit::Log::info() << "Combined parametrisation: " << combined << std::endl;
 
     std::auto_ptr< logic::MIRLogic > logic(logic::MIRLogicFactory::build(combined));
@@ -195,10 +192,10 @@ bool MIRJob::matches(const param::MIRParametrisation& metadata) const {
 
 // This comes grom eckit::Context
 static eckit::RegisterConfigHome configs("mir",
-                                 MIR_INSTALL_BIN_DIR,
-                                 MIR_DEVELOPER_BIN_DIR,
-                                 MIR_DATA_DIR,
-                                 MIR_DEVELOPER_SRC_DIR);
+        MIR_INSTALL_BIN_DIR,
+        MIR_DEVELOPER_BIN_DIR,
+        MIR_DATA_DIR,
+        MIR_DEVELOPER_SRC_DIR);
 
 }  // namespace api
 }  // namespace mir
