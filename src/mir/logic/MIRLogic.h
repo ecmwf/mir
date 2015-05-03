@@ -45,7 +45,7 @@ class MIRLogic {
 
 // -- Contructors
 
-    MIRLogic(param::MIRParametrisation& parametrisation);
+    MIRLogic(const param::MIRParametrisation& parametrisation);
 
 // -- Destructor
 
@@ -74,7 +74,7 @@ class MIRLogic {
 
 // -- Members
 
-    param::MIRParametrisation& parametrisation_;
+    const param::MIRParametrisation& parametrisation_;
 
 // -- Methods
 
@@ -124,7 +124,7 @@ class MIRLogic {
 
 class MIRLogicFactory {
     std::string name_;
-    virtual MIRLogic* make(param::MIRParametrisation&) = 0 ;
+    virtual MIRLogic* make(const param::MIRParametrisation&) = 0 ;
 
   protected:
 
@@ -132,14 +132,14 @@ class MIRLogicFactory {
     virtual ~MIRLogicFactory();
 
   public:
-    static MIRLogic* build(param::MIRParametrisation&);
+    static MIRLogic* build(const param::MIRParametrisation&);
 
 };
 
 
 template<class T>
 class MIRLogicBuilder : public MIRLogicFactory {
-    virtual MIRLogic* make(param::MIRParametrisation& param) {
+    virtual MIRLogic* make(const param::MIRParametrisation& param) {
         return new T(param);
     }
   public:

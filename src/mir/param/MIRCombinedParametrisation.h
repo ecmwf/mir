@@ -106,8 +106,6 @@ class MIRCombinedParametrisation : public MIRParametrisation {
 
     virtual bool has(const std::string& name) const;
 
-    virtual void copyValuesTo(MIRParametrisation& other) const;
-
 // -- Class members
     // None
 

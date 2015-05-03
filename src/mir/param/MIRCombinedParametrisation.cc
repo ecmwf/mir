@@ -47,10 +47,6 @@ void MIRCombinedParametrisation::print(std::ostream& out) const {
         << "]";
 }
 
-void MIRCombinedParametrisation::copyValuesTo(mir::param::MIRParametrisation&) const {
-    NOTIMP;
-}
-
 bool MIRCombinedParametrisation::has(const std::string& name) const {
     // eckit::Log::info() << "MIRCombinedParametrisation::has(" << name << ")" << std::endl;
 

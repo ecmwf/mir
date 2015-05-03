@@ -41,7 +41,7 @@ static void init() {
 }  // (anonymous namespace)
 
 
-MIRLogic::MIRLogic(param::MIRParametrisation &parametrisation):
+MIRLogic::MIRLogic(const param::MIRParametrisation &parametrisation):
     parametrisation_(parametrisation) {
 }
 
@@ -71,7 +71,7 @@ MIRLogicFactory::~MIRLogicFactory() {
 }
 
 
-MIRLogic* MIRLogicFactory::build(param::MIRParametrisation& params) {
+MIRLogic* MIRLogicFactory::build(const param::MIRParametrisation& params) {
 
     std::string name;
 

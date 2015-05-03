@@ -97,13 +97,15 @@ void Parser::fill(ParserConsumer& consumer) {
 
         case ':':
             consumer.scope(eckit::StringTools::trim(tmp));
-            tmp = ""; word = false;
+            tmp = "";
+            word = false;
             next();
             break;
 
         case '=':
             name = tmp;
-            tmp = ""; word = false;
+            tmp = "";
+            word = false;
             next();
             key = false;
             value = true;
@@ -134,7 +136,8 @@ void Parser::fill(ParserConsumer& consumer) {
             key = true;
             value = false;
             name = "";
-            tmp = ""; word = false;
+            tmp = "";
+            word = false;
             if (c == 0) {
                 return;
             }
@@ -178,7 +181,9 @@ bool Parser::readNumber(long& lvalue, double& dvalue) {
     }
 
     switch (c) {
-    case '0': s += c; break;
+    case '0':
+        s += c;
+        break;
     case '1':
     case '2':
     case '3':

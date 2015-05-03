@@ -31,7 +31,7 @@ class MARSLogic : public MIRLogic {
 
 // -- Contructors
 
-    MARSLogic(param::MIRParametrisation&);
+    MARSLogic(const param::MIRParametrisation&);
 
 // -- Destructor
 
@@ -84,8 +84,6 @@ class MARSLogic : public MIRLogic {
 // -- Members
 
 // -- Methods
-
-    void prepare(action::ActionPlan &plan, const param::MIRParametrisation &parametrisation) const;
 
 // -- Overridden methods
 
