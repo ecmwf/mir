@@ -39,7 +39,7 @@ class Increments {
     // -- Contructors
 
     Increments(const param::MIRParametrisation &);
-    Increments(double west_east=0, double north_south=0);
+    Increments(double west_east=0, double south_north=0);
 
     // -- Destructor
 
@@ -51,11 +51,11 @@ class Increments {
     // -- Operators
 
     bool operator==(const Increments& other) const {
-        return (west_east_ == other.west_east_) && (north_south_ == other.north_south_);
+        return (west_east_ == other.west_east_) && (south_north_ == other.south_north_);
     }
 
     bool operator!=(const Increments& other) const {
-        return (west_east_ != other.west_east_) || (north_south_ != other.north_south_);
+        return (west_east_ != other.west_east_) || (south_north_ != other.south_north_);
     }
 
     // -- Methods
@@ -64,8 +64,8 @@ class Increments {
         return west_east_;
     }
 
-    double north_south() const {
-        return north_south_;
+    double south_north() const {
+        return south_north_;
     }
 
     //
@@ -108,7 +108,7 @@ class Increments {
     // -- Members
 
     double west_east_;
-    double north_south_;
+    double south_north_;
 
     // -- Methods
 

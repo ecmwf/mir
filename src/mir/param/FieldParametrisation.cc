@@ -102,12 +102,12 @@ bool FieldParametrisation::get(const std::string &name, std::vector<double> &val
     // Special case
 
     if (name == "grid") {
-        double west_east_increment, north_south_increment;
+        double west_east_increment, south_north_increment;
 
-        if (get("west_east_increment", west_east_increment) && get("north_south_increment", north_south_increment)) {
+        if (get("west_east_increment", west_east_increment) && get("south_north_increment", south_north_increment)) {
             value.resize(2);
             value[0] = west_east_increment;
-            value[1] = north_south_increment;
+            value[1] = south_north_increment;
             return true;
         }
     }

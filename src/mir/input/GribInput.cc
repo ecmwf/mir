@@ -33,7 +33,7 @@ static struct {
     grib_values values;
 } mappings[] = {
     {"west_east_increment", "iDirectionIncrementInDegrees"},
-    {"north_south_increment", "jDirectionIncrementInDegrees"},
+    {"south_north_increment", "jDirectionIncrementInDegrees"},
     {"west", "longitudeOfFirstGridPointInDegrees"},
     {"east", "longitudeOfLastGridPointInDegrees"},
     {"north", "latitudeOfFirstGridPointInDegrees"},
