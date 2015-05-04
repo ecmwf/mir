@@ -22,7 +22,7 @@ namespace mir {
 namespace param {
 
 
-FieldParametrisation::FieldParametrisation(): check_(false) {
+FieldParametrisation::FieldParametrisation(): check_(false), logic_(0) {
 }
 
 
@@ -95,7 +95,7 @@ bool FieldParametrisation::get(const std::string &name, std::vector<long> &value
 
 bool FieldParametrisation::get(const std::string &name, std::vector<double> &value) const {
 
-    if(_get(name, value)) { // This will check if this in the logic paramaretirsaion
+    if (_get(name, value)) { // This will check if this in the logic paramaretirsaion
         return true;
     }
 
