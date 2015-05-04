@@ -50,15 +50,16 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
     MethodWeighted::Matrix W(npts_out, npts_inp);
 
     WeightCache cache;
-    const std::string whash = hash(in.spec(), out.spec());
-    if (!cache.get( whash, W )) {
-        if (in.uid() == out.uid() && in.same(out))
-            W.setIdentity();
-        else {
-            eckit::Timer t("Calculating interpolation weights");
-            assemble(W, in, out);
-        }
-        cache.add( whash, W );
+
+    const std::string whash = hash(in, out);
+    if (!cache.get(whash, W)) {
+      if (in.unique_id() == out.unique_id() && in.same(out)) {
+        W.setIdentity();
+      } else {
+        eckit::Timer t("Calculating interpolation weights");
+        assemble(W, in, out);
+      }
+      cache.add(whash, W);
     }
 
     applyMask(W);
@@ -109,13 +110,11 @@ void MethodWeighted::applyMask(MethodWeighted::Matrix& W) const {
 }
 
 
-std::string MethodWeighted::hash(const atlas::GridSpec& inspec, const atlas::GridSpec& outspec) const {
-    eckit::StrStream os;
-    os << name() << "." << inspec.uid() << "." << outspec.uid() << eckit::StrStream::ends;
-    return std::string(os);
+std::string MethodWeighted::hash(const atlas::Grid& in, const atlas::Grid& out) const {
+    std::ostringstream os;
+    os << name() << "." << in.unique_id() << "." << out.unique_id();
+    return os.str();
 }
-
-
 
 }  // namespace method
 }  // namespace mir

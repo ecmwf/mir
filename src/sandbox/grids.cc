@@ -51,14 +51,8 @@ class Grids : public eckit::Tool {
 
 void Grids::grid(const atlas::grids::ReducedGrid &grid) {
 
-    eckit::MD5 md5;
     const std::vector<int> &points_per_latitudes = grid.npts_per_lat();
     size_t half = points_per_latitudes.size() / 2;
-
-    for (size_t i =  0; i < half; i++) {
-        int l = points_per_latitudes[i];
-        md5.add(&l, sizeof(l));
-    }
 
     std::vector<int> diff; diff.reserve(half);
     eckit::DIFFencode(points_per_latitudes.begin(), points_per_latitudes.begin() + half, std::back_inserter(diff));
@@ -66,11 +60,11 @@ void Grids::grid(const atlas::grids::ReducedGrid &grid) {
     std::vector<int> rle;
     eckit::RLEencode2(diff.begin(), diff.end(), std::back_inserter(rle), 1000);
 
+    const atlas::Grid& g = grid;
 
-    eckit::Log::info() << "uid " << grid.uid() << " md5 " << md5.digest() << " rle ";
+    eckit::Log::info() << "uid " << g.unique_id() << " hash " << g.hash() << " rle ";
     eckit::RLEprint(eckit::Log::info(), rle.begin(), rle.end());
     eckit::Log::info() << std::endl;
-
 }
 
 void Grids::run() {

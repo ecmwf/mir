@@ -81,7 +81,7 @@ class MethodWeighted : public Method {
 
     void applyMask(Matrix& W) const;
 
-    std::string hash(const atlas::GridSpec& inspec, const atlas::GridSpec& outspec) const;
+    std::string hash(const atlas::Grid& in, const atlas::Grid& out) const;
 
 // -- Overridden methods
     // None
