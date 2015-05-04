@@ -88,7 +88,9 @@ class FieldParametrisation : public MIRParametrisation {
     FieldParametrisation& operator=(const FieldParametrisation&);
 
 // -- Members
-    // None
+
+    mutable bool check_;
+    mutable const MIRParametrisation* logic_;
 
 // -- Methods
 

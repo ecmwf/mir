@@ -118,8 +118,10 @@ class MIRConfiguration : public util::ParserConsumer {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const MIRConfiguration& p)
-    { p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s, const MIRConfiguration& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

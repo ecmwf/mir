@@ -24,7 +24,7 @@ namespace mir {
 namespace logic {
 
 
-ToolLogic::ToolLogic(param::MIRParametrisation &parametrisation):
+ToolLogic::ToolLogic(const param::MIRParametrisation &parametrisation):
     MIRLogic(parametrisation) {
 }
 

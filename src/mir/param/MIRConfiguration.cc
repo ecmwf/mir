@@ -95,8 +95,7 @@ const SimpleParametrisation* MIRConfiguration::lookup(long paramId) const {
     std::map<long, SimpleParametrisation*>::const_iterator j = settings_.find(paramId);
     if(j == settings_.end()) {
         return 0;
-    }
-    else {
+    } else {
         return (*j).second;
     }
 }

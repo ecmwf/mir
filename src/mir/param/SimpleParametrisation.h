@@ -50,22 +50,22 @@ class SimpleParametrisation : public MIRParametrisation {
     // None
 
 // -- Methods
+    void copyValuesTo(SimpleParametrisation& other) const;
 
 
-    virtual MIRParametrisation& set(const std::string& name, const char* value);
-    virtual MIRParametrisation& set(const std::string& name, const std::string& value);
-    virtual MIRParametrisation& set(const std::string& name, bool value);
-    virtual MIRParametrisation& set(const std::string& name, long value);
-    virtual MIRParametrisation& set(const std::string& name, double value);
-    virtual MIRParametrisation& set(const std::string& name, DelayedParametrisation* value);
+    SimpleParametrisation& set(const std::string& name, const char* value);
+    SimpleParametrisation& set(const std::string& name, const std::string& value);
+    SimpleParametrisation& set(const std::string& name, bool value);
+    SimpleParametrisation& set(const std::string& name, long value);
+    SimpleParametrisation& set(const std::string& name, double value);
+    SimpleParametrisation& set(const std::string& name, DelayedParametrisation* value);
 
-    virtual MIRParametrisation& set(const std::string& name, const std::vector<long>& value);
-    virtual MIRParametrisation& set(const std::string& name, const std::vector<double>& value);
+    SimpleParametrisation& set(const std::string& name, const std::vector<long>& value);
+    SimpleParametrisation& set(const std::string& name, const std::vector<double>& value);
 
-    virtual MIRParametrisation& clear(const std::string& name);
+    SimpleParametrisation& clear(const std::string& name);
 // -- Overridden methods
 
-    virtual void copyValuesTo(MIRParametrisation& other) const;
 
 // -- Class members
     // None
@@ -82,8 +82,6 @@ class SimpleParametrisation : public MIRParametrisation {
 // -- Methods
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
-
-
 
 
     bool matches(const param::MIRParametrisation& metadata) const;
