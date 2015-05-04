@@ -2,11 +2,13 @@ MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
 MIR
 - Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
+- Field using LSM. Talk to me on how to get to the LSM data (e.g. with config, and what class do we need to implement)
 - Rotated fields
 - Rotated winds?
 - Make sure we don't need to cast constness away
 - Make sure cached weight files are not loaded for every field
 - Wind interpolation
+- Use VOD2UV from trans
 
 TESTING:
 - Test mir_tool with valgrind
