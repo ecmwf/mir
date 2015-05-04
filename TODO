@@ -1,8 +1,5 @@
 MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
-SHOWSTOPPERS
-- Caching of meshed and weights must take PL array into account when naming files
-
 MIR
 - Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
 - Rotated fields
