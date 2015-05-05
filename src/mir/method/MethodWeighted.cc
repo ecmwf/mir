@@ -62,6 +62,8 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
       cache.add(whash, W);
     }
 
+    applyMissingValues(W);
+
     applyMask(W);
 
     // multiply interpolant matrix with field vector
@@ -83,6 +85,10 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
 
         field.values(result, i); // Update field with result
     }
+}
+
+
+void MethodWeighted::applyMissingValues(MethodWeighted::Matrix& W) const {
 }
 
 

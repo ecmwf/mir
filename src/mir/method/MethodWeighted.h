@@ -79,6 +79,10 @@ class MethodWeighted : public Method {
     virtual const char* name() const = 0;
     virtual void assemble(Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const = 0;
 
+    /// Update interpolation weigths matrix to account for missing values
+    void applyMissingValues(MethodWeighted::Matrix& W) const;
+
+    /// Update interpolation weigths matrix to account for field masked values
     void applyMask(Matrix& W) const;
 
     std::string hash(const atlas::Grid& in, const atlas::Grid& out) const;
