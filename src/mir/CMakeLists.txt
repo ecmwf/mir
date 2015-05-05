@@ -206,6 +206,8 @@ list( APPEND mir_srcs
       util/ParserConsumer.h
       util/PointSearch.cc
       util/PointSearch.h
+      util/Rotation.cc
+      util/Rotation.h
     )
 
 

@@ -20,6 +20,7 @@
 
 
 #include "mir/repres/RotatedLL.h"
+
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -35,6 +36,11 @@ Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation &parametris
     ASSERT(value.size() == 2);
 
     increments_ = util::Increments(value[0], value[1]);
+
+    ASSERT(parametrisation_.get("user.rotation", value));
+    ASSERT(value.size() == 2);
+
+    rotation_ = util::Rotation(value[0], value[1]);
 }
 
 
@@ -48,11 +54,9 @@ void Gridded2RotatedLL::print(std::ostream &out) const {
 
 
 repres::Representation *Gridded2RotatedLL::outputRepresentation(const repres::Representation *inputRepres) const {
-    // return new repres::RotatedLL(
-    //            util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
-    //            increments_);
-    NOTIMP;
-    return 0;
+    return new repres::RotatedLL(
+               util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
+               increments_, rotation_);
 }
 
 

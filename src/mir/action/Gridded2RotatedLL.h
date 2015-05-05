@@ -18,6 +18,7 @@
 
 #include "mir/action/Gridded2GriddedInterpolation.h"
 #include "mir/util/Increments.h"
+#include "mir/util/Rotation.h"
 
 namespace mir {
 namespace action {
@@ -82,6 +83,7 @@ class Gridded2RotatedLL : public Gridded2GriddedInterpolation {
 
 // -- Members
     util::Increments increments_;
+    util::Rotation rotation_;
 
 // -- Methods
     // None
