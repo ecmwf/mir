@@ -57,7 +57,7 @@ repres::Representation *Gridded2RotatedLL::outputRepresentation(const repres::Re
 
 
 namespace {
-static ActionBuilder< Gridded2RotatedLL > grid2grid("interpolate.grid2regular-ll");
+static ActionBuilder< Gridded2RotatedLL > grid2grid("interpolate.grid2rotated-ll");
 }
 
 
