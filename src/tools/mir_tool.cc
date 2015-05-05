@@ -55,7 +55,7 @@ void MIRTool::usage(const std::string& tool) {
             << "   --bitmap=path" << std::endl
             << "   --epsilon=e" << std::endl
             << "   --frame=n" << std::endl
-            << "   --grid=west_east/north_south" << std::endl
+            << "   --grid=west_east/south_north" << std::endl
             << "   --intermediate_gaussian=N" << std::endl
             << "   --interpolation=method (e.g. bilinear)" << std::endl
             << "   --nclosest=n (e.g. for k-nearest)" << std::endl

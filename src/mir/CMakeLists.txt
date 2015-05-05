@@ -38,6 +38,8 @@ list( APPEND mir_srcs
       action/Gridded2RegularGG.h
       action/Gridded2RegularLL.cc
       action/Gridded2RegularLL.h
+      action/Gridded2RotatedLL.cc
+      action/Gridded2RotatedLL.h
       action/Sh2GriddedTransform.cc
       action/Sh2GriddedTransform.h
       action/Sh2Octahedral.cc
@@ -204,6 +206,8 @@ list( APPEND mir_srcs
       util/ParserConsumer.h
       util/PointSearch.cc
       util/PointSearch.h
+      util/Rotation.cc
+      util/Rotation.h
     )
 
 

@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef Increments_H
-#define Increments_H
+#ifndef Rotation_H
+#define Rotation_H
 
 
 #include <iosfwd>
@@ -30,7 +30,7 @@ class MIRParametrisation;
 namespace mir {
 namespace util {
 
-class Increments {
+class Rotation {
   public:
 
     // -- Exceptions
@@ -38,35 +38,49 @@ class Increments {
 
     // -- Contructors
 
-    Increments(const param::MIRParametrisation &);
-    Increments(double west_east=0, double south_north=0);
+    Rotation(const param::MIRParametrisation &);
+    Rotation(double south_pole_latitude = 0,
+             double south_pole_longitude = 0,
+             double south_pole_rotation_angle = 0);
 
     // -- Destructor
 
-    ~Increments(); // Change to virtual if base class
+    ~Rotation(); // Change to virtual if base class
 
     // -- Convertors
     // None
 
     // -- Operators
 
-    bool operator==(const Increments& other) const {
-        return (west_east_ == other.west_east_) && (south_north_ == other.south_north_);
+    // bool operator==(const Rotation& other) const {
+    //     return (west_east_ == other.west_east_) && (south_north_ == other.south_north_);
+    // }
+
+    // bool operator!=(const Rotation& other) const {
+    //     return (west_east_ != other.west_east_) || (south_north_ != other.south_north_);
+    // }
+
+    // // -- Methods
+
+    double south_pole_latitude() const {
+        return south_pole_latitude_;
     }
 
-    bool operator!=(const Increments& other) const {
-        return (west_east_ != other.west_east_) || (south_north_ != other.south_north_);
+    double south_pole_longitude() const {
+        return south_pole_longitude_;
     }
 
-    // -- Methods
-
-    double west_east() const {
-        return west_east_;
+    double south_pole_rotation_angle() const {
+        return south_pole_rotation_angle_;
     }
 
-    double south_north() const {
-        return south_north_;
-    }
+    // double west_east() const {
+    //     return west_east_;
+    // }
+
+    // double south_north() const {
+    //     return south_north_;
+    // }
 
     //
     void fill(grib_info &) const;
@@ -107,8 +121,9 @@ class Increments {
 
     // -- Members
 
-    double west_east_;
-    double south_north_;
+    double south_pole_latitude_;
+    double south_pole_longitude_;
+    double south_pole_rotation_angle_;
 
     // -- Methods
 
@@ -123,7 +138,7 @@ class Increments {
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const Increments &p) {
+    friend std::ostream &operator<<(std::ostream &s, const Rotation &p) {
         p.print(s);
         return s;
     }

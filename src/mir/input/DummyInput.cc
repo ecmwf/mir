@@ -102,7 +102,7 @@ bool DummyInput::get(const std::string &name, double &value) const {
         return true;
     }
 
-    if (name == "north_south_increment") {
+    if (name == "south_north_increment") {
         value = 1;
         return true;
     }

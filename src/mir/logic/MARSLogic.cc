@@ -64,15 +64,13 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
         }
     }
 
-    if(vod2uv) {
+    if (vod2uv) {
         plan.add("transform.vod2uv");
     }
 
     if (parametrisation_.has("field.spherical")) {
         if (parametrisation_.has("user.grid")) {
-#if 0
-            plan.add("transform.sh2regular-ll");
-#else
+
             // For now, thar's what we do
             // runtime.set("reduced", 48L);
 
@@ -80,13 +78,18 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
                 plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
             }
 
-            if(intermediate_gaussian) {
+            if (intermediate_gaussian) {
                 plan.add("transform.sh2reduced-gg", "reduced", intermediate_gaussian);
             } else {
                 plan.add("transform.sh2reduced-gg", "reduced", new AutoReduced(parametrisation_));
             }
-            plan.add("interpolate.grid2regular-ll");
-#endif
+
+            if (parametrisation_.has("user.rotation")) {
+                plan.add("interpolate.grid2rotated-ll");
+            } else {
+                plan.add("interpolate.grid2regular-ll");
+            }
+
         }
         if (parametrisation_.has("user.reduced")) {
             if (autoresol) {
@@ -111,7 +114,11 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
 
     if (parametrisation_.has("field.gridded")) {
         if (parametrisation_.has("user.grid")) {
-            plan.add("interpolate.grid2regular-ll");
+             if (parametrisation_.has("user.rotation")) {
+                plan.add("interpolate.grid2rotated-ll");
+            } else {
+                plan.add("interpolate.grid2regular-ll");
+            }
         }
         if (parametrisation_.has("user.reduced")) {
             plan.add("interpolate.grid2reduced-gg");

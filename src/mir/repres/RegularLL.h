@@ -34,7 +34,7 @@ class RegularLL : public Gridded {
     // -- Contructors
 
     RegularLL(const param::MIRParametrisation &);
-    RegularLL(const util::BoundingBox& bbox, const util::Increments& increments);
+    RegularLL(const util::BoundingBox &bbox, const util::Increments &increments);
 
 
     // -- Destructor
@@ -68,14 +68,16 @@ class RegularLL : public Gridded {
   protected:
 
     // -- Members
-    // None
+
+    util::Increments increments_;
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
-    // None
+    void print(std::ostream &) const; // Change to virtual if base class
+    virtual atlas::Grid *atlasGrid() const;
+    virtual void fill(grib_info &) const;
 
     // -- Class members
     // None
@@ -94,7 +96,6 @@ class RegularLL : public Gridded {
     // -- Members
 
     util::BoundingBox bbox_;
-    util::Increments increments_;
 
     size_t ni_;
     size_t nj_;
@@ -104,13 +105,15 @@ class RegularLL : public Gridded {
 
     void setNiNj();
 
+    // Called by crop(), to override in subclasses
+    virtual RegularLL *create(const util::BoundingBox &bbox) const;
+
+
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
-    virtual Representation *crop(const util::BoundingBox& bbox, const std::vector<double> &, std::vector<double> &) const;
-    virtual atlas::Grid* atlasGrid() const;
+    virtual Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &, std::vector<double> &) const;
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
-    virtual Representation* clone() const;
+    virtual Representation *clone() const;
 
     // -- Class members
     // None

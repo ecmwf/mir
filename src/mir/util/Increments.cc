@@ -25,14 +25,14 @@ namespace mir {
 namespace util {
 
 
-Increments::Increments(double west_east, double north_south):
+Increments::Increments(double west_east, double south_north):
     west_east_(west_east),
-    north_south_(north_south) {
+    south_north_(south_north) {
 }
 
 Increments::Increments(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("west_east_increment", west_east_));
-    ASSERT(parametrisation.get("north_south_increment", north_south_));
+    ASSERT(parametrisation.get("south_north_increment", south_north_));
 }
 
 Increments::~Increments() {
@@ -41,14 +41,14 @@ Increments::~Increments() {
 void Increments::print(std::ostream &out) const {
     out << "Increments["
         << "west_east=" << west_east_
-        << ",north_south=" << north_south_
+        << ",south_north=" << south_north_
         << "]";
 }
 
 void Increments::fill(grib_info &info) const  {
     // Warning: scanning mode not considered
     info.grid.iDirectionIncrementInDegrees = west_east_;
-    info.grid.jDirectionIncrementInDegrees = north_south_;
+    info.grid.jDirectionIncrementInDegrees = south_north_;
 }
 
 
