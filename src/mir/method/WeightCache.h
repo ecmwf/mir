@@ -12,8 +12,8 @@
 /// @author Tiago Quintino
 /// @date Oct 2013
 
-#ifndef soyuz_method_WeightCache_H
-#define soyuz_method_WeightCache_H
+#ifndef mir_method_WeightCache_H
+#define mir_method_WeightCache_H
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/memory/NonCopyable.h"
