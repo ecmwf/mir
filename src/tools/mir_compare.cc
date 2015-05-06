@@ -55,6 +55,7 @@ class MIRCompare : public eckit::Tool {
         eckit::Tool(argc, argv),
         user_absolute_(1e-9),
         user_relative_(1e-9),
+        user_percent_(1e-9),
         user_ulps_(0)
     {
     }
@@ -63,6 +64,7 @@ private: // members
 
     double user_absolute_;
     double user_relative_;
+    double user_percent_;
     long   user_ulps_;
 
     eckit::ScopedPtr< eckit::RealCompare<double> > real_same_;
@@ -72,7 +74,7 @@ private: // members
 void MIRCompare::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " [--absolute a] [--relative r] [--ulps u]  file1.grib file2.grib" << std::endl
+            << std::endl << "Usage: " << tool << " [--absolute=a] [--relative=r] [--ulps=u] [--percent=p] file1.grib file2.grib" << std::endl
             ;
 
     ::exit(1);
@@ -137,6 +139,11 @@ bool MIRCompare::compare(const double *a, const double *b, size_t size) const {
         eckit::Log::info() << "maxAbsoluteError=" << maxAbsoluteError << " maxRelativeError=" << maxRelativeError << std::endl;
         eckit::Log::info() << "packing_error1=" << packing_error1 << " packing_error2=" << packing_error2 << std::endl;
 
+        if(p <= user_percent_) {
+            eckit::Log::info() << "Percent of different valus smaller than " << user_percent_ << ", ignoring differences" << std::endl;
+            count = 0;
+        }
+
         // << "Value " << i + 1 << " are different: " << a[i]
         //                           << " and " << b[i] << " diff=" << fabs(a[i] - b[i]) << " err=" << err(a[i], b[i]) << std::endl;
         //       return false;
@@ -185,6 +192,7 @@ void MIRCompare::run() {
 
     args.get("absolute", user_absolute_);
     args.get("relative", user_relative_);
+    args.get("percent", user_percent_);
 
 
     /// TODO Test this code
