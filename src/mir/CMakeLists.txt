@@ -85,6 +85,8 @@ list( APPEND mir_srcs
       logic/MIRLogic.h
       logic/ToolLogic.cc
       logic/ToolLogic.h
+      lsm/GribFileLSM.cc
+      lsm/GribFileLSM.h
       lsm/LandSeaMask.cc
       lsm/LandSeaMask.h
       method/Bilinear.cc
