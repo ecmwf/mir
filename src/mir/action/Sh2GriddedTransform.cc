@@ -55,8 +55,6 @@ static std::map<std::string, struct Trans_t> trans_handles;
 namespace mir {
 namespace action {
 
-#define X(a) std::cout << "  TRANS: " << #a << " = " << a << std::endl
-
 
 static void transform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
 #ifdef ATLAS_HAVE_TRANS

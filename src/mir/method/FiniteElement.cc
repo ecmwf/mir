@@ -54,13 +54,6 @@ bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, in
     }
     atlas::PointIndex3::NodeList cs = ptree->kNearestNeighbours(p,k);
 
-#if 0
-    std::cout << p << std::endl;
-    for( size_t i = 0; i < cs.size(); ++i ) {
-        std::cout << cs[i] << std::endl;
-    }
-#endif
-
     // find in which triangle the point is contained
     // by computing the intercetion of the point with each nearest triangle
 

@@ -30,13 +30,13 @@ namespace method {
 namespace {
 
 
-bool eq(const double& a, const double& b) {
+bool eq(const double &a, const double &b) {
     // @todo use the one in eckit once it stops giving you gip
-    return fabs(a-b) < 10e-10;
+    return fabs(a - b) < 10e-10;
 }
 
 
-void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, size_t start, size_t end, size_t& left, size_t& right) {
+void left_right_lon_indexes(const double &in, atlas::ArrayView<double, 2> &data, size_t start, size_t end, size_t &left, size_t &right) {
     using eckit::geometry::LON;
 
     double right_lon = 360.0;
@@ -46,7 +46,7 @@ void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, 
     left = start;
 
     for (unsigned int i = start; i < end; i++) {
-        const double& val = data[i].data()[LON];
+        const double &val = data[i].data()[LON];
 
         if (val < in || eq(val, in)) {
             left_lon = val;
@@ -64,7 +64,7 @@ void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, 
 }  // (utilities namespace)
 
 
-Bilinear::Bilinear(const param::MIRParametrisation& param) :
+Bilinear::Bilinear(const param::MIRParametrisation &param) :
     MethodWeighted(param) {
 }
 
@@ -72,39 +72,37 @@ Bilinear::Bilinear(const param::MIRParametrisation& param) :
 Bilinear::~Bilinear() {
 }
 
-const char* Bilinear::name() const {
+const char *Bilinear::name() const {
     return  "bilinear";
 }
 
-void Bilinear::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
+void Bilinear::assemble(MethodWeighted::Matrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
 
-    std::cout << "Bilinear:: compute called " << std::endl;
+    const atlas::Mesh &i_mesh = in.mesh();
+    const atlas::Mesh &o_mesh = out.mesh();
 
-    const atlas::Mesh& i_mesh = in.mesh();
-    const atlas::Mesh& o_mesh = out.mesh();
+    atlas::FunctionSpace &inodes = i_mesh.function_space("nodes");
+    atlas::FunctionSpace &onodes = o_mesh.function_space("nodes");
 
-    atlas::FunctionSpace& inodes = i_mesh.function_space( "nodes" );
-    atlas::FunctionSpace& onodes = o_mesh.function_space( "nodes" );
+    atlas::FieldT<double> &ilonlat = inodes.field<double>("lonlat");
+    atlas::FieldT<double> &olonlat = onodes.field<double>("lonlat");
 
-    atlas::FieldT<double>& ilonlat = inodes.field<double>( "lonlat" );
-    atlas::FieldT<double>& olonlat = onodes.field<double>( "lonlat" );
-
-    atlas::ArrayView<double,2> icoords     ( ilonlat );
-    atlas::ArrayView<double,2> ocoords     ( olonlat );
+    atlas::ArrayView<double, 2> icoords     ( ilonlat );
+    atlas::ArrayView<double, 2> ocoords     ( olonlat );
 
     // ReducedGrid involves all grids that can be represented with latitudes and npts_per_lat
-    const atlas::grids::ReducedGrid* igg = dynamic_cast<const atlas::grids::ReducedGrid*>(&in);
+    const atlas::grids::ReducedGrid *igg = dynamic_cast<const atlas::grids::ReducedGrid *>(&in);
 
     /// @todo we only handle these at the moment
     if (!igg)
         throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
 
     // get the longitudes from
-    const std::vector<int>& lons = igg->npts_per_lat();
+    const std::vector<int> &lons = igg->npts_per_lat();
 
     std::vector< Eigen::Triplet<double> > weights_triplets; /* structure to fill-in sparse matrix */
 
@@ -133,7 +131,7 @@ void Bilinear::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const 
             if ( (n + 1 ) == lons.size())
                 bot_n = 0;
             else
-                bot_n = lons[n+1];
+                bot_n = lons[n + 1];
 
             double top_lat = icoords[top_i].data()[LAT];
 
@@ -162,7 +160,7 @@ void Bilinear::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const 
         size_t top_i_lft, top_i_rgt;
 
         left_right_lon_indexes(lon, icoords, top_i, top_i + top_n, top_i_lft, top_i_rgt);
-        //left_right_lon_indexes(lon, icoords,  hi_data, tl, tr);
+        // left_right_lon_indexes(lon, icoords,  hi_data, tl, tr);
         ASSERT(top_i_lft >= top_i);
         ASSERT(top_i_lft < bot_i);
         ASSERT(top_i_rgt >= top_i);
@@ -209,10 +207,10 @@ void Bilinear::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const 
         double w_bl =  w4 * wb;
         double w_br =  w3 * wb;
 
-        weights_triplets.push_back( Eigen::Triplet<double>( i, bot_i_rgt, w_br ) );
-        weights_triplets.push_back( Eigen::Triplet<double>( i, bot_i_lft, w_bl ) );
-        weights_triplets.push_back( Eigen::Triplet<double>( i, top_i_rgt, w_tr ) );
-        weights_triplets.push_back( Eigen::Triplet<double>( i, top_i_lft, w_tl ) );
+        weights_triplets.push_back( Eigen::Triplet<double>(i, bot_i_rgt, w_br));
+        weights_triplets.push_back( Eigen::Triplet<double>(i, bot_i_lft, w_bl));
+        weights_triplets.push_back( Eigen::Triplet<double>(i, top_i_rgt, w_tr));
+        weights_triplets.push_back( Eigen::Triplet<double>(i, top_i_lft, w_tl));
 
     }
 
@@ -220,7 +218,7 @@ void Bilinear::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const 
 }
 
 
-void Bilinear::print(std::ostream& out) const {
+void Bilinear::print(std::ostream &out) const {
     out << "Bilinear[]";
 }
 
