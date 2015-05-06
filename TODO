@@ -2,12 +2,17 @@ MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
 PRIORITY
 
+ - ecbuild: add macro for ___attribute__((constructor))
  - Atlas / eckit: Fix mesh caching
+ - MIR: Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
  - Atlas: LatLon grid constructor refactor to take Ni Nj
+ - Find out in libemos:
+
+    * sh to rot latlon - what is the path?
+    * how 10m uv grid point - how are they interpolate?
 
 MIR
 
-- Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
 - Field using LSM. Talk to me on how to get to the LSM data (e.g. with config, and what class do we need to implement)
 - Rotated fields
 - Rotated winds?
