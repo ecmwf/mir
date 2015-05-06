@@ -40,7 +40,6 @@ MIRArgs::MIRArgs(usage_proc usage, int args_count) {
             parse(a.substr(2), v);
             ASSERT(v.size() == 2) ;
             set(v[0], v[1]);
-            std::cout << v[0] << " - " <<v[1] << std::endl;
             keys_.insert(v[0]);
         } else {
             args_.push_back(a);

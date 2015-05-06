@@ -146,7 +146,6 @@ data::MIRField *NetcdfFileInput::field() const {
 
     std::vector<double> values;
     getVariable(variable_, values);
-    std::cout << "Values " << values.size() << std::endl;
 
     bool hasMissing = false; // Should check!
     double missingValue = 9999; // Read from file

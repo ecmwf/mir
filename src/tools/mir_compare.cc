@@ -202,9 +202,6 @@ void MIRCompare::run() {
         real_same_.reset( new RealCompare<double>(0,user_ulps_) );
     }
 
-
-    // std::cout << std::numeric_limits<float>::min() << std::endl;
-
     mir::input::GribFileInput file1(args.args(0));
     mir::input::GribFileInput file2(args.args(1));
 
