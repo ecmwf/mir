@@ -87,6 +87,9 @@ class MethodWeighted : public Method {
 
     std::string hash(const atlas::Grid& in, const atlas::Grid& out) const;
 
+    const Matrix& getMatrix(const atlas::Grid& in, const atlas::Grid& out) const;
+
+
 // -- Overridden methods
     // None
 
