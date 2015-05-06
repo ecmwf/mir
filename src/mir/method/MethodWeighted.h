@@ -31,6 +31,11 @@ class Grid;
 
 
 namespace mir {
+
+namespace lsm {
+class LandSeaMask;
+}
+
 namespace method {
 
 
@@ -83,7 +88,9 @@ class MethodWeighted : public Method {
     Matrix applyMissingValues(const MethodWeighted::Matrix& W, data::MIRField& field, size_t which) const;
 
     /// Update interpolation weigths matrix to account for field masked values
-    void applyMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+    void applyInputMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&) const;
+    void applyOutputMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&) const;
+    void applyBothMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&, const lsm::LandSeaMask&) const;
 
     std::string hash(const atlas::Grid& in, const atlas::Grid& out) const;
 
@@ -114,7 +121,7 @@ class MethodWeighted : public Method {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const MethodWeighted& p) {
+    friend std::ostream& operator<<(std::ostream& s, const MethodWeighted& p) {
         p.print(s);
         return s;
     }

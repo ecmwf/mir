@@ -94,6 +94,13 @@ const MethodWeighted::Matrix& MethodWeighted::getMatrix(const atlas::Grid& in, c
 
         // TODO: Apply LSMs
 
+        if (mask_in.get() && mask_out.get()) {
+            applyBothMask(W, in, out, *mask_in, *mask_out);
+        } else if (mask_in.get()) {
+            applyInputMask(W, in, out, *mask_in);
+        } else if (mask_out.get()) {
+            applyOutputMask(W, in, out, *mask_out);
+        }
 
         // Mask should be considered in caching
         // applyMask(W, in, out);
@@ -169,34 +176,16 @@ MethodWeighted::Matrix MethodWeighted::applyMissingValues(const MethodWeighted::
     return W;
 }
 
+void MethodWeighted::applyInputMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&) const {
+    NOTIMP;
+}
 
-void MethodWeighted::applyMask(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
+void MethodWeighted::applyOutputMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&) const {
+    NOTIMP;
+}
 
-    bool use_lsm = false;
-    if (parametrisation_.get("use.lsm", use_lsm) && use_lsm) {
-        // std::auto_ptr<LandSeaMask> mask_in = lsm::LandSeaMaskFactory::build(parametrisation_);
-        // std::auto_ptr<LandSeaMask> mask_out = lsm::LandSeaMaskFactory::build(parametrisation_);
-    }
-#if 0
-//FIXME
-    // FIXME arguments:
-    atlas::Grid*       dummy_grid = 0;
-    atlas::Grid& in  (*dummy_grid);
-    atlas::Grid& out (*dummy_grid);
-
-    if ( params().has("MaskPath") ) {
-        PathName mask_path = params()["MaskPath"];
-
-        FieldSet::Ptr fmask( new FieldSet( mask_path ) );
-        ASSERT( fmask );
-
-        if ( fmask->size() != 1 )
-            throw UserError( "User provided mask file with multiple fields", Here() );
-
-        Masks m;
-        m.assemble( (*fmask)[0], in, out, W );
-    }
-#endif
+void MethodWeighted::applyBothMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&, const lsm::LandSeaMask&) const {
+    NOTIMP;
 }
 
 
