@@ -56,6 +56,9 @@ void MIRField::print(std::ostream &out) const {
     if (hasMissing_) {
         out << ",missingValue=" << missingValue_;
     }
+    if(representation_) {
+        out << ",representation=" << *representation_;
+    }
     out << "]";
 }
 

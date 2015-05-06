@@ -62,6 +62,7 @@ void MIRTool::usage(const std::string& tool) {
             << "   --octahedral=N" << std::endl
             << "   --reduced=N" << std::endl
             << "   --regular=N" << std::endl
+            << "   --rotation=lat/lon" << std::endl
             << "   --truncation=T" << std::endl
 
             ;

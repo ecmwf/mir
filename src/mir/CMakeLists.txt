@@ -141,6 +141,8 @@ list( APPEND mir_srcs
       repres/Gridded.h
       repres/IrregularLatlon.cc
       repres/IrregularLatlon.h
+      repres/LatLon.cc
+      repres/LatLon.h
       repres/Lambert.cc
       repres/Lambert.h
       repres/LambertAzimuthalEqualArea.cc
