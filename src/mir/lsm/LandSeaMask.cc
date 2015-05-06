@@ -77,8 +77,8 @@ LandSeaMask* LandSeaMaskFactory::build(const param::MIRParametrisation& params) 
 
     std::string name;
 
-    if(!params.get("logic", name)) {
-        throw eckit::SeriousBug("LandSeaMaskFactory cannot get logic");
+    if(!params.get("lsm", name)) {
+        throw eckit::SeriousBug("LandSeaMaskFactory cannot get lsm");
     }
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);

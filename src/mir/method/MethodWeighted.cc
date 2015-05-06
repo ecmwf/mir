@@ -66,11 +66,11 @@ const MethodWeighted::Matrix& MethodWeighted::getMatrix(const atlas::Grid& in, c
     }
 
     if (mask_in.get()) {
-        whash += std::string(".IM") + mask_in->unique_id();
+        whash += std::string(".IM") + mask_in->unique_id(in);
     }
 
     if (mask_out.get()) {
-        whash += std::string(".OM") + mask_out->unique_id();
+        whash += std::string(".OM") + mask_out->unique_id(out);
     }
 
     std::map<std::string, MethodWeighted::Matrix>::iterator j = matrix_cache.find(whash);
@@ -178,18 +178,24 @@ MethodWeighted::Matrix MethodWeighted::applyMissingValues(const MethodWeighted::
 }
 
 void MethodWeighted::applyInputMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask& imask) const {
-    NOTIMP;
+
+    return; // For now
+
     std::auto_ptr<data::MIRField> imask_field(imask.field(in));
 }
 
 void MethodWeighted::applyOutputMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask& omask) const {
-    NOTIMP;
+
+    return; // For now
+
     std::auto_ptr<data::MIRField> omask_field(omask.field(out));
 }
 
 void MethodWeighted::applyBothMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out,
     const lsm::LandSeaMask& imask, const lsm::LandSeaMask& omask) const {
-    NOTIMP;
+
+    return; // For now
+
     std::auto_ptr<data::MIRField> imask_field(imask.field(in));
     std::auto_ptr<data::MIRField> omask_field(omask.field(out));
 }

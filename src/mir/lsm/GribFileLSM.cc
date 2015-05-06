@@ -17,6 +17,7 @@
 
 #include "mir/lsm/GribFileLSM.h"
 
+#include "atlas/Grid.h"
 
 namespace mir {
 namespace lsm {
@@ -37,14 +38,19 @@ data::MIRField* GribFileLSM::field(const atlas::Grid &) const {
     NOTIMP;
 }
 
-std::string GribFileLSM::unique_id() const {
-    NOTIMP;
+std::string GribFileLSM::unique_id(const atlas::Grid &grid) const {
+    return grid.unique_id();
 }
 
 bool GribFileLSM::cacheable() const {
     NOTIMP;
 }
 
+
+// register MARS-specialized logic
+namespace {
+static LandSeaMaskBuilder<GribFileLSM> mars("lsm.grib-file");
+}
 
 //-----------------------------------------------------------------------------
 
