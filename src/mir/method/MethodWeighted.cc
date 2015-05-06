@@ -21,6 +21,7 @@
 
 #include "atlas/Grid.h"
 
+#include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
@@ -155,7 +156,7 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
 MethodWeighted::Matrix MethodWeighted::applyMissingValues(const MethodWeighted::Matrix& W, data::MIRField& field, size_t which) const {
     ASSERT(field.hasMissing());
 
-    eckit::Log::info() << "Field " << field << " has missing values" << std::endl;
+    eckit::Log::info() << "Field has missing values" << std::endl;
     double missing = field.missingValue();
     const std::vector<double>& values = field.values(which);
 
@@ -167,7 +168,7 @@ MethodWeighted::Matrix MethodWeighted::applyMissingValues(const MethodWeighted::
         }
     }
 
-    eckit::Log::info() << "Field " << field << " has " << eckit::Plural(count, "missing value") << std::endl;
+    eckit::Log::info() << "Field has " << eckit::Plural(count, "missing value") << " out of " << eckit::BigNum(values.size()) << std::endl;
     if (count == 0) {
         return W;
     }
