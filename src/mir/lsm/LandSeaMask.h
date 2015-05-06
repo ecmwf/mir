@@ -59,7 +59,7 @@ class LandSeaMask {
 
 // -- Methods
 
-    virtual data::MIRField* field(atlas::Grid &) const = 0;
+    virtual data::MIRField* field(const atlas::Grid &) const = 0;
     virtual std::string unique_id() const = 0;
 
 // -- Overridden methods

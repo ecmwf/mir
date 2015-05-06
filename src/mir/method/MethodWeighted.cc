@@ -176,16 +176,21 @@ MethodWeighted::Matrix MethodWeighted::applyMissingValues(const MethodWeighted::
     return W;
 }
 
-void MethodWeighted::applyInputMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&) const {
+void MethodWeighted::applyInputMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask& imask) const {
     NOTIMP;
+    std::auto_ptr<data::MIRField> imask_field(imask.field(in));
 }
 
-void MethodWeighted::applyOutputMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&) const {
+void MethodWeighted::applyOutputMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask& omask) const {
     NOTIMP;
+    std::auto_ptr<data::MIRField> omask_field(omask.field(out));
 }
 
-void MethodWeighted::applyBothMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&, const lsm::LandSeaMask&) const {
+void MethodWeighted::applyBothMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out,
+    const lsm::LandSeaMask& imake, const lsm::LandSeaMask& imask) const {
     NOTIMP;
+    std::auto_ptr<data::MIRField> imask_field(imask.field(in));
+    std::auto_ptr<data::MIRField> omask_field(omask.field(out));
 }
 
 
