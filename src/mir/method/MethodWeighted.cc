@@ -18,13 +18,16 @@
 
 #include <string>
 #include "atlas/Grid.h"
-#include "atlas/GridSpec.h"
+// #include "atlas/GridSpec.h"
 
 #include "eckit/log/Timer.h"
+#include "eckit/log/Plural.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/method/WeightCache.h"
 #include "mir/repres/Representation.h"
+#include "mir/lsm/LandSeaMask.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -62,9 +65,8 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
       cache.add(whash, W);
     }
 
-    applyMissingValues(W);
-
-    applyMask(W);
+    // Mask should be considered in caching
+    applyMask(W, in, out);
 
     // multiply interpolant matrix with field vector
     for(size_t i = 0; i < field.dimensions(); i++) {
@@ -81,18 +83,54 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
 
         Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &values[0], npts_inp );
         Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &result[0], npts_out );
-        vo = W * vi;
+
+        if(!field.hasMissing()) {
+            // Assumes compiler does return value optimization
+            // otherwise we need to pass result matrix as parameter
+            Matrix MW = applyMissingValues(W, field, i);
+            vo = MW * vi;
+        }
+        else {
+            vo = W * vi;
+        }
 
         field.values(result, i); // Update field with result
     }
 }
 
 
-void MethodWeighted::applyMissingValues(MethodWeighted::Matrix& W) const {
+MethodWeighted::Matrix MethodWeighted::applyMissingValues(const MethodWeighted::Matrix& W, data::MIRField& field, size_t which) const {
+    ASSERT(field.hasMissing());
+
+    eckit::Log::info() << "Field " << field << " has missing values" << std::endl;
+    double missing = field.missingValue();
+    const std::vector<double>& values = field.values(which);
+
+    size_t count = 0;
+    for(size_t i = 0; i < values.size(); i++) {
+        if(values[i] == missing) {
+            count++; // For now, just count
+            // redistributesWeights(W, i);
+        }
+    }
+
+    eckit::Log::info() << "Field " << field << " has " << eckit::Plural(count, "missing value") << std::endl;
+    if(count == 0) {
+        return W;
+    }
+    // More code here
+
+    return W;
 }
 
 
-void MethodWeighted::applyMask(MethodWeighted::Matrix& W) const {
+void MethodWeighted::applyMask(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
+
+    bool use_lsm = false;
+    if(parametrisation_.get("use.lsm", use_lsm) && use_lsm) {
+        // std::auto_ptr<LandSeaMask> mask_in = lsm::LandSeaMaskFactory::build(parametrisation_);
+        // std::auto_ptr<LandSeaMask> mask_out = lsm::LandSeaMaskFactory::build(parametrisation_);
+    }
 #if 0
 //FIXME
     // FIXME arguments:

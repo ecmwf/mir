@@ -17,21 +17,21 @@
 #define LandSeaMask_H
 
 #include <iosfwd>
-#include <memory>
-#include <string>
-#include <vector>
 
+
+namespace atlas {
+class Grid;
+}
 
 namespace mir {
 
-namespace action {
-class Action;
-class ActionPlan;
-}
-
 namespace param {
 class MIRParametrisation;
-class RuntimeParametrisation;
+}
+
+
+namespace data {
+class MIRField;
 }
 
 namespace lsm {
@@ -59,7 +59,7 @@ class LandSeaMask {
 
 // -- Methods
 
-    virtual void prepare(action::ActionPlan &) const = 0;
+    virtual data::MIRField* field(atlas::Grid &) const = 0;
 
 // -- Overridden methods
     // None

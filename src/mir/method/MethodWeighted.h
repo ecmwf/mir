@@ -80,10 +80,10 @@ class MethodWeighted : public Method {
     virtual void assemble(Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
-    void applyMissingValues(MethodWeighted::Matrix& W) const;
+    Matrix applyMissingValues(const MethodWeighted::Matrix& W, data::MIRField& field, size_t which) const;
 
     /// Update interpolation weigths matrix to account for field masked values
-    void applyMask(Matrix& W) const;
+    void applyMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
 
     std::string hash(const atlas::Grid& in, const atlas::Grid& out) const;
 
