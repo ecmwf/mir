@@ -39,6 +39,7 @@
 class TransInitor {
   public:
     TransInitor() {
+        trans_use_mpi(false); // So that even if MPI is enabled, we don't use it.
         trans_init();
     }
     ~TransInitor() {

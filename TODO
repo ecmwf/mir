@@ -2,14 +2,18 @@ MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
 PRIORITY
 
- - Atlas / eckit: Fix mesh caching
- - Atlas: LatLon grid constructor refactor to take Ni Nj
+ - ecbuild: add macro for ___attribute__((constructor))
+ - MIR: create unit test framework
+ - Atlas / ecKit: Fix mesh caching
+ - MIR: Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
+ - Find out in libemos:
+    * sh to rot latlon - what is the path?
+    * how 10m uv grid point - how are they interpolate, intvec?
 
 MIR
 
-- Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
 - Field using LSM. Talk to me on how to get to the LSM data (e.g. with config, and what class do we need to implement)
-- Rotated fields
+- Rotated fields (code is there, needs testing)
 - Rotated winds?
 - Make sure we don't need to cast constness away
 - Make sure cached weight files are not loaded for every field
@@ -32,8 +36,9 @@ IN ATLAS:
 - Make sure cached mesh files are not loaded for every field
 
 IN TRANS
-- Check if tansi can be called with a regular gaussian as output
-- Get transi to print an erro if memory allocation fails
+- Check if transi can be called with a regular gaussian as output
+- Get transi to print an error if memory allocation fails
+- sharedmem / memmap for caching transi structures
 
 PRODGEN:
 - ?

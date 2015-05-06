@@ -73,6 +73,8 @@ MIRLogicFactory::~MIRLogicFactory() {
 
 MIRLogic* MIRLogicFactory::build(const param::MIRParametrisation& params) {
 
+    pthread_once(&once,init);
+
     std::string name;
 
     if(!params.get("logic", name)) {
