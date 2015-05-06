@@ -16,8 +16,10 @@
 
 #include "mir/method/MethodWeighted.h"
 
-#include <string>
+#include <cmath>
+#include <limits>
 #include <map>
+#include <string>
 
 #include "atlas/Grid.h"
 
@@ -33,11 +35,13 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 
+
 static eckit::Mutex local_mutex;
 
 
 namespace mir {
 namespace method {
+
 
 static std::map<std::string, MethodWeighted::Matrix> matrix_cache;
 
@@ -49,6 +53,7 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& param) :
 
 MethodWeighted::~MethodWeighted() {
 }
+
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the cache
 const MethodWeighted::Matrix& MethodWeighted::getMatrix(const atlas::Grid& in, const atlas::Grid& out) const {
@@ -113,6 +118,7 @@ const MethodWeighted::Matrix& MethodWeighted::getMatrix(const atlas::Grid& in, c
     return matrix_cache[whash];
 }
 
+
 void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const atlas::Grid& out) const {
     eckit::Log::info() << "MethodWeighted::execute" << std::endl;
 
@@ -120,7 +126,7 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
     size_t npts_out = out.npts();
     const MethodWeighted::Matrix& W = getMatrix(in, out);
 
-    // TODO:: ASSERT matrix size is npts_inp * npts_out
+    // TODO: ASSERT matrix size is npts_inp * npts_out
 
 
     // multiply interpolant matrix with field vector
@@ -160,22 +166,88 @@ MethodWeighted::Matrix MethodWeighted::applyMissingValues(const MethodWeighted::
     double missing = field.missingValue();
     const std::vector<double>& values = field.values(which);
 
-    size_t count = 0;
-    for (size_t i = 0; i < values.size(); i++) {
+    // setup sizes & counters
+    const size_t
+            Nivalues = values.size(),
+            Novalues = W.rows();
+    size_t
+            count = 0,
+            count_all_missing  = 0,
+            count_some_missing = 0;
+
+    std::vector< bool > missvalues(Nivalues);
+    for (size_t i = 0; i < Nivalues; i++) {
+        missvalues[i] = (values[i] == missing);
         if (values[i] == missing) {
-            count++; // For now, just count
-            // redistributesWeights(W, i);
+            count++;
         }
     }
 
-    eckit::Log::info() << "Field has " << eckit::Plural(count, "missing value") << " out of " << eckit::BigNum(values.size()) << std::endl;
     if (count == 0) {
         return W;
     }
-    // More code here
+    eckit::Log::info() << "Field has " << eckit::Plural(count, "missing value") << " out of " << eckit::BigNum(Nivalues) << std::endl;
 
-    return W;
+
+    // sparse matrix weigths redistribution
+    MethodWeighted::Matrix X(W);
+    for (size_t i = 0; i < X.rows(); i++) {
+
+        // count missing values and accumulate weights
+        double sum = 0.;
+        size_t
+                Nmiss = 0,
+                Ncol  = 0;
+        for (Matrix::InnerIterator j(X,i); j; ++j, ++Ncol) {
+            if (missvalues[j.col()])
+              ++Nmiss;
+            else
+              sum += j.value();
+        }
+
+        // redistribution
+        if (!Nmiss) {
+
+            // no missing values, no redistribution
+
+        }
+        else if ( (std::abs(sum)<std::numeric_limits< double >::epsilon()) ||
+                  (Ncol==Nmiss) ) {
+            ++count_all_missing;
+
+            // all values are missing (or weights wrongly computed), special case
+            // (it covers Ncol>0 with the above condition)
+            for (Matrix::InnerIterator j(X,i); j; ++j) {
+                j.valueRef() = 0.;
+                field.values(which)[j.col()] = missing;
+            }
+            Matrix::InnerIterator(X,i).valueRef() = 1.;
+
+        }
+        else {
+            ++count_some_missing;
+
+            // apply linear redistribution
+            // TODO: new redistribution methods
+            const double invsum = 1/sum;
+            for (Matrix::InnerIterator j(X,i); j; ++j) {
+                if (missvalues[j.col()]) {
+                  field.values(which)[j.col()] = missing;
+                  j.valueRef() = 0.;
+                }
+                else {
+                  j.valueRef() *= invsum;
+                }
+            }
+
+        }
+    }
+
+    // log corrections and return
+    eckit::Log::info() << "Missing value corrections: " << count_some_missing << '/' << count_all_missing << " some/all-missing out of " << eckit::BigNum(Novalues) << std::endl;
+    return X;
 }
+
 
 void MethodWeighted::applyInputMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask& imask) const {
 
@@ -184,12 +256,14 @@ void MethodWeighted::applyInputMask(Matrix& W, const atlas::Grid& in, const atla
     std::auto_ptr<data::MIRField> imask_field(imask.field(in));
 }
 
+
 void MethodWeighted::applyOutputMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask& omask) const {
 
     return; // For now
 
     std::auto_ptr<data::MIRField> omask_field(omask.field(out));
 }
+
 
 void MethodWeighted::applyBothMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out,
     const lsm::LandSeaMask& imask, const lsm::LandSeaMask& omask) const {
@@ -206,6 +280,7 @@ std::string MethodWeighted::hash(const atlas::Grid& in, const atlas::Grid& out) 
     os << name() << "." << in.unique_id() << "." << out.unique_id();
     return os.str();
 }
+
 
 }  // namespace method
 }  // namespace mir
