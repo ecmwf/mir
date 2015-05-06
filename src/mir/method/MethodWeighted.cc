@@ -138,7 +138,7 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
         Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &values[0], npts_inp );
         Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &result[0], npts_out );
 
-        if (!field.hasMissing()) {
+        if (field.hasMissing()) {
             // Assumes compiler does return value optimization
             // otherwise we need to pass result matrix as parameter
             Matrix MW = applyMissingValues(W, field, i);
