@@ -98,7 +98,7 @@ class ConditionOR : public Condition {
     const Condition *left_;
     const Condition *right_;
     virtual bool eval(grib_handle *h) const {
-        return left_->eval(h) || left_->eval(h);
+        return left_->eval(h) || right_->eval(h);
     }
   public:
     ConditionOR(const Condition *left, const Condition *right): left_(left), right_(right) {}
@@ -108,7 +108,7 @@ class ConditionAND : public Condition {
     const Condition *left_;
     const Condition *right_;
     virtual bool eval(grib_handle *h) const {
-        return left_->eval(h) && left_->eval(h);
+        return left_->eval(h) && right_->eval(h);
     }
   public:
     ConditionAND(const Condition *left, const Condition *right): left_(left), right_(right) {}

@@ -142,7 +142,7 @@ void NetcdfFileInput::getVariable(const std::string &variable, std::vector<doubl
 }
 
 
-data::MIRField *NetcdfFileInput::field(bool) const {
+data::MIRField *NetcdfFileInput::field() const {
 
     std::vector<double> values;
     getVariable(variable_, values);
