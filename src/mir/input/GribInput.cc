@@ -123,11 +123,15 @@ static struct {
 } mappings[] = {
     {"west_east_increment", "iDirectionIncrementInDegrees"},
     {"south_north_increment", "jDirectionIncrementInDegrees"},
+
     {"west", "longitudeOfFirstGridPointInDegrees"},
     {"east", "longitudeOfLastGridPointInDegrees"},
 
     {"north", "latitudeOfFirstGridPointInDegrees", is("scanningMode", 0L)},
     {"south", "latitudeOfLastGridPointInDegrees", is("scanningMode", 0L)},
+
+    {"north", "latitudeOfLastGridPointInDegrees", is("jScansPositively", 1L)},
+    {"south", "latitudeOfFirstGridPointInDegrees", is("jScansPositively", 1L)},
 
     {"truncation", "pentagonalResolutionParameterJ",},// Assumes triangular truncation
 
