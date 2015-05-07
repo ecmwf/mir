@@ -22,7 +22,9 @@
 #include "mir/method/WeightCache.h"
 #include "mir/method/WeightMatrix.h"
 
-namespace atlas { class Grid; }
+namespace atlas {
+class Grid;
+}
 
 namespace mir {
 
@@ -40,33 +42,38 @@ class MethodWeighted : public Method {
   public:
 
 
-    explicit MethodWeighted(const param::MIRParametrisation&);
+    explicit MethodWeighted(const param::MIRParametrisation &);
 
     virtual ~MethodWeighted();
 
-    virtual void execute(data::MIRField& field, const atlas::Grid& in, const atlas::Grid& out) const;
+    virtual void execute(data::MIRField &field, const atlas::Grid &in, const atlas::Grid &out) const;
 
   protected:
 
-    virtual const char* name() const = 0;
+    virtual const char *name() const = 0;
 
-    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const = 0;
+    virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
-    WeightMatrix applyMissingValues(const WeightMatrix& W, data::MIRField& field, size_t which) const;
+    WeightMatrix applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const;
 
     /// Update interpolation weigths matrix to account for field masked values
-    void applyInputMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&) const;
-    void applyOutputMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&) const;
-    void applyBothMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&, const lsm::LandSeaMask&) const;
+    void applyInputMask(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out,
+                        const lsm::InputLandSeaMask &) const;
 
-    const WeightMatrix& getMatrix(const atlas::Grid& in, const atlas::Grid& out) const;
+    void applyOutputMask(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out,
+                         const lsm::OutputLandSeaMask &) const;
+
+    void applyBothMask(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out,
+                       const lsm::InputLandSeaMask &, const lsm::OutputLandSeaMask &) const;
+
+    const WeightMatrix &getMatrix(const atlas::Grid &in, const atlas::Grid &out) const;
 
   private:
 
-    void compute_weights(const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W) const;
+    void compute_weights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
 
-    friend std::ostream& operator<<(std::ostream& s, const MethodWeighted& p) {
+    friend std::ostream &operator<<(std::ostream &s, const MethodWeighted &p) {
         p.print(s);
         return s;
     }

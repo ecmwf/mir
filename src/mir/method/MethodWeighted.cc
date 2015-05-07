@@ -30,7 +30,8 @@
 #include "eckit/thread/Mutex.h"
 
 #include "mir/data/MIRField.h"
-#include "mir/lsm/LandSeaMask.h"
+#include "mir/lsm/InputLandSeaMask.h"
+#include "mir/lsm/OutputLandSeaMask.h"
 #include "mir/method/WeightCache.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -60,16 +61,10 @@ const WeightMatrix& MethodWeighted::getMatrix(const atlas::Grid& in, const atlas
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    std::auto_ptr<lsm::LandSeaMask> mask_in(0);
-    std::auto_ptr<lsm::LandSeaMask> mask_out(0);
+    const lsm::InputLandSeaMask& mask_in = lsm::InputLandSeaMask::lookup(parametrisation_);
+    const lsm::OutputLandSeaMask& mask_out = lsm::OutputLandSeaMask::lookup(parametrisation_);
 
-    bool use_lsm = false;
-    if (parametrisation_.get("use.lsm", use_lsm) && use_lsm) {
-        mask_in.reset(lsm::LandSeaMaskFactory::build(parametrisation_));
-        mask_out.reset(lsm::LandSeaMaskFactory::build(parametrisation_));
-    }
-
-    std::string key = cache_.generate_key(name(), in, out, mask_in.get(), mask_out.get());
+    std::string key = cache_.generateKey(name(), in, out, mask_in, mask_out);
 
     std::map<std::string, WeightMatrix>::iterator j = matrix_cache.find(key);
     if (j != matrix_cache.end()) {
@@ -86,12 +81,12 @@ const WeightMatrix& MethodWeighted::getMatrix(const atlas::Grid& in, const atlas
 
         // TODO: Apply LSMs
 
-        if (mask_in.get() && mask_out.get()) {
-            applyBothMask(W, in, out, *mask_in, *mask_out);
-        } else if (mask_in.get()) {
-            applyInputMask(W, in, out, *mask_in);
-        } else if (mask_out.get()) {
-            applyOutputMask(W, in, out, *mask_out);
+        if (mask_in.active() && mask_out.active()) {
+            applyBothMask(W, in, out, mask_in, mask_out);
+        } else if (mask_in.active()) {
+            applyInputMask(W, in, out, mask_in);
+        } else if (mask_out.active()) {
+            applyOutputMask(W, in, out, mask_out);
         }
 
         // Mask should be considered in caching
@@ -243,7 +238,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix& W, data::MIR
 }
 
 
-void MethodWeighted::applyInputMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask& imask) const {
+void MethodWeighted::applyInputMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::InputLandSeaMask& imask) const {
 
     return; // For now
 
@@ -251,7 +246,7 @@ void MethodWeighted::applyInputMask(WeightMatrix& W, const atlas::Grid& in, cons
 }
 
 
-void MethodWeighted::applyOutputMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask& omask) const {
+void MethodWeighted::applyOutputMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::OutputLandSeaMask& omask) const {
 
     return; // For now
 
@@ -260,7 +255,7 @@ void MethodWeighted::applyOutputMask(WeightMatrix& W, const atlas::Grid& in, con
 
 
 void MethodWeighted::applyBothMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out,
-                                   const lsm::LandSeaMask& imask, const lsm::LandSeaMask& omask) const {
+                                   const lsm::InputLandSeaMask& imask, const lsm::OutputLandSeaMask& omask) const {
 
     return; // For now
 

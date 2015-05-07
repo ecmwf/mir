@@ -24,25 +24,9 @@
 
 namespace mir {
 namespace lsm {
-namespace {
 
-
-static eckit::Mutex *local_mutex = 0;
-static std::map<std::string,LandSeaMaskFactory*> *m = 0;
-
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
-static void init() {
-    local_mutex = new eckit::Mutex();
-    m = new std::map<std::string,LandSeaMaskFactory*>();
-}
-
-
-}  // (anonymous namespace)
-
-
-LandSeaMask::LandSeaMask(const param::MIRParametrisation &parametrisation):
-    parametrisation_(parametrisation) {
+LandSeaMask::LandSeaMask(const std::string &name):
+    name_(name) {
 }
 
 
@@ -52,52 +36,6 @@ LandSeaMask::~LandSeaMask() {
 //-----------------------------------------------------------------------------
 
 
-LandSeaMaskFactory::LandSeaMaskFactory(const std::string& name):
-    name_(name) {
-
-    pthread_once(&once,init);
-
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
-    ASSERT(m->find(name) == m->end());
-    (*m)[name] = this;
-}
-
-
-LandSeaMaskFactory::~LandSeaMaskFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    m->erase(name_);
-
-}
-
-
-LandSeaMask* LandSeaMaskFactory::build(const param::MIRParametrisation& params) {
-
-    pthread_once(&once,init);
-
-    std::string name;
-
-    if(!params.get("lsm", name)) {
-        throw eckit::SeriousBug("LandSeaMaskFactory cannot get lsm");
-    }
-
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, LandSeaMaskFactory*>::const_iterator j = m->find(name);
-
-    eckit::Log::info() << "Looking for LandSeaMaskFactory [" << name << "]" << std::endl;
-
-    if (j == m->end()) {
-        eckit::Log::error() << "No LandSeaMaskFactory for [" << name << "]" << std::endl;
-        eckit::Log::error() << "LandSeaMaskFactories are:" << std::endl;
-        for(j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No LandSeaMaskFactory called ") + name);
-    }
-
-    return (*j).second->make(params);
-}
-
-
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

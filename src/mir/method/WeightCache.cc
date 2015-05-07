@@ -78,31 +78,32 @@ using eckit::AutoClose;
 using eckit::PathName;
 using atlas::Grid;
 
-WeightCache::WeightCache() : CacheManager("weights")
-{
+WeightCache::WeightCache() : CacheManager("weights") {
 }
 
-PathName WeightCache::entry(const key_t& key) const {
-    PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir","/tmp/cache/mir");
+PathName WeightCache::entry(const key_t &key) const {
+    PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir", "/tmp/cache/mir");
     PathName f = base_path / name() / PathName( key + ".cache" );
     return f;
 }
 
-std::string WeightCache::generate_key(const std::string& method,
-                                      const atlas::Grid& in,
-                                      const atlas::Grid& out,
-                                      const lsm::LandSeaMask* maskin,
-                                      const lsm::LandSeaMask* maskout) const {
+std::string WeightCache::generateKey(const std::string &method,
+                                     const atlas::Grid &in,
+                                     const atlas::Grid &out,
+                                     const lsm::InputLandSeaMask &maskin,
+                                     const lsm::OutputLandSeaMask &maskout) const {
     std::ostringstream s;
     s << method << "." << in.unique_id() << "." << out.unique_id();
-    if(maskin)
-      s << ".IM" << maskin->unique_id(in);
-    if(maskout)
-      s << ".OM" << maskout->unique_id(out);
+    if (maskin.active()) {
+        s << ".IM" << maskin.unique_id(in);
+    }
+    if (maskout.active()) {
+        s << ".OM" << maskout.unique_id(out);
+    }
     return s.str();
 }
 
-void WeightCache::insert(const std::string& key, const WeightMatrix& W) {
+void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
 
     PathName tmp_path = stage(key);
 
@@ -118,8 +119,8 @@ void WeightCache::insert(const std::string& key, const WeightMatrix& W) {
         long innerSize = W.innerSize();
         long outerSize = W.outerSize();
 
-        f.write(reinterpret_cast<const char*>(&innerSize), sizeof(innerSize));
-        f.write(reinterpret_cast<const char*>(&outerSize), sizeof(outerSize));
+        f.write(reinterpret_cast<const char *>(&innerSize), sizeof(innerSize));
+        f.write(reinterpret_cast<const char *>(&outerSize), sizeof(outerSize));
 
         // find all the non-zero values (aka triplets)
 
@@ -133,28 +134,28 @@ void WeightCache::insert(const std::string& key, const WeightMatrix& W) {
         // save the number of triplets
 
         long ntrips = trips.size();
-        f.write(reinterpret_cast<const char*>(&ntrips), sizeof(ntrips));
+        f.write(reinterpret_cast<const char *>(&ntrips), sizeof(ntrips));
 
         // now save the triplets themselves
 
         for (unsigned int i = 0; i < trips.size(); i++) {
 
-            Eigen::Triplet<double>& rt = trips[i];
+            Eigen::Triplet<double> &rt = trips[i];
 
             long x = rt.row();
             long y = rt.col();
             double w = rt.value();
 
-            f.write(reinterpret_cast<const char*>(&x), sizeof(x));
-            f.write(reinterpret_cast<const char*>(&y), sizeof(y));
-            f.write(reinterpret_cast<const char*>(&w), sizeof(w));
+            f.write(reinterpret_cast<const char *>(&x), sizeof(x));
+            f.write(reinterpret_cast<const char *>(&y), sizeof(y));
+            f.write(reinterpret_cast<const char *>(&w), sizeof(w));
         }
     }
 
     commit(key, tmp_path);
 }
 
-bool WeightCache::retrieve(const std::string& key, WeightMatrix& W) const {
+bool WeightCache::retrieve(const std::string &key, WeightMatrix &W) const {
 
     PathName path;
 
@@ -172,11 +173,11 @@ bool WeightCache::retrieve(const std::string& key, WeightMatrix& W) const {
 
         long inner, outer;
 
-        f.read(reinterpret_cast<char*>(&inner), sizeof(inner));
-        f.read(reinterpret_cast<char*>(&outer), sizeof(outer));
+        f.read(reinterpret_cast<char *>(&inner), sizeof(inner));
+        f.read(reinterpret_cast<char *>(&outer), sizeof(outer));
 
         long npts;
-        f.read(reinterpret_cast<char*>(&npts), sizeof(npts));
+        f.read(reinterpret_cast<char *>(&npts), sizeof(npts));
 
         // read total sparse points of matrix (so we can reserve)
 
@@ -189,21 +190,21 @@ bool WeightCache::retrieve(const std::string& key, WeightMatrix& W) const {
         for (unsigned int i = 0; i < npts; i++) {
             long x, y;
             double w;
-            f.read(reinterpret_cast<char*>(&x), sizeof(x));
-            f.read(reinterpret_cast<char*>(&y), sizeof(y));
-            f.read(reinterpret_cast<char*>(&w), sizeof(w));
+            f.read(reinterpret_cast<char *>(&x), sizeof(x));
+            f.read(reinterpret_cast<char *>(&y), sizeof(y));
+            f.read(reinterpret_cast<char *>(&w), sizeof(w));
             insertions.push_back(Eigen::Triplet<double>(x, y, w));
         }
 
-      // check matrix is correctly sized
-      // note that Weigths::Matrix is row-major, so rows are outer size
+        // check matrix is correctly sized
+        // note that Weigths::Matrix is row-major, so rows are outer size
 
-      ASSERT(W.rows() == outer);
-      ASSERT(W.cols() == inner);
+        ASSERT(W.rows() == outer);
+        ASSERT(W.cols() == inner);
 
-      // set the weights from the triplets
+        // set the weights from the triplets
 
-      W.setFromTriplets(insertions.begin(), insertions.end());
+        W.setFromTriplets(insertions.begin(), insertions.end());
     }
 
     return true;

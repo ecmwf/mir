@@ -22,34 +22,34 @@
 namespace mir {
 namespace lsm {
 
-GribFileLSM::GribFileLSM(const param::MIRParametrisation &parametrisation):
-    LandSeaMask(parametrisation) {
-}
+// GribFileLSM::GribFileLSM(const std::str &parametrisation):
+//     LandSeaMask(parametrisation) {
+// }
 
 
-GribFileLSM::~GribFileLSM() {
-}
+// GribFileLSM::~GribFileLSM() {
+// }
 
-void GribFileLSM::print(std::ostream& out) const {
-    out << "GribFileLSM[]";
-}
+// void GribFileLSM::print(std::ostream& out) const {
+//     out << "GribFileLSM[]";
+// }
 
-data::MIRField* GribFileLSM::field(const atlas::Grid &) const {
-    NOTIMP;
-}
+// data::MIRField* GribFileLSM::field(const atlas::Grid &) const {
+//     NOTIMP;
+// }
 
-std::string GribFileLSM::unique_id(const atlas::Grid &grid) const {
-    return grid.unique_id();
-}
+// std::string GribFileLSM::unique_id(const atlas::Grid &grid) const {
+//     return grid.unique_id();
+// }
 
-bool GribFileLSM::cacheable() const {
-    NOTIMP;
-}
+// bool GribFileLSM::cacheable() const {
+//     NOTIMP;
+// }
 
 
 // register MARS-specialized logic
 namespace {
-static LandSeaMaskBuilder<GribFileLSM> mars("lsm.grib-file");
+// static LandSeaMaskBuilder<GribFileLSM> mars("lsm.grib-file");
 }
 
 //-----------------------------------------------------------------------------

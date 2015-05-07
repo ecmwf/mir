@@ -13,31 +13,16 @@
 /// @date Apr 2015
 
 
-#ifndef LandSeaMask_H
-#define LandSeaMask_H
+#ifndef OutputLandSeaMask_H
+#define OutputLandSeaMask_H
 
-#include <iosfwd>
-
-
-namespace atlas {
-class Grid;
-}
+#include "mir/lsm/LandSeaMask.h"
 
 namespace mir {
-
-namespace param {
-class MIRParametrisation;
-}
-
-
-namespace data {
-class MIRField;
-}
-
 namespace lsm {
 
 
-class LandSeaMask {
+class OutputLandSeaMask : public LandSeaMask {
   public:
 
 // -- Exceptions
@@ -45,11 +30,11 @@ class LandSeaMask {
 
 // -- Contructors
 
-    LandSeaMask(const std::string& name);
+    OutputLandSeaMask(const std::string& name);
 
 // -- Destructor
 
-    virtual ~LandSeaMask(); // Change to virtual if base class
+    virtual ~OutputLandSeaMask(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -59,10 +44,6 @@ class LandSeaMask {
 
 // -- Methods
 
-    virtual bool active() const = 0;
-    virtual data::MIRField* field(const atlas::Grid &) const = 0;
-    virtual std::string unique_id(const atlas::Grid &) const = 0;
-
 // -- Overridden methods
     // None
 
@@ -70,18 +51,16 @@ class LandSeaMask {
     // None
 
 // -- Class methods
-    // None
+
+    static const OutputLandSeaMask& lookup(const param::MIRParametrisation& parametrisation);
 
   protected:
 
 // -- Members
 
-    std::string name_;
 
 // -- Methods
 
-
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
 // -- Overridden methods
     // None
@@ -96,11 +75,11 @@ class LandSeaMask {
 
 // No copy allowed
 
-    LandSeaMask(const LandSeaMask&);
-    LandSeaMask& operator=(const LandSeaMask&);
+    OutputLandSeaMask(const OutputLandSeaMask&);
+    OutputLandSeaMask& operator=(const OutputLandSeaMask&);
 
 // -- Members
-    // None
+
 
 // -- Methods
     // None
@@ -116,10 +95,7 @@ class LandSeaMask {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const LandSeaMask& p) {
-        p.print(s);
-        return s;
-    }
+
 
 };
 

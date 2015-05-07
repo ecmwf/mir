@@ -23,34 +23,35 @@
 #include "atlas/Grid.h"
 
 #include "mir/method/WeightMatrix.h"
-#include "mir/lsm/LandSeaMask.h"
+#include "mir/lsm/InputLandSeaMask.h"
+#include "mir/lsm/OutputLandSeaMask.h"
 
 namespace mir {
 namespace method {
 
 class WeightCache : public eckit::CacheManager {
- public:  // methods
+  public:  // methods
 
-  WeightCache();
+    WeightCache();
 
-  /// Tries to retrieve a cached WeightMatrix
-  /// @returns true if found cache
-  bool retrieve(const std::string& key, WeightMatrix& W) const;
+    /// Tries to retrieve a cached WeightMatrix
+    /// @returns true if found cache
+    bool retrieve(const std::string &key, WeightMatrix &W) const;
 
-  /// Inserts a cached WeightMatrix, overwritting any existing entry
-  /// @returns true if insertion successful cache
-  void insert(const std::string& key, const WeightMatrix& W);
+    /// Inserts a cached WeightMatrix, overwritting any existing entry
+    /// @returns true if insertion successful cache
+    void insert(const std::string &key, const WeightMatrix &W);
 
-  std::string generate_key(const std::string& method,
-                           const atlas::Grid& in,
-                           const atlas::Grid& out,
-                           const lsm::LandSeaMask* maskin,
-                           const lsm::LandSeaMask* maskout) const;
+    std::string generateKey(const std::string &method,
+                            const atlas::Grid &in,
+                            const atlas::Grid &out,
+                            const lsm::InputLandSeaMask &maskin,
+                            const lsm::OutputLandSeaMask &maskout) const;
 
- private:
+  private:
 
-  /// @returns the path of the cache entry given the key
-  virtual eckit::PathName entry(const key_t& key) const;
+    /// @returns the path of the cache entry given the key
+    virtual eckit::PathName entry(const key_t &key) const;
 
 };
 
