@@ -20,6 +20,11 @@
 
 #include "eckit/config/Resource.h"
 #include "eckit/io/FileHandle.h"
+#include "eckit/io/BufferedHandle.h"
+
+#include "eckit/log/Timer.h"
+#include "eckit/log/Plural.h"
+#include "eckit/log/Seconds.h"
 
 namespace mir {
 namespace method {
@@ -109,8 +114,10 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
 
     Log::info() << "Inserting weights in cache (" << tmp_path << ")" << std::endl;
 
+    eckit::Timer timer("Saving weights to cache");
+
     {
-        FileHandle f(tmp_path, true);
+        eckit::BufferedHandle f(tmp_path.fileHandle());
 
         f.openForWrite(0); AutoClose closer(f);
 
@@ -163,9 +170,10 @@ bool WeightCache::retrieve(const std::string &key, WeightMatrix &W) const {
         return false;
 
     Log::info() << "Found weights in cache (" << path << ")" << std::endl;
+    eckit::Timer timer("Loading weights from cache");
 
     {
-        FileHandle f(path);
+        eckit::BufferedHandle f(path.fileHandle());
 
         f.openForRead(); AutoClose closer(f);
 
@@ -204,7 +212,9 @@ bool WeightCache::retrieve(const std::string &key, WeightMatrix &W) const {
 
         // set the weights from the triplets
 
+        double now = timer.elapsed();
         W.setFromTriplets(insertions.begin(), insertions.end());
+        eckit::Log::info() << "Inserting " << eckit::Plural(insertions.size(), "triplet") << " in " << eckit::Seconds(timer.elapsed() - now) << std::endl;
     }
 
     return true;

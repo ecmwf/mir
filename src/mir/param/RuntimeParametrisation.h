@@ -17,6 +17,7 @@
 #define RuntimeParametrisation_H
 
 #include <string>
+#include <set>
 
 #include "mir/param/SimpleParametrisation.h"
 
@@ -46,6 +47,8 @@ class RuntimeParametrisation : public SimpleParametrisation {
     // None
 
 // -- Methods
+
+    void hide(const std::string& name);
 
     MIRParametrisation& set(const std::string& name, const char* value);
     MIRParametrisation& set(const std::string& name, const std::string& value);
@@ -97,6 +100,7 @@ class RuntimeParametrisation : public SimpleParametrisation {
 
 // -- Members
     const param::MIRParametrisation& owner_;
+    std::set<std::string> hidden_;
 
 // -- Methods
 

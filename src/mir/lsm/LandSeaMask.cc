@@ -57,7 +57,7 @@ LandSeaMask::~LandSeaMask() {
 
 class EmptyLandSeaMask : public LandSeaMask {
     virtual bool active() const {
-        return true;
+        return false;
     }
     virtual const data::MIRField &field() const {
         NOTIMP;

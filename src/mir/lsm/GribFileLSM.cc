@@ -40,8 +40,17 @@ GribFileLSM::GribFileLSM(const std::string &name, const std::string &key, const 
     field_.reset(input.field());
 
     param::RuntimeParametrisation runtime(param);
-    runtime.set("paramId", -1L); // Hide the paramID so we don't confuse this LSM with interpolating an LSM from MARS and create an infinite recurrsion
-    std::auto_ptr< method::Method > method(method::MethodFactory::build(name, runtime));
+    // Hide the paramID so we don't confuse this LSM with interpolating an LSM from MARS and create an infinite recurrsion
+
+    runtime.set("paramId", -1L);
+    runtime.hide("lsm.input");
+    runtime.hide("lsm.output");
+    runtime.hide("lsm");
+
+    std::string interpolation;
+    ASSERT(runtime.get("interpolation", interpolation));
+
+    std::auto_ptr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::info() << "LSM interpolation method is " << *method << std::endl;
 
     std::auto_ptr<atlas::Grid> gin(field_->representation()->atlasGrid());
