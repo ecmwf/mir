@@ -59,6 +59,22 @@ bool ConditionT<long>::eval(grib_handle*h ) const {
     return value_ == value;
 }
 
+template<>
+bool ConditionT<double>::eval(grib_handle*h ) const {
+    double value;
+    int err = grib_get_double(h, key_, &value);
+
+    if (err == GRIB_NOT_FOUND) {
+        return false;
+    }
+
+    if (err) {
+        eckit::Log::info() << "ConditionT<double>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
+        GRIB_ERROR(err, key_);
+    }
+
+    return value_ == value; // Want an epsilon?
+}
 
 template<>
 bool ConditionT<std::string>::eval(grib_handle*h ) const {
@@ -116,6 +132,18 @@ static Condition* is(const char* key, const char*value) {
     return new ConditionT<std::string>(key, value);
 }
 
+static Condition* _and(const Condition* left, const Condition* right) {
+    return new ConditionAND(left, right);
+}
+
+static Condition* _or(const Condition* left, const Condition* right) {
+    return new ConditionOR(left, right);
+}
+
+static Condition* _not(const Condition* c) {
+    return new ConditionNOT(c);
+}
+
 static struct {
     const char *name;
     const char *key;
@@ -133,14 +161,14 @@ static struct {
     {"north", "latitudeOfLastGridPointInDegrees", is("jScansPositively", 1L)},
     {"south", "latitudeOfFirstGridPointInDegrees", is("jScansPositively", 1L)},
 
-    {"truncation", "pentagonalResolutionParameterJ",},// Assumes triangular truncation
+    {"truncation", "pentagonalResolutionParameterJ",},  // Assumes triangular truncation
 
     {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees"},
     {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees"},
     {"south_pole_rotation_angle", "angleOfRotationInDegrees"},
 
     // This will be just called for has()
-    {"gridded", "numberOfPointsAlongAMeridian"}, // Is that always true?
+    {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
     {"spherical", "pentagonalResolutionParameterJ"},
 
     /// FIXME: Find something that does no clash
