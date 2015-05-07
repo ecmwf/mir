@@ -34,9 +34,9 @@ Rotation::Rotation(double south_pole_latitude,
 }
 
 Rotation::Rotation(const param::MIRParametrisation &parametrisation) {
-    // ASSERT(parametrisation.get("west_east_increment", west_east_));
-    // ASSERT(parametrisation.get("south_north_increment", south_north_));
-    NOTIMP;
+    ASSERT(parametrisation.get("south_pole_latitude", south_pole_latitude_));
+    ASSERT(parametrisation.get("south_pole_longitude", south_pole_longitude_));
+    ASSERT(parametrisation.get("south_pole_rotation_angle", south_pole_rotation_angle_));
 }
 
 Rotation::~Rotation() {
@@ -59,6 +59,15 @@ void Rotation::fill(grib_info &info) const  {
     // info.grid.uvRelativeToGrid= isec2[18]==8 ? 1 : 0;
     info.grid.latitudeOfSouthernPoleInDegrees    = south_pole_latitude_;
     info.grid.longitudeOfSouthernPoleInDegrees   = south_pole_longitude_;
+
+    // This is missing from the grib_spec
+    // Remove that when supported
+    if(south_pole_rotation_angle_) {
+        int n = info.packing.extra_settings_count++;
+        info.packing.extra_settings[n].name = "angleOfRotationInDegrees";
+        info.packing.extra_settings[n].type = GRIB_TYPE_DOUBLE;
+        info.packing.extra_settings[n].long_value = south_pole_rotation_angle_;
+    }
 }
 
 

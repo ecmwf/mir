@@ -123,13 +123,21 @@ static struct {
 } mappings[] = {
     {"west_east_increment", "iDirectionIncrementInDegrees"},
     {"south_north_increment", "jDirectionIncrementInDegrees"},
+
     {"west", "longitudeOfFirstGridPointInDegrees"},
     {"east", "longitudeOfLastGridPointInDegrees"},
 
     {"north", "latitudeOfFirstGridPointInDegrees", is("scanningMode", 0L)},
     {"south", "latitudeOfLastGridPointInDegrees", is("scanningMode", 0L)},
 
+    {"north", "latitudeOfLastGridPointInDegrees", is("jScansPositively", 1L)},
+    {"south", "latitudeOfFirstGridPointInDegrees", is("jScansPositively", 1L)},
+
     {"truncation", "pentagonalResolutionParameterJ",},// Assumes triangular truncation
+
+    {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees"},
+    {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees"},
+    {"south_pole_rotation_angle", "angleOfRotationInDegrees"},
 
     // This will be just called for has()
     {"gridded", "numberOfPointsAlongAMeridian"}, // Is that always true?
@@ -196,10 +204,9 @@ data::MIRField *GribInput::field() const {
     double missing;
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
 
-    long scanningMode;
-    GRIB_CALL(grib_get_long(grib_, "scanningMode", &scanningMode));
+    long scanningMode = 0;
 
-    if (scanningMode) {
+    if (grib_get_long(grib_, "scanningMode", &scanningMode) == GRIB_SUCCESS && scanningMode != 0) {
         // Deletegate to
         std::auto_ptr<repres::Representation> representation(repres::RepresentationFactory::build(*this));
         representation->reorder(scanningMode, values);

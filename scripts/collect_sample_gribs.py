@@ -9,7 +9,7 @@ SCORES = {}
 
 SCORE = {"od": 10000, "e2": 1000, "e4": 100, "ei": 150, "er": 50, "rd": 10}
 
-names = "shortName,type,stream,paramId,gridType,parameterName,parameterUnits".split(",")
+names = "shortName,type,stream,paramId,gridType,name,units".split(",")
 
 
 def dump():
@@ -41,10 +41,10 @@ for root, dirs, files in os.walk("/gpfs/lxab/marsdev/mars_grib2/workdir/class"):
                 if h is None:
                     break
 
-                id = "%s" % gribapi.grib_get_string(h, "paramId")
+                id = "%s-%s" % (gribapi.grib_get_string(h, "paramId"), gribapi.grib_get_string(h, "gridType"))
                 cl = "%s" % gribapi.grib_get_string(h, "class")
                 if id not in params or SCORE.get(cl, 0) > SCORES.get(id, 0):
-                    print "New ID", id, gribapi.grib_get_string(h, "parameterName")
+                    print "New ID", id, gribapi.grib_get_string(h, "name")
                     with open("/perm/ma/mab/gribs/%s.grib" % (id,), "w") as g:
                         g.write(gribapi.grib_get_message(h))
                     i = gribapi.grib_keys_iterator_new(h, "mars")
@@ -68,6 +68,8 @@ for root, dirs, files in os.walk("/gpfs/lxab/marsdev/mars_grib2/workdir/class"):
                     v = "?"
                     try:
                         v = "%s" % gribapi.grib_get_string(h, n)
+                        if "unknown" in v:
+                            print "unknown", n, "in", path
                     except Exception:
                         v = "missing"
 

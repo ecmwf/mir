@@ -3,17 +3,17 @@
 import json
 
 names = [
-    ("Name", "parameterName",),
+    ("Name", "name",),
     ("Abbr.", "shortName",),
     ("Type", "type",),
     ("Stream", "stream",),
     ("ID", "paramId",),
     ("Grid", "gridType",),
-    ("Units", "parameterUnits",),
+    ("Units", "units",),
     ("Method", None),
     ("Comment", None),
     ("Who", None),
-    ("Reques", "mars",),
+    ("Request", "mars",),
     ]
 
 with open("/perm/ma/mab/gribs/params.json") as f:
@@ -30,7 +30,7 @@ for n in names:
 
 print "</tr>"
 
-for k in sorted(params.keys(), key=lambda a: params[a]["parameterName"]):
+for k in sorted(params.keys(), key=lambda a: params[a]["name"]):
     p = params[k]
     print "<tr>"
     for n in names:
