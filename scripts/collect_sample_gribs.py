@@ -9,7 +9,7 @@ SCORES = {}
 
 SCORE = {"od": 10000, "e2": 1000, "e4": 100, "ei": 150, "er": 50, "rd": 10}
 
-names = "shortName,type,stream,paramId,gridType,parameterName,parameterUnits".split(",")
+names = "shortName,type,stream,paramId,gridType,name,units".split(",")
 
 
 def dump():
@@ -68,6 +68,8 @@ for root, dirs, files in os.walk("/gpfs/lxab/marsdev/mars_grib2/workdir/class"):
                     v = "?"
                     try:
                         v = "%s" % gribapi.grib_get_string(h, n)
+                        if "unknown" in v:
+                            print "unknown", n, "in", path
                     except Exception:
                         v = "missing"
 

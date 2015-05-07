@@ -200,10 +200,9 @@ data::MIRField *GribInput::field() const {
     double missing;
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
 
-    long scanningMode;
-    GRIB_CALL(grib_get_long(grib_, "scanningMode", &scanningMode));
+    long scanningMode = 0;
 
-    if (scanningMode) {
+    if (grib_get_long(grib_, "scanningMode", &scanningMode) == GRIB_SUCCESS && scanningMode != 0) {
         // Deletegate to
         std::auto_ptr<repres::Representation> representation(repres::RepresentationFactory::build(*this));
         representation->reorder(scanningMode, values);
