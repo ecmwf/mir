@@ -2,8 +2,9 @@ MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
 PRIORITY
 
+ - Create a Tesselation interface, with multiple implementations (Delaunay, ReducedGrid, etc)
+   CacheMesh should take tesselation method into account
  - MIR: create unit test framework
- - Atlas / ecKit: Fix mesh caching
  - MIR: Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
  - Find out in libemos:
     * sh to rot latlon - what is the path?
