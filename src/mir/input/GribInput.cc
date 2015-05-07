@@ -109,6 +109,10 @@ data::MIRField *GribInput::field() const {
     double missing;
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
 
+    long scanningMode;
+    GRIB_CALL(grib_get_long(grib_, "scanningMode", &scanningMode));
+    ASSERT(scanningMode == 0); // For now
+
     data::MIRField *field = new data::MIRField(bitmap != 0, missing);
     field->values(values, 0);
     return field;
