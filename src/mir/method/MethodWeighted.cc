@@ -61,8 +61,8 @@ const WeightMatrix& MethodWeighted::getMatrix(const atlas::Grid& in, const atlas
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    const lsm::InputLandSeaMask& mask_in = lsm::InputLandSeaMask::lookup(parametrisation_);
-    const lsm::OutputLandSeaMask& mask_out = lsm::OutputLandSeaMask::lookup(parametrisation_);
+    const lsm::InputLandSeaMask& mask_in = lsm::InputLandSeaMask::lookup(parametrisation_, in);
+    const lsm::OutputLandSeaMask& mask_out = lsm::OutputLandSeaMask::lookup(parametrisation_, out);
 
     std::string key = cache_.generateKey(name(), in, out, mask_in, mask_out);
 
@@ -82,11 +82,11 @@ const WeightMatrix& MethodWeighted::getMatrix(const atlas::Grid& in, const atlas
         // TODO: Apply LSMs
 
         if (mask_in.active() && mask_out.active()) {
-            applyBothMask(W, in, out, mask_in, mask_out);
+            applyBothMask(W, mask_in, mask_out);
         } else if (mask_in.active()) {
-            applyInputMask(W, in, out, mask_in);
+            applyInputMask(W, mask_in);
         } else if (mask_out.active()) {
-            applyOutputMask(W, in, out, mask_out);
+            applyOutputMask(W, mask_out);
         }
 
         // Mask should be considered in caching
@@ -238,29 +238,28 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix& W, data::MIR
 }
 
 
-void MethodWeighted::applyInputMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::InputLandSeaMask& imask) const {
+void MethodWeighted::applyInputMask(WeightMatrix& W, const lsm::InputLandSeaMask& imask) const {
 
     return; // For now
 
-    const data::MIRField& imask_field = imask.field(in);
+    const data::MIRField& imask_field = imask.field();
 }
 
 
-void MethodWeighted::applyOutputMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::OutputLandSeaMask& omask) const {
+void MethodWeighted::applyOutputMask(WeightMatrix& W, const lsm::OutputLandSeaMask& omask) const {
 
     return; // For now
 
-    const data::MIRField& omask_field = omask.field(out);
+    const data::MIRField& omask_field = omask.field();
 }
 
 
-void MethodWeighted::applyBothMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out,
-                                   const lsm::InputLandSeaMask& imask, const lsm::OutputLandSeaMask& omask) const {
+void MethodWeighted::applyBothMask(WeightMatrix& W, const lsm::InputLandSeaMask& imask, const lsm::OutputLandSeaMask& omask) const {
 
     return; // For now
 
-    const data::MIRField& imask_field = imask.field(in);
-    const data::MIRField& omask_field = omask.field(out);
+    const data::MIRField& imask_field = imask.field();
+    const data::MIRField& omask_field = omask.field();
 }
 
 }  // namespace method

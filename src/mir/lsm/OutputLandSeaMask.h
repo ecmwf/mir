@@ -52,7 +52,7 @@ class OutputLandSeaMask : public LandSeaMask {
 
 // -- Class methods
 
-    static const OutputLandSeaMask& lookup(const param::MIRParametrisation& parametrisation);
+    static const OutputLandSeaMask& lookup(const param::MIRParametrisation& parametrisation, const atlas::Grid &grid);
 
   protected:
 

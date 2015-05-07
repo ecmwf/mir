@@ -49,10 +49,10 @@ class EmptyInputLandSeaMask : public InputLandSeaMask {
     virtual void print(std::ostream &out) const {
         out << "<none>";
     }
-    virtual const data::MIRField& field(const atlas::Grid &) const {
+    virtual const data::MIRField& field() const {
         NOTIMP;
     }
-    virtual std::string unique_id(const atlas::Grid &) const {
+    virtual std::string unique_id() const {
         NOTIMP;
     }
   public:
@@ -79,11 +79,12 @@ InputLandSeaMask::~InputLandSeaMask() {
 }
 
 
-const InputLandSeaMask &InputLandSeaMask::lookup(const param::MIRParametrisation &params) {
+const InputLandSeaMask &InputLandSeaMask::lookup(const param::MIRParametrisation &params, const atlas::Grid &grid) {
 
     pthread_once(&once, init);
 
     static EmptyInputLandSeaMask empty;
+    return empty;
 
     std::string name;
 

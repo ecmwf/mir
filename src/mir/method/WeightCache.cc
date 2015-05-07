@@ -95,10 +95,10 @@ std::string WeightCache::generateKey(const std::string &method,
     std::ostringstream s;
     s << method << "." << in.unique_id() << "." << out.unique_id();
     if (maskin.active()) {
-        s << ".IM" << maskin.unique_id(in);
+        s << ".IM" << maskin.unique_id();
     }
     if (maskout.active()) {
-        s << ".OM" << maskout.unique_id(out);
+        s << ".OM" << maskout.unique_id();
     }
     return s.str();
 }
