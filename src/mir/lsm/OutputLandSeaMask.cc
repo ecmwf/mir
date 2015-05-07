@@ -49,7 +49,7 @@ class EmptyOutputLandSeaMask : public OutputLandSeaMask {
     virtual void print(std::ostream &out) const {
         out << "<none>";
     }
-    virtual data::MIRField *field(const atlas::Grid &) const {
+    virtual const data::MIRField& field(const atlas::Grid &) const {
         NOTIMP;
     }
     virtual std::string unique_id(const atlas::Grid &) const {

@@ -91,7 +91,7 @@ class GribFileLSM : public LandSeaMask {
     // None
 
 // -- Overridden methods
-    virtual data::MIRField* field(const atlas::Grid &) const;
+    virtual const data::MIRField& field(const atlas::Grid &) const;
     virtual std::string unique_id(const atlas::Grid &) const;
     virtual bool cacheable() const;
 

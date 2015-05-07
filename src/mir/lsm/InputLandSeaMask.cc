@@ -28,13 +28,13 @@ namespace {
 
 
 static eckit::Mutex *local_mutex = 0;
-static std::map<std::string, InputLandSeaMask*> *m = 0;
+static std::map<std::string, InputLandSeaMask *> *m = 0;
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map<std::string,InputLandSeaMask*>();
+    m = new std::map<std::string, InputLandSeaMask *>();
 }
 
 
@@ -43,20 +43,28 @@ static void init() {
 
 //-----------------------------------------------------------------------------
 class EmptyInputLandSeaMask : public InputLandSeaMask {
-virtual bool active() const { return false; }
-virtual void print(std::ostream& out) const { out << "<none>"; }
-virtual data::MIRField* field(const atlas::Grid &) const { NOTIMP; }
-virtual std::string unique_id(const atlas::Grid &) const { NOTIMP;}
-public:
-    EmptyInputLandSeaMask():InputLandSeaMask("<none>") {}
+    virtual bool active() const {
+        return false;
+    }
+    virtual void print(std::ostream &out) const {
+        out << "<none>";
+    }
+    virtual const data::MIRField& field(const atlas::Grid &) const {
+        NOTIMP;
+    }
+    virtual std::string unique_id(const atlas::Grid &) const {
+        NOTIMP;
+    }
+  public:
+    EmptyInputLandSeaMask(): InputLandSeaMask("<none>") {}
 };
 //-----------------------------------------------------------------------------
 
 
-InputLandSeaMask::InputLandSeaMask(const std::string& name):
+InputLandSeaMask::InputLandSeaMask(const std::string &name):
     LandSeaMask(name) {
 
-    pthread_once(&once,init);
+    pthread_once(&once, init);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -71,27 +79,27 @@ InputLandSeaMask::~InputLandSeaMask() {
 }
 
 
-const InputLandSeaMask& InputLandSeaMask::lookup(const param::MIRParametrisation& params) {
+const InputLandSeaMask &InputLandSeaMask::lookup(const param::MIRParametrisation &params) {
 
-    pthread_once(&once,init);
+    pthread_once(&once, init);
 
     static EmptyInputLandSeaMask empty;
 
     std::string name;
 
-    if(!params.get("lsm.in", name)) {
+    if (!params.get("lsm.in", name)) {
         return empty;
     }
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, InputLandSeaMask*>::const_iterator j = m->find(name);
+    std::map<std::string, InputLandSeaMask *>::const_iterator j = m->find(name);
 
     eckit::Log::info() << "Looking for InputLandSeaMask [" << name << "]" << std::endl;
 
     if (j == m->end()) {
         eckit::Log::error() << "No InputLandSeaMask for [" << name << "]" << std::endl;
         eckit::Log::error() << "InputLandSeaMaskFactories are:" << std::endl;
-        for(j = m->begin() ; j != m->end() ; ++j)
+        for (j = m->begin() ; j != m->end() ; ++j)
             eckit::Log::error() << "   " << (*j).first << std::endl;
         throw eckit::SeriousBug(std::string("No InputLandSeaMask called ") + name);
     }

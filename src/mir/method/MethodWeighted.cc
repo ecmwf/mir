@@ -242,7 +242,7 @@ void MethodWeighted::applyInputMask(WeightMatrix& W, const atlas::Grid& in, cons
 
     return; // For now
 
-    std::auto_ptr<data::MIRField> imask_field(imask.field(in));
+    const data::MIRField& imask_field = imask.field(in);
 }
 
 
@@ -250,7 +250,7 @@ void MethodWeighted::applyOutputMask(WeightMatrix& W, const atlas::Grid& in, con
 
     return; // For now
 
-    std::auto_ptr<data::MIRField> omask_field(omask.field(out));
+    const data::MIRField& omask_field = omask.field(out);
 }
 
 
@@ -259,8 +259,8 @@ void MethodWeighted::applyBothMask(WeightMatrix& W, const atlas::Grid& in, const
 
     return; // For now
 
-    std::auto_ptr<data::MIRField> imask_field(imask.field(in));
-    std::auto_ptr<data::MIRField> omask_field(omask.field(out));
+    const data::MIRField& imask_field = imask.field(in);
+    const data::MIRField& omask_field = omask.field(out);
 }
 
 }  // namespace method
