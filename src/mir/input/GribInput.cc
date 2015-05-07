@@ -135,6 +135,10 @@ static struct {
 
     {"truncation", "pentagonalResolutionParameterJ",},// Assumes triangular truncation
 
+    {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees"},
+    {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees"},
+    {"south_pole_rotation_angle", "angleOfRotationInDegrees"},
+
     // This will be just called for has()
     {"gridded", "numberOfPointsAlongAMeridian"}, // Is that always true?
     {"spherical", "pentagonalResolutionParameterJ"},

@@ -41,10 +41,10 @@ for root, dirs, files in os.walk("/gpfs/lxab/marsdev/mars_grib2/workdir/class"):
                 if h is None:
                     break
 
-                id = "%s" % gribapi.grib_get_string(h, "paramId")
+                id = "%s-%s" % (gribapi.grib_get_string(h, "paramId"), gribapi.grib_get_string(h, "gridType"))
                 cl = "%s" % gribapi.grib_get_string(h, "class")
                 if id not in params or SCORE.get(cl, 0) > SCORES.get(id, 0):
-                    print "New ID", id, gribapi.grib_get_string(h, "parameterName")
+                    print "New ID", id, gribapi.grib_get_string(h, "name")
                     with open("/perm/ma/mab/gribs/%s.grib" % (id,), "w") as g:
                         g.write(gribapi.grib_get_message(h))
                     i = gribapi.grib_keys_iterator_new(h, "mars")
