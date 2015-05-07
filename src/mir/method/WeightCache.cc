@@ -8,22 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
-#include "mir/method/WeightCache.h"
+#include "WeightCache.h"
+
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 
-#include <sys/types.h>
-#include <sys/stat.h>
-
 #include "eckit/config/Resource.h"
 #include "eckit/io/FileHandle.h"
-
-
-using namespace eckit;
-
 
 namespace mir {
 namespace method {
@@ -74,153 +70,137 @@ TODO:
 3 - Code must ensure that no resource are lost in case of exception  (e.g. using AutoClose<T>)
 */
 
+using eckit::CacheManager;
+using eckit::Log;
+using eckit::Resource;
+using eckit::FileHandle;
+using eckit::AutoClose;
+using eckit::PathName;
+using atlas::Grid;
 
-class AutoUmask {
-    mode_t umask_;
-  public:
-    AutoUmask(mode_t u = 0): umask_(::umask(u)) { }
-    ~AutoUmask() {
-        ::umask(umask_);
-    }
-};
+WeightCache::WeightCache() : CacheManager("weights")
+{
+}
 
-PathName WeightCache::filename(const std::string& key) {
+PathName WeightCache::entry(const key_t& key) const {
     PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir","/tmp/cache/mir");
-
-    PathName f = base_path / "weights" / PathName( key + ".cache" );
-
+    PathName f = base_path / name() / PathName( key + ".cache" );
     return f;
 }
 
+std::string WeightCache::compute_key(const std::string& method, const Grid& in, const Grid& out) const {
+    std::ostringstream s;
+    s << method << "." << in.unique_id() << "." << out.unique_id();
+    return s.str();
+}
 
-bool WeightCache::add(const std::string& key, MethodWeighted::Matrix& W ) {
-    PathName file( filename(key) );
+void WeightCache::insert(const std::string& method, const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W) {
 
-    if( file.exists() ) {
-        Log::debug() << "WeightCache entry " << file << " already exists..." << std::endl;
-        return false;
-    }
+    key_t key = compute_key(method, in, out);
 
-    AutoUmask umask(0);
+    PathName tmp_path = stage(key);
 
-    // FIXME: mask does not seem to affect first level directory
-    file.dirName().mkdir(0777); // ensure directory exists
+    Log::info() << "Inserting weights in cache (" << tmp_path << ")" << std::endl;
 
-    // unique file name avoids race conditions on the file from multiple processes
+    {
+        FileHandle f(tmp_path, true);
 
-    PathName tmpfile ( PathName::unique(file) );
+        f.openForWrite(0); AutoClose closer(f);
 
-    Log::info() << "Inserting weights in cache (" << file << ")" << std::endl;
+        // write nominal size of matrix
 
-    std::ofstream ofs;
-    ofs.exceptions ( std::ofstream::failbit | std::ofstream::badbit );
-    ofs.open( tmpfile.asString().c_str(), std::ios::binary );
+        long innerSize = W.innerSize();
+        long outerSize = W.outerSize();
 
-    SYSCALL(::chmod(tmpfile.asString().c_str(), 0444));
+        f.write(reinterpret_cast<const char*>(&innerSize), sizeof(innerSize));
+        f.write(reinterpret_cast<const char*>(&outerSize), sizeof(outerSize));
 
-    // write nominal size of matrix
+        // find all the non-zero values (aka triplets)
 
-    long innerSize = W.innerSize();
-    long outerSize = W.outerSize();
+        std::vector<Eigen::Triplet<double> > trips;
+        for (unsigned int i = 0; i < W.outerSize(); ++i) {
+            for (WeightMatrix::InnerIterator it(W, i); it; ++it) {
+                trips.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
+            }
+        }
 
-    ofs.write(reinterpret_cast<const char*>(&innerSize), sizeof(innerSize));
-    ofs.write(reinterpret_cast<const char*>(&outerSize), sizeof(outerSize));
+        // save the number of triplets
 
-    // find all the non-zero values (aka triplets)
+        long ntrips = trips.size();
+        f.write(reinterpret_cast<const char*>(&ntrips), sizeof(ntrips));
 
-    std::vector<Eigen::Triplet<double> > trips;
-    for (unsigned int i = 0; i < W.outerSize(); ++i) {
-        for ( MethodWeighted::Matrix::InnerIterator it(W,i); it; ++it) {
-            trips.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
+        // now save the triplets themselves
+
+        for (unsigned int i = 0; i < trips.size(); i++) {
+
+            Eigen::Triplet<double>& rt = trips[i];
+
+            long x = rt.row();
+            long y = rt.col();
+            double w = rt.value();
+
+            f.write(reinterpret_cast<const char*>(&x), sizeof(x));
+            f.write(reinterpret_cast<const char*>(&y), sizeof(y));
+            f.write(reinterpret_cast<const char*>(&w), sizeof(w));
         }
     }
 
-    // save the number of triplets
-
-    long ntrips = trips.size();
-    ofs.write(reinterpret_cast<const char*>(&ntrips), sizeof(ntrips));
-
-    // now save the triplets themselves
-
-    for (unsigned int i = 0; i < trips.size(); i++) {
-        Eigen::Triplet<double>& rt = trips[i];
-        //ofs << (long)rt.row() << (long)rt.col() << (double)rt.value();
-        long x = rt.row();
-        long y = rt.col();
-        double w = rt.value();
-
-        ofs.write(reinterpret_cast<const char*>(&x), sizeof(x));
-        ofs.write(reinterpret_cast<const char*>(&y), sizeof(y));
-        ofs.write(reinterpret_cast<const char*>(&w), sizeof(w));
-
-    }
-
-    ofs.close();
-
-    // now try to rename the file to its file pathname
-
-    try {
-        PathName::rename( tmpfile, file );
-    } catch( FailedSystemCall& e ) { // ignore failed system call -- another process nay have created the file meanwhile
-        Log::debug() << "Failed rename of cache file -- " << e.what() << std::endl;
-    }
-
-    return true;
+    commit(key, tmp_path);
 }
 
+bool WeightCache::retrieve(const std::string& method, const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W) const {
 
-bool WeightCache::get(const std::string& key, MethodWeighted::Matrix& W ) {
-    PathName file( filename(key) );
+    key_t key = compute_key(method, in, out);
 
-    if( ! file.exists() ) {
+    PathName path;
+
+    if (!get(key, path))
         return false;
+
+    Log::info() << "Found weights in cache (" << path << ")" << std::endl;
+
+    {
+        FileHandle f(path);
+
+        f.openForRead(); AutoClose closer(f);
+
+        // read inpts, outpts sizes of matrix
+
+        long inner, outer;
+
+        f.read(reinterpret_cast<char*>(&inner), sizeof(inner));
+        f.read(reinterpret_cast<char*>(&outer), sizeof(outer));
+
+        long npts;
+        f.read(reinterpret_cast<char*>(&npts), sizeof(npts));
+
+        // read total sparse points of matrix (so we can reserve)
+
+        std::vector<Eigen::Triplet<double> > insertions;
+
+        insertions.reserve(npts);
+
+        // read the values
+
+        for (unsigned int i = 0; i < npts; i++) {
+            long x, y;
+            double w;
+            f.read(reinterpret_cast<char*>(&x), sizeof(x));
+            f.read(reinterpret_cast<char*>(&y), sizeof(y));
+            f.read(reinterpret_cast<char*>(&w), sizeof(w));
+            insertions.push_back(Eigen::Triplet<double>(x, y, w));
+        }
+
+      // check matrix is correctly sized
+      // note that Weigths::Matrix is row-major, so rows are outer size
+
+      ASSERT(W.rows() == outer);
+      ASSERT(W.cols() == inner);
+
+      // set the weights from the triplets
+
+      W.setFromTriplets(insertions.begin(), insertions.end());
     }
-
-    Log::info() << "Found weights in cache (" << file << ")" << std::endl;
-
-    FileHandle fh( file );
-
-    fh.openForRead();
-
-    // read inpts, outpts sizes of matrix
-
-    long inner, outer;
-
-    fh.read(reinterpret_cast<char*>(&inner), sizeof(inner));
-    fh.read(reinterpret_cast<char*>(&outer), sizeof(outer));
-
-    long npts;
-    fh.read(reinterpret_cast<char*>(&npts), sizeof(npts));
-
-    // read total sparse points of matrix (so we can reserve)
-
-    std::vector<Eigen::Triplet<double> > insertions;
-
-    insertions.reserve(npts);
-
-    // read the values
-
-    for (unsigned int i = 0; i < npts; i++) {
-        long x, y;
-        double w;
-        //fh >> x >> y >> w;
-        fh.read(reinterpret_cast<char*>(&x), sizeof(x));
-        fh.read(reinterpret_cast<char*>(&y), sizeof(y));
-        fh.read(reinterpret_cast<char*>(&w), sizeof(w));
-        insertions.push_back(Eigen::Triplet<double>(x, y, w));
-    }
-
-    fh.close();
-
-    // check matrix is correctly sized
-    // note that Weigths::Matrix is row-major, so rows are outer size
-
-    ASSERT( W.rows() == outer );
-    ASSERT( W.cols() == inner );
-
-    // set the weights from the triplets
-
-    W.setFromTriplets(insertions.begin(), insertions.end());
 
     return true;
 }

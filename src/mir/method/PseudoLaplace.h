@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef soyuz_method_PseudoLaplace_H
-#define soyuz_method_PseudoLaplace_H
+#ifndef mir_method_PseudoLaplace_H
+#define mir_method_PseudoLaplace_H
 
 #include "mir/method/MethodWeighted.h"
 
@@ -73,7 +73,7 @@ class PseudoLaplace: public MethodWeighted {
 
 // -- Methods
 
-    virtual void assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 

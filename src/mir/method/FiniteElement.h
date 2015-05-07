@@ -13,15 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef soyuz_method_FiniteElement_H
-#define soyuz_method_FiniteElement_H
+#ifndef mir_method_FiniteElement_H
+#define mir_method_FiniteElement_H
 
 #include "eckit/memory/ScopedPtr.h"
 
 #include "eckit/maths/Eigen.h"
+#include "eckit/geometry/Point3.h"
 
 #include "atlas/Mesh.h"
 #include "atlas/Field.h"
+#include "atlas/PointIndex3.h"
 
 #include "mir/method/MethodWeighted.h"
 
@@ -32,6 +34,8 @@ namespace method {
 
 class FiniteElement: public MethodWeighted {
   public:
+
+    typedef eckit::geometry::Point3 Point;
 
 // -- Exceptions
     // None
@@ -94,7 +98,7 @@ class FiniteElement: public MethodWeighted {
 
 // -- Overridden methods
 
-    virtual void assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 

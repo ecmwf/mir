@@ -27,6 +27,8 @@
 #include "mir/repres/Representation.h"
 
 
+using atlas::Grid;
+
 namespace mir {
 namespace method {
 
@@ -39,60 +41,61 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& param) :
 MethodWeighted::~MethodWeighted() {
 }
 
-
 void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const atlas::Grid& out) const {
-    eckit::Log::info() << "MethodWeighted::execute" << std::endl;
 
+    eckit::Log::info() << "MethodWeighted::execute" << std::endl;
 
     // calculate weights matrix, apply mask if necessary
     size_t npts_inp = in.npts();
     size_t npts_out = out.npts();
-    MethodWeighted::Matrix W(npts_out, npts_inp);
+    WeightMatrix W(npts_out, npts_inp);
 
-    WeightCache cache;
-
-    const std::string whash = hash(in, out);
-    if (!cache.get(whash, W)) {
-      if (in.unique_id() == out.unique_id() && in.same(out)) {
-        W.setIdentity();
-      } else {
+    if (!cache_.retrieve(name(), in, out, W)) {
         eckit::Timer t("Calculating interpolation weights");
-        assemble(W, in, out);
-      }
-      cache.add(whash, W);
+        compute_weights(in, out, W);
+        cache_.insert(name(), in, out, W);
     }
 
+    /// TODO: add caching of missing values
     applyMissingValues(W);
 
+    /// TODO: add caching of maks values
     applyMask(W);
 
     // multiply interpolant matrix with field vector
-    for(size_t i = 0; i < field.dimensions(); i++) {
-        eckit::StrStream os;
-        os << "Interpolating field ("  << npts_inp << " -> " << npts_out << ")" << eckit::StrStream::ends;
-        std::string msg(os);
-        eckit::Timer t(msg);
+    for (size_t i = 0; i < field.dimensions(); i++) {
 
-        ASSERT(field.values(i).size() == npts_inp);
-        eckit::Log::info() << "Input field is " << field.values(i).size() << std::endl;
+      eckit::StrStream os;
+      os << "Interpolating field (" << npts_inp << " -> " << npts_out << ")" << eckit::StrStream::ends;
+      std::string msg(os);
+      eckit::Timer t(msg);
 
-        std::vector<double>& values = field.values(i);
-        std::vector<double> result(npts_out);
+      ASSERT(field.values(i).size() == npts_inp);
+      eckit::Log::info() << "Input field is " << field.values(i).size() << std::endl;
 
-        Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &values[0], npts_inp );
-        Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &result[0], npts_out );
-        vo = W * vi;
+      std::vector<double>& values = field.values(i);
+      std::vector<double> result(npts_out);
 
-        field.values(result, i); // Update field with result
+      Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map(&values[0], npts_inp);
+      Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map(&result[0], npts_out);
+      vo = W * vi;
+
+      field.values(result, i);  // Update field with result
     }
 }
 
+void MethodWeighted::compute_weights(const Grid& in, const Grid& out, WeightMatrix& W) const {
+    if(in.same(out))
+        W.setIdentity();  // grids are the same, use identity matrix
+    else
+        assemble(W, in, out);   // assemble matrix of coefficients
+}
 
-void MethodWeighted::applyMissingValues(MethodWeighted::Matrix& W) const {
+void MethodWeighted::applyMissingValues(WeightMatrix& W) const {
 }
 
 
-void MethodWeighted::applyMask(MethodWeighted::Matrix& W) const {
+void MethodWeighted::applyMask(WeightMatrix& W) const {
 #if 0
 //FIXME
     // FIXME arguments:

@@ -14,8 +14,8 @@
 /// @date Apr 2015
 
 
-#ifndef soyuz_method_PointSearch_H
-#define soyuz_method_PointSearch_H
+#ifndef mir_method_PointSearch_H
+#define mir_method_PointSearch_H
 
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"

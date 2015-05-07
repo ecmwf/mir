@@ -12,8 +12,8 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#ifndef soyuz_method_Bilinear_H
-#define soyuz_method_Bilinear_H
+#ifndef mir_method_Bilinear_H
+#define mir_method_Bilinear_H
 
 #include "mir/method/MethodWeighted.h"
 
@@ -84,7 +84,7 @@ class Bilinear: public MethodWeighted {
 
 // -- Overridden methods
 
-    virtual void assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 

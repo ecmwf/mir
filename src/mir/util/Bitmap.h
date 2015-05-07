@@ -12,115 +12,101 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-
 #ifndef Bitmap_H
 #define Bitmap_H
 
+#include <vector>
 
 #include "eckit/filesystem/PathName.h"
-
 
 namespace mir {
 namespace util {
 
-
 class Bitmap {
-  public:
+ public:
+  // -- Exceptions
+  // None
 
-// -- Exceptions
-    // None
+  // -- Contructors
 
-// -- Contructors
+  explicit Bitmap(const eckit::PathName&);
 
-    Bitmap(const eckit::PathName&);
+  // -- Destructor
 
-// -- Destructor
+  ~Bitmap();  // Change to virtual if base class
 
-    ~Bitmap(); // Change to virtual if base class
+  // -- Convertors
+  // None
 
-// -- Convertors
-    // None
+  // -- Operators
+  // None
 
-// -- Operators
-    // None
+  // -- Methods
 
-// -- Methods
+  size_t width() const { return width_; }
+  size_t height() const { return height_; }
 
-    const size_t width() const {
-        return width_;
-    }
-    const size_t height() const {
-        return height_;
-    }
+  bool on(size_t j, size_t i) const { return bitmap_[j][i]; }
 
-    bool on(size_t j, size_t i) const {
-        return bitmap_[j][i];
-    }
+  // -- Overridden methods
+  // None
 
-// -- Overridden methods
-    // None
+  // -- Class members
+  // None
 
-// -- Class members
-    // None
+  // -- Class methods
+  // None
 
-// -- Class methods
-    // None
+ protected:
+  // -- Members
+  // None
 
-  protected:
+  // -- Methods
 
-// -- Members
-    // None
+  void print(std::ostream&) const;  // Change to virtual if base class
 
-// -- Methods
+  // -- Overridden methods
+  // None
 
-    void print(std::ostream&) const; // Change to virtual if base class
+  // -- Class members
+  // None
 
-// -- Overridden methods
-    // None
+  // -- Class methods
+  // None
 
-// -- Class members
-    // None
+ private:
 
-// -- Class methods
-    // None
+  Bitmap(const Bitmap&);
+  Bitmap& operator=(const Bitmap&);
 
-  private:
+  // -- Members
 
-// No copy allowed
+  eckit::PathName path_;
+  std::vector<std::vector<bool> > bitmap_;
+  size_t width_;
+  size_t height_;
 
-    Bitmap(const Bitmap&);
-    Bitmap& operator=(const Bitmap&);
+  // -- Methods
+  // None
 
-// -- Members
+  // -- Overridden methods
 
-    eckit::PathName path_;
-    std::vector<std::vector<bool> > bitmap_;
-    size_t width_;
-    size_t height_;
+  // -- Class members
+  // None
 
-// -- Methods
-    // None
+  // -- Class methods
+  // None
 
-// -- Overridden methods
+  // -- Friends
 
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-// -- Friends
-
-    friend std::ostream& operator<<(std::ostream& s,const Bitmap& p) {
-        p.print(s);
-        return s;
-    }
+  friend std::ostream& operator<<(std::ostream& s, const Bitmap& p) {
+    p.print(s);
+    return s;
+  }
 
 };
 
-
 }  // namespace util
 }  // namespace mir
-#endif
 
+#endif

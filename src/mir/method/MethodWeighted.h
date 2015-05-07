@@ -13,103 +13,51 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#ifndef soyuz_method_MethodWeighted_H
-#define soyuz_method_MethodWeighted_H
-
+#ifndef mir_method_MethodWeighted_H
+#define mir_method_MethodWeighted_H
 
 #include <string>
 
-#include "eckit/maths/Eigen.h"
-#include "atlas/PointIndex3.h"
-
 #include "mir/method/Method.h"
+#include "mir/method/WeightCache.h"
+#include "mir/method/WeightMatrix.h"
 
-
-namespace atlas {
-class Grid;
-}
-
+namespace atlas { class Grid; }
 
 namespace mir {
 namespace method {
 
 
 class MethodWeighted : public Method {
+
+    mutable WeightCache cache_;
+
   public:
 
-// -- Definitions
 
-    typedef Eigen::SparseMatrix< double, Eigen::RowMajor > Matrix;
-    typedef eckit::geometry::Point3 Point;
+    explicit MethodWeighted(const param::MIRParametrisation&);
 
-// -- Exceptions
-    // None
-
-// -- Contructors
-    MethodWeighted(const param::MIRParametrisation&);
-
-// -- Destructor
     virtual ~MethodWeighted();
 
-// -- Convertors
-    // None
-
-// -- Operators
-    // None
-
-// -- Methods
-    // None
-
-// -- Overridden methods
     virtual void execute(data::MIRField& field, const atlas::Grid& in, const atlas::Grid& out) const;
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
 
   protected:
 
-// -- Members
-    // None
-
-// -- Methods
-
     virtual const char* name() const = 0;
-    virtual void assemble(Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const = 0;
+
+    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
-    void applyMissingValues(MethodWeighted::Matrix& W) const;
+    void applyMissingValues(WeightMatrix& W) const;
 
     /// Update interpolation weigths matrix to account for field masked values
-    void applyMask(Matrix& W) const;
+    void applyMask(WeightMatrix& W) const;
 
     std::string hash(const atlas::Grid& in, const atlas::Grid& out) const;
 
-// -- Overridden methods
-    // None
-
-// -- Class members
-
-// -- Class methods
-    // None
-
   private:
 
-// -- Methods
-    // None
-
-// -- Overridden methods
-    // None
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-// -- Friends
+    void compute_weights(const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W) const;
 
     friend std::ostream& operator<<(std::ostream& s,const MethodWeighted& p) {
         p.print(s);

@@ -43,7 +43,7 @@ const char *KNearest::name() const {
     return  "k-nearest";
 }
 
-void KNearest::assemble(MethodWeighted::Matrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
+void KNearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
     util::PointSearch sptree(in.mesh());
 

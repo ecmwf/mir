@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef soyuz_method_Method_H
-#define soyuz_method_Method_H
+#ifndef mir_method_Method_H
+#define mir_method_Method_H
 
 #include <iosfwd>
 #include <string>

@@ -2,7 +2,6 @@ MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
 PRIORITY
 
- - ecbuild: add macro for ___attribute__((constructor))
  - MIR: create unit test framework
  - Atlas / ecKit: Fix mesh caching
  - MIR: Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib

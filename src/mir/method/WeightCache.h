@@ -15,32 +15,41 @@
 #ifndef mir_method_WeightCache_H
 #define mir_method_WeightCache_H
 
+#include <string>
+
+#include "eckit/container/CacheManager.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/memory/NonCopyable.h"
 
-#include  "mir/method/MethodWeighted.h"
+#include "atlas/Grid.h"
 
+#include "mir/method/WeightMatrix.h"
 
 namespace mir {
 namespace method {
 
+class WeightCache : public eckit::CacheManager {
+ public:  // methods
 
-class WeightCache : private eckit::NonCopyable {
+  WeightCache();
 
-  public: // methods
+  /// Tries to retrieve a cached WeightMatrix
+  /// @returns true if found cache
+  bool retrieve(const std::string& method, const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W) const;
 
-    /// @returns true if found cache
-    static bool get(const std::string& key, MethodWeighted::Matrix& W);
+  /// Inserts a cached WeightMatrix, overwritting any existing entry
+  /// @returns true if insertion successful cache
+  void insert(const std::string& method, const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W);
 
-    /// @returns true if addition was succcessful
-    static bool add(const std::string& key, MethodWeighted::Matrix& W );
+ private:
 
-    static eckit::PathName filename(const std::string& key);
+  /// @returns the path of the cache entry given the key
+  virtual eckit::PathName entry(const key_t& key) const;
+
+  std::string compute_key(const std::string& method, const atlas::Grid& in, const atlas::Grid& out) const;
 
 };
 
-
 }  // namespace method
 }  // namespace mir
-#endif
 
+#endif

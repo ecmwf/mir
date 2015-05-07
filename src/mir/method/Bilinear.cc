@@ -76,7 +76,7 @@ const char* Bilinear::name() const {
     return  "bilinear";
 }
 
-void Bilinear::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
+void Bilinear::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
 
 
     using eckit::geometry::LON;

@@ -98,7 +98,7 @@ bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, in
 }
 
 
-void FiniteElement::assemble(MethodWeighted::Matrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
+void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
     // FIXME arguments:
     eckit::Log::info() << "FiniteElement::assemble" << std::endl;
 
