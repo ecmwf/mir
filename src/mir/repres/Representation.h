@@ -43,6 +43,15 @@ namespace repres {
 class Representation {
   public:
 
+    // Sanning mode bits
+    enum {
+        iScansNegatively = 1 << 7,
+        jScansPositively = 1 << 6,
+        jPointsAreConsecutive = 1 << 5,
+        alternateRowScanning = 1 << 4,
+    };
+
+
 // -- Exceptions
     // None
 
@@ -76,6 +85,8 @@ class Representation {
     virtual size_t truncation() const;
 
     virtual Representation* clone() const;
+
+    virtual void reorder(long scanningMode, std::vector<double>& values) const;
 
 // -- Overridden methods
     // None
@@ -128,7 +139,7 @@ class Representation {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const Representation& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Representation& p) {
         p.print(s);
         return s;
     }
