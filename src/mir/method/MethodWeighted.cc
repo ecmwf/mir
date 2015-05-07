@@ -30,8 +30,7 @@
 #include "eckit/thread/Mutex.h"
 
 #include "mir/data/MIRField.h"
-#include "mir/lsm/InputLandSeaMask.h"
-#include "mir/lsm/OutputLandSeaMask.h"
+#include "mir/lsm/LandSeaMask.h"
 #include "mir/method/WeightCache.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -48,7 +47,7 @@ namespace method {
 static std::map<std::string, WeightMatrix> matrix_cache;
 
 
-MethodWeighted::MethodWeighted(const param::MIRParametrisation& param) :
+MethodWeighted::MethodWeighted(const param::MIRParametrisation &param) :
     Method(param) {
 }
 
@@ -57,12 +56,15 @@ MethodWeighted::~MethodWeighted() {
 }
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
-const WeightMatrix& MethodWeighted::getMatrix(const atlas::Grid& in, const atlas::Grid& out) const {
+const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas::Grid &out) const {
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    const lsm::InputLandSeaMask& mask_in = lsm::InputLandSeaMask::lookup(parametrisation_, in);
-    const lsm::OutputLandSeaMask& mask_out = lsm::OutputLandSeaMask::lookup(parametrisation_, out);
+    const lsm::LandSeaMask &mask_in = lsm::LandSeaMask::lookupInput(parametrisation_, in);
+    const lsm::LandSeaMask &mask_out = lsm::LandSeaMask::lookupOutput(parametrisation_, out);
+
+    eckit::Log::info() << "++++ Input LSM is " << mask_in << std::endl;
+    eckit::Log::info() << "++++ Output LSM is " << mask_out << std::endl;
 
     std::string key = cache_.generateKey(name(), in, out, mask_in, mask_out);
 
@@ -101,14 +103,14 @@ const WeightMatrix& MethodWeighted::getMatrix(const atlas::Grid& in, const atlas
 }
 
 
-void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const atlas::Grid& out) const {
+void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const atlas::Grid &out) const {
 
     eckit::Log::info() << "MethodWeighted::execute" << std::endl;
 
     size_t npts_inp = in.npts();
     size_t npts_out = out.npts();
 
-    const WeightMatrix& W = getMatrix(in, out);
+    const WeightMatrix &W = getMatrix(in, out);
 
     // TODO: ASSERT matrix size is npts_inp * npts_out
 
@@ -123,7 +125,7 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
         ASSERT(field.values(i).size() == npts_inp);
         eckit::Log::info() << "Input field is " << field.values(i).size() << std::endl;
 
-        std::vector<double>& values = field.values(i);
+        std::vector<double> &values = field.values(i);
         std::vector<double> result(npts_out);
 
         Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &values[0], npts_inp );
@@ -138,24 +140,24 @@ void MethodWeighted::execute(data::MIRField& field, const atlas::Grid& in, const
             vo = W * vi;
         }
 
-      field.values(result, i);  // Update field with result
+        field.values(result, i);  // Update field with result
     }
 }
 
-void MethodWeighted::compute_weights(const Grid& in, const Grid& out, WeightMatrix& W) const {
-    if(in.same(out))
+void MethodWeighted::compute_weights(const Grid &in, const Grid &out, WeightMatrix &W) const {
+    if (in.same(out))
         W.setIdentity();        // grids are the same, use identity matrix
     else
         assemble(W, in, out);   // assemble matrix of coefficients
 }
 
-WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix& W, data::MIRField& field, size_t which) const {
+WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const {
 
     ASSERT(field.hasMissing());
 
     eckit::Log::info() << "Field has missing values" << std::endl;
     double missing = field.missingValue();
-    const std::vector<double>& values = field.values(which);
+    const std::vector<double> &values = field.values(which);
 
     // setup sizes & counters
     const size_t
@@ -190,7 +192,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix& W, data::MIR
 
         Nmiss = 0,
         Ncol  = 0;
-        for (WeightMatrix::InnerIterator j(X,i); j; ++j, ++Ncol) {
+        for (WeightMatrix::InnerIterator j(X, i); j; ++j, ++Ncol) {
             if (missvalues[j.col()])
                 ++Nmiss;
             else
@@ -202,25 +204,25 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix& W, data::MIR
 
             // no missing values, no redistribution
 
-        } else if ( (std::abs(sum)<std::numeric_limits< double >::epsilon()) ||
-                    (Ncol==Nmiss) ) {
+        } else if ( (std::abs(sum) < std::numeric_limits< double >::epsilon()) ||
+                    (Ncol == Nmiss) ) {
             ++count_all_missing;
 
             // all values are missing (or weights wrongly computed), special case
             // (it covers Ncol>0 with the above condition)
-            for (WeightMatrix::InnerIterator j(X,i); j; ++j) {
+            for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
                 j.valueRef() = 0.;
                 field.values(which)[j.col()] = missing;
             }
-            WeightMatrix::InnerIterator(X,i).valueRef() = 1.;
+            WeightMatrix::InnerIterator(X, i).valueRef() = 1.;
 
         } else {
             ++count_some_missing;
 
             // apply linear redistribution
             // TODO: new redistribution methods
-            const double invsum = 1/sum;
-            for (WeightMatrix::InnerIterator j(X,i); j; ++j) {
+            const double invsum = 1 / sum;
+            for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
                 if (missvalues[j.col()]) {
                     field.values(which)[j.col()] = missing;
                     j.valueRef() = 0.;
@@ -238,28 +240,24 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix& W, data::MIR
 }
 
 
-void MethodWeighted::applyInputMask(WeightMatrix& W, const lsm::InputLandSeaMask& imask) const {
+void MethodWeighted::applyInputMask(WeightMatrix &W, const lsm::LandSeaMask &imask) const {
+    eckit::Log::info() << "======== MethodWeighted::applyInputMask(" << imask << ")" << std::endl;
 
-    return; // For now
-
-    const data::MIRField& imask_field = imask.field();
+    const data::MIRField &imask_field = imask.field();
 }
 
 
-void MethodWeighted::applyOutputMask(WeightMatrix& W, const lsm::OutputLandSeaMask& omask) const {
+void MethodWeighted::applyOutputMask(WeightMatrix &W, const lsm::LandSeaMask &omask) const {
+    eckit::Log::info() << "======== MethodWeighted::applyOutputMask("  << omask << ")" << std::endl;
 
-    return; // For now
-
-    const data::MIRField& omask_field = omask.field();
+    const data::MIRField &omask_field = omask.field();
 }
 
 
-void MethodWeighted::applyBothMask(WeightMatrix& W, const lsm::InputLandSeaMask& imask, const lsm::OutputLandSeaMask& omask) const {
-
-    return; // For now
-
-    const data::MIRField& imask_field = imask.field();
-    const data::MIRField& omask_field = omask.field();
+void MethodWeighted::applyBothMask(WeightMatrix &W, const lsm::LandSeaMask &imask, const lsm::LandSeaMask &omask) const {
+    eckit::Log::info() << "======== MethodWeighted::applyBothMask(" << imask << "," << omask << ")" << std::endl;
+    const data::MIRField &imask_field = imask.field();
+    const data::MIRField &omask_field = omask.field();
 }
 
 }  // namespace method

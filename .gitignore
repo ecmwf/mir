@@ -9,3 +9,4 @@ CMakeLists.txt.user*
 suite/requests
 suite/check.def
 suite/combinations.pyc
+*.grib

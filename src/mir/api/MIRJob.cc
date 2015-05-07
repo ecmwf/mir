@@ -91,9 +91,6 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
     std::auto_ptr< data::MIRField > field(input.field());
     eckit::Log::info() << "Field is " << *field << std::endl;
 
-    // Add Grid to field
-    field->representation(repres::RepresentationFactory::build(metadata));
-    eckit::Log::info() << "Representation is " << *(field->representation()) << std::endl;
 
     plan.execute(*field);
 

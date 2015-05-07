@@ -25,13 +25,20 @@ namespace mir {
 namespace data {
 
 
-MIRField::MIRField(bool hasMissing, double missingValue):
+MIRField::MIRField(const param::MIRParametrisation &param, bool hasMissing, double missingValue):
     values_(),
     hasMissing_(hasMissing),
     missingValue_(missingValue),
-    representation_(0) {
+    representation_(repres::RepresentationFactory::build(param)) {
 }
 
+
+MIRField::MIRField(repres::Representation *repres, bool hasMissing, double missingValue):
+    values_(),
+    hasMissing_(hasMissing),
+    missingValue_(missingValue),
+    representation_(repres) {
+}
 
 // Warning: take ownership of values
 void MIRField::values(std::vector<double> &values, size_t which) {
@@ -56,7 +63,7 @@ void MIRField::print(std::ostream &out) const {
     if (hasMissing_) {
         out << ",missingValue=" << missingValue_;
     }
-    if(representation_) {
+    if (representation_) {
         out << ",representation=" << *representation_;
     }
     out << "]";

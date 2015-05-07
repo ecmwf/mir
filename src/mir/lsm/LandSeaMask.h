@@ -17,21 +17,30 @@
 #define LandSeaMask_H
 
 #include <iosfwd>
+#include <memory>
+#include <string>
+#include <vector>
 
+// #include "mir/data/MIRField.h"
 
 namespace atlas {
 class Grid;
 }
 
+
 namespace mir {
-
-namespace param {
-class MIRParametrisation;
-}
-
 
 namespace data {
 class MIRField;
+}
+namespace action {
+class Action;
+class ActionPlan;
+}
+
+namespace param {
+class MIRParametrisation;
+class RuntimeParametrisation;
 }
 
 namespace lsm {
@@ -40,87 +49,119 @@ namespace lsm {
 class LandSeaMask {
   public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
-    LandSeaMask(const std::string& name);
+    LandSeaMask(const std::string &name, const std::string &key);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~LandSeaMask(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-    virtual bool active() const = 0;
-    virtual const data::MIRField& field() const = 0;
-    virtual std::string unique_id() const = 0;
+    virtual bool active() const;
+    virtual std::string unique_id() const;
 
-// -- Overridden methods
+    virtual bool cacheable() const;
+    virtual const data::MIRField &field() const;
+
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
-    // None
+    // -- Class methods
+
+    static  LandSeaMask &lookupInput(const param::MIRParametrisation &param, const atlas::Grid &grid);
+    static  LandSeaMask &lookupOutput(const param::MIRParametrisation &param, const atlas::Grid &grid);
 
   protected:
 
-// -- Members
+    // -- Members
 
     std::string name_;
+    std::string key_;
+    std::auto_ptr<data::MIRField> field_;
 
-// -- Methods
+    // -- Methods
 
 
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   private:
 
-// No copy allowed
+    // No copy allowed
 
-    LandSeaMask(const LandSeaMask&);
-    LandSeaMask& operator=(const LandSeaMask&);
+    LandSeaMask(const LandSeaMask &);
+    LandSeaMask &operator=(const LandSeaMask &);
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
+
+
+    // -- Overridden methods
     // None
 
-// -- Overridden methods
+    // -- Class members
     // None
 
-// -- Class members
-    // None
+    // -- Class methods
+    static  LandSeaMask &lookup(const param::MIRParametrisation &param, const atlas::Grid &grid, bool in);
 
-// -- Class methods
-    // None
 
-// -- Friends
+    // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const LandSeaMask& p) {
+    friend std::ostream &operator<<(std::ostream &s, const LandSeaMask &p) {
         p.print(s);
         return s;
     }
 
+};
+
+
+class LandSeaMaskFactory {
+    std::string name_;
+    virtual LandSeaMask *make(const std::string &, const std::string &, const param::MIRParametrisation &param, const atlas::Grid &grid) = 0 ;
+
+  protected:
+
+    LandSeaMaskFactory(const std::string &);
+    virtual ~LandSeaMaskFactory();
+
+  public:
+    static LandSeaMask *build(const std::string &, const std::string &, const param::MIRParametrisation &param, const atlas::Grid &grid);
+
+};
+
+
+template<class T>
+class LandSeaMaskBuilder : public LandSeaMaskFactory {
+    virtual LandSeaMask *make(const std::string &name, const std::string &key, const param::MIRParametrisation &param, const atlas::Grid &grid) {
+        return new T(name, key, param, grid);
+    }
+  public:
+    LandSeaMaskBuilder(const std::string &name) : LandSeaMaskFactory(name) {}
 };
 
 

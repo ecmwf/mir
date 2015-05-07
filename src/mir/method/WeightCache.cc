@@ -90,8 +90,8 @@ PathName WeightCache::entry(const key_t &key) const {
 std::string WeightCache::generateKey(const std::string &method,
                                      const atlas::Grid &in,
                                      const atlas::Grid &out,
-                                     const lsm::InputLandSeaMask &maskin,
-                                     const lsm::OutputLandSeaMask &maskout) const {
+                                     const lsm::LandSeaMask &maskin,
+                                     const lsm::LandSeaMask &maskout) const {
     std::ostringstream s;
     s << method << "." << in.unique_id() << "." << out.unique_id();
     if (maskin.active()) {
@@ -119,8 +119,8 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
         long innerSize = W.innerSize();
         long outerSize = W.outerSize();
 
-        f.write(reinterpret_cast<const char *>(&innerSize), sizeof(innerSize));
-        f.write(reinterpret_cast<const char *>(&outerSize), sizeof(outerSize));
+        f.write(&innerSize, sizeof(innerSize));
+        f.write(&outerSize, sizeof(outerSize));
 
         // find all the non-zero values (aka triplets)
 
@@ -134,7 +134,7 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
         // save the number of triplets
 
         long ntrips = trips.size();
-        f.write(reinterpret_cast<const char *>(&ntrips), sizeof(ntrips));
+        f.write(&ntrips, sizeof(ntrips));
 
         // now save the triplets themselves
 
@@ -146,9 +146,9 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
             long y = rt.col();
             double w = rt.value();
 
-            f.write(reinterpret_cast<const char *>(&x), sizeof(x));
-            f.write(reinterpret_cast<const char *>(&y), sizeof(y));
-            f.write(reinterpret_cast<const char *>(&w), sizeof(w));
+            f.write(&x, sizeof(x));
+            f.write(&y, sizeof(y));
+            f.write(&w, sizeof(w));
         }
     }
 
@@ -173,11 +173,11 @@ bool WeightCache::retrieve(const std::string &key, WeightMatrix &W) const {
 
         long inner, outer;
 
-        f.read(reinterpret_cast<char *>(&inner), sizeof(inner));
-        f.read(reinterpret_cast<char *>(&outer), sizeof(outer));
+        f.read(&inner, sizeof(inner));
+        f.read(&outer, sizeof(outer));
 
         long npts;
-        f.read(reinterpret_cast<char *>(&npts), sizeof(npts));
+        f.read(&npts, sizeof(npts));
 
         // read total sparse points of matrix (so we can reserve)
 
@@ -190,9 +190,9 @@ bool WeightCache::retrieve(const std::string &key, WeightMatrix &W) const {
         for (unsigned int i = 0; i < npts; i++) {
             long x, y;
             double w;
-            f.read(reinterpret_cast<char *>(&x), sizeof(x));
-            f.read(reinterpret_cast<char *>(&y), sizeof(y));
-            f.read(reinterpret_cast<char *>(&w), sizeof(w));
+            f.read(&x, sizeof(x));
+            f.read(&y, sizeof(y));
+            f.read(&w, sizeof(w));
             insertions.push_back(Eigen::Triplet<double>(x, y, w));
         }
 

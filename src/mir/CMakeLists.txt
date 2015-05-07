@@ -87,12 +87,8 @@ list( APPEND mir_srcs
       logic/ToolLogic.h
       lsm/GribFileLSM.cc
       lsm/GribFileLSM.h
-      lsm/InputLandSeaMask.cc
-      lsm/InputLandSeaMask.h
       lsm/LandSeaMask.cc
       lsm/LandSeaMask.h
-      lsm/OutputLandSeaMask.cc
-      lsm/OutputLandSeaMask.h
       method/Bilinear.cc
       method/Bilinear.h
       method/FiniteElement.cc

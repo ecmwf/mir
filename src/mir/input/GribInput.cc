@@ -30,20 +30,20 @@ namespace {
 
 class Condition {
   public:
-    virtual bool eval(grib_handle*) const = 0;
+    virtual bool eval(grib_handle *) const = 0;
 };
 
 template<class T>
 class ConditionT : public Condition {
-    const char* key_;
+    const char *key_;
     T value_;
-    virtual bool eval(grib_handle*) const;
+    virtual bool eval(grib_handle *) const;
   public:
-    ConditionT(const char* key, const T& value): key_(key), value_(value) {}
+    ConditionT(const char *key, const T &value): key_(key), value_(value) {}
 };
 
 template<>
-bool ConditionT<long>::eval(grib_handle*h ) const {
+bool ConditionT<long>::eval(grib_handle *h ) const {
     long value;
     int err = grib_get_long(h, key_, &value);
 
@@ -60,7 +60,7 @@ bool ConditionT<long>::eval(grib_handle*h ) const {
 }
 
 template<>
-bool ConditionT<double>::eval(grib_handle*h ) const {
+bool ConditionT<double>::eval(grib_handle *h ) const {
     double value;
     int err = grib_get_double(h, key_, &value);
 
@@ -77,7 +77,7 @@ bool ConditionT<double>::eval(grib_handle*h ) const {
 }
 
 template<>
-bool ConditionT<std::string>::eval(grib_handle*h ) const {
+bool ConditionT<std::string>::eval(grib_handle *h ) const {
     char buffer[10240];
     size_t size = sizeof(buffer);
     int err = grib_get_string(h, key_, buffer, &size);
@@ -95,59 +95,59 @@ bool ConditionT<std::string>::eval(grib_handle*h ) const {
 }
 
 class ConditionOR : public Condition {
-    const Condition* left_;
-    const Condition* right_;
-    virtual bool eval(grib_handle* h) const {
+    const Condition *left_;
+    const Condition *right_;
+    virtual bool eval(grib_handle *h) const {
         return left_->eval(h) || left_->eval(h);
     }
   public:
-    ConditionOR(const Condition* left, const Condition* right): left_(left), right_(right) {}
+    ConditionOR(const Condition *left, const Condition *right): left_(left), right_(right) {}
 };
 
 class ConditionAND : public Condition {
-    const Condition* left_;
-    const Condition* right_;
-    virtual bool eval(grib_handle* h) const {
+    const Condition *left_;
+    const Condition *right_;
+    virtual bool eval(grib_handle *h) const {
         return left_->eval(h) && left_->eval(h);
     }
   public:
-    ConditionAND(const Condition* left, const Condition* right): left_(left), right_(right) {}
+    ConditionAND(const Condition *left, const Condition *right): left_(left), right_(right) {}
 };
 
 class ConditionNOT : public Condition {
-    const Condition* c_;
-    virtual bool eval(grib_handle* h) const {
+    const Condition *c_;
+    virtual bool eval(grib_handle *h) const {
         return !c_->eval(h);
     }
   public:
-    ConditionNOT(const Condition* c) : c_(c) {}
+    ConditionNOT(const Condition *c) : c_(c) {}
 };
 
 template<class T>
-static Condition* is(const char* key, const T& value) {
+static Condition *is(const char *key, const T &value) {
     return new ConditionT<T>(key, value);
 }
 
-static Condition* is(const char* key, const char*value) {
+static Condition *is(const char *key, const char *value) {
     return new ConditionT<std::string>(key, value);
 }
 
-static Condition* _and(const Condition* left, const Condition* right) {
+static Condition *_and(const Condition *left, const Condition *right) {
     return new ConditionAND(left, right);
 }
 
-static Condition* _or(const Condition* left, const Condition* right) {
+static Condition *_or(const Condition *left, const Condition *right) {
     return new ConditionOR(left, right);
 }
 
-static Condition* _not(const Condition* c) {
+static Condition *_not(const Condition *c) {
     return new ConditionNOT(c);
 }
 
 static struct {
     const char *name;
     const char *key;
-    const Condition* condition;
+    const Condition *condition;
 } mappings[] = {
     {"west_east_increment", "iDirectionIncrementInDegrees"},
     {"south_north_increment", "jDirectionIncrementInDegrees"},
@@ -181,12 +181,12 @@ static struct {
 };
 
 
-static const char *get_key(const std::string &name, grib_handle* h) {
+static const char *get_key(const std::string &name, grib_handle *h) {
     const char *key = name.c_str();
     size_t i = 0;
     while (mappings[i].name) {
         if (name == mappings[i].name) {
-            if(mappings[i].condition == 0 || mappings[i].condition->eval(h)) {
+            if (mappings[i].condition == 0 || mappings[i].condition->eval(h)) {
                 return mappings[i].key;
             }
         }
@@ -232,15 +232,15 @@ data::MIRField *GribInput::field() const {
     double missing;
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
 
-    long scanningMode = 0;
 
+
+    data::MIRField *field = new data::MIRField(*this, bitmap != 0, missing);
+
+    long scanningMode = 0;
     if (grib_get_long(grib_, "scanningMode", &scanningMode) == GRIB_SUCCESS && scanningMode != 0) {
-        // Deletegate to
-        std::auto_ptr<repres::Representation> representation(repres::RepresentationFactory::build(*this));
-        representation->reorder(scanningMode, values);
+        field->representation()->reorder(scanningMode, values);
     }
 
-    data::MIRField *field = new data::MIRField(bitmap != 0, missing);
     field->values(values, 0);
     return field;
 

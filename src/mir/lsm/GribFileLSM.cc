@@ -16,40 +16,57 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/lsm/GribFileLSM.h"
+#include "mir/input/GribFileInput.h"
+#include "mir/data/MIRField.h"
+#include "mir/method/Method.h"
+#include "mir/param/RuntimeParametrisation.h"
+#include "mir/repres/Representation.h"
 
 #include "atlas/Grid.h"
 
 namespace mir {
 namespace lsm {
 
-// GribFileLSM::GribFileLSM(const std::str &parametrisation):
-//     LandSeaMask(parametrisation) {
-// }
+GribFileLSM::GribFileLSM(const std::string &name, const std::string &key, const param::MIRParametrisation &param, const atlas::Grid &grid):
+    LandSeaMask(name, key) {
+    // WARNING: the atlas::Grid will not exist after
+    eckit::PathName path("~mir/etc/lsm.N640.grib");
+    eckit::Log::info() << "GribFileLSM loading " << path << std::endl;
+
+    mir::input::GribFileInput file("~mir/etc/lsm.N640.grib");
+    mir::input::MIRInput &input = file;
+
+    ASSERT(file.next());
+    field_.reset(input.field());
+
+    param::RuntimeParametrisation runtime(param);
+    runtime.set("paramId", -1L); // Hide the paramID so we don't confuse this LSM with interpolating an LSM from MARS and create an infinite recurrsion
+    std::auto_ptr< method::Method > method(method::MethodFactory::build(name, runtime));
+    eckit::Log::info() << "LSM interpolation method is " << *method << std::endl;
+
+    std::auto_ptr<atlas::Grid> gin(field_->representation()->atlasGrid());
+
+    method->execute(*field_, *gin, grid);
+
+    field_->representation(0); // This should not be used by users of the LSM
 
 
-// GribFileLSM::~GribFileLSM() {
-// }
 
-// void GribFileLSM::print(std::ostream& out) const {
-//     out << "GribFileLSM[]";
-// }
+}
 
-// data::MIRField* GribFileLSM::field(const atlas::Grid &) const {
-//     NOTIMP;
-// }
+GribFileLSM::~GribFileLSM() {
+}
 
-// std::string GribFileLSM::unique_id(const atlas::Grid &grid) const {
-//     return grid.unique_id();
-// }
-
-// bool GribFileLSM::cacheable() const {
-//     NOTIMP;
-// }
+void GribFileLSM::print(std::ostream &out) const {
+    out << "GribFileLSM[name=" << name_ << ",key=" << key_ << "]";
+}
 
 
 // register MARS-specialized logic
 namespace {
-// static LandSeaMaskBuilder<GribFileLSM> mars("lsm.grib-file");
+static LandSeaMaskBuilder<GribFileLSM> input("auto.input");
+static LandSeaMaskBuilder<GribFileLSM> output("auto.output");
+
 }
 
 //-----------------------------------------------------------------------------
