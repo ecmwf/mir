@@ -164,12 +164,12 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix& W, data::MIR
 
     // setup sizes & counters
     const size_t
-            Nivalues = values.size(),
-            Novalues = W.rows();
+    Nivalues = values.size(),
+    Novalues = W.rows();
     size_t
-            count = 0,
-            count_all_missing  = 0,
-            count_some_missing = 0;
+    count = 0,
+    count_all_missing  = 0,
+    count_some_missing = 0;
 
     std::vector< bool > missvalues(Nivalues);
     for (size_t i = 0; i < Nivalues; i++) {
@@ -192,13 +192,14 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix& W, data::MIR
         // count missing values and accumulate weights
         double sum = 0.;
         size_t
-                Nmiss = 0,
-                Ncol  = 0;
+
+        Nmiss = 0,
+        Ncol  = 0;
         for (WeightMatrix::InnerIterator j(X,i); j; ++j, ++Ncol) {
             if (missvalues[j.col()])
-              ++Nmiss;
+                ++Nmiss;
             else
-              sum += j.value();
+                sum += j.value();
         }
 
         // redistribution
@@ -206,9 +207,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix& W, data::MIR
 
             // no missing values, no redistribution
 
-        }
-        else if ( (std::abs(sum)<std::numeric_limits< double >::epsilon()) ||
-                  (Ncol==Nmiss) ) {
+        } else if ( (std::abs(sum)<std::numeric_limits< double >::epsilon()) ||
+                    (Ncol==Nmiss) ) {
             ++count_all_missing;
 
             // all values are missing (or weights wrongly computed), special case
@@ -219,8 +219,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix& W, data::MIR
             }
             WeightMatrix::InnerIterator(X,i).valueRef() = 1.;
 
-        }
-        else {
+        } else {
             ++count_some_missing;
 
             // apply linear redistribution
@@ -228,11 +227,10 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix& W, data::MIR
             const double invsum = 1/sum;
             for (WeightMatrix::InnerIterator j(X,i); j; ++j) {
                 if (missvalues[j.col()]) {
-                  field.values(which)[j.col()] = missing;
-                  j.valueRef() = 0.;
-                }
-                else {
-                  j.valueRef() *= invsum;
+                    field.values(which)[j.col()] = missing;
+                    j.valueRef() = 0.;
+                } else {
+                    j.valueRef() *= invsum;
                 }
             }
 
@@ -262,7 +260,7 @@ void MethodWeighted::applyOutputMask(WeightMatrix& W, const atlas::Grid& in, con
 
 
 void MethodWeighted::applyBothMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out,
-    const lsm::LandSeaMask& imask, const lsm::LandSeaMask& omask) const {
+                                   const lsm::LandSeaMask& imask, const lsm::LandSeaMask& omask) const {
 
     return; // For now
 
