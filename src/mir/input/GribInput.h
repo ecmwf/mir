@@ -93,7 +93,6 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Methods
 
-
     // -- Overridden methods
     // From MIRInput
 

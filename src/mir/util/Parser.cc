@@ -57,7 +57,6 @@ void Parser::fill(ParserConsumer& consumer) {
     for (;;) {
         c = peek();
 
-        // std::cout << "->" << c << std::endl;
         switch (c) {
         case '#':
             consumeComment();
@@ -149,7 +148,6 @@ void Parser::fill(ParserConsumer& consumer) {
                 c = next();
                 tmp += c;
                 word = true;
-                // std::cout << tmp << std::endl;
             } else {
                 eckit::StrStream os;
                 os << path_ << ": unexpected character " << (isprint(c) ? c : int(c)) << eckit::StrStream::ends;
@@ -162,7 +160,6 @@ void Parser::fill(ParserConsumer& consumer) {
 
 void Parser::consumeComment() {
     char c;
-    // std::cout << "Parser::consumeComment" << std::endl;
     while ( (c = next()) != 0) {
         if (c == '\n' || c == '\r') {
             break;
@@ -171,7 +168,6 @@ void Parser::consumeComment() {
 }
 
 bool Parser::readNumber(long& lvalue, double& dvalue) {
-    // std::cout << "Parser::readNumber" << std::endl;
     bool real = false;
     std::string s;
     char c = next();
@@ -238,11 +234,9 @@ bool Parser::readNumber(long& lvalue, double& dvalue) {
 
     if (real) {
         dvalue = eckit::Translator<std::string, double>()(s);
-        // std::cout << "real " << dvalue << std::endl;
         return true;
     } else {
         lvalue = eckit::Translator<std::string, long>()(s);
-        // std::cout << "int " << lvalue << std::endl;
         return false;
     }
 }

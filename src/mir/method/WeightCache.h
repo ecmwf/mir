@@ -23,6 +23,7 @@
 #include "atlas/Grid.h"
 
 #include "mir/method/WeightMatrix.h"
+#include "mir/lsm/LandSeaMask.h"
 
 namespace mir {
 namespace method {
@@ -34,18 +35,22 @@ class WeightCache : public eckit::CacheManager {
 
   /// Tries to retrieve a cached WeightMatrix
   /// @returns true if found cache
-  bool retrieve(const std::string& method, const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W) const;
+  bool retrieve(const std::string& key, WeightMatrix& W) const;
 
   /// Inserts a cached WeightMatrix, overwritting any existing entry
   /// @returns true if insertion successful cache
-  void insert(const std::string& method, const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W);
+  void insert(const std::string& key, const WeightMatrix& W);
+
+  std::string generate_key(const std::string& method,
+                           const atlas::Grid& in,
+                           const atlas::Grid& out,
+                           const lsm::LandSeaMask* maskin,
+                           const lsm::LandSeaMask* maskout) const;
 
  private:
 
   /// @returns the path of the cache entry given the key
   virtual eckit::PathName entry(const key_t& key) const;
-
-  std::string compute_key(const std::string& method, const atlas::Grid& in, const atlas::Grid& out) const;
 
 };
 

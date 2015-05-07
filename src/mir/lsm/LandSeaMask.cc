@@ -18,41 +18,41 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "mir/logic/MIRLogic.h"
+#include "mir/lsm/LandSeaMask.h"
 #include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
-namespace logic {
+namespace lsm {
 namespace {
 
 
 static eckit::Mutex *local_mutex = 0;
-static std::map<std::string,MIRLogicFactory*> *m = 0;
+static std::map<std::string,LandSeaMaskFactory*> *m = 0;
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map<std::string,MIRLogicFactory*>();
+    m = new std::map<std::string,LandSeaMaskFactory*>();
 }
 
 
 }  // (anonymous namespace)
 
 
-MIRLogic::MIRLogic(const param::MIRParametrisation &parametrisation):
+LandSeaMask::LandSeaMask(const param::MIRParametrisation &parametrisation):
     parametrisation_(parametrisation) {
 }
 
 
-MIRLogic::~MIRLogic() {
+LandSeaMask::~LandSeaMask() {
 }
 
 //-----------------------------------------------------------------------------
 
 
-MIRLogicFactory::MIRLogicFactory(const std::string& name):
+LandSeaMaskFactory::LandSeaMaskFactory(const std::string& name):
     name_(name) {
 
     pthread_once(&once,init);
@@ -64,34 +64,34 @@ MIRLogicFactory::MIRLogicFactory(const std::string& name):
 }
 
 
-MIRLogicFactory::~MIRLogicFactory() {
+LandSeaMaskFactory::~LandSeaMaskFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
 
 }
 
 
-MIRLogic* MIRLogicFactory::build(const param::MIRParametrisation& params) {
+LandSeaMask* LandSeaMaskFactory::build(const param::MIRParametrisation& params) {
 
     pthread_once(&once,init);
 
     std::string name;
 
-    if(!params.get("logic", name)) {
-        throw eckit::SeriousBug("MIRLogicFactory cannot get logic");
+    if(!params.get("lsm", name)) {
+        throw eckit::SeriousBug("LandSeaMaskFactory cannot get lsm");
     }
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, MIRLogicFactory*>::const_iterator j = m->find(name);
+    std::map<std::string, LandSeaMaskFactory*>::const_iterator j = m->find(name);
 
-    eckit::Log::info() << "Looking for MIRLogicFactory [" << name << "]" << std::endl;
+    eckit::Log::info() << "Looking for LandSeaMaskFactory [" << name << "]" << std::endl;
 
     if (j == m->end()) {
-        eckit::Log::error() << "No MIRLogicFactory for [" << name << "]" << std::endl;
-        eckit::Log::error() << "MIRLogicFactories are:" << std::endl;
+        eckit::Log::error() << "No LandSeaMaskFactory for [" << name << "]" << std::endl;
+        eckit::Log::error() << "LandSeaMaskFactories are:" << std::endl;
         for(j = m->begin() ; j != m->end() ; ++j)
             eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No MIRLogicFactory called ") + name);
+        throw eckit::SeriousBug(std::string("No LandSeaMaskFactory called ") + name);
     }
 
     return (*j).second->make(params);

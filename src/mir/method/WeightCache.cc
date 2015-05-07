@@ -88,15 +88,21 @@ PathName WeightCache::entry(const key_t& key) const {
     return f;
 }
 
-std::string WeightCache::compute_key(const std::string& method, const Grid& in, const Grid& out) const {
+std::string WeightCache::generate_key(const std::string& method,
+                                      const atlas::Grid& in,
+                                      const atlas::Grid& out,
+                                      const lsm::LandSeaMask* maskin,
+                                      const lsm::LandSeaMask* maskout) const {
     std::ostringstream s;
     s << method << "." << in.unique_id() << "." << out.unique_id();
+    if(maskin)
+      s << ".IM" << maskin->unique_id(in);
+    if(maskout)
+      s << ".OM" << maskout->unique_id(out);
     return s.str();
 }
 
-void WeightCache::insert(const std::string& method, const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W) {
-
-    key_t key = compute_key(method, in, out);
+void WeightCache::insert(const std::string& key, const WeightMatrix& W) {
 
     PathName tmp_path = stage(key);
 
@@ -148,9 +154,7 @@ void WeightCache::insert(const std::string& method, const atlas::Grid& in, const
     commit(key, tmp_path);
 }
 
-bool WeightCache::retrieve(const std::string& method, const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W) const {
-
-    key_t key = compute_key(method, in, out);
+bool WeightCache::retrieve(const std::string& key, WeightMatrix& W) const {
 
     PathName path;
 

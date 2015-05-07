@@ -25,6 +25,11 @@
 namespace atlas { class Grid; }
 
 namespace mir {
+
+namespace lsm {
+class LandSeaMask;
+}
+
 namespace method {
 
 
@@ -48,18 +53,20 @@ class MethodWeighted : public Method {
     virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
-    void applyMissingValues(WeightMatrix& W) const;
+    WeightMatrix applyMissingValues(const WeightMatrix& W, data::MIRField& field, size_t which) const;
 
     /// Update interpolation weigths matrix to account for field masked values
-    void applyMask(WeightMatrix& W) const;
+    void applyInputMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&) const;
+    void applyOutputMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&) const;
+    void applyBothMask(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out, const lsm::LandSeaMask&, const lsm::LandSeaMask&) const;
 
-    std::string hash(const atlas::Grid& in, const atlas::Grid& out) const;
+    const WeightMatrix& getMatrix(const atlas::Grid& in, const atlas::Grid& out) const;
 
   private:
 
     void compute_weights(const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W) const;
 
-    friend std::ostream& operator<<(std::ostream& s,const MethodWeighted& p) {
+    friend std::ostream& operator<<(std::ostream& s, const MethodWeighted& p) {
         p.print(s);
         return s;
     }

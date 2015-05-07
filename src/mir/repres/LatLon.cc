@@ -54,7 +54,10 @@ size_t LatLon::nj() const {
 
 static size_t compteN(double first, double last, double inc, const char *n_name, const char *first_name, const char *last_name) {
     size_t n;
-    ASSERT(first <= last);
+    if (!(first <= last)) {
+        eckit::Log::info() << first_name << " (first):" << first << ", " << last_name << " (last)" << last << std::endl;
+        ASSERT(first <= last);
+    }
     ASSERT(inc > 0);
     size_t p = size_t((last - first) / inc);
     double d0 = fabs((last + p * inc) - first);
@@ -88,6 +91,54 @@ void LatLon::setNiNj() {
     ni_ = compteN(bbox_.west(), bbox_.east(), increments_.west_east(), "Ni", "west", "east");
     nj_ = compteN(bbox_.south(), bbox_.north(), increments_.south_north(), "Nj", "south", "north");
 
+}
+
+void LatLon::reorder(long scanningMode, std::vector<double>& values) const {
+    // Code from ecRegrid, UNTESTED!!!
+
+    eckit::Log::info() << "WARNING: UNTESTED!!!" << std::endl;
+    eckit::Log::info() << "LatLon::reorder scanning mode " << std::hex << scanningMode << std::endl;
+    std::vector<double> out(values.size());
+
+    if (scanningMode == jScansPositively) {
+        long count = 0;
+        for (int j = nj_ - 1 ; j >= 0; --j) {
+            for (int i = 0 ; i <  ni_; ++i) {
+                out[count++] = values[j * ni_ + i];
+            }
+        }
+        ASSERT(count == out.size());
+        std::swap(values, out);
+        return;
+    }
+
+    if (scanningMode == iScansNegatively) {
+        long count = 0;
+        for (int j = 0  ; j < nj_; ++j) {
+            for (int i = ni_ - 1 ; i >= 0; --i) {
+                out[count++] = values[j * ni_ + i];
+            }
+        }
+        ASSERT(count == out.size());
+        std::swap(values, out);
+        return;
+    }
+
+    if (scanningMode == (iScansNegatively | jScansPositively)) {
+        long count = 0;
+        for (int j = nj_ - 1  ; j >= 0; --j) {
+            for (int i = ni_ - 1 ; i >= 0; --i) {
+                out[count++] = values[j * ni_ + i];
+            }
+        }
+        ASSERT(count == out.size());
+        std::swap(values, out);
+        return;
+    }
+
+    eckit::StrStream os;
+    os << "LatLon::reorder: unsupported scanning mode " << std::hex << scanningMode << eckit::StrStream::ends;
+    throw eckit::SeriousBug(os);
 }
 
 
@@ -156,7 +207,7 @@ Representation *LatLon::crop(const util::BoundingBox &bbox, const std::vector<do
         }
     }
 
-    std::cout << "CROP resulting bbox is: " << util::BoundingBox(n, w, s, e) << std::endl;
+    eckit::Log::info() << "CROP resulting bbox is: " << util::BoundingBox(n, w, s, e) << std::endl;
     LatLon *cropped =  this->cropped(util::BoundingBox(n, w, s, e));
 
     ASSERT(out.size() > 0);

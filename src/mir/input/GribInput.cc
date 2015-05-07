@@ -20,7 +20,9 @@
 #include "mir/util/Grib.h"
 
 #include "mir/input/GribInput.h"
+#include "mir/repres/Representation.h"
 
+#include <iomanip>
 
 namespace mir {
 namespace input {
@@ -109,11 +111,20 @@ data::MIRField *GribInput::field() const {
     double missing;
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
 
+    long scanningMode;
+    GRIB_CALL(grib_get_long(grib_, "scanningMode", &scanningMode));
+
+    if (scanningMode) {
+        // Deletegate to
+        std::auto_ptr<repres::Representation> representation(repres::RepresentationFactory::build(*this));
+        representation->reorder(scanningMode, values);
+    }
+
     data::MIRField *field = new data::MIRField(bitmap != 0, missing);
     field->values(values, 0);
     return field;
-}
 
+}
 
 grib_handle *GribInput::gribHandle() const {
     return grib_;

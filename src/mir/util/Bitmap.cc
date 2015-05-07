@@ -28,18 +28,6 @@ namespace mir {
 namespace util {
 namespace {
 
-
-// static void out(const std::vector<std::vector<bool> > &bitmap) {
-//     for (int i = 0; i < bitmap.size() ; i++ ) {
-//         const std::vector<bool> &v = bitmap[i];
-//         for (int j = 0; j < v.size() ; j++ ) {
-//             std::cout << (v[j] ? '1' : '0');
-//         }
-//         std::cout << std::endl;
-//     }
-// }
-
-
 static void out(std::vector<std::vector<bool> > &bitmap, int row, const std::string &line, bool on, long &prev) {
 
     ASSERT(row >= 0);
