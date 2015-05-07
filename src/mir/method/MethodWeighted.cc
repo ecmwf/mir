@@ -168,12 +168,12 @@ MethodWeighted::Matrix MethodWeighted::applyMissingValues(const MethodWeighted::
 
     // setup sizes & counters
     const size_t
-            Nivalues = values.size(),
-            Novalues = W.rows();
+    Nivalues = values.size(),
+    Novalues = W.rows();
     size_t
-            count = 0,
-            count_all_missing  = 0,
-            count_some_missing = 0;
+    count = 0,
+    count_all_missing  = 0,
+    count_some_missing = 0;
 
     std::vector< bool > missvalues(Nivalues);
     for (size_t i = 0; i < Nivalues; i++) {
@@ -196,13 +196,13 @@ MethodWeighted::Matrix MethodWeighted::applyMissingValues(const MethodWeighted::
         // count missing values and accumulate weights
         double sum = 0.;
         size_t
-                Nmiss = 0,
-                Ncol  = 0;
+        Nmiss = 0,
+        Ncol  = 0;
         for (Matrix::InnerIterator j(X,i); j; ++j, ++Ncol) {
             if (missvalues[j.col()])
-              ++Nmiss;
+                ++Nmiss;
             else
-              sum += j.value();
+                sum += j.value();
         }
 
         // redistribution
@@ -210,9 +210,8 @@ MethodWeighted::Matrix MethodWeighted::applyMissingValues(const MethodWeighted::
 
             // no missing values, no redistribution
 
-        }
-        else if ( (std::abs(sum)<std::numeric_limits< double >::epsilon()) ||
-                  (Ncol==Nmiss) ) {
+        } else if ( (std::abs(sum)<std::numeric_limits< double >::epsilon()) ||
+                    (Ncol==Nmiss) ) {
             ++count_all_missing;
 
             // all values are missing (or weights wrongly computed), special case
@@ -223,8 +222,7 @@ MethodWeighted::Matrix MethodWeighted::applyMissingValues(const MethodWeighted::
             }
             Matrix::InnerIterator(X,i).valueRef() = 1.;
 
-        }
-        else {
+        } else {
             ++count_some_missing;
 
             // apply linear redistribution
@@ -232,11 +230,10 @@ MethodWeighted::Matrix MethodWeighted::applyMissingValues(const MethodWeighted::
             const double invsum = 1/sum;
             for (Matrix::InnerIterator j(X,i); j; ++j) {
                 if (missvalues[j.col()]) {
-                  field.values(which)[j.col()] = missing;
-                  j.valueRef() = 0.;
-                }
-                else {
-                  j.valueRef() *= invsum;
+                    field.values(which)[j.col()] = missing;
+                    j.valueRef() = 0.;
+                } else {
+                    j.valueRef() *= invsum;
                 }
             }
 
@@ -266,7 +263,7 @@ void MethodWeighted::applyOutputMask(Matrix& W, const atlas::Grid& in, const atl
 
 
 void MethodWeighted::applyBothMask(Matrix& W, const atlas::Grid& in, const atlas::Grid& out,
-    const lsm::LandSeaMask& imask, const lsm::LandSeaMask& omask) const {
+                                   const lsm::LandSeaMask& imask, const lsm::LandSeaMask& omask) const {
 
     return; // For now
 

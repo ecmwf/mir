@@ -28,52 +28,137 @@ namespace mir {
 namespace input {
 namespace {
 
+class Condition {
+  public:
+    virtual bool eval(grib_handle*) const = 0;
+};
+
+template<class T>
+class ConditionT : public Condition {
+    const char* key_;
+    T value_;
+    virtual bool eval(grib_handle*) const;
+  public:
+    ConditionT(const char* key, const T& value): key_(key), value_(value) {}
+};
+
+template<>
+bool ConditionT<long>::eval(grib_handle*h ) const {
+    long value;
+    int err = grib_get_long(h, key_, &value);
+
+    if (err == GRIB_NOT_FOUND) {
+        return false;
+    }
+
+    if (err) {
+        eckit::Log::info() << "ConditionT<long>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
+        GRIB_ERROR(err, key_);
+    }
+
+    return value_ == value;
+}
+
+
+template<>
+bool ConditionT<std::string>::eval(grib_handle*h ) const {
+    char buffer[10240];
+    size_t size = sizeof(buffer);
+    int err = grib_get_string(h, key_, buffer, &size);
+
+    if (err == GRIB_NOT_FOUND) {
+        return false;
+    }
+
+    if (err) {
+        eckit::Log::info() << "ConditionT<std::string>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
+        GRIB_ERROR(err, key_);
+    }
+
+    return value_ == buffer;
+}
+
+class ConditionOR : public Condition {
+    const Condition* left_;
+    const Condition* right_;
+    virtual bool eval(grib_handle* h) const {
+        return left_->eval(h) || left_->eval(h);
+    }
+  public:
+    ConditionOR(const Condition* left, const Condition* right): left_(left), right_(right) {}
+};
+
+class ConditionAND : public Condition {
+    const Condition* left_;
+    const Condition* right_;
+    virtual bool eval(grib_handle* h) const {
+        return left_->eval(h) && left_->eval(h);
+    }
+  public:
+    ConditionAND(const Condition* left, const Condition* right): left_(left), right_(right) {}
+};
+
+class ConditionNOT : public Condition {
+    const Condition* c_;
+    virtual bool eval(grib_handle* h) const {
+        return !c_->eval(h);
+    }
+  public:
+    ConditionNOT(const Condition* c) : c_(c) {}
+};
+
+template<class T>
+static Condition* is(const char* key, const T& value) {
+    return new ConditionT<T>(key, value);
+}
+
+static Condition* is(const char* key, const char*value) {
+    return new ConditionT<std::string>(key, value);
+}
 
 static struct {
     const char *name;
     const char *key;
-    grib_values values;
+    const Condition* condition;
 } mappings[] = {
     {"west_east_increment", "iDirectionIncrementInDegrees"},
     {"south_north_increment", "jDirectionIncrementInDegrees"},
     {"west", "longitudeOfFirstGridPointInDegrees"},
     {"east", "longitudeOfLastGridPointInDegrees"},
-    {"north", "latitudeOfFirstGridPointInDegrees"},
-    {"south", "latitudeOfLastGridPointInDegrees"},
-    {"truncation", "pentagonalResolutionParameterJ", {0}},// Assumes triangular truncation
+
+    {"north", "latitudeOfFirstGridPointInDegrees", is("scanningMode", 0L)},
+    {"south", "latitudeOfLastGridPointInDegrees", is("scanningMode", 0L)},
+
+    {"truncation", "pentagonalResolutionParameterJ",},// Assumes triangular truncation
 
     // This will be just called for has()
     {"gridded", "numberOfPointsAlongAMeridian"}, // Is that always true?
-    {"spherical", "pentagonalResolutionParameterJ", {0}},
+    {"spherical", "pentagonalResolutionParameterJ"},
 
     /// FIXME: Find something that does no clash
-    {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator", {"isOctahedral", GRIB_TYPE_LONG, 0 }},
-    {"regular", "N", {"gridType", GRIB_TYPE_STRING, 0, 0.0, "regular_gg"}},
-    {"octahedral", "numberOfParallelsBetweenAPoleAndTheEquator", {"isOctahedral", GRIB_TYPE_LONG, 1 }},
+    {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator",  is("isOctahedral", 0L)},
+    {"regular", "N", is("gridType", "regular_gg")},
+    {"octahedral", "numberOfParallelsBetweenAPoleAndTheEquator", is("isOctahedral", 1L)},
 
 
     {0, 0},
 };
 
 
-static const char *get_key(const std::string &name, grib_values *&values) {
+static const char *get_key(const std::string &name, grib_handle* h) {
     const char *key = name.c_str();
     size_t i = 0;
     while (mappings[i].name) {
         if (name == mappings[i].name) {
-            key = mappings[i].key;
-            values = &mappings[i].values;
-            break;
+            if(mappings[i].condition == 0 || mappings[i].condition->eval(h)) {
+                return mappings[i].key;
+            }
         }
         i++;
     }
     return key;
 }
 
-static const char *get_key(const std::string &name) {
-    grib_values *ignore;
-    return get_key(name, ignore);
-}
 
 }  // (anonymous namespace)
 
@@ -131,54 +216,17 @@ grib_handle *GribInput::gribHandle() const {
 }
 
 bool GribInput::has(const std::string &name) const {
-    grib_values *values = 0;
-    const char *key = get_key(name, values);
+    const char *key = get_key(name, grib_);
 
-    eckit::Log::info() << "GribInput::has(" << name << ") " << values << std::endl;
+    bool    ok = grib_is_defined(grib_, key);
 
-    bool ok = false;
-
-    if (values->name) {
-
-        switch (values->type) {
-        case GRIB_TYPE_LONG: {
-            long value;
-            if (GribInput::get(values->name, value)) {
-                ok = value == values->long_value;
-            }
-        }
-        break;
-
-        case GRIB_TYPE_DOUBLE: {
-            double value;
-            if (GribInput::get(values->name, value)) {
-                ok = value == values->double_value;
-            }
-        }
-        break;
-
-        case GRIB_TYPE_STRING: {
-            std::string value;
-            if (GribInput::get(values->name, value)) {
-                ok = value == values->string_value;
-            }
-        }
-        break;
-
-        default:
-            ASSERT(false);
-        }
-
-    } else {
-        ok = grib_is_defined(grib_, key);
-    }
     eckit::Log::info() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") << std::endl;
     return ok;
 }
 
 bool GribInput::get(const std::string &name, bool &value) const {
     long temp;
-    const char *key = get_key(name);
+    const char *key = get_key(name, grib_);
     int err = grib_get_long(grib_, key, &temp);
 
     if (err == GRIB_NOT_FOUND) {
@@ -197,7 +245,7 @@ bool GribInput::get(const std::string &name, bool &value) const {
 }
 
 bool GribInput::get(const std::string &name, long &value) const {
-    const char *key = get_key(name);
+    const char *key = get_key(name, grib_);
     int err = grib_get_long(grib_, key, &value);
 
     if (err == GRIB_NOT_FOUND) {
@@ -214,7 +262,7 @@ bool GribInput::get(const std::string &name, long &value) const {
 }
 
 bool GribInput::get(const std::string &name, double &value) const {
-    const char *key = get_key(name);
+    const char *key = get_key(name, grib_);
     int err = grib_get_double(grib_, key, &value);
 
     if (err == GRIB_NOT_FOUND) {
@@ -231,7 +279,7 @@ bool GribInput::get(const std::string &name, double &value) const {
 }
 
 bool GribInput::get(const std::string &name, std::vector<long> &value) const {
-    const char *key = get_key(name);
+    const char *key = get_key(name, grib_);
 
     size_t count = 0;
     int err = grib_get_size(grib_, key, &count);
@@ -261,7 +309,7 @@ bool GribInput::get(const std::string &name, std::vector<long> &value) const {
 }
 
 bool GribInput::get(const std::string &name, std::string &value) const {
-    const char *key = get_key(name);
+    const char *key = get_key(name, grib_);
 
     char buffer[10240];
     size_t size = sizeof(buffer);
@@ -290,7 +338,7 @@ bool GribInput::get(const std::string &name, std::string &value) const {
 }
 
 bool GribInput::get(const std::string &name, std::vector<double> &value) const {
-    const char *key = get_key(name);
+    const char *key = get_key(name, grib_);
 
     size_t count = 0;
     int err = grib_get_size(grib_, key, &count);
