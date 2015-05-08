@@ -71,13 +71,6 @@ void GribFileLSM::print(std::ostream &out) const {
 }
 
 
-// register MARS-specialized logic
-namespace {
-static LandSeaMaskBuilder<GribFileLSM> input("auto.input");
-static LandSeaMaskBuilder<GribFileLSM> output("auto.output");
-
-}
-
 //-----------------------------------------------------------------------------
 
 

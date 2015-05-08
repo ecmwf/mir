@@ -23,86 +23,92 @@ namespace mir {
 namespace util {
 
 class Bitmap {
- public:
-  // -- Exceptions
-  // None
+  public:
+    // -- Exceptions
+    // None
 
-  // -- Contructors
+    // -- Contructors
 
-  explicit Bitmap(const eckit::PathName&);
+    explicit Bitmap(const eckit::PathName&);
 
-  // -- Destructor
+    // -- Destructor
 
-  ~Bitmap();  // Change to virtual if base class
+    ~Bitmap();  // Change to virtual if base class
 
-  // -- Convertors
-  // None
+    // -- Convertors
+    // None
 
-  // -- Operators
-  // None
+    // -- Operators
+    // None
 
-  // -- Methods
+    // -- Methods
 
-  size_t width() const { return width_; }
-  size_t height() const { return height_; }
+    size_t width() const {
+        return width_;
+    }
+    size_t height() const {
+        return height_;
+    }
 
-  bool on(size_t j, size_t i) const { return bitmap_[j][i]; }
+    bool on(size_t j, size_t i) const {
+        return bitmap_[j][i];
+    }
 
-  // -- Overridden methods
-  // None
+    // -- Overridden methods
+    // None
 
-  // -- Class members
-  // None
+    // -- Class members
+    // None
 
-  // -- Class methods
-  // None
+    // -- Class methods
+    // None
 
- protected:
-  // -- Members
-  // None
+  protected:
+    // -- Members
+    // None
 
-  // -- Methods
+    // -- Methods
 
-  void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
-  // -- Overridden methods
-  // None
+    // -- Overridden methods
+    // None
 
-  // -- Class members
-  // None
+    // -- Class members
+    // None
 
-  // -- Class methods
-  // None
+    // -- Class methods
+    // None
 
- private:
+  private:
 
-  Bitmap(const Bitmap&);
-  Bitmap& operator=(const Bitmap&);
+    Bitmap(const Bitmap&);
+    Bitmap& operator=(const Bitmap&);
 
-  // -- Members
+    // -- Members
 
-  eckit::PathName path_;
-  std::vector<std::vector<bool> > bitmap_;
-  size_t width_;
-  size_t height_;
+    eckit::PathName path_;
+    std::vector<std::vector<bool> > bitmap_;
+    size_t width_;
+    size_t height_;
 
-  // -- Methods
-  // None
+    // -- Methods
+    // None
 
-  // -- Overridden methods
+    // -- Overridden methods
 
-  // -- Class members
-  // None
+    // -- Class members
+    // None
 
-  // -- Class methods
-  // None
+    // -- Class methods
+    // None
 
-  // -- Friends
+    // -- Friends
 
-  friend std::ostream& operator<<(std::ostream& s, const Bitmap& p) {
-    p.print(s);
-    return s;
-  }
+    friend std::ostream& operator<<(std::ostream& s, const Bitmap& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

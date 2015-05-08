@@ -119,7 +119,8 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
     {
         eckit::BufferedHandle f(tmp_path.fileHandle());
 
-        f.openForWrite(0); AutoClose closer(f);
+        f.openForWrite(0);
+        AutoClose closer(f);
 
         // write nominal size of matrix
 
@@ -175,7 +176,8 @@ bool WeightCache::retrieve(const std::string &key, WeightMatrix &W) const {
     {
         eckit::BufferedHandle f(path.fileHandle());
 
-        f.openForRead(); AutoClose closer(f);
+        f.openForRead();
+        AutoClose closer(f);
 
         // read inpts, outpts sizes of matrix
 

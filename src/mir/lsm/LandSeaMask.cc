@@ -19,6 +19,8 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/lsm/LandSeaMask.h"
+#include "mir/lsm/LSMChooser.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/data/MIRField.h"
 
@@ -30,7 +32,6 @@ namespace {
 
 
 static eckit::Mutex *local_mutex = 0;
-static std::map<std::string, LandSeaMaskFactory *> *m = 0;
 
 static std::map<std::string, LandSeaMask *> cache;
 
@@ -38,7 +39,6 @@ static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map<std::string, LandSeaMaskFactory *>();
 }
 
 
@@ -74,28 +74,22 @@ class EmptyLandSeaMask : public LandSeaMask {
 
 //-----------------------------------------------------------------------------
 
-LandSeaMask &LandSeaMask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::Grid &grid, bool input) {
+LandSeaMask &LandSeaMask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::Grid &grid, const std::string& which) {
 
     static EmptyLandSeaMask empty;
 
     std::string name;
 
-    if (input) {
-        if (!parametrisation.get("lsm.input", name)) {
-            if (!parametrisation.get("lsm", name)) {
-                return empty;
-            }
-        }
-    } else {
-        if (!parametrisation.get("lsm.output", name)) {
-            if (!parametrisation.get("lsm", name)) {
-                return empty;
-            }
+
+    if (!parametrisation.get("lsm" + which, name)) {
+        if (!parametrisation.get("lsm", name)) {
+            return empty;
         }
     }
 
+
     std::stringstream os;
-    os << name << "-" << (input ? "in-" : "out-") << grid.unique_id();
+    os << name << which << "-" << grid.unique_id();
     std::string key = os.str();
 
     pthread_once(&once, init);
@@ -109,8 +103,9 @@ LandSeaMask &LandSeaMask::lookup(const param::MIRParametrisation  &parametrisati
         return *(*j).second;
     }
 
-    name = name + (input ? ".input" : ".output");
-    LandSeaMask* mask = LandSeaMaskFactory::build(name, key, parametrisation, grid);
+    name = name +  which;
+    LSMChooser& chooser = LSMChooser::lookup(name);
+    LandSeaMask* mask = chooser.create(name, key, parametrisation, grid);
 
     cache[key] = mask;
 
@@ -120,12 +115,12 @@ LandSeaMask &LandSeaMask::lookup(const param::MIRParametrisation  &parametrisati
 }
 
 LandSeaMask &LandSeaMask::lookupInput(const param::MIRParametrisation   &parametrisation, const atlas::Grid &grid) {
-    return lookup(parametrisation, grid, true);
+    return lookup(parametrisation, grid, ".input");
 }
 
 
 LandSeaMask &LandSeaMask::lookupOutput(const param::MIRParametrisation   &parametrisation, const atlas::Grid &grid) {
-    return lookup(parametrisation, grid, false);
+    return lookup(parametrisation, grid, ".output");
 }
 
 
@@ -146,46 +141,6 @@ std::string LandSeaMask::unique_id() const {
     return key_;
 }
 //-----------------------------------------------------------------------------
-
-
-LandSeaMaskFactory::LandSeaMaskFactory(const std::string &name):
-    name_(name) {
-
-    pthread_once(&once, init);
-
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
-    ASSERT(m->find(name) == m->end());
-    (*m)[name] = this;
-}
-
-
-LandSeaMaskFactory::~LandSeaMaskFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    m->erase(name_);
-
-}
-
-
-LandSeaMask *LandSeaMaskFactory::build(const std::string &name, const std::string &key, const param::MIRParametrisation &param, const atlas::Grid &grid) {
-
-    pthread_once(&once, init);
-
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, LandSeaMaskFactory *>::const_iterator j = m->find(name);
-
-    eckit::Log::info() << "Looking for LandSeaMaskFactory [" << name << "]" << std::endl;
-
-    if (j == m->end()) {
-        eckit::Log::error() << "No LandSeaMaskFactory for [" << name << "]" << std::endl;
-        eckit::Log::error() << "LandSeaMaskFactories are:" << std::endl;
-        for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No LandSeaMaskFactory called ") + name);
-    }
-
-    return (*j).second->make(name, key, param, grid);
-}
 
 
 }  // namespace logic

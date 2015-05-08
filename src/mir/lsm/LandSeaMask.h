@@ -127,7 +127,7 @@ class LandSeaMask {
     // None
 
     // -- Class methods
-    static  LandSeaMask &lookup(const param::MIRParametrisation &param, const atlas::Grid &grid, bool in);
+    static  LandSeaMask &lookup(const param::MIRParametrisation &param, const atlas::Grid &grid, const std::string& which);
 
 
     // -- Friends
@@ -137,31 +137,6 @@ class LandSeaMask {
         return s;
     }
 
-};
-
-
-class LandSeaMaskFactory {
-    std::string name_;
-    virtual LandSeaMask *make(const std::string &, const std::string &, const param::MIRParametrisation &param, const atlas::Grid &grid) = 0 ;
-
-  protected:
-
-    LandSeaMaskFactory(const std::string &);
-    virtual ~LandSeaMaskFactory();
-
-  public:
-    static LandSeaMask *build(const std::string &, const std::string &, const param::MIRParametrisation &param, const atlas::Grid &grid);
-
-};
-
-
-template<class T>
-class LandSeaMaskBuilder : public LandSeaMaskFactory {
-    virtual LandSeaMask *make(const std::string &name, const std::string &key, const param::MIRParametrisation &param, const atlas::Grid &grid) {
-        return new T(name, key, param, grid);
-    }
-  public:
-    LandSeaMaskBuilder(const std::string &name) : LandSeaMaskFactory(name) {}
 };
 
 
