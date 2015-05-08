@@ -93,6 +93,8 @@ list( APPEND mir_srcs
       lsm/LandSeaMask.h
 	  lsm/LSMChooser.cc
 	  lsm/LSMChooser.h
+	  lsm/UserFileLSM.cc
+	  lsm/UserFileLSM.h
       method/Bilinear.cc
       method/Bilinear.h
       method/FiniteElement.cc

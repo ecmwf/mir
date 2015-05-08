@@ -35,6 +35,8 @@ class GribFileLSM : public LandSeaMask {
 // -- Contructors
 
     GribFileLSM(const std::string& name, const std::string& key, const param::MIRParametrisation& param, const atlas::Grid& grid);
+    GribFileLSM(const std::string& name, const std::string& key,
+        const param::MIRParametrisation& param, const atlas::Grid& grid, const std::string& path);
 
 // -- Destructor
 
@@ -88,7 +90,8 @@ class GribFileLSM : public LandSeaMask {
     // None
 
 // -- Methods
-    // None
+
+    void init(const param::MIRParametrisation& param, const atlas::Grid& grid, const std::string& path);
 
 // -- Overridden methods
 

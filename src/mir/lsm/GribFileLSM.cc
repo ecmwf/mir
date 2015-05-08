@@ -27,10 +27,24 @@
 namespace mir {
 namespace lsm {
 
-GribFileLSM::GribFileLSM(const std::string &name, const std::string &key, const param::MIRParametrisation &param, const atlas::Grid &grid):
+GribFileLSM::GribFileLSM(const std::string &name, const std::string &key, const param::MIRParametrisation &param,
+    const atlas::Grid &grid):
+
     LandSeaMask(name, key) {
+        eckit::PathName path("~mir/etc/lsm.N640.grib");
+        init(param, grid, path);
+}
+
+GribFileLSM::GribFileLSM(const std::string &name, const std::string &key, const param::MIRParametrisation &param,
+    const atlas::Grid &grid, const std::string& path):
+    LandSeaMask(name, key + path)
+{
+    init(param, grid, path);
+}
+
+void GribFileLSM::init(const param::MIRParametrisation &param, const atlas::Grid &grid, const std::string& path) {
     // WARNING: the atlas::Grid will not exist after
-    eckit::PathName path("~mir/etc/lsm.N640.grib");
+
     eckit::Log::info() << "GribFileLSM loading " << path << std::endl;
 
     mir::input::GribFileInput file("~mir/etc/lsm.N640.grib");
