@@ -249,14 +249,17 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
 void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMask &imask, const lsm::LandSeaMask &omask) const {
     eckit::Log::info() << "======== MethodWeighted::applyBothMask(" << imask << "," << omask << ")" << std::endl;
-    const data::MIRField &imask_field = imask.field();
-    const data::MIRField &omask_field = omask.field();
 
     if(imask.active() ) {
+        const data::MIRField &imask_field = imask.field(); ASSERT(!imask_field.hasMissing());
+        const std::vector<double>& lsm = imask_field.values(0);
+
         // Do something with input lsm
     }
 
      if(omask.active() ) {
+        const data::MIRField &omask_field = omask.field();
+
         // Do something with input lsm
     }
 }
