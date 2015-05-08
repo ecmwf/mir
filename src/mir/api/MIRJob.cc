@@ -192,7 +192,7 @@ static eckit::RegisterConfigHome configs("mir",
         MIR_INSTALL_BIN_DIR,
         MIR_DEVELOPER_BIN_DIR,
         MIR_DATA_DIR,
-        MIR_DEVELOPER_SRC_DIR);
+        MIR_DEVELOPER_BIN_DIR);
 
 }  // namespace api
 }  // namespace mir
