@@ -12,28 +12,45 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#ifndef Bitmap_H
-#define Bitmap_H
 
+#ifndef LSMChooser_H
+#define LSMChooser_H
+
+#include <iosfwd>
+#include <memory>
+#include <string>
 #include <vector>
 
-#include "eckit/filesystem/PathName.h"
+// #include "mir/data/MIRField.h"
+
+namespace atlas {
+class Grid;
+}
+
 
 namespace mir {
-namespace util {
 
-class Bitmap {
+namespace param {
+class MIRParametrisation;
+}
+
+namespace lsm {
+
+class LandSeaMask;
+
+class LSMChooser {
   public:
+
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    explicit Bitmap(const eckit::PathName&);
+    LSMChooser(const std::string &name);
 
     // -- Destructor
 
-    ~Bitmap();  // Change to virtual if base class
+    virtual ~LSMChooser(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -43,16 +60,8 @@ class Bitmap {
 
     // -- Methods
 
-    size_t width() const {
-        return width_;
-    }
-    size_t height() const {
-        return height_;
-    }
-
-    bool on(size_t j, size_t i) const {
-        return bitmap_[j][i];
-    }
+    virtual LandSeaMask *create(const std::string &, const std::string &,
+                                const param::MIRParametrisation &param, const atlas::Grid &grid) const = 0 ;
 
     // -- Overridden methods
     // None
@@ -61,15 +70,19 @@ class Bitmap {
     // None
 
     // -- Class methods
-    // None
+
+    static LSMChooser &lookup(const std::string& name);
 
   protected:
+
     // -- Members
-    // None
+
+    std::string name_;
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+
+    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -82,37 +95,38 @@ class Bitmap {
 
   private:
 
-    Bitmap(const Bitmap&);
-    Bitmap& operator=(const Bitmap&);
+    // No copy allowed
+
+    LSMChooser(const LSMChooser &);
+    LSMChooser &operator=(const LSMChooser &);
 
     // -- Members
-
-    eckit::PathName path_;
-    std::vector<std::vector<bool> > bitmap_;
-    size_t width_;
-    size_t height_;
-
-    // -- Methods
     // None
 
+    // -- Methods
+
+
     // -- Overridden methods
+    // None
 
     // -- Class members
     // None
 
     // -- Class methods
-    // None
+
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const Bitmap& p) {
+    friend std::ostream &operator<<(std::ostream &s, const LSMChooser &p) {
         p.print(s);
         return s;
     }
 
 };
 
-}  // namespace util
-}  // namespace mir
 
+
+}  // namespace logic
+}  // namespace mir
 #endif
+

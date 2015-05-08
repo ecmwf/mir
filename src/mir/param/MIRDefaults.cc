@@ -33,7 +33,6 @@ MIRDefaults::MIRDefaults() {
     set("interpolation", "finite-element"); // The word 'method' is used in grib
     set("epsilon", std::numeric_limits<double>::epsilon());
     set("nclosest", 4L);
-    set("lsm", "lsm.grib-file");
 
     // Read the rest for the file
     eckit::PathName path("~mir/etc/defaults.cfg");

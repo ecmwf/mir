@@ -12,28 +12,53 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#ifndef Bitmap_H
-#define Bitmap_H
 
+#ifndef AutoLSM_H
+#define AutoLSM_H
+
+#include <iosfwd>
+#include <memory>
+#include <string>
 #include <vector>
 
-#include "eckit/filesystem/PathName.h"
+#include "mir/lsm/LSMChooser.h"
+
+namespace atlas {
+class Grid;
+}
+
 
 namespace mir {
-namespace util {
 
-class Bitmap {
+namespace data {
+class MIRField;
+}
+namespace action {
+class Action;
+class ActionPlan;
+}
+
+namespace param {
+class MIRParametrisation;
+class RuntimeParametrisation;
+}
+
+namespace lsm {
+
+
+class AutoLSM : public LSMChooser {
   public:
+
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    explicit Bitmap(const eckit::PathName&);
+    AutoLSM(const std::string &name);
 
     // -- Destructor
 
-    ~Bitmap();  // Change to virtual if base class
+    virtual ~AutoLSM(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -43,17 +68,6 @@ class Bitmap {
 
     // -- Methods
 
-    size_t width() const {
-        return width_;
-    }
-    size_t height() const {
-        return height_;
-    }
-
-    bool on(size_t j, size_t i) const {
-        return bitmap_[j][i];
-    }
-
     // -- Overridden methods
     // None
 
@@ -61,15 +75,16 @@ class Bitmap {
     // None
 
     // -- Class methods
-    // None
+
 
   protected:
+
     // -- Members
-    // None
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+
+    virtual void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -82,37 +97,38 @@ class Bitmap {
 
   private:
 
-    Bitmap(const Bitmap&);
-    Bitmap& operator=(const Bitmap&);
+    // No copy allowed
+
+    AutoLSM(const AutoLSM &);
+    AutoLSM &operator=(const AutoLSM &);
 
     // -- Members
-
-    eckit::PathName path_;
-    std::vector<std::vector<bool> > bitmap_;
-    size_t width_;
-    size_t height_;
-
-    // -- Methods
     // None
 
+    // -- Methods
+
+
     // -- Overridden methods
+    // None
 
     // -- Class members
     // None
 
     // -- Class methods
-    // None
+
+    virtual LandSeaMask *create(const std::string &, const std::string &,
+                                const param::MIRParametrisation &param, const atlas::Grid &grid) const ;
+
+
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const Bitmap& p) {
-        p.print(s);
-        return s;
-    }
+
 
 };
 
-}  // namespace util
-}  // namespace mir
 
+}  // namespace logic
+}  // namespace mir
 #endif
+

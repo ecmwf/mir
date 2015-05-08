@@ -80,8 +80,17 @@ MIRParametrisation& RuntimeParametrisation::set(const std::string& name, Delayed
 }
 
 
+void  RuntimeParametrisation::hide(const std::string& name)  {
+    hidden_.insert(name);
+}
+
 
 bool RuntimeParametrisation::has(const std::string& name) const {
+
+    if(hidden_.find(name) != hidden_.end()) {
+        return false;
+    }
+
     if(SimpleParametrisation::has(name)) {
         return true;
     }
@@ -92,6 +101,10 @@ bool RuntimeParametrisation::has(const std::string& name) const {
 
 template<class T>
 bool RuntimeParametrisation::_get(const std::string& name,  T& value) const {
+
+    if(hidden_.find(name) != hidden_.end()) {
+        return false;
+    }
 
     if (name.find("user.") == 0) {
         return _get(name.substr(5), value);

@@ -85,14 +85,16 @@ list( APPEND mir_srcs
       logic/MIRLogic.h
       logic/ToolLogic.cc
       logic/ToolLogic.h
+	  lsm/AutoLSM.cc
+	  lsm/AutoLSM.h
       lsm/GribFileLSM.cc
       lsm/GribFileLSM.h
-      lsm/InputLandSeaMask.cc
-      lsm/InputLandSeaMask.h
       lsm/LandSeaMask.cc
       lsm/LandSeaMask.h
-      lsm/OutputLandSeaMask.cc
-      lsm/OutputLandSeaMask.h
+	  lsm/LSMChooser.cc
+	  lsm/LSMChooser.h
+	  lsm/UserFileLSM.cc
+	  lsm/UserFileLSM.h
       method/Bilinear.cc
       method/Bilinear.h
       method/FiniteElement.cc

@@ -23,8 +23,7 @@
 #include "atlas/Grid.h"
 
 #include "mir/method/WeightMatrix.h"
-#include "mir/lsm/InputLandSeaMask.h"
-#include "mir/lsm/OutputLandSeaMask.h"
+#include "mir/lsm/LandSeaMask.h"
 
 namespace mir {
 namespace method {
@@ -45,8 +44,8 @@ class WeightCache : public eckit::CacheManager {
     std::string generateKey(const std::string &method,
                             const atlas::Grid &in,
                             const atlas::Grid &out,
-                            const lsm::InputLandSeaMask &maskin,
-                            const lsm::OutputLandSeaMask &maskout) const;
+                            const lsm::LandSeaMask &maskin,
+                            const lsm::LandSeaMask &maskout) const;
 
   private:
 

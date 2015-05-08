@@ -24,6 +24,9 @@ namespace mir {
 namespace repres {
 class Representation;
 }
+namespace param {
+class MIRParametrisation;
+}
 namespace data {
 
 
@@ -36,7 +39,8 @@ class MIRField {
     // -- Contructors
 
     //
-    MIRField(bool hasMissing, double missingValue);
+    MIRField(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
+    MIRField(repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
     // -- Destructor
 
