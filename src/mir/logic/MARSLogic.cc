@@ -80,14 +80,13 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
 
             if (intermediate_gaussian) {
                 plan.add("transform.sh2reduced-gg", "reduced", intermediate_gaussian);
+                plan.add("interpolate.grid2regular-ll");
             } else {
-                plan.add("transform.sh2reduced-gg", "reduced", new AutoReduced(parametrisation_));
+                plan.add("transform.sh2regular-ll");
             }
 
             if (parametrisation_.has("user.rotation")) {
                 plan.add("interpolate.grid2rotated-ll");
-            } else {
-                plan.add("interpolate.grid2regular-ll");
             }
 
         }

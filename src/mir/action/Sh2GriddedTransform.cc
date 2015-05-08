@@ -66,21 +66,15 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
 
     if (!reduced) {
-        throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG.");
+        throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
     }
 
-
-    eckit::MD5 md5;
-    const std::vector<int> &points_per_latitudes = reduced->npts_per_lat();
-
-    for (size_t i =  0; i < points_per_latitudes.size(); i++) {
-        int l = points_per_latitudes[i];
-        md5.add(&l, sizeof(l));
-    }
+    const atlas::grids::LonLatGrid *latlon = dynamic_cast<const atlas::grids::LonLatGrid *>(&grid);
 
     eckit::StrStream os;
-    os << "T" << truncation << ":N" << reduced->N() << ":PL" << md5.digest() << eckit::StrStream::ends;
 
+
+    os << "T" << truncation << ":" << grid.unique_id()<< eckit::StrStream::ends;
     std::string key(os);
 
 
@@ -90,7 +84,15 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
         struct Trans_t &trans = trans_handles[key] = new_trans();
 
         trans_set_trunc(&trans, truncation);
-        trans_set_resol(&trans, points_per_latitudes.size(), &points_per_latitudes[0]);
+
+        if(latlon)
+        {
+            trans_set_resol_lonlat(&trans,latlon->nlon(), latlon->nlat());
+        }
+        else {
+            const std::vector<int> &points_per_latitudes = reduced->npts_per_lat();
+            trans_set_resol(&trans, points_per_latitudes.size(), &points_per_latitudes[0]);
+        }
 
         // Register resolution in trans library
         trans_setup(&trans);
