@@ -25,6 +25,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
+#include "eckit/utils/MD5.h"
 
 namespace mir {
 namespace method {
@@ -97,15 +98,21 @@ std::string WeightCache::generateKey(const std::string &method,
                                      const atlas::Grid &out,
                                      const lsm::LandSeaMask &maskin,
                                      const lsm::LandSeaMask &maskout) const {
-    std::ostringstream s;
-    s << method << "." << in.unique_id() << "." << out.unique_id();
+    std::ostringstream os;
+    os << method << "." << in.unique_id() << "." << out.unique_id();
     if (maskin.active()) {
-        s << ".IM" << maskin.unique_id();
+        os << ".IM" << maskin.unique_id();
     }
     if (maskout.active()) {
-        s << ".OM" << maskout.unique_id();
+        os << ".OM" << maskout.unique_id();
     }
-    return s.str();
+
+    // For now... otherwith we get file too long errors
+    std::string s(os.str());
+    eckit::MD5 md5;
+    md5.add(&s[0], s.size());
+
+    return method + "-" + md5.digest();
 }
 
 void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
