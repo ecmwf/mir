@@ -58,9 +58,8 @@ class MethodWeighted : public Method {
     WeightMatrix applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const;
 
     /// Update interpolation weigths matrix to account for field masked values
-    void applyInputMask(WeightMatrix &W, const lsm::LandSeaMask &) const;
-    void applyOutputMask(WeightMatrix &W, const lsm::LandSeaMask &) const;
-    void applyBothMask(WeightMatrix &W, const lsm::LandSeaMask &, const lsm::LandSeaMask &) const;
+
+    void applyMasks(WeightMatrix &W, const lsm::LandSeaMask &, const lsm::LandSeaMask &) const;
 
     const WeightMatrix &getMatrix(const atlas::Grid &in, const atlas::Grid &out) const;
 

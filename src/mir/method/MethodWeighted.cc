@@ -85,13 +85,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
         // TODO: Apply LSMs
 
-        if (mask_in.active() && mask_out.active()) {
-            applyBothMask(W, mask_in, mask_out);
-        } else if (mask_in.active()) {
-            applyInputMask(W, mask_in);
-        } else if (mask_out.active()) {
-            applyOutputMask(W, mask_out);
-        }
+        applyMasks(W, mask_in, mask_out);
 
         // Mask should be considered in caching
         // applyMask(W, in, out);
@@ -253,24 +247,18 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 }
 
 
-void MethodWeighted::applyInputMask(WeightMatrix &W, const lsm::LandSeaMask &imask) const {
-    eckit::Log::info() << "======== MethodWeighted::applyInputMask(" << imask << ")" << std::endl;
-
-    const data::MIRField &imask_field = imask.field();
-}
-
-
-void MethodWeighted::applyOutputMask(WeightMatrix &W, const lsm::LandSeaMask &omask) const {
-    eckit::Log::info() << "======== MethodWeighted::applyOutputMask("  << omask << ")" << std::endl;
-
-    const data::MIRField &omask_field = omask.field();
-}
-
-
-void MethodWeighted::applyBothMask(WeightMatrix &W, const lsm::LandSeaMask &imask, const lsm::LandSeaMask &omask) const {
+void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMask &imask, const lsm::LandSeaMask &omask) const {
     eckit::Log::info() << "======== MethodWeighted::applyBothMask(" << imask << "," << omask << ")" << std::endl;
     const data::MIRField &imask_field = imask.field();
     const data::MIRField &omask_field = omask.field();
+
+    if(imask.active() ) {
+        // Do something with input lsm
+    }
+
+     if(omask.active() ) {
+        // Do something with input lsm
+    }
 }
 
 
