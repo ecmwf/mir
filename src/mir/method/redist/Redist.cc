@@ -8,48 +8,48 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @date May 2015
 
 
-#include "mir/method/Method.h"
-#include "mir/param/MIRParametrisation.h"
+#include "mir/method/redist/Redist.h"
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace method {
+namespace redist {
 namespace {
 
 
 static eckit::Mutex *local_mutex = 0;
-static std::map<std::string, MethodFactory *> *m = 0;
+static std::map<std::string, RedistFactory *> *m = 0;
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map<std::string, MethodFactory *>();
+    m = new std::map<std::string, RedistFactory *>();
 }
 
 
 }  // (unnamed namespace)
 
 
-Method::Method(const param::MIRParametrisation& params) :
+Redist::Redist(const param::MIRParametrisation& params) :
     parametrisation_(params) {
 }
 
 
-Method::~Method() {
+Redist::~Redist() {
 }
 
 
-MethodFactory::MethodFactory(const std::string &name):
+RedistFactory::RedistFactory(const std::string &name):
     name_(name) {
 
     pthread_once(&once, init);
@@ -61,34 +61,35 @@ MethodFactory::MethodFactory(const std::string &name):
 }
 
 
-MethodFactory::~MethodFactory() {
+RedistFactory::~RedistFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
 
 }
 
 
-Method *MethodFactory::build(const std::string &name, const param::MIRParametrisation& params) {
+Redist *RedistFactory::build(const std::string &name, const param::MIRParametrisation& params) {
 
     pthread_once(&once, init);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, MethodFactory *>::const_iterator j = m->find(name);
+    std::map<std::string, RedistFactory *>::const_iterator j = m->find(name);
 
-    eckit::Log::info() << "Looking for MethodFactory [" << name << "]" << std::endl;
+    eckit::Log::info() << "Looking for RedistFactory [" << name << "]" << std::endl;
 
     if (j == m->end()) {
-        eckit::Log::error() << "No MethodFactory for [" << name << "]" << std::endl;
-        eckit::Log::error() << "MethodFactories are:" << std::endl;
+        eckit::Log::error() << "No RedistFactory for [" << name << "]" << std::endl;
+        eckit::Log::error() << "RedistFactories are:" << std::endl;
         for (j = m->begin() ; j != m->end() ; ++j)
             eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No MethodFactory called ") + name);
+        throw eckit::SeriousBug(std::string("No RedistFactory called ") + name);
     }
 
     return (*j).second->make(params);
 }
 
 
+}  // namespace redist
 }  // namespace method
 }  // namespace mir
 

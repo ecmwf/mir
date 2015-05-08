@@ -8,43 +8,45 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @date May 2015
 
 
-#ifndef mir_method_Method_H
-#define mir_method_Method_H
+#ifndef mir_method_redist_Redist_H
+#define mir_method_redist_Redist_H
 
-#include <iosfwd>
 #include <string>
+#if 0
+#include <iosfwd>
+#endif
 
 
-namespace atlas {
-class Grid;
-}
+//namespace atlas {
+//class Grid;
+//}
 
 namespace mir {
-namespace data {
-class MIRField;
-}
+//namespace data {
+//class MIRField;
+//}
 namespace param {
 class MIRParametrisation;
 }
 namespace method {
+namespace redist {
 
 
-class Method {
+class Redist {
   public:
 
 // -- Exceptions
     // None
 
 // -- Contructors
-    Method(const param::MIRParametrisation&);
+    Redist(const param::MIRParametrisation&);
 
 // -- Destructor
-    virtual ~Method();
+    virtual ~Redist();
 
 // -- Convertors
     // None
@@ -53,7 +55,7 @@ class Method {
     // None
 
 // -- Methods
-    virtual void execute(data::MIRField&, const atlas::Grid&, const atlas::Grid&) const = 0;
+    virtual void execute(/*data::MIRField&, const atlas::Grid&, const atlas::Grid&*/) const = 0;
 
 // -- Overridden methods
     // None
@@ -87,8 +89,8 @@ class Method {
 
 // No copy allowed
 
-    Method(const Method&);
-    Method& operator=(const Method&);
+    Redist(const Redist&);
+    Redist& operator=(const Redist&);
 
 // -- Members
     // None
@@ -107,7 +109,7 @@ class Method {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const Method& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Redist& p) {
         p.print(s);
         return s;
     }
@@ -115,32 +117,33 @@ class Method {
 };
 
 
-class MethodFactory {
+class RedistFactory {
     std::string name_;
-    virtual Method* make(const param::MIRParametrisation&) = 0;
+    virtual Redist* make(const param::MIRParametrisation&) = 0;
 
   protected:
 
-    MethodFactory(const std::string&);
-    virtual ~MethodFactory();
+    RedistFactory(const std::string&);
+    virtual ~RedistFactory();
 
   public:
 
-    static Method* build(const std::string&, const param::MIRParametrisation&);
+    static Redist* build(const std::string&, const param::MIRParametrisation&);
 
 };
 
 
 template< class T>
-class MethodBuilder : public MethodFactory {
-    virtual Method* make(const param::MIRParametrisation& param) {
+class RedistBuilder : public RedistFactory {
+    virtual Redist* make(const param::MIRParametrisation& param) {
         return new T(param);
     }
   public:
-    MethodBuilder(const std::string& name) : MethodFactory(name) {}
+    RedistBuilder(const std::string& name) : RedistFactory(name) {}
 };
 
 
+}  // namespace redist
 }  // namespace method
 }  // namespace mir
 #endif

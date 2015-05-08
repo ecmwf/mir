@@ -11,7 +11,7 @@
 /// @author Peter Bispham
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date May 2015
 
 
 #include "mir/method/MethodWeighted.h"
@@ -21,13 +21,14 @@
 #include <map>
 #include <string>
 
-#include "atlas/Grid.h"
-
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+#include "eckit/types/FloatCompare.h"
+
+#include "atlas/Grid.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/lsm/LandSeaMask.h"
@@ -54,6 +55,7 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation &param) :
 
 MethodWeighted::~MethodWeighted() {
 }
+
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
 const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas::Grid &out) const {
@@ -144,12 +146,14 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
     }
 }
 
+
 void MethodWeighted::compute_weights(const Grid &in, const Grid &out, WeightMatrix &W) const {
     if (in.same(out))
         W.setIdentity();        // grids are the same, use identity matrix
     else
         assemble(W, in, out);   // assemble matrix of coefficients
 }
+
 
 WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const {
 
@@ -163,10 +167,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
     const size_t
     Nivalues = values.size(),
     Novalues = W.rows();
-    size_t
-    count = 0,
-    count_all_missing  = 0,
-    count_some_missing = 0;
+    size_t count = 0;
 
     std::vector< bool > missvalues(Nivalues);
     for (size_t i = 0; i < Nivalues; i++) {
@@ -184,6 +185,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
     // sparse matrix weigths redistribution
     WeightMatrix X(W);
+    size_t fix_misssome = 0;
+    size_t fix_missall  = 0;
     for (size_t i = 0; i < X.rows(); i++) {
 
         // count missing values and accumulate weights
@@ -199,6 +202,16 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
                 sum += j.value();
         }
 
+
+        const bool
+        weights_zero = eckit::FloatCompare::is_equal(sum,0.),
+        weights_one  = eckit::FloatCompare::is_equal(sum,1.);
+
+        if ( (Ncol!=Nmiss) && !weights_zero && !weights_one) {
+            std::cout << "  i=" << i << "  weights_zero=" << weights_zero << "  weights_one=" << weights_one << std::endl;
+        }
+
+
         // redistribution
         if (!Nmiss) {
 
@@ -206,7 +219,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
         } else if ( (std::abs(sum) < std::numeric_limits< double >::epsilon()) ||
                     (Ncol == Nmiss) ) {
-            ++count_all_missing;
+            ++fix_misssome;
 
             // all values are missing (or weights wrongly computed), special case
             // (it covers Ncol>0 with the above condition)
@@ -217,7 +230,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             WeightMatrix::InnerIterator(X, i).valueRef() = 1.;
 
         } else {
-            ++count_some_missing;
+            ++fix_missall;
 
             // apply linear redistribution
             // TODO: new redistribution methods
@@ -235,7 +248,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
     }
 
     // log corrections and return
-    eckit::Log::info() << "Missing value corrections: " << count_some_missing << '/' << count_all_missing << " some/all-missing out of " << eckit::BigNum(Novalues) << std::endl;
+    eckit::Log::info() << "Missing value corrections: " << fix_missall << '/' << fix_misssome << " some/all-missing out of " << eckit::BigNum(Novalues) << std::endl;
     return X;
 }
 
@@ -259,6 +272,7 @@ void MethodWeighted::applyBothMask(WeightMatrix &W, const lsm::LandSeaMask &imas
     const data::MIRField &imask_field = imask.field();
     const data::MIRField &omask_field = omask.field();
 }
+
 
 }  // namespace method
 }  // namespace mir
