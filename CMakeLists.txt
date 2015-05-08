@@ -52,9 +52,6 @@ ecbuild_declare_project()
 ###############################################################################
 # some variables/options of this project
 
-set( MIR_SHARE_DIR "${CMAKE_INSTALL_PREFIX}/share/mir"     ${MIR_SHARE_PATH} )
-set( MIR_DATA_DIR  "${CMAKE_INSTALL_PREFIX}/share/mir/lsm" ${MIR_LSM_PATH} )
-
 ecbuild_add_cxx11_flags()
 ecbuild_check_cxx11( PRINT )
 
@@ -69,7 +66,6 @@ if( ENABLE_OMP )
 else()
   ecbuild_enable_ompstubs()
 endif()
-
 
 ### MPI
 

@@ -1,7 +1,7 @@
 file( GLOB config_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cfg" )
 
 install( FILES ${config_files}
-         DESTINATION share/${PROJECT_NAME}/etc
+         DESTINATION ${INSTALL_DATA_DIR}/etc
 		 PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
 
 foreach( _f ${config_files} )
@@ -20,9 +20,9 @@ endforeach()
 # install them
 foreach( _f ${LSM_FILES} )
 
-install( FILES ${_f}
-         DESTINATION share/${PROJECT_NAME}/etc
-		 PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
+	install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${_f}
+	         DESTINATION ${INSTALL_DATA_DIR}/etc
+			 PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
 
 endforeach()
 
