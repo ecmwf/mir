@@ -162,12 +162,6 @@ list(
     repres/Gridded.h
     repres/LatLon.cc
     repres/LatLon.h
-    repres/ReducedGGClassic.cc
-    repres/ReducedGGClassic.h
-    repres/ReducedGGFromPL.cc
-    repres/ReducedGGFromPL.h
-    repres/ReducedGGOctahedral.cc
-    repres/ReducedGGOctahedral.h
     repres/ReducedLL.cc
     repres/ReducedLL.h
     repres/RegularGG.cc
@@ -220,6 +214,24 @@ list(
     repres/unsupported/TriangularGrid.h
     repres/unsupported/UnstructuredGrid.cc
     repres/unsupported/UnstructuredGrid.h
+repres/reduced/Classic.cc
+repres/reduced/Classic.h
+repres/reduced/FromPL.cc
+repres/reduced/FromPL.h
+repres/reduced/Octahedral.cc
+repres/reduced/Octahedral.h
+repres/reduced/ReducedClassic.cc
+repres/reduced/ReducedClassic.h
+repres/reduced/ReducedFromPL.cc
+repres/reduced/ReducedFromPL.h
+repres/reduced/ReducedOctahedral.cc
+repres/reduced/ReducedOctahedral.h
+repres/reduced/RotatedClassic.cc
+repres/reduced/RotatedClassic.h
+repres/reduced/RotatedFromPL.cc
+repres/reduced/RotatedFromPL.h
+repres/reduced/RotatedOctahedral.cc
+repres/reduced/RotatedOctahedral.h
     util/Arguments.cc
     util/Arguments.h
     util/Bitmap.cc
