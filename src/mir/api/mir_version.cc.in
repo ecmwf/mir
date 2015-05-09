@@ -1,4 +1,4 @@
-#include "mir/mir_version.h"
+#include "mir/api/mir_version.h"
 
 const char * mir_version()     { return MIR_VERSION; }
 const char * mir_version_str() { return MIR_VERSION_STR; }

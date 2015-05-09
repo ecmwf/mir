@@ -29,7 +29,8 @@ namespace mir {
 namespace method {
 
 class WeightCache : public eckit::CacheManager {
-  public:  // methods
+
+ public:  // methods
 
     WeightCache();
 
@@ -47,7 +48,7 @@ class WeightCache : public eckit::CacheManager {
                             const lsm::LandSeaMask &maskin,
                             const lsm::LandSeaMask &maskout) const;
 
-  private:
+ private:
 
     /// @returns the path of the cache entry given the key
     virtual eckit::PathName entry(const key_t &key) const;

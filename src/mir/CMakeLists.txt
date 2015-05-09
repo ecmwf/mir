@@ -18,6 +18,8 @@ install(
 
 configure_file( api/mir_version.cc.in  api/mir_version.cc )
 
+list( APPEND mir_srcs api/mir_version.cc )
+
 list(
   APPEND mir_srcs
     action/Action.cc

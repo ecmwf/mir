@@ -27,6 +27,8 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/api/mir_version.h"
+
 namespace mir {
 namespace method {
 
@@ -84,13 +86,13 @@ using eckit::AutoClose;
 using eckit::PathName;
 using atlas::Grid;
 
-WeightCache::WeightCache() : CacheManager("weights") {
+WeightCache::WeightCache() : CacheManager("weights", mir_version_str()) {
 }
 
 PathName WeightCache::entry(const key_t &key) const {
-    PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir", "/tmp/cache/mir");
-    PathName f = base_path / name() / PathName( key + ".cache" );
-    return f;
+  PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir", "/tmp/cache/mir");
+  PathName f = base_path / name() / version() / PathName(key + ".cache");
+  return f;
 }
 
 std::string WeightCache::generateKey(const std::string &method,
@@ -117,6 +119,8 @@ std::string WeightCache::generateKey(const std::string &method,
 
 void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
 
+    typedef WeightMatrix::Index Index;
+
     PathName tmp_path = stage(key);
 
     Log::info() << "Inserting weights in cache (" << tmp_path << ")" << std::endl;
@@ -131,8 +135,8 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
 
         // write nominal size of matrix
 
-        long innerSize = W.innerSize();
-        long outerSize = W.outerSize();
+        Index innerSize = W.innerSize();
+        Index outerSize = W.outerSize();
 
         f.write(&innerSize, sizeof(innerSize));
         f.write(&outerSize, sizeof(outerSize));
@@ -148,7 +152,7 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
 
         // save the number of triplets
 
-        long ntrips = trips.size();
+        Index ntrips = trips.size();
         f.write(&ntrips, sizeof(ntrips));
 
         // now save the triplets themselves
@@ -157,8 +161,8 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
 
             Eigen::Triplet<double> &rt = trips[i];
 
-            long x = rt.row();
-            long y = rt.col();
+            Index x = rt.row();
+            Index y = rt.col();
             double w = rt.value();
 
             f.write(&x, sizeof(x));
