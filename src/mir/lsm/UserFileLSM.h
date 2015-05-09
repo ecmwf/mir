@@ -16,33 +16,10 @@
 #ifndef UserFileLSM_H
 #define UserFileLSM_H
 
-#include <iosfwd>
-#include <memory>
-#include <string>
-#include <vector>
 
 #include "mir/lsm/LSMChooser.h"
 
-namespace atlas {
-class Grid;
-}
-
-
 namespace mir {
-
-namespace data {
-class MIRField;
-}
-namespace action {
-class Action;
-class ActionPlan;
-}
-
-namespace param {
-class MIRParametrisation;
-class RuntimeParametrisation;
-}
-
 namespace lsm {
 
 

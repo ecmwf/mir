@@ -17,34 +17,16 @@
 #define Mask_H
 
 #include <iosfwd>
-#include <memory>
 #include <string>
-#include <vector>
 
-// #include "mir/data/MIRField.h"
+namespace atlas { class Grid; }
 
-namespace atlas {
-class Grid;
-}
+namespace mir { namespace param { class MIRParametrisation; } }
+namespace mir { namespace data { class MIRField; }}
 
 
 namespace mir {
-
-namespace data {
-class MIRField;
-}
-namespace action {
-class Action;
-class ActionPlan;
-}
-
-namespace param {
-class MIRParametrisation;
-class RuntimeParametrisation;
-}
-
 namespace lsm {
-
 
 class Mask {
   public:

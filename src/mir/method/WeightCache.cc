@@ -91,7 +91,7 @@ PathName WeightCache::entry(const key_t &key) const {
     return f;
 }
 
-void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
+void WeightCache::insert(const std::string &key, const WeightMatrix &W) const {
 
     PathName tmp_path = stage(key);
 

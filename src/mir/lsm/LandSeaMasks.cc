@@ -13,10 +13,13 @@
 /// @date Apr 2015
 
 
-#include "eckit/exception/Exceptions.h"
 
 #include "mir/lsm/LandSeaMasks.h"
+
+#include <iostream>
+
 #include "mir/lsm/Mask.h"
+#include "eckit/exception/Exceptions.h"
 
 
 namespace mir {

@@ -62,10 +62,10 @@ list(
     action/Sh2ShTransform.h
     action/VOD2UVTransform.cc
     action/VOD2UVTransform.h
-    api/MIRJob.cc
-    api/MIRJob.h
     api/emoslib.cc
     api/emoslib.h
+    api/MIRJob.cc
+    api/MIRJob.h
     data/MIRField.cc
     data/MIRField.h
     input/DummyInput.cc
@@ -84,6 +84,7 @@ list(
     input/NetcdfFileInput.h
     input/VODInput.cc
     input/VODInput.h
+    logic
     logic/AutoReduced.cc
     logic/AutoReduced.h
     logic/AutoResol.cc
@@ -98,10 +99,10 @@ list(
     lsm/AutoLSM.h
     lsm/GribFileLSM.cc
     lsm/GribFileLSM.h
-    lsm/LSMChooser.cc
-    lsm/LSMChooser.h
     lsm/LandSeaMasks.cc
     lsm/LandSeaMasks.h
+    lsm/LSMChooser.cc
+    lsm/LSMChooser.h
     lsm/Mask.cc
     lsm/Mask.h
     lsm/NoneLSM.cc
@@ -120,6 +121,8 @@ list(
     method/MethodWeighted.h
     method/PseudoLaplace.cc
     method/PseudoLaplace.h
+    method/redist/Redist.cc
+    method/redist/Redist.h
     method/WeightCache.cc
     method/WeightCache.h
     method/WeightMatrix.h
@@ -155,26 +158,10 @@ list(
     param/RuntimeParametrisation.h
     param/SimpleParametrisation.cc
     param/SimpleParametrisation.h
-    repres/Albers.cc
-    repres/Albers.h
-    repres/AzimuthRange.cc
-    repres/AzimuthRange.h
-    repres/EquatorialAzimuthalEquidistant.cc
-    repres/EquatorialAzimuthalEquidistant.h
     repres/Gridded.cc
     repres/Gridded.h
-    repres/IrregularLatlon.cc
-    repres/IrregularLatlon.h
-    repres/Lambert.cc
-    repres/Lambert.h
-    repres/LambertAzimuthalEqualArea.cc
-    repres/LambertAzimuthalEqualArea.h
     repres/LatLon.cc
     repres/LatLon.h
-    repres/Mercator.cc
-    repres/Mercator.h
-    repres/PolarStereographic.cc
-    repres/PolarStereographic.h
     repres/ReducedGGClassic.cc
     repres/ReducedGGClassic.h
     repres/ReducedGGFromPL.cc
@@ -189,34 +176,50 @@ list(
     repres/RegularLL.h
     repres/Representation.cc
     repres/Representation.h
-    repres/RotatedGG.cc
-    repres/RotatedGG.h
     repres/RotatedLL.cc
     repres/RotatedLL.h
-    repres/RotatedSH.cc
-    repres/RotatedSH.h
-    repres/SpaceView.cc
-    repres/SpaceView.h
     repres/SphericalHarmonics.cc
     repres/SphericalHarmonics.h
-    repres/StretchedGG.cc
-    repres/StretchedGG.h
-    repres/StretchedLL.cc
-    repres/StretchedLL.h
-    repres/StretchedRotatedGG.cc
-    repres/StretchedRotatedGG.h
-    repres/StretchedRotatedLL.cc
-    repres/StretchedRotatedLL.h
-    repres/StretchedRotatedSH.cc
-    repres/StretchedRotatedSH.h
-    repres/StretchedSH.cc
-    repres/StretchedSH.h
-    repres/TransverseMercator.cc
-    repres/TransverseMercator.h
-    repres/TriangularGrid.cc
-    repres/TriangularGrid.h
-    repres/UnstructuredGrid.cc
-    repres/UnstructuredGrid.h
+    repres/unsupported/Albers.cc
+    repres/unsupported/Albers.h
+    repres/unsupported/AzimuthRange.cc
+    repres/unsupported/AzimuthRange.h
+    repres/unsupported/EquatorialAzimuthalEquidistant.cc
+    repres/unsupported/EquatorialAzimuthalEquidistant.h
+    repres/unsupported/IrregularLatlon.cc
+    repres/unsupported/IrregularLatlon.h
+    repres/unsupported/Lambert.cc
+    repres/unsupported/Lambert.h
+    repres/unsupported/LambertAzimuthalEqualArea.cc
+    repres/unsupported/LambertAzimuthalEqualArea.h
+    repres/unsupported/Mercator.cc
+    repres/unsupported/Mercator.h
+    repres/unsupported/PolarStereographic.cc
+    repres/unsupported/PolarStereographic.h
+    repres/unsupported/RotatedGG.cc
+    repres/unsupported/RotatedGG.h
+    repres/unsupported/RotatedSH.cc
+    repres/unsupported/RotatedSH.h
+    repres/unsupported/SpaceView.cc
+    repres/unsupported/SpaceView.h
+    repres/unsupported/StretchedGG.cc
+    repres/unsupported/StretchedGG.h
+    repres/unsupported/StretchedLL.cc
+    repres/unsupported/StretchedLL.h
+    repres/unsupported/StretchedRotatedGG.cc
+    repres/unsupported/StretchedRotatedGG.h
+    repres/unsupported/StretchedRotatedLL.cc
+    repres/unsupported/StretchedRotatedLL.h
+    repres/unsupported/StretchedRotatedSH.cc
+    repres/unsupported/StretchedRotatedSH.h
+    repres/unsupported/StretchedSH.cc
+    repres/unsupported/StretchedSH.h
+    repres/unsupported/TransverseMercator.cc
+    repres/unsupported/TransverseMercator.h
+    repres/unsupported/TriangularGrid.cc
+    repres/unsupported/TriangularGrid.h
+    repres/unsupported/UnstructuredGrid.cc
+    repres/unsupported/UnstructuredGrid.h
     util/Arguments.cc
     util/Arguments.h
     util/Bitmap.cc

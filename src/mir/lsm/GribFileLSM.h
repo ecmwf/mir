@@ -18,12 +18,11 @@
 
 #include "mir/lsm/Mask.h"
 
-#include <iosfwd>
-
-
+namespace mir { namespace param { class MIRParametrisation; }}
 
 namespace mir {
 namespace lsm {
+
 
 
 class GribFileLSM : public Mask {
@@ -34,9 +33,10 @@ class GribFileLSM : public Mask {
 
 // -- Contructors
 
-    GribFileLSM(const std::string& name, const std::string& key, const param::MIRParametrisation& param, const atlas::Grid& grid);
     GribFileLSM(const std::string& name, const std::string& key,
-                const param::MIRParametrisation& param, const atlas::Grid& grid, const std::string& path);
+                const param::MIRParametrisation& parametrisation, const atlas::Grid& grid);
+    GribFileLSM(const std::string& name, const std::string& key,
+                const param::MIRParametrisation& parametrisation, const atlas::Grid& grid, const std::string& path);
 
 // -- Destructor
 
@@ -91,7 +91,7 @@ class GribFileLSM : public Mask {
 
 // -- Methods
 
-    void init(const param::MIRParametrisation& param, const atlas::Grid& grid, const std::string& path);
+    void init(const param::MIRParametrisation& parametrisation, const atlas::Grid& grid, const std::string& path);
 
 // -- Overridden methods
 

@@ -12,17 +12,12 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "mir/lsm/LSMChooser.h"
 
 #include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Once.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "mir/lsm/LSMChooser.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/data/MIRField.h"
-
-#include "atlas/Grid.h"
 
 namespace mir {
 namespace lsm {

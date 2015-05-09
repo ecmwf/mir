@@ -16,28 +16,24 @@
 #ifndef mir_method_MethodWeighted_H
 #define mir_method_MethodWeighted_H
 
-#include <string>
+// #include <string>
 
 #include "mir/method/Method.h"
 #include "mir/method/WeightCache.h"
 #include "mir/method/WeightMatrix.h"
 
-namespace atlas {
-class Grid;
-}
+// namespace atlas {
+// class Grid;
+// }
+namespace mir { namespace lsm { class LandSeaMasks; }}
 
 namespace mir {
-
-namespace lsm {
-class LandSeaMasks;
-}
-
 namespace method {
 
 
 class MethodWeighted : public Method {
 
-    mutable WeightCache cache_;
+    WeightCache cache_;
 
   public:
 
@@ -65,7 +61,7 @@ class MethodWeighted : public Method {
 
   private:
 
-    void compute_weights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
+    void computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
 
     friend std::ostream &operator<<(std::ostream &s, const MethodWeighted &p) {
         p.print(s);

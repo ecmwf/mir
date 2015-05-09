@@ -21,7 +21,7 @@
 #include <map>
 #include <string>
 
-#include "eckit/log/BigNum.h"
+// #include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
@@ -32,12 +32,12 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/method/WeightCache.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
+// #include "mir/method/WeightCache.h"
+// #include "mir/param/MIRParametrisation.h"
+// #include "mir/repres/Representation.h"
 
 
-using atlas::Grid;
+// using atlas::Grid;
 
 static eckit::Mutex local_mutex;
 
@@ -62,7 +62,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    const lsm::LandSeaMasks &masks = lsm::LandSeaMasks::lookup(parametrisation_, in, out);
+    const lsm::LandSeaMasks masks = lsm::LandSeaMasks::lookup(parametrisation_, in, out);
 
     eckit::Log::info() << "++++ LSM masks " << masks << std::endl;
 
@@ -98,7 +98,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     WeightMatrix W(out.npts(), in.npts());
 
     if (!cache_.retrieve(cache_key, W)) {
-        compute_weights(in, out, W);
+        computeWeights(in, out, W);
         if (masks.active() && masks.cacheable()) {
             applyMasks(W, masks);
         }
@@ -158,7 +158,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 }
 
 
-void MethodWeighted::compute_weights(const Grid &in, const Grid &out, WeightMatrix &W) const {
+void MethodWeighted::computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const {
     if (in.same(out))
         W.setIdentity();        // grids are the same, use identity matrix
     else

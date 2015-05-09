@@ -12,13 +12,9 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/lsm/NoneLSM.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/lsm/GribFileLSM.h"
-#include "atlas/Grid.h"
+#include <iostream>
+#include "mir/lsm/Mask.h"
 
 namespace mir {
 namespace lsm {
