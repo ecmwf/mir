@@ -20,13 +20,15 @@
 
 #include <iosfwd>
 
-
+#include "eckit/filesystem/PathName.h"
 
 namespace mir {
 namespace lsm {
 
-
 class GribFileLSM : public LandSeaMask {
+
+  eckit::PathName path_;
+
   public:
 
 // -- Exceptions
@@ -50,8 +52,6 @@ class GribFileLSM : public LandSeaMask {
 
 // -- Methods
 
-
-
 // -- Overridden methods
     // None
 
@@ -67,8 +67,9 @@ class GribFileLSM : public LandSeaMask {
 
 // -- Methods
 
+    virtual void hash(eckit::MD5&) const;
 
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;
 
 // -- Overridden methods
     // None

@@ -10,6 +10,7 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
 /// @date Apr 2015
 
 
@@ -65,6 +66,7 @@ class EmptyLandSeaMask : public LandSeaMask {
     virtual std::string unique_id() const {
         NOTIMP;
     }
+    virtual void hash(eckit::MD5& md5) const {}
     virtual void print(std::ostream &out) const {
         out << name_;
     }

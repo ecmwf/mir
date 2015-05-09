@@ -10,6 +10,7 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
 /// @date Apr 2015
 
 
@@ -31,8 +32,8 @@ GribFileLSM::GribFileLSM(const std::string &name, const std::string &key, const 
     const atlas::Grid &grid):
 
     LandSeaMask(name, key) {
-        eckit::PathName path("~mir/etc/lsm.N640.grib");
-        init(param, grid, path);
+        path_ = "~mir/etc/lsm.N640.grib",
+        init(param, grid, path_);
 }
 
 GribFileLSM::GribFileLSM(const std::string &name, const std::string &key, const param::MIRParametrisation &param,
@@ -47,7 +48,7 @@ void GribFileLSM::init(const param::MIRParametrisation &param, const atlas::Grid
 
     eckit::Log::info() << "GribFileLSM loading " << path << std::endl;
 
-    mir::input::GribFileInput file("~mir/etc/lsm.N640.grib");
+    mir::input::GribFileInput file( path );
     mir::input::MIRInput &input = file;
 
     ASSERT(file.next());
@@ -72,12 +73,14 @@ void GribFileLSM::init(const param::MIRParametrisation &param, const atlas::Grid
     method->execute(*field_, *gin, grid);
 
     field_->representation(0); // This should not be used by users of the LSM
-
-
-
 }
 
 GribFileLSM::~GribFileLSM() {
+}
+
+void GribFileLSM::hash(eckit::MD5& md5) const
+{
+  md5.add(path_.asString());
 }
 
 void GribFileLSM::print(std::ostream &out) const {

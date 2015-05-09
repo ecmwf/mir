@@ -13,15 +13,15 @@
 /// @date Apr 2015
 
 
-#include "mir/method/Bilinear.h"
+#include "Bilinear.h"
 
 #include <string>
 #include <algorithm>
 
-#include "atlas/grids/ReducedGaussianGrid.h"
-
 #include "eckit/log/Log.h"
+#include "eckit/utils/MD5.h"
 
+#include "atlas/grids/ReducedGaussianGrid.h"
 
 namespace mir {
 namespace method {
@@ -74,6 +74,10 @@ Bilinear::~Bilinear() {
 
 const char *Bilinear::name() const {
     return  "bilinear";
+}
+
+void Bilinear::hash( eckit::MD5& md5) const {
+  md5.add(name());
 }
 
 void Bilinear::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {

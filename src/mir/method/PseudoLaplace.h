@@ -18,86 +18,38 @@
 
 #include "mir/method/MethodWeighted.h"
 
-
 namespace mir {
-
 namespace method {
 
 
 class PseudoLaplace: public MethodWeighted {
-  public:
 
-// -- Exceptions
-    // None
+  size_t nclosest_;  ///< Number of closest points to search for
 
-// -- Contructors
+public:
+
     PseudoLaplace(const param::MIRParametrisation&);
 
-// -- Destructor
     virtual ~PseudoLaplace();
 
-// -- Convertors
-    // None
+protected:
 
-// -- Operators
-    // None
+  virtual void hash( eckit::MD5& ) const;
 
-// -- Methods
-    // None
-
-// -- Overridden methods
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-  protected:
-
-// -- Members
-
-// -- Methods
-    // None
-
-// -- Overridden methods
-    // None
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-  private:
-
-// -- Methods
+private:
 
     virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
-
-// -- Overridden methods
-    // None
-
-// -- Class members
-    size_t nclosest_;  ///< Number of closest points to search for
-
-// -- Class methods
-    // None
-
-// -- Friends
-
     friend std::ostream& operator<<(std::ostream& s,const PseudoLaplace& p) {
         p.print(s);
         return s;
     }
-
 };
-
 
 }  // namespace method
 }  // namespace mir
+
 #endif
 

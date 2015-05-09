@@ -13,10 +13,12 @@
 /// @date Apr 2015
 
 
-#include "mir/method/PseudoLaplace.h"
+#include "PseudoLaplace.h"
 
 #include <string>
+
 #include "mir/util/PointSearch.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -24,15 +26,23 @@ namespace method {
 
 
 PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
-    MethodWeighted(param) {
-}
+    MethodWeighted(param),
+    nclosest_(4) {
 
+  param.get("nclosest", nclosest_);
+
+}
 
 PseudoLaplace::~PseudoLaplace() {
 }
 
 const char* PseudoLaplace::name() const {
     return  "pseudo-laplace";
+}
+
+void PseudoLaplace::hash( eckit::MD5& md5) const {
+  md5.add(name());
+  md5.add(nclosest_);
 }
 
 void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {

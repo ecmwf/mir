@@ -10,6 +10,7 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
 /// @date Apr 2015
 
 
@@ -21,21 +22,20 @@
 #include <string>
 #include <vector>
 
+#include "eckit/memory/NonCopyable.h"
+
 // #include "mir/data/MIRField.h"
 
-namespace atlas {
-class Grid;
-}
-
+namespace eckit { class MD5; }
+namespace atlas { class Grid; }
 
 namespace mir {
 
-namespace data {
-class MIRField;
-}
+namespace data { class MIRField; }
+
 namespace action {
-class Action;
-class ActionPlan;
+  class Action;
+  class ActionPlan;
 }
 
 namespace param {
@@ -46,13 +46,9 @@ class RuntimeParametrisation;
 namespace lsm {
 
 
-class LandSeaMask {
+class LandSeaMask : private eckit::NonCopyable {
+
   public:
-
-    // -- Exceptions
-    // None
-
-    // -- Contructors
 
     LandSeaMask(const std::string &name, const std::string &key);
 
@@ -73,6 +69,8 @@ class LandSeaMask {
 
     virtual bool cacheable() const;
     virtual const data::MIRField &field() const;
+
+    virtual void hash(eckit::MD5&) const = 0;
 
     // -- Overridden methods
     // None
@@ -95,8 +93,7 @@ class LandSeaMask {
 
     // -- Methods
 
-
-    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream &) const = 0;
 
     // -- Overridden methods
     // None
@@ -108,11 +105,6 @@ class LandSeaMask {
     // None
 
   private:
-
-    // No copy allowed
-
-    LandSeaMask(const LandSeaMask &);
-    LandSeaMask &operator=(const LandSeaMask &);
 
     // -- Members
     // None
@@ -139,8 +131,8 @@ class LandSeaMask {
 
 };
 
-
 }  // namespace logic
 }  // namespace mir
+
 #endif
 

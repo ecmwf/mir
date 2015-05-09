@@ -18,15 +18,17 @@
 #include <string>
 
 #include "eckit/container/CacheManager.h"
-#include "eckit/filesystem/PathName.h"
-
-#include "atlas/Grid.h"
-
 #include "mir/method/WeightMatrix.h"
-#include "mir/lsm/LandSeaMask.h"
+
+namespace atlas { class Grid; }
 
 namespace mir {
+namespace lsm { class LandSeaMask; }
 namespace method {
+
+class Method;
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class WeightCache : public eckit::CacheManager {
 
@@ -42,11 +44,15 @@ class WeightCache : public eckit::CacheManager {
     /// @returns true if insertion successful cache
     void insert(const std::string &key, const WeightMatrix &W);
 
-    std::string generate_key(const std::string &method,
-                            const atlas::Grid &in,
-                            const atlas::Grid &out,
-                            const lsm::LandSeaMask &maskin,
-                            const lsm::LandSeaMask &maskout) const;
+    std::string generate_key(const Method &method,
+                             const atlas::Grid &in,
+                             const atlas::Grid &out,
+                             const lsm::LandSeaMask &maskin,
+                             const lsm::LandSeaMask &maskout) const;
+
+ protected:
+
+    virtual void print(std::ostream& s) const;
 
  private:
 
@@ -54,6 +60,8 @@ class WeightCache : public eckit::CacheManager {
     virtual const char* extension() const;
 
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

@@ -33,65 +33,30 @@ namespace method {
 
 
 class FiniteElement: public MethodWeighted {
-  public:
+
+  mutable eckit::ScopedPtr<atlas::PointIndex3> ptree;
+
+  mutable size_t ip_;
+
+  mutable size_t nb_triags;
+  mutable size_t inp_npts;
+
+  mutable atlas::FieldT<double>* picoords;
+  mutable atlas::FieldT<int>* ptriag_nodes;
+
+public:
 
     typedef eckit::geometry::Point3 Point;
 
-// -- Exceptions
-    // None
-
-// -- Contructors
     FiniteElement(const param::MIRParametrisation&);
 
-// -- Destructor
     virtual ~FiniteElement();
 
-// -- Convertors
-    // None
+protected:
 
-// -- Operators
-    // None
+    virtual void hash( eckit::MD5& ) const;
 
-// -- Methods
-    // None
-
-// -- Overridden methods
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-  protected:
-
-// -- Members
-
-
-// -- Methods
-
-
-// -- Overridden methods
-    // None
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-  private:
-
-// -- Members
-    mutable eckit::ScopedPtr<atlas::PointIndex3> ptree;
-
-    mutable size_t ip_;
-
-    mutable size_t nb_triags;
-    mutable size_t inp_npts;
-
-    mutable atlas::FieldT<double>* picoords;
-    mutable atlas::FieldT<int>* ptriag_nodes;
+private:
 
 // -- Methods
     bool project_point_to_triangle( Point &p, Eigen::Vector3d& phi, int idx[3], const size_t k ) const;
@@ -102,15 +67,6 @@ class FiniteElement: public MethodWeighted {
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-// -- Friends
-
     friend std::ostream& operator<<(std::ostream& s,const FiniteElement& p) {
         p.print(s);
         return s;
@@ -118,8 +74,8 @@ class FiniteElement: public MethodWeighted {
 
 };
 
-
 }  // namespace method
 }  // namespace mir
+
 #endif
 

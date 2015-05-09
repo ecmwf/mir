@@ -21,61 +21,39 @@
 #include "eckit/config/Resource.h"
 #include "eckit/io/FileHandle.h"
 #include "eckit/io/BufferedHandle.h"
-
 #include "eckit/log/Timer.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/utils/MD5.h"
 
+#include "atlas/Grid.h"
+
 #include "mir/api/mir_version.h"
+#include "mir/lsm/LandSeaMask.h"
+#include "mir/method/Method.h"
+#include "mir/method/WeightMatrix.h"
 
 namespace mir {
 namespace method {
 
 /*
-I was asked to review that code, so there it is:
+    What's left todo from Baudouin's code review:
 
-1 - We discussed having a generic caching class in eckit, from which we derive, this is not the case.
-    There is also a need to cache legendre coefficients, and we want code reuse.
-2 - The code does not ensure that the created directories (mkdir) are world readable/writable/executable
-    so that other users can access them and create new files in them (umask? chmod?)
-3 - The code does not ensure that the created files (*.cache) are world readable
-    so that other users can access them (umask?)
 4 - Writting is done with std::fstream which does not throw exception unless asked explicitally
     like so: ofs.exceptions ( std::ofstream::failbit | std::ofstream::badbit );
     this means that no error checking is done on writting, this will lead the truncated files
     when file systems become full
-5 - Reading and writting code are not symetrical (write uses std::fstream, read uses DataHandle)
-6 - One should AutoClose<FileHandle> to ensure that handles are closed in case of
-    exception (same for std::ftream), so we don't leak file descriptors
-7 - DataHandle reads into a void*, not a char*, so there is not need for reinterpret_cast<const char*>
-8 - File names do not take compiler, number of bits, architecture, etc... in account. In certain cases
-    we will have to put these files in shared filesytems (e.g. $SCRATCH).
-9 - There is no check done that the code used to read the file matched the code used to right the file.
-    Old and new version of MIR (i.e. of MARS clients) will coexists. This should be refelected in the file
-    name, e.g. adding a version number of the encoding code (no need for fancy SHA1, just 1, 2, 3...)
-10- SparseMatrixBase<T>::innerSize() return Index, not long. Code should reflect that (consider point 9).
-    This applies to many other variables.
-11- Variable ntrips should be size_t
-12- Use size_t instead of unsigned int
-13- Use camelCase: filename() => fileName()
-14- Log() message should be English sentences, and thus start with a capital letter
 
-The points 8 and 9 could be addressed externally, i.e. having different cache directories
-for different architecture, compilers, etc, but:
+    --> class atlas::MeshCache must use DataHandle() to write and read
 
-a - Doing so will make it more difficult to share cache files between different applications (MARS, mir tool,
-    PRODGEN, ...)
+8 - File names do not take compiler, number of bits, architecture, etc... in account.
+    In certain cases we will have to put these files in shared filesytems (e.g. $SCRATCH).
 b - Code should ASSERT() that what their are decoding looks correct. This can be done by sticking a header
     in front of the files, and cheching that the decoder can understand the header correctly.
 
-Point 12-13 are stylistic but important if you are serious about a common code base.
+    --> We'll use the eckitCacheDir to create caches that have the compiler and architecture in them
+        However, TODO: stick a header with versions & platform info (compiler, architecture, etc)
 
-TODO:
-1 - Create a generic file caching class in eckit that takes care of management of directories and files,
-    ensuring proper permission settings.
-2 - This class provide DataHandles to its subclasses to read/write their stuff
-3 - Code must ensure that no resource are lost in case of exception  (e.g. using AutoClose<T>)
 */
 
 using eckit::CacheManager;
@@ -92,26 +70,31 @@ WeightCache::WeightCache() : CacheManager("mir/weights") {
 const char* WeightCache::version() const { return mir_version_str(); }
 const char* WeightCache::extension() const { return ".mat"; }
 
-std::string WeightCache::generate_key(const std::string &method,
-                                     const atlas::Grid &in,
-                                     const atlas::Grid &out,
-                                     const lsm::LandSeaMask &maskin,
-                                     const lsm::LandSeaMask &maskout) const {
-    std::ostringstream os;
-    os << method << "." << in.unique_id() << "." << out.unique_id();
-    if (maskin.active()) {
-        os << ".IM" << maskin.unique_id();
-    }
-    if (maskout.active()) {
-        os << ".OM" << maskout.unique_id();
-    }
+std::string WeightCache::generate_key(const Method &method,
+                                      const atlas::Grid &in,
+                                      const atlas::Grid &out,
+                                      const lsm::LandSeaMask &maskin,
+                                      const lsm::LandSeaMask &maskout) const {
 
-    // For now... otherwith we get file too long errors
-    std::string s(os.str());
-    eckit::MD5 md5;
-    md5.add(&s[0], s.size());
+  eckit::MD5 md5;
 
-    return method + "-" + md5.digest();
+  method.hash(md5);
+  in.hash(md5);
+  out.hash(md5);
+  maskin.hash(md5);
+  maskout.hash(md5);
+
+  return md5.digest();
+}
+
+void WeightCache::print(std::ostream &s) const
+{
+  s << "WeightCache[";
+  CacheManager::print(s);
+  s << "name=" << name() << ","
+    << "version=" << version() << ","
+    << "extention=" << extension() << ","
+    << "]";
 }
 
 void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
@@ -141,7 +124,7 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
         // find all the non-zero values (aka triplets)
 
         std::vector<Eigen::Triplet<double> > trips;
-        for (unsigned int i = 0; i < W.outerSize(); ++i) {
+        for (size_t i = 0; i < W.outerSize(); ++i) {
             for (WeightMatrix::InnerIterator it(W, i); it; ++it) {
                 trips.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
             }
@@ -154,7 +137,7 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
 
         // now save the triplets themselves
 
-        for (unsigned int i = 0; i < trips.size(); i++) {
+        for (size_t i = 0; i < trips.size(); i++) {
 
             Eigen::Triplet<double> &rt = trips[i];
 
@@ -205,7 +188,7 @@ bool WeightCache::retrieve(const std::string &key, WeightMatrix &W) const {
 
         // read the values
 
-        for (unsigned int i = 0; i < npts; i++) {
+        for (size_t i = 0; i < npts; i++) {
             long x, y;
             double w;
             f.read(&x, sizeof(x));

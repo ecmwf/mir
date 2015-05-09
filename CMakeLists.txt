@@ -115,6 +115,7 @@ include_directories( ${MIR_INCLUDE_DIRS} ${MIR_EXTRA_INCLUDE_DIRS}  )
 
 add_subdirectory( src )
 add_subdirectory( etc )
+add_subdirectory( tests )
 
 ### installation
 
