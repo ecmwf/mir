@@ -71,6 +71,8 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     std::string key_no_masks = os.str();
 
+
+
     os << "-" << masks.uniqueID();
     std::string key_with_masks = os.str();
 
@@ -85,6 +87,11 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     } else {
         cache_key = key_no_masks;
     }
+
+    // Shorten the key, to avoid "file name to long" errors
+    eckit::MD5 md5;
+    md5.add(cache_key);
+    cache_key = md5.digest();
 
     // calculate weights matrix, apply mask if necessary
 

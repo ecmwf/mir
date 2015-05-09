@@ -25,7 +25,6 @@
 #include "eckit/log/Timer.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
-#include "eckit/utils/MD5.h"
 
 namespace mir {
 namespace method {
