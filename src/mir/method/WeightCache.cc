@@ -28,7 +28,7 @@
 #include "atlas/Grid.h"
 
 #include "mir/api/mir_version.h"
-#include "mir/lsm/LandSeaMask.h"
+#include "mir/lsm/Mask.h"
 #include "mir/method/Method.h"
 #include "mir/method/WeightMatrix.h"
 
@@ -71,8 +71,8 @@ const char* WeightCache::extension() const { return ".mat"; }
 std::string WeightCache::generate_key(const Method &method,
                                       const atlas::Grid &in,
                                       const atlas::Grid &out,
-                                      const lsm::LandSeaMask &maskin,
-                                      const lsm::LandSeaMask &maskout) const {
+                                      const lsm::Mask &maskin,
+                                      const lsm::Mask &maskout) const {
 
   eckit::MD5 md5;
 

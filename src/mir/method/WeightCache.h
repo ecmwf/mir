@@ -24,7 +24,7 @@
 namespace atlas { class Grid; }
 
 namespace mir {
-namespace lsm { class LandSeaMask; }
+namespace lsm { class Mask; }
 namespace method {
 
 class Method;
@@ -48,8 +48,8 @@ class WeightCache : public eckit::CacheManager {
     std::string generate_key(const Method &method,
                              const atlas::Grid &in,
                              const atlas::Grid &out,
-                             const lsm::LandSeaMask &maskin,
-                             const lsm::LandSeaMask &maskout) const;
+                             const lsm::Mask &maskin,
+                             const lsm::Mask &maskout) const;
 
  protected:
 
