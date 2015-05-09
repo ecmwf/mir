@@ -20,6 +20,7 @@
 
 #include "mir/lsm/Mask.h"
 #include "mir/lsm/LSMChooser.h"
+#include "mir/lsm/NoneLSM.h"
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/data/MIRField.h"
@@ -76,14 +77,13 @@ class EmptyLandSeaMask : public Mask {
 
 Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::Grid &grid, const std::string& which) {
 
-    static EmptyLandSeaMask empty;
 
     std::string name;
 
 
     if (!parametrisation.get("lsm" + which, name)) {
         if (!parametrisation.get("lsm", name)) {
-            return empty;
+            return NoneLSM::instance();
         }
     }
 

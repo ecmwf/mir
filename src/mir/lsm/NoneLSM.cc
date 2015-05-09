@@ -23,6 +23,13 @@
 namespace mir {
 namespace lsm {
 
+class NoLSM : public Mask {
+    virtual bool active() const { return false; }
+    virtual bool cacheable() const { return false; }
+    virtual void print(std::ostream & out) const { out << "none"; }
+public:
+    NoLSM(): Mask("none", "none") {}
+};
 
 NoneLSM::NoneLSM(const std::string &name):
     LSMChooser(name) {
@@ -32,13 +39,18 @@ NoneLSM::NoneLSM(const std::string &name):
 NoneLSM::~NoneLSM() {
 }
 
+Mask& NoneLSM::instance() {
+    static NoLSM none;
+    return none;
+}
+
 void NoneLSM::print(std::ostream& out) const {
     out << "NoneLSM[" << name_ << "]";
 }
 
 Mask *NoneLSM::create(const std::string &name, const std::string &key,
                              const param::MIRParametrisation &param, const atlas::Grid &grid) const {
-    return new GribFileLSM(name, key, param, grid);
+    return new NoLSM();
 }
 
 

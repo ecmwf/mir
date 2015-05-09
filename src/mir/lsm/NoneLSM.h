@@ -76,6 +76,8 @@ class NoneLSM : public LSMChooser {
 
     // -- Class methods
 
+    static Mask& instance();
+
 
   protected:
 

@@ -104,6 +104,8 @@ list(
     lsm/LandSeaMasks.h
     lsm/Mask.cc
     lsm/Mask.h
+    lsm/NoneLSM.cc
+    lsm/NoneLSM.h
     lsm/UserFileLSM.cc
     lsm/UserFileLSM.h
     method/Bilinear.cc
