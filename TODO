@@ -34,6 +34,7 @@ ECKIT
 
 IN ATLAS:
 - Make sure cached mesh files are not loaded for every field
+- Speed-up mesh loading
 
 IN TRANS
 - Check if transi can be called with a regular gaussian as output
