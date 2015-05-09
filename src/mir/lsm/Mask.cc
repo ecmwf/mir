@@ -14,7 +14,6 @@
 
 #include "mir/lsm/Mask.h"
 
-#include <memory>
 
 #include "atlas/Grid.h"
 #include "eckit/exception/Exceptions.h"

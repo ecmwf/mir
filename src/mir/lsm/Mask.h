@@ -18,6 +18,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <memory>
 
 namespace atlas { class Grid; }
 
