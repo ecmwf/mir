@@ -19,7 +19,7 @@
 
 #include "mir/param/MIRParametrisation.h"
 
-#include "mir/repres/EquatorialAzimuthalEquidistant.h"
+#include "mir/repres/unsupported/EquatorialAzimuthalEquidistant.h"
 
 
 namespace mir {

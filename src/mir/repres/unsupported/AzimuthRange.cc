@@ -19,7 +19,7 @@
 
 #include "mir/param/MIRParametrisation.h"
 
-#include "mir/repres/AzimuthRange.h"
+#include "mir/repres/unsupported/AzimuthRange.h"
 
 
 namespace mir {

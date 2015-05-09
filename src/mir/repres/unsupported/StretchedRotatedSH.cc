@@ -19,7 +19,7 @@
 
 #include "mir/param/MIRParametrisation.h"
 
-#include "mir/repres/StretchedRotatedSH.h"
+#include "mir/repres/unsupported/StretchedRotatedSH.h"
 
 
 namespace mir {

@@ -12,48 +12,41 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "mir/action/interpolate/Gridded2ReducedLL.h"
 
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
 
-#include "mir/param/MIRParametrisation.h"
-
-#include "mir/repres/unsupported/RotatedSH.h"
-
 
 namespace mir {
-namespace repres {
+namespace action {
 
 
-RotatedSH::RotatedSH(const param::MIRParametrisation &parametrisation) {
+Gridded2ReducedLL::Gridded2ReducedLL(const param::MIRParametrisation& parametrisation):
+    Gridded2GriddedInterpolation(parametrisation) {
 }
 
 
-RotatedSH::RotatedSH() {
+Gridded2ReducedLL::~Gridded2ReducedLL() {
 }
 
 
-RotatedSH::~RotatedSH() {
+void Gridded2ReducedLL::print(std::ostream& out) const {
+    out << "Gridded2ReducedLL[]";
 }
 
 
-void RotatedSH::print(std::ostream &out) const {
-    out << "RotatedSH["
-        << "]";
-}
-
-
-void RotatedSH::fill(grib_info &info) const  {
+repres::Representation* Gridded2ReducedLL::outputRepresentation(const repres::Representation* inputRepres) const {
     NOTIMP;
 }
 
 
 namespace {
-static RepresentationBuilder<RotatedSH> rotatedSH("rotated_sh"); // Name is what is returned by grib_api
+static ActionBuilder< Gridded2ReducedLL > grid2grid("interpolate.grid2reduced-ll");
 }
 
 
-}  // namespace repres
+}  // namespace action
 }  // namespace mir
 

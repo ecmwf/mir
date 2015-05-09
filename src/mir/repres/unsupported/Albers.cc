@@ -15,7 +15,7 @@
 
 #include <iostream>
 
-#include "mir/repres/Albers.h"
+#include "mir/repres/unsupported/Albers.h"
 #include "mir/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 
