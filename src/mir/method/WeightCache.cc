@@ -82,7 +82,6 @@ using eckit::Resource;
 using eckit::FileHandle;
 using eckit::AutoClose;
 using eckit::PathName;
-using atlas::Grid;
 
 WeightCache::WeightCache() : CacheManager("weights") {
 }
@@ -91,28 +90,6 @@ PathName WeightCache::entry(const key_t &key) const {
     PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir", "/tmp/cache/mir");
     PathName f = base_path / name() / PathName( key + ".cache" );
     return f;
-}
-
-std::string WeightCache::generateKey(const std::string &method,
-                                     const atlas::Grid &in,
-                                     const atlas::Grid &out,
-                                     const lsm::LandSeaMask &maskin,
-                                     const lsm::LandSeaMask &maskout) const {
-    std::ostringstream os;
-    os << method << "." << in.unique_id() << "." << out.unique_id();
-    if (maskin.active()) {
-        os << ".IM" << maskin.unique_id();
-    }
-    if (maskout.active()) {
-        os << ".OM" << maskout.unique_id();
-    }
-
-    // For now... otherwith we get file too long errors
-    std::string s(os.str());
-    eckit::MD5 md5;
-    md5.add(&s[0], s.size());
-
-    return method + "-" + md5.digest();
 }
 
 void WeightCache::insert(const std::string &key, const WeightMatrix &W) {

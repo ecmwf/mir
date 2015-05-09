@@ -13,15 +13,15 @@
 /// @date Apr 2015
 
 
-#ifndef AutoLSM_H
-#define AutoLSM_H
+#ifndef LandSeaMasks_H
+#define LandSeaMasks_H
 
 #include <iosfwd>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "mir/lsm/LSMChooser.h"
+// #include "mir/data/MIRField.h"
 
 namespace atlas {
 class Grid;
@@ -40,13 +40,13 @@ class ActionPlan;
 
 namespace param {
 class MIRParametrisation;
-class RuntimeParametrisation;
 }
 
 namespace lsm {
 
+class Mask;
 
-class AutoLSM : public LSMChooser {
+class LandSeaMasks {
   public:
 
     // -- Exceptions
@@ -54,11 +54,11 @@ class AutoLSM : public LSMChooser {
 
     // -- Contructors
 
-    AutoLSM(const std::string &name);
+    LandSeaMasks(const Mask &input, const Mask &output);
 
     // -- Destructor
 
-    virtual ~AutoLSM(); // Change to virtual if base class
+    ~LandSeaMasks(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -68,6 +68,13 @@ class AutoLSM : public LSMChooser {
 
     // -- Methods
 
+    virtual bool active() const;
+    virtual std::string uniqueID() const;
+    virtual bool cacheable() const;
+
+    virtual const data::MIRField &inputField() const;
+    virtual const data::MIRField &outputField() const;
+
     // -- Overridden methods
     // None
 
@@ -76,10 +83,14 @@ class AutoLSM : public LSMChooser {
 
     // -- Class methods
 
+    static  LandSeaMasks lookup(const param::MIRParametrisation &param, const atlas::Grid &in, const atlas::Grid &out);
 
   protected:
 
     // -- Members
+
+    const Mask &input_;
+    const Mask &output_;
 
     // -- Methods
 
@@ -99,8 +110,8 @@ class AutoLSM : public LSMChooser {
 
     // No copy allowed
 
-    AutoLSM(const AutoLSM &);
-    AutoLSM &operator=(const AutoLSM &);
+    // LandSeaMasks(const LandSeaMasks &);
+    // LandSeaMasks &operator=(const LandSeaMasks &);
 
     // -- Members
     // None
@@ -116,14 +127,13 @@ class AutoLSM : public LSMChooser {
 
     // -- Class methods
 
-    virtual Mask *create(const std::string &, const std::string &,
-                                const param::MIRParametrisation &param, const atlas::Grid &grid) const ;
-
-
 
     // -- Friends
 
-
+    friend std::ostream &operator<<(std::ostream &s, const LandSeaMasks &p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

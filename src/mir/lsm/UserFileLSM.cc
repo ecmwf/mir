@@ -37,7 +37,7 @@ void UserFileLSM::print(std::ostream& out) const {
     out << "UserFileLSM[" << name_ << ",which=" << which_ << "]";
 }
 
-LandSeaMask *UserFileLSM::create(const std::string &name, const std::string &key,
+Mask *UserFileLSM::create(const std::string &name, const std::string &key,
                                  const param::MIRParametrisation &param, const atlas::Grid &grid) const {
 
     std::string path;

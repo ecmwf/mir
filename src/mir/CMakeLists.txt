@@ -100,8 +100,10 @@ list(
     lsm/GribFileLSM.h
     lsm/LSMChooser.cc
     lsm/LSMChooser.h
-    lsm/LandSeaMask.cc
-    lsm/LandSeaMask.h
+    lsm/LandSeaMasks.cc
+    lsm/LandSeaMasks.h
+    lsm/Mask.cc
+    lsm/Mask.h
     lsm/UserFileLSM.cc
     lsm/UserFileLSM.h
     method/Bilinear.cc

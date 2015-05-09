@@ -19,11 +19,7 @@
 
 #include "eckit/container/CacheManager.h"
 #include "eckit/filesystem/PathName.h"
-
-#include "atlas/Grid.h"
-
 #include "mir/method/WeightMatrix.h"
-#include "mir/lsm/LandSeaMask.h"
 
 namespace mir {
 namespace method {
@@ -41,11 +37,6 @@ class WeightCache : public eckit::CacheManager {
     /// @returns true if insertion successful cache
     void insert(const std::string &key, const WeightMatrix &W);
 
-    std::string generateKey(const std::string &method,
-                            const atlas::Grid &in,
-                            const atlas::Grid &out,
-                            const lsm::LandSeaMask &maskin,
-                            const lsm::LandSeaMask &maskout) const;
 
   private:
 

@@ -18,7 +18,7 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "mir/lsm/LandSeaMask.h"
+#include "mir/lsm/Mask.h"
 #include "mir/lsm/LSMChooser.h"
 
 #include "mir/param/MIRParametrisation.h"
@@ -33,7 +33,7 @@ namespace {
 
 static eckit::Mutex *local_mutex = 0;
 
-static std::map<std::string, LandSeaMask *> cache;
+static std::map<std::string, Mask *> cache;
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
@@ -45,36 +45,36 @@ static void init() {
 }  // (anonymous namespace)
 
 
-LandSeaMask::LandSeaMask(const std::string &name, const std::string &key):
+Mask::Mask(const std::string &name, const std::string &key):
     name_(name), key_(key) {
 }
 
 
-LandSeaMask::~LandSeaMask() {
+Mask::~Mask() {
 }
 
 //-----------------------------------------------------------------------------
 
-class EmptyLandSeaMask : public LandSeaMask {
+class EmptyLandSeaMask : public Mask {
     virtual bool active() const {
         return false;
     }
     virtual const data::MIRField &field() const {
         NOTIMP;
     }
-    virtual std::string unique_id() const {
+    virtual std::string uniqueID() const {
         NOTIMP;
     }
     virtual void print(std::ostream &out) const {
         out << name_;
     }
   public:
-    EmptyLandSeaMask() : LandSeaMask("<no-lsm>", "<no-lsm>") {}
+    EmptyLandSeaMask() : Mask("<no-lsm>", "<no-lsm>") {}
 };
 
 //-----------------------------------------------------------------------------
 
-LandSeaMask &LandSeaMask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::Grid &grid, const std::string& which) {
+Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::Grid &grid, const std::string& which) {
 
     static EmptyLandSeaMask empty;
 
@@ -96,8 +96,8 @@ LandSeaMask &LandSeaMask::lookup(const param::MIRParametrisation  &parametrisati
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::info() << "LandSeaMask::lookup(" << key << ")" << std::endl;
-    std::map<std::string, LandSeaMask *>::iterator j = cache.find(key);
+    eckit::Log::info() << "Mask::lookup(" << key << ")" << std::endl;
+    std::map<std::string, Mask *>::iterator j = cache.find(key);
 
     if(j != cache.end()) {
         return *(*j).second;
@@ -105,7 +105,7 @@ LandSeaMask &LandSeaMask::lookup(const param::MIRParametrisation  &parametrisati
 
     name = name +  which;
     LSMChooser& chooser = LSMChooser::lookup(name);
-    LandSeaMask* mask = chooser.create(name, key, parametrisation, grid);
+    Mask* mask = chooser.create(name, key, parametrisation, grid);
 
     cache[key] = mask;
 
@@ -114,30 +114,30 @@ LandSeaMask &LandSeaMask::lookup(const param::MIRParametrisation  &parametrisati
 
 }
 
-LandSeaMask &LandSeaMask::lookupInput(const param::MIRParametrisation   &parametrisation, const atlas::Grid &grid) {
+Mask &Mask::lookupInput(const param::MIRParametrisation   &parametrisation, const atlas::Grid &grid) {
     return lookup(parametrisation, grid, ".input");
 }
 
 
-LandSeaMask &LandSeaMask::lookupOutput(const param::MIRParametrisation   &parametrisation, const atlas::Grid &grid) {
+Mask &Mask::lookupOutput(const param::MIRParametrisation   &parametrisation, const atlas::Grid &grid) {
     return lookup(parametrisation, grid, ".output");
 }
 
 
-const data::MIRField& LandSeaMask::field() const {
+const data::MIRField& Mask::field() const {
     ASSERT(field_.get());
     return *field_;
 }
 
-bool LandSeaMask::cacheable() const {
+bool Mask::cacheable() const {
     return true;
 }
 
-bool LandSeaMask::active() const {
+bool Mask::active() const {
     return true;
 }
 
-std::string LandSeaMask::unique_id() const {
+std::string Mask::uniqueID() const {
     return key_;
 }
 //-----------------------------------------------------------------------------

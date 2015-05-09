@@ -36,7 +36,7 @@ class MIRParametrisation;
 
 namespace lsm {
 
-class LandSeaMask;
+class Mask;
 
 class LSMChooser {
   public:
@@ -60,7 +60,7 @@ class LSMChooser {
 
     // -- Methods
 
-    virtual LandSeaMask *create(const std::string &, const std::string &,
+    virtual Mask *create(const std::string &, const std::string &,
                                 const param::MIRParametrisation &param, const atlas::Grid &grid) const = 0 ;
 
     // -- Overridden methods

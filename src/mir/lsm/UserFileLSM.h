@@ -117,7 +117,7 @@ class UserFileLSM : public LSMChooser {
 
     // -- Class methods
 
-    virtual LandSeaMask *create(const std::string &, const std::string &,
+    virtual Mask *create(const std::string &, const std::string &,
                                 const param::MIRParametrisation &param, const atlas::Grid &grid) const ;
 
 

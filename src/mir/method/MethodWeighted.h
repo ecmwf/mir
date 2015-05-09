@@ -29,7 +29,7 @@ class Grid;
 namespace mir {
 
 namespace lsm {
-class LandSeaMask;
+class LandSeaMasks;
 }
 
 namespace method {
@@ -59,7 +59,7 @@ class MethodWeighted : public Method {
 
     /// Update interpolation weigths matrix to account for field masked values
 
-    void applyMasks(WeightMatrix &W, const lsm::LandSeaMask &, const lsm::LandSeaMask &) const;
+    void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const;
 
     const WeightMatrix &getMatrix(const atlas::Grid &in, const atlas::Grid &out) const;
 

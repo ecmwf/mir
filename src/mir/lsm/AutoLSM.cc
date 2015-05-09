@@ -36,7 +36,7 @@ void AutoLSM::print(std::ostream& out) const {
     out << "AutoLSM[" << name_ << "]";
 }
 
-LandSeaMask *AutoLSM::create(const std::string &name, const std::string &key,
+Mask *AutoLSM::create(const std::string &name, const std::string &key,
                              const param::MIRParametrisation &param, const atlas::Grid &grid) const {
     return new GribFileLSM(name, key, param, grid);
 }

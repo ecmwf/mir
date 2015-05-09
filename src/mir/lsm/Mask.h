@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef LandSeaMask_H
-#define LandSeaMask_H
+#ifndef Mask_H
+#define Mask_H
 
 #include <iosfwd>
 #include <memory>
@@ -46,7 +46,7 @@ class RuntimeParametrisation;
 namespace lsm {
 
 
-class LandSeaMask {
+class Mask {
   public:
 
     // -- Exceptions
@@ -54,11 +54,11 @@ class LandSeaMask {
 
     // -- Contructors
 
-    LandSeaMask(const std::string &name, const std::string &key);
+    Mask(const std::string &name, const std::string &key);
 
     // -- Destructor
 
-    virtual ~LandSeaMask(); // Change to virtual if base class
+    virtual ~Mask(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -69,7 +69,7 @@ class LandSeaMask {
     // -- Methods
 
     virtual bool active() const;
-    virtual std::string unique_id() const;
+    virtual std::string uniqueID() const;
 
     virtual bool cacheable() const;
     virtual const data::MIRField &field() const;
@@ -82,8 +82,8 @@ class LandSeaMask {
 
     // -- Class methods
 
-    static  LandSeaMask &lookupInput(const param::MIRParametrisation &param, const atlas::Grid &grid);
-    static  LandSeaMask &lookupOutput(const param::MIRParametrisation &param, const atlas::Grid &grid);
+    static  Mask &lookupInput(const param::MIRParametrisation &param, const atlas::Grid &grid);
+    static  Mask &lookupOutput(const param::MIRParametrisation &param, const atlas::Grid &grid);
 
   protected:
 
@@ -111,8 +111,8 @@ class LandSeaMask {
 
     // No copy allowed
 
-    LandSeaMask(const LandSeaMask &);
-    LandSeaMask &operator=(const LandSeaMask &);
+    Mask(const Mask &);
+    Mask &operator=(const Mask &);
 
     // -- Members
     // None
@@ -127,12 +127,12 @@ class LandSeaMask {
     // None
 
     // -- Class methods
-    static  LandSeaMask &lookup(const param::MIRParametrisation &param, const atlas::Grid &grid, const std::string& which);
+    static  Mask &lookup(const param::MIRParametrisation &param, const atlas::Grid &grid, const std::string& which);
 
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const LandSeaMask &p) {
+    friend std::ostream &operator<<(std::ostream &s, const Mask &p) {
         p.print(s);
         return s;
     }

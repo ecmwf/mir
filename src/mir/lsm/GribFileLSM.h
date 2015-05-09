@@ -16,7 +16,7 @@
 #ifndef GribFileLSM_H
 #define GribFileLSM_H
 
-#include "mir/lsm/LandSeaMask.h"
+#include "mir/lsm/Mask.h"
 
 #include <iosfwd>
 
@@ -26,7 +26,7 @@ namespace mir {
 namespace lsm {
 
 
-class GribFileLSM : public LandSeaMask {
+class GribFileLSM : public Mask {
   public:
 
 // -- Exceptions
