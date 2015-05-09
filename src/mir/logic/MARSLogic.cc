@@ -84,7 +84,7 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
             }
 
             if (parametrisation_.has("user.rotation")) {
-                plan.add("interpolate.grid2rotated-ll");
+                plan.add("interpolate.grid2rotated-regular-ll");
             }
 
         }
