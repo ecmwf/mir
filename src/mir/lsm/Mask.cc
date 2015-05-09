@@ -63,7 +63,7 @@ class EmptyLandSeaMask : public Mask {
         NOTIMP;
     }
     virtual std::string uniqueID() const {
-        NOTIMP;
+        return "<no-lsm>";
     }
     virtual void print(std::ostream &out) const {
         out << name_;
