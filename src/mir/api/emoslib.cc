@@ -41,7 +41,7 @@ typedef double fortfloat;
 std::auto_ptr<MIRJob> job(0);
 
 
-extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const char *value, fortint, fortint) {
+extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint, fortint) {
 
     eckit::Log::info() << "++++++ intout " << name << std::endl;
 
@@ -152,7 +152,7 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
     return 0;
 }
 
-extern "C" fortint intin_(char *name, fortint *ints, fortfloat *reals, const char *value, fortint, fortint) {
+extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint, fortint) {
 
     eckit::Log::info() << "++++++ intin " << name << std::endl;
 
