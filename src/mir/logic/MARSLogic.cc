@@ -55,20 +55,18 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
     long intermediate_gaussian = 0;
     parametrisation_.get("autoresol", autoresol);
     parametrisation_.get("vod2uv", vod2uv);
-
     parametrisation_.get("intermediate_gaussian", intermediate_gaussian);
 
     if (parametrisation_.has("field.spherical")) {
         if (parametrisation_.has("user.truncation")) {
             plan.add("transform.sh2sh");
         }
-    }
 
-    if (vod2uv) {
-        plan.add("transform.vod2uv");
-    }
 
-    if (parametrisation_.has("field.spherical")) {
+        if (vod2uv) {
+            plan.add("transform.vod2uv");
+        }
+
         if (parametrisation_.has("user.grid")) {
 
             // For now, thar's what we do
@@ -90,6 +88,7 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
             }
 
         }
+
         if (parametrisation_.has("user.reduced")) {
             if (autoresol) {
                 plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
@@ -97,12 +96,14 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
             plan.add("transform.sh2reduced-gg");
 
         }
+
         if (parametrisation_.has("user.regular")) {
             if (autoresol) {
                 plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
             }
             plan.add("transform.sh2regular-gg");
         }
+
         if (parametrisation_.has("user.octahedral")) {
             if (autoresol) {
                 plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
@@ -112,18 +113,37 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
     }
 
     if (parametrisation_.has("field.gridded")) {
+
         if (parametrisation_.has("user.grid")) {
             if (parametrisation_.has("user.rotation")) {
-                plan.add("interpolate.grid2rotated-ll");
+                plan.add("interpolate.grid2rotated-regular-ll");
             } else {
                 plan.add("interpolate.grid2regular-ll");
             }
         }
+
         if (parametrisation_.has("user.reduced")) {
-            plan.add("interpolate.grid2reduced-gg");
+            if (parametrisation_.has("user.rotation")) {
+                plan.add("interpolate.grid2rotated-reduced-gg");
+            } else {
+                plan.add("interpolate.grid2reduced-gg");
+            }
         }
+
         if (parametrisation_.has("user.regular")) {
-            plan.add("interpolate.grid2regular-gg");
+            if (parametrisation_.has("user.rotation")) {
+                plan.add("interpolate.grid2rotated-regular-gg");
+            } else {
+                plan.add("interpolate.grid2regular-gg");
+            }
+        }
+
+        if (parametrisation_.has("user.octahedral")) {
+            if (parametrisation_.has("user.rotation")) {
+                plan.add("interpolate.grid2rotated-octahedral-gg");
+            } else {
+                plan.add("interpolate.grid2octahedral-gg");
+            }
         }
     }
 

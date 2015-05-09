@@ -12,7 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/action/Gridded2RotatedLL.h"
+#include "mir/action/Gridded2RotatedRegular.h"
 
 #include <iostream>
 
@@ -28,15 +28,12 @@ namespace mir {
 namespace action {
 
 
-Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation &parametrisation):
+Gridded2RotatedRegular::Gridded2RotatedRegular(const param::MIRParametrisation &parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
+
+    ASSERT(parametrisation_.get("user.regular", N_));
+
     std::vector<double> value;
-
-    ASSERT(parametrisation_.get("user.grid", value));
-    ASSERT(value.size() == 2);
-
-    increments_ = util::Increments(value[0], value[1]);
-
     ASSERT(parametrisation_.get("user.rotation", value));
     ASSERT(value.size() == 2);
 
@@ -44,24 +41,25 @@ Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation &parametris
 }
 
 
-Gridded2RotatedLL::~Gridded2RotatedLL() {
+Gridded2RotatedRegular::~Gridded2RotatedRegular() {
 }
 
 
-void Gridded2RotatedLL::print(std::ostream &out) const {
-    out << "Gridded2RotatedLL[increments=" << increments_ << ",rotation" << rotation_ << "]";
+void Gridded2RotatedRegular::print(std::ostream &out) const {
+    out << "Gridded2RotatedRegular[N=" << N_ << ",rotation=" << rotation_ << "]";
 }
 
 
-repres::Representation *Gridded2RotatedLL::outputRepresentation(const repres::Representation *inputRepres) const {
-    return new repres::RotatedLL(
-               util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
-               increments_, rotation_);
+repres::Representation *Gridded2RotatedRegular::outputRepresentation(const repres::Representation *inputRepres) const {
+    NOTIMP;
+    // return new repres::RotatedLL(
+    //            util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
+    //            increments_, rotation_);
 }
 
 
 namespace {
-static ActionBuilder< Gridded2RotatedLL > grid2grid("interpolate.grid2rotated-regular-ll");
+static ActionBuilder< Gridded2RotatedRegular > grid2grid("interpolate.grid2rotated-regular-gg");
 }
 
 

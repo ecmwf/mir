@@ -42,6 +42,12 @@ list(
     action/Gridded2RegularLL.h
     action/Gridded2RotatedLL.cc
     action/Gridded2RotatedLL.h
+    action/Gridded2RotatedOctahedral.cc
+    action/Gridded2RotatedOctahedral.h
+    action/Gridded2RotatedReduced.cc
+    action/Gridded2RotatedReduced.h
+    action/Gridded2RotatedRegular.cc
+    action/Gridded2RotatedRegular.h
     action/Sh2GriddedTransform.cc
     action/Sh2GriddedTransform.h
     action/Sh2Octahedral.cc
@@ -59,6 +65,7 @@ list(
     api/MIRJob.cc
     api/MIRJob.h
     api/emoslib.cc
+    api/emoslib.h
     data/MIRField.cc
     data/MIRField.h
     input/DummyInput.cc
@@ -111,8 +118,7 @@ list(
     method/PseudoLaplace.h
     method/WeightCache.cc
     method/WeightCache.h
-    method/redist/Redist.cc
-    method/redist/Redist.h
+    method/WeightMatrix.h
     output/DummyOutput.cc
     output/DummyOutput.h
     output/GribFileOutput.cc

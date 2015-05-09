@@ -251,13 +251,14 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMask &imask, 
     eckit::Log::info() << "======== MethodWeighted::applyBothMask(" << imask << "," << omask << ")" << std::endl;
 
     if(imask.active() ) {
-        const data::MIRField &imask_field = imask.field(); ASSERT(!imask_field.hasMissing());
+        const data::MIRField &imask_field = imask.field();
+        ASSERT(!imask_field.hasMissing());
         const std::vector<double>& lsm = imask_field.values(0);
 
         // Do something with input lsm
     }
 
-     if(omask.active() ) {
+    if(omask.active() ) {
         const data::MIRField &omask_field = omask.field();
 
         // Do something with input lsm

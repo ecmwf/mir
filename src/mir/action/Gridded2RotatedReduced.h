@@ -13,20 +13,18 @@
 /// @date Apr 2015
 
 
-#ifndef GribFileLSM_H
-#define GribFileLSM_H
+#ifndef Gridded2RotatedReduced_H
+#define Gridded2RotatedReduced_H
 
-#include "mir/lsm/LandSeaMask.h"
-
-#include <iosfwd>
-
-
+#include "mir/action/Gridded2GriddedInterpolation.h"
+#include "mir/util/Increments.h"
+#include "mir/util/Rotation.h"
 
 namespace mir {
-namespace lsm {
+namespace action {
 
 
-class GribFileLSM : public LandSeaMask {
+class Gridded2RotatedReduced : public Gridded2GriddedInterpolation {
   public:
 
 // -- Exceptions
@@ -34,13 +32,11 @@ class GribFileLSM : public LandSeaMask {
 
 // -- Contructors
 
-    GribFileLSM(const std::string& name, const std::string& key, const param::MIRParametrisation& param, const atlas::Grid& grid);
-    GribFileLSM(const std::string& name, const std::string& key,
-                const param::MIRParametrisation& param, const atlas::Grid& grid, const std::string& path);
+    Gridded2RotatedReduced(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~GribFileLSM(); // Change to virtual if base class
+    virtual ~Gridded2RotatedReduced(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -49,8 +45,7 @@ class GribFileLSM : public LandSeaMask {
     // None
 
 // -- Methods
-
-
+    // None
 
 // -- Overridden methods
     // None
@@ -64,11 +59,11 @@ class GribFileLSM : public LandSeaMask {
   protected:
 
 // -- Members
+    // None
 
 // -- Methods
 
-
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
     // None
@@ -83,18 +78,20 @@ class GribFileLSM : public LandSeaMask {
 
 // No copy allowed
 
-    GribFileLSM(const GribFileLSM&);
-    GribFileLSM& operator=(const GribFileLSM&);
+    Gridded2RotatedReduced(const Gridded2RotatedReduced&);
+    Gridded2RotatedReduced& operator=(const Gridded2RotatedReduced&);
 
 // -- Members
-    // None
+    size_t N_;
+    util::Rotation rotation_;
 
 // -- Methods
-
-    void init(const param::MIRParametrisation& param, const atlas::Grid& grid, const std::string& path);
+    // None
 
 // -- Overridden methods
 
+    // From Gridded2GriddedInterpolation
+    virtual repres::Representation* outputRepresentation(const repres::Representation* inputRepres) const;
 
 // -- Class members
     // None
@@ -104,12 +101,13 @@ class GribFileLSM : public LandSeaMask {
 
 // -- Friends
 
+    //friend ostream& operator<<(ostream& s,const Gridded2RotatedReduced& p)
+    //	{ p.print(s); return s; }
 
 };
 
 
-
-}  // namespace logic
+}  // namespace action
 }  // namespace mir
 #endif
 

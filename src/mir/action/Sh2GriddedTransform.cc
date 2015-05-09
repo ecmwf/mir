@@ -85,11 +85,9 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
         trans_set_trunc(&trans, truncation);
 
-        if(latlon)
-        {
+        if(latlon) {
             trans_set_resol_lonlat(&trans,latlon->nlon(), latlon->nlat());
-        }
-        else {
+        } else {
             const std::vector<int> &points_per_latitudes = reduced->npts_per_lat();
             trans_set_resol(&trans, points_per_latitudes.size(), &points_per_latitudes[0]);
         }

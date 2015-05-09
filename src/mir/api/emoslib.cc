@@ -115,7 +115,7 @@ extern "C" fortint intout_(char *name, fortint *ints, fortfloat *reals, const ch
         }
 
         if (strcasecmp(name, "accuracy") == 0) {
-            job->set("accuracy", value);
+            job->set("accuracy", long(ints[0]));
             return 0;
         }
 
