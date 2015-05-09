@@ -86,16 +86,13 @@ using eckit::AutoClose;
 using eckit::PathName;
 using atlas::Grid;
 
-WeightCache::WeightCache() : CacheManager("weights", mir_version_str()) {
+WeightCache::WeightCache() : CacheManager("mir/weights") {
 }
 
-PathName WeightCache::entry(const key_t &key) const {
-  PathName base_path = Resource<PathName>("$MIR_CACHE_DIR;MirCacheDir", "/tmp/cache/mir");
-  PathName f = base_path / name() / version() / PathName(key + ".cache");
-  return f;
-}
+const char* WeightCache::version() const { return mir_version_str(); }
+const char* WeightCache::extension() const { return ".mat"; }
 
-std::string WeightCache::generateKey(const std::string &method,
+std::string WeightCache::generate_key(const std::string &method,
                                      const atlas::Grid &in,
                                      const atlas::Grid &out,
                                      const lsm::LandSeaMask &maskin,

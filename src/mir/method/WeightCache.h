@@ -42,7 +42,7 @@ class WeightCache : public eckit::CacheManager {
     /// @returns true if insertion successful cache
     void insert(const std::string &key, const WeightMatrix &W);
 
-    std::string generateKey(const std::string &method,
+    std::string generate_key(const std::string &method,
                             const atlas::Grid &in,
                             const atlas::Grid &out,
                             const lsm::LandSeaMask &maskin,
@@ -50,8 +50,8 @@ class WeightCache : public eckit::CacheManager {
 
  private:
 
-    /// @returns the path of the cache entry given the key
-    virtual eckit::PathName entry(const key_t &key) const;
+    virtual const char* version() const;
+    virtual const char* extension() const;
 
 };
 

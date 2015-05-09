@@ -68,7 +68,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     eckit::Log::info() << "++++ Input LSM is " << mask_in << std::endl;
     eckit::Log::info() << "++++ Output LSM is " << mask_out << std::endl;
 
-    std::string key = cache_.generateKey(name(), in, out, mask_in, mask_out);
+    std::string key = cache_.generate_key(name(), in, out, mask_in, mask_out);
 
     std::map<std::string, WeightMatrix>::iterator j = matrix_cache.find(key);
     if (j != matrix_cache.end()) {
