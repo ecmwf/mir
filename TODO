@@ -37,6 +37,8 @@ IN ATLAS:
 - Create a Tesselation interface, with multiple implementations (Delaunay, ReducedGrid, etc)
 - atlas gmsh writer must write with DataHandle
   CacheMesh should take tesselation method into account
+- Speed-up mesh loading
+   * use gmsh binary format + DataHandle/BufferedHandle
 
 IN TRANS
 - Check if transi can be called with a regular gaussian as output
