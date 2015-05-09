@@ -14,12 +14,15 @@
 
 #include "mir/lsm/Mask.h"
 
+#include <memory>
+
 #include "atlas/Grid.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "mir/lsm/NoneLSM.h"
 #include "mir/param/MIRParametrisation.h"
+
 
 namespace mir {
 namespace lsm {
