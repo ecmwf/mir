@@ -13,12 +13,11 @@
 /// @date Apr 2015
 
 
-#include "eckit/exception/Exceptions.h"
 
 #include "mir/lsm/AutoLSM.h"
-#include "mir/param/MIRParametrisation.h"
+
+#include <iostream>
 #include "mir/lsm/GribFileLSM.h"
-#include "atlas/Grid.h"
 
 namespace mir {
 namespace lsm {
@@ -36,9 +35,11 @@ void AutoLSM::print(std::ostream& out) const {
     out << "AutoLSM[" << name_ << "]";
 }
 
-LandSeaMask *AutoLSM::create(const std::string &name, const std::string &key,
-                             const param::MIRParametrisation &param, const atlas::Grid &grid) const {
-    return new GribFileLSM(name, key, param, grid);
+Mask *AutoLSM::create(const std::string &name,
+                      const std::string &key,
+                      const param::MIRParametrisation &parametrisation,
+                      const atlas::Grid &grid) const {
+    return new GribFileLSM(name, key, parametrisation, grid);
 }
 
 

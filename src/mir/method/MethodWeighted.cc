@@ -21,7 +21,7 @@
 #include <map>
 #include <string>
 
-#include "eckit/log/BigNum.h"
+// #include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
@@ -31,13 +31,13 @@
 #include "atlas/Grid.h"
 
 #include "mir/data/MIRField.h"
-#include "mir/lsm/LandSeaMask.h"
-#include "mir/method/WeightCache.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
+#include "mir/lsm/LandSeaMasks.h"
+// #include "mir/method/WeightCache.h"
+// #include "mir/param/MIRParametrisation.h"
+// #include "mir/repres/Representation.h"
 
 
-using atlas::Grid;
+// using atlas::Grid;
 
 static eckit::Mutex local_mutex;
 
@@ -62,46 +62,55 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    const lsm::LandSeaMask &mask_in = lsm::LandSeaMask::lookupInput(parametrisation_, in);
-    const lsm::LandSeaMask &mask_out = lsm::LandSeaMask::lookupOutput(parametrisation_, out);
+    const lsm::LandSeaMasks masks = lsm::LandSeaMasks::lookup(parametrisation_, in, out);
 
-    eckit::Log::info() << "++++ Input LSM is " << mask_in << std::endl;
-    eckit::Log::info() << "++++ Output LSM is " << mask_out << std::endl;
+    eckit::Log::info() << "++++ LSM masks " << masks << std::endl;
 
-    std::string key = cache_.generate_key( *this, in, out, mask_in, mask_out);
+    std::stringstream os;
+    os << name() << "-" << in.unique_id() << "-" << out.unique_id();
 
-    std::map<std::string, WeightMatrix>::iterator j = matrix_cache.find(key);
+    std::string key_no_masks = os.str();
+
+    os << "-" << masks.uniqueID();
+    std::string key_with_masks = os.str();
+
+    std::map<std::string, WeightMatrix>::iterator j = matrix_cache.find(key_with_masks);
     if (j != matrix_cache.end()) {
         return (*j).second;
     }
+
+    std::string cache_key;
+    if (masks.active() && masks.cacheable()) {
+        cache_key = key_with_masks;
+    } else {
+        cache_key = key_no_masks;
+    }
+
+    // Shorten the key, to avoid "file name to long" errors
+    eckit::MD5 md5;
+    md5.add(cache_key);
+    cache_key = md5.digest();
 
     // calculate weights matrix, apply mask if necessary
 
     WeightMatrix W(out.npts(), in.npts());
 
-    if (!cache_.retrieve(key, W)) {
-
-        compute_weights(in, out, W);
-
-        // TODO: Apply LSMs
-
-        if (mask_in.active() && mask_out.active()) {
-            applyBothMask(W, mask_in, mask_out);
-        } else if (mask_in.active()) {
-            applyInputMask(W, mask_in);
-        } else if (mask_out.active()) {
-            applyOutputMask(W, mask_out);
+    if (!cache_.retrieve(cache_key, W)) {
+        computeWeights(in, out, W);
+        if (masks.active() && masks.cacheable()) {
+            applyMasks(W, masks);
         }
-
-        // Mask should be considered in caching
-        // applyMask(W, in, out);
-
-        cache_.insert(key, W);
+        cache_.insert(cache_key, W);
     }
 
-    std::swap(matrix_cache[key], W);
+    // If LSM not cacheabe, e.g. user provided, we apply the mask after
+    if (masks.active() && !masks.cacheable())  {
+        applyMasks(W, masks);
+    }
 
-    return matrix_cache[key];
+    std::swap(matrix_cache[key_with_masks], W);
+
+    return matrix_cache[key_with_masks];
 }
 
 
@@ -147,7 +156,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 }
 
 
-void MethodWeighted::compute_weights(const Grid &in, const Grid &out, WeightMatrix &W) const {
+void MethodWeighted::computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const {
     if (in.same(out))
         W.setIdentity();        // grids are the same, use identity matrix
     else
@@ -204,10 +213,10 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
 
         const bool
-        weights_zero = eckit::FloatCompare::is_equal(sum,0.),
-        weights_one  = eckit::FloatCompare::is_equal(sum,1.);
+        weights_zero = eckit::FloatCompare::is_equal(sum, 0.),
+        weights_one  = eckit::FloatCompare::is_equal(sum, 1.);
 
-        if ( (Ncol!=Nmiss) && !weights_zero && !weights_one) {
+        if ( (Ncol != Nmiss) && !weights_zero && !weights_one) {
             std::cout << "  i=" << i << "  weights_zero=" << weights_zero << "  weights_one=" << weights_one << std::endl;
         }
 
@@ -253,25 +262,25 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 }
 
 
-void MethodWeighted::applyInputMask(WeightMatrix &W, const lsm::LandSeaMask &imask) const {
-    eckit::Log::info() << "======== MethodWeighted::applyInputMask(" << imask << ")" << std::endl;
+void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks) const {
+    eckit::Log::info() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
+    ASSERT(masks.active());
 
-    const data::MIRField &imask_field = imask.field();
+
+    const data::MIRField &imask_field = masks.inputField();
+    const data::MIRField &omask_field = masks.inputField();
+
+    ASSERT(!imask_field.hasMissing());
+    ASSERT(!omask_field.hasMissing());
+
+
+    const std::vector<double>& mask_in = imask_field.values(0);
+    const std::vector<double>& mask_out = omask_field.values(0);
+
+
+    // TODO
 }
 
-
-void MethodWeighted::applyOutputMask(WeightMatrix &W, const lsm::LandSeaMask &omask) const {
-    eckit::Log::info() << "======== MethodWeighted::applyOutputMask("  << omask << ")" << std::endl;
-
-    const data::MIRField &omask_field = omask.field();
-}
-
-
-void MethodWeighted::applyBothMask(WeightMatrix &W, const lsm::LandSeaMask &imask, const lsm::LandSeaMask &omask) const {
-    eckit::Log::info() << "======== MethodWeighted::applyBothMask(" << imask << "," << omask << ")" << std::endl;
-    const data::MIRField &imask_field = imask.field();
-    const data::MIRField &omask_field = omask.field();
-}
 
 
 }  // namespace method

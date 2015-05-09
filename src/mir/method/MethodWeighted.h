@@ -16,25 +16,23 @@
 #ifndef mir_method_MethodWeighted_H
 #define mir_method_MethodWeighted_H
 
-#include <string>
+// #include <string>
 
 #include "mir/method/Method.h"
 #include "mir/method/WeightCache.h"
 #include "mir/method/WeightMatrix.h"
 
 namespace atlas { class Grid; }
+namespace mir { namespace lsm { class LandSeaMasks; }}
 
 namespace mir {
-
-namespace lsm { class LandSeaMask; }
-
 namespace method {
 
 //----------------------------------------------------------------------------------------------------------------------
 
 class MethodWeighted : public Method {
 
-    mutable WeightCache cache_;
+    WeightCache cache_;
 
   public:
 
@@ -54,15 +52,14 @@ class MethodWeighted : public Method {
     WeightMatrix applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const;
 
     /// Update interpolation weigths matrix to account for field masked values
-    void applyInputMask(WeightMatrix &W, const lsm::LandSeaMask &) const;
-    void applyOutputMask(WeightMatrix &W, const lsm::LandSeaMask &) const;
-    void applyBothMask(WeightMatrix &W, const lsm::LandSeaMask &, const lsm::LandSeaMask &) const;
+
+    void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const;
 
     const WeightMatrix &getMatrix(const atlas::Grid &in, const atlas::Grid &out) const;
 
   private:
 
-    void compute_weights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
+    void computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
 
     friend std::ostream &operator<<(std::ostream &s, const MethodWeighted &p) {
         p.print(s);

@@ -14,9 +14,10 @@
 /// @date Apr 2015
 
 
-#include "eckit/exception/Exceptions.h"
+#include "GribFileLSM.h"
 
-#include "mir/lsm/GribFileLSM.h"
+#include "eckit/filesystem/PathName.h"
+
 #include "mir/input/GribFileInput.h"
 #include "mir/data/MIRField.h"
 #include "mir/method/Method.h"
@@ -29,17 +30,16 @@ namespace mir {
 namespace lsm {
 
 GribFileLSM::GribFileLSM(const std::string &name, const std::string &key, const param::MIRParametrisation &param,
-    const atlas::Grid &grid):
+                         const atlas::Grid &grid):
 
-    LandSeaMask(name, key) {
+    Mask(name, key) {
         path_ = "~mir/etc/lsm.N640.grib",
-        init(param, grid, path_);
+	    init(param, grid, path_);
 }
 
 GribFileLSM::GribFileLSM(const std::string &name, const std::string &key, const param::MIRParametrisation &param,
-    const atlas::Grid &grid, const std::string& path):
-    LandSeaMask(name, key + path)
-{
+                         const atlas::Grid &grid, const std::string& path):
+    Mask(name, key + path) {
     init(param, grid, path);
 }
 

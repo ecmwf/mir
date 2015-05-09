@@ -16,16 +16,18 @@
 #ifndef GribFileLSM_H
 #define GribFileLSM_H
 
-#include "mir/lsm/LandSeaMask.h"
-
 #include <iosfwd>
 
 #include "eckit/filesystem/PathName.h"
 
+#include "mir/lsm/Mask.h"
+
+namespace mir { namespace param { class MIRParametrisation; }}
+
 namespace mir {
 namespace lsm {
 
-class GribFileLSM : public LandSeaMask {
+class GribFileLSM : public Mask {
 
   eckit::PathName path_;
 
@@ -36,9 +38,10 @@ class GribFileLSM : public LandSeaMask {
 
 // -- Contructors
 
-    GribFileLSM(const std::string& name, const std::string& key, const param::MIRParametrisation& param, const atlas::Grid& grid);
     GribFileLSM(const std::string& name, const std::string& key,
-        const param::MIRParametrisation& param, const atlas::Grid& grid, const std::string& path);
+                const param::MIRParametrisation& parametrisation, const atlas::Grid& grid);
+    GribFileLSM(const std::string& name, const std::string& key,
+                const param::MIRParametrisation& parametrisation, const atlas::Grid& grid, const std::string& path);
 
 // -- Destructor
 
@@ -92,7 +95,7 @@ class GribFileLSM : public LandSeaMask {
 
 // -- Methods
 
-    void init(const param::MIRParametrisation& param, const atlas::Grid& grid, const std::string& path);
+    void init(const param::MIRParametrisation& parametrisation, const atlas::Grid& grid, const std::string& path);
 
 // -- Overridden methods
 

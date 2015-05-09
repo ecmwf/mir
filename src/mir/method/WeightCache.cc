@@ -24,7 +24,6 @@
 #include "eckit/log/Timer.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
-#include "eckit/utils/MD5.h"
 
 #include "atlas/Grid.h"
 
@@ -62,7 +61,6 @@ using eckit::Resource;
 using eckit::FileHandle;
 using eckit::AutoClose;
 using eckit::PathName;
-using atlas::Grid;
 
 WeightCache::WeightCache() : CacheManager("mir/weights") {
 }
@@ -97,7 +95,7 @@ void WeightCache::print(std::ostream &s) const
     << "]";
 }
 
-void WeightCache::insert(const std::string &key, const WeightMatrix &W) {
+void WeightCache::insert(const std::string &key, const WeightMatrix &W) const {
 
     typedef WeightMatrix::Index Index;
 

@@ -16,27 +16,16 @@
 #ifndef LSMChooser_H
 #define LSMChooser_H
 
-#include <iosfwd>
-#include <memory>
 #include <string>
-#include <vector>
+#include <iosfwd>
 
-// #include "mir/data/MIRField.h"
-
-namespace atlas {
-class Grid;
-}
-
+namespace atlas { class Grid; }
+namespace mir { namespace param { class MIRParametrisation; }}
 
 namespace mir {
-
-namespace param {
-class MIRParametrisation;
-}
-
 namespace lsm {
 
-class LandSeaMask;
+class Mask;
 
 class LSMChooser {
   public:
@@ -60,8 +49,9 @@ class LSMChooser {
 
     // -- Methods
 
-    virtual LandSeaMask *create(const std::string &, const std::string &,
-                                const param::MIRParametrisation &param, const atlas::Grid &grid) const = 0 ;
+    virtual Mask *create(const std::string &name, const std::string &key,
+                         const param::MIRParametrisation &parametrisation,
+                         const atlas::Grid &grid) const = 0 ;
 
     // -- Overridden methods
     // None
