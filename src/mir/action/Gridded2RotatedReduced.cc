@@ -22,7 +22,7 @@
 #include "mir/repres/RotatedLL.h"
 
 #include "mir/param/MIRParametrisation.h"
-
+#include "mir/repres/reduced/RotatedClassic.h"
 
 namespace mir {
 namespace action {
@@ -30,7 +30,7 @@ namespace action {
 
 Gridded2RotatedReduced::Gridded2RotatedReduced(const param::MIRParametrisation &parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
-    ASSERT(parametrisation_.get("user.regular", N_));
+    ASSERT(parametrisation_.get("user.reduced", N_));
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.rotation", value));
@@ -50,10 +50,7 @@ void Gridded2RotatedReduced::print(std::ostream &out) const {
 
 
 repres::Representation *Gridded2RotatedReduced::outputRepresentation(const repres::Representation *inputRepres) const {
-    NOTIMP;
-    // return new repres::RotatedLL(
-    //            util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
-    //            increments_, rotation_);
+    return new repres::reduced::RotatedClassic(N_, util::BoundingBox(), rotation_);
 }
 
 

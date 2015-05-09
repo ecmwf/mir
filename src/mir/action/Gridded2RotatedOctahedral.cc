@@ -22,6 +22,7 @@
 #include "mir/repres/RotatedLL.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/reduced/RotatedOctahedral.h"
 
 
 namespace mir {
@@ -31,7 +32,7 @@ namespace action {
 Gridded2RotatedOctahedral::Gridded2RotatedOctahedral(const param::MIRParametrisation &parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
 
-    ASSERT(parametrisation_.get("user.regular", N_));
+    ASSERT(parametrisation_.get("user.octahedral", N_));
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.rotation", value));
@@ -51,15 +52,12 @@ void Gridded2RotatedOctahedral::print(std::ostream &out) const {
 
 
 repres::Representation *Gridded2RotatedOctahedral::outputRepresentation(const repres::Representation *inputRepres) const {
-    NOTIMP;
-    // return new repres::RotatedLL(
-    //            util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
-    //            increments_, rotation_);
+    return new repres::reduced::RotatedOctahedral(N_, util::BoundingBox(), rotation_);
 }
 
 
 namespace {
-static ActionBuilder< Gridded2RotatedOctahedral > grid2grid("interpolate.grid2rotated-octahedral");
+static ActionBuilder< Gridded2RotatedOctahedral > grid2grid("interpolate.grid2rotated-octahedral-gg");
 }
 
 

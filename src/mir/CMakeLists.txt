@@ -32,6 +32,8 @@ list(
     action/FrameFilter.h
     action/Gridded2GriddedInterpolation.cc
     action/Gridded2GriddedInterpolation.h
+    action/Gridded2Octahedral.cc
+    action/Gridded2Octahedral.h
     action/Gridded2ReducedGG.cc
     action/Gridded2ReducedGG.h
     action/Gridded2ReducedLL.cc

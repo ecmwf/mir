@@ -12,43 +12,40 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/action/Sh2Octahedral.h"
+#include "mir/action/Gridded2Octahedral.h"
 
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/reduced/ReducedOctahedral.h"
-
+#include "mir/param/MIRParametrisation.h"
 
 namespace mir {
 namespace action {
 
 
-Sh2Octahedral::Sh2Octahedral(const param::MIRParametrisation& parametrisation):
-    Sh2GriddedTransform(parametrisation) {
-
+Gridded2Octahedral::Gridded2Octahedral(const param::MIRParametrisation& parametrisation):
+    Gridded2GriddedInterpolation(parametrisation) {
     ASSERT(parametrisation_.get("user.octahedral", N_));
-
 }
 
 
-Sh2Octahedral::~Sh2Octahedral() {
+Gridded2Octahedral::~Gridded2Octahedral() {
 }
 
 
-void Sh2Octahedral::print(std::ostream& out) const {
-    out << "Sh2Octahedral[N=" << N_ << "]";
+void Gridded2Octahedral::print(std::ostream& out) const {
+    out << "Gridded2Octahedral[N=" << N_ << "]";
 }
 
 
-repres::Representation* Sh2Octahedral::outputRepresentation(const repres::Representation* inputRepres) const {
+repres::Representation* Gridded2Octahedral::outputRepresentation(const repres::Representation* inputRepres) const {
     return new repres::reduced::ReducedOctahedral(N_);
 }
 
 
 namespace {
-static ActionBuilder< Sh2Octahedral > grid2grid("transform.sh2octahedral-gg");
+static ActionBuilder< Gridded2Octahedral > grid2grid("interpolate.grid2octahedral-gg");
 }
 
 

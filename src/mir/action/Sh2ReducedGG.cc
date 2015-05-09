@@ -18,7 +18,7 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/ReducedGGClassic.h"
+#include "mir/repres/reduced/ReducedClassic.h"
 
 
 namespace mir {
@@ -43,7 +43,7 @@ void Sh2ReducedGG::print(std::ostream& out) const {
 
 
 repres::Representation* Sh2ReducedGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    return new repres::ReducedGGClassic(N_);
+    return new repres::reduced::ReducedClassic(N_);
 }
 
 
