@@ -31,7 +31,6 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/repres/SphericalHarmonics.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"

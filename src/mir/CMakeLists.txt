@@ -20,202 +20,157 @@ configure_file( api/mir_version.cc.in  api/mir_version.cc )
 
 list(
   APPEND mir_srcs
-    action/Action.cc
-    action/Action.h
-    action/ActionPlan.cc
-    action/ActionPlan.h
-    action/AreaCropper.cc
-    action/AreaCropper.h
-    action/BitmapFilter.cc
-    action/BitmapFilter.h
-    action/FrameFilter.cc
-    action/FrameFilter.h
-    action/Gridded2GriddedInterpolation.cc
-    action/Gridded2GriddedInterpolation.h
-    action/Gridded2Octahedral.cc
-    action/Gridded2Octahedral.h
-    action/Gridded2ReducedGG.cc
-    action/Gridded2ReducedGG.h
-    action/Gridded2ReducedLL.cc
-    action/Gridded2ReducedLL.h
-    action/Gridded2RegularGG.cc
-    action/Gridded2RegularGG.h
-    action/Gridded2RegularLL.cc
-    action/Gridded2RegularLL.h
-    action/Gridded2RotatedLL.cc
-    action/Gridded2RotatedLL.h
-    action/Gridded2RotatedOctahedral.cc
-    action/Gridded2RotatedOctahedral.h
-    action/Gridded2RotatedReduced.cc
-    action/Gridded2RotatedReduced.h
-    action/Gridded2RotatedRegular.cc
-    action/Gridded2RotatedRegular.h
-    action/Sh2GriddedTransform.cc
-    action/Sh2GriddedTransform.h
-    action/Sh2Octahedral.cc
-    action/Sh2Octahedral.h
-    action/Sh2ReducedGG.cc
-    action/Sh2ReducedGG.h
-    action/Sh2RegularGG.cc
-    action/Sh2RegularGG.h
-    action/Sh2RegularLL.cc
-    action/Sh2RegularLL.h
-    action/Sh2ShTransform.cc
-    action/Sh2ShTransform.h
-    action/VOD2UVTransform.cc
-    action/VOD2UVTransform.h
-    api/emoslib.cc
-    api/emoslib.h
-    api/MIRJob.cc
-    api/MIRJob.h
-    data/MIRField.cc
-    data/MIRField.h
-    input/DummyInput.cc
-    input/DummyInput.h
-    input/GribFileInput.cc
-    input/GribFileInput.h
-    input/GribInput.cc
-    input/GribInput.h
-    input/GribMemoryInput.cc
-    input/GribMemoryInput.h
-    input/GribStreamInput.cc
-    input/GribStreamInput.h
-    input/MIRInput.cc
-    input/MIRInput.h
-    input/NetcdfFileInput.cc
-    input/NetcdfFileInput.h
-    input/VODInput.cc
-    input/VODInput.h
-    logic
-    logic/AutoReduced.cc
-    logic/AutoReduced.h
-    logic/AutoResol.cc
-    logic/AutoResol.h
-    logic/MARSLogic.cc
-    logic/MARSLogic.h
-    logic/MIRLogic.cc
-    logic/MIRLogic.h
-    logic/ToolLogic.cc
-    logic/ToolLogic.h
-    lsm/AutoLSM.cc
-    lsm/AutoLSM.h
-    lsm/GribFileLSM.cc
-    lsm/GribFileLSM.h
-    lsm/LandSeaMasks.cc
-    lsm/LandSeaMasks.h
-    lsm/LSMChooser.cc
-    lsm/LSMChooser.h
-    lsm/Mask.cc
-    lsm/Mask.h
-    lsm/NoneLSM.cc
-    lsm/NoneLSM.h
-    lsm/UserFileLSM.cc
-    lsm/UserFileLSM.h
-    method/Bilinear.cc
-    method/Bilinear.h
-    method/FiniteElement.cc
-    method/FiniteElement.h
-    method/KNearest.cc
-    method/KNearest.h
-    method/Method.cc
-    method/Method.h
-    method/MethodWeighted.cc
-    method/MethodWeighted.h
-    method/PseudoLaplace.cc
-    method/PseudoLaplace.h
-    method/redist/Redist.cc
-    method/redist/Redist.h
-    method/WeightCache.cc
-    method/WeightCache.h
-    method/WeightMatrix.h
-    output/DummyOutput.cc
-    output/DummyOutput.h
-    output/GribFileOutput.cc
-    output/GribFileOutput.h
-    output/GribMemoryOutput.cc
-    output/GribMemoryOutput.h
-    output/GribOutput.cc
-    output/GribOutput.h
-    output/GribStreamOutput.cc
-    output/GribStreamOutput.h
-    output/MIROutput.cc
-    output/MIROutput.h
-    output/UVOutput.cc
-    output/UVOutput.h
-    param/DelayedParametrisation.cc
-    param/DelayedParametrisation.h
-    param/FieldParametrisation.cc
-    param/FieldParametrisation.h
-    param/MIRArgs.cc
-    param/MIRArgs.h
-    param/MIRCombinedParametrisation.cc
-    param/MIRCombinedParametrisation.h
-    param/MIRConfiguration.cc
-    param/MIRConfiguration.h
-    param/MIRDefaults.cc
-    param/MIRDefaults.h
-    param/MIRParametrisation.cc
-    param/MIRParametrisation.h
-    param/RuntimeParametrisation.cc
-    param/RuntimeParametrisation.h
-    param/SimpleParametrisation.cc
-    param/SimpleParametrisation.h
-    repres/Gridded.cc
-    repres/Gridded.h
-    repres/LatLon.cc
-    repres/LatLon.h
-    repres/ReducedLL.cc
-    repres/ReducedLL.h
-    repres/RegularGG.cc
-    repres/RegularGG.h
-    repres/RegularLL.cc
-    repres/RegularLL.h
-    repres/Representation.cc
-    repres/Representation.h
-    repres/RotatedLL.cc
-    repres/RotatedLL.h
-    repres/SphericalHarmonics.cc
-    repres/SphericalHarmonics.h
-    repres/unsupported/Albers.cc
-    repres/unsupported/Albers.h
-    repres/unsupported/AzimuthRange.cc
-    repres/unsupported/AzimuthRange.h
-    repres/unsupported/EquatorialAzimuthalEquidistant.cc
-    repres/unsupported/EquatorialAzimuthalEquidistant.h
-    repres/unsupported/IrregularLatlon.cc
-    repres/unsupported/IrregularLatlon.h
-    repres/unsupported/Lambert.cc
-    repres/unsupported/Lambert.h
-    repres/unsupported/LambertAzimuthalEqualArea.cc
-    repres/unsupported/LambertAzimuthalEqualArea.h
-    repres/unsupported/Mercator.cc
-    repres/unsupported/Mercator.h
-    repres/unsupported/PolarStereographic.cc
-    repres/unsupported/PolarStereographic.h
-    repres/unsupported/RotatedGG.cc
-    repres/unsupported/RotatedGG.h
-    repres/unsupported/RotatedSH.cc
-    repres/unsupported/RotatedSH.h
-    repres/unsupported/SpaceView.cc
-    repres/unsupported/SpaceView.h
-    repres/unsupported/StretchedGG.cc
-    repres/unsupported/StretchedGG.h
-    repres/unsupported/StretchedLL.cc
-    repres/unsupported/StretchedLL.h
-    repres/unsupported/StretchedRotatedGG.cc
-    repres/unsupported/StretchedRotatedGG.h
-    repres/unsupported/StretchedRotatedLL.cc
-    repres/unsupported/StretchedRotatedLL.h
-    repres/unsupported/StretchedRotatedSH.cc
-    repres/unsupported/StretchedRotatedSH.h
-    repres/unsupported/StretchedSH.cc
-    repres/unsupported/StretchedSH.h
-    repres/unsupported/TransverseMercator.cc
-    repres/unsupported/TransverseMercator.h
-    repres/unsupported/TriangularGrid.cc
-    repres/unsupported/TriangularGrid.h
-    repres/unsupported/UnstructuredGrid.cc
-    repres/unsupported/UnstructuredGrid.h
+action/Action.cc
+action/Action.h
+action/ActionPlan.cc
+action/ActionPlan.h
+action/AreaCropper.cc
+action/AreaCropper.h
+action/BitmapFilter.cc
+action/BitmapFilter.h
+action/FrameFilter.cc
+action/FrameFilter.h
+action/Gridded2GriddedInterpolation.cc
+action/Gridded2GriddedInterpolation.h
+action/Gridded2Octahedral.cc
+action/Gridded2Octahedral.h
+action/Gridded2ReducedGG.cc
+action/Gridded2ReducedGG.h
+action/Gridded2ReducedLL.cc
+action/Gridded2ReducedLL.h
+action/Gridded2RegularGG.cc
+action/Gridded2RegularGG.h
+action/Gridded2RegularLL.cc
+action/Gridded2RegularLL.h
+action/Gridded2RotatedLL.cc
+action/Gridded2RotatedLL.h
+action/Gridded2RotatedOctahedral.cc
+action/Gridded2RotatedOctahedral.h
+action/Gridded2RotatedReduced.cc
+action/Gridded2RotatedReduced.h
+action/Gridded2RotatedRegular.cc
+action/Gridded2RotatedRegular.h
+action/Sh2GriddedTransform.cc
+action/Sh2GriddedTransform.h
+action/Sh2Octahedral.cc
+action/Sh2Octahedral.h
+action/Sh2ReducedGG.cc
+action/Sh2ReducedGG.h
+action/Sh2RegularGG.cc
+action/Sh2RegularGG.h
+action/Sh2RegularLL.cc
+action/Sh2RegularLL.h
+action/Sh2ShTransform.cc
+action/Sh2ShTransform.h
+action/VOD2UVTransform.cc
+action/VOD2UVTransform.h
+api/MIRJob.cc
+api/MIRJob.h
+api/emoslib.cc
+api/emoslib.h
+data/MIRField.cc
+data/MIRField.h
+input/DummyInput.cc
+input/DummyInput.h
+input/GribFileInput.cc
+input/GribFileInput.h
+input/GribInput.cc
+input/GribInput.h
+input/GribMemoryInput.cc
+input/GribMemoryInput.h
+input/GribStreamInput.cc
+input/GribStreamInput.h
+input/MIRInput.cc
+input/MIRInput.h
+input/NetcdfFileInput.cc
+input/NetcdfFileInput.h
+input/VODInput.cc
+input/VODInput.h
+logic/AutoReduced.cc
+logic/AutoReduced.h
+logic/AutoResol.cc
+logic/AutoResol.h
+logic/MARSLogic.cc
+logic/MARSLogic.h
+logic/MIRLogic.cc
+logic/MIRLogic.h
+logic/ToolLogic.cc
+logic/ToolLogic.h
+lsm/AutoLSM.cc
+lsm/AutoLSM.h
+lsm/GribFileLSM.cc
+lsm/GribFileLSM.h
+lsm/LSMChooser.cc
+lsm/LSMChooser.h
+lsm/LandSeaMasks.cc
+lsm/LandSeaMasks.h
+lsm/Mask.cc
+lsm/Mask.h
+lsm/NoneLSM.cc
+lsm/NoneLSM.h
+lsm/UserFileLSM.cc
+lsm/UserFileLSM.h
+method/Bilinear.cc
+method/Bilinear.h
+method/FiniteElement.cc
+method/FiniteElement.h
+method/KNearest.cc
+method/KNearest.h
+method/Method.cc
+method/Method.h
+method/MethodWeighted.cc
+method/MethodWeighted.h
+method/PseudoLaplace.cc
+method/PseudoLaplace.h
+method/WeightCache.cc
+method/WeightCache.h
+method/WeightMatrix.h
+method/redist/Redist.cc
+method/redist/Redist.h
+output/DummyOutput.cc
+output/DummyOutput.h
+output/GribFileOutput.cc
+output/GribFileOutput.h
+output/GribMemoryOutput.cc
+output/GribMemoryOutput.h
+output/GribOutput.cc
+output/GribOutput.h
+output/GribStreamOutput.cc
+output/GribStreamOutput.h
+output/MIROutput.cc
+output/MIROutput.h
+output/UVOutput.cc
+output/UVOutput.h
+param/DelayedParametrisation.cc
+param/DelayedParametrisation.h
+param/FieldParametrisation.cc
+param/FieldParametrisation.h
+param/MIRArgs.cc
+param/MIRArgs.h
+param/MIRCombinedParametrisation.cc
+param/MIRCombinedParametrisation.h
+param/MIRConfiguration.cc
+param/MIRConfiguration.h
+param/MIRDefaults.cc
+param/MIRDefaults.h
+param/MIRParametrisation.cc
+param/MIRParametrisation.h
+param/RuntimeParametrisation.cc
+param/RuntimeParametrisation.h
+param/SimpleParametrisation.cc
+param/SimpleParametrisation.h
+repres/Gridded.cc
+repres/Gridded.h
+repres/Representation.cc
+repres/Representation.h
+repres/latlon/LatLon.cc
+repres/latlon/LatLon.h
+repres/latlon/ReducedLL.cc
+repres/latlon/ReducedLL.h
+repres/latlon/RegularLL.cc
+repres/latlon/RegularLL.h
+repres/latlon/RotatedLL.cc
+repres/latlon/RotatedLL.h
 repres/reduced/Classic.cc
 repres/reduced/Classic.h
 repres/reduced/FromPL.cc
@@ -234,23 +189,69 @@ repres/reduced/RotatedFromPL.cc
 repres/reduced/RotatedFromPL.h
 repres/reduced/RotatedOctahedral.cc
 repres/reduced/RotatedOctahedral.h
-    util/Arguments.cc
-    util/Arguments.h
-    util/Bitmap.cc
-    util/Bitmap.h
-    util/BoundingBox.cc
-    util/BoundingBox.h
-    util/Grib.h
-    util/Increments.cc
-    util/Increments.h
-    util/Parser.cc
-    util/Parser.h
-    util/ParserConsumer.cc
-    util/ParserConsumer.h
-    util/PointSearch.cc
-    util/PointSearch.h
-    util/Rotation.cc
-    util/Rotation.h
+repres/regular/RegularGG.cc
+repres/regular/RegularGG.h
+repres/sh/SphericalHarmonics.cc
+repres/sh/SphericalHarmonics.h
+repres/unsupported/Albers.cc
+repres/unsupported/Albers.h
+repres/unsupported/AzimuthRange.cc
+repres/unsupported/AzimuthRange.h
+repres/unsupported/EquatorialAzimuthalEquidistant.cc
+repres/unsupported/EquatorialAzimuthalEquidistant.h
+repres/unsupported/IrregularLatlon.cc
+repres/unsupported/IrregularLatlon.h
+repres/unsupported/Lambert.cc
+repres/unsupported/Lambert.h
+repres/unsupported/LambertAzimuthalEqualArea.cc
+repres/unsupported/LambertAzimuthalEqualArea.h
+repres/unsupported/Mercator.cc
+repres/unsupported/Mercator.h
+repres/unsupported/PolarStereographic.cc
+repres/unsupported/PolarStereographic.h
+repres/unsupported/RotatedGG.cc
+repres/unsupported/RotatedGG.h
+repres/unsupported/RotatedSH.cc
+repres/unsupported/RotatedSH.h
+repres/unsupported/SpaceView.cc
+repres/unsupported/SpaceView.h
+repres/unsupported/StretchedGG.cc
+repres/unsupported/StretchedGG.h
+repres/unsupported/StretchedLL.cc
+repres/unsupported/StretchedLL.h
+repres/unsupported/StretchedRotatedGG.cc
+repres/unsupported/StretchedRotatedGG.h
+repres/unsupported/StretchedRotatedLL.cc
+repres/unsupported/StretchedRotatedLL.h
+repres/unsupported/StretchedRotatedSH.cc
+repres/unsupported/StretchedRotatedSH.h
+repres/unsupported/StretchedSH.cc
+repres/unsupported/StretchedSH.h
+repres/unsupported/TransverseMercator.cc
+repres/unsupported/TransverseMercator.h
+repres/unsupported/TriangularGrid.cc
+repres/unsupported/TriangularGrid.h
+repres/unsupported/UnstructuredGrid.cc
+repres/unsupported/UnstructuredGrid.h
+util/Arguments.cc
+util/Arguments.h
+util/Bitmap.cc
+util/Bitmap.h
+util/BoundingBox.cc
+util/BoundingBox.h
+util/Grib.h
+util/Increments.cc
+util/Increments.h
+util/Parser.cc
+util/Parser.h
+util/ParserConsumer.cc
+util/ParserConsumer.h
+util/PointSearch.cc
+util/PointSearch.h
+util/Rotation.cc
+util/Rotation.h
+repres/sh/SphericalHarmonics.cc
+repres/sh/SphericalHarmonics.h
   )
 
 

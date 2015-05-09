@@ -19,7 +19,7 @@
 #include "eckit/exception/Exceptions.h"
 
 
-#include "mir/repres/RegularLL.h"
+#include "mir/repres/latlon/RegularLL.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -48,7 +48,7 @@ void Gridded2RegularLL::print(std::ostream &out) const {
 
 
 repres::Representation *Gridded2RegularLL::outputRepresentation(const repres::Representation *inputRepres) const {
-    return new repres::RegularLL(
+    return new repres::latlon::RegularLL(
                util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
                increments_);
 }

@@ -22,7 +22,7 @@
 
 namespace mir {
 namespace repres {
-
+namespace regular {
 
 class RegularGG : public Gridded {
   public:
@@ -111,6 +111,7 @@ class RegularGG : public Gridded {
 
 };
 
+} // namespace regular
 
 }  // namespace repres
 }  // namespace mir

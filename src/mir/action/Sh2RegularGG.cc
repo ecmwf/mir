@@ -19,7 +19,7 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/RegularGG.h"
+#include "mir/repres/regular/RegularGG.h"
 
 
 namespace mir {
@@ -42,7 +42,7 @@ void Sh2RegularGG::print(std::ostream& out) const {
 
 
 repres::Representation* Sh2RegularGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    return new repres::RegularGG(N_);
+    return new repres::regular::RegularGG(N_);
 }
 
 

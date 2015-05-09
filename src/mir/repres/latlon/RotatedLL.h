@@ -13,19 +13,19 @@
 /// @date Apr 2015
 
 
-#ifndef LatLon_H
-#define LatLon_H
+#ifndef RotatedLL_H
+#define RotatedLL_H
 
-#include "mir/repres/Gridded.h"
-#include "mir/util/BoundingBox.h"
-#include "mir/util/Increments.h"
+#include "mir/repres/latlon/RegularLL.h"
+#include "mir/util/Rotation.h"
 
 
 namespace mir {
 namespace repres {
+namespace latlon {
 
 
-class LatLon : public Gridded {
+class RotatedLL : public RegularLL {
   public:
 
     // -- Exceptions
@@ -33,13 +33,13 @@ class LatLon : public Gridded {
 
     // -- Contructors
 
-    LatLon(const param::MIRParametrisation &);
-    LatLon(const util::BoundingBox &bbox, const util::Increments &increments);
+    RotatedLL(const param::MIRParametrisation &);
+    RotatedLL(const util::BoundingBox &bbox, const util::Increments &increments, const util::Rotation &rotation);
 
 
     // -- Destructor
 
-    virtual ~LatLon(); // Change to virtual if base class
+    virtual ~RotatedLL(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -48,9 +48,6 @@ class LatLon : public Gridded {
     // None
 
     // -- Methods
-
-    size_t ni() const;
-    size_t nj() const;
 
     // -- Overridden methods
     // None
@@ -65,17 +62,14 @@ class LatLon : public Gridded {
 
     // -- Members
 
-    util::BoundingBox bbox_;
-    util::Increments increments_;
-    size_t ni_;
-    size_t nj_;
+    util::Rotation rotation_;
 
     // -- Methods
 
+    void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
-    void print(std::ostream &) const; // Change to virtual if base class
-    virtual void fill(grib_info &) const;
+    // None
 
     // -- Class members
     // None
@@ -85,31 +79,30 @@ class LatLon : public Gridded {
 
   private:
 
+    // RotatedLL();
 
     // No copy allowed
 
-    LatLon(const LatLon &);
-    LatLon &operator=(const LatLon &);
+    RotatedLL(const RotatedLL &);
+    RotatedLL &operator=(const RotatedLL &);
 
     // -- Members
-
-
 
 
     // -- Methods
     // None
 
-    void setNiNj();
-
-    // Called by crop(), to override in subclasses
-    virtual LatLon *cropped(const util::BoundingBox &bbox) const = 0;
-
 
     // -- Overridden methods
 
-    virtual Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &, std::vector<double> &) const;
-    virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
-    virtual void reorder(long scanningMode, std::vector<double>& values) const;
+    virtual void fill(grib_info &) const;
+    virtual atlas::Grid *atlasGrid() const;
+    virtual Representation *clone() const;
+
+
+    // From RegularLL
+    virtual RegularLL *cropped(const util::BoundingBox &bbox) const;
+
 
 
     // -- Class members
@@ -120,12 +113,12 @@ class LatLon : public Gridded {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const LatLon& p)
+    //friend ostream& operator<<(ostream& s,const RotatedLL& p)
     //  { p.print(s); return s; }
 
 };
 
-
+} // namespave latlon
 }  // namespace repres
 }  // namespace mir
 #endif

@@ -17,7 +17,7 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/repres/RegularGG.h"
+#include "mir/repres/regular/RegularGG.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -41,7 +41,7 @@ void Gridded2RegularGG::print(std::ostream& out) const {
 
 
 repres::Representation* Gridded2RegularGG::outputRepresentation(const repres::Representation* inputRepres) const {
-    return new repres::RegularGG(N_);
+    return new repres::regular::RegularGG(N_);
 }
 
 

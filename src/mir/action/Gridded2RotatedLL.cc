@@ -19,7 +19,7 @@
 #include "eckit/exception/Exceptions.h"
 
 
-#include "mir/repres/RotatedLL.h"
+#include "mir/repres/latlon/RotatedLL.h"
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -54,7 +54,7 @@ void Gridded2RotatedLL::print(std::ostream &out) const {
 
 
 repres::Representation *Gridded2RotatedLL::outputRepresentation(const repres::Representation *inputRepres) const {
-    return new repres::RotatedLL(
+    return new repres::latlon::RotatedLL(
                util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
                increments_, rotation_);
 }

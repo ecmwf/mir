@@ -13,19 +13,20 @@
 /// @date Apr 2015
 
 
-#ifndef RegularLL_H
-#define RegularLL_H
+#ifndef LatLon_H
+#define LatLon_H
 
-#include "mir/repres/LatLon.h"
+#include "mir/repres/Gridded.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 
 
 namespace mir {
 namespace repres {
+namespace latlon {
 
 
-class RegularLL : public LatLon {
+class LatLon : public Gridded {
   public:
 
     // -- Exceptions
@@ -33,13 +34,13 @@ class RegularLL : public LatLon {
 
     // -- Contructors
 
-    RegularLL(const param::MIRParametrisation &);
-    RegularLL(const util::BoundingBox &bbox, const util::Increments &increments);
+    LatLon(const param::MIRParametrisation &);
+    LatLon(const util::BoundingBox &bbox, const util::Increments &increments);
 
 
     // -- Destructor
 
-    virtual ~RegularLL(); // Change to virtual if base class
+    virtual ~LatLon(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -48,6 +49,9 @@ class RegularLL : public LatLon {
     // None
 
     // -- Methods
+
+    size_t ni() const;
+    size_t nj() const;
 
     // -- Overridden methods
     // None
@@ -62,12 +66,16 @@ class RegularLL : public LatLon {
 
     // -- Members
 
+    util::BoundingBox bbox_;
+    util::Increments increments_;
+    size_t ni_;
+    size_t nj_;
+
     // -- Methods
 
 
     // -- Overridden methods
     void print(std::ostream &) const; // Change to virtual if base class
-    virtual atlas::Grid *atlasGrid() const;
     virtual void fill(grib_info &) const;
 
     // -- Class members
@@ -81,24 +89,29 @@ class RegularLL : public LatLon {
 
     // No copy allowed
 
-    RegularLL(const RegularLL &);
-    RegularLL &operator=(const RegularLL &);
+    LatLon(const LatLon &);
+    LatLon &operator=(const LatLon &);
 
     // -- Members
+
+
 
 
     // -- Methods
     // None
 
+    void setNiNj();
 
-    // Called by crop()
-    virtual RegularLL *cropped(const util::BoundingBox &bbox) const;
-
+    // Called by crop(), to override in subclasses
+    virtual LatLon *cropped(const util::BoundingBox &bbox) const = 0;
 
 
     // -- Overridden methods
 
-    virtual Representation *clone() const;
+    virtual Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &, std::vector<double> &) const;
+    virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
+    virtual void reorder(long scanningMode, std::vector<double>& values) const;
+
 
     // -- Class members
     // None
@@ -108,12 +121,12 @@ class RegularLL : public LatLon {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RegularLL& p)
+    //friend ostream& operator<<(ostream& s,const LatLon& p)
     //  { p.print(s); return s; }
 
 };
 
-
+} // namespave latlon
 }  // namespace repres
 }  // namespace mir
 #endif

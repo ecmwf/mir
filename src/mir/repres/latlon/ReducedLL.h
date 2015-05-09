@@ -21,6 +21,7 @@
 
 namespace mir {
 namespace repres {
+namespace latlon {
 
 
 class ReducedLL : public Gridded {
@@ -107,7 +108,7 @@ class ReducedLL : public Gridded {
 
 };
 
-
+} // namespave latlon
 }  // namespace repres
 }  // namespace mir
 #endif

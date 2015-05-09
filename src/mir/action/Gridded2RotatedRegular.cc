@@ -19,7 +19,6 @@
 #include "eckit/exception/Exceptions.h"
 
 
-#include "mir/repres/RotatedLL.h"
 
 #include "mir/param/MIRParametrisation.h"
 

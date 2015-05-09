@@ -21,8 +21,7 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
-#include "mir/repres/SphericalHarmonics.h"
+#include "mir/repres/sh/SphericalHarmonics.h"
 
 
 namespace mir {
@@ -54,7 +53,7 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     ASSERT(field.dimensions() == 2);
 
     size_t truncation = field.representation()->truncation();
-    size_t size = repres::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
+    size_t size = repres::sh::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
 
 
     ASSERT(sizeof(std::complex<double>) == 2 * sizeof(double));
@@ -76,8 +75,8 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     std::vector<double> temp_d;
 
 
-    repres::SphericalHarmonics::truncate(truncation, truncation - 1, field_vo, temp_vo);
-    repres::SphericalHarmonics::truncate(truncation, truncation - 1, field_d, temp_d);
+    repres::sh::SphericalHarmonics::truncate(truncation, truncation - 1, field_vo, temp_vo);
+    repres::sh::SphericalHarmonics::truncate(truncation, truncation - 1, field_d, temp_d);
 
 
     typedef std::vector<std::complex<double> > veccomp;

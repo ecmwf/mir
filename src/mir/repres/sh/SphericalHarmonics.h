@@ -21,7 +21,7 @@
 
 namespace mir {
 namespace repres {
-
+namespace sh {
 
 class SphericalHarmonics : public Representation {
   public:
@@ -116,7 +116,7 @@ class SphericalHarmonics : public Representation {
 
 };
 
-
+} // namespace sh
 }  // namespace repres
 }  // namespace mir
 #endif

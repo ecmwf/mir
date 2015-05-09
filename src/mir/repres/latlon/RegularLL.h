@@ -13,18 +13,20 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedLL_H
-#define RotatedLL_H
+#ifndef RegularLL_H
+#define RegularLL_H
 
-#include "mir/repres/RegularLL.h"
-#include "mir/util/Rotation.h"
+#include "mir/repres/latlon/LatLon.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/util/Increments.h"
 
 
 namespace mir {
 namespace repres {
+namespace latlon {
 
 
-class RotatedLL : public RegularLL {
+class RegularLL : public LatLon {
   public:
 
     // -- Exceptions
@@ -32,13 +34,13 @@ class RotatedLL : public RegularLL {
 
     // -- Contructors
 
-    RotatedLL(const param::MIRParametrisation &);
-    RotatedLL(const util::BoundingBox &bbox, const util::Increments &increments, const util::Rotation &rotation);
+    RegularLL(const param::MIRParametrisation &);
+    RegularLL(const util::BoundingBox &bbox, const util::Increments &increments);
 
 
     // -- Destructor
 
-    virtual ~RotatedLL(); // Change to virtual if base class
+    virtual ~RegularLL(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -61,14 +63,13 @@ class RotatedLL : public RegularLL {
 
     // -- Members
 
-    util::Rotation rotation_;
-
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
-    // None
+    void print(std::ostream &) const; // Change to virtual if base class
+    virtual atlas::Grid *atlasGrid() const;
+    virtual void fill(grib_info &) const;
 
     // -- Class members
     // None
@@ -78,12 +79,11 @@ class RotatedLL : public RegularLL {
 
   private:
 
-    // RotatedLL();
 
     // No copy allowed
 
-    RotatedLL(const RotatedLL &);
-    RotatedLL &operator=(const RotatedLL &);
+    RegularLL(const RegularLL &);
+    RegularLL &operator=(const RegularLL &);
 
     // -- Members
 
@@ -92,17 +92,14 @@ class RotatedLL : public RegularLL {
     // None
 
 
-    // -- Overridden methods
-
-    virtual void fill(grib_info &) const;
-    virtual atlas::Grid *atlasGrid() const;
-    virtual Representation *clone() const;
-
-
-    // From RegularLL
+    // Called by crop()
     virtual RegularLL *cropped(const util::BoundingBox &bbox) const;
 
 
+
+    // -- Overridden methods
+
+    virtual Representation *clone() const;
 
     // -- Class members
     // None
@@ -112,12 +109,12 @@ class RotatedLL : public RegularLL {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RotatedLL& p)
+    //friend ostream& operator<<(ostream& s,const RegularLL& p)
     //  { p.print(s); return s; }
 
 };
 
-
+} // namespave latlon
 }  // namespace repres
 }  // namespace mir
 #endif
