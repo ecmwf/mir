@@ -28,9 +28,6 @@ namespace mir {
 namespace lsm {
 
 class GribFileLSM : public Mask {
-
-  eckit::PathName path_;
-
   public:
 
 // -- Exceptions
@@ -38,10 +35,9 @@ class GribFileLSM : public Mask {
 
 // -- Contructors
 
-    GribFileLSM(const std::string& name, const std::string& key,
-                const param::MIRParametrisation& parametrisation, const atlas::Grid& grid);
-    GribFileLSM(const std::string& name, const std::string& key,
-                const param::MIRParametrisation& parametrisation, const atlas::Grid& grid, const std::string& path);
+    GribFileLSM(const std::string& name, const eckit::PathName& path,
+                const param::MIRParametrisation& parametrisation,
+                const atlas::Grid& grid);
 
 // -- Destructor
 
@@ -91,11 +87,11 @@ class GribFileLSM : public Mask {
     GribFileLSM& operator=(const GribFileLSM&);
 
 // -- Members
-    // None
+
+      eckit::PathName path_;
 
 // -- Methods
 
-    void init(const param::MIRParametrisation& parametrisation, const atlas::Grid& grid, const std::string& path);
 
 // -- Overridden methods
 

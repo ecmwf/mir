@@ -24,8 +24,8 @@ class NoLSM : public Mask {
     virtual bool cacheable() const { return false; }
     virtual void hash(eckit::MD5&) const {}
     virtual void print(std::ostream & out) const { out << "none"; }
-public:
-    NoLSM(): Mask("none", "none") {}
+  public:
+    NoLSM(): Mask("none") {}
 };
 
 NoneLSM::NoneLSM(const std::string &name):
@@ -45,11 +45,17 @@ void NoneLSM::print(std::ostream& out) const {
     out << "NoneLSM[" << name_ << "]";
 }
 
-Mask *NoneLSM::create(const std::string &name, const std::string &key,
-                             const param::MIRParametrisation &param, const atlas::Grid &grid) const {
+Mask *NoneLSM::create(const std::string &name,
+                      const param::MIRParametrisation &param,
+                      const atlas::Grid &grid) const {
     return new NoLSM();
 }
 
+std::string NoneLSM::cacheKey(const std::string &name,
+                      const param::MIRParametrisation &param,
+                      const atlas::Grid &grid) const {
+    return "none";
+}
 
 namespace {
 static NoneLSM input("none.input");

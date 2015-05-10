@@ -20,6 +20,7 @@
 #include <string>
 
 namespace atlas { class Grid; }
+namespace eckit { class MD5; }
 
 namespace mir { namespace data { class MIRField; }}
 namespace mir { namespace param {class MIRParametrisation; }}
@@ -52,8 +53,9 @@ class LandSeaMasks {
 
     // -- Methods
 
+    void hash(eckit::MD5&) const;
+
     virtual bool active() const;
-    virtual std::string uniqueID() const;
     virtual bool cacheable() const;
 
     virtual const data::MIRField &inputField() const;

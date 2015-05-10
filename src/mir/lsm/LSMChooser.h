@@ -49,7 +49,11 @@ class LSMChooser {
 
     // -- Methods
 
-    virtual Mask *create(const std::string &name, const std::string &key,
+    virtual Mask *create(const std::string &name,
+                         const param::MIRParametrisation &parametrisation,
+                         const atlas::Grid &grid) const = 0 ;
+
+    virtual std::string cacheKey(const std::string &name,
                          const param::MIRParametrisation &parametrisation,
                          const atlas::Grid &grid) const = 0 ;
 

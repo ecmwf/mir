@@ -66,13 +66,18 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     eckit::Log::info() << "++++ LSM masks " << masks << std::endl;
 
+    eckit::MD5 md5;
+    md5 << *this;
+    md5 << in;
+    md5 << out;
+
     std::stringstream os;
-    os << name() << "-" << in.unique_id() << "-" << out.unique_id();
+    os << name() << "-" << in.shortName() << "-" << out.shortName();
 
-    std::string key_no_masks = os.str();
+    std::string key_no_masks = os.str() + "-" + md5.digest();
 
-    os << "-" << masks.uniqueID();
-    std::string key_with_masks = os.str();
+    md5 << masks;
+    std::string key_with_masks = os.str() +  "-LSM-" + md5.digest();
 
     std::map<std::string, WeightMatrix>::iterator j = matrix_cache.find(key_with_masks);
     if (j != matrix_cache.end()) {
@@ -87,9 +92,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     }
 
     // Shorten the key, to avoid "file name to long" errors
-    eckit::MD5 md5;
-    md5.add(cache_key);
-    cache_key = md5.digest();
+
 
     // calculate weights matrix, apply mask if necessary
 
@@ -281,6 +284,9 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
     // TODO
 }
 
+void MethodWeighted::hash(eckit::MD5& md5) const {
+    md5.add(name());
+}
 
 
 }  // namespace method

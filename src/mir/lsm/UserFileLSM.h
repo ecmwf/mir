@@ -85,6 +85,8 @@ class UserFileLSM : public LSMChooser {
 
     // -- Methods
 
+    std::string path(const param::MIRParametrisation &param) const;
+
 
     // -- Overridden methods
     // None
@@ -94,9 +96,13 @@ class UserFileLSM : public LSMChooser {
 
     // -- Class methods
 
-    virtual Mask *create(const std::string &, const std::string &,
-                                const param::MIRParametrisation &param, const atlas::Grid &grid) const ;
+    virtual Mask *create(const std::string &,
+                         const param::MIRParametrisation &param,
+                         const atlas::Grid &grid) const ;
 
+    virtual std::string cacheKey(const std::string &,
+                            const param::MIRParametrisation &param,
+                            const atlas::Grid &grid) const ;
 
 
     // -- Friends

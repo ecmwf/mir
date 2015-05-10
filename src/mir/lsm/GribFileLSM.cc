@@ -29,26 +29,19 @@
 namespace mir {
 namespace lsm {
 
-GribFileLSM::GribFileLSM(const std::string &name, const std::string &key, const param::MIRParametrisation &param,
+GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
+                         const param::MIRParametrisation &param,
                          const atlas::Grid &grid):
+    Mask(name),
+    path_(path) {
 
-    Mask(name, key) {
-        path_ = "~mir/etc/lsm.N640.grib",
-	    init(param, grid, path_);
-}
+    // WARNING: don't store the grid, it won't be there later if this
+    // object is cached
 
-GribFileLSM::GribFileLSM(const std::string &name, const std::string &key, const param::MIRParametrisation &param,
-                         const atlas::Grid &grid, const std::string& path):
-    Mask(name, key + path) {
-    init(param, grid, path);
-}
 
-void GribFileLSM::init(const param::MIRParametrisation &param, const atlas::Grid &grid, const std::string& path) {
-    // WARNING: the atlas::Grid will not exist after
+    eckit::Log::info() << "GribFileLSM loading " << path_ << std::endl;
 
-    eckit::Log::info() << "GribFileLSM loading " << path << std::endl;
-
-    mir::input::GribFileInput file( path );
+    mir::input::GribFileInput file( path_ );
     mir::input::MIRInput &input = file;
 
     ASSERT(file.next());
@@ -78,13 +71,13 @@ void GribFileLSM::init(const param::MIRParametrisation &param, const atlas::Grid
 GribFileLSM::~GribFileLSM() {
 }
 
-void GribFileLSM::hash(eckit::MD5& md5) const
-{
-  md5.add(path_.asString());
+void GribFileLSM::hash(eckit::MD5& md5) const {
+    Mask::hash(md5);
+    md5.add(path_.asString());
 }
 
 void GribFileLSM::print(std::ostream &out) const {
-    out << "GribFileLSM[name=" << name_ << ",key=" << key_ << "]";
+    out << "GribFileLSM[name=" << name_ << ",path=" << path_ << "]";
 }
 
 

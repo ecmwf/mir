@@ -44,9 +44,9 @@ const char *KNearest::name() const {
 }
 
 void KNearest::hash( eckit::MD5& md5) const {
-  md5.add(name());
-  md5.add(nclosest_);
-  md5.add(epsilon_);
+    MethodWeighted::hash(md5);
+    md5 << nclosest_;
+    md5 << epsilon_;
 }
 
 void KNearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {

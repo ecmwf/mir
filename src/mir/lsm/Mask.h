@@ -34,7 +34,7 @@ namespace lsm {
 class Mask : private eckit::NonCopyable {
   public:
 
-    Mask(const std::string &name, const std::string &key);
+    Mask(const std::string &name);
 
     // -- Destructor
 
@@ -49,12 +49,11 @@ class Mask : private eckit::NonCopyable {
     // -- Methods
 
     virtual bool active() const;
-    virtual std::string uniqueID() const;
 
     virtual bool cacheable() const;
     virtual const data::MIRField &field() const;
 
-    virtual void hash(eckit::MD5&) const = 0;
+    virtual void hash(eckit::MD5&) const;
 
     // -- Overridden methods
     // None
@@ -72,7 +71,7 @@ class Mask : private eckit::NonCopyable {
     // -- Members
 
     std::string name_;
-    std::string key_;
+
     std::auto_ptr<data::MIRField> field_;
 
     // -- Methods
@@ -103,7 +102,9 @@ class Mask : private eckit::NonCopyable {
     // None
 
     // -- Class methods
-    static  Mask &lookup(const param::MIRParametrisation &param, const atlas::Grid &grid, const std::string& which);
+    static  Mask &lookup(const param::MIRParametrisation &param,
+                         const atlas::Grid &grid,
+                         const std::string& which);
 
 
     // -- Friends

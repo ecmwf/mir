@@ -20,6 +20,7 @@
 
 #include "mir/lsm/Mask.h"
 #include "eckit/exception/Exceptions.h"
+#include "eckit/utils/MD5.h"
 
 
 namespace mir {
@@ -37,6 +38,11 @@ LandSeaMasks::~LandSeaMasks() {
 
 void LandSeaMasks::print(std::ostream& out) const {
     out << "LandSeaMasks[in=" << input_ << ",output=" << output_ << "]";
+}
+
+void LandSeaMasks::hash(eckit::MD5& md5) const
+{
+    md5 << input_ << output_;
 }
 
 LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation &parametrisation, const atlas::Grid &in, const atlas::Grid &out){
@@ -61,9 +67,6 @@ bool LandSeaMasks::active() const {
     return input_.active() && output_.active();
 }
 
-std::string LandSeaMasks::uniqueID() const {
-    return input_.uniqueID() + "-" + output_.uniqueID();
-}
 //-----------------------------------------------------------------------------
 
 

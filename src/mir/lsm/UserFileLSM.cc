@@ -19,6 +19,8 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/lsm/GribFileLSM.h"
 #include "eckit/exception/Exceptions.h"
+#include "eckit/utils/MD5.h"
+#include "atlas/Grid.h"
 
 
 namespace mir {
@@ -37,20 +39,33 @@ void UserFileLSM::print(std::ostream& out) const {
     out << "UserFileLSM[" << name_ << ",which=" << which_ << "]";
 }
 
-Mask *UserFileLSM::create(const std::string &name, const std::string &key,
-                                 const param::MIRParametrisation &param, const atlas::Grid &grid) const {
 
+std::string UserFileLSM::path(const param::MIRParametrisation &param) const {
     std::string path;
-
-    if(!param.get("lsm.path." + which_, path)) {
-        if(!param.get("lsm.path", path)) {
+    if (!param.get("lsm.path." + which_, path)) {
+        if (!param.get("lsm.path", path)) {
             eckit::StrStream os;
             os << *this << " no path specified" << eckit::StrStream::ends;
             throw eckit::UserError(os);
         }
     }
+    return path;
+}
 
-    return new GribFileLSM(name, key, param, grid, path);
+Mask *UserFileLSM::create(const std::string &name,
+                          const param::MIRParametrisation &param,
+                          const atlas::Grid &grid) const {
+    return new GribFileLSM(name, path(param), param, grid);
+}
+
+std::string UserFileLSM::cacheKey(const std::string &name,
+                          const param::MIRParametrisation &param,
+                          const atlas::Grid &grid) const {
+    eckit::MD5 md5;
+    md5 << path(param)
+        << grid;
+
+    return "input." + md5.digest();
 }
 
 
