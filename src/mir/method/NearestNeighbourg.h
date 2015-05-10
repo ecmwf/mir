@@ -16,14 +16,14 @@
 #ifndef mir_method_NearestNeighbourg_H
 #define mir_method_NearestNeighbourg_H
 
-#include "mir/method/KNearest.h"
+#include "mir/method/Nearest.h"
 
 
 namespace mir {
 namespace method {
 
 
-class NearestNeighbourg: public KNearest {
+class NearestNeighbourg: public Nearest {
 
   public:
 
@@ -41,6 +41,7 @@ class NearestNeighbourg: public KNearest {
 
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
+    virtual size_t nclosest() const;
 
 // -- Class members
 

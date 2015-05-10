@@ -26,14 +26,15 @@ namespace method {
 
 
 NearestNeighbourg::NearestNeighbourg(const param::MIRParametrisation &param) :
-    KNearest(param) {
-
-    nclosest_ = 1;
-
+    Nearest(param) {
 }
 
 
 NearestNeighbourg::~NearestNeighbourg() {
+}
+
+size_t NearestNeighbourg::nclosest() const {
+    return 1;
 }
 
 const char *NearestNeighbourg::name() const {
@@ -41,7 +42,7 @@ const char *NearestNeighbourg::name() const {
 }
 
 void NearestNeighbourg::hash( eckit::MD5& md5) const {
-    KNearest::hash(md5);
+    Nearest::hash(md5);
 }
 
 
