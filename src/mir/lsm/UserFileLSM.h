@@ -98,11 +98,13 @@ class UserFileLSM : public LSMChooser {
 
     virtual Mask *create(const std::string &,
                          const param::MIRParametrisation &param,
-                         const atlas::Grid &grid) const ;
+                         const atlas::Grid &grid,
+                         const std::string& which) const ;
 
     virtual std::string cacheKey(const std::string &,
                                  const param::MIRParametrisation &param,
-                                 const atlas::Grid &grid) const ;
+                                 const atlas::Grid &grid,
+                                 const std::string& which) const ;
 
 
     // -- Friends

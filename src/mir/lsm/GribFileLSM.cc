@@ -30,8 +30,9 @@ namespace mir {
 namespace lsm {
 
 GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
-                         const param::MIRParametrisation &param,
-                         const atlas::Grid &grid):
+                         const param::MIRParametrisation &parametrisation,
+                         const atlas::Grid &grid,
+                         const std::string& which):
     Mask(name),
     path_(path) {
 
@@ -47,7 +48,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     ASSERT(file.next());
     field_.reset(input.field());
 
-    param::RuntimeParametrisation runtime(param);
+    param::RuntimeParametrisation runtime(parametrisation);
     // Hide the paramID so we don't confuse this LSM with interpolating an LSM from MARS and create an infinite recurrsion
 
     runtime.set("paramId", -1L);
@@ -56,7 +57,11 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     runtime.hide("lsm");
 
     std::string interpolation;
-    ASSERT(runtime.get("lsm.interpolation", interpolation));
+    if(!parametrisation.get("lsm.interpolation" + which, interpolation)) {
+        if(!parametrisation.get("lsm.interpolation", interpolation)) {
+            throw eckit::SeriousBug("Not interpolation methid defined for land sea mask");
+        }
+    }
 
     std::auto_ptr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::info() << "LSM interpolation method is " << *method << std::endl;
@@ -80,6 +85,22 @@ void GribFileLSM::print(std::ostream &out) const {
     out << "GribFileLSM[name=" << name_ << ",path=" << path_ << "]";
 }
 
+void GribFileLSM::hashCacheKey(eckit::MD5& md5, const eckit::PathName& path,
+                const param::MIRParametrisation& parametrisation,
+                const atlas::Grid& grid,
+                const std::string& which) {
+
+    std::string interpolation;
+    if(!parametrisation.get("lsm.interpolation" + which, interpolation)) {
+        if(!parametrisation.get("lsm.interpolation", interpolation)) {
+            throw eckit::SeriousBug("Not interpolation methid defined for land sea mask");
+        }
+    }
+
+    md5 << path.asString();
+    md5 << interpolation;
+    md5 << grid;
+}
 
 //-----------------------------------------------------------------------------
 

@@ -54,18 +54,20 @@ std::string UserFileLSM::path(const param::MIRParametrisation &param) const {
 
 Mask *UserFileLSM::create(const std::string &name,
                           const param::MIRParametrisation &param,
-                          const atlas::Grid &grid) const {
-    return new GribFileLSM(name, path(param), param, grid);
+                          const atlas::Grid &grid,
+                          const std::string& which) const {
+    return new GribFileLSM(name, path(param), param, grid, which);
 }
 
 std::string UserFileLSM::cacheKey(const std::string &name,
                                   const param::MIRParametrisation &param,
-                                  const atlas::Grid &grid) const {
-    eckit::MD5 md5;
-    md5 << path(param)
-        << grid;
+                                  const atlas::Grid &grid,
+                                  const std::string& which) const {
 
-    return "input." + md5.digest();
+    eckit::MD5 md5;
+    GribFileLSM::hashCacheKey(md5, path(param), param, grid, which); // We need to take the lsm interpolation method into account
+
+    return "file." + md5.digest();
 }
 
 

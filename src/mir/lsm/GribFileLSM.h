@@ -41,7 +41,7 @@ class GribFileLSM : public Mask {
 
     GribFileLSM(const std::string& name, const eckit::PathName& path,
                 const param::MIRParametrisation& parametrisation,
-                const atlas::Grid& grid);
+                const atlas::Grid& grid, const std::string& which);
 
 // -- Destructor
 
@@ -62,7 +62,11 @@ class GribFileLSM : public Mask {
     // None
 
 // -- Class methods
-    // None
+
+    static void hashCacheKey(eckit::MD5&, const eckit::PathName& path,
+                const param::MIRParametrisation& parametrisation,
+                const atlas::Grid& grid,
+                const std::string& which);
 
   protected:
 

@@ -31,6 +31,8 @@ MIRDefaults::MIRDefaults() {
 
     set("logic", "mars");
     set("interpolation", "finite-element"); // The word 'method' is used in grib
+
+    set("lsm.selection", "auto");
     set("lsm.interpolation", "nearest-neighbour");
 
     set("epsilon", std::numeric_limits<double>::epsilon());

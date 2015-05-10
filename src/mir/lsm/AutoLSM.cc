@@ -44,17 +44,17 @@ std::string AutoLSM::path(const param::MIRParametrisation &parametrisation) cons
 
 Mask *AutoLSM::create(const std::string &name,
                       const param::MIRParametrisation &param,
-                      const atlas::Grid &grid) const {
-    return new GribFileLSM(name, path(param), param, grid);
+                      const atlas::Grid &grid,
+                      const std::string& which) const {
+    return new GribFileLSM(name, path(param), param, grid, which);
 }
 
 std::string AutoLSM::cacheKey(const std::string &name,
                               const param::MIRParametrisation &param,
-                              const atlas::Grid &grid) const {
+                              const atlas::Grid &grid,
+                              const std::string& which) const {
     eckit::MD5 md5;
-    md5 << path(param)
-        << grid;
-
+    GribFileLSM::hashCacheKey(md5, path(param), param, grid, which); // We need to take the lsm interpolation method into account
     return "auto." + md5.digest();
 }
 

@@ -60,18 +60,25 @@ void Mask::hash(eckit::MD5 & md5) const {
 
 Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::Grid &grid, const std::string& which) {
 
+    bool lsm = false;
+    parametrisation.get("lsm", lsm);
+
+    if(!lsm) {
+        return NoneLSM::instance();
+    }
+
 
     std::string name;
 
-    if (!parametrisation.get("lsm" + which, name)) {
-        if (!parametrisation.get("lsm", name)) {
-            return NoneLSM::instance();
+    if (!parametrisation.get("lsm.selection" + which, name)) {
+        if (!parametrisation.get("lsm.selection", name)) {
+            throw eckit::SeriousBug("No lsm selection method provided");
         }
     }
 
     name = name +  which;
     const LSMChooser& chooser = LSMChooser::lookup(name);
-    std::string key = chooser.cacheKey(name, parametrisation, grid);
+    std::string key = chooser.cacheKey(name, parametrisation, grid, which);
 
     pthread_once(&once, init);
 
@@ -84,7 +91,7 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
         return *(*j).second;
     }
 
-    Mask* mask = chooser.create(name, parametrisation, grid);
+    Mask* mask = chooser.create(name, parametrisation, grid, which);
 
     cache[key] = mask;
 
