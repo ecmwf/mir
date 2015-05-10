@@ -57,13 +57,17 @@ file(GLOB_RECURSE grib_tmpl  ${GRIB_SAMPLES_PATH}*.tmpl)
 
 foreach( _t ${grib_tmpl} )
   get_filename_component(_tst ${_t} NAME_WE)
-  debug_var(_tst)
+  # debug_var(_tst)
+  if(${_tst} STREQUAL "budg")
+    # Ignore
+  else()
   ecbuild_add_test( TARGET test_grib_sample_${_tst}
                     COMMAND ${MIR_TOOL}
-                    ARGS "--grib=1/1" ${_t} /dev/null
+                    ARGS "--grid=1/1" ${_t} /dev/null
                     ENVIRONMENT
                       GRIB_DEFINITION_PATH=${GRIB_DEFINITION_PATH}
                       GRIB_SAMPLES_PATH=${GRIB_SAMPLES_PATH}
                   )
+endif()
 endforeach()
 # debug_var(grib_tmpl )
