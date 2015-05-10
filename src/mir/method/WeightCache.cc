@@ -67,8 +67,12 @@ using eckit::PathName;
 WeightCache::WeightCache() : CacheManager("mir/weights") {
 }
 
-const char* WeightCache::version() const { return mir_version_str(); }
-const char* WeightCache::extension() const { return ".mat"; }
+const char* WeightCache::version() const {
+    return mir_version_str();
+}
+const char* WeightCache::extension() const {
+    return ".mat";
+}
 
 std::string WeightCache::generate_key(const Method &method,
                                       const atlas::Grid &in,

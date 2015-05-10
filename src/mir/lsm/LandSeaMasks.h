@@ -19,11 +19,23 @@
 #include <iosfwd>
 #include <string>
 
-namespace atlas { class Grid; }
-namespace eckit { class MD5; }
+namespace atlas {
+class Grid;
+}
+namespace eckit {
+class MD5;
+}
 
-namespace mir { namespace data { class MIRField; }}
-namespace mir { namespace param {class MIRParametrisation; }}
+namespace mir {
+namespace data {
+class MIRField;
+}
+}
+namespace mir {
+namespace param {
+class MIRParametrisation;
+}
+}
 
 namespace mir {
 

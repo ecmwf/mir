@@ -19,8 +19,14 @@
 #include <string>
 #include <iosfwd>
 
-namespace atlas { class Grid; }
-namespace mir { namespace param { class MIRParametrisation; }}
+namespace atlas {
+class Grid;
+}
+namespace mir {
+namespace param {
+class MIRParametrisation;
+}
+}
 
 namespace mir {
 namespace lsm {
@@ -54,8 +60,8 @@ class LSMChooser {
                          const atlas::Grid &grid) const = 0 ;
 
     virtual std::string cacheKey(const std::string &name,
-                         const param::MIRParametrisation &parametrisation,
-                         const atlas::Grid &grid) const = 0 ;
+                                 const param::MIRParametrisation &parametrisation,
+                                 const atlas::Grid &grid) const = 0 ;
 
     // -- Overridden methods
     // None

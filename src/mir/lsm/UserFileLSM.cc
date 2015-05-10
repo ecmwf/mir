@@ -59,8 +59,8 @@ Mask *UserFileLSM::create(const std::string &name,
 }
 
 std::string UserFileLSM::cacheKey(const std::string &name,
-                          const param::MIRParametrisation &param,
-                          const atlas::Grid &grid) const {
+                                  const param::MIRParametrisation &param,
+                                  const atlas::Grid &grid) const {
     eckit::MD5 md5;
     md5 << path(param)
         << grid;

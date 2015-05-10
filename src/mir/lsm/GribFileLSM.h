@@ -22,7 +22,11 @@
 
 #include "mir/lsm/Mask.h"
 
-namespace mir { namespace param { class MIRParametrisation; }}
+namespace mir {
+namespace param {
+class MIRParametrisation;
+}
+}
 
 namespace mir {
 namespace lsm {
@@ -88,7 +92,7 @@ class GribFileLSM : public Mask {
 
 // -- Members
 
-      eckit::PathName path_;
+    eckit::PathName path_;
 
 // -- Methods
 

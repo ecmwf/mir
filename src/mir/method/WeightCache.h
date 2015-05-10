@@ -21,10 +21,14 @@
 
 #include "mir/method/WeightMatrix.h"
 
-namespace atlas { class Grid; }
+namespace atlas {
+class Grid;
+}
 
 namespace mir {
-namespace lsm { class Mask; }
+namespace lsm {
+class Mask;
+}
 namespace method {
 
 class Method;
@@ -33,7 +37,7 @@ class Method;
 
 class WeightCache : public eckit::CacheManager {
 
- public:  // methods
+  public:  // methods
 
     WeightCache();
 
@@ -51,11 +55,11 @@ class WeightCache : public eckit::CacheManager {
                              const lsm::Mask &maskin,
                              const lsm::Mask &maskout) const;
 
- protected:
+  protected:
 
     virtual void print(std::ostream& s) const;
 
- private:
+  private:
 
     virtual const char* version() const;
     virtual const char* extension() const;

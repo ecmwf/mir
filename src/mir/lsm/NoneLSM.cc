@@ -20,10 +20,16 @@ namespace mir {
 namespace lsm {
 
 class NoLSM : public Mask {
-    virtual bool active() const { return false; }
-    virtual bool cacheable() const { return false; }
+    virtual bool active() const {
+        return false;
+    }
+    virtual bool cacheable() const {
+        return false;
+    }
     virtual void hash(eckit::MD5&) const {}
-    virtual void print(std::ostream & out) const { out << "none"; }
+    virtual void print(std::ostream & out) const {
+        out << "none";
+    }
   public:
     NoLSM(): Mask("none") {}
 };
@@ -52,8 +58,8 @@ Mask *NoneLSM::create(const std::string &name,
 }
 
 std::string NoneLSM::cacheKey(const std::string &name,
-                      const param::MIRParametrisation &param,
-                      const atlas::Grid &grid) const {
+                              const param::MIRParametrisation &param,
+                              const atlas::Grid &grid) const {
     return "none";
 }
 

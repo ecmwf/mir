@@ -99,8 +99,8 @@ class AutoLSM : public LSMChooser {
                          const atlas::Grid &grid) const ;
 
     virtual std::string cacheKey(const std::string &,
-                            const param::MIRParametrisation &param,
-                            const atlas::Grid &grid) const ;
+                                 const param::MIRParametrisation &param,
+                                 const atlas::Grid &grid) const ;
 
 
     // -- Friends

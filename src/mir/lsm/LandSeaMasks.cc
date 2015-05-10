@@ -29,7 +29,7 @@ namespace lsm {
 
 LandSeaMasks::LandSeaMasks(const Mask &input, const Mask &output):
     input_(input), output_(output) {
-        ASSERT(input_.active() == output_.active());
+    ASSERT(input_.active() == output_.active());
 }
 
 
@@ -40,12 +40,11 @@ void LandSeaMasks::print(std::ostream& out) const {
     out << "LandSeaMasks[in=" << input_ << ",output=" << output_ << "]";
 }
 
-void LandSeaMasks::hash(eckit::MD5& md5) const
-{
+void LandSeaMasks::hash(eckit::MD5& md5) const {
     md5 << input_ << output_;
 }
 
-LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation &parametrisation, const atlas::Grid &in, const atlas::Grid &out){
+LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation &parametrisation, const atlas::Grid &in, const atlas::Grid &out) {
     return LandSeaMasks(Mask::lookupInput(parametrisation, in), Mask::lookupOutput(parametrisation, out));
 }
 

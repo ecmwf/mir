@@ -13,28 +13,25 @@
 /// @date Apr 2015
 
 
-#ifndef mir_method_KNearest_H
-#define mir_method_KNearest_H
+#ifndef mir_method_NearestNeighbourg_H
+#define mir_method_NearestNeighbourg_H
 
-#include "mir/method/MethodWeighted.h"
+#include "mir/method/KNearest.h"
 
 
 namespace mir {
 namespace method {
 
 
-class KNearest: public MethodWeighted {
+class NearestNeighbourg: public KNearest {
 
   public:
 
-    KNearest(const param::MIRParametrisation&);
+    NearestNeighbourg(const param::MIRParametrisation&);
 
-    virtual ~KNearest();
+    virtual ~NearestNeighbourg();
 
   protected:
-
-    size_t nclosest_;  ///< Number of closest points to search for
-    double epsilon_;
 
     virtual void hash( eckit::MD5& ) const;
 
@@ -42,7 +39,6 @@ class KNearest: public MethodWeighted {
 
 // -- Methods
 
-    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 

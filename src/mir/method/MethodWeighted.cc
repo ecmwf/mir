@@ -160,10 +160,13 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
 
 void MethodWeighted::computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const {
-    if (in.same(out))
+    if (in.same(out)) {
+        eckit::Log::info() << "Matrix is indentity" << std::endl;
         W.setIdentity();        // grids are the same, use identity matrix
-    else
+    } else {
+        eckit::Timer timer("Assemble matrix");
         assemble(W, in, out);   // assemble matrix of coefficients
+    }
 }
 
 
