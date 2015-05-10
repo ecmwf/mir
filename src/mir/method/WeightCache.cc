@@ -23,6 +23,8 @@
 #include "eckit/io/BufferedHandle.h"
 #include "eckit/log/Timer.h"
 #include "eckit/log/Plural.h"
+#include "eckit/log/BigNum.h"
+
 #include "eckit/log/Seconds.h"
 
 #include "atlas/Grid.h"
@@ -74,25 +76,24 @@ std::string WeightCache::generate_key(const Method &method,
                                       const lsm::Mask &maskin,
                                       const lsm::Mask &maskout) const {
 
-  eckit::MD5 md5;
+    eckit::MD5 md5;
 
-  method.hash(md5);
-  in.hash(md5);
-  out.hash(md5);
-  maskin.hash(md5);
-  maskout.hash(md5);
+    method.hash(md5);
+    in.hash(md5);
+    out.hash(md5);
+    maskin.hash(md5);
+    maskout.hash(md5);
 
-  return md5.digest();
+    return md5.digest();
 }
 
-void WeightCache::print(std::ostream &s) const
-{
-  s << "WeightCache[";
-  CacheManager::print(s);
-  s << "name=" << name() << ","
-    << "version=" << version() << ","
-    << "extention=" << extension() << ","
-    << "]";
+void WeightCache::print(std::ostream &s) const {
+    s << "WeightCache[";
+    CacheManager::print(s);
+    s << "name=" << name() << ","
+      << "version=" << version() << ","
+      << "extention=" << extension() << ","
+      << "]";
 }
 
 void WeightCache::insert(const std::string &key, const WeightMatrix &W) const {
@@ -154,6 +155,8 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) const {
 
 bool WeightCache::retrieve(const std::string &key, WeightMatrix &W) const {
 
+    typedef WeightMatrix::Index Index;
+
     PathName path;
 
     if (!get(key, path))
@@ -170,24 +173,28 @@ bool WeightCache::retrieve(const std::string &key, WeightMatrix &W) const {
 
         // read inpts, outpts sizes of matrix
 
-        long inner, outer;
+        Index inner, outer;
 
         f.read(&inner, sizeof(inner));
         f.read(&outer, sizeof(outer));
 
-        long npts;
+        Index npts;
         f.read(&npts, sizeof(npts));
 
         // read total sparse points of matrix (so we can reserve)
 
         std::vector<Eigen::Triplet<double> > insertions;
 
+        eckit::Log::info() << "Inner: " << eckit::BigNum(inner)
+                           << ", outer: " << eckit::BigNum(outer)
+                           << ", number of points: " << eckit::BigNum(npts) << std::endl;
+
         insertions.reserve(npts);
 
         // read the values
 
         for (size_t i = 0; i < npts; i++) {
-            long x, y;
+            Index x, y;
             double w;
             f.read(&x, sizeof(x));
             f.read(&y, sizeof(y));
