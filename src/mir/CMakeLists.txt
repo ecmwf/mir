@@ -124,8 +124,8 @@ list(
     method/MethodWeighted.h
     method/Nearest.cc
     method/Nearest.h
-    method/NearestNeighbourg.cc
-    method/NearestNeighbourg.h
+    method/NearestNeighbour.cc
+    method/NearestNeighbour.h
     method/PseudoLaplace.cc
     method/PseudoLaplace.h
     method/redist/Redist.cc

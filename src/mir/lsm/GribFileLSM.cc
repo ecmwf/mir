@@ -56,7 +56,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     runtime.hide("lsm");
 
     std::string interpolation;
-    ASSERT(runtime.get("interpolation", interpolation));
+    ASSERT(runtime.get("lsm.interpolation", interpolation));
 
     std::auto_ptr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::info() << "LSM interpolation method is " << *method << std::endl;

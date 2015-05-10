@@ -17,7 +17,7 @@
 
 #include "mir/util/PointSearch.h"
 
-#include "mir/method/NearestNeighbourg.h"
+#include "mir/method/NearestNeighbour.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -25,36 +25,36 @@ namespace mir {
 namespace method {
 
 
-NearestNeighbourg::NearestNeighbourg(const param::MIRParametrisation &param) :
+NearestNeighbour::NearestNeighbour(const param::MIRParametrisation &param) :
     Nearest(param) {
 }
 
 
-NearestNeighbourg::~NearestNeighbourg() {
+NearestNeighbour::~NearestNeighbour() {
 }
 
-size_t NearestNeighbourg::nclosest() const {
+size_t NearestNeighbour::nclosest() const {
     return 1;
 }
 
-const char *NearestNeighbourg::name() const {
-    return  "nearest-neighbourg";
+const char *NearestNeighbour::name() const {
+    return  "nearest-neighbour";
 }
 
-void NearestNeighbourg::hash( eckit::MD5& md5) const {
+void NearestNeighbour::hash( eckit::MD5& md5) const {
     Nearest::hash(md5);
 }
 
 
-void NearestNeighbourg::print(std::ostream &out) const {
-    out << "NearestNeighbourg[epsilon=" << epsilon_ << "]";
+void NearestNeighbour::print(std::ostream &out) const {
+    out << "NearestNeighbour[epsilon=" << epsilon_ << "]";
 }
 
 
 namespace {
-static MethodBuilder< NearestNeighbourg > __knearest1("nearest-neighbourg");
-static MethodBuilder< NearestNeighbourg > __knearest2("nearest-neighbor"); // For the americans
-static MethodBuilder< NearestNeighbourg > __knearest3("nn"); // For the lazy
+static MethodBuilder< NearestNeighbour > __knearest1("nearest-neighbour");
+static MethodBuilder< NearestNeighbour > __knearest2("nearest-neighbor"); // For the americans
+static MethodBuilder< NearestNeighbour > __knearest3("nn"); // For the lazy
 
 }
 

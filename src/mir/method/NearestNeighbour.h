@@ -23,13 +23,13 @@ namespace mir {
 namespace method {
 
 
-class NearestNeighbourg: public Nearest {
+class NearestNeighbour: public Nearest {
 
   public:
 
-    NearestNeighbourg(const param::MIRParametrisation&);
+    NearestNeighbour(const param::MIRParametrisation&);
 
-    virtual ~NearestNeighbourg();
+    virtual ~NearestNeighbour();
 
   protected:
 
