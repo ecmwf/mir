@@ -147,6 +147,14 @@ list(
     output/MIROutput.h
     output/UVOutput.cc
     output/UVOutput.h
+    packing/Complex.cc
+    packing/Complex.h
+    packing/Packer.cc
+    packing/Packer.h
+    packing/SecondOrder.cc
+    packing/SecondOrder.h
+    packing/Simple.cc
+    packing/Simple.h
     param/DelayedParametrisation.cc
     param/DelayedParametrisation.h
     param/FieldParametrisation.cc

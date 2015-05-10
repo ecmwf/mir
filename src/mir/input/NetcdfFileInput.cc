@@ -162,7 +162,7 @@ bool NetcdfFileInput::has(const std::string& name) const {
     if(name == "gridded") {
         return true;
     }
-    if(name == "spherical") {
+    if(name == "spectral") {
         return false;
     }
     return FieldParametrisation::has(name);

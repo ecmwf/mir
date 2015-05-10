@@ -13,27 +13,20 @@
 /// @date Apr 2015
 
 
-#ifndef LSMChooser_H
-#define LSMChooser_H
+#ifndef Packer_H
+#define Packer_H
 
 #include <string>
 #include <iosfwd>
 
-namespace atlas {
-class Grid;
-}
-namespace mir {
-namespace param {
-class MIRParametrisation;
-}
-}
+struct grib_info;
+
+namespace mir { namespace repres { class Representation; }}
 
 namespace mir {
-namespace lsm {
+namespace packing {
 
-class Mask;
-
-class LSMChooser {
+class Packer {
   public:
 
     // -- Exceptions
@@ -53,13 +46,7 @@ class LSMChooser {
 
     // -- Methods
 
-    virtual Mask *create(const std::string &name,
-                         const param::MIRParametrisation &parametrisation,
-                         const atlas::Grid &grid) const = 0 ;
-
-    virtual std::string cacheKey(const std::string &name,
-                                 const param::MIRParametrisation &parametrisation,
-                                 const atlas::Grid &grid) const = 0 ;
+    virtual void fill(grib_info&, const repres::Representation& ) const = 0;
 
     // -- Overridden methods
     // None
@@ -69,12 +56,12 @@ class LSMChooser {
 
     // -- Class methods
 
-    static const LSMChooser &lookup(const std::string& name);
+    static const Packer &lookup(const std::string& name);
 
   protected:
 
-    LSMChooser(const std::string &name);
-    virtual ~LSMChooser(); // Change to virtual if base class
+    Packer(const std::string &name);
+    virtual ~Packer(); // Change to virtual if base class
 
 
     // -- Members
@@ -99,8 +86,8 @@ class LSMChooser {
 
     // No copy allowed
 
-    LSMChooser(const LSMChooser &);
-    LSMChooser &operator=(const LSMChooser &);
+    Packer(const Packer &);
+    Packer &operator=(const Packer &);
 
     // -- Members
     // None
@@ -119,7 +106,7 @@ class LSMChooser {
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const LSMChooser &p) {
+    friend std::ostream &operator<<(std::ostream &s, const Packer &p) {
         p.print(s);
         return s;
     }

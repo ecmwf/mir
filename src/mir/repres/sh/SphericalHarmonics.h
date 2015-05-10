@@ -56,7 +56,7 @@ class SphericalHarmonics : public Representation {
 
     static void truncate(size_t truncation_from, size_t truncation_to, const std::vector<double>& in, std::vector<double>& out);
     static size_t number_of_complex_coefficients(size_t truncation) {
-        return (truncation+1) * (truncation+2) / 2;
+        return (truncation + 1) * (truncation + 2) / 2;
     }
 
   protected:
@@ -104,6 +104,9 @@ class SphericalHarmonics : public Representation {
     Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
     virtual void validate(const std::vector<double>&) const;
 
+    virtual void setComplexPacking(grib_info&) const;
+    virtual void setSimplePacking(grib_info&) const;
+
 // -- Class members
     // None
 
@@ -113,7 +116,7 @@ class SphericalHarmonics : public Representation {
 // -- Friends
 
     //friend ostream& operator<<(ostream& s,const SphericalHarmonics& p)
-    //	{ p.print(s); return s; }
+    //  { p.print(s); return s; }
 
 };
 

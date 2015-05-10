@@ -33,10 +33,10 @@ FieldParametrisation::~FieldParametrisation() {
 bool FieldParametrisation::has(const std::string &name) const {
 
     // FIXME: not very elegant
-    if (name == "spherical") {
-        long dummy;
-        return get("truncation", dummy);
-    }
+    // if (name == "spectral") {
+    //     long dummy;
+    //     return get("truncation", dummy);
+    // }
 
     eckit::Log::info() << "FieldParametrisation::has(" << name << ") " << *this << std::endl;
     return false;

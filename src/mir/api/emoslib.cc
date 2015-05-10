@@ -41,9 +41,22 @@ typedef double fortfloat;
 std::auto_ptr<MIRJob> job(0);
 
 
+static void tidy(const char *in, char *out, size_t max) {
+    size_t n = 0;
+    while(*in && n < max-1) {
+        *out = (*in == ' ')? '-' : tolower(*in);
+        in++;
+        out++;
+        n++;
+    }
+    *out = 0;
+}
+
+
 extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint, fortint) {
 
     eckit::Log::info() << "++++++ intout " << name << std::endl;
+    char buffer[1024];
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
@@ -130,13 +143,14 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, co
         }
 
         if (strcasecmp(name, "interpolation") == 0) {
-            std::string low;
-            const char *p = value;
-            while (*p) {
-                low += tolower(*p);
-                p++;
-            }
-            job->set("interpolation", low);
+            tidy(value, buffer, sizeof(buffer));
+            job->set("interpolation", buffer);
+            return 0;
+        }
+
+        if (strcasecmp(name, "packing") == 0) {
+            tidy(value, buffer, sizeof(buffer));
+            job->set("packing", buffer);
             return 0;
         }
 
@@ -453,7 +467,7 @@ extern "C" fortint areachk_(fortfloat *we, fortfloat *ns, fortfloat *north, fort
     C     SOUTH =  South latitude (degrees)
     C     EAST  =  East longitude (degrees)
     C
-    C     For spherical harmonics:
+    C     For spectral harmonics:
     C     EW    =  0
     C     NS    =  0
     C     NORTH =  0

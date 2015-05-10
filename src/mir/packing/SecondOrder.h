@@ -13,27 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef LSMChooser_H
-#define LSMChooser_H
+#ifndef SecondOrder_H
+#define SecondOrder_H
 
-#include <string>
-#include <iosfwd>
 
-namespace atlas {
-class Grid;
-}
-namespace mir {
-namespace param {
-class MIRParametrisation;
-}
-}
+#include "mir/packing/Packer.h"
 
 namespace mir {
-namespace lsm {
+namespace packing {
 
-class Mask;
 
-class LSMChooser {
+class SecondOrder : public Packer {
   public:
 
     // -- Exceptions
@@ -41,9 +31,11 @@ class LSMChooser {
 
     // -- Contructors
 
+    SecondOrder(const std::string &name);
 
     // -- Destructor
 
+    virtual ~SecondOrder(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -53,14 +45,6 @@ class LSMChooser {
 
     // -- Methods
 
-    virtual Mask *create(const std::string &name,
-                         const param::MIRParametrisation &parametrisation,
-                         const atlas::Grid &grid) const = 0 ;
-
-    virtual std::string cacheKey(const std::string &name,
-                                 const param::MIRParametrisation &parametrisation,
-                                 const atlas::Grid &grid) const = 0 ;
-
     // -- Overridden methods
     // None
 
@@ -69,22 +53,15 @@ class LSMChooser {
 
     // -- Class methods
 
-    static const LSMChooser &lookup(const std::string& name);
 
   protected:
 
-    LSMChooser(const std::string &name);
-    virtual ~LSMChooser(); // Change to virtual if base class
-
-
     // -- Members
-
-    std::string name_;
 
     // -- Methods
 
 
-    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -99,14 +76,13 @@ class LSMChooser {
 
     // No copy allowed
 
-    LSMChooser(const LSMChooser &);
-    LSMChooser &operator=(const LSMChooser &);
+    SecondOrder(const SecondOrder &);
+    SecondOrder &operator=(const SecondOrder &);
 
     // -- Members
     // None
 
     // -- Methods
-
 
     // -- Overridden methods
     // None
@@ -116,16 +92,15 @@ class LSMChooser {
 
     // -- Class methods
 
+    virtual void fill(grib_info&, const repres::Representation& ) const;
+
+
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const LSMChooser &p) {
-        p.print(s);
-        return s;
-    }
+
 
 };
-
 
 
 }  // namespace logic

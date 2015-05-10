@@ -14,6 +14,7 @@
 
 
 #include "mir/repres/Gridded.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir {
@@ -28,6 +29,17 @@ Gridded::Gridded(const param::MIRParametrisation &parametrisation) {}
 
 Gridded::~Gridded() {}
 
+void Gridded::setComplexPacking(grib_info& info) const {
+    info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_COMPLEX;
+}
+
+void Gridded::setSimplePacking(grib_info& info) const {
+    info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_SIMPLE;
+}
+
+void Gridded::setSecondOrderPacking(grib_info& info) const {
+    info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_SECOND_ORDER;
+}
 
 }  // namespace repres
 }  // namespace mir

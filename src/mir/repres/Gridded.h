@@ -83,7 +83,9 @@ class Gridded : public Representation {
     // None
 
 // -- Overridden methods
-
+    virtual void setComplexPacking(grib_info&) const;
+    virtual void setSimplePacking(grib_info&) const;
+    virtual void setSecondOrderPacking(grib_info&) const;
 // -- Class members
     // None
 
@@ -93,7 +95,7 @@ class Gridded : public Representation {
 // -- Friends
 
     //friend ostream& operator<<(ostream& s,const Gridded& p)
-    //	{ p.print(s); return s; }
+    //  { p.print(s); return s; }
 
 };
 

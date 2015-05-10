@@ -71,6 +71,7 @@ class Representation {
 
 // -- Methods
 
+
     virtual void validate(const std::vector<double> &values) const;
 
     virtual void fill(grib_info&) const;
@@ -89,6 +90,10 @@ class Representation {
     virtual Representation* clone() const;
 
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
+
+    virtual void setComplexPacking(grib_info&) const;
+    virtual void setSimplePacking(grib_info&) const;
+    virtual void setSecondOrderPacking(grib_info&) const;
 
 // -- Overridden methods
     // None

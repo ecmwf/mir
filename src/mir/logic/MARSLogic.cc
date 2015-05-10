@@ -57,7 +57,7 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
     parametrisation_.get("vod2uv", vod2uv);
     parametrisation_.get("intermediate_gaussian", intermediate_gaussian);
 
-    if (parametrisation_.has("field.spherical")) {
+    if (parametrisation_.has("field.spectral")) {
         if (parametrisation_.has("user.truncation")) {
             plan.add("transform.sh2sh");
         }

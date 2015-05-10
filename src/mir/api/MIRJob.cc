@@ -99,7 +99,7 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
     plan.execute(*field);
 
-    output.save(*this, input, *field);
+    output.save(combined, input, *field);
 }
 
 

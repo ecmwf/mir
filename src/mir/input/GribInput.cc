@@ -170,7 +170,7 @@ static struct {
     // This will be just called for has()
     {"gridded", "Nx", is("dataRepresentationType", 5L),},  // Polar stereo
     {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
-    {"spherical", "pentagonalResolutionParameterJ"},
+    {"spectral", "pentagonalResolutionParameterJ"},
 
     /// FIXME: Find something that does no clash
     {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator",  is("isOctahedral", 0L)},

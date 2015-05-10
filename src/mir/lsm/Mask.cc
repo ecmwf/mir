@@ -70,7 +70,7 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
     }
 
     name = name +  which;
-    LSMChooser& chooser = LSMChooser::lookup(name);
+    const LSMChooser& chooser = LSMChooser::lookup(name);
     std::string key = chooser.cacheKey(name, parametrisation, grid);
 
     pthread_once(&once, init);
