@@ -94,6 +94,7 @@ class ReducedLL : public Gridded {
 
     virtual void fill(grib_info&) const;
     atlas::Grid* atlasGrid() const;
+    virtual void validate(const std::vector<double>&) const;
 
 // -- Class members
     // None
