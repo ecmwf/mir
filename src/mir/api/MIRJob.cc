@@ -57,6 +57,7 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
         return;
     }
 
+
     // Accroding to c++11, this should be thread safe (assuming contructors are thread safe as well)
 
     const param::MIRParametrisation& defaults = param::MIRDefaults::instance();
@@ -64,7 +65,11 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
     eckit::Timer timer("MIRJob::execute");
 
+    int fmt = eckit::format(eckit::Log::info());
+    eckit::setformat(eckit::Log::info(), eckit::Log::applicationFormat);
     eckit::Log::info() << "MIRJob::execute: " << *this << std::endl;
+    eckit::setformat(eckit::Log::info(), fmt);
+
     eckit::Log::info() << "          Input: " << input << std::endl;
     eckit::Log::info() << "         Output: " << output << std::endl;
 
@@ -99,9 +104,15 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
 
 void MIRJob::print(std::ostream& out) const {
-    out << "MIRJob[";
-    SimpleParametrisation::print(out);
-    out << "]";
+    if (eckit::format(out) == eckit::Log::applicationFormat) {
+        out << "[mir_tool ";
+        SimpleParametrisation::print(out);
+        out << " in.grib out.grib]";
+    } else {
+        out << "MIRJob[";
+        SimpleParametrisation::print(out);
+        out << "]";
+    }
 }
 
 MIRJob& MIRJob::clear(const std::string& name) {

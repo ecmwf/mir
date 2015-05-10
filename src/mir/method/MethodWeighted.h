@@ -22,8 +22,14 @@
 #include "mir/method/WeightCache.h"
 #include "mir/method/WeightMatrix.h"
 
-namespace atlas { class Grid; }
-namespace mir { namespace lsm { class LandSeaMasks; }}
+namespace atlas {
+class Grid;
+}
+namespace mir {
+namespace lsm {
+class LandSeaMasks;
+}
+}
 
 namespace mir {
 namespace method {
@@ -42,9 +48,10 @@ class MethodWeighted : public Method {
 
     virtual void execute(data::MIRField &field, const atlas::Grid &in, const atlas::Grid &out) const;
 
+    virtual void hash( eckit::MD5& ) const;
+
   protected:
 
-    virtual const char *name() const = 0;
 
     virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const = 0;
 
@@ -59,12 +66,10 @@ class MethodWeighted : public Method {
 
   private:
 
+    virtual const char *name() const = 0;
+
     void computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
 
-    friend std::ostream &operator<<(std::ostream &s, const MethodWeighted &p) {
-        p.print(s);
-        return s;
-    }
 
 };
 

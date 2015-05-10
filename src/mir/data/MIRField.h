@@ -71,6 +71,8 @@ class MIRField {
     void hasMissing(bool on);
     bool hasMissing() const ;
 
+    void validate() const;
+
     //
 
     // -- Overridden methods

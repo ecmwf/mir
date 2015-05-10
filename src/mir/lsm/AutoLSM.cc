@@ -18,6 +18,8 @@
 
 #include <iostream>
 #include "mir/lsm/GribFileLSM.h"
+#include "eckit/utils/MD5.h"
+#include "atlas/Grid.h"
 
 namespace mir {
 namespace lsm {
@@ -35,11 +37,25 @@ void AutoLSM::print(std::ostream& out) const {
     out << "AutoLSM[" << name_ << "]";
 }
 
+std::string AutoLSM::path(const param::MIRParametrisation &parametrisation) const {
+    // TODO: Implement clever selection
+    return  "~mir/etc/lsm.N640.grib";
+}
+
 Mask *AutoLSM::create(const std::string &name,
-                      const std::string &key,
-                      const param::MIRParametrisation &parametrisation,
+                      const param::MIRParametrisation &param,
                       const atlas::Grid &grid) const {
-    return new GribFileLSM(name, key, parametrisation, grid);
+    return new GribFileLSM(name, path(param), param, grid);
+}
+
+std::string AutoLSM::cacheKey(const std::string &name,
+                              const param::MIRParametrisation &param,
+                              const atlas::Grid &grid) const {
+    eckit::MD5 md5;
+    md5 << path(param)
+        << grid;
+
+    return "auto." + md5.digest();
 }
 
 

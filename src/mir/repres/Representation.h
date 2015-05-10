@@ -71,6 +71,8 @@ class Representation {
 
 // -- Methods
 
+    virtual void validate(const std::vector<double> &values) const;
+
     virtual void fill(grib_info&) const;
 
     virtual Representation* crop(const util::BoundingBox&,

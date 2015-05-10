@@ -20,6 +20,8 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+#include "eckit/utils/MD5.h"
+
 #include "mir/lsm/NoneLSM.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -43,34 +45,17 @@ static void init() {
 }  // (anonymous namespace)
 
 
-Mask::Mask(const std::string &name, const std::string &key):
-    name_(name), key_(key) {
+Mask::Mask(const std::string &name):
+    name_(name) {
 }
 
 
 Mask::~Mask() {
 }
 
-//-----------------------------------------------------------------------------
-
-class EmptyLandSeaMask : public Mask {
-    virtual bool active() const {
-        return false;
-    }
-    virtual const data::MIRField &field() const {
-        NOTIMP;
-    }
-    virtual std::string uniqueID() const {
-        return "<no-lsm>";
-    }
-    virtual void hash(eckit::MD5& md5) const {}
-    virtual void print(std::ostream &out) const {
-        out << name_;
-    }
-  public:
-    EmptyLandSeaMask() : Mask("<no-lsm>", "<no-lsm>") {}
-};
-
+void Mask::hash(eckit::MD5 & md5) const {
+    md5 << name_;
+}
 //-----------------------------------------------------------------------------
 
 Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::Grid &grid, const std::string& which) {
@@ -78,17 +63,15 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
 
     std::string name;
 
-
     if (!parametrisation.get("lsm" + which, name)) {
         if (!parametrisation.get("lsm", name)) {
             return NoneLSM::instance();
         }
     }
 
-
-    std::stringstream os;
-    os << name << which << "-" << grid.unique_id();
-    std::string key = os.str();
+    name = name +  which;
+    LSMChooser& chooser = LSMChooser::lookup(name);
+    std::string key = chooser.cacheKey(name, parametrisation, grid);
 
     pthread_once(&once, init);
 
@@ -101,9 +84,7 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
         return *(*j).second;
     }
 
-    name = name +  which;
-    LSMChooser& chooser = LSMChooser::lookup(name);
-    Mask* mask = chooser.create(name, key, parametrisation, grid);
+    Mask* mask = chooser.create(name, parametrisation, grid);
 
     cache[key] = mask;
 
@@ -135,9 +116,6 @@ bool Mask::active() const {
     return true;
 }
 
-std::string Mask::uniqueID() const {
-    return key_;
-}
 //-----------------------------------------------------------------------------
 
 

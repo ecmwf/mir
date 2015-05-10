@@ -112,7 +112,7 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
         }
     }
 
-    if (parametrisation_.has("field.gridded")) {
+    else if (parametrisation_.has("field.gridded")) {
 
         if (parametrisation_.has("user.grid")) {
             if (parametrisation_.has("user.rotation")) {
@@ -145,6 +145,8 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
                 plan.add("interpolate.grid2octahedral-gg");
             }
         }
+    } else {
+        throw eckit::SeriousBug("Input field in neither spectral nor gridded");
     }
 
     if (parametrisation_.has("user.area")) {

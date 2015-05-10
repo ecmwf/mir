@@ -1,5 +1,20 @@
 MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
+PHILOSPY
+- 1 Make it work
+- 2 Make it correct
+- 3 Make it fast
+
+WHAT IS MISSING
+- Support of polar stereographic grids
+
+WHAT DOES NOT WORK
+- SH to LL with different increments north/south and west/east
+
+QUESTIONS
+- Should we cache identity matrices
+- Should compute interpolate if matrix is identity?
+
 PRIORITY
 
  - MIR: create unit test framework
@@ -21,6 +36,7 @@ MIR
 
 TESTING:
 - Test mir_tool with valgrind
+-
 
 EMOSLIB
 - Find out about all intuv* functions

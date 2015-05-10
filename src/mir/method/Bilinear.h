@@ -18,7 +18,9 @@
 #include "mir/method/MethodWeighted.h"
 
 namespace eckit {
-namespace geometry { class Point3; }
+namespace geometry {
+class Point3;
+}
 }
 
 namespace mir {
@@ -57,10 +59,6 @@ class Bilinear: public MethodWeighted {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const Bilinear& p) {
-        p.print(s);
-        return s;
-    }
 
 };
 
