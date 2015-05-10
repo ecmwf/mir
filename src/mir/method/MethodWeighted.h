@@ -22,21 +22,19 @@
 #include "mir/method/WeightCache.h"
 #include "mir/method/WeightMatrix.h"
 
-// namespace atlas {
-// class Grid;
-// }
+namespace atlas { class Grid; }
 namespace mir { namespace lsm { class LandSeaMasks; }}
 
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class MethodWeighted : public Method {
 
     WeightCache cache_;
 
   public:
-
 
     explicit MethodWeighted(const param::MIRParametrisation &);
 
@@ -70,8 +68,10 @@ class MethodWeighted : public Method {
 
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
 #endif
 

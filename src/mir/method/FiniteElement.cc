@@ -41,6 +41,10 @@ const char* FiniteElement::name() const {
     return  "finite-element";
 }
 
+void FiniteElement::hash( eckit::MD5& md5) const {
+  md5.add(name());
+}
+
 bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, int idx[3], const size_t k) const {
     using namespace eckit;
 
@@ -63,27 +67,27 @@ bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, in
     size_t tid = std::numeric_limits<size_t>::max();
 
     for( size_t i = 0; i < cs.size(); ++i ) {
-        tid = cs[i].value().payload();
 
+      tid = cs[i].value().payload();
 
-        ASSERT( tid < nb_triags );
+      ASSERT( tid < nb_triags );
 
-        idx[0] = triag_nodes(tid,0);
-        idx[1] = triag_nodes(tid,1);
-        idx[2] = triag_nodes(tid,2);
+      idx[0] = triag_nodes(tid,0);
+      idx[1] = triag_nodes(tid,1);
+      idx[2] = triag_nodes(tid,2);
 
-        ASSERT( idx[0] < inp_npts && idx[1] < inp_npts && idx[2] < inp_npts );
+      ASSERT( idx[0] < inp_npts && idx[1] < inp_npts && idx[2] < inp_npts );
 
-        atlas::Triag triag( icoords[idx[0]].data() , icoords[idx[1]].data(), icoords[idx[2]].data() );
+      atlas::Triag triag( icoords[idx[0]].data() , icoords[idx[1]].data(), icoords[idx[2]].data() );
 
-        found = triag.intersects( ray, uvt );
+      found = triag.intersects( ray, uvt );
 
-        if(found) { // weights are the baricentric cooridnates u,v
-            phi[0] = uvt.w();
-            phi[1] = uvt.u;
-            phi[2] = uvt.v;
-            break;
-        }
+      if(found) { // weights are the baricentric cooridnates u,v
+        phi[0] = uvt.w();
+        phi[1] = uvt.u;
+        phi[2] = uvt.v;
+        break;
+      }
 
     } // loop over nearest triangles
 

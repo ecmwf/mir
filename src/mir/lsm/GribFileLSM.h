@@ -16,6 +16,10 @@
 #ifndef GribFileLSM_H
 #define GribFileLSM_H
 
+#include <iosfwd>
+
+#include "eckit/filesystem/PathName.h"
+
 #include "mir/lsm/Mask.h"
 
 namespace mir { namespace param { class MIRParametrisation; }}
@@ -23,9 +27,10 @@ namespace mir { namespace param { class MIRParametrisation; }}
 namespace mir {
 namespace lsm {
 
-
-
 class GribFileLSM : public Mask {
+
+  eckit::PathName path_;
+
   public:
 
 // -- Exceptions
@@ -50,8 +55,6 @@ class GribFileLSM : public Mask {
 
 // -- Methods
 
-
-
 // -- Overridden methods
     // None
 
@@ -67,8 +70,9 @@ class GribFileLSM : public Mask {
 
 // -- Methods
 
+    virtual void hash(eckit::MD5&) const;
 
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;
 
 // -- Overridden methods
     // None

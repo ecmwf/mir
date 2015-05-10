@@ -7,10 +7,9 @@ PHILOSPY
 
 PRIORITY
 
- - Create a Tesselation interface, with multiple implementations (Delaunay, ReducedGrid, etc)
-   CacheMesh should take tesselation method into account
  - MIR: create unit test framework
  - MIR: Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
+
  - Find out in libemos:
     * sh to rot latlon - what is the path?
     * how 10m uv grid point - how are they interpolate, intvec?
@@ -40,7 +39,12 @@ ECKIT
 
 IN ATLAS:
 - Make sure cached mesh files are not loaded for every field
+- refactor & code cleanup of the Grid hiearchy
+- Create a Tesselation interface, with multiple implementations (Delaunay, ReducedGrid, etc)
+- atlas gmsh writer must write with DataHandle
+  CacheMesh should take tesselation method into account
 - Speed-up mesh loading
+   * use gmsh binary format + DataHandle/BufferedHandle
 
 IN TRANS
 - Check if transi can be called with a regular gaussian as output

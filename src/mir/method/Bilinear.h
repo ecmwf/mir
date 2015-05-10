@@ -17,13 +17,9 @@
 
 #include "mir/method/MethodWeighted.h"
 
-
 namespace eckit {
-namespace geometry {
-class Point3;
+namespace geometry { class Point3; }
 }
-}
-
 
 namespace mir {
 namespace method {
@@ -32,48 +28,13 @@ namespace method {
 class Bilinear: public MethodWeighted {
   public:
 
-// -- Exceptions
-    // None
-
-// -- Contructors
     Bilinear(const param::MIRParametrisation&);
 
-// -- Destructor
     virtual ~Bilinear();
-
-// -- Convertors
-    // None
-
-// -- Operators
-    // None
-
-// -- Methods
-    // None
-
-// -- Overridden methods
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
 
   protected:
 
-// -- Members
-
-
-// -- Methods
-
-
-// -- Overridden methods
-    // None
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
+    virtual void hash( eckit::MD5& ) const;
 
   private:
 
@@ -103,8 +64,8 @@ class Bilinear: public MethodWeighted {
 
 };
 
-
 }  // namespace method
 }  // namespace mir
+
 #endif
 

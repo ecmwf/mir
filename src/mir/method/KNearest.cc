@@ -43,6 +43,12 @@ const char *KNearest::name() const {
     return  "k-nearest";
 }
 
+void KNearest::hash( eckit::MD5& md5) const {
+  md5.add(name());
+  md5.add(nclosest_);
+  md5.add(epsilon_);
+}
+
 void KNearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
     util::PointSearch sptree(in.mesh());

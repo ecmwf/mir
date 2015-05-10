@@ -10,6 +10,7 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
 /// @date May 2015
 
 
@@ -19,93 +20,38 @@
 #include <iosfwd>
 #include <string>
 
+#include "eckit/memory/NonCopyable.h"
 
-namespace atlas {
-class Grid;
-}
+namespace eckit { class MD5; }
+namespace atlas { class Grid; }
 
 namespace mir {
-namespace data {
-class MIRField;
-}
-namespace param {
-class MIRParametrisation;
-}
+
+namespace data { class MIRField; }
+namespace param { class MIRParametrisation; }
+
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
-class Method {
+class Method : private eckit::NonCopyable {
   public:
 
-// -- Exceptions
-    // None
-
-// -- Contructors
     Method(const param::MIRParametrisation&);
 
-// -- Destructor
     virtual ~Method();
 
-// -- Convertors
-    // None
+    virtual void hash( eckit::MD5& ) const = 0;
 
-// -- Operators
-    // None
-
-// -- Methods
     virtual void execute(data::MIRField&, const atlas::Grid&, const atlas::Grid&) const = 0;
-
-// -- Overridden methods
-    // None
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
 
   protected:
 
-// -- Members
     const param::MIRParametrisation& parametrisation_;
 
-
-// -- Methods
-
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
-
-// -- Overridden methods
-    // None
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
+    virtual void print(std::ostream&) const = 0;
 
   private:
-
-// No copy allowed
-
-    Method(const Method&);
-    Method& operator=(const Method&);
-
-// -- Members
-    // None
-
-// -- Methods
-    // None
-
-// -- Overridden methods
-    // None
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-// -- Friends
 
     friend std::ostream& operator<<(std::ostream& s,const Method& p) {
         p.print(s);
@@ -114,6 +60,7 @@ class Method {
 
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class MethodFactory {
     std::string name_;
@@ -130,6 +77,7 @@ class MethodFactory {
 
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 template< class T>
 class MethodBuilder : public MethodFactory {
@@ -140,8 +88,10 @@ class MethodBuilder : public MethodFactory {
     MethodBuilder(const std::string& name) : MethodFactory(name) {}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
 #endif
 

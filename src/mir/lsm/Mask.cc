@@ -10,6 +10,7 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
 /// @date Apr 2015
 
 #include "mir/lsm/Mask.h"
@@ -62,6 +63,7 @@ class EmptyLandSeaMask : public Mask {
     virtual std::string uniqueID() const {
         return "<no-lsm>";
     }
+    virtual void hash(eckit::MD5& md5) const {}
     virtual void print(std::ostream &out) const {
         out << name_;
     }

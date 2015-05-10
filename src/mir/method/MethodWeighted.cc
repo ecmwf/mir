@@ -71,8 +71,6 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     std::string key_no_masks = os.str();
 
-
-
     os << "-" << masks.uniqueID();
     std::string key_with_masks = os.str();
 

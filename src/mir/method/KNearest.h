@@ -24,52 +24,18 @@ namespace method {
 
 
 class KNearest: public MethodWeighted {
-  public:
 
-// -- Exceptions
-    // None
+public:
 
-// -- Contructors
     KNearest(const param::MIRParametrisation&);
 
-// -- Destructor
     virtual ~KNearest();
 
-// -- Convertors
-    // None
+protected:
 
-// -- Operators
-    // None
+    virtual void hash( eckit::MD5& ) const;
 
-// -- Methods
-    // None
-
-// -- Overridden methods
-
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-  protected:
-
-// -- Members
-
-// -- Methods
-    // None
-
-// -- Overridden methods
-    // None
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-  private:
+private:
 
 // -- Methods
 
@@ -77,15 +43,9 @@ class KNearest: public MethodWeighted {
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
-// -- Overridden methods
-    // None
-
 // -- Class members
     size_t nclosest_;  ///< Number of closest points to search for
     double epsilon_;
-
-// -- Class methods
-    // None
 
 // -- Friends
 
@@ -96,8 +56,8 @@ class KNearest: public MethodWeighted {
 
 };
 
-
 }  // namespace method
 }  // namespace mir
+
 #endif
 

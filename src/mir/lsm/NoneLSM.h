@@ -61,8 +61,7 @@ class NoneLSM : public LSMChooser {
 
     // -- Methods
 
-
-    virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;
 
     // -- Overridden methods
     // None

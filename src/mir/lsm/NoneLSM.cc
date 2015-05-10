@@ -22,6 +22,7 @@ namespace lsm {
 class NoLSM : public Mask {
     virtual bool active() const { return false; }
     virtual bool cacheable() const { return false; }
+    virtual void hash(eckit::MD5&) const {}
     virtual void print(std::ostream & out) const { out << "none"; }
 public:
     NoLSM(): Mask("none", "none") {}

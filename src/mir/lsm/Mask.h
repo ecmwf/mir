@@ -10,6 +10,7 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
 /// @date Apr 2015
 
 
@@ -20,22 +21,18 @@
 #include <string>
 #include <memory>
 
-namespace atlas { class Grid; }
+#include "eckit/memory/NonCopyable.h"
 
+namespace eckit { class MD5; }
+namespace atlas { class Grid; }
 namespace mir { namespace param { class MIRParametrisation; } }
 namespace mir { namespace data { class MIRField; }}
-
 
 namespace mir {
 namespace lsm {
 
-class Mask {
+class Mask : private eckit::NonCopyable {
   public:
-
-    // -- Exceptions
-    // None
-
-    // -- Contructors
 
     Mask(const std::string &name, const std::string &key);
 
@@ -56,6 +53,8 @@ class Mask {
 
     virtual bool cacheable() const;
     virtual const data::MIRField &field() const;
+
+    virtual void hash(eckit::MD5&) const = 0;
 
     // -- Overridden methods
     // None
@@ -78,8 +77,7 @@ class Mask {
 
     // -- Methods
 
-
-    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream &) const = 0;
 
     // -- Overridden methods
     // None
@@ -91,11 +89,6 @@ class Mask {
     // None
 
   private:
-
-    // No copy allowed
-
-    Mask(const Mask &);
-    Mask &operator=(const Mask &);
 
     // -- Members
     // None
@@ -122,8 +115,8 @@ class Mask {
 
 };
 
-
 }  // namespace logic
 }  // namespace mir
+
 #endif
 
