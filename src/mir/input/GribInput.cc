@@ -243,6 +243,8 @@ data::MIRField *GribInput::field() const {
     }
 
     field->values(values, 0);
+    field->validate();
+
     return field;
 
 }
