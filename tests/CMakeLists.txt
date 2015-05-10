@@ -12,6 +12,8 @@ set( GRIB_DEFINITION_PATH ${grib_api_BASE_DIR}/share/grib_api/definitions/ )
 set( GRIB_SAMPLES_PATH    ${grib_api_BASE_DIR}/share/grib_api/samples/ )
 
 
+
+
 #### TESTS
 
 get_target_property( MIR_TOOL mir_tool LOCATION )
@@ -47,3 +49,21 @@ foreach( _t ${_test_reqs} )
                     TEST_DEPENDS get_data
                   )
 endforeach()
+
+#### TEST ALL GRIB_API templates
+
+# debug_var(GRIB_SAMPLES_PATH)
+file(GLOB_RECURSE grib_tmpl  ${GRIB_SAMPLES_PATH}*.tmpl)
+
+foreach( _t ${grib_tmpl} )
+  get_filename_component(_tst ${_t} NAME_WE)
+  debug_var(_tst)
+  ecbuild_add_test( TARGET test_grib_sample_${_tst}
+                    COMMAND ${MIR_TOOL}
+                    ARGS "--grib=1/1" ${_t} /dev/null
+                    ENVIRONMENT
+                      GRIB_DEFINITION_PATH=${GRIB_DEFINITION_PATH}
+                      GRIB_SAMPLES_PATH=${GRIB_SAMPLES_PATH}
+                  )
+endforeach()
+# debug_var(grib_tmpl )
