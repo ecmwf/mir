@@ -3,7 +3,7 @@ find_program( GRIB_LS      grib_ls )
 
 if( NOT GRIB_COMPARE AND TARGET grib_compare )
 	get_target_property( GRIB_COMPARE grib_compare LOCATION )
-	get_target_property( GRIB_LS      grib_ls      LOCATION )
+        get_target_property( GRIB_LS      grib_ls      LOCATION )
 endif()
 
 # define the grib environment
@@ -11,38 +11,39 @@ endif()
 set( GRIB_DEFINITION_PATH ${grib_api_BASE_DIR}/share/grib_api/definitions/ )
 set( GRIB_SAMPLES_PATH    ${grib_api_BASE_DIR}/share/grib_api/samples/ )
 
+
 #### TESTS
 
-# To add a test, just add the mir request with a .req extension
-# and make sure the target=testdata which automatically gets substituted to testdata.prod and testdata.test
+get_target_property( MIR_TOOL mir_tool LOCATION )
 
-#list( APPEND _test_reqs
-#  foo.grib
-#  bar.grib
-#)
+# each line is a request,
+# we parse the line and take the last entry as the file to download
 
-#foreach( t ${_test_reqs} )
-#        list( APPEND _test_data )
-#endforeach()
+list( APPEND _test_reqs
+  "--grid=2/2 --area=40/20/20/40 ll11_msl.grib"
+  "--grid=1/1 ll22_msl.grib"
+  "ll33_msl.grib"
+)
 
-#ecbuild_get_test_multidata( TARGET mit_get_test_data NAMES ${_test_data} )
+foreach( _t ${_test_reqs} )
+  separate_arguments(_t)
+  list( GET       _t -1 _f )
+  list( APPEND _test_data ${_f} )
+endforeach()
 
-#ecbuild_add_resources( TARGET tests_run_mars SOURCES_PACK ${_test_reqs} )
+ecbuild_get_test_multidata( TARGET mit_get_test_data NAMES ${_test_data} )
 
-#foreach( _req ${_test_reqs} )
+foreach( _t ${_test_reqs} )
+  separate_arguments(_t)
+  list( GET _t -1 _file )
+  string(REGEX REPLACE "[^A-Za-z0-9]" "_" _tst ${_file})
 
-#        string(REGEX REPLACE "[^A-Za-z0-9]" "_" _tst ${_req})
-
-#        ecbuild_add_test(
-#                                TARGET test_${_tst}
-#                                TYPE SCRIPT
-#                                COMMAND ${CMAKE_CURRENT_BINARY_DIR}/run_mars.sh
-#                                ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${_req}
-#        ENVIRONMENT
-#          TESTS_DIR=${CMAKE_CURRENT_BINARY_DIR}
-#          MARS_HOME=${PROJECT_SOURCE_DIR}
-#          MARS_LSM_PATH=${libemos_BASE_DIR}/share/libemos/tables/interpol/
-#                                TEST_DEPENDS get_data
-#                                )
-
-#endforeach()
+  ecbuild_add_test( TARGET test_${_tst}
+                    COMMAND ${MIR_TOOL}
+                    ARGS ${_t} ${_file}.test
+                    ENVIRONMENT
+                      GRIB_DEFINITION_PATH=${GRIB_DEFINITION_PATH}
+                      GRIB_SAMPLES_PATH=${GRIB_SAMPLES_PATH}
+                    TEST_DEPENDS get_data
+                  )
+endforeach()
