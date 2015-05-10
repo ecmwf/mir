@@ -168,6 +168,7 @@ static struct {
     {"south_pole_rotation_angle", "angleOfRotationInDegrees"},
 
     // This will be just called for has()
+    {"gridded", "Nx", is("dataRepresentationType", 5L),},  // Polar stereo
     {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
     {"spherical", "pentagonalResolutionParameterJ"},
 
@@ -242,6 +243,8 @@ data::MIRField *GribInput::field() const {
     }
 
     field->values(values, 0);
+    field->validate();
+
     return field;
 
 }

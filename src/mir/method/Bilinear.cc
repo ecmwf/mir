@@ -77,7 +77,7 @@ const char *Bilinear::name() const {
 }
 
 void Bilinear::hash( eckit::MD5& md5) const {
-  md5.add(name());
+    MethodWeighted::hash(md5);
 }
 
 void Bilinear::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {

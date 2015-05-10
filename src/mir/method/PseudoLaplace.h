@@ -24,28 +24,24 @@ namespace method {
 
 class PseudoLaplace: public MethodWeighted {
 
-  size_t nclosest_;  ///< Number of closest points to search for
+    size_t nclosest_;  ///< Number of closest points to search for
 
-public:
+  public:
 
     PseudoLaplace(const param::MIRParametrisation&);
 
     virtual ~PseudoLaplace();
 
-protected:
+  protected:
 
-  virtual void hash( eckit::MD5& ) const;
+    virtual void hash( eckit::MD5& ) const;
 
-private:
+  private:
 
     virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
-    friend std::ostream& operator<<(std::ostream& s,const PseudoLaplace& p) {
-        p.print(s);
-        return s;
-    }
 };
 
 }  // namespace method

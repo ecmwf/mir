@@ -23,23 +23,19 @@ namespace mir {
 namespace method {
 
 
-class KNearest: public Nearest {
+class NearestNeighbour: public Nearest {
 
   public:
 
-    KNearest(const param::MIRParametrisation&);
+    NearestNeighbour(const param::MIRParametrisation&);
 
-    virtual ~KNearest();
+    virtual ~NearestNeighbour();
 
   protected:
 
     virtual void hash( eckit::MD5& ) const;
 
   private:
-
-// -- Members
-
-    size_t nclosest_;
 
 // -- Methods
 

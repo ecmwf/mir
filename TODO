@@ -5,6 +5,16 @@ PHILOSPY
 - 2 Make it correct
 - 3 Make it fast
 
+WHAT IS MISSING
+- Support of polar stereographic grids
+
+WHAT DOES NOT WORK
+- SH to LL with different increments north/south and west/east
+
+QUESTIONS
+- Should we cache identity matrices
+- Should compute interpolate if matrix is identity?
+
 PRIORITY
 
  - MIR: create unit test framework

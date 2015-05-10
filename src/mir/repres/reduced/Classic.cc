@@ -15,6 +15,7 @@
 #include "mir/repres/reduced/Classic.h"
 
 #include "atlas/Grid.h"
+#include "atlas/grids/grids.h"
 #include "mir/util/Grib.h"
 
 namespace mir {
@@ -68,6 +69,22 @@ atlas::Grid *Classic::atlasGrid() const {
     return atlas::Grid::create(std::string(os));
 }
 
+
+void Classic::validate(const std::vector<double>& values) const {
+    eckit::StrStream os;
+    os << "rgg.N" << N_ << eckit::StrStream::ends;
+    std::auto_ptr<atlas::grids::ReducedGrid> grid(dynamic_cast<atlas::grids::ReducedGrid*>(atlas::Grid::create(std::string(os))));
+
+    ASSERT(grid.get());
+
+    const std::vector<int>& v = grid->npts_per_lat();
+    size_t count = 0;
+    for (size_t i = 0; i < v.size(); i++) {
+        count += v[i];
+    }
+
+    ASSERT(values.size() == count);
+}
 
 } // namespace reduced
 }  // namespace repres

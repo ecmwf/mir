@@ -29,7 +29,7 @@ PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
     MethodWeighted(param),
     nclosest_(4) {
 
-  param.get("nclosest", nclosest_);
+    param.get("nclosest", nclosest_);
 
 }
 
@@ -41,8 +41,8 @@ const char* PseudoLaplace::name() const {
 }
 
 void PseudoLaplace::hash( eckit::MD5& md5) const {
-  md5.add(name());
-  md5.add(nclosest_);
+    MethodWeighted::hash(md5);
+    md5 << nclosest_;
 }
 
 void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {

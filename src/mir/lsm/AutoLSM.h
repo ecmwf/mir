@@ -84,6 +84,7 @@ class AutoLSM : public LSMChooser {
 
     // -- Methods
 
+    std::string path(const param::MIRParametrisation &param) const;
 
     // -- Overridden methods
     // None
@@ -93,9 +94,13 @@ class AutoLSM : public LSMChooser {
 
     // -- Class methods
 
-    virtual Mask *create(const std::string &name, const std::string &key,
-                         const param::MIRParametrisation &parametrisation, const atlas::Grid &grid) const ;
+    virtual Mask *create(const std::string &,
+                         const param::MIRParametrisation &param,
+                         const atlas::Grid &grid) const ;
 
+    virtual std::string cacheKey(const std::string &,
+                                 const param::MIRParametrisation &param,
+                                 const atlas::Grid &grid) const ;
 
 
     // -- Friends

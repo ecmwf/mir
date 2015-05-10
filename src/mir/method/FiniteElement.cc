@@ -38,11 +38,11 @@ FiniteElement::~FiniteElement() {
 }
 
 const char* FiniteElement::name() const {
-    return  "finite-element";
+    return "finite-element";
 }
 
 void FiniteElement::hash( eckit::MD5& md5) const {
-  md5.add(name());
+    MethodWeighted::hash(md5);
 }
 
 bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, int idx[3], const size_t k) const {
@@ -51,12 +51,12 @@ bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, in
     bool found = false;
 
     atlas::IndexView<int,   2> triag_nodes ( *ptriag_nodes );
-    atlas::ArrayView<double,2> icoords     ( *picoords     );
+    atlas::ArrayView<double, 2> icoords     ( *picoords     );
 
-    if(k > 1000000) {
+    if (k > 1000000) {
         eckit::Log::info() << "FiniteElement::project_point_to_triangle " << k << std::endl;
     }
-    atlas::PointIndex3::NodeList cs = ptree->kNearestNeighbours(p,k);
+    atlas::PointIndex3::NodeList cs = ptree->kNearestNeighbours(p, k);
 
     // find in which triangle the point is contained
     // by computing the intercetion of the point with each nearest triangle
@@ -66,28 +66,28 @@ bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, in
 
     size_t tid = std::numeric_limits<size_t>::max();
 
-    for( size_t i = 0; i < cs.size(); ++i ) {
+    for ( size_t i = 0; i < cs.size(); ++i ) {
 
-      tid = cs[i].value().payload();
+        tid = cs[i].value().payload();
 
-      ASSERT( tid < nb_triags );
+        ASSERT( tid < nb_triags );
 
-      idx[0] = triag_nodes(tid,0);
-      idx[1] = triag_nodes(tid,1);
-      idx[2] = triag_nodes(tid,2);
+        idx[0] = triag_nodes(tid, 0);
+        idx[1] = triag_nodes(tid, 1);
+        idx[2] = triag_nodes(tid, 2);
 
-      ASSERT( idx[0] < inp_npts && idx[1] < inp_npts && idx[2] < inp_npts );
+        ASSERT( idx[0] < inp_npts && idx[1] < inp_npts && idx[2] < inp_npts );
 
-      atlas::Triag triag( icoords[idx[0]].data() , icoords[idx[1]].data(), icoords[idx[2]].data() );
+        atlas::Triag triag( icoords[idx[0]].data() , icoords[idx[1]].data(), icoords[idx[2]].data() );
 
-      found = triag.intersects( ray, uvt );
+        found = triag.intersects( ray, uvt );
 
-      if(found) { // weights are the baricentric cooridnates u,v
-        phi[0] = uvt.w();
-        phi[1] = uvt.u;
-        phi[2] = uvt.v;
-        break;
-      }
+        if (found) { // weights are the baricentric cooridnates u,v
+            phi[0] = uvt.w();
+            phi[1] = uvt.u;
+            phi[2] = uvt.v;
+            break;
+        }
 
     } // loop over nearest triangles
 
@@ -131,7 +131,7 @@ void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
     // output mesh
 
     atlas::FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
-    atlas::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
+    atlas::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
 
     const size_t out_npts = o_nodes.shape(0);
 
@@ -145,14 +145,14 @@ void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
 
     // boost::progress_display show_progress( out_npts );
 
-    for( ip_ = 0; ip_ < out_npts; ++ip_ ) {
+    for ( ip_ = 0; ip_ < out_npts; ++ip_ ) {
         int idx[3]; /* indexes of the triangle that will contain the point*/
         Eigen::Vector3d phi;
         Point p ( ocoords[ip_].data() ); // lookup point
 
         size_t factorial = 1;
         size_t n = 1;
-        while( ! project_point_to_triangle( p, phi, idx, factorial ) ) {
+        while ( ! project_point_to_triangle( p, phi, idx, factorial ) ) {
             factorial *= ++n;
         }
 
@@ -160,7 +160,7 @@ void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
 
-        for(int i = 0; i < 3; ++i)
+        for (int i = 0; i < 3; ++i)
             weights_triplets.push_back( Eigen::Triplet<double>( ip_, idx[i], phi[i] ) );
     }
 

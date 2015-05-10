@@ -50,8 +50,8 @@ class LatLon : public Gridded {
 
     // -- Methods
 
-    size_t ni() const;
-    size_t nj() const;
+    // size_t ni() const;
+    // size_t nj() const;
 
     // -- Overridden methods
     // None
@@ -112,6 +112,7 @@ class LatLon : public Gridded {
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
 
+    virtual void validate(const std::vector<double>&) const;
 
     // -- Class members
     // None

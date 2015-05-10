@@ -22,13 +22,21 @@
 
 #include "eckit/memory/NonCopyable.h"
 
-namespace eckit { class MD5; }
-namespace atlas { class Grid; }
+namespace eckit {
+class MD5;
+}
+namespace atlas {
+class Grid;
+}
 
 namespace mir {
 
-namespace data { class MIRField; }
-namespace param { class MIRParametrisation; }
+namespace data {
+class MIRField;
+}
+namespace param {
+class MIRParametrisation;
+}
 
 namespace method {
 
