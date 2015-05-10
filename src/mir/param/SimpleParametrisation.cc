@@ -132,6 +132,30 @@ class TSettings : public Setting {
     }
 };
 
+template<class T>
+static void _put(std::ostream &out, const std::vector<T>& v) {
+    const char* sep = "";
+    const char* comma = ", ";
+    if (eckit::format(out) == eckit::Log::applicationFormat) {
+        comma = "/";
+    }
+    for(size_t i = 0; i < v.size(); i++) {
+        out << sep << v[i];
+        sep = comma;
+    }
+}
+
+template<>
+void TSettings<std::vector<long> >::print(std::ostream &out) const {
+   _put(out, value_);
+}
+
+template<>
+void TSettings<std::vector<double> >::print(std::ostream &out) const {
+   _put(out, value_);
+}
+
+//==========================================================
 
 
 //==========================================================
@@ -409,10 +433,18 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const
 
 void SimpleParametrisation::print(std::ostream &out) const {
     const char *sep = "";
+    const char *comma = ",";
+    const char *extra = "";
+
+    if (eckit::format(out) == eckit::Log::applicationFormat) {
+        extra ="--";
+        comma = " ";
+    }
+
     for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
         out << sep;
-        out << (*j).first << "=" << *((*j).second);
-        sep = ",";
+        out << extra << (*j).first << "=" << *((*j).second);
+        sep = comma;
     }
 }
 
