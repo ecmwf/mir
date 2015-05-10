@@ -1,5 +1,10 @@
 MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
+PHILOSPY
+- 1 Make it work
+- 2 Make it correct
+- 3 Make it fast
+
 PRIORITY
 
  - Create a Tesselation interface, with multiple implementations (Delaunay, ReducedGrid, etc)
@@ -22,6 +27,7 @@ MIR
 
 TESTING:
 - Test mir_tool with valgrind
+-
 
 EMOSLIB
 - Find out about all intuv* functions
