@@ -73,29 +73,27 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     eckit::StrStream os;
 
 
-    os << "T" << truncation << ":" << grid.unique_id() << eckit::StrStream::ends;
+    os << "T" << truncation << ":" << grid.unique_id()<< eckit::StrStream::ends;
     std::string key(os);
 
 
     // Warning: we keep the coefficient in memory for all the resolution used
     if (trans_handles.find(key) == trans_handles.end()) {
         eckit::Log::info() << "Creating a new TRANS handle for " << key << std::endl;
-        struct Trans_t &trans = trans_handles[key] = new_trans();
+        struct Trans_t &trans = trans_handles[key];
+        ASSERT(trans_new(&trans) == 0);
 
-        trans_set_trunc(&trans, truncation);
+        ASSERT(trans_set_trunc(&trans, truncation) == 0);
 
-        if (latlon) {
-            trans_set_resol_lonlat(&trans, latlon->nlon(), latlon->nlat());
-            eckit::Log::info() << "Calling trans_set_resol_lonlat(" << latlon->nlon() << "," << latlon->nlat() << ")" << std::endl;
+        if(latlon) {
+            ASSERT(trans_set_resol_lonlat(&trans,latlon->nlon(), latlon->nlat()) == 0);
         } else {
             const std::vector<int> &points_per_latitudes = reduced->npts_per_lat();
-            trans_set_resol(&trans, points_per_latitudes.size(), &points_per_latitudes[0]);
-            eckit::Log::info() << "Calling trans_set_resol(" << points_per_latitudes.size() << ",...)" << std::endl;
-
+            ASSERT(trans_set_resol(&trans, points_per_latitudes.size(), &points_per_latitudes[0]) == 0);
         }
 
         // Register resolution in trans library
-        trans_setup(&trans);
+        ASSERT(trans_setup(&trans) == 0);
     }
 
     struct Trans_t &trans = trans_handles[key];
@@ -120,7 +118,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     distspec.rspecg = &input[0];
     distspec.rspec  = &rspec[0];
     distspec.nfld   = number_of_fields;
-    trans_distspec(&distspec);
+    ASSERT(trans_distspec(&distspec) == 0);
 
 
     // Transform sp to gp fields
@@ -131,7 +129,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     invtrans.nscalar   = number_of_fields;
     invtrans.rspscalar = &rspec[0];
     invtrans.rgp       = &rgp[0];
-    trans_invtrans(&invtrans);
+    ASSERT(trans_invtrans(&invtrans) == 0);
 
 
     // Gather all gridpoint fields
@@ -146,7 +144,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     gathgrid.rgpg = &output[0];
     gathgrid.nfld = number_of_fields;
     gathgrid.nto  = &nto[0];
-    trans_gathgrid(&gathgrid);
+    ASSERT(trans_gathgrid(&gathgrid) == 0);
 
 
     // trans_delete(&trans);
