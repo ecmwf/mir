@@ -150,7 +150,9 @@ list(
     packing/Complex.cc
     packing/Complex.h
     packing/Packer.cc
-    packing/Packer.h
+    packing/Packer.h 
+	packing/ArchivedValue.cc 
+	packing/ArchivedValue.h
     packing/SecondOrder.cc
     packing/SecondOrder.h
     packing/Simple.cc
