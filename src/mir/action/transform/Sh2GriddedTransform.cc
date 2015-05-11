@@ -73,7 +73,7 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     eckit::StrStream os;
 
 
-    os << "T" << truncation << ":" << grid.unique_id()<< eckit::StrStream::ends;
+    os << "T" << truncation << ":" << grid.unique_id() << eckit::StrStream::ends;
     std::string key(os);
 
 
@@ -84,11 +84,14 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
 
         trans_set_trunc(&trans, truncation);
 
-        if(latlon) {
-            trans_set_resol_lonlat(&trans,latlon->nlon(), latlon->nlat());
+        if (latlon) {
+            trans_set_resol_lonlat(&trans, latlon->nlon(), latlon->nlat());
+            eckit::Log::info() << "Calling trans_set_resol_lonlat(" << latlon->nlon() << "," << latlon->nlat() << ")" << std::endl;
         } else {
             const std::vector<int> &points_per_latitudes = reduced->npts_per_lat();
             trans_set_resol(&trans, points_per_latitudes.size(), &points_per_latitudes[0]);
+            eckit::Log::info() << "Calling trans_set_resol(" << points_per_latitudes.size() << ",...)" << std::endl;
+
         }
 
         // Register resolution in trans library

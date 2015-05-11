@@ -6,14 +6,16 @@ PHILOSPY
 - 3 Make it fast
 
 WHAT IS MISSING
-- Support of polar stereographic grids
+- Support of polar stereographic grids (in and out)
+- Nearest LSM interpolation
 
 WHAT DOES NOT WORK
 - SH to LL with different increments north/south and west/east
 
 QUESTIONS
-- Should we cache identity matrices
+- Should we cache identity matrices?
 - Should compute interpolate if matrix is identity?
+- Should we interpolate to the reduced LL?
 
 PRIORITY
 
