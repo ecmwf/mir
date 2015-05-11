@@ -62,6 +62,7 @@ IN TRANS
 - Check if transi can be called with a regular gaussian as output
 - Get transi to print an error if memory allocation fails
 - sharedmem / memmap for caching transi structures
+- transi seems to be fast for coarse target resolution, e.g. T1279 => 2x2. In this case it may not be needed to cache the coefficients. We need to study what is the threseold when computing coeff is faster than loading them.
 
 PRODGEN:
 - ?
