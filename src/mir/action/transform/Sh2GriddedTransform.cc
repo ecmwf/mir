@@ -80,7 +80,8 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     // Warning: we keep the coefficient in memory for all the resolution used
     if (trans_handles.find(key) == trans_handles.end()) {
         eckit::Log::info() << "Creating a new TRANS handle for " << key << std::endl;
-        struct Trans_t &trans = trans_handles[key] = new_trans();
+        struct Trans_t &trans = trans_handles[key];
+        trans_new(&trans);
 
         trans_set_trunc(&trans, truncation);
 
