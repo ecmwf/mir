@@ -50,6 +50,8 @@ list(
     action/interpolate/Gridded2RotatedReduced.h
     action/interpolate/Gridded2RotatedRegular.cc
     action/interpolate/Gridded2RotatedRegular.h
+    action/interpolate/Gridded2PolarStereographic.cc
+    action/interpolate/Gridded2PolarStereographic.h
     action/misc/AreaCropper.cc
     action/misc/AreaCropper.h
     action/transform/Sh2GriddedTransform.cc
