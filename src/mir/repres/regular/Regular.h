@@ -13,19 +13,18 @@
 /// @date Apr 2015
 
 
-#ifndef FrameFilter_H
-#define FrameFilter_H
+#ifndef Regular_H
+#define Regular_H
 
-#include "mir/action/Action.h"
-
-#include "eckit/filesystem/PathName.h"
+#include "mir/repres/Gridded.h"
+#include "mir/util/BoundingBox.h"
 
 
 namespace mir {
-namespace action {
+namespace repres {
+namespace regular {
 
-
-class FrameFilter : public Action {
+class Regular : public Gridded {
   public:
 
 // -- Exceptions
@@ -33,11 +32,13 @@ class FrameFilter : public Action {
 
 // -- Contructors
 
-    FrameFilter(const param::MIRParametrisation&);
+    Regular(const param::MIRParametrisation&);
+    Regular(size_t);
+    Regular(size_t, const util::BoundingBox& bbox);
 
 // -- Destructor
 
-    virtual ~FrameFilter(); // Change to virtual if base class
+    virtual ~Regular(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -46,7 +47,6 @@ class FrameFilter : public Action {
     // None
 
 // -- Methods
-    // None
 
 // -- Overridden methods
     // None
@@ -60,11 +60,14 @@ class FrameFilter : public Action {
   protected:
 
 // -- Members
-    // None
+    size_t N_;
+    util::BoundingBox bbox_;
+
 
 // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    virtual void fill(grib_info&) const;
+    virtual atlas::Grid* atlasGrid() const;
 
 // -- Overridden methods
     // None
@@ -77,21 +80,24 @@ class FrameFilter : public Action {
 
   private:
 
+    Regular();
+
 // No copy allowed
 
-    FrameFilter(const FrameFilter&);
-    FrameFilter& operator=(const FrameFilter&);
+    Regular(const Regular&);
+    Regular& operator=(const Regular&);
 
 // -- Members
 
-    size_t size_;
+
 
 // -- Methods
     // None
 
+
 // -- Overridden methods
 
-    virtual void execute(data::MIRField&) const;
+    virtual void validate(const std::vector<double>&) const;
 
 
 // -- Class members
@@ -102,13 +108,14 @@ class FrameFilter : public Action {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const FrameFilter& p)
-    //	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const Regular& p)
+    //  { p.print(s); return s; }
 
 };
 
+} // namespace regular
 
-}  // namespace action
+}  // namespace repres
 }  // namespace mir
 #endif
 

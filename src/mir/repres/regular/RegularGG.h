@@ -16,15 +16,14 @@
 #ifndef RegularGG_H
 #define RegularGG_H
 
-#include "mir/repres/Gridded.h"
-#include "mir/util/BoundingBox.h"
+#include "mir/repres/regular/Regular.h"
 
 
 namespace mir {
 namespace repres {
 namespace regular {
 
-class RegularGG : public Gridded {
+class RegularGG : public Regular {
   public:
 
 // -- Exceptions
@@ -34,6 +33,7 @@ class RegularGG : public Gridded {
 
     RegularGG(const param::MIRParametrisation&);
     RegularGG(size_t);
+    RegularGG(size_t, const util::BoundingBox&);
 
 // -- Destructor
 
@@ -85,8 +85,6 @@ class RegularGG : public Gridded {
 
 // -- Members
 
-    size_t N_;
-    util::BoundingBox bbox_;
 
 // -- Methods
     // None
@@ -94,10 +92,10 @@ class RegularGG : public Gridded {
 
 // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual atlas::Grid* atlasGrid() const;
+    //virtual void fill(grib_info&) const;
+    //virtual atlas::Grid* atlasGrid() const;
     virtual Representation *clone() const;
-    virtual void validate(const std::vector<double>&) const;
+    //virtual void validate(const std::vector<double>&) const;
 
 
 // -- Class members
