@@ -39,6 +39,8 @@ MIR
 TESTING:
 - Test mir_tool with valgrind
 - Make sure we compare mir and emoslib for speed
+- Make sure we run diss_requests in metabuilder with date for which the seasonal exists
+-
 
 EMOSLIB
 - Find out about all intuv* functions
@@ -69,6 +71,7 @@ PRODGEN:
 
 MARS:
 - Is intermediate_gaussian reduced?
+- Implement saving of timers in json
 
 
 --------------------------------------------------------------------------------------------------

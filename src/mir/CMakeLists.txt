@@ -150,8 +150,8 @@ list(
     packing/Complex.cc
     packing/Complex.h
     packing/Packer.cc
-    packing/Packer.h 
-	packing/ArchivedValue.cc 
+    packing/Packer.h
+	packing/ArchivedValue.cc
 	packing/ArchivedValue.h
     packing/SecondOrder.cc
     packing/SecondOrder.h
@@ -205,6 +205,10 @@ list(
     repres/reduced/RotatedOctahedral.h
     repres/regular/RegularGG.cc
     repres/regular/RegularGG.h
+    repres/regular/Regular.cc
+    repres/regular/Regular.h
+    repres/regular/RotatedGG.cc
+    repres/regular/RotatedGG.h
     repres/Representation.cc
     repres/Representation.h
     repres/sh/SphericalHarmonics.cc

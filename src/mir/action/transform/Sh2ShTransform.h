@@ -82,7 +82,7 @@ class Sh2ShTransform : public Action {
 
 // -- Members
 
-    long truncation_;
+    size_t truncation_;
 
 // -- Methods
     // None
