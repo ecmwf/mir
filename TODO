@@ -73,6 +73,9 @@ MARS:
 - Is intermediate_gaussian reduced?
 - Implement saving of timers in json
 
+MEMO:
+- Use IFS new interpolation (SH->GG, SH->LL, new code, published paper)
+- Wave will go to unstructured grid
 
 --------------------------------------------------------------------------------------------------
 
