@@ -38,7 +38,7 @@ MIR
 
 TESTING:
 - Test mir_tool with valgrind
--
+- Make sure we compare mir and emoslib for speed
 
 EMOSLIB
 - Find out about all intuv* functions
@@ -65,7 +65,7 @@ IN TRANS
 - transi seems to be fast for coarse target resolution, e.g. T1279 => 2x2. In this case it may not be needed to cache the coefficients. We need to study what is the threseold when computing coeff is faster than loading them.
 
 PRODGEN:
-- ?
+- We need to make sure prodgen does not sub-sample
 
 MARS:
 - Is intermediate_gaussian reduced?
