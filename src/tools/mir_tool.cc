@@ -58,6 +58,7 @@ void MIRTool::usage(const std::string& tool) {
             << "   --grid=west_east/south_north" << std::endl
             << "   --intermediate_gaussian=N" << std::endl
             << "   --interpolation=method (e.g. bilinear)" << std::endl
+
             << "   --lsm.file (path to LSM to use for both input and output, in grib, only if --lsm=file)"
             << "   --lsm.file.input (path to LSM to use in input, in grib, only if --lsm=file)"
             << "   --lsm.file.output (path to LSM to use in input, in grib, only if --lsm=file)"
@@ -68,6 +69,7 @@ void MIRTool::usage(const std::string& tool) {
             << "   --lsm.selection.input (selction method for input lsm, in grib, e.g. auto or file)"
             << "   --lsm.selection.output (selction method for output lsm, in grib, e.g. auto or file)"
             << "   --lsm=0/1 (use lsm when interpolating)"
+
             << "   --nclosest=n (e.g. for k-nearest)" << std::endl
             << "   --octahedral=N" << std::endl
             << "   --packing=p (e.g. second-order)" << std::endl
