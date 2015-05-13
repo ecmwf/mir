@@ -49,11 +49,6 @@ class WeightCache : public eckit::CacheManager {
     /// @returns true if insertion successful cache
     void insert(const std::string &key, const WeightMatrix &W) const;
 
-    std::string generate_key(const Method &method,
-                             const atlas::Grid &in,
-                             const atlas::Grid &out,
-                             const lsm::Mask &maskin,
-                             const lsm::Mask &maskout) const;
 
   protected:
 

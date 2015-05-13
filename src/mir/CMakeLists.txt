@@ -136,6 +136,8 @@ list(
     method/redist/Redist.h
     method/WeightCache.cc
     method/WeightCache.h
+    action/transform/LegendreCache.cc
+    action/transform/LegendreCache.h
     method/WeightMatrix.h
     output/DummyOutput.cc
     output/DummyOutput.h

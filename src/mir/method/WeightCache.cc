@@ -10,29 +10,29 @@
 
 #include "WeightCache.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
+// #include <sys/types.h>
+// #include <sys/stat.h>
 
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <string>
+// #include <fstream>
+// #include <iostream>
+// #include <sstream>
+// #include <string>
 
-#include "eckit/config/Resource.h"
-#include "eckit/io/FileHandle.h"
+// #include "eckit/config/Resource.h"
+// #include "eckit/io/FileHandle.h"
 #include "eckit/io/BufferedHandle.h"
 #include "eckit/log/Timer.h"
-#include "eckit/log/Plural.h"
+// #include "eckit/log/Plural.h"
 #include "eckit/log/BigNum.h"
 
-#include "eckit/log/Seconds.h"
+// #include "eckit/log/Seconds.h"
 
-#include "atlas/Grid.h"
+// #include "atlas/Grid.h"
 
 #include "mir/api/mir_version.h"
-#include "mir/lsm/Mask.h"
-#include "mir/method/Method.h"
-#include "mir/method/WeightMatrix.h"
+// #include "mir/lsm/Mask.h"
+// #include "mir/method/Method.h"
+// #include "mir/method/WeightMatrix.h"
 
 namespace mir {
 namespace method {
@@ -57,12 +57,12 @@ b - Code should ASSERT() that what their are decoding looks correct. This can be
 
 */
 
-using eckit::CacheManager;
-using eckit::Log;
-using eckit::Resource;
-using eckit::FileHandle;
-using eckit::AutoClose;
-using eckit::PathName;
+// using eckit::CacheManager;
+// using eckit::Log;
+// using eckit::Resource;
+// using eckit::FileHandle;
+// using eckit::AutoClose;
+// using eckit::PathName;
 
 WeightCache::WeightCache() : CacheManager("mir/weights") {
 }
@@ -72,23 +72,6 @@ const char* WeightCache::version() const {
 }
 const char* WeightCache::extension() const {
     return ".mat";
-}
-
-std::string WeightCache::generate_key(const Method &method,
-                                      const atlas::Grid &in,
-                                      const atlas::Grid &out,
-                                      const lsm::Mask &maskin,
-                                      const lsm::Mask &maskout) const {
-
-    eckit::MD5 md5;
-
-    method.hash(md5);
-    in.hash(md5);
-    out.hash(md5);
-    maskin.hash(md5);
-    maskout.hash(md5);
-
-    return md5.digest();
 }
 
 void WeightCache::print(std::ostream &s) const {
@@ -104,9 +87,9 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) const {
 
     typedef WeightMatrix::Index Index;
 
-    PathName tmp_path = stage(key);
+    eckit::PathName tmp_path = stage(key);
 
-    Log::info() << "Inserting weights in cache (" << tmp_path << ")" << std::endl;
+    eckit::Log::info() << "Inserting weights in cache (" << tmp_path << ")" << std::endl;
 
     eckit::Timer timer("Saving weights to cache");
 
@@ -114,7 +97,7 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) const {
         eckit::BufferedHandle f(tmp_path.fileHandle());
 
         f.openForWrite(0);
-        AutoClose closer(f);
+        eckit::AutoClose closer(f);
 
         // write nominal size of matrix
 
@@ -161,12 +144,12 @@ bool WeightCache::retrieve(const std::string &key, WeightMatrix &W) const {
 
     typedef WeightMatrix::Index Index;
 
-    PathName path;
+    eckit::PathName path;
 
     if (!get(key, path))
         return false;
 
-    Log::info() << "Found weights in cache (" << path << ")" << std::endl;
+    eckit::Log::info() << "Found weights in cache (" << path << ")" << std::endl;
     eckit::Timer timer("Loading weights from cache");
 
     {
