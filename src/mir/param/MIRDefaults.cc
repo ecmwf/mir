@@ -30,6 +30,8 @@ MIRDefaults::MIRDefaults() {
     // For demo only:
 
     set("logic", "mars");
+    set("legendre.loader", "mapped-memory");
+
     set("interpolation", "finite-element"); // The word 'method' is used in grib
 
     set("lsm.selection", "auto");

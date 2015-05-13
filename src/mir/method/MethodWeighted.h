@@ -19,26 +19,19 @@
 // #include <string>
 
 #include "mir/method/Method.h"
-#include "mir/method/WeightCache.h"
 #include "mir/method/WeightMatrix.h"
 
-namespace atlas {
-class Grid;
-}
 namespace mir {
+
 namespace lsm {
 class LandSeaMasks;
 }
-}
 
-namespace mir {
 namespace method {
 
 //----------------------------------------------------------------------------------------------------------------------
 
 class MethodWeighted : public Method {
-
-    WeightCache cache_;
 
   public:
 

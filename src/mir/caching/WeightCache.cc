@@ -10,32 +10,16 @@
 
 #include "WeightCache.h"
 
-// #include <sys/types.h>
-// #include <sys/stat.h>
-
-// #include <fstream>
-// #include <iostream>
-// #include <sstream>
-// #include <string>
-
-// #include "eckit/config/Resource.h"
-// #include "eckit/io/FileHandle.h"
 #include "eckit/io/BufferedHandle.h"
 #include "eckit/log/Timer.h"
-// #include "eckit/log/Plural.h"
+#include "eckit/log/Plural.h"
 #include "eckit/log/BigNum.h"
 
-// #include "eckit/log/Seconds.h"
-
-// #include "atlas/Grid.h"
-
+#include "eckit/log/Seconds.h"
 #include "mir/api/mir_version.h"
-// #include "mir/lsm/Mask.h"
-// #include "mir/method/Method.h"
-// #include "mir/method/WeightMatrix.h"
 
 namespace mir {
-namespace method {
+namespace caching {
 
 /*
     What's left todo from Baudouin's code review:
@@ -83,18 +67,18 @@ void WeightCache::print(std::ostream &s) const {
       << "]";
 }
 
-void WeightCache::insert(const std::string &key, const WeightMatrix &W) const {
+void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) const {
 
-    typedef WeightMatrix::Index Index;
+    typedef method::WeightMatrix::Index Index;
 
-    eckit::PathName tmp_path = stage(key);
+    eckit::PathName tmp = stage(key);
 
-    eckit::Log::info() << "Inserting weights in cache (" << tmp_path << ")" << std::endl;
+    eckit::Log::info() << "Inserting weights in cache (" << tmp << ")" << std::endl;
 
     eckit::Timer timer("Saving weights to cache");
 
     {
-        eckit::BufferedHandle f(tmp_path.fileHandle());
+        eckit::BufferedHandle f(tmp.fileHandle());
 
         f.openForWrite(0);
         eckit::AutoClose closer(f);
@@ -111,7 +95,7 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) const {
 
         std::vector<Eigen::Triplet<double> > trips;
         for (size_t i = 0; i < W.outerSize(); ++i) {
-            for (WeightMatrix::InnerIterator it(W, i); it; ++it) {
+            for (method::WeightMatrix::InnerIterator it(W, i); it; ++it) {
                 trips.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
             }
         }
@@ -137,12 +121,12 @@ void WeightCache::insert(const std::string &key, const WeightMatrix &W) const {
         }
     }
 
-    commit(key, tmp_path);
+    ASSERT(commit(key, tmp));
 }
 
-bool WeightCache::retrieve(const std::string &key, WeightMatrix &W) const {
+bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) const {
 
-    typedef WeightMatrix::Index Index;
+    typedef method::WeightMatrix::Index Index;
 
     eckit::PathName path;
 
@@ -156,7 +140,7 @@ bool WeightCache::retrieve(const std::string &key, WeightMatrix &W) const {
         eckit::BufferedHandle f(path.fileHandle());
 
         f.openForRead();
-        AutoClose closer(f);
+        eckit::AutoClose closer(f);
 
         // read inpts, outpts sizes of matrix
 

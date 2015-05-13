@@ -15,6 +15,7 @@
 
 
 #include "mir/method/MethodWeighted.h"
+#include "mir/caching/WeightCache.h"
 
 #include <cmath>
 #include <limits>
@@ -110,12 +111,15 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     WeightMatrix W(out.npts(), in.npts());
     eckit::Log::info() << "Create matrix " << timer.elapsed() - here << std::endl;
 
-    if (!cache_.retrieve(cache_key, W)) {
+
+    static caching::WeightCache cache;
+
+    if (!cache.retrieve(cache_key, W)) {
         computeWeights(in, out, W);
         if (masks.active() && masks.cacheable()) {
             applyMasks(W, masks);
         }
-        cache_.insert(cache_key, W);
+        cache.insert(cache_key, W);
     }
 
     // If LSM not cacheabe, e.g. user provided, we apply the mask after

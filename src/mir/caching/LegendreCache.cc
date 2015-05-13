@@ -10,36 +10,14 @@
 
 #include "LegendreCache.h"
 
-// #include <sys/types.h>
-// #include <sys/stat.h>
-
-// #include <fstream>
-// #include <iostream>
-// #include <sstream>
-// #include <string>
-
-// #include "eckit/config/Resource.h"
-// #include "eckit/io/FileHandle.h"
-// #include "eckit/io/BufferedHandle.h"
-// #include "eckit/log/Timer.h"
-// #include "eckit/log/Plural.h"
-// #include "eckit/log/BigNum.h"
-
-// #include "eckit/log/Seconds.h"
-
-// #include "atlas/Grid.h"
-
-// #include "mir/api/mir_version.h"
-// #include "mir/lsm/Mask.h"
-// #include "mir/method/Method.h"
-// #include "mir/method/WeightMatrix.h"
+#include "mir/api/mir_version.h"
 
 namespace mir {
-namespace method {
+namespace caching {
 
 
 
-LegendreCache::LegendreCache() : CacheManager("mir/weights") {
+LegendreCache::LegendreCache() : CacheManager("mir/coeffs") {
 }
 
 const char* LegendreCache::version() const {

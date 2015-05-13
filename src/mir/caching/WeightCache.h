@@ -25,11 +25,11 @@ namespace atlas {
 class Grid;
 }
 
+
+namespace mir { namespace lsm { class Mask; }};
+
 namespace mir {
-namespace lsm {
-class Mask;
-}
-namespace method {
+namespace caching {
 
 class Method;
 
@@ -43,11 +43,11 @@ class WeightCache : public eckit::CacheManager {
 
     /// Tries to retrieve a cached WeightMatrix
     /// @returns true if found cache
-    bool retrieve(const std::string &key, WeightMatrix &W) const;
+    bool retrieve(const std::string &key, method::WeightMatrix &W) const;
 
     /// Inserts a cached WeightMatrix, overwritting any existing entry
     /// @returns true if insertion successful cache
-    void insert(const std::string &key, const WeightMatrix &W) const;
+    void insert(const std::string &key, const method::WeightMatrix &W) const;
 
 
   protected:

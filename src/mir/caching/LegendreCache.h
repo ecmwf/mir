@@ -12,26 +12,14 @@
 /// @author Tiago Quintino
 /// @date Oct 2013
 
-#ifndef mir_method_WeightCache_H
-#define mir_method_WeightCache_H
+#ifndef mir_method_LegendreCache_H
+#define mir_method_LegendreCache_H
 
-#include <string>
 
 #include "eckit/container/CacheManager.h"
 
-#include "mir/method/WeightMatrix.h"
-
-namespace atlas {
-class Grid;
-}
-
 namespace mir {
-namespace lsm {
-class Mask;
-}
-namespace method {
-
-class Method;
+namespace caching {
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -40,14 +28,6 @@ class LegendreCache : public eckit::CacheManager {
   public:  // methods
 
     LegendreCache();
-
-    /// Tries to retrieve a cached WeightMatrix
-    /// @returns true if found cache
-    bool retrieve(const std::string &key, WeightMatrix &W) const;
-
-    /// Inserts a cached WeightMatrix, overwritting any existing entry
-    /// @returns true if insertion successful cache
-    void insert(const std::string &key, const WeightMatrix &W) const;
 
 
   protected:

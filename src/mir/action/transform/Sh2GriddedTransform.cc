@@ -31,6 +31,8 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/caching/LegendreCache.h"
+#include "mir/caching/LegendreLoader.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
@@ -46,8 +48,14 @@ class TransInitor {
     }
 };
 
+struct TransCache {
+    struct Trans_t trans_;
+    mir::caching::LegendreLoader *loader_;
+    TransCache(): loader_(0) {}
+};
+
 static eckit::Mutex amutex;
-static std::map<std::string, struct Trans_t> trans_handles;
+static std::map<std::string, TransCache> trans_handles;
 
 #endif
 
@@ -55,7 +63,8 @@ namespace mir {
 namespace action {
 
 
-static void transform(size_t truncation, const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
+static void transform(const param::MIRParametrisation &parametrisation, size_t truncation,
+                      const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
 #ifdef ATLAS_HAVE_TRANS
 
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
@@ -73,30 +82,52 @@ static void transform(size_t truncation, const std::vector<double> &input, std::
     eckit::StrStream os;
 
 
-    os << "T" << truncation << ":" << grid.unique_id()<< eckit::StrStream::ends;
+    os << "T" << truncation << ":" << grid.unique_id() << eckit::StrStream::ends;
     std::string key(os);
 
 
     // Warning: we keep the coefficient in memory for all the resolution used
     if (trans_handles.find(key) == trans_handles.end()) {
         eckit::Log::info() << "Creating a new TRANS handle for " << key << std::endl;
-        struct Trans_t &trans = trans_handles[key];
+
+        TransCache &tc = trans_handles[key];
+        struct Trans_t &trans = tc.trans_;
+
         ASSERT(trans_new(&trans) == 0);
 
         ASSERT(trans_set_trunc(&trans, truncation) == 0);
 
-        if(latlon) {
-            ASSERT(trans_set_resol_lonlat(&trans,latlon->nlon(), latlon->nlat()) == 0);
+        if (latlon) {
+            ASSERT(trans_set_resol_lonlat(&trans, latlon->nlon(), latlon->nlat()) == 0);
         } else {
             const std::vector<int> &points_per_latitudes = reduced->npts_per_lat();
             ASSERT(trans_set_resol(&trans, points_per_latitudes.size(), &points_per_latitudes[0]) == 0);
         }
 
-        // Register resolution in trans library
-        ASSERT(trans_setup(&trans) == 0);
+        //
+        caching::LegendreCache cache;
+        eckit::PathName path;
+        if (!cache.get(key, path)) {
+            eckit::Timer timer("Caching coefficients");
+            eckit::Log::info() << "LegendreCache " << key << " does not exists" << std::endl;
+            eckit::PathName tmp = cache.stage(key);
+            ASSERT( trans_set_write(&trans, tmp.asString().c_str())  == 0);
+            ASSERT(trans_setup(&trans) == 0);
+
+            ASSERT(cache.commit(key, tmp));
+        } else {
+
+            tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
+            eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
+
+            ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) );
+
+            ASSERT(trans_setup(&trans) == 0);
+        }
     }
 
-    struct Trans_t &trans = trans_handles[key];
+    TransCache &tc = trans_handles[key];
+    struct Trans_t &trans = tc.trans_;
 
     // Initialise grid ===============================================
 
@@ -183,7 +214,7 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
 
         try {
             std::auto_ptr<atlas::Grid> grid(out->atlasGrid());
-            transform(in->truncation(), values, result, *grid);
+            transform(parametrisation_, in->truncation(), values, result, *grid);
         } catch (...) {
             delete out;
             throw;
