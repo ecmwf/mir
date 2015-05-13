@@ -120,7 +120,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
             tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
             eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
 
-            ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) );
+            ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 
             ASSERT(trans_setup(&trans) == 0);
         }
