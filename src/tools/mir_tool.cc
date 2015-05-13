@@ -23,6 +23,10 @@
 #include "mir/input/GribFileInput.h"
 #include "mir/output/GribFileOutput.h"
 
+#include "eckit/log/Timer.h"
+#include "eckit/log/Seconds.h"
+#include "eckit/log/Plural.h"
+
 
 class MIRTool : public eckit::Tool {
 
@@ -59,15 +63,15 @@ void MIRTool::usage(const std::string& tool) {
             << "   --intermediate_gaussian=N" << std::endl
             << "   --interpolation=method (e.g. bilinear)" << std::endl
 
-            << "   --lsm.file (path to LSM to use for both input and output, in grib, only if --lsm=file)"
-            << "   --lsm.file.input (path to LSM to use in input, in grib, only if --lsm=file)"
-            << "   --lsm.file.output (path to LSM to use in input, in grib, only if --lsm=file)"
-            << "   --lsm.interpolation.input=n (interpolation method for input lsm, default nearest-neighbour)"
-            << "   --lsm.interpolation.output=n (interpolation method for output lsm, default nearest-neighbour)"
-            << "   --lsm.interpolation=n (interpolation method for both lsm, default nearest-neighbour)"
-            << "   --lsm.selection (selection method for both input and output lsm, e.g. auto or file)"
-            << "   --lsm.selection.input (selction method for input lsm, in grib, e.g. auto or file)"
-            << "   --lsm.selection.output (selction method for output lsm, in grib, e.g. auto or file)"
+            << "   --lsm.file (path to LSM to use for both input and output, in grib, only if --lsm=file)" << std::endl
+            << "   --lsm.file.input (path to LSM to use in input, in grib, only if --lsm=file)" << std::endl
+            << "   --lsm.file.output (path to LSM to use in input, in grib, only if --lsm=file)" << std::endl
+            << "   --lsm.interpolation.input=n (interpolation method for input lsm, default nearest-neighbour)" << std::endl
+            << "   --lsm.interpolation.output=n (interpolation method for output lsm, default nearest-neighbour)" << std::endl
+            << "   --lsm.interpolation=n (interpolation method for both lsm, default nearest-neighbour)" << std::endl
+            << "   --lsm.selection (selection method for both input and output lsm, e.g. auto or file)" << std::endl
+            << "   --lsm.selection.input (selction method for input lsm, in grib, e.g. auto or file)" << std::endl
+            << "   --lsm.selection.output (selction method for output lsm, in grib, e.g. auto or file)" << std::endl
             << "   --lsm=0/1 (use lsm when interpolating)"
 
             << "   --nclosest=n (e.g. for k-nearest)" << std::endl
@@ -85,6 +89,9 @@ void MIRTool::usage(const std::string& tool) {
 
 void MIRTool::run() {
 
+    eckit::Timer timer("Total time");
+
+
     mir::param::MIRArgs args(&usage, 2);
 
     mir::input::GribFileInput input(args.args(0));
@@ -99,6 +106,9 @@ void MIRTool::run() {
         eckit::Log::info() << "FIELD: " << (++i) << std::endl;
         job.execute(input, output);
     }
+
+    eckit::Log::info() << eckit::Plural(i, "field") << " in " << eckit::Seconds(timer.elapsed()) <<
+        ", rate: " << double(i) / double(timer.elapsed()) << " fields/s" << std::endl;
 
 }
 

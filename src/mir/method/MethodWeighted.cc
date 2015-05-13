@@ -24,6 +24,8 @@
 // #include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
+#include "eckit/log/Seconds.h"
+
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/types/FloatCompare.h"
@@ -60,16 +62,21 @@ MethodWeighted::~MethodWeighted() {
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
 const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas::Grid &out) const {
 
+    eckit::Timer timer("MethodWeighted::getMatrix");
+
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
+    double here = timer.elapsed();
     const lsm::LandSeaMasks masks = lsm::LandSeaMasks::lookup(parametrisation_, in, out);
+    eckit::Log::info() << "Compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
     eckit::Log::info() << "++++ LSM masks " << masks << std::endl;
-
+    here = timer.elapsed();
     eckit::MD5 md5;
     md5 << *this;
     md5 << in;
     md5 << out;
+
 
     std::stringstream os;
     os << name() << "-" << in.shortName() << "-" << out.shortName();
@@ -78,6 +85,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     md5 << masks;
     std::string key_with_masks = os.str() +  "-LSM-" + md5.digest();
+    eckit::Log::info() << "Compute md5 " << timer.elapsed() - here << std::endl;
 
     std::map<std::string, WeightMatrix>::iterator j = matrix_cache.find(key_with_masks);
     if (j != matrix_cache.end()) {
@@ -96,7 +104,11 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     // calculate weights matrix, apply mask if necessary
 
+    eckit::Log::info() << "Elapsed 1 " << timer.elapsed()  << std::endl;
+
+    here = timer.elapsed();
     WeightMatrix W(out.npts(), in.npts());
+    eckit::Log::info() << "Create matrix " << timer.elapsed() - here << std::endl;
 
     if (!cache_.retrieve(cache_key, W)) {
         computeWeights(in, out, W);
@@ -111,7 +123,9 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
         applyMasks(W, masks);
     }
 
+    here = timer.elapsed();
     std::swap(matrix_cache[key_with_masks], W);
+    eckit::Log::info() << "Swap matrix " << timer.elapsed() - here << std::endl;
 
     return matrix_cache[key_with_masks];
 }
@@ -119,6 +133,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
 void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const atlas::Grid &out) const {
 
+    eckit::Timer timer("MethodWeighted::execute");
     eckit::Log::info() << "MethodWeighted::execute" << std::endl;
 
     size_t npts_inp = in.npts();
@@ -132,12 +147,11 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
     for (size_t i = 0; i < field.dimensions(); i++) {
 
         eckit::StrStream os;
-        os << "Interpolating field ("  << npts_inp << " -> " << npts_out << ")" << eckit::StrStream::ends;
+        os << "Interpolating field ("  << eckit::BigNum(npts_inp) << " -> " << eckit::BigNum(npts_out) << ")" << eckit::StrStream::ends;
         std::string msg(os);
         eckit::Timer t(msg);
 
         ASSERT(field.values(i).size() == npts_inp);
-        eckit::Log::info() << "Input field is " << field.values(i).size() << std::endl;
 
         std::vector<double> &values = field.values(i);
         std::vector<double> result(npts_out);
@@ -269,6 +283,9 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
 
 void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks) const {
+
+    eckit::Timer timer("MethodWeighted::applyMasks");
+
     eckit::Log::info() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
     ASSERT(masks.active());
 
