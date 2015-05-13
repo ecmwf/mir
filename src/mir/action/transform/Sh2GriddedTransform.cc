@@ -116,6 +116,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
             ASSERT(cache.commit(key, tmp));
         } else {
+            eckit::Timer timer("Loading coefficients");
 
             tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
             eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
