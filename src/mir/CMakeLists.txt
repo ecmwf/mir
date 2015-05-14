@@ -140,8 +140,6 @@ list(
      method/NearestNeighbour.h
      method/PseudoLaplace.cc
      method/PseudoLaplace.h
-     method/redist/Redist.cc
-     method/redist/Redist.h
      method/WeightMatrix.h
      output/DummyOutput.cc
      output/DummyOutput.h
