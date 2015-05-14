@@ -162,11 +162,12 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     ASSERT(page_size > 0);
     size_t shmsize = ((size_ + page_size - 1) / page_size) * page_size + sizeof(struct info) ;
 
+#ifdef IPC_INFO
+    // Only on Linux?
     struct shminfo shm_info;
     SYSCALL(shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-
     eckit::Log::info() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) <<std::endl;
-
+#endif
     // This may return EINVAL is the segment is too large 256MB
     // To find the maximum; ipcs -l, max on my machine is
 /*
