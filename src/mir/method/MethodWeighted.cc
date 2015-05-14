@@ -364,11 +364,32 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
     const data::MIRField &omask_field = masks.inputField();
     ASSERT(!imask_field.hasMissing());
     ASSERT(!omask_field.hasMissing());
-    const std::vector<double>& mask_in = imask_field.values(0);
-    const std::vector<double>& mask_out = omask_field.values(0);
+    ASSERT(!imask_field.dimensions()==1);
+    ASSERT(!omask_field.dimensions()==1);
 
 
-    // TODO
+    // build boolean masks (to isolate algorithm from the logical mask condition)
+    const std::vector< double >
+    &imask_values = imask_field.values(0),
+    &omask_values = imask_field.values(0);
+
+    check_inequality_ge< double > check_lsm(0.5);
+    std::vector< bool >
+    imask(imask_values.size(), false),
+    omask(omask_values.size(), false);
+    std::transform(imask_values.begin(), imask_values.end(), imask.begin(), check_lsm);
+    std::transform(omask_values.begin(), omask_values.end(), omask.begin(), check_lsm);
+
+
+    // apply mask corrections based on equality of mask condition
+    // - input mask (imask) operates on matrix row index (here i)
+    // - output mask (omask) operates on matrix column index (here j)
+    for (size_t i = 0; i < W.rows(); i++) {
+
+        for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
+        }
+
+    }
 }
 
 void MethodWeighted::hash(eckit::MD5& md5) const {
