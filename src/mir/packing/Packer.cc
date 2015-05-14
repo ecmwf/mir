@@ -69,7 +69,7 @@ const Packer& Packer::lookup(const std::string &name) {
 
     if (j == m->end()) {
         eckit::Log::error() << "No Packer for [" << name << "]" << std::endl;
-        eckit::Log::error() << "LSMChoosers are:" << std::endl;
+        eckit::Log::error() << "Packers are:" << std::endl;
         for (j = m->begin() ; j != m->end() ; ++j)
             eckit::Log::error() << "   " << (*j).first << std::endl;
         throw eckit::SeriousBug(std::string("No Packer called ") + name);

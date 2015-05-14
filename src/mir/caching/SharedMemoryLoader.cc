@@ -32,6 +32,8 @@
 #include "eckit/os/Stat.h"
 
 #include "eckit/log/Bytes.h"
+#include "eckit/log/BigNum.h"
+
 #include "eckit/log/Timer.h"
 #include "eckit/io/StdFile.h"
 
@@ -160,11 +162,49 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     ASSERT(page_size > 0);
     size_t shmsize = ((size_ + page_size - 1) / page_size) * page_size + sizeof(struct info) ;
 
+    struct shminfo shm_info;
+    SYSCALL(shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
+
+    eckit::Log::info() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) <<std::endl;
+
+    // This may return EINVAL is the segment is too large 256MB
+    // To find the maximum; ipcs -l, max on my machine is
+/*
+% ipcs -l
+
+------ Messages Limits --------
+max queues system wide = 32768
+max size of message (bytes) = 65536
+default max size of queue (bytes) = 65536
+
+------ Shared Memory Limits --------
+max number of segments = 4096
+max seg size (kbytes) = 262144
+max total shared memory (kbytes) = 18014398509480960
+min seg size (bytes) = 1
+
+------ Semaphore Limits --------
+max number of arrays = 1024
+max semaphores per array = 250
+max semaphores system wide = 256000
+max ops per semop call = 32
+semaphore max value = 32767
+
+*/
+
+    eckit::Log::info() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
+    std::hex << key << std::dec << ", page size: "
+    << eckit::Bytes(page_size) << ", pages: "
+    << eckit::BigNum(shmsize/page_size)
+    << std::endl;
+
     int shmid;
-    SYSCALL ((shmid = shmget(key, shmsize , IPC_CREAT | 0600)) ) ;
+    SYSCALL(shmid = shmget(key, shmsize , IPC_CREAT | 0600)) ;
 
 #ifdef SHM_PAGESIZE
     {
+
+        eckit::Log::info() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
 
         /* Use 64K pages to back the shared memory region */
         size_t shm_size;
