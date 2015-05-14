@@ -292,8 +292,9 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
                 sum += j.value();
         }
         const bool
+        weights_zero = eckit::FloatCompare::is_equal(sum, 0.),
         miss_some = Nmiss,
-        miss_all  = miss_some && (Ncol==Nmiss) || (std::abs(sum)<std::numeric_limits< double >::epsilon());
+        miss_all  = (miss_some && (Ncol==Nmiss)) || weights_zero;
 
         // redistribution
         if ( miss_all ) {
