@@ -10,7 +10,7 @@
 
 /// @author Peter Bispham
 /// @author Tiago Quintino
-/// @date Oct 2013
+/// @date May 2015
 
 #ifndef mir_method_WeightCache_H
 #define mir_method_WeightCache_H
@@ -21,17 +21,9 @@
 
 #include "mir/method/WeightMatrix.h"
 
-namespace atlas {
-class Grid;
-}
-
-
-namespace mir { namespace lsm { class Mask; }};
 
 namespace mir {
 namespace caching {
-
-class Method;
 
 //----------------------------------------------------------------------------------------------------------------------
 
