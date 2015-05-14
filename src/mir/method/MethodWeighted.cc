@@ -17,6 +17,7 @@
 #include "mir/method/MethodWeighted.h"
 #include "mir/caching/WeightCache.h"
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <map>
@@ -46,6 +47,30 @@ static eckit::Mutex local_mutex;
 
 namespace mir {
 namespace method {
+
+
+namespace {
+
+
+/// Convert values vector to booleans, with equality
+template< typename T >
+struct check_equality {
+    check_equality(const T& ref_) : ref(ref_) {}
+    bool operator()(const T& v) { return v==ref; }
+    const T ref;
+};
+
+
+/// Convert values vector to booleans, with "greater than or equal to"
+template< typename T >
+struct check_inequality_ge {
+    check_inequality_ge(const T& ref_) : ref(ref_) {}
+    bool operator()(const T& v) { return v>=ref; }
+    const T ref;
+};
+
+
+}  // (anonymous namespace)
 
 
 static std::map<std::string, WeightMatrix> matrix_cache;
@@ -163,7 +188,10 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &values[0], npts_inp );
         Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &result[0], npts_out );
 
-        if (field.hasMissing()) {
+        const bool values_has_missing =
+                field.hasMissing() &&
+                std::find_if(values.begin(),values.end(),field.missingValue());
+        if ( values_has_missing ) {
             // Assumes compiler does return value optimization
             // otherwise we need to pass result matrix as parameter
             WeightMatrix MW = applyMissingValues(W, field, i);
@@ -173,6 +201,16 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         }
 
         field.values(result, i);  // Update field with result
+    }
+
+    // update if missing values are present
+    if (field.hasMissing()) {
+        const bool still_has_missing = true;
+        for (size_t i = 0; i < field.dimensions() && still_has_missing; ++i) {
+            const std::vector< double > &values = field.values(i);
+            still_has_missing = std::find_if(values.begin(),values.end(),field.missingValue());
+        }
+        field.hasMissing(still_has_missing);
     }
 }
 
@@ -193,22 +231,17 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
     ASSERT(field.hasMissing());
 
     eckit::Log::info() << "Field has missing values" << std::endl;
-    double missing = field.missingValue();
+    const double missing = field.missingValue();
     std::vector< double > &values = field.values(which);
 
     // setup sizes & counters
     const size_t
     Nivalues = values.size(),
     Novalues = W.rows();
-    size_t count = 0;
-
     std::vector< bool > missvalues(Nivalues);
-    for (size_t i = 0; i < Nivalues; i++) {
-        missvalues[i] = (values[i] == missing);
-        if (values[i] == missing) {
-            count++;
-        }
-    }
+
+    std::transform(values.begin(),values.end(),missvalues.begin(),check_equality< double >(missing));
+    size_t count = std::count(missvalues.begin(),missvalues.end(),true);
 
     if (count == 0) {
         return W;
@@ -329,11 +362,8 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
     const data::MIRField &imask_field = masks.inputField();
     const data::MIRField &omask_field = masks.inputField();
-
     ASSERT(!imask_field.hasMissing());
     ASSERT(!omask_field.hasMissing());
-
-
     const std::vector<double>& mask_in = imask_field.values(0);
     const std::vector<double>& mask_out = omask_field.values(0);
 
