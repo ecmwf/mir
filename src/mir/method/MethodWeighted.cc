@@ -415,7 +415,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
 
     // log corrections
-    eckit::Log::info() << "LandsSeaMasks correction: " << eckit::BigNum(fix) << "  out of " << eckit::BigNum(W.rows()) << std::endl;
+    eckit::Log::info() << "LandSeaMasks correction: " << eckit::BigNum(fix) << " out of " << eckit::BigNum(W.rows()) << std::endl;
 }
 
 void MethodWeighted::hash(eckit::MD5& md5) const {
