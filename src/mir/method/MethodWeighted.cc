@@ -194,7 +194,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
     eckit::Log::info() << "Field has missing values" << std::endl;
     double missing = field.missingValue();
-    const std::vector<double> &values = field.values(which);
+    std::vector< double > &values = field.values(which);
 
     // setup sizes & counters
     const size_t
@@ -216,16 +216,37 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
     eckit::Log::info() << "Field has " << eckit::Plural(count, "missing value") << " out of " << eckit::BigNum(Nivalues) << std::endl;
 
 
-    // sparse matrix weigths redistribution
+    // check matrix weigths correctness
+    // TODO this check should not be done here? maybe before matrix caching? but I don't know where it goes
+    size_t Nprob = 0;
+    for (size_t i = 0; i < W.rows(); i++) {
+        double sum = 0.;
+        for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
+            if (missvalues[j.col()])
+                sum += j.value();
+        }
+        const bool
+        weights_zero = eckit::FloatCompare::is_equal(sum, 0.),
+        weights_one  = eckit::FloatCompare::is_equal(sum, 1.);
+        if ( !weights_zero && !weights_one ) {
+            ++Nprob;
+            eckit::Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(W(" << i << ",:)) != {0,1} = " << sum << std::endl;
+        }
+    }
+    if (Nprob) {
+        eckit::Log::warning() <<  "Missing values: problem in input weights matrix for " << eckit::Plural(Nprob, "interpolation point") << ", continuing (but shouldn't really)." << std::endl;
+    }
+
+
+    // correct matrix weigths for the missing values (matrix copy happens here)
     WeightMatrix X(W);
-    size_t fix_misssome = 0;
     size_t fix_missall  = 0;
+    size_t fix_misssome = 0;
     for (size_t i = 0; i < X.rows(); i++) {
 
         // count missing values and accumulate weights
-        double sum = 0.;
+        double sum = 0.; // accumulated row weight, disregarding field missing values
         size_t
-
         Nmiss = 0,
         Ncol  = 0;
         for (WeightMatrix::InnerIterator j(X, i); j; ++j, ++Ncol) {
@@ -234,43 +255,30 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             else
                 sum += j.value();
         }
-
-
         const bool
-        weights_zero = eckit::FloatCompare::is_equal(sum, 0.),
-        weights_one  = eckit::FloatCompare::is_equal(sum, 1.);
-
-        if ( (Ncol != Nmiss) && !weights_zero && !weights_one) {
-            std::cout << "  i=" << i << "  weights_zero=" << weights_zero << "  weights_one=" << weights_one << std::endl;
-        }
-
+        miss_some = Nmiss,
+        miss_all  = miss_some && (Ncol==Nmiss) || (std::abs(sum)<std::numeric_limits< double >::epsilon());
 
         // redistribution
-        if (!Nmiss) {
+        if ( miss_all ) {
+            ++fix_missall;
 
-            // no missing values, no redistribution
-
-        } else if ( (std::abs(sum) < std::numeric_limits< double >::epsilon()) ||
-                    (Ncol == Nmiss) ) {
-            ++fix_misssome;
-
-            // all values are missing (or weights wrongly computed), special case
-            // (it covers Ncol>0 with the above condition)
+            // all values are missing (or weights wrongly computed):
+            // erase row & force missing value equality
             for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
                 j.valueRef() = 0.;
-                field.values(which)[j.col()] = missing;
+                values[j.col()] = missing;
             }
             WeightMatrix::InnerIterator(X, i).valueRef() = 1.;
 
-        } else {
-            ++fix_missall;
+        } else if ( miss_some ) {
+            ++fix_misssome;
 
             // apply linear redistribution
-            // TODO: new redistribution methods
-            const double invsum = 1 / sum;
+            const double invsum = 1/sum;
             for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
                 if (missvalues[j.col()]) {
-                    field.values(which)[j.col()] = missing;
+                    values[j.col()] = missing;
                     j.valueRef() = 0.;
                 } else {
                     j.valueRef() *= invsum;
@@ -280,8 +288,33 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
         }
     }
 
+
+    // recheck corrected matrix for problems
+    // TODO this check should not be done here? after interpolation? again I don't know where it goes
+    if ( Nprob ) {
+        Nprob = 0;
+        for (size_t i = 0; i < X.rows(); i++) {
+            double sum = 0.;
+            for (WeightMatrix::InnerIterator j(X, i); j; ++j)
+                sum += j.value();
+            const bool
+            weights_zero = eckit::FloatCompare::is_equal(sum, 0.),
+            weights_one  = eckit::FloatCompare::is_equal(sum, 1.);
+            if ( !weights_zero && !weights_one ) {
+                ++Nprob;
+                eckit::Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(X(" << i << ",:)) != {0,1} = " << sum << std::endl;
+            }
+        }
+        if (Nprob) {
+            eckit::Log::warning() <<  "Missing values: problems still found in corrected input weights matrix for " << eckit::Plural(Nprob, "interpolation point") << ", continuing (but shouldn't really)." << std::endl;
+        } else {
+            eckit::Log::info() <<  "Missing values: no problems found in corrected input weights matrix." << std::endl;
+        }
+    }
+
+
     // log corrections and return
-    eckit::Log::info() << "Missing value corrections: " << fix_missall << '/' << fix_misssome << " some/all-missing out of " << eckit::BigNum(Novalues) << std::endl;
+    eckit::Log::info() << "Missing values correction: " << fix_misssome << '/' << fix_missall << " some/all-missing out of " << eckit::BigNum(Novalues) << std::endl;
     return X;
 }
 
