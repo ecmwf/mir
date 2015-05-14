@@ -166,7 +166,6 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
     eckit::Log::info() << "MethodWeighted::execute" << std::endl;
 
     // setup sizes & checks
-    const check_equality< double > check_miss(field.missingValue());
     const size_t
     npts_inp = in.npts(),
     npts_out = out.npts();
@@ -191,9 +190,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &values[0], npts_inp );
         Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &result[0], npts_out );
 
-        const bool values_has_missing = field.hasMissing() &&
-                (std::find_if(values.begin(),values.end(),check_miss)!=values.end());
-        if ( values_has_missing ) {
+        if ( field.hasMissing() ) {
             // Assumes compiler does return value optimization
             // otherwise we need to pass result matrix as parameter
             WeightMatrix MW = applyMissingValues(W, field, i);
@@ -207,6 +204,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
     // update if missing values are present
     if (field.hasMissing()) {
+        const check_equality< double > check_miss(field.missingValue());
         bool still_has_missing = true;
         for (size_t i = 0; i < field.dimensions() && still_has_missing; ++i) {
             const std::vector< double > &values = field.values(i);
@@ -385,11 +383,12 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
     std::transform(omask_values.begin(), omask_values.end(), omask.begin(), check_lsm);
 
 
-    // apply mask corrections based on inequality != (XOR) of logical masks,
+    // apply corrections on inequality != (XOR) of logical masks,
     // then redistribute weights
     // - output mask (omask) operates on matrix row index, here i
     // - input mask (imask) operates on matrix column index, here j.col()
     // FIXME: hardcoded to *= 0.2
+    size_t fix = 0;
     for (size_t i = 0; i < W.rows(); i++) {
         double sum = 0.;
 
@@ -406,12 +405,17 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
         // apply linear redistribution if necessary
         const bool weights_zero = eckit::FloatCompare::is_equal(sum, 0.);
         if (row_changed && !weights_zero) {
+            ++fix;
             const double invsum = 1./sum;
             for (WeightMatrix::InnerIterator j(W, i); j; ++j)
                 j.valueRef() *= invsum;
         }
 
     }
+
+
+    // log corrections
+    eckit::Log::info() << "LandsSeaMasks correction: " << eckit::BigNum(fix) << "  out of " << eckit::BigNum(W.rows()) << std::endl;
 }
 
 void MethodWeighted::hash(eckit::MD5& md5) const {
