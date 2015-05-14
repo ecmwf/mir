@@ -16,6 +16,7 @@
 #include <sys/sem.h>
 
 #include "mir/caching/SharedMemoryLoader.h"
+#include "mir/param/SimpleParametrisation.h"
 
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -282,7 +283,12 @@ SharedMemoryLoader::~SharedMemoryLoader() {
     }
 }
 
-void SharedMemoryLoader::removeSharedMemory(const eckit::PathName& path) {
+void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
+    param::SimpleParametrisation param;
+    SharedMemoryLoader loader(param, path);
+}
+
+void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     eckit::PathName real = path.realName();
     int shmid = 0;
     key_t key;

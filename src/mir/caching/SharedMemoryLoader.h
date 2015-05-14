@@ -55,7 +55,8 @@ class SharedMemoryLoader : public LegendreLoader {
 
 // -- Class methods
 
-    static void removeSharedMemory(const eckit::PathName& path);
+    static void unloadSharedMemory(const eckit::PathName& path);
+    static void loadSharedMemory(const eckit::PathName& path);
 
 
   protected:
