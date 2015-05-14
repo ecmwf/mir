@@ -112,7 +112,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
             eckit::Log::info() << "LegendreCache " << key << " does not exists" << std::endl;
             eckit::PathName tmp = cache.stage(key);
             ASSERT( trans_set_write(&trans, tmp.asString().c_str())  == 0);
-            ASSERT(trans_setup(&trans) == 0);
+            ASSERT(trans_setup(&trans) == 0); // This will create the cache
 
             ASSERT(cache.commit(key, tmp));
         } else {

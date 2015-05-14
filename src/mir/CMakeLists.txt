@@ -72,13 +72,20 @@ list(
      api/emoslib.h
      api/MIRJob.cc
      api/MIRJob.h
+     caching/FileLoader.cc
+     caching/FileLoader.h
      caching/LegendreCache.cc
      caching/LegendreCache.h
      caching/LegendreLoader.cc
      caching/LegendreLoader.h
      caching/MappedMemoryLoader.cc
      caching/MappedMemoryLoader.h
+     caching/NoLoader.cc
+     caching/NoLoader.h
+     caching/SharedMemoryLoader.cc
+     caching/SharedMemoryLoader.h
      caching/WeightCache.cc
+     caching/WeightCache.h
      caching/WeightCache.h
      data/MIRField.cc
      data/MIRField.h

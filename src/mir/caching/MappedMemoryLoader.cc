@@ -82,7 +82,9 @@ size_t MappedMemoryLoader::size() const {
 }
 
 namespace {
-static LegendreLoaderBuilder<MappedMemoryLoader> loader("mapped-memory");
+static LegendreLoaderBuilder<MappedMemoryLoader> loader1("mapped-memory");
+static LegendreLoaderBuilder<MappedMemoryLoader> loader2("mmap");
+
 }
 
 
