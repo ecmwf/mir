@@ -56,7 +56,7 @@ namespace {
 template< typename T >
 struct check_equality {
     check_equality(const T& ref_) : ref(ref_) {}
-    bool operator()(const T& v) { return v==ref; }
+    bool operator()(const T& v) const { return v==ref; }
     const T ref;
 };
 
@@ -65,7 +65,7 @@ struct check_equality {
 template< typename T >
 struct check_inequality_ge {
     check_inequality_ge(const T& ref_) : ref(ref_) {}
-    bool operator()(const T& v) { return v>=ref; }
+    bool operator()(const T& v) const { return v>=ref; }
     const T ref;
 };
 
@@ -165,12 +165,15 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
     eckit::Timer timer("MethodWeighted::execute");
     eckit::Log::info() << "MethodWeighted::execute" << std::endl;
 
-    size_t npts_inp = in.npts();
-    size_t npts_out = out.npts();
+    // setup sizes & checks
+    const check_equality< double > check_miss(field.missingValue());
+    const size_t
+    npts_inp = in.npts(),
+    npts_out = out.npts();
 
     const WeightMatrix &W = getMatrix(in, out);
 
-    // TODO: ASSERT matrix size is npts_inp * npts_out
+    // TODO: ASSERT matrix size is npts_out * npts_inp
 
     // multiply interpolant matrix with field vector
     for (size_t i = 0; i < field.dimensions(); i++) {
@@ -188,9 +191,8 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &values[0], npts_inp );
         Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &result[0], npts_out );
 
-        const bool values_has_missing =
-                field.hasMissing() &&
-                std::find_if(values.begin(),values.end(),field.missingValue());
+        const bool values_has_missing = field.hasMissing() &&
+                (std::find_if(values.begin(),values.end(),check_miss)!=values.end());
         if ( values_has_missing ) {
             // Assumes compiler does return value optimization
             // otherwise we need to pass result matrix as parameter
@@ -205,10 +207,10 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
     // update if missing values are present
     if (field.hasMissing()) {
-        const bool still_has_missing = true;
+        bool still_has_missing = true;
         for (size_t i = 0; i < field.dimensions() && still_has_missing; ++i) {
             const std::vector< double > &values = field.values(i);
-            still_has_missing = std::find_if(values.begin(),values.end(),field.missingValue());
+            still_has_missing = (std::find_if(values.begin(),values.end(),check_miss)!=values.end());
         }
         field.hasMissing(still_has_missing);
     }
@@ -234,14 +236,15 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
     const double missing = field.missingValue();
     std::vector< double > &values = field.values(which);
 
-    // setup sizes & counters
+    // setup sizes & checks
+    const check_equality< double > check_miss(missing);
     const size_t
     Nivalues = values.size(),
     Novalues = W.rows();
     std::vector< bool > missvalues(Nivalues);
 
-    std::transform(values.begin(),values.end(),missvalues.begin(),check_equality< double >(missing));
-    size_t count = std::count(missvalues.begin(),missvalues.end(),true);
+    std::transform(values.begin(),values.end(),missvalues.begin(),check_miss);
+    const size_t count = std::count(missvalues.begin(),missvalues.end(),true);
 
     if (count == 0) {
         return W;
@@ -308,7 +311,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             ++fix_misssome;
 
             // apply linear redistribution
-            const double invsum = 1/sum;
+            const double invsum = 1./sum;
             for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
                 if (missvalues[j.col()]) {
                     values[j.col()] = missing;
@@ -364,8 +367,8 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
     const data::MIRField &omask_field = masks.inputField();
     ASSERT(!imask_field.hasMissing());
     ASSERT(!omask_field.hasMissing());
-    ASSERT(!imask_field.dimensions()==1);
-    ASSERT(!omask_field.dimensions()==1);
+    ASSERT(imask_field.dimensions()==1);
+    ASSERT(omask_field.dimensions()==1);
 
 
     // build boolean masks (to isolate algorithm from the logical mask condition)
@@ -381,12 +384,30 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
     std::transform(omask_values.begin(), omask_values.end(), omask.begin(), check_lsm);
 
 
-    // apply mask corrections based on equality of mask condition
-    // - input mask (imask) operates on matrix row index (here i)
-    // - output mask (omask) operates on matrix column index (here j)
+    // apply mask corrections based on inequality != (XOR) of logical masks,
+    // then redistribute weights
+    // - output mask (omask) operates on matrix row index, here i
+    // - input mask (imask) operates on matrix column index, here j.col()
+    // FIXME: hardcoded to *= 0.2
     for (size_t i = 0; i < W.rows(); i++) {
+        double sum = 0.;
 
+        // correct weight of non-matching input point weight contribution
+        bool row_changed = false;
         for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
+            if (omask[i] != imask[j.col()]) {
+                j.valueRef() *= 0.2;
+                row_changed = true;
+            }
+            sum += j.value();
+        }
+
+        // apply linear redistribution if necessary
+        const bool weights_zero = eckit::FloatCompare::is_equal(sum, 0.);
+        if (row_changed && !weights_zero) {
+            const double invsum = 1./sum;
+            for (WeightMatrix::InnerIterator j(W, i); j; ++j)
+                j.valueRef() *= invsum;
         }
 
     }
