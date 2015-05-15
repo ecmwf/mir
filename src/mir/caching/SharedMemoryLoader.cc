@@ -170,29 +170,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     eckit::Log::info() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) <<std::endl;
 #endif
     // This may return EINVAL is the segment is too large 256MB
-    // To find the maximum; ipcs -l, max on my machine is
-/*
-% ipcs -l
-
------- Messages Limits --------
-max queues system wide = 32768
-max size of message (bytes) = 65536
-default max size of queue (bytes) = 65536
-
------- Shared Memory Limits --------
-max number of segments = 4096
-max seg size (kbytes) = 262144
-max total shared memory (kbytes) = 18014398509480960
-min seg size (bytes) = 1
-
------- Semaphore Limits --------
-max number of arrays = 1024
-max semaphores per array = 250
-max semaphores system wide = 256000
-max ops per semop call = 32
-semaphore max value = 32767
-
-*/
+    // To find the maximum:
+    // Linux:ipcs -l, Mac/bsd: ipcs -M
 
     eckit::Log::info() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
     std::hex << key << std::dec << ", page size: "
