@@ -104,27 +104,33 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
             ASSERT(trans_set_resol(&trans, points_per_latitudes.size(), &points_per_latitudes[0]) == 0);
         }
 
-        //
-        caching::LegendreCache cache;
-        eckit::PathName path;
-        if (!cache.get(key, path)) {
-            eckit::Timer timer("Caching coefficients");
-            eckit::Log::info() << "LegendreCache " << key << " does not exists" << std::endl;
-            eckit::PathName tmp = cache.stage(key);
-            ASSERT( trans_set_write(&trans, tmp.asString().c_str())  == 0);
-            ASSERT(trans_setup(&trans) == 0); // This will create the cache
-
-            ASSERT(cache.commit(key, tmp));
-        } else {
-            eckit::Timer timer("Loading coefficients");
-
-            tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
-            eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
-
-            ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
-
+        if(latlon) {
+            eckit::Log::info() << "LegendreCache not implemented for lat/lon" << std::endl;
             ASSERT(trans_setup(&trans) == 0);
         }
+        else {
+            //
+            caching::LegendreCache cache;
+            eckit::PathName path;
+            if (!cache.get(key, path)) {
+                eckit::Timer timer("Caching coefficients");
+                eckit::Log::info() << "LegendreCache " << key << " does not exists" << std::endl;
+                eckit::PathName tmp = cache.stage(key);
+                ASSERT( trans_set_write(&trans, tmp.asString().c_str())  == 0);
+                ASSERT(trans_setup(&trans) == 0); // This will create the cache
+
+                ASSERT(cache.commit(key, tmp));
+            } else {
+                eckit::Timer timer("Loading coefficients");
+
+                tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
+                eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
+
+                ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
+
+                ASSERT(trans_setup(&trans) == 0);
+            }
+         }
     }
 
     TransCache &tc = trans_handles[key];
