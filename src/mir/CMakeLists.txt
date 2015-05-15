@@ -225,6 +225,8 @@ list(
      repres/regular/RotatedGG.cc
      repres/regular/RotatedGG.h
      repres/Representation.cc
+     repres/Iterator.h
+     repres/Iterator.cc
      repres/Representation.h
      repres/sh/SphericalHarmonics.cc
      repres/sh/SphericalHarmonics.h

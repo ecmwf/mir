@@ -1,5 +1,13 @@
 MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
+NEXT STEPS
+- Cropping of reduced gaussian grid
+  - See: https://software.ecmwf.int/wiki/pages/viewpage.action?pageId=44245985
+- Caching of SH=>LL coefficients
+- SH=>LL with different increments
+- Bi-linear
+- Nearest LSM
+
 PHILOSPY
 - 1 Make it work
 - 2 Make it correct

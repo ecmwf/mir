@@ -102,13 +102,12 @@ class LatLon : public Gridded {
 
     void setNiNj();
 
-    // Called by crop(), to override in subclasses
-    virtual LatLon *cropped(const util::BoundingBox &bbox) const = 0;
 
 
     // -- Overridden methods
 
-    virtual Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &, std::vector<double> &) const;
+    virtual Iterator *iterator() const;
+
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
 

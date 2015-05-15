@@ -22,6 +22,7 @@
 namespace mir {
 namespace repres {
 
+class Iterator;
 
 class Gridded : public Representation {
   public:
@@ -44,6 +45,8 @@ class Gridded : public Representation {
     // None
 
 // -- Methods
+
+    virtual Iterator* iterator() const;
 
 // -- Overridden methods
     // None
@@ -80,12 +83,17 @@ class Gridded : public Representation {
 // -- Members
 
 // -- Methods
-    // None
+
+    // Called by crop(), to override in subclasses
+    virtual Gridded* cropped(const util::BoundingBox &bbox) const;
 
 // -- Overridden methods
     virtual void setComplexPacking(grib_info&) const;
     virtual void setSimplePacking(grib_info&) const;
     virtual void setSecondOrderPacking(grib_info&) const;
+
+    Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
+
 // -- Class members
     // None
 

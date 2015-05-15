@@ -13,18 +13,16 @@
 /// @date Apr 2015
 
 
-#ifndef Classic_H
-#define Classic_H
+#ifndef Iterator_H
+#define Iterator_H
 
-#include "mir/repres/Gridded.h"
-#include "mir/util/BoundingBox.h"
-
+#include <iosfwd>
 
 namespace mir {
 namespace repres {
-namespace reduced {
 
-class Classic : public Gridded {
+
+class Iterator  {
   public:
 
     // -- Exceptions
@@ -32,11 +30,11 @@ class Classic : public Gridded {
 
     // -- Contructors
 
-    Classic(size_t);
+    Iterator();
 
     // -- Destructor
 
-    virtual ~Classic(); // Change to virtual if base class
+    virtual ~Iterator(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -45,6 +43,8 @@ class Classic : public Gridded {
     // None
 
     // -- Methods
+
+    virtual bool next(double &lat, double &lon) = 0;
 
     // -- Overridden methods
     // None
@@ -57,21 +57,14 @@ class Classic : public Gridded {
 
   protected:
 
-    Classic(size_t, const util::BoundingBox &);
-
     // -- Members
-
-    size_t N_;
-    util::BoundingBox bbox_;
 
     // -- Methods
 
-    // void print(std::ostream &) const; // Change to virtual if base class
+    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
 
     // -- Overridden methods
-    virtual void fill(grib_info &) const;
-    virtual atlas::Grid *atlasGrid() const;
-    virtual void validate(const std::vector<double>&) const;
+    // None
 
     // -- Class members
     // None
@@ -81,25 +74,17 @@ class Classic : public Gridded {
 
   private:
 
-
-
     // No copy allowed
 
-    Classic(const Classic &);
-    Classic &operator=(const Classic &);
+    Iterator(const Iterator &);
+    Iterator &operator=(const Iterator &);
 
     // -- Members
-
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    // Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
-
-
     // -- Class members
     // None
 
@@ -108,12 +93,14 @@ class Classic : public Gridded {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Classic& p)
-    //  { p.print(s); return s; }
+    friend std::ostream &operator<<(std::ostream &s, const Iterator &p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
-} // namespace
+
 }  // namespace repres
 }  // namespace mir
 #endif
