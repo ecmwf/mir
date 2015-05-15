@@ -132,6 +132,7 @@ static Condition *is(const char *key, const char *value) {
     return new ConditionT<std::string>(key, value);
 }
 
+/*
 static Condition *_and(const Condition *left, const Condition *right) {
     return new ConditionAND(left, right);
 }
@@ -143,6 +144,7 @@ static Condition *_or(const Condition *left, const Condition *right) {
 static Condition *_not(const Condition *c) {
     return new ConditionNOT(c);
 }
+*/
 
 static struct {
     const char *name;

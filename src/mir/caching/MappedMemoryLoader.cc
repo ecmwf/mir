@@ -33,8 +33,8 @@ namespace caching {
 MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName &path):
     LegendreLoader(parametrisation, path),
     fd_(-1),
-    size_(0),
-    address_(0) {
+    address_(0),
+    size_(0) {
 
     ASSERT(sizeof(size_) > 4);
 

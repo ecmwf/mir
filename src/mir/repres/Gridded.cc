@@ -93,6 +93,7 @@ Representation *Gridded::crop(const util::BoundingBox &bbox, const std::vector<d
     double lat, lon;
     std::auto_ptr<Iterator> iter(iterator());
     while (iter->next(lat, lon)) {
+        // std::cout << lat << " " << lon << std::endl;
         if (bbox.contains(lat, lon)) {
 
             lon = bbox.normalise(lon);
