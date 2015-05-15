@@ -28,6 +28,9 @@ PRIORITY
 
 MIR
 
+- memory mapping of the SparseMatrix coefficients
+  Store matrix in CRS
+  MappedSparseMatrix<double,RowMajor> weights(nrows, ncols, nnz, row_ptr, col_ind, val);
 - Field using LSM. Talk to me on how to get to the LSM data (e.g. with config, and what class do we need to implement)
 - Rotated fields (code is there, needs testing)
 - Rotated winds?
