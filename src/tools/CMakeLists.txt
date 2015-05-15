@@ -21,3 +21,9 @@ ecbuild_add_executable(
 		SOURCES     mir_config.cc
 		INCLUDES    ${ECKIT_INCLUDE_DIRS}
 		LIBS        mir ${ECKIT_LIBRARIES} )
+
+ecbuild_add_executable(
+		TARGET      mir_shared_memory
+		SOURCES     mir_shared_memory.cc
+		INCLUDES    ${ECKIT_INCLUDE_DIRS}
+		LIBS        mir ${ECKIT_LIBRARIES} )

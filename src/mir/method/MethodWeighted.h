@@ -11,7 +11,7 @@
 /// @author Peter Bispham
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date May 2015
 
 #ifndef mir_method_MethodWeighted_H
 #define mir_method_MethodWeighted_H
@@ -19,19 +19,30 @@
 // #include <string>
 
 #include "mir/method/Method.h"
+#include "mir/caching/WeightCache.h"
 #include "mir/method/WeightMatrix.h"
 
-namespace mir {
 
+namespace atlas {
+class Grid;
+}
+
+
+namespace mir {
 namespace lsm {
 class LandSeaMasks;
 }
+}
 
+
+namespace mir {
 namespace method {
 
 //----------------------------------------------------------------------------------------------------------------------
 
 class MethodWeighted : public Method {
+
+    caching::WeightCache cache_;
 
   public:
 
