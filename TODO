@@ -7,6 +7,8 @@ NEXT STEPS
 - SH=>LL with different increments
 - Bi-linear
 - Nearest LSM
+- Make the logging callback work in emoslib.cc
+- Gather knowledge about emoslib
 
 PHILOSPY
 - 1 Make it work
@@ -52,15 +54,14 @@ TESTING:
 - Make sure we compare mir and emoslib for speed
 - Make sure we run diss_requests in metabuilder with date for which the seasonal exists
 -
+PERFORMANCES
+- Consider switching of some ASSERTions, maybe with a resource
 
 EMOSLIB
 - Find out about all intuv* functions
 
 * Behaviour to reproduce
   - Specifying AREA on a SH field is ignored
-
-ECKIT
-- Implement general purpose file caching class
 
 IN ATLAS:
 - Make sure cached mesh files are not loaded for every field
@@ -92,3 +93,4 @@ MEMO:
 
 DONE:
 - Vo/D to U/V: Dropping one coefficient
+- Implement general purpose file caching class
