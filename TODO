@@ -49,7 +49,6 @@ MIR
 - Make sure cached weight files are not loaded for every field
 - Wind interpolation
 - Use VOD2UV from trans
-- Cropping of reduced gaussian grid (https://software.ecmwf.int/wiki/pages/viewpage.action?pageId=44245985)
 - Understand the normalisation of area (-180 - 180 or 0 - 360)
   - Consider dissemniaton request: --reduced=640 --area=a=89.892/300/25.092/60
 
@@ -98,3 +97,5 @@ MEMO:
 DONE:
 - Vo/D to U/V: Dropping one coefficient
 - Implement general purpose file caching class
+- Cropping of reduced gaussian grid
+
