@@ -80,10 +80,14 @@ void BoundingBox::normalise() {
         east_ += 360;
         west_ += 360;
     }
+
+    while(east_ < west_) {
+        east_ += 360;
+    }
 }
 
 double BoundingBox::normalise(double lon) const {
-    while (lon > west_) {
+    while (lon > east_) {
         lon -= 360;
     }
 
@@ -93,9 +97,21 @@ double BoundingBox::normalise(double lon) const {
     return lon;
 }
 
+inline bool greater_equal(double a, double b) {
+    if(a >= b) {
+        return true;
+    }
+
+    if(fabs(a-b) < 1e-10) { // FIXME: What should it be? give me a resource
+        return true;
+    }
+
+    return false;
+}
+
 bool BoundingBox::contains(double lat, double lon) const {
     lon = normalise(lon);
-    return (lat <= north_) && (lat >= south_) && (lon >= west_) && (lon <= east_);
+    return greater_equal(north_, lat) && greater_equal(lat, south_) && greater_equal(lon , west_) && greater_equal(east_, lon);
 }
 
 bool BoundingBox::global() const {

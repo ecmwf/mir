@@ -7,6 +7,7 @@ NEXT STEPS
 - Nearest LSM
 - Make the logging callback work in emoslib.cc
 - Check why metdabuilder-test://mir-test/opensuse131/gnu/tests/fixed_tests/egrr_pl fails
+- Check why some of the diss_requests tests fail with a 'number too large' error
 - Gather knowledge about emoslib
 - Merge metabuilder-test back to metabuilder-prod
 
@@ -49,6 +50,8 @@ MIR
 - Wind interpolation
 - Use VOD2UV from trans
 - Cropping of reduced gaussian grid (https://software.ecmwf.int/wiki/pages/viewpage.action?pageId=44245985)
+- Understand the normalisation of area (-180 - 180 or 0 - 360)
+  - Consider dissemniaton request: --reduced=640 --area=a=89.892/300/25.092/60
 
 TESTING:
 - Test mir_tool with valgrind
