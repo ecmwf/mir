@@ -34,12 +34,12 @@ namespace method {
 
 class FiniteElement: public MethodWeighted {
 
-    mutable eckit::ScopedPtr<atlas::PointIndex3> ptree;
+    mutable eckit::ScopedPtr<atlas::PointIndex3> pTree_;
 
     mutable size_t ip_;
 
-    mutable size_t nb_triags;
-    mutable size_t inp_npts;
+    mutable size_t nb_triags_;
+    mutable size_t inp_npts_;
 
     mutable atlas::FieldT<double>* picoords;
     mutable atlas::FieldT<int>* ptriag_nodes;
@@ -59,7 +59,9 @@ class FiniteElement: public MethodWeighted {
   private:
 
 // -- Methods
+
     bool project_point_to_triangle( Point &p, Eigen::Vector3d& phi, int idx[3], const size_t k ) const;
+    bool project_point_to_quadrilateral( Point &p, Eigen::Vector3d& phi, int idx[3], const size_t k ) const;
 
 // -- Overridden methods
 

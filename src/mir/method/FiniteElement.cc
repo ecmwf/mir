@@ -12,22 +12,23 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-
 #include "mir/method/FiniteElement.h"
 
 #include <iostream>
 #include <string>
 
-#include "atlas/Tesselation.h"
-#include "atlas/TriangleIntersection.h"
-#include "atlas/util/IndexView.h"
-
 #include "eckit/log/Timer.h"
 
+#include "atlas/Tesselation.h"
+#include "atlas/geometry/TriangleIntersection.h"
+#include "atlas/util/IndexView.h"
+
+using atlas::geometry::TriangleIntersection;
 
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
     MethodWeighted(param) {
@@ -46,23 +47,22 @@ void FiniteElement::hash( eckit::MD5& md5) const {
 }
 
 bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, int idx[3], const size_t k) const {
-    using namespace eckit;
 
     bool found = false;
 
-    atlas::IndexView<int,   2> triag_nodes ( *ptriag_nodes );
-    atlas::ArrayView<double, 2> icoords     ( *picoords     );
+    atlas::IndexView<int,2> triag_nodes ( *ptriag_nodes );
+    atlas::ArrayView<double,2> icoords  ( *picoords     );
 
     if (k > 1000000) {
         eckit::Log::info() << "FiniteElement::project_point_to_triangle " << k << std::endl;
     }
-    atlas::PointIndex3::NodeList cs = ptree->kNearestNeighbours(p, k);
+    atlas::PointIndex3::NodeList cs = pTree_->kNearestNeighbours(p, k);
 
     // find in which triangle the point is contained
     // by computing the intercetion of the point with each nearest triangle
 
-    atlas::Isect uvt;
-    atlas::Ray ray( p.data() );
+    TriangleIntersection::Intersection uvt;
+    TriangleIntersection::Ray ray( p.data() );
 
     size_t tid = std::numeric_limits<size_t>::max();
 
@@ -70,15 +70,15 @@ bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, in
 
         tid = cs[i].value().payload();
 
-        ASSERT( tid < nb_triags );
+        ASSERT( tid < nb_triags_ );
 
         idx[0] = triag_nodes(tid, 0);
         idx[1] = triag_nodes(tid, 1);
         idx[2] = triag_nodes(tid, 2);
 
-        ASSERT( idx[0] < inp_npts && idx[1] < inp_npts && idx[2] < inp_npts );
+        ASSERT( idx[0] < inp_npts_ && idx[1] < inp_npts_ && idx[2] < inp_npts_ );
 
-        atlas::Triag triag( icoords[idx[0]].data() , icoords[idx[1]].data(), icoords[idx[2]].data() );
+        TriangleIntersection triag( icoords[idx[0]].data() , icoords[idx[1]].data(), icoords[idx[2]].data() );
 
         found = triag.intersects( ray, uvt );
 
@@ -114,7 +114,7 @@ void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
 
     atlas::Tesselation::create_cell_centres( const_cast<atlas::Mesh&>(i_mesh) ); // OOPS!
 
-    ptree.reset( create_cell_centre_index( const_cast<atlas::Mesh&>(i_mesh) ) ); // OOPS!
+    pTree_.reset( create_cell_centre_index( const_cast<atlas::Mesh&>(i_mesh) ) ); // OOPS!
 
     // input mesh
 
@@ -125,8 +125,8 @@ void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
 
     ptriag_nodes = &triags.field<int>( "nodes" );
 
-    nb_triags = triags.shape(0);
-    inp_npts = i_nodes.shape(0);
+    nb_triags_ = triags.shape(0);
+    inp_npts_ = i_nodes.shape(0);
 
     // output mesh
 
@@ -146,6 +146,7 @@ void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
     // boost::progress_display show_progress( out_npts );
 
     for ( ip_ = 0; ip_ < out_npts; ++ip_ ) {
+
         int idx[3]; /* indexes of the triangle that will contain the point*/
         Eigen::Vector3d phi;
         Point p ( ocoords[ip_].data() ); // lookup point
@@ -179,6 +180,7 @@ namespace {
 static MethodBuilder< FiniteElement > __finiteelement("finite-element");
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
