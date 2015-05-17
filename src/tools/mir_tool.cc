@@ -104,7 +104,7 @@ void MIRTool::usage(const std::string & tool) {
             << "  % " << tool << " --grid=2/2 --area=90/-8/12/80 input.grib output.grib" << std::endl
             << "  % " << tool << " --reduced=80 input.grib output.grib" << std::endl
             << "  % " << tool << " --regular=80 input.grib output.grib" << std::endl
-            << "  % " << tool << " --truncation=63 input.grib output.grib" << std::endl << std::endl
+            << "  % " << tool << " --truncation=63 input.grib output.grib" << std::endl
             ;
 }
 
