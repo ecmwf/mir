@@ -82,6 +82,7 @@ IN TRANS
 - transi seems to be fast for coarse target resolution, e.g. T1279 => 2x2. In this case it may not be needed to cache the coefficients. We need to study what is the threseold when computing coeff is faster than loading them.
 
 PRODGEN:
+- Document what prodgen is doing
 - We need to make sure prodgen does not sub-sample
 
 MARS:
