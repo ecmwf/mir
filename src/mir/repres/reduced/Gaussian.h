@@ -34,6 +34,7 @@ class Gaussian : public Gridded {
 
     Gaussian(const param::MIRParametrisation &parametrisation);
     Gaussian(size_t N);
+    Gaussian(size_t N, const util::BoundingBox &);
 
     // -- Destructor
 
@@ -61,6 +62,7 @@ class Gaussian : public Gridded {
     // -- Members
 
     size_t N_;
+    util::BoundingBox bbox_;
 
     // -- Methods
 
@@ -69,6 +71,7 @@ class Gaussian : public Gridded {
 
     // -- Overridden methods
 
+    virtual void fill(grib_info &) const;
 
     // -- Class members
     // None
@@ -87,15 +90,23 @@ class Gaussian : public Gridded {
 
     // -- Members
 
+    mutable std::vector<double> latitudes_;
 
     // -- Methods
-    // None
+
+    const std::vector<double>& latitudes() const;
+    virtual Gaussian *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+
 
     virtual const std::vector<long> &pls() const = 0;
     virtual Iterator *iterator() const;
 
 
     // -- Overridden methods
+
+    Gridded *cropped(const util::BoundingBox &bbox) const ;
+    void validate(const std::vector<double> &values) const;
+
 
     // Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
 

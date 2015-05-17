@@ -21,6 +21,14 @@
 #include "mir/param/MIRArgs.h"
 
 
+static mir::param::ArgOptions options[] = {
+
+    {"load", "path", "Load file into shared memory. If file already loaded, does nothing."},
+    {"unload", "path", "Unload file from shared memory. Fail if no file was loaded."},
+    {0,}
+};
+
+
 class MIRSharedMemory : public eckit::Tool {
 
     virtual void run();
@@ -40,11 +48,10 @@ void MIRSharedMemory::usage(const std::string &tool) {
             << std::endl << "Usage: " << tool << " --load=file | --unload=file" << std::endl
             ;
 
-    ::exit(1);
 }
 
 void MIRSharedMemory::run() {
-    mir::param::MIRArgs args(&usage, 0);
+    mir::param::MIRArgs args(&usage, 0, options);
 
     std::string path;
 

@@ -25,6 +25,11 @@
 namespace mir {
 namespace param {
 
+struct ArgOptions {
+    const char* name_;
+    const char* values_;
+    const char* description_;
+};
 
 class MIRArgs : public SimpleParametrisation {
   public:
@@ -36,7 +41,8 @@ class MIRArgs : public SimpleParametrisation {
 
 // -- Contructors
 
-    MIRArgs(usage_proc usage, int args_count = -1);
+    MIRArgs(usage_proc usage, int args_count = -1, const ArgOptions* = 0); // Last parameter must be NULL terminated
+    // TODO: more proper ArgOption
 
 // -- Destructor
 
@@ -101,6 +107,7 @@ class MIRArgs : public SimpleParametrisation {
 
     std::set<std::string> keys_;
     std::vector<std::string> args_;
+    const ArgOptions* options_;
 
 // -- Methods
 

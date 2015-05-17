@@ -89,6 +89,7 @@ Representation *Gridded::crop(const util::BoundingBox &bbox, const std::vector<d
 
 
     size_t p = 0;
+    size_t count = 0;
     bool first = true;
     double lat, lon;
     std::auto_ptr<Iterator> iter(iterator());
@@ -109,12 +110,19 @@ Representation *Gridded::crop(const util::BoundingBox &bbox, const std::vector<d
                 w = std::min(w, lon);
             }
 
+            // if(m.find(LL(lat, lon)) != m.end()) {
+            //     eckit::Log::info() << "CROP  duplicate " << lat << ", " << lon << std::endl;
+            // }
             m.insert(std::make_pair(LL(lat, lon), in[p]));
+            count++;
 
         }
         p++;
     }
 
+    // Make sure we did not visit duplicate points
+    eckit::Log::info() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
+    ASSERT(count == m.size());
 
     out.clear();
     out.reserve(m.size());

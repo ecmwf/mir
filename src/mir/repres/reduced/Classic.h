@@ -61,7 +61,6 @@ class Classic : public Gaussian {
 
     // -- Members
 
-    util::BoundingBox bbox_;
     mutable std::vector<long> pl_;
 
 
@@ -72,7 +71,6 @@ class Classic : public Gaussian {
     // -- Overridden methods
     virtual void fill(grib_info &) const;
     virtual atlas::Grid *atlasGrid() const;
-    virtual void validate(const std::vector<double> &) const;
     virtual const std::vector<long> &pls() const;
 
     // -- Class members
@@ -94,10 +92,13 @@ class Classic : public Gaussian {
 
 
     // -- Methods
-    // None
+
+
 
 
     // -- Overridden methods
+
+
 
     // Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
 

@@ -33,36 +33,13 @@ Classic::~Classic() {
 }
 
 Classic::Classic(size_t N, const util::BoundingBox &bbox):
-    Gaussian(N),
-    bbox_(bbox) {
+    Gaussian(N, bbox) {
 
 }
 
 void Classic::fill(grib_info &info) const  {
-
-    // See copy_spec_from_ksec.c in libemos for info
-
-    info.grid.grid_type = GRIB_UTIL_GRID_SPEC_REDUCED_GG;
-    info.grid.Nj = N_ * 2; // Should be PL.size()
-    info.grid.N = N_;
-
-    bbox_.fill(info);
-
-    /*
-        Comment in libemos is:
-
-        "grib_api to set global area in full precision for gaussian grid"
-
-        TODO: check and document
-
-    */
-
-    size_t j = info.packing.extra_settings_count++;
-    info.packing.extra_settings[j].type = GRIB_TYPE_LONG;
-    info.packing.extra_settings[j].name = "global";
-    info.packing.extra_settings[j].long_value = bbox_.global() ? 1 : 0;
-
-    // FIXME: Where are the PL set? Looks like grib_api has its own list
+    Gaussian::fill(info);
+// NOTE: We assume that grib_api will put the proper PL
 }
 
 atlas::Grid *Classic::atlasGrid() const {
@@ -70,19 +47,6 @@ atlas::Grid *Classic::atlasGrid() const {
     os << "rgg.N" << N_ << eckit::StrStream::ends;
     return atlas::Grid::create(std::string(os));
 }
-
-
-void Classic::validate(const std::vector<double> &values) const {
-
-    const std::vector<long> &v = pls();
-    size_t count = 0;
-    for (size_t i = 0; i < v.size(); i++) {
-        count += v[i];
-    }
-
-    ASSERT(values.size() == count);
-}
-
 
 const std::vector<long> &Classic::pls() const {
     if (pl_.size() == 0) {

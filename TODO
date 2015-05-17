@@ -1,12 +1,15 @@
 MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
 NEXT STEPS
-- Cropping of reduced gaussian grid
-  - See: https://software.ecmwf.int/wiki/pages/viewpage.action?pageId=44245985
 - Caching of SH=>LL coefficients
 - SH=>LL with different increments
 - Bi-linear
 - Nearest LSM
+- Make the logging callback work in emoslib.cc
+- Check why metdabuilder-test://mir-test/opensuse131/gnu/tests/fixed_tests/egrr_pl fails
+- Check why some of the diss_requests tests fail with a 'number too large' error
+- Gather knowledge about emoslib
+- Merge metabuilder-test back to metabuilder-prod
 
 PHILOSPY
 - 1 Make it work
@@ -46,21 +49,23 @@ MIR
 - Make sure cached weight files are not loaded for every field
 - Wind interpolation
 - Use VOD2UV from trans
+- Understand the normalisation of area (-180 - 180 or 0 - 360)
+  - Consider dissemniaton request: --reduced=640 --area=a=89.892/300/25.092/60
 
 TESTING:
 - Test mir_tool with valgrind
 - Make sure we compare mir and emoslib for speed
 - Make sure we run diss_requests in metabuilder with date for which the seasonal exists
+- Check why metabuilder report failed tasks with incomplete output
 -
+PERFORMANCES
+- Consider switching of some ASSERTions, maybe with a resource
 
 EMOSLIB
 - Find out about all intuv* functions
 
 * Behaviour to reproduce
   - Specifying AREA on a SH field is ignored
-
-ECKIT
-- Implement general purpose file caching class
 
 IN ATLAS:
 - Make sure cached mesh files are not loaded for every field
@@ -78,6 +83,7 @@ IN TRANS
 - transi seems to be fast for coarse target resolution, e.g. T1279 => 2x2. In this case it may not be needed to cache the coefficients. We need to study what is the threseold when computing coeff is faster than loading them.
 
 PRODGEN:
+- Document what prodgen is doing
 - We need to make sure prodgen does not sub-sample
 
 MARS:
@@ -92,3 +98,6 @@ MEMO:
 
 DONE:
 - Vo/D to U/V: Dropping one coefficient
+- Implement general purpose file caching class
+- Cropping of reduced gaussian grid
+

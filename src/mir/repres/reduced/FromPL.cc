@@ -32,37 +32,16 @@ FromPL::~FromPL() {
 }
 
 FromPL::FromPL(size_t N, const std::vector<long> &pl, const util::BoundingBox &bbox):
-    Gaussian(N),
-    pl_(pl),
-    bbox_(bbox) {
+    Gaussian(N, bbox),
+    pl_(pl) {
 
 }
 
 void FromPL::fill(grib_info &info) const  {
+    Gaussian::fill(info);
 
-    // See copy_spec_from_ksec.c in libemos for info
-
-    info.grid.grid_type = GRIB_UTIL_GRID_SPEC_REDUCED_GG;
-    info.grid.Nj = N_ * 2; // Should be PL.size()
-    info.grid.N = N_;
-
-    bbox_.fill(info);
-
-    /*
-        Comment in libemos is:
-
-        "grib_api to set global area in full precision for gaussian grid"
-
-        TODO: check and document
-
-    */
-
-    size_t j = info.packing.extra_settings_count++;
-    info.packing.extra_settings[j].type = GRIB_TYPE_LONG;
-    info.packing.extra_settings[j].name = "global";
-    info.packing.extra_settings[j].long_value = bbox_.global() ? 1 : 0;
-
-    // FIXME: Where are the PL set? Looks like grib_api has its own list
+    info.grid.pl = &pl_[0];
+    info.grid.pl_size = pl_.size();
 }
 
 atlas::Grid *FromPL::atlasGrid() const {
@@ -78,18 +57,6 @@ atlas::Grid *FromPL::atlasGrid() const {
 
 const std::vector<long> &FromPL::pls() const {
     return pl_;
-}
-
-
-void FromPL::validate(const std::vector<double> &values) const {
-    // TODO: check with area
-#if 1
-    size_t count = 0;
-    for (size_t i = 0; i < pl_.size(); i++) {
-        count += pl_[i];
-    }
-    ASSERT(values.size() == count);
-#endif
 }
 
 } // namespace reduced
