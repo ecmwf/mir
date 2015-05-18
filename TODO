@@ -51,6 +51,8 @@ MIR
 - Use VOD2UV from trans
 - Understand the normalisation of area (-180 - 180 or 0 - 360)
   - Consider dissemniaton request: --reduced=640 --area=a=89.892/300/25.092/60
+- remove currently necessary C-style casts when updating to a const-correct version of grib_api
+  (currently unstable, casts are for current stable version 1.13.1 which is incorrect)
 
 TESTING:
 - Test mir_tool with valgrind
