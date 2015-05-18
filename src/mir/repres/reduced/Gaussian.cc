@@ -79,7 +79,9 @@ void Gaussian::fill(grib_info &info) const  {
     info.grid.Nj = pl.size() * 2;
     info.grid.N = N_;
 
-    info.grid.pl = &pl[0];
+    // FIXME C-style cast should be removed in a const-correct version of grib_api
+    // (currently unstable)
+    info.grid.pl = (long int*) &pl[0];
     info.grid.pl_size = pl.size();
 
     bbox_.fill(info);
@@ -267,7 +269,7 @@ Gaussian *Gaussian::cropped(const util::BoundingBox &bbox, const std::vector<lon
     throw eckit::SeriousBug(std::string(os));
 }
 
-} // namespace reduced
+}  // namespace reduced
 }  // namespace repres
 }  // namespace mir
 

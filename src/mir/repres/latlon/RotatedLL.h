@@ -118,7 +118,7 @@ class RotatedLL : public RegularLL {
 
 };
 
-} // namespave latlon
+}  // namespace latlon
 }  // namespace repres
 }  // namespace mir
 #endif
