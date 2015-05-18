@@ -120,7 +120,7 @@ class SphericalHarmonics : public Representation {
 
 };
 
-} // namespace sh
+}  // namespace sh
 }  // namespace repres
 }  // namespace mir
 #endif
