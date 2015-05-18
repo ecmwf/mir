@@ -21,7 +21,11 @@
 
 struct grib_info;
 
-namespace mir { namespace repres { class Representation; }}
+namespace mir {
+namespace repres {
+class Representation;
+}
+}
 
 namespace mir {
 namespace packing {
@@ -46,7 +50,7 @@ class Packer {
 
     // -- Methods
 
-    virtual void fill(grib_info&, const repres::Representation& ) const = 0;
+    virtual void fill(grib_info &, const repres::Representation & ) const = 0;
 
     // -- Overridden methods
     // None
@@ -56,7 +60,9 @@ class Packer {
 
     // -- Class methods
 
-    static const Packer &lookup(const std::string& name);
+    static const Packer &lookup(const std::string &name);
+    static void list(std::ostream &);
+
 
   protected:
 

@@ -58,6 +58,19 @@ Packer::~Packer() {
 }
 
 
+void Packer::list(std::ostream& out) {
+    pthread_once(&once, init);
+
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    const char* sep = "";
+    for (std::map<std::string, Packer *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
+        out << sep << (*j).first;
+        sep = ", ";
+    }
+}
+
+
 const Packer& Packer::lookup(const std::string &name) {
 
     pthread_once(&once, init);

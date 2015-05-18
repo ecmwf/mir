@@ -22,14 +22,15 @@
 #include <set>
 #include <vector>
 
+namespace mir { namespace param { namespace option {class Option; }}}
+
 namespace mir {
 namespace param {
 
-struct ArgOptions {
-    const char* name_;
-    const char* values_;
-    const char* description_;
-};
+namespace option {
+    class Option;
+}
+
 
 class MIRArgs : public SimpleParametrisation {
   public:
@@ -41,7 +42,7 @@ class MIRArgs : public SimpleParametrisation {
 
 // -- Contructors
 
-    MIRArgs(usage_proc usage, int args_count = -1, const ArgOptions* = 0); // Last parameter must be NULL terminated
+    MIRArgs(usage_proc usage, int args_count = -1, const std::vector<const option::Option*>& = std::vector<const option::Option*>());
     // TODO: more proper ArgOption
 
 // -- Destructor
@@ -107,7 +108,7 @@ class MIRArgs : public SimpleParametrisation {
 
     std::set<std::string> keys_;
     std::vector<std::string> args_;
-    const ArgOptions* options_;
+    const std::vector<const option::Option*>& options_;
 
 // -- Methods
 

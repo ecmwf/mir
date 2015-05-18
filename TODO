@@ -8,7 +8,7 @@ NEXT STEPS
 - Make the logging callback work in emoslib.cc
 - Check why metdabuilder-test://mir-test/opensuse131/gnu/tests/fixed_tests/egrr_pl fails
 - Check why some of the diss_requests tests fail with a 'number too large' error
-- Gather knowledge about emoslib
+- Gather knowledge about emoslib/prodgen
 - Merge metabuilder-test back to metabuilder-prod
 
 PHILOSPY

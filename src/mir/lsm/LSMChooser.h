@@ -72,6 +72,7 @@ class LSMChooser {
     // -- Class methods
 
     static const LSMChooser &lookup(const std::string& name);
+    static void list(std::ostream &);
 
   protected:
 
