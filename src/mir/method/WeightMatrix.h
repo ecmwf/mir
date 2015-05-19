@@ -19,7 +19,9 @@
 namespace mir {
 namespace method {
 
+
 typedef Eigen::SparseMatrix<double, Eigen::RowMajor> WeightMatrix;
+
 
 }  // namespace method
 }  // namespace mir

@@ -10,14 +10,13 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date May 2015
 
 
 #ifndef mir_method_FiniteElement_H
 #define mir_method_FiniteElement_H
 
 #include "eckit/memory/ScopedPtr.h"
-
 #include "eckit/maths/Eigen.h"
 #include "eckit/geometry/Point3.h"
 
@@ -69,8 +68,8 @@ class FiniteElement: public MethodWeighted {
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
-
 };
+
 
 }  // namespace method
 }  // namespace mir

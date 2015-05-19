@@ -10,7 +10,7 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date May 2015
 
 
 #ifndef mir_method_NearestNeighbourg_H
@@ -53,6 +53,7 @@ class KNearest: public Nearest {
 
 
 };
+
 
 }  // namespace method
 }  // namespace mir

@@ -10,18 +10,21 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date May 2015
+
 
 #ifndef mir_method_Bilinear_H
 #define mir_method_Bilinear_H
 
 #include "mir/method/MethodWeighted.h"
 
+
 namespace eckit {
 namespace geometry {
 class Point3;
 }
 }
+
 
 namespace mir {
 namespace method {
@@ -41,9 +44,7 @@ class NearestLSM: public MethodWeighted {
   private:
 
 // -- Methods
-    double crossProduct(const eckit::geometry::Point3& a, const eckit::geometry::Point3& b) const;
-    bool formClockwiseTriangle(const eckit::geometry::Point3& a, const eckit::geometry::Point3& b, const eckit::geometry::Point3& c) const;
-    void sort4Clockwise(std::vector<eckit::geometry::Point3>& points) const ;
+    // None
 
 // -- Overridden methods
 
@@ -59,8 +60,8 @@ class NearestLSM: public MethodWeighted {
 
 // -- Friends
 
-
 };
+
 
 }  // namespace method
 }  // namespace mir
