@@ -278,10 +278,8 @@ list(
      repres/unsupported/StretchedSH.h
      repres/unsupported/TransverseMercator.cc
      repres/unsupported/TransverseMercator.h
-     repres/unsupported/TriangularGrid.cc
-     repres/unsupported/TriangularGrid.h
-     repres/unsupported/UnstructuredGrid.cc
-     repres/unsupported/UnstructuredGrid.h
+     repres/other/UnstructuredGrid.cc
+     repres/other/UnstructuredGrid.h
      util/Arguments.cc
      util/Arguments.h
      util/Bitmap.cc

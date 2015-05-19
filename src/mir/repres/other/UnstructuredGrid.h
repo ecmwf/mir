@@ -13,17 +13,18 @@
 /// @date Apr 2015
 
 
-#ifndef TriangularGrid_H
-#define TriangularGrid_H
+#ifndef UnstructuredGrid_H
+#define UnstructuredGrid_H
 
 #include "mir/repres/Gridded.h"
 
 
 namespace mir {
 namespace repres {
+namespace other {
 
 
-class TriangularGrid : public Gridded {
+class UnstructuredGrid : public Gridded {
   public:
 
     // -- Exceptions
@@ -31,11 +32,11 @@ class TriangularGrid : public Gridded {
 
     // -- Contructors
 
-    TriangularGrid(const param::MIRParametrisation &);
+    UnstructuredGrid(const param::MIRParametrisation &);
 
     // -- Destructor
 
-    virtual ~TriangularGrid(); // Change to virtual if base class
+    virtual ~UnstructuredGrid(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -74,12 +75,12 @@ class TriangularGrid : public Gridded {
 
   private:
 
-    TriangularGrid();
+    UnstructuredGrid();
 
     // No copy allowed
 
-    TriangularGrid(const TriangularGrid &);
-    TriangularGrid &operator=(const TriangularGrid &);
+    UnstructuredGrid(const UnstructuredGrid &);
+    UnstructuredGrid &operator=(const UnstructuredGrid &);
 
     // -- Members
 
@@ -106,12 +107,13 @@ class TriangularGrid : public Gridded {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const TriangularGrid& p)
+    //friend ostream& operator<<(ostream& s,const UnstructuredGrid& p)
     //  { p.print(s); return s; }
 
 };
 
 
+}  // namespace other
 }  // namespace repres
 }  // namespace mir
 #endif
