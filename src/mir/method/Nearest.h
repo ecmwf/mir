@@ -12,50 +12,42 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-
 #ifndef mir_method_KNearest_H
 #define mir_method_KNearest_H
 
 #include "mir/method/MethodWeighted.h"
 
-
 namespace mir {
 namespace method {
 
+class Nearest : public MethodWeighted {
+public:
 
-class Nearest: public MethodWeighted {
+  explicit Nearest(const param::MIRParametrisation&);
 
-  public:
+  virtual ~Nearest();
 
-    Nearest(const param::MIRParametrisation&);
+protected:
 
-    virtual ~Nearest();
+  double epsilon_;
 
-  protected:
+  virtual void hash(eckit::MD5&) const;
 
-    double epsilon_;
+private:
+  // -- Methods
 
-    virtual void hash( eckit::MD5& ) const;
+  virtual size_t nclosest() const = 0;
 
-  private:
+  virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+  // virtual void print(std::ostream&) const;
+  virtual const char* name() const;
 
-// -- Methods
+  // -- Class members
 
-    virtual size_t nclosest() const = 0;
-
-    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
-    // virtual void print(std::ostream&) const;
-    virtual const char* name() const;
-
-// -- Class members
-
-// -- Friends
-
-
+  // -- Friends
 };
 
 }  // namespace method
 }  // namespace mir
 
 #endif
-

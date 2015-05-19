@@ -33,7 +33,7 @@ foreach( _t ${_test_reqs} )
   list( APPEND _test_data ${_f} )
 endforeach()
 
-ecbuild_get_test_multidata( TARGET mit_get_test_data NAMES ${_test_data} )
+ecbuild_get_test_multidata( TARGET mir_get_test_data NAMES ${_test_data} )
 
 foreach( _t ${_test_reqs} )
   separate_arguments(_t)
@@ -46,7 +46,7 @@ foreach( _t ${_test_reqs} )
                     ENVIRONMENT
                       GRIB_DEFINITION_PATH=${GRIB_DEFINITION_PATH}
                       GRIB_SAMPLES_PATH=${GRIB_SAMPLES_PATH}
-                    TEST_DEPENDS get_data
+                    TEST_DEPENDS mir_get_test_data
                   )
 endforeach()
 
