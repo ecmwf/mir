@@ -120,6 +120,11 @@ void MIRTool::run() {
     options.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm.selection.output", "Selection method for output lsm"));
     options.push_back(new SimpleOption<eckit::PathName>("lsm.file.output", "Path to lsm to use for output lsm, in grib, only if --lsm.selection=file"));
 
+     //==============================================
+    options.push_back(new Separator("Unstructured grids support"));
+    options.push_back(new SimpleOption<eckit::PathName>("latitudes", "Path GRIB file of latitudes"));
+    options.push_back(new SimpleOption<eckit::PathName>("longitudes", "Path GRIB file of longitudes"));
+
 
     //==============================================
     options.push_back(new Separator("GRIB Output"));
@@ -135,6 +140,12 @@ void MIRTool::run() {
 
     mir::input::GribFileInput input(args.args(0));
     mir::output::GribFileOutput output(args.args(1));
+
+    std::string path_lat, path_lon;
+    ASSERT(args.has("latitudes") ==  args.has("longitudes"));
+    if(args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
+        input.setAuxilaryFiles(path_lat, path_lon);
+    }
 
     mir::api::MIRJob job;
     args.copyValuesTo(job);

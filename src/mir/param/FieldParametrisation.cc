@@ -43,6 +43,18 @@ bool FieldParametrisation::has(const std::string &name) const {
 }
 
 
+void FieldParametrisation::latitudes(std::vector<double> &) const {
+    eckit::StrStream os;
+    os << "FieldParametrisation::latitudes() not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
+
+void FieldParametrisation::longitudes(std::vector<double> &) const {
+    eckit::StrStream os;
+    os << "FieldParametrisation::longitudes() not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
+
 template<class T>
 bool FieldParametrisation::_get(const std::string &name, T &value) const {
 
@@ -123,6 +135,16 @@ bool FieldParametrisation::get(const std::string &name, std::vector<double> &val
             value[3] = east;
             return true;
         }
+    }
+
+    if (name == "latitudes") {
+        latitudes(value);
+        return true;
+    }
+
+    if (name == "longitudes") {
+        longitudes(value);
+        return true;
     }
 
     return _get(name, value);

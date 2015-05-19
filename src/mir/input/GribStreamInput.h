@@ -53,11 +53,13 @@ class GribStreamInput : public GribInput {
     // -- Methods
     // None
 
-    bool next();
 
 
     // -- Overridden methods
     // None
+
+    virtual bool next();
+
 
     // -- Class members
     // None

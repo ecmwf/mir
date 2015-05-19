@@ -15,14 +15,17 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/BufferedHandle.h"
+#include "eckit/io/StdFile.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/util/Grib.h"
 
 #include "mir/input/GribInput.h"
 #include "mir/repres/Representation.h"
+#include "mir/input/GribFileInput.h"
 
 #include <iomanip>
+#include <iostream>
 
 namespace mir {
 namespace input {
@@ -417,6 +420,61 @@ bool GribInput::handle(grib_handle *h) {
     return h != 0;
 }
 
+
+void GribInput::auxilaryValues(const std::string &path, std::vector<double> &values) const {
+    eckit::StdFile f(path);
+    int e;
+    grib_handle *h = 0;
+
+    // We cannot use GribFileInput to read these files, because lat/lon files are also
+    // has grid_type = triangular_grid, and we will create a loop
+
+    try {
+        h = grib_handle_new_from_file(0, f, &e);
+        grib_call(e, path.c_str());
+        size_t count;
+        GRIB_CALL(grib_get_size(h, "values", &count));
+
+        size_t size = count;
+        values.resize(count);
+        GRIB_CALL(grib_get_double_array(h, "values", &values[0], &size));
+        ASSERT(count == size);
+
+        long bitmap;
+        GRIB_CALL(grib_get_long(h, "bitmapPresent", &bitmap));
+        ASSERT(!bitmap);
+
+        grib_handle_delete(h);
+    } catch (...) {
+        if (h) grib_handle_delete(h);
+        throw;
+    }
+}
+
+
+void GribInput::setAuxilaryFiles(const std::string &pathToLatitudes, const std::string &pathToLongitudes) {
+    eckit::Log::info() << "Loading auxilary files " << pathToLatitudes << " and " << pathToLongitudes << std::endl;
+    auxilaryValues(pathToLatitudes, latitudes_);
+    auxilaryValues(pathToLongitudes, longitudes_);
+}
+
+// TODO: some caching, also next() should maybe advance the auxilary files
+void GribInput::latitudes(std::vector<double> &values) const {
+    values.clear(); values.reserve(latitudes_.size());
+    std::copy(latitudes_.begin(), latitudes_.end(), std::back_inserter(values));
+}
+
+void GribInput::longitudes(std::vector<double> &values) const {
+    values.clear(); values.reserve(longitudes_.size());
+    std::copy(longitudes_.begin(), longitudes_.end(), std::back_inserter(values));
+}
+
+bool GribInput::next() {
+    eckit::StrStream os;
+    MIRInput &self = *this;
+    os << "GribInput::next() not implemented for " << self << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
 
 }  // namespace input
 }  // namespace mir

@@ -26,87 +26,90 @@ namespace param {
 class FieldParametrisation : public MIRParametrisation {
   public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     FieldParametrisation();
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~FieldParametrisation(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
-// -- Overridden methods
+    // -- Overridden methods
     // From MIRParametrisation
-    virtual bool get(const std::string& name, std::string& value) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, double& value) const;
-    virtual bool get(const std::string& name, std::vector<long>& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
+    virtual bool get(const std::string &name, std::string &value) const;
+    virtual bool get(const std::string &name, bool &value) const;
+    virtual bool get(const std::string &name, long &value) const;
+    virtual bool get(const std::string &name, double &value) const;
+    virtual bool get(const std::string &name, std::vector<long> &value) const;
+    virtual bool get(const std::string &name, std::vector<double> &value) const;
 
-    virtual bool has(const std::string& name) const;
+    virtual bool has(const std::string &name) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   private:
 
-// No copy allowed
+    // No copy allowed
 
-    FieldParametrisation(const FieldParametrisation&);
-    FieldParametrisation& operator=(const FieldParametrisation&);
+    FieldParametrisation(const FieldParametrisation &);
+    FieldParametrisation &operator=(const FieldParametrisation &);
 
-// -- Members
+    // -- Members
 
     mutable bool check_;
-    mutable const MIRParametrisation* logic_;
+    mutable const MIRParametrisation *logic_;
 
-// -- Methods
+    // -- Methods
 
     template<class T>
-    bool _get(const std::string&, T&) const;
+    bool _get(const std::string &, T &) const;
 
 
-// -- Overridden methods
+    virtual void latitudes(std::vector<double> &) const;
+    virtual void longitudes(std::vector<double> &) const;
 
-// -- Class members
+    // -- Overridden methods
+
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
 
 };

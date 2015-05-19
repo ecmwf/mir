@@ -48,7 +48,9 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     // -- Methods
     // None
 
-    bool next();
+    virtual bool next();
+
+    void setAuxilaryFiles(const std::string &pathToLatitudes, const std::string &pathToLongitudes);
 
 
     // -- Overridden methods
@@ -68,7 +70,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Methods
 
-    bool handle(grib_handle*);
+    bool handle(grib_handle *);
 
 
     // -- Overridden methods
@@ -89,9 +91,18 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Members
 
-    grib_handle* grib_;
+    grib_handle *grib_;
+
+    // --- For unstructured grids
+
+
+    std::vector<double> latitudes_;
+    std::vector<double> longitudes_;
 
     // -- Methods
+
+    void auxilaryValues(const std::string&, std::vector<double> &values) const;
+
 
     // -- Overridden methods
     // From MIRInput
@@ -101,14 +112,19 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     virtual grib_handle *gribHandle() const;
 
     /// From MIRParametrisation
-    virtual bool get(const std::string& name, std::string& value) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, double& value) const;
-    virtual bool get(const std::string& name, std::vector<long>& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
+    virtual bool get(const std::string &name, std::string &value) const;
+    virtual bool get(const std::string &name, bool &value) const;
+    virtual bool get(const std::string &name, long &value) const;
+    virtual bool get(const std::string &name, double &value) const;
+    virtual bool get(const std::string &name, std::vector<long> &value) const;
+    virtual bool get(const std::string &name, std::vector<double> &value) const;
 
-    virtual bool has(const std::string& name) const;
+    virtual bool has(const std::string &name) const;
+
+    // From FieldParametrisation
+    virtual void latitudes(std::vector<double> &) const;
+    virtual void longitudes(std::vector<double> &) const;
+
 
     // -- Class members
     // None
