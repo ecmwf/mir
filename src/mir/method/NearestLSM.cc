@@ -10,10 +10,10 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date May 2015
 
 
-#include "NearestLSM.h"
+#include "mir/method/NearestLSM.h"
 
 #include <string>
 #include <algorithm>
@@ -23,8 +23,10 @@
 
 #include "atlas/grids/ReducedGaussianGrid.h"
 
+
 namespace mir {
 namespace method {
+
 
 NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
     MethodWeighted(param) {
@@ -34,13 +36,16 @@ NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
 NearestLSM::~NearestLSM() {
 }
 
+
 const char *NearestLSM::name() const {
     return  "nearest-lsm";
 }
 
+
 void NearestLSM::hash( eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
 }
+
 
 void NearestLSM::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
     NOTIMP;

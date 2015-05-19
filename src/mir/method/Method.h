@@ -23,25 +23,30 @@
 
 #include "eckit/memory/NonCopyable.h"
 
+
 namespace eckit {
 class MD5;
 }
+
+
 namespace atlas {
 class Grid;
 }
 
-namespace mir {
 
+namespace mir {
 namespace data {
 class MIRField;
 }
 namespace param {
 class MIRParametrisation;
 }
+}
 
+
+namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class Method : private eckit::NonCopyable {
   public:
@@ -69,7 +74,7 @@ class Method : private eckit::NonCopyable {
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
+
 
 class MethodFactory {
     std::string name_;
@@ -87,7 +92,7 @@ class MethodFactory {
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
+
 
 template< class T>
 class MethodBuilder : public MethodFactory {
@@ -98,7 +103,7 @@ class MethodBuilder : public MethodFactory {
     MethodBuilder(const std::string &name) : MethodFactory(name) {}
 };
 
-//----------------------------------------------------------------------------------------------------------------------
+
 
 }  // namespace method
 }  // namespace mir

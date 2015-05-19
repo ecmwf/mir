@@ -10,14 +10,14 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date May 2015
 
+
+#include "mir/method/Nearest.h"
 
 #include <string>
 
 #include "mir/util/PointSearch.h"
-
-#include "mir/method/Nearest.h"
 #include "mir/param/MIRParametrisation.h"
 
 

@@ -10,7 +10,8 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date May 2015
+
 
 #include "mir/method/FiniteElement.h"
 
@@ -23,12 +24,10 @@
 #include "atlas/geometry/TriangleIntersection.h"
 #include "atlas/util/IndexView.h"
 
-using atlas::geometry::TriangleIntersection;
 
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
     MethodWeighted(param) {
@@ -38,15 +37,20 @@ FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
 FiniteElement::~FiniteElement() {
 }
 
+
 const char* FiniteElement::name() const {
     return "finite-element";
 }
+
 
 void FiniteElement::hash( eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
 }
 
+
 bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, int idx[3], const size_t k) const {
+
+    using atlas::geometry::TriangleIntersection;
 
     bool found = false;
 
@@ -180,7 +184,6 @@ namespace {
 static MethodBuilder< FiniteElement > __finiteelement("finite-element");
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

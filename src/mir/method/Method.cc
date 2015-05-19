@@ -28,9 +28,7 @@ namespace {
 
 static eckit::Mutex *local_mutex = 0;
 static std::map<std::string, MethodFactory *> *m = 0;
-
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-
 static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map<std::string, MethodFactory *>();
@@ -79,6 +77,7 @@ void MethodFactory::list(std::ostream& out) {
         sep = ", ";
     }
 }
+
 
 Method *MethodFactory::build(const std::string &name, const param::MIRParametrisation &params) {
 

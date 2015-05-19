@@ -18,12 +18,9 @@
 #include "mir/caching/WeightCache.h"
 
 #include <algorithm>
-#include <cmath>
-#include <limits>
 #include <map>
 #include <string>
 
-// #include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
 #include "eckit/log/Seconds.h"
@@ -36,20 +33,17 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/lsm/LandSeaMasks.h"
-// #include "mir/method/WeightCache.h"
 // #include "mir/param/MIRParametrisation.h"
-// #include "mir/repres/Representation.h"
 
-
-// using atlas::Grid;
-
-static eckit::Mutex local_mutex;
 
 namespace mir {
 namespace method {
 
 
 namespace {
+
+
+static eckit::Mutex local_mutex;
 
 
 /// Convert values vector to booleans, with equality
@@ -103,27 +97,25 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     md5 << in;
     md5 << out;
 
-
-    std::stringstream os;
-    os << name() << "-" << in.shortName() << "-" << out.shortName();
-
-    std::string key_no_masks = os.str() + "-" + md5.digest();
-
+    const eckit::MD5::digest_t md5_no_masks(md5.digest());
     md5 << masks;
-    std::string key_with_masks = os.str() +  "-LSM-" + md5.digest();
+    const eckit::MD5::digest_t md5_with_masks(md5.digest());
     eckit::Log::info() << "Compute md5 " << timer.elapsed() - here << std::endl;
+
+
+    const std::string
+    basen = std::string(name()) + "-" + in.shortName() + "-" + out.shortName(),
+    key_no_masks   = basen + "-"      + md5_no_masks,
+    key_with_masks = basen +  "-LSM-" + md5_with_masks;
 
     std::map<std::string, WeightMatrix>::iterator j = matrix_cache.find(key_with_masks);
     if (j != matrix_cache.end()) {
         return (*j).second;
     }
 
-    std::string cache_key;
-    if (masks.active() && masks.cacheable()) {
-        cache_key = key_with_masks;
-    } else {
-        cache_key = key_no_masks;
-    }
+    const std::string cache_key = (masks.active() && masks.cacheable())?
+                key_with_masks
+              : key_no_masks;
 
     // Shorten the key, to avoid "file name to long" errors
 

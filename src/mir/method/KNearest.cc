@@ -10,14 +10,14 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date May 2015
 
+
+#include "mir/method/KNearest.h"
 
 #include <string>
 
 #include "mir/util/PointSearch.h"
-
-#include "mir/method/KNearest.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -35,13 +35,16 @@ KNearest::KNearest(const param::MIRParametrisation &param) :
 KNearest::~KNearest() {
 }
 
+
 const char *KNearest::name() const {
     return  "k-nearest";
 }
 
+
 size_t KNearest::nclosest() const {
     return nclosest_;
 }
+
 
 void KNearest::hash( eckit::MD5& md5) const {
     Nearest::hash(md5);
@@ -57,6 +60,7 @@ void KNearest::print(std::ostream &out) const {
 namespace {
 static MethodBuilder< KNearest > __knearest("k-nearest");
 }
+
 
 }  // namespace method
 }  // namespace mir

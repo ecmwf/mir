@@ -13,10 +13,9 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
+
 #ifndef mir_method_MethodWeighted_H
 #define mir_method_MethodWeighted_H
-
-// #include <string>
 
 #include "mir/method/Method.h"
 #include "mir/caching/WeightCache.h"
