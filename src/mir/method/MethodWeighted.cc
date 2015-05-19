@@ -199,8 +199,8 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
     // update if missing values are present
     if (field.hasMissing()) {
         const check_equality< double > check_miss(field.missingValue());
-        bool still_has_missing = true;
-        for (size_t i = 0; i < field.dimensions() && still_has_missing; ++i) {
+        bool still_has_missing = false;
+        for (size_t i = 0; i < field.dimensions() && !still_has_missing; ++i) {
             const std::vector< double > &values = field.values(i);
             still_has_missing = (std::find_if(values.begin(),values.end(),check_miss)!=values.end());
         }
