@@ -64,6 +64,16 @@ void SimpleOption<T>::set(const std::string &value, SimpleParametrisation &param
 }
 
 template<class T>
+void SimpleOption<T>::set(SimpleParametrisation &parametrisation) const {
+    Option::set(parametrisation);
+}
+
+template<>
+void SimpleOption<bool>::set(SimpleParametrisation &parametrisation) const {
+    parametrisation.set(name_, true);
+}
+
+template<class T>
 void SimpleOption<T>::print(std::ostream &out) const {
     out << "   --" << name_ << "=" << Title<T>()() << " (" << description_ << ")";
 }

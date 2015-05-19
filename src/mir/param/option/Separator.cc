@@ -37,6 +37,9 @@ void Separator::set(const std::string &value, SimpleParametrisation &parametrisa
     NOTIMP;
 }
 
+bool Separator::active() const {
+    return false;
+}
 
 void Separator::print(std::ostream &out) const {
     out << std::endl << description_ << ":" << std::endl;

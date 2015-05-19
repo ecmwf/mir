@@ -94,6 +94,7 @@ class SimpleOption : public Option {
 
 // -- Overridden methods
 
+    virtual void set(SimpleParametrisation&) const;
     virtual void set(const std::string& value, SimpleParametrisation&) const;
 
 

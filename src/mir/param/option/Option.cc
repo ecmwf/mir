@@ -14,14 +14,14 @@
 
 
 #include "mir/param/option/Option.h"
-// #include "eckit/exception/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 namespace mir {
 namespace param {
 namespace option {
 
 
-Option::Option(const std::string& name, const std::string& description):
+Option::Option(const std::string &name, const std::string &description):
     name_(name),
     description_(description) {
 }
@@ -30,8 +30,19 @@ Option::Option(const std::string& name, const std::string& description):
 Option::~Option() {
 }
 
-const std::string& Option::name() const {
+const std::string &Option::name() const {
     return name_;
+}
+
+
+bool Option::active() const {
+    return true;
+}
+
+void Option::set(param::SimpleParametrisation &) const {
+    eckit::StrStream os;
+    os << "Option::set() not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
 }
 
 } // namespace option

@@ -53,8 +53,10 @@ class Option {
 
     const std::string& name() const;
 
-    virtual void set(const std::string& value, SimpleParametrisation&) const = 0;
+    virtual bool active() const;
 
+    virtual void set(SimpleParametrisation&) const;
+    virtual void set(const std::string& value, SimpleParametrisation&) const = 0;
 
 
 // -- Overridden methods

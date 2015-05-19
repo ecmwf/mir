@@ -93,6 +93,7 @@ class Separator : public Option {
 // -- Overridden methods
 
     virtual void set(const std::string& value, SimpleParametrisation&) const;
+    virtual bool active() const;
 
 
 // -- Class members
