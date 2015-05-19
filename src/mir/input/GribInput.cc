@@ -171,7 +171,9 @@ static struct {
 
     // This will be just called for has()
     {"gridded", "Nx", is("gridType", "polar_stereographic"),},  // Polar stereo
+    {"gridded", "Ni", is("gridType", "triangular_grid"),},  // Polar stereo
     {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
+
     {"spectral", "pentagonalResolutionParameterJ"},
 
     /// FIXME: Find something that does no clash
