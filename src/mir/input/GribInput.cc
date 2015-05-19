@@ -175,6 +175,8 @@ static struct {
     // This will be just called for has()
     {"gridded", "Nx", is("gridType", "polar_stereographic"),},  // Polar stereo
     {"gridded", "Ni", is("gridType", "triangular_grid"),},  // Polar stereo
+    {"gridded", "numberOfGridInReference", is("gridType", "unstructured_grid"),},  // numberOfGridInReference is just dummy
+
     {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
 
     {"spectral", "pentagonalResolutionParameterJ"},
