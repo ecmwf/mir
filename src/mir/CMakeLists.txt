@@ -190,6 +190,18 @@ list(
      param/RuntimeParametrisation.h
      param/SimpleParametrisation.cc
      param/SimpleParametrisation.h
+     param/option/FactoryOption.cc
+     param/option/FactoryOption.h
+     param/option/Option.cc
+     param/option/Option.h
+     # param/option/PathOption.cc
+     # param/option/PathOption.h
+     param/option/SimpleOption.cc
+     param/option/SimpleOption.h
+     param/option/Separator.cc
+     param/option/Separator.h
+     param/option/VectorOption.cc
+     param/option/VectorOption.h
      repres/Gridded.cc
      repres/Gridded.h
      repres/latlon/LatLon.cc
@@ -289,6 +301,11 @@ list(
      util/Rotation.h
   )
 
+LIST(APPEND mir_tmpls
+          param/option/SimpleOption.cc
+          param/option/VectorOption.cc
+          param/option/FactoryOption.cc
+)
 
 ecbuild_add_library(
   TARGET             mir
@@ -296,6 +313,7 @@ ecbuild_add_library(
   HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
   SOURCES            ${mir_srcs}
   GENERATED          api/mir_version.cc
+  TEMPLATES          ${mir_tmpls}
   INCLUDES           ${ECKIT_INCLUDE_DIRS} ${NETCDF_INCLUDE_DIRS}
   LIBS               ${ATLAS_LIBRARIES} ${ECKIT_LIBRARIES} ${NETCDF_LIBRARIES}
   )

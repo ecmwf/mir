@@ -114,7 +114,7 @@ class RegularLL : public LatLon {
 
 };
 
-} // namespave latlon
+}  // namespace latlon
 }  // namespace repres
 }  // namespace mir
 #endif

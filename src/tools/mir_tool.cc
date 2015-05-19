@@ -28,66 +28,27 @@
 #include "eckit/log/Plural.h"
 
 
-static mir::param::ArgOptions options[] = {
+#include "mir/param/option/SimpleOption.h"
+#include "mir/param/option/Separator.h"
+#include "mir/param/option/VectorOption.h"
+#include "mir/param/option/FactoryOption.h"
 
-    {"", 0, "Transform"},
-    {"autoresol", "0/1",},
-    {"truncation", "T",},
-
-    {"", 0, "Interpolation"},
-    {"grid", "west_east/south_north",},
-
-
-
-    {"regular", "N",},
-    {"reduced", "N",},
-    {"octahedral", "N",},
-
-    {"", 0, "Methods"},
-    {"interpolation", "method", "e.g. bilinear",},
-    {"intermediate_gaussian", "N",},
-    {"epsilon", "e", "k-nearest, nearest-neighbour",},
-    {"nclosest", "n", "k-nearest",},
+#include "mir/method/Method.h"
+#include "mir/packing/Packer.h"
+#include "mir/lsm/LSMChooser.h"
 
 
-    {"", 0, "Rotation"},
-    {"rotation", "lat/lon",},
-
-    {"", 0, "Filtering"},
-    {"area", "north/west/south/east",},
-    {"bitmap", "path",},
-    {"frame", "n",},
-
-    {"", 0, "Land sea mask management"},
-
-
-    {"lsm", "0/1", "use lsm when interpolating",},
-    {"lsm.interpolation", "name", "interpolation method for both lsm, default nearest-neighbour",},
-    {"lsm.selection", "name", "selection method for both input and output lsm, e.g. auto or file",},
-    {"lsm.file", "path", "path to LSM to use for both input and output, in grib, only if --lsm file",},
-
-    {"lsm.file.input", "path", "path to LSM to use in input, in grib, only if --lsm file",},
-    {"lsm.file.output", "path", "path to LSM to use in input, in grib, only if --lsm file",},
-    {"lsm.interpolation.input", "name", "interpolation method for input lsm, default nearest-neighbour",},
-    {"lsm.interpolation.output", "name", "interpolation method for output lsm, default nearest-neighbour",},
-    {"lsm.selection.input", "name", "selction method for input lsm, in grib, e.g. auto or file",},
-    {"lsm.selection.output", "name", "selction method for output lsm, in grib, e.g. auto or file",},
-    {"", 0, "GRIB Output"},
-    {"accuracy", "n", "number of bits per value",},
-    {"packing", "p", "e.g. second-order",},
-
-
-
-
-
-    {0, },
-};
+using mir::param::option::Option;
+using mir::param::option::SimpleOption;
+using mir::param::option::Separator;
+using mir::param::option::VectorOption;
+using mir::param::option::FactoryOption;
 
 class MIRTool : public eckit::Tool {
 
     virtual void run();
 
-    static void usage(const std::string & tool);
+    static void usage(const std::string &tool);
 
   public:
     MIRTool(int argc, char **argv) :
@@ -96,7 +57,7 @@ class MIRTool : public eckit::Tool {
 
 };
 
-void MIRTool::usage(const std::string & tool) {
+void MIRTool::usage(const std::string &tool) {
 
     eckit::Log::info()
             << std::endl << "Usage: " << tool << " [--key1=value --key2=value ...] input.grib output.grib" << std::endl
@@ -111,6 +72,63 @@ void MIRTool::usage(const std::string & tool) {
 void MIRTool::run() {
 
     eckit::Timer timer("Total time");
+
+
+    std::vector<const Option *> options;
+    //==============================================
+    options.push_back(new Separator("Transform"));
+    options.push_back(new SimpleOption<bool>("autoresol", "Turn on automatic truncation"));
+    options.push_back(new SimpleOption<size_t>("truncation", "Truncation input field"));
+
+    //==============================================
+    options.push_back(new Separator("Interpolation"));
+    options.push_back(new VectorOption<double>("grid", "Interpolate to the regular grid: west_east/south_north", 2));
+    options.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular gaussian grid N"));
+    options.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular gaussian grid N (pre 2016)"));
+    options.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular gaussian grid N"));
+
+    //==============================================
+    options.push_back(new Separator("Methods"));
+    options.push_back(new FactoryOption<mir::method::MethodFactory>("method", "Grid to grid interpolation method"));
+    options.push_back(new SimpleOption<size_t>("intermediate_gaussian", "Transform from SH to this gaussian number first"));
+    options.push_back(new SimpleOption<double>("epsilon", "Used by methods k-nearest and nearest-neighbour"));
+    options.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
+
+    //==============================================
+    options.push_back(new Separator("Rotation"));
+    options.push_back(new VectorOption<double>("rotation", "Rotate the grid by moving the south pole to: latitude/longitude", 2));
+
+    //==============================================
+    options.push_back(new Separator("Filtering"));
+    options.push_back(new VectorOption<double>("area", "Specify the cropping area: north/west/south/east", 4));
+    options.push_back(new SimpleOption<eckit::PathName>("bitmap", "Path to the bitmap to apply"));
+    options.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
+
+    //==============================================
+    options.push_back(new Separator("Land sea mask management"));
+    options.push_back(new SimpleOption<bool>("lsm", "Use land sea mask (lsm) when interpolating grid to grid"));
+
+    options.push_back(new FactoryOption<mir::method::MethodFactory>("lsm.interpolation", "Interpolation method for both input and output lsm, default nearest-neighbour"));
+    options.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm.selection", "Selection method for both input and output lsm"));
+    options.push_back(new SimpleOption<eckit::PathName>("lsm.file", "Path to lsm to use for both input and output, in grib, only if --lsm.selection=file"));
+
+    options.push_back(new FactoryOption<mir::method::MethodFactory>("lsm.interpolation.input", "Interpolation method for lsm, default nearest-neighbour"));
+    options.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm.selection.input", "Selection method for input lsm"));
+    options.push_back(new SimpleOption<eckit::PathName>("lsm.file.input", "Path to lsm to use for input lsm, in grib, only if --lsm.selection=file"));
+
+    options.push_back(new FactoryOption<mir::method::MethodFactory>("lsm.interpolation.output", "Interpolation method for lsm, default nearest-neighbour"));
+    options.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm.selection.output", "Selection method for output lsm"));
+    options.push_back(new SimpleOption<eckit::PathName>("lsm.file.output", "Path to lsm to use for output lsm, in grib, only if --lsm.selection=file"));
+
+
+    //==============================================
+    options.push_back(new Separator("GRIB Output"));
+    options.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
+    options.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
+
+    // {"", 0, "GRIB Output"},
+    // {"accuracy", "n", "number of bits per value",},
+    // {"packing", "p", "e.g. second-order",},
 
 
     mir::param::MIRArgs args(&usage, 2, options);

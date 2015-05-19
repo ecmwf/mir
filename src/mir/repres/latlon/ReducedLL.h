@@ -105,11 +105,12 @@ class ReducedLL : public Gridded {
 // -- Friends
 
     //friend ostream& operator<<(ostream& s,const ReducedLL& p)
-    //	{ p.print(s); return s; }
+    // { p.print(s); return s; }
 
 };
 
-} // namespave latlon
+
+}  // namespace latlon
 }  // namespace repres
 }  // namespace mir
 #endif

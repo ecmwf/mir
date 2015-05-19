@@ -20,13 +20,10 @@
 #include "mir/caching/SharedMemoryLoader.h"
 #include "mir/param/MIRArgs.h"
 
+#include "mir/param/option/SimpleOption.h"
 
-static mir::param::ArgOptions options[] = {
-
-    {"load", "path", "Load file into shared memory. If file already loaded, does nothing."},
-    {"unload", "path", "Unload file from shared memory. Fail if no file was loaded."},
-    {0,}
-};
+using mir::param::option::Option;
+using mir::param::option::SimpleOption;
 
 
 class MIRSharedMemory : public eckit::Tool {
@@ -51,6 +48,12 @@ void MIRSharedMemory::usage(const std::string &tool) {
 }
 
 void MIRSharedMemory::run() {
+
+
+    std::vector<const Option*> options;
+    options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
+    options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
+
     mir::param::MIRArgs args(&usage, 0, options);
 
     std::string path;

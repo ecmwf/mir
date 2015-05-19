@@ -18,6 +18,7 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
 
+#include <set>
 
 namespace mir {
 namespace lsm {
@@ -58,7 +59,25 @@ LSMChooser::~LSMChooser() {
 }
 
 
-const LSMChooser& LSMChooser::lookup(const std::string &name) {
+void LSMChooser::list(std::ostream &out) {
+    pthread_once(&once, init);
+
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+
+    std::set<std::string> seen;
+    const char *sep = "";
+    for (std::map<std::string, LSMChooser *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
+        std::string name = (*j).first.substr(0, (*j).first.find("."));
+        if (seen.find(name) == seen.end()) {
+            out << sep << name;
+            sep = ", ";
+            seen.insert(name);
+        }
+    }
+}
+
+const LSMChooser &LSMChooser::lookup(const std::string &name) {
 
     pthread_once(&once, init);
 

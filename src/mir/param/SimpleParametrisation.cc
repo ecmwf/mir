@@ -398,6 +398,13 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, long 
     return *this;
 }
 
+SimpleParametrisation& SimpleParametrisation::set(const std::string &name, size_t value) {
+    // TODO: Support unigned properly
+    ASSERT(long(value) == value);
+    _set(name, long(value));
+    return *this;
+}
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, double value) {
     _set(name, value);
     return *this;

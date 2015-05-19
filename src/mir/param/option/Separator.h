@@ -13,18 +13,19 @@
 /// @date Apr 2015
 
 
-#ifndef Regular_H
-#define Regular_H
+#ifndef Separator_H
+#define Separator_H
 
-#include "mir/repres/Gridded.h"
-#include "mir/util/BoundingBox.h"
+#include <iosfwd>
+
+#include "mir/param/option/Option.h"
 
 
 namespace mir {
-namespace repres {
-namespace regular {
+namespace param {
+namespace option {
 
-class Regular : public Gridded {
+class Separator : public Option {
   public:
 
 // -- Exceptions
@@ -32,13 +33,11 @@ class Regular : public Gridded {
 
 // -- Contructors
 
-    Regular(const param::MIRParametrisation&);
-    Regular(size_t);
-    Regular(size_t, const util::BoundingBox& bbox);
+    Separator(const std::string& description);
 
 // -- Destructor
 
-    virtual ~Regular(); // Change to virtual if base class
+    virtual ~Separator(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -47,6 +46,10 @@ class Regular : public Gridded {
     // None
 
 // -- Methods
+    // None
+
+
+
 
 // -- Overridden methods
     // None
@@ -60,14 +63,10 @@ class Regular : public Gridded {
   protected:
 
 // -- Members
-    size_t N_;
-    util::BoundingBox bbox_;
-
 
 // -- Methods
 
-    virtual void fill(grib_info&) const;
-    virtual atlas::Grid* atlasGrid() const;
+    virtual void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
     // None
@@ -80,24 +79,21 @@ class Regular : public Gridded {
 
   private:
 
-    Regular();
-
 // No copy allowed
 
-    Regular(const Regular&);
-    Regular& operator=(const Regular&);
+    Separator(const Separator&);
+    Separator& operator=(const Separator&);
 
 // -- Members
-
-
+    // None
 
 // -- Methods
     // None
 
-
 // -- Overridden methods
 
-    virtual void validate(const std::vector<double>&) const;
+    virtual void set(const std::string& value, SimpleParametrisation&) const;
+    virtual bool active() const;
 
 
 // -- Class members
@@ -108,14 +104,13 @@ class Regular : public Gridded {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Regular& p)
-    //  { p.print(s); return s; }
 
 };
 
-}  // namespace regular
 
-}  // namespace repres
+}
+}  // namespace param
 }  // namespace mir
+
 #endif
 

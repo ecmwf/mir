@@ -40,7 +40,7 @@ static void init() {
 }  // (unnamed namespace)
 
 
-Method::Method(const param::MIRParametrisation& params) :
+Method::Method(const param::MIRParametrisation &params) :
     parametrisation_(params) {
 }
 
@@ -68,7 +68,19 @@ MethodFactory::~MethodFactory() {
 }
 
 
-Method *MethodFactory::build(const std::string &name, const param::MIRParametrisation& params) {
+void MethodFactory::list(std::ostream& out) {
+    pthread_once(&once, init);
+
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    const char* sep = "";
+    for (std::map<std::string, MethodFactory *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
+        out << sep << (*j).first;
+        sep = ", ";
+    }
+}
+
+Method *MethodFactory::build(const std::string &name, const param::MIRParametrisation &params) {
 
     pthread_once(&once, init);
 

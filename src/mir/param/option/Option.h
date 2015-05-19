@@ -13,18 +13,22 @@
 /// @date Apr 2015
 
 
-#ifndef Regular_H
-#define Regular_H
+#ifndef Option_H
+#define Option_H
 
-#include "mir/repres/Gridded.h"
-#include "mir/util/BoundingBox.h"
+#include <iosfwd>
+#include <string>
 
 
 namespace mir {
-namespace repres {
-namespace regular {
+namespace param {
 
-class Regular : public Gridded {
+class SimpleParametrisation;
+
+namespace option {
+
+
+class Option {
   public:
 
 // -- Exceptions
@@ -32,13 +36,11 @@ class Regular : public Gridded {
 
 // -- Contructors
 
-    Regular(const param::MIRParametrisation&);
-    Regular(size_t);
-    Regular(size_t, const util::BoundingBox& bbox);
+    Option(const std::string& name, const std::string& description);
 
 // -- Destructor
 
-    virtual ~Regular(); // Change to virtual if base class
+    virtual ~Option(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -47,6 +49,15 @@ class Regular : public Gridded {
     // None
 
 // -- Methods
+    // None
+
+    const std::string& name() const;
+
+    virtual bool active() const;
+
+    virtual void set(SimpleParametrisation&) const;
+    virtual void set(const std::string& value, SimpleParametrisation&) const = 0;
+
 
 // -- Overridden methods
     // None
@@ -60,14 +71,13 @@ class Regular : public Gridded {
   protected:
 
 // -- Members
-    size_t N_;
-    util::BoundingBox bbox_;
 
+    std::string name_;
+    std::string description_;
 
 // -- Methods
 
-    virtual void fill(grib_info&) const;
-    virtual atlas::Grid* atlasGrid() const;
+    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
 // -- Overridden methods
     // None
@@ -80,25 +90,19 @@ class Regular : public Gridded {
 
   private:
 
-    Regular();
-
 // No copy allowed
 
-    Regular(const Regular&);
-    Regular& operator=(const Regular&);
+    Option(const Option&);
+    Option& operator=(const Option&);
 
 // -- Members
-
-
+    // None
 
 // -- Methods
     // None
 
-
 // -- Overridden methods
-
-    virtual void validate(const std::vector<double>&) const;
-
+    // None
 
 // -- Class members
     // None
@@ -108,14 +112,15 @@ class Regular : public Gridded {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Regular& p)
-    //  { p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s, const Option& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
-}  // namespace regular
-
-}  // namespace repres
+} // namespace option
+}  // namespace param
 }  // namespace mir
 #endif
 

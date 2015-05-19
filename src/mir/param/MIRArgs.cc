@@ -13,6 +13,7 @@
 /// @date Apr 2015
 
 #include "mir/param/MIRArgs.h"
+#include "mir/param/option/Option.h"
 
 #include <iostream>
 #include <map>
@@ -24,28 +25,21 @@ namespace mir {
 namespace param {
 
 
-MIRArgs::MIRArgs(usage_proc usage, int args_count, const ArgOptions* options):
+MIRArgs::MIRArgs(usage_proc usage, int args_count, const std::vector<const option::Option *> &options):
     options_(options) {
-    eckit::Context& ctx = eckit::Context::instance();
-    const std::string& tool = ctx.runName();
+    eckit::Context &ctx = eckit::Context::instance();
+    const std::string &tool = ctx.runName();
     size_t argc = ctx.argc();
     bool error = false;
 
-    // mir::input::GribFileInput input(ctx.argv(argc - 2));
-    // mir::output::GribFileOutput output(ctx.argv(argc - 1))
+    std::map<std::string, const option::Option *> opts;
 
-    std::map<std::string, const ArgOptions*> opts;
-
-    if (options) {
-        size_t i = 0;
-        while (options_[i].name_) {
-            if (options_[i].name_[0]) {
-                opts[options_[i].name_] = &options_[i];
-            }
-            i++;
+    for (std::vector<const option::Option *>::const_iterator j = options_.begin(); j != options_.end(); ++j) {
+        if ((*j)->active()) {
+            ASSERT(opts.find((*j)->name()) == opts.end());
+            opts[(*j)->name()] = *j;
         }
     }
-
 
     eckit::Tokenizer parse("=");
     for (size_t i = 1; i < argc; i++) {
@@ -54,56 +48,40 @@ MIRArgs::MIRArgs(usage_proc usage, int args_count, const ArgOptions* options):
         if (a.size() > 2 && a[0] == '-' && a[1] == '-') {
             std::vector<std::string> v;
             parse(a.substr(2), v);
-            ASSERT(v.size() <= 2) ;
-            if (v.size() == 1) {
-                set(v[0], true);
-            } else {
-                set(v[0], v[1]);
-            }
-            keys_.insert(v[0]);
+            ASSERT(v.size() <= 2);
 
-            if (options_) {
-                std::map<std::string, const ArgOptions*>::const_iterator j = opts.find(v[0]);
-                if (j == opts.end()) {
-                    eckit::Log::info() << "Invalid option --" << v[0] << std::endl;
-                    error = true;
+            std::map<std::string, const option::Option *>::const_iterator j = opts.find(v[0]);
+            if (j != opts.end()) {
+                if (v.size() == 1) {
+                    (*j).second->set(*this);
+                } else {
+                    (*j).second->set(v[1], *this);
                 }
+            } else {
+                eckit::Log::info() << "Invalid option --" << v[0] << std::endl;
+                error = true;
             }
-
-
         } else {
             args_.push_back(a);
         }
     }
 
+
     if (args_count >= 0) {
         if (args_.size() != args_count) {
+            eckit::Log::info() << "Invalid argument count: expected " << args_count << ", got: " << args_.size() << std::endl;
             error = true;
         }
     }
 
     if (error) {
         usage(tool);
-        if (options_) {
+        if (options_.size()) {
             eckit::Log::info() << std::endl;
             eckit::Log::info() << "Options are:" << std::endl;
             eckit::Log::info() << "===========:" << std::endl ;
-            size_t i = 0;
-            while (options_[i].name_) {
-
-                if (options_[i].name_[0]) {
-                    eckit::Log::info()
-                            << "   --" << options_[i].name_
-                            << "=" << options_[i].values_;
-
-                    if (options_[i].description_)
-                        eckit::Log::info() << " (" << options_[i].description_ << ")" ;
-                } else {
-                    eckit::Log::info() << std::endl << " " << options_[i].description_ << ":" ;
-                }
-
-                eckit::Log::info() << std::endl;
-                i++;
+            for (std::vector<const option::Option *>::const_iterator j = options_.begin(); j != options_.end(); ++j) {
+                eckit::Log::info() << *(*j) << std::endl << std::endl;
             }
             eckit::Log::info() << std::endl;
         }
@@ -117,50 +95,50 @@ MIRArgs::~MIRArgs() {
 }
 
 
-void MIRArgs::print(std::ostream& out) const {
+void MIRArgs::print(std::ostream &out) const {
     out << "MIRArgs[";
     SimpleParametrisation::print(out);
     out << "]";
 }
 
-const std::set<std::string>& MIRArgs::keys() const {
+const std::set<std::string> &MIRArgs::keys() const {
     return keys_;
 }
 
-const std::vector<std::string>& MIRArgs::args() const {
+const std::vector<std::string> &MIRArgs::args() const {
     return args_;
 }
 
-const std::string& MIRArgs::args(size_t i) const {
+const std::string &MIRArgs::args(size_t i) const {
     ASSERT(i < args_.size());
     return args_[i];
 }
 
-bool MIRArgs::has(const std::string& name) const {
+bool MIRArgs::has(const std::string &name) const {
     return SimpleParametrisation::has(name);
 }
 
-bool MIRArgs::get(const std::string& name, std::string& value) const {
+bool MIRArgs::get(const std::string &name, std::string &value) const {
     return SimpleParametrisation::get(name, value);
 }
 
-bool MIRArgs::get(const std::string& name, bool& value) const {
+bool MIRArgs::get(const std::string &name, bool &value) const {
     return SimpleParametrisation::get(name, value);
 }
 
-bool MIRArgs::get(const std::string& name, long& value) const {
+bool MIRArgs::get(const std::string &name, long &value) const {
     return SimpleParametrisation::get(name, value);
 }
 
-bool MIRArgs::get(const std::string& name, double& value) const {
+bool MIRArgs::get(const std::string &name, double &value) const {
     return SimpleParametrisation::get(name, value);
 }
 
-bool MIRArgs::get(const std::string& name, std::vector<long>& value) const {
+bool MIRArgs::get(const std::string &name, std::vector<long> &value) const {
     return SimpleParametrisation::get(name, value);
 }
 
-bool MIRArgs::get(const std::string& name, std::vector<double>& value) const {
+bool MIRArgs::get(const std::string &name, std::vector<double> &value) const {
     return SimpleParametrisation::get(name, value);
 }
 
