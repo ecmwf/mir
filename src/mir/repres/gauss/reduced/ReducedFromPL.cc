@@ -12,7 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/repres/reduced/ReducedFromPL.h"
+#include "mir/repres/gauss/reduced/ReducedFromPL.h"
 
 #include <iostream>
 

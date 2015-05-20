@@ -13,10 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedFromPL_H
-#define RotatedFromPL_H
+#ifndef RotatedOctahedral_H
+#define RotatedOctahedral_H
 
-#include "mir/repres/reduced/FromPL.h"
+#include "mir/repres/gauss/reduced/Octahedral.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Rotation.h"
 
@@ -25,7 +25,7 @@ namespace mir {
 namespace repres {
 namespace reduced {
 
-class RotatedFromPL : public FromPL {
+class RotatedOctahedral : public  Octahedral {
   public:
 
     // -- Exceptions
@@ -33,12 +33,11 @@ class RotatedFromPL : public FromPL {
 
     // -- Contructors
 
-    RotatedFromPL(const param::MIRParametrisation &);
-    RotatedFromPL(long, const std::vector<long> &, const util::BoundingBox &, const util::Rotation&);
+    RotatedOctahedral(long, const util::BoundingBox &, const util::Rotation&);
 
     // -- Destructor
 
-    virtual ~RotatedFromPL(); // Change to virtual if base class
+    virtual ~RotatedOctahedral(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -81,10 +80,11 @@ class RotatedFromPL : public FromPL {
 
     // No copy allowed
 
-    RotatedFromPL(const RotatedFromPL &);
-    RotatedFromPL &operator=(const RotatedFromPL &);
+    RotatedOctahedral(const RotatedOctahedral &);
+    RotatedOctahedral &operator=(const RotatedOctahedral &);
 
     // -- Members
+
 
     // -- Methods
     // None
@@ -105,7 +105,7 @@ class RotatedFromPL : public FromPL {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RotatedFromPL& p)
+    //friend ostream& operator<<(ostream& s,const RotatedOctahedral& p)
     //  { p.print(s); return s; }
 
 };

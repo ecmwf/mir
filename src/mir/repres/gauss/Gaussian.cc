@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/repres/Gaussian.h"
+#include "mir/repres/gauss/Gaussian.h"
 #include "mir/util/Grib.h"
 #include "eckit/log/Timer.h"
 #include "mir/util/BoundingBox.h"

@@ -13,17 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef ReducedOctahedral_H
-#define ReducedOctahedral_H
+#ifndef ReducedClassic_H
+#define ReducedClassic_H
 
-#include "mir/repres/reduced/Octahedral.h"
+#include "mir/repres/gauss/reduced/Classic.h"
 
 
 namespace mir {
 namespace repres {
 namespace reduced {
 
-class ReducedOctahedral : public Octahedral {
+class ReducedClassic : public Classic {
   public:
 
     // -- Exceptions
@@ -31,11 +31,11 @@ class ReducedOctahedral : public Octahedral {
 
     // -- Contructors
 
-    ReducedOctahedral(size_t);
+    ReducedClassic(size_t);
 
     // -- Destructor
 
-    virtual ~ReducedOctahedral(); // Change to virtual if base class
+    virtual ~ReducedClassic(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -74,16 +74,15 @@ class ReducedOctahedral : public Octahedral {
 
   private:
 
-    ReducedOctahedral(long, const util::BoundingBox &);
+    ReducedClassic(long, const util::BoundingBox &);
 
 
     // No copy allowed
 
-    ReducedOctahedral(const ReducedOctahedral &);
-    ReducedOctahedral &operator=(const ReducedOctahedral &);
+    ReducedClassic(const ReducedClassic &);
+    ReducedClassic &operator=(const ReducedClassic &);
 
     // -- Members
-
 
     // -- Methods
     // None
@@ -103,7 +102,7 @@ class ReducedOctahedral : public Octahedral {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const ReducedOctahedral& p)
+    //friend ostream& operator<<(ostream& s,const ReducedClassic& p)
     //  { p.print(s); return s; }
 
 };

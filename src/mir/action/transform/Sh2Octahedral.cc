@@ -18,7 +18,7 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/reduced/ReducedOctahedral.h"
+#include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 
 
 namespace mir {

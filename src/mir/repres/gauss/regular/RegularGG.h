@@ -16,7 +16,7 @@
 #ifndef RegularGG_H
 #define RegularGG_H
 
-#include "mir/repres/regular/Regular.h"
+#include "mir/repres/gauss/regular/Regular.h"
 
 
 namespace mir {

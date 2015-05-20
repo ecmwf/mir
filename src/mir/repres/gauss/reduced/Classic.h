@@ -13,19 +13,18 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedOctahedral_H
-#define RotatedOctahedral_H
+#ifndef Classic_H
+#define Classic_H
 
-#include "mir/repres/reduced/Octahedral.h"
+#include "mir/repres/gauss/reduced/Reduced.h"
 #include "mir/util/BoundingBox.h"
-#include "mir/util/Rotation.h"
 
 
 namespace mir {
 namespace repres {
 namespace reduced {
 
-class RotatedOctahedral : public  Octahedral {
+class Classic : public Reduced {
   public:
 
     // -- Exceptions
@@ -33,11 +32,11 @@ class RotatedOctahedral : public  Octahedral {
 
     // -- Contructors
 
-    RotatedOctahedral(long, const util::BoundingBox &, const util::Rotation&);
+    Classic(size_t);
 
     // -- Destructor
 
-    virtual ~RotatedOctahedral(); // Change to virtual if base class
+    virtual ~Classic(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -58,15 +57,21 @@ class RotatedOctahedral : public  Octahedral {
 
   protected:
 
+    Classic(size_t, const util::BoundingBox &);
+
     // -- Members
-    util::Rotation rotation_;
+
+    mutable std::vector<long> pl_;
+
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    // void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
-    // None
+    virtual void fill(grib_info &) const;
+    virtual atlas::Grid *atlasGrid() const;
+    virtual const std::vector<long> &pls() const;
 
     // -- Class members
     // None
@@ -80,22 +85,23 @@ class RotatedOctahedral : public  Octahedral {
 
     // No copy allowed
 
-    RotatedOctahedral(const RotatedOctahedral &);
-    RotatedOctahedral &operator=(const RotatedOctahedral &);
+    Classic(const Classic &);
+    Classic &operator=(const Classic &);
 
     // -- Members
 
 
     // -- Methods
-    // None
+
+
 
 
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
-    atlas::Grid *atlasGrid() const;
-    virtual Representation *clone() const;
-    virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+
+
+    // Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
+
 
     // -- Class members
     // None
@@ -105,12 +111,12 @@ class RotatedOctahedral : public  Octahedral {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RotatedOctahedral& p)
+    //friend ostream& operator<<(ostream& s,const Classic& p)
     //  { p.print(s); return s; }
 
 };
 
-}
+}  // namespace
 }  // namespace repres
 }  // namespace mir
 #endif

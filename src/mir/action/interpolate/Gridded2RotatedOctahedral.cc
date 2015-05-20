@@ -20,7 +20,7 @@
 
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/reduced/RotatedOctahedral.h"
+#include "mir/repres/gauss/reduced/RotatedOctahedral.h"
 
 
 namespace mir {

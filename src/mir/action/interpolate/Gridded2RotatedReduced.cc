@@ -21,7 +21,7 @@
 
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/reduced/RotatedClassic.h"
+#include "mir/repres/gauss/reduced/RotatedClassic.h"
 
 namespace mir {
 namespace action {

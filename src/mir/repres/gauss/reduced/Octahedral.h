@@ -13,17 +13,18 @@
 /// @date Apr 2015
 
 
-#ifndef ReducedFromPL_H
-#define ReducedFromPL_H
+#ifndef Octahedral_H
+#define Octahedral_H
 
-#include "mir/repres/reduced/FromPL.h"
+#include "mir/repres/gauss/reduced/Reduced.h"
+#include "mir/util/BoundingBox.h"
 
 
 namespace mir {
 namespace repres {
 namespace reduced {
 
-class ReducedFromPL : public FromPL {
+class Octahedral : public Reduced {
   public:
 
     // -- Exceptions
@@ -31,13 +32,11 @@ class ReducedFromPL : public FromPL {
 
     // -- Contructors
 
-    ReducedFromPL(const param::MIRParametrisation &);
-    ReducedFromPL(long, const std::vector<long> &, const util::BoundingBox &);
-
+    Octahedral(size_t);
 
     // -- Destructor
 
-    virtual ~ReducedFromPL(); // Change to virtual if base class
+    virtual ~Octahedral(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -57,16 +56,18 @@ class ReducedFromPL : public FromPL {
     // None
 
   protected:
+    Octahedral(long, const util::BoundingBox &);
 
     // -- Members
-    // None
+
+    mutable std::vector<long> pl_;
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
-    // None
+    virtual void fill(grib_info &) const;
+    virtual atlas::Grid *atlasGrid() const;
 
     // -- Class members
     // None
@@ -80,20 +81,23 @@ class ReducedFromPL : public FromPL {
 
     // No copy allowed
 
-    ReducedFromPL(const ReducedFromPL &);
-    ReducedFromPL &operator=(const ReducedFromPL &);
+    Octahedral(const Octahedral &);
+    Octahedral &operator=(const Octahedral &);
 
     // -- Members
+
 
 
     // -- Methods
     // None
 
 
+    virtual const std::vector<long>& pls() const;
+
+
     // -- Overridden methods
 
-    virtual Representation *clone() const;
-    virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+
 
     // -- Class members
     // None
@@ -103,7 +107,7 @@ class ReducedFromPL : public FromPL {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const ReducedFromPL& p)
+    //friend ostream& operator<<(ostream& s,const Octahedral& p)
     //  { p.print(s); return s; }
 
 };

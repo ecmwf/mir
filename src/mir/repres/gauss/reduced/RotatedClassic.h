@@ -13,17 +13,19 @@
 /// @date Apr 2015
 
 
-#ifndef ReducedClassic_H
-#define ReducedClassic_H
+#ifndef RotatedClassic_H
+#define RotatedClassic_H
 
-#include "mir/repres/reduced/Classic.h"
+#include "mir/repres/gauss/reduced/Classic.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/util/Rotation.h"
 
 
 namespace mir {
 namespace repres {
 namespace reduced {
 
-class ReducedClassic : public Classic {
+class RotatedClassic : public Classic {
   public:
 
     // -- Exceptions
@@ -31,11 +33,11 @@ class ReducedClassic : public Classic {
 
     // -- Contructors
 
-    ReducedClassic(size_t);
+    RotatedClassic(long, const util::BoundingBox &, const util::Rotation&);
 
     // -- Destructor
 
-    virtual ~ReducedClassic(); // Change to virtual if base class
+    virtual ~RotatedClassic(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -57,7 +59,7 @@ class ReducedClassic : public Classic {
   protected:
 
     // -- Members
-    // None
+    util::Rotation rotation_;
 
     // -- Methods
 
@@ -74,13 +76,12 @@ class ReducedClassic : public Classic {
 
   private:
 
-    ReducedClassic(long, const util::BoundingBox &);
 
 
     // No copy allowed
 
-    ReducedClassic(const ReducedClassic &);
-    ReducedClassic &operator=(const ReducedClassic &);
+    RotatedClassic(const RotatedClassic &);
+    RotatedClassic &operator=(const RotatedClassic &);
 
     // -- Members
 
@@ -90,7 +91,8 @@ class ReducedClassic : public Classic {
 
     // -- Overridden methods
 
-
+    virtual void fill(grib_info &) const;
+    atlas::Grid *atlasGrid() const;
     virtual Representation *clone() const;
     virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
 
@@ -102,7 +104,7 @@ class ReducedClassic : public Classic {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const ReducedClassic& p)
+    //friend ostream& operator<<(ostream& s,const RotatedClassic& p)
     //  { p.print(s); return s; }
 
 };

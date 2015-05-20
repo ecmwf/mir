@@ -204,8 +204,8 @@ list(
      param/option/VectorOption.h
      repres/Gridded.cc
      repres/Gridded.h
-     repres/Gaussian.cc
-     repres/Gaussian.h
+     repres/gauss/Gaussian.cc
+     repres/gauss/Gaussian.h
      repres/latlon/LatLon.cc
      repres/latlon/LatLon.h
      repres/latlon/ReducedLL.cc
@@ -214,32 +214,32 @@ list(
      repres/latlon/RegularLL.h
      repres/latlon/RotatedLL.cc
      repres/latlon/RotatedLL.h
-     repres/reduced/Reduced.cc
-     repres/reduced/Reduced.h
-     repres/reduced/Classic.cc
-     repres/reduced/Classic.h
-     repres/reduced/FromPL.cc
-     repres/reduced/FromPL.h
-     repres/reduced/Octahedral.cc
-     repres/reduced/Octahedral.h
-     repres/reduced/ReducedClassic.cc
-     repres/reduced/ReducedClassic.h
-     repres/reduced/ReducedFromPL.cc
-     repres/reduced/ReducedFromPL.h
-     repres/reduced/ReducedOctahedral.cc
-     repres/reduced/ReducedOctahedral.h
-     repres/reduced/RotatedClassic.cc
-     repres/reduced/RotatedClassic.h
-     repres/reduced/RotatedFromPL.cc
-     repres/reduced/RotatedFromPL.h
-     repres/reduced/RotatedOctahedral.cc
-     repres/reduced/RotatedOctahedral.h
-     repres/regular/Regular.cc
-     repres/regular/Regular.h
-     repres/regular/RegularGG.cc
-     repres/regular/RegularGG.h
-     repres/regular/RotatedGG.cc
-     repres/regular/RotatedGG.h
+     repres/gauss/reduced/Reduced.cc
+     repres/gauss/reduced/Reduced.h
+     repres/gauss/reduced/Classic.cc
+     repres/gauss/reduced/Classic.h
+     repres/gauss/reduced/FromPL.cc
+     repres/gauss/reduced/FromPL.h
+     repres/gauss/reduced/Octahedral.cc
+     repres/gauss/reduced/Octahedral.h
+     repres/gauss/reduced/ReducedClassic.cc
+     repres/gauss/reduced/ReducedClassic.h
+     repres/gauss/reduced/ReducedFromPL.cc
+     repres/gauss/reduced/ReducedFromPL.h
+     repres/gauss/reduced/ReducedOctahedral.cc
+     repres/gauss/reduced/ReducedOctahedral.h
+     repres/gauss/reduced/RotatedClassic.cc
+     repres/gauss/reduced/RotatedClassic.h
+     repres/gauss/reduced/RotatedFromPL.cc
+     repres/gauss/reduced/RotatedFromPL.h
+     repres/gauss/reduced/RotatedOctahedral.cc
+     repres/gauss/reduced/RotatedOctahedral.h
+     repres/gauss/regular/Regular.cc
+     repres/gauss/regular/Regular.h
+     repres/gauss/regular/RegularGG.cc
+     repres/gauss/regular/RegularGG.h
+     repres/gauss/regular/RotatedGG.cc
+     repres/gauss/regular/RotatedGG.h
      repres/Representation.cc
      repres/Iterator.h
      repres/Iterator.cc

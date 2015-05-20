@@ -16,7 +16,7 @@
 #ifndef FromPL_H
 #define FromPL_H
 
-#include "mir/repres/reduced/Reduced.h"
+#include "mir/repres/gauss/reduced/Reduced.h"
 #include "mir/util/BoundingBox.h"
 
 

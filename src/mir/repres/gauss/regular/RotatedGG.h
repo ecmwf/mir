@@ -13,18 +13,19 @@
 /// @date Apr 2015
 
 
-#ifndef Classic_H
-#define Classic_H
+#ifndef RotatedGG_H
+#define RotatedGG_H
 
-#include "mir/repres/reduced/Reduced.h"
+#include "mir/repres/gauss/regular/Regular.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Rotation.h"
 
 
 namespace mir {
 namespace repres {
-namespace reduced {
+namespace regular {
 
-class Classic : public Reduced {
+class RotatedGG : public Regular {
   public:
 
     // -- Exceptions
@@ -32,11 +33,11 @@ class Classic : public Reduced {
 
     // -- Contructors
 
-    Classic(size_t);
+    RotatedGG(const param::MIRParametrisation &);
 
     // -- Destructor
 
-    virtual ~Classic(); // Change to virtual if base class
+    virtual ~RotatedGG(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -57,21 +58,15 @@ class Classic : public Reduced {
 
   protected:
 
-    Classic(size_t, const util::BoundingBox &);
-
     // -- Members
-
-    mutable std::vector<long> pl_;
-
+    util::Rotation rotation_;
 
     // -- Methods
 
-    // void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
-    virtual void fill(grib_info &) const;
-    virtual atlas::Grid *atlasGrid() const;
-    virtual const std::vector<long> &pls() const;
+    // None
 
     // -- Class members
     // None
@@ -81,27 +76,25 @@ class Classic : public Reduced {
 
   private:
 
+    RotatedGG(size_t, const util::BoundingBox &, const util::Rotation&);
 
 
     // No copy allowed
 
-    Classic(const Classic &);
-    Classic &operator=(const Classic &);
+    RotatedGG(const RotatedGG &);
+    RotatedGG &operator=(const RotatedGG &);
 
     // -- Members
 
-
     // -- Methods
-
-
+    // None
 
 
     // -- Overridden methods
 
-
-
-    // Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
-
+    virtual void fill(grib_info &) const;
+    atlas::Grid *atlasGrid() const;
+    virtual Representation *clone() const;
 
     // -- Class members
     // None
@@ -111,12 +104,12 @@ class Classic : public Reduced {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Classic& p)
+    //friend ostream& operator<<(ostream& s,const RotatedGG& p)
     //  { p.print(s); return s; }
 
 };
 
-}  // namespace
+}
 }  // namespace repres
 }  // namespace mir
 #endif

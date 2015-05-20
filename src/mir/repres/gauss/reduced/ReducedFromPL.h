@@ -13,19 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedGG_H
-#define RotatedGG_H
+#ifndef ReducedFromPL_H
+#define ReducedFromPL_H
 
-#include "mir/repres/regular/Regular.h"
-#include "mir/util/BoundingBox.h"
-#include "mir/util/Rotation.h"
+#include "mir/repres/gauss/reduced/FromPL.h"
 
 
 namespace mir {
 namespace repres {
-namespace regular {
+namespace reduced {
 
-class RotatedGG : public Regular {
+class ReducedFromPL : public FromPL {
   public:
 
     // -- Exceptions
@@ -33,11 +31,13 @@ class RotatedGG : public Regular {
 
     // -- Contructors
 
-    RotatedGG(const param::MIRParametrisation &);
+    ReducedFromPL(const param::MIRParametrisation &);
+    ReducedFromPL(long, const std::vector<long> &, const util::BoundingBox &);
+
 
     // -- Destructor
 
-    virtual ~RotatedGG(); // Change to virtual if base class
+    virtual ~ReducedFromPL(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -59,7 +59,7 @@ class RotatedGG : public Regular {
   protected:
 
     // -- Members
-    util::Rotation rotation_;
+    // None
 
     // -- Methods
 
@@ -76,15 +76,15 @@ class RotatedGG : public Regular {
 
   private:
 
-    RotatedGG(size_t, const util::BoundingBox &, const util::Rotation&);
 
 
     // No copy allowed
 
-    RotatedGG(const RotatedGG &);
-    RotatedGG &operator=(const RotatedGG &);
+    ReducedFromPL(const ReducedFromPL &);
+    ReducedFromPL &operator=(const ReducedFromPL &);
 
     // -- Members
+
 
     // -- Methods
     // None
@@ -92,9 +92,8 @@ class RotatedGG : public Regular {
 
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
-    atlas::Grid *atlasGrid() const;
     virtual Representation *clone() const;
+    virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
 
     // -- Class members
     // None
@@ -104,7 +103,7 @@ class RotatedGG : public Regular {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RotatedGG& p)
+    //friend ostream& operator<<(ostream& s,const ReducedFromPL& p)
     //  { p.print(s); return s; }
 
 };

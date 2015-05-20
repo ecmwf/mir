@@ -19,7 +19,7 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/regular/RegularGG.h"
+#include "mir/repres/gauss/regular/RegularGG.h"
 
 
 namespace mir {

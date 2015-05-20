@@ -17,7 +17,7 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/repres/reduced/ReducedClassic.h"
+#include "mir/repres/gauss/reduced/ReducedClassic.h"
 #include "mir/param/MIRParametrisation.h"
 
 namespace mir {

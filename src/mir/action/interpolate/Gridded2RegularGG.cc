@@ -17,7 +17,7 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/repres/regular/RegularGG.h"
+#include "mir/repres/gauss/regular/RegularGG.h"
 #include "mir/param/MIRParametrisation.h"
 
 

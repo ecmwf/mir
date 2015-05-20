@@ -12,11 +12,11 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/repres/reduced/ReducedClassic.h"
+#include "mir/repres/gauss/reduced/ReducedClassic.h"
 
 #include <iostream>
 
-#include "mir/repres/reduced/ReducedFromPL.h"
+#include "mir/repres/gauss/reduced/ReducedFromPL.h"
 
 namespace mir {
 namespace repres {

@@ -13,19 +13,18 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedClassic_H
-#define RotatedClassic_H
+#ifndef Reduced_H
+#define Reduced_H
 
-#include "mir/repres/reduced/Classic.h"
+#include "mir/repres/gauss/Gaussian.h"
 #include "mir/util/BoundingBox.h"
-#include "mir/util/Rotation.h"
 
 
 namespace mir {
 namespace repres {
 namespace reduced {
 
-class RotatedClassic : public Classic {
+class Reduced : public Gaussian {
   public:
 
     // -- Exceptions
@@ -33,11 +32,13 @@ class RotatedClassic : public Classic {
 
     // -- Contructors
 
-    RotatedClassic(long, const util::BoundingBox &, const util::Rotation&);
+    Reduced(const param::MIRParametrisation &parametrisation);
+    Reduced(size_t N);
+    Reduced(size_t N, const util::BoundingBox &);
 
     // -- Destructor
 
-    virtual ~RotatedClassic(); // Change to virtual if base class
+    virtual ~Reduced(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -59,14 +60,15 @@ class RotatedClassic : public Classic {
   protected:
 
     // -- Members
-    util::Rotation rotation_;
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+
+    // void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
-    // None
+
+    virtual void fill(grib_info &) const;
 
     // -- Class members
     // None
@@ -80,21 +82,28 @@ class RotatedClassic : public Classic {
 
     // No copy allowed
 
-    RotatedClassic(const RotatedClassic &);
-    RotatedClassic &operator=(const RotatedClassic &);
+    Reduced(const Reduced &);
+    Reduced &operator=(const Reduced &);
 
     // -- Members
 
     // -- Methods
-    // None
+
+    virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+
+
+    virtual const std::vector<long> &pls() const = 0;
+    virtual Iterator *iterator() const;
 
 
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
-    atlas::Grid *atlasGrid() const;
-    virtual Representation *clone() const;
-    virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    Gridded *cropped(const util::BoundingBox &bbox) const ;
+    void validate(const std::vector<double> &values) const;
+
+
+    // Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
+
 
     // -- Class members
     // None
@@ -104,12 +113,12 @@ class RotatedClassic : public Classic {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RotatedClassic& p)
+    //friend ostream& operator<<(ostream& s,const Reduced& p)
     //  { p.print(s); return s; }
 
 };
 
-}
+}  // namespace
 }  // namespace repres
 }  // namespace mir
 #endif

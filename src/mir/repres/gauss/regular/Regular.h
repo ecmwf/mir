@@ -16,7 +16,7 @@
 #ifndef Regular_H
 #define Regular_H
 
-#include "mir/repres/Gaussian.h"
+#include "mir/repres/gauss/Gaussian.h"
 #include "mir/util/BoundingBox.h"
 
 

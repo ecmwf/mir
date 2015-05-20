@@ -12,7 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/repres/regular/RegularGG.h"
+#include "mir/repres/gauss/regular/RegularGG.h"
 
 
 #include <iostream>
