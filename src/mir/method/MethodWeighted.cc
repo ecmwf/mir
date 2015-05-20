@@ -389,6 +389,10 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
         // correct weight of non-matching input point weight contribution
         bool row_changed = false;
         for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
+
+            ASSERT(j.col() < imask.size());
+            ASSERT(i < omask.size());
+
             if (omask[i] != imask[j.col()]) {
                 j.valueRef() *= 0.2;
                 row_changed = true;
