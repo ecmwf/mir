@@ -204,6 +204,8 @@ list(
      param/option/VectorOption.h
      repres/Gridded.cc
      repres/Gridded.h
+     repres/Gaussian.cc
+     repres/Gaussian.h
      repres/latlon/LatLon.cc
      repres/latlon/LatLon.h
      repres/latlon/ReducedLL.cc
