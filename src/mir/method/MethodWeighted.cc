@@ -224,24 +224,17 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
     ASSERT(field.hasMissing());
 
-    eckit::Log::info() << "Field has missing values" << std::endl;
-    const double missing = field.missingValue();
+    // build boolean missing values mask (to isolate condition check)
     std::vector< double > &values = field.values(which);
+    const double missvalue = field.missingValue();
+    const check_equality< double > check_miss(missvalue);
+    const std::vector< bool > missmask = computeFieldMask(field,check_miss);
 
-    // setup sizes & checks
-    const check_equality< double > check_miss(missing);
-    const size_t
-    Nivalues = values.size(),
-    Novalues = W.rows();
-    std::vector< bool > missvalues(Nivalues);
-
-    std::transform(values.begin(),values.end(),missvalues.begin(),check_miss);
-    const size_t count = std::count(missvalues.begin(),missvalues.end(),true);
-
+    const size_t count = std::count(missmask.begin(),missmask.end(),true);
+    eckit::Log::info() << "Field has " << eckit::Plural(count, "missing value") << " out of " << eckit::BigNum(W.cols()) << std::endl;
     if (count == 0) {
         return W;
     }
-    eckit::Log::info() << "Field has " << eckit::Plural(count, "missing value") << " out of " << eckit::BigNum(Nivalues) << std::endl;
 
 
     // check matrix weigths correctness
@@ -249,10 +242,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
     size_t Nprob = 0;
     for (size_t i = 0; i < W.rows(); i++) {
         double sum = 0.;
-        for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
-            if (missvalues[j.col()])
-                sum += j.value();
-        }
+        for (WeightMatrix::InnerIterator j(W, i); j; ++j)
+            sum += j.value();
         const bool
         weights_zero = eckit::FloatCompare::is_equal(sum, 0.),
         weights_one  = eckit::FloatCompare::is_equal(sum, 1.);
@@ -278,7 +269,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
         Nmiss = 0,
         Ncol  = 0;
         for (WeightMatrix::InnerIterator j(X, i); j; ++j, ++Ncol) {
-            if (missvalues[j.col()])
+            if (missmask[j.col()])
                 ++Nmiss;
             else
                 sum += j.value();
@@ -295,8 +286,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             // all values are missing (or weights wrongly computed):
             // erase row & force missing value equality
             for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
+                values[j.col()] = missvalue;
                 j.valueRef() = 0.;
-                values[j.col()] = missing;
             }
             WeightMatrix::InnerIterator(X, i).valueRef() = 1.;
 
@@ -306,8 +297,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             // apply linear redistribution
             const double invsum = 1./sum;
             for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
-                if (missvalues[j.col()]) {
-                    values[j.col()] = missing;
+                if (missmask[j.col()]) {
+                    values[j.col()] = missvalue;
                     j.valueRef() = 0.;
                 } else {
                     j.valueRef() *= invsum;
@@ -343,7 +334,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
 
     // log corrections and return
-    eckit::Log::info() << "Missing values correction: " << fix_misssome << '/' << fix_missall << " some/all-missing out of " << eckit::BigNum(Novalues) << std::endl;
+    eckit::Log::info() << "Missing values correction: " << fix_misssome << '/' << fix_missall << " some/all-missing out of " << eckit::BigNum(W.rows()) << std::endl;
     return X;
 }
 
@@ -354,11 +345,13 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
     eckit::Log::info() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
     ASSERT(masks.active());
+    ASSERT(!masks.inputField().hasMissing());
+    ASSERT(!masks.outputField().hasMissing());
 
 
     // build boolean masks (to isolate algorithm from the logical mask condition)
-    check_inequality_ge< double > check_lsm(0.5);
-    std::vector< bool >
+    const check_inequality_ge< double > check_lsm(0.5);
+    const std::vector< bool >
     imask = computeFieldMask(masks.inputField(), check_lsm),
     omask = computeFieldMask(masks.outputField(),check_lsm);
     ASSERT(imask.size()==W.cols());
@@ -408,7 +401,6 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
 template< typename _UnaryOperation >
 std::vector< bool > MethodWeighted::computeFieldMask(const data::MIRField& field, const _UnaryOperation& op) const {
-    ASSERT(!field.hasMissing());
     ASSERT(field.dimensions()==1);
     std::vector< bool > fmask(field.values(0).size(),false);
     std::transform(field.values(0).begin(), field.values(0).end(), fmask.begin(), op);
