@@ -139,6 +139,7 @@ Representation *Gridded::crop(const util::BoundingBox &bbox, const std::vector<d
     ASSERT(out.size() > 0);
     cropped->validate(out);
     // ASSERT(cropped->ni() * cropped->nj() == out.size());
+    eckit::Log::info() << "CROP p=" << p << " size=" << in.size() << std::endl;
     ASSERT(p == in.size());
 
     return cropped;

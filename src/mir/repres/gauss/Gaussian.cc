@@ -62,26 +62,11 @@ Gaussian::~Gaussian() {
 
 }
 
-
-
+// This returns the Gaussian latititudes of a GLOBAL field
 const std::vector <double> &Gaussian::latitudes() const {
     if (latitudes_.size() == 0) {
-        if (bbox_.global()) {
-            latitudes_.resize(N_ * 2);
-            atlas::grids::gaussian_latitudes_npole_spole(N_, &latitudes_[0]);
-        } else {
-            std::vector<double> latitudes(N_ * 2);
-            atlas::grids::gaussian_latitudes_npole_spole(N_, &latitudes[0]);
-
-            double north = bbox_.north();
-            double south = bbox_.south();
-
-            for (size_t i = 0; i < latitudes.size(); i++) {
-                if ((latitudes[i] >= south) && (latitudes[i] <= north)) {
-                    latitudes_.push_back(latitudes[i]);
-                }
-            }
-        }
+        latitudes_.resize(N_ * 2);
+        atlas::grids::gaussian_latitudes_npole_spole(N_, &latitudes_[0]);
     }
     return latitudes_;
 }

@@ -412,6 +412,7 @@ std::vector< bool > MethodWeighted::computeFieldMask(const data::MIRField& field
     ASSERT(field.dimensions()==1);
     std::vector< bool > fmask(field.values(0).size(),false);
     std::transform(field.values(0).begin(), field.values(0).end(), fmask.begin(), op);
+    return fmask;
 }
 
 
