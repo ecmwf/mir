@@ -225,10 +225,9 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
     ASSERT(field.hasMissing());
 
     // build boolean missing values mask (to isolate condition check)
-    std::vector< double > &values = field.values(which);
     const double missvalue = field.missingValue();
     const check_equality< double > check_miss(missvalue);
-    const std::vector< bool > missmask = computeFieldMask(field,check_miss);
+    const std::vector< bool > missmask = computeFieldMask(check_miss,field,which);
 
     const size_t count = std::count(missmask.begin(),missmask.end(),true);
     eckit::Log::info() << "Field has " << eckit::Plural(count, "missing value") << " out of " << eckit::BigNum(W.cols()) << std::endl;
@@ -258,6 +257,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
 
     // correct matrix weigths for the missing values (matrix copy happens here)
+    std::vector< double > &values = field.values(which);
     WeightMatrix X(W);
     size_t fix_missall  = 0;
     size_t fix_misssome = 0;
@@ -347,13 +347,15 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
     ASSERT(masks.active());
     ASSERT(!masks.inputField().hasMissing());
     ASSERT(!masks.outputField().hasMissing());
+    ASSERT(masks.inputField().dimensions()==1);
+    ASSERT(masks.inputField().dimensions()==1);
 
 
     // build boolean masks (to isolate algorithm from the logical mask condition)
     const check_inequality_ge< double > check_lsm(0.5);
     const std::vector< bool >
-    imask = computeFieldMask(masks.inputField(), check_lsm),
-    omask = computeFieldMask(masks.outputField(),check_lsm);
+    imask = computeFieldMask(check_lsm,masks.inputField(),0),
+    omask = computeFieldMask(check_lsm,masks.outputField(),0);
     ASSERT(imask.size()==W.cols());
     ASSERT(omask.size()==W.rows());
 
@@ -400,10 +402,10 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
 
 template< typename _UnaryOperation >
-std::vector< bool > MethodWeighted::computeFieldMask(const data::MIRField& field, const _UnaryOperation& op) const {
-    ASSERT(field.dimensions()==1);
-    std::vector< bool > fmask(field.values(0).size(),false);
-    std::transform(field.values(0).begin(), field.values(0).end(), fmask.begin(), op);
+std::vector< bool > MethodWeighted::computeFieldMask(const _UnaryOperation& op, const data::MIRField& field, size_t which) const {
+    const std::vector< double > &values = field.values(which);
+    std::vector< bool > fmask(values.size(),false);
+    std::transform(values.begin(), values.end(), fmask.begin(), op);
     return fmask;
 }
 
