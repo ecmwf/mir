@@ -73,6 +73,8 @@ class MethodWeighted : public Method {
 
     void computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
 
+    template< typename _UnaryOperation >
+    std::vector< bool > computeFieldMask(const data::MIRField& field, const _UnaryOperation& op) const;
 
 };
 

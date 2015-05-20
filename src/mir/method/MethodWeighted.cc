@@ -356,27 +356,13 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
     ASSERT(masks.active());
 
 
-    const data::MIRField &imask_field = masks.inputField();
-    const data::MIRField &omask_field = masks.outputField();
-    ASSERT(!imask_field.hasMissing());
-    ASSERT(!omask_field.hasMissing());
-    ASSERT(imask_field.dimensions()==1);
-    ASSERT(omask_field.dimensions()==1);
-    ASSERT(imask_field.values(0).size()==W.cols());
-    ASSERT(omask_field.values(0).size()==W.rows());
-
-
     // build boolean masks (to isolate algorithm from the logical mask condition)
-    const std::vector< double >
-    &imask_values = imask_field.values(0),
-    &omask_values = omask_field.values(0);
-
     check_inequality_ge< double > check_lsm(0.5);
     std::vector< bool >
-    imask(imask_values.size(), false),
-    omask(omask_values.size(), false);
-    std::transform(imask_values.begin(), imask_values.end(), imask.begin(), check_lsm);
-    std::transform(omask_values.begin(), omask_values.end(), omask.begin(), check_lsm);
+    imask = computeFieldMask(masks.inputField(), check_lsm),
+    omask = computeFieldMask(masks.outputField(),check_lsm);
+    ASSERT(imask.size()==W.cols());
+    ASSERT(omask.size()==W.rows());
 
 
     // apply corrections on inequality != (XOR) of logical masks,
@@ -418,6 +404,16 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
     // log corrections
     eckit::Log::info() << "LandSeaMasks correction: " << eckit::BigNum(fix) << " out of " << eckit::BigNum(W.rows()) << std::endl;
 }
+
+
+template< typename _UnaryOperation >
+std::vector< bool > MethodWeighted::computeFieldMask(const data::MIRField& field, const _UnaryOperation& op) const {
+    ASSERT(!field.hasMissing());
+    ASSERT(field.dimensions()==1);
+    std::vector< bool > fmask(field.values(0).size(),false);
+    std::transform(field.values(0).begin(), field.values(0).end(), fmask.begin(), op);
+}
+
 
 void MethodWeighted::hash(eckit::MD5& md5) const {
     md5.add(name());
