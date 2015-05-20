@@ -357,17 +357,19 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
 
     const data::MIRField &imask_field = masks.inputField();
-    const data::MIRField &omask_field = masks.inputField();
+    const data::MIRField &omask_field = masks.outputField();
     ASSERT(!imask_field.hasMissing());
     ASSERT(!omask_field.hasMissing());
     ASSERT(imask_field.dimensions()==1);
     ASSERT(omask_field.dimensions()==1);
+    ASSERT(imask_field.values(0).size()==W.cols());
+    ASSERT(omask_field.values(0).size()==W.rows());
 
 
     // build boolean masks (to isolate algorithm from the logical mask condition)
     const std::vector< double >
     &imask_values = imask_field.values(0),
-    &omask_values = imask_field.values(0);
+    &omask_values = omask_field.values(0);
 
     check_inequality_ge< double > check_lsm(0.5);
     std::vector< bool >
@@ -384,14 +386,15 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
     // FIXME: hardcoded to *= 0.2
     size_t fix = 0;
     for (size_t i = 0; i < W.rows(); i++) {
-        double sum = 0.;
+
+        ASSERT(i < omask.size());
 
         // correct weight of non-matching input point weight contribution
+        double sum = 0.;
         bool row_changed = false;
         for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
 
             ASSERT(j.col() < imask.size());
-            ASSERT(i < omask.size());
 
             if (omask[i] != imask[j.col()]) {
                 j.valueRef() *= 0.2;
