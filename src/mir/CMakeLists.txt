@@ -212,8 +212,8 @@ list(
      repres/latlon/RegularLL.h
      repres/latlon/RotatedLL.cc
      repres/latlon/RotatedLL.h
-     repres/reduced/Gaussian.cc
-     repres/reduced/Gaussian.h
+     repres/reduced/Reduced.cc
+     repres/reduced/Reduced.h
      repres/reduced/Classic.cc
      repres/reduced/Classic.h
      repres/reduced/FromPL.cc
