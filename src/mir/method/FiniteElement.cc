@@ -231,20 +231,21 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) c
 
         size_t done = 0;
         size_t kpts = 1;
+
         while (!(success = project_point_to_element(p, done, kpts))) {
 
-            if(kpts>=1000)
-                eckit::Log::info() << "Failed projecting to " << kpts << " elements ... " << std::endl;
+//            if(kpts>=1000)
+//                eckit::Log::info() << "Failed projecting to " << kpts << " elements ... " << std::endl;
 
             done = kpts;
 
             if(done >= nb_triags_ + nb_quads_) {
                 failed_.push_back(p);
+                Log::warning() << "Point " << ip_ << " with coords " << p << " failed projection ..." << std::endl;
                 break;
             }
 
             kpts = std::max(4*done,nb_triags_+nb_quads_); // increase the number of searched elements
-
         }
 
         max_neighbours = std::max(done,max_neighbours);
