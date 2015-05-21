@@ -80,16 +80,42 @@ void FiniteElement::hash( eckit::MD5 &md5) const {
     MethodWeighted::hash(md5);
 }
 
+namespace {
 
-bool FiniteElement::projectPointToElements(const MeshStats& stats,
-                                           Point& p,
-                                           atlas::ElemIndex3::NodeList::const_iterator start,
-                                           atlas::ElemIndex3::NodeList::const_iterator finish ) const {
+struct MeshStats {
 
-    IndexView<int, 2> triag_nodes ( *ptriag_nodes );
-    IndexView<int, 2> quads_nodes ( *pquads_nodes );
+    size_t nb_triags;
+    size_t nb_quads;
+    size_t inp_npts;
+    size_t out_npts;
 
-    ArrayView<double, 2> icoords  ( *picoords     );
+    size_t nbElems() const { return nb_triags + nb_quads; }
+
+    void print(std::ostream& s) const {
+        s << "MeshStats[nb_triags=" << nb_triags
+          << ",nb_quads=" << nb_quads
+          << ",inp_npts=" << inp_npts
+          << ",out_npts=" << out_npts << "]";
+    }
+
+    friend std::ostream& operator<<(std::ostream& s, const MeshStats& p) {
+      p.print(s);
+      return s;
+    }
+};
+
+bool projectPointToElements(const MeshStats& stats,
+                            const ArrayView<double, 2>& icoords,
+                            const IndexView<int, 2>& triag_nodes,
+                            const IndexView<int, 2>& quads_nodes,
+                            FiniteElement::Point& p,
+                            std::vector< Eigen::Triplet<double> >& weights_triplets,
+                            size_t ip,
+                            atlas::ElemIndex3::NodeList::const_iterator start,
+                            atlas::ElemIndex3::NodeList::const_iterator finish ) {
+
+    int idx [4];
+    double w[4];
 
     // find in which element the point is contained
     // by computing the intercetion of the point with each nearest triangle
@@ -102,20 +128,20 @@ bool FiniteElement::projectPointToElements(const MeshStats& stats,
         ElemPayload elem = (*itc).value().payload();
 
         if ( elem.type_ == 't') {
-            phi_.resize(3);
+
             const size_t &tid = elem.id_;
 
             ASSERT( tid < stats.nb_triags );
 
-            phi_.idx[0] = triag_nodes(tid, 0);
-            phi_.idx[1] = triag_nodes(tid, 1);
-            phi_.idx[2] = triag_nodes(tid, 2);
+            idx[0] = triag_nodes(tid, 0);
+            idx[1] = triag_nodes(tid, 1);
+            idx[2] = triag_nodes(tid, 2);
 
-            ASSERT( phi_.idx[0] < stats.inp_npts && phi_.idx[1] < stats.inp_npts && phi_.idx[2] < stats.inp_npts );
+            ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts && idx[2] < stats.inp_npts );
 
-            TriangleIntersection triag(icoords[phi_.idx[0]].data(),
-                                       icoords[phi_.idx[1]].data(),
-                                       icoords[phi_.idx[2]].data());
+            TriangleIntersection triag(icoords[idx[0]].data(),
+                    icoords[idx[1]].data(),
+                    icoords[idx[2]].data());
 
             Intersect is = triag.intersects(ray);
 
@@ -123,43 +149,48 @@ bool FiniteElement::projectPointToElements(const MeshStats& stats,
 
             // weights are the baricentric cooridnates u,v
             if (is) {
-                phi_.w[0] = 1. - is.u - is.v;
-                phi_.w[1] = is.u;
-                phi_.w[2] = is.v;
-                //                Log::info() << p << " -> phi_ : " << phi_ << std::endl;
+                w[0] = 1. - is.u - is.v;
+                w[1] = is.u;
+                w[2] = is.v;
+
+                for (int i = 0; i < 3; ++i)
+                    weights_triplets.push_back( Eigen::Triplet<double>( ip, idx[i], w[i] ) );
+
                 return true;
             }
         } else {
             ASSERT(elem.type_ == 'q');
 
-            phi_.resize(4);
             const size_t &qid = elem.id_;
 
             ASSERT( qid < stats.nb_quads );
 
-            phi_.idx[0] = quads_nodes(qid, 0);
-            phi_.idx[1] = quads_nodes(qid, 1);
-            phi_.idx[2] = quads_nodes(qid, 2);
-            phi_.idx[3] = quads_nodes(qid, 3);
+            idx[0] = quads_nodes(qid, 0);
+            idx[1] = quads_nodes(qid, 1);
+            idx[2] = quads_nodes(qid, 2);
+            idx[3] = quads_nodes(qid, 3);
 
-            ASSERT( phi_.idx[0] < stats.inp_npts && phi_.idx[1] < stats.inp_npts &&
-                    phi_.idx[2] < stats.inp_npts && phi_.idx[3] < stats.inp_npts );
+            ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts &&
+                    idx[2] < stats.inp_npts && idx[3] < stats.inp_npts );
 
-            QuadrilateralIntersection quad( icoords[phi_.idx[0]].data(),
-                                            icoords[phi_.idx[1]].data(),
-                                            icoords[phi_.idx[2]].data(),
-                                            icoords[phi_.idx[3]].data() );
+            QuadrilateralIntersection quad( icoords[idx[0]].data(),
+                    icoords[idx[1]].data(),
+                    icoords[idx[2]].data(),
+                    icoords[idx[3]].data() );
 
             Intersect is = quad.intersects(ray);
 
             //            Log::info() << is << std::endl;
 
             if (is) {
-                phi_.w[0] = (1. - is.u) * (1. - is.v);
-                phi_.w[1] =       is.u  * (1. - is.v);
-                phi_.w[2] =       is.u  *       is.v ;
-                phi_.w[3] = (1. - is.u) *       is.v ;
-                //                Log::info() << p << " -> phi_ : " << phi_ << std::endl;
+                w[0] = (1. - is.u) * (1. - is.v);
+                w[1] =       is.u  * (1. - is.v);
+                w[2] =       is.u  *       is.v ;
+                w[3] = (1. - is.u) *       is.v ;
+
+                for (int i = 0; i < 4; ++i)
+                    weights_triplets.push_back( Eigen::Triplet<double>( ip, idx[i], w[i] ) );
+
                 return true;
             }
         }
@@ -167,6 +198,7 @@ bool FiniteElement::projectPointToElements(const MeshStats& stats,
     } // loop over nearest elements
 
     return false;
+}
 }
 
 void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) const {
@@ -204,18 +236,19 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
     // input mesh
 
     FunctionSpace  &i_nodes  = i_mesh.function_space( "nodes" );
-    picoords = &i_nodes.field<double>( "xyz" );
+    ArrayView<double, 2> icoords  ( i_nodes.field<double>( "xyz" ));
 
     FunctionSpace &triags = i_mesh.function_space( "triags" );
-    ptriag_nodes = &triags.field<int>( "nodes" );
+    IndexView<int, 2> triag_nodes ( triags.field<int>( "nodes" ) );
 
     FunctionSpace &quads = i_mesh.function_space( "quads" );
-    pquads_nodes = &quads.field<int>( "nodes" );
+    IndexView<int, 2> quads_nodes ( quads.field<int>( "nodes" ) );
 
     // output mesh
 
     FunctionSpace  &o_nodes  = o_mesh.function_space( "nodes" );
     ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
+
 
     MeshStats stats;
 
@@ -224,7 +257,8 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
     stats.inp_npts  = i_nodes.shape(0);
     stats.out_npts  = o_nodes.shape(0);
 
-    Log::info() << "Mesh has " << eckit::Plural(stats.nb_triags, "triangle") << " and " << eckit::Plural(stats.nb_quads, "quadrilateral") << std::endl;
+    Log::info() << "Mesh has " << eckit::Plural(stats.nb_triags, "triangle")
+                << " and " << eckit::Plural(stats.nb_quads, "quadrilateral") << std::endl;
     Log::info() << stats << std::endl;
 
     // weights -- one per vertice of element, triangles (3) or quads (4)
@@ -239,7 +273,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
 
     Log::info() << "Projecting " << stats.out_npts << " output points to input mesh " << in.shortName() << std::endl;
 
-    failed_.clear();
+    std::vector<Point> failed_;
 
     {
         eckit::Timer timerProj("Projecting");
@@ -273,7 +307,15 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
 
                 ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
 
-                success = projectPointToElements(stats, p, cs.begin()+done, cs.end() );
+                success = projectPointToElements(stats,
+                                                 icoords,
+                                                 triag_nodes,
+                                                 quads_nodes,
+                                                 p,
+                                                 weights_triplets,
+                                                 ip,
+                                                 cs.begin()+done,
+                                                 cs.end() );
 
                 done = kpts;
                 kpts = std::min(4*done,stats.nbElems()); // increase the number of searched elements
@@ -281,11 +323,6 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
             while( !success );
 
             max_neighbours = std::max(done, max_neighbours);
-
-            // insert the interpolant weights into the global (sparse) interpolant matrix
-            if (success)
-                for (int i = 0; i < phi_.size(); ++i)
-                    weights_triplets.push_back( Eigen::Triplet<double>( ip, phi_.idx[i], phi_.w[i] ) );
         }
 
     }
