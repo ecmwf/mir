@@ -243,7 +243,7 @@ void FiniteElement::assemble(WeightMatrix &W, const Grid &in, const Grid &out) c
 
         bool success = false;
 
-        if (ip_ && (ip_ % 1000 == 0)) {
+        if (ip_ && (ip_ % 100000 == 0)) {
             double rate = ip_ / timer.elapsed();
             Log::info() << eckit::BigNum(ip_) << " ..."  << eckit::Seconds(timer.elapsed())
                         << ", rate: " << rate << " points/s, ETA: "
