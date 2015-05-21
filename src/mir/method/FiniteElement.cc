@@ -76,38 +76,38 @@ void FiniteElement::hash( eckit::MD5& md5) const {
 }
 
 
-bool FiniteElement::project_point_to_element(Point& p, size_t done, size_t kpts ) const {
+bool FiniteElement::projectPointToElements(const MeshStats& stats,
+                                           Point& p,
+                                           atlas::ElemIndex3::NodeList::const_iterator start,
+                                           atlas::ElemIndex3::NodeList::const_iterator finish ) const {
 
     IndexView<int,2> triag_nodes ( *ptriag_nodes );
     IndexView<int,2> quads_nodes ( *pquads_nodes );
 
     ArrayView<double,2> icoords  ( *picoords     );
 
-//    Log::info() << "kNearest done: " << done << " kpts: " << kpts << std::endl;
-
-    ElemIndex3::NodeList cs = pTree_->kNearestNeighbours(p, kpts);
-
     // find in which element the point is contained
     // by computing the intercetion of the point with each nearest triangle
 
     Ray ray( p.data() );
 
-    for ( size_t i = done; i < cs.size(); ++i ) {
+    atlas::ElemIndex3::NodeList::const_iterator itc = start;
+    for ( ; itc != finish; ++itc ) {
 
-        ElemPayload elem = cs[i].value().payload();
+        ElemPayload elem = (*itc).value().payload();
 
         if( elem.type_ == 't')
         {
             phi_.resize(3);
             const size_t& tid = elem.id_;
 
-            ASSERT( tid < nb_triags_ );
+            ASSERT( tid < stats.nb_triags );
 
             phi_.idx[0] = triag_nodes(tid, 0);
             phi_.idx[1] = triag_nodes(tid, 1);
             phi_.idx[2] = triag_nodes(tid, 2);
 
-            ASSERT( phi_.idx[0] < inp_npts_ && phi_.idx[1] < inp_npts_ && phi_.idx[2] < inp_npts_ );
+            ASSERT( phi_.idx[0] < stats.inp_npts && phi_.idx[1] < stats.inp_npts && phi_.idx[2] < stats.inp_npts );
 
             TriangleIntersection triag(icoords[phi_.idx[0]].data(),
                                        icoords[phi_.idx[1]].data(),
@@ -133,15 +133,15 @@ bool FiniteElement::project_point_to_element(Point& p, size_t done, size_t kpts 
             phi_.resize(4);
             const size_t& qid = elem.id_;
 
-            ASSERT( qid < nb_quads_ );
+            ASSERT( qid < stats.nb_quads );
 
             phi_.idx[0] = quads_nodes(qid, 0);
             phi_.idx[1] = quads_nodes(qid, 1);
             phi_.idx[2] = quads_nodes(qid, 2);
             phi_.idx[3] = quads_nodes(qid, 3);
 
-            ASSERT( phi_.idx[0] < inp_npts_ && phi_.idx[1] < inp_npts_ &&
-                    phi_.idx[2] < inp_npts_ && phi_.idx[3] < inp_npts_ );
+            ASSERT( phi_.idx[0] < stats.inp_npts && phi_.idx[1] < stats.inp_npts &&
+                    phi_.idx[2] < stats.inp_npts && phi_.idx[3] < stats.inp_npts );
 
             QuadrilateralIntersection quad( icoords[phi_.idx[0]].data(),
                                             icoords[phi_.idx[1]].data(),
@@ -167,7 +167,6 @@ bool FiniteElement::project_point_to_element(Point& p, size_t done, size_t kpts 
     return false;
 }
 
-
 void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) const {
 
     // FIXME arguments:
@@ -180,7 +179,6 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) c
 
     // generate mesh ...
 
-
     Tesselation::tesselate(in, i_mesh);
 
 //    std::string meshGenerator;
@@ -192,7 +190,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) c
 
     Tesselation::create_cell_centres(i_mesh);
 
-    pTree_.reset(create_element_centre_index(i_mesh));
+    eckit::ScopedPtr<atlas::ElemIndex3> eTree ( create_element_centre_index(i_mesh) );
 
     // input mesh
 
@@ -205,70 +203,75 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) c
     FunctionSpace& quads = i_mesh.function_space( "quads" );
     pquads_nodes = &quads.field<int>( "nodes" );
 
-    inp_npts_  = i_nodes.shape(0);
-    nb_triags_ = triags.shape(0);
-    nb_quads_  = quads.shape(0);
-
-    Log::info() << "Mesh has " << nb_triags_ << " triangles and " << nb_quads_ << " quadrilaterals" << std::endl;
-
     // output mesh
 
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
     ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
 
-    out_npts_ = o_nodes.shape(0);
+    MeshStats stats;
+
+    stats.nb_triags = triags.shape(0);
+    stats.nb_quads  = quads.shape(0);
+    stats.inp_npts  = i_nodes.shape(0);
+    stats.out_npts  = o_nodes.shape(0);
+
+    Log::info() << stats << std::endl;
 
     // weights -- one per vertice of element, triangles (3) or quads (4)
 
     std::vector< Eigen::Triplet<double> > weights_triplets; /* structure to fill-in sparse matrix */
 
-    weights_triplets.reserve( out_npts_ * 4 );
+    weights_triplets.reserve( stats.out_npts * 4 );
 
     /* search nearest k cell centres */
 
     size_t max_neighbours = 0;
 
-    Log::info() << "Projecting " << out_npts_ << " output points to input mesh " << in.shortName() << std::endl;
+    Log::info() << "Projecting " << stats.out_npts << " output points to input mesh " << in.shortName() << std::endl;
 
     failed_.clear();
 
-    for ( ip_ = 0; ip_ < out_npts_; ++ip_ ) {
+    for ( size_t ip = 0; ip < stats.out_npts; ++ip ) {
 
         bool success = false;
 
-        if(ip_ && ip_ % 1000 == 0)
-            Log::info() << ip_ << " ..."  << std::endl;
+        if(ip && ip % 1000 == 0)
+            Log::info() << ip << " ..."  << std::endl;
 
-        Point p ( ocoords[ip_].data() ); // lookup point
+        Point p ( ocoords[ip].data() ); // lookup point
 
         size_t done = 0;
         size_t kpts = 1;
 
-        while (!(success = project_point_to_element(p, done, kpts))) {
-
-//            if(kpts>=1000)
-//                eckit::Log::info() << "Failed projecting to " << kpts << " elements ... " << std::endl;
-
-            done = kpts;
-
-            if(done >= nb_triags_ + nb_quads_) {
+        do
+        {
+            if(done >= stats.nbElems()) {
                 failed_.push_back(p);
-                Log::warning() << "Point " << ip_ << " with coords " << p << " failed projection ..." << std::endl;
+                Log::warning() << "Point " << ip << " with coords " << p << " failed projection ..." << std::endl;
                 break;
             }
 
-            kpts = std::min(4*done,nb_triags_+nb_quads_); // increase the number of searched elements
+            // if(kpts>=1000)
+            //   eckit::Log::info() << "Failed projecting to " << kpts << " elements ... " << std::endl;
+
+            ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
+
+            success = projectPointToElements(stats, p, cs.begin()+done, cs.end() );
+
+            done = kpts;
+            kpts = std::min(4*done,stats.nbElems()); // increase the number of searched elements
         }
+        while( !success );
 
         max_neighbours = std::max(done,max_neighbours);
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
         if(success)
             for (int i = 0; i < phi_.size(); ++i)
-                weights_triplets.push_back( Eigen::Triplet<double>( ip_, phi_.idx[i], phi_.w[i] ) );
+                weights_triplets.push_back( Eigen::Triplet<double>( ip, phi_.idx[i], phi_.w[i] ) );
     }
 
-    Log::info() << "Projected " << ip_ - failed_.size() << " points"  << std::endl;
+    Log::info() << "Projected " << stats.out_npts - failed_.size() << " points"  << std::endl;
     Log::info() << "Maximum neighbours searched " << max_neighbours << " elements"  << std::endl;
 
     if(failed_.size()) {

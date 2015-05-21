@@ -36,23 +36,6 @@ public:
 
     typedef eckit::geometry::Point3 Point;
 
-private:
-
-    mutable eckit::ScopedPtr<atlas::ElemIndex3> pTree_;
-
-    mutable size_t ip_;
-
-    mutable size_t nb_triags_;
-    mutable size_t nb_quads_;
-    mutable size_t inp_npts_;
-    mutable size_t out_npts_;
-
-    mutable atlas::FieldT<double>* picoords;
-    mutable atlas::FieldT<int>* ptriag_nodes;
-    mutable atlas::FieldT<int>* pquads_nodes;
-
-    mutable std::vector<Point> failed_;
-
 public:
 
     FiniteElement(const param::MIRParametrisation&);
@@ -64,6 +47,28 @@ public:
     virtual void hash( eckit::MD5& ) const;
 
   private:
+
+    struct MeshStats {
+
+        size_t nb_triags;
+        size_t nb_quads;
+        size_t inp_npts;
+        size_t out_npts;
+
+        size_t nbElems() const { return nb_triags + nb_quads; }
+
+        void print(std::ostream& s) const {
+            s << "MeshStats[nb_triags=" << nb_triags
+              << ",nb_quads=" << nb_quads
+              << ",inp_npts=" << inp_npts
+              << ",out_npts=" << out_npts << "]";
+        }
+
+        friend std::ostream& operator<<(std::ostream& s, const MeshStats& p) {
+          p.print(s);
+          return s;
+        }
+    };
 
     struct Phi
     {
@@ -84,11 +89,19 @@ public:
 
     };
 
+    mutable atlas::FieldT<double>* picoords;
+    mutable atlas::FieldT<int>* ptriag_nodes;
+    mutable atlas::FieldT<int>* pquads_nodes;
+
+    mutable std::vector<Point> failed_;
     mutable Phi phi_;
 
 // -- Methods
 
-    bool project_point_to_element(Point &p, size_t done, size_t kpts) const;
+    bool projectPointToElements(const MeshStats& stats,
+                                Point& p,
+                                atlas::ElemIndex3::NodeList::const_iterator start,
+                                atlas::ElemIndex3::NodeList::const_iterator finish) const;
 
 // -- Overridden methods
 
