@@ -3,7 +3,6 @@ MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 NEXT STEPS
 - Clear cache in metabuilder before each run (or select a new directory, better as it will not affect production when mir is operational)
 - Caching of SH=>LL coefficients
-- SH=>LL with different increments
 - Bi-linear
 - Nearest LSM
 - Make the logging callback work in emoslib.cc
@@ -104,4 +103,5 @@ DONE:
 - Vo/D to U/V: Dropping one coefficient
 - Implement general purpose file caching class
 - Cropping of reduced gaussian grid
+- SH=>LL with different increments
 
