@@ -76,7 +76,6 @@ void MIRTool::run() {
 
     std::vector<const Option *> options;
 
-    options.push_back(new SimpleOption<bool>("nocache", "Don't use caching of weights and grids"));
 
     //==============================================
     options.push_back(new Separator("Transform"));
@@ -90,12 +89,14 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular gaussian grid N (pre 2016)"));
     options.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular gaussian grid N"));
 
+
     //==============================================
     options.push_back(new Separator("Methods"));
     options.push_back(new FactoryOption<mir::method::MethodFactory>("method", "Grid to grid interpolation method"));
     options.push_back(new SimpleOption<size_t>("intermediate_gaussian", "Transform from SH to this gaussian number first"));
     options.push_back(new SimpleOption<double>("epsilon", "Used by methods k-nearest and nearest-neighbour"));
     options.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
+    options.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
 
     //==============================================
     options.push_back(new Separator("Rotation"));
@@ -146,7 +147,7 @@ void MIRTool::run() {
 
     std::string path_lat, path_lon;
     ASSERT(args.has("latitudes") ==  args.has("longitudes"));
-    if(args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
+    if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
         input.setAuxilaryFiles(path_lat, path_lon);
     }
 
