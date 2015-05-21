@@ -144,6 +144,41 @@ Representation *Gridded::crop(const util::BoundingBox &bbox, const std::vector<d
 
     return cropped;
 }
+
+
+size_t Gridded::computeN(double first, double last, double inc, const char *n_name, const char *first_name, const char *last_name) const {
+    size_t n;
+    if (!(first <= last)) {
+        eckit::Log::info() << first_name << " (first):" << first << ", " << last_name << " (last)" << last << std::endl;
+        ASSERT(first <= last);
+    }
+    ASSERT(inc > 0);
+    size_t p = size_t((last - first) / inc);
+    double d0 = fabs(last - (first + p * inc));
+    double d1 = fabs(last - (first + (p + 1) * inc));
+
+    // eckit::Log::info() << p << " " << d0 << " " << d1 << " " << inc << " " << first << " " << last << std::endl;
+    ASSERT(d0 != d1);
+
+    if (d0 < d1) {
+        n = p;
+    } else {
+        n = p + 1;
+    }
+
+    if ((n * inc + first) != last) {
+        eckit::Log::info() << "Gridded: cannot compute accuratly "
+                           << n_name << ", given "
+                           << first_name << "=" << first << ", "
+                           << last_name << "=" << last << " and increment=" << inc << std::endl;
+        eckit::Log::info() << "Last value is computed as " << (p * inc + first)
+                           << ", diff=" << (last - (p * inc + first))
+                           << std::endl;
+    }
+
+    return n + 1;
+
+}
 }  // namespace repres
 }  // namespace mir
 
