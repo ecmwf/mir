@@ -48,7 +48,7 @@ b - Code should ASSERT() that what their are decoding looks correct. This can be
 // using eckit::AutoClose;
 // using eckit::PathName;
 
-WeightCache::WeightCache() : CacheManager("mir/weights") {
+WeightCache::WeightCache( bool nocache ) : CacheManager("mir/weights"), nocache_(nocache) {
 }
 
 const char* WeightCache::version() const {
@@ -68,6 +68,8 @@ void WeightCache::print(std::ostream &s) const {
 }
 
 void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) const {
+
+    if(nocache_) return;
 
     typedef method::WeightMatrix::Index Index;
 
@@ -125,6 +127,8 @@ void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) 
 }
 
 bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) const {
+
+    if(nocache_) return false;
 
     typedef method::WeightMatrix::Index Index;
 

@@ -34,10 +34,12 @@
 #include "atlas/geometry/Ray.h"
 #include "atlas/geometry/TriangleIntersection.h"
 #include "atlas/geometry/QuadrilateralIntersection.h"
+#include "atlas/meshgen/MeshGenerator.h"
+
+#include "mir/param/MIRParametrisation.h"
 
 using namespace eckit;
 
-using eckit::Log;
 using atlas::Grid;
 using atlas::Mesh;
 using atlas::FunctionSpace;
@@ -51,6 +53,8 @@ using atlas::geometry::Intersect;
 using atlas::geometry::TriangleIntersection;
 using atlas::geometry::QuadrilateralIntersection;
 using atlas::geometry::Ray;
+using atlas::meshgen::MeshGenerator;
+using atlas::meshgen::MeshGeneratorFactory;
 
 namespace mir {
 namespace method {
@@ -83,6 +87,8 @@ bool FiniteElement::project_point_to_element(Point &p, size_t done, size_t kpts 
     IndexView<int, 2> quads_nodes ( *pquads_nodes );
 
     ArrayView<double, 2> icoords  ( *picoords     );
+
+//    Log::info() << "kNearest done: " << done << " kpts: " << kpts << std::endl;
 
     ElemIndex3::NodeList cs = pTree_->kNearestNeighbours(p, kpts);
 
@@ -176,10 +182,13 @@ void FiniteElement::assemble(WeightMatrix &W, const Grid &in, const Grid &out) c
 
     // generate mesh ...
 
-    {
-        eckit::Timer timer("Tesselation::tesselate");
-        Tesselation::tesselate(in, i_mesh);
-    }
+
+    Tesselation::tesselate(in, i_mesh);
+
+//    std::string meshGenerator;
+//    ASSERT(parametrisation_.get("meshGenerator", meshGenerator));
+//    eckit::ScopedPtr<MeshGenerator> meshGen( MeshGeneratorFactory::build(meshGenerator) );
+//    meshGen->tesselate(in, i_mesh);
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
 
@@ -234,7 +243,7 @@ void FiniteElement::assemble(WeightMatrix &W, const Grid &in, const Grid &out) c
 
         bool success = false;
 
-        if (ip_ && (ip_ % 100 == 0)) {
+        if (ip_ && (ip_ % 1000 == 0)) {
             double rate = ip_ / timer.elapsed();
             Log::info() << eckit::BigNum(ip_) << " ..."  << eckit::Seconds(timer.elapsed())
                         << ", rate: " << rate << " points/s, ETA: "
@@ -260,7 +269,7 @@ void FiniteElement::assemble(WeightMatrix &W, const Grid &in, const Grid &out) c
                 break;
             }
 
-            kpts = std::max(4 * done, nb_triags_ + nb_quads_); // increase the number of searched elements
+            kpts = std::min(4*done,nb_triags_+nb_quads_); // increase the number of searched elements
         }
 
         max_neighbours = std::max(done, max_neighbours);

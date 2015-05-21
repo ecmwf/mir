@@ -129,8 +129,8 @@ class SemLocker {
 
 SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName &path):
     LegendreLoader(parametrisation, path),
-    size_(path.size()),
-    address_(0) {
+    address_(0),
+    size_(path.size()) {
 
     eckit::Timer timer("Loading legendre coefficients from shared memory");
     eckit::PathName real = path.realName();
