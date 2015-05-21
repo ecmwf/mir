@@ -29,10 +29,12 @@
 #include "atlas/geometry/Ray.h"
 #include "atlas/geometry/TriangleIntersection.h"
 #include "atlas/geometry/QuadrilateralIntersection.h"
+#include "atlas/meshgen/MeshGenerator.h"
+
+#include "mir/param/MIRParametrisation.h"
 
 using namespace eckit;
 
-using eckit::Log;
 using atlas::Grid;
 using atlas::Mesh;
 using atlas::FunctionSpace;
@@ -46,6 +48,8 @@ using atlas::geometry::Intersect;
 using atlas::geometry::TriangleIntersection;
 using atlas::geometry::QuadrilateralIntersection;
 using atlas::geometry::Ray;
+using atlas::meshgen::MeshGenerator;
+using atlas::meshgen::MeshGeneratorFactory;
 
 namespace mir {
 namespace method {
@@ -78,6 +82,8 @@ bool FiniteElement::project_point_to_element(Point& p, size_t done, size_t kpts 
     IndexView<int,2> quads_nodes ( *pquads_nodes );
 
     ArrayView<double,2> icoords  ( *picoords     );
+
+//    Log::info() << "kNearest done: " << done << " kpts: " << kpts << std::endl;
 
     ElemIndex3::NodeList cs = pTree_->kNearestNeighbours(p, kpts);
 
@@ -174,7 +180,13 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) c
 
     // generate mesh ...
 
+
     Tesselation::tesselate(in, i_mesh);
+
+//    std::string meshGenerator;
+//    ASSERT(parametrisation_.get("meshGenerator", meshGenerator));
+//    eckit::ScopedPtr<MeshGenerator> meshGen( MeshGeneratorFactory::build(meshGenerator) );
+//    meshGen->tesselate(in, i_mesh);
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
 

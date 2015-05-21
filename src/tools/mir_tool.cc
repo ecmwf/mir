@@ -75,6 +75,9 @@ void MIRTool::run() {
 
 
     std::vector<const Option *> options;
+
+    options.push_back(new SimpleOption<bool>("nocache", "Don't use caching of weights and grids"));
+
     //==============================================
     options.push_back(new Separator("Transform"));
     options.push_back(new SimpleOption<bool>("autoresol", "Turn on automatic truncation"));
@@ -120,7 +123,7 @@ void MIRTool::run() {
     options.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm.selection.output", "Selection method for output lsm"));
     options.push_back(new SimpleOption<eckit::PathName>("lsm.file.output", "Path to lsm to use for output lsm, in grib, only if --lsm.selection=file"));
 
-     //==============================================
+    //==============================================
     options.push_back(new Separator("Unstructured grids support"));
     options.push_back(new SimpleOption<eckit::PathName>("latitudes", "Path GRIB file of latitudes"));
     options.push_back(new SimpleOption<eckit::PathName>("longitudes", "Path GRIB file of longitudes"));
