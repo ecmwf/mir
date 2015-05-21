@@ -195,9 +195,10 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
         Tesselation::create_cell_centres(i_mesh);
     }
 
+    eckit::ScopedPtr<atlas::ElemIndex3> eTree;
     {
         eckit::Timer timer("Tcreate_element_centre_index");
-    eckit::ScopedPtr<atlas::ElemIndex3> eTree ( create_element_centre_index(i_mesh) );
+        eTree.reset( create_element_centre_index(i_mesh) );
     }
 
     // input mesh
