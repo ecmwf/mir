@@ -11,8 +11,9 @@ endif()
 set( GRIB_DEFINITION_PATH ${grib_api_BASE_DIR}/share/grib_api/definitions/ )
 set( GRIB_SAMPLES_PATH    ${grib_api_BASE_DIR}/share/grib_api/samples/ )
 
+set( TEST_ECKIT_CACHE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/cache/ )
 
-
+file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
 #### TESTS
 
@@ -44,6 +45,7 @@ foreach( _t ${_test_reqs} )
                     COMMAND ${MIR_TOOL}
                     ARGS ${_t} ${_file}.test
                     ENVIRONMENT
+                      TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}
                       GRIB_DEFINITION_PATH=${GRIB_DEFINITION_PATH}
                       GRIB_SAMPLES_PATH=${GRIB_SAMPLES_PATH}
                     TEST_DEPENDS mir_get_test_data
@@ -65,6 +67,7 @@ foreach( _t ${grib_tmpl} )
                     COMMAND ${MIR_TOOL}
                     ARGS "--grid=1/1" ${_t} /dev/null
                     ENVIRONMENT
+                      TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}
                       GRIB_DEFINITION_PATH=${GRIB_DEFINITION_PATH}
                       GRIB_SAMPLES_PATH=${GRIB_SAMPLES_PATH}
                   )
