@@ -20,6 +20,11 @@
 #include <string>
 
 #include "eckit/log/Timer.h"
+#include "eckit/log/Plural.h"
+#include "eckit/log/BigNum.h"
+#include "eckit/log/Seconds.h"
+#include "eckit/log/ETA.h"
+
 #include "eckit/types/Types.h"
 
 #include "atlas/Tesselation.h"
@@ -57,7 +62,7 @@ namespace method {
 // void FiniteElement::Phi::print(std::ostream &s) const { s << "Phi[idx=" << idx << ",w=" << w << "]"; }
 
 
-FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
+FiniteElement::FiniteElement(const param::MIRParametrisation &param) :
     MethodWeighted(param) {
 }
 
@@ -66,12 +71,12 @@ FiniteElement::~FiniteElement() {
 }
 
 
-const char* FiniteElement::name() const {
+const char *FiniteElement::name() const {
     return "finite-element";
 }
 
 
-void FiniteElement::hash( eckit::MD5& md5) const {
+void FiniteElement::hash( eckit::MD5 &md5) const {
     MethodWeighted::hash(md5);
 }
 
@@ -81,10 +86,10 @@ bool FiniteElement::projectPointToElements(const MeshStats& stats,
                                            atlas::ElemIndex3::NodeList::const_iterator start,
                                            atlas::ElemIndex3::NodeList::const_iterator finish ) const {
 
-    IndexView<int,2> triag_nodes ( *ptriag_nodes );
-    IndexView<int,2> quads_nodes ( *pquads_nodes );
+    IndexView<int, 2> triag_nodes ( *ptriag_nodes );
+    IndexView<int, 2> quads_nodes ( *pquads_nodes );
 
-    ArrayView<double,2> icoords  ( *picoords     );
+    ArrayView<double, 2> icoords  ( *picoords     );
 
     // find in which element the point is contained
     // by computing the intercetion of the point with each nearest triangle
@@ -96,10 +101,9 @@ bool FiniteElement::projectPointToElements(const MeshStats& stats,
 
         ElemPayload elem = (*itc).value().payload();
 
-        if( elem.type_ == 't')
-        {
+        if ( elem.type_ == 't') {
             phi_.resize(3);
-            const size_t& tid = elem.id_;
+            const size_t &tid = elem.id_;
 
             ASSERT( tid < stats.nb_triags );
 
@@ -115,23 +119,21 @@ bool FiniteElement::projectPointToElements(const MeshStats& stats,
 
             Intersect is = triag.intersects(ray);
 
-//            Log::info() << is << std::endl;
+            //            Log::info() << is << std::endl;
 
             // weights are the baricentric cooridnates u,v
-            if(is) {
+            if (is) {
                 phi_.w[0] = 1. - is.u - is.v;
                 phi_.w[1] = is.u;
                 phi_.w[2] = is.v;
-//                Log::info() << p << " -> phi_ : " << phi_ << std::endl;
+                //                Log::info() << p << " -> phi_ : " << phi_ << std::endl;
                 return true;
             }
-        }
-        else
-        {
+        } else {
             ASSERT(elem.type_ == 'q');
 
             phi_.resize(4);
-            const size_t& qid = elem.id_;
+            const size_t &qid = elem.id_;
 
             ASSERT( qid < stats.nb_quads );
 
@@ -150,14 +152,14 @@ bool FiniteElement::projectPointToElements(const MeshStats& stats,
 
             Intersect is = quad.intersects(ray);
 
-//            Log::info() << is << std::endl;
+            //            Log::info() << is << std::endl;
 
             if (is) {
                 phi_.w[0] = (1. - is.u) * (1. - is.v);
                 phi_.w[1] =       is.u  * (1. - is.v);
                 phi_.w[2] =       is.u  *       is.v ;
                 phi_.w[3] = (1. - is.u) *       is.v ;
-//                Log::info() << p << " -> phi_ : " << phi_ << std::endl;
+                //                Log::info() << p << " -> phi_ : " << phi_ << std::endl;
                 return true;
             }
         }
@@ -167,15 +169,15 @@ bool FiniteElement::projectPointToElements(const MeshStats& stats,
     return false;
 }
 
-void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) const {
+void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) const {
 
     // FIXME arguments:
     eckit::Log::info() << "FiniteElement::assemble" << std::endl;
 
-    Mesh& i_mesh = const_cast<Mesh&>(in.mesh());   // we modify the mesh when we tesselate
-    Mesh& o_mesh = const_cast<Mesh&>(out.mesh());
+    Mesh &i_mesh = const_cast<Mesh &>(in.mesh());  // we modify the mesh when we tesselate
+    Mesh &o_mesh = const_cast<Mesh &>(out.mesh());
 
-    eckit::Timer t("compute weights");
+    eckit::Timer timer("Compute weights");
 
     // generate mesh ...
 
@@ -188,24 +190,30 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) c
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
 
-    Tesselation::create_cell_centres(i_mesh);
+    {
+        eckit::Timer timer("Tesselation::create_cell_centres");
+        Tesselation::create_cell_centres(i_mesh);
+    }
 
+    {
+        eckit::Timer timer("Tcreate_element_centre_index");
     eckit::ScopedPtr<atlas::ElemIndex3> eTree ( create_element_centre_index(i_mesh) );
+    }
 
     // input mesh
 
-    FunctionSpace&  i_nodes  = i_mesh.function_space( "nodes" );
+    FunctionSpace  &i_nodes  = i_mesh.function_space( "nodes" );
     picoords = &i_nodes.field<double>( "xyz" );
 
-    FunctionSpace& triags = i_mesh.function_space( "triags" );
+    FunctionSpace &triags = i_mesh.function_space( "triags" );
     ptriag_nodes = &triags.field<int>( "nodes" );
 
-    FunctionSpace& quads = i_mesh.function_space( "quads" );
+    FunctionSpace &quads = i_mesh.function_space( "quads" );
     pquads_nodes = &quads.field<int>( "nodes" );
 
     // output mesh
 
-    FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
+    FunctionSpace  &o_nodes  = o_mesh.function_space( "nodes" );
     ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
 
     MeshStats stats;
@@ -215,6 +223,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) c
     stats.inp_npts  = i_nodes.shape(0);
     stats.out_npts  = o_nodes.shape(0);
 
+    Log::info() << "Mesh has " << eckit::Plural(stats.nb_triags, "triangle") << " and " << eckit::Plural(stats.nb_quads, "quadrilateral") << std::endl;
     Log::info() << stats << std::endl;
 
     // weights -- one per vertice of element, triangles (3) or quads (4)
@@ -235,8 +244,13 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) c
 
         bool success = false;
 
-        if(ip && ip % 1000 == 0)
-            Log::info() << ip << " ..."  << std::endl;
+        if (ip && (ip % 100000 == 0)) {
+            double rate = ip / timer.elapsed();
+            Log::info() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timer.elapsed())
+                        << ", rate: " << rate << " points/s, ETA: "
+                        << eckit::ETA( (stats.out_npts - ip) / rate )
+                        << std::endl;
+        }
 
         Point p ( ocoords[ip].data() ); // lookup point
 
@@ -263,10 +277,10 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) c
         }
         while( !success );
 
-        max_neighbours = std::max(done,max_neighbours);
+        max_neighbours = std::max(done, max_neighbours);
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
-        if(success)
+        if (success)
             for (int i = 0; i < phi_.size(); ++i)
                 weights_triplets.push_back( Eigen::Triplet<double>( ip, phi_.idx[i], phi_.w[i] ) );
     }
@@ -274,12 +288,12 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) c
     Log::info() << "Projected " << stats.out_npts - failed_.size() << " points"  << std::endl;
     Log::info() << "Maximum neighbours searched " << max_neighbours << " elements"  << std::endl;
 
-    if(failed_.size()) {
+    if (failed_.size()) {
         std::ostringstream os;
         os << "Failed to project following points into input Grid " << in.shortName() << ":" << std::endl;
-        for(size_t i = 0; i < failed_.size(); ++i)
-           os << failed_[i] << std::endl;
-        throw SeriousBug(os.str(),Here());
+        for (size_t i = 0; i < failed_.size(); ++i)
+            os << failed_[i] << std::endl;
+        throw SeriousBug(os.str(), Here());
     }
 
     // fill-in sparse matrix
@@ -288,7 +302,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) c
 }
 
 
-void FiniteElement::print(std::ostream& out) const {
+void FiniteElement::print(std::ostream &out) const {
     out << "FiniteElement[]";
 }
 
