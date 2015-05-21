@@ -15,18 +15,42 @@
 
 #include "mir/method/FiniteElement.h"
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 
 #include "eckit/log/Timer.h"
+#include "eckit/types/Types.h"
 
 #include "atlas/Tesselation.h"
-#include "atlas/geometry/TriangleIntersection.h"
 #include "atlas/util/IndexView.h"
 
+#include "atlas/PointIndex3.h"
+#include "atlas/geometry/Ray.h"
+#include "atlas/geometry/TriangleIntersection.h"
+#include "atlas/geometry/QuadrilateralIntersection.h"
+
+using namespace eckit;
+
+using eckit::Log;
+using atlas::Grid;
+using atlas::Mesh;
+using atlas::FunctionSpace;
+using atlas::IndexView;
+using atlas::ArrayView;
+using atlas::ElemPayload;
+using atlas::ElemIndex3;
+using atlas::Tesselation;
+using atlas::create_element_centre_index;
+using atlas::geometry::Intersect;
+using atlas::geometry::TriangleIntersection;
+using atlas::geometry::QuadrilateralIntersection;
+using atlas::geometry::Ray;
 
 namespace mir {
 namespace method {
+
+void FiniteElement::Phi::print(std::ostream &s) const { s << "Phi[idx=" << idx << ",w=" << w << "]"; }
 
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
@@ -48,125 +72,198 @@ void FiniteElement::hash( eckit::MD5& md5) const {
 }
 
 
-bool FiniteElement::project_point_to_triangle(Point& p, Eigen::Vector3d& phi, int idx[3], const size_t k) const {
+bool FiniteElement::project_point_to_element(Point& p, size_t done, size_t kpts ) const {
 
-    using atlas::geometry::TriangleIntersection;
+    IndexView<int,2> triag_nodes ( *ptriag_nodes );
+    IndexView<int,2> quads_nodes ( *pquads_nodes );
 
-    bool found = false;
+    ArrayView<double,2> icoords  ( *picoords     );
 
-    atlas::IndexView<int,2> triag_nodes ( *ptriag_nodes );
-    atlas::ArrayView<double,2> icoords  ( *picoords     );
+    ElemIndex3::NodeList cs = pTree_->kNearestNeighbours(p, kpts);
 
-    if (k > 1000000) {
-        eckit::Log::info() << "FiniteElement::project_point_to_triangle " << k << std::endl;
-    }
-    atlas::PointIndex3::NodeList cs = pTree_->kNearestNeighbours(p, k);
-
-    // find in which triangle the point is contained
+    // find in which element the point is contained
     // by computing the intercetion of the point with each nearest triangle
 
-    TriangleIntersection::Intersection uvt;
-    TriangleIntersection::Ray ray( p.data() );
+    Ray ray( p.data() );
 
-    size_t tid = std::numeric_limits<size_t>::max();
+    for ( size_t i = done; i < cs.size(); ++i ) {
 
-    for ( size_t i = 0; i < cs.size(); ++i ) {
+        ElemPayload elem = cs[i].value().payload();
 
-        tid = cs[i].value().payload();
+        if( elem.type_ == 't')
+        {
+            phi_.resize(3);
+            const size_t& tid = elem.id_;
 
-        ASSERT( tid < nb_triags_ );
+            ASSERT( tid < nb_triags_ );
 
-        idx[0] = triag_nodes(tid, 0);
-        idx[1] = triag_nodes(tid, 1);
-        idx[2] = triag_nodes(tid, 2);
+            phi_.idx[0] = triag_nodes(tid, 0);
+            phi_.idx[1] = triag_nodes(tid, 1);
+            phi_.idx[2] = triag_nodes(tid, 2);
 
-        ASSERT( idx[0] < inp_npts_ && idx[1] < inp_npts_ && idx[2] < inp_npts_ );
+            ASSERT( phi_.idx[0] < inp_npts_ && phi_.idx[1] < inp_npts_ && phi_.idx[2] < inp_npts_ );
 
-        TriangleIntersection triag( icoords[idx[0]].data() , icoords[idx[1]].data(), icoords[idx[2]].data() );
+            TriangleIntersection triag(icoords[phi_.idx[0]].data(),
+                                       icoords[phi_.idx[1]].data(),
+                                       icoords[phi_.idx[2]].data());
 
-        found = triag.intersects( ray, uvt );
+            Intersect is = triag.intersects(ray);
 
-        if (found) { // weights are the baricentric cooridnates u,v
-            phi[0] = uvt.w();
-            phi[1] = uvt.u;
-            phi[2] = uvt.v;
-            break;
+//            Log::info() << is << std::endl;
+
+            // weights are the baricentric cooridnates u,v
+            if(is) {
+                phi_.w[0] = 1. - is.u - is.v;
+                phi_.w[1] = is.u;
+                phi_.w[2] = is.v;
+//                Log::info() << p << " -> phi_ : " << phi_ << std::endl;
+                return true;
+            }
+        }
+        else
+        {
+            ASSERT(elem.type_ == 'q');
+
+            phi_.resize(4);
+            const size_t& qid = elem.id_;
+
+            ASSERT( qid < nb_quads_ );
+
+            phi_.idx[0] = quads_nodes(qid, 0);
+            phi_.idx[1] = quads_nodes(qid, 1);
+            phi_.idx[2] = quads_nodes(qid, 2);
+            phi_.idx[3] = quads_nodes(qid, 3);
+
+            ASSERT( phi_.idx[0] < inp_npts_ && phi_.idx[1] < inp_npts_ &&
+                    phi_.idx[2] < inp_npts_ && phi_.idx[3] < inp_npts_ );
+
+            QuadrilateralIntersection quad( icoords[phi_.idx[0]].data(),
+                                            icoords[phi_.idx[1]].data(),
+                                            icoords[phi_.idx[2]].data(),
+                                            icoords[phi_.idx[3]].data() );
+
+            Intersect is = quad.intersects(ray);
+
+//            Log::info() << is << std::endl;
+
+            if (is) {
+                phi_.w[0] = (1. - is.u) * (1. - is.v);
+                phi_.w[1] =       is.u  * (1. - is.v);
+                phi_.w[2] =       is.u  *       is.v ;
+                phi_.w[3] = (1. - is.u) *       is.v ;
+//                Log::info() << p << " -> phi_ : " << phi_ << std::endl;
+                return true;
+            }
         }
 
-    } // loop over nearest triangles
+    } // loop over nearest elements
 
-    return found;
+    return false;
 }
 
 
-void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
+void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) const {
+
     // FIXME arguments:
     eckit::Log::info() << "FiniteElement::assemble" << std::endl;
 
-
-
-    const atlas::Mesh& i_mesh = in.mesh();
-    const atlas::Mesh& o_mesh = out.mesh();
+    Mesh& i_mesh = const_cast<Mesh&>(in.mesh());   // we modify the mesh when we tesselate
+    Mesh& o_mesh = const_cast<Mesh&>(out.mesh());
 
     eckit::Timer t("compute weights");
 
     // generate mesh ...
 
-    atlas::Tesselation::tesselate( const_cast<atlas::Grid&>(in) ); // OOPS!
+    Tesselation::tesselate(in, i_mesh);
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
 
-    atlas::Tesselation::create_cell_centres( const_cast<atlas::Mesh&>(i_mesh) ); // OOPS!
+    Tesselation::create_cell_centres(i_mesh);
 
-    pTree_.reset( create_cell_centre_index( const_cast<atlas::Mesh&>(i_mesh) ) ); // OOPS!
+    pTree_.reset(create_element_centre_index(i_mesh));
 
     // input mesh
 
-    atlas::FunctionSpace&  i_nodes  = i_mesh.function_space( "nodes" );
+    FunctionSpace&  i_nodes  = i_mesh.function_space( "nodes" );
     picoords = &i_nodes.field<double>( "xyz" );
 
-    atlas::FunctionSpace& triags = i_mesh.function_space( "triags" );
-
+    FunctionSpace& triags = i_mesh.function_space( "triags" );
     ptriag_nodes = &triags.field<int>( "nodes" );
 
+    FunctionSpace& quads = i_mesh.function_space( "quads" );
+    pquads_nodes = &quads.field<int>( "nodes" );
+
+    inp_npts_  = i_nodes.shape(0);
     nb_triags_ = triags.shape(0);
-    inp_npts_ = i_nodes.shape(0);
+    nb_quads_  = quads.shape(0);
+
+    Log::info() << "Mesh has " << nb_triags_ << " triangles and " << nb_quads_ << " quadrilaterals" << std::endl;
 
     // output mesh
 
-    atlas::FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
-    atlas::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
+    FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
+    ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
 
-    const size_t out_npts = o_nodes.shape(0);
+    out_npts_ = o_nodes.shape(0);
 
-    // weights
+    // weights -- one per vertice of element, triangles (3) or quads (4)
 
     std::vector< Eigen::Triplet<double> > weights_triplets; /* structure to fill-in sparse matrix */
 
-    weights_triplets.reserve( out_npts * 3 ); /* each row has 3 entries: one per vertice of triangle */
+    weights_triplets.reserve( out_npts_ * 4 );
 
     /* search nearest k cell centres */
 
-    // boost::progress_display show_progress( out_npts );
+    size_t max_neighbours = 0;
 
-    for ( ip_ = 0; ip_ < out_npts; ++ip_ ) {
+    Log::info() << "Projecting " << out_npts_ << " output points to input mesh " << in.shortName() << std::endl;
 
-        int idx[3]; /* indexes of the triangle that will contain the point*/
-        Eigen::Vector3d phi;
+    failed_.clear();
+
+    for ( ip_ = 0; ip_ < out_npts_; ++ip_ ) {
+
+        bool success = false;
+
+        if(ip_ && ip_ % 1000 == 0)
+            Log::info() << ip_ << " ..."  << std::endl;
+
         Point p ( ocoords[ip_].data() ); // lookup point
 
-        size_t factorial = 1;
-        size_t n = 1;
-        while ( ! project_point_to_triangle( p, phi, idx, factorial ) ) {
-            factorial *= ++n;
+        size_t done = 0;
+        size_t kpts = 1;
+        while (!(success = project_point_to_element(p, done, kpts))) {
+
+            if(kpts>=1000)
+                eckit::Log::info() << "Failed projecting to " << kpts << " elements ... " << std::endl;
+
+            done = kpts;
+
+            if(done >= nb_triags_ + nb_quads_) {
+                failed_.push_back(p);
+                break;
+            }
+
+            kpts = std::max(4*done,nb_triags_+nb_quads_); // increase the number of searched elements
+
         }
 
-//        ++show_progress;
+        max_neighbours = std::max(done,max_neighbours);
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
+        if(success)
+            for (int i = 0; i < phi_.size(); ++i)
+                weights_triplets.push_back( Eigen::Triplet<double>( ip_, phi_.idx[i], phi_.w[i] ) );
+    }
 
-        for (int i = 0; i < 3; ++i)
-            weights_triplets.push_back( Eigen::Triplet<double>( ip_, idx[i], phi[i] ) );
+    Log::info() << "Projected " << ip_ - failed_.size() << " points"  << std::endl;
+    Log::info() << "Maximum neighbours searched " << max_neighbours << " elements"  << std::endl;
+
+    if(failed_.size()) {
+        std::ostringstream os;
+        os << "Failed to project following points into input Grid " << in.shortName() << ":" << std::endl;
+        for(size_t i = 0; i < failed_.size(); ++i)
+           os << failed_[i] << std::endl;
+        throw SeriousBug(os.str(),Here());
     }
 
     // fill-in sparse matrix
@@ -183,7 +280,6 @@ void FiniteElement::print(std::ostream& out) const {
 namespace {
 static MethodBuilder< FiniteElement > __finiteelement("finite-element");
 }
-
 
 }  // namespace method
 }  // namespace mir
