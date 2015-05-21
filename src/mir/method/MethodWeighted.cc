@@ -128,7 +128,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     WeightMatrix W(out.npts(), in.npts());
     eckit::Log::info() << "Create matrix " << timer.elapsed() - here << std::endl;
 
-    bool nocache;
+    bool nocache = false;
     parametrisation_.get("nocache",nocache);
     static caching::WeightCache cache(nocache);
 
