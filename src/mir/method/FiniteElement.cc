@@ -197,7 +197,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
 
     eckit::ScopedPtr<atlas::ElemIndex3> eTree;
     {
-        eckit::Timer timer("Tcreate_element_centre_index");
+        eckit::Timer timer("create_element_centre_index");
         eTree.reset( create_element_centre_index(i_mesh) );
     }
 
@@ -241,49 +241,53 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
 
     failed_.clear();
 
-    for ( size_t ip = 0; ip < stats.out_npts; ++ip ) {
+    {
+        eckit::Timer timerProj("Projecting");
 
-        bool success = false;
+        for ( size_t ip = 0; ip < stats.out_npts; ++ip ) {
 
-        if (ip && (ip % 100000 == 0)) {
-            double rate = ip / timer.elapsed();
-            Log::info() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timer.elapsed())
-                        << ", rate: " << rate << " points/s, ETA: "
-                        << eckit::ETA( (stats.out_npts - ip) / rate )
-                        << std::endl;
-        }
-
-        Point p ( ocoords[ip].data() ); // lookup point
-
-        size_t done = 0;
-        size_t kpts = 1;
-
-        do
-        {
-            if(done >= stats.nbElems()) {
-                failed_.push_back(p);
-                Log::warning() << "Point " << ip << " with coords " << p << " failed projection ..." << std::endl;
-                break;
+            if (ip && (ip % 100000 == 0)) {
+                double rate = ip / timerProj.elapsed();
+                Log::info() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timerProj.elapsed())
+                            << ", rate: " << rate << " points/s, ETA: "
+                            << eckit::ETA( (stats.out_npts - ip) / rate )
+                            << std::endl;
             }
 
-            // if(kpts>=1000)
-            //   eckit::Log::info() << "Failed projecting to " << kpts << " elements ... " << std::endl;
+            Point p ( ocoords[ip].data() ); // lookup point
 
-            ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
+            size_t done = 0;
+            size_t kpts = 1;
+            bool success = false;
 
-            success = projectPointToElements(stats, p, cs.begin()+done, cs.end() );
+            do
+            {
+                if(done >= stats.nbElems()) {
+                    failed_.push_back(p);
+                    Log::warning() << "Point " << ip << " with coords " << p << " failed projection ..." << std::endl;
+                    break;
+                }
 
-            done = kpts;
-            kpts = std::min(4*done,stats.nbElems()); // increase the number of searched elements
+                // if(kpts>=1000)
+                //   eckit::Log::info() << "Failed projecting to " << kpts << " elements ... " << std::endl;
+
+                ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
+
+                success = projectPointToElements(stats, p, cs.begin()+done, cs.end() );
+
+                done = kpts;
+                kpts = std::min(4*done,stats.nbElems()); // increase the number of searched elements
+            }
+            while( !success );
+
+            max_neighbours = std::max(done, max_neighbours);
+
+            // insert the interpolant weights into the global (sparse) interpolant matrix
+            if (success)
+                for (int i = 0; i < phi_.size(); ++i)
+                    weights_triplets.push_back( Eigen::Triplet<double>( ip, phi_.idx[i], phi_.w[i] ) );
         }
-        while( !success );
 
-        max_neighbours = std::max(done, max_neighbours);
-
-        // insert the interpolant weights into the global (sparse) interpolant matrix
-        if (success)
-            for (int i = 0; i < phi_.size(); ++i)
-                weights_triplets.push_back( Eigen::Triplet<double>( ip, phi_.idx[i], phi_.w[i] ) );
     }
 
     Log::info() << "Projected " << stats.out_npts - failed_.size() << " points"  << std::endl;
