@@ -245,7 +245,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid& in, const Grid& out) c
                 break;
             }
 
-            kpts = std::max(4*done,nb_triags_+nb_quads_); // increase the number of searched elements
+            kpts = std::min(4*done,nb_triags_+nb_quads_); // increase the number of searched elements
         }
 
         max_neighbours = std::max(done,max_neighbours);
