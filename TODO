@@ -1,6 +1,7 @@
 MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
 NEXT STEPS
+- Clear cache in metabuilder before each run (or select a new directory, better as it will not affect production when mir is operational)
 - Caching of SH=>LL coefficients
 - SH=>LL with different increments
 - Bi-linear
@@ -62,6 +63,7 @@ TESTING:
 -
 PERFORMANCES
 - Consider switching of some ASSERTions, maybe with a resource
+- Cache cropping indices (cropping simply extract value from one vector into another, cache this mapping)
 
 EMOSLIB
 - Find out about all intuv* functions

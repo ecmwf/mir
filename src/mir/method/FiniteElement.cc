@@ -50,7 +50,7 @@ using atlas::geometry::Ray;
 namespace mir {
 namespace method {
 
-void FiniteElement::Phi::print(std::ostream &s) const { s << "Phi[idx=" << idx << ",w=" << w << "]"; }
+// void FiniteElement::Phi::print(std::ostream &s) const { s << "Phi[idx=" << idx << ",w=" << w << "]"; }
 
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
