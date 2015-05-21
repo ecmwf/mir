@@ -33,6 +33,7 @@ MIRDefaults::MIRDefaults() {
     set("legendre.loader", "mapped-memory");
 
     set("interpolation", "finite-element"); // The word 'method' is used in grib
+    set("caching", true);
 
     set("lsm.selection", "auto");
     set("lsm.interpolation", "nearest-neighbour");
