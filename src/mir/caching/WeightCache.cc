@@ -73,7 +73,7 @@ void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) 
 
     eckit::PathName tmp = stage(key);
 
-    eckit::Log::info() << "Inserting weights in cache (" << tmp << ")" << std::endl;
+    eckit::Log::info() << "Inserting weights in cache : " << tmp << "" << std::endl;
 
     eckit::Timer timer("Saving weights to cache");
 
@@ -133,7 +133,7 @@ bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) cons
     if (!get(key, path))
         return false;
 
-    eckit::Log::info() << "Found weights in cache (" << path << ")" << std::endl;
+    eckit::Log::info() << "Found weights in cache : " << path << "" << std::endl;
     eckit::Timer timer("Loading weights from cache");
 
     {
