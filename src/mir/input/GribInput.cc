@@ -27,6 +27,9 @@
 #include <iomanip>
 #include <iostream>
 
+#include "eckit/serialisation/HandleStream.h"
+#include "eckit/io/MemoryHandle.h"
+
 namespace mir {
 namespace input {
 namespace {
@@ -502,7 +505,12 @@ void GribInput::marsRequest(std::ostream& out) const {
         int err = grib_get_size(grib_, "freeFormData", &size);
 
         if(err == 0) {
-            // TODO:
+            eckit::Buffer buffer(size);
+            GRIB_CALL(grib_get_bytes(grib_ ,"freeFormData", buffer, &size));
+            ASSERT(size == buffer.size());
+
+            eckit::MemoryHandle h(buffer);
+
             NOTIMP;
         }
 
