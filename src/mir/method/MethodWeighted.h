@@ -41,8 +41,6 @@ namespace method {
 
 class MethodWeighted : public Method {
 
-    caching::WeightCache cache_;
-
   public:
 
     explicit MethodWeighted(const param::MIRParametrisation &);
@@ -54,7 +52,6 @@ class MethodWeighted : public Method {
     virtual void hash( eckit::MD5& ) const;
 
   protected:
-
 
     virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const = 0;
 

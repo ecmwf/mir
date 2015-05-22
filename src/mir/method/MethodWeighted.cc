@@ -33,7 +33,7 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/lsm/LandSeaMasks.h"
-// #include "mir/param/MIRParametrisation.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -128,8 +128,9 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     WeightMatrix W(out.npts(), in.npts());
     eckit::Log::info() << "Create matrix " << timer.elapsed() - here << std::endl;
 
-
-    static caching::WeightCache cache;
+    bool caching = true;
+    parametrisation_.get("caching", caching);
+    static caching::WeightCache cache(caching);
 
     if (!cache.retrieve(cache_key, W)) {
         computeWeights(in, out, W);
@@ -317,9 +318,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             double sum = 0.;
             for (WeightMatrix::InnerIterator j(X, i); j; ++j)
                 sum += j.value();
-            const bool
-            weights_zero = eckit::FloatCompare::is_equal(sum, 0.),
-            weights_one  = eckit::FloatCompare::is_equal(sum, 1.);
+            const bool weights_zero = eckit::FloatCompare::is_equal(sum, 0.);
+            const bool weights_one  = eckit::FloatCompare::is_equal(sum, 1.);
             if ( !weights_zero && !weights_one ) {
                 ++Nprob;
                 eckit::Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(X(" << i << ",:)) != {0,1} = " << sum << std::endl;

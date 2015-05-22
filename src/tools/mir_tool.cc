@@ -75,6 +75,8 @@ void MIRTool::run() {
 
 
     std::vector<const Option *> options;
+
+
     //==============================================
     options.push_back(new Separator("Transform"));
     options.push_back(new SimpleOption<bool>("autoresol", "Turn on automatic truncation"));
@@ -87,12 +89,14 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular gaussian grid N (pre 2016)"));
     options.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular gaussian grid N"));
 
+
     //==============================================
     options.push_back(new Separator("Methods"));
-    options.push_back(new FactoryOption<mir::method::MethodFactory>("method", "Grid to grid interpolation method"));
+    options.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
     options.push_back(new SimpleOption<size_t>("intermediate_gaussian", "Transform from SH to this gaussian number first"));
     options.push_back(new SimpleOption<double>("epsilon", "Used by methods k-nearest and nearest-neighbour"));
     options.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
+    options.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
 
     //==============================================
     options.push_back(new Separator("Rotation"));
@@ -120,7 +124,7 @@ void MIRTool::run() {
     options.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm.selection.output", "Selection method for output lsm"));
     options.push_back(new SimpleOption<eckit::PathName>("lsm.file.output", "Path to lsm to use for output lsm, in grib, only if --lsm.selection=file"));
 
-     //==============================================
+    //==============================================
     options.push_back(new Separator("Unstructured grids support"));
     options.push_back(new SimpleOption<eckit::PathName>("latitudes", "Path GRIB file of latitudes"));
     options.push_back(new SimpleOption<eckit::PathName>("longitudes", "Path GRIB file of longitudes"));
@@ -143,7 +147,7 @@ void MIRTool::run() {
 
     std::string path_lat, path_lon;
     ASSERT(args.has("latitudes") ==  args.has("longitudes"));
-    if(args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
+    if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
         input.setAuxilaryFiles(path_lat, path_lon);
     }
 

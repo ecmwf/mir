@@ -65,10 +65,9 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
     eckit::Timer timer("MIRJob::execute");
 
-    int fmt = eckit::format(eckit::Log::info());
-    eckit::setformat(eckit::Log::info(), eckit::Log::applicationFormat);
-    eckit::Log::info() << "MIRJob::execute: " << *this << std::endl;
-    eckit::setformat(eckit::Log::info(), fmt);
+    eckit::Log::info() << "MIRJob::execute: ";
+    mirToolCall(eckit::Log::info());
+    eckit::Log::info()<< std::endl;
 
     eckit::Log::info() << "          Input: " << input << std::endl;
     eckit::Log::info() << "         Output: " << output << std::endl;
@@ -105,9 +104,9 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
 void MIRJob::print(std::ostream& out) const {
     if (eckit::format(out) == eckit::Log::applicationFormat) {
-        out << "[mir_tool ";
+        out << "mir_tool ";
         SimpleParametrisation::print(out);
-        out << " in.grib out.grib]";
+        out << " in.grib out.grib";
     } else {
         out << "MIRJob[";
         SimpleParametrisation::print(out);
@@ -197,6 +196,14 @@ bool MIRJob::matches(const param::MIRParametrisation& metadata) const {
     }
     return ok;
 }
+
+void MIRJob::mirToolCall(std::ostream& out) const {
+    int fmt = eckit::format(out);
+    eckit::setformat(out, eckit::Log::applicationFormat);
+    out << *this;
+    eckit::setformat(out, fmt);
+}
+
 
 // This comes grom eckit::Context
 static eckit::RegisterConfigHome configs("mir",

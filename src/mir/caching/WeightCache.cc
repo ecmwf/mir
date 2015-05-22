@@ -48,7 +48,7 @@ b - Code should ASSERT() that what their are decoding looks correct. This can be
 // using eckit::AutoClose;
 // using eckit::PathName;
 
-WeightCache::WeightCache() : CacheManager("mir/weights") {
+WeightCache::WeightCache( bool enabled ) : CacheManager("mir/weights"), enabled_(enabled) {
 }
 
 const char* WeightCache::version() const {
@@ -69,11 +69,13 @@ void WeightCache::print(std::ostream &s) const {
 
 void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) const {
 
+    if(!enabled_) return;
+
     typedef method::WeightMatrix::Index Index;
 
     eckit::PathName tmp = stage(key);
 
-    eckit::Log::info() << "Inserting weights in cache (" << tmp << ")" << std::endl;
+    eckit::Log::info() << "Inserting weights in cache : " << tmp << "" << std::endl;
 
     eckit::Timer timer("Saving weights to cache");
 
@@ -126,6 +128,8 @@ void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) 
 
 bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) const {
 
+    if(!enabled_) return false;
+
     typedef method::WeightMatrix::Index Index;
 
     eckit::PathName path;
@@ -133,7 +137,7 @@ bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) cons
     if (!get(key, path))
         return false;
 
-    eckit::Log::info() << "Found weights in cache (" << path << ")" << std::endl;
+    eckit::Log::info() << "Found weights in cache : " << path << "" << std::endl;
     eckit::Timer timer("Loading weights from cache");
 
     {
