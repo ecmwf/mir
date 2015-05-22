@@ -201,7 +201,7 @@ void MIRCompare::run() {
     options.push_back(new SimpleOption<double>("absolute", "Maximum absolute error"));
     options.push_back(new SimpleOption<double>("relative", "Maximum relative error"));
     options.push_back(new SimpleOption<double>("percent", "Maximum percentage of different values"));
-    options.push_back(new SimpleOption<bool>("ulps", "Comparing with ULPS (???)"));
+    options.push_back(new SimpleOption<bool>("ulps", "Comparing with ULPS (?)"));
 
     mir::param::MIRArgs args(&usage, 2);
 

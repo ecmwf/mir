@@ -512,6 +512,29 @@ void GribInput::marsRequest(std::ostream& out) const {
             ASSERT(size == buffer.size());
 
             eckit::MemoryHandle h(buffer);
+            eckit::HandleStream in(h);
+            int n;
+            in >> n; // Number of requests
+            ASSERT(n == 1);
+            std::string verb;
+            in >> verb;
+
+            in >> n;
+            for(size_t i = 0; i < n ; i++) {
+                std::string param;
+                in >> param;
+                out << sep << param;
+                const char *slash = "=";
+                int m;
+                in >> m;
+                for(size_t j = 0; j < m; j++) {
+                    std::string value;
+                    in >> value;
+                    out << slash << value;
+                    slash = "/";
+                }
+
+            }
 
             NOTIMP;
         }
