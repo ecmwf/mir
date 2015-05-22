@@ -52,6 +52,9 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
     void setAuxilaryFiles(const std::string &pathToLatitudes, const std::string &pathToLongitudes);
 
+    // For debugging only
+    void marsRequest(std::ostream&) const;
+
 
     // -- Overridden methods
     // None

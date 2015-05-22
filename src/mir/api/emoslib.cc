@@ -215,6 +215,18 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
         mir::input::GribMemoryInput input(grib_in, *length_in);
         mir::output::GribMemoryOutput output(grib_out, *length_out);
 
+        static const char* capture = getenv("MIR_CAPTURE_CALLS");
+        if(capture) {
+            std::ofstream out(capture);
+            out << "mars<<EOF" << std::endl;
+            out << "retrieve,target=in.grib,";
+            input.marsRequest(out);
+            out << std::endl;
+            out << "EOF" << std::endl;
+            job->mirToolCall(out);
+            out << std::endl;
+        }
+
         job->execute(input, output);
 
         ASSERT(output.interpolated() + output.saved() == 1);

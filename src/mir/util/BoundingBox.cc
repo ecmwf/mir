@@ -97,7 +97,7 @@ double BoundingBox::normalise(double lon) const {
     return lon;
 }
 
-inline bool greater_equal(double a, double b) {
+bool BoundingBox::greater_equal(double a, double b) {
     if(a >= b) {
         return true;
     }

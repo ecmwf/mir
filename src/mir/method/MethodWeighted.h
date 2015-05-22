@@ -70,6 +70,7 @@ class MethodWeighted : public Method {
 
     void computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
 
+    /// Generate boolean mask provided a condition operator
     template< typename _UnaryOperation >
     std::vector< bool > computeFieldMask(const _UnaryOperation& op, const data::MIRField& field, size_t which) const;
 

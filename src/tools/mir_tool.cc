@@ -92,7 +92,7 @@ void MIRTool::run() {
 
     //==============================================
     options.push_back(new Separator("Methods"));
-    options.push_back(new FactoryOption<mir::method::MethodFactory>("method", "Grid to grid interpolation method"));
+    options.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
     options.push_back(new SimpleOption<size_t>("intermediate_gaussian", "Transform from SH to this gaussian number first"));
     options.push_back(new SimpleOption<double>("epsilon", "Used by methods k-nearest and nearest-neighbour"));
     options.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));

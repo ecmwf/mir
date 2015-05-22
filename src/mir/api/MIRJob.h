@@ -67,6 +67,9 @@ class MIRJob : public param::SimpleParametrisation {
 
     MIRJob& clear(const std::string& name);
 
+    // For debugging only
+    void mirToolCall(std::ostream&) const;
+
 // -- Overridden methods
     // None
 

@@ -30,6 +30,12 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRArgs.h"
 
+
+#include "mir/param/option/SimpleOption.h"
+
+using mir::param::option::Option;
+using mir::param::option::SimpleOption;
+
 static struct {
     size_t paramId_;
     double absolute_; // -1 means use default
@@ -187,6 +193,15 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
 void MIRCompare::run() {
 
     using eckit::RealCompare;
+
+     std::vector<const Option *> options;
+
+
+    //==============================================
+    options.push_back(new SimpleOption<double>("absolute", "Maximum absolute error"));
+    options.push_back(new SimpleOption<double>("relative", "Maximum relative error"));
+    options.push_back(new SimpleOption<double>("percent", "Maximum percentage of different values"));
+    options.push_back(new SimpleOption<bool>("ulps", "Comparing with ULPS (?)"));
 
     mir::param::MIRArgs args(&usage, 2);
 
