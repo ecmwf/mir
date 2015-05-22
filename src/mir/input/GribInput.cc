@@ -506,7 +506,9 @@ void GribInput::marsRequest(std::ostream& out) const {
 
         if(err == 0) {
             eckit::Buffer buffer(size);
-            GRIB_CALL(grib_get_bytes(grib_ ,"freeFormData", buffer, &size));
+            char *b = buffer;
+
+            GRIB_CALL(grib_get_bytes(grib_ ,"freeFormData", (unsigned char*)b, &size));
             ASSERT(size == buffer.size());
 
             eckit::MemoryHandle h(buffer);
