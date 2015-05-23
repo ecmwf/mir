@@ -202,7 +202,7 @@ void MIRCompare::run() {
     options.push_back(new SimpleOption<double>("percent", "Maximum percentage of different values"));
     options.push_back(new SimpleOption<bool>("ulps", "Comparing with ULPS (?)"));
 
-    mir::param::MIRArgs args(&usage, 2);
+    mir::param::MIRArgs args(&usage, 2, options);
 
     args.get("absolute", user_absolute_);
     args.get("relative", user_relative_);
