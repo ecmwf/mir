@@ -89,7 +89,7 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular gaussian grid N"));
     options.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular gaussian grid N (pre 2016)"));
     options.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular gaussian grid N"));
-    options.push_back(new SimpleOption<bool>("vector", "Use vector interpolation (not yet)"));
+    options.push_back(new SimpleOption<bool>("wind", "Use vector interpolation for wind (not yet)"));
 
 
     //==============================================

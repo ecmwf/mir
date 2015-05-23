@@ -347,7 +347,7 @@ extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_i
         mir::input::WindInput input(vort_input, div_input);
         mir::output::WindOutput output(u_output, v_output);
 
-        job->set("vector", true);
+        job->set("wind", true);
 
         static const char* capture = getenv("MIR_CAPTURE_CALLS");
         if (capture) {
@@ -366,7 +366,7 @@ extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_i
 
         job->execute(input, output);
 
-        job->clear("vector");
+        job->clear("wind");
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
