@@ -13,18 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef VODInput_H
-#define VODInput_H
+#ifndef WindOutput_H
+#define WindOutput_H
 
-
-#include "mir/input/VectorInput.h"
+#include "mir/output/VectorOutput.h"
 
 
 namespace mir {
-namespace input {
+namespace output {
 
 
-class VODInput : public VectorInput {
+class WindOutput : public VectorOutput {
   public:
 
     // -- Exceptions
@@ -32,11 +31,11 @@ class VODInput : public VectorInput {
 
     // -- Contructors
 
-    VODInput(MIRInput& vorticity, MIRInput& divergence);
+    WindOutput(MIROutput &u_component, MIROutput &v_component);
 
     // -- Destructor
 
-    virtual ~VODInput(); // Change to virtual if base class
+    virtual ~WindOutput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -46,6 +45,7 @@ class VODInput : public VectorInput {
 
     // -- Methods
     // None
+
 
     // -- Overridden methods
     // None
@@ -77,17 +77,17 @@ class VODInput : public VectorInput {
 
     // No copy allowed
 
-    VODInput(const VODInput &);
-    VODInput &operator=(const VODInput &);
+    WindOutput(const WindOutput &);
+    WindOutput &operator=(const WindOutput &);
 
     // -- Members
+
 
     // -- Methods
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;
-
+    virtual void print(std::ostream &) const;
 
     // -- Class members
     // None
@@ -97,13 +97,13 @@ class VODInput : public VectorInput {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const VODInput& p)
+    //friend ostream& operator<<(ostream& s,const WindOutput& p)
     //  { p.print(s); return s; }
 
 };
 
 
-}  // namespace input
+}  // namespace output
 }  // namespace mir
 #endif
 

@@ -105,6 +105,10 @@ list(
      input/NetcdfFileInput.h
      input/VODInput.cc
      input/VODInput.h
+     input/VectorInput.cc
+     input/VectorInput.h
+     input/WindInput.cc
+     input/WindInput.h
      logic/AutoReduced.cc
      logic/AutoReduced.h
      logic/AutoResol.cc
@@ -162,6 +166,10 @@ list(
      output/MIROutput.h
      output/UVOutput.cc
      output/UVOutput.h
+     output/VectorOutput.cc
+     output/VectorOutput.h
+     output/WindOutput.cc
+     output/WindOutput.h
      packing/ArchivedValue.cc
      packing/ArchivedValue.h
      packing/Complex.cc

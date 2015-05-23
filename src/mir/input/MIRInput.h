@@ -55,6 +55,8 @@ class MIRInput {
 
 // -- Methods
 
+    virtual bool next();
+
     virtual const param::MIRParametrisation& parametrisation() const = 0;
     virtual data::MIRField* field() const = 0;
     virtual grib_handle* gribHandle() const;

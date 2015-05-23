@@ -12,7 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/input/VODInput.h"
+#include "mir/input/WindInput.h"
 
 #include <iostream>
 
@@ -23,16 +23,16 @@ namespace mir {
 namespace input {
 
 
-VODInput::VODInput(MIRInput &vorticity, MIRInput &divergence):
-    VectorInput(vorticity, divergence) {
+WindInput::WindInput(MIRInput &u_component, MIRInput &v_component):
+    VectorInput(u_component, v_component) {
 }
 
 
-VODInput::~VODInput() {
+WindInput::~WindInput() {
 }
 
-void VODInput::print(std::ostream &out) const {
-    out << "VODInput[vorticity=" << component1_ << ", divergence=" << component2_ << "]";
+void WindInput::print(std::ostream &out) const {
+    out << "WindInput[u_component=" << component1_ << ", v_component=" << component2_ << "]";
 }
 
 }  // namespace input

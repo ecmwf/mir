@@ -13,18 +13,20 @@
 /// @date Apr 2015
 
 
-#ifndef VODInput_H
-#define VODInput_H
+#ifndef VectorInput_H
+#define VectorInput_H
 
 
-#include "mir/input/VectorInput.h"
+#include "eckit/io/Buffer.h"
+
+#include "mir/input/MIRInput.h"
 
 
 namespace mir {
 namespace input {
 
 
-class VODInput : public VectorInput {
+class VectorInput : public MIRInput {
   public:
 
     // -- Exceptions
@@ -32,11 +34,11 @@ class VODInput : public VectorInput {
 
     // -- Contructors
 
-    VODInput(MIRInput& vorticity, MIRInput& divergence);
+    VectorInput(MIRInput& component1, MIRInput& component2);
 
     // -- Destructor
 
-    virtual ~VODInput(); // Change to virtual if base class
+    virtual ~VectorInput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -59,7 +61,8 @@ class VODInput : public VectorInput {
   protected:
 
     // -- Members
-    // None
+    MIRInput& component1_;
+    MIRInput& component2_;
 
     // -- Methods
 
@@ -77,16 +80,20 @@ class VODInput : public VectorInput {
 
     // No copy allowed
 
-    VODInput(const VODInput &);
-    VODInput &operator=(const VODInput &);
+    VectorInput(const VectorInput &);
+    VectorInput &operator=(const VectorInput &);
 
     // -- Members
+
 
     // -- Methods
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;
+    virtual const param::MIRParametrisation& parametrisation() const;
+    virtual data::MIRField* field() const;
+    virtual grib_handle* gribHandle() const;
+    virtual bool next();
 
 
     // -- Class members
@@ -97,7 +104,7 @@ class VODInput : public VectorInput {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const VODInput& p)
+    //friend ostream& operator<<(ostream& s,const VectorInput& p)
     //  { p.print(s); return s; }
 
 };

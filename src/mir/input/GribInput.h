@@ -48,7 +48,6 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     // -- Methods
     // None
 
-    virtual bool next();
 
     void setAuxilaryFiles(const std::string &pathToLatitudes, const std::string &pathToLongitudes);
 

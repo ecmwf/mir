@@ -476,12 +476,6 @@ void GribInput::longitudes(std::vector<double> &values) const {
     std::copy(longitudes_.begin(), longitudes_.end(), std::back_inserter(values));
 }
 
-bool GribInput::next() {
-    eckit::StrStream os;
-    MIRInput &self = *this;
-    os << "GribInput::next() not implemented for " << self << eckit::StrStream::ends;
-    throw eckit::SeriousBug(std::string(os));
-}
 
 void GribInput::marsRequest(std::ostream& out) const {
     ASSERT(grib_);

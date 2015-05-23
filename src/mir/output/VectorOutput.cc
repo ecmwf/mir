@@ -12,7 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/output/UVOutput.h"
+#include "mir/output/VectorOutput.h"
 
 #include <iostream>
 
@@ -26,19 +26,21 @@ namespace mir {
 namespace output {
 
 
-UVOutput::UVOutput(MIROutput &u_component, MIROutput &v_component):
-    VectorOutput(u_component, v_component) {
+VectorOutput::VectorOutput(MIROutput &component1, MIROutput &v_component):
+    component1_(component1),
+    component2_(v_component) {
 }
 
 
-UVOutput::~UVOutput() {
+VectorOutput::~VectorOutput() {
 }
 
-void UVOutput::print(std::ostream &out) const {
-    out << "UVOutput[u_component=" << component1_ << ", v_component=" << component2_ << "]";
+
+void VectorOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+    NOTIMP;
 }
 
-void UVOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+void VectorOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
     ASSERT(field.dimensions() == 2);
 
     data::MIRField u(field.representation()->clone(), field.hasMissing(), field.missingValue());
@@ -47,13 +49,8 @@ void UVOutput::save(const param::MIRParametrisation &param, input::MIRInput &inp
     data::MIRField v(field.representation()->clone(), field.hasMissing(), field.missingValue());
     v.values(field.values(1), 0);
 
-    param::RuntimeParametrisation u_runtime(param);
-    u_runtime.set("u-component", true);
-    component1_.save(u_runtime, input, u);
-
-    param::RuntimeParametrisation v_runtime(param);
-    v_runtime.set("v-component", true);
-    component2_.save(v_runtime, input, v);
+    component1_.save(param, input, u);
+    component2_.save(param, input, v);
 }
 
 }  // namespace output

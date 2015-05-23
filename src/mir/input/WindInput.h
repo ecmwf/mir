@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef VODInput_H
-#define VODInput_H
+#ifndef WindInput_H
+#define WindInput_H
 
 
 #include "mir/input/VectorInput.h"
@@ -24,7 +24,7 @@ namespace mir {
 namespace input {
 
 
-class VODInput : public VectorInput {
+class WindInput : public VectorInput {
   public:
 
     // -- Exceptions
@@ -32,11 +32,11 @@ class VODInput : public VectorInput {
 
     // -- Contructors
 
-    VODInput(MIRInput& vorticity, MIRInput& divergence);
+    WindInput(MIRInput& u_component, MIRInput& v_component);
 
     // -- Destructor
 
-    virtual ~VODInput(); // Change to virtual if base class
+    virtual ~WindInput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -77,8 +77,8 @@ class VODInput : public VectorInput {
 
     // No copy allowed
 
-    VODInput(const VODInput &);
-    VODInput &operator=(const VODInput &);
+    WindInput(const WindInput &);
+    WindInput &operator=(const WindInput &);
 
     // -- Members
 
@@ -97,7 +97,7 @@ class VODInput : public VectorInput {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const VODInput& p)
+    //friend ostream& operator<<(ostream& s,const WindInput& p)
     //  { p.print(s); return s; }
 
 };

@@ -42,6 +42,13 @@ grib_handle *MIRInput::gribHandle() const {
 }
 
 
+bool MIRInput::next() {
+    eckit::StrStream os;
+    MIRInput &self = *this;
+    os << "MIRInput::next() not implemented for " << self << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
+
 }  // namespace input
 }  // namespace mir
 

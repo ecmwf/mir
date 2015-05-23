@@ -13,18 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef VODInput_H
-#define VODInput_H
+#ifndef VectorOutput_H
+#define VectorOutput_H
 
-
-#include "mir/input/VectorInput.h"
+#include "mir/output/MIROutput.h"
 
 
 namespace mir {
-namespace input {
+namespace output {
 
 
-class VODInput : public VectorInput {
+class VectorOutput : public MIROutput {
   public:
 
     // -- Exceptions
@@ -32,11 +31,11 @@ class VODInput : public VectorInput {
 
     // -- Contructors
 
-    VODInput(MIRInput& vorticity, MIRInput& divergence);
+    VectorOutput(MIROutput &component1, MIROutput &v_component);
 
     // -- Destructor
 
-    virtual ~VODInput(); // Change to virtual if base class
+    virtual ~VectorOutput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -46,6 +45,7 @@ class VODInput : public VectorInput {
 
     // -- Methods
     // None
+
 
     // -- Overridden methods
     // None
@@ -59,7 +59,9 @@ class VODInput : public VectorInput {
   protected:
 
     // -- Members
-    // None
+
+    MIROutput &component1_;
+    MIROutput &component2_;
 
     // -- Methods
 
@@ -77,17 +79,18 @@ class VODInput : public VectorInput {
 
     // No copy allowed
 
-    VODInput(const VODInput &);
-    VODInput &operator=(const VODInput &);
+    VectorOutput(const VectorOutput &);
+    VectorOutput &operator=(const VectorOutput &);
 
     // -- Members
+
 
     // -- Methods
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;
-
+    virtual void copy(const param::MIRParametrisation &, input::MIRInput &) ; // Not iterpolation performed
+    virtual void save(const param::MIRParametrisation &, input::MIRInput &, data::MIRField &);
 
     // -- Class members
     // None
@@ -97,13 +100,13 @@ class VODInput : public VectorInput {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const VODInput& p)
+    //friend ostream& operator<<(ostream& s,const VectorOutput& p)
     //  { p.print(s); return s; }
 
 };
 
 
-}  // namespace input
+}  // namespace output
 }  // namespace mir
 #endif
 
