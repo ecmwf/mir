@@ -21,6 +21,7 @@
 
 #include "mir/input/MIRInput.h"
 
+namespace mir { namespace output { class VectorOutput; }}
 
 namespace mir {
 namespace input {
@@ -47,7 +48,7 @@ class VectorInput : public MIRInput {
     // None
 
     // -- Methods
-    // None
+
 
     // -- Overridden methods
     // None
@@ -103,6 +104,8 @@ class VectorInput : public MIRInput {
     // None
 
     // -- Friends
+
+    friend class output::VectorOutput;
 
     //friend ostream& operator<<(ostream& s,const VectorInput& p)
     //  { p.print(s); return s; }

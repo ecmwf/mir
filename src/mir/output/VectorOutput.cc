@@ -20,6 +20,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/input/VectorInput.h"
 
 
 namespace mir {
@@ -37,7 +38,16 @@ VectorOutput::~VectorOutput() {
 
 
 void VectorOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
-    NOTIMP;
+    try {
+        input::VectorInput& v = dynamic_cast<input::VectorInput&>(input);
+        component1_.copy(param, v.component1_);
+        component2_.copy(param, v.component2_);
+
+    } catch (std::bad_cast &) {
+        eckit::StrStream os;
+        os << "VectorOutput::copy() not implemented for input of type: " << input << eckit::StrStream::ends;
+        throw eckit::SeriousBug(std::string(os));
+    }
 }
 
 void VectorOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {

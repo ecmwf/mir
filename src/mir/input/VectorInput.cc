@@ -64,6 +64,8 @@ bool VectorInput::next() {
     return next_u;
 }
 
+
+
 }  // namespace input
 }  // namespace mir
 
