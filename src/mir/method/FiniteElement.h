@@ -48,6 +48,8 @@ public:
 
   private:
 
+    void generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const;
+
 // -- Overridden methods
 
     virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;

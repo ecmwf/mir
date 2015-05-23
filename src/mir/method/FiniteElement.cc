@@ -24,6 +24,7 @@
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/ETA.h"
+#include "eckit/config/Resource.h"
 
 #include "eckit/types/Types.h"
 
@@ -35,6 +36,10 @@
 #include "atlas/geometry/TriangleIntersection.h"
 #include "atlas/geometry/QuadrilateralIntersection.h"
 #include "atlas/meshgen/MeshGenerator.h"
+#include "atlas/MeshCache.h"
+#include "atlas/meshgen/ReducedGridMeshGenerator.h"
+#include "atlas/meshgen/Delaunay.h"
+#include "atlas/grids/ReducedGrid.h"
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -42,6 +47,7 @@ using namespace eckit;
 
 using atlas::Grid;
 using atlas::Mesh;
+using atlas::MeshCache;
 using atlas::FunctionSpace;
 using atlas::IndexView;
 using atlas::ArrayView;
@@ -55,12 +61,12 @@ using atlas::geometry::QuadrilateralIntersection;
 using atlas::geometry::Ray;
 using atlas::meshgen::MeshGenerator;
 using atlas::meshgen::MeshGeneratorFactory;
+using atlas::grids::ReducedGrid;
+
+#define TEST_FINITE_ELEMENT
 
 namespace mir {
 namespace method {
-
-// void FiniteElement::Phi::print(std::ostream &s) const { s << "Phi[idx=" << idx << ",w=" << w << "]"; }
-
 
 FiniteElement::FiniteElement(const param::MIRParametrisation &param) :
     MethodWeighted(param) {
@@ -104,10 +110,69 @@ struct MeshStats {
     }
 };
 
+}
+
+void FiniteElement::generateMesh(const Grid& g, Mesh& mesh) const
+{
+    std::string uid = g.unique_id();
+
+    MeshCache cache;
+
+    if (cache.retrieve(g, mesh)) return;
+
+    std::cout << "Mesh not in cache -- tesselating grid " << uid << std::endl;
+
+    /// @TODO Ask Baudouin best way to build and parametrize the mesh generator
+    ///       MeshGenerator is in Atlas -- should we bring to MIR ??
+    ///       If stays in Atlas, we cannot pass MirParametrisation
+    ///
+    ///  We should be using something like:
+    ///
+    //    std::string meshGenerator;
+    //    ASSERT(parametrisation_.get("meshGenerator", meshGenerator));
+    //    eckit::ScopedPtr<MeshGenerator> meshGen( MeshGeneratorFactory::build(meshGenerator) );
+    //    meshGen->tesselate(in, i_mesh);
+
+    bool mirReducedGridMG = eckit::Resource<bool>("$MIR_REDUCED_GRID_MG", false);
+
+    const atlas::grids::ReducedGrid* rg = dynamic_cast<const atlas::grids::ReducedGrid*>(&g);
+    if (mirReducedGridMG && rg) {
+
+      // fast tesselation method, specific for ReducedGrid's
+
+      std::cout << "Mesh is ReducedGrid " << g.shortName() << std::endl;
+
+      ASSERT(rg);
+
+      atlas::meshgen::ReducedGridMeshGenerator mg;
+
+      bool mirReducedGridMGSplitQuads = eckit::Resource<bool>("$MIR_REDUCED_GRID_MG_SPLIT_QUADS", false);
+
+      // force these flags
+      mg.options.set("three_dimensional",true);
+      mg.options.set("patch_pole",true);
+      mg.options.set("include_pole",false);
+      mg.options.set("triangulate",mirReducedGridMGSplitQuads);
+
+      mg.generate(*rg, mesh);
+
+    } else {
+
+      // slower, more robust tesselation method, using Delaunay triangulation
+
+      std::cout << "Using Delaunay triangulation on grid: " << g.shortName() << std::endl;
+
+      atlas::meshgen::Delaunay mg;
+      mg.tesselate(g, mesh);
+    }
+
+    cache.insert(g, mesh);
+}
+
 bool projectPointToElements(const MeshStats& stats,
                             const ArrayView<double, 2>& icoords,
-                            const IndexView<int, 2>& triag_nodes,
-                            const IndexView<int, 2>& quads_nodes,
+                            const IndexView<int,    2>& triag_nodes,
+                            const IndexView<int,    2>& quads_nodes,
                             FiniteElement::Point& p,
                             std::vector< Eigen::Triplet<double> >& weights_triplets,
                             size_t ip,
@@ -127,7 +192,7 @@ bool projectPointToElements(const MeshStats& stats,
 
         ElemPayload elem = (*itc).value().payload();
 
-        if ( elem.type_ == 't') {
+        if ( elem.type_ == 't') { /* triags */
 
             const size_t &tid = elem.id_;
 
@@ -139,15 +204,13 @@ bool projectPointToElements(const MeshStats& stats,
 
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts && idx[2] < stats.inp_npts );
 
-            TriangleIntersection triag(icoords[idx[0]].data(),
-                    icoords[idx[1]].data(),
-                    icoords[idx[2]].data());
+            TriangleIntersection triag(icoords[idx[0]].data(), icoords[idx[1]].data(), icoords[idx[2]].data());
 
             Intersect is = triag.intersects(ray);
 
             //            Log::info() << is << std::endl;
 
-            // weights are the baricentric cooridnates u,v
+            // weights are the linear Lagrange function evaluated at u,v (aka baricentric coordinates)
             if (is) {
                 w[0] = 1. - is.u - is.v;
                 w[1] = is.u;
@@ -158,7 +221,9 @@ bool projectPointToElements(const MeshStats& stats,
 
                 return true;
             }
-        } else {
+
+        } else {  /* quads */
+
             ASSERT(elem.type_ == 'q');
 
             const size_t &qid = elem.id_;
@@ -173,16 +238,32 @@ bool projectPointToElements(const MeshStats& stats,
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts &&
                     idx[2] < stats.inp_npts && idx[3] < stats.inp_npts );
 
-            QuadrilateralIntersection quad( icoords[idx[0]].data(),
-                    icoords[idx[1]].data(),
-                    icoords[idx[2]].data(),
-                    icoords[idx[3]].data() );
+            QuadrilateralIntersection quad(icoords[idx[0]].data(),
+                                           icoords[idx[1]].data(),
+                                           icoords[idx[2]].data(),
+                                           icoords[idx[3]].data());
 
+            // this check is somewhat expensive but is better to keep it for sanity
+            if( !quad.validate() )
+            {
+                Log::warning() << "Invalid Quad : " << quad << std::endl;
+                throw SeriousBug("Found invalid quadrilateral in mesh", Here());
+            }
+
+#ifdef TEST_FINITE_ELEMENT
+            Intersect is = quad.intersectsTG(ray);
+#else
             Intersect is = quad.intersects(ray);
+#endif
 
-            //            Log::info() << is << std::endl;
-
+            // weights are the bilinear Lagrange function evaluated at u,v
             if (is) {
+
+#ifdef TEST_FINITE_ELEMENT // VERY EXPENSIVE -- DEBUG ONLY
+                if( !quad.validateIntersection(ray) )
+                    throw SeriousBug("Point projects to quad but not to its sub-triangles", Here());
+#endif
+
                 w[0] = (1. - is.u) * (1. - is.v);
                 w[1] =       is.u  * (1. - is.v);
                 w[2] =       is.u  *       is.v ;
@@ -192,13 +273,24 @@ bool projectPointToElements(const MeshStats& stats,
                     weights_triplets.push_back( Eigen::Triplet<double>( ip, idx[i], w[i] ) );
 
                 return true;
+
             }
+#ifdef TEST_FINITE_ELEMENT // VERY EXPENSIVE -- DEBUG ONLY
+            else {
+                if(quad.validateIntersection(ray)) {
+                    Log::warning() << "Point " << ip << ":" << p << " "
+                                   << "Quad"   << quad
+                                   << std::endl;
+                    throw SeriousBug("Point projects to sub-triangles but not to quad", Here());
+                }
+            }
+#endif
+
         }
 
     } // loop over nearest elements
 
     return false;
-}
 }
 
 void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) const {
@@ -211,14 +303,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
 
     eckit::Timer timer("Compute weights");
 
-    // generate mesh ...
-
-    Tesselation::tesselate(in, i_mesh);
-
-//    std::string meshGenerator;
-//    ASSERT(parametrisation_.get("meshGenerator", meshGenerator));
-//    eckit::ScopedPtr<MeshGenerator> meshGen( MeshGeneratorFactory::build(meshGenerator) );
-//    meshGen->tesselate(in, i_mesh);
+    generateMesh(in, i_mesh);
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
 
@@ -302,9 +387,6 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
                     break;
                 }
 
-                // if(kpts>=1000)
-                //   eckit::Log::info() << "Failed projecting to " << kpts << " elements ... " << std::endl;
-
                 ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
 
                 success = projectPointToElements(stats,
@@ -318,25 +400,26 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
                                                  cs.end() );
 
                 done = kpts;
-                kpts = std::min(4*done,stats.nbElems()); // increase the number of searched elements
+                kpts = std::min(4*done, stats.nbElems()); // increase the number of searched elements
             }
             while( !success );
 
             max_neighbours = std::max(done, max_neighbours);
-        }
 
+//            Log::info() << "Visited " << done << " elements"  << std::endl;
+        }
     }
 
     Log::info() << "Projected " << stats.out_npts - failed_.size() << " points"  << std::endl;
     Log::info() << "Maximum neighbours searched " << max_neighbours << " elements"  << std::endl;
 
-    if (failed_.size()) {
-        std::ostringstream os;
-        os << "Failed to project following points into input Grid " << in.shortName() << ":" << std::endl;
-        for (size_t i = 0; i < failed_.size(); ++i)
-            os << failed_[i] << std::endl;
-        throw SeriousBug(os.str(), Here());
-    }
+//    if (failed_.size()) {
+//        std::ostringstream os;
+//        os << "Failed to project following points into input Grid " << in.shortName() << ":" << std::endl;
+//        for (size_t i = 0; i < failed_.size(); ++i)
+//            os << failed_[i] << std::endl;
+//        throw SeriousBug(os.str(), Here());
+//    }
 
     // fill-in sparse matrix
 
