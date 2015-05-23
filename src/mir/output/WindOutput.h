@@ -89,6 +89,7 @@ class WindOutput : public VectorOutput {
 
     virtual void print(std::ostream &) const;
 
+
     // -- Class members
     // None
 

@@ -91,6 +91,11 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
     logic->prepare(plan);
 
     eckit::Log::info() << "Action plan is: " << plan << std::endl;
+    if(plan.empty()) {
+        eckit::Log::info() << "Nothing to do (empty plan)" << std::endl;
+        output.copy(*this, input);
+        return;
+    }
 
     std::auto_ptr< data::MIRField > field(input.field());
     eckit::Log::info() << "Field is " << *field << std::endl;

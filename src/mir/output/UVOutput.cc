@@ -38,23 +38,14 @@ void UVOutput::print(std::ostream &out) const {
     out << "UVOutput[u_component=" << component1_ << ", v_component=" << component2_ << "]";
 }
 
-void UVOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
-    ASSERT(field.dimensions() == 2);
-
-    data::MIRField u(field.representation()->clone(), field.hasMissing(), field.missingValue());
-    u.values(field.values(0), 0);
-
-    data::MIRField v(field.representation()->clone(), field.hasMissing(), field.missingValue());
-    v.values(field.values(1), 0);
-
-    param::RuntimeParametrisation u_runtime(param);
-    u_runtime.set("u-component", true);
-    component1_.save(u_runtime, input, u);
-
-    param::RuntimeParametrisation v_runtime(param);
-    v_runtime.set("v-component", true);
-    component2_.save(v_runtime, input, v);
+long UVOutput::component1ParamId(input::MIRInput &) const  {
+    return 131; // TODO: Find a better way
 }
+
+long UVOutput::component2ParamId(input::MIRInput &) const {
+    return 132; // TODO: Find a better way
+}
+
 
 }  // namespace output
 }  // namespace mir

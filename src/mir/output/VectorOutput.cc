@@ -17,10 +17,11 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "mir/input/VectorInput.h"
+#include "eckit/exception/Exceptions.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/input/VectorInput.h"
 
 
 namespace mir {
@@ -51,6 +52,7 @@ void VectorOutput::copy(const param::MIRParametrisation &param, input::MIRInput 
 }
 
 void VectorOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+
     ASSERT(field.dimensions() == 2);
 
     data::MIRField u(field.representation()->clone(), field.hasMissing(), field.missingValue());
@@ -59,8 +61,45 @@ void VectorOutput::save(const param::MIRParametrisation &param, input::MIRInput 
     data::MIRField v(field.representation()->clone(), field.hasMissing(), field.missingValue());
     v.values(field.values(1), 0);
 
-    component1_.save(param, input, u);
-    component2_.save(param, input, v);
+    param::RuntimeParametrisation u_runtime(param);
+    u_runtime.set("u-component", component1ParamId(input));
+    component1_.save(u_runtime, input, u);
+
+    param::RuntimeParametrisation v_runtime(param);
+    v_runtime.set("v-component", component2ParamId(input)); // TODO: Find something better
+    component2_.save(v_runtime, input, v);
+}
+
+
+// Default is same as input
+// TODO: Something more elegant
+
+long VectorOutput::component1ParamId(input::MIRInput &input) const  {
+    try {
+        input::VectorInput& v = dynamic_cast<input::VectorInput&>(input);
+        const param::MIRParametrisation& metadata = v.component1_.parametrisation();
+        long paramId;
+        ASSERT(metadata.get("paramId", paramId));
+        return paramId;
+    } catch (std::bad_cast &) {
+        eckit::StrStream os;
+        os << "VectorOutput::component1ParamId() not implemented for input of type: " << input << eckit::StrStream::ends;
+        throw eckit::SeriousBug(std::string(os));
+    }
+}
+
+long VectorOutput::component2ParamId(input::MIRInput &input) const {
+    try {
+        input::VectorInput& v = dynamic_cast<input::VectorInput&>(input);
+        const param::MIRParametrisation& metadata = v.component2_.parametrisation();
+        long paramId;
+        ASSERT(metadata.get("paramId", paramId));
+        return paramId;
+    } catch (std::bad_cast &) {
+        eckit::StrStream os;
+        os << "VectorOutput::component2ParamId() not implemented for input of type: " << input << eckit::StrStream::ends;
+        throw eckit::SeriousBug(std::string(os));
+    }
 }
 
 }  // namespace output

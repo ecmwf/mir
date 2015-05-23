@@ -87,6 +87,9 @@ class VectorOutput : public MIROutput {
 
     // -- Methods
 
+    virtual long component1ParamId(input::MIRInput &) const;
+    virtual long component2ParamId(input::MIRInput &) const;
+
     // -- Overridden methods
 
     virtual void copy(const param::MIRParametrisation &, input::MIRInput &) ; // Not iterpolation performed

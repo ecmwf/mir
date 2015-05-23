@@ -88,7 +88,8 @@ class UVOutput : public VectorOutput {
     // -- Overridden methods
 
     virtual void print(std::ostream &) const;
-    virtual void save(const param::MIRParametrisation &, input::MIRInput &, data::MIRField &);
+    virtual long component1ParamId(input::MIRInput &) const;
+    virtual long component2ParamId(input::MIRInput &) const;
 
     // -- Class members
     // None

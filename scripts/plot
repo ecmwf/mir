@@ -1,0 +1,199 @@
+#!/usr/bin/env python
+# importing Magics module
+
+import os
+import argparse
+from Magics import macro
+from sys import platform
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--format', help='Output file format (pdf, png, gif, svg, ...)', default='pdf')
+parser.add_argument('-w', '--wind', help='Plot wind fields', action='store_true')
+parser.add_argument('-d', '--default', help='Use MAGICS defaults settings', action='store_true')
+parser.add_argument('-r', '--raw', help='Turn off MAGICS automatic scaling', action='store_true')
+parser.add_argument('-g', '--grid_shading', help='Use grid_shading', action='store_true')
+parser.add_argument('-o', '--output', help='Path of output file', metavar='OUTPUT')
+parser.add_argument('-D', '--diff', help='Path of other GRIB', metavar='GRIB')
+parser.add_argument('-E', '--error', help='Path of other GRIB', metavar='GRIB')
+parser.add_argument('-n', '--polar_north', help='Polar stereographic north', action='store_true')
+parser.add_argument('-s', '--polar_south', help='Polar stereographic south', action='store_true')
+parser.add_argument('-e', '--europe', help='Europe', action='store_true')
+
+parser.add_argument('grib', type=str, metavar="GRIB", nargs=1, help="GRIB file to plot")
+args = parser.parse_args()
+
+print args
+
+tmp = None
+
+EPSILON = 1e-7
+
+
+def error(x, y):
+
+    if x < EPSILON and y < EPSILON:
+        return abs(x - y)
+
+    return abs(x - y) / max(abs(x), abs(y))
+
+
+def diff(x, y):
+    return x - y
+
+
+mproc = macro.mcont
+if args.wind:
+    mproc = macro.mwind
+
+
+scaling = 'on'
+contour = mproc(contour_automatic_setting='ecchart',)
+
+if args.diff or args.error:
+    scaling = 'off'
+    import gribapi
+
+    if args.diff:
+        path = args.diff
+        proc = diff
+
+    if args.error:
+        path = args.error
+        proc = error
+
+    with open(args.grib[0]) as f:
+        h1 = gribapi.grib_new_from_file(f)
+
+    with open(path) as f:
+        h2 = gribapi.grib_new_from_file(f)
+
+    v1 = gribapi.grib_get_values(h1)
+    v2 = gribapi.grib_get_values(h2)
+
+    e1 = gribapi.grib_get(h1, "packingError")
+    e2 = gribapi.grib_get(h2, "packingError")
+    EPSILON = max(e1, e2)
+
+    # Version without numpy
+
+    for i in xrange(len(v1)):
+        v1[i] = proc(v1[i], v2[i])
+
+    gribapi.grib_set_values(h1, v1)
+
+    # TODO: Use tmpfile
+    tmp = "/tmp/plot-diff$$.grib"
+    with open(tmp, "w") as f:
+        gribapi.grib_write(h1, f)
+
+    gribapi.grib_release(h1)
+    gribapi.grib_release(h2)
+
+    args.grib = [tmp]
+
+    if args.diff:
+        contour = [mproc(contour="off",
+                         contour_shade="on",
+                         contour_shade_technique="grid_shading",
+                         contour_shade_min_level=EPSILON,
+                         contour_label="off",
+                         contour_shade_max_level_colour='rgb(0,0,1)',
+                         contour_shade_min_level_colour='rgb(0,0,1)',),
+                   mproc(contour="off",
+                         contour_shade="on",
+                         contour_shade_technique="grid_shading",
+                         contour_shade_max_level=-EPSILON,
+                         contour_label="off",
+                         contour_shade_max_level_colour='rgb(1,0,0)',
+                         contour_shade_min_level_colour='rgb(1,0,0)',)]
+    if args.error:
+        contour = mproc(contour="off",
+                        contour_shade="on",
+                        contour_shade_technique="grid_shading",
+                        contour_shade_min_level=EPSILON - EPSILON / 2.0,
+                        contour_label="off")
+
+
+if not args.output:
+    view = True
+    args.output = "/tmp/plot%d.%s" % (os.getpid(), args.format)
+else:
+    view = False
+
+base, args.format = os.path.splitext(args.output)
+
+t
+output = macro.output(output_formats=[args.format[1:]],
+                      output_name_first_page_number='off',
+                      output_name=base)
+
+# Setting the coordinates of the geographical area
+
+projection = macro.mmap(subpage_upper_right_longitude=180.00,
+                        subpage_upper_right_latitude=90.00,
+                        subpage_lower_left_latitude=-90.00,
+                        subpage_lower_left_longitude=-180.0,
+                        subpage_map_projection='cylindrical')
+
+
+if args.polar_north:
+    projection = macro.mmap(subpage_map_projection="polar_stereographic")
+
+if args.polar_south:
+    projection = macro.mmap(subpage_map_projection="polar_stereographic",
+                            subpage_map_hemisphere="south")
+
+if args.europe:
+    projection = macro.mmap(subpage_upper_right_longitude=65.,
+                            subpage_map_projection="polar_stereographic",
+                            subpage_map_vertical_longitude=0.,
+                            subpage_lower_left_longitude=-37.27,
+                            subpage_lower_left_latitude=18.51,
+                            subpage_upper_right_latitude=51.28)
+
+foreground = macro.mcoast(map_grid='on')
+background = macro.mcoast(map_grid='on',
+                          map_grid_colour='tan',
+                          map_coastline_land_shade='on',
+                          map_coastline_land_shade_colour='cream',
+                          map_coastline_colour='tan')
+
+
+# Define a contour
+
+if args.default:
+    contour = mproc()
+
+if args.raw:
+    scaling = 'off'
+
+if args.grid_shading:
+    contour = mproc(contour="off", contour_shade="on", contour_shade_technique="grid_shading")
+
+
+data = []
+for i in range(1, 2):
+    grib = macro.mgrib(grib_input_file_name=args.grib[0], grib_field_position=i, grib_automatic_scaling=scaling)
+
+    data.append(background)
+    data.append(grib)
+    if isinstance(contour, list):
+        for c in contour:
+            data.append(c)
+    else:
+        data.append(contour)
+    data.append(foreground)
+    data.append(macro.mtext())
+    data.append(macro.page())
+
+
+print output, projection, data
+
+macro.plot(output, projection, data)
+
+if tmp:
+    os.unlink(tmp)
+
+if view:
+    op = "open" if platform == "darwin" else "xdg-open"
+    os.system("%s %s" % (op, args.output, ))
