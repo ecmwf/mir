@@ -167,9 +167,6 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
     npts_inp = in.npts(),
     npts_out = out.npts();
 
-    std::vector<double> result;
-    result.resize(npts_out);
-
     const WeightMatrix &W = getMatrix(in, out);
 
     // TODO: ASSERT matrix size is npts_out * npts_inp
@@ -185,6 +182,10 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         ASSERT(field.values(i).size() == npts_inp);
 
         std::vector<double> &values = field.values(i);
+
+        // This should be local too the loop as field.value() will take ownership of result with std::swap()
+        // For optimisation, one can also create result outside the loop, and resize() it here
+        std::vector<double> result(npts_out);
 
         Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &values[0], npts_inp );
         Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &result[0], npts_out );
