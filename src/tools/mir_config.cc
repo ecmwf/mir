@@ -38,8 +38,7 @@ void MIRConfig::run() {
     eckit::Log::info() << "Path is " << path << std::endl;
     if(path.exists()) {
         eckit::Log::info() << "File exists" << std::endl;
-    }
-    else {
+    } else {
         eckit::Log::info() << "File does not exist" << std::endl;
         ::exit(1);
     }

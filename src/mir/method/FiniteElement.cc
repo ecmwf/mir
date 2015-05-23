@@ -89,7 +89,9 @@ struct MeshStats {
     size_t inp_npts;
     size_t out_npts;
 
-    size_t nbElems() const { return nb_triags + nb_quads; }
+    size_t nbElems() const {
+        return nb_triags + nb_quads;
+    }
 
     void print(std::ostream& s) const {
         s << "MeshStats[nb_triags=" << nb_triags
@@ -99,8 +101,8 @@ struct MeshStats {
     }
 
     friend std::ostream& operator<<(std::ostream& s, const MeshStats& p) {
-      p.print(s);
-      return s;
+        p.print(s);
+        return s;
     }
 };
 
@@ -140,8 +142,8 @@ bool projectPointToElements(const MeshStats& stats,
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts && idx[2] < stats.inp_npts );
 
             TriangleIntersection triag(icoords[idx[0]].data(),
-                    icoords[idx[1]].data(),
-                    icoords[idx[2]].data());
+                                       icoords[idx[1]].data(),
+                                       icoords[idx[2]].data());
 
             Intersect is = triag.intersects(ray);
 
@@ -174,9 +176,9 @@ bool projectPointToElements(const MeshStats& stats,
                     idx[2] < stats.inp_npts && idx[3] < stats.inp_npts );
 
             QuadrilateralIntersection quad( icoords[idx[0]].data(),
-                    icoords[idx[1]].data(),
-                    icoords[idx[2]].data(),
-                    icoords[idx[3]].data() );
+                                            icoords[idx[1]].data(),
+                                            icoords[idx[2]].data(),
+                                            icoords[idx[3]].data() );
 
             Intersect is = quad.intersects(ray);
 
@@ -294,8 +296,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
             size_t kpts = 1;
             bool success = false;
 
-            do
-            {
+            do {
                 if(done >= stats.nbElems()) {
                     failed_.push_back(p);
                     Log::warning() << "Point " << ip << " with coords " << p << " failed projection ..." << std::endl;
@@ -319,8 +320,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
 
                 done = kpts;
                 kpts = std::min(4*done,stats.nbElems()); // increase the number of searched elements
-            }
-            while( !success );
+            } while( !success );
 
             max_neighbours = std::max(done, max_neighbours);
         }

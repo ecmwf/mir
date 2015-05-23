@@ -36,8 +36,8 @@ void SecondOrder::print(std::ostream& out) const {
 }
 
 void SecondOrder::fill(grib_info& info, const repres::Representation& ) const {
-  info.packing.packing = GRIB_UTIL_PACKING_USE_PROVIDED;
-  info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_SECOND_ORDER;
+    info.packing.packing = GRIB_UTIL_PACKING_USE_PROVIDED;
+    info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_SECOND_ORDER;
 }
 
 

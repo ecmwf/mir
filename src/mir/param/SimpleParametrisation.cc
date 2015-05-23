@@ -147,12 +147,12 @@ static void _put(std::ostream &out, const std::vector<T>& v) {
 
 template<>
 void TSettings<std::vector<long> >::print(std::ostream &out) const {
-   _put(out, value_);
+    _put(out, value_);
 }
 
 template<>
 void TSettings<std::vector<double> >::print(std::ostream &out) const {
-   _put(out, value_);
+    _put(out, value_);
 }
 
 //==========================================================

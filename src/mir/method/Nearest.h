@@ -21,30 +21,30 @@ namespace mir {
 namespace method {
 
 class Nearest : public MethodWeighted {
-public:
+  public:
 
-  explicit Nearest(const param::MIRParametrisation&);
+    explicit Nearest(const param::MIRParametrisation&);
 
-  virtual ~Nearest();
+    virtual ~Nearest();
 
-protected:
+  protected:
 
-  double epsilon_;
+    double epsilon_;
 
-  virtual void hash(eckit::MD5&) const;
+    virtual void hash(eckit::MD5&) const;
 
-private:
-  // -- Methods
+  private:
+    // -- Methods
 
-  virtual size_t nclosest() const = 0;
+    virtual size_t nclosest() const = 0;
 
-  virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
-  // virtual void print(std::ostream&) const;
-  virtual const char* name() const;
+    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+    // virtual void print(std::ostream&) const;
+    virtual const char* name() const;
 
-  // -- Class members
+    // -- Class members
 
-  // -- Friends
+    // -- Friends
 };
 
 }  // namespace method

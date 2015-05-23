@@ -50,7 +50,9 @@ static eckit::Mutex local_mutex;
 template< typename T >
 struct check_equality {
     check_equality(const T& ref_) : ref(ref_) {}
-    bool operator()(const T& v) const { return v==ref; }
+    bool operator()(const T& v) const {
+        return v==ref;
+    }
     const T ref;
 };
 
@@ -59,7 +61,9 @@ struct check_equality {
 template< typename T >
 struct check_inequality_ge {
     check_inequality_ge(const T& ref_) : ref(ref_) {}
-    bool operator()(const T& v) const { return v>=ref; }
+    bool operator()(const T& v) const {
+        return v>=ref;
+    }
     const T ref;
 };
 
@@ -114,8 +118,8 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     }
 
     const std::string cache_key = (masks.active() && masks.cacheable())?
-                key_with_masks
-              : key_no_masks;
+                                  key_with_masks
+                                  : key_no_masks;
 
     // Shorten the key, to avoid "file name to long" errors
 

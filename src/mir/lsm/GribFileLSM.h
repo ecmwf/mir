@@ -64,9 +64,9 @@ class GribFileLSM : public Mask {
 // -- Class methods
 
     static void hashCacheKey(eckit::MD5&, const eckit::PathName& path,
-                const param::MIRParametrisation& parametrisation,
-                const atlas::Grid& grid,
-                const std::string& which);
+                             const param::MIRParametrisation& parametrisation,
+                             const atlas::Grid& grid,
+                             const std::string& which);
 
   protected:
 

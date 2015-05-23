@@ -54,7 +54,8 @@ void Grids::grid(const atlas::grids::ReducedGrid &grid) {
     const std::vector<int> &points_per_latitudes = grid.npts_per_lat();
     size_t half = points_per_latitudes.size() / 2;
 
-    std::vector<int> diff; diff.reserve(half);
+    std::vector<int> diff;
+    diff.reserve(half);
     eckit::DIFFencode(points_per_latitudes.begin(), points_per_latitudes.begin() + half, std::back_inserter(diff));
 
     std::vector<int> rle;

@@ -32,11 +32,11 @@ namespace method {
 
 class FiniteElement: public MethodWeighted {
 
-public:
+  public:
 
     typedef eckit::geometry::Point3 Point;
 
-public:
+  public:
 
     FiniteElement(const param::MIRParametrisation&);
 

@@ -107,8 +107,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
         if(latlon) {
             eckit::Log::info() << "LegendreCache not implemented for lat/lon" << std::endl;
             ASSERT(trans_setup(&trans) == 0);
-        }
-        else {
+        } else {
             //
             caching::LegendreCache cache;
             eckit::PathName path;
@@ -130,7 +129,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
                 ASSERT(trans_setup(&trans) == 0);
             }
-         }
+        }
     }
 
     TransCache &tc = trans_handles[key];
