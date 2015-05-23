@@ -152,7 +152,7 @@ void MIRTool::run() {
     bool vod2uv = false;
 
     args.get("wind", wind);
-    args.get("vod2uv", wind);
+    args.get("vod2uv", vod2uv);
 
     if (wind) {
         ASSERT(!vod2uv);
