@@ -16,14 +16,14 @@
 #ifndef UVOutput_H
 #define UVOutput_H
 
-#include "mir/output/MIROutput.h"
+#include "mir/output/VectorOutput.h"
 
 
 namespace mir {
 namespace output {
 
 
-class UVOutput : public MIROutput {
+class UVOutput : public VectorOutput {
   public:
 
     // -- Exceptions
@@ -82,16 +82,14 @@ class UVOutput : public MIROutput {
 
     // -- Members
 
-    MIROutput &u_component_;
-    MIROutput &v_component_;
 
     // -- Methods
 
     // -- Overridden methods
 
     virtual void print(std::ostream &) const;
-    virtual void copy(const param::MIRParametrisation &, input::MIRInput &) ; // Not iterpolation performed
-    virtual void save(const param::MIRParametrisation &, input::MIRInput &, data::MIRField &);
+    virtual long component1ParamId(input::MIRInput &) const;
+    virtual long component2ParamId(input::MIRInput &) const;
 
     // -- Class members
     // None

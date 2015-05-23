@@ -22,7 +22,8 @@ namespace mir {
 namespace input {
 
 
-GribFileInput::GribFileInput(const eckit::PathName &path):
+GribFileInput::GribFileInput(const eckit::PathName &path, size_t skip, size_t step):
+    GribStreamInput(skip, step),
     path_(path), handle_(0) {
 }
 
@@ -36,7 +37,7 @@ GribFileInput::~GribFileInput() {
 
 
 void GribFileInput::print(std::ostream &out) const {
-    out << "GribFileInput[path=" << path_ << "]";
+    out << "GribFileInput[path=" << path_ << ",skip=" << skip_ << ", step=" << step_ << "]";
 }
 
 

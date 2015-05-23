@@ -13,24 +13,18 @@
 /// @date Apr 2015
 
 
-#ifndef GribStreamInput_H
-#define GribStreamInput_H
-
-#include "eckit/io/Buffer.h"
-
-#include "mir/input/GribInput.h"
+#ifndef WindInput_H
+#define WindInput_H
 
 
-namespace eckit {
-class DataHandle;
-}
+#include "mir/input/VectorInput.h"
 
 
 namespace mir {
 namespace input {
 
 
-class GribStreamInput : public GribInput {
+class WindInput : public VectorInput {
   public:
 
     // -- Exceptions
@@ -38,11 +32,11 @@ class GribStreamInput : public GribInput {
 
     // -- Contructors
 
-    GribStreamInput(size_t skip=0, size_t step=1);
+    WindInput(MIRInput& u_component, MIRInput& v_component);
 
     // -- Destructor
 
-    virtual ~GribStreamInput(); // Change to virtual if base class
+    virtual ~WindInput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -53,13 +47,8 @@ class GribStreamInput : public GribInput {
     // -- Methods
     // None
 
-
-
     // -- Overridden methods
     // None
-
-    virtual bool next();
-
 
     // -- Class members
     // None
@@ -70,8 +59,7 @@ class GribStreamInput : public GribInput {
   protected:
 
     // -- Members
-    size_t skip_;
-    size_t step_;
+    // None
 
     // -- Methods
 
@@ -89,20 +77,16 @@ class GribStreamInput : public GribInput {
 
     // No copy allowed
 
-    GribStreamInput(const GribStreamInput &);
-    GribStreamInput &operator=(const GribStreamInput &);
+    WindInput(const WindInput &);
+    WindInput &operator=(const WindInput &);
 
     // -- Members
 
-    bool first_;
-    eckit::Buffer buffer_;
-
-
     // -- Methods
 
-    virtual eckit::DataHandle &dataHandle() = 0;
-
     // -- Overridden methods
+
+    virtual void print(std::ostream&) const;
 
 
     // -- Class members
@@ -113,7 +97,7 @@ class GribStreamInput : public GribInput {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribStreamInput& p)
+    //friend ostream& operator<<(ostream& s,const WindInput& p)
     //  { p.print(s); return s; }
 
 };

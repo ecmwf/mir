@@ -29,6 +29,9 @@
 #include "mir/input/VODInput.h"
 #include "mir/output/UVOutput.h"
 
+#include "mir/input/WindInput.h"
+#include "mir/output/WindOutput.h"
+
 namespace mir {
 namespace api {
 namespace {
@@ -43,8 +46,8 @@ std::auto_ptr<MIRJob> job(0);
 
 static void tidy(const char *in, char *out, size_t max) {
     size_t n = 0;
-    while(*in && n < max-1) {
-        *out = (*in == ' ')? '-' : tolower(*in);
+    while (*in && n < max - 1) {
+        *out = (*in == ' ') ? '-' : tolower(*in);
         in++;
         out++;
         n++;
@@ -216,7 +219,7 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
         mir::output::GribMemoryOutput output(grib_out, *length_out);
 
         static const char* capture = getenv("MIR_CAPTURE_CALLS");
-        if(capture) {
+        if (capture) {
             std::ofstream out(capture);
             out << "mars<<EOF" << std::endl;
             out << "retrieve,target=in.grib,";
@@ -278,6 +281,7 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
         mir::input::GribMemoryInput vort_input(vort_grib_in, *length_in);
         mir::input::GribMemoryInput div_input(div_grib_in, *length_in);
 
+
         mir::output::GribMemoryOutput u_output(u_grib_out, *length_out);
         mir::output::GribMemoryOutput v_output(v_grib_out, *length_out);
 
@@ -285,6 +289,22 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
         mir::output::UVOutput output(u_output, v_output);
 
         job->set("vod2uv", true);
+
+
+        static const char* capture = getenv("MIR_CAPTURE_CALLS");
+        if (capture) {
+            std::ofstream out(capture);
+            out << "mars<<EOF" << std::endl;
+            out << "retrieve,target=in.grib,";
+            vort_input.marsRequest(out);
+            out << std::endl;
+            out << "retrieve,target=in.grib,";
+            div_input.marsRequest(out);
+            out << std::endl;
+            out << "EOF" << std::endl;
+            job->mirToolCall(out);
+            out << std::endl;
+        }
 
         job->execute(input, output);
 
@@ -324,10 +344,29 @@ extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_i
         mir::output::GribMemoryOutput u_output(u_grib_out, *length_out);
         mir::output::GribMemoryOutput v_output(v_grib_out, *length_out);
 
-        mir::input::VODInput input(vort_input, div_input);
-        mir::output::UVOutput output(u_output, v_output);
+        mir::input::WindInput input(vort_input, div_input);
+        mir::output::WindOutput output(u_output, v_output);
+
+        job->set("wind", true);
+
+        static const char* capture = getenv("MIR_CAPTURE_CALLS");
+        if (capture) {
+            std::ofstream out(capture);
+            out << "mars<<EOF" << std::endl;
+            out << "retrieve,target=in.grib,";
+            vort_input.marsRequest(out);
+            out << std::endl;
+            out << "retrieve,target=in.grib,";
+            div_input.marsRequest(out);
+            out << std::endl;
+            out << "EOF" << std::endl;
+            job->mirToolCall(out);
+            out << std::endl;
+        }
 
         job->execute(input, output);
+
+        job->clear("wind");
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
@@ -462,40 +501,6 @@ extern "C" void intlogs(emos_cb_proc proc) {
 extern "C" fortint areachk_(fortfloat *we, fortfloat *ns, fortfloat *north, fortfloat *west, fortfloat *south,
                             fortfloat *east) {
 
-    /* FROM EMOSLIB:
-    C     Input
-    C     -----
-    C
-    C     For latitude/longitude grids:
-    C     EW    =  East-west grid interval (degrees)
-    C     NS    =  North-south grid interval (degrees)
-    C
-    C     For gaussian grids:
-    C     EW    =  gaussian grid number
-    C     NS    =  0
-    C
-    C     NORTH =  North latitude (degrees)
-    C     WEST  =  West longitude (degrees)
-    C     SOUTH =  South latitude (degrees)
-    C     EAST  =  East longitude (degrees)
-    C
-    C     For spectral harmonics:
-    C     EW    =  0
-    C     NS    =  0
-    C     NORTH =  0
-    C     WEST  =  0
-    C     SOUTH =  0
-    C     EAST  =  0
-    C
-    C
-    C     Output
-    C     ------
-    C
-    C     NORTH =  North latitude, adjusted if necessary (degrees)
-    C     WEST  =  West longitude, adjusted if necessary (degrees)
-    C     SOUTH =  South latitude, adjusted if necessary (degrees)
-    C     EAST  =  East longitude, adjusted if necessary (degrees)
-    */
 
     eckit::Log::info() << "++++++ areachk" << std::endl;
 
@@ -546,7 +551,7 @@ extern "C" fortint areachk_(fortfloat *we, fortfloat *ns, fortfloat *north, fort
             w += 360;
         }
 
-        while(w > e) {
+        while (w > e) {
             w -= 360;
         }
 

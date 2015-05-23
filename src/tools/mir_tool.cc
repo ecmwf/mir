@@ -13,29 +13,28 @@
 /// @date Apr 2015
 
 
-#include "eckit/runtime/Tool.h"
-#include "eckit/runtime/Context.h"
+#include "eckit/log/Plural.h"
+#include "eckit/log/Seconds.h"
+#include "eckit/log/Timer.h"
 #include "eckit/parser/Tokenizer.h"
-
-#include "mir/param/MIRArgs.h"
+#include "eckit/runtime/Context.h"
+#include "eckit/runtime/Tool.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/output/GribFileOutput.h"
-
-#include "eckit/log/Timer.h"
-#include "eckit/log/Seconds.h"
-#include "eckit/log/Plural.h"
-
-
-#include "mir/param/option/SimpleOption.h"
-#include "mir/param/option/Separator.h"
-#include "mir/param/option/VectorOption.h"
-#include "mir/param/option/FactoryOption.h"
-
-#include "mir/method/Method.h"
-#include "mir/packing/Packer.h"
+#include "mir/input/VODInput.h"
+#include "mir/input/WindInput.h"
 #include "mir/lsm/LSMChooser.h"
+#include "mir/method/Method.h"
+#include "mir/output/GribFileOutput.h"
+#include "mir/output/UVOutput.h"
+#include "mir/output/WindOutput.h"
+#include "mir/packing/Packer.h"
+#include "mir/param/MIRArgs.h"
+#include "mir/param/option/FactoryOption.h"
+#include "mir/param/option/Separator.h"
+#include "mir/param/option/SimpleOption.h"
+#include "mir/param/option/VectorOption.h"
 
 
 using mir::param::option::Option;
@@ -47,6 +46,7 @@ using mir::param::option::FactoryOption;
 class MIRTool : public eckit::Tool {
 
     virtual void run();
+    void process(mir::api::MIRJob&, mir::input::MIRInput&, mir::output::MIROutput&, const std::string&);
 
     static void usage(const std::string &tool);
 
@@ -71,7 +71,6 @@ void MIRTool::usage(const std::string &tool) {
 
 void MIRTool::run() {
 
-    eckit::Timer timer("Total time");
 
 
     std::vector<const Option *> options;
@@ -81,6 +80,7 @@ void MIRTool::run() {
     options.push_back(new Separator("Transform"));
     options.push_back(new SimpleOption<bool>("autoresol", "Turn on automatic truncation"));
     options.push_back(new SimpleOption<size_t>("truncation", "Truncation input field"));
+    options.push_back(new SimpleOption<bool>("vod2uv", "Input is Vorticity and Divergence, convertion to U/V requested"));
 
     //==============================================
     options.push_back(new Separator("Interpolation"));
@@ -88,6 +88,7 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular gaussian grid N"));
     options.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular gaussian grid N (pre 2016)"));
     options.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular gaussian grid N"));
+    options.push_back(new SimpleOption<bool>("wind", "Use vector interpolation for wind (not yet)"));
 
 
     //==============================================
@@ -142,27 +143,69 @@ void MIRTool::run() {
 
     mir::param::MIRArgs args(&usage, 2, options);
 
-    mir::input::GribFileInput input(args.args(0));
-    mir::output::GribFileOutput output(args.args(1));
 
-    std::string path_lat, path_lon;
-    ASSERT(args.has("latitudes") ==  args.has("longitudes"));
-    if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
-        input.setAuxilaryFiles(path_lat, path_lon);
-    }
 
     mir::api::MIRJob job;
     args.copyValuesTo(job);
 
+    bool wind = false;
+    bool vod2uv = false;
+
+    args.get("wind", wind);
+    args.get("vod2uv", vod2uv);
+
+    if (wind) {
+        ASSERT(!vod2uv);
+        ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
+
+        mir::input::GribFileInput input1(args.args(0), 0, 2);
+        mir::input::GribFileInput input2(args.args(0), 1, 2);
+
+        mir::output::GribFileOutput output(args.args(1));
+
+
+        mir::input::WindInput winput(input1, input2);
+        mir::output::WindOutput woutput(output, output);
+        process(job, winput, woutput, "wind");
+
+    } else if (vod2uv) {
+        ASSERT(!wind);
+        ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
+
+        mir::input::GribFileInput input1(args.args(0), 0, 2);
+        mir::input::GribFileInput input2(args.args(0), 1, 2);
+        mir::output::GribFileOutput output(args.args(1));
+
+        mir::input::VODInput winput(input1, input2);
+        mir::output::UVOutput woutput(output, output);
+        process(job, winput, woutput, "wind");
+
+    } else {
+
+        mir::input::GribFileInput input(args.args(0));
+        mir::output::GribFileOutput output(args.args(1));
+
+        std::string path_lat, path_lon;
+        ASSERT(args.has("latitudes") ==  args.has("longitudes"));
+        if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
+            input.setAuxilaryFiles(path_lat, path_lon);
+        }
+
+        process(job, input, output, "field");
+    }
+}
+
+void MIRTool::process(mir::api::MIRJob& job, mir::input::MIRInput& input, mir::output::MIROutput& output, const std::string& what) {
+    eckit::Timer timer("Total time");
 
     size_t i = 0;
     while (input.next()) {
-        eckit::Log::info() << "FIELD: " << (++i) << std::endl;
+        eckit::Log::info() << "============> " << what << ": " << (++i) << std::endl;
         job.execute(input, output);
     }
 
-    eckit::Log::info() << eckit::Plural(i, "field") << " in " << eckit::Seconds(timer.elapsed()) <<
-                       ", rate: " << double(i) / double(timer.elapsed()) << " fields/s" << std::endl;
+    eckit::Log::info() << eckit::Plural(i, what) << " in " << eckit::Seconds(timer.elapsed()) <<
+                       ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
 
 }
 

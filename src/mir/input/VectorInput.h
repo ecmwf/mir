@@ -13,24 +13,21 @@
 /// @date Apr 2015
 
 
-#ifndef GribStreamInput_H
-#define GribStreamInput_H
+#ifndef VectorInput_H
+#define VectorInput_H
+
 
 #include "eckit/io/Buffer.h"
 
-#include "mir/input/GribInput.h"
+#include "mir/input/MIRInput.h"
 
-
-namespace eckit {
-class DataHandle;
-}
-
+namespace mir { namespace output { class VectorOutput; }}
 
 namespace mir {
 namespace input {
 
 
-class GribStreamInput : public GribInput {
+class VectorInput : public MIRInput {
   public:
 
     // -- Exceptions
@@ -38,11 +35,11 @@ class GribStreamInput : public GribInput {
 
     // -- Contructors
 
-    GribStreamInput(size_t skip=0, size_t step=1);
+    VectorInput(MIRInput& component1, MIRInput& component2);
 
     // -- Destructor
 
-    virtual ~GribStreamInput(); // Change to virtual if base class
+    virtual ~VectorInput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -51,15 +48,10 @@ class GribStreamInput : public GribInput {
     // None
 
     // -- Methods
-    // None
-
 
 
     // -- Overridden methods
     // None
-
-    virtual bool next();
-
 
     // -- Class members
     // None
@@ -70,8 +62,8 @@ class GribStreamInput : public GribInput {
   protected:
 
     // -- Members
-    size_t skip_;
-    size_t step_;
+    MIRInput& component1_;
+    MIRInput& component2_;
 
     // -- Methods
 
@@ -89,20 +81,20 @@ class GribStreamInput : public GribInput {
 
     // No copy allowed
 
-    GribStreamInput(const GribStreamInput &);
-    GribStreamInput &operator=(const GribStreamInput &);
+    VectorInput(const VectorInput &);
+    VectorInput &operator=(const VectorInput &);
 
     // -- Members
-
-    bool first_;
-    eckit::Buffer buffer_;
 
 
     // -- Methods
 
-    virtual eckit::DataHandle &dataHandle() = 0;
-
     // -- Overridden methods
+
+    virtual const param::MIRParametrisation& parametrisation() const;
+    virtual data::MIRField* field() const;
+    virtual grib_handle* gribHandle() const;
+    virtual bool next();
 
 
     // -- Class members
@@ -113,7 +105,9 @@ class GribStreamInput : public GribInput {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribStreamInput& p)
+    friend class output::VectorOutput;
+
+    //friend ostream& operator<<(ostream& s,const VectorInput& p)
     //  { p.print(s); return s; }
 
 };

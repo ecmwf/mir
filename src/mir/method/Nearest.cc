@@ -46,8 +46,8 @@ const char *Nearest::name() const {
 
 
 void Nearest::hash(eckit::MD5 &md5) const {
-  MethodWeighted::hash(md5);
-  md5 << epsilon_;
+    MethodWeighted::hash(md5);
+    md5 << epsilon_;
 }
 
 

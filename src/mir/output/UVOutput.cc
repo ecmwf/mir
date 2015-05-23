@@ -27,8 +27,7 @@ namespace output {
 
 
 UVOutput::UVOutput(MIROutput &u_component, MIROutput &v_component):
-    u_component_(u_component),
-    v_component_(v_component) {
+    VectorOutput(u_component, v_component) {
 }
 
 
@@ -36,30 +35,17 @@ UVOutput::~UVOutput() {
 }
 
 void UVOutput::print(std::ostream &out) const {
-    out << "UVOutput[u_component=" << u_component_ << ", v_component=" << v_component_ << "]";
+    out << "UVOutput[u_component=" << component1_ << ", v_component=" << component2_ << "]";
 }
 
-void UVOutput::copy(const param::MIRParametrisation &, input::MIRInput &input) {
-    NOTIMP;
+long UVOutput::component1ParamId(input::MIRInput &) const  {
+    return 131; // TODO: Find a better way
 }
 
-void UVOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
-    ASSERT(field.dimensions() == 2);
-
-    data::MIRField u(field.representation()->clone(), field.hasMissing(), field.missingValue());
-    u.values(field.values(0), 0);
-
-    data::MIRField v(field.representation()->clone(), field.hasMissing(), field.missingValue());
-    v.values(field.values(1), 0);
-
-    param::RuntimeParametrisation u_runtime(param);
-    u_runtime.set("u-component", true);
-    u_component_.save(u_runtime, input, u);
-
-    param::RuntimeParametrisation v_runtime(param);
-    v_runtime.set("v-component", true);
-    v_component_.save(v_runtime, input, v);
+long UVOutput::component2ParamId(input::MIRInput &) const {
+    return 132; // TODO: Find a better way
 }
+
 
 }  // namespace output
 }  // namespace mir

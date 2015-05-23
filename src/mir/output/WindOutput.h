@@ -13,24 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef GribStreamInput_H
-#define GribStreamInput_H
+#ifndef WindOutput_H
+#define WindOutput_H
 
-#include "eckit/io/Buffer.h"
-
-#include "mir/input/GribInput.h"
-
-
-namespace eckit {
-class DataHandle;
-}
+#include "mir/output/VectorOutput.h"
 
 
 namespace mir {
-namespace input {
+namespace output {
 
 
-class GribStreamInput : public GribInput {
+class WindOutput : public VectorOutput {
   public:
 
     // -- Exceptions
@@ -38,11 +31,11 @@ class GribStreamInput : public GribInput {
 
     // -- Contructors
 
-    GribStreamInput(size_t skip=0, size_t step=1);
+    WindOutput(MIROutput &u_component, MIROutput &v_component);
 
     // -- Destructor
 
-    virtual ~GribStreamInput(); // Change to virtual if base class
+    virtual ~WindOutput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,12 +47,8 @@ class GribStreamInput : public GribInput {
     // None
 
 
-
     // -- Overridden methods
     // None
-
-    virtual bool next();
-
 
     // -- Class members
     // None
@@ -70,8 +59,7 @@ class GribStreamInput : public GribInput {
   protected:
 
     // -- Members
-    size_t skip_;
-    size_t step_;
+    // None
 
     // -- Methods
 
@@ -89,20 +77,17 @@ class GribStreamInput : public GribInput {
 
     // No copy allowed
 
-    GribStreamInput(const GribStreamInput &);
-    GribStreamInput &operator=(const GribStreamInput &);
+    WindOutput(const WindOutput &);
+    WindOutput &operator=(const WindOutput &);
 
     // -- Members
-
-    bool first_;
-    eckit::Buffer buffer_;
 
 
     // -- Methods
 
-    virtual eckit::DataHandle &dataHandle() = 0;
-
     // -- Overridden methods
+
+    virtual void print(std::ostream &) const;
 
 
     // -- Class members
@@ -113,13 +98,13 @@ class GribStreamInput : public GribInput {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribStreamInput& p)
+    //friend ostream& operator<<(ostream& s,const WindOutput& p)
     //  { p.print(s); return s; }
 
 };
 
 
-}  // namespace input
+}  // namespace output
 }  // namespace mir
 #endif
 

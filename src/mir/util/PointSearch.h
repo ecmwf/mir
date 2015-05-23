@@ -32,32 +32,32 @@ namespace util {
 /// @todo test kd-tree stored in shared memory ?
 
 class PointSearch : private eckit::NonCopyable {
-  typedef atlas::PointIndex3 TreeType;
+    typedef atlas::PointIndex3 TreeType;
 
-  typedef atlas::PointIndex3::Point Point;
-  typedef atlas::PointIndex3::Value ValueType;
+    typedef atlas::PointIndex3::Point Point;
+    typedef atlas::PointIndex3::Value ValueType;
 
-  typedef atlas::PointIndex3::iterator iterator;
-  typedef eckit::geometry::Point3 PointType;
+    typedef atlas::PointIndex3::iterator iterator;
+    typedef eckit::geometry::Point3 PointType;
 
-public:
-  PointSearch(const std::vector<Point>& ipts);
+  public:
+    PointSearch(const std::vector<Point>& ipts);
 
-  PointSearch(const atlas::Mesh& mesh);
+    PointSearch(const atlas::Mesh& mesh);
 
-public:  // methods
-  /// Finds closest N points to an input point
-  void closestNPoints(const PointType& pt, size_t n, std::vector<ValueType>& closest);
+  public:  // methods
+    /// Finds closest N points to an input point
+    void closestNPoints(const PointType& pt, size_t n, std::vector<ValueType>& closest);
 
-protected:
-  eckit::ScopedPtr<TreeType> tree_;
+  protected:
+    eckit::ScopedPtr<TreeType> tree_;
 
-private:
-  void init(const std::vector<PointType>& points);
+  private:
+    void init(const std::vector<PointType>& points);
 
-  void init(const atlas::Mesh& mesh);
+    void init(const atlas::Mesh& mesh);
 
-  mutable atlas::Grid::uid_t uid_;
+    mutable atlas::Grid::uid_t uid_;
 };
 
 }  // namespace util

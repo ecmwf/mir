@@ -12,29 +12,33 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/input/VODInput.h"
+#include "mir/output/WindOutput.h"
 
 #include <iostream>
 
-#include "mir/data/MIRField.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/data/MIRField.h"
+#include "mir/param/RuntimeParametrisation.h"
+#include "mir/repres/Representation.h"
+
 
 namespace mir {
-namespace input {
+namespace output {
 
 
-VODInput::VODInput(MIRInput &vorticity, MIRInput &divergence):
-    VectorInput(vorticity, divergence) {
+WindOutput::WindOutput(MIROutput &u_component, MIROutput &v_component):
+    VectorOutput(u_component, v_component) {
 }
 
 
-VODInput::~VODInput() {
+WindOutput::~WindOutput() {
 }
 
-void VODInput::print(std::ostream &out) const {
-    out << "VODInput[vorticity=" << component1_ << ", divergence=" << component2_ << "]";
+void WindOutput::print(std::ostream &out) const {
+    out << "WindOutput[u_component=" << component1_ << ", v_component=" << component2_ << "]";
 }
 
-}  // namespace input
+
+}  // namespace output
 }  // namespace mir
 

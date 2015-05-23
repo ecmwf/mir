@@ -13,24 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef GribStreamInput_H
-#define GribStreamInput_H
+#ifndef VectorOutput_H
+#define VectorOutput_H
 
-#include "eckit/io/Buffer.h"
-
-#include "mir/input/GribInput.h"
-
-
-namespace eckit {
-class DataHandle;
-}
+#include "mir/output/MIROutput.h"
 
 
 namespace mir {
-namespace input {
+namespace output {
 
 
-class GribStreamInput : public GribInput {
+class VectorOutput : public MIROutput {
   public:
 
     // -- Exceptions
@@ -38,11 +31,11 @@ class GribStreamInput : public GribInput {
 
     // -- Contructors
 
-    GribStreamInput(size_t skip=0, size_t step=1);
+    VectorOutput(MIROutput &component1, MIROutput &v_component);
 
     // -- Destructor
 
-    virtual ~GribStreamInput(); // Change to virtual if base class
+    virtual ~VectorOutput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,12 +47,8 @@ class GribStreamInput : public GribInput {
     // None
 
 
-
     // -- Overridden methods
     // None
-
-    virtual bool next();
-
 
     // -- Class members
     // None
@@ -70,8 +59,9 @@ class GribStreamInput : public GribInput {
   protected:
 
     // -- Members
-    size_t skip_;
-    size_t step_;
+
+    MIROutput &component1_;
+    MIROutput &component2_;
 
     // -- Methods
 
@@ -89,21 +79,21 @@ class GribStreamInput : public GribInput {
 
     // No copy allowed
 
-    GribStreamInput(const GribStreamInput &);
-    GribStreamInput &operator=(const GribStreamInput &);
+    VectorOutput(const VectorOutput &);
+    VectorOutput &operator=(const VectorOutput &);
 
     // -- Members
-
-    bool first_;
-    eckit::Buffer buffer_;
 
 
     // -- Methods
 
-    virtual eckit::DataHandle &dataHandle() = 0;
+    virtual long component1ParamId(input::MIRInput &) const;
+    virtual long component2ParamId(input::MIRInput &) const;
 
     // -- Overridden methods
 
+    virtual void copy(const param::MIRParametrisation &, input::MIRInput &) ; // Not iterpolation performed
+    virtual void save(const param::MIRParametrisation &, input::MIRInput &, data::MIRField &);
 
     // -- Class members
     // None
@@ -113,13 +103,13 @@ class GribStreamInput : public GribInput {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribStreamInput& p)
+    //friend ostream& operator<<(ostream& s,const VectorOutput& p)
     //  { p.print(s); return s; }
 
 };
 
 
-}  // namespace input
+}  // namespace output
 }  // namespace mir
 #endif
 

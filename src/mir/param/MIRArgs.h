@@ -22,13 +22,19 @@
 #include <set>
 #include <vector>
 
-namespace mir { namespace param { namespace option {class Option; }}}
+namespace mir {
+namespace param {
+namespace option {
+class Option;
+}
+}
+}
 
 namespace mir {
 namespace param {
 
 namespace option {
-    class Option;
+class Option;
 }
 
 

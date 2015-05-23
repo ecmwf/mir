@@ -40,6 +40,9 @@ ActionPlan::~ActionPlan() {
     }
 }
 
+bool ActionPlan::empty() const {
+    return actions_.empty();
+}
 
 void ActionPlan::add(const std::string& name)  {
     actions_.push_back(action::ActionFactory::build(name, parametrisation_));

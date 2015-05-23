@@ -78,7 +78,7 @@ const repres::Representation *MIRField::representation() const {
 void MIRField::validate() const {
     if (representation_) {
         for (size_t i = 0; i < values_.size(); i++) {
-            representation_->validate(values_[0]);
+            representation_->validate(values_[i]);
         }
     }
 }

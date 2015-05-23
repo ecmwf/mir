@@ -17,16 +17,14 @@
 #define VODInput_H
 
 
-#include "eckit/io/Buffer.h"
-
-#include "mir/input/MIRInput.h"
+#include "mir/input/VectorInput.h"
 
 
 namespace mir {
 namespace input {
 
 
-class VODInput : public MIRInput {
+class VODInput : public VectorInput {
   public:
 
     // -- Exceptions
@@ -84,17 +82,11 @@ class VODInput : public MIRInput {
 
     // -- Members
 
-    MIRInput& vorticity_;
-    MIRInput& divergence_;
-
     // -- Methods
 
     // -- Overridden methods
 
     virtual void print(std::ostream&) const;
-    virtual const param::MIRParametrisation& parametrisation() const;
-    virtual data::MIRField* field() const;
-    virtual grib_handle* gribHandle() const;
 
 
     // -- Class members

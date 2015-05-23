@@ -65,7 +65,9 @@ class AutoFDClose {
     int fd_;
   public:
     AutoFDClose(int fd): fd_(fd) {}
-    ~AutoFDClose() { ::close(fd_); }
+    ~AutoFDClose() {
+        ::close(fd_);
+    }
 };
 
 
@@ -174,10 +176,10 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     // Linux:ipcs -l, Mac/bsd: ipcs -M
 
     eckit::Log::info() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
-    std::hex << key << std::dec << ", page size: "
-    << eckit::Bytes(page_size) << ", pages: "
-    << eckit::BigNum(shmsize/page_size)
-    << std::endl;
+                       std::hex << key << std::dec << ", page size: "
+                       << eckit::Bytes(page_size) << ", pages: "
+                       << eckit::BigNum(shmsize/page_size)
+                       << std::endl;
 
     int shmid;
     SYSCALL(shmid = shmget(key, shmsize , IPC_CREAT | 0600)) ;

@@ -39,8 +39,12 @@ static long readcb(void *data, void *buffer, long len) {
 }  // (anonymous namespace)
 
 
-GribStreamInput::GribStreamInput():
-    buffer_(SIXTY_FOUR_MB) {
+GribStreamInput::GribStreamInput(size_t skip, size_t step):
+    buffer_(SIXTY_FOUR_MB),
+    first_(true),
+    skip_(skip),
+    step_(step) {
+    ASSERT(step_ > 0);
 }
 
 
@@ -49,7 +53,28 @@ GribStreamInput::~GribStreamInput() {
 
 
 bool GribStreamInput::next() {
+
     handle(0);
+
+    // Skip a few message if needed
+    size_t advance = step_ - 1;
+
+    if (first_) {
+        first_ = false;
+        advance = skip_;
+    }
+
+    for (size_t i = 0; i < advance; i++) {
+        size_t len = buffer_.size();
+        int e  = wmo_read_any_from_stream(&dataHandle(), &readcb, buffer_, &len);
+        if (e == GRIB_END_OF_FILE) {
+            return false;
+
+        }
+        if (e != GRIB_SUCCESS) {
+            GRIB_ERROR(e, "wmo_read_any_from_stream");
+        }
+    }
 
     size_t len = buffer_.size();
     int e    = wmo_read_any_from_stream(&dataHandle(), &readcb, buffer_, &len);
@@ -61,7 +86,7 @@ bool GribStreamInput::next() {
 
     if (e == GRIB_END_OF_FILE) return false;
 
-    GRIB_ERROR(e, "grib_handle_new_from_message");
+    GRIB_ERROR(e, "wmo_read_any_from_stream");
     // Not reached
     return false;
 }

@@ -86,9 +86,9 @@ void GribFileLSM::print(std::ostream &out) const {
 }
 
 void GribFileLSM::hashCacheKey(eckit::MD5& md5, const eckit::PathName& path,
-                const param::MIRParametrisation& parametrisation,
-                const atlas::Grid& grid,
-                const std::string& which) {
+                               const param::MIRParametrisation& parametrisation,
+                               const atlas::Grid& grid,
+                               const std::string& which) {
 
     std::string interpolation;
     if(!parametrisation.get("lsm.interpolation" + which, interpolation)) {

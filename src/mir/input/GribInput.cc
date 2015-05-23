@@ -465,21 +465,17 @@ void GribInput::setAuxilaryFiles(const std::string &pathToLatitudes, const std::
 
 // TODO: some caching, also next() should maybe advance the auxilary files
 void GribInput::latitudes(std::vector<double> &values) const {
-    values.clear(); values.reserve(latitudes_.size());
+    values.clear();
+    values.reserve(latitudes_.size());
     std::copy(latitudes_.begin(), latitudes_.end(), std::back_inserter(values));
 }
 
 void GribInput::longitudes(std::vector<double> &values) const {
-    values.clear(); values.reserve(longitudes_.size());
+    values.clear();
+    values.reserve(longitudes_.size());
     std::copy(longitudes_.begin(), longitudes_.end(), std::back_inserter(values));
 }
 
-bool GribInput::next() {
-    eckit::StrStream os;
-    MIRInput &self = *this;
-    os << "GribInput::next() not implemented for " << self << eckit::StrStream::ends;
-    throw eckit::SeriousBug(std::string(os));
-}
 
 void GribInput::marsRequest(std::ostream& out) const {
     ASSERT(grib_);
@@ -544,8 +540,7 @@ void GribInput::marsRequest(std::ostream& out) const {
             grib_call(err, "freeFormData");
         }
 
-    }
-    catch(...) {
+    } catch(...) {
         if(keys) {
             grib_keys_iterator_delete(keys);
         }
