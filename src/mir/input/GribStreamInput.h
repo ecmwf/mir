@@ -38,7 +38,7 @@ class GribStreamInput : public GribInput {
 
     // -- Contructors
 
-    GribStreamInput();
+    GribStreamInput(size_t skip=0, size_t step=1);
 
     // -- Destructor
 
@@ -70,7 +70,8 @@ class GribStreamInput : public GribInput {
   protected:
 
     // -- Members
-    // None
+    size_t skip_;
+    size_t step_;
 
     // -- Methods
 
@@ -93,7 +94,9 @@ class GribStreamInput : public GribInput {
 
     // -- Members
 
+    bool first_;
     eckit::Buffer buffer_;
+
 
     // -- Methods
 

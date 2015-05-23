@@ -33,7 +33,7 @@ class GribFileInput : public GribStreamInput {
 
 // -- Contructors
 
-    GribFileInput(const eckit::PathName&);
+    GribFileInput(const eckit::PathName&, size_t skip=0, size_t step=1);
 
 // -- Destructor
 

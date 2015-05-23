@@ -143,14 +143,7 @@ void MIRTool::run() {
 
     mir::param::MIRArgs args(&usage, 2, options);
 
-    mir::input::GribFileInput input(args.args(0));
-    mir::output::GribFileOutput output(args.args(1));
 
-    std::string path_lat, path_lon;
-    ASSERT(args.has("latitudes") ==  args.has("longitudes"));
-    if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
-        input.setAuxilaryFiles(path_lat, path_lon);
-    }
 
     mir::api::MIRJob job;
     args.copyValuesTo(job);
@@ -163,16 +156,41 @@ void MIRTool::run() {
 
     if (wind) {
         ASSERT(!vod2uv);
-        mir::input::WindInput winput(input, input);
+        ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
+
+        mir::input::GribFileInput input1(args.args(0), 0, 2);
+        mir::input::GribFileInput input2(args.args(0), 1, 2);
+
+        mir::output::GribFileOutput output(args.args(1));
+
+
+        mir::input::WindInput winput(input1, input2);
         mir::output::WindOutput woutput(output, output);
-        process(job, input, output, "wind");
+        process(job, winput, woutput, "wind");
 
     } else if (vod2uv) {
         ASSERT(!wind);
-        mir::input::VODInput winput(input, input);
+        ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
+
+        mir::input::GribFileInput input1(args.args(0), 0, 2);
+        mir::input::GribFileInput input2(args.args(0), 1, 2);
+        mir::output::GribFileOutput output(args.args(1));
+
+        mir::input::VODInput winput(input1, input2);
         mir::output::UVOutput woutput(output, output);
-        process(job, input, output, "wind");
+        process(job, winput, woutput, "wind");
+
     } else {
+
+        mir::input::GribFileInput input(args.args(0));
+        mir::output::GribFileOutput output(args.args(1));
+
+        std::string path_lat, path_lon;
+        ASSERT(args.has("latitudes") ==  args.has("longitudes"));
+        if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
+            input.setAuxilaryFiles(path_lat, path_lon);
+        }
+
         process(job, input, output, "field");
     }
 }
