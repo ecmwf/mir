@@ -81,6 +81,7 @@ void MIRTool::run() {
     options.push_back(new Separator("Transform"));
     options.push_back(new SimpleOption<bool>("autoresol", "Turn on automatic truncation"));
     options.push_back(new SimpleOption<size_t>("truncation", "Truncation input field"));
+    options.push_back(new SimpleOption<bool>("vod2uv", "Input is Vorticity and Divergence, convertion to U/V requested"));
 
     //==============================================
     options.push_back(new Separator("Interpolation"));

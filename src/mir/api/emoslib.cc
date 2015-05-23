@@ -344,7 +344,26 @@ extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_i
         mir::input::VODInput input(vort_input, div_input);
         mir::output::UVOutput output(u_output, v_output);
 
+        job->set("vector", true);
+
+        static const char* capture = getenv("MIR_CAPTURE_CALLS");
+        if (capture) {
+            std::ofstream out(capture);
+            out << "mars<<EOF" << std::endl;
+            out << "retrieve,target=in.grib,";
+            vort_input.marsRequest(out);
+            out << std::endl;
+            out << "retrieve,target=in.grib,";
+            div_input.marsRequest(out);
+            out << std::endl;
+            out << "EOF" << std::endl;
+            job->mirToolCall(out);
+            out << std::endl;
+        }
+
         job->execute(input, output);
+
+        job->clear("vector");
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
