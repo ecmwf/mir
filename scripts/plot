@@ -122,7 +122,6 @@ else:
 
 base, args.format = os.path.splitext(args.output)
 
-t
 output = macro.output(output_formats=[args.format[1:]],
                       output_name_first_page_number='off',
                       output_name=base)
