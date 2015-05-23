@@ -13,29 +13,28 @@
 /// @date Apr 2015
 
 
-#include "eckit/runtime/Tool.h"
-#include "eckit/runtime/Context.h"
+#include "eckit/log/Plural.h"
+#include "eckit/log/Seconds.h"
+#include "eckit/log/Timer.h"
 #include "eckit/parser/Tokenizer.h"
-
-#include "mir/param/MIRArgs.h"
+#include "eckit/runtime/Context.h"
+#include "eckit/runtime/Tool.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/output/GribFileOutput.h"
-
-#include "eckit/log/Timer.h"
-#include "eckit/log/Seconds.h"
-#include "eckit/log/Plural.h"
-
-
-#include "mir/param/option/SimpleOption.h"
-#include "mir/param/option/Separator.h"
-#include "mir/param/option/VectorOption.h"
-#include "mir/param/option/FactoryOption.h"
-
-#include "mir/method/Method.h"
-#include "mir/packing/Packer.h"
+#include "mir/input/VODInput.h"
+#include "mir/input/WindInput.h"
 #include "mir/lsm/LSMChooser.h"
+#include "mir/method/Method.h"
+#include "mir/output/GribFileOutput.h"
+#include "mir/output/UVOutput.h"
+#include "mir/output/WindOutput.h"
+#include "mir/packing/Packer.h"
+#include "mir/param/MIRArgs.h"
+#include "mir/param/option/FactoryOption.h"
+#include "mir/param/option/Separator.h"
+#include "mir/param/option/SimpleOption.h"
+#include "mir/param/option/VectorOption.h"
 
 
 using mir::param::option::Option;
@@ -47,6 +46,7 @@ using mir::param::option::FactoryOption;
 class MIRTool : public eckit::Tool {
 
     virtual void run();
+    void process(mir::api::MIRJob&, mir::input::MIRInput&, mir::output::MIROutput&, const std::string&);
 
     static void usage(const std::string &tool);
 
@@ -71,7 +71,6 @@ void MIRTool::usage(const std::string &tool) {
 
 void MIRTool::run() {
 
-    eckit::Timer timer("Total time");
 
 
     std::vector<const Option *> options;
@@ -156,15 +155,39 @@ void MIRTool::run() {
     mir::api::MIRJob job;
     args.copyValuesTo(job);
 
+    bool wind = false;
+    bool vod2uv = false;
+
+    args.get("wind", wind);
+    args.get("vod2uv", wind);
+
+    if (wind) {
+        ASSERT(!vod2uv);
+        mir::input::WindInput winput(input, input);
+        mir::output::WindOutput woutput(output, output);
+        process(job, input, output, "wind");
+
+    } else if (vod2uv) {
+        ASSERT(!wind);
+        mir::input::VODInput winput(input, input);
+        mir::output::UVOutput woutput(output, output);
+        process(job, input, output, "wind");
+    } else {
+        process(job, input, output, "field");
+    }
+}
+
+void MIRTool::process(mir::api::MIRJob& job, mir::input::MIRInput& input, mir::output::MIROutput& output, const std::string& what) {
+    eckit::Timer timer("Total time");
 
     size_t i = 0;
     while (input.next()) {
-        eckit::Log::info() << "FIELD: " << (++i) << std::endl;
+        eckit::Log::info() << "============> " << what << ": " << (++i) << std::endl;
         job.execute(input, output);
     }
 
-    eckit::Log::info() << eckit::Plural(i, "field") << " in " << eckit::Seconds(timer.elapsed()) <<
-                       ", rate: " << double(i) / double(timer.elapsed()) << " fields/s" << std::endl;
+    eckit::Log::info() << eckit::Plural(i, what) << " in " << eckit::Seconds(timer.elapsed()) <<
+                       ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
 
 }
 
