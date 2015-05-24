@@ -118,7 +118,9 @@ void FiniteElement::generateMesh(const Grid& g, Mesh& mesh) const
 {
     std::string uid = g.unique_id();
 
-    MeshCache cache;
+    bool caching = true;
+    parametrisation_.get("caching", caching);
+    static MeshCache cache(caching);
 
     if (cache.retrieve(g, mesh)) return;
 
@@ -254,7 +256,7 @@ bool projectPointToElements(const MeshStats& stats,
                 throw SeriousBug("Found invalid quadrilateral in mesh", Here());
             }
 
-#ifdef TEST_FINITE_ELEMENT
+#if 1
             Intersect is = quad.intersectsTG(ray);
 #else
             Intersect is = quad.intersects(ray);
@@ -279,16 +281,16 @@ bool projectPointToElements(const MeshStats& stats,
                 return true;
 
             }
-#ifdef TEST_FINITE_ELEMENT // VERY EXPENSIVE -- DEBUG ONLY
-            else {
-                if(quad.validateIntersection(ray)) {
-                    Log::warning() << "Point " << ip << ":" << p << " "
-                                   << "Quad"   << quad
-                                   << std::endl;
-                    throw SeriousBug("Point projects to sub-triangles but not to quad", Here());
-                }
-            }
-#endif
+//#ifdef TEST_FINITE_ELEMENT // VERY EXPENSIVE -- DEBUG ONLY
+//            else {
+//                if(quad.validateIntersection(ray)) {
+//                    Log::warning() << "Point " << ip << ":" << p << " "
+//                                   << "Quad"   << quad
+//                                   << std::endl;
+//                    throw SeriousBug("Point projects to sub-triangles but not to quad", Here());
+//                }
+//            }
+//#endif
 
         }
 
