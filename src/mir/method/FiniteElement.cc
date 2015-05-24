@@ -285,7 +285,7 @@ typedef std::vector< std::pair<size_t,FiniteElement::Point> > FailedPoints;
 void handleFailedProjectionPoints(const MeshStats& stats,
                                   const FailedPoints& failed,
                                   const Mesh& in,
-                                  std::vector< Eigen::Triplet<double> > weights_triplets)
+                                  std::vector< Eigen::Triplet<double> >& weights_triplets)
 {
     Log::warning() << "Failed to project following points into input Grid:" << std::endl;
     for (size_t i = 0; i < failed.size(); ++i)
