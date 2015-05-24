@@ -19,6 +19,8 @@
 
 #include "eckit/exception/Exceptions.h"
 
+#include "atlas/Parameters.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
@@ -88,7 +90,7 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
 
 
     std::complex<double> zi(0.0, 1.0);
-    const double kRadiusOfTheEarth = 6.371e6;  // Seriously?
+    const double kRadiusOfTheEarth = atlas::Earth::radiusInMeters();
     size_t k = 0;
     size_t imn = 0;
 
