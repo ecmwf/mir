@@ -1,15 +1,18 @@
 MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
 
 NEXT STEPS
+
+* MAKE IT WORK
+  Bi-linear
+- Nearest LSM
+- Support of polar stereographic grids (LOW PRIORITY)
+
+* OTHER
 - Clear cache in metabuilder before each run (or select a new directory, better as it will not affect production when mir is operational)
 - Caching of SH=>LL coefficients
-- Bi-linear
-- Nearest LSM
 - Make the logging callback work in emoslib.cc
-- Check why metdabuilder-test://mir-test/opensuse131/gnu/tests/fixed_tests/egrr_pl fails
 - Check why some of the diss_requests tests fail with a 'number too large' error
 - Gather knowledge about emoslib/prodgen
-- Merge metabuilder-test back to metabuilder-prod
 
 PHILOSPY
 - 1 Make it work
@@ -17,8 +20,6 @@ PHILOSPY
 - 3 Make it fast
 
 WHAT IS MISSING
-- Support of polar stereographic grids (in and out)
-- Nearest LSM interpolation
 
 WHAT DOES NOT WORK
 - SH to LL with different increments north/south and west/east
@@ -31,7 +32,6 @@ QUESTIONS
 PRIORITY
 
  - MIR: create unit test framework
- - MIR: Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
 
  - Find out in libemos:
     * sh to rot latlon - what is the path?
@@ -80,9 +80,7 @@ IN ATLAS:
    * use gmsh binary format + DataHandle/BufferedHandle
 
 IN TRANS
-- Check if transi can be called with a regular gaussian as output
 - Get transi to print an error if memory allocation fails
-- sharedmem / memmap for caching transi structures
 - transi seems to be fast for coarse target resolution, e.g. T1279 => 2x2. In this case it may not be needed to cache the coefficients. We need to study what is the threseold when computing coeff is faster than loading them.
 
 PRODGEN:
@@ -104,4 +102,9 @@ DONE:
 - Implement general purpose file caching class
 - Cropping of reduced gaussian grid
 - SH=>LL with different increments
+- Check why metdabuilder-test://mir-test/opensuse131/gnu/tests/fixed_tests/egrr_pl fails
+- Merge metabuilder-test back to metabuilder-prod
+  Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
+- Check if transi can be called with a regular gaussian as output
+- sharedmem / memmap for caching transi structures
 
