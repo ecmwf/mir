@@ -131,7 +131,6 @@ void Parser::fill(ParserConsumer& consumer) {
                     consumer.store(name, eckit::StringTools::trim(tmp));
                 }
             }
-            word = false;
             key = true;
             value = false;
             name = "";
