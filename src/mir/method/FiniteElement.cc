@@ -130,12 +130,16 @@ void FiniteElement::generateMesh(const Grid& g, Mesh& mesh) const
     ///       MeshGenerator is in Atlas -- should we bring to MIR ??
     ///       If stays in Atlas, we cannot pass MirParametrisation
     ///
+    ///  This raises another issue: hoe to cache meshes generated with different parametrizations?
+    ///  We must md5 the MeshGenerator itself.
+    ///
     ///  We should be using something like:
     ///
     //    std::string meshGenerator;
     //    ASSERT(parametrisation_.get("meshGenerator", meshGenerator));
     //    eckit::ScopedPtr<MeshGenerator> meshGen( MeshGeneratorFactory::build(meshGenerator) );
     //    meshGen->tesselate(in, i_mesh);
+
 
     bool mirReducedGridMG = eckit::Resource<bool>("$MIR_REDUCED_GRID_MG", false);
 
@@ -173,6 +177,8 @@ void FiniteElement::generateMesh(const Grid& g, Mesh& mesh) const
     cache.insert(g, mesh);
 }
 
+/// Finds in which element the point is contained by projecting the point with each nearest element
+
 bool projectPointToElements(const MeshStats& stats,
                             const ArrayView<double, 2>& icoords,
                             const IndexView<int,    2>& triag_nodes,
@@ -186,13 +192,9 @@ bool projectPointToElements(const MeshStats& stats,
     int idx [4];
     double w[4];
 
-    // find in which element the point is contained
-    // by computing the intercetion of the point with each nearest triangle
-
     Ray ray( p.data() );
 
-    atlas::ElemIndex3::NodeList::const_iterator itc = start;
-    for ( ; itc != finish; ++itc ) {
+    for (ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
 
         ElemPayload elem = (*itc).value().payload();
 
@@ -214,10 +216,8 @@ bool projectPointToElements(const MeshStats& stats,
 
             Intersect is = triag.intersects(ray);
 
-            //            Log::info() << is << std::endl;
-
-            // weights are the linear Lagrange function evaluated at u,v (aka baricentric coordinates)
             if (is) {
+                // weights are the linear Lagrange function evaluated at u,v (aka baricentric coordinates)
                 w[0] = 1. - is.u - is.v;
                 w[1] = is.u;
                 w[2] = is.v;
@@ -249,27 +249,17 @@ bool projectPointToElements(const MeshStats& stats,
                                             icoords[idx[2]].data(),
                                             icoords[idx[3]].data() );
 
-            // this check is somewhat expensive but is better to keep it for sanity
-            if( !quad.validate() )
+            if( !quad.validate() ) // somewhat expensive sanity check
             {
                 Log::warning() << "Invalid Quad : " << quad << std::endl;
                 throw SeriousBug("Found invalid quadrilateral in mesh", Here());
             }
 
-#if 1
-            Intersect is = quad.intersectsTG(ray);
-#else
             Intersect is = quad.intersects(ray);
-#endif
 
-            // weights are the bilinear Lagrange function evaluated at u,v
             if (is) {
 
-#ifdef TEST_FINITE_ELEMENT // VERY EXPENSIVE -- DEBUG ONLY
-                if( !quad.validateIntersection(ray) )
-                    throw SeriousBug("Point projects to quad but not to its sub-triangles", Here());
-#endif
-
+                // weights are the bilinear Lagrange function evaluated at u,v
                 w[0] = (1. - is.u) * (1. - is.v);
                 w[1] =       is.u  * (1. - is.v);
                 w[2] =       is.u  *       is.v ;
@@ -281,17 +271,6 @@ bool projectPointToElements(const MeshStats& stats,
                 return true;
 
             }
-//#ifdef TEST_FINITE_ELEMENT // VERY EXPENSIVE -- DEBUG ONLY
-//            else {
-//                if(quad.validateIntersection(ray)) {
-//                    Log::warning() << "Point " << ip << ":" << p << " "
-//                                   << "Quad"   << quad
-//                                   << std::endl;
-//                    throw SeriousBug("Point projects to sub-triangles but not to quad", Here());
-//                }
-//            }
-//#endif
-
         }
 
     } // loop over nearest elements
@@ -340,9 +319,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
     FunctionSpace  &o_nodes  = o_mesh.function_space( "nodes" );
     ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
 
-
     MeshStats stats;
-
     stats.nb_triags = triags.shape(0);
     stats.nb_quads  = quads.shape(0);
     stats.inp_npts  = i_nodes.shape(0);
@@ -354,11 +331,10 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
 
     // weights -- one per vertice of element, triangles (3) or quads (4)
 
-    std::vector< Eigen::Triplet<double> > weights_triplets; /* structure to fill-in sparse matrix */
+    std::vector< Eigen::Triplet<double> > weights_triplets; // structure to fill-in sparse matrix
+    weights_triplets.reserve( stats.out_npts * 4 );         // preallocate space as if all elements where quads
 
-    weights_triplets.reserve( stats.out_npts * 4 );
-
-    /* search nearest k cell centres */
+    // search nearest k cell centres
 
     size_t max_neighbours = 0;
 
@@ -404,30 +380,29 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
                                                  cs.begin()+done,
                                                  cs.end() );
 
+                // increase the number of searched elements
                 done = kpts;
-                kpts = std::min(4*done,stats.nbElems()); // increase the number of searched elements
+                kpts = std::min(4*done,stats.nbElems());
+
             } while( !success );
 
             max_neighbours = std::max(done, max_neighbours);
 
-//            Log::info() << "Visited " << done << " elements"  << std::endl;
         }
     }
 
     Log::info() << "Projected " << stats.out_npts - failed_.size() << " points"  << std::endl;
     Log::info() << "Maximum neighbours searched " << max_neighbours << " elements"  << std::endl;
 
-//    if (failed_.size()) {
-//        std::ostringstream os;
-//        os << "Failed to project following points into input Grid " << in.shortName() << ":" << std::endl;
-//        for (size_t i = 0; i < failed_.size(); ++i)
-//            os << failed_[i] << std::endl;
-//        throw SeriousBug(os.str(), Here());
-//    }
+    if (failed_.size()) {
+        std::ostringstream os;
+        os << "Failed to project following points into input Grid " << in.shortName() << ":" << std::endl;
+        for (size_t i = 0; i < failed_.size(); ++i)
+            os << failed_[i] << std::endl;
+        throw SeriousBug(os.str(), Here());
+    }
 
-    // fill-in sparse matrix
-
-    W.setFromTriplets(weights_triplets.begin(), weights_triplets.end());
+    W.setFromTriplets(weights_triplets.begin(), weights_triplets.end()); // fill sparse matrix
 }
 
 
