@@ -317,10 +317,12 @@ void handleFailedProjectionPoints(const MeshStats& stats,
 
         const eckit::geometry::Point3 pi = closest[0].point();
 
-        if ( eckit::geometry::Point3::distance2(po,pi) < refArea)
+        const double distance2 = eckit::geometry::Point3::distance2(po,pi);
+        if (distance2 < refArea)
         {
-           Log::info() << "Matched Point id: " << it->first << " @ " << it->second
-                       << " with input Point " << idx_i << " @ " << pi
+           Log::info() << "Matched output Point: " << it->first << " @ " << it->second
+                       << " with input Point:  " << idx_i << " @ " << pi
+                       << " distance: " << std::sqrt(distance2) << " m"
                        << std::endl;
            weights_triplets.push_back(Eigen::Triplet<double>(idx_o, idx_i, 1.0));
         }
