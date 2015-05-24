@@ -42,6 +42,7 @@
 #include "atlas/grids/ReducedGrid.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/PointSearch.h"
 
 using namespace eckit;
 
@@ -278,10 +279,74 @@ bool projectPointToElements(const MeshStats& stats,
     return false;
 }
 
+typedef std::vector< std::pair<size_t,FiniteElement::Point> > FailedPoints;
+
+
+void handleFailedProjectionPoints(const MeshStats& stats,
+                                  const FailedPoints& failed,
+                                  const Mesh& in,
+                                  std::vector< Eigen::Triplet<double> > weights_triplets)
+{
+    Log::warning() << "Failed to project following points into input Grid:" << std::endl;
+    for (size_t i = 0; i < failed.size(); ++i)
+        Log::warning() << "Point id: " << failed[i].first << " @ " << failed[i].second  << std::endl;
+
+    FailedPoints failed_again;
+
+    // we will consider any point within 1/3 of element reference area,
+    // as coincident with other points. 1/3 is arbitrary,
+    // but chosen as the area closer to an node of a triangle on average
+    const double refArea = atlas::Earth::areaInSqMeters() / (3 * stats.inp_npts);
+
+    Log::warning() << "Trying to search for coincident points within an area of " << refArea  / 1.E6 << " Km^2 ..." << std::endl;
+
+    util::PointSearch sptree(in);
+
+    std::vector<atlas::PointIndex3::Value> closest;
+
+    for (FailedPoints::const_iterator it = failed.begin(); it != failed.end(); ++it) {
+
+        const size_t idx_o = it->first;
+        const eckit::geometry::Point3& po = it->second;
+
+        sptree.closestNPoints(po, 1, closest);
+        ASSERT( closest.size() == 1 );
+
+        size_t idx_i = closest[0].payload();
+        ASSERT( idx_i < stats.inp_npts );
+
+        const eckit::geometry::Point3 pi = closest[0].point();
+
+        if ( eckit::geometry::Point3::distance2(po,pi) < refArea)
+        {
+           Log::info() << "Matched Point id: " << it->first << " @ " << it->second
+                       << " with input Point " << idx_i << " @ " << pi
+                       << std::endl;
+           weights_triplets.push_back(Eigen::Triplet<double>(idx_o, idx_i, 1.0));
+        }
+        else
+            failed_again.push_back(*it);
+    }
+
+    if (failed_again.size())
+    {
+        std::ostringstream os;
+        os << "Failed to find coincident or near input points to output points:" << std::endl;
+        for (size_t i = 0; i < failed_again.size(); ++i)
+            os << "Point id: " << failed_again[i].first << " @ " << failed_again[i].second  << std::endl;
+        Log::warning() << os.str() << std::endl;
+        throw SeriousBug(os.str(),Here());
+    }
+}
+
+
+
 void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) const {
 
     // FIXME arguments:
     eckit::Log::info() << "FiniteElement::assemble" << std::endl;
+    eckit::Log::info() << "  Input  Grid: " << in.unique_id() << std::endl;
+    eckit::Log::info() << "  Output Grid: " << out.unique_id() << std::endl;
 
     Mesh &i_mesh = const_cast<Mesh &>(in.mesh());  // we modify the mesh when we tesselate
     Mesh &o_mesh = const_cast<Mesh &>(out.mesh());
@@ -340,7 +405,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
 
     Log::info() << "Projecting " << stats.out_npts << " output points to input mesh " << in.shortName() << std::endl;
 
-    std::vector<Point> failed_;
+    FailedPoints failed_;
 
     {
         eckit::Timer timerProj("Projecting");
@@ -363,7 +428,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
 
             do {
                 if(done >= stats.nbElems()) {
-                    failed_.push_back(p);
+                    failed_.push_back(std::make_pair(ip,p));
                     Log::warning() << "Point " << ip << " with coords " << p << " failed projection ..." << std::endl;
                     break;
                 }
@@ -394,13 +459,8 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
     Log::info() << "Projected " << stats.out_npts - failed_.size() << " points"  << std::endl;
     Log::info() << "Maximum neighbours searched " << max_neighbours << " elements"  << std::endl;
 
-    if (failed_.size()) {
-        std::ostringstream os;
-        os << "Failed to project following points into input Grid " << in.shortName() << ":" << std::endl;
-        for (size_t i = 0; i < failed_.size(); ++i)
-            os << failed_[i] << std::endl;
-        throw SeriousBug(os.str(), Here());
-    }
+    if (failed_.size())
+        handleFailedProjectionPoints(stats, failed_, i_mesh, weights_triplets);
 
     W.setFromTriplets(weights_triplets.begin(), weights_triplets.end()); // fill sparse matrix
 }
