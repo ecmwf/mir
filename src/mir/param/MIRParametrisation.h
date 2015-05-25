@@ -47,7 +47,17 @@ class MIRParametrisation : public eckit::Parametrisation {
 // -- Methods
     // None
 
+ // From eckit::Parametrisation
+    virtual bool has(const std::string& name) const = 0;
 
+    virtual bool get(const std::string& name, std::string& value) const = 0;
+    virtual bool get(const std::string& name, bool& value) const = 0;
+    virtual bool get(const std::string& name, long& value) const = 0;
+    virtual bool get(const std::string& name, double& value) const = 0;
+
+    virtual bool get(const std::string& name, std::vector<long>& value) const = 0;
+    virtual bool get(const std::string& name, std::vector<double>& value) const = 0;
+    virtual bool get(const std::string& name, size_t& value) const;
 
 // -- Overridden methods
     // None
@@ -68,7 +78,7 @@ class MIRParametrisation : public eckit::Parametrisation {
     virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
 // -- Overridden methods
-    // None
+
 
 // -- Class members
     // None
@@ -90,8 +100,7 @@ class MIRParametrisation : public eckit::Parametrisation {
     // None
 
 // -- Overridden methods
-    // From eckit::Parametrisation
-    virtual bool get(const std::string& name, size_t& value) const;
+
 
 
 // -- Class members
