@@ -258,7 +258,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     // FIXME: using the name() is not the right thing, although it should work, but create too many cached meshes.
     // We need to use the mesh-generator
     if (!cache.retrieve(in, i_mesh, name())) {
-        eckit::Timer timer("generateatlas::Mesh");
+        eckit::Timer timer("generate atlas::Mesh");
         generateMesh(in, i_mesh);
         cache.insert(in, i_mesh, name());
     }
