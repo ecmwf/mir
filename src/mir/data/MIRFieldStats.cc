@@ -59,6 +59,7 @@ void MIRFieldStats::print(std::ostream &s) const {
       << ", l2norm=" << std::sqrt(sqsum_)
       << ", count=" << count_
       << ", missing=" << missing_
+      << ", total=" << count_ + missing_
       << "]";
 }
 

@@ -31,7 +31,7 @@ class WeightCache : public eckit::CacheManager {
 
   public:  // methods
 
-    explicit WeightCache( bool enabled = true );
+    explicit WeightCache();
 
     /// Tries to retrieve a cached WeightMatrix
     /// @returns true if found cache
@@ -46,8 +46,6 @@ class WeightCache : public eckit::CacheManager {
     virtual void print(std::ostream& s) const;
 
   private:
-
-    const bool enabled_;
 
     virtual const char* version() const;
     virtual const char* extension() const;
