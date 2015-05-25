@@ -19,6 +19,7 @@
 #include <iosfwd>
 #include <vector>
 #include <cmath>
+#include <limits>
 
 
 namespace mir {

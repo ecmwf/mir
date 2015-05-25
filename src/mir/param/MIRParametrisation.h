@@ -16,16 +16,15 @@
 #ifndef MIRParametrisation_H
 #define MIRParametrisation_H
 
+#include "eckit/config/Parametrisation.h"
 #include <iosfwd>
-#include <string>
-#include <vector>
 
 
 namespace mir {
 namespace param {
 
 
-class MIRParametrisation {
+class MIRParametrisation : public eckit::Parametrisation {
   public:
 
 // -- Exceptions
@@ -48,14 +47,6 @@ class MIRParametrisation {
 // -- Methods
     // None
 
-    virtual bool has(const std::string& name) const = 0;
-    virtual bool get(const std::string& name, std::string& value) const = 0;
-    virtual bool get(const std::string& name, bool& value) const = 0;
-    virtual bool get(const std::string& name, long& value) const = 0;
-    virtual bool get(const std::string& name, double& value) const = 0;
-    virtual bool get(const std::string& name, std::vector<long>& value) const = 0;
-    virtual bool get(const std::string& name, std::vector<double>& value) const = 0;
-    virtual bool get(const std::string& name, size_t& value) const;
 
 
 // -- Overridden methods
@@ -99,7 +90,9 @@ class MIRParametrisation {
     // None
 
 // -- Overridden methods
-    // None
+    // From eckit::Parametrisation
+    virtual bool get(const std::string& name, size_t& value) const;
+
 
 // -- Class members
     // None
