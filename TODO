@@ -13,6 +13,7 @@ PHILOSOPHY:
     - Implement print() method on ATLAS grids
     !- CacheMesh should take tesselation method into account
         - Temporary solution
+    - Fix permission of top level cache directory
 
 
 --- METHODS (MAKE IT CORRECT)
