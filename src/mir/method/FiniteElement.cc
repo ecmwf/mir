@@ -142,7 +142,7 @@ void FiniteElement::generateMesh(const Grid& g, Mesh& mesh) const
     //    meshGen->tesselate(in, i_mesh);
 
 
-    bool mirReducedGridMG = eckit::Resource<bool>("$MIR_REDUCED_GRID_MG", false);
+    static bool mirReducedGridMG = eckit::Resource<bool>("$MIR_REDUCED_GRID_MG", false);
 
     const atlas::grids::ReducedGrid* rg = dynamic_cast<const atlas::grids::ReducedGrid*>(&g);
     if (mirReducedGridMG && rg) {
@@ -155,7 +155,7 @@ void FiniteElement::generateMesh(const Grid& g, Mesh& mesh) const
 
       atlas::meshgen::ReducedGridMeshGenerator mg;
 
-      bool mirReducedGridMGSplitQuads = eckit::Resource<bool>("$MIR_REDUCED_GRID_MG_SPLIT_QUADS", false);
+      static bool mirReducedGridMGSplitQuads = eckit::Resource<bool>("$MIR_REDUCED_GRID_MG_SPLIT_QUADS", false);
 
       // force these flags
       mg.options.set("three_dimensional",true);
@@ -180,7 +180,7 @@ void FiniteElement::generateMesh(const Grid& g, Mesh& mesh) const
 
 /// Finds in which element the point is contained by projecting the point with each nearest element
 
-bool projectPointToElements(const MeshStats& stats,
+static bool projectPointToElements(const MeshStats& stats,
                             const ArrayView<double, 2>& icoords,
                             const IndexView<int,    2>& triag_nodes,
                             const IndexView<int,    2>& quads_nodes,
@@ -282,7 +282,7 @@ bool projectPointToElements(const MeshStats& stats,
 typedef std::vector< std::pair<size_t,FiniteElement::Point> > FailedPoints;
 
 
-void handleFailedProjectionPoints(const MeshStats& stats,
+static void handleFailedProjectionPoints(const MeshStats& stats,
                                   const FailedPoints& failed,
                                   const Mesh& in,
                                   std::vector< Eigen::Triplet<double> >& weights_triplets)
