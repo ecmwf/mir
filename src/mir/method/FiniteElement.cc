@@ -18,7 +18,6 @@
 #include "atlas/geometry/QuadrilateralIntersection.h"
 #include "atlas/geometry/Ray.h"
 #include "atlas/geometry/TriangleIntersection.h"
-#include "atlas/MeshCache.h"
 #include "atlas/meshgen/Delaunay.h"
 #include "atlas/Tesselation.h"
 #include "atlas/util/IndexView.h"
@@ -29,7 +28,6 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 
-#include "mir/param/MIRParametrisation.h"
 #include "mir/util/PointSearch.h"
 
 
@@ -249,18 +247,11 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
     eckit::Timer timer("Compute weights");
 
-    bool caching = true;
-    parametrisation_.get("caching", caching);
-
-    // The object is not static as 'caching' may be disabled on a field by field basis (unstructured grids)
-    atlas::MeshCache cache(caching);
-
     // FIXME: using the name() is not the right thing, although it should work, but create too many cached meshes.
     // We need to use the mesh-generator
-    if (!cache.retrieve(in, i_mesh, name())) {
-        eckit::Timer timer("generateatlas::Mesh");
+    {
+        eckit::Timer timer("Generate mesh");
         generateMesh(in, i_mesh);
-        cache.insert(in, i_mesh, name());
     }
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree

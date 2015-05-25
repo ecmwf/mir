@@ -11,8 +11,7 @@ PHILOSOPHY:
     .- Support of polar stereographic grids (LOW PRIORITY)
     - Make the logging callback work in emoslib.cc
     - Implement print() method on ATLAS grids
-    !- CacheMesh should take tesselation method into account
-        - Temporary solution
+    +!- CacheMesh should take tesselation method into account: done, caching removed
     - Fix permission of top level cache directory
 
 
