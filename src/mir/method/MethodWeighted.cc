@@ -111,10 +111,9 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     Log::info() << "Compute md5 " << timer.elapsed() - here << std::endl;
 
 
-    const std::string
-    basen = std::string(name()) + "-" + in.shortName() + "-" + out.shortName(),
-    key_no_masks   = basen + "-"      + md5_no_masks,
-    key_with_masks = basen +  "-LSM-" + md5_with_masks;
+    const std::string base_name      = std::string(name()) + "-" + in.shortName() + "-" + out.shortName();
+    const std::string key_no_masks   = base_name + "-"      + md5_no_masks;
+    const std::string key_with_masks = base_name +  "-LSM-" + md5_with_masks;
 
     std::map<std::string, WeightMatrix>::iterator j = matrix_cache.find(key_with_masks);
     if (j != matrix_cache.end()) {
@@ -170,9 +169,8 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
     Log::info() << "MethodWeighted::execute" << std::endl;
 
     // setup sizes & checks
-    const size_t
-    npts_inp = in.npts(),
-    npts_out = out.npts();
+    const size_t npts_inp = in.npts();
+    const size_t npts_out = out.npts();
 
     const WeightMatrix &W = getMatrix(in, out);
 
