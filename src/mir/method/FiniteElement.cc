@@ -251,8 +251,12 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
     bool caching = true;
     parametrisation_.get("caching", caching);
+
+    // The object is not static as 'caching' may be disabled on a field by field basis (unstructured grids)
     atlas::MeshCache cache(caching);
 
+    // FIXME: using the name() is not the right thing, although it should work, but create too many cached meshes.
+    // We need to use the mesh-generator
     if (!cache.retrieve(in, i_mesh, name())) {
         eckit::Timer timer("generateatlas::Mesh");
         generateMesh(in, i_mesh);

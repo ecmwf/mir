@@ -138,6 +138,8 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     bool caching = true;
     parametrisation_.get("caching", caching);
+
+    // The object is not static as 'caching' may be disabled on a field by field basis (unstructured grids)
     caching::WeightCache cache(caching);
 
     if (!cache.retrieve(cache_key, W)) {
