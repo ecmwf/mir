@@ -285,7 +285,7 @@ typedef std::vector< std::pair<size_t,FiniteElement::Point> > FailedPoints;
 void handleFailedProjectionPoints(const MeshStats& stats,
                                   const FailedPoints& failed,
                                   const Mesh& in,
-                                  std::vector< Eigen::Triplet<double> > weights_triplets)
+                                  std::vector< Eigen::Triplet<double> >& weights_triplets)
 {
     Log::warning() << "Failed to project following points into input Grid:" << std::endl;
     for (size_t i = 0; i < failed.size(); ++i)
@@ -296,9 +296,9 @@ void handleFailedProjectionPoints(const MeshStats& stats,
     // we will consider any point within 1/3 of element reference area,
     // as coincident with other points. 1/3 is arbitrary,
     // but chosen as the area closer to an node of a triangle on average
-    const double refArea = atlas::Earth::areaInSqKm() / (3 * stats.inp_npts);
+    const double refArea = atlas::Earth::areaInSqMeters() / (3 * stats.inp_npts);
 
-    Log::warning() << "Trying to search for coincident points within an area of " << refArea << " Km^2 ..." << std::endl;
+    Log::warning() << "Trying to search for coincident points within an area of " << refArea / 1.E6 << " Km^2 ..." << std::endl;
 
     util::PointSearch sptree(in);
 
@@ -322,7 +322,7 @@ void handleFailedProjectionPoints(const MeshStats& stats,
         {
            Log::info() << "Matched output Point: " << it->first << " @ " << it->second
                        << " with input Point:  " << idx_i << " @ " << pi
-                       << " distance: " << std::sqrt(distance2) << " Km"
+                       << " distance: " << std::sqrt(distance2) / 1E3 << " Km"
                        << std::endl;
            weights_triplets.push_back(Eigen::Triplet<double>(idx_o, idx_i, 1.0));
         }

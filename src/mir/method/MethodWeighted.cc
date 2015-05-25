@@ -36,6 +36,8 @@
 #include "mir/param/MIRParametrisation.h"
 
 
+using eckit::Log;
+
 namespace mir {
 namespace method {
 
@@ -92,9 +94,9 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     double here = timer.elapsed();
     const lsm::LandSeaMasks masks = lsm::LandSeaMasks::lookup(parametrisation_, in, out);
-    eckit::Log::info() << "Compute LandSeaMasks " << timer.elapsed() - here << std::endl;
+    Log::info() << "Compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
-    eckit::Log::info() << "++++ LSM masks " << masks << std::endl;
+    Log::info() << "++++ LSM masks " << masks << std::endl;
     here = timer.elapsed();
     eckit::MD5 md5;
     md5 << *this;
@@ -104,7 +106,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     const eckit::MD5::digest_t md5_no_masks(md5.digest());
     md5 << masks;
     const eckit::MD5::digest_t md5_with_masks(md5.digest());
-    eckit::Log::info() << "Compute md5 " << timer.elapsed() - here << std::endl;
+    Log::info() << "Compute md5 " << timer.elapsed() - here << std::endl;
 
 
     const std::string
@@ -126,11 +128,11 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     // calculate weights matrix, apply mask if necessary
 
-    eckit::Log::info() << "Elapsed 1 " << timer.elapsed()  << std::endl;
+    Log::info() << "Elapsed 1 " << timer.elapsed()  << std::endl;
 
     here = timer.elapsed();
     WeightMatrix W(out.npts(), in.npts());
-    eckit::Log::info() << "Create matrix " << timer.elapsed() - here << std::endl;
+    Log::info() << "Create matrix " << timer.elapsed() - here << std::endl;
 
     bool caching = true;
     parametrisation_.get("caching", caching);
@@ -151,7 +153,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     here = timer.elapsed();
     std::swap(matrix_cache[key_with_masks], W);
-    eckit::Log::info() << "Swap matrix " << timer.elapsed() - here << std::endl;
+    Log::info() << "Swap matrix " << timer.elapsed() - here << std::endl;
 
     return matrix_cache[key_with_masks];
 }
@@ -160,7 +162,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const atlas::Grid &out) const {
 
     eckit::Timer timer("MethodWeighted::execute");
-    eckit::Log::info() << "MethodWeighted::execute" << std::endl;
+    Log::info() << "MethodWeighted::execute" << std::endl;
 
     // setup sizes & checks
     const size_t
@@ -200,6 +202,38 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         }
 
         field.values(result, i);  // Update field with result
+
+        // compute some statistics on the result
+        // This is expensive so we might want to skip it in production code
+
+        {
+            const std::vector<double> &values = field.values(i);
+
+            double min = std::numeric_limits<double>::max();
+            double max = std::numeric_limits<double>::min();
+            double sum = 0;
+            double sqsum = 0;
+
+            for(std::vector<double>::const_iterator it = values.begin(); it != values.end(); ++it )
+            {
+                double v = *it;
+                min = std::min(v,min);
+                max = std::max(v,max);
+                sum += v;
+                sqsum += v*v;
+            }
+
+            double mean = sum / values.size();
+            double stdev = std::sqrt(sqsum / values.size() - mean * mean);
+
+            Log::info() << "Result field statistics:"
+                        << " min=" << min
+                        << ", max=" << max
+                        << ", mean=" << mean
+                        << ", stdev=" << stdev
+                        << std::endl;
+
+        }
     }
 
     // update if missing values are present
@@ -217,7 +251,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
 void MethodWeighted::computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const {
     if (in.same(out)) {
-        eckit::Log::info() << "Matrix is indentity" << std::endl;
+        Log::info() << "Matrix is indentity" << std::endl;
         W.setIdentity();        // grids are the same, use identity matrix
     } else {
         eckit::Timer timer("Assemble matrix");
@@ -236,7 +270,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
     const std::vector< bool > missmask = computeFieldMask(check_miss,field,which);
 
     const size_t count = std::count(missmask.begin(),missmask.end(),true);
-    eckit::Log::info() << "Field has " << eckit::Plural(count, "missing value") << " out of " << eckit::BigNum(W.cols()) << std::endl;
+    Log::info() << "Field has " << eckit::Plural(count, "missing value") << " out of " << eckit::BigNum(W.cols()) << std::endl;
     if (count == 0) {
         return W;
     }
@@ -254,11 +288,11 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
         weights_one  = eckit::FloatCompare::is_equal(sum, 1.);
         if ( !weights_zero && !weights_one ) {
             ++Nprob;
-            eckit::Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(W(" << i << ",:)) != {0,1} = " << sum << std::endl;
+            Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(W(" << i << ",:)) != {0,1} = " << sum << std::endl;
         }
     }
     if (Nprob) {
-        eckit::Log::warning() <<  "Missing values: problem in input weights matrix for " << eckit::Plural(Nprob, "interpolation point") << ", continuing (but shouldn't really)." << std::endl;
+        Log::warning() <<  "Missing values: problem in input weights matrix for " << eckit::Plural(Nprob, "interpolation point") << ", continuing (but shouldn't really)." << std::endl;
     }
 
 
@@ -327,19 +361,19 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             const bool weights_one  = eckit::FloatCompare::is_equal(sum, 1.);
             if ( !weights_zero && !weights_one ) {
                 ++Nprob;
-                eckit::Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(X(" << i << ",:)) != {0,1} = " << sum << std::endl;
+                Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(X(" << i << ",:)) != {0,1} = " << sum << std::endl;
             }
         }
         if (Nprob) {
-            eckit::Log::warning() <<  "Missing values: problems still found in corrected input weights matrix for " << eckit::Plural(Nprob, "interpolation point") << ", continuing (but shouldn't really)." << std::endl;
+            Log::warning() <<  "Missing values: problems still found in corrected input weights matrix for " << eckit::Plural(Nprob, "interpolation point") << ", continuing (but shouldn't really)." << std::endl;
         } else {
-            eckit::Log::info() <<  "Missing values: no problems found in corrected input weights matrix." << std::endl;
+            Log::info() <<  "Missing values: no problems found in corrected input weights matrix." << std::endl;
         }
     }
 
 
     // log corrections and return
-    eckit::Log::info() << "Missing values correction: " << fix_misssome << '/' << fix_missall << " some/all-missing out of " << eckit::BigNum(W.rows()) << std::endl;
+    Log::info() << "Missing values correction: " << fix_misssome << '/' << fix_missall << " some/all-missing out of " << eckit::BigNum(W.rows()) << std::endl;
     return X;
 }
 
@@ -348,7 +382,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
     eckit::Timer timer("MethodWeighted::applyMasks");
 
-    eckit::Log::info() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
+    Log::info() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
     ASSERT(masks.active());
     ASSERT(!masks.inputField().hasMissing());
     ASSERT(!masks.outputField().hasMissing());
@@ -402,7 +436,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
 
     // log corrections
-    eckit::Log::info() << "LandSeaMasks correction: " << eckit::BigNum(fix) << " out of " << eckit::BigNum(W.rows()) << std::endl;
+    Log::info() << "LandSeaMasks correction: " << eckit::BigNum(fix) << " out of " << eckit::BigNum(W.rows()) << std::endl;
 }
 
 
