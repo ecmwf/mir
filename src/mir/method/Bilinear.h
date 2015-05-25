@@ -16,21 +16,14 @@
 #ifndef mir_method_Bilinear_H
 #define mir_method_Bilinear_H
 
-#include "mir/method/MethodWeighted.h"
-
-
-namespace eckit {
-namespace geometry {
-class Point3;
-}
-}
+#include "mir/method/FiniteElement.h"
 
 
 namespace mir {
 namespace method {
 
 
-class Bilinear: public MethodWeighted {
+class Bilinear: public FiniteElement {
   public:
 
     Bilinear(const param::MIRParametrisation&);
@@ -48,7 +41,7 @@ class Bilinear: public MethodWeighted {
 
 // -- Overridden methods
 
-    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+    virtual void generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
