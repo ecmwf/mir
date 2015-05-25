@@ -139,6 +139,8 @@ list(
      method/Bilinear.h
      method/Linear.cc
      method/Linear.h
+     method/Tessellation.cc
+     method/Tessellation.h
      method/FiniteElement.cc
      method/FiniteElement.h
      method/KNearest.cc
