@@ -11,6 +11,12 @@ PHILOSOPHY:
     .- Support of polar stereographic grids (LOW PRIORITY)
     - Make the logging callback work in emoslib.cc
 
+--- METHODS (MAKE IT CORRECT)
+    - What is the special treatment for winds (emoslib)
+        - Rotated
+        - Non-rotated
+    - What is the special treatment for precipitations (emoslib)
+
 --- TESTING (MAKE IT CORRECT)
     - Metabuilder
         --- Clear cache in metabuilder before each run: or select a new directory, better as it will not affect production when mir is operational
