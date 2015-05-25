@@ -70,14 +70,12 @@ void Bilinear::generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const
 
       std::cout << "Mesh is ReducedGrid " << g.shortName() << std::endl;
 
-      ASSERT(rg);
-
       atlas::meshgen::ReducedGridMeshGenerator mg;
 
       // force these flags
-      mg.options.set("three_dimensional",true);
-      mg.options.set("patch_pole",true);
-      mg.options.set("include_pole",false);
+      mg.options.set("three_dimensional", true);
+      mg.options.set("patch_pole", true);
+      mg.options.set("include_pole", false);
       mg.options.set("triangulate", false);
 
       mg.generate(*rg, mesh);
