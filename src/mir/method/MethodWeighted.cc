@@ -213,7 +213,12 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code
         Log::info() << "Input  Field statistics : " << istats << std::endl;
-        Log::info() << "Output Field statistics : " << field.statistics(i) << std::endl;
+
+        data::MIRFieldStats ostats = field.statistics(i);
+        Log::info() << "Output Field statistics : " << ostats << std::endl;
+
+        ASSERT(ostats.minimum() >= istats.minimum());
+        ASSERT(ostats.maximum() <= istats.maximum());
 
     }
 
