@@ -14,7 +14,6 @@
 
 #include <iostream>
 #include <cmath>
-#include <limits>
 
 #include "mir/data/MIRFieldStats.h"
 #include "eckit/exception/Exceptions.h"
@@ -27,13 +26,16 @@ namespace data {
 MIRFieldStats::MIRFieldStats(const std::vector<double>& vs, size_t missing) :
     count_(vs.size()),
     missing_(missing),
-    min_(std::numeric_limits<double>::max()),
-    max_(std::numeric_limits<double>::min()),
-    mean_(0.),
-    sqsum_(0.),
-    stdev_(0.) {
+    min_(0),
+    max_(0),
+    mean_(0),
+    sqsum_(0),
+    stdev_(0) {
 
     if (count_) {
+
+        min_ = max_ = vs[0];
+
         double sum = 0.;
         for (std::vector<double>::const_iterator it = vs.begin(); it != vs.end(); ++it ) {
             double v = *it;
@@ -49,14 +51,14 @@ MIRFieldStats::MIRFieldStats(const std::vector<double>& vs, size_t missing) :
 }
 
 void MIRFieldStats::print(std::ostream &s) const {
-    s << "Stats["
-      << "count=" << count_
-      << ",missing=" << missing_
-      << ",min=" << min_
-      << ",max=" << max_
-      << ",l2norm=" << std::sqrt(sqsum_)
-      << ",mean=" << mean_
-      << ",stdev=" << stdev_
+    s << "["
+      << "min=" << min_
+      << ", max=" << max_
+      << ", mean=" << mean_
+      << ", stdev=" << stdev_
+      << ", l2norm=" << std::sqrt(sqsum_)
+      << ", count=" << count_
+      << ", missing=" << missing_
       << "]";
 }
 
