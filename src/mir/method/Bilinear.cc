@@ -16,7 +16,6 @@
 #include "mir/method/Bilinear.h"
 
 #include "atlas/meshgen/ReducedGridMeshGenerator.h"
-#include "atlas/meshgen/Delaunay.h"
 #include "atlas/grids/ReducedGrid.h"
 
 namespace mir {
@@ -37,16 +36,12 @@ const char *Bilinear::name() const {
 }
 
 
-void Bilinear::hash( eckit::MD5& md5) const {
+void Bilinear::hash( eckit::MD5 &md5) const {
     FiniteElement::hash(md5);
 }
 
 
-void Bilinear::generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const
-{
-
-
-    std::cout << "Mesh not in cache -- tesselating grid " << g.unique_id() << std::endl;
+void Bilinear::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) const {
 
     /// @TODO Ask Baudouin best way to build and parametrize the mesh generator
     ///       MeshGenerator is in Atlas -- should we bring to MIR ??
@@ -63,32 +58,26 @@ void Bilinear::generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const
     //    meshGen->tesselate(in, i_mesh);
 
 
-    const atlas::grids::ReducedGrid* rg = dynamic_cast<const atlas::grids::ReducedGrid*>(&g);
-    if (rg) {
-
-      // fast tesselation method, specific for ReducedGrid's
-
-      std::cout << "Mesh is ReducedGrid " << g.shortName() << std::endl;
-
-      atlas::meshgen::ReducedGridMeshGenerator mg;
-
-      // force these flags
-      mg.options.set("three_dimensional", true);
-      mg.options.set("patch_pole", true);
-      mg.options.set("include_pole", false);
-      mg.options.set("triangulate", false);
-
-      mg.generate(*rg, mesh);
-
-    } else {
-
-      // slower, more robust tesselation method, using Delaunay triangulation
-
-      std::cout << "Using Delaunay triangulation on grid: " << g.shortName() << std::endl;
-
-      atlas::meshgen::Delaunay mg;
-      mg.tesselate(g, mesh);
+    const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
+    if (reduced == 0) {
+        // Falling back to default behaviour
+        FiniteElement::generateMesh(grid, mesh);
+        return;
     }
+
+    // fast tesselation method, specific for ReducedGrid's
+
+    std::cout << "Mesh is ReducedGrid " << grid.shortName() << std::endl;
+
+    atlas::meshgen::ReducedGridMeshGenerator generator;
+
+    // force these flags
+    generator.options.set("three_dimensional", true);
+    generator.options.set("patch_pole", true);
+    generator.options.set("include_pole", false);
+    generator.options.set("triangulate", false);
+
+    generator.generate(*reduced, mesh);
 
 }
 

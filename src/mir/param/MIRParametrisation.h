@@ -46,6 +46,7 @@ class MIRParametrisation : public eckit::Parametrisation {
 
 // -- Methods
     // None
+// -- Overridden methods
 
  // From eckit::Parametrisation
     virtual bool has(const std::string& name) const = 0;
@@ -59,7 +60,6 @@ class MIRParametrisation : public eckit::Parametrisation {
     virtual bool get(const std::string& name, std::vector<double>& value) const = 0;
     virtual bool get(const std::string& name, size_t& value) const;
 
-// -- Overridden methods
     // None
 
 // -- Class members

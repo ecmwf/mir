@@ -19,6 +19,7 @@
 #include "atlas/geometry/Ray.h"
 #include "atlas/geometry/TriangleIntersection.h"
 #include "atlas/MeshCache.h"
+#include "atlas/meshgen/Delaunay.h"
 #include "atlas/Tesselation.h"
 #include "atlas/util/IndexView.h"
 
@@ -43,12 +44,6 @@ FiniteElement::FiniteElement(const param::MIRParametrisation &param) :
 FiniteElement::~FiniteElement() {
 }
 
-
-const char *FiniteElement::name() const {
-    return "finite-element";
-}
-
-
 void FiniteElement::hash( eckit::MD5 &md5) const {
     MethodWeighted::hash(md5);
 }
@@ -66,14 +61,14 @@ struct MeshStats {
         return nb_triags + nb_quads;
     }
 
-    void print(std::ostream& s) const {
+    void print(std::ostream &s) const {
         s << "MeshStats[nb_triags=" << nb_triags
           << ",nb_quads=" << nb_quads
           << ",inp_npts=" << inp_npts
           << ",out_npts=" << out_npts << "]";
     }
 
-    friend std::ostream& operator<<(std::ostream& s, const MeshStats& p) {
+    friend std::ostream &operator<<(std::ostream &s, const MeshStats &p) {
         p.print(s);
         return s;
     }
@@ -84,15 +79,15 @@ struct MeshStats {
 
 /// Finds in which element the point is contained by projecting the point with each nearest element
 
-static bool projectPointToElements(const MeshStats& stats,
-                            const atlas::ArrayView<double, 2>& icoords,
-                            const atlas::IndexView<int,    2>& triag_nodes,
-                            const atlas::IndexView<int,    2>& quads_nodes,
-                            FiniteElement::Point& p,
-                            std::vector< Eigen::Triplet<double> >& weights_triplets,
-                            size_t ip,
-                            atlas::ElemIndex3::NodeList::const_iterator start,
-                            atlas::ElemIndex3::NodeList::const_iterator finish ) {
+static bool projectPointToElements(const MeshStats &stats,
+                                   const atlas::ArrayView<double, 2> &icoords,
+                                   const atlas::IndexView<int,    2> &triag_nodes,
+                                   const atlas::IndexView<int,    2> &quads_nodes,
+                                   FiniteElement::Point &p,
+                                   std::vector< Eigen::Triplet<double> > &weights_triplets,
+                                   size_t ip,
+                                   atlas::ElemIndex3::NodeList::const_iterator start,
+                                   atlas::ElemIndex3::NodeList::const_iterator finish ) {
 
     int idx [4];
     double w[4];
@@ -116,8 +111,8 @@ static bool projectPointToElements(const MeshStats& stats,
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts && idx[2] < stats.inp_npts );
 
             atlas::geometry::TriangleIntersection triag(icoords[idx[0]].data(),
-                                       icoords[idx[1]].data(),
-                                       icoords[idx[2]].data());
+                    icoords[idx[1]].data(),
+                    icoords[idx[2]].data());
 
             atlas::geometry::Intersect is = triag.intersects(ray);
 
@@ -150,12 +145,11 @@ static bool projectPointToElements(const MeshStats& stats,
                     idx[2] < stats.inp_npts && idx[3] < stats.inp_npts );
 
             atlas::geometry::QuadrilateralIntersection quad(icoords[idx[0]].data(),
-                                                            icoords[idx[1]].data(),
-                                                            icoords[idx[2]].data(),
-                                                            icoords[idx[3]].data() );
+                    icoords[idx[1]].data(),
+                    icoords[idx[2]].data(),
+                    icoords[idx[3]].data() );
 
-            if( !quad.validate() ) // somewhat expensive sanity check
-            {
+            if ( !quad.validate() ) { // somewhat expensive sanity check
                 eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
                 throw eckit::SeriousBug("Found invalid quadrilateral in mesh", Here());
             }
@@ -183,14 +177,13 @@ static bool projectPointToElements(const MeshStats& stats,
     return false;
 }
 
-typedef std::vector< std::pair<size_t,FiniteElement::Point> > FailedPoints;
+typedef std::vector< std::pair<size_t, FiniteElement::Point> > FailedPoints;
 
 
-static void handleFailedProjectionPoints(const MeshStats& stats,
-                                  const FailedPoints& failed,
-                                  const atlas::Mesh& in,
-                                  std::vector< Eigen::Triplet<double> >& weights_triplets)
-{
+static void handleFailedProjectionPoints(const MeshStats &stats,
+        const FailedPoints &failed,
+        const atlas::Mesh &in,
+        std::vector< Eigen::Triplet<double> > &weights_triplets) {
     eckit::Log::warning() << "Failed to project following points into input Grid:" << std::endl;
     for (size_t i = 0; i < failed.size(); ++i)
         eckit::Log::warning() << "Point id: " << failed[i].first << " @ " << failed[i].second  << std::endl;
@@ -211,7 +204,7 @@ static void handleFailedProjectionPoints(const MeshStats& stats,
     for (FailedPoints::const_iterator it = failed.begin(); it != failed.end(); ++it) {
 
         const size_t idx_o = it->first;
-        const eckit::geometry::Point3& po = it->second;
+        const eckit::geometry::Point3 &po = it->second;
 
         sptree.closestNPoints(po, 1, closest);
         ASSERT( closest.size() == 1 );
@@ -221,33 +214,30 @@ static void handleFailedProjectionPoints(const MeshStats& stats,
 
         const eckit::geometry::Point3 pi = closest[0].point();
 
-        const double distance2 = eckit::geometry::Point3::distance2(po,pi);
-        if (distance2 < refArea)
-        {
-           eckit::Log::info() << "Matched output Point: " << it->first << " @ " << it->second
-                       << " with input Point:  " << idx_i << " @ " << pi
-                       << " distance: " << std::sqrt(distance2) / 1E3 << " Km"
-                       << std::endl;
-           weights_triplets.push_back(Eigen::Triplet<double>(idx_o, idx_i, 1.0));
-        }
-        else
+        const double distance2 = eckit::geometry::Point3::distance2(po, pi);
+        if (distance2 < refArea) {
+            eckit::Log::info() << "Matched output Point: " << it->first << " @ " << it->second
+                               << " with input Point:  " << idx_i << " @ " << pi
+                               << " distance: " << std::sqrt(distance2) / 1E3 << " Km"
+                               << std::endl;
+            weights_triplets.push_back(Eigen::Triplet<double>(idx_o, idx_i, 1.0));
+        } else
             failed_again.push_back(*it);
     }
 
-    if (failed_again.size())
-    {
+    if (failed_again.size()) {
         std::ostringstream os;
         os << "Failed to find coincident or near input points to output points:" << std::endl;
         for (size_t i = 0; i < failed_again.size(); ++i)
             os << "Point id: " << failed_again[i].first << " @ " << failed_again[i].second  << std::endl;
         eckit::Log::warning() << os.str() << std::endl;
-        throw eckit::SeriousBug(os.str(),Here());
+        throw eckit::SeriousBug(os.str(), Here());
     }
 }
 
 
 
-void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid &in, const atlas::Grid& out) const {
+void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
     // FIXME arguments:
     eckit::Log::info() << "FiniteElement::assemble" << std::endl;
@@ -305,7 +295,7 @@ void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid &in, const atlas
     stats.out_npts  = o_nodes.shape(0);
 
     eckit::Log::info() << "atlas::Mesh has " << eckit::Plural(stats.nb_triags, "triangle")
-                << " and " << eckit::Plural(stats.nb_quads, "quadrilateral") << std::endl;
+                       << " and " << eckit::Plural(stats.nb_quads, "quadrilateral") << std::endl;
     eckit::Log::info() << stats << std::endl;
 
     // weights -- one per vertice of element, triangles (3) or quads (4)
@@ -329,9 +319,9 @@ void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid &in, const atlas
             if (ip && (ip % 100000 == 0)) {
                 double rate = ip / timerProj.elapsed();
                 eckit::Log::info() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timerProj.elapsed())
-                            << ", rate: " << rate << " points/s, ETA: "
-                            << eckit::ETA( (stats.out_npts - ip) / rate )
-                            << std::endl;
+                                   << ", rate: " << rate << " points/s, ETA: "
+                                   << eckit::ETA( (stats.out_npts - ip) / rate )
+                                   << std::endl;
             }
 
             Point p ( ocoords[ip].data() ); // lookup point
@@ -341,8 +331,8 @@ void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid &in, const atlas
             bool success = false;
 
             do {
-                if(done >= stats.nbElems()) {
-                    failed_.push_back(std::make_pair(ip,p));
+                if (done >= stats.nbElems()) {
+                    failed_.push_back(std::make_pair(ip, p));
                     eckit::Log::warning() << "Point " << eckit::BigNum(ip) << " with coords " << p << " failed projection ..." << std::endl;
                     break;
                 }
@@ -356,14 +346,14 @@ void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid &in, const atlas
                                                  p,
                                                  weights_triplets,
                                                  ip,
-                                                 cs.begin()+done,
+                                                 cs.begin() + done,
                                                  cs.end() );
 
                 // increase the number of searched elements
                 done = kpts;
-                kpts = std::min(4*done,stats.nbElems());
+                kpts = std::min(4 * done, stats.nbElems());
 
-            } while( !success );
+            } while ( !success );
 
             max_neighbours = std::max(done, max_neighbours);
 
@@ -380,8 +370,12 @@ void FiniteElement::assemble(WeightMatrix& W, const atlas::Grid &in, const atlas
 }
 
 
-void FiniteElement::print(std::ostream &out) const {
-    out << "FiniteElement[]";
+void FiniteElement::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) const {
+    // This is the fallback method if sub-classes cannot to their job properly
+
+    std::cout << *this << " using Delaunay triangulation on grid: " << grid.shortName() << std::endl;
+    atlas::meshgen::Delaunay generator;
+    generator.tesselate(grid, mesh);
 }
 
 

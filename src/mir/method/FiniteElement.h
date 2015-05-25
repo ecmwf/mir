@@ -45,16 +45,14 @@ class FiniteElement: public MethodWeighted {
   protected:
 
     virtual void hash( eckit::MD5& ) const;
+    virtual void generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const;
 
   private:
 
-    virtual void generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const = 0;
 
 // -- Overridden methods
 
     virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
-    virtual void print(std::ostream&) const;
-    virtual const char* name() const;
 
 };
 
