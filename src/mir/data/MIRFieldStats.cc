@@ -14,8 +14,10 @@
 
 #include <iostream>
 #include <cmath>
+#include <limits>
 
 #include "mir/data/MIRFieldStats.h"
+#include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
@@ -27,7 +29,8 @@ MIRFieldStats::MIRFieldStats() :
     max(std::numeric_limits<double>::min()),
     mean(0.),
     sqsum(0.),
-    stdev(0.)
+    stdev(0.),
+    ready(false)
 {}
 
 MIRFieldStats::MIRFieldStats(const std::vector<double>& vs) :
@@ -35,13 +38,17 @@ MIRFieldStats::MIRFieldStats(const std::vector<double>& vs) :
     max(std::numeric_limits<double>::min()),
     mean(0.),
     sqsum(0.),
-    stdev(0.)
+    stdev(0.),
+    ready(false)
 {
     compute(vs);
 }
 
 void MIRFieldStats::compute(const std::vector<double>& vs)
 {
+    ASSERT(!ready); // Warning, calling compute twice will lead to wrong resusts
+
+
     double sum = 0.;
     for(std::vector<double>::const_iterator it = vs.begin(); it != vs.end(); ++it )
     {
@@ -54,6 +61,7 @@ void MIRFieldStats::compute(const std::vector<double>& vs)
 
     mean = sum / vs.size();
     stdev = std::sqrt(sqsum / vs.size() - mean * mean);
+    ready = true;
 }
 
 void MIRFieldStats::print(std::ostream &s) const

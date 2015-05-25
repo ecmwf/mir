@@ -18,10 +18,7 @@
 
 #include <iosfwd>
 #include <vector>
-#include <cmath>
-#include <limits>
 
-#include "mir/data/MIRFieldStats.h"
 
 namespace mir {
 namespace repres {
@@ -32,6 +29,7 @@ class MIRParametrisation;
 }
 namespace data {
 
+class MIRFieldStats;
 
 class MIRField {
 

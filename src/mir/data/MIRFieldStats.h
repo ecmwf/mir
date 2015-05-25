@@ -28,6 +28,7 @@ struct MIRFieldStats {
     double mean;
     double sqsum;
     double stdev;
+    bool ready;
 
     MIRFieldStats();
     MIRFieldStats(const std::vector<double>& vs);

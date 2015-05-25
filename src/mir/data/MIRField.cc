@@ -19,6 +19,7 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
+#include "mir/data/MIRFieldStats.h"
 
 
 namespace mir {
