@@ -15,57 +15,9 @@
 
 #include "mir/method/Bilinear.h"
 
-#include <string>
-#include <algorithm>
-
-#include "eckit/log/Log.h"
-#include "eckit/utils/MD5.h"
-#include "eckit/types/FloatCompare.h"
-
-#include "atlas/grids/ReducedGaussianGrid.h"
-
-#include "eckit/log/Timer.h"
-#include "eckit/log/Plural.h"
-#include "eckit/log/BigNum.h"
-#include "eckit/log/Seconds.h"
-#include "eckit/log/ETA.h"
-#include "eckit/config/Resource.h"
-
-#include "eckit/types/Types.h"
-
-#include "atlas/Tesselation.h"
-#include "atlas/util/IndexView.h"
-
-#include "atlas/PointIndex3.h"
-#include "atlas/geometry/Ray.h"
-#include "atlas/geometry/TriangleIntersection.h"
-#include "atlas/geometry/QuadrilateralIntersection.h"
-#include "atlas/meshgen/MeshGenerator.h"
-#include "atlas/MeshCache.h"
 #include "atlas/meshgen/ReducedGridMeshGenerator.h"
 #include "atlas/meshgen/Delaunay.h"
 #include "atlas/grids/ReducedGrid.h"
-
-#include "mir/param/MIRParametrisation.h"
-#include "mir/util/PointSearch.h"
-
-using atlas::Grid;
-using atlas::Mesh;
-using atlas::MeshCache;
-using atlas::FunctionSpace;
-using atlas::IndexView;
-using atlas::ArrayView;
-using atlas::ElemPayload;
-using atlas::ElemIndex3;
-using atlas::Tesselation;
-using atlas::create_element_centre_index;
-using atlas::geometry::Intersect;
-using atlas::geometry::TriangleIntersection;
-using atlas::geometry::QuadrilateralIntersection;
-using atlas::geometry::Ray;
-using atlas::meshgen::MeshGenerator;
-using atlas::meshgen::MeshGeneratorFactory;
-using atlas::grids::ReducedGrid;
 
 namespace mir {
 namespace method {
