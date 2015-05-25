@@ -23,12 +23,12 @@ namespace mir {
 namespace method {
 
 
-class Bilinear: public FiniteElement {
+class Linear: public FiniteElement {
   public:
 
-    Bilinear(const param::MIRParametrisation&);
+    Linear(const param::MIRParametrisation&);
 
-    virtual ~Bilinear();
+    virtual ~Linear();
 
   protected:
 

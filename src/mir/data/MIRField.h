@@ -18,6 +18,7 @@
 
 #include <iosfwd>
 #include <vector>
+#include <cmath>
 
 
 namespace mir {
@@ -32,6 +33,31 @@ namespace data {
 
 class MIRField {
   public:
+
+    struct Stats {
+
+        double min;
+        double max;
+        double mean;
+        double sqsum;
+        double stdev;
+
+        Stats() :
+            min(std::numeric_limits<double>::max()),
+            max(std::numeric_limits<double>::min()),
+            mean(0.),
+            sqsum(0.),
+            stdev(0.)
+        {}
+
+        void print(std::ostream& s) const;
+
+        friend std::ostream &operator<<(std::ostream &s, const Stats &p) {
+            p.print(s);
+            return s;
+        }
+
+    };
 
     // -- Exceptions
     // None
@@ -72,6 +98,8 @@ class MIRField {
     bool hasMissing() const ;
 
     void validate() const;
+
+    Stats statistics(size_t i) const;
 
     //
 

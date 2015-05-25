@@ -48,7 +48,7 @@ class FiniteElement: public MethodWeighted {
 
   private:
 
-    void generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const;
+    virtual void generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const = 0;
 
 // -- Overridden methods
 

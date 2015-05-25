@@ -13,7 +13,7 @@
 /// @date May 2015
 
 
-#include "mir/method/Bilinear.h"
+#include "mir/method/Linear.h"
 
 #include "atlas/meshgen/ReducedGridMeshGenerator.h"
 #include "atlas/meshgen/Delaunay.h"
@@ -23,26 +23,26 @@ namespace mir {
 namespace method {
 
 
-Bilinear::Bilinear(const param::MIRParametrisation &param) :
+Linear::Linear(const param::MIRParametrisation &param) :
     FiniteElement(param) {
 }
 
 
-Bilinear::~Bilinear() {
+Linear::~Linear() {
 }
 
 
-const char *Bilinear::name() const {
+const char *Linear::name() const {
     return  "bilinear";
 }
 
 
-void Bilinear::hash( eckit::MD5& md5) const {
+void Linear::hash( eckit::MD5& md5) const {
     FiniteElement::hash(md5);
 }
 
 
-void Bilinear::generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const
+void Linear::generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const
 {
 
 
@@ -76,7 +76,7 @@ void Bilinear::generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const
       mg.options.set("three_dimensional", true);
       mg.options.set("patch_pole", true);
       mg.options.set("include_pole", false);
-      mg.options.set("triangulate", false);
+      mg.options.set("triangulate", true);
 
       mg.generate(*rg, mesh);
 
@@ -93,13 +93,14 @@ void Bilinear::generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const
 }
 
 
-void Bilinear::print(std::ostream &out) const {
-    out << "Bilinear[]";
+
+void Linear::print(std::ostream &out) const {
+    out << "Linear[]";
 }
 
 
 namespace {
-static MethodBuilder< Bilinear > __bilinear("bilinear");
+static MethodBuilder< Linear > __linear("linear");
 }
 
 

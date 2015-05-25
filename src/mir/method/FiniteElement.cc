@@ -115,72 +115,10 @@ struct MeshStats {
 
 }
 
-void FiniteElement::generateMesh(const Grid& g, Mesh& mesh) const
-{
-    std::string uid = g.unique_id();
-
-    bool caching = true;
-    parametrisation_.get("caching", caching);
-    static MeshCache cache(caching);
-
-    if (cache.retrieve(g, mesh)) return;
-
-    std::cout << "Mesh not in cache -- tesselating grid " << uid << std::endl;
-
-    /// @TODO Ask Baudouin best way to build and parametrize the mesh generator
-    ///       MeshGenerator is in Atlas -- should we bring to MIR ??
-    ///       If stays in Atlas, we cannot pass MirParametrisation
-    ///
-    ///  This raises another issue: hoe to cache meshes generated with different parametrizations?
-    ///  We must md5 the MeshGenerator itself.
-    ///
-    ///  We should be using something like:
-    ///
-    //    std::string meshGenerator;
-    //    ASSERT(parametrisation_.get("meshGenerator", meshGenerator));
-    //    eckit::ScopedPtr<MeshGenerator> meshGen( MeshGeneratorFactory::build(meshGenerator) );
-    //    meshGen->tesselate(in, i_mesh);
-
-
-    bool mirReducedGridMG = eckit::Resource<bool>("$MIR_REDUCED_GRID_MG", false);
-
-    const atlas::grids::ReducedGrid* rg = dynamic_cast<const atlas::grids::ReducedGrid*>(&g);
-    if (mirReducedGridMG && rg) {
-
-      // fast tesselation method, specific for ReducedGrid's
-
-      std::cout << "Mesh is ReducedGrid " << g.shortName() << std::endl;
-
-      ASSERT(rg);
-
-      atlas::meshgen::ReducedGridMeshGenerator mg;
-
-      bool mirReducedGridMGSplitQuads = eckit::Resource<bool>("$MIR_REDUCED_GRID_MG_SPLIT_QUADS", false);
-
-      // force these flags
-      mg.options.set("three_dimensional",true);
-      mg.options.set("patch_pole",true);
-      mg.options.set("include_pole",false);
-      mg.options.set("triangulate",mirReducedGridMGSplitQuads);
-
-      mg.generate(*rg, mesh);
-
-    } else {
-
-      // slower, more robust tesselation method, using Delaunay triangulation
-
-      std::cout << "Using Delaunay triangulation on grid: " << g.shortName() << std::endl;
-
-      atlas::meshgen::Delaunay mg;
-      mg.tesselate(g, mesh);
-    }
-
-    cache.insert(g, mesh);
-}
 
 /// Finds in which element the point is contained by projecting the point with each nearest element
 
-bool projectPointToElements(const MeshStats& stats,
+static bool projectPointToElements(const MeshStats& stats,
                             const ArrayView<double, 2>& icoords,
                             const IndexView<int,    2>& triag_nodes,
                             const IndexView<int,    2>& quads_nodes,
@@ -282,7 +220,7 @@ bool projectPointToElements(const MeshStats& stats,
 typedef std::vector< std::pair<size_t,FiniteElement::Point> > FailedPoints;
 
 
-void handleFailedProjectionPoints(const MeshStats& stats,
+static void handleFailedProjectionPoints(const MeshStats& stats,
                                   const FailedPoints& failed,
                                   const Mesh& in,
                                   std::vector< Eigen::Triplet<double> >& weights_triplets)
@@ -355,7 +293,15 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
 
     eckit::Timer timer("Compute weights");
 
-    generateMesh(in, i_mesh);
+    bool caching = true;
+    parametrisation_.get("caching", caching);
+    MeshCache cache(caching);
+
+    if (!cache.retrieve(in, i_mesh)) {
+        eckit::Timer timer("generateMesh");
+        generateMesh(in, i_mesh);
+        cache.insert(in, i_mesh);
+    }
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
 
@@ -405,7 +351,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
 
     size_t max_neighbours = 0;
 
-    Log::info() << "Projecting " << stats.out_npts << " output points to input mesh " << in.shortName() << std::endl;
+    Log::info() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.shortName() << std::endl;
 
     FailedPoints failed_;
 
@@ -431,7 +377,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
             do {
                 if(done >= stats.nbElems()) {
                     failed_.push_back(std::make_pair(ip,p));
-                    Log::warning() << "Point " << ip << " with coords " << p << " failed projection ..." << std::endl;
+                    Log::warning() << "Point " << eckit::BigNum(ip) << " with coords " << p << " failed projection ..." << std::endl;
                     break;
                 }
 
@@ -458,8 +404,8 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
         }
     }
 
-    Log::info() << "Projected " << stats.out_npts - failed_.size() << " points"  << std::endl;
-    Log::info() << "Maximum neighbours searched " << max_neighbours << " elements"  << std::endl;
+    Log::info() << "Projected " << eckit::Plural(stats.out_npts - failed_.size(), "point") << std::endl;
+    Log::info() << "Maximum neighbours searched " << eckit::Plural(max_neighbours, "element") << std::endl;
 
     if (failed_.size())
         handleFailedProjectionPoints(stats, failed_, i_mesh, weights_triplets);
@@ -472,10 +418,6 @@ void FiniteElement::print(std::ostream &out) const {
     out << "FiniteElement[]";
 }
 
-
-namespace {
-static MethodBuilder< FiniteElement > __finiteelement("finite-element");
-}
 
 }  // namespace method
 }  // namespace mir

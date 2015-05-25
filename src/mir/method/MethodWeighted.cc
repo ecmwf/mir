@@ -37,6 +37,7 @@
 
 
 using eckit::Log;
+using mir::data::MIRField;
 
 namespace mir {
 namespace method {
@@ -136,7 +137,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     bool caching = true;
     parametrisation_.get("caching", caching);
-    static caching::WeightCache cache(caching);
+    caching::WeightCache cache(caching);
 
     if (!cache.retrieve(cache_key, W)) {
         computeWeights(in, out, W);
@@ -157,7 +158,6 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     return matrix_cache[key_with_masks];
 }
-
 
 void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const atlas::Grid &out) const {
 
@@ -180,6 +180,10 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         os << "Interpolating field ("  << eckit::BigNum(npts_inp) << " -> " << eckit::BigNum(npts_out) << ")" << eckit::StrStream::ends;
         std::string msg(os);
         eckit::Timer t(msg);
+
+        // compute some statistics on the result
+        // This is expensive so we might want to skip it in production code
+        MIRField::Stats istats = field.statistics(i);
 
         ASSERT(field.values(i).size() == npts_inp);
 
@@ -205,35 +209,9 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code
+        Log::info() << "Input  Field statistics : " << istats << std::endl;
+        Log::info() << "Output Field statistics : " << field.statistics(i) << std::endl;
 
-        {
-            const std::vector<double> &values = field.values(i);
-
-            double min = std::numeric_limits<double>::max();
-            double max = std::numeric_limits<double>::min();
-            double sum = 0;
-            double sqsum = 0;
-
-            for(std::vector<double>::const_iterator it = values.begin(); it != values.end(); ++it )
-            {
-                double v = *it;
-                min = std::min(v,min);
-                max = std::max(v,max);
-                sum += v;
-                sqsum += v*v;
-            }
-
-            double mean = sum / values.size();
-            double stdev = std::sqrt(sqsum / values.size() - mean * mean);
-
-            Log::info() << "Result field statistics:"
-                        << " min=" << min
-                        << ", max=" << max
-                        << ", mean=" << mean
-                        << ", stdev=" << stdev
-                        << std::endl;
-
-        }
     }
 
     // update if missing values are present

@@ -135,6 +135,8 @@ list(
      lsm/UserFileLSM.h
      method/Bilinear.cc
      method/Bilinear.h
+     method/Linear.cc
+     method/Linear.h
      method/FiniteElement.cc
      method/FiniteElement.h
      method/KNearest.cc
