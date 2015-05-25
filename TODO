@@ -10,6 +10,7 @@ PHILOSOPHY:
     - Nearest LSM
     .- Support of polar stereographic grids (LOW PRIORITY)
     - Make the logging callback work in emoslib.cc
+    - Implement print() method on ATLAS grids
 
 --- TESTING (MAKE IT CORRECT)
     - Metabuilder

@@ -117,15 +117,13 @@ struct MeshStats {
 
 void FiniteElement::generateMesh(const Grid& g, Mesh& mesh) const
 {
-    std::string uid = g.unique_id();
-
     bool caching = true;
     parametrisation_.get("caching", caching);
     static MeshCache cache(caching);
 
     if (cache.retrieve(g, mesh)) return;
 
-    std::cout << "Mesh not in cache -- tesselating grid " << uid << std::endl;
+    std::cout << "Mesh not in cache -- tesselating grid " << g.unique_id() << std::endl;
 
     /// @TODO Ask Baudouin best way to build and parametrize the mesh generator
     ///       MeshGenerator is in Atlas -- should we bring to MIR ??
@@ -405,7 +403,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
 
     size_t max_neighbours = 0;
 
-    Log::info() << "Projecting " << stats.out_npts << " output points to input mesh " << in.shortName() << std::endl;
+    Log::info() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.shortName() << std::endl;
 
     FailedPoints failed_;
 
@@ -431,7 +429,7 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
             do {
                 if(done >= stats.nbElems()) {
                     failed_.push_back(std::make_pair(ip,p));
-                    Log::warning() << "Point " << ip << " with coords " << p << " failed projection ..." << std::endl;
+                    Log::warning() << "Point " << eckit::BigNum(ip) << " with coords " << p << " failed projection ..." << std::endl;
                     break;
                 }
 
@@ -458,8 +456,8 @@ void FiniteElement::assemble(WeightMatrix& W, const Grid &in, const Grid& out) c
         }
     }
 
-    Log::info() << "Projected " << stats.out_npts - failed_.size() << " points"  << std::endl;
-    Log::info() << "Maximum neighbours searched " << max_neighbours << " elements"  << std::endl;
+    Log::info() << "Projected " << eckit::Plural(stats.out_npts - failed_.size(), "point") << std::endl;
+    Log::info() << "Maximum neighbours searched " << eckit::Plural(max_neighbours, "element") << std::endl;
 
     if (failed_.size())
         handleFailedProjectionPoints(stats, failed_, i_mesh, weights_triplets);
