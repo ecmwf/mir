@@ -33,7 +33,7 @@ Linear::~Linear() {
 
 
 const char *Linear::name() const {
-    return  "bilinear";
+    return  "linear";
 }
 
 

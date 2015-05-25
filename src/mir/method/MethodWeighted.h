@@ -53,6 +53,8 @@ class MethodWeighted : public Method {
 
   protected:
 
+    virtual const char *name() const = 0;
+
     virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
@@ -66,7 +68,6 @@ class MethodWeighted : public Method {
 
   private:
 
-    virtual const char *name() const = 0;
 
     void computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
 

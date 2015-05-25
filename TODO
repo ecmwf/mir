@@ -11,6 +11,9 @@ PHILOSOPHY:
     .- Support of polar stereographic grids (LOW PRIORITY)
     - Make the logging callback work in emoslib.cc
     - Implement print() method on ATLAS grids
+    !- CacheMesh should take tesselation method into account
+        - Temporary solution
+
 
 --- METHODS (MAKE IT CORRECT)
     - What is the special treatment for winds (emoslib)
@@ -78,7 +81,6 @@ PERFORMANCES
 - Refactor & code cleanup of the Grid hiearchy
 - Create a Tesselation interface, with multiple implementations (Delaunay, ReducedGrid, etc)
 - Atlas gmsh writer must write with DataHandle
-!- CacheMesh should take tesselation method into account
 - Speed-up mesh loading
 - use gmsh binary format + DataHandle/BufferedHandle
 
