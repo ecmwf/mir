@@ -21,19 +21,19 @@
 namespace mir {
 namespace data {
 
-struct MIRFieldStats {
+class MIRFieldStats {
+public:
 
-    double min;
-    double max;
-    double mean;
-    double sqsum;
-    double stdev;
-    bool ready;
+    MIRFieldStats(const std::vector<double>& vs, size_t missing);
 
-    MIRFieldStats();
-    MIRFieldStats(const std::vector<double>& vs);
+private:
 
-    void compute(const std::vector<double>& vs);
+    size_t missing_;
+    double min_;
+    double max_;
+    double mean_;
+    double sqsum_;
+    double stdev_;
 
     void print(std::ostream& s) const;
 

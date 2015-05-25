@@ -24,53 +24,36 @@ namespace mir {
 namespace data {
 
 
-MIRFieldStats::MIRFieldStats() :
-    min(std::numeric_limits<double>::max()),
-    max(std::numeric_limits<double>::min()),
-    mean(0.),
-    sqsum(0.),
-    stdev(0.),
-    ready(false)
-{}
+MIRFieldStats::MIRFieldStats(const std::vector<double>& vs, size_t missing) :
+    missing_(missing),
+    min_(std::numeric_limits<double>::max()),
+    max_(std::numeric_limits<double>::min()),
+    mean_(0.),
+    sqsum_(0.),
+    stdev_(0.) {
 
-MIRFieldStats::MIRFieldStats(const std::vector<double>& vs) :
-    min(std::numeric_limits<double>::max()),
-    max(std::numeric_limits<double>::min()),
-    mean(0.),
-    sqsum(0.),
-    stdev(0.),
-    ready(false)
-{
-    compute(vs);
-}
+    if (vs.size()) {
+        double sum = 0.;
+        for (std::vector<double>::const_iterator it = vs.begin(); it != vs.end(); ++it ) {
+            double v = *it;
+            min_ = std::min(v, min_);
+            max_ = std::max(v, max_);
+            sum += v;
+            sqsum_ += v * v;
+        }
 
-void MIRFieldStats::compute(const std::vector<double>& vs)
-{
-    ASSERT(!ready); // Warning, calling compute twice will lead to wrong resusts
-
-
-    double sum = 0.;
-    for(std::vector<double>::const_iterator it = vs.begin(); it != vs.end(); ++it )
-    {
-        double v = *it;
-        min = std::min(v,min);
-        max = std::max(v,max);
-        sum += v;
-        sqsum += v*v;
+        mean_ = sum / vs.size();
+        stdev_ = std::sqrt(sqsum_ / vs.size() - mean_ * mean_);
     }
-
-    mean = sum / vs.size();
-    stdev = std::sqrt(sqsum / vs.size() - mean * mean);
-    ready = true;
 }
 
-void MIRFieldStats::print(std::ostream &s) const
-{
-    s << "Stats[min=" << min
-      << ",max=" << max
-      << ",l2norm=" << std::sqrt(sqsum)
-      << ",mean=" << mean
-      << ",stdev=" << stdev << "]";
+void MIRFieldStats::print(std::ostream &s) const {
+    s << "Stats[min=" << min_
+      << ",max=" << max_
+      << ",l2norm=" << std::sqrt(sqsum_)
+      << ",mean=" << mean_
+      << ",stdev=" << stdev_
+      << ",missing=" << missing_ << "]";
 }
 
 }  // namespace data

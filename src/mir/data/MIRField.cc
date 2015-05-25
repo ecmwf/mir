@@ -86,7 +86,23 @@ void MIRField::validate() const {
 
 MIRFieldStats MIRField::statistics(size_t i) const
 {
-    return MIRFieldStats(values(i));
+    if(hasMissing_) {
+        const std::vector<double>& vals = values(i);
+        std::vector<double> tmp;
+        tmp.reserve(vals.size());
+        size_t missing = 0;
+
+        for (size_t j = 0; j < vals.size(); j++) {
+            if(vals[j] != missingValue_) {
+                tmp.push_back(vals[j]);
+            }
+            else {
+                missing++;
+            }
+        }
+        return MIRFieldStats(tmp, missing);
+    }
+    return MIRFieldStats(values(i), 0);
 }
 
 void MIRField::representation(repres::Representation *representation) {
