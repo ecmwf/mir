@@ -24,46 +24,55 @@
 
 #include "atlas/grids/ReducedGaussianGrid.h"
 
+#include "eckit/log/Timer.h"
+#include "eckit/log/Plural.h"
+#include "eckit/log/BigNum.h"
+#include "eckit/log/Seconds.h"
+#include "eckit/log/ETA.h"
+#include "eckit/config/Resource.h"
+
+#include "eckit/types/Types.h"
+
+#include "atlas/Tesselation.h"
+#include "atlas/util/IndexView.h"
+
+#include "atlas/PointIndex3.h"
+#include "atlas/geometry/Ray.h"
+#include "atlas/geometry/TriangleIntersection.h"
+#include "atlas/geometry/QuadrilateralIntersection.h"
+#include "atlas/meshgen/MeshGenerator.h"
+#include "atlas/MeshCache.h"
+#include "atlas/meshgen/ReducedGridMeshGenerator.h"
+#include "atlas/meshgen/Delaunay.h"
+#include "atlas/grids/ReducedGrid.h"
+
+#include "mir/param/MIRParametrisation.h"
+#include "mir/util/PointSearch.h"
+
+using atlas::Grid;
+using atlas::Mesh;
+using atlas::MeshCache;
+using atlas::FunctionSpace;
+using atlas::IndexView;
+using atlas::ArrayView;
+using atlas::ElemPayload;
+using atlas::ElemIndex3;
+using atlas::Tesselation;
+using atlas::create_element_centre_index;
+using atlas::geometry::Intersect;
+using atlas::geometry::TriangleIntersection;
+using atlas::geometry::QuadrilateralIntersection;
+using atlas::geometry::Ray;
+using atlas::meshgen::MeshGenerator;
+using atlas::meshgen::MeshGeneratorFactory;
+using atlas::grids::ReducedGrid;
 
 namespace mir {
 namespace method {
 
 
-namespace {
-
-
-void left_right_lon_indexes(const double &in, atlas::ArrayView<double, 2> &data, size_t start, size_t end, size_t &left, size_t &right) {
-
-    using eckit::geometry::LON;
-
-    // comparison object (with predefined absolute tolerance)
-    eckit::RealCompare< double > eq(1.e-9);
-
-    double right_lon = 360.0;
-    double left_lon = 0.0;
-
-    right = start; // take the first if there's a wrap
-    left  = start;
-
-    for (unsigned int i = start; i < end; i++) {
-        const double &val = data[i].data()[LON];
-
-        if (val < in || eq(val, in)) {
-            left_lon = val;
-            left = i;
-        } else if (val < right_lon) {
-            right_lon = val;
-            right = i;
-        }
-    }
-}
-
-
-}  // (utilities namespace)
-
-
 Bilinear::Bilinear(const param::MIRParametrisation &param) :
-    MethodWeighted(param) {
+    FiniteElement(param) {
 }
 
 
@@ -77,142 +86,60 @@ const char *Bilinear::name() const {
 
 
 void Bilinear::hash( eckit::MD5& md5) const {
-    MethodWeighted::hash(md5);
+    FiniteElement::hash(md5);
 }
 
 
-void Bilinear::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
-
-    using eckit::geometry::LON;
-    using eckit::geometry::LAT;
-
-    // float comparison (with predefined absolute tolerance)
-    eckit::RealCompare< double > eq(1.e-9);
-
-    atlas::FunctionSpace &inodes = in.mesh().function_space("nodes");
-    atlas::FunctionSpace &onodes = out.mesh().function_space("nodes");
-
-    atlas::FieldT<double> &ilonlat = inodes.field<double>("lonlat");
-    atlas::FieldT<double> &olonlat = onodes.field<double>("lonlat");
-
-    atlas::ArrayView<double, 2> icoords( ilonlat );
-    atlas::ArrayView<double, 2> ocoords( olonlat );
-
-    // ReducedGrid involves all grids that can be represented with latitudes and npts_per_lat
-    const atlas::grids::ReducedGrid *igg = dynamic_cast<const atlas::grids::ReducedGrid *>(&in);
-
-    /// @todo we only handle these at the moment
-    if (!igg)
-        throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
-
-    // get the longitudes from
-    const std::vector<int> &lons = igg->npts_per_lat();
-
-    std::vector< Eigen::Triplet<double> > weights_triplets; /* structure to fill-in sparse matrix */
-
-    // determing the number of output points required
-    const size_t out_npts = onodes.shape(0);
-    weights_triplets.reserve( out_npts );
-
-    for (unsigned int i = 0; i < out_npts; i++) {
-        // get the lat, lon of the output data point required
-        double lat = ocoords[i].data()[LAT];
-        double lon = ocoords[i].data()[LON];
-
-        // these will hold indices in the input vector of the start of the upper and lower latitudes
-        size_t top_i = 0;
-        size_t bot_i = 0;
-
-        // we will need the number of points on the top and bottom latitudes later. store them
-        size_t top_n, bot_n;
-
-        for (unsigned int n = 0; n < lons.size() - 1; n++) {
-            top_i = bot_i;
-            bot_i += lons[n];
-
-            top_n = lons[n];
-            bot_n = ((n+1) == lons.size())? 0 : lons[n + 1];
-
-            double top_lat = icoords[top_i].data()[LAT];
-            double bot_lat = icoords[bot_i].data()[LAT];
-            ASSERT(top_lat != bot_lat);
-
-            // check output point is on or below the hi latitude
-            if (bot_lat < lat && (top_lat > lat || eq(top_lat, lat))) {
-                ASSERT(top_lat > lat || eq(top_lat, lat));
-                ASSERT(bot_lat < lat);
-                ASSERT(!eq(bot_lat, lat));
-
-                break;
-            }
-        }
-
-        double top_lat = icoords[top_i].data()[LAT];
-        double bot_lat = icoords[bot_i].data()[LAT];
-        ASSERT(top_lat > lat || eq(top_lat, lat));
-        ASSERT(bot_lat < lat);
-        ASSERT(!eq(bot_lat, lat));
+void Bilinear::generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const
+{
 
 
-        // now get indeces to the left and right points on each of the data sectors
-        // on the upper longitude
-        size_t top_i_lft, top_i_rgt;
+    std::cout << "Mesh not in cache -- tesselating grid " << g.unique_id() << std::endl;
 
-        left_right_lon_indexes(lon, icoords, top_i, top_i + top_n, top_i_lft, top_i_rgt);
-        // left_right_lon_indexes(lon, icoords,  hi_data, tl, tr);
-        ASSERT(top_i_lft >= top_i);
-        ASSERT(top_i_lft < bot_i);
-        ASSERT(top_i_rgt >= top_i);
-        ASSERT(top_i_rgt < bot_i);
-        ASSERT(top_i_rgt != top_i_lft);
+    /// @TODO Ask Baudouin best way to build and parametrize the mesh generator
+    ///       MeshGenerator is in Atlas -- should we bring to MIR ??
+    ///       If stays in Atlas, we cannot pass MirParametrisation
+    ///
+    ///  This raises another issue: hoe to cache meshes generated with different parametrizations?
+    ///  We must md5 the MeshGenerator itself.
+    ///
+    ///  We should be using something like:
+    ///
+    //    std::string meshGenerator;
+    //    ASSERT(parametrisation_.get("meshGenerator", meshGenerator));
+    //    eckit::ScopedPtr<MeshGenerator> meshGen( MeshGeneratorFactory::build(meshGenerator) );
+    //    meshGen->tesselate(in, i_mesh);
 
-        // check the data is the same
-        ASSERT(eq(icoords[top_i_lft].data()[LAT],  icoords[top_i_rgt].data()[LAT]));
 
-        // now get indeces to the left and right points on each of the data sectors
-        // on the lower longitude
-        size_t bot_i_lft, bot_i_rgt;
+    const atlas::grids::ReducedGrid* rg = dynamic_cast<const atlas::grids::ReducedGrid*>(&g);
+    if (rg) {
 
-        size_t bot_i_end = bot_i + bot_n;
+      // fast tesselation method, specific for ReducedGrid's
 
-        left_right_lon_indexes(lon, icoords, bot_i, bot_i_end , bot_i_lft, bot_i_rgt);
-        ASSERT(bot_i_lft >= bot_i);
-        ASSERT(bot_i_lft < bot_i_end);
-        ASSERT(bot_i_rgt >= bot_i);
-        ASSERT(bot_i_rgt < bot_i_end);
-        ASSERT(bot_i_rgt != bot_i_lft);
-        ASSERT(eq(icoords[bot_i_lft].data()[LAT],  icoords[bot_i_rgt].data()[LAT]));
+      std::cout << "Mesh is ReducedGrid " << g.shortName() << std::endl;
 
-        // we now have the indices of tl, tr, bl, br points around the output point
-        double tl_lon  = icoords[top_i_lft].data()[LON];
-        double tr_lon  = icoords[top_i_rgt].data()[LON];
-        double bl_lon  = icoords[bot_i_lft].data()[LON];
-        double br_lon  = icoords[bot_i_rgt].data()[LON];
+      ASSERT(rg);
 
-        // calculate the weights
-        double w1 = (tl_lon - lon) / (tl_lon - tr_lon);
-        double w2 = 1.0 - w1;
-        double w3 = (bl_lon - lon) / (bl_lon - br_lon);
-        double w4 = 1.0 - w3;
+      atlas::meshgen::ReducedGridMeshGenerator mg;
 
-        // top and bottom midpoint weights
-        double wt = (lat - bot_lat) / (top_lat - bot_lat);
-        double wb = 1.0 - wt;
+      // force these flags
+      mg.options.set("three_dimensional",true);
+      mg.options.set("patch_pole",true);
+      mg.options.set("include_pole",false);
+      mg.options.set("triangulate", false);
 
-        // weights for the tl, tr, bl, br points
-        double w_tl =  w2 * wt;
-        double w_tr =  w1 * wt;
-        double w_bl =  w4 * wb;
-        double w_br =  w3 * wb;
+      mg.generate(*rg, mesh);
 
-        weights_triplets.push_back(Eigen::Triplet<double>(i, bot_i_rgt, w_br));
-        weights_triplets.push_back(Eigen::Triplet<double>(i, bot_i_lft, w_bl));
-        weights_triplets.push_back(Eigen::Triplet<double>(i, top_i_rgt, w_tr));
-        weights_triplets.push_back(Eigen::Triplet<double>(i, top_i_lft, w_tl));
+    } else {
 
+      // slower, more robust tesselation method, using Delaunay triangulation
+
+      std::cout << "Using Delaunay triangulation on grid: " << g.shortName() << std::endl;
+
+      atlas::meshgen::Delaunay mg;
+      mg.tesselate(g, mesh);
     }
 
-    W.setFromTriplets(weights_triplets.begin(), weights_triplets.end());
 }
 
 
