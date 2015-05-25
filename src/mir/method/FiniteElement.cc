@@ -329,6 +329,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
                 if (done >= stats.nbElems()) {
                     failed_.push_back(std::make_pair(ip, p));
                     eckit::Log::warning() << "Point " << eckit::BigNum(ip) << " with coords " << p << " failed projection ..." << std::endl;
+                    ASSERT(failed_.size() < 10000);
                     break;
                 }
 
