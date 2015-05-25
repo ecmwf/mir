@@ -25,6 +25,7 @@ namespace data {
 
 
 MIRFieldStats::MIRFieldStats(const std::vector<double>& vs, size_t missing) :
+    count_(vs.size()),
     missing_(missing),
     min_(std::numeric_limits<double>::max()),
     max_(std::numeric_limits<double>::min()),
@@ -32,7 +33,7 @@ MIRFieldStats::MIRFieldStats(const std::vector<double>& vs, size_t missing) :
     sqsum_(0.),
     stdev_(0.) {
 
-    if (vs.size()) {
+    if (count_) {
         double sum = 0.;
         for (std::vector<double>::const_iterator it = vs.begin(); it != vs.end(); ++it ) {
             double v = *it;
@@ -42,18 +43,21 @@ MIRFieldStats::MIRFieldStats(const std::vector<double>& vs, size_t missing) :
             sqsum_ += v * v;
         }
 
-        mean_ = sum / vs.size();
-        stdev_ = std::sqrt(sqsum_ / vs.size() - mean_ * mean_);
+        mean_ = sum / count_;
+        stdev_ = std::sqrt(sqsum_ / count_ - mean_ * mean_);
     }
 }
 
 void MIRFieldStats::print(std::ostream &s) const {
-    s << "Stats[min=" << min_
+    s << "Stats["
+      << "count=" << count_
+      << ",missing=" << missing_
+      << ",min=" << min_
       << ",max=" << max_
       << ",l2norm=" << std::sqrt(sqsum_)
       << ",mean=" << mean_
       << ",stdev=" << stdev_
-      << ",missing=" << missing_ << "]";
+      << "]";
 }
 
 }  // namespace data

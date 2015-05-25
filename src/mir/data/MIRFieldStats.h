@@ -29,6 +29,7 @@ public:
 private:
 
     size_t missing_;
+    size_t count_;
     double min_;
     double max_;
     double mean_;
