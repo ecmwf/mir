@@ -1,47 +1,54 @@
 MOVE LINES DOWN TO "DONE" AS THINGS ARE IMPLEMENTED ...
+PHILOSOPHY:
+ 1 Make it `work`
+ 2 Make it `correct`
+ 3 Make it `fast`
 
-NEXT STEPS
 
-* MAKE IT WORK
-  Bi-linear
-- Nearest LSM
-- Support of polar stereographic grids (LOW PRIORITY)
+!----- NEXT STEPS (MAKE IS WORK)
+    - Bi-linear
+    - Nearest LSM
+    .- Support of polar stereographic grids (LOW PRIORITY)
+    - Make the logging callback work in emoslib.cc
 
-* OTHER
-- Clear cache in metabuilder before each run (or select a new directory, better as it will not affect production when mir is operational)
-- Caching of SH=>LL coefficients
-- Make the logging callback work in emoslib.cc
-- Check why some of the diss_requests tests fail with a 'number too large' error
-- Gather knowledge about emoslib/prodgen
+--- TESTING (MAKE IT CORRECT)
+    - Metabuilder
+        --- Clear cache in metabuilder before each run: or select a new directory, better as it will not affect production when mir is operational
+        - Test mir_tool with valgrind
+        - Make sure we compare mir and emoslib for speed
+            - Write MARS timers in JSON
+        - Make sure we run diss_requests in metabuilder with date for which the seasonal exists
+    - Unit tests
+        - Decide on what to test
 
-PHILOSPY
-- 1 Make it work
-- 2 Make it correct
-- 3 Make it fast
+-- PERFORMANCES (MAKE IT FAST)
+    !----- Caching of SH=>LL coefficients
+    - Memory mapping of the SparseMatrix coefficients: MappedSparseMatrix<double,RowMajor> weights(nrows, ncols, nnz, row_ptr, col_ind, val);
 
-WHAT IS MISSING
+- OTHER
+    - OPEN QUESTIONS
+-        Should we cache identity matrices?
+        - Should compute interpolate if matrix is identity?
+        - Should we interpolate to the reduced LL?
 
-WHAT DOES NOT WORK
-- SH to LL with different increments north/south and west/east
+    - Gather knowledge about emoslib/prodgen/mars
+        - EMOSLIB
+            - sh to rot latlon - what is the path?
+            - how 10m uv grid point - how are they interpolate, intvec?
+            - Find out about all intuv* functions
+        - MARS
+            .- Specifying AREA on a SH field is ignored
 
-QUESTIONS
-- Should we cache identity matrices?
-- Should compute interpolate if matrix is identity?
-- Should we interpolate to the reduced LL?
+MEMO:
+- Use IFS new interpolation (SH->GG, SH->LL, new code, published paper)
+- Wave will go to unstructured grid
 
-PRIORITY
 
- - MIR: create unit test framework
 
- - Find out in libemos:
-    * sh to rot latlon - what is the path?
-    * how 10m uv grid point - how are they interpolate, intvec?
 
 MIR
 
-- memory mapping of the SparseMatrix coefficients
-  Store matrix in CRS
-  MappedSparseMatrix<double,RowMajor> weights(nrows, ncols, nnz, row_ptr, col_ind, val);
+
 - Field using LSM. Talk to me on how to get to the LSM data (e.g. with config, and what class do we need to implement)
 - Rotated fields (code is there, needs testing)
 - Rotated winds?
@@ -54,57 +61,44 @@ MIR
 - remove currently necessary C-style casts when updating to a const-correct version of grib_api
   (currently unstable, casts are for current stable version 1.13.1 which is incorrect)
 
-TESTING:
-- Test mir_tool with valgrind
-- Make sure we compare mir and emoslib for speed
-- Make sure we run diss_requests in metabuilder with date for which the seasonal exists
-- Check why metabuilder report failed tasks with incomplete output
 -
 PERFORMANCES
-- Consider switching of some ASSERTions, maybe with a resource
+.- Consider switching of some ASSERTions, maybe with a resource
 - Cache cropping indices (cropping simply extract value from one vector into another, cache this mapping)
-
-EMOSLIB
-- Find out about all intuv* functions
-
-* Behaviour to reproduce
-  - Specifying AREA on a SH field is ignored
-
-IN ATLAS:
-- Make sure cached mesh files are not loaded for every field
-- refactor & code cleanup of the Grid hiearchy
+- Find out when it is most effective to compute legendre coefficients on the fly
+    ///transi seems to be fast for coarse target resolution, e.g. T1279 => 2x2. In this case it may not be needed to cache the coefficients. We need to study what is the threseold when computing coeff is faster than loading them.///
+- Make sure cached mesh files are not loaded for every field (ATLAS)
+- Refactor & code cleanup of the Grid hiearchy
 - Create a Tesselation interface, with multiple implementations (Delaunay, ReducedGrid, etc)
-- atlas gmsh writer must write with DataHandle
-  CacheMesh should take tesselation method into account
+- Atlas gmsh writer must write with DataHandle
+!- CacheMesh should take tesselation method into account
 - Speed-up mesh loading
-   * use gmsh binary format + DataHandle/BufferedHandle
+- use gmsh binary format + DataHandle/BufferedHandle
 
 IN TRANS
 - Get transi to print an error if memory allocation fails
-- transi seems to be fast for coarse target resolution, e.g. T1279 => 2x2. In this case it may not be needed to cache the coefficients. We need to study what is the threseold when computing coeff is faster than loading them.
-
+-
 PRODGEN:
 - Document what prodgen is doing
 - We need to make sure prodgen does not sub-sample
+- Is prodgen setting intermediate_gaussian?
 
 MARS:
 - Is intermediate_gaussian reduced?
-- Implement saving of timers in json
 
-MEMO:
-- Use IFS new interpolation (SH->GG, SH->LL, new code, published paper)
-- Wave will go to unstructured grid
+
 
 --------------------------------------------------------------------------------------------------
-
 DONE:
-- Vo/D to U/V: Dropping one coefficient
-- Implement general purpose file caching class
-- Cropping of reduced gaussian grid
-- SH=>LL with different increments
-- Check why metdabuilder-test://mir-test/opensuse131/gnu/tests/fixed_tests/egrr_pl fails
-- Merge metabuilder-test back to metabuilder-prod
-  Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
-- Check if transi can be called with a regular gaussian as output
-- sharedmem / memmap for caching transi structures
++- Vo/D to U/V: Dropping one coefficient
++- Implement general purpose file caching class
++- Cropping of reduced gaussian grid
++- SH=>LL with different increments
++- Check why metdabuilder-test://mir-test/opensuse131/gnu/tests/fixed_tests/egrr_pl fails
++- Merge metabuilder-test back to metabuilder-prod
++- Missing values (e.g. wave field). To get a wave field: retrieve,stream=wave,param=swh,target=wave.grib
++- Check if transi can be called with a regular gaussian as output
++- sharedmem / memmap for caching transi structures
++- SH to LL with different increments north/south and west/east
+
 
