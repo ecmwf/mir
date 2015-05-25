@@ -136,7 +136,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     bool caching = true;
     parametrisation_.get("caching", caching);
-    static caching::WeightCache cache(caching);
+    caching::WeightCache cache(caching);
 
     if (!cache.retrieve(cache_key, W)) {
         computeWeights(in, out, W);
