@@ -89,6 +89,8 @@ list(
      caching/WeightCache.h
      data/MIRField.cc
      data/MIRField.h
+     data/MIRFieldStats.cc
+     data/MIRFieldStats.h
      input/DummyInput.cc
      input/DummyInput.h
      input/GribFileInput.cc

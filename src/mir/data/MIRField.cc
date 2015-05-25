@@ -83,24 +83,9 @@ void MIRField::validate() const {
     }
 }
 
-MIRField::Stats MIRField::statistics(size_t i) const
+MIRFieldStats MIRField::statistics(size_t i) const
 {
-    const std::vector<double>& vs = values(i);
-    Stats st;
-    double sum = 0.;
-    for(std::vector<double>::const_iterator it = vs.begin(); it != vs.end(); ++it )
-    {
-        double v = *it;
-        st.min = std::min(v,st.min);
-        st.max = std::max(v,st.max);
-        sum += v;
-        st.sqsum += v*v;
-    }
-
-    st.mean = sum / vs.size();
-    st.stdev = std::sqrt(st.sqsum / vs.size() - st.mean * st.mean);
-
-    return st;
+    return MIRFieldStats(values(i));
 }
 
 void MIRField::representation(repres::Representation *representation) {
@@ -133,15 +118,6 @@ void MIRField::hasMissing(bool on) {
 
 void MIRField::missingValue(double value)  {
     missingValue_ = value;
-}
-
-void MIRField::Stats::print(std::ostream &s) const
-{
-    s << "Stats[min=" << min
-      << ",max=" << max
-      << ",l2norm=" << std::sqrt(sqsum)
-      << ",mean=" << mean
-      << ",stdev=" << stdev << "]";
 }
 
 }  // namespace data

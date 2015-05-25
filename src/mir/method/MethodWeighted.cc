@@ -32,6 +32,7 @@
 #include "atlas/Grid.h"
 
 #include "mir/data/MIRField.h"
+#include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -183,7 +184,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code
-        MIRField::Stats istats = field.statistics(i);
+        data::MIRFieldStats istats = field.statistics(i);
 
         ASSERT(field.values(i).size() == npts_inp);
 
