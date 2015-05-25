@@ -20,7 +20,7 @@
 #include "atlas/geometry/TriangleIntersection.h"
 #include "atlas/MeshCache.h"
 #include "atlas/meshgen/Delaunay.h"
-#include "atlas/Tessellation.h"
+#include "atlas/Tesselation.h"
 #include "atlas/util/IndexView.h"
 
 #include "eckit/log/BigNum.h"
@@ -262,8 +262,8 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
 
     {
-        eckit::Timer timer("Tessellation::create_cell_centres");
-        atlas::Tessellation::create_cell_centres(i_mesh);
+        eckit::Timer timer("Tesselation::create_cell_centres");
+        atlas::Tesselation::create_cell_centres(i_mesh);
     }
 
     eckit::ScopedPtr<atlas::ElemIndex3> eTree;
