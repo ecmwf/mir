@@ -25,11 +25,15 @@ namespace mir {
 namespace input {
 
 
-DummyInput::DummyInput() {
+DummyInput::DummyInput(): calls_(0) {
 }
 
 
 DummyInput::~DummyInput() {}
+
+bool DummyInput::next() {
+    return calls_++ == 0;
+}
 
 
 const param::MIRParametrisation &DummyInput::parametrisation() const {
@@ -40,10 +44,10 @@ const param::MIRParametrisation &DummyInput::parametrisation() const {
 data::MIRField *DummyInput::field() const {
     data::MIRField *field = new data::MIRField(*this, false, 999.);
 
-    std::vector< double > values(51 * 51, 42);
+    std::vector< double > values(360 * 181, 42);
     size_t k = 0;
-    for (size_t i = 0; i < 51; ++i)
-        for (size_t j = 0; j < 51; ++j) {
+    for (size_t i = 0; i < 360; ++i)
+        for (size_t j = 0; j < 181; ++j) {
             values[k++] = sin(double(i) / 10.) + cos(double(j) / 10.);
         }
     field->values(values, 0);
@@ -78,12 +82,12 @@ bool DummyInput::get(const std::string &name, std::string &value) const {
 bool DummyInput::get(const std::string &name, double &value) const {
 
     if (name == "north") {
-        value = 50;
+        value = 90;
         return true;
     }
 
     if (name == "south") {
-        value = 0;
+        value = -90;
         return true;
     }
 
@@ -93,7 +97,7 @@ bool DummyInput::get(const std::string &name, double &value) const {
     }
 
     if (name == "east") {
-        value = 50;
+        value = 359;
         return true;
     }
 
