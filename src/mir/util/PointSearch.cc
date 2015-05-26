@@ -35,7 +35,19 @@ void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<Valu
 
     closest.clear();
     closest.reserve(n);
-    for (PointIndex3::NodeList::iterator it = nn.begin(); it != nn.end(); ++it) closest.push_back(it->value());
+    for (PointIndex3::NodeList::iterator it = nn.begin(); it != nn.end(); ++it)
+        closest.push_back(it->value());
+}
+
+void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<ValueType>& closest) {
+    using atlas::PointIndex3;
+
+    PointIndex3::NodeList r = tree_->findInSphere(pt,radius);
+
+    closest.clear();
+    closest.reserve(r.size());
+    for (PointIndex3::NodeList::iterator it = r.begin(); it != r.end(); ++it)
+        closest.push_back(it->value());
 }
 
 void PointSearch::init(const std::vector<PointType>& points) {

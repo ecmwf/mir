@@ -30,6 +30,7 @@
 
 #include "mir/util/PointSearch.h"
 
+using eckit::Log;
 
 namespace mir {
 namespace method {
@@ -182,16 +183,18 @@ static void handleFailedProjectionPoints(const MeshStats &stats,
         const FailedPoints &failed,
         const atlas::Mesh &in,
         std::vector< Eigen::Triplet<double> > &weights_triplets) {
+
     eckit::Log::warning() << "Failed to project following points into input Grid:" << std::endl;
+
     for (size_t i = 0; i < failed.size(); ++i)
         eckit::Log::warning() << "Point id: " << failed[i].first << " @ " << failed[i].second  << std::endl;
 
     FailedPoints failed_again;
 
-    // we will consider any point within 1/3 of element reference area,
-    // as coincident with other points. 1/3 is arbitrary,
-    // but chosen as the area closer to an node of a triangle on average
-    const double refArea = atlas::Earth::areaInSqMeters() / (3 * stats.inp_npts);
+    // we will consider any point within 1 of element reference area
+    // as contributing to this output point
+    const double refArea = atlas::Earth::areaInSqMeters() / stats.inp_npts;
+    const double refRadius = std::sqrt(refArea);
 
     eckit::Log::warning() << "Trying to search for coincident points within an area of " << refArea / 1.E6 << " Km^2 ..." << std::endl;
 
@@ -204,23 +207,44 @@ static void handleFailedProjectionPoints(const MeshStats &stats,
         const size_t idx_o = it->first;
         const eckit::geometry::Point3 &po = it->second;
 
-        sptree.closestNPoints(po, 1, closest);
-        ASSERT( closest.size() == 1 );
+        sptree.closestWithinRadius(po, refRadius, closest);
 
-        size_t idx_i = closest[0].payload();
-        ASSERT( idx_i < stats.inp_npts );
+        if(closest.size()) {
 
-        const eckit::geometry::Point3 pi = closest[0].point();
+            double mind2 = std::numeric_limits<double>::max();
 
-        const double distance2 = eckit::geometry::Point3::distance2(po, pi);
-        if (distance2 < refArea) {
-            eckit::Log::info() << "Matched output Point: " << it->first << " @ " << it->second
-                               << " with input Point:  " << idx_i << " @ " << pi
-                               << " distance: " << std::sqrt(distance2) / 1E3 << " Km"
+            std::vector<double> weights(closest.size(), 0.); // nearest weights
+
+            // sum all calculated weights for normalisation
+            double sum = 0.;
+            for (size_t j = 0; j < closest.size(); ++j) {
+                // calculate distance squared and weight
+                eckit::geometry::Point3 np = closest[j].point();
+                const double d2 = eckit::geometry::Point3::distance2(po, np);
+                mind2 = std::min(mind2,d2);
+                weights[j] = 1.0 / (std::numeric_limits<double>::epsilon() + d2);
+                sum += weights[j]; // work out the total
+            }
+
+            // now normalise all weights according to the total
+            for (size_t j = 0; j < weights.size(); j++)
+                weights[j] /= sum;
+
+            // insert the interpolant weights into the global (sparse) interpolant matrix
+            for (int i = 0; i < weights.size(); ++i) {
+                size_t idx_i = closest[i].payload();
+                weights_triplets.push_back(Eigen::Triplet<double>(idx_o, idx_i, weights[i]));
+            }
+
+            eckit::Log::info() << "Matched output Point: " << idx_o << " @ " << po
+                               << " with " << eckit::Plural(closest.size(),"point")
+                               << " in a radius of " << refRadius / 1E3 << " Km"
+                               << ", closest @ " << std::sqrt(mind2) / 1E3 << " Km"
                                << std::endl;
-            weights_triplets.push_back(Eigen::Triplet<double>(idx_o, idx_i, 1.0));
-        } else
+
+        } else {
             failed_again.push_back(*it);
+        }
     }
 
     if (failed_again.size()) {
@@ -233,7 +257,7 @@ static void handleFailedProjectionPoints(const MeshStats &stats,
     }
 }
 
-
+static const double maxPercentElemsToTry = 0.02; // try to project to 2% of total number elements before giving up
 
 void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
@@ -300,6 +324,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
     // search nearest k cell centres
 
+    const size_t maxNbElemsToTry = maxPercentElemsToTry * stats.nbElems();
     size_t max_neighbours = 0;
 
     eckit::Log::info() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.shortName() << std::endl;
@@ -311,7 +336,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
         for ( size_t ip = 0; ip < stats.out_npts; ++ip ) {
 
-            if (ip && (ip % 100000 == 0)) {
+            if (ip && (ip % 10000 == 0)) {
                 double rate = ip / timerProj.elapsed();
                 eckit::Log::info() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timerProj.elapsed())
                                    << ", rate: " << rate << " points/s, ETA: "
@@ -326,7 +351,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
             bool success = false;
 
             do {
-                if (done >= stats.nbElems()) {
+                if (done >= maxNbElemsToTry) {
                     failed_.push_back(std::make_pair(ip, p));
                     eckit::Log::warning() << "Point " << eckit::BigNum(ip) << " with coords " << p << " failed projection ..." << std::endl;
                     break;
@@ -346,17 +371,16 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
                 // increase the number of searched elements
                 done = kpts;
-                kpts = std::min(4 * done, stats.nbElems());
+                kpts = std::min(2*done+1, maxNbElemsToTry);
 
             } while ( !success );
 
             max_neighbours = std::max(done, max_neighbours);
-
         }
     }
 
     eckit::Log::info() << "Projected " << eckit::Plural(stats.out_npts - failed_.size(), "point") << std::endl;
-    eckit::Log::info() << "Maximum neighbours searched " << eckit::Plural(max_neighbours, "element") << std::endl;
+    eckit::Log::info() << "Maximum neighbours searched was " << eckit::Plural(max_neighbours, "element") << std::endl;
 
     if (failed_.size())
         handleFailedProjectionPoints(stats, failed_, i_mesh, weights_triplets);

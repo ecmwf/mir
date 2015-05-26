@@ -32,22 +32,26 @@ namespace util {
 /// @todo test kd-tree stored in shared memory ?
 
 class PointSearch : private eckit::NonCopyable {
-    typedef atlas::PointIndex3 TreeType;
 
+    typedef atlas::PointIndex3 TreeType;
     typedef atlas::PointIndex3::Point Point;
     typedef atlas::PointIndex3::Value ValueType;
-
     typedef atlas::PointIndex3::iterator iterator;
+
     typedef eckit::geometry::Point3 PointType;
 
   public:
-    PointSearch(const std::vector<Point>& ipts);
 
+    PointSearch(const std::vector<Point>& ipts);
     PointSearch(const atlas::Mesh& mesh);
 
-  public:  // methods
+  public:
+
     /// Finds closest N points to an input point
     void closestNPoints(const PointType& pt, size_t n, std::vector<ValueType>& closest);
+
+    /// Finds closest points within a radius
+    void closestWithinRadius(const PointType& pt, double radius, std::vector<ValueType>& closest);
 
   protected:
     eckit::ScopedPtr<TreeType> tree_;
