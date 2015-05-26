@@ -89,6 +89,8 @@ if args.diff or args.error:
 
     gribapi.grib_set_values(h1, v1)
 
+    print min(v1), max(v1)
+
     # TODO: Use tmpfile
     tmp = "/tmp/plot-diff$$.grib"
     with open(tmp, "w") as f:
