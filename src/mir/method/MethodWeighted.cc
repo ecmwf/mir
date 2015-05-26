@@ -38,8 +38,8 @@
 
 
 using eckit::Log;
-using util::compare::is_approx_zero;
-using util::compare::is_approx_one;
+using mir::util::compare::is_approx_zero;
+using mir::util::compare::is_approx_one;
 
 
 namespace mir {
