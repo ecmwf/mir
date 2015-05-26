@@ -26,6 +26,9 @@ public:
 
     MIRFieldStats(const std::vector<double>& vs, size_t missing);
 
+    double maximum() const;
+    double minimum() const;
+
 private:
 
     size_t count_;

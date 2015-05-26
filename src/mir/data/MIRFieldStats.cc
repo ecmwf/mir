@@ -23,7 +23,7 @@ namespace mir {
 namespace data {
 
 
-MIRFieldStats::MIRFieldStats(const std::vector<double>& vs, size_t missing) :
+MIRFieldStats::MIRFieldStats(const std::vector<double> &vs, size_t missing) :
     count_(vs.size()),
     missing_(missing),
     min_(0),
@@ -62,6 +62,15 @@ void MIRFieldStats::print(std::ostream &s) const {
       << ", total=" << count_ + missing_
       << "]";
 }
+
+double MIRFieldStats::maximum() const {
+    return max_;
+}
+
+double MIRFieldStats::minimum() const {
+    return min_;
+}
+
 
 }  // namespace data
 }  // namespace mir
