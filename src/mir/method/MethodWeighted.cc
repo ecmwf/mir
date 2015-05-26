@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <map>
 #include <string>
+#include <cmath>
 
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
@@ -70,6 +71,20 @@ struct check_inequality_ge {
     }
     const T ref;
 };
+
+
+
+inline bool greater_equal(double a, double b) {
+    if(a >= b) {
+        return true;
+    }
+
+    if(fabs(a-b) < 1e-10) { // FIXME: What should it be? give me a resource
+        return true;
+    }
+
+    return false;
+}
 
 
 }  // (anonymous namespace)
@@ -217,8 +232,8 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         data::MIRFieldStats ostats = field.statistics(i);
         Log::info() << "Output Field statistics : " << ostats << std::endl;
 
-        ASSERT(ostats.minimum() >= istats.minimum());
-        ASSERT(ostats.maximum() <= istats.maximum());
+        ASSERT(greater_equal(ostats.minimum(), istats.minimum());
+        ASSERT(greater_equal(istats.maximum(), ostats.maximum());
 
     }
 
