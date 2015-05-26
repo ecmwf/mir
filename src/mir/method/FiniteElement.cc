@@ -30,7 +30,6 @@
 
 #include "mir/util/PointSearch.h"
 
-using eckit::Log;
 
 namespace mir {
 namespace method {
