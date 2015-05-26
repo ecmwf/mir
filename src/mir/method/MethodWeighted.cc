@@ -232,8 +232,8 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         data::MIRFieldStats ostats = field.statistics(i);
         Log::info() << "Output Field statistics : " << ostats << std::endl;
 
-        ASSERT(greater_equal(ostats.minimum(), istats.minimum());
-        ASSERT(greater_equal(istats.maximum(), ostats.maximum());
+        ASSERT(greater_equal(ostats.minimum(), istats.minimum()));
+        ASSERT(greater_equal(istats.maximum(), ostats.maximum()));
 
     }
 
