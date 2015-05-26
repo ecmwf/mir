@@ -20,6 +20,8 @@ namespace util {
 namespace compare {
 
 
+const is_approx_equal_fn< double > is_approx_zero (0.);
+const is_approx_equal_fn< double > is_approx_one  (1.);
 
 
 }  // namespace compare

@@ -108,6 +108,11 @@ struct is_approx_greater_equal_fn {
 };
 
 
+/// Utility comparators
+extern const is_approx_equal_fn< double > is_approx_zero;
+extern const is_approx_equal_fn< double > is_approx_one;
+
+
 }  // namespace compare
 }  // namespace util
 }  // namespace mir

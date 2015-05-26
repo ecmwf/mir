@@ -38,7 +38,9 @@
 
 
 using eckit::Log;
-//using mir::data::MIRField;
+using util::compare::is_approx_zero;
+using util::compare::is_approx_one;
+
 
 namespace mir {
 namespace method {
@@ -51,10 +53,6 @@ static eckit::Mutex local_mutex;
 
 
 static std::map<std::string, WeightMatrix> matrix_cache;
-
-
-const util::compare::is_approx_equal_fn< double > is_zero (0.);
-const util::compare::is_approx_equal_fn< double > is_one  (1.);
 
 
 }  // (anonymous namespace)
@@ -252,7 +250,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
         for (WeightMatrix::InnerIterator j(W, i); j; ++j)
             sum += j.value();
 
-        if ( !is_zero(sum) && !is_one(sum) ) {
+        if ( !is_approx_zero(sum) && !is_approx_one(sum) ) {
             ++Nprob;
             Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(W(" << i << ",:)) != {0,1} = " << sum << std::endl;
         }
@@ -281,7 +279,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
                 sum += j.value();
         }
         const bool miss_some = Nmiss;
-        const bool miss_all  = (miss_some && (Ncol == Nmiss)) || is_zero(sum);
+        const bool miss_all  = (miss_some && (Ncol == Nmiss)) || is_approx_zero(sum);
 
         // redistribution
         if ( miss_all ) {
@@ -321,7 +319,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             double sum = 0.;
             for (WeightMatrix::InnerIterator j(X, i); j; ++j)
                 sum += j.value();
-            if ( !is_zero(sum) && !is_one(sum) ) {
+            if ( !is_approx_zero(sum) && !is_approx_one(sum) ) {
                 ++Nprob;
                 Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(X(" << i << ",:)) != {0,1} = " << sum << std::endl;
             }
@@ -386,7 +384,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
         }
 
         // apply linear redistribution if necessary
-        if (row_changed && !is_zero(sum)) {
+        if (row_changed && !is_approx_zero(sum)) {
             ++fix;
             const double invsum = 1. / sum;
             for (WeightMatrix::InnerIterator j(W, i); j; ++j)
