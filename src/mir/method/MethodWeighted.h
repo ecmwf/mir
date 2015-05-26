@@ -68,7 +68,6 @@ class MethodWeighted : public Method {
 
   private:
 
-
     void computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
 
     /// Generate boolean mask provided a condition operator
