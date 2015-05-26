@@ -207,7 +207,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
         std::vector<double> &values = field.values(i);
 
-        // This should be local too the loop as field.value() will take ownership of result with std::swap()
+        // This should be local to the loop as field.value() will take ownership of result with std::swap()
         // For optimisation, one can also create result outside the loop, and resize() it here
         std::vector<double> result(npts_out);
 
@@ -232,8 +232,8 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         data::MIRFieldStats ostats = field.statistics(i);
         Log::info() << "Output Field statistics : " << ostats << std::endl;
 
-        ASSERT(greater_equal(ostats.minimum(), istats.minimum()));
-        ASSERT(greater_equal(istats.maximum(), ostats.maximum()));
+        // ASSERT(greater_equal(ostats.minimum(), istats.minimum()));
+        // ASSERT(greater_equal(istats.maximum(), ostats.maximum()));
 
     }
 
