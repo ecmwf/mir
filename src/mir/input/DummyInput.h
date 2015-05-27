@@ -83,6 +83,7 @@ class DummyInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Members
 
+    int calls_;
 
     // -- Methods
 
@@ -93,6 +94,8 @@ class DummyInput : public MIRInput, public param::FieldParametrisation {
 
     virtual const param::MIRParametrisation &parametrisation() const;
     virtual data::MIRField *field() const;
+
+    virtual bool next();
 
     // From MIRParametrisation
     virtual bool has(const std::string& name) const;

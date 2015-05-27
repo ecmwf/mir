@@ -6,7 +6,7 @@ PHILOSOPHY:
 
 
 !----- NEXT STEPS (MAKE IS WORK)
-    - Bi-linear
+    +- Bi-linear
     - Nearest LSM
     .- Support of polar stereographic grids (LOW PRIORITY)
     - Make the logging callback work in emoslib.cc

@@ -27,10 +27,10 @@
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/types/FloatCompare.h"
 
 #include "atlas/Grid.h"
 
+#include "mir/util/Compare.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
@@ -38,7 +38,9 @@
 
 
 using eckit::Log;
-using mir::data::MIRField;
+using mir::util::compare::is_approx_zero;
+using mir::util::compare::is_approx_one;
+
 
 namespace mir {
 namespace method {
@@ -50,32 +52,10 @@ namespace {
 static eckit::Mutex local_mutex;
 
 
-/// Convert values vector to booleans, with equality
-template< typename T >
-struct check_equality {
-    check_equality(const T& ref_) : ref(ref_) {}
-    bool operator()(const T& v) const {
-        return v == ref;
-    }
-    const T ref;
-};
-
-
-/// Convert values vector to booleans, with "greater than or equal to"
-template< typename T >
-struct check_inequality_ge {
-    check_inequality_ge(const T& ref_) : ref(ref_) {}
-    bool operator()(const T& v) const {
-        return v >= ref;
-    }
-    const T ref;
-};
+static std::map<std::string, WeightMatrix> matrix_cache;
 
 
 }  // (anonymous namespace)
-
-
-static std::map<std::string, WeightMatrix> matrix_cache;
 
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation &param) :
@@ -192,7 +172,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
         std::vector<double> &values = field.values(i);
 
-        // This should be local too the loop as field.value() will take ownership of result with std::swap()
+        // This should be local to the loop as field.value() will take ownership of result with std::swap()
         // For optimisation, one can also create result outside the loop, and resize() it here
         std::vector<double> result(npts_out);
 
@@ -217,14 +197,14 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         data::MIRFieldStats ostats = field.statistics(i);
         Log::info() << "Output Field statistics : " << ostats << std::endl;
 
-        ASSERT(ostats.minimum() >= istats.minimum());
-        ASSERT(ostats.maximum() <= istats.maximum());
+        // ASSERT(util::compare::is_approx_greater_equal(ostats.minimum(), istats.minimum()));
+        // ASSERT(util::compare::is_approx_greater_equal(istats.maximum(), ostats.maximum()));
 
     }
 
     // update if missing values are present
     if (field.hasMissing()) {
-        const check_equality< double > check_miss(field.missingValue());
+        const util::compare::is_equal_fn< double > check_miss(field.missingValue());
         bool still_has_missing = false;
         for (size_t i = 0; i < field.dimensions() && !still_has_missing; ++i) {
             const std::vector< double > &values = field.values(i);
@@ -252,7 +232,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
     // build boolean missing values mask (to isolate condition check)
     const double missvalue = field.missingValue();
-    const check_equality< double > check_miss(missvalue);
+    const util::compare::is_equal_fn< double > check_miss(missvalue);
     const std::vector< bool > missmask = computeFieldMask(check_miss, field, which);
 
     const size_t count = std::count(missmask.begin(), missmask.end(), true);
@@ -269,10 +249,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
         double sum = 0.;
         for (WeightMatrix::InnerIterator j(W, i); j; ++j)
             sum += j.value();
-        const bool
-        weights_zero = eckit::FloatCompare::is_equal(sum, 0.),
-        weights_one  = eckit::FloatCompare::is_equal(sum, 1.);
-        if ( !weights_zero && !weights_one ) {
+
+        if ( !is_approx_zero(sum) && !is_approx_one(sum) ) {
             ++Nprob;
             Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(W(" << i << ",:)) != {0,1} = " << sum << std::endl;
         }
@@ -300,10 +278,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             else
                 sum += j.value();
         }
-        const bool
-        weights_zero = eckit::FloatCompare::is_equal(sum, 0.),
-        miss_some = Nmiss,
-        miss_all  = (miss_some && (Ncol == Nmiss)) || weights_zero;
+        const bool miss_some = Nmiss;
+        const bool miss_all  = (miss_some && (Ncol == Nmiss)) || is_approx_zero(sum);
 
         // redistribution
         if ( miss_all ) {
@@ -343,9 +319,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             double sum = 0.;
             for (WeightMatrix::InnerIterator j(X, i); j; ++j)
                 sum += j.value();
-            const bool weights_zero = eckit::FloatCompare::is_equal(sum, 0.);
-            const bool weights_one  = eckit::FloatCompare::is_equal(sum, 1.);
-            if ( !weights_zero && !weights_one ) {
+            if ( !is_approx_zero(sum) && !is_approx_one(sum) ) {
                 ++Nprob;
                 Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(X(" << i << ",:)) != {0,1} = " << sum << std::endl;
             }
@@ -377,7 +351,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
 
     // build boolean masks (to isolate algorithm from the logical mask condition)
-    const check_inequality_ge< double > check_lsm(0.5);
+    const util::compare::is_greater_equal_fn< double > check_lsm(0.5);
     const std::vector< bool >
     imask = computeFieldMask(check_lsm, masks.inputField(), 0),
     omask = computeFieldMask(check_lsm, masks.outputField(), 0);
@@ -410,8 +384,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
         }
 
         // apply linear redistribution if necessary
-        const bool weights_zero = eckit::FloatCompare::is_equal(sum, 0.);
-        if (row_changed && !weights_zero) {
+        if (row_changed && !is_approx_zero(sum)) {
             ++fix;
             const double invsum = 1. / sum;
             for (WeightMatrix::InnerIterator j(W, i); j; ++j)

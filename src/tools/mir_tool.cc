@@ -22,6 +22,8 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/input/DummyInput.h"
+
 #include "mir/input/VODInput.h"
 #include "mir/input/WindInput.h"
 #include "mir/lsm/LSMChooser.h"
@@ -46,7 +48,7 @@ using mir::param::option::FactoryOption;
 class MIRTool : public eckit::Tool {
 
     virtual void run();
-    void process(mir::api::MIRJob&, mir::input::MIRInput&, mir::output::MIROutput&, const std::string&);
+    void process(mir::api::MIRJob &, mir::input::MIRInput &, mir::output::MIROutput &, const std::string &);
 
     static void usage(const std::string &tool);
 
@@ -136,6 +138,10 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
     options.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
 
+    //==============================================
+    options.push_back(new Separator("Debugging"));
+    options.push_back(new SimpleOption<bool>("dummy", "Use dummy data"));
+
     // {"", 0, "GRIB Output"},
     // {"accuracy", "n", "number of bits per value",},
     // {"packing", "p", "e.g. second-order",},
@@ -150,11 +156,18 @@ void MIRTool::run() {
 
     bool wind = false;
     bool vod2uv = false;
+    bool dummy = false;
 
     args.get("wind", wind);
     args.get("vod2uv", vod2uv);
+    args.get("dummy", dummy);
 
-    if (wind) {
+
+    if(dummy) {
+        mir::input::DummyInput input;
+        mir::output::GribFileOutput output(args.args(1));
+        process(job, input, output, "field");
+    } else if (wind) {
         ASSERT(!vod2uv);
         ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
 
@@ -195,7 +208,7 @@ void MIRTool::run() {
     }
 }
 
-void MIRTool::process(mir::api::MIRJob& job, mir::input::MIRInput& input, mir::output::MIROutput& output, const std::string& what) {
+void MIRTool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
     eckit::Timer timer("Total time");
 
     size_t i = 0;

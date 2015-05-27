@@ -30,7 +30,6 @@
 
 #include "mir/util/PointSearch.h"
 
-using eckit::Log;
 
 namespace mir {
 namespace method {
@@ -394,8 +393,8 @@ void FiniteElement::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) con
     // This is the fallback method if sub-classes cannot to their job properly
 
     std::cout << *this << " using Delaunay triangulation on grid: " << grid.shortName() << std::endl;
-    atlas::meshgen::Delaunay generator;
-    generator.tesselate(grid, mesh);
+    atlas::meshgen::Delaunay delaunay;
+    delaunay.generate(grid, mesh);
 }
 
 

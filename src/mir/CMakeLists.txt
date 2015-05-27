@@ -302,6 +302,8 @@ list(
      util/Bitmap.h
      util/BoundingBox.cc
      util/BoundingBox.h
+     util/Compare.cc
+     util/Compare.h
      util/Grib.h
      util/Increments.cc
      util/Increments.h
