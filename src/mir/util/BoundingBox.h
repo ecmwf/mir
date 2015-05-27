@@ -92,7 +92,6 @@ class BoundingBox {
     // None
 
     // -- Class methods
-    static bool greater_equal(double a, double b);
 
   protected:
 

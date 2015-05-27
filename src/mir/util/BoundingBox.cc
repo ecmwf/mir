@@ -16,6 +16,7 @@
 
 #include <iostream>
 
+#include "mir/util/Compare.h"
 #include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -81,7 +82,7 @@ void BoundingBox::normalise() {
         west_ += 360;
     }
 
-    while(east_ < west_) {
+    while (east_ < west_) {
         east_ += 360;
     }
 }
@@ -97,21 +98,12 @@ double BoundingBox::normalise(double lon) const {
     return lon;
 }
 
-bool BoundingBox::greater_equal(double a, double b) {
-    if(a >= b) {
-        return true;
-    }
-
-    if(fabs(a-b) < 1e-10) { // FIXME: What should it be? give me a resource
-        return true;
-    }
-
-    return false;
-}
-
 bool BoundingBox::contains(double lat, double lon) const {
     lon = normalise(lon);
-    return greater_equal(north_, lat) && greater_equal(lat, south_) && greater_equal(lon , west_) && greater_equal(east_, lon);
+    return util::compare::is_approx_greater_equal(north_, lat) &&
+           util::compare::is_approx_greater_equal(lat, south_) &&
+           util::compare::is_approx_greater_equal(lon , west_) &&
+           util::compare::is_approx_greater_equal(east_, lon);
 }
 
 bool BoundingBox::global() const {
