@@ -96,7 +96,7 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
 
             // calculate distance squared and weight
             const double d2 = eckit::geometry::Point3::distance2(p, np);
-            weights[j] = 1.0 / (epsilon_ + d2);
+            weights[j] = 1. / (1. + d2);
 
             // also work out the total
             sum += weights[j];
