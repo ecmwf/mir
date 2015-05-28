@@ -64,7 +64,10 @@ class MethodWeighted : public Method {
 
     virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const;
 
-    const WeightMatrix &getMatrix(const atlas::Grid &in, const atlas::Grid &out) const;
+
+    virtual const WeightMatrix &getMatrix(const atlas::Grid &in, const atlas::Grid &out) const;
+
+    virtual lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
 
   private:
 

@@ -22,6 +22,8 @@
 #include "eckit/utils/MD5.h"
 
 #include "atlas/grids/ReducedGaussianGrid.h"
+#include "mir/lsm/LandSeaMasks.h"
+#include "mir/param/RuntimeParametrisation.h"
 
 
 namespace mir {
@@ -36,6 +38,11 @@ NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
 NearestLSM::~NearestLSM() {
 }
 
+lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid &in, const atlas::Grid &out) const {
+    param::RuntimeParametrisation runtime(parametrisation_);
+    runtime.set("lsm", true); // Force use of LSM
+    return lsm::LandSeaMasks::lookup(runtime, in, out);
+}
 
 const char *NearestLSM::name() const {
     return  "nearest-lsm";
@@ -45,16 +52,16 @@ size_t NearestLSM::nclosest() const {
     return 16;
 }
 
-void NearestLSM::hash( eckit::MD5& md5) const {
+void NearestLSM::hash( eckit::MD5 &md5) const {
     MethodWeighted::hash(md5);
 }
 
 
-void NearestLSM::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
-    Nearest::assemble(W,in,out);
+void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
+    Nearest::assemble(W, in, out);
 }
 
-void NearestLSM::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks&) const {
+void NearestLSM::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const {
 }
 
 

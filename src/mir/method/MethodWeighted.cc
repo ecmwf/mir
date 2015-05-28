@@ -144,6 +144,10 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     return matrix_cache[key_with_masks];
 }
 
+lsm::LandSeaMasks MethodWeighted::getMasks(const atlas::Grid &in, const atlas::Grid &out) const {
+    return lsm::LandSeaMasks::lookup(parametrisation_, in, out);
+}
+
 void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const atlas::Grid &out) const {
 
     eckit::Timer timer("MethodWeighted::execute");

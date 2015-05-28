@@ -33,34 +33,36 @@ namespace method {
 class NearestLSM: public Nearest {
   public:
 
-    NearestLSM(const param::MIRParametrisation&);
+    NearestLSM(const param::MIRParametrisation &);
 
     virtual ~NearestLSM();
 
   protected:
 
-    virtual void hash( eckit::MD5& ) const;
+    virtual void hash( eckit::MD5 & ) const;
 
   private:
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
-    void print(std::ostream&) const;
-    const char* name() const;
-    void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+    void print(std::ostream &) const;
+    const char *name() const;
+    void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const;
     void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const;
     size_t nclosest() const;
+    lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
 
-// -- Class members
+
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
 };
 
