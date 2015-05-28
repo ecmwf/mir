@@ -230,6 +230,7 @@ const param::MIRParametrisation &GribInput::parametrisation() const {
 
 data::MIRField *GribInput::field() const {
     ASSERT(grib_);
+    // TODO: this is only here for debugging purposes
     GRIB_CALL(grib_set_double(grib_, "missingValue", 1.e15));
 
     size_t count;
