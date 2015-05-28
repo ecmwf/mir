@@ -29,7 +29,7 @@ namespace method {
 
 
 NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
-    MethodWeighted(param) {
+    Nearest(param) {
 }
 
 
@@ -41,6 +41,9 @@ const char *NearestLSM::name() const {
     return  "nearest-lsm";
 }
 
+size_t NearestLSM::nclosest() const {
+    return 16;
+}
 
 void NearestLSM::hash( eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
@@ -48,7 +51,10 @@ void NearestLSM::hash( eckit::MD5& md5) const {
 
 
 void NearestLSM::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
-    NOTIMP;
+    Nearest::assemble(W,in,out);
+}
+
+void NearestLSM::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks&) const {
 }
 
 

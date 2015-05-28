@@ -33,12 +33,13 @@ class Nearest : public MethodWeighted {
 
     virtual void hash(eckit::MD5&) const;
 
-  private:
+    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+
+private:
     // -- Methods
 
     virtual size_t nclosest() const = 0;
 
-    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
     // virtual void print(std::ostream&) const;
     virtual const char* name() const;
 

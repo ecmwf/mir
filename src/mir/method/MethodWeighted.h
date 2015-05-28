@@ -62,7 +62,7 @@ class MethodWeighted : public Method {
 
     /// Update interpolation weigths matrix to account for field masked values
 
-    void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const;
+    virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const;
 
     const WeightMatrix &getMatrix(const atlas::Grid &in, const atlas::Grid &out) const;
 
