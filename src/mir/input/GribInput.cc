@@ -26,6 +26,7 @@
 
 #include <iomanip>
 #include <iostream>
+#include <limits>
 
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/io/MemoryHandle.h"
@@ -230,7 +231,9 @@ const param::MIRParametrisation &GribInput::parametrisation() const {
 
 data::MIRField *GribInput::field() const {
     ASSERT(grib_);
-    GRIB_CALL(grib_set_double(grib_, "missingValue", 1.e15));
+
+    // TODO: Make it a config
+    GRIB_CALL(grib_set_double(grib_, "missingValue", std::numeric_limits<double>::max()));
 
     size_t count;
     GRIB_CALL(grib_get_size(grib_, "values", &count));
@@ -245,9 +248,6 @@ data::MIRField *GribInput::field() const {
 
     double missing;
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
-
-
-
 
 
     data::MIRField *field = new data::MIRField(*this, bitmap != 0, missing);

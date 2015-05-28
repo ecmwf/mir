@@ -273,7 +273,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &WW, data::MI
     }
 
     // correct matrix weigths for the missing values (matrix copy happens here)
-    const double missvalue = field.missingValue();
+    const double missingValue = field.missingValue();
     const std::vector< double > &values = field.values(which);
     WeightMatrix X(WW);
     size_t fix_missall  = 0;
@@ -285,7 +285,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &WW, data::MI
         size_t Nmiss = 0;
         size_t Ncol  = 0;
         for (WeightMatrix::InnerIterator j(X, i); j; ++j, ++Ncol) {
-            if (values[j.col()]==missvalue)
+            if (values[j.col()] == missingValue)
                 ++Nmiss;
             else
                 sum += j.value();
@@ -294,7 +294,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &WW, data::MI
         const bool miss_all  = (Ncol == Nmiss);
 
         // redistribution
-        if ( miss_all || is_approx_zero(sum) && (Ncol > 0)) {
+        if ( (miss_all || is_approx_zero(sum)) && (Ncol > 0)) {
             ++fix_missall;
 
             // all values are missing (or weights wrongly computed):
@@ -302,7 +302,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &WW, data::MI
             bool found = false;
             for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
                 j.valueRef() = 0.;
-                if (!found && values[j.col()]==missvalue) {
+                if (!found && values[j.col()] == missingValue) {
                     j.valueRef() = 1.;
                     found = true;
                 }
@@ -315,7 +315,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &WW, data::MI
 
             // apply linear redistribution
             for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
-                if (values[j.col()]==missvalue) {
+                if (values[j.col()] == missingValue) {
                     j.valueRef() = 0.;
                 } else {
                     j.valueRef() /= sum;
