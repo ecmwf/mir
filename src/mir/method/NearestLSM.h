@@ -49,12 +49,12 @@ class NearestLSM: public Nearest {
 
     // -- Overridden methods
 
-    const char *name() const;
-    lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
-    size_t nclosest() const;
-    void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks) const;
-    void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const;
-    void print(std::ostream &) const;
+    virtual const char *name() const;
+    virtual lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
+    virtual size_t nclosest() const;
+    virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks) const;
+    virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const;
+    virtual void print(std::ostream &) const;
 
 
     // -- Class members
