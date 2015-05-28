@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <map>
 #include <string>
+#include <sstream>
 
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
@@ -122,7 +123,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     static caching::WeightCache cache;
 
     if (!caching || !cache.retrieve(cache_key, W)) {
-        computeWeights(in, out, W);
+        computeMatrixWeights(in, out, W);
         if (masks.active() && masks.cacheable()) {
             applyMasks(W, masks);
         }
@@ -184,6 +185,18 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
             // otherwise we need to pass result matrix as parameter
             WeightMatrix MW = applyMissingValues(W, field, i);
             vo = MW * vi;
+
+            for (size_t var = 0; var < result.size(); ++var) {
+                if (result[var]>1.e10) {
+                    Log::info() << "var=" << var; // << std::endl;
+                    for (WeightMatrix::InnerIterator j(MW, var); j; ++j)
+                        Log::info() << " " /*<< j.col() << ":"*/ << j.value()
+                                    << "*" << values[j.col()];
+                    Log::info() << std::endl;
+                }
+            }
+
+
         } else {
             vo = W * vi;
         }
@@ -215,7 +228,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 }
 
 
-void MethodWeighted::computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const {
+void MethodWeighted::computeMatrixWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const {
     if (in.same(out)) {
         Log::info() << "Matrix is indentity" << std::endl;
         W.setIdentity();        // grids are the same, use identity matrix
@@ -226,7 +239,46 @@ void MethodWeighted::computeWeights(const atlas::Grid &in, const atlas::Grid &ou
 }
 
 
-WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const {
+size_t MethodWeighted::checkMatrixWeights(const WeightMatrix& W) {
+    using util::compare::is_approx_greater_equal;
+    size_t Nprob = 0;
+    for (size_t i = 0; i < W.rows(); i++) {
+
+        // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
+        double sum = 0.;
+        bool toolow  = false;
+        bool toohigh = false;
+        for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
+            const double &a = j.value();
+#if 1
+            if (!toolow && !is_approx_greater_equal< double >( a, 0.)) {
+                bool a = true;
+            }
+//                std::cout << "W("<<i<<','<<j.col()<<")="<<
+#endif
+            toolow  = toolow  || !is_approx_greater_equal< double >( a, 0.);
+            toohigh = toohigh || !is_approx_greater_equal< double >(-a,-1.);
+            sum += a;
+        }
+        bool badsum = !is_approx_zero(sum) && !is_approx_one(sum);
+
+        // log issues, per row
+        if (toolow || toohigh || badsum) {
+            ++Nprob;
+            std::ostringstream msg;
+            msg << "Incorrect interpolation weights at W(" << i << ",:):";
+            if (toolow)  msg << "  W(i,j)<0 (for some j)";
+            if (toohigh) msg << "  W(i,j)>1 (for some j)";
+            if (badsum)  msg << "  sum(W(i,:)) != {0,1} = " << sum;
+            Log::warning() << msg.str() << std::endl;
+        }
+
+    }
+    return Nprob;
+}
+
+
+WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &WW, data::MIRField &field, size_t which) const {
 
     ASSERT(field.hasMissing());
 
@@ -236,33 +288,23 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
     const std::vector< bool > missmask = computeFieldMask(check_miss, field, which);
 
     const size_t count = std::count(missmask.begin(), missmask.end(), true);
-    Log::info() << "Field has " << eckit::Plural(count, "missing value") << " out of " << eckit::BigNum(W.cols()) << std::endl;
+    Log::info() << "Field has " << eckit::Plural(count, "missing value") << " out of " << eckit::BigNum(WW.cols()) << std::endl;
     if (count == 0) {
-        return W;
+        return WW;
     }
 
 
     // check matrix weigths correctness
     // TODO this check should not be done here? maybe before matrix caching? but I don't know where it goes
-    size_t Nprob = 0;
-    for (size_t i = 0; i < W.rows(); i++) {
-        double sum = 0.;
-        for (WeightMatrix::InnerIterator j(W, i); j; ++j)
-            sum += j.value();
-
-        if ( !is_approx_zero(sum) && !is_approx_one(sum) ) {
-            ++Nprob;
-            Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(W(" << i << ",:)) != {0,1} = " << sum << std::endl;
-        }
-    }
+    size_t Nprob = checkMatrixWeights(WW);
     if (Nprob) {
-        Log::warning() <<  "Missing values: problem in input weights matrix for " << eckit::Plural(Nprob, "interpolation point") << ", continuing (but shouldn't really)." << std::endl;
+        Log::warning() <<  "Missing values: problems in weights matrix (input) on " << eckit::Plural(Nprob, "row") << ", continuing (but shouldn't really)." << std::endl;
     }
 
 
     // correct matrix weigths for the missing values (matrix copy happens here)
-    std::vector< double > &values = field.values(which);
-    WeightMatrix X(W);
+    const std::vector< double > &values = field.values(which);
+    WeightMatrix X(WW);
     size_t fix_missall  = 0;
     size_t fix_misssome = 0;
     for (size_t i = 0; i < X.rows(); i++) {
@@ -272,67 +314,138 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
         size_t Nmiss = 0;
         size_t Ncol  = 0;
         for (WeightMatrix::InnerIterator j(X, i); j; ++j, ++Ncol) {
-            if (missmask[j.col()])
+            if (values[j.col()]==missvalue)
                 ++Nmiss;
             else
                 sum += j.value();
         }
-        const bool miss_some = Nmiss;
+        const bool miss_some = Nmiss>0;
         const bool miss_all  = (miss_some && (Ncol == Nmiss)) || is_approx_zero(sum);
 
         // redistribution
         if ( miss_all ) {
             ++fix_missall;
 
+#if 0
             // all values are missing (or weights wrongly computed):
             // erase row & force missing value equality
             for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
-                values[j.col()] = missvalue;
+//                values[j.col()] = missvalue;
                 j.valueRef() = 0.;
             }
-            WeightMatrix::InnerIterator(X, i).valueRef() = 1.;
+            WeightMatrix::InnerIterator j(X, i);
+//            values[j.col()] = missvalue;
+            j.valueRef() = 1.;
+#else
+            bool found = false;
+            for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
+//                values[j.col()] = missvalue;
+                j.valueRef() = 0.;
+                ASSERT(j.value()==0.);
+                if (!found && values[j.col()]==missvalue) {
+                    j.valueRef() = 1.;
+                    ASSERT(j.value()==1.);
+                    found = true;
+                }
+            }
+            ASSERT(found);
+#endif
 
-        } else if ( miss_some ) {
+
+            if (i==65159) {
+
+                Log::info() << "XPTO ";
+                for (WeightMatrix::InnerIterator j(X, i); j; ++j)
+                    Log::info() << " " /*<< j.col() << ":"*/ << j.value()
+                                << "*" << values[j.col()]
+                                << " miss=" << (values[j.col()]==missvalue);
+
+                Log::info() << "i=" << i << "  is_approx_zero(sum)=" << is_approx_zero(sum)
+                            << "  miss_some=" << miss_some
+                            << "  miss_all=" << miss_all << std::endl;
+
+
+            }
+
+
+
+        } else if ( miss_some && !is_approx_zero(sum)) {
             ++fix_misssome;
+            ASSERT(!is_approx_zero(sum));
 
             // apply linear redistribution
             const double invsum = 1. / sum;
             for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
-                if (missmask[j.col()]) {
-                    values[j.col()] = missvalue;
+                if (values[j.col()]==missvalue) {
+//                    values[j.col()] = missvalue;
                     j.valueRef() = 0.;
                 } else {
                     j.valueRef() *= invsum;
                 }
             }
 
+        } else if ( miss_some && is_approx_zero(sum)) {
+
+
+#if 0
+            Log::info() << "NEW CONDITION ";
+                for (WeightMatrix::InnerIterator j(X, i); j; ++j)
+                    Log::info() << " " /*<< j.col() << ":"*/ << j.value()
+                                << "*" << values[j.col()];
+                Log::info() << std::endl;
+#endif
+                bool found = false;
+                for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
+    //                values[j.col()] = missvalue;
+                    j.valueRef() = 0.;
+                    if (!found && values[j.col()]==missvalue) {
+                        j.valueRef() = 1.;
+                        found = true;
+                    }
+                }
+                ASSERT(found);
+
+
+        } else {
+
+            Log::info() << "i=" << i << "  is_approx_zero(sum)=" << is_approx_zero(sum)
+                        << "  miss_some=" << miss_some << std::endl;
+
+            for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
+                ASSERT(values[j.col()]<1.e10);
+            }
+
         }
+
+
+        if (i==65159) {
+
+            Log::info() << "XPTO ";
+            for (WeightMatrix::InnerIterator j(X, i); j; ++j)
+                Log::info() << " " /*<< j.col() << ":"*/ << j.value()
+                            << "*" << values[j.col()]
+                            << " miss=" << (values[j.col()]==missvalue);
+
+            Log::info() << "i=" << i << "  is_approx_zero(sum)=" << is_approx_zero(sum)
+                        << "  miss_some=" << miss_some
+                        << "  miss_all=" << miss_all << std::endl;
+
+
+        }
+
     }
 
 
     // recheck corrected matrix for problems
     // TODO this check should not be done here? after interpolation? again I don't know where it goes
     if ( Nprob ) {
-        Nprob = 0;
-        for (size_t i = 0; i < X.rows(); i++) {
-            double sum = 0.;
-            for (WeightMatrix::InnerIterator j(X, i); j; ++j)
-                sum += j.value();
-            if ( !is_approx_zero(sum) && !is_approx_one(sum) ) {
-                ++Nprob;
-                Log::warning() <<  "Missing values: incorrect interpolation weights sum: Sum(X(" << i << ",:)) != {0,1} = " << sum << std::endl;
-            }
-        }
-        if (Nprob) {
-            Log::warning() <<  "Missing values: problems still found in corrected input weights matrix for " << eckit::Plural(Nprob, "interpolation point") << ", continuing (but shouldn't really)." << std::endl;
-        } else {
-            Log::info() <<  "Missing values: no problems found in corrected input weights matrix." << std::endl;
-        }
+        Nprob = checkMatrixWeights(X);
+        (Nprob? Log::warning() : Log::info()) <<  "Missing values: problems in weights matrix (corrected) on " << eckit::Plural(Nprob, "row") << std::endl;
     }
 
 
     // log corrections and return
-    Log::info() << "Missing values correction: " << fix_misssome << '/' << fix_missall << " some/all-missing out of " << eckit::BigNum(W.rows()) << std::endl;
+    Log::info() << "Missing values correction: " << fix_misssome << '/' << fix_missall << " some/all-missing out of " << eckit::BigNum(X.rows()) << std::endl;
     return X;
 }
 
@@ -398,7 +511,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
 
 template< typename _UnaryOperation >
-std::vector< bool > MethodWeighted::computeFieldMask(const _UnaryOperation& op, const data::MIRField& field, size_t which) const {
+std::vector< bool > MethodWeighted::computeFieldMask(const _UnaryOperation& op, const data::MIRField& field, size_t which) {
     const std::vector< double > &values = field.values(which);
     std::vector< bool > fmask(values.size(), false);
     std::transform(values.begin(), values.end(), fmask.begin(), op);

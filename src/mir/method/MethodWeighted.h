@@ -68,11 +68,16 @@ class MethodWeighted : public Method {
 
   private:
 
-    void computeWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
+    void computeMatrixWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
+
+    /// Confirm the matrix weights are correct.
+    /// @note this is intended for development only
+    /// @return number of rows with issues: sum(W(i,:))!=(0,1), or W(i,j)<0, or W(i,j)>1
+    static size_t checkMatrixWeights(const WeightMatrix &W);
 
     /// Generate boolean mask provided a condition operator
     template< typename _UnaryOperation >
-    std::vector< bool > computeFieldMask(const _UnaryOperation& op, const data::MIRField& field, size_t which) const;
+    static std::vector< bool > computeFieldMask(const _UnaryOperation& op, const data::MIRField& field, size_t which);
 
 };
 
