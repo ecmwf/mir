@@ -47,6 +47,14 @@ NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
 NearestLSM::~NearestLSM() {
 }
 
+template< typename _UnaryOperation >
+std::vector< bool > MethodWeighted::computeFieldMask(const _UnaryOperation& op, const data::MIRField& field, size_t which) {
+    const std::vector< double > &values = field.values(which);
+    std::vector< bool > fmask(values.size(), false);
+    std::transform(values.begin(), values.end(), fmask.begin(), op);
+    return fmask;
+}
+
 lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid &in, const atlas::Grid &out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
