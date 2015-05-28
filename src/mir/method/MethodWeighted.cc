@@ -76,7 +76,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     double here = timer.elapsed();
-    const lsm::LandSeaMasks masks = lsm::LandSeaMasks::lookup(parametrisation_, in, out);
+    const lsm::LandSeaMasks masks = getMasks(in, out);
     Log::info() << "Compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
     Log::info() << "++++ LSM masks " << masks << std::endl;
