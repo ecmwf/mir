@@ -269,9 +269,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
         // count missing values and accumulate weights
         double sum = 0.; // accumulated row weight, disregarding field missing values
-        size_t
-        Nmiss = 0,
-        Ncol  = 0;
+        size_t Nmiss = 0;
+        size_t Ncol  = 0;
         for (WeightMatrix::InnerIterator j(X, i); j; ++j, ++Ncol) {
             if (missmask[j.col()])
                 ++Nmiss;
@@ -352,9 +351,8 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
     // build boolean masks (to isolate algorithm from the logical mask condition)
     const util::compare::is_greater_equal_fn< double > check_lsm(0.5);
-    const std::vector< bool >
-    imask = computeFieldMask(check_lsm, masks.inputField(), 0),
-    omask = computeFieldMask(check_lsm, masks.outputField(), 0);
+    const std::vector< bool > imask = computeFieldMask(check_lsm, masks.inputField(),  0);
+    const std::vector< bool > omask = computeFieldMask(check_lsm, masks.outputField(), 0);
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
 
