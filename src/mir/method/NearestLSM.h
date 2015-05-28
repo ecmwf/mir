@@ -8,6 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Baudouin Raoult
 /// @author Tiago Quintino
 /// @author Pedro Maciel
 /// @date May 2015
@@ -48,12 +49,12 @@ class NearestLSM: public Nearest {
 
     // -- Overridden methods
 
-    void print(std::ostream &) const;
     const char *name() const;
-    void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const;
-    void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const;
-    size_t nclosest() const;
     lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
+    size_t nclosest() const;
+    void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks) const;
+    void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const;
+    void print(std::ostream &) const;
 
 
     // -- Class members

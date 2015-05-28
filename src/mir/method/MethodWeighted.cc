@@ -392,16 +392,15 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
         // apply linear redistribution if necessary
         if (row_changed && !is_approx_zero(sum)) {
             ++fix;
-            const double invsum = 1. / sum;
             for (WeightMatrix::InnerIterator j(W, i); j; ++j)
-                j.valueRef() *= invsum;
+                j.valueRef() /= sum;
         }
 
     }
 
 
     // log corrections
-    Log::info() << "LandSeaMasks correction: " << eckit::BigNum(fix) << " out of " << eckit::BigNum(W.rows()) << std::endl;
+    Log::info() << "MethodWeighted: applyMasks corrected " << eckit::BigNum(fix) << " out of " << eckit::Plural(W.rows() ,"row") << std::endl;
 }
 
 
