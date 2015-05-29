@@ -123,18 +123,25 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     static caching::WeightCache cache;
 
     if (!caching || !cache.retrieve(cache_key, W)) {
+
         computeMatrixWeights(in, out, W);
+        checkMatrixWeights(W, "computeMatrixWeights", in, out);
+
         if (masks.active() && masks.cacheable()) {
             applyMasks(W, masks);
+            checkMatrixWeights(W, "applyMasks", in, out);
         }
         if (caching) {
             cache.insert(cache_key, W);
         }
+    } else {
+        checkMatrixWeights(W, "fromCache", in, out);
     }
 
     // If LSM not cacheabe, e.g. user provided, we apply the mask after
     if (masks.active() && !masks.cacheable())  {
         applyMasks(W, masks);
+        checkMatrixWeights(W, "applyMasks", in, out);
     }
 
     here = timer.elapsed();
@@ -188,6 +195,8 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
             // Assumes compiler does return value optimization
             // otherwise we need to pass result matrix as parameter
             WeightMatrix MW = applyMissingValues(W, field, i);
+            checkMatrixWeights(MW, "applyMissingValues", in, out);
+
             vo = MW * vi;
         } else {
             vo = W * vi;
@@ -228,40 +237,83 @@ void MethodWeighted::computeMatrixWeights(const atlas::Grid &in, const atlas::Gr
     } else {
         eckit::Timer timer("Assemble matrix");
         assemble(W, in, out);   // assemble matrix of coefficients
+        cleanupMatrix(W);
     }
 }
 
-
-size_t MethodWeighted::checkMatrixWeights(const WeightMatrix &W) {
+void MethodWeighted::checkMatrixWeights(const WeightMatrix &W, const char *when, const atlas::Grid &in, const atlas::Grid &out) const {
     using util::compare::is_approx_greater_equal;
-    size_t Nprob = 0;
+
+    size_t errors = 0;
+
     for (size_t i = 0; i < W.rows(); i++) {
 
         // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
         double sum = 0.;
-        bool toolow  = false;
-        bool toohigh = false;
+        bool ok  = true;
+
         for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
             const double &a = j.value();
-            toolow  = toolow  || !is_approx_greater_equal< double >( a, 0.);
-            toohigh = toohigh || !is_approx_greater_equal< double >(-a, -1.);
+            if (!is_approx_greater_equal<double>(a, 0)) {
+                ok = false;
+            }
+            if (!is_approx_greater_equal<double>(1, a)) {
+                ok = false;
+            }
             sum += a;
         }
-        bool badsum = !is_approx_zero(sum) && !is_approx_one(sum);
 
-        // log issues, per row
-        if (toolow || toohigh || badsum) {
-            ++Nprob;
-            std::ostringstream msg;
-            msg << "Incorrect interpolation weights at W(" << i << ",:):";
-            if (toolow)  msg << "  W(i,j)<0 (for some j)";
-            if (toohigh) msg << "  W(i,j)>1 (for some j)";
-            if (badsum)  msg << "  sum(W(i,:)) != {0,1} = " << sum;
-            Log::warning() << msg.str() << std::endl;
+        if (!is_approx_zero(sum) && !is_approx_one(sum)) {
+            ok = false;
         }
 
+        // log issues, per row
+        if (!ok) {
+            if (errors) {
+                if (!errors) {
+                    eckit::Log::info() << "checkMatrixWeights(" << when << ") failed "
+                                       << *this
+                                       << " in=" << in.shortName()
+                                       << ", out=" << out.shortName() << std::endl;
+                }
+
+                eckit::Log::info() << "Row: " << i;
+                for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
+                    eckit::Log::info() << " [" << j.value() << "]";
+                }
+
+                eckit::Log::info() << " sum=" << sum << std::endl;
+            }
+            errors++;
+        }
     }
-    return Nprob;
+
+    if (errors) {
+        eckit::StrStream os;
+        os << "checkMatrixWeights(" << when << ") failed " << *this << " in=" << in.shortName() << ", out=" << out.shortName() << eckit::StrStream::ends;
+        throw eckit::SeriousBug(os);
+    }
+}
+
+void MethodWeighted::cleanupMatrix(WeightMatrix &W) const {
+    size_t fixed = 0;
+    size_t count = 0;
+    for (size_t i = 0; i < W.rows(); i++) {
+        for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
+            const double &a = j.value();
+            if (fabs(a) < 1e-12) {
+                j.valueRef() = 0;
+                fixed++;
+            }
+            count++;
+        }
+    }
+    if (fixed) {
+        eckit::Log::info() << "MethodWeighted::cleanupMatrix fixed "
+                           << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
+                           << " (matrix is " << eckit::BigNum(W.rows()) << "x" << eckit::BigNum(W.cols()) << ", total=" <<
+                           eckit::BigNum(W.rows() * W.cols()) << ")" << std::endl;
+    }
 }
 
 
@@ -269,19 +321,13 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
     ASSERT(field.hasMissing());
 
-    // check matrix weigths correctness
-    // TODO this check should not be done here? maybe before matrix caching? but I don't know where it goes
-    size_t Nprob = checkMatrixWeights(W);
-    if (Nprob) {
-        Log::warning() <<  "Missing values: problems in weights matrix (input) on " << eckit::Plural(Nprob, "row") << ", continuing (but shouldn't really)." << std::endl;
-    }
 
     // correct matrix weigths for the missing values (matrix copy happens here)
     const double missingValue = field.missingValue();
     const std::vector< double > &values = field.values(which);
+
     WeightMatrix X(W);
-    size_t fix_missall  = 0;
-    size_t fix_misssome = 0;
+
     for (size_t i = 0; i < X.rows(); i++) {
 
         // count missing values and accumulate weights
@@ -299,7 +345,6 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
         // redistribution
         if ( (miss_all || is_approx_zero(sum)) && (Ncol > 0)) {
-            ++fix_missall;
 
             // all values are missing (or weights wrongly computed):
             // erase row & force missing value equality
@@ -314,7 +359,6 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             ASSERT(found);
 
         } else if ( miss_some ) {
-            ++fix_misssome;
             ASSERT(!is_approx_zero(sum));
 
             // apply linear redistribution
@@ -330,17 +374,6 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
     }
 
-
-    // recheck corrected matrix for problems
-    // TODO this check should not be done here? after interpolation? again I don't know where it goes
-    if ( Nprob ) {
-        Nprob = checkMatrixWeights(X);
-        (Nprob ? Log::warning() : Log::info()) <<  "Missing values: problems in weights matrix (corrected) on " << eckit::Plural(Nprob, "row") << std::endl;
-    }
-
-
-    // log corrections and return
-    Log::info() << "Missing values correction: " << fix_misssome << '/' << fix_missall << " some/all-missing out of " << eckit::BigNum(X.rows()) << std::endl;
     return X;
 }
 
@@ -352,8 +385,8 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
     Log::info() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
     ASSERT(masks.active());
 
-    const std::vector< bool >& imask = masks.inputMask();
-    const std::vector< bool >& omask = masks.outputMask();
+    const std::vector< bool > &imask = masks.inputMask();
+    const std::vector< bool > &omask = masks.outputMask();
 
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());

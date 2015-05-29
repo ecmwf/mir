@@ -49,7 +49,7 @@ class MethodWeighted : public Method {
 
     virtual void execute(data::MIRField &field, const atlas::Grid &in, const atlas::Grid &out) const;
 
-    virtual void hash( eckit::MD5& ) const;
+    virtual void hash( eckit::MD5 & ) const;
 
   protected:
 
@@ -75,7 +75,9 @@ class MethodWeighted : public Method {
     /// Confirm the matrix weights are correct.
     /// @note this is intended for development only
     /// @return number of rows with issues: sum(W(i,:))!=(0,1), or W(i,j)<0, or W(i,j)>1
-    static size_t checkMatrixWeights(const WeightMatrix &W);
+    void checkMatrixWeights(const WeightMatrix &W, const char *when, const atlas::Grid &in, const atlas::Grid &out) const;
+    void cleanupMatrix(WeightMatrix &W) const;
+
 
 };
 
