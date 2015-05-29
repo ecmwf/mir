@@ -59,8 +59,9 @@ static std::map<std::string, WeightMatrix> matrix_cache;
 }  // (anonymous namespace)
 
 
-MethodWeighted::MethodWeighted(const param::MIRParametrisation &param) :
-    Method(param) {
+MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation) :
+    Method(parametrisation) {
+    ASSERT(parametrisation.get("lsm.weight.adjustement", lsmWeightAdjustement_));
 }
 
 
@@ -281,7 +282,7 @@ void MethodWeighted::checkMatrixWeights(const WeightMatrix &W, const char *when,
                 eckit::Log::info() << "Row: " << i;
                 size_t n = 0;
                 for (WeightMatrix::InnerIterator j(W, i); j; ++j, ++n) {
-                    if(n > 10) {
+                    if (n > 10) {
                         eckit::Log::info() << " ...";
                         break;
                     }
@@ -289,8 +290,7 @@ void MethodWeighted::checkMatrixWeights(const WeightMatrix &W, const char *when,
                 }
 
                 eckit::Log::info() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
-            }
-            else if(errors == 50) {
+            } else if (errors == 50) {
                 eckit::Log::info() << "..." << std::endl;
             }
             errors++;
@@ -328,7 +328,7 @@ void MethodWeighted::cleanupMatrix(WeightMatrix &W) const {
             double d = removed / non_zero;
             for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
                 const double &a = j.value();
-                if(a) {
+                if (a) {
                     j.valueRef() = a + d;
                 }
             }
@@ -424,7 +424,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
     // then redistribute weights
     // - output mask (omask) operates on matrix row index, here i
     // - input mask (imask) operates on matrix column index, here j.col()
-    // FIXME: hardcoded to *= 0.2
+
     size_t fix = 0;
     for (size_t i = 0; i < W.rows(); i++) {
 
@@ -438,7 +438,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
             ASSERT(j.col() < imask.size());
 
             if (omask[i] != imask[j.col()]) {
-                j.valueRef() *= 0.2;
+                j.valueRef() *= lsmWeightAdjustement_;
                 row_changed = true;
             }
             sum += j.value();

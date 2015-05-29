@@ -53,6 +53,8 @@ class MethodWeighted : public Method {
 
   private:
 
+    double lsmWeightAdjustement_;
+
     virtual const char *name() const = 0;
 
     virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const = 0;
