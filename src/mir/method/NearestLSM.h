@@ -54,9 +54,6 @@ private:
 
     virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const;
 
-    /// Update interpolation weigths matrix to account for missing values
-    virtual WeightMatrix applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const;
-
     /// Update interpolation weigths matrix to account for field masked values
     virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const;
 
