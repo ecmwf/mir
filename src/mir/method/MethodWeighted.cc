@@ -279,7 +279,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
     }
 
     // correct matrix weigths for the missing values (matrix copy happens here)
-    const double missingValue = field.missingValue();
+    const util::compare::is_equal_fn< double > check_miss(field.missingValue());
     const std::vector< double > &values = field.values(which);
     WeightMatrix X(W);
     size_t fix_missall  = 0;
@@ -291,7 +291,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
         size_t Nmiss = 0;
         size_t Ncol  = 0;
         for (WeightMatrix::InnerIterator j(X, i); j; ++j, ++Ncol) {
-            if (values[j.col()] == missingValue)
+            if (check_miss(values[j.col()]))
                 ++Nmiss;
             else
                 sum += j.value();
@@ -308,7 +308,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             bool found = false;
             for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
                 j.valueRef() = 0.;
-                if (!found && values[j.col()] == missingValue) {
+                if (!found && check_miss(values[j.col()])) {
                     j.valueRef() = 1.;
                     found = true;
                 }
@@ -321,7 +321,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
             // apply linear redistribution
             for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
-                if (values[j.col()] == missingValue) {
+                if (check_miss(values[j.col()])) {
                     j.valueRef() = 0.;
                 } else {
                     j.valueRef() /= sum;
