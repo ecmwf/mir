@@ -6,14 +6,18 @@ PHILOSOPHY:
 
 
 !----- NEXT STEPS (MAKE IS WORK)
-    +- Bi-linear
-    - Nearest LSM
-    .- Support of polar stereographic grids (LOW PRIORITY)
+    !- Find bad projections
+    !- Caching of SH coefficients for SH to LL
+    !- Clearing cache in metabuilder (note: we need to clear the caches of *ALL* cluster nodes)
+    !- Classic bi-linear
+    - Call HIRLAM routines in emoslib without the need for a rotation (environment variable)
     - Make the logging callback work in emoslib.cc
     - Implement print() method on ATLAS grids
-    +!- CacheMesh should take tesselation method into account: done, caching removed
     - Fix permission of top level cache directory
-
+    - Run metabuilder test on ALL platforms
+    - Add regression tests to metabuilder
+    - Implement other LSM, includinf 10 minute and HIRLAMs
+    .- Support of polar stereographic grids (LOW PRIORITY)
 
 --- METHODS (MAKE IT CORRECT)
     - What is the special treatment for winds (emoslib)
@@ -109,5 +113,7 @@ DONE:
 +- Check if transi can be called with a regular gaussian as output
 +- sharedmem / memmap for caching transi structures
 +- SH to LL with different increments north/south and west/east
++- Nearest LSM
++- CacheMesh should take tesselation method into account: done, caching removed
 
 
