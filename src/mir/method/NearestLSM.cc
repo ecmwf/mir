@@ -105,7 +105,6 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     // - input mask (imask) operates on matrix column index (j)
     here = timer.elapsed();
 
-    //std::vector<atlas::PointIndex3::Value> closest;
     for (size_t i=0; i<W.rows(); ++i) {
 
         // pick the (input) search tree matching the output mask
