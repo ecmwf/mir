@@ -279,11 +279,19 @@ void MethodWeighted::checkMatrixWeights(const WeightMatrix &W, const char *when,
                 }
 
                 eckit::Log::info() << "Row: " << i;
-                for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
+                size_t n = 0;
+                for (WeightMatrix::InnerIterator j(W, i); j; ++j, ++n) {
+                    if(n > 10) {
+                        eckit::Log::info() << " ...";
+                        break;
+                    }
                     eckit::Log::info() << " [" << j.value() << "]";
                 }
 
                 eckit::Log::info() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
+            }
+            else if(errors == 50) {
+                eckit::Log::info() << "..." << std::endl;
             }
             errors++;
 
