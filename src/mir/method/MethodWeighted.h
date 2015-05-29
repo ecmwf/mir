@@ -68,9 +68,8 @@ class MethodWeighted : public Method {
 
     virtual lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
 
-    /// Generate boolean mask provided a condition operator
-    template< typename _UnaryOperation >
-    static std::vector< bool > computeFieldMask(const _UnaryOperation& op, const data::MIRField& field, size_t which);
+    /// Generate boolean mask
+    static std::vector< bool > computeFieldMask(const data::MIRField& field, size_t which);
 
   private:
 

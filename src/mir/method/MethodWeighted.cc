@@ -232,7 +232,7 @@ void MethodWeighted::computeMatrixWeights(const atlas::Grid &in, const atlas::Gr
 }
 
 
-size_t MethodWeighted::checkMatrixWeights(const WeightMatrix& W) {
+size_t MethodWeighted::checkMatrixWeights(const WeightMatrix &W) {
     using util::compare::is_approx_greater_equal;
     size_t Nprob = 0;
     for (size_t i = 0; i < W.rows(); i++) {
@@ -244,7 +244,7 @@ size_t MethodWeighted::checkMatrixWeights(const WeightMatrix& W) {
         for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
             const double &a = j.value();
             toolow  = toolow  || !is_approx_greater_equal< double >( a, 0.);
-            toohigh = toohigh || !is_approx_greater_equal< double >(-a,-1.);
+            toohigh = toohigh || !is_approx_greater_equal< double >(-a, -1.);
             sum += a;
         }
         bool badsum = !is_approx_zero(sum) && !is_approx_one(sum);
@@ -335,7 +335,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &WW, data::MI
     // TODO this check should not be done here? after interpolation? again I don't know where it goes
     if ( Nprob ) {
         Nprob = checkMatrixWeights(X);
-        (Nprob? Log::warning() : Log::info()) <<  "Missing values: problems in weights matrix (corrected) on " << eckit::Plural(Nprob, "row") << std::endl;
+        (Nprob ? Log::warning() : Log::info()) <<  "Missing values: problems in weights matrix (corrected) on " << eckit::Plural(Nprob, "row") << std::endl;
     }
 
 
@@ -358,9 +358,8 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
 
     // build boolean masks (to isolate algorithm from the logical mask condition)
-    const util::compare::is_greater_equal_fn< double > check_lsm(0.5);
-    const std::vector< bool > imask = computeFieldMask(check_lsm, masks.inputField(),  0);
-    const std::vector< bool > omask = computeFieldMask(check_lsm, masks.outputField(), 0);
+    const std::vector< bool > imask = computeFieldMask(masks.inputField(),  0);
+    const std::vector< bool > omask = computeFieldMask(masks.outputField(), 0);
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
 
@@ -400,20 +399,20 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
 
     // log corrections
-    Log::info() << "MethodWeighted: applyMasks corrected " << eckit::BigNum(fix) << " out of " << eckit::Plural(W.rows() ,"row") << std::endl;
+    Log::info() << "MethodWeighted: applyMasks corrected " << eckit::BigNum(fix) << " out of " << eckit::Plural(W.rows() , "row") << std::endl;
 }
 
 
-template< typename _UnaryOperation >
-std::vector< bool > MethodWeighted::computeFieldMask(const _UnaryOperation& op, const data::MIRField& field, size_t which) {
+std::vector< bool > MethodWeighted::computeFieldMask(const data::MIRField &field, size_t which) {
+    const util::compare::is_greater_equal_fn< double > check_lsm(0.5);
     const std::vector< double > &values = field.values(which);
     std::vector< bool > fmask(values.size(), false);
-    std::transform(values.begin(), values.end(), fmask.begin(), op);
+    std::transform(values.begin(), values.end(), fmask.begin(), check_lsm);
     return fmask;
 }
 
 
-void MethodWeighted::hash(eckit::MD5& md5) const {
+void MethodWeighted::hash(eckit::MD5 &md5) const {
     md5.add(name());
 }
 

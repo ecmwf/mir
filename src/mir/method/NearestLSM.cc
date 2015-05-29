@@ -47,14 +47,6 @@ NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
 NearestLSM::~NearestLSM() {
 }
 
-template< typename _UnaryOperation >
-std::vector< bool > MethodWeighted::computeFieldMask(const _UnaryOperation& op, const data::MIRField& field, size_t which) {
-    const std::vector< double > &values = field.values(which);
-    std::vector< bool > fmask(values.size(), false);
-    std::transform(values.begin(), values.end(), fmask.begin(), op);
-    return fmask;
-}
-
 lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid &in, const atlas::Grid &out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
@@ -91,9 +83,8 @@ void NearestLSM::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks) con
 
 
     // build boolean masks (to isolate algorithm from the logical mask condition)
-    const util::compare::is_greater_equal_fn< double > check_lsm(0.5);
-    const std::vector< bool > imask = computeFieldMask(check_lsm, masks.inputField(),  0);
-    const std::vector< bool > omask = computeFieldMask(check_lsm, masks.outputField(), 0);
+    const std::vector< bool > imask = computeFieldMask(masks.inputField(),  0);
+    const std::vector< bool > omask = computeFieldMask(masks.outputField(), 0);
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
 
