@@ -19,9 +19,9 @@
 
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
-
 #include "atlas/Grid.h"
 #include "atlas/PointIndex3.h"
+#include "mir/util/Compare.h"
 
 
 namespace mir {
@@ -29,23 +29,28 @@ namespace util {
 
 
 /// Class for fast searches in point clouds following kd-tree algorithms
-/// @todo test kd-tree stored in shared memory ?
-
+/// @todo test kd-tree stored in shared memory?
 class PointSearch : private eckit::NonCopyable {
+private:
 
-    typedef atlas::PointIndex3 TreeType;
-    typedef atlas::PointIndex3::Point Point;
-    typedef atlas::PointIndex3::Value ValueType;
+    typedef atlas::PointIndex3           TreeType;
+    typedef atlas::PointIndex3::Point    Point;
+    typedef atlas::PointIndex3::Value    ValueType;
     typedef atlas::PointIndex3::iterator iterator;
+    typedef eckit::geometry::Point3      PointType;
 
-    typedef eckit::geometry::Point3 PointType;
+public:
 
-  public:
+    typedef compare::compare_fn     <size_t> CompareType;
+    typedef compare::is_anything_fn <size_t> CompareTypeNone;
+
+public:
 
     PointSearch(const std::vector<Point>& ipts);
+
     PointSearch(const atlas::Mesh& mesh);
 
-  public:
+public:
 
     /// Finds closest N points to an input point
     void closestNPoints(const PointType& pt, size_t n, std::vector<ValueType>& closest);
@@ -53,16 +58,20 @@ class PointSearch : private eckit::NonCopyable {
     /// Finds closest points within a radius
     void closestWithinRadius(const PointType& pt, double radius, std::vector<ValueType>& closest);
 
-  protected:
+protected:
+
     eckit::ScopedPtr<TreeType> tree_;
 
-  private:
+private:
+
     void init(const std::vector<PointType>& points);
 
-    void init(const atlas::Mesh& mesh);
+    void init(const atlas::Mesh& mesh, const CompareType& isok=CompareTypeNone());
 
     mutable atlas::Grid::uid_t uid_;
+
 };
+
 
 }  // namespace util
 }  // namespace mir
