@@ -14,15 +14,20 @@
 /// @date May 2015
 
 
-#ifndef mir_method_Bilinear_H
-#define mir_method_Bilinear_H
+#ifndef mir_method_NearestLSM_H
+#define mir_method_NearestLSM_H
 
 #include "mir/method/MethodWeighted.h"
 
 
-namespace eckit {
-namespace geometry {
-class Point3;
+namespace atlas {
+class Grid;
+}
+
+
+namespace mir {
+namespace lsm {
+class LandSeaMasks;
 }
 }
 
@@ -38,10 +43,6 @@ public:
 
     virtual ~NearestLSM();
 
-protected:
-
-    virtual void hash( eckit::MD5 & ) const;
-
 private:
 
     // -- Methods
@@ -51,11 +52,21 @@ private:
 
     virtual const char *name() const;
 
-    virtual lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
-
-    virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks) const;
-
     virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const;
+
+    /// Update interpolation weigths matrix to account for missing values
+    WeightMatrix applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const {
+        // FIXME this function should not be overriding to do nothing
+        // (there is an architecture problem here, exposure in .h is intentional)
+    }
+
+    /// Update interpolation weigths matrix to account for field masked values
+    virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const {
+        // FIXME this function should not be overriding to do nothing
+        // (there is an architecture problem here, exposure in .h is intentional)
+    }
+
+    virtual lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
 
     virtual void print(std::ostream &) const;
 
