@@ -61,7 +61,7 @@ static std::map<std::string, WeightMatrix> matrix_cache;
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation) :
     Method(parametrisation) {
-    ASSERT(parametrisation.get("lsm.weight.adjustement", lsmWeightAdjustement_));
+    ASSERT(parametrisation.get("lsm.weight.adjustment", lsmWeightAdjustement_));
 }
 
 

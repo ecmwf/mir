@@ -127,7 +127,7 @@ void MIRTool::run() {
     options.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm.selection.output", "Selection method for output lsm"));
     options.push_back(new SimpleOption<eckit::PathName>("lsm.file.output", "Path to lsm to use for output lsm, in grib, only if --lsm.selection=file"));
 
-    options.push_back(new SimpleOption<double>("lsm.weight.adjustement", "Weight adjustement factor when applying LSM (default 0.2)"));
+    options.push_back(new SimpleOption<double>("lsm.weight.adjustment", "Weight adjustment factor when applying LSM (default 0.2)"));
 
     //==============================================
     options.push_back(new Separator("Unstructured grids support"));

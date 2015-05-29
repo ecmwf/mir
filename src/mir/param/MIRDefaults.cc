@@ -41,7 +41,7 @@ MIRDefaults::MIRDefaults() {
     set("epsilon", std::numeric_limits<double>::epsilon());
     set("nclosest", 4L);
 
-    set("lsm.weight.adjustement", 0.2);
+    set("lsm.weight.adjustment", 0.2);
 
     // Read the rest for the file
     eckit::PathName path("~mir/etc/defaults.cfg");
