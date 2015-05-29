@@ -17,20 +17,16 @@
 #include "mir/method/NearestLSM.h"
 
 #if 0
-#include <algorithm>
-#include <string>
-
-#include "atlas/grids/ReducedGaussianGrid.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
-#include "eckit/log/Timer.h"
-#include "eckit/utils/MD5.h"
 #include "mir/data/MIRField.h"
 #endif
 #include "eckit/log/Log.h"
+#include "eckit/log/Timer.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/util/Compare.h"
+#include "mir/util/PointSearch.h"
 
 
 using eckit::Log;
@@ -55,58 +51,90 @@ const char *NearestLSM::name() const {
 
 
 void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
-    //    MethodWeighted::assemble(W, in, out);
 
-#if 0
-    eckit::Timer timer("NearestLSM::applyMasks");
-    using mir::util::compare::is_approx_zero;
 
+    const std::string name("MethodWeighted::getMatrix");
+    eckit::Timer timer(name);
+
+
+    // get the land-sea masks, with boolean masking on point (node) indices
+    double here = timer.elapsed();
+
+    const lsm::LandSeaMasks masks = getMasks(in, out);
     ASSERT(masks.active());
+    Log::info() << name << " compute LandSeaMasks " << timer.elapsed() - here << std::endl;
+
+
+    // compute masked/not-masked search trees
+    here = timer.elapsed();
 
     const std::vector< bool > &imask = masks.inputMask();
     const std::vector< bool > &omask = masks.outputMask();
 
+
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
 
+    const util::compare::is_masked_fn     is_imasked    (imask);
+    const util::compare::is_not_masked_fn is_inotmasked (imask);
 
-    // apply corrections on inequality != (XOR) of logical masks,
-    // then redistribute weights
-    // - output mask (omask) operates on matrix row index, here i
-    // - input mask (imask) operates on matrix column index, here j.col()
-    // FIXME: hardcoded to *= 0.2
-    size_t fix = 0;
-    for (size_t i = 0; i < W.rows(); i++) {
+    util::PointSearch sptree_masked    (in.mesh(), is_imasked);
+    util::PointSearch sptree_notmasked (in.mesh(), is_inotmasked);
 
-        ASSERT(i < omask.size());
+    Log::info() << name << " compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
 
-        // correct weight of non-matching input point weight contribution
-        double sum = 0.;
-        bool row_changed = false;
-        for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
 
-            ASSERT(j.col() < imask.size());
+    // compute the output nodes coordinates
+    here = timer.elapsed();
 
-            if (omask[i] != imask[j.col()]) {
-                j.valueRef() *= 0.2;
-                row_changed = true;
-            }
-            sum += j.value();
-        }
+    const atlas::Mesh &o_mesh = out.mesh();
+    ASSERT(o_mesh.has_function_space("nodes"));
+    ASSERT(o_mesh.function_space("nodes").has_field("xyz"));
+    atlas::ArrayView< double, 2 > ocoords(
+                o_mesh.function_space("nodes").field("xyz") );
 
-        // apply linear redistribution if necessary
-        if (row_changed && !is_approx_zero(sum)) {
-            ++fix;
-            for (WeightMatrix::InnerIterator j(W, i); j; ++j)
-                j.valueRef() /= sum;
-        }
+    Log::info() << name << " compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
+
+
+    // init sparse matrix uncompressed structure
+    here = timer.elapsed();
+    std::vector< Eigen::Triplet< double > > weights_triplets;
+    weights_triplets.reserve(W.rows());
+    Log::info() << name << " init sparse matrix uncompressed structure " << timer.elapsed() - here << std::endl;
+
+
+    // search nearest neighbours matching in/output masks
+    // - output mask (omask) operates on matrix row index (i)
+    // - input mask (imask) operates on matrix column index (j)
+    here = timer.elapsed();
+
+    for (size_t i=0; i<W.rows(); ++i) {
+
+        // pick the (input) search tree matching the output mask
+        util::PointSearch& sptree(
+                    omask[i]? sptree_masked
+                            : sptree_notmasked );
+
+        // perform nearest neighbour search
+        // - p: output grid node to look neighbours for
+        // - q: input grid node closest to p
+        // - j: index of q in input grid (or input field)
+        util::PointSearch::PointType      p(ocoords[i].data());
+        util::PointSearch::PointValueType q = sptree.closestPoint(p);
+        const size_t j = q.payload();
+
+        // insert entry into uncompressed matrix structure
+        weights_triplets.push_back(Eigen::Triplet< double >( i, j, 1.));
 
     }
 
+    Log::info() << name << " search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;
 
-    // log corrections
-    Log::info() << "NearestLSM: corrected " << eckit::BigNum(fix) << " out of " << eckit::Plural(W.rows() ,"row") << std::endl;
-#endif
+
+    // fill-in sparse matrix
+    here = timer.elapsed();
+    W.setFromTriplets(weights_triplets.begin(), weights_triplets.end());
+    Log::info() << name << " fill-in sparse matrix " << timer.elapsed() - here << std::endl;
 }
 
 

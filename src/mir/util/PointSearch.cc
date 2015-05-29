@@ -33,7 +33,13 @@ PointSearch::PointSearch(const atlas::Mesh& mesh, const CompareType& isok) {
 }
 
 
-void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<ValueType>& closest) {
+PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType& pt) {
+    const atlas::PointIndex3::NodeInfo nn = tree_->nearestNeighbour(pt);
+    return nn.value();
+}
+
+
+void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest) {
     using atlas::PointIndex3;
 
     PointIndex3::NodeList nn = tree_->kNearestNeighbours(pt, n);
@@ -45,7 +51,7 @@ void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<Valu
 }
 
 
-void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<ValueType>& closest) {
+void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest) {
     using atlas::PointIndex3;
 
     PointIndex3::NodeList r = tree_->findInSphere(pt,radius);
