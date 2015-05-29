@@ -93,7 +93,6 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     Log::info() << name << " compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
 
 
-
     // init sparse matrix uncompressed structure
     here = timer.elapsed();
     std::vector< Eigen::Triplet< double > > weights_triplets;
@@ -101,10 +100,33 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     Log::info() << name << " init sparse matrix uncompressed structure " << timer.elapsed() - here << std::endl;
 
 
+    // search nearest neighbours matching in/output masks
+    // - output mask (omask) operates on matrix row index (i)
+    // - input mask (imask) operates on matrix column index (j)
+    here = timer.elapsed();
 
-#if 0
-    // here goes nothin'!
-#endif
+    //std::vector<atlas::PointIndex3::Value> closest;
+    for (size_t i=0; i<W.rows(); ++i) {
+
+        // pick the (input) search tree matching the output mask
+        util::PointSearch& sptree(
+                    omask[i]? sptree_masked
+                            : sptree_notmasked );
+
+        // perform nearest neighbour search
+        // - p: output grid node to look neighbours for
+        // - q: input grid node closest to p
+        // - j: index of q in input grid (or input field)
+        util::PointSearch::PointType      p(ocoords[i].data());
+        util::PointSearch::PointValueType q = sptree.closestPoint(p);
+        const size_t j = q.payload();
+
+        // insert entry into uncompressed matrix structure
+        weights_triplets.push_back(Eigen::Triplet< double >( i, j, 1.));
+
+    }
+
+    Log::info() << name << " search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;
 
 
     // fill-in sparse matrix
