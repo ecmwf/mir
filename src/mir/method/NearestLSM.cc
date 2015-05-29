@@ -40,12 +40,13 @@ namespace method {
 
 
 NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
-    Nearest(param) {
+    MethodWeighted(param) {
 }
 
 
 NearestLSM::~NearestLSM() {
 }
+
 
 lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid &in, const atlas::Grid &out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
@@ -53,28 +54,24 @@ lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid &in, const atlas::Grid 
     return lsm::LandSeaMasks::lookup(runtime, in, out);
 }
 
+
 const char *NearestLSM::name() const {
     return  "nearest-lsm";
 }
 
-size_t NearestLSM::nclosest() const {
-    // TODO make this a real parameter and find a better default
-    return 16;
-}
 
 void NearestLSM::hash( eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
 }
 
-void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
-    Nearest::assemble(W, in, out);
-}
 
-void NearestLSM::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
+void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
+//    MethodWeighted::assemble(W, in, out);
+
+#if 0
     eckit::Timer timer("NearestLSM::applyMasks");
     using mir::util::compare::is_approx_zero;
 
-    Log::info() << "======== NearestLSM::applyMasks(" << masks << ")" << std::endl;
     ASSERT(masks.active());
 
     const std::vector< bool >& imask = masks.inputMask();
@@ -119,7 +116,13 @@ void NearestLSM::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks) con
 
 
     // log corrections
-    Log::info() << "NearestLSM: applyMasks corrected " << eckit::BigNum(fix) << " out of " << eckit::Plural(W.rows() ,"row") << std::endl;
+    Log::info() << "NearestLSM: corrected " << eckit::BigNum(fix) << " out of " << eckit::Plural(W.rows() ,"row") << std::endl;
+#endif
+}
+
+
+void NearestLSM::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
+    // FIXME this function should not be overriding to do nothing (there is an architecture problem here)
 }
 
 
