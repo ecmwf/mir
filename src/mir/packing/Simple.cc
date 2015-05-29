@@ -16,6 +16,7 @@
 
 #include "mir/packing/Simple.h"
 #include "mir/util/Grib.h"
+#include "mir/repres/Representation.h"
 
 #include <iostream>
 
@@ -35,10 +36,9 @@ void Simple::print(std::ostream& out) const {
     out << "Simple[]";
 }
 
-void Simple::fill(grib_info& info, const repres::Representation& ) const {
+void Simple::fill(grib_info& info, const repres::Representation& repres) const {
     info.packing.packing = GRIB_UTIL_PACKING_USE_PROVIDED;
-    // info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_SECOND_ORDER;
-    NOTIMP;
+    repres.setSimplePacking(info);
 }
 
 
