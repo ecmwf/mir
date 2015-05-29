@@ -17,6 +17,7 @@
 #include "mir/util/PointSearch.h"
 
 #include <vector>
+#include <limits>
 
 
 namespace mir {
@@ -86,13 +87,17 @@ void PointSearch::init(const atlas::Mesh& mesh, const CompareType& isok) {
     size_t npts = nodes.shape(0);
     ASSERT(npts > 0);
 
+    const double infty = std::numeric_limits< double >::infinity();
+    const PointType farpoint(infty,infty,infty);
+
     std::vector<PointType> points;
     points.reserve(npts);
 
     atlas::ArrayView<double, 2> coords(nodes.field<double>("xyz"));
     for (size_t ip = 0; ip < npts; ++ip)
-        if (isok(ip))
-            points.push_back(coords[ip].data());
+        points.push_back(isok(ip)?
+                             PointType(coords[ip].data())
+                           : farpoint );
 
     init(points);
 }
