@@ -232,7 +232,7 @@ void MethodWeighted::computeMatrixWeights(const atlas::Grid &in, const atlas::Gr
 }
 
 
-size_t MethodWeighted::checkMatrixWeights(const WeightMatrix &W) {
+size_t MethodWeighted::checkMatrixWeights(const WeightMatrix &W, bool print) {
     using util::compare::is_approx_greater_equal;
     size_t Nprob = 0;
     for (size_t i = 0; i < W.rows(); i++) {
@@ -252,6 +252,8 @@ size_t MethodWeighted::checkMatrixWeights(const WeightMatrix &W) {
         // log issues, per row
         if (toolow || toohigh || badsum) {
             ++Nprob;
+            if (!print)
+                continue;
             std::ostringstream msg;
             msg << "Incorrect interpolation weights at W(" << i << ",:):";
             if (toolow)  msg << "  W(i,j)<0 (for some j)";
@@ -334,7 +336,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
     // recheck corrected matrix for problems
     // TODO this check should not be done here? after interpolation? again I don't know where it goes
     if ( Nprob ) {
-        Nprob = checkMatrixWeights(X);
+        Nprob = checkMatrixWeights(X,false);
         (Nprob ? Log::warning() : Log::info()) <<  "Missing values: problems in weights matrix (corrected) on " << eckit::Plural(Nprob, "row") << std::endl;
     }
 

@@ -63,7 +63,6 @@ class MethodWeighted : public Method {
     /// Update interpolation weigths matrix to account for field masked values
     virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const;
 
-
     virtual const WeightMatrix &getMatrix(const atlas::Grid &in, const atlas::Grid &out) const;
 
     virtual lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
@@ -75,7 +74,7 @@ class MethodWeighted : public Method {
     /// Confirm the matrix weights are correct.
     /// @note this is intended for development only
     /// @return number of rows with issues: sum(W(i,:))!=(0,1), or W(i,j)<0, or W(i,j)>1
-    static size_t checkMatrixWeights(const WeightMatrix &W);
+    static size_t checkMatrixWeights(const WeightMatrix &W, bool print=true);
 
 };
 
