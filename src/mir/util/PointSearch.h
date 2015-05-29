@@ -35,11 +35,12 @@ private:
 
     typedef atlas::PointIndex3           TreeType;
     typedef atlas::PointIndex3::Point    Point;
-    typedef atlas::PointIndex3::Value    ValueType;
     typedef atlas::PointIndex3::iterator iterator;
-    typedef eckit::geometry::Point3      PointType;
 
 public:
+
+    typedef atlas::PointIndex3::Value PointValueType;
+    typedef eckit::geometry::Point3   PointType;
 
     typedef compare::compare_fn     <size_t> CompareType;
     typedef compare::is_anything_fn <size_t> CompareTypeNone;
@@ -52,11 +53,14 @@ public:
 
 public:
 
+    /// Finds closest point to an input point
+    PointValueType closestPoint(const PointType& pt);
+
     /// Finds closest N points to an input point
-    void closestNPoints(const PointType& pt, size_t n, std::vector<ValueType>& closest);
+    void closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest);
 
     /// Finds closest points within a radius
-    void closestWithinRadius(const PointType& pt, double radius, std::vector<ValueType>& closest);
+    void closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest);
 
 protected:
 
