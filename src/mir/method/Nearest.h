@@ -12,22 +12,25 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-#ifndef mir_method_KNearest_H
-#define mir_method_KNearest_H
+
+#ifndef mir_method_Nearest_H
+#define mir_method_Nearest_H
 
 #include "mir/method/MethodWeighted.h"
+
 
 namespace mir {
 namespace method {
 
+
 class Nearest : public MethodWeighted {
-  public:
+public:
 
     explicit Nearest(const param::MIRParametrisation&);
 
     virtual ~Nearest();
 
-  protected:
+protected:
 
     double epsilon_;
 
@@ -46,7 +49,9 @@ private:
     // -- Class members
 
     // -- Friends
+
 };
+
 
 }  // namespace method
 }  // namespace mir

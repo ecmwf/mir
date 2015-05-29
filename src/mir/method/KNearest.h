@@ -13,8 +13,8 @@
 /// @date May 2015
 
 
-#ifndef mir_method_NearestNeighbourg_H
-#define mir_method_NearestNeighbourg_H
+#ifndef mir_method_KNearest_H
+#define mir_method_KNearest_H
 
 #include "mir/method/Nearest.h"
 
@@ -24,33 +24,35 @@ namespace method {
 
 
 class KNearest: public Nearest {
-
-  public:
+public:
 
     KNearest(const param::MIRParametrisation&);
 
     virtual ~KNearest();
 
-  protected:
+protected:
 
     virtual void hash( eckit::MD5& ) const;
 
-  private:
+private:
 
-// -- Members
+    // -- Members
 
     size_t nclosest_;
 
-// -- Methods
+    // -- Methods
 
     virtual void print(std::ostream&) const;
+
     virtual const char* name() const;
+
     virtual size_t nclosest() const;
 
-// -- Class members
+    // -- Class members
+    // None
 
-// -- Friends
-
+    // -- Friends
+    // None
 
 };
 
