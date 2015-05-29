@@ -28,8 +28,8 @@ PointSearch::PointSearch(const std::vector<PointType>& points) {
 }
 
 
-PointSearch::PointSearch(const atlas::Mesh& mesh) {
-    init(mesh);
+PointSearch::PointSearch(const atlas::Mesh& mesh, const CompareType& isok) {
+    init(mesh,isok);
 }
 
 
