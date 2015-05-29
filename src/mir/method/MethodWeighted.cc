@@ -283,7 +283,7 @@ void MethodWeighted::checkMatrixWeights(const WeightMatrix &W, const char *when,
                     eckit::Log::info() << " [" << j.value() << "]";
                 }
 
-                eckit::Log::info() << " sum=" << sum << ", 1-sum " << (1-sum) << std::endl;
+                eckit::Log::info() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
             }
             errors++;
 
@@ -301,14 +301,32 @@ void MethodWeighted::cleanupMatrix(WeightMatrix &W) const {
     size_t fixed = 0;
     size_t count = 0;
     for (size_t i = 0; i < W.rows(); i++) {
+        double removed = 0;
+        size_t non_zero = 0;
+
         for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
             const double &a = j.value();
-            if (fabs(a) < 1e-12) {
+            if (fabs(a) < 1e-14) {
+                removed += a;
                 j.valueRef() = 0;
                 fixed++;
+            } else {
+                non_zero++;
             }
             count++;
         }
+
+        if (removed && non_zero) {
+            double d = removed / non_zero;
+            for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
+                const double &a = j.value();
+                if(a) {
+                    j.valueRef() = a + d;
+                }
+            }
+        }
+
+
     }
     if (fixed) {
         eckit::Log::info() << "MethodWeighted::cleanupMatrix fixed "
