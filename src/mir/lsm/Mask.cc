@@ -54,10 +54,11 @@ Mask::Mask(const std::string &name):
 Mask::~Mask() {
 }
 
+
 void Mask::hash(eckit::MD5 &md5) const {
     md5 << name_;
 }
-//-----------------------------------------------------------------------------
+
 
 Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::Grid &grid, const std::string &which) {
 
@@ -101,6 +102,7 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
 
 }
 
+
 Mask &Mask::lookupInput(const param::MIRParametrisation   &parametrisation, const atlas::Grid &grid) {
     return lookup(parametrisation, grid, ".input");
 }
@@ -116,9 +118,11 @@ const data::MIRField &Mask::field() const {
     return *field_;
 }
 
+
 bool Mask::cacheable() const {
     return true;
 }
+
 
 bool Mask::active() const {
     return true;
@@ -128,18 +132,16 @@ bool Mask::active() const {
 const std::vector<bool> &Mask::mask() const {
     if (mask_.size() == 0) {
         const util::compare::is_greater_equal_fn< double > check_lsm(0.5);
-        const std::vector< double > &values = field().values(0);
 
         ASSERT(!field().hasMissing());
         ASSERT(field().dimensions() == 1);
 
+        const std::vector< double > &values = field().values(0);
         mask_.resize(values.size());
         std::transform(values.begin(), values.end(), mask_.begin(), check_lsm);
     }
     return mask_;
 }
-
-//-----------------------------------------------------------------------------
 
 
 }  // namespace logic
