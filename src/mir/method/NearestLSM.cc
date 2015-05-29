@@ -145,18 +145,12 @@ lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid &in, const atlas::Grid 
 }
 
 
-
-WeightMatrix NearestLSM::applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const {
-    // This is possible, you can have missing values and use NearestLSM
-    return MethodWeighted::applyMissingValues(W, field, which);
-}
-
 void NearestLSM::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const {
     // FIXME this function should not be overriding to do nothing
 }
 
 void NearestLSM::print(std::ostream &out) const {
-    out << name() << "[]";
+    out << "NearestLSM[]";
 }
 
 

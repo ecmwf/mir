@@ -51,7 +51,7 @@ class MethodWeighted : public Method {
 
     virtual void hash( eckit::MD5 & ) const;
 
-  protected:
+  private:
 
     virtual const char *name() const = 0;
 
@@ -67,7 +67,6 @@ class MethodWeighted : public Method {
 
     virtual lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
 
-  private:
 
     void computeMatrixWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
 
