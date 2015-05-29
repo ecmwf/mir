@@ -51,9 +51,7 @@ const char *NearestLSM::name() const {
 
 
 void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
-
-
-    const std::string name("MethodWeighted::getMatrix");
+    const std::string name("NearestLSM::getMatrix");
     eckit::Timer timer(name);
 
 
@@ -62,6 +60,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
 
     const lsm::LandSeaMasks masks = getMasks(in, out);
     ASSERT(masks.active());
+
     Log::info() << name << " compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
 
@@ -70,16 +69,11 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
 
     const std::vector< bool > &imask = masks.inputMask();
     const std::vector< bool > &omask = masks.outputMask();
-
-
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
 
-    const util::compare::is_masked_fn     is_imasked    (imask);
-    const util::compare::is_not_masked_fn is_inotmasked (imask);
-
-    util::PointSearch sptree_masked    (in.mesh(), is_imasked);
-    util::PointSearch sptree_notmasked (in.mesh(), is_inotmasked);
+    util::PointSearch sptree_masked    (in.mesh(), util::compare::is_masked_fn     (imask));
+    util::PointSearch sptree_notmasked (in.mesh(), util::compare::is_not_masked_fn (imask));
 
     Log::info() << name << " compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
 
@@ -96,18 +90,13 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     Log::info() << name << " compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
 
 
-    // init sparse matrix uncompressed structure
-    here = timer.elapsed();
-    std::vector< Eigen::Triplet< double > > weights_triplets;
-    weights_triplets.reserve(W.rows());
-    Log::info() << name << " init sparse matrix uncompressed structure " << timer.elapsed() - here << std::endl;
-
-
     // search nearest neighbours matching in/output masks
     // - output mask (omask) operates on matrix row index (i)
     // - input mask (imask) operates on matrix column index (j)
     here = timer.elapsed();
 
+    std::vector< Eigen::Triplet< double > > mat;
+    mat.reserve(W.rows());
     for (size_t i=0; i<W.rows(); ++i) {
 
         // pick the (input) search tree matching the output mask
@@ -117,23 +106,22 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
 
         // perform nearest neighbour search
         // - p: output grid node to look neighbours for
-        // - q: input grid node closest to p
+        // - q: input grid node closest to p (accessed as qmeta.point())
         // - j: index of q in input grid (or input field)
-        util::PointSearch::PointType      p(ocoords[i].data());
-        util::PointSearch::PointValueType q = sptree.closestPoint(p);
-        const size_t j = q.payload();
+        const util::PointSearch::PointType      p(ocoords[i].data());
+        const util::PointSearch::PointValueType qmeta = sptree.closestPoint(p);
+        const size_t j = qmeta.payload();
 
         // insert entry into uncompressed matrix structure
-        weights_triplets.push_back(Eigen::Triplet< double >( i, j, 1.));
+        mat.push_back(Eigen::Triplet< double >( i, j, 1. ));
 
     }
-
     Log::info() << name << " search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;
 
 
     // fill-in sparse matrix
     here = timer.elapsed();
-    W.setFromTriplets(weights_triplets.begin(), weights_triplets.end());
+    W.setFromTriplets(mat.begin(), mat.end());
     Log::info() << name << " fill-in sparse matrix " << timer.elapsed() - here << std::endl;
 }
 
@@ -148,6 +136,7 @@ lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid &in, const atlas::Grid 
 void NearestLSM::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const {
     // FIXME this function should not be overriding to do nothing
 }
+
 
 void NearestLSM::print(std::ostream &out) const {
     out << "NearestLSM[]";
