@@ -20,6 +20,7 @@
 #include <iosfwd>
 #include <string>
 #include <memory>
+#include <vector>
 
 #include "eckit/memory/NonCopyable.h"
 
@@ -63,9 +64,9 @@ class Mask : private eckit::NonCopyable {
     virtual bool active() const;
 
     virtual bool cacheable() const;
-    virtual const data::MIRField &field() const;
 
-    virtual void hash(eckit::MD5&) const;
+    virtual void hash(eckit::MD5 &) const;
+    virtual const std::vector<bool> &mask() const;
 
     // -- Overridden methods
     // None
@@ -85,10 +86,12 @@ class Mask : private eckit::NonCopyable {
     std::string name_;
 
     std::auto_ptr<data::MIRField> field_;
+    mutable std::vector<bool> mask_;
 
     // -- Methods
 
     virtual void print(std::ostream &) const = 0;
+
 
     // -- Overridden methods
     // None
@@ -106,6 +109,7 @@ class Mask : private eckit::NonCopyable {
 
     // -- Methods
 
+    virtual const data::MIRField &field() const;
 
     // -- Overridden methods
     // None
@@ -116,7 +120,7 @@ class Mask : private eckit::NonCopyable {
     // -- Class methods
     static  Mask &lookup(const param::MIRParametrisation &param,
                          const atlas::Grid &grid,
-                         const std::string& which);
+                         const std::string &which);
 
 
     // -- Friends

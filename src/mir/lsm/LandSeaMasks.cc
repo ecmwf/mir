@@ -50,12 +50,12 @@ LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation &parametrisati
     return LandSeaMasks(Mask::lookupInput(parametrisation, in), Mask::lookupOutput(parametrisation, out));
 }
 
-const data::MIRField& LandSeaMasks::inputField() const {
-    return input_.field();
+const std::vector<bool>& LandSeaMasks::inputMask() const {
+    return input_.mask();
 }
 
-const data::MIRField& LandSeaMasks::outputField() const {
-    return output_.field();
+const std::vector<bool>& LandSeaMasks::outputMask() const {
+    return output_.mask();
 }
 //-----------------------------------------------------------------------------
 

@@ -18,6 +18,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <vector>
 
 namespace atlas {
 class Grid;
@@ -67,11 +68,12 @@ class LandSeaMasks {
 
     void hash(eckit::MD5&) const;
 
-    virtual bool active() const;
-    virtual bool cacheable() const;
+    bool active() const;
+    bool cacheable() const;
 
-    virtual const data::MIRField &inputField() const;
-    virtual const data::MIRField &outputField() const;
+    const std::vector<bool>& inputMask() const;
+    const std::vector<bool>& outputMask() const;
+
 
     // -- Overridden methods
     // None
@@ -93,7 +95,7 @@ class LandSeaMasks {
     // -- Methods
 
 
-    virtual void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None

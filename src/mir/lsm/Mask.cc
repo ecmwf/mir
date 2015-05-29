@@ -24,7 +24,8 @@
 
 #include "mir/lsm/NoneLSM.h"
 #include "mir/param/MIRParametrisation.h"
-
+#include "mir/util/Compare.h"
+#include "mir/data/MIRField.h"
 
 namespace mir {
 namespace lsm {
@@ -53,17 +54,17 @@ Mask::Mask(const std::string &name):
 Mask::~Mask() {
 }
 
-void Mask::hash(eckit::MD5 & md5) const {
+void Mask::hash(eckit::MD5 &md5) const {
     md5 << name_;
 }
 //-----------------------------------------------------------------------------
 
-Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::Grid &grid, const std::string& which) {
+Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::Grid &grid, const std::string &which) {
 
     bool lsm = false;
     parametrisation.get("lsm", lsm);
 
-    if(!lsm) {
+    if (!lsm) {
         return NoneLSM::instance();
     }
 
@@ -77,7 +78,7 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
     }
 
     name = name +  which;
-    const LSMChooser& chooser = LSMChooser::lookup(name);
+    const LSMChooser &chooser = LSMChooser::lookup(name);
     std::string key = chooser.cacheKey(name, parametrisation, grid, which);
 
     pthread_once(&once, init);
@@ -87,11 +88,11 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
     eckit::Log::info() << "Mask::lookup(" << key << ")" << std::endl;
     std::map<std::string, Mask *>::iterator j = cache.find(key);
 
-    if(j != cache.end()) {
+    if (j != cache.end()) {
         return *(*j).second;
     }
 
-    Mask* mask = chooser.create(name, parametrisation, grid, which);
+    Mask *mask = chooser.create(name, parametrisation, grid, which);
 
     cache[key] = mask;
 
@@ -110,7 +111,7 @@ Mask &Mask::lookupOutput(const param::MIRParametrisation   &parametrisation, con
 }
 
 
-const data::MIRField& Mask::field() const {
+const data::MIRField &Mask::field() const {
     ASSERT(field_.get());
     return *field_;
 }
@@ -121,6 +122,21 @@ bool Mask::cacheable() const {
 
 bool Mask::active() const {
     return true;
+}
+
+
+const std::vector<bool> &Mask::mask() const {
+    if (mask_.size() == 0) {
+        const util::compare::is_greater_equal_fn< double > check_lsm(0.5);
+        const std::vector< double > &values = field().values(0);
+
+        ASSERT(!field().hasMissing());
+        ASSERT(field().dimensions() == 1);
+
+        mask_.resize(values.size());
+        std::transform(values.begin(), values.end(), mask_.begin(), check_lsm);
+    }
+    return mask_;
 }
 
 //-----------------------------------------------------------------------------

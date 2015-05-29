@@ -76,15 +76,10 @@ void NearestLSM::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks) con
 
     Log::info() << "======== NearestLSM::applyMasks(" << masks << ")" << std::endl;
     ASSERT(masks.active());
-    ASSERT(!masks.inputField().hasMissing());
-    ASSERT(!masks.outputField().hasMissing());
-    ASSERT(masks.inputField().dimensions() == 1);
-    ASSERT(masks.inputField().dimensions() == 1);
 
+    const std::vector< bool >& imask = masks.inputMask();
+    const std::vector< bool >& omask = masks.outputMask();
 
-    // build boolean masks (to isolate algorithm from the logical mask condition)
-    const std::vector< bool > imask = computeFieldMask(masks.inputField(),  0);
-    const std::vector< bool > omask = computeFieldMask(masks.outputField(), 0);
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
 

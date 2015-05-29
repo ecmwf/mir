@@ -351,15 +351,10 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
     Log::info() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
     ASSERT(masks.active());
-    ASSERT(!masks.inputField().hasMissing());
-    ASSERT(!masks.outputField().hasMissing());
-    ASSERT(masks.inputField().dimensions() == 1);
-    ASSERT(masks.inputField().dimensions() == 1);
 
+    const std::vector< bool >& imask = masks.inputMask();
+    const std::vector< bool >& omask = masks.outputMask();
 
-    // build boolean masks (to isolate algorithm from the logical mask condition)
-    const std::vector< bool > imask = computeFieldMask(masks.inputField(),  0);
-    const std::vector< bool > omask = computeFieldMask(masks.outputField(), 0);
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
 
@@ -400,15 +395,6 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
     // log corrections
     Log::info() << "MethodWeighted: applyMasks corrected " << eckit::BigNum(fix) << " out of " << eckit::Plural(W.rows() , "row") << std::endl;
-}
-
-
-std::vector< bool > MethodWeighted::computeFieldMask(const data::MIRField &field, size_t which) {
-    const util::compare::is_greater_equal_fn< double > check_lsm(0.5);
-    const std::vector< double > &values = field.values(which);
-    std::vector< bool > fmask(values.size(), false);
-    std::transform(values.begin(), values.end(), fmask.begin(), check_lsm);
-    return fmask;
 }
 
 

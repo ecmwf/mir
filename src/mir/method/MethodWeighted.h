@@ -68,9 +68,6 @@ class MethodWeighted : public Method {
 
     virtual lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
 
-    /// Generate boolean mask
-    static std::vector< bool > computeFieldMask(const data::MIRField& field, size_t which);
-
   private:
 
     void computeMatrixWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
