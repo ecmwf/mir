@@ -17,7 +17,7 @@
 #ifndef mir_method_Bilinear_H
 #define mir_method_Bilinear_H
 
-#include "mir/method/Nearest.h"
+#include "mir/method/MethodWeighted.h"
 
 
 namespace eckit {
@@ -31,18 +31,18 @@ namespace mir {
 namespace method {
 
 
-class NearestLSM: public Nearest {
-  public:
+class NearestLSM: public MethodWeighted {
+public:
 
     NearestLSM(const param::MIRParametrisation &);
 
     virtual ~NearestLSM();
 
-  protected:
+protected:
 
     virtual void hash( eckit::MD5 & ) const;
 
-  private:
+private:
 
     // -- Methods
     // None
@@ -50,12 +50,14 @@ class NearestLSM: public Nearest {
     // -- Overridden methods
 
     virtual const char *name() const;
-    virtual lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
-    virtual size_t nclosest() const;
-    virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks) const;
-    virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const;
-    virtual void print(std::ostream &) const;
 
+    virtual lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
+
+    virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks) const;
+
+    virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const;
+
+    virtual void print(std::ostream &) const;
 
     // -- Class members
     // None
@@ -64,6 +66,7 @@ class NearestLSM: public Nearest {
     // None
 
     // -- Friends
+    // None
 
 };
 

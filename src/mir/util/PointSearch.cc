@@ -13,20 +13,25 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/util/PointSearch.h"
 
 #include <vector>
 
+
 namespace mir {
 namespace util {
+
 
 PointSearch::PointSearch(const std::vector<PointType>& points) {
     init(points);
 }
 
+
 PointSearch::PointSearch(const atlas::Mesh& mesh) {
     init(mesh);
 }
+
 
 void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<ValueType>& closest) {
     using atlas::PointIndex3;
@@ -39,6 +44,7 @@ void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<Valu
         closest.push_back(it->value());
 }
 
+
 void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<ValueType>& closest) {
     using atlas::PointIndex3;
 
@@ -50,19 +56,22 @@ void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::v
         closest.push_back(it->value());
 }
 
+
 void PointSearch::init(const std::vector<PointType>& points) {
     using atlas::PointIndex3;
 
     std::vector<PointIndex3::Value> pidx;
     pidx.reserve(points.size());
 
-    for (size_t ip = 0; ip < points.size(); ++ip) pidx.push_back(PointIndex3::Value(PointIndex3::Point(points[ip]), ip));
+    for (size_t ip = 0; ip < points.size(); ++ip)
+        pidx.push_back(PointIndex3::Value(PointIndex3::Point(points[ip]), ip));
 
     tree_.reset(new PointIndex3());
     tree_->build(pidx.begin(), pidx.end());
 }
 
-void PointSearch::init(const atlas::Mesh& mesh) {
+
+void PointSearch::init(const atlas::Mesh& mesh, const CompareType& isok) {
     ASSERT(mesh.has_function_space("nodes"));
 
     atlas::FunctionSpace& nodes = mesh.function_space("nodes");
@@ -75,10 +84,13 @@ void PointSearch::init(const atlas::Mesh& mesh) {
     points.reserve(npts);
 
     atlas::ArrayView<double, 2> coords(nodes.field<double>("xyz"));
-    for (size_t ip = 0; ip < npts; ++ip) points.push_back(coords[ip].data());
+    for (size_t ip = 0; ip < npts; ++ip)
+        if (isok(ip))
+            points.push_back(coords[ip].data());
 
     init(points);
 }
+
 
 }  // namespace util
 }  // namespace mir

@@ -265,13 +265,13 @@ size_t MethodWeighted::checkMatrixWeights(const WeightMatrix &W) {
 }
 
 
-WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &WW, data::MIRField &field, size_t which) const {
+WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const {
 
     ASSERT(field.hasMissing());
 
     // check matrix weigths correctness
     // TODO this check should not be done here? maybe before matrix caching? but I don't know where it goes
-    size_t Nprob = checkMatrixWeights(WW);
+    size_t Nprob = checkMatrixWeights(W);
     if (Nprob) {
         Log::warning() <<  "Missing values: problems in weights matrix (input) on " << eckit::Plural(Nprob, "row") << ", continuing (but shouldn't really)." << std::endl;
     }
@@ -279,7 +279,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &WW, data::MI
     // correct matrix weigths for the missing values (matrix copy happens here)
     const double missingValue = field.missingValue();
     const std::vector< double > &values = field.values(which);
-    WeightMatrix X(WW);
+    WeightMatrix X(W);
     size_t fix_missall  = 0;
     size_t fix_misssome = 0;
     for (size_t i = 0; i < X.rows(); i++) {
