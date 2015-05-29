@@ -16,17 +16,18 @@
 
 #include "mir/method/NearestLSM.h"
 
+#if 0
 #include <algorithm>
 #include <string>
 
 #include "atlas/grids/ReducedGaussianGrid.h"
 #include "eckit/log/BigNum.h"
-#include "eckit/log/Log.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
 #include "mir/data/MIRField.h"
-#include "mir/lsm/LandSeaMasks.h"
+#endif
+#include "eckit/log/Log.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/util/Compare.h"
@@ -48,25 +49,13 @@ NearestLSM::~NearestLSM() {
 }
 
 
-lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid &in, const atlas::Grid &out) const {
-    param::RuntimeParametrisation runtime(parametrisation_);
-    runtime.set("lsm", true); // Force use of LSM
-    return lsm::LandSeaMasks::lookup(runtime, in, out);
-}
-
-
 const char *NearestLSM::name() const {
     return  "nearest-lsm";
 }
 
 
-void NearestLSM::hash( eckit::MD5& md5) const {
-    MethodWeighted::hash(md5);
-}
-
-
 void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
-//    MethodWeighted::assemble(W, in, out);
+    //    MethodWeighted::assemble(W, in, out);
 
 #if 0
     eckit::Timer timer("NearestLSM::applyMasks");
@@ -74,8 +63,8 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
 
     ASSERT(masks.active());
 
-    const std::vector< bool >& imask = masks.inputMask();
-    const std::vector< bool >& omask = masks.outputMask();
+    const std::vector< bool > &imask = masks.inputMask();
+    const std::vector< bool > &omask = masks.outputMask();
 
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
@@ -121,13 +110,25 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
 }
 
 
-void NearestLSM::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
-    // FIXME this function should not be overriding to do nothing (there is an architecture problem here)
+lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid &in, const atlas::Grid &out) const {
+    param::RuntimeParametrisation runtime(parametrisation_);
+    runtime.set("lsm", true); // Force use of LSM
+    return lsm::LandSeaMasks::lookup(runtime, in, out);
 }
 
 
+
+WeightMatrix NearestLSM::applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const {
+    // This is possible, you can have missing values and use NearestLSM
+    return MethodWeighted::applyMissingValues(W, field, which);
+}
+
+void NearestLSM::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const {
+    // FIXME this function should not be overriding to do nothing
+}
+
 void NearestLSM::print(std::ostream &out) const {
-    out << "NearestLSM[]";
+    out << name() << "[]";
 }
 
 

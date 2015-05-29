@@ -48,7 +48,7 @@ public:
 
     PointSearch(const std::vector<Point>& ipts);
 
-    PointSearch(const atlas::Mesh& mesh);
+    PointSearch(const atlas::Mesh& mesh, const CompareType& isok=CompareTypeNone());
 
 public:
 
