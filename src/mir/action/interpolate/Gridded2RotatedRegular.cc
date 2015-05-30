@@ -19,7 +19,7 @@
 #include "eckit/exception/Exceptions.h"
 
 
-
+#include "mir/repres/gauss/regular/RotatedGG.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -50,10 +50,7 @@ void Gridded2RotatedRegular::print(std::ostream &out) const {
 
 
 repres::Representation *Gridded2RotatedRegular::outputRepresentation(const repres::Representation *inputRepres) const {
-    NOTIMP;
-    // return new repres::RotatedLL(
-    //            util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
-    //            increments_, rotation_);
+    return new repres::regular::RotatedGG(N_, util::BoundingBox(), rotation_);
 }
 
 

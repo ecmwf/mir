@@ -34,6 +34,7 @@ class RotatedGG : public Regular {
     // -- Contructors
 
     RotatedGG(const param::MIRParametrisation &);
+    RotatedGG(size_t, const util::BoundingBox &, const util::Rotation&);
 
     // -- Destructor
 
@@ -76,7 +77,6 @@ class RotatedGG : public Regular {
 
   private:
 
-    RotatedGG(size_t, const util::BoundingBox &, const util::Rotation&);
 
 
     // No copy allowed
@@ -93,8 +93,9 @@ class RotatedGG : public Regular {
     // -- Overridden methods
 
     virtual void fill(grib_info &) const;
-    atlas::Grid *atlasGrid() const;
+    virtual atlas::Grid *atlasGrid() const;
     virtual Representation *clone() const;
+    virtual Gridded *cropped(const util::BoundingBox &bbox) const;
 
     // -- Class members
     // None

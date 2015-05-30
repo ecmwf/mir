@@ -8,8 +8,15 @@ PHILOSOPHY:
 !----- NEXT STEPS (MAKE IS WORK)
     !- Find bad projections
     !- Caching of SH coefficients for SH to LL
-    !- Clearing cache in metabuilder (note: we need to clear the caches of *ALL* cluster nodes)
+    !- Clearing cache in metabuilder ///
+        Note: we need to clear the caches of *ALL* cluster nodes
+        Posible solution: put the cache in the build directory, so that it is wiped
+        at each rebuild
+        ///
     !- Classic bi-linear
+    - Rotated regular GG ///
+        GRIB_API ERROR   :  Unable to load sample file rotated_gg_pl_grib1.tmpl
+        ///
     - Call HIRLAM routines in emoslib without the need for a rotation (environment variable)
     - Make the logging callback work in emoslib.cc
     - Implement print() method on ATLAS grids
@@ -24,6 +31,7 @@ PHILOSOPHY:
         - Rotated
         - Non-rotated
     - What is the special treatment for precipitations (emoslib)
+    - Compare with real prodgen output
 
 --- TESTING (MAKE IT CORRECT)
     - Metabuilder
