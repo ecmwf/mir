@@ -48,7 +48,7 @@ Mask *AutoLSM::create(const std::string &name,
                       const atlas::Grid &grid,
                       const std::string& which) const {
 
-#if 0
+#if 1
     return new TenMinutesLSM(name, param, grid, which);
 #else
     return new GribFileLSM(name, path(param), param, grid, which);

@@ -15,6 +15,7 @@
 #include "mir/lsm/NoneLSM.h"
 #include <iostream>
 #include "mir/lsm/Mask.h"
+#include "eckit/exception/Exceptions.h"
 
 namespace mir {
 namespace lsm {
@@ -23,13 +24,23 @@ class NoLSM : public Mask {
     virtual bool active() const {
         return false;
     }
+
     virtual bool cacheable() const {
         return false;
     }
-    virtual void hash(eckit::MD5&) const {}
-    virtual void print(std::ostream & out) const {
+
+    virtual void hash(eckit::MD5 &) const {
+
+    }
+
+    virtual void print(std::ostream &out) const {
         out << "none";
     }
+
+    const std::vector<bool> &mask() const {
+        NOTIMP;
+    }
+
   public:
     NoLSM(): Mask("none") {}
 };
@@ -42,26 +53,26 @@ NoneLSM::NoneLSM(const std::string &name):
 NoneLSM::~NoneLSM() {
 }
 
-Mask& NoneLSM::instance() {
+Mask &NoneLSM::instance() {
     static NoLSM none;
     return none;
 }
 
-void NoneLSM::print(std::ostream& out) const {
+void NoneLSM::print(std::ostream &out) const {
     out << "NoneLSM[" << name_ << "]";
 }
 
 Mask *NoneLSM::create(const std::string &name,
                       const param::MIRParametrisation &param,
                       const atlas::Grid &grid,
-                      const std::string& which) const {
+                      const std::string &which) const {
     return new NoLSM();
 }
 
 std::string NoneLSM::cacheKey(const std::string &name,
                               const param::MIRParametrisation &param,
                               const atlas::Grid &grid,
-                              const std::string& which) const {
+                              const std::string &which) const {
     return "none";
 }
 

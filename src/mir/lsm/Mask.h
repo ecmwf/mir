@@ -19,7 +19,6 @@
 
 #include <iosfwd>
 #include <string>
-#include <memory>
 #include <vector>
 
 #include "eckit/memory/NonCopyable.h"
@@ -33,11 +32,6 @@ class Grid;
 namespace mir {
 namespace param {
 class MIRParametrisation;
-}
-}
-namespace mir {
-namespace data {
-class MIRField;
 }
 }
 
@@ -66,7 +60,7 @@ class Mask : private eckit::NonCopyable {
     virtual bool cacheable() const;
 
     virtual void hash(eckit::MD5 &) const;
-    virtual const std::vector<bool> &mask() const;
+    virtual const std::vector<bool> &mask() const = 0;
 
     // -- Overridden methods
     // None
@@ -84,9 +78,6 @@ class Mask : private eckit::NonCopyable {
     // -- Members
 
     std::string name_;
-
-    std::auto_ptr<data::MIRField> field_;
-    mutable std::vector<bool> mask_;
 
     // -- Methods
 
@@ -108,8 +99,6 @@ class Mask : private eckit::NonCopyable {
     // None
 
     // -- Methods
-
-    virtual const data::MIRField &field() const;
 
     // -- Overridden methods
     // None

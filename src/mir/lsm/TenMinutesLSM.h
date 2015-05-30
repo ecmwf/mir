@@ -92,12 +92,14 @@ class TenMinutesLSM : public Mask {
 // -- Members
 
     eckit::PathName path_;
+    std::vector<bool> mask_;
 
 // -- Methods
 
 
 // -- Overridden methods
 
+    virtual const std::vector<bool> &mask() const;
 
 // -- Class members
     // None
