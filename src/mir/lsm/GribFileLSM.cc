@@ -59,7 +59,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     std::string interpolation;
     if(!parametrisation.get("lsm.interpolation" + which, interpolation)) {
         if(!parametrisation.get("lsm.interpolation", interpolation)) {
-            throw eckit::SeriousBug("Not interpolation methid defined for land sea mask");
+            throw eckit::SeriousBug("Not interpolation method defined for land sea mask");
         }
     }
 
@@ -93,7 +93,7 @@ void GribFileLSM::hashCacheKey(eckit::MD5& md5, const eckit::PathName& path,
     std::string interpolation;
     if(!parametrisation.get("lsm.interpolation" + which, interpolation)) {
         if(!parametrisation.get("lsm.interpolation", interpolation)) {
-            throw eckit::SeriousBug("Not interpolation methid defined for land sea mask");
+            throw eckit::SeriousBug("Not interpolation method defined for land sea mask");
         }
     }
 
