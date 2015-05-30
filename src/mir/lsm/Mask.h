@@ -60,7 +60,7 @@ class Mask : private eckit::NonCopyable {
     virtual bool cacheable() const;
 
     virtual void hash(eckit::MD5 &) const;
-    virtual const std::vector<bool> &mask() const;
+    virtual const std::vector<bool> &mask() const = 0;
 
     // -- Overridden methods
     // None
@@ -78,7 +78,6 @@ class Mask : private eckit::NonCopyable {
     // -- Members
 
     std::string name_;
-    std::vector<bool> mask_;
 
     // -- Methods
 

@@ -111,6 +111,11 @@ void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
     md5 << grid;
 }
 
+
+const std::vector<bool> &GribFileLSM::mask() const {
+    return mask_;
+}
+
 //-----------------------------------------------------------------------------
 
 

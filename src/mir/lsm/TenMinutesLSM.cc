@@ -17,6 +17,7 @@
 #include "TenMinutesLSM.h"
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/log/Timer.h"
 
 #include "mir/input/GribFileInput.h"
 #include "mir/data/MIRField.h"
@@ -64,6 +65,8 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 
 
     if (ten_minutes_.size() == 0) {
+
+        eckit::Timer timer("Load 10 minutes LSM");
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
         eckit::Log::info() << "TenMinutesLSM loading " << path_ << std::endl;
 
@@ -84,6 +87,40 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
             }
         }
     }
+
+    eckit::Timer timer("Extract point from 10 minutes LSM");
+
+
+    // NOTE: this is not using 3D coordinate systems
+
+    std::vector<atlas::Grid::Point> points(grid.npts());
+    grid.lonlat(points);
+
+    mask_.reserve(points.size());
+
+    for (std::vector<atlas::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
+        double lat = (*j).lat();
+        ASSERT(lat >= -90);
+        ASSERT(lat <= 90);
+
+        double lon = (*j).lon();
+
+        while (lon >= 360) {
+            lon -= 360;
+        }
+        while (lon < 0) {
+            lon += 360;
+        }
+
+        int row = (90.0 - lat) * ROWS / 180;
+        ASSERT(row >= 0 && row < ROWS);
+
+        int col = lon * COLS / 360.0;
+        ASSERT(col >= 0 && col < COLS);
+
+        mask_.push_back(ten_minutes_[row][col]);
+    }
+
 }
 
 TenMinutesLSM::~TenMinutesLSM() {
@@ -96,6 +133,11 @@ void TenMinutesLSM::hash(eckit::MD5 &md5) const {
 
 void TenMinutesLSM::print(std::ostream &out) const {
     out << "TenMinutesLSM[path=" << path_ << "]";
+}
+
+
+const std::vector<bool> &TenMinutesLSM::mask() const {
+    return mask_;
 }
 
 //-----------------------------------------------------------------------------

@@ -416,6 +416,12 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
     const std::vector< bool > &imask = masks.inputMask();
     const std::vector< bool > &omask = masks.outputMask();
 
+    eckit::Log::info() << "imask size " << imask.size() << std::endl;
+    eckit::Log::info() << "omask size " << omask.size() << std::endl;
+
+    eckit::Log::info() << "cols " << W.cols() << std::endl;
+    eckit::Log::info() << "rows " << W.rows() << std::endl;
+
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
 

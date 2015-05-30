@@ -116,10 +116,6 @@ bool Mask::active() const {
     return true;
 }
 
-const std::vector<bool> &Mask::mask() const {
-    return mask_;
-}
-
 
 }  // namespace logic
 }  // namespace mir
