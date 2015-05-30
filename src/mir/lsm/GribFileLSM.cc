@@ -23,6 +23,7 @@
 #include "mir/method/Method.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Compare.h"
 
 #include "atlas/Grid.h"
 
@@ -32,7 +33,7 @@ namespace lsm {
 GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
                          const param::MIRParametrisation &parametrisation,
                          const atlas::Grid &grid,
-                         const std::string& which):
+                         const std::string &which):
     Mask(name),
     path_(path) {
 
@@ -46,7 +47,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     mir::input::MIRInput &input = file;
 
     ASSERT(file.next());
-    field_.reset(input.field());
+    std::auto_ptr<data::MIRField> field(input.field());
 
     param::RuntimeParametrisation runtime(parametrisation);
     // Hide the paramID so we don't confuse this LSM with interpolating an LSM from MARS and create an infinite recurrsion
@@ -57,8 +58,8 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     runtime.hide("lsm");
 
     std::string interpolation;
-    if(!parametrisation.get("lsm.interpolation" + which, interpolation)) {
-        if(!parametrisation.get("lsm.interpolation", interpolation)) {
+    if (!parametrisation.get("lsm.interpolation" + which, interpolation)) {
+        if (!parametrisation.get("lsm.interpolation", interpolation)) {
             throw eckit::SeriousBug("Not interpolation method defined for land sea mask");
         }
     }
@@ -66,17 +67,25 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     std::auto_ptr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::info() << "LSM interpolation method is " << *method << std::endl;
 
-    std::auto_ptr<atlas::Grid> gin(field_->representation()->atlasGrid());
+    std::auto_ptr<atlas::Grid> gin(field->representation()->atlasGrid());
 
-    method->execute(*field_, *gin, grid);
+    method->execute(*field, *gin, grid);
 
-    field_->representation(0); // This should not be used by users of the LSM
+    const util::compare::is_greater_equal_fn< double > check_lsm(0.5);
+
+    ASSERT(!field->hasMissing());
+    ASSERT(field->dimensions() == 1);
+
+    const std::vector< double > &values = field->values(0);
+    mask_.resize(values.size());
+    std::transform(values.begin(), values.end(), mask_.begin(), check_lsm);
+
 }
 
 GribFileLSM::~GribFileLSM() {
 }
 
-void GribFileLSM::hash(eckit::MD5& md5) const {
+void GribFileLSM::hash(eckit::MD5 &md5) const {
     Mask::hash(md5);
     md5.add(path_.asString());
 }
@@ -85,14 +94,14 @@ void GribFileLSM::print(std::ostream &out) const {
     out << "GribFileLSM[name=" << name_ << ",path=" << path_ << "]";
 }
 
-void GribFileLSM::hashCacheKey(eckit::MD5& md5, const eckit::PathName& path,
-                               const param::MIRParametrisation& parametrisation,
-                               const atlas::Grid& grid,
-                               const std::string& which) {
+void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
+                               const param::MIRParametrisation &parametrisation,
+                               const atlas::Grid &grid,
+                               const std::string &which) {
 
     std::string interpolation;
-    if(!parametrisation.get("lsm.interpolation" + which, interpolation)) {
-        if(!parametrisation.get("lsm.interpolation", interpolation)) {
+    if (!parametrisation.get("lsm.interpolation" + which, interpolation)) {
+        if (!parametrisation.get("lsm.interpolation", interpolation)) {
             throw eckit::SeriousBug("Not interpolation method defined for land sea mask");
         }
     }

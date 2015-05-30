@@ -58,7 +58,7 @@ From EMOSLIB:
 TenMinutesLSM::TenMinutesLSM(const std::string &name,
                              const param::MIRParametrisation &parametrisation,
                              const atlas::Grid &grid,
-                             const std::string& which):
+                             const std::string &which):
     Mask(name),
     path_("~mir/etc/ten-minutes.mask") {
 
@@ -70,16 +70,16 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
         eckit::StdFile file(path_);
         ten_minutes_.resize(ROWS);
 
-        size_t bytes = (((COLS + 31)/32)*32) / 8;
+        size_t bytes = (((COLS + 31) / 32) * 32) / 8;
         unsigned char c;
 
-        for(size_t i = 0; i < ROWS; i++) {
+        for (size_t i = 0; i < ROWS; i++) {
             size_t k = 0;
-            std::vector<bool>& v = ten_minutes_[i] = std::vector<bool>(COLS);
-            for(size_t j = 0; j < bytes ; j++) {
+            std::vector<bool> &v = ten_minutes_[i] = std::vector<bool>(COLS);
+            for (size_t j = 0; j < bytes ; j++) {
                 ASSERT(fread(&c, 1, 1, file) == 1);
-                for(size_t b = 0; b < 8 && k < COLS; b++) {
-                    v[k++] = (c >> (7-b)) & 0x1;
+                for (size_t b = 0; b < 8 && k < COLS; b++) {
+                    v[k++] = (c >> (7 - b)) & 0x1;
                 }
             }
         }
@@ -89,7 +89,7 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 TenMinutesLSM::~TenMinutesLSM() {
 }
 
-void TenMinutesLSM::hash(eckit::MD5& md5) const {
+void TenMinutesLSM::hash(eckit::MD5 &md5) const {
     Mask::hash(md5);
     md5.add(path_.asString());
 }
