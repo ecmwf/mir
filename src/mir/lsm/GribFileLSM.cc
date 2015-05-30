@@ -50,12 +50,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     std::auto_ptr<data::MIRField> field(input.field());
 
     param::RuntimeParametrisation runtime(parametrisation);
-    // Hide the paramID so we don't confuse this LSM with interpolating an LSM from MARS and create an infinite recurrsion
-
-    runtime.set("paramId", -1L);
-    runtime.hide("lsm.input");
-    runtime.hide("lsm.output");
-    runtime.hide("lsm");
+    runtime.set("lsm", false);
 
     std::string interpolation;
     if (!parametrisation.get("lsm.interpolation" + which, interpolation)) {
@@ -71,7 +66,9 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
 
     method->execute(*field, *gin, grid);
 
-    const util::compare::is_greater_equal_fn< double > check_lsm(0.5);
+    double threshold;
+    ASSERT(parametrisation.get("lsm.value.threshold", threshold));
+    const util::compare::is_greater_equal_fn< double > check_lsm(threshold);
 
     ASSERT(!field->hasMissing());
     ASSERT(field->dimensions() == 1);
