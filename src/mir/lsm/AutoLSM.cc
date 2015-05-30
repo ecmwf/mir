@@ -20,6 +20,7 @@
 #include "mir/lsm/GribFileLSM.h"
 #include "eckit/utils/MD5.h"
 #include "atlas/Grid.h"
+#include "mir/lsm/TenMinutesLSM.h"
 
 namespace mir {
 namespace lsm {
@@ -46,7 +47,12 @@ Mask *AutoLSM::create(const std::string &name,
                       const param::MIRParametrisation &param,
                       const atlas::Grid &grid,
                       const std::string& which) const {
+
+#if 0
+    return new TenMinutesLSM(name, param, grid, which);
+#else
     return new GribFileLSM(name, path(param), param, grid, which);
+#endif
 }
 
 std::string AutoLSM::cacheKey(const std::string &name,

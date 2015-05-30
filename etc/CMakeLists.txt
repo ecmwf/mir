@@ -12,7 +12,9 @@ endforeach()
 
 # get them into the build dir
 
-list( APPEND LSM_FILES  lsm.N640.grib lsm.N320.grib )
+# ten-minutes.mask is a copy of emos-tables/lsm_32_lsm10m01
+
+list( APPEND LSM_FILES  lsm.N640.grib lsm.N320.grib ten-minutes.mask)
 foreach( _f ${LSM_FILES} )
 	ecbuild_download_resource( ${_f} http://download.ecmwf.org/test-data/mir/lsm/${_f} )
 endforeach()

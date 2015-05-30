@@ -133,6 +133,8 @@ list(
      lsm/Mask.h
      lsm/NoneLSM.cc
      lsm/NoneLSM.h
+     lsm/TenMinutesLSM.cc
+     lsm/TenMinutesLSM.h
      lsm/UserFileLSM.cc
      lsm/UserFileLSM.h
      method/Bilinear.cc
