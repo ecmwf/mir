@@ -50,12 +50,12 @@ def s(x):
 
 
 header="P5\n172800\n86400\n255\n";
+g = open("p.pgm", "w+b");
 
-# g = open("p.pgm", "w")
-# g.write("P2\n172800\n86400\n1\n")
+g.write(header)
 X = {}
 for path in sys.argv[1:]:
-    # print path
+    print path
     raster = gdal.Open(path)
     (top_left_x, w_e_pixel_resolution, _, top_left_y, _, n_s_pixel_resolution) = raster.GetGeoTransform()
 
@@ -71,16 +71,25 @@ for path in sys.argv[1:]:
     values = band.ReadAsArray()
     (width, height) = values.shape
 
-    # print (width, height)
-    X.setdefault(s(top_left_x), {})
-    X[s(top_left_x)][s(top_left_y)] = (width,
-                                       height,
-                                       path,
-                                       w_e_pixel_resolution,
-                                       n_s_pixel_resolution,
-                                       (top_left_x, top_left_y),
-                                       (top_left_x + height * w_e_pixel_resolution,  top_left_y + width * n_s_pixel_resolution)
-                                       )
+    col = int(top_left_x * 172800 / 360 + 0.5)
+    row = int((90 - top_left_y) * 86400 / 180 + 0.5)
+
+    for x in xrange(0, height):
+        g.seek(len(header) + 172800 * (row-1) + col)
+        g.write(bytearray(values[x:x+1].flat))
+
+    # # print (width, height)
+    # X.setdefault(s(top_left_x), {})
+    # X[s(top_left_x)][s(top_left_y)] = (width,
+    #                                    height,
+    #                                    path,
+    #                                    int(top_left_x * 172800 / 360 + 0.5),
+    #                                    int((90 - top_left_y) * 86400 / 180 + 0.5),
+    #                                    w_e_pixel_resolution,
+    #                                    n_s_pixel_resolution,
+    #                                    (top_left_x, top_left_y),
+    #                                    (top_left_x + height * w_e_pixel_resolution,  top_left_y + width * n_s_pixel_resolution)
+    #                                    )
     # print (top_left_x, top_left_y)
 
     # for y in xrange(0, width):
@@ -90,7 +99,7 @@ for path in sys.argv[1:]:
 
     # print (lat, lon)
 
-print json.dumps(X, sort_keys=True, indent=4)
+# print json.dumps(X, sort_keys=True, indent=4)
 # for k, v in sorted(X.items()):
 #     print k
 #     print "     ", v
