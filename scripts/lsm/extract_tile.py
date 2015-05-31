@@ -2,6 +2,7 @@
 import gdal
 import sys
 import json
+import mmap
 
 # Data at http://landcover.org/data/watermask/index.shtml
 
@@ -38,9 +39,23 @@ Center      ( -77.9989583, -56.0010381) ( 77d59'56.25"W, 56d 0' 3.74"S)
 Band 1 Block=5761x1 Type=Byte, ColorInterp=Gray
 """
 
+"""
+360/0.0020833333333333333 = 172800
+180/0.0020833333333333333 = 86400
+"""
+
+
+def s(x):
+    return "%5g" % (x,)
+
+
+header="P5\n172800\n86400\n255\n";
+
+# g = open("p.pgm", "w")
+# g.write("P2\n172800\n86400\n1\n")
 X = {}
 for path in sys.argv[1:]:
-    print path
+    # print path
     raster = gdal.Open(path)
     (top_left_x, w_e_pixel_resolution, _, top_left_y, _, n_s_pixel_resolution) = raster.GetGeoTransform()
 
@@ -57,7 +72,15 @@ for path in sys.argv[1:]:
     (width, height) = values.shape
 
     # print (width, height)
-    X[(top_left_x, top_left_y)] = (width, height, path)
+    X.setdefault(s(top_left_x), {})
+    X[s(top_left_x)][s(top_left_y)] = (width,
+                                       height,
+                                       path,
+                                       w_e_pixel_resolution,
+                                       n_s_pixel_resolution,
+                                       (top_left_x, top_left_y),
+                                       (top_left_x + height * w_e_pixel_resolution,  top_left_y + width * n_s_pixel_resolution)
+                                       )
     # print (top_left_x, top_left_y)
 
     # for y in xrange(0, width):
@@ -67,10 +90,10 @@ for path in sys.argv[1:]:
 
     # print (lat, lon)
 
-# print json.dumps(X, sort_keys=True, indent=4)
-for k, v in sorted(X.items()):
-    print k
-    print "     ", v
+print json.dumps(X, sort_keys=True, indent=4)
+# for k, v in sorted(X.items()):
+#     print k
+#     print "     ", v
 # print band.shape
 
 # print "[ NO DATA VALUE ] = ", band.GetNoDataValue()
