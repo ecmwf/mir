@@ -314,7 +314,7 @@ void MethodWeighted::cleanupMatrix(WeightMatrix &W) const {
 
         for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
             const double &a = j.value();
-            if (fabs(a) < 1e-14) {
+            if (fabs(a) < 1e-12) {
                 removed += a;
                 j.valueRef() = 0;
                 fixed++;
@@ -342,6 +342,7 @@ void MethodWeighted::cleanupMatrix(WeightMatrix &W) const {
                            << " (matrix is " << eckit::BigNum(W.rows()) << "x" << eckit::BigNum(W.cols()) << ", total=" <<
                            eckit::BigNum(W.rows() * W.cols()) << ")" << std::endl;
     }
+    W.prune(0.0);
 }
 
 

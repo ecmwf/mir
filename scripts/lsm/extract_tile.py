@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 import gdal
 import sys
-import json
-import mmap
 
 # Data at http://landcover.org/data/watermask/index.shtml
 
