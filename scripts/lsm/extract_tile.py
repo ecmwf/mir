@@ -64,7 +64,7 @@ line = bytearray([127 for y in xrange(0, 172800)])
 
 g.write(header)
 for r in xrange(0, 86400):
-    g.write(line)
+    g.write(line)Ï
 
 # exit(0)
 

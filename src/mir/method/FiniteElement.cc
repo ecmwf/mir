@@ -87,6 +87,7 @@ static bool projectPointToElements(const MeshStats &stats,
                                    atlas::ElemIndex3::NodeList::const_iterator start,
                                    atlas::ElemIndex3::NodeList::const_iterator finish ) {
 
+
     int idx [4];
     double w[4];
 
@@ -171,6 +172,8 @@ static bool projectPointToElements(const MeshStats &stats,
         }
 
     } // loop over nearest elements
+
+    ASSERT(start != finish);
 
     return false;
 }
