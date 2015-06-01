@@ -88,7 +88,7 @@ void FEBilinear::print(std::ostream &out) const {
 
 
 namespace {
-static MethodBuilder< FEBilinear > __bilinear("fe-fbilinear");
+static MethodBuilder< FEBilinear > __bilinear("fe-bilinear");
 }
 
 
