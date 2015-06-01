@@ -60,11 +60,13 @@ def s(x):
 header = "P5\n172800\n86400\n255\n"
 g = open("p.pgm", "w+b")
 
-line = bytearray([127 for y in xrange(0, 172800)])
+lines = []
+for i in range(0, 256):
+    lines.append(bytearray([i for y in xrange(0, 172800)]))
 
 g.write(header)
 for r in xrange(0, 86400):
-    g.write(line)
+    g.write(lines[r % 256])
 
 # exit(0)
 
