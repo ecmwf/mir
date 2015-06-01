@@ -137,10 +137,12 @@ list(
      lsm/TenMinutesLSM.h
      lsm/UserFileLSM.cc
      lsm/UserFileLSM.h
+     method/FEBilinear.cc
+     method/FEBilinear.h
      method/Bilinear.cc
      method/Bilinear.h
-     method/Linear.cc
-     method/Linear.h
+     method/FELinear.cc
+     method/FELinear.h
      method/Tessellation.cc
      method/Tessellation.h
      method/FiniteElement.cc

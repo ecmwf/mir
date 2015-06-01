@@ -13,7 +13,7 @@
 /// @date May 2015
 
 
-#include "mir/method/Linear.h"
+#include "mir/method/FELinear.h"
 
 #include "atlas/meshgen/ReducedGridMeshGenerator.h"
 #include "atlas/meshgen/Delaunay.h"
@@ -23,26 +23,26 @@ namespace mir {
 namespace method {
 
 
-Linear::Linear(const param::MIRParametrisation &param) :
+FELinear::FELinear(const param::MIRParametrisation &param) :
     FiniteElement(param) {
 }
 
 
-Linear::~Linear() {
+FELinear::~FELinear() {
 }
 
 
-const char *Linear::name() const {
+const char *FELinear::name() const {
     return  "linear";
 }
 
 
-void Linear::hash( eckit::MD5& md5) const {
+void FELinear::hash( eckit::MD5& md5) const {
     FiniteElement::hash(md5);
 }
 
 
-void Linear::generateMesh(const atlas::Grid& grid, atlas::Mesh& mesh) const
+void FELinear::generateMesh(const atlas::Grid& grid, atlas::Mesh& mesh) const
 {
 
     /// @TODO Ask Baudouin best way to build and parametrize the mesh generator
@@ -84,13 +84,13 @@ void Linear::generateMesh(const atlas::Grid& grid, atlas::Mesh& mesh) const
 
 
 
-void Linear::print(std::ostream &out) const {
-    out << "Linear[]";
+void FELinear::print(std::ostream &out) const {
+    out << "FELinear[]";
 }
 
 
 namespace {
-static MethodBuilder< Linear > __linear("linear");
+static MethodBuilder< FELinear > __linear("linear");
 }
 
 

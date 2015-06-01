@@ -10,40 +10,84 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date May 2015
+/// @date Apr 2015
+
+#ifndef soyuz_method_Bilinear_H
+#define soyuz_method_Bilinear_H
+
+#include "mir/method/MethodWeighted.h"
 
 
-#ifndef mir_method_Bilinear_H
-#define mir_method_Bilinear_H
-
-#include "mir/method/FiniteElement.h"
+namespace eckit {
+namespace geometry {
+class Point3;
+}
+}
 
 
 namespace mir {
 namespace method {
 
 
-class Bilinear: public FiniteElement {
+class Bilinear: public MethodWeighted {
   public:
 
+// -- Exceptions
+    // None
+
+// -- Contructors
     Bilinear(const param::MIRParametrisation&);
 
+// -- Destructor
     virtual ~Bilinear();
 
-  protected:
+// -- Convertors
+    // None
 
-    virtual void hash( eckit::MD5& ) const;
-
-  private:
+// -- Operators
+    // None
 
 // -- Methods
     // None
 
 // -- Overridden methods
 
-    virtual void generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const;
+// -- Class members
+    // None
+
+// -- Class methods
+    // None
+
+  protected:
+
+// -- Members
+
+
+// -- Methods
+
+
+// -- Overridden methods
+    // None
+
+// -- Class members
+    // None
+
+// -- Class methods
+    // None
+
+  private:
+
+// -- Methods
+    double crossProduct(const eckit::geometry::Point3& a, const eckit::geometry::Point3& b) const;
+    bool formClockwiseTriangle(const eckit::geometry::Point3& a, const eckit::geometry::Point3& b, const eckit::geometry::Point3& c) const;
+    void sort4Clockwise(std::vector<eckit::geometry::Point3>& points) const ;
+
+// -- Overridden methods
+
+    virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
+    virtual void hash( eckit::MD5 & ) const;
 
 // -- Class members
     // None
@@ -53,11 +97,11 @@ class Bilinear: public FiniteElement {
 
 // -- Friends
 
+
 };
 
 
 }  // namespace method
 }  // namespace mir
-
 #endif
 
