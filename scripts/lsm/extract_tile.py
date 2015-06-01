@@ -108,37 +108,3 @@ for path in sys.argv[1:]:
         g.seek(pos)
         p = [mapping[q] for q in values[x:x+1].flatten()]
         g.write(bytearray(p))
-
-    # # print (width, height)
-    # X.setdefault(s(top_left_x), {})
-    # X[s(top_left_x)][s(top_left_y)] = (width,
-    #                                    height,
-    #                                    path,
-    #                                    int(top_left_x * 172800 / 360 + 0.5),
-    #                                    int((90 - top_left_y) * 86400 / 180 + 0.5),
-    #                                    w_e_pixel_resolution,
-    #                                    n_s_pixel_resolution,
-    #                                    (top_left_x, top_left_y),
-    #                                    (top_left_x + height * w_e_pixel_resolution,  top_left_y + width * n_s_pixel_resolution)
-    #                                    )
-    # print (top_left_x, top_left_y)
-
-    # for y in xrange(0, width):
-    #     lon = top_left_y + y * n_s_pixel_resolution
-    #     for x in xrange(0, height):
-    #         lat = top_left_x + x * w_e_pixel_resolution
-
-    # print (lat, lon)
-
-# print json.dumps(X, sort_keys=True, indent=4)
-# for k, v in sorted(X.items()):
-#     print k
-#     print "     ", v
-# print band.shape
-
-# print "[ NO DATA VALUE ] = ", band.GetNoDataValue()
-# print "[ MIN ] = ", band.GetMinimum()
-# print "[ MAX ] = ", band.GetMaximum()
-# print "[ SCALE ] = ", band.GetScale()
-# print "[ UNIT TYPE ] = ", band.GetUnitType()
-#print band.ReadAsArray()
