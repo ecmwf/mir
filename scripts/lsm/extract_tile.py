@@ -42,6 +42,14 @@ Band 1 Block=5761x1 Type=Byte, ColorInterp=Gray
 """
 360/0.0020833333333333333 = 172800
 180/0.0020833333333333333 = 86400
+
+
+48 20160
+-48 66240
+-32 58560
+-16 50880
+0
+
 """
 
 
@@ -49,10 +57,18 @@ def s(x):
     return "%5g" % (x,)
 
 
-header="P5\n172800\n86400\n255\n";
-g = open("p.pgm", "w+b");
+header = "P5\n172800\n86400\n255\n"
+g = open("p.pgm", "w+b")
+
+line = bytearray([127 for y in xrange(0, 172800)])
 
 g.write(header)
+for r in xrange(0, 86400):
+    g.write(line)
+
+# exit(0)
+
+mapping = {0.0: 0, 1.0: 255, 253: 200}
 X = {}
 for path in sys.argv[1:]:
     print path
@@ -70,13 +86,26 @@ for path in sys.argv[1:]:
     assert band.GetScale() == 1
     values = band.ReadAsArray()
     (width, height) = values.shape
+    print (width, height)
+
+    while top_left_x >= 360:
+        top_left_x -= 360
+
+    while top_left_x < 0:
+        top_left_x += 360
 
     col = int(top_left_x * 172800 / 360 + 0.5)
     row = int((90 - top_left_y) * 86400 / 180 + 0.5)
 
+    print (col, row, col + width, row + height)
+    print (top_left_x, top_left_y)
+
     for x in xrange(0, height):
-        g.seek(len(header) + 172800 * (row-1) + col)
-        g.write(bytearray(values[x:x+1].flat))
+        pos = len(header) + 172800 * (x + row-1) + col
+        assert pos > 0
+        g.seek(pos)
+        p = [mapping[q] for q in values[x:x+1].flatten()]
+        g.write(bytearray(p))
 
     # # print (width, height)
     # X.setdefault(s(top_left_x), {})
