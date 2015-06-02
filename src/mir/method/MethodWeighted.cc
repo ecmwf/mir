@@ -15,7 +15,6 @@
 
 
 #include "mir/method/MethodWeighted.h"
-#include "mir/caching/WeightCache.h"
 
 #include <algorithm>
 #include <map>
@@ -30,7 +29,9 @@
 #include "eckit/thread/Mutex.h"
 
 #include "atlas/Grid.h"
+#include "atlas/geometry/Intersect.h"
 
+#include "mir/caching/WeightCache.h"
 #include "mir/util/Compare.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
