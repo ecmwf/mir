@@ -21,25 +21,12 @@
 
 #include <cmath>
 
-#include "eckit/filesystem/PathName.h"
-#include "eckit/log/Timer.h"
-
-#include "mir/input/GribFileInput.h"
-#include "mir/data/MIRField.h"
-#include "mir/method/Method.h"
-#include "mir/param/RuntimeParametrisation.h"
-#include "mir/repres/Representation.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/io/StdFile.h"
 #include "atlas/Grid.h"
-
-
-#include "eckit/eckit.h"
+#include "eckit/io/StdFile.h"
+#include "eckit/log/Bytes.h"
+#include "eckit/log/Timer.h"
 #include "eckit/os/Stat.h"
 
-#include "eckit/log/Bytes.h"
 
 namespace {
 
@@ -62,8 +49,18 @@ class Unmapper {
     }
 };
 
+static const unsigned int MASKS[] {
+    1 << 7,
+    1 << 6,
+    1 << 5,
+    1 << 4,
+    1 << 3,
+    1 << 2,
+    1 << 1,
+    1 << 0,
+};
 
-}
+}  // namespace
 
 namespace mir {
 namespace lsm {
@@ -124,7 +121,7 @@ MappedMask::MappedMask(const std::string &name,
 
     mask_.reserve(points.size());
 
-    const unsigned char *mask = reinterpret_cast<unsigned char*>(address);
+    const unsigned char *mask = reinterpret_cast<unsigned char *>(address);
 
     for (std::vector<atlas::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
         double lat = (*j).lat();
@@ -151,7 +148,7 @@ MappedMask::MappedMask(const std::string &name,
         size_t bit = pos % 8;
 
         // TODO: Check me
-        mask_.push_back(mask[byte] & (1 << (8 - bit - 1)));
+        mask_.push_back(mask[byte] & MASKS[bit]);
     }
 
 }

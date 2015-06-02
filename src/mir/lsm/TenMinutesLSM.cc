@@ -16,22 +16,14 @@
 
 #include "TenMinutesLSM.h"
 
-#include "eckit/filesystem/PathName.h"
-#include "eckit/log/Timer.h"
-
-#include "mir/input/GribFileInput.h"
-#include "mir/data/MIRField.h"
-#include "mir/method/Method.h"
-#include "mir/param/RuntimeParametrisation.h"
-#include "mir/repres/Representation.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/io/StdFile.h"
 #include "atlas/Grid.h"
 
-namespace {
+#include "eckit/io/StdFile.h"
+#include "eckit/log/Timer.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
 
+namespace {
 
 static eckit::Mutex local_mutex ;
 static std::vector<std::vector<bool> > ten_minutes_;
