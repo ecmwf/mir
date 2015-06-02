@@ -314,7 +314,7 @@ void MethodWeighted::cleanupMatrix(WeightMatrix &W) const {
 
         for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
             const double &a = j.value();
-            if (fabs(a) < 1e-12) {
+            if (fabs(a) < atlas::geometry::parametricEpsilon) {
                 removed += a;
                 j.valueRef() = 0;
                 fixed++;
