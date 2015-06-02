@@ -15,6 +15,8 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/BufferedHandle.h"
+#include "eckit/config/Resource.h"
+#include "eckit/log/Bytes.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/util/Grib.h"
@@ -27,8 +29,10 @@ namespace input {
 namespace {
 
 
-const size_t SIXTY_FOUR_MB = 64 * 1024 * 1024;
-
+static size_t buffer_size() {
+    static size_t size = eckit::Resource<size_t>("$MIR_GRIB_INPUT_BUFFER_SIZE", 64 * 1024 * 1024);
+    return size;
+}
 
 static long readcb(void *data, void *buffer, long len) {
     eckit::DataHandle *handle = reinterpret_cast<eckit::DataHandle *>(data);
@@ -43,7 +47,7 @@ GribStreamInput::GribStreamInput(size_t skip, size_t step):
     skip_(skip),
     step_(step),
     first_(true),
-    buffer_(SIXTY_FOUR_MB) {
+    buffer_(buffer_size()) {
     ASSERT(step_ > 0);
 }
 
@@ -71,6 +75,12 @@ bool GribStreamInput::next() {
             return false;
 
         }
+
+        if (e == GRIB_BUFFER_TOO_SMALL) {
+            eckit::Log::info() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(len) << ")" << std::endl;
+            GRIB_ERROR(e, "wmo_read_any_from_stream");
+        }
+
         if (e != GRIB_SUCCESS) {
             GRIB_ERROR(e, "wmo_read_any_from_stream");
         }
@@ -85,6 +95,14 @@ bool GribStreamInput::next() {
     }
 
     if (e == GRIB_END_OF_FILE) return false;
+
+
+    if (e == GRIB_BUFFER_TOO_SMALL) {
+        eckit::Log::info() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(len) << ")" << std::endl;
+        eckit::Log::info() << "Buffer size is " << buffer_.size() << " bytes (" << eckit::Bytes(buffer_.size()) << "), rerun with:" << std::endl;
+        eckit::Log::info() << "env MIR_GRIB_INPUT_BUFFER_SIZE=" << len << std::endl;
+        GRIB_ERROR(e, "wmo_read_any_from_stream");
+    }
 
     GRIB_ERROR(e, "wmo_read_any_from_stream");
     // Not reached

@@ -27,3 +27,9 @@ ecbuild_add_executable(
 		SOURCES     mir_shared_memory.cc
 		INCLUDES    ${ECKIT_INCLUDE_DIRS}
 		LIBS        mir ${ECKIT_LIBRARIES} )
+
+ecbuild_add_executable(
+		TARGET      mir_make_lsm
+		SOURCES     mir_make_lsm.cc
+		INCLUDES    ${ECKIT_INCLUDE_DIRS}
+		LIBS        mir ${ECKIT_LIBRARIES} )
