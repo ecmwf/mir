@@ -6,22 +6,20 @@ PHILOSOPHY:
 
 
 !----- NEXT STEPS (MAKE IS WORK)
-    !- Find bad projections
-    !- Caching of SH coefficients for SH to LL
-    !- Clearing cache in metabuilder ///
-        Note: we need to clear the caches of *ALL* cluster nodes
-        Posible solution: put the cache in the build directory, so that it is wiped
-        at each rebuild
-        ///
+    !- Find bad projections (to check/validate)
+    !- Caching of SH coefficients for SH to LL (faster)
     !- Classic bi-linear
     - Rotated regular GG ///
         GRIB_API ERROR   :  Unable to load sample file rotated_gg_pl_grib1.tmpl
         ///
+    --- Tackle non-global grids ///
+        Look at data from wave model param=swh
+        has only latitudes [80N,78S]
+    ///
     - Call HIRLAM routines in emoslib without the need for a rotation (environment variable)
     - Make the logging callback work in emoslib.cc
     - Implement print() method on ATLAS grids
     - Fix permission of top level cache directory
-    - Run metabuilder test on ALL platforms
     - Add regression tests to metabuilder
     - Implement other LSM, includinf 10 minute and HIRLAMs
     .- Support of polar stereographic grids (LOW PRIORITY)
@@ -126,5 +124,10 @@ DONE:
 +- SH to LL with different increments north/south and west/east
 +- Nearest LSM
 +- CacheMesh should take tesselation method into account: done, caching removed
-
++- Clearing cache in metabuilder ///
+        Note: we need to clear the caches of *ALL* cluster nodes
+        Posible solution: put the cache in the build directory, so that it is wiped
+        at each rebuild
+        ///
++- Run metabuilder test on ALL platforms
 

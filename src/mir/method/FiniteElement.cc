@@ -15,18 +15,20 @@
 
 #include "mir/method/FiniteElement.h"
 
+#include "eckit/config/Resource.h"
+#include "eckit/log/BigNum.h"
+#include "eckit/log/ETA.h"
+#include "eckit/log/Plural.h"
+#include "eckit/log/Seconds.h"
+#include "eckit/log/Timer.h"
+
 #include "atlas/geometry/QuadrilateralIntersection.h"
 #include "atlas/geometry/Ray.h"
 #include "atlas/geometry/TriangleIntersection.h"
 #include "atlas/meshgen/Delaunay.h"
 #include "atlas/Tesselation.h"
 #include "atlas/util/IndexView.h"
-
-#include "eckit/log/BigNum.h"
-#include "eckit/log/ETA.h"
-#include "eckit/log/Plural.h"
-#include "eckit/log/Seconds.h"
-#include "eckit/log/Timer.h"
+#include "atlas/io/Gmsh.h"
 
 #include "mir/util/PointSearch.h"
 
@@ -198,6 +200,15 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     {
         eckit::Timer timer("Generate mesh");
         generateMesh(in, i_mesh);
+
+        static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH",false);
+        if(dumpMesh)
+        {
+            eckit::Log::info() << "Dumping mesh to tmp.msh" << std::endl;
+            atlas::io::Gmsh gmsh;
+            gmsh.options.set<std::string>("nodes","xyz");
+            gmsh.write(i_mesh,"tmp.msh");
+        }
     }
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
@@ -228,6 +239,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
     atlas::FunctionSpace  &o_nodes  = o_mesh.function_space( "nodes" );
     atlas::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
+    atlas::ArrayView<double, 2> olonlat ( o_nodes.field<double>( "lonlat" ));
 
     MeshStats stats;
     stats.nb_triags = triags.shape(0);
@@ -266,9 +278,9 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
             size_t kpts = 1;
             bool success = false;
-
             while(!success && kpts <= maxNbElemsToTry) {
-                max_neighbours = std::max(kpts, max_neighbours);
+                
+				max_neighbours = std::max(kpts, max_neighbours);
 
                 atlas::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
                 success = projectPointToElements(stats,
@@ -287,7 +299,8 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
             if(!success) {
                 // If this fails, consider lowering atlas::grid::parametricEpsilon
-                eckit::Log::info() << "Failed to project point " << ip << " " << p << std::endl;
+                eckit::Log::info() << "Failed to project point " << ip << " " << p
+                                   << " with coords lonlat " << olonlat[ip][0] << " " << olonlat[ip][1] << std::endl;
                 throw eckit::SeriousBug("Could not project point");
             }
         }
