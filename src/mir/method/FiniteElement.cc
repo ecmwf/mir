@@ -55,15 +55,15 @@ struct MeshStats {
     size_t inp_npts;
     size_t out_npts;
 
-    size_t nbElems() const {
+    size_t size() const {
         return nb_triags + nb_quads;
     }
 
     void print(std::ostream &s) const {
-        s << "MeshStats[nb_triags=" << nb_triags
-          << ",nb_quads=" << nb_quads
-          << ",inp_npts=" << inp_npts
-          << ",out_npts=" << out_npts << "]";
+        s << "MeshStats[nb_triags=" << eckit::BigNum(nb_triags)
+          << ",nb_quads=" << eckit::BigNum(nb_quads)
+          << ",inp_npts=" << eckit::BigNum(inp_npts)
+          << ",out_npts=" << eckit::BigNum(out_npts) << "]";
     }
 
     friend std::ostream &operator<<(std::ostream &s, const MeshStats &p) {
@@ -235,8 +235,6 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     stats.inp_npts  = i_nodes.shape(0);
     stats.out_npts  = o_nodes.shape(0);
 
-    eckit::Log::info() << "atlas::Mesh has " << eckit::Plural(stats.nb_triags, "triangle")
-                       << " and " << eckit::Plural(stats.nb_quads, "quadrilateral") << std::endl;
     eckit::Log::info() << stats << std::endl;
 
     // weights -- one per vertice of element, triangles (3) or quads (4)
@@ -246,7 +244,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
     // search nearest k cell centres
 
-    const size_t maxNbElemsToTry = maxPercentElemsToTry * stats.nbElems();
+    const size_t maxNbElemsToTry = maxPercentElemsToTry * stats.size();
     size_t max_neighbours = 0;
 
     eckit::Log::info() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.shortName() << std::endl;
