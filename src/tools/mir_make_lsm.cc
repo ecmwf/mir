@@ -22,6 +22,7 @@
 #include "eckit/runtime/Tool.h"
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/runtime/Context.h"
+#include "eckit/io/StdFile.h"
 
 // #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
@@ -63,17 +64,52 @@ void MIRMakeLSM::run() {
     }
 
     mir::input::GribFileInput file(ctx.argv(1));
+    eckit::StdFile out(ctx.argv(2), "w");
 
     while (file.next()) {
         mir::input::MIRInput &input = file;
 
         const mir::param::MIRParametrisation &parametrisation = input.parametrisation();
 
+        size_t Ni = 0;
+        size_t Nj = 0;
+
+        ASSERT(parametrisation.get("Ni", Ni));
+        ASSERT(parametrisation.get("Nj", Nj));
+
+        eckit::Log::info() << "Ni=" << Ni << ", Nj=" << Nj << ", size=" << Ni*Nj << std::endl;
+        ASSERT(Ni == Nj * 2);
+
+
         std::auto_ptr<mir::data::MIRField> field(input.field());
 
-        std::cout << field->values(0).size() << std::endl;
+        ASSERT(!field->hasMissing());
 
-        std::cout << std::endl;
+        const std::vector<double>  &values = field->values(0);
+
+        unsigned char byte = 0;
+        size_t n = 0;
+        for (std::vector<double>::const_iterator j = values.begin(); j != values.end(); ++j) {
+            bool land = (*j) >= 0.5;
+            byte <<= 1;
+            if (land) {
+                byte |= 1;
+            }
+            n++;
+            if (n == 8) {
+                ASSERT(fwrite(&byte, 1, 1, out) == 1);
+                n = 0;
+            }
+        }
+
+        ASSERT(n == 0); // Reader will workout Ni Nj from file size
+
+        // if (n) {
+        //     byte <<= (8 - n);
+        //     ASSERT(fwrite(&byte, 1, 1, out) == 1);
+
+        // }
+
     }
 
 }
