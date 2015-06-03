@@ -79,8 +79,8 @@ void MIRMakeLSM::run() {
 
     std::vector<double> v;
     if (args.get("grid", v)) {
-        Ni = size_t(360.0 / v[1] + 0.5);
-        Nj = size_t(180.0 / v[0] + 0.5) + 1;
+        Ni = size_t(360.0 / v[0] + 0.5);
+        Nj = size_t(180.0 / v[1] + 0.5) + 1;
     }
     eckit::Log::info() << "Ni=" << Ni << ", Nj=" << Nj << std::endl;
 
