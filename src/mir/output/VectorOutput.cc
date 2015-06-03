@@ -62,11 +62,11 @@ void VectorOutput::save(const param::MIRParametrisation &param, input::MIRInput 
     v.values(field.values(1), 0);
 
     param::RuntimeParametrisation u_runtime(param);
-    u_runtime.set("u-component", component1ParamId(input));
+    u_runtime.set("param-id", component1ParamId(input));
     component1_.save(u_runtime, input, u);
 
     param::RuntimeParametrisation v_runtime(param);
-    v_runtime.set("v-component", component2ParamId(input)); // TODO: Find something better
+    v_runtime.set("param-id", component2ParamId(input)); // TODO: Find something better
     component2_.save(v_runtime, input, v);
 }
 
