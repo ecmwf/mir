@@ -20,13 +20,9 @@
 
 
 #include "eckit/runtime/Tool.h"
-#include "eckit/parser/Tokenizer.h"
 #include "eckit/runtime/Context.h"
 #include "eckit/io/StdFile.h"
-
-// #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
-// #include "mir/output/GribFileOutput.h"
 #include "mir/data/MIRField.h"
 
 
@@ -46,7 +42,7 @@ class MIRMakeLSM : public eckit::Tool {
 void MIRMakeLSM::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " [key1 key2 ...] file.grib file.lsm" << std::endl
+            << std::endl << "Usage: " << tool << " file.grib file.lsm" << std::endl
             ;
 
     ::exit(1);
