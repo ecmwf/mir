@@ -49,16 +49,7 @@ class Unmapper {
     }
 };
 
-static const unsigned int MASKS[] {
-    1 << 7,
-    1 << 6,
-    1 << 5,
-    1 << 4,
-    1 << 3,
-    1 << 2,
-    1 << 1,
-    1 << 0,
-};
+static const unsigned int MASKS[] = {1 << 7, 1 << 6, 1 << 5, 1 << 4, 1 << 3, 1 << 2, 1 << 1, 1 << 0};
 
 }  // namespace
 
@@ -148,7 +139,7 @@ MappedMask::MappedMask(const std::string &name,
         size_t bit = pos % 8;
 
         // TODO: Check me
-        mask_.push_back(mask[byte] & MASKS[bit]);
+        mask_.push_back((mask[byte] & MASKS[bit]) != 0);
     }
 
 }

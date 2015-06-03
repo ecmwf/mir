@@ -6,7 +6,6 @@ PHILOSOPHY:
 
 
 !----- NEXT STEPS (MAKE IS WORK)
-    !- Find bad projections (to check/validate)
     !- Caching of SH coefficients for SH to LL (faster)
     !- Classic bi-linear
     - Rotated regular GG ///
@@ -130,4 +129,5 @@ DONE:
         at each rebuild
         ///
 +- Run metabuilder test on ALL platforms
++- Find bad projections
 
