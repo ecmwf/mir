@@ -19,6 +19,7 @@
 #include <iosfwd>
 
 #include "mir/param/option/Option.h"
+#include "mir/param/option/SimpleOption.h"
 
 
 namespace mir {

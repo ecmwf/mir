@@ -21,11 +21,11 @@
 
 #include "eckit/runtime/Tool.h"
 
-#include "atlas/Grid.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/runtime/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/lsm/Mask.h"
+#include "atlas/grids/LonLatGrid.h"
 
 #include "mir/input/GribFileInput.h"
 #include "mir/param/MIRParametrisation.h"
@@ -34,7 +34,11 @@
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
 
+#include "mir/param/option/VectorOption.h"
+
+
 using mir::param::option::Option;
+using mir::param::option::VectorOption;
 
 class MIRMakeLSM : public eckit::Tool {
 
@@ -61,48 +65,48 @@ void MIRMakeLSM::usage(const std::string &tool) {
 void MIRMakeLSM::run() {
 
 
-
     std::vector<const Option *> options;
+    options.push_back(new VectorOption<double>("grid", "Default 1/1", 2));
+
     // options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
     // options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
 
-    mir::param::MIRArgs args(&usage, 2, options);
+    mir::param::MIRArgs args(&usage, 1, options);
     args.set("lsm", true); // Force LSM
 
-    mir::input::GribFileInput file(args.args(0));
-    eckit::StdFile out(args.args(1), "w");
+    size_t Ni = 360;
+    size_t Nj = 181;
 
-    while (file.next()) {
-        mir::input::MIRInput &input = file;
+    std::vector<double> v;
+    if (args.get("grid", v)) {
+        Ni = size_t(360.0 / v[1] + 0.5);
+        Nj = size_t(180.0 / v[0] + 0.5) + 1;
+    }
+    eckit::Log::info() << "Ni=" << Ni << ", Nj=" << Nj << std::endl;
 
-        const mir::param::MIRParametrisation &defaults = mir::param::MIRDefaults::instance();
-        const mir::param::MIRParametrisation &metadata = input.parametrisation();
-        mir::param::MIRCombinedParametrisation combined(args, metadata, defaults);
-
-        size_t Ni = 0;
-        size_t Nj = 0;
-
-        ASSERT(metadata.get("Ni", Ni));
-        ASSERT(metadata.get("Nj", Nj));
-
-        std::auto_ptr<mir::data::MIRField> field(input.field());
-        std::auto_ptr<atlas::Grid> grid(field->representation()->atlasGrid());
+    eckit::StdFile out(args.args(0), "w");
 
 
-        mir::lsm::Mask &mask = mir::lsm::Mask::lookupOutput(combined, *grid);
 
-        eckit::Log::info() << "MASK IS => " << mask << std::endl;
+    const mir::param::MIRParametrisation &defaults = mir::param::MIRDefaults::instance();
+    mir::param::MIRCombinedParametrisation combined(args, defaults, defaults);
+
+    std::auto_ptr<atlas::Grid> grid(new atlas::grids::LonLatGrid(int(Ni),
+                                    int(Nj),
+                                    atlas::grids::LonLatGrid::INCLUDES_POLES));
 
 
-        const std::vector<bool> &m = mask.mask();
+    mir::lsm::Mask &mask = mir::lsm::Mask::lookupOutput(combined, *grid);
 
-        fprintf(out, "P5\n%zu %zu 255\n", Ni, Nj);
+    eckit::Log::info() << "MASK IS => " << mask << std::endl;
 
-        for (std::vector<bool>::const_iterator j = m.begin(); j != m.end(); ++j) {
-            unsigned char c = (*j) ? 0xff : 0;
-            ASSERT(fwrite(&c, 1, 1, out));
-        }
+    const std::vector<bool> &m = mask.mask();
 
+    fprintf(out, "P5\n%zu %zu 255\n", Ni, Nj);
+
+    for (std::vector<bool>::const_iterator j = m.begin(); j != m.end(); ++j) {
+        unsigned char c = (*j) ? 0xff : 0;
+        ASSERT(fwrite(&c, 1, 1, out));
     }
 
 }
