@@ -16,7 +16,7 @@
 
 #include <memory>
 
-#include "atlas/GridSpec.h"
+#include "atlas/Grid.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/method/Method.h"

@@ -97,8 +97,8 @@ MappedMask::MappedMask(const std::string &name,
     ASSERT(Ni * Nj / 8 == size);
 
 
-    const size_t ROWS = Ni;
-    const size_t COLS = Nj;
+    const size_t ROWS = Nj;
+    const size_t COLS = Ni;
 
     eckit::Log::info() << "LSM: Ni=" << Ni << ", Nj=" << Nj << std::endl;
 

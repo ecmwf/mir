@@ -49,9 +49,12 @@ Mask *AutoLSM::create(const std::string &name,
                       const atlas::Grid &grid,
                       const std::string& which) const {
 
-    // return new TenMinutesLSM(name, param, grid, which);
-    return new MappedMask(name, param, grid, which);
-    // return new GribFileLSM(name, path(param), param, grid, which);
+    // Mask* mask = new TenMinutesLSM(name, param, grid, which);
+    Mask* mask = new MappedMask(name, param, grid, which);
+    // Mask* mask = new GribFileLSM(name, path(param), param, grid, which);
+
+    eckit::Log::info() << "AutoLSM::create => " << *mask << std::endl;
+    return mask;
 }
 
 std::string AutoLSM::cacheKey(const std::string &name,
