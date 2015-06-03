@@ -78,23 +78,7 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
                 }
             }
         }
-#if 0
-        eckit::StdFile pgm("10.pgm", "w");
-        fwrite("P2\n", 3, 1, pgm);
-        fwrite("2160\n1080\n", 10, 1, pgm);
-        fwrite("1\n", 2, 1, pgm);
 
-        for (size_t i = 0; i < ROWS; i++) {
-            for (size_t j = 0; j < COLS; j++) {
-                if (ten_minutes_[i][j])  {
-                    fwrite("1\n", 2, 1, pgm);
-                } else {
-                    fwrite("0\n", 2, 1, pgm);
-                }
-            }
-            fwrite("\n", 1, 1, pgm);
-        }
-#endif
     }
 
     eckit::Timer timer("Extract point from 10 minutes LSM");

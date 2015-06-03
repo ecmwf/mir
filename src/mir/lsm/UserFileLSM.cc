@@ -15,12 +15,14 @@
 
 
 #include "mir/lsm/UserFileLSM.h"
+
 #include <iostream>
-#include "mir/param/MIRParametrisation.h"
-#include "mir/lsm/GribFileLSM.h"
+
+#include "atlas/Grid.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/Grid.h"
+#include "mir/lsm/GribFileLSM.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {

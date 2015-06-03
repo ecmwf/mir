@@ -14,10 +14,7 @@
 
 
 #include "eckit/runtime/Tool.h"
-
-// #include "mir/api/MIRJob.h"
 #include "eckit/filesystem/PathName.h"
-// #include "mir/output/GribFileOutput.h"
 
 
 class MIRConfig : public eckit::Tool {

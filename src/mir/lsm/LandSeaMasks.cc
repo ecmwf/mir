@@ -18,10 +18,11 @@
 
 #include <iostream>
 
-#include "mir/lsm/Mask.h"
 #include "eckit/exception/Exceptions.h"
-#include "eckit/utils/MD5.h"
 #include "eckit/log/Timer.h"
+#include "eckit/utils/MD5.h"
+
+#include "mir/lsm/Mask.h"
 
 
 namespace mir {

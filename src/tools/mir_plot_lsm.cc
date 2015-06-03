@@ -18,22 +18,15 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-
-#include "eckit/runtime/Tool.h"
-
-#include "eckit/io/StdFile.h"
-#include "eckit/runtime/Context.h"
-#include "mir/data/MIRField.h"
-#include "mir/lsm/Mask.h"
 #include "atlas/grids/LonLatGrid.h"
 
-#include "mir/input/GribFileInput.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
+#include "eckit/io/StdFile.h"
+#include "eckit/runtime/Tool.h"
+
+#include "mir/lsm/Mask.h"
 #include "mir/param/MIRArgs.h"
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
-
 #include "mir/param/option/VectorOption.h"
 
 

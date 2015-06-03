@@ -16,6 +16,7 @@
 #include "mir/param/option/SimpleOption.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/Translator.h"
+#include "eckit/filesystem/PathName.h"
 
 #include <iostream>
 

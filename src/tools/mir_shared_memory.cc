@@ -12,14 +12,10 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-
 #include "eckit/runtime/Tool.h"
 
-// #include "mir/api/MIRJob.h"
-#include "eckit/filesystem/PathName.h"
 #include "mir/caching/SharedMemoryLoader.h"
 #include "mir/param/MIRArgs.h"
-
 #include "mir/param/option/SimpleOption.h"
 
 using mir::param::option::Option;

@@ -17,11 +17,11 @@
 #include "mir/lsm/AutoLSM.h"
 
 #include <iostream>
-#include "mir/lsm/GribFileLSM.h"
+
 #include "eckit/utils/MD5.h"
-#include "atlas/Grid.h"
-#include "mir/lsm/TenMinutesLSM.h"
+#include "mir/lsm/GribFileLSM.h"
 #include "mir/lsm/MappedMask.h"
+#include "mir/lsm/TenMinutesLSM.h"
 
 namespace mir {
 namespace lsm {

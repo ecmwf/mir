@@ -23,9 +23,7 @@
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/runtime/Context.h"
 
-// #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
-// #include "mir/output/GribFileOutput.h"
 
 
 class MIRInspect : public eckit::Tool {

@@ -14,22 +14,10 @@
 
 
 #include "eckit/runtime/Tool.h"
-// #include "eckit/runtime/Context.h"
-// #include "eckit/parser/Tokenizer.h"
-
-// #include "mir/api/MIRJob.h"
-// #include "mir/action/VOD2UVTransform.h"
-// #include "mir/action/Sh2ShTransform.h"
-
-// #include "mir/input/GribFileInput.h"
-// #include "mir/output/GribFileOutput.h"
-// #include "mir/data/MIRField.h"
-// #include "mir/repres/Representation.h"
 
 
 #include "atlas/grids/grids.h"
 #include "atlas/grids/rgg/OctahedralRGG.h"
-#include "atlas/GridSpec.h"
 
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/RLE.h"

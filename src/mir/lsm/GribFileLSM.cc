@@ -14,18 +14,16 @@
 /// @date Apr 2015
 
 
-#include "GribFileLSM.h"
+#include "mir/lsm/GribFileLSM.h"
 
-#include "eckit/filesystem/PathName.h"
+#include "atlas/Grid.h"
 
-#include "mir/input/GribFileInput.h"
 #include "mir/data/MIRField.h"
+#include "mir/input/GribFileInput.h"
 #include "mir/method/Method.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
-
-#include "atlas/Grid.h"
 
 namespace mir {
 namespace lsm {

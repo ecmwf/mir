@@ -12,25 +12,16 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-
-#include "eckit/runtime/Tool.h"
-// #include "eckit/runtime/Context.h"
-// #include "eckit/parser/Tokenizer.h"
-#include "eckit/log/BigNum.h"
-#include "eckit/log/Plural.h"
-
-#include "eckit/memory/ScopedPtr.h"
-#include "eckit/types/FloatCompare.h"
-
 #include <cmath>
 
-// #include "mir/api/MIRJob.h"
-#include "mir/input/GribFileInput.h"
-// #include "mir/output/GribFileOutput.h"
+#include "eckit/log/Plural.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "eckit/runtime/Tool.h"
+#include "eckit/types/FloatCompare.h"
+
 #include "mir/data/MIRField.h"
+#include "mir/input/GribFileInput.h"
 #include "mir/param/MIRArgs.h"
-
-
 #include "mir/param/option/SimpleOption.h"
 
 using mir::param::option::Option;
