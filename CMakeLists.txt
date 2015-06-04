@@ -34,16 +34,10 @@ ecbuild_use_package( PROJECT eckit  VERSION  0.8  REQUIRED )
 ecbuild_use_package( PROJECT atlas  VERSION  0.3  REQUIRED )
 # ecbuild_use_package( PROJECT libemos  )
 
-# BUG: For some reason, in bundles this does not get propagated, unless
-# following lines are defined
-foreach( _feature ${ECKIT_FEATURES};${ATLAS_FEATURES} )
-  set( ${_feature} 1 )
-endforeach()
-
-# Eigen support in eckit is required
-# if( NOT ECKIT_HAVE_EIGEN )
-# message( FATAL_ERROR "Eigen support in eckit is required" )
-# endif()
+#Eigen support in eckit is required
+if( NOT ECKIT_HAVE_EIGEN )
+  message( FATAL_ERROR "Eigen support in eckit is required" )
+endif()
 
 # this will be replaced once ecbuild exports subcomponents between packages
 
@@ -70,23 +64,23 @@ endif()
 ### MPI
 
 ecbuild_add_option( FEATURE MPI
-					DEFAULT OFF
-					DESCRIPTION "support for MPI distributed parallelism" )
+                    DEFAULT OFF
+                    DESCRIPTION "support for MPI distributed parallelism" )
 
 if( ENABLE_MPI )
 
   ecbuild_enable_mpi()
 
   if( NOT MPI_CXX_FOUND )
-	set( HAVE_MPI 0 )
+    set( HAVE_MPI 0 )
   endif()
 
 endif()
 
 ecbuild_add_option( FEATURE NETCDF
-	  DEFAULT ON
-	  DESCRIPTION "support for NetCDF4"
-	  REQUIRED_PACKAGES NetCDF4 )
+                    DEFAULT ON
+                    DESCRIPTION "support for NetCDF4"
+                    REQUIRED_PACKAGES NetCDF4 )
 
 
 ###############################################################################
@@ -122,9 +116,9 @@ add_subdirectory( tests )
 # install( DIRECTORY share DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
 ecbuild_add_resources( TARGET top_files SOURCES
-											 TODO AUTHORS README NOTICE LICENSE INSTALL ChangeLog COPYING
-										DONT_PACK
-											 BUGS )
+                       TODO AUTHORS README NOTICE LICENSE INSTALL ChangeLog COPYING
+                       DONT_PACK
+                       BUGS )
 
 ############################################################################################
 # packaging and installation
