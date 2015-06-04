@@ -75,6 +75,12 @@ ecbuild_add_option( FEATURE NETCDF
                     DESCRIPTION "support for NetCDF4"
                     REQUIRED_PACKAGES NetCDF4 )
 
+### Hermes
+
+ecbuild_add_option( FEATURE HERMES
+                    DEFAULT OFF
+                    DESCRIPTION "Hermes computation engine"
+                    REQUIRED_PACKAGES "PROJECT hermes VERSION 0.1.0" )
 
 ###############################################################################
 # contents
@@ -84,6 +90,10 @@ ecbuild_add_option( FEATURE NETCDF
 set( MIR_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
 set( MIR_LIBRARIES      mir )
 set( MIR_TPLS           atlas eckit )
+
+if( HAVE_HERMES )
+  list( APPEND MIR_TPLS hermes )
+endif()
 
 get_directory_property( COMPILE_DEFINITIONS MIR_DEFINITIONS )
 

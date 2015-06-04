@@ -6,6 +6,7 @@
 #include "mir/api/mir_version.h"
 
 #cmakedefine ATLAS_HAVE_TRANS
+#cmakedefine HAVE_HERMES
 #cmakedefine HAVE_NETCDF
 
 #endif // mir_config_h
