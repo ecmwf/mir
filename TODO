@@ -15,12 +15,11 @@ PHILOSOPHY:
         Look at data from wave model param=swh
         has only latitudes [80N,78S]
     ///
+    --- Review LSM selection method/caching and hashing
     - Call HIRLAM routines in emoslib without the need for a rotation (environment variable)
     - Make the logging callback work in emoslib.cc
     - Implement print() method on ATLAS grids
-    - Fix permission of top level cache directory
     - Add regression tests to metabuilder
-    - Implement other LSM, includinf 10 minute and HIRLAMs
     .- Support of polar stereographic grids (LOW PRIORITY)
 
 --- METHODS (MAKE IT CORRECT)
@@ -130,4 +129,5 @@ DONE:
         ///
 +- Run metabuilder test on ALL platforms
 +- Find bad projections
++- Implement other LSM, includinf 10 minute and HIRLAMs
 
