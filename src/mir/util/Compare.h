@@ -135,7 +135,7 @@ struct is_masked_fn : compare_fn< size_t > {
         ASSERT(i<mask.size());
         return mask[i];
     }
-    const std::vector< bool > mask;
+    const std::vector< bool >& mask;
 };
 
 
@@ -148,7 +148,7 @@ struct is_not_masked_fn : compare_fn< size_t > {
         ASSERT(i<mask.size());
         return !mask[i];
     }
-    const std::vector< bool > mask;
+    const std::vector< bool >& mask;
 };
 
 
