@@ -129,5 +129,5 @@ DONE:
         ///
 +- Run metabuilder test on ALL platforms
 +- Find bad projections
-+- Implement other LSM, includinf 10 minute and HIRLAMs
++b- Implement other LSM, includinf 10 minute and HIRLAMs
 
