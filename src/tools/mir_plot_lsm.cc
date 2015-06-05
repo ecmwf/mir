@@ -60,6 +60,7 @@ void MIRMakeLSM::run() {
 
     std::vector<const Option *> options;
     options.push_back(new VectorOption<double>("grid", "Default 1/1", 2));
+    options.push_back(new VectorOption<long>("ninj", "Default 360/181", 2));
 
     // options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
     // options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
@@ -75,6 +76,13 @@ void MIRMakeLSM::run() {
         Ni = size_t(360.0 / v[0] + 0.5);
         Nj = size_t(180.0 / v[1] + 0.5) + 1;
     }
+
+    std::vector<long> n;
+    if (args.get("ninj", n)) {
+        Ni = n[0];
+        Nj = n[1];
+    }
+
     eckit::Log::info() << "Ni=" << Ni << ", Nj=" << Nj << std::endl;
 
     eckit::StdFile out(args.args(0), "w");

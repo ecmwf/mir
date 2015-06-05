@@ -28,10 +28,14 @@ template<class T> struct Title {
     const char *operator()() const;
 };
 
-
 template<>
 const char *Title<size_t>::operator()() const {
     return "ordinal";
+}
+
+template<>
+const char *Title<long>::operator()() const {
+    return "interger";
 }
 
 template<>
