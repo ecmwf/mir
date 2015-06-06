@@ -86,8 +86,8 @@ void BoundingBox::normalise() {
         east_ += 360;
     }
 
-    ASSERT(north_ > south_);
-    ASSERT(west_ < east_);
+    ASSERT(north_ >= south_);
+    ASSERT(west_ <= east_);
 }
 
 double BoundingBox::normalise(double lon) const {
