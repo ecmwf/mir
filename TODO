@@ -41,8 +41,10 @@ PHILOSOPHY:
         - Decide on what to test
 
 -- PERFORMANCES (MAKE IT FAST)
-    !----- Caching of SH=>LL coefficients
     - Memory mapping of the SparseMatrix coefficients: MappedSparseMatrix<double,RowMajor> weights(nrows, ncols, nnz, row_ptr, col_ind, val);
+    - Hide Eigen in a light wrapper
+    - Implement wrapper with armadilo
+
 
 - OTHER
     - OPEN QUESTIONS
@@ -132,4 +134,6 @@ DONE:
 +- Find bad projections
 +b- Implement other LSM, includinf 10 minute and HIRLAMs
 +- Rotated regular GG
++- Caching of SH=>LL coefficients
+
 
