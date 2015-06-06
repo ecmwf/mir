@@ -11,6 +11,9 @@ PHILOSOPHY:
     - Rotated regular GG ///
         GRIB_API ERROR   :  Unable to load sample file rotated_gg_pl_grib1.tmpl
         ///
+    --- Shifted Lat/Lon grid (not  passing by 0/0) ///
+        Example: tigge,origin=egrr. Need to pass reference point to atlas::LatLon contructor.
+        ///
     --- Tackle non-global grids ///
         Look at data from wave model param=swh
         has only latitudes [80N,78S]
