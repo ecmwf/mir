@@ -43,8 +43,10 @@ PHILOSOPHY:
         - Decide on what to test
 
 -- PERFORMANCES (MAKE IT FAST)
-    !----- Caching of SH=>LL coefficients
     - Memory mapping of the SparseMatrix coefficients: MappedSparseMatrix<double,RowMajor> weights(nrows, ncols, nnz, row_ptr, col_ind, val);
+    - Hide Eigen in a light wrapper
+    - Implement wrapper with armadilo
+
 
 - OTHER
     - OPEN QUESTIONS
@@ -133,4 +135,6 @@ DONE:
 +- Run metabuilder test on ALL platforms
 +- Find bad projections
 +b- Implement other LSM, includinf 10 minute and HIRLAMs
++- Caching of SH=>LL coefficients
+
 
