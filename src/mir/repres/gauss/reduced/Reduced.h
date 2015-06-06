@@ -100,7 +100,7 @@ class Reduced : public Gaussian {
 
     Gridded *cropped(const util::BoundingBox &bbox) const ;
     void validate(const std::vector<double> &values) const;
-
+    virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
     // Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
 

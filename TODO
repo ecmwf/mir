@@ -8,9 +8,7 @@ PHILOSOPHY:
 !----- NEXT STEPS (MAKE IS WORK)
     !- Caching of SH coefficients for SH to LL (faster)
     !- Classic bi-linear
-    - Rotated regular GG ///
-        GRIB_API ERROR   :  Unable to load sample file rotated_gg_pl_grib1.tmpl
-        ///
+    -- Frames and GG
     --- Shifted Lat/Lon grid (not  passing by 0/0) ///
         Example: tigge,origin=egrr. Need to pass reference point to atlas::LatLon contructor.
         ///
@@ -133,4 +131,5 @@ DONE:
 +- Run metabuilder test on ALL platforms
 +- Find bad projections
 +b- Implement other LSM, includinf 10 minute and HIRLAMs
++- Rotated regular GG
 
