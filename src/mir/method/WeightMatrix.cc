@@ -1,0 +1,141 @@
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+/// @author Tiago Quintino
+/// @date May 2015
+
+
+#include "mir/method/WeightMatrix.h"
+#include "eckit/log/Plural.h"
+#include "eckit/log/Timer.h"
+#include "eckit/log/Seconds.h"
+
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+
+#include "atlas/Grid.h"
+#include "atlas/geometry/Intersect.h"
+
+#include "mir/util/Compare.h"
+#include "mir/data/MIRField.h"
+#include "mir/data/MIRFieldStats.h"
+#include "mir/lsm/LandSeaMasks.h"
+#include "mir/param/MIRParametrisation.h"
+
+
+using mir::util::compare::is_approx_zero;
+using mir::util::compare::is_approx_one;
+
+namespace mir {
+namespace method {
+
+
+void WeightMatrix::cleanup() {
+    size_t fixed = 0;
+    size_t count = 0;
+    for (size_t i = 0; i < rows(); i++) {
+        double removed = 0;
+        size_t non_zero = 0;
+
+        for (WeightMatrix::InnerIterator j(*this, i); j; ++j) {
+            const double &a = j.value();
+            if (fabs(a) < atlas::geometry::parametricEpsilon) {
+                removed += a;
+                j.valueRef() = 0;
+                fixed++;
+            } else {
+                non_zero++;
+            }
+            count++;
+        }
+
+        if (removed && non_zero) {
+            double d = removed / non_zero;
+            for (WeightMatrix::InnerIterator j(*this, i); j; ++j) {
+                const double &a = j.value();
+                if (a) {
+                    j.valueRef() = a + d;
+                }
+            }
+        }
+
+
+    }
+    if (fixed) {
+        eckit::Log::info() << "MethodWeighted::cleanupMatrix fixed "
+                           << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
+                           << " (matrix is " << eckit::BigNum(rows()) << "x" << eckit::BigNum(cols()) << ", total=" <<
+                           eckit::BigNum(rows() * cols()) << ")" << std::endl;
+    }
+    prune(0.0);
+}
+
+void WeightMatrix::validate(const char *when) const {
+
+    using util::compare::is_approx_greater_equal;
+
+    size_t errors = 0;
+
+    for (size_t i = 0; i < rows(); i++) {
+
+        // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
+        double sum = 0.;
+        bool ok  = true;
+
+        for (WeightMatrix::InnerIterator j(*this, i); j; ++j) {
+            const double &a = j.value();
+            if (!is_approx_greater_equal<double>(a, 0)) {
+                ok = false;
+            }
+            if (!is_approx_greater_equal<double>(1, a)) {
+                ok = false;
+            }
+            sum += a;
+        }
+
+        if (!is_approx_zero(sum) && !is_approx_one(sum)) {
+            ok = false;
+        }
+
+        // log issues, per row
+        if (!ok) {
+            if (errors < 50) {
+                if (!errors) {
+                    eckit::Log::info() << "checkMatrixWeights(" << when << ") failed " << std::endl;
+                }
+
+                eckit::Log::info() << "Row: " << i;
+                size_t n = 0;
+                for (WeightMatrix::InnerIterator j(*this, i); j; ++j, ++n) {
+                    if (n > 10) {
+                        eckit::Log::info() << " ...";
+                        break;
+                    }
+                    eckit::Log::info() << " [" << j.value() << "]";
+                }
+
+                eckit::Log::info() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
+            } else if (errors == 50) {
+                eckit::Log::info() << "..." << std::endl;
+            }
+            errors++;
+
+        }
+    }
+
+    if (errors) {
+        eckit::StrStream os;
+        os << "checkMatrixWeights(" << when << ") failed ";
+    }
+}
+
+}  // namespace method
+}  // namespace mir
+

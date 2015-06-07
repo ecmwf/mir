@@ -15,6 +15,7 @@
 #define mir_method_WeightMatrix_H
 
 #include "eckit/maths/Eigen.h"
+#include "eckit/exception/Exceptions.h"
 
 namespace mir {
 namespace method {
@@ -68,6 +69,10 @@ class WeightMatrix {
 
         vo = matrix_ * vi;
     }
+
+    void cleanup();
+    void validate(const char *when) const;
+
 
     class InnerIterator {
         Matrix::InnerIterator it_;

@@ -164,6 +164,7 @@ list(
      method/PseudoLaplace.cc
      method/PseudoLaplace.h
      method/WeightMatrix.h
+     method/WeightMatrix.cc
      output/DummyOutput.cc
      output/DummyOutput.h
      output/GribFileOutput.cc

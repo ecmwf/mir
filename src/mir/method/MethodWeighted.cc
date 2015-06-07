@@ -127,23 +127,23 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     if (!caching || !cache.retrieve(cache_key, W)) {
 
         computeMatrixWeights(in, out, W);
-        checkMatrixWeights(W, "computeMatrixWeights", in, out);
+        W.validate("computeMatrixWeights");
 
         if (masks.active() && masks.cacheable()) {
             applyMasks(W, masks);
-            checkMatrixWeights(W, "applyMasks", in, out);
+            W.validate("applyMasks");
         }
         if (caching) {
             cache.insert(cache_key, W);
         }
     } else {
-        checkMatrixWeights(W, "fromCache", in, out);
+        W.validate("fromCache");
     }
 
     // If LSM not cacheabe, e.g. user provided, we apply the mask after
     if (masks.active() && !masks.cacheable())  {
         applyMasks(W, masks);
-        checkMatrixWeights(W, "applyMasks", in, out);
+        W.validate("applyMasks");
     }
 
     here = timer.elapsed();
@@ -196,7 +196,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
             // Assumes compiler does return value optimization
             // otherwise we need to pass result matrix as parameter
             WeightMatrix MW = applyMissingValues(W, field, i);
-            checkMatrixWeights(MW, "applyMissingValues", in, out);
+            MW.validate("applyMissingValues");
 
             MW.multiply(values, result);
         } else {
@@ -238,113 +238,9 @@ void MethodWeighted::computeMatrixWeights(const atlas::Grid &in, const atlas::Gr
     } else {
         eckit::Timer timer("Assemble matrix");
         assemble(W, in, out);   // assemble matrix of coefficients
-        cleanupMatrix(W);
+        W.cleanup();
     }
 }
-
-void MethodWeighted::checkMatrixWeights(const WeightMatrix &W, const char *when, const atlas::Grid &in, const atlas::Grid &out) const {
-
-    using util::compare::is_approx_greater_equal;
-
-    size_t errors = 0;
-
-    for (size_t i = 0; i < W.rows(); i++) {
-
-        // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
-        double sum = 0.;
-        bool ok  = true;
-
-        for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
-            const double &a = j.value();
-            if (!is_approx_greater_equal<double>(a, 0)) {
-                ok = false;
-            }
-            if (!is_approx_greater_equal<double>(1, a)) {
-                ok = false;
-            }
-            sum += a;
-        }
-
-        if (!is_approx_zero(sum) && !is_approx_one(sum)) {
-            ok = false;
-        }
-
-        // log issues, per row
-        if (!ok) {
-            if (errors < 50) {
-                if (!errors) {
-                    eckit::Log::info() << "checkMatrixWeights(" << when << ") failed "
-                                       << *this
-                                       << " in=" << in.shortName()
-                                       << ", out=" << out.shortName() << std::endl;
-                }
-
-                eckit::Log::info() << "Row: " << i;
-                size_t n = 0;
-                for (WeightMatrix::InnerIterator j(W, i); j; ++j, ++n) {
-                    if (n > 10) {
-                        eckit::Log::info() << " ...";
-                        break;
-                    }
-                    eckit::Log::info() << " [" << j.value() << "]";
-                }
-
-                eckit::Log::info() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
-            } else if (errors == 50) {
-                eckit::Log::info() << "..." << std::endl;
-            }
-            errors++;
-
-        }
-    }
-
-    if (errors) {
-        eckit::StrStream os;
-        os << "checkMatrixWeights(" << when << ") failed " << *this << " in=" << in.shortName() << ", out=" << out.shortName() << eckit::StrStream::ends;
-        throw eckit::SeriousBug(os);
-    }
-}
-
-void MethodWeighted::cleanupMatrix(WeightMatrix &W) const {
-    size_t fixed = 0;
-    size_t count = 0;
-    for (size_t i = 0; i < W.rows(); i++) {
-        double removed = 0;
-        size_t non_zero = 0;
-
-        for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
-            const double &a = j.value();
-            if (fabs(a) < atlas::geometry::parametricEpsilon) {
-                removed += a;
-                j.valueRef() = 0;
-                fixed++;
-            } else {
-                non_zero++;
-            }
-            count++;
-        }
-
-        if (removed && non_zero) {
-            double d = removed / non_zero;
-            for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
-                const double &a = j.value();
-                if (a) {
-                    j.valueRef() = a + d;
-                }
-            }
-        }
-
-
-    }
-    if (fixed) {
-        eckit::Log::info() << "MethodWeighted::cleanupMatrix fixed "
-                           << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
-                           << " (matrix is " << eckit::BigNum(W.rows()) << "x" << eckit::BigNum(W.cols()) << ", total=" <<
-                           eckit::BigNum(W.rows() * W.cols()) << ")" << std::endl;
-    }
-    W.prune(0.0);
-}
-
 
 WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const {
 

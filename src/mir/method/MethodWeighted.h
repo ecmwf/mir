@@ -73,10 +73,6 @@ class MethodWeighted : public Method {
     void computeMatrixWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
 
 
-    void checkMatrixWeights(const WeightMatrix &W, const char *when, const atlas::Grid &in, const atlas::Grid &out) const;
-    void cleanupMatrix(WeightMatrix &W) const;
-
-
 };
 
 //----------------------------------------------------------------------------------------------------------------------
