@@ -142,7 +142,7 @@ void MIRTool::run() {
 
     //==============================================
     options.push_back(new Separator("Miscellaneous"));
-    options.push_back(new SimpleOption<std::stringst>("style", "Compatibility with style=dissemination (ignored)"));
+    options.push_back(new SimpleOption<std::string>("style", "Compatibility with style=dissemination (ignored)"));
 
     //==============================================
     options.push_back(new Separator("Debugging"));

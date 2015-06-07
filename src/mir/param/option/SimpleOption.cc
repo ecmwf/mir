@@ -49,6 +49,11 @@ const char *Title<bool>::operator()() const {
 }
 
 template<>
+const char *Title<std::string>::operator()() const {
+    return "string";
+}
+
+template<>
 const char *Title<eckit::PathName>::operator()() const {
     return "path";
 }
