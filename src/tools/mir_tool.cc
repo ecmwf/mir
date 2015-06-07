@@ -141,8 +141,14 @@ void MIRTool::run() {
     options.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
 
     //==============================================
+    options.push_back(new Separator("Miscellaneous"));
+    options.push_back(new SimpleOption<std::stringst>("style", "Compatibility with style=dissemination (ignored)"));
+
+    //==============================================
     options.push_back(new Separator("Debugging"));
     options.push_back(new SimpleOption<bool>("dummy", "Use dummy data"));
+
+
 
     // {"", 0, "GRIB Output"},
     // {"accuracy", "n", "number of bits per value",},
