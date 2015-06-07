@@ -109,7 +109,7 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
     // get the longitudes from
     const std::vector<int>& lons = igg->npts_per_lat();
 
-    std::vector< Eigen::Triplet<double> > weights_triplets; /* structure to fill-in sparse matrix */
+    std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
 
     // determing the number of output points required
     const size_t out_npts = onodes.shape(0);
@@ -212,10 +212,10 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         double w_bl =  w4 * wb;
         double w_br =  w3 * wb;
 
-        weights_triplets.push_back( Eigen::Triplet<double>( i, bot_i_rgt, w_br ) );
-        weights_triplets.push_back( Eigen::Triplet<double>( i, bot_i_lft, w_bl ) );
-        weights_triplets.push_back( Eigen::Triplet<double>( i, top_i_rgt, w_tr ) );
-        weights_triplets.push_back( Eigen::Triplet<double>( i, top_i_lft, w_tl ) );
+        weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_rgt, w_br ) );
+        weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_lft, w_bl ) );
+        weights_triplets.push_back( WeightMatrix::Triplet( i, top_i_rgt, w_tr ) );
+        weights_triplets.push_back( WeightMatrix::Triplet( i, top_i_lft, w_tl ) );
 
     }
 

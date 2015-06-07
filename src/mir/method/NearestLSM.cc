@@ -95,7 +95,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     // - input mask (imask) operates on matrix column index (j)
     here = timer.elapsed();
 
-    std::vector< Eigen::Triplet< double > > mat;
+    std::vector<WeightMatrix::Triplet> mat;
     mat.reserve(W.rows());
     for (size_t i=0; i<W.rows(); ++i) {
 
@@ -113,7 +113,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
         const size_t j = qmeta.payload();
 
         // insert entry into uncompressed matrix structure
-        mat.push_back(Eigen::Triplet< double >( i, j, 1. ));
+        mat.push_back(WeightMatrix::Triplet( i, j, 1. ));
 
     }
     Log::info() << name << " search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;

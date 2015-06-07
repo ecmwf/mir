@@ -182,16 +182,15 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         // This is expensive so we might want to skip it in production code
         data::MIRFieldStats istats = field.statistics(i);
 
-        ASSERT(field.values(i).size() == npts_inp);
 
-        std::vector<double> &values = field.values(i);
+        const std::vector<double> &values = field.values(i);
+        ASSERT(values.size() == npts_inp);
+
 
         // This should be local to the loop as field.value() will take ownership of result with std::swap()
         // For optimisation, one can also create result outside the loop, and resize() it here
         std::vector<double> result(npts_out);
 
-        Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( &values[0], npts_inp );
-        Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &result[0], npts_out );
 
         if ( field.hasMissing() ) {
             // Assumes compiler does return value optimization
@@ -199,9 +198,9 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
             WeightMatrix MW = applyMissingValues(W, field, i);
             checkMatrixWeights(MW, "applyMissingValues", in, out);
 
-            vo = MW * vi;
+            MW.multiply(values, result);
         } else {
-            vo = W * vi;
+            W.multiply(values, result);
         }
 
         field.values(result, i);  // Update field with result

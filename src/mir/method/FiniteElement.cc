@@ -84,7 +84,7 @@ static bool projectPointToElements(const MeshStats &stats,
                                    const atlas::IndexView<int,    2> &triag_nodes,
                                    const atlas::IndexView<int,    2> &quads_nodes,
                                    const FiniteElement::Point &p,
-                                   std::vector< Eigen::Triplet<double> > &weights_triplets,
+                                   std::vector< WeightMatrix::Triplet > &weights_triplets,
                                    size_t ip,
                                    atlas::ElemIndex3::NodeList::const_iterator start,
                                    atlas::ElemIndex3::NodeList::const_iterator finish ) {
@@ -124,7 +124,7 @@ static bool projectPointToElements(const MeshStats &stats,
                 w[2] = is.v;
 
                 for (int i = 0; i < 3; ++i)
-                    weights_triplets.push_back( Eigen::Triplet<double>( ip, idx[i], w[i] ) );
+                    weights_triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
 
                 return true;
             }
@@ -166,7 +166,7 @@ static bool projectPointToElements(const MeshStats &stats,
                 w[3] = (1. - is.u) *       is.v ;
 
                 for (int i = 0; i < 4; ++i)
-                    weights_triplets.push_back( Eigen::Triplet<double>( ip, idx[i], w[i] ) );
+                    weights_triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
 
                 return true;
 
@@ -251,7 +251,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
     // weights -- one per vertice of element, triangles (3) or quads (4)
 
-    std::vector< Eigen::Triplet<double> > weights_triplets; // structure to fill-in sparse matrix
+    std::vector< WeightMatrix::Triplet > weights_triplets; // structure to fill-in sparse matrix
     weights_triplets.reserve( stats.out_npts * 4 );         // preallocate space as if all elements where quads
 
     // search nearest k cell centres
@@ -279,7 +279,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
             size_t kpts = 1;
             bool success = false;
             while(!success && kpts <= maxNbElemsToTry) {
-                
+
 				max_neighbours = std::max(kpts, max_neighbours);
 
                 atlas::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);

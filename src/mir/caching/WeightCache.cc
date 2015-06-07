@@ -88,10 +88,10 @@ void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) 
 
         // find all the non-zero values (aka triplets)
 
-        std::vector<Eigen::Triplet<double> > trips;
+        std::vector<method::WeightMatrix::Triplet > trips;
         for (size_t i = 0; i < W.outerSize(); ++i) {
             for (method::WeightMatrix::InnerIterator it(W, i); it; ++it) {
-                trips.push_back(Eigen::Triplet<double>(it.row(), it.col(), it.value()));
+                trips.push_back(method::WeightMatrix::Triplet(it.row(), it.col(), it.value()));
             }
         }
 
@@ -104,7 +104,7 @@ void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) 
 
         for (size_t i = 0; i < trips.size(); i++) {
 
-            Eigen::Triplet<double> &rt = trips[i];
+            method::WeightMatrix::Triplet &rt = trips[i];
 
             Index x = rt.row();
             Index y = rt.col();
@@ -149,7 +149,7 @@ bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) cons
 
         // read total sparse points of matrix (so we can reserve)
 
-        std::vector<Eigen::Triplet<double> > insertions;
+        std::vector<method::WeightMatrix::Triplet > insertions;
 
         eckit::Log::info() << "Inner: " << eckit::BigNum(inner)
                            << ", outer: " << eckit::BigNum(outer)
@@ -165,7 +165,7 @@ bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) cons
             f.read(&x, sizeof(x));
             f.read(&y, sizeof(y));
             f.read(&w, sizeof(w));
-            insertions.push_back(Eigen::Triplet<double>(x, y, w));
+            insertions.push_back(method::WeightMatrix::Triplet(x, y, w));
         }
 
         // check matrix is correctly sized

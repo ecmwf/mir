@@ -58,7 +58,7 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
     const size_t out_npts = o_nodes.shape(0);
 
     // init structure used to fill in sparse matrix
-    std::vector< Eigen::Triplet<double> > weights_triplets;
+    std::vector< WeightMatrix::Triplet > weights_triplets;
     weights_triplets.reserve( out_npts * nclosest_ );
 
     std::vector<atlas::PointIndex3::Value> closest;
@@ -130,7 +130,7 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
         // insert the interpolant weights into the global (sparse) interpolant matrix
         for(int i = 0; i < npts; ++i) {
             size_t index = closest[i].payload();
-            weights_triplets.push_back( Eigen::Triplet<double>( ip, index, weights[i] ) );
+            weights_triplets.push_back( WeightMatrix::Triplet( ip, index, weights[i] ) );
         }
     }
 

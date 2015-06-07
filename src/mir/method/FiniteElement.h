@@ -17,7 +17,6 @@
 #define mir_method_FiniteElement_H
 
 #include "eckit/memory/ScopedPtr.h"
-#include "eckit/maths/Eigen.h"
 #include "eckit/geometry/Point3.h"
 
 #include "atlas/Mesh.h"
