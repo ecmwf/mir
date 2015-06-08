@@ -82,19 +82,16 @@ class WeightMatrix {
     void validate(const char *when) const;
 
 
-    class InnerIterator {
+private:
+    // Solve the const-ness issues in eigen
+
+    class _inner_iterator {
+      protected:
         Matrix::InnerIterator it_;
-        bool const_;
       public:
 
-        InnerIterator(const WeightMatrix &m, Index outer):
-            it_(m.matrix_, outer),
-            const_(true) {
-        }
-
-        InnerIterator( WeightMatrix &m, Index outer) :
-            it_(m.matrix_, outer),
-            const_(false) {
+        _inner_iterator(const WeightMatrix &m, Index outer):
+            it_(m.matrix_, outer) {
         }
 
         operator bool() const {
@@ -113,14 +110,32 @@ class WeightMatrix {
             return it_.col();
         }
 
-        double value() const {
+        double operator*() const {
             return it_.value();
         }
 
-        double &valueRef() {
-            ASSERT(!const_);
+    };
+
+public:
+    class inner_iterator : public _inner_iterator {
+      public:
+
+        inner_iterator( WeightMatrix &m, Index outer) :
+            _inner_iterator(m, outer) {
+        }
+
+        double &operator*() {
             return it_.valueRef();
         }
+    };
+
+    class inner_const_iterator : public _inner_iterator {
+      public:
+
+        inner_const_iterator( const WeightMatrix &m, Index outer) :
+            _inner_iterator(m, outer) {
+        }
+
     };
 
     template<class T>
@@ -131,6 +146,8 @@ class WeightMatrix {
   private:
 
     Matrix matrix_;
+
+
 
 };
 

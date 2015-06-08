@@ -256,11 +256,11 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
         double sum = 0.; // accumulated row weight, disregarding field missing values
         size_t Nmiss = 0;
         size_t Ncol  = 0;
-        for (WeightMatrix::InnerIterator j(X, i); j; ++j, ++Ncol) {
+        for (WeightMatrix::inner_const_iterator j(X, i); j; ++j, ++Ncol) {
             if (check_miss(values[j.col()]))
                 ++Nmiss;
             else
-                sum += j.value();
+                sum += *j;
         }
         const bool miss_some = (Nmiss > 0);
         const bool miss_all  = (Ncol == Nmiss);
@@ -271,10 +271,10 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             // all values are missing (or weights wrongly computed):
             // erase row & force missing value equality
             bool found = false;
-            for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
-                j.valueRef() = 0.;
+            for (WeightMatrix::inner_iterator j(X, i); j; ++j) {
+                *j = 0.;
                 if (!found && check_miss(values[j.col()])) {
-                    j.valueRef() = 1.;
+                    *j = 1.;
                     found = true;
                 }
             }
@@ -284,11 +284,11 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             ASSERT(!is_approx_zero(sum));
 
             // apply linear redistribution
-            for (WeightMatrix::InnerIterator j(X, i); j; ++j) {
+            for (WeightMatrix::inner_iterator j(X, i); j; ++j) {
                 if (check_miss(values[j.col()])) {
-                    j.valueRef() = 0.;
+                    *j = 0.;
                 } else {
-                    j.valueRef() /= sum;
+                    *j /= sum;
                 }
             }
 
@@ -333,22 +333,22 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
         // correct weight of non-matching input point weight contribution
         double sum = 0.;
         bool row_changed = false;
-        for (WeightMatrix::InnerIterator j(W, i); j; ++j) {
+        for (WeightMatrix::inner_iterator j(W, i); j; ++j) {
 
             ASSERT(j.col() < imask.size());
 
             if (omask[i] != imask[j.col()]) {
-                j.valueRef() *= lsmWeightAdjustement_;
+                *j *= lsmWeightAdjustement_;
                 row_changed = true;
             }
-            sum += j.value();
+            sum += *j;
         }
 
         // apply linear redistribution if necessary
         if (row_changed && !is_approx_zero(sum)) {
             ++fix;
-            for (WeightMatrix::InnerIterator j(W, i); j; ++j)
-                j.valueRef() /= sum;
+            for (WeightMatrix::inner_iterator j(W, i); j; ++j)
+                *j /= sum;
         }
 
     }

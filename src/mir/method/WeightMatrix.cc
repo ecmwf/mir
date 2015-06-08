@@ -13,16 +13,12 @@
 
 
 #include "mir/method/WeightMatrix.h"
-#include "eckit/log/Plural.h"
 
 #include "atlas/geometry/Intersect.h"
-#include "mir/util/Compare.h"
-#include "eckit/io/BufferedHandle.h"
-#include "eckit/log/Timer.h"
-#include "eckit/log/Plural.h"
-#include "eckit/log/BigNum.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/log/Seconds.h"
+#include "eckit/io/BufferedHandle.h"
+#include "eckit/log/Plural.h"
+#include "mir/util/Compare.h"
 
 using mir::util::compare::is_approx_zero;
 using mir::util::compare::is_approx_one;
@@ -48,8 +44,8 @@ void WeightMatrix::save(const eckit::PathName &path) const {
 
     std::vector<method::WeightMatrix::Triplet > trips;
     for (size_t i = 0; i < outerSize(); ++i) {
-        for (method::WeightMatrix::InnerIterator it(*this, i); it; ++it) {
-            trips.push_back(method::WeightMatrix::Triplet(it.row(), it.col(), it.value()));
+        for (method::WeightMatrix::inner_const_iterator it(*this, i); it; ++it) {
+            trips.push_back(method::WeightMatrix::Triplet(it.row(), it.col(), *it));
         }
     }
 
@@ -130,11 +126,11 @@ void WeightMatrix::cleanup() {
         double removed = 0;
         size_t non_zero = 0;
 
-        for (WeightMatrix::InnerIterator j(*this, i); j; ++j) {
-            const double &a = j.value();
+        for (WeightMatrix::inner_iterator j(*this, i); j; ++j) {
+            const double a = *j;
             if (fabs(a) < atlas::geometry::parametricEpsilon) {
                 removed += a;
-                j.valueRef() = 0;
+                *j = 0;
                 fixed++;
             } else {
                 non_zero++;
@@ -144,16 +140,15 @@ void WeightMatrix::cleanup() {
 
         if (removed && non_zero) {
             double d = removed / non_zero;
-            for (WeightMatrix::InnerIterator j(*this, i); j; ++j) {
-                const double &a = j.value();
+            for (WeightMatrix::inner_iterator j(*this, i); j; ++j) {
+                const double a = *j;
                 if (a) {
-                    j.valueRef() = a + d;
+                    *j = a + d;
                 }
             }
         }
-
-
     }
+
     if (fixed) {
         eckit::Log::info() << "MethodWeighted::cleanupMatrix fixed "
                            << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
@@ -175,8 +170,8 @@ void WeightMatrix::validate(const char *when) const {
         double sum = 0.;
         bool ok  = true;
 
-        for (WeightMatrix::InnerIterator j(*this, i); j; ++j) {
-            const double &a = j.value();
+        for (WeightMatrix::inner_const_iterator j(*this, i); j; ++j) {
+            const double &a = *j;
             if (!is_approx_greater_equal<double>(a, 0)) {
                 ok = false;
             }
@@ -199,12 +194,12 @@ void WeightMatrix::validate(const char *when) const {
 
                 eckit::Log::info() << "Row: " << i;
                 size_t n = 0;
-                for (WeightMatrix::InnerIterator j(*this, i); j; ++j, ++n) {
+                for (WeightMatrix::inner_const_iterator j(*this, i); j; ++j, ++n) {
                     if (n > 10) {
                         eckit::Log::info() << " ...";
                         break;
                     }
-                    eckit::Log::info() << " [" << j.value() << "]";
+                    eckit::Log::info() << " [" << *j << "]";
                 }
 
                 eckit::Log::info() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
