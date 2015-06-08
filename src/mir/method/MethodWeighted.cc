@@ -15,31 +15,28 @@
 
 
 #include "mir/method/MethodWeighted.h"
-#include "mir/caching/WeightCache.h"
 
 #include <algorithm>
 #include <map>
 #include <string>
 #include <sstream>
 
+#include "atlas/Grid.h"
 #include "eckit/log/Plural.h"
-#include "eckit/log/Timer.h"
 #include "eckit/log/Seconds.h"
-
+#include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "atlas/Grid.h"
-#include "atlas/geometry/Intersect.h"
-
-#include "mir/util/Compare.h"
+#include "mir/caching/WeightCache.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Compare.h"
 
 
-using eckit::Log;
+// using eckit::Log;
 using mir::util::compare::is_approx_zero;
 using mir::util::compare::is_approx_one;
 
@@ -79,9 +76,9 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     double here = timer.elapsed();
     const lsm::LandSeaMasks masks = getMasks(in, out);
-    Log::info() << "Compute LandSeaMasks " << timer.elapsed() - here << std::endl;
+    eckit::Log::info() << "Compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
-    Log::info() << "++++ LSM masks " << masks << std::endl;
+    eckit::Log::info() << "++++ LSM masks " << masks << std::endl;
     here = timer.elapsed();
     eckit::MD5 md5;
     md5 << *this;
@@ -91,7 +88,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     const eckit::MD5::digest_t md5_no_masks(md5.digest());
     md5 << masks;
     const eckit::MD5::digest_t md5_with_masks(md5.digest());
-    Log::info() << "Compute md5 " << timer.elapsed() - here << std::endl;
+    eckit::Log::info() << "Compute md5 " << timer.elapsed() - here << std::endl;
 
 
     const std::string base_name      = std::string(name()) + "-" + in.shortName() + "-" + out.shortName();
@@ -112,11 +109,11 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     // calculate weights matrix, apply mask if necessary
 
-    Log::info() << "Elapsed 1 " << timer.elapsed()  << std::endl;
+    eckit::Log::info() << "Elapsed 1 " << timer.elapsed()  << std::endl;
 
     here = timer.elapsed();
     WeightMatrix W(out.npts(), in.npts());
-    Log::info() << "Create matrix " << timer.elapsed() - here << std::endl;
+    eckit::Log::info() << "Create matrix " << timer.elapsed() - here << std::endl;
 
     bool caching = true;
     parametrisation_.get("caching", caching);
@@ -148,7 +145,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
 
     here = timer.elapsed();
     std::swap(matrix_cache[key_with_masks], W);
-    Log::info() << "Swap matrix " << timer.elapsed() - here << std::endl;
+    eckit::Log::info() << "Swap matrix " << timer.elapsed() - here << std::endl;
 
     return matrix_cache[key_with_masks];
 }
@@ -160,7 +157,7 @@ lsm::LandSeaMasks MethodWeighted::getMasks(const atlas::Grid &in, const atlas::G
 void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const atlas::Grid &out) const {
 
     eckit::Timer timer("MethodWeighted::execute");
-    Log::info() << "MethodWeighted::execute" << std::endl;
+    eckit::Log::info() << "MethodWeighted::execute" << std::endl;
 
     // setup sizes & checks
     const size_t npts_inp = in.npts();
@@ -207,10 +204,10 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code
-        Log::info() << "Input  Field statistics : " << istats << std::endl;
+        eckit::Log::info() << "Input  Field statistics : " << istats << std::endl;
 
         data::MIRFieldStats ostats = field.statistics(i);
-        Log::info() << "Output Field statistics : " << ostats << std::endl;
+        eckit::Log::info() << "Output Field statistics : " << ostats << std::endl;
 
         ASSERT(util::compare::is_approx_greater_equal(ostats.minimum(), istats.minimum()));
         ASSERT(util::compare::is_approx_greater_equal(istats.maximum(), ostats.maximum()));
@@ -233,7 +230,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
 void MethodWeighted::computeMatrixWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const {
     if (in.same(out)) {
-        Log::info() << "Matrix is indentity" << std::endl;
+        eckit::Log::info() << "Matrix is indentity" << std::endl;
         W.setIdentity();        // grids are the same, use identity matrix
     } else {
         eckit::Timer timer("Assemble matrix");
@@ -307,7 +304,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
     eckit::Timer timer("MethodWeighted::applyMasks");
 
-    Log::info() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
+    eckit::Log::info() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
     ASSERT(masks.active());
 
     const std::vector< bool > &imask = masks.inputMask();
@@ -358,7 +355,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks)
 
 
     // log corrections
-    Log::info() << "MethodWeighted: applyMasks corrected " << eckit::BigNum(fix) << " out of " << eckit::Plural(W.rows() , "row") << std::endl;
+    eckit::Log::info() << "MethodWeighted: applyMasks corrected " << eckit::BigNum(fix) << " out of " << eckit::Plural(W.rows() , "row") << std::endl;
 }
 
 

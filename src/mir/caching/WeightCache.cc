@@ -46,10 +46,10 @@ WeightCache::WeightCache():
     CacheManager("mir/weights") {
 }
 
-const char* WeightCache::version() const {
+const char *WeightCache::version() const {
     return mir_version_str();
 }
-const char* WeightCache::extension() const {
+const char *WeightCache::extension() const {
     return ".mat";
 }
 
@@ -64,64 +64,17 @@ void WeightCache::print(std::ostream &s) const {
 
 void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) const {
 
-    typedef method::WeightMatrix::Index Index;
-
     eckit::PathName tmp = stage(key);
 
     eckit::Log::info() << "Inserting weights in cache : " << tmp << "" << std::endl;
 
     eckit::Timer timer("Saving weights to cache");
-
-    {
-        eckit::BufferedHandle f(tmp.fileHandle());
-
-        f.openForWrite(0);
-        eckit::AutoClose closer(f);
-
-        // write nominal size of matrix
-
-        Index innerSize = W.innerSize();
-        Index outerSize = W.outerSize();
-
-        f.write(&innerSize, sizeof(innerSize));
-        f.write(&outerSize, sizeof(outerSize));
-
-        // find all the non-zero values (aka triplets)
-
-        std::vector<method::WeightMatrix::Triplet > trips;
-        for (size_t i = 0; i < W.outerSize(); ++i) {
-            for (method::WeightMatrix::InnerIterator it(W, i); it; ++it) {
-                trips.push_back(method::WeightMatrix::Triplet(it.row(), it.col(), it.value()));
-            }
-        }
-
-        // save the number of triplets
-
-        Index ntrips = trips.size();
-        f.write(&ntrips, sizeof(ntrips));
-
-        // now save the triplets themselves
-
-        for (size_t i = 0; i < trips.size(); i++) {
-
-            method::WeightMatrix::Triplet &rt = trips[i];
-
-            Index x = rt.row();
-            Index y = rt.col();
-            double w = rt.value();
-
-            f.write(&x, sizeof(x));
-            f.write(&y, sizeof(y));
-            f.write(&w, sizeof(w));
-        }
-    }
+    W.save(tmp);
 
     ASSERT(commit(key, tmp));
 }
 
 bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) const {
-
-    typedef method::WeightMatrix::Index Index;
 
     eckit::PathName path;
 
@@ -131,55 +84,7 @@ bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) cons
     eckit::Log::info() << "Found weights in cache : " << path << "" << std::endl;
     eckit::Timer timer("Loading weights from cache");
 
-    {
-        eckit::BufferedHandle f(path.fileHandle());
-
-        f.openForRead();
-        eckit::AutoClose closer(f);
-
-        // read inpts, outpts sizes of matrix
-
-        Index inner, outer;
-
-        f.read(&inner, sizeof(inner));
-        f.read(&outer, sizeof(outer));
-
-        Index npts;
-        f.read(&npts, sizeof(npts));
-
-        // read total sparse points of matrix (so we can reserve)
-
-        std::vector<method::WeightMatrix::Triplet > insertions;
-
-        eckit::Log::info() << "Inner: " << eckit::BigNum(inner)
-                           << ", outer: " << eckit::BigNum(outer)
-                           << ", number of points: " << eckit::BigNum(npts) << std::endl;
-
-        insertions.reserve(npts);
-
-        // read the values
-
-        for (size_t i = 0; i < npts; i++) {
-            Index x, y;
-            double w;
-            f.read(&x, sizeof(x));
-            f.read(&y, sizeof(y));
-            f.read(&w, sizeof(w));
-            insertions.push_back(method::WeightMatrix::Triplet(x, y, w));
-        }
-
-        // check matrix is correctly sized
-        // note that Weigths::Matrix is row-major, so rows are outer size
-
-        ASSERT(W.rows() == outer);
-        ASSERT(W.cols() == inner);
-
-        // set the weights from the triplets
-
-        double now = timer.elapsed();
-        W.setFromTriplets(insertions.begin(), insertions.end());
-        eckit::Log::info() << "Inserting " << eckit::Plural(insertions.size(), "triplet") << " in " << eckit::Seconds(timer.elapsed() - now) << std::endl;
-    }
+    W.load(path);
 
     return true;
 }

@@ -17,6 +17,10 @@
 #include "eckit/maths/Eigen.h"
 #include "eckit/exception/Exceptions.h"
 
+namespace eckit {
+class PathName;
+}
+
 namespace mir {
 namespace method {
 
@@ -36,6 +40,10 @@ class WeightMatrix {
     WeightMatrix(Index rows, Index cols):
         matrix_(rows, cols) {
     }
+
+    void save(const eckit::PathName &path) const;
+    void load(const eckit::PathName &path);
+
 
     Index rows() const {
         return matrix_.rows();
