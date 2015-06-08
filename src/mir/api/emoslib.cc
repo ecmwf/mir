@@ -323,11 +323,11 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
         *length_out = std::max(u_output.length(), v_output.length());
 
         {
-            eckit::StdFile f("debug.u");
+            eckit::StdFile f("debug.u", "w");
             fwrite(u_grib_out, 1, *length_out, f);
         }
         {
-            eckit::StdFile f("debug.v");
+            eckit::StdFile f("debug.v", "w");
             fwrite(u_grib_out, 1, *length_out, f);
         }
 
