@@ -313,8 +313,9 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
         ASSERT(u_output.interpolated() + u_output.saved() == 1);
         ASSERT(v_output.interpolated() + v_output.saved() == 1);
 
-        ASSERT(u_output.length() == v_output.length());
-        *length_out = u_output.length();
+        // If packing=so, u and v will have different sizes
+        // ASSERT(u_output.length() == v_output.length());
+        *length_out = std::max(u_output.length(), v_output.length());
 
         // if (output.saved() == 1) {
         //     *length_out = 0; // Not interpolation performed
