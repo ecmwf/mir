@@ -14,6 +14,11 @@
 #ifndef mir_method_WeightMatrix_H
 #define mir_method_WeightMatrix_H
 
+#include "eckit/eckit_config.h"
+
+// #ifdef ECKIT_HAVE_EIGEN
+// #ifdef ECKIT_HAVE_ARMADILLO
+
 #include "eckit/maths/Eigen.h"
 #include "eckit/exception/Exceptions.h"
 

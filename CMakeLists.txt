@@ -34,9 +34,9 @@ ecbuild_use_package( PROJECT eckit  VERSION  0.8  REQUIRED )
 ecbuild_use_package( PROJECT atlas  VERSION  0.3  REQUIRED )
 # ecbuild_use_package( PROJECT libemos  )
 
-#Eigen support in eckit is required
-if( NOT ECKIT_HAVE_EIGEN )
-  message( FATAL_ERROR "Eigen support in eckit is required" )
+# Either Eigen support or Armadillo support in eckit is required
+if( NOT ECKIT_HAVE_EIGEN AND NOT ECKIT_HAVE_ARMADILLO )
+  message( FATAL_ERROR "Either Eigen support or Armadillo support in eckit is required" )
 endif()
 
 # this will be replaced once ecbuild exports subcomponents between packages
