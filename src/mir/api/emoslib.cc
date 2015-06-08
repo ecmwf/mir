@@ -274,6 +274,10 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
     try {
 #endif
 
+        // Second order packing may return different sizes
+        ::memset(u_grib_out, 0, *length_out);
+        ::memset(v_grib_out, 0, *length_out);
+
         if (!job.get()) {
             job.reset(new MIRJob());
         }
