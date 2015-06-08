@@ -21,6 +21,7 @@
 #include "eckit/log/Log.h"
 #include "eckit/runtime/LibBehavior.h"
 #include "eckit/runtime/Context.h"
+#include "eckit/io/StdFile.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribMemoryInput.h"
@@ -218,7 +219,7 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
         mir::input::GribMemoryInput input(grib_in, *length_in);
         mir::output::GribMemoryOutput output(grib_out, *length_out);
 
-        static const char* capture = getenv("MIR_CAPTURE_CALLS");
+        static const char *capture = getenv("MIR_CAPTURE_CALLS");
         if (capture) {
             std::ofstream out(capture);
             out << "mars<<EOF" << std::endl;
@@ -295,7 +296,7 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
         job->set("vod2uv", true);
 
 
-        static const char* capture = getenv("MIR_CAPTURE_CALLS");
+        static const char *capture = getenv("MIR_CAPTURE_CALLS");
         if (capture) {
             std::ofstream out(capture);
             out << "mars<<EOF" << std::endl;
@@ -320,6 +321,15 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
         // If packing=so, u and v will have different sizes
         // ASSERT(u_output.length() == v_output.length());
         *length_out = std::max(u_output.length(), v_output.length());
+
+        {
+            eckit::StdFile f("debug.u");
+            fwrite(u_grib_out, 1, *length_out, f);
+        }
+        {
+            eckit::StdFile f("debug.v");
+            fwrite(u_grib_out, 1, *length_out, f);
+        }
 
         // if (output.saved() == 1) {
         //     *length_out = 0; // Not interpolation performed
@@ -358,7 +368,7 @@ extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_i
 
         job->set("wind", true);
 
-        static const char* capture = getenv("MIR_CAPTURE_CALLS");
+        static const char *capture = getenv("MIR_CAPTURE_CALLS");
         if (capture) {
             std::ofstream out(capture);
             out << "mars<<EOF" << std::endl;
