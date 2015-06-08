@@ -328,7 +328,7 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
         }
         {
             eckit::StdFile f("debug.v", "w");
-            fwrite(u_grib_out, 1, *length_out, f);
+            fwrite(v_grib_out, 1, *length_out, f);
         }
 
         // if (output.saved() == 1) {
