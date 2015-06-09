@@ -60,6 +60,10 @@ PHILOSOPHY:
         - MARS
             .- Specifying AREA on a SH field is ignored
 
+CHANGES WE WANT TO MAKE
+--- Get rid of AREACHK in mars (like prodgen, does not work for all grids)
+--- Prodgen should not do sub-sampling
+
 MEMO:
 - Use IFS new interpolation (SH->GG, SH->LL, new code, published paper)
 - Wave will go to unstructured grid
