@@ -14,9 +14,7 @@
 
 
 #include "mir/method/Tessellation.h"
-
-#include "atlas/meshgen/ReducedGridMeshGenerator.h"
-#include "atlas/grids/ReducedGrid.h"
+#include "atlas/meshgen/Delaunay.h"
 
 namespace mir {
 namespace method {
@@ -42,7 +40,7 @@ void Tessellation::hash( eckit::MD5 &md5) const {
 
 
 void Tessellation::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) const {
-    FiniteElement::generateMesh(grid, mesh);
+  atlas::meshgen::Delaunay().generate(grid, mesh);
 }
 
 void Tessellation::print(std::ostream &out) const {

@@ -14,6 +14,7 @@
 
 
 #include "mir/method/FiniteElement.h"
+#include "mir/param/MIRParametrisation.h"
 
 #include "eckit/config/Resource.h"
 #include "eckit/log/BigNum.h"
@@ -26,15 +27,24 @@
 #include "atlas/geometry/Ray.h"
 #include "atlas/geometry/TriangleIntersection.h"
 #include "atlas/meshgen/Delaunay.h"
-#include "atlas/Tesselation.h"
+#include "atlas/meshgen/Tesselation.h"
+#include "atlas/grids/ReducedGrid.h"
 #include "atlas/util/IndexView.h"
 #include "atlas/io/Gmsh.h"
-
-#include "mir/util/PointSearch.h"
-
+#include "atlas/actions/BuildXYZField.h"
 
 namespace mir {
 namespace method {
+
+FiniteElement::MeshGenParams::MeshGenParams() : eckit::Properties()
+{
+  set("three_dimensional", true);
+  set("patch_pole",        true);
+  set("include_pole",      false);
+  set("angle",             0.);
+  set("triangulate",       false);
+}
+
 
 FiniteElement::FiniteElement(const param::MIRParametrisation &param) :
     MethodWeighted(param) {
@@ -185,13 +195,14 @@ static const double maxPercentElemsToTry = 0.02; // try to project to 2% of tota
 
 void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
+
     // FIXME arguments:
     eckit::Log::info() << "FiniteElement::assemble" << std::endl;
     eckit::Log::info() << "  Input  Grid: " << in.unique_id() << std::endl;
     eckit::Log::info() << "  Output Grid: " << out.unique_id() << std::endl;
 
-    atlas::Mesh &i_mesh = const_cast<atlas::Mesh &>(in.mesh());  // we modify the mesh when we tesselate
-    atlas::Mesh &o_mesh = const_cast<atlas::Mesh &>(out.mesh());
+    atlas::Mesh &i_mesh = in.mesh();
+    atlas::Mesh &o_mesh = out.mesh();
 
     eckit::Timer timer("Compute weights");
 
@@ -212,10 +223,9 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     }
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
-
     {
         eckit::Timer timer("Tesselation::create_cell_centres");
-        atlas::Tesselation::create_cell_centres(i_mesh);
+        atlas::meshgen::Tesselation::create_cell_centres(i_mesh);
     }
 
     eckit::ScopedPtr<atlas::ElemIndex3> eTree;
@@ -236,6 +246,9 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     atlas::IndexView<int, 2> quads_nodes ( quads.field<int>( "nodes" ) );
 
     // output mesh
+
+    // In case xyz field in the out mesh, build it
+    atlas::actions::build_xyz_field(out.mesh(),"xyz");
 
     atlas::FunctionSpace  &o_nodes  = o_mesh.function_space( "nodes" );
     atlas::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
@@ -280,7 +293,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
             bool success = false;
             while(!success && kpts <= maxNbElemsToTry) {
 
-				max_neighbours = std::max(kpts, max_neighbours);
+                max_neighbours = std::max(kpts, max_neighbours);
 
                 atlas::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
                 success = projectPointToElements(stats,
@@ -314,11 +327,29 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
 
 void FiniteElement::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) const {
-    // This is the fallback method if sub-classes cannot to their job properly
 
-    std::cout << *this << " using Delaunay triangulation on grid: " << grid.shortName() << std::endl;
-    atlas::meshgen::Delaunay delaunay;
-    delaunay.generate(grid, mesh);
+  ///  This raises another issue: how to cache meshes generated with different parametrisations?
+  ///  We must md5 the MeshGenerator itself.
+
+  std::string meshgenerator("ReducedGrid");             // Fastest option available by default
+
+  parametrisation_.get("meshgenerator",meshgenerator);  // Override with MIRParametrisation
+
+  const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
+
+  // Falling back to "Delaunay" if the mesh is not a ReducedGrid
+  if (reduced == 0 && meshgenerator == "ReducedGrid") {
+      meshgenerator = "Delaunay";
+  }
+
+  if( reduced )
+    eckit::Log::info() << "Mesh is ReducedGrid " << grid.shortName() << '\n';
+
+  eckit::ScopedPtr<atlas::meshgen::MeshGenerator> generator( atlas::meshgen::MeshGeneratorFactory::build(meshgenerator,meshgenparams_) );
+  generator->generate(*reduced, mesh);
+
+  // If meshgenerator did not create xyz field already, do it now.
+  atlas::actions::build_xyz_field(mesh);
 }
 
 

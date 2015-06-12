@@ -15,6 +15,7 @@
 
 #include "mir/method/FELinear.h"
 
+#include "mir/param/MIRParametrisation.h"
 #include "atlas/meshgen/ReducedGridMeshGenerator.h"
 #include "atlas/meshgen/Delaunay.h"
 #include "atlas/grids/ReducedGrid.h"
@@ -25,6 +26,7 @@ namespace method {
 
 FELinear::FELinear(const param::MIRParametrisation &param) :
     FiniteElement(param) {
+  meshgenparams_.set("triangulate", true); // No quads allowed
 }
 
 
@@ -40,49 +42,6 @@ const char *FELinear::name() const {
 void FELinear::hash( eckit::MD5& md5) const {
     FiniteElement::hash(md5);
 }
-
-
-void FELinear::generateMesh(const atlas::Grid& grid, atlas::Mesh& mesh) const
-{
-
-    /// @TODO Ask Baudouin best way to build and parametrize the mesh generator
-    ///       MeshGenerator is in Atlas -- should we bring to MIR ??
-    ///       If stays in Atlas, we cannot pass MirParametrisation
-    ///
-    ///  This raises another issue: hoe to cache meshes generated with different parametrizations?
-    ///  We must md5 the MeshGenerator itself.
-    ///
-    ///  We should be using something like:
-    ///
-    //    std::string meshGenerator;
-    //    ASSERT(parametrisation_.get("meshGenerator", meshGenerator));
-    //    eckit::ScopedPtr<MeshGenerator> meshGen( MeshGeneratorFactory::build(meshGenerator) );
-    //    meshGen->tesselate(in, i_mesh);
-
-
-    const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
-    if (reduced == 0) {
-        // Falling back to default behaviour
-        FiniteElement::generateMesh(grid, mesh);
-        return;
-    }
-
-    // fast tesselation method, specific for ReducedGrid's
-
-    std::cout << "Mesh is ReducedGrid " << grid.shortName() << std::endl;
-
-    atlas::meshgen::ReducedGridMeshGenerator generator;
-
-    // force these flags
-    generator.options.set("three_dimensional", true);
-    generator.options.set("patch_pole", true);
-    generator.options.set("include_pole", false);
-    generator.options.set("triangulate", true);
-
-    generator.generate(*reduced, mesh);
-}
-
-
 
 void FELinear::print(std::ostream &out) const {
     out << "FELinear[]";

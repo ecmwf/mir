@@ -117,8 +117,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
     for (unsigned int i = 0; i < out_npts; i++) {
         // get the lat, lon of the output data point required
-        double lat = ocoords[i].data()[LAT];
-        double lon = ocoords[i].data()[LON];
+        double lat = ocoords(i,LAT);
+        double lon = ocoords(i,LON);
 
         // these will hold indices in the input vector of the start of the upper and lower latitudes
         size_t top_i = 0;
@@ -138,9 +138,9 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             else
                 bot_n = lons[n+1];
 
-            double top_lat = icoords[top_i].data()[LAT];
+            double top_lat = icoords(top_i,LAT);
 
-            double bot_lat = icoords[bot_i].data()[LAT];
+            double bot_lat = icoords(bot_i,LAT);
             ASSERT(top_lat != bot_lat);
 
             // check output point is on or below the hi latitude
@@ -153,8 +153,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             }
         }
 
-        double top_lat = icoords[top_i].data()[LAT];
-        double bot_lat = icoords[bot_i].data()[LAT];
+        double top_lat = icoords(top_i,LAT);
+        double bot_lat = icoords(bot_i,LAT);
         ASSERT(top_lat > lat || eq(top_lat, lat));
         ASSERT(bot_lat < lat);
         ASSERT(!eq(bot_lat, lat));
@@ -173,7 +173,7 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         ASSERT(top_i_rgt != top_i_lft);
 
         // check the data is the same
-        ASSERT(eq(icoords[top_i_lft].data()[LAT],  icoords[top_i_rgt].data()[LAT]));
+        ASSERT(eq(icoords(top_i_lft,LAT),  icoords(top_i_rgt,LAT)));
 
         // now get indeces to the left and right points on each of the data sectors
         // on the lower longitude
@@ -187,14 +187,14 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         ASSERT(bot_i_rgt >= bot_i);
         ASSERT(bot_i_rgt < bot_i_end);
         ASSERT(bot_i_rgt != bot_i_lft);
-        ASSERT(eq(icoords[bot_i_lft].data()[LAT],  icoords[bot_i_rgt].data()[LAT]));
+        ASSERT(eq(icoords(bot_i_lft,LAT),  icoords(bot_i_rgt,LAT)));
 
         // we now have the indices of tl, tr, bl, br points around the output point
 
-        double tl_lon  = icoords[top_i_lft].data()[LON];
-        double tr_lon  = icoords[top_i_rgt].data()[LON];
-        double bl_lon  = icoords[bot_i_lft].data()[LON];
-        double br_lon  = icoords[bot_i_rgt].data()[LON];
+        double tl_lon  = icoords(top_i_lft,LON);
+        double tr_lon  = icoords(top_i_rgt,LON);
+        double bl_lon  = icoords(bot_i_lft,LON);
+        double br_lon  = icoords(bot_i_rgt,LON);
 
         // calculate the weights
         double w1 = (tl_lon - lon) / (tl_lon - tr_lon);

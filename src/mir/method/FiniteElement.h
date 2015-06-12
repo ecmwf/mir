@@ -10,6 +10,7 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
+/// @author Willem Deconinck
 /// @date May 2015
 
 
@@ -48,11 +49,20 @@ class FiniteElement: public MethodWeighted {
 
   private:
 
+    class MeshGenParams: public eckit::Properties {
+    // Deriving from any eckit::Parametrisation should work
+      public:
+        MeshGenParams();
+    };
 
 // -- Overridden methods
 
     virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
 
+  protected:
+
+//  -- Data
+    MeshGenParams meshgenparams_;
 };
 
 

@@ -41,7 +41,6 @@ class FELinear: public FiniteElement {
 
 // -- Overridden methods
 
-    virtual void generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 

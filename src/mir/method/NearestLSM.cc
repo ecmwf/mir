@@ -27,6 +27,7 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/PointSearch.h"
+#include "atlas/actions/BuildXYZField.h"
 
 
 using eckit::Log;
@@ -81,7 +82,9 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     // compute the output nodes coordinates
     here = timer.elapsed();
 
-    const atlas::Mesh &o_mesh = out.mesh();
+    atlas::Mesh &o_mesh = out.mesh();
+    atlas::actions::build_xyz_field(o_mesh,"xyz");
+
     ASSERT(o_mesh.has_function_space("nodes"));
     ASSERT(o_mesh.function_space("nodes").has_field("xyz"));
     atlas::ArrayView< double, 2 > ocoords(
