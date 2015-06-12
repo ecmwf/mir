@@ -18,6 +18,10 @@
 #include <string>
 #include <algorithm>
 
+#include "atlas/Mesh.h"
+#include "atlas/FunctionSpace.h"
+#include "atlas/Field.h"
+#include "atlas/util/ArrayView.h"
 #include "atlas/grids/ReducedGaussianGrid.h"
 
 #include "eckit/log/Log.h"
