@@ -25,6 +25,15 @@
 namespace mir {
 namespace util {
 
+BoundingBox::BoundingBox():
+    north_(90),
+    west_(0),
+    south_(-90),
+    east_(360),
+    global_(true) {
+    normalise();
+}
+
 
 BoundingBox::BoundingBox(double north,
                          double west,
@@ -36,6 +45,18 @@ BoundingBox::BoundingBox(double north,
     south_(south),
     east_(east),
     global_(global) {
+    normalise();
+}
+
+BoundingBox::BoundingBox(double north,
+                         double west,
+                         double south,
+                         double east):
+    north_(north),
+    west_(west),
+    south_(south),
+    east_(east),
+    global_((north - south) == 180 && (west - east) == 360) {
     normalise();
 }
 

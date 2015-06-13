@@ -39,7 +39,10 @@ class BoundingBox {
     // -- Contructors
 
     BoundingBox(const param::MIRParametrisation &);
-    BoundingBox(double north=90, double west=0, double south=-90, double east=360, bool global=true);
+
+    BoundingBox();
+    BoundingBox(double north, double west, double south, double east);
+    BoundingBox(double north, double west, double south, double east, bool global);
 
     // -- Destructor
 
@@ -63,7 +66,7 @@ class BoundingBox {
 
     // -- Methods
 
-    // DONT IMPLEMENT SETTERS!!!
+    // DONT IMPLEMENT SETTERS
 
     double north() const {
         return north_;
