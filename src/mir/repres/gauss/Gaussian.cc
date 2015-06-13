@@ -49,6 +49,8 @@ Gaussian::Gaussian(const param::MIRParametrisation &parametrisation):
     parametrisation.get("global", global);  // Grib_api will work out if a gaussian is global
 
     if (global) {
+        // This will expand the box to the full box (90/0/-90/360),
+        // avoiding possible issues of inaccuracy from the grib packing
         bbox_ = util::BoundingBox();
     }
 }

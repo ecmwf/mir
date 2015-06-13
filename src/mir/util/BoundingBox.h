@@ -39,7 +39,7 @@ class BoundingBox {
     // -- Contructors
 
     BoundingBox(const param::MIRParametrisation &);
-    BoundingBox(double north=90, double west=0, double south=-90, double east=360);
+    BoundingBox(double north=90, double west=0, double south=-90, double east=360, bool global=true);
 
     // -- Destructor
 
@@ -81,7 +81,10 @@ class BoundingBox {
 
     //
     void fill(grib_info &) const;
-    bool global() const;
+
+    bool global() const {
+        return global_;
+    }
 
 
 
@@ -122,6 +125,7 @@ class BoundingBox {
     double west_;
     double south_;
     double east_;
+    bool global_;
 
     // -- Methods
 

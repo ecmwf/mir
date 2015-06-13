@@ -29,11 +29,13 @@ namespace util {
 BoundingBox::BoundingBox(double north,
                          double west,
                          double south,
-                         double east):
+                         double east,
+                         bool global):
     north_(north),
     west_(west),
     south_(south),
-    east_(east) {
+    east_(east),
+    global_(global) {
     normalise();
 }
 
@@ -43,6 +45,7 @@ BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("west", west_));
     ASSERT(parametrisation.get("south", south_));
     ASSERT(parametrisation.get("east", east_));
+    ASSERT(parametrisation.get("global", global_));
 
     normalise();
 }
@@ -57,6 +60,7 @@ void BoundingBox::print(std::ostream &out) const {
         << ",west=" << west_
         << ",south=" << south_
         << ",east=" << east_
+        << ", global" << global_
         << "]";
 }
 
@@ -109,10 +113,6 @@ bool BoundingBox::contains(double lat, double lon) const {
            util::compare::is_approx_greater_equal(east_, lon);
 }
 
-bool BoundingBox::global() const {
-    // This is not supposed to be modified (e.g. don't add an epsilon in the comparaisons)
-    return (north_ - south_) == 180 && (east_ - west_) == 360;
-}
 
 }  // namespace data
 }  // namespace mir
