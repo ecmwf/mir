@@ -22,6 +22,7 @@ PHILOSOPHY:
     - Implement print() method on ATLAS grids
     - Add regression tests to metabuilder
     .- Support of polar stereographic grids (LOW PRIORITY)
+    - Consider moving bbox_ to Gridded.h
 
 --- METHODS (MAKE IT CORRECT)
     - What is the special treatment for winds (emoslib)

@@ -17,6 +17,7 @@
 #define ReducedLL_H
 
 #include "mir/repres/Gridded.h"
+#include "mir/util/BoundingBox.h"
 
 
 namespace mir {
@@ -84,6 +85,7 @@ class ReducedLL : public Gridded {
 
 // -- Members
 
+    util::BoundingBox bbox_;
     std::vector<long> pl_;
 
 // -- Methods
