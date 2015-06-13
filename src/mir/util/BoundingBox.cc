@@ -45,7 +45,18 @@ BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("west", west_));
     ASSERT(parametrisation.get("south", south_));
     ASSERT(parametrisation.get("east", east_));
-    ASSERT(parametrisation.get("global", global_));
+
+    bool global = false;
+    if (parametrisation.get("global", global)) {
+        global_ = global;
+    } else {
+        // It seems that grib_api does not always provide this information
+        eckit::Log::warning() << "Cannot establish if bounding box is global from "
+                              << parametrisation
+                              << ", assuming non-global"
+                              << std::endl;
+        global_ = false;
+    }
 
     normalise();
 }
