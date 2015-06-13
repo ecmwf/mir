@@ -63,6 +63,8 @@ class BoundingBox {
 
     // -- Methods
 
+    // DONT IMPLEMENT SETTERS!!!
+
     double north() const {
         return north_;
     }

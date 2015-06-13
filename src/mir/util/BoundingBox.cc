@@ -71,7 +71,7 @@ void BoundingBox::print(std::ostream &out) const {
         << ",west=" << west_
         << ",south=" << south_
         << ",east=" << east_
-        << ", global" << global_
+        << ", global=" << global_
         << "]";
 }
 

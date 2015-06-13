@@ -23,6 +23,7 @@ PHILOSOPHY:
     - Add regression tests to metabuilder
     .- Support of polar stereographic grids (LOW PRIORITY)
     - Consider moving bbox_ to Gridded.h
+    - Implement 'global' key for reduced-ll in grib_api (see ReducedLL.cc)
 
 --- METHODS (MAKE IT CORRECT)
     - What is the special treatment for winds (emoslib)

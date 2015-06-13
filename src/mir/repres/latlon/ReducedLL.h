@@ -87,6 +87,7 @@ class ReducedLL : public Gridded {
 
     util::BoundingBox bbox_;
     std::vector<long> pl_;
+    size_t Nj_;
 
 // -- Methods
     // None
