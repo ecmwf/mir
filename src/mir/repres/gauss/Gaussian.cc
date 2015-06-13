@@ -50,11 +50,6 @@ Gaussian::Gaussian(const param::MIRParametrisation &parametrisation):
 
     if (global) {
         bbox_ = util::BoundingBox();
-    } else {
-        // Adding support for non-global gaussian grids requires atlas support
-        eckit::StrStream os;
-        os << "Non-global gaussian grid not yet supported (N=" << N_ << ", bbox=" << bbox_ << ")" << eckit::StrStream::ends;
-        throw eckit::SeriousBug(os);
     }
 }
 
