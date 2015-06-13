@@ -42,7 +42,6 @@ class BoundingBox {
 
     BoundingBox();
     BoundingBox(double north, double west, double south, double east);
-    BoundingBox(double north, double west, double south, double east, bool global);
 
     // -- Destructor
 
@@ -97,7 +96,8 @@ class BoundingBox {
     // None
 
     // -- Class members
-    // None
+
+    static BoundingBox Global(double north, double west, double south, double east);
 
     // -- Class methods
 
@@ -120,6 +120,8 @@ class BoundingBox {
     // None
 
   private:
+
+    BoundingBox(double north, double west, double south, double east, bool global);
 
     // No copy allowed
 

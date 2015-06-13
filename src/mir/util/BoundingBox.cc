@@ -48,6 +48,14 @@ BoundingBox::BoundingBox(double north,
     normalise();
 }
 
+BoundingBox BoundingBox::Global(double north,
+                         double west,
+                         double south,
+                         double east) {
+    return BoundingBox(north, west, south, east, true);
+}
+
+
 BoundingBox::BoundingBox(double north,
                          double west,
                          double south,

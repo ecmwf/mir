@@ -48,7 +48,7 @@ void Sh2RegularLL::print(std::ostream &out) const {
 
 repres::Representation *Sh2RegularLL::outputRepresentation(const repres::Representation *inputRepres) const {
     return new repres::latlon::RegularLL(
-               util::BoundingBox(90, 0, -90, 360 - grid_.west_east()),
+               util::BoundingBox::Global(90, 0, -90, 360 - grid_.west_east()),
                grid_);
 }
 
