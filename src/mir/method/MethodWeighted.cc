@@ -209,8 +209,8 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         data::MIRFieldStats ostats = field.statistics(i);
         eckit::Log::info() << "Output Field statistics : " << ostats << std::endl;
 
-        ASSERT(util::compare::is_approx_greater_equal(ostats.minimum(), istats.minimum()));
-        ASSERT(util::compare::is_approx_greater_equal(istats.maximum(), ostats.maximum()));
+        ASSERT(eckit::FloatCompare<double>::isGreaterApproxEqual(ostats.minimum(), istats.minimum()));
+        ASSERT(eckit::FloatCompare<double>::isGreaterApproxEqual(istats.maximum(), ostats.maximum()));
 
     }
 

@@ -63,7 +63,7 @@ class MIRCompare : public eckit::Tool {
     double user_percent_;
     long   user_ulps_;
 
-    eckit::ScopedPtr< eckit::RealCompare<double> > real_same_;
+    eckit::ScopedPtr< eckit::FloatApproxCompare<double> > real_same_;
 
 };
 
@@ -182,7 +182,7 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
 
 void MIRCompare::run() {
 
-    using eckit::RealCompare;
+    using eckit::FloatApproxCompare;
 
     std::vector<const Option *> options;
 
@@ -224,8 +224,8 @@ void MIRCompare::run() {
 
         ++n;
 
-        std::auto_ptr<mir::data::MIRField> field1(input1.field());
-        std::auto_ptr<mir::data::MIRField> field2(input2.field());
+        eckit::ScopedPtr<<mir::data::MIRField> field1(input1.field());
+        eckit::ScopedPtr<<mir::data::MIRField> field2(input2.field());
 
         double absolute = user_absolute_;
         double relative = user_relative_;
