@@ -6,6 +6,12 @@ PHILOSOPHY:
 
 
 !----- NEXT STEPS (MAKE IS WORK)
+
+    !-- Separate concepts of BBox (mir) and Domain (Atlas) => feature/MIR-84-domain
+       --- BBox snaps to points so global can be [0,359] in a --grid=1/1
+           it depends on increments
+       --- Domain does not (in the Maths sense, e.g. global is [0,360] )
+
     !- Caching of SH coefficients for SH to LL (faster)
     !- Classic bi-linear
     -- Frames and GG
