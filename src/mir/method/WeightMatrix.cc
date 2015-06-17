@@ -160,8 +160,6 @@ void WeightMatrix::cleanup() {
 
 void WeightMatrix::validate(const char *when) const {
 
-    using util::compare::is_approx_greater_equal;
-
     size_t errors = 0;
 
     for (size_t i = 0; i < rows(); i++) {
@@ -172,10 +170,10 @@ void WeightMatrix::validate(const char *when) const {
 
         for (WeightMatrix::inner_const_iterator j(*this, i); j; ++j) {
             const double &a = *j;
-            if (!is_approx_greater_equal<double>(a, 0)) {
+            if (!eckit::FloatCompare<double>::isGreaterApproxEqual(a, 0)) {
                 ok = false;
             }
-            if (!is_approx_greater_equal<double>(1, a)) {
+            if (!eckit::FloatCompare<double>::isGreaterApproxEqual(1, a)) {
                 ok = false;
             }
             sum += a;

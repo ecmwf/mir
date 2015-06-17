@@ -198,8 +198,10 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
     // FIXME arguments:
     eckit::Log::info() << "FiniteElement::assemble" << std::endl;
-    eckit::Log::info() << "  Input  Grid: " << in.unique_id() << std::endl;
-    eckit::Log::info() << "  Output Grid: " << out.unique_id() << std::endl;
+    eckit::Log::info() << "  Input  Grid: " << in  << std::endl;
+    eckit::Log::info() << "  Output Grid: " << out << std::endl;
+
+    const atlas::Domain& domain = in.domain();
 
     atlas::Mesh &i_mesh = in.mesh();
     atlas::Mesh &o_mesh = out.mesh();
@@ -288,6 +290,8 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
             }
 
             Point p ( ocoords[ip].data() ); // lookup point
+
+            if( !domain.contains(olonlat[ip][0],olonlat[ip][1]) ) continue;
 
             size_t kpts = 1;
             bool success = false;

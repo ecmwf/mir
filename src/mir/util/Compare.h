@@ -8,55 +8,22 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Tiago Quintino
 /// @author Pedro Maciel
 /// @date May 2015
-
 
 #ifndef mir_util_Compare_H
 #define mir_util_Compare_H
 
 #include <cstddef>
 #include <vector>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
-
 
 namespace mir {
 namespace util {
 namespace compare {
-
-
-/// Compare values equality
-/// @note function version
-template< typename T >
-inline bool is_equal(const T &a, const T &b) {
-    return (a == b);
-}
-
-
-/// Compare values equality, approximately
-/// @note function version
-template< typename T >
-inline bool is_approx_equal(const T &a, const T &b) {
-    return eckit::FloatCompare::is_equal(a,b);
-}
-
-
-/// Compare values inequality: "is greater or equal to"
-/// @note function version
-template< typename T >
-inline bool is_greater_equal(const T &a, const T &b) {
-    return (a >= b);
-}
-
-
-/// Compare values inequality: "is greater or approximately equal to"
-/// @note function version
-template< typename T >
-inline bool is_approx_greater_equal(const T &a, const T &b) {
-    return (a >= b) || eckit::FloatCompare::is_equal(a,b);
-}
-
 
 /// Compare values parent type (abstract comparison functor)
 template< typename T >
@@ -92,7 +59,7 @@ template< typename T >
 struct is_approx_equal_fn : compare_fn<T> {
     is_approx_equal_fn(const T& ref_) : ref(ref_) {}
     bool operator()(const T& v) const {
-        return eckit::FloatCompare::is_equal(v,ref);
+        return eckit::FloatCompare<T>::isApproxEqual(v,ref);
     }
     const T ref;
 };
@@ -120,7 +87,7 @@ struct is_approx_greater_equal_fn : compare_fn<T> {
         // FIXME: What should it be? give me a resource
         return ( a >= b )? || (fabs(a-b) < 1e-10);
 #endif
-        return (v >= ref) || eckit::FloatCompare::is_equal(v,ref);
+        return (v >= ref) || eckit::FloatCompare<T>::isApproxEqual(v,ref);
     }
     const T ref;
 };
