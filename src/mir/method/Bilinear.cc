@@ -220,7 +220,7 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
     }
 
-    W.setFromTriplets(weights_triplets.begin(), weights_triplets.end());
+    W.setFromTriplets(weights_triplets);
 }
 
 

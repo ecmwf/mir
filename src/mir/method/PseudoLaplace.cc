@@ -137,7 +137,7 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
     }
 
     // fill-in sparse matrix
-    W.setFromTriplets(weights_triplets.begin(), weights_triplets.end());
+    W.setFromTriplets(weights_triplets);
 }
 
 

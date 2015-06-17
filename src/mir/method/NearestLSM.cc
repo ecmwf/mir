@@ -124,7 +124,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
 
     // fill-in sparse matrix
     here = timer.elapsed();
-    W.setFromTriplets(mat.begin(), mat.end());
+    W.setFromTriplets(mat);
     Log::info() << name << " fill-in sparse matrix " << timer.elapsed() - here << std::endl;
 }
 

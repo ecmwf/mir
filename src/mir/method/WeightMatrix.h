@@ -143,9 +143,8 @@ public:
 
     };
 
-    template<class T>
-    void setFromTriplets(T begin, T end) {
-        matrix_.setFromTriplets(begin, end);
+    void setFromTriplets(const std::vector<Triplet>& triplets) {
+        matrix_.setFromTriplets(triplets.begin(), triplets.end());
     }
 
   private:
