@@ -14,7 +14,7 @@
 
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
-#include <memory>
+#include "eckit/memory/ScopedPtr.h"
 
 #include "atlas/Grid.h"
 
@@ -52,8 +52,8 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     try {
         // TODO: We should not copy those things around
 
-        std::auto_ptr<atlas::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respect constness
-        std::auto_ptr<atlas::Grid> gout(out->atlasGrid());
+        eckit::ScopedPtr<atlas::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respect constness
+        eckit::ScopedPtr<atlas::Grid> gout(out->atlasGrid());
 
         // eckit::Log::info() << "ingrid  = " << *gin  << std::endl;
         // eckit::Log::info() << "outgrid = " << *gout << std::endl;

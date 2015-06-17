@@ -82,7 +82,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
     eckit::StrStream os;
 
 
-    os << "T" << truncation << ":" << grid.unique_id() << eckit::StrStream::ends;
+    os << "T" << truncation << ":" << grid.uniqueId() << eckit::StrStream::ends;
     std::string key(os);
 
 

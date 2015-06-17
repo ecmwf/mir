@@ -204,7 +204,7 @@ void MIRCompare::run() {
     args.get("ulps",     user_ulps_);
     if(user_ulps_) {
         eckit::Log::info() << "Comparing with ULPS " << user_ulps_ << std::endl;
-        real_same_.reset( new RealCompare<double>(0,user_ulps_) );
+        real_same_.reset( new FloatApproxCompare<double>(0,user_ulps_) );
     }
 
     mir::input::GribFileInput file1(args.args(0));
@@ -224,8 +224,8 @@ void MIRCompare::run() {
 
         ++n;
 
-        eckit::ScopedPtr<<mir::data::MIRField> field1(input1.field());
-        eckit::ScopedPtr<<mir::data::MIRField> field2(input2.field());
+        eckit::ScopedPtr<mir::data::MIRField> field1(input1.field());
+        eckit::ScopedPtr<mir::data::MIRField> field2(input2.field());
 
         double absolute = user_absolute_;
         double relative = user_relative_;
