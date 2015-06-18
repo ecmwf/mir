@@ -78,7 +78,7 @@ void MIRMakeLSM::run() {
         ASSERT(Ni == Nj * 2);
 
 
-        std::auto_ptr<mir::data::MIRField> field(input.field());
+        eckit::ScopedPtr<mir::data::MIRField> field(input.field());
 
         ASSERT(!field->hasMissing());
 

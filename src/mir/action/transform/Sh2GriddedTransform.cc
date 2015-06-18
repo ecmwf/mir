@@ -213,7 +213,7 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
         const repres::Representation *in = field.representation();
 
         try {
-            std::auto_ptr<atlas::Grid> grid(out->atlasGrid());
+            eckit::ScopedPtr<atlas::Grid> grid(out->atlasGrid());
             transform(parametrisation_, in->truncation(), values, result, *grid);
         } catch (...) {
             delete out;

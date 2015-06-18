@@ -42,7 +42,7 @@ typedef int fortint;
 typedef double fortfloat;
 
 
-std::auto_ptr<MIRJob> job(0);
+eckit::ScopedPtr<MIRJob> job(0);
 
 
 static void tidy(const char *in, char *out, size_t max) {

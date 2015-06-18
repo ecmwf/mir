@@ -17,6 +17,8 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/memory/ScopedPtr.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -49,7 +51,7 @@ void AreaCropper::print(std::ostream &out) const {
 
 void AreaCropper::execute(data::MIRField &field) const {
 
-    std::auto_ptr<const repres::Representation> representation(field.representation()->clone()); // This will be
+    eckit::ScopedPtr<const repres::Representation> representation(field.representation()->clone()); // This will be
 
     for (size_t i = 0; i < field.dimensions(); i++) {
         const std::vector<double> &values = field.values(i);

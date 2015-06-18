@@ -17,6 +17,7 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/memory/ScopedPtr.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -47,7 +48,7 @@ void Sh2ShTransform::print(std::ostream &out) const {
 
 void Sh2ShTransform::execute(data::MIRField &field) const {
 
-    std::auto_ptr<const repres::Representation> representation(field.representation()->clone());
+    eckit::ScopedPtr<const repres::Representation> representation(field.representation()->clone());
 
     for(size_t i = 0; i < field.dimensions(); i++) {
         const std::vector<double> &values = field.values(i);

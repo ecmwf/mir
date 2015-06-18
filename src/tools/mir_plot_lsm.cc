@@ -1,9 +1,3 @@
-
-
-
-
-
-
 /*
 * (C) Copyright 1996-2015 ECMWF.
 *
@@ -18,10 +12,11 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "atlas/grids/LonLatGrid.h"
-
 #include "eckit/io/StdFile.h"
 #include "eckit/runtime/Tool.h"
+#include "eckit/memory/ScopedPtr.h"
+
+#include "atlas/grids/LonLatGrid.h"
 
 #include "mir/lsm/Mask.h"
 #include "mir/param/MIRArgs.h"
@@ -92,7 +87,7 @@ void MIRMakeLSM::run() {
     const mir::param::MIRParametrisation &defaults = mir::param::MIRDefaults::instance();
     mir::param::MIRCombinedParametrisation combined(args, defaults, defaults);
 
-    std::auto_ptr<atlas::Grid> grid(new atlas::grids::LonLatGrid(int(Ni),
+    eckit::ScopedPtr<atlas::Grid> grid(new atlas::grids::LonLatGrid(int(Ni),
                                     int(Nj),
                                     atlas::grids::LonLatGrid::INCLUDES_POLES));
 

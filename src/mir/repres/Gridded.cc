@@ -14,12 +14,15 @@
 
 
 #include "mir/repres/Gridded.h"
-#include "mir/util/Grib.h"
-#include "eckit/log/Timer.h"
-#include "mir/util/BoundingBox.h"
-#include "mir/repres/Iterator.h"
 
 #include <map>
+
+#include "eckit/log/Timer.h"
+#include "eckit/memory/ScopedPtr.h"
+
+#include "mir/util/Grib.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/repres/Iterator.h"
 
 namespace mir {
 namespace repres {
@@ -92,7 +95,7 @@ Representation *Gridded::crop(const util::BoundingBox &bbox, const std::vector<d
     size_t count = 0;
     bool first = true;
     double lat, lon;
-    std::auto_ptr<Iterator> iter(iterator());
+    eckit::ScopedPtr<Iterator> iter(iterator());
     while (iter->next(lat, lon)) {
         // std::cout << lat << " " << lon << std::endl;
         if (bbox.contains(lat, lon)) {

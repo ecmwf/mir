@@ -12,7 +12,10 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "eckit/utils/MD5.h"
+#include "eckit/utils/RLE.h"
 
+#include "eckit/memory/ScopedPtr.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/io/StdFile.h"
 
@@ -35,8 +38,6 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRArgs.h"
 
-#include "eckit/utils/MD5.h"
-#include "eckit/utils/RLE.h"
 
 
 class LSM : public eckit::Tool {
@@ -78,7 +79,7 @@ void LSM::run() {
     while (file.next()) {
 
         input.parametrisation(); //
-        std::auto_ptr<mir::data::MIRField> field(input.field());
+        eckit::ScopedPtr<mir::data::MIRField> field(input.field());
 
         const std::vector<double> &v = field->values(0);
         std::vector<int32_t> p(v.size());
