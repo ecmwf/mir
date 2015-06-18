@@ -49,9 +49,9 @@ BoundingBox::BoundingBox(double north,
 }
 
 BoundingBox BoundingBox::Global(double north,
-                         double west,
-                         double south,
-                         double east) {
+                                double west,
+                                double south,
+                                double east) {
     return BoundingBox(north, west, south, east, true);
 }
 
@@ -64,7 +64,8 @@ BoundingBox::BoundingBox(double north,
     west_(west),
     south_(south),
     east_(east),
-    global_((north - south) == 180 && (west - east) == 360) {
+    global_(eckit::FloatCompare<double>::isApproxEqual(north - south, 180) &&
+            eckit::FloatCompare<double>::isApproxEqual(east - west, 360)) {
     normalise();
 }
 
@@ -116,7 +117,7 @@ void BoundingBox::fill(grib_info &info) const  {
 }
 
 void BoundingBox::normalise() {
-    while (east_ >= 360) {
+    while (east_ > 360) {
         east_ -= 360;
         west_ -= 360;
     }
