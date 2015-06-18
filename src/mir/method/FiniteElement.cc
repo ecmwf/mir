@@ -12,9 +12,9 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-
 #include "mir/method/FiniteElement.h"
-#include "mir/param/MIRParametrisation.h"
+
+#include <algorithm>
 
 #include "eckit/config/Resource.h"
 #include "eckit/log/BigNum.h"
@@ -32,6 +32,8 @@
 #include "atlas/util/IndexView.h"
 #include "atlas/io/Gmsh.h"
 #include "atlas/actions/BuildXYZField.h"
+
+#include "mir/param/MIRParametrisation.h"
 
 namespace mir {
 namespace method {
@@ -191,17 +193,16 @@ static bool projectPointToElements(const MeshStats &stats,
 }
 
 
-static const double maxPercentElemsToTry = 0.02; // try to project to 2% of total number elements before giving up
+static const size_t maxFractionElemsToTry = 50; // try to project to 10% of total number elements before giving up
 
 void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
-
 
     // FIXME arguments:
     eckit::Log::info() << "FiniteElement::assemble" << std::endl;
     eckit::Log::info() << "  Input  Grid: " << in  << std::endl;
     eckit::Log::info() << "  Output Grid: " << out << std::endl;
 
-    const atlas::Domain& domain = in.domain();
+    const atlas::Domain& inDomain = in.domain();
 
     atlas::Mesh &i_mesh = in.mesh();
     atlas::Mesh &o_mesh = out.mesh();
@@ -271,7 +272,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
     // search nearest k cell centres
 
-    const size_t maxNbElemsToTry = maxPercentElemsToTry * stats.size();
+    const size_t maxNbElemsToTry = std::max<size_t>(64, stats.size()/maxFractionElemsToTry);
     size_t max_neighbours = 0;
 
     eckit::Log::info() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.shortName() << std::endl;
@@ -291,7 +292,12 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
             Point p ( ocoords[ip].data() ); // lookup point
 
-            if( !domain.contains(olonlat[ip][0],olonlat[ip][1]) ) continue;
+            if( !inDomain.contains(olonlat[ip][0],olonlat[ip][1]) )
+            {
+                weights_triplets.push_back(WeightMatrix::Triplet(ip, ip, 0.)); /// DO WE NEED THIS? These points will be cropped out
+//                eckit::Log::info() << "skipping point " << ip << std::endl;
+                continue;
+            }
 
             size_t kpts = 1;
             bool success = false;
@@ -317,7 +323,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
             if(!success) {
                 // If this fails, consider lowering atlas::grid::parametricEpsilon
                 eckit::Log::info() << "Failed to project point " << ip << " " << p
-                                   << " with coords lonlat " << olonlat[ip][0] << " " << olonlat[ip][1] << std::endl;
+                                   << " with coords lonlat " << olonlat[ip][0] << " " << olonlat[ip][1] << "after " << eckit::BigNum(kpts) << std::endl;
                 throw eckit::SeriousBug("Could not project point");
             }
         }
