@@ -9,18 +9,17 @@
  */
 
 /// @author Tiago Quintino
+/// @author Florian Rathgeber
 /// @date May 2015
 
 #ifndef mir_method_WeightMatrix_H
 #define mir_method_WeightMatrix_H
 
-#include "eckit/eckit_config.h"
-
-// #ifdef ECKIT_HAVE_EIGEN
-// #ifdef ECKIT_HAVE_ARMADILLO
-
-#include "eckit/maths/Eigen.h"
 #include "eckit/exception/Exceptions.h"
+
+#include "eckit/la/LinearAlgebraFactory.h"
+#include "eckit/la/SparseMatrix.h"
+#include "eckit/la/Vector.h"
 
 namespace eckit {
 class PathName;
@@ -32,18 +31,20 @@ namespace method {
 
 class WeightMatrix {
 
-    typedef Eigen::SparseMatrix<double, Eigen::RowMajor> Matrix;
+    typedef eckit::la::SparseMatrix Matrix;
 
-  public:
+public:
     typedef Matrix::Index Index;
-    typedef Eigen::Triplet<double> Triplet;
+    typedef Matrix::Scalar Scalar;
+    typedef eckit::la::Triplet Triplet;
 
-    WeightMatrix():
-        matrix_() {
-    }
+    // TODO: linear algebra backend should depend on parametrisation
+    WeightMatrix()
+        : matrix_(), la_(eckit::la::LinearAlgebraFactory::get()) {}
 
+    // TODO: linear algebra backend should depend on parametrisation
     WeightMatrix(Index rows, Index cols):
-        matrix_(rows, cols) {
+        matrix_(rows, cols), la_(eckit::la::LinearAlgebraFactory::get()) {
     }
 
     void save(const eckit::PathName &path) const;
@@ -76,83 +77,37 @@ class WeightMatrix {
 
     void multiply(const std::vector<double> &values, std::vector<double> &result) const {
 
-        // FIXME: remove this const cast
-        Eigen::VectorXd::MapType vi = Eigen::VectorXd::Map( const_cast<double *>(&values[0]), cols() );
-        Eigen::VectorXd::MapType vo = Eigen::VectorXd::Map( &result[0], rows() );
+        // FIXME: remove this const cast once Vector provides read-only view
+        eckit::la::Vector vi(const_cast<double *>(values.data()), values.size());
+        eckit::la::Vector vo(result.data(), result.size());
 
-        vo = matrix_ * vi;
+        la_->spmv(matrix_, vi, vo);
     }
 
     void cleanup();
     void validate(const char *when) const;
 
-
-private:
-    // Solve the const-ness issues in eigen
-
-    class _inner_iterator {
-      protected:
-        Matrix::InnerIterator it_;
-      public:
-
-        _inner_iterator(const WeightMatrix &m, Index outer):
-            it_(m.matrix_, outer) {
-        }
-
-        operator bool() const {
-            return it_;
-        }
-
-        void operator++() {
-            ++it_;
-        }
-
-        Index row() const {
-            return it_.row();
-        }
-
-        Index col() const {
-            return it_.col();
-        }
-
-        double operator*() const {
-            return it_.value();
-        }
-
-    };
-
-public:
-    class inner_iterator : public _inner_iterator {
-      public:
-
+    class inner_iterator : public Matrix::InnerIterator {
+    public:
         inner_iterator( WeightMatrix &m, Index outer) :
-            _inner_iterator(m, outer) {
-        }
-
-        double &operator*() {
-            return it_.valueRef();
-        }
+            Matrix::InnerIterator(m.matrix_, outer) {}
     };
 
-    class inner_const_iterator : public _inner_iterator {
-      public:
-
-        inner_const_iterator( const WeightMatrix &m, Index outer) :
-            _inner_iterator(m, outer) {
-        }
-
+    class inner_const_iterator : public Matrix::InnerIterator {
+    public:
+        // FIXME: Remove const_cast once SparseMatrix provides const iterator
+        inner_const_iterator(const WeightMatrix &m, Index outer) :
+            Matrix::InnerIterator(const_cast<Matrix&>(m.matrix_), outer) {}
     };
 
     void setFromTriplets(const std::vector<Triplet>& triplets) {
-        matrix_.setFromTriplets(triplets.begin(), triplets.end());
+        matrix_.setFromTriplets(triplets);
     }
 
-  private:
+private:
 
     Matrix matrix_;
-
-
-
+    const eckit::la::LinearAlgebraBase* la_;
 };
 
 
