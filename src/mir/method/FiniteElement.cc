@@ -198,8 +198,9 @@ static const size_t maxFractionElemsToTry = 50; // try to project to 10% of tota
 
 void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
-    // FIXME arguments:
+    // FIXME: arguments
     eckit::Log::info() << "FiniteElement::assemble" << std::endl;
+
     eckit::Log::info() << "  Input  Grid: " << in  << std::endl;
     eckit::Log::info() << "  Output Grid: " << out << std::endl;
 
@@ -207,6 +208,9 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
     atlas::Mesh &i_mesh = in.mesh();
     atlas::Mesh &o_mesh = out.mesh();
+
+    eckit::Log::info() << "  Input  Mesh: " << i_mesh << std::endl;
+    eckit::Log::info() << "  Output Mesh: " << o_mesh << std::endl;
 
     eckit::Timer timer("Compute weights");
 
