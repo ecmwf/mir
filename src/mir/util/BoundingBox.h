@@ -86,18 +86,11 @@ class BoundingBox {
     //
     void fill(grib_info &) const;
 
-    bool global() const {
-        return global_;
-    }
-
-
 
     // -- Overridden methods
     // None
 
     // -- Class members
-
-    static BoundingBox Global(double north, double west, double south, double east);
 
     // -- Class methods
 
@@ -121,8 +114,6 @@ class BoundingBox {
 
   private:
 
-    BoundingBox(double north, double west, double south, double east, bool global);
-
     // No copy allowed
 
 
@@ -132,7 +123,6 @@ class BoundingBox {
     double west_;
     double south_;
     double east_;
-    bool global_;
 
     // -- Methods
 

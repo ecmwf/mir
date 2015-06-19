@@ -29,30 +29,8 @@ BoundingBox::BoundingBox():
     north_(90),
     west_(0),
     south_(-90),
-    east_(360),
-    global_(true) {
+    east_(360) {
     normalise();
-}
-
-
-BoundingBox::BoundingBox(double north,
-                         double west,
-                         double south,
-                         double east,
-                         bool global):
-    north_(north),
-    west_(west),
-    south_(south),
-    east_(east),
-    global_(global) {
-    normalise();
-}
-
-BoundingBox BoundingBox::Global(double north,
-                                double west,
-                                double south,
-                                double east) {
-    return BoundingBox(north, west, south, east, true);
 }
 
 
@@ -63,9 +41,7 @@ BoundingBox::BoundingBox(double north,
     north_(north),
     west_(west),
     south_(south),
-    east_(east),
-    global_(eckit::FloatCompare<double>::isApproxEqual(north - south, 180) &&
-            eckit::FloatCompare<double>::isApproxEqual(east - west, 360)) {
+    east_(east) {
     normalise();
 }
 
@@ -75,18 +51,6 @@ BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("west", west_));
     ASSERT(parametrisation.get("south", south_));
     ASSERT(parametrisation.get("east", east_));
-
-    bool global = false;
-    if (parametrisation.get("global", global)) {
-        global_ = global;
-    } else {
-        // It seems that grib_api does not always provide this information
-        eckit::Log::warning() << "Cannot establish if bounding box is global from "
-                              << parametrisation
-                              << ", assuming non-global"
-                              << std::endl;
-        global_ = false;
-    }
 
     normalise();
 }
@@ -101,7 +65,6 @@ void BoundingBox::print(std::ostream &out) const {
         << ",west=" << west_
         << ",south=" << south_
         << ",east=" << east_
-        << ", global=" << global_
         << "]";
 }
 
