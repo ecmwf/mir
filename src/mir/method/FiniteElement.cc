@@ -23,6 +23,7 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 
+#include "atlas/actions/BuildXYZField.h"
 #include "atlas/geometry/QuadrilateralIntersection.h"
 #include "atlas/geometry/Ray.h"
 #include "atlas/geometry/TriangleIntersection.h"
@@ -218,10 +219,15 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
         static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH",false);
         if(dumpMesh)
         {
-            eckit::Log::info() << "Dumping mesh to tmp.msh" << std::endl;
             atlas::io::Gmsh gmsh;
             gmsh.options.set<std::string>("nodes","xyz");
-            gmsh.write(i_mesh,"tmp.msh");
+
+            eckit::Log::info() << "Dumping input mesh to input.msh" << std::endl;
+            gmsh.write(i_mesh,"input.msh");
+
+            eckit::Log::info() << "Dumping output mesh to output.msh" << std::endl;
+            atlas::actions::build_xyz_field(o_mesh);
+            gmsh.write(o_mesh,"output.msh");
         }
     }
 
