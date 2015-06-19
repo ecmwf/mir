@@ -130,7 +130,7 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
             weights[j] /= S;
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
-        for(int i = 0; i < npts; ++i) {
+        for(size_t i = 0; i < npts; ++i) {
             size_t index = closest[i].payload();
             weights_triplets.push_back( WeightMatrix::Triplet( ip, index, weights[i] ) );
         }
