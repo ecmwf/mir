@@ -83,7 +83,7 @@ void PointSearch::init(const atlas::Mesh& mesh, const CompareType& isok) {
     ASSERT(mesh.has_function_space("nodes"));
 
     atlas::FunctionSpace& nodes = mesh.function_space("nodes");
-    atlas::actions::build_xyz_field(nodes,"xyz");
+    atlas::actions::BuildXYZField("xyz")(nodes);
     ASSERT(nodes.has_field("xyz"));
 
     size_t npts = nodes.shape(0);

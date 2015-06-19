@@ -28,11 +28,11 @@
 #include "atlas/geometry/Ray.h"
 #include "atlas/geometry/TriangleIntersection.h"
 #include "atlas/meshgen/Delaunay.h"
-#include "atlas/meshgen/Tesselation.h"
 #include "atlas/grids/ReducedGrid.h"
 #include "atlas/util/IndexView.h"
 #include "atlas/io/Gmsh.h"
 #include "atlas/actions/BuildXYZField.h"
+#include "atlas/actions/BuildCellCentres.h"
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -103,7 +103,7 @@ static bool projectPointToElements(const MeshStats &stats,
                                    atlas::ElemIndex3::NodeList::const_iterator finish ) {
 
 
-    int idx [4];
+    size_t idx [4];
     double w[4];
 
     atlas::geometry::Ray ray( p.data() );
@@ -226,7 +226,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
             gmsh.write(i_mesh,"input.msh");
 
             eckit::Log::info() << "Dumping output mesh to output.msh" << std::endl;
-            atlas::actions::build_xyz_field(o_mesh);
+            atlas::actions::BuildXYZField("xyz")(o_mesh);
             gmsh.write(o_mesh,"output.msh");
         }
     }
@@ -234,7 +234,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
     {
         eckit::Timer timer("Tesselation::create_cell_centres");
-        atlas::meshgen::Tesselation::create_cell_centres(i_mesh);
+        atlas::actions::BuildCellCentres()(i_mesh);
     }
 
     eckit::ScopedPtr<atlas::ElemIndex3> eTree;
@@ -257,7 +257,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     // output mesh
 
     // In case xyz field in the out mesh, build it
-    atlas::actions::build_xyz_field(out.mesh(),"xyz");
+    atlas::actions::BuildXYZField("xyz")(out.mesh());
 
     atlas::FunctionSpace  &o_nodes  = o_mesh.function_space( "nodes" );
     atlas::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
@@ -365,7 +365,7 @@ void FiniteElement::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) con
   generator->generate(*reduced, mesh);
 
   // If meshgenerator did not create xyz field already, do it now.
-  atlas::actions::build_xyz_field(mesh);
+  atlas::actions::BuildXYZField()(mesh);
 }
 
 

@@ -83,7 +83,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     here = timer.elapsed();
 
     atlas::Mesh &o_mesh = out.mesh();
-    atlas::actions::build_xyz_field(o_mesh,"xyz");
+    atlas::actions::BuildXYZField("xyz")(o_mesh);
 
     ASSERT(o_mesh.has_function_space("nodes"));
     ASSERT(o_mesh.function_space("nodes").has_field("xyz"));

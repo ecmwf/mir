@@ -54,7 +54,7 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
 
     // output points
     atlas::FunctionSpace& o_nodes  = o_mesh.function_space( "nodes" );
-    atlas::actions::build_xyz_field(o_nodes,"xyz");
+    atlas::actions::BuildXYZField("xyz")(o_nodes);
     atlas::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
 
     const size_t out_npts = o_nodes.shape(0);
