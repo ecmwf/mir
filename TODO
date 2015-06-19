@@ -37,6 +37,10 @@ PHILOSOPHY:
         - Non-rotated
     - What is the special treatment for precipitations (emoslib)
     - Compare with real prodgen output
+    - What does Vo/D to U/V means if we stay in spherical?
+        - Do we currently deliver U*cos(lat) and V*cos(lat)
+        - What is U/V in spectral in MARS/FDB? Do they have the cos(lat)
+        - What is U/V in spectral from MARS/FDB to grid, compared to VO/D to U/V grid?
 
 --- TESTING (MAKE IT CORRECT)
     - Metabuilder
