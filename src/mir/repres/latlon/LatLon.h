@@ -73,11 +73,11 @@ class LatLon : public Gridded {
 
     // -- Methods
 
+    bool globalDomain() const;
 
     // -- Overridden methods
     void print(std::ostream &) const; // Change to virtual if base class
     virtual void fill(grib_info &) const;
-    virtual bool globalDomain() const;
 
     // -- Class members
     // None

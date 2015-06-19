@@ -90,15 +90,14 @@ class ReducedLL : public Gridded {
     size_t Nj_;
 
 // -- Methods
-    // None
 
+    bool globalDomain() const;
 
 // -- Overridden methods
 
     virtual void fill(grib_info&) const;
     atlas::Grid* atlasGrid() const;
     virtual void validate(const std::vector<double>&) const;
-    virtual bool globalDomain() const;
 
 // -- Class members
     // None

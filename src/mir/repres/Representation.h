@@ -85,7 +85,6 @@ class Representation {
                                      const std::vector<double>&, std::vector<double>&) const;
 
     virtual atlas::Grid* atlasGrid() const;
-    virtual bool globalDomain() const;
 
     virtual size_t truncation() const;
 

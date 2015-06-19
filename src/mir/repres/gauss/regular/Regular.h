@@ -61,6 +61,8 @@ class Regular : public Gaussian {
 
 // -- Members
 
+    bool globalDomain() const;
+
 // -- Methods
 
     virtual void fill(grib_info&) const;
