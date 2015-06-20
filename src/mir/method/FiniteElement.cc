@@ -333,7 +333,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
             if(!success) {
                 // If this fails, consider lowering atlas::grid::parametricEpsilon
                 eckit::Log::info() << "Failed to project point " << ip << " " << p
-                                   << " with coords lonlat " << olonlat[ip][0] << " " << olonlat[ip][1] << "after " << eckit::BigNum(kpts) << std::endl;
+                                   << " with coords lonlat " << olonlat[ip][0] << " " << olonlat[ip][1] << " after " << eckit::BigNum(kpts) << std::endl;
                 throw eckit::SeriousBug("Could not project point");
             }
         }
