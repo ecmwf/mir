@@ -80,7 +80,7 @@ list( APPEND skipTmpl
 
 ecbuild_list_remove_pattern( "${grib_tmpl}" "${skipTmpl}" testGribTemplates )
 
-debug_var(testGribTemplates)
+# debug_var(testGribTemplates)
 
 foreach( _t ${testGribTemplates} )
 
