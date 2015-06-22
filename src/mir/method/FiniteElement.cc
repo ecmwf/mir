@@ -39,7 +39,7 @@
 namespace mir {
 namespace method {
 
-FiniteElement::MeshGenParams::MeshGenParams() : eckit::Properties()
+FiniteElement::MeshGenParams::MeshGenParams()
 {
   set("three_dimensional", true);
   set("patch_pole",        true);

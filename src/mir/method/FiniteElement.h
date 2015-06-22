@@ -23,6 +23,7 @@
 #include "atlas/Mesh.h"
 #include "atlas/Field.h"
 #include "atlas/PointIndex3.h"
+#include "atlas/meshgen/MeshGenerator.h"
 
 #include "mir/method/MethodWeighted.h"
 
@@ -49,7 +50,7 @@ class FiniteElement: public MethodWeighted {
 
   private:
 
-    class MeshGenParams: public eckit::Properties {
+    class MeshGenParams: public atlas::meshgen::MeshGenerator::Parameters {
     // Deriving from any eckit::Parametrisation should work
       public:
         MeshGenParams();

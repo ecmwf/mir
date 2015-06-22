@@ -87,8 +87,7 @@ void MIRMakeLSM::run() {
     const mir::param::MIRParametrisation &defaults = mir::param::MIRDefaults::instance();
     mir::param::MIRCombinedParametrisation combined(args, defaults, defaults);
 
-    eckit::ScopedPtr<atlas::Grid> grid(new atlas::grids::LonLatGrid(int(Ni),
-                                    int(Nj),
+    eckit::ScopedPtr<atlas::Grid> grid(new atlas::grids::LonLatGrid(Ni,Nj,
                                     atlas::grids::LonLatGrid::INCLUDES_POLES));
 
 
