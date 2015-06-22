@@ -194,7 +194,7 @@ static bool projectPointToElements(const MeshStats &stats,
 }
 
 
-static const size_t maxFractionElemsToTry = 50; // try to project to 10% of total number elements before giving up
+static const double maxFractionElemsToTry = 0.2; // try to project to 20% of total number elements before giving up
 
 void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
@@ -282,7 +282,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
     // search nearest k cell centres
 
-    const size_t maxNbElemsToTry = std::max<size_t>(64, stats.size()/maxFractionElemsToTry);
+    const size_t maxNbElemsToTry = std::max<size_t>(64, stats.size() * maxFractionElemsToTry);
     size_t max_neighbours = 0;
 
     eckit::Log::info() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.shortName() << std::endl;
@@ -300,14 +300,14 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
                                    << std::endl;
             }
 
-            Point p ( ocoords[ip].data() ); // lookup point
-
-            if( !inDomain.contains(olonlat[ip][0],olonlat[ip][1]) )
+            if( !inDomain.contains(olonlat[ip][atlas::LON], olonlat[ip][atlas::LAT]))
             {
                 weights_triplets.push_back(WeightMatrix::Triplet(ip, ip, 0.)); /// DO WE NEED THIS? These points will be cropped out
 //                eckit::Log::info() << "skipping point " << ip << std::endl;
                 continue;
             }
+
+            Point p ( ocoords[ip].data() ); // lookup point
 
             size_t kpts = 1;
             bool success = false;
@@ -333,7 +333,8 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
             if(!success) {
                 // If this fails, consider lowering atlas::grid::parametricEpsilon
                 eckit::Log::info() << "Failed to project point " << ip << " " << p
-                                   << " with coords lonlat " << olonlat[ip][0] << " " << olonlat[ip][1] << " after " << eckit::BigNum(kpts) << std::endl;
+                                   << " with coordinates lon=" << olonlat[ip][atlas::LON] << ", lat=" << olonlat[ip][atlas::LAT]
+                                   << " after " << eckit::Plural(kpts, "attempt") << std::endl;
                 throw eckit::SeriousBug("Could not project point");
             }
         }
