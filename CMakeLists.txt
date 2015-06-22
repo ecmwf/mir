@@ -3,19 +3,6 @@
 #   mir - ECMWF Meterological Interpolation and Regriding
 #
 ############################################################################################
-### TODO
-#
-#   * create the cache files atomically
-#   * cache weights based also on algorithm
-#   * define a MIR_HOME and resource file to store configurations
-#   * define a MIR_DATA_CACHE
-#   * cache mesh generation
-#   * when in and out grid hashes match we should immedietly return identity matrix
-#
-### BUG
-#   * ./mir_interpolate -i spectral-rg.grib -o output.grib -g ll55.grib ???
-#     - bug in input.gmsh (-1 vertice)
-#     - output field has weird feature
 
 cmake_minimum_required( VERSION 2.8.4 FATAL_ERROR )
 
@@ -25,7 +12,7 @@ set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} 
 
 include( ecbuild_system )
 
-ecbuild_requires_macro_version( 1.6 )
+ecbuild_requires_macro_version( 1.8 )
 
 ###############################################################################
 # project

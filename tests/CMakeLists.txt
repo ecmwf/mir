@@ -15,9 +15,10 @@ set( TEST_ECKIT_CACHE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/cache/ )
 
 file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
-#### TESTS
-
 get_target_property( MIR_TOOL mir_tool LOCATION )
+
+########################################################################################################################
+#### TESTS
 
 # each line is a request,
 # we parse the line and take the last entry as the file to download
@@ -52,25 +53,46 @@ foreach( _t ${_test_reqs} )
                   )
 endforeach()
 
+########################################################################################################################
 #### TEST ALL GRIB_API templates
 
-# debug_var(GRIB_SAMPLES_PATH)
-file(GLOB_RECURSE grib_tmpl  ${GRIB_SAMPLES_PATH}*.tmpl)
+file(GLOB_RECURSE grib_tmpl ${GRIB_SAMPLES_PATH}*.tmpl)
 
-foreach( _t ${grib_tmpl} )
-  get_filename_component(_tst ${_t} NAME_WE)
-  # debug_var(_tst)
-  if(${_tst} STREQUAL "budg")
-    # Ignore
-  else()
-  ecbuild_add_test( TARGET test_grib_sample_${_tst}
-                    COMMAND ${MIR_TOOL}
-                    ARGS "--grid=1/1" ${_t} /dev/null
-                    ENVIRONMENT
-                      TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}
-                      GRIB_DEFINITION_PATH=${GRIB_DEFINITION_PATH}
-                      GRIB_SAMPLES_PATH=${GRIB_SAMPLES_PATH}
-                  )
-endif()
+#debug_var(GRIB_SAMPLES_PATH)
+#debug_var(grib_tmpl)
+
+
+# skip these samples
+
+list( APPEND skipTmpl
+    ".*budg.tmpl"
+    ".*reduced_gg_pl_1280_grib1.tmpl"
+    ".*reduced_gg_pl_1280_grib2.tmpl"
+    ".*reduced_rotated_gg_pl_1280_grib1.tmpl"
+    ".*reduced_rotated_gg_pl_1280_grib2.tmpl"
+    ".*reduced_gg_pl_2000_grib1.tmpl"
+    ".*reduced_gg_pl_2000_grib2.tmpl"
+    ".*reduced_rotated_gg_pl_2000_grib1.tmpl"
+    ".*reduced_rotated_gg_pl_2000_grib2.tmpl"
+    ".*polar_stereographic_sfc_grib1.tmpl"
+    ".*polar_stereographic_sfc_grib2.tmpl"
+)
+
+ecbuild_list_remove_pattern( "${grib_tmpl}" "${skipTmpl}" testGribTemplates )
+
+debug_var(testGribTemplates)
+
+foreach( _t ${testGribTemplates} )
+
+    get_filename_component(_tst ${_t} NAME_WE)
+
+    ecbuild_add_test( TARGET test_grib_sample_${_tst}
+                      COMMAND ${MIR_TOOL}
+                      ARGS "--grid=1/1" ${_t} /dev/null
+                      ENVIRONMENT
+                        TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}
+                        GRIB_DEFINITION_PATH=${GRIB_DEFINITION_PATH}
+                        GRIB_SAMPLES_PATH=${GRIB_SAMPLES_PATH}
+                    )
+
 endforeach()
-# debug_var(grib_tmpl )
