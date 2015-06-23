@@ -250,13 +250,13 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     // input mesh
 
     atlas::FunctionSpace  &i_nodes  = i_mesh.function_space( "nodes" );
-    atlas::ArrayView<double, 2> icoords  ( i_nodes.field<double>( "xyz" ));
+    atlas::ArrayView<double, 2> icoords  ( i_nodes.field( "xyz" ));
 
     atlas::FunctionSpace &triags = i_mesh.function_space( "triags" );
-    atlas::IndexView<int, 2> triag_nodes ( triags.field<int>( "nodes" ) );
+    atlas::IndexView<int, 2> triag_nodes ( triags.field( "nodes" ) );
 
     atlas::FunctionSpace &quads = i_mesh.function_space( "quads" );
-    atlas::IndexView<int, 2> quads_nodes ( quads.field<int>( "nodes" ) );
+    atlas::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
 
     // output mesh
 
@@ -265,7 +265,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
     atlas::FunctionSpace  &o_nodes  = o_mesh.function_space( "nodes" );
     atlas::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
-    atlas::ArrayView<double, 2> olonlat ( o_nodes.field<double>( "lonlat" ));
+    atlas::ArrayView<double, 2> olonlat ( o_nodes.field( "lonlat" ));
 
     MeshStats stats;
     stats.nb_triags = triags.shape(0);

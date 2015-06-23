@@ -95,7 +95,7 @@ void PointSearch::init(const atlas::Mesh& mesh, const CompareType& isok) {
     std::vector<PointType> points;
     points.reserve(npts);
 
-    atlas::ArrayView<double, 2> coords(nodes.field<double>("xyz"));
+    atlas::ArrayView<double, 2> coords(nodes.field("xyz"));
     for (size_t ip = 0; ip < npts; ++ip)
         points.push_back(isok(ip)?
                              PointType(coords[ip].data())

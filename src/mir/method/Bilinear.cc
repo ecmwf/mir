@@ -97,11 +97,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
     atlas::FunctionSpace& inodes = i_mesh.function_space( "nodes" );
     atlas::FunctionSpace& onodes = o_mesh.function_space( "nodes" );
 
-    atlas::FieldT<double>& ilonlat = inodes.field<double>( "lonlat" );
-    atlas::FieldT<double>& olonlat = onodes.field<double>( "lonlat" );
-
-    atlas::ArrayView<double,2> icoords     ( ilonlat );
-    atlas::ArrayView<double,2> ocoords     ( olonlat );
+    atlas::ArrayView<double,2> icoords ( inodes.field( "lonlat" ) );
+    atlas::ArrayView<double,2> ocoords ( onodes.field( "lonlat" ) );
 
     // ReducedGrid involves all grids that can be represented with latitudes and npts_per_lat
     const atlas::grids::ReducedGrid* igg = dynamic_cast<const atlas::grids::ReducedGrid*>(&in);
