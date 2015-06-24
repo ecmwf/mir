@@ -21,6 +21,12 @@ ecbuild_use_package( PROJECT eckit  VERSION  0.8  REQUIRED )
 ecbuild_use_package( PROJECT atlas  VERSION  0.3  REQUIRED )
 # ecbuild_use_package( PROJECT libemos  )
 
+# Experimental features in eckit are required
+# TODO: remove requirement when no longer necessary
+if( NOT ECKIT_HAVE_EXPERIMENTAL )
+  message( FATAL_ERROR "Experimental features in eckit are required" )
+endif()
+
 # Either Eigen support or Armadillo support in eckit is required
 if( NOT ECKIT_HAVE_EIGEN AND NOT ECKIT_HAVE_ARMADILLO )
   message( FATAL_ERROR "Either Eigen support or Armadillo support in eckit is required" )
