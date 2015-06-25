@@ -17,9 +17,9 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "eckit/la/LinearAlgebraFactory.h"
-#include "eckit/la/SparseMatrix.h"
-#include "eckit/la/Vector.h"
+#include "experimental/eckit/la/LinearAlgebraFactory.h"
+#include "experimental/eckit/la/SparseMatrix.h"
+#include "experimental/eckit/la/Vector.h"
 
 namespace eckit {
 class PathName;

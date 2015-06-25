@@ -12,7 +12,7 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-#include "eckit/la/Vector.h"
+#include "experimental/eckit/la/Vector.h"
 
 #include "mir/method/PseudoLaplace.h"
 
