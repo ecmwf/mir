@@ -337,8 +337,8 @@ ecbuild_add_library(
   SOURCES            ${mir_srcs}
   GENERATED          api/mir_version.cc
   TEMPLATES          ${mir_tmpls}
-  INCLUDES           ${ECKIT_INCLUDE_DIRS} ${NETCDF_INCLUDE_DIRS}
-  LIBS               ${ATLAS_LIBRARIES} ${ECKIT_LIBRARIES} ${NETCDF_LIBRARIES}
+  INCLUDES           ${ECKIT_INCLUDE_DIRS} ${NETCDF_INCLUDE_DIRS} ${HERMES_INCLUDE_DIRS}
+  LIBS               ${ATLAS_LIBRARIES} ${ECKIT_LIBRARIES} ${NETCDF_LIBRARIES} ${HERMES_LIBRARIES}
   )
 
 
