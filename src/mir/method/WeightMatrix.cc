@@ -20,6 +20,8 @@
 #include "eckit/log/Plural.h"
 #include "mir/util/Compare.h"
 
+#include <cmath>
+
 using mir::util::compare::is_approx_zero;
 using mir::util::compare::is_approx_one;
 

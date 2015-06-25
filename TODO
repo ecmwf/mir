@@ -41,6 +41,11 @@ PHILOSOPHY:
         - Do we currently deliver U*cos(lat) and V*cos(lat)
         - What is U/V in spectral in MARS/FDB? Do they have the cos(lat)
         - What is U/V in spectral from MARS/FDB to grid, compared to VO/D to U/V grid?
+    ---- MASS CONSERVING
+        - We call it 'box' interpolation
+            - 'box-mean' is mass conserving
+            - 'box-mode' can be used for things like vegetation index
+            - 'box-max' will be used for fire (MACC)
 
 --- TESTING (MAKE IT CORRECT)
     - Metabuilder
@@ -57,6 +62,8 @@ PHILOSOPHY:
     - Hide Eigen in a light wrapper
     - Implement wrapper with armadilo
 
+  ---- OPERATIONS
+    - MIR should fail for unknown parameters
 
 - OTHER
     - OPEN QUESTIONS
