@@ -343,7 +343,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     eckit::Log::info() << "Projected " << eckit::Plural(stats.out_npts, "point") << std::endl;
     eckit::Log::info() << "Maximum neighbours searched was " << eckit::Plural(max_neighbours, "element") << std::endl;
 
-    W.setFromTriplets(weights_triplets.begin(), weights_triplets.end()); // fill sparse matrix
+    W.setFromTriplets(weights_triplets); // fill sparse matrix
 }
 
 

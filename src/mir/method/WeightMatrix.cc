@@ -116,7 +116,7 @@ void WeightMatrix::load(const eckit::PathName &path)  {
 
     // set the weights from the triplets
 
-    setFromTriplets(insertions.begin(), insertions.end());
+    setFromTriplets(insertions);
 }
 
 void WeightMatrix::cleanup() {

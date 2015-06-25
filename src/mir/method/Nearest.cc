@@ -119,7 +119,7 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
     }
 
     // fill-in sparse matrix
-    W.setFromTriplets(weights_triplets.begin(), weights_triplets.end());
+    W.setFromTriplets(weights_triplets);
 }
 
 
