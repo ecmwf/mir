@@ -102,7 +102,6 @@ static bool projectPointToElements(const MeshStats &stats,
                                    atlas::ElemIndex3::NodeList::const_iterator start,
                                    atlas::ElemIndex3::NodeList::const_iterator finish ) {
 
-
     size_t idx [4];
     double w[4];
 
@@ -124,19 +123,27 @@ static bool projectPointToElements(const MeshStats &stats,
 
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts && idx[2] < stats.inp_npts );
 
-            atlas::geometry::TriangleIntersection triag(icoords[idx[0]].data(),
-                    icoords[idx[1]].data(),
-                    icoords[idx[2]].data());
+            atlas::geometry::TriangleIntersection triag(
+                        icoords[idx[0]].data(),
+                        icoords[idx[1]].data(),
+                        icoords[idx[2]].data());
 
             atlas::geometry::Intersect is = triag.intersects(ray);
 
             if (is) {
+
                 // weights are the linear Lagrange function evaluated at u,v (aka baricentric coordinates)
                 w[0] = 1. - is.u - is.v;
                 w[1] = is.u;
                 w[2] = is.v;
 
-                for (int i = 0; i < 3; ++i)
+//                eckit::Log::info() << " *** POINT [" << ip << "] -- " <<  p
+//                                   << " w0 " << w[0]
+//                                   << " w1 " << w[1]
+//                                   << " w2 " << w[2]
+//                                   << std::endl;
+
+                for (size_t i = 0; i < 3; ++i)
                     weights_triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
 
                 return true;
@@ -158,7 +165,8 @@ static bool projectPointToElements(const MeshStats &stats,
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts &&
                     idx[2] < stats.inp_npts && idx[3] < stats.inp_npts );
 
-            atlas::geometry::QuadrilateralIntersection quad(icoords[idx[0]].data(),
+            atlas::geometry::QuadrilateralIntersection quad(
+                    icoords[idx[0]].data(),
                     icoords[idx[1]].data(),
                     icoords[idx[2]].data(),
                     icoords[idx[3]].data() );
@@ -178,7 +186,7 @@ static bool projectPointToElements(const MeshStats &stats,
                 w[2] =       is.u  *       is.v ;
                 w[3] = (1. - is.u) *       is.v ;
 
-                for (int i = 0; i < 4; ++i)
+                for (size_t i = 0; i < 4; ++i)
                     weights_triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
 
                 return true;

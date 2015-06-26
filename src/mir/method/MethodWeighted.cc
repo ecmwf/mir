@@ -163,11 +163,11 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
     const size_t npts_inp = in.npts();
     const size_t npts_out = out.npts();
 
-    const WeightMatrix &W = getMatrix(in, out);
+    const WeightMatrix& W = getMatrix(in, out);
 
-    // TODO: ASSERT matrix size is npts_out * npts_inp
+    ASSERT( W.rows() == npts_out );
+    ASSERT( W.cols() == npts_inp );
 
-    // multiply interpolant matrix with field vector
     for (size_t i = 0; i < field.dimensions(); i++) {
 
         eckit::StrStream os;
@@ -178,7 +178,6 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code
         data::MIRFieldStats istats = field.statistics(i);
-
 
         const std::vector<double> &values = field.values(i);
         ASSERT(values.size() == npts_inp);
