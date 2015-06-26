@@ -73,6 +73,11 @@ class LatLon : public Gridded {
 
     // -- Methods
 
+    static void computeNiNj(size_t& ni,
+                            size_t& nj,
+                            const util::BoundingBox& box,
+                            const util::Increments& increments);
+
     bool globalDomain() const;
 
     // -- Overridden methods
@@ -85,7 +90,7 @@ class LatLon : public Gridded {
     // -- Class methods
     // None
 
-  private:
+private:
 
 
     // No copy allowed

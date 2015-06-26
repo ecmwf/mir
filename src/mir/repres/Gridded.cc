@@ -149,7 +149,7 @@ Representation *Gridded::crop(const util::BoundingBox &bbox, const std::vector<d
 }
 
 
-size_t Gridded::computeN(double first, double last, double inc, const char *n_name, const char *first_name, const char *last_name) const {
+size_t Gridded::computeN(double first, double last, double inc, const char *n_name, const char *first_name, const char *last_name) {
     size_t n;
     if (!(first <= last)) {
         eckit::Log::info() << first_name << " (first):" << first << ", " << last_name << " (last)" << last << std::endl;

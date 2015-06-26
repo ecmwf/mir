@@ -64,7 +64,7 @@ class Gridded : public Representation {
 
 // -- Methods
 
-    size_t computeN(double first, double last, double inc, const char *n_name, const char *first_name, const char *last_name) const;
+    static size_t computeN(double first, double last, double inc, const char *n_name, const char *first_name, const char *last_name);
 
 
 // -- Overridden methods

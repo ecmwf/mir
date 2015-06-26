@@ -302,7 +302,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
             if( !inDomain.contains(olonlat[ip][atlas::LON], olonlat[ip][atlas::LAT]))
             {
-                weights_triplets.push_back(WeightMatrix::Triplet(ip, ip, 0.)); /// DO WE NEED THIS? These points will be cropped out
+//                weights_triplets.push_back(WeightMatrix::Triplet(ip, ip, 0.)); /// DO WE NEED THIS? These points will be cropped out
 //                eckit::Log::info() << "skipping point " << ip << std::endl;
                 continue;
             }
