@@ -62,6 +62,18 @@ Gridded *Gridded::cropped(const util::BoundingBox &bbox) const {
     throw eckit::SeriousBug(std::string(os));
 }
 
+bool Gridded::globalDomain() const {
+    eckit::StrStream os;
+    os << "Representation::globalDomain() not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
+
+void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField& field) const {
+    if(!globalDomain()) {
+        Representation::cropToDomain(parametrisation, field); // This will throw an exception
+    }
+}
+
 Representation *Gridded::crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const {
 
     eckit::Timer timer("crop");

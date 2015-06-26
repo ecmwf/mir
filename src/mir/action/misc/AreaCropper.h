@@ -34,6 +34,7 @@ class AreaCropper : public Action {
 // -- Contructors
 
     AreaCropper(const param::MIRParametrisation&);
+    AreaCropper(const param::MIRParametrisation &parametrisation, const util::BoundingBox&);
 
 // -- Destructor
 
@@ -50,6 +51,8 @@ class AreaCropper : public Action {
 
 // -- Overridden methods
     // None
+
+    virtual void execute(data::MIRField&) const;
 
 // -- Class members
     // None
@@ -90,7 +93,6 @@ class AreaCropper : public Action {
 
 // -- Overridden methods
 
-    virtual void execute(data::MIRField&) const;
 
 // -- Class members
     // None

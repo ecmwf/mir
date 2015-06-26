@@ -39,13 +39,12 @@
 namespace mir {
 namespace method {
 
-FiniteElement::MeshGenParams::MeshGenParams()
-{
-  set("three_dimensional", true);
-  set("patch_pole",        true);
-  set("include_pole",      false);
-  set("angle",             0.);
-  set("triangulate",       false);
+FiniteElement::MeshGenParams::MeshGenParams() {
+    set("three_dimensional", true);
+    set("patch_pole",        true);
+    set("include_pole",      false);
+    set("angle",             0.);
+    set("triangulate",       false);
 }
 
 
@@ -124,9 +123,9 @@ static bool projectPointToElements(const MeshStats &stats,
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts && idx[2] < stats.inp_npts );
 
             atlas::geometry::TriangleIntersection triag(
-                        icoords[idx[0]].data(),
-                        icoords[idx[1]].data(),
-                        icoords[idx[2]].data());
+                icoords[idx[0]].data(),
+                icoords[idx[1]].data(),
+                icoords[idx[2]].data());
 
             atlas::geometry::Intersect is = triag.intersects(ray);
 
@@ -136,12 +135,6 @@ static bool projectPointToElements(const MeshStats &stats,
                 w[0] = 1. - is.u - is.v;
                 w[1] = is.u;
                 w[2] = is.v;
-
-//                eckit::Log::info() << " *** POINT [" << ip << "] -- " <<  p
-//                                   << " w0 " << w[0]
-//                                   << " w1 " << w[1]
-//                                   << " w2 " << w[2]
-//                                   << std::endl;
 
                 for (size_t i = 0; i < 3; ++i)
                     weights_triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
@@ -166,10 +159,10 @@ static bool projectPointToElements(const MeshStats &stats,
                     idx[2] < stats.inp_npts && idx[3] < stats.inp_npts );
 
             atlas::geometry::QuadrilateralIntersection quad(
-                    icoords[idx[0]].data(),
-                    icoords[idx[1]].data(),
-                    icoords[idx[2]].data(),
-                    icoords[idx[3]].data() );
+                icoords[idx[0]].data(),
+                icoords[idx[1]].data(),
+                icoords[idx[2]].data(),
+                icoords[idx[3]].data() );
 
             if ( !quad.validate() ) { // somewhat expensive sanity check
                 eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
@@ -212,7 +205,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     eckit::Log::info() << "  Input  Grid: " << in  << std::endl;
     eckit::Log::info() << "  Output Grid: " << out << std::endl;
 
-    const atlas::Domain& inDomain = in.domain();
+    const atlas::Domain &inDomain = in.domain();
 
     atlas::Mesh &i_mesh = in.mesh();
     atlas::Mesh &o_mesh = out.mesh();
@@ -228,18 +221,17 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
         eckit::Timer timer("Generate mesh");
         generateMesh(in, i_mesh);
 
-        static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH",false);
-        if(dumpMesh)
-        {
+        static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
+        if (dumpMesh) {
             atlas::io::Gmsh gmsh;
-            gmsh.options.set<std::string>("nodes","xyz");
+            gmsh.options.set<std::string>("nodes", "xyz");
 
             eckit::Log::info() << "Dumping input mesh to input.msh" << std::endl;
-            gmsh.write(i_mesh,"input.msh");
+            gmsh.write(i_mesh, "input.msh");
 
             eckit::Log::info() << "Dumping output mesh to output.msh" << std::endl;
             atlas::actions::BuildXYZField("xyz")(o_mesh);
-            gmsh.write(o_mesh,"output.msh");
+            gmsh.write(o_mesh, "output.msh");
         }
     }
 
@@ -308,10 +300,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
                                    << std::endl;
             }
 
-            if( !inDomain.contains(olonlat[ip][atlas::LON], olonlat[ip][atlas::LAT]))
-            {
-//                weights_triplets.push_back(WeightMatrix::Triplet(ip, ip, 0.)); /// DO WE NEED THIS? These points will be cropped out
-//                eckit::Log::info() << "skipping point " << ip << std::endl;
+            if (!inDomain.contains(olonlat[ip][atlas::LON], olonlat[ip][atlas::LAT])) {
                 continue;
             }
 
@@ -319,7 +308,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
             size_t kpts = 1;
             bool success = false;
-            while(!success && kpts <= maxNbElemsToTry) {
+            while (!success && kpts <= maxNbElemsToTry) {
 
                 max_neighbours = std::max(kpts, max_neighbours);
 
@@ -338,7 +327,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
             }
 
-            if(!success) {
+            if (!success) {
                 // If this fails, consider lowering atlas::grid::parametricEpsilon
                 eckit::Log::info() << "Failed to project point " << ip << " " << p
                                    << " with coordinates lon=" << olonlat[ip][atlas::LON] << ", lat=" << olonlat[ip][atlas::LAT]
@@ -357,28 +346,28 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
 void FiniteElement::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) const {
 
-  ///  This raises another issue: how to cache meshes generated with different parametrisations?
-  ///  We must md5 the MeshGenerator itself.
+    ///  This raises another issue: how to cache meshes generated with different parametrisations?
+    ///  We must md5 the MeshGenerator itself.
 
-  std::string meshgenerator("ReducedGrid");             // Fastest option available by default
+    std::string meshgenerator("ReducedGrid");             // Fastest option available by default
 
-  parametrisation_.get("meshgenerator",meshgenerator);  // Override with MIRParametrisation
+    parametrisation_.get("meshgenerator", meshgenerator); // Override with MIRParametrisation
 
-  const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
+    const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
 
-  // Falling back to "Delaunay" if the mesh is not a ReducedGrid
-  if (reduced == 0 && meshgenerator == "ReducedGrid") {
-      meshgenerator = "Delaunay";
-  }
+    // Falling back to "Delaunay" if the mesh is not a ReducedGrid
+    if (reduced == 0 && meshgenerator == "ReducedGrid") {
+        meshgenerator = "Delaunay";
+    }
 
-  if( reduced )
-    eckit::Log::info() << "Mesh is ReducedGrid " << grid.shortName() << '\n';
+    if ( reduced )
+        eckit::Log::info() << "Mesh is ReducedGrid " << grid.shortName() << '\n';
 
-  eckit::ScopedPtr<atlas::meshgen::MeshGenerator> generator( atlas::meshgen::MeshGeneratorFactory::build(meshgenerator,meshgenparams_) );
-  generator->generate(*reduced, mesh);
+    eckit::ScopedPtr<atlas::meshgen::MeshGenerator> generator( atlas::meshgen::MeshGeneratorFactory::build(meshgenerator, meshgenparams_) );
+    generator->generate(*reduced, mesh);
 
-  // If meshgenerator did not create xyz field already, do it now.
-  atlas::actions::BuildXYZField()(mesh);
+    // If meshgenerator did not create xyz field already, do it now.
+    atlas::actions::BuildXYZField()(mesh);
 }
 
 

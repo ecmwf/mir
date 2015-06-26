@@ -56,18 +56,7 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
         eckit::ScopedPtr<atlas::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respect constness
         eckit::ScopedPtr<atlas::Grid> gout(out->atlasGrid());
 
-//        if(!gin->domain().global())
-//        {
-//            atlas::Grid* g = out->atlasGrid();
-//            eckit::ScopedPtr<atlas::Grid> gout(new atlas::grids::LocalGrid(, gin->domain()));
-//        }
-
-        // eckit::Log::info() << "ingrid  = " << *gin  << std::endl;
-        // eckit::Log::info() << "outgrid = " << *gout << std::endl;
-
         method->execute(field, *gin, *gout);
-
-        /// FIXME -- if not global we need to crop the ouput with the input domain
 
     } catch (...) {
         delete out;
@@ -76,6 +65,8 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
 
     field.representation(out);
 
+    // Make sure we crop to the input domain if not global
+    in->cropToDomain(parametrisation_, field);
 }
 
 

@@ -37,6 +37,10 @@ namespace util {
 class BoundingBox;
 }
 
+namespace data {
+class MIRField;
+}
+
 namespace repres {
 
 
@@ -95,6 +99,9 @@ class Representation {
     virtual void setComplexPacking(grib_info&) const;
     virtual void setSimplePacking(grib_info&) const;
     virtual void setSecondOrderPacking(grib_info&) const;
+
+    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField &field) const;
+
 
 // -- Overridden methods
     // None

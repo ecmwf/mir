@@ -61,7 +61,7 @@ class Regular : public Gaussian {
 
 // -- Members
 
-    bool globalDomain() const;
+    virtual bool globalDomain() const;
 
 // -- Methods
 

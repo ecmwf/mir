@@ -91,7 +91,7 @@ class ReducedLL : public Gridded {
 
 // -- Methods
 
-    bool globalDomain() const;
+    virtual bool globalDomain() const;
 
 // -- Overridden methods
 

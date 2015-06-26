@@ -63,7 +63,7 @@ class Reduced : public Gaussian {
 
     // -- Methods
 
-    bool globalDomain() const;
+    virtual bool globalDomain() const;
 
     // void print(std::ostream &) const; // Change to virtual if base class
 

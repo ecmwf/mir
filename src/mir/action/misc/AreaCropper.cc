@@ -40,6 +40,11 @@ AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):
 }
 
 
+AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation, const util::BoundingBox &bbox):
+    Action(parametrisation),
+    bbox_(bbox) {
+}
+
 AreaCropper::~AreaCropper() {
 }
 

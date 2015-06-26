@@ -78,7 +78,7 @@ class LatLon : public Gridded {
                             const util::BoundingBox& box,
                             const util::Increments& increments);
 
-    bool globalDomain() const;
+    virtual bool globalDomain() const;
 
     // -- Overridden methods
     void print(std::ostream &) const; // Change to virtual if base class
@@ -118,6 +118,7 @@ private:
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
 
     virtual void validate(const std::vector<double>&) const;
+    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField& field) const;
 
     // -- Class members
     // None
