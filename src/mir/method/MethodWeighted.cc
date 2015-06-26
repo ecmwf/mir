@@ -208,8 +208,16 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
         data::MIRFieldStats ostats = field.statistics(i);
         eckit::Log::info() << "Output Field statistics : " << ostats << std::endl;
 
-        ASSERT(eckit::FloatCompare<double>::isGreaterApproxEqual(ostats.minimum(), istats.minimum()));
-        ASSERT(eckit::FloatCompare<double>::isGreaterApproxEqual(istats.maximum(), ostats.maximum()));
+        /// FIXME: This assertion is to early in the case of LocalGrid input
+        ///        because there will be output points which won't be updated (where skipped)
+        ///        but later should be cropped out
+        ///        UNLESS, we compute the statistics based on only points contained in the Domain
+
+        if( in.domain().global() )
+        {
+            ASSERT(eckit::FloatCompare<double>::isGreaterApproxEqual(ostats.minimum(), istats.minimum()));
+            ASSERT(eckit::FloatCompare<double>::isGreaterApproxEqual(istats.maximum(), ostats.maximum()));
+        }
 
     }
 
