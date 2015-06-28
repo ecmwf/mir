@@ -59,13 +59,13 @@ public:
         return matrix_.cols();
     }
 
-    Index innerSize() const {
-        return matrix_.innerSize();
-    }
+    // Index innerSize() const {
+    //     return matrix_.innerSize();
+    // }
 
-    Index outerSize() const {
-        return matrix_.outerSize();
-    }
+    // Index outerSize() const {
+    //     return matrix_.outerSize();
+    // }
 
     void setIdentity() {
         matrix_.setIdentity();

@@ -15,8 +15,8 @@
 #include "mir/method/WeightMatrix.h"
 
 #include "atlas/geometry/Intersect.h"
-#include "eckit/filesystem/PathName.h"
-#include "eckit/io/BufferedHandle.h"
+// #include "eckit/filesystem/PathName.h"
+// #include "eckit/io/BufferedHandle.h"
 #include "eckit/log/Plural.h"
 #include "mir/util/Compare.h"
 
@@ -29,96 +29,11 @@ namespace mir {
 namespace method {
 
 void WeightMatrix::save(const eckit::PathName &path) const {
-    eckit::BufferedHandle f(path.fileHandle());
-
-    f.openForWrite(0);
-    eckit::AutoClose closer(f);
-
-    // write nominal size of matrix
-
-    Index iSize = innerSize();
-    Index oSize = outerSize();
-
-    f.write(&iSize, sizeof(iSize));
-    f.write(&oSize, sizeof(oSize));
-
-    // find all the non-zero values (aka triplets)
-
-    std::vector<method::WeightMatrix::Triplet > trips;
-    for (size_t i = 0; i < outerSize(); ++i) {
-        for (method::WeightMatrix::inner_const_iterator it(*this, i); it; ++it) {
-            trips.push_back(method::WeightMatrix::Triplet(it.row(), it.col(), *it));
-        }
-    }
-
-    // save the number of triplets
-
-    Index ntrips = trips.size();
-    f.write(&ntrips, sizeof(ntrips));
-
-    // now save the triplets themselves
-
-    for (size_t i = 0; i < trips.size(); i++) {
-
-        method::WeightMatrix::Triplet &rt = trips[i];
-
-        Index x = rt.row();
-        Index y = rt.col();
-        double w = rt.value();
-
-        f.write(&x, sizeof(x));
-        f.write(&y, sizeof(y));
-        f.write(&w, sizeof(w));
-    }
+    matrix_.save(path);
 }
 
 void WeightMatrix::load(const eckit::PathName &path)  {
-
-    eckit::BufferedHandle f(path.fileHandle());
-
-    f.openForRead();
-    eckit::AutoClose closer(f);
-
-    // read inpts, outpts sizes of matrix
-
-    Index inner, outer;
-
-    f.read(&inner, sizeof(inner));
-    f.read(&outer, sizeof(outer));
-
-    Index npts;
-    f.read(&npts, sizeof(npts));
-
-    // read total sparse points of matrix (so we can reserve)
-
-    std::vector<method::WeightMatrix::Triplet > insertions;
-
-    eckit::Log::info() << "Inner: " << eckit::BigNum(inner)
-                       << ", outer: " << eckit::BigNum(outer)
-                       << ", number of points: " << eckit::BigNum(npts) << std::endl;
-
-    insertions.reserve(npts);
-
-    // read the values
-
-    for (size_t i = 0; i < npts; i++) {
-        Index x, y;
-        double w;
-        f.read(&x, sizeof(x));
-        f.read(&y, sizeof(y));
-        f.read(&w, sizeof(w));
-        insertions.push_back(method::WeightMatrix::Triplet(x, y, w));
-    }
-
-    // check matrix is correctly sized
-    // note that Weigths::Matrix is row-major, so rows are outer size
-
-    ASSERT(rows() == outer);
-    ASSERT(cols() == inner);
-
-    // set the weights from the triplets
-
-    setFromTriplets(insertions);
+    matrix_.load(path);
 }
 
 void WeightMatrix::cleanup() {
