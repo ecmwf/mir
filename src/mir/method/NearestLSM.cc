@@ -52,8 +52,9 @@ const char *NearestLSM::name() const {
 
 
 void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
-    const std::string name("NearestLSM::getMatrix");
-    eckit::Timer timer(name);
+
+    eckit::Timer timer("NearestLSM::assemble");
+    eckit::Log::info() << "NearestLSM::assemble" << std::endl;
 
 
     // get the land-sea masks, with boolean masking on point (node) indices
@@ -62,7 +63,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     const lsm::LandSeaMasks masks = getMasks(in, out);
     ASSERT(masks.active());
 
-    Log::info() << name << " compute LandSeaMasks " << timer.elapsed() - here << std::endl;
+    Log::info() << "NearestLSM compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
 
     // compute masked/not-masked search trees
@@ -76,7 +77,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     util::PointSearch sptree_masked    (in.mesh(), util::compare::is_masked_fn     (imask));
     util::PointSearch sptree_notmasked (in.mesh(), util::compare::is_not_masked_fn (imask));
 
-    Log::info() << name << " compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
+    Log::info() << "NearestLSM compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
 
 
     // compute the output nodes coordinates
@@ -90,7 +91,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     atlas::ArrayView< double, 2 > ocoords(
                 o_mesh.function_space("nodes").field("xyz") );
 
-    Log::info() << name << " compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
+    Log::info() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
 
 
     // search nearest neighbours matching in/output masks
@@ -119,13 +120,13 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
         mat.push_back(WeightMatrix::Triplet( i, j, 1. ));
 
     }
-    Log::info() << name << " search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;
+    Log::info() << "NearestLSM search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;
 
 
     // fill-in sparse matrix
     here = timer.elapsed();
     W.setFromTriplets(mat);
-    Log::info() << name << " fill-in sparse matrix " << timer.elapsed() - here << std::endl;
+    Log::info() << "NearestLSM fill-in sparse matrix " << timer.elapsed() - here << std::endl;
 }
 
 

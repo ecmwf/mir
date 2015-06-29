@@ -70,6 +70,8 @@ MethodWeighted::~MethodWeighted() {
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
 const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas::Grid &out) const {
 
+    eckit::Log::info() << "MethodWeighted::getMatrix " << *this << std::endl;
+
     eckit::Timer timer("MethodWeighted::getMatrix");
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);

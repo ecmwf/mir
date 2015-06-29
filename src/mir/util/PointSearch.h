@@ -62,6 +62,9 @@ public:
     /// Finds closest points within a radius
     void closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest);
 
+    void statsPrint(std::ostream& o, bool fancy) const;
+    void statsReset();
+
 protected:
 
     eckit::ScopedPtr<TreeType> tree_;

@@ -58,6 +58,9 @@ PHILOSOPHY:
         - Decide on what to test
 
 -- PERFORMANCES (MAKE IT FAST)
+    -- SCALABILITY?
+        How does the system scale with finer grids
+        What about the number of cache weights
     - Memory mapping of the SparseMatrix coefficients: MappedSparseMatrix<double,RowMajor> weights(nrows, ncols, nnz, row_ptr, col_ind, val);
     - Hide Eigen in a light wrapper
     - Implement wrapper with armadilo

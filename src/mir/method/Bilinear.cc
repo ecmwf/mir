@@ -89,7 +89,7 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
 
-    std::cout << "Bilinear:: compute called " << std::endl;
+    eckit::Log::info() << "Bilinear::assemble " << *this << std::endl;
 
     const atlas::Mesh& i_mesh = in.mesh();
     const atlas::Mesh& o_mesh = out.mesh();

@@ -35,6 +35,14 @@ PointSearch::PointSearch(const atlas::Mesh& mesh, const CompareType& isok) {
 }
 
 
+void PointSearch::statsPrint(std::ostream& s, bool fancy) const {
+    tree_->statsPrint(s, fancy);
+}
+
+void PointSearch::statsReset() {
+    tree_->statsReset();
+}
+
 PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType& pt) {
     const atlas::PointIndex3::NodeInfo nn = tree_->nearestNeighbour(pt);
     return nn.value();
@@ -43,6 +51,13 @@ PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointTy
 
 void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest) {
     using atlas::PointIndex3;
+
+    // Small optimisation
+    if(n == 1) {
+        closest.clear();
+        closest.push_back(closestPoint(pt));
+        return;
+    }
 
     PointIndex3::NodeList nn = tree_->kNearestNeighbours(pt, n);
 
