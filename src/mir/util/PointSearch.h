@@ -54,16 +54,16 @@ public:
 public:
 
     /// Finds closest point to an input point
-    PointValueType closestPoint(const PointType& pt);
+    PointValueType closestPoint(const PointType& pt) const;
 
     /// Finds closest N points to an input point
-    void closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest);
+    void closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest) const;
 
     /// Finds closest points within a radius
-    void closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest);
+    void closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest) const;
 
     void statsPrint(std::ostream& o, bool fancy) const;
-    void statsReset();
+    void statsReset() const;
 
 protected:
 
@@ -75,7 +75,6 @@ private:
 
     void init(const atlas::Mesh& mesh, const CompareType& isok=CompareTypeNone());
 
-    mutable atlas::Grid::uid_t uid_;
 
 };
 
