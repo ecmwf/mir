@@ -63,9 +63,9 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
     eckit::Timer timer("Nearest::assemble");
     eckit::Log::info() << "Nearest::assemble" << std::endl;
 
-    size_t nclosest = this->nclosest();
+    const size_t nclosest = this->nclosest();
 
-    util::PointSearch sptree(in.mesh());
+    const util::PointSearch sptree(in.mesh());
 
     const atlas::Mesh &o_mesh = out.mesh();
     const atlas::Domain &inDomain = in.domain();
