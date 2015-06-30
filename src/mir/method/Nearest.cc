@@ -68,11 +68,13 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
     util::PointSearch sptree(in.mesh());
 
     const atlas::Mesh &o_mesh = out.mesh();
+    const atlas::Domain &inDomain = in.domain();
 
     // output points
     atlas::FunctionSpace &o_nodes = o_mesh.function_space("nodes");
     atlas::actions::BuildXYZField("xyz")(o_nodes);
     atlas::ArrayView<double, 2> ocoords(o_nodes.field("xyz"));
+    atlas::ArrayView<double, 2> olonlat ( o_nodes.field( "lonlat" ));
 
     const size_t out_npts = o_nodes.shape(0);
     double nearest = 0;
@@ -98,10 +100,14 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
                                << std::endl;
 
             eckit::Log::info() << "Nearest: " << nearest << ", Push back:" << push_back << std::endl;
-            sptree.statsPrint(eckit::Log::info(), true);
+            sptree.statsPrint(eckit::Log::info(), false);
             eckit::Log::info() << std::endl;
             sptree.statsReset();
             nearest = push_back = 0;
+        }
+
+        if (!inDomain.contains(olonlat[ip][atlas::LON], olonlat[ip][atlas::LAT])) {
+            continue;
         }
 
         // get the reference output point
