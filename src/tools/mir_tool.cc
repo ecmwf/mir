@@ -160,12 +160,11 @@ void MIRTool::run() {
 
     mir::param::MIRArgs args(&usage, 2, options);
 
+    // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;
     if(args.get("backend", backend)) {
         eckit::la::LinearAlgebra::backend(backend);
     }
-
-
 
     mir::api::MIRJob job;
     args.copyValuesTo(job);
