@@ -11,13 +11,15 @@
 /// @author Tiago Quintino
 /// @date May 2015
 
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Plural.h"
 
-#include "mir/method/WeightMatrix.h"
+#include "experimental/eckit/la/LinearAlgebra.h"
+#include "experimental/eckit/la/Vector.h"
 
 #include "atlas/geometry/Intersect.h"
-// #include "eckit/filesystem/PathName.h"
-// #include "eckit/io/BufferedHandle.h"
-#include "eckit/log/Plural.h"
+
+#include "mir/method/WeightMatrix.h"
 #include "mir/util/Compare.h"
 
 #include <cmath>
@@ -28,12 +30,39 @@ using mir::util::compare::is_approx_one;
 namespace mir {
 namespace method {
 
+WeightMatrix::WeightMatrix() : matrix_() {}
+
+WeightMatrix::WeightMatrix(WeightMatrix::Index rows, WeightMatrix::Index cols)
+    : matrix_(rows, cols) {}
+
 void WeightMatrix::save(const eckit::PathName &path) const {
     matrix_.save(path);
 }
 
 void WeightMatrix::load(const eckit::PathName &path)  {
     matrix_.load(path);
+}
+
+void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& triplets) {
+    matrix_.setFromTriplets(triplets);
+}
+
+void WeightMatrix::setIdentity() {
+    matrix_.setIdentity();
+}
+
+void WeightMatrix::prune(double value) {
+    matrix_.prune(value);
+}
+
+void WeightMatrix::multiply(const std::vector<double>& values, std::vector<double>& result) const {
+
+    // FIXME: remove this const cast once Vector provides read-only view
+    eckit::la::Vector vi(const_cast<double *>(values.data()), values.size());
+    eckit::la::Vector vo(result.data(), result.size());
+
+    // TODO: linear algebra backend should depend on parametrisation
+    eckit::la::LinearAlgebra::backend().spmv(matrix_, vi, vo);
 }
 
 void WeightMatrix::cleanup() {

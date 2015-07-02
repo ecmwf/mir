@@ -15,11 +15,7 @@
 #ifndef mir_method_WeightMatrix_H
 #define mir_method_WeightMatrix_H
 
-#include "eckit/exception/Exceptions.h"
-
-#include "experimental/eckit/la/LinearAlgebra.h"
 #include "experimental/eckit/la/SparseMatrix.h"
-#include "experimental/eckit/la/Vector.h"
 
 namespace eckit {
 class PathName;
@@ -38,9 +34,9 @@ public:
     typedef Matrix::Scalar Scalar;
     typedef eckit::la::Triplet Triplet;
 
-    WeightMatrix() : matrix_() {}
+    WeightMatrix();
 
-    WeightMatrix(Index rows, Index cols) : matrix_(rows, cols) {}
+    WeightMatrix(Index rows, Index cols);
 
     void save(const eckit::PathName &path) const;
     void load(const eckit::PathName &path);
@@ -62,23 +58,13 @@ public:
     //     return matrix_.outerSize();
     // }
 
-    void setIdentity() {
-        matrix_.setIdentity();
-    }
+    void setFromTriplets(const std::vector<Triplet>& triplets);
 
-    void prune(double value) {
-        matrix_.prune(value);
-    }
+    void setIdentity();
 
-    void multiply(const std::vector<double> &values, std::vector<double> &result) const {
+    void prune(double value);
 
-        // FIXME: remove this const cast once Vector provides read-only view
-        eckit::la::Vector vi(const_cast<double *>(values.data()), values.size());
-        eckit::la::Vector vo(result.data(), result.size());
-
-        // TODO: linear algebra backend should depend on parametrisation
-        eckit::la::LinearAlgebra::backend().spmv(matrix_, vi, vo);
-    }
+    void multiply(const std::vector<double> &values, std::vector<double> &result) const;
 
     void cleanup();
     void validate(const char *when) const;
@@ -95,10 +81,6 @@ public:
         inner_const_iterator(const WeightMatrix &m, Index outer) :
             Matrix::InnerIterator(const_cast<Matrix&>(m.matrix_), outer) {}
     };
-
-    void setFromTriplets(const std::vector<Triplet>& triplets) {
-        matrix_.setFromTriplets(triplets);
-    }
 
 private:
 
