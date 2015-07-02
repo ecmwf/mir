@@ -85,7 +85,6 @@ const LSMChooser &LSMChooser::lookup(const std::string &name) {
     std::map<std::string, LSMChooser *>::const_iterator j = m->find(name);
 
     eckit::Log::info() << "Looking for LSMChooser [" << name << "]" << std::endl;
-
     if (j == m->end()) {
         eckit::Log::error() << "No LSMChooser for [" << name << "]" << std::endl;
         eckit::Log::error() << "LSMChoosers are:" << std::endl;
@@ -93,6 +92,7 @@ const LSMChooser &LSMChooser::lookup(const std::string &name) {
             eckit::Log::error() << "   " << (*j).first << std::endl;
         throw eckit::SeriousBug(std::string("No LSMChooser called ") + name);
     }
+
 
     return *(*j).second;
 }
