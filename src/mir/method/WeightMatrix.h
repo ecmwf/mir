@@ -17,7 +17,7 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "experimental/eckit/la/LinearAlgebraFactory.h"
+#include "experimental/eckit/la/LinearAlgebra.h"
 #include "experimental/eckit/la/SparseMatrix.h"
 #include "experimental/eckit/la/Vector.h"
 
@@ -38,14 +38,9 @@ public:
     typedef Matrix::Scalar Scalar;
     typedef eckit::la::Triplet Triplet;
 
-    // TODO: linear algebra backend should depend on parametrisation
-    WeightMatrix()
-        : matrix_(), la_(eckit::la::LinearAlgebraFactory::get()) {}
+    WeightMatrix() : matrix_() {}
 
-    // TODO: linear algebra backend should depend on parametrisation
-    WeightMatrix(Index rows, Index cols):
-        matrix_(rows, cols), la_(eckit::la::LinearAlgebraFactory::get()) {
-    }
+    WeightMatrix(Index rows, Index cols) : matrix_(rows, cols) {}
 
     void save(const eckit::PathName &path) const;
     void load(const eckit::PathName &path);
@@ -81,7 +76,8 @@ public:
         eckit::la::Vector vi(const_cast<double *>(values.data()), values.size());
         eckit::la::Vector vo(result.data(), result.size());
 
-        la_->spmv(matrix_, vi, vo);
+        // TODO: linear algebra backend should depend on parametrisation
+        eckit::la::LinearAlgebra::backend().spmv(matrix_, vi, vo);
     }
 
     void cleanup();
@@ -107,7 +103,6 @@ public:
 private:
 
     Matrix matrix_;
-    const eckit::la::LinearAlgebraBase* la_;
 };
 
 
