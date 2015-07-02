@@ -20,6 +20,8 @@
 #include "eckit/log/Timer.h"
 #include "eckit/runtime/Tool.h"
 
+#include "experimental/eckit/la/LinearAlgebra.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/input/DummyInput.h"
 #include "mir/input/GribFileInput.h"
@@ -99,6 +101,7 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<double>("epsilon", "Used by methods k-nearest and nearest-neighbour"));
     options.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
     options.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
+    options.push_back(new FactoryOption<eckit::la::LinearAlgebra>("backend", "Linear algebra backend (default 'generic')"));
 
     //==============================================
     options.push_back(new Separator("Rotation"));
@@ -156,6 +159,11 @@ void MIRTool::run() {
 
 
     mir::param::MIRArgs args(&usage, 2, options);
+
+    std::string backend;
+    if(args.get("backend", backend)) {
+        eckit::la::LinearAlgebra::backend(backend);
+    }
 
 
 
