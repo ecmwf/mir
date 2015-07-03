@@ -597,23 +597,6 @@ extern "C" fortint emosnum_(fortint *value) {
 }
 
 
-extern "C" void bus012_(fortint* KBUFL,char* KBUFF, fortint KSUP,fortint KSEC0,fortint KSEC1,fortint KSEC2,fortint* KERR)
-{
-   eckit::Log::info() << "++++++ bus012_" << std::endl;
-
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
-   try {
-#endif
-       NOTIMP;
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
-   } catch (std::exception &e) {
-       eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
-       return -2;
-   }
-#endif
-}
-
-
 }  // (anonymous namespace)
 }  // namespace api
 }  // namespace mir

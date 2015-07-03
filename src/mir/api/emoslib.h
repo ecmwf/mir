@@ -36,7 +36,4 @@ extern "C" {
                      fortfloat *south, fortfloat *east) ;
     fortint emosnum_(fortint *value) ;
 
-
-    // BUFR
-    void bus012_(fortint* KBUFL,char* KBUFF, fortint KSUP,fortint KSEC0,fortint KSEC1,fortint KSEC2,fortint* KERR);
 }
