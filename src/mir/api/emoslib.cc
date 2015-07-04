@@ -596,6 +596,28 @@ extern "C" fortint emosnum_(fortint *value) {
     return 42424242;
 }
 
+extern "C" void freecf_(fortint*)
+ {
+
+    eckit::Log::info() << "++++++ freecf" << std::endl;
+    NOTIMP;
+}
+
+extern "C" fortint jgglat_(fortint*,fortfloat*)
+ {
+
+    eckit::Log::info() << "++++++ jgglat" << std::endl;
+    NOTIMP;
+}
+
+extern "C" fortint wvqlint_(fortint*,fortint*,fortint*,fortint*,fortfloat*,fortfloat*,fortfloat*,fortfloat*,fortfloat*,fortint*,fortfloat*,fortfloat*)
+{
+
+    eckit::Log::info() << "++++++ wvqlint" << std::endl;
+    NOTIMP;
+}
+
+
 
 }  // (anonymous namespace)
 }  // namespace api

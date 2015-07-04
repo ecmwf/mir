@@ -36,4 +36,8 @@ extern "C" {
                      fortfloat *south, fortfloat *east) ;
     fortint emosnum_(fortint *value) ;
 
+    void freecf_(fortint*);
+    fortint jgglat_(fortint*,fortfloat*);
+    fortint wvqlint(fortint,fortint,fortint,fortint,fortfloat*,fortfloat*,fortfloat*,fortfloat*,fortfloat*,fortint*,fortfloat*,fortfloat*);
+
 }
