@@ -26,6 +26,7 @@
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribMemoryInput.h"
 #include "mir/output/GribMemoryOutput.h"
+#include "mir/param/SimpleParametrisation.h"
 
 #include "mir/input/VODInput.h"
 #include "mir/output/UVOutput.h"
@@ -42,8 +43,10 @@ typedef int fortint;
 typedef double fortfloat;
 
 
-eckit::ScopedPtr<MIRJob> job(0);
+static eckit::ScopedPtr<param::SimpleParametrisation> intin(0);
 
+static eckit::ScopedPtr<MIRJob> job(0);
+static bool unpackedform = false;
 
 static void tidy(const char *in, char *out, size_t max) {
     size_t n = 0;
@@ -57,9 +60,9 @@ static void tidy(const char *in, char *out, size_t max) {
 }
 
 
-extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint, fortint) {
+extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint namelen, fortint valuelen) {
 
-    eckit::Log::info() << "++++++ intout " << name << std::endl;
+    eckit::Log::info() << "++++++ intout [" << name << "] len=" <<  namelen <<  std::endl;
     char buffer[1024];
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
@@ -70,95 +73,106 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, co
             job.reset(new MIRJob());
         }
 
-        if (strcasecmp(name, "grid") == 0) {
+        if (strncasecmp(name, "grid", namelen) == 0) {
             job->set("grid", reals[0], reals[1]);
             return 0;
         }
 
-        if (strcasecmp(name, "area") == 0) {
+        if (strncasecmp(name, "area", namelen) == 0) {
             job->set("area", reals[0] ,  reals[1] , reals[2] , reals[3]);
             return 0;
         }
 
-        // if(strcasecmp(name, "gaussian") == 0) {
+        // if(strncasecmp(name, "gaussian") == 0) {
         //      // TODO:
         //     return 0;
         // }
 
-        if (strcasecmp(name, "reduced") == 0) {
+        if (strncasecmp(name, "reduced", namelen) == 0) {
             job->set("reduced", long(ints[0]));
             return 0;
         }
 
-        if (strcasecmp(name, "truncation") == 0) {
+        if (strncasecmp(name, "truncation", namelen) == 0) {
             job->set("truncation", long(ints[0]));
             return 0;
         }
 
-        if (strcasecmp(name, "regular") == 0) {
+        if (strncasecmp(name, "regular", namelen) == 0) {
             job->set("regular", long(ints[0]));
             return 0;
         }
 
         // TODO: Check that gaussian == regular in all cases
-        if (strcasecmp(name, "gaussian") == 0) {
+        if (strncasecmp(name, "gaussian", namelen) == 0) {
             job->set("regular", long(ints[0]));
             return 0;
         }
 
-        if (strcasecmp(name, "rotation") == 0) {
+        if (strncasecmp(name, "rotation", namelen) == 0) {
             job->set("rotation", double(reals[0]) , double(reals[1]));
             return 0;
         }
 
-        if (strcasecmp(name, "autoresol") == 0) {
+        if (strncasecmp(name, "autoresol", namelen) == 0) {
             job->set("autoresol", ints[0] != 0);
             return 0;
         }
 
-        // if(strcasecmp(name, "resol") == 0) {
+        // if(strncasecmp(name, "resol") == 0) {
         //     job->set("resol", value);
         //     return 0;
         // }
 
-        if (strcasecmp(name, "style") == 0) {
+        if (strncasecmp(name, "style", namelen) == 0) {
             job->set("style", value);
             return 0;
         }
 
-        if (strcasecmp(name, "bitmap") == 0) {
+        if (strncasecmp(name, "bitmap", namelen) == 0) {
             job->set("bitmap", value);
             return 0;
         }
 
-        if (strcasecmp(name, "accuracy") == 0) {
+        if (strncasecmp(name, "accuracy", namelen) == 0) {
             job->set("accuracy", long(ints[0]));
             return 0;
         }
 
-        if (strcasecmp(name, "frame") == 0) {
+        if (strncasecmp(name, "frame", namelen) == 0) {
             job->set("frame", long(ints[0]));
             return 0;
         }
 
-        if (strcasecmp(name, "intermediate_gaussian") == 0) {
+        if (strncasecmp(name, "intermediate_gaussian", namelen) == 0) {
             job->set("intermediate_gaussian", long(ints[0]));
             return 0;
         }
 
-        if (strcasecmp(name, "interpolation") == 0) {
+        if (strncasecmp(name, "interpolation", namelen) == 0) {
             tidy(value, buffer, sizeof(buffer));
             job->set("interpolation", buffer);
             return 0;
         }
 
-        if (strcasecmp(name, "packing") == 0) {
+        if (strncasecmp(name, "packing", namelen) == 0) {
             tidy(value, buffer, sizeof(buffer));
             job->set("packing", buffer);
             return 0;
         }
 
-        throw eckit::SeriousBug(std::string("Unexpected name in INTOUT: ") + name);
+        if (strncasecmp(name, "form", namelen) == 0) {
+            tidy(value, buffer, sizeof(buffer));
+            if (strncasecmp(buffer, "unpackedform", valuelen) == 0) {
+                unpackedform = true;
+                return 0;
+            }
+        }
+
+        std::string n(name);
+        n = n.substr(0, namelen);
+        eckit::Log::info() << "INTOUT " << n << ", s=" << value << " (" << valuelen << ") - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
+        throw eckit::SeriousBug(std::string("Unexpected name in INTOUT: [") + n + "]");
         // job->set(
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
@@ -170,14 +184,79 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, co
     return 0;
 }
 
-extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint, fortint) {
+extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint namelen, fortint valuelen) {
 
     eckit::Log::info() << "++++++ intin " << name << std::endl;
+    char buffer[1024];
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
 #endif
-        eckit::Log::warning() << "INTIN not implemenent (ignored), name=" << name << std::endl;
+
+        eckit::Log::info() << "INTIN " << name << ", s=" << value << " (" << valuelen << ") - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
+
+
+        if (!intin.get()) {
+            intin.reset(new param::SimpleParametrisation());
+        }
+
+        if (strncasecmp(name, "usewind", namelen) == 0) {
+            intin->set("usewind", long(ints[0]));
+            return 0;
+        }
+        if (strncasecmp(name, "uselsm", namelen) == 0) {
+            intin->set("uselsm", long(ints[0]));
+            return 0;
+        }
+
+        if (strncasecmp(name, "useprecip", namelen) == 0) {
+            intin->set("useprecip", long(ints[0]));
+            return 0;
+        }
+
+        if (strncasecmp(name, "lsm_param", namelen) == 0) {
+            // tidy(value, buffer, sizeof(buffer));
+            // job->set("packing", buffer);
+            return 0;
+        }
+
+        if (strncasecmp(name, "parameter", namelen) == 0) {
+            intin->set("parameter", long(ints[0]));
+            return 0;
+        }
+
+        if (strncasecmp(name, "table", namelen) == 0) {
+            intin->set("table", long(ints[0]));
+            return 0;
+        }
+
+        if (strncasecmp(name, "reduced", namelen) == 0) {
+            intin->set("reduced", long(ints[0]));
+            return 0;
+        }
+
+        if (strncasecmp(name, "g_pnts", namelen) == 0) {
+            intin->set("g_pnts", long(ints[0]));
+            return 0;
+        }
+
+        if (strncasecmp(name, "missingvalue", namelen) == 0) {
+            intin->set("missingvalue", reals[0]);
+            return 0;
+        }
+
+        if (strncasecmp(name, "form", namelen) == 0) {
+            tidy(value, buffer, sizeof(buffer));
+            if (strncasecmp(buffer, "unpackedform", valuelen) == 0) {
+                return 0;
+            }
+        }
+
+        std::string n(name);
+        n = n.substr(0, namelen);
+        eckit::Log::info() << "INTIN " << n << ", s=" << value << " (" << valuelen << ") - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
+        throw eckit::SeriousBug(std::string("Unexpected name in INTIN: [") + n + "]");
+
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
@@ -187,14 +266,45 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
     return 0;
 }
 
-extern "C" fortint intf_(char *, fortint *, fortfloat *, char *, fortint *, fortfloat *) {
+extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in,
+                         char *grib_out, fortint *length_out, fortfloat *values_out) {
 
     eckit::Log::info() << "++++++ intf" << std::endl;
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
 #endif
-        NOTIMP;
+        ASSERT(unpackedform); // Only for PRODGEN
+
+        if (!job.get()) {
+            job.reset(new MIRJob());
+        }
+
+        mir::input::GribMemoryInput input(grib_in, *length_in);
+        mir::output::GribMemoryOutput output(grib_out, *length_out);
+
+        // static const char *capture = getenv("MIR_CAPTURE_CALLS");
+        // if (capture) {
+        //     std::ofstream out(capture);
+        //     out << "mars<<EOF" << std::endl;
+        //     out << "retrieve,target=in.grib,";
+        //     input.marsRequest(out);
+        //     out << std::endl;
+        //     out << "EOF" << std::endl;
+        //     job->mirToolCall(out);
+        //     out << std::endl;
+        // }
+
+        job->execute(input, output);
+
+        ASSERT(output.interpolated() + output.saved() == 1);
+
+        if (output.saved() == 1) {
+            *length_out = 0; // Not interpolation performed
+        } else {
+            *length_out = output.length();
+        }
+
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
@@ -595,67 +705,59 @@ extern "C" fortint emosnum_(fortint *value) {
     return 42424242;
 }
 
-extern "C" void freecf_(fortint*)
-{
-
-    eckit::Log::info() << "++++++ freecf" << std::endl;
-    NOTIMP;
+extern "C" void freecf_(fortint *flag) {
+    // C     KFLAG - Flag indicating whether flushing of memory is done or not
+    // C              = 1 to turn on flushing
+    // C              = any other value to turn off flushing (default)
+    eckit::Log::info() << "++++++ freecf flag=" << *flag << std::endl;
 }
 
-extern "C" void jvod2uv_(fortfloat* vor, fortfloat* div, fortint* ktin, fortfloat* u, fortfloat* v, fortint* ktout)
-{
+extern "C" void jvod2uv_(fortfloat *vor, fortfloat *div, fortint *ktin, fortfloat *u, fortfloat *v, fortint *ktout) {
     eckit::Log::info() << "++++++ jvod2uv" << std::endl;
     NOTIMP;
 }
 
-extern "C" void wv2dint_(fortint* knum, fortint* numpts, fortint* ke_w, fortint* kn_s, fortfloat* reson,
-                         fortfloat* oldwave, fortfloat* newwave, fortfloat* nort, fortfloat* west,
-                         fortint* knspec, fortfloat* pmiss, fortfloat* rns)
-{
+extern "C" void wv2dint_(fortint *knum, fortint *numpts, fortint *ke_w, fortint *kn_s, fortfloat *reson,
+                         fortfloat *oldwave, fortfloat *newwave, fortfloat *nort, fortfloat *west,
+                         fortint *knspec, fortfloat *pmiss, fortfloat *rns) {
     eckit::Log::info() << "++++++ wv2dint" << std::endl;
     NOTIMP;
 }
 
-extern "C" fortint jgglat_(fortint*,fortfloat*)
-{
+extern "C" fortint jgglat_(fortint *, fortfloat *) {
 
     eckit::Log::info() << "++++++ jgglat" << std::endl;
     NOTIMP;
 }
 
-extern "C" void jnumgg_(fortint* knum, char* htype, fortint* kpts, fortint* kret)
-{
+extern "C" void jnumgg_(fortint *knum, char *htype, fortint *kpts, fortint *kret) {
     eckit::Log::info() << "++++++ jnumgg" << std::endl;
     NOTIMP;
 }
 
-extern "C" fortint wvqlint_(fortint*,fortint*,fortint*,fortint*,fortfloat*,fortfloat*,fortfloat*,fortfloat*,fortfloat*,fortint*,fortfloat*,fortfloat*)
-{
+extern "C" fortint wvqlint_(fortint *, fortint *, fortint *, fortint *, fortfloat *, fortfloat *, fortfloat *, fortfloat *, fortfloat *, fortint *, fortfloat *, fortfloat *) {
 
     eckit::Log::info() << "++++++ wvqlint" << std::endl;
     NOTIMP;
 }
 
-extern "C" fortint hirlam_( fortint* l12pnt, fortfloat* oldfld, fortint* kount, fortint* kgauss,
-                            fortfloat* area, fortfloat* pole, fortfloat* grid, fortfloat* newfld,
-                            fortint* ksize, fortint* nlon,fortint* nlot)
-{
+extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, fortint *kgauss,
+                            fortfloat *area, fortfloat *pole, fortfloat *grid, fortfloat *newfld,
+                            fortint *ksize, fortint *nlon, fortint *nlot) {
     eckit::Log::info() << "++++++ hirlam" << std::endl;
     NOTIMP;
 }
 
-extern "C" fortint hirlsm_( fortint* l12pnt, fortfloat* oldfld, fortint* kount, fortint* kgauss,
-                            fortfloat* area, fortfloat* pole, fortfloat* grid, fortfloat* newfld,
-                            fortint* ksize, fortint* nlon,fortint* nlot)
-{
+extern "C" fortint hirlsm_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, fortint *kgauss,
+                            fortfloat *area, fortfloat *pole, fortfloat *grid, fortfloat *newfld,
+                            fortint *ksize, fortint *nlon, fortint *nlot) {
     eckit::Log::info() << "++++++ hirlsm" << std::endl;
     NOTIMP;
 }
 
-extern "C" fortint hirlamw_(fortint* l12pnt, fortfloat* oldfldu, fortfloat* oldfldv, fortint* kount, fortint* kgauss,
-                            fortfloat* area, fortfloat* pole, fortfloat* grid, fortfloat* newfldu, fortfloat* newfldv,
-                            fortint* ksize, fortint* nlon,fortint* nlot)
-{
+extern "C" fortint hirlamw_(fortint *l12pnt, fortfloat *oldfldu, fortfloat *oldfldv, fortint *kount, fortint *kgauss,
+                            fortfloat *area, fortfloat *pole, fortfloat *grid, fortfloat *newfldu, fortfloat *newfldv,
+                            fortint *ksize, fortint *nlon, fortint *nlot) {
     eckit::Log::info() << "++++++ hirlamw" << std::endl;
     NOTIMP;
 }
