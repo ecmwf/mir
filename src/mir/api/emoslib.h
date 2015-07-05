@@ -37,7 +37,29 @@ extern "C" {
     fortint emosnum_(fortint *value) ;
 
     void freecf_(fortint*);
+
+    void jvod2uv_(fortfloat* vor, fortfloat* div, fortint* ktin, fortfloat* u, fortfloat* v, fortint* ktout);
+
+    void wv2dint_(fortint* knum, fortint* numpts, fortint* ke_w, fortint* kn_s, fortfloat* reson,
+                         fortfloat* oldwave, fortfloat* newwave, fortfloat* nort, fortfloat* west,
+                         fortint* knspec, fortfloat* pmiss, fortfloat* rns);
+
     fortint jgglat_(fortint*,fortfloat*);
-    fortint wvqlint(fortint,fortint,fortint,fortint,fortfloat*,fortfloat*,fortfloat*,fortfloat*,fortfloat*,fortint*,fortfloat*,fortfloat*);
+
+    void jnumgg_(fortint* knum, char* htype, fortint* kpts, fortint* kret);
+
+    fortint wvqlint_(fortint*,fortint*,fortint*,fortint*,fortfloat*,fortfloat*,fortfloat*,fortfloat*,fortfloat*,fortint*,fortfloat*,fortfloat*);
+
+    fortint hirlam_( fortint* l12pnt, fortfloat* oldfld, fortint* kount, fortint* kgauss,
+                            fortfloat* area, fortfloat* pole, fortfloat* grid, fortfloat* newfld,
+                            fortint* ksize, fortint* nlon,fortint* nlot);
+
+    fortint hirlsm_( fortint* l12pnt, fortfloat* oldfld, fortint* kount, fortint* kgauss,
+                            fortfloat* area, fortfloat* pole, fortfloat* grid, fortfloat* newfld,
+                            fortint* ksize, fortint* nlon,fortint* nlot);
+
+    fortint hirlamw_(fortint* l12pnt, fortfloat* oldfldu, fortfloat* oldfldv, fortint* kount, fortint* kgauss,
+                            fortfloat* area, fortfloat* pole, fortfloat* grid, fortfloat* newfldu, fortfloat* newfldv,
+                            fortint* ksize, fortint* nlon,fortint* nlot);
 
 }

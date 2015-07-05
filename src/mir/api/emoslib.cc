@@ -588,7 +588,6 @@ extern "C" fortint areachk_(fortfloat *we, fortfloat *ns, fortfloat *north, fort
     return 0;
 }
 
-
 extern "C" fortint emosnum_(fortint *value) {
 
     eckit::Log::info() << "++++++ emosnum" << std::endl;
@@ -597,16 +596,36 @@ extern "C" fortint emosnum_(fortint *value) {
 }
 
 extern "C" void freecf_(fortint*)
- {
+{
 
     eckit::Log::info() << "++++++ freecf" << std::endl;
     NOTIMP;
 }
 
+extern "C" void jvod2uv_(fortfloat* vor, fortfloat* div, fortint* ktin, fortfloat* u, fortfloat* v, fortint* ktout)
+{
+    eckit::Log::info() << "++++++ jvod2uv" << std::endl;
+    NOTIMP;
+}
+
+extern "C" void wv2dint_(fortint* knum, fortint* numpts, fortint* ke_w, fortint* kn_s, fortfloat* reson,
+                         fortfloat* oldwave, fortfloat* newwave, fortfloat* nort, fortfloat* west,
+                         fortint* knspec, fortfloat* pmiss, fortfloat* rns)
+{
+    eckit::Log::info() << "++++++ wv2dint" << std::endl;
+    NOTIMP;
+}
+
 extern "C" fortint jgglat_(fortint*,fortfloat*)
- {
+{
 
     eckit::Log::info() << "++++++ jgglat" << std::endl;
+    NOTIMP;
+}
+
+extern "C" void jnumgg_(fortint* knum, char* htype, fortint* kpts, fortint* kret)
+{
+    eckit::Log::info() << "++++++ jnumgg" << std::endl;
     NOTIMP;
 }
 
@@ -617,7 +636,29 @@ extern "C" fortint wvqlint_(fortint*,fortint*,fortint*,fortint*,fortfloat*,fortf
     NOTIMP;
 }
 
+extern "C" fortint hirlam_( fortint* l12pnt, fortfloat* oldfld, fortint* kount, fortint* kgauss,
+                            fortfloat* area, fortfloat* pole, fortfloat* grid, fortfloat* newfld,
+                            fortint* ksize, fortint* nlon,fortint* nlot)
+{
+    eckit::Log::info() << "++++++ hirlam" << std::endl;
+    NOTIMP;
+}
 
+extern "C" fortint hirlsm_( fortint* l12pnt, fortfloat* oldfld, fortint* kount, fortint* kgauss,
+                            fortfloat* area, fortfloat* pole, fortfloat* grid, fortfloat* newfld,
+                            fortint* ksize, fortint* nlon,fortint* nlot)
+{
+    eckit::Log::info() << "++++++ hirlsm" << std::endl;
+    NOTIMP;
+}
+
+extern "C" fortint hirlamw_(fortint* l12pnt, fortfloat* oldfldu, fortfloat* oldfldv, fortint* kount, fortint* kgauss,
+                            fortfloat* area, fortfloat* pole, fortfloat* grid, fortfloat* newfldu, fortfloat* newfldv,
+                            fortint* ksize, fortint* nlon,fortint* nlot)
+{
+    eckit::Log::info() << "++++++ hirlamw" << std::endl;
+    NOTIMP;
+}
 
 }  // (anonymous namespace)
 }  // namespace api
