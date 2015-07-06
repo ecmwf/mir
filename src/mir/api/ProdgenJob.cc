@@ -19,6 +19,10 @@
 #include "mir/api/ProdgenJob.h"
 #include "eckit/exception/Exceptions.h"
 
+#include "atlas/Grid.h"
+#include "atlas/grids/grids.h"
+#include "atlas/grids/GaussianLatitudes.h"
+
 namespace mir {
 namespace api {
 
@@ -123,6 +127,20 @@ bool ProdgenJob::gridded() const {
 
 bool ProdgenJob::spherical() const {
     return spherical_;
+}
+
+void ProdgenJob::auto_pl() {
+    eckit::StrStream os;
+    os << "rgg.N" << N_ << eckit::StrStream::ends;
+    eckit::ScopedPtr<atlas::grids::ReducedGrid> grid(dynamic_cast<atlas::grids::ReducedGrid *>(atlas::Grid::create(std::string(os))));
+
+    ASSERT(grid.get());
+
+    const std::vector<int> &v = grid->npts_per_lat();
+    pl_.resize(v.size());
+    for (size_t i = 0; i < v.size(); i++) {
+        pl_[i] = v[i];
+    }
 }
 
 }  // namespace api

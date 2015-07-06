@@ -48,14 +48,16 @@ void RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &in
     ASSERT(field.dimensions() == 1);
     const std::vector<double>& values = field.values(0);
 
-    ASSERT(values.size() < count_);
+    eckit::Log::info() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
+
+    ASSERT(values.size() <= count_);
     ::memcpy(values_, &values[0], values.size() * sizeof(double));
 
 }
 
 
 void RawOutput::print(std::ostream &out) const {
-    out << "RawOutput[...]";
+    out << "RawOutput[count=" << count_ << "]";
 }
 
 

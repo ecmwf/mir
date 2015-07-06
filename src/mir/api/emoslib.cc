@@ -28,6 +28,8 @@
 #include "mir/input/GribMemoryInput.h"
 #include "mir/output/GribMemoryOutput.h"
 
+#include "atlas/grids/GaussianLatitudes.h"
+
 #include "mir/input/VODInput.h"
 #include "mir/output/UVOutput.h"
 
@@ -234,8 +236,7 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
         }
 
         if (strncasecmp(name, "lsm_param", namelen) == 0) {
-            // tidy(value, buffer, sizeof(buffer));
-            // job->set("packing", buffer);
+            intin->lsm_param(boolean(value));
             return 0;
         }
 
@@ -304,29 +305,7 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
         mir::input::RawInput input(*intin, values_in, *length_in);
         mir::output::RawOutput output(values_out, *length_out);
 
-
-        // static const char *capture = getenv("MIR_CAPTURE_CALLS");
-        // if (capture) {
-        //     std::ofstream out(capture);
-        //     out << "mars<<EOF" << std::endl;
-        //     out << "retrieve,target=in.grib,";
-        //     input.marsRequest(out);
-        //     out << std::endl;
-        //     out << "EOF" << std::endl;
-        //     job->mirToolCall(out);
-        //     out << std::endl;
-        // }
-
         job->execute(input, output);
-
-
-        // ASSERT(output.interpolated() + output.saved() == 1);
-
-        // if (output.saved() == 1) {
-        //     *length_out = 0; // Not interpolation performed
-        // } else {
-        //     *length_out = output.length();
-        // }
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
@@ -747,10 +726,13 @@ extern "C" void wv2dint_(fortint *knum, fortint *numpts, fortint *ke_w, fortint 
     NOTIMP;
 }
 
-extern "C" fortint jgglat_(fortint *, fortfloat *) {
+extern "C" fortint jgglat_(fortint *KLAT, fortfloat *PGAUSS) {
 
-    eckit::Log::info() << "++++++ jgglat" << std::endl;
-    NOTIMP;
+    eckit::Log::info() << "++++++ jgglat " << *KLAT << std::endl;
+    size_t N = *KLAT / 2;
+    atlas::grids::gaussian_latitudes_npole_equator(N, PGAUSS);
+
+    return 0;
 }
 
 extern "C" void jnumgg_(fortint *knum, char *htype, fortint *kpts, fortint *kret) {
@@ -768,7 +750,52 @@ extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
                             fortfloat *area, fortfloat *pole, fortfloat *grid, fortfloat *newfld,
                             fortint *ksize, fortint *nlon, fortint *nlot) {
     eckit::Log::info() << "++++++ hirlam" << std::endl;
-    NOTIMP;
+
+// C     L12PNT - Chooses between 12-point and 4-point interpolation
+// C              = .TRUE. for 12-point horizontal
+// C              = .FALSE. for 4-point
+// C     OLDFLD  - The array of values from the gaussian field
+// C     KOUNT   - Number of values in OLDFLD
+// C     KGAUSS  - Gaussian number for the gaussian field
+// C     AREA    - Limits of output area (N/W/S/E)
+// C     POLE    - Pole of rotation (lat/long)
+// C     GRID    - Output lat/long grid increments (we/ns)
+// C     KSIZE   - The size of the output array to fill with the regular
+// C               lat/long field
+
+
+#ifdef EMOSLIB_CATCH_EXCECPTIONS
+    try {
+#endif
+        ASSERT(unpacked); // Only for PRODGEN
+
+        if (!job.get()) {
+            job.reset(new MIRJob());
+        }
+
+        if (!intin.get()) {
+            intin.reset(new ProdgenJob());
+        }
+
+        mir::input::RawInput input(*intin, oldfld, *kount);
+        mir::output::RawOutput output(newfld, *ksize);
+
+        intin->reduced(*kgauss);
+        intin->auto_pl();
+
+        job->set("area", area[0], area[1], area[2], area[3]);
+        job->set("grid", grid[0], grid[1]);
+        job->set("rotation", pole[0], pole[1]);
+
+        job->execute(input, output);
+
+#ifdef EMOSLIB_CATCH_EXCECPTIONS
+    } catch (std::exception &e) {
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        return -2;
+    }
+#endif
+    return 0;
 }
 
 extern "C" fortint hirlsm_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, fortint *kgauss,
@@ -782,6 +809,9 @@ extern "C" fortint hirlamw_(fortint *l12pnt, fortfloat *oldfldu, fortfloat *oldf
                             fortfloat *area, fortfloat *pole, fortfloat *grid, fortfloat *newfldu, fortfloat *newfldv,
                             fortint *ksize, fortint *nlon, fortint *nlot) {
     eckit::Log::info() << "++++++ hirlamw" << std::endl;
+
+
+
     NOTIMP;
 }
 

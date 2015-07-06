@@ -58,6 +58,7 @@ class ProdgenJob : public input::RawMetadata {
     void table(size_t);
     void reduced(size_t);
 
+    void auto_pl();
     void g_pnts(int*);
 
     // ============
