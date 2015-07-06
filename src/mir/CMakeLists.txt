@@ -95,6 +95,8 @@ list(
      data/MIRFieldStats.h
      input/RawInput.cc
      input/RawInput.h
+     input/RawMetadata.cc
+     input/RawMetadata.h
      input/DummyInput.cc
      input/DummyInput.h
      input/GribFileInput.cc

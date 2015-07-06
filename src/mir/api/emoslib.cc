@@ -84,13 +84,19 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, co
         }
 
         if (strncasecmp(name, "grid", namelen) == 0) {
-            job->set("grid", reals[0], reals[1]);
+            if (reals[0] != 0 ||  reals[1] != 0) {
+                job->set("grid", reals[0], reals[1]);
+            } else {
+                job->clear("grid");
+            }
             return 0;
         }
 
         if (strncasecmp(name, "area", namelen) == 0) {
             if (reals[0] != 0 ||  reals[1] != 0 || reals[2] != 0 || reals[3] != 0 ) {
-                job->set("area", reals[0] ,  reals[1] , reals[2] , reals[3]);
+                job->set("area", reals[0], reals[1], reals[2], reals[3]);
+            } else {
+                job->clear("area");
             }
             return 0;
         }

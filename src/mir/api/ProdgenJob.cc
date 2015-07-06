@@ -81,6 +81,22 @@ void ProdgenJob::g_pnts(int *pl) {
     }
 }
 
+const std::vector<long>  &ProdgenJob::pl() const {
+    return pl_;
+}
+
+size_t  ProdgenJob::N() const {
+    return N_;
+}
+
+const util::BoundingBox &ProdgenJob::bbox() const {
+    return bbox_;
+}
+
+const std::string &ProdgenJob::gridType() const {
+    return gridType_;
+}
+
 
 }  // namespace api
 }  // namespace mir

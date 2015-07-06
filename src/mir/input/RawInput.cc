@@ -26,24 +26,22 @@ namespace mir {
 namespace input {
 
 
-RawInput::RawInput(const api::ProdgenJob &metadata, const double *values, size_t count):
+RawInput::RawInput(const RawMetadata &metadata, const double *values, size_t count):
     metadata_(metadata),
     values_(values),
     count_(count) {
 }
 
-
-RawInput::~RawInput() {}
+RawInput::~RawInput() {
+}
 
 bool RawInput::next() {
     NOTIMP;
 }
 
-
 const param::MIRParametrisation &RawInput::parametrisation() const {
     return *this;
 }
-
 
 data::MIRField *RawInput::field() const {
     data::MIRField *field = new data::MIRField(*this, false, 999.);

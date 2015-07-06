@@ -13,20 +13,19 @@
 /// @date Apr 2015
 
 
-#ifndef ProdgenJob_H
-#define ProdgenJob_H
+#ifndef RawMetadata_H
+#define RawMetadata_H
 
 #include <string>
 
 #include "mir/util/BoundingBox.h"
-#include "mir/input/RawMetadata.h"
 
 
 namespace mir {
-namespace api {
+namespace input {
 
 
-class ProdgenJob : public input::RawMetadata {
+class RawMetadata {
   public:
 
     // -- Exceptions
@@ -34,11 +33,11 @@ class ProdgenJob : public input::RawMetadata {
 
     // -- Contructors
 
-    ProdgenJob();
+    RawMetadata();
 
     // -- Destructor
 
-    virtual ~ProdgenJob();
+    virtual ~RawMetadata();
 
     // -- Convertors
     // None
@@ -48,19 +47,14 @@ class ProdgenJob : public input::RawMetadata {
 
     // -- Methods
 
-    void usewind(bool);
-    void uselsm(bool);
-    void useprecip(bool);
-    void missingvalue(bool);
 
-    void lsm_param(bool);
-    void parameter(size_t);
-    void table(size_t);
-    void reduced(size_t);
-
-    void g_pnts(int*);
 
     // ============
+
+    virtual const std::vector<long>& pl() const = 0;
+    virtual size_t N() const = 0;
+    virtual const util::BoundingBox &bbox() const = 0;
+    virtual const std::string &gridType() const = 0;
 
 
     // -- Overridden methods
@@ -95,22 +89,15 @@ class ProdgenJob : public input::RawMetadata {
 
     // -- Members
 
-    std::string gridType_;
-    util::BoundingBox bbox_;
-    size_t N_;
-    std::vector<long> pl_;
 
     // -- Methods
 
 
     // -- Overridden methods
 
+    // From MIRParametrisation
 
-    virtual const std::vector<long>& pl() const ;
-    virtual size_t N() const ;
-    virtual const util::BoundingBox &bbox() const;
-    virtual const std::string &gridType() const ;
-    virtual void print(std::ostream &) const;
+    virtual void print(std::ostream &) const = 0;
 
     // -- Class members
     // None

@@ -19,7 +19,7 @@
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/api/ProdgenJob.h"
+#include "mir/input/RawMetadata.h"
 
 
 namespace mir {
@@ -33,7 +33,7 @@ class RawInput : public MIRInput, public param::MIRParametrisation {
     // None
 
     // -- Contructors
-    RawInput(const api::ProdgenJob& metadata, const double* values, size_t count);
+    RawInput(const RawMetadata& metadata, const double* values, size_t count);
 
     // -- Destructor
 
@@ -84,7 +84,7 @@ class RawInput : public MIRInput, public param::MIRParametrisation {
 
     // -- Members
 
-    const api::ProdgenJob& metadata_;
+    const RawMetadata& metadata_;
     const double* values_;
     size_t count_;
 
