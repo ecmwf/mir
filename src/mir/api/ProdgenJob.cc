@@ -17,13 +17,15 @@
 
 #include "eckit/log/Log.h"
 #include "mir/api/ProdgenJob.h"
-
+#include "eckit/exception/Exceptions.h"
 
 namespace mir {
 namespace api {
 
 
-ProdgenJob::ProdgenJob() {
+ProdgenJob::ProdgenJob():
+    gridType_("unknown"),
+    N_(0) {
 }
 
 
@@ -31,7 +33,7 @@ ProdgenJob::~ProdgenJob() {
 }
 
 
-void ProdgenJob::print(std::ostream& out) const {
+void ProdgenJob::print(std::ostream &out) const {
     out << "ProdgenJob[";
     out << "]";
 }
@@ -66,10 +68,17 @@ void ProdgenJob::table(size_t n) {
 
 void ProdgenJob::reduced(size_t n) {
     eckit::Log::info() << "ProdgenJob::reduced " << n << std::endl;
+    gridType_ = "reduced_gg";
+    N_ = n;
 }
 
-void ProdgenJob::g_pnts(size_t n) {
-    eckit::Log::info() << "ProdgenJob::g_pnts " << n << std::endl;
+void ProdgenJob::g_pnts(int *pl) {
+    eckit::Log::info() << "ProdgenJob::g_pnts " << std::endl;
+    ASSERT(gridType_ == "reduced_gg");
+    pl_.resize(2 * N_);
+    for (size_t i = 0; i < 2 * N_; i++) {
+        pl_[i] = pl[i];
+    }
 }
 
 

@@ -89,7 +89,9 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, co
         }
 
         if (strncasecmp(name, "area", namelen) == 0) {
-            job->set("area", reals[0] ,  reals[1] , reals[2] , reals[3]);
+            if (reals[0] != 0 ||  reals[1] != 0 || reals[2] != 0 || reals[3] != 0 ) {
+                job->set("area", reals[0] ,  reals[1] , reals[2] , reals[3]);
+            }
             return 0;
         }
 
@@ -247,7 +249,7 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
         }
 
         if (strncasecmp(name, "g_pnts", namelen) == 0) {
-            intin->g_pnts(ints[0]);
+            intin->g_pnts(ints);
             return 0;
         }
 
@@ -278,7 +280,7 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
 extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in,
                          char *grib_out, fortint *length_out, fortfloat *values_out) {
 
-    eckit::Log::info() << "++++++ intf" << std::endl;
+    eckit::Log::info() << "++++++ intf in="  << *length_in << ", out=" << *length_out << std::endl;
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
@@ -296,6 +298,7 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
         mir::input::RawInput input(*intin, values_in, *length_in);
         mir::output::RawOutput output(values_out, *length_out);
 
+
         // static const char *capture = getenv("MIR_CAPTURE_CALLS");
         // if (capture) {
         //     std::ofstream out(capture);
@@ -309,6 +312,7 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
         // }
 
         job->execute(input, output);
+
 
         // ASSERT(output.interpolated() + output.saved() == 1);
 

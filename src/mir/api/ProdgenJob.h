@@ -18,6 +18,8 @@
 
 #include <string>
 
+#include "mir/util/BoundingBox.h"
+
 
 namespace mir {
 namespace api {
@@ -26,24 +28,24 @@ namespace api {
 class ProdgenJob {
   public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     ProdgenJob();
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~ProdgenJob();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
     void usewind(bool);
     void uselsm(bool);
@@ -55,57 +57,80 @@ class ProdgenJob {
     void table(size_t);
     void reduced(size_t);
 
-void g_pnts(size_t);
+    void g_pnts(int*);
 
-// -- Overridden methods
+    // ============
+
+    const std::vector<long>& pl() const {
+        return pl_;
+    }
+
+    size_t N() const {
+        return N_;
+    }
+
+    const util::BoundingBox &bbox() const {
+        return bbox_;
+    }
+
+    const std::string &gridType() const {
+        return gridType_;
+    }
+
+
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
 
 
-// -- Overridden methods
+    // -- Overridden methods
 
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   private:
 
 
-// -- Members
+    // -- Members
+
+    std::string gridType_;
+    util::BoundingBox bbox_;
+    size_t N_;
+    std::vector<long> pl_;
+
+    // -- Methods
 
 
-// -- Methods
-
-
-// -- Overridden methods
+    // -- Overridden methods
 
     // From MIRParametrisation
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream &) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
 };
 

@@ -26,7 +26,7 @@ namespace mir {
 namespace input {
 
 
-RawInput::RawInput(api::ProdgenJob& metadata, const double* values, size_t count):
+RawInput::RawInput(const api::ProdgenJob &metadata, const double *values, size_t count):
     metadata_(metadata),
     values_(values),
     count_(count) {
@@ -60,61 +60,98 @@ void RawInput::print(std::ostream &out) const {
     out << "RawInput[count=" << count_ << "]";
 }
 
-bool RawInput::has(const std::string& name) const {
+bool RawInput::has(const std::string &name) const {
+    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::has (" << name << ")" << std::endl;
+
     if (name == "gridded") {
         return true;
     }
-    if (name == "spectral") {
-        return false;
-    }
-    return FieldParametrisation::has(name);
+
+    return false;
 }
 
 bool RawInput::get(const std::string &name, std::string &value) const {
+    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::get string (" << name << ")" << std::endl;
 
     if (name == "gridType") {
-        value = "regular_ll";
+        value = metadata_.gridType();
         return true;
     }
-    return FieldParametrisation::get(name, value);
+
+    return false;
+}
+
+bool RawInput::get(const std::string &name, bool &value) const {
+    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::get bool (" << name << ")" << std::endl;
+    return false;
+}
+
+bool RawInput::get(const std::string &name, long &value) const {
+    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::get long (" << name << ")" << std::endl;
+
+    if (name == "N") {
+        value = metadata_.N();
+        return true;
+    }
+
+    return false;
 }
 
 bool RawInput::get(const std::string &name, double &value) const {
+    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::get double (" << name << ")" << std::endl;
 
     if (name == "north") {
-        value = 90;
+        value = metadata_.bbox().north();
         return true;
     }
 
     if (name == "south") {
-        value = -90;
+        value = metadata_.bbox().south();
         return true;
     }
 
     if (name == "west") {
-        value = 0;
+        value = metadata_.bbox().west();
         return true;
     }
 
     if (name == "east") {
-        value = 359;
+        value = metadata_.bbox().east();
         return true;
     }
 
-    if (name == "west_east_increment") {
-        value = 1;
-        return true;
-    }
-
-    if (name == "south_north_increment") {
-        value = 1;
-        return true;
-    }
-
-    return FieldParametrisation::get(name, value);
+    return false;
 }
 
+bool RawInput::get(const std::string &name, std::vector<long> &value) const {
+    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::get vector<long> (" << name << ")" << std::endl;
 
+    if (name == "pl") {
+        value = metadata_.pl();
+        return true;
+    }
+
+    return false;
+}
+
+bool RawInput::get(const std::string &name, std::vector<double> &value) const {
+
+    if (name == "area") {
+        value.resize(4);
+        value[0] = metadata_.bbox().north(); // North
+        value[1] = metadata_.bbox().west(); // West
+        value[2] = metadata_.bbox().south(); // South
+        value[3] = metadata_.bbox().east(); // East
+        return true;
+    }
+
+    if (name == "grid") {
+        return false;
+    }
+
+    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::get vector<double> (" << name << ")" << std::endl;
+    return false;
+}
 
 }  // namespace input
 }  // namespace mir

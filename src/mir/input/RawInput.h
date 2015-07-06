@@ -18,7 +18,7 @@
 
 
 #include "mir/input/MIRInput.h"
-#include "mir/param/FieldParametrisation.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/api/ProdgenJob.h"
 
 
@@ -26,14 +26,14 @@ namespace mir {
 namespace input {
 
 
-class RawInput : public MIRInput, public param::FieldParametrisation {
+class RawInput : public MIRInput, public param::MIRParametrisation {
   public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    RawInput(api::ProdgenJob& metadata, const double* values, size_t count);
+    RawInput(const api::ProdgenJob& metadata, const double* values, size_t count);
 
     // -- Destructor
 
@@ -84,7 +84,7 @@ class RawInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Members
 
-    api::ProdgenJob& metadata_;
+    const api::ProdgenJob& metadata_;
     const double* values_;
     size_t count_;
 
@@ -102,8 +102,14 @@ class RawInput : public MIRInput, public param::FieldParametrisation {
 
     // From MIRParametrisation
     virtual bool has(const std::string& name) const;
-    virtual bool get(const std::string&, std::string&) const;
-    virtual bool get(const std::string&, double&) const;
+
+    virtual bool get(const std::string& name, std::string& value) const;
+    virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, double& value) const;
+
+    virtual bool get(const std::string& name, std::vector<long>& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
 
     // -- Class members
     // None
