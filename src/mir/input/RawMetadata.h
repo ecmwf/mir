@@ -56,6 +56,9 @@ class RawMetadata {
     virtual const util::BoundingBox &bbox() const = 0;
     virtual const std::string &gridType() const = 0;
 
+    virtual bool gridded() const = 0;
+    virtual bool spherical() const = 0;
+
 
     // -- Overridden methods
     // None

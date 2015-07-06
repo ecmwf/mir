@@ -25,7 +25,9 @@ namespace api {
 
 ProdgenJob::ProdgenJob():
     gridType_("unknown"),
-    N_(0) {
+    N_(0),
+    gridded_(false),
+    spherical_(false) {
 }
 
 
@@ -68,20 +70,24 @@ void ProdgenJob::table(size_t n) {
 
 void ProdgenJob::reduced(size_t n) {
     eckit::Log::info() << "ProdgenJob::reduced " << n << std::endl;
+    ASSERT(!spherical_);
     gridType_ = "reduced_gg";
     N_ = n;
+    gridded_ = true;
 }
 
 void ProdgenJob::g_pnts(int *pl) {
     eckit::Log::info() << "ProdgenJob::g_pnts " << std::endl;
     ASSERT(gridType_ == "reduced_gg");
-    pl_.resize(2 * N_);
-    for (size_t i = 0; i < 2 * N_; i++) {
+
+    size_t size = 2 * N_;
+    pl_.resize(size);
+    for (size_t i = 0; i < size; i++) {
         pl_[i] = pl[i];
     }
 }
 
-const std::vector<long>  &ProdgenJob::pl() const {
+const std::vector<long> &ProdgenJob::pl() const {
     return pl_;
 }
 
@@ -97,6 +103,13 @@ const std::string &ProdgenJob::gridType() const {
     return gridType_;
 }
 
+bool ProdgenJob::gridded() const {
+    return gridded_;
+}
+
+bool ProdgenJob::spherical() const {
+    return spherical_;
+}
 
 }  // namespace api
 }  // namespace mir

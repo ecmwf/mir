@@ -99,6 +99,8 @@ class ProdgenJob : public input::RawMetadata {
     util::BoundingBox bbox_;
     size_t N_;
     std::vector<long> pl_;
+    bool gridded_;
+    bool spherical_;
 
     // -- Methods
 
@@ -111,6 +113,8 @@ class ProdgenJob : public input::RawMetadata {
     virtual const util::BoundingBox &bbox() const;
     virtual const std::string &gridType() const ;
     virtual void print(std::ostream &) const;
+    virtual bool gridded() const;
+    virtual bool spherical() const;
 
     // -- Class members
     // None

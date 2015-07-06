@@ -62,7 +62,11 @@ bool RawInput::has(const std::string &name) const {
     eckit::Log::info() << ">>>>>>>>>>>>> RawInput::has (" << name << ")" << std::endl;
 
     if (name == "gridded") {
-        return true;
+        return metadata_.gridded();
+    }
+
+     if (name == "spherical") {
+        return metadata_.spherical();
     }
 
     return false;
