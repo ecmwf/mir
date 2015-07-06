@@ -102,6 +102,8 @@ class Representation {
 
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField &field) const;
 
+    virtual void shape(size_t& ni, size_t& nj) const;
+
 
 // -- Overridden methods
     // None

@@ -18,6 +18,7 @@
 #include "mir/output/RawOutput.h"
 #include "eckit/exception/Exceptions.h"
 #include "mir/data/MIRField.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir {
@@ -26,7 +27,9 @@ namespace output {
 
 RawOutput::RawOutput(double *values, size_t count):
     values_(values),
-    count_(count) {
+    count_(count),
+    ni_(0),
+    nj_(0) {
 }
 
 
@@ -46,18 +49,24 @@ void RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &in
 
 
     ASSERT(field.dimensions() == 1);
-    const std::vector<double>& values = field.values(0);
+    const std::vector<double> &values = field.values(0);
 
     eckit::Log::info() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
 
     ASSERT(values.size() <= count_);
     ::memcpy(values_, &values[0], values.size() * sizeof(double));
 
-}
+    field.representation()->shape(ni_, nj_);
 
+}
 
 void RawOutput::print(std::ostream &out) const {
     out << "RawOutput[count=" << count_ << "]";
+}
+
+void RawOutput::shape(size_t &ni, size_t &nj) const {
+    ni = ni_;
+    nj = nj_;
 }
 
 

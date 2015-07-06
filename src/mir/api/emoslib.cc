@@ -748,7 +748,7 @@ extern "C" fortint wvqlint_(fortint *, fortint *, fortint *, fortint *, fortfloa
 
 extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, fortint *kgauss,
                             fortfloat *area, fortfloat *pole, fortfloat *grid, fortfloat *newfld,
-                            fortint *ksize, fortint *nlon, fortint *nlot) {
+                            fortint *ksize, fortint *nlon, fortint *nlat) {
     eckit::Log::info() << "++++++ hirlam" << std::endl;
 
 // C     L12PNT - Chooses between 12-point and 4-point interpolation
@@ -788,6 +788,13 @@ extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
         job->set("rotation", pole[0], pole[1]);
 
         job->execute(input, output);
+
+        size_t ni = 0;
+        size_t nj = 0;
+        output.shape(ni, nj);
+
+        *nlon = nj;
+        *nlat = ni;
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
