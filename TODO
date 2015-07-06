@@ -98,7 +98,6 @@ LSM:
 
 MIR
 
-
 - Field using LSM. Talk to me on how to get to the LSM data (e.g. with config, and what class do we need to implement)
 - Rotated fields (code is there, needs testing)
 - Rotated winds?
@@ -111,7 +110,10 @@ MIR
 - remove currently necessary C-style casts when updating to a const-correct version of grib_api
   (currently unstable, casts are for current stable version 1.13.1 which is incorrect)
 
--
+ATLAS
+
+- Create a Longitude and Latitude types to ensure we don't swap them accidently (low priority)
+
 PERFORMANCES
 .- Consider switching of some ASSERTions, maybe with a resource
 - Cache cropping indices (cropping simply extract value from one vector into another, cache this mapping)
