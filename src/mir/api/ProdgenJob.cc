@@ -27,7 +27,14 @@ ProdgenJob::ProdgenJob():
     gridType_("unknown"),
     N_(0),
     gridded_(false),
-    spherical_(false) {
+    spherical_(false),
+    usewind_(false),
+    uselsm_(false),
+    useprecip_(false),
+    missingvalue_(false),
+    lsm_param_(false),
+    parameter_(0),
+    table_(0) {
 }
 
 
@@ -42,30 +49,37 @@ void ProdgenJob::print(std::ostream &out) const {
 
 void ProdgenJob::usewind(bool on) {
     eckit::Log::info() << "ProdgenJob::usewind " << on << std::endl;
+    usewind_ = on;
 }
 
 void ProdgenJob::uselsm(bool on) {
     eckit::Log::info() << "ProdgenJob::uselsm " << on << std::endl;
+    uselsm_ = on;
 }
 
 void ProdgenJob::useprecip(bool on) {
     eckit::Log::info() << "ProdgenJob::useprecip " << on << std::endl;
+    useprecip_ = on;
 }
 
 void ProdgenJob::missingvalue(bool on) {
     eckit::Log::info() << "ProdgenJob::missingvalue " << on << std::endl;
+    missingvalue_ = on;
 }
 
 void ProdgenJob::lsm_param(bool on) {
     eckit::Log::info() << "ProdgenJob::lsm_param " << on << std::endl;
+    lsm_param_ = on;
 }
 
 void ProdgenJob::parameter(size_t n) {
     eckit::Log::info() << "ProdgenJob::parameter " << n << std::endl;
+    parameter_ = n;
 }
 
 void ProdgenJob::table(size_t n) {
     eckit::Log::info() << "ProdgenJob::table " << n << std::endl;
+    table_ = n;
 }
 
 void ProdgenJob::reduced(size_t n) {

@@ -97,10 +97,21 @@ class ProdgenJob : public input::RawMetadata {
 
     std::string gridType_;
     util::BoundingBox bbox_;
+
     size_t N_;
     std::vector<long> pl_;
+
     bool gridded_;
     bool spherical_;
+
+    bool usewind_;
+    bool uselsm_;
+    bool useprecip_;
+    bool missingvalue_;
+    bool lsm_param_;
+
+    size_t parameter_;
+    size_t table_;
 
     // -- Methods
 
