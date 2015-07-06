@@ -96,6 +96,7 @@ class Regular : public Gaussian {
 
     virtual void validate(const std::vector<double>&) const;
     virtual Iterator *iterator() const;
+    virtual void shape(size_t &ni, size_t &nj) const;
 
 
 // -- Class members
