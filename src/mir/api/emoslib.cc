@@ -24,15 +24,18 @@
 #include "eckit/io/StdFile.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/api/ProdgenJob.h"
 #include "mir/input/GribMemoryInput.h"
 #include "mir/output/GribMemoryOutput.h"
-#include "mir/param/SimpleParametrisation.h"
 
 #include "mir/input/VODInput.h"
 #include "mir/output/UVOutput.h"
 
 #include "mir/input/WindInput.h"
 #include "mir/output/WindOutput.h"
+
+#include "mir/input/RawInput.h"
+#include "mir/output/RawOutput.h"
 
 namespace mir {
 namespace api {
@@ -43,7 +46,7 @@ typedef int fortint;
 typedef double fortfloat;
 
 
-static eckit::ScopedPtr<param::SimpleParametrisation> intin(0);
+static eckit::ScopedPtr<ProdgenJob> intin(0);
 
 static eckit::ScopedPtr<MIRJob> job(0);
 static bool unpackedform = false;
@@ -197,7 +200,7 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
 
 
         if (!intin.get()) {
-            intin.reset(new param::SimpleParametrisation());
+            intin.reset(new ProdgenJob());
         }
 
         if (strncasecmp(name, "usewind", namelen) == 0) {
@@ -280,8 +283,12 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
             job.reset(new MIRJob());
         }
 
-        mir::input::GribMemoryInput input(grib_in, *length_in);
-        mir::output::GribMemoryOutput output(grib_out, *length_out);
+         if (!intin.get()) {
+            intin.reset(new ProdgenJob());
+        }
+
+        mir::input::RawInput input(*intin, values_in, *length_in);
+        mir::output::RawOutput output(values_out, *length_out);
 
         // static const char *capture = getenv("MIR_CAPTURE_CALLS");
         // if (capture) {
@@ -297,13 +304,13 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
 
         job->execute(input, output);
 
-        ASSERT(output.interpolated() + output.saved() == 1);
+        // ASSERT(output.interpolated() + output.saved() == 1);
 
-        if (output.saved() == 1) {
-            *length_out = 0; // Not interpolation performed
-        } else {
-            *length_out = output.length();
-        }
+        // if (output.saved() == 1) {
+        //     *length_out = 0; // Not interpolation performed
+        // } else {
+        //     *length_out = output.length();
+        // }
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {

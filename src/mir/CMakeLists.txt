@@ -72,6 +72,8 @@ list(
      api/emoslib.h
      api/MIRJob.cc
      api/MIRJob.h
+     api/ProdgenJob.cc
+     api/ProdgenJob.h
      caching/FileLoader.cc
      caching/FileLoader.h
      caching/LegendreCache.cc
@@ -91,6 +93,8 @@ list(
      data/MIRField.h
      data/MIRFieldStats.cc
      data/MIRFieldStats.h
+     input/RawInput.cc
+     input/RawInput.h
      input/DummyInput.cc
      input/DummyInput.h
      input/GribFileInput.cc
@@ -165,6 +169,8 @@ list(
      method/PseudoLaplace.h
      method/WeightMatrix.h
      method/WeightMatrix.cc
+     output/RawOutput.cc
+     output/RawOutput.h
      output/DummyOutput.cc
      output/DummyOutput.h
      output/GribFileOutput.cc
