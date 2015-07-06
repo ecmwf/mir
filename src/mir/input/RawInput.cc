@@ -26,9 +26,10 @@ namespace mir {
 namespace input {
 
 
-RawInput::RawInput(param::MIRParametrisation& in, const double* values, size_t count):
-values_(values),
-count_(count) {
+RawInput::RawInput(api::ProdgenJob& metadata, const double* values, size_t count):
+    metadata_(metadata),
+    values_(values),
+    count_(count) {
 }
 
 
@@ -60,10 +61,10 @@ void RawInput::print(std::ostream &out) const {
 }
 
 bool RawInput::has(const std::string& name) const {
-    if(name == "gridded") {
+    if (name == "gridded") {
         return true;
     }
-    if(name == "spectral") {
+    if (name == "spectral") {
         return false;
     }
     return FieldParametrisation::has(name);

@@ -49,7 +49,7 @@ typedef double fortfloat;
 static eckit::ScopedPtr<ProdgenJob> intin(0);
 
 static eckit::ScopedPtr<MIRJob> job(0);
-static bool unpackedform = false;
+static bool unpacked = false;
 
 static void tidy(const char *in, char *out, size_t max) {
     size_t n = 0;
@@ -63,9 +63,16 @@ static void tidy(const char *in, char *out, size_t max) {
 }
 
 
-extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint namelen, fortint valuelen) {
+static bool boolean(const char *in) {
+    if (in[0] == 'n') return false;
+    if (in[0] == 'y') return true;
+    throw eckit::SeriousBug(std::string("Invalid boolean: ") + in);
+}
 
-    eckit::Log::info() << "++++++ intout [" << name << "] len=" <<  namelen <<  std::endl;
+extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint namelen, fortint valuelen) {
+    std::string n(name);
+    n = n.substr(0, namelen);
+    eckit::Log::info() << "++++++ intout [" << n << "]" <<  std::endl;
     char buffer[1024];
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
@@ -166,15 +173,14 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, co
 
         if (strncasecmp(name, "form", namelen) == 0) {
             tidy(value, buffer, sizeof(buffer));
-            if (strncasecmp(buffer, "unpackedform", valuelen) == 0) {
-                unpackedform = true;
+            if (strncasecmp(buffer, "unpacked", valuelen) == 0) {
+                unpacked = true;
                 return 0;
             }
         }
-
-        std::string n(name);
-        n = n.substr(0, namelen);
-        eckit::Log::info() << "INTOUT " << n << ", s=" << value << " (" << valuelen << ") - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
+        std::string v(value);
+        v = v.substr(0, valuelen);
+        eckit::Log::info() << "INTOUT " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
         throw eckit::SeriousBug(std::string("Unexpected name in INTOUT: [") + n + "]");
         // job->set(
 
@@ -189,14 +195,16 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, co
 
 extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint namelen, fortint valuelen) {
 
-    eckit::Log::info() << "++++++ intin " << name << std::endl;
-    char buffer[1024];
-
+    std::string n(name);
+    n = n.substr(0, namelen);
+    eckit::Log::info() << "++++++ intin [" << n << "]" <<  std::endl;    char buffer[1024];
+    std::string v(value);
+    v = v.substr(0, valuelen);
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
 #endif
 
-        eckit::Log::info() << "INTIN " << name << ", s=" << value << " (" << valuelen << ") - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
+        eckit::Log::info() << "INTIN " << n << ", s=[" << v << "] - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
 
 
         if (!intin.get()) {
@@ -204,16 +212,16 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
         }
 
         if (strncasecmp(name, "usewind", namelen) == 0) {
-            intin->set("usewind", long(ints[0]));
+            intin->usewind(boolean(value));
             return 0;
         }
         if (strncasecmp(name, "uselsm", namelen) == 0) {
-            intin->set("uselsm", long(ints[0]));
+            intin->uselsm(boolean(value));
             return 0;
         }
 
         if (strncasecmp(name, "useprecip", namelen) == 0) {
-            intin->set("useprecip", long(ints[0]));
+            intin->useprecip(boolean(value));
             return 0;
         }
 
@@ -224,40 +232,38 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
         }
 
         if (strncasecmp(name, "parameter", namelen) == 0) {
-            intin->set("parameter", long(ints[0]));
+            intin->parameter(ints[0]);
             return 0;
         }
 
         if (strncasecmp(name, "table", namelen) == 0) {
-            intin->set("table", long(ints[0]));
+            intin->table(ints[0]);
             return 0;
         }
 
         if (strncasecmp(name, "reduced", namelen) == 0) {
-            intin->set("reduced", long(ints[0]));
+            intin->reduced(ints[0]);
             return 0;
         }
 
         if (strncasecmp(name, "g_pnts", namelen) == 0) {
-            intin->set("g_pnts", long(ints[0]));
+            intin->g_pnts(ints[0]);
             return 0;
         }
 
         if (strncasecmp(name, "missingvalue", namelen) == 0) {
-            intin->set("missingvalue", reals[0]);
+            intin->missingvalue(boolean(value));
             return 0;
         }
 
         if (strncasecmp(name, "form", namelen) == 0) {
             tidy(value, buffer, sizeof(buffer));
-            if (strncasecmp(buffer, "unpackedform", valuelen) == 0) {
+            if (strncasecmp(buffer, "unpacked", valuelen) == 0) {
                 return 0;
             }
         }
 
-        std::string n(name);
-        n = n.substr(0, namelen);
-        eckit::Log::info() << "INTIN " << n << ", s=" << value << " (" << valuelen << ") - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
+        eckit::Log::info() << "INTIN " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
         throw eckit::SeriousBug(std::string("Unexpected name in INTIN: [") + n + "]");
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
@@ -277,13 +283,13 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
 #endif
-        ASSERT(unpackedform); // Only for PRODGEN
+        ASSERT(unpacked); // Only for PRODGEN
 
         if (!job.get()) {
             job.reset(new MIRJob());
         }
 
-         if (!intin.get()) {
+        if (!intin.get()) {
             intin.reset(new ProdgenJob());
         }
 

@@ -19,20 +19,11 @@
 #include <string>
 
 
-#include "mir/param/SimpleParametrisation.h"
-
-
 namespace mir {
-namespace input {
-class MIRInput;
-}
-namespace output {
-class MIROutput;
-}
 namespace api {
 
 
-class ProdgenJob : public param::SimpleParametrisation {
+class ProdgenJob {
   public:
 
 // -- Exceptions
@@ -54,21 +45,17 @@ class ProdgenJob : public param::SimpleParametrisation {
 
 // -- Methods
 
-    void execute(input::MIRInput&, output::MIROutput&) const;
+    void usewind(bool);
+    void uselsm(bool);
+    void useprecip(bool);
+    void missingvalue(bool);
 
-    ProdgenJob& set(const std::string& name, const char* value);
-    ProdgenJob& set(const std::string& name, const std::string& value);
-    ProdgenJob& set(const std::string& name, bool value);
-    ProdgenJob& set(const std::string& name, long value);
-    ProdgenJob& set(const std::string& name, double value);
-    ProdgenJob& set(const std::string& name, param::DelayedParametrisation* value);
-    ProdgenJob& set(const std::string& name, double v1, double v2);
-    ProdgenJob& set(const std::string& name, double v1, double v2, double v3, double v4);
+    void lsm_param(bool);
+    void parameter(size_t);
+    void table(size_t);
+    void reduced(size_t);
 
-    ProdgenJob& clear(const std::string& name);
-
-    // For debugging only
-    void mirToolCall(std::ostream&) const;
+void g_pnts(size_t);
 
 // -- Overridden methods
     // None
@@ -105,7 +92,6 @@ class ProdgenJob : public param::SimpleParametrisation {
 
 // -- Methods
 
-    bool matches(const param::MIRParametrisation&) const;
 
 // -- Overridden methods
 
