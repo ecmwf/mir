@@ -16,6 +16,8 @@
 #include <istream>
 
 #include "mir/output/RawOutput.h"
+#include "eckit/exception/Exceptions.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -33,10 +35,22 @@ RawOutput::~RawOutput() {
 
 
 void RawOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+    NOTIMP;
 }
 
 
 void RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+    field.validate();
+    // field.hasMissing();
+    // field.missingValue();
+
+
+    ASSERT(field.dimensions() == 1);
+    const std::vector<double>& values = field.values(0);
+
+    ASSERT(values.size() < count_);
+    ::memcpy(values_, &values[0], values.size() * sizeof(double));
+
 }
 
 
