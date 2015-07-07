@@ -119,8 +119,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         const double lon = ocoords(i,LON);
 
         // these will hold indices in the input vector of the start of the upper and lower latitudes
-        size_t top_i = 0;
-        size_t bot_i = 0;
+        long top_i = 0;
+        long bot_i = 0;
 
 
         // we will need the number of points on the top and bottom latitudes later. store them
@@ -156,7 +156,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
         // now get indeces to the left and right points on each of the data sectors
         // on the upper longitude
-        size_t top_i_lft, top_i_rgt;
+        size_t top_i_lft;
+        size_t top_i_rgt;
 
         left_right_lon_indexes(lon, icoords, top_i, top_i + top_n, top_i_lft, top_i_rgt);
         ASSERT(top_i_lft >= top_i);
@@ -170,15 +171,14 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
         // now get indeces to the left and right points on each of the data sectors
         // on the lower longitude
-        size_t bot_i_lft, bot_i_rgt;
+        size_t bot_i_lft;
+        size_t bot_i_rgt;
 
-        size_t bot_i_end = bot_i + bot_n;
-
-        left_right_lon_indexes(lon, icoords, bot_i, bot_i_end , bot_i_lft, bot_i_rgt);
+        left_right_lon_indexes(lon, icoords, bot_i, bot_i + bot_n , bot_i_lft, bot_i_rgt);
         ASSERT(bot_i_lft >= bot_i);
-        ASSERT(bot_i_lft < bot_i_end);
+        ASSERT(bot_i_lft < bot_i + bot_n);
         ASSERT(bot_i_rgt >= bot_i);
-        ASSERT(bot_i_rgt < bot_i_end);
+        ASSERT(bot_i_rgt < bot_i + bot_n);
         ASSERT(bot_i_rgt != bot_i_lft);
         ASSERT(eq(icoords(bot_i_lft,LAT),  icoords(bot_i_rgt,LAT)));
 
