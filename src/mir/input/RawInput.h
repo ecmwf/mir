@@ -99,6 +99,8 @@ class RawInput : public MIRInput, public param::MIRParametrisation {
     virtual data::MIRField *field() const;
 
     virtual bool next();
+    virtual size_t copy(double* values, size_t size) const;
+
 
     // From MIRParametrisation
     virtual bool has(const std::string& name) const;

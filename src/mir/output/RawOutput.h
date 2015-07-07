@@ -51,6 +51,7 @@ class RawOutput : public MIROutput {
 // -- Methods
 
     void shape(size_t& ni, size_t& nj) const;
+    size_t size() const;
 
 // -- Overridden methods
     // None
@@ -91,6 +92,7 @@ class RawOutput : public MIROutput {
     size_t count_;
     size_t ni_;
     size_t nj_;
+    size_t size_;
 
 // -- Methods
     // None

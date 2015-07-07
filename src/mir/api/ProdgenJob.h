@@ -57,6 +57,7 @@ class ProdgenJob : public input::RawMetadata {
     void parameter(size_t);
     void table(size_t);
     void reduced(size_t);
+    void truncation(size_t);
 
     void auto_pl();
     void g_pnts(int*);
@@ -102,8 +103,10 @@ class ProdgenJob : public input::RawMetadata {
     size_t N_;
     std::vector<long> pl_;
 
+    size_t truncation_;
+
     bool gridded_;
-    bool spherical_;
+    bool spectral_;
 
     bool usewind_;
     bool uselsm_;
@@ -121,12 +124,15 @@ class ProdgenJob : public input::RawMetadata {
 
 
     virtual const std::vector<long>& pl() const ;
-    virtual size_t N() const ;
+
+    virtual size_t N() const;
+    virtual size_t truncation() const;
+
     virtual const util::BoundingBox &bbox() const;
     virtual const std::string &gridType() const ;
     virtual void print(std::ostream &) const;
     virtual bool gridded() const;
-    virtual bool spherical() const;
+    virtual bool spectral() const;
 
     // -- Class members
     // None

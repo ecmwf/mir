@@ -52,12 +52,15 @@ class RawMetadata {
     // ============
 
     virtual const std::vector<long>& pl() const = 0;
+
     virtual size_t N() const = 0;
+    virtual size_t truncation() const = 0;
+
     virtual const util::BoundingBox &bbox() const = 0;
     virtual const std::string &gridType() const = 0;
 
     virtual bool gridded() const = 0;
-    virtual bool spherical() const = 0;
+    virtual bool spectral() const = 0;
 
 
     // -- Overridden methods

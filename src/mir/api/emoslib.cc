@@ -255,6 +255,11 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
             return 0;
         }
 
+        if (strncasecmp(name, "truncation", namelen) == 0) {
+            intin->truncation(ints[0]);
+            return 0;
+        }
+
         if (strncasecmp(name, "g_pnts", namelen) == 0) {
             intin->g_pnts(ints);
             return 0;
@@ -289,6 +294,11 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
 
     eckit::Log::info() << "++++++ intf in="  << *length_in << ", out=" << *length_out << std::endl;
 
+    if(*length_in == 0) {
+        // Prodgen seems to be doing that!
+        return 0;
+    }
+
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
 #endif
@@ -306,6 +316,10 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
         mir::output::RawOutput output(values_out, *length_out);
 
         job->execute(input, output);
+
+        *length_out = output.size();
+
+        unpacked = false;
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
@@ -751,31 +765,28 @@ extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
                             fortint *ksize, fortint *nlon, fortint *nlat) {
     eckit::Log::info() << "++++++ hirlam" << std::endl;
 
-// C     L12PNT - Chooses between 12-point and 4-point interpolation
-// C              = .TRUE. for 12-point horizontal
-// C              = .FALSE. for 4-point
-// C     OLDFLD  - The array of values from the gaussian field
-// C     KOUNT   - Number of values in OLDFLD
-// C     KGAUSS  - Gaussian number for the gaussian field
-// C     AREA    - Limits of output area (N/W/S/E)
-// C     POLE    - Pole of rotation (lat/long)
-// C     GRID    - Output lat/long grid increments (we/ns)
-// C     KSIZE   - The size of the output array to fill with the regular
-// C               lat/long field
+    // C     L12PNT - Chooses between 12-point and 4-point interpolation
+    // C              = .TRUE. for 12-point horizontal
+    // C              = .FALSE. for 4-point
+    // C     OLDFLD  - The array of values from the gaussian field
+    // C     KOUNT   - Number of values in OLDFLD
+    // C     KGAUSS  - Gaussian number for the gaussian field
+    // C     AREA    - Limits of output area (N/W/S/E)
+    // C     POLE    - Pole of rotation (lat/long)
+    // C     GRID    - Output lat/long grid increments (we/ns)
+    // C     KSIZE   - The size of the output array to fill with the regular
+    // C               lat/long field
 
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
 #endif
-        ASSERT(unpacked); // Only for PRODGEN
+        // ASSERT(unpacked); // Only for PRODGEN
 
-        if (!job.get()) {
-            job.reset(new MIRJob());
-        }
+        // HIRLAM routines do not respect INTIN/INTOUT
 
-        if (!intin.get()) {
-            intin.reset(new ProdgenJob());
-        }
+        eckit::ScopedPtr<ProdgenJob> intin(new ProdgenJob());
+        eckit::ScopedPtr<MIRJob> job(new MIRJob());
 
         mir::input::RawInput input(*intin, oldfld, *kount);
         mir::output::RawOutput output(newfld, *ksize);
@@ -807,9 +818,46 @@ extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
 
 extern "C" fortint hirlsm_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, fortint *kgauss,
                             fortfloat *area, fortfloat *pole, fortfloat *grid, fortfloat *newfld,
-                            fortint *ksize, fortint *nlon, fortint *nlot) {
+                            fortint *ksize, fortint *nlon, fortint *nlat) {
     eckit::Log::info() << "++++++ hirlsm" << std::endl;
-    NOTIMP;
+
+#ifdef EMOSLIB_CATCH_EXCECPTIONS
+    try {
+#endif
+        // ASSERT(unpacked); // Only for PRODGEN
+
+        // HIRLAM routines do not respect INTIN/INTOUT
+
+        eckit::ScopedPtr<ProdgenJob> intin(new ProdgenJob());
+        eckit::ScopedPtr<MIRJob> job(new MIRJob());
+
+        mir::input::RawInput input(*intin, oldfld, *kount);
+        mir::output::RawOutput output(newfld, *ksize);
+
+        intin->reduced(*kgauss);
+        intin->auto_pl();
+
+        job->set("area", area[0], area[1], area[2], area[3]);
+        job->set("grid", grid[0], grid[1]);
+        job->set("rotation", pole[0], pole[1]);
+        job->set("interpolation", "nn");
+
+        job->execute(input, output);
+
+        size_t ni = 0;
+        size_t nj = 0;
+        output.shape(ni, nj);
+
+        *nlon = nj;
+        *nlat = ni;
+
+#ifdef EMOSLIB_CATCH_EXCECPTIONS
+    } catch (std::exception &e) {
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        return -2;
+    }
+#endif
+    return 0;
 }
 
 extern "C" fortint hirlamw_(fortint *l12pnt, fortfloat *oldfldu, fortfloat *oldfldv, fortint *kount, fortint *kgauss,

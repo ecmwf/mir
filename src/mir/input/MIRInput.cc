@@ -33,7 +33,7 @@ MIRInput::~MIRInput() {
 
 
 grib_handle *MIRInput::gribHandle() const {
-    static grib_handle* handle = 0;
+    static grib_handle *handle = 0;
     if (!handle) {
         handle = grib_handle_new_from_samples(0, "GRIB1");
         ASSERT(handle);
@@ -48,6 +48,13 @@ bool MIRInput::next() {
     os << "MIRInput::next() not implemented for " << self << eckit::StrStream::ends;
     throw eckit::SeriousBug(std::string(os));
 }
+
+size_t MIRInput::copy(double *values, size_t size) const {
+    eckit::StrStream os;
+    os << "MIRInput::copy() not implemented for " << *this << eckit::StrStream::ends;
+    throw eckit::SeriousBug(std::string(os));
+}
+
 
 }  // namespace input
 }  // namespace mir

@@ -19,6 +19,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
+#include "mir/input/RawInput.h"
 
 
 namespace mir {
@@ -29,7 +30,8 @@ RawOutput::RawOutput(double *values, size_t count):
     values_(values),
     count_(count),
     ni_(0),
-    nj_(0) {
+    nj_(0),
+    size_(9) {
 }
 
 
@@ -38,7 +40,10 @@ RawOutput::~RawOutput() {
 
 
 void RawOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
-    NOTIMP;
+    size_ = input.copy(values_, count_);
+    // FIXME:
+    // ni_ = size_;
+    // nj_ = 1;
 }
 
 
@@ -53,10 +58,12 @@ void RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &in
 
     eckit::Log::info() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
 
-    ASSERT(values.size() <= count_);
-    ::memcpy(values_, &values[0], values.size() * sizeof(double));
+    size_ = values.size();
+    ASSERT(size_ <= count_);
+    ::memcpy(values_, &values[0], size_ * sizeof(double));
 
     field.representation()->shape(ni_, nj_);
+    ASSERT(size_ == ni_ * nj_);
 
 }
 
@@ -67,6 +74,10 @@ void RawOutput::print(std::ostream &out) const {
 void RawOutput::shape(size_t &ni, size_t &nj) const {
     ni = ni_;
     nj = nj_;
+}
+
+size_t RawOutput::size() const {
+    return size_;
 }
 
 

@@ -30,8 +30,9 @@ namespace api {
 ProdgenJob::ProdgenJob():
     gridType_("unknown"),
     N_(0),
+    truncation_(0),
     gridded_(false),
-    spherical_(false),
+    spectral_(false),
     usewind_(false),
     uselsm_(false),
     useprecip_(false),
@@ -88,10 +89,18 @@ void ProdgenJob::table(size_t n) {
 
 void ProdgenJob::reduced(size_t n) {
     eckit::Log::info() << "ProdgenJob::reduced " << n << std::endl;
-    ASSERT(!spherical_);
+    ASSERT(!spectral_);
     gridType_ = "reduced_gg";
     N_ = n;
     gridded_ = true;
+}
+
+void ProdgenJob::truncation(size_t n) {
+    eckit::Log::info() << "ProdgenJob::reduced " << n << std::endl;
+    ASSERT(!gridded_);
+    gridType_ = "sh";
+    truncation_ = n;
+    spectral_ = true;
 }
 
 void ProdgenJob::g_pnts(int *pl) {
@@ -109,8 +118,12 @@ const std::vector<long> &ProdgenJob::pl() const {
     return pl_;
 }
 
-size_t  ProdgenJob::N() const {
+size_t ProdgenJob::N() const {
     return N_;
+}
+
+size_t ProdgenJob::truncation() const {
+    return truncation_;
 }
 
 const util::BoundingBox &ProdgenJob::bbox() const {
@@ -125,8 +138,8 @@ bool ProdgenJob::gridded() const {
     return gridded_;
 }
 
-bool ProdgenJob::spherical() const {
-    return spherical_;
+bool ProdgenJob::spectral() const {
+    return spectral_;
 }
 
 void ProdgenJob::auto_pl() {

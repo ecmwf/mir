@@ -58,6 +58,12 @@ void RawInput::print(std::ostream &out) const {
     out << "RawInput[count=" << count_ << "]";
 }
 
+size_t RawInput::copy(double *values, size_t size) const {
+    ASSERT(count_ <= size);
+    ::memcpy(values, values_, sizeof(double) * count_);
+    return count_;
+}
+
 bool RawInput::has(const std::string &name) const {
     eckit::Log::info() << ">>>>>>>>>>>>> RawInput::has (" << name << ")" << std::endl;
 
@@ -65,8 +71,8 @@ bool RawInput::has(const std::string &name) const {
         return metadata_.gridded();
     }
 
-     if (name == "spherical") {
-        return metadata_.spherical();
+    if (name == "spectral") {
+        return metadata_.spectral();
     }
 
     return false;
@@ -93,6 +99,11 @@ bool RawInput::get(const std::string &name, long &value) const {
 
     if (name == "N") {
         value = metadata_.N();
+        return true;
+    }
+
+    if (name == "truncation") {
+        value = metadata_.truncation();
         return true;
     }
 
