@@ -42,7 +42,6 @@ struct is_anything_fn : compare_fn<T> {
 
 
 /// Compare values equality
-/// @note functor version
 template< typename T >
 struct is_equal_fn : compare_fn<T> {
     is_equal_fn(const T& ref_) : ref(ref_) {}
@@ -54,7 +53,6 @@ struct is_equal_fn : compare_fn<T> {
 
 
 /// Compare values equality, approximately
-/// @note functor version
 template< typename T >
 struct is_approx_equal_fn : compare_fn<T> {
     is_approx_equal_fn(const T& ref_) : ref(ref_) {}
@@ -66,7 +64,6 @@ struct is_approx_equal_fn : compare_fn<T> {
 
 
 /// Compare values inequality, "is greater or equal to"
-/// @note functor version
 template< typename T >
 struct is_greater_equal_fn : compare_fn<T> {
     is_greater_equal_fn(const T& ref_) : ref(ref_) {}
@@ -78,7 +75,6 @@ struct is_greater_equal_fn : compare_fn<T> {
 
 
 /// Compare values inequality, "is greater or approximately equal to"
-/// @note functor version
 template< typename T >
 struct is_approx_greater_equal_fn : compare_fn<T> {
     is_approx_greater_equal_fn(const T& ref_) : ref(ref_) {}
@@ -93,8 +89,29 @@ struct is_approx_greater_equal_fn : compare_fn<T> {
 };
 
 
+/// Compare values inequality, "is less than or equal to"
+template< typename T >
+struct is_less_equal_fn : compare_fn<T> {
+    is_less_equal_fn(const T& ref_) : ref(ref_) {}
+    bool operator()(const T& v) const {
+        return (v <= ref);
+    }
+    const T ref;
+};
+
+
+/// Compare values inequality, "is less than or approximately equal to"
+template< typename T >
+struct is_approx_less_equal_fn : compare_fn<T> {
+    is_approx_less_equal_fn(const T& ref_) : ref(ref_) {}
+    bool operator()(const size_t& v) const {
+        return (v <= ref) || eckit::FloatCompare<T>::isApproxEqual(v,ref);
+    }
+    const T ref;
+};
+
+
 /// Compare if in mask (vector indices)
-/// @note functor version (the only one available)
 struct is_masked_fn : compare_fn< size_t > {
     is_masked_fn(const std::vector< bool >& mask_) : mask(mask_) {}
     bool operator()(const size_t& i) const {
@@ -107,7 +124,6 @@ struct is_masked_fn : compare_fn< size_t > {
 
 
 /// Compare if not in mask (vector indices)
-/// @note functor version (the only one available)
 struct is_not_masked_fn : compare_fn< size_t > {
     is_not_masked_fn(const std::vector< bool >& mask_) : mask(mask_) {}
     bool operator()(const size_t& i) const {
