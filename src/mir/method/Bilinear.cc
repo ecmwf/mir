@@ -146,124 +146,122 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
     // interpolate each output point in turn, described by (i,lon,lat)
     for (size_t i=0; i<out.npts(); ++i) {
-        double lon = ocoords(i,LON);
-        double lat = ocoords(i,LAT);
-
-
-        // special case for close-to-the poles: collapse bilinear into linear
-        // interpolation on northern/southern-most parallel
+        const double lat = ocoords(i,LAT);
         if (too_much_north(lat) || too_much_south(lat)) {
 
-            double top_lat;
-            size_t top_i;
-            double top_n;
+            /*
+             * special case for close-to-the poles: collapse bilinear into linear
+             * interpolation on northern/southern-most parallel
+             */
 
-            // set latitude
-            if (too_much_north(lat)) {
-                lat     = max_lat;
-                top_lat = max_lat;
-                top_i   = max_lat_i;
-                top_n   = lons[ max_lat_i ];
+            // set encompassing latitudes ("top/bottom")
+            const double lat   = too_much_north(lat)? max_lat   : min_lat;
+            const size_t lat_i = too_much_north(lat)? max_lat_i : min_lat_i;
+            const size_t n     = lons[ lat_i ];
+
+            // set encompassing longitudes ("left/right")
+            const double lon = ocoords(i,LON);
+            size_t lft_i;
+            size_t rgt_i;
+            left_right_lon_indexes(lon, icoords, lat_i, lat_i+n, lft_i, rgt_i);
+
+            //FIXME verify all the above
+
+#if 0
+            weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_rgt, w_br ) );
+            weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_lft, w_bl ) );
+#endif
+            
+        }
+        else {
+
+            // find encompassing latitudes ("bottom/top")
+            // ------------------------------------------
+            double top_lat = 0.;  // upper/lower latitudes
+            double bot_lat = 0.;
+            long   top_i = 0;     // upper/lower latitude vector index
+            long   bot_i = 0;
+            size_t top_n;         // upper/lower latitude vector number of points on the same latitude
+            size_t bot_n;
+
+            for (size_t n=1; n<lons.size(); ++n) {
+                top_n = lons[n-1];
+                bot_n = (n==lons.size()? 0 : lons[n]);
+
+                top_i  = bot_i;
+                bot_i += lons[n-1];
+                top_lat = icoords(top_i,LAT);
+                bot_lat = icoords(bot_i,LAT);
+                ASSERT(top_lat != bot_lat);
+
+                // check output point is on or below the hi latitude
+                if (bot_lat < lat && (top_lat > lat || eq(top_lat, lat))) {
+                    ASSERT(top_lat > lat || eq(top_lat, lat));
+                    ASSERT(bot_lat < lat);
+                    ASSERT(!eq(bot_lat, lat));
+                    break;
+                }
             }
-            else {
-                lat     = min_lat;
-                top_lat = min_lat;
-                top_i   = min_lat_i;
-                top_n   = lons[ min_lat_i ];
-            }
+
+            top_lat = icoords(top_i,LAT);
+            bot_lat = icoords(bot_i,LAT);
+            ASSERT(top_lat > lat || eq(top_lat, lat));
+            ASSERT(bot_lat < lat);
+            ASSERT(!eq(bot_lat, lat));
+
 
             // find encompassing longitudes ("left/right")
+            // -------------------------------------------
+
+            const double lon = ocoords(i,LON);
+
+            // set left/right point indices, on the upper latitude
             size_t top_i_lft;
             size_t top_i_rgt;
             left_right_lon_indexes(lon, icoords, top_i, top_i + top_n, top_i_lft, top_i_rgt);
+            ASSERT(top_i_rgt < bot_i);
+            ASSERT(top_i_lft < bot_i);
 
-            continue;
+            // set left/right point indices, on the lower latitude
+            size_t bot_i_lft;
+            size_t bot_i_rgt;
+            left_right_lon_indexes(lon, icoords, bot_i, bot_i + bot_n , bot_i_lft, bot_i_rgt);
+            ASSERT(bot_i_rgt < bot_i + bot_n);
+            ASSERT(bot_i_lft < bot_i + bot_n);
+
+            // now we have the indices of the input points around the output point
+
+
+            // calculate interpolation weights
+            // -------------------------------
+
+            double tl_lon  = icoords(top_i_lft,LON);
+            double tr_lon  = icoords(top_i_rgt,LON);
+            double bl_lon  = icoords(bot_i_lft,LON);
+            double br_lon  = icoords(bot_i_rgt,LON);
+
+            // calculate the weights
+            double w1 = (tl_lon - lon) / (tl_lon - tr_lon);
+            double w2 = 1.0 - w1;
+            double w3 = (bl_lon - lon) / (bl_lon - br_lon);
+            double w4 = 1.0 - w3;
+
+            // top and bottom midpoint weights
+            double wt = (lat - bot_lat) / (top_lat - bot_lat);
+            double wb = 1.0 - wt;
+
+            // weights for the tl, tr, bl, br points
+            double w_br =  w3 * wb;
+            double w_bl =  w4 * wb;
+            double w_tr =  w1 * wt;
+            double w_tl =  w2 * wt;
+
+            weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_rgt, w_br ) );
+            weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_lft, w_bl ) );
+            weights_triplets.push_back( WeightMatrix::Triplet( i, top_i_rgt, w_tr ) );
+            weights_triplets.push_back( WeightMatrix::Triplet( i, top_i_lft, w_tl ) );
+
         }
-
-
-        // find encompassing latitudes ("bottom/top")
-        // ------------------------------------------
-        double top_lat = 0.;  // upper/lower latitudes
-        double bot_lat = 0.;
-        long   top_i = 0;     // upper/lower latitude vector index
-        long   bot_i = 0;
-        size_t top_n;         // upper/lower latitude vector number of points on the same latitude
-        size_t bot_n;
-
-        for (size_t n=1; n<lons.size(); ++n) {
-            top_n = lons[n-1];
-            bot_n = (n==lons.size()? 0 : lons[n]);
-
-            top_i  = bot_i;
-            bot_i += lons[n-1];
-            top_lat = icoords(top_i,LAT);
-            bot_lat = icoords(bot_i,LAT);
-            ASSERT(top_lat != bot_lat);
-
-            // check output point is on or below the hi latitude
-            if (bot_lat < lat && (top_lat > lat || eq(top_lat, lat))) {
-                ASSERT(top_lat > lat || eq(top_lat, lat));
-                ASSERT(bot_lat < lat);
-                ASSERT(!eq(bot_lat, lat));
-                break;
-            }
-        }
-
-        top_lat = icoords(top_i,LAT);
-        bot_lat = icoords(bot_i,LAT);
-        ASSERT(top_lat > lat || eq(top_lat, lat));
-        ASSERT(bot_lat < lat);
-        ASSERT(!eq(bot_lat, lat));
-
-
-        // find encompassing longitudes ("left/right")
-        // -------------------------------------------
-
-        // set left/right point indices, on the upper latitude
-        size_t top_i_lft;
-        size_t top_i_rgt;
-        left_right_lon_indexes(lon, icoords, top_i, top_i + top_n, top_i_lft, top_i_rgt);
-        ASSERT(top_i_rgt < bot_i);
-        ASSERT(top_i_lft < bot_i);
-
-        // set left/right point indices, on the lower latitude
-        size_t bot_i_lft;
-        size_t bot_i_rgt;
-        left_right_lon_indexes(lon, icoords, bot_i, bot_i + bot_n , bot_i_lft, bot_i_rgt);
-        ASSERT(bot_i_rgt < bot_i + bot_n);
-        ASSERT(bot_i_lft < bot_i + bot_n);
-
-        // now we have the indices of the input points around the output point
-
-
-        // calculate interpolation weights
-        // -------------------------------
-
-        double tl_lon  = icoords(top_i_lft,LON);
-        double tr_lon  = icoords(top_i_rgt,LON);
-        double bl_lon  = icoords(bot_i_lft,LON);
-        double br_lon  = icoords(bot_i_rgt,LON);
-
-        // calculate the weights
-        double w1 = (tl_lon - lon) / (tl_lon - tr_lon);
-        double w2 = 1.0 - w1;
-        double w3 = (bl_lon - lon) / (bl_lon - br_lon);
-        double w4 = 1.0 - w3;
-
-        // top and bottom midpoint weights
-        double wt = (lat - bot_lat) / (top_lat - bot_lat);
-        double wb = 1.0 - wt;
-
-        // weights for the tl, tr, bl, br points
-        double w_br =  w3 * wb;
-        double w_bl =  w4 * wb;
-        double w_tr =  w1 * wt;
-        double w_tl =  w2 * wt;
-
-        weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_rgt, w_br ) );
-        weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_lft, w_bl ) );
-        weights_triplets.push_back( WeightMatrix::Triplet( i, top_i_rgt, w_tr ) );
-        weights_triplets.push_back( WeightMatrix::Triplet( i, top_i_lft, w_tl ) );
 
     }
 
