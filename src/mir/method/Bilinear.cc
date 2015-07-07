@@ -34,34 +34,43 @@ namespace method {
 namespace {
 
 
-bool eq(const double& a, const double& b) {
-    // @todo use the one in eckit once it stops giving you gip
-    return fabs(a-b) < 10e-10;
-}
+void left_right_lon_indexes(
+        const double& in,
+        const atlas::ArrayView<double,2>& coords,
+        const size_t start,
+        const size_t end,
+        size_t& left,
+        size_t& right) {
 
-
-void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, size_t start, size_t end, size_t& left, size_t& right) {
     using eckit::geometry::LON;
-
-    double right_lon = 360.0;
-    double left_lon = 0.0;
+    using eckit::geometry::LAT;
+    eckit::FloatApproxCompare< double > eq(10e-10);  //FIXME
 
     right = start; // take the first if there's a wrap
-    left = start;
+    left  = start;
 
-    for (unsigned int i = start; i < end; i++) {
-        const double& val = data[i].data()[LON];
+    double right_lon = 360.;
+    double left_lon  =   0.;
+    for (size_t i=start; i<end; ++i) {
 
-        if (val < in || eq(val, in)) {
+        const double& val = coords[i].data()[LON];
+        ASSERT((0.<=val) && (val<=360.));
+
+        if (val<in || eq(val,in)) {
             left_lon = val;
-            left = i;
-        } else {
-            if (val < right_lon) {
-                right_lon = val;
-                right = i;
-            }
+            left     = i;
         }
+        else if (val < right_lon) {
+            right_lon = val;
+            right     = i;
+        }
+
     }
+
+    ASSERT(left  >= start);
+    ASSERT(right >= start);
+    ASSERT(right != left);
+    ASSERT(eq(coords(left,LAT), coords(right,LAT)));
 }
 
 
@@ -76,113 +85,147 @@ Bilinear::Bilinear(const param::MIRParametrisation& param) :
 Bilinear::~Bilinear() {
 }
 
+
 const char* Bilinear::name() const {
     return  "bilinear";
 }
+
 
 void Bilinear::hash(eckit::MD5 &md5) const {
     MethodWeighted::hash(md5);
 }
 
+
 void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
+    eckit::FloatApproxCompare< double > eq(10e-10);  //FIXME
 
     eckit::Log::info() << "Bilinear::assemble " << *this << std::endl;
 
+
+    // Ensure the input is a reduced grid, and get the pl array
+    //@todo handle other formats
+    const atlas::grids::ReducedGrid* igg = dynamic_cast<const atlas::grids::ReducedGrid*>(&in);
+    if (!igg)
+        throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
+    const std::vector<long>& lons = igg->points_per_latitude();
+
+
+    // pre-allocate matrix entries
+    std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
+    weights_triplets.reserve( out.npts() );
+
+
+    // access the input/output fields coordinates
     atlas::ArrayView<double,2> icoords( in .mesh().function_space("nodes").field("lonlat") );
     atlas::ArrayView<double,2> ocoords( out.mesh().function_space("nodes").field("lonlat") );
 
-    // ReducedGrid involves all grids that can be represented with latitudes and npts_per_lat
-    const atlas::grids::ReducedGrid* igg = dynamic_cast<const atlas::grids::ReducedGrid*>(&in);
 
-    /// @todo we only handle these at the moment
-    if (!igg)
-        throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
+    // check input grid range (reduced grids exclude the poles)
+    double min_lat = 0.;
+    double max_lat = 0.;
+    size_t min_lat_i = 0;
+    size_t max_lat_i = 0;
+    for (size_t i=0; i<in.npts(); ++i) {
+        const double lat = icoords(i,LAT);
+        if (lat < min_lat) { min_lat = lat; min_lat_i = i; }
+        if (lat > max_lat) { max_lat = lat; max_lat_i = i; }
+    }
 
-    // get the longitudes from
-    const std::vector<long>& lons = igg->points_per_latitude();
-
-    // determing the number of output points required
-    const size_t out_npts = out.npts();
-
-    std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
-    weights_triplets.reserve( out_npts );
-
-    for (unsigned int i = 0; i < out_npts; i++) {
-        eckit::Log::info() << "i/out_npts " << i << '/' << out_npts << std::endl;
+    ASSERT(min_lat_i != max_lat_i);
+    const util::compare::is_approx_greater_equal_fn <double> too_much_north(max_lat);
+    const util::compare::is_approx_less_equal_fn    <double> too_much_south(min_lat);
 
 
-        // get the lat, lon of the output data point required
-        const double lat = ocoords(i,LAT);
-        const double lon = ocoords(i,LON);
-
-        // these will hold indices in the input vector of the start of the upper and lower latitudes
-        long top_i = 0;
-        long bot_i = 0;
+    // interpolate each output point in turn, described by (i,lon,lat)
+    for (size_t i=0; i<out.npts(); ++i) {
+        double lon = ocoords(i,LON);
+        double lat = ocoords(i,LAT);
 
 
-        // we will need the number of points on the top and bottom latitudes later. store them
-        size_t top_n;
+        // find encompassing latitudes ("bottom/top")
+        // ------------------------------------------
+        double top_lat = 0.;  // upper/lower latitudes
+        double bot_lat = 0.;
+        long   top_i = 0;     // upper/lower latitude vector index
+        long   bot_i = 0;
+        size_t top_n;         // upper/lower latitude vector number of points on the same latitude
         size_t bot_n;
 
-        for (unsigned int n = 0; n < lons.size() - 1; n++) {
-            top_i = bot_i;
-            bot_i += lons[n];
+        if (too_much_north(lat)) {
 
-            top_n = lons[n];
-            bot_n = ((n+1)==lons.size()? 0 : lons[n+1]);
+            // linear interpolation on northern-most parallel segment
+            lat               = max_lat;
+            top_lat = bot_lat = max_lat;
+            top_i   = bot_i   = max_lat_i;
+            top_n   = bot_n   = lons[ max_lat_i ];
 
-            const double top_lat = icoords(top_i,LAT);
-            const double bot_lat = icoords(bot_i,LAT);
-            ASSERT(top_lat != bot_lat);
+        }
+        else if (too_much_south(lat)) {
 
-            // check output point is on or below the hi latitude
-            if (bot_lat < lat && (top_lat > lat || eq(top_lat, lat))) {
-                ASSERT(top_lat > lat || eq(top_lat, lat));
-                ASSERT(bot_lat < lat);
-                ASSERT(!eq(bot_lat, lat));
-                break;
+            // use linear interpolation on southern-most parallel segment
+            lat               = min_lat;
+            top_lat = bot_lat = min_lat;
+            top_i   = bot_i   = min_lat_i;
+            top_n   = bot_n   = lons[ min_lat_i ];
+
+        }
+        else {
+
+            // use bilinear interpolation assuming quasi-regular grid
+            // (this assumes the points are oriented north-south)
+            for (size_t n=1; n<lons.size(); ++n) {
+                top_n = lons[n-1];
+                bot_n = (n==lons.size()? 0 : lons[n]);
+
+                top_i  = bot_i;
+                bot_i += lons[n-1];
+                top_lat = icoords(top_i,LAT);
+                bot_lat = icoords(bot_i,LAT);
+                ASSERT(top_lat != bot_lat);
+
+                // check output point is on or below the hi latitude
+                if (bot_lat < lat && (top_lat > lat || eq(top_lat, lat))) {
+                    ASSERT(top_lat > lat || eq(top_lat, lat));
+                    ASSERT(bot_lat < lat);
+                    ASSERT(!eq(bot_lat, lat));
+                    break;
+                }
             }
+
+            top_lat = icoords(top_i,LAT);
+            bot_lat = icoords(bot_i,LAT);
+            ASSERT(top_lat > lat || eq(top_lat, lat));
+            ASSERT(bot_lat < lat);
+            ASSERT(!eq(bot_lat, lat));
+
         }
 
-        const double top_lat = icoords(top_i,LAT);
-        const double bot_lat = icoords(bot_i,LAT);
-        ASSERT(top_lat > lat || eq(top_lat, lat));
-        ASSERT(bot_lat < lat);
-        ASSERT(!eq(bot_lat, lat));
 
+        // find encompassing longitudes ("left/right")
+        // -------------------------------------------
 
-        // now get indeces to the left and right points on each of the data sectors
-        // on the upper longitude
+        // set left/right point indices, on the upper latitude
         size_t top_i_lft;
         size_t top_i_rgt;
-
         left_right_lon_indexes(lon, icoords, top_i, top_i + top_n, top_i_lft, top_i_rgt);
-        ASSERT(top_i_lft >= top_i);
-        ASSERT(top_i_lft < bot_i);
-        ASSERT(top_i_rgt >= top_i);
         ASSERT(top_i_rgt < bot_i);
-        ASSERT(top_i_rgt != top_i_lft);
+        ASSERT(top_i_lft < bot_i);
 
-        // check the data is the same
-        ASSERT(eq(icoords(top_i_lft,LAT),  icoords(top_i_rgt,LAT)));
-
-        // now get indeces to the left and right points on each of the data sectors
-        // on the lower longitude
+        // set left/right point indices, on the lower latitude
         size_t bot_i_lft;
         size_t bot_i_rgt;
-
         left_right_lon_indexes(lon, icoords, bot_i, bot_i + bot_n , bot_i_lft, bot_i_rgt);
-        ASSERT(bot_i_lft >= bot_i);
-        ASSERT(bot_i_lft < bot_i + bot_n);
-        ASSERT(bot_i_rgt >= bot_i);
         ASSERT(bot_i_rgt < bot_i + bot_n);
-        ASSERT(bot_i_rgt != bot_i_lft);
-        ASSERT(eq(icoords(bot_i_lft,LAT),  icoords(bot_i_rgt,LAT)));
+        ASSERT(bot_i_lft < bot_i + bot_n);
 
-        // we now have the indices of tl, tr, bl, br points around the output point
+        // now we have the indices of the input points around the output point
+
+
+        // calculate interpolation weights
+        // -------------------------------
 
         double tl_lon  = icoords(top_i_lft,LON);
         double tr_lon  = icoords(top_i_rgt,LON);
@@ -200,10 +243,10 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         double wb = 1.0 - wt;
 
         // weights for the tl, tr, bl, br points
-        double w_tl =  w2 * wt;
-        double w_tr =  w1 * wt;
-        double w_bl =  w4 * wb;
         double w_br =  w3 * wb;
+        double w_bl =  w4 * wb;
+        double w_tr =  w1 * wt;
+        double w_tl =  w2 * wt;
 
         weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_rgt, w_br ) );
         weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_lft, w_bl ) );
@@ -212,7 +255,10 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
     }
 
+
+    // set sparse matrix
     W.setFromTriplets(weights_triplets);
+
 }
 
 
