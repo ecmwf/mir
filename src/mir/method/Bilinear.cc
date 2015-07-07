@@ -154,6 +154,10 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         // interpolation on northern/southern-most parallel
         if (too_much_north(lat) || too_much_south(lat)) {
 
+            double top_lat;
+            size_t top_i;
+            double top_n;
+
             // set latitude
             if (too_much_north(lat)) {
                 lat     = max_lat;

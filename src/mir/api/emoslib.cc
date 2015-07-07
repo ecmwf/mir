@@ -39,6 +39,11 @@
 #include "mir/input/RawInput.h"
 #include "mir/output/RawOutput.h"
 
+
+#include "atlas/Grid.h"
+#include "atlas/grids/grids.h"
+#include "atlas/grids/GaussianLatitudes.h"
+
 namespace mir {
 namespace api {
 namespace {
@@ -71,9 +76,10 @@ static bool boolean(const char *in) {
     throw eckit::SeriousBug(std::string("Invalid boolean: ") + in);
 }
 
-extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint namelen, fortint valuelen) {
+extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals,
+                           const char *value, fortint name_len, fortint value_len) {
     std::string n(name);
-    n = n.substr(0, namelen);
+    n = n.substr(0, name_len);
     eckit::Log::info() << "++++++ intout [" << n << "]" <<  std::endl;
     char buffer[1024];
 
@@ -85,7 +91,7 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, co
             job.reset(new MIRJob());
         }
 
-        if (strncasecmp(name, "grid", namelen) == 0) {
+        if (strncasecmp(name, "grid", name_len) == 0) {
             if (reals[0] != 0 ||  reals[1] != 0) {
                 job->set("grid", reals[0], reals[1]);
             } else {
@@ -94,7 +100,7 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, co
             return 0;
         }
 
-        if (strncasecmp(name, "area", namelen) == 0) {
+        if (strncasecmp(name, "area", name_len) == 0) {
             if (reals[0] != 0 ||  reals[1] != 0 || reals[2] != 0 || reals[3] != 0 ) {
                 job->set("area", reals[0], reals[1], reals[2], reals[3]);
             } else {
@@ -108,91 +114,85 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, co
         //     return 0;
         // }
 
-        if (strncasecmp(name, "reduced", namelen) == 0) {
+        if (strncasecmp(name, "reduced", name_len) == 0) {
             job->set("reduced", long(ints[0]));
             return 0;
         }
 
-        if (strncasecmp(name, "truncation", namelen) == 0) {
+        if (strncasecmp(name, "truncation", name_len) == 0) {
             job->set("truncation", long(ints[0]));
             return 0;
         }
 
-        if (strncasecmp(name, "regular", namelen) == 0) {
+        if (strncasecmp(name, "regular", name_len) == 0) {
             job->set("regular", long(ints[0]));
             return 0;
         }
 
         // TODO: Check that gaussian == regular in all cases
-        if (strncasecmp(name, "gaussian", namelen) == 0) {
+        if (strncasecmp(name, "gaussian", name_len) == 0) {
             job->set("regular", long(ints[0]));
             return 0;
         }
 
-        if (strncasecmp(name, "rotation", namelen) == 0) {
+        if (strncasecmp(name, "rotation", name_len) == 0) {
             job->set("rotation", double(reals[0]) , double(reals[1]));
             return 0;
         }
 
-        if (strncasecmp(name, "autoresol", namelen) == 0) {
+        if (strncasecmp(name, "autoresol", name_len) == 0) {
             job->set("autoresol", ints[0] != 0);
             return 0;
         }
 
-        // if(strncasecmp(name, "resol") == 0) {
-        //     job->set("resol", value);
-        //     return 0;
-        // }
-
-        if (strncasecmp(name, "style", namelen) == 0) {
+        if (strncasecmp(name, "style", name_len) == 0) {
             job->set("style", value);
             return 0;
         }
 
-        if (strncasecmp(name, "bitmap", namelen) == 0) {
+        if (strncasecmp(name, "bitmap", name_len) == 0) {
             job->set("bitmap", value);
             return 0;
         }
 
-        if (strncasecmp(name, "accuracy", namelen) == 0) {
+        if (strncasecmp(name, "accuracy", name_len) == 0) {
             job->set("accuracy", long(ints[0]));
             return 0;
         }
 
-        if (strncasecmp(name, "frame", namelen) == 0) {
+        if (strncasecmp(name, "frame", name_len) == 0) {
             job->set("frame", long(ints[0]));
             return 0;
         }
 
-        if (strncasecmp(name, "intermediate_gaussian", namelen) == 0) {
+        if (strncasecmp(name, "intermediate_gaussian", name_len) == 0) {
             job->set("intermediate_gaussian", long(ints[0]));
             return 0;
         }
 
-        if (strncasecmp(name, "interpolation", namelen) == 0) {
+        if (strncasecmp(name, "interpolation", name_len) == 0) {
             tidy(value, buffer, sizeof(buffer));
             job->set("interpolation", buffer);
             return 0;
         }
 
-        if (strncasecmp(name, "packing", namelen) == 0) {
+        if (strncasecmp(name, "packing", name_len) == 0) {
             tidy(value, buffer, sizeof(buffer));
             job->set("packing", buffer);
             return 0;
         }
 
-        if (strncasecmp(name, "form", namelen) == 0) {
+        if (strncasecmp(name, "form", name_len) == 0) {
             tidy(value, buffer, sizeof(buffer));
-            if (strncasecmp(buffer, "unpacked", valuelen) == 0) {
+            if (strncasecmp(buffer, "unpacked", value_len) == 0) {
                 unpacked = true;
                 return 0;
             }
         }
         std::string v(value);
-        v = v.substr(0, valuelen);
+        v = v.substr(0, value_len);
         eckit::Log::info() << "INTOUT " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
         throw eckit::SeriousBug(std::string("Unexpected name in INTOUT: [") + n + "]");
-        // job->set(
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
@@ -203,13 +203,13 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals, co
     return 0;
 }
 
-extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint namelen, fortint valuelen) {
+extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint name_len, fortint value_len) {
 
     std::string n(name);
-    n = n.substr(0, namelen);
+    n = n.substr(0, name_len);
     eckit::Log::info() << "++++++ intin [" << n << "]" <<  std::endl;    char buffer[1024];
     std::string v(value);
-    v = v.substr(0, valuelen);
+    v = v.substr(0, value_len);
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
 #endif
@@ -221,58 +221,58 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
             intin.reset(new ProdgenJob());
         }
 
-        if (strncasecmp(name, "usewind", namelen) == 0) {
+        if (strncasecmp(name, "usewind", name_len) == 0) {
             intin->usewind(boolean(value));
             return 0;
         }
-        if (strncasecmp(name, "uselsm", namelen) == 0) {
+        if (strncasecmp(name, "uselsm", name_len) == 0) {
             intin->uselsm(boolean(value));
             return 0;
         }
 
-        if (strncasecmp(name, "useprecip", namelen) == 0) {
+        if (strncasecmp(name, "useprecip", name_len) == 0) {
             intin->useprecip(boolean(value));
             return 0;
         }
 
-        if (strncasecmp(name, "lsm_param", namelen) == 0) {
+        if (strncasecmp(name, "lsm_param", name_len) == 0) {
             intin->lsm_param(boolean(value));
             return 0;
         }
 
-        if (strncasecmp(name, "parameter", namelen) == 0) {
+        if (strncasecmp(name, "parameter", name_len) == 0) {
             intin->parameter(ints[0]);
             return 0;
         }
 
-        if (strncasecmp(name, "table", namelen) == 0) {
+        if (strncasecmp(name, "table", name_len) == 0) {
             intin->table(ints[0]);
             return 0;
         }
 
-        if (strncasecmp(name, "reduced", namelen) == 0) {
+        if (strncasecmp(name, "reduced", name_len) == 0) {
             intin->reduced(ints[0]);
             return 0;
         }
 
-        if (strncasecmp(name, "truncation", namelen) == 0) {
+        if (strncasecmp(name, "truncation", name_len) == 0) {
             intin->truncation(ints[0]);
             return 0;
         }
 
-        if (strncasecmp(name, "g_pnts", namelen) == 0) {
+        if (strncasecmp(name, "g_pnts", name_len) == 0) {
             intin->g_pnts(ints);
             return 0;
         }
 
-        if (strncasecmp(name, "missingvalue", namelen) == 0) {
+        if (strncasecmp(name, "missingvalue", name_len) == 0) {
             intin->missingvalue(boolean(value));
             return 0;
         }
 
-        if (strncasecmp(name, "form", namelen) == 0) {
+        if (strncasecmp(name, "form", name_len) == 0) {
             tidy(value, buffer, sizeof(buffer));
-            if (strncasecmp(buffer, "unpacked", valuelen) == 0) {
+            if (strncasecmp(buffer, "unpacked", value_len) == 0) {
                 return 0;
             }
         }
@@ -294,7 +294,7 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
 
     eckit::Log::info() << "++++++ intf in="  << *length_in << ", out=" << *length_out << std::endl;
 
-    if(*length_in == 0) {
+    if (*length_in == 0) {
         // Prodgen seems to be doing that!
         return 0;
     }
@@ -749,9 +749,38 @@ extern "C" fortint jgglat_(fortint *KLAT, fortfloat *PGAUSS) {
     return 0;
 }
 
-extern "C" void jnumgg_(fortint *knum, char *htype, fortint *kpts, fortint *kret) {
-    eckit::Log::info() << "++++++ jnumgg" << std::endl;
-    NOTIMP;
+extern "C" void jnumgg_(fortint *knum, char *htype, fortint *kpts, fortint *kret, fortint htype_len) {
+    eckit::Log::info() << "++++++ jnumgg " << htype[0] << " " << *knum << std::endl;
+
+    *kret = 0;
+#ifdef EMOSLIB_CATCH_EXCECPTIONS
+    try {
+#endif
+        eckit::ScopedPtr<atlas::grids::ReducedGrid> grid(0);
+
+        if (htype[0] == 'R') {
+            eckit::StrStream os;
+            os << "rgg.N" << *knum << eckit::StrStream::ends;
+            grid.reset(dynamic_cast<atlas::grids::ReducedGrid *>(atlas::Grid::create(std::string(os))));
+        }
+
+        if (htype[0] == 'F') {
+            grid.reset(dynamic_cast<atlas::grids::ReducedGrid *>(new atlas::grids::GaussianGrid(*knum)));
+        }
+
+        ASSERT(grid.get());
+
+        const std::vector<int> &v = grid->npts_per_lat();
+        for (size_t i = 0; i < v.size(); i++) {
+            kpts[i] = v[i];
+        }
+
+#ifdef EMOSLIB_CATCH_EXCECPTIONS
+    } catch (std::exception &e) {
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        *kret = -2;
+    }
+#endif
 }
 
 extern "C" fortint wvqlint_(fortint *, fortint *, fortint *, fortint *, fortfloat *, fortfloat *, fortfloat *, fortfloat *, fortfloat *, fortint *, fortfloat *, fortfloat *) {

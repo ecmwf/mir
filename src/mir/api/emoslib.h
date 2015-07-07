@@ -46,7 +46,7 @@ extern "C" {
 
     fortint jgglat_(fortint*,fortfloat*);
 
-    void jnumgg_(fortint* knum, char* htype, fortint* kpts, fortint* kret);
+    void jnumgg_(fortint* knum, char* htype, fortint* kpts, fortint* kret, fortint);
 
     fortint wvqlint_(fortint*,fortint*,fortint*,fortint*,fortfloat*,fortfloat*,fortfloat*,fortfloat*,fortfloat*,fortint*,fortfloat*,fortfloat*);
 

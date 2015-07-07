@@ -25,6 +25,10 @@ class DataHandle;
 
 
 namespace mir {
+namespace repres {
+class Representation;
+}
+
 namespace output {
 
 
@@ -90,9 +94,8 @@ class RawOutput : public MIROutput {
 
     double* values_;
     size_t count_;
-    size_t ni_;
-    size_t nj_;
     size_t size_;
+    repres::Representation* representation_;
 
 // -- Methods
     // None

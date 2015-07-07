@@ -29,21 +29,18 @@ namespace output {
 RawOutput::RawOutput(double *values, size_t count):
     values_(values),
     count_(count),
-    ni_(0),
-    nj_(0),
-    size_(9) {
+    size_(0),
+    representation_(0) {
 }
 
 
 RawOutput::~RawOutput() {
+    delete representation_;
 }
 
 
 void RawOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
     size_ = input.copy(values_, count_);
-    // FIXME:
-    // ni_ = size_;
-    // nj_ = 1;
 }
 
 
@@ -62,8 +59,9 @@ void RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &in
     ASSERT(size_ <= count_);
     ::memcpy(values_, &values[0], size_ * sizeof(double));
 
-    field.representation()->shape(ni_, nj_);
-    ASSERT(size_ == ni_ * nj_);
+    // Use for HIRLAM like routines. Remove when emoslib compatibility not needed anymore
+    ASSERT(!representation_);
+    representation_ = field.representation()->clone();
 
 }
 
@@ -71,9 +69,10 @@ void RawOutput::print(std::ostream &out) const {
     out << "RawOutput[count=" << count_ << "]";
 }
 
+// Use for HIRLAM like routines. Remove when emoslib compatibility not needed anymore
 void RawOutput::shape(size_t &ni, size_t &nj) const {
-    ni = ni_;
-    nj = nj_;
+    ASSERT(representation_);
+    representation_->shape(ni, nj);
 }
 
 size_t RawOutput::size() const {
