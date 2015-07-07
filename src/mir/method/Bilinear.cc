@@ -10,7 +10,7 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date July 2015
 
 
 #include "mir/method/Bilinear.h"
@@ -18,13 +18,13 @@
 #include <string>
 #include <algorithm>
 
-#include "atlas/Mesh.h"
-#include "atlas/FunctionSpace.h"
 #include "atlas/Field.h"
-#include "atlas/util/ArrayView.h"
+#include "atlas/FunctionSpace.h"
+#include "atlas/Mesh.h"
 #include "atlas/grids/ReducedGaussianGrid.h"
-
+#include "atlas/util/ArrayView.h"
 #include "eckit/log/Log.h"
+#include "mir/util/Compare.h"
 
 
 namespace mir {
@@ -91,14 +91,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
     eckit::Log::info() << "Bilinear::assemble " << *this << std::endl;
 
-    const atlas::Mesh& i_mesh = in.mesh();
-    const atlas::Mesh& o_mesh = out.mesh();
-
-    atlas::FunctionSpace& inodes = i_mesh.function_space( "nodes" );
-    atlas::FunctionSpace& onodes = o_mesh.function_space( "nodes" );
-
-    atlas::ArrayView<double,2> icoords ( inodes.field( "lonlat" ) );
-    atlas::ArrayView<double,2> ocoords ( onodes.field( "lonlat" ) );
+    atlas::ArrayView<double,2> icoords( in .mesh().function_space("nodes").field("lonlat") );
+    atlas::ArrayView<double,2> ocoords( out.mesh().function_space("nodes").field("lonlat") );
 
     // ReducedGrid involves all grids that can be represented with latitudes and npts_per_lat
     const atlas::grids::ReducedGrid* igg = dynamic_cast<const atlas::grids::ReducedGrid*>(&in);
@@ -108,18 +102,21 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
 
     // get the longitudes from
-    const std::vector<int>& lons = igg->npts_per_lat();
-
-    std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
+    const std::vector<long>& lons = igg->points_per_latitude();
 
     // determing the number of output points required
-    const size_t out_npts = onodes.shape(0);
+    const size_t out_npts = out.npts();
+
+    std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
     weights_triplets.reserve( out_npts );
 
     for (unsigned int i = 0; i < out_npts; i++) {
+        eckit::Log::info() << "i/out_npts " << i << '/' << out_npts << std::endl;
+
+
         // get the lat, lon of the output data point required
-        double lat = ocoords(i,LAT);
-        double lon = ocoords(i,LON);
+        const double lat = ocoords(i,LAT);
+        const double lon = ocoords(i,LON);
 
         // these will hold indices in the input vector of the start of the upper and lower latitudes
         size_t top_i = 0;
@@ -127,21 +124,18 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
 
         // we will need the number of points on the top and bottom latitudes later. store them
-        size_t top_n, bot_n;
+        size_t top_n;
+        size_t bot_n;
 
         for (unsigned int n = 0; n < lons.size() - 1; n++) {
             top_i = bot_i;
             bot_i += lons[n];
 
             top_n = lons[n];
-            if ( (n + 1 ) == lons.size())
-                bot_n = 0;
-            else
-                bot_n = lons[n+1];
+            bot_n = ((n+1)==lons.size()? 0 : lons[n+1]);
 
-            double top_lat = icoords(top_i,LAT);
-
-            double bot_lat = icoords(bot_i,LAT);
+            const double top_lat = icoords(top_i,LAT);
+            const double bot_lat = icoords(bot_i,LAT);
             ASSERT(top_lat != bot_lat);
 
             // check output point is on or below the hi latitude
@@ -149,13 +143,12 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
                 ASSERT(top_lat > lat || eq(top_lat, lat));
                 ASSERT(bot_lat < lat);
                 ASSERT(!eq(bot_lat, lat));
-
                 break;
             }
         }
 
-        double top_lat = icoords(top_i,LAT);
-        double bot_lat = icoords(bot_i,LAT);
+        const double top_lat = icoords(top_i,LAT);
+        const double bot_lat = icoords(bot_i,LAT);
         ASSERT(top_lat > lat || eq(top_lat, lat));
         ASSERT(bot_lat < lat);
         ASSERT(!eq(bot_lat, lat));
@@ -166,7 +159,6 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         size_t top_i_lft, top_i_rgt;
 
         left_right_lon_indexes(lon, icoords, top_i, top_i + top_n, top_i_lft, top_i_rgt);
-        //left_right_lon_indexes(lon, icoords,  hi_data, tl, tr);
         ASSERT(top_i_lft >= top_i);
         ASSERT(top_i_lft < bot_i);
         ASSERT(top_i_rgt >= top_i);
