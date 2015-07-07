@@ -147,11 +147,12 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
     // interpolate each output point in turn, described by (i,lon,lat)
     for (size_t i=0; i<out.npts(); ++i) {
         const double lat = ocoords(i,LAT);
+        const double lon = ocoords(i,LON);
         if (too_much_north(lat) || too_much_south(lat)) {
 
             /*
-             * special case for close-to-the poles: collapse bilinear into linear
-             * interpolation on northern/southern-most parallel
+             * close-to-the poles: collapse bilinear into linear
+             * interpolation to northern/southern-most parallel
              */
 
             // set encompassing latitudes ("top/bottom")
@@ -160,17 +161,18 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             const size_t n     = lons[ lat_i ];
 
             // set encompassing longitudes ("left/right")
-            const double lon = ocoords(i,LON);
             size_t lft_i;
             size_t rgt_i;
             left_right_lon_indexes(lon, icoords, lat_i, lat_i+n, lft_i, rgt_i);
+            const double lft = icoords(lft_i,LON);
+            const double rgt = icoords(rgt_i,LON);
+            ASSERT( !eckit::isApproxEqualUlps<double>(lft,rgt) );
+            ASSERT( (lft<=lon) && (lon<=rgt) );
 
-            //FIXME verify all the above
-
-#if 0
-            weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_rgt, w_br ) );
-            weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_lft, w_bl ) );
-#endif
+            // linear interpolation
+            const double w = (lft-lon) / (lft-rgt);
+            weights_triplets.push_back( WeightMatrix::Triplet( i, rgt_i,  w  ) );
+            weights_triplets.push_back( WeightMatrix::Triplet( i, lft_i, 1-w ) );
             
         }
         else {
@@ -213,8 +215,6 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             // find encompassing longitudes ("left/right")
             // -------------------------------------------
 
-            const double lon = ocoords(i,LON);
-
             // set left/right point indices, on the upper latitude
             size_t top_i_lft;
             size_t top_i_rgt;
@@ -232,8 +232,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             // now we have the indices of the input points around the output point
 
 
-            // calculate interpolation weights
-            // -------------------------------
+            // bilinear interpolation
+            // ----------------------
 
             double tl_lon  = icoords(top_i_lft,LON);
             double tr_lon  = icoords(top_i_rgt,LON);
