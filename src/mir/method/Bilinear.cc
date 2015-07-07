@@ -105,6 +105,11 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
     eckit::Log::info() << "Bilinear::assemble " << *this << std::endl;
 
 
+    // NOTE: use bilinear interpolation assuming quasi-regular grid
+    // (this assumes the points are oriented north-south)
+    // FIXME: proper documentation
+
+
     // Ensure the input is a reduced grid, and get the pl array
     //@todo handle other formats
     const atlas::grids::ReducedGrid* igg = dynamic_cast<const atlas::grids::ReducedGrid*>(&in);
@@ -145,6 +150,33 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         double lat = ocoords(i,LAT);
 
 
+        // special case for close-to-the poles: collapse bilinear into linear
+        // interpolation on northern/southern-most parallel
+        if (too_much_north(lat) || too_much_south(lat)) {
+
+            // set latitude
+            if (too_much_north(lat)) {
+                lat     = max_lat;
+                top_lat = max_lat;
+                top_i   = max_lat_i;
+                top_n   = lons[ max_lat_i ];
+            }
+            else {
+                lat     = min_lat;
+                top_lat = min_lat;
+                top_i   = min_lat_i;
+                top_n   = lons[ min_lat_i ];
+            }
+
+            // find encompassing longitudes ("left/right")
+            size_t top_i_lft;
+            size_t top_i_rgt;
+            left_right_lon_indexes(lon, icoords, top_i, top_i + top_n, top_i_lft, top_i_rgt);
+
+            continue;
+        }
+
+
         // find encompassing latitudes ("bottom/top")
         // ------------------------------------------
         double top_lat = 0.;  // upper/lower latitudes
@@ -154,54 +186,30 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         size_t top_n;         // upper/lower latitude vector number of points on the same latitude
         size_t bot_n;
 
-        if (too_much_north(lat)) {
+        for (size_t n=1; n<lons.size(); ++n) {
+            top_n = lons[n-1];
+            bot_n = (n==lons.size()? 0 : lons[n]);
 
-            // linear interpolation on northern-most parallel segment
-            lat               = max_lat;
-            top_lat = bot_lat = max_lat;
-            top_i   = bot_i   = max_lat_i;
-            top_n   = bot_n   = lons[ max_lat_i ];
-
-        }
-        else if (too_much_south(lat)) {
-
-            // use linear interpolation on southern-most parallel segment
-            lat               = min_lat;
-            top_lat = bot_lat = min_lat;
-            top_i   = bot_i   = min_lat_i;
-            top_n   = bot_n   = lons[ min_lat_i ];
-
-        }
-        else {
-
-            // use bilinear interpolation assuming quasi-regular grid
-            // (this assumes the points are oriented north-south)
-            for (size_t n=1; n<lons.size(); ++n) {
-                top_n = lons[n-1];
-                bot_n = (n==lons.size()? 0 : lons[n]);
-
-                top_i  = bot_i;
-                bot_i += lons[n-1];
-                top_lat = icoords(top_i,LAT);
-                bot_lat = icoords(bot_i,LAT);
-                ASSERT(top_lat != bot_lat);
-
-                // check output point is on or below the hi latitude
-                if (bot_lat < lat && (top_lat > lat || eq(top_lat, lat))) {
-                    ASSERT(top_lat > lat || eq(top_lat, lat));
-                    ASSERT(bot_lat < lat);
-                    ASSERT(!eq(bot_lat, lat));
-                    break;
-                }
-            }
-
+            top_i  = bot_i;
+            bot_i += lons[n-1];
             top_lat = icoords(top_i,LAT);
             bot_lat = icoords(bot_i,LAT);
-            ASSERT(top_lat > lat || eq(top_lat, lat));
-            ASSERT(bot_lat < lat);
-            ASSERT(!eq(bot_lat, lat));
+            ASSERT(top_lat != bot_lat);
 
+            // check output point is on or below the hi latitude
+            if (bot_lat < lat && (top_lat > lat || eq(top_lat, lat))) {
+                ASSERT(top_lat > lat || eq(top_lat, lat));
+                ASSERT(bot_lat < lat);
+                ASSERT(!eq(bot_lat, lat));
+                break;
+            }
         }
+
+        top_lat = icoords(top_i,LAT);
+        bot_lat = icoords(bot_i,LAT);
+        ASSERT(top_lat > lat || eq(top_lat, lat));
+        ASSERT(bot_lat < lat);
+        ASSERT(!eq(bot_lat, lat));
 
 
         // find encompassing longitudes ("left/right")
