@@ -103,6 +103,12 @@ void ProdgenJob::truncation(size_t n) {
     spectral_ = true;
 }
 
+void ProdgenJob::reset() {
+    gridded_ = false;
+    spectral_ = false;
+    gridType_ = "unknown";
+}
+
 void ProdgenJob::g_pnts(int *pl) {
     eckit::Log::info() << "ProdgenJob::g_pnts " << std::endl;
     ASSERT(gridType_ == "reduced_gg");

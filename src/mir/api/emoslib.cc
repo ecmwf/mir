@@ -319,7 +319,8 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
 
         *length_out = output.size();
 
-        unpacked = false;
+        // unpacked = false;
+        intin->reset();
 
 #ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
