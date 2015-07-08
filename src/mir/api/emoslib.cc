@@ -692,7 +692,38 @@ extern "C" void freecf_(fortint *flag) {
 extern "C" void jvod2uv_(fortfloat *vor, fortfloat *div, fortint *ktin, fortfloat *u, fortfloat *v, fortint *ktout) {
     eckit::Log::info() << "++++++ jvod2uv" << std::endl;
     try {
-        NOTIMP;
+
+
+        if (!job.get()) {
+            job.reset(new MIRJob());
+        }
+
+        if (!intin.get()) {
+            intin.reset(new ProdgenJob());
+        }
+
+        mir::input::RawInput vort_input(*intin, vor, *ktin);
+        mir::input::RawInput div_input(*intin, div, *ktin);
+
+        mir::output::RawOutput u_output(u, *ktout);
+        mir::output::RawOutput v_output(v, *ktout);
+
+        mir::input::VODInput input(vort_input, div_input);
+        mir::output::UVOutput output(u_output, v_output);
+
+        job->set("vod2uv", true);
+
+        job->execute(input, output);
+
+        job->clear("vod2uv");
+
+
+        // If packing=so, u and v will have different sizes
+        // ASSERT(u_output.length() == v_output.length());
+        *ktout = std::max(u_output.size(), v_output.size());
+
+
+
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         throw;
