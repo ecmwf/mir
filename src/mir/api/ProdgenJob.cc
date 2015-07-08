@@ -96,7 +96,7 @@ void ProdgenJob::reduced(size_t n) {
 }
 
 void ProdgenJob::truncation(size_t n) {
-    eckit::Log::info() << "ProdgenJob::reduced " << n << std::endl;
+    eckit::Log::info() << "ProdgenJob::truncation " << n << std::endl;
     ASSERT(!gridded_);
     gridType_ = "sh";
     truncation_ = n;

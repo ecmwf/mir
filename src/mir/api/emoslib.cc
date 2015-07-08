@@ -76,6 +76,14 @@ static bool boolean(const char *in) {
     throw eckit::SeriousBug(std::string("Invalid boolean: ") + in);
 }
 
+static void clear(MIRJob &job) {
+    job.clear("grid");
+    job.clear("truncation");
+    job.clear("gaussian");
+    job.clear("regular");
+    job.clear("reduced");
+}
+
 extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals,
                            const char *value, fortint name_len, fortint value_len) {
     std::string n(name);
@@ -83,22 +91,12 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals,
     eckit::Log::info() << "++++++ intout [" << n << "]" <<  std::endl;
     char buffer[1024];
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
 
         if (!job.get()) {
             job.reset(new MIRJob());
         }
 
-        if (strncasecmp(name, "grid", name_len) == 0) {
-            if (reals[0] != 0 ||  reals[1] != 0) {
-                job->set("grid", reals[0], reals[1]);
-            } else {
-                job->clear("grid");
-            }
-            return 0;
-        }
 
         if (strncasecmp(name, "area", name_len) == 0) {
             if (reals[0] != 0 ||  reals[1] != 0 || reals[2] != 0 || reals[3] != 0 ) {
@@ -109,22 +107,30 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals,
             return 0;
         }
 
-        // if(strncasecmp(name, "gaussian") == 0) {
-        //      // TODO:
-        //     return 0;
-        // }
+        if (strncasecmp(name, "grid", name_len) == 0) {
+            clear(*job);
+            if (reals[0] != 0 ||  reals[1] != 0) {
+                job->set("grid", reals[0], reals[1]);
+            } else {
+                job->clear("grid");
+            }
+            return 0;
+        }
 
         if (strncasecmp(name, "reduced", name_len) == 0) {
+            clear(*job);
             job->set("reduced", long(ints[0]));
             return 0;
         }
 
         if (strncasecmp(name, "truncation", name_len) == 0) {
+            clear(*job);
             job->set("truncation", long(ints[0]));
             return 0;
         }
 
         if (strncasecmp(name, "regular", name_len) == 0) {
+            clear(*job);
             job->set("regular", long(ints[0]));
             return 0;
         }
@@ -194,12 +200,11 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals,
         eckit::Log::info() << "INTOUT " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
         throw eckit::SeriousBug(std::string("Unexpected name in INTOUT: [") + n + "]");
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
+
     return 0;
 }
 
@@ -210,9 +215,8 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
     eckit::Log::info() << "++++++ intin [" << n << "]" <<  std::endl;    char buffer[1024];
     std::string v(value);
     v = v.substr(0, value_len);
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
+
     try {
-#endif
 
         eckit::Log::info() << "INTIN " << n << ", s=[" << v << "] - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
 
@@ -280,13 +284,13 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
         eckit::Log::info() << "INTIN " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
         throw eckit::SeriousBug(std::string("Unexpected name in INTIN: [") + n + "]");
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
+
     return 0;
+
 }
 
 extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in,
@@ -294,14 +298,8 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
 
     eckit::Log::info() << "++++++ intf in="  << *length_in << ", out=" << *length_out << std::endl;
 
-    if (*length_in == 0) {
-        // Prodgen seems to be doing that!
-        return 0;
-    }
-
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
+
         ASSERT(unpacked); // Only for PRODGEN
 
         if (!job.get()) {
@@ -322,12 +320,10 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
         // unpacked = false;
         intin->reset();
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
     return 0;
 }
 
@@ -335,9 +331,7 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
 
     eckit::Log::info() << "++++++ intf2" << std::endl;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
 
         if (!job.get()) {
             job.reset(new MIRJob());
@@ -368,12 +362,11 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
             *length_out = output.length();
         }
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
+
     return 0;
 }
 
@@ -381,16 +374,13 @@ extern "C" fortint intuvs2_(char *vort_grib_in, char *div_grib_in, fortint *leng
 
     eckit::Log::info() << "++++++ intuvs2" << std::endl;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
         NOTIMP;
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
+
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
     return 0;
 }
 
@@ -398,9 +388,7 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
 
     eckit::Log::info() << "++++++ intuvp2" << std::endl;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
 
         // Second order packing may return different sizes
         ::memset(u_grib_out, 0, *length_out);
@@ -449,27 +437,21 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
         // ASSERT(u_output.length() == v_output.length());
         *length_out = std::max(u_output.length(), v_output.length());
 
-        {
-            eckit::StdFile f("debug.u", "w");
-            fwrite(u_grib_out, 1, *length_out, f);
-        }
-        {
-            eckit::StdFile f("debug.v", "w");
-            fwrite(v_grib_out, 1, *length_out, f);
-        }
-
-        // if (output.saved() == 1) {
-        //     *length_out = 0; // Not interpolation performed
-        // } else {
-        //     *length_out = output.length();
+        // {
+        //     eckit::StdFile f("debug.u", "w");
+        //     fwrite(u_grib_out, 1, *length_out, f);
+        // }
+        // {
+        //     eckit::StdFile f("debug.v", "w");
+        //     fwrite(v_grib_out, 1, *length_out, f);
         // }
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
+
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
+
     return 0;
 }
 
@@ -477,9 +459,7 @@ extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_i
 
     eckit::Log::info() << "++++++ intvect2" << std::endl;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
         if (!job.get()) {
             job.reset(new MIRJob());
         }
@@ -514,12 +494,11 @@ extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_i
 
         job->clear("wind");
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
+
     return 0;
 }
 
@@ -527,16 +506,13 @@ extern "C" fortint intuvs_(char *vort_grib_in, char *div_grib_in, fortint *lengt
 
     eckit::Log::info() << "++++++ intuvs" << std::endl;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
         NOTIMP;
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
+
     return 0;
 }
 
@@ -544,16 +520,12 @@ extern "C" fortint intuvp_(char *vort_grib_in, char *div_grib_in, fortint *lengt
 
     eckit::Log::info() << "++++++ intuvp" << std::endl;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
         NOTIMP;
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
     return 0;
 }
 
@@ -561,16 +533,12 @@ extern "C" fortint intvect_(char *u_grib_in, char *v_grib_in, fortint *length_in
 
     eckit::Log::info() << "++++++ intvect" << std::endl;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
         NOTIMP;
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
     return 0;
 }
 
@@ -578,16 +546,12 @@ extern "C" fortint iscrsz_() {
 
     eckit::Log::info() << "++++++ iscrsz" << std::endl;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
         NOTIMP;
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
     return 0;
 }
 
@@ -597,6 +561,8 @@ extern "C" fortint ibasini_(fortint *force) {
 
     // Init interpolation package
     job.reset(0);
+    intin.reset(0);
+
     return 0;
 }
 
@@ -604,15 +570,12 @@ extern "C" void intlogm_(fortint (*)(char *, fortint)) {
 
     eckit::Log::info() << "++++++ intlogm" << std::endl;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
         NOTIMP;
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        throw;
     }
-#endif
 }
 
 typedef void (*emos_cb_proc)(char *);
@@ -650,9 +613,7 @@ extern "C" fortint areachk_(fortfloat *we, fortfloat *ns, fortfloat *north, fort
 
     eckit::Log::info() << "++++++ areachk" << std::endl;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
 
         if (*we == 0 || *ns == 0) { // Looks like mars call areachk for gaussian grids as well
             return 0;
@@ -706,12 +667,11 @@ extern "C" fortint areachk_(fortfloat *we, fortfloat *ns, fortfloat *north, fort
         *west = w;
         *east = e;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
+
     return 0;
 }
 
@@ -731,14 +691,25 @@ extern "C" void freecf_(fortint *flag) {
 
 extern "C" void jvod2uv_(fortfloat *vor, fortfloat *div, fortint *ktin, fortfloat *u, fortfloat *v, fortint *ktout) {
     eckit::Log::info() << "++++++ jvod2uv" << std::endl;
-    NOTIMP;
+    try {
+        NOTIMP;
+    } catch (std::exception &e) {
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        throw;
+    }
 }
 
 extern "C" void wv2dint_(fortint *knum, fortint *numpts, fortint *ke_w, fortint *kn_s, fortfloat *reson,
                          fortfloat *oldwave, fortfloat *newwave, fortfloat *nort, fortfloat *west,
                          fortint *knspec, fortfloat *pmiss, fortfloat *rns) {
     eckit::Log::info() << "++++++ wv2dint" << std::endl;
-    NOTIMP;
+    try {
+        NOTIMP;
+    } catch (std::exception &e) {
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        throw;
+    }
+
 }
 
 extern "C" fortint jgglat_(fortint *KLAT, fortfloat *PGAUSS) {
@@ -754,9 +725,7 @@ extern "C" void jnumgg_(fortint *knum, char *htype, fortint *kpts, fortint *kret
     eckit::Log::info() << "++++++ jnumgg " << htype[0] << " " << *knum << std::endl;
 
     *kret = 0;
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
         eckit::ScopedPtr<atlas::grids::ReducedGrid> grid(0);
 
         if (htype[0] == 'R') {
@@ -776,18 +745,23 @@ extern "C" void jnumgg_(fortint *knum, char *htype, fortint *kpts, fortint *kret
             kpts[i] = v[i];
         }
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         *kret = -2;
     }
-#endif
+
 }
 
 extern "C" fortint wvqlint_(fortint *, fortint *, fortint *, fortint *, fortfloat *, fortfloat *, fortfloat *, fortfloat *, fortfloat *, fortint *, fortfloat *, fortfloat *) {
 
     eckit::Log::info() << "++++++ wvqlint" << std::endl;
-    NOTIMP;
+    try {
+        NOTIMP;
+    } catch (std::exception &e) {
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        return -2;
+    }
+    return 0;
 }
 
 extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, fortint *kgauss,
@@ -808,10 +782,7 @@ extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
     // C               lat/long field
 
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
-        // ASSERT(unpacked); // Only for PRODGEN
 
         // HIRLAM routines do not respect INTIN/INTOUT
 
@@ -837,12 +808,11 @@ extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
         *nlon = nj;
         *nlat = ni;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
+
     return 0;
 }
 
@@ -851,9 +821,7 @@ extern "C" fortint hirlsm_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
                             fortint *ksize, fortint *nlon, fortint *nlat) {
     eckit::Log::info() << "++++++ hirlsm" << std::endl;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     try {
-#endif
         // ASSERT(unpacked); // Only for PRODGEN
 
         // HIRLAM routines do not respect INTIN/INTOUT
@@ -881,12 +849,10 @@ extern "C" fortint hirlsm_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
         *nlon = nj;
         *nlat = ni;
 
-#ifdef EMOSLIB_CATCH_EXCECPTIONS
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
     }
-#endif
     return 0;
 }
 
@@ -895,9 +861,13 @@ extern "C" fortint hirlamw_(fortint *l12pnt, fortfloat *oldfldu, fortfloat *oldf
                             fortint *ksize, fortint *nlon, fortint *nlot) {
     eckit::Log::info() << "++++++ hirlamw" << std::endl;
 
-
-
-    NOTIMP;
+    try {
+        NOTIMP;
+    } catch (std::exception &e) {
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        return -2;
+    }
+    return 0;
 }
 
 }  // (anonymous namespace)
