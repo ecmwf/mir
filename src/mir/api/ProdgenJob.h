@@ -60,7 +60,7 @@ class ProdgenJob : public input::RawMetadata {
 
     void reduced(size_t);
     void truncation(size_t);
-    void reduced_ll(double north, double west);
+    void reduced_ll(size_t nj, const int pl[]);
 
     void auto_pl();
     void g_pnts(const int[]);
@@ -122,6 +122,9 @@ class ProdgenJob : public input::RawMetadata {
 
     double missing_;
 
+    // For reduced_ll
+    size_t nj_;
+
     // -- Methods
 
 
@@ -138,6 +141,7 @@ class ProdgenJob : public input::RawMetadata {
     virtual void print(std::ostream &) const;
     virtual bool gridded() const;
     virtual bool spectral() const;
+    virtual size_t nj() const;
 
     // -- Class members
     // None

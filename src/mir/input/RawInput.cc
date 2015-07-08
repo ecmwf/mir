@@ -102,6 +102,11 @@ bool RawInput::get(const std::string &name, long &value) const {
         return true;
     }
 
+    if (name == "Nj") {
+        value = metadata_.nj();
+        return true;
+    }
+
     if (name == "truncation") {
         value = metadata_.truncation();
         return true;

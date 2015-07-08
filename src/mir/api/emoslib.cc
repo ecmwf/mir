@@ -858,7 +858,6 @@ extern "C" fortint wvqlint_(const fortint &knum,
     // C     PMISS   - Missing value indicator
     // C     RNS     - Difference in degrees in NS disrection
     eckit::Log::info() << "++++++ wvqlint knum=" << knum
-                       << ", numpts=" << numpts
                        << ", ke_w=" << ke_w
                        << ", kn_s=" << kn_s
                        << ", reson=" << reson
@@ -869,6 +868,12 @@ extern "C" fortint wvqlint_(const fortint &knum,
                        << ", rns=" << rns
                        << std::endl;
     try {
+
+        // Only global for now
+        ASSERT(north == 90);
+        ASSERT(west == 0);
+
+
         ProdgenJob intin;
         MIRJob job;
 
@@ -880,31 +885,15 @@ extern "C" fortint wvqlint_(const fortint &knum,
         mir::input::RawInput input(intin, oldwave, size);
         mir::output::RawOutput output(newwave, ke_w * kn_s);
 
-        // init.reduced_ll();
         job.set("grid", reson, reson);
-        job.set("area", north, west, north - (kn_s - 1) * reson, west + (ke_w - 1) * reson);
+        // job.set("area", north, west, north - (kn_s - 1) * reson, west + (ke_w - 1) * reson);
 
         intin.missingvalue(pmiss);
-        intin.reduced_ll(north, west);
-
-        // intin.reduced(*kgauss);
-        // intin.auto_pl();
-
-        // job.set("area", area[0], area[1], area[2], area[3]);
-        // job.set("grid", grid[0], grid[1]);
-        // job.set("rotation", pole[0], pole[1]);
+        intin.reduced_ll(knum, numpts);
 
         job.execute(input, output);
 
-        // size_t ni = 0;
-        // size_t nj = 0;
-        // output.shape(ni, nj);
 
-        // *nlon = nj;
-        // *nlat = ni;
-
-
-        NOTIMP;
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
@@ -921,12 +910,46 @@ extern "C" void wv2dint_(const fortint &knum,
                          fortfloat newwave[],
                          const fortfloat &north,
                          const fortfloat &west,
-                         const fortint &knspec,
+                         const fortint &knspec, // <== What is that?
                          const fortfloat &pmiss,
                          const fortfloat &rns) {
-    eckit::Log::info() << "++++++ wv2dint" << std::endl;
+
+    eckit::Log::info() << "++++++ wv2dint knum=" << knum
+                       << ", ke_w=" << ke_w
+                       << ", kn_s=" << kn_s
+                       << ", reson=" << reson
+                       << ", north=" << north
+                       << ", west=" << west
+                       << ", knspec=" << knspec
+                       << ", pmiss=" << pmiss
+                       << ", rns=" << rns
+                       << std::endl;
     try {
-        NOTIMP;
+
+        // Only global for now
+        ASSERT(north == 90);
+        ASSERT(west == 0);
+
+
+        ProdgenJob intin;
+        MIRJob job;
+
+        size_t size = 0;
+        for (size_t i = 0; i < knum; i++) {
+            size += numpts[i];
+        }
+
+        mir::input::RawInput input(intin, oldwave, size);
+        mir::output::RawOutput output(newwave, ke_w * kn_s);
+
+        job.set("grid", reson, reson);
+        job.set("interpolation", "nn");
+        // job.set("area", north, west, north - (kn_s - 1) * reson, west + (ke_w - 1) * reson);
+
+        intin.missingvalue(pmiss);
+        intin.reduced_ll(knum, numpts);
+
+        job.execute(input, output);
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         throw;

@@ -62,6 +62,8 @@ class RawMetadata {
     virtual bool gridded() const = 0;
     virtual bool spectral() const = 0;
 
+    virtual size_t nj() const = 0;
+
 
     // -- Overridden methods
     // None
