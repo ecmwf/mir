@@ -66,22 +66,14 @@ file(GLOB_RECURSE grib_tmpl ${GRIB_SAMPLES_PATH}*.tmpl)
 
 list( APPEND skipTmpl
     ".*budg.tmpl"
-    ".*reduced_gg_pl_1280_grib1.tmpl"
-    ".*reduced_gg_pl_1280_grib2.tmpl"
-    ".*reduced_rotated_gg_pl_1280_grib1.tmpl"
-    ".*reduced_rotated_gg_pl_1280_grib2.tmpl"
-    ".*reduced_gg_pl_2000_grib1.tmpl"
-    ".*reduced_gg_pl_2000_grib2.tmpl"
-    ".*reduced_rotated_gg_pl_2000_grib1.tmpl"
-    ".*reduced_rotated_gg_pl_2000_grib2.tmpl"
-    ".*polar_stereographic_sfc_grib1.tmpl"
-    ".*polar_stereographic_sfc_grib2.tmpl"
-    ".*rotated_ll_pl_grib1.tmpl"
-    ".*rotated_ll_pl_grib2.tmpl"
-    ".*rotated_ll_sfc_grib1.tmpl"
-    ".*rotated_ll_sfc_grib2.tmpl"
-    ".*polar_stereographic_pl_grib1.tmpl"
-    ".*polar_stereographic_pl_grib2.tmpl"
+    ".*reduced_gg_pl_1280_grib.*"
+    ".*reduced_rotated_gg_pl_1280_grib.*"
+    ".*reduced_gg_pl_2000_grib.*"
+    ".*reduced_rotated_gg_pl_2000_grib.*"
+    ".*polar_stereographic_sfc_grib.*"
+    ".*rotated_ll_pl_grib.*"
+    ".*rotated_ll_sfc_grib.*"
+    ".*polar_stereographic_pl_grib.*"
 )
 
 ecbuild_list_remove_pattern( "${grib_tmpl}" "${skipTmpl}" testGribTemplates )
