@@ -17,6 +17,7 @@ typedef double fortfloat;
 typedef void (*emos_cb_proc)(char *);
 
 extern "C" {
+    /*
     fortint intout_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint, fortint) ;
     fortint intin_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint, fortint) ;
     fortint intf_(char *, fortint *, fortfloat *, char *, fortint *, fortfloat *) ;
@@ -61,5 +62,5 @@ extern "C" {
     fortint hirlamw_(fortint* l12pnt, fortfloat* oldfldu, fortfloat* oldfldv, fortint* kount, fortint* kgauss,
                             fortfloat* area, fortfloat* pole, fortfloat* grid, fortfloat* newfldu, fortfloat* newfldv,
                             fortint* ksize, fortint* nlon,fortint* nlot);
-
+*/
 }

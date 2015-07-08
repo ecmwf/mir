@@ -39,7 +39,8 @@ ProdgenJob::ProdgenJob():
     missingvalue_(false),
     lsm_param_(false),
     parameter_(0),
-    table_(0) {
+    table_(0),
+    missing_(9999) {
 }
 
 
@@ -70,6 +71,12 @@ void ProdgenJob::useprecip(bool on) {
 void ProdgenJob::missingvalue(bool on) {
     eckit::Log::info() << "ProdgenJob::missingvalue " << on << std::endl;
     missingvalue_ = on;
+}
+
+void ProdgenJob::missingvalue(double missing) {
+    eckit::Log::info() << "ProdgenJob::missingvalue " << missing << std::endl;
+    missingvalue_ = true;
+    missing_ = missing;
 }
 
 void ProdgenJob::lsm_param(bool on) {
@@ -105,7 +112,14 @@ void ProdgenJob::truncation(size_t n) {
     gridded_ = false;
 }
 
-void ProdgenJob::g_pnts(int *pl) {
+void ProdgenJob::reduced_ll(double north, double west) {
+    eckit::Log::info() << "ProdgenJob::reduced_ll"  << std::endl;
+    gridType_ = "reduced_ll";
+    gridded_ = true;
+    spectral_ = false;
+}
+
+void ProdgenJob::g_pnts(const int *pl) {
     eckit::Log::info() << "ProdgenJob::g_pnts " << std::endl;
     ASSERT(gridType_ == "reduced_gg");
 

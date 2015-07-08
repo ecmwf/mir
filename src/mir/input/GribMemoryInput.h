@@ -39,7 +39,7 @@ class GribMemoryInput : public GribInput {
 
     // -- Contructors
 
-    GribMemoryInput(const char* message, size_t length);
+    GribMemoryInput(const void* message, size_t length);
 
     // -- Destructor
 

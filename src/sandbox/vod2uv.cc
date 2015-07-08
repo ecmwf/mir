@@ -47,7 +47,7 @@ class VOD2UVTool : public eckit::Tool {
 
 
 void VOD2UVTool::run() {
-
+#if 0
     int err;
     size_t size_vo, size_d;
     const void *vo_buffer, *d_buffer;
@@ -81,7 +81,7 @@ void VOD2UVTool::run() {
     eckit::StdFile fu("/tmp/uv.grib", "w");
     fwrite(ub, 1, size, fu);
     fwrite(vb, 1, size, fu);
-
+#endif
 }
 
 

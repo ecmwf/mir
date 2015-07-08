@@ -26,8 +26,8 @@ namespace mir {
 namespace input {
 
 
-GribMemoryInput::GribMemoryInput(const char* message, size_t length) {
-    ASSERT(handle(grib_handle_new_from_message(0, const_cast<char*>(message), length)));
+GribMemoryInput::GribMemoryInput(const void* message, size_t length) {
+    ASSERT(handle(grib_handle_new_from_message(0, const_cast<void*>(message), length)));
 }
 
 

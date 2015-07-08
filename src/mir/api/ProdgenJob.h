@@ -57,11 +57,13 @@ class ProdgenJob : public input::RawMetadata {
     void lsm_param(bool);
     void parameter(size_t);
     void table(size_t);
+
     void reduced(size_t);
     void truncation(size_t);
+    void reduced_ll(double north, double west);
 
     void auto_pl();
-    void g_pnts(int*);
+    void g_pnts(const int[]);
 
     // ============
 
@@ -117,6 +119,8 @@ class ProdgenJob : public input::RawMetadata {
 
     size_t parameter_;
     size_t table_;
+
+    double missing_;
 
     // -- Methods
 

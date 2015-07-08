@@ -84,8 +84,12 @@ static void clear(MIRJob &job) {
     job.clear("reduced");
 }
 
-extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals,
-                           const char *value, fortint name_len, fortint value_len) {
+extern "C" fortint intout_(const char *name,
+                           const fortint ints[],
+                           const fortfloat reals[],
+                           const char *value,
+                           const fortint name_len,
+                           const fortint value_len) {
     std::string n(name);
     n = n.substr(0, name_len);
     eckit::Log::info() << "++++++ intout [" << n << "]" <<  std::endl;
@@ -208,7 +212,12 @@ extern "C" fortint intout_(const char *name, fortint *ints, fortfloat *reals,
     return 0;
 }
 
-extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, const char *value, fortint name_len, fortint value_len) {
+extern "C" fortint intin_(const char *name,
+                          const fortint ints[],
+                          const fortfloat reals[],
+                          const char *value,
+                          const fortint name_len,
+                          const fortint value_len) {
 
     std::string n(name);
     n = n.substr(0, name_len);
@@ -297,10 +306,14 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
 
 }
 
-extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in,
-                         char *grib_out, fortint *length_out, fortfloat *values_out) {
+extern "C" fortint intf_(const void *grib_in,
+                         const fortint &length_in,
+                         const fortfloat values_in[],
+                         void *grib_out,
+                         fortint &length_out,
+                         fortfloat values_out[]) {
 
-    eckit::Log::info() << "++++++ intf in="  << *length_in << ", out=" << *length_out << std::endl;
+    eckit::Log::info() << "++++++ intf in="  << length_in << ", out=" << length_out << std::endl;
 
     try {
 
@@ -314,12 +327,12 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
             intin.reset(new ProdgenJob());
         }
 
-        mir::input::RawInput input(*intin, values_in, *length_in);
-        mir::output::RawOutput output(values_out, *length_out);
+        mir::input::RawInput input(*intin, values_in, length_in);
+        mir::output::RawOutput output(values_out, length_out);
 
         job->execute(input, output);
 
-        *length_out = output.size();
+        length_out = output.size();
 
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
@@ -328,7 +341,10 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
     return 0;
 }
 
-extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fortint *length_out) {
+extern "C" fortint intf2(const void *grib_in,
+                         const fortint &length_in,
+                         void *grib_out,
+                         fortint &length_out) {
 
     eckit::Log::info() << "++++++ intf2" << std::endl;
 
@@ -338,8 +354,8 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
             job.reset(new MIRJob());
         }
 
-        mir::input::GribMemoryInput input(grib_in, *length_in);
-        mir::output::GribMemoryOutput output(grib_out, *length_out);
+        mir::input::GribMemoryInput input(grib_in, length_in);
+        mir::output::GribMemoryOutput output(grib_out, length_out);
 
         static const char *capture = getenv("MIR_CAPTURE_CALLS");
         if (capture) {
@@ -358,9 +374,9 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
         ASSERT(output.interpolated() + output.saved() == 1);
 
         if (output.saved() == 1) {
-            *length_out = 0; // Not interpolation performed
+            length_out = 0; // Not interpolation performed
         } else {
-            *length_out = output.length();
+            length_out = output.length();
         }
 
     } catch (std::exception &e) {
@@ -371,7 +387,12 @@ extern "C" fortint intf2(char *grib_in, fortint *length_in, char *grib_out, fort
     return 0;
 }
 
-extern "C" fortint intuvs2_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *u_grib_out, char *v_grib_out, fortint *length_out) {
+extern "C" fortint intuvs2_(char *vort_grib_in,
+                            char *div_grib_in,
+                            const fortint &length_in,
+                            char *u_grib_out,
+                            char *v_grib_out,
+                            const fortint &length_out) {
 
     eckit::Log::info() << "++++++ intuvs2" << std::endl;
 
@@ -385,26 +406,31 @@ extern "C" fortint intuvs2_(char *vort_grib_in, char *div_grib_in, fortint *leng
     return 0;
 }
 
-extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *u_grib_out, char *v_grib_out, fortint *length_out) {
+extern "C" fortint intuvp2_(const void *vort_grib_in,
+                            const void *div_grib_in,
+                            const fortint &length_in,
+                            void *u_grib_out,
+                            void *v_grib_out,
+                            fortint &length_out) {
 
     eckit::Log::info() << "++++++ intuvp2" << std::endl;
 
     try {
 
         // Second order packing may return different sizes
-        ::memset(u_grib_out, 0, *length_out);
-        ::memset(v_grib_out, 0, *length_out);
+        ::memset(u_grib_out, 0, length_out);
+        ::memset(v_grib_out, 0, length_out);
 
         if (!job.get()) {
             job.reset(new MIRJob());
         }
 
-        mir::input::GribMemoryInput vort_input(vort_grib_in, *length_in);
-        mir::input::GribMemoryInput div_input(div_grib_in, *length_in);
+        mir::input::GribMemoryInput vort_input(vort_grib_in, length_in);
+        mir::input::GribMemoryInput div_input(div_grib_in, length_in);
 
 
-        mir::output::GribMemoryOutput u_output(u_grib_out, *length_out);
-        mir::output::GribMemoryOutput v_output(v_grib_out, *length_out);
+        mir::output::GribMemoryOutput u_output(u_grib_out, length_out);
+        mir::output::GribMemoryOutput v_output(v_grib_out, length_out);
 
         mir::input::VODInput input(vort_input, div_input);
         mir::output::UVOutput output(u_output, v_output);
@@ -436,7 +462,7 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
 
         // If packing=so, u and v will have different sizes
         // ASSERT(u_output.length() == v_output.length());
-        *length_out = std::max(u_output.length(), v_output.length());
+        length_out = std::max(u_output.length(), v_output.length());
 
         // {
         //     eckit::StdFile f("debug.u", "w");
@@ -456,7 +482,12 @@ extern "C" fortint intuvp2_(char *vort_grib_in, char *div_grib_in, fortint *leng
     return 0;
 }
 
-extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_in, char *u_grib_out, char *v_grib_out, fortint *length_out) {
+extern "C" fortint intvect2_(const void *u_grib_in,
+                             const void *v_grib_in,
+                             const fortint &length_in,
+                             void *u_grib_out,
+                             void *v_grib_out,
+                             fortint &length_out) {
 
     eckit::Log::info() << "++++++ intvect2" << std::endl;
 
@@ -465,11 +496,11 @@ extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_i
             job.reset(new MIRJob());
         }
 
-        mir::input::GribMemoryInput vort_input(u_grib_in, *length_in);
-        mir::input::GribMemoryInput div_input(v_grib_in, *length_in);
+        mir::input::GribMemoryInput vort_input(u_grib_in, length_in);
+        mir::input::GribMemoryInput div_input(v_grib_in, length_in);
 
-        mir::output::GribMemoryOutput u_output(u_grib_out, *length_out);
-        mir::output::GribMemoryOutput v_output(v_grib_out, *length_out);
+        mir::output::GribMemoryOutput u_output(u_grib_out, length_out);
+        mir::output::GribMemoryOutput v_output(v_grib_out, length_out);
 
         mir::input::WindInput input(vort_input, div_input);
         mir::output::WindOutput output(u_output, v_output);
@@ -503,7 +534,12 @@ extern "C" fortint intvect2_(char *u_grib_in, char *v_grib_in, fortint *length_i
     return 0;
 }
 
-extern "C" fortint intuvs_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *u_grib_out, char *v_grib_out, fortint *length_out) {
+extern "C" fortint intuvs_(const void *vort_grib_in,
+                           const void *div_grib_in,
+                           const fortint &length_in,
+                           void *u_grib_out,
+                           void *v_grib_out,
+                           fortint &length_out) {
 
     eckit::Log::info() << "++++++ intuvs" << std::endl;
 
@@ -517,7 +553,12 @@ extern "C" fortint intuvs_(char *vort_grib_in, char *div_grib_in, fortint *lengt
     return 0;
 }
 
-extern "C" fortint intuvp_(char *vort_grib_in, char *div_grib_in, fortint *length_in, char *u_grib_out, char *v_grib_out, fortint *length_out) {
+extern "C" fortint intuvp_(const void *vort_grib_in,
+                           const void *div_grib_in,
+                           const fortint &length_in,
+                           void *u_grib_out,
+                           void *v_grib_out,
+                           fortint &length_out) {
 
     eckit::Log::info() << "++++++ intuvp" << std::endl;
 
@@ -530,7 +571,12 @@ extern "C" fortint intuvp_(char *vort_grib_in, char *div_grib_in, fortint *lengt
     return 0;
 }
 
-extern "C" fortint intvect_(char *u_grib_in, char *v_grib_in, fortint *length_in, char *u_grib_out, char *v_grib_out, fortint *length_out) {
+extern "C" fortint intvect_(const void *u_grib_in,
+                            const void *v_grib_in,
+                            const fortint &length_in,
+                            void *u_grib_out,
+                            void *v_grib_out,
+                            fortint &length_out) {
 
     eckit::Log::info() << "++++++ intvect" << std::endl;
 
@@ -556,7 +602,7 @@ extern "C" fortint iscrsz_() {
     return 0;
 }
 
-extern "C" fortint ibasini_(fortint *force) {
+extern "C" fortint ibasini_(const fortint &force) {
 
     eckit::Log::info() << "++++++ ibasini" << std::endl;
 
@@ -608,45 +654,49 @@ extern "C" void intlogs(emos_cb_proc proc) {
     }
 }
 
-extern "C" fortint areachk_(fortfloat *we, fortfloat *ns, fortfloat *north, fortfloat *west, fortfloat *south,
-                            fortfloat *east) {
+extern "C" fortint areachk_(const fortfloat &we,
+                            const fortfloat &ns,
+                            fortfloat &north,
+                            fortfloat &west,
+                            fortfloat &south,
+                            fortfloat &east) {
 
 
     eckit::Log::info() << "++++++ areachk" << std::endl;
 
     try {
 
-        if (*we == 0 || *ns == 0) { // Looks like mars call areachk for gaussian grids as well
+        if (we == 0 || ns == 0) { // Looks like mars call areachk for gaussian grids as well
             return 0;
         }
 
-        ASSERT(*we > 0 && *ns > 0); // Only regular LL for now
+        ASSERT(we > 0 && ns > 0); // Only regular LL for now
         // This is not the code in EMOSLIB, just a guess
-        double n = long(*north / *ns) * *ns;
-        double s = long(*south / *ns) * *ns;
-        double w = long(*west / *we) * *we;
-        double e = long(*east / *we) * *we;
+        double n = long(north / ns) * ns;
+        double s = long(south / ns) * ns;
+        double w = long(west / we) * we;
+        double e = long(east / we) * we;
 
-        if (*north != n) {
-            n += *ns;
+        if (north != n) {
+            n += ns;
             if (n > 90) {
                 n = 90;
             }
         }
 
-        if (*south != s) {
-            s += *ns;
+        if (south != s) {
+            s += ns;
             if (s < -90) {
                 s = -90;
             }
         }
 
-        if (*west != w) {
-            w -= *we;
+        if (west != w) {
+            w -= we;
         }
 
-        if (*east != e) {
-            e += *we;
+        if (east != e) {
+            e += we;
         }
 
         while (e > 360) {
@@ -663,10 +713,10 @@ extern "C" fortint areachk_(fortfloat *we, fortfloat *ns, fortfloat *north, fort
             w -= 360;
         }
 
-        *north = n;
-        *south = s;
-        *west = w;
-        *east = e;
+        north = n;
+        south = s;
+        west = w;
+        east = e;
 
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
@@ -676,22 +726,27 @@ extern "C" fortint areachk_(fortfloat *we, fortfloat *ns, fortfloat *north, fort
     return 0;
 }
 
-extern "C" fortint emosnum_(fortint *value) {
+extern "C" fortint emosnum_(fortint &value) {
 
     eckit::Log::info() << "++++++ emosnum" << std::endl;
-    *value = 0;
+    value = 0;
     return 42424242;
 }
 
-extern "C" void freecf_(fortint *flag) {
+extern "C" void freecf_(const fortint &flag) {
     // C     KFLAG - Flag indicating whether flushing of memory is done or not
     // C              = 1 to turn on flushing
     // C              = any other value to turn off flushing (default)
-    eckit::Log::info() << "++++++ freecf flag=" << *flag << std::endl;
+    eckit::Log::info() << "++++++ freecf flag=" << flag << std::endl;
 }
 
-extern "C" void jvod2uv_(fortfloat *vor, fortfloat *div, fortint *ktin, fortfloat *u, fortfloat *v, fortint *ktout) {
-    eckit::Log::info() << "++++++ jvod2uv in=" << *ktin << ", out=" << *ktout << std::endl;
+extern "C" void jvod2uv_(const fortfloat vor[],
+                         const fortfloat div[],
+                         const fortint &ktin,
+                         fortfloat u[],
+                         fortfloat v[],
+                         const fortint &ktout) {
+    eckit::Log::info() << "++++++ jvod2uv in=" << ktin << ", out=" << ktout << std::endl;
     try {
 
         if (!intin.get()) {
@@ -700,12 +755,12 @@ extern "C" void jvod2uv_(fortfloat *vor, fortfloat *div, fortint *ktin, fortfloa
 
         MIRJob job;
 
-        size_t size_in = ((*ktin) + 1) * ((*ktin) + 2) / 2;
-        size_t size_out = ((*ktout) + 1) * ((*ktout) + 2) / 2;
-        //ASSERT(*ktin == *ktout);
+        size_t size_in = ((ktin) + 1) * ((ktin) + 2) / 2;
+        size_t size_out = ((ktout) + 1) * ((ktout) + 2) / 2;
+        //ASSERT(ktin == ktout);
 
-        intin->truncation(*ktin);
-        // job->set("truncation", (long)*ktout);
+        intin->truncation(ktin);
+        // job->set("truncation", (long)ktout);
 
         mir::input::RawInput vort_input(*intin, vor, size_in * 2);
         mir::input::RawInput div_input(*intin, div, size_in * 2);
@@ -717,10 +772,10 @@ extern "C" void jvod2uv_(fortfloat *vor, fortfloat *div, fortint *ktin, fortfloa
         mir::output::UVOutput output(u_output, v_output);
 
         job.set("vod2uv", true);
-        job.set("truncation", long(*ktout));
+        job.set("truncation", long(ktout));
 
         job.execute(input, output);
-        intin->truncation(*ktout);
+        intin->truncation(ktout);
 
 
     } catch (std::exception &e) {
@@ -731,30 +786,35 @@ extern "C" void jvod2uv_(fortfloat *vor, fortfloat *div, fortint *ktin, fortfloa
 
 
 
-extern "C" fortint jgglat_(fortint *KLAT, fortfloat *PGAUSS) {
+extern "C" fortint jgglat_(const fortint &KLAT, fortfloat PGAUSS[]) {
 
-    eckit::Log::info() << "++++++ jgglat " << *KLAT << std::endl;
-    size_t N = *KLAT / 2;
+    eckit::Log::info() << "++++++ jgglat " << KLAT << std::endl;
+    size_t N = KLAT / 2;
     atlas::grids::gaussian_latitudes_npole_equator(N, PGAUSS);
 
     return 0;
 }
 
-extern "C" void jnumgg_(fortint *knum, char *htype, fortint *kpts, fortint *kret, fortint htype_len) {
-    eckit::Log::info() << "++++++ jnumgg " << htype[0] << " " << *knum << std::endl;
+extern "C" void jnumgg_(const fortint &knum,
+                        const char *htype,
+                        fortint kpts[],
+                        fortint &kret,
+                        fortint htype_len) {
 
-    *kret = 0;
+    eckit::Log::info() << "++++++ jnumgg " << htype[0] << " " << knum << std::endl;
+
+    kret = 0;
     try {
         eckit::ScopedPtr<atlas::grids::ReducedGrid> grid(0);
 
         if (htype[0] == 'R') {
             eckit::StrStream os;
-            os << "rgg.N" << *knum << eckit::StrStream::ends;
+            os << "rgg.N" << knum << eckit::StrStream::ends;
             grid.reset(dynamic_cast<atlas::grids::ReducedGrid *>(atlas::Grid::create(std::string(os))));
         }
 
         if (htype[0] == 'F') {
-            grid.reset(dynamic_cast<atlas::grids::ReducedGrid *>(new atlas::grids::GaussianGrid(*knum)));
+            grid.reset(dynamic_cast<atlas::grids::ReducedGrid *>(new atlas::grids::GaussianGrid(knum)));
         }
 
         ASSERT(grid.get());
@@ -766,23 +826,23 @@ extern "C" void jnumgg_(fortint *knum, char *htype, fortint *kpts, fortint *kret
 
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
-        *kret = -2;
+        kret = -2;
     }
 
 }
 
-extern "C" fortint wvqlint_(fortint *knum,
-                            fortint *numpts,
-                            fortint *ke_w,
-                            fortint *kn_s,
-                            fortfloat *reson,
-                            fortfloat *oldwave,
-                            fortfloat *newwave,
-                            fortfloat *north,
-                            fortfloat *west,
-                            fortint *kparam,
-                            fortfloat *pmiss,
-                            fortfloat *rns) {
+extern "C" fortint wvqlint_(const fortint &knum,
+                            const fortint numpts[],
+                            const fortint &ke_w,
+                            const fortint &kn_s,
+                            const fortfloat &reson,
+                            const fortfloat oldwave[],
+                            fortfloat newwave[],
+                            const fortfloat &north,
+                            const fortfloat &west,
+                            const fortint &kparam,
+                            const fortfloat &pmiss,
+                            const fortfloat &rns) {
     //     C     KNUM    - No. of meridians from North to South pole (input field)
     // C     NUMPTS  - Array giving number of points along each latitude
     // C               (empty latitudes have entry 0)
@@ -797,28 +857,35 @@ extern "C" fortint wvqlint_(fortint *knum,
     // C     KPARAM  - Field parameter code
     // C     PMISS   - Missing value indicator
     // C     RNS     - Difference in degrees in NS disrection
-    eckit::Log::info() << "++++++ wvqlint knum=" << *knum
-                        << ", numpts=" << *numpts
-                        << ", ke_w=" << *ke_w
-                        << ", kn_s=" << *kn_s
-                        << ", reson=" << *reson
-                        << ", north=" << *north
-                        << ", west=" << *west
-                        << ", kparam=" << *kparam
-                        << ", pmiss=" << *pmiss
-                        << ", rns=" << *rns
-                        << std::endl;
+    eckit::Log::info() << "++++++ wvqlint knum=" << knum
+                       << ", numpts=" << numpts
+                       << ", ke_w=" << ke_w
+                       << ", kn_s=" << kn_s
+                       << ", reson=" << reson
+                       << ", north=" << north
+                       << ", west=" << west
+                       << ", kparam=" << kparam
+                       << ", pmiss=" << pmiss
+                       << ", rns=" << rns
+                       << std::endl;
     try {
         ProdgenJob intin;
         MIRJob job;
 
-        mir::input::RawInput input(intin, oldwave, *numpts);
-        mir::output::RawOutput output(newwave, (*ke_w) * (*kn_s));
+        size_t size = 0;
+        for (size_t i = 0; i < knum; i++) {
+            size += numpts[i];
+        }
+
+        mir::input::RawInput input(intin, oldwave, size);
+        mir::output::RawOutput output(newwave, ke_w * kn_s);
 
         // init.reduced_ll();
-        job.set("grid", *reson, *reson);
-        job.set("area", *north, *west, (*north) - (*kn_s - 1) * (*reson), (*west) + (*ke_w - 1) * (*reson) );
-        intin.missingvalue(*pmiss);
+        job.set("grid", reson, reson);
+        job.set("area", north, west, north - (kn_s - 1) * reson, west + (ke_w - 1) * reson);
+
+        intin.missingvalue(pmiss);
+        intin.reduced_ll(north, west);
 
         // intin.reduced(*kgauss);
         // intin.auto_pl();
@@ -845,9 +912,18 @@ extern "C" fortint wvqlint_(fortint *knum,
     return 0;
 }
 
-extern "C" void wv2dint_(fortint *knum, fortint *numpts, fortint *ke_w, fortint *kn_s, fortfloat *reson,
-                         fortfloat *oldwave, fortfloat *newwave, fortfloat *nort, fortfloat *west,
-                         fortint *knspec, fortfloat *pmiss, fortfloat *rns) {
+extern "C" void wv2dint_(const fortint &knum,
+                         const fortint numpts[],
+                         const fortint &ke_w,
+                         const fortint &kn_s,
+                         const fortfloat &reson,
+                         const fortfloat oldwave[],
+                         fortfloat newwave[],
+                         const fortfloat &north,
+                         const fortfloat &west,
+                         const fortint &knspec,
+                         const fortfloat &pmiss,
+                         const fortfloat &rns) {
     eckit::Log::info() << "++++++ wv2dint" << std::endl;
     try {
         NOTIMP;
@@ -858,9 +934,18 @@ extern "C" void wv2dint_(fortint *knum, fortint *numpts, fortint *ke_w, fortint 
 
 }
 
-extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, fortint *kgauss,
-                            fortfloat *area, fortfloat *pole, fortfloat *grid, fortfloat *newfld,
-                            fortint *ksize, fortint *nlon, fortint *nlat) {
+extern "C" fortint hirlam_( const fortint &l12pnt,
+                            const fortfloat oldfld[],
+                            const fortint &kount,
+                            const fortint &kgauss,
+                            const fortfloat area[],
+                            const fortfloat pole[],
+                            const fortfloat grid[],
+                            fortfloat newfld[],
+                            const fortint &ksize,
+                            fortint &nlon,
+                            fortint &nlat) {
+
     eckit::Log::info() << "++++++ hirlam" << std::endl;
 
     // C     L12PNT - Chooses between 12-point and 4-point interpolation
@@ -883,10 +968,10 @@ extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
         ProdgenJob intin;
         MIRJob job;
 
-        mir::input::RawInput input(intin, oldfld, *kount);
-        mir::output::RawOutput output(newfld, *ksize);
+        mir::input::RawInput input(intin, oldfld, kount);
+        mir::output::RawOutput output(newfld, ksize);
 
-        intin.reduced(*kgauss);
+        intin.reduced(kgauss);
         intin.auto_pl();
 
         job.set("area", area[0], area[1], area[2], area[3]);
@@ -899,8 +984,8 @@ extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
         size_t nj = 0;
         output.shape(ni, nj);
 
-        *nlon = nj;
-        *nlat = ni;
+        nlon = nj;
+        nlat = ni;
 
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
@@ -910,9 +995,18 @@ extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
     return 0;
 }
 
-extern "C" fortint hirlsm_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, fortint *kgauss,
-                            fortfloat *area, fortfloat *pole, fortfloat *grid, fortfloat *newfld,
-                            fortint *ksize, fortint *nlon, fortint *nlat) {
+extern "C" fortint hirlsm_( const fortint &l12pnt,
+                            const fortfloat oldfld[],
+                            const fortint &kount,
+                            const fortint &kgauss,
+                            const fortfloat area[],
+                            const fortfloat pole[],
+                            const fortfloat grid[],
+                            fortfloat newfld[],
+                            const fortint &ksize,
+                            fortint &nlon,
+                            fortint &nlat) {
+
     eckit::Log::info() << "++++++ hirlsm" << std::endl;
 
     try {
@@ -923,10 +1017,10 @@ extern "C" fortint hirlsm_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
         ProdgenJob intin;
         MIRJob job;
 
-        mir::input::RawInput input(intin, oldfld, *kount);
-        mir::output::RawOutput output(newfld, *ksize);
+        mir::input::RawInput input(intin, oldfld, kount);
+        mir::output::RawOutput output(newfld, ksize);
 
-        intin.reduced(*kgauss);
+        intin.reduced(kgauss);
         intin.auto_pl();
 
         job.set("area", area[0], area[1], area[2], area[3]);
@@ -940,8 +1034,8 @@ extern "C" fortint hirlsm_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
         size_t nj = 0;
         output.shape(ni, nj);
 
-        *nlon = nj;
-        *nlat = ni;
+        nlon = nj;
+        nlat = ni;
 
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
@@ -950,9 +1044,19 @@ extern "C" fortint hirlsm_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
     return 0;
 }
 
-extern "C" fortint hirlamw_(fortint *l12pnt, fortfloat *oldfldu, fortfloat *oldfldv, fortint *kount, fortint *kgauss,
-                            fortfloat *area, fortfloat *pole, fortfloat *grid, fortfloat *newfldu, fortfloat *newfldv,
-                            fortint *ksize, fortint *nlon, fortint *nlot) {
+extern "C" fortint hirlamw_(const fortint &l12pnt,
+                            const fortfloat oldfldu[],
+                            const fortfloat oldfldv[],
+                            const fortint &kount,
+                            const fortint &kgauss,
+                            const fortfloat area[],
+                            const fortfloat pole[],
+                            const fortfloat grid[],
+                            fortfloat newfldu[],
+                            fortfloat newfldv[],
+                            const fortint &ksize,
+                            fortint &nlon,
+                            fortint &nlot) {
     eckit::Log::info() << "++++++ hirlamw" << std::endl;
 
     try {
