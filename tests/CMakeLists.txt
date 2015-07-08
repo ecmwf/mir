@@ -76,6 +76,12 @@ list( APPEND skipTmpl
     ".*reduced_rotated_gg_pl_2000_grib2.tmpl"
     ".*polar_stereographic_sfc_grib1.tmpl"
     ".*polar_stereographic_sfc_grib2.tmpl"
+    ".*rotated_ll_pl_grib1.tmpl"
+    ".*rotated_ll_pl_grib2.tmpl"
+    ".*rotated_ll_sfc_grib1.tmpl"
+    ".*rotated_ll_sfc_grib2.tmpl"
+    ".*polar_stereographic_pl_grib1.tmpl"
+    ".*polar_stereographic_pl_grib2.tmpl"
 )
 
 ecbuild_list_remove_pattern( "${grib_tmpl}" "${skipTmpl}" testGribTemplates )
