@@ -52,6 +52,7 @@ class ProdgenJob : public input::RawMetadata {
     void uselsm(bool);
     void useprecip(bool);
     void missingvalue(bool);
+    void missingvalue(double);
 
     void lsm_param(bool);
     void parameter(size_t);

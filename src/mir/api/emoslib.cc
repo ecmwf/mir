@@ -694,15 +694,11 @@ extern "C" void jvod2uv_(fortfloat *vor, fortfloat *div, fortint *ktin, fortfloa
     eckit::Log::info() << "++++++ jvod2uv in=" << *ktin << ", out=" << *ktout << std::endl;
     try {
 
-        if (!job.get()) {
-            job.reset(new MIRJob());
-        }
-
         if (!intin.get()) {
             intin.reset(new ProdgenJob());
         }
 
-        MIRJob local;
+        MIRJob job;
 
         size_t size_in = ((*ktin) + 1) * ((*ktin) + 2) / 2;
         size_t size_out = ((*ktout) + 1) * ((*ktout) + 2) / 2;
@@ -720,10 +716,10 @@ extern "C" void jvod2uv_(fortfloat *vor, fortfloat *div, fortint *ktin, fortfloa
         mir::input::VODInput input(vort_input, div_input);
         mir::output::UVOutput output(u_output, v_output);
 
-        local.set("vod2uv", true);
-        local.set("truncation", long(*ktout));
+        job.set("vod2uv", true);
+        job.set("truncation", long(*ktout));
 
-        local.execute(input, output);
+        job.execute(input, output);
         intin->truncation(*ktout);
 
 
@@ -775,9 +771,18 @@ extern "C" void jnumgg_(fortint *knum, char *htype, fortint *kpts, fortint *kret
 
 }
 
-extern "C" fortint wvqlint_(fortint *knum, fortint *numpts, fortint *ke_w, fortint *kn_s, fortfloat *reson,
-                            fortfloat *oldwave, fortfloat *newwave, fortfloat *nort, fortfloat *west,
-                            fortint *kparam, fortfloat *pmiss, fortfloat *rns) {
+extern "C" fortint wvqlint_(fortint *knum,
+                            fortint *numpts,
+                            fortint *ke_w,
+                            fortint *kn_s,
+                            fortfloat *reson,
+                            fortfloat *oldwave,
+                            fortfloat *newwave,
+                            fortfloat *north,
+                            fortfloat *west,
+                            fortint *kparam,
+                            fortfloat *pmiss,
+                            fortfloat *rns) {
     //     C     KNUM    - No. of meridians from North to South pole (input field)
     // C     NUMPTS  - Array giving number of points along each latitude
     // C               (empty latitudes have entry 0)
@@ -792,8 +797,46 @@ extern "C" fortint wvqlint_(fortint *knum, fortint *numpts, fortint *ke_w, forti
     // C     KPARAM  - Field parameter code
     // C     PMISS   - Missing value indicator
     // C     RNS     - Difference in degrees in NS disrection
-    eckit::Log::info() << "++++++ wvqlint" << std::endl;
+    eckit::Log::info() << "++++++ wvqlint knum=" << *knum
+                        << ", numpts=" << *numpts
+                        << ", ke_w=" << *ke_w
+                        << ", kn_s=" << *kn_s
+                        << ", reson=" << *reson
+                        << ", north=" << *north
+                        << ", west=" << *west
+                        << ", kparam=" << *kparam
+                        << ", pmiss=" << *pmiss
+                        << ", rns=" << *rns
+                        << std::endl;
     try {
+        ProdgenJob intin;
+        MIRJob job;
+
+        mir::input::RawInput input(intin, oldwave, *numpts);
+        mir::output::RawOutput output(newwave, (*ke_w) * (*kn_s));
+
+        // init.reduced_ll();
+        job.set("grid", *reson, *reson);
+        job.set("area", *north, *west, (*north) - (*kn_s - 1) * (*reson), (*west) + (*ke_w - 1) * (*reson) );
+        intin.missingvalue(*pmiss);
+
+        // intin.reduced(*kgauss);
+        // intin.auto_pl();
+
+        // job.set("area", area[0], area[1], area[2], area[3]);
+        // job.set("grid", grid[0], grid[1]);
+        // job.set("rotation", pole[0], pole[1]);
+
+        job.execute(input, output);
+
+        // size_t ni = 0;
+        // size_t nj = 0;
+        // output.shape(ni, nj);
+
+        // *nlon = nj;
+        // *nlat = ni;
+
+
         NOTIMP;
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
@@ -837,20 +880,20 @@ extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
 
         // HIRLAM routines do not respect INTIN/INTOUT
 
-        eckit::ScopedPtr<ProdgenJob> intin(new ProdgenJob());
-        eckit::ScopedPtr<MIRJob> job(new MIRJob());
+        ProdgenJob intin;
+        MIRJob job;
 
-        mir::input::RawInput input(*intin, oldfld, *kount);
+        mir::input::RawInput input(intin, oldfld, *kount);
         mir::output::RawOutput output(newfld, *ksize);
 
-        intin->reduced(*kgauss);
-        intin->auto_pl();
+        intin.reduced(*kgauss);
+        intin.auto_pl();
 
-        job->set("area", area[0], area[1], area[2], area[3]);
-        job->set("grid", grid[0], grid[1]);
-        job->set("rotation", pole[0], pole[1]);
+        job.set("area", area[0], area[1], area[2], area[3]);
+        job.set("grid", grid[0], grid[1]);
+        job.set("rotation", pole[0], pole[1]);
 
-        job->execute(input, output);
+        job.execute(input, output);
 
         size_t ni = 0;
         size_t nj = 0;
@@ -877,21 +920,21 @@ extern "C" fortint hirlsm_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, 
 
         // HIRLAM routines do not respect INTIN/INTOUT
 
-        eckit::ScopedPtr<ProdgenJob> intin(new ProdgenJob());
-        eckit::ScopedPtr<MIRJob> job(new MIRJob());
+        ProdgenJob intin;
+        MIRJob job;
 
-        mir::input::RawInput input(*intin, oldfld, *kount);
+        mir::input::RawInput input(intin, oldfld, *kount);
         mir::output::RawOutput output(newfld, *ksize);
 
-        intin->reduced(*kgauss);
-        intin->auto_pl();
+        intin.reduced(*kgauss);
+        intin.auto_pl();
 
-        job->set("area", area[0], area[1], area[2], area[3]);
-        job->set("grid", grid[0], grid[1]);
-        job->set("rotation", pole[0], pole[1]);
-        job->set("interpolation", "nn");
+        job.set("area", area[0], area[1], area[2], area[3]);
+        job.set("grid", grid[0], grid[1]);
+        job.set("rotation", pole[0], pole[1]);
+        job.set("interpolation", "nn");
 
-        job->execute(input, output);
+        job.execute(input, output);
 
         size_t ni = 0;
         size_t nj = 0;
