@@ -40,6 +40,7 @@ RawOutput::~RawOutput() {
 
 
 void RawOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+    NOTIMP;
     size_ = input.copy(values_, count_);
 }
 

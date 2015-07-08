@@ -62,8 +62,6 @@ class ProdgenJob : public input::RawMetadata {
     void auto_pl();
     void g_pnts(int*);
 
-    void reset();
-
     // ============
 
 

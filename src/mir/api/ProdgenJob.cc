@@ -89,24 +89,20 @@ void ProdgenJob::table(size_t n) {
 
 void ProdgenJob::reduced(size_t n) {
     eckit::Log::info() << "ProdgenJob::reduced " << n << std::endl;
-    ASSERT(!spectral_);
+    // ASSERT(!spectral_);
     gridType_ = "reduced_gg";
     N_ = n;
     gridded_ = true;
+    spectral_ = false;
 }
 
 void ProdgenJob::truncation(size_t n) {
     eckit::Log::info() << "ProdgenJob::truncation " << n << std::endl;
-    ASSERT(!gridded_);
+    // ASSERT(!gridded_);
     gridType_ = "sh";
     truncation_ = n;
     spectral_ = true;
-}
-
-void ProdgenJob::reset() {
     gridded_ = false;
-    spectral_ = false;
-    gridType_ = "unknown";
 }
 
 void ProdgenJob::g_pnts(int *pl) {
@@ -141,10 +137,12 @@ const std::string &ProdgenJob::gridType() const {
 }
 
 bool ProdgenJob::gridded() const {
+    eckit::Log::info() << "ProdgenJob::gridded " << gridded_ << std::endl;
     return gridded_;
 }
 
 bool ProdgenJob::spectral() const {
+    eckit::Log::info() << "ProdgenJob::spectral " << spectral_ << std::endl;
     return spectral_;
 }
 

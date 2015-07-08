@@ -212,9 +212,13 @@ extern "C" fortint intin_(const char *name, fortint *ints, fortfloat *reals, con
 
     std::string n(name);
     n = n.substr(0, name_len);
-    eckit::Log::info() << "++++++ intin [" << n << "]" <<  std::endl;    char buffer[1024];
+
     std::string v(value);
     v = v.substr(0, value_len);
+
+    eckit::Log::info() << "++++++ intin [" << n << "] v=[" <<  v << "] r=" << reals[0] << " i=" << ints[0] << std::endl;
+
+    char buffer[1024];
 
     try {
 
@@ -316,9 +320,6 @@ extern "C" fortint intf_(char *grib_in, fortint *length_in, fortfloat *values_in
         job->execute(input, output);
 
         *length_out = output.size();
-
-        // unpacked = false;
-        intin->reset();
 
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
@@ -690,9 +691,8 @@ extern "C" void freecf_(fortint *flag) {
 }
 
 extern "C" void jvod2uv_(fortfloat *vor, fortfloat *div, fortint *ktin, fortfloat *u, fortfloat *v, fortint *ktout) {
-    eckit::Log::info() << "++++++ jvod2uv" << std::endl;
+    eckit::Log::info() << "++++++ jvod2uv in=" << *ktin << ", out=" << *ktout << std::endl;
     try {
-
 
         if (!job.get()) {
             job.reset(new MIRJob());
@@ -702,26 +702,29 @@ extern "C" void jvod2uv_(fortfloat *vor, fortfloat *div, fortint *ktin, fortfloa
             intin.reset(new ProdgenJob());
         }
 
-        mir::input::RawInput vort_input(*intin, vor, *ktin);
-        mir::input::RawInput div_input(*intin, div, *ktin);
+        MIRJob local;
 
-        mir::output::RawOutput u_output(u, *ktout);
-        mir::output::RawOutput v_output(v, *ktout);
+        size_t size_in = ((*ktin) + 1) * ((*ktin) + 2) / 2;
+        size_t size_out = ((*ktout) + 1) * ((*ktout) + 2) / 2;
+        //ASSERT(*ktin == *ktout);
+
+        intin->truncation(*ktin);
+        // job->set("truncation", (long)*ktout);
+
+        mir::input::RawInput vort_input(*intin, vor, size_in * 2);
+        mir::input::RawInput div_input(*intin, div, size_in * 2);
+
+        mir::output::RawOutput u_output(u, size_out * 2);
+        mir::output::RawOutput v_output(v, size_out * 2);
 
         mir::input::VODInput input(vort_input, div_input);
         mir::output::UVOutput output(u_output, v_output);
 
-        job->set("vod2uv", true);
+        local.set("vod2uv", true);
+        local.set("truncation", long(*ktout));
 
-        job->execute(input, output);
-
-        job->clear("vod2uv");
-
-
-        // If packing=so, u and v will have different sizes
-        // ASSERT(u_output.length() == v_output.length());
-        *ktout = std::max(u_output.size(), v_output.size());
-
+        local.execute(input, output);
+        intin->truncation(*ktout);
 
 
     } catch (std::exception &e) {
@@ -730,18 +733,7 @@ extern "C" void jvod2uv_(fortfloat *vor, fortfloat *div, fortint *ktin, fortfloa
     }
 }
 
-extern "C" void wv2dint_(fortint *knum, fortint *numpts, fortint *ke_w, fortint *kn_s, fortfloat *reson,
-                         fortfloat *oldwave, fortfloat *newwave, fortfloat *nort, fortfloat *west,
-                         fortint *knspec, fortfloat *pmiss, fortfloat *rns) {
-    eckit::Log::info() << "++++++ wv2dint" << std::endl;
-    try {
-        NOTIMP;
-    } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
-        throw;
-    }
 
-}
 
 extern "C" fortint jgglat_(fortint *KLAT, fortfloat *PGAUSS) {
 
@@ -783,8 +775,23 @@ extern "C" void jnumgg_(fortint *knum, char *htype, fortint *kpts, fortint *kret
 
 }
 
-extern "C" fortint wvqlint_(fortint *, fortint *, fortint *, fortint *, fortfloat *, fortfloat *, fortfloat *, fortfloat *, fortfloat *, fortint *, fortfloat *, fortfloat *) {
-
+extern "C" fortint wvqlint_(fortint *knum, fortint *numpts, fortint *ke_w, fortint *kn_s, fortfloat *reson,
+                            fortfloat *oldwave, fortfloat *newwave, fortfloat *nort, fortfloat *west,
+                            fortint *kparam, fortfloat *pmiss, fortfloat *rns) {
+    //     C     KNUM    - No. of meridians from North to South pole (input field)
+    // C     NUMPTS  - Array giving number of points along each latitude
+    // C               (empty latitudes have entry 0)
+    // C     KE_W    - First dimension of new array
+    // C               = Number of points E-W in new grid
+    // C     KN_S    - Second dimension of new array
+    // C               = Number of points N-S in new grid
+    // C     RESON   - Output grid resolution (degrees)
+    // C     OLDWAVE - Original wave field
+    // C     NORTH   - Input and output grid northernmost latitude (degree)
+    // C     WEST    - Input and output grid westernmost  longitude (degree)
+    // C     KPARAM  - Field parameter code
+    // C     PMISS   - Missing value indicator
+    // C     RNS     - Difference in degrees in NS disrection
     eckit::Log::info() << "++++++ wvqlint" << std::endl;
     try {
         NOTIMP;
@@ -793,6 +800,19 @@ extern "C" fortint wvqlint_(fortint *, fortint *, fortint *, fortint *, fortfloa
         return -2;
     }
     return 0;
+}
+
+extern "C" void wv2dint_(fortint *knum, fortint *numpts, fortint *ke_w, fortint *kn_s, fortfloat *reson,
+                         fortfloat *oldwave, fortfloat *newwave, fortfloat *nort, fortfloat *west,
+                         fortint *knspec, fortfloat *pmiss, fortfloat *rns) {
+    eckit::Log::info() << "++++++ wv2dint" << std::endl;
+    try {
+        NOTIMP;
+    } catch (std::exception &e) {
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        throw;
+    }
+
 }
 
 extern "C" fortint hirlam_( fortint *l12pnt, fortfloat *oldfld, fortint *kount, fortint *kgauss,
