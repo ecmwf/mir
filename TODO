@@ -30,7 +30,8 @@ PHILOSOPHY:
     .- Support of polar stereographic grids (LOW PRIORITY)
     - Consider moving bbox_ to Gridded.h
     - Implement 'global' key for reduced-ll in grib_api (see ReducedLL.cc)
-
+    --- Wave
+    - Is there a special interpolation for 2D spectra?
 --- METHODS (MAKE IT CORRECT)
     - What is the special treatment for winds (emoslib)
         - Rotated
