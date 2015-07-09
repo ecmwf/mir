@@ -15,9 +15,8 @@
 
 #include "mir/method/Bilinear.h"
 
-#include <string>
 #include <algorithm>
-
+#include <string>
 #include "atlas/Field.h"
 #include "atlas/FunctionSpace.h"
 #include "atlas/Mesh.h"
@@ -128,27 +127,28 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
     atlas::ArrayView<double,2> ocoords( out.mesh().function_space("nodes").field("lonlat") );
 
 
-    // check input grid range (reduced grids exclude the poles)
-    double min_lat = 0.;
-    double max_lat = 0.;
-    size_t min_lat_i = 0;
-    size_t max_lat_i = 0;
+    // check input min/max latitudes (reduced grids exclude the poles)
+    double min_lat   = 0.;
+    double max_lat   = 0.;
+    size_t min_lat_i = 0;   // (min value first occurence index)
+    size_t max_lat_i = 0;   // (max...)
     for (size_t i=0; i<in.npts(); ++i) {
         const double lat = icoords(i,LAT);
         if (lat < min_lat) { min_lat = lat; min_lat_i = i; }
         if (lat > max_lat) { max_lat = lat; max_lat_i = i; }
     }
-
+    ASSERT(min_lat   <  max_lat  );
     ASSERT(min_lat_i != max_lat_i);
-    const util::compare::is_approx_greater_equal_fn <double> too_much_north(max_lat);
-    const util::compare::is_approx_less_equal_fn    <double> too_much_south(min_lat);
 
 
-    // interpolate each output point in turn, described by (i,lon,lat)
+    // interpolate each output point in turn
     for (size_t i=0; i<out.npts(); ++i) {
         const double lat = ocoords(i,LAT);
         const double lon = ocoords(i,LON);
-        if (too_much_north(lat) || too_much_south(lat)) {
+
+        const bool too_much_north = (lat>=max_lat) || eckit::isApproxEqualUlps<double>(lat,max_lat);
+        const bool too_much_south = (lat<=min_lat) || eckit::isApproxEqualUlps<double>(lat,min_lat);
+        if (too_much_north || too_much_south) {
 
             /*
              * close-to-the poles: collapse bilinear into linear
@@ -156,8 +156,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
              */
 
             // set encompassing latitudes ("top/bottom")
-            const double lat   = too_much_north(lat)? max_lat   : min_lat;
-            const size_t lat_i = too_much_north(lat)? max_lat_i : min_lat_i;
+            const double lat   = too_much_north? max_lat   : min_lat;
+            const size_t lat_i = too_much_north? max_lat_i : min_lat_i;
             const size_t n     = lons[ lat_i ];
 
             // set encompassing longitudes ("left/right")
