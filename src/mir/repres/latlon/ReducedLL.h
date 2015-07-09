@@ -77,6 +77,7 @@ class ReducedLL : public Gridded {
   private:
 
     ReducedLL();
+    ReducedLL(size_t Ni, const std::vector<long>& pl, const util::BoundingBox& bbox);
 
 // No copy allowed
 
@@ -92,6 +93,8 @@ class ReducedLL : public Gridded {
 // -- Methods
 
     virtual bool globalDomain() const;
+    virtual Representation *clone() const;
+    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField&) const;
 
 // -- Overridden methods
 

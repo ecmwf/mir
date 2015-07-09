@@ -47,7 +47,7 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, parametrisation_));
     eckit::Log::info() << "Method is " << *method << std::endl;
 
-    const repres::Representation *in = field.representation();
+    eckit::ScopedPtr<const repres::Representation> in(field.representation()->clone());
     repres::Representation *out = outputRepresentation(field.representation());
 
     try {
@@ -66,7 +66,7 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     field.representation(out);
 
     // Make sure we crop to the input domain if not global
-    field.representation()->cropToDomain(parametrisation_, field);
+    in->cropToDomain(parametrisation_, field);
 }
 
 

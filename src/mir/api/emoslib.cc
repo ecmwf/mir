@@ -1079,11 +1079,39 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
                             fortfloat newfldv[],
                             const fortint &ksize,
                             fortint &nlon,
-                            fortint &nlot) {
+                            fortint &nlat) {
     eckit::Log::info() << "++++++ hirlamw" << std::endl;
 
     try {
-        NOTIMP;
+        ProdgenJob intin;
+        MIRJob job;
+
+        mir::input::RawInput u_input(intin, oldfldu, kount);
+        mir::input::RawInput v_input(intin, oldfldv, kount);
+
+        mir::output::RawOutput u_output(newfldu, ksize);
+        mir::output::RawOutput v_output(newfldv, ksize);
+
+        mir::input::WindInput input(u_input, v_input);
+        mir::output::WindOutput output(u_output, v_output);
+
+        intin.reduced(kgauss);
+        intin.auto_pl();
+
+        job.set("area", area[0], area[1], area[2], area[3]);
+        job.set("grid", grid[0], grid[1]);
+        job.set("rotation", pole[0], pole[1]);
+        // job.set("interpolation", "nn");
+
+        job.execute(input, output);
+
+        size_t ni = 0;
+        size_t nj = 0;
+        u_output.shape(ni, nj);
+
+        nlon = nj;
+        nlat = ni;
+
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         return -2;
