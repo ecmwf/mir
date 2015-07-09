@@ -115,6 +115,9 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
     if (!igg)
         throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
     const std::vector<long>& lons = igg->points_per_latitude();
+    ASSERT(lons.size());
+    ASSERT(lons.front());
+    ASSERT(lons.back());
 
 
     // pre-allocate matrix entries
@@ -127,53 +130,42 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
     atlas::ArrayView<double,2> ocoords( out.mesh().function_space("nodes").field("lonlat") );
 
 
-    // check input min/max latitudes (reduced grids exclude the poles)
-    double min_lat   = 0.;
-    double max_lat   = 0.;
-    size_t min_lat_i = 0;   // (min value first occurence index)
-    size_t max_lat_i = 0;   // (max...)
+    // check input min/max latitudes (gaussian grids exclude the poles)
+    double min_lat = 0.;
+    double max_lat = 0.;
     for (size_t i=0; i<in.npts(); ++i) {
         const double lat = icoords(i,LAT);
-        if (lat < min_lat) { min_lat = lat; min_lat_i = i; }
-        if (lat > max_lat) { max_lat = lat; max_lat_i = i; }
+        if (lat < min_lat) min_lat = lat;
+        if (lat > max_lat) max_lat = lat;
     }
-    ASSERT(min_lat   <  max_lat  );
-    ASSERT(min_lat_i != max_lat_i);
+    ASSERT(min_lat < max_lat);
+
+
+    // set northern & southern-most parallel point indices
+    std::vector<size_t>
+            parallel_north(lons.front()),
+            parallel_south(lons.back());
+    for (size_t i=0; i<lons.front(); ++i)
+        parallel_north[i] = i;
+    for (size_t i=lons.front(); i>0; --i)
+        parallel_south[i] = in.npts() - i;
 
 
     // interpolate each output point in turn
     for (size_t i=0; i<out.npts(); ++i) {
         const double lat = ocoords(i,LAT);
         const double lon = ocoords(i,LON);
-
         const bool too_much_north = (lat>=max_lat) || eckit::isApproxEqualUlps<double>(lat,max_lat);
         const bool too_much_south = (lat<=min_lat) || eckit::isApproxEqualUlps<double>(lat,min_lat);
+
         if (too_much_north || too_much_south) {
 
-            /*
-             * close-to-the poles: collapse bilinear into linear
-             * interpolation to northern/southern-most parallel
-             */
+            const std::vector<size_t>& par(too_much_north? parallel_north
+                                                         : parallel_south);
+            const double w = 1./double(par.size());
+            for (std::vector<size_t>::const_iterator j=par.begin(); j!=par.end(); ++j)
+                weights_triplets.push_back( WeightMatrix::Triplet( i, *j, w ) );
 
-            // set encompassing latitudes ("top/bottom")
-            const double lat   = too_much_north? max_lat   : min_lat;
-            const size_t lat_i = too_much_north? max_lat_i : min_lat_i;
-            const size_t n     = lons[ lat_i ];
-
-            // set encompassing longitudes ("left/right")
-            size_t lft_i;
-            size_t rgt_i;
-            left_right_lon_indexes(lon, icoords, lat_i, lat_i+n, lft_i, rgt_i);
-            const double lft = icoords(lft_i,LON);
-            const double rgt = icoords(rgt_i,LON);
-            ASSERT( !eckit::isApproxEqualUlps<double>(lft,rgt) );
-            ASSERT( (lft<=lon) && (lon<=rgt) );
-
-            // linear interpolation
-            const double w = (lft-lon) / (lft-rgt);
-            weights_triplets.push_back( WeightMatrix::Triplet( i, rgt_i,  w  ) );
-            weights_triplets.push_back( WeightMatrix::Triplet( i, lft_i, 1-w ) );
-            
         }
         else {
 
