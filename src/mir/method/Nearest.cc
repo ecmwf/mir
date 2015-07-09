@@ -141,7 +141,7 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
         ASSERT(sum > 0.0);
 
         // now normalise all weights according to the total
-        for (size_t j = 0; j < npts; j++) {
+        for (size_t j = 0; j < npts; ++j) {
             weights[j] /= sum;
         }
 

@@ -282,20 +282,20 @@ Arguments::argmode_t& Arguments::get_argument_mode(
     if (uscore != std::string::npos && fmodes.exists(_basename.substr(uscore + 1))) {
         std::string a(_basename.substr(uscore + 1));
         _modearg = 1;
-        DEBUG_VAR(a);
+        ECKIT_DEBUG_VAR(a);
         return *(fmodes.get( _basename.substr(uscore + 1) ).create());
     }
 
     // 2. check 2nd argument ($1) (git-style)
     if (fmodes.exists(_arg1)) {
         _modearg = 2;
-        DEBUG_VAR(_modearg);
+        ECKIT_DEBUG_VAR(_modearg);
         return *(fmodes.get( _arg1 ).create());
     }
 
     // 3. return default argument mode
     _modearg = 0;
-    DEBUG_VAR(_modearg);
+    ECKIT_DEBUG_VAR(_modearg);
     return *(fmodes.get("").create());
 }
 

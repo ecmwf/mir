@@ -15,6 +15,7 @@
 #include "mir/method/FiniteElement.h"
 
 #include <algorithm>
+#include <limits>
 
 #include "eckit/config/Resource.h"
 #include "eckit/log/BigNum.h"
@@ -86,8 +87,25 @@ struct MeshStats {
     }
 };
 
+typedef std::vector< WeightMatrix::Triplet > Triplets;
+
 }
 
+static void normalise(Triplets& triplets)
+{
+    // sum all calculated weights for normalisation
+    double sum = 0.0;
+
+    for (size_t j = 0; j < triplets.size(); ++j) {
+        sum += triplets[j].value();
+    }
+
+    // now normalise all weights according to the total
+    const double invSum = 1.0 / sum;
+    for (size_t j = 0; j < triplets.size(); ++j) {
+        triplets[j].value() *= invSum;
+    }
+}
 
 /// Finds in which element the point is contained by projecting the point with each nearest element
 
@@ -98,8 +116,14 @@ static bool projectPointToElements(const MeshStats &stats,
                                    const FiniteElement::Point &p,
                                    std::vector< WeightMatrix::Triplet > &weights_triplets,
                                    size_t ip,
+                                   size_t firstVirtualPoint,
                                    atlas::ElemIndex3::NodeList::const_iterator start,
                                    atlas::ElemIndex3::NodeList::const_iterator finish ) {
+
+    Triplets triplets;
+
+    bool mustNormalise = false;
+    bool projectedToElem = false;
 
     size_t idx [4];
     double w[4];
@@ -137,9 +161,15 @@ static bool projectPointToElements(const MeshStats &stats,
                 w[2] = is.v;
 
                 for (size_t i = 0; i < 3; ++i)
-                    weights_triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
+                {
+                    if(idx[i] < firstVirtualPoint)
+                        triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
+                    else
+                        mustNormalise = true;
+                }
 
-                return true;
+                projectedToElem = true;
+                break; // stop looking for elements
             }
 
         } else {  /* quads */
@@ -179,11 +209,17 @@ static bool projectPointToElements(const MeshStats &stats,
                 w[2] =       is.u  *       is.v ;
                 w[3] = (1. - is.u) *       is.v ;
 
+
                 for (size_t i = 0; i < 4; ++i)
-                    weights_triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
+                {
+                    if(idx[i] < firstVirtualPoint)
+                        triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
+                    else
+                        mustNormalise = true;
+                }
 
-                return true;
-
+                projectedToElem = true;
+                break; // stop looking for elements
             }
         }
 
@@ -191,7 +227,17 @@ static bool projectPointToElements(const MeshStats &stats,
 
     ASSERT(start != finish);
 
-    return false;
+    if( projectedToElem )
+    {
+        ASSERT(triplets.size()); // at least one of the nodes of element shoudn't be virtual
+
+        if( mustNormalise)
+            normalise(triplets);
+
+        std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
+    }
+
+    return projectedToElem;
 }
 
 
@@ -258,6 +304,11 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     atlas::FunctionSpace &quads = i_mesh.function_space( "quads" );
     atlas::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
 
+
+    size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
+    if( i_nodes.metadata().has("NbRealPts") )
+        firstVirtualPoint = i_nodes.metadata().get<size_t>("NbRealPts");
+
     // output mesh
 
     // In case xyz field in the out mesh, build it
@@ -308,6 +359,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
             size_t kpts = 1;
             bool success = false;
+
             while (!success && kpts <= maxNbElemsToTry) {
 
                 max_neighbours = std::max(kpts, max_neighbours);
@@ -320,6 +372,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
                                                  p,
                                                  weights_triplets,
                                                  ip,
+                                                 firstVirtualPoint,
                                                  cs.begin(),
                                                  cs.end() );
 
