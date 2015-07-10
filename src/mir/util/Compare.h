@@ -57,7 +57,7 @@ template< typename T >
 struct is_approx_equal_fn : compare_fn<T> {
     is_approx_equal_fn(const T& ref_) : ref(ref_) {}
     bool operator()(const T& v) const {
-        return eckit::FloatCompare<T>::isApproxEqual(v,ref);
+        return eckit::FloatCompare<T>::isApproximatelyEqual(v,ref);
     }
     const T ref;
 };
@@ -83,7 +83,7 @@ struct is_approx_greater_equal_fn : compare_fn<T> {
         // FIXME: What should it be? give me a resource
         return ( a >= b )? || (fabs(a-b) < 1e-10);
 #endif
-        return (v >= ref) || eckit::FloatCompare<T>::isApproxEqual(v,ref);
+        return (v >= ref) || eckit::FloatCompare<T>::isApproximatelyEqual(v,ref);
     }
     const T ref;
 };
@@ -105,7 +105,7 @@ template< typename T >
 struct is_approx_less_equal_fn : compare_fn<T> {
     is_approx_less_equal_fn(const T& ref_) : ref(ref_) {}
     bool operator()(const T& v) const {
-        return (v <= ref) || eckit::FloatCompare<T>::isApproxEqual(v,ref);
+        return (v <= ref) || eckit::FloatCompare<T>::isApproximatelyEqual(v,ref);
     }
     const T ref;
 };

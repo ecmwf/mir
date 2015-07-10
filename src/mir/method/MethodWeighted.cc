@@ -217,8 +217,8 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
         if( in.domain().global() )
         {
-            ASSERT(eckit::FloatCompare<double>::isGreaterApproxEqual(ostats.minimum(), istats.minimum()));
-            ASSERT(eckit::FloatCompare<double>::isGreaterApproxEqual(istats.maximum(), ostats.maximum()));
+            ASSERT(eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(ostats.minimum(), istats.minimum()));
+            ASSERT(eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(istats.maximum(), ostats.maximum()));
         }
 
     }

@@ -111,10 +111,10 @@ double BoundingBox::normalise(double lon) const {
 
 bool BoundingBox::contains(double lat, double lon) const {
     lon = normalise(lon);
-    return eckit::FloatCompare<double>::isGreaterApproxEqual(north_, lat) &&
-           eckit::FloatCompare<double>::isGreaterApproxEqual(lat, south_) &&
-           eckit::FloatCompare<double>::isGreaterApproxEqual(lon , west_) &&
-           eckit::FloatCompare<double>::isGreaterApproxEqual(east_, lon);
+    return eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(north_, lat) &&
+           eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(lat, south_) &&
+           eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(lon , west_) &&
+           eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(east_, lon);
 }
 
 
