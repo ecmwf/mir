@@ -114,7 +114,9 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
     const atlas::grids::ReducedGrid* igg = dynamic_cast<const atlas::grids::ReducedGrid*>(&in);
     if (!igg)
         throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
+
     const std::vector<long>& lons = igg->points_per_latitude();
+
     ASSERT(lons.size());
     ASSERT(lons.front());
     ASSERT(lons.back());
@@ -131,9 +133,9 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
 
     // check input min/max latitudes (gaussian grids exclude the poles)
-    double min_lat = 0.;
-    double max_lat = 0.;
-    for (size_t i=0; i<in.npts(); ++i) {
+    double min_lat = icoords(0,LAT);
+    double max_lat = icoords(0,LAT);
+    for (size_t i = 1; i<in.npts(); ++i) {
         const double lat = icoords(i,LAT);
         if (lat < min_lat) min_lat = lat;
         if (lat > max_lat) max_lat = lat;
@@ -142,9 +144,9 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
 
     // set northern & southern-most parallel point indices
-    std::vector<size_t>
-            parallel_north(lons.front()),
-            parallel_south(lons.back());
+    std::vector<size_t> parallel_north(lons.front());
+    std::vector<size_t> parallel_south(lons.back());
+
     for (size_t i=0; i<lons.front(); ++i)
         parallel_north[i] = i;
     for (size_t i=lons.front(); i>0; --i)
@@ -155,8 +157,9 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
     for (size_t i=0; i<out.npts(); ++i) {
         const double lat = ocoords(i,LAT);
         const double lon = ocoords(i,LON);
-        const bool too_much_north = (lat>=max_lat) || eckit::isApproxEqualUlps<double>(lat,max_lat);
-        const bool too_much_south = (lat<=min_lat) || eckit::isApproxEqualUlps<double>(lat,min_lat);
+
+        const bool too_much_north = eckit::FloatCompare<double>::isGreaterApproxEqual(lat, max_lat);
+        const bool too_much_south = eckit::FloatCompare<double>::isGreaterApproxEqual(min_lat, lat);
 
         if (too_much_north || too_much_south) {
 
