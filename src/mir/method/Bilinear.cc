@@ -34,12 +34,12 @@ namespace {
 
 
 void left_right_lon_indexes(
-        const double& in,
-        const atlas::ArrayView<double,2>& coords,
-        const size_t start,
-        const size_t end,
-        size_t& left,
-        size_t& right) {
+    const double& in,
+    const atlas::ArrayView<double, 2>& coords,
+    const size_t start,
+    const size_t end,
+    size_t& left,
+    size_t& right) {
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
@@ -50,16 +50,15 @@ void left_right_lon_indexes(
 
     double right_lon = 360.;
     double left_lon  =   0.;
-    for (size_t i=start; i<end; ++i) {
+    for (size_t i = start; i < end; ++i) {
 
         const double& val = coords[i].data()[LON];
-        ASSERT((0.<=val) && (val<=360.));
+        ASSERT((0. <= val) && (val <= 360.));
 
-        if (val<in || eq(val,in)) {
+        if (val < in || eq(val, in)) {
             left_lon = val;
             left     = i;
-        }
-        else if (val < right_lon) {
+        } else if (val < right_lon) {
             right_lon = val;
             right     = i;
         }
@@ -69,7 +68,7 @@ void left_right_lon_indexes(
     ASSERT(left  >= start);
     ASSERT(right >= start);
     ASSERT(right != left);
-    ASSERT(eq(coords(left,LAT), coords(right,LAT)));
+    ASSERT(eq(coords(left, LAT), coords(right, LAT)));
 }
 
 
@@ -128,49 +127,56 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
 
     // access the input/output fields coordinates
-    atlas::ArrayView<double,2> icoords( in .mesh().function_space("nodes").field("lonlat") );
-    atlas::ArrayView<double,2> ocoords( out.mesh().function_space("nodes").field("lonlat") );
+    atlas::ArrayView<double, 2> icoords( in .mesh().function_space("nodes").field("lonlat") );
+    atlas::ArrayView<double, 2> ocoords( out.mesh().function_space("nodes").field("lonlat") );
 
 
     // check input min/max latitudes (gaussian grids exclude the poles)
-    double min_lat = icoords(0,LAT);
-    double max_lat = icoords(0,LAT);
-    for (size_t i = 1; i<in.npts(); ++i) {
-        const double lat = icoords(i,LAT);
+    double min_lat = icoords(0, LAT);
+    double max_lat = icoords(0, LAT);
+    for (size_t i = 1; i < in.npts(); ++i) {
+        const double lat = icoords(i, LAT);
         if (lat < min_lat) min_lat = lat;
         if (lat > max_lat) max_lat = lat;
     }
     ASSERT(min_lat < max_lat);
+    eckit::Log::info() << "Bilinear::assemble max_lat=" << max_lat << ", min_lat=" << min_lat << std::endl;
 
 
     // set northern & southern-most parallel point indices
     std::vector<size_t> parallel_north(lons.front());
     std::vector<size_t> parallel_south(lons.back());
 
-    for (size_t i=0; i<lons.front(); ++i)
+    eckit::Log::info() << "Bilinear::assemble first row: " << lons.front() << std::endl;
+    for (size_t i = 0; i < lons.front(); ++i) {
         parallel_north[i] = i;
-    for (size_t i=lons.front(); i>0; --i)
-        parallel_south[i] = in.npts() - i;
+    }
+
+    eckit::Log::info() << "Bilinear::assemble last row: " << lons.back() << std::endl;
+    for (size_t i = 0; i < lons.back(); i++) {
+        parallel_south[i] = in.npts() - i - 1;
+    }
 
 
     // interpolate each output point in turn
-    for (size_t i=0; i<out.npts(); ++i) {
-        const double lat = ocoords(i,LAT);
-        const double lon = ocoords(i,LON);
+    for (size_t i = 0; i < out.npts(); ++i) {
+        const double lat = ocoords(i, LAT);
+        const double lon = ocoords(i, LON);
 
         const bool too_much_north = eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(lat, max_lat);
         const bool too_much_south = eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(min_lat, lat);
 
         if (too_much_north || too_much_south) {
 
-            const std::vector<size_t>& par(too_much_north? parallel_north
-                                                         : parallel_south);
-            const double w = 1./double(par.size());
-            for (std::vector<size_t>::const_iterator j=par.begin(); j!=par.end(); ++j)
+            ASSERT(too_much_north != too_much_south);
+
+            const std::vector<size_t>& par(too_much_north ? parallel_north
+                                           : parallel_south);
+            const double w = 1. / double(par.size());
+            for (std::vector<size_t>::const_iterator j = par.begin(); j != par.end(); ++j)
                 weights_triplets.push_back( WeightMatrix::Triplet( i, *j, w ) );
 
-        }
-        else {
+        } else {
 
             // find encompassing latitudes ("bottom/top")
             // ------------------------------------------
@@ -181,14 +187,14 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             size_t top_n;         // upper/lower latitude vector number of points on the same latitude
             size_t bot_n;
 
-            for (size_t n=1; n<lons.size(); ++n) {
-                top_n = lons[n-1];
-                bot_n = (n==lons.size()? 0 : lons[n]);
+            for (size_t n = 1; n < lons.size(); ++n) {
+                top_n = lons[n - 1];
+                bot_n = (n == lons.size() ? 0 : lons[n]);
 
                 top_i  = bot_i;
-                bot_i += lons[n-1];
-                top_lat = icoords(top_i,LAT);
-                bot_lat = icoords(bot_i,LAT);
+                bot_i += lons[n - 1];
+                top_lat = icoords(top_i, LAT);
+                bot_lat = icoords(bot_i, LAT);
                 ASSERT(top_lat != bot_lat);
 
                 // check output point is on or below the hi latitude
@@ -200,8 +206,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
                 }
             }
 
-            top_lat = icoords(top_i,LAT);
-            bot_lat = icoords(bot_i,LAT);
+            top_lat = icoords(top_i, LAT);
+            bot_lat = icoords(bot_i, LAT);
             ASSERT(top_lat > lat || eq(top_lat, lat));
             ASSERT(bot_lat < lat);
             ASSERT(!eq(bot_lat, lat));
@@ -230,10 +236,10 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             // bilinear interpolation
             // ----------------------
 
-            double tl_lon  = icoords(top_i_lft,LON);
-            double tr_lon  = icoords(top_i_rgt,LON);
-            double bl_lon  = icoords(bot_i_lft,LON);
-            double br_lon  = icoords(bot_i_rgt,LON);
+            double tl_lon  = icoords(top_i_lft, LON);
+            double tr_lon  = icoords(top_i_rgt, LON);
+            double bl_lon  = icoords(bot_i_lft, LON);
+            double br_lon  = icoords(bot_i_rgt, LON);
 
             // calculate the weights
             double w1 = (tl_lon - lon) / (tl_lon - tr_lon);
