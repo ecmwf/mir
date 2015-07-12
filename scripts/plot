@@ -20,6 +20,8 @@ parser.add_argument('-w', '--wind', help='Plot wind fields', action='store_true'
 parser.add_argument('-d', '--default', help='Use MAGICS defaults settings', action='store_true')
 parser.add_argument('-r', '--raw', help='Turn off MAGICS automatic scaling', action='store_true')
 parser.add_argument('-g', '--grid_shading', help='Use grid_shading', action='store_true')
+parser.add_argument('-c', '--cell_shading', help='Use cell_shading', action='store_true')
+parser.add_argument('-m', '--marker', help='Use marker', action='store_true')
 parser.add_argument('-o', '--output', help='Path of output file', metavar='OUTPUT')
 parser.add_argument('-D', '--diff', help='Path of other GRIB', metavar='GRIB')
 parser.add_argument('-E', '--error', help='Path of other GRIB', metavar='GRIB')
@@ -179,6 +181,11 @@ if args.raw:
 if args.grid_shading:
     contour = mproc(contour="off", contour_shade="on", contour_shade_technique="grid_shading")
 
+if args.cell_shading:
+    contour = mproc(contour="off", contour_shade="on", contour_shade_technique="cell_shading")
+
+if args.marker:
+    contour = mproc(contour="off", contour_shade="on", contour_shade_technique="marker")
 
 data = []
 for i in range(1, 2):
