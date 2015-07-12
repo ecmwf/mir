@@ -97,10 +97,10 @@ class SphericalHarmonics : public Representation {
 // -- Overridden methods
 
     virtual void fill(grib_info&) const;
-    virtual Representation* truncate(size_t truncation,
+    virtual const Representation* truncate(size_t truncation,
                                      const std::vector<double>&, std::vector<double>&) const;
     virtual size_t truncation() const;
-    virtual Representation* clone() const;
+
     virtual void validate(const std::vector<double>&) const;
 
     virtual void setComplexPacking(grib_info&) const;

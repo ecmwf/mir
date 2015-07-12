@@ -93,9 +93,9 @@ class RotatedOctahedral : public  Octahedral {
     // -- Overridden methods
 
     virtual void fill(grib_info &) const;
-    atlas::Grid *atlasGrid() const;
-    virtual Representation *clone() const;
-    virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    virtual atlas::Grid *atlasGrid() const;
+
+    virtual const Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
 
     // -- Class members
     // None

@@ -31,14 +31,22 @@ MIRField::MIRField(const param::MIRParametrisation &param, bool hasMissing, doub
     hasMissing_(hasMissing),
     missingValue_(missingValue),
     representation_(repres::RepresentationFactory::build(param)) {
+
+    if (representation_) {
+        representation_->attach();
+    }
 }
 
 
-MIRField::MIRField(repres::Representation *repres, bool hasMissing, double missingValue):
+MIRField::MIRField(const repres::Representation *repres, bool hasMissing, double missingValue):
     values_(),
     hasMissing_(hasMissing),
     missingValue_(missingValue),
     representation_(repres) {
+
+    if (representation_) {
+        representation_->attach();
+    }
 }
 
 // Warning: take ownership of values
@@ -55,7 +63,9 @@ size_t MIRField::dimensions() const {
 
 
 MIRField::~MIRField() {
-    delete representation_;
+    if (representation_) {
+        representation_->detach();
+    }
 }
 
 
@@ -84,19 +94,17 @@ void MIRField::validate() const {
     }
 }
 
-MIRFieldStats MIRField::statistics(size_t i) const
-{
-    if(hasMissing_) {
+MIRFieldStats MIRField::statistics(size_t i) const {
+    if (hasMissing_) {
         const std::vector<double>& vals = values(i);
         std::vector<double> tmp;
         tmp.reserve(vals.size());
         size_t missing = 0;
 
         for (size_t j = 0; j < vals.size(); j++) {
-            if(vals[j] != missingValue_) {
+            if (vals[j] != missingValue_) {
                 tmp.push_back(vals[j]);
-            }
-            else {
+            } else {
                 missing++;
             }
         }
@@ -105,8 +113,13 @@ MIRFieldStats MIRField::statistics(size_t i) const
     return MIRFieldStats(values(i), 0);
 }
 
-void MIRField::representation(repres::Representation *representation) {
-    delete representation_;
+void MIRField::representation(const repres::Representation *representation) {
+    if (representation) {
+        representation->attach();
+    }
+    if (representation_) {
+        representation_->detach();
+    }
     representation_ = representation;
 }
 

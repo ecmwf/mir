@@ -93,13 +93,9 @@ class RegularLL : public LatLon {
 
 
     // Called by crop()
-    virtual RegularLL *cropped(const util::BoundingBox &bbox) const;
-
-
+    virtual const RegularLL *cropped(const util::BoundingBox &bbox) const;
 
     // -- Overridden methods
-
-    virtual Representation *clone() const;
 
     // -- Class members
     // None

@@ -56,14 +56,15 @@ void AreaCropper::print(std::ostream &out) const {
 
 void AreaCropper::execute(data::MIRField &field) const {
 
-    eckit::ScopedPtr<const repres::Representation> representation(field.representation()->clone()); // This will be
+    // Keep a pointer on the original representation, as the one in the field will
+    // be changed in the loop
+    repres::RepresentationHandle representation(field.representation());
 
     for (size_t i = 0; i < field.dimensions(); i++) {
         const std::vector<double> &values = field.values(i);
         std::vector<double> result;
 
-
-        repres::Representation *cropped = representation->crop(bbox_, values, result);
+        const repres::Representation *cropped = representation->crop(bbox_, values, result);
 
         if (cropped) { // NULL if nothing happend
             field.representation(cropped);

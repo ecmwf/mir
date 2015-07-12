@@ -35,7 +35,9 @@ RawOutput::RawOutput(double *values, size_t count):
 
 
 RawOutput::~RawOutput() {
-    delete representation_;
+    if (representation_) {
+        representation_->detach();
+    }
 }
 
 
@@ -62,7 +64,8 @@ void RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &in
 
     // Use for HIRLAM like routines. Remove when emoslib compatibility not needed anymore
     ASSERT(!representation_);
-    representation_ = field.representation()->clone();
+    representation_ = field.representation();
+    representation_->attach();
 
 }
 

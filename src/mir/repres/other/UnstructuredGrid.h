@@ -95,7 +95,8 @@ class UnstructuredGrid : public Gridded {
 
     virtual void fill(grib_info &) const;
     virtual atlas::Grid *atlasGrid() const;
-    void validate(const std::vector<double> &values) const;
+    virtual void validate(const std::vector<double> &values) const;
+    virtual bool globalDomain() const;
 
 
 

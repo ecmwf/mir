@@ -20,7 +20,6 @@
 #include <string>
 #include <vector>
 
-
 namespace atlas {
 class Grid;
 }
@@ -65,7 +64,6 @@ class Representation {
 
 // -- Destructor
 
-    virtual ~Representation(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -75,24 +73,28 @@ class Representation {
 
 // -- Methods
 
+    // For refenrence counting
+    void attach() const;
+
+    void detach() const;
+
+    // --------------------
 
     virtual void validate(const std::vector<double> &values) const;
 
     virtual void fill(grib_info&) const;
 
-    virtual Representation* crop(const util::BoundingBox&,
+    virtual const Representation* crop(const util::BoundingBox&,
                                  const std::vector<double>&, std::vector<double>&) const;
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
-    virtual Representation* truncate(size_t truncation,
+    virtual const Representation* truncate(size_t truncation,
                                      const std::vector<double>&, std::vector<double>&) const;
 
     virtual atlas::Grid* atlasGrid() const;
 
     virtual size_t truncation() const;
-
-    virtual Representation* clone() const;
 
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
 
@@ -118,6 +120,7 @@ class Representation {
 
 // -- Members
 
+    virtual ~Representation(); // Change to virtual if base class
 
 // -- Methods
 
@@ -140,7 +143,8 @@ class Representation {
     Representation& operator=(const Representation&);
 
 // -- Members
-    // None
+
+    mutable size_t count_;
 
 // -- Methods
     // None
@@ -163,6 +167,19 @@ class Representation {
 
 };
 
+//========================================================
+
+class RepresentationHandle {
+    const Representation* representation_;
+public:
+    RepresentationHandle(const Representation* r);
+    ~RepresentationHandle();
+
+    const Representation* operator->() const { return representation_; }
+    operator const Representation*() const { return representation_; }
+};
+
+//================================================
 
 class RepresentationFactory {
     std::string name_;
@@ -174,7 +191,9 @@ class RepresentationFactory {
     virtual ~RepresentationFactory();
 
   public:
-    static Representation* build(const param::MIRParametrisation&);
+    // This is 'const' as the representation uses reference counting
+    // Represention should always be immutable
+    static const Representation* build(const param::MIRParametrisation&);
 
 };
 
@@ -187,6 +206,7 @@ class RepresentationBuilder : public RepresentationFactory {
   public:
     RepresentationBuilder(const std::string& name) : RepresentationFactory(name) {}
 };
+
 
 
 }  // namespace repres

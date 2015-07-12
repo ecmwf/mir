@@ -56,7 +56,7 @@ Iterator *Gridded::iterator() const {
 }
 
 
-Gridded *Gridded::cropped(const util::BoundingBox &bbox) const {
+const Gridded *Gridded::cropped(const util::BoundingBox &bbox) const {
     eckit::StrStream os;
     os << "Gridded::cropped() not implemented for " << *this << eckit::StrStream::ends;
     throw eckit::SeriousBug(std::string(os));
@@ -75,7 +75,7 @@ void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, dat
     }
 }
 
-Representation *Gridded::crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const {
+const Gridded *Gridded::crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const {
 
     eckit::Timer timer("crop");
 
@@ -149,7 +149,7 @@ Representation *Gridded::crop(const util::BoundingBox &bbox, const std::vector<d
 
     eckit::Log::info() << "CROP resulting bbox is: " << util::BoundingBox(n, w, s, e) <<
                        ", size=" << out.size() << std::endl;
-    Gridded *cropped =  this->cropped(util::BoundingBox(n, w, s, e));
+    const Gridded *cropped =  this->cropped(util::BoundingBox(n, w, s, e));
     eckit::Log::info() << *cropped << std::endl;
 
     ASSERT(out.size() > 0);

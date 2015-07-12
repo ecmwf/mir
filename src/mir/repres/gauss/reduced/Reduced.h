@@ -91,7 +91,7 @@ class Reduced : public Gaussian {
 
     // -- Methods
 
-    virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    virtual const Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
 
 
     virtual const std::vector<long> &pls() const = 0;
@@ -100,8 +100,8 @@ class Reduced : public Gaussian {
 
     // -- Overridden methods
 
-    Gridded *cropped(const util::BoundingBox &bbox) const ;
-    void validate(const std::vector<double> &values) const;
+    virtual const Reduced* cropped(const util::BoundingBox &bbox) const ;
+    virtual void validate(const std::vector<double> &values) const;
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
     // Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
 

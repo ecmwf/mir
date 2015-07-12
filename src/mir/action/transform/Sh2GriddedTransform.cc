@@ -201,25 +201,16 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 void Sh2GriddedTransform::execute(data::MIRField &field) const {
     // ASSERT(field.dimensions() == 1); // For now
 
-    repres::Representation *out = outputRepresentation(field.representation());
+    repres::RepresentationHandle out(outputRepresentation(field.representation()));
 
     // TODO: Transform all the fields together
     for (size_t i = 0; i < field.dimensions(); i++) {
 
-
         const std::vector<double> &values = field.values(i);
         std::vector<double> result;
 
-        const repres::Representation *in = field.representation();
-
-        try {
-            eckit::ScopedPtr<atlas::Grid> grid(out->atlasGrid());
-            transform(parametrisation_, in->truncation(), values, result, *grid);
-        } catch (...) {
-            delete out;
-            throw;
-        }
-
+        eckit::ScopedPtr<atlas::Grid> grid(out->atlasGrid());
+        transform(parametrisation_, field.representation()->truncation(), values, result, *grid);
 
         field.values(result, i);
 

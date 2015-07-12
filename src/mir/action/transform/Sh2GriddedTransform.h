@@ -91,7 +91,7 @@ class Sh2GriddedTransform : public Action {
 
 // -- Methods
 
-    virtual repres::Representation* outputRepresentation(const repres::Representation* inputRepres) const = 0;
+    virtual const repres::Representation* outputRepresentation(const repres::Representation* inputRepres) const = 0;
 
 // -- Overridden methods
 

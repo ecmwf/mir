@@ -93,8 +93,8 @@ class RotatedFromPL : public FromPL {
     // -- Overridden methods
 
     virtual void fill(grib_info &) const;
-    atlas::Grid *atlasGrid() const;
-    virtual Representation *clone() const;
+    virtual atlas::Grid *atlasGrid() const;
+
     virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
 
     // -- Class members

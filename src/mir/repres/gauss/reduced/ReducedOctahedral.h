@@ -74,9 +74,6 @@ class ReducedOctahedral : public Octahedral {
 
   private:
 
-    ReducedOctahedral(long, const util::BoundingBox &);
-
-
     // No copy allowed
 
     ReducedOctahedral(const ReducedOctahedral &);
@@ -91,9 +88,7 @@ class ReducedOctahedral : public Octahedral {
 
     // -- Overridden methods
 
-
-    virtual Representation *clone() const;
-    virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    virtual const Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
 
     // -- Class members
     // None

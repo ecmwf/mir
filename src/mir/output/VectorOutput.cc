@@ -55,10 +55,10 @@ void VectorOutput::save(const param::MIRParametrisation &param, input::MIRInput 
 
     ASSERT(field.dimensions() == 2);
 
-    data::MIRField u(field.representation()->clone(), field.hasMissing(), field.missingValue());
+    data::MIRField u(field.representation(), field.hasMissing(), field.missingValue());
     u.values(field.values(0), 0);
 
-    data::MIRField v(field.representation()->clone(), field.hasMissing(), field.missingValue());
+    data::MIRField v(field.representation(), field.hasMissing(), field.missingValue());
     v.values(field.values(1), 0);
 
     param::RuntimeParametrisation u_runtime(param);

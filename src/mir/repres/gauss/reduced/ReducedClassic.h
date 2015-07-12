@@ -74,9 +74,6 @@ class ReducedClassic : public Classic {
 
   private:
 
-    ReducedClassic(long, const util::BoundingBox &);
-
-
     // No copy allowed
 
     ReducedClassic(const ReducedClassic &);
@@ -90,8 +87,6 @@ class ReducedClassic : public Classic {
 
     // -- Overridden methods
 
-
-    virtual Representation *clone() const;
     virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
 
     // -- Class members

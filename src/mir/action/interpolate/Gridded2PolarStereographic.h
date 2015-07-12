@@ -87,7 +87,7 @@ class Gridded2PolarStereographic : public Gridded2GriddedInterpolation {
 // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual repres::Representation* outputRepresentation(const repres::Representation* inputRepres) const;
+    virtual const repres::Representation* outputRepresentation(const repres::Representation* inputRepres) const;
 
 // -- Class members
     // None

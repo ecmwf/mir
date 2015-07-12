@@ -95,7 +95,7 @@ class RawOutput : public MIROutput {
     double* values_;
     size_t count_;
     size_t size_;
-    repres::Representation* representation_;
+    const repres::Representation* representation_;
 
 // -- Methods
     // None

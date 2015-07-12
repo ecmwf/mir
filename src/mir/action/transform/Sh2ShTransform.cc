@@ -48,13 +48,16 @@ void Sh2ShTransform::print(std::ostream &out) const {
 
 void Sh2ShTransform::execute(data::MIRField &field) const {
 
-    eckit::ScopedPtr<const repres::Representation> representation(field.representation()->clone());
+    // Keep a pointer on the original representation, as the one in the field will
+    // be changed in the loop
+    repres::RepresentationHandle representation(field.representation());
+
 
     for(size_t i = 0; i < field.dimensions(); i++) {
         const std::vector<double> &values = field.values(i);
         std::vector<double> result;
 
-        repres::Representation *repres = representation->truncate(truncation_, values, result);
+        const repres::Representation* repres = representation->truncate(truncation_, values, result);
 
         if (repres) { // NULL if nothing happend
             field.representation(repres); // Assumes representation will be the same

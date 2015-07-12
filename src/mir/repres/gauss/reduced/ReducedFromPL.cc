@@ -41,10 +41,6 @@ ReducedFromPL::ReducedFromPL(long N, const std::vector<long> &pl, const util::Bo
     FromPL(N, pl, bbox) {
 }
 
-Representation *ReducedFromPL::clone() const {
-    return new ReducedFromPL(N_, pl_, bbox_);
-}
-
 void ReducedFromPL::print(std::ostream &out) const {
     out << "ReducedGGFromPL[N" << N_ << "]";
 }

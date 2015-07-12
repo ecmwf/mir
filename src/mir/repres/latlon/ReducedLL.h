@@ -93,13 +93,13 @@ class ReducedLL : public Gridded {
 // -- Methods
 
     virtual bool globalDomain() const;
-    virtual Representation *clone() const;
+
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField&) const;
 
 // -- Overridden methods
 
     virtual void fill(grib_info&) const;
-    atlas::Grid* atlasGrid() const;
+    virtual atlas::Grid* atlasGrid() const;
     virtual void validate(const std::vector<double>&) const;
 
 // -- Class members

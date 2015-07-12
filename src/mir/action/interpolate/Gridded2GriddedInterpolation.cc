@@ -47,21 +47,13 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, parametrisation_));
     eckit::Log::info() << "Method is " << *method << std::endl;
 
-    eckit::ScopedPtr<const repres::Representation> in(field.representation()->clone());
-    repres::Representation *out = outputRepresentation(field.representation());
+    repres::RepresentationHandle in(field.representation());
+    repres::RepresentationHandle out(outputRepresentation(field.representation()));
 
-    try {
-        // TODO: We should not copy those things around
+    eckit::ScopedPtr<atlas::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respect constness
+    eckit::ScopedPtr<atlas::Grid> gout(out->atlasGrid());
 
-        eckit::ScopedPtr<atlas::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respect constness
-        eckit::ScopedPtr<atlas::Grid> gout(out->atlasGrid());
-
-        method->execute(field, *gin, *gout);
-
-    } catch (...) {
-        delete out;
-        throw;
-    }
+    method->execute(field, *gin, *gout);
 
     field.representation(out);
 

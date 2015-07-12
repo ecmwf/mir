@@ -97,11 +97,10 @@ class RotatedLL : public RegularLL {
 
     virtual void fill(grib_info &) const;
     virtual atlas::Grid *atlasGrid() const;
-    virtual Representation *clone() const;
 
 
     // From RegularLL
-    virtual RegularLL *cropped(const util::BoundingBox &bbox) const;
+    virtual const RotatedLL *cropped(const util::BoundingBox &bbox) const;
 
 
 

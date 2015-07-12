@@ -31,15 +31,6 @@ ReducedClassic::ReducedClassic(size_t N):
 ReducedClassic::~ReducedClassic() {
 }
 
-ReducedClassic::ReducedClassic(long N, const util::BoundingBox &bbox):
-    Classic(N, bbox) {
-
-}
-
-Representation *ReducedClassic::clone() const {
-    return new ReducedClassic(N_, bbox_);
-}
-
 void ReducedClassic::print(std::ostream &out) const {
     out << "ReducedGGClassic[N" << N_ << ",bbox=" << bbox_ << "]";
 }

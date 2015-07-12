@@ -95,8 +95,8 @@ class RegularGG : public Regular {
 
     //virtual void fill(grib_info&) const;
     //virtual atlas::Grid* atlasGrid() const;
-    virtual Representation *clone() const;
-    virtual Gridded* cropped(const util::BoundingBox &bbox) const;
+
+    virtual const Gridded* cropped(const util::BoundingBox &bbox) const;
 
     //virtual void validate(const std::vector<double>&) const;
 

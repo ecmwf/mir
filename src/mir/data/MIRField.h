@@ -42,7 +42,7 @@ public:
 
     //
     MIRField(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
-    MIRField(repres::Representation*, bool hasMissing = false, double missingValue = 0);
+    MIRField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
     // -- Destructor
 
@@ -59,7 +59,7 @@ public:
     size_t dimensions() const;
 
 
-    void representation(repres::Representation *);
+    void representation(const repres::Representation *);
     const repres::Representation *representation() const;
 
     void values(std::vector<double> &, size_t which /*=0*/);  // Warning Takes ownership of the vector
@@ -116,7 +116,7 @@ public:
     std::vector<std::vector<double> > values_;
     bool hasMissing_;
     double missingValue_;
-    repres::Representation* representation_;
+    const repres::Representation* representation_;
 
     // -- Methods
     // None

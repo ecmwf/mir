@@ -47,16 +47,7 @@ void Gridded2PolarStereographic::print(std::ostream &out) const {
 }
 
 
-repres::Representation *Gridded2PolarStereographic::outputRepresentation(const repres::Representation *inputRepres) const {
-    // return new repres::unsupported::PolarStereographic(size_t Nx,
-    //                    size_t Ny,
-    //                    size_t Dx,
-    //                    size_t Dy,
-    //                    double longitudeOfFirstGridPoint,
-    //                    double latitudeOfFirstGridPoint,
-    //                    double orientationOfTheGrid,
-    //                    bool southPoleOnProjectionPlane,
-    //                    double radiusOfTheEarth);
+const repres::Representation *Gridded2PolarStereographic::outputRepresentation(const repres::Representation *inputRepres) const {
     NOTIMP;
 }
 
