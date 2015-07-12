@@ -153,8 +153,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
     }
 
     eckit::Log::info() << "Bilinear::assemble last row: " << lons.back() << std::endl;
-    for (size_t i = 0; i < lons.back(); i++) {
-        parallel_south[i] = in.npts() - i - 1;
+    for (size_t i = lons.back(), j = 0; i > 0; i--, j++) {
+        parallel_south[j] = in.npts() - i;
     }
 
 
