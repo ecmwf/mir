@@ -75,8 +75,6 @@ class UnstructuredGrid : public Gridded {
 
   private:
 
-    UnstructuredGrid();
-
     // No copy allowed
 
     UnstructuredGrid(const UnstructuredGrid &);

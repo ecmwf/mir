@@ -76,9 +76,6 @@ class ReducedLL : public Gridded {
 
   private:
 
-    ReducedLL();
-    ReducedLL(size_t Ni, const std::vector<long>& pl, const util::BoundingBox& bbox);
-
 // No copy allowed
 
     ReducedLL(const ReducedLL&);
