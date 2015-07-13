@@ -165,11 +165,24 @@ const Gridded *Gridded::crop(const util::BoundingBox &bbox, const std::vector<do
 void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double missingValue) const {
 
 
-    ASSERT(values.size());
-    double minvalue = values[0];
-    double maxvalue = values[1];
+    double minvalue = 0;
+    double maxvalue = 0;
 
-    for (size_t i = 1; i < values.size(); ++i) {
+    size_t first   = 0;
+    for (; first < values.size(); ++first) {
+        if (!hasMissing || values[first] != minvalue) {
+            minvalue = values[first];
+            maxvalue = values[first];
+            break;
+        }
+    }
+
+    if (first == values.size()) {
+        // Only missing values
+        return;
+    }
+
+    for (size_t i = first; i < values.size(); ++i) {
         minvalue = std::min(minvalue, values[i]);
         maxvalue = std::max(maxvalue, values[i]);
     }
@@ -210,9 +223,9 @@ void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double 
         size_t nn = size_t(lat / dns);
         size_t mm = size_t(lon / dwe);
 
-        if(nn != n || mm != m) {
+        if (nn != n || mm != m) {
 
-            if(nn != n) {
+            if (nn != n) {
                 i++;
             }
 
@@ -223,8 +236,11 @@ void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double 
             i %= v.size();
         }
 
-        values[k++] = v[i];
+        if (!hasMissing || values[k] != minvalue) {
+            values[k] = v[i];
+        }
 
+        k++;
     }
 
     ASSERT(k == values.size());
