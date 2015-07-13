@@ -62,6 +62,10 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
     bool user_regular = parametrisation_.has("user.regular");
     bool user_octahedral = parametrisation_.has("user.octahedral");
 
+    if(parametrisation_.has("checkerboard")) {
+        plan.add("misc.checkerboard");
+    }
+
     if (user_grid) {
         ASSERT(!user_reduced);
         ASSERT(!user_regular);

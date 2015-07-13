@@ -49,7 +49,7 @@ MIRJob::~MIRJob() {
 }
 
 
-void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
+void MIRJob::execute(input::MIRInput &input, output::MIROutput &output) const {
     // Optimisation: nothing to do, usefull for MARS
     if (size() == 0) {
         eckit::Log::info() << "Nothing to do (no request)" << std::endl;
@@ -60,19 +60,19 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
     // Accroding to c++11, this should be thread safe (assuming contructors are thread safe as well)
 
-    const param::MIRParametrisation& defaults = param::MIRDefaults::instance();
+    const param::MIRParametrisation &defaults = param::MIRDefaults::instance();
     eckit::Log::info() << "Defaults: " << defaults << std::endl;
 
     eckit::Timer timer("MIRJob::execute");
 
     eckit::Log::info() << "MIRJob::execute: ";
     mirToolCall(eckit::Log::info());
-    eckit::Log::info()<< std::endl;
+    eckit::Log::info() << std::endl;
 
     eckit::Log::info() << "          Input: " << input << std::endl;
     eckit::Log::info() << "         Output: " << output << std::endl;
 
-    const param::MIRParametrisation& metadata = input.parametrisation();
+    const param::MIRParametrisation &metadata = input.parametrisation();
 
     if (matches(metadata)) {
         eckit::Log::info() << "Nothing to do (field matches)" << std::endl;
@@ -91,7 +91,7 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
     logic->prepare(plan);
 
     eckit::Log::info() << "Action plan is: " << plan << std::endl;
-    if(plan.empty()) {
+    if (plan.empty()) {
         eckit::Log::info() << "Nothing to do (empty plan)" << std::endl;
         output.copy(*this, input);
         return;
@@ -107,7 +107,7 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 }
 
 
-void MIRJob::print(std::ostream& out) const {
+void MIRJob::print(std::ostream &out) const {
     if (eckit::format(out) == eckit::Log::applicationFormat) {
         out << "mir_tool ";
         SimpleParametrisation::print(out);
@@ -119,50 +119,50 @@ void MIRJob::print(std::ostream& out) const {
     }
 }
 
-MIRJob& MIRJob::clear(const std::string& name) {
+MIRJob &MIRJob::clear(const std::string &name) {
     eckit::Log::info() << "************* MIRJob::clear [" << name << "]" << std::endl;
     SimpleParametrisation::clear(name);
     return *this;
 }
-MIRJob& MIRJob::set(const std::string& name, const std::string& value) {
+MIRJob &MIRJob::set(const std::string &name, const std::string &value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (string)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
-MIRJob& MIRJob::set(const std::string& name, const char* value) {
+MIRJob &MIRJob::set(const std::string &name, const char *value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (char)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
-MIRJob& MIRJob::set(const std::string& name, bool value) {
+MIRJob &MIRJob::set(const std::string &name, bool value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (bool)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
 
-MIRJob& MIRJob::set(const std::string& name, long value) {
+MIRJob &MIRJob::set(const std::string &name, long value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (long)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
 
-MIRJob& MIRJob::set(const std::string& name, double value) {
+MIRJob &MIRJob::set(const std::string &name, double value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (double)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
-MIRJob& MIRJob::set(const std::string& name, param::DelayedParametrisation* value) {
+MIRJob &MIRJob::set(const std::string &name, param::DelayedParametrisation *value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (delayed)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
-MIRJob& MIRJob::set(const std::string& name, double v1, double v2) {
+MIRJob &MIRJob::set(const std::string &name, double v1, double v2) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << v1 << ", "  << v2 << "] (double)" << std::endl;
     std::vector<double> v(2);
     v[0] = v1;
@@ -171,7 +171,7 @@ MIRJob& MIRJob::set(const std::string& name, double v1, double v2) {
     return *this;
 }
 
-MIRJob& MIRJob::set(const std::string& name, double v1, double v2, double v3, double v4) {
+MIRJob &MIRJob::set(const std::string &name, double v1, double v2, double v3, double v4) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] =  [" << v1
                        << ", "  << v2 << ", "  << v3 << ", "  << v4 << "] (double)" << std::endl;
     std::vector<double> v(4);
@@ -184,13 +184,17 @@ MIRJob& MIRJob::set(const std::string& name, double v1, double v2, double v3, do
 }
 
 
-bool MIRJob::matches(const param::MIRParametrisation& metadata) const {
-    static const char* force[] = { "vod2uv", "bitmap", "frame", "packing", "accuracy", 0 }; // Move to MIRLogic
+bool MIRJob::matches(const param::MIRParametrisation &metadata) const {
+    static const char *force[] = { "vod2uv", "bitmap",
+                                   "frame", "packing",
+                                   "accuracy", "checkerboard",
+                                   0
+                                 }; // Move to MIRLogic
     size_t i = 0;
     while (force[i]) {
         if (has(force[i])) {
             eckit::Log::info() << "MIRJob will perform transformation/interpolation ('"
-                << force[i] << "' specified)" << std::endl;
+                               << force[i] << "' specified)" << std::endl;
             return false;
         }
         i++;
@@ -203,7 +207,7 @@ bool MIRJob::matches(const param::MIRParametrisation& metadata) const {
     return ok;
 }
 
-void MIRJob::mirToolCall(std::ostream& out) const {
+void MIRJob::mirToolCall(std::ostream &out) const {
     int fmt = eckit::format(out);
     eckit::setformat(out, eckit::Log::applicationFormat);
     out << *this;

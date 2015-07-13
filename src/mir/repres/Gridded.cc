@@ -68,9 +68,9 @@ bool Gridded::globalDomain() const {
     throw eckit::SeriousBug(std::string(os));
 }
 
-void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField& field) const {
+void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField &field) const {
 
-    if(!globalDomain()) {
+    if (!globalDomain()) {
         Representation::cropToDomain(parametrisation, field); // This will throw an exception
     }
 }
@@ -161,6 +161,74 @@ const Gridded *Gridded::crop(const util::BoundingBox &bbox, const std::vector<do
     return cropped;
 }
 
+
+void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double missingValue) const {
+
+
+    ASSERT(values.size());
+    double minvalue = values[0];
+    double maxvalue = values[1];
+
+    for (size_t i = 1; i < values.size(); ++i) {
+        minvalue = std::min(minvalue, values[i]);
+        maxvalue = std::max(maxvalue, values[i]);
+    }
+
+    size_t we = 16;
+    size_t ns = 8;
+
+    double dwe = 360.0 / we;
+    double dns = 180.0 / ns;
+
+    // Assumes iterator scans in the same order as the values
+    eckit::ScopedPtr<Iterator> iter(iterator());
+    double lat = 0;
+    double lon = 0;
+
+    std::vector<double> v;
+    v.push_back(minvalue);
+    v.push_back(maxvalue);
+
+    size_t i = 0;
+    size_t n = 0;
+    size_t m = 0;
+
+    size_t k = 0;
+
+    while (iter->next(lat, lon)) {
+
+        lat = 90 - lat;
+
+        while (lon >= 369) {
+            lon -= 360;
+        }
+
+        while (lon < 0) {
+            lon += 360;
+        }
+
+        size_t nn = size_t(lat / dns);
+        size_t mm = size_t(lon / dwe);
+
+        if(nn != n || mm != m) {
+
+            if(nn != n) {
+                i++;
+            }
+
+            n = nn;
+            m = mm;
+
+            i++;
+            i %= v.size();
+        }
+
+        values[k++] = v[i];
+
+    }
+
+    ASSERT(k == values.size());
+}
 
 size_t Gridded::computeN(double first, double last, double inc, const char *n_name, const char *first_name, const char *last_name) {
     size_t n;

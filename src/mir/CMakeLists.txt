@@ -54,6 +54,8 @@ list(
      action/interpolate/Gridded2RotatedRegular.h
      action/misc/AreaCropper.cc
      action/misc/AreaCropper.h
+     action/misc/CheckerBoard.cc
+     action/misc/CheckerBoard.h
      action/transform/Sh2GriddedTransform.cc
      action/transform/Sh2GriddedTransform.h
      action/transform/Sh2Octahedral.cc
