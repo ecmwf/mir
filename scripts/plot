@@ -58,6 +58,7 @@ if args.wind:
 
 scaling = 'on'
 contour = mproc(contour_automatic_setting='ecchart',)
+grib_extra = {}
 
 if args.diff or args.error:
     scaling = 'off'
@@ -104,7 +105,9 @@ if args.diff or args.error:
     args.grib = [tmp]
 
     if args.diff:
+        grib_extra = {'grib_interpolation_method': 'nearest'}
         contour = [mproc(contour="off",
+                         contour_method="linear",
                          contour_shade="on",
                          contour_shade_technique="grid_shading",
                          contour_shade_min_level=EPSILON,
@@ -113,14 +116,17 @@ if args.diff or args.error:
                          contour_shade_min_level_colour='rgb(0,0,1)',),
                    mproc(contour="off",
                          contour_shade="on",
+                         contour_method="linear",
                          contour_shade_technique="grid_shading",
                          contour_shade_max_level=-EPSILON,
                          contour_label="off",
                          contour_shade_max_level_colour='rgb(1,0,0)',
                          contour_shade_min_level_colour='rgb(1,0,0)',)]
     if args.error:
+        grib_extra = {'grib_interpolation_method': 'nearest'}
         contour = mproc(contour="off",
                         contour_shade="on",
+                        contour_method="linear",
                         contour_shade_technique="grid_shading",
                         contour_shade_min_level=EPSILON - EPSILON / 2.0,
                         contour_label="off")
@@ -179,7 +185,8 @@ if args.raw:
     scaling = 'off'
 
 if args.grid_shading:
-    contour = mproc(contour="off", contour_shade="on", contour_shade_technique="grid_shading")
+    contour = mproc(contour="off", contour_shade="on", contour_shade_technique="grid_shading", contour_method="linear")
+    grib_extra = {'grib_interpolation_method': 'nearest'}
 
 if args.cell_shading:
     contour = mproc(contour="off", contour_shade="on", contour_shade_technique="cell_shading")
@@ -189,7 +196,8 @@ if args.marker:
 
 data = []
 for i in range(1, 2):
-    grib = macro.mgrib(grib_input_file_name=args.grib[0], grib_field_position=i, grib_automatic_scaling=scaling)
+    grib = macro.mgrib(grib_input_file_name=args.grib[0], grib_field_position=i, grib_automatic_scaling=scaling, **grib_extra)
+    print grib
 
     data.append(background)
     data.append(grib)
