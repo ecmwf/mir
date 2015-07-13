@@ -1,11 +1,3 @@
-find_program( GRIB_COMPARE grib_compare )
-find_program( GRIB_LS      grib_ls )
-
-if( NOT GRIB_COMPARE AND TARGET grib_compare )
-	get_target_property( GRIB_COMPARE grib_compare LOCATION )
-        get_target_property( GRIB_LS      grib_ls      LOCATION )
-endif()
-
 # define the grib environment
 
 set( GRIB_DEFINITION_PATH ${grib_api_BASE_DIR}/share/grib_api/definitions/ )
