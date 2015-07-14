@@ -237,21 +237,6 @@ void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double 
         size_t c = size_t(lat / dns);
         size_t r = size_t(lon / dwe);
 
-        // eckit::Log::info() << lat << " - " << lon << " mm " << mm << " nn " << nn << std::endl;
-
-        // if (nn != n || mm != m) {
-
-        //     if (nn != n) {
-        //         i++;
-        //     }
-
-        //     n = nn;
-        //     m = mm;
-
-        //     i++;
-        //     i %= v.size();
-        // }
-
         if (!hasMissing || values[k] != missingValue) {
             values[k] = boxes[std::make_pair(r, c)];
         }
