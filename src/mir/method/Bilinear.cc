@@ -157,9 +157,12 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         parallel_south[j] = in.npts() - i;
     }
 
+    std::ofstream outfile ("coeffs_mir.out");
 
     // interpolate each output point in turn
-    for (size_t i = 0; i < out.npts(); ++i) {
+    const size_t onpts = out.npts();
+    for (size_t i = 0; i < onpts; ++i) {
+
         const double lat = ocoords(i, LAT);
         const double lon = ocoords(i, LON);
 
@@ -184,8 +187,9 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             double bot_lat = 0.;
             long   top_i = 0;     // upper/lower latitude vector index
             long   bot_i = 0;
-            size_t top_n;         // upper/lower latitude vector number of points on the same latitude
-            size_t bot_n;
+
+            size_t top_n = 0;     // upper/lower latitude vector number of points on the same latitude
+            size_t bot_n = 0;
 
             for (size_t n = 1; n < lons.size(); ++n) {
                 top_n = lons[n - 1];
@@ -217,15 +221,15 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             // -------------------------------------------
 
             // set left/right point indices, on the upper latitude
-            size_t top_i_lft;
-            size_t top_i_rgt;
+            size_t top_i_lft = 0;
+            size_t top_i_rgt = 0;
             left_right_lon_indexes(lon, icoords, top_i, top_i + top_n, top_i_lft, top_i_rgt);
             ASSERT(top_i_rgt < bot_i);
             ASSERT(top_i_lft < bot_i);
 
             // set left/right point indices, on the lower latitude
-            size_t bot_i_lft;
-            size_t bot_i_rgt;
+            size_t bot_i_lft = 0;
+            size_t bot_i_rgt = 0;
             left_right_lon_indexes(lon, icoords, bot_i, bot_i + bot_n , bot_i_lft, bot_i_rgt);
             ASSERT(bot_i_rgt < bot_i + bot_n);
             ASSERT(bot_i_lft < bot_i + bot_n);
@@ -257,6 +261,11 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             double w_tr =  w1 * wt;
             double w_tl =  w2 * wt;
 
+            outfile << w_tl << " "
+                    << w_tr << " "
+                    << w_bl << " "
+                    << w_br << std::endl;
+
             weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_rgt, w_br ) );
             weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_lft, w_bl ) );
             weights_triplets.push_back( WeightMatrix::Triplet( i, top_i_rgt, w_tr ) );
@@ -266,6 +275,7 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
     }
 
+    outfile.close();
 
     // set sparse matrix
     W.setFromTriplets(weights_triplets);
