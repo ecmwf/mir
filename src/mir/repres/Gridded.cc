@@ -170,7 +170,7 @@ void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double 
 
     size_t first   = 0;
     for (; first < values.size(); ++first) {
-        if (!hasMissing || values[first] != minvalue) {
+        if (!hasMissing || values[first] != missingValue) {
             minvalue = values[first];
             maxvalue = values[first];
             break;
@@ -183,8 +183,10 @@ void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double 
     }
 
     for (size_t i = first; i < values.size(); ++i) {
-        minvalue = std::min(minvalue, values[i]);
-        maxvalue = std::max(maxvalue, values[i]);
+        if (!hasMissing || values[i] != missingValue) {
+            minvalue = std::min(minvalue, values[i]);
+            maxvalue = std::max(maxvalue, values[i]);
+        }
     }
 
     size_t we = 16;
@@ -192,6 +194,8 @@ void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double 
 
     double dwe = 360.0 / we;
     double dns = 180.0 / ns;
+
+
 
     // Assumes iterator scans in the same order as the values
     eckit::ScopedPtr<Iterator> iter(iterator());
@@ -202,9 +206,19 @@ void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double 
     v.push_back(minvalue);
     v.push_back(maxvalue);
 
-    size_t i = 0;
-    size_t n = 0;
-    size_t m = 0;
+    std::map<std::pair<size_t, size_t>, size_t> boxes;
+
+    size_t b = 0;
+    for (size_t r = 0; r < we; r++) {
+        for (size_t c = 0; c < ns; c++) {
+            boxes[std::make_pair(r, c)] = b;
+            b++;
+            b %= v.size();
+        }
+        b++;
+        b %= v.size();
+    }
+
 
     size_t k = 0;
 
@@ -220,24 +234,26 @@ void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double 
             lon += 360;
         }
 
-        size_t nn = size_t(lat / dns);
-        size_t mm = size_t(lon / dwe);
+        size_t c = size_t(lat / dns);
+        size_t r = size_t(lon / dwe);
 
-        if (nn != n || mm != m) {
+        // eckit::Log::info() << lat << " - " << lon << " mm " << mm << " nn " << nn << std::endl;
 
-            if (nn != n) {
-                i++;
-            }
+        // if (nn != n || mm != m) {
 
-            n = nn;
-            m = mm;
+        //     if (nn != n) {
+        //         i++;
+        //     }
 
-            i++;
-            i %= v.size();
-        }
+        //     n = nn;
+        //     m = mm;
 
-        if (!hasMissing || values[k] != minvalue) {
-            values[k] = v[i];
+        //     i++;
+        //     i %= v.size();
+        // }
+
+        if (!hasMissing || values[k] != missingValue) {
+            values[k] = boxes[std::make_pair(r, c)];
         }
 
         k++;
