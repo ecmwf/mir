@@ -78,9 +78,16 @@ ecbuild_add_option( FEATURE NETCDF
 ### Hermes
 
 ecbuild_add_option( FEATURE HERMES
-                    DEFAULT OFF
+                    DEFAULT ON
                     DESCRIPTION "Hermes computation engine"
                     REQUIRED_PACKAGES "PROJECT hermes VERSION 0.1.0" )
+
+### Libemos
+
+ecbuild_add_option( FEATURE LIBEMOS_INTERPOLATION
+                    DEFAULT ON
+                    DESCRIPTION "Comparison with Libemos interpolation"
+                    REQUIRED_PACKAGES "PROJECT libemos VERSION 4.1.0" )
 
 ###############################################################################
 # contents
