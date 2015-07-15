@@ -49,10 +49,6 @@ namespace api {
 namespace {
 
 
-typedef int fortint;
-typedef double fortfloat;
-
-
 static eckit::ScopedPtr<ProdgenJob> intin(0);
 
 static eckit::ScopedPtr<MIRJob> job(0);

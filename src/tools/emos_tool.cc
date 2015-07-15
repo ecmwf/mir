@@ -11,16 +11,13 @@
 /// @author Baudouin Raoult
 /// @date Apr 2015
 
+#include "mir/api/emoslib.h"
+
+
 #include "eckit/runtime/Tool.h"
 #include "eckit/log/Log.h"
 
 using eckit::Log;
-
-extern "C"
-{
-    typedef int fortint;
-    fortint emosnum_(fortint *a);
-}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -31,8 +28,7 @@ class EmosTool : public eckit::Tool {
     static void usage(const std::string &tool);
 
   public:
-    EmosTool(int argc, char **argv) :  eckit::Tool(argc, argv)
-    {
+    EmosTool(int argc, char **argv) :  eckit::Tool(argc, argv) {
     }
 
 };
@@ -41,10 +37,24 @@ void EmosTool::usage(const std::string &tool) {
 
 }
 
+static void intout(const char *name, double x, double y) {
+    // extern "C" fortint intout_(const char *name,
+    //                        const fortint ints[],
+    //                        const fortfloat reals[],
+    //                        const char *value,
+    //                        const fortint name_len,
+    //                        const fortint value_len);
+    fortint ints[] = {0, };
+    fortfloat reals[] = {x, y};
+    // ASSERT(intout_(name, ints, reals, "", strlen(name), 0));
+}
+
 void EmosTool::run() {
 
-    int dummy = 1;
-    Log::info() << "Libemos cycle " << (long)emosnum_(&dummy) << std::endl;
+    fortint dummy = 1;
+    Log::info() << "Libemos cycle " << emosnum_(dummy) << std::endl;
+
+    intout("grid", 2.0, 2.0);
 
 }
 
