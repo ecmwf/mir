@@ -22,8 +22,10 @@ parser.add_argument('-r', '--raw', help='Turn off MAGICS automatic scaling', act
 parser.add_argument('-g', '--grid_shading', help='Use grid_shading', action='store_true')
 parser.add_argument('-c', '--cell_shading', help='Use cell_shading', action='store_true')
 parser.add_argument('-m', '--marker', help='Use marker', action='store_true')
-parser.add_argument('-o', '--output', help='Path of output file', metavar='OUTPUT')
-parser.add_argument('-D', '--diff', help='Path of other GRIB', metavar='GRIB')
+parser.add_argument('-o', '--output', help='Path to output file', metavar='OUTPUT')
+parser.add_argument('-D', '--diff', help='Path to other GRIB', metavar='GRIB')
+parser.add_argument('-R', '--reference', help='Path to reference GRIB', metavar='GRIB')
+
 parser.add_argument('-E', '--error', help='Path of other GRIB', metavar='GRIB')
 parser.add_argument('-n', '--polar_north', help='Polar stereographic north', action='store_true')
 parser.add_argument('-s', '--polar_south', help='Polar stereographic south', action='store_true')

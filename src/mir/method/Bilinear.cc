@@ -166,8 +166,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         const double lat = ocoords(i, LAT);
         const double lon = ocoords(i, LON);
 
-        const bool too_much_north = eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(lat, max_lat);
-        const bool too_much_south = eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(min_lat, lat);
+        const bool too_much_north = !eckit::FloatCompare<double>::isApproximatelyEqual(lat, max_lat) && lat > max_lat;
+        const bool too_much_south = !eckit::FloatCompare<double>::isApproximatelyEqual(lat, min_lat) && lat < min_lat;
 
         if (too_much_north || too_much_south) {
 
