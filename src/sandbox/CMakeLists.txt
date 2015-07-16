@@ -17,6 +17,10 @@ ecbuild_add_executable( TARGET  lsm
                         INCLUDES ${ECKIT_INCLUDE_DIRS}
                         LIBS     mir ${LIBEMOS_LIBRARIES} ${ECKIT_LIBRARIES})
 
+ecbuild_add_executable( TARGET  json_config
+                        SOURCES  json_config.cc
+                        INCLUDES ${ECKIT_INCLUDE_DIRS}
+                        LIBS     mir ${LIBEMOS_LIBRARIES} ${ECKIT_LIBRARIES})
 
 # ecbuild_add_executable( TARGET  eigen_sparse
 # 						SOURCES eigen_sparse.cpp utils.h

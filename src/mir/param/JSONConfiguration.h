@@ -18,15 +18,18 @@
 
 #include <string>
 
-#include "mir/param/SimpleParametrisation.h"
-#include "mir/util/ParserConsumer.h"
+#include "mir/param/MIRParametrisation.h"
+#include "eckit/value/Value.h"
 
+namespace eckit {
+    class PathName;
+};
 
 namespace mir {
 namespace param {
 
 
-class JSONConfiguration : public SimpleParametrisation, public util::ParserConsumer {
+class JSONConfiguration : public MIRParametrisation {
   public:
 
 // -- Exceptions
@@ -34,7 +37,8 @@ class JSONConfiguration : public SimpleParametrisation, public util::ParserConsu
 
 // -- Contructors
 
-
+    JSONConfiguration(const eckit::PathName& path, char separator = '.');
+    ~JSONConfiguration(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -53,15 +57,12 @@ class JSONConfiguration : public SimpleParametrisation, public util::ParserConsu
 
 // -- Class methods
 
-    static const JSONConfiguration& instance();
 
   protected:
 
-    JSONConfiguration();
 
 // -- Destructor
 
-    ~JSONConfiguration(); // Change to virtual if base class
 // -- Members
     // None
 
@@ -87,6 +88,9 @@ class JSONConfiguration : public SimpleParametrisation, public util::ParserConsu
 
 // -- Members
 
+    eckit::Value root_;
+    char separator_;
+
 // -- Methods
     // None
 
@@ -95,14 +99,16 @@ class JSONConfiguration : public SimpleParametrisation, public util::ParserConsu
     // From MIRParametrisation
     virtual void print(std::ostream&) const;
 
-    // From MIRParametrisation and ParserConsumer
-    virtual void store(const std::string& name, const char* value);
-    virtual void store(const std::string& name, const std::string& value);
-    virtual void store(const std::string& name, bool value);
-    virtual void store(const std::string& name, long value);
-    virtual void store(const std::string& name, double value);
+    virtual bool has(const std::string& name) const;
 
-    virtual void scope(const std::string& name);
+    virtual bool get(const std::string& name, std::string& value) const;
+    virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, double& value) const;
+
+    virtual bool get(const std::string& name, std::vector<long>& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
+    virtual bool get(const std::string& name, size_t& value) const;
 
 // -- Class members
     // None

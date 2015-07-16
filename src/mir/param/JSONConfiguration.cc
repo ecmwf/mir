@@ -18,7 +18,7 @@
 #include <iostream>
 #include <limits>
 #include "eckit/filesystem/PathName.h"
-#include "eckit/io/StdFile.h"
+#include "eckit/parser/JSONParser.h"
 #include "mir/util/Parser.h"
 
 
@@ -26,77 +26,53 @@ namespace mir {
 namespace param {
 
 
-JSONConfiguration::JSONConfiguration() {
-    // For demo only:
-
-    set("logic", "mars");
-    set("legendre.loader", "mapped-memory");
-
-    set("interpolation", "tessellation"); // The word 'method' is used in grib
-    set("caching", true);
-
-    set("lsm.selection", "auto");
-    set("lsm.interpolation", "nearest-neighbour");
-
-    set("epsilon", std::numeric_limits<double>::epsilon());
-    set("nclosest", 4L);
-
-    set("lsm.weight.adjustment", 0.2);
-    set("lsm.value.threshold", 0.5);
-
-    // Read the rest for the file
-    eckit::PathName path("~mir/etc/defaults.cfg");
-    if (!path.exists())  {
-        return;
-    }
-
-    eckit::Log::info() << "Loading MIR defaults from " << path << std::endl;
-    util::Parser parser(path);
-    parser.fill(*this);
-
+JSONConfiguration::JSONConfiguration(const eckit::PathName &path, char separator):
+    separator_(separator) {
+    std::ifstream in(path);
+    eckit::JSONParser parser(in);
+    root_ = parser.parse();
+    ASSERT(!in.bad());
 }
 
 
 JSONConfiguration::~JSONConfiguration() {
 }
 
-const JSONConfiguration& JSONConfiguration::instance() {
-    static JSONConfiguration instance_;
-    return instance_;
-}
-
-void JSONConfiguration::print(std::ostream& out) const {
-    out << "JSONConfiguration[";
-    SimpleParametrisation::print(out);
+void JSONConfiguration::print(std::ostream &out) const {
+    out << "JSONConfiguration[root=";
+    out << root_;
     out << "]";
 }
 
-void JSONConfiguration::store(const std::string& name, const char* value) {
-    eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (string)" << std::endl;
-    SimpleParametrisation::set(name, value);
+bool JSONConfiguration::has(const std::string &name) const {
+    NOTIMP;
 }
 
-void JSONConfiguration::store(const std::string& name, const std::string& value) {
-    eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (string)" << std::endl;
-    SimpleParametrisation::set(name, value);
+bool JSONConfiguration::get(const std::string &name, std::string &value) const {
+    NOTIMP;
 }
 
-void JSONConfiguration::store(const std::string& name, bool value) {
-    eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (bool)" << std::endl;
-    SimpleParametrisation::set(name, value);
+bool JSONConfiguration::get(const std::string &name, bool &value) const {
+    NOTIMP;
 }
 
-void JSONConfiguration::store(const std::string& name, long value) {
-    eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (long)" << std::endl;
-    SimpleParametrisation::set(name, value);
+bool JSONConfiguration::get(const std::string &name, long &value) const {
+    NOTIMP;
 }
 
-void JSONConfiguration::store(const std::string& name, double value) {
-    eckit::Log::info() << "From configuration file " << name << "=[" << value << "] (double)" << std::endl;
-    SimpleParametrisation::set(name, value);
+bool JSONConfiguration::get(const std::string &name, double &value) const {
+    NOTIMP;
 }
 
-void JSONConfiguration::scope(const std::string& name) {
+bool JSONConfiguration::get(const std::string &name, std::vector<long> &value) const {
+    NOTIMP;
+}
+
+bool JSONConfiguration::get(const std::string &name, std::vector<double> &value) const {
+    NOTIMP;
+}
+
+bool JSONConfiguration::get(const std::string &name, size_t &value) const {
     NOTIMP;
 }
 
