@@ -207,6 +207,8 @@ list(
      param/DelayedParametrisation.h
      param/FieldParametrisation.cc
      param/FieldParametrisation.h
+     param/JSONConfiguration.cc
+     param/JSONConfiguration.h
      param/MIRArgs.cc
      param/MIRArgs.h
      param/MIRCombinedParametrisation.cc
