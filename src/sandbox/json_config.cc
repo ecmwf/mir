@@ -9,8 +9,7 @@
  */
 
 /// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Jul 2015
 
 
 #include "eckit/runtime/Tool.h"
