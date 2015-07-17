@@ -47,21 +47,32 @@ void JSONTool::run() {
     std::cout << config << std::endl;
 
     size_t n;
-    config.get("a", n);
-    std::cout << "a = " << n << std::endl;
+    if (config.get("a", n)) {
+        std::cout << "a = " << n << std::endl;
+    } else {
+        std::cout << "a not found" << std::endl;
+    }
 
     double x;
-    config.get("c.b", x);
-    std::cout << "c.b = " << x << std::endl;
+    if (config.get("c.b", x)) {
+        std::cout << "c.b = " << x << std::endl;
+    } else {
+        std::cout << "c.b not found" << std::endl;
+    }
 
-    x = -9;
-    config.get("c.d", x);
-    std::cout << "c.d = " << x << std::endl;
+    if (config.get("c.d", x)) {
+        std::cout << "c.d = " << x << std::endl;
+    } else {
+        std::cout << "c.d not found" << std::endl;
+    }
 
     std::vector<double> v;
-    config.get("b", v);
-    for (size_t i = 0; i < v.size(); i++) {
-        std::cout << "b = " << v[i] << std::endl;
+    if (config.get("b", v)) {
+        for (size_t i = 0; i < v.size(); i++) {
+            std::cout << "b = " << v[i] << std::endl;
+        }
+    } else {
+        std::cout << "b not found" << std::endl;
     }
 
     eckit::LocalConfiguration sub(config, "c");
