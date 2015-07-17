@@ -15,6 +15,7 @@
 
 #include "eckit/runtime/Tool.h"
 #include "eckit/config/JSONConfiguration.h"
+#include "eckit/config/LocalConfiguration.h"
 
 
 class JSONTool : public eckit::Tool {
@@ -64,7 +65,7 @@ void JSONTool::run() {
         std::cout << "b = " << v[i] << std::endl;
     }
 
-    eckit::Configuration sub(config, "c");
+    eckit::LocalConfiguration sub(config, "c");
     std::cout << "++++++++ " << sub << std::endl;
     sub.set("a.s", 2L);
     sub.set("a.b.c.d", 2.6);
@@ -72,6 +73,14 @@ void JSONTool::run() {
     sub.set("a.b.c.r", false);
     std::cout << "++++++++ " << sub << std::endl;
     std::cout << config << std::endl;
+
+    eckit::LocalConfiguration sub2(config);
+    sub2.set("p", "p");
+    std::cout << "++++++++ " << sub2 << std::endl;
+
+    eckit::LocalConfiguration sub3;
+    sub3.set("p", "p");
+    std::cout << "++++++++ " << sub3 << std::endl;
 
 }
 
