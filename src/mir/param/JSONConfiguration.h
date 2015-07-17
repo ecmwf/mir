@@ -22,7 +22,7 @@
 #include "eckit/value/Value.h"
 
 namespace eckit {
-    class PathName;
+class PathName;
 };
 
 namespace mir {
@@ -32,97 +32,103 @@ namespace param {
 class JSONConfiguration : public MIRParametrisation {
   public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
-    JSONConfiguration(const eckit::PathName& path, char separator = '.');
-    JSONConfiguration(std::istream&, char separator = '.');
+    JSONConfiguration(const eckit::PathName &path, char separator = '.');
+    JSONConfiguration(std::istream &, char separator = '.');
     JSONConfiguration(const JSONConfiguration &other, const std::string &path);
 
     ~JSONConfiguration(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
+
+    void set(const std::string &name, const std::string &value);
+    void set(const std::string &name, const char *value);
+
+    void set(const std::string &name, double value);
+    void set(const std::string &name, long value);
+    void set(const std::string &name, bool value);
+
+    // -- Overridden methods
+
+    virtual bool has(const std::string &name) const;
+
+    virtual bool get(const std::string &name, std::string &value) const;
+    virtual bool get(const std::string &name, bool &value) const;
+    virtual bool get(const std::string &name, long &value) const;
+    virtual bool get(const std::string &name, double &value) const;
+
+    virtual bool get(const std::string &name, std::vector<long> &value) const;
+    virtual bool get(const std::string &name, std::vector<double> &value) const;
+    virtual bool get(const std::string &name, size_t &value) const;
+
+    // -- Class members
     // None
 
-// -- Overridden methods
-
-    virtual bool has(const std::string& name) const;
-
-    virtual bool get(const std::string& name, std::string& value) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, double& value) const;
-
-    virtual bool get(const std::string& name, std::vector<long>& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
-    virtual bool get(const std::string& name, size_t& value) const;
-
-// -- Class members
-    // None
-
-// -- Class methods
+    // -- Class methods
 
 
   protected:
 
 
-// -- Destructor
+    // -- Destructor
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     // void print(ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   private:
 
-// No copy allowed
+    // No copy allowed
 
-    JSONConfiguration(const JSONConfiguration&);
-    JSONConfiguration& operator=(const JSONConfiguration&);
+    JSONConfiguration(const JSONConfiguration &);
+    JSONConfiguration &operator=(const JSONConfiguration &);
 
-// -- Members
+    // -- Members
 
     eckit::Value root_;
     char separator_;
 
-// -- Methods
+    // -- Methods
 
-    eckit::Value lookUp(const std::string&, bool&) const;
-    eckit::Value lookUp(const std::string&) const;
+    eckit::Value lookUp(const std::string &, bool &) const;
+    eckit::Value lookUp(const std::string &) const;
 
-// -- Overridden methods
+    // -- Overridden methods
 
     // From MIRParametrisation
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream &) const;
 
 
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const JSONConfiguration& p)
     //  { p.print(s); return s; }

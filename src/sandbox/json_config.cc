@@ -59,10 +59,9 @@ void JSONTool::run() {
         std::cout << "b = " << v[i] << std::endl;
     }
 
-
     mir::param::JSONConfiguration sub(config, "c");
     std::cout << sub << std::endl;
-
+    sub.set("d.b", 2L);
 }
 
 
