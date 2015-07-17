@@ -27,6 +27,7 @@ parser.add_argument('-D', '--diff', help='Path to other GRIB', metavar='GRIB')
 parser.add_argument('-R', '--reference', help='Path to reference GRIB', metavar='GRIB')
 
 parser.add_argument('-E', '--error', help='Path of other GRIB', metavar='GRIB')
+parser.add_argument('-l', '--legend', help='Turn on legend', action='store_true')
 parser.add_argument('-n', '--polar_north', help='Polar stereographic north', action='store_true')
 parser.add_argument('-s', '--polar_south', help='Polar stereographic south', action='store_true')
 parser.add_argument('-e', '--europe', help='Europe', action='store_true')
@@ -61,6 +62,10 @@ if args.wind:
 scaling = 'on'
 contour = mproc(contour_automatic_setting='ecchart',)
 grib_extra = {}
+contour_extra = {}
+
+if args.legend:
+    contour_extra['legend'] = 'on'
 
 if args.diff or args.error:
     scaling = 'off'
@@ -85,7 +90,7 @@ if args.diff or args.error:
 
     e1 = gribapi.grib_get(h1, "packingError")
     e2 = gribapi.grib_get(h2, "packingError")
-    EPSILON = max(e1, e2)
+    EPSILON = min(e1, e2)
 
     # Version without numpy
 
@@ -115,7 +120,7 @@ if args.diff or args.error:
                          contour_shade_min_level=EPSILON,
                          contour_label="off",
                          contour_shade_max_level_colour='rgb(0,0,1)',
-                         contour_shade_min_level_colour='rgb(0,0,1)',),
+                         contour_shade_min_level_colour='rgb(0,0,1)', **contour_extra),
                    mproc(contour="off",
                          contour_shade="on",
                          contour_method="linear",
@@ -123,7 +128,7 @@ if args.diff or args.error:
                          contour_shade_max_level=-EPSILON,
                          contour_label="off",
                          contour_shade_max_level_colour='rgb(1,0,0)',
-                         contour_shade_min_level_colour='rgb(1,0,0)',)]
+                         contour_shade_min_level_colour='rgb(1,0,0)', **contour_extra)]
     if args.error:
         grib_extra = {'grib_interpolation_method': 'nearest'}
         contour = mproc(contour="off",
@@ -131,7 +136,7 @@ if args.diff or args.error:
                         contour_method="linear",
                         contour_shade_technique="grid_shading",
                         contour_shade_min_level=EPSILON - EPSILON / 2.0,
-                        contour_label="off")
+                        contour_label="off", **contour_extra)
 
 
 if not args.output:
@@ -181,20 +186,20 @@ background = macro.mcoast(map_grid='on',
 # Define a contour
 
 if args.default:
-    contour = mproc()
+    contour = mproc(**contour_extra)
 
 if args.raw:
     scaling = 'off'
 
 if args.grid_shading:
-    contour = mproc(contour="off", contour_shade="on", contour_shade_technique="grid_shading", contour_method="linear")
+    contour = mproc(contour="off", contour_shade="on", contour_shade_technique="grid_shading", contour_method="linear", **contour_extra)
     grib_extra = {'grib_interpolation_method': 'nearest'}
 
 if args.cell_shading:
-    contour = mproc(contour="off", contour_shade="on", contour_shade_technique="cell_shading")
+    contour = mproc(contour="off", contour_shade="on", contour_shade_technique="cell_shading", **contour_extra)
 
 if args.marker:
-    contour = mproc(contour="off", contour_shade="on", contour_shade_technique="marker")
+    contour = mproc(contour="off", contour_shade="on", contour_shade_technique="marker", **contour_extra)
 
 data = []
 for i in range(1, 2):

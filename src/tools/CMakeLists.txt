@@ -39,8 +39,3 @@ ecbuild_add_executable(
 		SOURCES     mir_plot_lsm.cc
 		INCLUDES    ${ECKIT_INCLUDE_DIRS}
 		LIBS        mir ${ECKIT_LIBRARIES} )
-
-########################################################################################################################
-
-
-
