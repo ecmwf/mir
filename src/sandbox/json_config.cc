@@ -14,7 +14,7 @@
 
 
 #include "eckit/runtime/Tool.h"
-#include "mir/param/JSONConfiguration.h"
+#include "eckit/config/JSONConfiguration.h"
 
 
 class JSONTool : public eckit::Tool {
@@ -42,7 +42,7 @@ void JSONTool::run() {
         )";
     in.str(json);
 
-    mir::param::JSONConfiguration config(in);
+    eckit::JSONConfiguration config(in);
 
     std::cout << config << std::endl;
 
@@ -64,7 +64,7 @@ void JSONTool::run() {
         std::cout << "b = " << v[i] << std::endl;
     }
 
-    mir::param::JSONConfiguration sub(config, "c");
+    eckit::Configuration sub(config, "c");
     std::cout << "++++++++ " << sub << std::endl;
     sub.set("a.s", 2L);
     sub.set("a.b.c.d", 2.6);
