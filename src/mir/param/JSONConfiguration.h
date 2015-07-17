@@ -115,6 +115,9 @@ class JSONConfiguration : public MIRParametrisation {
     eckit::Value lookUp(const std::string &, bool &) const;
     eckit::Value lookUp(const std::string &) const;
 
+    void set(const std::vector<std::string> &path, size_t i, eckit::Value &root, const eckit::Value &value);
+    void set(const std::string &s, const eckit::Value &value);
+
     // -- Overridden methods
 
     // From MIRParametrisation

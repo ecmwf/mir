@@ -20,6 +20,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/JSONParser.h"
 #include "mir/util/Parser.h"
+#include "eckit/parser/Tokenizer.h"
 
 
 namespace mir {
@@ -56,43 +57,86 @@ void JSONConfiguration::print(std::ostream &out) const {
 }
 
 eckit::Value JSONConfiguration::lookUp(const std::string &s, bool &found) const {
-    size_t len = s.size();
-    size_t j = 0;
+
+    eckit::Tokenizer parse(separator_);
+    std::vector<std::string> path;
+    parse(s, path);
+
     eckit::Value result = root_;
 
     std::cout << "JSONConfiguration::lookUp root=" << result << std::endl;
-    for (size_t i = 0; i < len; i++) {
-        if (s[i] == separator_) {
-            std::string key = s.substr(j, i);
-            if (!result.contains(key)) {
-                found = false;
-                return result;
-            }
-
-            std::cout << "JSONConfiguration::lookUp key='" << key << "'" << std::endl;
-            result = result[key];
-            std::cout << "JSONConfiguration::lookUp result=" << result << std::endl;
-
-            j = i + 1;
-        }
-    }
-    if (j < len) {
-        std::string key = s.substr(j);
+    for (size_t i = 0; i < path.size(); i++) {
+        const std::string &key = path[i];
         if (!result.contains(key)) {
             found = false;
             return result;
         }
-        std::cout << "JSONConfiguration::lookUp key='" << key << "'" << std::endl;
+        std::cout << "JSONConfiguration::lookUp key=" << key  << std::endl;
+
         result = result[key];
-        std::cout << "JSONConfiguration::lookUp result=" << result << std::endl;
+        std::cout << "JSONConfiguration::lookUp key=" << result  << std::endl;
 
     }
+
     found = true;
     return result;
 }
 
+void JSONConfiguration::set(const std::vector<std::string> &path, size_t i, eckit::Value &root, const eckit::Value &value)  {
+    if (root.shared()) {
+        std::cout << "Clone " << root << std::endl;
+        root = root.clone();
+    }
 
-eckit::Value JSONConfiguration::lookUp(const std::string& name) const {
+    if (i + 1 == path.size()) {
+        std::cout << i << " SET " << path[i] << " to " << value << std::endl;
+        root[path[i]] = value;
+        return;
+    }
+
+    if (!root.contains(path[i])) {
+        std::cout << i << " NEW " << path[i]  << std::endl;
+        root[path[i]] = eckit::Value::makeMap();
+    }
+
+    eckit::Value &r = root.element(path[i]);
+    set(path, i + 1, r, value);
+}
+
+void JSONConfiguration::set(const std::string &s, const eckit::Value &value)  {
+
+    std::cout << "---- " << s << " => " << value << std::endl;
+
+    eckit::Tokenizer parse(separator_);
+    std::vector<std::string> path;
+    parse(s, path);
+
+    set(path, 0, root_, value);
+}
+
+void JSONConfiguration::set(const std::string &s, long value)  {
+    set(s, eckit::Value(value));
+}
+
+
+void JSONConfiguration::set(const std::string &s, const char* value)  {
+    set(s, eckit::Value(value));
+}
+
+
+void JSONConfiguration::set(const std::string &s, const std::string& value)  {
+    set(s, eckit::Value(value));
+}
+
+void JSONConfiguration::set(const std::string &s, double value)  {
+    set(s, eckit::Value(value));
+}
+
+void JSONConfiguration::set(const std::string &s, bool value)  {
+    set(s, eckit::Value(value));
+}
+
+eckit::Value JSONConfiguration::lookUp(const std::string &name) const {
     bool found = false;
     eckit::Value v = lookUp(name, found);
     ASSERT(found);
