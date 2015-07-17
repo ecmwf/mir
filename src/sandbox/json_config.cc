@@ -34,7 +34,7 @@ class JSONTool : public eckit::Tool {
 void JSONTool::run() {
 
     std::istringstream in;
-    std::string json = "{\"a\":2,\"b\":true, \"c\":{\"b\":1.2}}";
+    std::string json = "{\"a\":2,\"b\":[1,2,3], \"c\":{\"b\":1.2}}";
     in.str(json);
 
     mir::param::JSONConfiguration config(in);
@@ -49,10 +49,19 @@ void JSONTool::run() {
     config.get("c.b", x);
     std::cout << "c.b = " << x << std::endl;
 
-
     x = -9;
     config.get("c.d", x);
     std::cout << "c.d = " << x << std::endl;
+
+    std::vector<double> v;
+    config.get("b", v);
+    for (size_t i = 0; i < v.size(); i++) {
+        std::cout << "b = " << v[i] << std::endl;
+    }
+
+
+    mir::param::JSONConfiguration sub(config, "c");
+    std::cout << sub << std::endl;
 
 }
 

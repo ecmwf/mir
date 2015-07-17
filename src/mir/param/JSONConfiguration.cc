@@ -41,6 +41,11 @@ JSONConfiguration::JSONConfiguration(std::istream &in, char separator):
     ASSERT(!in.bad());
 }
 
+JSONConfiguration::JSONConfiguration(const JSONConfiguration &other, const std::string &path):
+    root_(other.lookUp(path)),
+    separator_(other.separator_) {
+}
+
 JSONConfiguration::~JSONConfiguration() {
 }
 
@@ -84,6 +89,14 @@ eckit::Value JSONConfiguration::lookUp(const std::string &s, bool &found) const 
     }
     found = true;
     return result;
+}
+
+
+eckit::Value JSONConfiguration::lookUp(const std::string& name) const {
+    bool found = false;
+    eckit::Value v = lookUp(name, found);
+    ASSERT(found);
+    return v;
 }
 
 
@@ -133,8 +146,13 @@ bool JSONConfiguration::get(const std::string &name, std::vector<long> &value) c
     bool found = false;
     eckit::Value v = lookUp(name, found);
     if (found) {
-        // value = v;
-        NOTIMP;
+        ASSERT(v.isList());
+        value.clear();
+        int i = 0;
+        while (v.contains(i)) {
+            value.push_back(v[i]);
+            i++;
+        }
     }
     return found;
 }
@@ -143,8 +161,13 @@ bool JSONConfiguration::get(const std::string &name, std::vector<double> &value)
     bool found = false;
     eckit::Value v = lookUp(name, found);
     if (found) {
-        // value = v;
-        NOTIMP;
+        ASSERT(v.isList());
+        value.clear();
+        int i = 0;
+        while (v.contains(i)) {
+            value.push_back(v[i]);
+            i++;
+        }
     }
     return found;
 }

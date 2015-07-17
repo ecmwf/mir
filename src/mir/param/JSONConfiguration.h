@@ -39,6 +39,8 @@ class JSONConfiguration : public MIRParametrisation {
 
     JSONConfiguration(const eckit::PathName& path, char separator = '.');
     JSONConfiguration(std::istream&, char separator = '.');
+    JSONConfiguration(const JSONConfiguration &other, const std::string &path);
+
     ~JSONConfiguration(); // Change to virtual if base class
 
 // -- Convertors
@@ -105,6 +107,7 @@ class JSONConfiguration : public MIRParametrisation {
 // -- Methods
 
     eckit::Value lookUp(const std::string&, bool&) const;
+    eckit::Value lookUp(const std::string&) const;
 
 // -- Overridden methods
 
