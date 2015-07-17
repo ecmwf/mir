@@ -42,12 +42,5 @@ ecbuild_add_executable(
 
 ########################################################################################################################
 
-# Just for testing and validation
 
-ecbuild_add_executable(
-        TARGET      emos_tool
-        SOURCES     emos_tool.cc
-        CONDITION   HAVE_LIBEMOS_INTERPOLATION
-        INCLUDES    ${ECKIT_INCLUDE_DIRS} ${GRIB_API_INCLUDE_DIRS}
-        LIBS        ${ECKIT_LIBRARIES} ${LIBEMOS_LIBRARIES} ${GRIB_API_LIBRARIES} )
 

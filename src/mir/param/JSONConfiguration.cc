@@ -34,6 +34,12 @@ JSONConfiguration::JSONConfiguration(const eckit::PathName &path, char separator
     ASSERT(!in.bad());
 }
 
+JSONConfiguration::JSONConfiguration(std::istream &in, char separator):
+    separator_(separator) {
+    eckit::JSONParser parser(in);
+    root_ = parser.parse();
+    ASSERT(!in.bad());
+}
 
 JSONConfiguration::~JSONConfiguration() {
 }
@@ -44,36 +50,112 @@ void JSONConfiguration::print(std::ostream &out) const {
     out << "]";
 }
 
+eckit::Value JSONConfiguration::lookUp(const std::string &s, bool &found) const {
+    size_t len = s.size();
+    size_t j = 0;
+    eckit::Value result = root_;
+
+    std::cout << "JSONConfiguration::lookUp root=" << result << std::endl;
+    for (size_t i = 0; i < len; i++) {
+        if (s[i] == separator_) {
+            std::string key = s.substr(j, i);
+            if (!result.contains(key)) {
+                found = false;
+                return result;
+            }
+
+            std::cout << "JSONConfiguration::lookUp key='" << key << "'" << std::endl;
+            result = result[key];
+            std::cout << "JSONConfiguration::lookUp result=" << result << std::endl;
+
+            j = i + 1;
+        }
+    }
+    if (j < len) {
+        std::string key = s.substr(j);
+        if (!result.contains(key)) {
+            found = false;
+            return result;
+        }
+        std::cout << "JSONConfiguration::lookUp key='" << key << "'" << std::endl;
+        result = result[key];
+        std::cout << "JSONConfiguration::lookUp result=" << result << std::endl;
+
+    }
+    found = true;
+    return result;
+}
+
+
 bool JSONConfiguration::has(const std::string &name) const {
-    NOTIMP;
+    bool found = false;
+    lookUp(name, found);
+    return found;
 }
 
 bool JSONConfiguration::get(const std::string &name, std::string &value) const {
-    NOTIMP;
+    bool found = false;
+    eckit::Value v = lookUp(name, found);
+    if (found) {
+        value = std::string(v);
+    }
+    return found;
 }
 
 bool JSONConfiguration::get(const std::string &name, bool &value) const {
-    NOTIMP;
+    bool found = false;
+    eckit::Value v = lookUp(name, found);
+    if (found) {
+        value = v;
+    }
+    return found;
 }
 
 bool JSONConfiguration::get(const std::string &name, long &value) const {
-    NOTIMP;
+    bool found = false;
+    eckit::Value v = lookUp(name, found);
+    if (found) {
+        value = long(v);
+    }
+    return found;
 }
 
 bool JSONConfiguration::get(const std::string &name, double &value) const {
-    NOTIMP;
+    bool found = false;
+    eckit::Value v = lookUp(name, found);
+    if (found) {
+        value = v;
+    }
+    return found;
 }
 
 bool JSONConfiguration::get(const std::string &name, std::vector<long> &value) const {
-    NOTIMP;
+    bool found = false;
+    eckit::Value v = lookUp(name, found);
+    if (found) {
+        // value = v;
+        NOTIMP;
+    }
+    return found;
 }
 
 bool JSONConfiguration::get(const std::string &name, std::vector<double> &value) const {
-    NOTIMP;
+    bool found = false;
+    eckit::Value v = lookUp(name, found);
+    if (found) {
+        // value = v;
+        NOTIMP;
+    }
+    return found;
 }
 
 bool JSONConfiguration::get(const std::string &name, size_t &value) const {
-    NOTIMP;
+    bool found = false;
+    eckit::Value v = lookUp(name, found);
+    if (found) {
+        value = long(v);
+    }
+    return found;
 }
 
 }  // namespace param
