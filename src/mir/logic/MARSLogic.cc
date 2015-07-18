@@ -66,6 +66,10 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
         plan.add("misc.checkerboard");
     }
 
+    if(parametrisation_.has("pattern")) {
+        plan.add("misc.pattern");
+    }
+
     if (user_grid) {
         ASSERT(!user_reduced);
         ASSERT(!user_regular);

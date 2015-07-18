@@ -151,6 +151,7 @@ void MIRTool::run() {
     options.push_back(new Separator("Debugging"));
     options.push_back(new SimpleOption<bool>("dummy", "Use dummy data"));
     options.push_back(new SimpleOption<bool>("checkerboard", "Create checkerboard field"));
+    options.push_back(new SimpleOption<bool>("pattern", "Create reference pattern field"));
 
 
     // {"", 0, "GRIB Output"},

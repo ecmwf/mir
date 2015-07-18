@@ -56,6 +56,8 @@ list(
      action/misc/AreaCropper.h
      action/misc/CheckerBoard.cc
      action/misc/CheckerBoard.h
+     action/misc/ReferencePattern.cc
+     action/misc/ReferencePattern.h
      action/transform/Sh2GriddedTransform.cc
      action/transform/Sh2GriddedTransform.h
      action/transform/Sh2Octahedral.cc

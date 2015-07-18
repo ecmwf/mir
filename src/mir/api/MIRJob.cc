@@ -188,6 +188,7 @@ bool MIRJob::matches(const param::MIRParametrisation &metadata) const {
     static const char *force[] = { "vod2uv", "bitmap",
                                    "frame", "packing",
                                    "accuracy", "checkerboard",
+                                   "pattern",
                                    0
                                  }; // Move to MIRLogic
     size_t i = 0;

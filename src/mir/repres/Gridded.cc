@@ -16,6 +16,7 @@
 #include "mir/repres/Gridded.h"
 
 #include <map>
+#include <cmath>
 
 #include "eckit/log/Timer.h"
 #include "eckit/memory/ScopedPtr.h"
@@ -239,6 +240,64 @@ void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double 
 
         if (!hasMissing || values[k] != missingValue) {
             values[k] = boxes[std::make_pair(r, c)];
+        }
+
+        k++;
+    }
+
+    ASSERT(k == values.size());
+}
+
+void Gridded::pattern(std::vector<double> &values, bool hasMissing, double missingValue) const {
+
+
+    double minvalue = 0;
+    double maxvalue = 0;
+
+    size_t first = 0;
+    size_t count = 0;
+    for (; first < values.size(); ++first) {
+        if (!hasMissing || values[first] != missingValue) {
+            minvalue = values[first];
+            maxvalue = values[first];
+            count++;
+            break;
+        }
+    }
+
+    if (first == values.size()) {
+        // Only missing values
+        return;
+    }
+
+    for (size_t i = first; i < values.size(); ++i) {
+        if (!hasMissing || values[i] != missingValue) {
+            minvalue = std::min(minvalue, values[i]);
+            maxvalue = std::max(maxvalue, values[i]);
+            count++;
+        }
+    }
+
+    double median = (minvalue + maxvalue) / 2;
+    double range = maxvalue - minvalue;
+
+    eckit::ScopedPtr<Iterator> iter(iterator());
+    double lat = 0;
+    double lon = 0;
+
+    std::vector<double> v;
+    v.push_back(minvalue);
+    v.push_back(maxvalue);
+
+
+    size_t k = 0;
+    const double deg2rad = M_PI/180.0;
+
+    while (iter->next(lat, lon)) {
+
+        if (!hasMissing || values[k] != missingValue) {
+            values[k] =
+                range * sin(3 * lon * deg2rad) * cos(lat * deg2rad * 3) * 0.5 + median;
         }
 
         k++;

@@ -88,6 +88,7 @@ class Representation {
                                  const std::vector<double>&, std::vector<double>&) const;
 
     virtual void checkerboard(std::vector<double>& values, bool hasMissing, double missingValue) const;
+    virtual void pattern(std::vector<double>& values, bool hasMissing, double missingValue) const;
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
