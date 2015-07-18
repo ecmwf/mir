@@ -39,3 +39,9 @@ ecbuild_add_executable(
 		SOURCES     mir_plot_lsm.cc
 		INCLUDES    ${ECKIT_INCLUDE_DIRS}
 		LIBS        mir ${ECKIT_LIBRARIES} )
+
+ecbuild_add_executable(
+		TARGET      mir_stats
+		SOURCES     mir_stats.cc
+		INCLUDES    ${ECKIT_INCLUDE_DIRS}
+		LIBS        mir ${ECKIT_LIBRARIES} )
