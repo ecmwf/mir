@@ -9,12 +9,12 @@
  */
 
 /// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Jul 2015
 
 
 #include "eckit/runtime/Tool.h"
-#include "mir/param/JSONConfiguration.h"
+#include "eckit/config/JSONConfiguration.h"
+#include "eckit/config/LocalConfiguration.h"
 
 
 class JSONTool : public eckit::Tool {
@@ -34,25 +34,63 @@ class JSONTool : public eckit::Tool {
 void JSONTool::run() {
 
     std::istringstream in;
-    std::string json = "{\"a\":2,\"b\":true, \"c\":{\"b\":1.2}}";
+    std::string json = R"(
+        {
+            "a" : 2,
+            "b" : [1,2,3],
+            "c" : {"b": 1.2}}
+        )";
     in.str(json);
 
-    mir::param::JSONConfiguration config(in);
+    eckit::JSONConfiguration config(in);
 
     std::cout << config << std::endl;
 
     size_t n;
-    config.get("a", n);
-    std::cout << "a = " << n << std::endl;
+    if (config.get("a", n)) {
+        std::cout << "a = " << n << std::endl;
+    } else {
+        std::cout << "a not found" << std::endl;
+    }
 
     double x;
-    config.get("c.b", x);
-    std::cout << "c.b = " << x << std::endl;
+    if (config.get("c.b", x)) {
+        std::cout << "c.b = " << x << std::endl;
+    } else {
+        std::cout << "c.b not found" << std::endl;
+    }
 
+    if (config.get("c.d", x)) {
+        std::cout << "c.d = " << x << std::endl;
+    } else {
+        std::cout << "c.d not found" << std::endl;
+    }
 
-    x = -9;
-    config.get("c.d", x);
-    std::cout << "c.d = " << x << std::endl;
+    std::vector<double> v;
+    if (config.get("b", v)) {
+        for (size_t i = 0; i < v.size(); i++) {
+            std::cout << "b = " << v[i] << std::endl;
+        }
+    } else {
+        std::cout << "b not found" << std::endl;
+    }
+
+    eckit::LocalConfiguration sub(config, "c");
+    std::cout << "++++++++ " << sub << std::endl;
+    sub.set("a.s", 2L);
+    sub.set("a.b.c.d", 2.6);
+    std::cout << "++++++++ " << sub << std::endl;
+    sub.set("a.b.c.r", false);
+    std::cout << "++++++++ " << sub << std::endl;
+    std::cout << config << std::endl;
+
+    eckit::LocalConfiguration sub2(config);
+    sub2.set("p", "p");
+    std::cout << "++++++++ " << sub2 << std::endl;
+
+    eckit::LocalConfiguration sub3;
+    sub3.set("p", "p");
+    std::cout << "++++++++ " << sub3 << std::endl;
 
 }
 
