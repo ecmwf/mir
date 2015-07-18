@@ -161,8 +161,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         parallel_south[j] = inpts - i;
     }
 
-    std::ofstream outfile ("mir.coeffs");
-    outfile.precision(2);
+//    std::ofstream outfile ("mir.coeffs");
+//    outfile.precision(2);
 
     // interpolate each output point in turn
     const size_t onpts = out.npts();
@@ -184,12 +184,12 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             for (std::vector<size_t>::const_iterator j = par.begin(); j != par.end(); ++j)
                 weights_triplets.push_back( WeightMatrix::Triplet( i, *j, w ) );
 
-            outfile << std::fixed
-                    << " " << (size_t) lat * 100 << " "
-                    << w << " "
-                    << w << " "
-                    << w << " "
-                    << w << std::endl;
+//            outfile << std::fixed
+//                    << " " << (size_t) lat * 100 << " "
+//                    << w << " "
+//                    << w << " "
+//                    << w << " "
+//                    << w << std::endl;
 
         } else {
 
@@ -275,15 +275,6 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             // bilinear interpolation
             // ----------------------
 
-            std::cout << " --> LL "
-                      << lat << " "
-                      << lon << " "
-                      << top_i_lft << " "
-                      << top_i_rgt << " "
-                      << bot_i_lft << " "
-                      << bot_i_rgt << " "
-                      << std::endl;
-
             ASSERT(bot_i_rgt < inpts);
             ASSERT(bot_i_lft < inpts);
             ASSERT(top_i_rgt < inpts);
@@ -293,6 +284,9 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             double tr_lon  = icoords(top_i_rgt, LON);
             double bl_lon  = icoords(bot_i_lft, LON);
             double br_lon  = icoords(bot_i_rgt, LON);
+
+            if( tr_lon < tl_lon ) tr_lon += 360.;
+            if( br_lon < bl_lon ) br_lon += 360.;
 
             // calculate the weights
             double w1 =  lon - tl_lon;
@@ -310,23 +304,32 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             double w_tr =  w1 * wt;
             double w_tl =  w2 * wt;
 
-            std::cout << "*** "
-                      << top_lat << " "
-                      << bot_lat << " "
-                      << w1 << " "
-                      << w2 << " "
-                      << w3 << " "
-                      << w4 << " "
-                      << wt << " "
-                      << wb << " "
-                      << std::endl;
+            //            std::cout << " --> LL "
+            //                      << lon << " ["
+            //                      << tl_lon << "/" << tr_lon << ","
+            //                      << bl_lon << "/" << br_lon << "] "
+            //                      << lat << " ["
+            //                      << top_lat << ","
+            //                      << bot_lat << "] : "
+            //                      << top_i_lft << " "
+            //                      << top_i_rgt << " "
+            //                      << bot_i_lft << " "
+            //                      << bot_i_rgt << " "
+//                      << " *** "
+//                      << w1 << " "
+//                      << w2 << " "
+//                      << w3 << " "
+//                      << w4 << " "
+//                      << wt << " "
+//                      << wb << " "
+//                      << std::endl;
 
-            ASSERT( w1 >= 0. );
-            ASSERT( w2 >= 0. );
-            ASSERT( w3 >= 0. );
-            ASSERT( w4 >= 0. );
-            ASSERT( wt >= 0. );
-            ASSERT( wb >= 0. );
+            ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(w1, 0.) );
+            ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(w2, 0.) );
+            ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(w3, 0.) );
+            ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(w4, 0.) );
+            ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(wt, 0.) );
+            ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(wb, 0.) );
 
             const double sum = w_br + w_bl + w_tr + w_tl;
 
@@ -337,12 +340,12 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
             w_tr /=  sum;
             w_tl /=  sum;
 
-            outfile << std::fixed
-                    << " " << (size_t) lat * 100 << " "
-                    << fabs(w_tl) << " "
-                    << fabs(w_tr) << " "
-                    << fabs(w_bl) << " "
-                    << fabs(w_br) << std::endl;
+//            outfile << std::fixed
+//                    << " " << (size_t) ( lat * 100 ) << " "
+//                    << fabs(w_tl) << " "
+//                    << fabs(w_tr) << " "
+//                    << fabs(w_bl) << " "
+//                    << fabs(w_br) << std::endl;
 
             weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_rgt, w_br ) );
             weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_lft, w_bl ) );
@@ -353,7 +356,7 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
     }
 
-    outfile.close();
+//    outfile.close();
 
     // set sparse matrix
     W.setFromTriplets(weights_triplets);
