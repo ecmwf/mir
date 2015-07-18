@@ -43,6 +43,7 @@ class MIRCompare : public eckit::Tool {
     static void usage(const std::string &tool);
 
     void compare(size_t n, mir::data::MIRField &field1, mir::data::MIRField &field2) const;
+    void l2norm(size_t n, mir::data::MIRField &field1, mir::data::MIRField &field2) const;
 
     bool compare( double,  double) const;
     bool compare(const double *, const double *, size_t) const;
@@ -62,6 +63,7 @@ class MIRCompare : public eckit::Tool {
     double user_relative_;
     double user_percent_;
     long   user_ulps_;
+    bool   l2norm_;
 
     eckit::ScopedPtr< eckit::FloatApproxCompare<double> > real_same_;
 
@@ -70,7 +72,7 @@ class MIRCompare : public eckit::Tool {
 void MIRCompare::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " [--absolute=a] [--relative=r] [--ulps=u] [--percent=p] file1.grib file2.grib" << std::endl
+            << std::endl << "Usage: " << tool << " [--absolute=a] [--relative=r] [--ulps=u] [--percent=p] [--l2norm] file1.grib file2.grib" << std::endl
             ;
 
     ::exit(1);
@@ -102,8 +104,8 @@ static bool same(double A, double B) {
 
 bool MIRCompare::compare(double a, double b) const {
 
-    if(real_same_)
-        return (*real_same_)(a,b);
+    if (real_same_)
+        return (*real_same_)(a, b);
     else
         return same(a, b);
 }
@@ -135,7 +137,7 @@ bool MIRCompare::compare(const double *a, const double *b, size_t size) const {
         eckit::Log::info() << "maxAbsoluteError=" << maxAbsoluteError << " maxRelativeError=" << maxRelativeError << std::endl;
         eckit::Log::info() << "packing_error1=" << packing_error1 << " packing_error2=" << packing_error2 << std::endl;
 
-        if(p <= user_percent_) {
+        if (p <= user_percent_) {
             eckit::Log::info() << "Percent of different valus smaller than " << user_percent_ << ", ignoring differences" << std::endl;
             count = 0;
         }
@@ -180,6 +182,43 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
     }
 }
 
+
+void MIRCompare::l2norm(size_t n, mir::data::MIRField &field1, mir::data::MIRField &field2) const {
+
+    ASSERT(field1.dimensions() == 1);
+    ASSERT(field2.dimensions() == 1);
+
+    if (field1.hasMissing() != field2.hasMissing()) {
+        eckit::Log::info() << "Field " << n << ": " << (field1.hasMissing() ? "file 1 has missing values" : "file 1 has not missing values") << " "
+                           << (field2.hasMissing() ? "file 2 has missing values" : "file 2 has not missing values") << std::endl;
+        ::exit(1);
+    }
+
+
+    if (field1.missingValue() != field2.missingValue()) {
+        eckit::Log::info() << "Field " << n << ": missing value mismatch " <<  field1.missingValue()
+                           << " and " << field2.missingValue() << std::endl;
+        ::exit(1);
+    }
+
+    const std::vector<double> &v1 = field1.values(0);
+    const std::vector<double> &v2 = field2.values(0);
+
+    if (v1.size() != v2.size()) {
+        eckit::Log::info() << "Field " << n << ": values count mismatch " <<  eckit::BigNum(v1.size())
+                           << " and " << eckit::BigNum(v2.size()) << std::endl;
+        ::exit(1);
+    }
+
+    double norm = 0;
+    for(size_t i = 0; i < v1.size(); i++) {
+        double a = v1[i] - v2[i];
+        norm += a * a;
+    }
+
+    std::cout << "L2-norm " << sqrt(norm) << std::endl;
+}
+
 void MIRCompare::run() {
 
     using eckit::FloatApproxCompare;
@@ -192,19 +231,21 @@ void MIRCompare::run() {
     options.push_back(new SimpleOption<double>("relative", "Maximum relative error"));
     options.push_back(new SimpleOption<double>("percent", "Maximum percentage of different values"));
     options.push_back(new SimpleOption<bool>("ulps", "Comparing with ULPS (?)"));
+    options.push_back(new SimpleOption<bool>("l2norm", "Compute L2 norm between 2 fields"));
 
     mir::param::MIRArgs args(&usage, 2, options);
 
     args.get("absolute", user_absolute_);
     args.get("relative", user_relative_);
     args.get("percent", user_percent_);
+    args.get("l2norm", l2norm_);
 
 
     /// TODO Test this code
     args.get("ulps",     user_ulps_);
-    if(user_ulps_) {
+    if (user_ulps_) {
         eckit::Log::info() << "Comparing with ULPS " << user_ulps_ << std::endl;
-        real_same_.reset( new FloatApproxCompare<double>(0,user_ulps_) );
+        real_same_.reset( new FloatApproxCompare<double>(0, user_ulps_) );
     }
 
     mir::input::GribFileInput file1(args.args(0));
@@ -227,57 +268,62 @@ void MIRCompare::run() {
         eckit::ScopedPtr<mir::data::MIRField> field1(input1.field());
         eckit::ScopedPtr<mir::data::MIRField> field2(input2.field());
 
-        double absolute = user_absolute_;
-        double relative = user_relative_;
+        if (l2norm_) {
+            l2norm(n, *field1, *field2);
+        } else {
 
-        size_t paramId1 = 0;
-        ASSERT(metadata1.get("paramId", paramId1));
+            double absolute = user_absolute_;
+            double relative = user_relative_;
 
-        size_t paramId2 = 0;
-        ASSERT(metadata2.get("paramId", paramId2));
+            size_t paramId1 = 0;
+            ASSERT(metadata1.get("paramId", paramId1));
 
-        ASSERT(paramId1 == paramId2);
+            size_t paramId2 = 0;
+            ASSERT(metadata2.get("paramId", paramId2));
 
-        std::string name;
-        ASSERT(metadata1.get("shortName", name));
-        eckit::Log::info() << "Field " << n << ": paramId is " << paramId1 << " (" << name << ")" << std::endl;
+            ASSERT(paramId1 == paramId2);
 
-        size_t i = 0;
-        while (thresholds[i].paramId_) {
-            if (thresholds[i].paramId_ == paramId1) {
-                if (thresholds[i].absolute_ >= 0) {
-                    absolute = thresholds[i].absolute_;
+            std::string name;
+            ASSERT(metadata1.get("shortName", name));
+            eckit::Log::info() << "Field " << n << ": paramId is " << paramId1 << " (" << name << ")" << std::endl;
+
+            size_t i = 0;
+            while (thresholds[i].paramId_) {
+                if (thresholds[i].paramId_ == paramId1) {
+                    if (thresholds[i].absolute_ >= 0) {
+                        absolute = thresholds[i].absolute_;
+                    }
+                    if (thresholds[i].relative_ >= 0) {
+                        relative = thresholds[i].relative_;
+                    }
+                    eckit::Log::info() << "Field " << n << ": thresholds changed for paramId " << paramId1
+                                       << " to absolute=" << absolute << ", relative=" << relative << std::endl;
+                    break;
                 }
-                if (thresholds[i].relative_ >= 0) {
-                    relative = thresholds[i].relative_;
-                }
-                eckit::Log::info() << "Field " << n << ": thresholds changed for paramId " << paramId1
-                                   << " to absolute=" << absolute << ", relative=" << relative << std::endl;
-                break;
+                i++;
             }
-            i++;
+
+            //================================
+
+            packing_error1 = absolute;
+            ASSERT(metadata1.get("packingError", packing_error1));
+
+            packing_error2 = absolute;
+            ASSERT(metadata2.get("packingError", packing_error2));
+
+            double packing_error = std::min(packing_error1, packing_error2);
+            maxAbsoluteError = std::max(absolute, packing_error);
+            maxRelativeError = relative;
+
+            if (maxAbsoluteError != absolute) {
+                eckit::Log::warning() << "Field " << n << ": packing error " << packing_error
+                                      << " is more than requested absolute error " << absolute << std::endl;
+                eckit::Log::warning() << "Field " << n << ": using packing error as absolute error" << std::endl;
+            }
+
+
+            compare(n, *field1, *field2);
         }
-
-        //================================
-
-        packing_error1 = absolute;
-        ASSERT(metadata1.get("packingError", packing_error1));
-
-        packing_error2 = absolute;
-        ASSERT(metadata2.get("packingError", packing_error2));
-
-        double packing_error = std::min(packing_error1, packing_error2);
-        maxAbsoluteError = std::max(absolute, packing_error);
-        maxRelativeError = relative;
-
-        if (maxAbsoluteError != absolute) {
-            eckit::Log::warning() << "Field " << n << ": packing error " << packing_error
-                                  << " is more than requested absolute error " << absolute << std::endl;
-            eckit::Log::warning() << "Field " << n << ": using packing error as absolute error" << std::endl;
-        }
-
-
-        compare(n, *field1, *field2);
 
         ok1 = file1.next();
         ok2 = file2.next();
