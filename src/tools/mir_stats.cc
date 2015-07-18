@@ -156,7 +156,7 @@ void MIRStats::run() {
         for (size_t i = 0; i < buckets.size(); ++i) {
             double p = double(buckets[i]) / double(count);
             if (p) {
-                e += -p * log(p);
+                e += -p * log(p) * one_over_log2;
             }
         }
 
