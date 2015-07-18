@@ -142,13 +142,11 @@ void MIRStats::run() {
 
         // Compute entropy
         std::vector<size_t> buckets(bucket_count, 0);
-        double scale = bucket_count  / (maxvalue - minvalue);
+        double scale = (bucket_count - 1)  / (maxvalue - minvalue);
         for (size_t i = 0; i < values.size(); ++i) {
             if (!hasMissing || values[i] != missingValue) {
                 size_t b = (values[i] - minvalue) * scale;
-                if (b >= buckets.size()) {
-                    b = buckets.size() - 1;
-                }
+                ASSERT(b < bucket_count);
                 buckets[b]++;
             }
         }
