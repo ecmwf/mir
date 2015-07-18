@@ -66,6 +66,8 @@ void MIRStats::run() {
 
     //==============================================
     options.push_back(new SimpleOption<size_t>("buckets", "Bucket count for computing entropy (default 65536)"));
+    options.push_back(new SimpleOption<size_t>("bits", "Bucket count (as 2^bits) for computing entropy (default 16)"));
+
     // options.push_back(new SimpleOption<double>("relative", "Maximum relative error"));
     // options.push_back(new SimpleOption<double>("percent", "Maximum percentage of different values"));
     // options.push_back(new SimpleOption<bool>("ulps", "Comparing with ULPS (?)"));
@@ -81,6 +83,11 @@ void MIRStats::run() {
     const mir::param::MIRParametrisation &metadata = input.parametrisation();
     long bucket_count = 65536;
     args.get("buckets", bucket_count);
+
+    long bits = 0;
+    if (args.get("bits", bits)) {
+        bucket_count = 1L << bits;
+    }
 
     eckit::Log::info() << "Number of buckets: " << bucket_count << std::endl;
 
