@@ -41,6 +41,7 @@ PHILOSOPHY:
        - mir sets bbox to 0-359
     - What is the special treatment for precipitations (emoslib)
     - Compare with real prodgen output
+    - How can we interpolate to a 8x8 lat/lon grid?
     - What does Vo/D to U/V means if we stay in spherical?
         - Do we currently deliver U*cos(lat) and V*cos(lat)
         - What is U/V in spectral in MARS/FDB? Do they have the cos(lat)
