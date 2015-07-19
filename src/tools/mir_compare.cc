@@ -216,7 +216,7 @@ void MIRCompare::l2norm(size_t n, mir::data::MIRField &field1, mir::data::MIRFie
         norm += a * a;
     }
 
-    std::cout << "L2-norm " << sqrt(norm) << std::endl;
+    std::cout << "L2-norm " << sqrt(norm) << " " << v1.size() << " " << sqrt(norm)/v1.size() << " " << sqrt(norm)/sqrt(v1.size()) << std::endl;
 }
 
 void MIRCompare::run() {

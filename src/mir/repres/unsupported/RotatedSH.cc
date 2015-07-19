@@ -26,13 +26,9 @@ namespace mir {
 namespace repres {
 
 
-RotatedSH::RotatedSH(const param::MIRParametrisation &parametrisation) {
+RotatedSH::RotatedSH(const param::MIRParametrisation &parametrisation):
+    SphericalHarmonics(parametrisation) {
 }
-
-
-RotatedSH::RotatedSH() {
-}
-
 
 RotatedSH::~RotatedSH() {
 }

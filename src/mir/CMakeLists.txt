@@ -72,12 +72,12 @@ list(
      action/transform/Sh2ShTransform.h
      action/transform/VOD2UVTransform.cc
      action/transform/VOD2UVTransform.h
-     api/emoslib.cc
-     api/emoslib.h
      api/MIRJob.cc
      api/MIRJob.h
      api/ProdgenJob.cc
      api/ProdgenJob.h
+     api/emoslib.cc
+     api/emoslib.h
      caching/FileLoader.cc
      caching/FileLoader.h
      caching/LegendreCache.cc
@@ -97,10 +97,6 @@ list(
      data/MIRField.h
      data/MIRFieldStats.cc
      data/MIRFieldStats.h
-     input/RawInput.cc
-     input/RawInput.h
-     input/RawMetadata.cc
-     input/RawMetadata.h
      input/DummyInput.cc
      input/DummyInput.h
      input/GribFileInput.cc
@@ -115,6 +111,10 @@ list(
      input/MIRInput.h
      input/NetcdfFileInput.cc
      input/NetcdfFileInput.h
+     input/RawInput.cc
+     input/RawInput.h
+     input/RawMetadata.cc
+     input/RawMetadata.h
      input/VODInput.cc
      input/VODInput.h
      input/VectorInput.cc
@@ -135,28 +135,26 @@ list(
      lsm/AutoLSM.h
      lsm/GribFileLSM.cc
      lsm/GribFileLSM.h
-     lsm/LandSeaMasks.cc
-     lsm/LandSeaMasks.h
      lsm/LSMChooser.cc
      lsm/LSMChooser.h
+     lsm/LandSeaMasks.cc
+     lsm/LandSeaMasks.h
+     lsm/MappedMask.cc
+     lsm/MappedMask.h
      lsm/Mask.cc
      lsm/Mask.h
      lsm/NoneLSM.cc
      lsm/NoneLSM.h
-     lsm/MappedMask.cc
-     lsm/MappedMask.h
      lsm/TenMinutesLSM.cc
      lsm/TenMinutesLSM.h
      lsm/UserFileLSM.cc
      lsm/UserFileLSM.h
-     method/FEBilinear.cc
-     method/FEBilinear.h
      method/Bilinear.cc
      method/Bilinear.h
+     method/FEBilinear.cc
+     method/FEBilinear.h
      method/FELinear.cc
      method/FELinear.h
-     method/Tessellation.cc
-     method/Tessellation.h
      method/FiniteElement.cc
      method/FiniteElement.h
      method/KNearest.cc
@@ -173,10 +171,10 @@ list(
      method/NearestNeighbour.h
      method/PseudoLaplace.cc
      method/PseudoLaplace.h
-     method/WeightMatrix.h
+     method/Tessellation.cc
+     method/Tessellation.h
      method/WeightMatrix.cc
-     output/RawOutput.cc
-     output/RawOutput.h
+     method/WeightMatrix.h
      output/DummyOutput.cc
      output/DummyOutput.h
      output/GribFileOutput.cc
@@ -189,6 +187,8 @@ list(
      output/GribStreamOutput.h
      output/MIROutput.cc
      output/MIROutput.h
+     output/RawOutput.cc
+     output/RawOutput.h
      output/UVOutput.cc
      output/UVOutput.h
      output/VectorOutput.cc
@@ -227,34 +227,28 @@ list(
      param/option/FactoryOption.h
      param/option/Option.cc
      param/option/Option.h
-     # param/option/PathOption.cc
-     # param/option/PathOption.h
-     param/option/SimpleOption.cc
-     param/option/SimpleOption.h
      param/option/Separator.cc
      param/option/Separator.h
+     param/option/SimpleOption.cc
+     param/option/SimpleOption.h
      param/option/VectorOption.cc
      param/option/VectorOption.h
      repres/Gridded.cc
      repres/Gridded.h
+     repres/Iterator.cc
+     repres/Iterator.h
+     repres/Representation.cc
+     repres/Representation.h
      repres/gauss/Gaussian.cc
      repres/gauss/Gaussian.h
-     repres/latlon/LatLon.cc
-     repres/latlon/LatLon.h
-     repres/latlon/ReducedLL.cc
-     repres/latlon/ReducedLL.h
-     repres/latlon/RegularLL.cc
-     repres/latlon/RegularLL.h
-     repres/latlon/RotatedLL.cc
-     repres/latlon/RotatedLL.h
-     repres/gauss/reduced/Reduced.cc
-     repres/gauss/reduced/Reduced.h
      repres/gauss/reduced/Classic.cc
      repres/gauss/reduced/Classic.h
      repres/gauss/reduced/FromPL.cc
      repres/gauss/reduced/FromPL.h
      repres/gauss/reduced/Octahedral.cc
      repres/gauss/reduced/Octahedral.h
+     repres/gauss/reduced/Reduced.cc
+     repres/gauss/reduced/Reduced.h
      repres/gauss/reduced/ReducedClassic.cc
      repres/gauss/reduced/ReducedClassic.h
      repres/gauss/reduced/ReducedFromPL.cc
@@ -273,10 +267,16 @@ list(
      repres/gauss/regular/RegularGG.h
      repres/gauss/regular/RotatedGG.cc
      repres/gauss/regular/RotatedGG.h
-     repres/Representation.cc
-     repres/Iterator.h
-     repres/Iterator.cc
-     repres/Representation.h
+     repres/latlon/LatLon.cc
+     repres/latlon/LatLon.h
+     repres/latlon/ReducedLL.cc
+     repres/latlon/ReducedLL.h
+     repres/latlon/RegularLL.cc
+     repres/latlon/RegularLL.h
+     repres/latlon/RotatedLL.cc
+     repres/latlon/RotatedLL.h
+     repres/other/UnstructuredGrid.cc
+     repres/other/UnstructuredGrid.h
      repres/sh/SphericalHarmonics.cc
      repres/sh/SphericalHarmonics.h
      repres/unsupported/Albers.cc
@@ -313,8 +313,6 @@ list(
      repres/unsupported/StretchedSH.h
      repres/unsupported/TransverseMercator.cc
      repres/unsupported/TransverseMercator.h
-     repres/other/UnstructuredGrid.cc
-     repres/other/UnstructuredGrid.h
      util/Arguments.cc
      util/Arguments.h
      util/Bitmap.cc
@@ -332,6 +330,8 @@ list(
      util/ParserConsumer.h
      util/PointSearch.cc
      util/PointSearch.h
+     util/RotatedIterator.cc
+     util/RotatedIterator.h
      util/Rotation.cc
      util/Rotation.h
   )

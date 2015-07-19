@@ -70,6 +70,7 @@ class Reduced : public Gaussian {
     // -- Overridden methods
 
     virtual void fill(grib_info &) const;
+    virtual Iterator *iterator(bool unrotated) const;
 
 
     // -- Class members
@@ -95,7 +96,6 @@ class Reduced : public Gaussian {
 
 
     virtual const std::vector<long> &pls() const = 0;
-    virtual Iterator *iterator() const;
 
 
     // -- Overridden methods

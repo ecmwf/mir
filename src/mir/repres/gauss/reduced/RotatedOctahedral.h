@@ -94,6 +94,7 @@ class RotatedOctahedral : public  Octahedral {
 
     virtual void fill(grib_info &) const;
     virtual atlas::Grid *atlasGrid() const;
+    virtual Iterator* iterator(bool unrotated) const;
 
     virtual const Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
 

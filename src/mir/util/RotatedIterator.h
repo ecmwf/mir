@@ -13,19 +13,19 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedLL_H
-#define RotatedLL_H
+#ifndef RotatedIterator_H
+#define RotatedIterator_H
 
-#include "mir/repres/latlon/RegularLL.h"
+#include "mir/repres/Iterator.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "mir/util/Rotation.h"
-
+#include "eckit/geometry/RotateGrid.h"
 
 namespace mir {
-namespace repres {
-namespace latlon {
+namespace util {
 
 
-class RotatedLL : public RegularLL {
+class RotatedIterator : public repres::Iterator {
   public:
 
     // -- Exceptions
@@ -33,13 +33,11 @@ class RotatedLL : public RegularLL {
 
     // -- Contructors
 
-    RotatedLL(const param::MIRParametrisation &);
-    RotatedLL(const util::BoundingBox &bbox, const util::Increments &increments, const util::Rotation &rotation);
-
+    RotatedIterator(Iterator* iterator, const util::Rotation &rotation);
 
     // -- Destructor
 
-    virtual ~RotatedLL(); // Change to virtual if base class
+    virtual ~RotatedIterator(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -62,11 +60,8 @@ class RotatedLL : public RegularLL {
 
     // -- Members
 
-    util::Rotation rotation_;
-
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -79,45 +74,40 @@ class RotatedLL : public RegularLL {
 
   private:
 
-    // RotatedLL();
-
     // No copy allowed
 
-    RotatedLL(const RotatedLL &);
-    RotatedLL &operator=(const RotatedLL &);
+    RotatedIterator(const RotatedIterator &);
+    RotatedIterator &operator=(const RotatedIterator &);
 
     // -- Members
 
+    eckit::ScopedPtr<Iterator> iterator_;
+    util::Rotation rotation_;
+    eckit::geometry::RotateGrid rotate_;
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
-    virtual atlas::Grid *atlasGrid() const;
-    virtual Iterator* iterator(bool unrotated) const;
-
-    // From RegularLL
-    virtual const RotatedLL *cropped(const util::BoundingBox &bbox) const;
-
-
+    virtual bool next(double &lat, double &lon);
+    virtual void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Class members
-    // None
 
     // -- Class methods
     // None
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RotatedLL& p)
-    //  { p.print(s); return s; }
+    friend std::ostream &operator<<(std::ostream &s, const RotatedIterator &p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
-}  // namespace latlon
+
 }  // namespace repres
 }  // namespace mir
 #endif
