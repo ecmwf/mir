@@ -50,9 +50,9 @@ void Gridded::setSecondOrderPacking(grib_info &info) const {
 }
 
 
-Iterator *Gridded::iterator() const {
+Iterator *Gridded::iterator(bool unrotated) const {
     eckit::StrStream os;
-    os << "Gridded::iterator() not implemented for " << *this << eckit::StrStream::ends;
+    os << "Gridded::iterator(bool unrotated) not implemented for " << *this << eckit::StrStream::ends;
     throw eckit::SeriousBug(std::string(os));
 }
 
@@ -109,7 +109,10 @@ const Gridded *Gridded::crop(const util::BoundingBox &bbox, const std::vector<do
     size_t count = 0;
     bool first = true;
     double lat, lon;
-    eckit::ScopedPtr<Iterator> iter(iterator());
+
+    // Iterator is "unrotated", because the cropping area
+    // is expressed in the rotated coordinated system
+    eckit::ScopedPtr<Iterator> iter(iterator(true));
     while (iter->next(lat, lon)) {
         // std::cout << lat << " " << lon << std::endl;
         if (bbox.contains(lat, lon)) {
@@ -199,7 +202,7 @@ void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double 
 
 
     // Assumes iterator scans in the same order as the values
-    eckit::ScopedPtr<Iterator> iter(iterator());
+    eckit::ScopedPtr<Iterator> iter(iterator(false));
     double lat = 0;
     double lon = 0;
 
@@ -281,7 +284,7 @@ void Gridded::pattern(std::vector<double> &values, bool hasMissing, double missi
     double median = (minvalue + maxvalue) / 2;
     double range = maxvalue - minvalue;
 
-    eckit::ScopedPtr<Iterator> iter(iterator());
+    eckit::ScopedPtr<Iterator> iter(iterator(false));
     double lat = 0;
     double lon = 0;
 

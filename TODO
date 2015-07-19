@@ -36,6 +36,9 @@ PHILOSOPHY:
     - What is the special treatment for winds (emoslib)
         - Rotated
         - Non-rotated
+    - Rotation with no area (grid 1/1)
+       = emoslib sets bbox to 0-360
+       - mir sets bbox to 0-359
     - What is the special treatment for precipitations (emoslib)
     - Compare with real prodgen output
     - How can we interpolate to a 8x8 lat/lon grid?

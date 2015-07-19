@@ -16,14 +16,14 @@
 #ifndef RotatedSH_H
 #define RotatedSH_H
 
-#include "mir/repres/Gridded.h"
+#include "mir/repres/sh/SphericalHarmonics.h"
 
 
 namespace mir {
 namespace repres {
 
 
-class RotatedSH : public Gridded {
+class RotatedSH : public sh::SphericalHarmonics {
   public:
 
 // -- Exceptions

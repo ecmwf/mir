@@ -46,7 +46,7 @@ class Gridded : public Representation {
 
 // -- Methods
 
-    virtual Iterator* iterator() const;
+    virtual Iterator* iterator(bool unrotated) const;
 
 // -- Overridden methods
     // None
