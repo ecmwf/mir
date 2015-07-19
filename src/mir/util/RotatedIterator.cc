@@ -23,8 +23,7 @@ namespace util {
 RotatedIterator::RotatedIterator(Iterator *iterator, const util::Rotation &rotation):
     iterator_(iterator),
     rotation_(rotation),
-    rotate_(eckit::geometry::LLPoint2(rotation.south_pole_latitude(),
-            rotation.south_pole_longitude()),
+    rotate_(eckit::geometry::LLPoint2(rotation.south_pole_longitude(), rotation.south_pole_latitude()),
             rotation.south_pole_rotation_angle()) {
 }
 
@@ -38,14 +37,10 @@ void RotatedIterator::print(std::ostream &out) const {
 
 bool RotatedIterator::next(double &lat, double &lon) {
 
-    return false;
-
     if(iterator_->next(lat, lon)) {
-        std::cout << lat << " " << lon << " => ";
         eckit::geometry::LLPoint2 p = rotate_.unrotate(eckit::geometry::LLPoint2(lon, lat)); // <== notice order
         lat = p.lat();
         lon = p.lon();
-        std::cout << lat << " " << lon << std::endl;
         return true;
     }
 
