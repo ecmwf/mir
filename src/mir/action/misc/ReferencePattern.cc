@@ -51,10 +51,12 @@ void ReferencePattern::print(std::ostream &out) const {
 void ReferencePattern::execute(data::MIRField &field) const {
 
     repres::RepresentationHandle representation(field.representation());
+    bool normalize = false;
+    parametrisation_.get("0-1", normalize);
 
     for (size_t i = 0; i < field.dimensions(); i++) {
         std::vector<double> &values = field.values(i);
-        representation->pattern(values, field.hasMissing(), field.missingValue());
+        representation->pattern(values, field.hasMissing(), field.missingValue(), normalize);
     }
 }
 

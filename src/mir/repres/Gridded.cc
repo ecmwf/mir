@@ -166,7 +166,7 @@ const Gridded *Gridded::crop(const util::BoundingBox &bbox, const std::vector<do
 }
 
 
-void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double missingValue) const {
+void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double missingValue, bool normalize) const {
 
 
     double minvalue = 0;
@@ -199,7 +199,10 @@ void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double 
     double dwe = 360.0 / we;
     double dns = 180.0 / ns;
 
-
+    if (normalize) {
+        maxvalue = 1;
+        minvalue = 0;
+    }
 
     // Assumes iterator scans in the same order as the values
     eckit::ScopedPtr<Iterator> iter(iterator(false));
@@ -251,7 +254,7 @@ void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double 
     ASSERT(k == values.size());
 }
 
-void Gridded::pattern(std::vector<double> &values, bool hasMissing, double missingValue) const {
+void Gridded::pattern(std::vector<double> &values, bool hasMissing, double missingValue, bool normalize) const {
 
 
     double minvalue = 0;
@@ -281,6 +284,11 @@ void Gridded::pattern(std::vector<double> &values, bool hasMissing, double missi
         }
     }
 
+    if (normalize) {
+        maxvalue = 1;
+        minvalue = 0;
+    }
+
     double median = (minvalue + maxvalue) / 2;
     double range = maxvalue - minvalue;
 
@@ -288,13 +296,9 @@ void Gridded::pattern(std::vector<double> &values, bool hasMissing, double missi
     double lat = 0;
     double lon = 0;
 
-    std::vector<double> v;
-    v.push_back(minvalue);
-    v.push_back(maxvalue);
-
 
     size_t k = 0;
-    const double deg2rad = M_PI/180.0;
+    const double deg2rad = M_PI / 180.0;
 
     while (iter->next(lat, lon)) {
 

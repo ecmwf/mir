@@ -91,8 +91,8 @@ class Gridded : public Representation {
 
     // Called by crop(), to override in subclasses
     virtual const Gridded* cropped(const util::BoundingBox &bbox) const;
-    virtual void checkerboard(std::vector<double>&,bool hasMissing, double missingValue) const;
-    virtual void pattern(std::vector<double>&,bool hasMissing, double missingValue) const;
+    virtual void checkerboard(std::vector<double>&,bool hasMissing, double missingValue, bool normalize) const;
+    virtual void pattern(std::vector<double>&,bool hasMissing, double missingValue, bool normalize) const;
 
 // -- Overridden methods
     virtual void setComplexPacking(grib_info&) const;

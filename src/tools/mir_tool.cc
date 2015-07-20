@@ -152,7 +152,8 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<bool>("dummy", "Use dummy data"));
     options.push_back(new SimpleOption<bool>("checkerboard", "Create checkerboard field"));
     options.push_back(new SimpleOption<bool>("pattern", "Create reference pattern field"));
-
+    options.push_back(new SimpleOption<size_t>("param-id", "Set parameter id"));
+    options.push_back(new SimpleOption<bool>("0-1", "Set pattern and checkerboard values between 0 and 1"));
 
     // {"", 0, "GRIB Output"},
     // {"accuracy", "n", "number of bits per value",},

@@ -51,10 +51,12 @@ void CheckerBoard::print(std::ostream &out) const {
 void CheckerBoard::execute(data::MIRField &field) const {
 
     repres::RepresentationHandle representation(field.representation());
+    bool normalize = false;
+    parametrisation_.get("0-1", normalize);
 
     for (size_t i = 0; i < field.dimensions(); i++) {
         std::vector<double> &values = field.values(i);
-        representation->checkerboard(values, field.hasMissing(), field.missingValue());
+        representation->checkerboard(values, field.hasMissing(), field.missingValue(), normalize);
     }
 }
 
