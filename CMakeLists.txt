@@ -1,6 +1,6 @@
 ############################################################################################
 #
-#   mir - ECMWF Meterological Interpolation and Regriding
+#   MIR - ECMWF Meterological Interpolation and Regriding
 #
 ############################################################################################
 

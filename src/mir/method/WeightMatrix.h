@@ -30,6 +30,7 @@ class WeightMatrix {
     typedef eckit::la::SparseMatrix Matrix;
 
 public:
+
     typedef Matrix::Index Index;
     typedef Matrix::Scalar Scalar;
     typedef eckit::la::Triplet Triplet;
@@ -40,7 +41,6 @@ public:
 
     void save(const eckit::PathName &path) const;
     void load(const eckit::PathName &path);
-
 
     Index rows() const {
         return matrix_.rows();
@@ -81,6 +81,8 @@ public:
         inner_const_iterator(const WeightMatrix &m, Index outer) :
             Matrix::InnerIterator(const_cast<Matrix&>(m.matrix_), outer) {}
     };
+
+    Matrix& matrix() { return matrix_; }
 
 private:
 

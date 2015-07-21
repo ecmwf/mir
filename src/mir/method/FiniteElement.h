@@ -48,21 +48,18 @@ class FiniteElement: public MethodWeighted {
     virtual void hash( eckit::MD5& ) const;
     virtual void generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const;
 
-  private:
+  protected: // methods
 
-    class MeshGenParams: public atlas::meshgen::MeshGenerator::Parameters {
     // Deriving from any eckit::Parametrisation should work
+    class MeshGenParams: public atlas::meshgen::MeshGenerator::Parameters {
       public:
         MeshGenParams();
     };
 
-// -- Overridden methods
-
     virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
 
-  protected:
+  protected: // members
 
-//  -- Data
     MeshGenParams meshgenparams_;
 };
 

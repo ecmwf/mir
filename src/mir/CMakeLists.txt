@@ -155,6 +155,8 @@ list(
      method/FEBilinear.h
      method/FELinear.cc
      method/FELinear.h
+     method/Conservative.cc
+     method/Conservative.h
      method/FiniteElement.cc
      method/FiniteElement.h
      method/KNearest.cc

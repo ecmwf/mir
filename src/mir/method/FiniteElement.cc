@@ -25,9 +25,9 @@
 #include "eckit/log/Timer.h"
 
 #include "atlas/actions/BuildXYZField.h"
-#include "atlas/geometry/QuadrilateralIntersection.h"
+#include "atlas/geometry/Quad3D.h"
 #include "atlas/geometry/Ray.h"
-#include "atlas/geometry/TriangleIntersection.h"
+#include "atlas/geometry/Triag3D.h"
 #include "atlas/meshgen/Delaunay.h"
 #include "atlas/grids/ReducedGrid.h"
 #include "atlas/util/IndexView.h"
@@ -146,7 +146,7 @@ static bool projectPointToElements(const MeshStats &stats,
 
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts && idx[2] < stats.inp_npts );
 
-            atlas::geometry::TriangleIntersection triag(
+            atlas::geometry::Triag3D triag(
                 icoords[idx[0]].data(),
                 icoords[idx[1]].data(),
                 icoords[idx[2]].data());
@@ -188,7 +188,7 @@ static bool projectPointToElements(const MeshStats &stats,
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts &&
                     idx[2] < stats.inp_npts && idx[3] < stats.inp_npts );
 
-            atlas::geometry::QuadrilateralIntersection quad(
+            atlas::geometry::Quad3D quad(
                 icoords[idx[0]].data(),
                 icoords[idx[1]].data(),
                 icoords[idx[2]].data(),

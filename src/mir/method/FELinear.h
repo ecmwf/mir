@@ -32,25 +32,12 @@ class FELinear: public FiniteElement {
 
   protected:
 
-    virtual void hash( eckit::MD5& ) const;
+    virtual void hash(eckit::MD5&) const;
 
   private:
 
-// -- Methods
-    // None
-
-// -- Overridden methods
-
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-// -- Friends
 
 };
 
