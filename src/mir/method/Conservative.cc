@@ -53,6 +53,8 @@ void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::Gr
 
     Mesh& mesh = g.mesh();
 
+    eckit::Log::info() << "Mesh " << mesh << std::endl;
+
     d.resize(g.npts());
 
     d.setZero();
@@ -72,6 +74,8 @@ void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::Gr
 //    size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
 //    if( nodes.metadata().has("NbRealPts") )
 //        firstVirtualPoint = i_nodes.metadata().get<size_t>("NbRealPts");
+
+/// TODO Must handle missing values
 
     size_t nb_triags = triags.metadata().has("nb_owned") ? triags.metadata().get<size_t>("nb_owned") : triags.shape(0);
     size_t nb_quads = quads.metadata().has("nb_owned") ? quads.metadata().get<size_t>("nb_owned") : quads.shape(0);
@@ -131,21 +135,22 @@ void Conservative::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas:
 
     // 2) M_s compute the lumped mass matrix of the source mesh
 
-    Vector M_s;
+    generateMesh(in, in.mesh()); // input grid hasn't been tesselated mesh yet ...
 
-    computeLumpedMassMatrix(M_s, out);
+    Vector M_s;
+    computeLumpedMassMatrix(M_s, in);
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix of the destination mesh
 
-
     Vector M_d;
-
     computeLumpedMassMatrix(M_d, out);
 
     for(size_t i = 0; i < M_d.size(); ++i)
         M_d[i] = 1./M_d[i];
 
     // 4) W = M_d^{-1} . I^{T} . M_s
+
+    W.matrix().reserve( IM.matrix().nonZeros() ); // reserve same space as IM
 
     LinearAlgebra::backend().dsptd(M_d, IM.matrix(), M_s, W.matrix());
 }

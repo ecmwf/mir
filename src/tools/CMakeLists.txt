@@ -41,7 +41,13 @@ ecbuild_add_executable(
 		LIBS        mir ${ECKIT_LIBRARIES} )
 
 ecbuild_add_executable(
-		TARGET      mir_stats
-		SOURCES     mir_stats.cc
-		INCLUDES    ${ECKIT_INCLUDE_DIRS}
-		LIBS        mir ${ECKIT_LIBRARIES} )
+        TARGET      mir_stats
+        SOURCES     mir_stats.cc
+        INCLUDES    ${ECKIT_INCLUDE_DIRS}
+        LIBS        mir ${ECKIT_LIBRARIES} )
+
+ecbuild_add_executable(
+        TARGET      mir_integrate
+        SOURCES     mir_integrate.cc
+        INCLUDES    ${ECKIT_INCLUDE_DIRS}
+        LIBS        mir ${ECKIT_LIBRARIES} )
