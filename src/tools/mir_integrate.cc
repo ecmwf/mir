@@ -100,7 +100,7 @@ void MIRIntegrate::run() {
         ASSERT(rep);
         // ASSERT(rep->globalDomain());
 
-#if 0
+#if 1
         eckit::ScopedPtr<atlas::Grid> grid( rep->atlasGrid() );
 
         atlas::Mesh& mesh = grid->mesh();
@@ -174,7 +174,7 @@ void MIRIntegrate::run() {
 #endif
 
 
-        eckit::Log::info() << "Integral is " << result << std::endl;
+        eckit::Log::info() << "Integral " << result << std::endl;
 
     }
 }
