@@ -304,7 +304,7 @@ void Gridded::pattern(std::vector<double> &values, bool hasMissing, double missi
 
         if (!hasMissing || values[k] != missingValue) {
             values[k] =
-                range * sin(3 * lon * deg2rad) * cos(lat * deg2rad * 3) * 0.5 + median;
+                range * sin(7 * lon * deg2rad) * cos(7 * lat * deg2rad) * 0.5 + median;
         }
 
         k++;
