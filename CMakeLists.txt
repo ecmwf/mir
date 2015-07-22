@@ -75,6 +75,10 @@ ecbuild_add_option( FEATURE NETCDF
                     DESCRIPTION "support for NetCDF4"
                     REQUIRED_PACKAGES NetCDF4 )
 
+if( HAVE_NETCDF )
+  list( APPEND MIR_FEATURE_LIBRARIES ${NETCDF_LIBRARIES} )
+endif()
+
 ### Hermes
 
 ecbuild_add_option( FEATURE HERMES
@@ -82,6 +86,9 @@ ecbuild_add_option( FEATURE HERMES
                     DESCRIPTION "Hermes computation engine"
                     REQUIRED_PACKAGES "PROJECT hermes VERSION 0.1.0" )
 
+if( HAVE_HERMES )
+  list( APPEND MIR_FEATURE_LIBRARIES hermes )
+endif()
 
 ###############################################################################
 # contents
