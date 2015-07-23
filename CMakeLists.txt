@@ -17,8 +17,8 @@ ecbuild_requires_macro_version( 1.8 )
 ###############################################################################
 # project
 
-ecbuild_use_package( PROJECT eckit  VERSION  0.8  REQUIRED )
-ecbuild_use_package( PROJECT atlas  VERSION  0.3  REQUIRED )
+ecbuild_use_package( PROJECT eckit  VERSION  0.9  REQUIRED )
+ecbuild_use_package( PROJECT atlas  VERSION  0.4  REQUIRED )
 # ecbuild_use_package( PROJECT libemos  )
 
 # Experimental features in eckit are required
