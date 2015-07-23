@@ -168,9 +168,6 @@ void MIRIntegrate::run() {
 
         ASSERT(reduced);
 
-        const repres::Gridded* gridded = dynamic_cast<const repres::Gridded*>(rep);
-
-
         size_t i = 0;
         for(size_t jlat = 0; jlat < reduced->nlat(); ++jlat) {
 
