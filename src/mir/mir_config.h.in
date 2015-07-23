@@ -5,6 +5,10 @@
 
 #include "mir/mir_version.h"
 
+// dependencies
+
+#cmakedefine ATLAS_HAVE_TRANS
+
 // C++11 support
 
 #cmakedefine HAS_CXX11___FUNC__

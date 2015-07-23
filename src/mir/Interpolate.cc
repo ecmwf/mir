@@ -18,10 +18,12 @@
 #include "eckit/log/Plural.h"
 #include "eckit/utils/Translator.h"
 #include "eckit/maths/Eigen.h"
+#include "eckit/config/Resource.h"
 
 #include "atlas/Grid.h"
 #include "atlas/io/Grib.h"
 #include "atlas/Tesselation.h"
+#include "atlas/io/Gmsh.h"
 
 #include "mir/Bilinear.h"
 #include "mir/FiniteElement.h"
@@ -31,22 +33,21 @@
 #include "mir/WeightCache.h"
 #include "mir/Weights.h"
 #include "mir/Masks.h"
-#include "mir/FieldContext.h"
+#include "mir/FieldParams.h"
 
 //------------------------------------------------------------------------------------------------------
 
 using namespace Eigen;
 using namespace eckit;
-using namespace eckit::grib;
 using namespace atlas;
-using namespace atlas::io;
+using namespace eckit::grib;
 using namespace mir;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-Interpolate::Interpolate(const eckit::Params::Ptr& p) : Action(p)
+Interpolate::Interpolate(const Params & p) : Action(p)
 {
 }
 
@@ -54,28 +55,20 @@ Interpolate::~Interpolate()
 {
 }
 
-static Grid::Ptr make_grid( const std::string& filename )
+void Interpolate::applyMask(const atlas::Grid& grid_inp, const atlas::Grid& grid_out, Weights::Matrix& W ) const
 {
-    FILE* fh = ::fopen( filename.c_str(), "r" );
-    if( fh == 0 )
-        throw ReadError( std::string("error opening file ") + filename );
+  if( params().has("MaskPath") )
+  {
+      PathName mask_path = params()["MaskPath"];
 
-    int err = 0;
-    grib_handle* h;
+      FieldSet::Ptr fmask( new FieldSet( mask_path ) ); ASSERT( fmask );
 
-    h = grib_handle_new_from_file(0,fh,&err);
+      if( fmask->size() != 1 )
+          throw UserError( "User provided mask file with multiple fields", Here() );
 
-    if( h == 0 || err != 0 )
-        throw ReadError( std::string("error reading grib file ") + filename );
-
-	if( ::fclose(fh) == -1 )
-		throw ReadError( std::string("error closing file ") + filename );
-
-	GribHandle gh(h);
-	Grid::Ptr g ( Grib::create_grid( gh ) );
-    ASSERT( g );
-
-    return g;
+      Masks m;
+      m.assemble( (*fmask)[0], grid_inp, grid_out, W );
+  }
 }
 
 atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) const
@@ -84,105 +77,106 @@ atlas::FieldSet::Ptr Interpolate::eval( const atlas::FieldSet::Ptr& fs_inp ) con
 
 //    Grib::write( *fs_inp, "inp.grib" );
 
-//    Params::Ptr rctxt( new FieldContext( fs_inp ) );
+//    Params::Ptr rctxt( new FieldParams( fs_inp ) );
 
-	/// @todo somewhere here we should use the GribParams* to pass to target_grid create...
+    /// @todo somewhere here we should use the GribParams* to pass to create grid_out ...
 
     // clone grid
 
-    Grid::Ptr target_grid;
-
-    if( params().get("Target.GridPath").isNil() )
-    {
-		target_grid = Grid::create( eckit::UnScopeParams( "Target", params().self() ) );
-	}
-    else
-    {
-        target_grid = make_grid( params()["Target.GridPath"] );
-    }
+    Grid::Ptr target_grid(
+          !params().has("Target.GridPath") ?
+            Grid::create( Params( UnScopeParams( "Target", params() ) ) ) :
+            atlas::io::make_grid( params()["Target.GridPath"] ).get() );
 
     ASSERT( target_grid );
 
-    FieldSet::Ptr fs_out( new FieldSet( target_grid, fs_inp->field_names() ) );
+    FieldSet::Ptr fs_out( new FieldSet() );
 
     ASSERT( fs_out );
 
-    size_t npts_inp = fs_inp->grid().nPoints();
-    size_t npts_out = fs_out->grid().nPoints();
+    FunctionSpace& nodes_out = target_grid->mesh().function_space( "nodes" );
 
-    std::cout << ">>> interpolation points " << npts_inp << " -> " << npts_out << std::endl;
+    for (size_t n=0; n<fs_inp->size(); ++n)
+    {
+      const Field& f_in = (*fs_inp)[n];
+      Field& f = nodes_out.create_field<double>(f_in.name(),1);
+      fs_out->add_field(f.self());
+    }
 
-    // compute weights for each point in output grid
-
-    Weights::Matrix W( npts_out, npts_inp );
-
-    Weights* w;
+    ASSERT( fs_inp->size() == fs_out->size() );
 
     /// @todo make this into a factory
     std::string method = params()["InterpolationMethod"];
-    if( method == std::string("fe") )
-        w = new FiniteElement();
-    if( method == std::string("kn") )
-        w = new KNearest();
-    if( method == std::string("plap") )
-        w = new PseudoLaplace();
-    if( method == std::string("bi") )
-        w = new Bilinear();
-
+    Weights* w = method=="fe"?   new FiniteElement() :
+                 method=="kn"?   new KNearest() :
+                 method=="plap"? new PseudoLaplace() :
+                 method=="bi"?   new Bilinear() :
+                                 (Weights*) NULL;
     if( !w )
         throw UserError( std::string("Unknown Interpolator type ") + method , Here() );
 
-    w->assemble( fs_inp->grid(), fs_out->grid(), W );
-
-    // apply mask if necessary
-
-    if( ! params().get("MaskPath").isNil() )
+    for (size_t n = 0; n < fs_inp->size(); ++n)
     {
-        PathName mask_path = params()["MaskPath"];
+      Field& fi = (*fs_inp)[n];
+      Field& fo = (*fs_out)[n];
 
-        FieldSet::Ptr fmask( new FieldSet( mask_path ) ); ASSERT( fmask );
+      const Grid& grid_inp = fi.grid();
+      const Grid& grid_out = *target_grid;
 
-        if( fmask->size() != 1 )
-            throw UserError( "User provided mask file with multiple fields", Here() );
+      size_t npts_inp = grid_inp.npts();
+      size_t npts_out = grid_out.npts();
 
-        Masks m;
-        m.assemble( (*fmask)[0], fs_inp->grid(), fs_out->grid(), W);
-    }
+      std::cout << ">>> interpolation points " << npts_inp << " -> " << npts_out << std::endl;
 
-    // interpolation -- multiply interpolant matrix with field vector
+      // compute weights for each point in output grid
 
-    size_t nfields = fs_inp->size();
+      Weights::Matrix W( npts_out, npts_inp );
 
-    if( nfields != fs_out->size() )
-        throw SeriousBug( "Number of fields in input does not match number of fields in ouput", Here() );
+      w->assemble( grid_inp, grid_out, W );
 
-    std::cout << ">>> interpolating " <<  Plural(nfields,"field")  << " ... " << std::endl;
+      // apply mask if necessary
 
-    for( size_t n = 0; n < nfields; ++n )
-    {
-		Field& fi = (*fs_inp)[n];
-		Field& fo = (*fs_out)[n];
+      applyMask(grid_inp, grid_out, W);
 
-        // interpolation
-        {
-            Timer t( "interpolating field " + Translator<size_t,std::string>()(n) );
+      // interpolation -- multiply interpolant matrix with field vector
 
-			VectorXd::MapType vi = VectorXd::Map( fi.data<double>(), fi.size() );
-			VectorXd::MapType vo = VectorXd::Map( fo.data<double>(), fo.size() );
+      {
+        Timer t( "interpolating field " + Translator<size_t,std::string>()(n) );
 
-			vo = W * vi;
-        }
+        VectorXd::MapType vi = VectorXd::Map( fi.data<double>(), fi.size() );
+        VectorXd::MapType vo = VectorXd::Map( fo.data<double>(), fo.size() );
+
+        vo = W * vi;
+      }
 
 #ifdef ECKIT_HAVE_GRIB
-        /// @todo this must be abstracted out, so GRIB is not exposed
-        // metadata transfer by cloning the grib handle
-        fo.grib( fi.grib().clone() );
+      /// @todo this must be abstracted out, so GRIB is not exposed
+      ///       here the metadata is transfered by cloning the grib handle
+      if( fi.grib() )
+        fo.grib( fi.grib()->clone() );
 #endif
+
+    }
+
+    // output to gmsh
+    bool mirInterpolateDumpGmsh = Resource<bool>("mirInterpolateDumpGmsh;$MIR_INTERPOLATE_DUMP_GMSH",false);
+    if( mirInterpolateDumpGmsh )
+    {
+        Tesselation::tesselate( *target_grid );
+
+        /* std::cout << go.mesh() << std::endl; */
+        atlas::io::Gmsh::write3dsurf( target_grid->mesh(), std::string("result.msh") );
     }
 
 //    Grib::write( *fs_out, "out.grib" );
 
-    return fs_out;
+	return fs_out;
+}
+
+ExpPtr interpolate(const ExpPtr& e)
+{
+	NOTIMP;
+//	return ExpPtr( new Interpolate( e ) );
 }
 
 //------------------------------------------------------------------------------------------------------

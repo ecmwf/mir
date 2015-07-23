@@ -28,13 +28,17 @@ class FieldSink : public Action {
 
 public: // methods
 
-    FieldSink( const eckit::Params::Ptr& );
+    FieldSink( const eckit::Params& );
 
     virtual ~FieldSink();
 
 	void eval( const atlas::FieldSet::Ptr& ) const;
 
 };
+
+//------------------------------------------------------------------------------------------------------
+
+ExpPtr field_sink( const ExpPtr& e );
 
 //------------------------------------------------------------------------------------------------------
 

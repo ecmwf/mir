@@ -10,21 +10,23 @@
 
 #include <string>
 
-#include "eckit/memory/NonCopyable.h"
-#include "eckit/value/Properties.h"
+#include "eckit/config/Resource.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/log/CallbackChannel.h"
-#include "eckit/runtime/LibBehavior.h"
+#include "eckit/memory/NonCopyable.h"
 #include "eckit/runtime/Context.h"
+#include "eckit/runtime/LibBehavior.h"
+#include "eckit/value/Properties.h"
 
 #include "atlas/FieldSet.h"
 #include "atlas/io/Grib.h"
 
 #include "mir/mars_api.h"
 
+#include "mir/Context.h"
 #include "mir/Interpolate.h"
 #include "mir/Params.h"
-#include "mir/FieldContext.h"
+#include "mir/FieldParams.h"
 
 using namespace eckit;
 using namespace eckit::grib;
@@ -50,44 +52,51 @@ public: // methods
 //        /// translate from GRID=1/1 to ValueMap( GridType = "regular_ll", LatInc = 1, LonInc = 1 )
 //    }
 
-    virtual value_t get( const key_t& k ) const
+    Params::value_t operator[]( const Params::key_t& k ) const
     {
-        value_t v = values_.get(k);
-        if( !v.isNil() )
-            return v;
+        if( values_.has(k) )
+            return values_[k];
         else
-            return DispatchParams<MarsParams>::get(k);
+            return get( *this, k );
     }
 
 private: // members
 
+    friend void print( const MarsParams& p, std::ostream& s );
     const Params& values_;
 };
 
+void print( const MarsParams& p, std::ostream& s ) {
+    s << p.values_;
+}
+
 //------------------------------------------------------------------------------------------------------
 
-class MarsContext : public MirContext {
+class MarsContext {
 
 public: // methods
 
     MarsContext() :
-        MirContext( &runtime_ ),
         frozen_(false),
-        buffer_( Resource<size_t>( "MirFieldBufferSize;$MIR_FIELD_BUFFER_SIZE", 60*1024*1024) )
+        mirContext_( new MirContext() ),
+        buffer_( Resource<size_t>( "MirFieldBufferSize;$MIR_FIELD_BUFFER_SIZE",
+                                   60*1024*1024) )
     {
-        Params::Ptr mars( new MarsParams( mars_values_ ) );
+        MarsParams mars( (Params( mars_values_ )) ); // Most Vexing Parse
 
-        push_front( mars->self() );
+        mirContext_->params().push_front( Params(mars) );
     }
 
-    virtual ~MarsContext() { std::cout << "Destroying MarsContext" << std::endl; }
+    virtual ~MarsContext()
+    {
+        std::cout << "Destroying MarsContext" << std::endl;
+    }
 
     bool frozen() const { return frozen_; }
     void freeze() { frozen_ = true; }
 
     ValueParams& mars_values() { return mars_values_; }
-
-    void set_runtime( Params::Ptr p ) { runtime_ = p.get(); }
+    MirParams& mir_params() { return mirContext_->params(); }
 
     Buffer& buffer() { return buffer_; }
 
@@ -96,7 +105,8 @@ private: // members
     bool frozen_;
 
     ValueParams mars_values_;
-    Params* runtime_;
+
+    ScopedPtr<MirContext> mirContext_;
 
     Buffer buffer_;
 };
@@ -140,7 +150,8 @@ mir_err mir_set_context_value(mir_context_ptr ctxt, const char* key, const char*
     return MIR_SUCCESS;
 }
 
-mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, void **buffout, size_t* sout)
+mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin,
+                        void **buffout, size_t* sout)
 {
     if(!ctxt) return MIR_INVALID_CONTEXT;
 
@@ -156,12 +167,15 @@ mir_err mir_interpolate(mir_context_ptr ctxt, const void* buffin, size_t sin, vo
     {
         Buffer b(const_cast<void*>(buffin), sin, false);
 
-        FieldSet::Ptr fs_inp( new FieldSet(b) );                ///< @todo create a fieldset from a buffer
+        ///< @todo create a fieldset from a buffer
+        FieldSet::Ptr fs_inp( new FieldSet(b) );
 
-        Params::Ptr inparams( new FieldContext(fs_inp) );
-        mctxt->set_runtime( inparams );
+        MirParams params_mir = mctxt->mir_params();
+        Params params_inp( ScopeParams( "Input", Params(FieldParams(fs_inp)) ) );
 
-        Interpolate interpolator( mctxt->self() );
+        params_mir.push_front( params_inp );
+
+        Interpolate interpolator( (Params(params_mir)) ); // C++ Most Vexing Parse
 
         FieldSet::Ptr fs_out( interpolator.eval( fs_inp ) );
         ASSERT( fs_out );

@@ -9,6 +9,7 @@
  */
 
 #include "atlas/io/Grib.h"
+#include "atlas/io/PointCloud.h"
 
 #include "mir/mir_config.h"
 #include "mir/FieldSink.h"
@@ -24,7 +25,7 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-FieldSink::FieldSink(const eckit::Params::Ptr& p) : Action(p)
+FieldSink::FieldSink(const Params & p) : Action(p)
 {
 }
 
@@ -38,9 +39,30 @@ void FieldSink::eval(const FieldSet::Ptr& fs_out) const
 
     // Grib::write( *fs_out, path_out ); ///< @todo remove need for clone() with GridSpec's
 
+  std::string oformat( params()["Target.OutputFormat"] );
+
+  if( oformat == "grib" )
+  {
     Grib::clone( *fs_out,
                       params()["Target.GridPath"],
                       params()["Target.Path"] );
+    return;
+  }
+
+  if( oformat == "pointcloud" )
+  {
+    PointCloud::write( params()["Target.Path"], *fs_out );
+    return;
+  }
+
+  throw UserError( std::string("unknown output format ") + oformat, Here() );
+
+}
+
+ExpPtr field_sink(const ExpPtr& e)
+{
+  NOTIMP;
+//	return ExpPtr( new FieldSink( e ) );
 }
 
 //------------------------------------------------------------------------------------------------------

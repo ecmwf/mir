@@ -12,10 +12,11 @@
 #include <algorithm>
 
 #include <boost/progress.hpp>
+#include "eckit/geometry/KPoint.h"
 
-#include "atlas/ReducedGG.h"
+#include "atlas/grids/ReducedGaussianGrid.h"
 #include "atlas/Tesselation.h"
-#include "atlas/Unstructured.h"
+#include "atlas/grids/Unstructured.h"
 #include "atlas/util/ArrayView.h"
 
 #include "eckit/config/Resource.h"
@@ -30,10 +31,12 @@
 
 using eckit::Resource;
 using eckit::geometry::Point3;
+using eckit::geometry::LON;
+using eckit::geometry::LAT;
 
-using atlas::Grid;
 using atlas::FunctionSpace;
 using atlas::FieldT;
+using atlas::Grid;
 
 namespace mir {
 
@@ -70,7 +73,7 @@ void left_right_lon_indexes(const double& in, atlas::ArrayView<double,2>& data, 
 
     for (unsigned int i = start; i < end; i++)
     {
-        const double& val = data[i].data()[1];
+        const double& val = data[i].data()[LON];
 
         if (val < in || eq(val, in))
         {
@@ -98,20 +101,21 @@ void Bilinear::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
     atlas::FunctionSpace& inodes = i_mesh.function_space( "nodes" );
     atlas::FunctionSpace& onodes = o_mesh.function_space( "nodes" );
 
-    atlas::FieldT<double>& ilatlon = inodes.field<double>( "latlon" );
-    atlas::FieldT<double>& olatlon = onodes.field<double>( "latlon" );
+    atlas::FieldT<double>& ilonlat = inodes.field<double>( "lonlat" );
+    atlas::FieldT<double>& olonlat = onodes.field<double>( "lonlat" );
 
-    atlas::ArrayView<double,2> icoords     ( ilatlon );
-    atlas::ArrayView<double,2> ocoords     ( olatlon );
+    atlas::ArrayView<double,2> icoords     ( ilonlat );
+    atlas::ArrayView<double,2> ocoords     ( olonlat );
 
-	atlas::ReducedGG* igg = dynamic_cast<atlas::ReducedGG*>(&in);
+    // ReducedGrid involves all grids that can be represented with latitudes and npts_per_lat
+    atlas::grids::ReducedGrid* igg = dynamic_cast<atlas::grids::ReducedGrid*>(&in);
 
     /// @todo we only handle these at the moment
     if (!igg)
-        throw eckit::UserError("Bilinear currently only supports Reduced Gaussian Grids as input");
+        throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
 
     // get the longitudes from
-    const std::vector<long>& lons = igg->pointsPerLatitude();
+    const std::vector<int>& lons = igg->npts_per_lat();
 
     std::vector< Eigen::Triplet<double> > weights_triplets; /* structure to fill-in sparse matrix */
 
@@ -122,8 +126,8 @@ void Bilinear::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
     for (unsigned int i = 0; i < out_npts; i++)
     {
         // get the lat, lon of the output data point required
-        double lat = ocoords[i].data()[0];
-        double lon = ocoords[i].data()[1];
+        double lat = ocoords[i].data()[LAT];
+        double lon = ocoords[i].data()[LON];
 
         // these will hold indices in the input vector of the start of the upper and lower latitudes
         size_t top_i = 0;
@@ -146,9 +150,9 @@ void Bilinear::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
             else
                 bot_n = lons[n+1];
 
-            double top_lat = icoords[top_i].data()[0];
+            double top_lat = icoords[top_i].data()[LAT];
 
-            double bot_lat = icoords[bot_i].data()[0];
+            double bot_lat = icoords[bot_i].data()[LAT];
             ASSERT(top_lat != bot_lat);
 
             // check output point is on or below the hi latitude
@@ -162,8 +166,8 @@ void Bilinear::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
             }
         }
 
-        double top_lat = icoords[top_i].data()[0];
-        double bot_lat = icoords[bot_i].data()[0];
+        double top_lat = icoords[top_i].data()[LAT];
+        double bot_lat = icoords[bot_i].data()[LAT];
         ASSERT(top_lat > lat || eq(top_lat, lat));
         ASSERT(bot_lat < lat);
         ASSERT(!eq(bot_lat, lat));
@@ -182,7 +186,7 @@ void Bilinear::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
         ASSERT(top_i_rgt != top_i_lft);
 
         // check the data is the same
-        ASSERT(eq(icoords[top_i_lft].data()[0],  icoords[top_i_rgt].data()[0]));
+        ASSERT(eq(icoords[top_i_lft].data()[LAT],  icoords[top_i_rgt].data()[LAT]));
 
         // now get indeces to the left and right points on each of the data sectors
         // on the lower longitude
@@ -196,14 +200,14 @@ void Bilinear::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
         ASSERT(bot_i_rgt >= bot_i);
         ASSERT(bot_i_rgt < bot_i_end);
         ASSERT(bot_i_rgt != bot_i_lft);
-        ASSERT(eq(icoords[bot_i_lft].data()[0],  icoords[bot_i_rgt].data()[0]));
+        ASSERT(eq(icoords[bot_i_lft].data()[LAT],  icoords[bot_i_rgt].data()[LAT]));
 
         // we now have the indices of tl, tr, bl, br points around the output point
 
-        double tl_lon  = icoords[top_i_lft].data()[1];
-        double tr_lon  = icoords[top_i_rgt].data()[1];
-        double bl_lon  = icoords[bot_i_lft].data()[1];
-        double br_lon  = icoords[bot_i_rgt].data()[1];
+        double tl_lon  = icoords[top_i_lft].data()[LON];
+        double tr_lon  = icoords[top_i_rgt].data()[LON];
+        double bl_lon  = icoords[bot_i_lft].data()[LON];
+        double br_lon  = icoords[bot_i_rgt].data()[LON];
 
         // calculate the weights
         double w1 = (tl_lon - lon) / (tl_lon - tr_lon);

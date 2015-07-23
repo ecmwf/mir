@@ -1,6 +1,6 @@
-# Copyright (C) 2009 ECMWF
+# Copyright (C) 2015 ECMWF
 
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
 
 urlpatterns = patterns("viewer.views",

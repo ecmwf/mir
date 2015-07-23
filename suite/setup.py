@@ -77,14 +77,8 @@ def parse_config_file(filename):
 
     return config_dict
 
-# Get the path to the executed file
-run_path=sys.path[0]
-# We use this for the working folder unless otherwise specified
-working_folder=  run_path
-
-
-
-config_file="%s/default.settings" % run_path
+# Get settings from the path to the executed file
+config_file="%s/default.settings" % sys.path[0]
 print "Using config file %s" % config_file
 
 # Whether to ignore warnings and plough on
@@ -117,10 +111,10 @@ config_file_base=os.path.basename(config_file)
 suite_name, _ =os.path.splitext(config_file_base) 
 
 
-
+working_folder = "."
 if "ECF_HOME" in config_dict.keys():
 
-    working_folder=config_dict["ECF_HOME"]    
+    working_folder = config_dict["ECF_HOME"]    
     mkdir_p(working_folder)
     print "ensuring folder %s exists" % working_folder
 
@@ -133,8 +127,8 @@ clear_path(folder_path)
 mkdir_p(folder_path)
 
 suite.add_variable("ECF_INCLUDE", working_folder) 
-suite.add_variable("ECF_HOME", working_folder)
-suite.add_variable("ECF_FILES", working_folder)
+suite.add_variable("ECF_HOME",    working_folder)
+suite.add_variable("ECF_FILES",   working_folder)
 
 
 # copy minimum files over
@@ -282,7 +276,7 @@ for client in client_list:
                         vadjust = dict(combinations.adjust[tgrid].items() + combinations.adjust["all"].items())
                         allkeys = vadjust.keys()
                         allvecs = vadjust.values()
-                        req_folder = "%s/requests" % run_path
+                        req_folder = "%s/requests" % working_folder
                         mkdir_p(req_folder)
 
                         print "Using request folder %s" % req_folder

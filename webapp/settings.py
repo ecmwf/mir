@@ -39,7 +39,8 @@ SESSION_COOKIE_NAME = "mir-development"
 SESSION_ENGINE = "django.contrib.sessions.backends.file" 
 
 # default results folder
-RESULTS_FOLDER="/tmp/matq/testcases/mir/suite/output"
+RESULTS_FOLDER="/home/ma/mapm/testcases/mir/suite/output"
+#RESULTS_FOLDER="output"
 #RESULTS_FOLDER="/scratch/ma/maf/scratchdir/ecRegrid/bigtest/output"
 SHOW_JIRA_SECTION=False
 
@@ -72,7 +73,7 @@ ROOT_URLCONF = "urls"
 
 # the place where templates will resider
 TEMPLATE_DIRS = (
-    os.path.join(site_dir, "templates")
+    os.path.join(site_dir, "templates"),
 )
 
 INSTALLED_APPS = (

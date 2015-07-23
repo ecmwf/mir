@@ -8,38 +8,28 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Tiago Quintino
-/// @date July 2014
+#include "atlas/Grid.h"
 
-#ifndef mir_FieldContext_H
-#define mir_FieldContext_H
-
-#include "atlas/FieldSet.h"
-
-#include "mir/Params.h"
+#include "mir/FieldParams.h"
 
 //------------------------------------------------------------------------------------------------------
+
+using namespace eckit;
+using namespace atlas;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class FieldContext : public eckit::DispatchParams<FieldContext> {
+FieldParams::FieldParams(const atlas::FieldSet::Ptr& f) :
+    fieldset_(f)
+{
+}
 
-public: // methods
-
-	FieldContext( const atlas::FieldSet::Ptr& );
-
-	virtual ~FieldContext();
-
-private: // members
-
-	atlas::FieldSet::Ptr fieldset_;
-
-};
+FieldParams::~FieldParams()
+{
+}
 
 //------------------------------------------------------------------------------------------------------
 
 } // namespace mir
-
-#endif

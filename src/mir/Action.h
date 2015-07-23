@@ -14,7 +14,7 @@
 #ifndef mir_Action_H
 #define mir_Action_H
 
-// #include "eckit/maths/Expression.h"
+#include "eckit/xpr/Function.h"
 
 #include "mir/Params.h"
 
@@ -24,22 +24,23 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-/// @todo this class will become an eckit::maths::Expression
+typedef eckit::xpr::ExpPtr ExpPtr;
 
-class Action : private eckit::NonCopyable {
+//class Action : public eckit::xpr::Function {
+class Action {
 
 public: // methods
 
-    Action( const eckit::Params::Ptr& );
+    Action( const eckit::Params& );
 
     virtual ~Action();
 
-    const eckit::Params& params() const { return *params_; }
-    eckit::Params& params() { return *params_; }
+    const eckit::Params& params() const { return params_; }
+    eckit::Params& params() { return params_; }
 
 private: // members
 
-    eckit::Params::Ptr params_;
+    eckit::Params params_;
 
 };
 

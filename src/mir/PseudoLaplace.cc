@@ -45,7 +45,7 @@ void PseudoLaplace::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
 
     // output points
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
-    ArrayView<double,2> ocoords ( o_nodes.field( "coordinates" ) );
+	ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
 
     const size_t out_npts = o_nodes.shape(0);
 

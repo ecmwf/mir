@@ -9,14 +9,12 @@
  */
 
 /// @author Tiago Quintino
-/// @date July 2014
+/// @date Jun 2014
 
-#ifndef mir_Params_H
-#define mir_Params_H
+#ifndef mir_Field_H
+#define mir_Field_H
 
-#include "eckit/memory/Owned.h"
-#include "eckit/memory/SharedPtr.h"
-#include "eckit/value/Params.h"
+#include "eckit/xpr/Value.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -24,36 +22,13 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-class UserParams : public eckit::DispatchParams<UserParams> {
+class Field : public eckit::xpr::Value {
 
 public: // methods
 
-    UserParams();
+	Field();
 
-private: // methods
-
-    eckit::Params::value_t getMaskPath( const eckit::Params::key_t& ) const;
-
-};
-
-//-------------------------------------------------------------------------------------------
-
-class ProfileParams : public eckit::ValueParams {
-public:
-
-    ProfileParams()
-    {
-		set( "InterpolationMethod", "fe" );
-//      set( "lsm", "hres.grib" );
-    }
-};
-
-//-------------------------------------------------------------------------------------------
-
-class MirParams : public eckit::CompositeParams {
-public:
-
-    MirParams();
+private: // members
 
 };
 

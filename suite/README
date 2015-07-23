@@ -3,20 +3,15 @@ To use the suite please do the following:
 
 1. Initialise ecflow
 
-//use ecflow
-use module ecflow
-
 // on new desktops
-module load ecflow/4.0.4
+module load ecflow
 
 2. Start the ecflow server.
 
 - Choose which settings file you will be using, e.g. local.settings
 - Start an appropriate server for this file with:
 
-./start_server.sh -c new.settings
-
-NB the new.settings has been shown to work on the new desktop (tested on skadi)
+./start_server.sh -c local.settings
 
 3. Run the suite
 

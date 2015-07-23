@@ -58,7 +58,7 @@ void KNearest::compute( Grid& in, Grid& out, Weights::Matrix& W ) const
 
     // output points
     FunctionSpace&  o_nodes  = o_mesh.function_space( "nodes" );
-    ArrayView<double,2> ocoords ( o_nodes.field( "coordinates" ) );
+  ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
 
     const size_t out_npts = o_nodes.shape(0);
 
@@ -135,11 +135,11 @@ void KNearest::build_sptree( Grid& in ) const
 {
     atlas::Mesh& i_mesh = in.mesh();
 
-    std::string inhash = in.hash();
-    if( inhash != hash_ )
+    std::string uidIn = in.uid();
+    if( uidIn != uid_ )
         sptree_.reset( new PointSearch(i_mesh) );
 
-    hash_ = inhash;
+    uid_ = uidIn;
 }
 
 //------------------------------------------------------------------------------------------------------

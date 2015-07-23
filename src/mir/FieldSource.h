@@ -28,13 +28,17 @@ class FieldSource : public Action {
 
 public: // methods
 
-    FieldSource( const eckit::Params::Ptr& );
+    FieldSource( const eckit::Params& );
 
     virtual ~FieldSource();
 
-	atlas::FieldSet::Ptr eval() const;
+    atlas::FieldSet::Ptr eval() const;
 
 };
+
+//------------------------------------------------------------------------------------------------------
+
+ExpPtr field_source( const ExpPtr& e );
 
 //------------------------------------------------------------------------------------------------------
 

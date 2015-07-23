@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2014 ECMWF.
+ * (C) Copyright 1996-2015 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,26 +8,19 @@
  * does it submit to any jurisdiction.
  */
 
-#include "atlas/Grid.h"
-
-#include "mir/FieldContext.h"
+#include "mir/Context.h"
 
 //------------------------------------------------------------------------------------------------------
 
 using namespace eckit;
-using namespace atlas;
 
 namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-FieldContext::FieldContext(const atlas::FieldSet::Ptr& f) :
-    fieldset_(f)
+MirParams& MirContext::params()
 {
-}
-
-FieldContext::~FieldContext()
-{
+    return params_;
 }
 
 //------------------------------------------------------------------------------------------------------

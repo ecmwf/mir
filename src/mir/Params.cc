@@ -23,31 +23,24 @@ namespace mir {
 
 UserParams::UserParams()
 {
-    dispatch_["MaskPath"] = &UserParams::getMask;
+    dispatch_["MaskPath"] = &UserParams::getMaskPath;
 }
 
-Params::value_t UserParams::getMask(const Params::key_t &) const
+Params::value_t UserParams::getMaskPath(const Params::key_t &) const
 {
     std::string mpath = Resource<std::string>("-mask",""); // mask may be empty
 
     if( !mpath.empty() )
-        return value_t( mpath );
+        return Params::value_t( mpath );
     else
-        return value_t();
+        return Params::value_t();
 }
 
 //------------------------------------------------------------------------------------------------------
 
-MirContext::MirContext( Params** r )
+MirParams::MirParams()
 {
-    Params::Ptr runtime( new RuntimeParams(r) );
-    Params::Ptr input( new ScopeParams( "Input", runtime ) );
-
-    push_back( input );
-
-    Params::Ptr ecmwf( new ProfileParams() );
-
-    push_back( ecmwf );
+    push_back( Params( ProfileParams() ) );
 }
 
 //------------------------------------------------------------------------------------------------------

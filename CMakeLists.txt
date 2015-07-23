@@ -25,13 +25,26 @@ set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} 
 
 include( ecbuild_system )
 
-ecbuild_requires_macro_version( 1.3 )
+ecbuild_requires_macro_version( 1.6 )
 
 ###############################################################################
 # project
 
-ecbuild_use_package( PROJECT eckit  VERSION  0.6  REQUIRED )
-ecbuild_use_package( PROJECT atlas  VERSION  0.1  REQUIRED )
+ecbuild_use_package( PROJECT eckit  VERSION  0.9  REQUIRED )
+ecbuild_use_package( PROJECT atlas  VERSION  0.4  REQUIRED )
+
+# BUG: For some reason, in bundles this does not get propagated, unless
+# following lines are defined
+foreach( _feature ${ECKIT_FEATURES};${ATLAS_FEATURES} )
+  set( ${_feature} 1 )
+endforeach()
+
+# Eigen support in eckit is required
+if( NOT ECKIT_HAVE_EIGEN )
+  message( FATAL_ERROR "Eigen support in eckit is required" )
+endif()
+
+# this will be replaced once ecbuild exports subcomponents between packages
 
 ecbuild_declare_project()
 
@@ -44,6 +57,19 @@ set( MIR_DATA_DIR  "${CMAKE_INSTALL_PREFIX}/share/mir/lsm" ${MIR_LSM_PATH} )
 ecbuild_add_cxx11_flags()
 ecbuild_check_cxx11( PRINT )
 
+### OMP
+
+ecbuild_add_option( FEATURE OMP
+                    DESCRIPTION "support for OpenMP shared memory parallelism"
+                    DEFAULT ON )
+
+if( ENABLE_OMP )
+  ecbuild_enable_omp()
+else()
+  ecbuild_enable_ompstubs()
+endif()
+
+
 ### MPI
 
 ecbuild_add_option( FEATURE MPI
@@ -52,13 +78,9 @@ ecbuild_add_option( FEATURE MPI
 
 if( ENABLE_MPI )
 
-  ecbuild_find_mpi()
+  ecbuild_enable_mpi()
 
-  if( MPI_CXX_FOUND )
-	cmake_add_c_flags( " ${MPI_C_COMPILE_FLAGS}" )
-	cmake_add_cxx_flags( " ${MPI_CXX_COMPILE_FLAGS}" )
-	include_directories( "${MPI_CXX_INCLUDE_PATH}" )
-  else()
+  if( NOT MPI_CXX_FOUND )
 	set( HAVE_MPI 0 )
   endif()
 
@@ -71,16 +93,16 @@ endif()
 
 set( MIR_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
 set( MIR_LIBRARIES      ${CMAKE_PROJECT_NAME} )
-set( MIR_TPLS           atlas atlas_grid eckit )
+set( MIR_TPLS           atlas eckit )
 
 get_directory_property( COMPILE_DEFINITIONS MIR_DEFINITIONS )
 
 foreach( _tpl ${MIR_TPLS} )
 	string( TOUPPER ${_tpl} TPL )
 	if( ${TPL}_FOUND )
-		list( APPEND MIR_EXTRA_DEFINITIONS   ${${TPL}_DEFINITIONS} )
-		list( APPEND MIR_EXTRA_INCLUDE_DIRS  ${${TPL}_INCLUDE_DIRS} )
-		list( APPEND MIR_EXTRA_LIBRARIES     ${${TPL}_LIBRARIES} )
+		list( APPEND MIR_EXTRA_DEFINITIONS   ${${TPL}_DEFINITIONS} ${${TPL}_TPL_DEFINITIONS})
+		list( APPEND MIR_EXTRA_INCLUDE_DIRS  ${${TPL}_INCLUDE_DIRS} ${${TPL}_TPL_INCLUDE_DIRS} )
+		list( APPEND MIR_EXTRA_LIBRARIES     ${${TPL}_LIBRARIES} ${${TPL}_TPL_LIBRARIES})
 	endif()
 endforeach()
 

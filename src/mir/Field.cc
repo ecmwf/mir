@@ -8,16 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Tiago Quintino
-/// @date Jun 2014
-
-#ifndef mir_Interpolate_H
-#define mir_Interpolate_H
-
-#include "atlas/FieldSet.h"
-
-#include "mir/Action.h"
-#include "mir/Weights.h"
+#include "mir/Field.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -25,30 +16,10 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-/// @todo this class will become an eckit::xpr::Expression
-
-class Interpolate : public Action {
-
-public: // methods
-
-  Interpolate( const eckit::Params& );
-
-  virtual ~Interpolate();
-
-  atlas::FieldSet::Ptr eval( const atlas::FieldSet::Ptr& in ) const;
-
-private: // methods
-
-  void applyMask(const atlas::Grid& grid_inp, const atlas::Grid& grid_out, Weights::Matrix& W) const;
-
-};
-
-//------------------------------------------------------------------------------------------------------
-
-ExpPtr interpolate( const ExpPtr& e );
+mir::Field::Field()
+{   
+}
 
 //------------------------------------------------------------------------------------------------------
 
 } // namespace mir
-
-#endif

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2014 ECMWF.
+ * (C) Copyright 1996-2015 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,16 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Tiago Quintino
-/// @date Jun 2014
+/// @author Florian Rathgeber
+/// @date March 2015
 
-#ifndef mir_Interpolate_H
-#define mir_Interpolate_H
+#ifndef mir_Context_H
+#define mir_Context_H
 
-#include "atlas/FieldSet.h"
-
-#include "mir/Action.h"
-#include "mir/Weights.h"
+#include "mir/Params.h"
 
 //------------------------------------------------------------------------------------------------------
 
@@ -25,27 +22,14 @@ namespace mir {
 
 //------------------------------------------------------------------------------------------------------
 
-/// @todo this class will become an eckit::xpr::Expression
-
-class Interpolate : public Action {
+class MirContext {
 
 public: // methods
+    MirParams& params();
 
-  Interpolate( const eckit::Params& );
-
-  virtual ~Interpolate();
-
-  atlas::FieldSet::Ptr eval( const atlas::FieldSet::Ptr& in ) const;
-
-private: // methods
-
-  void applyMask(const atlas::Grid& grid_inp, const atlas::Grid& grid_out, Weights::Matrix& W) const;
-
+private: // members
+    MirParams params_;
 };
-
-//------------------------------------------------------------------------------------------------------
-
-ExpPtr interpolate( const ExpPtr& e );
 
 //------------------------------------------------------------------------------------------------------
 
