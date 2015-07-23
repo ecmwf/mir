@@ -19,6 +19,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/log/BigNum.h"
 
+#include "atlas/Parameters.h"
 #include "atlas/Grid.h"
 #include "atlas/Mesh.h"
 #include "atlas/FunctionSpace.h"
@@ -27,6 +28,7 @@
 #include "atlas/actions/BuildConvexHull3D.h"
 #include "atlas/geometry/Triag3D.h"
 #include "atlas/geometry/Quad3D.h"
+#include "atlas/grids/ReducedGrid.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
@@ -36,6 +38,8 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Gridded.h"
 
+using atlas::Constants;
+using atlas::grids::ReducedGrid;
 using atlas::geometry::Triag3D;
 using atlas::geometry::Quad3D;
 
@@ -100,7 +104,7 @@ void MIRIntegrate::run() {
         ASSERT(rep);
         // ASSERT(rep->globalDomain());
 
-#if 1
+#if 0
         eckit::ScopedPtr<atlas::Grid> grid( rep->atlasGrid() );
 
         atlas::Mesh& mesh = grid->mesh();
@@ -155,21 +159,35 @@ void MIRIntegrate::run() {
                 result += area * oneFourth * values[idx[i]];
         }
 #else
-        double lat = 0;
-        double lon = 0;
-
         double result = 0;
+        double weights = 0;
+
+        eckit::ScopedPtr<atlas::Grid> grid( rep->atlasGrid() );
+
+        const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid*>(grid.get());
+
+        ASSERT(reduced);
 
         const repres::Gridded* gridded = dynamic_cast<const repres::Gridded*>(rep);
 
-        eckit::ScopedPtr<repres::Iterator> iter( gridded->iterator(true) );
 
         size_t i = 0;
-        while (iter->next(lat,lon)) {
-            result += values[i++] * cos(lat);
+        for(size_t jlat = 0; jlat < reduced->nlat(); ++jlat) {
+
+            size_t pts_on_latitude = reduced->nlon(jlat);
+
+            const double lat = reduced->lat(jlat);
+
+            for(size_t jlon = 0; jlon < pts_on_latitude; ++jlon) {
+                const double w = cos( lat * Constants::degreesToRadians() ) / pts_on_latitude;
+                result  += w * values[i++];
+                weights += w;
+            }
         }
 
         ASSERT(i == values.size());
+
+        result /= weights;
 
 #endif
 
