@@ -48,6 +48,12 @@ void CheckerBoard::execute(data::MIRField &field) const {
     bool normalize = false;
     parametrisation_.get("0-1", normalize);
 
+    std::vector<long> frequencies;
+    if(!parametrisation_.get("frequencies", frequencies)) {
+        frequencies.push_back(16);
+        frequencies.push_back(8);
+    }
+
     bool hasMissing = field.hasMissing();
     double missingValue = field.missingValue();
 
@@ -78,8 +84,8 @@ void CheckerBoard::execute(data::MIRField &field) const {
             }
         }
 
-        size_t we = 16;
-        size_t ns = 8;
+        size_t we = frequencies[0];
+        size_t ns = frequencies[1];
 
         double dwe = 360.0 / we;
         double dns = 180.0 / ns;

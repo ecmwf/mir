@@ -47,6 +47,12 @@ void ReferencePattern::execute(data::MIRField &field) const {
     bool normalize = false;
     parametrisation_.get("0-1", normalize);
 
+    std::vector<long> frequencies;
+    if(!parametrisation_.get("frequencies", frequencies)) {
+        frequencies.push_back(6);
+        frequencies.push_back(3);
+    }
+
     bool hasMissing = field.hasMissing();
     double missingValue = field.missingValue();
 
@@ -92,6 +98,8 @@ void ReferencePattern::execute(data::MIRField &field) const {
         double lat = 0;
         double lon = 0;
 
+        double f1 = frequencies[0] / 2.0;
+        double f2 = frequencies[1];
 
         size_t j = 0;
         const double deg2rad = M_PI / 180.0;
@@ -99,7 +107,7 @@ void ReferencePattern::execute(data::MIRField &field) const {
         while (iter->next(lat, lon)) {
 
             if (!hasMissing || values[j] != missingValue) {
-                values[j] = range * sin(3 * lon * deg2rad) * cos(3 * lat * deg2rad) * 0.5 + median;
+                values[j] = range * sin(f1 * lon * deg2rad) * cos(f2 * lat * deg2rad) * 0.5 + median;
             }
 
             j++;
