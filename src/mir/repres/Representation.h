@@ -109,6 +109,8 @@ class Representation {
 
     virtual void shape(size_t& ni, size_t& nj) const;
 
+    virtual void windDirections(std::vector<double>&) const;
+
 
 // -- Overridden methods
     // None

@@ -102,7 +102,7 @@ void JSONTool::run() {
     std::vector<eckit::LocalConfiguration> fields;
     config.get("fields", fields);
 
-    for(size_t i = 0; i < fields.size(); i++) {
+    for (size_t i = 0; i < fields.size(); i++) {
         std::cout << fields[i] << std::endl;
     }
 }

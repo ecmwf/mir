@@ -165,6 +165,47 @@ const Gridded *Gridded::crop(const util::BoundingBox &bbox, const std::vector<do
     return cropped;
 }
 
+const double radians = M_PI / 180.0;
+
+void Gridded::windDirections(std::vector<double> &result) const {
+    result.clear();
+
+    eckit::ScopedPtr<Iterator> unrotated(iterator(false));
+    eckit::ScopedPtr<Iterator> rotated(iterator(true));
+
+    double rlat = 0;
+    double rlon = 0;
+    double ulat = 0;
+    double ulon = 0;
+
+    bool rok = rotated->next(rlat, rlon);
+    bool uok = unrotated->next(ulat, ulon);
+
+    ASSERT(rok == uok);
+
+    while (rok && uok) {
+
+
+        double lamba1 = ulat * radians;
+        double lamba2 = rlat * radians;
+        double phi1 = ulon * radians;
+        double phi2 = rlon * radians;
+
+        double delta = lamba2 - lamba1;
+
+        double y = sin(delta) * cos(phi2);
+        double x = cos(phi1)*sin(phi2) - sin(phi1)*cos(phi2)*cos(delta);
+        double direction = x ? atan2(y, x) : 0;
+
+        result.push_back(direction);
+
+        rok = rotated->next(rlat, rlon);
+        uok = unrotated->next(ulat, ulon);
+
+        ASSERT(rok == uok);
+    }
+
+}
 
 void Gridded::checkerboard(std::vector<double> &values, bool hasMissing, double missingValue, bool normalize) const {
 

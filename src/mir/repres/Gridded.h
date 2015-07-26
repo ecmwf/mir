@@ -101,6 +101,7 @@ class Gridded : public Representation {
 
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField&) const;
     virtual const Gridded *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
+    virtual void windDirections(std::vector<double>&) const;
 
 // -- Class members
     // None

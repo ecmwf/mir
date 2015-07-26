@@ -26,6 +26,8 @@ list(
      action/Action.h
      action/ActionPlan.cc
      action/ActionPlan.h
+     action/filter/AdjustWinds.cc
+     action/filter/AdjustWinds.h
      action/filter/BitmapFilter.cc
      action/filter/BitmapFilter.h
      action/filter/FrameFilter.cc

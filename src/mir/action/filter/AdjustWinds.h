@@ -13,17 +13,18 @@
 /// @date Apr 2015
 
 
-#ifndef FrameFilter_H
-#define FrameFilter_H
+#ifndef AdjustWinds_H
+#define AdjustWinds_H
 
 #include "mir/action/Action.h"
+#include "mir/util/Rotation.h"
 
 
 namespace mir {
 namespace action {
 
 
-class FrameFilter : public Action {
+class AdjustWinds : public Action {
   public:
 
 // -- Exceptions
@@ -31,11 +32,11 @@ class FrameFilter : public Action {
 
 // -- Contructors
 
-    FrameFilter(const param::MIRParametrisation&);
+    AdjustWinds(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~FrameFilter(); // Change to virtual if base class
+    virtual ~AdjustWinds(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -77,15 +78,16 @@ class FrameFilter : public Action {
 
 // No copy allowed
 
-    FrameFilter(const FrameFilter&);
-    FrameFilter& operator=(const FrameFilter&);
+    AdjustWinds(const AdjustWinds&);
+    AdjustWinds& operator=(const AdjustWinds&);
 
 // -- Members
-
-    size_t size_;
+    util::Rotation rotation_;
 
 // -- Methods
     // None
+
+    void computeDirections() const;
 
 // -- Overridden methods
 
@@ -100,7 +102,7 @@ class FrameFilter : public Action {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const FrameFilter& p)
+    //friend ostream& operator<<(ostream& s,const AdjustWinds& p)
     //	{ p.print(s); return s; }
 
 };
