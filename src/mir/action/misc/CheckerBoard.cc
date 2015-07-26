@@ -90,7 +90,7 @@ void CheckerBoard::execute(data::MIRField &field) const {
         }
 
         // Assumes iterator scans in the same order as the values
-        eckit::ScopedPtr<repres::Iterator> iter(representation->iterator(false));
+        eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
         double lat = 0;
         double lon = 0;
 

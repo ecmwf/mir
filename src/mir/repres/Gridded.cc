@@ -101,8 +101,8 @@ const Gridded *Gridded::crop(const util::BoundingBox &bbox, const std::vector<do
     double lat, lon;
 
     // Iterator is "unrotated", because the cropping area
-    // is expressed in the rotated coordinated system
-    eckit::ScopedPtr<Iterator> iter(iterator(true));
+    // is expressed in before the rotation is applied
+    eckit::ScopedPtr<Iterator> iter(unrotatedIterator());
     while (iter->next(lat, lon)) {
         // std::cout << lat << " " << lon << std::endl;
         if (bbox.contains(lat, lon)) {

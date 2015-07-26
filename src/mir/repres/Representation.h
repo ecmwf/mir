@@ -83,7 +83,8 @@ class Representation {
 
     // --------------------
 
-    virtual Iterator* iterator(bool unrotated) const;
+    virtual Iterator* rotatedIterator() const; // After rotation
+    virtual Iterator* unrotatedIterator() const; // Before rotation
 
     virtual void validate(const std::vector<double> &values) const;
 

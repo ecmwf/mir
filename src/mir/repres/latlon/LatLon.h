@@ -79,7 +79,7 @@ class LatLon : public Gridded {
                             const util::Increments& increments);
 
     virtual bool globalDomain() const;
-    virtual Iterator *iterator(bool unrotated) const;
+    virtual Iterator *unrotatedIterator() const;
 
     // -- Overridden methods
     void print(std::ostream &) const; // Change to virtual if base class

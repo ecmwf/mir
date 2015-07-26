@@ -94,7 +94,7 @@ class RotatedGG : public Regular {
 
     virtual void fill(grib_info &) const;
     virtual atlas::Grid *atlasGrid() const;
-    virtual Iterator* iterator(bool unrotated) const;
+    virtual Iterator* rotatedIterator() const;
 
     virtual const Gridded *cropped(const util::BoundingBox &bbox) const;
 

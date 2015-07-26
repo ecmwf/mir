@@ -70,7 +70,7 @@ class Reduced : public Gaussian {
     // -- Overridden methods
 
     virtual void fill(grib_info &) const;
-    virtual Iterator *iterator(bool unrotated) const;
+    virtual Iterator *unrotatedIterator() const;
 
 
     // -- Class members

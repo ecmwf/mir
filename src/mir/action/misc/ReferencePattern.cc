@@ -88,7 +88,7 @@ void ReferencePattern::execute(data::MIRField &field) const {
         double median = (minvalue + maxvalue) / 2;
         double range = maxvalue - minvalue;
 
-        eckit::ScopedPtr<repres::Iterator> iter(representation->iterator(false));
+        eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
         double lat = 0;
         double lon = 0;
 

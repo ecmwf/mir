@@ -97,7 +97,7 @@ class RotatedLL : public RegularLL {
 
     virtual void fill(grib_info &) const;
     virtual atlas::Grid *atlasGrid() const;
-    virtual Iterator* iterator(bool unrotated) const;
+    virtual Iterator* rotatedIterator() const;
 
     // From RegularLL
     virtual const RotatedLL *cropped(const util::BoundingBox &bbox) const;

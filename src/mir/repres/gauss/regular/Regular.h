@@ -67,7 +67,7 @@ class Regular : public Gaussian {
 
     virtual void fill(grib_info&) const;
     virtual atlas::Grid* atlasGrid() const;
-    virtual Iterator *iterator(bool unrotated) const;
+    virtual Iterator *unrotatedIterator() const;
 
 // -- Overridden methods
     // None
