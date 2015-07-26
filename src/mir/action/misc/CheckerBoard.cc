@@ -136,7 +136,7 @@ void CheckerBoard::execute(data::MIRField &field) const {
             j++;
         }
 
-        ASSERT(k == values.size());
+        ASSERT(j == values.size());
     }
 }
 
