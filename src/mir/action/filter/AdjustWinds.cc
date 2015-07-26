@@ -23,6 +23,7 @@
 #include "mir/repres/Representation.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/repres/Iterator.h"
+#include "mir/util/Compare.h"
 
 namespace mir {
 namespace action {
@@ -48,7 +49,7 @@ void AdjustWinds::print(std::ostream &out) const {
 
 inline double radian(double x) { return x * (M_PI / 180.0); }
 inline double degree(double x) { return x * (180.0 / M_PI);}
-inline double normal(double x) { return std::max(std::min(x, 1.0), -1.0); }
+inline double normalize(double x) { return std::max(std::min(x, 1.0), -1.0); }
 
 inline double sign(double a, double b) {
     if (b >= 0.0 ) {
@@ -65,72 +66,53 @@ void AdjustWinds::windDirections(const repres::Representation* representation, s
 
     double lat = 0;
     double lon = 0;
-    const double epsilon = 1e-5;
 
-    // See HPSHGPW
+    // Inspired from HPSHGPW
 
-    double longmod = -rotation_.south_pole_longitude();
+    double pole_longitude = -rotation_.south_pole_longitude();
     double theta = radian(rotation_.south_pole_latitude());
-    double sinthe = -sin(theta);
-    double costhe = -cos(theta);
+    double sin_theta = -sin(theta);
+    double cos_theta = -cos(theta);
 
     while (iter->next(lat, lon)) {
 
-        double zlat   = radian(lat);
-        double sinlat = sin(zlat);
-        double coslat = cos(zlat);
-        double zlon = lon + longmod;
+        double radian_lat = radian(lat);
+        double sin_lat = sin(radian_lat);
+        double cos_lat = cos(radian_lat);
 
-        if ( zlon > 180.0 ) {
-            zlon = zlon - 360.0;
+        lon += pole_longitude;
+
+        // For some reason, the algorithms only work between in (-180,180]
+        while(lon < -180) { lon += 360; }
+        while(lon >  180) { lon -= 360; }
+
+        if (eckit::FloatCompare<double>::isApproximatelyEqual(lon, -180)) {
+            lon = 180.0;
         }
 
-        if ( fabs(zlon + 180.0) < epsilon ) {
-            zlon = 180.0;
+        double radian_lon = radian(lon);
+        double sin_lon = sin(radian_lon);
+        double cos_lon = cos(radian_lon);
+        double znew = normalize(sin_theta * sin_lat + cos_theta * cos_lat * cos_lon);
+
+        double ncos_lat = 0;
+
+        if ( !(eckit::FloatCompare<double>::isApproximatelyEqual(znew, 1.0) ||
+                eckit::FloatCompare<double>::isApproximatelyEqual(znew, -1.0))) {
+            ncos_lat = cos(asin(znew));
         }
 
-        zlon   = radian(zlon);
-        double sinlon = sin(zlon);
-        double coslon = cos(zlon);
-        double znew = sinthe * sinlat + costhe * coslat * coslon;
-        znew = normal(znew);
-
-        double latnew;
-        double ncoslat;
-
-        if ( fabs(znew - 1.0) < epsilon )  {
-            latnew = M_PI / 2.0;
-            ncoslat = 0.0;
-        } else if ( fabs(znew + 1.0) < epsilon )  {
-            latnew = -M_PI / 2.0;
-            ncoslat = 0.0;
-        } else {
-            latnew = asin(znew);
-            ncoslat = cos(latnew);
+        if (eckit::FloatCompare<double>::isApproximatelyEqual(ncos_lat, 0.0)) {
+            ncos_lat = 1.0;
         }
 
-        if ( ncoslat == 0.0 ) {
-            ncoslat = 1.0;
-        }
+        double cos_new = normalize(( (sin_theta * cos_lat * cos_lon - cos_theta * sin_lat) ) / ncos_lat);
+        double lon_new = sign(acos(cos_new), radian_lon);
 
-        double zdiv = 1.0 / ncoslat;
-        double cosnew = ( (sinthe * coslat * coslon - costhe * sinlat) ) * zdiv;
-        cosnew = normal(cosnew);
-        double lonnew = sign(acos(cosnew), zlon);
+        double cos_delta = normalize(sin_theta * sin_lon * sin(lon_new) + cos_lon * cos_new);
+        double delta = sign(acos(cos_delta), -cos_theta * radian_lon);
 
-        double cosdel = sinthe * sinlon * sin(lonnew) + coslon * cosnew;
-        cosdel = normal(cosdel);
-        double delta  = sign(acos(cosdel), -costhe * zlon);
-
-        double direction = -degree(delta);
-        if ( direction > 180.0 ) {
-            direction -= 360.0;
-        }
-        if ( direction <= -180.0) {
-            direction += 360.0;
-        }
-
-        result.push_back(direction);
+        result.push_back(delta);
     }
 
 }
@@ -151,10 +133,9 @@ void AdjustWinds::execute(data::MIRField &field) const {
     std::vector<double> s(size);
 
     for (size_t i = 0; i < size; i++) {
-        double d =  -radian(directions[i]);
+        double d =  directions[i];
         c[i] = cos(d);
         s[i] = sin(d);
-        std::cout << directions[i] << " - " << c[i] << " - " << s[i] << std::endl;
     }
 
     for (size_t i = 0; i < field.dimensions(); i += 2 ) {
