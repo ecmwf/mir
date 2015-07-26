@@ -16,13 +16,13 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/BoundingBox.h"
+
 
 namespace mir {
 namespace action {
@@ -30,12 +30,6 @@ namespace action {
 
 CheckerBoard::CheckerBoard(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
-
-    // std::vector<double> value;
-    // ASSERT(parametrisation.get("user.area", value));
-    // ASSERT(value.size() == 4);
-
-    // bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
 }
 
 
@@ -44,7 +38,7 @@ CheckerBoard::~CheckerBoard() {
 
 
 void CheckerBoard::print(std::ostream &out) const {
-    out << "CheckerBoard["  << "]";
+    out << "CheckerBoard[]";
 }
 
 
@@ -54,9 +48,95 @@ void CheckerBoard::execute(data::MIRField &field) const {
     bool normalize = false;
     parametrisation_.get("0-1", normalize);
 
-    for (size_t i = 0; i < field.dimensions(); i++) {
-        std::vector<double> &values = field.values(i);
-        representation->checkerboard(values, field.hasMissing(), field.missingValue(), normalize);
+    bool hasMissing = field.hasMissing();
+    double missingValue = field.missingValue();
+
+    for (size_t k = 0; k < field.dimensions(); k++) {
+        std::vector<double> &values = field.values(k);
+
+        double minvalue = 0;
+        double maxvalue = 0;
+
+        size_t first   = 0;
+        for (; first < values.size(); ++first) {
+            if (!hasMissing || values[first] != missingValue) {
+                minvalue = values[first];
+                maxvalue = values[first];
+                break;
+            }
+        }
+
+        if (first == values.size()) {
+            // Only missing values
+            return;
+        }
+
+        for (size_t i = first; i < values.size(); ++i) {
+            if (!hasMissing || values[i] != missingValue) {
+                minvalue = std::min(minvalue, values[i]);
+                maxvalue = std::max(maxvalue, values[i]);
+            }
+        }
+
+        size_t we = 16;
+        size_t ns = 8;
+
+        double dwe = 360.0 / we;
+        double dns = 180.0 / ns;
+
+        if (normalize) {
+            maxvalue = 1;
+            minvalue = 0;
+        }
+
+        // Assumes iterator scans in the same order as the values
+        eckit::ScopedPtr<repres::Iterator> iter(representation->iterator(false));
+        double lat = 0;
+        double lon = 0;
+
+        std::vector<double> v;
+        v.push_back(minvalue);
+        v.push_back(maxvalue);
+
+        std::map<std::pair<size_t, size_t>, size_t> boxes;
+
+        size_t b = 0;
+        for (size_t r = 0; r < we; r++) {
+            for (size_t c = 0; c < ns; c++) {
+                boxes[std::make_pair(r, c)] = b;
+                b++;
+                b %= v.size();
+            }
+            b++;
+            b %= v.size();
+        }
+
+
+        size_t j = 0;
+
+        while (iter->next(lat, lon)) {
+
+            lat = 90 - lat;
+
+            while (lon >= 369) {
+                lon -= 360;
+            }
+
+            while (lon < 0) {
+                lon += 360;
+            }
+
+            size_t c = size_t(lat / dns);
+            size_t r = size_t(lon / dwe);
+
+            if (!hasMissing || values[j] != missingValue) {
+                values[j] = boxes[std::make_pair(r, c)];
+            }
+
+            j++;
+        }
+
+        ASSERT(k == values.size());
     }
 }
 

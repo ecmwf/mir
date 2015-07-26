@@ -21,6 +21,8 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/repres/Iterator.h"
 
 namespace mir {
 namespace action {
@@ -44,7 +46,94 @@ void AdjustWinds::print(std::ostream &out) const {
     out << "AdjustWinds[rotation=" << rotation_ << "]";
 }
 
-inline double radian(double x) { return x * M_PI / 180.0; }
+inline double radian(double x) { return x * (M_PI / 180.0); }
+inline double degree(double x) { return x * (180.0 / M_PI);}
+inline double normal(double x) { return std::max(std::min(x, 1.0), -1.0); }
+
+inline double sign(double a, double b) {
+    if (b >= 0.0 ) {
+        return fabs(a);
+    }
+    return -fabs(a);
+}
+
+
+void AdjustWinds::windDirections(const repres::Representation* representation, std::vector<double> &result) const {
+    result.clear();
+
+    eckit::ScopedPtr<repres::Iterator> iter(representation->iterator(false));
+
+    double lat = 0;
+    double lon = 0;
+    const double epsilon = 1e-5;
+
+    // See HPSHGPW
+
+    double longmod = -rotation_.south_pole_longitude();
+    double theta = radian(rotation_.south_pole_latitude());
+    double sinthe = -sin(theta);
+    double costhe = -cos(theta);
+
+    while (iter->next(lat, lon)) {
+
+        double zlat   = radian(lat);
+        double sinlat = sin(zlat);
+        double coslat = cos(zlat);
+        double zlon = lon + longmod;
+
+        if ( zlon > 180.0 ) {
+            zlon = zlon - 360.0;
+        }
+
+        if ( fabs(zlon + 180.0) < epsilon ) {
+            zlon = 180.0;
+        }
+
+        zlon   = radian(zlon);
+        double sinlon = sin(zlon);
+        double coslon = cos(zlon);
+        double znew = sinthe * sinlat + costhe * coslat * coslon;
+        znew = normal(znew);
+
+        double latnew;
+        double ncoslat;
+
+        if ( fabs(znew - 1.0) < epsilon )  {
+            latnew = M_PI / 2.0;
+            ncoslat = 0.0;
+        } else if ( fabs(znew + 1.0) < epsilon )  {
+            latnew = -M_PI / 2.0;
+            ncoslat = 0.0;
+        } else {
+            latnew = asin(znew);
+            ncoslat = cos(latnew);
+        }
+
+        if ( ncoslat == 0.0 ) {
+            ncoslat = 1.0;
+        }
+
+        double zdiv = 1.0 / ncoslat;
+        double cosnew = ( (sinthe * coslat * coslon - costhe * sinlat) ) * zdiv;
+        cosnew = normal(cosnew);
+        double lonnew = sign(acos(cosnew), zlon);
+
+        double cosdel = sinthe * sinlon * sin(lonnew) + coslon * cosnew;
+        cosdel = normal(cosdel);
+        double delta  = sign(acos(cosdel), -costhe * zlon);
+
+        double direction = -degree(delta);
+        if ( direction > 180.0 ) {
+            direction -= 360.0;
+        }
+        if ( direction <= -180.0) {
+            direction += 360.0;
+        }
+
+        result.push_back(direction);
+    }
+
+}
 
 
 void AdjustWinds::execute(data::MIRField &field) const {
@@ -54,7 +143,8 @@ void AdjustWinds::execute(data::MIRField &field) const {
     directions.reserve(field.values(0).size());
 
     ASSERT(!field.hasMissing()); // For now
-    field.representation()->windDirections(rotation_, directions);
+
+    windDirections(field.representation(), directions);
     size_t size = directions.size();
 
     std::vector<double> c(size);

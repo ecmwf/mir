@@ -43,6 +43,8 @@ class MIRField;
 
 namespace repres {
 
+class Iterator;
+
 
 class Representation {
   public:
@@ -81,6 +83,8 @@ class Representation {
 
     // --------------------
 
+    virtual Iterator* iterator(bool unrotated) const;
+
     virtual void validate(const std::vector<double> &values) const;
 
     virtual void fill(grib_info&) const;
@@ -88,8 +92,6 @@ class Representation {
     virtual const Representation* crop(const util::BoundingBox&,
                                  const std::vector<double>&, std::vector<double>&) const;
 
-    virtual void checkerboard(std::vector<double>& values, bool hasMissing, double missingValue, bool normalize) const;
-    virtual void pattern(std::vector<double>& values, bool hasMissing, double missingValue, bool normalize) const;
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
@@ -110,7 +112,6 @@ class Representation {
 
     virtual void shape(size_t& ni, size_t& nj) const;
 
-    virtual void windDirections(const util::Rotation&, std::vector<double>&) const;
 
 
 // -- Overridden methods

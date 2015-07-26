@@ -18,9 +18,13 @@
 
 #include "mir/action/Action.h"
 #include "mir/util/Rotation.h"
-
+#include <vector>
 
 namespace mir {
+
+namespace repres { class Representation; }
+
+
 namespace action {
 
 
@@ -87,7 +91,7 @@ class AdjustWinds : public Action {
 // -- Methods
     // None
 
-    void computeDirections() const;
+    void windDirections(const repres::Representation* representation, std::vector<double> &result) const ;
 
 // -- Overridden methods
 

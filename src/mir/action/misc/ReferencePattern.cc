@@ -15,14 +15,13 @@
 #include "mir/action/misc/ReferencePattern.h"
 
 #include <iostream>
+#include <cmath>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
-
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/BoundingBox.h"
 
 namespace mir {
 namespace action {
@@ -30,12 +29,6 @@ namespace action {
 
 ReferencePattern::ReferencePattern(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
-
-    // std::vector<double> value;
-    // ASSERT(parametrisation.get("user.area", value));
-    // ASSERT(value.size() == 4);
-
-    // bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
 }
 
 
@@ -44,7 +37,7 @@ ReferencePattern::~ReferencePattern() {
 
 
 void ReferencePattern::print(std::ostream &out) const {
-    out << "ReferencePattern["  << "]";
+    out << "ReferencePattern[]";
 }
 
 
@@ -54,9 +47,66 @@ void ReferencePattern::execute(data::MIRField &field) const {
     bool normalize = false;
     parametrisation_.get("0-1", normalize);
 
-    for (size_t i = 0; i < field.dimensions(); i++) {
-        std::vector<double> &values = field.values(i);
-        representation->pattern(values, field.hasMissing(), field.missingValue(), normalize);
+    bool hasMissing = field.hasMissing();
+    double missingValue = field.missingValue();
+
+    for (size_t k = 0; k < field.dimensions(); k++) {
+        std::vector<double> &values = field.values(k);
+
+        double minvalue = 0;
+        double maxvalue = 0;
+
+        size_t first = 0;
+        size_t count = 0;
+        for (; first < values.size(); ++first) {
+            if (!hasMissing || values[first] != missingValue) {
+                minvalue = values[first];
+                maxvalue = values[first];
+                count++;
+                break;
+            }
+        }
+
+        if (first == values.size()) {
+            // Only missing values
+            continue;
+        }
+
+        for (size_t i = first; i < values.size(); ++i) {
+            if (!hasMissing || values[i] != missingValue) {
+                minvalue = std::min(minvalue, values[i]);
+                maxvalue = std::max(maxvalue, values[i]);
+                count++;
+            }
+        }
+
+        if (normalize) {
+            maxvalue = 1;
+            minvalue = 0;
+        }
+
+        double median = (minvalue + maxvalue) / 2;
+        double range = maxvalue - minvalue;
+
+        eckit::ScopedPtr<repres::Iterator> iter(representation->iterator(false));
+        double lat = 0;
+        double lon = 0;
+
+
+        size_t j = 0;
+        const double deg2rad = M_PI / 180.0;
+
+        while (iter->next(lat, lon)) {
+
+            if (!hasMissing || values[j] != missingValue) {
+                values[j] = range * sin(3 * lon * deg2rad) * cos(3 * lat * deg2rad) * 0.5 + median;
+            }
+
+            j++;
+        }
+
+        ASSERT(j == values.size());
+
     }
 }
 
