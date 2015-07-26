@@ -38,8 +38,14 @@ void JSONTool::run() {
         {
             "a" : 2,
             "b" : [1,2,3],
-            "c" : {"b": 1.2}}
-        )";
+            "c" : {"b": 1.2},
+            "fields":[{ "datatype" : "real64", "name" : "pressure" },
+                      { "datatype" : "real64", "name" : "temperature" },
+                      { "datatype" : "int32",  "name" : "soiltype" }]
+
+      }
+      )";
+
     in.str(json);
 
     eckit::JSONConfiguration config(in);
@@ -92,6 +98,13 @@ void JSONTool::run() {
     sub3.set("p", "p");
     std::cout << "++++++++ " << sub3 << std::endl;
 
+
+    std::vector<eckit::LocalConfiguration> fields;
+    config.get("fields", fields);
+
+    for(size_t i = 0; i < fields.size(); i++) {
+        std::cout << fields[i] << std::endl;
+    }
 }
 
 
