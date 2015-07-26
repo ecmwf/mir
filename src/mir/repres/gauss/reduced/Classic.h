@@ -93,14 +93,7 @@ class Classic : public Reduced {
 
     // -- Methods
 
-
-
-
     // -- Overridden methods
-
-
-
-    // Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
 
 
     // -- Class members

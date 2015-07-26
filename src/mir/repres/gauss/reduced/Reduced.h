@@ -103,8 +103,6 @@ class Reduced : public Gaussian {
     virtual const Reduced* cropped(const util::BoundingBox &bbox) const ;
     virtual void validate(const std::vector<double> &values) const;
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
-    // Representation *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
-
 
     // -- Class members
     // None

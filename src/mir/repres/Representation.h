@@ -90,9 +90,8 @@ class Representation {
 
     virtual void fill(grib_info&) const;
 
-    virtual const Representation* crop(const util::BoundingBox&,
-                                 const std::vector<double>&, std::vector<double>&) const;
-
+    // Return a cropped version
+    virtual const Representation* cropped(const util::BoundingBox &bbox) const;
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 

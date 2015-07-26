@@ -87,8 +87,7 @@ class Gridded : public Representation {
 
     virtual bool globalDomain() const;
 
-    // Called by crop(), to override in subclasses
-    virtual const Gridded* cropped(const util::BoundingBox &bbox) const;
+
 
 // -- Overridden methods
     virtual void setComplexPacking(grib_info&) const;
@@ -96,7 +95,6 @@ class Gridded : public Representation {
     virtual void setSecondOrderPacking(grib_info&) const;
 
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField&) const;
-    virtual const Gridded *crop(const util::BoundingBox &bbox, const std::vector<double> &in, std::vector<double> &out) const;
 
 // -- Class members
     // None
