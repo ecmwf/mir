@@ -23,6 +23,8 @@
 
 #include "mir/util/Grib.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Rotation.h"
+
 #include "mir/repres/Iterator.h"
 
 namespace mir {
@@ -165,44 +167,89 @@ const Gridded *Gridded::crop(const util::BoundingBox &bbox, const std::vector<do
     return cropped;
 }
 
-const double radians = M_PI / 180.0;
+inline double radian(double x) { return x * (M_PI / 180.0); }
+inline double degree(double x) { return x * (180.0 / M_PI);}
+inline double normal(double x) { return std::max(std::min(x, 1.0), -1.0); }
+inline double sign(double a, double b) {
+    if (b >= 0.0 ) {
+        return fabs(a);
+    }
+    return -fabs(a);
+}
 
-void Gridded::windDirections(std::vector<double> &result) const {
+void Gridded::windDirections(const util::Rotation& rotation, std::vector<double> &result) const {
     result.clear();
 
-    eckit::ScopedPtr<Iterator> unrotated(iterator(false));
-    eckit::ScopedPtr<Iterator> rotated(iterator(true));
+    eckit::ScopedPtr<Iterator> iter(iterator(false));
 
-    double rlat = 0;
-    double rlon = 0;
-    double ulat = 0;
-    double ulon = 0;
+    double lat = 0;
+    double lon = 0;
+    const double epsilon = 1e-5;
 
-    bool rok = rotated->next(rlat, rlon);
-    bool uok = unrotated->next(ulat, ulon);
+    // See HPSHGPW
 
-    ASSERT(rok == uok);
+    double longmod = -rotation.south_pole_longitude();
+    double theta = radian(rotation.south_pole_latitude());
+    double sinthe = -sin(theta);
+    double costhe = -cos(theta);
 
-    while (rok && uok) {
+    while (iter->next(lat, lon)) {
 
+        double zlat   = radian(lat);
+        double sinlat = sin(zlat);
+        double coslat = cos(zlat);
+        double zlon = lon + longmod;
 
-        double lamba1 = ulat * radians;
-        double lamba2 = rlat * radians;
-        double phi1 = ulon * radians;
-        double phi2 = rlon * radians;
+        if ( zlon > 180.0 ) {
+            zlon = zlon - 360.0;
+        }
 
-        double delta = lamba2 - lamba1;
+        if ( fabs(zlon + 180.0) < epsilon ) {
+            zlon = 180.0;
+        }
 
-        double y = sin(delta) * cos(phi2);
-        double x = cos(phi1)*sin(phi2) - sin(phi1)*cos(phi2)*cos(delta);
-        double direction = x ? atan2(y, x) : 0;
+        zlon   = radian(zlon);
+        double sinlon = sin(zlon);
+        double coslon = cos(zlon);
+        double znew = sinthe * sinlat + costhe * coslat * coslon;
+        znew = normal(znew);
+
+        double latnew;
+        double ncoslat;
+
+        if ( fabs(znew - 1.0) < epsilon )  {
+            latnew = M_PI / 2.0;
+            ncoslat = 0.0;
+        } else if ( fabs(znew + 1.0) < epsilon )  {
+            latnew = -M_PI / 2.0;
+            ncoslat = 0.0;
+        } else {
+            latnew = asin(znew);
+            ncoslat = cos(latnew);
+        }
+
+        if ( ncoslat == 0.0 ) {
+            ncoslat = 1.0;
+        }
+
+        double zdiv = 1.0 / ncoslat;
+        double cosnew = ( (sinthe * coslat * coslon - costhe * sinlat) ) * zdiv;
+        cosnew = normal(cosnew);
+        double lonnew = sign(acos(cosnew), zlon);
+
+        double cosdel = sinthe * sinlon * sin(lonnew) + coslon * cosnew;
+        cosdel = normal(cosdel);
+        double delta  = sign(acos(cosdel), -costhe * zlon);
+
+        double direction = -degree(delta);
+        if ( direction > 180.0 ) {
+            direction -= 360.0;
+        }
+        if ( direction <= -180.0) {
+            direction += 360.0;
+        }
 
         result.push_back(direction);
-
-        rok = rotated->next(rlat, rlon);
-        uok = unrotated->next(ulat, ulon);
-
-        ASSERT(rok == uok);
     }
 
 }

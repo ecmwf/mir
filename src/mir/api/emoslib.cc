@@ -1097,6 +1097,7 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
         job.set("area", area[0], area[1], area[2], area[3]);
         job.set("grid", grid[0], grid[1]);
         job.set("rotation", pole[0], pole[1]);
+        job.set("wind", true);
         // job.set("interpolation", "nn");
 
         job.execute(input, output);

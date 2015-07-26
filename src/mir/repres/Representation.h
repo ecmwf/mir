@@ -34,6 +34,7 @@ class MIRParametrisation;
 
 namespace util {
 class BoundingBox;
+class Rotation;
 }
 
 namespace data {
@@ -109,7 +110,7 @@ class Representation {
 
     virtual void shape(size_t& ni, size_t& nj) const;
 
-    virtual void windDirections(std::vector<double>&) const;
+    virtual void windDirections(const util::Rotation&, std::vector<double>&) const;
 
 
 // -- Overridden methods

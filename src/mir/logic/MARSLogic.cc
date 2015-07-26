@@ -51,10 +51,13 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
 
     bool autoresol = false;
     bool vod2uv = false;
+    bool wind = false;
 
     long intermediate_gaussian = 0;
     parametrisation_.get("autoresol", autoresol);
     parametrisation_.get("vod2uv", vod2uv);
+    parametrisation_.get("wind", wind);
+
     parametrisation_.get("intermediate_gaussian", intermediate_gaussian);
 
     bool user_grid = parametrisation_.has("user.grid");
@@ -62,11 +65,11 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
     bool user_regular = parametrisation_.has("user.regular");
     bool user_octahedral = parametrisation_.has("user.octahedral");
 
-    if(parametrisation_.has("checkerboard")) {
+    if (parametrisation_.has("checkerboard")) {
         plan.add("misc.checkerboard");
     }
 
-    if(parametrisation_.has("pattern")) {
+    if (parametrisation_.has("pattern")) {
         plan.add("misc.pattern");
     }
 
@@ -98,12 +101,9 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
             plan.add("transform.sh2sh");
         }
 
-
         if (vod2uv) {
             plan.add("transform.vod2uv");
         }
-
-
 
         if (user_grid) {
 
@@ -120,6 +120,9 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
 
             if (parametrisation_.has("user.rotation")) {
                 plan.add("interpolate.grid2rotated-regular-ll");
+                 if(wind || vod2uv) {
+                    plan.add("filter.adjust-winds");
+                }
             }
 
         }
@@ -152,6 +155,9 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
         if (user_grid) {
             if (parametrisation_.has("user.rotation")) {
                 plan.add("interpolate.grid2rotated-regular-ll");
+                if (wind || vod2uv) {
+                    plan.add("filter.adjust-winds");
+                }
             } else {
                 plan.add("interpolate.grid2regular-ll");
             }
@@ -160,6 +166,9 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
         if (user_reduced) {
             if (parametrisation_.has("user.rotation")) {
                 plan.add("interpolate.grid2rotated-reduced-gg");
+                if (wind || vod2uv) {
+                    plan.add("filter.adjust-winds");
+                }
             } else {
                 plan.add("interpolate.grid2reduced-gg");
             }
@@ -168,6 +177,9 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
         if (user_regular) {
             if (parametrisation_.has("user.rotation")) {
                 plan.add("interpolate.grid2rotated-regular-gg");
+                if (wind || vod2uv) {
+                    plan.add("filter.adjust-winds");
+                }
             } else {
                 plan.add("interpolate.grid2regular-gg");
             }
@@ -176,6 +188,9 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
         if (user_octahedral) {
             if (parametrisation_.has("user.rotation")) {
                 plan.add("interpolate.grid2rotated-octahedral-gg");
+                if (wind || vod2uv) {
+                    plan.add("filter.adjust-winds");
+                }
             } else {
                 plan.add("interpolate.grid2octahedral-gg");
             }

@@ -27,9 +27,13 @@ namespace action {
 
 
 AdjustWinds::AdjustWinds(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation),
-    rotation_(parametrisation) {
-    // ASSERT(parametrisation.get("user.frame", size_));
+    Action(parametrisation) {
+
+    std::vector<double> value;
+    ASSERT(parametrisation_.get("user.rotation", value));
+    ASSERT(value.size() == 2);
+
+    rotation_ = util::Rotation(value[0], value[1]);
 }
 
 
@@ -40,25 +44,27 @@ void AdjustWinds::print(std::ostream &out) const {
     out << "AdjustWinds[rotation=" << rotation_ << "]";
 }
 
+inline double radian(double x) { return x * M_PI / 180.0; }
+
+
 void AdjustWinds::execute(data::MIRField &field) const {
     ASSERT((field.dimensions() % 2) == 0);
 
-    std::vector<double> rdir;
-    rdir.reserve(field.values(0).size());
+    std::vector<double> directions;
+    directions.reserve(field.values(0).size());
 
     ASSERT(!field.hasMissing()); // For now
-    field.representation()->windDirections(rdir);
-    size_t size = rdir.size();
+    field.representation()->windDirections(rotation_, directions);
+    size_t size = directions.size();
 
     std::vector<double> c(size);
     std::vector<double> s(size);
 
-    static double radian = M_PI / 180.0;
-
     for (size_t i = 0; i < size; i++) {
-        double d = -radian * rdir[i];
+        double d =  -radian(directions[i]);
         c[i] = cos(d);
         s[i] = sin(d);
+        std::cout << directions[i] << " - " << c[i] << " - " << s[i] << std::endl;
     }
 
     for (size_t i = 0; i < field.dimensions(); i += 2 ) {
@@ -76,7 +82,7 @@ void AdjustWinds::execute(data::MIRField &field) const {
 
         for (size_t j = 0; j < size; j++) {
             new_u_values[j] = u_values[j] * c[j] - v_values[j] * s[j];
-            new_v_values[j] = u_values[j] * s[j] + u_values[j] * c[j];
+            new_v_values[j] = u_values[j] * s[j] + v_values[j] * c[j];
         }
 
         field.values(new_u_values, i);
@@ -86,7 +92,7 @@ void AdjustWinds::execute(data::MIRField &field) const {
 
 
 namespace {
-static ActionBuilder< AdjustWinds > filter("filter.adjustwinds");
+static ActionBuilder< AdjustWinds > filter("filter.adjust-winds");
 }
 
 

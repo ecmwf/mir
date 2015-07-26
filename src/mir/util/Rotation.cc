@@ -59,6 +59,7 @@ void Rotation::fill(grib_info &info) const  {
     // info.grid.uvRelativeToGrid= isec2[18]==8 ? 1 : 0;
     info.grid.latitudeOfSouthernPoleInDegrees    = south_pole_latitude_;
     info.grid.longitudeOfSouthernPoleInDegrees   = south_pole_longitude_;
+    info.grid.uvRelativeToGrid = 1; // FIXME: only set for winds
 
     // This is missing from the grib_spec
     // Remove that when supported
