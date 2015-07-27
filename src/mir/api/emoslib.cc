@@ -1080,7 +1080,7 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
 
     try {
         ProdgenJob u_intin;
-                ProdgenJob v_intin;
+        ProdgenJob v_intin;
 
         MIRJob job;
 
@@ -1097,7 +1097,7 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
         u_intin.auto_pl();
         u_intin.parameter(131);
 
-         v_intin.reduced(kgauss);
+        v_intin.reduced(kgauss);
         v_intin.auto_pl();
         v_intin.parameter(132);
 
