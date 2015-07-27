@@ -151,6 +151,14 @@ size_t ProdgenJob::truncation() const {
     return truncation_;
 }
 
+size_t ProdgenJob::paramId() const {
+    ASSERT(parameter_);
+    if (table_ == 128) {
+        return parameter_;
+    }
+    return table_ * 1000 + parameter_;
+}
+
 const util::BoundingBox &ProdgenJob::bbox() const {
     return bbox_;
 }

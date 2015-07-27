@@ -135,6 +135,7 @@ class ProdgenJob : public input::RawMetadata {
 
     virtual size_t N() const;
     virtual size_t truncation() const;
+    virtual size_t paramId() const;
 
     virtual const util::BoundingBox &bbox() const;
     virtual const std::string &gridType() const ;

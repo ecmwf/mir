@@ -1079,11 +1079,13 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
     eckit::Log::info() << "++++++ hirlamw" << std::endl;
 
     try {
-        ProdgenJob intin;
+        ProdgenJob u_intin;
+                ProdgenJob v_intin;
+
         MIRJob job;
 
-        mir::input::RawInput u_input(intin, oldfldu, kount);
-        mir::input::RawInput v_input(intin, oldfldv, kount);
+        mir::input::RawInput u_input(u_intin, oldfldu, kount);
+        mir::input::RawInput v_input(v_intin, oldfldv, kount);
 
         mir::output::RawOutput u_output(newfldu, ksize);
         mir::output::RawOutput v_output(newfldv, ksize);
@@ -1091,8 +1093,13 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
         mir::input::WindInput input(u_input, v_input);
         mir::output::WindOutput output(u_output, v_output);
 
-        intin.reduced(kgauss);
-        intin.auto_pl();
+        u_intin.reduced(kgauss);
+        u_intin.auto_pl();
+        u_intin.parameter(131);
+
+         v_intin.reduced(kgauss);
+        v_intin.auto_pl();
+        v_intin.parameter(132);
 
         job.set("area", area[0], area[1], area[2], area[3]);
         job.set("grid", grid[0], grid[1]);

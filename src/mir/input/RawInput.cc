@@ -112,6 +112,11 @@ bool RawInput::get(const std::string &name, long &value) const {
         return true;
     }
 
+    if (name == "paramId") {
+        value = metadata_.paramId();
+        return true;
+    }
+
     return false;
 }
 
