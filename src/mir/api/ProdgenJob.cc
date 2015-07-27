@@ -36,11 +36,11 @@ ProdgenJob::ProdgenJob():
     usewind_(false),
     uselsm_(false),
     useprecip_(false),
-    missingvalue_(false),
+    missingValue_(-55555.0),
     lsm_param_(false),
     parameter_(0),
     table_(0),
-    missing_(9999),
+    hasMissing_(false),
     nj_(0) {
 }
 
@@ -69,15 +69,15 @@ void ProdgenJob::useprecip(bool on) {
     useprecip_ = on;
 }
 
-void ProdgenJob::missingvalue(bool on) {
-    eckit::Log::info() << "ProdgenJob::missingvalue " << on << std::endl;
-    missingvalue_ = on;
+void ProdgenJob::hasMissing(bool on) {
+    eckit::Log::info() << "ProdgenJob::hasMissing " << on << std::endl;
+    missingValue_ = on;
 }
 
-void ProdgenJob::missingvalue(double missing) {
-    eckit::Log::info() << "ProdgenJob::missingvalue " << missing << std::endl;
-    missingvalue_ = true;
-    missing_ = missing;
+void ProdgenJob::missingValue(double missing) {
+    eckit::Log::info() << "ProdgenJob::missingValue " << missing << std::endl;
+    missingValue_ = missing;
+    hasMissing_ = true;
 }
 
 void ProdgenJob::lsm_param(bool on) {
@@ -194,6 +194,14 @@ void ProdgenJob::auto_pl() {
     for (size_t i = 0; i < v.size(); i++) {
         pl_[i] = v[i];
     }
+}
+
+bool ProdgenJob::hasMissing() const {
+    return hasMissing_;
+}
+
+double ProdgenJob::missingValue() const {
+    return missingValue_;
 }
 
 }  // namespace api

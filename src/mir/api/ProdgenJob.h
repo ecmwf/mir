@@ -51,8 +51,8 @@ class ProdgenJob : public input::RawMetadata {
     void usewind(bool);
     void uselsm(bool);
     void useprecip(bool);
-    void missingvalue(bool);
-    void missingvalue(double);
+    void hasMissing(bool);
+    void missingValue(double);
 
     void lsm_param(bool);
     void parameter(size_t);
@@ -114,13 +114,13 @@ class ProdgenJob : public input::RawMetadata {
     bool usewind_;
     bool uselsm_;
     bool useprecip_;
-    bool missingvalue_;
+    bool hasMissing_;
     bool lsm_param_;
 
     size_t parameter_;
     size_t table_;
 
-    double missing_;
+    double missingValue_;
 
     // For reduced_ll
     size_t nj_;
@@ -143,6 +143,8 @@ class ProdgenJob : public input::RawMetadata {
     virtual bool gridded() const;
     virtual bool spectral() const;
     virtual size_t nj() const;
+    virtual bool hasMissing() const;
+    virtual double missingValue() const;
 
     // -- Class members
     // None

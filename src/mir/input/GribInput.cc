@@ -248,9 +248,6 @@ data::MIRField *GribInput::field() const {
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
 
 
-
-
-
     data::MIRField *field = new data::MIRField(*this, bitmap != 0, missing);
 
     long scanningMode = 0;

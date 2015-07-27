@@ -279,7 +279,11 @@ extern "C" fortint intin_(const char *name,
         }
 
         if (strncasecmp(name, "missingvalue", name_len) == 0) {
-            intin->missingvalue(boolean(value));
+            if (strncasecmp(value, "no", 2) == 0) {
+                intin->hasMissing(false);
+            } else {
+                intin->missingValue(reals[0]);
+            }
             return 0;
         }
 
@@ -884,7 +888,7 @@ extern "C" fortint wvqlint_(const fortint &knum,
         job.set("grid", reson, reson);
         // job.set("area", north, west, north - (kn_s - 1) * reson, west + (ke_w - 1) * reson);
 
-        intin.missingvalue(pmiss);
+        intin.missingValue(pmiss);
         intin.reduced_ll(knum, numpts);
 
         job.execute(input, output);
@@ -942,7 +946,7 @@ extern "C" void wv2dint_(const fortint &knum,
         job.set("interpolation", "nn");
         // job.set("area", north, west, north - (kn_s - 1) * reson, west + (ke_w - 1) * reson);
 
-        intin.missingvalue(pmiss);
+        intin.missingValue(pmiss);
         intin.reduced_ll(knum, numpts);
 
         job.execute(input, output);

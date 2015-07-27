@@ -65,6 +65,9 @@ class RawMetadata {
     virtual size_t nj() const = 0;
     virtual size_t paramId() const = 0;
 
+    virtual bool hasMissing() const = 0;
+    virtual double missingValue() const = 0;
+
     // -- Overridden methods
     // None
 
