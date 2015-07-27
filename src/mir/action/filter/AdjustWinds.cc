@@ -93,13 +93,13 @@ void AdjustWinds::windDirections(const repres::Representation* representation, s
         double radian_lon = radian(lon);
         double sin_lon = sin(radian_lon);
         double cos_lon = cos(radian_lon);
-        double znew = normalize(sin_theta * sin_lat + cos_theta * cos_lat * cos_lon);
+        double z = normalize(sin_theta * sin_lat + cos_theta * cos_lat * cos_lon);
 
         double ncos_lat = 0;
 
-        if ( !(eckit::FloatCompare<double>::isApproximatelyEqual(znew, 1.0) ||
-                eckit::FloatCompare<double>::isApproximatelyEqual(znew, -1.0))) {
-            ncos_lat = cos(asin(znew));
+        if ( !(eckit::FloatCompare<double>::isApproximatelyEqual(z, 1.0) ||
+                eckit::FloatCompare<double>::isApproximatelyEqual(z, -1.0))) {
+            ncos_lat = cos(asin(z));
         }
 
         if (eckit::FloatCompare<double>::isApproximatelyEqual(ncos_lat, 0.0)) {
