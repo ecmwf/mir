@@ -1049,7 +1049,7 @@ extern "C" fortint hirlsm_( const fortint &l12pnt,
         job.set("area", area[0], area[1], area[2], area[3]);
         job.set("grid", grid[0], grid[1]);
         job.set("rotation", pole[0], pole[1]);
-        job.set("interpolation", "nn");
+        job.set("lsm", true);
 
         job.execute(input, output);
 
