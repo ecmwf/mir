@@ -156,7 +156,7 @@ void WeightMatrix::validate(const char *when) const {
     }
 
     if (errors) {
-        eckit::StrStream os;
+        std::ostringstream os;
         os << "checkMatrixWeights(" << when << ") failed ";
     }
 }

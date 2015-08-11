@@ -73,9 +73,9 @@ void Arguments::argument_option_t::process(
     const std::string& _param,
     const std::string& _value ) {
     if (params_.find(_param) == params_.end()) {
-        eckit::StrStream os;
-        os << "option '" << option << "' does not have parameter '" << _param << "'" << eckit::StrStream::ends;
-        warnings_.push_back(std::string(os));
+        std::ostringstream os;
+        os << "option '" << option << "' does not have parameter '" << _param << "'";
+        warnings_.push_back(os.str());
         return;
     }
     params_[_param] = _value;
@@ -96,9 +96,9 @@ void Arguments::argument_option_t::process(
         if ((q = params_.find(p->first)) != params_.end()) {
             q->second = p->second;
         } else {
-            eckit::StrStream os;
-            os << "Option '" << option << "' does not have parameter '" << p->first + "'" << eckit::StrStream::ends;
-            warnings_.push_back(std::string(os));
+            std::ostringstream os;
+            os << "Option '" << option << "' does not have parameter '" << p->first + "'";
+            warnings_.push_back(os.str());
         }
     }
 }
@@ -154,12 +154,12 @@ void Arguments::argument_shortoption_t::process(const std::string& _value) {
 
     // check if position is within bounds
     if (positional_counter_ >= positional_params_.size()) {
-        eckit::StrStream os;
+        std::ostringstream os;
         os << "Option '" << shortoption << "': '" << _value
            << " exceeds the number of expected parameters ("
-           << positional_params_.size() << ")" << eckit::StrStream::ends;
+           << positional_params_.size() << ")";
 
-        warnings_.push_back(std::string(os));
+        warnings_.push_back(os.str());
         return;
     }
 
@@ -168,16 +168,16 @@ void Arguments::argument_shortoption_t::process(const std::string& _value) {
     std::vector< std::string > pv;
     parse_equal(positional_params_[positional_counter_++], pv);
     if (pv.size() != 1 && pv.size() != 2) {
-        eckit::StrStream os;
-        os << "Option '" << shortoption << "': could not find parameter to assign value '" << _value + "' to" << eckit::StrStream::ends;
-        warnings_.push_back(std::string(os));
+        std::ostringstream os;
+        os << "Option '" << shortoption << "': could not find parameter to assign value '" << _value + "' to";
+        warnings_.push_back(os.str());
         return;
     }
     const std::string param = eckit::StringTools::trim(pv[0]);
     if (!param.length() || !_value.length()) {
-        eckit::StrStream os;
-        os << "Option '" << shortoption << "': could not assign '" << param << "'='" << _value << "'" << eckit::StrStream::ends;
-        warnings_.push_back(std::string(os));
+        std::ostringstream os;
+        os << "Option '" << shortoption << "': could not assign '" << param << "'='" << _value << "'";
+        warnings_.push_back(os.str());
         return;
     }
 

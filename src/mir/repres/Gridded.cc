@@ -43,9 +43,9 @@ void Gridded::setSecondOrderPacking(grib_info &info) const {
 }
 
 bool Gridded::globalDomain() const {
-    eckit::StrStream os;
-    os << "Representation::globalDomain() not implemented for " << *this << eckit::StrStream::ends;
-    throw eckit::SeriousBug(std::string(os));
+    std::ostringstream os;
+    os << "Representation::globalDomain() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField &field) const {

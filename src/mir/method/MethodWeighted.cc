@@ -172,10 +172,9 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
     for (size_t i = 0; i < field.dimensions(); i++) {
 
-        eckit::StrStream os;
-        os << "Interpolating field ("  << eckit::BigNum(npts_inp) << " -> " << eckit::BigNum(npts_out) << ")" << eckit::StrStream::ends;
-        std::string msg(os);
-        eckit::Timer t(msg);
+        std::ostringstream os;
+        os << "Interpolating field ("  << eckit::BigNum(npts_inp) << " -> " << eckit::BigNum(npts_out) << ")";
+        eckit::Timer t(os.str());
 
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code

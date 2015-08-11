@@ -808,9 +808,9 @@ extern "C" void jnumgg_(const fortint &knum,
         eckit::ScopedPtr<atlas::grids::ReducedGrid> grid(0);
 
         if (htype[0] == 'R') {
-            eckit::StrStream os;
-            os << "rgg.N" << knum << eckit::StrStream::ends;
-            grid.reset(dynamic_cast<atlas::grids::ReducedGrid *>(atlas::Grid::create(std::string(os))));
+            std::ostringstream os;
+            os << "rgg.N" << knum;
+            grid.reset(dynamic_cast<atlas::grids::ReducedGrid *>(atlas::Grid::create(os.str())));
         }
 
         if (htype[0] == 'F') {
