@@ -311,6 +311,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
         firstVirtualPoint = i_nodes.metadata().get<size_t>("NbRealPts");
 
     // output mesh
+    out.mesh().createNodes(out);
 
     // In case xyz field in the out mesh, build it
     atlas::actions::BuildXYZField("xyz")(out.mesh());
