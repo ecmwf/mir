@@ -23,6 +23,7 @@
 #include "atlas/Field.h"
 #include "atlas/FunctionSpace.h"
 #include "atlas/Mesh.h"
+#include "atlas/Nodes.h"
 #include "atlas/grids/ReducedGaussianGrid.h"
 #include "atlas/util/ArrayView.h"
 
@@ -131,8 +132,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
 
     // access the input/output fields coordinates
-    atlas::ArrayView<double, 2> icoords( in .mesh().function_space("nodes").field("lonlat") );
-    atlas::ArrayView<double, 2> ocoords( out.mesh().function_space("nodes").field("lonlat") );
+    atlas::ArrayView<double, 2> icoords( in .mesh().nodes().lonlat() );
+    atlas::ArrayView<double, 2> ocoords( out.mesh().nodes().lonlat() );
 
 
     // check input min/max latitudes (gaussian grids exclude the poles)

@@ -21,6 +21,7 @@
 #include "mir/util/PointSearch.h"
 #include "mir/param/MIRParametrisation.h"
 #include "atlas/actions/BuildXYZField.h"
+#include "atlas/Nodes.h"
 #include "eckit/log/Timer.h"
 
 
@@ -55,14 +56,15 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
 
     util::PointSearch  sptree(in.mesh());
 
-    const atlas::Mesh& o_mesh = out.mesh();
+    atlas::Mesh& o_mesh = const_cast<atlas::Mesh&>(out.mesh());
 
     // output points
-    atlas::FunctionSpace& o_nodes  = o_mesh.function_space( "nodes" );
+    atlas::Nodes& o_nodes = o_mesh.nodes();
+
     atlas::actions::BuildXYZField("xyz")(o_nodes);
     atlas::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
 
-    const size_t out_npts = o_nodes.shape(0);
+    const size_t out_npts = o_nodes.size();
 
     // init structure used to fill in sparse matrix
     std::vector< WeightMatrix::Triplet > weights_triplets;

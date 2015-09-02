@@ -27,6 +27,7 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/PointSearch.h"
+#include "atlas/Nodes.h"
 #include "atlas/actions/BuildXYZField.h"
 
 
@@ -86,10 +87,9 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     atlas::Mesh &o_mesh = out.mesh();
     atlas::actions::BuildXYZField("xyz")(o_mesh);
 
-    ASSERT(o_mesh.has_function_space("nodes"));
-    ASSERT(o_mesh.function_space("nodes").has_field("xyz"));
+    ASSERT(o_mesh.nodes().has_field("xyz"));
     atlas::ArrayView< double, 2 > ocoords(
-                o_mesh.function_space("nodes").field("xyz") );
+                o_mesh.nodes().field("xyz") );
 
     Log::info() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
 

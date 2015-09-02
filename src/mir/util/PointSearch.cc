@@ -16,6 +16,7 @@
 
 #include "mir/util/PointSearch.h"
 #include "atlas/actions/BuildXYZField.h"
+#include "atlas/Nodes.h"
 
 #include <vector>
 #include <limits>
@@ -95,13 +96,12 @@ void PointSearch::init(const std::vector<PointType>& points) {
 
 
 void PointSearch::init(const atlas::Mesh& mesh, const CompareType& isok) {
-    ASSERT(mesh.has_function_space("nodes"));
 
-    atlas::FunctionSpace& nodes = mesh.function_space("nodes");
+    atlas::Nodes& nodes = const_cast<atlas::Mesh&>(mesh).nodes();
     atlas::actions::BuildXYZField("xyz")(nodes);
     ASSERT(nodes.has_field("xyz"));
 
-    size_t npts = nodes.shape(0);
+    size_t npts = nodes.size();
     ASSERT(npts > 0);
 
     const double infty = std::numeric_limits< double >::infinity();

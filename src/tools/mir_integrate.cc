@@ -113,7 +113,7 @@ void MIRIntegrate::run() {
         atlas::actions::BuildConvexHull3D builder;
         builder(mesh);
 
-        atlas::FunctionSpace& nodes  = mesh.function_space( "nodes" );
+        atlas::Nodes& nodes  = mesh.nodes();
         atlas::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
 
         atlas::FunctionSpace& triags = mesh.function_space( "triags" );

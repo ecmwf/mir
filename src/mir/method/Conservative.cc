@@ -21,6 +21,7 @@
 
 #include "atlas/Grid.h"
 #include "atlas/Mesh.h"
+#include "atlas/Nodes.h"
 #include "atlas/util/IndexView.h"
 #include "atlas/actions/BuildXYZField.h"
 #include "atlas/geometry/Triag3D.h"
@@ -61,7 +62,7 @@ void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::Gr
 
     atlas::actions::BuildXYZField("xyz")(mesh); // ensure we have a 'xyz' field (output mesh may not have it)
 
-    atlas::FunctionSpace& nodes  = mesh.function_space( "nodes" );
+    const atlas::Nodes& nodes  = mesh.nodes();
     atlas::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
 
     atlas::FunctionSpace& triags = mesh.function_space( "triags" );
