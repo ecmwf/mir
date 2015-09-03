@@ -12,7 +12,7 @@ set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} 
 
 include( ecbuild_system NO_POLICY_SCOPE )
 
-ecbuild_requires_macro_version( 1.8 )
+ecbuild_requires_macro_version( 1.9 )
 
 ###############################################################################
 # project
@@ -97,11 +97,6 @@ endif()
 
 set( MIR_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
 set( MIR_LIBRARIES      mir )
-set( MIR_TPLS           atlas eckit )
-
-if( HAVE_HERMES )
-  list( APPEND MIR_TPLS hermes )
-endif()
 
 get_directory_property( COMPILE_DEFINITIONS MIR_DEFINITIONS )
 
