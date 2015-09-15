@@ -86,7 +86,7 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
     weights_triplets.reserve(out_npts * nclosest);
     eckit::Log::info() << "Reserve " << eckit::BigNum(out_npts * nclosest) << std::endl;
 
-    std::vector<atlas::PointIndex3::Value> closest;
+    std::vector<util::PointSearch::PointValueType> closest;
 
     std::vector<double> weights;
     weights.reserve(nclosest);

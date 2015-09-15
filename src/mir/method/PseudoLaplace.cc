@@ -24,7 +24,6 @@
 #include "atlas/Nodes.h"
 #include "eckit/log/Timer.h"
 
-
 namespace mir {
 namespace method {
 
@@ -70,7 +69,7 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
     std::vector< WeightMatrix::Triplet > weights_triplets;
     weights_triplets.reserve( out_npts * nclosest_ );
 
-    std::vector<atlas::PointIndex3::Value> closest;
+    std::vector<util::PointSearch::PointValueType> closest;
 
     eckit::la::Vector Dx(nclosest_);
     eckit::la::Vector Dy(nclosest_);

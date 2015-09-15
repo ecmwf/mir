@@ -32,6 +32,7 @@
 #include "atlas/meshgen/Delaunay.h"
 #include "atlas/grids/ReducedGrid.h"
 #include "atlas/util/IndexView.h"
+#include "atlas/util/PointIndex3.h"
 #include "atlas/io/Gmsh.h"
 #include "atlas/actions/BuildXYZField.h"
 #include "atlas/actions/BuildCellCentres.h"
@@ -118,8 +119,8 @@ static bool projectPointToElements(const MeshStats &stats,
                                    std::vector< WeightMatrix::Triplet > &weights_triplets,
                                    size_t ip,
                                    size_t firstVirtualPoint,
-                                   atlas::ElemIndex3::NodeList::const_iterator start,
-                                   atlas::ElemIndex3::NodeList::const_iterator finish ) {
+                                   atlas::util::ElemIndex3::NodeList::const_iterator start,
+                                   atlas::util::ElemIndex3::NodeList::const_iterator finish ) {
 
     Triplets triplets;
 
@@ -131,9 +132,9 @@ static bool projectPointToElements(const MeshStats &stats,
 
     atlas::geometry::Ray ray( p.data() );
 
-    for (atlas::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
+    for (atlas::util::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
 
-        atlas::ElemPayload elem = (*itc).value().payload();
+        atlas::util::ElemPayload elem = (*itc).value().payload();
 
         if ( elem.type_ == 't') { /* triags */
 
@@ -288,7 +289,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
         atlas::actions::BuildCellCentres()(i_mesh);
     }
 
-    eckit::ScopedPtr<atlas::ElemIndex3> eTree;
+    eckit::ScopedPtr<atlas::util::ElemIndex3> eTree;
     {
         eckit::Timer timer("create_element_centre_index");
         eTree.reset( create_element_centre_index(i_mesh) );
@@ -366,7 +367,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
                 max_neighbours = std::max(kpts, max_neighbours);
 
-                atlas::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
+                atlas::util::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
                 success = projectPointToElements(stats,
                                                  icoords,
                                                  triag_nodes,

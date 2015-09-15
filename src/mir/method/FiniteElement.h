@@ -22,7 +22,6 @@
 
 #include "atlas/Mesh.h"
 #include "atlas/Field.h"
-#include "atlas/PointIndex3.h"
 #include "atlas/meshgen/MeshGenerator.h"
 
 #include "mir/method/MethodWeighted.h"
