@@ -29,6 +29,8 @@ MIRConfiguration::MIRConfiguration():
 
     eckit::PathName path("~mir/etc/interpolation-methods.cfg");
     eckit::Log::info() << "Loading MIR configuration from " << path << std::endl;
+    if (!path.exists())
+        throw eckit::CantOpenFile(path, Here());
     util::Parser parser(path);
     parser.fill(*this);
 
