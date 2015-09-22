@@ -13,6 +13,7 @@
 /// @date Apr 2015
 
 #include "mir/namedgrids/NamedGrid.h"
+#include "mir/namedgrids/NamedGridPattern.h"
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -81,8 +82,17 @@ const NamedGrid& NamedGrid::lookup(const std::string &name) {
     eckit::Log::info() << "Looking for NamedGrid [" << name << "]" << std::endl;
 
     if (j == m->end()) {
+
+        // Look for pattern matchings
+
+        // This will automatically add the new NamedGrid to the map
+        const NamedGrid *ng = NamedGridPattern::build(name);
+        if(ng) {
+            return *ng;
+        }
+
         eckit::Log::error() << "No NamedGrid for [" << name << "]" << std::endl;
-        eckit::Log::error() << "Packers are:" << std::endl;
+        eckit::Log::error() << "NamedGrid are:" << std::endl;
         for (j = m->begin() ; j != m->end() ; ++j)
             eckit::Log::error() << "   " << (*j).first << std::endl;
         throw eckit::SeriousBug(std::string("No NamedGrid called ") + name);
