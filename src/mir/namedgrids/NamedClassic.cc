@@ -16,6 +16,7 @@
 
 #include "mir/namedgrids/NamedClassic.h"
 #include "mir/repres/gauss/reduced/ReducedClassic.h"
+#include "mir/repres/gauss/reduced/RotatedClassic.h"
 #include "eckit/exception/Exceptions.h"
 #include <iostream>
 
@@ -45,7 +46,7 @@ const repres::Representation *NamedClassic::outputRepresentation(const param::MI
 const repres::Representation *NamedClassic::outputRepresentation(const param::MIRParametrisation &,
         const repres::Representation *inputRepres,
         const util::Rotation &rotation) const {
-    NOTIMP;
+    return new repres::reduced::RotatedClassic(N_, util::BoundingBox(), rotation);
 }
 
 }  // namespace logic

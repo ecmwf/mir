@@ -16,6 +16,7 @@
 
 #include "mir/namedgrids/NamedFull.h"
 #include "mir/repres/gauss/regular/RegularGG.h"
+#include "mir/repres/gauss/regular/RotatedGG.h"
 #include "eckit/exception/Exceptions.h"
 #include <iostream>
 
@@ -45,7 +46,7 @@ const repres::Representation *NamedFull::outputRepresentation(const param::MIRPa
 const repres::Representation *NamedFull::outputRepresentation(const param::MIRParametrisation &,
         const repres::Representation *inputRepres,
         const util::Rotation &rotation) const {
-    NOTIMP;
+    return new repres::regular::RotatedGG(N_, util::BoundingBox(), rotation);
 }
 
 }  // namespace logic

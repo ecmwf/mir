@@ -16,6 +16,7 @@
 
 #include "mir/namedgrids/NamedOctahedral.h"
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
+#include "mir/repres/gauss/reduced/RotatedOctahedral.h"
 #include "eckit/exception/Exceptions.h"
 #include <iostream>
 
@@ -45,7 +46,7 @@ const repres::Representation *NamedOctahedral::outputRepresentation(const param:
 const repres::Representation *NamedOctahedral::outputRepresentation(const param::MIRParametrisation &,
         const repres::Representation *inputRepres,
         const util::Rotation &rotation) const {
-    NOTIMP;
+    return new repres::reduced::RotatedOctahedral(N_, util::BoundingBox(), rotation);
 }
 
 }  // namespace logic
