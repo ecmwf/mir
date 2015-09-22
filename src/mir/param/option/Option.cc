@@ -40,9 +40,9 @@ bool Option::active() const {
 }
 
 void Option::set(param::SimpleParametrisation &) const {
-    eckit::StrStream os;
-    os << "Option::set() not implemented for " << *this << eckit::StrStream::ends;
-    throw eckit::SeriousBug(std::string(os));
+    std::stringstream os;
+    os << "Option::set() not implemented for " << *this ;
+    throw eckit::SeriousBug(os.str());
 }
 
 } // namespace option

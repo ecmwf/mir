@@ -183,9 +183,9 @@ size_t ProdgenJob::nj() const {
 }
 
 void ProdgenJob::auto_pl() {
-    eckit::StrStream os;
-    os << "rgg.N" << N_ << eckit::StrStream::ends;
-    eckit::ScopedPtr<atlas::grids::ReducedGrid> grid(dynamic_cast<atlas::grids::ReducedGrid *>(atlas::Grid::create(std::string(os))));
+    std::stringstream os;
+    os << "rgg.N" << N_ ;
+    eckit::ScopedPtr<atlas::grids::ReducedGrid> grid(dynamic_cast<atlas::grids::ReducedGrid *>(atlas::Grid::create(os.str())));
 
     ASSERT(grid.get());
 

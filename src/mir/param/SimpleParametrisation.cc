@@ -164,9 +164,9 @@ class CannotConvert : public eckit::Exception {
   public:
     template<class T>
     CannotConvert(const char *from, const char *to, const std::string &name, const T &value) {
-        eckit::StrStream os;
-        os << "Cannot convert " << value << " from " << from << " to " << to << " (requesting " << name << ")" << eckit::StrStream::ends;
-        reason(std::string(os));
+        std::stringstream os;
+        os << "Cannot convert " << value << " from " << from << " to " << to << " (requesting " << name << ")" ;
+        reason(os.str());
     }
 };
 

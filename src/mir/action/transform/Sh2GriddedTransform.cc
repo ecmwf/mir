@@ -79,11 +79,11 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
     const atlas::grids::LonLatGrid *latlon = dynamic_cast<const atlas::grids::LonLatGrid *>(&grid);
 
-    eckit::StrStream os;
+    std::stringstream os;
 
 
-    os << "T" << truncation << ":" << grid.uniqueId() << eckit::StrStream::ends;
-    std::string key(os);
+    os << "T" << truncation << ":" << grid.uniqueId() ;
+    std::string key(os.str());
 
 
     // Warning: we keep the coefficient in memory for all the resolution used

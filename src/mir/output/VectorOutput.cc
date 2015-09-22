@@ -45,9 +45,9 @@ void VectorOutput::copy(const param::MIRParametrisation &param, input::MIRInput 
         component2_.copy(param, v.component2_);
 
     } catch (std::bad_cast &) {
-        eckit::StrStream os;
-        os << "VectorOutput::copy() not implemented for input of type: " << input << eckit::StrStream::ends;
-        throw eckit::SeriousBug(std::string(os));
+        std::stringstream os;
+        os << "VectorOutput::copy() not implemented for input of type: " << input ;
+        throw eckit::SeriousBug(os.str());
     }
 }
 
@@ -82,9 +82,9 @@ long VectorOutput::component1ParamId(input::MIRInput &input) const  {
         ASSERT(metadata.get("paramId", paramId));
         return paramId;
     } catch (std::bad_cast &) {
-        eckit::StrStream os;
-        os << "VectorOutput::component1ParamId() not implemented for input of type: " << input << eckit::StrStream::ends;
-        throw eckit::SeriousBug(std::string(os));
+        std::stringstream os;
+        os << "VectorOutput::component1ParamId() not implemented for input of type: " << input ;
+        throw eckit::SeriousBug(os.str());
     }
 }
 
@@ -96,9 +96,9 @@ long VectorOutput::component2ParamId(input::MIRInput &input) const {
         ASSERT(metadata.get("paramId", paramId));
         return paramId;
     } catch (std::bad_cast &) {
-        eckit::StrStream os;
-        os << "VectorOutput::component2ParamId() not implemented for input of type: " << input << eckit::StrStream::ends;
-        throw eckit::SeriousBug(std::string(os));
+        std::stringstream os;
+        os << "VectorOutput::component2ParamId() not implemented for input of type: " << input ;
+        throw eckit::SeriousBug(os.str());
     }
 }
 

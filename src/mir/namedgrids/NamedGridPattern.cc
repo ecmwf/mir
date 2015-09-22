@@ -106,7 +106,7 @@ const NamedGrid *NamedGridPattern::build(const std::string &name) {
         eckit::Log::error() << "No NamedGridPattern for [" << name << "]" << std::endl;
         eckit::Log::error() << "NamedGridPattern are:" << std::endl;
         for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
+            eckit::Log::error() << "   " << *(*j).second << std::endl;
     }
 
     return 0;
