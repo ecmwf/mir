@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef NamedFull_H
-#define NamedFull_H
+#ifndef NamedRegular_H
+#define NamedRegular_H
 
 
 #include "mir/namedgrids/NamedGrid.h"
@@ -23,7 +23,7 @@ namespace mir {
 namespace namedgrids {
 
 
-class NamedFull : public NamedGrid {
+class NamedRegular : public NamedGrid {
   public:
 
     // -- Exceptions
@@ -31,11 +31,11 @@ class NamedFull : public NamedGrid {
 
     // -- Contructors
 
-    NamedFull(const std::string &name, size_t N);
+    NamedRegular(const std::string &name, size_t N);
 
     // -- Destructor
 
-    virtual ~NamedFull(); // Change to virtual if base class
+    virtual ~NamedRegular(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -76,8 +76,8 @@ class NamedFull : public NamedGrid {
 
     // No copy allowed
 
-    NamedFull(const NamedFull &);
-    NamedFull &operator=(const NamedFull &);
+    NamedRegular(const NamedRegular &);
+    NamedRegular &operator=(const NamedRegular &);
 
     // -- Members
 
@@ -93,14 +93,8 @@ class NamedFull : public NamedGrid {
 
     // -- Class methods
 
-    virtual const repres::Representation *outputRepresentation(const param::MIRParametrisation &,
-            const repres::Representation *inputRepres) const;
-
-    virtual const repres::Representation *outputRepresentation(const param::MIRParametrisation &,
-            const repres::Representation *inputRepres,
-            const util::Rotation& rotation) const;
-
-
+    virtual const repres::Representation *representation() const;
+    virtual const repres::Representation *representation(const util::Rotation& rotation) const;
 
     // -- Friends
 

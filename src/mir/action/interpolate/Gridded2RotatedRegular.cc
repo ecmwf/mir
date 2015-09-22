@@ -49,7 +49,7 @@ void Gridded2RotatedRegular::print(std::ostream &out) const {
 }
 
 
-const repres::Representation *Gridded2RotatedRegular::outputRepresentation(const repres::Representation *inputRepres) const {
+const repres::Representation *Gridded2RotatedRegular::outputRepresentation() const {
     return new repres::regular::RotatedGG(N_, util::BoundingBox(), rotation_);
 }
 

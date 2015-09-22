@@ -20,9 +20,7 @@
 #include <iosfwd>
 
 namespace mir {
-namespace param {
-class MIRParametrisation;
-}
+
 namespace repres {
 class Representation;
 }
@@ -54,12 +52,8 @@ class NamedGrid {
 
     // -- Methods
 
-    virtual const repres::Representation *outputRepresentation(const param::MIRParametrisation &,
-            const repres::Representation *inputRepres) const = 0;
-
-    virtual const repres::Representation *outputRepresentation(const param::MIRParametrisation &,
-            const repres::Representation *inputRepres,
-            const util::Rotation& rotation) const = 0;
+    virtual const repres::Representation *representation() const = 0;
+    virtual const repres::Representation *representation(const util::Rotation& rotation) const = 0;
 
     // -- Overridden methods
     // None

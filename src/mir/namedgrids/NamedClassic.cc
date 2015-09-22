@@ -37,15 +37,11 @@ void NamedClassic::print(std::ostream &out) const {
     out << "NamedClassic[name=" << name_ << ",N=" << N_ << "]";
 }
 
-const repres::Representation *NamedClassic::outputRepresentation(const param::MIRParametrisation &,
-        const repres::Representation *inputRepres) const {
+const repres::Representation *NamedClassic::representation() const {
     return new repres::reduced::ReducedClassic(N_);
-
 }
 
-const repres::Representation *NamedClassic::outputRepresentation(const param::MIRParametrisation &,
-        const repres::Representation *inputRepres,
-        const util::Rotation &rotation) const {
+const repres::Representation *NamedClassic::representation(const util::Rotation &rotation) const {
     return new repres::reduced::RotatedClassic(N_, util::BoundingBox(), rotation);
 }
 

@@ -47,7 +47,7 @@ void Gridded2RegularLL::print(std::ostream &out) const {
 }
 
 
-const repres::Representation *Gridded2RegularLL::outputRepresentation(const repres::Representation *inputRepres) const {
+const repres::Representation *Gridded2RegularLL::outputRepresentation() const {
     return new repres::latlon::RegularLL(
                util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
                increments_);

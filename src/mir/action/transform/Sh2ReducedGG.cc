@@ -42,7 +42,7 @@ void Sh2ReducedGG::print(std::ostream& out) const {
 }
 
 
-const repres::Representation* Sh2ReducedGG::outputRepresentation(const repres::Representation* inputRepres) const {
+const repres::Representation* Sh2ReducedGG::outputRepresentation() const {
     return new repres::reduced::ReducedClassic(N_);
 }
 

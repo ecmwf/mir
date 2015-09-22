@@ -41,9 +41,9 @@ void Sh2NamedGrid::print(std::ostream& out) const {
 }
 
 
-const repres::Representation* Sh2NamedGrid::outputRepresentation(const repres::Representation* inputRepres) const {
+const repres::Representation* Sh2NamedGrid::outputRepresentation() const {
     const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
-    return ng.outputRepresentation(parametrisation_, inputRepres);
+    return ng.representation();
 }
 
 

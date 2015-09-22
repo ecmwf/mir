@@ -14,8 +14,8 @@
 
 
 
-#include "mir/namedgrids/FullPattern.h"
-#include "mir/namedgrids/NamedFull.h"
+#include "mir/namedgrids/RegularPattern.h"
+#include "mir/namedgrids/NamedRegular.h"
 #include "eckit/utils/Translator.h"
 
 #include <iostream>
@@ -24,24 +24,24 @@ namespace mir {
 namespace namedgrids {
 
 
-FullPattern::FullPattern(const std::string &name):
+RegularPattern::RegularPattern(const std::string &name):
     NamedGridPattern(name) {
 }
 
 
-FullPattern::~FullPattern() {
+RegularPattern::~RegularPattern() {
 }
 
-void FullPattern::print(std::ostream &out) const {
-    out << "FullPattern[pattern=" <<  pattern_ << "]";
+void RegularPattern::print(std::ostream &out) const {
+    out << "RegularPattern[pattern=" <<  pattern_ << "]";
 }
 
-const NamedGrid *FullPattern::make(const std::string& name) const {
-    return new NamedFull(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
+const NamedGrid *RegularPattern::make(const std::string& name) const {
+    return new NamedRegular(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
 }
 
 namespace {
-static FullPattern pattern("^[fF][1-9][0-9]*$");
+static RegularPattern pattern("^[fF][1-9][0-9]*$");
 
 }
 

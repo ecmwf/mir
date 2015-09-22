@@ -48,7 +48,7 @@ void Gridded2RotatedReduced::print(std::ostream &out) const {
 }
 
 
-const repres::Representation *Gridded2RotatedReduced::outputRepresentation(const repres::Representation *inputRepres) const {
+const repres::Representation *Gridded2RotatedReduced::outputRepresentation() const {
     return new repres::reduced::RotatedClassic(N_, util::BoundingBox(), rotation_);
 }
 

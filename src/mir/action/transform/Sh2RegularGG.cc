@@ -41,7 +41,7 @@ void Sh2RegularGG::print(std::ostream& out) const {
 }
 
 
-const repres::Representation* Sh2RegularGG::outputRepresentation(const repres::Representation* inputRepres) const {
+const repres::Representation* Sh2RegularGG::outputRepresentation() const {
     return new repres::regular::RegularGG(N_);
 }
 

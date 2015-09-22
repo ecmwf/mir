@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef FullPattern_H
-#define FullPattern_H
+#ifndef RegularPattern_H
+#define RegularPattern_H
 
 
 #include "mir/namedgrids/NamedGridPattern.h"
@@ -23,7 +23,7 @@ namespace mir {
 namespace namedgrids {
 
 
-class FullPattern : public NamedGridPattern {
+class RegularPattern : public NamedGridPattern {
   public:
 
     // -- Exceptions
@@ -31,11 +31,11 @@ class FullPattern : public NamedGridPattern {
 
     // -- Contructors
 
-    FullPattern(const std::string &name);
+    RegularPattern(const std::string &name);
 
     // -- Destructor
 
-    virtual ~FullPattern(); // Change to virtual if base class
+    virtual ~RegularPattern(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -76,8 +76,8 @@ class FullPattern : public NamedGridPattern {
 
     // No copy allowed
 
-    FullPattern(const FullPattern &);
-    FullPattern &operator=(const FullPattern &);
+    RegularPattern(const RegularPattern &);
+    RegularPattern &operator=(const RegularPattern &);
 
     // -- Members
     // None

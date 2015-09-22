@@ -47,14 +47,14 @@ void Gridded2RotatedNamedGrid::print(std::ostream &out) const {
     out << "Gridded2RotatedNamedGrid[gridname=" << gridname_ << ",rotation=" << rotation_ << "]";
 }
 
-const repres::Representation *Gridded2RotatedNamedGrid::outputRepresentation(const repres::Representation *inputRepres) const {
-    const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
-    return ng.outputRepresentation(parametrisation_, inputRepres, rotation_);
+const repres::Representation *Gridded2RotatedNamedGrid::outputRepresentation() const {
+    const namedgrids::NamedGrid &ng = namedgrids::NamedGrid::lookup(gridname_);
+    return ng.representation(rotation_);
 }
 
 
 namespace {
-static ActionBuilder< Gridded2RotatedNamedGrid > grid2grid("interpolate.grid2rotated-grid2namedgrid");
+static ActionBuilder< Gridded2RotatedNamedGrid > grid2grid("interpolate.grid2rotated-namedgrid");
 }
 
 

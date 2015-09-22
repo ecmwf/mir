@@ -14,7 +14,7 @@
 
 
 
-#include "mir/namedgrids/NamedFull.h"
+#include "mir/namedgrids/NamedRegular.h"
 #include "mir/repres/gauss/regular/RegularGG.h"
 #include "mir/repres/gauss/regular/RotatedGG.h"
 #include "eckit/exception/Exceptions.h"
@@ -24,28 +24,24 @@ namespace mir {
 namespace namedgrids {
 
 
-NamedFull::NamedFull(const std::string &name, size_t N):
+NamedRegular::NamedRegular(const std::string &name, size_t N):
     NamedGrid(name),
     N_(N) {
 }
 
 
-NamedFull::~NamedFull() {
+NamedRegular::~NamedRegular() {
 }
 
-void NamedFull::print(std::ostream &out) const {
-    out << "NamedFull[name=" << name_ << ",N=" << N_ << "]";
+void NamedRegular::print(std::ostream &out) const {
+    out << "NamedRegular[name=" << name_ << ",N=" << N_ << "]";
 }
 
-const repres::Representation *NamedFull::outputRepresentation(const param::MIRParametrisation &,
-        const repres::Representation *inputRepres) const {
+const repres::Representation *NamedRegular::representation() const {
     return new repres::regular::RegularGG(N_);
-
 }
 
-const repres::Representation *NamedFull::outputRepresentation(const param::MIRParametrisation &,
-        const repres::Representation *inputRepres,
-        const util::Rotation &rotation) const {
+const repres::Representation *NamedRegular::representation(const util::Rotation &rotation) const {
     return new repres::regular::RotatedGG(N_, util::BoundingBox(), rotation);
 }
 

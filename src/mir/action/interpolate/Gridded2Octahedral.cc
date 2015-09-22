@@ -39,7 +39,7 @@ void Gridded2Octahedral::print(std::ostream& out) const {
 }
 
 
-const repres::Representation* Gridded2Octahedral::outputRepresentation(const repres::Representation* inputRepres) const {
+const repres::Representation* Gridded2Octahedral::outputRepresentation() const {
     return new repres::reduced::ReducedOctahedral(N_);
 }
 

@@ -89,7 +89,7 @@ class Gridded2Octahedral : public Gridded2GriddedInterpolation {
 // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation(const repres::Representation* inputRepres) const;
+    virtual const repres::Representation* outputRepresentation() const;
 
 // -- Class members
     // None

@@ -93,13 +93,8 @@ class NamedOctahedral : public NamedGrid {
 
     // -- Class methods
 
-    virtual const repres::Representation *outputRepresentation(const param::MIRParametrisation &,
-            const repres::Representation *inputRepres) const;
-
-    virtual const repres::Representation *outputRepresentation(const param::MIRParametrisation &,
-            const repres::Representation *inputRepres,
-            const util::Rotation& rotation) const;
-
+    virtual const repres::Representation *representation() const;
+    virtual const repres::Representation *representation(const util::Rotation& rotation) const;
 
 
     // -- Friends

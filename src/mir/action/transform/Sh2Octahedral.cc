@@ -42,7 +42,7 @@ void Sh2Octahedral::print(std::ostream& out) const {
 }
 
 
-const repres::Representation* Sh2Octahedral::outputRepresentation(const repres::Representation* inputRepres) const {
+const repres::Representation* Sh2Octahedral::outputRepresentation() const {
     return new repres::reduced::ReducedOctahedral(N_);
 }
 

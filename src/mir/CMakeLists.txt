@@ -193,10 +193,10 @@ namedgrids/NamedClassic.cc
 namedgrids/NamedClassic.h
 namedgrids/ClassicPattern.cc
 namedgrids/ClassicPattern.h
-namedgrids/NamedFull.cc
-namedgrids/NamedFull.h
-namedgrids/FullPattern.cc
-namedgrids/FullPattern.h
+namedgrids/NamedRegular.cc
+namedgrids/NamedRegular.h
+namedgrids/RegularPattern.cc
+namedgrids/RegularPattern.h
 namedgrids/NamedGrid.cc
 namedgrids/NamedGrid.h
 namedgrids/NamedGridPattern.cc

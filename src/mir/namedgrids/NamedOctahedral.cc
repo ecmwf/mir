@@ -37,15 +37,12 @@ void NamedOctahedral::print(std::ostream &out) const {
     out << "NamedOctahedral[name=" << name_ << ",N=" << N_ << "]";
 }
 
-const repres::Representation *NamedOctahedral::outputRepresentation(const param::MIRParametrisation &,
-        const repres::Representation *inputRepres) const {
+const repres::Representation *NamedOctahedral::representation() const {
     return new repres::reduced::ReducedOctahedral(N_);
 
 }
 
-const repres::Representation *NamedOctahedral::outputRepresentation(const param::MIRParametrisation &,
-        const repres::Representation *inputRepres,
-        const util::Rotation &rotation) const {
+const repres::Representation *NamedOctahedral::representation(const util::Rotation &rotation) const {
     return new repres::reduced::RotatedOctahedral(N_, util::BoundingBox(), rotation);
 }
 

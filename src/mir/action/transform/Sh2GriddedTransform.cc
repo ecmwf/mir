@@ -201,7 +201,7 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 void Sh2GriddedTransform::execute(data::MIRField &field) const {
     // ASSERT(field.dimensions() == 1); // For now
 
-    repres::RepresentationHandle out(outputRepresentation(field.representation()));
+    repres::RepresentationHandle out(outputRepresentation());
 
     // TODO: Transform all the fields together
     for (size_t i = 0; i < field.dimensions(); i++) {

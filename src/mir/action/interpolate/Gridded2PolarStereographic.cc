@@ -47,7 +47,7 @@ void Gridded2PolarStereographic::print(std::ostream &out) const {
 }
 
 
-const repres::Representation *Gridded2PolarStereographic::outputRepresentation(const repres::Representation *inputRepres) const {
+const repres::Representation *Gridded2PolarStereographic::outputRepresentation() const {
     NOTIMP;
 }
 

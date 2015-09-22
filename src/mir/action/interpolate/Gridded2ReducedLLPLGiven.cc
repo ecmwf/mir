@@ -37,7 +37,7 @@ void Gridded2ReducedLLPLGiven::print(std::ostream& out) const {
 }
 
 
-const repres::Representation* Gridded2ReducedLLPLGiven::outputRepresentation(const repres::Representation* inputRepres) const {
+const repres::Representation* Gridded2ReducedLLPLGiven::outputRepresentation() const {
     NOTIMP;
 }
 
