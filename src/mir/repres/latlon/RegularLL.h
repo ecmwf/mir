@@ -70,6 +70,7 @@ class RegularLL : public LatLon {
     void print(std::ostream &) const; // Change to virtual if base class
     virtual atlas::Grid *atlasGrid() const;
     virtual void fill(grib_info &) const;
+    virtual void fill(api::MIRJob &) const;
 
     // -- Class members
     // None

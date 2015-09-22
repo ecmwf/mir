@@ -13,19 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef ReducedLL_H
-#define ReducedLL_H
+#ifndef Gridded2ReducedGGPLGiven_H
+#define Gridded2ReducedGGPLGiven_H
 
-#include "mir/repres/Gridded.h"
-#include "mir/util/BoundingBox.h"
-
+#include <vector>
+#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
 namespace mir {
-namespace repres {
-namespace latlon {
+namespace action {
 
 
-class ReducedLL : public Gridded {
+class Gridded2ReducedGGPLGiven : public Gridded2GriddedInterpolation {
   public:
 
 // -- Exceptions
@@ -33,11 +31,11 @@ class ReducedLL : public Gridded {
 
 // -- Contructors
 
-    ReducedLL(const param::MIRParametrisation&);
+    Gridded2ReducedGGPLGiven(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~ReducedLL(); // Change to virtual if base class
+    virtual ~Gridded2ReducedGGPLGiven(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -46,6 +44,7 @@ class ReducedLL : public Gridded {
     // None
 
 // -- Methods
+    // None
 
 // -- Overridden methods
     // None
@@ -78,29 +77,20 @@ class ReducedLL : public Gridded {
 
 // No copy allowed
 
-    ReducedLL(const ReducedLL&);
-    ReducedLL& operator=(const ReducedLL&);
+    Gridded2ReducedGGPLGiven(const Gridded2ReducedGGPLGiven&);
+    Gridded2ReducedGGPLGiven& operator=(const Gridded2ReducedGGPLGiven&);
 
 // -- Members
 
-    util::BoundingBox bbox_;
     std::vector<long> pl_;
-    size_t Nj_;
 
 // -- Methods
-
-    virtual bool globalDomain() const;
-
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField&) const;
+    // None
 
 // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob &) const;
-    virtual atlas::Grid* atlasGrid() const;
-    virtual void validate(const std::vector<double>&) const;
-    virtual Iterator* rotatedIterator() const; // After rotation
-    virtual Iterator* unrotatedIterator() const; // Before rotation
+    // From Gridded2GriddedInterpolation
+    virtual const repres::Representation* outputRepresentation(const repres::Representation* inputRepres) const;
 
 // -- Class members
     // None
@@ -110,14 +100,13 @@ class ReducedLL : public Gridded {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const ReducedLL& p)
-    // { p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const Gridded2ReducedGGPLGiven& p)
+    //	{ p.print(s); return s; }
 
 };
 
 
-}  // namespace latlon
-}  // namespace repres
+}  // namespace action
 }  // namespace mir
 #endif
 

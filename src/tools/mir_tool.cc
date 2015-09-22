@@ -91,7 +91,10 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular gaussian grid N"));
     options.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular gaussian grid N (pre 2016)"));
     options.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular gaussian grid N"));
+    options.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
+
     options.push_back(new SimpleOption<bool>("wind", "Use vector interpolation for wind (not yet)"));
+    options.push_back(new SimpleOption<eckit::PathName>("same", "Inperpolate to the same grid as the one provided in the first GRIB of the grib file"));
 
 
     //==============================================
@@ -165,12 +168,19 @@ void MIRTool::run() {
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;
-    if(args.get("backend", backend)) {
+    if (args.get("backend", backend)) {
         eckit::la::LinearAlgebra::backend(backend);
     }
 
     mir::api::MIRJob job;
     args.copyValuesTo(job);
+
+    std::string same;
+    if (args.get("same", same)) {
+        mir::input::GribFileInput input(same);
+        ASSERT(input.next());
+        job.representationFrom(input);
+    }
 
     bool wind = false;
     bool vod2uv = false;

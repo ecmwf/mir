@@ -24,6 +24,7 @@
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/namedgrids/NamedGrid.h"
 
 
 namespace mir {
@@ -64,6 +65,8 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
     bool user_reduced = parametrisation_.has("user.reduced");
     bool user_regular = parametrisation_.has("user.regular");
     bool user_octahedral = parametrisation_.has("user.octahedral");
+    bool user_pl = parametrisation_.has("user.pl");
+    bool user_gridname = parametrisation_.has("user.gridname");
 
     if (parametrisation_.has("checkerboard")) {
         plan.add("misc.checkerboard");
@@ -77,25 +80,50 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
         ASSERT(!user_reduced);
         ASSERT(!user_regular);
         ASSERT(!user_octahedral);
+        ASSERT(!user_pl);
+        ASSERT(!user_gridname);
     }
 
     if (user_reduced) {
         ASSERT(!user_grid);
         ASSERT(!user_regular);
         ASSERT(!user_octahedral);
+        ASSERT(!user_pl);
+        ASSERT(!user_gridname);
     }
 
     if (user_regular) {
         ASSERT(!user_grid);
         ASSERT(!user_reduced);
         ASSERT(!user_octahedral);
+        ASSERT(!user_pl);
+        ASSERT(!user_gridname);
     }
 
     if (user_octahedral) {
         ASSERT(!user_grid);
         ASSERT(!user_reduced);
         ASSERT(!user_regular);
+        ASSERT(!user_pl);
+        ASSERT(!user_gridname);
     }
+
+    if (user_pl) {
+        ASSERT(!user_grid);
+        ASSERT(!user_reduced);
+        ASSERT(!user_regular);
+        ASSERT(!user_octahedral);
+        ASSERT(!user_gridname);
+    }
+
+    if (user_gridname) {
+        ASSERT(!user_grid);
+        ASSERT(!user_reduced);
+        ASSERT(!user_regular);
+        ASSERT(!user_octahedral);
+        ASSERT(!user_pl);
+    }
+
     if (parametrisation_.has("field.spectral")) {
         if (parametrisation_.has("user.truncation")) {
             plan.add("transform.sh2sh");
@@ -120,7 +148,7 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
 
             if (parametrisation_.has("user.rotation")) {
                 plan.add("interpolate.grid2rotated-regular-ll");
-                 if(wind || vod2uv) {
+                if (wind || vod2uv) {
                     plan.add("filter.adjust-winds");
                 }
             }
@@ -148,9 +176,26 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
             }
             plan.add("transform.sh2octahedral-gg");
         }
-    }
 
-    else if (parametrisation_.has("field.gridded")) {
+        if (user_pl) {
+            if (autoresol) {
+                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            }
+            plan.add("transform.sh2reduced-gg-pl-given");
+
+        }
+
+        if (user_gridname) {
+            if (autoresol) {
+                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            }
+            std::string gridname;
+            ASSERT (parametrisation_.get("gridname", gridname));
+            plan.add("transform.sh2reduced-namedgrid");
+        }
+
+
+    } else if (parametrisation_.has("field.gridded")) {
 
         if (user_grid) {
             if (parametrisation_.has("user.rotation")) {
@@ -195,6 +240,26 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
                 plan.add("interpolate.grid2octahedral-gg");
             }
         }
+
+        if (user_pl) {
+            ASSERT(!parametrisation_.has("user.rotation"));
+            plan.add("interpolate.grid2reduced-gg-pl-given");
+        }
+
+        if (user_gridname) {
+            std::string gridname;
+            ASSERT (parametrisation_.get("gridname", gridname));
+
+            if (parametrisation_.has("user.rotation")) {
+                plan.add("interpolate.grid2rotated-namedgrid");
+                if (wind || vod2uv) {
+                    plan.add("filter.adjust-winds");
+                }
+            } else {
+                plan.add("interpolate.grid2namedgrid");
+            }
+        }
+
     } else {
         throw eckit::SeriousBug("Input field in neither spectral nor gridded");
     }

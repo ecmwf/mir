@@ -41,6 +41,10 @@ ReducedFromPL::ReducedFromPL(long N, const std::vector<long> &pl, const util::Bo
     FromPL(N, pl, bbox) {
 }
 
+ReducedFromPL::ReducedFromPL(const std::vector<long> &pl):
+    FromPL(pl) {
+}
+
 void ReducedFromPL::print(std::ostream &out) const {
     out << "ReducedGGFromPL[N" << N_ << "]";
 }

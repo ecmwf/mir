@@ -25,6 +25,10 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
+
+namespace api {
+class MIRJob;
+}
 }
 
 namespace mir {
@@ -74,16 +78,10 @@ class Rotation {
         return south_pole_rotation_angle_;
     }
 
-    // double west_east() const {
-    //     return west_east_;
-    // }
-
-    // double south_north() const {
-    //     return south_north_;
-    // }
 
     //
     void fill(grib_info &) const;
+    void fill(api::MIRJob &) const;
 
 
 

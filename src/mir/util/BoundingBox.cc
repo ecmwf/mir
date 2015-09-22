@@ -21,6 +21,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
+#include "mir/api/MIRJob.h"
 
 namespace mir {
 namespace util {
@@ -77,6 +78,10 @@ void BoundingBox::fill(grib_info &info) const  {
 
     info.grid.latitudeOfFirstGridPointInDegrees = north_;
     info.grid.latitudeOfLastGridPointInDegrees = south_;
+}
+
+void BoundingBox::fill(api::MIRJob &job) const  {
+   job.set("area", north_, west_, south_, east_);
 }
 
 void BoundingBox::normalise() {

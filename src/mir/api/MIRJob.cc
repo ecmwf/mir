@@ -18,6 +18,8 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
+#include "eckit/log/Plural.h"
+
 #include "eckit/runtime/Context.h"
 
 #include "mir/api/mir_config.h"
@@ -150,6 +152,12 @@ MIRJob &MIRJob::set(const std::string &name, long value) {
 }
 
 
+MIRJob &MIRJob::set(const std::string &name, size_t value) {
+    ASSERT(long(value) == value);
+    SimpleParametrisation::set(name, long(value));
+    return *this;
+}
+
 MIRJob &MIRJob::set(const std::string &name, double value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (double)" << std::endl;
     SimpleParametrisation::set(name, value);
@@ -159,6 +167,12 @@ MIRJob &MIRJob::set(const std::string &name, double value) {
 MIRJob &MIRJob::set(const std::string &name, param::DelayedParametrisation *value) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << value << "] (delayed)" << std::endl;
     SimpleParametrisation::set(name, value);
+    return *this;
+}
+
+MIRJob &MIRJob::set(const std::string &name, const std::vector<long>& v) {
+    eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << eckit::Plural(v.size(), "value") << "] (vector<long>)" << std::endl;
+    SimpleParametrisation::set(name, v);
     return *this;
 }
 
@@ -180,6 +194,17 @@ MIRJob &MIRJob::set(const std::string &name, double v1, double v2, double v3, do
     v[2] = v3;
     v[3] = v4;
     SimpleParametrisation::set(name, v);
+    return *this;
+}
+
+MIRJob& MIRJob::representationFrom(input::MIRInput& input) {
+    eckit::ScopedPtr< data::MIRField > field(input.field());
+
+    const repres::Representation* repres = field->representation();
+
+    eckit::Log::info() << "Copy from " << *repres << std::endl;
+    repres->fill(*this);
+
     return *this;
 }
 

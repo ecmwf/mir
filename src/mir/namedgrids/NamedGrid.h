@@ -13,19 +13,28 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedOctahedral_H
-#define RotatedOctahedral_H
+#ifndef NamedGrid_H
+#define NamedGrid_H
 
-#include "mir/repres/gauss/reduced/Octahedral.h"
-#include "mir/util/BoundingBox.h"
-#include "mir/util/Rotation.h"
-
+#include <string>
+#include <iosfwd>
 
 namespace mir {
+namespace param {
+class MIRParametrisation;
+}
 namespace repres {
-namespace reduced {
+class Representation;
+}
+namespace util {
+class Rotation;
+}
+}
 
-class RotatedOctahedral : public  Octahedral {
+namespace mir {
+namespace namedgrids {
+
+class NamedGrid {
   public:
 
     // -- Exceptions
@@ -33,11 +42,9 @@ class RotatedOctahedral : public  Octahedral {
 
     // -- Contructors
 
-    RotatedOctahedral(long, const util::BoundingBox &, const util::Rotation&);
 
     // -- Destructor
 
-    virtual ~RotatedOctahedral(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -47,6 +54,13 @@ class RotatedOctahedral : public  Octahedral {
 
     // -- Methods
 
+    virtual const repres::Representation *outputRepresentation(const param::MIRParametrisation &,
+            const repres::Representation *inputRepres) const = 0;
+
+    virtual const repres::Representation *outputRepresentation(const param::MIRParametrisation &,
+            const repres::Representation *inputRepres,
+            const util::Rotation& rotation) const = 0;
+
     // -- Overridden methods
     // None
 
@@ -54,16 +68,25 @@ class RotatedOctahedral : public  Octahedral {
     // None
 
     // -- Class methods
-    // None
+
+    static const NamedGrid &lookup(const std::string &name);
+    static void list(std::ostream &);
+
 
   protected:
 
+    NamedGrid(const std::string &name);
+    virtual ~NamedGrid(); // Change to virtual if base class
+
+
     // -- Members
-    util::Rotation rotation_;
+
+    std::string name_;
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+
+    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -76,45 +99,38 @@ class RotatedOctahedral : public  Octahedral {
 
   private:
 
-
-
     // No copy allowed
 
-    RotatedOctahedral(const RotatedOctahedral &);
-    RotatedOctahedral &operator=(const RotatedOctahedral &);
+    NamedGrid(const NamedGrid &);
+    NamedGrid &operator=(const NamedGrid &);
 
     // -- Members
-
+    // None
 
     // -- Methods
-    // None
 
 
     // -- Overridden methods
-
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
-
-    virtual atlas::Grid *atlasGrid() const;
-    virtual Iterator* rotatedIterator() const;
-
-    virtual const Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    // None
 
     // -- Class members
     // None
 
     // -- Class methods
-    // None
+
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RotatedOctahedral& p)
-    //  { p.print(s); return s; }
+    friend std::ostream &operator<<(std::ostream &s, const NamedGrid &p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
-}
-}  // namespace repres
+
+
+}  // namespace logic
 }  // namespace mir
 #endif
 

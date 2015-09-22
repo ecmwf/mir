@@ -20,6 +20,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
+#include "mir/api/MIRJob.h"
 
 namespace mir {
 namespace util {
@@ -71,6 +72,9 @@ void Rotation::fill(grib_info &info) const  {
     }
 }
 
+void Rotation::fill(api::MIRJob &job) const  {
+    job.set("rotation", south_pole_latitude_, south_pole_longitude_);
+}
 
 }  // namespace data
 }  // namespace mir

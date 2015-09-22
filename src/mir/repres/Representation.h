@@ -41,6 +41,10 @@ namespace data {
 class MIRField;
 }
 
+namespace api {
+class MIRJob;
+}
+
 namespace repres {
 
 class Iterator;
@@ -89,6 +93,7 @@ class Representation {
     virtual void validate(const std::vector<double> &values) const;
 
     virtual void fill(grib_info&) const;
+    virtual void fill(api::MIRJob&) const;
 
     // Return a cropped version
     virtual const Representation* cropped(const util::BoundingBox &bbox) const;

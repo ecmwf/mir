@@ -33,6 +33,7 @@ class ReducedFromPL : public FromPL {
 
     ReducedFromPL(const param::MIRParametrisation &);
     ReducedFromPL(long, const std::vector<long> &, const util::BoundingBox &);
+    ReducedFromPL(const std::vector<long> &);
 
 
     // -- Destructor

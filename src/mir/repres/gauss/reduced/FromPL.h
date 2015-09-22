@@ -58,6 +58,7 @@ class FromPL : public Reduced {
   protected:
 
     FromPL(size_t, const std::vector<long> &, const util::BoundingBox &);
+    FromPL(const std::vector<long> &);
 
     // -- Members
 
@@ -69,6 +70,7 @@ class FromPL : public Reduced {
 
     // -- Overridden methods
     virtual void fill(grib_info &) const;
+    virtual void fill(api::MIRJob &) const;
     virtual atlas::Grid *atlasGrid() const;
     virtual const std::vector<long>& pls() const;
 

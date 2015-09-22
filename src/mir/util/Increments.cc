@@ -20,6 +20,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
+#include "mir/api/MIRJob.h"
 
 namespace mir {
 namespace util {
@@ -49,6 +50,11 @@ void Increments::fill(grib_info &info) const  {
     // Warning: scanning mode not considered
     info.grid.iDirectionIncrementInDegrees = west_east_;
     info.grid.jDirectionIncrementInDegrees = south_north_;
+}
+
+
+void Increments::fill(api::MIRJob &job) const  {
+   job.set("grid", west_east_, south_north_);
 }
 
 

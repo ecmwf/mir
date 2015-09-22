@@ -25,6 +25,10 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
+
+namespace api {
+class MIRJob;
+}
 }
 
 namespace mir {
@@ -70,7 +74,7 @@ class Increments {
 
     //
     void fill(grib_info &) const;
-
+    void fill(api::MIRJob &) const;
 
 
     // -- Overridden methods

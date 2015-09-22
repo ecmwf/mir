@@ -13,19 +13,16 @@
 /// @date Apr 2015
 
 
-#ifndef ReducedLL_H
-#define ReducedLL_H
+#ifndef Sh2NamedGrid_H
+#define Sh2NamedGrid_H
 
-#include "mir/repres/Gridded.h"
-#include "mir/util/BoundingBox.h"
-
+#include "mir/action/transform/Sh2GriddedTransform.h"
 
 namespace mir {
-namespace repres {
-namespace latlon {
+namespace action {
 
 
-class ReducedLL : public Gridded {
+class Sh2NamedGrid : public Sh2GriddedTransform {
   public:
 
 // -- Exceptions
@@ -33,11 +30,11 @@ class ReducedLL : public Gridded {
 
 // -- Contructors
 
-    ReducedLL(const param::MIRParametrisation&);
+    Sh2NamedGrid(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~ReducedLL(); // Change to virtual if base class
+    virtual ~Sh2NamedGrid(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -46,6 +43,7 @@ class ReducedLL : public Gridded {
     // None
 
 // -- Methods
+    // None
 
 // -- Overridden methods
     // None
@@ -78,29 +76,20 @@ class ReducedLL : public Gridded {
 
 // No copy allowed
 
-    ReducedLL(const ReducedLL&);
-    ReducedLL& operator=(const ReducedLL&);
+    Sh2NamedGrid(const Sh2NamedGrid&);
+    Sh2NamedGrid& operator=(const Sh2NamedGrid&);
 
 // -- Members
 
-    util::BoundingBox bbox_;
-    std::vector<long> pl_;
-    size_t Nj_;
+    std::string gridname_;
 
 // -- Methods
-
-    virtual bool globalDomain() const;
-
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField&) const;
+    // None
 
 // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob &) const;
-    virtual atlas::Grid* atlasGrid() const;
-    virtual void validate(const std::vector<double>&) const;
-    virtual Iterator* rotatedIterator() const; // After rotation
-    virtual Iterator* unrotatedIterator() const; // Before rotation
+    // From Gridded2GriddedInterpolation
+    virtual const repres::Representation* outputRepresentation(const repres::Representation* inputRepres) const;
 
 // -- Class members
     // None
@@ -110,14 +99,13 @@ class ReducedLL : public Gridded {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const ReducedLL& p)
-    // { p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const Sh2NamedGrid& p)
+    //	{ p.print(s); return s; }
 
 };
 
 
-}  // namespace latlon
-}  // namespace repres
+}  // namespace action
 }  // namespace mir
 #endif
 

@@ -97,6 +97,7 @@ class SphericalHarmonics : public Representation {
 // -- Overridden methods
 
     virtual void fill(grib_info&) const;
+    virtual void fill(api::MIRJob &) const;
     virtual const Representation* truncate(size_t truncation,
                                      const std::vector<double>&, std::vector<double>&) const;
     virtual size_t truncation() const;

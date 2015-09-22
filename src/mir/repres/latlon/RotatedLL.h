@@ -96,6 +96,7 @@ class RotatedLL : public RegularLL {
     // -- Overridden methods
 
     virtual void fill(grib_info &) const;
+    virtual void fill(api::MIRJob &) const;
     virtual atlas::Grid *atlasGrid() const;
     virtual Iterator* rotatedIterator() const;
 

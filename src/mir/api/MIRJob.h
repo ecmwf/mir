@@ -60,12 +60,19 @@ class MIRJob : public param::SimpleParametrisation {
     MIRJob& set(const std::string& name, const std::string& value);
     MIRJob& set(const std::string& name, bool value);
     MIRJob& set(const std::string& name, long value);
+    MIRJob& set(const std::string& name, size_t value);
+
     MIRJob& set(const std::string& name, double value);
     MIRJob& set(const std::string& name, param::DelayedParametrisation* value);
     MIRJob& set(const std::string& name, double v1, double v2);
     MIRJob& set(const std::string& name, double v1, double v2, double v3, double v4);
 
+    MIRJob& set(const std::string& name, const std::vector<long>&);
+    MIRJob& set(const std::string& name, const std::vector<size_t>&);
+
+
     MIRJob& clear(const std::string& name);
+    MIRJob& representationFrom(input::MIRInput&);
 
     // For debugging only
     void mirToolCall(std::ostream&) const;
