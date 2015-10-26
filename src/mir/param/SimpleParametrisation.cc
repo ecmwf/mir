@@ -321,7 +321,7 @@ SimpleParametrisation::SimpleParametrisation() {
 
 
 SimpleParametrisation::~SimpleParametrisation() {
-    for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
         delete (*j).second;
     }
 }
@@ -336,7 +336,7 @@ size_t SimpleParametrisation::size() const {
 
 template<class T>
 bool SimpleParametrisation::_get(const std::string &name, T &value) const {
-    std::map<std::string, Setting *>::const_iterator j = settings_.find(name);
+    SettingsMap::const_iterator j = settings_.find(name);
     if (j == settings_.end()) {
         return false;
     }
@@ -371,7 +371,7 @@ bool SimpleParametrisation::get(const std::string &name, std::vector<double> &va
 
 template<class T>
 void SimpleParametrisation::_set(const std::string &name, const T &value) {
-    std::map<std::string, Setting *>::iterator j = settings_.find(name);
+    SettingsMap::iterator j = settings_.find(name);
     if (j != settings_.end()) {
         delete (*j).second;
     }
@@ -411,7 +411,7 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, doubl
 }
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, DelayedParametrisation *value) {
-    std::map<std::string, Setting *>::iterator j = settings_.find(name);
+    SettingsMap::iterator j = settings_.find(name);
     if (j != settings_.end()) {
         delete (*j).second;
     }
@@ -420,7 +420,7 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, Delay
 }
 
 SimpleParametrisation& SimpleParametrisation::clear(const std::string &name) {
-    std::map<std::string, Setting *>::iterator j = settings_.find(name);
+    SettingsMap::iterator j = settings_.find(name);
     if (j != settings_.end()) {
         delete (*j).second;
         settings_.erase(j);
@@ -448,7 +448,7 @@ void SimpleParametrisation::print(std::ostream &out) const {
         comma = " ";
     }
 
-    for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
         out << sep;
         out << extra << (*j).first << "=" << *((*j).second);
         sep = comma;
@@ -457,7 +457,7 @@ void SimpleParametrisation::print(std::ostream &out) const {
 
 bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
     eckit::Log::info() << "SimpleParametrisation::matches " << other << std::endl;
-    for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
 
         if ((*j).second->match((*j).first, other)) {
             eckit::Log::info() << "Matching parametrisation: " << (*j).first << "="
@@ -473,7 +473,7 @@ bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
 }
 
 void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other) const {
-    for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
         (*j).second->copyValueTo((*j).first, other);
     }
 }

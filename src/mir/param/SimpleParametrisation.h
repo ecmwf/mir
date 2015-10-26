@@ -110,6 +110,9 @@ class SimpleParametrisation : public MIRParametrisation {
 
   private:
 
+    // Types
+    typedef std::map<std::string, Setting*> SettingsMap;
+
 // No copy allowed
 
     SimpleParametrisation(const SimpleParametrisation&);
@@ -117,7 +120,7 @@ class SimpleParametrisation : public MIRParametrisation {
 
 // -- Members
 
-    std::map<std::string, Setting*> settings_;
+    SettingsMap settings_;
 
 
 // -- Methods
