@@ -28,7 +28,7 @@
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 
-#include "atlas/Nodes.h"
+#include "atlas/mesh/Nodes.h"
 #include "atlas/actions/BuildXYZField.h"
 
 namespace mir {
@@ -72,7 +72,7 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
     const atlas::Domain &inDomain = in.domain();
 
     // output points
-    atlas::Nodes &o_nodes = o_mesh.nodes();
+    atlas::mesh::Nodes &o_nodes = o_mesh.nodes();
     atlas::actions::BuildXYZField("xyz")(o_nodes);
     atlas::ArrayView<double, 2> ocoords(o_nodes.field("xyz"));
     atlas::ArrayView<double, 2> olonlat ( o_nodes.lonlat());

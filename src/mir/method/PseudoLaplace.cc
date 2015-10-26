@@ -21,7 +21,7 @@
 #include "mir/util/PointSearch.h"
 #include "mir/param/MIRParametrisation.h"
 #include "atlas/actions/BuildXYZField.h"
-#include "atlas/Nodes.h"
+#include "atlas/mesh/Nodes.h"
 #include "eckit/log/Timer.h"
 
 namespace mir {
@@ -58,7 +58,7 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
     atlas::Mesh& o_mesh = const_cast<atlas::Mesh&>(out.mesh());
 
     // output points
-    atlas::Nodes& o_nodes = o_mesh.nodes();
+    atlas::mesh::Nodes& o_nodes = o_mesh.nodes();
 
     atlas::actions::BuildXYZField("xyz")(o_nodes);
     atlas::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );

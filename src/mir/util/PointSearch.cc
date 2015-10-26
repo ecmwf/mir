@@ -16,7 +16,7 @@
 
 #include "mir/util/PointSearch.h"
 #include "atlas/actions/BuildXYZField.h"
-#include "atlas/Nodes.h"
+#include "atlas/mesh/Nodes.h"
 
 #include <vector>
 #include <limits>
@@ -97,7 +97,7 @@ void PointSearch::init(const std::vector<PointType>& points) {
 
 void PointSearch::init(const atlas::Mesh& mesh, const CompareType& isok) {
 
-    atlas::Nodes& nodes = const_cast<atlas::Mesh&>(mesh).nodes();
+    atlas::mesh::Nodes& nodes = const_cast<atlas::Mesh&>(mesh).nodes();
     atlas::actions::BuildXYZField("xyz")(nodes);
     ASSERT(nodes.has_field("xyz"));
 
