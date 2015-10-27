@@ -21,6 +21,9 @@
 #include <map>
 #include <set>
 
+namespace eckit {
+class JSON;
+}
 
 namespace mir {
 namespace param {
@@ -41,7 +44,7 @@ class SimpleParametrisation : public MIRParametrisation {
 
 // -- Destructor
 
-    virtual ~SimpleParametrisation(); // Change to virtual if base class
+    virtual ~SimpleParametrisation();
 
 // -- Convertors
     // None
@@ -83,8 +86,8 @@ class SimpleParametrisation : public MIRParametrisation {
 
 // -- Methods
 
-    virtual void print(std::ostream&) const; // Change to virtual if base class
-
+    virtual void print(std::ostream&) const;
+    void json(eckit::JSON&) const;
 
     bool matches(const param::MIRParametrisation& metadata) const;
 
@@ -147,12 +150,10 @@ class SimpleParametrisation : public MIRParametrisation {
 
 // -- Friends
 
-
-    // friend std::ostream& operator<<(std::ostream& s,const SimpleParametrisation& p) {
-    //     p.print(s);
-    //     return s;
-    // }
-
+    friend eckit::JSON& operator<<(eckit::JSON& s, const SimpleParametrisation& p) {
+        p.json(s);
+        return s;
+    }
 };
 
 

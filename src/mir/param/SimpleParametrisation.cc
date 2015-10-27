@@ -16,6 +16,7 @@
 #include "mir/param/SimpleParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/parser/JSON.h"
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/types/Types.h"
 #include "eckit/utils/Translator.h"
@@ -44,9 +45,15 @@ class Setting {
     virtual void copyValueTo(const std::string &name, SimpleParametrisation &) const = 0;
 
     virtual void print(std::ostream &) const = 0;
+    virtual void json(eckit::JSON&) const = 0;
 
     friend std::ostream &operator<<(std::ostream &s, const Setting &p) {
         p.print(s);
+        return s;
+    }
+
+    friend eckit::JSON& operator<<(eckit::JSON& s, const Setting& p) {
+        p.json(s);
         return s;
     }
 };
@@ -94,6 +101,10 @@ class DelayedSetting : public Setting {
         out << "<DELAYED>";
     }
 
+    virtual void json(eckit::JSON& out) const {
+        out << "<DELAYED>";
+    }
+
     void copyValueTo(const std::string &name, SimpleParametrisation &param) const  {
         NOTIMP;
     }
@@ -128,6 +139,10 @@ class TSettings : public Setting {
     }
 
     virtual void print(std::ostream &out) const {
+        out << value_;
+    }
+
+    virtual void json(eckit::JSON& out) const {
         out << value_;
     }
 };
@@ -453,6 +468,13 @@ void SimpleParametrisation::print(std::ostream &out) const {
         out << extra << (*j).first << "=" << *((*j).second);
         sep = comma;
     }
+}
+
+void SimpleParametrisation::json(eckit::JSON& s) const {
+    s.startObject();
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j)
+        s << (*j).first << *((*j).second);
+    s.endObject();
 }
 
 bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
