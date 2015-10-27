@@ -77,6 +77,8 @@ class MIRJob : public param::SimpleParametrisation {
     // For debugging only
     void mirToolCall(std::ostream&) const;
 
+    void json(eckit::JSON&) const;
+
 // -- Overridden methods
     // None
 

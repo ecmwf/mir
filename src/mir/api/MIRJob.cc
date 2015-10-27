@@ -240,6 +240,10 @@ void MIRJob::mirToolCall(std::ostream &out) const {
     eckit::setformat(out, fmt);
 }
 
+void MIRJob::json(eckit::JSON& json) const {
+    SimpleParametrisation::json(json);
+}
+
 
 // This comes grom eckit::Context
 static eckit::RegisterConfigHome configs("mir",
