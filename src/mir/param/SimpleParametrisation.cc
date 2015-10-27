@@ -20,6 +20,7 @@
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/types/Types.h"
 #include "eckit/utils/Translator.h"
+#include "eckit/value/Value.h"
 
 #include "mir/param/DelayedParametrisation.h"
 
@@ -393,6 +394,37 @@ void SimpleParametrisation::_set(const std::string &name, const T &value) {
     settings_[name] = new TSettings<T>(value);
 }
 
+// FIXME: can we do this in a more elegant way?
+template<>
+void SimpleParametrisation::_set(const std::string &name, const eckit::Value& value) {
+    if (value.isBool()) {
+        _set<bool>(name, value);
+    } else if (value.isDouble()) {
+        _set<double>(name, value);
+    } else if (value.isNumber()) {
+        _set<long>(name, value);
+    } else if (value.isString()) {
+        _set<std::string>(name, value);
+    } else if (value.isList()) {
+        eckit::ValueList v = value;
+        if (v[0].isDouble()) {
+            std::vector<double> d;
+            for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
+                d.push_back(double(*it));
+            _set(name, d);
+        } else if (v[0].isNumber()) {
+            std::vector<long> l;
+            for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
+                l.push_back(long(*it));
+            _set(name, l);
+        } else {
+            throw eckit::BadParameter("Vector contains invalid type", Here());
+        }
+    } else {
+        throw eckit::BadParameter("Map contains invalid type", Here());
+    }
+}
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const char *value) {
     _set(name, std::string(value));
     return *this;
@@ -450,6 +482,14 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const std::vector<double> &value) {
     _set(name, value);
+    return *this;
+}
+
+SimpleParametrisation& SimpleParametrisation::set(const eckit::Value& map) {
+    ASSERT( map.isMap() );
+    eckit::ValueMap m = map;
+    for( eckit::ValueMap::const_iterator vit = m.begin(); vit != m.end(); ++vit )
+      _set(vit->first, vit->second);
     return *this;
 }
 
