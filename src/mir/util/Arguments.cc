@@ -73,8 +73,8 @@ void Arguments::argument_option_t::process(
     const std::string& _param,
     const std::string& _value ) {
     if (params_.find(_param) == params_.end()) {
-        std::stringstream os;
-        os << "option '" << option << "' does not have parameter '" << _param << "'" ;
+        std::ostringstream os;
+        os << "option '" << option << "' does not have parameter '" << _param << "'";
         warnings_.push_back(os.str());
         return;
     }
@@ -96,8 +96,8 @@ void Arguments::argument_option_t::process(
         if ((q = params_.find(p->first)) != params_.end()) {
             q->second = p->second;
         } else {
-            std::stringstream os;
-            os << "Option '" << option << "' does not have parameter '" << p->first + "'" ;
+            std::ostringstream os;
+            os << "Option '" << option << "' does not have parameter '" << p->first + "'";
             warnings_.push_back(os.str());
         }
     }
@@ -154,10 +154,10 @@ void Arguments::argument_shortoption_t::process(const std::string& _value) {
 
     // check if position is within bounds
     if (positional_counter_ >= positional_params_.size()) {
-        std::stringstream os;
+        std::ostringstream os;
         os << "Option '" << shortoption << "': '" << _value
            << " exceeds the number of expected parameters ("
-           << positional_params_.size() << ")" ;
+           << positional_params_.size() << ")";
 
         warnings_.push_back(os.str());
         return;
@@ -168,15 +168,15 @@ void Arguments::argument_shortoption_t::process(const std::string& _value) {
     std::vector< std::string > pv;
     parse_equal(positional_params_[positional_counter_++], pv);
     if (pv.size() != 1 && pv.size() != 2) {
-        std::stringstream os;
-        os << "Option '" << shortoption << "': could not find parameter to assign value '" << _value + "' to" ;
+        std::ostringstream os;
+        os << "Option '" << shortoption << "': could not find parameter to assign value '" << _value + "' to";
         warnings_.push_back(os.str());
         return;
     }
     const std::string param = eckit::StringTools::trim(pv[0]);
     if (!param.length() || !_value.length()) {
-        std::stringstream os;
-        os << "Option '" << shortoption << "': could not assign '" << param << "'='" << _value << "'" ;
+        std::ostringstream os;
+        os << "Option '" << shortoption << "': could not assign '" << param << "'='" << _value << "'";
         warnings_.push_back(os.str());
         return;
     }

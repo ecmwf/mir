@@ -156,7 +156,7 @@ void WeightMatrix::validate(const char *when) const {
     }
 
     if (errors) {
-        std::stringstream os;
+        std::ostringstream os;
         os << "checkMatrixWeights(" << when << ") failed ";
     }
 }

@@ -40,8 +40,8 @@ bool Option::active() const {
 }
 
 void Option::set(param::SimpleParametrisation &) const {
-    std::stringstream os;
-    os << "Option::set() not implemented for " << *this ;
+    std::ostringstream os;
+    os << "Option::set() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 

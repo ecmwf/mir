@@ -43,8 +43,8 @@ void Gridded::setSecondOrderPacking(grib_info &info) const {
 }
 
 bool Gridded::globalDomain() const {
-    std::stringstream os;
-    os << "Representation::globalDomain() not implemented for " << *this ;
+    std::ostringstream os;
+    os << "Representation::globalDomain() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 

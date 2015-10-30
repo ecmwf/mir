@@ -35,8 +35,8 @@ namespace {
 
 inline int _nc_call(int e, const char *call, const std::string &path) {
     if (e) {
-        std::stringstream os;
-        os << call << ": " << nc_strerror(e) << " (" << path << ")" ;
+        std::ostringstream os;
+        os << call << ": " << nc_strerror(e) << " (" << path << ")";
         throw eckit::SeriousBug(os.str());
     }
     return e;
@@ -136,8 +136,8 @@ void NetcdfFileInput::getVariable(const std::string &variable, std::vector<doubl
         // add(v);
     }
 
-    std::stringstream os;
-    os <<  "NetcdfFileInput: cannot find variable " << variable ;
+    std::ostringstream os;
+    os <<  "NetcdfFileInput: cannot find variable " << variable;
     throw eckit::SeriousBug(os.str());
 }
 

@@ -44,14 +44,14 @@ bool FieldParametrisation::has(const std::string &name) const {
 
 
 void FieldParametrisation::latitudes(std::vector<double> &) const {
-    std::stringstream os;
-    os << "FieldParametrisation::latitudes() not implemented for " << *this ;
+    std::ostringstream os;
+    os << "FieldParametrisation::latitudes() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 void FieldParametrisation::longitudes(std::vector<double> &) const {
-    std::stringstream os;
-    os << "FieldParametrisation::longitudes() not implemented for " << *this ;
+    std::ostringstream os;
+    os << "FieldParametrisation::longitudes() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 

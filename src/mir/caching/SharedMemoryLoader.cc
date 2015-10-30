@@ -92,8 +92,8 @@ class SemLocker {
                 retry++;
                 // sprintf(message,"ERR: sharedmem:semop:lock(%s)",path);
                 if (retry >= MAX_WAIT_LOCK) {
-                    std::stringstream os;
-                    os << "Failed to acquire semaphore lock for " << path_ ;
+                    std::ostringstream os;
+                    os << "Failed to acquire semaphore lock for " << path_;
                     throw eckit::SeriousBug(os.str());
                 } else {
                     eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << std::endl;
@@ -111,8 +111,8 @@ class SemLocker {
         while (retry < MAX_WAIT_LOCK) {
             if (semop(sem_, _unlock, 1) < 0) {
                 if (retry >= MAX_WAIT_LOCK) {
-                    std::stringstream os;
-                    os << "Failed to realease semaphore lock for " << path_ ;
+                    std::ostringstream os;
+                    os << "Failed to realease semaphore lock for " << path_;
                     throw eckit::SeriousBug(os.str());
                 } else {
                     eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << std::endl;
@@ -139,8 +139,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     eckit::Log::info() << "Loading legendre coefficients from " << real << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
-        std::stringstream os;
-        os << "SharedMemoryLoader: path name to long " << real << ", maximum " << INFO_PATH ;
+        std::ostringstream os;
+        os << "SharedMemoryLoader: path name to long " << real << ", maximum " << INFO_PATH;
         throw eckit::SeriousBug(os.str());
     }
 
@@ -221,15 +221,15 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         if (nfo->ready) {
             loadfile = false;
             if (nfo->magic != MAGIC) {
-                std::stringstream os;
-                os << "SharedMemoryLoader: bad magic found " << nfo->magic ;
+                std::ostringstream os;
+                os << "SharedMemoryLoader: bad magic found " << nfo->magic;
 
                 throw eckit::SeriousBug(os.str());
             }
 
             if (real.asString() != nfo->path) {
-                std::stringstream os;
-                os << "SharedMemoryLoader: path mismatch " << real << " and " << nfo->path ;
+                std::ostringstream os;
+                os << "SharedMemoryLoader: path mismatch " << real << " and " << nfo->path;
 
                 throw eckit::SeriousBug(os.str());
             }

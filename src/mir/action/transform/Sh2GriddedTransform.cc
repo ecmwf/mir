@@ -79,10 +79,9 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
     const atlas::grids::LonLatGrid *latlon = dynamic_cast<const atlas::grids::LonLatGrid *>(&grid);
 
-    std::stringstream os;
+    std::ostringstream os;
 
-
-    os << "T" << truncation << ":" << grid.uniqueId() ;
+    os << "T" << truncation << ":" << grid.uniqueId();
     std::string key(os.str());
 
 

@@ -43,15 +43,15 @@ grib_handle *MIRInput::gribHandle() const {
 
 
 bool MIRInput::next() {
-    std::stringstream os;
+    std::ostringstream os;
     MIRInput &self = *this;
-    os << "MIRInput::next() not implemented for " << self ;
+    os << "MIRInput::next() not implemented for " << self;
     throw eckit::SeriousBug(os.str());
 }
 
 size_t MIRInput::copy(double *values, size_t size) const {
-    std::stringstream os;
-    os << "MIRInput::copy() not implemented for " << *this ;
+    std::ostringstream os;
+    os << "MIRInput::copy() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 

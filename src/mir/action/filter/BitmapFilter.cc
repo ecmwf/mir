@@ -70,10 +70,9 @@ void BitmapFilter::execute(data::MIRField &field) const {
         std::vector<double> &values = field.values(f);
 
         if (values.size() != bitmap_->width() * bitmap_->height()) {
-            std::stringstream os;
+            std::ostringstream os;
             os << "BitmapFilter::execute size mismatch: values=" << values.size()
-               << ", bitmap=" << bitmap_->width() << "x" << bitmap_->height()
-               ;
+               << ", bitmap=" << bitmap_->width() << "x" << bitmap_->height();
 
             throw eckit::UserError(os.str());
         }

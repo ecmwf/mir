@@ -46,8 +46,8 @@ std::string UserFileLSM::path(const param::MIRParametrisation &param) const {
     std::string path;
     if (!param.get("lsm.path." + which_, path)) {
         if (!param.get("lsm.path", path)) {
-            std::stringstream os;
-            os << *this << " no path specified" ;
+            std::ostringstream os;
+            os << *this << " no path specified";
             throw eckit::UserError(os.str());
         }
     }

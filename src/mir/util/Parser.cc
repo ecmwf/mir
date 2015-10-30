@@ -148,8 +148,8 @@ void Parser::fill(ParserConsumer& consumer) {
                 tmp += c;
                 word = true;
             } else {
-                std::stringstream os;
-                os << path_ << ": unexpected character " << (isprint(c) ? c : int(c)) ;
+                std::ostringstream os;
+                os << path_ << ": unexpected character " << (isprint(c) ? c : int(c));
                 throw eckit::SeriousBug(os.str());
             }
             break;
