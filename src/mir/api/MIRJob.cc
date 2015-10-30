@@ -176,6 +176,12 @@ MIRJob &MIRJob::set(const std::string &name, const std::vector<long>& v) {
     return *this;
 }
 
+MIRJob&MIRJob::set(const eckit::Value& map) {
+    eckit::Log::info() << "************* MIRJob::set from ValueMap" << std::endl;
+    SimpleParametrisation::set(map);
+    return *this;
+}
+
 MIRJob &MIRJob::set(const std::string &name, double v1, double v2) {
     eckit::Log::info() << "************* MIRJob::set [" << name << "] = [" << v1 << ", "  << v2 << "] (double)" << std::endl;
     std::vector<double> v(2);
@@ -238,6 +244,10 @@ void MIRJob::mirToolCall(std::ostream &out) const {
     eckit::setformat(out, eckit::Log::applicationFormat);
     out << *this;
     eckit::setformat(out, fmt);
+}
+
+void MIRJob::json(eckit::JSON& json) const {
+    SimpleParametrisation::json(json);
 }
 
 

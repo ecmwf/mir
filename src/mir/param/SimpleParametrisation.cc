@@ -16,9 +16,11 @@
 #include "mir/param/SimpleParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/parser/JSON.h"
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/types/Types.h"
 #include "eckit/utils/Translator.h"
+#include "eckit/value/Value.h"
 
 #include "mir/param/DelayedParametrisation.h"
 
@@ -44,9 +46,15 @@ class Setting {
     virtual void copyValueTo(const std::string &name, SimpleParametrisation &) const = 0;
 
     virtual void print(std::ostream &) const = 0;
+    virtual void json(eckit::JSON&) const = 0;
 
     friend std::ostream &operator<<(std::ostream &s, const Setting &p) {
         p.print(s);
+        return s;
+    }
+
+    friend eckit::JSON& operator<<(eckit::JSON& s, const Setting& p) {
+        p.json(s);
         return s;
     }
 };
@@ -94,6 +102,10 @@ class DelayedSetting : public Setting {
         out << "<DELAYED>";
     }
 
+    virtual void json(eckit::JSON& out) const {
+        out << "<DELAYED>";
+    }
+
     void copyValueTo(const std::string &name, SimpleParametrisation &param) const  {
         NOTIMP;
     }
@@ -128,6 +140,10 @@ class TSettings : public Setting {
     }
 
     virtual void print(std::ostream &out) const {
+        out << value_;
+    }
+
+    virtual void json(eckit::JSON& out) const {
         out << value_;
     }
 };
@@ -321,7 +337,7 @@ SimpleParametrisation::SimpleParametrisation() {
 
 
 SimpleParametrisation::~SimpleParametrisation() {
-    for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
         delete (*j).second;
     }
 }
@@ -336,7 +352,7 @@ size_t SimpleParametrisation::size() const {
 
 template<class T>
 bool SimpleParametrisation::_get(const std::string &name, T &value) const {
-    std::map<std::string, Setting *>::const_iterator j = settings_.find(name);
+    SettingsMap::const_iterator j = settings_.find(name);
     if (j == settings_.end()) {
         return false;
     }
@@ -371,11 +387,42 @@ bool SimpleParametrisation::get(const std::string &name, std::vector<double> &va
 
 template<class T>
 void SimpleParametrisation::_set(const std::string &name, const T &value) {
-    std::map<std::string, Setting *>::iterator j = settings_.find(name);
+    SettingsMap::iterator j = settings_.find(name);
     if (j != settings_.end()) {
         delete (*j).second;
     }
     settings_[name] = new TSettings<T>(value);
+}
+
+// FIXME: can we do this in a more elegant way?
+template<>
+void SimpleParametrisation::_set(const std::string &name, const eckit::Value& value) {
+    if (value.isBool()) {
+        _set<bool>(name, value);
+    } else if (value.isDouble()) {
+        _set<double>(name, value);
+    } else if (value.isNumber()) {
+        _set<long>(name, value);
+    } else if (value.isString()) {
+        _set<std::string>(name, value);
+    } else if (value.isList()) {
+        eckit::ValueList v = value;
+        if (v[0].isDouble()) {
+            std::vector<double> d;
+            for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
+                d.push_back(double(*it));
+            _set(name, d);
+        } else if (v[0].isNumber()) {
+            std::vector<long> l;
+            for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
+                l.push_back(long(*it));
+            _set(name, l);
+        } else {
+            throw eckit::BadParameter("Vector contains invalid type", Here());
+        }
+    } else {
+        throw eckit::BadParameter("Map contains invalid type", Here());
+    }
 }
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const char *value) {
@@ -411,7 +458,7 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, doubl
 }
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, DelayedParametrisation *value) {
-    std::map<std::string, Setting *>::iterator j = settings_.find(name);
+    SettingsMap::iterator j = settings_.find(name);
     if (j != settings_.end()) {
         delete (*j).second;
     }
@@ -420,7 +467,7 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, Delay
 }
 
 SimpleParametrisation& SimpleParametrisation::clear(const std::string &name) {
-    std::map<std::string, Setting *>::iterator j = settings_.find(name);
+    SettingsMap::iterator j = settings_.find(name);
     if (j != settings_.end()) {
         delete (*j).second;
         settings_.erase(j);
@@ -438,6 +485,14 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const
     return *this;
 }
 
+SimpleParametrisation& SimpleParametrisation::set(const eckit::Value& map) {
+    ASSERT( map.isMap() );
+    eckit::ValueMap m = map;
+    for( eckit::ValueMap::const_iterator vit = m.begin(); vit != m.end(); ++vit )
+      _set(vit->first, vit->second);
+    return *this;
+}
+
 void SimpleParametrisation::print(std::ostream &out) const {
     const char *sep = "";
     const char *comma = ",";
@@ -448,16 +503,23 @@ void SimpleParametrisation::print(std::ostream &out) const {
         comma = " ";
     }
 
-    for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
         out << sep;
         out << extra << (*j).first << "=" << *((*j).second);
         sep = comma;
     }
 }
 
+void SimpleParametrisation::json(eckit::JSON& s) const {
+    s.startObject();
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j)
+        s << (*j).first << *((*j).second);
+    s.endObject();
+}
+
 bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
     eckit::Log::info() << "SimpleParametrisation::matches " << other << std::endl;
-    for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
 
         if ((*j).second->match((*j).first, other)) {
             eckit::Log::info() << "Matching parametrisation: " << (*j).first << "="
@@ -473,7 +535,7 @@ bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
 }
 
 void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other) const {
-    for (std::map<std::string, Setting *>::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
         (*j).second->copyValueTo((*j).first, other);
     }
 }

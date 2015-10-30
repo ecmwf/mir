@@ -21,7 +21,6 @@
 
 #include "mir/param/SimpleParametrisation.h"
 
-
 namespace mir {
 namespace input {
 class MIRInput;
@@ -70,12 +69,15 @@ class MIRJob : public param::SimpleParametrisation {
     MIRJob& set(const std::string& name, const std::vector<long>&);
     MIRJob& set(const std::string& name, const std::vector<size_t>&);
 
+    MIRJob& set(const eckit::Value& map);
 
     MIRJob& clear(const std::string& name);
     MIRJob& representationFrom(input::MIRInput&);
 
     // For debugging only
     void mirToolCall(std::ostream&) const;
+
+    void json(eckit::JSON&) const;
 
 // -- Overridden methods
     // None
