@@ -23,7 +23,7 @@
 #include "atlas/Field.h"
 #include "atlas/FunctionSpace.h"
 #include "atlas/Mesh.h"
-#include "atlas/Nodes.h"
+#include "atlas/mesh/Nodes.h"
 #include "atlas/grids/ReducedGaussianGrid.h"
 #include "atlas/util/ArrayView.h"
 

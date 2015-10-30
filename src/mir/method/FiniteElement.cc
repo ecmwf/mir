@@ -24,7 +24,7 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 
-#include "atlas/Nodes.h"
+#include "atlas/mesh/Nodes.h"
 #include "atlas/actions/BuildXYZField.h"
 #include "atlas/geometry/Quad3D.h"
 #include "atlas/geometry/Ray.h"
@@ -297,7 +297,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
     // input mesh
 
-    const atlas::Nodes  &i_nodes  = i_mesh.nodes();
+    const atlas::mesh::Nodes  &i_nodes  = i_mesh.nodes();
     atlas::ArrayView<double, 2> icoords  ( i_nodes.field( "xyz" ));
 
     atlas::FunctionSpace &triags = i_mesh.function_space( "triags" );
@@ -317,7 +317,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     // In case xyz field in the out mesh, build it
     atlas::actions::BuildXYZField("xyz")(out.mesh());
 
-    atlas::Nodes  &o_nodes  = o_mesh.nodes();
+    atlas::mesh::Nodes  &o_nodes  = o_mesh.nodes();
     atlas::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
     atlas::ArrayView<double, 2> olonlat ( o_nodes.lonlat() );
 

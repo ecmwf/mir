@@ -27,7 +27,7 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/PointSearch.h"
-#include "atlas/Nodes.h"
+#include "atlas/mesh/Nodes.h"
 #include "atlas/actions/BuildXYZField.h"
 
 
