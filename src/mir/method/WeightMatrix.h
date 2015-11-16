@@ -15,7 +15,7 @@
 #ifndef mir_method_WeightMatrix_H
 #define mir_method_WeightMatrix_H
 
-#include "experimental/eckit/la/SparseMatrix.h"
+#include "eckit/la/SparseMatrix.h"
 
 namespace eckit {
 class PathName;

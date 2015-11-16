@@ -16,8 +16,8 @@
 
 #include "eckit/log/Log.h"
 
-#include "experimental/eckit/la/Vector.h"
-#include "experimental/eckit/la/LinearAlgebra.h"
+#include "eckit/la/Vector.h"
+#include "eckit/la/LinearAlgebra.h"
 
 #include "atlas/Grid.h"
 #include "atlas/Mesh.h"

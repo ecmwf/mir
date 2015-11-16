@@ -20,7 +20,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/runtime/Tool.h"
 
-#include "experimental/eckit/la/LinearAlgebra.h"
+#include "eckit/la/LinearAlgebra.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/DummyInput.h"

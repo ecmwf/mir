@@ -14,8 +14,8 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Plural.h"
 
-#include "experimental/eckit/la/LinearAlgebra.h"
-#include "experimental/eckit/la/Vector.h"
+#include "eckit/la/LinearAlgebra.h"
+#include "eckit/la/Vector.h"
 
 #include "atlas/geometry/Intersect.h"
 
