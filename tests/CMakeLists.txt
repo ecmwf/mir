@@ -48,10 +48,10 @@ endforeach()
 ########################################################################################################################
 #### TEST ALL GRIB_API templates
 
-file(GLOB_RECURSE grib_tmpl ${GRIB_SAMPLES_PATH}*.tmpl)
+file(GLOB_RECURSE testGribTemplates ${GRIB_SAMPLES_PATH}*.tmpl)
 
 #debug_var(GRIB_SAMPLES_PATH)
-#debug_var(grib_tmpl)
+#debug_var(testGribTemplates)
 
 
 # skip these samples
@@ -68,7 +68,7 @@ list( APPEND skipTmpl
     ".*polar_stereographic_pl_grib.*"
 )
 
-ecbuild_list_remove_pattern( "${grib_tmpl}" "${skipTmpl}" testGribTemplates )
+ecbuild_list_exclude_pattern( LIST testGribTemplates PATTERNS ${skipTmpl} )
 
 # debug_var(testGribTemplates)
 
