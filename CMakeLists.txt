@@ -1,21 +1,8 @@
 ############################################################################################
 #
-#   mir - ECMWF Meterological Interpolation and Regriding
+#   MIR - ECMWF Meterological Interpolation and Regriding
 #
 ############################################################################################
-### TODO
-#
-#   * create the cache files atomically
-#   * cache weights based also on algorithm
-#   * define a MIR_HOME and resource file to store configurations
-#   * define a MIR_DATA_CACHE
-#   * cache mesh generation
-#   * when in and out grid hashes match we should immedietly return identity matrix
-#
-### BUG
-#   * ./mir_interpolate -i spectral-rg.grib -o output.grib -g ll55.grib ???
-#     - bug in input.gmsh (-1 vertice)
-#     - output field has weird feature
 
 cmake_minimum_required( VERSION 2.8.4 FATAL_ERROR )
 
@@ -23,25 +10,26 @@ project( mir C CXX )
 
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
 
-include( ecbuild_system )
+include( ecbuild_system NO_POLICY_SCOPE )
 
-ecbuild_requires_macro_version( 1.6 )
+ecbuild_requires_macro_version( 1.9 )
 
 ###############################################################################
 # project
 
 ecbuild_use_package( PROJECT eckit  VERSION  0.9  REQUIRED )
 ecbuild_use_package( PROJECT atlas  VERSION  0.4  REQUIRED )
+# ecbuild_use_package( PROJECT libemos  )
 
-# BUG: For some reason, in bundles this does not get propagated, unless
-# following lines are defined
-foreach( _feature ${ECKIT_FEATURES};${ATLAS_FEATURES} )
-  set( ${_feature} 1 )
-endforeach()
+# Experimental features in eckit are required
+# TODO: remove requirement when no longer necessary
+if( NOT ECKIT_HAVE_EXPERIMENTAL )
+  message( FATAL_ERROR "Experimental features in eckit are required" )
+endif()
 
-# Eigen support in eckit is required
-if( NOT ECKIT_HAVE_EIGEN )
-  message( FATAL_ERROR "Eigen support in eckit is required" )
+# Either Eigen support or Armadillo support in eckit is required
+if( NOT ECKIT_HAVE_EIGEN AND NOT ECKIT_HAVE_ARMADILLO )
+  message( FATAL_ERROR "Either Eigen support or Armadillo support in eckit is required" )
 endif()
 
 # this will be replaced once ecbuild exports subcomponents between packages
@@ -50,9 +38,6 @@ ecbuild_declare_project()
 
 ###############################################################################
 # some variables/options of this project
-
-set( MIR_SHARE_DIR "${CMAKE_INSTALL_PREFIX}/share/mir"     ${MIR_SHARE_PATH} )
-set( MIR_DATA_DIR  "${CMAKE_INSTALL_PREFIX}/share/mir/lsm" ${MIR_LSM_PATH} )
 
 ecbuild_add_cxx11_flags()
 ecbuild_check_cxx11( PRINT )
@@ -69,21 +54,29 @@ else()
   ecbuild_enable_ompstubs()
 endif()
 
-
 ### MPI
 
 ecbuild_add_option( FEATURE MPI
-					DEFAULT OFF
-					DESCRIPTION "support for MPI distributed parallelism" )
+                    DEFAULT OFF
+                    DESCRIPTION "support for MPI distributed parallelism" )
 
 if( ENABLE_MPI )
 
   ecbuild_enable_mpi()
 
   if( NOT MPI_CXX_FOUND )
-	set( HAVE_MPI 0 )
+    set( HAVE_MPI 0 )
   endif()
 
+endif()
+
+ecbuild_add_option( FEATURE NETCDF
+                    DEFAULT ON
+                    DESCRIPTION "support for NetCDF4"
+                    REQUIRED_PACKAGES NetCDF4 )
+
+if( HAVE_NETCDF )
+  list( APPEND MIR_FEATURE_LIBRARIES ${NETCDF_LIBRARIES} )
 endif()
 
 ###############################################################################
@@ -92,8 +85,7 @@ endif()
 ### export package to other ecbuild packages
 
 set( MIR_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
-set( MIR_LIBRARIES      ${CMAKE_PROJECT_NAME} )
-set( MIR_TPLS           atlas eckit )
+set( MIR_LIBRARIES      mir )
 
 get_directory_property( COMPILE_DEFINITIONS MIR_DEFINITIONS )
 
@@ -111,19 +103,21 @@ endforeach()
 include_directories( ${MIR_INCLUDE_DIRS} ${MIR_EXTRA_INCLUDE_DIRS}  )
 
 add_subdirectory( src )
+add_subdirectory( etc )
+add_subdirectory( tests )
 
 ### installation
 
 # install( DIRECTORY share DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
-ecbuild_add_resources( TARGET top_files SOURCES
-											 TODO AUTHORS README NOTICE LICENSE INSTALL ChangeLog COPYING
-										DONT_PACK
-											 BUGS )
+ecbuild_add_resources( TARGET ${PROJECT_NAME}_top_files SOURCES
+                       TODO AUTHORS README NOTICE LICENSE INSTALL ChangeLog COPYING
+                       DONT_PACK
+                       BUGS )
 
 ############################################################################################
 # packaging and installation
 
-ecbuild_install_project( NAME ${CMAKE_PROJECT_NAME} )
+ecbuild_install_project( NAME ${PROJECT_NAME} )
 
 ecbuild_print_summary()

@@ -1,0 +1,3 @@
+
+collect_sample_gribs.py will scan /marstest filesystem to collect sample gribs
+create_html_table.py creates a html table for confluence

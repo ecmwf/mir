@@ -1,11 +1,1 @@
-11-8-2001
-	* RERR LatLon::northSouthNumberOfPoints
-	ssp this one has a problem on both 64 and 32 bits machin
-	return int((north() - south() + ns_ ) / ns_ + ROUNDING_FACTOR);
-8-8-2011
-    * RERR Regular::generateLongitudes 32bit machine Unexpected behaviour it reports < 0 intead of 0 without print bellow and longitude value is 360.0
-10-5-2011
-	* GERR Gaussian::northIndex : bug fix north + AREA_FACTOR
-	* RE 
-RERR = rounding error for 32bits machine
-GERR = Grib error - due to lack of grib precision
+Not yet
