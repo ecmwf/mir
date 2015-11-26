@@ -68,7 +68,7 @@ list( APPEND skipTmpl
     ".*polar_stereographic_pl_grib.*"
 )
 
-ecbuild_list_exclude_pattern( LIST testGribTemplates PATTERNS ${skipTmpl} )
+ecbuild_list_exclude_pattern( LIST testGribTemplates REGEX ${skipTmpl} )
 
 # debug_var(testGribTemplates)
 
