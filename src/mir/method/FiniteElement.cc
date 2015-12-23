@@ -409,13 +409,13 @@ void FiniteElement::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) con
 
     parametrisation_.get("meshgenerator", meshgenerator); // Override with MIRParametrisation
 
-    eckit::Log::info() << "MeshGenerator parametrisation is \'" << meshgenerator << '\'\n';
+    eckit::Log::info() << "MeshGenerator parametrisation is \'" << meshgenerator << "\'\n";
 
     const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
 
     // Falling back to "Delaunay" if the mesh is not a ReducedGrid
     if (reduced == 0 && meshgenerator == "ReducedGrid") {
-        eckit::Log::info() << "Mesh isn't ReducedGrid, reverting to 'Delaunay' MeshGenerator \'" << meshgenerator << '\'\n';
+        eckit::Log::info() << "Mesh isn't ReducedGrid, reverting to 'Delaunay' MeshGenerator \'" << meshgenerator << "\'\n";
         meshgenerator = "Delaunay";
     }
 
