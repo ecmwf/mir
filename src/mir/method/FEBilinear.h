@@ -13,8 +13,8 @@
 /// @date May 2015
 
 
-#ifndef mir_method_Bilinear_H
-#define mir_method_Bilinear_H
+#ifndef mir_method_FEBilinear_H
+#define mir_method_FEBilinear_H
 
 #include "mir/method/FiniteElement.h"
 
