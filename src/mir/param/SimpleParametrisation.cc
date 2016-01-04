@@ -34,7 +34,7 @@ inline std::ostream &operator<<(std::ostream &s, const std::vector<T> &v) {
 
 class Setting {
   public:
-    virtual ~Setting() {};
+    virtual ~Setting() {}
     virtual void get(const std::string &name, std::string &value) const = 0;
     virtual void get(const std::string &name, bool &value) const = 0;
     virtual void get(const std::string &name, long &value) const = 0;
