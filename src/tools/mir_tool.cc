@@ -12,12 +12,11 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-
-
-
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
+#include "eckit/mpi/ParallelContextBehavior.h"
+#include "eckit/runtime/Context.h"
 #include "eckit/runtime/Tool.h"
 
 #include "eckit/la/LinearAlgebra.h"
@@ -54,8 +53,8 @@ class MIRTool : public eckit::Tool {
     static void usage(const std::string &tool);
 
   public:
-    MIRTool(int argc, char **argv) :
-        eckit::Tool(argc, argv) {
+    MIRTool(int argc, char **argv) : eckit::Tool(argc, argv) {
+        eckit::Context::instance().behavior(new eckit::mpi::ParallelContextBehavior());
     }
 
 };
