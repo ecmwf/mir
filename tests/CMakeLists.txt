@@ -58,14 +58,15 @@ file(GLOB_RECURSE testGribTemplates ${GRIB_SAMPLES_PATH}*.tmpl)
 
 list( APPEND skipTmpl
     ".*budg.tmpl"
-    ".*reduced_gg_pl_1280_grib.*"
-    ".*reduced_rotated_gg_pl_1280_grib.*"
-    ".*reduced_gg_pl_2000_grib.*"
-    ".*reduced_rotated_gg_pl_2000_grib.*"
+    ".*polar_stereographic_pl_grib.*"
     ".*polar_stereographic_sfc_grib.*"
+    ".*reduced_gg_pl_1280_grib.*"
+    ".*reduced_gg_pl_2000_grib.*"
+    ".*reduced_ll_sfc_grib.*"
+    ".*reduced_rotated_gg_pl_1280_grib.*"
+    ".*reduced_rotated_gg_pl_2000_grib.*"
     ".*rotated_ll_pl_grib.*"
     ".*rotated_ll_sfc_grib.*"
-    ".*polar_stereographic_pl_grib.*"
 )
 
 ecbuild_list_exclude_pattern( LIST testGribTemplates REGEX ${skipTmpl} )
