@@ -423,7 +423,7 @@ void FiniteElement::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) con
         eckit::Log::info() << "Mesh is ReducedGrid " << grid.shortName() << '\n';
 
     eckit::ScopedPtr<atlas::meshgen::MeshGenerator> generator( atlas::meshgen::MeshGeneratorFactory::build(meshgenerator, meshgenparams_) );
-    generator->generate(*reduced, mesh);
+    generator->generate(grid, mesh);
 
     // If meshgenerator did not create xyz field already, do it now.
     atlas::actions::BuildXYZField()(mesh);
