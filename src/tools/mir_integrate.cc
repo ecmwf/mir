@@ -197,6 +197,6 @@ void MIRIntegrate::run() {
 
 int main( int argc, char **argv ) {
     MIRIntegrate tool(argc, argv);
-    return tool.execute();
+    return tool.start();
 }
 

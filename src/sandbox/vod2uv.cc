@@ -85,6 +85,6 @@ void VOD2UVTool::run() {
 
 int main( int argc, char **argv ) {
     VOD2UVTool tool(argc, argv);
-    return tool.execute();
+    return tool.start();
 }
 

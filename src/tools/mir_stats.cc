@@ -171,6 +171,6 @@ void MIRStats::run() {
 
 int main( int argc, char **argv ) {
     MIRStats tool(argc, argv);
-    return tool.execute();
+    return tool.start();
 }
 

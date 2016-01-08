@@ -138,6 +138,6 @@ void LSM::run() {
 
 int main( int argc, char **argv ) {
     LSM tool(argc, argv);
-    return tool.execute();
+    return tool.start();
 }
 

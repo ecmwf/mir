@@ -110,6 +110,6 @@ void JSONTool::run() {
 
 int main( int argc, char **argv ) {
     JSONTool tool(argc, argv);
-    return tool.execute();
+    return tool.start();
 }
 

@@ -252,6 +252,6 @@ void MIRTool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::o
 
 int main( int argc, char **argv ) {
     MIRTool tool(argc, argv);
-    return tool.execute();
+    return tool.start();
 }
 

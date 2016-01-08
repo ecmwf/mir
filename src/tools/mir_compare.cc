@@ -346,6 +346,6 @@ void MIRCompare::run() {
 
 int main( int argc, char **argv ) {
     MIRCompare tool(argc, argv);
-    return tool.execute();
+    return tool.start();
 }
 

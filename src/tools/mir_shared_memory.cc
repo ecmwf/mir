@@ -67,6 +67,6 @@ void MIRSharedMemory::run() {
 
 int main( int argc, char **argv ) {
     MIRSharedMemory tool(argc, argv);
-    return tool.execute();
+    return tool.start();
 }
 
