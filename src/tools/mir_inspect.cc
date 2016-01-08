@@ -94,7 +94,6 @@ void MIRInspect::run() {
 
 int main( int argc, char **argv ) {
     MIRInspect tool(argc, argv);
-    tool.start();
-    return 0;
+    return tool.execute();
 }
 

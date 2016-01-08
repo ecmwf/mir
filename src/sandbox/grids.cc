@@ -110,7 +110,6 @@ void Grids::run() {
 
 int main( int argc, char **argv ) {
     Grids tool(argc, argv);
-    tool.start();
-    return 0;
+    return tool.execute();
 }
 

@@ -114,7 +114,6 @@ void MIRMakeLSM::run() {
 
 int main( int argc, char **argv ) {
     MIRMakeLSM tool(argc, argv);
-    tool.start();
-    return 0;
+    return tool.execute();
 }
 

@@ -44,7 +44,6 @@ void MIRConfig::run() {
 
 int main( int argc, char **argv ) {
     MIRConfig tool(argc, argv);
-    tool.start();
-    return 0;
+    return tool.execute();
 }
 
