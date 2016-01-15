@@ -14,6 +14,8 @@ endforeach()
 
 # ten-minutes.mask is a copy of emos-tables/lsm_32_lsm10m01
 
+ecbuild_info("Downloading LSM files")
+
 list( APPEND LSM_FILES  lsm.N640.grib lsm.N320.grib ten-minutes.mask 1km-lsm.mask)
 foreach( _f ${LSM_FILES} )
   ecbuild_download_resource( ${CMAKE_BINARY_DIR}/etc/${_f} http://download.ecmwf.org/test-data/mir/lsm/${_f} )
