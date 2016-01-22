@@ -134,7 +134,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
     ASSERT(trans.myproc == 1);
 
-    ASSERT(trans.nspec2g == input.size());
+    ASSERT(trans.nspec2g == (int) input.size());
 
     int number_of_fields = 1; // number of fields
 

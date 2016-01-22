@@ -878,7 +878,7 @@ extern "C" fortint wvqlint_(const fortint &knum,
         MIRJob job;
 
         size_t size = 0;
-        for (size_t i = 0; i < knum; i++) {
+        for (fortint i = 0; i < knum; i++) {
             size += numpts[i];
         }
 
@@ -935,7 +935,7 @@ extern "C" void wv2dint_(const fortint &knum,
         MIRJob job;
 
         size_t size = 0;
-        for (size_t i = 0; i < knum; i++) {
+        for (fortint i = 0; i < knum; i++) {
             size += numpts[i];
         }
 
