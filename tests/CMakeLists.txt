@@ -1,8 +1,5 @@
 # define the grib environment
 
-set( GRIB_DEFINITION_PATH ${grib_api_BASE_DIR}/share/grib_api/definitions/ )
-set( GRIB_SAMPLES_PATH    ${grib_api_BASE_DIR}/share/grib_api/samples/ )
-
 set( TEST_ECKIT_CACHE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/cache/ )
 
 file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
@@ -39,8 +36,8 @@ foreach( _t ${_test_reqs} )
                     ARGS ${_t} ${_file}.test
                     ENVIRONMENT
                       TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}
-                      GRIB_DEFINITION_PATH=${GRIB_DEFINITION_PATH}
-                      GRIB_SAMPLES_PATH=${GRIB_SAMPLES_PATH}
+                      GRIB_DEFINITION_PATH=${GRIB_API_DEFINITION_PATH}
+                      GRIB_SAMPLES_PATH=${GRIB_API_SAMPLES_PATH}
                     TEST_DEPENDS mir_get_test_data
                   )
 endforeach()
@@ -48,10 +45,10 @@ endforeach()
 ########################################################################################################################
 #### TEST ALL GRIB_API templates
 
-file(GLOB_RECURSE testGribTemplates ${GRIB_SAMPLES_PATH}*.tmpl)
+file(GLOB_RECURSE testGribTemplates ${GRIB_API_SAMPLES_PATH}/*.tmpl)
 
-#debug_var(GRIB_SAMPLES_PATH)
-#debug_var(testGribTemplates)
+# ecbuild_debug_var(GRIB_SAMPLES_PATH)
+# ecbuild_debug_var(testGribTemplates)
 
 
 # skip these samples
@@ -71,7 +68,7 @@ list( APPEND skipTmpl
 
 ecbuild_list_exclude_pattern( LIST testGribTemplates REGEX ${skipTmpl} )
 
-# debug_var(testGribTemplates)
+# ecbuild_debug_var(testGribTemplates)
 
 foreach( _t ${testGribTemplates} )
 
@@ -82,8 +79,8 @@ foreach( _t ${testGribTemplates} )
                       ARGS "--grid=1/1" ${_t} /dev/null
                       ENVIRONMENT
                         TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}
-                        GRIB_DEFINITION_PATH=${GRIB_DEFINITION_PATH}
-                        GRIB_SAMPLES_PATH=${GRIB_SAMPLES_PATH}
+                        GRIB_DEFINITION_PATH=${GRIB_API_DEFINITION_PATH}
+                        GRIB_SAMPLES_PATH=${GRIB_API_SAMPLES_PATH}
                     )
 
 endforeach()
