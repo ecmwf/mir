@@ -378,7 +378,7 @@ ecbuild_add_library(
   SOURCES            ${mir_srcs}
   GENERATED          api/mir_version.cc
   TEMPLATES          ${mir_tmpls}
-  INCLUDES           ${ECKIT_INCLUDE_DIRS} ${NETCDF_INCLUDE_DIRS} ${GRIB_API_INCLUDE_DIRS}
+  PRIVATE_INCLUDES   ${ECKIT_INCLUDE_DIRS} ${NETCDF_INCLUDE_DIRS} ${GRIB_API_INCLUDE_DIRS}
   LIBS               atlas eckit_la  ${GRIB_API_LIBRARIES} ${MIR_FEATURE_LIBRARIES}
   )
 
