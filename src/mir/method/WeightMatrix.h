@@ -31,22 +31,20 @@ class WeightMatrix {
 
 public:
 
-    typedef Matrix::Index Index;
-    typedef Matrix::Scalar Scalar;
     typedef eckit::la::Triplet Triplet;
 
     WeightMatrix();
 
-    WeightMatrix(Index rows, Index cols);
+    WeightMatrix(eckit::la::Index rows, eckit::la::Index cols);
 
     void save(const eckit::PathName &path) const;
     void load(const eckit::PathName &path);
 
-    Index rows() const {
+    eckit::la::Index rows() const {
         return matrix_.rows();
     }
 
-    Index cols() const {
+    eckit::la::Index cols() const {
         return matrix_.cols();
     }
 
@@ -71,14 +69,14 @@ public:
 
     class inner_iterator : public Matrix::InnerIterator {
     public:
-        inner_iterator( WeightMatrix &m, Index outer) :
+        inner_iterator( WeightMatrix &m, eckit::la::Index outer) :
             Matrix::InnerIterator(m.matrix_, outer) {}
     };
 
     class inner_const_iterator : public Matrix::InnerIterator {
     public:
         // FIXME: Remove const_cast once SparseMatrix provides const iterator
-        inner_const_iterator(const WeightMatrix &m, Index outer) :
+        inner_const_iterator(const WeightMatrix &m, eckit::la::Index outer) :
             Matrix::InnerIterator(const_cast<Matrix&>(m.matrix_), outer) {}
     };
 

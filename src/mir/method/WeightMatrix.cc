@@ -24,6 +24,8 @@
 
 #include <cmath>
 
+using eckit::la::Index;
+
 using mir::util::compare::is_approx_zero;
 using mir::util::compare::is_approx_one;
 
@@ -32,7 +34,7 @@ namespace method {
 
 WeightMatrix::WeightMatrix() : matrix_() {}
 
-WeightMatrix::WeightMatrix(WeightMatrix::Index rows, WeightMatrix::Index cols)
+WeightMatrix::WeightMatrix(Index rows, Index cols)
     : matrix_(rows, cols) {}
 
 void WeightMatrix::save(const eckit::PathName &path) const {
@@ -68,7 +70,7 @@ void WeightMatrix::multiply(const std::vector<double>& values, std::vector<doubl
 void WeightMatrix::cleanup() {
     size_t fixed = 0;
     size_t count = 0;
-    for (size_t i = 0; i < rows(); i++) {
+    for (Index i = 0; i < rows(); i++) {
         double removed = 0;
         size_t non_zero = 0;
 
@@ -108,7 +110,7 @@ void WeightMatrix::validate(const char *when) const {
 
     size_t errors = 0;
 
-    for (size_t i = 0; i < rows(); i++) {
+    for (Index i = 0; i < rows(); i++) {
 
         // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
         double sum = 0.;
