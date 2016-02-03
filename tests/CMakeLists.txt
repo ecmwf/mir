@@ -66,11 +66,26 @@ list( APPEND skipTmpl
     ".*rotated_ll_sfc_grib.*"
 )
 
-ecbuild_list_exclude_pattern( LIST testGribTemplates REGEX ${skipTmpl} )
+if( ECBUILD_MACRO_VERSION VERSION_LESS 2.0 )
 
-# ecbuild_debug_var(testGribTemplates)
+    foreach( item ${testGribTemplates} )
+        foreach( pattern ${skipTmpl} )
+            if( NOT ${item} MATCHES ${pattern} )
+                list( APPEND sanitizedGribTemplates )
+            endif()
+        endforeach()
+    endforeach()
 
-foreach( _t ${testGribTemplates} )
+else()
+
+    ecbuild_list_exclude_pattern( LIST testGribTemplates REGEX ${skipTmpl} )
+    set( sanitizedGribTemplates ${testGribTemplates})
+
+endif()
+
+# ecbuild_debug_var(sanitizedGribTemplates)
+
+foreach( _t ${sanitizedGribTemplates} )
 
     get_filename_component(_tst ${_t} NAME_WE)
 
