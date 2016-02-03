@@ -138,6 +138,10 @@ void LSM::run() {
 
 int main( int argc, char **argv ) {
     LSM tool(argc, argv);
+#if (ECKIT_MAJOR_VERSION == 0) && (ECKIT_MINOR_VERSION <= 10)
+    return 0;
+#else
     return tool.start();
+#endif
 }
 
