@@ -17,10 +17,10 @@ ecbuild_add_executable( TARGET  lsm
                         INCLUDES ${ATLAS_INCLUDE_DIRS}
                         LIBS     mir ${LIBEMOS_LIBRARIES} )
 
-ecbuild_add_executable( TARGET  json_config
-                        SOURCES  json_config.cc
-                        INCLUDES ${ATLAS_INCLUDE_DIRS}
-                        LIBS     mir ${LIBEMOS_LIBRARIES} )
+#ecbuild_add_executable( TARGET  json_config
+#                        SOURCES  json_config.cc
+#                        INCLUDES ${ATLAS_INCLUDE_DIRS}
+#                        LIBS     mir ${LIBEMOS_LIBRARIES} )
 
 # ecbuild_add_executable( TARGET  eigen_sparse
 # 						SOURCES eigen_sparse.cpp utils.h
