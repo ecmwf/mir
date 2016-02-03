@@ -162,13 +162,13 @@ struct Arguments {
       public:
 
         /// Option short name (can work as key)
-        const std::string shortoption;
+        std::string shortoption;
 
         /// Option name (can work as key)
-        const std::string option;
+        std::string option;
 
         /// Option descrition
-        const std::string help;
+        std::string help;
 
 
       protected:
