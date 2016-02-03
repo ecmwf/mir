@@ -74,16 +74,17 @@ class AutoFDClose {
 
 class SemLocker {
 
-    const int MAX_WAIT_LOCK = 30;
-    const int SLEEP = 2;
+    static const int MAX_WAIT_LOCK = 30;
+    static const int SLEEP = 2;
 
     int sem_;
     eckit::PathName path_;
 
   public:
 
-    SemLocker(int s, const eckit::PathName& path):
-        sem_(s), path_(path) {
+    SemLocker(int s, const eckit::PathName& path) :
+        sem_(s),
+        path_(path) {
 
         int retry = 0;
         while (retry < MAX_WAIT_LOCK) {
