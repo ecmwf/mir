@@ -21,7 +21,7 @@ LegendreCache::LegendreCache() : CacheManager("mir/coeffs") {
 }
 
 const char* LegendreCache::version() const {
-    return mir_version_str();
+    return "1"; // Change me if the cache file structure changes
 }
 const char* LegendreCache::extension() const {
     return ".leg";

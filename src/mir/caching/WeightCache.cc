@@ -47,8 +47,9 @@ WeightCache::WeightCache():
 }
 
 const char *WeightCache::version() const {
-    return mir_version_str();
+    return "1"; // Change me if the cache file structure changes
 }
+
 const char *WeightCache::extension() const {
     return ".mat";
 }

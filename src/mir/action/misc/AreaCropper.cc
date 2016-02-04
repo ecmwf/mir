@@ -29,6 +29,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/caching/CroppingCache.h"
 
 
 namespace mir {
@@ -49,15 +50,10 @@ struct LL {
 };
 
 
-struct CacheEntry {
 
-    std::vector<size_t> mapping_;
-    util::BoundingBox bbox_;
-
-};
 
 static eckit::Mutex local_mutex;
-static std::map< std::string, CacheEntry > cache;
+static std::map< std::string, caching::CroppingCacheEntry > cache;
 
 
 AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):
@@ -86,16 +82,24 @@ void AreaCropper::print(std::ostream &out) const {
 }
 
 // TODO: Write cache to disk
-static const CacheEntry &getMapping(const repres::Representation *representation, const util::BoundingBox &bbox) {
+static const caching::CroppingCacheEntry &getMapping(const repres::Representation *representation, const util::BoundingBox &bbox) {
 
     eckit::ScopedPtr<atlas::Grid> gin(representation->atlasGrid()); // This should disapear once we move Representation to atlas
     eckit::MD5 md5;
     md5 << *gin << bbox;
 
+    std::string key(md5);
+
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    CacheEntry &c = cache[md5];
+    caching::CroppingCacheEntry &c = cache[key];
     if (c.mapping_.size() > 0) {
+        return c;
+    }
+
+    static caching::CroppingCache disk;
+
+    if(disk.retrieve(key, c)) {
         return c;
     }
 
@@ -158,6 +162,7 @@ static const CacheEntry &getMapping(const repres::Representation *representation
         c.mapping_.push_back((*j).second);
     }
 
+    disk.insert(key, c);
     return c;
 }
 
@@ -166,7 +171,7 @@ void AreaCropper::execute(data::MIRField &field) const {
     // Keep a pointer on the original representation, as the one in the field will
     // be changed in the loop
     repres::RepresentationHandle representation(field.representation());
-    const CacheEntry &c = getMapping(representation, bbox_);
+    const caching::CroppingCacheEntry &c = getMapping(representation, bbox_);
 
     eckit::Log::info() << "CROP resulting bbox is: " << c.bbox_ <<
                        ", size=" << c.mapping_.size() << std::endl;
