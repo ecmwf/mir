@@ -58,11 +58,14 @@ static std::map< std::string, caching::CroppingCacheEntry > cache;
 
 AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
-    bbox_() {
+    bbox_(),
+    caching_(true) {
 
     std::vector<double> value;
     ASSERT(parametrisation.get("user.area", value));
     ASSERT(value.size() == 4);
+
+    parametrisation_.get("caching", caching_);
 
     bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
 }
@@ -70,7 +73,8 @@ AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):
 
 AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation, const util::BoundingBox &bbox):
     Action(parametrisation),
-    bbox_(bbox) {
+    bbox_(bbox),
+    caching_(true) {
 }
 
 AreaCropper::~AreaCropper() {
@@ -82,7 +86,9 @@ void AreaCropper::print(std::ostream &out) const {
 }
 
 // TODO: Write cache to disk
-static const caching::CroppingCacheEntry &getMapping(const repres::Representation *representation, const util::BoundingBox &bbox) {
+static const caching::CroppingCacheEntry &getMapping(const repres::Representation *representation,
+        const util::BoundingBox &bbox,
+        bool caching) {
 
     eckit::ScopedPtr<atlas::Grid> gin(representation->atlasGrid()); // This should disapear once we move Representation to atlas
     eckit::MD5 md5;
@@ -99,7 +105,7 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
 
     static caching::CroppingCache disk;
 
-    if(disk.retrieve(key, c)) {
+    if (caching && disk.retrieve(key, c)) {
         return c;
     }
 
@@ -162,7 +168,10 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
         c.mapping_.push_back((*j).second);
     }
 
-    disk.insert(key, c);
+    if (caching) {
+        disk.insert(key, c);
+    }
+
     return c;
 }
 
@@ -171,7 +180,7 @@ void AreaCropper::execute(data::MIRField &field) const {
     // Keep a pointer on the original representation, as the one in the field will
     // be changed in the loop
     repres::RepresentationHandle representation(field.representation());
-    const caching::CroppingCacheEntry &c = getMapping(representation, bbox_);
+    const caching::CroppingCacheEntry &c = getMapping(representation, bbox_, caching_);
 
     eckit::Log::info() << "CROP resulting bbox is: " << c.bbox_ <<
                        ", size=" << c.mapping_.size() << std::endl;

@@ -88,6 +88,8 @@ class AreaCropper : public Action {
 // -- Members
 
     util::BoundingBox bbox_;
+    bool caching_;
+
 // -- Methods
     // None
 
