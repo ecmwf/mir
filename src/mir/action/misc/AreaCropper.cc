@@ -17,8 +17,14 @@
 #include <iostream>
 #include <vector>
 
+#include "atlas/Grid.h"
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/log/Timer.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
@@ -41,6 +47,18 @@ struct LL {
         return lat_ > other.lat_;
     }
 };
+
+
+struct CacheEntry {
+
+    std::vector<size_t> mapping_;
+    util::BoundingBox bbox_;
+
+};
+
+static eckit::Mutex local_mutex;
+static std::map< std::string, CacheEntry > cache;
+
 
 AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
@@ -67,81 +85,108 @@ void AreaCropper::print(std::ostream &out) const {
     out << "AreaCropper[bbox=" << bbox_ << "]";
 }
 
+// TODO: Write cache to disk
+static const CacheEntry &getMapping(const repres::Representation *representation, const util::BoundingBox &bbox) {
+
+    eckit::ScopedPtr<atlas::Grid> gin(representation->atlasGrid()); // This should disapear once we move Representation to atlas
+    eckit::MD5 md5;
+    md5 << *gin << bbox;
+
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    CacheEntry &c = cache[md5];
+    if (c.mapping_.size() > 0) {
+        return c;
+    }
+
+    eckit::Timer timer("Compute crop mapping");
+
+    // TODO: Consider caching these maps (e.g. cache map LL -> index instead)
+    std::map<LL, size_t> m;
+
+    double n = 0;
+    double s = 0;
+    double e = 0;
+    double w = 0;
+
+    size_t p = 0;
+    size_t count = 0;
+    bool first = true;
+    double lat, lon;
+
+    // Iterator is "unrotated", because the cropping area
+    // is expressed in before the rotation is applied
+    eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
+    while (iter->next(lat, lon)) {
+        // std::cout << lat << " " << lon << std::endl;
+        if (bbox.contains(lat, lon)) {
+
+            lon = bbox.normalise(lon);
+
+            if (first) {
+                n = s = lat;
+                w = e = lon;
+                first = false;
+            } else {
+                n = std::max(n, lat);
+                s = std::min(s, lat);
+                e = std::max(e, lon);
+                w = std::min(w, lon);
+            }
+
+            // if(m.find(LL(lat, lon)) != m.end()) {
+            //     eckit::Log::info() << "CROP  duplicate " << lat << ", " << lon << std::endl;
+            // }
+            m.insert(std::make_pair(LL(lat, lon), p));
+            count++;
+
+        }
+        p++;
+    }
+
+    // Make sure we did not visit duplicate points
+    eckit::Log::info() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
+    ASSERT(count == m.size());
+
+    // Don't support empty results
+    ASSERT(m.size() > 0);
+
+    c.bbox_ = util::BoundingBox(n, w, s, e);
+    c.mapping_.reserve(m.size());
+
+    for (std::map<LL, size_t>::const_iterator j = m.begin(); j != m.end(); ++j) {
+        c.mapping_.push_back((*j).second);
+    }
+
+    return c;
+}
 
 void AreaCropper::execute(data::MIRField &field) const {
 
     // Keep a pointer on the original representation, as the one in the field will
     // be changed in the loop
     repres::RepresentationHandle representation(field.representation());
+    const CacheEntry &c = getMapping(representation, bbox_);
+
+    eckit::Log::info() << "CROP resulting bbox is: " << c.bbox_ <<
+                       ", size=" << c.mapping_.size() << std::endl;
 
     for (size_t i = 0; i < field.dimensions(); i++) {
         const std::vector<double> &values = field.values(i);
 
-        // TODO: Consider caching these maps (e.g. cache map LL -> index instead)
-        std::map<LL, double> m;
-
-        double n = 0;
-        double s = 0;
-        double e = 0;
-        double w = 0;
-
-        size_t p = 0;
-        size_t count = 0;
-        bool first = true;
-        double lat, lon;
-
-        // Iterator is "unrotated", because the cropping area
-        // is expressed in before the rotation is applied
-        eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
-        while (iter->next(lat, lon)) {
-            // std::cout << lat << " " << lon << std::endl;
-            if (bbox_.contains(lat, lon)) {
-
-                lon = bbox_.normalise(lon);
-
-                if (first) {
-                    n = s = lat;
-                    w = e = lon;
-                    first = false;
-                } else {
-                    n = std::max(n, lat);
-                    s = std::min(s, lat);
-                    e = std::max(e, lon);
-                    w = std::min(w, lon);
-                }
-
-                // if(m.find(LL(lat, lon)) != m.end()) {
-                //     eckit::Log::info() << "CROP  duplicate " << lat << ", " << lon << std::endl;
-                // }
-                m.insert(std::make_pair(LL(lat, lon), values[p]));
-                count++;
-
-            }
-            p++;
-        }
-
-        // Make sure we did not visit duplicate points
-        eckit::Log::info() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
-        ASSERT(count == m.size());
-
         std::vector<double> result;
 
-        result.reserve(m.size());
+        result.reserve(c.mapping_.size());
 
-        for (std::map<LL, double>::const_iterator j = m.begin(); j != m.end(); ++j) {
-            result.push_back((*j).second);
+        for (std::vector<size_t>::const_iterator j = c.mapping_.begin(); j != c.mapping_.end(); ++j) {
+            result.push_back(values[*j]);
         }
 
-        eckit::Log::info() << "CROP resulting bbox is: " << util::BoundingBox(n, w, s, e) <<
-                           ", size=" << result.size() << std::endl;
-        const repres::Representation *cropped =  representation->cropped(util::BoundingBox(n, w, s, e));
+        const repres::Representation *cropped =  representation->cropped(c.bbox_);
         eckit::Log::info() << *cropped << std::endl;
 
         ASSERT(result.size() > 0);
         cropped->validate(result);
-        // ASSERT(cropped->ni() * cropped->nj() == result.size());
-        eckit::Log::info() << "CROP p=" << p << " size=" << values.size() << std::endl;
-        ASSERT(p == values.size());
 
         field.representation(cropped);
         field.values(result, i);

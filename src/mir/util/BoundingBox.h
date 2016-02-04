@@ -21,6 +21,10 @@
 
 struct grib_info;
 
+namespace eckit {
+class MD5;
+}
+
 namespace mir {
 namespace param {
 class MIRParametrisation;
@@ -90,6 +94,8 @@ class BoundingBox {
     //
     void fill(grib_info &) const;
     void fill(api::MIRJob &) const;
+
+    void hash(eckit::MD5&) const;
 
     // -- Overridden methods
     // None

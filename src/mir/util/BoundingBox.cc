@@ -17,7 +17,10 @@
 #include <iostream>
 
 #include "mir/util/Compare.h"
+
 #include "eckit/exception/Exceptions.h"
+#include "eckit/utils/MD5.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
@@ -78,6 +81,13 @@ void BoundingBox::fill(grib_info &info) const  {
 
     info.grid.latitudeOfFirstGridPointInDegrees = north_;
     info.grid.latitudeOfLastGridPointInDegrees = south_;
+}
+
+void BoundingBox::hash(eckit::MD5 &md5) const {
+    md5.add(north_);
+    md5.add(west_);
+    md5.add(south_);
+    md5.add(east_);
 }
 
 void BoundingBox::fill(api::MIRJob &job) const  {
