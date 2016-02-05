@@ -96,10 +96,13 @@ void WeightMatrix::cleanup() {
     }
 
     if (fixed) {
+        size_t r = rows();
+        size_t c = cols();
+        size_t total = r * c;
         eckit::Log::info() << "MethodWeighted::cleanupMatrix fixed "
                            << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
-                           << " (matrix is " << eckit::BigNum(rows()) << "x" << eckit::BigNum(cols()) << ", total=" <<
-                           eckit::BigNum(rows() * cols()) << ")" << std::endl;
+                           << " (matrix is " << eckit::BigNum(r) << "x" << eckit::BigNum(c) << ", total=" <<
+                           eckit::BigNum(total) << ")" << std::endl;
     }
     prune(0.0);
 }
