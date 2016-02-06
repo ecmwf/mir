@@ -42,7 +42,7 @@ void MIRArgs::init(usage_proc usage, int args_count)  {
 
     std::map<std::string, const option::Option *> opts;
 
-    for (std::vector<const option::Option *>::const_iterator j = options_.begin(); j != options_.end(); ++j) {
+    for (std::vector<option::Option *>::const_iterator j = options_.begin(); j != options_.end(); ++j) {
         if ((*j)->active()) {
             ASSERT(opts.find((*j)->name()) == opts.end());
             opts[(*j)->name()] = *j;
