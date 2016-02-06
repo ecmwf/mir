@@ -46,7 +46,7 @@ void MIRSharedMemory::usage(const std::string &tool) {
 void MIRSharedMemory::run() {
 
 
-    std::vector<const Option*> options;
+    std::vector<Option*> options;
     options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
     options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
 

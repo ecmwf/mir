@@ -76,7 +76,7 @@ void MIRIntegrate::run() {
 
     using eckit::FloatApproxCompare;
 
-    std::vector<const Option *> options;
+    std::vector<Option *> options;
 
 //     options.push_back(new SimpleOption<size_t>("buckets", "Bucket count for computing entropy (default 65536)"));
 

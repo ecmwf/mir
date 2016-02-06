@@ -48,7 +48,10 @@ class MIRArgs : public SimpleParametrisation {
 
 // -- Contructors
 
-    MIRArgs(usage_proc usage, int args_count = -1, const std::vector<const option::Option*>& = std::vector<const option::Option*>());
+    MIRArgs(usage_proc usage, int args_count = -1);
+
+    // Will take owneship of the content of the vector
+    MIRArgs(usage_proc usage, int args_count, std::vector<option::Option*>& options);
     // TODO: more proper ArgOption
 
 // -- Destructor
@@ -114,11 +117,11 @@ class MIRArgs : public SimpleParametrisation {
 
     std::set<std::string> keys_;
     std::vector<std::string> args_;
-    const std::vector<const option::Option*>& options_;
+    std::vector<option::Option*> options_;
 
 // -- Methods
 
-
+    void init(usage_proc usage, int args_count);
 
 // -- Overridden methods
 

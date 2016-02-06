@@ -75,7 +75,7 @@ void MIRTool::run() {
 
 
 
-    std::vector<const Option *> options;
+    std::vector<Option *> options;
 
 
     //==============================================

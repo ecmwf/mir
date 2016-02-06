@@ -25,8 +25,16 @@ namespace mir {
 namespace param {
 
 
-MIRArgs::MIRArgs(usage_proc usage, int args_count, const std::vector<const option::Option *> &options):
-    options_(options) {
+MIRArgs::MIRArgs(usage_proc usage, int args_count) {
+    init(usage, args_count);
+}
+
+MIRArgs::MIRArgs(usage_proc usage, int args_count,  std::vector< option::Option *> &options) {
+    std::swap(options_, options); // Take ownership so it can be destroyed
+    init(usage, args_count);
+}
+
+void MIRArgs::init(usage_proc usage, int args_count)  {
     eckit::Context &ctx = eckit::Context::instance();
     const std::string &tool = ctx.runName();
     size_t argc = ctx.argc();
@@ -92,6 +100,9 @@ MIRArgs::MIRArgs(usage_proc usage, int args_count, const std::vector<const optio
 
 
 MIRArgs::~MIRArgs() {
+    for (std::vector<option::Option*>::iterator j = options_.begin(); j  != options_.end(); ++j) {
+        delete (*j);
+    }
 }
 
 

@@ -223,7 +223,7 @@ void MIRCompare::run() {
 
     using eckit::FloatApproxCompare;
 
-    std::vector<const Option *> options;
+    std::vector<Option *> options;
 
 
     //==============================================

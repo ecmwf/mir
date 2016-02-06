@@ -53,7 +53,7 @@ void MIRMakeLSM::usage(const std::string &tool) {
 void MIRMakeLSM::run() {
 
 
-    std::vector<const Option *> options;
+    std::vector<Option *> options;
     options.push_back(new VectorOption<double>("grid", "Default 1/1", 2));
     options.push_back(new VectorOption<long>("ninj", "Default 360/181", 2));
 
