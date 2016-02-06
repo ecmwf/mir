@@ -88,7 +88,7 @@ void MIRArgs::init(usage_proc usage, int args_count)  {
             eckit::Log::info() << std::endl;
             eckit::Log::info() << "Options are:" << std::endl;
             eckit::Log::info() << "===========:" << std::endl ;
-            for (std::vector<const option::Option *>::const_iterator j = options_.begin(); j != options_.end(); ++j) {
+            for (std::vector<option::Option *>::const_iterator j = options_.begin(); j != options_.end(); ++j) {
                 eckit::Log::info() << *(*j) << std::endl << std::endl;
             }
             eckit::Log::info() << std::endl;
