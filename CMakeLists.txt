@@ -20,7 +20,12 @@ ecbuild_requires_macro_version( 2.0 )
 ecbuild_use_package( PROJECT grib_api VERSION  1.14 REQUIRED )
 ecbuild_use_package( PROJECT eckit  VERSION  0.9  REQUIRED )
 ecbuild_use_package( PROJECT atlas  VERSION  0.4  REQUIRED )
-# ecbuild_use_package( PROJECT libemos  )
+
+### temporary until we fix exporting TPLS targets between projects
+if( ATLAS_HAVE_TESSELATION )
+  find_package(CGAL REQUIRED)
+  find_package(Boost 1.45.0 REQUIRED)
+endif()
 
 # Experimental features in eckit are required
 # TODO: remove requirement when no longer necessary
