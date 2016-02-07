@@ -21,12 +21,6 @@ ecbuild_use_package( PROJECT grib_api VERSION  1.14 REQUIRED )
 ecbuild_use_package( PROJECT eckit  VERSION  0.9  REQUIRED )
 ecbuild_use_package( PROJECT atlas  VERSION  0.4  REQUIRED )
 
-### temporary until we fix exporting TPLS targets between projects
-if( ATLAS_HAVE_TESSELATION )
-  find_package(CGAL REQUIRED)
-  find_package(Boost 1.45.0 REQUIRED)
-endif()
-
 # Experimental features in eckit are required
 # TODO: remove requirement when no longer necessary
 if( NOT ECKIT_HAVE_EXPERIMENTAL )
