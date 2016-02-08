@@ -31,8 +31,8 @@ class WeightMatrix {
 
 public:
 
-    typedef Matrix::Index Index;
-    typedef Matrix::Scalar Scalar;
+    typedef eckit::la::Index Index;
+    typedef eckit::la::Scalar Scalar;
     typedef eckit::la::Triplet Triplet;
 
     WeightMatrix();
