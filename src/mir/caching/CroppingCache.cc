@@ -18,6 +18,7 @@
 
 #include "eckit/log/Seconds.h"
 #include "mir/api/mir_version.h"
+#include "mir/log/MIR.h"
 
 namespace mir {
 namespace caching {
@@ -47,9 +48,9 @@ void CroppingCache::insert(const std::string &key, const CroppingCacheEntry &c) 
 
     eckit::PathName tmp = stage(key);
 
-    eckit::Log::info() << "Inserting cropping in cache : " << tmp << "" << std::endl;
+    eckit::Log::trace<MIR>() << "Inserting cropping in cache : " << tmp << "" << std::endl;
 
-    eckit::Timer timer("Saving cropping to cache");
+    eckit::TraceTimer<MIR> timer("Saving cropping to cache");
 
     eckit::FileStream f(tmp, "w");
     f << c.bbox_.north();
@@ -72,8 +73,8 @@ bool CroppingCache::retrieve(const std::string &key, CroppingCacheEntry &c) cons
     if (!get(key, path))
         return false;
 
-    eckit::Log::info() << "Found cropping in cache : " << path << "" << std::endl;
-    eckit::Timer timer("Loading cropping from cache");
+    eckit::Log::trace<MIR>() << "Found cropping in cache : " << path << "" << std::endl;
+    eckit::TraceTimer<MIR> timer("Loading cropping from cache");
 
     eckit::FileStream f(path, "r");
     double n, w, s, e;

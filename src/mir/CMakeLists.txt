@@ -90,6 +90,8 @@ api/ProdgenJob.cc
 api/ProdgenJob.h
 api/emoslib.cc
 api/emoslib.h
+log/MIR.cc
+log/MIR.h
 caching/CroppingCache.cc
 caching/CroppingCache.h
 caching/FileLoader.cc

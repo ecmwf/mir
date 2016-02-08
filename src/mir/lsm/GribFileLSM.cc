@@ -26,6 +26,7 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
+#include "mir/log/MIR.h"
 
 namespace mir {
 namespace lsm {
@@ -41,7 +42,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     // object is cached
 
 
-    eckit::Log::info() << "GribFileLSM loading " << path_ << std::endl;
+    eckit::Log::trace<MIR>() << "GribFileLSM loading " << path_ << std::endl;
 
     mir::input::GribFileInput file( path_ );
     mir::input::MIRInput &input = file;
@@ -60,7 +61,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     }
 
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
-    eckit::Log::info() << "LSM interpolation method is " << *method << std::endl;
+    eckit::Log::trace<MIR>() << "LSM interpolation method is " << *method << std::endl;
 
     eckit::ScopedPtr<atlas::Grid> gin(field->representation()->atlasGrid());
 

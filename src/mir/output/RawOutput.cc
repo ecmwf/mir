@@ -20,6 +20,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/input/RawInput.h"
+#include "mir/log/MIR.h"
 
 
 namespace mir {
@@ -56,7 +57,7 @@ void RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &in
     ASSERT(field.dimensions() == 1);
     const std::vector<double> &values = field.values(0);
 
-    eckit::Log::info() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
+    eckit::Log::trace<MIR>() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
 
     size_ = values.size();
     ASSERT(size_ <= count_);

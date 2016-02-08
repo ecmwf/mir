@@ -30,6 +30,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/caching/CroppingCache.h"
+#include "mir/log/MIR.h"
 
 
 namespace mir {
@@ -109,7 +110,7 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
         return c;
     }
 
-    eckit::Timer timer("Compute crop mapping");
+    eckit::TraceTimer<MIR> timer("Compute crop mapping");
 
     // TODO: Consider caching these maps (e.g. cache map LL -> index instead)
     std::map<LL, size_t> m;
@@ -145,7 +146,7 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
             }
 
             // if(m.find(LL(lat, lon)) != m.end()) {
-            //     eckit::Log::info() << "CROP  duplicate " << lat << ", " << lon << std::endl;
+            //     eckit::Log::trace<MIR>() << "CROP  duplicate " << lat << ", " << lon << std::endl;
             // }
             m.insert(std::make_pair(LL(lat, lon), p));
             count++;
@@ -155,7 +156,7 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
     }
 
     // Make sure we did not visit duplicate points
-    eckit::Log::info() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
+    eckit::Log::trace<MIR>() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
     ASSERT(count == m.size());
 
     // Don't support empty results
@@ -182,7 +183,7 @@ void AreaCropper::execute(data::MIRField &field) const {
     repres::RepresentationHandle representation(field.representation());
     const caching::CroppingCacheEntry &c = getMapping(representation, bbox_, caching_);
 
-    eckit::Log::info() << "CROP resulting bbox is: " << c.bbox_ <<
+    eckit::Log::trace<MIR>() << "CROP resulting bbox is: " << c.bbox_ <<
                        ", size=" << c.mapping_.size() << std::endl;
 
     for (size_t i = 0; i < field.dimensions(); i++) {
@@ -197,7 +198,7 @@ void AreaCropper::execute(data::MIRField &field) const {
         }
 
         const repres::Representation *cropped =  representation->cropped(c.bbox_);
-        eckit::Log::info() << *cropped << std::endl;
+        eckit::Log::trace<MIR>() << *cropped << std::endl;
 
         ASSERT(result.size() > 0);
         cropped->validate(result);

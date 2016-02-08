@@ -18,6 +18,7 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/param/MIRCombinedParametrisation.h"
+#include "mir/log/MIR.h"
 
 
 namespace mir {
@@ -48,7 +49,7 @@ void MIRCombinedParametrisation::print(std::ostream& out) const {
 }
 
 bool MIRCombinedParametrisation::has(const std::string& name) const {
-    eckit::Log::info() << "MIRCombinedParametrisation::has(" << name << ")" << std::endl;
+    eckit::Log::trace<MIR>() << "MIRCombinedParametrisation::has(" << name << ")" << std::endl;
 
     if (name.find("user.") == 0) {
         return user_.has(name.substr(5));
@@ -69,7 +70,7 @@ bool MIRCombinedParametrisation::has(const std::string& name) const {
 
 template<class T>
 bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
-    eckit::Log::info() << "MIRCombinedParametrisation::get(" << name << ")" << std::endl;
+    eckit::Log::trace<MIR>() << "MIRCombinedParametrisation::get(" << name << ")" << std::endl;
 
     if (name.find("user.") == 0) {
         return user_.get(name.substr(5), value);

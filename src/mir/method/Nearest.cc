@@ -22,6 +22,7 @@
 #include "mir/util/PointSearch.h"
 #include "mir/param/MIRParametrisation.h"
 #include "eckit/log/Timer.h"
+#include "mir/log/MIR.h"
 
 #include "eckit/log/BigNum.h"
 #include "eckit/log/ETA.h"
@@ -61,8 +62,8 @@ void Nearest::hash(eckit::MD5 &md5) const {
 
 void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
-    eckit::Timer timer("Nearest::assemble");
-    eckit::Log::info() << "Nearest::assemble" << std::endl;
+    eckit::TraceTimer<MIR> timer("Nearest::assemble");
+    eckit::Log::trace<MIR>() << "Nearest::assemble" << std::endl;
 
     const size_t nclosest = this->nclosest();
 
@@ -84,7 +85,7 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
     // init structure used to fill in sparse matrix
     std::vector<WeightMatrix::Triplet > weights_triplets;
     weights_triplets.reserve(out_npts * nclosest);
-    eckit::Log::info() << "Reserve " << eckit::BigNum(out_npts * nclosest) << std::endl;
+    eckit::Log::trace<MIR>() << "Reserve " << eckit::BigNum(out_npts * nclosest) << std::endl;
 
     std::vector<util::PointSearch::PointValueType> closest;
 
@@ -95,14 +96,14 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
 
         if (ip && (ip % 50000 == 0)) {
             double rate = ip / timer.elapsed();
-            eckit::Log::info() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timer.elapsed())
+            eckit::Log::trace<MIR>() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timer.elapsed())
                                << ", rate: " << rate << " points/s, ETA: "
                                << eckit::ETA( (out_npts - ip) / rate )
                                << std::endl;
 
-            eckit::Log::info() << "Nearest: " << nearest << ", Push back:" << push_back << std::endl;
-            sptree.statsPrint(eckit::Log::info(), false);
-            eckit::Log::info() << std::endl;
+            eckit::Log::trace<MIR>() << "Nearest: " << nearest << ", Push back:" << push_back << std::endl;
+            sptree.statsPrint(eckit::Log::trace<MIR>(), false);
+            eckit::Log::trace<MIR>() << std::endl;
             sptree.statsReset();
             nearest = push_back = 0;
         }

@@ -20,6 +20,7 @@
 
 #include "mir/caching/LegendreLoader.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/log/MIR.h"
 
 
 namespace mir {
@@ -85,7 +86,7 @@ LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& pa
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, LegendreLoaderFactory*>::const_iterator j = m->find(name);
 
-    eckit::Log::info() << "Looking for LegendreLoaderFactory [" << name << "]" << std::endl;
+    eckit::Log::trace<MIR>() << "Looking for LegendreLoaderFactory [" << name << "]" << std::endl;
 
     if (j == m->end()) {
         eckit::Log::error() << "No LegendreLoaderFactory for [" << name << "]" << std::endl;

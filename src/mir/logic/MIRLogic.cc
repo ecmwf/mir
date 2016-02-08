@@ -20,6 +20,7 @@
 
 #include "mir/logic/MIRLogic.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/log/MIR.h"
 
 
 namespace mir {
@@ -84,7 +85,7 @@ MIRLogic* MIRLogicFactory::build(const param::MIRParametrisation& params) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, MIRLogicFactory*>::const_iterator j = m->find(name);
 
-    eckit::Log::info() << "Looking for MIRLogicFactory [" << name << "]" << std::endl;
+    eckit::Log::trace<MIR>() << "Looking for MIRLogicFactory [" << name << "]" << std::endl;
 
     if (j == m->end()) {
         eckit::Log::error() << "No MIRLogicFactory for [" << name << "]" << std::endl;

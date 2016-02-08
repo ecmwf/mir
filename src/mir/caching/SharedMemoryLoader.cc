@@ -37,6 +37,7 @@
 
 #include "eckit/log/Timer.h"
 #include "eckit/io/StdFile.h"
+#include "mir/log/MIR.h"
 
 
 namespace mir {
@@ -134,9 +135,9 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     address_(0),
     size_(path.size()) {
 
-    eckit::Timer timer("Loading legendre coefficients from shared memory");
+    eckit::TraceTimer<MIR> timer("Loading legendre coefficients from shared memory");
     eckit::PathName real = path.realName();
-    eckit::Log::info() << "Loading legendre coefficients from " << real << std::endl;
+    eckit::Log::trace<MIR>() << "Loading legendre coefficients from " << real << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
         std::ostringstream os;
@@ -169,13 +170,13 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     // Only on Linux?
     struct shminfo shm_info;
     SYSCALL(shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-    eckit::Log::info() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) <<std::endl;
+    eckit::Log::trace<MIR>() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) <<std::endl;
 #endif
     // This may return EINVAL is the segment is too large 256MB
     // To find the maximum:
     // Linux:ipcs -l, Mac/bsd: ipcs -M
 
-    eckit::Log::info() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
+    eckit::Log::trace<MIR>() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
                        std::hex << key << std::dec << ", page size: "
                        << eckit::Bytes(page_size) << ", pages: "
                        << eckit::BigNum(shmsize/page_size)
@@ -187,7 +188,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 #ifdef SHM_PAGESIZE
     {
 
-        eckit::Log::info() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
+        eckit::Log::trace<MIR>() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
 
         /* Use 64K pages to back the shared memory region */
         size_t shm_size;
@@ -237,7 +238,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
 
         if (loadfile) {
-            eckit::Timer timer("Loading file into shared memory");
+            eckit::TraceTimer<MIR> timer("Loading file into shared memory");
             eckit::StdFile file(real);
             ASSERT(::fread(address_, 1, size_, file) == size_);
 
@@ -247,7 +248,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
             strcpy(nfo->path, real.asString().c_str());
             nfo->ready = 1;
         } else {
-            eckit::Log::info() << "SharedMemoryLoader: file already loaded" << std::endl;
+            eckit::Log::trace<MIR>() << "SharedMemoryLoader: file already loaded" << std::endl;
         }
 
     } catch (...) {
@@ -282,7 +283,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
 
     SYSCALL(shmid = shmget(key, 0, 0600));
 
-    eckit::Log::info() << "Removing shared memory for " << path << std::endl;
+    eckit::Log::trace<MIR>() << "Removing shared memory for " << path << std::endl;
 
     SYSCALL(shmctl(shmid, IPC_RMID, 0));
 

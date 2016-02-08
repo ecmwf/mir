@@ -17,6 +17,7 @@
 #include "eckit/io/BufferedHandle.h"
 #include "eckit/config/Resource.h"
 #include "eckit/log/Bytes.h"
+#include "mir/log/MIR.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/util/Grib.h"
@@ -77,7 +78,7 @@ bool GribStreamInput::next() {
         }
 
         if (e == GRIB_BUFFER_TOO_SMALL) {
-            eckit::Log::info() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(len) << ")" << std::endl;
+            eckit::Log::trace<MIR>() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(len) << ")" << std::endl;
             GRIB_ERROR(e, "wmo_read_any_from_stream");
         }
 
@@ -98,9 +99,9 @@ bool GribStreamInput::next() {
 
 
     if (e == GRIB_BUFFER_TOO_SMALL) {
-        eckit::Log::info() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(len) << ")" << std::endl;
-        eckit::Log::info() << "Buffer size is " << buffer_.size() << " bytes (" << eckit::Bytes(buffer_.size()) << "), rerun with:" << std::endl;
-        eckit::Log::info() << "env MIR_GRIB_INPUT_BUFFER_SIZE=" << len << std::endl;
+        eckit::Log::trace<MIR>() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(len) << ")" << std::endl;
+        eckit::Log::trace<MIR>() << "Buffer size is " << buffer_.size() << " bytes (" << eckit::Bytes(buffer_.size()) << "), rerun with:" << std::endl;
+        eckit::Log::trace<MIR>() << "env MIR_GRIB_INPUT_BUFFER_SIZE=" << len << std::endl;
         GRIB_ERROR(e, "wmo_read_any_from_stream");
     }
 

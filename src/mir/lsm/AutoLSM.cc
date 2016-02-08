@@ -15,6 +15,7 @@
 
 
 #include "mir/lsm/AutoLSM.h"
+#include "mir/log/MIR.h"
 
 #include <iostream>
 
@@ -53,7 +54,7 @@ Mask *AutoLSM::create(const std::string &name,
     Mask* mask = new MappedMask(name, param, grid, which);
     // Mask* mask = new GribFileLSM(name, path(param), param, grid, which);
 
-    eckit::Log::info() << "AutoLSM::create => " << *mask << std::endl;
+    eckit::Log::trace<MIR>() << "AutoLSM::create => " << *mask << std::endl;
     return mask;
 }
 

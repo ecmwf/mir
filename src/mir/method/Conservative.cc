@@ -28,6 +28,7 @@
 #include "atlas/geometry/Quad3D.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/log/MIR.h"
 
 using eckit::la::Vector;
 using eckit::la::LinearAlgebra;
@@ -50,11 +51,11 @@ Conservative::~Conservative() {
 
 void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::Grid& g) const
 {
-    eckit::Log::info() << "Conservative::computeLumpedMassMatrix" << std::endl;
+    eckit::Log::trace<MIR>() << "Conservative::computeLumpedMassMatrix" << std::endl;
 
     Mesh& mesh = g.mesh();
 
-    eckit::Log::info() << "Mesh " << mesh << std::endl;
+    eckit::Log::trace<MIR>() << "Mesh " << mesh << std::endl;
 
     d.resize(g.npts());
 
@@ -120,7 +121,7 @@ void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::Gr
 void Conservative::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const
 {
 
-    eckit::Log::info() << "Input  pts " << in.npts()
+    eckit::Log::trace<MIR>() << "Input  pts " << in.npts()
                        << "Output pts " << out.npts() << std::endl;
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
@@ -129,7 +130,7 @@ void Conservative::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas:
 
     FELinear::assemble(IM, out, in);
 
-    eckit::Log::info() << "IM rows " << IM.rows()
+    eckit::Log::trace<MIR>() << "IM rows " << IM.rows()
                        << " cols "   << IM.cols() << std::endl;
 
 //    IM.save("IM.mat");

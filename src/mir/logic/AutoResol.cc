@@ -19,6 +19,7 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/log/MIR.h"
 
 
 namespace mir {
@@ -35,7 +36,7 @@ AutoResol::~AutoResol() {
 }
 
 void AutoResol::get(const std::string &name, long &value) const {
-    eckit::Log::info() << "AutoResol::get(" << name << ")" << std::endl;
+    eckit::Log::trace<MIR>() << "AutoResol::get(" << name << ")" << std::endl;
     ASSERT(name == "truncation"); // For now
 
     double step = 0;
@@ -80,13 +81,13 @@ void AutoResol::get(const std::string &name, long &value) const {
         value = 2047;
     }
 
-    eckit::Log::info() << "AutoResol: step is " << step << ", selecting truncation T" << value << std::endl;
+    eckit::Log::trace<MIR>() << "AutoResol: step is " << step << ", selecting truncation T" << value << std::endl;
 
     long truncation;
     if (parametrisation_.get("field.truncation", truncation)) {
         if (truncation < value) {
             value = truncation;
-            eckit::Log::info() << "AutoResol: field is T" << truncation << ", selecting truncation T" << value << std::endl;
+            eckit::Log::trace<MIR>() << "AutoResol: field is T" << truncation << ", selecting truncation T" << value << std::endl;
         }
     }
 

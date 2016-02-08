@@ -29,6 +29,7 @@
 #include "mir/util/PointSearch.h"
 #include "atlas/mesh/Nodes.h"
 #include "atlas/actions/BuildXYZField.h"
+#include "mir/log/MIR.h"
 
 
 using eckit::Log;
@@ -54,8 +55,8 @@ const char *NearestLSM::name() const {
 
 void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
 
-    eckit::Timer timer("NearestLSM::assemble");
-    eckit::Log::info() << "NearestLSM::assemble" << std::endl;
+    eckit::TraceTimer<MIR> timer("NearestLSM::assemble");
+    eckit::Log::trace<MIR>() << "NearestLSM::assemble" << std::endl;
 
 
     // get the land-sea masks, with boolean masking on point (node) indices
@@ -64,7 +65,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     const lsm::LandSeaMasks masks = getMasks(in, out);
     ASSERT(masks.active());
 
-    Log::info() << "NearestLSM compute LandSeaMasks " << timer.elapsed() - here << std::endl;
+    Log::trace<MIR>() << "NearestLSM compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
 
     // compute masked/not-masked search trees
@@ -78,7 +79,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     util::PointSearch sptree_masked    (in.mesh(), util::compare::is_masked_fn     (imask));
     util::PointSearch sptree_notmasked (in.mesh(), util::compare::is_not_masked_fn (imask));
 
-    Log::info() << "NearestLSM compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
+    Log::trace<MIR>() << "NearestLSM compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
 
 
     // compute the output nodes coordinates
@@ -91,7 +92,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     atlas::ArrayView< double, 2 > ocoords(
                 o_mesh.nodes().field("xyz") );
 
-    Log::info() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
+    Log::trace<MIR>() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
 
 
     // search nearest neighbours matching in/output masks
@@ -120,13 +121,13 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
         mat.push_back(WeightMatrix::Triplet( i, j, 1. ));
 
     }
-    Log::info() << "NearestLSM search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;
+    Log::trace<MIR>() << "NearestLSM search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;
 
 
     // fill-in sparse matrix
     here = timer.elapsed();
     W.setFromTriplets(mat);
-    Log::info() << "NearestLSM fill-in sparse matrix " << timer.elapsed() - here << std::endl;
+    Log::trace<MIR>() << "NearestLSM fill-in sparse matrix " << timer.elapsed() - here << std::endl;
 }
 
 

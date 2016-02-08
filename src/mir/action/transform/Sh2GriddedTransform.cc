@@ -33,6 +33,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/caching/LegendreCache.h"
 #include "mir/caching/LegendreLoader.h"
+#include "mir/log/MIR.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
@@ -87,7 +88,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
     // Warning: we keep the coefficient in memory for all the resolution used
     if (trans_handles.find(key) == trans_handles.end()) {
-        eckit::Log::info() << "Creating a new TRANS handle for " << key << std::endl;
+        eckit::Log::trace<MIR>() << "Creating a new TRANS handle for " << key << std::endl;
 
         TransCache &tc = trans_handles[key];
         struct Trans_t &trans = tc.trans_;
@@ -106,18 +107,18 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
         caching::LegendreCache cache;
         eckit::PathName path;
         if (!cache.get(key, path)) {
-            eckit::Timer timer("Caching coefficients");
-            eckit::Log::info() << "LegendreCache " << key << " does not exists" << std::endl;
+            eckit::TraceTimer<MIR> timer("Caching coefficients");
+            eckit::Log::trace<MIR>() << "LegendreCache " << key << " does not exists" << std::endl;
             eckit::PathName tmp = cache.stage(key);
             ASSERT( trans_set_write(&trans, tmp.asString().c_str())  == 0);
             ASSERT(trans_setup(&trans) == 0); // This will create the cache
 
             ASSERT(cache.commit(key, tmp));
         } else {
-            eckit::Timer timer("Loading coefficients");
+            eckit::TraceTimer<MIR> timer("Loading coefficients");
 
             tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
-            eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
+            eckit::Log::trace<MIR>() << "LegendreLoader " << *tc.loader_ << std::endl;
 
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 

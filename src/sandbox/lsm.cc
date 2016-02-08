@@ -66,9 +66,9 @@ class LSM : public eckit::Tool {
 
 //     const atlas::Grid& g = grid;
 
-//     eckit::Log::info() << "uid " << g.uniqueID() << " hash " << g.hash() << " rle ";
-//     eckit::RLEprint(eckit::Log::info(), rle.begin(), rle.end());
-//     eckit::Log::info() << std::endl;
+//     eckit::Log::trace<MIR>() << "uid " << g.uniqueID() << " hash " << g.hash() << " rle ";
+//     eckit::RLEprint(eckit::Log::trace<MIR>(), rle.begin(), rle.end());
+//     eckit::Log::trace<MIR>() << std::endl;
 // }
 
 void LSM::run() {

@@ -23,6 +23,7 @@
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/log/MIR.h"
 
 
 
@@ -45,7 +46,7 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     ASSERT(parametrisation_.get("interpolation", interpolation));
 
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, parametrisation_));
-    eckit::Log::info() << "Method is " << *method << std::endl;
+    eckit::Log::trace<MIR>() << "Method is " << *method << std::endl;
 
     repres::RepresentationHandle in(field.representation());
     repres::RepresentationHandle out(outputRepresentation());

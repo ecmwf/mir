@@ -23,6 +23,7 @@
 #include "eckit/value/Value.h"
 
 #include "mir/param/DelayedParametrisation.h"
+#include "mir/log/MIR.h"
 
 namespace mir {
 namespace param {
@@ -357,7 +358,7 @@ bool SimpleParametrisation::_get(const std::string &name, T &value) const {
         return false;
     }
     (*j).second->get(name, value);
-    eckit::Log::info() << "SimpleParametrisation::get(" << name << ") => " << value << std::endl;
+    eckit::Log::trace<MIR>() << "SimpleParametrisation::get(" << name << ") => " << value << std::endl;
     return true;
 }
 
@@ -518,15 +519,15 @@ void SimpleParametrisation::json(eckit::JSON& s) const {
 }
 
 bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
-    eckit::Log::info() << "SimpleParametrisation::matches " << other << std::endl;
+    eckit::Log::trace<MIR>() << "SimpleParametrisation::matches " << other << std::endl;
     for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
 
         if ((*j).second->match((*j).first, other)) {
-            eckit::Log::info() << "Matching parametrisation: " << (*j).first << "="
+            eckit::Log::trace<MIR>() << "Matching parametrisation: " << (*j).first << "="
                                << *((*j).second) << std::endl;
             return true;
         } else {
-            eckit::Log::info() << "Not matching parametrisation: " << (*j).first << "="
+            eckit::Log::trace<MIR>() << "Not matching parametrisation: " << (*j).first << "="
                                << *((*j).second) << std::endl;
         }
 

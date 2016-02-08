@@ -18,6 +18,7 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/log/MIR.h"
 
 
 namespace mir {
@@ -79,7 +80,7 @@ const NamedGrid& NamedGrid::lookup(const std::string &name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, NamedGrid *>::const_iterator j = m->find(name);
 
-    eckit::Log::info() << "Looking for NamedGrid [" << name << "]" << std::endl;
+    eckit::Log::trace<MIR>() << "Looking for NamedGrid [" << name << "]" << std::endl;
 
     if (j == m->end()) {
 

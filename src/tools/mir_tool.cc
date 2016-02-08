@@ -37,7 +37,9 @@
 #include "mir/param/option/Separator.h"
 #include "mir/param/option/SimpleOption.h"
 #include "mir/param/option/VectorOption.h"
+#include "mir/log/MIR.h"
 
+using mir::MIR;
 
 using mir::param::option::Option;
 using mir::param::option::SimpleOption;

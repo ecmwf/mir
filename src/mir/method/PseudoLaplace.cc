@@ -23,6 +23,7 @@
 #include "atlas/actions/BuildXYZField.h"
 #include "atlas/mesh/Nodes.h"
 #include "eckit/log/Timer.h"
+#include "mir/log/MIR.h"
 
 namespace mir {
 namespace method {
@@ -50,8 +51,8 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
 
 void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
 
-    eckit::Timer timer("PseudoLaplace::assemble");
-    eckit::Log::info() << "PseudoLaplace::assemble" << std::endl;
+    eckit::TraceTimer<MIR> timer("PseudoLaplace::assemble");
+    eckit::Log::trace<MIR>() << "PseudoLaplace::assemble" << std::endl;
 
     util::PointSearch  sptree(in.mesh());
 

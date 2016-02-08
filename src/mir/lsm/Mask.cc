@@ -25,6 +25,7 @@
 #include "mir/lsm/NoneLSM.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/data/MIRField.h"
+#include "mir/log/MIR.h"
 
 namespace mir {
 namespace lsm {
@@ -85,7 +86,7 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::info() << "Mask::lookup(" << key << ")" << std::endl;
+    eckit::Log::trace<MIR>() << "Mask::lookup(" << key << ")" << std::endl;
     std::map<std::string, Mask *>::iterator j = cache.find(key);
 
     if (j != cache.end()) {

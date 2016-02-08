@@ -17,6 +17,7 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/log/MIR.h"
 
 #include <set>
 
@@ -84,7 +85,7 @@ const LSMChooser &LSMChooser::lookup(const std::string &name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, LSMChooser *>::const_iterator j = m->find(name);
 
-    eckit::Log::info() << "Looking for LSMChooser [" << name << "]" << std::endl;
+    eckit::Log::trace<MIR>() << "Looking for LSMChooser [" << name << "]" << std::endl;
     if (j == m->end()) {
         eckit::Log::error() << "No LSMChooser for [" << name << "]" << std::endl;
         eckit::Log::error() << "LSMChoosers are:" << std::endl;

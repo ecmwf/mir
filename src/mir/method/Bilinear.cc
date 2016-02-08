@@ -28,6 +28,7 @@
 #include "atlas/util/ArrayView.h"
 
 #include "mir/util/Compare.h"
+#include "mir/log/MIR.h"
 
 using eckit::FloatCompare;
 
@@ -105,7 +106,7 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
     using eckit::geometry::LAT;
     eckit::FloatApproxCompare< double > eq(10e-10);  //FIXME
 
-    eckit::Log::info() << "Bilinear::assemble " << *this << std::endl;
+    eckit::Log::trace<MIR>() << "Bilinear::assemble " << *this << std::endl;
 
 
     // NOTE: use bilinear interpolation assuming quasi-regular grid
@@ -145,19 +146,19 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         if (lat > max_lat) max_lat = lat;
     }
     ASSERT(min_lat < max_lat);
-    eckit::Log::info() << "Bilinear::assemble max_lat=" << max_lat << ", min_lat=" << min_lat << std::endl;
+    eckit::Log::trace<MIR>() << "Bilinear::assemble max_lat=" << max_lat << ", min_lat=" << min_lat << std::endl;
 
 
     // set northern & southern-most parallel point indices
     std::vector<size_t> parallel_north(lons.front());
     std::vector<size_t> parallel_south(lons.back());
 
-    eckit::Log::info() << "Bilinear::assemble first row: " << lons.front() << std::endl;
+    eckit::Log::trace<MIR>() << "Bilinear::assemble first row: " << lons.front() << std::endl;
     for (size_t i = 0; i < lons.front(); ++i) {
         parallel_north[i] = i;
     }
 
-    eckit::Log::info() << "Bilinear::assemble last row: " << lons.back() << std::endl;
+    eckit::Log::trace<MIR>() << "Bilinear::assemble last row: " << lons.back() << std::endl;
     for (size_t i = lons.back(), j = 0; i > 0; i--, j++) {
         parallel_south[j] = inpts - i;
     }

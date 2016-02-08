@@ -24,6 +24,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
+#include "mir/log/MIR.h"
 
 
 namespace mir {
@@ -63,7 +64,7 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     const std::vector<double> &field_vo = field.values(0);
     const std::vector<double> &field_d = field.values(1);
 
-    eckit::Log::info() << "VOD2UVTransform truncation=" << truncation
+    eckit::Log::trace<MIR>() << "VOD2UVTransform truncation=" << truncation
                        << ", size=" << size
                        << ", values=" << field_vo.size() << std::endl;
 
