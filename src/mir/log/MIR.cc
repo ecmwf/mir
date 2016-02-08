@@ -12,13 +12,15 @@
 /// @date Feb 2016
 
 #include "mir/log/MIR.h"
+#include "eckit/config/Resource.h"
 
 namespace mir {
 
 // Although it is in log, we dont have a namespace
 
 bool MIR::trace(int) {
-    return true;
+    static bool on = eckit::Resource<bool>("$MIR_TRACE", false);
+    return on;
 }
 
 

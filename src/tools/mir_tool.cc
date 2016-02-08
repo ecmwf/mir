@@ -242,7 +242,7 @@ void MIRTool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::o
 
     size_t i = 0;
     while (input.next()) {
-        eckit::Log::info() << "============> " << what << ": " << (++i) << std::endl;
+        eckit::Log::trace<MIR>() << "============> " << what << ": " << (++i) << std::endl;
         job.execute(input, output);
     }
 

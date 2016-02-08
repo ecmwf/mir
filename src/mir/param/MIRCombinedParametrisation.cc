@@ -64,7 +64,7 @@ bool MIRCombinedParametrisation::has(const std::string& name) const {
     if (metadata_.has(name)) return true;
     if (defaults_.has(name)) return true;
 
-    eckit::Log::warning() << "**** MIRCombinedParametrisation::has(" << name << ") unanswered" << std::endl;
+    eckit::Log::trace<MIR>() << "**** MIRCombinedParametrisation::has(" << name << ") unanswered" << std::endl;
     return false;
 }
 
@@ -85,7 +85,7 @@ bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
     if (metadata_.get(name, value)) return true;
     if (defaults_.get(name, value)) return true;
 
-    eckit::Log::warning() << "**** MIRCombinedParametrisation::get(" << name << ") unanswered" << std::endl;
+    eckit::Log::trace<MIR>() << "**** MIRCombinedParametrisation::get(" << name << ") unanswered" << std::endl;
 
     return false;
 }

@@ -23,6 +23,7 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/lsm/Mask.h"
+#include "mir/log/MIR.h"
 
 
 namespace mir {
@@ -47,7 +48,7 @@ void LandSeaMasks::hash(eckit::MD5& md5) const {
 }
 
 LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation &parametrisation, const atlas::Grid &in, const atlas::Grid &out) {
-    eckit::Timer("LandSeaMasks::lookup");
+    eckit::TraceTimer<MIR>("LandSeaMasks::lookup");
     return LandSeaMasks(Mask::lookupInput(parametrisation, in), Mask::lookupOutput(parametrisation, out));
 }
 
