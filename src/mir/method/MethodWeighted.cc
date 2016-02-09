@@ -27,6 +27,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+#include "eckit/config/Resource.h"
 
 #include "mir/caching/WeightCache.h"
 #include "mir/data/MIRField.h"
@@ -159,6 +160,8 @@ lsm::LandSeaMasks MethodWeighted::getMasks(const atlas::Grid &in, const atlas::G
 
 void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const atlas::Grid &out) const {
 
+    static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
+
     eckit::TraceTimer<MIR> timer("MethodWeighted::execute");
     eckit::Log::trace<MIR>() << "MethodWeighted::execute" << std::endl;
 
@@ -166,7 +169,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
     const size_t npts_inp = in.npts();
     const size_t npts_out = out.npts();
 
-    const WeightMatrix& W = getMatrix(in, out);
+    const WeightMatrix &W = getMatrix(in, out);
 
     ASSERT( W.rows() == npts_out );
     ASSERT( W.cols() == npts_inp );
@@ -179,7 +182,11 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code
-        data::MIRFieldStats istats = field.statistics(i);
+        data::MIRFieldStats istats;
+
+        if (check_stats) {
+            istats = field.statistics(i);
+        }
 
         const std::vector<double> &values = field.values(i);
         ASSERT(values.size() == npts_inp);
@@ -203,22 +210,23 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 
         field.values(result, i);  // Update field with result
 
-        // compute some statistics on the result
-        // This is expensive so we might want to skip it in production code
-        eckit::Log::trace<MIR>() << "Input  Field statistics : " << istats << std::endl;
+        if (check_stats) {
+            // compute some statistics on the result
+            // This is expensive so we might want to skip it in production code
+            eckit::Log::trace<MIR>() << "Input  Field statistics : " << istats << std::endl;
 
-        data::MIRFieldStats ostats = field.statistics(i);
-        eckit::Log::trace<MIR>() << "Output Field statistics : " << ostats << std::endl;
+            data::MIRFieldStats ostats = field.statistics(i);
+            eckit::Log::trace<MIR>() << "Output Field statistics : " << ostats << std::endl;
 
-        /// FIXME: This assertion is to early in the case of LocalGrid input
-        ///        because there will be output points which won't be updated (where skipped)
-        ///        but later should be cropped out
-        ///        UNLESS, we compute the statistics based on only points contained in the Domain
+            /// FIXME: This assertion is to early in the case of LocalGrid input
+            ///        because there will be output points which won't be updated (where skipped)
+            ///        but later should be cropped out
+            ///        UNLESS, we compute the statistics based on only points contained in the Domain
 
-        if( in.domain().global() )
-        {
-            ASSERT(eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(ostats.minimum(), istats.minimum()));
-            ASSERT(eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(istats.maximum(), ostats.maximum()));
+            if ( in.domain().global() ) {
+                ASSERT(eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(ostats.minimum(), istats.minimum()));
+                ASSERT(eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(istats.maximum(), ostats.maximum()));
+            }
         }
 
     }

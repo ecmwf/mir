@@ -105,7 +105,7 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<double>("epsilon", "Used by methods k-nearest and nearest-neighbour"));
     options.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
     options.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
-    options.push_back(new FactoryOption<eckit::la::LinearAlgebra>("backend", "Linear algebra backend (default 'generic')"));
+    options.push_back(new FactoryOption<eckit::la::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::la::LinearAlgebra::backend().name() + "')"));
 
     //==============================================
     options.push_back(new Separator("Rotation"));
@@ -239,6 +239,8 @@ void MIRTool::run() {
 
 void MIRTool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
     eckit::Timer timer("Total time");
+
+    eckit::Log::info() << "Using '" << eckit::la::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.next()) {
