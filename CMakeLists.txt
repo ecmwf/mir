@@ -27,11 +27,6 @@ if( NOT ECKIT_HAVE_EXPERIMENTAL )
   message( FATAL_ERROR "Experimental features in eckit are required" )
 endif()
 
-# Either Eigen support or Armadillo support in eckit is required
-if( NOT ECKIT_HAVE_EIGEN AND NOT ECKIT_HAVE_ARMADILLO )
-  message( FATAL_ERROR "Either Eigen support or Armadillo support in eckit is required" )
-endif()
-
 # this will be replaced once ecbuild exports subcomponents between packages
 
 ecbuild_declare_project()
