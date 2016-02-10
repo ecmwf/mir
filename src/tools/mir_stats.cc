@@ -80,7 +80,6 @@ void MIRStats::run() {
 
     mir::input::MIRInput &input = file;
 
-    const mir::param::MIRParametrisation &metadata = input.parametrisation();
     long bucket_count = 65536;
     args.get("buckets", bucket_count);
 

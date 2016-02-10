@@ -86,8 +86,6 @@ void MIRIntegrate::run() {
 
     mir::input::MIRInput &input = file;
 
-    const mir::param::MIRParametrisation &metadata = input.parametrisation();
-
     size_t n = 0;
     while ( file.next() ) {
 
