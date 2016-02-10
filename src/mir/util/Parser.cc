@@ -31,7 +31,7 @@ namespace util {
 
 Parser::Parser(const eckit::PathName& path):
     path_(path),
-    in_(std::string(path)),
+    in_(std::string(path).c_str()),
     parser_(in_) {
 
     // in_.exceptions ( std::ifstream::failbit | std::ifstream::badbit );

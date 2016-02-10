@@ -1,8 +1,5 @@
 # define the grib environment
 
-set( GRIB_DEFINITION_PATH ${grib_api_BASE_DIR}/share/grib_api/definitions/ )
-set( GRIB_SAMPLES_PATH    ${grib_api_BASE_DIR}/share/grib_api/samples/ )
-
 set( TEST_ECKIT_CACHE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/cache/ )
 
 file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
@@ -39,8 +36,8 @@ foreach( _t ${_test_reqs} )
                     ARGS ${_t} ${_file}.test
                     ENVIRONMENT
                       TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}
-                      GRIB_DEFINITION_PATH=${GRIB_DEFINITION_PATH}
-                      GRIB_SAMPLES_PATH=${GRIB_SAMPLES_PATH}
+                      GRIB_DEFINITION_PATH=${GRIB_API_DEFINITION_PATH}
+                      GRIB_SAMPLES_PATH=${GRIB_API_SAMPLES_PATH}
                     TEST_DEPENDS mir_get_test_data
                   )
 endforeach()
@@ -48,31 +45,47 @@ endforeach()
 ########################################################################################################################
 #### TEST ALL GRIB_API templates
 
-file(GLOB_RECURSE grib_tmpl ${GRIB_SAMPLES_PATH}*.tmpl)
+file(GLOB_RECURSE testGribTemplates ${GRIB_API_SAMPLES_PATH}/*.tmpl)
 
-#debug_var(GRIB_SAMPLES_PATH)
-#debug_var(grib_tmpl)
+# ecbuild_debug_var(GRIB_SAMPLES_PATH)
+# ecbuild_debug_var(testGribTemplates)
 
 
 # skip these samples
 
 list( APPEND skipTmpl
     ".*budg.tmpl"
-    ".*reduced_gg_pl_1280_grib.*"
-    ".*reduced_rotated_gg_pl_1280_grib.*"
-    ".*reduced_gg_pl_2000_grib.*"
-    ".*reduced_rotated_gg_pl_2000_grib.*"
+    ".*polar_stereographic_pl_grib.*"
     ".*polar_stereographic_sfc_grib.*"
+    ".*reduced_gg_pl_1280_grib.*"
+    ".*reduced_gg_pl_2000_grib.*"
+    ".*reduced_ll_sfc_grib.*"
+    ".*reduced_rotated_gg_pl_1280_grib.*"
+    ".*reduced_rotated_gg_pl_2000_grib.*"
     ".*rotated_ll_pl_grib.*"
     ".*rotated_ll_sfc_grib.*"
-    ".*polar_stereographic_pl_grib.*"
 )
 
-ecbuild_list_remove_pattern( "${grib_tmpl}" "${skipTmpl}" testGribTemplates )
+if( ECBUILD_MACRO_VERSION VERSION_LESS 2.0 )
 
-# debug_var(testGribTemplates)
+    foreach( item ${testGribTemplates} )
+        foreach( pattern ${skipTmpl} )
+            if( NOT ${item} MATCHES ${pattern} )
+                list( APPEND sanitizedGribTemplates )
+            endif()
+        endforeach()
+    endforeach()
 
-foreach( _t ${testGribTemplates} )
+else()
+
+    ecbuild_list_exclude_pattern( LIST testGribTemplates REGEX ${skipTmpl} )
+    set( sanitizedGribTemplates ${testGribTemplates})
+
+endif()
+
+# ecbuild_debug_var(sanitizedGribTemplates)
+
+foreach( _t ${sanitizedGribTemplates} )
 
     get_filename_component(_tst ${_t} NAME_WE)
 
@@ -81,8 +94,8 @@ foreach( _t ${testGribTemplates} )
                       ARGS "--grid=1/1" ${_t} /dev/null
                       ENVIRONMENT
                         TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}
-                        GRIB_DEFINITION_PATH=${GRIB_DEFINITION_PATH}
-                        GRIB_SAMPLES_PATH=${GRIB_SAMPLES_PATH}
+                        GRIB_DEFINITION_PATH=${GRIB_API_DEFINITION_PATH}
+                        GRIB_SAMPLES_PATH=${GRIB_API_SAMPLES_PATH}
                     )
 
 endforeach()

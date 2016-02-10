@@ -36,11 +36,11 @@ ProdgenJob::ProdgenJob():
     usewind_(false),
     uselsm_(false),
     useprecip_(false),
-    missingValue_(-55555.0),
+    hasMissing_(false),
     lsm_param_(false),
     parameter_(0),
     table_(0),
-    hasMissing_(false),
+    missingValue_(-55555.0),
     nj_(0) {
 }
 

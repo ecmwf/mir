@@ -82,6 +82,14 @@ bool Reduced::globalDomain() const {
 
         const double epsilon = 1.0 / 1000.0;
 
+        
+        if(ew > last) {
+            // The dissemination will put in the GRIB header what is sepecified by the user
+            // so, for example if the user specify 359.999999 as the eastern longitude, this
+            // value will end up in the header
+            return true;
+        }
+        
         bool global = fabs(ew-last) < epsilon;
         return global;
     }
@@ -178,6 +186,8 @@ class GaussianIterator: public Iterator {
             }
 
             // eckit::Log::info() << "++++++ " << lat << " " << lon << " - " << bbox_ << " -> " << bbox_.contains(lat, lon) << std::endl;
+            
+            // eckit::Log::info() << "++++++ " << j_ << " " << nj_ << " - " << i_ << " " << ni_ << std::endl;
 
             if (bbox_.contains(lat, lon)) {
                 count_++;
@@ -254,9 +264,11 @@ size_t Reduced::frame(std::vector<double> &values, size_t size, double missingVa
 
     double lat;
     double lon;
-
+    
     size_t rows = 0;
-    size_t *col = 0;
+
+    size_t dummy = 0; // Used to keep static analyser quiet
+    size_t *col = &dummy;
 
     // Collect the 'shape' of the gaussian field
     // This could be done with the latitudes() and pls(), maybe more efficeintly

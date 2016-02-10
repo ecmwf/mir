@@ -405,22 +405,14 @@ void FiniteElement::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) con
     ///  This raises another issue: how to cache meshes generated with different parametrisations?
     ///  We must md5 the MeshGenerator itself.
 
-    std::string meshgenerator("ReducedGrid");             // Fastest option available by default
+    std::string meshgenerator( grid.getOptimalMeshGenerator() );
 
     parametrisation_.get("meshgenerator", meshgenerator); // Override with MIRParametrisation
 
-    const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
-
-    // Falling back to "Delaunay" if the mesh is not a ReducedGrid
-    if (reduced == 0 && meshgenerator == "ReducedGrid") {
-        meshgenerator = "Delaunay";
-    }
-
-    if ( reduced )
-        eckit::Log::info() << "Mesh is ReducedGrid " << grid.shortName() << '\n';
+    eckit::Log::info() << "MeshGenerator parametrisation is '" << meshgenerator << "'" << std::endl;
 
     eckit::ScopedPtr<atlas::meshgen::MeshGenerator> generator( atlas::meshgen::MeshGeneratorFactory::build(meshgenerator, meshgenparams_) );
-    generator->generate(*reduced, mesh);
+    generator->generate(grid, mesh);
 
     // If meshgenerator did not create xyz field already, do it now.
     atlas::actions::BuildXYZField()(mesh);
