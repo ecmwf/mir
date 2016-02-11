@@ -191,7 +191,7 @@ void MARSLogic::prepare(action::ActionPlan &plan) const {
             }
             std::string gridname;
             ASSERT (parametrisation_.get("gridname", gridname));
-            plan.add("transform.sh2reduced-namedgrid");
+            plan.add("transform.sh2namedgrid");
         }
 
 
