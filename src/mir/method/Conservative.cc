@@ -22,6 +22,8 @@
 #include "atlas/Grid.h"
 #include "atlas/Mesh.h"
 #include "atlas/mesh/Nodes.h"
+#include "atlas/mesh/Elements.h"
+#include "atlas/mesh/ElementType.h"
 #include "atlas/util/IndexView.h"
 #include "atlas/actions/BuildXYZField.h"
 #include "atlas/geometry/Triag3D.h"
@@ -66,12 +68,6 @@ void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::Gr
     const atlas::mesh::Nodes& nodes  = mesh.nodes();
     atlas::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
 
-    atlas::FunctionSpace& triags = mesh.function_space( "triags" );
-    atlas::IndexView<int, 2> triag_nodes ( triags.field( "nodes" ) );
-
-    atlas::FunctionSpace& quads = mesh.function_space( "quads" );
-    atlas::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
-
 // TODO we need to consider points that are virtual
 //    size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
 //    if( nodes.metadata().has("NbRealPts") )
@@ -79,43 +75,54 @@ void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::Gr
 
 /// TODO Must handle missing values
 
-    size_t nb_triags = triags.metadata().has("nb_owned") ? triags.metadata().get<size_t>("nb_owned") : triags.shape(0);
-    size_t nb_quads = quads.metadata().has("nb_owned") ? quads.metadata().get<size_t>("nb_owned") : quads.shape(0);
-
-    // loop on all the elements
-
-    for(size_t e = 0; e < nb_triags; ++e)
+    const atlas::mesh::Cells& cells = mesh.cells();
+    for( size_t jtype=0; jtype<cells.nb_types(); ++jtype )
     {
-        size_t idx [3];
-        for(size_t n = 0; n<3; ++n)
-          idx[n] = triag_nodes(e,n);
+      const atlas::mesh::Elements& elements = cells.elements(jtype);
+      const atlas::mesh::ElementType& element_type = elements.element_type();
+      const atlas::mesh::Elements::Connectivity& node_connectivity = elements.node_connectivity();
 
-        Triag3D triag(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data());
+      if( element_type.name() == "Triangle" )
+      {
+        const size_t nb_triags = elements.size();
+        for(size_t e = 0; e < nb_triags; ++e)
+        {
+            size_t idx [3];
+            for(size_t n = 0; n<3; ++n)
+              idx[n] = node_connectivity(e,n);
 
-        const double area = triag.area();
+            Triag3D triag(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data());
 
-        /// TODO add check for virtuals
+            const double area = triag.area();
 
-        for(size_t n = 0; n<3; ++n)
-            d[ idx[n] ] += area * oneThird;
+            /// TODO add check for virtuals
+
+            for(size_t n = 0; n<3; ++n)
+                d[ idx[n] ] += area * oneThird;
+        }
+      }
+
+      if( element_type.name() == "Quadrilateral" )
+      {
+        const size_t nb_quads = elements.size();
+        for(size_t e = 0; e < nb_quads; ++e)
+        {
+            size_t idx [4];
+            for(size_t n = 0; n<4; ++n)
+              idx[n] = node_connectivity(e,n);
+
+            Quad3D quad(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data(), coords[idx[3]].data());
+
+            const double area = quad.area();
+
+            /// TODO add check for virtuals
+
+            for(size_t n = 0; n<4; ++n)
+                d[ idx[n] ] += area * oneFourth;
+        }
+      }
+
     }
-
-    for(size_t e = 0; e < nb_quads; ++e)
-    {
-        size_t idx [4];
-        for(size_t n = 0; n<4; ++n)
-          idx[n] = quads_nodes(e,n);
-
-        Quad3D quad(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data(), coords[idx[3]].data());
-
-        const double area = quad.area();
-
-        /// TODO add check for virtuals
-
-        for(size_t n = 0; n<4; ++n)
-            d[ idx[n] ] += area * oneFourth;
-    }
-
 }
 
 void Conservative::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const

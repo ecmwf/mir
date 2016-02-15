@@ -25,6 +25,8 @@
 #include "eckit/log/Timer.h"
 
 #include "atlas/mesh/Nodes.h"
+#include "atlas/mesh/Elements.h"
+#include "atlas/mesh/ElementType.h"
 #include "atlas/actions/BuildXYZField.h"
 #include "atlas/geometry/Quad3D.h"
 #include "atlas/geometry/Ray.h"
@@ -114,8 +116,8 @@ static void normalise(Triplets& triplets)
 
 static bool projectPointToElements(const MeshStats &stats,
                                    const atlas::ArrayView<double, 2> &icoords,
-                                   const atlas::IndexView<int,    2> &triag_nodes,
-                                   const atlas::IndexView<int,    2> &quads_nodes,
+                                   const atlas::mesh::Elements::Connectivity &triag_nodes,
+                                   const atlas::mesh::Elements::Connectivity &quads_nodes,
                                    const FiniteElement::Point &p,
                                    std::vector< WeightMatrix::Triplet > &weights_triplets,
                                    size_t ip,
@@ -137,7 +139,7 @@ static bool projectPointToElements(const MeshStats &stats,
 
         atlas::util::ElemPayload elem = (*itc).value().payload();
 
-        if ( elem.type_ == 't') { /* triags */
+        if ( elem.triangle() ) { /* triags */
 
             const size_t &tid = elem.id_;
 
@@ -175,9 +177,7 @@ static bool projectPointToElements(const MeshStats &stats,
                 break; // stop looking for elements
             }
 
-        } else {  /* quads */
-
-            ASSERT(elem.type_ == 'q');
+        } else if( elem.quadrilateral() ) {  /* quads */
 
             const size_t &qid = elem.id_;
 
@@ -224,6 +224,8 @@ static bool projectPointToElements(const MeshStats &stats,
                 projectedToElem = true;
                 break; // stop looking for elements
             }
+        } else {
+          throw eckit::SeriousBug("Element type is not triangle or quadrilateral", Here());
         }
 
     } // loop over nearest elements
@@ -297,16 +299,28 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     }
 
     // input mesh
+    MeshStats stats;
 
     const atlas::mesh::Nodes  &i_nodes  = i_mesh.nodes();
     atlas::ArrayView<double, 2> icoords  ( i_nodes.field( "xyz" ));
 
-    atlas::FunctionSpace &triags = i_mesh.function_space( "triags" );
-    atlas::IndexView<int, 2> triag_nodes ( triags.field( "nodes" ) );
+    atlas::mesh::Elements::Connectivity const *triag_nodes;
+    atlas::mesh::Elements::Connectivity const *quads_nodes;
 
-    atlas::FunctionSpace &quads = i_mesh.function_space( "quads" );
-    atlas::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
-
+    for( size_t jtype=0; jtype<i_mesh.cells().nb_types(); ++jtype )
+    {
+      const atlas::mesh::Elements& elements =  i_mesh.cells().elements(jtype);
+      if( elements.element_type().name() == "Triangle" )
+      {
+        stats.nb_triags = elements.size();
+        triag_nodes = &elements.node_connectivity();
+      }
+      if( elements.element_type().name() == "Quadrilateral" )
+      {
+        stats.nb_quads  = elements.size();
+        quads_nodes = &elements.node_connectivity();
+      }
+    }
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
     if( i_nodes.metadata().has("NbRealPts") )
@@ -322,9 +336,6 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     atlas::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
     atlas::ArrayView<double, 2> olonlat ( o_nodes.lonlat() );
 
-    MeshStats stats;
-    stats.nb_triags = triags.shape(0);
-    stats.nb_quads  = quads.shape(0);
     stats.inp_npts  = i_nodes.size();
     stats.out_npts  = o_nodes.size();
 
@@ -371,8 +382,8 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
                 atlas::util::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
                 success = projectPointToElements(stats,
                                                  icoords,
-                                                 triag_nodes,
-                                                 quads_nodes,
+                                                 *triag_nodes,
+                                                 *quads_nodes,
                                                  p,
                                                  weights_triplets,
                                                  ip,
