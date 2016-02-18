@@ -43,3 +43,11 @@ foreach( _t ${_test_reqs} )
 endforeach()
 
 
+# Test settings and helper functions
+include("${PROJECT_SOURCE_DIR}/tests/settings.cmake")
+
+# Regression tests
+if( HAVE_MIR_TESTS_REGRESS )
+  add_subdirectory( regress )
+endif()
+

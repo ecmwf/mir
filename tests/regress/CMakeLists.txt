@@ -1,0 +1,93 @@
+
+# Download interpolation source files/reference results
+
+file(STRINGS "download_tests_regress_src_files.txt" files)
+ecbuild_get_test_multidata(
+    TARGET download_tests_regress_src_files NOCHECK
+    NAMES ${files} )
+
+file(STRINGS "download_tests_regress_ref_files.txt" files)
+ecbuild_get_test_multidata(
+    TARGET download_tests_regress_ref_files NOCHECK
+    NAMES ${files} )
+
+
+######################### EMOS-216 #########################
+
+foreach( area "" "_sub-area" )
+  foreach( in "vo-d_sh" )
+    foreach( out "regular_ll" "F80" "N80" "O80" )
+      set( label "regress_EMOS-216_intuvp2_${in}_to_${out}${area}" )
+      set( input "${in}.grib" )
+      set( output "${label}.grib" )
+      if( NOT (label MATCHES "_sub-area_to_" ) )
+        unset( opt )
+        if( out MATCHES "^regular_ll" )
+          list( APPEND opt "--grid=3/3" )
+        else()
+          list( APPEND opt "--gridname=${out}" )
+        endif()
+        if( "${area}" STREQUAL "_sub-area" )
+          list( APPEND opt "--area=70/-60/20/60" )
+        endif()
+
+        interpolation_add_test_interpol( ${label} "${input}" "${output}" "${opt}" download_tests_regress_src_files )
+        if( NOT area MATCHES "_sub-area" )  # FIXME confirm reference files
+        interpolation_add_test_compare( ${label} "${output}" "${output}.ref"      download_tests_regress_ref_files )
+        endif()
+
+        unset( opt )
+      endif()
+      unset( output )
+      unset( input )
+      unset( label )
+    endforeach()
+  endforeach()
+endforeach()
+
+foreach( area "" "_sub-area" )
+  foreach( rotated "" "rotated_" "hirlam_non-rotated_" )
+    foreach( in "2t_F640" "2t_F640_sub-area" "2t_N640" "2t_O1280" "2t_regular_ll" "2t_regular_ll_staggered" "2t_regular_ll_sub-area" "msl_F640" "msl_F640_sub-area" "msl_N640" "msl_O1280" "msl_regular_ll" "msl_regular_ll_sub-area" "swh_reduced_ll" "swh_reduced_ll_sub-area" "u-v_sh" "z_sh" )
+      foreach( out "regular_ll" "F80" "N80" "O80" "F48" )
+        set( label "regress_EMOS-216_intf2_${in}_to_${rotated}${out}${area}" )
+        set( input "${in}.grib" )
+        set( output "${label}.grib" )
+        if(     NOT (label MATCHES "_sub-area_to_")
+            AND NOT (label MATCHES "_swh_reduced_ll_to_.*_sub-area")
+            AND NOT (label MATCHES "_2t_regular_ll_staggered_to_") )  # FIXME: these avoided cases should be possible
+          unset( opt )
+          if( out MATCHES "^regular_ll" )
+            list( APPEND opt "--grid=3/3" )
+          else()
+            list( APPEND opt "--gridname=${out}" )
+          endif()
+          if( "${rotated}" STREQUAL "hirlam_non-rotated_" )
+            list( APPEND opt "--rotation=-90/0" )
+          elseif( "${rotated}" STREQUAL "rotated_" )
+            list( APPEND opt "--rotation=30/30" )
+          endif()
+          if( "${area}" STREQUAL "_sub-area" )
+            list( APPEND opt "--area=70/-60/20/60" )
+          endif()
+          set( strict TRUE )
+
+          interpolation_add_test_interpol( ${label} "${input}" "${output}" "${opt}" download_tests_regress_src_files )
+          if(     (NOT area MATCHES "_sub-area")         # FIXME confirm reference files
+              AND (NOT in   MATCHES "swh_reduced_ll") )  # FIXME seems correct but an assertion is triggered (look into this)
+          interpolation_add_test_compare( ${label} "${output}" "${output}.ref"      download_tests_regress_ref_files ${strict} )
+          endif()
+
+          unset( strict )
+          unset( opt )
+        endif()
+        unset( output )
+        unset( input )
+        unset( label )
+      endforeach()
+    endforeach()
+  endforeach()
+endforeach()
+
+
+############################################################
+

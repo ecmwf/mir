@@ -37,38 +37,24 @@ ecbuild_declare_project()
 ecbuild_add_cxx11_flags()
 ecbuild_check_cxx11( PRINT )
 
-### OMP
+ecbuild_add_option( FEATURE OMP               DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
+ecbuild_add_option( FEATURE MPI               DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
+ecbuild_add_option( FEATURE NETCDF            DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
+ecbuild_add_option( FEATURE MIR_TESTS_REGRESS DEFAULT OFF DESCRIPTION "additional tests: regression" )
 
-ecbuild_add_option( FEATURE OMP
-                    DESCRIPTION "support for OpenMP shared memory parallelism"
-                    DEFAULT ON )
-
+# OMP/MPI features handling
 if( ENABLE_OMP )
   ecbuild_enable_omp()
 else()
   ecbuild_enable_ompstubs()
 endif()
 
-### MPI
-
-ecbuild_add_option( FEATURE MPI
-                    DEFAULT OFF
-                    DESCRIPTION "support for MPI distributed parallelism" )
-
 if( ENABLE_MPI )
-
   ecbuild_enable_mpi()
-
   if( NOT MPI_CXX_FOUND )
     set( HAVE_MPI 0 )
   endif()
-
 endif()
-
-ecbuild_add_option( FEATURE NETCDF
-                    DEFAULT ON
-                    DESCRIPTION "support for NetCDF4"
-                    REQUIRED_PACKAGES NetCDF4 )
 
 if( HAVE_NETCDF )
   list( APPEND MIR_FEATURE_LIBRARIES ${NETCDF_LIBRARIES} )
