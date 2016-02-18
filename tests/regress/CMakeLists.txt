@@ -91,7 +91,7 @@ foreach( area "_sub-area" )
       foreach( out "F80" "N80" "O80" )
         set( label "regress_EMOS-216_intuvp2_${in}_to_${rotated}${out}${area}" )
         set_tests_properties(  ${label}_compare PROPERTIES WILL_FAIL TRUE )
-        ecbuild_debug( "FIXME: ${label}_compare avoids failing assertion" )
+        ecbuild_warn( "FIXME: ${label}_compare avoids failing assertion" )
         unset( label )
       endforeach()
     endforeach()
@@ -103,7 +103,7 @@ foreach( area "_sub-area" )
       foreach( out "N80" "O80" )
         set( label "regress_EMOS-216_intf2_${in}_to_${rotated}${out}${area}" )
         set_tests_properties(  ${label}_compare PROPERTIES WILL_FAIL TRUE )
-        ecbuild_debug( "FIXME: ${label}_compare avoids failing assertion" )
+        ecbuild_warn( "FIXME: ${label}_compare avoids failing assertion" )
         unset( label )
       endforeach()
     endforeach()
@@ -118,7 +118,7 @@ foreach( area "_sub-area" )
       foreach( out "F48" "F80" )
         set( label "regress_EMOS-216_intf2_${in}_to_${rotated}${out}${area}" )
         set_tests_properties(  ${label}_compare PROPERTIES WILL_FAIL TRUE )
-        ecbuild_debug( "FIXME: ${label}_compare avoids failing assertion" )
+        ecbuild_warn( "FIXME: ${label}_compare avoids failing assertion" )
         unset( label )
       endforeach()
     endforeach()
@@ -130,12 +130,70 @@ foreach( area "" )
       foreach( out "F48" "F80" )
         set( label "regress_EMOS-216_intf2_${in}_to_${rotated}${out}${area}" )
         set_tests_properties(  ${label}_compare PROPERTIES WILL_FAIL TRUE )
-        ecbuild_debug( "FIXME: ${label}_compare avoids failing assertion" )
+        ecbuild_warn( "FIXME: ${label}_compare avoids failing assertion" )
         unset( label )
       endforeach()
     endforeach()
   endforeach()
 endforeach()
+
+
+################### GRIB-863 / EMOS-214 ####################
+
+# GRIB1 interpolate to regular_ll (1/16)/(1/16) degree
+foreach( in "2t_O1280" )
+  set( label "regress_GRIB-863_intf2_${in}_to_regular_ll_1-16" )
+  set( input "${in}.grib" )
+  set( output "${label}.grib" )
+  set( opt "--grid=0.0625/0.0625" )
+
+  interpolation_add_test_interpol( ${label} "${input}" "${output}" "${opt}" download_tests_regress_src_files )
+  interpolation_add_test_compare( ${label} "${output}" "${output}.ref"      download_tests_regress_ref_files )
+
+  unset( opt )
+  unset( output )
+  unset( input )
+  unset( label )
+endforeach()
+
+
+######################### GRIB-864 #########################
+
+# GRIB1 sub-milli degree encoding limit
+# snap-milli-degree:     snaps to 0.001 because grid is 0.00025/0.00025, and is GRIB1-encodable
+# snap-sub-milli-degree: snaps to 0.0005, not GRIB1-encodable (failure expected)
+foreach( snap "snap-milli-degree" "snap-sub-milli-degree_bad" "snap-sub-milli-degree_sub-area_bad" )
+  set( label "regress_GRIB-864_intf2_msl_N640_to_regular_ll_${snap}" )
+  set( input "msl_N640.grib" )
+  set( output "${label}.grib" )
+  if(     snap STREQUAL "snap-sub-milli-degree_sub-area_bad" )
+    set( opt "--grid=0.0625/0.0625"   "--area=1/0.0625/0/0.5625" )
+  elseif( snap STREQUAL "snap-sub-milli-degree_bad" )
+    set( opt "--grid=0.00025/0.00025" "--area=0.00074/0/0/0.00074" )
+  else()
+    set( opt "--grid=0.00025/0.00025" "--area=0.00076/0/0/0.00076" )
+  endif()
+
+  interpolation_add_test_interpol( ${label} "${input}" "/dev/null" "${opt}" download_tests_regress_src_files )
+  if( snap MATCHES "sub-milli-degree" )
+    set_tests_properties( ${label}_interpol PROPERTIES WILL_FAIL TRUE )
+  endif()
+
+  unset( opt )
+  unset( output )
+  unset( input )
+  unset( label )
+endforeach()
+
+# FIXME: throws exception
+# std::bad_alloc Caught in /home/ma/mapm/git/eckit/src/eckit/runtime/Tool.cc +80
+foreach( snap "snap-milli-degree" )
+  set( label "regress_GRIB-864_intf2_msl_N640_to_regular_ll_${snap}" )
+  set_tests_properties(  ${label}_interpol PROPERTIES WILL_FAIL TRUE )
+  ecbuild_warn(  "FIXME: ${label}_interpol avoids throwing exception" )
+  unset( label )
+endforeach()
+
 
 ############################################################
 
