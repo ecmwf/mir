@@ -19,16 +19,16 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/log/BigNum.h"
 
-#include "atlas/Parameters.h"
-#include "atlas/Grid.h"
-#include "atlas/Mesh.h"
-#include "atlas/FunctionSpace.h"
-#include "atlas/util/IndexView.h"
-#include "atlas/actions/BuildXYZField.h"
-#include "atlas/actions/BuildConvexHull3D.h"
-#include "atlas/geometry/Triag3D.h"
-#include "atlas/geometry/Quad3D.h"
-#include "atlas/grids/ReducedGrid.h"
+#include "atlas/internals/Parameters.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/mesh/Mesh.h"
+#include "atlas/functionspace/FunctionSpace.h"
+#include "atlas/util/array/IndexView.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/mesh/actions/BuildConvexHull3D.h"
+#include "atlas/interpolation/Triag3D.h"
+#include "atlas/interpolation/Quad3D.h"
+#include "atlas/grid/ReducedGrid.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
@@ -38,10 +38,10 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Gridded.h"
 
-using atlas::Constants;
-using atlas::grids::ReducedGrid;
-using atlas::geometry::Triag3D;
-using atlas::geometry::Quad3D;
+using atlas::internals::Constants;
+using atlas::grid::ReducedGrid;
+using atlas::interpolation::Triag3D;
+using atlas::interpolation::Quad3D;
 
 using mir::param::option::Option;
 using mir::param::option::SimpleOption;
@@ -103,22 +103,22 @@ void MIRIntegrate::run() {
         // ASSERT(rep->globalDomain());
 
 #if 0
-        eckit::ScopedPtr<atlas::Grid> grid( rep->atlasGrid() );
+        eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );
 
-        atlas::Mesh& mesh = grid->mesh();
+        atlas::mesh::Mesh& mesh = grid->mesh();
 
-        atlas::actions::BuildXYZField()(mesh);
-        atlas::actions::BuildConvexHull3D builder;
+        atlas::mesh::actions::BuildXYZField()(mesh);
+        atlas::mesh::actions::BuildConvexHull3D builder;
         builder(mesh);
 
         atlas::Nodes& nodes  = mesh.nodes();
-        atlas::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
+        atlas::util::array::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
 
         atlas::FunctionSpace& triags = mesh.function_space( "triags" );
-        atlas::IndexView<int, 2> triag_nodes ( triags.field( "nodes" ) );
+        atlas::util::array::IndexView<int, 2> triag_nodes ( triags.field( "nodes" ) );
 
         atlas::FunctionSpace& quads = mesh.function_space( "quads" );
-        atlas::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
+        atlas::util::array::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
 
         size_t nb_triags = triags.shape(0);
         size_t nb_quads  = quads.shape(0);
@@ -160,9 +160,9 @@ void MIRIntegrate::run() {
         double result = 0;
         double weights = 0;
 
-        eckit::ScopedPtr<atlas::Grid> grid( rep->atlasGrid() );
+        eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );
 
-        const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid*>(grid.get());
+        const atlas::grid::ReducedGrid *reduced = dynamic_cast<const atlas::grid::ReducedGrid*>(grid.get());
 
         ASSERT(reduced);
 

@@ -84,7 +84,7 @@ class Bilinear: public MethodWeighted {
 
 // -- Overridden methods
 
-    virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const;
+    virtual void assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
     virtual void hash( eckit::MD5 & ) const;

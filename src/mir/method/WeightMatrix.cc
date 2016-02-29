@@ -17,7 +17,7 @@
 #include "eckit/la/LinearAlgebra.h"
 #include "eckit/la/Vector.h"
 
-#include "atlas/geometry/Intersect.h"
+#include "atlas/interpolation/Intersect.h"
 
 #include "mir/method/WeightMatrix.h"
 #include "mir/util/Compare.h"
@@ -77,7 +77,7 @@ void WeightMatrix::cleanup() {
 
         for (WeightMatrix::inner_iterator j(*this, i); j; ++j) {
             const double a = *j;
-            if (fabs(a) < atlas::geometry::parametricEpsilon) {
+            if (fabs(a) < atlas::interpolation::parametricEpsilon) {
                 removed += a;
                 *j = 0;
                 fixed++;

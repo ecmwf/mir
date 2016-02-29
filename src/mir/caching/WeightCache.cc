@@ -30,7 +30,7 @@ namespace caching {
     this means that no error checking is done on writting, this will lead the truncated files
     when file systems become full
 
-    --> class atlas::MeshCache must use DataHandle() to write and read
+    --> class atlas::mesh::MeshCache must use DataHandle() to write and read
 
 8 - File names do not take compiler, number of bits, architecture, etc... in account.
     In certain cases we will have to put these files in shared filesytems (e.g. $SCRATCH).

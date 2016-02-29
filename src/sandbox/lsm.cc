@@ -53,7 +53,7 @@ class LSM : public eckit::Tool {
 
 };
 
-// void LSM::grid(const atlas::grids::ReducedGrid &grid) {
+// void LSM::grid(const atlas::grid::ReducedGrid &grid) {
 
 //     const std::vector<int> &points_per_latitudes = grid.npts_per_lat();
 //     size_t half = points_per_latitudes.size() / 2;
@@ -64,7 +64,7 @@ class LSM : public eckit::Tool {
 //     std::vector<int> rle;
 //     eckit::RLEencode2(diff.begin(), diff.end(), std::back_inserter(rle), 1000);
 
-//     const atlas::Grid& g = grid;
+//     const atlas::grid::Grid& g = grid;
 
 //     eckit::Log::trace<MIR>() << "uid " << g.uniqueID() << " hash " << g.hash() << " rle ";
 //     eckit::RLEprint(eckit::Log::trace<MIR>(), rle.begin(), rle.end());

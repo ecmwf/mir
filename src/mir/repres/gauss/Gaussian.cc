@@ -24,7 +24,7 @@
 #include "mir/repres/Iterator.h"
 
 
-#include "atlas/grids/GaussianLatitudes.h"
+#include "atlas/grid/GaussianLatitudes.h"
 #include "mir/util/Grib.h"
 
 #include <map>
@@ -54,7 +54,7 @@ Gaussian::~Gaussian() {
 const std::vector <double> &Gaussian::latitudes() const {
     if (latitudes_.size() == 0) {
         latitudes_.resize(N_ * 2);
-        atlas::grids::gaussian_latitudes_npole_spole(N_, &latitudes_[0]);
+        atlas::grid::gaussian_latitudes_npole_spole(N_, &latitudes_[0]);
     }
     return latitudes_;
 }

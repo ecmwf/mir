@@ -19,8 +19,8 @@
 
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "atlas/Grid.h"
-#include "atlas/util/PointIndex3.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/internals/PointIndex3.h"
 #include "mir/util/Compare.h"
 
 
@@ -33,13 +33,13 @@ namespace util {
 class PointSearch : private eckit::NonCopyable {
 private:
 
-    typedef atlas::util::PointIndex3           TreeType;
-    typedef atlas::util::PointIndex3::Point    Point;
-    typedef atlas::util::PointIndex3::iterator iterator;
+    typedef atlas::internals::PointIndex3           TreeType;
+    typedef atlas::internals::PointIndex3::Point    Point;
+    typedef atlas::internals::PointIndex3::iterator iterator;
 
 public:
 
-    typedef atlas::util::PointIndex3::Value PointValueType;
+    typedef atlas::internals::PointIndex3::Value PointValueType;
     typedef eckit::geometry::Point3   PointType;
 
     typedef compare::compare_fn     <size_t> CompareType;
@@ -49,7 +49,7 @@ public:
 
     PointSearch(const std::vector<Point>& ipts);
 
-    PointSearch(const atlas::Mesh& mesh, const CompareType& isok=CompareTypeNone());
+    PointSearch(const atlas::mesh::Mesh& mesh, const CompareType& isok=CompareTypeNone());
 
 public:
 
@@ -73,7 +73,7 @@ private:
 
     void init(const std::vector<PointType>& points);
 
-    void init(const atlas::Mesh& mesh, const CompareType& isok=CompareTypeNone());
+    void init(const atlas::mesh::Mesh& mesh, const CompareType& isok=CompareTypeNone());
 
 
 };

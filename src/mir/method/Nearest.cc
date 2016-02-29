@@ -30,7 +30,7 @@
 #include "eckit/log/Seconds.h"
 
 #include "atlas/mesh/Nodes.h"
-#include "atlas/actions/BuildXYZField.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
 
 namespace mir {
 namespace method {
@@ -60,7 +60,7 @@ void Nearest::hash(eckit::MD5 &md5) const {
 }
 
 
-void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
+void Nearest::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
 
     eckit::TraceTimer<MIR> timer("Nearest::assemble");
     eckit::Log::trace<MIR>() << "Nearest::assemble" << std::endl;
@@ -69,14 +69,14 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
 
     const util::PointSearch sptree(in.mesh());
 
-    atlas::Mesh &o_mesh = const_cast<atlas::Mesh&>(out.mesh());
-    const atlas::Domain &inDomain = in.domain();
+    atlas::mesh::Mesh &o_mesh = const_cast<atlas::mesh::Mesh&>(out.mesh());
+    const atlas::grid::Domain &inDomain = in.domain();
 
     // output points
     atlas::mesh::Nodes &o_nodes = o_mesh.nodes();
-    atlas::actions::BuildXYZField("xyz")(o_nodes);
-    atlas::ArrayView<double, 2> ocoords(o_nodes.field("xyz"));
-    atlas::ArrayView<double, 2> olonlat ( o_nodes.lonlat());
+    atlas::mesh::actions::BuildXYZField("xyz")(o_nodes);
+    atlas::util::array::ArrayView<double, 2> ocoords(o_nodes.field("xyz"));
+    atlas::util::array::ArrayView<double, 2> olonlat ( o_nodes.lonlat());
 
     const size_t out_npts = o_nodes.size();
     double nearest = 0;
@@ -108,7 +108,7 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
             nearest = push_back = 0;
         }
 
-        if (!inDomain.contains(olonlat[ip][atlas::LON], olonlat[ip][atlas::LAT])) {
+        if (!inDomain.contains(olonlat[ip][atlas::internals::LON], olonlat[ip][atlas::internals::LAT])) {
             continue;
         }
 

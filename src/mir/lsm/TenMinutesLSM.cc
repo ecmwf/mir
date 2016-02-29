@@ -16,7 +16,7 @@
 
 #include "TenMinutesLSM.h"
 
-#include "atlas/Grid.h"
+#include "atlas/grid/Grid.h"
 
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Timer.h"
@@ -51,7 +51,7 @@ From EMOSLIB:
 
 TenMinutesLSM::TenMinutesLSM(const std::string &name,
                              const param::MIRParametrisation &parametrisation,
-                             const atlas::Grid &grid,
+                             const atlas::grid::Grid &grid,
                              const std::string &which):
     Mask(name),
     path_("~mir/etc/ten-minutes.mask") {
@@ -87,12 +87,12 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 
     // NOTE: this is not using 3D coordinate systems
 
-    std::vector<atlas::Grid::Point> points(grid.npts());
+    std::vector<atlas::grid::Grid::Point> points(grid.npts());
     grid.lonlat(points);
 
     mask_.reserve(points.size());
 
-    for (std::vector<atlas::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
+    for (std::vector<atlas::grid::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
         double lat = (*j).lat();
         ASSERT(lat >= -90);
         ASSERT(lat <= 90);

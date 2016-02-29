@@ -16,7 +16,7 @@
 #include "eckit/runtime/Tool.h"
 #include "eckit/memory/ScopedPtr.h"
 
-#include "atlas/grids/LonLatGrid.h"
+#include "atlas/grid/LonLatGrid.h"
 
 #include "mir/lsm/Mask.h"
 #include "mir/param/MIRArgs.h"
@@ -87,8 +87,8 @@ void MIRMakeLSM::run() {
     const mir::param::MIRParametrisation &defaults = mir::param::MIRDefaults::instance();
     mir::param::MIRCombinedParametrisation combined(args, defaults, defaults);
 
-    eckit::ScopedPtr<atlas::Grid> grid(new atlas::grids::LonLatGrid(Ni,Nj,
-                                    atlas::grids::LonLatGrid::INCLUDES_POLES));
+    eckit::ScopedPtr<atlas::grid::Grid> grid(new atlas::grid::LonLatGrid(Ni,Nj,
+                                    atlas::grid::LonLatGrid::INCLUDES_POLES));
 
 
     mir::lsm::Mask &mask = mir::lsm::Mask::lookupOutput(combined, *grid);

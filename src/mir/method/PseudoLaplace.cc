@@ -20,7 +20,7 @@
 
 #include "mir/util/PointSearch.h"
 #include "mir/param/MIRParametrisation.h"
-#include "atlas/actions/BuildXYZField.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/mesh/Nodes.h"
 #include "eckit/log/Timer.h"
 #include "mir/log/MIR.h"
@@ -49,20 +49,20 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
     md5 << nclosest_;
 }
 
-void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
+void PseudoLaplace::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const {
 
     eckit::TraceTimer<MIR> timer("PseudoLaplace::assemble");
     eckit::Log::trace<MIR>() << "PseudoLaplace::assemble" << std::endl;
 
     util::PointSearch  sptree(in.mesh());
 
-    atlas::Mesh& o_mesh = const_cast<atlas::Mesh&>(out.mesh());
+    atlas::mesh::Mesh& o_mesh = const_cast<atlas::mesh::Mesh&>(out.mesh());
 
     // output points
     atlas::mesh::Nodes& o_nodes = o_mesh.nodes();
 
-    atlas::actions::BuildXYZField("xyz")(o_nodes);
-    atlas::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
+    atlas::mesh::actions::BuildXYZField("xyz")(o_nodes);
+    atlas::util::array::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
 
     const size_t out_npts = o_nodes.size();
 
@@ -95,9 +95,9 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
 
         for( size_t j = 0; j < npts; ++j) {
             eckit::geometry::Point3 np  = closest[j].point();
-            using atlas::XX;
-            using atlas::YY;
-            using atlas::ZZ;
+            using atlas::internals::XX;
+            using atlas::internals::YY;
+            using atlas::internals::ZZ;
 
             dx = np[XX] - p[XX];
             dy = np[YY] - p[YY];

@@ -20,9 +20,9 @@
 #include "eckit/exception/Exceptions.h"
 #include "mir/log/MIR.h"
 
-#include "atlas/Grid.h"
-#include "atlas/grids/grids.h"
-#include "atlas/grids/GaussianLatitudes.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/grids.h"
+#include "atlas/grid/GaussianLatitudes.h"
 
 namespace mir {
 namespace api {
@@ -186,7 +186,7 @@ size_t ProdgenJob::nj() const {
 void ProdgenJob::auto_pl() {
     std::ostringstream os;
     os << "rgg.N" << N_;
-    eckit::ScopedPtr<atlas::grids::ReducedGrid> grid(dynamic_cast<atlas::grids::ReducedGrid *>(atlas::Grid::create(os.str())));
+    eckit::ScopedPtr<atlas::grid::ReducedGrid> grid(dynamic_cast<atlas::grid::ReducedGrid *>(atlas::grid::Grid::create(os.str())));
 
     ASSERT(grid.get());
 

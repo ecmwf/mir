@@ -20,12 +20,12 @@
 
 #include "eckit/log/Log.h"
 
-#include "atlas/Field.h"
-#include "atlas/FunctionSpace.h"
-#include "atlas/Mesh.h"
+#include "atlas/field/Field.h"
+#include "atlas/functionspace/FunctionSpace.h"
+#include "atlas/mesh/Mesh.h"
 #include "atlas/mesh/Nodes.h"
-#include "atlas/grids/ReducedGaussianGrid.h"
-#include "atlas/util/ArrayView.h"
+#include "atlas/grid/ReducedGaussianGrid.h"
+#include "atlas/util/array/ArrayView.h"
 
 #include "mir/util/Compare.h"
 #include "mir/log/MIR.h"
@@ -41,7 +41,7 @@ namespace {
 
 void left_right_lon_indexes(
     const double& in,
-    const atlas::ArrayView<double, 2>& coords,
+    const atlas::util::array::ArrayView<double, 2>& coords,
     const size_t start,
     const size_t end,
     size_t& left,
@@ -100,7 +100,7 @@ void Bilinear::hash(eckit::MD5 &md5) const {
 }
 
 
-void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
+void Bilinear::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
@@ -115,7 +115,7 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
 
     // Ensure the input is a reduced grid, and get the pl array
-    const atlas::grids::ReducedGrid* igg = dynamic_cast<const atlas::grids::ReducedGrid*>(&in);
+    const atlas::grid::ReducedGrid* igg = dynamic_cast<const atlas::grid::ReducedGrid*>(&in);
     if (!igg)
         throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
 
@@ -133,8 +133,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
 
     // access the input/output fields coordinates
-    atlas::ArrayView<double, 2> icoords( in .mesh().nodes().lonlat() );
-    atlas::ArrayView<double, 2> ocoords( out.mesh().nodes().lonlat() );
+    atlas::util::array::ArrayView<double, 2> icoords( in .mesh().nodes().lonlat() );
+    atlas::util::array::ArrayView<double, 2> ocoords( out.mesh().nodes().lonlat() );
 
 
     // check input min/max latitudes (gaussian grids exclude the poles)

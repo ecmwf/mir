@@ -21,7 +21,7 @@
 #include <string>
 #include <sstream>
 
-#include "atlas/Grid.h"
+#include "atlas/grid/Grid.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
@@ -70,7 +70,7 @@ MethodWeighted::~MethodWeighted() {
 
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
-const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas::Grid &out) const {
+const WeightMatrix &MethodWeighted::getMatrix(const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
 
     eckit::Log::trace<MIR>() << "MethodWeighted::getMatrix " << *this << std::endl;
 
@@ -154,11 +154,11 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::Grid &in, const atlas
     return matrix_cache[key_with_masks];
 }
 
-lsm::LandSeaMasks MethodWeighted::getMasks(const atlas::Grid &in, const atlas::Grid &out) const {
+lsm::LandSeaMasks MethodWeighted::getMasks(const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
     return lsm::LandSeaMasks::lookup(parametrisation_, in, out);
 }
 
-void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const atlas::Grid &out) const {
+void MethodWeighted::execute(data::MIRField &field, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
 
@@ -245,7 +245,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::Grid &in, const
 }
 
 
-void MethodWeighted::computeMatrixWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const {
+void MethodWeighted::computeMatrixWeights(const atlas::grid::Grid &in, const atlas::grid::Grid &out, WeightMatrix &W) const {
     if (in.same(out)) {
         eckit::Log::trace<MIR>() << "Matrix is indentity" << std::endl;
         W.setIdentity();        // grids are the same, use identity matrix

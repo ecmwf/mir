@@ -15,7 +15,7 @@
 
 
 #include "mir/util/PointSearch.h"
-#include "atlas/actions/BuildXYZField.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/mesh/Nodes.h"
 
 #include <vector>
@@ -31,7 +31,7 @@ PointSearch::PointSearch(const std::vector<PointType>& points) {
 }
 
 
-PointSearch::PointSearch(const atlas::Mesh& mesh, const CompareType& isok) {
+PointSearch::PointSearch(const atlas::mesh::Mesh& mesh, const CompareType& isok) {
     init(mesh,isok);
 }
 
@@ -45,13 +45,13 @@ void PointSearch::statsReset() const {
 }
 
 PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType& pt) const {
-    const atlas::util::PointIndex3::NodeInfo nn = tree_->nearestNeighbour(pt);
+    const atlas::internals::PointIndex3::NodeInfo nn = tree_->nearestNeighbour(pt);
     return nn.value();
 }
 
 
 void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest) const {
-    using atlas::util::PointIndex3;
+    using atlas::internals::PointIndex3;
 
     // Small optimisation
     if(n == 1) {
@@ -70,7 +70,7 @@ void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<Poin
 
 
 void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest) const {
-    using atlas::util::PointIndex3;
+    using atlas::internals::PointIndex3;
 
     PointIndex3::NodeList r = tree_->findInSphere(pt,radius);
 
@@ -82,7 +82,7 @@ void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::v
 
 
 void PointSearch::init(const std::vector<PointType>& points) {
-    using atlas::util::PointIndex3;
+    using atlas::internals::PointIndex3;
 
     std::vector<PointIndex3::Value> pidx;
     pidx.reserve(points.size());
@@ -95,10 +95,10 @@ void PointSearch::init(const std::vector<PointType>& points) {
 }
 
 
-void PointSearch::init(const atlas::Mesh& mesh, const CompareType& isok) {
+void PointSearch::init(const atlas::mesh::Mesh& mesh, const CompareType& isok) {
 
-    atlas::mesh::Nodes& nodes = const_cast<atlas::Mesh&>(mesh).nodes();
-    atlas::actions::BuildXYZField("xyz")(nodes);
+    atlas::mesh::Nodes& nodes = const_cast<atlas::mesh::Mesh&>(mesh).nodes();
+    atlas::mesh::actions::BuildXYZField("xyz")(nodes);
     ASSERT(nodes.has_field("xyz"));
 
     size_t npts = nodes.size();
@@ -110,7 +110,7 @@ void PointSearch::init(const atlas::Mesh& mesh, const CompareType& isok) {
     std::vector<PointType> points;
     points.reserve(npts);
 
-    atlas::ArrayView<double, 2> coords(nodes.field("xyz"));
+    atlas::util::array::ArrayView<double, 2> coords(nodes.field("xyz"));
     for (size_t ip = 0; ip < npts; ++ip)
         points.push_back(isok(ip)?
                              PointType(coords[ip].data())

@@ -21,7 +21,9 @@
 #include <vector>
 
 namespace atlas {
+namespace grid {
 class Grid;
+}
 }
 
 struct grib_info;
@@ -103,7 +105,7 @@ class Representation {
     virtual const Representation* truncate(size_t truncation,
                                      const std::vector<double>&, std::vector<double>&) const;
 
-    virtual atlas::Grid* atlasGrid() const;
+    virtual atlas::grid::Grid* atlasGrid() const;
 
     virtual size_t truncation() const;
 

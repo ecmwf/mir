@@ -16,8 +16,8 @@
 
 #include "eckit/memory/ScopedPtr.h"
 
-#include "atlas/Grid.h"
-#include "atlas/grids/LocalGrid.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/LocalGrid.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/method/Method.h"
@@ -51,8 +51,8 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     repres::RepresentationHandle in(field.representation());
     repres::RepresentationHandle out(outputRepresentation());
 
-    eckit::ScopedPtr<atlas::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respect constness
-    eckit::ScopedPtr<atlas::Grid> gout(out->atlasGrid());
+    eckit::ScopedPtr<atlas::grid::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respect constness
+    eckit::ScopedPtr<atlas::grid::Grid> gout(out->atlasGrid());
 
     method->execute(field, *gin, *gout);
 

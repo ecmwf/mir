@@ -16,9 +16,9 @@
 #include "mir/method/FELinear.h"
 
 #include "mir/param/MIRParametrisation.h"
-#include "atlas/meshgen/ReducedGridMeshGenerator.h"
-#include "atlas/meshgen/Delaunay.h"
-#include "atlas/grids/ReducedGrid.h"
+#include "atlas/mesh/generators/ReducedGridMeshGenerator.h"
+#include "atlas/mesh/generators/Delaunay.h"
+#include "atlas/grid/ReducedGrid.h"
 
 namespace mir {
 namespace method {

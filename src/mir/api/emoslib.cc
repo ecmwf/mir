@@ -28,7 +28,7 @@
 #include "mir/input/GribMemoryInput.h"
 #include "mir/output/GribMemoryOutput.h"
 
-#include "atlas/grids/GaussianLatitudes.h"
+#include "atlas/grid/GaussianLatitudes.h"
 
 #include "mir/input/VODInput.h"
 #include "mir/output/UVOutput.h"
@@ -41,9 +41,9 @@
 #include "mir/log/MIR.h"
 
 
-#include "atlas/Grid.h"
-#include "atlas/grids/grids.h"
-#include "atlas/grids/GaussianLatitudes.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/grids.h"
+#include "atlas/grid/GaussianLatitudes.h"
 
 namespace mir {
 namespace api {
@@ -791,7 +791,7 @@ extern "C" fortint jgglat_(const fortint &KLAT, fortfloat PGAUSS[]) {
 
     eckit::Log::trace<MIR>() << "++++++ jgglat " << KLAT << std::endl;
     size_t N = KLAT / 2;
-    atlas::grids::gaussian_latitudes_npole_equator(N, PGAUSS);
+    atlas::grid::gaussian_latitudes_npole_equator(N, PGAUSS);
 
     return 0;
 }
@@ -806,16 +806,16 @@ extern "C" void jnumgg_(const fortint &knum,
 
     kret = 0;
     try {
-        eckit::ScopedPtr<atlas::grids::ReducedGrid> grid(0);
+        eckit::ScopedPtr<atlas::grid::ReducedGrid> grid(0);
 
         if (htype[0] == 'R') {
             std::ostringstream os;
             os << "rgg.N" << knum;
-            grid.reset(dynamic_cast<atlas::grids::ReducedGrid *>(atlas::Grid::create(os.str())));
+            grid.reset(dynamic_cast<atlas::grid::ReducedGrid *>(atlas::grid::Grid::create(os.str())));
         }
 
         if (htype[0] == 'F') {
-            grid.reset(dynamic_cast<atlas::grids::ReducedGrid *>(new atlas::grids::GaussianGrid(knum)));
+            grid.reset(dynamic_cast<atlas::grid::ReducedGrid *>(new atlas::grid::GaussianGrid(knum)));
         }
 
         ASSERT(grid.get());

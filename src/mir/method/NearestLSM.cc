@@ -28,7 +28,7 @@
 #include "mir/util/Compare.h"
 #include "mir/util/PointSearch.h"
 #include "atlas/mesh/Nodes.h"
-#include "atlas/actions/BuildXYZField.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
 #include "mir/log/MIR.h"
 
 
@@ -53,7 +53,7 @@ const char *NearestLSM::name() const {
 }
 
 
-void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
+void NearestLSM::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
 
     eckit::TraceTimer<MIR> timer("NearestLSM::assemble");
     eckit::Log::trace<MIR>() << "NearestLSM::assemble" << std::endl;
@@ -85,11 +85,11 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     // compute the output nodes coordinates
     here = timer.elapsed();
 
-    atlas::Mesh &o_mesh = out.mesh();
-    atlas::actions::BuildXYZField("xyz")(o_mesh);
+    atlas::mesh::Mesh &o_mesh = out.mesh();
+    atlas::mesh::actions::BuildXYZField("xyz")(o_mesh);
 
     ASSERT(o_mesh.nodes().has_field("xyz"));
-    atlas::ArrayView< double, 2 > ocoords(
+    atlas::util::array::ArrayView< double, 2 > ocoords(
                 o_mesh.nodes().field("xyz") );
 
     Log::trace<MIR>() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
@@ -131,7 +131,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
 }
 
 
-lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid &in, const atlas::Grid &out) const {
+lsm::LandSeaMasks NearestLSM::getMasks(const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
     return lsm::LandSeaMasks::lookup(runtime, in, out);

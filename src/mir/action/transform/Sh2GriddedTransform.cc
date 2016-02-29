@@ -19,8 +19,8 @@
 #include <vector>
 
 #include "atlas/atlas_config.h"
-#include "atlas/Grid.h"
-#include "atlas/grids/grids.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/grids.h"
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -65,20 +65,20 @@ namespace action {
 
 
 static void transform(const param::MIRParametrisation &parametrisation, size_t truncation,
-                      const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
+                      const std::vector<double> &input, std::vector<double> &output, const atlas::grid::Grid &grid) {
 #ifdef ATLAS_HAVE_TRANS
 
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
 
     static TransInitor initor; // Will init trans if needed
 
-    const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
+    const atlas::grid::ReducedGrid *reduced = dynamic_cast<const atlas::grid::ReducedGrid *>(&grid);
 
     if (!reduced) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
     }
 
-    const atlas::grids::LonLatGrid *latlon = dynamic_cast<const atlas::grids::LonLatGrid *>(&grid);
+    const atlas::grid::LonLatGrid *latlon = dynamic_cast<const atlas::grid::LonLatGrid *>(&grid);
 
     std::ostringstream os;
 
@@ -209,7 +209,7 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
         const std::vector<double> &values = field.values(i);
         std::vector<double> result;
 
-        eckit::ScopedPtr<atlas::Grid> grid(out->atlasGrid());
+        eckit::ScopedPtr<atlas::grid::Grid> grid(out->atlasGrid());
         transform(parametrisation_, field.representation()->truncation(), values, result, *grid);
 
         field.values(result, i);

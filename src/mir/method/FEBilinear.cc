@@ -15,8 +15,8 @@
 
 #include "mir/method/FEBilinear.h"
 
-#include "atlas/meshgen/ReducedGridMeshGenerator.h"
-#include "atlas/grids/ReducedGrid.h"
+#include "atlas/mesh/generators/ReducedGridMeshGenerator.h"
+#include "atlas/grid/ReducedGrid.h"
 
 namespace mir {
 namespace method {

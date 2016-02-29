@@ -19,24 +19,24 @@
 #include "eckit/la/Vector.h"
 #include "eckit/la/LinearAlgebra.h"
 
-#include "atlas/Grid.h"
-#include "atlas/Mesh.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/mesh/Mesh.h"
 #include "atlas/mesh/Nodes.h"
 #include "atlas/mesh/Elements.h"
 #include "atlas/mesh/ElementType.h"
-#include "atlas/util/IndexView.h"
-#include "atlas/actions/BuildXYZField.h"
-#include "atlas/geometry/Triag3D.h"
-#include "atlas/geometry/Quad3D.h"
+#include "atlas/util/array/IndexView.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/interpolation/Triag3D.h"
+#include "atlas/interpolation/Quad3D.h"
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/log/MIR.h"
 
 using eckit::la::Vector;
 using eckit::la::LinearAlgebra;
-using atlas::Mesh;
-using atlas::geometry::Triag3D;
-using atlas::geometry::Quad3D;
+using atlas::mesh::Mesh;
+using atlas::interpolation::Triag3D;
+using atlas::interpolation::Quad3D;
 
 namespace mir {
 namespace method {
@@ -51,7 +51,7 @@ Conservative::Conservative(const param::MIRParametrisation &param) :
 Conservative::~Conservative() {
 }
 
-void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::Grid& g) const
+void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::grid::Grid& g) const
 {
     eckit::Log::trace<MIR>() << "Conservative::computeLumpedMassMatrix" << std::endl;
 
@@ -63,10 +63,10 @@ void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::Gr
 
     d.setZero();
 
-    atlas::actions::BuildXYZField("xyz")(mesh); // ensure we have a 'xyz' field (output mesh may not have it)
+    atlas::mesh::actions::BuildXYZField("xyz")(mesh); // ensure we have a 'xyz' field (output mesh may not have it)
 
     const atlas::mesh::Nodes& nodes  = mesh.nodes();
-    atlas::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
+    atlas::util::array::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
 
 // TODO we need to consider points that are virtual
 //    size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
@@ -125,7 +125,7 @@ void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::Gr
     }
 }
 
-void Conservative::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const
+void Conservative::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const
 {
 
     eckit::Log::trace<MIR>() << "Input  pts " << in.npts()

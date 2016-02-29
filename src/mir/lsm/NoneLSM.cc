@@ -64,14 +64,14 @@ void NoneLSM::print(std::ostream &out) const {
 
 Mask *NoneLSM::create(const std::string &name,
                       const param::MIRParametrisation &param,
-                      const atlas::Grid &grid,
+                      const atlas::grid::Grid &grid,
                       const std::string &which) const {
     return new NoLSM();
 }
 
 std::string NoneLSM::cacheKey(const std::string &name,
                               const param::MIRParametrisation &param,
-                              const atlas::Grid &grid,
+                              const atlas::grid::Grid &grid,
                               const std::string &which) const {
     return "none";
 }
