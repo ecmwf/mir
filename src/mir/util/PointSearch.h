@@ -20,7 +20,7 @@
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "atlas/grid/Grid.h"
-#include "atlas/internals/PointIndex3.h"
+#include "atlas/interpolation/PointIndex3.h"
 #include "mir/util/Compare.h"
 
 
@@ -33,13 +33,13 @@ namespace util {
 class PointSearch : private eckit::NonCopyable {
 private:
 
-    typedef atlas::internals::PointIndex3           TreeType;
-    typedef atlas::internals::PointIndex3::Point    Point;
-    typedef atlas::internals::PointIndex3::iterator iterator;
+    typedef atlas::interpolation::PointIndex3           TreeType;
+    typedef atlas::interpolation::PointIndex3::Point    Point;
+    typedef atlas::interpolation::PointIndex3::iterator iterator;
 
 public:
 
-    typedef atlas::internals::PointIndex3::Value PointValueType;
+    typedef atlas::interpolation::PointIndex3::Value PointValueType;
     typedef eckit::geometry::Point3   PointType;
 
     typedef compare::compare_fn     <size_t> CompareType;

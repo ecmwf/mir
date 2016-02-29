@@ -19,11 +19,11 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/log/BigNum.h"
 
-#include "atlas/internals/Parameters.h"
+#include "atlas/util/Constants.h"
 #include "atlas/grid/Grid.h"
 #include "atlas/mesh/Mesh.h"
 #include "atlas/functionspace/FunctionSpace.h"
-#include "atlas/util/array/IndexView.h"
+#include "atlas/array/IndexView.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/mesh/actions/BuildConvexHull3D.h"
 #include "atlas/interpolation/Triag3D.h"
@@ -38,15 +38,16 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Gridded.h"
 
-using atlas::internals::Constants;
 using atlas::grid::ReducedGrid;
 using atlas::interpolation::Triag3D;
 using atlas::interpolation::Quad3D;
+using atlas::util::Constants;
 
 using mir::param::option::Option;
 using mir::param::option::SimpleOption;
 
 using namespace mir;
+
 
 class MIRIntegrate : public eckit::Tool {
 
@@ -112,13 +113,13 @@ void MIRIntegrate::run() {
         builder(mesh);
 
         atlas::Nodes& nodes  = mesh.nodes();
-        atlas::util::array::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
+        atlas::array::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
 
         atlas::FunctionSpace& triags = mesh.function_space( "triags" );
-        atlas::util::array::IndexView<int, 2> triag_nodes ( triags.field( "nodes" ) );
+        atlas::array::IndexView<int, 2> triag_nodes ( triags.field( "nodes" ) );
 
         atlas::FunctionSpace& quads = mesh.function_space( "quads" );
-        atlas::util::array::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
+        atlas::array::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
 
         size_t nb_triags = triags.shape(0);
         size_t nb_quads  = quads.shape(0);

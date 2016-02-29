@@ -33,8 +33,8 @@
 #include "atlas/interpolation/Triag3D.h"
 #include "atlas/mesh/generators/Delaunay.h"
 #include "atlas/grid/ReducedGrid.h"
-#include "atlas/util/array/IndexView.h"
-#include "atlas/internals/PointIndex3.h"
+#include "atlas/array/IndexView.h"
+#include "atlas/interpolation/PointIndex3.h"
 #include "atlas/util/io/Gmsh.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/mesh/actions/BuildCellCentres.h"
@@ -94,6 +94,8 @@ struct MeshStats {
 
 typedef std::vector< WeightMatrix::Triplet > Triplets;
 
+enum { LON=0, LAT=1 };
+
 }
 
 static void normalise(Triplets& triplets)
@@ -115,15 +117,15 @@ static void normalise(Triplets& triplets)
 /// Finds in which element the point is contained by projecting the point with each nearest element
 
 static bool projectPointToElements(const MeshStats &stats,
-                                   const atlas::util::array::ArrayView<double, 2> &icoords,
+                                   const atlas::array::ArrayView<double, 2> &icoords,
                                    const atlas::mesh::Elements::Connectivity &triag_nodes,
                                    const atlas::mesh::Elements::Connectivity &quads_nodes,
                                    const FiniteElement::Point &p,
                                    std::vector< WeightMatrix::Triplet > &weights_triplets,
                                    size_t ip,
                                    size_t firstVirtualPoint,
-                                   atlas::internals::ElemIndex3::NodeList::const_iterator start,
-                                   atlas::internals::ElemIndex3::NodeList::const_iterator finish ) {
+                                   atlas::interpolation::ElemIndex3::NodeList::const_iterator start,
+                                   atlas::interpolation::ElemIndex3::NodeList::const_iterator finish ) {
 
     Triplets triplets;
 
@@ -135,9 +137,9 @@ static bool projectPointToElements(const MeshStats &stats,
 
     atlas::interpolation::Ray ray( p.data() );
 
-    for (atlas::internals::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
+    for (atlas::interpolation::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
 
-        atlas::internals::ElemPayload elem = (*itc).value().payload();
+        atlas::interpolation::ElemPayload elem = (*itc).value().payload();
 
         if ( elem.triangle() ) { /* triags */
 
@@ -292,17 +294,17 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const
         atlas::mesh::actions::BuildCellCentres()(i_mesh);
     }
 
-    eckit::ScopedPtr<atlas::internals::ElemIndex3> eTree;
+    eckit::ScopedPtr<atlas::interpolation::ElemIndex3> eTree;
     {
         eckit::TraceTimer<MIR> timer("create_element_centre_index");
-        eTree.reset( create_element_centre_index(i_mesh) );
+        eTree.reset( atlas::interpolation::create_element_centre_index(i_mesh) );
     }
 
     // input mesh
     MeshStats stats;
 
     const atlas::mesh::Nodes  &i_nodes  = i_mesh.nodes();
-    atlas::util::array::ArrayView<double, 2> icoords  ( i_nodes.field( "xyz" ));
+    atlas::array::ArrayView<double, 2> icoords  ( i_nodes.field( "xyz" ));
 
     atlas::mesh::Elements::Connectivity const *triag_nodes;
     atlas::mesh::Elements::Connectivity const *quads_nodes;
@@ -333,8 +335,8 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const
     atlas::mesh::actions::BuildXYZField("xyz")(out.mesh());
 
     atlas::mesh::Nodes  &o_nodes  = o_mesh.nodes();
-    atlas::util::array::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
-    atlas::util::array::ArrayView<double, 2> olonlat ( o_nodes.lonlat() );
+    atlas::array::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
+    atlas::array::ArrayView<double, 2> olonlat ( o_nodes.lonlat() );
 
     stats.inp_npts  = i_nodes.size();
     stats.out_npts  = o_nodes.size();
@@ -366,7 +368,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const
                                    << std::endl;
             }
 
-            if (!inDomain.contains(olonlat[ip][atlas::internals::LON], olonlat[ip][atlas::internals::LAT])) {
+            if (!inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
                 continue;
             }
 
@@ -379,7 +381,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const
 
                 max_neighbours = std::max(kpts, max_neighbours);
 
-                atlas::internals::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
+                atlas::interpolation::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
                 success = projectPointToElements(stats,
                                                  icoords,
                                                  *triag_nodes,
@@ -398,7 +400,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const
             if (!success) {
                 // If this fails, consider lowering atlas::grid::parametricEpsilon
                 eckit::Log::trace<MIR>() << "Failed to project point " << ip << " " << p
-                                   << " with coordinates lon=" << olonlat[ip][atlas::internals::LON] << ", lat=" << olonlat[ip][atlas::internals::LAT]
+                                   << " with coordinates lon=" << olonlat[ip][LON] << ", lat=" << olonlat[ip][LAT]
                                    << " after " << eckit::Plural(kpts, "attempt") << std::endl;
                 throw eckit::SeriousBug("Could not project point");
             }

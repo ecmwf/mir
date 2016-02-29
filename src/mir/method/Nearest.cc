@@ -35,6 +35,11 @@
 namespace mir {
 namespace method {
 
+namespace {
+
+enum { LON=0, LAT=1 };
+
+}
 
 Nearest::Nearest(const param::MIRParametrisation &param) :
     MethodWeighted(param),
@@ -75,8 +80,8 @@ void Nearest::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas
     // output points
     atlas::mesh::Nodes &o_nodes = o_mesh.nodes();
     atlas::mesh::actions::BuildXYZField("xyz")(o_nodes);
-    atlas::util::array::ArrayView<double, 2> ocoords(o_nodes.field("xyz"));
-    atlas::util::array::ArrayView<double, 2> olonlat ( o_nodes.lonlat());
+    atlas::array::ArrayView<double, 2> ocoords(o_nodes.field("xyz"));
+    atlas::array::ArrayView<double, 2> olonlat ( o_nodes.lonlat());
 
     const size_t out_npts = o_nodes.size();
     double nearest = 0;
@@ -108,7 +113,7 @@ void Nearest::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas
             nearest = push_back = 0;
         }
 
-        if (!inDomain.contains(olonlat[ip][atlas::internals::LON], olonlat[ip][atlas::internals::LAT])) {
+        if (!inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
             continue;
         }
 

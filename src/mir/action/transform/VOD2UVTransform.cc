@@ -19,7 +19,7 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "atlas/internals/Parameters.h"
+#include "atlas/util/Constants.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -91,7 +91,7 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
 
 
     std::complex<double> zi(0.0, 1.0);
-    const double kRadiusOfTheEarth = atlas::internals::Earth::radiusInMeters();
+    const double kRadiusOfTheEarth = atlas::util::Earth::radiusInMeters();
     size_t k = 0;
     size_t imn = 0;
 

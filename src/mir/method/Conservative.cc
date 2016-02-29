@@ -24,7 +24,7 @@
 #include "atlas/mesh/Nodes.h"
 #include "atlas/mesh/Elements.h"
 #include "atlas/mesh/ElementType.h"
-#include "atlas/util/array/IndexView.h"
+#include "atlas/array/IndexView.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/interpolation/Triag3D.h"
 #include "atlas/interpolation/Quad3D.h"
@@ -66,7 +66,7 @@ void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::gr
     atlas::mesh::actions::BuildXYZField("xyz")(mesh); // ensure we have a 'xyz' field (output mesh may not have it)
 
     const atlas::mesh::Nodes& nodes  = mesh.nodes();
-    atlas::util::array::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
+    atlas::array::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
 
 // TODO we need to consider points that are virtual
 //    size_t firstVirtualPoint = std::numeric_limits<size_t>::max();

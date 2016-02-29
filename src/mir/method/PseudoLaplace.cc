@@ -28,6 +28,11 @@
 namespace mir {
 namespace method {
 
+namespace {
+
+enum { XX=0, YY=1, ZZ=2 };
+
+}
 
 PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
     MethodWeighted(param),
@@ -62,7 +67,7 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const
     atlas::mesh::Nodes& o_nodes = o_mesh.nodes();
 
     atlas::mesh::actions::BuildXYZField("xyz")(o_nodes);
-    atlas::util::array::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
+    atlas::array::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
 
     const size_t out_npts = o_nodes.size();
 
@@ -95,9 +100,6 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const
 
         for( size_t j = 0; j < npts; ++j) {
             eckit::geometry::Point3 np  = closest[j].point();
-            using atlas::internals::XX;
-            using atlas::internals::YY;
-            using atlas::internals::ZZ;
 
             dx = np[XX] - p[XX];
             dy = np[YY] - p[YY];

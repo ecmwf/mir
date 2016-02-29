@@ -89,7 +89,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const at
     atlas::mesh::actions::BuildXYZField("xyz")(o_mesh);
 
     ASSERT(o_mesh.nodes().has_field("xyz"));
-    atlas::util::array::ArrayView< double, 2 > ocoords(
+    atlas::array::ArrayView< double, 2 > ocoords(
                 o_mesh.nodes().field("xyz") );
 
     Log::trace<MIR>() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;

@@ -25,7 +25,7 @@
 #include "atlas/mesh/Mesh.h"
 #include "atlas/mesh/Nodes.h"
 #include "atlas/grid/ReducedGaussianGrid.h"
-#include "atlas/util/array/ArrayView.h"
+#include "atlas/array/ArrayView.h"
 
 #include "mir/util/Compare.h"
 #include "mir/log/MIR.h"
@@ -41,7 +41,7 @@ namespace {
 
 void left_right_lon_indexes(
     const double& in,
-    const atlas::util::array::ArrayView<double, 2>& coords,
+    const atlas::array::ArrayView<double, 2>& coords,
     const size_t start,
     const size_t end,
     size_t& left,
@@ -133,8 +133,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atla
 
 
     // access the input/output fields coordinates
-    atlas::util::array::ArrayView<double, 2> icoords( in .mesh().nodes().lonlat() );
-    atlas::util::array::ArrayView<double, 2> ocoords( out.mesh().nodes().lonlat() );
+    atlas::array::ArrayView<double, 2> icoords( in .mesh().nodes().lonlat() );
+    atlas::array::ArrayView<double, 2> ocoords( out.mesh().nodes().lonlat() );
 
 
     // check input min/max latitudes (gaussian grids exclude the poles)
