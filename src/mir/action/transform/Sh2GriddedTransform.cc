@@ -18,7 +18,7 @@
 #include <iostream>
 #include <vector>
 
-#include "atlas/atlas_config.h"
+#include "atlas/atlas.h"
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/grids.h"
 
