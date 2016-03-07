@@ -321,4 +321,6 @@ regress_EMOS-216_intuvp2_vo-d_sh_to_O80.grib.ref
 regress_EMOS-216_intuvp2_vo-d_sh_to_O80_sub-area.grib.ref
 regress_EMOS-216_intuvp2_vo-d_sh_to_regular_ll.grib.ref
 regress_EMOS-216_intuvp2_vo-d_sh_to_regular_ll_sub-area.grib.ref
+regress_EMOS-260_intf2_2t_N640_to_regular_ll_sub-area.grib.ref
+regress_EMOS-262_intf2_msl_N640_to_regular_ll_sub-area_single-point.grib.ref
 regress_GRIB-863_intf2_2t_O1280_to_regular_ll_1-16.grib.ref

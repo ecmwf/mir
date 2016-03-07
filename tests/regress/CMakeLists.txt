@@ -67,12 +67,10 @@ foreach( area "" "_sub-area" )
           if( "${area}" STREQUAL "_sub-area" )
             list( APPEND opt "--area=70/-60/20/60" )
           endif()
-          set( strict TRUE )
 
           interpolation_add_test_interpol( ${label} "${input}" "${output}" "${opt}" download_tests_regress_src_files )
-          interpolation_add_test_compare( ${label} "${output}" "${output}.ref"      download_tests_regress_ref_files ${strict} )
+          interpolation_add_test_compare( ${label} "${output}" "${output}.ref"      download_tests_regress_ref_files )
 
-          unset( strict )
           unset( opt )
         endif()
         unset( output )
@@ -136,6 +134,38 @@ foreach( area "" )
     endforeach()
   endforeach()
 endforeach()
+
+
+######################### EMOS-260 #########################
+
+set( label "regress_EMOS-260_intf2_2t_N640_to_regular_ll_sub-area" )
+set( input "2t_N640.grib" )
+set( output "${label}.grib" )
+set( opt "--area=47.1/-13.05/33/8.1" "--grid=0.15/0.15" )
+
+interpolation_add_test_interpol( ${label} "${input}" "${output}" "${opt}" download_tests_regress_src_files )
+interpolation_add_test_compare( ${label} "${output}" "${output}.ref"      download_tests_regress_ref_files )
+
+unset( opt )
+unset( output )
+unset( input )
+unset( label )
+
+
+######################### EMOS-262 #########################
+
+set( label "regress_EMOS-262_intf2_msl_N640_to_regular_ll_sub-area_single-point" )
+set( input "msl_N640.grib" )
+set( output "${label}.grib" )
+set( opt "--area=45.5/9.25/45.5/9.25" "--grid=0.125/0.125" )
+
+interpolation_add_test_interpol( ${label} "${input}" "${output}" "${opt}" download_tests_regress_src_files )
+interpolation_add_test_compare( ${label} "${output}" "${output}.ref"      download_tests_regress_ref_files )
+
+unset( opt )
+unset( output )
+unset( input )
+unset( label )
 
 
 ################### GRIB-863 / EMOS-214 ####################
