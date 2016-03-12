@@ -138,7 +138,7 @@ bool MIRCompare::compare(const double *a, const double *b, size_t size) const {
         eckit::Log::info() << "packing_error1=" << packing_error1 << " packing_error2=" << packing_error2 << std::endl;
 
         if (p <= user_percent_) {
-            eckit::Log::info() << "Percent of different valus smaller than " << user_percent_ << ", ignoring differences" << std::endl;
+            eckit::Log::info() << "Percent of different values smaller than " << user_percent_ << ", ignoring differences" << std::endl;
             count = 0;
         }
 

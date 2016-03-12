@@ -38,7 +38,7 @@ function( interpolation_add_test_compare
     endif()
     set( _tolerate "" )
     if( FALSE )
-        set( _tolerate "--relative=1" )  #FIXME
+        set( _tolerate "--relative=5 --percent=5" )  #FIXME
     endif()
     ecbuild_add_test(
         TARGET       ${_label}_compare
