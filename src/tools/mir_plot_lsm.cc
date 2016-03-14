@@ -13,20 +13,20 @@
 /// @date Apr 2015
 
 #include "eckit/io/StdFile.h"
-#include "eckit/runtime/Tool.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/VectorOption.h"
+#include "eckit/runtime/Tool.h"
 
 #include "atlas/grid/LonLatGrid.h"
 
 #include "mir/lsm/Mask.h"
-#include "mir/param/MIRArgs.h"
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
-#include "mir/param/option/VectorOption.h"
 
 
-using mir::param::option::Option;
-using mir::param::option::VectorOption;
+using eckit::option::Option;
+using eckit::option::VectorOption;
 
 class MIRMakeLSM : public eckit::Tool {
 
@@ -60,7 +60,7 @@ void MIRMakeLSM::run() {
     // options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
     // options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
 
-    mir::param::MIRArgs args(&usage, 1, options);
+    eckit::option::CmdArgs args(&usage, 1, options);
     args.set("lsm", true); // Force LSM
 
     size_t Ni = 360;

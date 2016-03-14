@@ -14,7 +14,7 @@ ecbuild_add_executable(
 		TARGET      mir_compare
 		SOURCES     mir_compare.cc
 		INCLUDES    ${ATLAS_INCLUDE_DIRS}
-    LIBS        mir )
+    LIBS        mir eckit_option )
 
 ecbuild_add_executable(
 		TARGET      mir_config
@@ -38,7 +38,7 @@ ecbuild_add_executable(
 		TARGET      mir_plot_lsm
 		SOURCES     mir_plot_lsm.cc
 		INCLUDES    ${ATLAS_INCLUDE_DIRS}
-    LIBS        mir )
+    LIBS        mir eckit_option )
 
 ecbuild_add_executable(
         TARGET      mir_stats
@@ -50,4 +50,4 @@ ecbuild_add_executable(
         TARGET      mir_integrate
         SOURCES     mir_integrate.cc
         INCLUDES    ${ATLAS_INCLUDE_DIRS}
-        LIBS        mir )
+        LIBS        mir eckit_option )
