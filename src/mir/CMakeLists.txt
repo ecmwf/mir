@@ -242,8 +242,6 @@ param/DelayedParametrisation.cc
 param/DelayedParametrisation.h
 param/FieldParametrisation.cc
 param/FieldParametrisation.h
-param/MIRArgs.cc
-param/MIRArgs.h
 param/MIRCombinedParametrisation.cc
 param/MIRCombinedParametrisation.h
 param/MIRConfiguration.cc
@@ -256,16 +254,6 @@ param/RuntimeParametrisation.cc
 param/RuntimeParametrisation.h
 param/SimpleParametrisation.cc
 param/SimpleParametrisation.h
-param/option/FactoryOption.cc
-param/option/FactoryOption.h
-param/option/Option.cc
-param/option/Option.h
-param/option/Separator.cc
-param/option/Separator.h
-param/option/SimpleOption.cc
-param/option/SimpleOption.h
-param/option/VectorOption.cc
-param/option/VectorOption.h
 repres/Gridded.cc
 repres/Gridded.h
 repres/Iterator.cc
@@ -368,12 +356,6 @@ util/RotatedIterator.h
 util/Rotation.cc
 util/Rotation.h
   )
-
-LIST(APPEND mir_tmpls
-          param/option/SimpleOption.cc
-          param/option/VectorOption.cc
-          param/option/FactoryOption.cc
-)
 
 ecbuild_add_library(
   TARGET             mir
