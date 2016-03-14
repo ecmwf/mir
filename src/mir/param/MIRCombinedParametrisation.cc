@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/config/Configuration.h"
 
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/log/MIR.h"
@@ -25,7 +26,8 @@ namespace mir {
 namespace param {
 
 
-MIRCombinedParametrisation::MIRCombinedParametrisation(const MIRParametrisation& user,
+MIRCombinedParametrisation::MIRCombinedParametrisation(
+        const eckit::Configuration& user,
         const MIRParametrisation& metadata,
         const MIRParametrisation& defaults):
     user_(user),

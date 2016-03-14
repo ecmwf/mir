@@ -19,6 +19,11 @@
 #include "mir/param/MIRParametrisation.h"
 
 
+namespace eckit {
+    class Configuration;
+}
+
+
 namespace mir {
 namespace param {
 
@@ -31,7 +36,7 @@ class MIRCombinedParametrisation : public MIRParametrisation {
 
 // -- Contructors
 
-    MIRCombinedParametrisation(const MIRParametrisation& user,
+    MIRCombinedParametrisation(const eckit::Configuration& user,
                                const MIRParametrisation& metadata,
                                const MIRParametrisation& defaults);
 
@@ -83,7 +88,7 @@ class MIRCombinedParametrisation : public MIRParametrisation {
     MIRCombinedParametrisation& operator=(const MIRCombinedParametrisation&);
 
 // -- Members
-    const MIRParametrisation& user_;
+    const eckit::Configuration& user_;
     const MIRParametrisation& metadata_;
     const MIRParametrisation& defaults_;
 
