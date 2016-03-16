@@ -26,7 +26,7 @@ ecbuild_add_executable(
 		TARGET      mir_shared_memory
 		SOURCES     mir_shared_memory.cc
 		INCLUDES    ${ATLAS_INCLUDE_DIRS}
-    LIBS        mir )
+    LIBS        mir eckit_option )
 
 ecbuild_add_executable(
 		TARGET      mir_make_lsm
@@ -44,7 +44,7 @@ ecbuild_add_executable(
         TARGET      mir_stats
         SOURCES     mir_stats.cc
         INCLUDES    ${ATLAS_INCLUDE_DIRS}
-        LIBS        mir )
+        LIBS        mir eckit_option )
 
 ecbuild_add_executable(
         TARGET      mir_integrate

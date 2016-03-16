@@ -27,7 +27,7 @@ namespace param {
 
 
 MIRCombinedParametrisation::MIRCombinedParametrisation(
-        const eckit::Configuration& user,
+        const MIRParametrisation& user,
         const MIRParametrisation& metadata,
         const MIRParametrisation& defaults):
     user_(user),

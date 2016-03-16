@@ -254,6 +254,8 @@ param/RuntimeParametrisation.cc
 param/RuntimeParametrisation.h
 param/SimpleParametrisation.cc
 param/SimpleParametrisation.h
+param/ConfigurationWrapper.cc
+param/ConfigurationWrapper.h
 repres/Gridded.cc
 repres/Gridded.h
 repres/Iterator.cc

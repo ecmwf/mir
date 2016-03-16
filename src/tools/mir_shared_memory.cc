@@ -13,13 +13,14 @@
 /// @date Apr 2015
 
 #include "eckit/runtime/Tool.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
 
 #include "mir/caching/SharedMemoryLoader.h"
-#include "mir/param/MIRArgs.h"
-#include "mir/param/option/SimpleOption.h"
 
-using mir::param::option::Option;
-using mir::param::option::SimpleOption;
+using eckit::option::Option;
+using eckit::option::SimpleOption;
+using eckit::option::CmdArgs;
 
 
 class MIRSharedMemory : public eckit::Tool {
@@ -50,7 +51,7 @@ void MIRSharedMemory::run() {
     options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
     options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
 
-    mir::param::MIRArgs args(&usage, 0, options);
+    CmdArgs args(&usage, 0, options);
 
     std::string path;
 

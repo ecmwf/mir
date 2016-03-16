@@ -21,6 +21,7 @@
 #include "atlas/grid/LonLatGrid.h"
 
 #include "mir/lsm/Mask.h"
+#include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
 
@@ -82,10 +83,11 @@ void MIRMakeLSM::run() {
 
     eckit::StdFile out(args.args(0), "w");
 
-
+    // Wrap the arguments, so that they behave as a MIRParameter
+    mir::param::ConfigurationWrapper wrapped_args(args);
 
     const mir::param::MIRParametrisation &defaults = mir::param::MIRDefaults::instance();
-    mir::param::MIRCombinedParametrisation combined(args, defaults, defaults);
+    mir::param::MIRCombinedParametrisation combined(wrapped_args, defaults, defaults);
 
     eckit::ScopedPtr<atlas::grid::Grid> grid(new atlas::grid::LonLatGrid(Ni,Nj,
                                     atlas::grid::LonLatGrid::INCLUDES_POLES));

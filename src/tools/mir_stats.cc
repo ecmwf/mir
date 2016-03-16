@@ -14,20 +14,19 @@
 
 #include <cmath>
 
+#include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/types/FloatCompare.h"
-#include "eckit/log/BigNum.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/param/MIRArgs.h"
-#include "mir/param/option/SimpleOption.h"
 
-using mir::param::option::Option;
-using mir::param::option::SimpleOption;
-
+using eckit::option::Option;
+using eckit::option::SimpleOption;
 
 
 class MIRStats : public eckit::Tool {
@@ -72,8 +71,7 @@ void MIRStats::run() {
     // options.push_back(new SimpleOption<double>("percent", "Maximum percentage of different values"));
     // options.push_back(new SimpleOption<bool>("ulps", "Comparing with ULPS (?)"));
 
-    mir::param::MIRArgs args(&usage, 1, options);
-
+    eckit::option::CmdArgs args(&usage, 1, options);
 
 
     mir::input::GribFileInput file(args.args(0));
