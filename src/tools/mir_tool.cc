@@ -16,6 +16,11 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 #include "eckit/mpi/ParallelContextBehavior.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/FactoryOption.h"
+#include "eckit/option/Separator.h"
+#include "eckit/option/SimpleOption.h"
+#include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Context.h"
 #include "eckit/runtime/Tool.h"
 
@@ -32,20 +37,15 @@
 #include "mir/output/UVOutput.h"
 #include "mir/output/WindOutput.h"
 #include "mir/packing/Packer.h"
-#include "mir/param/MIRArgs.h"
-#include "mir/param/option/FactoryOption.h"
-#include "mir/param/option/Separator.h"
-#include "mir/param/option/SimpleOption.h"
-#include "mir/param/option/VectorOption.h"
 #include "mir/log/MIR.h"
 
 using mir::MIR;
 
-using mir::param::option::Option;
-using mir::param::option::SimpleOption;
-using mir::param::option::Separator;
-using mir::param::option::VectorOption;
-using mir::param::option::FactoryOption;
+using eckit::option::Option;
+using eckit::option::SimpleOption;
+using eckit::option::Separator;
+using eckit::option::VectorOption;
+using eckit::option::FactoryOption;
 
 class MIRTool : public eckit::Tool {
 
@@ -165,7 +165,7 @@ void MIRTool::run() {
     // {"packing", "p", "e.g. second-order",},
 
 
-    mir::param::MIRArgs args(&usage, 2, options);
+    eckit::option::CmdArgs args(&usage, 2, options);
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;
@@ -174,7 +174,7 @@ void MIRTool::run() {
     }
 
     mir::api::MIRJob job;
-    args.copyValuesTo(job);
+    job.set(args.get());
 
     std::string same;
     if (args.get("same", same)) {

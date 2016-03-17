@@ -2,7 +2,7 @@ ecbuild_add_executable(
 		TARGET      mir_tool
 		SOURCES     mir_tool.cc
 		INCLUDES    ${ATLAS_INCLUDE_DIRS}
-    LIBS        mir )
+    LIBS        mir eckit_option )
 
 ecbuild_add_executable(
 		TARGET      mir_inspect
