@@ -25,6 +25,7 @@
 
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/global/gaussian/RegularGaussian.h"
+#include "atlas/grid/global/gaussian/ClassicGaussian.h"
 #include "atlas/grid/global/gaussian/latitudes/Latitudes.h"
 #include "atlas/grid/grids.h"
 
@@ -825,21 +826,14 @@ extern "C" void jnumgg_(const fortint &knum,
 
     kret = 0;
     try {
-        eckit::ScopedPtr<atlas::grid::global::Structured> grid(0);
-
-        if (htype[0] == 'R') {
-            std::ostringstream os;
-            os << "rgg.N" << knum;
-            grid.reset(dynamic_cast<atlas::grid::global::Structured *>(atlas::grid::Grid::create(os.str())));
-        }
-
-        if (htype[0] == 'F') {
-            grid.reset(dynamic_cast<atlas::grid::global::Structured*>(new atlas::grid::global::gaussian::RegularGaussian(knum)));
-        }
-
+        eckit::ScopedPtr<atlas::grid::global::Structured> grid(
+                    dynamic_cast<atlas::grid::global::Structured*>(
+                        htype[0] == 'R'? new atlas::grid::global::gaussian::ClassicGaussian(knum)
+                      : htype[0] == 'F'? new atlas::grid::global::gaussian::RegularGaussian(knum)
+                      : (atlas::grid::global::gaussian::Gaussian*) NULL ));
         ASSERT(grid.get());
 
-        const std::vector<int> &v = grid->npts_per_lat();
+        const std::vector<long> &v = grid->pl();
         for (size_t i = 0; i < v.size(); i++) {
             kpts[i] = v[i];
         }

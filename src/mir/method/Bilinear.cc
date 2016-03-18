@@ -122,7 +122,7 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atla
     if (!igg)
         throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
 
-    const std::vector<long>& lons = igg->points_per_latitude();
+    const std::vector<long>& lons = igg->pl();
     const size_t inpts = igg->npts();
 
     ASSERT(lons.size());

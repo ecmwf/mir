@@ -103,8 +103,18 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
         if (latlon) {
             ASSERT(trans_set_resol_lonlat(&trans, latlon->nlon(), latlon->nlat()) == 0);
         } else {
-            const std::vector<int> &points_per_latitudes = reduced->npts_per_lat();
-            ASSERT(trans_set_resol(&trans, points_per_latitudes.size(), &points_per_latitudes[0]) == 0);
+
+            const std::vector<long>& pl = reduced->pl();
+            ASSERT(pl.size());
+
+            std::vector<int> pli(pl.size());
+            ASSERT(pl.size()==pli.size());
+
+            for (size_t i=0; i<pl.size(); ++i) {
+                pli[i] = pl[i];
+            }
+
+            ASSERT(trans_set_resol(&trans, pli.size(), &pli[0]) == 0);
         }
 
         caching::LegendreCache cache;

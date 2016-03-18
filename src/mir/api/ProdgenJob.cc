@@ -21,6 +21,7 @@
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/grids.h"
 #include "atlas/grid/global/Structured.h"
+#include "atlas/grid/global/gaussian/ClassicGaussian.h"
 
 #include "mir/api/ProdgenJob.h"
 #include "mir/log/MIR.h"
@@ -183,6 +184,7 @@ const util::BoundingBox &ProdgenJob::bbox() const {
     return bbox_;
 }
 
+
 const std::string &ProdgenJob::gridType() const {
     return gridType_;
 }
@@ -207,17 +209,11 @@ size_t ProdgenJob::nj() const {
 
 
 void ProdgenJob::auto_pl() {
-    std::ostringstream os;
-    os << "rgg.N" << N_;
-    eckit::ScopedPtr<atlas::grid::global::Structured> grid(dynamic_cast<atlas::grid::global::Structured*>(atlas::grid::Grid::create(os.str())));
-
+    eckit::ScopedPtr<atlas::grid::global::Structured> grid(
+                dynamic_cast<atlas::grid::global::Structured*>(
+                    new atlas::grid::global::gaussian::ClassicGaussian(N_) ));
     ASSERT(grid.get());
-
-    const std::vector<int> &v = grid->npts_per_lat();
-    pl_.resize(v.size());
-    for (size_t i = 0; i < v.size(); i++) {
-        pl_[i] = v[i];
-    }
+    pl_ = grid->pl();
 }
 
 

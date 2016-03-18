@@ -40,8 +40,14 @@ class Grids : public eckit::Tool {
 
 void Grids::grid(const atlas::grid::global::Structured& grid) {
 
-    const std::vector<int> &points_per_latitudes = grid.npts_per_lat();
+    const std::vector<long>& pl = grid.pl();
+    ASSERT(pl.size());
+
+    std::vector<int> points_per_latitudes(pl.size());
+    ASSERT(pl.size()==points_per_latitudes.size());
+
     size_t half = points_per_latitudes.size() / 2;
+    ASSERT(half>0);
 
     std::vector<int> diff;
     diff.reserve(half);
