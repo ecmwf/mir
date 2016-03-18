@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -15,9 +15,9 @@
 
 #include "eckit/runtime/Tool.h"
 
-
 #include "atlas/grid/grids.h"
-#include "atlas/grid/OctahedralReducedGaussianGrid.h"
+#include "atlas/grid/global/gaussian/OctahedralGaussian.h"
+#include "atlas/grid/global/gaussian/ClassicGaussian.h"
 
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/RLE.h"
@@ -28,7 +28,7 @@ class Grids : public eckit::Tool {
     virtual void run();
 
     void usage(const std::string &tool);
-    void grid(const atlas::grid::ReducedGrid &);
+    void grid(const atlas::grid::global::Structured &);
 
   public:
     Grids(int argc, char **argv) :
@@ -37,7 +37,8 @@ class Grids : public eckit::Tool {
 
 };
 
-void Grids::grid(const atlas::grid::ReducedGrid &grid) {
+
+void Grids::grid(const atlas::grid::global::Structured& grid) {
 
     const std::vector<int> &points_per_latitudes = grid.npts_per_lat();
     size_t half = points_per_latitudes.size() / 2;
@@ -56,55 +57,57 @@ void Grids::grid(const atlas::grid::ReducedGrid &grid) {
     eckit::Log::info() << std::endl;
 }
 
+
 void Grids::run() {
+    using namespace atlas::grid::global::gaussian;
 
-    grid(atlas::grid::predefined::rgg::N16());
-    grid(atlas::grid::predefined::rgg::N24());
-    grid(atlas::grid::predefined::rgg::N32());
-    grid(atlas::grid::predefined::rgg::N48());
-    grid(atlas::grid::predefined::rgg::N64());
-    grid(atlas::grid::predefined::rgg::N80());
-    grid(atlas::grid::predefined::rgg::N96());
-    grid(atlas::grid::predefined::rgg::N128());
-    grid(atlas::grid::predefined::rgg::N160());
-    grid(atlas::grid::predefined::rgg::N200());
-    grid(atlas::grid::predefined::rgg::N256());
-    grid(atlas::grid::predefined::rgg::N320());
-    grid(atlas::grid::predefined::rgg::N400());
-    grid(atlas::grid::predefined::rgg::N512());
-    grid(atlas::grid::predefined::rgg::N576());
-    grid(atlas::grid::predefined::rgg::N640());
-    grid(atlas::grid::predefined::rgg::N800());
-    grid(atlas::grid::predefined::rgg::N1024());
-    grid(atlas::grid::predefined::rgg::N1280());
-    grid(atlas::grid::predefined::rgg::N1600());
-    grid(atlas::grid::predefined::rgg::N2000());
-    grid(atlas::grid::predefined::rgg::N4000());
-    grid(atlas::grid::predefined::rgg::N8000());
+    grid(ClassicGaussian(16));
+    grid(ClassicGaussian(24));
+    grid(ClassicGaussian(32));
+    grid(ClassicGaussian(48));
+    grid(ClassicGaussian(64));
+    grid(ClassicGaussian(80));
+    grid(ClassicGaussian(96));
+    grid(ClassicGaussian(128));
+    grid(ClassicGaussian(160));
+    grid(ClassicGaussian(200));
+    grid(ClassicGaussian(256));
+    grid(ClassicGaussian(320));
+    grid(ClassicGaussian(400));
+    grid(ClassicGaussian(512));
+    grid(ClassicGaussian(576));
+    grid(ClassicGaussian(640));
+    grid(ClassicGaussian(800));
+    grid(ClassicGaussian(1024));
+    grid(ClassicGaussian(1280));
+    grid(ClassicGaussian(1600));
+    grid(ClassicGaussian(2000));
+    grid(ClassicGaussian(4000));
+    grid(ClassicGaussian(8000));
 
-    grid(atlas::grid::OctahedralReducedGaussianGrid(16));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(24));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(32));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(48));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(64));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(80));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(96));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(128));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(160));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(200));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(256));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(320));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(400));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(512));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(576));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(640));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(800));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(1024));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(1280));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(1600));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(2000));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(4000));
-    grid(atlas::grid::OctahedralReducedGaussianGrid(8000));
+    grid(OctahedralGaussian(16));
+    grid(OctahedralGaussian(24));
+    grid(OctahedralGaussian(32));
+    grid(OctahedralGaussian(48));
+    grid(OctahedralGaussian(64));
+    grid(OctahedralGaussian(80));
+    grid(OctahedralGaussian(96));
+    grid(OctahedralGaussian(128));
+    grid(OctahedralGaussian(160));
+    grid(OctahedralGaussian(200));
+    grid(OctahedralGaussian(256));
+    grid(OctahedralGaussian(320));
+    grid(OctahedralGaussian(400));
+    grid(OctahedralGaussian(512));
+    grid(OctahedralGaussian(576));
+    grid(OctahedralGaussian(640));
+    grid(OctahedralGaussian(800));
+    grid(OctahedralGaussian(1024));
+    grid(OctahedralGaussian(1280));
+    grid(OctahedralGaussian(1600));
+    grid(OctahedralGaussian(2000));
+    grid(OctahedralGaussian(4000));
+    grid(OctahedralGaussian(8000));
 }
 
 

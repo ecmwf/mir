@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -24,6 +24,7 @@
 namespace mir {
 namespace repres {
 namespace reduced {
+
 
 class RotatedFromPL : public FromPL {
   public:
@@ -97,7 +98,7 @@ class RotatedFromPL : public FromPL {
     virtual atlas::grid::Grid *atlasGrid() const;
     virtual Iterator* rotatedIterator() const;
 
-    virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    virtual const Reduced* cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
 
     // -- Class members
     // None
@@ -112,7 +113,8 @@ class RotatedFromPL : public FromPL {
 
 };
 
-}
+
+}  // namespace reduced
 }  // namespace repres
 }  // namespace mir
 #endif

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,6 +11,7 @@
 /// @author Tiago Quintino
 /// @date   Jul 2015
 
+
 #include <cmath>
 
 #include "eckit/log/Plural.h"
@@ -19,26 +20,26 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/log/BigNum.h"
 
-#include "atlas/util/Constants.h"
-#include "atlas/grid/Grid.h"
-#include "atlas/mesh/Mesh.h"
-#include "atlas/functionspace/FunctionSpace.h"
 #include "atlas/array/IndexView.h"
-#include "atlas/mesh/actions/BuildXYZField.h"
-#include "atlas/mesh/actions/BuildConvexHull3D.h"
-#include "atlas/interpolation/Triag3D.h"
+#include "atlas/functionspace/FunctionSpace.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/global/Structured.h"
 #include "atlas/interpolation/Quad3D.h"
-#include "atlas/grid/ReducedGrid.h"
+#include "atlas/interpolation/Triag3D.h"
+#include "atlas/mesh/Mesh.h"
+#include "atlas/mesh/actions/BuildConvexHull3D.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/util/Constants.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/MIRArgs.h"
 #include "mir/param/option/SimpleOption.h"
-#include "mir/repres/Representation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Gridded.h"
+#include "mir/repres/Iterator.h"
+#include "mir/repres/Representation.h"
 
-using atlas::grid::ReducedGrid;
+
 using atlas::interpolation::Triag3D;
 using atlas::interpolation::Quad3D;
 using atlas::util::Constants;
@@ -55,12 +56,13 @@ class MIRIntegrate : public eckit::Tool {
 
     static void usage(const std::string &tool);
 
-
   public:
     MIRIntegrate(int argc, char **argv) :
         eckit::Tool(argc, argv) {
     }
+
 };
+
 
 void MIRIntegrate::usage(const std::string &tool) {
 
@@ -70,8 +72,10 @@ void MIRIntegrate::usage(const std::string &tool) {
     ::exit(1);
 }
 
+
 static const double oneThird  = 1./ 3.;
 static const double oneFourth = 1./ 4.;
+
 
 void MIRIntegrate::run() {
 
@@ -163,7 +167,8 @@ void MIRIntegrate::run() {
 
         eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );
 
-        const atlas::grid::ReducedGrid *reduced = dynamic_cast<const atlas::grid::ReducedGrid*>(grid.get());
+        const atlas::grid::global::Structured* reduced =
+                dynamic_cast<const atlas::grid::global::Structured*>(grid.get());
 
         ASSERT(reduced);
 

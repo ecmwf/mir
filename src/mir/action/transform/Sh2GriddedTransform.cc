@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -20,6 +20,8 @@
 
 #include "atlas/atlas.h"
 #include "atlas/grid/Grid.h"
+#include "atlas/grid/global/Structured.h"
+#include "atlas/grid/global/lonlat/RegularLonLat.h"
 #include "atlas/grid/grids.h"
 
 #include "eckit/thread/AutoLock.h"
@@ -60,6 +62,7 @@ static std::map<std::string, TransCache> trans_handles;
 
 #endif
 
+
 namespace mir {
 namespace action {
 
@@ -72,13 +75,13 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
     static TransInitor initor; // Will init trans if needed
 
-    const atlas::grid::ReducedGrid *reduced = dynamic_cast<const atlas::grid::ReducedGrid *>(&grid);
+    const atlas::grid::global::Structured* reduced = dynamic_cast<const atlas::grid::global::Structured*>(&grid);
 
     if (!reduced) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
     }
 
-    const atlas::grid::LonLatGrid *latlon = dynamic_cast<const atlas::grid::LonLatGrid *>(&grid);
+    const atlas::grid::global::lonlat::RegularLonLat* latlon = dynamic_cast<const atlas::grid::global::lonlat::RegularLonLat* >(&grid);
 
     std::ostringstream os;
 
@@ -185,8 +188,6 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
                             " Please recompile ATLAS was not compiled with TRANS support.");
 #endif
 }
-
-
 
 
 Sh2GriddedTransform::Sh2GriddedTransform(const param::MIRParametrisation &parametrisation):

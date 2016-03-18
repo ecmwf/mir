@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,6 +11,7 @@
 /// @author Tiago Quintino
 /// @author Pedro Maciel
 /// @date May 2015
+
 
 #include "mir/method/FiniteElement.h"
 
@@ -24,26 +25,25 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 
-#include "atlas/mesh/Nodes.h"
-#include "atlas/mesh/Elements.h"
-#include "atlas/mesh/ElementType.h"
-#include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/grid/global/Structured.h"
+#include "atlas/interpolation/PointIndex3.h"
 #include "atlas/interpolation/Quad3D.h"
 #include "atlas/interpolation/Ray.h"
 #include "atlas/interpolation/Triag3D.h"
-#include "atlas/mesh/generators/Delaunay.h"
-#include "atlas/grid/ReducedGrid.h"
-#include "atlas/array/IndexView.h"
-#include "atlas/interpolation/PointIndex3.h"
-#include "atlas/util/io/Gmsh.h"
-#include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/mesh/ElementType.h"
+#include "atlas/mesh/Elements.h"
+#include "atlas/mesh/Nodes.h"
 #include "atlas/mesh/actions/BuildCellCentres.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/util/io/Gmsh.h"
 
-#include "mir/param/MIRParametrisation.h"
 #include "mir/log/MIR.h"
+#include "mir/param/MIRParametrisation.h"
+
 
 namespace mir {
 namespace method {
+
 
 FiniteElement::MeshGenParams::MeshGenParams() {
     set("three_dimensional", true);
@@ -62,11 +62,14 @@ FiniteElement::FiniteElement(const param::MIRParametrisation &param) :
 FiniteElement::~FiniteElement() {
 }
 
+
 void FiniteElement::hash( eckit::MD5 &md5) const {
     MethodWeighted::hash(md5);
 }
 
+
 namespace {
+
 
 struct MeshStats {
 
@@ -98,6 +101,7 @@ enum { LON=0, LAT=1 };
 
 }
 
+
 static void normalise(Triplets& triplets)
 {
     // sum all calculated weights for normalisation
@@ -114,8 +118,8 @@ static void normalise(Triplets& triplets)
     }
 }
 
-/// Finds in which element the point is contained by projecting the point with each nearest element
 
+/// Finds in which element the point is contained by projecting the point with each nearest element
 static bool projectPointToElements(const MeshStats &stats,
                                    const atlas::array::ArrayView<double, 2> &icoords,
                                    const atlas::mesh::Elements::Connectivity &triag_nodes,
@@ -249,6 +253,7 @@ static bool projectPointToElements(const MeshStats &stats,
 
 
 static const double maxFractionElemsToTry = 0.2; // try to project to 20% of total number elements before giving up
+
 
 void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
 
