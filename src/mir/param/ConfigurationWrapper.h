@@ -18,6 +18,7 @@
 #include <string>
 
 #include "eckit/config/Configuration.h"
+#include "eckit/memory/NonCopyable.h"
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -36,7 +37,7 @@ namespace param {
 //----------------------------------------------------------------------------------------------------------------------
 
 
-class ConfigurationWrapper : public MIRParametrisation {
+class ConfigurationWrapper : public MIRParametrisation, private eckit::NonCopyable {
 
 public: // methods
 

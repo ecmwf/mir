@@ -16,7 +16,6 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/config/Configuration.h"
 
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/log/MIR.h"

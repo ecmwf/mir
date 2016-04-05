@@ -36,8 +36,6 @@
 #include "mir/input/GribFileInput.h"
 // #include "mir/output/GribFileOutput.h"
 #include "mir/data/MIRField.h"
-//#include "mir/param/MIRArgs.h"
-
 
 
 class LSM : public eckit::Tool {
