@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -16,6 +16,7 @@
 #ifndef RotatedGG_H
 #define RotatedGG_H
 
+
 #include "mir/repres/gauss/regular/Regular.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Rotation.h"
@@ -24,6 +25,7 @@
 namespace mir {
 namespace repres {
 namespace regular {
+
 
 class RotatedGG : public Regular {
   public:
@@ -112,8 +114,10 @@ class RotatedGG : public Regular {
 
 };
 
-}
+
+}  // namespace regular
 }  // namespace repres
 }  // namespace mir
+
 #endif
 

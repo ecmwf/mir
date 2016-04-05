@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,6 +11,7 @@
 /// @author Tiago Quintino
 /// @author Pedro Maciel
 /// @date July 2015
+
 
 #include "mir/method/Bilinear.h"
 
@@ -24,13 +25,15 @@
 #include "atlas/functionspace/FunctionSpace.h"
 #include "atlas/mesh/Mesh.h"
 #include "atlas/mesh/Nodes.h"
-#include "atlas/grid/ReducedGaussianGrid.h"
+#include "atlas/grid/global/Structured.h"
 #include "atlas/array/ArrayView.h"
 
 #include "mir/util/Compare.h"
 #include "mir/log/MIR.h"
 
+
 using eckit::FloatCompare;
+
 
 namespace mir {
 namespace method {
@@ -115,11 +118,11 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atla
 
 
     // Ensure the input is a reduced grid, and get the pl array
-    const atlas::grid::ReducedGrid* igg = dynamic_cast<const atlas::grid::ReducedGrid*>(&in);
+    const atlas::grid::global::Structured* igg = dynamic_cast<const atlas::grid::global::Structured*>(&in);
     if (!igg)
         throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
 
-    const std::vector<long>& lons = igg->points_per_latitude();
+    const std::vector<long>& lons = igg->pl();
     const size_t inpts = igg->npts();
 
     ASSERT(lons.size());

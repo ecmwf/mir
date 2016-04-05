@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,38 +12,35 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/api/emoslib.h"
 
+#include "mir/api/emoslib.h"
 
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
-#include "eckit/runtime/LibBehavior.h"
-#include "eckit/runtime/Context.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/log/Log.h"
+#include "eckit/runtime/Context.h"
+#include "eckit/runtime/LibBehavior.h"
+
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/global/gaussian/RegularGaussian.h"
+#include "atlas/grid/global/gaussian/ClassicGaussian.h"
+#include "atlas/grid/global/gaussian/latitudes/Latitudes.h"
+#include "atlas/grid/grids.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/api/ProdgenJob.h"
 #include "mir/input/GribMemoryInput.h"
-#include "mir/output/GribMemoryOutput.h"
-
-#include "atlas/grid/GaussianLatitudes.h"
-
+#include "mir/input/RawInput.h"
 #include "mir/input/VODInput.h"
-#include "mir/output/UVOutput.h"
-
 #include "mir/input/WindInput.h"
+#include "mir/log/MIR.h"
+#include "mir/output/GribMemoryOutput.h"
+#include "mir/output/RawOutput.h"
+#include "mir/output/UVOutput.h"
 #include "mir/output/WindOutput.h"
 
-#include "mir/input/RawInput.h"
-#include "mir/output/RawOutput.h"
-#include "mir/log/MIR.h"
-
-
-#include "atlas/grid/Grid.h"
-#include "atlas/grid/grids.h"
-#include "atlas/grid/GaussianLatitudes.h"
 
 namespace mir {
 namespace api {
@@ -51,9 +48,9 @@ namespace {
 
 
 static eckit::ScopedPtr<ProdgenJob> intin(0);
-
 static eckit::ScopedPtr<MIRJob> job(0);
 static bool unpacked = false;
+
 
 static void tidy(const char *in, char *out, size_t max) {
     size_t n = 0;
@@ -73,6 +70,7 @@ static bool boolean(const char *in) {
     throw eckit::SeriousBug(std::string("Invalid boolean: ") + in);
 }
 
+
 static void clear(MIRJob &job) {
     job.clear("grid");
     job.clear("truncation");
@@ -80,6 +78,7 @@ static void clear(MIRJob &job) {
     job.clear("regular");
     job.clear("reduced");
 }
+
 
 extern "C" fortint intout_(const char *name,
                            const fortint ints[],
@@ -209,6 +208,7 @@ extern "C" fortint intout_(const char *name,
     return 0;
 }
 
+
 extern "C" fortint intin_(const char *name,
                           const fortint ints[],
                           const fortfloat reals[],
@@ -307,6 +307,7 @@ extern "C" fortint intin_(const char *name,
 
 }
 
+
 extern "C" fortint intf_(const void *grib_in,
                          const fortint &length_in,
                          const fortfloat values_in[],
@@ -341,6 +342,7 @@ extern "C" fortint intf_(const void *grib_in,
     }
     return 0;
 }
+
 
 extern "C" fortint intf2(const void *grib_in,
                          const fortint &length_in,
@@ -388,6 +390,7 @@ extern "C" fortint intf2(const void *grib_in,
     return 0;
 }
 
+
 extern "C" fortint intuvs2_(char *vort_grib_in,
                             char *div_grib_in,
                             const fortint &length_in,
@@ -406,6 +409,7 @@ extern "C" fortint intuvs2_(char *vort_grib_in,
     }
     return 0;
 }
+
 
 extern "C" fortint intuvp2_(const void *vort_grib_in,
                             const void *div_grib_in,
@@ -483,6 +487,7 @@ extern "C" fortint intuvp2_(const void *vort_grib_in,
     return 0;
 }
 
+
 extern "C" fortint intvect2_(const void *u_grib_in,
                              const void *v_grib_in,
                              const fortint &length_in,
@@ -535,6 +540,7 @@ extern "C" fortint intvect2_(const void *u_grib_in,
     return 0;
 }
 
+
 extern "C" fortint intuvs_(const void *vort_grib_in,
                            const void *div_grib_in,
                            const fortint &length_in,
@@ -554,6 +560,7 @@ extern "C" fortint intuvs_(const void *vort_grib_in,
     return 0;
 }
 
+
 extern "C" fortint intuvp_(const void *vort_grib_in,
                            const void *div_grib_in,
                            const fortint &length_in,
@@ -571,6 +578,7 @@ extern "C" fortint intuvp_(const void *vort_grib_in,
     }
     return 0;
 }
+
 
 extern "C" fortint intvect_(const void *u_grib_in,
                             const void *v_grib_in,
@@ -590,6 +598,7 @@ extern "C" fortint intvect_(const void *u_grib_in,
     return 0;
 }
 
+
 extern "C" fortint iscrsz_() {
 
     eckit::Log::trace<MIR>() << "++++++ iscrsz" << std::endl;
@@ -603,6 +612,7 @@ extern "C" fortint iscrsz_() {
     return 0;
 }
 
+
 extern "C" fortint ibasini_(const fortint &force) {
 
     eckit::Log::trace<MIR>() << "++++++ ibasini" << std::endl;
@@ -613,6 +623,7 @@ extern "C" fortint ibasini_(const fortint &force) {
 
     return 0;
 }
+
 
 extern "C" void intlogm_(fortint (*)(char *, fortint)) {
 
@@ -626,18 +637,23 @@ extern "C" void intlogm_(fortint (*)(char *, fortint)) {
     }
 }
 
+
 typedef void (*emos_cb_proc)(char *);
+
 
 struct emos_cb_ctx {
     emos_cb_proc proc;
 };
 
+
 static emos_cb_ctx emos_ctx;
+
 
 static void callback(void *ctxt, const char *msg) {
     emos_cb_ctx *c = reinterpret_cast<emos_cb_ctx *>(ctxt);
     c->proc(const_cast<char *>(msg));
 }
+
 
 extern "C" void intlogs(emos_cb_proc proc) {
 
@@ -654,6 +670,7 @@ extern "C" void intlogs(emos_cb_proc proc) {
         eckit::Log::warning() << "INTLOGS: ContextBehavior is not a LibBehavior" << std::endl;
     }
 }
+
 
 extern "C" fortint areachk_(const fortfloat &we,
                             const fortfloat &ns,
@@ -727,6 +744,7 @@ extern "C" fortint areachk_(const fortfloat &we,
     return 0;
 }
 
+
 extern "C" fortint emosnum_(fortint &value) {
 
     eckit::Log::trace<MIR>() << "++++++ emosnum" << std::endl;
@@ -734,12 +752,14 @@ extern "C" fortint emosnum_(fortint &value) {
     return 42424242;
 }
 
+
 extern "C" void freecf_(const fortint &flag) {
     // C     KFLAG - Flag indicating whether flushing of memory is done or not
     // C              = 1 to turn on flushing
     // C              = any other value to turn off flushing (default)
     eckit::Log::trace<MIR>() << "++++++ freecf flag=" << flag << std::endl;
 }
+
 
 extern "C" void jvod2uv_(const fortfloat vor[],
                          const fortfloat div[],
@@ -786,15 +806,15 @@ extern "C" void jvod2uv_(const fortfloat vor[],
 }
 
 
-
 extern "C" fortint jgglat_(const fortint &KLAT, fortfloat PGAUSS[]) {
 
     eckit::Log::trace<MIR>() << "++++++ jgglat " << KLAT << std::endl;
     size_t N = KLAT / 2;
-    atlas::grid::gaussian_latitudes_npole_equator(N, PGAUSS);
+    atlas::grid::global::gaussian::latitudes::gaussian_latitudes_npole_equator(N, PGAUSS);
 
     return 0;
 }
+
 
 extern "C" void jnumgg_(const fortint &knum,
                         const char *htype,
@@ -806,21 +826,14 @@ extern "C" void jnumgg_(const fortint &knum,
 
     kret = 0;
     try {
-        eckit::ScopedPtr<atlas::grid::ReducedGrid> grid(0);
-
-        if (htype[0] == 'R') {
-            std::ostringstream os;
-            os << "rgg.N" << knum;
-            grid.reset(dynamic_cast<atlas::grid::ReducedGrid *>(atlas::grid::Grid::create(os.str())));
-        }
-
-        if (htype[0] == 'F') {
-            grid.reset(dynamic_cast<atlas::grid::ReducedGrid *>(new atlas::grid::GaussianGrid(knum)));
-        }
-
+        eckit::ScopedPtr<atlas::grid::global::Structured> grid(
+                    dynamic_cast<atlas::grid::global::Structured*>(
+                        htype[0] == 'R'? new atlas::grid::global::gaussian::ClassicGaussian(knum)
+                      : htype[0] == 'F'? new atlas::grid::global::gaussian::RegularGaussian(knum)
+                      : (atlas::grid::global::gaussian::Gaussian*) NULL ));
         ASSERT(grid.get());
 
-        const std::vector<int> &v = grid->npts_per_lat();
+        const std::vector<long> &v = grid->pl();
         for (size_t i = 0; i < v.size(); i++) {
             kpts[i] = v[i];
         }
@@ -829,8 +842,8 @@ extern "C" void jnumgg_(const fortint &knum,
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         kret = -2;
     }
-
 }
+
 
 extern "C" fortint wvqlint_(const fortint &knum,
                             const fortint numpts[],
@@ -902,6 +915,7 @@ extern "C" fortint wvqlint_(const fortint &knum,
     return 0;
 }
 
+
 extern "C" void wv2dint_(const fortint &knum,
                          const fortint numpts[],
                          const fortint &ke_w,
@@ -955,8 +969,8 @@ extern "C" void wv2dint_(const fortint &knum,
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         throw;
     }
-
 }
+
 
 extern "C" fortint hirlam_( const fortint &l12pnt,
                             const fortfloat oldfld[],
@@ -1019,6 +1033,7 @@ extern "C" fortint hirlam_( const fortint &l12pnt,
     return 0;
 }
 
+
 extern "C" fortint hirlsm_( const fortint &l12pnt,
                             const fortfloat oldfld[],
                             const fortint &kount,
@@ -1067,6 +1082,7 @@ extern "C" fortint hirlsm_( const fortint &l12pnt,
     }
     return 0;
 }
+
 
 extern "C" fortint hirlamw_(const fortint &l12pnt,
                             const fortfloat oldfldu[],
@@ -1127,6 +1143,7 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
     }
     return 0;
 }
+
 
 }  // (anonymous namespace)
 }  // namespace api

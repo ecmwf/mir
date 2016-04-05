@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,19 +12,18 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
 #include "eckit/memory/ScopedPtr.h"
 
 #include "atlas/grid/Grid.h"
-#include "atlas/grid/LocalGrid.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/log/MIR.h"
-
 
 
 namespace mir {

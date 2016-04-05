@@ -1,5 +1,5 @@
 /*
-* (C) Copyright 1996-2015 ECMWF.
+* (C) Copyright 1996-2016 ECMWF.
 *
 * This software is licensed under the terms of the Apache Licence Version 2.0
 * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,13 +12,14 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "eckit/io/StdFile.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Tool.h"
 
-#include "atlas/grid/LonLatGrid.h"
+#include "atlas/grid/global/lonlat/RegularLonLat.h"
 
 #include "mir/lsm/Mask.h"
 #include "mir/param/ConfigurationWrapper.h"
@@ -28,6 +29,7 @@
 
 using eckit::option::Option;
 using eckit::option::VectorOption;
+
 
 class MIRMakeLSM : public eckit::Tool {
 
@@ -42,6 +44,7 @@ class MIRMakeLSM : public eckit::Tool {
 
 };
 
+
 void MIRMakeLSM::usage(const std::string &tool) {
 
     eckit::Log::info()
@@ -50,6 +53,7 @@ void MIRMakeLSM::usage(const std::string &tool) {
 
     ::exit(1);
 }
+
 
 void MIRMakeLSM::run() {
 
@@ -89,8 +93,10 @@ void MIRMakeLSM::run() {
     const mir::param::MIRParametrisation &defaults = mir::param::MIRDefaults::instance();
     mir::param::MIRCombinedParametrisation combined(wrapped_args, defaults, defaults);
 
-    eckit::ScopedPtr<atlas::grid::Grid> grid(new atlas::grid::LonLatGrid(Ni,Nj,
-                                    atlas::grid::LonLatGrid::INCLUDES_POLES));
+    eckit::ScopedPtr<atlas::grid::Grid> grid(
+                new atlas::grid::global::lonlat::RegularLonLat(
+                    (const size_t) Ni,
+                    (const size_t) Nj ));
 
 
     mir::lsm::Mask &mask = mir::lsm::Mask::lookupOutput(combined, *grid);
