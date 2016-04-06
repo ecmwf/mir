@@ -28,11 +28,6 @@
 namespace mir {
 namespace param {
 
-template<class T>
-inline std::ostream &operator<<(std::ostream &s, const std::vector<T> &v) {
-    return eckit::__print_list(s, v);
-}
-
 class Setting {
   public:
     virtual ~Setting() {}
@@ -447,7 +442,7 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, long 
 }
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, size_t value) {
-    // TODO: Support unigned properly
+    // TODO: Support unsigned properly
     ASSERT(long(value) == value);
     _set(name, long(value));
     return *this;
