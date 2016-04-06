@@ -70,8 +70,16 @@ function( interpolation_add_test_compare
         set( _depends "${ARGV3}" )
     endif()
     set( _tolerate "" )
-    if( FALSE )
-        set( _tolerate "--relative=5 --percent=5" )  #FIXME
+    if(    (_label MATCHES "(F640|N640|O1280)_to_hirlam_non-rotated_F80")
+        OR (_label MATCHES "N640_to_F80")
+        OR (_label MATCHES "O1280_to_rotated_regular_ll")
+        OR (_label MATCHES "regular_ll_to_hirlam_non-rotated_(F48|F80)") )
+
+        # within 2x packing tolerance
+        set( _tolerate "--packing=2" )
+
+    elseif( FALSE )
+        set( _tolerate "--relative=5" "--percent=5" )  #FIXME
     endif()
     ecbuild_add_test(
         TARGET       ${_label}_compare
