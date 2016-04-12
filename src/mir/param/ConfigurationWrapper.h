@@ -61,12 +61,6 @@ protected: // methods
 
     virtual void print(std::ostream&) const;
 
-private: // methods (not implemented)
-
-    // Copying disallowed.
-    ConfigurationWrapper(const ConfigurationWrapper&);
-    ConfigurationWrapper& operator=(const ConfigurationWrapper&);
-
 private: // members
 
     // Store a reference to the configuration, so that the wrapper can mimic a MIRParametrisation
