@@ -14,11 +14,13 @@
 
 #include <cmath>
 
+#include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/types/FloatCompare.h"
-#include "eckit/log/BigNum.h"
 
 #include "atlas/array/IndexView.h"
 #include "atlas/functionspace/FunctionSpace.h"
@@ -33,8 +35,6 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/param/MIRArgs.h"
-#include "mir/param/option/SimpleOption.h"
 #include "mir/repres/Gridded.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
@@ -44,8 +44,8 @@ using atlas::interpolation::Triag3D;
 using atlas::interpolation::Quad3D;
 using atlas::util::Constants;
 
-using mir::param::option::Option;
-using mir::param::option::SimpleOption;
+using eckit::option::Option;
+using eckit::option::SimpleOption;
 
 using namespace mir;
 
@@ -85,7 +85,7 @@ void MIRIntegrate::run() {
 
 //     options.push_back(new SimpleOption<size_t>("buckets", "Bucket count for computing entropy (default 65536)"));
 
-    mir::param::MIRArgs args(&usage, 1, options);
+    eckit::option::CmdArgs args(&usage, 1, options);
 
     mir::input::GribFileInput file(args.args(0));
 

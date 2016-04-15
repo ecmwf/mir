@@ -16,16 +16,16 @@
 
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/param/MIRArgs.h"
-#include "mir/param/option/SimpleOption.h"
 
-using mir::param::option::Option;
-using mir::param::option::SimpleOption;
+using eckit::option::Option;
+using eckit::option::SimpleOption;
 
 static struct {
     size_t paramId_;
@@ -243,7 +243,7 @@ void MIRCompare::run() {
     options.push_back(new SimpleOption< bool   >("ulps",     "Comparing with ULPS (?)"));
     options.push_back(new SimpleOption< bool   >("l2norm",   "Compute L2 norm between 2 fields"));
 
-    mir::param::MIRArgs args(&usage, 2, options);
+    eckit::option::CmdArgs args(&usage, 2, options);
 
     args.get("absolute", user_absolute_);
     args.get("relative", user_relative_);

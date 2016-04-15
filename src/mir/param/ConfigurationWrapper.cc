@@ -1,0 +1,81 @@
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+/// @author Simon Smart
+/// @date March 2016
+
+#include "eckit/parser/JSON.h"
+
+#include "mir/param/ConfigurationWrapper.h"
+
+namespace mir {
+namespace param {
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+ConfigurationWrapper::ConfigurationWrapper(eckit::Configuration& config) :
+    configuration_(config) {}
+
+
+ConfigurationWrapper::~ConfigurationWrapper() {}
+
+
+bool ConfigurationWrapper::has(const std::string& name) const {
+    return configuration_.has(name);
+}
+
+
+bool ConfigurationWrapper::get(const std::string& name, std::string& value) const {
+    return configuration_.get(name, value);
+}
+
+
+bool ConfigurationWrapper::get(const std::string& name, bool& value) const {
+    return configuration_.get(name, value);
+}
+
+
+bool ConfigurationWrapper::get(const std::string& name, long& value) const {
+    return configuration_.get(name, value);
+}
+
+
+bool ConfigurationWrapper::get(const std::string& name, double& value) const {
+    return configuration_.get(name, value);
+}
+
+
+bool ConfigurationWrapper::get(const std::string& name, size_t& value) const {
+    return configuration_.get(name, value);
+}
+
+
+bool ConfigurationWrapper::get(const std::string& name, std::vector<long>& value) const {
+    return configuration_.get(name, value);
+}
+
+
+bool ConfigurationWrapper::get(const std::string& name, std::vector<double>& value) const {
+    return configuration_.get(name, value);
+}
+
+
+void ConfigurationWrapper::print(std::ostream& s) const {
+    s << "ConfigurationWrapper(";
+    s << configuration_;
+    s << ")";
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+}
+}

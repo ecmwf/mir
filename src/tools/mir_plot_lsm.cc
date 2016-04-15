@@ -14,20 +14,21 @@
 
 
 #include "eckit/io/StdFile.h"
-#include "eckit/runtime/Tool.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/VectorOption.h"
+#include "eckit/runtime/Tool.h"
 
 #include "atlas/grid/global/lonlat/RegularLonLat.h"
 
 #include "mir/lsm/Mask.h"
-#include "mir/param/MIRArgs.h"
+#include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
-#include "mir/param/option/VectorOption.h"
 
 
-using mir::param::option::Option;
-using mir::param::option::VectorOption;
+using eckit::option::Option;
+using eckit::option::VectorOption;
 
 
 class MIRMakeLSM : public eckit::Tool {
@@ -64,7 +65,7 @@ void MIRMakeLSM::run() {
     // options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
     // options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
 
-    mir::param::MIRArgs args(&usage, 1, options);
+    eckit::option::CmdArgs args(&usage, 1, options);
     args.set("lsm", true); // Force LSM
 
     size_t Ni = 360;
@@ -86,9 +87,11 @@ void MIRMakeLSM::run() {
 
     eckit::StdFile out(args.args(0), "w");
 
+    // Wrap the arguments, so that they behave as a MIRParameter
+    mir::param::ConfigurationWrapper wrapped_args(args);
 
     const mir::param::MIRParametrisation &defaults = mir::param::MIRDefaults::instance();
-    mir::param::MIRCombinedParametrisation combined(args, defaults, defaults);
+    mir::param::MIRCombinedParametrisation combined(wrapped_args, defaults, defaults);
 
     eckit::ScopedPtr<atlas::grid::Grid> grid(
                 new atlas::grid::global::lonlat::RegularLonLat(
