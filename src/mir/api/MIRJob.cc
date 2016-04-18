@@ -252,12 +252,11 @@ void MIRJob::json(eckit::JSON& json) const {
 }
 
 
-// This comes grom eckit::Context
-static eckit::RegisterConfigHome configs("mir", 4,
-        MIR_INSTALL_BIN_DIR,
-        MIR_DEVELOPER_BIN_DIR,
-        MIR_INSTALL_DATA_DIR,
-        MIR_DEVELOPER_BIN_DIR);
+// This comes from eckit::Context
+static eckit::RegisterConfigHome configs( "mir", 3,
+        MIR_INSTALL_DIR,
+        MIR_DEVELOPER_SRC_DIR,
+        MIR_DEVELOPER_BIN_DIR );
 
 }  // namespace api
 }  // namespace mir
