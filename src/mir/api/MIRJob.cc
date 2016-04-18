@@ -253,7 +253,7 @@ void MIRJob::json(eckit::JSON& json) const {
 
 
 // This comes grom eckit::Context
-static eckit::RegisterConfigHome configs("mir",
+static eckit::RegisterConfigHome configs("mir", 4,
         MIR_INSTALL_BIN_DIR,
         MIR_DEVELOPER_BIN_DIR,
         MIR_INSTALL_DATA_DIR,
