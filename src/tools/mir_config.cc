@@ -31,7 +31,7 @@ class MIRConfig : public eckit::Tool {
 
 
 void MIRConfig::run() {
-    eckit::PathName path("~mir/etc/interpolation-methods.cfg");
+    eckit::PathName path("~/etc/mir/interpolation-methods.cfg");
     eckit::Log::info() << "Path is " << path << std::endl;
     if(path.exists()) {
         eckit::Log::info() << "File exists" << std::endl;

@@ -251,13 +251,6 @@ void MIRJob::json(eckit::JSON& json) const {
     SimpleParametrisation::json(json);
 }
 
-
-// This comes from eckit::Context
-static eckit::RegisterConfigHome configs( "mir", 3,
-        MIR_INSTALL_DIR,
-        MIR_DEVELOPER_SRC_DIR,
-        MIR_DEVELOPER_BIN_DIR );
-
 }  // namespace api
 }  // namespace mir
 

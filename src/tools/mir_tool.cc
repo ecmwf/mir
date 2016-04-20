@@ -26,6 +26,8 @@
 
 #include "eckit/la/LinearAlgebra.h"
 
+#include "mir/mir_ecbuild_config.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/input/DummyInput.h"
 #include "mir/input/GribFileInput.h"
@@ -55,7 +57,7 @@ class MIRTool : public eckit::Tool {
     static void usage(const std::string &tool);
 
   public:
-    MIRTool(int argc, char **argv) : eckit::Tool(argc, argv) {
+    MIRTool(int argc, char **argv) : eckit::Tool(argc, argv, "MIRHOME", MIR_INSTALL_DIR ) {
         eckit::Context::instance().behavior(new eckit::mpi::ParallelContextBehavior());
     }
 

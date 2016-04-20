@@ -42,7 +42,7 @@ void AutoLSM::print(std::ostream& out) const {
 
 std::string AutoLSM::path(const param::MIRParametrisation &parametrisation) const {
     // TODO: Implement clever selection
-    return  "~mir/etc/lsm.N640.grib";
+    return  "~/share/mir/masks/lsm.N640.grib";
 }
 
 Mask *AutoLSM::create(const std::string &name,

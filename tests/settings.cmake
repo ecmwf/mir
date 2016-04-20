@@ -42,7 +42,7 @@ function( interpolation_add_test_interpol
         _file2
         _options )
     set( _depends     "" )
-    set( _environment "" )
+    set( _environment "MIRHOME=${CMAKE_BINARY_DIR}" )
     if( ${ARGC} GREATER 4 )
         set( _depends "${ARGV4}" )
     endif()
