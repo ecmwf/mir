@@ -71,7 +71,7 @@ function( interpolation_add_test_compare
     endif()
 
     # relax comparisons across platforms/compiler (FIXME: temporary)
-    unset( _tolerate "" )
+    unset( _tolerate )
     list( APPEND _tolerate "--percent=0.1" )
 
     if(    (_label MATCHES "(F640|N640|O1280)_to_hirlam_non-rotated_F80")
