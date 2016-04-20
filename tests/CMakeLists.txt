@@ -5,8 +5,6 @@ file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
 get_target_property( MIR_TOOL mir_tool LOCATION )
 
-########################################################################################################################
-#### TESTS
 
 # Test settings and helper functions
 include("${PROJECT_SOURCE_DIR}/tests/settings.cmake")
@@ -39,6 +37,7 @@ foreach( _t ${_test_reqs} )
       ARGS         ${_t} ${_file}.test
       TEST_DEPENDS mir_get_test_data
       ENVIRONMENT
+        MIRHOME=${CMAKE_BINARY_DIR}
         TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}
         ${_grib_environment} )
 
