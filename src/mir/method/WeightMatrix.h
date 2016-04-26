@@ -15,7 +15,7 @@
 #ifndef mir_method_WeightMatrix_H
 #define mir_method_WeightMatrix_H
 
-#include "eckit/la/SparseMatrix.h"
+#include "eckit/linalg/SparseMatrix.h"
 
 namespace eckit {
 class PathName;
@@ -27,24 +27,24 @@ namespace method {
 
 class WeightMatrix {
 
-    typedef eckit::la::SparseMatrix Matrix;
+    typedef eckit::linalg::SparseMatrix Matrix;
 
 public:
 
-    typedef eckit::la::Triplet Triplet;
+    typedef eckit::linalg::Triplet Triplet;
 
     WeightMatrix();
 
-    WeightMatrix(eckit::la::Index rows, eckit::la::Index cols);
+    WeightMatrix(eckit::linalg::Index rows, eckit::linalg::Index cols);
 
     void save(const eckit::PathName &path) const;
     void load(const eckit::PathName &path);
 
-    eckit::la::Index rows() const {
+    eckit::linalg::Index rows() const {
         return matrix_.rows();
     }
 
-    eckit::la::Index cols() const {
+    eckit::linalg::Index cols() const {
         return matrix_.cols();
     }
 
@@ -69,14 +69,14 @@ public:
 
     class inner_iterator : public Matrix::InnerIterator {
     public:
-        inner_iterator( WeightMatrix &m, eckit::la::Index outer) :
+        inner_iterator( WeightMatrix &m, eckit::linalg::Index outer) :
             Matrix::InnerIterator(m.matrix_, outer) {}
     };
 
     class inner_const_iterator : public Matrix::InnerIterator {
     public:
         // FIXME: Remove const_cast once SparseMatrix provides const iterator
-        inner_const_iterator(const WeightMatrix &m, eckit::la::Index outer) :
+        inner_const_iterator(const WeightMatrix &m, eckit::linalg::Index outer) :
             Matrix::InnerIterator(const_cast<Matrix&>(m.matrix_), outer) {}
     };
 

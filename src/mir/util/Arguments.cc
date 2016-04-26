@@ -256,7 +256,7 @@ Arguments::Arguments(int argc, char** argv) {
 
 
 #if 0
-    argument_option_t la("help1", "this help1", 1, "xs");
+    argument_option_t linalg("help1", "this help1", 1, "xs");
     argument_option_t lo("help2", "this help2", 1, "option", "optionparam");
     argument_option_t lc("help3", "this help3");
     /*

@@ -16,8 +16,8 @@
 
 #include "eckit/log/Log.h"
 
-#include "eckit/la/Vector.h"
-#include "eckit/la/LinearAlgebra.h"
+#include "eckit/linalg/Vector.h"
+#include "eckit/linalg/LinearAlgebra.h"
 
 #include "atlas/grid/Grid.h"
 #include "atlas/mesh/Mesh.h"
@@ -32,8 +32,8 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/log/MIR.h"
 
-using eckit::la::Vector;
-using eckit::la::LinearAlgebra;
+using eckit::linalg::Vector;
+using eckit::linalg::LinearAlgebra;
 using atlas::mesh::Mesh;
 using atlas::interpolation::Triag3D;
 using atlas::interpolation::Quad3D;
@@ -51,7 +51,7 @@ Conservative::Conservative(const param::MIRParametrisation &param) :
 Conservative::~Conservative() {
 }
 
-void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::grid::Grid& g) const
+void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::grid::Grid& g) const
 {
     eckit::Log::trace<MIR>() << "Conservative::computeLumpedMassMatrix" << std::endl;
 

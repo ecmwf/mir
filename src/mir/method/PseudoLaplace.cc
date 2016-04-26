@@ -12,7 +12,7 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-#include "eckit/la/Vector.h"
+#include "eckit/linalg/Vector.h"
 
 #include "mir/method/PseudoLaplace.h"
 
@@ -77,9 +77,9 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const
 
     std::vector<util::PointSearch::PointValueType> closest;
 
-    eckit::la::Vector Dx(nclosest_);
-    eckit::la::Vector Dy(nclosest_);
-    eckit::la::Vector Dz(nclosest_);
+    eckit::linalg::Vector Dx(nclosest_);
+    eckit::linalg::Vector Dy(nclosest_);
+    eckit::linalg::Vector Dz(nclosest_);
 
     std::vector<double> weights;
     weights.reserve(nclosest_);

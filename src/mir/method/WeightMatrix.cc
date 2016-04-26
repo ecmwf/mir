@@ -14,8 +14,8 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Plural.h"
 
-#include "eckit/la/LinearAlgebra.h"
-#include "eckit/la/Vector.h"
+#include "eckit/linalg/LinearAlgebra.h"
+#include "eckit/linalg/Vector.h"
 
 #include "atlas/interpolation/Intersect.h"
 
@@ -25,7 +25,7 @@
 
 #include <cmath>
 
-using eckit::la::Index;
+using eckit::linalg::Index;
 
 using mir::util::compare::is_approx_zero;
 using mir::util::compare::is_approx_one;
@@ -61,11 +61,11 @@ void WeightMatrix::prune(double value) {
 void WeightMatrix::multiply(const std::vector<double>& values, std::vector<double>& result) const {
 
     // FIXME: remove this const cast once Vector provides read-only view
-    eckit::la::Vector vi(const_cast<double *>(values.data()), values.size());
-    eckit::la::Vector vo(result.data(), result.size());
+    eckit::linalg::Vector vi(const_cast<double *>(values.data()), values.size());
+    eckit::linalg::Vector vo(result.data(), result.size());
 
     // TODO: linear algebra backend should depend on parametrisation
-    eckit::la::LinearAlgebra::backend().spmv(matrix_, vi, vo);
+    eckit::linalg::LinearAlgebra::backend().spmv(matrix_, vi, vo);
 }
 
 void WeightMatrix::cleanup() {
