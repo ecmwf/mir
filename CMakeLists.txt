@@ -21,12 +21,6 @@ ecbuild_use_package( PROJECT grib_api VERSION  1.14 REQUIRED )
 ecbuild_use_package( PROJECT eckit  VERSION  0.9  REQUIRED )
 ecbuild_use_package( PROJECT atlas  VERSION  0.6  REQUIRED )
 
-# Experimental features in eckit are required
-# TODO: remove requirement when no longer necessary
-if( NOT ECKIT_HAVE_EXPERIMENTAL )
-  message( FATAL_ERROR "Experimental features in eckit are required" )
-endif()
-
 # this will be replaced once ecbuild exports subcomponents between packages
 
 ecbuild_declare_project()
