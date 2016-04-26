@@ -24,7 +24,7 @@
 #include "eckit/runtime/Context.h"
 #include "eckit/runtime/Tool.h"
 
-#include "eckit/la/LinearAlgebra.h"
+#include "eckit/linalg/LinearAlgebra.h"
 
 #include "mir/mir_ecbuild_config.h"
 
@@ -107,7 +107,7 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<double>("epsilon", "Used by methods k-nearest and nearest-neighbour"));
     options.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
     options.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
-    options.push_back(new FactoryOption<eckit::la::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::la::LinearAlgebra::backend().name() + "')"));
+    options.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
 
     //==============================================
     options.push_back(new Separator("Rotation"));
@@ -172,7 +172,7 @@ void MIRTool::run() {
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;
     if (args.get("backend", backend)) {
-        eckit::la::LinearAlgebra::backend(backend);
+        eckit::linalg::LinearAlgebra::backend(backend);
     }
 
     mir::api::MIRJob job;
@@ -242,7 +242,7 @@ void MIRTool::run() {
 void MIRTool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
     eckit::Timer timer("Total time");
 
-    eckit::Log::info() << "Using '" << eckit::la::LinearAlgebra::backend().name() << "' backend." << std::endl;
+    eckit::Log::info() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.next()) {
