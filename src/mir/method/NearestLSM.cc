@@ -29,7 +29,6 @@
 
 
 using eckit::Log;
-using mir::method::WeightMatrix::Size;
 
 namespace mir {
 namespace method {
@@ -99,7 +98,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const at
 
     std::vector<WeightMatrix::Triplet> mat;
     mat.reserve(W.rows());
-    for (Size i=0; i<W.rows(); ++i) {
+    for (WeightMatrix::Size i=0; i<W.rows(); ++i) {
 
         // pick the (input) search tree matching the output mask
         util::PointSearch& sptree(
