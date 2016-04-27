@@ -24,12 +24,16 @@ class PathName;
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class WeightMatrix {
 
-    typedef eckit::linalg::SparseMatrix Matrix;
+public: // types
 
-public:
+    typedef eckit::linalg::SparseMatrix  Matrix;
+    typedef Matrix::Size                 Size;
+
+public: // methods
 
     typedef eckit::linalg::Triplet Triplet;
 
@@ -40,13 +44,9 @@ public:
     void save(const eckit::PathName &path) const;
     void load(const eckit::PathName &path);
 
-    eckit::linalg::Index rows() const {
-        return matrix_.rows();
-    }
+    Size rows() const { return matrix_.rows(); }
 
-    eckit::linalg::Index cols() const {
-        return matrix_.cols();
-    }
+    Size cols() const { return matrix_.cols(); }
 
     // Index innerSize() const {
     //     return matrix_.innerSize();
@@ -82,12 +82,12 @@ public:
 
     Matrix& matrix() { return matrix_; }
 
-private:
+private: // members
 
     Matrix matrix_;
 };
 
-
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

@@ -13,31 +13,28 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-
 #include "mir/method/NearestLSM.h"
 
-#if 0
-#include "eckit/log/BigNum.h"
-#include "eckit/log/Plural.h"
-#include "mir/data/MIRField.h"
-#endif
+#include "atlas/mesh/Nodes.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
+
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
+
+#include "mir/log/MIR.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/PointSearch.h"
-#include "atlas/mesh/Nodes.h"
-#include "atlas/mesh/actions/BuildXYZField.h"
-#include "mir/log/MIR.h"
 
 
 using eckit::Log;
-
+using mir::method::WeightMatrix::Size;
 
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
     MethodWeighted(param) {
@@ -102,7 +99,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const at
 
     std::vector<WeightMatrix::Triplet> mat;
     mat.reserve(W.rows());
-    for (size_t i=0; i<W.rows(); ++i) {
+    for (Size i=0; i<W.rows(); ++i) {
 
         // pick the (input) search tree matching the output mask
         util::PointSearch& sptree(
@@ -152,6 +149,7 @@ namespace {
 static MethodBuilder< NearestLSM > __method("nearest-lsm");
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
