@@ -85,7 +85,7 @@ void MIRIntegrate::run() {
 
 //     options.push_back(new SimpleOption<size_t>("buckets", "Bucket count for computing entropy (default 65536)"));
 
-    eckit::option::CmdArgs args(&usage, 1, options);
+    eckit::option::CmdArgs args(&usage, options, 1, 0);
 
     mir::input::GribFileInput file(args.args(0));
 

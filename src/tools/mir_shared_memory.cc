@@ -51,7 +51,7 @@ void MIRSharedMemory::run() {
     options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
     options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
 
-    CmdArgs args(&usage, 0, options);
+    CmdArgs args(&usage, options, 0, 0);
 
     std::string path;
 

@@ -65,7 +65,7 @@ void MIRMakeLSM::run() {
     // options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
     // options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
 
-    eckit::option::CmdArgs args(&usage, 1, options);
+    eckit::option::CmdArgs args(&usage, options, 1, 0);
     args.set("lsm", true); // Force LSM
 
     size_t Ni = 360;

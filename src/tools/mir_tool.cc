@@ -167,7 +167,7 @@ void MIRTool::run() {
     // {"packing", "p", "e.g. second-order",},
 
 
-    eckit::option::CmdArgs args(&usage, 2, options);
+    eckit::option::CmdArgs args(&usage, options, 2);
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;

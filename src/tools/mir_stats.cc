@@ -71,7 +71,7 @@ void MIRStats::run() {
     // options.push_back(new SimpleOption<double>("percent", "Maximum percentage of different values"));
     // options.push_back(new SimpleOption<bool>("ulps", "Comparing with ULPS (?)"));
 
-    eckit::option::CmdArgs args(&usage, 1, options);
+    eckit::option::CmdArgs args(&usage, options, 1, 0);
 
 
     mir::input::GribFileInput file(args.args(0));

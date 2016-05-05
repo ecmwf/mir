@@ -243,7 +243,7 @@ void MIRCompare::run() {
     options.push_back(new SimpleOption< bool   >("ulps",     "Comparing with ULPS (?)"));
     options.push_back(new SimpleOption< bool   >("l2norm",   "Compute L2 norm between 2 fields"));
 
-    eckit::option::CmdArgs args(&usage, 2, options);
+    eckit::option::CmdArgs args(&usage, options, 2);
 
     args.get("absolute", user_absolute_);
     args.get("relative", user_relative_);
