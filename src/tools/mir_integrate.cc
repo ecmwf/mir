@@ -87,7 +87,7 @@ void MIRIntegrate::run() {
 
     eckit::option::CmdArgs args(&usage, options, 1, 0);
 
-    mir::input::GribFileInput file(args.args(0));
+    mir::input::GribFileInput file(args(0));
 
     mir::input::MIRInput &input = file;
 
