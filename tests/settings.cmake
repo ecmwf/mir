@@ -32,7 +32,7 @@ if( grib_api_BASE_DIR )
   endif()
   set( _grib_environment
     GRIB_DEFINITION_PATH=${grib_api_BASE_DIR}/share/${grib_handling_pkg}/definitions
-    GRIB_SAMPLES_PATH=${grib_api_BASE_DIR}/share/${grib_handling_pkg}/samples/ )
+    GRIB_SAMPLES_PATH=${grib_api_BASE_DIR}/share/${grib_handling_pkg}/samples )
 endif()
 ecbuild_info( "Test _grib_environment: ${_grib_environment}" )
 
