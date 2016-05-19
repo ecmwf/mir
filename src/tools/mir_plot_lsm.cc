@@ -85,7 +85,7 @@ void MIRMakeLSM::run() {
 
     eckit::Log::info() << "Ni=" << Ni << ", Nj=" << Nj << std::endl;
 
-    eckit::StdFile out(args.args(0), "w");
+    eckit::StdFile out(args(0), "w");
 
     // Wrap the arguments, so that they behave as a MIRParameter
     mir::param::ConfigurationWrapper wrapped_args(args);

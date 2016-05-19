@@ -196,16 +196,16 @@ void MIRTool::run() {
 
     if (dummy) {
         mir::input::DummyInput input;
-        mir::output::GribFileOutput output(args.args(1));
+        mir::output::GribFileOutput output(args(1));
         process(job, input, output, "field");
     } else if (wind) {
         ASSERT(!vod2uv);
         ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
 
-        mir::input::GribFileInput input1(args.args(0), 0, 2);
-        mir::input::GribFileInput input2(args.args(0), 1, 2);
+        mir::input::GribFileInput input1(args(0), 0, 2);
+        mir::input::GribFileInput input2(args(0), 1, 2);
 
-        mir::output::GribFileOutput output(args.args(1));
+        mir::output::GribFileOutput output(args(1));
 
 
         mir::input::WindInput winput(input1, input2);
@@ -216,9 +216,9 @@ void MIRTool::run() {
         ASSERT(!wind);
         ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
 
-        mir::input::GribFileInput input1(args.args(0), 0, 2);
-        mir::input::GribFileInput input2(args.args(0), 1, 2);
-        mir::output::GribFileOutput output(args.args(1));
+        mir::input::GribFileInput input1(args(0), 0, 2);
+        mir::input::GribFileInput input2(args(0), 1, 2);
+        mir::output::GribFileOutput output(args(1));
 
         mir::input::VODInput winput(input1, input2);
         mir::output::UVOutput woutput(output, output);
@@ -226,8 +226,8 @@ void MIRTool::run() {
 
     } else {
 
-        mir::input::GribFileInput input(args.args(0));
-        mir::output::GribFileOutput output(args.args(1));
+        mir::input::GribFileInput input(args(0));
+        mir::output::GribFileOutput output(args(1));
 
         std::string path_lat, path_lon;
         ASSERT(args.has("latitudes") ==  args.has("longitudes"));

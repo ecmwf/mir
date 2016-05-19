@@ -263,8 +263,8 @@ void MIRCompare::run() {
         real_same_.reset( new FloatApproxCompare<double>(0, user_ulps_) );
     }
 
-    mir::input::GribFileInput file1(args.args(0));
-    mir::input::GribFileInput file2(args.args(1));
+    mir::input::GribFileInput file1(args(0));
+    mir::input::GribFileInput file2(args(1));
 
     mir::input::MIRInput &input1 = file1;
     mir::input::MIRInput &input2 = file2;
