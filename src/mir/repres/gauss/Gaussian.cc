@@ -52,6 +52,11 @@ Gaussian::Gaussian(const param::MIRParametrisation &parametrisation):
 Gaussian::~Gaussian() {
 }
 
+std::vector<double> Gaussian::latitudes(size_t N) {
+    std::vector<double> latitudes(2 * N);
+    atlas::grid::global::gaussian::latitudes::gaussian_latitudes_npole_spole(N, &latitudes[0]);
+    return latitudes;
+}
 
 // This returns the Gaussian latititudes of a GLOBAL field
 const std::vector <double> &Gaussian::latitudes() const {

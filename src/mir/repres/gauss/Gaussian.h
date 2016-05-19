@@ -55,7 +55,8 @@ class Gaussian : public Gridded {
     // None
 
     // -- Class methods
-    // None
+
+    static std::vector<double> latitudes(size_t N);
 
   protected:
 
