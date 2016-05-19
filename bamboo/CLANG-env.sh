@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # No module environment on the Mac
 [[ $(uname) == "Darwin" ]] && return
 
