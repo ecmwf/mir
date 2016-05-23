@@ -184,7 +184,7 @@ class CannotConvert : public eckit::Exception {
 
 template<class T>
 static void convertion_warning(const char *from, const char *to, const std::string &name, const T &value) {
-    eckit::Log::warning() << "   +++ WARNING: Converting " << value << " from " << from << " to " << to << " (requesting " << name << ")" << std::endl;
+    // eckit::Log::warning() << "   +++ WARNING: Converting " << value << " from " << from << " to " << to << " (requesting " << name << ")" << std::endl;
 }
 
 // We will implement convertion as needed
