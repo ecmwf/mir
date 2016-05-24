@@ -79,6 +79,8 @@ class LatLon : public Gridded {
                             const util::Increments& increments);
 
     virtual bool globalDomain() const;
+    virtual atlas::grid::Domain atlasDomain() const;
+
     virtual Iterator* rotatedIterator() const; // After rotation
     virtual Iterator* unrotatedIterator() const; // Before rotation
 

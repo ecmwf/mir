@@ -62,17 +62,16 @@ class Gridded : public Representation {
 
 // -- Methods
 
-    static size_t computeN(double first, double last, double inc, const char *n_name, const char *first_name, const char *last_name);
-
-
 // -- Overridden methods
-    // None
+
+    virtual bool globalDomain() const;
 
 // -- Class members
     // None
 
 // -- Class methods
-    // None
+
+    static size_t computeN(double first, double last, double inc, const char *n_name, const char *first_name, const char *last_name);
 
   private:
 
@@ -84,8 +83,6 @@ class Gridded : public Representation {
 // -- Members
 
 // -- Methods
-
-    virtual bool globalDomain() const;
 
 
 

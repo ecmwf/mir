@@ -64,6 +64,7 @@ class Reduced : public Gaussian {
     // -- Methods
 
     virtual bool globalDomain() const;
+    virtual atlas::grid::Domain atlasDomain() const;
 
     // void print(std::ostream &) const; // Change to virtual if base class
 

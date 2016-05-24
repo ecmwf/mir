@@ -70,7 +70,9 @@ class Gaussian : public Gridded {
     const std::vector<double> &latitudes() const;
 
     // -- Overridden methods
-    // None
+
+    virtual atlas::grid::Domain atlasDomain() const;
+
 
     // -- Class members
     // None

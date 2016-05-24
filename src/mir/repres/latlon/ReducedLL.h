@@ -90,6 +90,7 @@ class ReducedLL : public Gridded {
 // -- Methods
 
     virtual bool globalDomain() const;
+    virtual atlas::grid::Domain atlasDomain() const;
 
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField&) const;
 

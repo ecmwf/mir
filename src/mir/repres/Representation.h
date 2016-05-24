@@ -23,6 +23,7 @@
 namespace atlas {
 namespace grid {
 class Grid;
+class Domain;
 }
 }
 
@@ -106,6 +107,7 @@ class Representation {
                                      const std::vector<double>&, std::vector<double>&) const;
 
     virtual atlas::grid::Grid* atlasGrid() const;
+    virtual atlas::grid::Domain atlasDomain() const;
 
     virtual size_t truncation() const;
 

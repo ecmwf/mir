@@ -19,6 +19,7 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "atlas/grid/global/gaussian/latitudes/Latitudes.h"
+#include "atlas/grid/Domain.h"
 
 #include "mir/util/Grib.h"
 #include "mir/util/BoundingBox.h"
@@ -65,6 +66,12 @@ const std::vector <double> &Gaussian::latitudes() const {
         atlas::grid::global::gaussian::latitudes::gaussian_latitudes_npole_spole(N_, &latitudes_[0]);
     }
     return latitudes_;
+}
+
+atlas::grid::Domain Gaussian::atlasDomain() const {
+    return globalDomain()
+        ? atlas::grid::Domain::makeGlobal()
+        : atlas::grid::Domain(bbox_.north(), bbox_.west(), bbox_.south(), bbox_.east());
 }
 
 
