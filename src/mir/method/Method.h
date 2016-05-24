@@ -30,7 +30,9 @@ class MD5;
 
 
 namespace atlas {
+namespace grid {
 class Grid;
+}
 }
 
 
@@ -57,7 +59,7 @@ class Method : private eckit::NonCopyable {
 
     virtual void hash( eckit::MD5 & ) const = 0;
 
-    virtual void execute(data::MIRField &, const atlas::Grid &, const atlas::Grid &) const = 0;
+    virtual void execute(data::MIRField &, const atlas::grid::Grid &, const atlas::grid::Grid &) const = 0;
 
   protected:
 

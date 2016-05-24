@@ -16,6 +16,7 @@
 #ifndef GribOutput_H
 #define GribOutput_H
 
+#include "eckit/io/Length.h"
 #include "mir/output/MIROutput.h"
 
 
@@ -86,6 +87,8 @@ class GribOutput : public MIROutput {
 
 // -- Members
 
+    eckit::Length total_;
+
 // -- Methods
 
     virtual void out(const void* message, size_t length, bool iterpolated) = 0;
@@ -95,7 +98,7 @@ class GribOutput : public MIROutput {
 
     virtual void copy(const param::MIRParametrisation&, input::MIRInput&); // Not iterpolation performed
     virtual void save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&);
-
+    virtual eckit::Length total() const;
 
 // -- Class members
     // None

@@ -12,7 +12,7 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-#include "eckit/la/Vector.h"
+#include "eckit/linalg/Vector.h"
 
 #include "mir/method/PseudoLaplace.h"
 
@@ -20,7 +20,7 @@
 
 #include "mir/util/PointSearch.h"
 #include "mir/param/MIRParametrisation.h"
-#include "atlas/actions/BuildXYZField.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/mesh/Nodes.h"
 #include "eckit/log/Timer.h"
 #include "mir/log/MIR.h"
@@ -28,6 +28,11 @@
 namespace mir {
 namespace method {
 
+namespace {
+
+enum { XX=0, YY=1, ZZ=2 };
+
+}
 
 PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
     MethodWeighted(param),
@@ -49,20 +54,20 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
     md5 << nclosest_;
 }
 
-void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
+void PseudoLaplace::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const {
 
     eckit::TraceTimer<MIR> timer("PseudoLaplace::assemble");
     eckit::Log::trace<MIR>() << "PseudoLaplace::assemble" << std::endl;
 
     util::PointSearch  sptree(in.mesh());
 
-    atlas::Mesh& o_mesh = const_cast<atlas::Mesh&>(out.mesh());
+    atlas::mesh::Mesh& o_mesh = const_cast<atlas::mesh::Mesh&>(out.mesh());
 
     // output points
     atlas::mesh::Nodes& o_nodes = o_mesh.nodes();
 
-    atlas::actions::BuildXYZField("xyz")(o_nodes);
-    atlas::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
+    atlas::mesh::actions::BuildXYZField("xyz")(o_nodes);
+    atlas::array::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
 
     const size_t out_npts = o_nodes.size();
 
@@ -72,9 +77,9 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
 
     std::vector<util::PointSearch::PointValueType> closest;
 
-    eckit::la::Vector Dx(nclosest_);
-    eckit::la::Vector Dy(nclosest_);
-    eckit::la::Vector Dz(nclosest_);
+    eckit::linalg::Vector Dx(nclosest_);
+    eckit::linalg::Vector Dy(nclosest_);
+    eckit::linalg::Vector Dz(nclosest_);
 
     std::vector<double> weights;
     weights.reserve(nclosest_);
@@ -95,9 +100,6 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
 
         for( size_t j = 0; j < npts; ++j) {
             eckit::geometry::Point3 np  = closest[j].point();
-            using atlas::XX;
-            using atlas::YY;
-            using atlas::ZZ;
 
             dx = np[XX] - p[XX];
             dy = np[YY] - p[YY];

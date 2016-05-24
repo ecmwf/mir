@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,6 +12,7 @@
 /// @author Pedro Maciel
 /// @date July 2015
 
+
 #include "mir/method/Bilinear.h"
 
 #include <cmath>
@@ -20,17 +21,19 @@
 
 #include "eckit/log/Log.h"
 
-#include "atlas/Field.h"
-#include "atlas/FunctionSpace.h"
-#include "atlas/Mesh.h"
+#include "atlas/field/Field.h"
+#include "atlas/functionspace/FunctionSpace.h"
+#include "atlas/mesh/Mesh.h"
 #include "atlas/mesh/Nodes.h"
-#include "atlas/grids/ReducedGaussianGrid.h"
-#include "atlas/util/ArrayView.h"
+#include "atlas/grid/global/Structured.h"
+#include "atlas/array/ArrayView.h"
 
 #include "mir/util/Compare.h"
 #include "mir/log/MIR.h"
 
+
 using eckit::FloatCompare;
+
 
 namespace mir {
 namespace method {
@@ -41,7 +44,7 @@ namespace {
 
 void left_right_lon_indexes(
     const double& in,
-    const atlas::ArrayView<double, 2>& coords,
+    const atlas::array::ArrayView<double, 2>& coords,
     const size_t start,
     const size_t end,
     size_t& left,
@@ -100,7 +103,7 @@ void Bilinear::hash(eckit::MD5 &md5) const {
 }
 
 
-void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
+void Bilinear::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
@@ -115,11 +118,11 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
 
     // Ensure the input is a reduced grid, and get the pl array
-    const atlas::grids::ReducedGrid* igg = dynamic_cast<const atlas::grids::ReducedGrid*>(&in);
+    const atlas::grid::global::Structured* igg = dynamic_cast<const atlas::grid::global::Structured*>(&in);
     if (!igg)
         throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
 
-    const std::vector<long>& lons = igg->points_per_latitude();
+    const std::vector<long>& lons = igg->pl();
     const size_t inpts = igg->npts();
 
     ASSERT(lons.size());
@@ -133,8 +136,8 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
 
     // access the input/output fields coordinates
-    atlas::ArrayView<double, 2> icoords( in .mesh().nodes().lonlat() );
-    atlas::ArrayView<double, 2> ocoords( out.mesh().nodes().lonlat() );
+    atlas::array::ArrayView<double, 2> icoords( in .mesh().nodes().lonlat() );
+    atlas::array::ArrayView<double, 2> ocoords( out.mesh().nodes().lonlat() );
 
 
     // check input min/max latitudes (gaussian grids exclude the poles)

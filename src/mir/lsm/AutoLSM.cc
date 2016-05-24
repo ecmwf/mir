@@ -42,12 +42,12 @@ void AutoLSM::print(std::ostream& out) const {
 
 std::string AutoLSM::path(const param::MIRParametrisation &parametrisation) const {
     // TODO: Implement clever selection
-    return  "~mir/etc/lsm.N640.grib";
+    return  "~/share/mir/masks/lsm.N640.grib";
 }
 
 Mask *AutoLSM::create(const std::string &name,
                       const param::MIRParametrisation &param,
-                      const atlas::Grid &grid,
+                      const atlas::grid::Grid &grid,
                       const std::string& which) const {
 
     // Mask* mask = new TenMinutesLSM(name, param, grid, which);
@@ -60,7 +60,7 @@ Mask *AutoLSM::create(const std::string &name,
 
 std::string AutoLSM::cacheKey(const std::string &name,
                               const param::MIRParametrisation &param,
-                              const atlas::Grid &grid,
+                              const atlas::grid::Grid &grid,
                               const std::string& which) const {
     eckit::MD5 md5;
     GribFileLSM::hashCacheKey(md5, path(param), param, grid, which); // We need to take the lsm interpolation method into account

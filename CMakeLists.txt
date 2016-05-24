@@ -4,7 +4,7 @@
 #
 ############################################################################################
 
-cmake_minimum_required( VERSION 2.8.4 FATAL_ERROR )
+cmake_minimum_required( VERSION 2.8.11 FATAL_ERROR )
 
 project( mir C CXX )
 
@@ -16,16 +16,21 @@ ecbuild_requires_macro_version( 1.9 )
 
 ###############################################################################
 # project
+ecbuild_add_option( FEATURE ECCODES DESCRIPTION "" DEFAULT OFF )
 
-ecbuild_use_package( PROJECT grib_api VERSION  1.14 REQUIRED )
-ecbuild_use_package( PROJECT eckit  VERSION  0.9  REQUIRED )
-ecbuild_use_package( PROJECT atlas  VERSION  0.4  REQUIRED )
-
-# Experimental features in eckit are required
-# TODO: remove requirement when no longer necessary
-if( NOT ECKIT_HAVE_EXPERIMENTAL )
-  message( FATAL_ERROR "Experimental features in eckit are required" )
+if( HAVE_ECCODES )
+  ecbuild_use_package( PROJECT eccodes VERSION 0.14 REQUIRED )
+  set( GRIB_API_INCLUDE_DIRS ${ECCODES_INCLUDE_DIRS} )
+  set( GRIB_API_LIBRARIES    ${ECCODES_LIBRARIES} )
+  set( GRIB_API_DEFINITIONS  ${ECCODES_DEFINITIONS} )
+  set( grib_api_BASE_DIR     ${eccodes_BASE_DIR} )
+else()
+  ecbuild_use_package( PROJECT grib_api VERSION 1.14 REQUIRED )
 endif()
+
+
+ecbuild_use_package( PROJECT eckit  VERSION  0.9  REQUIRED )
+ecbuild_use_package( PROJECT atlas  VERSION  0.6  REQUIRED )
 
 # this will be replaced once ecbuild exports subcomponents between packages
 
@@ -37,38 +42,24 @@ ecbuild_declare_project()
 ecbuild_add_cxx11_flags()
 ecbuild_check_cxx11( PRINT )
 
-### OMP
+ecbuild_add_option( FEATURE OMP               DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
+ecbuild_add_option( FEATURE MPI               DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
+ecbuild_add_option( FEATURE NETCDF            DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
+ecbuild_add_option( FEATURE MIR_TESTS_REGRESS DEFAULT OFF DESCRIPTION "additional tests: regression" )
 
-ecbuild_add_option( FEATURE OMP
-                    DESCRIPTION "support for OpenMP shared memory parallelism"
-                    DEFAULT ON )
-
+# OMP/MPI features handling
 if( ENABLE_OMP )
   ecbuild_enable_omp()
 else()
   ecbuild_enable_ompstubs()
 endif()
 
-### MPI
-
-ecbuild_add_option( FEATURE MPI
-                    DEFAULT OFF
-                    DESCRIPTION "support for MPI distributed parallelism" )
-
 if( ENABLE_MPI )
-
   ecbuild_enable_mpi()
-
   if( NOT MPI_CXX_FOUND )
     set( HAVE_MPI 0 )
   endif()
-
 endif()
-
-ecbuild_add_option( FEATURE NETCDF
-                    DEFAULT ON
-                    DESCRIPTION "support for NetCDF4"
-                    REQUIRED_PACKAGES NetCDF4 )
 
 if( HAVE_NETCDF )
   list( APPEND MIR_FEATURE_LIBRARIES ${NETCDF_LIBRARIES} )
@@ -97,9 +88,10 @@ endforeach()
 
 include_directories( ${MIR_INCLUDE_DIRS} ${MIR_EXTRA_INCLUDE_DIRS}  )
 
-add_subdirectory( src )
-add_subdirectory( etc )
-add_subdirectory( tests )
+add_subdirectory( "src" )
+add_subdirectory( "etc" )
+add_subdirectory( "share" )
+add_subdirectory( "tests" )
 
 ### installation
 

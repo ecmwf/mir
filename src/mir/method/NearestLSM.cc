@@ -13,31 +13,27 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-
 #include "mir/method/NearestLSM.h"
 
-#if 0
-#include "eckit/log/BigNum.h"
-#include "eckit/log/Plural.h"
-#include "mir/data/MIRField.h"
-#endif
+#include "atlas/mesh/Nodes.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
+
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
+
+#include "mir/log/MIR.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/PointSearch.h"
-#include "atlas/mesh/Nodes.h"
-#include "atlas/actions/BuildXYZField.h"
-#include "mir/log/MIR.h"
 
 
 using eckit::Log;
 
-
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
     MethodWeighted(param) {
@@ -53,7 +49,7 @@ const char *NearestLSM::name() const {
 }
 
 
-void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
+void NearestLSM::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
 
     eckit::TraceTimer<MIR> timer("NearestLSM::assemble");
     eckit::Log::trace<MIR>() << "NearestLSM::assemble" << std::endl;
@@ -85,11 +81,11 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
     // compute the output nodes coordinates
     here = timer.elapsed();
 
-    atlas::Mesh &o_mesh = out.mesh();
-    atlas::actions::BuildXYZField("xyz")(o_mesh);
+    atlas::mesh::Mesh &o_mesh = out.mesh();
+    atlas::mesh::actions::BuildXYZField("xyz")(o_mesh);
 
     ASSERT(o_mesh.nodes().has_field("xyz"));
-    atlas::ArrayView< double, 2 > ocoords(
+    atlas::array::ArrayView< double, 2 > ocoords(
                 o_mesh.nodes().field("xyz") );
 
     Log::trace<MIR>() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
@@ -102,7 +98,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
 
     std::vector<WeightMatrix::Triplet> mat;
     mat.reserve(W.rows());
-    for (size_t i=0; i<W.rows(); ++i) {
+    for (WeightMatrix::Size i=0; i<W.rows(); ++i) {
 
         // pick the (input) search tree matching the output mask
         util::PointSearch& sptree(
@@ -131,7 +127,7 @@ void NearestLSM::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::G
 }
 
 
-lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid &in, const atlas::Grid &out) const {
+lsm::LandSeaMasks NearestLSM::getMasks(const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
     return lsm::LandSeaMasks::lookup(runtime, in, out);
@@ -152,6 +148,7 @@ namespace {
 static MethodBuilder< NearestLSM > __method("nearest-lsm");
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

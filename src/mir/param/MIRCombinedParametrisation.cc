@@ -25,7 +25,8 @@ namespace mir {
 namespace param {
 
 
-MIRCombinedParametrisation::MIRCombinedParametrisation(const MIRParametrisation& user,
+MIRCombinedParametrisation::MIRCombinedParametrisation(
+        const MIRParametrisation& user,
         const MIRParametrisation& metadata,
         const MIRParametrisation& defaults):
     user_(user),

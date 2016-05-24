@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,6 +11,7 @@
 /// @author Tiago Quintino
 /// @author Pedro Maciel
 /// @date May 2015
+
 
 #include "mir/method/FiniteElement.h"
 
@@ -24,24 +25,25 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 
+#include "atlas/grid/global/Structured.h"
+#include "atlas/interpolation/PointIndex3.h"
+#include "atlas/interpolation/Quad3D.h"
+#include "atlas/interpolation/Ray.h"
+#include "atlas/interpolation/Triag3D.h"
+#include "atlas/mesh/ElementType.h"
+#include "atlas/mesh/Elements.h"
 #include "atlas/mesh/Nodes.h"
-#include "atlas/actions/BuildXYZField.h"
-#include "atlas/geometry/Quad3D.h"
-#include "atlas/geometry/Ray.h"
-#include "atlas/geometry/Triag3D.h"
-#include "atlas/meshgen/Delaunay.h"
-#include "atlas/grids/ReducedGrid.h"
-#include "atlas/util/IndexView.h"
-#include "atlas/util/PointIndex3.h"
-#include "atlas/io/Gmsh.h"
-#include "atlas/actions/BuildXYZField.h"
-#include "atlas/actions/BuildCellCentres.h"
+#include "atlas/mesh/actions/BuildCellCentres.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/util/io/Gmsh.h"
 
-#include "mir/param/MIRParametrisation.h"
 #include "mir/log/MIR.h"
+#include "mir/param/MIRParametrisation.h"
+
 
 namespace mir {
 namespace method {
+
 
 FiniteElement::MeshGenParams::MeshGenParams() {
     set("three_dimensional", true);
@@ -60,11 +62,14 @@ FiniteElement::FiniteElement(const param::MIRParametrisation &param) :
 FiniteElement::~FiniteElement() {
 }
 
+
 void FiniteElement::hash( eckit::MD5 &md5) const {
     MethodWeighted::hash(md5);
 }
 
+
 namespace {
+
 
 struct MeshStats {
 
@@ -92,7 +97,10 @@ struct MeshStats {
 
 typedef std::vector< WeightMatrix::Triplet > Triplets;
 
+enum { LON=0, LAT=1 };
+
 }
+
 
 static void normalise(Triplets& triplets)
 {
@@ -110,18 +118,18 @@ static void normalise(Triplets& triplets)
     }
 }
 
-/// Finds in which element the point is contained by projecting the point with each nearest element
 
+/// Finds in which element the point is contained by projecting the point with each nearest element
 static bool projectPointToElements(const MeshStats &stats,
-                                   const atlas::ArrayView<double, 2> &icoords,
-                                   const atlas::IndexView<int,    2> &triag_nodes,
-                                   const atlas::IndexView<int,    2> &quads_nodes,
+                                   const atlas::array::ArrayView<double, 2> &icoords,
+                                   const atlas::mesh::Elements::Connectivity &triag_nodes,
+                                   const atlas::mesh::Elements::Connectivity &quads_nodes,
                                    const FiniteElement::Point &p,
                                    std::vector< WeightMatrix::Triplet > &weights_triplets,
                                    size_t ip,
                                    size_t firstVirtualPoint,
-                                   atlas::util::ElemIndex3::NodeList::const_iterator start,
-                                   atlas::util::ElemIndex3::NodeList::const_iterator finish ) {
+                                   atlas::interpolation::ElemIndex3::NodeList::const_iterator start,
+                                   atlas::interpolation::ElemIndex3::NodeList::const_iterator finish ) {
 
     Triplets triplets;
 
@@ -131,13 +139,13 @@ static bool projectPointToElements(const MeshStats &stats,
     size_t idx [4];
     double w[4];
 
-    atlas::geometry::Ray ray( p.data() );
+    atlas::interpolation::Ray ray( p.data() );
 
-    for (atlas::util::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
+    for (atlas::interpolation::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
 
-        atlas::util::ElemPayload elem = (*itc).value().payload();
+        atlas::interpolation::ElemPayload elem = (*itc).value().payload();
 
-        if ( elem.type_ == 't') { /* triags */
+        if ( elem.triangle() ) { /* triags */
 
             const size_t &tid = elem.id_;
 
@@ -149,12 +157,12 @@ static bool projectPointToElements(const MeshStats &stats,
 
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts && idx[2] < stats.inp_npts );
 
-            atlas::geometry::Triag3D triag(
+            atlas::interpolation::Triag3D triag(
                 icoords[idx[0]].data(),
                 icoords[idx[1]].data(),
                 icoords[idx[2]].data());
 
-            atlas::geometry::Intersect is = triag.intersects(ray);
+            atlas::interpolation::Intersect is = triag.intersects(ray);
 
             if (is) {
 
@@ -175,9 +183,7 @@ static bool projectPointToElements(const MeshStats &stats,
                 break; // stop looking for elements
             }
 
-        } else {  /* quads */
-
-            ASSERT(elem.type_ == 'q');
+        } else if( elem.quadrilateral() ) {  /* quads */
 
             const size_t &qid = elem.id_;
 
@@ -191,7 +197,7 @@ static bool projectPointToElements(const MeshStats &stats,
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts &&
                     idx[2] < stats.inp_npts && idx[3] < stats.inp_npts );
 
-            atlas::geometry::Quad3D quad(
+            atlas::interpolation::Quad3D quad(
                 icoords[idx[0]].data(),
                 icoords[idx[1]].data(),
                 icoords[idx[2]].data(),
@@ -202,7 +208,7 @@ static bool projectPointToElements(const MeshStats &stats,
                 throw eckit::SeriousBug("Found invalid quadrilateral in mesh", Here());
             }
 
-            atlas::geometry::Intersect is = quad.intersects(ray);
+            atlas::interpolation::Intersect is = quad.intersects(ray);
 
             if (is) {
 
@@ -224,6 +230,8 @@ static bool projectPointToElements(const MeshStats &stats,
                 projectedToElem = true;
                 break; // stop looking for elements
             }
+        } else {
+          throw eckit::SeriousBug("Element type is not triangle or quadrilateral", Here());
         }
 
     } // loop over nearest elements
@@ -246,7 +254,8 @@ static bool projectPointToElements(const MeshStats &stats,
 
 static const double maxFractionElemsToTry = 0.2; // try to project to 20% of total number elements before giving up
 
-void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
+
+void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
 
     // FIXME: arguments
     eckit::Log::trace<MIR>() << "FiniteElement::assemble" << std::endl;
@@ -254,10 +263,10 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     eckit::Log::trace<MIR>() << "  Input  Grid: " << in  << std::endl;
     eckit::Log::trace<MIR>() << "  Output Grid: " << out << std::endl;
 
-    const atlas::Domain &inDomain = in.domain();
+    const atlas::grid::Domain &inDomain = in.domain();
 
-    atlas::Mesh &i_mesh = in.mesh();
-    atlas::Mesh &o_mesh = out.mesh();
+    atlas::mesh::Mesh &i_mesh = in.mesh();
+    atlas::mesh::Mesh &o_mesh = out.mesh();
 
     eckit::Log::trace<MIR>() << "  Input  Mesh: " << i_mesh << std::endl;
     eckit::Log::trace<MIR>() << "  Output Mesh: " << o_mesh << std::endl;
@@ -272,14 +281,14 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
         static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
         if (dumpMesh) {
-            atlas::io::Gmsh gmsh;
+            atlas::util::io::Gmsh gmsh;
             gmsh.options.set<std::string>("nodes", "xyz");
 
             eckit::Log::trace<MIR>() << "Dumping input mesh to input.msh" << std::endl;
             gmsh.write(i_mesh, "input.msh");
 
             eckit::Log::trace<MIR>() << "Dumping output mesh to output.msh" << std::endl;
-            atlas::actions::BuildXYZField("xyz")(o_mesh);
+            atlas::mesh::actions::BuildXYZField("xyz")(o_mesh);
             gmsh.write(o_mesh, "output.msh");
         }
     }
@@ -287,26 +296,38 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
     {
         eckit::TraceTimer<MIR> timer("Tesselation::create_cell_centres");
-        atlas::actions::BuildCellCentres()(i_mesh);
+        atlas::mesh::actions::BuildCellCentres()(i_mesh);
     }
 
-    eckit::ScopedPtr<atlas::util::ElemIndex3> eTree;
+    eckit::ScopedPtr<atlas::interpolation::ElemIndex3> eTree;
     {
         eckit::TraceTimer<MIR> timer("create_element_centre_index");
-        eTree.reset( create_element_centre_index(i_mesh) );
+        eTree.reset( atlas::interpolation::create_element_centre_index(i_mesh) );
     }
 
     // input mesh
+    MeshStats stats;
 
     const atlas::mesh::Nodes  &i_nodes  = i_mesh.nodes();
-    atlas::ArrayView<double, 2> icoords  ( i_nodes.field( "xyz" ));
+    atlas::array::ArrayView<double, 2> icoords  ( i_nodes.field( "xyz" ));
 
-    atlas::FunctionSpace &triags = i_mesh.function_space( "triags" );
-    atlas::IndexView<int, 2> triag_nodes ( triags.field( "nodes" ) );
+    atlas::mesh::Elements::Connectivity const *triag_nodes;
+    atlas::mesh::Elements::Connectivity const *quads_nodes;
 
-    atlas::FunctionSpace &quads = i_mesh.function_space( "quads" );
-    atlas::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
-
+    for( size_t jtype=0; jtype<i_mesh.cells().nb_types(); ++jtype )
+    {
+      const atlas::mesh::Elements& elements =  i_mesh.cells().elements(jtype);
+      if( elements.element_type().name() == "Triangle" )
+      {
+        stats.nb_triags = elements.size();
+        triag_nodes = &elements.node_connectivity();
+      }
+      if( elements.element_type().name() == "Quadrilateral" )
+      {
+        stats.nb_quads  = elements.size();
+        quads_nodes = &elements.node_connectivity();
+      }
+    }
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
     if( i_nodes.metadata().has("NbRealPts") )
@@ -316,15 +337,12 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
     out.mesh().createNodes(out);
 
     // In case xyz field in the out mesh, build it
-    atlas::actions::BuildXYZField("xyz")(out.mesh());
+    atlas::mesh::actions::BuildXYZField("xyz")(out.mesh());
 
     atlas::mesh::Nodes  &o_nodes  = o_mesh.nodes();
-    atlas::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
-    atlas::ArrayView<double, 2> olonlat ( o_nodes.lonlat() );
+    atlas::array::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
+    atlas::array::ArrayView<double, 2> olonlat ( o_nodes.lonlat() );
 
-    MeshStats stats;
-    stats.nb_triags = triags.shape(0);
-    stats.nb_quads  = quads.shape(0);
     stats.inp_npts  = i_nodes.size();
     stats.out_npts  = o_nodes.size();
 
@@ -355,7 +373,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
                                    << std::endl;
             }
 
-            if (!inDomain.contains(olonlat[ip][atlas::LON], olonlat[ip][atlas::LAT])) {
+            if (!inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
                 continue;
             }
 
@@ -368,11 +386,11 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 
                 max_neighbours = std::max(kpts, max_neighbours);
 
-                atlas::util::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
+                atlas::interpolation::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
                 success = projectPointToElements(stats,
                                                  icoords,
-                                                 triag_nodes,
-                                                 quads_nodes,
+                                                 *triag_nodes,
+                                                 *quads_nodes,
                                                  p,
                                                  weights_triplets,
                                                  ip,
@@ -387,7 +405,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
             if (!success) {
                 // If this fails, consider lowering atlas::grid::parametricEpsilon
                 eckit::Log::trace<MIR>() << "Failed to project point " << ip << " " << p
-                                   << " with coordinates lon=" << olonlat[ip][atlas::LON] << ", lat=" << olonlat[ip][atlas::LAT]
+                                   << " with coordinates lon=" << olonlat[ip][LON] << ", lat=" << olonlat[ip][LAT]
                                    << " after " << eckit::Plural(kpts, "attempt") << std::endl;
                 throw eckit::SeriousBug("Could not project point");
             }
@@ -401,7 +419,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas
 }
 
 
-void FiniteElement::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) const {
+void FiniteElement::generateMesh(const atlas::grid::Grid &grid, atlas::mesh::Mesh &mesh) const {
 
     ///  This raises another issue: how to cache meshes generated with different parametrisations?
     ///  We must md5 the MeshGenerator itself.
@@ -412,11 +430,11 @@ void FiniteElement::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) con
 
     eckit::Log::trace<MIR>() << "MeshGenerator parametrisation is '" << meshgenerator << "'" << std::endl;
 
-    eckit::ScopedPtr<atlas::meshgen::MeshGenerator> generator( atlas::meshgen::MeshGeneratorFactory::build(meshgenerator, meshgenparams_) );
+    eckit::ScopedPtr<atlas::mesh::generators::MeshGenerator> generator( atlas::mesh::generators::MeshGeneratorFactory::build(meshgenerator, meshgenparams_) );
     generator->generate(grid, mesh);
 
     // If meshgenerator did not create xyz field already, do it now.
-    atlas::actions::BuildXYZField()(mesh);
+    atlas::mesh::actions::BuildXYZField()(mesh);
 }
 
 

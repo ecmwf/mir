@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -24,6 +24,7 @@
 namespace mir {
 namespace repres {
 namespace reduced {
+
 
 class RotatedOctahedral : public  Octahedral {
   public:
@@ -76,15 +77,12 @@ class RotatedOctahedral : public  Octahedral {
 
   private:
 
-
-
     // No copy allowed
 
     RotatedOctahedral(const RotatedOctahedral &);
     RotatedOctahedral &operator=(const RotatedOctahedral &);
 
     // -- Members
-
 
     // -- Methods
     // None
@@ -94,8 +92,7 @@ class RotatedOctahedral : public  Octahedral {
 
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
-
-    virtual atlas::Grid *atlasGrid() const;
+    virtual atlas::grid::Grid *atlasGrid() const;
     virtual Iterator* rotatedIterator() const;
 
     virtual const Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
@@ -113,7 +110,8 @@ class RotatedOctahedral : public  Octahedral {
 
 };
 
-}
+
+}  // namespace reduced
 }  // namespace repres
 }  // namespace mir
 #endif

@@ -16,7 +16,7 @@
 
 #include "TenMinutesLSM.h"
 
-#include "atlas/Grid.h"
+#include "atlas/grid/Grid.h"
 
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Timer.h"
@@ -46,15 +46,15 @@ From EMOSLIB:
      the centre of a 10 minute square (e.g. the first value is
      assumed to be at 0  5' East and 89  55' North).
 
-    ~mir/etc/ten-minutes.mask is a copy of ~emos/tables/interpolation/lsm_32_lsm10m01
+    ~/share/mir/masks/ten-minutes.mask is a copy of ~emos/tables/interpolation/lsm_32_lsm10m01
 */
 
 TenMinutesLSM::TenMinutesLSM(const std::string &name,
                              const param::MIRParametrisation &parametrisation,
-                             const atlas::Grid &grid,
+                             const atlas::grid::Grid &grid,
                              const std::string &which):
     Mask(name),
-    path_("~mir/etc/ten-minutes.mask") {
+    path_("~/share/mir/masks/ten-minutes.mask") {
 
 
     if (ten_minutes_.size() == 0) {
@@ -87,12 +87,12 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 
     // NOTE: this is not using 3D coordinate systems
 
-    std::vector<atlas::Grid::Point> points(grid.npts());
+    std::vector<atlas::grid::Grid::Point> points(grid.npts());
     grid.lonlat(points);
 
     mask_.reserve(points.size());
 
-    for (std::vector<atlas::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
+    for (std::vector<atlas::grid::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
         double lat = (*j).lat();
         ASSERT(lat >= -90);
         ASSERT(lat <= 90);

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -15,10 +15,11 @@
 
 #include "mir/method/FELinear.h"
 
+#include "atlas/mesh/generators/MeshGenerator.h"
+#include "atlas/mesh/generators/Delaunay.h"
+
 #include "mir/param/MIRParametrisation.h"
-#include "atlas/meshgen/ReducedGridMeshGenerator.h"
-#include "atlas/meshgen/Delaunay.h"
-#include "atlas/grids/ReducedGrid.h"
+
 
 namespace mir {
 namespace method {
@@ -42,6 +43,7 @@ const char *FELinear::name() const {
 void FELinear::hash( eckit::MD5& md5) const {
     FiniteElement::hash(md5);
 }
+
 
 void FELinear::print(std::ostream &out) const {
     out << "FELinear[]";

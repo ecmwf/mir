@@ -41,7 +41,7 @@ class TenMinutesLSM : public Mask {
 
     TenMinutesLSM(const std::string& name,
                 const param::MIRParametrisation& parametrisation,
-                const atlas::Grid& grid, const std::string& which);
+                const atlas::grid::Grid& grid, const std::string& which);
 
 // -- Destructor
 

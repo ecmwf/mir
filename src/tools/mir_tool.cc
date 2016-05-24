@@ -16,10 +16,17 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 #include "eckit/mpi/ParallelContextBehavior.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/FactoryOption.h"
+#include "eckit/option/Separator.h"
+#include "eckit/option/SimpleOption.h"
+#include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Context.h"
 #include "eckit/runtime/Tool.h"
 
-#include "eckit/la/LinearAlgebra.h"
+#include "eckit/linalg/LinearAlgebra.h"
+
+#include "mir/mir_ecbuild_config.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/DummyInput.h"
@@ -32,20 +39,15 @@
 #include "mir/output/UVOutput.h"
 #include "mir/output/WindOutput.h"
 #include "mir/packing/Packer.h"
-#include "mir/param/MIRArgs.h"
-#include "mir/param/option/FactoryOption.h"
-#include "mir/param/option/Separator.h"
-#include "mir/param/option/SimpleOption.h"
-#include "mir/param/option/VectorOption.h"
 #include "mir/log/MIR.h"
 
 using mir::MIR;
 
-using mir::param::option::Option;
-using mir::param::option::SimpleOption;
-using mir::param::option::Separator;
-using mir::param::option::VectorOption;
-using mir::param::option::FactoryOption;
+using eckit::option::Option;
+using eckit::option::SimpleOption;
+using eckit::option::Separator;
+using eckit::option::VectorOption;
+using eckit::option::FactoryOption;
 
 class MIRTool : public eckit::Tool {
 
@@ -55,7 +57,7 @@ class MIRTool : public eckit::Tool {
     static void usage(const std::string &tool);
 
   public:
-    MIRTool(int argc, char **argv) : eckit::Tool(argc, argv) {
+    MIRTool(int argc, char **argv) : eckit::Tool(argc, argv, "MIRHOME", MIR_INSTALL_DIR ) {
         eckit::Context::instance().behavior(new eckit::mpi::ParallelContextBehavior());
     }
 
@@ -105,7 +107,7 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<double>("epsilon", "Used by methods k-nearest and nearest-neighbour"));
     options.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
     options.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
-    options.push_back(new FactoryOption<eckit::la::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::la::LinearAlgebra::backend().name() + "')"));
+    options.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
 
     //==============================================
     options.push_back(new Separator("Rotation"));
@@ -165,16 +167,16 @@ void MIRTool::run() {
     // {"packing", "p", "e.g. second-order",},
 
 
-    mir::param::MIRArgs args(&usage, 2, options);
+    eckit::option::CmdArgs args(&usage, options, 2);
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;
     if (args.get("backend", backend)) {
-        eckit::la::LinearAlgebra::backend(backend);
+        eckit::linalg::LinearAlgebra::backend(backend);
     }
 
     mir::api::MIRJob job;
-    args.copyValuesTo(job);
+    job.set(args.get());
 
     std::string same;
     if (args.get("same", same)) {
@@ -194,16 +196,16 @@ void MIRTool::run() {
 
     if (dummy) {
         mir::input::DummyInput input;
-        mir::output::GribFileOutput output(args.args(1));
+        mir::output::GribFileOutput output(args(1));
         process(job, input, output, "field");
     } else if (wind) {
         ASSERT(!vod2uv);
         ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
 
-        mir::input::GribFileInput input1(args.args(0), 0, 2);
-        mir::input::GribFileInput input2(args.args(0), 1, 2);
+        mir::input::GribFileInput input1(args(0), 0, 2);
+        mir::input::GribFileInput input2(args(0), 1, 2);
 
-        mir::output::GribFileOutput output(args.args(1));
+        mir::output::GribFileOutput output(args(1));
 
 
         mir::input::WindInput winput(input1, input2);
@@ -214,9 +216,9 @@ void MIRTool::run() {
         ASSERT(!wind);
         ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
 
-        mir::input::GribFileInput input1(args.args(0), 0, 2);
-        mir::input::GribFileInput input2(args.args(0), 1, 2);
-        mir::output::GribFileOutput output(args.args(1));
+        mir::input::GribFileInput input1(args(0), 0, 2);
+        mir::input::GribFileInput input2(args(0), 1, 2);
+        mir::output::GribFileOutput output(args(1));
 
         mir::input::VODInput winput(input1, input2);
         mir::output::UVOutput woutput(output, output);
@@ -224,8 +226,8 @@ void MIRTool::run() {
 
     } else {
 
-        mir::input::GribFileInput input(args.args(0));
-        mir::output::GribFileOutput output(args.args(1));
+        mir::input::GribFileInput input(args(0));
+        mir::output::GribFileOutput output(args(1));
 
         std::string path_lat, path_lon;
         ASSERT(args.has("latitudes") ==  args.has("longitudes"));
@@ -240,7 +242,7 @@ void MIRTool::run() {
 void MIRTool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
     eckit::Timer timer("Total time");
 
-    eckit::Log::info() << "Using '" << eckit::la::LinearAlgebra::backend().name() << "' backend." << std::endl;
+    eckit::Log::info() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.next()) {

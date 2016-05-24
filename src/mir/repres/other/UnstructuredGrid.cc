@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,16 +13,17 @@
 /// @date Apr 2015
 
 
+#include "mir/repres/other/UnstructuredGrid.h"
+
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
 
+#include "atlas/grid/global/Unstructured.h"
+
 #include "mir/param/MIRParametrisation.h"
-
-#include "mir/repres/other/UnstructuredGrid.h"
-
-#include "atlas/grids/Unstructured.h"
 #include "mir/log/MIR.h"
+
 
 namespace mir {
 namespace repres {
@@ -49,9 +50,11 @@ void UnstructuredGrid::fill(grib_info &info) const  {
     NOTIMP;
 }
 
+
 void UnstructuredGrid::fill(api::MIRJob &job) const  {
     NOTIMP;
 }
+
 
 bool UnstructuredGrid::globalDomain() const {
     eckit::Log::warning() << "UnstructuredGrid::globalDomain: assuming grid is global" << std::endl;
@@ -59,22 +62,23 @@ bool UnstructuredGrid::globalDomain() const {
 }
 
 
-atlas::Grid *UnstructuredGrid::atlasGrid() const {
-    std::vector<atlas::Grid::Point> *pts = new std::vector<atlas::Grid::Point>();
+atlas::grid::Grid *UnstructuredGrid::atlasGrid() const {
+    std::vector<atlas::grid::Grid::Point> *pts = new std::vector<atlas::grid::Grid::Point>();
     ASSERT(latitudes_.size() == longitudes_.size());
     pts->reserve(latitudes_.size());
 
     for (size_t i = 0; i < latitudes_.size(); i++) {
-        pts->push_back(atlas::Grid::Point(longitudes_[i], latitudes_[i]));
+        pts->push_back(atlas::grid::Grid::Point(longitudes_[i], latitudes_[i]));
         if (i < 10) {
             eckit::Log::trace<MIR>() << "UnstructuredGrid::atlasGrid lon=" << longitudes_[i] << ", lat=" << latitudes_[i] << std::endl;
         }
     }
 
-    return new atlas::grids::Unstructured(pts);
+    return new atlas::grid::global::Unstructured(pts);
 
     // so constructor takes a vector<Point> (where point is LLPoint2)
 }
+
 
 void UnstructuredGrid::validate(const std::vector<double> &values) const {
     ASSERT(values.size() == latitudes_.size());

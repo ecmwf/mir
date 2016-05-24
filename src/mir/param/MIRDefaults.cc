@@ -46,7 +46,7 @@ MIRDefaults::MIRDefaults() {
     set("lsm.value.threshold", 0.5);
 
     // Read the rest for the file
-    eckit::PathName path("~mir/etc/defaults.cfg");
+    eckit::PathName path("~/etc/mir/defaults.cfg");
     if (!path.exists())  {
         return;
     }

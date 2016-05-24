@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -18,9 +18,11 @@
 #include <iostream>
 #include <vector>
 
-#include "atlas/atlas_config.h"
-#include "atlas/Grid.h"
-#include "atlas/grids/grids.h"
+#include "atlas/atlas.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/global/Structured.h"
+#include "atlas/grid/global/lonlat/RegularLonLat.h"
+#include "atlas/grid/grids.h"
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -60,25 +62,26 @@ static std::map<std::string, TransCache> trans_handles;
 
 #endif
 
+
 namespace mir {
 namespace action {
 
 
 static void transform(const param::MIRParametrisation &parametrisation, size_t truncation,
-                      const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
+                      const std::vector<double> &input, std::vector<double> &output, const atlas::grid::Grid &grid) {
 #ifdef ATLAS_HAVE_TRANS
 
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
 
     static TransInitor initor; // Will init trans if needed
 
-    const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
+    const atlas::grid::global::Structured* reduced = dynamic_cast<const atlas::grid::global::Structured*>(&grid);
 
     if (!reduced) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
     }
 
-    const atlas::grids::LonLatGrid *latlon = dynamic_cast<const atlas::grids::LonLatGrid *>(&grid);
+    const atlas::grid::global::lonlat::RegularLonLat* latlon = dynamic_cast<const atlas::grid::global::lonlat::RegularLonLat* >(&grid);
 
     std::ostringstream os;
 
@@ -100,8 +103,18 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
         if (latlon) {
             ASSERT(trans_set_resol_lonlat(&trans, latlon->nlon(), latlon->nlat()) == 0);
         } else {
-            const std::vector<int> &points_per_latitudes = reduced->npts_per_lat();
-            ASSERT(trans_set_resol(&trans, points_per_latitudes.size(), &points_per_latitudes[0]) == 0);
+
+            const std::vector<long>& pl = reduced->pl();
+            ASSERT(pl.size());
+
+            std::vector<int> pli(pl.size());
+            ASSERT(pl.size()==pli.size());
+
+            for (size_t i=0; i<pl.size(); ++i) {
+                pli[i] = pl[i];
+            }
+
+            ASSERT(trans_set_resol(&trans, pli.size(), &pli[0]) == 0);
         }
 
         caching::LegendreCache cache;
@@ -187,8 +200,6 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 }
 
 
-
-
 Sh2GriddedTransform::Sh2GriddedTransform(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 }
@@ -209,7 +220,7 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
         const std::vector<double> &values = field.values(i);
         std::vector<double> result;
 
-        eckit::ScopedPtr<atlas::Grid> grid(out->atlasGrid());
+        eckit::ScopedPtr<atlas::grid::Grid> grid(out->atlasGrid());
         transform(parametrisation_, field.representation()->truncation(), values, result, *grid);
 
         field.values(result, i);

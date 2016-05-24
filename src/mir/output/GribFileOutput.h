@@ -33,7 +33,7 @@ class GribFileOutput : public GribStreamOutput {
 
 // -- Contructors
 
-    GribFileOutput(const eckit::PathName&);
+    GribFileOutput(const eckit::PathName&, bool append = false);
 
 // -- Destructor
 
@@ -85,6 +85,7 @@ class GribFileOutput : public GribStreamOutput {
 
     eckit::PathName path_;
     eckit::DataHandle* handle_;
+    bool append_;
 
 // -- Methods
     // None

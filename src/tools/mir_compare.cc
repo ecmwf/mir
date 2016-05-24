@@ -16,16 +16,16 @@
 
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/param/MIRArgs.h"
-#include "mir/param/option/SimpleOption.h"
 
-using mir::param::option::Option;
-using mir::param::option::SimpleOption;
+using eckit::option::Option;
+using eckit::option::SimpleOption;
 
 static struct {
     size_t paramId_;
@@ -54,7 +54,8 @@ class MIRCompare : public eckit::Tool {
         user_absolute_(1e-9),
         user_relative_(1e-9),
         user_percent_(1e-9),
-        user_ulps_(0) {
+        user_ulps_(0),
+        user_pack_factor_(0.) {
     }
 
   private: // members
@@ -63,6 +64,7 @@ class MIRCompare : public eckit::Tool {
     double user_relative_;
     double user_percent_;
     long   user_ulps_;
+    double user_pack_factor_;
     bool   l2norm_;
 
     eckit::ScopedPtr< eckit::FloatApproxCompare<double> > real_same_;
@@ -72,8 +74,15 @@ class MIRCompare : public eckit::Tool {
 void MIRCompare::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " [--absolute=a] [--relative=r] [--ulps=u] [--percent=p] [--l2norm] file1.grib file2.grib" << std::endl
-            ;
+            << '\n'
+            << "Usage: " << tool << " [options] file1.grib file2.grib" << '\n'
+            << "  [--absolute=a]: Maximum absolute error"                           << '\n'
+            << "  [--relative=r]: Maximum relative error"                           << '\n'
+            << "  [--percent=p]:  Maximum percentage of different values"           << '\n'
+            << "  [--packing=f]:  Comparing to packing error, with provided factor" << '\n'
+            << "  [--ulps=u]:     Comparing with ULPs"                              << '\n'
+            << "  [--l2norm]:     Compute L2 norm between 2 fields"                 << '\n'
+            << std::endl;
 
     ::exit(1);
 }
@@ -138,7 +147,7 @@ bool MIRCompare::compare(const double *a, const double *b, size_t size) const {
         eckit::Log::info() << "packing_error1=" << packing_error1 << " packing_error2=" << packing_error2 << std::endl;
 
         if (p <= user_percent_) {
-            eckit::Log::info() << "Percent of different valus smaller than " << user_percent_ << ", ignoring differences" << std::endl;
+            eckit::Log::info() << "Percent of different values smaller than " << user_percent_ << ", ignoring differences" << std::endl;
             count = 0;
         }
 
@@ -227,29 +236,35 @@ void MIRCompare::run() {
 
 
     //==============================================
-    options.push_back(new SimpleOption<double>("absolute", "Maximum absolute error"));
-    options.push_back(new SimpleOption<double>("relative", "Maximum relative error"));
-    options.push_back(new SimpleOption<double>("percent", "Maximum percentage of different values"));
-    options.push_back(new SimpleOption<bool>("ulps", "Comparing with ULPS (?)"));
-    options.push_back(new SimpleOption<bool>("l2norm", "Compute L2 norm between 2 fields"));
+    options.push_back(new SimpleOption< double >("absolute", "Maximum absolute error"));
+    options.push_back(new SimpleOption< double >("relative", "Maximum relative error"));
+    options.push_back(new SimpleOption< double >("percent",  "Maximum percentage of different values"));
+    options.push_back(new SimpleOption< double >("packing",  "Comparing to packing error, with provided factor"));
+    options.push_back(new SimpleOption< bool   >("ulps",     "Comparing with ULPS (?)"));
+    options.push_back(new SimpleOption< bool   >("l2norm",   "Compute L2 norm between 2 fields"));
 
-    mir::param::MIRArgs args(&usage, 2, options);
+    eckit::option::CmdArgs args(&usage, options, 2);
 
     args.get("absolute", user_absolute_);
     args.get("relative", user_relative_);
-    args.get("percent", user_percent_);
-    args.get("l2norm", l2norm_);
+    args.get("percent",  user_percent_);
+    args.get("l2norm",   l2norm_);
+    args.get("packing",  user_pack_factor_);
+    const bool compare_with_packing_error(eckit::FloatCompare< double >::isStrictlyGreater(user_pack_factor_, 0.));
 
 
     /// TODO Test this code
     args.get("ulps",     user_ulps_);
-    if (user_ulps_) {
+    if (compare_with_packing_error) {
+        eckit::Log::info() << "Comparing with packing error, factor " << user_pack_factor_ << std::endl;
+    }
+    else if (user_ulps_) {
         eckit::Log::info() << "Comparing with ULPS " << user_ulps_ << std::endl;
         real_same_.reset( new FloatApproxCompare<double>(0, user_ulps_) );
     }
 
-    mir::input::GribFileInput file1(args.args(0));
-    mir::input::GribFileInput file2(args.args(1));
+    mir::input::GribFileInput file1(args(0));
+    mir::input::GribFileInput file2(args(1));
 
     mir::input::MIRInput &input1 = file1;
     mir::input::MIRInput &input2 = file2;
@@ -312,15 +327,21 @@ void MIRCompare::run() {
             ASSERT(metadata2.get("packingError", packing_error2));
 
             double packing_error = std::min(packing_error1, packing_error2);
+
             maxAbsoluteError = std::max(absolute, packing_error);
             maxRelativeError = relative;
 
-            if (maxAbsoluteError != absolute) {
+            if (compare_with_packing_error) {
+
+                /* maxUlps=64 is a big enough number so ULPs comparisons don't matter */
+                real_same_.reset( new FloatApproxCompare<double>(user_pack_factor_*packing_error, 64) );
+
+            }
+            else if (maxAbsoluteError != absolute) {
                 eckit::Log::warning() << "Field " << n << ": packing error " << packing_error
                                       << " is more than requested absolute error " << absolute << std::endl;
                 eckit::Log::warning() << "Field " << n << ": using packing error as absolute error" << std::endl;
             }
-
 
             compare(n, *field1, *field2);
         }
@@ -331,14 +352,8 @@ void MIRCompare::run() {
     }
 
     if (ok1 != ok2) {
-        if (ok1)  {
-            eckit::Log::info() << input1 << " has more fields than " << input2 << std::endl;
-            ::exit(1);
-        }
-        if (ok2)  {
-            eckit::Log::info() << input2 << " has more fields than " << input1 << std::endl;
-            ::exit(1);
-        }
+        eckit::Log::info() << input1 << " has " << (ok1?"more":"less") << " fields than " << input2 << std::endl;
+        ::exit(1);
     }
 
 }

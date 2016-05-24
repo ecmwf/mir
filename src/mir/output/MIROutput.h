@@ -18,6 +18,9 @@
 
 #include <iosfwd>
 
+namespace eckit {
+    class Length;
+}
 
 namespace mir {
 namespace data {
@@ -56,6 +59,7 @@ class MIROutput {
 
     virtual void copy(const param::MIRParametrisation&, input::MIRInput&) = 0; // Not iterpolation performed
     virtual void save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&) = 0;
+    virtual eckit::Length total() const = 0;
 
 // -- Overridden methods
     // None

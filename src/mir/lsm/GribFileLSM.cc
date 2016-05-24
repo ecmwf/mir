@@ -18,7 +18,7 @@
 
 #include "eckit/memory/ScopedPtr.h"
 
-#include "atlas/Grid.h"
+#include "atlas/grid/Grid.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
@@ -33,7 +33,7 @@ namespace lsm {
 
 GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
                          const param::MIRParametrisation &parametrisation,
-                         const atlas::Grid &grid,
+                         const atlas::grid::Grid &grid,
                          const std::string &which):
     Mask(name),
     path_(path) {
@@ -63,7 +63,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::trace<MIR>() << "LSM interpolation method is " << *method << std::endl;
 
-    eckit::ScopedPtr<atlas::Grid> gin(field->representation()->atlasGrid());
+    eckit::ScopedPtr<atlas::grid::Grid> gin(field->representation()->atlasGrid());
 
     method->execute(*field, *gin, grid);
 
@@ -94,7 +94,7 @@ void GribFileLSM::print(std::ostream &out) const {
 
 void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
                                const param::MIRParametrisation &parametrisation,
-                               const atlas::Grid &grid,
+                               const atlas::grid::Grid &grid,
                                const std::string &which) {
 
     std::string interpolation;

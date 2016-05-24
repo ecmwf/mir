@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,42 +11,44 @@
 /// @author Tiago Quintino
 /// @date   Jul 2015
 
+
 #include <cmath>
 
+#include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/types/FloatCompare.h"
-#include "eckit/log/BigNum.h"
 
-#include "atlas/Parameters.h"
-#include "atlas/Grid.h"
-#include "atlas/Mesh.h"
-#include "atlas/FunctionSpace.h"
-#include "atlas/util/IndexView.h"
-#include "atlas/actions/BuildXYZField.h"
-#include "atlas/actions/BuildConvexHull3D.h"
-#include "atlas/geometry/Triag3D.h"
-#include "atlas/geometry/Quad3D.h"
-#include "atlas/grids/ReducedGrid.h"
+#include "atlas/array/IndexView.h"
+#include "atlas/functionspace/FunctionSpace.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/global/Structured.h"
+#include "atlas/interpolation/Quad3D.h"
+#include "atlas/interpolation/Triag3D.h"
+#include "atlas/mesh/Mesh.h"
+#include "atlas/mesh/actions/BuildConvexHull3D.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/util/Constants.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/param/MIRArgs.h"
-#include "mir/param/option/SimpleOption.h"
-#include "mir/repres/Representation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Gridded.h"
+#include "mir/repres/Iterator.h"
+#include "mir/repres/Representation.h"
 
-using atlas::Constants;
-using atlas::grids::ReducedGrid;
-using atlas::geometry::Triag3D;
-using atlas::geometry::Quad3D;
 
-using mir::param::option::Option;
-using mir::param::option::SimpleOption;
+using atlas::interpolation::Triag3D;
+using atlas::interpolation::Quad3D;
+using atlas::util::Constants;
+
+using eckit::option::Option;
+using eckit::option::SimpleOption;
 
 using namespace mir;
+
 
 class MIRIntegrate : public eckit::Tool {
 
@@ -54,12 +56,13 @@ class MIRIntegrate : public eckit::Tool {
 
     static void usage(const std::string &tool);
 
-
   public:
     MIRIntegrate(int argc, char **argv) :
         eckit::Tool(argc, argv) {
     }
+
 };
+
 
 void MIRIntegrate::usage(const std::string &tool) {
 
@@ -69,8 +72,10 @@ void MIRIntegrate::usage(const std::string &tool) {
     ::exit(1);
 }
 
+
 static const double oneThird  = 1./ 3.;
 static const double oneFourth = 1./ 4.;
+
 
 void MIRIntegrate::run() {
 
@@ -80,9 +85,9 @@ void MIRIntegrate::run() {
 
 //     options.push_back(new SimpleOption<size_t>("buckets", "Bucket count for computing entropy (default 65536)"));
 
-    mir::param::MIRArgs args(&usage, 1, options);
+    eckit::option::CmdArgs args(&usage, options, 1, 0);
 
-    mir::input::GribFileInput file(args.args(0));
+    mir::input::GribFileInput file(args(0));
 
     mir::input::MIRInput &input = file;
 
@@ -103,22 +108,22 @@ void MIRIntegrate::run() {
         // ASSERT(rep->globalDomain());
 
 #if 0
-        eckit::ScopedPtr<atlas::Grid> grid( rep->atlasGrid() );
+        eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );
 
-        atlas::Mesh& mesh = grid->mesh();
+        atlas::mesh::Mesh& mesh = grid->mesh();
 
-        atlas::actions::BuildXYZField()(mesh);
-        atlas::actions::BuildConvexHull3D builder;
+        atlas::mesh::actions::BuildXYZField()(mesh);
+        atlas::mesh::actions::BuildConvexHull3D builder;
         builder(mesh);
 
         atlas::Nodes& nodes  = mesh.nodes();
-        atlas::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
+        atlas::array::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
 
         atlas::FunctionSpace& triags = mesh.function_space( "triags" );
-        atlas::IndexView<int, 2> triag_nodes ( triags.field( "nodes" ) );
+        atlas::array::IndexView<int, 2> triag_nodes ( triags.field( "nodes" ) );
 
         atlas::FunctionSpace& quads = mesh.function_space( "quads" );
-        atlas::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
+        atlas::array::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
 
         size_t nb_triags = triags.shape(0);
         size_t nb_quads  = quads.shape(0);
@@ -160,9 +165,10 @@ void MIRIntegrate::run() {
         double result = 0;
         double weights = 0;
 
-        eckit::ScopedPtr<atlas::Grid> grid( rep->atlasGrid() );
+        eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );
 
-        const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid*>(grid.get());
+        const atlas::grid::global::Structured* reduced =
+                dynamic_cast<const atlas::grid::global::Structured*>(grid.get());
 
         ASSERT(reduced);
 

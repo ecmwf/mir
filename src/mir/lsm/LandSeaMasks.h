@@ -21,7 +21,9 @@
 #include <vector>
 
 namespace atlas {
+namespace grid {
 class Grid;
+}
 }
 namespace eckit {
 class MD5;
@@ -83,7 +85,7 @@ class LandSeaMasks {
 
     // -- Class methods
 
-    static  LandSeaMasks lookup(const param::MIRParametrisation &param, const atlas::Grid &in, const atlas::Grid &out);
+    static  LandSeaMasks lookup(const param::MIRParametrisation &param, const atlas::grid::Grid &in, const atlas::grid::Grid &out);
 
   protected:
 

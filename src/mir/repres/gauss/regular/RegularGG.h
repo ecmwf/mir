@@ -94,7 +94,7 @@ class RegularGG : public Regular {
 // -- Overridden methods
 
     //virtual void fill(grib_info&) const;
-    //virtual atlas::Grid* atlasGrid() const;
+    //virtual atlas::grid::Grid* atlasGrid() const;
 
     virtual const Gridded* cropped(const util::BoundingBox &bbox) const;
 

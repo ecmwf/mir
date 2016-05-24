@@ -16,7 +16,7 @@
 #include "mir/lsm/Mask.h"
 
 
-#include "atlas/Grid.h"
+#include "atlas/grid/Grid.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -61,7 +61,7 @@ void Mask::hash(eckit::MD5 &md5) const {
 }
 
 
-Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::Grid &grid, const std::string &which) {
+Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::grid::Grid &grid, const std::string &which) {
 
     bool lsm = false;
     parametrisation.get("lsm", lsm);
@@ -101,12 +101,12 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
     return *(*cache)[key];
 }
 
-Mask &Mask::lookupInput(const param::MIRParametrisation   &parametrisation, const atlas::Grid &grid) {
+Mask &Mask::lookupInput(const param::MIRParametrisation   &parametrisation, const atlas::grid::Grid &grid) {
     return lookup(parametrisation, grid, ".input");
 }
 
 
-Mask &Mask::lookupOutput(const param::MIRParametrisation   &parametrisation, const atlas::Grid &grid) {
+Mask &Mask::lookupOutput(const param::MIRParametrisation   &parametrisation, const atlas::grid::Grid &grid) {
     return lookup(parametrisation, grid, ".output");
 }
 

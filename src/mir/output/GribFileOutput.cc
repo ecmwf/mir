@@ -21,8 +21,10 @@ namespace mir {
 namespace output {
 
 
-GribFileOutput::GribFileOutput(const eckit::PathName &path):
-    path_(path), handle_(0) {
+GribFileOutput::GribFileOutput(const eckit::PathName &path, bool append):
+    path_(path),
+    handle_(0),
+    append_(append) {
 }
 
 
@@ -42,7 +44,11 @@ void GribFileOutput::print(std::ostream &out) const {
 eckit::DataHandle& GribFileOutput::dataHandle() {
     if(!handle_) {
         handle_ = path_.fileHandle();
-        handle_->openForWrite(0);
+        if(append_) {
+            handle_->openForAppend(0);
+        } else {
+            handle_->openForWrite(0);
+        }
     }
     return *handle_;
 }

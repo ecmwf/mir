@@ -16,9 +16,9 @@
 
 #include <iostream>
 
-// #include "atlas/Grid.h"
-// #include "atlas/grids/grids.h"
-// #include "atlas/grids/ReducedGaussianGrid.h"
+// #include "atlas/grid/Grid.h"
+// #include "atlas/grid/grids.h"
+// #include "atlas/grid/ReducedGaussianGrid.h"
 // #include "eckit/exception/Exceptions.h"
 // #include "mir/param/MIRParametrisation.h"
 // #include "mir/util/Grib.h"
