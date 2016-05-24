@@ -34,12 +34,13 @@ namespace {
 
 static eckit::Mutex *local_mutex = 0;
 
-static std::map<std::string, Mask *> cache;
+static std::map<std::string, Mask *> *cache = 0;
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 static void init() {
     local_mutex = new eckit::Mutex();
+	cache = new std::map<std::string, Mask *>();
 }
 
 
@@ -87,17 +88,17 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     eckit::Log::trace<MIR>() << "Mask::lookup(" << key << ")" << std::endl;
-    std::map<std::string, Mask *>::iterator j = cache.find(key);
+    std::map<std::string, Mask *>::iterator j = cache->find(key);
 
-    if (j != cache.end()) {
+    if (j != cache->end()) {
         return *(*j).second;
     }
 
     Mask *mask = chooser.create(name, parametrisation, grid, which);
 
-    cache[key] = mask;
+    (*cache)[key] = mask;
 
-    return *cache[key];
+    return *(*cache)[key];
 }
 
 Mask &Mask::lookupInput(const param::MIRParametrisation   &parametrisation, const atlas::Grid &grid) {
