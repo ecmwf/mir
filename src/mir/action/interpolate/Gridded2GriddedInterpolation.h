@@ -19,11 +19,13 @@
 #include "mir/action/Action.h"
 
 namespace mir {
-
 namespace repres {
 class Representation;
 }
+}
 
+
+namespace mir {
 namespace action {
 
 

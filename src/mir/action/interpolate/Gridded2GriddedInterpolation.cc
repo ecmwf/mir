@@ -50,7 +50,7 @@ void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
     repres::RepresentationHandle in(field.representation());
     repres::RepresentationHandle out(outputRepresentation());
 
-    eckit::ScopedPtr<atlas::grid::Grid> gin(in->atlasGrid()); // We do it here has ATLAS does not respect constness
+    eckit::ScopedPtr<atlas::grid::Grid> gin(in->atlasGrid()); // We do it here as ATLAS does not respect constness
     eckit::ScopedPtr<atlas::grid::Grid> gout(out->atlasGrid());
 
     method->execute(field, *gin, *gout);
