@@ -1,0 +1,7 @@
+#!/bin/sh
+if [ -n "$1" ]; then
+  E1="s/TEMPLATE/$1/"
+  E2="s/IFDEF/$(pwd | sed -e "s+.*/git/.*/src/++" -e "s+.*/git/++" -e "s+/+_+g")_h/"
+  sed -e ${E1} -e ${E2} > "$0.cpp"
+  sed -e ${E1} -e ${E2} > "$0.h"
+fi
