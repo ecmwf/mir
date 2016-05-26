@@ -39,6 +39,12 @@ VOD2UVTransform::~VOD2UVTransform() {
 }
 
 
+bool VOD2UVTransform::sameAs(const Action& other) const {
+    const VOD2UVTransform* o = dynamic_cast<const VOD2UVTransform*>(&other);
+    return o;
+}
+
+
 void VOD2UVTransform::print(std::ostream &out) const {
     out << "VOD2UVTransform[";
     out << "]";

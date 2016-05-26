@@ -95,6 +95,8 @@ class AreaCropper : public Action {
 
 // -- Overridden methods
 
+    virtual bool sameAs(const Action& other) const;
+
 
 // -- Class members
     // None

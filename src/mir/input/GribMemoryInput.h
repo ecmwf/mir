@@ -95,6 +95,7 @@ class GribMemoryInput : public GribInput {
     // -- Overridden methods
 
     virtual void print(std::ostream&) const;
+    virtual bool sameAs(const MIRInput& other) const;
 
     // -- Class members
     // None

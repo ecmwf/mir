@@ -36,6 +36,11 @@ FrameFilter::~FrameFilter() {
 }
 
 
+bool FrameFilter::sameAs(const Action& other) const {
+    const FrameFilter* o = dynamic_cast<const FrameFilter*>(&other);
+    return o && (size_ == o->size_);
+}
+
 void FrameFilter::print(std::ostream &out) const {
     out << "FrameFilter[size=" << size_ << "]";
 }

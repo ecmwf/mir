@@ -35,6 +35,10 @@ Gridded2NamedGrid::Gridded2NamedGrid(const param::MIRParametrisation& parametris
 Gridded2NamedGrid::~Gridded2NamedGrid() {
 }
 
+bool Gridded2NamedGrid::sameAs(const Action& other) const {
+    const Gridded2NamedGrid* o = dynamic_cast<const Gridded2NamedGrid*>(&other);
+    return o && (gridname_ == o->gridname_);
+}
 
 void Gridded2NamedGrid::print(std::ostream& out) const {
     out << "Gridded2NamedGrid[gridname=" << gridname_ << "]";

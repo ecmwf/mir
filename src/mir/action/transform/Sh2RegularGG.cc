@@ -35,6 +35,10 @@ Sh2RegularGG::Sh2RegularGG(const param::MIRParametrisation& parametrisation):
 Sh2RegularGG::~Sh2RegularGG() {
 }
 
+bool Sh2RegularGG::sameAs(const Action& other) const {
+    const Sh2RegularGG* o = dynamic_cast<const Sh2RegularGG*>(&other);
+    return o && (N_ == o->N_);
+}
 
 void Sh2RegularGG::print(std::ostream& out) const {
     out << "Sh2RegularGG[N=" << N_ << "]";

@@ -55,6 +55,7 @@ class Action {
     // -- Methods
 
     virtual void execute(data::MIRField &) const = 0;
+    virtual bool sameAs(const Action& other) const = 0;
     virtual bool needField() const ;
 
     // -- Overridden methods

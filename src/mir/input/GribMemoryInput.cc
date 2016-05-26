@@ -34,6 +34,9 @@ GribMemoryInput::GribMemoryInput(const void* message, size_t length) {
 GribMemoryInput::~GribMemoryInput() {
 }
 
+bool GribMemoryInput::sameAs(const MIRInput& other) const {
+    return this == &other;
+}
 
 void GribMemoryInput::print(std::ostream& out) const {
     out << "GribMemoryInput[]";

@@ -105,6 +105,7 @@ class GribMemoryOutput : public GribOutput {
 
     virtual void out(const void* message, size_t length, bool iterpolated);
     virtual void print(std::ostream&) const;
+    virtual bool sameAs(const MIROutput& other) const;
 
     // -- Class members
     // None

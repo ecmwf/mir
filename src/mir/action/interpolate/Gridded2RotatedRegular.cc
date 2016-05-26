@@ -44,6 +44,11 @@ Gridded2RotatedRegular::~Gridded2RotatedRegular() {
 }
 
 
+bool Gridded2RotatedRegular::sameAs(const Action& other) const {
+    const Gridded2RotatedRegular* o = dynamic_cast<const Gridded2RotatedRegular*>(&other);
+    return o && (N_ == o->N_) && (rotation_ == o->rotation_);
+}
+
 void Gridded2RotatedRegular::print(std::ostream &out) const {
     out << "Gridded2RotatedRegular[N=" << N_ << ",rotation=" << rotation_ << "]";
 }

@@ -42,6 +42,11 @@ Gridded2RegularLL::~Gridded2RegularLL() {
 }
 
 
+bool Gridded2RegularLL::sameAs(const Action& other) const {
+    const Gridded2RegularLL* o = dynamic_cast<const Gridded2RegularLL*>(&other);
+    return o && (increments_ == o->increments_);
+}
+
 void Gridded2RegularLL::print(std::ostream &out) const {
     out << "Gridded2RegularLL[increments=" << increments_ << "]";
 }

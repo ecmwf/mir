@@ -43,6 +43,13 @@ AdjustWinds::AdjustWinds(const param::MIRParametrisation &parametrisation):
 AdjustWinds::~AdjustWinds() {
 }
 
+
+bool AdjustWinds::sameAs(const Action& other) const {
+    const AdjustWinds* o = dynamic_cast<const AdjustWinds*>(&other);
+    return o && (rotation_ == o->rotation_);
+}
+
+
 void AdjustWinds::print(std::ostream &out) const {
     out << "AdjustWinds[rotation=" << rotation_ << "]";
 }

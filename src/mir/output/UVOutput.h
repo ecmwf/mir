@@ -90,6 +90,7 @@ class UVOutput : public VectorOutput {
     virtual void print(std::ostream &) const;
     virtual long component1ParamId(input::MIRInput &) const;
     virtual long component2ParamId(input::MIRInput &) const;
+    virtual bool sameAs(const MIROutput& other) const;
 
     // -- Class members
     // None

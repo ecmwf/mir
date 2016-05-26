@@ -43,6 +43,9 @@ RawOutput::~RawOutput() {
     }
 }
 
+bool RawOutput::sameAs(const MIROutput& other) const {
+    return this == &other;
+}
 
 void RawOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
     NOTIMP;

@@ -48,6 +48,11 @@ Gridded2RotatedLL::~Gridded2RotatedLL() {
 }
 
 
+bool Gridded2RotatedLL::sameAs(const Action& other) const {
+    const Gridded2RotatedLL* o = dynamic_cast<const Gridded2RotatedLL*>(&other);
+    return o && (increments_ == o->increments_) && (rotation_ == o->rotation_);
+}
+
 void Gridded2RotatedLL::print(std::ostream &out) const {
     out << "Gridded2RotatedLL[increments=" << increments_ << ",rotation" << rotation_ << "]";
 }

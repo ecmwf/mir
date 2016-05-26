@@ -56,9 +56,7 @@ class Rotation {
 
     // -- Operators
 
-    // bool operator==(const Rotation& other) const {
-    //     return (west_east_ == other.west_east_) && (south_north_ == other.south_north_);
-    // }
+    bool operator==(const Rotation& other) const;
 
     // bool operator!=(const Rotation& other) const {
     //     return (west_east_ != other.west_east_) || (south_north_ != other.south_north_);

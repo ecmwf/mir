@@ -34,6 +34,12 @@ Gridded2Octahedral::~Gridded2Octahedral() {
 }
 
 
+bool Gridded2Octahedral::sameAs(const Action& other) const {
+    const Gridded2Octahedral* o = dynamic_cast<const Gridded2Octahedral*>(&other);
+    return o && (N_ == o->N_);
+}
+
+
 void Gridded2Octahedral::print(std::ostream& out) const {
     out << "Gridded2Octahedral[N=" << N_ << "]";
 }

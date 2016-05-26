@@ -43,6 +43,11 @@ Gridded2RotatedNamedGrid::~Gridded2RotatedNamedGrid() {
 }
 
 
+bool Gridded2RotatedNamedGrid::sameAs(const Action& other) const {
+    const Gridded2RotatedNamedGrid* o = dynamic_cast<const Gridded2RotatedNamedGrid*>(&other);
+    return o && (gridname_ == o->gridname_) && (rotation_ == o->rotation_);
+}
+
 void Gridded2RotatedNamedGrid::print(std::ostream &out) const {
     out << "Gridded2RotatedNamedGrid[gridname=" << gridname_ << ",rotation=" << rotation_ << "]";
 }

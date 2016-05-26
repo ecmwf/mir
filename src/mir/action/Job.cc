@@ -68,7 +68,7 @@ void Job::execute() const {
 
     // This is an optimistation for MARS
     // We avoid to decode the input field
-    if(plan_->size() == 1 && !plan_->action(0)->needField()) {
+    if(plan_->size() == 1 && !plan_->action(0).needField()) {
         data::MIRField dummy(job_);
         plan_->execute(dummy);
         return;
@@ -79,6 +79,10 @@ void Job::execute() const {
     plan_->execute(*field);
 }
 
+
+const ActionPlan& Job::plan() const {
+    return *plan_;
+}
 
 }  // namespace action
 }  // namespace mir

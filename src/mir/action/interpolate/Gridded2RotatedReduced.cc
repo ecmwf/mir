@@ -43,6 +43,11 @@ Gridded2RotatedReduced::~Gridded2RotatedReduced() {
 }
 
 
+bool Gridded2RotatedReduced::sameAs(const Action& other) const {
+    const Gridded2RotatedReduced* o = dynamic_cast<const Gridded2RotatedReduced*>(&other);
+    return o && (N_ == o->N_) && (rotation_ == o->rotation_);
+}
+
 void Gridded2RotatedReduced::print(std::ostream &out) const {
     out << "Gridded2RotatedReduced[N=" << N_ << ",rotation=" << rotation_ << "]";
 }

@@ -88,6 +88,8 @@ class VOD2UVTransform : public Action {
 
 // -- Overridden methods
 
+    virtual bool sameAs(const Action& other) const;
+
     virtual void execute(data::MIRField&) const;
 
 // -- Class members

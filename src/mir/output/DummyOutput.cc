@@ -15,6 +15,8 @@
 
 #include <istream>
 
+#include "eckit/io/Length.h"
+
 #include "mir/output/DummyOutput.h"
 
 
@@ -30,6 +32,12 @@ DummyOutput::~DummyOutput() {
 }
 
 
+bool DummyOutput::sameAs(const MIROutput& other) const {
+    const DummyOutput* o = dynamic_cast<const DummyOutput*>(&other);
+    return o;
+}
+
+
 void DummyOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
 }
 
@@ -40,6 +48,10 @@ void DummyOutput::save(const param::MIRParametrisation &param, input::MIRInput &
 
 void DummyOutput::print(std::ostream &out) const {
     out << "DummyOutput[...]";
+}
+
+eckit::Length DummyOutput::total() const {
+    return 0;
 }
 
 

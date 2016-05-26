@@ -96,6 +96,7 @@ class AdjustWinds : public Action {
 // -- Overridden methods
 
     virtual void execute(data::MIRField&) const;
+    virtual bool sameAs(const Action& other) const;
 
 
 // -- Class members

@@ -92,7 +92,7 @@ class GribFileOutput : public GribStreamOutput {
 
 // -- Overridden methods
     // From MIROutput
-
+    virtual bool sameAs(const MIROutput& other) const;
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
     // From GribInput

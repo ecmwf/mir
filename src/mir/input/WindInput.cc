@@ -31,6 +31,12 @@ WindInput::WindInput(MIRInput &u_component, MIRInput &v_component):
 WindInput::~WindInput() {
 }
 
+
+bool WindInput::sameAs(const MIRInput& other) const {
+    const WindInput* o = dynamic_cast<const WindInput*>(&other);
+    return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
+}
+
 void WindInput::print(std::ostream &out) const {
     out << "WindInput[u_component=" << component1_ << ", v_component=" << component2_ << "]";
 }

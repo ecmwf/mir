@@ -31,6 +31,12 @@ VODInput::VODInput(MIRInput &vorticity, MIRInput &divergence):
 VODInput::~VODInput() {
 }
 
+
+bool VODInput::sameAs(const MIRInput& other) const {
+    const VODInput* o = dynamic_cast<const VODInput*>(&other);
+    return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
+}
+
 void VODInput::print(std::ostream &out) const {
     out << "VODInput[vorticity=" << component1_ << ", divergence=" << component2_ << "]";
 }

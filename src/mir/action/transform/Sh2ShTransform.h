@@ -89,6 +89,8 @@ class Sh2ShTransform : public Action {
 
 // -- Overridden methods
 
+    virtual bool sameAs(const Action& other) const;
+
     virtual void execute(data::MIRField&) const;
 
 // -- Class members

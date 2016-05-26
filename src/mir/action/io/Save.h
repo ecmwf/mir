@@ -54,7 +54,6 @@ class Save : public Action {
     // -- Overridden methods
     // None
 
-    virtual void execute(data::MIRField &) const;
 
     // -- Class members
     // None
@@ -97,6 +96,8 @@ class Save : public Action {
 
     // -- Overridden methods
 
+    virtual void execute(data::MIRField &) const;
+    virtual bool sameAs(const Action& other) const;
 
     // -- Class members
     // None

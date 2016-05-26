@@ -40,6 +40,10 @@ Sh2RegularLL::Sh2RegularLL(const param::MIRParametrisation &parametrisation):
 Sh2RegularLL::~Sh2RegularLL() {
 }
 
+bool Sh2RegularLL::sameAs(const Action& other) const {
+    const Sh2RegularLL* o = dynamic_cast<const Sh2RegularLL*>(&other);
+    return o && (grid_ == o->grid_);
+}
 
 void Sh2RegularLL::print(std::ostream &out) const {
     out << "Sh2RegularLL[grib=" << grid_ << "]";

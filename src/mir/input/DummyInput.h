@@ -91,6 +91,7 @@ class DummyInput : public MIRInput, public param::FieldParametrisation {
     // From MIRInput
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual bool sameAs(const MIRInput& other) const;
 
     virtual const param::MIRParametrisation &parametrisation() const;
     virtual data::MIRField *field() const;

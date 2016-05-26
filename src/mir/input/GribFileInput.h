@@ -95,6 +95,7 @@ class GribFileInput : public GribStreamInput {
     // From MIRInput
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual bool sameAs(const MIRInput& other) const;
 
     // From GribInput
 

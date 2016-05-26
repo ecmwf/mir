@@ -87,6 +87,7 @@ class WindInput : public VectorInput {
     // -- Overridden methods
 
     virtual void print(std::ostream&) const;
+    virtual bool sameAs(const MIRInput& other) const;
 
 
     // -- Class members

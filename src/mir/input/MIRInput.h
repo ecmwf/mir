@@ -62,6 +62,8 @@ class MIRInput {
     virtual grib_handle* gribHandle() const;
     virtual size_t copy(double* values, size_t size) const;
 
+    virtual bool sameAs(const MIRInput& other) const = 0;
+
 // -- Overridden methods
     // None
 

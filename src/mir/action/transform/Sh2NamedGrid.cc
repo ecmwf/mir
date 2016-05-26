@@ -36,6 +36,11 @@ Sh2NamedGrid::~Sh2NamedGrid() {
 }
 
 
+bool Sh2NamedGrid::sameAs(const Action& other) const {
+    const Sh2NamedGrid* o = dynamic_cast<const Sh2NamedGrid*>(&other);
+    return o && (gridname_ == o->gridname_);
+}
+
 void Sh2NamedGrid::print(std::ostream& out) const {
     out << "Sh2NamedGrid[gridname=" << gridname_ << "]";
 }

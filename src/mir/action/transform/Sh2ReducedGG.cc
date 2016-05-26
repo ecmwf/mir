@@ -37,6 +37,11 @@ Sh2ReducedGG::~Sh2ReducedGG() {
 }
 
 
+bool Sh2ReducedGG::sameAs(const Action& other) const {
+    const Sh2ReducedGG* o = dynamic_cast<const Sh2ReducedGG*>(&other);
+    return o && (N_ == o->N_);
+}
+
 void Sh2ReducedGG::print(std::ostream& out) const {
     out << "Sh2ReducedGG[N=" << N_ << "]";
 }

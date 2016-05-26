@@ -34,6 +34,11 @@ UVOutput::UVOutput(MIROutput &u_component, MIROutput &v_component):
 UVOutput::~UVOutput() {
 }
 
+bool UVOutput::sameAs(const MIROutput& other) const {
+    const UVOutput* o = dynamic_cast<const UVOutput*>(&other);
+    return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
+}
+
 void UVOutput::print(std::ostream &out) const {
     out << "UVOutput[u_component=" << component1_ << ", v_component=" << component2_ << "]";
 }

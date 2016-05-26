@@ -82,6 +82,11 @@ AreaCropper::~AreaCropper() {
 }
 
 
+bool AreaCropper::sameAs(const Action& other) const {
+    const AreaCropper* o = dynamic_cast<const AreaCropper*>(&other);
+    return o && (bbox_ == o->bbox_);
+}
+
 void AreaCropper::print(std::ostream &out) const {
     out << "AreaCropper[bbox=" << bbox_ << "]";
 }

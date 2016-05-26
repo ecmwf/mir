@@ -16,7 +16,7 @@
 
 #include <iostream>
 #include "mir/output/MIROutput.h"
-// #include "mir/input/MIRInput.h"
+#include "mir/input/MIRInput.h"
 
 
 namespace mir {
@@ -29,6 +29,11 @@ Copy::Copy(const param::MIRParametrisation &parametrisation, input::MIRInput &in
 }
 
 Copy::~Copy() {
+}
+
+bool Copy::sameAs(const Action& other) const {
+    const Copy* o = dynamic_cast<const Copy*>(&other);
+    return o && input_.sameAs(o->input_) && output_.sameAs(o->output_);
 }
 
 void Copy::print(std::ostream &out) const {

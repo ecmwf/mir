@@ -89,6 +89,8 @@ class Gridded2ReducedGGPLGiven : public Gridded2GriddedInterpolation {
 
 // -- Overridden methods
 
+    virtual bool sameAs(const Action& other) const;
+
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;
 

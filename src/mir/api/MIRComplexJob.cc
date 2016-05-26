@@ -19,6 +19,8 @@
 #include "mir/action/Job.h"
 #include "mir/output/MIROutput.h"
 #include "mir/api/MIRJob.h"
+#include "mir/action/ActionPlan.h"
+#include "mir/action/Action.h"
 
 
 namespace mir {
@@ -41,15 +43,23 @@ MIRComplexJob::~MIRComplexJob() {
 
 void MIRComplexJob::execute() const {
 
+    //
+    for (std::vector<action::Job *>::const_iterator j = jobs_.begin(); j != jobs_.end(); ++j) {
+        const action::ActionPlan& plan = (*j)->plan();
+        std::cout << "======== " << std::endl;
+        for(size_t i = 0; i < plan.size(); i++) {
+            const action::Action& action = plan.action(i);
+            std::cout << action << std::endl;
+        }
+    }
 }
-
 
 void MIRComplexJob::print(std::ostream &out) const {
     out << "MIRComplexJob[]";
 }
 
 MIRComplexJob &MIRComplexJob::add(api::MIRJob *job, input::MIRInput &input, output::MIROutput &output) {
-    apis_.push_back(job);
+    apis_.push_back(job); // We keep it becase the Job needs a reference
     jobs_.push_back(new action::Job(*job, input, output));
     return *this;
 }

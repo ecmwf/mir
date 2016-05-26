@@ -57,9 +57,9 @@ size_t ActionPlan::size() const {
     return actions_.size();
 }
 
-const Action *ActionPlan::action(size_t n) const {
+const Action &ActionPlan::action(size_t n) const {
     ASSERT(n < actions_.size());
-    return actions_[n];
+    return *actions_[n];
 }
 
 void ActionPlan::add(const std::string &name, const std::string &param, long value)  {

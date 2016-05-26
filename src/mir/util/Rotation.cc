@@ -64,7 +64,7 @@ void Rotation::fill(grib_info &info) const  {
 
     // This is missing from the grib_spec
     // Remove that when supported
-    if(south_pole_rotation_angle_) {
+    if (south_pole_rotation_angle_) {
         int n = info.packing.extra_settings_count++;
         info.packing.extra_settings[n].name = "angleOfRotationInDegrees";
         info.packing.extra_settings[n].type = GRIB_TYPE_DOUBLE;
@@ -74,6 +74,12 @@ void Rotation::fill(grib_info &info) const  {
 
 void Rotation::fill(api::MIRJob &job) const  {
     job.set("rotation", south_pole_latitude_, south_pole_longitude_);
+}
+
+bool Rotation::operator==(const Rotation &other) const {
+    return south_pole_latitude_ == other.south_pole_latitude_
+           && south_pole_longitude_ == other.south_pole_longitude_
+           && south_pole_rotation_angle_ == other.south_pole_rotation_angle_;
 }
 
 }  // namespace data

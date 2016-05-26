@@ -57,6 +57,11 @@ BitmapFilter::~BitmapFilter() {
 }
 
 
+bool BitmapFilter::sameAs(const Action& other) const {
+    const BitmapFilter* o = dynamic_cast<const BitmapFilter*>(&other);
+    return o && (bitmap_ == o->bitmap_);
+}
+
 void BitmapFilter::print(std::ostream &out) const {
     out << "BitmapFilter[bitmap=" << *bitmap_ << "]";
 }

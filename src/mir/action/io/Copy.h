@@ -54,7 +54,6 @@ class Copy : public Action {
     // -- Overridden methods
     // None
 
-    virtual void execute(data::MIRField &) const;
 
     // -- Class members
     // None
@@ -97,7 +96,9 @@ class Copy : public Action {
 
     // -- Overridden methods
 
+    virtual void execute(data::MIRField &) const;
     virtual bool needField() const;
+    virtual bool sameAs(const Action& other) const;
 
     // -- Class members
     // None

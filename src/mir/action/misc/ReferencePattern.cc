@@ -35,6 +35,10 @@ ReferencePattern::ReferencePattern(const param::MIRParametrisation &parametrisat
 ReferencePattern::~ReferencePattern() {
 }
 
+bool ReferencePattern::sameAs(const Action& other) const {
+    return false;
+}
+
 
 void ReferencePattern::print(std::ostream &out) const {
     out << "ReferencePattern[]";

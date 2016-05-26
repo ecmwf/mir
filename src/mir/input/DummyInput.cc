@@ -31,6 +31,12 @@ DummyInput::DummyInput(): calls_(0) {
 
 DummyInput::~DummyInput() {}
 
+
+bool DummyInput::sameAs(const MIRInput& other) const {
+    const DummyInput* o = dynamic_cast<const DummyInput*>(&other);
+    return o;
+}
+
 bool DummyInput::next() {
     return calls_++ == 0;
 }

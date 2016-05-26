@@ -32,6 +32,10 @@ Sh2Octahedral::Sh2Octahedral(const param::MIRParametrisation& parametrisation):
 
 }
 
+bool Sh2Octahedral::sameAs(const Action& other) const {
+    const Sh2Octahedral* o = dynamic_cast<const Sh2Octahedral*>(&other);
+    return o && (N_ == o->N_);
+}
 
 Sh2Octahedral::~Sh2Octahedral() {
 }

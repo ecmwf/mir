@@ -93,10 +93,11 @@ class DummyOutput : public MIROutput {
 // -- Overridden methods
     // From MIROutput
     virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual bool sameAs(const MIROutput& other) const;
 
     virtual void copy(const param::MIRParametrisation&, input::MIRInput&); // Not iterpolation performed
     virtual void save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&);
-
+    virtual eckit::Length total() const;
 
 // -- Class members
     // None

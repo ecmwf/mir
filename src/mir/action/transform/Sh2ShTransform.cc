@@ -39,6 +39,11 @@ Sh2ShTransform::~Sh2ShTransform() {
 }
 
 
+bool Sh2ShTransform::sameAs(const Action& other) const {
+    const Sh2ShTransform* o = dynamic_cast<const Sh2ShTransform*>(&other);
+    return o && (truncation_ == o->truncation_);
+}
+
 void Sh2ShTransform::print(std::ostream &out) const {
     out << "Sh2ShTransform[";
     out << "truncation=" << truncation_;

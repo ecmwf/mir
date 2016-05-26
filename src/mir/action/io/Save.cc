@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include "mir/output/MIROutput.h"
+#include "mir/input/MIRInput.h"
 
 
 namespace mir {
@@ -28,6 +29,11 @@ Save::Save(const param::MIRParametrisation &parametrisation, input::MIRInput &in
 }
 
 Save::~Save() {
+}
+
+bool Save::sameAs(const Action& other) const {
+    const Save* o = dynamic_cast<const Save*>(&other);
+    return o && input_.sameAs(o->input_) && output_.sameAs(o->output_);
 }
 
 void Save::print(std::ostream &out) const {

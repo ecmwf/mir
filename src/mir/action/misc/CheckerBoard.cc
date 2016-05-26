@@ -37,6 +37,10 @@ CheckerBoard::~CheckerBoard() {
 }
 
 
+bool CheckerBoard::sameAs(const Action& other) const {
+    return false;
+}
+
 void CheckerBoard::print(std::ostream &out) const {
     out << "CheckerBoard[]";
 }

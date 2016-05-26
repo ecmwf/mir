@@ -35,6 +35,10 @@ GribFileInput::~GribFileInput() {
     }
 }
 
+bool GribFileInput::sameAs(const MIRInput& other) const {
+    const GribFileInput* o = dynamic_cast<const GribFileInput*>(&other);
+    return o && (skip_ == o->skip_) && (step_ == o->step_) && (path_ == o->path_);
+}
 
 void GribFileInput::print(std::ostream &out) const {
     out << "GribFileInput[path=" << path_ << ",skip=" << skip_ << ", step=" << step_ << "]";

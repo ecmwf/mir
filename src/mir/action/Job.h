@@ -61,6 +61,8 @@ class Job  {
 
     void execute() const;
 
+    const ActionPlan& plan() const;
+
     // -- Overridden methods
     // None
 

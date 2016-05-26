@@ -36,6 +36,10 @@ RawInput::RawInput(const RawMetadata &metadata, const double *values, size_t cou
 RawInput::~RawInput() {
 }
 
+bool RawInput::sameAs(const MIRInput& other) const {
+    return this == &other;
+}
+
 bool RawInput::next() {
     NOTIMP;
 }

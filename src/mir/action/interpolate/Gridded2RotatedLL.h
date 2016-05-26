@@ -90,6 +90,8 @@ class Gridded2RotatedLL : public Gridded2GriddedInterpolation {
 
 // -- Overridden methods
 
+    virtual bool sameAs(const Action& other) const;
+
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;
 
