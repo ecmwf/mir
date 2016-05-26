@@ -28,6 +28,10 @@ action/ActionPlan.cc
 action/ActionPlan.h
 action/Job.cc
 action/Job.h
+action/io/Save.cc
+action/io/Save.h
+action/io/Copy.cc
+action/io/Copy.h
 action/filter/AdjustWinds.cc
 action/filter/AdjustWinds.h
 action/filter/BitmapFilter.cc

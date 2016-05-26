@@ -28,20 +28,20 @@ namespace {
 
 
 static eckit::Mutex *local_mutex = 0;
-static std::map<std::string,ActionFactory*> *m = 0;
+static std::map<std::string, ActionFactory *> *m = 0;
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map<std::string,ActionFactory*>();
+    m = new std::map<std::string, ActionFactory *>();
 }
 
 
 }  // (anonymous namespace)
 
 
-Action::Action(const param::MIRParametrisation& parametrisation):
+Action::Action(const param::MIRParametrisation &parametrisation):
     parametrisation_(parametrisation) {
 }
 
@@ -49,10 +49,14 @@ Action::Action(const param::MIRParametrisation& parametrisation):
 Action::~Action() {
 }
 
-ActionFactory::ActionFactory(const std::string& name):
+bool Action::needField() const {
+    return true;
+}
+
+ActionFactory::ActionFactory(const std::string &name):
     name_(name) {
 
-    pthread_once(&once,init);
+    pthread_once(&once, init);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -68,19 +72,19 @@ ActionFactory::~ActionFactory() {
 }
 
 
-Action* ActionFactory::build(const std::string& name, const param::MIRParametrisation& params) {
+Action *ActionFactory::build(const std::string &name, const param::MIRParametrisation &params) {
 
-    pthread_once(&once,init);
+    pthread_once(&once, init);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, ActionFactory*>::const_iterator j = m->find(name);
+    std::map<std::string, ActionFactory *>::const_iterator j = m->find(name);
 
     eckit::Log::trace<MIR>() << "Looking for ActionFactory [" << name << "]" << std::endl;
 
     if (j == m->end()) {
         eckit::Log::error() << "No ActionFactory for [" << name << "]" << std::endl;
         eckit::Log::error() << "ActionFactories are:" << std::endl;
-        for(j = m->begin() ; j != m->end() ; ++j)
+        for (j = m->begin() ; j != m->end() ; ++j)
             eckit::Log::error() << "   " << (*j).first << std::endl;
         throw eckit::SeriousBug(std::string("No ActionFactory called ") + name);
     }

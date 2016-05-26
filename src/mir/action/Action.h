@@ -35,81 +35,81 @@ namespace action {
 class Action {
   public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
-    Action(const param::MIRParametrisation& parametrisation);
+    Action(const param::MIRParametrisation &parametrisation);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~Action(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-    virtual void execute(data::MIRField&) const = 0;
+    virtual void execute(data::MIRField &) const = 0;
+    virtual bool needField() const ;
 
-
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   protected:
 
-// -- Members
+    // -- Members
 
-    const param::MIRParametrisation& parametrisation_;
+    const param::MIRParametrisation &parametrisation_;
 
-// -- Methods
+    // -- Methods
 
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   private:
 
-// No copy allowed
+    // No copy allowed
 
-    Action(const Action&);
-    Action& operator=(const Action&);
+    Action(const Action &);
+    Action &operator=(const Action &);
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const Action& p) {
+    friend std::ostream &operator<<(std::ostream &s, const Action &p) {
         p.print(s);
         return s;
     }
@@ -119,27 +119,27 @@ class Action {
 
 class ActionFactory {
     std::string name_;
-    virtual Action* make(const param::MIRParametrisation&) = 0;
+    virtual Action *make(const param::MIRParametrisation &) = 0;
 
   protected:
 
-    ActionFactory(const std::string&);
+    ActionFactory(const std::string &);
     virtual ~ActionFactory();
 
   public:
 
-    static Action* build(const std::string&, const param::MIRParametrisation&);
+    static Action *build(const std::string &, const param::MIRParametrisation &);
 
 };
 
 
 template<class T>
 class ActionBuilder : public ActionFactory {
-    virtual Action* make(const param::MIRParametrisation& param) {
+    virtual Action *make(const param::MIRParametrisation &param) {
         return new T(param);
     }
   public:
-    ActionBuilder(const std::string& name) : ActionFactory(name) {}
+    ActionBuilder(const std::string &name) : ActionFactory(name) {}
 };
 
 

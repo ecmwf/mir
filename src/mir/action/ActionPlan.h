@@ -56,9 +56,12 @@ class ActionPlan {
     void add(const std::string& name);
     void add(const std::string& name, const std::string&, long);
     void add(const std::string& name, const std::string&, param::DelayedParametrisation*);
+    void add(Action* action);
 
     void execute(data::MIRField&) const;
     bool empty() const;
+    size_t size() const;
+    const Action* action(size_t) const;
 
 // -- Overridden methods
     // None

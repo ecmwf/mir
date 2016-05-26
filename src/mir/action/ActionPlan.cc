@@ -26,17 +26,17 @@ namespace mir {
 namespace action {
 
 
-ActionPlan::ActionPlan(const param::MIRParametrisation& parametrisation):
+ActionPlan::ActionPlan(const param::MIRParametrisation &parametrisation):
     parametrisation_(parametrisation) {
 }
 
 
 ActionPlan::~ActionPlan() {
-    for (std::vector<Action*>::iterator j = actions_.begin(); j != actions_.end(); ++j) {
+    for (std::vector<Action *>::iterator j = actions_.begin(); j != actions_.end(); ++j) {
         delete (*j);
     }
 
-    for (std::vector<param::MIRParametrisation*>::iterator j = runtimes_.begin(); j != runtimes_.end(); ++j) {
+    for (std::vector<param::MIRParametrisation *>::iterator j = runtimes_.begin(); j != runtimes_.end(); ++j) {
         delete (*j);
     }
 }
@@ -45,29 +45,41 @@ bool ActionPlan::empty() const {
     return actions_.empty();
 }
 
-void ActionPlan::add(const std::string& name)  {
+void ActionPlan::add(const std::string &name)  {
     actions_.push_back(action::ActionFactory::build(name, parametrisation_));
 }
 
+void ActionPlan::add(Action *action)  {
+    actions_.push_back(action);
+}
 
-void ActionPlan::add(const std::string& name, const std::string& param, long value)  {
-    param::RuntimeParametrisation* runtime = new param::RuntimeParametrisation(parametrisation_);
+size_t ActionPlan::size() const {
+    return actions_.size();
+}
+
+const Action *ActionPlan::action(size_t n) const {
+    ASSERT(n < actions_.size());
+    return actions_[n];
+}
+
+void ActionPlan::add(const std::string &name, const std::string &param, long value)  {
+    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
 
     runtime->set(param, value);
     actions_.push_back(action::ActionFactory::build(name, *runtime));
 }
 
-void ActionPlan::add(const std::string& name, const std::string& param, param::DelayedParametrisation* value) {
-    param::RuntimeParametrisation* runtime = new param::RuntimeParametrisation(parametrisation_);
+void ActionPlan::add(const std::string &name, const std::string &param, param::DelayedParametrisation *value) {
+    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
 
     runtime->set(param, value);
     actions_.push_back(action::ActionFactory::build(name, *runtime));
 }
 
-void ActionPlan::execute(data::MIRField& field) const {
-    for (std::vector<Action*>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
+void ActionPlan::execute(data::MIRField &field) const {
+    for (std::vector<Action *>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
         eckit::Log::trace<MIR>() << "EXECUTE => " << *(*j) << std::endl;
         eckit::Log::trace<MIR>() << " => INPUT: " << field << std::endl;
         (*j)->execute(field);
@@ -78,8 +90,8 @@ void ActionPlan::execute(data::MIRField& field) const {
 
 void ActionPlan::print(std::ostream &out) const {
     out << "ActionPlan[";
-    const char* arrow = "";
-    for (std::vector<Action*>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
+    const char *arrow = "";
+    for (std::vector<Action *>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
         out << arrow << *(*j);
         arrow = " ==> ";
     }

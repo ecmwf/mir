@@ -16,6 +16,8 @@
 #include <iostream>
 
 #include "mir/action/ActionPlan.h"
+#include "mir/action/io/Save.h"
+#include "mir/action/io/Copy.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
@@ -33,7 +35,6 @@ namespace mir {
 namespace action {
 
 
-
 Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &output):
     job_(job),
     input_(input),
@@ -45,42 +46,37 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
     combined_.reset(new param::MIRCombinedParametrisation(job, metadata, defaults));
     plan_.reset(new action::ActionPlan(*combined_));
 
-    if (job.empty()) {
-        eckit::Log::trace<MIR>() << "Nothing to do (no request)" << std::endl;
-        return;
+    if (!job.empty() && !job.matches(metadata)) {
+
+        eckit::ScopedPtr< logic::MIRLogic > logic(logic::MIRLogicFactory::build(*combined_));
+        logic->prepare(*plan_);
     }
 
-    if (job.matches(metadata)) {
-        eckit::Log::trace<MIR>() << "Nothing to do (field matches)" << std::endl;
-        return;
+    if (plan_->empty()) {
+        plan_->add(new action::Copy(*combined_, input_, output_));
+    } else {
+        plan_->add(new action::Save(*combined_, input_, output_));
     }
-
-
-    eckit::ScopedPtr< logic::MIRLogic > logic(logic::MIRLogicFactory::build(*combined_));
-    logic->prepare(*plan_);
 
     eckit::Log::trace<MIR>() << "Action plan is: " << *plan_ << std::endl;
-
 }
-
 
 Job::~Job() {
 }
 
-
 void Job::execute() const {
 
-    if (plan_->empty()) {
-        output_.copy(job_, input_);
+    // This is an optimistation for MARS
+    // We avoid to decode the input field
+    if(plan_->size() == 1 && !plan_->action(0)->needField()) {
+        data::MIRField dummy(job_);
+        plan_->execute(dummy);
         return;
     }
 
     eckit::ScopedPtr< data::MIRField > field(input_.field());
     eckit::Log::trace<MIR>() << "Field is " << *field << std::endl;
-
     plan_->execute(*field);
-
-    output_.save(*combined_, input_, *field);
 }
 
 
