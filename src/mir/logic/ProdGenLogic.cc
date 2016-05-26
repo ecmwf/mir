@@ -280,7 +280,7 @@ void ProdGenLogic::prepare(action::ActionPlan &plan) const {
 
 // register MARS-specialized logic
 namespace {
-static MIRLogicBuilder<ProdGenLogic> mars("mars");
+static MIRLogicBuilder<ProdGenLogic> prodgen("prodgen");
 }
 
 
