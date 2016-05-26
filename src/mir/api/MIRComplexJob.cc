@@ -40,18 +40,92 @@ MIRComplexJob::~MIRComplexJob() {
     }
 }
 
+class Node {
+
+    const action::Action &action_;
+    std::vector<Node *> kids_;
+
+  public:
+
+    Node(const action::Action &action) : action_(action) {}
+
+    const action::Action &action() const {
+        return action_;
+    }
+
+    std::vector<Node *> &kids() {
+        return kids_;
+    }
+
+    void dump(size_t depth) const {
+        for (size_t i = 0; i < 3 * depth; i++) {
+            std::cout << " ";
+        }
+        std::cout << action_ << std::endl;
+        for (std::vector<Node *>::const_iterator j = kids_.begin(); j != kids_.end(); ++j) {
+            (*j)->dump(depth+1);
+        }
+    }
+
+};
+
+// static void fill(size_t n) {
+
+// }
 
 void MIRComplexJob::execute() const {
+    std::cout << "---------------------- " << std::endl;
 
-    //
     for (std::vector<action::Job *>::const_iterator j = jobs_.begin(); j != jobs_.end(); ++j) {
-        const action::ActionPlan& plan = (*j)->plan();
-        std::cout << "======== " << std::endl;
-        for(size_t i = 0; i < plan.size(); i++) {
-            const action::Action& action = plan.action(i);
+        const action::ActionPlan &plan = (*j)->plan();
+        std::cout << std::endl;
+        for (size_t i = 0; i < plan.size(); i++) {
+            const action::Action &action = plan.action(i);
             std::cout << action << std::endl;
         }
     }
+
+    std::cout << "---------------------- " << std::endl;
+
+    std::vector<Node *> graph;
+
+    for (std::vector<action::Job *>::const_iterator j = jobs_.begin(); j != jobs_.end(); ++j) {
+        const action::ActionPlan &plan = (*j)->plan();
+
+        std::vector<Node *> *nodes = &graph;
+
+        size_t i = 0;
+        while (i < plan.size()) {
+            bool found = false;
+
+            for (std::vector<Node *>::const_iterator k = nodes->begin(); k != nodes->end(); ++k) {
+                if (plan.action(i).sameAs((*k)->action())) {
+                    nodes = &(*k)->kids();
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                break;
+            }
+            i++;
+        }
+
+        while (i < plan.size()) {
+            Node* node = new Node(plan.action(i));
+            nodes->push_back(node);
+            nodes = &node->kids();
+            i++;
+        }
+    }
+    std::cout << ">>>>> " << std::endl;
+
+    for (std::vector<Node *>::const_iterator j = graph.begin(); j != graph.end(); ++j) {
+        (*j)->dump(0);
+    }
+        std::cout << "<<<<< " << std::endl;
+
 }
 
 void MIRComplexJob::print(std::ostream &out) const {
