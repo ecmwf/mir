@@ -74,10 +74,17 @@ class MIRJob : public param::SimpleParametrisation {
     MIRJob& clear(const std::string& name);
     MIRJob& representationFrom(input::MIRInput&);
 
+
     // For debugging only
     void mirToolCall(std::ostream&) const;
 
     void json(eckit::JSON&) const;
+
+    // Used by Job
+
+    bool empty() const;
+    bool matches(const param::MIRParametrisation&) const;
+
 
 // -- Overridden methods
     // None
@@ -114,7 +121,6 @@ class MIRJob : public param::SimpleParametrisation {
 
 // -- Methods
 
-    bool matches(const param::MIRParametrisation&) const;
 
 // -- Overridden methods
 

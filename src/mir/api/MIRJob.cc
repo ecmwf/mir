@@ -15,25 +15,11 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
-#include "eckit/log/Timer.h"
 #include "eckit/log/Plural.h"
-
-#include "eckit/runtime/Context.h"
-
-#include "mir/api/mir_config.h"
-
-#include "mir/action/Action.h"
-#include "mir/action/ActionPlan.h"
-
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
-#include "mir/logic/MIRLogic.h"
-#include "mir/output/MIROutput.h"
-#include "mir/param/MIRCombinedParametrisation.h"
-#include "mir/param/MIRDefaults.h"
 #include "mir/log/MIR.h"
+#include "mir/action/Job.h"
 
 #include "mir/repres/Representation.h"
 
@@ -53,62 +39,8 @@ MIRJob::~MIRJob() {
 
 
 void MIRJob::execute(input::MIRInput &input, output::MIROutput &output) const {
-    // Optimisation: nothing to do, usefull for MARS
-    if (size() == 0) {
-        eckit::Log::trace<MIR>() << "Nothing to do (no request)" << std::endl;
-        output.copy(*this, input);
-        return;
-    }
-
-
-    // Accroding to c++11, this should be thread safe (assuming contructors are thread safe as well)
-
-    const param::MIRParametrisation &defaults = param::MIRDefaults::instance();
-    eckit::Log::trace<MIR>() << "Defaults: " << defaults << std::endl;
-
-    eckit::TraceTimer<MIR> timer("MIRJob::execute");
-
-    eckit::Log::trace<MIR>() << "MIRJob::execute: ";
-    mirToolCall(eckit::Log::trace<MIR>());
-    eckit::Log::trace<MIR>() << std::endl;
-
-    eckit::Log::trace<MIR>() << "          Input: " << input << std::endl;
-    eckit::Log::trace<MIR>() << "         Output: " << output << std::endl;
-
-    const param::MIRParametrisation &metadata = input.parametrisation();
-
-    if (matches(metadata)) {
-        eckit::Log::trace<MIR>() << "Nothing to do (field matches)" << std::endl;
-        output.copy(*this, input);
-        return;
-    }
-
-    param::MIRCombinedParametrisation combined(*this, metadata, defaults);
-    eckit::Log::trace<MIR>() << "Combined parametrisation: " << combined << std::endl;
-
-    eckit::ScopedPtr< logic::MIRLogic > logic(logic::MIRLogicFactory::build(combined));
-
-    eckit::Log::trace<MIR>() << "Logic: " << *logic << std::endl;
-
-    action::ActionPlan plan(combined);
-    logic->prepare(plan);
-
-    eckit::Log::trace<MIR>() << "Action plan is: " << plan << std::endl;
-    if (plan.empty()) {
-        eckit::Log::trace<MIR>() << "Nothing to do (empty plan)" << std::endl;
-        output.copy(*this, input);
-        return;
-    }
-
-    eckit::ScopedPtr< data::MIRField > field(input.field());
-    eckit::Log::trace<MIR>() << "Field is " << *field << std::endl;
-
-
-    plan.execute(*field);
-
-    output.save(combined, input, *field);
+    action::Job(*this, input, output).execute();
 }
-
 
 void MIRJob::print(std::ostream &out) const {
     if (eckit::format(out) == eckit::Log::applicationFormat) {
@@ -120,6 +52,10 @@ void MIRJob::print(std::ostream &out) const {
         SimpleParametrisation::print(out);
         out << "]";
     }
+}
+
+bool MIRJob::empty() const {
+    return size() == 0;
 }
 
 MIRJob &MIRJob::clear(const std::string &name) {

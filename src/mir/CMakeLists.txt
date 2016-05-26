@@ -26,6 +26,8 @@ action/Action.cc
 action/Action.h
 action/ActionPlan.cc
 action/ActionPlan.h
+action/Job.cc
+action/Job.h
 action/filter/AdjustWinds.cc
 action/filter/AdjustWinds.h
 action/filter/BitmapFilter.cc
@@ -86,6 +88,8 @@ action/transform/VOD2UVTransform.cc
 action/transform/VOD2UVTransform.h
 api/MIRJob.cc
 api/MIRJob.h
+api/MIRComplexJob.cc
+api/MIRComplexJob.h
 api/ProdgenJob.cc
 api/ProdgenJob.h
 api/emoslib.cc
@@ -142,6 +146,8 @@ logic/AutoResol.cc
 logic/AutoResol.h
 logic/MARSLogic.cc
 logic/MARSLogic.h
+logic/ProdGenLogic.cc
+logic/ProdGenLogic.h
 logic/MIRLogic.cc
 logic/MIRLogic.h
 logic/ToolLogic.cc
