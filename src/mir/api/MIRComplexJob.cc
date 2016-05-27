@@ -21,13 +21,17 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionGraph.h"
+#include "mir/input/MIRInput.h"
+#include "mir/log/MIR.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
 namespace api {
 
 
-MIRComplexJob::MIRComplexJob() {
+MIRComplexJob::MIRComplexJob():
+    input_(0) {
 }
 
 
@@ -71,6 +75,14 @@ void MIRComplexJob::execute() const {
 
     std::cout << "<<<<< " << std::endl;
 
+    if (!input_) {
+        return;
+    }
+
+    eckit::ScopedPtr< data::MIRField > field(input_->field());
+    eckit::Log::trace<MIR>() << "Field is " << *field << std::endl;
+    graph.execute(*field);
+
 
 }
 
@@ -79,6 +91,18 @@ void MIRComplexJob::print(std::ostream &out) const {
 }
 
 MIRComplexJob &MIRComplexJob::add(api::MIRJob *job, input::MIRInput &input, output::MIROutput &output) {
+
+    if (!input_) {
+        input_ = &input;
+    }
+
+    if (input_ != &input) {
+        std::ostringstream oss;
+        oss << "MIRComplexJob: all jobs must share the same input (for now)";
+        throw eckit::SeriousBug(oss.str());
+    }
+
+
     apis_.push_back(job); // We keep it becase the Job needs a reference
     jobs_.push_back(new action::Job(*job, input, output));
     return *this;

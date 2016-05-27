@@ -13,14 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef MIRComplexJob_H
-#define MIRComplexJob_H
+#ifndef Input_H
+#define Input_H
 
-#include <string>
-#include <vector>
-
-
-#include "eckit/memory/NonCopyable.h"
+#include "mir/action/plan/Action.h"
 
 namespace mir {
 namespace input {
@@ -30,13 +26,9 @@ namespace output {
 class MIROutput;
 }
 namespace action {
-class Job;
-}
-namespace api {
 
-class MIRJob;
 
-class MIRComplexJob : private eckit::NonCopyable {
+class Input : public Action {
   public:
 
     // -- Exceptions
@@ -44,11 +36,11 @@ class MIRComplexJob : private eckit::NonCopyable {
 
     // -- Contructors
 
-    MIRComplexJob();
+    Input(const param::MIRParametrisation &, input::MIRInput &input, output::MIROutput &output);
 
     // -- Destructor
 
-    ~MIRComplexJob();
+    virtual ~Input(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -57,13 +49,11 @@ class MIRComplexJob : private eckit::NonCopyable {
     // None
 
     // -- Methods
-
-    void execute() const;
-
-    MIRComplexJob &add(api::MIRJob *job, input::MIRInput &input, output::MIROutput &output);
+    // None
 
     // -- Overridden methods
     // None
+
 
     // -- Class members
     // None
@@ -78,10 +68,10 @@ class MIRComplexJob : private eckit::NonCopyable {
 
     // -- Methods
 
-
+    void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
-
+    // None
 
     // -- Class members
     // None
@@ -91,23 +81,23 @@ class MIRComplexJob : private eckit::NonCopyable {
 
   private:
 
+    // No copy allowed
+
+    Input(const Input &);
+    Input &operator=(const Input &);
 
     // -- Members
 
-    std::vector<api::MIRJob *> apis_;
-    std::vector<action::Job *> jobs_;
-    std::vector<output::MIROutput *> outputs_;
-
-    input::MIRInput* input_;
+    input::MIRInput &input_;
+    output::MIROutput &output_;
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
 
-    // From MIRParametrisation
-
-    virtual void print(std::ostream &) const;
+    virtual void execute(data::MIRField &) const;
+    virtual bool sameAs(const Action& other) const;
 
     // -- Class members
     // None
@@ -117,10 +107,12 @@ class MIRComplexJob : private eckit::NonCopyable {
 
     // -- Friends
 
+    //friend ostream& operator<<(ostream& s,const Input& p)
+    //  { p.print(s); return s; }
+
 };
 
-
-}  // namespace api
+}  // namespace action
 }  // namespace mir
 #endif
 
