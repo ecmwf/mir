@@ -52,6 +52,10 @@ class ActionNode {
 
 // -- Methods
 
+    void execute(data::MIRField&) const;
+
+    //=====================================
+
     const action::Action &action() const;
 
     ActionGraph& graph();
