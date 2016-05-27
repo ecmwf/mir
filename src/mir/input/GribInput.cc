@@ -36,7 +36,7 @@ namespace input {
 namespace {
 
 class Condition {
-  public:
+public:
     virtual bool eval(grib_handle *) const = 0;
 };
 
@@ -45,13 +45,14 @@ class ConditionT : public Condition {
     const char *key_;
     T value_;
     virtual bool eval(grib_handle *) const;
-  public:
+public:
     ConditionT(const char *key, const T &value): key_(key), value_(value) {}
 };
 
 template<>
 bool ConditionT<long>::eval(grib_handle *h ) const {
     long value;
+    ASSERT(h);
     int err = grib_get_long(h, key_, &value);
 
     if (err == GRIB_NOT_FOUND) {
@@ -69,6 +70,7 @@ bool ConditionT<long>::eval(grib_handle *h ) const {
 template<>
 bool ConditionT<double>::eval(grib_handle *h ) const {
     double value;
+    ASSERT(h);
     int err = grib_get_double(h, key_, &value);
 
     if (err == GRIB_NOT_FOUND) {
@@ -87,6 +89,7 @@ template<>
 bool ConditionT<std::string>::eval(grib_handle *h ) const {
     char buffer[10240];
     size_t size = sizeof(buffer);
+    ASSERT(h);
     int err = grib_get_string(h, key_, buffer, &size);
 
     if (err == GRIB_NOT_FOUND) {
@@ -268,6 +271,7 @@ grib_handle *GribInput::gribHandle() const {
 }
 
 bool GribInput::has(const std::string &name) const {
+    ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
     bool    ok = grib_is_defined(grib_, key);
@@ -277,6 +281,7 @@ bool GribInput::has(const std::string &name) const {
 }
 
 bool GribInput::get(const std::string &name, bool &value) const {
+    ASSERT(grib_);
     long temp = GRIB_MISSING_LONG;
     const char *key = get_key(name, grib_);
     int err = grib_get_long(grib_, key, &temp);
@@ -297,6 +302,7 @@ bool GribInput::get(const std::string &name, bool &value) const {
 }
 
 bool GribInput::get(const std::string &name, long &value) const {
+    ASSERT(grib_);
     const char *key = get_key(name, grib_);
     int err = grib_get_long(grib_, key, &value);
 
@@ -315,6 +321,7 @@ bool GribInput::get(const std::string &name, long &value) const {
 }
 
 bool GribInput::get(const std::string &name, double &value) const {
+    ASSERT(grib_);
     const char *key = get_key(name, grib_);
     int err = grib_get_double(grib_, key, &value);
 
@@ -333,6 +340,7 @@ bool GribInput::get(const std::string &name, double &value) const {
 }
 
 bool GribInput::get(const std::string &name, std::vector<long> &value) const {
+    ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
     size_t count = 0;
@@ -363,6 +371,7 @@ bool GribInput::get(const std::string &name, std::vector<long> &value) const {
 }
 
 bool GribInput::get(const std::string &name, std::string &value) const {
+    ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
     char buffer[10240];
@@ -392,6 +401,7 @@ bool GribInput::get(const std::string &name, std::string &value) const {
 }
 
 bool GribInput::get(const std::string &name, std::vector<double> &value) const {
+    ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
     size_t count = 0;
@@ -481,15 +491,15 @@ void GribInput::longitudes(std::vector<double> &values) const {
 }
 
 
-void GribInput::marsRequest(std::ostream& out) const {
+void GribInput::marsRequest(std::ostream &out) const {
     ASSERT(grib_);
 
-    grib_keys_iterator* keys =  grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, "mars");
+    grib_keys_iterator *keys =  grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, "mars");
     ASSERT(keys);
 
-    const char* sep = "";
+    const char *sep = "";
     try {
-        while(grib_keys_iterator_next(keys)) {
+        while (grib_keys_iterator_next(keys)) {
 
             char value[1024];
             size_t size = sizeof(value);
@@ -504,11 +514,11 @@ void GribInput::marsRequest(std::ostream& out) const {
         size_t size = 0;
         int err = grib_get_size(grib_, "freeFormData", &size);
 
-        if(err == 0) {
+        if (err == 0) {
             eckit::Buffer buffer(size);
             char *b = buffer;
 
-            GRIB_CALL(grib_get_bytes(grib_ ,"freeFormData", (unsigned char*)b, &size));
+            GRIB_CALL(grib_get_bytes(grib_ , "freeFormData", (unsigned char *)b, &size));
             ASSERT(size == buffer.size());
 
             eckit::MemoryHandle h(buffer);
@@ -520,14 +530,14 @@ void GribInput::marsRequest(std::ostream& out) const {
             in >> verb;
 
             in >> n;
-            for(size_t i = 0; i < n ; i++) {
+            for (size_t i = 0; i < n ; i++) {
                 std::string param;
                 in >> param;
                 out << sep << param;
                 const char *slash = "=";
                 int m;
                 in >> m;
-                for(size_t j = 0; j < m; j++) {
+                for (size_t j = 0; j < m; j++) {
                     std::string value;
                     in >> value;
                     out << slash << value;
@@ -544,8 +554,8 @@ void GribInput::marsRequest(std::ostream& out) const {
             grib_call(err, "freeFormData");
         }
 
-    } catch(...) {
-        if(keys) {
+    } catch (...) {
+        if (keys) {
             grib_keys_iterator_delete(keys);
         }
         throw;
