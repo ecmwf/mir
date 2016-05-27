@@ -36,6 +36,8 @@ action/io/Save.cc
 action/io/Save.h
 action/io/Copy.cc
 action/io/Copy.h
+action/io/Input.cc
+action/io/Input.h
 action/filter/AdjustWinds.cc
 action/filter/AdjustWinds.h
 action/filter/BitmapFilter.cc
