@@ -34,6 +34,12 @@ ActionGraph::~ActionGraph() {
     }
 }
 
+void ActionGraph::execute(data::MIRField& field) const {
+    for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
+        (*j)->execute(field);
+    }
+}
+
 void ActionGraph::add(const ActionPlan& plan) {
     action::ActionGraph *current = this;
 

@@ -35,6 +35,11 @@ ActionNode::~ActionNode() {
 
 }
 
+void ActionNode::execute(data::MIRField& field) const {
+    action_.execute(field);
+    graph_.execute(field);
+}
+
 const action::Action &ActionNode::action() const {
     return action_;
 }
