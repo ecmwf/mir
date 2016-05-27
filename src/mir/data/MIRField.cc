@@ -27,6 +27,7 @@ namespace data {
 
 
 MIRField::MIRField(const param::MIRParametrisation &param, bool hasMissing, double missingValue):
+    parent_(0),
     values_(),
     hasMissing_(hasMissing),
     missingValue_(missingValue),
@@ -39,6 +40,7 @@ MIRField::MIRField(const param::MIRParametrisation &param, bool hasMissing, doub
 
 
 MIRField::MIRField(const repres::Representation *repres, bool hasMissing, double missingValue):
+    parent_(0),
     values_(),
     hasMissing_(hasMissing),
     missingValue_(missingValue),
@@ -49,8 +51,29 @@ MIRField::MIRField(const repres::Representation *repres, bool hasMissing, double
     }
 }
 
+
+MIRField::MIRField(MIRField *parent):
+    parent_(parent),
+    values_(),
+    hasMissing_(parent->hasMissing_),
+    missingValue_(parent->missingValue_),
+    representation_(parent->representation_) {
+
+    if (representation_) {
+        representation_->attach();
+    }
+}
+
+void MIRField::copyOnWrite() {
+    if (parent_) {
+        values_ = parent_->values_;
+        parent_ = 0;
+    }
+}
+
 // Warning: take ownership of values
 void MIRField::values(std::vector<double> &values, size_t which) {
+    copyOnWrite();
     if (values_.size() <= which) {
         values_.resize(which + 1);
     }
@@ -58,6 +81,9 @@ void MIRField::values(std::vector<double> &values, size_t which) {
 }
 
 size_t MIRField::dimensions() const {
+    if (parent_) {
+        return parent_->dimensions();
+    }
     return values_.size();
 }
 
@@ -70,13 +96,23 @@ MIRField::~MIRField() {
 
 
 void MIRField::print(std::ostream &out) const {
+
     out << "MIRField[dimensions=" << values_.size();
     if (hasMissing_) {
         out << ",missingValue=" << missingValue_;
     }
+
     if (representation_) {
         out << ",representation=" << *representation_;
     }
+
+    if (parent_) {
+        out << ",parent=";
+        parent_->print(out);
+        out << "]";
+        return;
+    }
+
     out << "]";
 }
 
@@ -87,6 +123,12 @@ const repres::Representation *MIRField::representation() const {
 }
 
 void MIRField::validate() const {
+
+    if (parent_) {
+        parent_->validate();
+        return;
+    }
+
     if (representation_) {
         for (size_t i = 0; i < values_.size(); i++) {
             representation_->validate(values_[i]);
@@ -95,8 +137,13 @@ void MIRField::validate() const {
 }
 
 MIRFieldStats MIRField::statistics(size_t i) const {
+
+    if (parent_) {
+        return parent_->statistics(i);
+    }
+
     if (hasMissing_) {
-        const std::vector<double>& vals = values(i);
+        const std::vector<double> &vals = values(i);
         std::vector<double> tmp;
         tmp.reserve(vals.size());
         size_t missing = 0;
@@ -124,11 +171,19 @@ void MIRField::representation(const repres::Representation *representation) {
 }
 
 const std::vector<double> &MIRField::values(size_t which) const {
+
+    if (parent_) {
+        return parent_->values(which);
+    }
+
     ASSERT(which < values_.size());
     return values_[which];
 }
 
 std::vector<double> &MIRField::values(size_t which)  {
+
+    copyOnWrite();
+
     ASSERT(which < values_.size());
     return values_[which];
 }

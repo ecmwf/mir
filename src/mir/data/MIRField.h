@@ -40,6 +40,8 @@ public:
     // -- Contructors
 
     //
+    MIRField(MIRField* parent);
+
     MIRField(const MIRField& other);
     MIRField(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
     MIRField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
@@ -113,13 +115,15 @@ public:
 
     // -- Members
 
+    MIRField* parent_;
     std::vector<std::vector<double> > values_;
     bool hasMissing_;
     double missingValue_;
     const repres::Representation* representation_;
 
     // -- Methods
-    // None
+
+    void copyOnWrite();
 
     // -- Overridden methods
     // None

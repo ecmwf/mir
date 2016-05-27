@@ -81,8 +81,6 @@ void ActionGraph::dump(std::ostream& out, size_t depth) const {
 }
 
 
-
-
 void ActionGraph::print(std::ostream &out) const {
     out << "ActionGraph[]";
 }
