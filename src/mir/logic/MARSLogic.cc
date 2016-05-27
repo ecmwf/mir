@@ -17,7 +17,7 @@
 
 #include "mir/logic/MARSLogic.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/action/ActionPlan.h"
+#include "mir/action/plan/ActionPlan.h"
 #include "mir/logic/AutoResol.h"
 #include "mir/logic/AutoReduced.h"
 #include "mir/param/MIRConfiguration.h"

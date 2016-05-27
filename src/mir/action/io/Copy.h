@@ -16,7 +16,7 @@
 #ifndef Copy_H
 #define Copy_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 namespace mir {
 namespace input {
@@ -112,7 +112,6 @@ class Copy : public Action {
     //  { p.print(s); return s; }
 
 };
-
 
 }  // namespace action
 }  // namespace mir

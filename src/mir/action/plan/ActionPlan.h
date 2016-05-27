@@ -13,22 +13,25 @@
 /// @date Apr 2015
 
 
-#ifndef BitmapFilter_H
-#define BitmapFilter_H
+#ifndef ActionPlan_H
+#define ActionPlan_H
 
-#include "mir/action/plan/Action.h"
+#include <string>
 
-#include "eckit/filesystem/PathName.h"
 
+#include "mir/param/RuntimeParametrisation.h"
 
 namespace mir {
-namespace util {
-class Bitmap;
+
+namespace data {
+class MIRField;
 }
+
 namespace action {
 
+class Action;
 
-class BitmapFilter : public Action {
+class ActionPlan {
   public:
 
 // -- Exceptions
@@ -36,11 +39,11 @@ class BitmapFilter : public Action {
 
 // -- Contructors
 
-    BitmapFilter(const param::MIRParametrisation&);
+    ActionPlan(const param::MIRParametrisation& parametrisation);
 
 // -- Destructor
 
-    virtual ~BitmapFilter(); // Change to virtual if base class
+    ~ActionPlan(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -49,7 +52,16 @@ class BitmapFilter : public Action {
     // None
 
 // -- Methods
-    // None
+
+    void add(const std::string& name);
+    void add(const std::string& name, const std::string&, long);
+    void add(const std::string& name, const std::string&, param::DelayedParametrisation*);
+    void add(Action* action);
+
+    void execute(data::MIRField&) const;
+    bool empty() const;
+    size_t size() const;
+    const Action& action(size_t) const;
 
 // -- Overridden methods
     // None
@@ -63,7 +75,10 @@ class BitmapFilter : public Action {
   protected:
 
 // -- Members
-    // None
+
+    const param::MIRParametrisation& parametrisation_;
+    std::vector<Action*> actions_;
+    std::vector<param::MIRParametrisation*> runtimes_;
 
 // -- Methods
 
@@ -82,21 +97,17 @@ class BitmapFilter : public Action {
 
 // No copy allowed
 
-    BitmapFilter(const BitmapFilter&);
-    BitmapFilter& operator=(const BitmapFilter&);
+    ActionPlan(const ActionPlan&);
+    ActionPlan& operator=(const ActionPlan&);
 
 // -- Members
-
-    const util::Bitmap* bitmap_;
+    // None
 
 // -- Methods
     // None
 
 // -- Overridden methods
-
-    virtual void execute(data::MIRField&) const;
-    virtual bool sameAs(const Action& other) const;
-
+    // None
 
 // -- Class members
     // None
@@ -106,8 +117,10 @@ class BitmapFilter : public Action {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const BitmapFilter& p)
-    //	{ p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s, const ActionPlan& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

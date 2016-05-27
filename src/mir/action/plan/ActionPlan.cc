@@ -12,8 +12,8 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/action/ActionPlan.h"
-#include "mir/action/Action.h"
+#include "mir/action/plan/ActionPlan.h"
+#include "mir/action/plan/Action.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/data/MIRField.h"
 #include "mir/log/MIR.h"
@@ -24,7 +24,6 @@
 
 namespace mir {
 namespace action {
-
 
 ActionPlan::ActionPlan(const param::MIRParametrisation &parametrisation):
     parametrisation_(parametrisation) {
@@ -46,7 +45,7 @@ bool ActionPlan::empty() const {
 }
 
 void ActionPlan::add(const std::string &name)  {
-    actions_.push_back(action::ActionFactory::build(name, parametrisation_));
+    actions_.push_back(ActionFactory::build(name, parametrisation_));
 }
 
 void ActionPlan::add(Action *action)  {
@@ -67,7 +66,7 @@ void ActionPlan::add(const std::string &name, const std::string &param, long val
     runtimes_.push_back(runtime);
 
     runtime->set(param, value);
-    actions_.push_back(action::ActionFactory::build(name, *runtime));
+    actions_.push_back(ActionFactory::build(name, *runtime));
 }
 
 void ActionPlan::add(const std::string &name, const std::string &param, param::DelayedParametrisation *value) {
@@ -75,7 +74,7 @@ void ActionPlan::add(const std::string &name, const std::string &param, param::D
     runtimes_.push_back(runtime);
 
     runtime->set(param, value);
-    actions_.push_back(action::ActionFactory::build(name, *runtime));
+    actions_.push_back(ActionFactory::build(name, *runtime));
 }
 
 void ActionPlan::execute(data::MIRField &field) const {

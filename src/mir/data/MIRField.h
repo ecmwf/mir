@@ -19,7 +19,6 @@
 #include <iosfwd>
 #include <vector>
 
-
 namespace mir {
 namespace repres {
 class Representation;
@@ -41,6 +40,7 @@ public:
     // -- Contructors
 
     //
+    MIRField(const MIRField& other);
     MIRField(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
     MIRField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
@@ -49,7 +49,7 @@ public:
     ~MIRField(); // Change to virtual if base class
 
     // -- Convertors
-    // None
+    MIRField& operator=(const MIRField& other);
 
     // -- Operators
     // None

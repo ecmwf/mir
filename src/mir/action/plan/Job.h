@@ -119,8 +119,7 @@ class Job  {
 
 };
 
-
-}  // namespace api
+}  // namespace action
 }  // namespace mir
 #endif
 

@@ -13,22 +13,23 @@
 /// @date Apr 2015
 
 
-#ifndef BitmapFilter_H
-#define BitmapFilter_H
+#ifndef ActionNode_H
+#define ActionNode_H
 
-#include "mir/action/plan/Action.h"
 
-#include "eckit/filesystem/PathName.h"
-
+#include "mir/action/plan/ActionGraph.h"
 
 namespace mir {
-namespace util {
-class Bitmap;
+
+namespace data {
+class MIRField;
 }
+
 namespace action {
 
+class Action;
 
-class BitmapFilter : public Action {
+class ActionNode {
   public:
 
 // -- Exceptions
@@ -36,11 +37,11 @@ class BitmapFilter : public Action {
 
 // -- Contructors
 
-    BitmapFilter(const param::MIRParametrisation&);
+    ActionNode(const Action& action);
 
 // -- Destructor
 
-    virtual ~BitmapFilter(); // Change to virtual if base class
+    ~ActionNode(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -49,7 +50,12 @@ class BitmapFilter : public Action {
     // None
 
 // -- Methods
-    // None
+
+    const action::Action &action() const;
+
+    ActionGraph& graph();
+
+    void dump(std::ostream& out, size_t depth) const;
 
 // -- Overridden methods
     // None
@@ -63,7 +69,7 @@ class BitmapFilter : public Action {
   protected:
 
 // -- Members
-    // None
+
 
 // -- Methods
 
@@ -82,21 +88,19 @@ class BitmapFilter : public Action {
 
 // No copy allowed
 
-    BitmapFilter(const BitmapFilter&);
-    BitmapFilter& operator=(const BitmapFilter&);
+    ActionNode(const ActionNode&);
+    ActionNode& operator=(const ActionNode&);
 
 // -- Members
 
-    const util::Bitmap* bitmap_;
+    const Action &action_;
+    ActionGraph graph_;
 
 // -- Methods
     // None
 
 // -- Overridden methods
-
-    virtual void execute(data::MIRField&) const;
-    virtual bool sameAs(const Action& other) const;
-
+    // None
 
 // -- Class members
     // None
@@ -106,8 +110,10 @@ class BitmapFilter : public Action {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const BitmapFilter& p)
-    //	{ p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s, const ActionNode& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

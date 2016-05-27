@@ -143,7 +143,6 @@ class ActionBuilder : public ActionFactory {
     ActionBuilder(const std::string &name) : ActionFactory(name) {}
 };
 
-
 }  // namespace action
 }  // namespace mir
 #endif

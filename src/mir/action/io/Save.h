@@ -16,7 +16,7 @@
 #ifndef Save_H
 #define Save_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 namespace mir {
 namespace input {
@@ -111,7 +111,6 @@ class Save : public Action {
     //  { p.print(s); return s; }
 
 };
-
 
 }  // namespace action
 }  // namespace mir
