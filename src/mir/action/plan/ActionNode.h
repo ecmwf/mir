@@ -16,6 +16,7 @@
 #ifndef ActionNode_H
 #define ActionNode_H
 
+#include <iosfwd>
 
 #include "mir/action/plan/ActionGraph.h"
 
