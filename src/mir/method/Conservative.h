@@ -18,6 +18,7 @@
 #include "mir/method/FELinear.h"
 
 namespace eckit { namespace linalg { class Vector; } }
+namespace atlas { namespace mesh { class Mesh; } }
 
 namespace mir {
 namespace method {
@@ -36,7 +37,7 @@ protected:
 
     virtual void assemble(WeightMatrix& W, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
 
-    void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::grid::Grid& g) const;
+    void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
 
 private:
 

@@ -134,11 +134,16 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atla
     std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
     weights_triplets.reserve( out.npts() );
 
-
     // access the input/output fields coordinates
-    atlas::array::ArrayView<double, 2> icoords( in .mesh().nodes().lonlat() );
-    atlas::array::ArrayView<double, 2> ocoords( out.mesh().nodes().lonlat() );
 
+    std::vector<double> inCoords(in.npts()*2);
+    in.fillLonLat(inCoords);
+
+    std::vector<double> outCoords(out.npts()*2);
+    out.fillLonLat(outCoords);
+
+    atlas::array::ArrayView<double, 2> icoords( &inCoords[0],  atlas::array::make_shape(in.npts(), 2));
+    atlas::array::ArrayView<double, 2> ocoords( &outCoords[0], atlas::array::make_shape(out.npts(), 2));
 
     // check input min/max latitudes (gaussian grids exclude the poles)
     double min_lat = icoords(0, LAT);

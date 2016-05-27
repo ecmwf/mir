@@ -71,9 +71,7 @@ class MethodWeighted : public Method {
 
     virtual lsm::LandSeaMasks getMasks(const atlas::grid::Grid &in, const atlas::grid::Grid &out) const;
 
-
     void computeMatrixWeights(const atlas::grid::Grid &in, const atlas::grid::Grid &out, WeightMatrix &W) const;
-
 
 };
 

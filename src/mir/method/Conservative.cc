@@ -51,11 +51,9 @@ Conservative::Conservative(const param::MIRParametrisation &param) :
 Conservative::~Conservative() {
 }
 
-void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::grid::Grid& g) const
+void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const
 {
     eckit::Log::trace<MIR>() << "Conservative::computeLumpedMassMatrix" << std::endl;
-
-    Mesh& mesh = g.mesh();
 
     eckit::Log::trace<MIR>() << "Mesh " << mesh << std::endl;
 
@@ -144,15 +142,16 @@ void Conservative::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const 
 
     // 2) M_s compute the lumped mass matrix of the source mesh
 
-    generateMesh(in, in.mesh()); // input grid hasn't been tesselated mesh yet ...
+    Mesh inMesh;
+    generateMesh(in, inMesh); // input grid hasn't been tesselated mesh yet ...
 
     Vector M_s;
-    computeLumpedMassMatrix(M_s, in);
+    computeLumpedMassMatrix(M_s, in, inMesh);
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix of the destination mesh
 
     Vector M_d;
-    computeLumpedMassMatrix(M_d, out);
+    computeLumpedMassMatrix(M_d, out, outMesh);
 
     for(size_t i = 0; i < M_d.size(); ++i)
         M_d[i] = 1./M_d[i];
