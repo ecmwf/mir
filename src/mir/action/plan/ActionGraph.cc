@@ -18,6 +18,7 @@
 #include "mir/action/plan/ActionNode.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/action/plan/Action.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -36,7 +37,8 @@ ActionGraph::~ActionGraph() {
 
 void ActionGraph::execute(data::MIRField& field) const {
     for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
-        (*j)->execute(field);
+        data::MIRField local(&field);
+        (*j)->execute(local);
     }
 }
 

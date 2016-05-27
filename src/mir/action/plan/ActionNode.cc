@@ -36,6 +36,7 @@ ActionNode::~ActionNode() {
 }
 
 void ActionNode::execute(data::MIRField& field) const {
+    std::cout << " -----> " << action_ << " ---> " << field << std::endl;
     action_.execute(field);
     graph_.execute(field);
 }
