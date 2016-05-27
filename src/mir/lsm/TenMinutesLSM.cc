@@ -46,7 +46,7 @@ From EMOSLIB:
      the centre of a 10 minute square (e.g. the first value is
      assumed to be at 0  5' East and 89  55' North).
 
-    ~/share/mir/masks/ten-minutes.mask is a copy of ~emos/tables/interpolation/lsm_32_lsm10m01
+    ~mir-share/share/mir/masks/ten-minutes.mask is a copy of ~emos/tables/interpolation/lsm_32_lsm10m01
 */
 
 TenMinutesLSM::TenMinutesLSM(const std::string &name,
@@ -54,7 +54,7 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
                              const atlas::grid::Grid &grid,
                              const std::string &which):
     Mask(name),
-    path_("~/share/mir/masks/ten-minutes.mask") {
+    path_("~mir-share/share/mir/masks/ten-minutes.mask") {
 
 
     if (ten_minutes_.size() == 0) {
