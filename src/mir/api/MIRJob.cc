@@ -19,7 +19,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 #include "mir/log/MIR.h"
-#include "mir/action/Job.h"
+#include "mir/action/plan/Job.h"
 
 #include "mir/repres/Representation.h"
 

@@ -19,11 +19,12 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/log/MIR.h"
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {
 namespace action {
+
 namespace {
 
 
@@ -91,7 +92,6 @@ Action *ActionFactory::build(const std::string &name, const param::MIRParametris
 
     return (*j).second->make(params);
 }
-
 
 }  // namespace action
 }  // namespace mir

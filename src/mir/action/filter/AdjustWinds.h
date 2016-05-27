@@ -16,7 +16,7 @@
 #ifndef AdjustWinds_H
 #define AdjustWinds_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 #include "mir/util/Rotation.h"
 #include <vector>
 

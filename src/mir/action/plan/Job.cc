@@ -15,7 +15,7 @@
 
 #include <iostream>
 
-#include "mir/action/ActionPlan.h"
+#include "mir/action/plan/ActionPlan.h"
 #include "mir/action/io/Save.h"
 #include "mir/action/io/Copy.h"
 
@@ -27,7 +27,7 @@
 #include "mir/param/MIRDefaults.h"
 #include "mir/log/MIR.h"
 
-#include "mir/action/Job.h"
+#include "mir/action/plan/Job.h"
 #include "mir/api/MIRJob.h"
 
 

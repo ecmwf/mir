@@ -13,25 +13,22 @@
 /// @date Apr 2015
 
 
-#ifndef ActionPlan_H
-#define ActionPlan_H
-
-#include <string>
+#ifndef ActionGraph_H
+#define ActionGraph_H
 
 
-#include "mir/param/RuntimeParametrisation.h"
+#include <vector>
+
 
 namespace mir {
-
-namespace data {
-class MIRField;
-}
 
 namespace action {
 
 class Action;
+class ActionNode;
+class ActionPlan;
 
-class ActionPlan {
+class ActionGraph {
   public:
 
 // -- Exceptions
@@ -39,11 +36,11 @@ class ActionPlan {
 
 // -- Contructors
 
-    ActionPlan(const param::MIRParametrisation& parametrisation);
+    ActionGraph();
 
 // -- Destructor
 
-    ~ActionPlan(); // Change to virtual if base class
+    ~ActionGraph(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -53,15 +50,11 @@ class ActionPlan {
 
 // -- Methods
 
-    void add(const std::string& name);
-    void add(const std::string& name, const std::string&, long);
-    void add(const std::string& name, const std::string&, param::DelayedParametrisation*);
-    void add(Action* action);
+    void add(const ActionPlan&);
 
-    void execute(data::MIRField&) const;
-    bool empty() const;
-    size_t size() const;
-    const Action& action(size_t) const;
+    ActionNode* add(const Action&);
+
+    void dump(std::ostream& out, size_t depth) const;
 
 // -- Overridden methods
     // None
@@ -76,9 +69,6 @@ class ActionPlan {
 
 // -- Members
 
-    const param::MIRParametrisation& parametrisation_;
-    std::vector<Action*> actions_;
-    std::vector<param::MIRParametrisation*> runtimes_;
 
 // -- Methods
 
@@ -97,11 +87,12 @@ class ActionPlan {
 
 // No copy allowed
 
-    ActionPlan(const ActionPlan&);
-    ActionPlan& operator=(const ActionPlan&);
+    ActionGraph(const ActionGraph&);
+    ActionGraph& operator=(const ActionGraph&);
 
 // -- Members
-    // None
+
+    std::vector<ActionNode *> nodes_;
 
 // -- Methods
     // None
@@ -117,13 +108,12 @@ class ActionPlan {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const ActionPlan& p) {
+    friend std::ostream& operator<<(std::ostream& s, const ActionGraph& p) {
         p.print(s);
         return s;
     }
 
 };
-
 
 
 }  // namespace action

@@ -22,12 +22,16 @@ list( APPEND mir_srcs api/mir_version.cc )
 
 list(
   APPEND mir_srcs
-action/Action.cc
-action/Action.h
-action/ActionPlan.cc
-action/ActionPlan.h
-action/Job.cc
-action/Job.h
+action/plan/Action.cc
+action/plan/Action.h
+action/plan/ActionPlan.cc
+action/plan/ActionPlan.h
+action/plan/ActionGraph.cc
+action/plan/ActionGraph.h
+action/plan/ActionNode.cc
+action/plan/ActionNode.h
+action/plan/Job.cc
+action/plan/Job.h
 action/io/Save.cc
 action/io/Save.h
 action/io/Copy.cc

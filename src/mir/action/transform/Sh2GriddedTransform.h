@@ -16,7 +16,7 @@
 #ifndef Sh2GriddedTransform_H
 #define Sh2GriddedTransform_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 
 

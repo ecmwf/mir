@@ -16,7 +16,7 @@
 #ifndef FrameFilter_H
 #define FrameFilter_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {

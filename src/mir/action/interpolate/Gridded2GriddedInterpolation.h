@@ -16,7 +16,7 @@
 #ifndef Gridded2GriddedInterpolation_H
 #define Gridded2GriddedInterpolation_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 namespace mir {
 namespace repres {

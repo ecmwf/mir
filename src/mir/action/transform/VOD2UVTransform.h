@@ -16,7 +16,7 @@
 #ifndef VOD2UVTransform_H
 #define VOD2UVTransform_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 #include <vector>
 

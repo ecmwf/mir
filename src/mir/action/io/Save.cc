@@ -44,7 +44,6 @@ void Save::execute(data::MIRField &field) const {
     output_.save(parametrisation_, input_, field);
 }
 
-
 }  // namespace action
 }  // namespace mir
 

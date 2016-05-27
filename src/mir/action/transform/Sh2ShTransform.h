@@ -16,7 +16,7 @@
 #ifndef Sh2ShTransform_H
 #define Sh2ShTransform_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {

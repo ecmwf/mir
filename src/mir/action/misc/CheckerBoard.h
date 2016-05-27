@@ -16,7 +16,7 @@
 #ifndef CheckerBoard_H
 #define CheckerBoard_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {

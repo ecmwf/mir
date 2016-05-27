@@ -16,7 +16,7 @@
 #ifndef AreaCropper_H
 #define AreaCropper_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 #include "mir/util/BoundingBox.h"
 
 
