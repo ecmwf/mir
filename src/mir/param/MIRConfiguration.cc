@@ -28,7 +28,7 @@ namespace param {
 MIRConfiguration::MIRConfiguration():
     scope_(0) {
 
-    eckit::PathName path("~/etc/mir/interpolation-methods.cfg");
+    eckit::PathName path("~mir/etc/mir/interpolation-methods.cfg");
     eckit::Log::trace<MIR>() << "Loading MIR configuration from " << path << std::endl;
     if (!path.exists())
         throw eckit::CantOpenFile(path, Here());
