@@ -23,6 +23,10 @@
 
 namespace mir {
 
+namespace data {
+    class MIRField;
+}
+
 namespace action {
 
 class Action;
@@ -50,6 +54,10 @@ class ActionGraph {
     // None
 
 // -- Methods
+
+    void execute(data::MIRField&) const;
+
+    // =================
 
     void add(const ActionPlan&);
 
