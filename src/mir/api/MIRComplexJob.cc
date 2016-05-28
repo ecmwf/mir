@@ -77,7 +77,7 @@ void MIRComplexJob::execute() const {
 
     // std::cout << ">>>>> " << std::endl;
 
-    graph.dump(std::cout, 0);
+    // graph.dump(std::cout, 0);
 
     // std::cout << "<<<<< " << std::endl;
 
