@@ -54,7 +54,7 @@ data::MIRField *RawInput::field() const {
 
     std::vector< double > values(count_);
     ::memcpy(&values[0], values_, sizeof(double) * count_);
-    field->values(values, 0);
+    field->update(values, 0);
 
     eckit::Log::trace<MIR>() << "RawInput::field: " << *field << std::endl;
 

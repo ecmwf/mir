@@ -56,7 +56,7 @@ data::MIRField *DummyInput::field() const {
         for (size_t j = 0; j < 181; ++j) {
             values[k++] = sin(double(i) / 10.) + cos(double(j) / 10.);
         }
-    field->values(values, 0);
+    field->update(values, 0);
 
     return field;
 }

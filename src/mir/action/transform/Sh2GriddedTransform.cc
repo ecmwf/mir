@@ -223,7 +223,7 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
         eckit::ScopedPtr<atlas::grid::Grid> grid(out->atlasGrid());
         transform(parametrisation_, field.representation()->truncation(), values, result, *grid);
 
-        field.values(result, i);
+        field.update(result, i);
 
     }
 

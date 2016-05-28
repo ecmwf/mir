@@ -209,7 +209,7 @@ void AreaCropper::execute(data::MIRField &field) const {
         cropped->validate(result);
 
         field.representation(cropped);
-        field.values(result, i);
+        field.update(result, i);
     }
 }
 

@@ -61,7 +61,7 @@ void ReferencePattern::execute(data::MIRField &field) const {
     double missingValue = field.missingValue();
 
     for (size_t k = 0; k < field.dimensions(); k++) {
-        std::vector<double> &values = field.values(k);
+        std::vector<double> &values = field.direct(k);
 
         double minvalue = 0;
         double maxvalue = 0;

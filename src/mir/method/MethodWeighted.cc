@@ -208,7 +208,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::grid::Grid &in,
             W.multiply(values, result);
         }
 
-        field.values(result, i);  // Update field with result
+        field.update(result, i);  // Update field with result
 
         if (check_stats) {
             // compute some statistics on the result

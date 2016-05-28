@@ -162,8 +162,8 @@ void VOD2UVTransform::execute(data::MIRField &field) const {
     // std::cout << k << " " << size << std::endl;
     // ASSERT(k == size);
 
-    field.values(result_u, 0);
-    field.values(result_v, 1);
+    field.update(result_u, 0);
+    field.update(result_v, 1);
 
 }
 

@@ -72,7 +72,7 @@ void BitmapFilter::execute(data::MIRField &field) const {
     for (size_t f = 0; f < field.dimensions() ; f++) {
 
         double missingValue = field.missingValue();
-        std::vector<double> &values = field.values(f);
+        std::vector<double> &values = field.direct(f);
 
         if (values.size() != bitmap_->width() * bitmap_->height()) {
             std::ostringstream os;
