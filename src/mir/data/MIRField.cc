@@ -66,7 +66,11 @@ MIRField::MIRField(MIRField *parent):
 
 void MIRField::copyOnWrite() {
     if (parent_) {
-        values_ = parent_->values_;
+        MIRField *top = this;
+        while (top->parent_) {
+            top = top->parent_;
+        }
+        values_ = top->values_;
         parent_ = 0;
     }
 }
