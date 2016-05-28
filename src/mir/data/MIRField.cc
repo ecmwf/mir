@@ -72,7 +72,7 @@ void MIRField::copyOnWrite() {
         }
         values_ = top->values_;
         parent_ = 0;
-        std::cout << "MIRField::copyOnWrite" << std::endl;
+        // std::cout << "MIRField::copyOnWrite" << std::endl;
     }
 }
 
