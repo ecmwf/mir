@@ -36,14 +36,20 @@ MIRComplexJob::MIRComplexJob():
 
 
 MIRComplexJob::~MIRComplexJob() {
+    clear();
+}
+
+void MIRComplexJob::clear() {
     for (std::vector<action::Job *>::iterator j = jobs_.begin(); j != jobs_.end(); ++j) {
         delete (*j);
     }
+    jobs_.clear();
     for (std::vector<api::MIRJob *>::iterator j = apis_.begin(); j != apis_.end(); ++j) {
         delete (*j);
     }
+    apis_.clear();
+    input_ = 0;
 }
-
 
 // static void fill(size_t n) {
 
@@ -86,11 +92,19 @@ void MIRComplexJob::execute() const {
 
 }
 
+bool MIRComplexJob::empty() const {
+    return jobs_.empty();
+}
+
 void MIRComplexJob::print(std::ostream &out) const {
     out << "MIRComplexJob[]";
 }
 
 MIRComplexJob &MIRComplexJob::add(api::MIRJob *job, input::MIRInput &input, output::MIROutput &output) {
+
+    if (!job) {
+        return *this;
+    }
 
     if (!input_) {
         input_ = &input;

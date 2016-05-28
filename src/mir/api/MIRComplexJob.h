@@ -59,6 +59,10 @@ class MIRComplexJob : private eckit::NonCopyable {
     // -- Methods
 
     void execute() const;
+    bool empty() const;
+
+
+    void clear();
 
     MIRComplexJob &add(api::MIRJob *job, input::MIRInput &input, output::MIROutput &output);
 
