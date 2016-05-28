@@ -66,7 +66,7 @@ void Sh2ShTransform::execute(data::MIRField &field) const {
 
         if (repres) { // NULL if nothing happend
             field.representation(repres); // Assumes representation will be the same
-            field.values(result, i);
+            field.update(result, i);
         }
     }
 

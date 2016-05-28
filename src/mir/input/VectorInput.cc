@@ -54,7 +54,7 @@ data::MIRField *VectorInput::field() const {
     ASSERT(u->dimensions() == 1);
     ASSERT(v->dimensions() == 1);
 
-    u->values(v->values(0), 1);
+    u->update(v->direct(0), 1);
     delete v;
 
     return u;

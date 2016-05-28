@@ -50,7 +50,7 @@ void FrameFilter::execute(data::MIRField &field) const {
     for (size_t i = 0; i < field.dimensions(); i++ ) {
 
         double missingValue = field.missingValue();
-        std::vector<double> &values = field.values(i);
+        std::vector<double> &values = field.direct(i);
 
         const repres::Representation *representation = field.representation();
         size_t count = representation->frame(values, size_, missingValue);

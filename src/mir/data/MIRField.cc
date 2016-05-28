@@ -72,11 +72,12 @@ void MIRField::copyOnWrite() {
         }
         values_ = top->values_;
         parent_ = 0;
+        std::cout << "MIRField::copyOnWrite" << std::endl;
     }
 }
 
 // Warning: take ownership of values
-void MIRField::values(std::vector<double> &values, size_t which) {
+void MIRField::update(std::vector<double> &values, size_t which) {
     copyOnWrite();
     if (values_.size() <= which) {
         values_.resize(which + 1);
@@ -184,7 +185,7 @@ const std::vector<double> &MIRField::values(size_t which) const {
     return values_[which];
 }
 
-std::vector<double> &MIRField::values(size_t which)  {
+std::vector<double> &MIRField::direct(size_t which)  {
 
     copyOnWrite();
 

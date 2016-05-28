@@ -259,7 +259,7 @@ data::MIRField *GribInput::field() const {
         field->representation()->reorder(scanningMode, values);
     }
 
-    field->values(values, 0);
+    field->update(values, 0);
     field->validate();
 
     return field;

@@ -163,8 +163,8 @@ void AdjustWinds::execute(data::MIRField &field) const {
             new_v_values[j] = u_values[j] * s[j] + v_values[j] * c[j];
         }
 
-        field.values(new_u_values, i);
-        field.values(new_v_values, i + 1);
+        field.update(new_u_values, i);
+        field.update(new_v_values, i + 1);
     }
 }
 
