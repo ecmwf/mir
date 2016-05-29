@@ -142,8 +142,7 @@ void Conservative::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const 
 
     // 2) M_s compute the lumped mass matrix of the source mesh
 
-    Mesh inMesh;
-    generateMesh(in, inMesh); // input grid hasn't been tesselated mesh yet ...
+    generateMeshAndCache(in, in.mesh()); // input grid hasn't been tesselated mesh yet ...
 
     Vector M_s;
     computeLumpedMassMatrix(M_s, in, inMesh);

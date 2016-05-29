@@ -114,6 +114,8 @@ caching/LegendreLoader.cc
 caching/LegendreLoader.h
 caching/MappedMemoryLoader.cc
 caching/MappedMemoryLoader.h
+caching/MeshCache.cc
+caching/MeshCache.h
 caching/NoLoader.cc
 caching/NoLoader.h
 caching/SharedMemoryLoader.cc

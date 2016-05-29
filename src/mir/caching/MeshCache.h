@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2014 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -9,44 +9,42 @@
  */
 
 /// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date May 2015
+/// @date   May 2016
 
+#ifndef atlas_MeshCache_h
+#define atlas_MeshCache_h
 
-#ifndef mir_method_Tessellation_H
-#define mir_method_Tessellation_H
+#include "eckit/memory/NonCopyable.h"
+#include "eckit/filesystem/PathName.h"
 
-#include "mir/method/FiniteElement.h"
-
+namespace atlas {
+namespace mesh {
+class Mesh;
+}
+}
 
 namespace mir {
-namespace method {
+namespace caching {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class Tessellation: public FiniteElement {
-  public:
+class MeshCache : private eckit::NonCopyable {
 
-    Tessellation(const param::MIRParametrisation&);
+public: // methods
 
-    virtual ~Tessellation();
+    /// @returns true if found cache
+    static bool add( const std::string& key, const atlas::mesh::Mesh& );
 
-  protected:
+    /// @returns true if addition was succcessful
+    static bool get( const std::string& key, atlas::mesh::Mesh& );
 
-    virtual void hash( eckit::MD5& ) const;
-
-  private:
-
-    virtual void generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
-    virtual void print(std::ostream&) const;
-    virtual const char* name() const;
+    static eckit::PathName filename(const std::string& key);
 
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
-}  // namespace method
-}  // namespace mir
+} // namespace caching
+} // namespace mir
 
 #endif
-
