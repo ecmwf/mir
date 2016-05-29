@@ -54,7 +54,7 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
     md5 << nclosest_;
 }
 
-void PseudoLaplace::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const {
+void PseudoLaplace::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const atlas::grid::Grid& out, util::MIRStatistics& statistics) const {
 
     eckit::TraceTimer<MIR> timer("PseudoLaplace::assemble");
     eckit::Log::trace<MIR>() << "PseudoLaplace::assemble" << std::endl;

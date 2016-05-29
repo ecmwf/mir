@@ -70,7 +70,7 @@ MethodWeighted::~MethodWeighted() {
 
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
-const WeightMatrix &MethodWeighted::getMatrix(const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
+const WeightMatrix &MethodWeighted::getMatrix(const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const {
 
     eckit::Log::trace<MIR>() << "MethodWeighted::getMatrix " << *this << std::endl;
 
@@ -79,7 +79,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::grid::Grid &in, const
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     double here = timer.elapsed();
-    const lsm::LandSeaMasks masks = getMasks(in, out);
+    const lsm::LandSeaMasks masks = getMasks(in, out, statistics);
     eckit::Log::trace<MIR>() << "Compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
     eckit::Log::trace<MIR>() << "++++ LSM masks " << masks << std::endl;
@@ -127,7 +127,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::grid::Grid &in, const
 
     if (!caching || !cache.retrieve(cache_key, W)) {
 
-        computeMatrixWeights(in, out, W);
+        computeMatrixWeights(in, out, W, statistics);
         W.validate("computeMatrixWeights");
 
         if (masks.active() && masks.cacheable()) {
@@ -154,11 +154,11 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::grid::Grid &in, const
     return matrix_cache[key_with_masks];
 }
 
-lsm::LandSeaMasks MethodWeighted::getMasks(const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
+lsm::LandSeaMasks MethodWeighted::getMasks(const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const {
     return lsm::LandSeaMasks::lookup(parametrisation_, in, out);
 }
 
-void MethodWeighted::execute(data::MIRField &field, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
+void MethodWeighted::execute(data::MIRField &field, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const {
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
 
@@ -169,7 +169,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::grid::Grid &in,
     const size_t npts_inp = in.npts();
     const size_t npts_out = out.npts();
 
-    const WeightMatrix &W = getMatrix(in, out);
+    const WeightMatrix &W = getMatrix(in, out, statistics);
 
     ASSERT( W.rows() == npts_out );
     ASSERT( W.cols() == npts_inp );
@@ -200,7 +200,7 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::grid::Grid &in,
         if ( field.hasMissing() ) {
             // Assumes compiler does return value optimization
             // otherwise we need to pass result matrix as parameter
-            WeightMatrix MW = applyMissingValues(W, field, i);
+            WeightMatrix MW = applyMissingValues(W, field, i, statistics);
             MW.validate("applyMissingValues");
 
             MW.multiply(values, result);
@@ -245,18 +245,18 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::grid::Grid &in,
 }
 
 
-void MethodWeighted::computeMatrixWeights(const atlas::grid::Grid &in, const atlas::grid::Grid &out, WeightMatrix &W) const {
+void MethodWeighted::computeMatrixWeights(const atlas::grid::Grid &in, const atlas::grid::Grid &out, WeightMatrix &W, util::MIRStatistics& statistics) const {
     if (in.same(out)) {
         eckit::Log::trace<MIR>() << "Matrix is indentity" << std::endl;
         W.setIdentity();        // grids are the same, use identity matrix
     } else {
         eckit::TraceTimer<MIR> timer("Assemble matrix");
-        assemble(W, in, out);   // assemble matrix of coefficients
+        assemble(W, in, out, statistics);   // assemble matrix of coefficients
         W.cleanup();
     }
 }
 
-WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const {
+WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which, util::MIRStatistics& statistics) const {
 
     ASSERT(field.hasMissing());
 

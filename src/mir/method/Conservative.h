@@ -35,7 +35,7 @@ protected:
 
     virtual void hash(eckit::MD5&) const;
 
-    virtual void assemble(WeightMatrix& W, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
+    virtual void assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const;
 
     void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
 
