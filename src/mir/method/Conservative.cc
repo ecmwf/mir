@@ -126,8 +126,7 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
     }
 }
 
-void Conservative::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const atlas::grid::Grid& out, util::MIRStatistics& statistics) const
-{
+void Conservative::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const {
 
     eckit::Log::trace<MIR>()
             << "Input  pts " << in.grid().npts()
