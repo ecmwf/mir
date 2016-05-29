@@ -375,6 +375,10 @@ util/RotatedIterator.cc
 util/RotatedIterator.h
 util/Rotation.cc
 util/Rotation.h
+util/Statistics.cc
+util/Statistics.h
+util/MIRStatistics.cc
+util/MIRStatistics.h
   )
 
 ecbuild_add_library(
