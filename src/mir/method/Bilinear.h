@@ -10,10 +10,10 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date   Apr 2015
 
-#ifndef soyuz_method_Bilinear_H
-#define soyuz_method_Bilinear_H
+#ifndef mir_method_Bilinear_H
+#define mir_method_Bilinear_H
 
 #include "mir/method/MethodWeighted.h"
 
@@ -24,84 +24,40 @@ class Point3;
 }
 }
 
-
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class Bilinear: public MethodWeighted {
-  public:
+public:
 
-// -- Exceptions
-    // None
-
-// -- Contructors
     Bilinear(const param::MIRParametrisation&);
 
-// -- Destructor
     virtual ~Bilinear();
 
-// -- Convertors
-    // None
+private: // methods
 
-// -- Operators
-    // None
-
-// -- Methods
-    // None
-
-// -- Overridden methods
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-  protected:
-
-// -- Members
-
-
-// -- Methods
-
-
-// -- Overridden methods
-    // None
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-  private:
-
-// -- Methods
     double crossProduct(const eckit::geometry::Point3& a, const eckit::geometry::Point3& b) const;
+
     bool formClockwiseTriangle(const eckit::geometry::Point3& a, const eckit::geometry::Point3& b, const eckit::geometry::Point3& c) const;
+
     void sort4Clockwise(std::vector<eckit::geometry::Point3>& points) const ;
 
-// -- Overridden methods
+    virtual void assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const;
 
-    virtual void assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const;
     virtual void print(std::ostream&) const;
+
     virtual const char* name() const;
+
     virtual void hash( eckit::MD5 & ) const;
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-// -- Friends
-
 
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
 #endif
 

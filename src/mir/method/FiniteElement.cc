@@ -41,6 +41,7 @@
 #include "mir/caching/MeshCache.h"
 #include "mir/log/MIR.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/method/GridSpace.h"
 
 
 namespace mir {
@@ -278,7 +279,7 @@ static bool projectPointToElements(const MeshStats &stats,
 static const double maxFractionElemsToTry = 0.2; // try to project to 20% of total number elements before giving up
 
 
-void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const {
+void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const {
 
     // FIXME: arguments
     eckit::Log::trace<MIR>() << "FiniteElement::assemble" << std::endl;
@@ -288,11 +289,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const
 
     const atlas::grid::Domain &inDomain = in.domain();
 
-    atlas::mesh::Mesh &i_mesh = in.mesh();
-    atlas::mesh::Mesh &o_mesh = out.mesh();
-
     eckit::Log::trace<MIR>() << "  Input  Mesh: " << i_mesh << std::endl;
-    eckit::Log::trace<MIR>() << "  Output Mesh: " << o_mesh << std::endl;
 
     eckit::TraceTimer<MIR> timer("Compute weights");
 
@@ -300,7 +297,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const
     // We need to use the mesh-generator
     {
         eckit::TraceTimer<MIR> timer("Generate mesh");
-        generateMeshAndCache(in, i_mesh);
+        generateMeshAndCache(in.grid(), in.mesh());
 
         static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
         if (dumpMesh) {
@@ -308,38 +305,38 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const
             gmsh.options.set<std::string>("nodes", "xyz");
 
             eckit::Log::trace<MIR>() << "Dumping input mesh to input.msh" << std::endl;
-            gmsh.write(i_mesh, "input.msh");
+            gmsh.write(in.mesh(), "input.msh");
 
             eckit::Log::trace<MIR>() << "Dumping output mesh to output.msh" << std::endl;
-            atlas::mesh::actions::BuildXYZField("xyz")(o_mesh);
-            gmsh.write(o_mesh, "output.msh");
+            atlas::mesh::actions::BuildXYZField("xyz")(out.mesh());
+            gmsh.write(out.mesh(), "output.msh");
         }
     }
 
     // generate baricenters of each triangle & insert the baricenters on a kd-tree
     {
         eckit::TraceTimer<MIR> timer("Tesselation::create_cell_centres");
-        atlas::mesh::actions::BuildCellCentres()(i_mesh);
+        atlas::mesh::actions::BuildCellCentres()(in.mesh());
     }
 
     eckit::ScopedPtr<atlas::interpolation::ElemIndex3> eTree;
     {
         eckit::TraceTimer<MIR> timer("create_element_centre_index");
-        eTree.reset( atlas::interpolation::create_element_centre_index(i_mesh) );
+        eTree.reset( atlas::interpolation::create_element_centre_index(in.mesh()) );
     }
 
     // input mesh
     MeshStats stats;
 
-    const atlas::mesh::Nodes  &i_nodes  = i_mesh.nodes();
+    const atlas::mesh::Nodes  &i_nodes  = in.mesh().nodes();
     atlas::array::ArrayView<double, 2> icoords  ( i_nodes.field( "xyz" ));
 
     atlas::mesh::Elements::Connectivity const *triag_nodes;
     atlas::mesh::Elements::Connectivity const *quads_nodes;
 
-    for( size_t jtype=0; jtype<i_mesh.cells().nb_types(); ++jtype )
+    for( size_t jtype=0; jtype<in.mesh().cells().nb_types(); ++jtype )
     {
-      const atlas::mesh::Elements& elements =  i_mesh.cells().elements(jtype);
+      const atlas::mesh::Elements& elements =  in.mesh().cells().elements(jtype);
       if( elements.element_type().name() == "Triangle" )
       {
         stats.nb_triags = elements.size();
@@ -362,7 +359,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const
     // In case xyz field in the out mesh, build it
     atlas::mesh::actions::BuildXYZField("xyz")(out.mesh());
 
-    atlas::mesh::Nodes  &o_nodes  = o_mesh.nodes();
+    atlas::mesh::Nodes  &o_nodes  = out.mesh().nodes();
     atlas::array::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
     atlas::array::ArrayView<double, 2> olonlat ( o_nodes.lonlat() );
 

@@ -44,6 +44,8 @@ class MIRStatistics;
 namespace mir {
 namespace method {
 
+class GridSpace;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 class MethodWeighted : public Method {
@@ -64,7 +66,7 @@ class MethodWeighted : public Method {
 
     virtual const char *name() const = 0;
 
-    virtual void assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const = 0;
+    virtual void assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
     WeightMatrix applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which, util::MIRStatistics& statistics) const;

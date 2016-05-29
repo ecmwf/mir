@@ -33,6 +33,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
+#include "mir/method/GridSpace.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/log/MIR.h"
@@ -261,7 +262,9 @@ void MethodWeighted::computeMatrixWeights(const atlas::grid::Grid &in, const atl
         W.setIdentity();        // grids are the same, use identity matrix
     } else {
         eckit::TraceTimer<MIR> timer("Assemble matrix");
-        assemble(W, in, out, statistics);   // assemble matrix of coefficients
+        GridSpace iSpace(in);
+        GridSpace oSpace(out);
+        assemble(W, iSpace, oSpace, statistics);   // assemble matrix of coefficients
         W.cleanup();
     }
 }
