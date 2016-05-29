@@ -44,6 +44,8 @@ public:
     eckit::Timing vod2uvTiming_;
     eckit::Timing computeMatrixTiming_;
     eckit::Timing matrixTiming_;
+    eckit::Timing loadCoeffTiming_;
+    eckit::Timing createCoeffTiming_;
 
     void report(std::ostream &out, const char *indent = "") const;
 

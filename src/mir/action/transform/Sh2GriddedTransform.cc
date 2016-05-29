@@ -126,6 +126,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
         caching::LegendreCache cache;
         eckit::PathName path;
         if (!cache.get(key, path)) {
+            eckit::AutoTiming timing(statistics.timer_, statistics.createCoeffTiming_);
             eckit::TraceTimer<MIR> timer("Caching coefficients");
             eckit::Log::trace<MIR>() << "LegendreCache " << key << " does not exists" << std::endl;
             eckit::PathName tmp = cache.stage(key);
@@ -134,6 +135,8 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
             ASSERT(cache.commit(key, tmp));
         } else {
+            eckit::AutoTiming timing(statistics.timer_, statistics.loadCoeffTiming_);
+
             eckit::TraceTimer<MIR> timer("Loading coefficients");
 
             tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
