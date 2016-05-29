@@ -27,7 +27,7 @@ using atlas::mesh::Mesh;
 
 PathName MeshCache::filename(const std::string& key)
 {
-    PathName base_path = Resource<PathName>("$ATLAS_CACHE_DIR;AtlasCacheDir", "~atlas-cache/tmp/cache/atlas" );
+    PathName base_path = Resource<PathName>("$MIR_CACHE_DIR", "~mir-cache/tmp/cache/mir" );
 
     PathName f = base_path / "mesh" / PathName( key + ".gmsh" );
 
