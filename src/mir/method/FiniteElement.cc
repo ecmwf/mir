@@ -297,6 +297,7 @@ void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpa
     // We need to use the mesh-generator
     {
         eckit::TraceTimer<MIR> timer("Generate mesh");
+
         generateMeshAndCache(in.grid(), in.mesh());
 
         static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
