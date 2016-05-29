@@ -36,7 +36,6 @@ namespace action {
 
 
 Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &output):
-    job_(job),
     input_(input),
     output_(output)  {
 

@@ -77,6 +77,8 @@ struct MeshStats {
     size_t nb_quads;
     size_t inp_npts;
     size_t out_npts;
+    
+    MeshStats(): nb_triags(0), nb_quads(0), inp_npts(0), out_npts(0) {}
 
     size_t size() const {
         return nb_triags + nb_quads;
