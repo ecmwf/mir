@@ -37,6 +37,7 @@ class LandSeaMasks;
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class NearestLSM: public MethodWeighted {
 public:
@@ -47,14 +48,9 @@ public:
 
 private:
 
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-
     virtual const char *name() const;
 
-    virtual void assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const;
+    virtual void assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const;
 
     /// Update interpolation weigths matrix to account for field masked values
     virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const;
@@ -63,17 +59,9 @@ private:
 
     virtual void print(std::ostream &) const;
 
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
-
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

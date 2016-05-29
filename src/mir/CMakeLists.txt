@@ -190,6 +190,8 @@ method/FELinear.cc
 method/FELinear.h
 method/FiniteElement.cc
 method/FiniteElement.h
+method/GridSpace.cc
+method/GridSpace.h
 method/KNearest.cc
 method/KNearest.h
 method/Method.cc

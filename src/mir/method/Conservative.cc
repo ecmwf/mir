@@ -30,6 +30,7 @@
 #include "atlas/interpolation/Quad3D.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/method/GridSpace.h"
 #include "mir/log/MIR.h"
 
 using eckit::linalg::Vector;
@@ -41,6 +42,8 @@ using atlas::interpolation::Quad3D;
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
+
 static const double oneThird  = 1./ 3.;
 static const double oneFourth = 1./ 4.;
 
@@ -51,11 +54,9 @@ Conservative::Conservative(const param::MIRParametrisation &param) :
 Conservative::~Conservative() {
 }
 
-void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::grid::Grid& g) const
+void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const
 {
     eckit::Log::trace<MIR>() << "Conservative::computeLumpedMassMatrix" << std::endl;
-
-    Mesh& mesh = g.mesh();
 
     eckit::Log::trace<MIR>() << "Mesh " << mesh << std::endl;
 
@@ -125,34 +126,35 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
     }
 }
 
-void Conservative::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const atlas::grid::Grid& out, util::MIRStatistics& statistics) const
-{
+void Conservative::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const {
 
-    eckit::Log::trace<MIR>() << "Input  pts " << in.npts()
-                       << "Output pts " << out.npts() << std::endl;
+    eckit::Log::trace<MIR>()
+            << "Input  pts " << in.grid().npts()
+            << "Output pts " << out.grid().npts() << std::endl;
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
 
-    WeightMatrix IM(in.npts(), out.npts());
+    WeightMatrix IM(in.grid().npts(), out.grid().npts());
 
     FELinear::assemble(IM, out, in, statistics);
 
-    eckit::Log::trace<MIR>() << "IM rows " << IM.rows()
-                       << " cols "   << IM.cols() << std::endl;
+    eckit::Log::trace<MIR>()
+            << "IM rows " << IM.rows()
+            << " cols "   << IM.cols() << std::endl;
 
 //    IM.save("IM.mat");
 
     // 2) M_s compute the lumped mass matrix of the source mesh
 
-    generateMeshAndCache(in, in.mesh()); // input grid hasn't been tesselated mesh yet ...
+    generateMeshAndCache(in.grid(), in.mesh()); // input grid hasn't been tesselated mesh yet ...
 
     Vector M_s;
-    computeLumpedMassMatrix(M_s, in);
+    computeLumpedMassMatrix(M_s, in.grid(), in.mesh());
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix of the destination mesh
 
     Vector M_d;
-    computeLumpedMassMatrix(M_d, out);
+    computeLumpedMassMatrix(M_d, out.grid(), out.mesh());
 
     for(size_t i = 0; i < M_d.size(); ++i)
         M_d[i] = 1./M_d[i];
@@ -179,6 +181,8 @@ void Conservative::print(std::ostream &out) const {
 namespace {
 static MethodBuilder< Conservative > __conservative("conservative");
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

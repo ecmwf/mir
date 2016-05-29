@@ -30,6 +30,7 @@
 
 #include "mir/util/Compare.h"
 #include "mir/log/MIR.h"
+#include "mir/method/GridSpace.h"
 
 
 using eckit::FloatCompare;
@@ -38,6 +39,7 @@ using eckit::FloatCompare;
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 namespace {
 
@@ -83,6 +85,7 @@ void left_right_lon_indexes(
 
 }  // (utilities namespace)
 
+//----------------------------------------------------------------------------------------------------------------------
 
 Bilinear::Bilinear(const param::MIRParametrisation& param) :
     MethodWeighted(param) {
@@ -103,7 +106,7 @@ void Bilinear::hash(eckit::MD5 &md5) const {
 }
 
 
-void Bilinear::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const {
+void Bilinear::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const {
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
@@ -118,7 +121,7 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atla
 
 
     // Ensure the input is a reduced grid, and get the pl array
-    const atlas::grid::global::Structured* igg = dynamic_cast<const atlas::grid::global::Structured*>(&in);
+    const atlas::grid::global::Structured* igg = dynamic_cast<const atlas::grid::global::Structured*>(&in.grid());
     if (!igg)
         throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
 
@@ -132,13 +135,12 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atla
 
     // pre-allocate matrix entries
     std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
-    weights_triplets.reserve( out.npts() );
-
+    weights_triplets.reserve( out.grid().npts() );
 
     // access the input/output fields coordinates
-    atlas::array::ArrayView<double, 2> icoords( in .mesh().nodes().lonlat() );
-    atlas::array::ArrayView<double, 2> ocoords( out.mesh().nodes().lonlat() );
 
+    atlas::array::ArrayView<double, 2> icoords = in.coordsView();
+    atlas::array::ArrayView<double, 2> ocoords = out.coordsView();
 
     // check input min/max latitudes (gaussian grids exclude the poles)
     double min_lat = icoords(0, LAT);
@@ -170,7 +172,7 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atla
 //    outfile.precision(2);
 
     // interpolate each output point in turn
-    const size_t onpts = out.npts();
+    const size_t onpts = out.grid().npts();
     for (size_t i = 0; i < onpts; ++i) {
 
         const double lat = ocoords(i, LAT);
@@ -378,6 +380,7 @@ namespace {
 static MethodBuilder< Bilinear > __bilinear("bilinear");
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

@@ -58,7 +58,7 @@ class FiniteElement: public MethodWeighted {
         MeshGenParams();
     };
 
-    virtual void assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const;
+    virtual void assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const;
 
   protected: // members
 
