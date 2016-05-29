@@ -29,7 +29,7 @@ MIRStatistics::MIRStatistics(eckit::Stream &s) {
     s >> vod2uvTiming_;
     s >> computeMatrixTiming_;
     s >> matrixTiming_;
-     s >> loadCoeffTiming_;
+    s >> loadCoeffTiming_;
     s >> createCoeffTiming_;
 
 }
@@ -71,7 +71,7 @@ void MIRStatistics::report(std::ostream &out, const char *indent) const {
     reportTime(out, "Time compute matrices", computeMatrixTiming_, indent);
     reportTime(out, "Time matrix multiply", matrixTiming_, indent);
     reportTime(out, "Time creating coefficients", createCoeffTiming_, indent);
-    reportTime(out, "Time loading coefficients", loadoeffTiming_, indent);
+    reportTime(out, "Time loading coefficients", loadCoeffTiming_, indent);
 
 
 }
