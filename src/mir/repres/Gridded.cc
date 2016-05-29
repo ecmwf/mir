@@ -52,7 +52,7 @@ bool Gridded::globalDomain() const {
 void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField &field, util::MIRStatistics& statistics) const {
 
     if (!globalDomain()) {
-        Representation::cropToDomain(parametrisation, field); // This will throw an exception
+        Representation::cropToDomain(parametrisation, field, statistics); // This will throw an exception
     }
 }
 

@@ -61,7 +61,7 @@ void Gridded2GriddedInterpolation::execute(data::MIRField & field, util::MIRStat
     field.representation(out);
 
     // Make sure we crop to the input domain if not global
-    in->cropToDomain(parametrisation_, field);
+    in->cropToDomain(parametrisation_, field, statistics);
 }
 
 

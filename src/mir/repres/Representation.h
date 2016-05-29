@@ -38,6 +38,7 @@ class MIRParametrisation;
 namespace util {
 class BoundingBox;
 class Rotation;
+class MIRStatistics;
 }
 
 namespace data {
@@ -117,7 +118,7 @@ class Representation {
     virtual void setSimplePacking(grib_info&) const;
     virtual void setSecondOrderPacking(grib_info&) const;
 
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField &field) const;
+    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField&, util::MIRStatistics&) const;
 
     virtual void shape(size_t& ni, size_t& nj) const;
 
