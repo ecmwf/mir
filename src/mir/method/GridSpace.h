@@ -41,6 +41,8 @@ public: // methods
 
     GridSpace(const atlas::grid::Grid& grid);
 
+    ~GridSpace();
+
     const atlas::grid::Grid& grid() const { return grid_; }
 
     atlas::mesh::Mesh& mesh() const;

@@ -23,6 +23,8 @@ namespace atlas { namespace mesh { class Mesh; } }
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
+
 class Conservative: public FELinear {
 
 public:
@@ -35,7 +37,7 @@ protected:
 
     virtual void hash(eckit::MD5&) const;
 
-    virtual void assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const;
+    virtual void assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const;
 
     void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
 
@@ -45,6 +47,8 @@ private:
   virtual const char* name() const;
 
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

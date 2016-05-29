@@ -121,7 +121,7 @@ void Bilinear::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& o
 
 
     // Ensure the input is a reduced grid, and get the pl array
-    const atlas::grid::global::Structured* igg = dynamic_cast<const atlas::grid::global::Structured*>(&in);
+    const atlas::grid::global::Structured* igg = dynamic_cast<const atlas::grid::global::Structured*>(&in.grid());
     if (!igg)
         throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
 
@@ -135,7 +135,7 @@ void Bilinear::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& o
 
     // pre-allocate matrix entries
     std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
-    weights_triplets.reserve( out.npts() );
+    weights_triplets.reserve( out.grid().npts() );
 
     // access the input/output fields coordinates
 
@@ -172,7 +172,7 @@ void Bilinear::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& o
 //    outfile.precision(2);
 
     // interpolate each output point in turn
-    const size_t onpts = out.npts();
+    const size_t onpts = out.grid().npts();
     for (size_t i = 0; i < onpts; ++i) {
 
         const double lat = ocoords(i, LAT);

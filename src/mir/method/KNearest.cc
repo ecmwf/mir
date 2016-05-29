@@ -24,6 +24,7 @@
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 KNearest::KNearest(const param::MIRParametrisation &param) :
     Nearest(param),
@@ -61,6 +62,7 @@ namespace {
 static MethodBuilder< KNearest > __knearest("k-nearest");
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

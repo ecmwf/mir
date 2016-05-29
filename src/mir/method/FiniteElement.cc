@@ -284,12 +284,10 @@ void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpa
     // FIXME: arguments
     eckit::Log::trace<MIR>() << "FiniteElement::assemble" << std::endl;
 
-    eckit::Log::trace<MIR>() << "  Input  Grid: " << in  << std::endl;
-    eckit::Log::trace<MIR>() << "  Output Grid: " << out << std::endl;
+    eckit::Log::trace<MIR>() << "  Input  Grid: " << in.grid()  << std::endl;
+    eckit::Log::trace<MIR>() << "  Output Grid: " << out.grid() << std::endl;
 
-    const atlas::grid::Domain &inDomain = in.domain();
-
-    eckit::Log::trace<MIR>() << "  Input  Mesh: " << i_mesh << std::endl;
+    const atlas::grid::Domain &inDomain = in.grid().domain();
 
     eckit::TraceTimer<MIR> timer("Compute weights");
 
@@ -355,7 +353,7 @@ void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpa
         firstVirtualPoint = i_nodes.metadata().get<size_t>("NbRealPts");
 
     // output mesh
-    out.mesh().createNodes(out);
+    out.mesh().createNodes(out.grid());
 
     // In case xyz field in the out mesh, build it
     atlas::mesh::actions::BuildXYZField("xyz")(out.mesh());
@@ -379,7 +377,7 @@ void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpa
     const size_t maxNbElemsToTry = std::max<size_t>(64, stats.size() * maxFractionElemsToTry);
     size_t max_neighbours = 0;
 
-    eckit::Log::trace<MIR>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.shortName() << std::endl;
+    eckit::Log::trace<MIR>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().shortName() << std::endl;
 
     {
         eckit::TraceTimer<MIR> timerProj("Projecting");

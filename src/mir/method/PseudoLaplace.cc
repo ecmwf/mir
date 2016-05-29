@@ -12,21 +12,25 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-#include "eckit/linalg/Vector.h"
-
 #include "mir/method/PseudoLaplace.h"
 
 #include <string>
 
-#include "mir/util/PointSearch.h"
-#include "mir/param/MIRParametrisation.h"
+#include "eckit/linalg/Vector.h"
+#include "eckit/log/Timer.h"
+
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/mesh/Nodes.h"
-#include "eckit/log/Timer.h"
+
+#include "mir/method/GridSpace.h"
+#include "mir/util/PointSearch.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/log/MIR.h"
 
 namespace mir {
 namespace method {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 namespace {
 
@@ -54,7 +58,7 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
     md5 << nclosest_;
 }
 
-void PseudoLaplace::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const atlas::grid::Grid& out, util::MIRStatistics& statistics) const {
+void PseudoLaplace::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const {
 
     eckit::TraceTimer<MIR> timer("PseudoLaplace::assemble");
     eckit::Log::trace<MIR>() << "PseudoLaplace::assemble" << std::endl;
@@ -149,13 +153,16 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::grid::Grid& in, const
 }
 
 
-void PseudoLaplace::print(std::ostream&) const {
+void PseudoLaplace::print(std::ostream& os) const {
+    os << "PseudoLaplace()";
 }
 
 
 namespace {
 static MethodBuilder< PseudoLaplace > __pseudolaplace("pseudo-laplace");
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 }  // namespace method

@@ -33,6 +33,10 @@ GridSpace::GridSpace(const atlas::grid::Grid& grid) :
 
 }
 
+GridSpace::~GridSpace()
+{
+}
+
 atlas::mesh::Mesh& GridSpace::mesh() const
 {
     if(!mesh_) { mesh_.reset(new atlas::mesh::Mesh()); }
@@ -42,15 +46,15 @@ atlas::mesh::Mesh& GridSpace::mesh() const
 const std::vector<double>& GridSpace::coords() const
 {
     if(!coords_.size()) {
-        coords_.resize(grid.npts()*2);
-        grid.fillLonLat(coords_);
+        coords_.resize(grid_.npts()*2);
+        grid_.fillLonLat(coords_);
     }
     return coords_;
 }
 
 atlas::array::ArrayView<double,2> GridSpace::coordsView() const
 {
-    return atlas::array::ArrayView<double,2>( &coords()[0], atlas::array::make_shape(grid.npts(), 2));
+    return atlas::array::ArrayView<double,2>( &coords()[0], atlas::array::make_shape(grid_.npts(), 2));
 }
 
 //----------------------------------------------------------------------------------------------------------------------

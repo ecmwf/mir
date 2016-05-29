@@ -21,6 +21,7 @@
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class PseudoLaplace: public MethodWeighted {
 
@@ -38,11 +39,13 @@ class PseudoLaplace: public MethodWeighted {
 
   private:
 
-    virtual void assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const;
+    virtual void assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
