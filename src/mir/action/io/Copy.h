@@ -96,7 +96,7 @@ class Copy : public Action {
 
     // -- Overridden methods
 
-    virtual void execute(data::MIRField &) const;
+    virtual void execute(data::MIRField & field, util::MIRStatistics& statistics) const;
     virtual bool needField() const;
     virtual bool sameAs(const Action& other) const;
 

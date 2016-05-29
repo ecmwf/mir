@@ -35,10 +35,10 @@ ActionNode::~ActionNode() {
 
 }
 
-void ActionNode::execute(data::MIRField& field) const {
+void ActionNode::execute(data::MIRField& field, util::MIRStatistics& statistics) const {
     // std::cout << " -----> " << action_ << std::endl << "      ---> " << field << std::endl;
-    action_.execute(field);
-    graph_.execute(field);
+    action_.execute(field, statistics);
+    graph_.execute(field, statistics);
 }
 
 const action::Action &ActionNode::action() const {

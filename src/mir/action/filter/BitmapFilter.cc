@@ -67,7 +67,7 @@ void BitmapFilter::print(std::ostream &out) const {
 }
 
 
-void BitmapFilter::execute(data::MIRField &field) const {
+void BitmapFilter::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
 
     for (size_t f = 0; f < field.dimensions() ; f++) {
 

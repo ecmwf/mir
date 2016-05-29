@@ -35,10 +35,10 @@ ActionGraph::~ActionGraph() {
     }
 }
 
-void ActionGraph::execute(data::MIRField& field) const {
+void ActionGraph::execute(data::MIRField& field, util::MIRStatistics& statistics) const {
     for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
         data::MIRField local(&field);
-        (*j)->execute(local);
+        (*j)->execute(local, statistics);
     }
 }
 

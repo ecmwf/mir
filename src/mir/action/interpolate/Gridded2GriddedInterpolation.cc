@@ -39,7 +39,7 @@ Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 }
 
 
-void Gridded2GriddedInterpolation::execute(data::MIRField &field) const {
+void Gridded2GriddedInterpolation::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
 
     std::string interpolation;
     ASSERT(parametrisation_.get("interpolation", interpolation));

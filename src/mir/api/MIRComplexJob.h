@@ -32,6 +32,11 @@ class MIROutput;
 namespace action {
 class Job;
 }
+
+namespace util {
+class MIRStatistics;
+}
+
 namespace api {
 
 class MIRJob;
@@ -58,7 +63,7 @@ class MIRComplexJob : private eckit::NonCopyable {
 
     // -- Methods
 
-    void execute() const;
+    void execute(util::MIRStatistics& statistics) const;
     bool empty() const;
 
 

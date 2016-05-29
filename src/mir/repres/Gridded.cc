@@ -49,7 +49,7 @@ bool Gridded::globalDomain() const {
     throw eckit::SeriousBug(os.str());
 }
 
-void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField &field) const {
+void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField &field, util::MIRStatistics& statistics) const {
 
     if (!globalDomain()) {
         Representation::cropToDomain(parametrisation, field); // This will throw an exception

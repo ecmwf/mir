@@ -27,6 +27,10 @@ namespace data {
     class MIRField;
 }
 
+namespace util {
+class MIRStatistics;
+}
+
 namespace action {
 
 class Action;
@@ -55,7 +59,7 @@ class ActionGraph {
 
 // -- Methods
 
-    void execute(data::MIRField&) const;
+    void execute(data::MIRField&, util::MIRStatistics& statistics) const;
 
     // =================
 

@@ -28,6 +28,12 @@ class MIRInput;
 namespace output {
 class MIROutput;
 }
+
+
+namespace util {
+class MIRStatistics;
+}
+
 namespace api {
 
 
@@ -54,6 +60,7 @@ class MIRJob : public param::SimpleParametrisation {
 // -- Methods
 
     void execute(input::MIRInput&, output::MIROutput&) const;
+    void execute(input::MIRInput&, output::MIROutput&, util::MIRStatistics& statistics) const;
 
     MIRJob& set(const std::string& name, const char* value);
     MIRJob& set(const std::string& name, const std::string& value);

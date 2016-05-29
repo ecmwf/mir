@@ -29,6 +29,10 @@ namespace param {
 class MIRParametrisation;
 }
 
+namespace util {
+class MIRStatistics;
+}
+
 namespace action {
 
 
@@ -54,7 +58,7 @@ class Action {
 
     // -- Methods
 
-    virtual void execute(data::MIRField &) const = 0;
+    virtual void execute(data::MIRField & field, util::MIRStatistics& statistics) const = 0;
     virtual bool sameAs(const Action& other) const = 0;
     virtual bool needField() const ;
 

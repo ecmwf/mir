@@ -45,7 +45,7 @@ void ReferencePattern::print(std::ostream &out) const {
 }
 
 
-void ReferencePattern::execute(data::MIRField &field) const {
+void ReferencePattern::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
 
     repres::RepresentationHandle representation(field.representation());
     bool normalize = false;

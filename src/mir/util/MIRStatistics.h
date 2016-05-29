@@ -13,12 +13,12 @@
 /// @author Tiago Quintino
 /// @date   April 2016
 
-#ifndef pgen_MIRStatistics_H
-#define pgen_MIRStatistics_H
+#ifndef util_MIRStatistics_H
+#define util_MIRStatistics_H
 
 #include <iosfwd>
 
-#include "mir/util/Statistics.h"
+#include "eckit/log/Statistics.h"
 #include "eckit/log/Timer.h"
 
 namespace eckit {
@@ -26,11 +26,11 @@ class Stream;
 }
 
 namespace mir {
-
+namespace util {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class MIRStatistics : public Statistics {
+class MIRStatistics : public eckit::Statistics {
   public:
     MIRStatistics() ;
     MIRStatistics(eckit::Stream &) ;
@@ -76,6 +76,7 @@ class MIRStatistics : public Statistics {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+} // namespace util
 } // namespace pgen
 
 #endif

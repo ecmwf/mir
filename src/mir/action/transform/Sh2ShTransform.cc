@@ -51,7 +51,7 @@ void Sh2ShTransform::print(std::ostream &out) const {
 }
 
 
-void Sh2ShTransform::execute(data::MIRField &field) const {
+void Sh2ShTransform::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
 
     // Keep a pointer on the original representation, as the one in the field will
     // be changed in the loop

@@ -13,6 +13,7 @@
 
 
 namespace mir {
+namespace util {
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -130,6 +131,7 @@ void MIRStatistics::report(std::ostream &out, const char *indent) const {
     reportTime(out, "Time in MPI", mpiTime_, indent);
     reportTime(out, "Time in writting", outputTime_, indent);
 
+}
 }
 
 //----------------------------------------------------------------------------------------------------------------------

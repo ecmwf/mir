@@ -40,7 +40,7 @@ void Copy::print(std::ostream &out) const {
     out << "Copy[output=" << output_ << "]";
 }
 
-void Copy::execute(data::MIRField &field) const {
+void Copy::execute(data::MIRField &field, util::MIRStatistics& statistics) const {
     output_.copy(parametrisation_, input_);
 }
 
