@@ -31,6 +31,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/caching/CroppingCache.h"
 #include "mir/log/MIR.h"
+#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
@@ -190,6 +191,9 @@ void AreaCropper::execute(data::MIRField & field, util::MIRStatistics& statistic
 
     eckit::Log::trace<MIR>() << "CROP resulting bbox is: " << c.bbox_ <<
                        ", size=" << c.mapping_.size() << std::endl;
+
+
+    eckit::AutoTiming timing(statistics.timer_, statistics.cropTiming_);
 
     for (size_t i = 0; i < field.dimensions(); i++) {
         const std::vector<double> &values = field.values(i);

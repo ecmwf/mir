@@ -10,6 +10,7 @@
 
 #include "mir/util/MIRStatistics.h"
 #include "eckit/serialisation/Stream.h"
+#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
@@ -17,25 +18,46 @@ namespace util {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-MIRStatistics::MIRStatistics()
-   {
+MIRStatistics::MIRStatistics() {
 }
 
 MIRStatistics::MIRStatistics(eckit::Stream &s) {
+    s >> cropTiming_;
+    s >> coefficientTiming_;
+    s >> sh2gridTiming_;
+    s >> grid2gridTiming_;
+    s >> vod2uvTiming_;
 
 }
 
 void MIRStatistics::encode(eckit::Stream &s) const {
+    s << cropTiming_;
+    s << coefficientTiming_;
+    s << sh2gridTiming_;
+    s << grid2gridTiming_;
+    s << vod2uvTiming_;
 
 }
 
 MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &rhs) {
+    cropTiming_ += rhs.cropTiming_;
+    coefficientTiming_ += rhs.coefficientTiming_;
+    sh2gridTiming_ += rhs.sh2gridTiming_;
+    grid2gridTiming_ += rhs.grid2gridTiming_;
+    vod2uvTiming_ += rhs.vod2uvTiming_;
+
     return *this;
 }
 
 
 void MIRStatistics::report(std::ostream &out, const char *indent) const {
 
+    reportTime(out, "Time in grid to grid interpolations", grid2gridTiming_, indent);
+    reportTime(out, "Time in SH to grid transform", sh2gridTiming_, indent);
+    reportTime(out, "Time loading/building legendre coefficients", coefficientTiming_, indent);
+    reportTime(out, "Time in VO/D to U/V", vod2uvTiming_, indent);
+
+    reportTime(out, "Time in area-crop", cropTiming_, indent);
 
 }
 }

@@ -36,6 +36,7 @@
 #include "mir/caching/LegendreCache.h"
 #include "mir/caching/LegendreLoader.h"
 #include "mir/log/MIR.h"
+#include "mir/util/MIRStatistics.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
@@ -68,7 +69,9 @@ namespace action {
 
 
 static void transform(const param::MIRParametrisation &parametrisation, size_t truncation,
-                      const std::vector<double> &input, std::vector<double> &output, const atlas::grid::Grid &grid) {
+                      const std::vector<double> &input, std::vector<double> &output,
+                      const atlas::grid::Grid &grid,
+                      util::MIRStatistics& statistics) {
 #ifdef ATLAS_HAVE_TRANS
 
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
@@ -92,6 +95,9 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
     // Warning: we keep the coefficient in memory for all the resolution used
     if (trans_handles.find(key) == trans_handles.end()) {
         eckit::Log::trace<MIR>() << "Creating a new TRANS handle for " << key << std::endl;
+
+        eckit::AutoTiming timing(statistics.timer_, statistics.coefficientTiming_);
+
 
         TransCache &tc = trans_handles[key];
         struct Trans_t &trans = tc.trans_;
@@ -138,6 +144,9 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
             ASSERT(trans_setup(&trans) == 0);
         }
     }
+
+    eckit::AutoTiming timing(statistics.timer_, statistics.sh2gridTiming_);
+
 
     TransCache &tc = trans_handles[key];
     struct Trans_t &trans = tc.trans_;
@@ -221,7 +230,7 @@ void Sh2GriddedTransform::execute(data::MIRField & field, util::MIRStatistics& s
         std::vector<double> result;
 
         eckit::ScopedPtr<atlas::grid::Grid> grid(out->atlasGrid());
-        transform(parametrisation_, field.representation()->truncation(), values, result, *grid);
+        transform(parametrisation_, field.representation()->truncation(), values, result, *grid, statistics);
 
         field.update(result, i);
 

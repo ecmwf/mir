@@ -36,6 +36,14 @@ public:
 
     MIRStatistics &operator+=(const MIRStatistics &rhs) ;
 
+
+    eckit::Timing cropTiming_;
+    eckit::Timing coefficientTiming_;
+    eckit::Timing sh2gridTiming_;
+    eckit::Timing grid2gridTiming_;
+    eckit::Timing vod2uvTiming_;
+
+
     void report(std::ostream &out, const char *indent = "") const;
 
     void encode(eckit::Stream &) const;
