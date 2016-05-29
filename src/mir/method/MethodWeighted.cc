@@ -132,7 +132,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::grid::Grid &in, const
         W.validate("computeMatrixWeights");
 
         if (masks.active() && masks.cacheable()) {
-            applyMasks(W, masks);
+            applyMasks(W, masks, statistics);
             W.validate("applyMasks");
         }
         if (caching) {
@@ -144,7 +144,7 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::grid::Grid &in, const
 
     // If LSM not cacheabe, e.g. user provided, we apply the mask after
     if (masks.active() && !masks.cacheable())  {
-        applyMasks(W, masks);
+        applyMasks(W, masks, statistics);
         W.validate("applyMasks");
     }
 
@@ -327,7 +327,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 }
 
 
-void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks) const {
+void MethodWeighted::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &masks, util::MIRStatistics& statistics) const {
 
     eckit::TraceTimer<MIR> timer("MethodWeighted::applyMasks");
 
