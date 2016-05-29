@@ -27,6 +27,8 @@ MIRStatistics::MIRStatistics(eckit::Stream &s) {
     s >> sh2gridTiming_;
     s >> grid2gridTiming_;
     s >> vod2uvTiming_;
+    s >> computeMatrixTiming_;
+    s >> matrixTiming_;
 
 }
 
@@ -36,7 +38,8 @@ void MIRStatistics::encode(eckit::Stream &s) const {
     s << sh2gridTiming_;
     s << grid2gridTiming_;
     s << vod2uvTiming_;
-
+    s << computeMatrixTiming_;
+    s << matrixTiming_;
 }
 
 MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &rhs) {
@@ -45,7 +48,8 @@ MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &rhs) {
     sh2gridTiming_ += rhs.sh2gridTiming_;
     grid2gridTiming_ += rhs.grid2gridTiming_;
     vod2uvTiming_ += rhs.vod2uvTiming_;
-
+    computeMatrixTiming_ += rhs.computeMatrixTiming_;
+    computeMatrixTiming_ += rhs.matrixTiming_;
     return *this;
 }
 
@@ -58,6 +62,9 @@ void MIRStatistics::report(std::ostream &out, const char *indent) const {
     reportTime(out, "Time in VO/D to U/V", vod2uvTiming_, indent);
 
     reportTime(out, "Time in area-crop", cropTiming_, indent);
+    reportTime(out, "Time compute matrices", computeMatrixTiming_, indent);
+    reportTime(out, "Time matrix multiply", matrixTiming_, indent);
+
 
 }
 }
