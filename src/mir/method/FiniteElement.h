@@ -29,6 +29,7 @@
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class FiniteElement: public MethodWeighted {
 
@@ -43,6 +44,8 @@ class FiniteElement: public MethodWeighted {
     virtual ~FiniteElement();
 
   protected:
+
+    void generateMeshAndCache(const atlas::grid::Grid& grid, atlas::mesh::Mesh& mesh) const;
 
     virtual void hash( eckit::MD5& ) const;
     virtual void generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
@@ -62,6 +65,7 @@ class FiniteElement: public MethodWeighted {
     MeshGenParams meshgenparams_;
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

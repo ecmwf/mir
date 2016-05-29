@@ -24,6 +24,7 @@
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
+#include "eckit/utils/MD5.h"
 
 #include "atlas/grid/global/Structured.h"
 #include "atlas/interpolation/PointIndex3.h"
@@ -37,6 +38,7 @@
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/util/io/Gmsh.h"
 
+#include "mir/caching/MeshCache.h"
 #include "mir/log/MIR.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -44,6 +46,11 @@
 namespace mir {
 namespace method {
 
+using atlas::grid::Grid;
+using atlas::mesh::Mesh;
+using mir::caching::MeshCache;
+
+//----------------------------------------------------------------------------------------------------------------------
 
 FiniteElement::MeshGenParams::MeshGenParams() {
     set("three_dimensional", true);
@@ -62,14 +69,28 @@ FiniteElement::FiniteElement(const param::MIRParametrisation &param) :
 FiniteElement::~FiniteElement() {
 }
 
+void FiniteElement::generateMeshAndCache(const Grid& grid, Mesh& mesh) const
+{
+    eckit::MD5 md5;
+    grid.hash(md5);
+
+    hash(md5); // add mesh generator settings to make it trully unique key
+
+    if(MeshCache::get(md5.digest(), mesh)) { return; }
+
+    generateMesh(grid, mesh);
+
+    MeshCache::add(md5.digest(), mesh);
+}
 
 void FiniteElement::hash( eckit::MD5 &md5) const {
     MethodWeighted::hash(md5);
 }
 
 
-namespace {
+//----------------------------------------------------------------------------------------------------------------------
 
+namespace {
 
 struct MeshStats {
 
@@ -279,7 +300,7 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const
     // We need to use the mesh-generator
     {
         eckit::TraceTimer<MIR> timer("Generate mesh");
-        generateMesh(in, i_mesh);
+        generateMeshAndCache(in, i_mesh);
 
         static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
         if (dumpMesh) {
@@ -423,22 +444,21 @@ void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const
 
 void FiniteElement::generateMesh(const atlas::grid::Grid &grid, atlas::mesh::Mesh &mesh) const {
 
-    ///  This raises another issue: how to cache meshes generated with different parametrisations?
-    ///  We must md5 the MeshGenerator itself.
-
     std::string meshgenerator( grid.getOptimalMeshGenerator() );
 
     parametrisation_.get("meshgenerator", meshgenerator); // Override with MIRParametrisation
 
     eckit::Log::trace<MIR>() << "MeshGenerator parametrisation is '" << meshgenerator << "'" << std::endl;
 
-    eckit::ScopedPtr<atlas::mesh::generators::MeshGenerator> generator( atlas::mesh::generators::MeshGeneratorFactory::build(meshgenerator, meshgenparams_) );
+    eckit::ScopedPtr<atlas::mesh::generators::MeshGenerator> generator(
+                atlas::mesh::generators::MeshGeneratorFactory::build(meshgenerator, meshgenparams_) );
     generator->generate(grid, mesh);
 
     // If meshgenerator did not create xyz field already, do it now.
     atlas::mesh::actions::BuildXYZField()(mesh);
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
