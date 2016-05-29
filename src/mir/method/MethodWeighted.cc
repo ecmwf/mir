@@ -36,6 +36,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/log/MIR.h"
+#include "mir/util/MIRStatistics.h"
 
 
 // using eckit::Log;
@@ -174,6 +175,8 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::grid::Grid &in,
     ASSERT( W.rows() == npts_out );
     ASSERT( W.cols() == npts_inp );
 
+
+
     for (size_t i = 0; i < field.dimensions(); i++) {
 
         std::ostringstream os;
@@ -198,6 +201,8 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::grid::Grid &in,
 
 
         if ( field.hasMissing() ) {
+            eckit::AutoTiming timing(statistics.timer_, statistics.matrixTiming_);
+
             // Assumes compiler does return value optimization
             // otherwise we need to pass result matrix as parameter
             WeightMatrix MW = applyMissingValues(W, field, i, statistics);
@@ -205,6 +210,8 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::grid::Grid &in,
 
             MW.multiply(values, result);
         } else {
+            eckit::AutoTiming timing(statistics.timer_, statistics.matrixTiming_);
+
             W.multiply(values, result);
         }
 
@@ -246,6 +253,9 @@ void MethodWeighted::execute(data::MIRField &field, const atlas::grid::Grid &in,
 
 
 void MethodWeighted::computeMatrixWeights(const atlas::grid::Grid &in, const atlas::grid::Grid &out, WeightMatrix &W, util::MIRStatistics& statistics) const {
+
+    eckit::AutoTiming timing(statistics.timer_, statistics.computeMatrixTiming_);
+
     if (in.same(out)) {
         eckit::Log::trace<MIR>() << "Matrix is indentity" << std::endl;
         W.setIdentity();        // grids are the same, use identity matrix

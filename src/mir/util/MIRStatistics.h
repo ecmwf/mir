@@ -42,7 +42,8 @@ public:
     eckit::Timing sh2gridTiming_;
     eckit::Timing grid2gridTiming_;
     eckit::Timing vod2uvTiming_;
-
+    eckit::Timing computeMatrixTiming_;
+    eckit::Timing matrixTiming_;
 
     void report(std::ostream &out, const char *indent = "") const;
 
