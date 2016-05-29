@@ -19,7 +19,6 @@
 #include <iosfwd>
 
 #include "eckit/log/Statistics.h"
-#include "eckit/log/Timer.h"
 
 namespace eckit {
 class Stream;
@@ -31,40 +30,13 @@ namespace util {
 //----------------------------------------------------------------------------------------------------------------------
 
 class MIRStatistics : public eckit::Statistics {
-  public:
+public:
     MIRStatistics() ;
     MIRStatistics(eckit::Stream &) ;
-
-    size_t  batchCount_;
-
-    size_t requirementsCount_;
-    size_t failuresCount_;
-
-    size_t filesCount_;
-
-    size_t fieldsReadCount_;
-    eckit::Length fieldsReadSize_;
-
-    size_t winds_;
-
-    size_t fieldsInterpolated_;
-    size_t fieldsNotInterpolated_;
-
-    size_t fieldsWrittenCount_;
-    eckit::Length fieldsWrittenSize_;
-
-    double fdbTime_;
-    double mirTime_;
-    double mpiTime_;
-    double outputTime_;
-
-    mutable eckit::Timer timer_;
 
     MIRStatistics &operator+=(const MIRStatistics &rhs) ;
 
     void report(std::ostream &out, const char *indent = "") const;
-
-  private:
 
     void encode(eckit::Stream &) const;
 
