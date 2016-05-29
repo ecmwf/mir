@@ -27,6 +27,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
 #include "mir/log/MIR.h"
+#include "mir/util/MIRStatistics.h"
 
 namespace mir {
 namespace lsm {
@@ -65,7 +66,8 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
 
     eckit::ScopedPtr<atlas::grid::Grid> gin(field->representation()->atlasGrid());
 
-    method->execute(*field, *gin, grid);
+    util::MIRStatistics dummy; // TODO: use the gloabl one
+    method->execute(*field, *gin, grid, dummy);
 
     double threshold;
     ASSERT(parametrisation.get("lsm.value.threshold", threshold));

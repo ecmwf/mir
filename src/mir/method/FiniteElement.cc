@@ -77,7 +77,7 @@ struct MeshStats {
     size_t nb_quads;
     size_t inp_npts;
     size_t out_npts;
-    
+
     MeshStats(): nb_triags(0), nb_quads(0), inp_npts(0), out_npts(0) {}
 
     size_t size() const {
@@ -257,7 +257,7 @@ static bool projectPointToElements(const MeshStats &stats,
 static const double maxFractionElemsToTry = 0.2; // try to project to 20% of total number elements before giving up
 
 
-void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
+void FiniteElement::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const {
 
     // FIXME: arguments
     eckit::Log::trace<MIR>() << "FiniteElement::assemble" << std::endl;

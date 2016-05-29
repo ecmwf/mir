@@ -43,6 +43,10 @@ class MIRField;
 namespace param {
 class MIRParametrisation;
 }
+
+namespace util {
+class MIRStatistics;
+}
 }
 
 
@@ -59,7 +63,7 @@ class Method : private eckit::NonCopyable {
 
     virtual void hash( eckit::MD5 & ) const = 0;
 
-    virtual void execute(data::MIRField &, const atlas::grid::Grid &, const atlas::grid::Grid &) const = 0;
+    virtual void execute(data::MIRField &, const atlas::grid::Grid &, const atlas::grid::Grid &, util::MIRStatistics& statistics) const = 0;
 
   protected:
 

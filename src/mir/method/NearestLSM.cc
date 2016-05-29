@@ -49,7 +49,7 @@ const char *NearestLSM::name() const {
 }
 
 
-void NearestLSM::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
+void NearestLSM::assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const {
 
     eckit::TraceTimer<MIR> timer("NearestLSM::assemble");
     eckit::Log::trace<MIR>() << "NearestLSM::assemble" << std::endl;

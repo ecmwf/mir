@@ -38,7 +38,7 @@ class PseudoLaplace: public MethodWeighted {
 
   private:
 
-    virtual void assemble(WeightMatrix& W, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
+    virtual void assemble(WeightMatrix &W, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
