@@ -24,6 +24,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/log/MIR.h"
+#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
@@ -40,6 +41,8 @@ Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 
 
 void Gridded2GriddedInterpolation::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+
+    eckit::AutoTiming timing(statistics.timer_, statistics.grid2gridTiming_);
 
     std::string interpolation;
     ASSERT(parametrisation_.get("interpolation", interpolation));

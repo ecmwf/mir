@@ -25,6 +25,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/log/MIR.h"
+#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
@@ -60,6 +61,9 @@ inline double ss(double pm, double pn) {
 
 void VOD2UVTransform::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
     ASSERT(field.dimensions() == 2);
+
+    eckit::AutoTiming timing(statistics.timer_, statistics.vod2uvTiming_);
+
 
     size_t truncation = field.representation()->truncation();
     size_t size = repres::sh::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
