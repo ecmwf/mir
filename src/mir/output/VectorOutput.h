@@ -67,7 +67,9 @@ class VectorOutput : public MIROutput {
 
 
     // -- Overridden methods
-    // None
+
+    virtual void copy(const param::MIRParametrisation &, input::MIRInput &) ; // Not iterpolation performed
+    virtual void save(const param::MIRParametrisation &, input::MIRInput &, data::MIRField &);
 
     // -- Class members
     // None
@@ -92,8 +94,6 @@ class VectorOutput : public MIROutput {
 
     // -- Overridden methods
 
-    virtual void copy(const param::MIRParametrisation &, input::MIRInput &) ; // Not iterpolation performed
-    virtual void save(const param::MIRParametrisation &, input::MIRInput &, data::MIRField &);
     virtual eckit::Length total() const;
 
     // -- Class members

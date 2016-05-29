@@ -95,7 +95,6 @@ class Job  {
 
     // -- Members
 
-    const api::MIRJob &job_;
     input::MIRInput &input_;
     output::MIROutput &output_;
 

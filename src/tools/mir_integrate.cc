@@ -73,9 +73,6 @@ void MIRIntegrate::usage(const std::string &tool) {
 }
 
 
-static const double oneThird  = 1./ 3.;
-static const double oneFourth = 1./ 4.;
-
 
 void MIRIntegrate::run() {
 
