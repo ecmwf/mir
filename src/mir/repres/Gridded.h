@@ -20,6 +20,11 @@
 
 
 namespace mir {
+
+namespace util {
+class MIRStatistics;
+}
+
 namespace repres {
 
 
@@ -91,7 +96,7 @@ class Gridded : public Representation {
     virtual void setSimplePacking(grib_info&) const;
     virtual void setSecondOrderPacking(grib_info&) const;
 
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField&) const;
+    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField&, util::MIRStatistics&) const;
 
 // -- Class members
     // None

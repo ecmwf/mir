@@ -63,19 +63,19 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
 Job::~Job() {
 }
 
-void Job::execute() const {
+void Job::execute(util::MIRStatistics& statistics) const {
 
     // This is an optimistation for MARS
     // We avoid to decode the input field
     if(plan_->size() == 1 && !plan_->action(0).needField()) {
         data::MIRField dummy(*combined_);
-        plan_->execute(dummy);
+        plan_->execute(dummy, statistics);
         return;
     }
 
     eckit::ScopedPtr< data::MIRField > field(input_.field());
     eckit::Log::trace<MIR>() << "Field is " << *field << std::endl;
-    plan_->execute(*field);
+    plan_->execute(*field, statistics);
 }
 
 

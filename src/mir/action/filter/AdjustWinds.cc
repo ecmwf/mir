@@ -125,7 +125,7 @@ void AdjustWinds::windDirections(const repres::Representation* representation, s
 }
 
 
-void AdjustWinds::execute(data::MIRField &field) const {
+void AdjustWinds::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
     ASSERT((field.dimensions() % 2) == 0);
 
     std::vector<double> directions;

@@ -209,7 +209,7 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 }
 
 
-void Sh2GriddedTransform::execute(data::MIRField &field) const {
+void Sh2GriddedTransform::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
     // ASSERT(field.dimensions() == 1); // For now
 
     repres::RepresentationHandle out(outputRepresentation());

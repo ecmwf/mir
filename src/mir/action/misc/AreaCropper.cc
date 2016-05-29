@@ -181,7 +181,7 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
     return c;
 }
 
-void AreaCropper::execute(data::MIRField &field) const {
+void AreaCropper::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
 
     // Keep a pointer on the original representation, as the one in the field will
     // be changed in the loop

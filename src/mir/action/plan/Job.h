@@ -33,6 +33,10 @@ namespace api {
 class MIRJob;
 }
 
+namespace util {
+class MIRStatistics;
+}
+
 namespace action {
 
 class ActionPlan;
@@ -59,7 +63,7 @@ class Job  {
 
     // -- Methods
 
-    void execute() const;
+    void execute(util::MIRStatistics& statistics) const;
 
     const ActionPlan& plan() const;
 

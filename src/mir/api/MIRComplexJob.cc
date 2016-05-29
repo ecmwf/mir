@@ -55,19 +55,8 @@ void MIRComplexJob::clear() {
 
 // }
 
-void MIRComplexJob::execute() const {
-    // std::cout << "---------------------- " << std::endl;
+void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
 
-    // for (std::vector<action::Job *>::const_iterator j = jobs_.begin(); j != jobs_.end(); ++j) {
-    //     const action::ActionPlan &plan = (*j)->plan();
-    //     std::cout << std::endl;
-    //     for (size_t i = 0; i < plan.size(); i++) {
-    //         const action::Action &action = plan.action(i);
-    //         std::cout << action << std::endl;
-    //     }
-    // }
-
-    // std::cout << "---------------------- " << std::endl;
 
     action::ActionGraph graph;
 
@@ -75,19 +64,13 @@ void MIRComplexJob::execute() const {
         graph.add((*j)->plan());
     }
 
-    // std::cout << ">>>>> " << std::endl;
-
-    // graph.dump(std::cout, 0);
-
-    // std::cout << "<<<<< " << std::endl;
-
     if (!input_) {
         return;
     }
 
     eckit::ScopedPtr< data::MIRField > field(input_->field());
     eckit::Log::trace<MIR>() << "Field is " << *field << std::endl;
-    graph.execute(*field);
+    graph.execute(*field, statistics);
 
 
 }

@@ -91,7 +91,7 @@ class Sh2ShTransform : public Action {
 
     virtual bool sameAs(const Action& other) const;
 
-    virtual void execute(data::MIRField&) const;
+    virtual void execute(data::MIRField & field, util::MIRStatistics& statistics) const;
 
 // -- Class members
     // None

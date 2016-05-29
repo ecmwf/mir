@@ -22,6 +22,7 @@
 #include "mir/action/plan/Job.h"
 
 #include "mir/repres/Representation.h"
+#include "mir/util/MIRStatistics.h"
 
 #include "mir/api/MIRJob.h"
 
@@ -38,8 +39,13 @@ MIRJob::~MIRJob() {
 }
 
 
+void MIRJob::execute(input::MIRInput &input, output::MIROutput &output, util::MIRStatistics& statistics) const {
+    action::Job(*this, input, output).execute(statistics);
+}
+
 void MIRJob::execute(input::MIRInput &input, output::MIROutput &output) const {
-    action::Job(*this, input, output).execute();
+    util::MIRStatistics statistics;
+    execute(input, output, statistics);
 }
 
 void MIRJob::print(std::ostream &out) const {

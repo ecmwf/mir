@@ -46,7 +46,7 @@ void FrameFilter::print(std::ostream &out) const {
 }
 
 
-void FrameFilter::execute(data::MIRField &field) const {
+void FrameFilter::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
     for (size_t i = 0; i < field.dimensions(); i++ ) {
 
         double missingValue = field.missingValue();

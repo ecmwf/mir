@@ -36,8 +36,6 @@ action/io/Save.cc
 action/io/Save.h
 action/io/Copy.cc
 action/io/Copy.h
-action/io/Input.cc
-action/io/Input.h
 action/filter/AdjustWinds.cc
 action/filter/AdjustWinds.h
 action/filter/BitmapFilter.cc
@@ -375,8 +373,6 @@ util/RotatedIterator.cc
 util/RotatedIterator.h
 util/Rotation.cc
 util/Rotation.h
-util/Statistics.cc
-util/Statistics.h
 util/MIRStatistics.cc
 util/MIRStatistics.h
   )

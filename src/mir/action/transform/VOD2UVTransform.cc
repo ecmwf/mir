@@ -58,7 +58,7 @@ inline double ss(double pm, double pn) {
     return -pm / (pn * (pn + 1));
 }
 
-void VOD2UVTransform::execute(data::MIRField &field) const {
+void VOD2UVTransform::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
     ASSERT(field.dimensions() == 2);
 
     size_t truncation = field.representation()->truncation();
