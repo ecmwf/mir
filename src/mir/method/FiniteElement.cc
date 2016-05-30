@@ -38,7 +38,6 @@
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/util/io/Gmsh.h"
 
-#include "mir/caching/MeshCache.h"
 #include "mir/log/MIR.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/method/GridSpace.h"
@@ -49,7 +48,6 @@ namespace method {
 
 using atlas::grid::Grid;
 using atlas::mesh::Mesh;
-using mir::caching::MeshCache;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -70,25 +68,10 @@ FiniteElement::FiniteElement(const param::MIRParametrisation &param) :
 FiniteElement::~FiniteElement() {
 }
 
-void FiniteElement::generateMeshAndCache(const Grid& grid, Mesh& mesh) const
+void FiniteElement::hash(eckit::MD5&) const
 {
-    eckit::MD5 md5;
-    grid.hash(md5);
 
-    hash(md5); // add mesh generator settings to make it trully unique key
-
-    /// @TODO disable until we have Mesh serialisation
-//    if(MeshCache::get(md5.digest(), mesh)) { return; }
-
-    generateMesh(grid, mesh);
-
-//    MeshCache::add(md5.digest(), mesh);
 }
-
-void FiniteElement::hash( eckit::MD5 &md5) const {
-    MethodWeighted::hash(md5);
-}
-
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -297,7 +280,7 @@ void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpa
     {
         eckit::TraceTimer<MIR> timer("Generate mesh");
 
-        generateMeshAndCache(in.grid(), in.mesh());
+//        generateMeshAndCache(in.grid(), in.mesh()); // mesh generation will be done lazily
 
         static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
         if (dumpMesh) {

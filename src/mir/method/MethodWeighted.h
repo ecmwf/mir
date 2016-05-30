@@ -23,9 +23,8 @@
 
 
 namespace atlas {
-namespace grid {
-class Grid;
-}
+namespace grid { class Grid; }
+namespace mesh { class Mesh; }
 }
 
 
@@ -50,7 +49,7 @@ class GridSpace;
 
 class MethodWeighted : public Method {
 
-  public:
+public:
 
     explicit MethodWeighted(const param::MIRParametrisation &);
 
@@ -58,9 +57,15 @@ class MethodWeighted : public Method {
 
     virtual void execute(data::MIRField &field, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const;
 
-    virtual void hash( eckit::MD5 & ) const;
+    virtual void hash(eckit::MD5&) const;
 
-  private:
+    atlas::mesh::Mesh* generateMeshAndCache(const atlas::grid::Grid& grid) const;
+
+    virtual void generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
+
+protected:
+
+private:
 
     double lsmWeightAdjustement_;
 

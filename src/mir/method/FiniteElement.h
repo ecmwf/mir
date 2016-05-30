@@ -20,11 +20,14 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/geometry/Point3.h"
 
-#include "atlas/mesh/Mesh.h"
-#include "atlas/field/Field.h"
 #include "atlas/mesh/generators/MeshGenerator.h"
 
 #include "mir/method/MethodWeighted.h"
+
+namespace atlas {
+namespace grid { class Grid; }
+namespace mesh { class Mesh; }
+}
 
 namespace mir {
 namespace method {
@@ -45,9 +48,7 @@ class FiniteElement: public MethodWeighted {
 
   protected:
 
-    void generateMeshAndCache(const atlas::grid::Grid& grid, atlas::mesh::Mesh& mesh) const;
-
-    virtual void hash( eckit::MD5& ) const;
+    virtual void hash(eckit::MD5&) const;
     virtual void generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
 
   protected: // methods

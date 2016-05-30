@@ -12,7 +12,6 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-
 #include "mir/method/Nearest.h"
 
 #include <string>
@@ -24,9 +23,6 @@
 #include "eckit/log/ETA.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
-
-#include "atlas/mesh/Nodes.h"
-#include "atlas/mesh/actions/BuildXYZField.h"
 
 #include "mir/method/GridSpace.h"
 #include "mir/util/PointSearch.h"
@@ -40,9 +36,7 @@ namespace method {
 //----------------------------------------------------------------------------------------------------------------------
 
 namespace {
-
 enum { LON=0, LAT=1 };
-
 }
 
 Nearest::Nearest(const param::MIRParametrisation &param) :
@@ -76,17 +70,14 @@ void Nearest::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& ou
 
     const size_t nclosest = this->nclosest();
 
-    const util::PointSearch sptree(in.mesh());
+    const util::PointSearch sptree(in);
 
-    const atlas::grid::Domain &inDomain = in.grid().domain();
+    const atlas::grid::Domain& inDomain = in.grid().domain();
 
-    // output points
-    atlas::mesh::Nodes &o_nodes = out.mesh().nodes();
-    atlas::mesh::actions::BuildXYZField("xyz")(o_nodes);
-    atlas::array::ArrayView<double, 2> ocoords(o_nodes.field("xyz"));
-    atlas::array::ArrayView<double, 2> olonlat ( o_nodes.lonlat());
+    atlas::array::ArrayView<double, 2> ocoords = out.coordsXYZ();
+    atlas::array::ArrayView<double, 2> olonlat = out.coordsLonLat();
 
-    const size_t out_npts = o_nodes.size();
+    const size_t out_npts = out.grid().npts();
     double nearest = 0;
     double push_back = 0;
 
