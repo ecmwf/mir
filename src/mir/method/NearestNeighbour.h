@@ -22,33 +22,29 @@
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class NearestNeighbour: public Nearest {
 
-  public:
+public:
 
     NearestNeighbour(const param::MIRParametrisation&);
 
     virtual ~NearestNeighbour();
 
-  protected:
+protected:
 
     virtual void hash( eckit::MD5& ) const;
 
-  private:
-
-// -- Methods
+private:
 
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
     virtual size_t nclosest() const;
 
-// -- Class members
-
-// -- Friends
-
-
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
