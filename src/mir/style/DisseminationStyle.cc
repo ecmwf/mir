@@ -204,10 +204,6 @@ void DisseminationStyle::prepare(action::ActionPlan &plan) const {
             }
         }
 
-    } else {
-        if (parametrisation_.has("field.spectral")) {
-            throw eckit::SeriousBug("Input field in neither spectral nor gridded");
-        }
     }
 
     if (parametrisation_.has("user.area")) {
