@@ -242,7 +242,7 @@ void MIRTool::run() {
 void MIRTool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
     eckit::Timer timer("Total time");
 
-    eckit::Log::info() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
+    eckit::Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.next()) {

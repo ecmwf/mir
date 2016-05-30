@@ -77,11 +77,12 @@ void FiniteElement::generateMeshAndCache(const Grid& grid, Mesh& mesh) const
 
     hash(md5); // add mesh generator settings to make it trully unique key
 
-    if(MeshCache::get(md5.digest(), mesh)) { return; }
+    /// @TODO disable until we have Mesh serialisation
+//    if(MeshCache::get(md5.digest(), mesh)) { return; }
 
     generateMesh(grid, mesh);
 
-    MeshCache::add(md5.digest(), mesh);
+//    MeshCache::add(md5.digest(), mesh);
 }
 
 void FiniteElement::hash( eckit::MD5 &md5) const {
