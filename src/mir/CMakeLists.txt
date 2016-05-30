@@ -246,8 +246,6 @@ output/VectorOutput.cc
 output/VectorOutput.h
 output/WindOutput.cc
 output/WindOutput.h
-output/ForwardOutput.cc
-output/ForwardOutput.h
 packing/ArchivedValue.cc
 packing/ArchivedValue.h
 packing/Complex.cc
