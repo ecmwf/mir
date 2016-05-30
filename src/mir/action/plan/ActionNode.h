@@ -31,6 +31,11 @@ namespace util {
 class MIRStatistics;
 }
 
+
+namespace api {
+class MIRWatcher;
+}
+
 namespace action {
 
 class Action;
@@ -43,7 +48,7 @@ class ActionNode {
 
 // -- Contructors
 
-    ActionNode(const Action& action);
+    ActionNode(const Action& action, api::MIRWatcher *watcher);
 
 // -- Destructor
 
@@ -66,6 +71,8 @@ class ActionNode {
     ActionGraph& graph();
 
     void dump(std::ostream& out, size_t depth) const;
+
+    void notifyFailure(std::exception&, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const;
 
 // -- Overridden methods
     // None
@@ -105,6 +112,7 @@ class ActionNode {
 
     const Action &action_;
     ActionGraph graph_;
+    api::MIRWatcher* watcher_;  // Just a reference, do not won
 
 // -- Methods
     // None

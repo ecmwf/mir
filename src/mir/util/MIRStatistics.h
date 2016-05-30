@@ -39,6 +39,9 @@ public:
 
 
     eckit::Timing cropTiming_;
+    eckit::Timing frameTiming_;
+    eckit::Timing bitmapTiming_;
+
     eckit::Timing coefficientTiming_;
     eckit::Timing sh2gridTiming_;
     eckit::Timing grid2gridTiming_;

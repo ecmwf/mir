@@ -13,36 +13,23 @@
 /// @date Apr 2015
 
 
-#ifndef MIRComplexJob_H
-#define MIRComplexJob_H
-
-#include <string>
-#include <vector>
+#ifndef MIRWatcher_H
+#define MIRWatcher_H
 
 
 #include "eckit/memory/NonCopyable.h"
 
 namespace mir {
-namespace input {
-class MIRInput;
-}
-namespace output {
-class MIROutput;
-}
-namespace action {
-class Job;
-}
 
-namespace util {
-class MIRStatistics;
+namespace action {
+class Action;
 }
 
 namespace api {
 
 class MIRJob;
-class MIRWatcher;
 
-class MIRComplexJob : private eckit::NonCopyable {
+class MIRWatcher : private eckit::NonCopyable {
   public:
 
     // -- Exceptions
@@ -50,11 +37,11 @@ class MIRComplexJob : private eckit::NonCopyable {
 
     // -- Contructors
 
-    MIRComplexJob();
+    MIRWatcher();
 
     // -- Destructor
 
-    ~MIRComplexJob();
+    virtual ~MIRWatcher();
 
     // -- Convertors
     // None
@@ -64,16 +51,10 @@ class MIRComplexJob : private eckit::NonCopyable {
 
     // -- Methods
 
-    void execute(util::MIRStatistics& statistics) const;
-    bool empty() const;
+    virtual void success() = 0;
 
-
-    void clear();
-
-    MIRComplexJob &add(api::MIRJob *job,
-                       input::MIRInput &input,
-                       output::MIROutput &output,
-                       api::MIRWatcher *watcher = 0);
+    // Return true to rethrow, false to continue
+    virtual bool failure(std::exception&, const action::Action& action) = 0;
 
     // -- Overridden methods
     // None
@@ -107,12 +88,6 @@ class MIRComplexJob : private eckit::NonCopyable {
 
     // -- Members
 
-    std::vector<api::MIRJob *> apis_;
-    std::vector<action::Job *> jobs_;
-    std::vector<output::MIROutput *> outputs_;
-    std::vector<api::MIRWatcher *> watchers_;
-
-    input::MIRInput* input_;
 
     // -- Methods
 
@@ -121,7 +96,7 @@ class MIRComplexJob : private eckit::NonCopyable {
 
     // From MIRParametrisation
 
-    virtual void print(std::ostream &) const;
+    virtual void print(std::ostream &) const = 0;
 
     // -- Class members
     // None
@@ -131,6 +106,10 @@ class MIRComplexJob : private eckit::NonCopyable {
 
     // -- Friends
 
+    friend std::ostream &operator<<(std::ostream &s, const MIRWatcher &p) {
+        p.print(s);
+        return s;
+    }
 };
 
 

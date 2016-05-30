@@ -11,10 +11,10 @@
 #include "mir/caching/MeshCache.h"
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/filesystem/PathName.h"
+#include "eckit/serialisation/FileStream.h"
 #include "eckit/config/Resource.h"
 
-#include "atlas/util/io/Gmsh.h"
+#include "atlas/mesh/Mesh.h"
 
 using namespace eckit;
 
@@ -52,9 +52,11 @@ bool MeshCache::add(const std::string& key, const Mesh& mesh)
 
     Log::info() << "Inserting mesh in cache (" << file << ")" << std::endl;
 
-    atlas::util::io::Gmsh gmsh;
-    gmsh.options.set("nodes",std::string("xyz"));
-    gmsh.write(mesh, tmpfile);
+    {
+        eckit::FileStream s(tmpfile,"w");
+        mesh.encode(s);
+    }
+
 
     // now try to rename the file to its file pathname
     try
@@ -69,23 +71,19 @@ bool MeshCache::add(const std::string& key, const Mesh& mesh)
     return true;
 }
 
-bool MeshCache::get(const std::string &key, Mesh& mesh)
+atlas::mesh::Mesh* MeshCache::get(const std::string &key)
 {
     PathName file( filename(key) );
 
     Log::info() << "Looking for file cache (" << file << ")" << std::endl;
 
-    if( ! file.exists() )
-    {
-        return false;
-    }
+    if(!file.exists()) { return 0; }
 
     Log::info() << "Found mesh in cache (" << file << ")" << std::endl;
 
-    atlas::util::io::Gmsh gmsh;
-    gmsh.read(file, mesh);
+    eckit::FileStream s(file, "r");
 
-    return true;
+    return new Mesh(s);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

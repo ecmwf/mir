@@ -35,8 +35,8 @@ public: // methods
     /// @returns true if found cache
     static bool add( const std::string& key, const atlas::mesh::Mesh& );
 
-    /// @returns true if addition was succcessful
-    static bool get( const std::string& key, atlas::mesh::Mesh& );
+    /// @returns pointer to cached mesh
+    static atlas::mesh::Mesh* get(const std::string& key);
 
     static eckit::PathName filename(const std::string& key);
 

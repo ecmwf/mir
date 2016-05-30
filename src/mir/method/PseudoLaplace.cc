@@ -19,9 +19,6 @@
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Timer.h"
 
-#include "atlas/mesh/actions/BuildXYZField.h"
-#include "atlas/mesh/Nodes.h"
-
 #include "mir/method/GridSpace.h"
 #include "mir/util/PointSearch.h"
 #include "mir/param/MIRParametrisation.h"
@@ -33,9 +30,7 @@ namespace method {
 //----------------------------------------------------------------------------------------------------------------------
 
 namespace {
-
 enum { XX=0, YY=1, ZZ=2 };
-
 }
 
 PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
@@ -63,17 +58,11 @@ void PseudoLaplace::assemble(WeightMatrix &W, const GridSpace& in, const GridSpa
     eckit::TraceTimer<MIR> timer("PseudoLaplace::assemble");
     eckit::Log::trace<MIR>() << "PseudoLaplace::assemble" << std::endl;
 
-    util::PointSearch  sptree(in.mesh());
+    util::PointSearch  sptree(in);
 
-    atlas::mesh::Mesh& o_mesh = const_cast<atlas::mesh::Mesh&>(out.mesh());
+    atlas::array::ArrayView<double,2> ocoords = out.coordsXYZ();
 
-    // output points
-    atlas::mesh::Nodes& o_nodes = o_mesh.nodes();
-
-    atlas::mesh::actions::BuildXYZField("xyz")(o_nodes);
-    atlas::array::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
-
-    const size_t out_npts = o_nodes.size();
+    const size_t out_npts = out.grid().npts();
 
     // init structure used to fill in sparse matrix
     std::vector< WeightMatrix::Triplet > weights_triplets;

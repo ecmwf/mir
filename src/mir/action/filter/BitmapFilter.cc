@@ -23,6 +23,7 @@
 #include "mir/util/Bitmap.h"
 
 #include "mir/action/filter/BitmapFilter.h"
+#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
@@ -68,6 +69,8 @@ void BitmapFilter::print(std::ostream &out) const {
 
 
 void BitmapFilter::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+
+    eckit::AutoTiming timing(statistics.timer_, statistics.bitmapTiming_);
 
     for (size_t f = 0; f < field.dimensions() ; f++) {
 

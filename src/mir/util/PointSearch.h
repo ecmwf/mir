@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Peter Bispham
+/// @author Baudouin Raoult
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date   Apr 2015
 
 
 #ifndef mir_method_PointSearch_H
@@ -25,8 +25,12 @@
 
 
 namespace mir {
+
+namespace method { class GridSpace; }
+
 namespace util {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 /// Class for fast searches in point clouds following kd-tree algorithms
 /// @todo test kd-tree stored in shared memory?
@@ -49,7 +53,7 @@ public:
 
     PointSearch(const std::vector<Point>& ipts);
 
-    PointSearch(const atlas::mesh::Mesh& mesh, const CompareType& isok=CompareTypeNone());
+    PointSearch(const method::GridSpace& sp, const CompareType& isok=CompareTypeNone());
 
 public:
 
@@ -73,13 +77,13 @@ private:
 
     void init(const std::vector<PointType>& points);
 
-    void init(const atlas::mesh::Mesh& mesh, const CompareType& isok=CompareTypeNone());
-
-
+    void init(const method::GridSpace& sp, const CompareType& isok=CompareTypeNone());
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace util
 }  // namespace mir
+
 #endif
 

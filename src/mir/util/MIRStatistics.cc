@@ -23,6 +23,8 @@ MIRStatistics::MIRStatistics() {
 
 MIRStatistics::MIRStatistics(eckit::Stream &s) {
     s >> cropTiming_;
+    s >> frameTiming_;
+    s >> bitmapTiming_;
     s >> coefficientTiming_;
     s >> sh2gridTiming_;
     s >> grid2gridTiming_;
@@ -36,6 +38,8 @@ MIRStatistics::MIRStatistics(eckit::Stream &s) {
 
 void MIRStatistics::encode(eckit::Stream &s) const {
     s << cropTiming_;
+    s << frameTiming_;
+    s << bitmapTiming_;
     s << coefficientTiming_;
     s << sh2gridTiming_;
     s << grid2gridTiming_;
@@ -48,6 +52,8 @@ void MIRStatistics::encode(eckit::Stream &s) const {
 
 MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &other) {
     cropTiming_ += other.cropTiming_;
+    frameTiming_ += other.frameTiming_;
+    bitmapTiming_ += other.bitmapTiming_;
     coefficientTiming_ += other.coefficientTiming_;
     sh2gridTiming_ += other.sh2gridTiming_;
     grid2gridTiming_ += other.grid2gridTiming_;
@@ -62,6 +68,8 @@ MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &other) {
 
 MIRStatistics &MIRStatistics::operator/=(size_t n) {
     cropTiming_ /= n;
+    frameTiming_ /= n;
+    bitmapTiming_ /= n;
     coefficientTiming_ /= n;
     sh2gridTiming_ /= n;
     grid2gridTiming_ /= n;
@@ -81,6 +89,9 @@ void MIRStatistics::report(std::ostream &out, const char *indent) const {
     reportTime(out, "Time in VO/D to U/V", vod2uvTiming_, indent);
 
     reportTime(out, "Time in area-crop", cropTiming_, indent);
+    reportTime(out, "Time in extracting frames", frameTiming_, indent);
+    reportTime(out, "Time applying bitmaps", bitmapTiming_, indent);
+
     reportTime(out, "Time compute matrices", computeMatrixTiming_, indent);
     reportTime(out, "Time matrix multiply", matrixTiming_, indent);
     reportTime(out, "Time creating coefficients", createCoeffTiming_, indent);
