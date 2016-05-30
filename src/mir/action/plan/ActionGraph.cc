@@ -19,6 +19,7 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/action/plan/Action.h"
 #include "mir/data/MIRField.h"
+#include "mir/api/MIRWatcher.h"
 
 
 namespace mir {
@@ -30,19 +31,19 @@ ActionGraph::ActionGraph() {
 
 
 ActionGraph::~ActionGraph() {
-    for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
+    for (auto j = nodes_.begin(); j != nodes_.end(); ++j) {
         delete (*j);
     }
 }
 
 void ActionGraph::execute(data::MIRField& field, util::MIRStatistics& statistics) const {
-    for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
+    for (auto j = nodes_.begin(); j != nodes_.end(); ++j) {
         data::MIRField local(&field);
         (*j)->execute(local, statistics);
     }
 }
 
-void ActionGraph::add(const ActionPlan& plan) {
+void ActionGraph::add(const ActionPlan& plan, api::MIRWatcher *watcher) {
     action::ActionGraph *current = this;
 
     size_t i = 0;
@@ -64,20 +65,20 @@ void ActionGraph::add(const ActionPlan& plan) {
     }
 
     while (i < plan.size()) {
-        action::ActionNode* node = current->add(plan.action(i));
+        action::ActionNode* node = current->add(plan.action(i), watcher);
         current = &node->graph();
         i++;
     }
 }
 
-ActionNode* ActionGraph::add(const Action& action) {
-    nodes_.push_back(new ActionNode(action));
+ActionNode* ActionGraph::add(const Action& action, api::MIRWatcher *watcher) {
+    nodes_.push_back(new ActionNode(action, watcher));
     return nodes_.back();
 }
 
 
 void ActionGraph::dump(std::ostream& out, size_t depth) const {
-    for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
+    for (auto j = nodes_.begin(); j != nodes_.end(); ++j) {
         (*j)->dump(out, depth);
     }
 }
@@ -85,6 +86,17 @@ void ActionGraph::dump(std::ostream& out, size_t depth) const {
 
 void ActionGraph::print(std::ostream &out) const {
     out << "ActionGraph[]";
+}
+
+void ActionGraph::notifyFailure(std::exception& e, api::MIRWatcher *watcher, bool& rethrow) const {
+    if (nodes_.empty()) {
+        if (watcher) {
+            rethrow = watcher->failure(e) && rethrow;
+        }
+    }
+    for (auto j = nodes_.begin(); j != nodes_.end(); ++j) {
+        (*j)->notifyFailure(e, watcher, rethrow);
+    }
 }
 
 }  // namespace action

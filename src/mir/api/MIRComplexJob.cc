@@ -18,6 +18,8 @@
 #include "mir/api/MIRComplexJob.h"
 #include "mir/action/plan/Job.h"
 #include "mir/api/MIRJob.h"
+#include "mir/api/MIRWatcher.h"
+
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionGraph.h"
@@ -40,14 +42,18 @@ MIRComplexJob::~MIRComplexJob() {
 }
 
 void MIRComplexJob::clear() {
-    for (std::vector<action::Job *>::iterator j = jobs_.begin(); j != jobs_.end(); ++j) {
+    for (auto j = jobs_.begin(); j != jobs_.end(); ++j) {
         delete (*j);
     }
     jobs_.clear();
-    for (std::vector<api::MIRJob *>::iterator j = apis_.begin(); j != apis_.end(); ++j) {
+    for (auto j = apis_.begin(); j != apis_.end(); ++j) {
         delete (*j);
     }
     apis_.clear();
+    for (auto j = watchers_.begin(); j != watchers_.end(); ++j) {
+        delete (*j);
+    }
+    watchers_.clear();
     input_ = 0;
 }
 
@@ -60,8 +66,9 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
 
     action::ActionGraph graph;
 
-    for (std::vector<action::Job *>::const_iterator j = jobs_.begin(); j != jobs_.end(); ++j) {
-        graph.add((*j)->plan());
+    size_t i = 0;
+    for (auto j = jobs_.begin(); j != jobs_.end(); ++j, ++i) {
+        graph.add((*j)->plan(), watchers_[i]);
     }
 
     if (!input_) {
@@ -83,7 +90,10 @@ void MIRComplexJob::print(std::ostream &out) const {
     out << "MIRComplexJob[]";
 }
 
-MIRComplexJob &MIRComplexJob::add(api::MIRJob *job, input::MIRInput &input, output::MIROutput &output) {
+MIRComplexJob &MIRComplexJob::add(api::MIRJob *job,
+                                  input::MIRInput &input,
+                                  output::MIROutput &output,
+                                  api::MIRWatcher *watcher) {
 
     if (!job) {
         return *this;
@@ -102,6 +112,8 @@ MIRComplexJob &MIRComplexJob::add(api::MIRJob *job, input::MIRInput &input, outp
 
     apis_.push_back(job); // We keep it becase the Job needs a reference
     jobs_.push_back(new action::Job(*job, input, output));
+    watchers_.push_back(watcher);
+
     return *this;
 }
 

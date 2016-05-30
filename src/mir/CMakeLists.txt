@@ -96,6 +96,8 @@ action/transform/VOD2UVTransform.cc
 action/transform/VOD2UVTransform.h
 api/MIRJob.cc
 api/MIRJob.h
+api/MIRWatcher.cc
+api/MIRWatcher.h
 api/MIRComplexJob.cc
 api/MIRComplexJob.h
 api/ProdgenJob.cc

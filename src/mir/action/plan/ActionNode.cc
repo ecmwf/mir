@@ -26,8 +26,9 @@ namespace mir {
 namespace action {
 
 
-ActionNode::ActionNode(const Action& action):
-    action_(action) {
+ActionNode::ActionNode(const Action& action, api::MIRWatcher *watcher):
+    action_(action),
+    watcher_(watcher) {
 }
 
 
@@ -37,9 +38,26 @@ ActionNode::~ActionNode() {
 
 void ActionNode::execute(data::MIRField& field, util::MIRStatistics& statistics) const {
     // std::cout << " -----> " << action_ << std::endl << "      ---> " << field << std::endl;
-    action_.execute(field, statistics);
+
+    try {
+        action_.execute(field, statistics);
+    } catch (std::exception& e) {
+
+        eckit::Log::error() << e.what() << " while executing " << action_ << std::endl;
+
+        bool rethrow = true;
+        notifyFailure(e, watcher_, rethrow);
+        if (rethrow) {
+            throw;
+        }
+    }
     graph_.execute(field, statistics);
 }
+
+void ActionNode::notifyFailure(std::exception& e, api::MIRWatcher *watcher, bool& rethrow) const {
+    graph_.notifyFailure(e, watcher_, rethrow);
+}
+
 
 const action::Action &ActionNode::action() const {
     return action_;
