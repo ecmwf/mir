@@ -17,6 +17,7 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/data/MIRField.h"
 #include "mir/log/MIR.h"
+#include "mir/api/MIRWatcher.h"
 
 #include "eckit/exception/Exceptions.h"
 
@@ -41,6 +42,9 @@ void ActionNode::execute(data::MIRField& field, util::MIRStatistics& statistics)
 
     try {
         action_.execute(field, statistics);
+        if(watcher_ && graph_.empty()) {
+            watcher_->success();
+        }
     } catch (std::exception& e) {
 
         eckit::Log::error() << e.what() << " while executing " << action_ << std::endl;

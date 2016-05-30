@@ -76,6 +76,9 @@ class ActionGraph {
 
 
     void notifyFailure(std::exception&, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const;
+
+    bool empty() const;
+
 // -- Overridden methods
     // None
 

@@ -83,6 +83,9 @@ void ActionGraph::dump(std::ostream& out, size_t depth) const {
     }
 }
 
+bool ActionGraph::empty() const {
+    return nodes_.empty();
+}
 
 void ActionGraph::print(std::ostream &out) const {
     out << "ActionGraph[]";
