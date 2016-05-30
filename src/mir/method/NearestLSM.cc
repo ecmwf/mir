@@ -15,9 +15,6 @@
 
 #include "mir/method/NearestLSM.h"
 
-#include "atlas/mesh/Nodes.h"
-#include "atlas/mesh/actions/BuildXYZField.h"
-
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
 
@@ -73,8 +70,8 @@ void NearestLSM::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace&
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
 
-    util::PointSearch sptree_masked    (in.mesh(), util::compare::is_masked_fn     (imask));
-    util::PointSearch sptree_notmasked (in.mesh(), util::compare::is_not_masked_fn (imask));
+    util::PointSearch sptree_masked    (in, util::compare::is_masked_fn     (imask));
+    util::PointSearch sptree_notmasked (in, util::compare::is_not_masked_fn (imask));
 
     Log::trace<MIR>() << "NearestLSM compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
 
@@ -82,12 +79,7 @@ void NearestLSM::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace&
     // compute the output nodes coordinates
     here = timer.elapsed();
 
-    atlas::mesh::Mesh &o_mesh = out.mesh();
-    atlas::mesh::actions::BuildXYZField("xyz")(o_mesh);
-
-    ASSERT(o_mesh.nodes().has_field("xyz"));
-    atlas::array::ArrayView< double, 2 > ocoords(
-                o_mesh.nodes().field("xyz") );
+    atlas::array::ArrayView< double, 2 > ocoords = out.coordsXYZ();
 
     Log::trace<MIR>() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
 

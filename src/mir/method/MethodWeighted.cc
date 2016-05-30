@@ -22,6 +22,8 @@
 #include <sstream>
 
 #include "atlas/grid/Grid.h"
+#include "atlas/mesh/Mesh.h"
+
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
@@ -30,6 +32,7 @@
 #include "eckit/config/Resource.h"
 
 #include "mir/caching/WeightCache.h"
+#include "mir/caching/MeshCache.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
@@ -38,28 +41,25 @@
 #include "mir/util/Compare.h"
 #include "mir/log/MIR.h"
 #include "mir/util/MIRStatistics.h"
-
+#include "mir/caching/MeshCache.h"
 
 // using eckit::Log;
 using mir::util::compare::is_approx_zero;
 using mir::util::compare::is_approx_one;
 
+using atlas::grid::Grid;
+using atlas::mesh::Mesh;
+using mir::caching::MeshCache;
 
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 namespace {
-
-
-static eckit::Mutex local_mutex;
-
-
-static std::map<std::string, WeightMatrix> matrix_cache;
-
-
-}  // (anonymous namespace)
-
+    static eckit::Mutex local_mutex;
+    static std::map<std::string, WeightMatrix> matrix_cache;
+}
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation) :
     Method(parametrisation) {
@@ -70,6 +70,33 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation)
 MethodWeighted::~MethodWeighted() {
 }
 
+atlas::mesh::Mesh* MethodWeighted::generateMeshAndCache(const atlas::grid::Grid& grid) const
+{
+    atlas::mesh::Mesh* mesh = 0;
+
+    eckit::MD5 md5;
+    grid.hash(md5);
+
+    hash(md5); // this adds mesh generator settings to make it trully unique key
+
+//    if((mesh = MeshCache::get(md5.digest()))) { return mesh; }
+
+    mesh = new Mesh();
+    generateMesh(grid, *mesh);
+
+//    MeshCache::add(md5.digest(), *mesh);
+
+    return mesh;
+}
+
+void MethodWeighted::generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const
+{
+    std::ostringstream oss;
+    oss << "Method " << name()
+        << " needs a mesh() but does not implement generateMesh()"
+        << std::endl;
+    throw eckit::SeriousBug(oss.str(), Here());
+}
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
 const WeightMatrix &MethodWeighted::getMatrix(const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const {
@@ -262,8 +289,8 @@ void MethodWeighted::computeMatrixWeights(const atlas::grid::Grid &in, const atl
         W.setIdentity();        // grids are the same, use identity matrix
     } else {
         eckit::TraceTimer<MIR> timer("Assemble matrix");
-        GridSpace iSpace(in);
-        GridSpace oSpace(out);
+        GridSpace iSpace(in, *this);
+        GridSpace oSpace(out, *this);
         assemble(W, iSpace, oSpace, statistics);   // assemble matrix of coefficients
         W.cleanup();
     }

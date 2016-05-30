@@ -20,6 +20,7 @@
 #include "eckit/linalg/LinearAlgebra.h"
 
 #include "atlas/grid/Grid.h"
+#include "atlas/field/Field.h"
 #include "atlas/mesh/Mesh.h"
 #include "atlas/mesh/Nodes.h"
 #include "atlas/mesh/Elements.h"
@@ -145,8 +146,6 @@ void Conservative::assemble(WeightMatrix &W, const GridSpace& in, const GridSpac
 //    IM.save("IM.mat");
 
     // 2) M_s compute the lumped mass matrix of the source mesh
-
-    generateMeshAndCache(in.grid(), in.mesh()); // input grid hasn't been tesselated mesh yet ...
 
     Vector M_s;
     computeLumpedMassMatrix(M_s, in.grid(), in.mesh());

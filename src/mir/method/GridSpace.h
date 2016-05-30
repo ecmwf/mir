@@ -33,13 +33,15 @@ namespace atlas {
 namespace mir {
 namespace method {
 
+class MethodWeighted;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 class GridSpace : private eckit::NonCopyable {
 
 public: // methods
 
-    GridSpace(const atlas::grid::Grid& grid);
+    GridSpace(const atlas::grid::Grid& grid, const mir::method::MethodWeighted& method);
 
     ~GridSpace();
 
@@ -49,16 +51,19 @@ public: // methods
 
     const std::vector<double>& coords() const;
 
-    atlas::array::ArrayView<double,2> coordsView() const;
+    atlas::array::ArrayView<double,2> coordsLonLat() const;
+    atlas::array::ArrayView<double,2> coordsXYZ() const;
 
 private: // members
+
+    const mir::method::MethodWeighted& method_;
 
     const atlas::grid::Grid& grid_;
 
     mutable eckit::ScopedPtr<atlas::mesh::Mesh> mesh_;
 
-    mutable std::vector<double> coords_;
-
+    mutable std::vector<double> coordsLonLat_;
+    mutable std::vector<double> coordsXYZ_;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

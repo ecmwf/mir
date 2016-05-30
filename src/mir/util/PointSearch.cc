@@ -13,26 +13,25 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-
-#include "mir/util/PointSearch.h"
-#include "atlas/mesh/actions/BuildXYZField.h"
-#include "atlas/mesh/Nodes.h"
-
 #include <vector>
 #include <limits>
 
+#include "mir/util/PointSearch.h"
+
+#include "mir/method/GridSpace.h"
 
 namespace mir {
 namespace util {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 PointSearch::PointSearch(const std::vector<PointType>& points) {
     init(points);
 }
 
 
-PointSearch::PointSearch(const atlas::mesh::Mesh& mesh, const CompareType& isok) {
-    init(mesh,isok);
+PointSearch::PointSearch(const mir::method::GridSpace& sp, const CompareType& isok) {
+    init(sp,isok);
 }
 
 
@@ -82,6 +81,7 @@ void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::v
 
 
 void PointSearch::init(const std::vector<PointType>& points) {
+
     using atlas::interpolation::PointIndex3;
 
     std::vector<PointIndex3::Value> pidx;
@@ -95,13 +95,9 @@ void PointSearch::init(const std::vector<PointType>& points) {
 }
 
 
-void PointSearch::init(const atlas::mesh::Mesh& mesh, const CompareType& isok) {
+void PointSearch::init(const method::GridSpace& sp, const CompareType& isok) {
 
-    atlas::mesh::Nodes& nodes = const_cast<atlas::mesh::Mesh&>(mesh).nodes();
-    atlas::mesh::actions::BuildXYZField("xyz")(nodes);
-    ASSERT(nodes.has_field("xyz"));
-
-    size_t npts = nodes.size();
+    const size_t npts = sp.grid().npts();
     ASSERT(npts > 0);
 
     const double infty = std::numeric_limits< double >::infinity();
@@ -110,15 +106,15 @@ void PointSearch::init(const atlas::mesh::Mesh& mesh, const CompareType& isok) {
     std::vector<PointType> points;
     points.reserve(npts);
 
-    atlas::array::ArrayView<double, 2> coords(nodes.field("xyz"));
-    for (size_t ip = 0; ip < npts; ++ip)
-        points.push_back(isok(ip)?
-                             PointType(coords[ip].data())
-                           : farpoint );
+    atlas::array::ArrayView<double, 2> coords = sp.coordsXYZ();
+    for (size_t ip = 0; ip < npts; ++ip) {
+        points.push_back(isok(ip) ? PointType(coords[ip].data()) : farpoint );
+    }
 
     init(points);
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace util
 }  // namespace mir
