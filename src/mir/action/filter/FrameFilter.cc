@@ -20,6 +20,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/MIRStatistics.h"
 
 namespace mir {
 namespace action {
@@ -47,6 +48,9 @@ void FrameFilter::print(std::ostream &out) const {
 
 
 void FrameFilter::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+
+    eckit::AutoTiming timing(statistics.timer_, statistics.frameTiming_);
+
     for (size_t i = 0; i < field.dimensions(); i++ ) {
 
         double missingValue = field.missingValue();
