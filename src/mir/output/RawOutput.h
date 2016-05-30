@@ -107,7 +107,7 @@ class RawOutput : public MIROutput {
 
     virtual void copy(const param::MIRParametrisation&, input::MIRInput&); // Not iterpolation performed
     virtual void save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&);
-    virtual eckit::Length total() const;
+    virtual unsigned long long total() const;
     virtual bool sameAs(const MIROutput& other) const;
 
 // -- Class members

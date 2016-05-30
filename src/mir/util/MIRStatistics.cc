@@ -60,6 +60,19 @@ MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &other) {
 }
 
 
+MIRStatistics &MIRStatistics::operator/=(size_t n) {
+    cropTiming_ /= n;
+    coefficientTiming_ /= n;
+    sh2gridTiming_ /= n;
+    grid2gridTiming_ /= n;
+    vod2uvTiming_ /= n;
+    computeMatrixTiming_ /= n;
+    matrixTiming_ /= n;
+    loadCoeffTiming_ /= n;
+    createCoeffTiming_ /= n;
+    return *this;
+}
+
 void MIRStatistics::report(std::ostream &out, const char *indent) const {
 
     reportTime(out, "Time in grid to grid interpolations", grid2gridTiming_, indent);

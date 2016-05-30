@@ -94,7 +94,7 @@ class VectorOutput : public MIROutput {
 
     // -- Overridden methods
 
-    virtual eckit::Length total() const;
+    virtual unsigned long long total() const;
 
     // -- Class members
     // None

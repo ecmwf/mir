@@ -22,7 +22,6 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "eckit/io/Length.h"
 
 
 namespace mir {
@@ -103,7 +102,7 @@ long VectorOutput::component2ParamId(input::MIRInput &input) const {
     }
 }
 
-eckit::Length VectorOutput::total() const {
+unsigned long long VectorOutput::total() const {
     return component1_.total() + component2_.total();
 }
 

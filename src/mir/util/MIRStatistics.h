@@ -35,6 +35,7 @@ public:
     MIRStatistics(eckit::Stream &) ;
 
     MIRStatistics &operator+=(const MIRStatistics &rhs) ;
+    MIRStatistics &operator/=(size_t) ;
 
 
     eckit::Timing cropTiming_;

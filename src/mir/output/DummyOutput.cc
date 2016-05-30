@@ -15,8 +15,6 @@
 
 #include <istream>
 
-#include "eckit/io/Length.h"
-
 #include "mir/output/DummyOutput.h"
 
 
@@ -50,7 +48,7 @@ void DummyOutput::print(std::ostream &out) const {
     out << "DummyOutput[...]";
 }
 
-eckit::Length DummyOutput::total() const {
+unsigned long long DummyOutput::total() const {
     return 0;
 }
 

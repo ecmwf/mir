@@ -18,8 +18,6 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "eckit/io/Length.h"
-
 
 namespace mir {
 namespace output {
@@ -40,7 +38,7 @@ void ForwardOutput::save(const param::MIRParametrisation &param, input::MIRInput
     output_.save(param, input, field);
 }
 
-eckit::Length ForwardOutput::total() const {
+unsigned long long ForwardOutput::total() const {
     return output_.total();
 }
 

@@ -17,7 +17,6 @@
 
 #include "mir/output/RawOutput.h"
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/Length.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
@@ -89,7 +88,7 @@ size_t RawOutput::size() const {
     return size_;
 }
 
-eckit::Length RawOutput::total() const {
+unsigned long long RawOutput::total() const {
     return size_;
 }
 
