@@ -46,16 +46,16 @@ void MIRStatistics::encode(eckit::Stream &s) const {
     s << createCoeffTiming_;
 }
 
-MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &rhs) {
-    cropTiming_ += rhs.cropTiming_;
-    coefficientTiming_ += rhs.coefficientTiming_;
-    sh2gridTiming_ += rhs.sh2gridTiming_;
-    grid2gridTiming_ += rhs.grid2gridTiming_;
-    vod2uvTiming_ += rhs.vod2uvTiming_;
-    computeMatrixTiming_ += rhs.computeMatrixTiming_;
-    computeMatrixTiming_ += rhs.matrixTiming_;
-    loadCoeffTiming_ += rhs.loadCoeffTiming_;
-    createCoeffTiming_ += rhs.createCoeffTiming_;
+MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &other) {
+    cropTiming_ += other.cropTiming_;
+    coefficientTiming_ += other.coefficientTiming_;
+    sh2gridTiming_ += other.sh2gridTiming_;
+    grid2gridTiming_ += other.grid2gridTiming_;
+    vod2uvTiming_ += other.vod2uvTiming_;
+    computeMatrixTiming_ += other.computeMatrixTiming_;
+    matrixTiming_ += other.matrixTiming_;
+    loadCoeffTiming_ += other.loadCoeffTiming_;
+    createCoeffTiming_ += other.createCoeffTiming_;
     return *this;
 }
 
