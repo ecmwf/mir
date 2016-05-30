@@ -124,6 +124,8 @@ void ProdGenLogic::prepare(action::ActionPlan &plan) const {
         ASSERT(!user_pl);
     }
 
+    bool field_gridded = parametrisation_.has("field.gridded");
+
     if (parametrisation_.has("field.spectral")) {
         if (parametrisation_.has("user.truncation")) {
             plan.add("transform.sh2sh");
@@ -133,69 +135,19 @@ void ProdGenLogic::prepare(action::ActionPlan &plan) const {
             plan.add("transform.vod2uv");
         }
 
-        if (user_grid) {
 
-            if (autoresol) {
-                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            }
+        if (user_grid || user_reduced || user_regular || user_octahedral || user_pl || user_gridname) {
+            // if(autoresol) {
+            //     plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            // }
 
-            if (intermediate_gaussian) {
-                plan.add("transform.sh2reduced-gg", "reduced", intermediate_gaussian);
-                plan.add("interpolate.grid2regular-ll");
-            } else {
-                plan.add("transform.sh2regular-ll");
-            }
-
-            if (parametrisation_.has("user.rotation")) {
-                plan.add("interpolate.grid2rotated-regular-ll");
-                if (wind || vod2uv) {
-                    plan.add("filter.adjust-winds");
-                }
-            }
-
+            plan.add("transform.sh2octahedral-gg", "octahedral", 1280);
+            field_gridded = true;
         }
-
-        if (user_reduced) {
-            if (autoresol) {
-                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            }
-            plan.add("transform.sh2reduced-gg");
-
-        }
-
-        if (user_regular) {
-            if (autoresol) {
-                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            }
-            plan.add("transform.sh2regular-gg");
-        }
-
-        if (user_octahedral) {
-            if (autoresol) {
-                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            }
-            plan.add("transform.sh2octahedral-gg");
-        }
-
-        if (user_pl) {
-            if (autoresol) {
-                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            }
-            plan.add("transform.sh2reduced-gg-pl-given");
-
-        }
-
-        if (user_gridname) {
-            if (autoresol) {
-                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            }
-            std::string gridname;
-            ASSERT (parametrisation_.get("gridname", gridname));
-            plan.add("transform.sh2namedgrid");
-        }
+    }
 
 
-    } else if (parametrisation_.has("field.gridded")) {
+    if (field_gridded) {
 
         if (user_grid) {
             if (parametrisation_.has("user.rotation")) {
