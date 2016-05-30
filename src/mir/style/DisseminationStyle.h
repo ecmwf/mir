@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef ProdGenStyle_H
-#define ProdGenStyle_H
+#ifndef DisseminationStyle_H
+#define DisseminationStyle_H
 
 #include "mir/style/MIRStyle.h"
 
@@ -23,7 +23,7 @@ namespace mir {
 namespace style {
 
 
-class ProdGenStyle : public MIRStyle {
+class DisseminationStyle : public MIRStyle {
   public:
 
 // -- Exceptions
@@ -31,11 +31,11 @@ class ProdGenStyle : public MIRStyle {
 
 // -- Contructors
 
-    ProdGenStyle(const param::MIRParametrisation&);
+    DisseminationStyle(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    ~ProdGenStyle(); // Change to virtual if base class
+    ~DisseminationStyle(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -78,8 +78,8 @@ class ProdGenStyle : public MIRStyle {
 
 // No copy allowed
 
-    ProdGenStyle(const ProdGenStyle&);
-    ProdGenStyle& operator=(const ProdGenStyle&);
+    DisseminationStyle(const DisseminationStyle&);
+    DisseminationStyle& operator=(const DisseminationStyle&);
 
 // -- Members
 
@@ -98,7 +98,7 @@ class ProdGenStyle : public MIRStyle {
 
 // -- Friends
 
-    // friend std::ostream& operator<<(std::ostream& s, const ProdGenStyle& p)
+    // friend std::ostream& operator<<(std::ostream& s, const DisseminationStyle& p)
     // { p.print(s); return s; }
 
 };

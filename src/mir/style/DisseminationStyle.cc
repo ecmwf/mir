@@ -15,7 +15,7 @@
 
 #include <iostream>
 
-#include "mir/style/ProdGenStyle.h"
+#include "mir/style/DisseminationStyle.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/style/AutoResol.h"
@@ -31,22 +31,22 @@ namespace mir {
 namespace style {
 
 
-ProdGenStyle::ProdGenStyle(const param::MIRParametrisation &parametrisation):
+DisseminationStyle::DisseminationStyle(const param::MIRParametrisation &parametrisation):
     MIRStyle(parametrisation) {
 
 }
 
 
-ProdGenStyle::~ProdGenStyle() {
+DisseminationStyle::~DisseminationStyle() {
 }
 
 
-void ProdGenStyle::print(std::ostream &out) const {
-    out << "ProdGenStyle[]";
+void DisseminationStyle::print(std::ostream &out) const {
+    out << "DisseminationStyle[]";
 }
 
 
-void ProdGenStyle::prepare(action::ActionPlan &plan) const {
+void DisseminationStyle::prepare(action::ActionPlan &plan) const {
     // All the nasty style goes there
 
 
@@ -67,14 +67,6 @@ void ProdGenStyle::prepare(action::ActionPlan &plan) const {
     bool user_octahedral = parametrisation_.has("user.octahedral");
     bool user_pl = parametrisation_.has("user.pl");
     bool user_gridname = parametrisation_.has("user.gridname");
-
-    if (parametrisation_.has("checkerboard")) {
-        plan.add("misc.checkerboard");
-    }
-
-    if (parametrisation_.has("pattern")) {
-        plan.add("misc.pattern");
-    }
 
     if (user_grid) {
         ASSERT(!user_reduced);
@@ -213,7 +205,9 @@ void ProdGenStyle::prepare(action::ActionPlan &plan) const {
         }
 
     } else {
-        throw eckit::SeriousBug("Input field in neither spectral nor gridded");
+        if (parametrisation_.has("field.spectral")) {
+            throw eckit::SeriousBug("Input field in neither spectral nor gridded");
+        }
     }
 
     if (parametrisation_.has("user.area")) {
@@ -232,7 +226,7 @@ void ProdGenStyle::prepare(action::ActionPlan &plan) const {
 
 // register MARS-specialized style
 namespace {
-static MIRStyleBuilder<ProdGenStyle> prodgen("dissemination");
+static MIRStyleBuilder<DisseminationStyle> prodgen("dissemination");
 }
 
 
