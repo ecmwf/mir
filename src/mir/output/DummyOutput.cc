@@ -36,11 +36,13 @@ bool DummyOutput::sameAs(const MIROutput& other) const {
 }
 
 
-void DummyOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+size_t DummyOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+    return 0;
 }
 
 
-void DummyOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+size_t DummyOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+    return 0;
 }
 
 
@@ -48,9 +50,6 @@ void DummyOutput::print(std::ostream &out) const {
     out << "DummyOutput[...]";
 }
 
-unsigned long long DummyOutput::total() const {
-    return 0;
-}
 
 
 }  // namespace output

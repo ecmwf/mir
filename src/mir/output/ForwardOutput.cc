@@ -30,16 +30,12 @@ ForwardOutput::ForwardOutput(MIROutput &output):
 ForwardOutput::~ForwardOutput() {
 }
 
-void ForwardOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
-    output_.copy(param, input);
+size_t ForwardOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+    return output_.copy(param, input);
 }
 
-void ForwardOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
-    output_.save(param, input, field);
-}
-
-unsigned long long ForwardOutput::total() const {
-    return output_.total();
+size_t ForwardOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+    return output_.save(param, input, field);
 }
 
 bool ForwardOutput::sameAs(const MIROutput &other) const {

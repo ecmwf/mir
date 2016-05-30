@@ -38,11 +38,13 @@ VectorOutput::~VectorOutput() {
 }
 
 
-void VectorOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+size_t VectorOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
     try {
         input::VectorInput& v = dynamic_cast<input::VectorInput&>(input);
-        component1_.copy(param, v.component1_);
-        component2_.copy(param, v.component2_);
+        size_t size = 0;
+        size += component1_.copy(param, v.component1_);
+        size += component2_.copy(param, v.component2_);
+        return size;
 
     } catch (std::bad_cast &) {
         std::ostringstream os;
@@ -51,7 +53,7 @@ void VectorOutput::copy(const param::MIRParametrisation &param, input::MIRInput 
     }
 }
 
-void VectorOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+size_t VectorOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
 
     ASSERT(field.dimensions() == 2);
 
@@ -61,13 +63,17 @@ void VectorOutput::save(const param::MIRParametrisation &param, input::MIRInput 
     data::MIRField v(field.representation(), field.hasMissing(), field.missingValue());
     v.update(field.direct(1), 0);
 
+    size_t size = 0;
+
     param::RuntimeParametrisation u_runtime(param);
     u_runtime.set("param-id", component1ParamId(input));
-    component1_.save(u_runtime, input, u);
+    size += component1_.save(u_runtime, input, u);
 
     param::RuntimeParametrisation v_runtime(param);
     v_runtime.set("param-id", component2ParamId(input)); // TODO: Find something better
-    component2_.save(v_runtime, input, v);
+    size += component2_.save(v_runtime, input, v);
+
+    return size;
 }
 
 
@@ -101,11 +107,6 @@ long VectorOutput::component2ParamId(input::MIRInput &input) const {
         throw eckit::SeriousBug(os.str());
     }
 }
-
-unsigned long long VectorOutput::total() const {
-    return component1_.total() + component2_.total();
-}
-
 
 }  // namespace output
 }  // namespace mir

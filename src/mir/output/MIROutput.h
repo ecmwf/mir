@@ -53,9 +53,8 @@ class MIROutput {
 
 // -- Methods
 
-    virtual void copy(const param::MIRParametrisation&, input::MIRInput&) = 0; // Not iterpolation performed
-    virtual void save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&) = 0;
-    virtual unsigned long long total() const = 0;
+    virtual size_t copy(const param::MIRParametrisation&, input::MIRInput&) = 0; // Not iterpolation performed
+    virtual size_t save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&) = 0;
     virtual bool sameAs(const MIROutput& other) const = 0;
 
 // -- Overridden methods

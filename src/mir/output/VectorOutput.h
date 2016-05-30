@@ -68,8 +68,8 @@ class VectorOutput : public MIROutput {
 
     // -- Overridden methods
 
-    virtual void copy(const param::MIRParametrisation &, input::MIRInput &) ; // Not iterpolation performed
-    virtual void save(const param::MIRParametrisation &, input::MIRInput &, data::MIRField &);
+    virtual size_t copy(const param::MIRParametrisation &, input::MIRInput &) ; // Not iterpolation performed
+    virtual size_t save(const param::MIRParametrisation &, input::MIRInput &, data::MIRField &);
 
     // -- Class members
     // None
@@ -94,7 +94,7 @@ class VectorOutput : public MIROutput {
 
     // -- Overridden methods
 
-    virtual unsigned long long total() const;
+
 
     // -- Class members
     // None

@@ -46,13 +46,14 @@ bool RawOutput::sameAs(const MIROutput& other) const {
     return this == &other;
 }
 
-void RawOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+size_t RawOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
     NOTIMP;
     size_ = input.copy(values_, count_);
+    return size_ * sizeof(double);
 }
 
 
-void RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+size_t RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
     field.validate();
     // field.hasMissing();
     // field.missingValue();
@@ -72,6 +73,8 @@ void RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &in
     representation_ = field.representation();
     representation_->attach();
 
+    return size_ * sizeof(double);
+
 }
 
 void RawOutput::print(std::ostream &out) const {
@@ -85,10 +88,6 @@ void RawOutput::shape(size_t &ni, size_t &nj) const {
 }
 
 size_t RawOutput::size() const {
-    return size_;
-}
-
-unsigned long long RawOutput::total() const {
     return size_;
 }
 
