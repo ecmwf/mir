@@ -137,6 +137,6 @@ const std::vector<bool> &TenMinutesLSM::mask() const {
 //-----------------------------------------------------------------------------
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

@@ -48,6 +48,6 @@ static Complex packing("complex");
 }
 
 
-}  // namespace logic
+}  // namespace packing
 }  // namespace mir
 

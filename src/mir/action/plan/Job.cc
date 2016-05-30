@@ -21,7 +21,7 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
-#include "mir/logic/MIRLogic.h"
+#include "mir/style/MIRStyle.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
@@ -47,8 +47,8 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
 
     if (!job.empty() && !job.matches(metadata)) {
 
-        eckit::ScopedPtr< logic::MIRLogic > logic(logic::MIRLogicFactory::build(*combined_));
-        logic->prepare(*plan_);
+        eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
+        style->prepare(*plan_);
     }
 
     if (plan_->empty()) {

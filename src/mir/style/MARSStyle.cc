@@ -15,11 +15,11 @@
 
 #include <iostream>
 
-#include "mir/logic/ProdGenLogic.h"
+#include "mir/style/MARSStyle.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/logic/AutoResol.h"
-#include "mir/logic/AutoReduced.h"
+#include "mir/style/AutoResol.h"
+#include "mir/style/AutoReduced.h"
 #include "mir/param/MIRConfiguration.h"
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
@@ -28,26 +28,26 @@
 
 
 namespace mir {
-namespace logic {
+namespace style {
 
 
-ProdGenLogic::ProdGenLogic(const param::MIRParametrisation &parametrisation):
-    MIRLogic(parametrisation) {
+MARSStyle::MARSStyle(const param::MIRParametrisation &parametrisation):
+    MIRStyle(parametrisation) {
 
 }
 
 
-ProdGenLogic::~ProdGenLogic() {
+MARSStyle::~MARSStyle() {
 }
 
 
-void ProdGenLogic::print(std::ostream &out) const {
-    out << "ProdGenLogic[]";
+void MARSStyle::print(std::ostream &out) const {
+    out << "MARSStyle[]";
 }
 
 
-void ProdGenLogic::prepare(action::ActionPlan &plan) const {
-    // All the nasty logic goes there
+void MARSStyle::prepare(action::ActionPlan &plan) const {
+    // All the nasty style goes there
 
 
     bool autoresol = false;
@@ -124,8 +124,6 @@ void ProdGenLogic::prepare(action::ActionPlan &plan) const {
         ASSERT(!user_pl);
     }
 
-    bool field_gridded = parametrisation_.has("field.gridded");
-
     if (parametrisation_.has("field.spectral")) {
         if (parametrisation_.has("user.truncation")) {
             plan.add("transform.sh2sh");
@@ -135,19 +133,69 @@ void ProdGenLogic::prepare(action::ActionPlan &plan) const {
             plan.add("transform.vod2uv");
         }
 
+        if (user_grid) {
 
-        if (user_grid || user_reduced || user_regular || user_octahedral || user_pl || user_gridname) {
-            // if(autoresol) {
-            //     plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            // }
+            if (autoresol) {
+                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            }
 
-            plan.add("transform.sh2octahedral-gg", "octahedral", 1280);
-            field_gridded = true;
+            if (intermediate_gaussian) {
+                plan.add("transform.sh2reduced-gg", "reduced", intermediate_gaussian);
+                plan.add("interpolate.grid2regular-ll");
+            } else {
+                plan.add("transform.sh2regular-ll");
+            }
+
+            if (parametrisation_.has("user.rotation")) {
+                plan.add("interpolate.grid2rotated-regular-ll");
+                if (wind || vod2uv) {
+                    plan.add("filter.adjust-winds");
+                }
+            }
+
         }
-    }
+
+        if (user_reduced) {
+            if (autoresol) {
+                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            }
+            plan.add("transform.sh2reduced-gg");
+
+        }
+
+        if (user_regular) {
+            if (autoresol) {
+                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            }
+            plan.add("transform.sh2regular-gg");
+        }
+
+        if (user_octahedral) {
+            if (autoresol) {
+                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            }
+            plan.add("transform.sh2octahedral-gg");
+        }
+
+        if (user_pl) {
+            if (autoresol) {
+                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            }
+            plan.add("transform.sh2reduced-gg-pl-given");
+
+        }
+
+        if (user_gridname) {
+            if (autoresol) {
+                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            }
+            std::string gridname;
+            ASSERT (parametrisation_.get("gridname", gridname));
+            plan.add("transform.sh2namedgrid");
+        }
 
 
-    if (field_gridded) {
+    } else if (parametrisation_.has("field.gridded")) {
 
         if (user_grid) {
             if (parametrisation_.has("user.rotation")) {
@@ -230,12 +278,12 @@ void ProdGenLogic::prepare(action::ActionPlan &plan) const {
 }
 
 
-// register MARS-specialized logic
+// register MARS-specialized style
 namespace {
-static MIRLogicBuilder<ProdGenLogic> prodgen("prodgen");
+static MIRStyleBuilder<MARSStyle> mars("mars");
 }
 
 
-}  // namespace logic
+}  // namespace style
 }  // namespace mir
 

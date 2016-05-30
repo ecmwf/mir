@@ -80,6 +80,6 @@ static UserFileLSM output("file.output", "output");
 }
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

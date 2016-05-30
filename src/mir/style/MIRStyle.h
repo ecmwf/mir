@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef MIRLogic_H
-#define MIRLogic_H
+#ifndef MIRStyle_H
+#define MIRStyle_H
 
 #include <iosfwd>
 #include <memory>
@@ -34,10 +34,10 @@ class MIRParametrisation;
 class RuntimeParametrisation;
 }
 
-namespace logic {
+namespace style {
 
 
-class MIRLogic {
+class MIRStyle {
   public:
 
 // -- Exceptions
@@ -45,11 +45,11 @@ class MIRLogic {
 
 // -- Contructors
 
-    MIRLogic(const param::MIRParametrisation& parametrisation);
+    MIRStyle(const param::MIRParametrisation& parametrisation);
 
 // -- Destructor
 
-    virtual ~MIRLogic(); // Change to virtual if base class
+    virtual ~MIRStyle(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -94,8 +94,8 @@ class MIRLogic {
 
 // No copy allowed
 
-    MIRLogic(const MIRLogic&);
-    MIRLogic& operator=(const MIRLogic&);
+    MIRStyle(const MIRStyle&);
+    MIRStyle& operator=(const MIRStyle&);
 
 // -- Members
     // None
@@ -114,7 +114,7 @@ class MIRLogic {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const MIRLogic& p) {
+    friend std::ostream& operator<<(std::ostream& s,const MIRStyle& p) {
         p.print(s);
         return s;
     }
@@ -122,32 +122,32 @@ class MIRLogic {
 };
 
 
-class MIRLogicFactory {
+class MIRStyleFactory {
     std::string name_;
-    virtual MIRLogic* make(const param::MIRParametrisation&) = 0 ;
+    virtual MIRStyle* make(const param::MIRParametrisation&) = 0 ;
 
   protected:
 
-    MIRLogicFactory(const std::string&);
-    virtual ~MIRLogicFactory();
+    MIRStyleFactory(const std::string&);
+    virtual ~MIRStyleFactory();
 
   public:
-    static MIRLogic* build(const param::MIRParametrisation&);
+    static MIRStyle* build(const param::MIRParametrisation&);
 
 };
 
 
 template<class T>
-class MIRLogicBuilder : public MIRLogicFactory {
-    virtual MIRLogic* make(const param::MIRParametrisation& param) {
+class MIRStyleBuilder : public MIRStyleFactory {
+    virtual MIRStyle* make(const param::MIRParametrisation& param) {
         return new T(param);
     }
   public:
-    MIRLogicBuilder(const std::string& name) : MIRLogicFactory(name) {}
+    MIRStyleBuilder(const std::string& name) : MIRStyleFactory(name) {}
 };
 
 
-}  // namespace logic
+}  // namespace style
 }  // namespace mir
 #endif
 

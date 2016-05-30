@@ -114,7 +114,7 @@ class UserFileLSM : public LSMChooser {
 };
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 #endif
 

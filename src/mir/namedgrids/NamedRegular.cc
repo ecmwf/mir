@@ -45,6 +45,6 @@ const repres::Representation *NamedRegular::representation(const util::Rotation 
     return new repres::regular::RotatedGG(N_, util::BoundingBox(), rotation);
 }
 
-}  // namespace logic
+}  // namespace namedgrids
 }  // namespace mir
 

@@ -93,6 +93,6 @@ const Packer& Packer::lookup(const std::string &name) {
 }
 
 
-}  // namespace logic
+}  // namespace packing
 }  // namespace mir
 

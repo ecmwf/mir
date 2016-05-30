@@ -103,7 +103,7 @@ class Simple : public Packer {
 };
 
 
-}  // namespace logic
+}  // namespace packing
 }  // namespace mir
 #endif
 

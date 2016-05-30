@@ -13,23 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef AutoReduced_H
-#define AutoReduced_H
+#ifndef MARSStyle_H
+#define MARSStyle_H
 
-#include "mir/param/DelayedParametrisation.h"
-#include <vector>
+#include "mir/style/MIRStyle.h"
 
 
 namespace mir {
-
-namespace param {
-class MIRParametrisation;
-}
-
-namespace logic {
+namespace style {
 
 
-class AutoReduced : public param::DelayedParametrisation {
+class MARSStyle : public MIRStyle {
   public:
 
 // -- Exceptions
@@ -37,11 +31,11 @@ class AutoReduced : public param::DelayedParametrisation {
 
 // -- Contructors
 
-    AutoReduced(const param::MIRParametrisation &parametrisation);
+    MARSStyle(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~AutoReduced(); // Change to virtual if base class
+    ~MARSStyle(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -50,7 +44,6 @@ class AutoReduced : public param::DelayedParametrisation {
     // None
 
 // -- Methods
-    // None
 
 
 
@@ -66,18 +59,14 @@ class AutoReduced : public param::DelayedParametrisation {
   protected:
 
 // -- Members
-
-
+    // None
 
 // -- Methods
 
-    virtual void print(std::ostream&) const; // Change to virtual if base class
-
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
-    // virtual bool has(const std::string& name) const;
-
-    virtual void get(const std::string& name, long& value) const;
+    // None
 
 // -- Class members
     // None
@@ -89,18 +78,16 @@ class AutoReduced : public param::DelayedParametrisation {
 
 // No copy allowed
 
-    AutoReduced(const AutoReduced&);
-    AutoReduced& operator=(const AutoReduced&);
+    MARSStyle(const MARSStyle&);
+    MARSStyle& operator=(const MARSStyle&);
 
 // -- Members
 
-    const param::MIRParametrisation &parametrisation_;
-
 // -- Methods
-    // None
 
 // -- Overridden methods
-    // None
+
+    virtual void prepare(action::ActionPlan&) const;
 
 
 // -- Class members
@@ -111,15 +98,13 @@ class AutoReduced : public param::DelayedParametrisation {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const AutoReduced& p) {
-        p.print(s);
-        return s;
-    }
+    // friend std::ostream& operator<<(std::ostream& s, const MARSStyle& p)
+    // { p.print(s); return s; }
 
 };
 
 
-}  // namespace param
+}  // namespace style
 }  // namespace mir
 #endif
 

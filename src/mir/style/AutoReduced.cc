@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/logic/AutoReduced.h"
+#include "mir/style/AutoReduced.h"
 
 #include <iostream>
 
@@ -23,7 +23,7 @@
 
 
 namespace mir {
-namespace logic {
+namespace style {
 
 // TODO: Get this list from atlas
 static long RGG[] = {16, 24, 32, 48, 64, 80, 96, 128, 160, 200, 256, 320, 400,

@@ -104,7 +104,7 @@ class NamedOctahedral : public NamedGrid {
 };
 
 
-}  // namespace logic
+}  // namespace namedgrids
 }  // namespace mir
 #endif
 

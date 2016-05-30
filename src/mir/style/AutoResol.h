@@ -26,7 +26,7 @@ namespace param {
 class MIRParametrisation;
 }
 
-namespace logic {
+namespace style {
 
 
 class AutoResol : public param::DelayedParametrisation {

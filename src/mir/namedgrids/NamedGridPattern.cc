@@ -114,6 +114,6 @@ const NamedGrid *NamedGridPattern::build(const std::string &name) {
 }
 
 
-}  // namespace logic
+}  // namespace namedgrids
 }  // namespace mir
 

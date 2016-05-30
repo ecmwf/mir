@@ -45,6 +45,6 @@ const repres::Representation *NamedClassic::representation(const util::Rotation 
     return new repres::reduced::RotatedClassic(N_, util::BoundingBox(), rotation);
 }
 
-}  // namespace logic
+}  // namespace namedgrids
 }  // namespace mir
 

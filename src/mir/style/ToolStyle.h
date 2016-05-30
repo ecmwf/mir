@@ -13,17 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef ToolLogic_H
-#define ToolLogic_H
+#ifndef ToolStyle_H
+#define ToolStyle_H
 
-#include "mir/logic/MIRLogic.h"
+#include "mir/style/MIRStyle.h"
 
 
 namespace mir {
-namespace logic {
+namespace style {
 
 
-class ToolLogic : public MIRLogic {
+class ToolStyle : public MIRStyle {
   public:
 
 // -- Exceptions
@@ -31,11 +31,11 @@ class ToolLogic : public MIRLogic {
 
 // -- Contructors
 
-    ToolLogic(const param::MIRParametrisation&);
+    ToolStyle(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    ~ToolLogic(); // Change to virtual if base class
+    ~ToolStyle(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -78,8 +78,8 @@ class ToolLogic : public MIRLogic {
 
 // No copy allowed
 
-    ToolLogic(const ToolLogic&);
-    ToolLogic& operator=(const ToolLogic&);
+    ToolStyle(const ToolStyle&);
+    ToolStyle& operator=(const ToolStyle&);
 
 // -- Members
 
@@ -99,13 +99,13 @@ class ToolLogic : public MIRLogic {
 
 // -- Friends
 
-    // friend std::ostream& operator<<(std::ostream& s, const ToolLogic& p)
+    // friend std::ostream& operator<<(std::ostream& s, const ToolStyle& p)
     // { p.print(s); return s; }
 
 };
 
 
-}  // namespace logic
+}  // namespace style
 }  // namespace mir
 #endif
 

@@ -123,7 +123,7 @@ class Mask : private eckit::NonCopyable {
 
 };
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 
 #endif

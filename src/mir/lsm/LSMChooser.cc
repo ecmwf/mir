@@ -99,6 +99,6 @@ const LSMChooser &LSMChooser::lookup(const std::string &name) {
 }
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

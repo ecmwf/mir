@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/logic/AutoResol.h"
+#include "mir/style/AutoResol.h"
 
 #include <iostream>
 
@@ -23,7 +23,7 @@
 
 
 namespace mir {
-namespace logic {
+namespace style {
 
 //==========================================================
 AutoResol::AutoResol(const param::MIRParametrisation &parametrisation):

@@ -103,6 +103,6 @@ const NamedGrid& NamedGrid::lookup(const std::string &name) {
 }
 
 
-}  // namespace logic
+}  // namespace namedgrids
 }  // namespace mir
 

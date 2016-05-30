@@ -48,6 +48,6 @@ static SecondOrder packing2("so"); // For the lazy
 }
 
 
-}  // namespace logic
+}  // namespace packing
 }  // namespace mir
 

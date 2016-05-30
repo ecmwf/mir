@@ -164,7 +164,7 @@ bool MIRJob::matches(const param::MIRParametrisation &metadata) const {
                                    "accuracy", "checkerboard",
                                    "pattern",
                                    0
-                                 }; // Move to MIRLogic
+                                 }; // Move to MIRStyle
     size_t i = 0;
     while (force[i]) {
         if (has(force[i])) {

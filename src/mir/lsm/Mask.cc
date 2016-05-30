@@ -119,6 +119,6 @@ bool Mask::active() const {
 }
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

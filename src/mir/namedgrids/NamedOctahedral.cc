@@ -46,6 +46,6 @@ const repres::Representation *NamedOctahedral::representation(const util::Rotati
     return new repres::reduced::RotatedOctahedral(N_, util::BoundingBox(), rotation);
 }
 
-}  // namespace logic
+}  // namespace namedgrids
 }  // namespace mir
 

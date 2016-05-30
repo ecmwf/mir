@@ -165,6 +165,6 @@ const std::vector<bool> &MappedMask::mask() const {
 //-----------------------------------------------------------------------------
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

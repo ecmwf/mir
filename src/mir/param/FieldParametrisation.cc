@@ -23,7 +23,7 @@ namespace mir {
 namespace param {
 
 
-FieldParametrisation::FieldParametrisation(): check_(false), logic_(0) {
+FieldParametrisation::FieldParametrisation(): check_(false), style_(0) {
 }
 
 
@@ -61,16 +61,16 @@ bool FieldParametrisation::_get(const std::string &name, T &value) const {
 
     const param::MIRConfiguration &configuration = param::MIRConfiguration::instance();
 
-    if (!logic_ && !check_) {
+    if (!style_ && !check_) {
         check_ = true;
 
         long paramId = 0;
 
         // This assumes that other input (NetCDF, etc) also return a paramId
         if (get("paramId", paramId)) {
-            logic_ = configuration.lookup(paramId);
-            if (logic_) {
-                eckit::Log::trace<MIR>() << "paramId=" << paramId << " " << *logic_ << std::endl;
+            style_ = configuration.lookup(paramId);
+            if (style_) {
+                eckit::Log::trace<MIR>() << "paramId=" << paramId << " " << *style_ << std::endl;
             }
         } else {
             eckit::Log::trace<MIR>() << "ERROR: " << *this << " has no paramId" << std::endl;
@@ -79,8 +79,8 @@ bool FieldParametrisation::_get(const std::string &name, T &value) const {
 
     eckit::Log::trace<MIR>() << "FieldParametrisation::_get(" << name << ") " <<  *this << std::endl;
 
-    if (logic_) {
-        return logic_->get(name, value);
+    if (style_) {
+        return style_->get(name, value);
     }
 
     return false;
@@ -108,7 +108,7 @@ bool FieldParametrisation::get(const std::string &name, std::vector<long> &value
 
 bool FieldParametrisation::get(const std::string &name, std::vector<double> &value) const {
 
-    if (_get(name, value)) { // This will check if this in the logic paramaretirsaion
+    if (_get(name, value)) { // This will check if this in the style paramaretirsaion
         return true;
     }
 

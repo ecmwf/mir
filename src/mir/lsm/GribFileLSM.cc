@@ -119,6 +119,6 @@ const std::vector<bool> &GribFileLSM::mask() const {
 //-----------------------------------------------------------------------------
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

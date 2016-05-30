@@ -124,7 +124,7 @@ class NamedGrid {
 
 
 
-}  // namespace logic
+}  // namespace namedgrids
 }  // namespace mir
 #endif
 

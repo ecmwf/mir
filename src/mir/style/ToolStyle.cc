@@ -15,31 +15,31 @@
 
 #include "eckit/runtime/Context.h"
 
-#include "mir/logic/ToolLogic.h"
+#include "mir/style/ToolStyle.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Arguments.h"
 
 
 namespace mir {
-namespace logic {
+namespace style {
 
 
-ToolLogic::ToolLogic(const param::MIRParametrisation &parametrisation):
-    MIRLogic(parametrisation) {
+ToolStyle::ToolStyle(const param::MIRParametrisation &parametrisation):
+    MIRStyle(parametrisation) {
 }
 
 
-ToolLogic::~ToolLogic() {
+ToolStyle::~ToolStyle() {
 }
 
 
-void ToolLogic::print(std::ostream &out) const {
-    out << "ToolLogic[]";
+void ToolStyle::print(std::ostream &out) const {
+    out << "ToolStyle[]";
 }
 
 
-void ToolLogic::prepare(action::ActionPlan &plan) const {
-    // All the nasty logic goes there
+void ToolStyle::prepare(action::ActionPlan &plan) const {
+    // All the nasty style goes there
 
     size_t argc = eckit::Context::instance().argc();
     for(size_t i = 0; i < argc; i++) {
@@ -94,14 +94,14 @@ struct argmode_transform_t : public util::Arguments::argmode_t {
 };
 
 
-// register command-line tool specialized logic (and associated parsing modes)
+// register command-line tool specialized style (and associated parsing modes)
 namespace {
-static MIRLogicBuilder< ToolLogic > __tool("tool");
+static MIRStyleBuilder< ToolStyle > __tool("tool");
 eckit::ConcreteBuilderT0< util::Arguments::argmode_t, argmode_transform_t   > __Arguments_argmode_transform;
 eckit::ConcreteBuilderT0< util::Arguments::argmode_t, argmode_interpolate_t > __Arguments_argmode_interpolate;
 }
 
 
-}  // namespace logic
+}  // namespace style
 }  // namespace mir
 

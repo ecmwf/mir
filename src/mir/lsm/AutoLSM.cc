@@ -75,6 +75,6 @@ static AutoLSM output("auto.output");
 }
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

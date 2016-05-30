@@ -121,7 +121,7 @@ class Packer {
 
 
 
-}  // namespace logic
+}  // namespace packing
 }  // namespace mir
 #endif
 

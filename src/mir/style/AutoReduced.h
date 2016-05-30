@@ -13,17 +13,23 @@
 /// @date Apr 2015
 
 
-#ifndef MARSLogic_H
-#define MARSLogic_H
+#ifndef AutoReduced_H
+#define AutoReduced_H
 
-#include "mir/logic/MIRLogic.h"
+#include "mir/param/DelayedParametrisation.h"
+#include <vector>
 
 
 namespace mir {
-namespace logic {
+
+namespace param {
+class MIRParametrisation;
+}
+
+namespace style {
 
 
-class MARSLogic : public MIRLogic {
+class AutoReduced : public param::DelayedParametrisation {
   public:
 
 // -- Exceptions
@@ -31,11 +37,11 @@ class MARSLogic : public MIRLogic {
 
 // -- Contructors
 
-    MARSLogic(const param::MIRParametrisation&);
+    AutoReduced(const param::MIRParametrisation &parametrisation);
 
 // -- Destructor
 
-    ~MARSLogic(); // Change to virtual if base class
+    virtual ~AutoReduced(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -44,6 +50,7 @@ class MARSLogic : public MIRLogic {
     // None
 
 // -- Methods
+    // None
 
 
 
@@ -59,14 +66,18 @@ class MARSLogic : public MIRLogic {
   protected:
 
 // -- Members
-    // None
+
+
 
 // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const; // Change to virtual if base class
+
 
 // -- Overridden methods
-    // None
+    // virtual bool has(const std::string& name) const;
+
+    virtual void get(const std::string& name, long& value) const;
 
 // -- Class members
     // None
@@ -78,16 +89,18 @@ class MARSLogic : public MIRLogic {
 
 // No copy allowed
 
-    MARSLogic(const MARSLogic&);
-    MARSLogic& operator=(const MARSLogic&);
+    AutoReduced(const AutoReduced&);
+    AutoReduced& operator=(const AutoReduced&);
 
 // -- Members
 
+    const param::MIRParametrisation &parametrisation_;
+
 // -- Methods
+    // None
 
 // -- Overridden methods
-
-    virtual void prepare(action::ActionPlan&) const;
+    // None
 
 
 // -- Class members
@@ -98,13 +111,15 @@ class MARSLogic : public MIRLogic {
 
 // -- Friends
 
-    // friend std::ostream& operator<<(std::ostream& s, const MARSLogic& p)
-    // { p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const AutoReduced& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
 
-}  // namespace logic
+}  // namespace param
 }  // namespace mir
 #endif
 

@@ -119,7 +119,7 @@ class GribFileLSM : public Mask {
 
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 #endif
 

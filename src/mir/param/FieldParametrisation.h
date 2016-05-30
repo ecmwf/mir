@@ -90,7 +90,7 @@ class FieldParametrisation : public MIRParametrisation {
     // -- Members
 
     mutable bool check_;
-    mutable const MIRParametrisation *logic_;
+    mutable const MIRParametrisation *style_;
 
     // -- Methods
 

@@ -83,6 +83,6 @@ static NoneLSM output("none.output");
 }
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

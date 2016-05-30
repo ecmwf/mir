@@ -48,6 +48,6 @@ static Simple packing("simple");
 }
 
 
-}  // namespace logic
+}  // namespace packing
 }  // namespace mir
 

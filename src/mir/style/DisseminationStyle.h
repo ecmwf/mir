@@ -13,17 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef ProdGenLogic_H
-#define ProdGenLogic_H
+#ifndef ProdGenStyle_H
+#define ProdGenStyle_H
 
-#include "mir/logic/MIRLogic.h"
+#include "mir/style/MIRStyle.h"
 
 
 namespace mir {
-namespace logic {
+namespace style {
 
 
-class ProdGenLogic : public MIRLogic {
+class ProdGenStyle : public MIRStyle {
   public:
 
 // -- Exceptions
@@ -31,11 +31,11 @@ class ProdGenLogic : public MIRLogic {
 
 // -- Contructors
 
-    ProdGenLogic(const param::MIRParametrisation&);
+    ProdGenStyle(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    ~ProdGenLogic(); // Change to virtual if base class
+    ~ProdGenStyle(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -78,8 +78,8 @@ class ProdGenLogic : public MIRLogic {
 
 // No copy allowed
 
-    ProdGenLogic(const ProdGenLogic&);
-    ProdGenLogic& operator=(const ProdGenLogic&);
+    ProdGenStyle(const ProdGenStyle&);
+    ProdGenStyle& operator=(const ProdGenStyle&);
 
 // -- Members
 
@@ -98,13 +98,13 @@ class ProdGenLogic : public MIRLogic {
 
 // -- Friends
 
-    // friend std::ostream& operator<<(std::ostream& s, const ProdGenLogic& p)
+    // friend std::ostream& operator<<(std::ostream& s, const ProdGenStyle& p)
     // { p.print(s); return s; }
 
 };
 
 
-}  // namespace logic
+}  // namespace style
 }  // namespace mir
 #endif
 
