@@ -88,14 +88,14 @@ void ActionGraph::print(std::ostream &out) const {
     out << "ActionGraph[]";
 }
 
-void ActionGraph::notifyFailure(std::exception& e, api::MIRWatcher *watcher, bool& rethrow) const {
+void ActionGraph::notifyFailure(std::exception& e, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const {
     if (nodes_.empty()) {
         if (watcher) {
-            rethrow = watcher->failure(e) && rethrow;
+            rethrow = watcher->failure(e, action) && rethrow;
         }
     }
     for (auto j = nodes_.begin(); j != nodes_.end(); ++j) {
-        (*j)->notifyFailure(e, watcher, rethrow);
+        (*j)->notifyFailure(e, action, watcher, rethrow);
     }
 }
 

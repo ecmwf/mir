@@ -46,7 +46,7 @@ void ActionNode::execute(data::MIRField& field, util::MIRStatistics& statistics)
         eckit::Log::error() << e.what() << " while executing " << action_ << std::endl;
 
         bool rethrow = true;
-        notifyFailure(e, watcher_, rethrow);
+        notifyFailure(e, action_, watcher_, rethrow);
         if (rethrow) {
             throw;
         }
@@ -54,8 +54,8 @@ void ActionNode::execute(data::MIRField& field, util::MIRStatistics& statistics)
     graph_.execute(field, statistics);
 }
 
-void ActionNode::notifyFailure(std::exception& e, api::MIRWatcher *watcher, bool& rethrow) const {
-    graph_.notifyFailure(e, watcher_, rethrow);
+void ActionNode::notifyFailure(std::exception& e, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const {
+    graph_.notifyFailure(e, action, watcher_, rethrow);
 }
 
 

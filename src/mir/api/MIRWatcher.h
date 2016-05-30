@@ -20,6 +20,11 @@
 #include "eckit/memory/NonCopyable.h"
 
 namespace mir {
+
+namespace action {
+class Action;
+}
+
 namespace api {
 
 class MIRJob;
@@ -49,7 +54,7 @@ class MIRWatcher : private eckit::NonCopyable {
     virtual void success() = 0;
 
     // Return true to rethrow, false to continue
-    virtual bool failure(std::exception&) = 0;
+    virtual bool failure(std::exception&, const action::Action& action) = 0;
 
     // -- Overridden methods
     // None

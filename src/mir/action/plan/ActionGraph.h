@@ -75,7 +75,7 @@ class ActionGraph {
     void dump(std::ostream& out, size_t depth) const;
 
 
-    void notifyFailure(std::exception&, api::MIRWatcher *watcher, bool& rethrow) const;
+    void notifyFailure(std::exception&, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const;
 // -- Overridden methods
     // None
 
