@@ -82,12 +82,26 @@ static void out(std::vector<std::vector<bool> > &bitmap, long row, const std::st
 }  // (unnamed namespace)
 
 
-Bitmap::Bitmap(const eckit::PathName& path):
+Bitmap::Bitmap(const std::string& path):
     path_(path),
     width_(0),
     height_(0) {
 
-    eckit::StdFile file(path_);
+    std::vector<std::string> v;
+    eckit::Tokenizer parse(":");
+    parse(path, v);
+
+    if(v.size() == 3) {
+        prodgenBitmap(v[0], v[1], v[2]);
+    }
+    else {
+        disseminationBitmap(path);
+    }
+}
+
+void Bitmap::disseminationBitmap(const std::string& path) {
+
+    eckit::StdFile file(path);
     int c;
     std::string s;
 
@@ -178,6 +192,73 @@ Bitmap::Bitmap(const eckit::PathName& path):
     std::swap(bitmap, bitmap_);
 }
 
+void Bitmap::prodgenBitmap(const std::string& path, const std::string& destination, const std::string& number)
+{
+    char  line[1024];
+    std::ifstream in(path);
+    if (in.bad()) {
+        throw eckit::CantOpenFile(path);
+    }
+
+    eckit::Translator<std::string, size_t> s2l;
+
+    size_t no = s2l(number);
+
+    while (in.getline(line, sizeof(line))) {
+
+        std::string dest(line, line + 5);
+        size_t num = s2l(std::string(line + 6, line + 9));
+        bool ok = (num == no && destination == dest);
+
+        size_t size = 0;
+        for (const char *c = line + 10; c != line + 20; ++c) {
+            if (::isdigit(*c)) {
+                size *= 10;
+                size += *c - '0';
+            }
+        }
+
+        size_t len = 0;
+        bool first = true;
+        size_t count = 0;
+        char last = '-';
+
+        std::vector<bool> bitmap(size);
+        bitmap.reserve(size);
+
+        size_t k = 0;
+        for (;;) {
+            in.getline(line, sizeof(line));
+            len += strlen(line);
+
+            if(ok) {
+                const char *p = line;
+
+                while (*p) {
+                    bitmap[k++] = (*p == '1');
+                    p++;
+                }
+             }
+
+            if (len >= size) {
+                break;
+            }
+        }
+
+        if(ok)
+        {
+            height_ = 1;
+            width_ = bitmap.size();
+            bitmap_.resize(1);
+            std::swap(bitmap_[0], bitmap);
+            return;
+        }
+    }
+
+    std::ostringstream oss;
+    oss << "Cannot find bitmap " << no << " for destination " << destination << " in " << path;
+    throw eckit::UserError(oss.str());
+}
 
 Bitmap::~Bitmap() {
 }

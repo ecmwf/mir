@@ -17,8 +17,6 @@
 
 #include <vector>
 
-#include "eckit/filesystem/PathName.h"
-
 namespace mir {
 namespace util {
 
@@ -29,7 +27,7 @@ class Bitmap {
 
     // -- Contructors
 
-    explicit Bitmap(const eckit::PathName&);
+    explicit Bitmap(const std::string&);
 
     // -- Destructor
 
@@ -87,13 +85,15 @@ class Bitmap {
 
     // -- Members
 
-    eckit::PathName path_;
+    std::string path_;
     std::vector<std::vector<bool> > bitmap_;
     size_t width_;
     size_t height_;
 
     // -- Methods
-    // None
+
+    void disseminationBitmap(const std::string& path);
+    void prodgenBitmap(const std::string& path, const std::string& destination, const std::string& number);
 
     // -- Overridden methods
 
