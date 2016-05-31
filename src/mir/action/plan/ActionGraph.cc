@@ -31,13 +31,13 @@ ActionGraph::ActionGraph() {
 
 
 ActionGraph::~ActionGraph() {
-    for (auto j = nodes_.begin(); j != nodes_.end(); ++j) {
+    for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
         delete (*j);
     }
 }
 
 void ActionGraph::execute(data::MIRField& field, util::MIRStatistics& statistics) const {
-    for (auto j = nodes_.begin(); j != nodes_.end(); ++j) {
+    for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
         data::MIRField local(&field);
         (*j)->execute(local, statistics);
     }
@@ -78,7 +78,7 @@ ActionNode* ActionGraph::add(const Action& action, api::MIRWatcher *watcher) {
 
 
 void ActionGraph::dump(std::ostream& out, size_t depth) const {
-    for (auto j = nodes_.begin(); j != nodes_.end(); ++j) {
+    for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
         (*j)->dump(out, depth);
     }
 }
@@ -97,7 +97,7 @@ void ActionGraph::notifyFailure(std::exception& e, const Action& action, api::MI
             rethrow = watcher->failure(e, action) && rethrow;
         }
     }
-    for (auto j = nodes_.begin(); j != nodes_.end(); ++j) {
+    for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
         (*j)->notifyFailure(e, action, watcher, rethrow);
     }
 }

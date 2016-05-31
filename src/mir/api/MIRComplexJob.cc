@@ -42,15 +42,15 @@ MIRComplexJob::~MIRComplexJob() {
 }
 
 void MIRComplexJob::clear() {
-    for (auto j = jobs_.begin(); j != jobs_.end(); ++j) {
+    for (std::vector<action::Job *>::const_iterator j = jobs_.begin(); j != jobs_.end(); ++j) {
         delete (*j);
     }
     jobs_.clear();
-    for (auto j = apis_.begin(); j != apis_.end(); ++j) {
+    for (std::vector<api::MIRJob *>::const_iterator j = apis_.begin(); j != apis_.end(); ++j) {
         delete (*j);
     }
     apis_.clear();
-    for (auto j = watchers_.begin(); j != watchers_.end(); ++j) {
+    for (std::vector<api::MIRWatcher *>::const_iterator j = watchers_.begin(); j != watchers_.end(); ++j) {
         delete (*j);
     }
     watchers_.clear();
@@ -67,7 +67,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     action::ActionGraph graph;
 
     size_t i = 0;
-    for (auto j = jobs_.begin(); j != jobs_.end(); ++j, ++i) {
+    for (std::vector<action::Job *>::const_iterator j = jobs_.begin(); j != jobs_.end(); ++j, ++i) {
         graph.add((*j)->plan(), watchers_[i]);
     }
 
