@@ -20,6 +20,7 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/style/AutoResol.h"
 #include "mir/style/AutoReduced.h"
+#include "mir/style/AutoGaussian.h"
 #include "mir/param/MIRConfiguration.h"
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
@@ -133,7 +134,7 @@ void DisseminationStyle::prepare(action::ActionPlan &plan) const {
             //     plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
             // }
 
-            plan.add("transform.sh2octahedral-gg", "octahedral", 1280);
+            plan.add("transform.sh2octahedral-gg", "octahedral", new AutoGaussian(parametrisation_));
             field_gridded = true;
         }
     }

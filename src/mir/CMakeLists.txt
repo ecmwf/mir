@@ -152,6 +152,8 @@ input/VectorInput.cc
 input/VectorInput.h
 input/WindInput.cc
 input/WindInput.h
+style/AutoGaussian.cc
+style/AutoGaussian.h
 style/AutoReduced.cc
 style/AutoReduced.h
 style/AutoResol.cc
