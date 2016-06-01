@@ -83,9 +83,9 @@ MIRStatistics &MIRStatistics::operator/=(size_t n) {
 
 void MIRStatistics::report(std::ostream &out, const char *indent) const {
 
-    reportTime(out, "Time in grid to grid interpolations", grid2gridTiming_, indent);
+    reportTime(out, "Time in grid to grid interp.", grid2gridTiming_, indent);
     reportTime(out, "Time in SH to grid transform", sh2gridTiming_, indent);
-    reportTime(out, "Time loading/building legendre coefficients", coefficientTiming_, indent);
+    reportTime(out, "Time loading/building coeff.", coefficientTiming_, indent);
     reportTime(out, "Time in VO/D to U/V", vod2uvTiming_, indent);
 
     reportTime(out, "Time in area-crop", cropTiming_, indent);
