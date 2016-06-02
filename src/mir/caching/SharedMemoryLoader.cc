@@ -134,17 +134,16 @@ class SemLocker {
 
 class Unloader {
     std::vector<eckit::PathName> paths_;
-public:
+  public:
     void add(const eckit::PathName& path) {
         paths_.push_back(path);
     }
 
     ~Unloader() {
-        for(std::vector<eckit::PathName>::const_iterator j = paths_.begin(); j != paths_.end(); ++j) {
+        for (std::vector<eckit::PathName>::const_iterator j = paths_.begin(); j != paths_.end(); ++j) {
             try {
                 SharedMemoryLoader::unloadSharedMemory(*j);
-            }
-            catch(std::exception& e) {
+            } catch (std::exception& e) {
                 std::cout << e.what() << std::endl;
             }
         }
@@ -159,22 +158,22 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     size_(path.size()),
     unload_(false) {
 
-    eckit::Log::info() << "Loading shared memory from " << path << std::endl;
+    // eckit::Log::info() << "Loading shared memory from " << path << std::endl;
 
 
     std::string name;
 
-    if(parametrisation.get("legendre-loader", name)) {
-       unload_ = name.substr(0,4) == "tmp-";
+    if (parametrisation.get("legendre-loader", name)) {
+        unload_ = name.substr(0, 4) == "tmp-";
     }
 
-    if(unload_) {
+    if (unload_) {
         unloader.add(path);
     }
 
-    eckit::TraceTimer<MIR> timer("Loading legendre coefficients from shared memory");
+    // eckit::TraceTimer<MIR> timer("Loading legendre coefficients from shared memory");
     eckit::PathName real = path.realName();
-    eckit::Log::trace<MIR>() << "Loading legendre coefficients from " << real << std::endl;
+    // eckit::Log::trace<MIR>() << "Loading legendre coefficients from " << real << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
         std::ostringstream os;
@@ -207,17 +206,17 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     // Only on Linux?
     struct shminfo shm_info;
     SYSCALL(shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-    eckit::Log::trace<MIR>() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) <<std::endl;
+    eckit::Log::trace<MIR>() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) << std::endl;
 #endif
     // This may return EINVAL is the segment is too large 256MB
     // To find the maximum:
     // Linux:ipcs -l, Mac/bsd: ipcs -M
 
     eckit::Log::trace<MIR>() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
-                       std::hex << key << std::dec << ", page size: "
-                       << eckit::Bytes(page_size) << ", pages: "
-                       << eckit::BigNum(shmsize/page_size)
-                       << std::endl;
+                             std::hex << key << std::dec << ", page size: "
+                             << eckit::Bytes(page_size) << ", pages: "
+                             << eckit::BigNum(shmsize / page_size)
+                             << std::endl;
 
     int shmid;
     SYSCALL(shmid = shmget(key, shmsize , IPC_CREAT | 0600)) ;
@@ -275,7 +274,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
 
         if (loadfile) {
-            eckit::Log::info() << "SharedMemoryLoader: loading " << path_<< std::endl;
+            // eckit::Log::info() << "SharedMemoryLoader: loading " << path_ << std::endl;
             eckit::Timer("Loading file into shared memory");
             eckit::StdFile file(real);
             ASSERT(::fread(address_, 1, size_, file) == size_);
@@ -286,7 +285,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
             strcpy(nfo->path, real.asString().c_str());
             nfo->ready = 1;
         } else {
-            eckit::Log::info() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
+            // eckit::Log::info() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
         }
 
     } catch (...) {
@@ -301,7 +300,7 @@ SharedMemoryLoader::~SharedMemoryLoader() {
     if (address_) {
         SYSCALL(shmdt(address_));
     }
-    if(unload_) {
+    if (unload_) {
         unloadSharedMemory(path_);
     }
 }
@@ -312,7 +311,7 @@ void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
 }
 
 void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
-    std::cout << "Unloading SharedMemory from " << path << std::endl;
+    // std::cout << "Unloading SharedMemory from " << path << std::endl;
 
     eckit::PathName real = path.realName();
     int shmid = 0;
@@ -325,29 +324,27 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     }
 
     shmid = shmget(key, 0, 0600);
-    if(shmid < 0 && errno != ENOENT) {
+    if (shmid < 0 && errno != ENOENT) {
         throw eckit::FailedSystemCall("Cannot get shared memory for " + path);
     }
 
-    if(shmid < 0 && errno == ENOENT) {
-        std::cout << "SharedMemory from " << path  << " already unloaded" <<std::endl;
-    }
-    else {
+    if (shmid < 0 && errno == ENOENT) {
+        // std::cout << "SharedMemory from " << path  << " already unloaded" <<std::endl;
+    } else {
         SYSCALL(shmctl(shmid, IPC_RMID, 0));
-        std::cout << "Succefully unloaded SharedMemory from " << path  << std::endl;
+        // std::cout << "Succefully unloaded SharedMemory from " << path  << std::endl;
     }
 
     sem = semget(key, 1, 0600);
-    if(sem < 0 && errno != ENOENT) {
+    if (sem < 0 && errno != ENOENT) {
         throw eckit::FailedSystemCall("Cannot get shared semaphor for " + path);
     }
 
-    if(sem < 0 && errno == ENOENT) {
-        std::cout << "SharedMemory semaphore for " << path  << " already unloaded" <<std::endl;
-    }
-    else {
+    if (sem < 0 && errno == ENOENT) {
+        // std::cout << "SharedMemory semaphore for " << path  << " already unloaded" <<std::endl;
+    } else {
         SYSCALL(semctl(sem, 0, IPC_RMID, 0));
-         std::cout << "SharedMemory removed semaphore for " << path  <<std::endl;
+        // std::cout << "SharedMemory removed semaphore for " << path  <<std::endl;
     }
 
 }
