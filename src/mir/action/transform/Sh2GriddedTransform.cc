@@ -150,11 +150,8 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
             const char *p = static_cast<const char*>(tc.loader_->address());
             size_t size = tc.loader_->size();
             size_t dummy = 0;
-            const size_t fourK = 4096;
-            while(size >= fourK) {
-                dummy += *p;
-                p += fourK;
-                size -= fourK;
+            while(size >= 0) {
+                dummy += *p++;
             }
         }
     }
