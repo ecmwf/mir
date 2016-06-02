@@ -44,7 +44,7 @@ static void init() {
 
 LegendreLoader::LegendreLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName& path):
     parametrisation_(parametrisation),
-    path_(path) {
+    path_(path.realName()) {
 }
 
 

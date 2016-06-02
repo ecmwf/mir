@@ -312,7 +312,7 @@ void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
 }
 
 void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
-    std::cout << "Unloading shared memory from " << path << std::endl;
+    std::cout << "Unloading SharedMemory from " << path << std::endl;
 
     eckit::PathName real = path.realName();
     int shmid = 0;
@@ -324,16 +324,31 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
         throw eckit::FailedSystemCall("ftok(" + real.asString() + ")");
     }
 
-    SYSCALL(shmid = shmget(key, 0, 0600));
+    shmid = shmget(key, 0, 0600);
+    if(shmid < 0 && errno != ENOENT) {
+        throw eckit::FailedSystemCall("Cannot get shared memory for " + path);
+    }
 
-    // eckit::Log::trace<MIR>() << "Removing shared memory for " << path << std::endl;
+    if(shmid < 0 && errno == ENOENT) {
+        std::cout << "SharedMemory from " << path  << " already unloaded" <<std::endl;
+    }
+    else {
+        SYSCALL(shmctl(shmid, IPC_RMID, 0));
+        std::cout << "Succefully unloaded SharedMemory from " << path  << std::endl;
+    }
 
-    SYSCALL(shmctl(shmid, IPC_RMID, 0));
+    sem = semget(key, 1, 0600);
+    if(sem < 0 && errno != ENOENT) {
+        throw eckit::FailedSystemCall("Cannot get shared semaphor for " + path);
+    }
 
-    SYSCALL(sem = semget(key, 1, 0600));
-
-    SYSCALL(semctl(sem, 0, IPC_RMID, 0));
-
+    if(sem < 0 && errno == ENOENT) {
+        std::cout << "SharedMemory semaphore for " << path  << " already unloaded" <<std::endl;
+    }
+    else {
+        SYSCALL(semctl(sem, 0, IPC_RMID, 0));
+         std::cout << "SharedMemory removed semaphore for " << path  <<std::endl;
+    }
 
 }
 
