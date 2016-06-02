@@ -17,13 +17,13 @@
 #define SimpleParametrisation_H
 
 #include "mir/param/MIRParametrisation.h"
+
 #include <string>
 #include <map>
 #include <set>
 
 namespace eckit {
 class JSON;
-class Value;
 }
 
 namespace mir {
@@ -68,8 +68,6 @@ class SimpleParametrisation : public MIRParametrisation {
 
     SimpleParametrisation& set(const std::string& name, const std::vector<long>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<double>& value);
-
-    SimpleParametrisation& set(const eckit::Value& map);
 
     SimpleParametrisation& clear(const std::string& name);
 // -- Overridden methods

@@ -179,7 +179,7 @@ void MIRTool::run() {
     }
 
     mir::api::MIRJob job;
-    job.set(args.get());
+    args.configure(job);
 
     std::string same;
     if (args.get("same", same)) {

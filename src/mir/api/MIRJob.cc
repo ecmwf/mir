@@ -119,9 +119,10 @@ MIRJob &MIRJob::set(const std::string &name, const std::vector<long>& v) {
     return *this;
 }
 
-MIRJob&MIRJob::set(const eckit::Value& map) {
-    eckit::Log::trace<MIR>() << "************* MIRJob::set from ValueMap" << std::endl;
-    SimpleParametrisation::set(map);
+
+MIRJob &MIRJob::set(const std::string &name, const std::vector<double>& v) {
+    eckit::Log::trace<MIR>() << "************* MIRJob::set [" << name << "] = [" << eckit::Plural(v.size(), "value") << "] (vector<double>)" << std::endl;
+    SimpleParametrisation::set(name, v);
     return *this;
 }
 

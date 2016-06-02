@@ -481,14 +481,6 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const
     return *this;
 }
 
-SimpleParametrisation& SimpleParametrisation::set(const eckit::Value& map) {
-    ASSERT( map.isMap() );
-    eckit::ValueMap m = map;
-    for( eckit::ValueMap::const_iterator vit = m.begin(); vit != m.end(); ++vit )
-      _set(vit->first, vit->second);
-    return *this;
-}
-
 void SimpleParametrisation::print(std::ostream &out) const {
     const char *sep = "";
     const char *comma = ",";
