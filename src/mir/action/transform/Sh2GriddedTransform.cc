@@ -137,22 +137,15 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
         } else {
             eckit::AutoTiming timing(statistics.timer_, statistics.loadCoeffTiming_);
 
-            eckit::Timer timer("Loading coefficients");
+            // eckit::Timer timer("Loading coefficients");
 
             tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
-            eckit::Log::trace<MIR>() << "LegendreLoader " << *tc.loader_ << std::endl;
+            eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
 
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 
             ASSERT(trans_setup(&trans) == 0);
 
-            // Touch all the pages to force MMAP to load, so we can time it
-            const char *p = static_cast<const char*>(tc.loader_->address());
-            size_t size = tc.loader_->size();
-            size_t dummy = 0;
-            while(size >= 0) {
-                dummy += *p++;
-            }
         }
     }
 

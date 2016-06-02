@@ -23,6 +23,8 @@
 #include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Context.h"
 #include "eckit/runtime/Tool.h"
+#include "mir/caching/LegendreLoader.h"
+#include "mir/style/MIRStyle.h"
 
 #include "eckit/linalg/LinearAlgebra.h"
 
@@ -151,7 +153,8 @@ void MIRTool::run() {
 
     //==============================================
     options.push_back(new Separator("Miscellaneous"));
-    options.push_back(new SimpleOption<std::string>("style", "Compatibility with style=dissemination (ignored)"));
+    options.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
+    options.push_back(new FactoryOption<mir::caching::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
 
     //==============================================
     options.push_back(new Separator("Debugging"));

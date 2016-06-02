@@ -131,6 +131,7 @@ class LegendreLoaderFactory {
 
   public:
     static LegendreLoader* build(const param::MIRParametrisation&, const eckit::PathName& path);
+    static void list(std::ostream &);
 
 };
 

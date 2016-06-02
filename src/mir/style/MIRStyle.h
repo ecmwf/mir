@@ -133,6 +133,7 @@ class MIRStyleFactory {
 
   public:
     static MIRStyle* build(const param::MIRParametrisation&);
+    static void list(std::ostream &);
 
 };
 

@@ -99,6 +99,19 @@ MIRStyle* MIRStyleFactory::build(const param::MIRParametrisation& params) {
 }
 
 
+void MIRStyleFactory::list(std::ostream& out) {
+    pthread_once(&once, init);
+
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    const char* sep = "";
+    for (std::map<std::string, MIRStyleFactory *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
+        out << sep << (*j).first;
+        sep = ", ";
+    }
+}
+
+
 }  // namespace style
 }  // namespace mir
 

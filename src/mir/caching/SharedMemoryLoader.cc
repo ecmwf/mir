@@ -131,10 +131,46 @@ class SemLocker {
 
 }
 
+
+class Unloader {
+    std::vector<eckit::PathName> paths_;
+public:
+    void add(const eckit::PathName& path) {
+        paths_.push_back(path);
+    }
+
+    ~Unloader() {
+        for(std::vector<eckit::PathName>::const_iterator j = paths_.begin(); j != paths_.end(); ++j) {
+            try {
+                SharedMemoryLoader::unloadSharedMemory(*j);
+            }
+            catch(std::exception& e) {
+                std::cout << e.what() << std::endl;
+            }
+        }
+    }
+};
+
+static Unloader unloader;
+
 SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName &path):
     LegendreLoader(parametrisation, path),
     address_(0),
-    size_(path.size()) {
+    size_(path.size()),
+    unload_(false) {
+
+    eckit::Log::info() << "Loading shared memory from " << path << std::endl;
+
+
+    std::string name;
+
+    if(parametrisation.get("legendre-loader", name)) {
+       unload_ = name.substr(0,4) == "tmp-";
+    }
+
+    if(unload_) {
+        unloader.add(path);
+    }
 
     eckit::TraceTimer<MIR> timer("Loading legendre coefficients from shared memory");
     eckit::PathName real = path.realName();
@@ -239,7 +275,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
 
         if (loadfile) {
-            eckit::TraceTimer<MIR> timer("Loading file into shared memory");
+            eckit::Log::info() << "SharedMemoryLoader: loading " << path_<< std::endl;
+            eckit::Timer("Loading file into shared memory");
             eckit::StdFile file(real);
             ASSERT(::fread(address_, 1, size_, file) == size_);
 
@@ -249,7 +286,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
             strcpy(nfo->path, real.asString().c_str());
             nfo->ready = 1;
         } else {
-            eckit::Log::trace<MIR>() << "SharedMemoryLoader: file already loaded" << std::endl;
+            eckit::Log::info() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
         }
 
     } catch (...) {
@@ -264,6 +301,9 @@ SharedMemoryLoader::~SharedMemoryLoader() {
     if (address_) {
         SYSCALL(shmdt(address_));
     }
+    if(unload_) {
+        unloadSharedMemory(path_);
+    }
 }
 
 void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
@@ -272,6 +312,8 @@ void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
 }
 
 void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
+    std::cout << "Unloading shared memory from " << path << std::endl;
+
     eckit::PathName real = path.realName();
     int shmid = 0;
     key_t key;
@@ -284,7 +326,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
 
     SYSCALL(shmid = shmget(key, 0, 0600));
 
-    eckit::Log::trace<MIR>() << "Removing shared memory for " << path << std::endl;
+    // eckit::Log::trace<MIR>() << "Removing shared memory for " << path << std::endl;
 
     SYSCALL(shmctl(shmid, IPC_RMID, 0));
 
@@ -296,7 +338,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
 }
 
 void SharedMemoryLoader::print(std::ostream &out) const {
-    out << "SharedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(size_) << "]";
+    out << "SharedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(size_) << ",unload=" << unload_ << "]";
 }
 
 const void *SharedMemoryLoader::address() const {
@@ -310,6 +352,9 @@ size_t SharedMemoryLoader::size() const {
 namespace {
 static LegendreLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
 static LegendreLoaderBuilder<SharedMemoryLoader> loader2("shmem");
+static LegendreLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
+static LegendreLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
+
 
 }
 

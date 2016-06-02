@@ -89,6 +89,7 @@ class SharedMemoryLoader : public LegendreLoader {
     int fd_;
     void* address_;
     size_t size_;
+    bool unload_;
 
 // -- Methods
 

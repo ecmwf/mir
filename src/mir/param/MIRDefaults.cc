@@ -31,7 +31,7 @@ MIRDefaults::MIRDefaults() {
     // For demo only:
 
     set("style", "mars");
-    set("legendre.loader", "mapped-memory");
+    set("legendre-loader", "mapped-memory");
 
     set("interpolation", "linear"); // The word 'method' is used in grib
     set("caching", true);
