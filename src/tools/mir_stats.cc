@@ -78,7 +78,7 @@ void MIRStats::run() {
 
     mir::input::MIRInput &input = file;
 
-    long bucket_count = 65536;
+    size_t bucket_count = 65536;
     args.get("buckets", bucket_count);
 
     long bits = 0;
