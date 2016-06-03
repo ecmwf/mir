@@ -45,7 +45,7 @@ bool Binop<T>::sameAs(const Action& other) const {
 
 template<class T>
 void Binop<T>::print(std::ostream &out) const {
-    out << "Binop[size=" << scalar_ << "]";
+    out << "Binop<" << T::name() << ">[scalar=" << scalar_ << "]";
 }
 
 template<class T>
