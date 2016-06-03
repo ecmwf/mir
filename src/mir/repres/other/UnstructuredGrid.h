@@ -38,6 +38,9 @@ class UnstructuredGrid : public Gridded {
     UnstructuredGrid(const eckit::PathName& path);
     UnstructuredGrid(const param::MIRParametrisation &);
 
+    // Take ownership of vectors
+    UnstructuredGrid(std::vector<double>& latitudes, std::vector<double>& longitudes);
+
     // -- Destructor
 
     virtual ~UnstructuredGrid(); // Change to virtual if base class

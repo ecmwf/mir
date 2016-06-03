@@ -39,6 +39,7 @@
 #include "mir/method/Method.h"
 #include "mir/output/GribFileOutput.h"
 #include "mir/output/GeoPointsOutput.h"
+#include "mir/input/GeoPointsInput.h"
 
 #include "mir/output/UVOutput.h"
 #include "mir/output/WindOutput.h"
@@ -145,6 +146,7 @@ void MIRTool::run() {
 
     //==============================================
     options.push_back(new Separator("Unstructured grids support"));
+    options.push_back(new SimpleOption<bool>("geopoints", "Input is a geopoints file"));
     options.push_back(new SimpleOption<eckit::PathName>("latitudes", "Path GRIB file of latitudes"));
     options.push_back(new SimpleOption<eckit::PathName>("longitudes", "Path GRIB file of longitudes"));
 
@@ -242,8 +244,15 @@ void MIRTool::run() {
 
     }
 
+    if (args.has("geopoints")) {
+        mir::input::GeoPointsInput input(args(0));
+        mir::output::GribFileOutput output(args(1));
+        process(job, input, output, "field");
+        return;
+    }
+
     std::string griddef;
-    if(args.has("griddef")) {
+    if (args.has("griddef")) {
         mir::input::GribFileInput input(args(0));
         mir::output::GeoPointsOutput output(args(1));
         process(job, input, output, "field");

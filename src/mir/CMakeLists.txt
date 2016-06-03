@@ -134,6 +134,8 @@ data/MIRFieldStats.cc
 data/MIRFieldStats.h
 input/DummyInput.cc
 input/DummyInput.h
+input/GeoPointsInput.cc
+input/GeoPointsInput.h
 input/GribFileInput.cc
 input/GribFileInput.h
 input/GribInput.cc
@@ -224,6 +226,8 @@ namedgrids/RegularPattern.cc
 namedgrids/RegularPattern.h
 output/DummyOutput.cc
 output/DummyOutput.h
+output/GeoPointsOutput.cc
+output/GeoPointsOutput.h
 output/GribFileOutput.cc
 output/GribFileOutput.h
 output/GribMemoryOutput.cc
@@ -240,8 +244,6 @@ output/RawOutput.cc
 output/RawOutput.h
 output/UVOutput.cc
 output/UVOutput.h
-output/GeoPointsOutput.cc
-output/GeoPointsOutput.h
 output/VectorOutput.cc
 output/VectorOutput.h
 output/WindOutput.cc

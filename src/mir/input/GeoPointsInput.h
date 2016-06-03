@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef DummyInput_H
-#define DummyInput_H
+#ifndef GeoPointsInput_H
+#define GeoPointsInput_H
 
 
 #include "mir/input/MIRInput.h"
@@ -25,18 +25,18 @@ namespace mir {
 namespace input {
 
 
-class DummyInput : public MIRInput, public param::FieldParametrisation {
+class GeoPointsInput : public MIRInput, public param::FieldParametrisation {
   public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    DummyInput();
+    GeoPointsInput(const std::string& path);
 
     // -- Destructor
 
-    virtual ~DummyInput(); // Change to virtual if base class
+    virtual ~GeoPointsInput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -78,12 +78,16 @@ class DummyInput : public MIRInput, public param::FieldParametrisation {
 
     // No copy allowed
 
-    DummyInput(const DummyInput &);
-    DummyInput &operator=(const DummyInput &);
+    GeoPointsInput(const GeoPointsInput &);
+    GeoPointsInput &operator=(const GeoPointsInput &);
 
     // -- Members
 
-    size_t calls_;
+    std::string path_;
+
+    mutable std::vector<double> latitudes_;
+    mutable std::vector<double> longitudes_;
+    mutable std::vector<double> values_;
 
     // -- Methods
 
@@ -101,7 +105,10 @@ class DummyInput : public MIRInput, public param::FieldParametrisation {
     // From MIRParametrisation
     virtual bool has(const std::string& name) const;
     virtual bool get(const std::string&, std::string&) const;
-    virtual bool get(const std::string&, double&) const;
+
+    // From FieldParametrisation
+    virtual void latitudes(std::vector<double> &) const;
+    virtual void longitudes(std::vector<double> &) const;
 
     // -- Class members
     // None
@@ -111,7 +118,7 @@ class DummyInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const DummyInput& p)
+    //friend ostream& operator<<(ostream& s,const GeoPointsInput& p)
     //  { p.print(s); return s; }
 
 };
