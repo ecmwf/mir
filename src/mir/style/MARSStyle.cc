@@ -12,19 +12,14 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "mir/style/MARSStyle.h"
 
 #include <iostream>
 
-#include "mir/style/MARSStyle.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/style/AutoResol.h"
-#include "mir/style/AutoReduced.h"
-#include "mir/param/MIRConfiguration.h"
-#include "mir/param/MIRCombinedParametrisation.h"
-#include "mir/param/MIRDefaults.h"
 #include "eckit/exception/Exceptions.h"
-#include "mir/namedgrids/NamedGrid.h"
 
 
 namespace mir {

@@ -46,6 +46,8 @@ action/filter/FrameFilter.cc
 action/filter/FrameFilter.h
 action/interpolate/Gridded2GriddedInterpolation.cc
 action/interpolate/Gridded2GriddedInterpolation.h
+action/interpolate/Gridded2GridDef.cc
+action/interpolate/Gridded2GridDef.h
 action/interpolate/Gridded2NamedGrid.cc
 action/interpolate/Gridded2NamedGrid.h
 action/interpolate/Gridded2Octahedral.cc

@@ -18,6 +18,9 @@
 
 #include "mir/repres/Gridded.h"
 
+namespace eckit {
+    class PathName;
+}
 
 namespace mir {
 namespace repres {
@@ -32,6 +35,7 @@ class UnstructuredGrid : public Gridded {
 
     // -- Contructors
 
+    UnstructuredGrid(const eckit::PathName& path);
     UnstructuredGrid(const param::MIRParametrisation &);
 
     // -- Destructor

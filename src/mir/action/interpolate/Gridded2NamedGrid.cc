@@ -17,7 +17,6 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/repres/gauss/regular/RegularGG.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/namedgrids/NamedGrid.h"
 

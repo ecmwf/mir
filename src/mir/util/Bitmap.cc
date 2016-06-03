@@ -196,7 +196,7 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
 {
     char  line[1024];
     std::ifstream in(path);
-    if (in.bad()) {
+    if (!in) {
         throw eckit::CantOpenFile(path);
     }
 
