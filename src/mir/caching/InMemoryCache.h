@@ -33,7 +33,8 @@ class InMemoryCache : public eckit::NonCopyable {
 
     typedef T* iterator;
 
-    explicit InMemoryCache(size_t capacity);
+    explicit InMemoryCache(const std::string& name, size_t capacity = 2);
+
     ~InMemoryCache();
 
     iterator find(const std::string& key) const;
@@ -46,6 +47,7 @@ private:
 
     T& create(const std::string& key);
 
+    std::string name_;
     size_t capacity_;
 
     struct Entry {

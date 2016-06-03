@@ -8,15 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/config/Resource.h"
 
 namespace mir {
 
 
 template<class T>
-InMemoryCache<T>::InMemoryCache(size_t capacity):
-    capacity_(capacity) {
+InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity):
+    name_(name),
+    capacity_(eckit::Resource<size_t>(name + "InMemoryCacheCapacity", capacity)) {
         ASSERT(capacity_>0);
 }
+
 
 template<class T>
 InMemoryCache<T>::~InMemoryCache() {
@@ -68,6 +71,9 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
     }
 
     while(cache_.size() >= capacity_) {
+
+        std::cout << "Evicting entries from InMemoryCache " << name_ << " capacity=" << capacity_ << std::endl;
+
         time_t now = ::time(0);
         typename std::map<std::string, Entry*>::iterator best = cache_.begin();
         double m = 0;
