@@ -32,7 +32,7 @@ namespace style {
 
 
 MARSStyle::MARSStyle(const param::MIRParametrisation &parametrisation):
-    MIRStyle(parametrisation) {
+    ECMWFStyle(parametrisation) {
 
 }
 
@@ -45,238 +45,86 @@ void MARSStyle::print(std::ostream &out) const {
     out << "MARSStyle[]";
 }
 
+void MARSStyle::sh2sh(action::ActionPlan& plan) const {
 
-void MARSStyle::prepare(action::ActionPlan &plan) const {
-    // All the nasty style goes there
+    if (parametrisation_.has("user.truncation")) {
+        plan.add("transform.sh2sh");
+    }
 
-
-    bool autoresol = false;
     bool vod2uv = false;
-    bool wind = false;
-
-    long intermediate_gaussian = 0;
-    parametrisation_.get("autoresol", autoresol);
     parametrisation_.get("vod2uv", vod2uv);
-    parametrisation_.get("wind", wind);
 
-    parametrisation_.get("intermediate_gaussian", intermediate_gaussian);
-
-    bool user_grid = parametrisation_.has("user.grid");
-    bool user_reduced = parametrisation_.has("user.reduced");
-    bool user_regular = parametrisation_.has("user.regular");
-    bool user_octahedral = parametrisation_.has("user.octahedral");
-    bool user_pl = parametrisation_.has("user.pl");
-    bool user_gridname = parametrisation_.has("user.gridname");
-
-    if (parametrisation_.has("checkerboard")) {
-        plan.add("misc.checkerboard");
-    }
-
-    if (parametrisation_.has("pattern")) {
-        plan.add("misc.pattern");
-    }
-
-    if (user_grid) {
-        ASSERT(!user_reduced);
-        ASSERT(!user_regular);
-        ASSERT(!user_octahedral);
-        ASSERT(!user_pl);
-        ASSERT(!user_gridname);
-    }
-
-    if (user_reduced) {
-        ASSERT(!user_grid);
-        ASSERT(!user_regular);
-        ASSERT(!user_octahedral);
-        ASSERT(!user_pl);
-        ASSERT(!user_gridname);
-    }
-
-    if (user_regular) {
-        ASSERT(!user_grid);
-        ASSERT(!user_reduced);
-        ASSERT(!user_octahedral);
-        ASSERT(!user_pl);
-        ASSERT(!user_gridname);
-    }
-
-    if (user_octahedral) {
-        ASSERT(!user_grid);
-        ASSERT(!user_reduced);
-        ASSERT(!user_regular);
-        ASSERT(!user_pl);
-        ASSERT(!user_gridname);
-    }
-
-    if (user_pl) {
-        ASSERT(!user_grid);
-        ASSERT(!user_reduced);
-        ASSERT(!user_regular);
-        ASSERT(!user_octahedral);
-        ASSERT(!user_gridname);
-    }
-
-    if (user_gridname) {
-        ASSERT(!user_grid);
-        ASSERT(!user_reduced);
-        ASSERT(!user_regular);
-        ASSERT(!user_octahedral);
-        ASSERT(!user_pl);
-    }
-
-    if (parametrisation_.has("field.spectral")) {
-        if (parametrisation_.has("user.truncation")) {
-            plan.add("transform.sh2sh");
-        }
-
-        if (vod2uv) {
-            plan.add("transform.vod2uv");
-        }
-
-        if (user_grid) {
-
-            if (autoresol) {
-                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            }
-
-            if (intermediate_gaussian) {
-                plan.add("transform.sh2reduced-gg", "reduced", intermediate_gaussian);
-                plan.add("interpolate.grid2regular-ll");
-            } else {
-                plan.add("transform.sh2regular-ll");
-            }
-
-            if (parametrisation_.has("user.rotation")) {
-                plan.add("interpolate.grid2rotated-regular-ll");
-                if (wind || vod2uv) {
-                    plan.add("filter.adjust-winds");
-                }
-            }
-
-        }
-
-        if (user_reduced) {
-            if (autoresol) {
-                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            }
-            plan.add("transform.sh2reduced-gg");
-
-        }
-
-        if (user_regular) {
-            if (autoresol) {
-                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            }
-            plan.add("transform.sh2regular-gg");
-        }
-
-        if (user_octahedral) {
-            if (autoresol) {
-                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            }
-            plan.add("transform.sh2octahedral-gg");
-        }
-
-        if (user_pl) {
-            if (autoresol) {
-                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            }
-            plan.add("transform.sh2reduced-gg-pl-given");
-
-        }
-
-        if (user_gridname) {
-            if (autoresol) {
-                plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
-            }
-            std::string gridname;
-            ASSERT (parametrisation_.get("gridname", gridname));
-            plan.add("transform.sh2namedgrid");
-        }
-
-
-    } else if (parametrisation_.has("field.gridded")) {
-
-        if (user_grid) {
-            if (parametrisation_.has("user.rotation")) {
-                plan.add("interpolate.grid2rotated-regular-ll");
-                if (wind || vod2uv) {
-                    plan.add("filter.adjust-winds");
-                }
-            } else {
-                plan.add("interpolate.grid2regular-ll");
-            }
-        }
-
-        if (user_reduced) {
-            if (parametrisation_.has("user.rotation")) {
-                plan.add("interpolate.grid2rotated-reduced-gg");
-                if (wind || vod2uv) {
-                    plan.add("filter.adjust-winds");
-                }
-            } else {
-                plan.add("interpolate.grid2reduced-gg");
-            }
-        }
-
-        if (user_regular) {
-            if (parametrisation_.has("user.rotation")) {
-                plan.add("interpolate.grid2rotated-regular-gg");
-                if (wind || vod2uv) {
-                    plan.add("filter.adjust-winds");
-                }
-            } else {
-                plan.add("interpolate.grid2regular-gg");
-            }
-        }
-
-        if (user_octahedral) {
-            if (parametrisation_.has("user.rotation")) {
-                plan.add("interpolate.grid2rotated-octahedral-gg");
-                if (wind || vod2uv) {
-                    plan.add("filter.adjust-winds");
-                }
-            } else {
-                plan.add("interpolate.grid2octahedral-gg");
-            }
-        }
-
-        if (user_pl) {
-            ASSERT(!parametrisation_.has("user.rotation"));
-            plan.add("interpolate.grid2reduced-gg-pl-given");
-        }
-
-        if (user_gridname) {
-            std::string gridname;
-            ASSERT (parametrisation_.get("gridname", gridname));
-
-            if (parametrisation_.has("user.rotation")) {
-                plan.add("interpolate.grid2rotated-namedgrid");
-                if (wind || vod2uv) {
-                    plan.add("filter.adjust-winds");
-                }
-            } else {
-                plan.add("interpolate.grid2namedgrid");
-            }
-        }
-
-    } else {
-        throw eckit::SeriousBug("Input field in neither spectral nor gridded");
-    }
-
-    if (parametrisation_.has("user.area")) {
-        plan.add("crop.area");
-    }
-
-    if (parametrisation_.has("user.bitmap")) {
-        plan.add("filter.bitmap");
-    }
-
-    if (parametrisation_.has("user.frame")) {
-        plan.add("filter.frame");
+    if (vod2uv) {
+        plan.add("transform.vod2uv");
     }
 }
 
+
+void MARSStyle::sh2grid(action::ActionPlan& plan) const {
+    bool autoresol = false;
+    parametrisation_.get("autoresol", autoresol);
+
+    if (autoresol) {
+        plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+    }
+
+    if (parametrisation_.has("user.grid")) {
+
+        long intermediate_gaussian = 0;
+        parametrisation_.get("intermediate_gaussian", intermediate_gaussian);
+
+        if (intermediate_gaussian) {
+            plan.add("transform.sh2reduced-gg", "reduced", intermediate_gaussian);
+            plan.add("interpolate.grid2regular-ll");
+        } else {
+            plan.add("transform.sh2regular-ll");
+        }
+
+        if (parametrisation_.has("user.rotation")) {
+            plan.add("interpolate.grid2rotated-regular-ll");
+
+            bool vod2uv = false;
+            bool wind = false;
+
+            parametrisation_.get("vod2uv", vod2uv);
+            parametrisation_.get("wind", wind);
+
+            if (wind || vod2uv) {
+                plan.add("filter.adjust-winds");
+            }
+        }
+
+    }
+
+    if (parametrisation_.has("user.reduced")) {
+        plan.add("transform.sh2reduced-gg");
+    }
+
+    if (parametrisation_.has("user.regular")) {
+        plan.add("transform.sh2regular-gg");
+    }
+
+    if (parametrisation_.has("user.octahedral")) {
+        plan.add("transform.sh2octahedral-gg");
+    }
+
+    if (parametrisation_.has("user.pl")) {
+        plan.add("transform.sh2reduced-gg-pl-given");
+    }
+
+    if (parametrisation_.has("user.gridname")) {
+        std::string gridname;
+        ASSERT (parametrisation_.get("gridname", gridname));
+        plan.add("transform.sh2namedgrid");
+    }
+
+    if (parametrisation_.has("user.griddef")) {
+        std::string griddef;
+        ASSERT (parametrisation_.get("griddef", griddef));
+        plan.add("transform.sh2namedgrid");
+    }
+
+}
 
 // register MARS-specialized style
 namespace {

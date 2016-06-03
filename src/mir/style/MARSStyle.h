@@ -16,14 +16,14 @@
 #ifndef MARSStyle_H
 #define MARSStyle_H
 
-#include "mir/style/MIRStyle.h"
+#include "mir/style/ECMWFStyle.h"
 
 
 namespace mir {
 namespace style {
 
 
-class MARSStyle : public MIRStyle {
+class MARSStyle : public ECMWFStyle {
   public:
 
 // -- Exceptions
@@ -87,8 +87,8 @@ class MARSStyle : public MIRStyle {
 
 // -- Overridden methods
 
-    virtual void prepare(action::ActionPlan&) const;
-
+    virtual void sh2grid(action::ActionPlan&) const;
+    virtual void sh2sh(action::ActionPlan&) const;
 
 // -- Class members
     // None

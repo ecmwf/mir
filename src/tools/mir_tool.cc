@@ -100,6 +100,7 @@ void MIRTool::run() {
 
     options.push_back(new SimpleOption<bool>("wind", "Use vector interpolation for wind (not yet)"));
     options.push_back(new SimpleOption<eckit::PathName>("same", "Inperpolate to the same grid as the one provided in the first GRIB of the grib file"));
+    options.push_back(new SimpleOption<eckit::PathName>("griddef", "File containing a list of lat/lon pairs"));
 
 
     //==============================================

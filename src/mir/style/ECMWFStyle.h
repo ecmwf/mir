@@ -13,17 +13,18 @@
 /// @date Apr 2015
 
 
-#ifndef DisseminationStyle_H
-#define DisseminationStyle_H
+#ifndef ECMWFStyle_H
+#define ECMWFStyle_H
 
-#include "mir/style/ECMWFStyle.h"
+#include "mir/style/MIRStyle.h"
 
 
 namespace mir {
 namespace style {
 
+struct Requirements;
 
-class DisseminationStyle : public ECMWFStyle {
+class ECMWFStyle : public MIRStyle {
   public:
 
 // -- Exceptions
@@ -31,11 +32,11 @@ class DisseminationStyle : public ECMWFStyle {
 
 // -- Contructors
 
-    DisseminationStyle(const param::MIRParametrisation&);
+    ECMWFStyle(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    ~DisseminationStyle(); // Change to virtual if base class
+    ~ECMWFStyle(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -63,7 +64,12 @@ class DisseminationStyle : public ECMWFStyle {
 
 // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+
+    virtual void prologue(action::ActionPlan&) const;
+    virtual void sh2sh(action::ActionPlan&) const = 0;
+    virtual void sh2grid(action::ActionPlan&) const = 0;
+    virtual void grid2grid(action::ActionPlan&) const;
+    virtual void epilogue(action::ActionPlan&) const;
 
 // -- Overridden methods
     // None
@@ -78,8 +84,8 @@ class DisseminationStyle : public ECMWFStyle {
 
 // No copy allowed
 
-    DisseminationStyle(const DisseminationStyle&);
-    DisseminationStyle& operator=(const DisseminationStyle&);
+    ECMWFStyle(const ECMWFStyle&);
+    ECMWFStyle& operator=(const ECMWFStyle&);
 
 // -- Members
 
@@ -87,8 +93,7 @@ class DisseminationStyle : public ECMWFStyle {
 
 // -- Overridden methods
 
-    void sh2sh(action::ActionPlan& plan) const;
-    void sh2grid(action::ActionPlan& plan) const;
+    virtual void prepare(action::ActionPlan&) const;
 
 
 // -- Class members
@@ -99,7 +104,7 @@ class DisseminationStyle : public ECMWFStyle {
 
 // -- Friends
 
-    // friend std::ostream& operator<<(std::ostream& s, const DisseminationStyle& p)
+    // friend std::ostream& operator<<(std::ostream& s, const ECMWFStyle& p)
     // { p.print(s); return s; }
 
 };

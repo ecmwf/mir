@@ -164,6 +164,8 @@ style/AutoResol.cc
 style/AutoResol.h
 style/MARSStyle.cc
 style/MARSStyle.h
+style/ECMWFStyle.cc
+style/ECMWFStyle.h
 style/DisseminationStyle.cc
 style/DisseminationStyle.h
 style/MIRStyle.cc
