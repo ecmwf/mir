@@ -32,6 +32,7 @@
 #include "mir/caching/CroppingCache.h"
 #include "mir/log/MIR.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/caching/InMemoryCache.h"
 
 
 namespace mir {
@@ -55,7 +56,7 @@ struct LL {
 
 
 static eckit::Mutex local_mutex;
-static std::map< std::string, caching::CroppingCacheEntry > cache;
+static InMemoryCache<caching::CroppingCacheEntry> cache(20);
 
 
 AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):
@@ -105,13 +106,14 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    caching::CroppingCacheEntry &c = cache[key];
-    if (c.mapping_.size() > 0) {
-        return c;
+    InMemoryCache<caching::CroppingCacheEntry>::iterator a = cache.find(key);
+    if (a != cache.end()) {
+        return *a;
     }
 
     static caching::CroppingCache disk;
 
+    caching::CroppingCacheEntry& c = cache[key];
     if (caching && disk.retrieve(key, c)) {
         return c;
     }

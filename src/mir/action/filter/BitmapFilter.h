@@ -87,10 +87,11 @@ class BitmapFilter : public Action {
 
 // -- Members
 
-    const util::Bitmap* bitmap_;
+    std::string path_;
 
 // -- Methods
-    // None
+
+    util::Bitmap& bitmap() const;
 
 // -- Overridden methods
 

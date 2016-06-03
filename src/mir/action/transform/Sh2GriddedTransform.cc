@@ -37,6 +37,7 @@
 #include "mir/caching/LegendreLoader.h"
 #include "mir/log/MIR.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/caching/InMemoryCache.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
@@ -59,7 +60,7 @@ struct TransCache {
 };
 
 static eckit::Mutex amutex;
-static std::map<std::string, TransCache> trans_handles;
+static mir::InMemoryCache<TransCache> trans_handles(2);
 
 #endif
 

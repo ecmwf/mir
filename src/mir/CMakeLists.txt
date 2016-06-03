@@ -108,6 +108,8 @@ api/emoslib.cc
 api/emoslib.h
 log/MIR.cc
 log/MIR.h
+caching/InMemoryCache.cc
+caching/InMemoryCache.h
 caching/CroppingCache.cc
 caching/CroppingCache.h
 caching/FileLoader.cc
@@ -386,6 +388,8 @@ util/Rotation.h
 util/MIRStatistics.cc
 util/MIRStatistics.h
   )
+
+list(APPEND mir_tmpls caching/InMemoryCache.cc)
 
 ecbuild_add_library(
   TARGET             mir

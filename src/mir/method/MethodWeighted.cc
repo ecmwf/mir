@@ -42,6 +42,7 @@
 #include "mir/log/MIR.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/caching/MeshCache.h"
+#include "mir/caching/InMemoryCache.h"
 
 // using eckit::Log;
 using mir::util::compare::is_approx_zero;
@@ -58,7 +59,7 @@ namespace method {
 
 namespace {
     static eckit::Mutex local_mutex;
-    static std::map<std::string, WeightMatrix> matrix_cache;
+    static InMemoryCache<WeightMatrix> matrix_cache(10);
 }
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation) :
@@ -128,9 +129,9 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::grid::Grid &in, const
     const std::string key_no_masks   = base_name + "-"      + md5_no_masks;
     const std::string key_with_masks = base_name +  "-LSM-" + md5_with_masks;
 
-    std::map<std::string, WeightMatrix>::iterator j = matrix_cache.find(key_with_masks);
+    InMemoryCache<WeightMatrix>::iterator j = matrix_cache.find(key_with_masks);
     if (j != matrix_cache.end()) {
-        return (*j).second;
+        return *j;
     }
 
     const std::string cache_key = (masks.active() && masks.cacheable()) ?
@@ -177,10 +178,10 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::grid::Grid &in, const
     }
 
     here = timer.elapsed();
-    std::swap(matrix_cache[key_with_masks], W);
-    eckit::Log::trace<MIR>() << "Swap matrix " << timer.elapsed() - here << std::endl;
 
-    return matrix_cache[key_with_masks];
+    WeightMatrix& w = matrix_cache[key_with_masks];
+    std::swap(w, W);
+    return w;
 }
 
 lsm::LandSeaMasks MethodWeighted::getMasks(const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const {

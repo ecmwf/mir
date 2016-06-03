@@ -24,6 +24,7 @@
 
 #include "mir/action/filter/BitmapFilter.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/caching/InMemoryCache.h"
 
 
 namespace mir {
@@ -32,25 +33,13 @@ namespace action {
 
 namespace {
 static eckit::Mutex local_mutex;
-static std::map< std::string, util::Bitmap *> cache;
+static InMemoryCache<util::Bitmap> cache(20);
 }
 
 
 BitmapFilter::BitmapFilter(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
-
-    std::string path;
-    ASSERT(parametrisation.get("user.bitmap", path));
-
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, util::Bitmap *>::iterator j = cache.find(path);
-    if (j == cache.end()) {
-        bitmap_ = cache[path] = new util::Bitmap(path);
-    } else {
-        bitmap_ = (*j).second;
-    }
-
-    ASSERT(bitmap_);
+    ASSERT(parametrisation.get("user.bitmap", path_));
 }
 
 
@@ -58,40 +47,53 @@ BitmapFilter::~BitmapFilter() {
 }
 
 
+
+
 bool BitmapFilter::sameAs(const Action& other) const {
     const BitmapFilter* o = dynamic_cast<const BitmapFilter*>(&other);
-    return o && (bitmap_ == o->bitmap_);
+    return o && (path_ == o->path_);
 }
 
 void BitmapFilter::print(std::ostream &out) const {
-    out << "BitmapFilter[bitmap=" << *bitmap_ << "]";
+    out << "BitmapFilter[path=" << path_ << "]";
 }
 
+
+util::Bitmap& BitmapFilter::bitmap() const {
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    InMemoryCache<util::Bitmap>::iterator j  = cache.find(path_);
+    if (j == cache.end()) {
+        return cache.insert(path_, new util::Bitmap(path_));
+    }
+    return *j;
+}
 
 void BitmapFilter::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
 
     eckit::AutoTiming timing(statistics.timer_, statistics.bitmapTiming_);
+
+    util::Bitmap& b = bitmap();
 
     for (size_t f = 0; f < field.dimensions() ; f++) {
 
         double missingValue = field.missingValue();
         std::vector<double> &values = field.direct(f);
 
-        if (values.size() != bitmap_->width() * bitmap_->height()) {
+        if (values.size() != b.width() * b.height()) {
             std::ostringstream os;
             os << "BitmapFilter::execute size mismatch: values=" << values.size()
-               << ", bitmap=" << bitmap_->width() << "x" << bitmap_->height();
+               << ", bitmap=" << b.width() << "x" << b.height();
 
             throw eckit::UserError(os.str());
         }
 
 
         size_t k = 0;
-        for (size_t j = 0; j < bitmap_->height() ; j++ ) {
+        for (size_t j = 0; j < b.height() ; j++ ) {
 
-            for (size_t i = 0; i < bitmap_->width() ; i++ ) {
+            for (size_t i = 0; i < b.width() ; i++ ) {
 
-                if (!bitmap_->on(j, i)) {
+                if (!b.on(j, i)) {
                     values[k] = missingValue;
                 }
                 k++;
