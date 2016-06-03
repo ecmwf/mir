@@ -67,6 +67,7 @@ struct TransCache {
     ~TransCache() {
         std::cout << "Delete " << *this << std::endl;
         trans_delete(&trans_);
+        delete loader_;
     }
 };
 

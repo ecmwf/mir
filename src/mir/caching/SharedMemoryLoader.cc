@@ -325,25 +325,32 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
 
     shmid = shmget(key, 0, 0600);
     if (shmid < 0 && errno != ENOENT) {
-        throw eckit::FailedSystemCall("Cannot get shared memory for " + path);
+        // throw eckit::FailedSystemCall("Cannot get shared memory for " + path);
+        std::cout << "Cannot get shared memory for " << path << eckit::Log::syserr << std::endl;
+        return;
     }
 
     if (shmid < 0 && errno == ENOENT) {
         // std::cout << "SharedMemory from " << path  << " already unloaded" <<std::endl;
     } else {
-        SYSCALL(shmctl(shmid, IPC_RMID, 0));
+        if(shmctl(shmid, IPC_RMID, 0) < 0) {
+             std::cout << "Cannot delete memory for " << path << eckit::Log::syserr << std::endl;
+        }
         // std::cout << "Succefully unloaded SharedMemory from " << path  << std::endl;
     }
 
     sem = semget(key, 1, 0600);
     if (sem < 0 && errno != ENOENT) {
-        throw eckit::FailedSystemCall("Cannot get shared semaphor for " + path);
+        std::cout << "Cannot get shared shemaphore for " << path << eckit::Log::syserr << std::endl;
+        return;
     }
 
     if (sem < 0 && errno == ENOENT) {
         // std::cout << "SharedMemory semaphore for " << path  << " already unloaded" <<std::endl;
     } else {
-        SYSCALL(semctl(sem, 0, IPC_RMID, 0));
+        if(semctl(sem, 0, IPC_RMID, 0) < 0) {
+            std::cout << "Cannot delete semaphore for " << path << eckit::Log::syserr << std::endl;
+        }
         // std::cout << "SharedMemory removed semaphore for " << path  <<std::endl;
     }
 
