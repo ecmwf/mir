@@ -219,9 +219,7 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
         }
 
         size_t len = 0;
-        bool first = true;
-        size_t count = 0;
-        char last = '-';
+
 
         std::vector<bool> bitmap(size);
         bitmap.reserve(size);
