@@ -18,7 +18,7 @@ namespace mir {
 template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity):
     name_(name),
-    capacity_(eckit::Resource<size_t>(name + "InMemoryCacheCapacity", capacity)) {
+    capacity_(eckit::Resource<size_t>(name + "InMemoryCacheCapacity;$CACHE_" + name, capacity)) {
     ASSERT(capacity_ > 0);
 }
 
