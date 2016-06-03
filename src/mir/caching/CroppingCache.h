@@ -31,6 +31,8 @@ struct CroppingCacheEntry {
 
     std::vector<size_t> mapping_;
     util::BoundingBox bbox_;
+    void print(std::ostream& s) const;
+    friend std::ostream& operator<<(std::ostream& out, const CroppingCacheEntry& e) { e.print(out); return out; }
 
 };
 

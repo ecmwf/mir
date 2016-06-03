@@ -57,7 +57,14 @@ struct TransCache {
     struct Trans_t trans_;
     mir::caching::LegendreLoader *loader_;
     TransCache(): loader_(0) {}
+    void print(std::ostream& s) const {
+        s << "TransCache[";
+        if(loader_) s << *loader_;
+        s << "]";
+    }
+    friend std::ostream& operator<<(std::ostream& out, const TransCache& e) { e.print(out); return out; }
 };
+
 
 static eckit::Mutex amutex;
 static mir::InMemoryCache<TransCache> trans_handles("mirCoefficients", 2);

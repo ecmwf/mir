@@ -97,7 +97,9 @@ bool CroppingCache::retrieve(const std::string &key, CroppingCacheEntry &c) cons
     return true;
 }
 
-
+void CroppingCacheEntry::print(std::ostream& out) const {
+    out << "CroppingCacheEntry[size=" <<  mapping_.size() << ",bbox=" << bbox_ << "]";
+}
 }  // namespace method
 }  // namespace mir
 

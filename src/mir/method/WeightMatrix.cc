@@ -58,6 +58,14 @@ void WeightMatrix::prune(double value) {
     matrix_.prune(value);
 }
 
+void WeightMatrix::print(std::ostream& out) const {
+    out << "WeightMatrix[row="
+        << rows()
+        << ",cols"
+        << cols()
+        << "]";
+}
+
 void WeightMatrix::multiply(const std::vector<double>& values, std::vector<double>& result) const {
 
     // FIXME: remove this const cast once Vector provides read-only view
@@ -103,9 +111,9 @@ void WeightMatrix::cleanup() {
         size_t c = cols();
         size_t total = r * c;
         eckit::Log::trace<MIR>() << "MethodWeighted::cleanupMatrix fixed "
-                           << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
-                           << " (matrix is " << eckit::BigNum(r) << "x" << eckit::BigNum(c) << ", total=" <<
-                           eckit::BigNum(total) << ")" << std::endl;
+                                 << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
+                                 << " (matrix is " << eckit::BigNum(r) << "x" << eckit::BigNum(c) << ", total=" <<
+                                 eckit::BigNum(total) << ")" << std::endl;
     }
     prune(0.0);
 }

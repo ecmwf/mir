@@ -66,6 +66,8 @@ static inline double score(size_t count, size_t recent, size_t age) {
 template<class T>
 T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
     ASSERT(ptr);
+    std::cout << "Insert in InMemoryCache " << *ptr << std::endl;
+
     typename std::map<std::string, Entry*>::iterator j = cache_.find(key);
     if (j != cache_.end()) {
         delete (*j).second;
@@ -97,9 +99,15 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
                   <<  name_
                   << " best="
                   << m
-                  << ", " << eckit::BigNum((*j).second->access_)
-                  << " " <<  eckit::Seconds(now - (*j).second->last_)
-                  << " " << eckit::Seconds(now - (*j).second->insert_)
+                  << ", " << eckit::BigNum((*best).second->access_)
+                  << " " <<  eckit::Seconds(now - (*best).second->last_)
+                  << " " << eckit::Seconds(now - (*best).second->insert_)
+                  << std::endl;
+
+        std::cout << "Evicting entries from InMemoryCache "
+                  <<  name_
+                  << " "
+                  << *((*best).second->ptr_)
                   << std::endl;
 
         delete (*best).second;

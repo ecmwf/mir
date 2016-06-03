@@ -85,6 +85,10 @@ public: // methods
 private: // members
 
     Matrix matrix_;
+
+
+    void print(std::ostream& s) const;
+    friend std::ostream& operator<<(std::ostream& out, const WeightMatrix& e) { e.print(out); return out; }
 };
 
 //----------------------------------------------------------------------------------------------------------------------
