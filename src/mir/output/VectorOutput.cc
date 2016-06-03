@@ -28,9 +28,9 @@ namespace mir {
 namespace output {
 
 
-VectorOutput::VectorOutput(MIROutput &component1, MIROutput &v_component):
+VectorOutput::VectorOutput(MIROutput &component1, MIROutput &component2):
     component1_(component1),
-    component2_(v_component) {
+    component2_(component2) {
 }
 
 

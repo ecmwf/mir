@@ -250,6 +250,8 @@ output/UVOutput.cc
 output/UVOutput.h
 output/VectorOutput.cc
 output/VectorOutput.h
+output/ParamOutput.cc
+output/ParamOutput.h
 output/WindOutput.cc
 output/WindOutput.h
 packing/ArchivedValue.cc
