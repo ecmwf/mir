@@ -184,8 +184,6 @@ const WeightMatrix &MethodWeighted::getMatrix(const atlas::grid::Grid &in, const
         W.validate("applyMasks");
     }
 
-    here = timer.elapsed();
-
     WeightMatrix& w = matrix_cache[key_with_masks];
     std::swap(w, W);
     return w;
