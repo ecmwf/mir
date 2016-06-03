@@ -53,15 +53,30 @@ void Binop<T>::execute(data::MIRField & field, util::MIRStatistics& statistics) 
 
     // eckit::AutoTiming timing(statistics.timer_, statistics.frameTiming_);
 
-    double scalar = scalar_;
+   double scalar = scalar_;
 
-    for (size_t i = 0; i < field.dimensions(); i++ ) {
-
+   if(field.hasMissing()) {
         double missingValue = field.missingValue();
-        std::vector<double> &values = field.direct(i);
+        for (size_t i = 0; i < field.dimensions(); i++ ) {
 
-        for(std::vector<double>::iterator j = values.begin(); j != values.end(); ++j) {
-            *j = T::op(*j, scalar);
+            std::vector<double> &values = field.direct(i);
+
+            for(std::vector<double>::iterator j = values.begin(); j != values.end(); ++j) {
+                if(*j != missingValue) {
+                    *j = T::op(*j, scalar);
+                }
+            }
+        }
+
+    }
+    else {
+        for (size_t i = 0; i < field.dimensions(); i++ ) {
+
+            std::vector<double> &values = field.direct(i);
+
+            for(std::vector<double>::iterator j = values.begin(); j != values.end(); ++j) {
+                *j = T::op(*j, scalar);
+            }
         }
     }
 }
