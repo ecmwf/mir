@@ -23,7 +23,6 @@
 
 #include "mir/util/Grib.h"
 #include "mir/util/BoundingBox.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/gauss/Gaussian.h"
 #include "mir/param/MIRParametrisation.h"
 

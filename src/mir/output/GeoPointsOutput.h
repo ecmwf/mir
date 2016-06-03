@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef UnstructuredOutput_H
-#define UnstructuredOutput_H
+#ifndef GeoPointsOutput_H
+#define GeoPointsOutput_H
 
 #include "mir/output/MIROutput.h"
 
@@ -28,7 +28,7 @@ namespace mir {
 namespace output {
 
 
-class UnstructuredOutput : public MIROutput {
+class GeoPointsOutput : public MIROutput {
   public:
 
 // -- Exceptions
@@ -36,11 +36,11 @@ class UnstructuredOutput : public MIROutput {
 
 // -- Contructors
 
-    UnstructuredOutput(const std::string& path);
+    GeoPointsOutput(const std::string& path);
 
 // -- Destructor
 
-    ~UnstructuredOutput(); // Change to virtual if base class
+    ~GeoPointsOutput(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -81,8 +81,8 @@ class UnstructuredOutput : public MIROutput {
 
 // No copy allowed
 
-    UnstructuredOutput(const UnstructuredOutput&);
-    UnstructuredOutput& operator=(const UnstructuredOutput&);
+    GeoPointsOutput(const GeoPointsOutput&);
+    GeoPointsOutput& operator=(const GeoPointsOutput&);
 
 // -- Members
 
@@ -109,7 +109,7 @@ class UnstructuredOutput : public MIROutput {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const UnstructuredOutput& p)
+    //friend ostream& operator<<(ostream& s,const GeoPointsOutput& p)
     // { p.print(s); return s; }
 
 };

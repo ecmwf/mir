@@ -240,8 +240,8 @@ output/RawOutput.cc
 output/RawOutput.h
 output/UVOutput.cc
 output/UVOutput.h
-output/UnstructuredOutput.cc
-output/UnstructuredOutput.h
+output/GeoPointsOutput.cc
+output/GeoPointsOutput.h
 output/VectorOutput.cc
 output/VectorOutput.h
 output/WindOutput.cc

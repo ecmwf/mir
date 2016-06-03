@@ -50,8 +50,6 @@ class UnstructuredGrid : public Gridded {
 
     // -- Methods
 
-    const std::vector<double>& latitudes() const;
-    const std::vector<double>& longitudes() const;
 
     // -- Overridden methods
     // None
@@ -104,6 +102,8 @@ class UnstructuredGrid : public Gridded {
     virtual void validate(const std::vector<double> &values) const;
 
     virtual bool globalDomain() const;
+    virtual Iterator* rotatedIterator() const; // After rotation
+    virtual Iterator* unrotatedIterator() const; // Before rotation
 
     // -- Class members
     // None

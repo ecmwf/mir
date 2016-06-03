@@ -16,57 +16,48 @@
 #include <iostream>
 #include <fstream>
 
-#include "mir/output/UnstructuredOutput.h"
+#include "mir/output/GeoPointsOutput.h"
 #include "eckit/exception/Exceptions.h"
 #include "mir/data/MIRField.h"
-#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/repres/Iterator.h"
 #include "mir/param/MIRParametrisation.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir {
 namespace output {
 
 
-UnstructuredOutput::UnstructuredOutput(const std::string& path):
+GeoPointsOutput::GeoPointsOutput(const std::string& path):
     path_(path) {
 }
 
 
-UnstructuredOutput::~UnstructuredOutput() {
+GeoPointsOutput::~GeoPointsOutput() {
 }
 
 
-bool UnstructuredOutput::sameAs(const MIROutput& other) const {
-    const UnstructuredOutput* o = dynamic_cast<const UnstructuredOutput*>(&other);
+bool GeoPointsOutput::sameAs(const MIROutput& other) const {
+    const GeoPointsOutput* o = dynamic_cast<const GeoPointsOutput*>(&other);
     return o && (path_ == o->path_);
 }
 
 
-size_t UnstructuredOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+size_t GeoPointsOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
     NOTIMP;
     return 0;
 }
 
 static const char* keys[] = {"class", "type", "stream", "expver",  "date", "time", "step", "number", "levtype", "levelist", "param", 0};
 
-size_t UnstructuredOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+size_t GeoPointsOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
 
     std::cout << "Save " << *this << std::endl;
 
-
-
-
     ASSERT(field.dimensions() == 1);
-    const repres::other::UnstructuredGrid *grid = dynamic_cast<const repres::other::UnstructuredGrid *>(field.representation());
-    ASSERT(grid);
-
-    const std::vector<double>& latitudes = grid->latitudes();
-    const std::vector<double>& longitudes = grid->longitudes();
-
 
     const std::vector<double> values = field.values(0);
-    ASSERT(values.size() == latitudes.size());
-    ASSERT(values.size() == longitudes.size());
 
     std::ofstream out(path_);
     if (!out) {
@@ -86,11 +77,17 @@ size_t UnstructuredOutput::save(const param::MIRParametrisation &param, input::M
 
     out << "#DATA" << std::endl;
 
-    std::vector<double>::const_iterator la = latitudes.begin();
-    std::vector<double>::const_iterator lo = longitudes.begin();
 
-    for (std::vector<double>::const_iterator v = values.begin(); v != values.end(); ++v, ++la, ++lo) {
-        out << *la << ' ' << *lo << ' ' << *v << std::endl;
+    eckit::ScopedPtr<repres::Iterator> it(field.representation()->rotatedIterator());
+    double lat;
+    double lon;
+
+    std::vector<double>::const_iterator v = values.begin();
+
+    while (it->next(lat, lon)) {
+        ASSERT(v != values.end());
+        out << lat << ' ' << lon << ' ' << *v << std::endl;
+        ++v;
     }
 
     out.close();
@@ -101,8 +98,8 @@ size_t UnstructuredOutput::save(const param::MIRParametrisation &param, input::M
 }
 
 
-void UnstructuredOutput::print(std::ostream &out) const {
-    out << "UnstructuredOutput[path=" << path_ << "]";
+void GeoPointsOutput::print(std::ostream &out) const {
+    out << "GeoPointsOutput[path=" << path_ << "]";
 }
 
 
