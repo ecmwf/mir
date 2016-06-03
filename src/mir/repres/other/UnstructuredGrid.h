@@ -50,6 +50,9 @@ class UnstructuredGrid : public Gridded {
 
     // -- Methods
 
+    const std::vector<double>& latitudes() const;
+    const std::vector<double>& longitudes() const;
+
     // -- Overridden methods
     // None
 

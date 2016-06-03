@@ -1,0 +1,112 @@
+/*
+ * (C) Copyright 1996-2015 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
+
+
+#include <iostream>
+#include <fstream>
+
+#include "mir/output/UnstructuredOutput.h"
+#include "eckit/exception/Exceptions.h"
+#include "mir/data/MIRField.h"
+#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/param/MIRParametrisation.h"
+
+
+namespace mir {
+namespace output {
+
+
+UnstructuredOutput::UnstructuredOutput(const std::string& path):
+    path_(path) {
+}
+
+
+UnstructuredOutput::~UnstructuredOutput() {
+}
+
+
+bool UnstructuredOutput::sameAs(const MIROutput& other) const {
+    const UnstructuredOutput* o = dynamic_cast<const UnstructuredOutput*>(&other);
+    return o && (path_ == o->path_);
+}
+
+
+size_t UnstructuredOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+    NOTIMP;
+    return 0;
+}
+
+static const char* keys[] = {"class", "type", "stream", "expver",  "date", "time", "step", "number", "levtype", "levelist", "param", 0};
+
+size_t UnstructuredOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+
+    std::cout << "Save " << *this << std::endl;
+
+
+
+
+    ASSERT(field.dimensions() == 1);
+    const repres::other::UnstructuredGrid *grid = dynamic_cast<const repres::other::UnstructuredGrid *>(field.representation());
+    ASSERT(grid);
+
+    const std::vector<double>& latitudes = grid->latitudes();
+    const std::vector<double>& longitudes = grid->longitudes();
+
+
+    const std::vector<double> values = field.values(0);
+    ASSERT(values.size() == latitudes.size());
+    ASSERT(values.size() == longitudes.size());
+
+    std::ofstream out(path_);
+    if (!out) {
+        throw eckit::CantOpenFile(path_);
+    }
+
+    out << "#GEO" << std::endl;
+
+    size_t i = 0;
+    while (keys[i]) {
+        std::string v;
+        if (param.get(keys[i], v)) {
+            out << "# " << keys[i] << "=" << v << std::endl;
+        }
+        i++;
+    }
+
+    out << "#DATA" << std::endl;
+
+    std::vector<double>::const_iterator la = latitudes.begin();
+    std::vector<double>::const_iterator lo = longitudes.begin();
+
+    for (std::vector<double>::const_iterator v = values.begin(); v != values.end(); ++v, ++la, ++lo) {
+        out << *la << ' ' << *lo << ' ' << *v << std::endl;
+    }
+
+    out.close();
+    if (out.bad()) {
+        throw eckit::WriteError(path_);
+    }
+    return 0;
+}
+
+
+void UnstructuredOutput::print(std::ostream &out) const {
+    out << "UnstructuredOutput[path=" << path_ << "]";
+}
+
+
+
+}  // namespace output
+}  // namespace mir
+

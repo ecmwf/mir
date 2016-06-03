@@ -38,6 +38,8 @@
 #include "mir/lsm/LSMChooser.h"
 #include "mir/method/Method.h"
 #include "mir/output/GribFileOutput.h"
+#include "mir/output/UnstructuredOutput.h"
+
 #include "mir/output/UVOutput.h"
 #include "mir/output/WindOutput.h"
 #include "mir/packing/Packer.h"
@@ -198,11 +200,17 @@ void MIRTool::run() {
     args.get("dummy", dummy);
 
 
+
+
+
     if (dummy) {
         mir::input::DummyInput input;
         mir::output::GribFileOutput output(args(1));
         process(job, input, output, "field");
-    } else if (wind) {
+        return;
+    }
+
+    if (wind) {
         ASSERT(!vod2uv);
         ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
 
@@ -215,8 +223,11 @@ void MIRTool::run() {
         mir::input::WindInput winput(input1, input2);
         mir::output::WindOutput woutput(output, output);
         process(job, winput, woutput, "wind");
+        return;
 
-    } else if (vod2uv) {
+    }
+
+    if (vod2uv) {
         ASSERT(!wind);
         ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
 
@@ -227,20 +238,29 @@ void MIRTool::run() {
         mir::input::VODInput winput(input1, input2);
         mir::output::UVOutput woutput(output, output);
         process(job, winput, woutput, "wind");
+        return;
 
-    } else {
-
-        mir::input::GribFileInput input(args(0));
-        mir::output::GribFileOutput output(args(1));
-
-        std::string path_lat, path_lon;
-        ASSERT(args.has("latitudes") ==  args.has("longitudes"));
-        if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
-            input.setAuxilaryFiles(path_lat, path_lon);
-        }
-
-        process(job, input, output, "field");
     }
+
+    std::string griddef;
+    if(args.has("griddef")) {
+        mir::input::GribFileInput input(args(0));
+        mir::output::UnstructuredOutput output(args(1));
+        process(job, input, output, "field");
+        return;
+    }
+
+    mir::input::GribFileInput input(args(0));
+    mir::output::GribFileOutput output(args(1));
+
+    std::string path_lat, path_lon;
+    ASSERT(args.has("latitudes") ==  args.has("longitudes"));
+    if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
+        input.setAuxilaryFiles(path_lat, path_lon);
+    }
+
+    process(job, input, output, "field");
+
 }
 
 void MIRTool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {

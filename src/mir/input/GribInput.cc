@@ -193,6 +193,8 @@ static struct {
     {"regular", "N", is("gridType", "regular_gg")},
     {"octahedral", "numberOfParallelsBetweenAPoleAndTheEquator", is("isOctahedral", 1L)},
 
+    /// TODO: is that a good idea?
+    {"param", "paramId"},
 
     {0, 0},
 };
@@ -386,6 +388,8 @@ bool GribInput::get(const std::string &name, std::string &value) const {
         eckit::Log::trace<MIR>() << "grib_get_string(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
+
+    // std::cout << err << "  " << size << " " << name << std::endl;
 
     ASSERT(size < sizeof(buffer) - 1);
 
