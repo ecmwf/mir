@@ -38,7 +38,7 @@ class MIRStatistics;
 namespace api {
 
 
-class MIRJob : public param::SimpleParametrisation, public eckit::option::Configured {
+class MIRJob : public param::SimpleParametrisation, public eckit::Configured {
   public:
 
 // -- Exceptions
