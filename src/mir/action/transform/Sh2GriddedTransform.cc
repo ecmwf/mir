@@ -63,6 +63,11 @@ struct TransCache {
         s << "]";
     }
     friend std::ostream& operator<<(std::ostream& out, const TransCache& e) { e.print(out); return out; }
+
+    ~TransCache() {
+        std::cout << "Delete " << *this << std::endl;
+        trans_delete(&trans_);
+    }
 };
 
 

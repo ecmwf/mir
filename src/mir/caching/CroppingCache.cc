@@ -15,6 +15,7 @@
 #include "eckit/log/Plural.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/serialisation/FileStream.h"
+#include "eckit/log/Bytes.h"
 
 #include "eckit/log/Seconds.h"
 #include "mir/api/mir_version.h"
@@ -98,7 +99,11 @@ bool CroppingCache::retrieve(const std::string &key, CroppingCacheEntry &c) cons
 }
 
 void CroppingCacheEntry::print(std::ostream& out) const {
-    out << "CroppingCacheEntry[size=" <<  mapping_.size() << ",bbox=" << bbox_ << "]";
+    out << "CroppingCacheEntry[size=" <<  mapping_.size() << ",bbox=" << bbox_ << ",size=" << eckit::Bytes(sizeof(size_t) * mapping_.size()) << "]";
+}
+
+CroppingCacheEntry::~CroppingCacheEntry() {
+    std::cout << "Delete " << *this << std::endl;
 }
 }  // namespace method
 }  // namespace mir

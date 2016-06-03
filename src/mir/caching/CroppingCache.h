@@ -29,6 +29,8 @@ namespace caching {
 //----------------------------------------------------------------------------------------------------------------------
 struct CroppingCacheEntry {
 
+    ~CroppingCacheEntry();
+
     std::vector<size_t> mapping_;
     util::BoundingBox bbox_;
     void print(std::ostream& s) const;
