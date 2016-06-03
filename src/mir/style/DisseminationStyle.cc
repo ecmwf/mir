@@ -207,14 +207,13 @@ void DisseminationStyle::prepare(action::ActionPlan &plan) const {
 
     }
 
-    if (parametrisation_.has("user.area")) {
-        plan.add("crop.area");
-    }
-
     if (parametrisation_.has("multiply")) {
         plan.add("multiply");
     }
 
+    if (parametrisation_.has("user.area")) {
+        plan.add("crop.area");
+    }
 
     if (parametrisation_.has("user.bitmap")) {
         plan.add("filter.bitmap");
