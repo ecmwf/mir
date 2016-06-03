@@ -51,7 +51,7 @@ void Binop<T>::print(std::ostream &out) const {
 template<class T>
 void Binop<T>::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
 
-    // eckit::AutoTiming timing(statistics.timer_, statistics.frameTiming_);
+    eckit::AutoTiming timing(statistics.timer_, statistics.calcTiming_);
 
    double scalar = scalar_;
 

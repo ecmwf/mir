@@ -50,6 +50,7 @@ public:
     eckit::Timing matrixTiming_;
     eckit::Timing loadCoeffTiming_;
     eckit::Timing createCoeffTiming_;
+    eckit::Timing calcTiming_;
 
     void report(std::ostream &out, const char *indent = "") const;
 

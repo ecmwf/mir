@@ -33,6 +33,7 @@ MIRStatistics::MIRStatistics(eckit::Stream &s) {
     s >> matrixTiming_;
     s >> loadCoeffTiming_;
     s >> createCoeffTiming_;
+    s >> calcTiming_;
 
 }
 
@@ -48,6 +49,7 @@ void MIRStatistics::encode(eckit::Stream &s) const {
     s << matrixTiming_;
     s << loadCoeffTiming_;
     s << createCoeffTiming_;
+    s << calcTiming_;
 }
 
 MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &other) {
@@ -62,6 +64,7 @@ MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &other) {
     matrixTiming_ += other.matrixTiming_;
     loadCoeffTiming_ += other.loadCoeffTiming_;
     createCoeffTiming_ += other.createCoeffTiming_;
+    calcTiming_ += other.calcTiming_;
     return *this;
 }
 
@@ -78,6 +81,7 @@ MIRStatistics &MIRStatistics::operator/=(size_t n) {
     matrixTiming_ /= n;
     loadCoeffTiming_ /= n;
     createCoeffTiming_ /= n;
+    calcTiming_ /= n;
     return *this;
 }
 
@@ -88,6 +92,7 @@ void MIRStatistics::report(std::ostream &out, const char *indent) const {
     reportTime(out, "Time loading/building coeff.", coefficientTiming_, indent);
     reportTime(out, "Time in VO/D to U/V", vod2uvTiming_, indent);
 
+    reportTime(out, "Time in basic computations", calcTiming_, indent);
     reportTime(out, "Time in area-crop", cropTiming_, indent);
     reportTime(out, "Time in extracting frames", frameTiming_, indent);
     reportTime(out, "Time applying bitmaps", bitmapTiming_, indent);
