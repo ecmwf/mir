@@ -56,7 +56,7 @@ void NearestLSM::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace&
     // get the land-sea masks, with boolean masking on point (node) indices
     double here = timer.elapsed();
 
-    const lsm::LandSeaMasks masks = getMasks(in.grid(), out.grid());
+    const lsm::LandSeaMasks masks = getMasks(in.grid(), out.grid(), statistics);
     ASSERT(masks.active());
 
     Log::trace<MIR>() << "NearestLSM compute LandSeaMasks " << timer.elapsed() - here << std::endl;
@@ -120,14 +120,14 @@ void NearestLSM::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace&
 }
 
 
-lsm::LandSeaMasks NearestLSM::getMasks(const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
+lsm::LandSeaMasks NearestLSM::getMasks(const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
     return lsm::LandSeaMasks::lookup(runtime, in, out);
 }
 
 
-void NearestLSM::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const {
+void NearestLSM::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &, util::MIRStatistics& statistics) const {
     // FIXME this function should not be overriding to do nothing
 }
 
