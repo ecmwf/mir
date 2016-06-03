@@ -31,7 +31,7 @@ class ParamOutput : public MIROutput {
 
     // -- Contructors
 
-    ParamOutput(MIROutput &output);
+    ParamOutput(MIROutput &output, long param);
 
     // -- Destructor
 
@@ -69,6 +69,8 @@ class ParamOutput : public MIROutput {
 
     virtual size_t copy(const param::MIRParametrisation &, input::MIRInput &) ; // Not iterpolation performed
     virtual size_t save(const param::MIRParametrisation &, input::MIRInput &, data::MIRField &);
+    virtual bool sameAs(const MIROutput& other) const;
+    virtual void print(std::ostream &out) const;
 
     // -- Class members
     // None

@@ -26,8 +26,9 @@ namespace output {
 
 // This class change the param id of the field (for TP = CP + LSP)
 
-ParamOutput::ParamOutput(MIROutput &output):
-    output_(output) {
+ParamOutput::ParamOutput(MIROutput &output, long param):
+    output_(output),
+    param_(param) {
 }
 
 
@@ -43,6 +44,16 @@ size_t ParamOutput::save(const param::MIRParametrisation &param, input::MIRInput
     param::RuntimeParametrisation runtime(param);
     runtime.set("param-id", param_);
     return output_.save(runtime, input, field);
+}
+
+bool ParamOutput::sameAs(const MIROutput& other) const {
+    const ParamOutput* o = dynamic_cast<const ParamOutput*>(&other);
+    return o && (param_ == o->param_);
+}
+
+
+void ParamOutput::print(std::ostream &out) const {
+    out << "ParamOutput[param=" << param_ << ",output=" << output_ << "]";
 }
 
 
