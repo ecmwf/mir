@@ -28,6 +28,7 @@
 namespace mir {
 namespace input {
 
+// See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
 GeoPointsInput::GeoPointsInput(const std::string& path):
     path_(path) {
@@ -119,42 +120,6 @@ void GeoPointsInput::latitudes(std::vector<double> &latitudes) const {
 void GeoPointsInput::longitudes(std::vector<double> &longitudes) const {
     longitudes = longitudes_;
 }
-
-
-// bool GeoPointsInput::get(const std::string &name, double &value) const {
-
-//     if (name == "north") {
-//         value = 90;
-//         return true;
-//     }
-
-//     if (name == "south") {
-//         value = -90;
-//         return true;
-//     }
-
-//     if (name == "west") {
-//         value = 0;
-//         return true;
-//     }
-
-//     if (name == "east") {
-//         value = 359;
-//         return true;
-//     }
-
-//     if (name == "west_east_increment") {
-//         value = 1;
-//         return true;
-//     }
-
-//     if (name == "south_north_increment") {
-//         value = 1;
-//         return true;
-//     }
-
-//     return FieldParametrisation::get(name, value);
-// }
 
 
 

@@ -28,6 +28,8 @@
 namespace mir {
 namespace output {
 
+// See https://software.ecmwf.int/wiki/display/METV/Geopoints
+
 
 GeoPointsOutput::GeoPointsOutput(const std::string& path):
     path_(path) {
