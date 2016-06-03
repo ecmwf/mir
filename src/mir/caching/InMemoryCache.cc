@@ -68,10 +68,10 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
     ASSERT(ptr);
     std::cout << "Insert in InMemoryCache " << *ptr << std::endl;
 
-    typename std::map<std::string, Entry*>::iterator j = cache_.find(key);
-    if (j != cache_.end()) {
-        delete (*j).second;
-        (*j).second = new Entry(ptr);
+    typename std::map<std::string, Entry*>::iterator k = cache_.find(key);
+    if (k != cache_.end()) {
+        delete (*k).second;
+        (*k).second = new Entry(ptr);
         return *ptr;
     }
 

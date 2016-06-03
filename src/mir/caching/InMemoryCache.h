@@ -29,7 +29,7 @@ namespace mir {
 template<class T>
 class InMemoryCache : public eckit::NonCopyable {
 
-  public:  // methods
+public:  // methods
 
     typedef T* iterator;
 
