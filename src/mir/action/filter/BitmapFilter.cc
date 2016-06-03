@@ -33,7 +33,7 @@ namespace action {
 
 namespace {
 static eckit::Mutex local_mutex;
-static InMemoryCache<util::Bitmap> cache("mirBitmaps", 10);
+static InMemoryCache<util::Bitmap> cache("mirBitmaps", 5);
 }
 
 
