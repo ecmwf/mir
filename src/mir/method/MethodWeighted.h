@@ -59,7 +59,7 @@ public:
 
     virtual void hash(eckit::MD5&) const;
 
-    atlas::mesh::Mesh* generateMeshAndCache(const atlas::grid::Grid& grid) const;
+    atlas::mesh::Mesh& generateMeshAndCache(const atlas::grid::Grid& grid) const;
 
     virtual void generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
 

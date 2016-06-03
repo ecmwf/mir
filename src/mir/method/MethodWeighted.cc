@@ -60,6 +60,7 @@ namespace method {
 namespace {
     static eckit::Mutex local_mutex;
     static InMemoryCache<WeightMatrix> matrix_cache(10);
+    static InMemoryCache<atlas::mesh::Mesh> mesh_cache(2);
 }
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation) :
@@ -71,9 +72,9 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation)
 MethodWeighted::~MethodWeighted() {
 }
 
-atlas::mesh::Mesh* MethodWeighted::generateMeshAndCache(const atlas::grid::Grid& grid) const
+atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid& grid) const
 {
-    atlas::mesh::Mesh* mesh = 0;
+
 
     eckit::MD5 md5;
     grid.hash(md5);
@@ -82,8 +83,14 @@ atlas::mesh::Mesh* MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
 
 //    if((mesh = MeshCache::get(md5.digest()))) { return mesh; }
 
-    mesh = new Mesh();
-    generateMesh(grid, *mesh);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    InMemoryCache<atlas::mesh::Mesh>::iterator j = mesh_cache.find(md5);
+    if(j != mesh_cache.end()) {
+        return *j;
+    }
+
+    atlas::mesh::Mesh& mesh = mesh_cache[md5];
+    generateMesh(grid, mesh);
 
 //    MeshCache::add(md5.digest(), *mesh);
 
