@@ -9,6 +9,8 @@
  */
 
 #include "eckit/config/Resource.h"
+#include "eckit/log/Seconds.h"
+#include "eckit/log/BigNum.h"
 
 namespace mir {
 
@@ -17,14 +19,14 @@ template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity):
     name_(name),
     capacity_(eckit::Resource<size_t>(name + "InMemoryCacheCapacity", capacity)) {
-        ASSERT(capacity_>0);
+    ASSERT(capacity_ > 0);
 }
 
 
 template<class T>
 InMemoryCache<T>::~InMemoryCache() {
-       std::cout << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
-    for(typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
+    std::cout << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
+    for (typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
         delete (*j).second;
     }
 }
@@ -32,7 +34,7 @@ InMemoryCache<T>::~InMemoryCache() {
 template<class T>
 T* InMemoryCache<T>::find(const std::string& key) const {
     typename std::map<std::string, Entry*>::const_iterator j = cache_.find(key);
-    if(j != cache_.end()) {
+    if (j != cache_.end()) {
         (*j).second->access_++;
         (*j).second->last_ = ::time(0);
         return (*j).second->ptr_.get();
@@ -44,7 +46,7 @@ T* InMemoryCache<T>::find(const std::string& key) const {
 template<class T>
 T& InMemoryCache<T>::operator[](const std::string& key) {
     T* ptr = find(key);
-    if(ptr) {
+    if (ptr) {
         return *ptr;
     }
     return create(key);
@@ -65,27 +67,40 @@ template<class T>
 T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
     ASSERT(ptr);
     typename std::map<std::string, Entry*>::iterator j = cache_.find(key);
-    if(j != cache_.end()) {
+    if (j != cache_.end()) {
         delete (*j).second;
         (*j).second = new Entry(ptr);
         return *ptr;
     }
 
-    while(cache_.size() >= capacity_) {
+    while (cache_.size() >= capacity_) {
 
-        std::cout << "Evicting entries from InMemoryCache " << name_ << " capacity=" << capacity_ << std::endl;
+        std::cout << "Evicting entries from InMemoryCache "
+                  << name_
+                  << " capacity="
+                  << capacity_
+                  << std::endl;
 
         time_t now = ::time(0);
         typename std::map<std::string, Entry*>::iterator best = cache_.begin();
         double m = 0;
 
-        for(typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
+        for (typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
             double s = score((*j).second->access_, now - (*j).second->last_, now - (*j).second->insert_);
-            if(s > m) {
+            if (s > m) {
                 m = s;
                 best = j;
             }
         }
+
+        std::cout << "Evicting entries from InMemoryCache "
+                  <<  name_
+                  << " best="
+                  << m
+                  << ", " << eckit::BigNum((*j).second->access_)
+                  << " " <<  eckit::Seconds(now - (*j).second->last_)
+                  << " " << eckit::Seconds(now - (*j).second->insert_)
+                  << std::endl;
 
         delete (*best).second;
         cache_.erase(best);
