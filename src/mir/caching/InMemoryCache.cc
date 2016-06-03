@@ -12,8 +12,16 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/BigNum.h"
 
+#include <time.h>
+#include <sys/time.h>
+
 namespace mir {
 
+inline static double utime() {
+    struct timeval t;
+    ::gettimeofday(&t,0);
+    return double(t.tv_sec) + double(t.tv_usec) * 0.000001;
+}
 
 template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity):
@@ -37,7 +45,7 @@ T* InMemoryCache<T>::find(const std::string& key) const {
     typename std::map<std::string, Entry*>::const_iterator j = cache_.find(key);
     if (j != cache_.end()) {
         (*j).second->access_++;
-        (*j).second->last_ = ::time(0);
+        (*j).second->last_ = utime();
         return (*j).second->ptr_.get();
     }
     return 0;
@@ -53,14 +61,16 @@ T& InMemoryCache<T>::operator[](const std::string& key) {
     return create(key);
 }
 
-static inline double score(size_t count, size_t recent, size_t age) {
+static inline double score(size_t count, double recent, double age) {
     // count: number of accesses
     // age: age in seconds since creation
     // recent: age in seconds since last access
 
     // The higher the score, the most likely to be deleted
 
-    return (double(recent) + double(age)) / double(count);
+    // return (double(recent) + double(age)) / double(count);
+
+    return recent; // LRU
 }
 
 
@@ -84,7 +94,7 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
                   << capacity_
                   << std::endl;
 
-        time_t now = ::time(0);
+        double now = utime();
         typename std::map<std::string, Entry*>::iterator best = cache_.begin();
         double m = 0;
 

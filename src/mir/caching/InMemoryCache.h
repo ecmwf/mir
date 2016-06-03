@@ -53,8 +53,8 @@ private:
     struct Entry {
         eckit::ScopedPtr<T> ptr_;
         size_t access_;
-        time_t last_;
-        time_t insert_;
+        double last_;
+        double insert_;
         Entry(T* ptr): ptr_(ptr), access_(1), last_(::time(0)), insert_(::time(0)) {}
     };
 

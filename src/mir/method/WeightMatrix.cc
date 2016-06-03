@@ -59,9 +59,9 @@ void WeightMatrix::prune(double value) {
 }
 
 void WeightMatrix::print(std::ostream& out) const {
-    out << "WeightMatrix[row="
+    out << "WeightMatrix[rows="
         << rows()
-        << ",cols"
+        << ",cols="
         << cols()
         << "]";
 }
