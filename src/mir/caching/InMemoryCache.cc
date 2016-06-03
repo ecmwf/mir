@@ -23,6 +23,7 @@ InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity):
 
 template<class T>
 InMemoryCache<T>::~InMemoryCache() {
+       std::cout << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
     for(typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
         delete (*j).second;
     }
