@@ -74,8 +74,8 @@ class AutoFDClose {
 
 class SemLocker {
 
-    static const int MAX_WAIT_LOCK = 30;
-    static const int SLEEP = 2;
+    static const int MAX_WAIT_LOCK = 60;
+    static const int SLEEP = 1;
 
     int sem_;
     eckit::PathName path_;
@@ -89,14 +89,14 @@ class SemLocker {
         int retry = 0;
         while (retry < MAX_WAIT_LOCK) {
             if (semop(sem_, _lock, 2 ) < 0) {
-                eckit::Log::warning() << "SharedMemoryLoader: Failed to acquire exclusive lock on " << path_ << std::endl;
+                eckit::Log::warning() << "SharedMemoryLoader: Failed to acquire exclusive lock on " << path_ << " " << eckit::Log::syserr << std::endl;
 
                 retry++;
                 // sprintf(message,"ERR: sharedmem:semop:lock(%s)",path);
                 if (retry >= MAX_WAIT_LOCK) {
                     std::ostringstream os;
                     os << "Failed to acquire semaphore lock for " << path_;
-                    throw eckit::SeriousBug(os.str());
+                    throw eckit::FailedSystemCall(os.str());
                 } else {
                     eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << std::endl;
                     sleep(SLEEP);
