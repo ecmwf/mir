@@ -103,7 +103,7 @@ void CroppingCacheEntry::print(std::ostream& out) const {
 }
 
 CroppingCacheEntry::~CroppingCacheEntry() {
-    std::cout << "Delete " << *this << std::endl;
+    // std::cout << "Delete " << *this << std::endl;
 }
 }  // namespace method
 }  // namespace mir
