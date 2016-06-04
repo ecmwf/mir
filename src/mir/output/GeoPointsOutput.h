@@ -67,6 +67,7 @@ class GeoPointsOutput : public MIROutput {
 
 // -- Methods
 
+    std::string path_;
 
 // -- Overridden methods
     // None
@@ -86,7 +87,6 @@ class GeoPointsOutput : public MIROutput {
 
 // -- Members
 
-    std::string path_;
 
 // -- Methods
     // None

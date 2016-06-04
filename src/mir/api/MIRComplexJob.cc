@@ -79,6 +79,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     eckit::Log::trace<MIR>() << "Field is " << *field << std::endl;
 
     std::cout << ">>>>>>>>>>>> ======" << std::endl;
+    std::cout << *input_ << std::endl;
     std::cout << *field << std::endl;
 
     graph.dump(std::cout, 0);
