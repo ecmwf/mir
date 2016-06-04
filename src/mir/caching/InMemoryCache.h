@@ -50,6 +50,12 @@ private:
     std::string name_;
     size_t capacity_;
 
+    mutable size_t insertions_;
+    mutable size_t evictions_;
+    mutable size_t accesses_;
+    mutable double youngest_;
+    mutable double oldest_;
+
     struct Entry {
         eckit::ScopedPtr<T> ptr_;
         size_t access_;

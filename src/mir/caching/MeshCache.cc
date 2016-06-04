@@ -50,7 +50,7 @@ bool MeshCache::add(const std::string& key, const Mesh& mesh)
 
     PathName tmpfile ( PathName::unique(file) );
 
-    Log::info() << "Inserting mesh in cache (" << file << ")" << std::endl;
+    // Log::info() << "Inserting mesh in cache (" << file << ")" << std::endl;
 
     {
         eckit::FileStream s(tmpfile,"w");

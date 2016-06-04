@@ -116,7 +116,7 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
     if (parametrisation_.has("user.griddef")) {
         std::string griddef;
         ASSERT (parametrisation_.get("griddef", griddef));
-        plan.add("transform.sh2namedgrid");
+        plan.add("transform.sh2griddef");
     }
 
 }
