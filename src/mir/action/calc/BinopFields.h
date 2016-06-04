@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef Binop_H
-#define Binop_H
+#ifndef BinopFields_H
+#define BinopFields_H
 
 #include "mir/action/plan/Action.h"
 
@@ -24,7 +24,7 @@ namespace action {
 
 
 template<class T>
-class Binop : public Action {
+class BinopFields : public Action {
   public:
 
 // -- Exceptions
@@ -32,11 +32,11 @@ class Binop : public Action {
 
 // -- Contructors
 
-    Binop(const param::MIRParametrisation&);
+    BinopFields(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~Binop(); // Change to virtual if base class
+    virtual ~BinopFields(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -78,12 +78,10 @@ class Binop : public Action {
 
 // No copy allowed
 
-    Binop(const Binop&);
-    Binop& operator=(const Binop&);
+    BinopFields(const BinopFields&);
+    BinopFields& operator=(const BinopFields&);
 
 // -- Members
-
-    double scalar_;
 
 // -- Methods
     // None
@@ -102,7 +100,7 @@ class Binop : public Action {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Binop& p)
+    //friend ostream& operator<<(ostream& s,const BinopFields& p)
     //	{ p.print(s); return s; }
 
 };

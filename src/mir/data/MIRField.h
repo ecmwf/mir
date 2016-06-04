@@ -59,6 +59,7 @@ public:
     // -- Methods
 
     size_t dimensions() const;
+    void dimensions(size_t);
 
 
     void representation(const repres::Representation *);

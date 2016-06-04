@@ -12,7 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/action/calc/Binop.h"
+#include "mir/action/calc/BinopScalar.h"
 
 #include <iostream>
 
@@ -27,29 +27,29 @@ namespace action {
 
 
 template<class T>
-Binop<T>::Binop(const param::MIRParametrisation &parametrisation):
+BinopScalar<T>::BinopScalar(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
     scalar_(0) {
     ASSERT(parametrisation.get(T::name(), scalar_));
 }
 
 template<class T>
-Binop<T>::~Binop() {
+BinopScalar<T>::~BinopScalar() {
 }
 
 template<class T>
-bool Binop<T>::sameAs(const Action& other) const {
-    const Binop* o = dynamic_cast<const Binop<T>*>(&other);
+bool BinopScalar<T>::sameAs(const Action& other) const {
+    const BinopScalar* o = dynamic_cast<const BinopScalar<T>*>(&other);
     return o && (scalar_ == o->scalar_);
 }
 
 template<class T>
-void Binop<T>::print(std::ostream &out) const {
-    out << "Binop<" << T::name() << ">[scalar=" << scalar_ << "]";
+void BinopScalar<T>::print(std::ostream &out) const {
+    out << "BinopScalar<" << T::name() << ">[scalar=" << scalar_ << "]";
 }
 
 template<class T>
-void Binop<T>::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+void BinopScalar<T>::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
 
     eckit::AutoTiming timing(statistics.timer_, statistics.calcTiming_);
 
@@ -81,10 +81,10 @@ void Binop<T>::execute(data::MIRField & field, util::MIRStatistics& statistics) 
     }
 }
 
-struct multiply { static const char* name() { return "multiply"; }
+struct multiply { static const char* name() { return "multiply.scalar"; }
 static double op(double a, double b) { return a*b; }};
 
-static ActionBuilder< Binop<multiply> > _multiply(multiply::name());
+static ActionBuilder< BinopScalar<multiply> > _multiply(multiply::name());
 
 
 

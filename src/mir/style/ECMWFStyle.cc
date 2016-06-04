@@ -190,11 +190,17 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
         plan.add("misc.pattern");
     }
 
+    if (parametrisation_.has("add.fields")) {
+        plan.add("add.fields");
+    }
+
 }
 
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
-    if (parametrisation_.has("multiply")) {
-        plan.add("multiply");
+
+    // Could be in the prologue
+    if (parametrisation_.has("multiply.scalar")) {
+        plan.add("multiply.scalar");
     }
 
     if (parametrisation_.has("user.area")) {

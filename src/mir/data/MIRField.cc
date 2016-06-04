@@ -93,6 +93,12 @@ size_t MIRField::dimensions() const {
 }
 
 
+void MIRField::dimensions(size_t size)  {
+    copyOnWrite();
+    return values_.resize(size);
+}
+
+
 MIRField::~MIRField() {
     if (representation_) {
         representation_->detach();
