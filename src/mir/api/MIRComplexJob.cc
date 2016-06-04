@@ -78,6 +78,8 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     eckit::ScopedPtr< data::MIRField > field(input_->field());
     eckit::Log::trace<MIR>() << "Field is " << *field << std::endl;
 
+    std::cout << ">>>>>>>>>>>> ====== ";
+
     std::cout << *input_ << std::endl;
     std::cout << *field << std::endl;
 
