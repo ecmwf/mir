@@ -89,9 +89,14 @@ class SemLocker {
         int retry = 0;
         while (retry < MAX_WAIT_LOCK) {
             if (semop(sem_, _lock, 2 ) < 0) {
+                int save = errno;
+                retry++;
+
+                if (save == EINTR && retry < MAX_WAIT_LOCK) {
+                    continue;
+                }
                 eckit::Log::warning() << "SharedMemoryLoader: Failed to acquire exclusive lock on " << path_ << " " << eckit::Log::syserr << std::endl;
 
-                retry++;
                 // sprintf(message,"ERR: sharedmem:semop:lock(%s)",path);
                 if (retry >= MAX_WAIT_LOCK) {
                     std::ostringstream os;
@@ -100,7 +105,6 @@ class SemLocker {
                 } else {
                     eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << std::endl;
                     sleep(SLEEP);
-                    retry++;
                 }
             } else {
                 break;
@@ -112,6 +116,15 @@ class SemLocker {
         int retry = 0;
         while (retry < MAX_WAIT_LOCK) {
             if (semop(sem_, _unlock, 1) < 0) {
+                int save = errno;
+                retry++;
+
+                if (save == EINTR && retry < MAX_WAIT_LOCK) {
+                    continue;
+                }
+
+                eckit::Log::warning() << "SharedMemoryLoader: Failed to realease exclusive lock on " << path_ << " " << eckit::Log::syserr << std::endl;
+
                 if (retry >= MAX_WAIT_LOCK) {
                     std::ostringstream os;
                     os << "Failed to realease semaphore lock for " << path_;
@@ -119,7 +132,6 @@ class SemLocker {
                 } else {
                     eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << std::endl;
                     sleep(SLEEP);
-                    retry++;
                 }
             } else {
                 break;
@@ -333,8 +345,8 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     if (shmid < 0 && errno == ENOENT) {
         // std::cout << "SharedMemory from " << path  << " already unloaded" <<std::endl;
     } else {
-        if(shmctl(shmid, IPC_RMID, 0) < 0) {
-             std::cout << "Cannot delete memory for " << path << eckit::Log::syserr << std::endl;
+        if (shmctl(shmid, IPC_RMID, 0) < 0) {
+            std::cout << "Cannot delete memory for " << path << eckit::Log::syserr << std::endl;
         }
         // std::cout << "Succefully unloaded SharedMemory from " << path  << std::endl;
     }
@@ -348,7 +360,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     if (sem < 0 && errno == ENOENT) {
         // std::cout << "SharedMemory semaphore for " << path  << " already unloaded" <<std::endl;
     } else {
-        if(semctl(sem, 0, IPC_RMID, 0) < 0) {
+        if (semctl(sem, 0, IPC_RMID, 0) < 0) {
             std::cout << "Cannot delete semaphore for " << path << eckit::Log::syserr << std::endl;
         }
         // std::cout << "SharedMemory removed semaphore for " << path  <<std::endl;
