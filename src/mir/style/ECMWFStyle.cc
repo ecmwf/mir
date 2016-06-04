@@ -38,7 +38,7 @@ ECMWFStyle::~ECMWFStyle() {
 void ECMWFStyle::prepare(action::ActionPlan &plan) const {
     // All the nasty style goes there
 
-    epilogue(plan);
+    prologue(plan);
 
     size_t user_wants_gridded = 0;
 
@@ -89,6 +89,8 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
     }
 
     epilogue(plan);
+
+    // std::cout << plan << std::endl;
 }
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
