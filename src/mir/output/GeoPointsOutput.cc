@@ -62,7 +62,9 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, input::MIRI
 
     param::RuntimeParametrisation runtime(param);
     if (field.paramId(0)) {
-        runtime.set("param", long(field.paramId(0)));
+        std::ostringstream oss;
+        oss << field.paramId(0);
+        runtime.set("param", oss.str());
     }
 
     const std::vector<double> values = field.values(0);
