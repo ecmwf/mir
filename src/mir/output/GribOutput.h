@@ -69,7 +69,10 @@ class GribOutput : public MIROutput {
 
 
 // -- Overridden methods
-    // None
+     // From MIROutput
+
+    virtual size_t copy(const param::MIRParametrisation&, input::MIRInput&); // Not iterpolation performed
+    virtual size_t save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&);
 
 // -- Class members
     // None
@@ -93,10 +96,6 @@ class GribOutput : public MIROutput {
     virtual void out(const void* message, size_t length, bool iterpolated) = 0;
 
 // -- Overridden methods
-    // From MIROutput
-
-    virtual size_t copy(const param::MIRParametrisation&, input::MIRInput&); // Not iterpolation performed
-    virtual size_t save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&);
 
 
 // -- Class members
