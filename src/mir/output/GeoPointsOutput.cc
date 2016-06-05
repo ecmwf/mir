@@ -23,6 +23,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/repres/Representation.h"
+#include "mir/param/RuntimeParametrisation.h"
 
 
 namespace mir {
@@ -59,6 +60,11 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, input::MIRI
 
     ASSERT(field.dimensions() == 1);
 
+    param::RuntimeParametrisation runtime(param);
+    if (field.paramId(0)) {
+        runtime.set("param", long(field.paramId(0)));
+    }
+
     const std::vector<double> values = field.values(0);
 
     std::ofstream out(path_);
@@ -71,7 +77,7 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, input::MIRI
     size_t i = 0;
     while (keys[i]) {
         std::string v;
-        if (param.get(keys[i], v)) {
+        if (runtime.get(keys[i], v)) {
             out << "# " << keys[i] << "=" << v << std::endl;
         }
         i++;
