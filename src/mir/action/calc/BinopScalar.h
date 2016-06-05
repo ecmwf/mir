@@ -84,6 +84,7 @@ class BinopScalar : public Action {
 // -- Members
 
     double scalar_;
+    size_t param_;
 
 // -- Methods
     // None

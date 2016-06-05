@@ -31,6 +31,7 @@ BinopScalar<T>::BinopScalar(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
     scalar_(0) {
     ASSERT(parametrisation.get(T::name(), scalar_));
+    ASSERT(parametrisation.get(T::param(), param_));
 }
 
 template<class T>
@@ -45,7 +46,7 @@ bool BinopScalar<T>::sameAs(const Action& other) const {
 
 template<class T>
 void BinopScalar<T>::print(std::ostream &out) const {
-    out << "BinopScalar<" << T::name() << ">[scalar=" << scalar_ << "]";
+    out << "BinopScalar<" << T::name() << ">[scalar=" << scalar_ << ",param=" << param_ << "]";
 }
 
 template<class T>
@@ -53,36 +54,43 @@ void BinopScalar<T>::execute(data::MIRField & field, util::MIRStatistics& statis
 
     eckit::AutoTiming timing(statistics.timer_, statistics.calcTiming_);
 
-   double scalar = scalar_;
+    double scalar = scalar_;
 
-   if(field.hasMissing()) {
+    if (field.hasMissing()) {
         double missingValue = field.missingValue();
         for (size_t i = 0; i < field.dimensions(); i++ ) {
 
             std::vector<double> &values = field.direct(i);
 
-            for(std::vector<double>::iterator j = values.begin(); j != values.end(); ++j) {
-                if(*j != missingValue) {
+            for (std::vector<double>::iterator j = values.begin(); j != values.end(); ++j) {
+                if (*j != missingValue) {
                     *j = T::op(*j, scalar);
                 }
             }
         }
 
-    }
-    else {
+    } else {
         for (size_t i = 0; i < field.dimensions(); i++ ) {
 
             std::vector<double> &values = field.direct(i);
 
-            for(std::vector<double>::iterator j = values.begin(); j != values.end(); ++j) {
+            for (std::vector<double>::iterator j = values.begin(); j != values.end(); ++j) {
                 *j = T::op(*j, scalar);
             }
         }
     }
+
+    for (size_t i = 0; i < field.dimensions(); i++ ) {
+        field.paramId(i, param_);
+    }
 }
 
-struct multiply { static const char* name() { return "multiply.scalar"; }
-static double op(double a, double b) { return a*b; }};
+struct multiply {
+    static const char* name() { return "multiply.scalar"; }
+    static const char* param() { return "multiply.scalar.param"; }
+
+    static double op(double a, double b) { return a * b; }
+};
 
 static ActionBuilder< BinopScalar<multiply> > _multiply(multiply::name());
 

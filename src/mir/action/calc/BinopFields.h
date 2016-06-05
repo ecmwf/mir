@@ -83,6 +83,8 @@ class BinopFields : public Action {
 
 // -- Members
 
+    size_t param_;
+
 // -- Methods
     // None
 

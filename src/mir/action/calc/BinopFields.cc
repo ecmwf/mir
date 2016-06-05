@@ -29,6 +29,7 @@ namespace action {
 template<class T>
 BinopFields<T>::BinopFields(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
+    ASSERT(parametrisation.get(T::param(), param_));
 }
 
 template<class T>
@@ -43,7 +44,7 @@ bool BinopFields<T>::sameAs(const Action& other) const {
 
 template<class T>
 void BinopFields<T>::print(std::ostream &out) const {
-    out << "BinopFields<" << T::name() << ">[]";
+    out << "BinopFields<" << T::name() << ">[param=" << param_ << "]";
 }
 
 template<class T>
@@ -70,18 +71,20 @@ void BinopFields<T>::execute(data::MIRField & field, util::MIRStatistics& statis
             }
         }
 
-    }
-    else {
+    } else {
         for (size_t i = 0; i < size; i++) {
             values0[i] = T::op(values0[i], values1[i]);
         }
     }
 
     field.dimensions(1);
+    field.paramId(0, param_);
 }
 
 struct add {
     static const char* name() { return "add.fields"; }
+    static const char* param() { return "add.fields.param"; }
+
     static double op(double a, double b) { return a + b; }
 };
 
