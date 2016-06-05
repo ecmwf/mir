@@ -22,10 +22,10 @@ list( APPEND mir_srcs api/mir_version.cc )
 
 list(
   APPEND mir_srcs
-  action/calc/BinopScalar.cc
-  action/calc/BinopScalar.h
-  action/calc/BinopFields.cc
-  action/calc/BinopFields.h
+action/calc/BinopFields.cc
+action/calc/BinopFields.h
+action/calc/BinopScalar.cc
+action/calc/BinopScalar.h
 action/filter/AdjustWinds.cc
 action/filter/AdjustWinds.h
 action/filter/BitmapFilter.cc
@@ -240,8 +240,6 @@ output/GribStreamOutput.cc
 output/GribStreamOutput.h
 output/MIROutput.cc
 output/MIROutput.h
-output/ParamOutput.cc
-output/ParamOutput.h
 output/RawOutput.cc
 output/RawOutput.h
 output/UVOutput.cc
