@@ -231,7 +231,11 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
                              << std::endl;
 
     int shmid;
-    SYSCALL(shmid = shmget(key, shmsize , IPC_CREAT | 0600)) ;
+    if ((shmid = shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
+        std::ostringstream oss;
+        oss << "Failed to aquire shared memory for " << eckit::Bytes(shmsize) << ", check the maximum authorised on this system (Linux ipcs -l, Mac/BSD ipcs -M)";
+        throw eckit::FailedSystemCall(oss.str());
+    }
 
 #ifdef SHM_PAGESIZE
     {

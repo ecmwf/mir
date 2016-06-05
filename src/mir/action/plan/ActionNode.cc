@@ -39,12 +39,13 @@ ActionNode::~ActionNode() {
 
 void ActionNode::execute(data::MIRField& field, util::MIRStatistics& statistics) const {
     // std::cout << " -----> " << action_ << std::endl << "      ---> " << field << std::endl;
-
+    bool ok = false;
     try {
         action_.execute(field, statistics);
         if(watcher_ && graph_.empty()) {
             watcher_->success();
         }
+        ok = true;
     } catch (std::exception& e) {
 
         eckit::Log::error() << e.what() << " while executing " << action_ << std::endl;
@@ -55,7 +56,9 @@ void ActionNode::execute(data::MIRField& field, util::MIRStatistics& statistics)
             throw;
         }
     }
-    graph_.execute(field, statistics);
+    if(ok) {
+        graph_.execute(field, statistics);
+    }
 }
 
 void ActionNode::notifyFailure(std::exception& e, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const {
