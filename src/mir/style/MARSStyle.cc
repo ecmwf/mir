@@ -56,7 +56,7 @@ void MARSStyle::sh2sh(action::ActionPlan& plan) const {
 
 
 void MARSStyle::sh2grid(action::ActionPlan& plan) const {
-    bool autoresol = false;
+    bool autoresol = true;
     parametrisation_.get("autoresol", autoresol);
 
     if (autoresol) {
