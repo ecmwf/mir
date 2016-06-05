@@ -58,9 +58,11 @@ size_t VectorOutput::save(const param::MIRParametrisation &param, input::MIRInpu
 
     data::MIRField u(field.representation(), field.hasMissing(), field.missingValue());
     u.update(field.direct(0), 0);
+    u.paramId(0, field.paramId(0));
 
     data::MIRField v(field.representation(), field.hasMissing(), field.missingValue());
     v.update(field.direct(1), 0);
+    v.paramId(0, field.paramId(1));
 
     size_t size = 0;
 

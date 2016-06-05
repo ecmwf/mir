@@ -118,6 +118,16 @@ void MIRField::print(std::ostream &out) const {
         out << ",representation=" << *representation_;
     }
 
+    if (paramId_.size()) {
+        out << ",params=";
+        char sep = '(';
+        for (size_t i = 0; i < paramId_.size(); i++) {
+            out << sep << paramId_[i];
+            sep = ',';
+        }
+        out << ')';
+    }
+
     if (parent_) {
         out << ",parent=";
         parent_->print(out);

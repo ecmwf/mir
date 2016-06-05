@@ -38,7 +38,7 @@ ActionNode::~ActionNode() {
 }
 
 void ActionNode::execute(data::MIRField& field, util::MIRStatistics& statistics) const {
-    // std::cout << " -----> " << action_ << std::endl << "      ---> " << field << std::endl;
+    // std::cout << " BEFORE -----> " << action_  << "  " << field << std::endl;
     bool ok = false;
     try {
         action_.execute(field, statistics);
@@ -56,6 +56,8 @@ void ActionNode::execute(data::MIRField& field, util::MIRStatistics& statistics)
             throw;
         }
     }
+    // std::cout << " AFTER -----> " << action_  << "  " << field << std::endl;
+
     if(ok) {
         graph_.execute(field, statistics);
     }
