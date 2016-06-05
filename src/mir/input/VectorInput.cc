@@ -68,6 +68,15 @@ bool VectorInput::next() {
 }
 
 
+bool VectorInput::sameAs(const MIRInput& other) const {
+    const VectorInput* o = dynamic_cast<const VectorInput*>(&other);
+    return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
+}
+
+
+void VectorInput::print(std::ostream &out) const {
+    out << "VectorInput[" << component1_ << "," << component2_ << "]";
+}
 
 }  // namespace input
 }  // namespace mir

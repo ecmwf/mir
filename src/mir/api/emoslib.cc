@@ -33,13 +33,12 @@
 #include "mir/api/ProdgenJob.h"
 #include "mir/input/GribMemoryInput.h"
 #include "mir/input/RawInput.h"
-#include "mir/input/VODInput.h"
-#include "mir/input/WindInput.h"
+#include "mir/input/VectorInput.h"
+#include "mir/input/VectorInput.h"
 #include "mir/log/MIR.h"
 #include "mir/output/GribMemoryOutput.h"
 #include "mir/output/RawOutput.h"
-#include "mir/output/UVOutput.h"
-#include "mir/output/WindOutput.h"
+#include "mir/output/VectorOutput.h"
 
 
 namespace mir {
@@ -437,8 +436,8 @@ extern "C" fortint intuvp2_(const void *vort_grib_in,
         mir::output::GribMemoryOutput u_output(u_grib_out, length_out);
         mir::output::GribMemoryOutput v_output(v_grib_out, length_out);
 
-        mir::input::VODInput input(vort_input, div_input);
-        mir::output::UVOutput output(u_output, v_output);
+        mir::input::VectorInput input(vort_input, div_input);
+        mir::output::VectorOutput output(u_output, v_output);
 
         job->set("vod2uv", true);
 
@@ -508,8 +507,8 @@ extern "C" fortint intvect2_(const void *u_grib_in,
         mir::output::GribMemoryOutput u_output(u_grib_out, length_out);
         mir::output::GribMemoryOutput v_output(v_grib_out, length_out);
 
-        mir::input::WindInput input(vort_input, div_input);
-        mir::output::WindOutput output(u_output, v_output);
+        mir::input::VectorInput input(vort_input, div_input);
+        mir::output::VectorOutput output(u_output, v_output);
 
         job->set("wind", true);
 
@@ -789,8 +788,8 @@ extern "C" void jvod2uv_(const fortfloat vor[],
         mir::output::RawOutput u_output(u, size_out * 2);
         mir::output::RawOutput v_output(v, size_out * 2);
 
-        mir::input::VODInput input(vort_input, div_input);
-        mir::output::UVOutput output(u_output, v_output);
+        mir::input::VectorInput input(vort_input, div_input);
+        mir::output::VectorOutput output(u_output, v_output);
 
         job.set("vod2uv", true);
         job.set("truncation", long(ktout));
@@ -1111,8 +1110,8 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
         mir::output::RawOutput u_output(newfldu, ksize);
         mir::output::RawOutput v_output(newfldv, ksize);
 
-        mir::input::WindInput input(u_input, v_input);
-        mir::output::WindOutput output(u_output, v_output);
+        mir::input::VectorInput input(u_input, v_input);
+        mir::output::VectorOutput output(u_output, v_output);
 
         u_intin.reduced(kgauss);
         u_intin.auto_pl();

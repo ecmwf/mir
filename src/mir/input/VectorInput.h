@@ -96,6 +96,8 @@ class VectorInput : public MIRInput {
     virtual grib_handle* gribHandle() const;
     virtual bool next();
 
+    virtual bool sameAs(const MIRInput &other) const ;
+    virtual void print(std::ostream &out) const;
 
     // -- Class members
     // None

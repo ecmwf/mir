@@ -33,16 +33,14 @@
 #include "mir/api/MIRJob.h"
 #include "mir/input/DummyInput.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/input/VODInput.h"
-#include "mir/input/WindInput.h"
+#include "mir/input/VectorInput.h"
 #include "mir/lsm/LSMChooser.h"
 #include "mir/method/Method.h"
 #include "mir/output/GribFileOutput.h"
 #include "mir/output/GeoPointsOutput.h"
 #include "mir/input/GeoPointsInput.h"
 
-#include "mir/output/UVOutput.h"
-#include "mir/output/WindOutput.h"
+#include "mir/output/VectorOutput.h"
 #include "mir/packing/Packer.h"
 #include "mir/log/MIR.h"
 
@@ -222,8 +220,8 @@ void MIRTool::run() {
         mir::output::GribFileOutput output(args(1));
 
 
-        mir::input::WindInput winput(input1, input2);
-        mir::output::WindOutput woutput(output, output);
+        mir::input::VectorInput winput(input1, input2);
+        mir::output::VectorOutput woutput(output, output);
         process(job, winput, woutput, "wind");
         return;
 
@@ -237,8 +235,8 @@ void MIRTool::run() {
         mir::input::GribFileInput input2(args(0), 1, 2);
         mir::output::GribFileOutput output(args(1));
 
-        mir::input::VODInput winput(input1, input2);
-        mir::output::UVOutput woutput(output, output);
+        mir::input::VectorInput winput(input1, input2);
+        mir::output::VectorOutput woutput(output, output);
         process(job, winput, woutput, "wind");
         return;
 

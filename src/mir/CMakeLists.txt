@@ -154,12 +154,8 @@ input/RawInput.cc
 input/RawInput.h
 input/RawMetadata.cc
 input/RawMetadata.h
-input/VODInput.cc
-input/VODInput.h
 input/VectorInput.cc
 input/VectorInput.h
-input/WindInput.cc
-input/WindInput.h
 log/MIR.cc
 log/MIR.h
 lsm/AutoLSM.cc
@@ -242,12 +238,8 @@ output/MIROutput.cc
 output/MIROutput.h
 output/RawOutput.cc
 output/RawOutput.h
-output/UVOutput.cc
-output/UVOutput.h
 output/VectorOutput.cc
 output/VectorOutput.h
-output/WindOutput.cc
-output/WindOutput.h
 packing/ArchivedValue.cc
 packing/ArchivedValue.h
 packing/Complex.cc

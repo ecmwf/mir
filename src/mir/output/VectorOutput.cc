@@ -71,6 +71,15 @@ size_t VectorOutput::save(const param::MIRParametrisation &param, input::MIRInpu
 }
 
 
+bool VectorOutput::sameAs(const MIROutput& other) const {
+    const VectorOutput* o = dynamic_cast<const VectorOutput*>(&other);
+    return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
+}
+
+
+void VectorOutput::print(std::ostream &out) const {
+    out << "VectorOutput[" << component1_ << "," << component2_ << "]";
+}
 }  // namespace output
 }  // namespace mir
 
