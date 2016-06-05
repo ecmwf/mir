@@ -20,7 +20,6 @@
 #include "mir/input/VectorInput.h"
 #include "eckit/exception/Exceptions.h"
 #include "mir/data/MIRField.h"
-#include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
 
 
@@ -65,48 +64,12 @@ size_t VectorOutput::save(const param::MIRParametrisation &param, input::MIRInpu
 
     size_t size = 0;
 
-    param::RuntimeParametrisation u_runtime(param);
-    u_runtime.set("param-id", component1ParamId(input));
-    size += component1_.save(u_runtime, input, u);
-
-    param::RuntimeParametrisation v_runtime(param);
-    v_runtime.set("param-id", component2ParamId(input)); // TODO: Find something better
-    size += component2_.save(v_runtime, input, v);
+    size += component1_.save(param, input, u);
+    size += component2_.save(param, input, v);
 
     return size;
 }
 
-
-// Default is same as input
-// TODO: Something more elegant
-
-long VectorOutput::component1ParamId(input::MIRInput &input) const  {
-    try {
-        input::VectorInput& v = dynamic_cast<input::VectorInput&>(input);
-        const param::MIRParametrisation& metadata = v.component1_.parametrisation();
-        long paramId;
-        ASSERT(metadata.get("paramId", paramId));
-        return paramId;
-    } catch (std::bad_cast &) {
-        std::ostringstream os;
-        os << "VectorOutput::component1ParamId() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
-    }
-}
-
-long VectorOutput::component2ParamId(input::MIRInput &input) const {
-    try {
-        input::VectorInput& v = dynamic_cast<input::VectorInput&>(input);
-        const param::MIRParametrisation& metadata = v.component2_.parametrisation();
-        long paramId;
-        ASSERT(metadata.get("paramId", paramId));
-        return paramId;
-    } catch (std::bad_cast &) {
-        std::ostringstream os;
-        os << "VectorOutput::component2ParamId() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
-    }
-}
 
 }  // namespace output
 }  // namespace mir

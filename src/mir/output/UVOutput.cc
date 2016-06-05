@@ -43,15 +43,6 @@ void UVOutput::print(std::ostream &out) const {
     out << "UVOutput[u_component=" << component1_ << ", v_component=" << component2_ << "]";
 }
 
-long UVOutput::component1ParamId(input::MIRInput &) const  {
-    return 131; // TODO: Find a better way
-}
-
-long UVOutput::component2ParamId(input::MIRInput &) const {
-    return 132; // TODO: Find a better way
-}
-
-
 }  // namespace output
 }  // namespace mir
 

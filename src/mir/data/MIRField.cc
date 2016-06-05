@@ -71,6 +71,7 @@ void MIRField::copyOnWrite() {
             top = top->parent_;
         }
         values_ = top->values_;
+        paramId_ = top->paramId_;
         parent_ = 0;
         // std::cout << "MIRField::copyOnWrite" << std::endl;
     }
@@ -192,6 +193,26 @@ std::vector<double> &MIRField::direct(size_t which)  {
 
     ASSERT(which < values_.size());
     return values_[which];
+}
+
+void MIRField::paramId(size_t which, size_t param) {
+    copyOnWrite();
+    while (paramId_.size() <= which) {
+        paramId_.push_back(0);
+    }
+    paramId_[which] = param;
+}
+
+size_t MIRField::paramId(size_t which) const {
+    if (parent_) {
+        return parent_->paramId(which);
+    }
+
+    if (paramId_.size() <= which) {
+        return 0;
+    }
+
+    return paramId_[which];
 }
 
 bool MIRField::hasMissing() const {

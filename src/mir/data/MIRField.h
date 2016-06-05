@@ -70,6 +70,11 @@ public:
     const std::vector<double> &values(size_t which /*=0*/) const;
     std::vector<double> &direct(size_t which /*=0*/);   // Non-const version for direct update (Filter)
 
+
+    size_t paramId(size_t which) const;
+    void paramId(size_t which, size_t param);
+
+
     void missingValue(double value);
     double missingValue() const;
 
@@ -118,6 +123,8 @@ public:
 
     MIRField* parent_;
     std::vector<std::vector<double> > values_;
+    std::vector<size_t > paramId_;
+
     bool hasMissing_;
     double missingValue_;
     const repres::Representation* representation_;

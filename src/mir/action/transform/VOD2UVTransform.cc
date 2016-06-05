@@ -169,6 +169,9 @@ void VOD2UVTransform::execute(data::MIRField & field, util::MIRStatistics& stati
     field.update(result_u, 0);
     field.update(result_v, 1);
 
+    // TODO: Find a way to get these numbers
+    field.paramId(0, 131);
+    field.paramId(1, 132);
 }
 
 
