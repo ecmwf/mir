@@ -354,7 +354,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
         }
         // std::cout << "Succefully unloaded SharedMemory from " << path  << std::endl;
     }
-
+#if 0
     sem = semget(key, 1, 0600);
     if (sem < 0 && errno != ENOENT) {
         std::cout << "Cannot get shared shemaphore for " << path << eckit::Log::syserr << std::endl;
@@ -369,7 +369,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
         }
         // std::cout << "SharedMemory removed semaphore for " << path  <<std::endl;
     }
-
+#endif
 }
 
 void SharedMemoryLoader::print(std::ostream &out) const {
