@@ -33,7 +33,8 @@ namespace output {
 
 
 GeoPointsOutput::GeoPointsOutput(const std::string& path):
-    path_(path) {
+    path_(path),
+    once_(true) {
 }
 
 
@@ -56,7 +57,7 @@ static const char* keys[] = {"class", "type", "stream", "expver",  "date", "time
 
 size_t GeoPointsOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
 
-    std::cout << "Save " << *this << std::endl;
+    ASSERT(once_);
 
     ASSERT(field.dimensions() == 1);
 
@@ -104,6 +105,9 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, input::MIRI
     if (out.bad()) {
         throw eckit::WriteError(path_);
     }
+
+    once_ = false;
+
     return 0;
 }
 

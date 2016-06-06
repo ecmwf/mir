@@ -87,6 +87,7 @@ class GeoPointsOutput : public MIROutput {
 
 // -- Members
 
+    bool once_;
 
 // -- Methods
     // None
