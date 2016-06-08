@@ -39,7 +39,7 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
     input_(input),
     output_(output)  {
 
-    if (plan_->empty()) {
+    if (job.empty()) {
         plan_.reset(new action::ActionPlan(job));
         plan_->add(new action::Copy(job, input_, output_));
         return;
