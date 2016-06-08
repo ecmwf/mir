@@ -103,6 +103,8 @@ class EmptyInput : public MIRInput, public param::FieldParametrisation {
     virtual bool get(const std::string&, std::string&) const;
     // virtual bool get(const std::string&, double&) const;
 
+    virtual void latitudes(std::vector<double> &) const;
+    virtual void longitudes(std::vector<double> &) const;
     // -- Class members
     // None
 

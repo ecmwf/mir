@@ -32,8 +32,8 @@ EmptyInput::EmptyInput(): calls_(0) {
 EmptyInput::~EmptyInput() {}
 
 
-bool EmptyInput::sameAs(const MIRInput& other) const {
-    const EmptyInput* o = dynamic_cast<const EmptyInput*>(&other);
+bool EmptyInput::sameAs(const MIRInput &other) const {
+    const EmptyInput *o = dynamic_cast<const EmptyInput *>(&other);
     return o;
 }
 
@@ -57,11 +57,11 @@ void EmptyInput::print(std::ostream &out) const {
     out << "EmptyInput[...]";
 }
 
-bool EmptyInput::has(const std::string& name) const {
-    if(name == "gridded") {
+bool EmptyInput::has(const std::string &name) const {
+    if (name == "gridded") {
         return true;
     }
-    if(name == "spectral") {
+    if (name == "spectral") {
         return false;
     }
     return FieldParametrisation::has(name);
@@ -75,6 +75,15 @@ bool EmptyInput::get(const std::string &name, std::string &value) const {
     }
     return FieldParametrisation::get(name, value);
 }
+
+void EmptyInput::latitudes(std::vector<double> &) const {
+
+}
+
+void EmptyInput::longitudes(std::vector<double> &) const {
+
+}
+
 
 // bool EmptyInput::get(const std::string &name, double &value) const {
 
