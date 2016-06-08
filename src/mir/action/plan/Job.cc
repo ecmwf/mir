@@ -39,17 +39,26 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
     input_(input),
     output_(output)  {
 
-    const param::MIRParametrisation &defaults = param::MIRDefaults::instance();
+    if (plan_->empty()) {
+        plan_->add(new action::Copy(job, input_, output_));
+        return;
+    }
+
     const param::MIRParametrisation &metadata = input.parametrisation();
+
+    if (job.matches(metadata)) {
+        plan_->add(new action::Copy(job, input_, output_));
+        return;
+    }
+
+    const param::MIRParametrisation &defaults = param::MIRDefaults::instance();
 
     combined_.reset(new param::MIRCombinedParametrisation(job, metadata, defaults));
     plan_.reset(new action::ActionPlan(*combined_));
 
-    if (!job.empty() && !job.matches(metadata)) {
+    eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
+    style->prepare(*plan_);
 
-        eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
-        style->prepare(*plan_);
-    }
 
     if (plan_->empty()) {
         plan_->add(new action::Copy(*combined_, input_, output_));
@@ -63,11 +72,11 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
 Job::~Job() {
 }
 
-void Job::execute(util::MIRStatistics& statistics) const {
+void Job::execute(util::MIRStatistics &statistics) const {
 
     // This is an optimistation for MARS
     // We avoid to decode the input field
-    if(plan_->size() == 1 && !plan_->action(0).needField()) {
+    if (plan_->size() == 1 && !plan_->action(0).needField()) {
         data::MIRField dummy(*combined_);
         plan_->execute(dummy, statistics);
         return;
@@ -79,7 +88,7 @@ void Job::execute(util::MIRStatistics& statistics) const {
 }
 
 
-const ActionPlan& Job::plan() const {
+const ActionPlan &Job::plan() const {
     return *plan_;
 }
 
