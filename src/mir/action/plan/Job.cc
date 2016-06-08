@@ -40,6 +40,7 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
     output_(output)  {
 
     if (plan_->empty()) {
+        plan_.reset(new action::ActionPlan(job));
         plan_->add(new action::Copy(job, input_, output_));
         return;
     }
@@ -47,6 +48,7 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
     const param::MIRParametrisation &metadata = input.parametrisation();
 
     if (job.matches(metadata)) {
+        plan_.reset(new action::ActionPlan(job));
         plan_->add(new action::Copy(job, input_, output_));
         return;
     }
