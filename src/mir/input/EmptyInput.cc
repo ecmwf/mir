@@ -67,14 +67,14 @@ bool EmptyInput::has(const std::string& name) const {
     return FieldParametrisation::has(name);
 }
 
-// bool EmptyInput::get(const std::string &name, std::string &value) const {
+bool EmptyInput::get(const std::string &name, std::string &value) const {
 
-//     if (name == "gridType") {
-//         value = "regular_ll";
-//         return true;
-//     }
-//     return FieldParametrisation::get(name, value);
-// }
+    if (name == "gridType") {
+        value = "unstructured_grid";
+        return true;
+    }
+    return FieldParametrisation::get(name, value);
+}
 
 // bool EmptyInput::get(const std::string &name, double &value) const {
 

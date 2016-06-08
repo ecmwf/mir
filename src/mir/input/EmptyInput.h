@@ -100,7 +100,7 @@ class EmptyInput : public MIRInput, public param::FieldParametrisation {
 
     // From MIRParametrisation
     virtual bool has(const std::string& name) const;
-    // virtual bool get(const std::string&, std::string&) const;
+    virtual bool get(const std::string&, std::string&) const;
     // virtual bool get(const std::string&, double&) const;
 
     // -- Class members
