@@ -57,15 +57,15 @@ void EmptyInput::print(std::ostream &out) const {
     out << "EmptyInput[...]";
 }
 
-// bool EmptyInput::has(const std::string& name) const {
-//     if(name == "gridded") {
-//         return true;
-//     }
-//     if(name == "spectral") {
-//         return false;
-//     }
-//     return FieldParametrisation::has(name);
-// }
+bool EmptyInput::has(const std::string& name) const {
+    if(name == "gridded") {
+        return true;
+    }
+    if(name == "spectral") {
+        return false;
+    }
+    return FieldParametrisation::has(name);
+}
 
 // bool EmptyInput::get(const std::string &name, std::string &value) const {
 
