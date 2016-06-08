@@ -333,9 +333,7 @@ SimpleParametrisation::SimpleParametrisation() {
 
 
 SimpleParametrisation::~SimpleParametrisation() {
-    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-        delete (*j).second;
-    }
+   reset();
 }
 
 bool SimpleParametrisation::has(const std::string &name) const {
@@ -468,6 +466,14 @@ SimpleParametrisation& SimpleParametrisation::clear(const std::string &name) {
         delete (*j).second;
         settings_.erase(j);
     }
+    return *this;
+}
+
+SimpleParametrisation& SimpleParametrisation::reset() {
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+        delete (*j).second;
+    }
+    settings_.clear();
     return *this;
 }
 

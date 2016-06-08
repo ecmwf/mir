@@ -64,6 +64,12 @@ bool MIRJob::empty() const {
     return size() == 0;
 }
 
+MIRJob &MIRJob::reset() {
+    eckit::Log::trace<MIR>() << "************* MIRJob::reset()" << std::endl;
+    SimpleParametrisation::reset();
+    return *this;
+}
+
 MIRJob &MIRJob::clear(const std::string &name) {
     eckit::Log::trace<MIR>() << "************* MIRJob::clear [" << name << "]" << std::endl;
     SimpleParametrisation::clear(name);

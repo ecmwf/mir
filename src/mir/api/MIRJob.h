@@ -79,6 +79,8 @@ class MIRJob : public param::SimpleParametrisation, public eckit::Configured {
     MIRJob& set(const std::string& name, const std::vector<double>& value);
 
     MIRJob& clear(const std::string& name);
+    MIRJob& reset();
+
     MIRJob& representationFrom(input::MIRInput&);
 
 

@@ -70,6 +70,8 @@ class SimpleParametrisation : public MIRParametrisation {
     SimpleParametrisation& set(const std::string& name, const std::vector<double>& value);
 
     SimpleParametrisation& clear(const std::string& name);
+    SimpleParametrisation& reset();
+
 // -- Overridden methods
 
 
