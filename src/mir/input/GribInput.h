@@ -111,7 +111,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
     virtual const param::MIRParametrisation &parametrisation() const;
     virtual data::MIRField *field() const;
-    virtual grib_handle *gribHandle() const;
+    virtual grib_handle *gribHandle(size_t which = 0) const;
 
     /// From MIRParametrisation
     virtual bool get(const std::string &name, std::string &value) const;

@@ -268,7 +268,8 @@ data::MIRField *GribInput::field() const {
 
 }
 
-grib_handle *GribInput::gribHandle() const {
+grib_handle *GribInput::gribHandle(size_t which) const {
+    ASSERT(which == 0);
     return grib_;
 }
 

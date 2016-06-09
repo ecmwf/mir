@@ -32,7 +32,8 @@ MIRInput::~MIRInput() {
 }
 
 
-grib_handle *MIRInput::gribHandle() const {
+grib_handle *MIRInput::gribHandle(size_t which) const {
+     ASSERT(which == 0);
     static grib_handle *handle = 0;
     if (!handle) {
         handle = grib_handle_new_from_samples(0, "GRIB1");

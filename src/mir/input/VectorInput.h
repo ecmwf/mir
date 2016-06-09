@@ -93,7 +93,7 @@ class VectorInput : public MIRInput {
 
     virtual const param::MIRParametrisation& parametrisation() const;
     virtual data::MIRField* field() const;
-    virtual grib_handle* gribHandle() const;
+    virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual bool next();
 
     virtual bool sameAs(const MIRInput &other) const ;
