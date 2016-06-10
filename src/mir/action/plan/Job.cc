@@ -81,7 +81,8 @@ void Job::execute(util::MIRStatistics &statistics) const {
     // This is an optimistation for MARS
     // We avoid to decode the input field
     if (plan_->size() == 1 && !plan_->action(0).needField()) {
-        data::MIRField dummy(*combined_);
+        api::MIRJob job;
+        data::MIRField dummy(job);
         plan_->execute(dummy, statistics);
         return;
     }
