@@ -33,7 +33,7 @@ MIRDefaults::MIRDefaults() {
     set("style", "mars");
     set("legendre-loader", "mapped-memory");
 
-    set("interpolation", "linear"); // The word 'method' is used in grib
+    set("interpolation", "nearest-neighbour"); // The word 'method' is used in grib
     set("caching", true);
 
     set("lsm.selection", "auto");
