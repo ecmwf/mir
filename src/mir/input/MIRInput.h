@@ -56,6 +56,7 @@ class MIRInput {
 // -- Methods
 
     virtual bool next();
+    virtual size_t dimensions() const;
 
     virtual const param::MIRParametrisation& parametrisation() const = 0;
     virtual data::MIRField* field() const = 0;

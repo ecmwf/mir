@@ -13,24 +13,21 @@
 /// @date Apr 2015
 
 
-#ifndef GribStreamInput_H
-#define GribStreamInput_H
+#ifndef GribAllFileInput_H
+#define GribAllFileInput_H
+
 
 #include "eckit/io/Buffer.h"
 
-#include "mir/input/GribInput.h"
+#include "mir/input/MIRInput.h"
 
-
-namespace eckit {
-class DataHandle;
-}
-
+namespace mir { namespace output { class VectorOutput; }}
 
 namespace mir {
 namespace input {
 
 
-class GribStreamInput : public GribInput {
+class GribAllFileInput : public MIRInput {
   public:
 
     // -- Exceptions
@@ -38,13 +35,11 @@ class GribStreamInput : public GribInput {
 
     // -- Contructors
 
-    GribStreamInput();
-    GribStreamInput(size_t skip, size_t step);
-    GribStreamInput(off_t offset);
+    GribAllFileInput(const std::string& path);
 
     // -- Destructor
 
-    virtual ~GribStreamInput(); // Change to virtual if base class
+    virtual ~GribAllFileInput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -53,15 +48,10 @@ class GribStreamInput : public GribInput {
     // None
 
     // -- Methods
-    // None
-
 
 
     // -- Overridden methods
     // None
-
-    virtual bool next();
-
 
     // -- Class members
     // None
@@ -72,9 +62,6 @@ class GribStreamInput : public GribInput {
   protected:
 
     // -- Members
-    size_t skip_;
-    size_t step_;
-    off_t  offset_;
 
     // -- Methods
 
@@ -92,21 +79,28 @@ class GribStreamInput : public GribInput {
 
     // No copy allowed
 
-    GribStreamInput(const GribStreamInput &);
-    GribStreamInput &operator=(const GribStreamInput &);
+    GribAllFileInput(const GribAllFileInput &);
+    GribAllFileInput &operator=(const GribAllFileInput &);
 
     // -- Members
 
-    bool first_;
-    eckit::Buffer buffer_;
-
+    std::string path_;
+    std::vector<MIRInput*> inputs_;
+    size_t count_;
 
     // -- Methods
 
-    virtual eckit::DataHandle &dataHandle() = 0;
-
     // -- Overridden methods
 
+    virtual const param::MIRParametrisation& parametrisation() const;
+    virtual data::MIRField* field() const;
+    virtual bool next();
+
+    virtual bool sameAs(const MIRInput &other) const ;
+    virtual void print(std::ostream &out) const;
+
+    virtual grib_handle* gribHandle(size_t which = 0) const;
+    virtual size_t dimensions() const;
 
     // -- Class members
     // None
@@ -116,7 +110,9 @@ class GribStreamInput : public GribInput {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribStreamInput& p)
+    friend class output::VectorOutput;
+
+    //friend ostream& operator<<(ostream& s,const GribAllFileInput& p)
     //  { p.print(s); return s; }
 
 };

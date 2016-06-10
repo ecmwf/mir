@@ -57,6 +57,13 @@ size_t MIRInput::copy(double *values, size_t size) const {
 }
 
 
+size_t MIRInput::dimensions() const {
+    std::ostringstream os;
+    os << "MIRInput::dimensions() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
 }  // namespace input
 }  // namespace mir
 

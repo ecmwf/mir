@@ -47,11 +47,31 @@ static long readcb(void *data, void *buffer, long len) {
 GribStreamInput::GribStreamInput(size_t skip, size_t step):
     skip_(skip),
     step_(step),
+    offset_(0),
     first_(true),
     buffer_(buffer_size()) {
     ASSERT(step_ > 0);
 }
 
+
+GribStreamInput::GribStreamInput(off_t offset):
+    skip_(0),
+    step_(1),
+    offset_(offset),
+    first_(true),
+    buffer_(buffer_size()) {
+    ASSERT(step_ > 0);
+}
+
+
+GribStreamInput::GribStreamInput():
+    skip_(0),
+    step_(1),
+    offset_(0),
+    first_(true),
+    buffer_(buffer_size()) {
+    ASSERT(step_ > 0);
+}
 
 GribStreamInput::~GribStreamInput() {
 }
@@ -67,6 +87,10 @@ bool GribStreamInput::next() {
     if (first_) {
         first_ = false;
         advance = skip_;
+
+        if(offset_) {
+            dataHandle().skip(offset_);
+        }
     }
 
     for (size_t i = 0; i < advance; i++) {

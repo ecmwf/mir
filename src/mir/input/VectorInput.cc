@@ -79,6 +79,10 @@ void VectorInput::print(std::ostream &out) const {
     out << "VectorInput[" << component1_ << "," << component2_ << "]";
 }
 
+size_t VectorInput::dimensions() const {
+    return 2;
+}
+
 }  // namespace input
 }  // namespace mir
 

@@ -140,6 +140,8 @@ input/EmptyInput.cc
 input/EmptyInput.h
 input/GeoPointsInput.cc
 input/GeoPointsInput.h
+input/GribAllFileInput.cc
+input/GribAllFileInput.h
 input/GribFileInput.cc
 input/GribFileInput.h
 input/GribInput.cc
