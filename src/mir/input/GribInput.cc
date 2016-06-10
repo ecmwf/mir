@@ -535,14 +535,14 @@ void GribInput::marsRequest(std::ostream &out) const {
             in >> verb;
 
             in >> n;
-            for (size_t i = 0; i < n ; i++) {
+            for (int i = 0; i < n ; i++) {
                 std::string param;
                 in >> param;
                 out << sep << param;
                 const char *slash = "=";
                 int m;
                 in >> m;
-                for (size_t j = 0; j < m; j++) {
+                for (int j = 0; j < m; j++) {
                     std::string value;
                     in >> value;
                     out << slash << value;
