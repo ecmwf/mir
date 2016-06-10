@@ -39,23 +39,17 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
     input_(input),
     output_(output)  {
 
-    if (job.empty()) {
-        plan_.reset(new action::ActionPlan(job));
-        plan_->add(new action::Copy(job, input_, output_));
-        return;
-    }
-
     const param::MIRParametrisation &metadata = input.parametrisation();
-
-    if (job.matches(metadata)) {
-        plan_.reset(new action::ActionPlan(job));
-        plan_->add(new action::Copy(job, input_, output_));
-        return;
-    }
-
     const param::MIRParametrisation &defaults = param::MIRDefaults::instance();
 
     combined_.reset(new param::MIRCombinedParametrisation(job, metadata, defaults));
+
+    if (job.empty() || job.matches(metadata)) {
+        plan_.reset(new action::ActionPlan(job));
+        plan_->add(new action::Copy(job, input_, output_));
+        return;
+    }
+
     plan_.reset(new action::ActionPlan(*combined_));
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
