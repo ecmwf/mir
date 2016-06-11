@@ -63,10 +63,9 @@ GribAllFileInput::~GribAllFileInput() {
 }
 
 
-const param::MIRParametrisation &GribAllFileInput::parametrisation() const {
-    // Assumes that all components have the same parametrisation
-    ASSERT(inputs_.size());
-    return inputs_[0]->parametrisation();
+const param::MIRParametrisation &GribAllFileInput::parametrisation(size_t which) const {
+    ASSERT(which < inputs_.size());
+    return inputs_[which]->parametrisation();
 }
 
 grib_handle *GribAllFileInput::gribHandle(size_t which) const {

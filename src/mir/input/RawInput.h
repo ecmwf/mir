@@ -95,7 +95,7 @@ class RawInput : public MIRInput, public param::MIRParametrisation {
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
-    virtual const param::MIRParametrisation &parametrisation() const;
+    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
     virtual data::MIRField *field() const;
 
     virtual bool next();

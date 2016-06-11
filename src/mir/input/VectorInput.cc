@@ -36,9 +36,10 @@ VectorInput::~VectorInput() {
 }
 
 
-const param::MIRParametrisation &VectorInput::parametrisation() const {
+const param::MIRParametrisation &VectorInput::parametrisation(size_t which) const {
     // Assumes that both component (e.g. U and V) have the same parametrisation
-    return component1_.parametrisation();
+    ASSERT(which <= 1);
+    return (which == 0) ? component1_.parametrisation() : component2_.parametrisation();
 }
 
 grib_handle* VectorInput::gribHandle(size_t which) const {

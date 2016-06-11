@@ -229,7 +229,8 @@ GribInput::~GribInput() {
 }
 
 
-const param::MIRParametrisation &GribInput::parametrisation() const {
+const param::MIRParametrisation &GribInput::parametrisation(size_t which) const {
+    ASSERT(which == 0);
     return *this;
 }
 

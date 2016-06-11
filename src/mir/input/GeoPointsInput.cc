@@ -75,7 +75,8 @@ bool GeoPointsInput::next() {
 }
 
 
-const param::MIRParametrisation &GeoPointsInput::parametrisation() const {
+const param::MIRParametrisation &GeoPointsInput::parametrisation(size_t which) const {
+    ASSERT(which == 0);
     return *this;
 }
 

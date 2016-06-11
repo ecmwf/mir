@@ -19,6 +19,7 @@
 #include "mir/data/MIRField.h"
 
 #include "mir/input/DummyInput.h"
+#include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
@@ -42,7 +43,8 @@ bool DummyInput::next() {
 }
 
 
-const param::MIRParametrisation &DummyInput::parametrisation() const {
+const param::MIRParametrisation &DummyInput::parametrisation(size_t which) const {
+    ASSERT(which == 0);
     return *this;
 }
 

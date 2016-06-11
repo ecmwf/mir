@@ -44,7 +44,8 @@ bool RawInput::next() {
     NOTIMP;
 }
 
-const param::MIRParametrisation &RawInput::parametrisation() const {
+const param::MIRParametrisation &RawInput::parametrisation(size_t which) const {
+    ASSERT(which == 0);
     return *this;
 }
 

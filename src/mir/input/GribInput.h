@@ -109,7 +109,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     // -- Overridden methods
     // From MIRInput
 
-    virtual const param::MIRParametrisation &parametrisation() const;
+    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
     virtual data::MIRField *field() const;
     virtual grib_handle *gribHandle(size_t which = 0) const;
 
