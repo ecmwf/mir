@@ -20,6 +20,7 @@
 
 #include "mir/input/EmptyInput.h"
 
+#include "eckit/exception/Exceptions.h"
 
 namespace mir {
 namespace input {
@@ -42,7 +43,8 @@ bool EmptyInput::next() {
 }
 
 
-const param::MIRParametrisation &EmptyInput::parametrisation() const {
+const param::MIRParametrisation &EmptyInput::parametrisation(size_t which) const {
+    ASSERT(which == 0);
     return *this;
 }
 
