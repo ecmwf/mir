@@ -16,8 +16,8 @@
 #ifndef GribFileInput_H
 #define GribFileInput_H
 
-#include "eckit/filesystem/PathName.h"
 
+#include "eckit/filesystem/PathName.h"
 #include "mir/input/GribStreamInput.h"
 
 
@@ -26,74 +26,72 @@ namespace input {
 
 
 class GribFileInput : public GribStreamInput {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     GribFileInput(const eckit::PathName&, size_t skip, size_t step);
     GribFileInput(const eckit::PathName&, off_t offset);
     GribFileInput(const eckit::PathName&);
 
-// -- Destructor
+    // -- Destructor
 
     ~GribFileInput(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
+    // -- Overridden methods
+    virtual size_t dimensions() const;
 
-
-// -- Overridden methods
+    // -- Class members
     // None
 
-// -- Class members
+    // -- Class methods
     // None
 
-// -- Class methods
+protected:
+
+    // -- Members
     // None
 
-  protected:
+    // -- Methods
 
-// -- Members
+
+    // -- Overridden methods
     // None
 
-// -- Methods
-
-
-// -- Overridden methods
+    // -- Class members
     // None
 
-// -- Class members
+    // -- Class methods
     // None
 
-// -- Class methods
-    // None
+private:
 
-  private:
-
-// No copy allowed
+    // No copy allowed
 
     GribFileInput(const GribFileInput&);
     GribFileInput& operator=(const GribFileInput&);
 
-// -- Members
+    // -- Members
 
     eckit::PathName path_;
     eckit::DataHandle* handle_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // From MIRInput
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
@@ -104,13 +102,13 @@ class GribFileInput : public GribStreamInput {
     virtual eckit::DataHandle& dataHandle();
 
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const GribFileInput& p)
     // { p.print(s); return s; }

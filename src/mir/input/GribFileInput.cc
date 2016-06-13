@@ -13,9 +13,10 @@
 /// @date Apr 2015
 
 
-#include "eckit/io/BufferedHandle.h"
-
 #include "mir/input/GribFileInput.h"
+
+#include "eckit/io/BufferedHandle.h"
+#include "mir/log/MIR.h"
 
 
 namespace mir {
@@ -26,7 +27,6 @@ GribFileInput::GribFileInput(const eckit::PathName &path, size_t skip, size_t st
     GribStreamInput(skip, step),
     path_(path), handle_(0) {
 }
-
 
 GribFileInput::GribFileInput(const eckit::PathName &path, off_t offset):
     GribStreamInput(offset),
@@ -45,6 +45,12 @@ GribFileInput::~GribFileInput() {
     }
 }
 
+size_t GribFileInput::dimensions() const {
+    // FIXME
+    eckit::Log::warning() << "GribFileInput::dimensions() returning 1 (hardcoded!)" << std::endl;
+    return 1;
+}
+
 bool GribFileInput::sameAs(const MIRInput& other) const {
     const GribFileInput* o = dynamic_cast<const GribFileInput*>(&other);
     return o && (skip_ == o->skip_) && (step_ == o->step_) && (path_ == o->path_);
@@ -53,7 +59,6 @@ bool GribFileInput::sameAs(const MIRInput& other) const {
 void GribFileInput::print(std::ostream &out) const {
     out << "GribFileInput[path=" << path_ << ",skip=" << skip_ << ", step=" << step_ << "]";
 }
-
 
 eckit::DataHandle &GribFileInput::dataHandle() {
     if (!handle_) {
