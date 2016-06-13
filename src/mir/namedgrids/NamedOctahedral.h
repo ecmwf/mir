@@ -62,6 +62,7 @@ class NamedOctahedral : public NamedGrid {
 
 
     virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual size_t gaussianNumber() const;
 
     // -- Overridden methods
     // None

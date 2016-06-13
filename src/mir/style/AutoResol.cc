@@ -18,8 +18,12 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/filesystem/PathName.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/log/MIR.h"
+#include "mir/namedgrids/NamedGrid.h"
+#include "mir/repres/other/UnstructuredGrid.h"
 
 
 namespace mir {
@@ -47,13 +51,27 @@ void AutoResol::get(const std::string &name, long &value) const {
         step = std::min(grid[0], grid[1]);
     }
 
-    long N;
+    long N = 0;
     if (parametrisation_.get("user.reduced", N)) {
         step = 90.0 / N;
     }
 
     if (parametrisation_.get("user.regular", N)) {
         step = 90.0 / N;
+    }
+
+    std::string gridname;
+    if (parametrisation_.get("user.gridname", gridname)) {
+        N = namedgrids::NamedGrid::lookup(gridname).gaussianNumber();
+        step = 90.0 / N;
+    }
+
+    std::string griddef;
+    if (parametrisation_.get("user.griddef", griddef)) {
+        // eckit::PathName path(griddef);
+        // repres::other::UnstructuredGrid grid(path);
+        // step = grid.increment();
+        throw eckit::SeriousBug("AutoResol: not yet supported for unstuctured grids");
     }
 
     if (step == 0) {

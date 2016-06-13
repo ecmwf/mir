@@ -95,6 +95,7 @@ class NamedRegular : public NamedGrid {
 
     virtual const repres::Representation *representation() const;
     virtual const repres::Representation *representation(const util::Rotation& rotation) const;
+    virtual size_t gaussianNumber() const;
 
     // -- Friends
 

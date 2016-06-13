@@ -53,6 +53,7 @@ class UnstructuredGrid : public Gridded {
 
     // -- Methods
 
+    double increment() const;
 
     // -- Overridden methods
     // None
