@@ -9,29 +9,47 @@ include("${PROJECT_SOURCE_DIR}/tests/settings.cmake")
 
 
 # Set interpolation tests
-# (each line is a request, the previous-to-last entry in each line is a file to download)
-unset(_tests_reqs)
-foreach( input "ll11_msl.grib" "ll22_msl.grib" "ll33_msl.grib")
-  foreach( grid "" "--grid=1/1" "--grid=2/2")
-    foreach( area "" "--area=40/20/20/40")
-
-      set(_label "mir_tests_interpol_${input} to ${grid} ${area} ${input}")
+# (each line is an interpolation, the previous-to-last entry in each line is a file to download)
+unset(_test_reqs)
+foreach( _in
+        "2t_O640.grib"
+        "msl_N640.grib"
+        "msl_regular_ll_1-1.grib"
+        "msl_regular_ll_2-2.grib"
+        "msl_regular_ll_3-3.grib"
+        "q_F640.grib"
+        "vo-d_sh.grib"
+        "z_sh.grib" )
+  foreach( _pproc
+          ""
+          "--grid=1/1 --area=40/20/20/40"
+          "--grid=1/1 --area=40/20/20/40 --frame=2"
+          "--grid=2/2"
+          "--grid=3/3"
+          "--rotation=-90/0"
+          "--rotation=-89/1" )
+      if( "${_pproc}" STREQUAL "" )
+        set(_label "mir_tests_nointerpol ${_in}")
+      else()
+        set(_label "mir_tests_interpol ${_in} to ${_pproc}")
+      endif()
       string(REGEX REPLACE "[.]grib"      ""  _label ${_label})
       string(REGEX REPLACE "[^A-Za-z0-9]" "_" _label ${_label})
       string(REGEX REPLACE "[ _]+"        "_" _label ${_label})
+      if( NOT (_in MATCHES ".*_sh.grib$" AND _pproc MATCHES "--frame=.*") )
 
-      list( APPEND _test_reqs "${grid} ${area} ${input} ${_label}.grib")
-      unset(_label)
+        set(_out "${_label}.grib")
+        list(APPEND _test_reqs "${_pproc} ${_in} ${_out}")
 
-    endforeach()
+      endif()
   endforeach()
 endforeach()
 
 unset(_tests_src_files)
-foreach( _t ${_test_reqs} )
+foreach(_t ${_test_reqs})
   separate_arguments(_t)
-  list( GET    _t -2 _file )
-  list( APPEND _tests_src_files ${_file} )
+  list(GET    _t -2 _file)
+  list(APPEND _tests_src_files ${_file})
 endforeach()
 list(REMOVE_DUPLICATES _tests_src_files)
 
@@ -41,11 +59,10 @@ ecbuild_get_test_multidata(
 
 
 # Unit tests: simple interpolations
-foreach( _t ${_test_reqs} )
-
+foreach(_t ${_test_reqs})
   separate_arguments(_t)
-  list( GET _t -1 _label )
-  string(REGEX REPLACE "[.]grib$" "" _label ${_label})
+  list(GET _t -1 _out)
+  string(REGEX REPLACE "[.]grib$" "" _label ${_out})
 
   ecbuild_add_test(
       TARGET       ${_label}
