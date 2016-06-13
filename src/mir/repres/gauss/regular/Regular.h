@@ -24,98 +24,99 @@ namespace mir {
 namespace repres {
 namespace regular {
 
-class Regular : public Gaussian {
-  public:
 
-// -- Exceptions
+class Regular : public Gaussian {
+public:
+
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     Regular(const param::MIRParametrisation&);
     Regular(size_t N);
     Regular(size_t N, const util::BoundingBox& bbox);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~Regular(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
+    virtual void validate(const std::vector<double>&) const;
+
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
 
     virtual bool globalDomain() const;
 
-// -- Methods
+    // -- Methods
 
     virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob &) const;
+    virtual void fill(api::MIRJob&) const;
     virtual atlas::grid::Grid* atlasGrid() const;
     virtual Iterator* rotatedIterator() const; // After rotation
     virtual Iterator* unrotatedIterator() const; // Before rotation
 
-// -- Overridden methods
+    // -- Overridden methods
+
+    virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
+
+    // -- Class members
     // None
 
-// -- Class members
+    // -- Class methods
     // None
 
-// -- Class methods
-    // None
-
-  private:
+private:
 
     Regular();
 
-// No copy allowed
+    // No copy allowed
 
     Regular(const Regular&);
     Regular& operator=(const Regular&);
 
-// -- Members
+    // -- Members
+    // None
 
+    // -- Methods
+    // None
 
-// -- Methods
+    // -- Overridden methods
 
-
-// -- Overridden methods
-
-    virtual void validate(const std::vector<double>&) const;
     virtual void shape(size_t &ni, size_t &nj) const;
 
-
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const Regular& p)
     //  { p.print(s); return s; }
 
 };
 
-}  // namespace regular
 
+}  // namespace regular
 }  // namespace repres
 }  // namespace mir
 #endif
