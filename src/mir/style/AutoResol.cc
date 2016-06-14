@@ -60,6 +60,10 @@ void AutoResol::get(const std::string &name, long &value) const {
         step = 90.0 / N;
     }
 
+    if (parametrisation_.get("user.octahedral", N)) {
+        step = 90.0 / N;
+    }
+
     std::string gridname;
     if (parametrisation_.get("user.gridname", gridname)) {
         N = namedgrids::NamedGrid::lookup(gridname).gaussianNumber();
