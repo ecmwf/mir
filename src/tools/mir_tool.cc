@@ -37,8 +37,8 @@
 #include "mir/lsm/LSMChooser.h"
 #include "mir/method/Method.h"
 #include "mir/output/GribFileOutput.h"
-#include "mir/output/GeoPointsOutput.h"
-#include "mir/input/GeoPointsInput.h"
+#include "mir/output/GeoPointsFileOutput.h"
+#include "mir/input/GeoPointsFileInput.h"
 
 #include "mir/packing/Packer.h"
 #include "mir/log/MIR.h"
@@ -240,7 +240,7 @@ void MIRTool::run() {
     }
 
     if (args.has("geopoints")) {
-        mir::input::GeoPointsInput input(args(0));
+        mir::input::GeoPointsFileInput input(args(0));
         mir::output::GribFileOutput output(args(1));
         process(job, input, output, "field");
         return;
@@ -249,7 +249,7 @@ void MIRTool::run() {
     std::string griddef;
     if (args.has("griddef")) {
         mir::input::GribFileInput input(args(0));
-        mir::output::GeoPointsOutput output(args(1));
+        mir::output::GeoPointsFileOutput output(args(1));
         process(job, input, output, "field");
         return;
     }

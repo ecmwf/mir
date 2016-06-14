@@ -13,34 +13,31 @@
 /// @date Apr 2015
 
 
-#ifndef GeoPointsOutput_H
-#define GeoPointsOutput_H
+#ifndef GeoPointsFileOutput_H
+#define GeoPointsFileOutput_H
 
-#include "mir/output/MIROutput.h"
+#include "mir/output/GeoPointsOutput.h"
+#include "eckit/memory/ScopedPtr.h"
 
-
-namespace eckit {
-class DataHandle;
-}
 
 
 namespace mir {
 namespace output {
 
 
-class GeoPointsOutput : public MIROutput {
-  public:
+class GeoPointsFileOutput : public GeoPointsOutput {
+public:
 
 // -- Exceptions
     // None
 
 // -- Contructors
 
-    GeoPointsOutput();
+    GeoPointsFileOutput(const std::string& path);
 
 // -- Destructor
 
-    ~GeoPointsOutput(); // Change to virtual if base class
+    ~GeoPointsFileOutput(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -60,14 +57,13 @@ class GeoPointsOutput : public MIROutput {
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
     // None
 
 // -- Methods
 
-    virtual eckit::DataHandle& dataHandle() const = 0;
 
 // -- Overridden methods
     // None
@@ -78,16 +74,17 @@ class GeoPointsOutput : public MIROutput {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 
-    GeoPointsOutput(const GeoPointsOutput&);
-    GeoPointsOutput& operator=(const GeoPointsOutput&);
+    GeoPointsFileOutput(const GeoPointsFileOutput&);
+    GeoPointsFileOutput& operator=(const GeoPointsFileOutput&);
 
 // -- Members
 
-    bool once_;
+    std::string path_;
+    mutable eckit::ScopedPtr<eckit::DataHandle> handle_;
 
 // -- Methods
     // None
@@ -95,11 +92,9 @@ class GeoPointsOutput : public MIROutput {
 
 // -- Overridden methods
     // From MIROutput
-
-
-    virtual size_t copy(const param::MIRParametrisation&, input::MIRInput&); // Not iterpolation performed
-    virtual size_t save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&);
-
+    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual bool sameAs(const MIROutput& other) const;
+    virtual eckit::DataHandle& dataHandle() const;
 
 // -- Class members
     // None
@@ -109,7 +104,7 @@ class GeoPointsOutput : public MIROutput {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GeoPointsOutput& p)
+    //friend ostream& operator<<(ostream& s,const GeoPointsFileOutput& p)
     // { p.print(s); return s; }
 
 };

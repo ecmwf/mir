@@ -25,18 +25,18 @@ namespace mir {
 namespace input {
 
 
-class GeoPointsInput : public MIRInput, public param::FieldParametrisation {
+class GeoPointsFileInput : public MIRInput, public param::FieldParametrisation {
   public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    GeoPointsInput(const std::string& path);
+    GeoPointsFileInput(const std::string& path);
 
     // -- Destructor
 
-    virtual ~GeoPointsInput(); // Change to virtual if base class
+    virtual ~GeoPointsFileInput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -78,8 +78,8 @@ class GeoPointsInput : public MIRInput, public param::FieldParametrisation {
 
     // No copy allowed
 
-    GeoPointsInput(const GeoPointsInput &);
-    GeoPointsInput &operator=(const GeoPointsInput &);
+    GeoPointsFileInput(const GeoPointsFileInput &);
+    GeoPointsFileInput &operator=(const GeoPointsFileInput &);
 
     // -- Members
 
@@ -118,7 +118,7 @@ class GeoPointsInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GeoPointsInput& p)
+    //friend ostream& operator<<(ostream& s,const GeoPointsFileInput& p)
     //  { p.print(s); return s; }
 
 };

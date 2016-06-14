@@ -18,7 +18,7 @@
 
 #include "mir/data/MIRField.h"
 
-#include "mir/input/GeoPointsInput.h"
+#include "mir/input/GeoPointsFileInput.h"
 #include "mir/repres/other/UnstructuredGrid.h"
 
 #include "eckit/parser/Tokenizer.h"
@@ -30,7 +30,7 @@ namespace input {
 
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
-GeoPointsInput::GeoPointsInput(const std::string& path):
+GeoPointsFileInput::GeoPointsFileInput(const std::string& path):
     path_(path) {
 
 
@@ -62,26 +62,26 @@ GeoPointsInput::GeoPointsInput(const std::string& path):
  }
 
 
-GeoPointsInput::~GeoPointsInput() {}
+GeoPointsFileInput::~GeoPointsFileInput() {}
 
 
-bool GeoPointsInput::sameAs(const MIRInput& other) const {
-    const GeoPointsInput* o = dynamic_cast<const GeoPointsInput*>(&other);
+bool GeoPointsFileInput::sameAs(const MIRInput& other) const {
+    const GeoPointsFileInput* o = dynamic_cast<const GeoPointsFileInput*>(&other);
     return o && (path_ == o->path_);
 }
 
-bool GeoPointsInput::next() {
+bool GeoPointsFileInput::next() {
     return values_.size() != 0;
 }
 
 
-const param::MIRParametrisation &GeoPointsInput::parametrisation(size_t which) const {
+const param::MIRParametrisation &GeoPointsFileInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
     return *this;
 }
 
 
-data::MIRField *GeoPointsInput::field() const {
+data::MIRField *GeoPointsFileInput::field() const {
 
     data::MIRField *field = new data::MIRField(new repres::other::UnstructuredGrid(latitudes_, longitudes_), false, 999.0);
     field->update(values_, 0);
@@ -90,11 +90,11 @@ data::MIRField *GeoPointsInput::field() const {
 }
 
 
-void GeoPointsInput::print(std::ostream &out) const {
-    out << "GeoPointsInput[path=" << path_ << "]";
+void GeoPointsFileInput::print(std::ostream &out) const {
+    out << "GeoPointsFileInput[path=" << path_ << "]";
 }
 
-bool GeoPointsInput::has(const std::string& name) const {
+bool GeoPointsFileInput::has(const std::string& name) const {
     if (name == "gridded") {
         return true;
     }
@@ -104,7 +104,7 @@ bool GeoPointsInput::has(const std::string& name) const {
     return FieldParametrisation::has(name);
 }
 
-bool GeoPointsInput::get(const std::string &name, std::string &value) const {
+bool GeoPointsFileInput::get(const std::string &name, std::string &value) const {
 
     if (name == "gridType") {
         value = "unstructured_grid";
@@ -114,11 +114,11 @@ bool GeoPointsInput::get(const std::string &name, std::string &value) const {
 }
 
 // From FieldParametrisation
-void GeoPointsInput::latitudes(std::vector<double> &latitudes) const {
+void GeoPointsFileInput::latitudes(std::vector<double> &latitudes) const {
     latitudes = latitudes_;
 }
 
-void GeoPointsInput::longitudes(std::vector<double> &longitudes) const {
+void GeoPointsFileInput::longitudes(std::vector<double> &longitudes) const {
     longitudes = longitudes_;
 }
 

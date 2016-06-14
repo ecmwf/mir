@@ -138,8 +138,8 @@ input/DummyInput.cc
 input/DummyInput.h
 input/EmptyInput.cc
 input/EmptyInput.h
-input/GeoPointsInput.cc
-input/GeoPointsInput.h
+input/GeoPointsFileInput.cc
+input/GeoPointsFileInput.h
 input/GribAllFileInput.cc
 input/GribAllFileInput.h
 input/GribFileInput.cc
@@ -232,6 +232,8 @@ output/EmptyOutput.cc
 output/EmptyOutput.h
 output/GeoPointsOutput.cc
 output/GeoPointsOutput.h
+output/GeoPointsFileOutput.cc
+output/GeoPointsFileOutput.h
 output/GribFileOutput.cc
 output/GribFileOutput.h
 output/GribMemoryOutput.cc

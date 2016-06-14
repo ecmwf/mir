@@ -13,17 +13,15 @@
 /// @date Apr 2015
 
 
-#include <iostream>
-#include <fstream>
 
 #include "mir/output/GeoPointsOutput.h"
 #include "eckit/exception/Exceptions.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Iterator.h"
-#include "mir/param/MIRParametrisation.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/repres/Representation.h"
 #include "mir/param/RuntimeParametrisation.h"
+#include "eckit/io/HandleBuf.h"
 
 
 namespace mir {
@@ -32,8 +30,7 @@ namespace output {
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
 
-GeoPointsOutput::GeoPointsOutput(const std::string& path):
-    path_(path),
+GeoPointsOutput::GeoPointsOutput():
     once_(true) {
 }
 
@@ -42,20 +39,19 @@ GeoPointsOutput::~GeoPointsOutput() {
 }
 
 
-bool GeoPointsOutput::sameAs(const MIROutput& other) const {
-    const GeoPointsOutput* o = dynamic_cast<const GeoPointsOutput*>(&other);
-    return o && (path_ == o->path_);
-}
-
-
 size_t GeoPointsOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
     NOTIMP;
     return 0;
 }
 
-static const char* keys[] = {"class", "type", "stream", "expver",  "date", "time", "step", "number", "levtype", "levelist", "param", 0};
+static const char* keys[] = {"class", "type", "stream", "expver",
+                             "date", "time", "step", "number", "levtype",
+                             "levelist", "param", 0
+                            };
 
-size_t GeoPointsOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+size_t GeoPointsOutput::save(const param::MIRParametrisation &param,
+                             input::MIRInput &input,
+                             data::MIRField &field) {
 
     ASSERT(once_);
 
@@ -70,10 +66,12 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, input::MIRI
 
     const std::vector<double>& values = field.values(0);
 
-    std::ofstream out(path_);
-    if (!out) {
-        throw eckit::CantOpenFile(path_);
-    }
+
+    eckit::DataHandle& handle = dataHandle();
+    eckit::Offset position = handle.position();
+
+    std::ostream out(new eckit::HandleBuf(handle));
+
 
     out << "#GEO" << std::endl;
 
@@ -101,20 +99,12 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, input::MIRI
         ++v;
     }
 
-    out.close();
-    if (out.bad()) {
-        throw eckit::WriteError(path_);
-    }
 
     once_ = false;
 
-    return 0;
+    return handle.position() - position;
 }
 
-
-void GeoPointsOutput::print(std::ostream &out) const {
-    out << "GeoPointsOutput[path=" << path_ << "]";
-}
 
 
 

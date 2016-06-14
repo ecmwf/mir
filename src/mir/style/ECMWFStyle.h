@@ -25,7 +25,7 @@ namespace style {
 struct Requirements;
 
 class ECMWFStyle : public MIRStyle {
-  public:
+public:
 
 // -- Exceptions
     // None
@@ -57,7 +57,7 @@ class ECMWFStyle : public MIRStyle {
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
     // None
@@ -80,7 +80,7 @@ class ECMWFStyle : public MIRStyle {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 

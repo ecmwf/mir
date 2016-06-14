@@ -30,88 +30,88 @@ namespace style {
 
 
 class AutoResol : public param::DelayedParametrisation {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     AutoResol(const param::MIRParametrisation &parametrisation);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~AutoResol(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
 
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
-
-
-
-// -- Methods
-
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    // -- Members
 
 
-// -- Overridden methods
+
+    // -- Methods
+
+    virtual void print(std::ostream &) const; // Change to virtual if base class
+
+
+    // -- Overridden methods
     // virtual bool has(const std::string& name) const;
 
-    virtual void get(const std::string& name, long& value) const;
+    virtual void get(const std::string &name, long &value) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // No copy allowed
 
-    AutoResol(const AutoResol&);
-    AutoResol& operator=(const AutoResol&);
+    AutoResol(const AutoResol &);
+    AutoResol &operator=(const AutoResol &);
 
-// -- Members
+    // -- Members
 
     const param::MIRParametrisation &parametrisation_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const AutoResol& p) {
+    friend std::ostream &operator<<(std::ostream &s, const AutoResol &p) {
         p.print(s);
         return s;
     }
