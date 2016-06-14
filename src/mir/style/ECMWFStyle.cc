@@ -36,6 +36,11 @@ ECMWFStyle::~ECMWFStyle() {
 
 
 void ECMWFStyle::prepare(action::ActionPlan &plan) const {
+
+    if(parametrisation_.has("field.empty")) {
+        return;
+    }
+
     // All the nasty style goes there
 
     prologue(plan);

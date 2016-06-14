@@ -60,11 +60,8 @@ void EmptyInput::print(std::ostream &out) const {
 }
 
 bool EmptyInput::has(const std::string &name) const {
-    if (name == "gridded") {
+    if (name == "empty") {
         return true;
-    }
-    if (name == "spectral") {
-        return false;
     }
     return FieldParametrisation::has(name);
 }
