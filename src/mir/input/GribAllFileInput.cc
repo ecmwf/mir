@@ -22,6 +22,7 @@
 #include "eckit/io/StdFile.h"
 #include "eckit/io/Buffer.h"
 #include "mir/util/Grib.h"
+#include "eckit/memory/ScopedPtr.h"
 
 namespace mir {
 namespace input {
@@ -74,6 +75,14 @@ grib_handle *GribAllFileInput::gribHandle(size_t which) const {
 }
 
 data::MIRField *GribAllFileInput::field() const {
+    ASSERT(inputs_.size());
+    eckit::ScopedPtr<data::MIRField> f(inputs_[0]->field());
+    ASSERT(f->dimensions() == 1);
+    for(size_t i = 1; i < inputs_.size(); i++) {
+        eckit::ScopedPtr<data::MIRField> g(inputs_[i]->field());
+        ASSERT(g->dimensions() == 1);
+        f->update(g->direct(0), i);
+    }
     // // Assumes that both component (e.g. U and V) have the same parametrisation
     // data::MIRField *u = component1_.field();
     // data::MIRField *v = component2_.field();
@@ -85,7 +94,7 @@ data::MIRField *GribAllFileInput::field() const {
     // delete v;
 
     // return u;
-    NOTIMP;
+    f.release();
 }
 
 bool GribAllFileInput::next() {

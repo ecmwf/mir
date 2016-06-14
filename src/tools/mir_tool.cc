@@ -40,7 +40,6 @@
 #include "mir/output/GeoPointsOutput.h"
 #include "mir/input/GeoPointsInput.h"
 
-#include "mir/output/VectorOutput.h"
 #include "mir/packing/Packer.h"
 #include "mir/log/MIR.h"
 
@@ -221,8 +220,7 @@ void MIRTool::run() {
 
 
         mir::input::VectorInput winput(input1, input2);
-        mir::output::VectorOutput woutput(output, output);
-        process(job, winput, woutput, "wind");
+        process(job, winput, output, "wind");
         return;
 
     }
@@ -236,8 +234,7 @@ void MIRTool::run() {
         mir::output::GribFileOutput output(args(1));
 
         mir::input::VectorInput winput(input1, input2);
-        mir::output::VectorOutput woutput(output, output);
-        process(job, winput, woutput, "wind");
+        process(job, winput, output, "wind");
         return;
 
     }
