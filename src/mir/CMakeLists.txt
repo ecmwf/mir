@@ -372,8 +372,6 @@ style/MARSStyle.cc
 style/MARSStyle.h
 style/MIRStyle.cc
 style/MIRStyle.h
-style/ToolStyle.cc
-style/ToolStyle.h
 util/Arguments.cc
 util/Arguments.h
 util/Bitmap.cc
