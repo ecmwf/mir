@@ -47,6 +47,16 @@ namespace method {
 namespace {
 
 
+// try to project to 20% of total number elements before giving up
+const double maxFractionElemsToTry = 0.2;
+
+
+enum { LON=0, LAT=1 };
+
+
+typedef std::vector< WeightMatrix::Triplet > Triplets;
+
+
 struct MeshStats {
 
     size_t nb_triags;
@@ -74,12 +84,6 @@ struct MeshStats {
 };
 
 
-typedef std::vector< WeightMatrix::Triplet > Triplets;
-
-
-enum { LON=0, LAT=1 };
-
-
 void normalise(Triplets& triplets)
 {
     // sum all calculated weights for normalisation
@@ -97,25 +101,25 @@ void normalise(Triplets& triplets)
 }
 
 
-/// Finds in which element the point is contained by projecting the point with each nearest element
-static bool projectPointToElements(const MeshStats &stats,
-                                   const atlas::array::ArrayView<double, 2> &icoords,
-                                   const atlas::mesh::Elements::Connectivity &triag_nodes,
-                                   const atlas::mesh::Elements::Connectivity &quads_nodes,
-                                   const FiniteElement::Point &p,
-                                   std::vector< WeightMatrix::Triplet > &weights_triplets,
-                                   size_t ip,
-                                   size_t firstVirtualPoint,
-                                   atlas::interpolation::ElemIndex3::NodeList::const_iterator start,
-                                   atlas::interpolation::ElemIndex3::NodeList::const_iterator finish ) {
+/// Find in which element the point is contained by projecting the point with each nearest element
+Triplets projectPointToElements(
+        const MeshStats &stats,
+        const atlas::array::ArrayView<double, 2> &icoords,
+        const atlas::mesh::Elements::Connectivity &triag_nodes,
+        const atlas::mesh::Elements::Connectivity &quads_nodes,
+        const FiniteElement::Point &p,
+        size_t ip,
+        size_t firstVirtualPoint,
+        atlas::interpolation::ElemIndex3::NodeList::const_iterator start,
+        atlas::interpolation::ElemIndex3::NodeList::const_iterator finish ) {
+
+    ASSERT(start != finish);
 
     Triplets triplets;
-    bool mustNormalise = false;
-    bool projectedToElem = false;
 
+    bool mustNormalise = false;
     size_t idx[4];
     double w[4];
-
     atlas::interpolation::Ray ray( p.data() );
 
     for (atlas::interpolation::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
@@ -156,7 +160,6 @@ static bool projectPointToElements(const MeshStats &stats,
                         mustNormalise = true;
                 }
 
-                projectedToElem = true;
                 break; // stop looking for elements
             }
 
@@ -204,7 +207,6 @@ static bool projectPointToElements(const MeshStats &stats,
                         mustNormalise = true;
                 }
 
-                projectedToElem = true;
                 break; // stop looking for elements
             }
         } else {
@@ -213,23 +215,13 @@ static bool projectPointToElements(const MeshStats &stats,
 
     } // loop over nearest elements
 
-    ASSERT(start != finish);
-
-    if( projectedToElem )
-    {
-        ASSERT(triplets.size()); // at least one of the nodes of element shoudn't be virtual
-
-        if( mustNormalise)
-            normalise(triplets);
-
-        std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
+    // at least one of the nodes of element shouldn't be virtual
+    if (!triplets.empty() && mustNormalise) {
+        normalise(triplets);
     }
 
-    return projectedToElem;
+    return triplets;
 }
-
-
-const double maxFractionElemsToTry = 0.2; // try to project to 20% of total number elements before giving up
 
 
 }  // (anonymous namespace)
@@ -275,7 +267,7 @@ void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpa
     {
         eckit::TraceTimer<MIR> timer("Generate mesh");
 
-//        generateMeshAndCache(in.grid(), in.mesh()); // mesh generation will be done lazily
+        // generateMeshAndCache(in.grid(), in.mesh()); // mesh generation will be done lazily
 
         static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
         if (dumpMesh) {
@@ -385,17 +377,21 @@ void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpa
                 max_neighbours = std::max(kpts, max_neighbours);
 
                 atlas::interpolation::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
-                success = projectPointToElements(stats,
-                                                 icoords,
-                                                 *triag_nodes,
-                                                 *quads_nodes,
-                                                 p,
-                                                 weights_triplets,
-                                                 ip,
-                                                 firstVirtualPoint,
-                                                 cs.begin(),
-                                                 cs.end() );
+                Triplets triplets = projectPointToElements(
+                            stats,
+                            icoords,
+                            *triag_nodes,
+                            *quads_nodes,
+                            p,
+                            ip,
+                            firstVirtualPoint,
+                            cs.begin(),
+                            cs.end() );
 
+                if (triplets.size()) {
+                    std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
+                    success = true;
+                }
                 kpts *= 2;
 
             }
