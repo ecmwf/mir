@@ -116,6 +116,18 @@ void GeoPointsFileInput::longitudes(std::vector<double> &longitudes) const {
     longitudes = longitudes_;
 }
 
+const std::vector<double>& GeoPointsFileInput::latitudes() const {
+    return latitudes_;
+}
+
+const std::vector<double>& GeoPointsFileInput::longitudes() const {
+    return longitudes_;
+}
+
+const std::vector<double>& GeoPointsFileInput::values() const {
+    return values_;
+}
+
 
 
 }  // namespace input
