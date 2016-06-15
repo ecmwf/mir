@@ -33,33 +33,46 @@ namespace input {
 GeoPointsFileInput::GeoPointsFileInput(const std::string& path):
     path_(path) {
 
+    parametrisation_.set("gridType", "unstructured_grid");
+    parametrisation_.set("gridded", true);
 
     eckit::Tokenizer parse(" \t");
     eckit::Translator<std::string, double> s2d;
 
     std::ifstream in(path_);
-    if(!in) {
+    if (!in) {
         throw eckit::CantOpenFile(path_);
     }
 
+    eckit::Tokenizer parse2("=");
+
     char line[10240];
     bool data = false;
-    while(in.getline(line, sizeof(line))) {
-        if(!data && strncmp(line, "#DATA", 5) == 0) {
+    while (in.getline(line, sizeof(line))) {
+
+        if (!data && strncmp(line, "# ", 2) == 0) {
+            std::vector<std::string> v;
+            // std::cout << "PARSE " << line +2 << std::endl;
+            parse2(line + 2, v);
+            ASSERT(v.size() == 2);
+            parametrisation_.set(v[0], v[1]);
+        }
+
+        if (!data && strncmp(line, "#DATA", 5) == 0) {
             data = true;
             continue;
         }
-        if(data) {
+        if (data) {
             std::vector<std::string> v;
             parse(line, v);
-            if(v.size() >= 3) {
+            if (v.size() >= 3) {
                 latitudes_.push_back(s2d(v[0]));
                 longitudes_.push_back(s2d(v[1]));
                 values_.push_back(s2d(v.back()));
             }
         }
     }
- }
+}
 
 
 GeoPointsFileInput::~GeoPointsFileInput() {}
@@ -77,7 +90,7 @@ bool GeoPointsFileInput::next() {
 
 const param::MIRParametrisation &GeoPointsFileInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
-    return *this;
+    return parametrisation_;
 }
 
 
@@ -92,25 +105,6 @@ data::MIRField *GeoPointsFileInput::field() const {
 
 void GeoPointsFileInput::print(std::ostream &out) const {
     out << "GeoPointsFileInput[path=" << path_ << "]";
-}
-
-bool GeoPointsFileInput::has(const std::string& name) const {
-    if (name == "gridded") {
-        return true;
-    }
-    if (name == "spectral") {
-        return false;
-    }
-    return FieldParametrisation::has(name);
-}
-
-bool GeoPointsFileInput::get(const std::string &name, std::string &value) const {
-
-    if (name == "gridType") {
-        value = "unstructured_grid";
-        return true;
-    }
-    return FieldParametrisation::get(name, value);
 }
 
 // From FieldParametrisation

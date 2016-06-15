@@ -18,15 +18,15 @@
 
 
 #include "mir/input/MIRInput.h"
-#include "mir/param/FieldParametrisation.h"
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
 namespace input {
 
 
-class GeoPointsFileInput : public MIRInput, public param::FieldParametrisation {
-  public:
+class GeoPointsFileInput : public MIRInput {
+public:
 
     // -- Exceptions
     // None
@@ -47,7 +47,9 @@ class GeoPointsFileInput : public MIRInput, public param::FieldParametrisation {
     // -- Methods
     // None
 
-
+    const std::vector<double>& latitudes() const;
+    const std::vector<double>& longitudes() const;
+    const std::vector<double>& values() const;
     // -- Overridden methods
     // None
 
@@ -57,7 +59,7 @@ class GeoPointsFileInput : public MIRInput, public param::FieldParametrisation {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -74,7 +76,7 @@ class GeoPointsFileInput : public MIRInput, public param::FieldParametrisation {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
@@ -84,6 +86,7 @@ class GeoPointsFileInput : public MIRInput, public param::FieldParametrisation {
     // -- Members
 
     std::string path_;
+    param::SimpleParametrisation parametrisation_;
 
     mutable std::vector<double> latitudes_;
     mutable std::vector<double> longitudes_;
@@ -102,9 +105,6 @@ class GeoPointsFileInput : public MIRInput, public param::FieldParametrisation {
 
     virtual bool next();
 
-    // From MIRParametrisation
-    virtual bool has(const std::string& name) const;
-    virtual bool get(const std::string&, std::string&) const;
 
     // From FieldParametrisation
     virtual void latitudes(std::vector<double> &) const;
