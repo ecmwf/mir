@@ -24,7 +24,7 @@
 namespace mir {
 
 namespace data {
-    class MIRField;
+class MIRField;
 }
 
 namespace util {
@@ -43,7 +43,7 @@ class ActionNode;
 class ActionPlan;
 
 class ActionGraph {
-  public:
+public:
 
 // -- Exceptions
     // None
@@ -88,7 +88,7 @@ class ActionGraph {
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
 
@@ -106,7 +106,7 @@ class ActionGraph {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 

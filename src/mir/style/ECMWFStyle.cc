@@ -37,10 +37,6 @@ ECMWFStyle::~ECMWFStyle() {
 
 void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
-    if(parametrisation_.has("field.empty")) {
-        return;
-    }
-
     // All the nasty style goes there
 
     prologue(plan);
@@ -218,6 +214,11 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 
     if (parametrisation_.has("user.frame")) {
         plan.add("filter.frame");
+    }
+
+    std::string epilogue;
+    if (parametrisation_.get("epilogue", epilogue)) {
+        plan.add(epilogue);
     }
 }
 

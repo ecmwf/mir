@@ -27,6 +27,8 @@ namespace input {
 
 
 EmptyInput::EmptyInput(): calls_(0) {
+    parametrisation_.set("gridded", true);
+    parametrisation_.set("gridType", "none");
 }
 
 
@@ -45,34 +47,18 @@ bool EmptyInput::next() {
 
 const param::MIRParametrisation &EmptyInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
-    return *this;
+    return parametrisation_;
 }
 
 
 data::MIRField *EmptyInput::field() const {
-    data::MIRField *field = new data::MIRField(*this, false, 999.);
+    data::MIRField *field = new data::MIRField(parametrisation_, false, 999.);
     return field;
 }
 
 
 void EmptyInput::print(std::ostream &out) const {
     out << "EmptyInput[...]";
-}
-
-bool EmptyInput::has(const std::string &name) const {
-    if (name == "empty") {
-        return true;
-    }
-    return FieldParametrisation::has(name);
-}
-
-bool EmptyInput::get(const std::string &name, std::string &value) const {
-
-    if (name == "gridType") {
-        value = "unstructured_grid";
-        return true;
-    }
-    return FieldParametrisation::get(name, value);
 }
 
 void EmptyInput::latitudes(std::vector<double> &) const {
@@ -83,41 +69,6 @@ void EmptyInput::longitudes(std::vector<double> &) const {
 
 }
 
-
-// bool EmptyInput::get(const std::string &name, double &value) const {
-
-//     if (name == "north") {
-//         value = 90;
-//         return true;
-//     }
-
-//     if (name == "south") {
-//         value = -90;
-//         return true;
-//     }
-
-//     if (name == "west") {
-//         value = 0;
-//         return true;
-//     }
-
-//     if (name == "east") {
-//         value = 359;
-//         return true;
-//     }
-
-//     if (name == "west_east_increment") {
-//         value = 1;
-//         return true;
-//     }
-
-//     if (name == "south_north_increment") {
-//         value = 1;
-//         return true;
-//     }
-
-//     return FieldParametrisation::get(name, value);
-// }
 
 
 

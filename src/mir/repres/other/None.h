@@ -13,30 +13,31 @@
 /// @date Apr 2015
 
 
-#ifndef DummyInput_H
-#define DummyInput_H
+#ifndef None_H
+#define None_H
 
-
-#include "mir/input/MIRInput.h"
-#include "mir/param/SimpleParametrisation.h"
-
+#include "mir/repres/Representation.h"
 
 namespace mir {
-namespace input {
+namespace repres {
+namespace other {
 
 
-class EmptyInput : public MIRInput {
-public:
+class None : public Representation {
+  public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    EmptyInput();
+
+    None();
+    None(const param::MIRParametrisation &);
+
 
     // -- Destructor
 
-    virtual ~EmptyInput(); // Change to virtual if base class
+    virtual ~None(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -45,7 +46,6 @@ public:
     // None
 
     // -- Methods
-    // None
 
 
     // -- Overridden methods
@@ -57,13 +57,14 @@ public:
     // -- Class methods
     // None
 
-protected:
+  protected:
 
     // -- Members
     // None
 
     // -- Methods
 
+    void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -74,35 +75,30 @@ protected:
     // -- Class methods
     // None
 
-private:
+  private:
 
     // No copy allowed
 
-    EmptyInput(const EmptyInput &);
-    EmptyInput &operator=(const EmptyInput &);
+    None(const None &);
+    None &operator=(const None &);
 
     // -- Members
 
-    size_t calls_;
-    param::SimpleParametrisation parametrisation_;
-
     // -- Methods
+    // None
+
 
     // -- Overridden methods
-    // From MIRInput
 
-    virtual void print(std::ostream&) const; // Change to virtual if base class
-    virtual bool sameAs(const MIRInput& other) const;
+    // virtual void fill(grib_info &) const;
+    // virtual void fill(api::MIRJob &) const;
+    // virtual atlas::grid::Grid *atlasGrid() const;
+    // virtual void validate(const std::vector<double> &values) const;
 
-    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
-    virtual data::MIRField *field() const;
+    // virtual bool globalDomain() const;
+    // virtual Iterator* rotatedIterator() const; // After rotation
+    // virtual Iterator* unrotatedIterator() const; // Before rotation
 
-    virtual bool next();
-
-    // virtual bool get(const std::string&, double&) const;
-
-    virtual void latitudes(std::vector<double> &) const;
-    virtual void longitudes(std::vector<double> &) const;
     // -- Class members
     // None
 
@@ -111,13 +107,14 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const EmptyInput& p)
+    //friend ostream& operator<<(ostream& s,const None& p)
     //  { p.print(s); return s; }
 
 };
 
 
-}  // namespace input
+}  // namespace other
+}  // namespace repres
 }  // namespace mir
 #endif
 
