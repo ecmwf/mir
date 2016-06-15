@@ -17,7 +17,6 @@
 
 #include <algorithm>
 #include <limits>
-
 #include "eckit/config/Resource.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/ETA.h"
@@ -25,7 +24,6 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
-
 #include "atlas/grid/global/Structured.h"
 #include "atlas/interpolation/PointIndex3.h"
 #include "atlas/interpolation/Quad3D.h"
@@ -37,7 +35,6 @@
 #include "atlas/mesh/actions/BuildCellCentres.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/util/io/Gmsh.h"
-
 #include "mir/log/MIR.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/method/GridSpace.h"
@@ -46,36 +43,9 @@
 namespace mir {
 namespace method {
 
-using atlas::grid::Grid;
-using atlas::mesh::Mesh;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-FiniteElement::MeshGenParams::MeshGenParams() {
-    set("three_dimensional", true);
-    set("patch_pole",        true);
-    set("include_pole",      false);
-    set("angle",             0.);
-    set("triangulate",       false);
-}
-
-
-FiniteElement::FiniteElement(const param::MIRParametrisation &param) :
-    MethodWeighted(param) {
-}
-
-
-FiniteElement::~FiniteElement() {
-}
-
-void FiniteElement::hash(eckit::MD5&) const
-{
-
-}
-
-//----------------------------------------------------------------------------------------------------------------------
 
 namespace {
+
 
 struct MeshStats {
 
@@ -103,14 +73,14 @@ struct MeshStats {
     }
 };
 
+
 typedef std::vector< WeightMatrix::Triplet > Triplets;
+
 
 enum { LON=0, LAT=1 };
 
-}
 
-
-static void normalise(Triplets& triplets)
+void normalise(Triplets& triplets)
 {
     // sum all calculated weights for normalisation
     double sum = 0.0;
@@ -140,11 +110,10 @@ static bool projectPointToElements(const MeshStats &stats,
                                    atlas::interpolation::ElemIndex3::NodeList::const_iterator finish ) {
 
     Triplets triplets;
-
     bool mustNormalise = false;
     bool projectedToElem = false;
 
-    size_t idx [4];
+    size_t idx[4];
     double w[4];
 
     atlas::interpolation::Ray ray( p.data() );
@@ -166,15 +135,15 @@ static bool projectPointToElements(const MeshStats &stats,
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts && idx[2] < stats.inp_npts );
 
             atlas::interpolation::Triag3D triag(
-                icoords[idx[0]].data(),
-                icoords[idx[1]].data(),
-                icoords[idx[2]].data());
+                    icoords[idx[0]].data(),
+                    icoords[idx[1]].data(),
+                    icoords[idx[2]].data());
 
             atlas::interpolation::Intersect is = triag.intersects(ray);
 
             if (is) {
 
-                // weights are the linear Lagrange function evaluated at u,v (aka baricentric coordinates)
+                // weights are the linear Lagrange function evaluated at u,v (aka barycentric coordinates)
                 w[0] = 1. - is.u - is.v;
                 w[1] = is.u;
                 w[2] = is.v;
@@ -206,10 +175,10 @@ static bool projectPointToElements(const MeshStats &stats,
                     idx[2] < stats.inp_npts && idx[3] < stats.inp_npts );
 
             atlas::interpolation::Quad3D quad(
-                icoords[idx[0]].data(),
-                icoords[idx[1]].data(),
-                icoords[idx[2]].data(),
-                icoords[idx[3]].data() );
+                    icoords[idx[0]].data(),
+                    icoords[idx[1]].data(),
+                    icoords[idx[2]].data(),
+                    icoords[idx[3]].data() );
 
             if ( !quad.validate() ) { // somewhat expensive sanity check
                 eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
@@ -239,7 +208,7 @@ static bool projectPointToElements(const MeshStats &stats,
                 break; // stop looking for elements
             }
         } else {
-          throw eckit::SeriousBug("Element type is not triangle or quadrilateral", Here());
+            throw eckit::SeriousBug("Element type is not triangle or quadrilateral", Here());
         }
 
     } // loop over nearest elements
@@ -260,7 +229,33 @@ static bool projectPointToElements(const MeshStats &stats,
 }
 
 
-static const double maxFractionElemsToTry = 0.2; // try to project to 20% of total number elements before giving up
+const double maxFractionElemsToTry = 0.2; // try to project to 20% of total number elements before giving up
+
+
+}  // (anonymous namespace)
+
+
+FiniteElement::MeshGenParams::MeshGenParams() {
+    set("three_dimensional", true);
+    set("patch_pole",        true);
+    set("include_pole",      false);
+    set("angle",             0.);
+    set("triangulate",       false);
+}
+
+
+FiniteElement::FiniteElement(const param::MIRParametrisation &param) :
+    MethodWeighted(param) {
+}
+
+
+FiniteElement::~FiniteElement() {
+}
+
+
+void FiniteElement::hash(eckit::MD5&) const
+{
+}
 
 
 void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const {
@@ -319,17 +314,17 @@ void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpa
 
     for( size_t jtype=0; jtype<in.mesh().cells().nb_types(); ++jtype )
     {
-      const atlas::mesh::Elements& elements =  in.mesh().cells().elements(jtype);
-      if( elements.element_type().name() == "Triangle" )
-      {
-        stats.nb_triags = elements.size();
-        triag_nodes = &elements.node_connectivity();
-      }
-      if( elements.element_type().name() == "Quadrilateral" )
-      {
-        stats.nb_quads  = elements.size();
-        quads_nodes = &elements.node_connectivity();
-      }
+        const atlas::mesh::Elements& elements =  in.mesh().cells().elements(jtype);
+        if( elements.element_type().name() == "Triangle" )
+        {
+            stats.nb_triags = elements.size();
+            triag_nodes = &elements.node_connectivity();
+        }
+        if( elements.element_type().name() == "Quadrilateral" )
+        {
+            stats.nb_quads  = elements.size();
+            quads_nodes = &elements.node_connectivity();
+        }
     }
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
@@ -351,7 +346,7 @@ void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpa
 
     eckit::Log::trace<MIR>() << stats << std::endl;
 
-    // weights -- one per vertice of element, triangles (3) or quads (4)
+    // weights -- one per vertex of element, triangles (3) or quads (4)
 
     std::vector< WeightMatrix::Triplet > weights_triplets; // structure to fill-in sparse matrix
     weights_triplets.reserve( stats.out_npts * 4 );         // preallocate space as if all elements where quads
@@ -371,9 +366,9 @@ void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpa
             if (ip && (ip % 10000 == 0)) {
                 double rate = ip / timerProj.elapsed();
                 eckit::Log::trace<MIR>() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timerProj.elapsed())
-                                   << ", rate: " << rate << " points/s, ETA: "
-                                   << eckit::ETA( (stats.out_npts - ip) / rate )
-                                   << std::endl;
+                                         << ", rate: " << rate << " points/s, ETA: "
+                                         << eckit::ETA( (stats.out_npts - ip) / rate )
+                                         << std::endl;
             }
 
             if (!inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
@@ -408,8 +403,8 @@ void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpa
             if (!success) {
                 // If this fails, consider lowering atlas::grid::parametricEpsilon
                 eckit::Log::trace<MIR>() << "Failed to project point " << ip << " " << p
-                                   << " with coordinates lon=" << olonlat[ip][LON] << ", lat=" << olonlat[ip][LAT]
-                                   << " after " << eckit::Plural(kpts, "attempt") << std::endl;
+                                         << " with coordinates lon=" << olonlat[ip][LON] << ", lat=" << olonlat[ip][LAT]
+                                         << " after " << eckit::Plural(kpts, "attempt") << std::endl;
                 throw eckit::SeriousBug("Could not project point");
             }
         }
@@ -438,7 +433,6 @@ void FiniteElement::generateMesh(const atlas::grid::Grid &grid, atlas::mesh::Mes
     atlas::mesh::actions::BuildXYZField()(mesh);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
