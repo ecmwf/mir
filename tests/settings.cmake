@@ -26,10 +26,6 @@ endif()
 
 unset( _grib_environment )
 if( grib_api_BASE_DIR )
-  set( grib_handling_pkg grib_api )
-  if( HAVE_ECCODES )
-    set( grib_handling_pkg eccodes )
-  endif()
   set( _grib_environment
     GRIB_DEFINITION_PATH=${grib_api_BASE_DIR}/share/${grib_handling_pkg}/definitions
     GRIB_SAMPLES_PATH=${grib_api_BASE_DIR}/share/${grib_handling_pkg}/samples )
