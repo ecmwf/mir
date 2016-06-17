@@ -32,7 +32,7 @@ public:
     // None
 
     // -- Contructors
-    GeoPointsFileInput(const std::string& path);
+    GeoPointsFileInput(const std::string& path, int which = -1);
 
     // -- Destructor
 
@@ -87,6 +87,7 @@ private:
 
     std::string path_;
     param::SimpleParametrisation parametrisation_;
+    int which_;
 
     mutable std::vector<double> latitudes_;
     mutable std::vector<double> longitudes_;

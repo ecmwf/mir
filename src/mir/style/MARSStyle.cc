@@ -59,8 +59,17 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
     bool autoresol = true;
     parametrisation_.get("autoresol", autoresol);
 
+    bool griddef = parametrisation_.has("griddef");
+
     if (autoresol) {
-        plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+
+        if (griddef) {
+            // TODO: this is temporary
+            plan.add("transform.sh2sh", "truncation", 63L);
+        }
+        else {
+            plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+        }
     }
 
     if (parametrisation_.has("user.grid")) {
@@ -116,7 +125,9 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
     if (parametrisation_.has("user.griddef")) {
         std::string griddef;
         ASSERT (parametrisation_.get("griddef", griddef));
-        plan.add("transform.sh2griddef");
+        // TODO: this is temporary
+        plan.add("transform.sh2octahedral-gg", "octahedral", 64L);
+        plan.add("interpolate.grid2griddef");
     }
 
 }

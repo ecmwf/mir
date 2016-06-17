@@ -55,52 +55,60 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param,
 
     ASSERT(once_);
 
-    // ASSERT(field.dimensions() == 1);
-
-    param::RuntimeParametrisation runtime(param);
-    if (field.paramId(0)) {
-        std::ostringstream oss;
-        oss << field.paramId(0);
-        runtime.set("param", oss.str());
-    }
-
-    const std::vector<double>& values = field.values(0);
-
 
     eckit::DataHandle& handle = dataHandle();
     eckit::Offset position = handle.position();
 
     std::ostream out(new eckit::HandleBuf(handle));
 
+    for (size_t j = 0; j < field.dimensions(); ++j) {
 
-    out << "#GEO" << std::endl;
+        // ASSERT(field.dimensions() == 1);
 
-    size_t i = 0;
-    while (keys[i]) {
-        std::string v;
-        if (runtime.get(keys[i], v)) {
-            out << "# " << keys[i] << "=" << v << std::endl;
+        param::RuntimeParametrisation runtime(param);
+        if (field.paramId(j)) {
+            std::ostringstream oss;
+            oss << field.paramId(j);
+            runtime.set("param", oss.str());
         }
-        i++;
+
+        const std::vector<double>& values = field.values(j);
+
+
+        std::cout << "GeoPointsOutput::save => " << handle << std::endl;
+
+
+        out << "#GEO" << std::endl;
+
+        size_t i = 0;
+        while (keys[i]) {
+            std::string v;
+            if (runtime.get(keys[i], v)) {
+                out << "# " << keys[i] << "=" << v << std::endl;
+            }
+            i++;
+        }
+
+        out << "#DATA" << std::endl;
+
+
+        eckit::ScopedPtr<repres::Iterator> it(field.representation()->rotatedIterator());
+        double lat;
+        double lon;
+
+        std::vector<double>::const_iterator v = values.begin();
+
+        while (it->next(lat, lon)) {
+            ASSERT(v != values.end());
+            out << lat << ' ' << lon << ' ' << *v << std::endl;
+            ++v;
+        }
+
     }
-
-    out << "#DATA" << std::endl;
-
-
-    eckit::ScopedPtr<repres::Iterator> it(field.representation()->rotatedIterator());
-    double lat;
-    double lon;
-
-    std::vector<double>::const_iterator v = values.begin();
-
-    while (it->next(lat, lon)) {
-        ASSERT(v != values.end());
-        out << lat << ' ' << lon << ' ' << *v << std::endl;
-        ++v;
-    }
-
 
     once_ = false;
+
+    std::cout << "GeoPointsOutput::save <= " << handle.position() - position << std::endl;
 
     return handle.position() - position;
 }

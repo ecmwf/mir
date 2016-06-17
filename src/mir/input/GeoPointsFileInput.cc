@@ -30,11 +30,9 @@ namespace input {
 
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
-GeoPointsFileInput::GeoPointsFileInput(const std::string& path):
-    path_(path) {
-
-    parametrisation_.set("gridType", "unstructured_grid");
-    parametrisation_.set("gridded", true);
+GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
+    path_(path),
+    which_(which) {
 
     eckit::Tokenizer parse(" \t");
     eckit::Translator<std::string, double> s2d;
@@ -48,7 +46,27 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path):
 
     char line[10240];
     bool data = false;
+    size_t count = 0;
+
     while (in.getline(line, sizeof(line))) {
+
+        if (strncmp(line, "#GEO", 4) == 0) {
+            count++;
+
+            if (which >= 0 && count  > which + 1) {
+                break;
+            }
+
+            parametrisation_.reset();
+            parametrisation_.set("gridType", "unstructured_grid");
+            parametrisation_.set("gridded", true);
+
+            data = false;
+            latitudes_.empty();
+            longitudes_.empty();
+            values_.empty();
+            continue;
+        }
 
         if (!data && strncmp(line, "# ", 2) == 0) {
             std::vector<std::string> v;
@@ -56,6 +74,8 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path):
             parse2(line + 2, v);
             ASSERT(v.size() == 2);
             parametrisation_.set(v[0], v[1]);
+
+            std::cout << path_ << " ===> " << v[0] << "=" << v[1] << std::endl;
         }
 
         if (!data && strncmp(line, "#DATA", 5) == 0) {
@@ -71,6 +91,24 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path):
                 values_.push_back(s2d(v.back()));
             }
         }
+    }
+
+    if (count == 0) {
+        std::ostringstream oss;
+        oss << path_ << " is not a valid geopoints file";
+        throw eckit::SeriousBug(oss.str());
+    }
+
+    if (which == -1 && count > 1) {
+        std::ostringstream oss;
+        oss << path_ << " is a multi-field geopoints file with " << count << " fields, please select which";
+        throw eckit::SeriousBug(oss.str());
+    }
+
+    if (which >= count) {
+        std::ostringstream oss;
+        oss << path_ << " contains " << count << " fields, requested index is " << which;
+        throw eckit::SeriousBug(oss.str());
     }
 }
 
@@ -104,7 +142,7 @@ data::MIRField *GeoPointsFileInput::field() const {
 
 
 void GeoPointsFileInput::print(std::ostream &out) const {
-    out << "GeoPointsFileInput[path=" << path_ << "]";
+    out << "GeoPointsFileInput[path=" << path_ << ",which=" << which_ << "]";
 }
 
 // From FieldParametrisation
