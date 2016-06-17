@@ -222,7 +222,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported."
-                            " Please recompile ATLAS was not compiled with TRANS support.");
+                            " Please recompile ATLAS with TRANS support enabled.");
 #endif
 }
 
