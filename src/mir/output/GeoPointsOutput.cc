@@ -55,7 +55,7 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param,
 
     ASSERT(once_);
 
-    ASSERT(field.dimensions() == 1);
+    // ASSERT(field.dimensions() == 1);
 
     param::RuntimeParametrisation runtime(param);
     if (field.paramId(0)) {
