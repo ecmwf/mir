@@ -7,19 +7,27 @@ file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 # Test settings and helper functions
 include("${PROJECT_SOURCE_DIR}/tests/settings.cmake")
 
+# Set list of input data files
 
-# Set interpolation tests
-# (each line is an interpolation, the previous-to-last entry in each line is a file to download)
-unset(_test_reqs)
-foreach( _in
+set(TEST_INPUT_FILES 
         "2t_O640.grib"
         "msl_N640.grib"
         "msl_regular_ll_1-1.grib"
         "msl_regular_ll_2-2.grib"
         "msl_regular_ll_3-3.grib"
-        "q_F640.grib"
+        "q_F640.grib" )
+
+# Add input data with spherical harmonic if possible
+if(ATLAS_HAVE_TRANS)
+    list(APPEND TEST_INPUT_FILES 
         "vo-d_sh.grib"
         "z_sh.grib" )
+endif(ATLAS_HAVE_TRANS)
+
+# Set interpolation tests
+# (each line is an interpolation, the previous-to-last entry in each line is a file to download)
+unset(_test_reqs)
+foreach( _in ${TEST_INPUT_FILES})
   foreach( _pproc
           ""
           "--grid=1/1 --area=40/20/20/40"
