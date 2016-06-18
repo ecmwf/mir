@@ -75,7 +75,7 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param,
         const std::vector<double>& values = field.values(j);
 
 
-        std::cout << "GeoPointsOutput::save => " << handle << std::endl;
+        // std::cout << "GeoPointsOutput::save => " << handle << std::endl;
 
 
         out << "#GEO" << std::endl;
@@ -108,7 +108,7 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param,
 
     once_ = false;
 
-    std::cout << "GeoPointsOutput::save <= " << handle.position() - position << std::endl;
+    // std::cout << "GeoPointsOutput::save <= " << handle.position() - position << std::endl;
 
     return handle.position() - position;
 }
