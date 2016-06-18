@@ -62,9 +62,9 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
             parametrisation_.set("gridded", true);
 
             data = false;
-            latitudes_.empty();
-            longitudes_.empty();
-            values_.empty();
+            latitudes_.clear();
+            longitudes_.clear();
+            values_.clear();
             continue;
         }
 
@@ -75,7 +75,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
             ASSERT(v.size() == 2);
             parametrisation_.set(v[0], v[1]);
 
-            std::cout << path_ << " ===> " << v[0] << "=" << v[1] << std::endl;
+            // std::cout << path_ << " ===> " << v[0] << "=" << v[1] << std::endl;
         }
 
         if (!data && strncmp(line, "#DATA", 5) == 0) {
