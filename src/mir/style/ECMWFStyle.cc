@@ -216,6 +216,10 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
         plan.add("sub.scalar");
     }
 
+    if (parametrisation_.has("round.field")) {
+        plan.add("round.field");
+    }
+
     if (parametrisation_.has("min.scalar")) {
         plan.add("min.scalar");
     }

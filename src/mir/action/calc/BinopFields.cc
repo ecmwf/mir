@@ -55,7 +55,7 @@ void BinopFields<T>::execute(data::MIRField & field, util::MIRStatistics& statis
     ASSERT(field.dimensions() == 2);
 
     std::vector<double> &values0 = field.direct(0);
-    std::vector<double> &values1 = field.direct(1);
+    const std::vector<double> &values1 = field.values(1);
 
     size_t size = values0.size();
     ASSERT(values0.size() == values1.size());

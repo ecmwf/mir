@@ -24,6 +24,8 @@ list(
   APPEND mir_srcs
 action/calc/BinopFields.cc
 action/calc/BinopFields.h
+action/calc/UnopField.cc
+action/calc/UnopField.h
 action/calc/BinopScalar.cc
 action/calc/BinopScalar.h
 action/filter/AdjustWinds.cc
