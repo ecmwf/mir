@@ -216,6 +216,14 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
         plan.add("sub.scalar");
     }
 
+    if (parametrisation_.has("min.scalar")) {
+        plan.add("min.scalar");
+    }
+
+    if (parametrisation_.has("max.scalar")) {
+        plan.add("max.scalar");
+    }
+
     if (parametrisation_.has("user.area")) {
         plan.add("crop.area");
     }

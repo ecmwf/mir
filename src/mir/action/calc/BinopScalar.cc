@@ -122,6 +122,24 @@ struct sub {
 static ActionBuilder< BinopScalar<sub> > _sub(sub::name());
 
 
+struct min {
+    static const char* name() { return "min.scalar"; }
+    static const char* param() { return "min.scalar.param"; }
+
+    static double op(double a, double b) { return std::min(a, b); }
+};
+
+static ActionBuilder< BinopScalar<min> > _min(min::name());
+
+struct max {
+    static const char* name() { return "max.scalar"; }
+    static const char* param() { return "max.scalar.param"; }
+
+    static double op(double a, double b) { return std::max(a, b); }
+};
+
+static ActionBuilder< BinopScalar<max> > _max(max::name());
+
 }  // namespace action
 }  // namespace mir
 
