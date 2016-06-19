@@ -70,6 +70,12 @@ class GeoPointsOutput : public MIROutput {
     virtual eckit::DataHandle& dataHandle() const = 0;
 
 // -- Overridden methods
+    // From MIROutput
+
+
+    virtual size_t copy(const param::MIRParametrisation&, input::MIRInput&); // Not iterpolation performed
+    virtual size_t save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&);
+
     // None
 
 // -- Class members
@@ -94,11 +100,6 @@ class GeoPointsOutput : public MIROutput {
 
 
 // -- Overridden methods
-    // From MIROutput
-
-
-    virtual size_t copy(const param::MIRParametrisation&, input::MIRInput&); // Not iterpolation performed
-    virtual size_t save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&);
 
 
 // -- Class members

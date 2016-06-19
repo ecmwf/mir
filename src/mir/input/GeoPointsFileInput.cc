@@ -79,7 +79,12 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
         }
 
         if (!data && strncmp(line, "#DATA", 5) == 0) {
-            data = true;
+            if (which < 0) {
+                data = true;
+            }
+            else {
+                data = (count == which + 1);
+            }
             continue;
         }
         if (data) {
