@@ -85,15 +85,41 @@ void BinopScalar<T>::execute(data::MIRField & field, util::MIRStatistics& statis
     }
 }
 
-struct multiply {
-    static const char* name() { return "multiply.scalar"; }
-    static const char* param() { return "multiply.scalar.param"; }
+struct mul {
+    static const char* name() { return "mul.scalar"; }
+    static const char* param() { return "mul.scalar.param"; }
 
     static double op(double a, double b) { return a * b; }
 };
 
-static ActionBuilder< BinopScalar<multiply> > _multiply(multiply::name());
+static ActionBuilder< BinopScalar<mul> > _mul(mul::name());
 
+struct div {
+    static const char* name() { return "div.scalar"; }
+    static const char* param() { return "div.scalar.param"; }
+
+    static double op(double a, double b) { return a / b; }
+};
+
+static ActionBuilder< BinopScalar<div> > _div(div::name());
+
+struct add {
+    static const char* name() { return "add.scalar"; }
+    static const char* param() { return "add.scalar.param"; }
+
+    static double op(double a, double b) { return a + b; }
+};
+
+static ActionBuilder< BinopScalar<add> > _add(add::name());
+
+struct sub {
+    static const char* name() { return "sub.scalar"; }
+    static const char* param() { return "sub.scalar.param"; }
+
+    static double op(double a, double b) { return a - b; }
+};
+
+static ActionBuilder< BinopScalar<sub> > _sub(sub::name());
 
 
 }  // namespace action

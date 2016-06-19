@@ -200,8 +200,20 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 
     // Could be in the prologue
-    if (parametrisation_.has("multiply.scalar")) {
-        plan.add("multiply.scalar");
+    if (parametrisation_.has("mul.scalar")) {
+        plan.add("mul.scalar");
+    }
+
+    if (parametrisation_.has("div.scalar")) {
+        plan.add("div.scalar");
+    }
+
+    if (parametrisation_.has("add.scalar")) {
+        plan.add("add.scalar");
+    }
+
+    if (parametrisation_.has("sub.scalar")) {
+        plan.add("sub.scalar");
     }
 
     if (parametrisation_.has("user.area")) {
