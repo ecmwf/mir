@@ -195,6 +195,9 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
         plan.add("add.fields");
     }
 
+    if (parametrisation_.has("sub.fields")) {
+        plan.add("sub.fields");
+    }
 }
 
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {

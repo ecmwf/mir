@@ -88,6 +88,16 @@ struct add {
 };
 
 static ActionBuilder< BinopFields<add> > _add(add::name());
+
+struct sub {
+    static const char* name() { return "sub.fields"; }
+    static const char* param() { return "sub.fields.param"; }
+
+    static double op(double a, double b) { return a - b; }
+};
+
+static ActionBuilder< BinopFields<sub> > _sub(sub::name());
+
 }
 
 
