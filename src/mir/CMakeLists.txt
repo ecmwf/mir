@@ -374,6 +374,8 @@ style/MARSStyle.cc
 style/MARSStyle.h
 style/MIRStyle.cc
 style/MIRStyle.h
+util/FormulaParser.cc
+util/FormulaParser.h
 util/Arguments.cc
 util/Arguments.h
 util/Bitmap.cc
