@@ -22,7 +22,6 @@ namespace util {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-
 FormulaParser::FormulaParser(std::istream &in) : StreamParser(in, true) {
 }
 

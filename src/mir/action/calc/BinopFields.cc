@@ -24,8 +24,6 @@
 
 namespace mir {
 namespace action {
-
-
 template<class T>
 BinopFields<T>::BinopFields(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
