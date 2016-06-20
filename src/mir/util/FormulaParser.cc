@@ -47,8 +47,9 @@ void FormulaParser::parseNumber()
     if (peek() == '.') {
         s += next();
         char c = next();
-        if (!isdigit(c))
+        if (!isdigit(c)) {
             throw StreamParser::Error(std::string("FormulaParser::parseNumber invalid char '") + c + "'");
+        }
         s += c;
         while (isdigit(peek())) {
             s += next();
@@ -66,8 +67,9 @@ void FormulaParser::parseNumber()
             c = next();
         }
 
-        if (!isdigit(c))
+        if (!isdigit(c)) {
             throw StreamParser::Error(std::string("FormulaParser::parseNumber invalid char '") + c + "'");
+        }
         s += c;
         while (isdigit(peek())) {
             s += next();
@@ -104,7 +106,6 @@ void FormulaParser::parseAtom()
         break;
 
     case '-':
-        // neg
         consume('-');
         parseAtom();
         break;
@@ -143,6 +144,7 @@ void FormulaParser::parsePower()
 
         consume(c);
         parseAtom();
+        c = peek();
     }
 }
 
@@ -167,6 +169,7 @@ void FormulaParser::parseFactor()
     {
         consume(c);
         parsePower();
+        c = peek();
     }
 }
 
@@ -177,6 +180,7 @@ void FormulaParser::parseTerm()
     {
         consume(c);
         parseFactor();
+        c = peek();
     }
 }
 
@@ -193,6 +197,7 @@ void FormulaParser::parseTest()
             consume(c);
         }
         parseTerm();
+        c = peek();
     }
 }
 

@@ -332,7 +332,6 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     eckit::PathName real = path.realName();
     int shmid = 0;
     key_t key;
-    int sem;
 
     key = ftok(real.asString().c_str(), 1);
     if (key == key_t(-1)) {

@@ -85,6 +85,8 @@ void BinopScalar<T>::execute(data::MIRField & field, util::MIRStatistics& statis
     }
 }
 
+namespace {
+
 struct mul {
     static const char* name() { return "mul.scalar"; }
     static const char* param() { return "mul.scalar.param"; }
@@ -139,6 +141,9 @@ struct max {
 };
 
 static ActionBuilder< BinopScalar<max> > _max(max::name());
+
+
+}
 
 }  // namespace action
 }  // namespace mir

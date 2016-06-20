@@ -61,6 +61,10 @@ ActionFactory::ActionFactory(const std::string &name):
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
+    if(m->find(name) != m->end()) {
+        throw eckit::SeriousBug("ActionFactory: duplication action: " + name);
+    }
+
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
 }

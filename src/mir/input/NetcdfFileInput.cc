@@ -68,7 +68,8 @@ void NetcdfFileInput::print(std::ostream &out) const {
 }
 
 
-const param::MIRParametrisation &NetcdfFileInput::parametrisation() const {
+const param::MIRParametrisation &NetcdfFileInput::parametrisation(size_t which) const {
+    ASSERT(which == 0);
     return *this;
 }
 

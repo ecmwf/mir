@@ -81,6 +81,7 @@ void BinopFields<T>::execute(data::MIRField & field, util::MIRStatistics& statis
     field.paramId(0, param_);
 }
 
+namespace {
 struct add {
     static const char* name() { return "add.fields"; }
     static const char* param() { return "add.fields.param"; }
@@ -89,6 +90,7 @@ struct add {
 };
 
 static ActionBuilder< BinopFields<add> > _add(add::name());
+}
 
 
 

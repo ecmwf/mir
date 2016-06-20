@@ -77,6 +77,8 @@ void UnopField<T>::execute(data::MIRField & field, util::MIRStatistics& statisti
     }
 }
 
+namespace {
+
 struct round {
     static const char* name() { return "round.field"; }
     static const char* param() { return "round.field.param"; }
@@ -88,7 +90,7 @@ struct round {
 
 static ActionBuilder< UnopField<round> > _round(round::name());
 
-
+}
 
 }  // namespace action
 }  // namespace mir

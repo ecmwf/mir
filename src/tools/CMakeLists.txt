@@ -5,6 +5,12 @@ ecbuild_add_executable(
     LIBS        mir eckit_option )
 
 ecbuild_add_executable(
+		TARGET      mir_formula
+		SOURCES     mir_formula.cc
+		INCLUDES    ${ATLAS_INCLUDE_DIRS}
+    LIBS        mir )
+
+ecbuild_add_executable(
 		TARGET      mir_inspect
 		SOURCES     mir_inspect.cc
 		INCLUDES    ${ATLAS_INCLUDE_DIRS}

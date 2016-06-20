@@ -35,7 +35,6 @@ GribAllFileInput::GribAllFileInput(const std::string &path):
     eckit::StdFile f(path);
     eckit::Buffer buffer(64 * 1024 * 1024);
 
-    int e = 0;
     for (;;) {
         size_t len = buffer.size();
         off_t here = ftello(f);
