@@ -15,7 +15,7 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/action/plan/Action.h"
 #include "mir/param/RuntimeParametrisation.h"
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/log/MIR.h"
 
 #include "eckit/exception/Exceptions.h"
@@ -77,11 +77,11 @@ void ActionPlan::add(const std::string &name, const std::string &param, param::D
     actions_.push_back(ActionFactory::build(name, *runtime));
 }
 
-void ActionPlan::execute(data::MIRField &field, util::MIRStatistics& statistics) const {
+void ActionPlan::execute(context::Context & ctx) const {
     for (std::vector<Action *>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
         // eckit::Log::trace<MIR>() << "EXECUTE => " << *(*j) << std::endl;
         // eckit::Log::trace<MIR>() << " => INPUT: " << field << std::endl;
-        (*j)->execute(field, statistics);
+        (*j)->execute(ctx);
         // eckit::Log::trace<MIR>() << " <= OUTPUT: " << field << std::endl;
     }
 }

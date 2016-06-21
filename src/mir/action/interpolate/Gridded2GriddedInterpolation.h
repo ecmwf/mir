@@ -95,7 +95,7 @@ class Gridded2GriddedInterpolation : public Action {
 
 // -- Overridden methods
 
-    virtual void execute(data::MIRField & field, util::MIRStatistics& statistics) const;
+    virtual void execute(context::Context & ctx) const;
 
 // -- Class members
     // None

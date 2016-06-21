@@ -250,7 +250,7 @@ void FiniteElement::hash(eckit::MD5&) const
 }
 
 
-void FiniteElement::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const {
+void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
     // FIXME: arguments
     eckit::Log::trace<MIR>() << "FiniteElement::assemble" << std::endl;

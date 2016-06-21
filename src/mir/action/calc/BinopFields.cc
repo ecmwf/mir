@@ -17,10 +17,11 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/data/MIRField.h"
 
 namespace mir {
 namespace action {
@@ -37,7 +38,7 @@ BinopFields<T>::~BinopFields() {
 template<class T>
 bool BinopFields<T>::sameAs(const Action& other) const {
     const BinopFields* o = dynamic_cast<const BinopFields<T>*>(&other);
-    return o ;
+    return o && (param_ == o->param_);
 }
 
 template<class T>
@@ -46,9 +47,10 @@ void BinopFields<T>::print(std::ostream &out) const {
 }
 
 template<class T>
-void BinopFields<T>::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+void BinopFields<T>::execute(context::Context & ctx) const {
 
-    eckit::AutoTiming timing(statistics.timer_, statistics.calcTiming_);
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
+    data::MIRField& field = ctx.field();
 
     ASSERT(field.dimensions() == 2);
 

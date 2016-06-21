@@ -21,6 +21,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
+#include "mir/action/context/Context.h"
 
 
 namespace mir {
@@ -37,12 +38,20 @@ VectorOutput::~VectorOutput() {
 }
 
 
-size_t VectorOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+size_t VectorOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
+
+    input::MIRInput& input = ctx.input();
+
     try {
         input::VectorInput& v = dynamic_cast<input::VectorInput&>(input);
         size_t size = 0;
-        size += component1_.copy(param, v.component1_);
-        size += component2_.copy(param, v.component2_);
+
+        context::Context ctx1(v.component1_, ctx.statistics());
+        size += component1_.copy(param, ctx1);
+
+        context::Context ctx2(v.component2_, ctx.statistics());
+        size += component2_.copy(param, ctx2);
+
         return size;
 
     } catch (std::bad_cast &) {
@@ -52,7 +61,8 @@ size_t VectorOutput::copy(const param::MIRParametrisation &param, input::MIRInpu
     }
 }
 
-size_t VectorOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+size_t VectorOutput::save(const param::MIRParametrisation &param, context::Context& ctx) {
+    data::MIRField& field = ctx.field();
 
     ASSERT(field.dimensions() == 2);
 
@@ -66,8 +76,11 @@ size_t VectorOutput::save(const param::MIRParametrisation &param, input::MIRInpu
 
     size_t size = 0;
 
-    size += component1_.save(param, input, u);
-    size += component2_.save(param, input, v);
+    context::Context ctx1(u, ctx.statistics());
+    size += component1_.save(param, ctx1);
+
+    context::Context ctx2(v, ctx.statistics());
+    size += component2_.save(param, ctx2);
 
     return size;
 }

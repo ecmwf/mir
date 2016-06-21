@@ -90,7 +90,7 @@ class VOD2UVTransform : public Action {
 
     virtual bool sameAs(const Action& other) const;
 
-    virtual void execute(data::MIRField & field, util::MIRStatistics& statistics) const;
+    virtual void execute(context::Context & ctx) const;
 
 // -- Class members
     // None

@@ -25,7 +25,7 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/log/Timer.h"
 
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
@@ -33,6 +33,7 @@
 #include "mir/log/MIR.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/caching/InMemoryCache.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -184,7 +185,9 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
     return c;
 }
 
-void AreaCropper::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+void AreaCropper::execute(context::Context & ctx) const {
+
+    data::MIRField& field = ctx.field();
 
     // Keep a pointer on the original representation, as the one in the field will
     // be changed in the loop
@@ -195,7 +198,7 @@ void AreaCropper::execute(data::MIRField & field, util::MIRStatistics& statistic
                        ", size=" << c.mapping_.size() << std::endl;
 
 
-    eckit::AutoTiming timing(statistics.timer_, statistics.cropTiming_);
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
 
     for (size_t i = 0; i < field.dimensions(); i++) {
         const std::vector<double> &values = field.values(i);

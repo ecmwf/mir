@@ -63,7 +63,7 @@ void Nearest::hash(eckit::MD5 &md5) const {
 }
 
 
-void Nearest::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const {
+void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
     eckit::TraceTimer<MIR> timer("Nearest::assemble");
     eckit::Log::trace<MIR>() << "Nearest::assemble" << std::endl;

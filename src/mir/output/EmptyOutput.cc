@@ -36,12 +36,12 @@ bool EmptyOutput::sameAs(const MIROutput& other) const {
 }
 
 
-size_t EmptyOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+size_t EmptyOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
     return 0;
 }
 
 
-size_t EmptyOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+size_t EmptyOutput::save(const param::MIRParametrisation &param, context::Context& ctx) {
     return 0;
 }
 

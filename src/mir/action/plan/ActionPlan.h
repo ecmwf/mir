@@ -23,8 +23,8 @@
 
 namespace mir {
 
-namespace data {
-class MIRField;
+namespace context {
+class Context;
 }
 
 namespace util {
@@ -62,7 +62,7 @@ class ActionPlan {
     void add(const std::string& name, const std::string&, param::DelayedParametrisation*);
     void add(Action* action);
 
-    void execute(data::MIRField& field, util::MIRStatistics& statistics) const;
+    void execute(context::Context& ctx) const;
     bool empty() const;
     size_t size() const;
     const Action& action(size_t) const;

@@ -18,10 +18,11 @@
 
 #include "eckit/memory/ScopedPtr.h"
 
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -46,7 +47,8 @@ void CheckerBoard::print(std::ostream &out) const {
 }
 
 
-void CheckerBoard::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+void CheckerBoard::execute(context::Context & ctx) const {
+    data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle representation(field.representation());
     bool normalize = false;

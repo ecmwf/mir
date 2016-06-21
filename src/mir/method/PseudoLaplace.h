@@ -39,7 +39,7 @@ protected:
 
 private:
 
-    virtual void assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const;
+    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 

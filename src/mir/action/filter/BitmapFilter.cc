@@ -19,12 +19,13 @@
 #include "eckit/thread/Mutex.h"
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/util/Bitmap.h"
 
 #include "mir/action/filter/BitmapFilter.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/caching/InMemoryCache.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -68,9 +69,10 @@ util::Bitmap& BitmapFilter::bitmap() const {
     return *j;
 }
 
-void BitmapFilter::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+void BitmapFilter::execute(context::Context & ctx) const {
 
-    eckit::AutoTiming timing(statistics.timer_, statistics.bitmapTiming_);
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().bitmapTiming_);
+    data::MIRField& field = ctx.field();
 
     util::Bitmap& b = bitmap();
 

@@ -15,6 +15,7 @@
 
 #include "eckit/runtime/Tool.h"
 #include "mir/util/FormulaParser.h"
+#include "mir/util/Formula.h"
 
 
 class MIRFormula : public eckit::Tool {
@@ -31,10 +32,12 @@ class MIRFormula : public eckit::Tool {
 
 
 void MIRFormula::run() {
-    std::istringstream in("foo(f, 42) + bar() ^ 2");
+    std::istringstream in("2 + 3 - 4 -5 * (foo(f, 42) + bar() ^ 2)");
+    // std::istringstream in("(2)");
     mir::util::FormulaParser p(in);
 
-    p.parse();
+    mir::util::Formula * f = p.parse();
+    std::cout << (*f) << std::endl;
 }
 
 

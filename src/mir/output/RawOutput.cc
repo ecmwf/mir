@@ -22,6 +22,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/input/RawInput.h"
 #include "mir/log/MIR.h"
+#include "mir/action/context/Context.h"
 
 
 namespace mir {
@@ -46,14 +47,16 @@ bool RawOutput::sameAs(const MIROutput& other) const {
     return this == &other;
 }
 
-size_t RawOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+size_t RawOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
     NOTIMP;
-    size_ = input.copy(values_, count_);
-    return size_ * sizeof(double);
+    // size_ = input.copy(values_, count_);
+    // return size_ * sizeof(double);
 }
 
 
-size_t RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+size_t RawOutput::save(const param::MIRParametrisation &param, context::Context& ctx) {
+    data::MIRField& field = ctx.field();
+
     field.validate();
     // field.hasMissing();
     // field.missingValue();

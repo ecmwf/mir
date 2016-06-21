@@ -19,9 +19,10 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
 
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -51,14 +52,14 @@ void Sh2ShTransform::print(std::ostream &out) const {
 }
 
 
-void Sh2ShTransform::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
-
+void Sh2ShTransform::execute(context::Context & ctx) const {
+    data::MIRField& field = ctx.field();
     // Keep a pointer on the original representation, as the one in the field will
     // be changed in the loop
     repres::RepresentationHandle representation(field.representation());
 
 
-    for(size_t i = 0; i < field.dimensions(); i++) {
+    for (size_t i = 0; i < field.dimensions(); i++) {
         const std::vector<double> &values = field.values(i);
         std::vector<double> result;
 

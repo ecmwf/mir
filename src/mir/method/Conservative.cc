@@ -127,8 +127,7 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
     }
 }
 
-void Conservative::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const {
-
+void Conservative::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
     eckit::Log::trace<MIR>()
             << "Input  pts " << in.grid().npts()
             << "Output pts " << out.grid().npts() << std::endl;
@@ -137,7 +136,7 @@ void Conservative::assemble(WeightMatrix &W, const GridSpace& in, const GridSpac
 
     WeightMatrix IM(in.grid().npts(), out.grid().npts());
 
-    FELinear::assemble(IM, out, in, statistics);
+    FELinear::assemble(ctx, IM, out, in);
 
     eckit::Log::trace<MIR>()
             << "IM rows " << IM.rows()

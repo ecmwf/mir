@@ -17,10 +17,11 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/data/MIRField.h"
 
 namespace mir {
 namespace action {
@@ -50,10 +51,10 @@ void BinopScalar<T>::print(std::ostream &out) const {
 }
 
 template<class T>
-void BinopScalar<T>::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+void BinopScalar<T>::execute(context::Context & ctx) const {
 
-    eckit::AutoTiming timing(statistics.timer_, statistics.calcTiming_);
-
+eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
+    data::MIRField& field = ctx.field();
     double scalar = scalar_;
 
     if (field.hasMissing()) {

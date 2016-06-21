@@ -40,8 +40,8 @@ void Save::print(std::ostream &out) const {
     out << "Save[output=" << output_ << "]";
 }
 
-void Save::execute(data::MIRField &field, util::MIRStatistics& statistics) const {
-    output_.save(parametrisation_, input_, field);
+void Save::execute(context::Context & ctx) const {
+    output_.save(parametrisation_, ctx);
 }
 
 }  // namespace action

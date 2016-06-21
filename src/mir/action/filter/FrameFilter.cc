@@ -17,10 +17,11 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/data/MIRField.h"
 
 namespace mir {
 namespace action {
@@ -47,9 +48,10 @@ void FrameFilter::print(std::ostream &out) const {
 }
 
 
-void FrameFilter::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+void FrameFilter::execute(context::Context & ctx) const {
 
-    eckit::AutoTiming timing(statistics.timer_, statistics.frameTiming_);
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().frameTiming_);
+    data::MIRField& field = ctx.field();
 
     for (size_t i = 0; i < field.dimensions(); i++ ) {
 

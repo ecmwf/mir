@@ -18,12 +18,13 @@
 #include <cmath>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Compare.h"
+#include "mir/data/MIRField.h"
 
 namespace mir {
 namespace action {
@@ -90,8 +91,8 @@ void AdjustWinds::windDirections(const repres::Representation* representation, s
         lon += pole_longitude;
 
         // For some reason, the algorithms only work between in (-180,180]
-        while(lon < -180) { lon += 360; }
-        while(lon >  180) { lon -= 360; }
+        while (lon < -180) { lon += 360; }
+        while (lon >  180) { lon -= 360; }
 
         if (eckit::FloatCompare<double>::isApproximatelyEqual(lon, -180)) {
             lon = 180.0;
@@ -125,7 +126,10 @@ void AdjustWinds::windDirections(const repres::Representation* representation, s
 }
 
 
-void AdjustWinds::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+void AdjustWinds::execute(context::Context & ctx) const {
+    data::MIRField& field = ctx.field();
+
+
     ASSERT((field.dimensions() % 2) == 0);
 
     std::vector<double> directions;

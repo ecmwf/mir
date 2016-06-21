@@ -105,7 +105,7 @@ void Bilinear::hash(eckit::MD5 &md5) const {
 }
 
 
-void Bilinear::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const {
+void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;

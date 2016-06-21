@@ -123,7 +123,7 @@ private:
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
 
     virtual void validate(const std::vector<double>&) const;
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField& field, util::MIRStatistics& statistics) const;
+    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context& ctx) const;
 
     // -- Class members
     // None

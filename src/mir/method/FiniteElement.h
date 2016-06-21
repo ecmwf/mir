@@ -59,7 +59,7 @@ class FiniteElement: public MethodWeighted {
         MeshGenParams();
     };
 
-    virtual void assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const;
+    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
 
   protected: // members
 

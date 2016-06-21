@@ -19,8 +19,8 @@
 #include <iosfwd>
 
 namespace mir {
-namespace data {
-class MIRField;
+namespace context {
+class Context;
 }
 namespace input {
 class MIRInput;
@@ -53,8 +53,8 @@ class MIROutput {
 
 // -- Methods
 
-    virtual size_t copy(const param::MIRParametrisation&, input::MIRInput&) = 0; // Not iterpolation performed
-    virtual size_t save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&) = 0;
+    virtual size_t copy(const param::MIRParametrisation &, context::Context &) = 0; // Not iterpolation performed
+    virtual size_t save(const param::MIRParametrisation&, context::Context&) = 0;
     virtual bool sameAs(const MIROutput& other) const = 0;
 
 // -- Overridden methods

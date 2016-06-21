@@ -36,12 +36,12 @@ bool DummyOutput::sameAs(const MIROutput& other) const {
 }
 
 
-size_t DummyOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+size_t DummyOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
     return 0;
 }
 
 
-size_t DummyOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+size_t DummyOutput::save(const param::MIRParametrisation &param, context::Context& ctx) {
     return 0;
 }
 

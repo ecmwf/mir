@@ -105,8 +105,8 @@ class RawOutput : public MIROutput {
     // From MIROutput
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
-    virtual size_t copy(const param::MIRParametrisation&, input::MIRInput&); // Not iterpolation performed
-    virtual size_t save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&);
+    virtual size_t copy(const param::MIRParametrisation &, context::Context &); // Not iterpolation performed
+    virtual size_t save(const param::MIRParametrisation&, context::Context&);
 
     virtual bool sameAs(const MIROutput& other) const;
 

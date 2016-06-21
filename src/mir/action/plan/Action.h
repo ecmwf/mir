@@ -21,8 +21,8 @@
 
 namespace mir {
 
-namespace data {
-class MIRField;
+namespace context {
+class Context;
 }
 
 namespace param {
@@ -58,7 +58,7 @@ class Action {
 
     // -- Methods
 
-    virtual void execute(data::MIRField & field, util::MIRStatistics& statistics) const = 0;
+    virtual void execute(context::Context & ctx) const = 0;
     virtual bool sameAs(const Action& other) const = 0;
     virtual bool needField() const ;
 

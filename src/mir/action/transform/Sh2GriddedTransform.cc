@@ -30,7 +30,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/caching/LegendreCache.h"
@@ -38,12 +38,13 @@
 #include "mir/log/MIR.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/caching/InMemoryCache.h"
+#include "mir/data/MIRField.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
 
 class TransInitor {
-  public:
+public:
     TransInitor() {
         trans_use_mpi(false); // So that even if MPI is enabled, we don't use it.
         trans_init();
@@ -59,7 +60,7 @@ struct TransCache {
     TransCache(): loader_(0) {}
     void print(std::ostream& s) const {
         s << "TransCache[";
-        if(loader_) s << *loader_;
+        if (loader_) s << *loader_;
         s << "]";
     }
     friend std::ostream& operator<<(std::ostream& out, const TransCache& e) { e.print(out); return out; }
@@ -85,7 +86,7 @@ namespace action {
 static void transform(const param::MIRParametrisation &parametrisation, size_t truncation,
                       const std::vector<double> &input, std::vector<double> &output,
                       const atlas::grid::Grid &grid,
-                      util::MIRStatistics& statistics) {
+                      context::Context& ctx) {
 #ifdef ATLAS_HAVE_TRANS
 
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
@@ -110,7 +111,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
     if (trans_handles.find(key) == trans_handles.end()) {
         eckit::Log::trace<MIR>() << "Creating a new TRANS handle for " << key << std::endl;
 
-        eckit::AutoTiming timing(statistics.timer_, statistics.coefficientTiming_);
+        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
 
 
         TransCache &tc = trans_handles[key];
@@ -128,9 +129,9 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
             ASSERT(pl.size());
 
             std::vector<int> pli(pl.size());
-            ASSERT(pl.size()==pli.size());
+            ASSERT(pl.size() == pli.size());
 
-            for (size_t i=0; i<pl.size(); ++i) {
+            for (size_t i = 0; i < pl.size(); ++i) {
                 pli[i] = pl[i];
             }
 
@@ -140,7 +141,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
         caching::LegendreCache cache;
         eckit::PathName path;
         if (!cache.get(key, path)) {
-            eckit::AutoTiming timing(statistics.timer_, statistics.createCoeffTiming_);
+            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
             eckit::TraceTimer<MIR> timer("Caching coefficients");
             eckit::Log::trace<MIR>() << "LegendreCache " << key << " does not exists" << std::endl;
             eckit::PathName tmp = cache.stage(key);
@@ -149,7 +150,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
             ASSERT(cache.commit(key, tmp));
         } else {
-            eckit::AutoTiming timing(statistics.timer_, statistics.loadCoeffTiming_);
+            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
 
             // eckit::Timer timer("Loading coefficients");
 
@@ -163,7 +164,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
         }
     }
 
-    eckit::AutoTiming timing(statistics.timer_, statistics.sh2gridTiming_);
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
 
 
     TransCache &tc = trans_handles[key];
@@ -236,8 +237,11 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 }
 
 
-void Sh2GriddedTransform::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+void Sh2GriddedTransform::execute(context::Context & ctx) const {
     // ASSERT(field.dimensions() == 1); // For now
+
+    data::MIRField& field = ctx.field();
+
 
     repres::RepresentationHandle out(outputRepresentation());
 
@@ -248,7 +252,12 @@ void Sh2GriddedTransform::execute(data::MIRField & field, util::MIRStatistics& s
         std::vector<double> result;
 
         eckit::ScopedPtr<atlas::grid::Grid> grid(out->atlasGrid());
-        transform(parametrisation_, field.representation()->truncation(), values, result, *grid, statistics);
+        transform(parametrisation_,
+                  field.representation()->truncation(),
+                  values,
+                  result,
+                  *grid,
+                  ctx);
 
         field.update(result, i);
 

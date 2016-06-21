@@ -15,6 +15,13 @@
 
 
 #include "mir/util/FormulaParser.h"
+#include "mir/util/FormulaNumber.h"
+#include "eckit/utils/Translator.h"
+#include "mir/util/FormulaIdent.h"
+#include "mir/util/FormulaString.h"
+#include "mir/util/FormulaFunction.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/util/FormulaBinop.h"
 
 
 namespace mir {
@@ -25,17 +32,18 @@ namespace util {
 FormulaParser::FormulaParser(std::istream &in) : StreamParser(in, true) {
 }
 
-void FormulaParser::parseIdent() {
+std::string FormulaParser::parseIdent() {
     std::string s;
     char c = peek();
     while (isalnum(c)) {
         s += next();
         c = peek();
     }
+    return s;
 }
 
 
-void FormulaParser::parseNumber()
+Formula* FormulaParser::parseNumber()
 {
     std::string s;
 
@@ -76,9 +84,11 @@ void FormulaParser::parseNumber()
 
     }
 
+    eckit::Translator<std::string, double> s2d;
+    return new FormulaNumber(s2d(s));
 }
 
-void FormulaParser::parseString()
+Formula* FormulaParser::parseString()
 {
     char quote = peek();
     consume(quote);
@@ -91,40 +101,49 @@ void FormulaParser::parseString()
         }
         s += c;
     }
+
+    return new FormulaString(s);
 }
 
-void FormulaParser::parseAtom()
+Formula* FormulaParser::parseAtom()
 {
+    eckit::ScopedPtr<Formula> f;
+
     char c = peek();
     switch (c)
     {
     case '(':
         consume('(');
-        parseTest();
+        f.reset(parseTest());
         consume(')');
+        return f.release();
         break;
 
     case '-':
         consume('-');
-        parseAtom();
+        return new FormulaFunction("neg", parseAtom());
         break;
 
     case '\'':
-        parseString();
+        return parseString();
         break;
 
     case '"':
-        parseString();
+        return parseString();
         break;
 
     default:
         if (isalpha(c) || c == '_') {
-            parseIdent();
+            std::string name = parseIdent();
             if (peek() == '(') {
-                parseList();
+                std::vector<Formula*> args = parseList();
+                return new FormulaFunction(name, args);
+            }
+            else {
+                return new FormulaIdent(name);
             }
         } else if (isdigit(c)) {
-            parseNumber();
+            return parseNumber();
         }
         else {
             throw StreamParser::Error(std::string("FormulaParser::parseAtom invalid  char '") + c + "'");
@@ -134,78 +153,109 @@ void FormulaParser::parseAtom()
     }
 }
 
-void FormulaParser::parsePower()
+Formula* FormulaParser::parsePower()
 {
-    parseAtom();
+    char name[2] = {0,};
+
+    Formula* result = parseAtom();
     char c = peek();
     while (c == '^' /*|| c == '*' */ )
     {
-
         consume(c);
-        parseAtom();
+        name[0] = c;
+        result = new FormulaBinop(name,
+            result,
+            parseAtom());
         c = peek();
     }
+
+    return result;
 }
 
-void FormulaParser::parseList() {
+std::vector<Formula*> FormulaParser::parseList() {
+    std::vector<Formula*> v;
     consume('(');
     while (peek() != ')') {
-        parseTest();
+        v.push_back(parseTest());
         if (peek() == ')') {
             break;
         }
         consume(',');
     }
     consume(')');
+    return v;
 }
 
 
-void FormulaParser::parseFactor()
+Formula* FormulaParser::parseFactor()
 {
-    parsePower();
+    char name[2] = {0,};
+
+    Formula* result = parsePower();
     char c = peek();
     while (c == '*' || c == '/')
     {
         consume(c);
-        parsePower();
+        name[0] = c;
+        result = new FormulaBinop(name,
+                                     result,
+                                     parsePower());
         c = peek();
     }
+    return result;
 }
 
-void FormulaParser::parseTerm()
-{   parseFactor();
+Formula* FormulaParser::parseTerm()
+{   char name[2] = {0,};
+
+    Formula* result = parseFactor();
     char c = peek();
     while (c == '+' || c == '-')
     {
         consume(c);
-        parseFactor();
+        name[0] = c;
+        result = new FormulaBinop(name,
+                                     result,
+                                     parseFactor());
         c = peek();
     }
+    return result;
 }
 
-void FormulaParser::parseTest()
+Formula* FormulaParser::parseTest()
 {
-    parseTerm();
+    char name[3] = {0,};
+
+    Formula* result = parseTerm();
     char c = peek();
     while (c == '<' || c == '>' || c == '=')
     {
         consume(c);
+        name[0] = c;
+        name[1] = 0;
+
         c = peek();
         if (c == '=' || c == '>')
         {
             consume(c);
+            name[1] = c;
         }
-        parseTerm();
+
+        result = new FormulaFunction(name,
+                                     result,
+                                     parseTerm());
         c = peek();
     }
+    return result;
 }
 
-void FormulaParser::parse() {
-    parseTest();
+Formula* FormulaParser::parse() {
+    eckit::ScopedPtr<Formula> f(parseTest());
     char c;
     if ((c = peek())) {
         throw StreamParser::Error(std::string("Error parsing rules: remaining char: ") + c);
     }
+    return f.release();
 }
 
 

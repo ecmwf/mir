@@ -50,12 +50,12 @@ private:
 
     virtual const char *name() const;
 
-    virtual void assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const;
+    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
 
     /// Update interpolation weigths matrix to account for field masked values
     virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &, util::MIRStatistics& statistics) const;
 
-    virtual lsm::LandSeaMasks getMasks(const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const;
+    virtual lsm::LandSeaMasks getMasks(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const;
 
     virtual void print(std::ostream &) const;
 

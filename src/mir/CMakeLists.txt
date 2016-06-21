@@ -22,6 +22,10 @@ list( APPEND mir_srcs api/mir_version.cc )
 
 list(
   APPEND mir_srcs
+  action/calc/FormulaAction.cc
+  action/calc/FormulaAction.h
+  action/context/Context.cc
+  action/context/Context.h
 action/calc/BinopFields.cc
 action/calc/BinopFields.h
 action/calc/UnopField.cc
@@ -376,6 +380,18 @@ style/MIRStyle.cc
 style/MIRStyle.h
 util/FormulaParser.cc
 util/FormulaParser.h
+util/FormulaBinop.cc
+util/FormulaBinop.h
+util/Formula.cc
+util/Formula.h
+util/FormulaNumber.cc
+util/FormulaNumber.h
+util/FormulaString.cc
+util/FormulaString.h
+util/FormulaIdent.cc
+util/FormulaIdent.h
+util/FormulaFunction.cc
+util/FormulaFunction.h
 util/Arguments.cc
 util/Arguments.h
 util/Bitmap.cc

@@ -36,7 +36,7 @@ class Copy : public Action {
 
     // -- Contructors
 
-    Copy(const param::MIRParametrisation &, input::MIRInput &input, output::MIROutput &output);
+    Copy(const param::MIRParametrisation &, output::MIROutput &output);
 
     // -- Destructor
 
@@ -88,7 +88,6 @@ class Copy : public Action {
 
     // -- Members
 
-    input::MIRInput &input_;
     output::MIROutput &output_;
 
     // -- Methods
@@ -96,7 +95,7 @@ class Copy : public Action {
 
     // -- Overridden methods
 
-    virtual void execute(data::MIRField & field, util::MIRStatistics& statistics) const;
+    virtual void execute(context::Context & ctx) const;
     virtual bool needField() const;
     virtual bool sameAs(const Action& other) const;
 

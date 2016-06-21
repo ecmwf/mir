@@ -15,7 +15,7 @@
 #include "mir/action/plan/ActionNode.h"
 #include "mir/action/plan/Action.h"
 #include "mir/param/RuntimeParametrisation.h"
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/log/MIR.h"
 #include "mir/api/MIRWatcher.h"
 
@@ -37,11 +37,11 @@ ActionNode::~ActionNode() {
 
 }
 
-void ActionNode::execute(data::MIRField& field, util::MIRStatistics& statistics) const {
+void ActionNode::execute(context::Context& ctx) const {
     // std::cout << " BEFORE -----> " << action_  << "  " << field << std::endl;
     bool ok = false;
     try {
-        action_.execute(field, statistics);
+        action_.execute(ctx);
         if(watcher_ && graph_.empty()) {
             watcher_->success();
         }
@@ -59,7 +59,7 @@ void ActionNode::execute(data::MIRField& field, util::MIRStatistics& statistics)
     // std::cout << " AFTER -----> " << action_  << "  " << field << std::endl;
 
     if(ok) {
-        graph_.execute(field, statistics);
+        graph_.execute(ctx);
     }
 }
 

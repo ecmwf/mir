@@ -22,9 +22,8 @@
 namespace mir {
 namespace action {
 
-Copy::Copy(const param::MIRParametrisation &parametrisation, input::MIRInput &input, output::MIROutput &output):
+Copy::Copy(const param::MIRParametrisation &parametrisation, output::MIROutput &output):
     Action(parametrisation),
-    input_(input),
     output_(output) {
 }
 
@@ -33,15 +32,15 @@ Copy::~Copy() {
 
 bool Copy::sameAs(const Action& other) const {
     const Copy* o = dynamic_cast<const Copy*>(&other);
-    return o && input_.sameAs(o->input_) && output_.sameAs(o->output_);
+    return o && output_.sameAs(o->output_);
 }
 
 void Copy::print(std::ostream &out) const {
     out << "Copy[output=" << output_ << "]";
 }
 
-void Copy::execute(data::MIRField &field, util::MIRStatistics& statistics) const {
-    output_.copy(parametrisation_, input_);
+void Copy::execute(context::Context & ctx) const {
+    output_.copy(parametrisation_, ctx);
 }
 
 bool Copy::needField() const {

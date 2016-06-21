@@ -23,8 +23,8 @@
 
 namespace mir {
 
-namespace data {
-class MIRField;
+namespace context {
+class Context;
 }
 
 namespace util {
@@ -64,7 +64,7 @@ public:
 
 // -- Methods
 
-    void execute(data::MIRField&, util::MIRStatistics& statistics) const;
+    void execute(context::Context& ctx) const;
 
     // =================
 

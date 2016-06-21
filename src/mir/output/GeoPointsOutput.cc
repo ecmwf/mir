@@ -22,6 +22,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "eckit/io/HandleBuf.h"
+#include "mir/action/context/Context.h"
 
 
 namespace mir {
@@ -39,7 +40,7 @@ GeoPointsOutput::~GeoPointsOutput() {
 }
 
 
-size_t GeoPointsOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+size_t GeoPointsOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
     NOTIMP;
     return 0;
 }
@@ -49,12 +50,11 @@ static const char* keys[] = {"class", "type", "stream", "expver",
                              "levelist", "param", 0
                             };
 
-size_t GeoPointsOutput::save(const param::MIRParametrisation &param,
-                             input::MIRInput &input,
-                             data::MIRField &field) {
+size_t GeoPointsOutput::save(const param::MIRParametrisation &param, context::Context &ctx) {
 
     ASSERT(once_);
 
+    data::MIRField& field = ctx.field();
 
     eckit::DataHandle& handle = dataHandle();
     eckit::Offset position = handle.position();

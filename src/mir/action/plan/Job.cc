@@ -19,7 +19,7 @@
 #include "mir/action/io/Save.h"
 #include "mir/action/io/Copy.h"
 
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/input/MIRInput.h"
 #include "mir/style/MIRStyle.h"
 #include "mir/output/MIROutput.h"
@@ -46,7 +46,7 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
 
     if (job.empty() || job.matches(metadata)) {
         plan_.reset(new action::ActionPlan(job));
-        plan_->add(new action::Copy(job, input_, output_));
+        plan_->add(new action::Copy(job, output_));
         return;
     }
 
@@ -57,7 +57,7 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
 
 
     if (plan_->empty()) {
-        plan_->add(new action::Copy(*combined_, input_, output_));
+        plan_->add(new action::Copy(*combined_, output_));
     } else {
         plan_->add(new action::Save(*combined_, input_, output_));
     }
@@ -74,15 +74,15 @@ void Job::execute(util::MIRStatistics &statistics) const {
 
     // This is an optimistation for MARS
     // We avoid to decode the input field
-    if (plan_->size() == 1 && !plan_->action(0).needField()) {
-        data::MIRField dummy(*combined_);
-        plan_->execute(dummy, statistics);
-        return;
-    }
+    // if (plan_->size() == 1 && !plan_->action(0).needField()) {
+    //     context::Context dummy(*combined_);
+    //     plan_->execute(dummy, statistics);
+    //     return;
+    // }
 
-    eckit::ScopedPtr< data::MIRField > field(input_.field());
-    eckit::Log::trace<MIR>() << "Field is " << *field << std::endl;
-    plan_->execute(*field, statistics);
+
+    context::Context ctx(input_, statistics);
+    plan_->execute(ctx);
 }
 
 

@@ -37,6 +37,10 @@ namespace util {
 class MIRStatistics;
 }
 
+
+namespace data {
+class MIRField;
+}
 }
 
 
@@ -55,7 +59,7 @@ public:
 
     virtual ~MethodWeighted();
 
-    virtual void execute(data::MIRField &field, const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const;
+    virtual void execute(context::Context &ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const;
 
     virtual void hash(eckit::MD5&) const;
 
@@ -71,19 +75,19 @@ private:
 
     virtual const char *name() const = 0;
 
-    virtual void assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const = 0;
+    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
-    WeightMatrix applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which, util::MIRStatistics& statistics) const;
+    WeightMatrix applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const;
 
     /// Update interpolation weigths matrix to account for field masked values
-    virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &, util::MIRStatistics& statistics) const;
+    virtual void applyMasks(context::Context& ctx, WeightMatrix &W, const lsm::LandSeaMasks &) const;
 
-    virtual const WeightMatrix &getMatrix(const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const;
+    virtual const WeightMatrix &getMatrix(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const;
 
-    virtual lsm::LandSeaMasks getMasks(const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const;
+    virtual lsm::LandSeaMasks getMasks(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const;
 
-    void computeMatrixWeights(const atlas::grid::Grid &in, const atlas::grid::Grid &out, WeightMatrix &W, util::MIRStatistics& statistics) const;
+    void computeMatrixWeights(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out, WeightMatrix &W) const;
 
 };
 

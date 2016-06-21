@@ -11,8 +11,10 @@
 /// @author Baudouin Raoult
 /// @date Jun 2012
 
-#ifndef fdb5_SchemaParser_h
-#define fdb5_SchemaParser_h
+#ifndef mir_FormulaParser_h
+#define mir_FormulaParser_h
+
+#include <vector>
 
 #include "eckit/parser/StreamParser.h"
 #include "eckit/types/Types.h"
@@ -20,7 +22,7 @@
 namespace mir {
 namespace util {
 
-
+class Formula;
 //----------------------------------------------------------------------------------------------------------------------
 
 class FormulaParser : public eckit::StreamParser {
@@ -29,26 +31,19 @@ public: // methods
 
     FormulaParser(std::istream &in);
 
-    void parse();
+    Formula* parse();
 
 private: // methods
 
-    void parseAtom();
-    void parseTest();
-    void parsePower();
-    void parseList();
-    void parseFactor();
-    void parseTerm();
-    void parseIdent();
-    void parseString();
-    void parseNumber();
-
-    // std::string parseIdent(bool emptyOK = false);
-
-    // Rule *parseRule(const Schema &owner);
-
-    // Predicate *parsePredicate(std::map<std::string, std::string> &types);
-    // void parseTypes(std::map<std::string, std::string> &);
+    Formula* parseAtom();
+    Formula* parseTest();
+    Formula* parsePower();
+    std::vector<Formula*> parseList();
+    Formula* parseFactor();
+    Formula* parseTerm();
+    std::string parseIdent();
+    Formula* parseString();
+    Formula* parseNumber();
 
 };
 

@@ -41,8 +41,8 @@ class Rotation;
 class MIRStatistics;
 }
 
-namespace data {
-class MIRField;
+namespace context {
+class Context;
 }
 
 namespace api {
@@ -118,7 +118,7 @@ class Representation {
     virtual void setSimplePacking(grib_info&) const;
     virtual void setSecondOrderPacking(grib_info&) const;
 
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField&, util::MIRStatistics&) const;
+    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
 
     virtual void shape(size_t& ni, size_t& nj) const;
 

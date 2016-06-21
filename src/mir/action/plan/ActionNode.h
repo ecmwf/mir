@@ -23,7 +23,7 @@
 namespace mir {
 
 namespace data {
-class MIRField;
+class Context;
 }
 
 
@@ -62,7 +62,7 @@ class ActionNode {
 
 // -- Methods
 
-    void execute(data::MIRField&, util::MIRStatistics& statistics) const;
+    void execute(context::Context& ctx) const;
 
     //=====================================
 

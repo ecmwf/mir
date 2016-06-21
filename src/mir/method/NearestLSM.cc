@@ -47,7 +47,7 @@ const char *NearestLSM::name() const {
 }
 
 
-void NearestLSM::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace& out, util::MIRStatistics& statistics) const {
+void NearestLSM::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
     eckit::TraceTimer<MIR> timer("NearestLSM::assemble");
     eckit::Log::trace<MIR>() << "NearestLSM::assemble" << std::endl;
@@ -56,7 +56,7 @@ void NearestLSM::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace&
     // get the land-sea masks, with boolean masking on point (node) indices
     double here = timer.elapsed();
 
-    const lsm::LandSeaMasks masks = getMasks(in.grid(), out.grid(), statistics);
+    const lsm::LandSeaMasks masks = getMasks(ctx, in.grid(), out.grid());
     ASSERT(masks.active());
 
     Log::trace<MIR>() << "NearestLSM compute LandSeaMasks " << timer.elapsed() - here << std::endl;
@@ -120,7 +120,7 @@ void NearestLSM::assemble(WeightMatrix &W, const GridSpace& in, const GridSpace&
 }
 
 
-lsm::LandSeaMasks NearestLSM::getMasks(const atlas::grid::Grid &in, const atlas::grid::Grid &out, util::MIRStatistics& statistics) const {
+lsm::LandSeaMasks NearestLSM::getMasks(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
     return lsm::LandSeaMasks::lookup(runtime, in, out);

@@ -26,6 +26,7 @@
 #include "mir/input/MIRInput.h"
 #include "mir/log/MIR.h"
 #include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 
 
 namespace mir {
@@ -75,7 +76,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
         return;
     }
 
-    eckit::ScopedPtr< data::MIRField > field(input_->field());
+    context::Context ctx(*input_, statistics);
 
     std::cout << ">>>>>>>>>>>> ====== " << std::endl;
 
@@ -83,7 +84,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     // std::cout << *field << std::endl;
 
     graph.dump(std::cout, 1);
-    graph.execute(*field, statistics);
+    graph.execute(ctx);
     std::cout << "<<<<<<<<<<< ======" << std::endl;
 
 

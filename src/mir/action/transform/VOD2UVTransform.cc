@@ -21,11 +21,12 @@
 
 #include "atlas/util/Constants.h"
 
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/log/MIR.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -59,10 +60,12 @@ inline double ss(double pm, double pn) {
     return -pm / (pn * (pn + 1));
 }
 
-void VOD2UVTransform::execute(data::MIRField & field, util::MIRStatistics& statistics) const {
+void VOD2UVTransform::execute(context::Context & ctx) const {
+    data::MIRField& field = ctx.field();
+
     ASSERT(field.dimensions() == 2);
 
-    eckit::AutoTiming timing(statistics.timer_, statistics.vod2uvTiming_);
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().vod2uvTiming_);
 
 
     size_t truncation = field.representation()->truncation();
@@ -75,8 +78,8 @@ void VOD2UVTransform::execute(data::MIRField & field, util::MIRStatistics& stati
     const std::vector<double> &field_d = field.values(1);
 
     eckit::Log::trace<MIR>() << "VOD2UVTransform truncation=" << truncation
-                       << ", size=" << size
-                       << ", values=" << field_vo.size() << std::endl;
+                             << ", size=" << size
+                             << ", values=" << field_vo.size() << std::endl;
 
     ASSERT(field_vo.size() == size);
     ASSERT(field_d.size() == size);

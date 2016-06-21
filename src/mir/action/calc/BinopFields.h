@@ -90,7 +90,7 @@ class BinopFields : public Action {
 
 // -- Overridden methods
 
-    virtual void execute(data::MIRField & field, util::MIRStatistics& statistics) const;
+    virtual void execute(context::Context & ctx) const;
     virtual bool sameAs(const Action& other) const;
 
 
