@@ -37,7 +37,9 @@ void FormulaIdent::print(std::ostream& out) const {
 }
 
 
-void FormulaIdent::execute(mir::context::Context&) const {
+void FormulaIdent::execute(mir::context::Context& ctx) const {
+    std::cout << "Execute " << *this << std::endl;
+
     NOTIMP;
 }
 

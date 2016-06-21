@@ -392,6 +392,8 @@ util/FormulaIdent.cc
 util/FormulaIdent.h
 util/FormulaFunction.cc
 util/FormulaFunction.h
+util/Function.cc
+util/Function.h
 util/Arguments.cc
 util/Arguments.h
 util/Bitmap.cc

@@ -22,6 +22,7 @@
 namespace mir {
 namespace util {
 
+class Function;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -45,7 +46,7 @@ public:
 
 protected: // members
 
-    std::string name_;
+    const Function& function_;
     std::vector<Formula*> args_;
 
 private:

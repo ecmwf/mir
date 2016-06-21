@@ -50,9 +50,6 @@ Action::Action(const param::MIRParametrisation &parametrisation):
 Action::~Action() {
 }
 
-bool Action::needField() const {
-    return true;
-}
 
 ActionFactory::ActionFactory(const std::string &name):
     name_(name) {

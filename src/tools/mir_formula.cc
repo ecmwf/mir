@@ -34,7 +34,7 @@ public:
 
 
 void MIRFormula::run() {
-    std::istringstream in("2 + 3 - 4 -5 * (foo(f, 42) + bar() ^ 2)");
+    std::istringstream in("not(-2 + 3 - 4 >  - 5*10/2)");
     mir::util::FormulaParser p(in);
 
     mir::param::SimpleParametrisation param;
@@ -44,6 +44,8 @@ void MIRFormula::run() {
 
     mir::context::Context ctx;
     f->execute(ctx);
+
+    std::cout << ctx << std::endl;
 
 }
 

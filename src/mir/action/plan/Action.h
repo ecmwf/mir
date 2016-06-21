@@ -17,6 +17,7 @@
 #define Action_H
 
 #include <string>
+#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
@@ -36,7 +37,7 @@ class MIRStatistics;
 namespace action {
 
 
-class Action {
+class Action : public eckit::NonCopyable {
   public:
 
     // -- Exceptions
@@ -60,7 +61,6 @@ class Action {
 
     virtual void execute(context::Context & ctx) const = 0;
     virtual bool sameAs(const Action& other) const = 0;
-    virtual bool needField() const ;
 
     // -- Overridden methods
     // None

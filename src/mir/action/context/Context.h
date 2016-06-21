@@ -96,6 +96,7 @@ protected:
 
     // -- Methods
 
+    void print(std::ostream& s) const;
 
 
     // -- Overridden methods
@@ -131,6 +132,12 @@ private:
     // None
 
     // -- Friends
+
+
+    friend std::ostream &operator<<(std::ostream &s, const Context &p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

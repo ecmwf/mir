@@ -96,7 +96,6 @@ class Copy : public Action {
     // -- Overridden methods
 
     virtual void execute(context::Context & ctx) const;
-    virtual bool needField() const;
     virtual bool sameAs(const Action& other) const;
 
     // -- Class members

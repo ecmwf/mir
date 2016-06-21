@@ -16,7 +16,8 @@
 #include <iostream>
 #include "mir/util/FormulaFunction.h"
 #include "eckit/exception/Exceptions.h"
-
+#include "mir/action/context/Context.h"
+#include "mir/util/Function.h"
 
 namespace mir {
 namespace util {
@@ -25,28 +26,31 @@ namespace util {
 
 FormulaFunction::FormulaFunction(const param::MIRParametrisation &parametrisation, const std::string& name, Formula* arg1):
     Formula(parametrisation),
-    name_(name) {
+    function_(Function::lookup(name)) {
     args_.push_back(arg1);
 }
 
 FormulaFunction::FormulaFunction(const param::MIRParametrisation &parametrisation, const std::string& name, Formula* arg1, Formula *arg2):
     Formula(parametrisation),
-    name_(name) {
+    function_(Function::lookup(name)) {
     args_.push_back(arg1);
     args_.push_back(arg2);
 }
 
 FormulaFunction::FormulaFunction(const param::MIRParametrisation &parametrisation, const std::string& name, std::vector<Formula*>& args):
     Formula(parametrisation),
-    name_(name) {
+    function_(Function::lookup(name)) {
     std::swap(args_, args);
 }
 
 FormulaFunction::~FormulaFunction() {
+    for (auto j = args_.begin(); j != args_.end(); ++j) {
+        delete (*j);
+    }
 }
 
 void FormulaFunction::print(std::ostream& out) const {
-    out << name_ << "(";
+    out << function_ << "(";
     const char* sep = "";
     for (auto j = args_.begin(); j != args_.end(); ++j) {
         out << sep << *(*j);
@@ -56,18 +60,37 @@ void FormulaFunction::print(std::ostream& out) const {
     out << ")";
 }
 
+class Cleanup {
+    std::vector<context::Context*>& v_;
+public:
+    Cleanup(std::vector<context::Context*>& v): v_(v) {}
+    ~Cleanup() {
+        for(auto j = v_.begin(); j != v_.end(); ++j) {
+            delete (*j);
+        }
+    }
+};
+
 void FormulaFunction::execute(mir::context::Context& ctx) const {
     std::cout << "Execute " << *this << std::endl;
+
+    std::vector<context::Context*> params;
+    Cleanup clean(params);
+
     for (auto j = args_.begin(); j != args_.end(); ++j) {
-        (*j)->execute(ctx);
+        params.push_back(new mir::context::Context());
+        (*j)->execute(*params.back());
     }
+
+    function_.execute(ctx, params);
+
 }
 
 bool FormulaFunction::sameAs(const mir::action::Action& other) const {
     const FormulaFunction* o = dynamic_cast<const FormulaFunction*>(&other);
-    if(o && (name_ == o->name_) && (args_.size() == o->args_.size())) {
-        for(size_t i = 0; i < args_.size(); ++i) {
-            if(!args_[i]->sameAs(*(o->args_[i]))) {
+    if (o && (&function_ == &(o->function_)) && (args_.size() == o->args_.size())) {
+        for (size_t i = 0; i < args_.size(); ++i) {
+            if (!args_[i]->sameAs(*(o->args_[i]))) {
                 return false;
             }
         }
@@ -75,8 +98,6 @@ bool FormulaFunction::sameAs(const mir::action::Action& other) const {
     }
     return false;
 }
-
-//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace util
 } // namespace mir

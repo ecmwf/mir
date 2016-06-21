@@ -43,9 +43,6 @@ void Copy::execute(context::Context & ctx) const {
     output_.copy(parametrisation_, ctx);
 }
 
-bool Copy::needField() const {
-    return false;
-}
 
 }  // namespace action
 }  // namespace mir

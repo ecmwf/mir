@@ -15,23 +15,10 @@
 
 #include <iostream>
 
-#include "mir/action/plan/ActionPlan.h"
-#include "mir/action/io/Save.h"
-#include "mir/action/io/Copy.h"
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/action/context/Context.h"
-#include "mir/input/MIRInput.h"
-#include "mir/style/MIRStyle.h"
-#include "mir/output/MIROutput.h"
-#include "mir/param/MIRCombinedParametrisation.h"
-#include "mir/param/MIRDefaults.h"
-#include "mir/log/MIR.h"
-#include "mir/util/MIRStatistics.h"
-
-#include "mir/action/context/Context.h"
-#include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
+#include "mir/input/MIRInput.h"
+#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
@@ -189,6 +176,18 @@ double Context::scalar() const {
     ASSERT(content_);
     return content_->scalar();
 }
+
+void Context::print(std::ostream& out) const {
+    out << "Context[content=";
+    if (content_) {
+        out << *content_;
+    }
+    else {
+        out << "null";
+    }
+    out << "]";
+}
+
 
 }  // namespace action
 }  // namespace mir
