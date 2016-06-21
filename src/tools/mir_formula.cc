@@ -34,7 +34,8 @@ public:
 
 
 void MIRFormula::run() {
-    std::istringstream in("not(-2 + 3 - 4 >  - 5*10/2)");
+    // std::istringstream in("sqrt(-(-2 + 3 - 4   - 5*10/2))");
+    std::istringstream in("2 ^ 10");
     mir::util::FormulaParser p(in);
 
     mir::param::SimpleParametrisation param;

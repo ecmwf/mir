@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <functional>
+#include <cmath>
 
 
 #include "mir/util/FormulaBinop.h"
@@ -44,7 +45,7 @@ void FormulaBinop::print(std::ostream& out) const {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-template<class T>
+template<typename T>
 class Unop : public Function {
 
     T op_;
@@ -65,7 +66,7 @@ public:
 };
 
 
-template<class T>
+template<typename T>
 class Binop : public Function {
 
     T op_;
@@ -113,6 +114,23 @@ static Binop<std::logical_or<double> > logical_or_2("or");
 
 
 static Unop<std::logical_not<double> > logical_not("not");
+
+//=========================================================
+struct sqrt { double operator()(double x) const{ return ::sqrt(x); }};
+static Unop<sqrt> _sqrt("sqrt");
+
+struct sin { double operator()(double x) const{ return ::sin(x); }};
+static Unop<sin> _sin("sin");
+
+struct cos { double operator()(double x) const{ return ::cos(x); }};
+static Unop<cos> _cos("cos");
+
+//=========================================================
+
+struct pow { double operator()(double x, double y) const{ return ::pow(x, y); }};
+static Binop<pow> _pow_1("^");
+static Binop<pow> _pow_2("pow");
+
 
 
 } // namespace util
