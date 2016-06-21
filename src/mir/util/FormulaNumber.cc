@@ -16,13 +16,16 @@
 
 #include <iostream>
 #include "mir/util/FormulaNumber.h"
+#include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
 namespace util {
 
 //----------------------------------------------------------------------------------------------------------------------
-FormulaNumber::FormulaNumber(double value): value_(value) {
+FormulaNumber::FormulaNumber(const param::MIRParametrisation &parametrisation, double value):
+    Formula(parametrisation),
+    value_(value) {
 
 }
 
@@ -32,6 +35,18 @@ FormulaNumber::~FormulaNumber() {
 
 void FormulaNumber::print(std::ostream& out) const {
     out << value_;
+}
+
+
+void FormulaNumber::execute(mir::context::Context& ctx) const {
+    std::cout << "Execute " << *this << std::endl;
+    // ctx.scalar(value_);
+
+}
+
+bool FormulaNumber::sameAs(const mir::action::Action& other) const {
+    const FormulaNumber* o = dynamic_cast<const FormulaNumber*>(&other);
+    return o && (value_ == o->value_);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -26,12 +26,14 @@ namespace util {
 class FormulaIdent : public Formula {
 public:
 
-    FormulaIdent(const std::string& name);
+    FormulaIdent(const param::MIRParametrisation &parametrisation, const std::string& name);
     virtual ~FormulaIdent();
 
 private:
 
     virtual void print(std::ostream& s) const;
+    virtual void execute(context::Context & ctx) const;
+    virtual bool sameAs(const Action& other) const;
 
 private: // members
 

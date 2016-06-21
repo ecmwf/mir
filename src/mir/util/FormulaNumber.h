@@ -25,12 +25,14 @@ namespace util {
 class FormulaNumber : public Formula {
 public:
 
-    FormulaNumber(double value);
+    FormulaNumber(const param::MIRParametrisation &parametrisation, double value);
     virtual ~FormulaNumber();
 
 private:
 
     virtual void print(std::ostream& s) const;
+    virtual void execute(context::Context & ctx) const;
+    virtual bool sameAs(const Action& other) const;
 
 private: // members
 

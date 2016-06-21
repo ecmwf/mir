@@ -22,7 +22,8 @@ namespace util {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Formula::Formula() {
+Formula::Formula(const param::MIRParametrisation &parametrisation):
+    Action(parametrisation) {
 
 }
 

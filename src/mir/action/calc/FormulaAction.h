@@ -88,7 +88,6 @@ class FormulaAction : public Action {
 
 // -- Members
 
-    std::string text_;
     eckit::ScopedPtr<util::Formula> formula_;
 
 // -- Methods

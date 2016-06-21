@@ -30,11 +30,12 @@ namespace action {
 FormulaAction::FormulaAction(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 
-    ASSERT(parametrisation.get("formula", text_));
+    std::string formula;
+    ASSERT(parametrisation.get("formula", formula));
 
-    std::istringstream in(text_);
+    std::istringstream in(formula);
     mir::util::FormulaParser p(in);
-    formula_.reset(p.parse());
+    formula_.reset(p.parse(parametrisation));
 }
 
 
@@ -44,7 +45,7 @@ FormulaAction::~FormulaAction() {
 
 bool FormulaAction::sameAs(const Action& other) const {
     const FormulaAction* o = dynamic_cast<const FormulaAction*>(&other);
-    return o && (text_ == o->text_);
+    return o && (formula_->sameAs(*o->formula_));
 }
 
 

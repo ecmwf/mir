@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include "mir/util/FormulaFunction.h"
+#include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
@@ -22,16 +23,22 @@ namespace util {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-FormulaFunction::FormulaFunction(const std::string& name, Formula* arg1): name_(name) {
+FormulaFunction::FormulaFunction(const param::MIRParametrisation &parametrisation, const std::string& name, Formula* arg1):
+    Formula(parametrisation),
+    name_(name) {
     args_.push_back(arg1);
 }
 
-FormulaFunction::FormulaFunction(const std::string& name, Formula* arg1, Formula *arg2): name_(name) {
+FormulaFunction::FormulaFunction(const param::MIRParametrisation &parametrisation, const std::string& name, Formula* arg1, Formula *arg2):
+    Formula(parametrisation),
+    name_(name) {
     args_.push_back(arg1);
     args_.push_back(arg2);
 }
 
-FormulaFunction::FormulaFunction(const std::string& name, std::vector<Formula*>& args): name_(name) {
+FormulaFunction::FormulaFunction(const param::MIRParametrisation &parametrisation, const std::string& name, std::vector<Formula*>& args):
+    Formula(parametrisation),
+    name_(name) {
     std::swap(args_, args);
 }
 
@@ -47,6 +54,26 @@ void FormulaFunction::print(std::ostream& out) const {
     }
 
     out << ")";
+}
+
+void FormulaFunction::execute(mir::context::Context& ctx) const {
+    std::cout << "Execute " << *this << std::endl;
+    for (auto j = args_.begin(); j != args_.end(); ++j) {
+        (*j)->execute(ctx);
+    }
+}
+
+bool FormulaFunction::sameAs(const mir::action::Action& other) const {
+    const FormulaFunction* o = dynamic_cast<const FormulaFunction*>(&other);
+    if(o && (name_ == o->name_) && (args_.size() == o->args_.size())) {
+        for(size_t i = 0; i < args_.size(); ++i) {
+            if(!args_[i]->sameAs(*(o->args_[i]))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

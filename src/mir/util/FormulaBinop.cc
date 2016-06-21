@@ -22,8 +22,9 @@ namespace util {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-FormulaBinop::FormulaBinop(const std::string& name, Formula* arg1, Formula *arg2):
-    FormulaFunction(name, arg1, arg2) {
+FormulaBinop::FormulaBinop(const param::MIRParametrisation &parametrisation,
+    const std::string& name, Formula* arg1, Formula *arg2):
+    FormulaFunction(parametrisation, name, arg1, arg2) {
 
 }
 

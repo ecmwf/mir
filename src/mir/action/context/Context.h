@@ -48,6 +48,8 @@ public:
 
     // -- Contructors
 
+    Context();
+
     Context(Context*);
 
     Context(input::MIRInput &input,

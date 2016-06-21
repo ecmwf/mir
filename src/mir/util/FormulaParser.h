@@ -20,6 +20,11 @@
 #include "eckit/types/Types.h"
 
 namespace mir {
+
+namespace param {
+class MIRParametrisation;
+}
+
 namespace util {
 
 class Formula;
@@ -31,19 +36,19 @@ public: // methods
 
     FormulaParser(std::istream &in);
 
-    Formula* parse();
+    Formula* parse(const param::MIRParametrisation &parametrisation);
 
 private: // methods
 
-    Formula* parseAtom();
-    Formula* parseTest();
-    Formula* parsePower();
-    std::vector<Formula*> parseList();
-    Formula* parseFactor();
-    Formula* parseTerm();
-    std::string parseIdent();
-    Formula* parseString();
-    Formula* parseNumber();
+    Formula* parseAtom(const param::MIRParametrisation &parametrisation);
+    Formula* parseTest(const param::MIRParametrisation &parametrisation);
+    Formula* parsePower(const param::MIRParametrisation &parametrisation);
+    std::vector<Formula*> parseList(const param::MIRParametrisation &parametrisation);
+    Formula* parseFactor(const param::MIRParametrisation &parametrisation);
+    Formula* parseTerm(const param::MIRParametrisation &parametrisation);
+    std::string parseIdent(const param::MIRParametrisation &parametrisation);
+    Formula* parseString(const param::MIRParametrisation &parametrisation);
+    Formula* parseNumber(const param::MIRParametrisation &parametrisation);
 
 };
 

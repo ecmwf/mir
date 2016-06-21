@@ -28,10 +28,19 @@ namespace util {
 class FormulaFunction : public Formula {
 public:
 
-    FormulaFunction(const std::string& name, Formula* arg1);
-    FormulaFunction(const std::string& name, Formula* arg1, Formula *arg2);
+    FormulaFunction(const param::MIRParametrisation &parametrisation,
+                    const std::string& name,
+                    Formula* arg1);
 
-    FormulaFunction(const std::string& name, std::vector<Formula*>& args);
+    FormulaFunction(const param::MIRParametrisation &parametrisation,
+                    const std::string& name,
+                    Formula* arg1,
+                    Formula *arg2);
+
+    FormulaFunction(const param::MIRParametrisation &parametrisation,
+                    const std::string& name,
+                    std::vector<Formula*>& args);
+
     virtual ~FormulaFunction();
 
 protected: // members
@@ -42,7 +51,8 @@ protected: // members
 private:
 
     virtual void print(std::ostream& s) const;
-
+    virtual void execute(context::Context & ctx) const;
+    virtual bool sameAs(const Action& other) const;
 
 };
 

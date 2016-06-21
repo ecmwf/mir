@@ -26,6 +26,7 @@
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
 #include "mir/log/MIR.h"
+#include "mir/util/MIRStatistics.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/api/MIRJob.h"
@@ -61,11 +62,19 @@ public:
 };
 
 static MissingInput missing;
+static util::MIRStatistics stats;
+
 }
 
 static Context& c(Context* ctx) {
     ASSERT(ctx);
     return *ctx;
+}
+
+Context::Context():
+    input_(missing),
+    statistics_(stats) {
+
 }
 
 Context::Context(Context* parent):
@@ -102,7 +111,8 @@ util::MIRStatistics& Context::statistics() {
 
 data::MIRField& Context::field() {
     // TODO: Add a mutex
-    if(!field_) {
+    if (!field_) {
+        std::cout << "Context -> allocate field from " << input_ << std::endl;
         field_.reset(input_.field());
     }
     return *field_;

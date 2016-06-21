@@ -28,9 +28,9 @@ namespace util {
 class FormulaBinop : public FormulaFunction {
 public:
 
-    FormulaBinop(const std::string& name, Formula* arg1, Formula *arg2);
+    FormulaBinop(const param::MIRParametrisation &parametrisation,
+        const std::string& name, Formula* arg1, Formula *arg2);
 
-    FormulaBinop(const std::string& name, std::vector<Formula*>& args);
     virtual ~FormulaBinop();
 
 private:

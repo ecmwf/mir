@@ -16,6 +16,7 @@
 
 #include <iosfwd>
 #include "eckit/memory/NonCopyable.h"
+#include "mir/action/plan/Action.h"
 
 namespace mir {
 namespace util {
@@ -23,10 +24,10 @@ namespace util {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class Formula : public eckit::NonCopyable {
+class Formula : public action::Action {
 public:
 
-    Formula();
+    Formula(const param::MIRParametrisation &parametrisation);
     virtual ~Formula();
 
 private:
