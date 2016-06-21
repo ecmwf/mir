@@ -39,8 +39,11 @@ class MIRField;
 
 namespace context {
 
+class Content;
 
 class Context : private eckit::NonCopyable {
+
+
 public:
 
     // -- Exceptions
@@ -72,6 +75,10 @@ public:
     util::MIRStatistics& statistics();
     data::MIRField& field();
     input::MIRInput& input();
+
+    void scalar(double);
+    double scalar() const;
+
 
     // -- Overridden methods
     // None
@@ -107,8 +114,7 @@ private:
 
     input::MIRInput &input_;
     util::MIRStatistics& statistics_;
-
-    eckit::ScopedPtr<data::MIRField> field_;
+    eckit::ScopedPtr<Content> content_;
 
     // -- Methods
 

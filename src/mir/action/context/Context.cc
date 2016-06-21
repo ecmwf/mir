@@ -18,6 +18,7 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/action/io/Save.h"
 #include "mir/action/io/Copy.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/input/MIRInput.h"
@@ -66,6 +67,67 @@ static util::MIRStatistics stats;
 
 }
 
+class Content {
+    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+
+public:
+    Content() {}
+    virtual ~Content() {}
+
+    virtual data::MIRField& field() {
+        std::ostringstream oss;
+        oss << "Cannot get field from " << *this;
+        throw eckit::SeriousBug(oss.str());
+    }
+
+    virtual double scalar() const {
+        std::ostringstream oss;
+        oss << "Cannot get field from " << *this;
+        throw eckit::SeriousBug(oss.str());
+    }
+
+    friend std::ostream &operator<<(std::ostream &s, const Content &p) {
+        p.print(s);
+        return s;
+    }
+};
+
+class ScalarContent : public Content {
+
+    double value_;
+
+    virtual void print(std::ostream& out) const {
+        out << "ScalarContent[value=" << value_ << "]";
+    }
+
+    virtual double scalar() const {
+        return value_;
+    }
+
+public:
+
+    ScalarContent(double value): value_(value) {}
+
+};
+
+class FieldContent : public Content {
+    eckit::ScopedPtr<data::MIRField> field_;
+
+    data::MIRField& field() {
+        return *field_;
+    }
+
+    virtual void print(std::ostream& out) const {
+        out << "FieldContent[field=" << *field_ << "]";
+    }
+
+public:
+    FieldContent(data::MIRField* field):
+        field_(field) { ASSERT(field); }
+
+
+};
+
 static Context& c(Context* ctx) {
     ASSERT(ctx);
     return *ctx;
@@ -81,13 +143,14 @@ Context::Context(Context* parent):
     input_(c(parent).input()),
     statistics_(c(parent).statistics())  {
 
-    field_.reset(new data::MIRField(&c(parent).field()));
+    content_.reset(new FieldContent(new data::MIRField(&c(parent).field())));
+
 }
 
 Context::Context(mir::data::MIRField& field, mir::util::MIRStatistics& statistics):
     input_(missing),
     statistics_(statistics) {
-    field_.reset(new data::MIRField(&field));
+    content_.reset(new FieldContent(new data::MIRField(&field)));
 }
 
 
@@ -111,11 +174,20 @@ util::MIRStatistics& Context::statistics() {
 
 data::MIRField& Context::field() {
     // TODO: Add a mutex
-    if (!field_) {
+    if (!content_) {
         std::cout << "Context -> allocate field from " << input_ << std::endl;
-        field_.reset(input_.field());
+        content_.reset(new FieldContent(input_.field()));
     }
-    return *field_;
+    return content_->field();
+}
+
+void Context::scalar(double value) {
+    content_.reset(new ScalarContent(value));
+}
+
+double Context::scalar() const {
+    ASSERT(content_);
+    return content_->scalar();
 }
 
 }  // namespace action

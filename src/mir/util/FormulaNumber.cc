@@ -17,6 +17,7 @@
 #include <iostream>
 #include "mir/util/FormulaNumber.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/action/context/Context.h"
 
 
 namespace mir {
@@ -40,7 +41,7 @@ void FormulaNumber::print(std::ostream& out) const {
 
 void FormulaNumber::execute(mir::context::Context& ctx) const {
     std::cout << "Execute " << *this << std::endl;
-    // ctx.scalar(value_);
+    ctx.scalar(value_);
 
 }
 
