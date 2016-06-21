@@ -101,7 +101,10 @@ util::MIRStatistics& Context::statistics() {
 }
 
 data::MIRField& Context::field() {
-    ASSERT(field_);
+    // TODO: Add a mutex
+    if(!field_) {
+        field_.reset(input_.field());
+    }
     return *field_;
 }
 

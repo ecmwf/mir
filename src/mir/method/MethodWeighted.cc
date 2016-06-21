@@ -169,7 +169,7 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas
         W.validate("computeMatrixWeights");
 
         if (masks.active() && masks.cacheable()) {
-            applyMasks(ctx, W, masks);
+            applyMasks(W, masks, ctx.statistics());
             W.validate("applyMasks");
         }
         if (caching) {
@@ -181,7 +181,7 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas
 
     // If LSM not cacheabe, e.g. user provided, we apply the mask after
     if (masks.active() && !masks.cacheable())  {
-        applyMasks(ctx, W, masks);
+        applyMasks(W, masks, ctx.statistics());
         W.validate("applyMasks");
     }
 
@@ -364,7 +364,9 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 }
 
 
-void MethodWeighted::applyMasks(context::Context& ctx, WeightMatrix &W, const lsm::LandSeaMasks &masks) const {
+void MethodWeighted::applyMasks(WeightMatrix &W,
+    const lsm::LandSeaMasks &masks,
+    util::MIRStatistics&) const {
 
     eckit::TraceTimer<MIR> timer("MethodWeighted::applyMasks");
 

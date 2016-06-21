@@ -81,7 +81,7 @@ private:
     WeightMatrix applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const;
 
     /// Update interpolation weigths matrix to account for field masked values
-    virtual void applyMasks(context::Context& ctx, WeightMatrix &W, const lsm::LandSeaMasks &) const;
+    virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &, util::MIRStatistics& statistics) const;
 
     virtual const WeightMatrix &getMatrix(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const;
 
