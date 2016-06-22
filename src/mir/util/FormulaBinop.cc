@@ -61,38 +61,51 @@ class Unop : public Function {
         s << name_;
     }
 
-    void field(context::Context&) const {
+    void field(context::Context& ctx,  context::Context& ctx1) const {
 
-        // eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
-        // data::MIRField& field = ctx.field();
+        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
 
-        // for (size_t j = 0; j < field.dimensions(); j++) {
-        //     std::vector<double> &values = field.direct(j);
+        data::MIRField& field = ctx.field();
 
-        //     size_t size = values.size();
+        data::MIRField& field1 = ctx1.field();
 
-        //     if (field.hasMissing()) {
-        //         double missingValue = field.missingValue();
+        field.dimensions(field1.dimensions());
 
-        //         for (size_t i = 0; i < size; i++) {
-        //             if (values[i] != missingValue) {
-        //                 values[i] = op_(values[i]);
-        //             }
-        //         }
+        for (size_t i = 0; i < field1.dimensions(); ++i)
+        {
+            const std::vector<double> &values1 = field1.values(i);
 
-        //     } else {
-        //         for (size_t i = 0; i < size; i++) {
-        //             values[i] = op_(values[i]);
-        //         }
-        //     }
+            size_t size = values1.size();
 
-        //     // field.paramId(j, param_);
+            std::vector<double> values(size);
 
-        // }
+            if (field1.hasMissing()) {
+                double missingValue1 = field1.missingValue();
+
+                for (size_t i = 0; i < size; i++) {
+                    if (values1[i] == missingValue1) {
+                        values[i] = missingValue1;
+                    } else {
+                        values[i] = op_(values1[i]);
+                    }
+                }
+
+                field.update(values, i);
+                field.hasMissing(true);
+                field.missingValue(missingValue1);
+
+            } else
+            {
+                for (size_t i = 0; i < size; i++) {
+                    values[i] = op_(values1[i]);
+                }
+                field.update(values, i);
+            }
+        }
     }
 
-    void scalar(context::Context& a) const {
-        a.scalar(op_(a.scalar()));
+    void scalar(context::Context& ctx, context::Context& ctx1) const {
+        ctx.scalar(op_(ctx1.scalar()));
     }
 
     virtual void execute(context::Context& ctx) const {
@@ -100,11 +113,11 @@ class Unop : public Function {
         context::Context a = ctx.pop();
 
         if (a.isField()) {
-            return field(a);
+            return field(ctx, a);
         }
 
         if (a.isScalar()) {
-            return scalar(a);
+            return scalar(ctx, a);
         }
 
         std::ostringstream oss;
@@ -142,8 +155,6 @@ class Binop : public Function {
 
         for (size_t i = 0; i < field1.dimensions(); ++i)
         {
-
-
             const std::vector<double> &values1 = field1.values(i);
             const std::vector<double> &values2 = field2.values(i);
 
@@ -152,105 +163,120 @@ class Binop : public Function {
 
             std::vector<double> values(size);
 
+            if (field1.hasMissing() || field2.hasMissing()) {
+                double missingValue1 = field1.missingValue();
+                double missingValue2 = field2.missingValue();
 
-            // if (field1.hasMissing() || field2.hasMissing()) {
-            //     double missingValue1 = field1.missingValue();
-            //     double missingValue2 = field2.missingValue();
+                for (size_t i = 0; i < size; i++) {
+                    if (values1[i] == missingValue1 || values2[i] == missingValue2) {
+                        values[i] = missingValue1;
+                    } else {
+                        values[i] = op_(values1[i], values2[i]);
+                    }
+                }
 
-            //     for (size_t i = 0; i < size; i++) {
-            //         if (values1[i] == missingValue || values2[i] == missingValue) {
-            //             values1[i] = missingValue;
-            //         } else {
-            //             values1[i] = op_(values1[i], values2[i]);
-            //         }
-            //     }
+                field.update(values, i);
+                field.hasMissing(true);
+                field.missingValue(missingValue1);
 
-            // } else
+            } else
             {
                 for (size_t i = 0; i < size; i++) {
                     values[i] = op_(values1[i], values2[i]);
                 }
+                field.update(values, i);
             }
-
-            field.update(values, i);
-
         }
-        // field.paramId(0, param_);
     }
 
     void scalarScalar(context::Context& ctx, context::Context& ctx1, context::Context& ctx2) const {
         ctx.scalar(op_(ctx1.scalar(), ctx2.scalar()));
-
     }
 
     void fieldScalar(context::Context& ctx, context::Context& ctx1, context::Context& ctx2) const {
-        // eckit::AutoTiming timing(ctx1.statistics().timer_, ctx1.statistics().calcTiming_);
+        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
 
-        // data::MIRField& field1 = ctx1.field();
-        // double scalar2 = ctx2.scalar();
+        data::MIRField& field = ctx.field();
 
-        // for (size_t i = 0; i < field1.dimensions(); ++i)
-        // {
+        data::MIRField& field1 = ctx1.field();
+        double scalar2 = ctx2.scalar();
 
-        //     std::vector<double> &values1 = field.direct(i);
-        //     const std::vector<double> &values2 = field.values(i);
+        field.dimensions(field1.dimensions());
 
-        //     size_t size = values1.size();
-        //     ASSERT(values1.size() == values2.size());
+        for (size_t i = 0; i < field1.dimensions(); ++i)
+        {
+            const std::vector<double> &values1 = field1.values(i);
 
-        //     if (field.hasMissing()) {
-        //         double missingValue = field.missingValue();
+            size_t size = values1.size();
 
-        //         for (size_t i = 0; i < size; i++) {
-        //             if (values1[i] == missingValue || values2[i] == missingValue) {
-        //                 values1[i] = missingValue;
-        //             } else {
-        //                 values1[i] = op_(values1[i], values2[i]);
-        //             }
-        //         }
+            std::vector<double> values(size);
 
-        //     } else {
-        //         for (size_t i = 0; i < size; i++) {
-        //             values1[i] = op_(values1[i], values2[i]);
-        //         }
-        //     }
+            if (field1.hasMissing()) {
+                double missingValue1 = field1.missingValue();
 
+                for (size_t i = 0; i < size; i++) {
+                    if (values1[i] == missingValue1) {
+                        values[i] = missingValue1;
+                    } else {
+                        values[i] = op_(values1[i], scalar2);
+                    }
+                }
 
-        // }
+                field.update(values, i);
+                field.hasMissing(true);
+                field.missingValue(missingValue1);
+
+            }
+            else {
+                for (size_t i = 0; i < size; i++) {
+                    values[i] = op_(values1[i], scalar2);
+                }
+                field.update(values, i);
+            }
+        }
     }
 
     void scalarField(context::Context& ctx, context::Context& ctx1, context::Context& ctx2) const {
+        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
 
-        // eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
-        // data::MIRField& field = ctx.field();
+        data::MIRField& field = ctx.field();
 
-        // ASSERT(field.dimensions() == 2);
+        double scalar1 = ctx1.scalar();
+        data::MIRField& field2 = ctx2.field();
 
-        // std::vector<double> &values0 = field.direct(0);
-        // const std::vector<double> &values1 = field.values(1);
+        field.dimensions(field2.dimensions());
 
-        // size_t size = values0.size();
-        // ASSERT(values0.size() == values1.size());
+        for (size_t i = 0; i < field2.dimensions(); ++i)
+        {
+            const std::vector<double> &values2 = field2.values(i);
 
-        // if (field.hasMissing()) {
-        //     double missingValue = field.missingValue();
+            size_t size = values2.size();
 
-        //     for (size_t i = 0; i < size; i++) {
-        //         if (values0[i] == missingValue || values1[i] == missingValue) {
-        //             values0[i] = missingValue;
-        //         } else {
-        //             values0[i] = op_(values0[i], values1[i]);
-        //         }
-        //     }
+            std::vector<double> values(size);
 
-        // } else {
-        //     for (size_t i = 0; i < size; i++) {
-        //         values0[i] = op_(values0[i], values1[i]);
-        //     }
-        // }
+            if (field2.hasMissing()) {
+                double missingValue2 = field2.missingValue();
 
-        // field.dimensions(1);
-        // // field.paramId(0, param_);
+                for (size_t i = 0; i < size; i++) {
+                    if (values2[i] == missingValue2) {
+                        values[i] = missingValue2;
+                    } else {
+                        values[i] = op_(scalar1, values2[i]);
+                    }
+                }
+
+                field.update(values, i);
+                field.hasMissing(true);
+                field.missingValue(missingValue2);
+
+            }
+            else {
+                for (size_t i = 0; i < size; i++) {
+                    values[i] = op_(scalar1, values2[i]);
+                }
+                field.update(values, i);
+            }
+        }
     }
 
     virtual void execute(context::Context& ctx) const {
