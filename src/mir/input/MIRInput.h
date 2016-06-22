@@ -60,7 +60,7 @@ class MIRInput {
 
     virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const = 0;
 
-    virtual data::MIRField* field() const = 0;
+    virtual data::MIRField field() const = 0;
     virtual grib_handle* gribHandle(size_t which = 0) const;
 
     virtual size_t copy(double* values, size_t size) const;

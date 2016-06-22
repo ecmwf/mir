@@ -78,11 +78,11 @@ void MIRMakeLSM::run() {
         ASSERT(Ni == Nj * 2);
 
 
-        eckit::ScopedPtr<mir::data::MIRField> field(input.field());
+        mir::data::MIRField field(input.field());
 
-        ASSERT(!field->hasMissing());
+        ASSERT(!field.hasMissing());
 
-        const std::vector<double>  &values = field->values(0);
+        const std::vector<double>  &values = field.values(0);
 
         unsigned char byte = 0;
         size_t n = 0;

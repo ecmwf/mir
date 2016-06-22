@@ -138,6 +138,8 @@ caching/WeightCache.cc
 caching/WeightCache.h
 data/MIRField.cc
 data/MIRField.h
+data/Field.cc
+data/Field.h
 data/MIRFieldStats.cc
 data/MIRFieldStats.h
 input/DummyInput.cc

@@ -198,6 +198,10 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
     if (parametrisation_.has("sub.fields")) {
         plan.add("sub.fields");
     }
+
+    if (parametrisation_.has("user.formula")) {
+        plan.add("calc.formula");
+    }
 }
 
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {

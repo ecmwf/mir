@@ -20,6 +20,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/data/MIRFieldStats.h"
+#include "mir/data/Field.h"
 
 
 namespace mir {
@@ -27,219 +28,109 @@ namespace data {
 
 
 MIRField::MIRField(const param::MIRParametrisation &param, bool hasMissing, double missingValue):
-    parent_(0),
-    values_(),
-    hasMissing_(hasMissing),
-    missingValue_(missingValue),
-    representation_(repres::RepresentationFactory::build(param)) {
+    field_(new Field(param, hasMissing, missingValue)) {
 
-    if (representation_) {
-        representation_->attach();
-    }
+    field_->attach();
 }
 
 
 MIRField::MIRField(const repres::Representation *repres, bool hasMissing, double missingValue):
-    parent_(0),
-    values_(),
-    hasMissing_(hasMissing),
-    missingValue_(missingValue),
-    representation_(repres) {
+    field_(new Field(repres, hasMissing, missingValue)) {
 
-    if (representation_) {
-        representation_->attach();
-    }
+    field_->attach();
 }
 
-
-MIRField::MIRField(MIRField *parent):
-    parent_(parent),
-    values_(),
-    hasMissing_(parent->hasMissing_),
-    missingValue_(parent->missingValue_),
-    representation_(parent->representation_) {
-
-    if (representation_) {
-        representation_->attach();
-    }
+MIRField::MIRField(const MIRField& other):
+    field_(other.field_) {
+    field_->attach();
 }
 
 void MIRField::copyOnWrite() {
-    if (parent_) {
-        MIRField *top = this;
-        while (top->parent_) {
-            top = top->parent_;
-        }
-        values_ = top->values_;
-        paramId_ = top->paramId_;
-        parent_ = 0;
-        // std::cout << "MIRField::copyOnWrite" << std::endl;
+    if (field_->count() > 1) {
+        Field *f = field_->clone();
+        field_->detach();
+        field_ = f;
+        field_->attach();
     }
 }
 
 // Warning: take ownership of values
 void MIRField::update(std::vector<double> &values, size_t which) {
     copyOnWrite();
-    if (values_.size() <= which) {
-        values_.resize(which + 1);
-    }
-    std::swap(values_[which], values);
+    field_->update(values, which);
 }
 
 size_t MIRField::dimensions() const {
-    if (parent_) {
-        return parent_->dimensions();
-    }
-    return values_.size();
+    return field_->dimensions();
 }
-
 
 void MIRField::dimensions(size_t size)  {
     copyOnWrite();
-    return values_.resize(size);
+    field_->dimensions(size);
 }
-
 
 MIRField::~MIRField() {
-    if (representation_) {
-        representation_->detach();
-    }
+    field_->detach();
 }
-
 
 void MIRField::print(std::ostream &out) const {
-
-    out << "MIRField[dimensions=" << values_.size();
-    if (hasMissing_) {
-        out << ",missingValue=" << missingValue_;
-    }
-
-    if (representation_) {
-        out << ",representation=" << *representation_;
-    }
-
-    if (paramId_.size()) {
-        out << ",params=";
-        char sep = '(';
-        for (size_t i = 0; i < paramId_.size(); i++) {
-            out << sep << paramId_[i];
-            sep = ',';
-        }
-        out << ')';
-    }
-
-    if (parent_) {
-        out << ",parent=";
-        parent_->print(out);
-        out << "]";
-        return;
-    }
-
-    out << "]";
+    out << *field_;
 }
 
-
 const repres::Representation *MIRField::representation() const {
-    ASSERT(representation_);
-    return representation_;
+    return field_->representation();
 }
 
 void MIRField::validate() const {
-
-    if (representation_) {
-        for (size_t i = 0; i < values_.size(); i++) {
-            representation_->validate(values(i));
-        }
-    }
+    field_->validate();
 }
 
 MIRFieldStats MIRField::statistics(size_t i) const {
-
-    if (parent_) {
-        return parent_->statistics(i);
-    }
-
-    if (hasMissing_) {
-        const std::vector<double> &vals = values(i);
-        std::vector<double> tmp;
-        tmp.reserve(vals.size());
-        size_t missing = 0;
-
-        for (size_t j = 0; j < vals.size(); j++) {
-            if (vals[j] != missingValue_) {
-                tmp.push_back(vals[j]);
-            } else {
-                missing++;
-            }
-        }
-        return MIRFieldStats(tmp, missing);
-    }
-    return MIRFieldStats(values(i), 0);
+    return field_->statistics(i);
 }
 
 void MIRField::representation(const repres::Representation *representation) {
-    if (representation) {
-        representation->attach();
-    }
-    if (representation_) {
-        representation_->detach();
-    }
-    representation_ = representation;
+    field_->representation(representation);
 }
 
 const std::vector<double> &MIRField::values(size_t which) const {
-
-    if (parent_) {
-        return parent_->values(which);
-    }
-
-    ASSERT(which < values_.size());
-    return values_[which];
+    return field_->values(which);
 }
 
 std::vector<double> &MIRField::direct(size_t which)  {
-
     copyOnWrite();
-
-    ASSERT(which < values_.size());
-    return values_[which];
+    return field_->direct(which);
 }
 
 void MIRField::paramId(size_t which, size_t param) {
     copyOnWrite();
-    while (paramId_.size() <= which) {
-        paramId_.push_back(0);
-    }
-    paramId_[which] = param;
+    field_->paramId(which, param);
 }
 
 size_t MIRField::paramId(size_t which) const {
-    if (parent_) {
-        return parent_->paramId(which);
-    }
-
-    if (paramId_.size() <= which) {
-        return 0;
-    }
-
-    return paramId_[which];
+    return field_->paramId(which);
 }
 
 bool MIRField::hasMissing() const {
-    return hasMissing_;
+    return field_->hasMissing();
 }
 
 double MIRField::missingValue() const {
-    return missingValue_;
+    return field_->missingValue();
 }
 
-
 void MIRField::hasMissing(bool on) {
-    hasMissing_ = on;
+    if (on != hasMissing()) {
+        copyOnWrite();
+        field_->hasMissing(on);
+    }
 }
 
 void MIRField::missingValue(double value)  {
-    missingValue_ = value;
+    if (value != missingValue()) {
+        copyOnWrite();
+        field_->missingValue(value);
+    }
 }
 
 }  // namespace data

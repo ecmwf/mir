@@ -95,7 +95,7 @@ private:
     virtual bool sameAs(const MIRInput& other) const;
 
     virtual const param::MIRParametrisation &parametrisation(size_t which) const;
-    virtual data::MIRField *field() const;
+    virtual data::MIRField field() const;
 
     virtual bool next();
 

@@ -123,6 +123,10 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
 
     //==============================================
+    options.push_back(new Separator("Compute"));
+    options.push_back(new SimpleOption<std::string>("formula", "Formula to apply on field"));
+
+    //==============================================
     options.push_back(new Separator("Land sea mask management"));
     options.push_back(new SimpleOption<bool>("lsm", "Use land sea mask (lsm) when interpolating grid to grid"));
 

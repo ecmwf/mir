@@ -51,9 +51,8 @@ const param::MIRParametrisation &EmptyInput::parametrisation(size_t which) const
 }
 
 
-data::MIRField *EmptyInput::field() const {
-    data::MIRField *field = new data::MIRField(parametrisation_, false, 999.);
-    return field;
+data::MIRField EmptyInput::field() const {
+    return data::MIRField(parametrisation_, false, 999.);
 }
 
 

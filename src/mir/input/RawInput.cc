@@ -49,15 +49,15 @@ const param::MIRParametrisation &RawInput::parametrisation(size_t which) const {
     return *this;
 }
 
-data::MIRField *RawInput::field() const {
+data::MIRField RawInput::field() const {
 
-    data::MIRField *field = new data::MIRField(*this, metadata_.hasMissing(), metadata_.missingValue());
+    data::MIRField field(*this, metadata_.hasMissing(), metadata_.missingValue());
 
     std::vector< double > values(count_);
     ::memcpy(&values[0], values_, sizeof(double) * count_);
-    field->update(values, 0);
+    field.update(values, 0);
 
-    eckit::Log::trace<MIR>() << "RawInput::field: " << *field << std::endl;
+    // eckit::Log::trace<MIR>() << "RawInput::field: " << field << std::endl;
 
     return field;
 }

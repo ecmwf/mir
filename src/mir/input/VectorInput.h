@@ -92,7 +92,7 @@ class VectorInput : public MIRInput {
     // -- Overridden methods
 
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
-    virtual data::MIRField* field() const;
+    virtual data::MIRField field() const;
     virtual bool next();
 
     virtual bool sameAs(const MIRInput &other) const ;

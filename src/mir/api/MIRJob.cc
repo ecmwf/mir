@@ -143,7 +143,7 @@ MIRJob &MIRJob::set(const std::string &name, double v1, double v2) {
 
 MIRJob &MIRJob::set(const std::string &name, double v1, double v2, double v3, double v4) {
     eckit::Log::trace<MIR>() << "************* MIRJob::set [" << name << "] =  [" << v1
-                       << ", "  << v2 << ", "  << v3 << ", "  << v4 << "] (double)" << std::endl;
+                             << ", "  << v2 << ", "  << v3 << ", "  << v4 << "] (double)" << std::endl;
     std::vector<double> v(4);
     v[0] = v1;
     v[1] = v2;
@@ -154,9 +154,8 @@ MIRJob &MIRJob::set(const std::string &name, double v1, double v2, double v3, do
 }
 
 MIRJob& MIRJob::representationFrom(input::MIRInput& input) {
-    eckit::ScopedPtr< data::MIRField > field(input.field());
 
-    const repres::Representation* repres = field->representation();
+    const repres::Representation* repres = input.field().representation();
 
     eckit::Log::trace<MIR>() << "Copy from " << *repres << std::endl;
     repres->fill(*this);
@@ -166,9 +165,13 @@ MIRJob& MIRJob::representationFrom(input::MIRInput& input) {
 
 
 bool MIRJob::matches(const param::MIRParametrisation &metadata) const {
-    static const char *force[] = { "vod2uv", "bitmap",
-                                   "frame", "packing",
-                                   "accuracy", "checkerboard",
+    static const char *force[] = { "vod2uv",
+                                   "bitmap",
+                                   "frame",
+                                   "packing",
+                                   "accuracy",
+                                   "checkerboard",
+                                   "formula",
                                    "pattern",
                                    0
                                  }; // Move to MIRStyle
@@ -176,7 +179,7 @@ bool MIRJob::matches(const param::MIRParametrisation &metadata) const {
     while (force[i]) {
         if (has(force[i])) {
             eckit::Log::trace<MIR>() << "MIRJob will perform transformation/interpolation ('"
-                               << force[i] << "' specified)" << std::endl;
+                                     << force[i] << "' specified)" << std::endl;
             return false;
         }
         i++;

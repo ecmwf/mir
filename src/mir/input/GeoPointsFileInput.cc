@@ -137,10 +137,10 @@ const param::MIRParametrisation &GeoPointsFileInput::parametrisation(size_t whic
 }
 
 
-data::MIRField *GeoPointsFileInput::field() const {
+data::MIRField GeoPointsFileInput::field() const {
 
-    data::MIRField *field = new data::MIRField(new repres::other::UnstructuredGrid(latitudes_, longitudes_), false, 999.0);
-    field->update(values_, 0);
+    data::MIRField field(new repres::other::UnstructuredGrid(latitudes_, longitudes_), false, 999.0);
+    field.update(values_, 0);
 
     return field;
 }

@@ -93,13 +93,13 @@ void MIRIntegrate::run() {
 
         ++n;
 
-        eckit::ScopedPtr<mir::data::MIRField> field(input.field());
+        mir::data::MIRField field(input.field());
 
-        const std::vector<double>& values = field->values(0);
+        const std::vector<double>& values = field.values(0);
 
-        ASSERT(!field->hasMissing());
+        ASSERT(!field.hasMissing());
 
-        const repres::Representation* rep = field->representation();
+        const repres::Representation* rep = field.representation();
 
         ASSERT(rep);
         // ASSERT(rep->globalDomain());

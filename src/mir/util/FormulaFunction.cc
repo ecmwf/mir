@@ -60,29 +60,26 @@ void FormulaFunction::print(std::ostream& out) const {
     out << ")";
 }
 
-class Cleanup {
-    std::vector<context::Context*>& v_;
-public:
-    Cleanup(std::vector<context::Context*>& v): v_(v) {}
-    ~Cleanup() {
-        for(auto j = v_.begin(); j != v_.end(); ++j) {
-            delete (*j);
-        }
-    }
-};
+// class Cleanup {
+//     std::vector<context::Context*>& v_;
+// public:
+//     Cleanup(std::vector<context::Context*>& v): v_(v) {}
+//     ~Cleanup() {
+//         for(auto j = v_.begin(); j != v_.end(); ++j) {
+//             delete (*j);
+//         }
+//     }
+// };
 
 void FormulaFunction::execute(mir::context::Context& ctx) const {
     std::cout << "Execute " << *this << std::endl;
 
-    std::vector<context::Context*> params;
-    Cleanup clean(params);
-
-    for (auto j = args_.begin(); j != args_.end(); ++j) {
-        params.push_back(new mir::context::Context());
-        (*j)->execute(*params.back());
+    size_t i = 0;
+    for (auto j = args_.begin(); j != args_.end(); ++j, ++i) {
+        (*j)->execute(ctx.push());
     }
 
-    function_.execute(ctx, params);
+    function_.execute(ctx);
 
 }
 

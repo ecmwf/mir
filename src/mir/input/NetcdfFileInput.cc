@@ -143,7 +143,7 @@ void NetcdfFileInput::getVariable(const std::string &variable, std::vector<doubl
 }
 
 
-data::MIRField *NetcdfFileInput::field() const {
+data::MIRField NetcdfFileInput::field() const {
 
     std::vector<double> values;
     getVariable(variable_, values);
@@ -151,8 +151,8 @@ data::MIRField *NetcdfFileInput::field() const {
     bool hasMissing = false; // Should check!
     double missingValue = 9999; // Read from file
 
-    data::MIRField *field = new data::MIRField(*this, hasMissing, missingValue);
-    field->update(values, 0);
+    data::MIRField field(*this, hasMissing, missingValue);
+    field.update(values, 0);
 
     return field;
 

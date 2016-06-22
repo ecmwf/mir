@@ -13,11 +13,13 @@
 /// @date Apr 2015
 
 
-#ifndef MIRField_H
-#define MIRField_H
+#ifndef Field_H
+#define Field_H
 
 #include <iosfwd>
 #include <vector>
+
+#include "eckit/memory/Counted.h"
 
 namespace mir {
 namespace repres {
@@ -29,9 +31,8 @@ class MIRParametrisation;
 namespace data {
 
 class MIRFieldStats;
-class Field;
 
-class MIRField {
+class Field : public eckit::Counted {
 
 public:
 
@@ -39,20 +40,21 @@ public:
     // None
 
     // -- Contructors
-    MIRField(const MIRField& other);
+
     //
 
-    MIRField(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
-    MIRField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
+    Field(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
+    Field(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
     // -- Destructor
 
-    ~MIRField(); // Change to virtual if base class
+    ~Field(); // Change to virtual if base class
 
     // -- Convertors
 
+
     // -- Operators
-    MIRField& operator=(const MIRField& other);
+    // None
 
     // -- Methods
 
@@ -83,6 +85,8 @@ public:
 
     MIRFieldStats statistics(size_t i) const;
 
+    Field* clone() const;
+
     //
 
     // -- Overridden methods
@@ -94,7 +98,7 @@ public:
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -112,19 +116,23 @@ public:
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
-
+    Field(const Field& other);
+    Field& operator=(const Field& other);
 
     // -- Members
 
-    Field *field_;
+    std::vector<std::vector<double> > values_;
+    std::vector<size_t > paramId_;
+
+    bool hasMissing_;
+    double missingValue_;
+    const repres::Representation* representation_;
 
     // -- Methods
-
-    void copyOnWrite();
 
     // -- Overridden methods
     // None
@@ -137,7 +145,7 @@ public:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const MIRField &p) {
+    friend std::ostream &operator<<(std::ostream &s, const Field &p) {
         p.print(s);
         return s;
     }

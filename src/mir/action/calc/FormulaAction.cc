@@ -58,6 +58,7 @@ void FormulaAction::execute(context::Context & ctx) const {
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
 
+    formula_->execute(ctx);
     // ASSERT(field.dimensions() == 2);
 
     // std::vector<double> &values0 = field.direct(0);

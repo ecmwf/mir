@@ -19,6 +19,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 #include "mir/util/MIRStatistics.h"
+#include "eckit/memory/Counted.h"
 
 
 namespace mir {
@@ -39,9 +40,10 @@ class MissingInput : public input::MIRInput
         out << "MissingInput[]";
     }
 
-    virtual data::MIRField* field() const {
+    virtual data::MIRField field() const {
         NOTIMP;
     }
+
 
 public:
     MissingInput() {}
@@ -54,12 +56,14 @@ static util::MIRStatistics stats;
 
 }
 
-class Content {
+class Content : public eckit::Counted {
     virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+
+protected:
+    virtual ~Content() {}
 
 public:
     Content() {}
-    virtual ~Content() {}
 
     virtual data::MIRField& field() {
         std::ostringstream oss;
@@ -71,6 +75,14 @@ public:
         std::ostringstream oss;
         oss << "Cannot get field from " << *this;
         throw eckit::SeriousBug(oss.str());
+    }
+
+    virtual bool isField() const {
+        return false;
+    }
+
+    virtual bool isScalar() const {
+        return false;
     }
 
     friend std::ostream &operator<<(std::ostream &s, const Content &p) {
@@ -91,6 +103,10 @@ class ScalarContent : public Content {
         return value_;
     }
 
+    virtual bool isScalar() const {
+        return true;
+    }
+
 public:
 
     ScalarContent(double value): value_(value) {}
@@ -98,57 +114,108 @@ public:
 };
 
 class FieldContent : public Content {
-    eckit::ScopedPtr<data::MIRField> field_;
+    data::MIRField field_;
 
     data::MIRField& field() {
-        return *field_;
+        return field_;
     }
 
     virtual void print(std::ostream& out) const {
-        out << "FieldContent[field=" << *field_ << "]";
+        out << "FieldContent[field=" << field_ << "]";
     }
 
+    virtual bool isField() const {
+        return true;
+    }
+
+
 public:
-    FieldContent(data::MIRField* field):
-        field_(field) { ASSERT(field); }
+    FieldContent(const data::MIRField& field):
+        field_(field) {  }
 
 
 };
 
-static Context& c(Context* ctx) {
-    ASSERT(ctx);
-    return *ctx;
-}
 
 Context::Context():
+    parent_(0),
     input_(missing),
-    statistics_(stats) {
+    statistics_(stats),
+    content_(0) {
 
 }
 
-Context::Context(Context* parent):
-    input_(c(parent).input()),
-    statistics_(c(parent).statistics())  {
 
-    content_.reset(new FieldContent(new data::MIRField(&c(parent).field())));
-
+Context::Context(const Context& other):
+    parent_(other.parent_),
+    input_(other.input_),
+    statistics_(other.statistics_),
+    content_(other.content_) {
+    if (content_) {
+        content_->attach();
+    }
 }
+
+
+Context::Context( Context* parent):
+    parent_(parent),
+    input_(parent_->input_),
+    statistics_(parent_->statistics_),
+    content_(parent_->content_) {
+    if (content_) {
+        content_->attach();
+    }
+}
+
+// Context::Context(Context* parent):
+//     parent_(parent),
+//     input_(c(parent).input()),
+//     statistics_(c(parent).statistics()),
+//     content_(0)  {
+
+//     if (parent_->content_) {
+//         content_ =  parent_->content_->inherit();
+//         content_->attach();
+//     }
+// }
 
 Context::Context(mir::data::MIRField& field, mir::util::MIRStatistics& statistics):
+    parent_(0),
     input_(missing),
     statistics_(statistics) {
-    content_.reset(new FieldContent(new data::MIRField(&field)));
+    content_ = new FieldContent(field);
+    content_->attach();
+
 }
 
 
 Context::Context(input::MIRInput &input,
                  util::MIRStatistics& statistics):
+    parent_(0),
     input_(input),
-    statistics_(statistics)  {
+    statistics_(statistics),
+    content_(0)  {
 
 }
 
 Context::~Context() {
+    if (content_) {
+        content_->detach();
+    }
+}
+
+bool Context::isField() const {
+    if (!content_) {
+        return false;
+    }
+    return content_->isField();
+}
+
+bool Context::isScalar() const {
+    if (!content_) {
+        return false;
+    }
+    return content_->isScalar();
 }
 
 input::MIRInput &Context::input() {
@@ -162,14 +229,23 @@ util::MIRStatistics& Context::statistics() {
 data::MIRField& Context::field() {
     // TODO: Add a mutex
     if (!content_) {
-        std::cout << "Context -> allocate field from " << input_ << std::endl;
-        content_.reset(new FieldContent(input_.field()));
+        if (parent_) {
+             std::cout << "Context -> adopt parent field"  << std::endl;
+            content_ = new FieldContent(parent_->field());
+        }
+        else {
+            std::cout << "Context -> allocate field from " << input_ << std::endl;
+            content_ = new FieldContent(input_.field());
+        }
+        content_->attach();
     }
     return content_->field();
 }
 
 void Context::scalar(double value) {
-    content_.reset(new ScalarContent(value));
+    if (content_) content_->detach();
+    content_ = new ScalarContent(value);
+    content_->attach();
 }
 
 double Context::scalar() const {
@@ -188,6 +264,19 @@ void Context::print(std::ostream& out) const {
     out << "]";
 }
 
+
+Context& Context::push() {
+    stack_.push_back(Context(this));
+    return stack_.back();
+}
+
+
+Context Context::pop() {
+    ASSERT(stack_.size());
+    Context ctx = stack_.back();
+    stack_.pop_back();
+    return ctx;
+}
 
 }  // namespace action
 }  // namespace mir

@@ -92,11 +92,11 @@ void MIRStats::run() {
     while ( file.next() ) {
         ++n;
 
-        eckit::ScopedPtr<mir::data::MIRField> field(input.field());
+        mir::data::MIRField field(input.field());
 
-        const std::vector<double>& values = field->values(0);
-        bool hasMissing = field->hasMissing();
-        double missingValue = field->missingValue();
+        const std::vector<double>& values = field.values(0);
+        bool hasMissing = field.hasMissing();
+        double missingValue = field.missingValue();
         double minvalue = 0;
         double maxvalue = 0;
 

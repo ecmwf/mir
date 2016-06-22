@@ -32,8 +32,7 @@ public:
     Function(const std::string& name);
     virtual ~Function();
 
-    virtual void execute(context::Context&  result,
-                         const std::vector<context::Context*>& args) const = 0;
+    virtual void execute(context::Context& ctx) const = 0;
 
 
     static const Function& lookup(const std::string& name);

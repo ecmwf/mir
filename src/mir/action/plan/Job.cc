@@ -71,16 +71,6 @@ Job::~Job() {
 void Job::execute(util::MIRStatistics &statistics) const {
 
     ASSERT(plan_);
-
-    // This is an optimistation for MARS
-    // We avoid to decode the input field
-    // if (plan_->size() == 1 && !plan_->action(0).needField()) {
-    //     context::Context dummy(*combined_);
-    //     plan_->execute(dummy, statistics);
-    //     return;
-    // }
-
-
     context::Context ctx(input_, statistics);
     plan_->execute(ctx);
 }

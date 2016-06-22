@@ -235,7 +235,7 @@ const param::MIRParametrisation &GribInput::parametrisation(size_t which) const 
 }
 
 
-data::MIRField *GribInput::field() const {
+data::MIRField GribInput::field() const {
     ASSERT(grib_);
     // TODO: this is only here for debugging purposes
     GRIB_CALL(grib_set_double(grib_, "missingValue", 1.e15));
@@ -255,15 +255,15 @@ data::MIRField *GribInput::field() const {
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
 
 
-    data::MIRField *field = new data::MIRField(*this, bitmap != 0, missing);
+    data::MIRField field(*this, bitmap != 0, missing);
 
     long scanningMode = 0;
     if (grib_get_long(grib_, "scanningMode", &scanningMode) == GRIB_SUCCESS && scanningMode != 0) {
-        field->representation()->reorder(scanningMode, values);
+        field.representation()->reorder(scanningMode, values);
     }
 
-    field->update(values, 0);
-    field->validate();
+    field.update(values, 0);
+    field.validate();
 
     return field;
 

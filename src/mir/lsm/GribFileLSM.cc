@@ -50,7 +50,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     mir::input::MIRInput &input = file;
 
     ASSERT(file.next());
-    eckit::ScopedPtr<data::MIRField> field(input.field());
+    data::MIRField field = input.field();
 
     param::RuntimeParametrisation runtime(parametrisation);
     runtime.set("lsm", false);
@@ -65,20 +65,20 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::trace<MIR>() << "LSM interpolation method is " << *method << std::endl;
 
-    eckit::ScopedPtr<atlas::grid::Grid> gin(field->representation()->atlasGrid());
+    eckit::ScopedPtr<atlas::grid::Grid> gin(field.representation()->atlasGrid());
 
     util::MIRStatistics dummy; // TODO: use the gloabl one
-    context::Context ctx(*field, dummy);
+    context::Context ctx(field, dummy);
     method->execute(ctx, *gin, grid);
 
     double threshold;
     ASSERT(parametrisation.get("lsm.value.threshold", threshold));
     const util::compare::is_greater_equal_fn< double > check_lsm(threshold);
 
-    ASSERT(!field->hasMissing());
-    ASSERT(field->dimensions() == 1);
+    ASSERT(!field.hasMissing());
+    ASSERT(field.dimensions() == 1);
 
-    const std::vector< double > &values = field->values(0);
+    const std::vector< double > &values = field.values(0);
     mask_.resize(values.size());
     std::transform(values.begin(), values.end(), mask_.begin(), check_lsm);
 

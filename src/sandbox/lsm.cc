@@ -77,9 +77,9 @@ void LSM::run() {
     while (file.next()) {
 
         input.parametrisation(); //
-        eckit::ScopedPtr<mir::data::MIRField> field(input.field());
+        mir::data::MIRField field(input.field());
 
-        const std::vector<double> &v = field->values(0);
+        const std::vector<double> &v = field.values(0);
         std::vector<int32_t> p(v.size());
 
         eckit::StdFile f("zzzzz", "w");

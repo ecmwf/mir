@@ -79,10 +79,7 @@ void ActionPlan::add(const std::string &name, const std::string &param, param::D
 
 void ActionPlan::execute(context::Context & ctx) const {
     for (std::vector<Action *>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
-        // eckit::Log::trace<MIR>() << "EXECUTE => " << *(*j) << std::endl;
-        // eckit::Log::trace<MIR>() << " => INPUT: " << field << std::endl;
         (*j)->execute(ctx);
-        // eckit::Log::trace<MIR>() << " <= OUTPUT: " << field << std::endl;
     }
 }
 

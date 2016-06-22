@@ -56,8 +56,8 @@ const param::MIRParametrisation &DummyInput::parametrisation(size_t which) const
 }
 
 
-data::MIRField *DummyInput::field() const {
-    data::MIRField *field = new data::MIRField(parametrisation_, false, 999.);
+data::MIRField DummyInput::field() const {
+    data::MIRField field(parametrisation_, false, 999.);
 
     std::vector< double > values(360 * 181, 42);
     size_t k = 0;
@@ -65,7 +65,7 @@ data::MIRField *DummyInput::field() const {
         for (size_t j = 0; j < 181; ++j) {
             values[k++] = sin(double(i) / 10.) + cos(double(j) / 10.);
         }
-    field->update(values, 0);
+    field.update(values, 0);
 
     return field;
 }

@@ -22,7 +22,6 @@
 #include "eckit/memory/NonCopyable.h"
 
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/action/context/Context.h"
 
 namespace mir {
 namespace input {
@@ -41,7 +40,7 @@ namespace context {
 
 class Content;
 
-class Context : private eckit::NonCopyable {
+class Context  {
 
 
 public:
@@ -52,6 +51,7 @@ public:
     // -- Contructors
 
     Context();
+    Context(const Context& other);
 
     Context(Context*);
 
@@ -68,9 +68,13 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    Context& operator=(const Context& other);
 
     // -- Methods
+
+    Context& push();
+    Context pop();
 
     util::MIRStatistics& statistics();
     data::MIRField& field();
@@ -78,6 +82,11 @@ public:
 
     void scalar(double);
     double scalar() const;
+
+    bool isField() const;
+    bool isScalar() const;
+
+    std::vector<Context> stack_;
 
 
     // -- Overridden methods
@@ -113,9 +122,10 @@ private:
 
     // -- Members
 
+    Context* parent_;
     input::MIRInput &input_;
     util::MIRStatistics& statistics_;
-    eckit::ScopedPtr<Content> content_;
+    Content* content_;
 
     // -- Methods
 

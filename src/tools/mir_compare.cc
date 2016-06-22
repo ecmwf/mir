@@ -280,11 +280,11 @@ void MIRCompare::run() {
 
         ++n;
 
-        eckit::ScopedPtr<mir::data::MIRField> field1(input1.field());
-        eckit::ScopedPtr<mir::data::MIRField> field2(input2.field());
+        mir::data::MIRField field1(input1.field());
+        mir::data::MIRField field2(input2.field());
 
         if (l2norm_) {
-            l2norm(n, *field1, *field2);
+            l2norm(n, field1, field2);
         } else {
 
             double absolute = user_absolute_;
@@ -343,7 +343,7 @@ void MIRCompare::run() {
                 eckit::Log::warning() << "Field " << n << ": using packing error as absolute error" << std::endl;
             }
 
-            compare(n, *field1, *field2);
+            compare(n, field1, field2);
         }
 
         ok1 = file1.next();
