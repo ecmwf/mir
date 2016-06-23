@@ -125,7 +125,7 @@ private:
     Context* parent_;
     input::MIRInput &input_;
     util::MIRStatistics& statistics_;
-    Content* content_;
+    eckit::ScopedPtr<Content> content_;
 
     // -- Methods
 

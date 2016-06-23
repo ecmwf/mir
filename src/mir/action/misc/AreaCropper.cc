@@ -165,11 +165,16 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
     }
 
     // Make sure we did not visit duplicate points
-    eckit::Log::trace<MIR>() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
+    // eckit::Log::trace<MIR>() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
     ASSERT(count == m.size());
 
     // Don't support empty results
-    ASSERT(m.size() > 0);
+    if(!m.size()) {
+        std::ostringstream oss;
+        oss << "Cropping " << *representation << " to " << bbox << " returns not points";
+        throw eckit::UserError(oss.str());
+    }
+    // ASSERT(m.size() > 0);
 
     c.bbox_ = util::BoundingBox(n, w, s, e);
     c.mapping_.reserve(m.size());

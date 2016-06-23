@@ -47,6 +47,7 @@ MIRField::MIRField(const MIRField& other):
 
 void MIRField::copyOnWrite() {
     if (field_->count() > 1) {
+        // std::cout << "XXXX copyOnWrite " << *field_ << std::endl;
         Field *f = field_->clone();
         field_->detach();
         field_ = f;
@@ -56,6 +57,8 @@ void MIRField::copyOnWrite() {
 
 // Warning: take ownership of values
 void MIRField::update(std::vector<double> &values, size_t which) {
+    // std::cout << "MIRField::update " << *field_ << std::endl;
+
     copyOnWrite();
     field_->update(values, which);
 }
@@ -90,6 +93,9 @@ MIRFieldStats MIRField::statistics(size_t i) const {
 }
 
 void MIRField::representation(const repres::Representation *representation) {
+    // std::cout << "MIRField::representation " << *field_ << " => " << *representation << std::endl;
+
+    copyOnWrite();
     field_->representation(representation);
 }
 
@@ -98,11 +104,14 @@ const std::vector<double> &MIRField::values(size_t which) const {
 }
 
 std::vector<double> &MIRField::direct(size_t which)  {
+    // std::cout << "MIRField::direct " << *field_ << std::endl;
     copyOnWrite();
     return field_->direct(which);
 }
 
 void MIRField::paramId(size_t which, size_t param) {
+    // std::cout << "MIRField::paramId " << *field_ << std::endl;
+
     copyOnWrite();
     field_->paramId(which, param);
 }

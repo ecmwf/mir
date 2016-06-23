@@ -245,6 +245,8 @@ void Sh2GriddedTransform::execute(context::Context & ctx) const {
 
     repres::RepresentationHandle out(outputRepresentation());
 
+    // std::cout << *out << std::endl;
+
     // TODO: Transform all the fields together
     for (size_t i = 0; i < field.dimensions(); i++) {
 

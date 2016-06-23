@@ -90,7 +90,8 @@ Field::~Field() {
 
 void Field::print(std::ostream &out) const {
 
-    out << "Field[dimensions=" << values_.size();
+    out << "Field[count="<< count() << ",";
+    out << "dimensions=" << values_.size();
     if (hasMissing_) {
         out << ",missingValue=" << missingValue_;
     }

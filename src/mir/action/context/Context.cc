@@ -19,7 +19,6 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 #include "mir/util/MIRStatistics.h"
-#include "eckit/memory/Counted.h"
 
 
 namespace mir {
@@ -56,14 +55,13 @@ static util::MIRStatistics stats;
 
 }
 
-class Content : public eckit::Counted {
-    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+class Content  {
 
-protected:
-    virtual ~Content() {}
+    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
 
 public:
     Content() {}
+    virtual ~Content() {}
 
     virtual data::MIRField& field() {
         std::ostringstream oss;
@@ -84,6 +82,8 @@ public:
     virtual bool isScalar() const {
         return false;
     }
+
+    virtual Content* clone() const = 0;
 
     friend std::ostream &operator<<(std::ostream &s, const Content &p) {
         p.print(s);
@@ -107,6 +107,11 @@ class ScalarContent : public Content {
         return true;
     }
 
+    virtual Content* clone() const  {
+        return new ScalarContent(value_);
+    }
+
+
 public:
 
     ScalarContent(double value): value_(value) {}
@@ -128,6 +133,9 @@ class FieldContent : public Content {
         return true;
     }
 
+    virtual Content* clone() const  {
+        return new FieldContent(field_);
+    }
 
 public:
     FieldContent(const data::MIRField& field):
@@ -150,10 +158,7 @@ Context::Context(const Context& other):
     parent_(other.parent_),
     input_(other.input_),
     statistics_(other.statistics_),
-    content_(other.content_) {
-    if (content_) {
-        content_->attach();
-    }
+    content_(other.content_ ? other.content_->clone() : 0) {
 }
 
 
@@ -161,30 +166,15 @@ Context::Context( Context* parent):
     parent_(parent),
     input_(parent_->input_),
     statistics_(parent_->statistics_),
-    content_(parent_->content_) {
-    if (content_) {
-        content_->attach();
-    }
+    content_(parent_->content_ ? parent_->content_->clone() : 0) {
 }
 
-// Context::Context(Context* parent):
-//     parent_(parent),
-//     input_(c(parent).input()),
-//     statistics_(c(parent).statistics()),
-//     content_(0)  {
-
-//     if (parent_->content_) {
-//         content_ =  parent_->content_->inherit();
-//         content_->attach();
-//     }
-// }
 
 Context::Context(mir::data::MIRField& field, mir::util::MIRStatistics& statistics):
     parent_(0),
     input_(missing),
-    statistics_(statistics) {
-    content_ = new FieldContent(field);
-    content_->attach();
+    statistics_(statistics),
+    content_(new FieldContent(field)) {
 
 }
 
@@ -199,9 +189,6 @@ Context::Context(input::MIRInput &input,
 }
 
 Context::~Context() {
-    if (content_) {
-        content_->detach();
-    }
 }
 
 bool Context::isField() const {
@@ -230,22 +217,19 @@ data::MIRField& Context::field() {
     // TODO: Add a mutex
     if (!content_) {
         if (parent_) {
-             std::cout << "Context -> adopt parent field"  << std::endl;
-            content_ = new FieldContent(parent_->field());
+            // std::cout << "Context -> adopt parent field"  << std::endl;
+            content_.reset(new FieldContent(parent_->field()));
         }
         else {
-            std::cout << "Context -> allocate field from " << input_ << std::endl;
-            content_ = new FieldContent(input_.field());
+            // std::cout << "Context -> allocate field from " << input_ << std::endl;
+            content_.reset(new FieldContent(input_.field()));
         }
-        content_->attach();
     }
     return content_->field();
 }
 
 void Context::scalar(double value) {
-    if (content_) content_->detach();
-    content_ = new ScalarContent(value);
-    content_->attach();
+    content_.reset(new ScalarContent(value));
 }
 
 double Context::scalar() const {
