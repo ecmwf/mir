@@ -53,7 +53,7 @@ static const char* keys[] = {"class", "type", "stream", "expver",
 size_t GeoPointsOutput::save(const param::MIRParametrisation &param, context::Context &ctx) {
 
     if(!once_) {
-        std::strstringstream oss;
+        std::ostringstream oss;
         oss << "Attempt to write more than once to " << *this;
         throw eckit::SeriousBug(oss.str());
     }
