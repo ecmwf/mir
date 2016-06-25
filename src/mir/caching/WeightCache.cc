@@ -27,7 +27,7 @@ namespace caching {
 
 4 - Writting is done with std::fstream which does not throw exception unless asked explicitally
     like so: ofs.exceptions ( std::ofstream::failbit | std::ofstream::badbit );
-    this means that no error checking is done on writting, this will lead the truncated files
+    this means that no error checking is done on writing, this will lead the truncated files
     when file systems become full
 
     --> class atlas::mesh::MeshCache must use DataHandle() to write and read

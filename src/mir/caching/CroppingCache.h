@@ -48,7 +48,7 @@ class CroppingCache : public eckit::CacheManager {
     /// @returns true if found cache
     bool retrieve(const std::string &key, CroppingCacheEntry &W) const;
 
-    /// Inserts a cached WeightMatrix, overwritting any existing entry
+    /// Inserts a cached WeightMatrix, overwriting any existing entry
     /// @returns true if insertion successful cache
     void insert(const std::string &key, const CroppingCacheEntry &W) const;
 
