@@ -78,14 +78,14 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
 
     context::Context ctx(*input_, statistics);
 
-    std::cout << ">>>>>>>>>>>> ====== " << std::endl;
+    // std::cout << ">>>>>>>>>>>> ====== " << std::endl;
 
-    std::cout << *input_ << std::endl;
-    // std::cout << *field << std::endl;
+    // std::cout << *input_ << std::endl;
+    // // std::cout << *field << std::endl;
 
-    graph.dump(std::cout, 1);
+    // graph.dump(std::cout, 1);
     graph.execute(ctx);
-    std::cout << "<<<<<<<<<<< ======" << std::endl;
+    // std::cout << "<<<<<<<<<<< ======" << std::endl;
 
 
 }
