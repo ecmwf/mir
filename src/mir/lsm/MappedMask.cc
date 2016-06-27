@@ -28,6 +28,9 @@
 #include "eckit/os/Stat.h"
 #include "mir/log/MIR.h"
 
+// On CRAY/Brodwell, the rounding of areas is incorrect
+// 90 is actually 90 +- 1e-14
+#pragma GCC target ("no-fma")
 
 namespace {
 
