@@ -15,6 +15,8 @@
 
 #include <iostream>
 
+#include "eckit/log/Timer.h"
+
 #include "mir/api/MIRComplexJob.h"
 #include "mir/action/plan/Job.h"
 #include "mir/api/MIRJob.h"
@@ -75,6 +77,8 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     if (!input_) {
         return;
     }
+
+    eckit::Timer timer("MIRComplexJob::execute", std::cout);
 
     context::Context ctx(*input_, statistics);
 
