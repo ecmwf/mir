@@ -109,7 +109,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
     // Warning: we keep the coefficient in memory for all the resolution used
     if (trans_handles.find(key) == trans_handles.end()) {
-        eckit::Log::trace<MIR>() << "Creating a new TRANS handle for " << key << std::endl;
+        std::cout << "Creating a new TRANS handle for " << key << std::endl;
 
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
 
@@ -143,7 +143,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
         if (!cache.get(key, path)) {
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
             eckit::TraceTimer<MIR> timer("Caching coefficients");
-            eckit::Log::trace<MIR>() << "LegendreCache " << key << " does not exists" << std::endl;
+            std::cout << "LegendreCache " << key << " does not exists" << std::endl;
             eckit::PathName tmp = cache.stage(key);
             ASSERT( trans_set_write(&trans, tmp.asString().c_str())  == 0);
             ASSERT(trans_setup(&trans) == 0); // This will create the cache
@@ -152,10 +152,10 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
         } else {
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
 
-            // eckit::Timer timer("Loading coefficients");
+            eckit::Timer timer("Loading coefficients");
 
             tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
-            // eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
+            std::cout << "LegendreLoader " << *tc.loader_ << std::endl;
 
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 
@@ -165,6 +165,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
     }
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
+            eckit::Timer timer("SH2GRID");
 
 
     TransCache &tc = trans_handles[key];
