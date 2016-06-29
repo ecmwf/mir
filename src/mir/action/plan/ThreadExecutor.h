@@ -19,7 +19,6 @@
 #include <iosfwd>
 
 #include "mir/action/plan/Executor.h"
-#include "eckit/thread/ThreadPool.h"
 
 namespace mir {
 
@@ -105,7 +104,7 @@ class ThreadExecutor : public Executor {
 
 // -- Members
 
-    eckit::ThreadPool pool_;
+    // eckit::ThreadPool pool_;
 
 // -- Methods
     // None

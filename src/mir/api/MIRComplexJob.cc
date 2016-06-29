@@ -22,7 +22,7 @@
 #include "mir/api/MIRJob.h"
 #include "mir/api/MIRWatcher.h"
 #include "mir/action/plan/SimpleExecutor.h"
-// #include "mir/action/plan/ThreadExecutor.h"
+#include "mir/action/plan/ThreadExecutor.h"
 
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/action/plan/Action.h"
@@ -89,7 +89,8 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     std::cout << *input_ << std::endl;
     // std::cout << *field << std::endl;
 
-    action::SimpleExecutor executor;
+    // action::SimpleExecutor executor;
+    action::ThreadExecutor executor;
 
     graph.dump(std::cout, 1);
     graph.execute(ctx, executor);

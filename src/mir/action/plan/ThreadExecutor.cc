@@ -28,13 +28,13 @@
 namespace mir {
 namespace action {
 
-// static eckit::ThreadPool* pool;
+static eckit::ThreadPool* pool = 0;
 
-// static pthread_once_t once = PTHREAD_ONCE_INIT;
+static pthread_once_t once = PTHREAD_ONCE_INIT;
 
-// static void init() {
-//     pool = new eckit::ThreadPool("actions", 20);
-// }
+static void init() {
+    pool = new eckit::ThreadPool("executor", 4);
+}
 
 
 class ThreadExecutorTask : public eckit::ThreadPoolTask {
@@ -43,7 +43,10 @@ class ThreadExecutorTask : public eckit::ThreadPoolTask {
     const ActionNode& node_;
 
     virtual void execute() {
+        std::cout << "===> Execute " << node_ << std::endl;
         node_.execute(ctx_, owner_);
+        std::cout << "<=== Done " << node_ << std::endl;
+
     }
 
 public:
@@ -57,9 +60,8 @@ public:
     }
 };
 
-ThreadExecutor::ThreadExecutor():
-    pool_("action", 8) {
-    // pthread_once(&once, init);
+ThreadExecutor::ThreadExecutor() {
+    pthread_once(&once, init);
 
 }
 
@@ -74,11 +76,14 @@ void ThreadExecutor::print(std::ostream& out) const {
 
 
 void ThreadExecutor::wait() {
-    pool_.waitForThreads();
+    // pool_.waitForThreads();
+            // std::cout << "===> wait " << std::endl;
+
+    pool->wait();
 }
 
 void ThreadExecutor::execute(context::Context& ctx, const ActionNode& node) {
-    pool_.push(new ThreadExecutorTask(*this, ctx, node));
+    pool->push(new ThreadExecutorTask(*this, ctx, node));
 }
 }  // namespace action
 }  // namespace mir
