@@ -50,6 +50,11 @@ void SimpleExecutor::execute(context::Context& ctx, const ActionNode& node) cons
     node.execute(ctx, *this);
 }
 
+void SimpleExecutor::parametrisation(const param::MIRParametrisation &parametrisation) {
+
+}
+
+
 
 namespace {
 static SimpleExecutor executor("simple");

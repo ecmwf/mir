@@ -33,7 +33,7 @@ static eckit::ThreadPool* pool = 0;
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 static void init() {
-    pool = new eckit::ThreadPool("executor", 4);
+    pool = new eckit::ThreadPool("executor", 2);
 }
 
 
@@ -81,6 +81,15 @@ void ThreadExecutor::wait() const {
 void ThreadExecutor::execute(context::Context& ctx, const ActionNode& node) const {
     pthread_once(&once, init);
     pool->push(new ThreadExecutorTask(*this, ctx, node));
+}
+
+
+void ThreadExecutor::parametrisation(const param::MIRParametrisation &parametrisation) {
+    pthread_once(&once, init);
+    size_t threads;
+    if (parametrisation.get("executor.threads", threads)) {
+        pool->resize(threads);
+    }
 }
 
 

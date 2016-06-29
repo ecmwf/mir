@@ -67,6 +67,7 @@ public:
 
     virtual void execute(context::Context& ctx, const ActionNode& node) const = 0;
     virtual void wait() const = 0;
+    virtual void parametrisation(const param::MIRParametrisation &parametrisation) = 0;
 
     //=====================================
 
@@ -88,7 +89,7 @@ protected:
 
 // -- Members
 
-        std::string name_;
+    std::string name_;
 
 
 // -- Methods

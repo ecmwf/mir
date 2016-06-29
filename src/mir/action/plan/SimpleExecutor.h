@@ -111,6 +111,7 @@ private:
     // None
     virtual void execute(context::Context& ctx, const ActionNode& node) const;
     virtual void wait() const;
+    virtual void parametrisation(const param::MIRParametrisation &parametrisation);
 
 // -- Class members
     // None

@@ -104,6 +104,8 @@ const Executor &Executor::lookup(const param::MIRParametrisation& params) {
     }
 
 
+    (*j).second->parametrisation(params);
+
     return *(*j).second;
 }
 
