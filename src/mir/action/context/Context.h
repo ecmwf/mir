@@ -22,6 +22,7 @@
 #include "eckit/memory/NonCopyable.h"
 
 #include "mir/param/SimpleParametrisation.h"
+#include "eckit/thread/Mutex.h"
 
 namespace mir {
 namespace input {
@@ -121,6 +122,8 @@ private:
 
 
     // -- Members
+
+    mutable eckit::Mutex mutex_;
 
     Context* parent_;
     input::MIRInput &input_;

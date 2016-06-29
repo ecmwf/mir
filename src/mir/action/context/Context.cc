@@ -19,6 +19,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 #include "mir/util/MIRStatistics.h"
+#include "eckit/thread/AutoLock.h"
 
 
 namespace mir {
@@ -192,6 +193,9 @@ Context::~Context() {
 }
 
 bool Context::isField() const {
+
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     if (!content_) {
         return false;
     }
@@ -199,6 +203,10 @@ bool Context::isField() const {
 }
 
 bool Context::isScalar() const {
+
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+
     if (!content_) {
         return false;
     }
@@ -214,7 +222,10 @@ util::MIRStatistics& Context::statistics() {
 }
 
 data::MIRField& Context::field() {
-    // TODO: Add a mutex
+
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+
     if (!content_) {
         if (parent_) {
             // std::cout << "Context -> adopt parent field"  << std::endl;
@@ -229,10 +240,14 @@ data::MIRField& Context::field() {
 }
 
 void Context::scalar(double value) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     content_.reset(new ScalarContent(value));
 }
 
 double Context::scalar() const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(content_);
     return content_->scalar();
 }
@@ -250,12 +265,16 @@ void Context::print(std::ostream& out) const {
 
 
 Context& Context::push() {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     stack_.push_back(Context(this));
     return stack_.back();
 }
 
 
 Context Context::pop() {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(stack_.size());
     Context ctx = stack_.back();
     stack_.pop_back();
