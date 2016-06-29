@@ -20,6 +20,8 @@
 #include <string>
 #include <vector>
 
+#include "eckit/memory/Counted.h"
+
 namespace atlas {
 namespace grid {
 class Grid;
@@ -54,7 +56,7 @@ namespace repres {
 class Iterator;
 
 
-class Representation {
+class Representation : public eckit::Counted {
   public:
 
     // Sanning mode bits
@@ -84,10 +86,6 @@ class Representation {
 
 // -- Methods
 
-    // For refenrence counting
-    void attach() const;
-
-    void detach() const;
 
     // --------------------
 
@@ -160,8 +158,6 @@ class Representation {
     Representation& operator=(const Representation&);
 
 // -- Members
-
-    mutable size_t count_;
 
 // -- Methods
     // None
