@@ -18,6 +18,7 @@
 
 #include <iosfwd>
 #include <vector>
+#include <string>
 
 
 namespace mir {
@@ -36,23 +37,25 @@ namespace api {
 class MIRWatcher;
 }
 
+namespace param {
+class MIRParametrisation;
+}
+
 namespace action {
 
 class ActionNode;
 
 class Executor {
-  public:
+public:
 
 // -- Exceptions
     // None
 
 // -- Contructors
 
-    Executor();
 
 // -- Destructor
 
-    virtual ~Executor(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -62,23 +65,30 @@ class Executor {
 
 // -- Methods
 
-    virtual void execute(context::Context& ctx, const ActionNode& node) = 0;
-    virtual void wait() = 0;
+    virtual void execute(context::Context& ctx, const ActionNode& node) const = 0;
+    virtual void wait() const = 0;
 
     //=====================================
 
- // -- Overridden methods
+// -- Overridden methods
     // None
 
 // -- Class members
     // None
 
 // -- Class methods
-    // None
 
-  protected:
+    static const Executor &lookup(const param::MIRParametrisation &parametrisation);
+    static void list(std::ostream &);
+
+protected:
+
+    Executor(const std::string &name);
+    virtual ~Executor(); // Change to virtual if base class
 
 // -- Members
+
+        std::string name_;
 
 
 // -- Methods
@@ -94,7 +104,7 @@ class Executor {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 

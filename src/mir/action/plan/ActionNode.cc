@@ -42,7 +42,7 @@ void ActionNode::print(std::ostream& out) const {
     out << "ActionNode[" << action_ << "]";
 }
 
-void ActionNode::execute(context::Context& ctx, Executor& executor) const {
+void ActionNode::execute(context::Context& ctx, const Executor& executor) const {
     // std::cout << " BEFORE -----> " << action_  << "  " << field << std::endl;
     bool ok = false;
     try {

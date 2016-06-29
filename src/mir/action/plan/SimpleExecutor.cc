@@ -28,7 +28,8 @@ namespace mir {
 namespace action {
 
 
-SimpleExecutor::SimpleExecutor() {
+SimpleExecutor::SimpleExecutor(const std::string& name):
+    Executor(name) {
 }
 
 
@@ -41,13 +42,19 @@ void SimpleExecutor::print(std::ostream& out) const {
 }
 
 
-void SimpleExecutor::wait() {
+void SimpleExecutor::wait() const {
 
 }
 
-void SimpleExecutor::execute(context::Context& ctx, const ActionNode& node) {
+void SimpleExecutor::execute(context::Context& ctx, const ActionNode& node) const {
     node.execute(ctx, *this);
 }
+
+
+namespace {
+static SimpleExecutor executor("simple");
+}
+
 }  // namespace action
 }  // namespace mir
 

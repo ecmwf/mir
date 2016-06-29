@@ -62,7 +62,7 @@ class ActionNode {
 
 // -- Methods
 
-    void execute(context::Context& ctx, Executor& executor) const;
+    void execute(context::Context& ctx, const Executor& executor) const;
 
     //=====================================
 

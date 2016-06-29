@@ -38,7 +38,7 @@ static void init() {
 
 
 class ThreadExecutorTask : public eckit::ThreadPoolTask {
-    ThreadExecutor& owner_;
+    const ThreadExecutor& owner_;
     context::Context ctx_; // Not a reference, so we have a copy
     const ActionNode& node_;
 
@@ -50,7 +50,7 @@ class ThreadExecutorTask : public eckit::ThreadPoolTask {
     }
 
 public:
-    ThreadExecutorTask(ThreadExecutor& owner,
+    ThreadExecutorTask(const ThreadExecutor& owner,
                        context::Context& ctx,
                        const ActionNode& node):
         owner_(owner),
@@ -60,11 +60,10 @@ public:
     }
 };
 
-ThreadExecutor::ThreadExecutor() {
-    pthread_once(&once, init);
+ThreadExecutor::ThreadExecutor(const std::string& name):
+    Executor(name) {
 
 }
-
 
 ThreadExecutor::~ThreadExecutor() {
 
@@ -74,17 +73,21 @@ void ThreadExecutor::print(std::ostream& out) const {
     out << "ThreadExecutor[]";
 }
 
-
-void ThreadExecutor::wait() {
-    // pool_.waitForThreads();
-            // std::cout << "===> wait " << std::endl;
-
+void ThreadExecutor::wait() const {
+    pthread_once(&once, init);
     pool->wait();
 }
 
-void ThreadExecutor::execute(context::Context& ctx, const ActionNode& node) {
+void ThreadExecutor::execute(context::Context& ctx, const ActionNode& node) const {
+    pthread_once(&once, init);
     pool->push(new ThreadExecutorTask(*this, ctx, node));
 }
+
+
+namespace {
+static ThreadExecutor executor("thread");
+}
+
 }  // namespace action
 }  // namespace mir
 

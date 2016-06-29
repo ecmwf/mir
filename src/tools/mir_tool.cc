@@ -25,6 +25,7 @@
 #include "eckit/runtime/Tool.h"
 #include "mir/caching/LegendreLoader.h"
 #include "mir/style/MIRStyle.h"
+#include "mir/action/plan/Executor.h"
 
 #include "eckit/linalg/LinearAlgebra.h"
 
@@ -161,6 +162,7 @@ void MIRTool::run() {
     options.push_back(new Separator("Miscellaneous"));
     options.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
     options.push_back(new FactoryOption<mir::caching::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
+    options.push_back(new FactoryOption<mir::action::Executor>("executor", "Select wether threads are used on not"));
 
     //==============================================
     options.push_back(new Separator("Debugging"));

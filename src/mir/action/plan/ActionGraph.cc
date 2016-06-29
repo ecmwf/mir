@@ -37,7 +37,7 @@ ActionGraph::~ActionGraph() {
     }
 }
 
-void ActionGraph::execute(context::Context& ctx, Executor& executor) const {
+void ActionGraph::execute(context::Context& ctx, const Executor& executor) const {
     for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
         context::Context local(&ctx);
         executor.execute(local, *(*j));

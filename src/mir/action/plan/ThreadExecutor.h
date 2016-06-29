@@ -48,7 +48,7 @@ class ThreadExecutor : public Executor {
 
 // -- Contructors
 
-    ThreadExecutor();
+    ThreadExecutor(const std::string& name);
 
 // -- Destructor
 
@@ -62,7 +62,6 @@ class ThreadExecutor : public Executor {
 
 // -- Methods
 
-    virtual void wait();
 
     //=====================================
 
@@ -111,7 +110,8 @@ class ThreadExecutor : public Executor {
 
 // -- Overridden methods
     // None
-    virtual void execute(context::Context& ctx, const ActionNode& node);
+    virtual void execute(context::Context& ctx, const ActionNode& node) const;
+    virtual void wait() const;
 
 // -- Class members
     // None

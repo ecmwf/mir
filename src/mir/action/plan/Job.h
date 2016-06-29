@@ -66,6 +66,7 @@ class Job  {
     void execute(util::MIRStatistics& statistics) const;
 
     const ActionPlan& plan() const;
+    const param::MIRParametrisation& parametrisation() const;
 
     // -- Overridden methods
     // None

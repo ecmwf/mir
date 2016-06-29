@@ -68,6 +68,10 @@ void MIRComplexJob::clear() {
 
 void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
 
+    if(jobs_.empty()) {
+        return;
+    }
+
 
     action::ActionGraph graph;
 
@@ -90,7 +94,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     // std::cout << *field << std::endl;
 
     // action::SimpleExecutor executor;
-    action::ThreadExecutor executor;
+    const action::Executor& executor = action::Executor::lookup((*jobs_.begin())->parametrisation());
 
     graph.dump(std::cout, 1);
     graph.execute(ctx, executor);

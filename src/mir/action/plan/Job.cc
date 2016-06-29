@@ -80,6 +80,12 @@ const ActionPlan &Job::plan() const {
     return *plan_;
 }
 
+const param::MIRParametrisation& Job::parametrisation() const {
+    ASSERT(combined_);
+    return *combined_;
+}
+
+
 }  // namespace action
 }  // namespace mir
 

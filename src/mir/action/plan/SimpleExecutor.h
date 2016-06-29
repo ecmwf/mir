@@ -48,7 +48,7 @@ public:
 
 // -- Contructors
 
-    SimpleExecutor();
+    SimpleExecutor(const std::string& name);
 
 // -- Destructor
 
@@ -62,7 +62,6 @@ public:
 
 // -- Methods
 
-    virtual void wait();
 
     //=====================================
 
@@ -110,7 +109,8 @@ private:
 
 // -- Overridden methods
     // None
-    virtual void execute(context::Context& ctx, const ActionNode& node);
+    virtual void execute(context::Context& ctx, const ActionNode& node) const;
+    virtual void wait() const;
 
 // -- Class members
     // None
