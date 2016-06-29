@@ -20,6 +20,7 @@
 #include "mir/action/plan/Action.h"
 #include "mir/action/context/Context.h"
 #include "mir/api/MIRWatcher.h"
+#include "mir/action/plan/Executor.h"
 
 
 namespace mir {
@@ -36,10 +37,10 @@ ActionGraph::~ActionGraph() {
     }
 }
 
-void ActionGraph::execute(context::Context& ctx) const {
+void ActionGraph::execute(context::Context& ctx, Executor& executor) const {
     for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
         context::Context local(&ctx);
-        (*j)->execute(local);
+        executor.execute(local, *(*j));
     }
 }
 

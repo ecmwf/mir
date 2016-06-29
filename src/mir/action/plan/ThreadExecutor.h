@@ -13,12 +13,13 @@
 /// @date Apr 2015
 
 
-#ifndef ActionNode_H
-#define ActionNode_H
+#ifndef ThreadExecutor_h
+#define ThreadExecutor_h
 
 #include <iosfwd>
 
-#include "mir/action/plan/ActionGraph.h"
+#include "mir/action/plan/Executor.h"
+#include "eckit/thread/ThreadPool.h"
 
 namespace mir {
 
@@ -40,7 +41,7 @@ namespace action {
 
 class Action;
 
-class ActionNode {
+class ThreadExecutor : public Executor {
   public:
 
 // -- Exceptions
@@ -48,11 +49,11 @@ class ActionNode {
 
 // -- Contructors
 
-    ActionNode(const Action& action, api::MIRWatcher *watcher);
+    ThreadExecutor();
 
 // -- Destructor
 
-    ~ActionNode(); // Change to virtual if base class
+    ~ThreadExecutor(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -62,17 +63,11 @@ class ActionNode {
 
 // -- Methods
 
-    void execute(context::Context& ctx, Executor& executor) const;
+    virtual void wait();
 
     //=====================================
 
-    const action::Action &action() const;
 
-    ActionGraph& graph();
-
-    void dump(std::ostream& out, size_t depth) const;
-
-    void notifyFailure(std::exception&, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const;
 
 // -- Overridden methods
     // None
@@ -105,22 +100,19 @@ class ActionNode {
 
 // No copy allowed
 
-    ActionNode(const ActionNode&);
-    ActionNode& operator=(const ActionNode&);
+    ThreadExecutor(const ThreadExecutor&);
+    ThreadExecutor& operator=(const ThreadExecutor&);
 
 // -- Members
 
-    const Action &action_;
-    ActionGraph graph_;
-    api::MIRWatcher* watcher_;  // Just a reference, do not won
+    eckit::ThreadPool pool_;
 
 // -- Methods
     // None
 
-
-
 // -- Overridden methods
     // None
+    virtual void execute(context::Context& ctx, const ActionNode& node);
 
 // -- Class members
     // None
@@ -130,10 +122,7 @@ class ActionNode {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const ActionNode& p) {
-        p.print(s);
-        return s;
-    }
+
 
 };
 

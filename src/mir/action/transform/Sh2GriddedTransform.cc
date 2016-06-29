@@ -165,7 +165,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
     }
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
-            eckit::Timer timer("SH2GRID");
+    eckit::Timer timer("SH2GRID");
 
 
     TransCache &tc = trans_handles[key];

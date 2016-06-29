@@ -18,6 +18,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/log/MIR.h"
 #include "mir/api/MIRWatcher.h"
+#include "mir/action/plan/Executor.h"
 
 #include "eckit/exception/Exceptions.h"
 
@@ -37,14 +38,11 @@ ActionNode::~ActionNode() {
 
 }
 
-void ActionNode::execute(context::Context& ctx) const {
+void ActionNode::execute(context::Context& ctx, Executor& executor) const {
     // std::cout << " BEFORE -----> " << action_  << "  " << field << std::endl;
     bool ok = false;
     try {
         action_.execute(ctx);
-        if(watcher_ && graph_.empty()) {
-            watcher_->success();
-        }
         ok = true;
     } catch (std::exception& e) {
 
@@ -59,7 +57,7 @@ void ActionNode::execute(context::Context& ctx) const {
     // std::cout << " AFTER -----> " << action_  << "  " << field << std::endl;
 
     if(ok) {
-        graph_.execute(ctx);
+        graph_.execute(ctx, executor);
     }
 }
 

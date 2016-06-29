@@ -51,8 +51,6 @@ class MIRWatcher : private eckit::NonCopyable {
 
     // -- Methods
 
-    virtual void success() = 0;
-
     // Return true to rethrow, false to continue
     virtual bool failure(std::exception&, const action::Action& action) = 0;
 

@@ -80,6 +80,12 @@ action/misc/CheckerBoard.cc
 action/misc/CheckerBoard.h
 action/misc/ReferencePattern.cc
 action/misc/ReferencePattern.h
+action/plan/Executor.cc
+action/plan/Executor.h
+action/plan/SimpleExecutor.cc
+action/plan/SimpleExecutor.h
+action/plan/ThreadExecutor.cc
+action/plan/ThreadExecutor.h
 action/plan/Action.cc
 action/plan/Action.h
 action/plan/ActionGraph.cc

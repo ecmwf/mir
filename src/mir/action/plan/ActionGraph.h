@@ -41,6 +41,7 @@ namespace action {
 class Action;
 class ActionNode;
 class ActionPlan;
+class Executor;
 
 class ActionGraph {
 public:
@@ -64,7 +65,7 @@ public:
 
 // -- Methods
 
-    void execute(context::Context& ctx) const;
+    void execute(context::Context& ctx, Executor& executor) const;
 
     // =================
 

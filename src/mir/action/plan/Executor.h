@@ -13,16 +13,16 @@
 /// @date Apr 2015
 
 
-#ifndef ActionNode_H
-#define ActionNode_H
+#ifndef Executor_H
+#define Executor_H
 
 #include <iosfwd>
+#include <vector>
 
-#include "mir/action/plan/ActionGraph.h"
 
 namespace mir {
 
-namespace data {
+namespace context {
 class Context;
 }
 
@@ -38,9 +38,9 @@ class MIRWatcher;
 
 namespace action {
 
-class Action;
+class ActionNode;
 
-class ActionNode {
+class Executor {
   public:
 
 // -- Exceptions
@@ -48,11 +48,11 @@ class ActionNode {
 
 // -- Contructors
 
-    ActionNode(const Action& action, api::MIRWatcher *watcher);
+    Executor();
 
 // -- Destructor
 
-    ~ActionNode(); // Change to virtual if base class
+    virtual ~Executor(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -62,19 +62,12 @@ class ActionNode {
 
 // -- Methods
 
-    void execute(context::Context& ctx, Executor& executor) const;
+    virtual void execute(context::Context& ctx, const ActionNode& node) = 0;
+    virtual void wait() = 0;
 
     //=====================================
 
-    const action::Action &action() const;
-
-    ActionGraph& graph();
-
-    void dump(std::ostream& out, size_t depth) const;
-
-    void notifyFailure(std::exception&, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const;
-
-// -- Overridden methods
+ // -- Overridden methods
     // None
 
 // -- Class members
@@ -90,7 +83,7 @@ class ActionNode {
 
 // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
 // -- Overridden methods
     // None
@@ -105,19 +98,14 @@ class ActionNode {
 
 // No copy allowed
 
-    ActionNode(const ActionNode&);
-    ActionNode& operator=(const ActionNode&);
+    Executor(const Executor&);
+    Executor& operator=(const Executor&);
 
 // -- Members
 
-    const Action &action_;
-    ActionGraph graph_;
-    api::MIRWatcher* watcher_;  // Just a reference, do not won
 
 // -- Methods
     // None
-
-
 
 // -- Overridden methods
     // None
@@ -130,7 +118,7 @@ class ActionNode {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const ActionNode& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Executor& p) {
         p.print(s);
         return s;
     }

@@ -13,12 +13,12 @@
 /// @date Apr 2015
 
 
-#ifndef ActionNode_H
-#define ActionNode_H
+#ifndef SimpleExecutor_h
+#define SimpleExecutor_h
 
 #include <iosfwd>
 
-#include "mir/action/plan/ActionGraph.h"
+#include "mir/action/plan/Executor.h"
 
 namespace mir {
 
@@ -40,19 +40,19 @@ namespace action {
 
 class Action;
 
-class ActionNode {
-  public:
+class SimpleExecutor : public Executor {
+public:
 
 // -- Exceptions
     // None
 
 // -- Contructors
 
-    ActionNode(const Action& action, api::MIRWatcher *watcher);
+    SimpleExecutor();
 
 // -- Destructor
 
-    ~ActionNode(); // Change to virtual if base class
+    ~SimpleExecutor(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -62,17 +62,11 @@ class ActionNode {
 
 // -- Methods
 
-    void execute(context::Context& ctx, Executor& executor) const;
+    virtual void wait();
 
     //=====================================
 
-    const action::Action &action() const;
 
-    ActionGraph& graph();
-
-    void dump(std::ostream& out, size_t depth) const;
-
-    void notifyFailure(std::exception&, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const;
 
 // -- Overridden methods
     // None
@@ -83,7 +77,7 @@ class ActionNode {
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
 
@@ -101,26 +95,22 @@ class ActionNode {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 
-    ActionNode(const ActionNode&);
-    ActionNode& operator=(const ActionNode&);
+    SimpleExecutor(const SimpleExecutor&);
+    SimpleExecutor& operator=(const SimpleExecutor&);
 
 // -- Members
 
-    const Action &action_;
-    ActionGraph graph_;
-    api::MIRWatcher* watcher_;  // Just a reference, do not won
 
 // -- Methods
     // None
 
-
-
 // -- Overridden methods
     // None
+    virtual void execute(context::Context& ctx, const ActionNode& node);
 
 // -- Class members
     // None
@@ -130,10 +120,7 @@ class ActionNode {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const ActionNode& p) {
-        p.print(s);
-        return s;
-    }
+
 
 };
 
