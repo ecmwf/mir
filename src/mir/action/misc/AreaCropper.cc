@@ -180,7 +180,7 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
     try {
         c.mapping_.reserve(m.size());
     }
-    catch (std::exception& e) {
+    catch (std::length_error& e) {
 
         // Make sure we don't this entry lying around
         cache.erase(key);
