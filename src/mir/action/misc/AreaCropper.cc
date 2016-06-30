@@ -201,8 +201,8 @@ void AreaCropper::execute(context::Context & ctx) const {
 
     ASSERT(c.mapping_.size());
 
-    eckit::Log::trace<MIR>() << "CROP resulting bbox is: " << c.bbox_ <<
-                       ", size=" << c.mapping_.size() << std::endl;
+    // eckit::Log::trace<MIR>() << "CROP resulting bbox is: " << c.bbox_ <<
+    //                    ", size=" << c.mapping_.size() << std::endl;
 
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
@@ -218,7 +218,7 @@ void AreaCropper::execute(context::Context & ctx) const {
             result.push_back(values[*j]);
         }
 
-        const repres::Representation *cropped =  representation->cropped(c.bbox_);
+        repres::RepresentationHandle cropped(representation->cropped(c.bbox_));
         // eckit::Log::trace<MIR>() << *cropped << std::endl;
 
         if(result.size() == 0) {

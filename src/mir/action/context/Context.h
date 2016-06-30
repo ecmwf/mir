@@ -53,6 +53,7 @@ public:
 
     Context();
     Context(const Context& other);
+    Context& operator=(const Context& other);
 
     // Context(Context*);
 
@@ -70,7 +71,6 @@ public:
 
     // -- Operators
 
-    Context& operator=(const Context& other);
 
     // -- Methods
 
@@ -89,6 +89,8 @@ public:
 
     std::vector<Context> stack_;
 
+    void lock() const;
+    void unlock() const;
 
     // -- Overridden methods
     // None

@@ -157,7 +157,11 @@ Context::Context():
 Context::Context(const Context& other):
     input_(other.input_),
     statistics_(other.statistics_),
-    content_(other.content_ ? other.content_->clone() : 0) {
+    content_(0) {
+    eckit::AutoLock<const Context> lock(other);
+    if (other.content_) {
+        content_.reset(other.content_->clone());
+    }
 }
 
 Context::Context(mir::data::MIRField& field,
@@ -259,6 +263,14 @@ Context Context::pop() {
     Context ctx = stack_.back();
     stack_.pop_back();
     return ctx;
+}
+
+void Context::lock() const {
+    mutex_.lock();
+}
+
+void Context::unlock() const {
+    mutex_.unlock();
 }
 
 }  // namespace action
