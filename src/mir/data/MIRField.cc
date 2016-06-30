@@ -28,14 +28,18 @@ namespace mir {
 namespace data {
 
 
-MIRField::MIRField(const param::MIRParametrisation &param, bool hasMissing, double missingValue):
+MIRField::MIRField(const param::MIRParametrisation &param,
+                   bool hasMissing,
+                   double missingValue):
     field_(new Field(param, hasMissing, missingValue)) {
 
     field_->attach();
 }
 
 
-MIRField::MIRField(const repres::Representation *repres, bool hasMissing, double missingValue):
+MIRField::MIRField(const repres::Representation *repres,
+                   bool hasMissing,
+                   double missingValue):
     field_(new Field(repres, hasMissing, missingValue)) {
 
     field_->attach();

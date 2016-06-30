@@ -125,7 +125,6 @@ private:
 
     mutable eckit::Mutex mutex_;
 
-    Context* parent_;
     input::MIRInput &input_;
     util::MIRStatistics& statistics_;
     eckit::ScopedPtr<Content> content_;

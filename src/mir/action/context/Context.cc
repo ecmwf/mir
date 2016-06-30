@@ -147,7 +147,6 @@ public:
 
 
 Context::Context():
-    parent_(0),
     input_(missing),
     statistics_(stats),
     content_(0) {
@@ -156,24 +155,13 @@ Context::Context():
 
 
 Context::Context(const Context& other):
-    parent_(other.parent_),
     input_(other.input_),
     statistics_(other.statistics_),
     content_(other.content_ ? other.content_->clone() : 0) {
 }
 
-
-// Context::Context( Context* parent):
-//     parent_(parent),
-//     input_(parent_->input_),
-//     statistics_(parent_->statistics_),
-//     content_(parent_->content_ ? parent_->content_->clone() : 0) {
-// }
-
-
 Context::Context(mir::data::MIRField& field,
                  mir::util::MIRStatistics& statistics):
-    parent_(0),
     input_(missing),
     statistics_(statistics),
     content_(new FieldContent(field)) {
@@ -183,7 +171,6 @@ Context::Context(mir::data::MIRField& field,
 
 Context::Context(input::MIRInput &input,
                  util::MIRStatistics& statistics):
-    parent_(0),
     input_(input),
     statistics_(statistics),
     content_(0)  {
@@ -225,17 +212,8 @@ util::MIRStatistics& Context::statistics() {
 data::MIRField& Context::field() {
 
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
-
     if (!content_) {
-        if (parent_) {
-            // std::cout << "Context -> adopt parent field"  << std::endl;
-            content_.reset(new FieldContent(parent_->field()));
-        }
-        else {
-            // std::cout << "Context -> allocate field from " << input_ << std::endl;
-            content_.reset(new FieldContent(input_.field()));
-        }
+        content_.reset(new FieldContent(input_.field()));
     }
     return content_->field();
 }
