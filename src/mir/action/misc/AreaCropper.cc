@@ -208,7 +208,7 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
         cache.erase(key);
 
         std::ostringstream oss;
-        oss << "Cropping: failed to allocate vector " << e.what();
+        oss << "Cropping::getMapping failed: " << e.what();
         throw eckit::SeriousBug(oss.str());
     }
 }

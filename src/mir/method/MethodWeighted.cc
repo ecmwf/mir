@@ -91,7 +91,14 @@ atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
     }
 
     atlas::mesh::Mesh& mesh = mesh_cache[md5];
-    generateMesh(grid, mesh);
+
+    try{
+        generateMesh(grid, mesh);
+    }
+    catch(...) {
+        mesh_cache.erase(md5);
+        throw;
+    }
 
 //    MeshCache::add(md5.digest(), *mesh);
 

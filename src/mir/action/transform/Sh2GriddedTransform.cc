@@ -82,16 +82,14 @@ static mir::InMemoryCache<TransCache> trans_handles("mirCoefficients", 2);
 namespace mir {
 namespace action {
 
-
-static void transform(const param::MIRParametrisation &parametrisation, size_t truncation,
-                      const std::vector<double> &input, std::vector<double> &output,
-                      const atlas::grid::Grid &grid,
-                      context::Context& ctx) {
 #ifdef ATLAS_HAVE_TRANS
 
-    eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
-
-    static TransInitor initor; // Will init trans if needed
+static void transform(
+    const std::string& key,
+    const param::MIRParametrisation &parametrisation, size_t truncation,
+    const std::vector<double> &input, std::vector<double> &output,
+    const atlas::grid::Grid &grid,
+    context::Context& ctx) {
 
     const atlas::grid::global::Structured* reduced = dynamic_cast<const atlas::grid::global::Structured*>(&grid);
 
@@ -100,12 +98,6 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
     }
 
     const atlas::grid::global::lonlat::RegularLonLat* latlon = dynamic_cast<const atlas::grid::global::lonlat::RegularLonLat* >(&grid);
-
-    std::ostringstream os;
-
-    os << "T" << truncation << ":" << grid.uniqueId();
-    std::string key(os.str());
-
 
     // Warning: we keep the coefficient in memory for all the resolution used
     if (trans_handles.find(key) == trans_handles.end()) {
@@ -221,6 +213,31 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
 
     // trans_delete(&trans);
+}
+#endif
+
+
+static void transform(const param::MIRParametrisation &parametrisation, size_t truncation,
+                      const std::vector<double> &input, std::vector<double> &output,
+                      const atlas::grid::Grid &grid,
+                      context::Context& ctx) {
+#ifdef ATLAS_HAVE_TRANS
+
+    eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
+
+    static TransInitor initor; // Will init trans if needed
+
+    std::ostringstream os;
+
+    os << "T" << truncation << ":" << grid.uniqueId();
+    std::string key(os.str());
+
+    try {
+        transform(key, parametrisation, truncation, input, output, grid, ctx);
+    } catch (...) {
+        trans_handles.erase(key);
+        throw;
+    }
 
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported."

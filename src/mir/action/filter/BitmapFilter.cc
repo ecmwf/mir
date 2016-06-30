@@ -64,7 +64,8 @@ util::Bitmap& BitmapFilter::bitmap() const {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     InMemoryCache<util::Bitmap>::iterator j  = cache.find(path_);
     if (j == cache.end()) {
-        return cache.insert(path_, new util::Bitmap(path_));
+        eckit::ScopedPtr<util::Bitmap> bitmap(new util::Bitmap(path_));
+        return cache.insert(path_, bitmap.release());
     }
     return *j;
 }
