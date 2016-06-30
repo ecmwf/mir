@@ -202,14 +202,12 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
     try {
         return getMapping(key, representation, bbox, caching);
     }
-    catch (std::exception& e) {
+    catch (...) {
 
         // Make sure we don't this entry lying around
         cache.erase(key);
 
-        std::ostringstream oss;
-        oss << "Cropping::getMapping failed: " << e.what();
-        throw eckit::SeriousBug(oss.str());
+        throw;
     }
 }
 
