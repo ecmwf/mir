@@ -61,7 +61,7 @@ bool ConditionT<long>::eval(grib_handle *h ) const {
     }
 
     if (err) {
-        eckit::Log::trace<MIR>() << "ConditionT<long>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
+        // eckit::Log::trace<MIR>() << "ConditionT<long>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
         GRIB_ERROR(err, key_);
     }
 
@@ -79,7 +79,7 @@ bool ConditionT<double>::eval(grib_handle *h ) const {
     }
 
     if (err) {
-        eckit::Log::trace<MIR>() << "ConditionT<double>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
+        // eckit::Log::trace<MIR>() << "ConditionT<double>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
         GRIB_ERROR(err, key_);
     }
 
@@ -289,7 +289,7 @@ bool GribInput::has(const std::string &name) const {
 
     bool    ok = grib_is_defined(grib_, key);
 
-    eckit::Log::trace<MIR>() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") << std::endl;
+    // eckit::Log::trace<MIR>() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") << std::endl;
     return ok;
 }
 
@@ -306,13 +306,13 @@ bool GribInput::get(const std::string &name, bool &value) const {
     }
 
     if (err) {
-        eckit::Log::trace<MIR>() << "grib_get_bool(" << name << ",key=" << key << ") failed " << err << std::endl;
+        // eckit::Log::trace<MIR>() << "grib_get_bool(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
 
     value = temp != 0;
 
-    eckit::Log::trace<MIR>() << "grib_get_bool(" << name << ",key=" << key << ") " << value << std::endl;
+    // eckit::Log::trace<MIR>() << "grib_get_bool(" << name << ",key=" << key << ") " << value << std::endl;
     return true;
 }
 
@@ -350,7 +350,7 @@ bool GribInput::get(const std::string &name, double &value) const {
     }
 
     if (err) {
-        eckit::Log::trace<MIR>() << "grib_get_double(" << name << ",key=" << key << ") failed " << err << std::endl;
+        // eckit::Log::trace<MIR>() << "grib_get_double(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -385,7 +385,7 @@ bool GribInput::get(const std::string &name, std::vector<long> &value) const {
 
     ASSERT(value.size());
 
-    eckit::Log::trace<MIR>() << "grib_get_long_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
+    // eckit::Log::trace<MIR>() << "grib_get_long_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
 
 
     return true;
@@ -406,7 +406,7 @@ bool GribInput::get(const std::string &name, std::string &value) const {
     }
 
     if (err) {
-        eckit::Log::trace<MIR>() << "grib_get_string(" << name << ",key=" << key << ") failed " << err << std::endl;
+        // eckit::Log::trace<MIR>() << "grib_get_string(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -420,7 +420,7 @@ bool GribInput::get(const std::string &name, std::string &value) const {
 
     value = buffer;
 
-    eckit::Log::trace<MIR>() << "grib_get_string(" << name << ",key=" << key << ") " << value << std::endl;
+    // eckit::Log::trace<MIR>() << "grib_get_string(" << name << ",key=" << key << ") " << value << std::endl;
 
     return true;
 }
@@ -439,7 +439,7 @@ bool GribInput::get(const std::string &name, std::vector<double> &value) const {
     }
 
     if (err) {
-        eckit::Log::trace<MIR>() << "grib_get_double_array(" << name << ",key=" << key << ") failed " << err << " count=" << count << std::endl;
+        // eckit::Log::trace<MIR>() << "grib_get_double_array(" << name << ",key=" << key << ") failed " << err << " count=" << count << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -452,7 +452,7 @@ bool GribInput::get(const std::string &name, std::vector<double> &value) const {
 
     ASSERT(value.size());
 
-    eckit::Log::trace<MIR>() << "grib_get_double_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
+    // eckit::Log::trace<MIR>() << "grib_get_double_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
 
 
     return true;
@@ -505,7 +505,7 @@ void GribInput::auxilaryValues(const std::string &path, std::vector<double> &val
 void GribInput::setAuxilaryFiles(const std::string &pathToLatitudes, const std::string &pathToLongitudes) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    eckit::Log::trace<MIR>() << "Loading auxilary files " << pathToLatitudes << " and " << pathToLongitudes << std::endl;
+    // eckit::Log::trace<MIR>() << "Loading auxilary files " << pathToLatitudes << " and " << pathToLongitudes << std::endl;
     auxilaryValues(pathToLatitudes, latitudes_);
     auxilaryValues(pathToLongitudes, longitudes_);
 }

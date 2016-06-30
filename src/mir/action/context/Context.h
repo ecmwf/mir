@@ -54,7 +54,7 @@ public:
     Context();
     Context(const Context& other);
 
-    Context(Context*);
+    // Context(Context*);
 
     Context(input::MIRInput &input,
             util::MIRStatistics& statistics);

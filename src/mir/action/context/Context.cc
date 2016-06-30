@@ -163,15 +163,16 @@ Context::Context(const Context& other):
 }
 
 
-Context::Context( Context* parent):
-    parent_(parent),
-    input_(parent_->input_),
-    statistics_(parent_->statistics_),
-    content_(parent_->content_ ? parent_->content_->clone() : 0) {
-}
+// Context::Context( Context* parent):
+//     parent_(parent),
+//     input_(parent_->input_),
+//     statistics_(parent_->statistics_),
+//     content_(parent_->content_ ? parent_->content_->clone() : 0) {
+// }
 
 
-Context::Context(mir::data::MIRField& field, mir::util::MIRStatistics& statistics):
+Context::Context(mir::data::MIRField& field,
+                 mir::util::MIRStatistics& statistics):
     parent_(0),
     input_(missing),
     statistics_(statistics),
@@ -253,6 +254,7 @@ double Context::scalar() const {
 }
 
 void Context::print(std::ostream& out) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
     out << "Context[content=";
     if (content_) {
         out << *content_;
@@ -267,7 +269,7 @@ void Context::print(std::ostream& out) const {
 Context& Context::push() {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    stack_.push_back(Context(this));
+    stack_.push_back(Context(*this));
     return stack_.back();
 }
 

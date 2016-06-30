@@ -21,6 +21,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/data/Field.h"
+#include "eckit/thread/AutoLock.h"
 
 
 namespace mir {
@@ -57,6 +58,8 @@ void MIRField::copyOnWrite() {
 
 // Warning: take ownership of values
 void MIRField::update(std::vector<double> &values, size_t which) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     // std::cout << "MIRField::update " << *field_ << std::endl;
 
     copyOnWrite();
@@ -64,52 +67,73 @@ void MIRField::update(std::vector<double> &values, size_t which) {
 }
 
 size_t MIRField::dimensions() const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     return field_->dimensions();
 }
 
 void MIRField::dimensions(size_t size)  {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     copyOnWrite();
     field_->dimensions(size);
 }
 
 MIRField::~MIRField() {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     field_->detach();
 }
 
 void MIRField::print(std::ostream &out) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     out << *field_;
 }
 
 const repres::Representation *MIRField::representation() const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     return field_->representation();
 }
 
 void MIRField::validate() const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     field_->validate();
 }
 
 MIRFieldStats MIRField::statistics(size_t i) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     return field_->statistics(i);
 }
 
 void MIRField::representation(const repres::Representation *representation) {
     // std::cout << "MIRField::representation " << *field_ << " => " << *representation << std::endl;
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     copyOnWrite();
     field_->representation(representation);
 }
 
 const std::vector<double> &MIRField::values(size_t which) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     return field_->values(which);
 }
 
 std::vector<double> &MIRField::direct(size_t which)  {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     // std::cout << "MIRField::direct " << *field_ << std::endl;
     copyOnWrite();
     return field_->direct(which);
 }
 
 void MIRField::paramId(size_t which, size_t param) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     // std::cout << "MIRField::paramId " << *field_ << std::endl;
 
     copyOnWrite();
@@ -117,18 +141,26 @@ void MIRField::paramId(size_t which, size_t param) {
 }
 
 size_t MIRField::paramId(size_t which) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     return field_->paramId(which);
 }
 
 bool MIRField::hasMissing() const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     return field_->hasMissing();
 }
 
 double MIRField::missingValue() const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     return field_->missingValue();
 }
 
 void MIRField::hasMissing(bool on) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     if (on != hasMissing()) {
         copyOnWrite();
         field_->hasMissing(on);
@@ -136,6 +168,8 @@ void MIRField::hasMissing(bool on) {
 }
 
 void MIRField::missingValue(double value)  {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     if (value != missingValue()) {
         copyOnWrite();
         field_->missingValue(value);

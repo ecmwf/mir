@@ -18,6 +18,7 @@
 
 #include <iosfwd>
 #include <vector>
+#include "eckit/thread/Mutex.h"
 
 namespace mir {
 namespace repres {
@@ -120,6 +121,7 @@ public:
 
     // -- Members
 
+    mutable eckit::Mutex mutex_;
     Field *field_;
 
     // -- Methods

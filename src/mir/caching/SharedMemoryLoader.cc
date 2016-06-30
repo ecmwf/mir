@@ -224,11 +224,11 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     // To find the maximum:
     // Linux:ipcs -l, Mac/bsd: ipcs -M
 
-    eckit::Log::trace<MIR>() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
-                             std::hex << key << std::dec << ", page size: "
-                             << eckit::Bytes(page_size) << ", pages: "
-                             << eckit::BigNum(shmsize / page_size)
-                             << std::endl;
+    // eckit::Log::trace<MIR>() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
+    //                          std::hex << key << std::dec << ", page size: "
+    //                          << eckit::Bytes(page_size) << ", pages: "
+    //                          << eckit::BigNum(shmsize / page_size)
+    //                          << std::endl;
 
     int shmid;
     if ((shmid = shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
@@ -240,7 +240,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 #ifdef SHM_PAGESIZE
     {
 
-        eckit::Log::trace<MIR>() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
+        // eckit::Log::trace<MIR>() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
 
         /* Use 64K pages to back the shared memory region */
         size_t shm_size;

@@ -351,7 +351,7 @@ bool SimpleParametrisation::_get(const std::string &name, T &value) const {
         return false;
     }
     (*j).second->get(name, value);
-    eckit::Log::trace<MIR>() << "SimpleParametrisation::get(" << name << ") => " << value << std::endl;
+    // eckit::Log::trace<MIR>() << "SimpleParametrisation::get(" << name << ") => " << value << std::endl;
     return true;
 }
 
@@ -389,35 +389,35 @@ void SimpleParametrisation::_set(const std::string &name, const T &value) {
 }
 
 // FIXME: can we do this in a more elegant way?
-template<>
-void SimpleParametrisation::_set(const std::string &name, const eckit::Value& value) {
-    if (value.isBool()) {
-        _set<bool>(name, value);
-    } else if (value.isDouble()) {
-        _set<double>(name, value);
-    } else if (value.isNumber()) {
-        _set<long>(name, value);
-    } else if (value.isString()) {
-        _set<std::string>(name, value);
-    } else if (value.isList()) {
-        eckit::ValueList v = value;
-        if (v[0].isDouble()) {
-            std::vector<double> d;
-            for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
-                d.push_back(double(*it));
-            _set(name, d);
-        } else if (v[0].isNumber()) {
-            std::vector<long> l;
-            for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
-                l.push_back(long(*it));
-            _set(name, l);
-        } else {
-            throw eckit::BadParameter("Vector contains invalid type", Here());
-        }
-    } else {
-        throw eckit::BadParameter("Map contains invalid type", Here());
-    }
-}
+// template<>
+// void SimpleParametrisation::_set(const std::string &name, const eckit::Value& value) {
+//     if (value.isBool()) {
+//         _set<bool>(name, value);
+//     } else if (value.isDouble()) {
+//         _set<double>(name, value);
+//     } else if (value.isNumber()) {
+//         _set<long>(name, value);
+//     } else if (value.isString()) {
+//         _set<std::string>(name, value);
+//     } else if (value.isList()) {
+//         eckit::ValueList v = value;
+//         if (v[0].isDouble()) {
+//             std::vector<double> d;
+//             for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
+//                 d.push_back(double(*it));
+//             _set(name, d);
+//         } else if (v[0].isNumber()) {
+//             std::vector<long> l;
+//             for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
+//                 l.push_back(long(*it));
+//             _set(name, l);
+//         } else {
+//             throw eckit::BadParameter("Vector contains invalid type", Here());
+//         }
+//     } else {
+//         throw eckit::BadParameter("Map contains invalid type", Here());
+//     }
+// }
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const char *value) {
     _set(name, std::string(value));
