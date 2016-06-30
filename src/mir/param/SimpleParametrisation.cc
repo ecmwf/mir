@@ -67,11 +67,11 @@ class DelayedSetting : public Setting {
     };
 
     virtual void get(const std::string &name, std::string &value) const {
-        NOTIMP;
+        delayed_->get(name, value);
     }
 
     virtual void get(const std::string &name, bool &value) const {
-        NOTIMP;
+        delayed_->get(name, value);
     }
 
     virtual void get(const std::string &name, long &value) const {
@@ -79,15 +79,15 @@ class DelayedSetting : public Setting {
     }
 
     virtual void get(const std::string &name, double &value) const {
-        NOTIMP;
+        delayed_->get(name, value);
     }
 
     virtual void get(const std::string &name, std::vector<long> &value) const {
-        NOTIMP;
+        delayed_->get(name, value);
     }
 
     virtual void get(const std::string &name, std::vector<double> &value) const {
-        NOTIMP;
+        delayed_->get(name, value);
     }
 
     virtual bool match(const std::string &name, const MIRParametrisation &) const {
