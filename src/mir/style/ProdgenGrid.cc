@@ -51,13 +51,13 @@ void ProdgenGrid::get(const std::string &name, std::vector<double>& value) const
     double y = grid[1] * 10;
 
     if(size_t(x) == x && size_t(y) == y) {
-        value[0] = 0.1;
-        value[1] = 0.1;
+        value[0] = 1./10.;
+        value[1] = 1./10.;
         return;
     }
 
-    value[0] = 1./16.;
-    value[1] = 1./16.;
+    value[0] = 1./8.;
+    value[1] = 1./8.;
 
     // eckit::Log::trace<MIR>() << "ProdgenGrid: N is " << N << ", selecting reduced N" << value << std::endl;
 }
