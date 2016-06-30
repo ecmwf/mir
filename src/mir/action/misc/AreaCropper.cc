@@ -199,6 +199,8 @@ void AreaCropper::execute(context::Context & ctx) const {
     repres::RepresentationHandle representation(field.representation());
     const caching::CroppingCacheEntry &c = getMapping(representation, bbox_, caching_);
 
+    ASSERT(c.mapping_.size());
+
     eckit::Log::trace<MIR>() << "CROP resulting bbox is: " << c.bbox_ <<
                        ", size=" << c.mapping_.size() << std::endl;
 

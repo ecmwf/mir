@@ -24,6 +24,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/log/MIR.h"
+#include "eckit/thread/AutoLock.h"
 
 #include <iomanip>
 #include <iostream>
@@ -110,7 +111,7 @@ class ConditionOR : public Condition {
     virtual bool eval(grib_handle *h) const {
         return left_->eval(h) || right_->eval(h);
     }
-  public:
+public:
     ConditionOR(const Condition *left, const Condition *right): left_(left), right_(right) {}
 };
 
@@ -120,7 +121,7 @@ class ConditionAND : public Condition {
     virtual bool eval(grib_handle *h) const {
         return left_->eval(h) && right_->eval(h);
     }
-  public:
+public:
     ConditionAND(const Condition *left, const Condition *right): left_(left), right_(right) {}
 };
 
@@ -129,7 +130,7 @@ class ConditionNOT : public Condition {
     virtual bool eval(grib_handle *h) const {
         return !c_->eval(h);
     }
-  public:
+public:
     ConditionNOT(const Condition *c) : c_(c) {}
 };
 
@@ -237,6 +238,9 @@ const param::MIRParametrisation &GribInput::parametrisation(size_t which) const 
 
 data::MIRField GribInput::field() const {
 
+    // Protect the grib_handle, as eccodes may update its internals
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(grib_);
     // TODO: this is only here for debugging purposes
     // GRIB_CALL(grib_set_double(grib_, "missingValue", 1.e15));
@@ -271,11 +275,15 @@ data::MIRField GribInput::field() const {
 }
 
 grib_handle *GribInput::gribHandle(size_t which) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(which == 0);
     return grib_;
 }
 
 bool GribInput::has(const std::string &name) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
@@ -286,6 +294,8 @@ bool GribInput::has(const std::string &name) const {
 }
 
 bool GribInput::get(const std::string &name, bool &value) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(grib_);
     long temp = GRIB_MISSING_LONG;
     const char *key = get_key(name, grib_);
@@ -307,6 +317,8 @@ bool GribInput::get(const std::string &name, bool &value) const {
 }
 
 bool GribInput::get(const std::string &name, long &value) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(grib_);
     const char *key = get_key(name, grib_);
     int err = grib_get_long(grib_, key, &value);
@@ -326,6 +338,8 @@ bool GribInput::get(const std::string &name, long &value) const {
 }
 
 bool GribInput::get(const std::string &name, double &value) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(grib_);
     const char *key = get_key(name, grib_);
     int err = grib_get_double(grib_, key, &value);
@@ -345,6 +359,8 @@ bool GribInput::get(const std::string &name, double &value) const {
 }
 
 bool GribInput::get(const std::string &name, std::vector<long> &value) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
@@ -376,6 +392,8 @@ bool GribInput::get(const std::string &name, std::vector<long> &value) const {
 }
 
 bool GribInput::get(const std::string &name, std::string &value) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
@@ -408,6 +426,8 @@ bool GribInput::get(const std::string &name, std::string &value) const {
 }
 
 bool GribInput::get(const std::string &name, std::vector<double> &value) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
@@ -439,6 +459,8 @@ bool GribInput::get(const std::string &name, std::vector<double> &value) const {
 }
 
 bool GribInput::handle(grib_handle *h) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     if (grib_) {
         grib_handle_delete(grib_);
     }
@@ -448,6 +470,8 @@ bool GribInput::handle(grib_handle *h) {
 
 
 void GribInput::auxilaryValues(const std::string &path, std::vector<double> &values) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     eckit::StdFile f(path);
     int e;
     grib_handle *h = 0;
@@ -479,6 +503,8 @@ void GribInput::auxilaryValues(const std::string &path, std::vector<double> &val
 
 
 void GribInput::setAuxilaryFiles(const std::string &pathToLatitudes, const std::string &pathToLongitudes) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     eckit::Log::trace<MIR>() << "Loading auxilary files " << pathToLatitudes << " and " << pathToLongitudes << std::endl;
     auxilaryValues(pathToLatitudes, latitudes_);
     auxilaryValues(pathToLongitudes, longitudes_);
@@ -486,12 +512,16 @@ void GribInput::setAuxilaryFiles(const std::string &pathToLatitudes, const std::
 
 // TODO: some caching, also next() should maybe advance the auxilary files
 void GribInput::latitudes(std::vector<double> &values) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     values.clear();
     values.reserve(latitudes_.size());
     std::copy(latitudes_.begin(), latitudes_.end(), std::back_inserter(values));
 }
 
 void GribInput::longitudes(std::vector<double> &values) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     values.clear();
     values.reserve(longitudes_.size());
     std::copy(longitudes_.begin(), longitudes_.end(), std::back_inserter(values));
@@ -499,6 +529,8 @@ void GribInput::longitudes(std::vector<double> &values) const {
 
 
 void GribInput::marsRequest(std::ostream &out) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(grib_);
 
     grib_keys_iterator *keys =  grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, "mars");
