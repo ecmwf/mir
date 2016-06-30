@@ -219,7 +219,13 @@ void AreaCropper::execute(context::Context & ctx) const {
         }
 
         const repres::Representation *cropped =  representation->cropped(c.bbox_);
-        eckit::Log::trace<MIR>() << *cropped << std::endl;
+        // eckit::Log::trace<MIR>() << *cropped << std::endl;
+
+        if(result.size() == 0) {
+            std::ostringstream oss;
+            oss << "AreaCropper: failed to crop " << *representation << " with bbox " << c.bbox_ << " cropped=" << *cropped ;
+            throw eckit::UserError(oss.str());
+        }
 
         ASSERT(result.size() > 0);
         cropped->validate(result);
