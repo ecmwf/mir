@@ -169,7 +169,7 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
     ASSERT(count == m.size());
 
     // Don't support empty results
-    if(!m.size()) {
+    if (!m.size()) {
         std::ostringstream oss;
         oss << "Cropping " << *representation << " to " << bbox << " returns not points";
         throw eckit::UserError(oss.str());
@@ -177,7 +177,14 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
     // ASSERT(m.size() > 0);
 
     c.bbox_ = util::BoundingBox(n, w, s, e);
-    c.mapping_.reserve(m.size());
+    try {
+        c.mapping_.reserve(m.size());
+    }
+    catch (std::exception& e) {
+        std::ostringstream oss;
+        oss << "Cropping: failed to allocate vector size=" << m.size();
+        throw eckit::SeriousBug(oss.str());
+    }
 
     for (std::map<LL, size_t>::const_iterator j = m.begin(); j != m.end(); ++j) {
         c.mapping_.push_back((*j).second);
@@ -221,7 +228,7 @@ void AreaCropper::execute(context::Context & ctx) const {
         repres::RepresentationHandle cropped(representation->cropped(c.bbox_));
         // eckit::Log::trace<MIR>() << *cropped << std::endl;
 
-        if(result.size() == 0) {
+        if (result.size() == 0) {
             std::ostringstream oss;
             oss << "AreaCropper: failed to crop " << *representation << " with bbox " << c.bbox_ << " cropped=" << *cropped ;
             throw eckit::UserError(oss.str());
