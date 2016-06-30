@@ -165,5 +165,15 @@ T& InMemoryCache<T>::create(const std::string& key) {
     return insert(key, new T());
 }
 
+
+template<class T>
+void InMemoryCache<T>::erase(const std::string& key) {
+    typename std::map<std::string, Entry*>::const_iterator j = cache_.find(key);
+    if (j != cache_.end()) {
+        delete (*j).second;
+        cache_.erase(j);
+    }
+}
+
 }  // namespace mir
 

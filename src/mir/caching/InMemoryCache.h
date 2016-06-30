@@ -43,6 +43,8 @@ public:  // methods
 
     iterator end() const { return 0; }
 
+    void erase(const std::string& key);
+
 private:
 
     T& create(const std::string& key);

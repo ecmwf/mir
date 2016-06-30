@@ -181,6 +181,10 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
         c.mapping_.reserve(m.size());
     }
     catch (std::exception& e) {
+
+        // Make sure we don't this entry lying around
+        cache.erase(key);
+
         std::ostringstream oss;
         oss << "Cropping: failed to allocate vector size=" << m.size();
         throw eckit::SeriousBug(oss.str());
