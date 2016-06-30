@@ -16,14 +16,17 @@
 #include "mir/util/RotatedIterator.h"
 
 
+using eckit::geometry::LLPoint2;
+
+
 namespace mir {
 namespace util {
 
 
-RotatedIterator::RotatedIterator(Iterator *iterator, const util::Rotation &rotation):
+RotatedIterator::RotatedIterator(Iterator* iterator, const util::Rotation& rotation) :
     iterator_(iterator),
     rotation_(rotation),
-    rotate_(eckit::geometry::LLPoint2(rotation.south_pole_longitude(), rotation.south_pole_latitude()),
+    rotate_(LLPoint2(rotation.south_pole_longitude(), rotation.south_pole_latitude()),
             rotation.south_pole_rotation_angle()) {
 }
 
@@ -31,19 +34,19 @@ RotatedIterator::RotatedIterator(Iterator *iterator, const util::Rotation &rotat
 RotatedIterator::~RotatedIterator() {
 }
 
-void RotatedIterator::print(std::ostream &out) const {
+
+void RotatedIterator::print(std::ostream& out) const {
     out << "RotatedIterator[iterator=" << *iterator_ << ",rotation=" << rotation_ << "]";
 }
 
-bool RotatedIterator::next(double &lat, double &lon) {
 
+bool RotatedIterator::next(double& lat, double& lon) {
     if(iterator_->next(lat, lon)) {
-        eckit::geometry::LLPoint2 p = rotate_.unrotate(eckit::geometry::LLPoint2(lon, lat)); // <== notice order
+        LLPoint2 p = rotate_.unrotate(LLPoint2(lon, lat)); // <== notice order
         lat = p.lat();
         lon = p.lon();
         return true;
     }
-
     return false;
 }
 

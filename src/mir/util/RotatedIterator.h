@@ -16,10 +16,11 @@
 #ifndef RotatedIterator_H
 #define RotatedIterator_H
 
-#include "mir/repres/Iterator.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "mir/repres/Iterator.h"
+#include "mir/util/RotateGrid.h"
 #include "mir/util/Rotation.h"
-#include "eckit/geometry/RotateGrid.h"
+
 
 namespace mir {
 namespace util {
@@ -33,7 +34,7 @@ class RotatedIterator : public repres::Iterator {
 
     // -- Contructors
 
-    RotatedIterator(Iterator* iterator, const util::Rotation &rotation);
+    RotatedIterator(Iterator* iterator, const util::Rotation& rotation);
 
     // -- Destructor
 
@@ -46,6 +47,7 @@ class RotatedIterator : public repres::Iterator {
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -59,9 +61,10 @@ class RotatedIterator : public repres::Iterator {
   protected:
 
     // -- Members
+    // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -76,31 +79,33 @@ class RotatedIterator : public repres::Iterator {
 
     // No copy allowed
 
-    RotatedIterator(const RotatedIterator &);
-    RotatedIterator &operator=(const RotatedIterator &);
+    RotatedIterator(const RotatedIterator&);
+    RotatedIterator& operator=(const RotatedIterator&);
 
     // -- Members
 
     eckit::ScopedPtr<Iterator> iterator_;
     util::Rotation rotation_;
-    eckit::geometry::RotateGrid rotate_;
+    util::RotateGrid rotate_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool next(double &lat, double &lon);
-    virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual bool next(double& lat, double& lon);
+
+    virtual void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Class members
+    // None
 
     // -- Class methods
     // None
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const RotatedIterator &p) {
+    friend std::ostream &operator<<(std::ostream& s, const RotatedIterator& p) {
         p.print(s);
         return s;
     }
@@ -108,7 +113,9 @@ class RotatedIterator : public repres::Iterator {
 };
 
 
-}  // namespace repres
+}  // namespace util
 }  // namespace mir
+
+
 #endif
 
