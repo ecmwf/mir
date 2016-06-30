@@ -94,7 +94,101 @@ void AreaCropper::print(std::ostream &out) const {
     out << "AreaCropper[bbox=" << bbox_ << "]";
 }
 
-// TODO: Write cache to disk
+
+
+static const caching::CroppingCacheEntry &getMapping(const std::string& key,
+        const repres::Representation *representation,
+        const util::BoundingBox &bbox,
+        bool caching) {
+
+
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    InMemoryCache<caching::CroppingCacheEntry>::iterator a = cache.find(key);
+    if (a != cache.end()) {
+        return *a;
+    }
+
+    static caching::CroppingCache disk;
+
+    caching::CroppingCacheEntry& c = cache[key];
+    if (caching && disk.retrieve(key, c)) {
+        return c;
+    }
+
+    eckit::TraceTimer<MIR> timer("Compute crop mapping");
+
+    // TODO: Consider caching these maps (e.g. cache map LL -> index instead)
+    std::map<LL, size_t> m;
+
+    double n = 0;
+    double s = 0;
+    double e = 0;
+    double w = 0;
+
+    size_t p = 0;
+    size_t count = 0;
+    bool first = true;
+    double lat, lon;
+
+    // Iterator is "unrotated", because the cropping area
+    // is expressed in before the rotation is applied
+    eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
+    while (iter->next(lat, lon)) {
+        // std::cout << lat << " " << lon << std::endl;
+        if (bbox.contains(lat, lon)) {
+
+            lon = bbox.normalise(lon);
+
+            if (first) {
+                n = s = lat;
+                w = e = lon;
+                first = false;
+            } else {
+                n = std::max(n, lat);
+                s = std::min(s, lat);
+                e = std::max(e, lon);
+                w = std::min(w, lon);
+            }
+
+            // if(m.find(LL(lat, lon)) != m.end()) {
+            //     eckit::Log::trace<MIR>() << "CROP  duplicate " << lat << ", " << lon << std::endl;
+            // }
+            m.insert(std::make_pair(LL(lat, lon), p));
+            count++;
+
+        }
+        p++;
+    }
+
+    // Make sure we did not visit duplicate points
+    // eckit::Log::trace<MIR>() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
+    ASSERT(count == m.size());
+
+    // Don't support empty results
+    if (!m.size()) {
+        std::ostringstream oss;
+        oss << "Cropping " << *representation << " to " << bbox << " returns not points";
+        throw eckit::UserError(oss.str());
+    }
+    // ASSERT(m.size() > 0);
+
+    c.bbox_ = util::BoundingBox(n, w, s, e);
+    c.mapping_.reserve(m.size());
+
+
+    for (std::map<LL, size_t>::const_iterator j = m.begin(); j != m.end(); ++j) {
+        c.mapping_.push_back((*j).second);
+    }
+
+    if (caching) {
+        disk.insert(key, c);
+    }
+
+    return c;
+
+}
+
 static const caching::CroppingCacheEntry &getMapping(const repres::Representation *representation,
         const util::BoundingBox &bbox,
         bool caching) {
@@ -105,95 +199,10 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
 
     std::string key(md5);
 
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
-    InMemoryCache<caching::CroppingCacheEntry>::iterator a = cache.find(key);
-    if (a != cache.end()) {
-        return *a;
-    }
-
     try {
-
-        static caching::CroppingCache disk;
-
-        caching::CroppingCacheEntry& c = cache[key];
-        if (caching && disk.retrieve(key, c)) {
-            return c;
-        }
-
-        eckit::TraceTimer<MIR> timer("Compute crop mapping");
-
-        // TODO: Consider caching these maps (e.g. cache map LL -> index instead)
-        std::map<LL, size_t> m;
-
-        double n = 0;
-        double s = 0;
-        double e = 0;
-        double w = 0;
-
-        size_t p = 0;
-        size_t count = 0;
-        bool first = true;
-        double lat, lon;
-
-        // Iterator is "unrotated", because the cropping area
-        // is expressed in before the rotation is applied
-        eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
-        while (iter->next(lat, lon)) {
-            // std::cout << lat << " " << lon << std::endl;
-            if (bbox.contains(lat, lon)) {
-
-                lon = bbox.normalise(lon);
-
-                if (first) {
-                    n = s = lat;
-                    w = e = lon;
-                    first = false;
-                } else {
-                    n = std::max(n, lat);
-                    s = std::min(s, lat);
-                    e = std::max(e, lon);
-                    w = std::min(w, lon);
-                }
-
-                // if(m.find(LL(lat, lon)) != m.end()) {
-                //     eckit::Log::trace<MIR>() << "CROP  duplicate " << lat << ", " << lon << std::endl;
-                // }
-                m.insert(std::make_pair(LL(lat, lon), p));
-                count++;
-
-            }
-            p++;
-        }
-
-        // Make sure we did not visit duplicate points
-        // eckit::Log::trace<MIR>() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
-        ASSERT(count == m.size());
-
-        // Don't support empty results
-        if (!m.size()) {
-            std::ostringstream oss;
-            oss << "Cropping " << *representation << " to " << bbox << " returns not points";
-            throw eckit::UserError(oss.str());
-        }
-        // ASSERT(m.size() > 0);
-
-        c.bbox_ = util::BoundingBox(n, w, s, e);
-        c.mapping_.reserve(m.size());
-
-
-        for (std::map<LL, size_t>::const_iterator j = m.begin(); j != m.end(); ++j) {
-            c.mapping_.push_back((*j).second);
-        }
-
-        if (caching) {
-            disk.insert(key, c);
-        }
-
-        return c;
-
+        return getMapping(key, representation, bbox, caching);
     }
-    catch (std::length_error& e) {
+    catch (std::exception& e) {
 
         // Make sure we don't this entry lying around
         cache.erase(key);
@@ -202,7 +211,6 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
         oss << "Cropping: failed to allocate vector " << e.what();
         throw eckit::SeriousBug(oss.str());
     }
-
 }
 
 void AreaCropper::execute(context::Context & ctx) const {
