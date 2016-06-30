@@ -387,9 +387,9 @@ list(
 	style/MIRStyle.cc
 	style/MIRStyle.h
 	style/ProdgenGrid.cc
-	style/ProdgenGrid.cc
 	style/ProdgenGrid.h
-	style/ProdgenGrid.h
+	style/ProdgenStyle.cc
+	style/ProdgenStyle.h
 	util/Arguments.cc
 	util/Arguments.h
 	util/Bitmap.cc
