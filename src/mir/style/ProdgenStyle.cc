@@ -83,7 +83,20 @@ void ProdgenStyle::sh2sh(action::ActionPlan& plan) const {
     }
 }
 
+void ProdgenStyle::grid2grid(action::ActionPlan& plan) const {
 
+    bool field_gridded  = parametrisation_.has("field.gridded");
+    // bool field_spectral = parametrisation_.has("field.spectral");
+
+    if (!parametrisation_.has("user.grid")) {
+        ECMWFStyle::grid2grid(plan);
+        return;
+    }
+
+    plan.add("interpolate.grid2regular-ll",
+             "grid",
+             new ProdgenGrid(parametrisation_));
+}
 
 // register MARS-specialized style
 namespace {

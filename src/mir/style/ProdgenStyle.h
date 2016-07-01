@@ -89,6 +89,7 @@ class ProdgenStyle : public ECMWFStyle {
 
     void sh2sh(action::ActionPlan& plan) const;
     void sh2grid(action::ActionPlan& plan) const;
+    virtual void grid2grid(action::ActionPlan&) const;
 
 
 // -- Class members
