@@ -195,7 +195,7 @@ void Bitmap::disseminationBitmap(const std::string& path) {
 void Bitmap::prodgenBitmap(const std::string& path, const std::string& destination, const std::string& number)
 {
     char  line[1024];
-    std::ifstream in(path);
+    std::ifstream in(path.c_str());
     if (!in) {
         throw eckit::CantOpenFile(path);
     }

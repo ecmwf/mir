@@ -37,7 +37,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
     eckit::Tokenizer parse(" \t");
     eckit::Translator<std::string, double> s2d;
 
-    std::ifstream in(path_);
+    std::ifstream in(path_.c_str());
     if (!in) {
         throw eckit::CantOpenFile(path_);
     }
