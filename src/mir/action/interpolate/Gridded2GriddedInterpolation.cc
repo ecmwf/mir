@@ -50,7 +50,7 @@ void Gridded2GriddedInterpolation::execute(context::Context & ctx) const {
     ASSERT(parametrisation_.get("interpolation", interpolation));
 
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, parametrisation_));
-    eckit::Log::trace<MIR>() << "Method is " << *method << std::endl;
+    eckit::Log::trace<MIR>() << "Method is " << *method << eckit::newl;
 
     repres::RepresentationHandle in(field.representation());
     repres::RepresentationHandle out(outputRepresentation());

@@ -56,7 +56,7 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
 void PseudoLaplace::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
     eckit::TraceTimer<MIR> timer("PseudoLaplace::assemble");
-    eckit::Log::trace<MIR>() << "PseudoLaplace::assemble" << std::endl;
+    eckit::Log::trace<MIR>() << "PseudoLaplace::assemble" << eckit::newl;
 
     util::PointSearch  sptree(in);
 

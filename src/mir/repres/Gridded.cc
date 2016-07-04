@@ -59,7 +59,7 @@ void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, con
 size_t Gridded::computeN(double first, double last, double inc, const char *n_name, const char *first_name, const char *last_name) {
     size_t n;
     if (!(first <= last)) {
-        eckit::Log::trace<MIR>() << first_name << " (first):" << first << ", " << last_name << " (last)" << last << std::endl;
+        eckit::Log::trace<MIR>() << first_name << " (first):" << first << ", " << last_name << " (last)" << last << eckit::newl;
         ASSERT(first <= last);
     }
     ASSERT(inc > 0);
@@ -67,7 +67,7 @@ size_t Gridded::computeN(double first, double last, double inc, const char *n_na
     double d0 = fabs(last - (first + p * inc));
     double d1 = fabs(last - (first + (p + 1) * inc));
 
-    // eckit::Log::trace<MIR>() << p << " " << d0 << " " << d1 << " " << inc << " " << first << " " << last << std::endl;
+    // eckit::Log::trace<MIR>() << p << " " << d0 << " " << d1 << " " << inc << " " << first << " " << last << eckit::newl;
     ASSERT(d0 != d1);
 
     if (d0 < d1) {
@@ -80,10 +80,10 @@ size_t Gridded::computeN(double first, double last, double inc, const char *n_na
         eckit::Log::trace<MIR>() << "Gridded: cannot compute accuratly "
                            << n_name << ", given "
                            << first_name << "=" << first << ", "
-                           << last_name << "=" << last << " and increment=" << inc << std::endl;
+                           << last_name << "=" << last << " and increment=" << inc << eckit::newl;
         eckit::Log::trace<MIR>() << "Last value is computed as " << (p * inc + first)
                            << ", diff=" << (last - (p * inc + first))
-                           << std::endl;
+                           << eckit::newl;
     }
 
     return n + 1;

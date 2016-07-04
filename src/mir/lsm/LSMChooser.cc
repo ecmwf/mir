@@ -85,12 +85,12 @@ const LSMChooser &LSMChooser::lookup(const std::string &name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, LSMChooser *>::const_iterator j = m->find(name);
 
-    eckit::Log::trace<MIR>() << "Looking for LSMChooser [" << name << "]" << std::endl;
+    eckit::Log::trace<MIR>() << "Looking for LSMChooser [" << name << "]" << eckit::newl;
     if (j == m->end()) {
-        eckit::Log::error() << "No LSMChooser for [" << name << "]" << std::endl;
-        eckit::Log::error() << "LSMChoosers are:" << std::endl;
+        eckit::Log::error() << "No LSMChooser for [" << name << "]" << eckit::newl;
+        eckit::Log::error() << "LSMChoosers are:" << eckit::newl;
         for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
+            eckit::Log::error() << "   " << (*j).first << eckit::newl;
         throw eckit::SeriousBug(std::string("No LSMChooser called ") + name);
     }
 

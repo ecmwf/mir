@@ -184,7 +184,7 @@ class CannotConvert : public eckit::Exception {
 
 template<class T>
 static void convertion_warning(const char *from, const char *to, const std::string &name, const T &value) {
-    // eckit::Log::warning() << "   +++ WARNING: Converting " << value << " from " << from << " to " << to << " (requesting " << name << ")" << std::endl;
+    // eckit::Log::warning() << "   +++ WARNING: Converting " << value << " from " << from << " to " << to << " (requesting " << name << ")" << eckit::newl;
 }
 
 // We will implement convertion as needed
@@ -351,7 +351,7 @@ bool SimpleParametrisation::_get(const std::string &name, T &value) const {
         return false;
     }
     (*j).second->get(name, value);
-    // eckit::Log::trace<MIR>() << "SimpleParametrisation::get(" << name << ") => " << value << std::endl;
+    // eckit::Log::trace<MIR>() << "SimpleParametrisation::get(" << name << ") => " << value << eckit::newl;
     return true;
 }
 
@@ -512,16 +512,16 @@ void SimpleParametrisation::json(eckit::JSON& s) const {
 }
 
 bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
-    eckit::Log::trace<MIR>() << "SimpleParametrisation::matches " << other << std::endl;
+    eckit::Log::trace<MIR>() << "SimpleParametrisation::matches " << other << eckit::newl;
     for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
 
         if ((*j).second->match((*j).first, other)) {
             eckit::Log::trace<MIR>() << "Matching parametrisation: " << (*j).first << "="
-                               << *((*j).second) << std::endl;
+                               << *((*j).second) << eckit::newl;
             return true;
         } else {
             eckit::Log::trace<MIR>() << "Not matching parametrisation: " << (*j).first << "="
-                               << *((*j).second) << std::endl;
+                               << *((*j).second) << eckit::newl;
         }
 
     }

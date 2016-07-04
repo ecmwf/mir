@@ -49,11 +49,11 @@ InMemoryCache<T>::~InMemoryCache() {
     //           << ", evictions: " << eckit::BigNum(evictions_)
     //           << ", youngest: " << youngest_
     //           << ", oldest: " << oldest_
-    //           << std::endl;
+    //           << eckit::newl;
 
-    // std::cout << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
+    // std::cout << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << eckit::newl;
     // for (typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
-    //     std::cout << "Deleting InMemoryCache " << name_ << " " << *((*j).second->ptr_) << std::endl;
+    //     std::cout << "Deleting InMemoryCache " << name_ << " " << *((*j).second->ptr_) << eckit::newl;
     //     delete (*j).second;
     // }
 }
@@ -98,7 +98,7 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
     ASSERT(ptr);
 
     insertions_++;
-    // std::cout << "Insert in InMemoryCache " << *ptr << std::endl;
+    // std::cout << "Insert in InMemoryCache " << *ptr << eckit::newl;
 
     typename std::map<std::string, Entry*>::iterator k = cache_.find(key);
     if (k != cache_.end()) {
@@ -113,7 +113,7 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
         //           << name_
         //           << " capacity="
         //           << capacity_
-        //           << std::endl;
+        //           << eckit::newl;
 
         double now = utime();
         typename std::map<std::string, Entry*>::iterator best = cache_.begin();
@@ -142,13 +142,13 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
         //           << ", " << eckit::BigNum((*best).second->access_)
         //           << " " <<  eckit::Seconds(now - (*best).second->last_)
         //           << " " << eckit::Seconds(now - (*best).second->insert_)
-        //           << std::endl;
+        //           << eckit::newl;
 
         // std::cout << "Evicting entries from InMemoryCache "
         //           <<  name_
         //           << " "
         //           << *((*best).second->ptr_)
-        //           << std::endl;
+        //           << eckit::newl;
         evictions_++;
         delete (*best).second;
         cache_.erase(best);

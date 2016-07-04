@@ -135,7 +135,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
     // is expressed in before the rotation is applied
     eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
     while (iter->next(lat, lon)) {
-        // std::cout << lat << " " << lon << std::endl;
+        // std::cout << lat << " " << lon << eckit::newl;
         if (bbox.contains(lat, lon)) {
 
             lon = bbox.normalise(lon);
@@ -152,7 +152,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
             }
 
             // if(m.find(LL(lat, lon)) != m.end()) {
-            //     eckit::Log::trace<MIR>() << "CROP  duplicate " << lat << ", " << lon << std::endl;
+            //     eckit::Log::trace<MIR>() << "CROP  duplicate " << lat << ", " << lon << eckit::newl;
             // }
             m.insert(std::make_pair(LL(lat, lon), p));
             count++;
@@ -162,7 +162,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
     }
 
     // Make sure we did not visit duplicate points
-    // eckit::Log::trace<MIR>() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
+    // eckit::Log::trace<MIR>() << "CROP inserted points " << count << ", unique points " << m.size() << eckit::newl;
     ASSERT(count == m.size());
 
     // Don't support empty results
@@ -223,7 +223,7 @@ void AreaCropper::execute(context::Context & ctx) const {
     ASSERT(c.mapping_.size());
 
     // eckit::Log::trace<MIR>() << "CROP resulting bbox is: " << c.bbox_ <<
-    //                    ", size=" << c.mapping_.size() << std::endl;
+    //                    ", size=" << c.mapping_.size() << eckit::newl;
 
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
@@ -240,7 +240,7 @@ void AreaCropper::execute(context::Context & ctx) const {
         }
 
         repres::RepresentationHandle cropped(representation->cropped(c.bbox_));
-        // eckit::Log::trace<MIR>() << *cropped << std::endl;
+        // eckit::Log::trace<MIR>() << *cropped << eckit::newl;
 
         if (result.size() == 0) {
             std::ostringstream oss;

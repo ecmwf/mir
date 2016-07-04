@@ -40,7 +40,7 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation &parametr
 
     fd_ = ::open(path.localPath(), O_RDONLY);
     if (fd_ < 0) {
-        eckit::Log::error() << "open(" << path << ')' << eckit::Log::syserr << std::endl;
+        eckit::Log::error() << "open(" << path << ')' << eckit::Log::syserr << eckit::newl;
         throw eckit::FailedSystemCall("open");
     }
 
@@ -53,7 +53,7 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation &parametr
     address_ = ::mmap(0, size_, PROT_READ, MAP_SHARED, fd_, 0);
     if (address_ == MAP_FAILED) {
         eckit::Log::error() << "open(" << path << ',' << size_ << ')'
-                            << eckit::Log::syserr << std::endl;
+                            << eckit::Log::syserr << eckit::newl;
         throw eckit::FailedSystemCall("mmap");
     }
 

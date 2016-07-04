@@ -43,7 +43,7 @@ class MIRMakeLSM : public eckit::Tool {
 void MIRMakeLSM::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " file.grib file.lsm" << std::endl
+            << eckit::newl << "Usage: " << tool << " file.grib file.lsm" << eckit::newl
             ;
 
     ::exit(1);
@@ -74,7 +74,7 @@ void MIRMakeLSM::run() {
         ASSERT(parametrisation.get("Ni", Ni));
         ASSERT(parametrisation.get("Nj", Nj));
 
-        eckit::Log::info() << "Ni=" << Ni << ", Nj=" << Nj << ", size=" << Ni*Nj << std::endl;
+        eckit::Log::info() << "Ni=" << Ni << ", Nj=" << Nj << ", size=" << Ni*Nj << eckit::newl;
         ASSERT(Ni == Nj * 2);
 
 

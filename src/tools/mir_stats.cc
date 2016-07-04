@@ -48,7 +48,7 @@ class MIRStats : public eckit::Tool {
 void MIRStats::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " file.grib" << std::endl
+            << eckit::newl << "Usage: " << tool << " file.grib" << eckit::newl
             ;
 
     ::exit(1);
@@ -86,7 +86,7 @@ void MIRStats::run() {
         bucket_count = 1L << bits;
     }
 
-    eckit::Log::info() << "Number of buckets: " << bucket_count << std::endl;
+    eckit::Log::info() << "Number of buckets: " << bucket_count << eckit::newl;
 
     size_t n = 0;
     while ( file.next() ) {
@@ -114,7 +114,7 @@ void MIRStats::run() {
         }
 
         if (first == values.size()) {
-            eckit::Log::info() << "Field " << n << " has only missing values" << std::endl;
+            eckit::Log::info() << "Field " << n << " has only missing values" << eckit::newl;
             continue;
         }
 
@@ -134,7 +134,7 @@ void MIRStats::run() {
                            << ", max=" << maxvalue
                            << ", count=" << eckit::BigNum(count)
                            << ", missing=" << eckit::BigNum(missing)
-                           << std::endl;
+                           << eckit::newl;
 
 
         // Compute entropy
@@ -157,7 +157,7 @@ void MIRStats::run() {
             }
         }
 
-        std::cout << "Entropy " << e << std::endl;
+        std::cout << "Entropy " << e << eckit::newl;
 
     }
 

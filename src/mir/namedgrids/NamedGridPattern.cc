@@ -80,12 +80,12 @@ const NamedGrid *NamedGridPattern::build(const std::string &name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, NamedGridPattern *>::const_iterator j;
 
-    eckit::Log::trace<MIR>() << "Looking for NamedGridPattern [" << name << "]" << std::endl;
+    eckit::Log::trace<MIR>() << "Looking for NamedGridPattern [" << name << "]" << eckit::newl;
 
     std::map<std::string, NamedGridPattern *>::const_iterator k = m->end();
     for (j = m->begin() ; j != m->end() ; ++j) {
         if (j->second->pattern_.match(name)) {
-            eckit::Log::trace<MIR>() << "Regex " << j->second->pattern_ << " and " << name << " (match)" << std::endl;
+            eckit::Log::trace<MIR>() << "Regex " << j->second->pattern_ << " and " << name << " (match)" << eckit::newl;
 
             if (k != m->end()) {
                 std::stringstream os;
@@ -94,7 +94,7 @@ const NamedGrid *NamedGridPattern::build(const std::string &name) {
             }
             k = j;
         } else {
-            eckit::Log::trace<MIR>() << "Regex " << j->second->pattern_ << " and " << name << " (no match)" << std::endl;
+            eckit::Log::trace<MIR>() << "Regex " << j->second->pattern_ << " and " << name << " (no match)" << eckit::newl;
         }
     }
 
@@ -104,10 +104,10 @@ const NamedGrid *NamedGridPattern::build(const std::string &name) {
 
 
     if (k == m->end()) {
-        eckit::Log::error() << "No NamedGridPattern for [" << name << "]" << std::endl;
-        eckit::Log::error() << "NamedGridPattern are:" << std::endl;
+        eckit::Log::error() << "No NamedGridPattern for [" << name << "]" << eckit::newl;
+        eckit::Log::error() << "NamedGridPattern are:" << eckit::newl;
         for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << *(*j).second << std::endl;
+            eckit::Log::error() << "   " << *(*j).second << eckit::newl;
     }
 
     return 0;

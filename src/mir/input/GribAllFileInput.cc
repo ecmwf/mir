@@ -89,7 +89,7 @@ data::MIRField GribAllFileInput::field() const {
 bool GribAllFileInput::next() {
     if (count_ == 0) {
         for (auto j = inputs_.begin(); j != inputs_.end(); ++j) {
-            // std::cout << *(*j) << std::endl;
+            // std::cout << *(*j) << eckit::newl;
             ASSERT((*j)->next());
         }
         return true;

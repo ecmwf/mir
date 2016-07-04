@@ -250,7 +250,7 @@ Arguments::Arguments(int argc, char** argv) {
     // 3. fill long options parameters (be strict on warnings)
 
 
-    std::cout << eckit::Factory< argmode_t >::instance() << std::endl;
+    std::cout << eckit::Factory< argmode_t >::instance() << eckit::newl;
 
 
 

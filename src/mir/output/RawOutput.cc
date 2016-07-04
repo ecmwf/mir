@@ -65,7 +65,7 @@ size_t RawOutput::save(const param::MIRParametrisation &param, context::Context&
     ASSERT(field.dimensions() == 1);
     const std::vector<double> &values = field.values(0);
 
-    eckit::Log::trace<MIR>() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
+    eckit::Log::trace<MIR>() << "RawOutput::save values: " << values.size() << ", user: " << count_ << eckit::newl;
 
     size_ = values.size();
     ASSERT(size_ <= count_);

@@ -110,14 +110,14 @@ void MethodWeighted::generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh&
     std::ostringstream oss;
     oss << "Method " << name()
         << " needs a mesh() but does not implement generateMesh()"
-        << std::endl;
+        << eckit::newl;
     throw eckit::SeriousBug(oss.str(), Here());
 }
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
 const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
 
-    eckit::Log::trace<MIR>() << "MethodWeighted::getMatrix " << *this << std::endl;
+    eckit::Log::trace<MIR>() << "MethodWeighted::getMatrix " << *this << eckit::newl;
 
     eckit::TraceTimer<MIR> timer("MethodWeighted::getMatrix");
 
@@ -125,9 +125,9 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas
 
     double here = timer.elapsed();
     const lsm::LandSeaMasks masks = getMasks(ctx, in, out);
-    eckit::Log::trace<MIR>() << "Compute LandSeaMasks " << timer.elapsed() - here << std::endl;
+    eckit::Log::trace<MIR>() << "Compute LandSeaMasks " << timer.elapsed() - here << eckit::newl;
 
-    eckit::Log::trace<MIR>() << "++++ LSM masks " << masks << std::endl;
+    eckit::Log::trace<MIR>() << "++++ LSM masks " << masks << eckit::newl;
     here = timer.elapsed();
     eckit::MD5 md5;
     md5 << *this;
@@ -137,7 +137,7 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas
     const eckit::MD5::digest_t md5_no_masks(md5.digest());
     md5 << masks;
     const eckit::MD5::digest_t md5_with_masks(md5.digest());
-    eckit::Log::trace<MIR>() << "Compute md5 " << timer.elapsed() - here << std::endl;
+    eckit::Log::trace<MIR>() << "Compute md5 " << timer.elapsed() - here << eckit::newl;
 
 
     const std::string base_name      = std::string(name()) + "-" + in.shortName() + "-" + out.shortName();
@@ -158,11 +158,11 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas
 
     // calculate weights matrix, apply mask if necessary
 
-    eckit::Log::trace<MIR>() << "Elapsed 1 " << timer.elapsed()  << std::endl;
+    eckit::Log::trace<MIR>() << "Elapsed 1 " << timer.elapsed()  << eckit::newl;
 
     here = timer.elapsed();
     WeightMatrix W(out.npts(), in.npts());
-    eckit::Log::trace<MIR>() << "Create matrix " << timer.elapsed() - here << std::endl;
+    eckit::Log::trace<MIR>() << "Create matrix " << timer.elapsed() - here << eckit::newl;
 
     bool caching = true;
     parametrisation_.get("caching", caching);
@@ -206,7 +206,7 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
 
     eckit::TraceTimer<MIR> timer("MethodWeighted::execute");
-    eckit::Log::trace<MIR>() << "MethodWeighted::execute" << std::endl;
+    eckit::Log::trace<MIR>() << "MethodWeighted::execute" << eckit::newl;
 
     // setup sizes & checks
     const size_t npts_inp = in.npts();
@@ -262,10 +262,10 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
         if (check_stats) {
             // compute some statistics on the result
             // This is expensive so we might want to skip it in production code
-            eckit::Log::trace<MIR>() << "Input  Field statistics : " << istats << std::endl;
+            eckit::Log::trace<MIR>() << "Input  Field statistics : " << istats << eckit::newl;
 
             data::MIRFieldStats ostats = field.statistics(i);
-            eckit::Log::trace<MIR>() << "Output Field statistics : " << ostats << std::endl;
+            eckit::Log::trace<MIR>() << "Output Field statistics : " << ostats << eckit::newl;
 
             /// FIXME: This assertion is to early in the case of LocalGrid input
             ///        because there will be output points which won't be updated (where skipped)
@@ -299,7 +299,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const atlas::gr
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
 
     if (in.same(out)) {
-        eckit::Log::trace<MIR>() << "Matrix is indentity" << std::endl;
+        eckit::Log::trace<MIR>() << "Matrix is indentity" << eckit::newl;
         W.setIdentity();        // grids are the same, use identity matrix
     } else {
         eckit::TraceTimer<MIR> timer("Assemble matrix");
@@ -377,17 +377,17 @@ void MethodWeighted::applyMasks(WeightMatrix &W,
 
     eckit::TraceTimer<MIR> timer("MethodWeighted::applyMasks");
 
-    eckit::Log::trace<MIR>() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
+    eckit::Log::trace<MIR>() << "======== MethodWeighted::applyMasks(" << masks << ")" << eckit::newl;
     ASSERT(masks.active());
 
     const std::vector< bool > &imask = masks.inputMask();
     const std::vector< bool > &omask = masks.outputMask();
 
-    eckit::Log::trace<MIR>() << "imask size " << imask.size() << std::endl;
-    eckit::Log::trace<MIR>() << "omask size " << omask.size() << std::endl;
+    eckit::Log::trace<MIR>() << "imask size " << imask.size() << eckit::newl;
+    eckit::Log::trace<MIR>() << "omask size " << omask.size() << eckit::newl;
 
-    eckit::Log::trace<MIR>() << "cols " << W.cols() << std::endl;
-    eckit::Log::trace<MIR>() << "rows " << W.rows() << std::endl;
+    eckit::Log::trace<MIR>() << "cols " << W.cols() << eckit::newl;
+    eckit::Log::trace<MIR>() << "rows " << W.rows() << eckit::newl;
 
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
@@ -428,7 +428,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W,
 
 
     // log corrections
-    eckit::Log::trace<MIR>() << "MethodWeighted: applyMasks corrected " << eckit::BigNum(fix) << " out of " << eckit::Plural(W.rows() , "row") << std::endl;
+    eckit::Log::trace<MIR>() << "MethodWeighted: applyMasks corrected " << eckit::BigNum(fix) << " out of " << eckit::Plural(W.rows() , "row") << eckit::newl;
 }
 
 

@@ -87,7 +87,7 @@ extern "C" fortint intout_(const char *name,
                            const fortint value_len) {
     std::string n(name);
     n = n.substr(0, name_len);
-    eckit::Log::trace<MIR>() << "++++++ intout [" << n << "]" <<  std::endl;
+    eckit::Log::trace<MIR>() << "++++++ intout [" << n << "]" <<  eckit::newl;
     char buffer[1024];
 
     try {
@@ -196,11 +196,11 @@ extern "C" fortint intout_(const char *name,
         }
         std::string v(value);
         v = v.substr(0, value_len);
-        eckit::Log::trace<MIR>() << "INTOUT " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
+        eckit::Log::trace<MIR>() << "INTOUT " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << eckit::newl;
         throw eckit::SeriousBug(std::string("Unexpected name in INTOUT: [") + n + "]");
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
 
@@ -221,13 +221,13 @@ extern "C" fortint intin_(const char *name,
     std::string v(value);
     v = v.substr(0, value_len);
 
-    eckit::Log::trace<MIR>() << "++++++ intin [" << n << "] v=[" <<  v << "] r=" << reals[0] << " i=" << ints[0] << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ intin [" << n << "] v=[" <<  v << "] r=" << reals[0] << " i=" << ints[0] << eckit::newl;
 
     char buffer[1024];
 
     try {
 
-        eckit::Log::trace<MIR>() << "INTIN " << n << ", s=[" << v << "] - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
+        eckit::Log::trace<MIR>() << "INTIN " << n << ", s=[" << v << "] - i[0]=" << ints[0] << " -r[0]=" << reals[0] << eckit::newl;
 
 
         if (!intin.get()) {
@@ -294,11 +294,11 @@ extern "C" fortint intin_(const char *name,
             }
         }
 
-        eckit::Log::trace<MIR>() << "INTIN " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
+        eckit::Log::trace<MIR>() << "INTIN " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << eckit::newl;
         throw eckit::SeriousBug(std::string("Unexpected name in INTIN: [") + n + "]");
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
 
@@ -314,7 +314,7 @@ extern "C" fortint intf_(const void *grib_in,
                          fortint &length_out,
                          fortfloat values_out[]) {
 
-    eckit::Log::trace<MIR>() << "++++++ intf in="  << length_in << ", out=" << length_out << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ intf in="  << length_in << ", out=" << length_out << eckit::newl;
 
     try {
 
@@ -336,7 +336,7 @@ extern "C" fortint intf_(const void *grib_in,
         length_out = output.size();
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
     return 0;
@@ -348,7 +348,7 @@ extern "C" fortint intf2(const void *grib_in,
                          void *grib_out,
                          fortint &length_out) {
 
-    eckit::Log::trace<MIR>() << "++++++ intf2" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ intf2" << eckit::newl;
 
     try {
 
@@ -362,13 +362,13 @@ extern "C" fortint intf2(const void *grib_in,
         static const char *capture = getenv("MIR_CAPTURE_CALLS");
         if (capture) {
             std::ofstream out(capture);
-            out << "mars<<EOF" << std::endl;
+            out << "mars<<EOF" << eckit::newl;
             out << "retrieve,target=in.grib,";
             input.marsRequest(out);
-            out << std::endl;
-            out << "EOF" << std::endl;
+            out << eckit::newl;
+            out << "EOF" << eckit::newl;
             job->mirToolCall(out);
-            out << std::endl;
+            out << eckit::newl;
         }
 
         job->execute(input, output);
@@ -382,7 +382,7 @@ extern "C" fortint intf2(const void *grib_in,
         }
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
 
@@ -397,13 +397,13 @@ extern "C" fortint intuvs2_(char *vort_grib_in,
                             char *v_grib_out,
                             const fortint &length_out) {
 
-    eckit::Log::trace<MIR>() << "++++++ intuvs2" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ intuvs2" << eckit::newl;
 
     try {
         NOTIMP;
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
     return 0;
@@ -417,7 +417,7 @@ extern "C" fortint intuvp2_(const void *vort_grib_in,
                             void *v_grib_out,
                             fortint &length_out) {
 
-    eckit::Log::trace<MIR>() << "++++++ intuvp2" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ intuvp2" << eckit::newl;
 
     try {
 
@@ -445,16 +445,16 @@ extern "C" fortint intuvp2_(const void *vort_grib_in,
         static const char *capture = getenv("MIR_CAPTURE_CALLS");
         if (capture) {
             std::ofstream out(capture);
-            out << "mars<<EOF" << std::endl;
+            out << "mars<<EOF" << eckit::newl;
             out << "retrieve,target=in.grib,";
             vort_input.marsRequest(out);
-            out << std::endl;
+            out << eckit::newl;
             out << "retrieve,target=in.grib,";
             div_input.marsRequest(out);
-            out << std::endl;
-            out << "EOF" << std::endl;
+            out << eckit::newl;
+            out << "EOF" << eckit::newl;
             job->mirToolCall(out);
-            out << std::endl;
+            out << eckit::newl;
         }
 
         job->execute(input, output);
@@ -479,7 +479,7 @@ extern "C" fortint intuvp2_(const void *vort_grib_in,
 
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
 
@@ -494,7 +494,7 @@ extern "C" fortint intvect2_(const void *u_grib_in,
                              void *v_grib_out,
                              fortint &length_out) {
 
-    eckit::Log::trace<MIR>() << "++++++ intvect2" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ intvect2" << eckit::newl;
 
     try {
         if (!job.get()) {
@@ -515,16 +515,16 @@ extern "C" fortint intvect2_(const void *u_grib_in,
         static const char *capture = getenv("MIR_CAPTURE_CALLS");
         if (capture) {
             std::ofstream out(capture);
-            out << "mars<<EOF" << std::endl;
+            out << "mars<<EOF" << eckit::newl;
             out << "retrieve,target=in.grib,";
             vort_input.marsRequest(out);
-            out << std::endl;
+            out << eckit::newl;
             out << "retrieve,target=in.grib,";
             div_input.marsRequest(out);
-            out << std::endl;
-            out << "EOF" << std::endl;
+            out << eckit::newl;
+            out << "EOF" << eckit::newl;
             job->mirToolCall(out);
-            out << std::endl;
+            out << eckit::newl;
         }
 
         job->execute(input, output);
@@ -532,7 +532,7 @@ extern "C" fortint intvect2_(const void *u_grib_in,
         job->clear("wind");
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
 
@@ -547,12 +547,12 @@ extern "C" fortint intuvs_(const void *vort_grib_in,
                            void *v_grib_out,
                            fortint &length_out) {
 
-    eckit::Log::trace<MIR>() << "++++++ intuvs" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ intuvs" << eckit::newl;
 
     try {
         NOTIMP;
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
 
@@ -567,12 +567,12 @@ extern "C" fortint intuvp_(const void *vort_grib_in,
                            void *v_grib_out,
                            fortint &length_out) {
 
-    eckit::Log::trace<MIR>() << "++++++ intuvp" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ intuvp" << eckit::newl;
 
     try {
         NOTIMP;
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
     return 0;
@@ -586,12 +586,12 @@ extern "C" fortint intvect_(const void *u_grib_in,
                             void *v_grib_out,
                             fortint &length_out) {
 
-    eckit::Log::trace<MIR>() << "++++++ intvect" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ intvect" << eckit::newl;
 
     try {
         NOTIMP;
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
     return 0;
@@ -600,12 +600,12 @@ extern "C" fortint intvect_(const void *u_grib_in,
 
 extern "C" fortint iscrsz_() {
 
-    eckit::Log::trace<MIR>() << "++++++ iscrsz" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ iscrsz" << eckit::newl;
 
     try {
         NOTIMP;
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
     return 0;
@@ -614,7 +614,7 @@ extern "C" fortint iscrsz_() {
 
 extern "C" fortint ibasini_(const fortint &force) {
 
-    eckit::Log::trace<MIR>() << "++++++ ibasini" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ ibasini" << eckit::newl;
 
     // Init interpolation package
     job.reset(0);
@@ -626,12 +626,12 @@ extern "C" fortint ibasini_(const fortint &force) {
 
 extern "C" void intlogm_(fortint (*)(char *, fortint)) {
 
-    eckit::Log::trace<MIR>() << "++++++ intlogm" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ intlogm" << eckit::newl;
 
     try {
         NOTIMP;
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         throw;
     }
 }
@@ -656,7 +656,7 @@ static void callback(void *ctxt, const char *msg) {
 
 extern "C" void intlogs(emos_cb_proc proc) {
 
-    eckit::Log::trace<MIR>() << "++++++ intlogs" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ intlogs" << eckit::newl;
 
     emos_ctx.proc = proc;
 
@@ -666,7 +666,7 @@ extern "C" void intlogs(emos_cb_proc proc) {
         eckit::LibBehavior &libbehavior = dynamic_cast<eckit::LibBehavior &>(behavior);
         libbehavior.default_callback(&callback, &emos_ctx);
     } catch (std::bad_cast &) {
-        eckit::Log::warning() << "INTLOGS: ContextBehavior is not a LibBehavior" << std::endl;
+        eckit::Log::warning() << "INTLOGS: ContextBehavior is not a LibBehavior" << eckit::newl;
     }
 }
 
@@ -679,7 +679,7 @@ extern "C" fortint areachk_(const fortfloat &we,
                             fortfloat &east) {
 
 
-    eckit::Log::trace<MIR>() << "++++++ areachk" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ areachk" << eckit::newl;
 
     try {
 
@@ -736,7 +736,7 @@ extern "C" fortint areachk_(const fortfloat &we,
         east = e;
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
 
@@ -746,7 +746,7 @@ extern "C" fortint areachk_(const fortfloat &we,
 
 extern "C" fortint emosnum_(fortint &value) {
 
-    eckit::Log::trace<MIR>() << "++++++ emosnum" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ emosnum" << eckit::newl;
     value = 0;
     return 42424242;
 }
@@ -756,7 +756,7 @@ extern "C" void freecf_(const fortint &flag) {
     // C     KFLAG - Flag indicating whether flushing of memory is done or not
     // C              = 1 to turn on flushing
     // C              = any other value to turn off flushing (default)
-    eckit::Log::trace<MIR>() << "++++++ freecf flag=" << flag << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ freecf flag=" << flag << eckit::newl;
 }
 
 
@@ -766,7 +766,7 @@ extern "C" void jvod2uv_(const fortfloat vor[],
                          fortfloat u[],
                          fortfloat v[],
                          const fortint &ktout) {
-    eckit::Log::trace<MIR>() << "++++++ jvod2uv in=" << ktin << ", out=" << ktout << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ jvod2uv in=" << ktin << ", out=" << ktout << eckit::newl;
     try {
 
         if (!intin.get()) {
@@ -799,7 +799,7 @@ extern "C" void jvod2uv_(const fortfloat vor[],
 
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         throw;
     }
 }
@@ -807,7 +807,7 @@ extern "C" void jvod2uv_(const fortfloat vor[],
 
 extern "C" fortint jgglat_(const fortint &KLAT, fortfloat PGAUSS[]) {
 
-    eckit::Log::trace<MIR>() << "++++++ jgglat " << KLAT << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ jgglat " << KLAT << eckit::newl;
     size_t N = KLAT / 2;
     atlas::grid::global::gaussian::latitudes::gaussian_latitudes_npole_equator(N, PGAUSS);
 
@@ -821,7 +821,7 @@ extern "C" void jnumgg_(const fortint &knum,
                         fortint &kret,
                         fortint htype_len) {
 
-    eckit::Log::trace<MIR>() << "++++++ jnumgg " << htype[0] << " " << knum << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ jnumgg " << htype[0] << " " << knum << eckit::newl;
 
     kret = 0;
     try {
@@ -838,7 +838,7 @@ extern "C" void jnumgg_(const fortint &knum,
         }
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         kret = -2;
     }
 }
@@ -879,7 +879,7 @@ extern "C" fortint wvqlint_(const fortint &knum,
                        << ", kparam=" << kparam
                        << ", pmiss=" << pmiss
                        << ", rns=" << rns
-                       << std::endl;
+                       << eckit::newl;
     try {
 
         // Only global for now
@@ -908,7 +908,7 @@ extern "C" fortint wvqlint_(const fortint &knum,
 
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
     return 0;
@@ -937,7 +937,7 @@ extern "C" void wv2dint_(const fortint &knum,
                        << ", knspec=" << knspec
                        << ", pmiss=" << pmiss
                        << ", rns=" << rns
-                       << std::endl;
+                       << eckit::newl;
     try {
 
         // Only global for now
@@ -965,7 +965,7 @@ extern "C" void wv2dint_(const fortint &knum,
 
         job.execute(input, output);
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         throw;
     }
 }
@@ -983,7 +983,7 @@ extern "C" fortint hirlam_( const fortint &l12pnt,
                             fortint &nlon,
                             fortint &nlat) {
 
-    eckit::Log::trace<MIR>() << "++++++ hirlam" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ hirlam" << eckit::newl;
 
     // C     L12PNT - Chooses between 12-point and 4-point interpolation
     // C              = .TRUE. for 12-point horizontal
@@ -1025,7 +1025,7 @@ extern "C" fortint hirlam_( const fortint &l12pnt,
         nlat = ni;
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
 
@@ -1045,7 +1045,7 @@ extern "C" fortint hirlsm_( const fortint &l12pnt,
                             fortint &nlon,
                             fortint &nlat) {
 
-    eckit::Log::trace<MIR>() << "++++++ hirlsm" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ hirlsm" << eckit::newl;
 
     try {
         // ASSERT(unpacked); // Only for PRODGEN
@@ -1076,7 +1076,7 @@ extern "C" fortint hirlsm_( const fortint &l12pnt,
         nlat = ni;
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
     return 0;
@@ -1096,7 +1096,7 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
                             const fortint &ksize,
                             fortint &nlon,
                             fortint &nlat) {
-    eckit::Log::trace<MIR>() << "++++++ hirlamw" << std::endl;
+    eckit::Log::trace<MIR>() << "++++++ hirlamw" << eckit::newl;
 
     try {
         ProdgenJob u_intin;
@@ -1137,7 +1137,7 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
         nlat = ni;
 
     } catch (std::exception &e) {
-        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
+        eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << eckit::newl;
         return -2;
     }
     return 0;

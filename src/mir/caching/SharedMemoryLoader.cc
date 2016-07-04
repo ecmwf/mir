@@ -95,7 +95,7 @@ class SemLocker {
                 if (save == EINTR && retry < MAX_WAIT_LOCK) {
                     continue;
                 }
-                eckit::Log::warning() << "SharedMemoryLoader: Failed to acquire exclusive lock on " << path_ << " " << eckit::Log::syserr << std::endl;
+                eckit::Log::warning() << "SharedMemoryLoader: Failed to acquire exclusive lock on " << path_ << " " << eckit::Log::syserr << eckit::newl;
 
                 // sprintf(message,"ERR: sharedmem:semop:lock(%s)",path);
                 if (retry >= MAX_WAIT_LOCK) {
@@ -103,7 +103,7 @@ class SemLocker {
                     os << "Failed to acquire semaphore lock for " << path_;
                     throw eckit::FailedSystemCall(os.str());
                 } else {
-                    eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << std::endl;
+                    eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << eckit::newl;
                     sleep(SLEEP);
                 }
             } else {
@@ -123,14 +123,14 @@ class SemLocker {
                     continue;
                 }
 
-                eckit::Log::warning() << "SharedMemoryLoader: Failed to realease exclusive lock on " << path_ << " " << eckit::Log::syserr << std::endl;
+                eckit::Log::warning() << "SharedMemoryLoader: Failed to realease exclusive lock on " << path_ << " " << eckit::Log::syserr << eckit::newl;
 
                 if (retry >= MAX_WAIT_LOCK) {
                     std::ostringstream os;
                     os << "Failed to realease semaphore lock for " << path_;
                     throw eckit::SeriousBug(os.str());
                 } else {
-                    eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << std::endl;
+                    eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << eckit::newl;
                     sleep(SLEEP);
                 }
             } else {
@@ -156,7 +156,7 @@ class Unloader {
             try {
                 SharedMemoryLoader::unloadSharedMemory(*j);
             } catch (std::exception& e) {
-                std::cout << e.what() << std::endl;
+                std::cout << e.what() << eckit::newl;
             }
         }
     }
@@ -170,7 +170,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     size_(path.size()),
     unload_(false) {
 
-    // eckit::Log::info() << "Loading shared memory from " << path << std::endl;
+    // eckit::Log::info() << "Loading shared memory from " << path << eckit::newl;
 
 
     std::string name;
@@ -185,7 +185,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
     // eckit::TraceTimer<MIR> timer("Loading legendre coefficients from shared memory");
     eckit::PathName real = path.realName();
-    // eckit::Log::trace<MIR>() << "Loading legendre coefficients from " << real << std::endl;
+    // eckit::Log::trace<MIR>() << "Loading legendre coefficients from " << real << eckit::newl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
         std::ostringstream os;
@@ -218,7 +218,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     // Only on Linux?
     struct shminfo shm_info;
     SYSCALL(shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-    eckit::Log::trace<MIR>() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) << std::endl;
+    eckit::Log::trace<MIR>() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) << eckit::newl;
 #endif
     // This may return EINVAL is the segment is too large 256MB
     // To find the maximum:
@@ -228,7 +228,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     //                          std::hex << key << std::dec << ", page size: "
     //                          << eckit::Bytes(page_size) << ", pages: "
     //                          << eckit::BigNum(shmsize / page_size)
-    //                          << std::endl;
+    //                          << eckit::newl;
 
     int shmid;
     if ((shmid = shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
@@ -240,7 +240,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 #ifdef SHM_PAGESIZE
     {
 
-        // eckit::Log::trace<MIR>() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
+        // eckit::Log::trace<MIR>() << "SharedMemoryLoader: attempting to use 64K pages"  << eckit::newl;
 
         /* Use 64K pages to back the shared memory region */
         size_t shm_size;
@@ -290,7 +290,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
 
         if (loadfile) {
-            // eckit::Log::info() << "SharedMemoryLoader: loading " << path_ << std::endl;
+            // eckit::Log::info() << "SharedMemoryLoader: loading " << path_ << eckit::newl;
             // eckit::Timer("Loading file into shared memory");
             eckit::StdFile file(real);
             ASSERT(::fread(address_, 1, size_, file) == size_);
@@ -301,7 +301,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
             strcpy(nfo->path, real.asString().c_str());
             nfo->ready = 1;
         } else {
-            // eckit::Log::info() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
+            // eckit::Log::info() << "SharedMemoryLoader: " << path_ << " already loaded" << eckit::newl;
         }
 
     } catch (...) {
@@ -327,7 +327,7 @@ void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
 }
 
 void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
-    // std::cout << "Unloading SharedMemory from " << path << std::endl;
+    // std::cout << "Unloading SharedMemory from " << path << eckit::newl;
 
     eckit::PathName real = path.realName();
     int shmid = 0;
@@ -341,32 +341,32 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     shmid = shmget(key, 0, 0600);
     if (shmid < 0 && errno != ENOENT) {
         // throw eckit::FailedSystemCall("Cannot get shared memory for " + path);
-        std::cout << "Cannot get shared memory for " << path << eckit::Log::syserr << std::endl;
+        std::cout << "Cannot get shared memory for " << path << eckit::Log::syserr << eckit::newl;
         return;
     }
 
     if (shmid < 0 && errno == ENOENT) {
-        // std::cout << "SharedMemory from " << path  << " already unloaded" <<std::endl;
+        // std::cout << "SharedMemory from " << path  << " already unloaded" <<eckit::newl;
     } else {
         if (shmctl(shmid, IPC_RMID, 0) < 0) {
-            std::cout << "Cannot delete memory for " << path << eckit::Log::syserr << std::endl;
+            std::cout << "Cannot delete memory for " << path << eckit::Log::syserr << eckit::newl;
         }
-        // std::cout << "Succefully unloaded SharedMemory from " << path  << std::endl;
+        // std::cout << "Succefully unloaded SharedMemory from " << path  << eckit::newl;
     }
 #if 0
     sem = semget(key, 1, 0600);
     if (sem < 0 && errno != ENOENT) {
-        std::cout << "Cannot get shared shemaphore for " << path << eckit::Log::syserr << std::endl;
+        std::cout << "Cannot get shared shemaphore for " << path << eckit::Log::syserr << eckit::newl;
         return;
     }
 
     if (sem < 0 && errno == ENOENT) {
-        // std::cout << "SharedMemory semaphore for " << path  << " already unloaded" <<std::endl;
+        // std::cout << "SharedMemory semaphore for " << path  << " already unloaded" <<eckit::newl;
     } else {
         if (semctl(sem, 0, IPC_RMID, 0) < 0) {
-            std::cout << "Cannot delete semaphore for " << path << eckit::Log::syserr << std::endl;
+            std::cout << "Cannot delete semaphore for " << path << eckit::Log::syserr << eckit::newl;
         }
-        // std::cout << "SharedMemory removed semaphore for " << path  <<std::endl;
+        // std::cout << "SharedMemory removed semaphore for " << path  <<eckit::newl;
     }
 #endif
 }

@@ -60,7 +60,7 @@ void Grids::grid(const atlas::grid::global::Structured& grid) {
 
     eckit::Log::info() << "uid " << g.uniqueId() << " hash " << g.hash() << " rle ";
     eckit::RLEprint(eckit::Log::info(), rle.begin(), rle.end());
-    eckit::Log::info() << std::endl;
+    eckit::Log::info() << eckit::newl;
 }
 
 

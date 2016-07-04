@@ -72,7 +72,7 @@ void FormulaFunction::print(std::ostream& out) const {
 // };
 
 void FormulaFunction::execute(mir::context::Context& ctx) const {
-    std::cout << "Execute " << *this << std::endl;
+    std::cout << "Execute " << *this << eckit::newl;
 
     size_t i = 0;
     for (auto j = args_.begin(); j != args_.end(); ++j, ++i) {

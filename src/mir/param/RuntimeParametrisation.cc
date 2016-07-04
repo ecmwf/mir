@@ -45,7 +45,7 @@ void RuntimeParametrisation::print(std::ostream& out) const {
 
 template<class T>
 void RuntimeParametrisation::_set(const std::string& name, const T& value) {
-    eckit::Log::trace<MIR>() << "************* RuntimeParametrisation::set [" << name << "] = [" << value << "]" << std::endl;
+    eckit::Log::trace<MIR>() << "************* RuntimeParametrisation::set [" << name << "] = [" << value << "]" << eckit::newl;
     SimpleParametrisation::set(name, value);
 }
 
@@ -75,7 +75,7 @@ MIRParametrisation& RuntimeParametrisation::set(const std::string& name, double 
 }
 
 MIRParametrisation& RuntimeParametrisation::set(const std::string& name, DelayedParametrisation* value) {
-    eckit::Log::trace<MIR>() << "************* RuntimeParametrisation::set [" << name << "] = [" << *value << "]" << std::endl;
+    eckit::Log::trace<MIR>() << "************* RuntimeParametrisation::set [" << name << "] = [" << *value << "]" << eckit::newl;
     SimpleParametrisation::set(name, value);
     return *this;
 }

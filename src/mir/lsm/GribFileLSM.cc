@@ -44,7 +44,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     // object is cached
 
 
-    eckit::Log::trace<MIR>() << "GribFileLSM loading " << path_ << std::endl;
+    eckit::Log::trace<MIR>() << "GribFileLSM loading " << path_ << eckit::newl;
 
     mir::input::GribFileInput file( path_ );
     mir::input::MIRInput &input = file;
@@ -63,7 +63,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     }
 
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
-    eckit::Log::trace<MIR>() << "LSM interpolation method is " << *method << std::endl;
+    eckit::Log::trace<MIR>() << "LSM interpolation method is " << *method << eckit::newl;
 
     eckit::ScopedPtr<atlas::grid::Grid> gin(field.representation()->atlasGrid());
 

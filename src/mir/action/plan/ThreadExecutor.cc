@@ -43,9 +43,9 @@ class ThreadExecutorTask : public eckit::ThreadPoolTask {
     const ActionNode& node_;
 
     virtual void execute() {
-        std::cout << "===> Execute " << node_ << std::endl;
+        std::cout << "===> Execute " << node_ << eckit::newl;
         node_.execute(ctx_, owner_);
-        std::cout << "<=== Done " << node_ << std::endl;
+        std::cout << "<=== Done " << node_ << eckit::newl;
 
     }
 

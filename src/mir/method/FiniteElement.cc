@@ -184,7 +184,7 @@ Triplets projectPointToElements(
                     icoords[idx[3]].data() );
 
             if ( !quad.validate() ) { // somewhat expensive sanity check
-                eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
+                eckit::Log::warning() << "Invalid Quad : " << quad << eckit::newl;
                 throw eckit::SeriousBug("Found invalid quadrilateral in mesh", Here());
             }
 
@@ -253,10 +253,10 @@ void FiniteElement::hash(eckit::MD5&) const
 void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
     // FIXME: arguments
-    eckit::Log::trace<MIR>() << "FiniteElement::assemble" << std::endl;
+    eckit::Log::trace<MIR>() << "FiniteElement::assemble" << eckit::newl;
 
-    eckit::Log::trace<MIR>() << "  Input  Grid: " << in.grid()  << std::endl;
-    eckit::Log::trace<MIR>() << "  Output Grid: " << out.grid() << std::endl;
+    eckit::Log::trace<MIR>() << "  Input  Grid: " << in.grid()  << eckit::newl;
+    eckit::Log::trace<MIR>() << "  Output Grid: " << out.grid() << eckit::newl;
 
     const atlas::grid::Domain &inDomain = in.grid().domain();
 
@@ -274,10 +274,10 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
             atlas::util::io::Gmsh gmsh;
             gmsh.options.set<std::string>("nodes", "xyz");
 
-            eckit::Log::trace<MIR>() << "Dumping input mesh to input.msh" << std::endl;
+            eckit::Log::trace<MIR>() << "Dumping input mesh to input.msh" << eckit::newl;
             gmsh.write(in.mesh(), "input.msh");
 
-            eckit::Log::trace<MIR>() << "Dumping output mesh to output.msh" << std::endl;
+            eckit::Log::trace<MIR>() << "Dumping output mesh to output.msh" << eckit::newl;
             atlas::mesh::actions::BuildXYZField("xyz")(out.mesh());
             gmsh.write(out.mesh(), "output.msh");
         }
@@ -336,7 +336,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     stats.inp_npts  = i_nodes.size();
     stats.out_npts  = o_nodes.size();
 
-    eckit::Log::trace<MIR>() << stats << std::endl;
+    eckit::Log::trace<MIR>() << stats << eckit::newl;
 
     // weights -- one per vertex of element, triangles (3) or quads (4)
 
@@ -348,7 +348,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     const size_t maxNbElemsToTry = std::max<size_t>(64, stats.size() * maxFractionElemsToTry);
     size_t max_neighbours = 0;
 
-    eckit::Log::trace<MIR>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().shortName() << std::endl;
+    eckit::Log::trace<MIR>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().shortName() << eckit::newl;
 
     {
         eckit::TraceTimer<MIR> timerProj("Projecting");
@@ -360,7 +360,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
                 eckit::Log::trace<MIR>() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timerProj.elapsed())
                                          << ", rate: " << rate << " points/s, ETA: "
                                          << eckit::ETA( (stats.out_npts - ip) / rate )
-                                         << std::endl;
+                                         << eckit::newl;
             }
 
             if (!inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
@@ -400,14 +400,14 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
                 // If this fails, consider lowering atlas::grid::parametricEpsilon
                 eckit::Log::trace<MIR>() << "Failed to project point " << ip << " " << p
                                          << " with coordinates lon=" << olonlat[ip][LON] << ", lat=" << olonlat[ip][LAT]
-                                         << " after " << eckit::Plural(kpts, "attempt") << std::endl;
+                                         << " after " << eckit::Plural(kpts, "attempt") << eckit::newl;
                 throw eckit::SeriousBug("Could not project point");
             }
         }
     }
 
-    eckit::Log::trace<MIR>() << "Projected " << eckit::Plural(stats.out_npts, "point") << std::endl;
-    eckit::Log::trace<MIR>() << "Maximum neighbours searched was " << eckit::Plural(max_neighbours, "element") << std::endl;
+    eckit::Log::trace<MIR>() << "Projected " << eckit::Plural(stats.out_npts, "point") << eckit::newl;
+    eckit::Log::trace<MIR>() << "Maximum neighbours searched was " << eckit::Plural(max_neighbours, "element") << eckit::newl;
 
     W.setFromTriplets(weights_triplets); // fill sparse matrix
 }
@@ -419,7 +419,7 @@ void FiniteElement::generateMesh(const atlas::grid::Grid &grid, atlas::mesh::Mes
 
     parametrisation_.get("meshgenerator", meshgenerator); // Override with MIRParametrisation
 
-    eckit::Log::trace<MIR>() << "MeshGenerator parametrisation is '" << meshgenerator << "'" << std::endl;
+    eckit::Log::trace<MIR>() << "MeshGenerator parametrisation is '" << meshgenerator << "'" << eckit::newl;
 
     eckit::ScopedPtr<atlas::mesh::generators::MeshGenerator> generator(
                 atlas::mesh::generators::MeshGeneratorFactory::build(meshgenerator, meshgenparams_) );

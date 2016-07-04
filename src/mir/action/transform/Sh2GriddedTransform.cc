@@ -66,7 +66,7 @@ struct TransCache {
     friend std::ostream& operator<<(std::ostream& out, const TransCache& e) { e.print(out); return out; }
 
     ~TransCache() {
-        std::cout << "Delete " << *this << std::endl;
+        std::cout << "Delete " << *this << eckit::newl;
         trans_delete(&trans_);
         delete loader_;
     }
@@ -101,7 +101,7 @@ static void transform(
 
     // Warning: we keep the coefficient in memory for all the resolution used
     if (trans_handles.find(key) == trans_handles.end()) {
-        // std::cout << "Creating a new TRANS handle for " << key << std::endl;
+        // std::cout << "Creating a new TRANS handle for " << key << eckit::newl;
 
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
 
@@ -135,7 +135,7 @@ static void transform(
         if (!cache.get(key, path)) {
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
             eckit::TraceTimer<MIR> timer("Caching coefficients");
-            // std::cout << "LegendreCache " << key << " does not exists" << std::endl;
+            // std::cout << "LegendreCache " << key << " does not exists" << eckit::newl;
             eckit::PathName tmp = cache.stage(key);
             ASSERT( trans_set_write(&trans, tmp.asString().c_str())  == 0);
             ASSERT(trans_setup(&trans) == 0); // This will create the cache
@@ -147,7 +147,7 @@ static void transform(
             eckit::Timer timer("Loading coefficients");
 
             tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
-            // std::cout << "LegendreLoader " << *tc.loader_ << std::endl;
+            // std::cout << "LegendreLoader " << *tc.loader_ << eckit::newl;
 
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 
@@ -263,7 +263,7 @@ void Sh2GriddedTransform::execute(context::Context & ctx) const {
 
     repres::RepresentationHandle out(outputRepresentation());
 
-    // std::cout << *out << std::endl;
+    // std::cout << *out << eckit::newl;
 
     // TODO: Transform all the fields together
     for (size_t i = 0; i < field.dimensions(); i++) {

@@ -67,7 +67,7 @@ class MIRIntegrate : public eckit::Tool {
 void MIRIntegrate::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " file.grib" << std::endl;
+            << eckit::newl << "Usage: " << tool << " file.grib" << eckit::newl;
 
     ::exit(1);
 }
@@ -190,7 +190,7 @@ void MIRIntegrate::run() {
 #endif
 
 
-        eckit::Log::info() << "Integral " << result << std::endl;
+        eckit::Log::info() << "Integral " << result << eckit::newl;
 
     }
 }

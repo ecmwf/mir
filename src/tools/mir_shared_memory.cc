@@ -39,7 +39,7 @@ class MIRSharedMemory : public eckit::Tool {
 void MIRSharedMemory::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " --load=file | --unload=file" << std::endl
+            << eckit::newl << "Usage: " << tool << " --load=file | --unload=file" << eckit::newl
             ;
 
 }

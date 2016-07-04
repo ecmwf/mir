@@ -73,7 +73,7 @@ MappedMask::MappedMask(const std::string &name,
 
     int fd = ::open(path_.localPath(), O_RDONLY);
     if (fd < 0) {
-        eckit::Log::error() << "open(" << path_ << ')' << eckit::Log::syserr << std::endl;
+        eckit::Log::error() << "open(" << path_ << ')' << eckit::Log::syserr << eckit::newl;
         throw eckit::FailedSystemCall("open");
     }
 
@@ -88,7 +88,7 @@ MappedMask::MappedMask(const std::string &name,
     void *address = ::mmap(0, size, PROT_READ, MAP_SHARED, fd, 0);
     if (address == MAP_FAILED) {
         eckit::Log::error() << "open(" << path_ << ',' << size << ')'
-                            << eckit::Log::syserr << std::endl;
+                            << eckit::Log::syserr << eckit::newl;
         throw eckit::FailedSystemCall("mmap");
     }
 
@@ -104,7 +104,7 @@ MappedMask::MappedMask(const std::string &name,
     const size_t ROWS = Nj;
     const size_t COLS = Ni;
 
-    eckit::Log::trace<MIR>() << "LSM: Ni=" << Ni << ", Nj=" << Nj << std::endl;
+    eckit::Log::trace<MIR>() << "LSM: Ni=" << Ni << ", Nj=" << Nj << eckit::newl;
 
     eckit::TraceTimer<MIR> timer("Extract points from  LSM");
 

@@ -111,7 +111,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
     using eckit::geometry::LAT;
     eckit::FloatApproxCompare< double > eq(10e-10);  //FIXME
 
-    eckit::Log::trace<MIR>() << "Bilinear::assemble " << *this << std::endl;
+    eckit::Log::trace<MIR>() << "Bilinear::assemble " << *this << eckit::newl;
 
 
     // NOTE: use bilinear interpolation assuming quasi-regular grid
@@ -150,19 +150,19 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
         if (lat > max_lat) max_lat = lat;
     }
     ASSERT(min_lat < max_lat);
-    eckit::Log::trace<MIR>() << "Bilinear::assemble max_lat=" << max_lat << ", min_lat=" << min_lat << std::endl;
+    eckit::Log::trace<MIR>() << "Bilinear::assemble max_lat=" << max_lat << ", min_lat=" << min_lat << eckit::newl;
 
 
     // set northern & southern-most parallel point indices
     std::vector<size_t> parallel_north(lons.front());
     std::vector<size_t> parallel_south(lons.back());
 
-    eckit::Log::trace<MIR>() << "Bilinear::assemble first row: " << lons.front() << std::endl;
+    eckit::Log::trace<MIR>() << "Bilinear::assemble first row: " << lons.front() << eckit::newl;
     for (size_t i = 0; i < lons.front(); ++i) {
         parallel_north[i] = i;
     }
 
-    eckit::Log::trace<MIR>() << "Bilinear::assemble last row: " << lons.back() << std::endl;
+    eckit::Log::trace<MIR>() << "Bilinear::assemble last row: " << lons.back() << eckit::newl;
     for (size_t i = lons.back(), j = 0; i > 0; i--, j++) {
         parallel_south[j] = inpts - i;
     }
@@ -195,7 +195,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 //                    << w << " "
 //                    << w << " "
 //                    << w << " "
-//                    << w << std::endl;
+//                    << w << eckit::newl;
 
         } else {
 
@@ -328,7 +328,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 //                      << w4 << " "
 //                      << wt << " "
 //                      << wb << " "
-//                      << std::endl;
+//                      << eckit::newl;
 
             ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(w1, 0.) );
             ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(w2, 0.) );
@@ -351,7 +351,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 //                    << fabs(w_tl) << " "
 //                    << fabs(w_tr) << " "
 //                    << fabs(w_bl) << " "
-//                    << fabs(w_br) << std::endl;
+//                    << fabs(w_br) << eckit::newl;
 
             weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_rgt, w_br ) );
             weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_lft, w_bl ) );

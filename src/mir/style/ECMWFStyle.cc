@@ -91,7 +91,7 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
     epilogue(plan);
 
-    // std::cout << plan << std::endl;
+    // std::cout << plan << eckit::newl;
 }
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {

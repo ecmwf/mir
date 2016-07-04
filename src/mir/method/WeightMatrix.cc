@@ -113,7 +113,7 @@ void WeightMatrix::cleanup() {
         eckit::Log::trace<MIR>() << "MethodWeighted::cleanupMatrix fixed "
                                  << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
                                  << " (matrix is " << eckit::BigNum(r) << "x" << eckit::BigNum(c) << ", total=" <<
-                                 eckit::BigNum(total) << ")" << std::endl;
+                                 eckit::BigNum(total) << ")" << eckit::newl;
     }
     prune(0.0);
 }
@@ -147,7 +147,7 @@ void WeightMatrix::validate(const char *when) const {
         if (!ok) {
             if (errors < 50) {
                 if (!errors) {
-                    eckit::Log::trace<MIR>() << "checkMatrixWeights(" << when << ") failed " << std::endl;
+                    eckit::Log::trace<MIR>() << "checkMatrixWeights(" << when << ") failed " << eckit::newl;
                 }
 
                 eckit::Log::trace<MIR>() << "Row: " << i;
@@ -160,9 +160,9 @@ void WeightMatrix::validate(const char *when) const {
                     eckit::Log::trace<MIR>() << " [" << *j << "]";
                 }
 
-                eckit::Log::trace<MIR>() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
+                eckit::Log::trace<MIR>() << " sum=" << sum << ", 1-sum " << (1 - sum) << eckit::newl;
             } else if (errors == 50) {
-                eckit::Log::trace<MIR>() << "..." << std::endl;
+                eckit::Log::trace<MIR>() << "..." << eckit::newl;
             }
             errors++;
 

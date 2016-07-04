@@ -87,13 +87,13 @@ Method *MethodFactory::build(const std::string &name, const param::MIRParametris
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, MethodFactory *>::const_iterator j = m->find(name);
 
-    eckit::Log::trace<MIR>() << "Looking for MethodFactory [" << name << "]" << std::endl;
+    eckit::Log::trace<MIR>() << "Looking for MethodFactory [" << name << "]" << eckit::newl;
 
     if (j == m->end()) {
-        eckit::Log::error() << "No MethodFactory for [" << name << "]" << std::endl;
-        eckit::Log::error() << "MethodFactories are:" << std::endl;
+        eckit::Log::error() << "No MethodFactory for [" << name << "]" << eckit::newl;
+        eckit::Log::error() << "MethodFactories are:" << eckit::newl;
         for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
+            eckit::Log::error() << "   " << (*j).first << eckit::newl;
         throw eckit::SeriousBug(std::string("No MethodFactory called ") + name);
     }
 

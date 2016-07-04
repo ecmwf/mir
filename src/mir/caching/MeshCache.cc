@@ -40,7 +40,7 @@ bool MeshCache::add(const std::string& key, const Mesh& mesh)
 
     if( file.exists() )
     {
-        Log::info() << "MeshCache entry " << file << " already exists ..." << std::endl;
+        Log::info() << "MeshCache entry " << file << " already exists ..." << eckit::newl;
         return false;
     }
 
@@ -50,7 +50,7 @@ bool MeshCache::add(const std::string& key, const Mesh& mesh)
 
     PathName tmpfile ( PathName::unique(file) );
 
-    // Log::info() << "Inserting mesh in cache (" << file << ")" << std::endl;
+    // Log::info() << "Inserting mesh in cache (" << file << ")" << eckit::newl;
 
     {
         eckit::FileStream s(tmpfile,"w");
@@ -65,7 +65,7 @@ bool MeshCache::add(const std::string& key, const Mesh& mesh)
     }
     catch( FailedSystemCall& e ) // ignore failed system call -- another process may have created the file meanwhile
     {
-        Log::info() << "Failed rename of cache file -- " << e.what() << std::endl;
+        Log::info() << "Failed rename of cache file -- " << e.what() << eckit::newl;
     }
 
     return true;
@@ -75,11 +75,11 @@ atlas::mesh::Mesh* MeshCache::get(const std::string &key)
 {
     PathName file( filename(key) );
 
-    Log::info() << "Looking for file cache (" << file << ")" << std::endl;
+    Log::info() << "Looking for file cache (" << file << ")" << eckit::newl;
 
     if(!file.exists()) { return 0; }
 
-    Log::info() << "Found mesh in cache (" << file << ")" << std::endl;
+    Log::info() << "Found mesh in cache (" << file << ")" << eckit::newl;
 
     eckit::FileStream s(file, "r");
 

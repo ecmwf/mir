@@ -41,12 +41,12 @@ void MIRFormula::run() {
     mir::param::SimpleParametrisation param;
 
     mir::util::Formula * f = p.parse(param);
-    std::cout << (*f) << std::endl;
+    std::cout << (*f) << eckit::newl;
 
     mir::context::Context ctx;
     f->execute(ctx);
 
-    std::cout << ctx << std::endl;
+    std::cout << ctx << eckit::newl;
 
 }
 

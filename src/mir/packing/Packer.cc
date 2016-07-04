@@ -79,13 +79,13 @@ const Packer& Packer::lookup(const std::string &name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, Packer *>::const_iterator j = m->find(name);
 
-    eckit::Log::trace<MIR>() << "Looking for Packer [" << name << "]" << std::endl;
+    eckit::Log::trace<MIR>() << "Looking for Packer [" << name << "]" << eckit::newl;
 
     if (j == m->end()) {
-        eckit::Log::error() << "No Packer for [" << name << "]" << std::endl;
-        eckit::Log::error() << "Packers are:" << std::endl;
+        eckit::Log::error() << "No Packer for [" << name << "]" << eckit::newl;
+        eckit::Log::error() << "Packers are:" << eckit::newl;
         for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
+            eckit::Log::error() << "   " << (*j).first << eckit::newl;
         throw eckit::SeriousBug(std::string("No Packer called ") + name);
     }
 

@@ -70,12 +70,12 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
 
         if (!data && strncmp(line, "# ", 2) == 0) {
             std::vector<std::string> v;
-            // std::cout << "PARSE " << line +2 << std::endl;
+            // std::cout << "PARSE " << line +2 << eckit::newl;
             parse2(line + 2, v);
             ASSERT(v.size() == 2);
             parametrisation_.set(v[0], v[1]);
 
-            // std::cout << path_ << " ===> " << v[0] << "=" << v[1] << std::endl;
+            // std::cout << path_ << " ===> " << v[0] << "=" << v[1] << eckit::newl;
         }
 
         if (!data && strncmp(line, "#DATA", 5) == 0) {

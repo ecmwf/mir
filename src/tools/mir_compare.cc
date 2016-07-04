@@ -82,7 +82,7 @@ void MIRCompare::usage(const std::string &tool) {
             << "  [--packing=f]:  Comparing to packing error, with provided factor" << '\n'
             << "  [--ulps=u]:     Comparing with ULPs"                              << '\n'
             << "  [--l2norm]:     Compute L2 norm between 2 fields"                 << '\n'
-            << std::endl;
+            << eckit::newl;
 
     ::exit(1);
 }
@@ -138,21 +138,21 @@ bool MIRCompare::compare(const double *a, const double *b, size_t size) const {
         double p = double(count) / double(size) * 100;
         eckit::Log::info() << eckit::Plural(count, "value")
                            << " out of " << eckit::BigNum(size)
-                           << (count > 1 ? " are " : " is ") << "different (" << p << "%)" << std::endl;
+                           << (count > 1 ? " are " : " is ") << "different (" << p << "%)" << eckit::newl;
 
         eckit::Log::info() << "Max difference is element " << m + 1 << " v1=" << a[m] << " v2=" << b[m]
-                           << " diff=" << fabs(a[m] - b[m]) << " err=" << err(a[m], b[m]) << std::endl;
+                           << " diff=" << fabs(a[m] - b[m]) << " err=" << err(a[m], b[m]) << eckit::newl;
 
-        eckit::Log::info() << "maxAbsoluteError=" << maxAbsoluteError << " maxRelativeError=" << maxRelativeError << std::endl;
-        eckit::Log::info() << "packing_error1=" << packing_error1 << " packing_error2=" << packing_error2 << std::endl;
+        eckit::Log::info() << "maxAbsoluteError=" << maxAbsoluteError << " maxRelativeError=" << maxRelativeError << eckit::newl;
+        eckit::Log::info() << "packing_error1=" << packing_error1 << " packing_error2=" << packing_error2 << eckit::newl;
 
         if (p <= user_percent_) {
-            eckit::Log::info() << "Percent of different values smaller than " << user_percent_ << ", ignoring differences" << std::endl;
+            eckit::Log::info() << "Percent of different values smaller than " << user_percent_ << ", ignoring differences" << eckit::newl;
             count = 0;
         }
 
         // << "Value " << i + 1 << " are different: " << a[i]
-        //                           << " and " << b[i] << " diff=" << fabs(a[i] - b[i]) << " err=" << err(a[i], b[i]) << std::endl;
+        //                           << " and " << b[i] << " diff=" << fabs(a[i] - b[i]) << " err=" << err(a[i], b[i]) << eckit::newl;
         //       return false;
         //   }
     }
@@ -166,14 +166,14 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
 
     if (field1.hasMissing() != field2.hasMissing()) {
         eckit::Log::info() << "Field " << n << ": " << (field1.hasMissing() ? "file 1 has missing values" : "file 1 has not missing values") << " "
-                           << (field2.hasMissing() ? "file 2 has missing values" : "file 2 has not missing values") << std::endl;
+                           << (field2.hasMissing() ? "file 2 has missing values" : "file 2 has not missing values") << eckit::newl;
         ::exit(1);
     }
 
 
     if (field1.missingValue() != field2.missingValue()) {
         eckit::Log::info() << "Field " << n << ": missing value mismatch " <<  field1.missingValue()
-                           << " and " << field2.missingValue() << std::endl;
+                           << " and " << field2.missingValue() << eckit::newl;
         ::exit(1);
     }
 
@@ -182,11 +182,11 @@ void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRFi
 
     if (v1.size() != v2.size()) {
         eckit::Log::info() << "Field " << n << ": values count mismatch " <<  eckit::BigNum(v1.size())
-                           << " and " << eckit::BigNum(v2.size()) << std::endl;
+                           << " and " << eckit::BigNum(v2.size()) << eckit::newl;
         ::exit(1);
     }
     if (!compare(&v1[0], &v2[0], v1.size())) {
-        eckit::Log::info() << "Field " << n << " values comparaison failed" << std::endl;
+        eckit::Log::info() << "Field " << n << " values comparaison failed" << eckit::newl;
         ::exit(1);
     }
 }
@@ -199,14 +199,14 @@ void MIRCompare::l2norm(size_t n, mir::data::MIRField &field1, mir::data::MIRFie
 
     if (field1.hasMissing() != field2.hasMissing()) {
         eckit::Log::info() << "Field " << n << ": " << (field1.hasMissing() ? "file 1 has missing values" : "file 1 has not missing values") << " "
-                           << (field2.hasMissing() ? "file 2 has missing values" : "file 2 has not missing values") << std::endl;
+                           << (field2.hasMissing() ? "file 2 has missing values" : "file 2 has not missing values") << eckit::newl;
         ::exit(1);
     }
 
 
     if (field1.missingValue() != field2.missingValue()) {
         eckit::Log::info() << "Field " << n << ": missing value mismatch " <<  field1.missingValue()
-                           << " and " << field2.missingValue() << std::endl;
+                           << " and " << field2.missingValue() << eckit::newl;
         ::exit(1);
     }
 
@@ -215,7 +215,7 @@ void MIRCompare::l2norm(size_t n, mir::data::MIRField &field1, mir::data::MIRFie
 
     if (v1.size() != v2.size()) {
         eckit::Log::info() << "Field " << n << ": values count mismatch " <<  eckit::BigNum(v1.size())
-                           << " and " << eckit::BigNum(v2.size()) << std::endl;
+                           << " and " << eckit::BigNum(v2.size()) << eckit::newl;
         ::exit(1);
     }
 
@@ -225,7 +225,7 @@ void MIRCompare::l2norm(size_t n, mir::data::MIRField &field1, mir::data::MIRFie
         norm += a * a;
     }
 
-    std::cout << "L2-norm " << sqrt(norm) << " " << v1.size() << " " << sqrt(norm)/v1.size() << " " << sqrt(norm)/sqrt(v1.size()) << std::endl;
+    std::cout << "L2-norm " << sqrt(norm) << " " << v1.size() << " " << sqrt(norm)/v1.size() << " " << sqrt(norm)/sqrt(v1.size()) << eckit::newl;
 }
 
 void MIRCompare::run() {
@@ -256,10 +256,10 @@ void MIRCompare::run() {
     /// TODO Test this code
     args.get("ulps",     user_ulps_);
     if (compare_with_packing_error) {
-        eckit::Log::info() << "Comparing with packing error, factor " << user_pack_factor_ << std::endl;
+        eckit::Log::info() << "Comparing with packing error, factor " << user_pack_factor_ << eckit::newl;
     }
     else if (user_ulps_) {
-        eckit::Log::info() << "Comparing with ULPS " << user_ulps_ << std::endl;
+        eckit::Log::info() << "Comparing with ULPS " << user_ulps_ << eckit::newl;
         real_same_.reset( new FloatApproxCompare<double>(0, user_ulps_) );
     }
 
@@ -300,7 +300,7 @@ void MIRCompare::run() {
 
             std::string name;
             ASSERT(metadata1.get("shortName", name));
-            eckit::Log::info() << "Field " << n << ": paramId is " << paramId1 << " (" << name << ")" << std::endl;
+            eckit::Log::info() << "Field " << n << ": paramId is " << paramId1 << " (" << name << ")" << eckit::newl;
 
             size_t i = 0;
             while (thresholds[i].paramId_) {
@@ -312,7 +312,7 @@ void MIRCompare::run() {
                         relative = thresholds[i].relative_;
                     }
                     eckit::Log::info() << "Field " << n << ": thresholds changed for paramId " << paramId1
-                                       << " to absolute=" << absolute << ", relative=" << relative << std::endl;
+                                       << " to absolute=" << absolute << ", relative=" << relative << eckit::newl;
                     break;
                 }
                 i++;
@@ -339,8 +339,8 @@ void MIRCompare::run() {
             }
             else if (maxAbsoluteError != absolute) {
                 eckit::Log::warning() << "Field " << n << ": packing error " << packing_error
-                                      << " is more than requested absolute error " << absolute << std::endl;
-                eckit::Log::warning() << "Field " << n << ": using packing error as absolute error" << std::endl;
+                                      << " is more than requested absolute error " << absolute << eckit::newl;
+                eckit::Log::warning() << "Field " << n << ": using packing error as absolute error" << eckit::newl;
             }
 
             compare(n, field1, field2);
@@ -352,7 +352,7 @@ void MIRCompare::run() {
     }
 
     if (ok1 != ok2) {
-        eckit::Log::info() << input1 << " has " << (ok1?"more":"less") << " fields than " << input2 << std::endl;
+        eckit::Log::info() << input1 << " has " << (ok1?"more":"less") << " fields than " << input2 << eckit::newl;
         ::exit(1);
     }
 

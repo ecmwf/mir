@@ -37,7 +37,7 @@ ProdgenGrid::~ProdgenGrid() {
 }
 
 void ProdgenGrid::get(const std::string &name, std::vector<double>& value) const {
-    eckit::Log::trace<MIR>() << "ProdgenGrid::get(" << name << ")" << std::endl;
+    eckit::Log::trace<MIR>() << "ProdgenGrid::get(" << name << ")" << eckit::newl;
     ASSERT(name == "grid"); // For now
 
     value.resize(2);
@@ -59,7 +59,7 @@ void ProdgenGrid::get(const std::string &name, std::vector<double>& value) const
     value[0] = 1./8.;
     value[1] = 1./8.;
 
-    // eckit::Log::trace<MIR>() << "ProdgenGrid: N is " << N << ", selecting reduced N" << value << std::endl;
+    // eckit::Log::trace<MIR>() << "ProdgenGrid: N is " << N << ", selecting reduced N" << value << eckit::newl;
 }
 
 void ProdgenGrid::print(std::ostream &out) const {

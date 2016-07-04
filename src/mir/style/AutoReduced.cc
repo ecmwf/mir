@@ -41,7 +41,7 @@ AutoReduced::~AutoReduced() {
 }
 
 void AutoReduced::get(const std::string &name, long &value) const {
-    eckit::Log::trace<MIR>() << "AutoReduced::get(" << name << ")" << std::endl;
+    eckit::Log::trace<MIR>() << "AutoReduced::get(" << name << ")" << eckit::newl;
     ASSERT(name == "reduced"); // For now
 
     long N = 0;
@@ -66,7 +66,7 @@ void AutoReduced::get(const std::string &name, long &value) const {
         throw eckit::SeriousBug("AutoReduced: cannot establish N");
     }
 
-    eckit::Log::trace<MIR>() << "AutoReduced: N is " << N << ", selecting reduced N" << value << std::endl;
+    eckit::Log::trace<MIR>() << "AutoReduced: N is " << N << ", selecting reduced N" << value << eckit::newl;
 }
 
 void AutoReduced::print(std::ostream &out) const {
