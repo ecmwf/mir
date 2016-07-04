@@ -16,6 +16,7 @@
 #include "mir/api/emoslib.h"
 
 #include <memory>
+#include <typeinfo>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
