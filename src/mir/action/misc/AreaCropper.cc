@@ -213,6 +213,9 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
 
 void AreaCropper::execute(context::Context & ctx) const {
 
+    eckit::AutoLock<InMemoryCache<caching::CroppingCacheEntry> > lock(cache);
+
+
     data::MIRField& field = ctx.field();
 
     // Keep a pointer on the original representation, as the one in the field will

@@ -20,7 +20,8 @@
 
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
-
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
 
 namespace mir {
 
@@ -45,6 +46,9 @@ public:  // methods
 
     void erase(const std::string& key);
 
+    void lock();
+    void unlock();
+
 private:
 
     T& create(const std::string& key);
@@ -52,11 +56,15 @@ private:
     std::string name_;
     size_t capacity_;
 
+    size_t locks_;
+
     mutable size_t insertions_;
     mutable size_t evictions_;
     mutable size_t accesses_;
     mutable double youngest_;
     mutable double oldest_;
+
+    mutable eckit::Mutex mutex_;
 
     struct Entry {
         eckit::ScopedPtr<T> ptr_;

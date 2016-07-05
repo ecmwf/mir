@@ -27,6 +27,7 @@ template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity):
     name_(name),
     capacity_(eckit::Resource<size_t>(name + "InMemoryCacheCapacity;$TEST_IN_MEMORY_CACHE", capacity)),
+    locks_(0),
     insertions_(0),
     evictions_(0),
     accesses_(0),
@@ -60,6 +61,8 @@ InMemoryCache<T>::~InMemoryCache() {
 
 template<class T>
 T* InMemoryCache<T>::find(const std::string& key) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     typename std::map<std::string, Entry*>::const_iterator j = cache_.find(key);
     if (j != cache_.end()) {
         accesses_++;
@@ -73,6 +76,8 @@ T* InMemoryCache<T>::find(const std::string& key) const {
 
 template<class T>
 T& InMemoryCache<T>::operator[](const std::string& key) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     T* ptr = find(key);
     if (ptr) {
         return *ptr;
@@ -97,6 +102,8 @@ template<class T>
 T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
     ASSERT(ptr);
 
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     insertions_++;
     // std::cout << "Insert in InMemoryCache " << *ptr << std::endl;
 
@@ -107,51 +114,33 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
         return *ptr;
     }
 
-    while (cache_.size() >= capacity_) {
+    if (!locks_) {
+        while (cache_.size() >= capacity_) {
 
-        // std::cout << "Evicting entries from InMemoryCache "
-        //           << name_
-        //           << " capacity="
-        //           << capacity_
-        //           << std::endl;
+            double now = utime();
+            typename std::map<std::string, Entry*>::iterator best = cache_.begin();
+            double m = 0;
 
-        double now = utime();
-        typename std::map<std::string, Entry*>::iterator best = cache_.begin();
-        double m = 0;
-
-        for (typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
-            double s = score((*j).second->access_, now - (*j).second->last_, now - (*j).second->insert_);
-            if (s > m) {
-                m = s;
-                best = j;
+            for (typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
+                double s = score((*j).second->access_, now - (*j).second->last_, now - (*j).second->insert_);
+                if (s > m) {
+                    m = s;
+                    best = j;
+                }
             }
+
+            if (m < youngest_) {
+                youngest_ = m;
+            }
+
+            if (m > oldest_) {
+                oldest_ = m;
+            }
+
+            evictions_++;
+            delete (*best).second;
+            cache_.erase(best);
         }
-
-        if (m < youngest_) {
-            youngest_ = m;
-        }
-
-        if (m > oldest_) {
-            oldest_ = m;
-        }
-
-        // std::cout << "Evicting entries from InMemoryCache "
-        //           <<  name_
-        //           << " best="
-        //           << m
-        //           << ", " << eckit::BigNum((*best).second->access_)
-        //           << " " <<  eckit::Seconds(now - (*best).second->last_)
-        //           << " " << eckit::Seconds(now - (*best).second->insert_)
-        //           << std::endl;
-
-        // std::cout << "Evicting entries from InMemoryCache "
-        //           <<  name_
-        //           << " "
-        //           << *((*best).second->ptr_)
-        //           << std::endl;
-        evictions_++;
-        delete (*best).second;
-        cache_.erase(best);
     }
 
     cache_[key] = new Entry(ptr);
@@ -159,15 +148,29 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
 
 }
 
-
 template<class T>
 T& InMemoryCache<T>::create(const std::string& key) {
     return insert(key, new T());
 }
 
+template<class T>
+void InMemoryCache<T>::lock() {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    locks_++;
+}
+
+template<class T>
+void InMemoryCache<T>::unlock() {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    ASSERT(locks_);
+    locks_--;
+}
+
 
 template<class T>
 void InMemoryCache<T>::erase(const std::string& key) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     typename std::map<std::string, Entry*>::iterator j = cache_.find(key);
     if (j != cache_.end()) {
         delete (*j).second;

@@ -258,6 +258,8 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 void Sh2GriddedTransform::execute(context::Context & ctx) const {
     // ASSERT(field.dimensions() == 1); // For now
 
+    eckit::AutoLock<InMemoryCache<TransCache> > lock(trans_handles);
+
     data::MIRField& field = ctx.field();
 
 

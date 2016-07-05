@@ -72,6 +72,8 @@ util::Bitmap& BitmapFilter::bitmap() const {
 
 void BitmapFilter::execute(context::Context & ctx) const {
 
+    eckit::AutoLock<InMemoryCache<util::Bitmap> > lock(cache);
+
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().bitmapTiming_);
     data::MIRField& field = ctx.field();
 
