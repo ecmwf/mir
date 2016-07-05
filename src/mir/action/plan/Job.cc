@@ -62,7 +62,7 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
         plan_->add(new action::Save(*combined_, input_, output_));
     }
 
-    eckit::Log::trace<MIR>() << "Action plan is: " << *plan_ << eckit::newl;
+    eckit::Log::trace<MIR>() << "Action plan is: " << *plan_ << std::endl;
 }
 
 Job::~Job() {

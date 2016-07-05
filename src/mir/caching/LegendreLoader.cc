@@ -86,13 +86,13 @@ LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& pa
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, LegendreLoaderFactory*>::const_iterator j = m->find(name);
 
-    eckit::Log::trace<MIR>() << "Looking for LegendreLoaderFactory [" << name << "]" << eckit::newl;
+    eckit::Log::trace<MIR>() << "Looking for LegendreLoaderFactory [" << name << "]" << std::endl;
 
     if (j == m->end()) {
-        eckit::Log::error() << "No LegendreLoaderFactory for [" << name << "]" << eckit::newl;
-        eckit::Log::error() << "LegendreLoaderFactories are:" << eckit::newl;
+        eckit::Log::error() << "No LegendreLoaderFactory for [" << name << "]" << std::endl;
+        eckit::Log::error() << "LegendreLoaderFactories are:" << std::endl;
         for(j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << eckit::newl;
+            eckit::Log::error() << "   " << (*j).first << std::endl;
         throw eckit::SeriousBug(std::string("No LegendreLoaderFactory called ") + name);
     }
 

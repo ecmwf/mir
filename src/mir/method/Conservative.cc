@@ -57,9 +57,9 @@ Conservative::~Conservative() {
 
 void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const
 {
-    eckit::Log::trace<MIR>() << "Conservative::computeLumpedMassMatrix" << eckit::newl;
+    eckit::Log::trace<MIR>() << "Conservative::computeLumpedMassMatrix" << std::endl;
 
-    eckit::Log::trace<MIR>() << "Mesh " << mesh << eckit::newl;
+    eckit::Log::trace<MIR>() << "Mesh " << mesh << std::endl;
 
     d.resize(g.npts());
 
@@ -130,7 +130,7 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
 void Conservative::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
     eckit::Log::trace<MIR>()
             << "Input  pts " << in.grid().npts()
-            << "Output pts " << out.grid().npts() << eckit::newl;
+            << "Output pts " << out.grid().npts() << std::endl;
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
 
@@ -140,7 +140,7 @@ void Conservative::assemble(context::Context& ctx, WeightMatrix &W, const GridSp
 
     eckit::Log::trace<MIR>()
             << "IM rows " << IM.rows()
-            << " cols "   << IM.cols() << eckit::newl;
+            << " cols "   << IM.cols() << std::endl;
 
 //    IM.save("IM.mat");
 

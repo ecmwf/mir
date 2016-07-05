@@ -64,7 +64,7 @@ void FrameFilter::execute(context::Context & ctx) const {
         if (count) {
             field.hasMissing(true);
         } else {
-            eckit::Log::warning() << "Frame " << size_ << " has no effect" << eckit::newl;
+            eckit::Log::warning() << "Frame " << size_ << " has no effect" << std::endl;
         }
     }
 }

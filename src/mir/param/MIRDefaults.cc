@@ -52,7 +52,7 @@ MIRDefaults::MIRDefaults() {
         return;
     }
 
-    eckit::Log::trace<MIR>() << "Loading MIR defaults from " << path << eckit::newl;
+    eckit::Log::trace<MIR>() << "Loading MIR defaults from " << path << std::endl;
     util::Parser parser(path);
     parser.fill(*this);
 
@@ -74,27 +74,27 @@ void MIRDefaults::print(std::ostream& out) const {
 }
 
 void MIRDefaults::store(const std::string& name, const char* value) {
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (string)" << eckit::newl;
+    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (string)" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 
 void MIRDefaults::store(const std::string& name, const std::string& value) {
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (string)" << eckit::newl;
+    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (string)" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 
 void MIRDefaults::store(const std::string& name, bool value) {
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (bool)" << eckit::newl;
+    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (bool)" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 
 void MIRDefaults::store(const std::string& name, long value) {
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (long)" << eckit::newl;
+    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (long)" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 
 void MIRDefaults::store(const std::string& name, double value) {
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (double)" << eckit::newl;
+    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (double)" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 

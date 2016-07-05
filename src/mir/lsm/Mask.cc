@@ -87,7 +87,7 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::trace<MIR>() << "Mask::lookup(" << key << ")" << eckit::newl;
+    eckit::Log::trace<MIR>() << "Mask::lookup(" << key << ")" << std::endl;
     std::map<std::string, Mask *>::iterator j = cache->find(key);
 
     if (j != cache->end()) {

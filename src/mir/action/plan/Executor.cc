@@ -94,12 +94,12 @@ const Executor &Executor::lookup(const param::MIRParametrisation& params) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, Executor *>::const_iterator j = m->find(name);
 
-    eckit::Log::trace<MIR>() << "Looking for Executor [" << name << "]" << eckit::newl;
+    eckit::Log::trace<MIR>() << "Looking for Executor [" << name << "]" << std::endl;
     if (j == m->end()) {
-        eckit::Log::error() << "No Executor for [" << name << "]" << eckit::newl;
-        eckit::Log::error() << "Executors are:" << eckit::newl;
+        eckit::Log::error() << "No Executor for [" << name << "]" << std::endl;
+        eckit::Log::error() << "Executors are:" << std::endl;
         for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << eckit::newl;
+            eckit::Log::error() << "   " << (*j).first << std::endl;
         throw eckit::SeriousBug(std::string("No Executor called ") + name);
     }
 

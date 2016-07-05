@@ -40,7 +40,7 @@ AutoResol::~AutoResol() {
 }
 
 void AutoResol::get(const std::string &name, long &value) const {
-    eckit::Log::trace<MIR>() << "AutoResol::get(" << name << ")" << eckit::newl;
+    eckit::Log::trace<MIR>() << "AutoResol::get(" << name << ")" << std::endl;
     ASSERT(name == "truncation"); // For now
 
     double step = 0;
@@ -103,13 +103,13 @@ void AutoResol::get(const std::string &name, long &value) const {
         value = 2047;
     }
 
-    eckit::Log::trace<MIR>() << "AutoResol: step is " << step << ", selecting truncation T" << value << eckit::newl;
+    eckit::Log::trace<MIR>() << "AutoResol: step is " << step << ", selecting truncation T" << value << std::endl;
 
     long truncation;
     if (parametrisation_.get("field.truncation", truncation)) {
         if (truncation < value) {
             value = truncation;
-            eckit::Log::trace<MIR>() << "AutoResol: field is T" << truncation << ", selecting truncation T" << value << eckit::newl;
+            eckit::Log::trace<MIR>() << "AutoResol: field is T" << truncation << ", selecting truncation T" << value << std::endl;
         }
     }
 

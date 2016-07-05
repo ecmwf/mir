@@ -60,56 +60,56 @@ void ProdgenJob::print(std::ostream &out) const {
 
 
 void ProdgenJob::usewind(bool on) {
-    eckit::Log::trace<MIR>() << "ProdgenJob::usewind " << on << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::usewind " << on << std::endl;
     usewind_ = on;
 }
 
 
 void ProdgenJob::uselsm(bool on) {
-    eckit::Log::trace<MIR>() << "ProdgenJob::uselsm " << on << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::uselsm " << on << std::endl;
     uselsm_ = on;
 }
 
 
 void ProdgenJob::useprecip(bool on) {
-    eckit::Log::trace<MIR>() << "ProdgenJob::useprecip " << on << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::useprecip " << on << std::endl;
     useprecip_ = on;
 }
 
 
 void ProdgenJob::hasMissing(bool on) {
-    eckit::Log::trace<MIR>() << "ProdgenJob::hasMissing " << on << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::hasMissing " << on << std::endl;
     missingValue_ = on;
 }
 
 
 void ProdgenJob::missingValue(double missing) {
-    eckit::Log::trace<MIR>() << "ProdgenJob::missingValue " << missing << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::missingValue " << missing << std::endl;
     missingValue_ = missing;
     hasMissing_ = true;
 }
 
 
 void ProdgenJob::lsm_param(bool on) {
-    eckit::Log::trace<MIR>() << "ProdgenJob::lsm_param " << on << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::lsm_param " << on << std::endl;
     lsm_param_ = on;
 }
 
 
 void ProdgenJob::parameter(size_t n) {
-    eckit::Log::trace<MIR>() << "ProdgenJob::parameter " << n << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::parameter " << n << std::endl;
     parameter_ = n;
 }
 
 
 void ProdgenJob::table(size_t n) {
-    eckit::Log::trace<MIR>() << "ProdgenJob::table " << n << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::table " << n << std::endl;
     table_ = n;
 }
 
 
 void ProdgenJob::reduced(size_t n) {
-    eckit::Log::trace<MIR>() << "ProdgenJob::reduced " << n << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::reduced " << n << std::endl;
     gridType_ = "reduced_gg";
     N_ = n;
     gridded_ = true;
@@ -118,7 +118,7 @@ void ProdgenJob::reduced(size_t n) {
 
 
 void ProdgenJob::truncation(size_t n) {
-    eckit::Log::trace<MIR>() << "ProdgenJob::truncation " << n << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::truncation " << n << std::endl;
     gridType_ = "sh";
     truncation_ = n;
     spectral_ = true;
@@ -129,7 +129,7 @@ void ProdgenJob::truncation(size_t n) {
 void ProdgenJob::reduced_ll(size_t nj,
                             const int pl[]) {
 
-    eckit::Log::trace<MIR>() << "ProdgenJob::reduced_ll"  << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::reduced_ll"  << std::endl;
 
     gridType_ = "reduced_ll";
     gridded_ = true;
@@ -145,7 +145,7 @@ void ProdgenJob::reduced_ll(size_t nj,
 
 
 void ProdgenJob::g_pnts(const int *pl) {
-    eckit::Log::trace<MIR>() << "ProdgenJob::g_pnts " << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::g_pnts " << std::endl;
     ASSERT(gridType_ == "reduced_gg");
 
     size_t size = 2 * N_;
@@ -191,19 +191,19 @@ const std::string &ProdgenJob::gridType() const {
 
 
 bool ProdgenJob::gridded() const {
-    eckit::Log::trace<MIR>() << "ProdgenJob::gridded " << gridded_ << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::gridded " << gridded_ << std::endl;
     return gridded_;
 }
 
 
 bool ProdgenJob::spectral() const {
-    eckit::Log::trace<MIR>() << "ProdgenJob::spectral " << spectral_ << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::spectral " << spectral_ << std::endl;
     return spectral_;
 }
 
 
 size_t ProdgenJob::nj() const {
-    eckit::Log::trace<MIR>() << "ProdgenJob::nj " << nj_ << eckit::newl;
+    eckit::Log::trace<MIR>() << "ProdgenJob::nj " << nj_ << std::endl;
     return nj_;
 }
 

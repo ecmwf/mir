@@ -80,21 +80,21 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, context::Co
         const std::vector<double>& values = field.values(j);
 
 
-        // std::cout << "GeoPointsOutput::save => " << handle << eckit::newl;
+        // std::cout << "GeoPointsOutput::save => " << handle << std::endl;
 
 
-        out << "#GEO" << eckit::newl;
+        out << "#GEO" << std::endl;
 
         size_t i = 0;
         while (keys[i]) {
             std::string v;
             if (runtime.get(keys[i], v)) {
-                out << "# " << keys[i] << "=" << v << eckit::newl;
+                out << "# " << keys[i] << "=" << v << std::endl;
             }
             i++;
         }
 
-        out << "#DATA" << eckit::newl;
+        out << "#DATA" << std::endl;
 
 
         eckit::ScopedPtr<repres::Iterator> it(field.representation()->rotatedIterator());
@@ -105,7 +105,7 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, context::Co
 
         while (it->next(lat, lon)) {
             ASSERT(v != values.end());
-            out << lat << ' ' << lon << ' ' << *v << eckit::newl;
+            out << lat << ' ' << lon << ' ' << *v << std::endl;
             ++v;
         }
 
@@ -113,7 +113,7 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, context::Co
 
     once_ = false;
 
-    // std::cout << "GeoPointsOutput::save <= " << handle.position() - position << eckit::newl;
+    // std::cout << "GeoPointsOutput::save <= " << handle.position() - position << std::endl;
 
     return handle.position() - position;
 }

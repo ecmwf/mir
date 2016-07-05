@@ -66,7 +66,7 @@ class LSM : public eckit::Tool {
 
 //     eckit::Log::trace<MIR>() << "uid " << g.uniqueID() << " hash " << g.hash() << " rle ";
 //     eckit::RLEprint(eckit::Log::trace<MIR>(), rle.begin(), rle.end());
-//     eckit::Log::trace<MIR>() << eckit::newl;
+//     eckit::Log::trace<MIR>() << std::endl;
 // }
 
 void LSM::run() {
@@ -109,7 +109,7 @@ void LSM::run() {
         fwrite(&c, 1, 1, f);
 
 
-        std::cout << eckit::newl;
+        std::cout << std::endl;
 
         // std::vector<int32_t> q;
         // q.push_back(p[0]);
@@ -121,15 +121,15 @@ void LSM::run() {
         // eckit::RLEencode2(q.begin(), q.end(), std::back_inserter(diff), 10000);
 
 
-        // std::cout << diff.size() << eckit::newl;
+        // std::cout << diff.size() << std::endl;
 
 
 
         // std::vector<int32_t> rle;
         // eckit::RLEdecode2(a.begin(), a.end(), std::back_inserter(rle));
-        // std::cout << a.size() << eckit::newl;
+        // std::cout << a.size() << std::endl;
 
-        // std::cout << "};" << eckit::newl;
+        // std::cout << "};" << std::endl;
     }
 
 }

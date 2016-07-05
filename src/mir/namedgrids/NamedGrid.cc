@@ -80,7 +80,7 @@ const NamedGrid& NamedGrid::lookup(const std::string &name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, NamedGrid *>::const_iterator j = m->find(name);
 
-    eckit::Log::trace<MIR>() << "Looking for NamedGrid [" << name << "]" << eckit::newl;
+    eckit::Log::trace<MIR>() << "Looking for NamedGrid [" << name << "]" << std::endl;
 
     if (j == m->end()) {
 
@@ -92,10 +92,10 @@ const NamedGrid& NamedGrid::lookup(const std::string &name) {
             return *ng;
         }
 
-        eckit::Log::error() << "No NamedGrid for [" << name << "]" << eckit::newl;
-        eckit::Log::error() << "NamedGrid are:" << eckit::newl;
+        eckit::Log::error() << "No NamedGrid for [" << name << "]" << std::endl;
+        eckit::Log::error() << "NamedGrid are:" << std::endl;
         for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << eckit::newl;
+            eckit::Log::error() << "   " << (*j).first << std::endl;
         throw eckit::SeriousBug(std::string("No NamedGrid called ") + name);
     }
 

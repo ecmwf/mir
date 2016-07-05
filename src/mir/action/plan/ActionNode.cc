@@ -43,14 +43,14 @@ void ActionNode::print(std::ostream& out) const {
 }
 
 void ActionNode::execute(context::Context& ctx, const Executor& executor) const {
-    // std::cout << " BEFORE -----> " << action_  << "  " << field << eckit::newl;
+    // std::cout << " BEFORE -----> " << action_  << "  " << field << std::endl;
     bool ok = false;
     try {
         action_.execute(ctx);
         ok = true;
     } catch (std::exception& e) {
 
-        eckit::Log::error() << e.what() << " while executing " << action_ << eckit::newl;
+        eckit::Log::error() << e.what() << " while executing " << action_ << std::endl;
 
         bool rethrow = true;
         notifyFailure(e, action_, watcher_, rethrow);
@@ -58,7 +58,7 @@ void ActionNode::execute(context::Context& ctx, const Executor& executor) const 
             throw;
         }
     }
-    // std::cout << " AFTER -----> " << action_  << "  " << field << eckit::newl;
+    // std::cout << " AFTER -----> " << action_  << "  " << field << std::endl;
 
     if(ok) {
         graph_.execute(ctx, executor);
@@ -82,7 +82,7 @@ void ActionNode::dump(std::ostream& out, size_t depth) const {
     for (size_t i = 0; i < depth; i++) {
         out << "   ";
     }
-    out << action_ << eckit::newl;
+    out << action_ << std::endl;
     graph_.dump(out, depth + 1);
 }
 

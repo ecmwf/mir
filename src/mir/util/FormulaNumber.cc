@@ -40,7 +40,7 @@ void FormulaNumber::print(std::ostream& out) const {
 
 
 void FormulaNumber::execute(mir::context::Context& ctx) const {
-    std::cout << "Execute " << *this << eckit::newl;
+    std::cout << "Execute " << *this << std::endl;
     ctx.scalar(value_);
 
 }

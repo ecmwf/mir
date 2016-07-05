@@ -85,13 +85,13 @@ MIRStyle* MIRStyleFactory::build(const param::MIRParametrisation& params) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, MIRStyleFactory*>::const_iterator j = m->find(name);
 
-    eckit::Log::trace<MIR>() << "Looking for MIRStyleFactory [" << name << "]" << eckit::newl;
+    eckit::Log::trace<MIR>() << "Looking for MIRStyleFactory [" << name << "]" << std::endl;
 
     if (j == m->end()) {
-        eckit::Log::error() << "No MIRStyleFactory for [" << name << "]" << eckit::newl;
-        eckit::Log::error() << "MIRStyleFactories are:" << eckit::newl;
+        eckit::Log::error() << "No MIRStyleFactory for [" << name << "]" << std::endl;
+        eckit::Log::error() << "MIRStyleFactories are:" << std::endl;
         for(j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << eckit::newl;
+            eckit::Log::error() << "   " << (*j).first << std::endl;
         throw eckit::SeriousBug(std::string("No MIRStyleFactory called ") + name);
     }
 

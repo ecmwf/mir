@@ -65,7 +65,7 @@ void VOD2UVTool::run() {
 
     int size = size_d;
 
-    eckit::Log::info() << "Size " << size << eckit::newl;
+    eckit::Log::info() << "Size " << size << std::endl;
 
     eckit::Buffer ub(size);
     eckit::Buffer vb(size);

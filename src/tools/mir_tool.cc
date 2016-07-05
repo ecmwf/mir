@@ -69,12 +69,12 @@ class MIRTool : public eckit::Tool {
 void MIRTool::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << eckit::newl << "Usage: " << tool << " [--key1=value --key2=value ...] input.grib output.grib" << eckit::newl
-            << eckit::newl << "Examples: " << eckit::newl
-            << "  % " << tool << " --grid=2/2 --area=90/-8/12/80 input.grib output.grib" << eckit::newl
-            << "  % " << tool << " --reduced=80 input.grib output.grib" << eckit::newl
-            << "  % " << tool << " --regular=80 input.grib output.grib" << eckit::newl
-            << "  % " << tool << " --truncation=63 input.grib output.grib" << eckit::newl
+            << std::endl << "Usage: " << tool << " [--key1=value --key2=value ...] input.grib output.grib" << std::endl
+            << std::endl << "Examples: " << std::endl
+            << "  % " << tool << " --grid=2/2 --area=90/-8/12/80 input.grib output.grib" << std::endl
+            << "  % " << tool << " --reduced=80 input.grib output.grib" << std::endl
+            << "  % " << tool << " --regular=80 input.grib output.grib" << std::endl
+            << "  % " << tool << " --truncation=63 input.grib output.grib" << std::endl
             ;
 }
 
@@ -276,16 +276,16 @@ void MIRTool::run() {
 void MIRTool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
     eckit::Timer timer("Total time");
 
-    eckit::Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << eckit::newl;
+    eckit::Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.next()) {
-        eckit::Log::trace<MIR>() << "============> " << what << ": " << (++i) << eckit::newl;
+        eckit::Log::trace<MIR>() << "============> " << what << ": " << (++i) << std::endl;
         job.execute(input, output);
     }
 
     eckit::Log::info() << eckit::Plural(i, what) << " in " << eckit::Seconds(timer.elapsed()) <<
-                       ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << eckit::newl;
+                       ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
 
 }
 

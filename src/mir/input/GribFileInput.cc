@@ -47,7 +47,7 @@ GribFileInput::~GribFileInput() {
 
 size_t GribFileInput::dimensions() const {
     // FIXME
-    eckit::Log::warning() << "GribFileInput::dimensions() returning 1 (hardcoded!)" << eckit::newl;
+    eckit::Log::warning() << "GribFileInput::dimensions() returning 1 (hardcoded!)" << std::endl;
     return 1;
 }
 

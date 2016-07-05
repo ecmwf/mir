@@ -37,7 +37,7 @@ AutoGaussian::~AutoGaussian() {
 }
 
 void AutoGaussian::get(const std::string &name, long &value) const {
-    eckit::Log::trace<MIR>() << "AutoGaussian::get(" << name << ")" << eckit::newl;
+    eckit::Log::trace<MIR>() << "AutoGaussian::get(" << name << ")" << std::endl;
     ASSERT(name == "octahedral"); // For now
 
     long truncation = 0;
@@ -66,7 +66,7 @@ void AutoGaussian::get(const std::string &name, long &value) const {
         throw eckit::SeriousBug(oss.str());
     }
 
-    // eckit::Log::trace<MIR>() << "AutoGaussian: N is " << N << ", selecting reduced N" << value << eckit::newl;
+    // eckit::Log::trace<MIR>() << "AutoGaussian: N is " << N << ", selecting reduced N" << value << std::endl;
 }
 
 void AutoGaussian::print(std::ostream &out) const {

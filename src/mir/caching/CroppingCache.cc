@@ -49,7 +49,7 @@ void CroppingCache::insert(const std::string &key, const CroppingCacheEntry &c) 
 
     eckit::PathName tmp = stage(key);
 
-    // eckit::Log::info() << "Inserting cropping in cache : " << tmp << "" << eckit::newl;
+    // eckit::Log::info() << "Inserting cropping in cache : " << tmp << "" << std::endl;
 
     // eckit::TraceTimer<MIR> timer("Saving cropping to cache");
 
@@ -74,7 +74,7 @@ bool CroppingCache::retrieve(const std::string &key, CroppingCacheEntry &c) cons
     if (!get(key, path))
         return false;
 
-    // eckit::Log::info() << "Found cropping in cache : " << path << "" << eckit::newl;
+    // eckit::Log::info() << "Found cropping in cache : " << path << "" << std::endl;
     // eckit::TraceTimer<MIR> timer("Loading cropping from cache");
 
     eckit::FileStream f(path, "r");
@@ -103,7 +103,7 @@ void CroppingCacheEntry::print(std::ostream& out) const {
 }
 
 CroppingCacheEntry::~CroppingCacheEntry() {
-    // std::cout << "Delete " << *this << eckit::newl;
+    // std::cout << "Delete " << *this << std::endl;
 }
 }  // namespace method
 }  // namespace mir

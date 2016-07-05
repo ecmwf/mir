@@ -50,7 +50,7 @@ void MIRCombinedParametrisation::print(std::ostream& out) const {
 }
 
 bool MIRCombinedParametrisation::has(const std::string& name) const {
-    // eckit::Log::trace<MIR>() << "MIRCombinedParametrisation::has(" << name << ")" << eckit::newl;
+    // eckit::Log::trace<MIR>() << "MIRCombinedParametrisation::has(" << name << ")" << std::endl;
 
     if (name.find("user.") == 0) {
         return user_.has(name.substr(5));
@@ -65,13 +65,13 @@ bool MIRCombinedParametrisation::has(const std::string& name) const {
     if (metadata_.has(name)) return true;
     if (defaults_.has(name)) return true;
 
-    // eckit::Log::trace<MIR>() << "**** MIRCombinedParametrisation::has(" << name << ") unanswered" << eckit::newl;
+    // eckit::Log::trace<MIR>() << "**** MIRCombinedParametrisation::has(" << name << ") unanswered" << std::endl;
     return false;
 }
 
 template<class T>
 bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
-    // eckit::Log::trace<MIR>() << "MIRCombinedParametrisation::get(" << name << ")" << eckit::newl;
+    // eckit::Log::trace<MIR>() << "MIRCombinedParametrisation::get(" << name << ")" << std::endl;
 
     if (name.find("user.") == 0) {
         return user_.get(name.substr(5), value);
@@ -86,7 +86,7 @@ bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
     if (metadata_.get(name, value)) return true;
     if (defaults_.get(name, value)) return true;
 
-    // eckit::Log::trace<MIR>() << "**** MIRCombinedParametrisation::get(" << name << ") unanswered" << eckit::newl;
+    // eckit::Log::trace<MIR>() << "**** MIRCombinedParametrisation::get(" << name << ") unanswered" << std::endl;
 
     return false;
 }

@@ -42,13 +42,13 @@ class MIRInspect : public eckit::Tool {
 void MIRInspect::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << eckit::newl << "Usage: " << tool << " [key1 key2 ...] file.grib" << eckit::newl
-            << eckit::newl << "Examples: " << eckit::newl
-            << "% " << tool << " grid area file.grib" << eckit::newl
-            << "% " << tool << " reduced file.grib" << eckit::newl << eckit::newl
-            << "% " << tool << " regular file.grib" << eckit::newl << eckit::newl
-            << "% " << tool << " truncation file.grib" << eckit::newl << eckit::newl
-            << "% " << tool << " octahedral file.grib" << eckit::newl << eckit::newl
+            << std::endl << "Usage: " << tool << " [key1 key2 ...] file.grib" << std::endl
+            << std::endl << "Examples: " << std::endl
+            << "% " << tool << " grid area file.grib" << std::endl
+            << "% " << tool << " reduced file.grib" << std::endl << std::endl
+            << "% " << tool << " regular file.grib" << std::endl << std::endl
+            << "% " << tool << " truncation file.grib" << std::endl << std::endl
+            << "% " << tool << " octahedral file.grib" << std::endl << std::endl
 
             ;
 
@@ -86,7 +86,7 @@ void MIRInspect::run() {
             sep = ", ";
         }
 
-        std::cout << eckit::newl;
+        std::cout << std::endl;
     }
 
 }

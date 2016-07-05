@@ -79,7 +79,7 @@ void VOD2UVTransform::execute(context::Context & ctx) const {
 
     eckit::Log::trace<MIR>() << "VOD2UVTransform truncation=" << truncation
                              << ", size=" << size
-                             << ", values=" << field_vo.size() << eckit::newl;
+                             << ", values=" << field_vo.size() << std::endl;
 
     ASSERT(field_vo.size() == size);
     ASSERT(field_d.size() == size);
@@ -166,7 +166,7 @@ void VOD2UVTransform::execute(context::Context & ctx) const {
         k++;
     }
 
-    // std::cout << k << " " << size << eckit::newl;
+    // std::cout << k << " " << size << std::endl;
     // ASSERT(k == size);
 
     field.update(result_u, 0);

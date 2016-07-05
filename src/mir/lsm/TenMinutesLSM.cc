@@ -61,7 +61,7 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 
         eckit::TraceTimer<MIR> timer("Load 10 minutes LSM");
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-        eckit::Log::trace<MIR>() << "TenMinutesLSM loading " << path_ << eckit::newl;
+        eckit::Log::trace<MIR>() << "TenMinutesLSM loading " << path_ << std::endl;
 
         eckit::StdFile file(path_);
         ten_minutes_.resize(ROWS);

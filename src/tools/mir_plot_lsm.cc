@@ -48,7 +48,7 @@ class MIRMakeLSM : public eckit::Tool {
 void MIRMakeLSM::usage(const std::string &tool) {
 
     eckit::Log::info()
-            << eckit::newl << "Usage: " << tool << " file.grib file.lsm" << eckit::newl
+            << std::endl << "Usage: " << tool << " file.grib file.lsm" << std::endl
             ;
 
     ::exit(1);
@@ -83,7 +83,7 @@ void MIRMakeLSM::run() {
         Nj = n[1];
     }
 
-    eckit::Log::info() << "Ni=" << Ni << ", Nj=" << Nj << eckit::newl;
+    eckit::Log::info() << "Ni=" << Ni << ", Nj=" << Nj << std::endl;
 
     eckit::StdFile out(args(0), "w");
 
@@ -101,7 +101,7 @@ void MIRMakeLSM::run() {
 
     mir::lsm::Mask &mask = mir::lsm::Mask::lookupOutput(combined, *grid);
 
-    eckit::Log::info() << "MASK IS => " << mask << eckit::newl;
+    eckit::Log::info() << "MASK IS => " << mask << std::endl;
 
     const std::vector<bool> &m = mask.mask();
 

@@ -29,9 +29,9 @@ MIRConfiguration::MIRConfiguration():
     scope_(0) {
 
     eckit::PathName path("~mir/etc/mir/interpolation-methods.cfg");
-    eckit::Log::trace<MIR>() << "Loading MIR configuration from " << path << eckit::newl;
+    eckit::Log::trace<MIR>() << "Loading MIR configuration from " << path << std::endl;
     if (!path.exists()) {
-        eckit::Log::warning() << "Cannot load " << path << eckit::newl;
+        eckit::Log::warning() << "Cannot load " << path << std::endl;
         return;
         // throw eckit::CantOpenFile(path, Here());
     }
@@ -63,32 +63,32 @@ void MIRConfiguration::store(const std::string& name, const char* value) {
 
 void MIRConfiguration::store(const std::string& name, const std::string& value) {
     ASSERT(scope_);
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (string) paramId=" << current_ << eckit::newl;
+    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (string) paramId=" << current_ << std::endl;
     scope_->set(name, value);
 }
 
 void MIRConfiguration::store(const std::string& name, bool value) {
     ASSERT(scope_);
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (bool) paramId=" << current_ << eckit::newl;
+    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (bool) paramId=" << current_ << std::endl;
     scope_->set(name, value);
 }
 
 void MIRConfiguration::store(const std::string& name, long value) {
     ASSERT(scope_);
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (long) paramId=" << current_ << eckit::newl;
+    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (long) paramId=" << current_ << std::endl;
     scope_->set(name, value);
 
 }
 
 void MIRConfiguration::store(const std::string& name, double value) {
     ASSERT(scope_);
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (double) paramId=" << current_ << eckit::newl;
+    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (double) paramId=" << current_ << std::endl;
     scope_->set(name, value);
 }
 
 void MIRConfiguration::scope(const std::string& name) {
     long scope = eckit::Translator<std::string, long>()(name);
-    eckit::Log::trace<MIR>() << "MIRConfiguration::scope(paramId=" << scope << ")" << eckit::newl;
+    eckit::Log::trace<MIR>() << "MIRConfiguration::scope(paramId=" << scope << ")" << std::endl;
     std::map<long, SimpleParametrisation*>::iterator j = settings_.find(scope);
     if (j == settings_.end()) {
         settings_[scope] = new SimpleParametrisation();

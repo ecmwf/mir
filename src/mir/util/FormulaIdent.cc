@@ -39,7 +39,7 @@ void FormulaIdent::print(std::ostream& out) const {
 
 
 void FormulaIdent::execute(mir::context::Context& ctx) const {
-    std::cout << "Execute " << *this << eckit::newl;
+    std::cout << "Execute " << *this << std::endl;
 
     if(name_ != "f") {
         std::ostringstream oss;

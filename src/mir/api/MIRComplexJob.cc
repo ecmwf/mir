@@ -88,10 +88,10 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
 
     context::Context ctx(*input_, statistics);
 
-    std::cout << ">>>>>>>>>>>> ====== " << eckit::newl;
+    std::cout << ">>>>>>>>>>>> ====== " << std::endl;
 
-    std::cout << *input_ << eckit::newl;
-    // std::cout << *field << eckit::newl;
+    std::cout << *input_ << std::endl;
+    // std::cout << *field << std::endl;
 
     // action::SimpleExecutor executor;
     const action::Executor& executor = action::Executor::lookup((*jobs_.begin())->parametrisation());
@@ -101,7 +101,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
 
     executor.wait();
 
-    std::cout << "<<<<<<<<<<< ======" << eckit::newl;
+    std::cout << "<<<<<<<<<<< ======" << std::endl;
 
 
 }
