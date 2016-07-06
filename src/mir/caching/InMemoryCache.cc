@@ -114,38 +114,43 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
         return *ptr;
     }
 
-    if (!locks_) {
-        while (cache_.size() >= capacity_) {
-
-            double now = utime();
-            typename std::map<std::string, Entry*>::iterator best = cache_.begin();
-            double m = 0;
-
-            for (typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
-                double s = score((*j).second->access_, now - (*j).second->last_, now - (*j).second->insert_);
-                if (s > m) {
-                    m = s;
-                    best = j;
-                }
-            }
-
-            if (m < youngest_) {
-                youngest_ = m;
-            }
-
-            if (m > oldest_) {
-                oldest_ = m;
-            }
-
-            evictions_++;
-            delete (*best).second;
-            cache_.erase(best);
-        }
+    if (locks_ == 0) {
+        purge();
     }
 
     cache_[key] = new Entry(ptr);
     return *ptr;
 
+}
+
+template<class T>
+void InMemoryCache<T>::purge() {
+    while (cache_.size() >= capacity_) {
+
+        double now = utime();
+        typename std::map<std::string, Entry*>::iterator best = cache_.begin();
+        double m = 0;
+
+        for (typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
+            double s = score((*j).second->access_, now - (*j).second->last_, now - (*j).second->insert_);
+            if (s > m) {
+                m = s;
+                best = j;
+            }
+        }
+
+        if (m < youngest_) {
+            youngest_ = m;
+        }
+
+        if (m > oldest_) {
+            oldest_ = m;
+        }
+
+        evictions_++;
+        delete (*best).second;
+        cache_.erase(best);
+    }
 }
 
 template<class T>
@@ -164,6 +169,9 @@ void InMemoryCache<T>::unlock() {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
     ASSERT(locks_);
     locks_--;
+    if (locks_ == 0) {
+        purge();
+    }
 }
 
 
