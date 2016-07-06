@@ -40,7 +40,7 @@ struct CroppingCacheEntry {
 
 class CroppingCache : public eckit::CacheManager {
 
-  public:  // methods
+public:  // methods
 
     explicit CroppingCache();
 
@@ -52,11 +52,11 @@ class CroppingCache : public eckit::CacheManager {
     /// @returns true if insertion successful cache
     void insert(const std::string &key, const CroppingCacheEntry &W) const;
 
-  protected:
+protected:
 
     virtual void print(std::ostream& s) const;
 
-  private:
+private:
 
     virtual const char* version() const;
     virtual const char* extension() const;

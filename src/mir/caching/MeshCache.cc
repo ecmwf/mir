@@ -21,69 +21,56 @@ using namespace eckit;
 namespace mir {
 namespace caching {
 
-using atlas::mesh::Mesh;
 
-//----------------------------------------------------------------------------------------------------------------------
-
-PathName MeshCache::filename(const std::string& key)
-{
-    PathName base_path = Resource<PathName>("$MIR_CACHE_DIR", "~mir-cache/tmp/cache/mir" );
-
-    PathName f = base_path / "mesh" / PathName( key + ".gmsh" );
-
-    return f;
+MeshCache::MeshCache():
+    CacheManager("mir/meshes") {
 }
 
-bool MeshCache::add(const std::string& key, const Mesh& mesh)
-{
-    PathName file( filename(key) );
+const char *MeshCache::version() const {
+    return "1"; // Change me if the cache file structure changes
+}
 
-    if( file.exists() )
-    {
-        Log::info() << "MeshCache entry " << file << " already exists ..." << std::endl;
+const char *MeshCache::extension() const {
+    return ".gmsh";
+}
+
+void MeshCache::print(std::ostream &s) const {
+    s << "MeshCache[";
+    CacheManager::print(s);
+    s << "name=" << name() << ","
+      << "version=" << version() << ","
+      << "extention=" << extension() << ","
+      << "]";
+}
+
+void MeshCache::insert(const std::string &key, const atlas::mesh::Mesh &mesh) const {
+
+    eckit::PathName tmp = stage(key);
+
+
+    eckit::FileStream s(tmp, "w");
+    mesh.encode(s);
+
+
+    ASSERT(commit(key, tmp));
+}
+
+bool MeshCache::retrieve(const std::string &key, atlas::mesh::Mesh &mesh) const {
+
+    eckit::PathName path;
+
+    if (!get(key, path))
         return false;
-    }
 
-    file.dirName().mkdir();  // ensure directory exists
-
-    // unique file name avoids race conditions on the file from multiple processes
-
-    PathName tmpfile ( PathName::unique(file) );
-
-    // Log::info() << "Inserting mesh in cache (" << file << ")" << std::endl;
-
-    {
-        eckit::FileStream s(tmpfile,"w");
-        mesh.encode(s);
-    }
+    // eckit::Log::info() << "Found cropping in cache : " << path << "" << std::endl;
+    // eckit::TraceTimer<MIR> timer("Loading cropping from cache");
 
 
-    // now try to rename the file to its file pathname
-    try
-    {
-        PathName::rename(tmpfile, file);
-    }
-    catch( FailedSystemCall& e ) // ignore failed system call -- another process may have created the file meanwhile
-    {
-        Log::info() << "Failed rename of cache file -- " << e.what() << std::endl;
-    }
+    eckit::FileStream s(path, "r");
+    NOTIMP;
+    //mesh = atlas::mesh::Mesh(s);
 
     return true;
-}
-
-atlas::mesh::Mesh* MeshCache::get(const std::string &key)
-{
-    PathName file( filename(key) );
-
-    Log::info() << "Looking for file cache (" << file << ")" << std::endl;
-
-    if(!file.exists()) { return 0; }
-
-    Log::info() << "Found mesh in cache (" << file << ")" << std::endl;
-
-    eckit::FileStream s(file, "r");
-
-    return new Mesh(s);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
