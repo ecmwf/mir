@@ -51,6 +51,7 @@ public:  // methods
 
 private:
 
+    void purge();
     T& create(const std::string& key);
 
     std::string name_;
