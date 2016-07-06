@@ -92,15 +92,14 @@ atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
 
     atlas::mesh::Mesh& mesh = mesh_cache[md5];
 
-    try{
+    try {
         generateMesh(grid, mesh);
     }
-    catch(...) {
+    catch (...) {
+        // Make sure we don't leave an incomplete entry in the cache
         mesh_cache.erase(md5);
         throw;
     }
-
-//    MeshCache::add(md5.digest(), *mesh);
 
     return mesh;
 }
@@ -377,8 +376,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
 
 void MethodWeighted::applyMasks(WeightMatrix &W,
-    const lsm::LandSeaMasks &masks,
-    util::MIRStatistics&) const {
+                                const lsm::LandSeaMasks &masks,
+                                util::MIRStatistics&) const {
 
     eckit::TraceTimer<MIR> timer("MethodWeighted::applyMasks");
 
@@ -425,8 +424,9 @@ void MethodWeighted::applyMasks(WeightMatrix &W,
         // apply linear redistribution if necessary
         if (row_changed && !is_approx_zero(sum)) {
             ++fix;
-            for (WeightMatrix::inner_iterator j(W, i); j; ++j)
+            for (WeightMatrix::inner_iterator j(W, i); j; ++j) {
                 *j /= sum;
+            }
         }
 
     }
