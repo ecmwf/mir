@@ -46,8 +46,8 @@ public:  // methods
 
     void erase(const std::string& key);
 
-    void lock();
-    void unlock();
+    void startUsing();
+    void stopUsing();
 
 private:
 
@@ -57,7 +57,7 @@ private:
     std::string name_;
     size_t capacity_;
 
-    size_t locks_;
+    size_t users_;
 
     mutable size_t insertions_;
     mutable size_t evictions_;
@@ -77,6 +77,14 @@ private:
 
     std::map<std::string, Entry*> cache_;
 
+};
+
+template<class T>
+class InMemoryCacheUser {
+    InMemoryCache<T>& cache_;
+public:
+    InMemoryCacheUser(InMemoryCache<T>& cache): cache_(cache) { cache_.startUsing(); }
+    ~InMemoryCacheUser() { cache_.stopUsing(); }
 };
 
 //----------------------------------------------------------------------------------------------------------------------

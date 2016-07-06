@@ -213,7 +213,8 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
 
 void AreaCropper::execute(context::Context & ctx) const {
 
-    eckit::AutoLock<InMemoryCache<caching::CroppingCacheEntry> > lock(cache);
+    // Make sure another thread to no evict anything from the cache while we are using it
+    InMemoryCacheUser<caching::CroppingCacheEntry> use(cache);
 
 
     data::MIRField& field = ctx.field();

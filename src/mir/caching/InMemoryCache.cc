@@ -27,7 +27,7 @@ template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity):
     name_(name),
     capacity_(eckit::Resource<size_t>(name + "InMemoryCacheCapacity;$TEST_IN_MEMORY_CACHE", capacity)),
-    locks_(0),
+    users_(0),
     insertions_(0),
     evictions_(0),
     accesses_(0),
@@ -114,7 +114,7 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
         return *ptr;
     }
 
-    if (locks_ == 0) {
+    if (users_ == 0) {
         purge();
     }
 
@@ -159,17 +159,17 @@ T& InMemoryCache<T>::create(const std::string& key) {
 }
 
 template<class T>
-void InMemoryCache<T>::lock() {
+void InMemoryCache<T>::startUsing() {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
-    locks_++;
+    users_++;
 }
 
 template<class T>
-void InMemoryCache<T>::unlock() {
+void InMemoryCache<T>::stopUsing() {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
-    ASSERT(locks_);
-    locks_--;
-    if (locks_ == 0) {
+    ASSERT(users_);
+    users_--;
+    if (users_ == 0) {
         purge();
     }
 }
