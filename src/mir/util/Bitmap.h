@@ -12,13 +12,17 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #ifndef Bitmap_H
 #define Bitmap_H
 
+#include <string>
 #include <vector>
+
 
 namespace mir {
 namespace util {
+
 
 class Bitmap {
   public:
@@ -44,6 +48,7 @@ class Bitmap {
     size_t width() const {
         return width_;
     }
+
     size_t height() const {
         return height_;
     }
@@ -112,7 +117,9 @@ class Bitmap {
 
 };
 
+
 }  // namespace util
 }  // namespace mir
+
 
 #endif
