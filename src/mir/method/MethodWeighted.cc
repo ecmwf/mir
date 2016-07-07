@@ -204,7 +204,7 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<WeightMatrix>      matrix_use(matrix_cache);
-    InMemoryCacheUser<atlas::mesh::Mesh> cache_lock(mesh_cache);
+    InMemoryCacheUser<atlas::mesh::Mesh> cache_use(mesh_cache);
 
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
