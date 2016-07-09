@@ -36,7 +36,7 @@ namespace {
 
 class FDClose {
     int fd_;
-  public:
+public:
     FDClose(int fd): fd_(fd) {}
     ~FDClose() {
         SYSCALL(::close(fd_));
@@ -46,7 +46,7 @@ class FDClose {
 class Unmapper {
     void *address_;
     size_t size_;
-  public:
+public:
     Unmapper(void *address, size_t size): address_(address), size_(size) {}
     ~Unmapper() {
         SYSCALL(::munmap(address_, size_));
@@ -120,7 +120,22 @@ MappedMask::MappedMask(const std::string &name,
 
     for (std::vector<atlas::grid::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
         double lat = (*j).lat();
+
+        if (lat < -90) {
+            std::ostringstream oss;
+            oss << "GRID " << grid << " returns a latitude of " << lat << " (lat+90)=" << (lat + 90);
+            throw eckit::SeriousBug(oss.str());
+        }
+
         ASSERT(lat >= -90);
+
+        if (lat > 90) {
+            std::ostringstream oss;
+            oss << "GRID " << grid << " returns a latitude of " << lat << " (lat-90)=" << (lat - 90);
+            throw eckit::SeriousBug(oss.str());
+        }
+
+
         ASSERT(lat <= 90);
 
         double lon = (*j).lon();
