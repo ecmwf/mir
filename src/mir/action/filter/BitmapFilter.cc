@@ -86,19 +86,11 @@ void BitmapFilter::execute(context::Context & ctx) const {
         std::vector<double> &values = field.direct(f);
 
         if (values.size() != b.width() * b.height()) {
+            std::ostringstream os;
+            os << "BitmapFilter::execute size mismatch: values=" << values.size()
+               << ", bitmap=" << b.width() << "x" << b.height();
 
-            // if (values.size() > b.width() * b.height()) {
-
-                std::ostringstream os;
-                os << "BitmapFilter::execute size mismatch: values=" << values.size()
-                   << ", bitmap=" << b.width() << "x" << b.height();
-
-                throw eckit::UserError(os.str());
-            // }
-            // else {
-            //     eckit::Log::warning() << "BitmapFilter::execute size mismatch: values=" << values.size()
-            //                           << ", bitmap=" << b.width() << "x" << b.height() << std::endl;
-            // }
+            throw eckit::UserError(os.str());
         }
 
 
