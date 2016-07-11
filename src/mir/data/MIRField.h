@@ -60,6 +60,8 @@ public:
     size_t dimensions() const;
     void dimensions(size_t);
 
+    // Resize to one, and keep only which
+    void select(size_t which);
 
     void representation(const repres::Representation *);
     const repres::Representation *representation() const;

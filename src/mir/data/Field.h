@@ -60,6 +60,7 @@ public:
 
     size_t dimensions() const;
     void dimensions(size_t);
+    void select(size_t which);
 
 
     void representation(const repres::Representation *);

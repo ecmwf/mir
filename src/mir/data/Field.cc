@@ -91,6 +91,17 @@ void Field::dimensions(size_t size)  {
     return values_.resize(size);
 }
 
+
+void Field::select(size_t which)  {
+    eckit::AutoLock<const eckit::Counted> lock(this);
+    ASSERT(which < values_.size());
+    if(which != 0) {
+        std::swap(values_[0], values_[which]);
+    }
+
+    return values_.resize(1);
+}
+
 Field::~Field() {
     if (representation_) {
         representation_->detach();

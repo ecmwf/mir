@@ -41,6 +41,17 @@ void FormulaIdent::print(std::ostream& out) const {
 void FormulaIdent::execute(mir::context::Context& ctx) const {
     std::cout << "Execute " << *this << std::endl;
 
+
+    if(name_ == "f1") {
+        ctx.select(0);
+        return;
+    }
+
+    if(name_ == "f2") {
+        ctx.select(1);
+        return;
+    }
+
     if(name_ != "f") {
         std::ostringstream oss;
         oss << "Only variable 'f' is supported (" << name_ << ")";

@@ -83,6 +83,15 @@ void MIRField::dimensions(size_t size)  {
     field_->dimensions(size);
 }
 
+
+void MIRField::select(size_t which)  {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    // TODO: Check the if we can select() wothout copying everything first
+    copyOnWrite();
+    field_->select(which);
+}
+
+
 MIRField::~MIRField() {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 

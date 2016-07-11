@@ -81,6 +81,9 @@ public:
     data::MIRField& field();
     input::MIRInput& input();
 
+    // Select only one field
+    void select(size_t which);
+
     void scalar(double);
     double scalar() const;
 

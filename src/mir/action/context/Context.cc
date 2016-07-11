@@ -222,6 +222,12 @@ data::MIRField& Context::field() {
     return content_->field();
 }
 
+void Context::select(size_t which) {
+
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    field().select(which);
+}
+
 void Context::scalar(double value) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
