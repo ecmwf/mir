@@ -84,7 +84,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
         return;
     }
 
-    eckit::Timer timer("MIRComplexJob::execute", std::cout);
+    // eckit::Timer timer("MIRComplexJob::execute", std::cout);
 
     context::Context ctx(*input_, statistics);
 
