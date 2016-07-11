@@ -99,7 +99,7 @@ void BitmapFilter::execute(context::Context & ctx) const {
 
             for (size_t i = 0; i < b.width() ; i++ ) {
 
-                if(k == values.size()) {
+                if (k == values.size()) {
                     // Temp fix
                     break;
                 }
