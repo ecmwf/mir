@@ -85,7 +85,7 @@ void BitmapFilter::execute(context::Context & ctx) const {
         double missingValue = field.missingValue();
         std::vector<double> &values = field.direct(f);
 
-        if (values.size() != b.width() * b.height()) {
+        if (values.size() > b.width() * b.height()) {
             std::ostringstream os;
             os << "BitmapFilter::execute size mismatch: values=" << values.size()
                << ", bitmap=" << b.width() << "x" << b.height();
@@ -99,10 +99,17 @@ void BitmapFilter::execute(context::Context & ctx) const {
 
             for (size_t i = 0; i < b.width() ; i++ ) {
 
+                if(k == values.size()) {
+                    // Temp fix
+                    break;
+                }
+
                 if (!b.on(j, i)) {
                     values[k] = missingValue;
                 }
                 k++;
+
+
             }
         }
 
