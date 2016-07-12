@@ -381,6 +381,13 @@ static Unop<abs> _abs("abs");
 //=========================================================
 struct atan2 { double operator()(double x, double y) const { return ::atan2(x, y); }};
 static Binop<atan2> _atan2("atan2");
+
+//=========================================================
+struct min { double operator()(double x, double y) const { return std::min(x, y); }};
+static Binop<min> _min("min");
+//=========================================================
+struct max { double operator()(double x, double y) const { return std::max(x, y); }};
+static Binop<max> _max("max");
 //=========================================================
 
 struct pow { double operator()(double x, double y) const { return ::pow(x, y); }};
