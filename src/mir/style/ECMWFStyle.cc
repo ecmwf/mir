@@ -75,17 +75,31 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
     bool field_gridded  = parametrisation_.has("field.gridded");
     bool field_spectral = parametrisation_.has("field.spectral");
+        std::string formula;
 
     ASSERT(field_gridded != field_spectral);
 
     if (field_spectral) {
         sh2sh(plan);
+
+        if (parametrisation_.get("user.formula.spectral", formula)) {
+            plan.add("calc.formula", "formula", formula);
+        }
+
         if (user_wants_gridded) {
             sh2grid(plan);
+
+            if (parametrisation_.get("user.formula.gridded", formula)) {
+                plan.add("calc.formula", "formula", formula);
+            }
         }
     }
 
     if (field_gridded) {
+
+        if (parametrisation_.get("user.formula.gridded", formula)) {
+            plan.add("calc.formula", "formula", formula);
+        }
         grid2grid(plan);
     }
 
@@ -199,8 +213,9 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
         plan.add("sub.fields");
     }
 
-    if (parametrisation_.has("user.formula")) {
-        plan.add("calc.formula");
+    std::string formula;
+    if (parametrisation_.get("user.formula.prologue", formula)) {
+        plan.add("calc.formula", "formula", formula);
     }
 }
 
@@ -251,6 +266,13 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
     if (parametrisation_.get("epilogue", epilogue)) {
         plan.add(epilogue);
     }
+
+
+    std::string formula;
+    if (parametrisation_.get("user.formula.epilogue", formula)) {
+        plan.add("calc.formula", "formula", formula);
+    }
+
 }
 
 

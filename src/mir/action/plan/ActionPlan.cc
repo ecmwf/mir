@@ -69,6 +69,14 @@ void ActionPlan::add(const std::string &name, const std::string &param, long val
     actions_.push_back(ActionFactory::build(name, *runtime));
 }
 
+void ActionPlan::add(const std::string &name, const std::string &param, const std::string& value)  {
+    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
+    runtimes_.push_back(runtime);
+
+    runtime->set(param, value);
+    actions_.push_back(ActionFactory::build(name, *runtime));
+}
+
 void ActionPlan::add(const std::string &name, const std::string &param, param::DelayedParametrisation *value) {
     param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
