@@ -22,14 +22,8 @@ list( APPEND mir_srcs api/mir_version.cc )
 
 list(
 	APPEND mir_srcs
-	action/calc/BinopFields.cc
-	action/calc/BinopFields.h
-	action/calc/BinopScalar.cc
-	action/calc/BinopScalar.h
 	action/calc/FormulaAction.cc
 	action/calc/FormulaAction.h
-	action/calc/UnopField.cc
-	action/calc/UnopField.h
 	action/context/Context.cc
 	action/context/Context.h
 	action/filter/AdjustWinds.cc
