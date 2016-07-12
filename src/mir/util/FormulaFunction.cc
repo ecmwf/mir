@@ -60,19 +60,7 @@ void FormulaFunction::print(std::ostream& out) const {
     out << ")";
 }
 
-// class Cleanup {
-//     std::vector<context::Context*>& v_;
-// public:
-//     Cleanup(std::vector<context::Context*>& v): v_(v) {}
-//     ~Cleanup() {
-//         for(auto j = v_.begin(); j != v_.end(); ++j) {
-//             delete (*j);
-//         }
-//     }
-// };
-
 void FormulaFunction::execute(mir::context::Context& ctx) const {
-    // std::cout << "Execute " << *this << std::endl;
 
     size_t i = 0;
     for (auto j = args_.begin(); j != args_.end(); ++j, ++i) {

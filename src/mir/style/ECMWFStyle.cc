@@ -75,7 +75,7 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
     bool field_gridded  = parametrisation_.has("field.gridded");
     bool field_spectral = parametrisation_.has("field.spectral");
-        std::string formula;
+    std::string formula;
 
     ASSERT(field_gridded != field_spectral);
 
@@ -197,20 +197,17 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
 void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
+    std::string prologue;
+    if (parametrisation_.get("prologue", prologue)) {
+        plan.add(prologue);
+    }
+
     if (parametrisation_.has("checkerboard")) {
         plan.add("misc.checkerboard");
     }
 
     if (parametrisation_.has("pattern")) {
         plan.add("misc.pattern");
-    }
-
-    if (parametrisation_.has("add.fields")) {
-        plan.add("add.fields");
-    }
-
-    if (parametrisation_.has("sub.fields")) {
-        plan.add("sub.fields");
     }
 
     std::string formula;
@@ -221,56 +218,14 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 
-    // Could be in the prologue
-    if (parametrisation_.has("mul.scalar")) {
-        plan.add("mul.scalar");
-    }
-
-    if (parametrisation_.has("div.scalar")) {
-        plan.add("div.scalar");
-    }
-
-    if (parametrisation_.has("add.scalar")) {
-        plan.add("add.scalar");
-    }
-
-    if (parametrisation_.has("sub.scalar")) {
-        plan.add("sub.scalar");
-    }
-
-    if (parametrisation_.has("round.field")) {
-        plan.add("round.field");
-    }
-
-    if (parametrisation_.has("min.scalar")) {
-        plan.add("min.scalar");
-    }
-
-    if (parametrisation_.has("max.scalar")) {
-        plan.add("max.scalar");
-    }
-
-    if (parametrisation_.has("user.area")) {
-        plan.add("crop.area");
-    }
-
-    if (parametrisation_.has("user.bitmap")) {
-        plan.add("filter.bitmap");
-    }
-
-    if (parametrisation_.has("user.frame")) {
-        plan.add("filter.frame");
+    std::string formula;
+    if (parametrisation_.get("user.formula.epilogue", formula)) {
+        plan.add("calc.formula", "formula", formula);
     }
 
     std::string epilogue;
     if (parametrisation_.get("epilogue", epilogue)) {
         plan.add(epilogue);
-    }
-
-
-    std::string formula;
-    if (parametrisation_.get("user.formula.epilogue", formula)) {
-        plan.add("calc.formula", "formula", formula);
     }
 
 }

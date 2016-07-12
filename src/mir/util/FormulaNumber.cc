@@ -40,9 +40,7 @@ void FormulaNumber::print(std::ostream& out) const {
 
 
 void FormulaNumber::execute(mir::context::Context& ctx) const {
-    std::cout << "Execute " << *this << std::endl;
     ctx.scalar(value_);
-
 }
 
 bool FormulaNumber::sameAs(const mir::action::Action& other) const {
