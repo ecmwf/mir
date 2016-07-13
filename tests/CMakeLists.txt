@@ -85,6 +85,18 @@ foreach(_t ${_test_reqs})
 endforeach()
 
 
+# Unit tests: other
+foreach(_t "mir_tests_RotateGrid")
+  ecbuild_add_test(
+      TARGET   ${_t}
+      SOURCES "${_t}.cc"
+      LIBS    mir
+      ENVIRONMENT
+        "MIR_TRACE=1"
+        "MIRHOME=${CMAKE_BINARY_DIR}"  )
+endforeach()
+
+
 # Regression tests
 if( HAVE_MIR_TESTS_REGRESS )
   add_subdirectory("regress")

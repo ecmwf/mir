@@ -3,13 +3,15 @@
 2t_N640.grib
 2t_O1280.grib
 2t_regular_ll.grib
-2t_regular_ll_staggered.grib
+2t_regular_ll_shifted.grib
 2t_regular_ll_sub-area.grib
+frpfire_regular_ll_shifted.grib
 msl_F640.grib
 msl_F640_sub-area.grib
 msl_N640.grib
 msl_O1280.grib
 msl_regular_ll.grib
+msl_regular_ll_shifted.grib
 msl_regular_ll_sub-area.grib
 swh_reduced_ll.grib
 swh_reduced_ll_sub-area.grib
