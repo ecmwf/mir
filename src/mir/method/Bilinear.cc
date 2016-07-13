@@ -15,21 +15,18 @@
 
 #include "mir/method/Bilinear.h"
 
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 #include <string>
-
 #include "eckit/log/Log.h"
-
+#include "atlas/array/ArrayView.h"
 #include "atlas/field/Field.h"
 #include "atlas/functionspace/FunctionSpace.h"
-#include "atlas/mesh/Nodes.h"
 #include "atlas/grid/Structured.h"
-#include "atlas/array/ArrayView.h"
-
-#include "mir/util/Compare.h"
+#include "atlas/mesh/Nodes.h"
 #include "mir/log/MIR.h"
 #include "mir/method/GridSpace.h"
+#include "mir/util/Compare.h"
 
 
 using eckit::FloatCompare;

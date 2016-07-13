@@ -19,8 +19,10 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
-
 #include "eckit/memory/Counted.h"
+
+
+struct grib_info;
 
 namespace atlas {
 namespace grid {
@@ -29,62 +31,55 @@ class Domain;
 }
 }
 
-struct grib_info;
-
-
 namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-
+namespace repres {
+class Iterator;
+}
 namespace util {
 class BoundingBox;
-class Rotation;
 class MIRStatistics;
 }
-
 namespace context {
 class Context;
 }
-
 namespace api {
 class MIRJob;
 }
+}
 
+
+namespace mir {
 namespace repres {
-
-class Iterator;
 
 
 class Representation : public eckit::Counted {
   public:
 
-    // Sanning mode bits
+    // Scanning mode bits
     enum {
-        iScansNegatively = 1 << 7,
-        jScansPositively = 1 << 6,
+        iScansNegatively      = 1 << 7,
+        jScansPositively      = 1 << 6,
         jPointsAreConsecutive = 1 << 5,
-        alternateRowScanning = 1 << 4,
+        alternateRowScanning  = 1 << 4,
     };
 
-
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Constructors
 
     Representation();
 
-// -- Destructor
-
-
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
 
     // --------------------
@@ -102,8 +97,7 @@ class Representation : public eckit::Counted {
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
-    virtual const Representation* truncate(size_t truncation,
-                                     const std::vector<double>&, std::vector<double>&) const;
+    virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
     virtual atlas::grid::Grid* atlasGrid() const;
     virtual atlas::grid::Domain atlasDomain() const;
@@ -120,58 +114,60 @@ class Representation : public eckit::Counted {
 
     virtual void shape(size_t& ni, size_t& nj) const;
 
-
-
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   protected:
 
-// -- Members
+    // -- Destructor
 
-    virtual ~Representation(); // Change to virtual if base class
+    virtual ~Representation();
 
-// -- Methods
-
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
-
-// -- Overridden methods
+    // -- Members
     // None
 
-// -- Class members
+    // -- Methods
+
+    virtual void print(std::ostream&) const = 0;
+
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
+    // None
+
+    // -- Class methods
     // None
 
   private:
 
-// No copy allowed
+    // No copy allowed
 
     Representation(const Representation&);
     Representation& operator=(const Representation&);
 
-// -- Members
-
-// -- Methods
+    // -- Members
     // None
 
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-// -- Friends
+    // -- Class methods
+    // None
+
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const Representation& p) {
         p.print(s);
@@ -180,29 +176,27 @@ class Representation : public eckit::Counted {
 
 };
 
-//========================================================
 
 class RepresentationHandle {
     const Representation* representation_;
-public:
+  public:
     RepresentationHandle(const Representation* r);
     ~RepresentationHandle();
-
-    const Representation* operator->() const { return representation_; }
-    operator const Representation*() const { return representation_; }
+    const Representation* operator->() const {
+        return representation_;
+    }
+    operator const Representation*() const {
+        return representation_;
+    }
 };
 
-//================================================
 
 class RepresentationFactory {
     std::string name_;
     virtual Representation* make(const param::MIRParametrisation&) = 0 ;
-
   protected:
-
     RepresentationFactory(const std::string&);
     virtual ~RepresentationFactory();
-
   public:
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable
@@ -221,8 +215,8 @@ class RepresentationBuilder : public RepresentationFactory {
 };
 
 
-
 }  // namespace repres
 }  // namespace mir
-#endif
 
+
+#endif

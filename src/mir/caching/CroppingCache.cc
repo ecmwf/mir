@@ -8,42 +8,48 @@
  * does it submit to any jurisdiction.
  */
 
+
 #include "CroppingCache.h"
 
 #include "eckit/io/BufferedHandle.h"
-#include "eckit/log/Timer.h"
-#include "eckit/log/Plural.h"
 #include "eckit/log/BigNum.h"
-#include "eckit/serialisation/FileStream.h"
 #include "eckit/log/Bytes.h"
-
+#include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
+#include "eckit/log/Timer.h"
+#include "eckit/serialisation/FileStream.h"
 #include "mir/api/mir_version.h"
 #include "mir/log/MIR.h"
 
+
 namespace mir {
 namespace caching {
+
 
 CroppingCache::CroppingCache():
     CacheManager("mir/cropping") {
 }
 
+
 const char *CroppingCache::version() const {
     return "1"; // Change me if the cache file structure changes
 }
+
 
 const char *CroppingCache::extension() const {
     return ".area";
 }
 
+
 void CroppingCache::print(std::ostream &s) const {
     s << "CroppingCache[";
     CacheManager::print(s);
-    s << "name=" << name() << ","
-      << "version=" << version() << ","
-      << "extention=" << extension() << ","
+    s << ",name=" << name()
+      << ",version=" << version()
+      << ",extention=" << extension()
       << "]";
 }
+
 
 void CroppingCache::insert(const std::string &key, const CroppingCacheEntry &c) const {
 
@@ -67,6 +73,7 @@ void CroppingCache::insert(const std::string &key, const CroppingCacheEntry &c) 
     ASSERT(commit(key, tmp));
 }
 
+
 bool CroppingCache::retrieve(const std::string &key, CroppingCacheEntry &c) const {
 
     eckit::PathName path;
@@ -88,6 +95,7 @@ bool CroppingCache::retrieve(const std::string &key, CroppingCacheEntry &c) cons
 
     size_t size;
     f >> size;
+
     c.mapping_.reserve(size);
     for (size_t i = 0; i < size; ++i) {
         size_t j;
@@ -98,13 +106,17 @@ bool CroppingCache::retrieve(const std::string &key, CroppingCacheEntry &c) cons
     return true;
 }
 
+
 void CroppingCacheEntry::print(std::ostream& out) const {
     out << "CroppingCacheEntry[size=" <<  mapping_.size() << ",bbox=" << bbox_ << ",size=" << eckit::Bytes(sizeof(size_t) * mapping_.size()) << "]";
 }
 
+
 CroppingCacheEntry::~CroppingCacheEntry() {
     // std::cout << "Delete " << *this << std::endl;
 }
+
+
 }  // namespace method
 }  // namespace mir
 

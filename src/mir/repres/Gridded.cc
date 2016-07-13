@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -15,8 +15,8 @@
 
 #include "mir/repres/Gridded.h"
 
-#include "mir/util/Grib.h"
 #include "mir/log/MIR.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir {
@@ -31,17 +31,21 @@ Gridded::Gridded(const param::MIRParametrisation &parametrisation) {}
 
 Gridded::~Gridded() {}
 
+
 void Gridded::setComplexPacking(grib_info &info) const {
     info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_COMPLEX;
 }
+
 
 void Gridded::setSimplePacking(grib_info &info) const {
     info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_SIMPLE;
 }
 
+
 void Gridded::setSecondOrderPacking(grib_info &info) const {
     info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_SECOND_ORDER;
 }
+
 
 bool Gridded::globalDomain() const {
     std::ostringstream os;
@@ -49,8 +53,8 @@ bool Gridded::globalDomain() const {
     throw eckit::SeriousBug(os.str());
 }
 
-void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
 
+void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
     if (!globalDomain()) {
         Representation::cropToDomain(parametrisation, ctx); // This will throw an exception
     }
@@ -89,6 +93,8 @@ size_t Gridded::computeN(double first, double last, double inc, const char *n_na
     return n + 1;
 
 }
+
+
 }  // namespace repres
 }  // namespace mir
 

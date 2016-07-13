@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -20,91 +20,100 @@
 
 
 namespace mir {
-
 namespace util {
 class MIRStatistics;
 }
+}
 
+
+namespace mir {
 namespace repres {
 
 
 class Gridded : public Representation {
   public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     Gridded(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~Gridded(); // Change to virtual if base class
+    virtual ~Gridded();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
-
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
+    // None
+
+    // -- Class methods
     // None
 
   protected:
 
-// -- Members
+    // -- Members
+
     Gridded();
 
-// -- Methods
-
-// -- Overridden methods
-
-    virtual bool globalDomain() const;
-
-// -- Class members
-    // None
-
-// -- Class methods
+    // -- Methods
 
     static size_t computeN(double first, double last, double inc, const char *n_name, const char *first_name, const char *last_name);
 
+    virtual bool globalDomain() const;
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
   private:
 
-// No copy allowed
+    // No copy allowed
 
     Gridded(const Gridded&);
+
     Gridded& operator=(const Gridded&);
 
-// -- Members
+    // -- Members
+    // None
 
-// -- Methods
+    // -- Methods
+    // None
 
+    // -- Overridden methods
 
-
-// -- Overridden methods
     virtual void setComplexPacking(grib_info&) const;
+
     virtual void setSimplePacking(grib_info&) const;
+
     virtual void setSecondOrderPacking(grib_info&) const;
 
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const Gridded& p)
     //  { p.print(s); return s; }
@@ -114,5 +123,7 @@ class Gridded : public Representation {
 
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

@@ -19,7 +19,7 @@
 #include "mir/repres/Gridded.h"
 
 namespace eckit {
-    class PathName;
+class PathName;
 }
 
 namespace mir {

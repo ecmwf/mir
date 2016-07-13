@@ -18,9 +18,7 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Tool.h"
-
 #include "atlas/grid/lonlat/RegularLonLat.h"
-
 #include "mir/lsm/Mask.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/MIRCombinedParametrisation.h"

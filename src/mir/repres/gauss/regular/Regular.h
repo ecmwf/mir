@@ -67,15 +67,20 @@ protected:
 
     // -- Methods
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob&) const;
-    virtual atlas::grid::Grid* atlasGrid() const;
-    virtual Iterator* rotatedIterator() const; // After rotation
-    virtual Iterator* unrotatedIterator() const; // Before rotation
 
     // -- Overridden methods
 
+    virtual Iterator* rotatedIterator() const; // After rotation
+
+    virtual Iterator* unrotatedIterator() const; // Before rotation
+
+    virtual void fill(grib_info&) const;
+
+    virtual void fill(api::MIRJob&) const;
+
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
+
+    virtual atlas::grid::Grid* atlasGrid() const;
 
     // -- Class members
     // None
@@ -119,5 +124,7 @@ private:
 }  // namespace regular
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

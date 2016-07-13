@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -23,83 +23,85 @@ namespace mir {
 namespace repres {
 namespace sh {
 
+
 class SphericalHarmonics : public Representation {
   public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     SphericalHarmonics(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~SphericalHarmonics(); // Change to virtual if base class
+    virtual ~SphericalHarmonics();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
-
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
+    // None
+
+    // -- Class methods
 
     static void truncate(size_t truncation_from, size_t truncation_to, const std::vector<double>& in, std::vector<double>& out);
+
     static size_t number_of_complex_coefficients(size_t truncation) {
         return (truncation + 1) * (truncation + 2) / 2;
     }
 
   protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   private:
 
     SphericalHarmonics(size_t truncation);
 
-// No copy allowed
+    // No copy allowed
 
     SphericalHarmonics(const SphericalHarmonics&);
     SphericalHarmonics& operator=(const SphericalHarmonics&);
 
-// -- Members
+    // -- Members
 
     size_t truncation_;
 
-// -- Methods
+    // -- Methods
     // None
 
 
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob &) const;
     virtual const Representation* truncate(size_t truncation,
-                                     const std::vector<double>&, std::vector<double>&) const;
+                                           const std::vector<double>&, std::vector<double>&) const;
     virtual size_t truncation() const;
 
     virtual void validate(const std::vector<double>&) const;
@@ -107,21 +109,24 @@ class SphericalHarmonics : public Representation {
     virtual void setComplexPacking(grib_info&) const;
     virtual void setSimplePacking(grib_info&) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const SphericalHarmonics& p)
     //  { p.print(s); return s; }
 
 };
 
+
 }  // namespace sh
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

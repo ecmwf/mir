@@ -18,32 +18,28 @@
 
 #include <algorithm>
 #include <map>
-#include <string>
 #include <sstream>
-
-#include "atlas/grid/Grid.h"
-#include "atlas/mesh/Mesh.h"
-
+#include <string>
+#include "eckit/config/Resource.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/config/Resource.h"
-
-#include "mir/caching/WeightCache.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/mesh/Mesh.h"
+#include "mir/action/context/Context.h"
+#include "mir/caching/InMemoryCache.h"
 #include "mir/caching/MeshCache.h"
+#include "mir/caching/WeightCache.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
+#include "mir/log/MIR.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/method/GridSpace.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Compare.h"
-#include "mir/log/MIR.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/caching/MeshCache.h"
-#include "mir/caching/InMemoryCache.h"
-#include "mir/action/context/Context.h"
 
 // using eckit::Log;
 using mir::util::compare::is_approx_zero;
@@ -93,7 +89,8 @@ atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
 
     try {
         generateMesh(grid, mesh);
-    } catch (...) {
+    }
+    catch (...) {
         // Make sure we don't leave an incomplete entry in the cache
         mesh_cache.erase(md5);
         throw;

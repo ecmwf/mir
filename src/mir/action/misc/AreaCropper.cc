@@ -12,32 +12,31 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/misc/AreaCropper.h"
 
 #include <iostream>
 #include <vector>
-
-#include "atlas/grid/Grid.h"
-
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Timer.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/log/Timer.h"
-
+#include "atlas/grid/Grid.h"
 #include "mir/action/context/Context.h"
+#include "mir/caching/CroppingCache.h"
+#include "mir/caching/InMemoryCache.h"
+#include "mir/data/MIRField.h"
+#include "mir/log/MIR.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/caching/CroppingCache.h"
-#include "mir/log/MIR.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/caching/InMemoryCache.h"
-#include "mir/data/MIRField.h"
 
 
 namespace mir {
 namespace action {
+
 
 struct LL {
     double lat_;
@@ -54,9 +53,9 @@ struct LL {
 };
 
 
-
-
 static eckit::Mutex local_mutex;
+
+
 static InMemoryCache<caching::CroppingCacheEntry> cache("mirAreas", 10);
 
 
@@ -81,6 +80,7 @@ AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation, const
     caching_(true) {
 }
 
+
 AreaCropper::~AreaCropper() {
 }
 
@@ -90,10 +90,10 @@ bool AreaCropper::sameAs(const Action& other) const {
     return o && (bbox_ == o->bbox_);
 }
 
+
 void AreaCropper::print(std::ostream &out) const {
     out << "AreaCropper[bbox=" << bbox_ << "]";
 }
-
 
 
 static const caching::CroppingCacheEntry &getMapping(const std::string& key,
@@ -174,9 +174,8 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
     // ASSERT(m.size() > 0);
 
     c.bbox_ = util::BoundingBox(n, w, s, e);
+
     c.mapping_.reserve(m.size());
-
-
     for (std::map<LL, size_t>::const_iterator j = m.begin(); j != m.end(); ++j) {
         c.mapping_.push_back((*j).second);
     }
@@ -210,6 +209,7 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
         throw;
     }
 }
+
 
 void AreaCropper::execute(context::Context & ctx) const {
 

@@ -49,6 +49,7 @@ class RegularLL : public LatLon {
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -62,6 +63,7 @@ class RegularLL : public LatLon {
   protected:
 
     // -- Members
+    // None
 
     // -- Methods
 
@@ -87,16 +89,15 @@ class RegularLL : public LatLon {
     RegularLL &operator=(const RegularLL &);
 
     // -- Members
-
-
-    // -- Methods
     // None
 
+    // -- Methods
 
     // Called by crop()
     virtual const RegularLL *cropped(const util::BoundingBox &bbox) const;
 
     // -- Overridden methods
+    // None
 
     // -- Class members
     // None

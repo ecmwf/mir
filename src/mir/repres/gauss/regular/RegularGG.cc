@@ -17,8 +17,6 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
-
 
 namespace mir {
 namespace repres {
@@ -28,6 +26,7 @@ namespace regular {
 RegularGG::RegularGG(const param::MIRParametrisation &parametrisation):
     Regular(parametrisation) {
 }
+
 
 RegularGG::RegularGG(size_t N):
     Regular(N) {

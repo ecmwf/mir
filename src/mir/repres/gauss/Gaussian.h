@@ -47,6 +47,7 @@ class Gaussian : public Gridded {
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -92,8 +93,7 @@ class Gaussian : public Gridded {
     mutable std::vector<double> latitudes_;
 
     // -- Methods
-
-
+    // None
 
     // -- Class members
     // None
@@ -111,5 +111,7 @@ class Gaussian : public Gridded {
 
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

@@ -13,37 +13,33 @@
 /// @date Apr 2015
 
 
-#include <map>
-
-#include "eckit/log/Timer.h"
-#include "eckit/exception/Exceptions.h"
-
-#include "atlas/grid/gaussian/latitudes/Latitudes.h"
-#include "atlas/grid/Domain.h"
-
-#include "mir/util/Grib.h"
-#include "mir/util/BoundingBox.h"
 #include "mir/repres/gauss/Gaussian.h"
-#include "mir/param/MIRParametrisation.h"
 
-#include "mir/util/Grib.h"
+#include <map>
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Timer.h"
+#include "atlas/grid/Domain.h"
+#include "atlas/grid/gaussian/latitudes/Latitudes.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace repres {
 
 
-Gaussian::Gaussian(size_t N):
+Gaussian::Gaussian(size_t N) :
     N_(N) {
 }
 
 
-Gaussian::Gaussian(size_t N, const util::BoundingBox &bbox):
-    N_(N), bbox_(bbox) {
+Gaussian::Gaussian(size_t N, const util::BoundingBox &bbox) :
+    N_(N),
+    bbox_(bbox) {
 }
 
 
-Gaussian::Gaussian(const param::MIRParametrisation &parametrisation):
+Gaussian::Gaussian(const param::MIRParametrisation &parametrisation) :
     bbox_(parametrisation) {
     ASSERT(parametrisation.get("N", N_));
 }
@@ -52,20 +48,23 @@ Gaussian::Gaussian(const param::MIRParametrisation &parametrisation):
 Gaussian::~Gaussian() {
 }
 
+
 std::vector<double> Gaussian::latitudes(size_t N) {
     std::vector<double> latitudes(2 * N);
     atlas::grid::gaussian::latitudes::gaussian_latitudes_npole_spole(N, &latitudes[0]);
     return latitudes;
 }
 
-// This returns the Gaussian latititudes of a GLOBAL field
-const std::vector <double> &Gaussian::latitudes() const {
+
+const std::vector<double>& Gaussian::latitudes() const {
+    // This returns the Gaussian latitudes of a GLOBAL field
     if (latitudes_.size() == 0) {
         latitudes_.resize(N_ * 2);
         atlas::grid::gaussian::latitudes::gaussian_latitudes_npole_spole(N_, &latitudes_[0]);
     }
     return latitudes_;
 }
+
 
 atlas::grid::Domain Gaussian::atlasDomain() const {
     return globalDomain()

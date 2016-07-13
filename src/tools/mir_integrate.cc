@@ -13,7 +13,6 @@
 
 
 #include <cmath>
-
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
@@ -21,7 +20,6 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/types/FloatCompare.h"
-
 #include "atlas/array/IndexView.h"
 #include "atlas/functionspace/FunctionSpace.h"
 #include "atlas/grid/Grid.h"
@@ -32,7 +30,6 @@
 #include "atlas/mesh/actions/BuildConvexHull3D.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/util/Constants.h"
-
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Gridded.h"
@@ -102,7 +99,7 @@ void MIRIntegrate::run() {
         const repres::Representation* rep = field.representation();
 
         ASSERT(rep);
-        // ASSERT(rep->globalDomain());
+        // ASSERT(rep->atlasDomain().isGlobal());
 
 #if 0
         eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );

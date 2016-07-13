@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,11 +13,11 @@
 /// @date Apr 2015
 
 
-#ifndef BoundingBox_H
-#define BoundingBox_H
-
+#ifndef mir_util_BoundingBox_h
+#define mir_util_BoundingBox_h
 
 #include <iosfwd>
+
 
 struct grib_info;
 
@@ -26,17 +26,18 @@ class MD5;
 }
 
 namespace mir {
-namespace param {
-class MIRParametrisation;
-}
-
 namespace api {
 class MIRJob;
 }
+namespace param {
+class MIRParametrisation;
 }
+}
+
 
 namespace mir {
 namespace util {
+
 
 class BoundingBox {
   public:
@@ -44,12 +45,11 @@ class BoundingBox {
     // -- Exceptions
     // None
 
-    // -- Contructors
-
-    BoundingBox(const param::MIRParametrisation &);
+    // -- Constructors
 
     BoundingBox();
     BoundingBox(double north, double west, double south, double east);
+    BoundingBox(const param::MIRParametrisation&);
 
     // -- Destructor
 
@@ -67,9 +67,6 @@ class BoundingBox {
     bool operator!=(const BoundingBox& other) const {
         return (north_ != other.north_) || (south_ != other.south_) || (west_ != other.west_) || (east_ != other.east_);
     }
-
-    bool contains(double lat, double lon) const;
-    double normalise(double lon) const;
 
     // -- Methods
 
@@ -91,9 +88,12 @@ class BoundingBox {
         return east_;
     }
 
-    //
-    void fill(grib_info &) const;
-    void fill(api::MIRJob &) const;
+    bool contains(double lat, double lon) const;
+    double normalise(double lon) const;
+
+    void fill(grib_info&) const;
+
+    void fill(api::MIRJob&) const;
 
     void hash(eckit::MD5&) const;
 
@@ -101,8 +101,10 @@ class BoundingBox {
     // None
 
     // -- Class members
+    // None
 
     // -- Class methods
+    // None
 
   protected:
 
@@ -120,6 +122,9 @@ class BoundingBox {
     // None
 
     // -- Class methods
+    // None
+
+    // -- Friends
     // None
 
   private:
@@ -159,5 +164,7 @@ class BoundingBox {
 
 }  // namespace util
 }  // namespace mir
+
+
 #endif
 
