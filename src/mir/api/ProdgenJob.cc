@@ -20,8 +20,8 @@
 
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/grids.h"
-#include "atlas/grid/global/Structured.h"
-#include "atlas/grid/global/gaussian/ClassicGaussian.h"
+#include "atlas/grid/Structured.h"
+#include "atlas/grid/gaussian/ClassicGaussian.h"
 
 #include "mir/api/ProdgenJob.h"
 #include "mir/log/MIR.h"
@@ -209,9 +209,9 @@ size_t ProdgenJob::nj() const {
 
 
 void ProdgenJob::auto_pl() {
-    eckit::ScopedPtr<atlas::grid::global::Structured> grid(
-                dynamic_cast<atlas::grid::global::Structured*>(
-                    new atlas::grid::global::gaussian::ClassicGaussian(N_) ));
+    eckit::ScopedPtr<atlas::grid::Structured> grid(
+                dynamic_cast<atlas::grid::Structured*>(
+                    new atlas::grid::gaussian::ClassicGaussian(N_) ));
     ASSERT(grid.get());
     pl_ = grid->pl();
 }

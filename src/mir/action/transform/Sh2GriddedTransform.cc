@@ -20,8 +20,8 @@
 
 #include "atlas/atlas.h"
 #include "atlas/grid/Grid.h"
-#include "atlas/grid/global/Structured.h"
-#include "atlas/grid/global/lonlat/RegularLonLat.h"
+#include "atlas/grid/Structured.h"
+#include "atlas/grid/lonlat/RegularLonLat.h"
 #include "atlas/grid/grids.h"
 
 #include "eckit/thread/AutoLock.h"
@@ -91,13 +91,13 @@ static void transform(
     const atlas::grid::Grid &grid,
     context::Context& ctx) {
 
-    const atlas::grid::global::Structured* reduced = dynamic_cast<const atlas::grid::global::Structured*>(&grid);
+    const atlas::grid::Structured* reduced = dynamic_cast<const atlas::grid::Structured*>(&grid);
 
     if (!reduced) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
     }
 
-    const atlas::grid::global::lonlat::RegularLonLat* latlon = dynamic_cast<const atlas::grid::global::lonlat::RegularLonLat* >(&grid);
+    const atlas::grid::lonlat::RegularLonLat* latlon = dynamic_cast<const atlas::grid::lonlat::RegularLonLat* >(&grid);
 
     // Warning: we keep the coefficient in memory for all the resolution used
     if (trans_handles.find(key) == trans_handles.end()) {

@@ -24,7 +24,7 @@
 #include "atlas/field/Field.h"
 #include "atlas/functionspace/FunctionSpace.h"
 #include "atlas/mesh/Nodes.h"
-#include "atlas/grid/global/Structured.h"
+#include "atlas/grid/Structured.h"
 #include "atlas/array/ArrayView.h"
 
 #include "mir/util/Compare.h"
@@ -120,7 +120,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 
 
     // Ensure the input is a reduced grid, and get the pl array
-    const atlas::grid::global::Structured* igg = dynamic_cast<const atlas::grid::global::Structured*>(&in.grid());
+    const atlas::grid::Structured* igg = dynamic_cast<const atlas::grid::Structured*>(&in.grid());
     if (!igg)
         throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
 

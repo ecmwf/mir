@@ -24,7 +24,7 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/grid/global/Structured.h"
+#include "atlas/grid/Structured.h"
 #include "atlas/interpolation/PointIndex3.h"
 #include "atlas/interpolation/Quad3D.h"
 #include "atlas/interpolation/Ray.h"

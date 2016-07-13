@@ -21,7 +21,7 @@
 // #include "eckit/exception/Exceptions.h"
 // #include "eckit/filesystem/PathName.h"
 
-// #include "atlas/grid/global/Unstructured.h"
+// #include "atlas/grid/Unstructured.h"
 
 // #include "mir/param/MIRParametrisation.h"
 // #include "mir/log/MIR.h"

@@ -18,7 +18,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "atlas/grid/global/gaussian/latitudes/Latitudes.h"
+#include "atlas/grid/gaussian/latitudes/Latitudes.h"
 #include "atlas/grid/Domain.h"
 
 #include "mir/util/Grib.h"
@@ -54,7 +54,7 @@ Gaussian::~Gaussian() {
 
 std::vector<double> Gaussian::latitudes(size_t N) {
     std::vector<double> latitudes(2 * N);
-    atlas::grid::global::gaussian::latitudes::gaussian_latitudes_npole_spole(N, &latitudes[0]);
+    atlas::grid::gaussian::latitudes::gaussian_latitudes_npole_spole(N, &latitudes[0]);
     return latitudes;
 }
 
@@ -62,7 +62,7 @@ std::vector<double> Gaussian::latitudes(size_t N) {
 const std::vector <double> &Gaussian::latitudes() const {
     if (latitudes_.size() == 0) {
         latitudes_.resize(N_ * 2);
-        atlas::grid::global::gaussian::latitudes::gaussian_latitudes_npole_spole(N_, &latitudes_[0]);
+        atlas::grid::gaussian::latitudes::gaussian_latitudes_npole_spole(N_, &latitudes_[0]);
     }
     return latitudes_;
 }

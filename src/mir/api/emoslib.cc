@@ -25,9 +25,9 @@
 #include "eckit/runtime/LibBehavior.h"
 
 #include "atlas/grid/Grid.h"
-#include "atlas/grid/global/gaussian/RegularGaussian.h"
-#include "atlas/grid/global/gaussian/ClassicGaussian.h"
-#include "atlas/grid/global/gaussian/latitudes/Latitudes.h"
+#include "atlas/grid/gaussian/RegularGaussian.h"
+#include "atlas/grid/gaussian/ClassicGaussian.h"
+#include "atlas/grid/gaussian/latitudes/Latitudes.h"
 #include "atlas/grid/grids.h"
 
 #include "mir/api/MIRJob.h"
@@ -810,7 +810,7 @@ extern "C" fortint jgglat_(const fortint &KLAT, fortfloat PGAUSS[]) {
 
     eckit::Log::trace<MIR>() << "++++++ jgglat " << KLAT << std::endl;
     size_t N = KLAT / 2;
-    atlas::grid::global::gaussian::latitudes::gaussian_latitudes_npole_equator(N, PGAUSS);
+    atlas::grid::gaussian::latitudes::gaussian_latitudes_npole_equator(N, PGAUSS);
 
     return 0;
 }
@@ -826,11 +826,11 @@ extern "C" void jnumgg_(const fortint &knum,
 
     kret = 0;
     try {
-        eckit::ScopedPtr<atlas::grid::global::Structured> grid(
-                    dynamic_cast<atlas::grid::global::Structured*>(
-                        htype[0] == 'R'? new atlas::grid::global::gaussian::ClassicGaussian(knum)
-                      : htype[0] == 'F'? new atlas::grid::global::gaussian::RegularGaussian(knum)
-                      : (atlas::grid::global::gaussian::Gaussian*) NULL ));
+        eckit::ScopedPtr<atlas::grid::Structured> grid(
+                    dynamic_cast<atlas::grid::Structured*>(
+                        htype[0] == 'R'? new atlas::grid::gaussian::ClassicGaussian(knum)
+                      : htype[0] == 'F'? new atlas::grid::gaussian::RegularGaussian(knum)
+                      : (atlas::grid::gaussian::Gaussian*) NULL ));
         ASSERT(grid.get());
 
         const std::vector<long> &v = grid->pl();

@@ -276,7 +276,7 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
             ///        but later should be cropped out
             ///        UNLESS, we compute the statistics based on only points contained in the Domain
 
-            if ( in.domain().global() ) {
+            if ( in.domain().isGlobal() ) {
                 ASSERT(eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(ostats.minimum(), istats.minimum()));
                 ASSERT(eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(istats.maximum(), ostats.maximum()));
             }

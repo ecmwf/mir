@@ -19,7 +19,7 @@
 #include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Tool.h"
 
-#include "atlas/grid/global/lonlat/RegularLonLat.h"
+#include "atlas/grid/lonlat/RegularLonLat.h"
 
 #include "mir/lsm/Mask.h"
 #include "mir/param/ConfigurationWrapper.h"
@@ -94,7 +94,7 @@ void MIRMakeLSM::run() {
     mir::param::MIRCombinedParametrisation combined(wrapped_args, defaults, defaults);
 
     eckit::ScopedPtr<atlas::grid::Grid> grid(
-                new atlas::grid::global::lonlat::RegularLonLat(
+                new atlas::grid::lonlat::RegularLonLat(
                     (const size_t) Ni,
                     (const size_t) Nj ));
 

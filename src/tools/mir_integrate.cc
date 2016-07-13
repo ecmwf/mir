@@ -25,7 +25,7 @@
 #include "atlas/array/IndexView.h"
 #include "atlas/functionspace/FunctionSpace.h"
 #include "atlas/grid/Grid.h"
-#include "atlas/grid/global/Structured.h"
+#include "atlas/grid/Structured.h"
 #include "atlas/interpolation/Quad3D.h"
 #include "atlas/interpolation/Triag3D.h"
 #include "atlas/mesh/Mesh.h"
@@ -164,8 +164,8 @@ void MIRIntegrate::run() {
 
         eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );
 
-        const atlas::grid::global::Structured* reduced =
-                dynamic_cast<const atlas::grid::global::Structured*>(grid.get());
+        const atlas::grid::Structured* reduced =
+                dynamic_cast<const atlas::grid::Structured*>(grid.get());
 
         ASSERT(reduced);
 

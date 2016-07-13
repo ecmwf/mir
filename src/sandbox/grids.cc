@@ -16,8 +16,8 @@
 #include "eckit/runtime/Tool.h"
 
 #include "atlas/grid/grids.h"
-#include "atlas/grid/global/gaussian/OctahedralGaussian.h"
-#include "atlas/grid/global/gaussian/ClassicGaussian.h"
+#include "atlas/grid/gaussian/OctahedralGaussian.h"
+#include "atlas/grid/gaussian/ClassicGaussian.h"
 
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/RLE.h"
@@ -28,7 +28,7 @@ class Grids : public eckit::Tool {
     virtual void run();
 
     void usage(const std::string &tool);
-    void grid(const atlas::grid::global::Structured &);
+    void grid(const atlas::grid::Structured &);
 
   public:
     Grids(int argc, char **argv) :
@@ -38,7 +38,7 @@ class Grids : public eckit::Tool {
 };
 
 
-void Grids::grid(const atlas::grid::global::Structured& grid) {
+void Grids::grid(const atlas::grid::Structured& grid) {
 
     const std::vector<long>& pl = grid.pl();
     ASSERT(pl.size());
@@ -65,7 +65,7 @@ void Grids::grid(const atlas::grid::global::Structured& grid) {
 
 
 void Grids::run() {
-    using namespace atlas::grid::global::gaussian;
+    using namespace atlas::grid::gaussian;
 
     grid(ClassicGaussian(16));
     grid(ClassicGaussian(24));
