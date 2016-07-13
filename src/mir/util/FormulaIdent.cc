@@ -39,8 +39,8 @@ void FormulaIdent::print(std::ostream& out) const {
 
 
 void FormulaIdent::execute(mir::context::Context& ctx) const {
-    std::cout << "Execute " << *this << std::endl;
 
+    // TODO: something better...
 
     if(name_ == "f1") {
         ctx.select(0);
