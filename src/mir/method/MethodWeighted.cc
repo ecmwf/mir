@@ -73,8 +73,7 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation)
 MethodWeighted::~MethodWeighted() {
 }
 
-atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid& grid) const
-{
+atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid& grid) const {
 
 
     eckit::MD5 md5;
@@ -94,8 +93,7 @@ atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
 
     try {
         generateMesh(grid, mesh);
-    }
-    catch (...) {
+    } catch (...) {
         // Make sure we don't leave an incomplete entry in the cache
         mesh_cache.erase(md5);
         throw;
@@ -104,8 +102,7 @@ atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
     return mesh;
 }
 
-void MethodWeighted::generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const
-{
+void MethodWeighted::generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const {
     std::ostringstream oss;
     oss << "Method " << name()
         << " needs a mesh() but does not implement generateMesh()"

@@ -212,8 +212,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 
             ASSERT(lons.size() >= 2); // at least 2 lines of latitude
 
-            if( FloatCompare<double>::isApproximatelyEqual(max_lat, lat) )
-            {
+            if( FloatCompare<double>::isApproximatelyEqual(max_lat, lat) ) {
                 top_n = lons[0];
                 bot_n = lons[1];
                 top_i = 0;
@@ -221,22 +220,18 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 
             } else {
 
-                if( FloatCompare<double>::isApproximatelyEqual(min_lat, lat) )
-                {
+                if( FloatCompare<double>::isApproximatelyEqual(min_lat, lat) ) {
                     top_n = lons[ lons.size() - 2 ];
                     bot_n = lons[ lons.size() - 1 ];
                     bot_i = inpts - bot_n;
                     top_i = bot_i - top_n;
-                }
-                else
-                {
+                } else {
                     top_lat = icoords(top_i, LAT);
                     bot_lat = icoords(bot_i, LAT);
 
                     size_t n = 1;
                     while ( !( bot_lat < lat && FloatCompare<double>::isApproximatelyGreaterOrEqual(top_lat, lat) )
-                            && n != lons.size() )
-                    {
+                            && n != lons.size() ) {
 
                         top_n = lons[n - 1];
                         bot_n = lons[n];

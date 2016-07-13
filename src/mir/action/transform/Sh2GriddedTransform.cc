@@ -44,7 +44,7 @@
 #include "transi/trans.h"
 
 class TransInitor {
-public:
+  public:
     TransInitor() {
         trans_use_mpi(false); // So that even if MPI is enabled, we don't use it.
         trans_init();
@@ -63,7 +63,10 @@ struct TransCache {
         if (loader_) s << *loader_;
         s << "]";
     }
-    friend std::ostream& operator<<(std::ostream& out, const TransCache& e) { e.print(out); return out; }
+    friend std::ostream& operator<<(std::ostream& out, const TransCache& e) {
+        e.print(out);
+        return out;
+    }
 
     ~TransCache() {
         std::cout << "Delete " << *this << std::endl;

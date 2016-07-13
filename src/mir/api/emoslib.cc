@@ -827,10 +827,10 @@ extern "C" void jnumgg_(const fortint &knum,
     kret = 0;
     try {
         eckit::ScopedPtr<atlas::grid::Structured> grid(
-                    dynamic_cast<atlas::grid::Structured*>(
-                        htype[0] == 'R'? new atlas::grid::gaussian::ClassicGaussian(knum)
-                      : htype[0] == 'F'? new atlas::grid::gaussian::RegularGaussian(knum)
-                      : (atlas::grid::gaussian::Gaussian*) NULL ));
+            dynamic_cast<atlas::grid::Structured*>(
+                  htype[0] == 'R'? new atlas::grid::gaussian::ClassicGaussian(knum)
+                : htype[0] == 'F'? new atlas::grid::gaussian::RegularGaussian(knum)
+                : (atlas::grid::gaussian::Gaussian*) NULL ));
         ASSERT(grid.get());
 
         const std::vector<long> &v = grid->pl();
@@ -872,15 +872,15 @@ extern "C" fortint wvqlint_(const fortint &knum,
     // C     PMISS   - Missing value indicator
     // C     RNS     - Difference in degrees in NS disrection
     eckit::Log::trace<MIR>() << "++++++ wvqlint knum=" << knum
-                       << ", ke_w=" << ke_w
-                       << ", kn_s=" << kn_s
-                       << ", reson=" << reson
-                       << ", north=" << north
-                       << ", west=" << west
-                       << ", kparam=" << kparam
-                       << ", pmiss=" << pmiss
-                       << ", rns=" << rns
-                       << std::endl;
+                             << ", ke_w=" << ke_w
+                             << ", kn_s=" << kn_s
+                             << ", reson=" << reson
+                             << ", north=" << north
+                             << ", west=" << west
+                             << ", kparam=" << kparam
+                             << ", pmiss=" << pmiss
+                             << ", rns=" << rns
+                             << std::endl;
     try {
 
         // Only global for now
@@ -930,15 +930,15 @@ extern "C" void wv2dint_(const fortint &knum,
                          const fortfloat &rns) {
 
     eckit::Log::trace<MIR>() << "++++++ wv2dint knum=" << knum
-                       << ", ke_w=" << ke_w
-                       << ", kn_s=" << kn_s
-                       << ", reson=" << reson
-                       << ", north=" << north
-                       << ", west=" << west
-                       << ", knspec=" << knspec
-                       << ", pmiss=" << pmiss
-                       << ", rns=" << rns
-                       << std::endl;
+                             << ", ke_w=" << ke_w
+                             << ", kn_s=" << kn_s
+                             << ", reson=" << reson
+                             << ", north=" << north
+                             << ", west=" << west
+                             << ", knspec=" << knspec
+                             << ", pmiss=" << pmiss
+                             << ", rns=" << rns
+                             << std::endl;
     try {
 
         // Only global for now

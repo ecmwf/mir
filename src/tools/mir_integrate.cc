@@ -127,11 +127,10 @@ void MIRIntegrate::run() {
 
         double result = 0.;
 
-        for(size_t e = 0; e < nb_triags; ++e)
-        {
+        for(size_t e = 0; e < nb_triags; ++e) {
             size_t idx [3];
             for(size_t n = 0; n<3; ++n)
-              idx[n] = triag_nodes(e,n);
+                idx[n] = triag_nodes(e,n);
 
             Triag3D triag(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data());
 
@@ -143,11 +142,10 @@ void MIRIntegrate::run() {
                 result += area * oneThird * values[idx[i]];
         }
 
-        for(size_t e = 0; e < nb_quads; ++e)
-        {
+        for(size_t e = 0; e < nb_quads; ++e) {
             size_t idx [4];
             for(size_t n = 0; n<4; ++n)
-              idx[n] = quads_nodes(e,n);
+                idx[n] = quads_nodes(e,n);
 
             Quad3D quad(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data(), coords[idx[3]].data());
 
@@ -165,7 +163,7 @@ void MIRIntegrate::run() {
         eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );
 
         const atlas::grid::Structured* reduced =
-                dynamic_cast<const atlas::grid::Structured*>(grid.get());
+            dynamic_cast<const atlas::grid::Structured*>(grid.get());
 
         ASSERT(reduced);
 

@@ -94,9 +94,9 @@ void MIRMakeLSM::run() {
     mir::param::MIRCombinedParametrisation combined(wrapped_args, defaults, defaults);
 
     eckit::ScopedPtr<atlas::grid::Grid> grid(
-                new atlas::grid::lonlat::RegularLonLat(
-                    (const size_t) Ni,
-                    (const size_t) Nj ));
+        new atlas::grid::lonlat::RegularLonLat(
+            (const size_t) Ni,
+            (const size_t) Nj ));
 
 
     mir::lsm::Mask &mask = mir::lsm::Mask::lookupOutput(combined, *grid);

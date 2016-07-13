@@ -210,8 +210,8 @@ size_t ProdgenJob::nj() const {
 
 void ProdgenJob::auto_pl() {
     eckit::ScopedPtr<atlas::grid::Structured> grid(
-                dynamic_cast<atlas::grid::Structured*>(
-                    new atlas::grid::gaussian::ClassicGaussian(N_) ));
+        dynamic_cast<atlas::grid::Structured*>(
+            new atlas::grid::gaussian::ClassicGaussian(N_) ));
     ASSERT(grid.get());
     pl_ = grid->pl();
 }

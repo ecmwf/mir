@@ -69,8 +69,8 @@ const std::vector <double> &Gaussian::latitudes() const {
 
 atlas::grid::Domain Gaussian::atlasDomain() const {
     return globalDomain()
-        ? atlas::grid::Domain::makeGlobal()
-        : atlas::grid::Domain(bbox_.north(), bbox_.west(), bbox_.south(), bbox_.east());
+           ? atlas::grid::Domain::makeGlobal()
+           : atlas::grid::Domain(bbox_.north(), bbox_.west(), bbox_.south(), bbox_.east());
 }
 
 
