@@ -70,8 +70,6 @@ class Gridded : public Representation {
 
     // -- Methods
 
-    static size_t computeN(double first, double last, double inc, const char *n_name, const char *first_name, const char *last_name);
-
     virtual bool globalDomain() const;
 
     // -- Overridden methods

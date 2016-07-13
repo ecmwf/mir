@@ -74,10 +74,7 @@ class LatLon : public Gridded {
 
     virtual Iterator* unrotatedIterator() const; // Before rotation
 
-    static void computeNiNj(size_t& ni,
-                            size_t& nj,
-                            const util::BoundingBox& box,
-                            const util::Increments& increments);
+    void setNiNj();
 
     virtual bool globalDomain() const;
 
@@ -91,7 +88,7 @@ class LatLon : public Gridded {
 
     virtual void shape(size_t& ni, size_t& nj) const;
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    virtual void print(std::ostream &) const;
 
     // -- Class members
     // None
@@ -110,8 +107,7 @@ private:
     // None
 
     // -- Methods
-
-    void setNiNj();
+    // None
 
     // -- Overridden methods
 

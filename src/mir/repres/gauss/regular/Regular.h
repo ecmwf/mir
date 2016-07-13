@@ -63,10 +63,13 @@ protected:
 
     // -- Members
 
-    virtual bool globalDomain() const;
+    size_t Ni_;
+
+    size_t Nj_;
 
     // -- Methods
 
+    void setNiNj();
 
     // -- Overridden methods
 
@@ -81,6 +84,8 @@ protected:
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
     virtual atlas::grid::Grid* atlasGrid() const;
+
+    virtual bool globalDomain() const;
 
     // -- Class members
     // None
