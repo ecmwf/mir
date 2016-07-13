@@ -340,7 +340,9 @@ static Binop<std::logical_or<double> > logical_or_2("or");
 
 
 static Unop<std::logical_not<double> > logical_not("not");
-
+//=========================================================
+struct round { double operator()(double x) const { return ::round(x); }};
+static Unop<round> _round("round");
 //=========================================================
 struct sqrt { double operator()(double x) const { return ::sqrt(x); }};
 static Unop<sqrt> _sqrt("sqrt");
