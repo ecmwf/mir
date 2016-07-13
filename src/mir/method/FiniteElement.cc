@@ -36,8 +36,8 @@
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/util/io/Gmsh.h"
 #include "mir/log/MIR.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/method/GridSpace.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -48,7 +48,7 @@ namespace {
 
 
 // try to project to 20% of total number elements before giving up
-const double maxFractionElemsToTry = 0.2;
+static const double maxFractionElemsToTry = 0.2;
 
 
 enum { LON=0, LAT=1 };
@@ -84,7 +84,8 @@ struct MeshStats {
 };
 
 
-void normalise(Triplets& triplets) {
+static void normalise(Triplets& triplets)
+{
     // sum all calculated weights for normalisation
     double sum = 0.0;
 
@@ -101,16 +102,16 @@ void normalise(Triplets& triplets) {
 
 
 /// Find in which element the point is contained by projecting the point with each nearest element
-Triplets projectPointToElements(
-    const MeshStats &stats,
-    const atlas::array::ArrayView<double, 2> &icoords,
-    const atlas::mesh::Elements::Connectivity &triag_nodes,
-    const atlas::mesh::Elements::Connectivity &quads_nodes,
-    const FiniteElement::Point &p,
-    size_t ip,
-    size_t firstVirtualPoint,
-    atlas::interpolation::ElemIndex3::NodeList::const_iterator start,
-    atlas::interpolation::ElemIndex3::NodeList::const_iterator finish ) {
+static Triplets projectPointToElements(
+        const MeshStats &stats,
+        const atlas::array::ArrayView<double, 2> &icoords,
+        const atlas::mesh::Elements::Connectivity &triag_nodes,
+        const atlas::mesh::Elements::Connectivity &quads_nodes,
+        const FiniteElement::Point &p,
+        size_t ip,
+        size_t firstVirtualPoint,
+        atlas::interpolation::ElemIndex3::NodeList::const_iterator start,
+        atlas::interpolation::ElemIndex3::NodeList::const_iterator finish ) {
 
     ASSERT(start != finish);
 
@@ -138,9 +139,9 @@ Triplets projectPointToElements(
             ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts && idx[2] < stats.inp_npts );
 
             atlas::interpolation::Triag3D triag(
-                icoords[idx[0]].data(),
-                icoords[idx[1]].data(),
-                icoords[idx[2]].data());
+                    icoords[idx[0]].data(),
+                    icoords[idx[1]].data(),
+                    icoords[idx[2]].data());
 
             atlas::interpolation::Intersect is = triag.intersects(ray);
 
@@ -151,7 +152,8 @@ Triplets projectPointToElements(
                 w[1] = is.u;
                 w[2] = is.v;
 
-                for (size_t i = 0; i < 3; ++i) {
+                for (size_t i = 0; i < 3; ++i)
+                {
                     if(idx[i] < firstVirtualPoint)
                         triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
                     else
@@ -176,10 +178,10 @@ Triplets projectPointToElements(
                     idx[2] < stats.inp_npts && idx[3] < stats.inp_npts );
 
             atlas::interpolation::Quad3D quad(
-                icoords[idx[0]].data(),
-                icoords[idx[1]].data(),
-                icoords[idx[2]].data(),
-                icoords[idx[3]].data() );
+                    icoords[idx[0]].data(),
+                    icoords[idx[1]].data(),
+                    icoords[idx[2]].data(),
+                    icoords[idx[3]].data() );
 
             if ( !quad.validate() ) { // somewhat expensive sanity check
                 eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
@@ -197,7 +199,8 @@ Triplets projectPointToElements(
                 w[3] = (1. - is.u) *       is.v ;
 
 
-                for (size_t i = 0; i < 4; ++i) {
+                for (size_t i = 0; i < 4; ++i)
+                {
                     if(idx[i] < firstVirtualPoint)
                         triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
                     else
@@ -242,7 +245,8 @@ FiniteElement::~FiniteElement() {
 }
 
 
-void FiniteElement::hash(eckit::MD5&) const {
+void FiniteElement::hash(eckit::MD5&) const
+{
 }
 
 
@@ -279,7 +283,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
         }
     }
 
-    // generate baricenters of each triangle & insert the baricenters on a kd-tree
+    // generate barycenters of each triangle & insert them on a kd-tree
     {
         eckit::TraceTimer<MIR> timer("Tesselation::create_cell_centres");
         atlas::mesh::actions::BuildCellCentres()(in.mesh());
@@ -300,13 +304,16 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     atlas::mesh::Elements::Connectivity const *triag_nodes;
     atlas::mesh::Elements::Connectivity const *quads_nodes;
 
-    for( size_t jtype=0; jtype<in.mesh().cells().nb_types(); ++jtype ) {
+    for( size_t jtype=0; jtype<in.mesh().cells().nb_types(); ++jtype )
+    {
         const atlas::mesh::Elements& elements =  in.mesh().cells().elements(jtype);
-        if( elements.element_type().name() == "Triangle" ) {
+        if( elements.element_type().name() == "Triangle" )
+        {
             stats.nb_triags = elements.size();
             triag_nodes = &elements.node_connectivity();
         }
-        if( elements.element_type().name() == "Quadrilateral" ) {
+        if( elements.element_type().name() == "Quadrilateral" )
+        {
             stats.nb_quads  = elements.size();
             quads_nodes = &elements.node_connectivity();
         }
@@ -371,15 +378,15 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
                 atlas::interpolation::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
                 Triplets triplets = projectPointToElements(
-                                        stats,
-                                        icoords,
-                                        *triag_nodes,
-                                        *quads_nodes,
-                                        p,
-                                        ip,
-                                        firstVirtualPoint,
-                                        cs.begin(),
-                                        cs.end() );
+                            stats,
+                            icoords,
+                            *triag_nodes,
+                            *quads_nodes,
+                            p,
+                            ip,
+                            firstVirtualPoint,
+                            cs.begin(),
+                            cs.end() );
 
                 if (triplets.size()) {
                     std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
@@ -415,7 +422,7 @@ void FiniteElement::generateMesh(const atlas::grid::Grid &grid, atlas::mesh::Mes
     eckit::Log::trace<MIR>() << "MeshGenerator parametrisation is '" << meshgenerator << "'" << std::endl;
 
     eckit::ScopedPtr<atlas::mesh::generators::MeshGenerator> generator(
-        atlas::mesh::generators::MeshGeneratorFactory::build(meshgenerator, meshgenparams_) );
+                atlas::mesh::generators::MeshGeneratorFactory::build(meshgenerator, meshgenparams_) );
     generator->generate(grid, mesh);
 
     // If meshgenerator did not create xyz field already, do it now.
