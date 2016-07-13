@@ -42,7 +42,7 @@ GridSpace::~GridSpace() {
 
 atlas::mesh::Mesh& GridSpace::mesh() const
 {
-    return method_.generateMeshAndCache(grid_);;
+    return method_.generateMeshAndCache(grid_);
 }
 
 const std::vector<double>& GridSpace::coords() const
