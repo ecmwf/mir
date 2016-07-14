@@ -16,6 +16,7 @@
 #ifndef SphericalHarmonics_H
 #define SphericalHarmonics_H
 
+#include "atlas/grid/Domain.h"
 #include "mir/repres/Representation.h"
 
 
@@ -48,7 +49,10 @@ class SphericalHarmonics : public Representation {
     // None
 
     // -- Overridden methods
-    // None
+
+    atlas::grid::Domain atlasDomain() const {
+        return atlas::grid::Domain();
+    }
 
     // -- Class members
     // None

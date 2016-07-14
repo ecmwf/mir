@@ -15,6 +15,7 @@
 
 #include "mir/repres/Gridded.h"
 
+#include "atlas/grid/Domain.h"
 #include "mir/log/MIR.h"
 #include "mir/util/Grib.h"
 
@@ -47,15 +48,8 @@ void Gridded::setSecondOrderPacking(grib_info &info) const {
 }
 
 
-bool Gridded::globalDomain() const {
-    std::ostringstream os;
-    os << "Representation::globalDomain() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
-}
-
-
 void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
-    if (!globalDomain()) {
+    if (!atlasDomain().isGlobal()) {
         Representation::cropToDomain(parametrisation, ctx); // This will throw an exception
     }
 }

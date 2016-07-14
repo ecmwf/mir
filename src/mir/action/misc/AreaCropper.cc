@@ -175,6 +175,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
 
     c.bbox_ = util::BoundingBox(n, w, s, e);
 
+    c.mapping_.clear();
     c.mapping_.reserve(m.size());
     for (std::map<LL, size_t>::const_iterator j = m.begin(); j != m.end(); ++j) {
         c.mapping_.push_back((*j).second);

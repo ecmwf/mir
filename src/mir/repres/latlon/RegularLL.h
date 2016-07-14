@@ -16,6 +16,7 @@
 #ifndef RegularLL_H
 #define RegularLL_H
 
+#include "atlas/grid/lonlat/LonLat.h"
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
@@ -67,6 +68,7 @@ class RegularLL : public LatLon {
 
     // -- Methods
 
+    atlas::grid::lonlat::Shift atlasShift() const;
 
     // -- Overridden methods
     void print(std::ostream &) const; // Change to virtual if base class

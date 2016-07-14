@@ -16,6 +16,8 @@
 #include "mir/repres/gauss/regular/RegularGG.h"
 
 #include <iostream>
+#include "atlas/grid/Domain.h"
+#include "mir/action/misc/AreaCropper.h"
 
 
 namespace mir {
@@ -49,6 +51,14 @@ void RegularGG::print(std::ostream &out) const {
 
 const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
     return new RegularGG(N_, bbox);
+}
+
+
+void RegularGG::cropToDomain(const param::MIRParametrisation& param, context::Context& ctx) const {
+    if (!atlasDomain().isGlobal()) {
+        action::AreaCropper cropper(param, bbox_);
+        cropper.execute(ctx);
+    }
 }
 
 

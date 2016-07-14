@@ -76,8 +76,6 @@ class LatLon : public Gridded {
 
     void setNiNj();
 
-    virtual bool globalDomain() const;
-
     // -- Overridden methods
 
     virtual atlas::grid::Domain atlasDomain() const;

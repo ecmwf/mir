@@ -69,8 +69,7 @@ class Gridded : public Representation {
     Gridded();
 
     // -- Methods
-
-    virtual bool globalDomain() const;
+    // None
 
     // -- Overridden methods
     // None

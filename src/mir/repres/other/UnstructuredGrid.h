@@ -105,7 +105,7 @@ class UnstructuredGrid : public Gridded {
     virtual atlas::grid::Grid *atlasGrid() const;
     virtual void validate(const std::vector<double> &values) const;
 
-    virtual bool globalDomain() const;
+    virtual atlas::grid::Domain atlasDomain() const;
     virtual Iterator* rotatedIterator() const; // After rotation
     virtual Iterator* unrotatedIterator() const; // Before rotation
 

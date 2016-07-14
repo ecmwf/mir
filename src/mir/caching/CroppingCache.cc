@@ -96,6 +96,7 @@ bool CroppingCache::retrieve(const std::string &key, CroppingCacheEntry &c) cons
     size_t size;
     f >> size;
 
+    c.mapping_.clear();
     c.mapping_.reserve(size);
     for (size_t i = 0; i < size; ++i) {
         size_t j;

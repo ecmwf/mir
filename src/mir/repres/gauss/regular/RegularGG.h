@@ -67,7 +67,8 @@ protected:
     void print(std::ostream&) const;
 
     // -- Overridden methods
-    // None
+
+    virtual void cropToDomain(const param::MIRParametrisation&, context::Context&) const;
 
     // -- Class members
     // None

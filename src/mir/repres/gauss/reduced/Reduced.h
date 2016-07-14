@@ -17,7 +17,6 @@
 #define Reduced_H
 
 #include "mir/repres/gauss/Gaussian.h"
-#include "mir/util/BoundingBox.h"
 
 
 namespace mir {
@@ -69,8 +68,6 @@ class Reduced : public Gaussian {
     // void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
-
-    virtual bool globalDomain() const;
 
     virtual atlas::grid::Domain atlasDomain() const;
 

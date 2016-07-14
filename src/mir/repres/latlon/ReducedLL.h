@@ -64,6 +64,10 @@ class ReducedLL : public Gridded {
 
     // -- Methods
 
+    virtual atlas::grid::Grid* atlasGrid() const;
+
+    virtual atlas::grid::Domain atlasDomain() const;
+
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -90,8 +94,6 @@ class ReducedLL : public Gridded {
 
     // -- Methods
 
-    virtual bool globalDomain() const;
-
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
 
     // -- Overridden methods
@@ -99,8 +101,6 @@ class ReducedLL : public Gridded {
     virtual void fill(grib_info&) const;
 
     virtual void fill(api::MIRJob &) const;
-
-    virtual atlas::grid::Grid* atlasGrid() const;
 
     virtual void validate(const std::vector<double>&) const;
 

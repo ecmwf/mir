@@ -85,7 +85,7 @@ protected:
 
     virtual atlas::grid::Grid* atlasGrid() const;
 
-    virtual bool globalDomain() const;
+    virtual atlas::grid::Domain atlasDomain() const;
 
     // -- Class members
     // None

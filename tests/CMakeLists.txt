@@ -75,7 +75,7 @@ foreach(_t ${_test_reqs})
   ecbuild_add_test(
       TARGET       ${_label}
       COMMAND      mir_tool
-      ARGS         ${_t}
+      ARGS         "--caching=0" ${_t}
       TEST_DEPENDS download_mir_tests_files
       ENVIRONMENT
         "MIRHOME=${CMAKE_BINARY_DIR}"
