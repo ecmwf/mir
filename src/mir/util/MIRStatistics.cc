@@ -109,8 +109,8 @@ MIRStatistics &MIRStatistics::operator/=(size_t n) {
 void MIRStatistics::report(std::ostream &out, const char *indent) const {
 
     bitmapCache_.report("Bitmap cache", out, indent);
-    areaCroppingCache_.report("Area cropping cache", out, indent);
-    transHandleCache_.report("Trans handles cache", out, indent);
+    areaCroppingCache_.report("Area cache", out, indent);
+    transHandleCache_.report("Trans cache", out, indent);
     matrixCache_.report("Matrix cache", out, indent);
     meshCache_.report("Mesh cache", out, indent);
 
