@@ -56,7 +56,7 @@ namespace method {
 
 namespace {
 static eckit::Mutex local_mutex;
-static InMemoryCache<WeightMatrix> matrix_cache("mirMatrices", 32);
+static InMemoryCache<WeightMatrix> matrix_cache("mirMatrices", 64);
 static InMemoryCache<atlas::mesh::Mesh> mesh_cache("mirMeshes", 2);
 }
 
