@@ -63,9 +63,9 @@ void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const
 
     std::string t(title);
 
-    reportCount(out, (t + ", number of insertions").c_str(), insertions_, indent);
-    reportCount(out, (t + ", number of evictions").c_str(), evictions_, indent);
-    reportCount(out, (t + ", number of accesses").c_str(), accesses_, indent);
+    reportCount(out, (t + ", insertions").c_str(), insertions_, indent);
+    reportCount(out, (t + ", evictions").c_str(), evictions_, indent);
+    reportCount(out, (t + ", accesses").c_str(), accesses_, indent);
     reportTime(out, (t + ", oldest eviction").c_str(), oldest_, indent);
     reportTime(out, (t + ", youngest eviction").c_str(), youngest_, indent);
 
