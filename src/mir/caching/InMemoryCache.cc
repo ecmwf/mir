@@ -11,6 +11,7 @@
 #include "eckit/config/Resource.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/BigNum.h"
+#include "mir/caching/InMemoryCacheStatistics.h"
 
 #include <time.h>
 #include <sys/time.h>
@@ -28,11 +29,7 @@ InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity):
     name_(name),
     capacity_(eckit::Resource<size_t>(name + "InMemoryCacheCapacity;$TEST_IN_MEMORY_CACHE", capacity)),
     users_(0),
-    insertions_(0),
-    evictions_(0),
-    accesses_(0),
-    youngest_(1e30),
-    oldest_(0) {
+    statistics_(0) {
     ASSERT(capacity_ > 0);
 }
 
@@ -65,7 +62,9 @@ T* InMemoryCache<T>::find(const std::string& key) const {
 
     typename std::map<std::string, Entry*>::const_iterator j = cache_.find(key);
     if (j != cache_.end()) {
-        accesses_++;
+        if (statistics_) {
+            statistics_->accesses_++;
+        }
         (*j).second->access_++;
         (*j).second->last_ = utime();
         return (*j).second->ptr_.get();
@@ -104,7 +103,9 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
 
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    insertions_++;
+    if (statistics_) {
+        statistics_->insertions_++;
+    }
     // std::cout << "Insert in InMemoryCache " << *ptr << std::endl;
 
     typename std::map<std::string, Entry*>::iterator k = cache_.find(key);
@@ -139,15 +140,18 @@ void InMemoryCache<T>::purge() {
             }
         }
 
-        if (m < youngest_) {
-            youngest_ = m;
-        }
+        if (statistics_) {
 
-        if (m > oldest_) {
-            oldest_ = m;
-        }
+            if (m < statistics_->youngest_) {
+                statistics_->youngest_ = m;
+            }
 
-        evictions_++;
+            if (m > statistics_->oldest_) {
+                statistics_->oldest_ = m;
+            }
+
+            statistics_->evictions_++;
+        }
         delete (*best).second;
         cache_.erase(best);
     }
@@ -159,9 +163,14 @@ T& InMemoryCache<T>::create(const std::string& key) {
 }
 
 template<class T>
-void InMemoryCache<T>::startUsing() {
+void InMemoryCache<T>::startUsing(InMemoryCacheStatistics& statistics) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
     users_++;
+    // TODO: This does not work with threads
+    // The statistics will not be correct as each thread
+    // overrides statistics_ to their own version
+    statistics_ = 0;
+    statistics_ = &statistics;
 }
 
 template<class T>
@@ -172,6 +181,10 @@ void InMemoryCache<T>::stopUsing() {
     if (users_ == 0) {
         purge();
     }
+    // TODO: This does not work with threads
+    // The statistics will not be correct as each thread
+    // overrides statistics_ to their own version
+    statistics_ = 0;
 }
 
 

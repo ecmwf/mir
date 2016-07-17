@@ -122,6 +122,8 @@ list(
 	caching/FileLoader.h
 	caching/InMemoryCache.cc
 	caching/InMemoryCache.h
+	caching/InMemoryCacheStatistics.cc
+	caching/InMemoryCacheStatistics.h
 	caching/LegendreCache.cc
 	caching/LegendreCache.h
 	caching/LegendreLoader.cc

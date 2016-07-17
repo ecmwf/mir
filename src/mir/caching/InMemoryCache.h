@@ -24,6 +24,7 @@
 #include "eckit/thread/Mutex.h"
 
 namespace mir {
+class InMemoryCacheStatistics;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -46,7 +47,7 @@ public:  // methods
 
     void erase(const std::string& key);
 
-    void startUsing();
+    void startUsing(InMemoryCacheStatistics&);
     void stopUsing();
 
 private:
@@ -59,9 +60,8 @@ private:
 
     size_t users_;
 
-    mutable size_t insertions_;
-    mutable size_t evictions_;
-    mutable size_t accesses_;
+    mutable InMemoryCacheStatistics* statistics_;
+
     mutable double youngest_;
     mutable double oldest_;
 
@@ -83,8 +83,13 @@ template<class T>
 class InMemoryCacheUser {
     InMemoryCache<T>& cache_;
 public:
-    InMemoryCacheUser(InMemoryCache<T>& cache): cache_(cache) { cache_.startUsing(); }
-    ~InMemoryCacheUser() { cache_.stopUsing(); }
+    InMemoryCacheUser(InMemoryCache<T>& cache, InMemoryCacheStatistics& statistics):
+        cache_(cache) {
+        cache_.startUsing(statistics);
+    }
+    ~InMemoryCacheUser() {
+        cache_.stopUsing();
+    }
 };
 
 //----------------------------------------------------------------------------------------------------------------------

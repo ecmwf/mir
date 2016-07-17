@@ -19,7 +19,6 @@
 #include <iosfwd>
 
 #include "eckit/log/Statistics.h"
-#include "mir/caching/InMemoryCacheStatistics.h"
 
 namespace eckit {
 class Stream;
@@ -38,11 +37,6 @@ public:
     MIRStatistics &operator+=(const MIRStatistics &rhs) ;
     MIRStatistics &operator/=(size_t) ;
 
-    InMemoryCacheStatistics bitmapCache_;
-    InMemoryCacheStatistics areaCroppingCache_;
-    InMemoryCacheStatistics transHandleCache_;
-    InMemoryCacheStatistics matrixCache_;
-    InMemoryCacheStatistics meshCache_;
 
     eckit::Timing cropTiming_;
     eckit::Timing frameTiming_;
@@ -57,8 +51,6 @@ public:
     eckit::Timing loadCoeffTiming_;
     eckit::Timing createCoeffTiming_;
     eckit::Timing calcTiming_;
-
-
 
     void report(std::ostream &out, const char *indent = "") const;
 

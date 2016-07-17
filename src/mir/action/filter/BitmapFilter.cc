@@ -73,7 +73,7 @@ util::Bitmap& BitmapFilter::bitmap() const {
 void BitmapFilter::execute(context::Context & ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    InMemoryCacheUser<util::Bitmap> use(cache);
+    InMemoryCacheUser<util::Bitmap> use(cache, ctx.statistics().bitmapCache_);
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().bitmapTiming_);
     data::MIRField& field = ctx.field();

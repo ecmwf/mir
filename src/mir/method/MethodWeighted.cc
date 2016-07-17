@@ -197,8 +197,8 @@ lsm::LandSeaMasks MethodWeighted::getMasks(context::Context& ctx, const atlas::g
 void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    InMemoryCacheUser<WeightMatrix>      matrix_use(matrix_cache);
-    InMemoryCacheUser<atlas::mesh::Mesh> cache_use(mesh_cache);
+    InMemoryCacheUser<WeightMatrix>      matrix_use(matrix_cache, ctx.statistics().matrixCache_);
+    InMemoryCacheUser<atlas::mesh::Mesh> cache_use(mesh_cache, ctx.statistics().meshCache_);
 
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);

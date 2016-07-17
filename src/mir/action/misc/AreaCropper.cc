@@ -215,7 +215,7 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
 void AreaCropper::execute(context::Context & ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    InMemoryCacheUser<caching::CroppingCacheEntry> use(cache);
+    InMemoryCacheUser<caching::CroppingCacheEntry> use(cache, ctx.statistics().areaCroppingCache_);
 
 
     data::MIRField& field = ctx.field();

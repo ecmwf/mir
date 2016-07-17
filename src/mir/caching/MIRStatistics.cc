@@ -21,13 +21,7 @@ namespace util {
 MIRStatistics::MIRStatistics() {
 }
 
-MIRStatistics::MIRStatistics(eckit::Stream &s):
-    bitmapCache_(s),
-    areaCroppingCache_(s),
-    transHandleCache_(s),
-    matrixCache_(s),
-    meshCache_(s)
-{
+MIRStatistics::MIRStatistics(eckit::Stream &s) {
     s >> cropTiming_;
     s >> frameTiming_;
     s >> bitmapTiming_;
@@ -44,11 +38,6 @@ MIRStatistics::MIRStatistics(eckit::Stream &s):
 }
 
 void MIRStatistics::encode(eckit::Stream &s) const {
-    s << bitmapCache_;
-    s << areaCroppingCache_;
-    s << transHandleCache_;
-    s << matrixCache_;
-    s << meshCache_;
     s << cropTiming_;
     s << frameTiming_;
     s << bitmapTiming_;
@@ -64,11 +53,6 @@ void MIRStatistics::encode(eckit::Stream &s) const {
 }
 
 MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &other) {
-    bitmapCache_ += other.bitmapCache_;
-    areaCroppingCache_ += other.areaCroppingCache_;
-    transHandleCache_ += other.transHandleCache_;
-    matrixCache_ += other.matrixCache_;
-    meshCache_ += other.meshCache_;
     cropTiming_ += other.cropTiming_;
     frameTiming_ += other.frameTiming_;
     bitmapTiming_ += other.bitmapTiming_;
@@ -86,11 +70,6 @@ MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &other) {
 
 
 MIRStatistics &MIRStatistics::operator/=(size_t n) {
-    bitmapCache_ /= n;
-    areaCroppingCache_ /= n;
-    transHandleCache_ /= n;
-    matrixCache_ /= n;
-    meshCache_ /= n;
     cropTiming_ /= n;
     frameTiming_ /= n;
     bitmapTiming_ /= n;
@@ -107,13 +86,6 @@ MIRStatistics &MIRStatistics::operator/=(size_t n) {
 }
 
 void MIRStatistics::report(std::ostream &out, const char *indent) const {
-
-    bitmapCache_.report("Bitmap cache", out, indent);
-    areaCroppingCache_.report("Area cropping cache", out, indent);
-    transHandleCache_.report("Trans handles cache", out, indent);
-    matrixCache_.report("Matrix cache", out, indent);
-    meshCache_.report("Mesh cache", out, indent);
-
 
     reportTime(out, "Time in grid to grid interp.", grid2gridTiming_, indent);
     reportTime(out, "Time in SH to grid transform", sh2gridTiming_, indent);
