@@ -21,7 +21,9 @@ InMemoryCacheStatistics::InMemoryCacheStatistics():
     evictions_(0),
     accesses_(0),
     youngest_(0),
-    oldest_(0) {
+    oldest_(0),
+    capacity_(0),
+    unique_(0) {
 }
 
 InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream &s) {
@@ -30,6 +32,8 @@ InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream &s) {
     s >> accesses_;
     s >> youngest_;
     s >> oldest_;
+    s >> capacity_;
+    s >> unique_;
 }
 
 void InMemoryCacheStatistics::encode(eckit::Stream &s) const {
@@ -38,6 +42,8 @@ void InMemoryCacheStatistics::encode(eckit::Stream &s) const {
     s << accesses_;
     s << youngest_;
     s << oldest_;
+    s << capacity_;
+    s << unique_;
 }
 
 InMemoryCacheStatistics &InMemoryCacheStatistics::operator+=(const InMemoryCacheStatistics &other) {
@@ -46,6 +52,8 @@ InMemoryCacheStatistics &InMemoryCacheStatistics::operator+=(const InMemoryCache
     accesses_ += other.accesses_;
     youngest_ += other.youngest_;
     oldest_ += other.oldest_;
+    capacity_ += other.capacity_;
+    unique_ += other.unique_;
     return *this;
 }
 
@@ -56,13 +64,16 @@ InMemoryCacheStatistics &InMemoryCacheStatistics::operator/=(size_t n) {
     accesses_ /= n;
     youngest_ /= n;
     oldest_ /= n;
+    capacity_ /= n;
+    unique_ /= n;
     return *this;
 }
 
 void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const char *indent) const {
 
     std::string t(title);
-
+    reportCount(out, (t + ", capacity").c_str(), capacity_, indent);
+    reportCount(out, (t + ", unique keys").c_str(), unique_, indent);
     reportCount(out, (t + ", insertions").c_str(), insertions_, indent);
     reportCount(out, (t + ", evictions").c_str(), evictions_, indent);
     reportCount(out, (t + ", accesses").c_str(), accesses_, indent);

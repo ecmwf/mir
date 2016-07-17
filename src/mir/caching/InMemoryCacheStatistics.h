@@ -42,6 +42,8 @@ public:
     size_t insertions_;
     double oldest_;
     double youngest_;
+    size_t capacity_;
+    size_t unique_;
 
     void report(const char *title, std::ostream &out, const char *indent = "") const;
 

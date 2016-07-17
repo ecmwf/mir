@@ -36,19 +36,6 @@ InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity):
 
 template<class T>
 InMemoryCache<T>::~InMemoryCache() {
-    // std::cout << "Deleting InMemoryCache "
-    //           << name_
-    //           << " capacity="
-    //           << capacity_
-    //           << ", entries: "
-    //           << cache_.size()
-    //           << ", accesses: " << eckit::BigNum(accesses_)
-    //           << ", insertions: " << eckit::BigNum(insertions_)
-    //           << ", evictions: " << eckit::BigNum(evictions_)
-    //           << ", youngest: " << youngest_
-    //           << ", oldest: " << oldest_
-    //           << std::endl;
-
     // std::cout << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
     // for (typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
     //     std::cout << "Deleting InMemoryCache " << name_ << " " << *((*j).second->ptr_) << std::endl;
@@ -120,6 +107,14 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
     }
 
     cache_[key] = new Entry(ptr);
+
+    if (statistics_) {
+        keys_.insert(key);
+        statistics_->insertions_++;
+        statistics_->unique_ = keys_.size();
+    }
+
+
     return *ptr;
 
 }
@@ -171,6 +166,7 @@ void InMemoryCache<T>::startUsing(InMemoryCacheStatistics& statistics) {
     // overrides statistics_ to their own version
     statistics_ = 0;
     statistics_ = &statistics;
+    statistics_->capacity_ = capacity_;
 }
 
 template<class T>

@@ -61,11 +61,8 @@ private:
     size_t users_;
 
     mutable InMemoryCacheStatistics* statistics_;
-
-    mutable double youngest_;
-    mutable double oldest_;
-
     mutable eckit::Mutex mutex_;
+    mutable std::set<std::string> keys_;
 
     struct Entry {
         eckit::ScopedPtr<T> ptr_;
