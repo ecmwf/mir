@@ -35,7 +35,7 @@ public:  // methods
 
     typedef T* iterator;
 
-    explicit InMemoryCache(const std::string& name, size_t capacity = 2);
+    explicit InMemoryCache(const std::string& name, size_t capacity, const char* variable);
 
     ~InMemoryCache();
 

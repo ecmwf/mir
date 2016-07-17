@@ -25,9 +25,9 @@ inline static double utime() {
 }
 
 template<class T>
-InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity):
+InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity, const char* variable):
     name_(name),
-    capacity_(eckit::Resource<size_t>(name + "InMemoryCacheCapacity;$TEST_IN_MEMORY_CACHE", capacity)),
+    capacity_(eckit::Resource<size_t>(name + "InMemoryCacheCapacity;"  + variable, capacity)),
     users_(0),
     statistics_(0) {
     ASSERT(capacity_ > 0);

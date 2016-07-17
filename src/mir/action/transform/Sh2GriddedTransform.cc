@@ -77,7 +77,7 @@ struct TransCache {
 
 
 static eckit::Mutex amutex;
-static mir::InMemoryCache<TransCache> trans_handles("mirCoefficients", 2);
+static mir::InMemoryCache<TransCache> trans_handles("mirCoefficients", 2, "$MIR_COEFF_CACHE");
 
 #endif
 

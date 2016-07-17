@@ -56,7 +56,7 @@ struct LL {
 static eckit::Mutex local_mutex;
 
 
-static InMemoryCache<caching::CroppingCacheEntry> cache("mirAreas", 10);
+static InMemoryCache<caching::CroppingCacheEntry> cache("mirAreas", 10, "$MIR_AREA_CACHE");
 
 
 AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):
