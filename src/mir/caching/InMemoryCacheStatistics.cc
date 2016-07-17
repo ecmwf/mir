@@ -20,7 +20,7 @@ InMemoryCacheStatistics::InMemoryCacheStatistics():
     insertions_(0),
     evictions_(0),
     accesses_(0),
-    youngest_(1e30),
+    youngest_(0),
     oldest_(0) {
 }
 
@@ -44,6 +44,7 @@ InMemoryCacheStatistics &InMemoryCacheStatistics::operator+=(const InMemoryCache
     insertions_ += other.insertions_;
     evictions_ += other.evictions_;
     accesses_ += other.accesses_;
+    if()
     youngest_ += other.youngest_;
     oldest_ += other.oldest_;
     return *this;

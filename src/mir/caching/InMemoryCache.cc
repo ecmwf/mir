@@ -142,7 +142,7 @@ void InMemoryCache<T>::purge() {
 
         if (statistics_) {
 
-            if (m < statistics_->youngest_) {
+            if (m < statistics_->youngest_ || statistics_->youngest_ == 0 ) {
                 statistics_->youngest_ = m;
             }
 
