@@ -53,8 +53,11 @@ void Gridded2RegularLL::print(std::ostream &out) const {
 
 
 const repres::Representation *Gridded2RegularLL::outputRepresentation() const {
+    double ns = increments_.south_north();
+    // Cater for grids that are regular, but do not reach the pole (e.g. 1.6)
+    double pole  = size_t(90/ns) * ns;
     return new repres::latlon::RegularLL(
-               util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
+               util::BoundingBox(pole, 0, -pole, 360 - increments_.west_east()),
                increments_);
 }
 
