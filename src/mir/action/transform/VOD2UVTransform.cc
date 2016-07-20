@@ -12,21 +12,19 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/transform/VOD2UVTransform.h"
 
-#include <iostream>
 #include <complex>
-
+#include <iostream>
 #include "eckit/exception/Exceptions.h"
-
-#include "atlas/util/Constants.h"
-
 #include "mir/action/context/Context.h"
+#include "mir/api/mir_config.h"
+#include "mir/data/MIRField.h"
+#include "mir/log/MIR.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
-#include "mir/log/MIR.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/data/MIRField.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
@@ -40,6 +38,7 @@ namespace action {
 VOD2UVTransform::VOD2UVTransform(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 }
+
 
 VOD2UVTransform::~VOD2UVTransform() {
 }
@@ -56,13 +55,6 @@ void VOD2UVTransform::print(std::ostream &out) const {
     out << "]";
 }
 
-inline double dd(double pm, double pn) {
-    return -sqrt((pn * pn - pm * pm) / (4.*pn * pn - 1)) / pn;
-}
-
-inline double ss(double pm, double pn) {
-    return -pm / (pn * (pn + 1));
-}
 
 void VOD2UVTransform::execute(context::Context & ctx) const {
     data::MIRField& field = ctx.field();
