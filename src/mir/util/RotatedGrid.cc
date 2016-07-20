@@ -30,23 +30,6 @@ RotatedGrid::~RotatedGrid() {
 }
 
 
-std::string RotatedGrid::shortName() const {
-    if (shortName_.empty()) {
-        shortName_ = "rotated." + grid_->shortName();
-    }
-    return shortName_;
-}
-
-
-void RotatedGrid::hash(eckit::MD5& md5) const {
-    md5.add("rotated.");
-    grid_->hash(md5);
-    md5.add(south_pole_longitude_);
-    md5.add(south_pole_latitude_);
-    md5.add(south_pole_rotation_angle_);
-}
-
-
 size_t RotatedGrid::npts() const {
     return grid_->npts();
 }
@@ -71,6 +54,28 @@ std::string RotatedGrid::gridType() const {
 
 eckit::Properties RotatedGrid::spec() const {
     NOTIMP;
+}
+
+
+std::string RotatedGrid::shortName() const {
+    if (shortName_.empty()) {
+        shortName_ = "rotated." + grid_->shortName();
+    }
+    return shortName_;
+}
+
+
+void RotatedGrid::hash(eckit::MD5& md5) const {
+    md5.add("rotated.");
+    grid_->hash(md5);
+    md5.add(south_pole_longitude_);
+    md5.add(south_pole_latitude_);
+    md5.add(south_pole_rotation_angle_);
+}
+
+
+const atlas::grid::Domain& RotatedGrid::domain() const {
+    return grid_->domain();
 }
 
 

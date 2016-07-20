@@ -14,8 +14,9 @@
 
 #include <cstddef>
 #include <vector>
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/memory/Builder.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "atlas/grid/Domain.h"
 #include "atlas/grid/Grid.h"
 
 
@@ -53,7 +54,7 @@ namespace util {
  */
 class RotatedGrid : public atlas::grid::Grid {
 
-  public: // methods
+public: // methods
 
     RotatedGrid(Grid *grid, double south_pole_latitude, double south_pole_longitude, double south_pole_rotation_angle);
 
@@ -67,22 +68,27 @@ class RotatedGrid : public atlas::grid::Grid {
 
     virtual eckit::Properties spec() const;
 
-  private:  // methods
-
-    virtual void print(std::ostream&) const;
+private:  // methods
 
     /// Human readable name (may not be unique, especially when BoundBox is different)
     virtual std::string shortName() const;
 
-    /// Hash of the information this class unique
+    /// Adds to the MD5 the information that makes this Grid unique
     virtual void hash(eckit::MD5&) const;
 
-  private: // members
+    /// @return area represented by the grid
+    virtual const atlas::grid::Domain& domain() const;
+
+    virtual void print(std::ostream&) const;
+
+private: // members
 
     eckit::ScopedPtr<Grid> grid_;
 
     double south_pole_latitude_;
+
     double south_pole_longitude_;
+
     double south_pole_rotation_angle_;
 
     mutable std::string shortName_;
