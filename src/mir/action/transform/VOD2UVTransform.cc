@@ -28,6 +28,10 @@
 #include "mir/util/MIRStatistics.h"
 #include "mir/data/MIRField.h"
 
+#ifdef ATLAS_HAVE_TRANS
+#include "transi/trans.h"
+#endif
+
 
 namespace mir {
 namespace action {
@@ -62,8 +66,9 @@ inline double ss(double pm, double pn) {
 
 void VOD2UVTransform::execute(context::Context & ctx) const {
     data::MIRField& field = ctx.field();
-
     ASSERT(field.dimensions() == 2);
+
+    ASSERT(sizeof(std::complex<double>) == 2 * sizeof(double));
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().vod2uvTiming_);
 
@@ -72,102 +77,31 @@ void VOD2UVTransform::execute(context::Context & ctx) const {
     size_t size = repres::sh::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
 
 
-    ASSERT(sizeof(std::complex<double>) == 2 * sizeof(double));
-
     const std::vector<double> &field_vo = field.values(0);
-    const std::vector<double> &field_d = field.values(1);
-
-    eckit::Log::trace<MIR>() << "VOD2UVTransform truncation=" << truncation
-                             << ", size=" << size
-                             << ", values=" << field_vo.size() << std::endl;
-
-    ASSERT(field_vo.size() == size);
-    ASSERT(field_d.size() == size);
-
+    const std::vector<double> &field_d  = field.values(1);
     std::vector<double> result_u(size, 0);
     std::vector<double> result_v(size, 0);
+    ASSERT(field_vo.size() == size);
+    ASSERT(field_d.size()  == size);
 
-    std::vector<double> temp_vo;
-    std::vector<double> temp_d;
+    eckit::Log::trace<MIR>() << "VOD2UVTransform["
+                             <<  "truncation=" << truncation
+                             << ",size="       << size
+                             << ",values="     << field_vo.size()
+                             << "]" << std::endl;
 
+    VorDivToUV_t vod_to_UV = new_vordiv_to_UV();
+    vod_to_UV.nfld   = 1;                // number of distributed fields
+    vod_to_UV.ncoeff = int(size);        // number of spectral coefficients (equivalent to NSPEC2 for distributed or NSPEC2G for global)
+    vod_to_UV.nsmax  = int(truncation);  // spectral resolution (T)
+    vod_to_UV.rspvor = field_vo.data();  // spectral array for vorticity    DIMENSIONS(1:NFLD,1:NSPEC2)
+    vod_to_UV.rspdiv = field_d.data();   // spectral array for divergence   DIMENSIONS(1:NFLD,1:NSPEC2)
+    vod_to_UV.rspu   = result_u.data();  // spectral array for u*cos(theta) DIMENSIONS(1:NFLD,1:NSPEC2)
+    vod_to_UV.rspv   = result_v.data();  // spectral array for v*cos(theta) DIMENSIONS(1:NFLD,1:NSPEC2)
 
-    repres::sh::SphericalHarmonics::truncate(truncation, truncation - 1, field_vo, temp_vo);
-    repres::sh::SphericalHarmonics::truncate(truncation, truncation - 1, field_d, temp_d);
-
-
-    typedef std::vector<std::complex<double> > veccomp;
-    const veccomp &vorticity = reinterpret_cast<const veccomp &>(temp_vo);
-    const veccomp &divergence = reinterpret_cast<const veccomp &>(temp_d);
-
-    veccomp &u_component = reinterpret_cast<veccomp &>(result_u);
-    veccomp &v_component = reinterpret_cast<veccomp &>(result_v);
-
-
-    std::complex<double> zi(0.0, 1.0);
-    const double kRadiusOfTheEarth = atlas::util::Earth::radiusInMeters();
-    size_t k = 0;
-    size_t imn = 0;
-
-    size_t count = truncation;
-
-
-    for (size_t j = 0 ; j < count ;  j++) {
-        double zm = j;
-        double zn = zm;
-
-        double ddmn1 = dd(zm, zn + 1.);
-        double ssmn = ss(zm, zn);
-        if (j) {
-            u_component[k] = (-ddmn1 * vorticity[imn + 1] + zi * ssmn * divergence[imn]) * kRadiusOfTheEarth;
-            v_component[k] = ( ddmn1 * divergence[imn + 1] + zi * ssmn * vorticity[imn]) * kRadiusOfTheEarth;
-
-        } else {
-            u_component[k] = (-ddmn1 * vorticity[imn + 1]) * kRadiusOfTheEarth ;
-            v_component[k] = ( ddmn1 * divergence[imn + 1]) * kRadiusOfTheEarth;
-        }
-
-        imn++;
-        k++;
-        size_t  jmp = j + 1;
-
-        if (jmp < count - 1) {
-            for (size_t i = jmp; i < count - 1;  i++) {
-                zn = i;
-
-                double ddzmn = dd(zm, zn);
-                double ddmn1 = dd(zm, zn + 1.);
-                double ssmn = ss(zm, zn);
-                u_component[k] =  ( ddzmn * vorticity[imn - 1] - ddmn1 * vorticity[imn + 1] + zi * ssmn * divergence[imn]) * kRadiusOfTheEarth;
-                v_component[k] =  (-ddzmn * divergence[imn - 1] + ddmn1 * divergence[imn + 1] + zi * ssmn * vorticity[imn]) * kRadiusOfTheEarth;
-                k++;
-                imn++;
-            }
-
-            zn = count - 1;
-            double ddzmn = dd(zm, zn);
-            double ssmn = ss(zm, zn);
-            u_component[k] =  ( ddzmn * vorticity[imn - 1] + zi * ssmn * divergence[imn]) * kRadiusOfTheEarth;
-            v_component[k] =  (-ddzmn * divergence[imn - 1] + zi * ssmn * vorticity[imn]) * kRadiusOfTheEarth;
-            k++;
-            imn++;
-        }
-
-        zn = count;
-        double ddzmn = dd(zm, zn);
-        u_component[k] =  ddzmn * vorticity[imn - 1] * kRadiusOfTheEarth;
-        v_component[k] =  -ddzmn * divergence[imn - 1] * kRadiusOfTheEarth;
-        k++;
-
+    if (trans_vordiv_to_UV(&vod_to_UV) != TRANS_SUCCESS) {
+        throw eckit::SeriousBug("trans_vordiv_to_UV: failed", Here());
     }
-
-    while (2 * k < size) {
-        u_component[k] = 0;
-        v_component[k] = 0;
-        k++;
-    }
-
-    // std::cout << k << " " << size << std::endl;
-    // ASSERT(k == size);
 
     field.update(result_u, 0);
     field.update(result_v, 1);
