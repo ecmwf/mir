@@ -232,6 +232,11 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
         }
 
         const std::vector<double> &values = field.values(i);
+        if(values.size() != npts_inp) {
+            std::ostringstream oss;
+            oss << "MethodWeighted size mitmatch field=" << values.size() << " matrix=" << npts_inp;
+            throw eckit::SeriousBug(oss.str());
+        }
         ASSERT(values.size() == npts_inp);
 
 
