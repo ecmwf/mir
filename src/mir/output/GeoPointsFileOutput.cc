@@ -35,6 +35,7 @@ eckit::DataHandle& GeoPointsFileOutput::dataHandle() const {
     if (!handle_) {
         eckit::PathName path(path_);
         handle_.reset(path.fileHandle());
+        handle_->openForWrite(0);
     }
     return *handle_;
 }
