@@ -234,15 +234,15 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
         const std::vector<double> &values = field.values(i);
 
 
-        std::cout << "field " << i << " "  << values.size() << std::endl;
-        std::cout << "npts_inp " << npts_inp << std::endl;
+        // std::cout << "field " << i << " "  << values.size() << std::endl;
+        // std::cout << "npts_inp " << npts_inp << std::endl;
 
 
-        if (values.size() != npts_inp) {
-            std::ostringstream oss;
-            oss << "MethodWeighted size mismatch field=" << values.size() << " matrix=" << npts_inp;
-            throw eckit::SeriousBug(oss.str());
-        }
+        // if (values.size() != npts_inp) {
+        //     std::ostringstream oss;
+        //     oss << "MethodWeighted size mismatch field=" << values.size() << " matrix=" << npts_inp;
+        //     throw eckit::SeriousBug(oss.str());
+        // }
         ASSERT(values.size() == npts_inp);
 
 
