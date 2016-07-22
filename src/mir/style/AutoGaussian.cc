@@ -60,6 +60,10 @@ void AutoGaussian::get(const std::string &name, long &value) const {
         value = 64;
     }
 
+    if(truncation == 319) {
+        value = 320;
+    }
+
     if (value == 0) {
         std::ostringstream oss;
         oss << "AutoGaussian: cannot establish N for truncation " << truncation;
