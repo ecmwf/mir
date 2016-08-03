@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "eckit/log/Timer.h"
+#include "eckit/config/Resource.h"
 
 #include "mir/api/MIRComplexJob.h"
 #include "mir/action/plan/Job.h"
@@ -68,10 +69,11 @@ void MIRComplexJob::clear() {
 
 void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
 
-    if(jobs_.empty()) {
+    if (jobs_.empty()) {
         return;
     }
 
+    static bool showActionGraph = eckit::Resource<bool>("$MIR_SHOW_ACTION_GRAPH", false);
 
     action::ActionGraph graph;
 
@@ -84,23 +86,33 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
         return;
     }
 
-    // eckit::Timer timer("MIRComplexJob::execute", std::cout);
+    eckit::ScopedPtr<eckit::Timer> timer;
+
+    if (showActionGraph) {
+        timer.reset(new eckit::Timer ("MIRComplexJob::execute", std::cout));
+    }
 
     context::Context ctx(*input_, statistics);
 
-    // std::cout << ">>>>>>>>>>>> ====== " << std::endl;
+    if (showActionGraph) {
+        std::cout << ">>>>>>>>>>>> ====== " << std::endl;
 
-    // std::cout << *input_ << std::endl;
+        std::cout << *input_ << std::endl;
+    }
 
     // action::SimpleExecutor executor;
     const action::Executor& executor = action::Executor::lookup((*jobs_.begin())->parametrisation());
 
-    // graph.dump(std::cout, 1);
+    if (showActionGraph) {
+        graph.dump(std::cout, 1);
+    }
     graph.execute(ctx, executor);
 
     executor.wait();
 
-    // std::cout << "<<<<<<<<<<< ======" << std::endl;
+    if (showActionGraph) {
+        std::cout << "<<<<<<<<<<< ======" << std::endl;
+    }
 
 
 }
