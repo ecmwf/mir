@@ -429,6 +429,7 @@ list(
 	util/RotatedIterator.h
 	util/Rotation.cc
 	util/Rotation.h
+    LibMir.cc
   )
 
 list(APPEND mir_tmpls caching/InMemoryCache.cc)

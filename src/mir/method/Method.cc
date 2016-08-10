@@ -14,30 +14,33 @@
 
 
 #include "mir/method/Method.h"
-#include "mir/param/MIRParametrisation.h"
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
-#include "mir/log/MIR.h"
 
+#include "mir/log/MIR.h"
+#include "mir/param/MIRParametrisation.h"
 
 namespace mir {
 namespace method {
+
+//----------------------------------------------------------------------------------------------------------------------
+
 namespace {
 
-
+static pthread_once_t once = PTHREAD_ONCE_INIT;
 static eckit::Mutex *local_mutex = 0;
 static std::map<std::string, MethodFactory *> *m = 0;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
+
 static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map<std::string, MethodFactory *>();
 }
 
-
 }  // (unnamed namespace)
 
+//----------------------------------------------------------------------------------------------------------------------
 
 Method::Method(const param::MIRParametrisation &params) :
     parametrisation_(params) {
@@ -100,6 +103,7 @@ Method *MethodFactory::build(const std::string &name, const param::MIRParametris
     return (*j).second->make(params);
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
