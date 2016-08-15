@@ -60,7 +60,7 @@ class MIRTool : public eckit::Tool {
     static void usage(const std::string &tool);
 
   public:
-    MIRTool(int argc, char **argv) : eckit::Tool(argc, argv, "MIRHOME", MIR_INSTALL_DIR ) {
+    MIRTool(int argc, char **argv) : eckit::Tool(argc, argv, "MIR_HOME" ) {
         eckit::Context::instance().behavior(new eckit::mpi::ParallelContextBehavior());
     }
 
