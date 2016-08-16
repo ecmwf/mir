@@ -54,7 +54,7 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
                              const atlas::grid::Grid &grid,
                              const std::string &which):
     Mask(name),
-    path_("~mir-share/share/mir/masks/ten-minutes.mask") {
+    path_("~mir/share/mir/masks/ten-minutes.mask") {
 
 
     if (ten_minutes_.size() == 0) {

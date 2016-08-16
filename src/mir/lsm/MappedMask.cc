@@ -67,7 +67,7 @@ MappedMask::MappedMask(const std::string &name,
                        const atlas::grid::Grid &grid,
                        const std::string &which):
     Mask(name),
-    path_("~mir-share/share/mir/masks/1km-lsm.mask") {
+    path_("~mir/share/mir/masks/1km-lsm.mask") {
 
 
 
