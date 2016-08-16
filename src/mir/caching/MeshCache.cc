@@ -16,6 +16,8 @@
 
 #include "atlas/mesh/Mesh.h"
 
+#include "mir/api/LibMir.h"
+
 using namespace eckit;
 
 namespace mir {
@@ -23,7 +25,7 @@ namespace caching {
 
 
 MeshCache::MeshCache():
-    CacheManager("mir/meshes") {
+    CacheManager("mir/meshes", LibMir::cacheDir()) {
 }
 
 const char *MeshCache::version() const {

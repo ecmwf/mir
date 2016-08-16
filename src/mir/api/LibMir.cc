@@ -12,18 +12,24 @@
 /// @author Tiago Quintino
 /// @date   August 2016
 
-#include "eckit/system/Library.h"
+#include "mir/api/LibMir.h"
+
+#include "eckit/config/Resource.h"
+
+using namespace eckit;
 
 namespace mir {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class LibMir : public eckit::system::Library {
-public:
-    LibMir() : Library("mir") {}
-protected:
-    const void* addr() const { return this; }
-};
+LibMir::LibMir() : Library("mir") {}
+
+eckit::PathName LibMir::cacheDir()
+{
+    return Resource<PathName>("mirCacheDir;$MIR_CACHE_DIR", "/tmp/cache");
+}
+
+const void* LibMir::addr() const { return this; }
 
 static LibMir libmir;
 

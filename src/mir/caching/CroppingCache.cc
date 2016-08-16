@@ -20,14 +20,14 @@
 #include "eckit/serialisation/FileStream.h"
 #include "mir/api/mir_version.h"
 #include "mir/log/MIR.h"
-
+#include "mir/api/LibMir.h"
 
 namespace mir {
 namespace caching {
 
 
 CroppingCache::CroppingCache():
-    CacheManager("mir/cropping") {
+    CacheManager("mir/cropping", LibMir::cacheDir()) {
 }
 
 

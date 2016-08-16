@@ -11,14 +11,19 @@
 #include "LegendreCache.h"
 
 #include "mir/api/mir_version.h"
+#include "mir/api/LibMir.h"
+
+#include "eckit/filesystem/PathName.h"
+
+using namespace eckit;
 
 namespace mir {
 namespace caching {
 
+//----------------------------------------------------------------------------------------------------------------------
 
-
-LegendreCache::LegendreCache() : CacheManager("mir/coeffs") {
-}
+LegendreCache::LegendreCache() :
+    CacheManager("mir/coeffs", LibMir::cacheDir()) {}
 
 const char* LegendreCache::version() const {
     return "1"; // Change me if the cache file structure changes
@@ -37,6 +42,7 @@ void LegendreCache::print(std::ostream &s) const {
       << "]";
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

@@ -116,6 +116,8 @@ list(
 	api/ProdgenJob.h
 	api/emoslib.cc
 	api/emoslib.h
+    api/LibMir.cc
+    api/LibMir.h
 	caching/CroppingCache.cc
 	caching/CroppingCache.h
 	caching/FileLoader.cc
@@ -429,7 +431,6 @@ list(
 	util/RotatedIterator.h
 	util/Rotation.cc
 	util/Rotation.h
-    LibMir.cc
   )
 
 list(APPEND mir_tmpls caching/InMemoryCache.cc)

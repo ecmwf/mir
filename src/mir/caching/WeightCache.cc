@@ -18,6 +18,7 @@
 #include "eckit/log/Seconds.h"
 #include "mir/api/mir_version.h"
 #include "mir/log/MIR.h"
+#include "mir/api/LibMir.h"
 
 namespace mir {
 namespace caching {
@@ -44,7 +45,7 @@ b - Code should ASSERT() that what their are decoding looks correct. This can be
 
 
 WeightCache::WeightCache():
-    CacheManager("mir/weights") {
+    CacheManager("mir/weights", LibMir::cacheDir()) {
 }
 
 const char *WeightCache::version() const {
