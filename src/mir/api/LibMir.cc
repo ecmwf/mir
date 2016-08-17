@@ -16,6 +16,8 @@
 
 #include "eckit/config/Resource.h"
 
+#include "mir/api/mir_version.h"
+
 using namespace eckit;
 
 namespace mir {
@@ -30,6 +32,19 @@ eckit::PathName LibMir::cacheDir()
 }
 
 const void* LibMir::addr() const { return this; }
+
+std::string LibMir::version() const {
+    return mir_version_str();
+}
+
+std::string LibMir::gitsha1(unsigned int count) const {
+    std::string sha1(mir_git_sha1());
+    if(sha1.empty()) {
+        return "not available";
+    }
+
+    return sha1.substr(0,std::min(count,40u));
+}
 
 static LibMir libmir;
 
