@@ -28,7 +28,7 @@ LibMir::LibMir() : Library("mir") {}
 
 eckit::PathName LibMir::cacheDir()
 {
-    return Resource<PathName>("mirCacheDir;$MIR_CACHE_DIR", "/tmp/cache");
+    return Resource<PathName>("mirCacheDir;$MIR_CACHE_DIRECTORY", "/tmp/cache");
 }
 
 const void* LibMir::addr() const { return this; }
