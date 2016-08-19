@@ -11,7 +11,7 @@
 /// @author Baudouin Raoult
 /// @date Feb 2016
 
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 #include "eckit/config/Resource.h"
 
 namespace mir {

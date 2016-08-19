@@ -24,7 +24,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/data/MIRField.h"
 
@@ -77,7 +77,7 @@ void VOD2UVTransform::execute(context::Context & ctx) const {
     const std::vector<double> &field_vo = field.values(0);
     const std::vector<double> &field_d = field.values(1);
 
-    eckit::Log::trace<MIR>() << "VOD2UVTransform truncation=" << truncation
+    eckit::Log::debug<LibMir>() << "VOD2UVTransform truncation=" << truncation
                              << ", size=" << size
                              << ", values=" << field_vo.size() << std::endl;
 

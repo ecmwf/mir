@@ -22,7 +22,7 @@
 #include "mir/method/GridSpace.h"
 #include "mir/util/PointSearch.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 namespace mir {
 namespace method {
@@ -55,8 +55,8 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
 
 void PseudoLaplace::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
-    eckit::TraceTimer<MIR> timer("PseudoLaplace::assemble");
-    eckit::Log::trace<MIR>() << "PseudoLaplace::assemble" << std::endl;
+    eckit::TraceTimer<LibMir> timer("PseudoLaplace::assemble");
+    eckit::Log::debug<LibMir>() << "PseudoLaplace::assemble" << std::endl;
 
     util::PointSearch  sptree(in);
 

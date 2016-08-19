@@ -16,7 +16,7 @@
 #include "mir/input/GribFileInput.h"
 
 #include "eckit/io/BufferedHandle.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {

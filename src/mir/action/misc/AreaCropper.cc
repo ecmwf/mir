@@ -27,7 +27,7 @@
 #include "mir/caching/CroppingCache.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
@@ -116,7 +116,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
         return c;
     }
 
-//    eckit::TraceTimer<MIR> timer("Compute crop mapping");
+//    eckit::TraceTimer<LibMir> timer("Compute crop mapping");
 
     // TODO: Consider caching these maps (e.g. cache map LL -> index instead)
     std::map<LL, size_t> m;
@@ -152,7 +152,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
             }
 
             // if(m.find(LL(lat, lon)) != m.end()) {
-            //     eckit::Log::trace<MIR>() << "CROP  duplicate " << lat << ", " << lon << std::endl;
+            //     eckit::Log::debug<LibMir>() << "CROP  duplicate " << lat << ", " << lon << std::endl;
             // }
             m.insert(std::make_pair(LL(lat, lon), p));
             count++;
@@ -162,7 +162,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
     }
 
     // Make sure we did not visit duplicate points
-    // eckit::Log::trace<MIR>() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
+    // eckit::Log::debug<LibMir>() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
     ASSERT(count == m.size());
 
     // Don't support empty results
@@ -227,7 +227,7 @@ void AreaCropper::execute(context::Context & ctx) const {
 
     ASSERT(c.mapping_.size());
 
-    // eckit::Log::trace<MIR>() << "CROP resulting bbox is: " << c.bbox_ <<
+    // eckit::Log::debug<LibMir>() << "CROP resulting bbox is: " << c.bbox_ <<
     //                    ", size=" << c.mapping_.size() << std::endl;
 
 
@@ -245,7 +245,7 @@ void AreaCropper::execute(context::Context & ctx) const {
         }
 
         repres::RepresentationHandle cropped(representation->cropped(c.bbox_));
-        // eckit::Log::trace<MIR>() << *cropped << std::endl;
+        // eckit::Log::debug<LibMir>() << *cropped << std::endl;
 
         if (result.size() == 0) {
             std::ostringstream oss;

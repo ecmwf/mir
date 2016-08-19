@@ -14,7 +14,7 @@
 #ifndef MIR_H
 #define MIR_H
 
-#include "mir/api/LibMir.h"
+#include "mir/config/LibMir.h"
 
 namespace mir {
 

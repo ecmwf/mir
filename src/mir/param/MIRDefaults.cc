@@ -20,7 +20,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/StdFile.h"
 #include "mir/util/Parser.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
@@ -52,7 +52,7 @@ MIRDefaults::MIRDefaults() {
         return;
     }
 
-    eckit::Log::trace<MIR>() << "Loading MIR defaults from " << path << std::endl;
+    eckit::Log::debug<LibMir>() << "Loading MIR defaults from " << path << std::endl;
     util::Parser parser(path);
     parser.fill(*this);
 
@@ -74,27 +74,27 @@ void MIRDefaults::print(std::ostream& out) const {
 }
 
 void MIRDefaults::store(const std::string& name, const char* value) {
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (string)" << std::endl;
+    eckit::Log::debug<LibMir>() << "From configuration file " << name << "=[" << value << "] (string)" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 
 void MIRDefaults::store(const std::string& name, const std::string& value) {
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (string)" << std::endl;
+    eckit::Log::debug<LibMir>() << "From configuration file " << name << "=[" << value << "] (string)" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 
 void MIRDefaults::store(const std::string& name, bool value) {
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (bool)" << std::endl;
+    eckit::Log::debug<LibMir>() << "From configuration file " << name << "=[" << value << "] (bool)" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 
 void MIRDefaults::store(const std::string& name, long value) {
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (long)" << std::endl;
+    eckit::Log::debug<LibMir>() << "From configuration file " << name << "=[" << value << "] (long)" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 
 void MIRDefaults::store(const std::string& name, double value) {
-    eckit::Log::trace<MIR>() << "From configuration file " << name << "=[" << value << "] (double)" << std::endl;
+    eckit::Log::debug<LibMir>() << "From configuration file " << name << "=[" << value << "] (double)" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 

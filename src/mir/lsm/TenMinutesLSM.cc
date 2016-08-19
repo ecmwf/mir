@@ -22,7 +22,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 namespace {
 
@@ -59,9 +59,9 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 
     if (ten_minutes_.size() == 0) {
 
-        eckit::TraceTimer<MIR> timer("Load 10 minutes LSM");
+        eckit::TraceTimer<LibMir> timer("Load 10 minutes LSM");
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-        eckit::Log::trace<MIR>() << "TenMinutesLSM loading " << path_ << std::endl;
+        eckit::Log::debug<LibMir>() << "TenMinutesLSM loading " << path_ << std::endl;
 
         eckit::StdFile file(path_);
         ten_minutes_.resize(ROWS);
@@ -82,7 +82,7 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 
     }
 
-    eckit::TraceTimer<MIR> timer("Extract point from 10 minutes LSM");
+    eckit::TraceTimer<LibMir> timer("Extract point from 10 minutes LSM");
 
 
     // NOTE: this is not using 3D coordinate systems

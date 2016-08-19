@@ -26,7 +26,7 @@
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Timer.h"
 #include "eckit/os/Stat.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 // On CRAY/Brodwell, the rounding of areas is incorrect
 // 90 is actually 90 +- 1e-14
@@ -104,9 +104,9 @@ MappedMask::MappedMask(const std::string &name,
     const size_t ROWS = Nj;
     const size_t COLS = Ni;
 
-    eckit::Log::trace<MIR>() << "LSM: Ni=" << Ni << ", Nj=" << Nj << std::endl;
+    eckit::Log::debug<LibMir>() << "LSM: Ni=" << Ni << ", Nj=" << Nj << std::endl;
 
-    eckit::TraceTimer<MIR> timer("Extract points from  LSM");
+    eckit::TraceTimer<LibMir> timer("Extract points from  LSM");
 
 
     // NOTE: this is not using 3D coordinate systems

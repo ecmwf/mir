@@ -32,7 +32,7 @@
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/method/GridSpace.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 using eckit::linalg::Vector;
 using eckit::linalg::LinearAlgebra;
@@ -57,9 +57,9 @@ Conservative::~Conservative() {
 
 void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const
 {
-    eckit::Log::trace<MIR>() << "Conservative::computeLumpedMassMatrix" << std::endl;
+    eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix" << std::endl;
 
-    eckit::Log::trace<MIR>() << "Mesh " << mesh << std::endl;
+    eckit::Log::debug<LibMir>() << "Mesh " << mesh << std::endl;
 
     d.resize(g.npts());
 
@@ -128,7 +128,7 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
 }
 
 void Conservative::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
-    eckit::Log::trace<MIR>()
+    eckit::Log::debug<LibMir>()
             << "Input  pts " << in.grid().npts()
             << "Output pts " << out.grid().npts() << std::endl;
 
@@ -138,7 +138,7 @@ void Conservative::assemble(context::Context& ctx, WeightMatrix &W, const GridSp
 
     FELinear::assemble(ctx, IM, out, in);
 
-    eckit::Log::trace<MIR>()
+    eckit::Log::debug<LibMir>()
             << "IM rows " << IM.rows()
             << " cols "   << IM.cols() << std::endl;
 

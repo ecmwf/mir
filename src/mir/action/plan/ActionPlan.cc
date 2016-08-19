@@ -16,7 +16,7 @@
 #include "mir/action/plan/Action.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/action/context/Context.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 #include "eckit/exception/Exceptions.h"
 
@@ -88,9 +88,7 @@ void ActionPlan::add(const std::string &name, const std::string &param, param::D
 void ActionPlan::execute(context::Context & ctx) const {
     for (std::vector<Action *>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
 
-//        eckit::Log::debug(MIR) << "Executing " << *j << std::endl;
-
-        eckit::Log::trace<MIR>() << "Executing " << *j << std::endl;
+        eckit::Log::debug<LibMir>() << "Executing " << *j << std::endl;
 
         (*j)->execute(ctx);
     }

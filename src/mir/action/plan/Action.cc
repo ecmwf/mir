@@ -18,7 +18,7 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 #include "mir/action/plan/Action.h"
 
 
@@ -81,7 +81,7 @@ Action *ActionFactory::build(const std::string &name, const param::MIRParametris
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, ActionFactory *>::const_iterator j = m->find(name);
 
-    eckit::Log::trace<MIR>() << "Looking for ActionFactory [" << name << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "Looking for ActionFactory [" << name << "]" << std::endl;
 
     if (j == m->end()) {
         eckit::Log::error() << "No ActionFactory for [" << name << "]" << std::endl;

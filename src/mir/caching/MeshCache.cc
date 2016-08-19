@@ -16,7 +16,7 @@
 
 #include "atlas/mesh/Mesh.h"
 
-#include "mir/api/LibMir.h"
+#include "mir/config/LibMir.h"
 
 using namespace eckit;
 
@@ -65,7 +65,7 @@ bool MeshCache::retrieve(const std::string &key, atlas::mesh::Mesh &mesh) const 
         return false;
 
     // eckit::Log::info() << "Found cropping in cache : " << path << "" << std::endl;
-    // eckit::TraceTimer<MIR> timer("Loading cropping from cache");
+    // eckit::TraceTimer<LibMir> timer("Loading cropping from cache");
 
 
     eckit::FileStream s(path, "r");

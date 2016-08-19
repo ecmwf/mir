@@ -42,9 +42,7 @@
 #include "mir/input/GeoPointsFileInput.h"
 
 #include "mir/packing/Packer.h"
-#include "mir/log/MIR.h"
-
-using mir::MIR;
+#include "mir/config/LibMir.h"
 
 using eckit::option::Option;
 using eckit::option::SimpleOption;
@@ -79,7 +77,6 @@ void MIRTool::usage(const std::string &tool) {
 }
 
 void MIRTool::run() {
-
 
 
     std::vector<Option *> options;
@@ -280,7 +277,7 @@ void MIRTool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::o
 
     size_t i = 0;
     while (input.next()) {
-        eckit::Log::trace<MIR>() << "============> " << what << ": " << (++i) << std::endl;
+        eckit::Log::debug<mir::LibMir>() << "============> " << what << ": " << (++i) << std::endl;
         job.execute(input, output);
     }
 

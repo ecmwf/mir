@@ -11,7 +11,7 @@
 #include "LegendreCache.h"
 
 #include "mir/api/mir_version.h"
-#include "mir/api/LibMir.h"
+#include "mir/config/LibMir.h"
 
 #include "eckit/filesystem/PathName.h"
 

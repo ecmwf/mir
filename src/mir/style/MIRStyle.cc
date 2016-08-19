@@ -20,7 +20,7 @@
 
 #include "mir/style/MIRStyle.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
@@ -85,7 +85,7 @@ MIRStyle* MIRStyleFactory::build(const param::MIRParametrisation& params) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, MIRStyleFactory*>::const_iterator j = m->find(name);
 
-    eckit::Log::trace<MIR>() << "Looking for MIRStyleFactory [" << name << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "Looking for MIRStyleFactory [" << name << "]" << std::endl;
 
     if (j == m->end()) {
         eckit::Log::error() << "No MIRStyleFactory for [" << name << "]" << std::endl;

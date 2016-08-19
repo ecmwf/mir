@@ -116,8 +116,8 @@ list(
 	api/ProdgenJob.h
 	api/emoslib.cc
 	api/emoslib.h
-    api/LibMir.cc
-    api/LibMir.h
+    config/LibMir.cc
+    config/LibMir.h
 	caching/CroppingCache.cc
 	caching/CroppingCache.h
 	caching/FileLoader.cc

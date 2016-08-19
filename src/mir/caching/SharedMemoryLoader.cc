@@ -37,7 +37,7 @@
 
 #include "eckit/log/Timer.h"
 #include "eckit/io/StdFile.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
@@ -183,9 +183,9 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         unloader.add(path);
     }
 
-    eckit::TraceTimer<MIR> timer("Loading legendre coefficients from shared memory");
+    eckit::TraceTimer<LibMir> timer("Loading legendre coefficients from shared memory");
     eckit::PathName real = path.realName();
-    // eckit::Log::trace<MIR>() << "Loading legendre coefficients from " << real << std::endl;
+    // eckit::Log::debug<LibMir>() << "Loading legendre coefficients from " << real << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
         std::ostringstream os;
@@ -218,13 +218,13 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     // Only on Linux?
     struct shminfo shm_info;
     SYSCALL(shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-    eckit::Log::trace<MIR>() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) << std::endl;
+    eckit::Log::debug<LibMir>() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) << std::endl;
 #endif
     // This may return EINVAL is the segment is too large 256MB
     // To find the maximum:
     // Linux:ipcs -l, Mac/bsd: ipcs -M
 
-    // eckit::Log::trace<MIR>() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
+    // eckit::Log::debug<LibMir>() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
     //                          std::hex << key << std::dec << ", page size: "
     //                          << eckit::Bytes(page_size) << ", pages: "
     //                          << eckit::BigNum(shmsize / page_size)
@@ -240,7 +240,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 #ifdef SHM_PAGESIZE
     {
 
-        // eckit::Log::trace<MIR>() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
+        // eckit::Log::debug<LibMir>() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
 
         /* Use 64K pages to back the shared memory region */
         size_t shm_size;

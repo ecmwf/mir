@@ -19,7 +19,7 @@
 
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/param/DelayedParametrisation.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
@@ -45,7 +45,7 @@ void RuntimeParametrisation::print(std::ostream& out) const {
 
 template<class T>
 void RuntimeParametrisation::_set(const std::string& name, const T& value) {
-    eckit::Log::trace<MIR>() << "************* RuntimeParametrisation::set [" << name << "] = [" << value << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "************* RuntimeParametrisation::set [" << name << "] = [" << value << "]" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 
@@ -75,7 +75,7 @@ MIRParametrisation& RuntimeParametrisation::set(const std::string& name, double 
 }
 
 MIRParametrisation& RuntimeParametrisation::set(const std::string& name, DelayedParametrisation* value) {
-    eckit::Log::trace<MIR>() << "************* RuntimeParametrisation::set [" << name << "] = [" << *value << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "************* RuntimeParametrisation::set [" << name << "] = [" << *value << "]" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }

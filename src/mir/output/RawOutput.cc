@@ -21,7 +21,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/input/RawInput.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 #include "mir/action/context/Context.h"
 
 
@@ -65,7 +65,7 @@ size_t RawOutput::save(const param::MIRParametrisation &param, context::Context&
     ASSERT(field.dimensions() == 1);
     const std::vector<double> &values = field.values(0);
 
-    eckit::Log::trace<MIR>() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
+    eckit::Log::debug<LibMir>() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
 
     size_ = values.size();
     ASSERT(size_ <= count_);

@@ -12,7 +12,7 @@
 /// @author Tiago Quintino
 /// @date   August 2016
 
-#include "mir/api/LibMir.h"
+#include "mir/config/LibMir.h"
 
 #include "eckit/config/Resource.h"
 

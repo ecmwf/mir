@@ -17,7 +17,7 @@
 
 #include "mir/param/FieldParametrisation.h"
 #include "mir/param/MIRConfiguration.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 namespace mir {
 namespace param {
@@ -39,7 +39,7 @@ bool FieldParametrisation::has(const std::string &name) const {
     //     return get("truncation", dummy);
     // }
 
-    eckit::Log::trace<MIR>() << "FieldParametrisation::has(" << name << ") " << *this << std::endl;
+    eckit::Log::debug<LibMir>() << "FieldParametrisation::has(" << name << ") " << *this << std::endl;
     return false;
 }
 
@@ -70,14 +70,14 @@ bool FieldParametrisation::_get(const std::string &name, T &value) const {
         if (get("paramId", paramId)) {
             style_ = configuration.lookup(paramId);
             if (style_) {
-                eckit::Log::trace<MIR>() << "paramId=" << paramId << " " << *style_ << std::endl;
+                eckit::Log::debug<LibMir>() << "paramId=" << paramId << " " << *style_ << std::endl;
             }
         } else {
-            eckit::Log::trace<MIR>() << "ERROR: " << *this << " has no paramId" << std::endl;
+            eckit::Log::debug<LibMir>() << "ERROR: " << *this << " has no paramId" << std::endl;
         }
     }
 
-    eckit::Log::trace<MIR>() << "FieldParametrisation::_get(" << name << ") " <<  *this << std::endl;
+    eckit::Log::debug<LibMir>() << "FieldParametrisation::_get(" << name << ") " <<  *this << std::endl;
 
     if (style_) {
         return style_->get(name, value);

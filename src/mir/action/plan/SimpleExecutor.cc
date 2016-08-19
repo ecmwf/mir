@@ -16,7 +16,7 @@
 #include "mir/action/plan/Action.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/action/context/Context.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 #include "mir/api/MIRWatcher.h"
 #include "mir/action/plan/ActionNode.h"
 

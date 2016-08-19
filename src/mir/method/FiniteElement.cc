@@ -35,7 +35,7 @@
 #include "atlas/mesh/actions/BuildCellCentres.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/util/io/Gmsh.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 #include "mir/method/GridSpace.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -253,19 +253,19 @@ void FiniteElement::hash(eckit::MD5&) const
 void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
     // FIXME: arguments
-    eckit::Log::trace<MIR>() << "FiniteElement::assemble" << std::endl;
+    eckit::Log::debug<LibMir>() << "FiniteElement::assemble" << std::endl;
 
-    eckit::Log::trace<MIR>() << "  Input  Grid: " << in.grid()  << std::endl;
-    eckit::Log::trace<MIR>() << "  Output Grid: " << out.grid() << std::endl;
+    eckit::Log::debug<LibMir>() << "  Input  Grid: " << in.grid()  << std::endl;
+    eckit::Log::debug<LibMir>() << "  Output Grid: " << out.grid() << std::endl;
 
     const atlas::grid::Domain &inDomain = in.grid().domain();
 
-    eckit::TraceTimer<MIR> timer("Compute weights");
+    eckit::TraceTimer<LibMir> timer("Compute weights");
 
     // FIXME: using the name() is not the right thing, although it should work, but create too many cached meshes.
     // We need to use the mesh-generator
     {
-        eckit::TraceTimer<MIR> timer("Generate mesh");
+        eckit::TraceTimer<LibMir> timer("Generate mesh");
 
         // generateMeshAndCache(in.grid(), in.mesh()); // mesh generation will be done lazily
 
@@ -274,10 +274,10 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
             atlas::util::io::Gmsh gmsh;
             gmsh.options.set<std::string>("nodes", "xyz");
 
-            eckit::Log::trace<MIR>() << "Dumping input mesh to input.msh" << std::endl;
+            eckit::Log::debug<LibMir>() << "Dumping input mesh to input.msh" << std::endl;
             gmsh.write(in.mesh(), "input.msh");
 
-            eckit::Log::trace<MIR>() << "Dumping output mesh to output.msh" << std::endl;
+            eckit::Log::debug<LibMir>() << "Dumping output mesh to output.msh" << std::endl;
             atlas::mesh::actions::BuildXYZField("xyz")(out.mesh());
             gmsh.write(out.mesh(), "output.msh");
         }
@@ -285,13 +285,13 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
     // generate barycenters of each triangle & insert them on a kd-tree
     {
-        eckit::TraceTimer<MIR> timer("Tesselation::create_cell_centres");
+        eckit::TraceTimer<LibMir> timer("Tesselation::create_cell_centres");
         atlas::mesh::actions::BuildCellCentres()(in.mesh());
     }
 
     eckit::ScopedPtr<atlas::interpolation::ElemIndex3> eTree;
     {
-        eckit::TraceTimer<MIR> timer("create_element_centre_index");
+        eckit::TraceTimer<LibMir> timer("create_element_centre_index");
         eTree.reset( atlas::interpolation::create_element_centre_index(in.mesh()) );
     }
 
@@ -336,7 +336,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     stats.inp_npts  = i_nodes.size();
     stats.out_npts  = o_nodes.size();
 
-    eckit::Log::trace<MIR>() << stats << std::endl;
+    eckit::Log::debug<LibMir>() << stats << std::endl;
 
     // weights -- one per vertex of element, triangles (3) or quads (4)
 
@@ -348,16 +348,16 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     const size_t maxNbElemsToTry = std::max<size_t>(64, stats.size() * maxFractionElemsToTry);
     size_t max_neighbours = 0;
 
-    eckit::Log::trace<MIR>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().shortName() << std::endl;
+    eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().shortName() << std::endl;
 
     {
-        eckit::TraceTimer<MIR> timerProj("Projecting");
+        eckit::TraceTimer<LibMir> timerProj("Projecting");
 
         for ( size_t ip = 0; ip < stats.out_npts; ++ip ) {
 
             if (ip && (ip % 10000 == 0)) {
                 double rate = ip / timerProj.elapsed();
-                eckit::Log::trace<MIR>() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timerProj.elapsed())
+                eckit::Log::debug<LibMir>() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timerProj.elapsed())
                                          << ", rate: " << rate << " points/s, ETA: "
                                          << eckit::ETA( (stats.out_npts - ip) / rate )
                                          << std::endl;
@@ -398,7 +398,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
             if (!success) {
                 // If this fails, consider lowering atlas::grid::parametricEpsilon
-                eckit::Log::trace<MIR>() << "Failed to project point " << ip << " " << p
+                eckit::Log::debug<LibMir>() << "Failed to project point " << ip << " " << p
                                          << " with coordinates lon=" << olonlat[ip][LON] << ", lat=" << olonlat[ip][LAT]
                                          << " after " << eckit::Plural(kpts, "attempt") << std::endl;
                 throw eckit::SeriousBug("Could not project point");
@@ -406,8 +406,8 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
         }
     }
 
-    eckit::Log::trace<MIR>() << "Projected " << eckit::Plural(stats.out_npts, "point") << std::endl;
-    eckit::Log::trace<MIR>() << "Maximum neighbours searched was " << eckit::Plural(max_neighbours, "element") << std::endl;
+    eckit::Log::debug<LibMir>() << "Projected " << eckit::Plural(stats.out_npts, "point") << std::endl;
+    eckit::Log::debug<LibMir>() << "Maximum neighbours searched was " << eckit::Plural(max_neighbours, "element") << std::endl;
 
     W.setFromTriplets(weights_triplets); // fill sparse matrix
 }
@@ -419,7 +419,7 @@ void FiniteElement::generateMesh(const atlas::grid::Grid &grid, atlas::mesh::Mes
 
     parametrisation_.get("meshgenerator", meshgenerator); // Override with MIRParametrisation
 
-    eckit::Log::trace<MIR>() << "MeshGenerator parametrisation is '" << meshgenerator << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "MeshGenerator parametrisation is '" << meshgenerator << "'" << std::endl;
 
     eckit::ScopedPtr<atlas::mesh::generators::MeshGenerator> generator(
                 atlas::mesh::generators::MeshGeneratorFactory::build(meshgenerator, meshgenparams_) );

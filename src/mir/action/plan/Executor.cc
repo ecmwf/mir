@@ -16,7 +16,7 @@
 #include "mir/action/plan/Action.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/action/context/Context.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 #include "mir/api/MIRWatcher.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -94,7 +94,7 @@ const Executor &Executor::lookup(const param::MIRParametrisation& params) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, Executor *>::const_iterator j = m->find(name);
 
-    eckit::Log::trace<MIR>() << "Looking for Executor [" << name << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "Looking for Executor [" << name << "]" << std::endl;
     if (j == m->end()) {
         eckit::Log::error() << "No Executor for [" << name << "]" << std::endl;
         eckit::Log::error() << "Executors are:" << std::endl;

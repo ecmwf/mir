@@ -21,7 +21,7 @@
 
 #include "mir/method/WeightMatrix.h"
 #include "mir/util/Compare.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 #include <cmath>
 
@@ -110,7 +110,7 @@ void WeightMatrix::cleanup() {
         size_t r = rows();
         size_t c = cols();
         size_t total = r * c;
-        eckit::Log::trace<MIR>() << "MethodWeighted::cleanupMatrix fixed "
+        eckit::Log::debug<LibMir>() << "MethodWeighted::cleanupMatrix fixed "
                                  << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
                                  << " (matrix is " << eckit::BigNum(r) << "x" << eckit::BigNum(c) << ", total=" <<
                                  eckit::BigNum(total) << ")" << std::endl;
@@ -147,22 +147,22 @@ void WeightMatrix::validate(const char *when) const {
         if (!ok) {
             if (errors < 50) {
                 if (!errors) {
-                    eckit::Log::trace<MIR>() << "checkMatrixWeights(" << when << ") failed " << std::endl;
+                    eckit::Log::debug<LibMir>() << "checkMatrixWeights(" << when << ") failed " << std::endl;
                 }
 
-                eckit::Log::trace<MIR>() << "Row: " << i;
+                eckit::Log::debug<LibMir>() << "Row: " << i;
                 size_t n = 0;
                 for (WeightMatrix::inner_const_iterator j(*this, i); j; ++j, ++n) {
                     if (n > 10) {
-                        eckit::Log::trace<MIR>() << " ...";
+                        eckit::Log::debug<LibMir>() << " ...";
                         break;
                     }
-                    eckit::Log::trace<MIR>() << " [" << *j << "]";
+                    eckit::Log::debug<LibMir>() << " [" << *j << "]";
                 }
 
-                eckit::Log::trace<MIR>() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
+                eckit::Log::debug<LibMir>() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
             } else if (errors == 50) {
-                eckit::Log::trace<MIR>() << "..." << std::endl;
+                eckit::Log::debug<LibMir>() << "..." << std::endl;
             }
             errors++;
 

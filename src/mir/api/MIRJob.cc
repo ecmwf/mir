@@ -18,7 +18,7 @@
 #include "eckit/log/Plural.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 #include "mir/action/plan/Job.h"
 
 #include "mir/repres/Representation.h"
@@ -65,37 +65,37 @@ bool MIRJob::empty() const {
 }
 
 MIRJob &MIRJob::reset() {
-    // eckit::Log::trace<MIR>() << "************* MIRJob::reset()" << std::endl;
+    // eckit::Log::debug<LibMir>() << "************* MIRJob::reset()" << std::endl;
     SimpleParametrisation::reset();
     return *this;
 }
 
 MIRJob &MIRJob::clear(const std::string &name) {
-    // eckit::Log::trace<MIR>() << "************* MIRJob::clear [" << name << "]" << std::endl;
+    // eckit::Log::debug<LibMir>() << "************* MIRJob::clear [" << name << "]" << std::endl;
     SimpleParametrisation::clear(name);
     return *this;
 }
 MIRJob &MIRJob::set(const std::string &name, const std::string &value) {
-    // eckit::Log::trace<MIR>() << "************* MIRJob::set [" << name << "] = [" << value << "] (string)" << std::endl;
+    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << value << "] (string)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
 MIRJob &MIRJob::set(const std::string &name, const char *value) {
-    // eckit::Log::trace<MIR>() << "************* MIRJob::set [" << name << "] = [" << value << "] (char)" << std::endl;
+    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << value << "] (char)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
 MIRJob &MIRJob::set(const std::string &name, bool value) {
-    // eckit::Log::trace<MIR>() << "************* MIRJob::set [" << name << "] = [" << value << "] (bool)" << std::endl;
+    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << value << "] (bool)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, long value) {
-    // eckit::Log::trace<MIR>() << "************* MIRJob::set [" << name << "] = [" << value << "] (long)" << std::endl;
+    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << value << "] (long)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
@@ -108,32 +108,32 @@ MIRJob &MIRJob::set(const std::string &name, size_t value) {
 }
 
 MIRJob &MIRJob::set(const std::string &name, double value) {
-    // eckit::Log::trace<MIR>() << "************* MIRJob::set [" << name << "] = [" << value << "] (double)" << std::endl;
+    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << value << "] (double)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
 MIRJob &MIRJob::set(const std::string &name, param::DelayedParametrisation *value) {
-    // eckit::Log::trace<MIR>() << "************* MIRJob::set [" << name << "] = [" << value << "] (delayed)" << std::endl;
+    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << value << "] (delayed)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
 MIRJob &MIRJob::set(const std::string &name, const std::vector<long>& v) {
-    // eckit::Log::trace<MIR>() << "************* MIRJob::set [" << name << "] = [" << eckit::Plural(v.size(), "value") << "] (vector<long>)" << std::endl;
+    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << eckit::Plural(v.size(), "value") << "] (vector<long>)" << std::endl;
     SimpleParametrisation::set(name, v);
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, const std::vector<double>& v) {
-    // eckit::Log::trace<MIR>() << "************* MIRJob::set [" << name << "] = [" << eckit::Plural(v.size(), "value") << "] (vector<double>)" << std::endl;
+    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << eckit::Plural(v.size(), "value") << "] (vector<double>)" << std::endl;
     SimpleParametrisation::set(name, v);
     return *this;
 }
 
 MIRJob &MIRJob::set(const std::string &name, double v1, double v2) {
-    // eckit::Log::trace<MIR>() << "************* MIRJob::set [" << name << "] = [" << v1 << ", "  << v2 << "] (double)" << std::endl;
+    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << v1 << ", "  << v2 << "] (double)" << std::endl;
     std::vector<double> v(2);
     v[0] = v1;
     v[1] = v2;
@@ -142,7 +142,7 @@ MIRJob &MIRJob::set(const std::string &name, double v1, double v2) {
 }
 
 MIRJob &MIRJob::set(const std::string &name, double v1, double v2, double v3, double v4) {
-    // eckit::Log::trace<MIR>() << "************* MIRJob::set [" << name << "] =  [" << v1
+    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] =  [" << v1
                              // << ", "  << v2 << ", "  << v3 << ", "  << v4 << "] (double)" << std::endl;
     std::vector<double> v(4);
     v[0] = v1;
@@ -157,7 +157,7 @@ MIRJob& MIRJob::representationFrom(input::MIRInput& input) {
 
     const repres::Representation* repres = input.field().representation();
 
-    // eckit::Log::trace<MIR>() << "Copy from " << *repres << std::endl;
+    // eckit::Log::debug<LibMir>() << "Copy from " << *repres << std::endl;
     repres->fill(*this);
 
     return *this;
@@ -178,7 +178,7 @@ bool MIRJob::matches(const param::MIRParametrisation &metadata) const {
     size_t i = 0;
     while (force[i]) {
         if (has(force[i])) {
-            // eckit::Log::trace<MIR>() << "MIRJob will perform transformation/interpolation ('"
+            // eckit::Log::debug<LibMir>() << "MIRJob will perform transformation/interpolation ('"
                                      // << force[i] << "' specified)" << std::endl;
             return false;
         }
@@ -187,7 +187,7 @@ bool MIRJob::matches(const param::MIRParametrisation &metadata) const {
 
     bool ok = SimpleParametrisation::matches(metadata);
     if (!ok) {
-        // eckit::Log::trace<MIR>() << "MIRJob will perform transformation/interpolation" << std::endl;
+        // eckit::Log::debug<LibMir>() << "MIRJob will perform transformation/interpolation" << std::endl;
     }
     return ok;
 }

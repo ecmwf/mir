@@ -25,7 +25,7 @@
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 
 #include "mir/action/plan/Job.h"
 #include "mir/api/MIRJob.h"
@@ -62,7 +62,7 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
         plan_->add(new action::Save(*combined_, input_, output_));
     }
 
-    eckit::Log::trace<MIR>() << "Action plan is: " << *plan_ << std::endl;
+    eckit::Log::debug<LibMir>() << "Action plan is: " << *plan_ << std::endl;
 }
 
 Job::~Job() {

@@ -29,7 +29,7 @@
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionGraph.h"
 #include "mir/input/MIRInput.h"
-#include "mir/log/MIR.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/action/context/Context.h"
 
