@@ -11,20 +11,16 @@
 /// @author Baudouin Raoult
 /// @date Feb 2016
 
-
 #ifndef MIR_H
 #define MIR_H
 
+#include "mir/api/LibMir.h"
 
 namespace mir {
 
  // Note: no 'log' namespace
 
-class MIR {
-  public:
-    static const char* name() { return "MIR"; }
-    static bool trace(int level);
-};
+typedef LibMir MIR;
 
 } // namespace mir
 

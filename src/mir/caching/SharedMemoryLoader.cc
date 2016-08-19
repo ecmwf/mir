@@ -183,7 +183,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         unloader.add(path);
     }
 
-    // eckit::TraceTimer<MIR> timer("Loading legendre coefficients from shared memory");
+    eckit::TraceTimer<MIR> timer("Loading legendre coefficients from shared memory");
     eckit::PathName real = path.realName();
     // eckit::Log::trace<MIR>() << "Loading legendre coefficients from " << real << std::endl;
 

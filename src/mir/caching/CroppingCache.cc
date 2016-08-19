@@ -57,7 +57,7 @@ void CroppingCache::insert(const std::string &key, const CroppingCacheEntry &c) 
 
     // eckit::Log::info() << "Inserting cropping in cache : " << tmp << "" << std::endl;
 
-    // eckit::TraceTimer<MIR> timer("Saving cropping to cache");
+    eckit::TraceTimer<MIR> timer("Saving cropping to cache");
 
     eckit::FileStream f(tmp, "w");
     f << c.bbox_.north();
@@ -82,7 +82,7 @@ bool CroppingCache::retrieve(const std::string &key, CroppingCacheEntry &c) cons
         return false;
 
     // eckit::Log::info() << "Found cropping in cache : " << path << "" << std::endl;
-    // eckit::TraceTimer<MIR> timer("Loading cropping from cache");
+    eckit::TraceTimer<MIR> timer("Loading cropping from cache");
 
     eckit::FileStream f(path, "r");
     double n, w, s, e;

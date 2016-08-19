@@ -116,7 +116,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
         return c;
     }
 
-    eckit::TraceTimer<MIR> timer("Compute crop mapping");
+//    eckit::TraceTimer<MIR> timer("Compute crop mapping");
 
     // TODO: Consider caching these maps (e.g. cache map LL -> index instead)
     std::map<LL, size_t> m;

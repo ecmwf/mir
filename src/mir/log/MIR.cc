@@ -18,10 +18,10 @@ namespace mir {
 
 // Although it is in log, we dont have a namespace
 
-bool MIR::trace(int) {
-    static bool on = eckit::Resource<bool>("$MIR_TRACE", false);
-    return on;
-}
+//bool MIR::trace(int) {
+//    static bool on = eckit::Resource<bool>("$MIR_TRACE", false);
+//    return on;
+//}
 
 
 }  // namespace mir

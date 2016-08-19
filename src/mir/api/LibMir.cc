@@ -24,11 +24,18 @@ namespace mir {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+static LibMir libmir;
+
 LibMir::LibMir() : Library("mir") {}
 
 eckit::PathName LibMir::cacheDir()
 {
     return Resource<PathName>("mirCacheDirectory;$MIR_CACHE_DIRECTORY", "/tmp/cache");
+}
+
+const LibMir& LibMir::instance()
+{
+    return libmir;
 }
 
 const void* LibMir::addr() const { return this; }
@@ -45,8 +52,6 @@ std::string LibMir::gitsha1(unsigned int count) const {
 
     return sha1.substr(0,std::min(count,40u));
 }
-
-static LibMir libmir;
 
 //----------------------------------------------------------------------------------------------------------------------
 

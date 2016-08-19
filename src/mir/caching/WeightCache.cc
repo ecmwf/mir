@@ -71,7 +71,7 @@ void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) 
 
     eckit::Log::info() << "Inserting weights in cache : " << tmp << "" << std::endl;
 
-    // eckit::TraceTimer<MIR> timer("Saving weights to cache");
+    eckit::TraceTimer<MIR> timer("Saving weights to cache");
     W.save(tmp);
 
     ASSERT(commit(key, tmp));
@@ -85,7 +85,7 @@ bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) cons
         return false;
 
     // eckit::Log::info() << "Found weights in cache : " << path << "" << std::endl;
-    // eckit::TraceTimer<MIR> timer("Loading weights from cache");
+    eckit::TraceTimer<MIR> timer("Loading weights from cache");
 
     W.load(path);
 

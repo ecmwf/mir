@@ -137,7 +137,7 @@ static void transform(
         eckit::PathName path;
         if (!cache.get(key, path)) {
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
-            eckit::TraceTimer<MIR> timer("Caching coefficients");
+//            eckit::TraceTimer<MIR> timer("Caching coefficients");
             // std::cout << "LegendreCache " << key << " does not exists" << std::endl;
             eckit::PathName tmp = cache.stage(key);
             ASSERT( trans_set_write(&trans, tmp.asString().c_str())  == 0);

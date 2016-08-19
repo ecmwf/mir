@@ -12,6 +12,9 @@
 /// @author Tiago Quintino
 /// @date   August 2016
 
+#ifndef mir_LibMir_H
+#define mir_LibMir_H
+
 #include "eckit/system/Library.h"
 #include "eckit/filesystem/PathName.h"
 
@@ -26,6 +29,8 @@ public:
 
     static eckit::PathName cacheDir();
 
+    static const LibMir& instance();
+
 protected:
 
     const void* addr() const;
@@ -39,3 +44,4 @@ protected:
 
 } // namespace mir
 
+#endif

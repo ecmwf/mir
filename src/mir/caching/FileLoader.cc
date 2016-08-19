@@ -37,7 +37,7 @@ namespace caching {
 FileLoader::FileLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName &path):
     LegendreLoader(parametrisation, path),
     buffer_(path.size()) {
-    eckit::TraceTimer<MIR> timer("Loading legendre coefficients from file");
+//    eckit::TraceTimer<MIR> timer("Loading legendre coefficients from file");
     eckit::Log::trace<MIR>() << "Loading legendre coefficients from " << path << std::endl;
 
     eckit::StdFile file(path);
