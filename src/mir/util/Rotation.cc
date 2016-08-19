@@ -32,12 +32,27 @@ Rotation::Rotation(double south_pole_latitude,
     south_pole_latitude_(south_pole_latitude),
     south_pole_longitude_(south_pole_longitude),
     south_pole_rotation_angle_(south_pole_rotation_angle) {
+
+    normalize();
 }
 
 Rotation::Rotation(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("south_pole_latitude", south_pole_latitude_));
     ASSERT(parametrisation.get("south_pole_longitude", south_pole_longitude_));
     ASSERT(parametrisation.get("south_pole_rotation_angle", south_pole_rotation_angle_));
+
+    normalize();
+}
+
+void Rotation::normalize() {
+    while (south_pole_longitude < 0 ) {
+        south_pole_longitude += 360;
+    }
+
+    while (south_pole_longitude >= 360) {
+        south_pole_longitude -= 360;
+    }
+
 }
 
 Rotation::~Rotation() {

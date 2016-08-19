@@ -46,11 +46,11 @@ std::string LibMir::version() const {
 
 std::string LibMir::gitsha1(unsigned int count) const {
     std::string sha1(mir_git_sha1());
-    if(sha1.empty()) {
+    if (sha1.empty()) {
         return "not available";
     }
 
-    return sha1.substr(0,std::min(count,40u));
+    return sha1.substr(0, std::min(count, 40u));
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -123,6 +123,8 @@ class Rotation {
 
     // -- Methods
 
+    void normalize();
+
     // -- Overridden methods
     // None
 

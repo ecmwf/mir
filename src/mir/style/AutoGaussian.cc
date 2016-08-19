@@ -48,25 +48,25 @@ void AutoGaussian::get(const std::string &name, long &value) const {
 
     // TODO: a config file
 
-    if(truncation == 1279) {
+    if (truncation == 1279) {
         value = 1280;
     }
 
-    if(truncation == 639) {
+    if (truncation == 639) {
         value = 640;
     }
 
-    if(truncation == 255) {
+    if (truncation == 255) {
         // TODO: Should be N256, not O256
         value = 256;
     }
 
-    if(truncation == 63) {
+    if (truncation == 63) {
         // TODO: Should be N64, not O64
         value = 64;
     }
 
-    if(truncation == 319) {
+    if (truncation == 319) {
         value = 320;
     }
 
