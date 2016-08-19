@@ -218,6 +218,18 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 
+    if (parametrisation_.has("user.area")) {
+        plan.add("crop.area");
+    }
+
+    if (parametrisation_.has("user.bitmap")) {
+        plan.add("filter.bitmap");
+    }
+
+    if (parametrisation_.has("user.frame")) {
+        plan.add("filter.frame");
+    }
+
     std::string formula;
     if (parametrisation_.get("user.formula.epilogue", formula)) {
         plan.add("calc.formula", "formula", formula);
