@@ -45,13 +45,13 @@ Rotation::Rotation(const param::MIRParametrisation &parametrisation) {
 }
 
 void Rotation::normalize() {
-    while (south_pole_longitude_ < 0 ) {
-        south_pole_longitude_ += 360;
-    }
+    // while (south_pole_longitude_ < 0 ) {
+    //     south_pole_longitude_ += 360;
+    // }
 
-    while (south_pole_longitude_ >= 360) {
-        south_pole_longitude_ -= 360;
-    }
+    // while (south_pole_longitude_ >= 360) {
+    //     south_pole_longitude_ -= 360;
+    // }
 
 }
 
