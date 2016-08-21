@@ -69,7 +69,7 @@ void BoundingBox::print(std::ostream &out) const {
 
 // Round away from 0
 
-const double ROUNDING = 1e12;
+const double ROUNDING = 1e10;
 
 static double rounded(double x) {
     x *= ROUNDING;
