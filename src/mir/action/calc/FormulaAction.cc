@@ -23,15 +23,20 @@
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/FormulaParser.h"
 #include "mir/util/Formula.h"
+#include "mir/data/MIRField.h"
 
 namespace mir {
 namespace action {
 
 FormulaAction::FormulaAction(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation) {
+    Action(parametrisation),
+    param_(0) {
 
     std::string formula;
     ASSERT(parametrisation.get("formula", formula));
+
+    ASSERT(parametrisation.get("formula.param", param_));
+    ASSERT(param_);
 
     std::istringstream in(formula);
     mir::util::FormulaParser p(in);
@@ -50,7 +55,7 @@ bool FormulaAction::sameAs(const Action& other) const {
 
 
 void FormulaAction::print(std::ostream &out) const {
-    out << "FormulaAction[" << *formula_ << "]";
+    out << "FormulaAction[" << *formula_ << ", param=" << param_ << "]";
 }
 
 
@@ -59,33 +64,13 @@ void FormulaAction::execute(context::Context & ctx) const {
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
 
     formula_->execute(ctx);
-    // ASSERT(field.dimensions() == 2);
 
-    // std::vector<double> &values0 = field.direct(0);
-    // const std::vector<double> &values1 = field.values(1);
+    data::MIRField& field = ctx.field();
+    for (size_t i = 0; i < field.dimensions(); i++) {
+        field.paramId(i, param_);
 
-    // size_t size = values0.size();
-    // ASSERT(values0.size() == values1.size());
+    }
 
-    // if (field.hasMissing()) {
-    //     double missingValue = field.missingValue();
-
-    //     for (size_t i = 0; i < size; i++) {
-    //         if (values0[i] == missingValue || values1[i] == missingValue) {
-    //             values0[i] = missingValue;
-    //         } else {
-    //             values0[i] = T::op(values0[i], values1[i]);
-    //         }
-    //     }
-
-    // } else {
-    //     for (size_t i = 0; i < size; i++) {
-    //         values0[i] = T::op(values0[i], values1[i]);
-    //     }
-    // }
-
-    // field.dimensions(1);
-    // field.paramId(0, param_);
 }
 
 namespace {

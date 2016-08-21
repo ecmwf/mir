@@ -62,9 +62,7 @@ void RegularGG::cropToDomain(const param::MIRParametrisation& param, context::Co
 }
 
 
-namespace {
 static RepresentationBuilder<RegularGG> reducedGG("regular_gg"); // Name is what is returned by grib_api
-}
 
 
 }  // namespace regular
