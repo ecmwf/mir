@@ -72,6 +72,7 @@ void BoundingBox::print(std::ostream &out) const {
 const double ROUNDING = 1e7;
 
 static double rounded(double x) {
+    return x;
     x *= ROUNDING;
     x = x < 0 ? floor(x) : ceil(x);
     x /= ROUNDING;
