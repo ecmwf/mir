@@ -228,7 +228,7 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
         long param = 0;
         // paramId for the results of formulas
         parametrisation_.get("user.formula.prologue.param", param);
-        plan.add("calc.formula", "formula", formula);
+        plan.add("calc.formula", "formula", formula, "formula.param", param);
     }
 }
 
@@ -251,7 +251,7 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
         long param = 0;
         // paramId for the results of formulas
         parametrisation_.get("user.formula.epilogue.param", param);
-        plan.add("calc.formula", "formula", formula);
+        plan.add("calc.formula", "formula", formula, "formula.param", param);
     }
 
     std::string epilogue;
