@@ -23,6 +23,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
 
+#include <cmath>
 
 namespace mir {
 namespace util {
@@ -66,12 +67,24 @@ void BoundingBox::print(std::ostream &out) const {
 }
 
 
+// Round away from 0
+
+const double ROUNDING = 1e12;
+
+static double rounded(double x) {
+    x *= ROUNDING;
+    x = x < 0 ? floor(x) : ceil(x);
+    x /= ROUNDING;
+    return x;
+}
+
+
 void BoundingBox::fill(grib_info &info) const  {
     // Warning: scanning mode not considered
-    info.grid.latitudeOfFirstGridPointInDegrees  = north_;
-    info.grid.longitudeOfFirstGridPointInDegrees = west_;
-    info.grid.latitudeOfLastGridPointInDegrees   = south_;
-    info.grid.longitudeOfLastGridPointInDegrees  = east_;
+    info.grid.latitudeOfFirstGridPointInDegrees  = rounded(north_);
+    info.grid.longitudeOfFirstGridPointInDegrees = rounded(west_);
+    info.grid.latitudeOfLastGridPointInDegrees   = rounded(south_);
+    info.grid.longitudeOfLastGridPointInDegrees  = rounded(east_);
 }
 
 
@@ -84,7 +97,7 @@ void BoundingBox::hash(eckit::MD5 &md5) const {
 
 
 void BoundingBox::fill(api::MIRJob &job) const  {
-   job.set("area", north_, west_, south_, east_);
+    job.set("area", north_, west_, south_, east_);
 }
 
 
