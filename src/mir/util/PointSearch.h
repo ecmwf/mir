@@ -46,8 +46,8 @@ public:
     typedef atlas::interpolation::PointIndex3::Value PointValueType;
     typedef eckit::geometry::Point3   PointType;
 
-    typedef compare::compare_fn     <size_t> CompareType;
-    typedef compare::is_anything_fn <size_t> CompareTypeNone;
+    typedef compare::ACompareFn  <size_t> CompareType;
+    typedef compare::IsAnythingFn<size_t> CompareTypeNone;
 
 public:
 

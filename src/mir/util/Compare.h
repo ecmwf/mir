@@ -12,30 +12,54 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
+
 #ifndef mir_util_Compare_H
 #define mir_util_Compare_H
 
 #include <cstddef>
 #include <vector>
-
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
+
 
 namespace mir {
 namespace util {
 namespace compare {
 
-/// Compare values parent type (abstract comparison functor)
+
+/// Compare values parent type (abstract comparison unary operator functor)
 template< typename T >
-struct compare_fn {
-    virtual bool operator()(const T& v) const = 0;
+struct ACompareFn {
+    virtual ~ACompareFn() {}
+    virtual bool operator()(const T&) const = 0;
+};
+
+
+/// Compare values parent type (abstract comparison binary operator functor)
+template< typename T >
+struct ACompareBinFn {
+    virtual ~ACompareBinFn() {}
+    virtual bool operator()(const T&, const T&) = 0;
+};
+
+
+/// Compare to missing values
+struct IsMissingFn : ACompareFn<double> {
+    IsMissingFn(double missingValue) :
+        missingValue_(missingValue),
+        missingValueDefined_(missingValue==missingValue) {}
+    bool operator()(const double& v) const {
+        return (missingValueDefined_ && (missingValue_==v));
+    }
+    const double missingValue_;
+    const bool missingValueDefined_;
 };
 
 
 /// Avoid comparing
 template< typename T >
-struct is_anything_fn : compare_fn<T> {
-    bool operator()(const T& v) const {
+struct IsAnythingFn : ACompareFn<T> {
+    bool operator()(const T&) const {
         return true;
     }
 };
@@ -43,105 +67,150 @@ struct is_anything_fn : compare_fn<T> {
 
 /// Compare values equality
 template< typename T >
-struct is_equal_fn : compare_fn<T> {
-    is_equal_fn(const T& ref_) : ref(ref_) {}
+struct IsEqualFn : ACompareFn<T> {
+    IsEqualFn(T ref) : ref_(ref) {}
     bool operator()(const T& v) const {
-        return (v == ref);
+        return (v == ref_);
     }
-    const T ref;
+    const T ref_;
 };
 
 
 /// Compare values equality, approximately
 template< typename T >
-struct is_approx_equal_fn : compare_fn<T> {
-    is_approx_equal_fn(const T& ref_) : ref(ref_) {}
+struct IsApproximatelyEqualFn : ACompareFn<T> {
+    IsApproximatelyEqualFn(T ref) : ref_(ref) {}
     bool operator()(const T& v) const {
-        return eckit::FloatCompare<T>::isApproximatelyEqual(v,ref);
+        return eckit::FloatCompare<T>::isApproximatelyEqual(v, ref_);
     }
-    const T ref;
+    const T ref_;
 };
 
 
 /// Compare values inequality, "is greater or equal to"
 template< typename T >
-struct is_greater_equal_fn : compare_fn<T> {
-    is_greater_equal_fn(const T& ref_) : ref(ref_) {}
+struct IsGreaterOrEqualFn : ACompareFn<T> {
+    IsGreaterOrEqualFn(T ref) : ref_(ref) {}
     bool operator()(const T& v) const {
-        return (v >= ref);
+        return (v >= ref_);
     }
-    const T ref;
+    const T ref_;
 };
 
 
 /// Compare values inequality, "is greater or approximately equal to"
 template< typename T >
-struct is_approx_greater_equal_fn : compare_fn<T> {
-    is_approx_greater_equal_fn(const T& ref_) : ref(ref_) {}
+struct IsApproximatelyGreaterOrEqualFn : ACompareFn<T> {
+    IsApproximatelyGreaterOrEqualFn(T ref) : ref_(ref) {}
     bool operator()(const T& v) const {
 #if 0
         // FIXME: What should it be? give me a resource
         return ( a >= b )? || (fabs(a-b) < 1e-10);
 #endif
-        return (v >= ref) || eckit::FloatCompare<T>::isApproximatelyEqual(v,ref);
+        return (v >= ref_) || eckit::FloatCompare<T>::isApproximatelyEqual(v, ref_);
     }
-    const T ref;
+    const T ref_;
 };
 
 
 /// Compare values inequality, "is less than or equal to"
 template< typename T >
-struct is_less_equal_fn : compare_fn<T> {
-    is_less_equal_fn(const T& ref_) : ref(ref_) {}
+struct IsLessThanOrEqualFn : ACompareFn<T> {
+    IsLessThanOrEqualFn(T ref) : ref_(ref) {}
     bool operator()(const T& v) const {
-        return (v <= ref);
+        return (v <= ref_);
     }
-    const T ref;
+    const T ref_;
 };
 
 
 /// Compare values inequality, "is less than or approximately equal to"
 template< typename T >
-struct is_approx_less_equal_fn : compare_fn<T> {
-    is_approx_less_equal_fn(const T& ref_) : ref(ref_) {}
+struct IsApproximatelyLessThanOrEqualFn : ACompareFn<T> {
+    IsApproximatelyLessThanOrEqualFn(T ref) : ref_(ref) {}
     bool operator()(const T& v) const {
-        return (v <= ref) || eckit::FloatCompare<T>::isApproximatelyEqual(v,ref);
+        return (v <= ref_) || eckit::FloatCompare<T>::isApproximatelyEqual(v, ref_);
     }
-    const T ref;
+    const T ref_;
 };
 
 
 /// Compare if in mask (vector indices)
-struct is_masked_fn : compare_fn< size_t > {
-    is_masked_fn(const std::vector< bool >& mask_) : mask(mask_) {}
+struct IsMaskedFn : ACompareFn< size_t > {
+    IsMaskedFn(const std::vector< bool >& mask) : mask_(mask) {}
     bool operator()(const size_t& i) const {
         // TODO: remove when properly debugged
-        ASSERT(i<mask.size());
-        return mask[i];
+        ASSERT(i<mask_.size());
+        return mask_[i];
     }
-    const std::vector< bool >& mask;
+    const std::vector< bool >& mask_;
 };
 
 
 /// Compare if not in mask (vector indices)
-struct is_not_masked_fn : compare_fn< size_t > {
-    is_not_masked_fn(const std::vector< bool >& mask_) : mask(mask_) {}
+struct IsNotMaskedFn : ACompareFn< size_t > {
+    IsNotMaskedFn(const std::vector< bool >& mask) : mask_(mask) {}
     bool operator()(const size_t& i) const {
         // TODO: remove when properly debugged
-        ASSERT(i<mask.size());
-        return !mask[i];
+        ASSERT(i<mask_.size());
+        return !mask_[i];
     }
-    const std::vector< bool >& mask;
+    const std::vector< bool >& mask_;
+};
+
+
+/// Compare two values (possibly missing) with absolute tolerance
+template< typename T >
+struct CompareValuesAbsoluteToleranceFn : ACompareBinFn<T> {
+    CompareValuesAbsoluteToleranceFn( T epsilon,
+            const double& missingValue1=std::numeric_limits<double>::quiet_NaN(),
+            const double& missingValue2=std::numeric_limits<double>::quiet_NaN() ) :
+        miss1_(missingValue1),
+        miss2_(missingValue2),
+        eps_(epsilon) {
+        ASSERT(eps_>=0);
+    }
+    bool operator()(const T& v1, const T& v2) {
+        if (miss1_(v1) || miss2_(v2))
+            return (miss1_(v1) && miss2_(v2));
+        return eckit::FloatCompare<T>::isApproximatelyEqual(v1, v2, eps_, 64);  // 64 is chosen so ULPs comparisons don't matter
+    }
+    IsMissingFn miss1_, miss2_;
+    const T eps_;
+};
+
+
+/// Compare two values (possibly missing) with relative tolerance
+template< typename T >
+struct CompareValuesRelativeToleranceFn : ACompareBinFn<T> {
+    CompareValuesRelativeToleranceFn( T epsilon,
+            const double& missingValue1=std::numeric_limits<double>::quiet_NaN(),
+            const double& missingValue2=std::numeric_limits<double>::quiet_NaN() ) :
+        miss1_(missingValue1),
+        miss2_(missingValue2),
+        eps_(epsilon) {
+        ASSERT(eps_>=0.);
+    }
+    bool operator()(const T& v1, const T& v2) {
+        if (miss1_(v1) || miss2_(v2))
+            return (miss1_(v1) && miss2_(v2));
+        const T dx = std::abs(v1 - v2);
+        const T x = std::max(std::numeric_limits<T>::epsilon(), std::max(std::abs(v1), std::abs(v2)));
+        return (dx/x <= eps_);
+    }
+    IsMissingFn miss1_, miss2_;
+    const T eps_;
 };
 
 
 /// Utility comparators
-extern const is_approx_equal_fn< double > is_approx_zero;
-extern const is_approx_equal_fn< double > is_approx_one;
+extern const IsApproximatelyEqualFn< double > is_approx_zero;
+extern const IsApproximatelyEqualFn< double > is_approx_one;
 
 
 }  // namespace compare
 }  // namespace util
 }  // namespace mir
+
 
 #endif

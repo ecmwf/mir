@@ -73,7 +73,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
 
     double threshold;
     ASSERT(parametrisation.get("lsm.value.threshold", threshold));
-    const util::compare::is_greater_equal_fn< double > check_lsm(threshold);
+    const util::compare::IsGreaterOrEqualFn< double > check_lsm(threshold);
 
     ASSERT(!field.hasMissing());
     ASSERT(field.dimensions() == 1);

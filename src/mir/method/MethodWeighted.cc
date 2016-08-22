@@ -292,11 +292,11 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
     // TODO: move logic to MIRField
     // update if missing values are present
     if (field.hasMissing()) {
-        const util::compare::is_equal_fn< double > check_miss(field.missingValue());
+        const util::compare::IsMissingFn isMissing(field.missingValue());
         bool still_has_missing = false;
         for (size_t i = 0; i < field.dimensions() && !still_has_missing; ++i) {
             const std::vector< double > &values = field.values(i);
-            still_has_missing = (std::find_if(values.begin(), values.end(), check_miss) != values.end());
+            still_has_missing = (std::find_if(values.begin(), values.end(), isMissing) != values.end());
         }
         field.hasMissing(still_has_missing);
     }
@@ -325,7 +325,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
 
     // correct matrix weigths for the missing values (matrix copy happens here)
-    const util::compare::is_equal_fn< double > check_miss(field.missingValue());
+    const util::compare::IsMissingFn isMissing(field.missingValue());
     const std::vector< double > &values = field.values(which);
 
     WeightMatrix X(W);
@@ -337,7 +337,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
         size_t Nmiss = 0;
         size_t Ncol  = 0;
         for (WeightMatrix::inner_const_iterator j(X, i); j; ++j, ++Ncol) {
-            if (check_miss(values[j.col()]))
+            if (isMissing(values[j.col()]))
                 ++Nmiss;
             else
                 sum += *j;
@@ -353,7 +353,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             bool found = false;
             for (WeightMatrix::inner_iterator j(X, i); j; ++j) {
                 *j = 0.;
-                if (!found && check_miss(values[j.col()])) {
+                if (!found && isMissing(values[j.col()])) {
                     *j = 1.;
                     found = true;
                 }
@@ -365,7 +365,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
 
             // apply linear redistribution
             for (WeightMatrix::inner_iterator j(X, i); j; ++j) {
-                if (check_miss(values[j.col()])) {
+                if (isMissing(values[j.col()])) {
                     *j = 0.;
                 } else {
                     *j /= sum;
