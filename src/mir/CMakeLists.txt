@@ -388,6 +388,7 @@ list(
     style/ProdgenGrid.h
     style/ProdgenStyle.cc
     style/ProdgenStyle.h
+    util/Angles.h
     util/Arguments.cc
     util/Arguments.h
     util/Bitmap.cc

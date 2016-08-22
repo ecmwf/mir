@@ -12,19 +12,21 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/filter/AdjustWinds.h"
 
-#include <iostream>
 #include <cmath>
-
+#include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/context/Context.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "mir/repres/Iterator.h"
-#include "mir/util/Compare.h"
+#include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
+#include "mir/repres/Representation.h"
+#include "mir/util/Angles.h"
+#include "mir/util/Compare.h"
+
 
 namespace mir {
 namespace action {
@@ -55,9 +57,11 @@ void AdjustWinds::print(std::ostream &out) const {
     out << "AdjustWinds[rotation=" << rotation_ << "]";
 }
 
-inline double radian(double x) { return x * (M_PI / 180.0); }
-inline double degree(double x) { return x * (180.0 / M_PI);}
-inline double normalize(double x) { return std::max(std::min(x, 1.0), -1.0); }
+
+inline double normalize(double x) {
+    return std::max(std::min(x, 1.0), -1.0);
+}
+
 
 inline double sign(double a, double b) {
     if (b >= 0.0 ) {
@@ -78,27 +82,25 @@ void AdjustWinds::windDirections(const repres::Representation* representation, s
     // Inspired from HPSHGPW
 
     double pole_longitude = -rotation_.south_pole_longitude();
-    double theta = radian(rotation_.south_pole_latitude());
+    double theta = util::angles::degree_to_radian(rotation_.south_pole_latitude());
     double sin_theta = -sin(theta);
     double cos_theta = -cos(theta);
 
     while (iter->next(lat, lon)) {
 
-        double radian_lat = radian(lat);
+        double radian_lat = util::angles::degree_to_radian(lat);
         double sin_lat = sin(radian_lat);
         double cos_lat = cos(radian_lat);
 
         lon += pole_longitude;
 
-        // For some reason, the algorithms only work between in (-180,180]
-        while (lon < -180) { lon += 360; }
-        while (lon >  180) { lon -= 360; }
-
+        // For some reason, the algorithms only work between in ]-180,180]
+        lon = util::angles::between_m180_and_p180(lon);
         if (eckit::FloatCompare<double>::isApproximatelyEqual(lon, -180)) {
             lon = 180.0;
         }
 
-        double radian_lon = radian(lon);
+        double radian_lon = util::angles::degree_to_radian(lon);
         double sin_lon = sin(radian_lon);
         double cos_lon = cos(radian_lon);
         double z = normalize(sin_theta * sin_lat + cos_theta * cos_lat * cos_lon);
