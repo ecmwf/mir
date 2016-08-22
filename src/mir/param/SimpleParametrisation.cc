@@ -513,19 +513,13 @@ void SimpleParametrisation::json(eckit::JSON& s) const {
 
 bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
     eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches " << other << std::endl;
-    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-
-        if ((*j).second->match((*j).first, other)) {
-            eckit::Log::debug<LibMir>() << "Matching parametrisation: " << (*j).first << "="
-                               << *((*j).second) << std::endl;
-            return true;
-        } else {
-            eckit::Log::debug<LibMir>() << "Not matching parametrisation: " << (*j).first << "="
-                               << *((*j).second) << std::endl;
-        }
-
+    bool ok = true;
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end() && ok; ++j) {
+        ok = (*j).second->match((*j).first, other);
+        eckit::Log::debug<LibMir>() << (ok? "Matching":"Not matching") <<  " parametrisation: "
+                                    << (*j).first << "=" << *((*j).second) << std::endl;
     }
-    return false;
+    return ok;
 }
 
 void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other) const {
