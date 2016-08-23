@@ -23,7 +23,6 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
 
-#include <cmath>
 
 namespace mir {
 namespace util {
@@ -32,7 +31,7 @@ namespace util {
 typedef eckit::FloatCompare<double> cmp;
 
 
-BoundingBox::BoundingBox():
+BoundingBox::BoundingBox() :
     north_(90), west_(0), south_(-90), east_(360) {
     normalise();
 }
@@ -50,6 +49,11 @@ BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("south", south_));
     ASSERT(parametrisation.get("east",  east_ ));
     normalise();
+}
+
+
+BoundingBox::BoundingBox(const BoundingBox& other) {
+    operator=(other);
 }
 
 
