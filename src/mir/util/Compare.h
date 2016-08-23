@@ -16,6 +16,7 @@
 #ifndef mir_util_Compare_H
 #define mir_util_Compare_H
 
+#include <cmath>
 #include <cstddef>
 #include <vector>
 #include "eckit/exception/Exceptions.h"
