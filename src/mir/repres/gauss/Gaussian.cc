@@ -18,8 +18,10 @@
 #include <map>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Timer.h"
+#include "eckit/types/FloatCompare.h"
 #include "atlas/grid/Domain.h"
 #include "atlas/grid/gaussian/latitudes/Latitudes.h"
+#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -60,6 +62,27 @@ const std::vector<double>& Gaussian::latitudes() const {
     if (latitudes_.size() == 0) {
         latitudes_.resize(N_ * 2);
         atlas::grid::gaussian::latitudes::gaussian_latitudes_npole_spole(N_, &latitudes_[0]);
+
+#if 0
+        // Make sure calculated latitudes comply with BoundingBox, enlarging it if necessary
+        double lat_max = latitudes_.front();
+        double max_inc_north_south = std::numeric_limits<double>::epsilon();
+        for (size_t j=1; j<latitudes_.size(); ++j) {
+            max_inc_north_south = std::max(max_inc_north_south, latitudes_[j-1]-latitudes_[j]);
+        }
+
+        typedef eckit::FloatCompare<double> cmp;
+        const util::BoundingBox bbox_larger(
+                    cmp::isApproximatelyEqual(bbox_.north(),  90, max_inc_north_south)? std::max(bbox_.north(),  lat_max) : bbox_.north(), bbox_.west(),
+                    cmp::isApproximatelyEqual(bbox_.south(), -90, max_inc_north_south)? std::min(bbox_.south(), -lat_max) : bbox_.south(), bbox_.east() );
+
+        if (bbox_!=bbox_larger) {
+            std::streamsize prev = eckit::Log::trace<MIR>().precision(12);
+            eckit::Log::trace<MIR>() << "BoundingBox: " << bbox_ << " enlarged to " << bbox_larger << std::endl;
+            eckit::Log::trace<MIR>().precision(prev);
+            const_cast< util::BoundingBox& >(this->bbox_) = bbox_larger;
+        }
+#endif
     }
     return latitudes_;
 }
