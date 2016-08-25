@@ -121,7 +121,7 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
 
 template<class T>
 void InMemoryCache<T>::purge() {
-    while (cache_.size() >= capacity_) {
+    while (cache_.size() > capacity_) {
 
         double now = utime();
         typename std::map<std::string, Entry*>::iterator best = cache_.begin();
