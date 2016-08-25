@@ -12,13 +12,11 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/interpolate/Gridded2RegularLL.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
-
-
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -47,6 +45,7 @@ bool Gridded2RegularLL::sameAs(const Action& other) const {
     return o && (increments_ == o->increments_);
 }
 
+
 void Gridded2RegularLL::print(std::ostream &out) const {
     out << "Gridded2RegularLL[increments=" << increments_ << "]";
 }
@@ -56,16 +55,25 @@ const repres::Representation *Gridded2RegularLL::outputRepresentation() const {
     double ns = increments_.south_north();
     double we = increments_.west_east();
 
-    // Cater for grids that are regular, but do not reach the pole (e.g. 1.6)
+    // Latitude range: cater for grids that are regular, but do not reach the pole (e.g. 1.6)
     double pole = size_t(90/ns) * ns;
-    double last = size_t(360/we) * we;
-    if(last == 360) {
-        last -= we;
+
+    // Longitude range
+    // - periodic grids have East-most longitude at 360 - increment
+    // - non-periodic grids are symmetric to Greenwhich and do not reach the date line (e.g. 1.1)
+    double west = 0;
+    double east = size_t(360/we) * we;
+    if (east == 360) {
+        east -= we;
+    }
+    else {
+        east = size_t(180/we) * we;
+        west = -east;
     }
 
     return new repres::latlon::RegularLL(
-               util::BoundingBox(pole, 0, -pole, last),
-               increments_);
+                util::BoundingBox(pole, west, -pole, east),
+                increments_);
 }
 
 
