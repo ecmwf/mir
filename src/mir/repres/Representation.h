@@ -63,7 +63,7 @@ class Representation : public eckit::Counted {
         iScansNegatively      = 1 << 7,
         jScansPositively      = 1 << 6,
         jPointsAreConsecutive = 1 << 5,
-        alternateRowScanning  = 1 << 4,
+        alternateRowScanning  = 1 << 4
     };
 
     // -- Exceptions
@@ -101,6 +101,7 @@ class Representation : public eckit::Counted {
 
     virtual atlas::grid::Grid* atlasGrid() const;
     virtual atlas::grid::Domain atlasDomain() const;
+    virtual atlas::grid::Domain atlasDomain(const util::BoundingBox&) const;
 
     virtual size_t truncation() const;
 

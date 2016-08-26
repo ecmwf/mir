@@ -50,6 +50,7 @@ class BoundingBox {
     BoundingBox();
     BoundingBox(double north, double west, double south, double east);
     BoundingBox(const param::MIRParametrisation&);
+    BoundingBox(const BoundingBox& other);
 
     // -- Destructor
 
@@ -59,6 +60,14 @@ class BoundingBox {
     // None
 
     // -- Operators
+
+    BoundingBox& operator=(const BoundingBox& other) {
+        north_ = other.north_;
+        west_  = other.west_;
+        south_ = other.south_;
+        east_  = other.east_;
+        return *this;
+    }
 
     bool operator==(const BoundingBox& other) const {
         return (north_ == other.north_) && (south_ == other.south_) && (west_ == other.west_) && (east_ == other.east_);
@@ -70,7 +79,7 @@ class BoundingBox {
 
     // -- Methods
 
-    // DONT IMPLEMENT SETTERS
+    // DON'T IMPLEMENT SETTERS
 
     double north() const {
         return north_;
@@ -89,6 +98,7 @@ class BoundingBox {
     }
 
     bool contains(double lat, double lon) const;
+
     double normalise(double lon) const;
 
     void fill(grib_info&) const;
@@ -128,9 +138,6 @@ class BoundingBox {
     // None
 
   private:
-
-    // No copy allowed
-
 
     // -- Members
 

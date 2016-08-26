@@ -87,6 +87,8 @@ protected:
 
     virtual atlas::grid::Domain atlasDomain() const;
 
+    virtual atlas::grid::Domain atlasDomain(const util::BoundingBox&) const;
+
     // -- Class members
     // None
 

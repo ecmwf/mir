@@ -134,11 +134,12 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
     eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
+    atlas::grid::Domain domain = representation->atlasDomain(bbox);
     while (iter->next(lat, lon)) {
         // std::cout << lat << " " << lon << std::endl;
-        if (bbox.contains(lat, lon)) {
+        if (domain.contains(lon, lat)) {
 
-            lon = bbox.normalise(lon);
+            lon = domain.normalise(lon);
 
             if (first) {
                 n = s = lat;
@@ -168,7 +169,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
     // Don't support empty results
     if (!m.size()) {
         std::ostringstream oss;
-        oss << "Cropping " << *representation << " to " << bbox << " returns not points";
+        oss << "Cropping " << *representation << " to " << bbox << " returns no points";
         throw eckit::UserError(oss.str());
     }
     // ASSERT(m.size() > 0);

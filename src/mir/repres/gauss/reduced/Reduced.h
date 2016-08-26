@@ -71,6 +71,8 @@ class Reduced : public Gaussian {
 
     virtual atlas::grid::Domain atlasDomain() const;
 
+    virtual atlas::grid::Domain atlasDomain(const util::BoundingBox&) const;
+
     virtual void fill(grib_info &) const;
 
     virtual void fill(api::MIRJob &) const;
