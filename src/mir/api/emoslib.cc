@@ -22,7 +22,6 @@
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Log.h"
 #include "eckit/runtime/Context.h"
-#include "eckit/runtime/LibBehavior.h"
 
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/gaussian/RegularGaussian.h"
@@ -659,16 +658,16 @@ extern "C" void intlogs(emos_cb_proc proc) {
 
     eckit::Log::debug<LibMir>() << "++++++ intlogs" << std::endl;
 
-    emos_ctx.proc = proc;
+    // emos_ctx.proc = proc;
 
 
-    eckit::ContextBehavior &behavior = eckit::Context::instance().behavior();
-    try {
-        eckit::LibBehavior &libbehavior = dynamic_cast<eckit::LibBehavior &>(behavior);
-        libbehavior.default_callback(&callback, &emos_ctx);
-    } catch (std::bad_cast &) {
-        eckit::Log::warning() << "INTLOGS: ContextBehavior is not a LibBehavior" << std::endl;
-    }
+    // eckit::ContextBehavior &behavior = eckit::Context::instance().behavior();
+    // try {
+    //     eckit::LibBehavior &libbehavior = dynamic_cast<eckit::LibBehavior &>(behavior);
+    //     libbehavior.default_callback(&callback, &emos_ctx);
+    // } catch (std::bad_cast &) {
+    //     eckit::Log::warning() << "INTLOGS: ContextBehavior is not a LibBehavior" << std::endl;
+    // }
 }
 
 

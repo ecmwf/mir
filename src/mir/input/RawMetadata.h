@@ -17,6 +17,7 @@
 #define RawMetadata_H
 
 #include <string>
+#include <vector>
 
 #include "mir/util/BoundingBox.h"
 

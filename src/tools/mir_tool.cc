@@ -15,7 +15,6 @@
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
-#include "eckit/mpi/ParallelContextBehavior.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
@@ -59,7 +58,6 @@ class MIRTool : public eckit::Tool {
 
   public:
     MIRTool(int argc, char **argv) : eckit::Tool(argc, argv, "MIR_HOME" ) {
-        eckit::Context::instance().behavior(new eckit::mpi::ParallelContextBehavior());
     }
 
 };
