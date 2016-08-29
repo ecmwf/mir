@@ -22,6 +22,7 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+#include "eckit/config/Resource.h"
 
 namespace mir {
 class InMemoryCacheStatistics;
@@ -55,8 +56,9 @@ private:
     void purge();
     T& create(const std::string& key);
 
+
     std::string name_;
-    size_t capacity_;
+    eckit::Resource<size_t> capacity_;
 
     size_t users_;
 
