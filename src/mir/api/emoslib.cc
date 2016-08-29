@@ -21,7 +21,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Log.h"
-#include "eckit/runtime/Context.h"
+#include "eckit/runtime/Main.h"
 
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/gaussian/RegularGaussian.h"

@@ -21,7 +21,6 @@
 
 #include "eckit/runtime/Tool.h"
 #include "eckit/parser/Tokenizer.h"
-#include "eckit/runtime/Context.h"
 
 #include "mir/input/GribFileInput.h"
 
@@ -57,16 +56,12 @@ void MIRInspect::usage(const std::string &tool) {
 
 void MIRInspect::run() {
 
-    eckit::Context &ctx = eckit::Context::instance();
-    const std::string &tool = ctx.runName();
 
-    size_t argc = ctx.argc();
-
-    if (argc <= 2) {
-        usage(tool);
+    if (argc() <= 2) {
+        usage(name());
     }
 
-    mir::input::GribFileInput file(ctx.argv(argc - 1));
+    mir::input::GribFileInput file(argv(argc() - 1));
 
     while (file.next()) {
         mir::input::MIRInput &input = file;
@@ -76,9 +71,9 @@ void MIRInspect::run() {
         const char *sep = "";
         std::string value;
 
-        for (size_t i = 1; i < argc - 1; i++) {
-            std::cout << sep << ctx.argv(i) << "=";
-            if (parametrisation.get(ctx.argv(i), value)) {
+        for (size_t i = 1; i < argc() - 1; i++) {
+            std::cout << sep << argv(i) << "=";
+            if (parametrisation.get(argv(i), value)) {
                 std::cout << value;
             } else {
                 std::cout << "<not found>";

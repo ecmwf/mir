@@ -20,7 +20,6 @@
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
-#include "eckit/runtime/Context.h"
 #include "eckit/runtime/Tool.h"
 #include "mir/caching/LegendreLoader.h"
 #include "mir/style/MIRStyle.h"
