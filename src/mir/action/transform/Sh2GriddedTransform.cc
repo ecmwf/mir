@@ -260,9 +260,10 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 
 void Sh2GriddedTransform::execute(context::Context & ctx) const {
     // ASSERT(field.dimensions() == 1); // For now
-
+#ifdef ATLAS_HAVE_TRANS
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<TransCache> use(trans_handles, ctx.statistics().transHandleCache_);
+#endif
 
     data::MIRField& field = ctx.field();
 
