@@ -133,7 +133,13 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas
     eckit::Log::debug<LibMir>() << "Compute md5 " << timer.elapsed() - here << std::endl;
 
 
-    const std::string base_name      = std::string(name()) + "-" + in.shortName() + "-" + out.shortName();
+    const std::string shortName_in  = in.shortName();
+    const std::string shortName_out = out.shortName();
+    ASSERT(!shortName_in.empty());
+    ASSERT(!shortName_out.empty());
+
+
+    const std::string base_name      = std::string(name()) + "-" + shortName_in + "-" + shortName_out;
     const std::string key_no_masks   = base_name + "-"      + md5_no_masks;
     const std::string key_with_masks = base_name +  "-LSM-" + md5_with_masks;
 
@@ -417,7 +423,7 @@ void MethodWeighted::applyMasks(WeightMatrix &W,
         bool row_changed = false;
         for (WeightMatrix::inner_iterator j(W, i); j; ++j) {
 
-            ASSERT(j.col() < imask.size());
+            ASSERT(j.col() < int(imask.size()));
 
             if (omask[i] != imask[j.col()]) {
                 *j *= lsmWeightAdjustement_;

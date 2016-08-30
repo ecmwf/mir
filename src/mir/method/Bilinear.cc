@@ -155,13 +155,13 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
     std::vector<size_t> parallel_south(lons.back());
 
     eckit::Log::debug<LibMir>() << "Bilinear::assemble first row: " << lons.front() << std::endl;
-    for (size_t i = 0; i < lons.front(); ++i) {
-        parallel_north[i] = i;
+    for (long i = 0; i < lons.front(); ++i) {
+        parallel_north[i] = size_t(i);
     }
 
     eckit::Log::debug<LibMir>() << "Bilinear::assemble last row: " << lons.back() << std::endl;
-    for (size_t i = lons.back(), j = 0; i > 0; i--, j++) {
-        parallel_south[j] = inpts - i;
+    for (long i = lons.back(), j = 0; i > 0; i--, j++) {
+        parallel_south[j] = size_t(inpts - i);
     }
 
 //    std::ofstream outfile ("mir.coeffs");

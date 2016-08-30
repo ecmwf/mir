@@ -11,32 +11,24 @@
 /// @author Tiago Quintino
 /// @date May 2015
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Plural.h"
-
-#include "eckit/linalg/LinearAlgebra.h"
-#include "eckit/linalg/Vector.h"
-
-#include "atlas/interpolation/Intersect.h"
-
-#include "mir/method/WeightMatrix.h"
-#include "mir/util/Compare.h"
-#include "mir/config/LibMir.h"
 
 #include <cmath>
+#include "atlas/interpolation/Intersect.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/linalg/LinearAlgebra.h"
+#include "eckit/linalg/Vector.h"
+#include "eckit/log/Plural.h"
+#include "mir/config/LibMir.h"
+#include "mir/method/WeightMatrix.h"
+#include "mir/util/Compare.h"
 
-using eckit::linalg::Index;
-
-using mir::util::compare::is_approx_zero;
-using mir::util::compare::is_approx_one;
 
 namespace mir {
 namespace method {
 
 WeightMatrix::WeightMatrix() : matrix_() {}
 
-WeightMatrix::WeightMatrix(Index rows, Index cols)
-    : matrix_(rows, cols) {}
+WeightMatrix::WeightMatrix(Size rows, Size cols) : matrix_(rows, cols) {}
 
 void WeightMatrix::save(const eckit::PathName &path) const {
     matrix_.save(path);
@@ -77,9 +69,11 @@ void WeightMatrix::multiply(const std::vector<double>& values, std::vector<doubl
 }
 
 void WeightMatrix::cleanup() {
+    using eckit::linalg::Index;
+
     size_t fixed = 0;
     size_t count = 0;
-    for (Index i = 0; i < rows(); i++) {
+    for (Index i = 0; Size(i) < rows(); i++) {
         double removed = 0;
         size_t non_zero = 0;
 
@@ -111,18 +105,21 @@ void WeightMatrix::cleanup() {
         size_t c = cols();
         size_t total = r * c;
         eckit::Log::debug<LibMir>() << "MethodWeighted::cleanupMatrix fixed "
-                                 << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
-                                 << " (matrix is " << eckit::BigNum(r) << "x" << eckit::BigNum(c) << ", total=" <<
-                                 eckit::BigNum(total) << ")" << std::endl;
+                                    << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
+                                    << " (matrix is " << eckit::BigNum(r) << "x" << eckit::BigNum(c) << ", total=" <<
+                                    eckit::BigNum(total) << ")" << std::endl;
     }
     prune(0.0);
 }
 
 void WeightMatrix::validate(const char *when) const {
+    using eckit::linalg::Index;
+    using mir::util::compare::is_approx_one;
+    using mir::util::compare::is_approx_zero;
 
     size_t errors = 0;
 
-    for (Index i = 0; i < rows(); i++) {
+    for (Index i = 0; Size(i) < rows(); i++) {
 
         // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
         double sum = 0.;
@@ -177,4 +174,3 @@ void WeightMatrix::validate(const char *when) const {
 
 }  // namespace method
 }  // namespace mir
-

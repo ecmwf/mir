@@ -148,10 +148,10 @@ MappedMask::MappedMask(const std::string &name,
         }
 
         int row = (90.0 - lat) * (ROWS - 1) / 180;
-        ASSERT(row >= 0 && row < ROWS);
+        ASSERT(row >= 0 && row < int(ROWS));
 
         int col = lon * COLS / 360.0;
-        ASSERT(col >= 0 && col < COLS);
+        ASSERT(col >= 0 && col < int(COLS));
 
         size_t pos = COLS * row + col;
         size_t byte = pos / 8;

@@ -441,7 +441,7 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, long 
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, size_t value) {
     // TODO: Support unsigned properly
-    ASSERT(long(value) == value);
+    ASSERT(size_t(long(value)) == value);
     _set(name, long(value));
     return *this;
 }

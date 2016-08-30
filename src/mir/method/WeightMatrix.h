@@ -15,6 +15,7 @@
 #ifndef mir_method_WeightMatrix_H
 #define mir_method_WeightMatrix_H
 
+#include <sstream>
 #include "eckit/linalg/SparseMatrix.h"
 
 namespace eckit {
@@ -28,25 +29,29 @@ namespace method {
 
 class WeightMatrix {
 
-public: // types
+  public: // types
 
     typedef eckit::linalg::SparseMatrix  Matrix;
     typedef Matrix::Size                 Size;
 
-public: // methods
+  public: // methods
 
     typedef eckit::linalg::Triplet Triplet;
 
     WeightMatrix();
 
-    WeightMatrix(eckit::linalg::Index rows, eckit::linalg::Index cols);
+    WeightMatrix(Size rows, Size cols);
 
     void save(const eckit::PathName &path) const;
     void load(const eckit::PathName &path);
 
-    Size rows() const { return matrix_.rows(); }
+    Size rows() const {
+        return matrix_.rows();
+    }
 
-    Size cols() const { return matrix_.cols(); }
+    Size cols() const {
+        return matrix_.cols();
+    }
 
     // Index innerSize() const {
     //     return matrix_.innerSize();
@@ -68,27 +73,31 @@ public: // methods
     void validate(const char *when) const;
 
     class inner_iterator : public Matrix::InnerIterator {
-    public:
+      public:
         inner_iterator( WeightMatrix &m, eckit::linalg::Index outer) :
             Matrix::InnerIterator(m.matrix_, outer) {}
     };
 
     class inner_const_iterator : public Matrix::InnerIterator {
-    public:
+      public:
         // FIXME: Remove const_cast once SparseMatrix provides const iterator
         inner_const_iterator(const WeightMatrix &m, eckit::linalg::Index outer) :
             Matrix::InnerIterator(const_cast<Matrix&>(m.matrix_), outer) {}
     };
 
-    Matrix& matrix() { return matrix_; }
+    Matrix& matrix() {
+        return matrix_;
+    }
 
-private: // members
+  private: // members
 
     Matrix matrix_;
 
-
     void print(std::ostream& s) const;
-    friend std::ostream& operator<<(std::ostream& out, const WeightMatrix& e) { e.print(out); return out; }
+    friend std::ostream& operator<<(std::ostream& out, const WeightMatrix& e) {
+        e.print(out);
+        return out;
+    }
 };
 
 //----------------------------------------------------------------------------------------------------------------------

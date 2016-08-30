@@ -85,7 +85,7 @@ void ProdgenStyle::sh2sh(action::ActionPlan& plan) const {
 
 void ProdgenStyle::grid2grid(action::ActionPlan& plan) const {
 
-    bool field_gridded  = parametrisation_.has("field.gridded");
+    // bool field_gridded  = parametrisation_.has("field.gridded");
     // bool field_spectral = parametrisation_.has("field.spectral");
 
     if (!parametrisation_.has("user.grid")) {
