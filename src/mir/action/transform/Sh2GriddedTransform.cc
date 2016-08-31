@@ -78,7 +78,7 @@ struct TransCache {
     ~TransCache() {
         if (inited_) {
             std::cout << "Delete " << *this << std::endl;
-            trans_delete(&trans_);
+            //trans_delete(&trans_);
         }
         else {
             std::cout << "Not Deleting " << *this << std::endl;
@@ -253,7 +253,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
     try {
         transform(key, parametrisation, truncation, input, output, grid, ctx);
     } catch (std::exception& e) {
-        eckit::Log::error() << "Error while running SH2GRID" << std::endl;
+        eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
         trans_handles.erase(key);
         throw;
     }
