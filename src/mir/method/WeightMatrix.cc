@@ -13,11 +13,11 @@
 
 
 #include <cmath>
-#include "atlas/interpolation/Intersect.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Plural.h"
+#include "atlas/interpolation/Intersect.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/util/Compare.h"
@@ -51,14 +51,13 @@ void WeightMatrix::prune(double value) {
 }
 
 void WeightMatrix::print(std::ostream& out) const {
-    out << "WeightMatrix[rows="
-        << rows()
-        << ",cols="
-        << cols()
+    out << "WeightMatrix["
+        <<  "rows=" << rows()
+        << ",cols=" << cols()
         << "]";
 }
 
-void WeightMatrix::multiply(const std::vector<double>& values, std::vector<double>& result) const {
+void WeightMatrix::multiply(const WeightMatrix::Vector& values, WeightMatrix::Vector& result) const {
 
     // FIXME: remove this const cast once Vector provides read-only view
     eckit::linalg::Vector vi(const_cast<double *>(values.data()), values.size());
@@ -66,6 +65,19 @@ void WeightMatrix::multiply(const std::vector<double>& values, std::vector<doubl
 
     // TODO: linear algebra backend should depend on parametrisation
     eckit::linalg::LinearAlgebra::backend().spmv(matrix_, vi, vo);
+}
+
+void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Matrix& result) const {
+    eckit::Log::debug<LibMir>() << "MethodWeighted::multiply: "
+                                   "A[" << rows()        << ',' << cols()        << "] "
+                                   "B[" << values.rows() << ',' << values.cols() << "] = "
+                                   "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
+    ASSERT(values.rows() == cols());
+    ASSERT(result.rows() == rows());
+    ASSERT(values.cols() == result.cols());
+
+    // TODO: linear algebra backend should depend on parametrisation
+    eckit::linalg::LinearAlgebra::backend().spmm(matrix_, values, result);
 }
 
 void WeightMatrix::cleanup() {

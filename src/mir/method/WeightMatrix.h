@@ -12,27 +12,32 @@
 /// @author Florian Rathgeber
 /// @date May 2015
 
+
 #ifndef mir_method_WeightMatrix_H
 #define mir_method_WeightMatrix_H
 
 #include <sstream>
+#include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/SparseMatrix.h"
+
 
 namespace eckit {
 class PathName;
 }
 
+
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class WeightMatrix {
 
   public: // types
 
-    typedef eckit::linalg::SparseMatrix  Matrix;
-    typedef Matrix::Size                 Size;
+    typedef eckit::linalg::SparseMatrix  SparseMatrix;
+    typedef eckit::linalg::Matrix        Matrix;
+    typedef SparseMatrix::Size           Size;
+    typedef std::vector<double>          Vector;
 
   public: // methods
 
@@ -43,6 +48,7 @@ class WeightMatrix {
     WeightMatrix(Size rows, Size cols);
 
     void save(const eckit::PathName &path) const;
+
     void load(const eckit::PathName &path);
 
     Size rows() const {
@@ -53,56 +59,52 @@ class WeightMatrix {
         return matrix_.cols();
     }
 
-    // Index innerSize() const {
-    //     return matrix_.innerSize();
-    // }
-
-    // Index outerSize() const {
-    //     return matrix_.outerSize();
-    // }
-
     void setFromTriplets(const std::vector<Triplet>& triplets);
 
     void setIdentity();
 
     void prune(double value);
 
-    void multiply(const std::vector<double> &values, std::vector<double> &result) const;
+    void multiply(const Vector& values, Vector& result) const;
+
+    void multiply(const Matrix& values, Matrix& result) const;
 
     void cleanup();
+
     void validate(const char *when) const;
 
-    class inner_iterator : public Matrix::InnerIterator {
+    class inner_iterator : public SparseMatrix::InnerIterator {
       public:
         inner_iterator( WeightMatrix &m, eckit::linalg::Index outer) :
-            Matrix::InnerIterator(m.matrix_, outer) {}
+            SparseMatrix::InnerIterator(m.matrix_, outer) {}
     };
 
-    class inner_const_iterator : public Matrix::InnerIterator {
+    class inner_const_iterator : public SparseMatrix::InnerIterator {
       public:
         // FIXME: Remove const_cast once SparseMatrix provides const iterator
         inner_const_iterator(const WeightMatrix &m, eckit::linalg::Index outer) :
-            Matrix::InnerIterator(const_cast<Matrix&>(m.matrix_), outer) {}
+            SparseMatrix::InnerIterator(const_cast<SparseMatrix&>(m.matrix_), outer) {}
     };
 
-    Matrix& matrix() {
+    SparseMatrix& matrix() {
         return matrix_;
     }
 
   private: // members
 
-    Matrix matrix_;
+    SparseMatrix matrix_;
 
     void print(std::ostream& s) const;
+
     friend std::ostream& operator<<(std::ostream& out, const WeightMatrix& e) {
         e.print(out);
         return out;
     }
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
 
 #endif
