@@ -147,12 +147,12 @@ Formula* FormulaParser::parseAtom(const param::MIRParametrisation &parametrisati
         } else if (isdigit(c)) {
             return parseNumber(parametrisation);
         }
-        else {
-            throw StreamParser::Error(std::string("FormulaParser::parseAtom invalid  char '") + c + "'");
-        }
         break;
 
     }
+
+    throw StreamParser::Error(std::string("FormulaParser::parseAtom invalid char '") + c + "'");
+    return NULL;
 }
 
 Formula* FormulaParser::parsePower(const param::MIRParametrisation &parametrisation)

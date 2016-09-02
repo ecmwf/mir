@@ -8,7 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
+
 #include "mir/caching/InMemoryCacheStatistics.h"
+
 #include "eckit/serialisation/Stream.h"
 
 
@@ -17,11 +19,11 @@ namespace mir {
 //----------------------------------------------------------------------------------------------------------------------
 
 InMemoryCacheStatistics::InMemoryCacheStatistics():
-    insertions_(0),
-    evictions_(0),
     accesses_(0),
-    youngest_(0),
+    evictions_(0),
+    insertions_(0),
     oldest_(0),
+    youngest_(0),
     capacity_(0),
     unique_(0) {
 }

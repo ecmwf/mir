@@ -183,7 +183,7 @@ struct Arguments {
         std::vector< std::string > positional_params_;
 
         /// Positional (non-named) option parameters
-        int positional_counter_;
+        size_t positional_counter_;
 
     };
 

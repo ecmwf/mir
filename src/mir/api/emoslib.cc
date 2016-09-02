@@ -645,7 +645,7 @@ struct emos_cb_ctx {
 };
 
 
-static emos_cb_ctx emos_ctx;
+//static emos_cb_ctx emos_ctx;
 
 
 static void callback(void *ctxt, const char *msg) {

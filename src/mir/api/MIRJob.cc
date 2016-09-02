@@ -102,7 +102,7 @@ MIRJob &MIRJob::set(const std::string &name, long value) {
 
 
 MIRJob &MIRJob::set(const std::string &name, size_t value) {
-    ASSERT(long(value) == value);
+    ASSERT(size_t(long(value)) == value);
     SimpleParametrisation::set(name, long(value));
     return *this;
 }

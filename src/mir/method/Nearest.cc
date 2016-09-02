@@ -64,6 +64,7 @@ void Nearest::hash(eckit::MD5 &md5) const {
 
 
 void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
+    using eckit::linalg::Index;
 
     eckit::TraceTimer<LibMir> timer("Nearest::assemble");
     eckit::Log::debug<LibMir>() << "Nearest::assemble" << std::endl;
@@ -147,10 +148,10 @@ void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& 
         }
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
-        for (int i = 0; i < npts; ++i) {
+        for (size_t i = 0; i < npts; ++i) {
             size_t index = closest[i].payload();
             double t = timer.elapsed();
-            weights_triplets.push_back(WeightMatrix::Triplet(ip, index, weights[i]));
+            weights_triplets.push_back(WeightMatrix::Triplet(Index(ip), Index(index), weights[i]));
             push_back += timer.elapsed() - t;
 
         }

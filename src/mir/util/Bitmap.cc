@@ -50,10 +50,10 @@ static void out(std::vector<std::vector<bool> > &bitmap, long row, const std::st
     t1(line, r);
 
 
-    ASSERT(row >= 0 && row < bitmap.size());
+    ASSERT(row >= 0 && row < long(bitmap.size()));
     std::vector<bool> &v = bitmap[row];
 
-    for (int i = 0; i < r.size() ; i++) {
+    for (size_t i = 0; i < r.size() ; i++) {
 
         std::vector<std::string> s;
         t2(r[i], s);
@@ -68,8 +68,8 @@ static void out(std::vector<std::vector<bool> > &bitmap, long row, const std::st
         if (a >= 0) {
 
 
-            ASSERT(a >= 0 && a < v.size());
-            ASSERT(b >= 0 && b < v.size());
+            ASSERT(a >= 0 && a < long(v.size()));
+            ASSERT(b >= 0 && b < long(v.size()));
 
             for (int j = a; j <= b ; j++) {
                 v[j] = on;
@@ -124,7 +124,7 @@ void Bitmap::disseminationBitmap(const std::string& path) {
 
     bool on = s.find("values=on") == s.npos;
 
-    int pos = s.find("size=");
+    size_t pos = s.find("size=");
     ASSERT(pos != s.npos);
     pos += 5;
     int  n = 0;

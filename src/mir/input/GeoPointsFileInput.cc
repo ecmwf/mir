@@ -46,7 +46,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
 
     char line[10240];
     bool data = false;
-    size_t count = 0;
+    int count = 0;
 
     while (in.getline(line, sizeof(line))) {
 
