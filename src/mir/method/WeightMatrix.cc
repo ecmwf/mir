@@ -76,8 +76,16 @@ void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Ma
     ASSERT(result.rows() == rows());
     ASSERT(values.cols() == result.cols());
 
-    // TODO: linear algebra backend should depend on parametrisation
-    eckit::linalg::LinearAlgebra::backend().spmm(matrix_, values, result);
+    // when interpolating, the general case is for single-column values/result vectors
+    if (values.cols() == 1) {
+        // FIXME: remove this const cast once Vector provides read-only view
+        eckit::linalg::Vector vi(const_cast<double *>(values.data()), values.rows());
+        eckit::linalg::Vector vo(result.data(), result.rows());
+
+        eckit::linalg::LinearAlgebra::backend().spmv(matrix_, vi, vo);
+    } else {
+        eckit::linalg::LinearAlgebra::backend().spmm(matrix_, values, result);
+    }
 }
 
 void WeightMatrix::cleanup() {
