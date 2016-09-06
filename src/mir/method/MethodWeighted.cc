@@ -21,6 +21,7 @@
 #include <sstream>
 #include <string>
 #include "eckit/config/Resource.h"
+#include "eckit/linalg/Vector.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
@@ -243,23 +244,28 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
         // For optimisation, one can also create result outside the loop, and resize() it here
         std::vector<double> result(npts_out);
 
+        {
+            // FIXME: remove this const cast once Vector provides read-only view
+            WeightMatrix::Vector vi(const_cast<double *>(values.data()), values.size());
+            WeightMatrix::Vector vo(result.data(), result.size());
 
-        if ( field.hasMissing() ) {
-            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
+            if ( field.hasMissing() ) {
+                eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
-            std::vector<bool> fieldMissingValues(npts_inp, false);
-            std::transform(values.begin(), values.end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
+                std::vector<bool> fieldMissingValues(npts_inp, false);
+                std::transform(values.begin(), values.end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
 
-            // Assumes compiler does return value optimization
-            // otherwise we need to pass result matrix as parameter
-            WeightMatrix MW = applyMissingValues(W, fieldMissingValues);
-            MW.validate("applyMissingValues");
+                // Assumes compiler does return value optimization
+                // otherwise we need to pass result matrix as parameter
+                WeightMatrix MW = applyMissingValues(W, fieldMissingValues);
+                MW.validate("applyMissingValues");
 
-            MW.multiply(values, result);
-        } else {
-            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
+                MW.multiply(vi, vo);
+            } else {
+                eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
-            W.multiply(values, result);
+                W.multiply(vi, vo);
+            }
         }
 
         field.update(result, i);  // Update field with result
