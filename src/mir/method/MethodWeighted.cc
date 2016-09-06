@@ -32,22 +32,19 @@
 #include "mir/caching/InMemoryCache.h"
 #include "mir/caching/MeshCache.h"
 #include "mir/caching/WeightCache.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
-#include "mir/config/LibMir.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/method/GridSpace.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/MIRStatistics.h"
 
-// using eckit::Log;
+
 using mir::util::compare::is_approx_zero;
 using mir::util::compare::is_approx_one;
 
-using atlas::grid::Grid;
-using atlas::mesh::Mesh;
-using mir::caching::MeshCache;
 
 namespace mir {
 namespace method {
@@ -77,7 +74,7 @@ atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
 
     hash(md5); // this adds mesh generator settings to make it trully unique key
 
-//    if((mesh = MeshCache::get(md5.digest()))) { return mesh; }
+//    if((mesh = mir::caching::MeshCache::get(md5.digest()))) { return mesh; }
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     InMemoryCache<atlas::mesh::Mesh>::iterator j = mesh_cache.find(md5);
@@ -201,6 +198,7 @@ lsm::LandSeaMasks MethodWeighted::getMasks(context::Context& ctx, const atlas::g
 }
 
 void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
+    using util::compare::IsMissingFn;
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<WeightMatrix>      matrix_use(matrix_cache, ctx.statistics().matrixCache_);
@@ -237,20 +235,9 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
             istats = field.statistics(i);
         }
 
+
         const std::vector<double> &values = field.values(i);
-
-
-        // std::cout << "field " << i << " "  << values.size() << std::endl;
-        // std::cout << "npts_inp " << npts_inp << std::endl;
-
-
-        // if (values.size() != npts_inp) {
-        //     std::ostringstream oss;
-        //     oss << "MethodWeighted size mismatch field=" << values.size() << " matrix=" << npts_inp;
-        //     throw eckit::SeriousBug(oss.str());
-        // }
         ASSERT(values.size() == npts_inp);
-
 
         // This should be local to the loop as field.value() will take ownership of result with std::swap()
         // For optimisation, one can also create result outside the loop, and resize() it here
@@ -260,9 +247,12 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
         if ( field.hasMissing() ) {
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
+            std::vector<bool> fieldMissingValues(npts_inp, false);
+            std::transform(values.begin(), values.end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
+
             // Assumes compiler does return value optimization
             // otherwise we need to pass result matrix as parameter
-            WeightMatrix MW = applyMissingValues(W, field, i);
+            WeightMatrix MW = applyMissingValues(W, fieldMissingValues);
             MW.validate("applyMissingValues");
 
             MW.multiply(values, result);
@@ -298,7 +288,7 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
     // TODO: move logic to MIRField
     // update if missing values are present
     if (field.hasMissing()) {
-        const util::compare::IsMissingFn isMissing(field.missingValue());
+        const IsMissingFn isMissing(field.missingValue());
         bool still_has_missing = false;
         for (size_t i = 0; i < field.dimensions() && !still_has_missing; ++i) {
             const std::vector< double > &values = field.values(i);
@@ -325,15 +315,10 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const atlas::gr
     }
 }
 
-WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const {
-
-    ASSERT(field.hasMissing());
-
+WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, const std::vector<bool>& fieldMissingValues) const {
 
     // correct matrix weigths for the missing values (matrix copy happens here)
-    const util::compare::IsMissingFn isMissing(field.missingValue());
-    const std::vector< double > &values = field.values(which);
-
+    ASSERT( W.cols() == fieldMissingValues.size() );
     WeightMatrix X(W);
 
     for (size_t i = 0; i < X.rows(); i++) {
@@ -343,35 +328,34 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
         size_t Nmiss = 0;
         size_t Ncol  = 0;
         for (WeightMatrix::inner_const_iterator j(X, i); j; ++j, ++Ncol) {
-            if (isMissing(values[j.col()]))
+            if (fieldMissingValues[static_cast<size_t>(j.col())])
                 ++Nmiss;
             else
                 sum += *j;
         }
-        const bool miss_some = (Nmiss > 0);
-        const bool miss_all  = (Ncol == Nmiss);
+        const bool missingSome = (Nmiss > 0);
+        const bool missingAll  = (Ncol == Nmiss);
 
-        // redistribution
-        if ( (miss_all || is_approx_zero(sum)) && (Ncol > 0)) {
+        // redistribution; either:
+        // - all values are missing (or weights wrongly computed), erase row & force missing value, or
+        // - some values are missing, so apply linear redistribution
+        if ((missingAll || is_approx_zero(sum)) && (Ncol > 0)) {
 
-            // all values are missing (or weights wrongly computed):
-            // erase row & force missing value equality
             bool found = false;
             for (WeightMatrix::inner_iterator j(X, i); j; ++j) {
                 *j = 0.;
-                if (!found && isMissing(values[j.col()])) {
+                if (!found && fieldMissingValues[static_cast<size_t>(j.col())]) {
                     *j = 1.;
                     found = true;
                 }
             }
             ASSERT(found);
 
-        } else if ( miss_some ) {
-            ASSERT(!is_approx_zero(sum));
+        } else if (missingSome) {
 
-            // apply linear redistribution
+            ASSERT(!is_approx_zero(sum));
             for (WeightMatrix::inner_iterator j(X, i); j; ++j) {
-                if (isMissing(values[j.col()])) {
+                if (fieldMissingValues[static_cast<size_t>(j.col())]) {
                     *j = 0.;
                 } else {
                     *j /= sum;
@@ -379,7 +363,6 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, data::MIR
             }
 
         }
-
     }
 
     return X;
