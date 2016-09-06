@@ -20,30 +20,38 @@
 #include <vector>
 #include "eckit/thread/Mutex.h"
 
+
 namespace mir {
-namespace repres {
-class Representation;
+namespace data {
+class Field;
+class MIRFieldStats;
 }
 namespace param {
 class MIRParametrisation;
 }
+namespace repres {
+class Representation;
+}
+}
+
+
+namespace mir {
 namespace data {
 
-class MIRFieldStats;
-class Field;
 
 class MIRField {
-
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
+
+    /// @note not in Field
     MIRField(const MIRField& other);
-    //
 
     MIRField(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
+
     MIRField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
     // -- Destructor
@@ -51,8 +59,11 @@ public:
     ~MIRField(); // Change to virtual if base class
 
     // -- Convertors
+    // None
 
     // -- Operators
+
+    /// @note not in Field
     MIRField& operator=(const MIRField& other);
 
     // -- Methods
@@ -60,33 +71,30 @@ public:
     size_t dimensions() const;
     void dimensions(size_t);
 
-    // Resize to one, and keep only which
+    /// Resize to one, and keep only which
     void select(size_t which);
 
     void representation(const repres::Representation *);
     const repres::Representation *representation() const;
 
-    void update(std::vector<double> &, size_t which /*=0*/);  // Warning Takes ownership of the vector
+    /// @warning Takes ownership of the vector
+    void update(std::vector<double> &, size_t which);
 
-    const std::vector<double> &values(size_t which /*=0*/) const;
-    std::vector<double> &direct(size_t which /*=0*/);   // Non-const version for direct update (Filter)
-
+    const std::vector<double> &values(size_t which) const;
+    std::vector<double> &direct(size_t which);   // Non-const version for direct update (Filter)
 
     size_t paramId(size_t which) const;
     void paramId(size_t which, size_t param);
-
 
     void missingValue(double value);
     double missingValue() const;
 
     void hasMissing(bool on);
-    bool hasMissing() const ;
+    bool hasMissing() const;
 
     void validate() const;
 
     MIRFieldStats statistics(size_t i) const;
-
-    //
 
     // -- Overridden methods
     // None
@@ -97,7 +105,7 @@ public:
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -115,11 +123,7 @@ public:
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-
+private:
 
     // -- Members
 
@@ -128,6 +132,7 @@ public:
 
     // -- Methods
 
+    /// @note note in Field
     void copyOnWrite();
 
     // -- Overridden methods
@@ -151,5 +156,6 @@ public:
 
 }  // namespace data
 }  // namespace mir
-#endif
 
+
+#endif

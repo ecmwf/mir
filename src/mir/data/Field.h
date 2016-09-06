@@ -21,19 +21,25 @@
 
 #include "eckit/memory/Counted.h"
 
+
 namespace mir {
-namespace repres {
-class Representation;
+namespace data {
+class MIRFieldStats;
 }
 namespace param {
 class MIRParametrisation;
 }
+namespace repres {
+class Representation;
+}
+}
+
+
+namespace mir {
 namespace data {
 
-class MIRFieldStats;
 
 class Field : public eckit::Counted {
-
 public:
 
     // -- Exceptions
@@ -41,9 +47,8 @@ public:
 
     // -- Contructors
 
-    //
-
     Field(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
+
     Field(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
     // -- Destructor
@@ -51,7 +56,7 @@ public:
     ~Field(); // Change to virtual if base class
 
     // -- Convertors
-
+    // None
 
     // -- Operators
     // None
@@ -60,35 +65,34 @@ public:
 
     size_t dimensions() const;
     void dimensions(size_t);
-    void select(size_t which);
 
+    /// Resize to one, and keep only which
+    void select(size_t which);
 
     void representation(const repres::Representation *);
     const repres::Representation *representation() const;
 
-    void update(std::vector<double> &, size_t which /*=0*/);  // Warning Takes ownership of the vector
+    /// @warning Takes ownership of the vector
+    void update(std::vector<double> &, size_t which);
 
-    const std::vector<double> &values(size_t which /*=0*/) const;
-    std::vector<double> &direct(size_t which /*=0*/);   // Non-const version for direct update (Filter)
-
+    const std::vector<double> &values(size_t which) const;
+    std::vector<double> &direct(size_t which);   // Non-const version for direct update (Filter)
 
     size_t paramId(size_t which) const;
     void paramId(size_t which, size_t param);
-
 
     void missingValue(double value);
     double missingValue() const;
 
     void hasMissing(bool on);
-    bool hasMissing() const ;
+    bool hasMissing() const;
 
     void validate() const;
 
     MIRFieldStats statistics(size_t i) const;
 
+    /// @note not in MIRField
     Field* clone() const;
-
-    //
 
     // -- Overridden methods
     // None
@@ -156,5 +160,6 @@ private:
 
 }  // namespace data
 }  // namespace mir
-#endif
 
+
+#endif
