@@ -17,27 +17,26 @@
 #ifndef mir_method_MethodWeighted_H
 #define mir_method_MethodWeighted_H
 
-#include "mir/method/Method.h"
 #include "mir/caching/WeightCache.h"
+#include "mir/method/Method.h"
 #include "mir/method/WeightMatrix.h"
 
 
 namespace atlas {
-namespace grid { class Grid; }
-namespace mesh { class Mesh; }
+namespace grid {
+class Grid;
 }
-
-
+namespace mesh {
+class Mesh;
+}
+}
 namespace mir {
 namespace lsm {
 class LandSeaMasks;
 }
-
 namespace util {
 class MIRStatistics;
 }
-
-
 namespace data {
 class MIRField;
 }
@@ -78,7 +77,7 @@ private:
     virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
-    WeightMatrix applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const;
+    WeightMatrix applyMissingValues(const WeightMatrix &W, const std::vector<bool>& fieldMissingValues) const;
 
     /// Update interpolation weigths matrix to account for field masked values
     virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &, util::MIRStatistics& statistics) const;

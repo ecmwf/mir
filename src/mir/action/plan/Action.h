@@ -16,24 +16,25 @@
 #ifndef Action_H
 #define Action_H
 
+#include <iosfwd>
 #include <string>
 #include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
-
 namespace context {
 class Context;
 }
-
 namespace param {
 class MIRParametrisation;
 }
-
 namespace util {
 class MIRStatistics;
 }
+}
 
+
+namespace mir {
 namespace action {
 
 
@@ -123,17 +124,22 @@ class Action : public eckit::NonCopyable {
 
 
 class ActionFactory {
+
     std::string name_;
+
     virtual Action *make(const param::MIRParametrisation &) = 0;
 
   protected:
 
     ActionFactory(const std::string &);
+
     virtual ~ActionFactory();
 
   public:
 
-    static Action *build(const std::string &, const param::MIRParametrisation &);
+    static Action *build(const std::string&, const param::MIRParametrisation&);
+
+    static void list(std::ostream&);
 
 };
 
@@ -147,7 +153,9 @@ class ActionBuilder : public ActionFactory {
     ActionBuilder(const std::string &name) : ActionFactory(name) {}
 };
 
+
 }  // namespace action
 }  // namespace mir
-#endif
 
+
+#endif

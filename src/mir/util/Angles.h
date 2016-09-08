@@ -27,7 +27,7 @@ namespace angles {
 
 /// @return degree from radian (no range check)
 inline double degree_to_radian(const double& a) {
-    return a * (M_PI   / 180.0);
+    return a * (M_PI / 180.0);
 }
 
 
@@ -68,16 +68,15 @@ T convert_complex_to_degrees(const std::complex<T>& c) {
          eckit::FloatCompare<T>::isApproximatelyEqual(c.imag(), 0) ) {
         return T(0);
     }
-    // [-π, π] -> [-180°, 180°] -> [0°, 360°[
-    const T theta = radian_to_degree(std::arg(c));
-    return between_0_and_360(theta);
+    // [-π, π] -> [-180°, 180°]
+    return radian_to_degree(std::arg(c));
 }
 
 
 /// @return complex number from an angle [°]
 template< typename T>
 static std::complex<T> convert_degrees_to_complex(const T& theta) {
-    return std::polar<T>(1., degree_to_radian(theta));
+    return std::polar<T>(1, degree_to_radian(theta));
 }
 
 
@@ -102,9 +101,8 @@ struct ConvertVectorCartesian2dToPolarDegrees {
         else if (compare::is_approx_zero(x) && compare::is_approx_zero(y)) {
             return 0.;
         }
-        // [-π, π] -> [-180°, 180°] -> [0°, 360°[
-        const double theta = radian_to_degree(std::atan2(y, x));
-        return between_0_and_360(theta);
+        // [-π, π] -> [-180°, 180°]
+        return radian_to_degree(std::atan2(y, x));
     }
 
 };

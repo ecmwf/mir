@@ -36,8 +36,8 @@ class WeightMatrix {
 
     typedef eckit::linalg::SparseMatrix  SparseMatrix;
     typedef eckit::linalg::Matrix        Matrix;
+    typedef eckit::linalg::Vector       Vector;
     typedef SparseMatrix::Size           Size;
-    typedef std::vector<double>          Vector;
 
   public: // methods
 
@@ -74,16 +74,15 @@ class WeightMatrix {
     void validate(const char *when) const;
 
     class inner_iterator : public SparseMatrix::InnerIterator {
-      public:
-        inner_iterator( WeightMatrix &m, eckit::linalg::Index outer) :
+    public:
+        inner_iterator(WeightMatrix &m, eckit::linalg::Index outer) :
             SparseMatrix::InnerIterator(m.matrix_, outer) {}
     };
 
-    class inner_const_iterator : public SparseMatrix::InnerIterator {
-      public:
-        // FIXME: Remove const_cast once SparseMatrix provides const iterator
+    class inner_const_iterator : public SparseMatrix::ConstInnerIterator {
+    public:
         inner_const_iterator(const WeightMatrix &m, eckit::linalg::Index outer) :
-            SparseMatrix::InnerIterator(const_cast<SparseMatrix&>(m.matrix_), outer) {}
+            SparseMatrix::ConstInnerIterator(m.matrix_, outer) {}
     };
 
     SparseMatrix& matrix() {

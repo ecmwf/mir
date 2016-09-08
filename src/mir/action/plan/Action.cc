@@ -30,8 +30,8 @@ namespace {
 
 static eckit::Mutex *local_mutex = 0;
 static std::map<std::string, ActionFactory *> *m = 0;
-
 static pthread_once_t once = PTHREAD_ONCE_INIT;
+
 
 static void init() {
     local_mutex = new eckit::Mutex();
@@ -53,7 +53,6 @@ Action::~Action() {
 
 ActionFactory::ActionFactory(const std::string &name):
     name_(name) {
-
     pthread_once(&once, init);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -74,15 +73,13 @@ ActionFactory::~ActionFactory() {
 }
 
 
-Action *ActionFactory::build(const std::string &name, const param::MIRParametrisation &params) {
-
+Action *ActionFactory::build(const std::string& name, const param::MIRParametrisation& params) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, ActionFactory *>::const_iterator j = m->find(name);
 
     eckit::Log::debug<LibMir>() << "Looking for ActionFactory [" << name << "]" << std::endl;
 
+    std::map<std::string, ActionFactory *>::const_iterator j = m->find(name);
     if (j == m->end()) {
         eckit::Log::error() << "No ActionFactory for [" << name << "]" << std::endl;
         eckit::Log::error() << "ActionFactories are:" << std::endl;
@@ -93,6 +90,19 @@ Action *ActionFactory::build(const std::string &name, const param::MIRParametris
 
     return (*j).second->make(params);
 }
+
+
+void ActionFactory::list(std::ostream& out) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    const char* sep = "";
+    for (std::map<std::string, ActionFactory *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
+        out << sep << (*j).first;
+        sep = ", ";
+    }
+}
+
 
 }  // namespace action
 }  // namespace mir
