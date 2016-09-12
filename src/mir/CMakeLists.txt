@@ -24,6 +24,18 @@ list(
     APPEND mir_srcs
     action/calc/FormulaAction.cc
     action/calc/FormulaAction.h
+    action/compare/Compare.cc
+    action/compare/Compare.h
+    action/compare/CompareDifferenceNorms.cc
+    action/compare/CompareDifferenceNorms.h
+    action/compare/CompareMetadata.cc
+    action/compare/CompareMetadata.h
+    action/compare/CompareStatistics.cc
+    action/compare/CompareStatistics.h
+    action/compare/CompareValues.cc
+    action/compare/CompareValues.h
+    action/compare/Options.cc
+    action/compare/Options.h
     action/context/Context.cc
     action/context/Context.h
     action/filter/AdjustWinds.cc
@@ -92,6 +104,8 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
+    action/statistics/Statistics.cc
+    action/statistics/Statistics.h
     action/transform/Sh2GriddedTransform.cc
     action/transform/Sh2GriddedTransform.h
     action/transform/Sh2NamedGrid.cc
@@ -434,6 +448,7 @@ list(
     util/RotatedIterator.h
     util/Rotation.cc
     util/Rotation.h
+    util/Statistics.h
   )
 
 list(APPEND mir_tmpls caching/InMemoryCache.cc)

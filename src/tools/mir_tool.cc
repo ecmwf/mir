@@ -12,6 +12,8 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
+#include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
@@ -21,32 +23,24 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Tool.h"
-#include "mir/caching/LegendreLoader.h"
-#include "mir/style/MIRStyle.h"
+#include "mir/action/compare/Compare.h"
+#include "mir/action/statistics/Statistics.h"
 #include "mir/action/plan/Executor.h"
-
-#include "eckit/linalg/LinearAlgebra.h"
-
-#include "mir/mir_ecbuild_config.h"
-
 #include "mir/api/MIRJob.h"
+#include "mir/caching/LegendreLoader.h"
+#include "mir/config/LibMir.h"
 #include "mir/input/DummyInput.h"
+#include "mir/input/GeoPointsFileInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/VectorInput.h"
 #include "mir/lsm/LSMChooser.h"
 #include "mir/method/Method.h"
-#include "mir/output/GribFileOutput.h"
+#include "mir/mir_ecbuild_config.h"
 #include "mir/output/GeoPointsFileOutput.h"
-#include "mir/input/GeoPointsFileInput.h"
-
+#include "mir/output/GribFileOutput.h"
 #include "mir/packing/Packer.h"
-#include "mir/config/LibMir.h"
+#include "mir/style/MIRStyle.h"
 
-using eckit::option::Option;
-using eckit::option::SimpleOption;
-using eckit::option::Separator;
-using eckit::option::VectorOption;
-using eckit::option::FactoryOption;
 
 class MIRTool : public eckit::Tool {
 
@@ -74,8 +68,7 @@ void MIRTool::usage(const std::string &tool) {
 }
 
 void MIRTool::run() {
-
-
+    using namespace eckit::option;
     std::vector<Option *> options;
 
 
@@ -158,6 +151,9 @@ void MIRTool::run() {
     options.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
     options.push_back(new FactoryOption<mir::caching::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
     options.push_back(new FactoryOption<mir::action::Executor>("executor", "Select wether threads are used on not"));
+    options.push_back(new SimpleOption<eckit::PathName>("compare.file", "TODO :)"));
+    options.push_back(new FactoryOption<mir::action::compare::ComparisonFactory>("compare", "TODO :)"));
+    options.push_back(new FactoryOption<mir::action::statistics::StatisticsFactory>("statistics", "TODO :)"));
 
     //==============================================
     options.push_back(new Separator("Debugging"));
@@ -173,7 +169,7 @@ void MIRTool::run() {
     // {"packing", "p", "e.g. second-order",},
 
 
-    eckit::option::CmdArgs args(&usage, options, 2);
+    CmdArgs args(&usage, options, 2);
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;
@@ -198,8 +194,6 @@ void MIRTool::run() {
     args.get("wind", wind);
     args.get("vod2uv", vod2uv);
     args.get("dummy", dummy);
-
-
 
 
 

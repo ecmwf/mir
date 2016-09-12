@@ -12,13 +12,14 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/style/ECMWFStyle.h"
 
 #include <iostream>
-
+#include "eckit/filesystem/PathName.h"
+#include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
@@ -91,8 +92,6 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
     ASSERT(field_gridded != field_spectral);
 
 
-
-
     if (field_spectral) {
         sh2sh(plan);
 
@@ -119,6 +118,7 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
         }
     }
 
+
     if (field_gridded) {
 
         if (parametrisation_.get("user.formula.gridded", formula)) {
@@ -129,6 +129,22 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
         }
         grid2grid(plan);
     }
+
+
+#if 0
+    std::string x;
+    if (parametrisation_.has("compare")) {
+        parametrisation_.get("compare", x);
+        eckit::PathName k(x);
+        std::cout << parametrisation_ << std::endl;
+        std::cout << "x = \"" << x << "\"" << std::endl;
+        std::cout << "k = \"" << k << "\"" << std::endl;
+    }
+    else {
+        std::cout << parametrisation_ << std::endl;
+    }
+#endif
+
 
     epilogue(plan);
 

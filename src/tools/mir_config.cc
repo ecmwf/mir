@@ -13,6 +13,7 @@
 /// @date Apr 2015
 
 
+#include "mir/param/MIRConfiguration.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/filesystem/PathName.h"
 
@@ -31,6 +32,10 @@ class MIRConfig : public eckit::Tool {
 
 
 void MIRConfig::run() {
+    using namespace mir;
+
+    const param::MIRConfiguration& conf = param::MIRConfiguration::instance();
+
     eckit::PathName path("~mir/etc/mir/interpolation-methods.cfg");
     eckit::Log::info() << "Path is " << path << std::endl;
     if(path.exists()) {

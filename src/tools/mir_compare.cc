@@ -12,17 +12,21 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include <cmath>
 
+#include <cmath>
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/types/FloatCompare.h"
-
+#include "mir/action/context/Context.h"
+#include "mir/action/compare/Compare.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/param/SimpleParametrisation.h"
+#include "mir/util/MIRStatistics.h"
+
 
 using eckit::option::Option;
 using eckit::option::SimpleOption;
@@ -263,6 +267,25 @@ void MIRCompare::run() {
         real_same_.reset( new FloatApproxCompare<double>(0, user_ulps_) );
     }
 
+#if 1
+    const char* ops[] = { "metadata", "statistics", "differenceNorms", "values", 0 };
+    size_t i = 0;
+    while (ops[i]) {
+        using namespace mir::action::compare;
+
+        mir::param::SimpleParametrisation param;
+        param.set("compare.file", args(1));
+        if (!strncmp(ops[i], "values", 6)) {
+            param.set("compare.mode", "absolute");
+        }
+        eckit::ScopedPtr< Compare > cmp(ComparisonFactory::build(ops[i++], param));
+
+        mir::util::MIRStatistics statistics;
+        mir::input::GribFileInput grib1(args(0));
+        mir::context::Context ctx(grib1, statistics);
+        cmp->execute(ctx);
+    }
+#else
     mir::input::GribFileInput file1(args(0));
     mir::input::GribFileInput file2(args(1));
 
@@ -355,7 +378,7 @@ void MIRCompare::run() {
         eckit::Log::info() << input1 << " has " << (ok1?"more":"less") << " fields than " << input2 << std::endl;
         ::exit(1);
     }
-
+#endif
 }
 
 
