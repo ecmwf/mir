@@ -11,25 +11,23 @@
 /// @date Aug 2016
 
 
-#include "mir/action/compare/Options.h"
+#include "mir/util/MapKeyValue.h"
 
 #include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
-namespace action {
-namespace compare {
+namespace util {
 
 
 template<>
-size_t Options::get(const std::string& name, const size_t& defaultValue) const {
+size_t MapKeyValue::get(const std::string& name, const size_t& defaultValue) const {
     const long i = get< long >(name, long(defaultValue));
     ASSERT(i>=0);
     return size_t(i);
 }
 
 
-}  // namespace compare
-}  // namespace action
+}  // namespace util
 }  // namespace mir
 

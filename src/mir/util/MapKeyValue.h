@@ -11,25 +11,24 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_compare_Options_h
-#define mir_action_compare_Options_h
+#ifndef mir_util_MapKeyValue_h
+#define mir_util_MapKeyValue_h
 
 #include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
-namespace action {
-namespace compare {
+namespace util {
 
 
-struct Options : private param::SimpleParametrisation {
-    Options() {}
-    Options(const Options& other) { operator=(other); }
-    Options& operator=(const Options& other) {
+struct MapKeyValue : private param::SimpleParametrisation {
+    MapKeyValue() {}
+    MapKeyValue(const MapKeyValue& other) { operator=(other); }
+    MapKeyValue& operator=(const MapKeyValue& other) {
         other.copyValuesTo(*this);
         return *this;
     }
-    bool operator==(const Options& other) const {
+    bool operator==(const MapKeyValue& other) const {
         return size() == other.size() && matches(other);
     }
     using SimpleParametrisation::has;
@@ -49,7 +48,7 @@ struct Options : private param::SimpleParametrisation {
         set(name, defaultValue);
         return false;
     }
-    friend std::ostream& operator<<(std::ostream& s, const Options& p) {
+    friend std::ostream& operator<<(std::ostream& s, const MapKeyValue& p) {
         p.print(s);
         return s;
     }
@@ -57,11 +56,10 @@ struct Options : private param::SimpleParametrisation {
 
 
 template<>
-size_t Options::get(const std::string& name, const size_t& defaultValue) const;
+size_t MapKeyValue::get(const std::string& name, const size_t& defaultValue) const;
 
 
-}  // namespace compare
-}  // namespace action
+}  // namespace util
 }  // namespace mir
 
 

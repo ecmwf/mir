@@ -34,8 +34,6 @@ list(
     action/compare/CompareStatistics.h
     action/compare/CompareValues.cc
     action/compare/CompareValues.h
-    action/compare/Options.cc
-    action/compare/Options.h
     action/context/Context.cc
     action/context/Context.h
     action/filter/AdjustWinds.cc
@@ -434,6 +432,8 @@ list(
     util/Increments.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
+    util/MapKeyValue.cc
+    util/MapKeyValue.h
     util/Parser.cc
     util/Parser.h
     util/ParserConsumer.cc

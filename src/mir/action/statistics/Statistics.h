@@ -16,10 +16,10 @@
 
 #include <iosfwd>
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/compare/Options.h"
 #include "mir/action/plan/Action.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/MapKeyValue.h"
 #include "mir/util/Statistics.h"
 
 
@@ -44,7 +44,7 @@ public:
     // -- Types
 
     /// Statistics results type
-    typedef compare::Options StatisticsResults;
+    typedef util::MapKeyValue StatisticsResults;
 
     // -- Exceptions
     // None

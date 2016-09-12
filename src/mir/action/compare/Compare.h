@@ -16,11 +16,11 @@
 
 #include <iosfwd>
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/compare/Options.h"
 #include "mir/action/plan/Action.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Compare.h"
+#include "mir/util/MapKeyValue.h"
 
 
 namespace mir {
@@ -55,10 +55,10 @@ public:
     // -- Types
 
     /// Compare options type
-    typedef compare::Options CompareOptions;
+    typedef util::MapKeyValue CompareOptions;
 
     /// Compare results type
-    typedef compare::Options CompareResults;
+    typedef util::MapKeyValue CompareResults;
 
     // -- Exceptions
     // None
