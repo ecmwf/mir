@@ -22,22 +22,31 @@ namespace util {
 
 
 struct MapKeyValue : private param::SimpleParametrisation {
+
     MapKeyValue() {}
-    MapKeyValue(const MapKeyValue& other) { operator=(other); }
+
+    MapKeyValue(const MapKeyValue& other) {
+        operator=(other);
+    }
+
     MapKeyValue& operator=(const MapKeyValue& other) {
         other.copyValuesTo(*this);
         return *this;
     }
+
     bool operator==(const MapKeyValue& other) const {
         return size() == other.size() && matches(other);
     }
+
     using SimpleParametrisation::has;
     using SimpleParametrisation::set;
+
     template< typename T >
     T get(const std::string& name, const T& defaultValue=T()) const {
         T value(defaultValue);
         return SimpleParametrisation::get(name, value)? value : defaultValue;
     }
+
     template< typename T >
     bool setFrom(const MIRParametrisation& other, const std::string& name, const T& defaultValue=T()) {
         T v;
@@ -48,10 +57,12 @@ struct MapKeyValue : private param::SimpleParametrisation {
         set(name, defaultValue);
         return false;
     }
+
     friend std::ostream& operator<<(std::ostream& s, const MapKeyValue& p) {
         p.print(s);
         return s;
     }
+
 };
 
 
