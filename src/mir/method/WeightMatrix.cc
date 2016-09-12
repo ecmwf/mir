@@ -59,14 +59,13 @@ void WeightMatrix::print(std::ostream& out) const {
 
 void WeightMatrix::multiply(const WeightMatrix::Vector& values, WeightMatrix::Vector& result) const {
 
-
     // TODO: linear algebra backend should depend on parametrisation
     eckit::linalg::LinearAlgebra::backend().spmv(matrix_, values, result);
 }
 
 void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Matrix& result) const {
     eckit::Log::debug<LibMir>() << "MethodWeighted::multiply: "
-                                   "A[" << rows()        << ',' << cols()        << "] "
+                                   "A[" << rows()        << ',' << cols()        << "] * "
                                    "B[" << values.rows() << ',' << values.cols() << "] = "
                                    "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
     ASSERT(values.rows() == cols());
