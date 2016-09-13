@@ -61,7 +61,7 @@ void MIRConfiguration::print(std::ostream& out) const {
 
 
 void MIRConfiguration::store(const std::string& name, const char* value) {
-    store(name, std::string(name));
+    store(name, std::string(value));
 }
 
 
