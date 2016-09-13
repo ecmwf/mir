@@ -25,6 +25,13 @@
 
 namespace mir {
 namespace param {
+class ParamClass;
+}
+}
+
+
+namespace mir {
+namespace param {
 
 
 class MIRConfiguration : public util::ParserConsumer {
@@ -34,10 +41,10 @@ public:
     // None
 
     // -- Contructors
-
+    // None
 
     // -- Destructor
-
+    // None
 
     // -- Convertors
     // None
@@ -67,6 +74,7 @@ protected:
     // -- Destructor
 
     ~MIRConfiguration();
+
     // -- Members
     // None
 
@@ -118,7 +126,8 @@ private:
     // None
 
     // -- Class methods
-    // None
+
+    bool flattenOnSetting(const ParamClass& settingsParams, const std::string& setting, size_t recurseLevelMax, SimpleParametrisation& paramSettings);
 
     // -- Friends
 
