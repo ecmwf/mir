@@ -32,10 +32,10 @@ public:
     // None
 
     // -- Contructors
-
+    // None
 
     // -- Destructor
-
+    // None
 
     // -- Convertors
     // None
@@ -65,6 +65,7 @@ protected:
     // -- Destructor
 
     ~ParamClass();
+
     // -- Members
     // None
 

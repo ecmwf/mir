@@ -28,7 +28,7 @@ ParamClass::ParamClass():
     scope_(0) {
 
     eckit::PathName path("~mir/etc/mir/param-class.cfg");
-    eckit::Log::debug<LibMir>() << "Loading MIR configuration from " << path << std::endl;
+    eckit::Log::debug<LibMir>() << "Loading parameter classes from " << path << std::endl;
     if (!path.exists()) {
         eckit::Log::warning() << "Cannot load " << path << std::endl;
         return;
@@ -107,11 +107,10 @@ void ParamClass::scope(const std::string& name) {
 
 const SimpleParametrisation* ParamClass::lookup(const std::string& paramClass) const {
     map_t::const_iterator j = settings_.find(paramClass);
-    if(j != settings_.end()) {
+    if (j != settings_.end()) {
         return (*j).second;
-    } else {
-        // throw eckit::CantOpenFile(path, Here());
     }
+    throw eckit::UserError("Cannot find a definition for parameter class \"" + paramClass + "\"", Here());
 }
 
 
