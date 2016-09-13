@@ -21,9 +21,7 @@ namespace data {
 
 
 ParamInfo::ParamInfo(size_t id, size_t dimension, ParamInfo::Component component) {
-    setId(id);
-    setDimension(dimension);
-    setComponent(component);
+    set(id, dimension, component);
 }
 
 
@@ -33,28 +31,19 @@ ParamInfo::ParamInfo(const ParamInfo& other) {
 
 
 ParamInfo& ParamInfo::operator=(const ParamInfo& other) {
-    id_        = other.id_;
-    dimension_ = other.dimension_;
-    component_ = other.component_;
+    set(other.id_, other.dimension_, other.component_);
     return *this;
 }
 
 
-void ParamInfo::setId(size_t id) {
-    id_ = id;
-}
-
-void ParamInfo::setDimension(size_t dimension) {
+void ParamInfo::set(size_t id, size_t dimension, Component component) {
+    id_        = id;
     dimension_ = dimension;
+    component_ = component;
+
     if (id_ != 0) {
         ASSERT(1 <= dimension_ && dimension_ <= 3);
-    }
-}
-
-void ParamInfo::setComponent(ParamInfo::Component component) {
-    component_ = component;
-    if (id_ != 0 && dimension_ > 1) {
-        ASSERT(1 <= component_ && component_ < ALL_COMPONENTS);
+        ASSERT((dimension_ == 1) || (1 <= component_ && component_ < ALL_COMPONENTS));
     }
 }
 

@@ -35,19 +35,19 @@ public:
 
         // Cartesian representations
         CARTESIAN_X = 1,
-	CARTESIAN_Y = 2,
-	CARTESIAN_Z = 3,
+        CARTESIAN_Y = 2,
+        CARTESIAN_Z = 3,
 
         // Cylindrical/polar representations
         // @note angles in degrees [0,360[/[-180,180] or radians [0,2π[/[-π,π]
         CYLINDRICAL_ANGLE = 4,
         CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC = 4,
-	CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC   = 5,
+        CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC   = 5,
         CYLINDRICAL_ANGLE_RADIANS_ASSYMMETRIC = 6,
-	CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC   = 7,
+        CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC   = 7,
         ALL_CYLINDRICAL_ANGLES = 8,
         CYLINDRICAL_RADIUS =  9,
-	CYLINDRICAL_HEIGHT = 10,
+        CYLINDRICAL_HEIGHT = 10,
 
         ALL_COMPONENTS = 11
     };
@@ -67,9 +67,7 @@ public:
 
     // -- Methods
 
-    void setId(size_t);
-    void setDimension(size_t);
-    void setComponent(Component);
+    void set(size_t id, size_t dimension, Component component);
 
     size_t    id()        const { return id_; }
     size_t    dimension() const { return dimension_; }
@@ -84,22 +82,31 @@ public:
     }
 
     bool isVectorInCartesianRepr() const {
-        return isVector() && (CARTESIAN_X <= component_ && component_ <= CARTESIAN_Z);
+        return isVector()
+            && component_ >= CARTESIAN_X
+            && component_ <= CARTESIAN_Z;
     }
 
     bool isVectorInPolarRepr() const {
-        return isVector() && (CYLINDRICAL_ANGLE <= component_ && component_ <= CYLINDRICAL_HEIGHT);
+        return isVector()
+            && component_ >= CYLINDRICAL_ANGLE
+            && component_ <= CYLINDRICAL_HEIGHT;
     }
 
     bool isAngle()  const {
-        return (CYLINDRICAL_ANGLE <= component_ && component_ <= ALL_CYLINDRICAL_ANGLES);
+        return component_ >= CYLINDRICAL_ANGLE
+            && component_ <= ALL_CYLINDRICAL_ANGLES;
     }
 
-    bool isAngleInDegreesAssymmetric() const { return component_ == CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC; }
-    bool isAngleInDegreesSymmetric()   const { return component_ == CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC; }
+    bool isAngleInDegrees() const {
+        return component_ == CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC
+            || component_ == CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC;
+    }
 
-    bool isAngleInRadiansAssymmetric() const { return component_ == CYLINDRICAL_ANGLE_RADIANS_ASSYMMETRIC; }
-    bool isAngleInRadiansSymmetric()   const { return component_ == CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC; }
+    bool isAngleSymmetric() const {
+        return component_ == CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC
+            || component_ == CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC;
+    }
 
 private:
 
