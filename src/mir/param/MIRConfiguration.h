@@ -25,13 +25,6 @@
 
 namespace mir {
 namespace param {
-class ParamClass;
-}
-}
-
-
-namespace mir {
-namespace param {
 
 
 class MIRConfiguration : public util::ParserConsumer {
@@ -107,6 +100,8 @@ private:
     long current_;
     SimpleParametrisation* scope_;
     map_t settings_;
+    const std::string flattenSetting_;
+    const size_t flattenDepth_;
 
     // -- Methods
     // None
@@ -126,8 +121,7 @@ private:
     // None
 
     // -- Class methods
-
-    bool flattenOnSetting(const ParamClass& settingsParams, const std::string& setting, size_t recurseLevelMax, SimpleParametrisation& paramSettings);
+    // None
 
     // -- Friends
 
