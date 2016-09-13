@@ -18,7 +18,7 @@
 
 
 namespace mir {
-namespace param {
+namespace data {
 
 
 /**
@@ -34,15 +34,20 @@ public:
         NONE = 0,
 
         // Cartesian representations
-        CARTESIAN_X = 1, CARTESIAN_Y, CARTESIAN_Z,
+        CARTESIAN_X = 1,
+	CARTESIAN_Y = 2,
+	CARTESIAN_Z = 3,
 
         // Cylindrical/polar representations
         // @note angles in degrees [0,360[/[-180,180] or radians [0,2π[/[-π,π]
         CYLINDRICAL_ANGLE = 4,
-        CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC = 4, CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC,
-        CYLINDRICAL_ANGLE_RADIANS_ASSYMMETRIC,     CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC,
+        CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC = 4,
+	CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC   = 5,
+        CYLINDRICAL_ANGLE_RADIANS_ASSYMMETRIC = 6,
+	CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC   = 7,
         ALL_CYLINDRICAL_ANGLES = 8,
-        CYLINDRICAL_RADIUS = 9, CYLINDRICAL_HEIGHT,
+        CYLINDRICAL_RADIUS =  9,
+	CYLINDRICAL_HEIGHT = 10,
 
         ALL_COMPONENTS = 11
     };
@@ -112,7 +117,7 @@ private:
 };
 
 
-}  // namespace param
+}  // namespace data
 }  // namespace mir
 
 

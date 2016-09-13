@@ -160,6 +160,8 @@ list(
     data/MIRField.h
     data/MIRFieldStats.cc
     data/MIRFieldStats.h
+    data/ParamInfo.cc
+    data/ParamInfo.h
     input/DummyInput.cc
     input/DummyInput.h
     input/EmptyInput.cc
@@ -302,8 +304,6 @@ list(
     param/MIRParametrisation.h
     param/ParamClass.cc
     param/ParamClass.h
-    param/ParamInfo.cc
-    param/ParamInfo.h
     param/RuntimeParametrisation.cc
     param/RuntimeParametrisation.h
     param/SimpleParametrisation.cc

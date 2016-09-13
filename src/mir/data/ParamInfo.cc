@@ -11,13 +11,13 @@
 /// @date Sep 2016
 
 
-#include "mir/param/ParamInfo.h"
+#include "mir/data/ParamInfo.h"
 
 #include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
-namespace param {
+namespace data {
 
 
 ParamInfo::ParamInfo(size_t id, size_t dimension, ParamInfo::Component component) {
@@ -59,5 +59,5 @@ void ParamInfo::setComponent(ParamInfo::Component component) {
 }
 
 
-}  // namespace param
+}  // namespace data
 }  // namespace mir
