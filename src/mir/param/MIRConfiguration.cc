@@ -13,13 +13,14 @@
 /// @date Apr 2015
 
 
-#include <iostream>
-
 #include "mir/param/MIRConfiguration.h"
+
+#include <iostream>
 #include "eckit/filesystem/PathName.h"
-#include "mir/util/Parser.h"
 #include "eckit/utils/Translator.h"
 #include "mir/config/LibMir.h"
+#include "mir/util/Parser.h"
+
 
 namespace mir {
 namespace param {
@@ -47,10 +48,12 @@ MIRConfiguration::~MIRConfiguration() {
     }
 }
 
+
 const MIRConfiguration& MIRConfiguration::instance() {
     static MIRConfiguration instance_;
     return instance_;
 }
+
 
 void MIRConfiguration::print(std::ostream& out) const {
     out << "MIRConfiguration[...]";
@@ -61,17 +64,20 @@ void MIRConfiguration::store(const std::string& name, const char* value) {
     store(name, std::string(name));
 }
 
+
 void MIRConfiguration::store(const std::string& name, const std::string& value) {
     ASSERT(scope_);
     eckit::Log::debug<LibMir>() << "From configuration file " << name << "=[" << value << "] (string) paramId=" << current_ << std::endl;
     scope_->set(name, value);
 }
 
+
 void MIRConfiguration::store(const std::string& name, bool value) {
     ASSERT(scope_);
     eckit::Log::debug<LibMir>() << "From configuration file " << name << "=[" << value << "] (bool) paramId=" << current_ << std::endl;
     scope_->set(name, value);
 }
+
 
 void MIRConfiguration::store(const std::string& name, long value) {
     ASSERT(scope_);
@@ -80,11 +86,13 @@ void MIRConfiguration::store(const std::string& name, long value) {
 
 }
 
+
 void MIRConfiguration::store(const std::string& name, double value) {
     ASSERT(scope_);
     eckit::Log::debug<LibMir>() << "From configuration file " << name << "=[" << value << "] (double) paramId=" << current_ << std::endl;
     scope_->set(name, value);
 }
+
 
 void MIRConfiguration::scope(const std::string& name) {
     long scope = eckit::Translator<std::string, long>()(name);
@@ -97,6 +105,7 @@ void MIRConfiguration::scope(const std::string& name) {
     scope_ = settings_[scope];
 }
 
+
 const SimpleParametrisation* MIRConfiguration::lookup(long paramId) const {
     std::map<long, SimpleParametrisation*>::const_iterator j = settings_.find(paramId);
     if(j == settings_.end()) {
@@ -105,6 +114,7 @@ const SimpleParametrisation* MIRConfiguration::lookup(long paramId) const {
         return (*j).second;
     }
 }
+
 
 }  // namespace param
 }  // namespace mir

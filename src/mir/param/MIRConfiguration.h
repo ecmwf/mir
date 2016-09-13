@@ -19,87 +19,87 @@
 #include <iosfwd>
 #include <map>
 #include <string>
-
-#include "mir/util/ParserConsumer.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/ParserConsumer.h"
+
 
 namespace mir {
 namespace param {
 
 
 class MIRConfiguration : public util::ParserConsumer {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
 
-// -- Destructor
+    // -- Destructor
 
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
     const SimpleParametrisation* lookup(long paramId) const;
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
 
     static const MIRConfiguration& instance();
 
-  protected:
+protected:
     // -- Contructors
 
     MIRConfiguration();
 
-// -- Destructor
+    // -- Destructor
 
     ~MIRConfiguration();
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // No copy allowed
 
     MIRConfiguration(const MIRConfiguration&);
     MIRConfiguration& operator=(const MIRConfiguration&);
 
-// -- Members
+    // -- Members
 
     long current_;
     SimpleParametrisation* scope_;
     std::map<long, SimpleParametrisation*> settings_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
     // From ParserConsumer
     virtual void store(const std::string& name, const char* value);
@@ -110,13 +110,13 @@ class MIRConfiguration : public util::ParserConsumer {
 
     virtual void scope(const std::string& name);
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const MIRConfiguration& p) {
         p.print(s);
@@ -128,5 +128,6 @@ class MIRConfiguration : public util::ParserConsumer {
 
 }  // namespace param
 }  // namespace mir
-#endif
 
+
+#endif
