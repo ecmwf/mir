@@ -29,7 +29,7 @@ namespace param {
 MIRConfiguration::MIRConfiguration():
     scope_(0) {
 
-    eckit::PathName path("~mir/etc/mir/interpolation-methods.cfg");
+    eckit::PathName path("~mir/etc/mir/param-info.cfg");
     eckit::Log::debug<LibMir>() << "Loading MIR configuration from " << path << std::endl;
     if (!path.exists()) {
         eckit::Log::warning() << "Cannot load " << path << std::endl;
