@@ -300,6 +300,8 @@ list(
     param/MIRDefaults.h
     param/MIRParametrisation.cc
     param/MIRParametrisation.h
+    param/ParamInfo.cc
+    param/ParamInfo.h
     param/RuntimeParametrisation.cc
     param/RuntimeParametrisation.h
     param/SimpleParametrisation.cc
