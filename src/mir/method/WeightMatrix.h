@@ -34,10 +34,10 @@ class WeightMatrix {
 
   public: // types
 
-    typedef eckit::linalg::SparseMatrix  SparseMatrix;
-    typedef eckit::linalg::Matrix        Matrix;
+    typedef eckit::linalg::SparseMatrix SparseMatrix;
+    typedef eckit::linalg::Matrix       Matrix;
     typedef eckit::linalg::Vector       Vector;
-    typedef SparseMatrix::Size           Size;
+    typedef SparseMatrix::Size          Size;
 
   public: // methods
 
