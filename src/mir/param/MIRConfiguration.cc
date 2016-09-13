@@ -36,14 +36,14 @@ MIRConfiguration::MIRConfiguration():
         return;
         // throw eckit::CantOpenFile(path, Here());
     }
+
     util::Parser parser(path);
     parser.fill(*this);
-
 }
 
 
 MIRConfiguration::~MIRConfiguration() {
-    for (std::map<long, SimpleParametrisation*>::iterator j = settings_.begin(); j != settings_.end(); ++j) {
+    for (map_t::iterator j = settings_.begin(); j != settings_.end(); ++j) {
         delete (*j).second;
     }
 }
@@ -83,7 +83,6 @@ void MIRConfiguration::store(const std::string& name, long value) {
     ASSERT(scope_);
     eckit::Log::debug<LibMir>() << "From configuration file " << name << "=[" << value << "] (long) paramId=" << current_ << std::endl;
     scope_->set(name, value);
-
 }
 
 
@@ -97,7 +96,8 @@ void MIRConfiguration::store(const std::string& name, double value) {
 void MIRConfiguration::scope(const std::string& name) {
     long scope = eckit::Translator<std::string, long>()(name);
     eckit::Log::debug<LibMir>() << "MIRConfiguration::scope(paramId=" << scope << ")" << std::endl;
-    std::map<long, SimpleParametrisation*>::iterator j = settings_.find(scope);
+
+    map_t::iterator j = settings_.find(scope);
     if (j == settings_.end()) {
         settings_[scope] = new SimpleParametrisation();
     }
@@ -107,7 +107,7 @@ void MIRConfiguration::scope(const std::string& name) {
 
 
 const SimpleParametrisation* MIRConfiguration::lookup(long paramId) const {
-    std::map<long, SimpleParametrisation*>::const_iterator j = settings_.find(paramId);
+    map_t::const_iterator j = settings_.find(paramId);
     if(j == settings_.end()) {
         return 0;
     } else {

@@ -90,11 +90,15 @@ private:
     MIRConfiguration(const MIRConfiguration&);
     MIRConfiguration& operator=(const MIRConfiguration&);
 
+    // -- Types
+
+    typedef std::map< long, SimpleParametrisation* > map_t;
+
     // -- Members
 
     long current_;
     SimpleParametrisation* scope_;
-    std::map<long, SimpleParametrisation*> settings_;
+    map_t settings_;
 
     // -- Methods
     // None
