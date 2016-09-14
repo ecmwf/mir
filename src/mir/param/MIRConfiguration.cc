@@ -32,8 +32,8 @@ namespace param {
 namespace  {
 
 
-// fill params (recursively) with settings nested from settingsParams[setting]
-bool flatten_on_setting(const ParamClass& settingsParams, const std::string& setting, const size_t& recurseLevelMax, SimpleParametrisation& params) {
+// fill params (recursively) with settings from settingsParams[setting]
+bool flatten_params_on_setting(const ParamClass& settingsParams, const std::string& setting, const size_t& recurseLevelMax, SimpleParametrisation& params) {
     ASSERT(setting.length());
 
     // track recursivity depth and values (to detect loops)
@@ -44,6 +44,7 @@ bool flatten_on_setting(const ParamClass& settingsParams, const std::string& set
         // get the setting value
         std::string value;
         static_cast< const MIRParametrisation& >(params).get(setting, value);
+        ASSERT(value.length());
 
         // increase recursivity depth
         if (std::find(recurse.begin(), recurse.end(), value) != recurse.end()) {
@@ -163,7 +164,7 @@ const SimpleParametrisation* MIRConfiguration::lookup(long paramId) const {
         return 0;
     }
 
-    if (!flatten_on_setting(ParamClass::instance(), flattenSetting_, flattenDepth_, *(j->second))) {
+    if (!flatten_params_on_setting(ParamClass::instance(), flattenSetting_, flattenDepth_, *(j->second))) {
         throw eckit::UserError("Cannot flatten paramId=" + eckit::Translator< long, std::string >()(j->first) + " on \"class\"", Here());
     }
     eckit::Log::debug<LibMir>() << "MIRConfiguration paramId=" << j->first << ": ["  << *(j->second) << "]" << std::endl;
