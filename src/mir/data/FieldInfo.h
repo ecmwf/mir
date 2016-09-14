@@ -129,6 +129,8 @@ private:
 
     void set(size_t dimension, Component component);
 
+    static void get(const std::string& info, size_t& dimension, FieldInfo::Component& component);
+
 };
 
 
