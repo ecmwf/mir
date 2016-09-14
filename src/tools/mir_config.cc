@@ -13,9 +13,9 @@
 /// @date Apr 2015
 
 
-#include "mir/param/MIRConfiguration.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/filesystem/PathName.h"
+#include "mir/param/MIRConfiguration.h"
 
 
 class MIRConfig : public eckit::Tool {
