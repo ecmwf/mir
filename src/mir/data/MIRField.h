@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef MIRField_H
-#define MIRField_H
+#ifndef mir_data_MIRField_h
+#define mir_data_MIRField_h
 
 #include <iosfwd>
 #include <vector>
@@ -49,9 +49,7 @@ public:
 
     /// @note not in Field
     MIRField(const MIRField& other);
-
     MIRField(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
-
     MIRField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
     // -- Destructor

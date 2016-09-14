@@ -49,7 +49,7 @@ bool flatten_params_on_setting(const ParamClass& settingsParams, const std::stri
         // increase recursivity depth
         if (std::find(recurse.begin(), recurse.end(), value) != recurse.end()) {
             // all settings copied already, an "elegant" way to not loop...
-            eckit::Log::warning() << "flatten_on_setting: recursion loop on " << setting << "=\"" << value << "\"";
+            eckit::Log::warning() << "flatten_on_setting: recursion loop on \"" << setting << " = " << value << "\"";
             return true;
         }
         if (recurse.size() >= recurseLevelMax) {
@@ -62,7 +62,7 @@ bool flatten_params_on_setting(const ParamClass& settingsParams, const std::stri
         SimpleParametrisation paramsModif;
         settingsParams.lookup(value)->copyValuesTo(paramsModif);
 
-        // exclude the "flattening" setting and overwrite all other settings defined by this parameter
+        // overwrite with parameter-specific settings (exclude the "flattening" setting)
         params.clear(setting);
         params.copyValuesTo(paramsModif);
         paramsModif.copyValuesTo(params);
