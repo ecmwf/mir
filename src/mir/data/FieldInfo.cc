@@ -11,7 +11,7 @@
 /// @date Sep 2016
 
 
-#include "mir/data/ParamInfo.h"
+#include "mir/data/FieldInfo.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
@@ -21,12 +21,12 @@ namespace mir {
 namespace data {
 
 
-ParamInfo::ParamInfo(size_t id, size_t dimension, ParamInfo::Component component) {
+FieldInfo::FieldInfo(size_t id, size_t dimension, FieldInfo::Component component) {
     set(id, dimension, component);
 }
 
 
-ParamInfo::ParamInfo(size_t id, const param::MIRParametrisation& params) {
+FieldInfo::FieldInfo(size_t id, const param::MIRParametrisation& params) {
 
     size_t dimension = 1;
     if (id != 0) {
@@ -58,18 +58,18 @@ ParamInfo::ParamInfo(size_t id, const param::MIRParametrisation& params) {
 }
 
 
-ParamInfo::ParamInfo(const ParamInfo& other) {
+FieldInfo::FieldInfo(const FieldInfo& other) {
     operator=(other);
 }
 
 
-ParamInfo& ParamInfo::operator=(const ParamInfo& other) {
+FieldInfo& FieldInfo::operator=(const FieldInfo& other) {
     set(other.id_, other.dimension_, other.component_);
     return *this;
 }
 
 
-void ParamInfo::set(size_t id, size_t dimension, Component component) {
+void FieldInfo::set(size_t id, size_t dimension, Component component) {
     id_        = id;
     dimension_ = dimension;
     component_ = component;

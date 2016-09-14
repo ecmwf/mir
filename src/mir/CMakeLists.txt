@@ -156,12 +156,12 @@ list(
     config/LibMir.h
     data/Field.cc
     data/Field.h
+    data/FieldInfo.cc
+    data/FieldInfo.h
     data/MIRField.cc
     data/MIRField.h
     data/MIRFieldStats.cc
     data/MIRFieldStats.h
-    data/ParamInfo.cc
-    data/ParamInfo.h
     input/DummyInput.cc
     input/DummyInput.h
     input/EmptyInput.cc

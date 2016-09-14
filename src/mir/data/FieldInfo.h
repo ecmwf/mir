@@ -11,8 +11,8 @@
 /// @date Sep 2016
 
 
-#ifndef mir_data_ParamInfo_H
-#define mir_data_ParamInfo_H
+#ifndef mir_data_FieldInfo_H
+#define mir_data_FieldInfo_H
 
 #include <cstddef>
 
@@ -29,10 +29,9 @@ namespace data {
 
 
 /**
- * @brief ParamInfo describes useful parameter information for interpolation,
- * such as how it is represented in space.
+ * @brief FieldInfo describes a representation in space.
  */
-class ParamInfo {
+class FieldInfo {
 public:
 
     // -- Types
@@ -61,17 +60,17 @@ public:
 
     // -- Contructors
 
-    explicit ParamInfo(size_t id, size_t dimension=1, Component component=NONE);
-    ParamInfo(size_t id, const param::MIRParametrisation&);
-    ParamInfo(const ParamInfo&);
+    explicit FieldInfo(size_t id, size_t dimension=1, Component component=NONE);
+    FieldInfo(size_t id, const param::MIRParametrisation&);
+    FieldInfo(const FieldInfo&);
 
     // -- Destructor
 
-    ~ParamInfo() {}
+    ~FieldInfo() {}
 
     // -- Operators
 
-    ParamInfo& operator=(const ParamInfo&);
+    FieldInfo& operator=(const FieldInfo&);
 
     // -- Methods
 
