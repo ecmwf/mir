@@ -29,7 +29,7 @@ namespace output {
 
 
 class GeoPointsOutput : public MIROutput {
-  public:
+public:
 
 // -- Exceptions
     // None
@@ -60,7 +60,7 @@ class GeoPointsOutput : public MIROutput {
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
     // None
@@ -76,6 +76,8 @@ class GeoPointsOutput : public MIROutput {
     virtual size_t copy(const param::MIRParametrisation &, context::Context &); // Not iterpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
 
+    bool sameParametrisation(const param::MIRParametrisation &param1,
+                             const param::MIRParametrisation & param2) const;
     // None
 
 // -- Class members
@@ -84,7 +86,7 @@ class GeoPointsOutput : public MIROutput {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 

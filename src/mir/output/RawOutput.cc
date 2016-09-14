@@ -47,6 +47,10 @@ bool RawOutput::sameAs(const MIROutput& other) const {
     return this == &other;
 }
 
+bool RawOutput::sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const {
+    NOTIMP;
+}
+
 size_t RawOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
     NOTIMP;
     // size_ = input.copy(values_, count_);
