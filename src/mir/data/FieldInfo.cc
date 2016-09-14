@@ -21,6 +21,26 @@ namespace mir {
 namespace data {
 
 
+namespace {
+
+
+static const char * valid[] = {
+    "scalar",
+
+    "vector/1d/polar/angle",
+    "vector/2d/polar/angle", "vector/2d/polar/radius",
+    "vector/3d/polar/angle", "vector/3d/polar/radius", "vector/3d/polar/height",
+
+    "vector/2d/cartesian/x", "vector/2d/cartesian/y",
+    "vector/3d/cartesian/x", "vector/3d/cartesian/y", "vector/3d/cartesian/z",
+
+    0,
+};
+
+
+}  // (anonymous namespace)
+
+
 FieldInfo::FieldInfo(size_t dimension, FieldInfo::Component component) {
     set(dimension, component);
 }
@@ -64,6 +84,37 @@ FieldInfo::FieldInfo(const FieldInfo& other) {
 FieldInfo& FieldInfo::operator=(const FieldInfo& other) {
     set(other.dimension_, other.component_);
     return *this;
+}
+
+
+mir::data::FieldInfo::operator std::string() const {
+    if (isScalar())
+        return "scalar";
+
+    std::string info = "vector";
+
+    info += dimension_ == 1? "/1d"
+          : dimension_ == 2? "/2d"
+          : dimension_ == 3? "/3d"
+          : "";
+
+    info += component_ == CARTESIAN_X?        "/cartesian/x"
+          : component_ == CARTESIAN_Y?        "/cartesian/y"
+          : component_ == CARTESIAN_Z?        "/cartesian/z"
+          : isAngle()?                        "/polar/angle"
+          : component_ == CYLINDRICAL_RADIUS? "/polar/radius"
+          : component_ == CYLINDRICAL_HEIGHT? "/polar/height"
+          : "";
+
+    // ensure this is a recognized FieldInfo
+    size_t i = 0;
+    while (valid[i]) {
+        if (info == valid[i++]) {
+            return info;
+        }
+    }
+
+    throw eckit::SeriousBug("Fieldinfo: dimension/components combination: \"" + info + "\"", Here());
 }
 
 

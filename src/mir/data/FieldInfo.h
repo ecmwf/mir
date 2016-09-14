@@ -15,6 +15,7 @@
 #define mir_data_FieldInfo_H
 
 #include <cstddef>
+#include <string>
 
 
 namespace mir {
@@ -72,17 +73,19 @@ public:
 
     FieldInfo& operator=(const FieldInfo&);
 
+    operator std::string() const;
+
     // -- Methods
 
     size_t    dimension() const { return dimension_; }
     Component component() const { return component_; }
 
     bool isScalar() const {
-        return dimension_ == 1;
+        return component_ == NONE;
     }
 
     bool isVector() const {
-        return dimension_ > 1;
+        return component_ != NONE;
     }
 
     bool isVectorInCartesianRepr() const {
@@ -97,7 +100,7 @@ public:
             && component_ <= CYLINDRICAL_HEIGHT;
     }
 
-    bool isAngle()  const {
+    bool isAngle() const {
         return component_ >= CYLINDRICAL_ANGLE
             && component_ <= ALL_CYLINDRICAL_ANGLES;
     }
