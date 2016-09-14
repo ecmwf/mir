@@ -18,6 +18,13 @@
 
 
 namespace mir {
+namespace param {
+class MIRParametrisation;
+}
+}
+
+
+namespace mir {
 namespace data {
 
 
@@ -55,6 +62,7 @@ public:
     // -- Contructors
 
     explicit ParamInfo(size_t id, size_t dimension=1, Component component=NONE);
+    ParamInfo(size_t id, const param::MIRParametrisation&);
     ParamInfo(const ParamInfo&);
 
     // -- Destructor
@@ -66,8 +74,6 @@ public:
     ParamInfo& operator=(const ParamInfo&);
 
     // -- Methods
-
-    void set(size_t id, size_t dimension, Component component);
 
     size_t    id()        const { return id_; }
     size_t    dimension() const { return dimension_; }
@@ -120,6 +126,10 @@ private:
 
     /// Parameter vector field dimension component (for scalars, Component::NONE)
     Component component_;
+
+    // -- Methods
+
+    void set(size_t id, size_t dimension, Component component);
 
 };
 

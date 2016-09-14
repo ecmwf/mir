@@ -14,6 +14,7 @@
 #include "mir/data/ParamInfo.h"
 
 #include "eckit/exception/Exceptions.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -21,6 +22,38 @@ namespace data {
 
 
 ParamInfo::ParamInfo(size_t id, size_t dimension, ParamInfo::Component component) {
+    set(id, dimension, component);
+}
+
+
+ParamInfo::ParamInfo(size_t id, const param::MIRParametrisation& params) {
+
+    size_t dimension = 1;
+    if (id != 0) {
+        params.get("dimension", dimension);
+    }
+
+    Component component = NONE;
+    std::string componentStr;
+    if (id != 0 && params.get("component", componentStr)) {
+        if (componentStr == "angle") {
+
+            bool degree    = true;
+            bool symmetric = false;
+            params.get("degree",    degree);
+            params.get("symmetric", symmetric);
+
+            component = degree? (symmetric? CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC : CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC)
+                              : (symmetric? CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC : CYLINDRICAL_ANGLE_RADIANS_ASSYMMETRIC);
+
+        }
+        else if (componentStr == "vector/" && dimension > 1) {
+
+
+
+        }
+    }
+
     set(id, dimension, component);
 }
 
