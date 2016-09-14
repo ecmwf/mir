@@ -60,8 +60,8 @@ public:
 
     // -- Contructors
 
-    explicit FieldInfo(size_t id, size_t dimension=1, Component component=NONE);
-    FieldInfo(size_t id, const param::MIRParametrisation&);
+    explicit FieldInfo(size_t dimension=1, Component component=NONE);
+    FieldInfo(const param::MIRParametrisation&);
     FieldInfo(const FieldInfo&);
 
     // -- Destructor
@@ -74,7 +74,6 @@ public:
 
     // -- Methods
 
-    size_t    id()        const { return id_; }
     size_t    dimension() const { return dimension_; }
     Component component() const { return component_; }
 
@@ -117,9 +116,6 @@ private:
 
     // -- Members
 
-    /// Parameter identification number (paramId)
-    size_t id_;
-
     /// Parameter vector field dimension (for scalars, 1)
     size_t dimension_;
 
@@ -128,7 +124,7 @@ private:
 
     // -- Methods
 
-    void set(size_t id, size_t dimension, Component component);
+    void set(size_t dimension, Component component);
 
 };
 

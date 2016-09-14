@@ -21,21 +21,19 @@ namespace mir {
 namespace data {
 
 
-FieldInfo::FieldInfo(size_t id, size_t dimension, FieldInfo::Component component) {
-    set(id, dimension, component);
+FieldInfo::FieldInfo(size_t dimension, FieldInfo::Component component) {
+    set(dimension, component);
 }
 
 
-FieldInfo::FieldInfo(size_t id, const param::MIRParametrisation& params) {
+FieldInfo::FieldInfo(const param::MIRParametrisation& params) {
 
     size_t dimension = 1;
-    if (id != 0) {
-        params.get("dimension", dimension);
-    }
+    params.get("dimension", dimension);
 
     Component component = NONE;
     std::string componentStr;
-    if (id != 0 && params.get("component", componentStr)) {
+    if (params.get("component", componentStr)) {
         if (componentStr == "angle") {
 
             bool degree    = true;
@@ -54,7 +52,7 @@ FieldInfo::FieldInfo(size_t id, const param::MIRParametrisation& params) {
         }
     }
 
-    set(id, dimension, component);
+    set(dimension, component);
 }
 
 
@@ -64,20 +62,16 @@ FieldInfo::FieldInfo(const FieldInfo& other) {
 
 
 FieldInfo& FieldInfo::operator=(const FieldInfo& other) {
-    set(other.id_, other.dimension_, other.component_);
+    set(other.dimension_, other.component_);
     return *this;
 }
 
 
-void FieldInfo::set(size_t id, size_t dimension, Component component) {
-    id_        = id;
+void FieldInfo::set(size_t dimension, Component component) {
     dimension_ = dimension;
     component_ = component;
-
-    if (id_ != 0) {
-        ASSERT(1 <= dimension_ && dimension_ <= 3);
-        ASSERT((dimension_ == 1) || (1 <= component_ && component_ < ALL_COMPONENTS));
-    }
+    ASSERT(1 <= dimension_ && dimension_ <= 3);
+    ASSERT((dimension_ == 1) || (1 <= component_ && component_ < ALL_COMPONENTS));
 }
 
 
