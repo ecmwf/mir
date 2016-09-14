@@ -25,6 +25,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/GribInput.h"
+#include "mir/param/MIRConfiguration.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
@@ -257,7 +258,16 @@ data::MIRField GribInput::field() const {
     double missing;
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
 
-    data::MIRField field(*this, bitmap != 0, missing);
+    long id;
+    GRIB_CALL(grib_get_long(grib_, "paramId", &id));
+
+    data::FieldInfo info;  // (defaults to scalar)
+    if (id != 0) {
+        const param::MIRConfiguration& configuration = param::MIRConfiguration::instance();
+        info = data::FieldInfo(*configuration.lookup(id));
+    }
+
+    data::MIRField field(*this, bitmap != 0, missing, info);
 
     long scanningMode = 0;
     if (grib_get_long(grib_, "scanningMode", &scanningMode) == GRIB_SUCCESS && scanningMode != 0) {
