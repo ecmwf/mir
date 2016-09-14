@@ -11,8 +11,8 @@
 /// @date Sep 2016
 
 
-#ifndef mir_param_ParameterInfo_H
-#define mir_param_ParameterInfo_H
+#ifndef mir_data_ParamInfo_H
+#define mir_data_ParamInfo_H
 
 #include <cstddef>
 
@@ -54,7 +54,7 @@ public:
 
     // -- Contructors
 
-    ParamInfo(size_t id, size_t dimension, Component component);
+    explicit ParamInfo(size_t id, size_t dimension=1, Component component=NONE);
     ParamInfo(const ParamInfo&);
 
     // -- Destructor
@@ -124,7 +124,7 @@ private:
 };
 
 
-}  // namespace data
+}  // namespace param
 }  // namespace mir
 
 
