@@ -34,16 +34,12 @@ namespace input {
 
 
 class MIRInput {
-  public:
 
-// -- Exceptions
-    // None
-
-// -- Contructors
+protected:
 
     MIRInput();
 
-// -- Destructor
+public:
 
     virtual ~MIRInput(); // Change to virtual if base class
 

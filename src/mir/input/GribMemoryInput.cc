@@ -42,6 +42,11 @@ void GribMemoryInput::print(std::ostream& out) const {
     out << "GribMemoryInput[]";
 }
 
+size_t GribMemoryInput::dimensions() const {
+    // FIXME
+    eckit::Log::warning() << "GribMemoryInput::dimensions() returning 1 (hardcoded!)" << std::endl;
+    return 1;
+}
 
 }  // namespace input
 }  // namespace mir
