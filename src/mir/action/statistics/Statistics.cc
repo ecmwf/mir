@@ -15,7 +15,6 @@
 #include <ostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/log/Plural.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
@@ -52,58 +51,18 @@ Statistics::Statistics(const param::MIRParametrisation& parametrisation) :
 
 
 void Statistics::execute(context::Context& ctx) const {
-#if 0
-    input::MIRInput& input1 = ctx.input();
 
+    // update internal results
+    calculate(ctx.field(), const_cast<Results&>(results_));
 
-    bool next1 = input1.next();
-    bool next2 = input2.next();
-    size_t count1 = next1? 1 : 0;
-    size_t count2 = next2? 1 : 0;
-
-    bool cmp = true;
-    while (cmp && next1 && next2) {
-
-        // perform comparison
-        cmp = compare(
-                    input1.field(), input1.parametrisation(),
-                    input2.field(), input2.parametrisation() );
-
-        next1 = input1.next();
-        next2 = input2.next();
-        if (next1) { ++count1; }
-        if (next2) { ++count2; }
-    }
-    cmp = cmp && (count1==count2);
-
-    const size_t countMax = options_.get<size_t>("compare.max_count_fields");
-    while (input1.next() && (count1<countMax)) { ++count1; }
-    while (input2.next() && (count2<countMax)) { ++count2; }
-
-
-    if (count1!=count2 || options_.get< bool >("compare.verbose")) {
-        eckit::Log::info() << "\tinput A: " <<  eckit::Plural(count1, "field") << (count1>=countMax? " (possibly more)":"") << "\n"
-                              "\tinput B: " <<  eckit::Plural(count2, "field") << (count2>=countMax? " (possibly more)":"") << std::endl;
-    }
-
-
-    eckit::Log::info() << "Statistics: input A " << (cmp? "==":"!=") << " input B." << std::endl;
-#endif
-}
-
-
-bool Statistics::sameAs(const action::Action& other) const {
-#if 0
-    const Statistics* o = dynamic_cast<const Statistics*>(&other);
-    return (o && options_ == o->options_);
-#endif
-    return false;
+    // display
+    eckit::Log::info() << *this << std::endl;
 }
 
 
 void Statistics::print(std::ostream& out) const {
     out << "Statistics["
-//      <<  "options[" << options_ << "]"
+        <<  "results[" << results_ << "]"
         << "]";
 }
 

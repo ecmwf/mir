@@ -43,8 +43,8 @@ public:
 
     // -- Types
 
-    /// Statistics results type
-    typedef util::MapKeyValue StatisticsResults;
+    /// Results type
+    typedef util::MapKeyValue Results;
 
     // -- Exceptions
     // None
@@ -64,13 +64,20 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    /// Calculate statistics
+    virtual void calculate(const data::MIRField&, Results&) const = 0;
+
+    /// @return statistics
+    const Results& results() const {
+        return results_;
+    }
 
     // -- Overridden methods
 
     void execute(context::Context&) const;
 
-    bool sameAs(const Action&) const;
+    virtual bool sameAs(const Action&) const = 0;
 
     // -- Class members
     // None
@@ -85,8 +92,10 @@ protected:
 
     // -- Methods
 
-    /// @return statistics results
-    virtual bool calculate(const data::MIRField&, const param::MIRParametrisation&) const = 0;
+    /// @return statistics
+    Results& results() {
+        return results_;
+    }
 
     // -- Overridden methods
 
@@ -101,7 +110,8 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    Results results_;
 
     // -- Methods
     // None

@@ -102,6 +102,10 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
+    action/statistics/CentralMoments.cc
+    action/statistics/CentralMoments.h
+    action/statistics/PNorms.cc
+    action/statistics/PNorms.h
     action/statistics/Statistics.cc
     action/statistics/Statistics.h
     action/transform/Sh2GriddedTransform.cc
