@@ -40,6 +40,7 @@ struct MapKeyValue : private param::SimpleParametrisation {
 
     using SimpleParametrisation::has;
     using SimpleParametrisation::set;
+    using SimpleParametrisation::reset;
 
     template< typename T >
     T get(const std::string& name, const T& defaultValue=T()) const {
