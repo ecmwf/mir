@@ -143,7 +143,7 @@ private:
 public:
     StatisticsBuilder(const std::string& name) : StatisticsFactory(name) {
         // register in the ActionFactory as well (Statistics is an Action)
-        ActionBuilder<T> actionBuilder("statistics."+name);
+        static ActionBuilder<T> actionBuilder("statistics." + name);
     }
 };
 

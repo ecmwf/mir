@@ -123,7 +123,10 @@ StatisticsFactory::StatisticsFactory(const std::string& name) :
 }
 
 
-StatisticsFactory::~StatisticsFactory() {}
+StatisticsFactory::~StatisticsFactory() {
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    m->erase(name_);
+}
 
 
 void StatisticsFactory::list(std::ostream& out) {

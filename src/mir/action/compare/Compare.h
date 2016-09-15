@@ -185,7 +185,7 @@ private:
 public:
     ComparisonBuilder(const std::string& name) : ComparisonFactory(name) {
         // register in the ActionFactory as well (Compare is an Action) under a more descriptive name
-        ActionBuilder<T> actionBuilder("compare." + name);
+        static ActionBuilder<T> actionBuilder("compare." + name);
     }
 };
 

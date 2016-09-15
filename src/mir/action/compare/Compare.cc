@@ -185,7 +185,10 @@ ComparisonFactory::ComparisonFactory(const std::string& name) :
 }
 
 
-ComparisonFactory::~ComparisonFactory() {}
+ComparisonFactory::~ComparisonFactory() {
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    m->erase(name_);
+}
 
 
 void ComparisonFactory::list(std::ostream& out) {
