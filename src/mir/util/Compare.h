@@ -16,7 +16,6 @@
 #ifndef mir_util_Compare_H
 #define mir_util_Compare_H
 
-#include <cmath>
 #include <cstddef>
 #include <vector>
 #include "eckit/exception/Exceptions.h"
@@ -46,14 +45,18 @@ struct ACompareBinFn {
 
 /// Compare to missing values
 struct IsMissingFn : ACompareFn<double> {
-    IsMissingFn(double missingValue) :
-        missingValue_(missingValue),
-        missingValueDefined_(missingValue==missingValue) {}
+    IsMissingFn(double missingValue=std::numeric_limits<double>::quiet_NaN()) {
+        reset(missingValue);
+    }
+    void reset(double missingValue=std::numeric_limits<double>::quiet_NaN()) {
+        missingValue_ = missingValue;
+        missingValueDefined_ = (missingValue==missingValue);
+    }
     bool operator()(const double& v) const {
         return (missingValueDefined_ && (missingValue_==v));
     }
-    const double missingValue_;
-    const bool missingValueDefined_;
+    double missingValue_;
+    bool missingValueDefined_;
 };
 
 
@@ -157,50 +160,6 @@ struct IsNotMaskedFn : ACompareFn< size_t > {
         return !mask_[i];
     }
     const std::vector< bool >& mask_;
-};
-
-
-/// Compare two values (possibly missing) with absolute tolerance
-template< typename T >
-struct CompareValuesAbsoluteToleranceFn : ACompareBinFn<T> {
-    CompareValuesAbsoluteToleranceFn( T epsilon,
-            const double& missingValue1=std::numeric_limits<double>::quiet_NaN(),
-            const double& missingValue2=std::numeric_limits<double>::quiet_NaN() ) :
-        miss1_(missingValue1),
-        miss2_(missingValue2),
-        eps_(epsilon) {
-        ASSERT(eps_>=0);
-    }
-    bool operator()(const T& v1, const T& v2) {
-        if (miss1_(v1) || miss2_(v2))
-            return (miss1_(v1) && miss2_(v2));
-        return eckit::FloatCompare<T>::isApproximatelyEqual(v1, v2, eps_, 64);  // 64 is chosen so ULPs comparisons don't matter
-    }
-    IsMissingFn miss1_, miss2_;
-    const T eps_;
-};
-
-
-/// Compare two values (possibly missing) with relative tolerance
-template< typename T >
-struct CompareValuesRelativeToleranceFn : ACompareBinFn<T> {
-    CompareValuesRelativeToleranceFn( T epsilon,
-            const double& missingValue1=std::numeric_limits<double>::quiet_NaN(),
-            const double& missingValue2=std::numeric_limits<double>::quiet_NaN() ) :
-        miss1_(missingValue1),
-        miss2_(missingValue2),
-        eps_(epsilon) {
-        ASSERT(eps_>=0.);
-    }
-    bool operator()(const T& v1, const T& v2) {
-        if (miss1_(v1) || miss2_(v2))
-            return (miss1_(v1) && miss2_(v2));
-        const T dx = std::abs(v1 - v2);
-        const T x = std::max(std::numeric_limits<T>::epsilon(), std::max(std::abs(v1), std::abs(v2)));
-        return (dx/x <= eps_);
-    }
-    IsMissingFn miss1_, miss2_;
-    const T eps_;
 };
 
 

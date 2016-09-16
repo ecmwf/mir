@@ -24,16 +24,6 @@ list(
     APPEND mir_srcs
     action/calc/FormulaAction.cc
     action/calc/FormulaAction.h
-    action/compare/Compare.cc
-    action/compare/Compare.h
-    action/compare/CompareDifferenceNorms.cc
-    action/compare/CompareDifferenceNorms.h
-    action/compare/CompareMetadata.cc
-    action/compare/CompareMetadata.h
-    action/compare/CompareStatistics.cc
-    action/compare/CompareStatistics.h
-    action/compare/CompareValues.cc
-    action/compare/CompareValues.h
     action/context/Context.cc
     action/context/Context.h
     action/filter/AdjustWinds.cc
@@ -102,12 +92,22 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/statistics/CentralMoments.cc
-    action/statistics/CentralMoments.h
+    action/statistics/AngleCentralMoments.cc
+    action/statistics/AngleCentralMoments.h
+    action/statistics/AngleStatistics.cc
+    action/statistics/AngleStatistics.h
+    action/statistics/CountOutsideRange.cc
+    action/statistics/CountOutsideRange.h
     action/statistics/PNorms.cc
     action/statistics/PNorms.h
+    action/statistics/ScalarCentralMoments.cc
+    action/statistics/ScalarCentralMoments.h
+    action/statistics/ScalarStatistics.cc
+    action/statistics/ScalarStatistics.h
     action/statistics/Statistics.cc
     action/statistics/Statistics.h
+    action/statistics/detail/AngleStatistics.h
+    action/statistics/detail/ScalarStatistics.h
     action/transform/Sh2GriddedTransform.cc
     action/transform/Sh2GriddedTransform.h
     action/transform/Sh2NamedGrid.cc

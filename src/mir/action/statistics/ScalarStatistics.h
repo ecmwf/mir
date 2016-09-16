@@ -11,47 +11,39 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_compare_CompareStatistics_h
-#define mir_action_compare_CompareStatistics_h
+#ifndef mir_action_statistics_ScalarStatistics_h
+#define mir_action_statistics_ScalarStatistics_h
 
-#include "mir/action/compare/Compare.h"
-
-
-namespace mir {
-namespace data {
-class MIRField;
-}
-namespace param {
-class MIRParametrisation;
-}
-}
+#include <iosfwd>
+#include "eckit/exception/Exceptions.h"
+#include "mir/action/statistics/Statistics.h"
+#include "mir/action/statistics/detail/ScalarStatistics.h"
+#include "mir/data/MIRField.h"
+#include "mir/param/SimpleParametrisation.h"
+#include "mir/util/MapKeyValue.h"
 
 
 namespace mir {
 namespace action {
-namespace compare {
+namespace statistics {
 
 
 /**
- * @brief Compare MIRField's using the statistics of their field values
+ * @brief Calculate statistics on a MIRField
  */
-class CompareStatistics : public Compare {
+class ScalarStatistics : public Statistics {
 public:
-
-    // -- Types
-    // None
 
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    CompareStatistics(const param::MIRParametrisation& parametrisation) :
-        Compare(parametrisation) {
-    }
+    ScalarStatistics(const param::MIRParametrisation&);
 
     // -- Destructor
-    // None
+
+    virtual ~ScalarStatistics() {}
 
     // -- Convertors
     // None
@@ -60,10 +52,13 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    /// Online statistics update
+    void operator+=(const ScalarStatistics&);
 
     // -- Overridden methods
-    // None
+
+    bool sameAs(const Action&) const;
 
     // -- Class members
     // None
@@ -74,25 +69,15 @@ public:
 protected:
 
     // -- Members
-
-    /// Comparison options
     // None
 
     // -- Methods
-
-    /// @returns report on field statistics (scalar quantity)
-    CompareResults getFieldStatisticsScalar(const data::MIRField&) const;
-
-    /// @returns report on field statistics (angular quantity)
-    CompareResults getFieldStatisticsAngleDegrees(const data::MIRField&) const;
-
+    // None
 
     // -- Overridden methods
 
-    /// @return if fields compare successfuly
-    bool compare(
-            const data::MIRField& field1, const param::MIRParametrisation& param1,
-            const data::MIRField& field2, const param::MIRParametrisation& param2 ) const;
+    /// Calculate statistics
+    void calculate(const data::MIRField&, Results&) const;
 
     // -- Class members
     // None
@@ -103,7 +88,8 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    mutable detail::ScalarStatistics<double> stats_;
 
     // -- Methods
     // None
@@ -123,7 +109,7 @@ private:
 };
 
 
-}  // namespace compare
+}  // namespace statistics
 }  // namespace action
 }  // namespace mir
 

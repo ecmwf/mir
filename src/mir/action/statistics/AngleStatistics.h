@@ -11,11 +11,12 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_CentralMoments_h
-#define mir_action_statistics_CentralMoments_h
+#ifndef mir_action_statistics_AngleStatistics_h
+#define mir_action_statistics_AngleStatistics_h
 
 #include <iosfwd>
 #include "eckit/exception/Exceptions.h"
+#include "mir/action/statistics/detail/AngleStatistics.h"
 #include "mir/action/statistics/Statistics.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -30,7 +31,7 @@ namespace statistics {
 /**
  * @brief Calculate statistics on a MIRField
  */
-class CentralMoments : public Statistics {
+class AngleStatistics : public Statistics {
 public:
 
     // -- Exceptions
@@ -38,11 +39,11 @@ public:
 
     // -- Constructors
 
-    CentralMoments(const param::MIRParametrisation&);
+    AngleStatistics(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~CentralMoments() {}
+    virtual ~AngleStatistics() {}
 
     // -- Convertors
     // None
@@ -51,7 +52,9 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    /// Online statistics update
+    void operator+=(const AngleStatistics&);
 
     // -- Overridden methods
 
@@ -85,7 +88,8 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    mutable detail::AngleStatistics<double> stats_;
 
     // -- Methods
     // None

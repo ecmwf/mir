@@ -11,7 +11,7 @@
 /// @date Aug 2016
 
 
-#include "mir/action/statistics/PNorms.h"
+#include "mir/action/statistics/CountOutsideRange.h"
 
 #include <sstream>
 
@@ -21,23 +21,23 @@ namespace action {
 namespace statistics {
 
 
-PNorms::PNorms(const param::MIRParametrisation& parametrisation) :
+CountOutsideRange::CountOutsideRange(const param::MIRParametrisation& parametrisation) :
     Statistics(parametrisation) {
 }
 
 
-void PNorms::operator+=(const PNorms& other) {
+void CountOutsideRange::operator+=(const CountOutsideRange& other) {
     stats_ += other.stats_;
 }
 
 
-bool PNorms::sameAs(const action::Action& other) const {
-    const PNorms* o = dynamic_cast<const PNorms*>(&other);
+bool CountOutsideRange::sameAs(const action::Action& other) const {
+    const CountOutsideRange* o = dynamic_cast<const CountOutsideRange*>(&other);
     return o; //(o && options_ == o->options_);
 }
 
 
-void PNorms::calculate(const data::MIRField& field, Results& results) const {
+void CountOutsideRange::calculate(const data::MIRField& field, Results& results) const {
     results.reset();
 
     util::compare::IsMissingFn isMissing( field.hasMissing()?
@@ -66,17 +66,15 @@ void PNorms::calculate(const data::MIRField& field, Results& results) const {
             head = s.str();
         }
 
-        results.set(head + " normL1", stats_.normL1());
-        results.set(head + " normL2", stats_.normL2());
-        results.set(head + " normLinfinity", stats_.normLinfinity());
-        results.set(head + " missing", missing);
+        results.set(head + "count", stats_.count());
+        results.set(head + "missing", missing);
+
     }
 }
 
 
 namespace {
-// Name (non-)capitalized according to: https://en.wikipedia.org/wiki/Lp_space
-static StatisticsBuilder<PNorms> statistics("p-norms");
+static StatisticsBuilder<CountOutsideRange> statistics("CountOutsideRange");
 }
 
 

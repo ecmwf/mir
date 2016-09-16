@@ -32,8 +32,8 @@ namespace statistics {
 template< typename T >
 struct CountMissingValuesFn : compare::ACompareBinFn<T> {
 protected:
-    const compare::IsMissingFn isMissing1_;
-    const compare::IsMissingFn isMissing2_;
+    compare::IsMissingFn isMissing1_;
+    compare::IsMissingFn isMissing2_;
     size_t countMissing1_;
     size_t countMissing2_;
     size_t countDifferencesMissing_;
@@ -44,13 +44,15 @@ public:
 
     CountMissingValuesFn(
             const double& missingValue1=std::numeric_limits<double>::quiet_NaN(),
-            const double& missingValue2=std::numeric_limits<double>::quiet_NaN() ) :
-        isMissing1_(missingValue1),
-        isMissing2_(missingValue2) {
-        reset();
+            const double& missingValue2=std::numeric_limits<double>::quiet_NaN() ) {
+        reset(missingValue1, missingValue2);
     }
 
-    void reset() {
+    void reset(
+            const double& missingValue1=std::numeric_limits<double>::quiet_NaN(),
+            const double& missingValue2=std::numeric_limits<double>::quiet_NaN() ) {
+        isMissing1_.reset(missingValue1);
+        isMissing2_.reset(missingValue2);
         countMissing1_   = 0;
         countMissing2_   = 0;
         countDifferencesMissing_ = 0;
@@ -93,7 +95,7 @@ public:
         return false;
     }
 
-    bool operator+=(const CountMissingValuesFn& other) const {
+    bool operator+=(const CountMissingValuesFn& other) {
         countMissing1_           += other.countMissing1_;
         countMissing2_           += other.countMissing2_;
         countDifferencesMissing_ += other.countDifferencesMissing_;
@@ -108,7 +110,7 @@ public:
  * Counter unary operator functor: outside range
  */
 template< typename T >
-struct CountValueOutsideRangeFn {
+struct CountOutsideRangeFn {
 protected:
     const T lowerLimit_;
     const T upperLimit_;
@@ -116,7 +118,7 @@ protected:
 
 public:
 
-    CountValueOutsideRangeFn(
+    CountOutsideRangeFn(
             const T& lowerLimit=std::numeric_limits<T>::quiet_NaN(),
             const T& upperLimit=std::numeric_limits<T>::quiet_NaN() ) :
         lowerLimit_(lowerLimit),
@@ -136,7 +138,7 @@ public:
         return true;
     }
 
-    bool operator+=(const CountValueOutsideRangeFn& other) const {
+    bool operator+=(const CountOutsideRangeFn& other) {
         count_ += other.count_;
         return true;
     }
@@ -148,7 +150,7 @@ public:
  * @note: operator+= (the pairwise version) invalidates minIndex() and maxIndex() because they are local to the functor
  */
 template< typename T >
-struct ScalarValueMinMaxFn {
+struct ScalarMinMaxFn {
 private:
     T min_;
     T max_;
@@ -158,7 +160,7 @@ private:
 
 public:
 
-    ScalarValueMinMaxFn() { reset(); }
+    ScalarMinMaxFn() { reset(); }
 
     void reset() {
         min_ = std::numeric_limits<T>::quiet_NaN();
@@ -180,7 +182,7 @@ public:
         return true;
     }
 
-    bool operator+=(const ScalarValueMinMaxFn& other) {
+    bool operator+=(const ScalarMinMaxFn& other) {
         if (other.count_) {
             if (min_!=min_ || min_>other.min_) { min_ = other.min_; minIndex_ = 0; }
             if (max_!=max_ || max_<other.max_) { max_ = other.max_; maxIndex_ = 0; }
@@ -199,7 +201,7 @@ public:
  * @note: kurtosis (γ_2 = μ_4/μ_2^2 - 3) is computed as kurtosis "excess", @see http://mathworld.wolfram.com/Kurtosis.html
  */
 template< typename T >
-struct ScalarValueCentralMomentsFn {
+struct ScalarCentralMomentsFn {
 private:
     T M1_;
     T M2_;
@@ -209,7 +211,7 @@ private:
 
 public:
 
-    ScalarValueCentralMomentsFn() {
+    ScalarCentralMomentsFn() {
         reset();
     }
 
@@ -247,7 +249,7 @@ public:
         return true;
     }
 
-    bool operator+=(const ScalarValueCentralMomentsFn& other) {
+    bool operator+=(const ScalarCentralMomentsFn& other) {
         if (other.count_) {
             const T n1   = T(count_);
             const T n2   = T(other.count_);
@@ -278,7 +280,7 @@ public:
  * @see https://en.wikipedia.org/wiki/Minkowski_distance
  */
 template< typename T >
-struct ScalarValuepNormsFn {
+struct ScalarpNormsFn {
 private:
     T normL1_;
     T sumSquares_;
@@ -286,7 +288,7 @@ private:
 
 public:
 
-    ScalarValuepNormsFn() {
+    ScalarpNormsFn() {
         reset();
     }
 
@@ -307,7 +309,7 @@ public:
         return true;
     }
 
-    bool operator+=(const ScalarValuepNormsFn& other) {
+    bool operator+=(const ScalarpNormsFn& other) {
         normL1_       += other.normL1_;
         sumSquares_   += other.sumSquares_;
         normLinfinity_ = std::max(normLinfinity_, other.normLinfinity_);
@@ -321,154 +323,37 @@ public:
  * @note: uses scalar statistics of complex numbers, operating on argument and discarding modulus
  */
 template< typename T >
-struct PolarAngleDegreesCentralMomentsFn : ScalarValueCentralMomentsFn< std::complex<T> > {
+struct AngleCentralMomentsFn : ScalarCentralMomentsFn< std::complex<T> > {
 private:
-    typedef ScalarValueCentralMomentsFn< std::complex<T> > complex;
+    typedef ScalarCentralMomentsFn< std::complex<T> > complex_t;
+    bool degrees_;
+    bool symmetric_;
 
 public:
 
-    PolarAngleDegreesCentralMomentsFn() : complex() {}
-    using complex::reset;
-    using complex::count;
-    using complex::operator+=;
+    AngleCentralMomentsFn() : complex_t() {}
 
-    T mean()     const { return angles::convert_complex_to_degrees<T>(complex::mean()); }
-    T variance() const { return angles::convert_complex_to_degrees<T>(complex::variance()); }
-    T skewness() const { return angles::convert_complex_to_degrees<T>(complex::skewness()); }  // works, but is it meaningful for circular quantities?
-    T kurtosis() const { return angles::convert_complex_to_degrees<T>(complex::kurtosis()); }  // works, but is it meaningful for circular quantities?
-    T standardDeviation() const { return std::sqrt(variance()); }
+    void reset(bool degrees=true, bool symmetric=false) {
+        complex_t::reset();
+        degrees_   = degrees;
+        symmetric_ = symmetric;
+    }
+
+    using complex_t::count;
+    using complex_t::operator+=;
+
+    T mean()     const { return angles::convert_complex_to_degrees<T>(complex_t::mean()); }
+    T variance() const { return angles::convert_complex_to_degrees<T>(complex_t::variance()); }
+    T skewness() const { return angles::convert_complex_to_degrees<T>(complex_t::skewness()); }  // works, but is it meaningful for circular quantities?
+    T kurtosis() const { return angles::convert_complex_to_degrees<T>(complex_t::kurtosis()); }  // works, but is it meaningful for circular quantities?
+    T standardDeviation() const { return std::sqrt(std::abs(variance())); }
 
     bool operator()(const T& th) {
-        return complex::operator()(angles::convert_degrees_to_complex<T>(th));
-    }
-};
-
-
-/**
- * Statistics unary operator functor: composition of above functionality (suitable for scalars)
- */
-template< typename T >
-struct ScalarValueStatistics : CountMissingValuesFn<T> {
-private:
-    ScalarValueMinMaxFn<T>         calculateMinMax_;
-    ScalarValueCentralMomentsFn<T> calculateCentralMoments_;
-    ScalarValuepNormsFn<T>         calculateNorms_;
-
-public:
-
-    ScalarValueStatistics(
-            const double& missingValue1=std::numeric_limits<double>::quiet_NaN(),
-            const double& missingValue2=std::numeric_limits<double>::quiet_NaN()) :
-        CountMissingValuesFn<T>(missingValue1, missingValue2) {
-        reset();
-    }
-
-    void reset() {
-        CountMissingValuesFn<T>::reset();
-        calculateMinMax_.reset();
-        calculateCentralMoments_.reset();
-        calculateNorms_.reset();
-    }
-
-    T min()               const { return calculateMinMax_.min(); }
-    T max()               const { return calculateMinMax_.max(); }
-    size_t minIndex()     const { return calculateMinMax_.minIndex(); }
-    size_t maxIndex()     const { return calculateMinMax_.maxIndex(); }
-
-    T mean()              const { return calculateCentralMoments_.mean(); }
-    T variance()          const { return calculateCentralMoments_.variance(); }
-    T standardDeviation() const { return calculateCentralMoments_.standardDeviation(); }
-    T skewness()          const { return calculateCentralMoments_.skewness(); }
-    T kurtosis()          const { return calculateCentralMoments_.kurtosis(); }
-
-    T normL1()            const { return calculateNorms_.normL1(); }
-    T normL2()            const { return calculateNorms_.normL2(); }
-    T normLinfinity()     const { return calculateNorms_.normLinfinity(); }
-
-    bool operator()(const T& v) {
-        return CountMissingValuesFn<T>::operator()(v)
-                && calculateMinMax_        (v)
-                && calculateCentralMoments_(v)
-                && calculateNorms_         (v);
-    }
-
-    bool operator()(const T& v1, const T& v2) {
-        if (CountMissingValuesFn<T>::operator()(v1, v2)) {
-            // if value is good for comparison
-            const T v = std::abs(v1 - v2);
-            return calculateMinMax_        (v)
-                && calculateCentralMoments_(v)
-                && calculateNorms_         (v);
-        }
-        return false;
-    }
-
-    bool operator+=(const ScalarValueStatistics& other) {
-        CountMissingValuesFn<T>::operator+=(other);
-        calculateMinMax_         += other.calculateMinMax_;
-        calculateCentralMoments_ += other.calculateCentralMoments_;
-        calculateNorms_          += other.calculateNorms_;
-        return true;
-    }
-};
-
-
-/**
- * Statistics unary operator functor: composition of above functionality (suitable for angles in [0°, 360°[)
- */
-template< typename T >
-struct PolarAngleDegreesStatistics : CountMissingValuesFn<T> {
-private:
-    ScalarValueMinMaxFn<T>               calculateMinMax_;
-    PolarAngleDegreesCentralMomentsFn<T> calculateCentralMoments_;
-
-public:
-
-    PolarAngleDegreesStatistics(
-            const double& missingValue1=std::numeric_limits<double>::quiet_NaN(),
-            const double& missingValue2=std::numeric_limits<double>::quiet_NaN()) :
-        CountMissingValuesFn<T>(missingValue1, missingValue2) {
-        calculateCentralMoments_.reset();
-    }
-
-    void reset() {
-        CountMissingValuesFn<T>::reset();
-        calculateMinMax_.reset();
-        calculateCentralMoments_.reset();
-    }
-
-    T min()               const { return calculateMinMax_.min(); }
-    T max()               const { return calculateMinMax_.max(); }
-    size_t minIndex()     const { return calculateMinMax_.minIndex(); }
-    size_t maxIndex()     const { return calculateMinMax_.maxIndex(); }
-
-    T mean()              const { return calculateCentralMoments_.mean(); }
-    T variance()          const { return calculateCentralMoments_.variance(); }
-    T standardDeviation() const { return calculateCentralMoments_.standardDeviation(); }
-
-    bool operator()(const T& v) {
-        return CountMissingValuesFn<T>::operator()(v)
-                && calculateMinMax_        (v)
-                && calculateCentralMoments_(v);
-    }
-
-    bool operator()(const T& v1, const T& v2) {
-        if (CountMissingValuesFn<T>::operator()(v1, v2)) {
-            // if value is good for comparison
-            const T angleDegreesDifference = std::abs(
-                        angles::convert_complex_to_degrees(
-                            angles::convert_degrees_to_complex( v1 - v2 ) ));
-            return calculateMinMax_        (angleDegreesDifference)
-                && calculateCentralMoments_(angleDegreesDifference);
-        }
-        return false;
-    }
-
-    bool operator+=(const PolarAngleDegreesStatistics& other) {
-        CountMissingValuesFn<T>::operator+=(other);
-        calculateMinMax_         += other.calculateMinMax_;
-        calculateCentralMoments_ += other.calculateCentralMoments_;
-        return true;
+        using namespace angles;
+        T th_normalized = degrees_? (symmetric_? between_m180_and_p180 : between_0_and_360)(th)
+                                  : (symmetric_? between_mPI_and_pPI   : between_0_and_2PI)(th);
+        return complex_t::operator()(degrees_? convert_degrees_to_complex<T>(th_normalized)
+                                             : std::polar<T>(1, th_normalized) );
     }
 };
 

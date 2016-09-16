@@ -61,6 +61,30 @@ inline double between_m180_and_p180(double a) {
 }
 
 
+/// @return normalised angle [r] in [0, 2π[ range
+inline double between_0_and_2PI(double a) {
+    while (a >= M_2_PI) {
+        a -= M_2_PI;
+    }
+    while (a < 0 ) {
+        a += M_2_PI;
+    }
+    return a;
+}
+
+
+/// @return normalised angle [p] in [-π, π] range
+inline double between_mPI_and_pPI(double a) {
+    while (a > M_PI) {
+        a -= M_2_PI;
+    }
+    while (a < -M_PI ) {
+        a += M_2_PI;
+    }
+    return a;
+}
+
+
 /// @return degree from a complex number
 template< typename T>
 T convert_complex_to_degrees(const std::complex<T>& c) {
@@ -78,34 +102,6 @@ template< typename T>
 static std::complex<T> convert_degrees_to_complex(const T& theta) {
     return std::polar<T>(1, degree_to_radian(theta));
 }
-
-
-/// Convert from Cartesian 2D to Polar representation radius and angle [°] in [0°, 360°[ range
-struct ConvertVectorCartesian2dToPolarDegrees {
-    const compare::IsMissingFn isMissing_;
-
-    ConvertVectorCartesian2dToPolarDegrees(const double& missingValue) :
-        isMissing_(missingValue) {}
-
-    double r(const double& x, const double& y) {
-        if (isMissing_(x) || isMissing_(y)) {
-            return isMissing_.missingValue_;
-        }
-        return std::sqrt(x*x + y*y);
-    }
-
-    double theta(const double& x, const double& y) {
-        if (isMissing_(x) || isMissing_(y)) {
-            return isMissing_.missingValue_;
-        }
-        else if (compare::is_approx_zero(x) && compare::is_approx_zero(y)) {
-            return 0.;
-        }
-        // [-π, π] -> [-180°, 180°]
-        return radian_to_degree(std::atan2(y, x));
-    }
-
-};
 
 
 }  // namespace angles

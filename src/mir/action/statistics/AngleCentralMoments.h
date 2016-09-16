@@ -11,8 +11,8 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_pNorms_h
-#define mir_action_statistics_pNorms_h
+#ifndef mir_action_statistics_AngleCentralMoments_h
+#define mir_action_statistics_AngleCentralMoments_h
 
 #include <iosfwd>
 #include "eckit/exception/Exceptions.h"
@@ -31,7 +31,7 @@ namespace statistics {
 /**
  * @brief Calculate statistics on a MIRField
  */
-class PNorms : public Statistics {
+class AngleCentralMoments : public Statistics {
 public:
 
     // -- Exceptions
@@ -39,11 +39,11 @@ public:
 
     // -- Constructors
 
-    PNorms(const param::MIRParametrisation&);
+    AngleCentralMoments(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~PNorms() {}
+    virtual ~AngleCentralMoments() {}
 
     // -- Convertors
     // None
@@ -54,7 +54,7 @@ public:
     // -- Methods
 
     /// Online statistics update
-    void operator+=(const PNorms&);
+    void operator+=(const AngleCentralMoments&);
 
     // -- Overridden methods
 
@@ -89,7 +89,7 @@ private:
 
     // -- Members
 
-    mutable util::statistics::ScalarpNormsFn<double> stats_;
+    mutable util::statistics::AngleCentralMomentsFn<double> stats_;
 
     // -- Methods
     // None

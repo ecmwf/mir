@@ -21,7 +21,6 @@
 #include "eckit/runtime/Tool.h"
 #include "eckit/types/FloatCompare.h"
 #include "mir/action/context/Context.h"
-#include "mir/action/compare/Compare.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -267,7 +266,7 @@ void MIRCompare::run() {
         real_same_.reset( new FloatApproxCompare<double>(0, user_ulps_) );
     }
 
-#if 1
+#if 0
     const char* ops[] = { "metadata", "statistics", "differenceNorms", "values", 0 };
     size_t i = 0;
     while (ops[i]) {

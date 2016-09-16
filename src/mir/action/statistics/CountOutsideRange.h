@@ -11,47 +11,39 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_compare_CompareMetadata_h
-#define mir_action_compare_CompareMetadata_h
+#ifndef mir_action_statistics_CountOutsideRange_h
+#define mir_action_statistics_CountOutsideRange_h
 
-#include "mir/action/compare/Compare.h"
-
-
-namespace mir {
-namespace data {
-class MIRField;
-}
-namespace param {
-class MIRParametrisation;
-}
-}
+#include <iosfwd>
+#include "eckit/exception/Exceptions.h"
+#include "mir/action/statistics/Statistics.h"
+#include "mir/data/MIRField.h"
+#include "mir/param/SimpleParametrisation.h"
+#include "mir/util/MapKeyValue.h"
+#include "mir/util/Statistics.h"
 
 
 namespace mir {
 namespace action {
-namespace compare {
+namespace statistics {
 
 
 /**
- * @brief Compare MIRField's using their metadata
+ * @brief Calculate statistics on a MIRField
  */
-class CompareMetadata : public Compare {
+class CountOutsideRange : public Statistics {
 public:
-
-    // -- Types
-    // None
 
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    CompareMetadata(const param::MIRParametrisation& parametrisation) :
-        Compare(parametrisation) {
-    }
+    CountOutsideRange(const param::MIRParametrisation&);
 
     // -- Destructor
-    // None
+
+    virtual ~CountOutsideRange() {}
 
     // -- Convertors
     // None
@@ -60,10 +52,13 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    /// Online statistics update
+    void operator+=(const CountOutsideRange&);
 
     // -- Overridden methods
-    // None
+
+    bool sameAs(const Action&) const;
 
     // -- Class members
     // None
@@ -74,21 +69,15 @@ public:
 protected:
 
     // -- Members
-
-    /// Comparison options
     // None
 
     // -- Methods
-
-    /// @returns report field metada
-    CompareResults getFieldMetadata(const data::MIRField&, const param::MIRParametrisation&) const;
+    // None
 
     // -- Overridden methods
 
-    /// @return if fields compare successfuly
-    bool compare(
-            const data::MIRField& field1, const param::MIRParametrisation& param1,
-            const data::MIRField& field2, const param::MIRParametrisation& param2 ) const;
+    /// Calculate statistics
+    void calculate(const data::MIRField&, Results&) const;
 
     // -- Class members
     // None
@@ -99,7 +88,8 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    mutable util::statistics::CountOutsideRangeFn<double> stats_;
 
     // -- Methods
     // None
@@ -119,7 +109,7 @@ private:
 };
 
 
-}  // namespace compare
+}  // namespace statistics
 }  // namespace action
 }  // namespace mir
 
