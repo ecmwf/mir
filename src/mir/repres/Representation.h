@@ -109,7 +109,7 @@ class Representation : public eckit::Counted {
 
     virtual void setComplexPacking(grib_info&) const;
     virtual void setSimplePacking(grib_info&) const;
-    virtual void setSecondOrderPacking(grib_info&) const;
+    virtual void setGivenPacking(grib_info&) const;
 
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
 

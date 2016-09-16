@@ -43,8 +43,8 @@ void Gridded::setSimplePacking(grib_info &info) const {
 }
 
 
-void Gridded::setSecondOrderPacking(grib_info &info) const {
-    info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_SECOND_ORDER;
+void Gridded::setGivenPacking(grib_info &info) const {
+    // The packing_type is set by the caller
 }
 
 

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2016 ECMWF.
+ * (C) Copyright 1996-2015 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,24 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded_H
-#define Gridded_H
-
-#include "mir/repres/Representation.h"
+#ifndef JPEG2000_H
+#define JPEG2000_H
 
 
-namespace mir {
-namespace util {
-class MIRStatistics;
-}
-}
-
+#include "mir/packing/Packer.h"
 
 namespace mir {
-namespace repres {
+namespace packing {
 
 
-class Gridded : public Representation {
+class JPEG2000 : public Packer {
   public:
 
     // -- Exceptions
@@ -38,11 +31,11 @@ class Gridded : public Representation {
 
     // -- Contructors
 
-    Gridded(const param::MIRParametrisation&);
+    JPEG2000(const std::string &name);
 
     // -- Destructor
 
-    virtual ~Gridded();
+    virtual ~JPEG2000(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -51,7 +44,6 @@ class Gridded : public Representation {
     // None
 
     // -- Methods
-    // None
 
     // -- Overridden methods
     // None
@@ -60,16 +52,16 @@ class Gridded : public Representation {
     // None
 
     // -- Class methods
-    // None
+
 
   protected:
 
     // -- Members
 
-    Gridded();
-
     // -- Methods
-    // None
+
+
+    virtual void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -84,43 +76,34 @@ class Gridded : public Representation {
 
     // No copy allowed
 
-    Gridded(const Gridded&);
-
-    Gridded& operator=(const Gridded&);
+    JPEG2000(const JPEG2000 &);
+    JPEG2000 &operator=(const JPEG2000 &);
 
     // -- Members
     // None
 
     // -- Methods
-    // None
 
     // -- Overridden methods
-
-    virtual void setComplexPacking(grib_info&) const;
-
-    virtual void setSimplePacking(grib_info&) const;
-
-    virtual void setGivenPacking(grib_info&) const;
-
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
+    // None
 
     // -- Class members
     // None
 
     // -- Class methods
-    // None
+
+    virtual void fill(grib_info&, const repres::Representation& ) const;
+
+
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Gridded& p)
-    //  { p.print(s); return s; }
+
 
 };
 
 
-}  // namespace repres
+}  // namespace packing
 }  // namespace mir
-
-
 #endif
 

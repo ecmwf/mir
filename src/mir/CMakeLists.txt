@@ -266,6 +266,8 @@ list(
     packing/Complex.h
     packing/Packer.cc
     packing/Packer.h
+    packing/JPEG2000.cc
+    packing/JPEG2000.h
     packing/SecondOrder.cc
     packing/SecondOrder.h
     packing/Simple.cc
