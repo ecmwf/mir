@@ -106,8 +106,14 @@ list(
     action/statistics/ScalarStatistics.h
     action/statistics/Statistics.cc
     action/statistics/Statistics.h
+    action/statistics/detail/AngleCentralMomentsFn.h
     action/statistics/detail/AngleStatistics.h
+    action/statistics/detail/CountMissingValuesFn.h
+    action/statistics/detail/CountOutsideRangeFn.h
+    action/statistics/detail/ScalarCentralMomentsFn.h
+    action/statistics/detail/ScalarMinMaxFn.h
     action/statistics/detail/ScalarStatistics.h
+    action/statistics/detail/ScalarpNormsFn.h
     action/transform/Sh2GriddedTransform.cc
     action/transform/Sh2GriddedTransform.h
     action/transform/Sh2NamedGrid.cc
@@ -456,7 +462,6 @@ list(
     util/RotatedIterator.h
     util/Rotation.cc
     util/Rotation.h
-    util/Statistics.h
   )
 
 list(APPEND mir_tmpls caching/InMemoryCache.cc)

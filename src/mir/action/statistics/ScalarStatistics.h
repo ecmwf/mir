@@ -14,13 +14,10 @@
 #ifndef mir_action_statistics_ScalarStatistics_h
 #define mir_action_statistics_ScalarStatistics_h
 
-#include <iosfwd>
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/statistics/Statistics.h"
 #include "mir/action/statistics/detail/ScalarStatistics.h"
 #include "mir/data/MIRField.h"
-#include "mir/param/SimpleParametrisation.h"
-#include "mir/util/MapKeyValue.h"
 
 
 namespace mir {

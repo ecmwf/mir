@@ -14,7 +14,11 @@
 #ifndef mir_action_statistics_detail_ScalarStatistics_H
 #define mir_action_statistics_detail_ScalarStatistics_H
 
-#include "mir/util/Statistics.h"
+#include "mir/action/statistics/detail/CountMissingValuesFn.h"
+#include "mir/action/statistics/detail/ScalarCentralMomentsFn.h"
+#include "mir/action/statistics/detail/ScalarMinMaxFn.h"
+#include "mir/action/statistics/detail/ScalarStatistics.h"
+#include "mir/action/statistics/detail/ScalarpNormsFn.h"
 
 
 namespace mir {
@@ -27,12 +31,12 @@ namespace detail {
  * Statistics unary operator functor: composition of above functionality (suitable for scalars)
  */
 template< typename T >
-struct ScalarStatistics : util::statistics::CountMissingValuesFn<T> {
+struct ScalarStatistics : CountMissingValuesFn<T> {
 private:
-    util::statistics::ScalarMinMaxFn<T>         calculateMinMax_;
-    util::statistics::ScalarCentralMomentsFn<T> calculateCentralMoments_;
-    util::statistics::ScalarpNormsFn<T>         calculateNorms_;
-    typedef util::statistics::CountMissingValuesFn<T> missing_t;
+    ScalarMinMaxFn<T>         calculateMinMax_;
+    ScalarCentralMomentsFn<T> calculateCentralMoments_;
+    ScalarpNormsFn<T>         calculateNorms_;
+    typedef CountMissingValuesFn<T> missing_t;
     //NOTE: not using difference mode for the moment (2nd argument to missing_t)
 
 public:

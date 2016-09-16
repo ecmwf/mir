@@ -14,6 +14,7 @@
 #include "mir/action/statistics/PNorms.h"
 
 #include <sstream>
+#include "mir/util/Compare.h"
 
 
 namespace mir {

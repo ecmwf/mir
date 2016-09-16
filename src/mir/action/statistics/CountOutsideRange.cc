@@ -14,6 +14,7 @@
 #include "mir/action/statistics/CountOutsideRange.h"
 
 #include <sstream>
+#include "mir/util/Compare.h"
 
 
 namespace mir {

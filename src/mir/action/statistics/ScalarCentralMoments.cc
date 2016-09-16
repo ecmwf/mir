@@ -9,11 +9,12 @@
  */
 
 /// @date Aug 2016
-//
 
 #include "mir/action/statistics/ScalarCentralMoments.h"
 
 #include <sstream>
+#include "mir/data/MIRField.h"
+#include "mir/util/Compare.h"
 
 
 namespace mir {

@@ -14,13 +14,10 @@
 #ifndef mir_action_statistics_AngleCentralMoments_h
 #define mir_action_statistics_AngleCentralMoments_h
 
-#include <iosfwd>
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/statistics/Statistics.h"
+#include "mir/action/statistics/detail/AngleCentralMomentsFn.h"
 #include "mir/data/MIRField.h"
-#include "mir/param/SimpleParametrisation.h"
-#include "mir/util/MapKeyValue.h"
-#include "mir/util/Statistics.h"
 
 
 namespace mir {
@@ -89,7 +86,7 @@ private:
 
     // -- Members
 
-    mutable util::statistics::AngleCentralMomentsFn<double> stats_;
+    mutable detail::AngleCentralMomentsFn<double> stats_;
 
     // -- Methods
     // None

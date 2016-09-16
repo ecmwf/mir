@@ -14,14 +14,16 @@
 #ifndef mir_action_statistics_ScalarCentralMoments_h
 #define mir_action_statistics_ScalarCentralMoments_h
 
-#include <iosfwd>
-#include "eckit/exception/Exceptions.h"
 #include "mir/action/statistics/Statistics.h"
-#include "mir/data/MIRField.h"
-#include "mir/param/SimpleParametrisation.h"
+#include "mir/action/statistics/detail/ScalarCentralMomentsFn.h"
 #include "mir/util/MapKeyValue.h"
-#include "mir/util/Statistics.h"
 
+
+namespace mir {
+namespace action {
+class MIRField;
+}
+}
 
 namespace mir {
 namespace action {
@@ -89,7 +91,7 @@ private:
 
     // -- Members
 
-    mutable util::statistics::ScalarCentralMomentsFn<double> stats_;
+    mutable detail::ScalarCentralMomentsFn<double> stats_;
 
     // -- Methods
     // None

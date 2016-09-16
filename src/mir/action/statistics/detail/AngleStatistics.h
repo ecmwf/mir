@@ -14,7 +14,9 @@
 #ifndef mir_action_statistics_detail_AngleStatistics_H
 #define mir_action_statistics_detail_AngleStatistics_H
 
-#include "mir/util/Statistics.h"
+#include "mir/action/statistics/detail/AngleCentralMomentsFn.h"
+#include "mir/action/statistics/detail/CountMissingValuesFn.h"
+#include "mir/action/statistics/detail/ScalarMinMaxFn.h"
 
 
 namespace mir {
@@ -27,11 +29,11 @@ namespace detail {
  * Statistics unary operator functor: composition of above functionality (suitable for angles in [0°, 360°[)
  */
 template< typename T >
-struct AngleStatistics : util::statistics::CountMissingValuesFn<T> {
+struct AngleStatistics : CountMissingValuesFn<T> {
 private:
-    util::statistics::ScalarMinMaxFn<T>        calculateMinMax_;
-    util::statistics::AngleCentralMomentsFn<T> calculateCentralMoments_;
-    typedef util::statistics::CountMissingValuesFn<T> missing_t;
+    ScalarMinMaxFn<T>        calculateMinMax_;
+    AngleCentralMomentsFn<T> calculateCentralMoments_;
+    typedef CountMissingValuesFn<T> missing_t;
     //NOTE: not using difference mode for the moment (2nd argument to missing_t)
 
 public:

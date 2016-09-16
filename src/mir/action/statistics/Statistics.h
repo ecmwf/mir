@@ -17,15 +17,16 @@
 #include <iosfwd>
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/plan/Action.h"
-#include "mir/data/MIRField.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/MapKeyValue.h"
-#include "mir/util/Statistics.h"
 
 
 namespace mir {
 namespace context {
 class Context;
+}
+namespace data {
+class MIRField;
 }
 }
 
