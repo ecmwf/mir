@@ -15,6 +15,7 @@
 #include "mir/action/io/Save.h"
 
 #include <iostream>
+
 #include "mir/output/MIROutput.h"
 #include "mir/input/MIRInput.h"
 
@@ -34,11 +35,15 @@ Save::~Save() {
 bool Save::sameAs(const Action& other) const {
     const Save* o = dynamic_cast<const Save*>(&other);
     return o && input_.sameAs(o->input_) && output_.sameAs(o->output_)
-        && o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
+           && o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
 }
 
 void Save::print(std::ostream &out) const {
-    out << "Save[output=" << output_ << "]";
+    out << "Save[";
+    if (output_.printParametrisation(out, parametrisation_)) {
+        out << ",";
+    }
+    out << "output=" << output_ << "]";
 }
 
 void Save::execute(context::Context & ctx) const {

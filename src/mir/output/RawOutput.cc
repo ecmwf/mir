@@ -51,6 +51,10 @@ bool RawOutput::sameParametrisation(const param::MIRParametrisation &, const par
     NOTIMP;
 }
 
+bool RawOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
+    NOTIMP;
+}
+
 size_t RawOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
     NOTIMP;
     // size_ = input.copy(values_, count_);

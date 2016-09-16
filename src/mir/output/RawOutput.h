@@ -110,6 +110,7 @@ class RawOutput : public MIROutput {
 
     virtual bool sameAs(const MIROutput& other) const;
     virtual bool sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const;
+    virtual bool printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const;
 
 // -- Class members
     // None

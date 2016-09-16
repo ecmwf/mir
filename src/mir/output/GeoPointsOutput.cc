@@ -57,6 +57,10 @@ bool GeoPointsOutput::sameParametrisation(const param::MIRParametrisation &param
     return true;
 }
 
+bool GeoPointsOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
+    return false;
+}
+
 size_t GeoPointsOutput::save(const param::MIRParametrisation &param, context::Context &ctx) {
 
     if (!once_) {

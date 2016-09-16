@@ -98,6 +98,10 @@ bool VectorOutput::sameParametrisation(const param::MIRParametrisation &param1,
            component2_.sameParametrisation(param1, param2);
 }
 
+bool VectorOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
+    return component1_.printParametrisation(out, param);
+}
+
 void VectorOutput::print(std::ostream &out) const {
     out << "VectorOutput[" << component1_ << "," << component2_ << "]";
 }

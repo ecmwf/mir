@@ -76,8 +76,11 @@ protected:
     virtual size_t copy(const param::MIRParametrisation &, context::Context &); // Not iterpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
 
-    bool sameParametrisation(const param::MIRParametrisation &param1,
-                             const param::MIRParametrisation & param2) const;
+    virtual bool sameParametrisation(const param::MIRParametrisation &param1,
+                                     const param::MIRParametrisation & param2) const;
+
+    virtual bool printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const;
+
     // None
 
 // -- Class members
