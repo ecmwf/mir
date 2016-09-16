@@ -44,7 +44,7 @@
 #include "transi/trans.h"
 
 class TransInitor {
-  public:
+public:
     TransInitor() {
         trans_use_mpi(false); // So that even if MPI is enabled, we don't use it.
         trans_init();
@@ -55,22 +55,35 @@ class TransInitor {
 };
 
 struct TransCache {
+
+    bool inited_;
     struct Trans_t trans_;
     mir::caching::LegendreLoader *loader_;
-    TransCache(): loader_(0) {}
+
+    TransCache():
+        inited_(false),
+        loader_(0) {}
+
     void print(std::ostream& s) const {
         s << "TransCache[";
         if (loader_) s << *loader_;
         s << "]";
     }
+
     friend std::ostream& operator<<(std::ostream& out, const TransCache& e) {
         e.print(out);
         return out;
     }
 
     ~TransCache() {
-        std::cout << "Delete " << *this << std::endl;
-        trans_delete(&trans_);
+        if (inited_) {
+            std::cout << "Delete " << *this << std::endl;
+            //trans_delete(&trans_);
+        }
+        else {
+            std::cout << "Not Deleting " << *this << std::endl;
+
+        }
         delete loader_;
     }
 };
@@ -132,6 +145,8 @@ static void transform(
 
             ASSERT(trans_set_resol(&trans, pli.size(), &pli[0]) == 0);
         }
+
+        tc.inited_ = true;
 
         caching::LegendreCache cache;
         eckit::PathName path;
@@ -237,7 +252,8 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
     try {
         transform(key, parametrisation, truncation, input, output, grid, ctx);
-    } catch (...) {
+    } catch (std::exception& e) {
+        eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
         trans_handles.erase(key);
         throw;
     }
@@ -260,9 +276,10 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 
 void Sh2GriddedTransform::execute(context::Context & ctx) const {
     // ASSERT(field.dimensions() == 1); // For now
-
+#ifdef ATLAS_HAVE_TRANS
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<TransCache> use(trans_handles, ctx.statistics().transHandleCache_);
+#endif
 
     data::MIRField& field = ctx.field();
 

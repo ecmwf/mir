@@ -20,7 +20,6 @@
 
 
 #include "eckit/runtime/Tool.h"
-#include "eckit/runtime/Context.h"
 #include "eckit/io/StdFile.h"
 
 #include "mir/input/GribFileInput.h"
@@ -51,17 +50,13 @@ void MIRMakeLSM::usage(const std::string &tool) {
 
 void MIRMakeLSM::run() {
 
-    eckit::Context &ctx = eckit::Context::instance();
-    const std::string &tool = ctx.runName();
 
-    size_t argc = ctx.argc();
-
-    if (argc <= 2) {
-        usage(tool);
+    if (argc() <= 2) {
+        usage(name());
     }
 
-    mir::input::GribFileInput file(ctx.argv(1));
-    eckit::StdFile out(ctx.argv(2), "w");
+    mir::input::GribFileInput file(argv(1));
+    eckit::StdFile out(argv(2), "w");
 
     while (file.next()) {
         mir::input::MIRInput &input = file;

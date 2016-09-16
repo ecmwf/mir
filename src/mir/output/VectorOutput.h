@@ -72,6 +72,7 @@ class VectorOutput : public MIROutput {
     virtual size_t save(const param::MIRParametrisation &, context::Context &);
     virtual bool sameAs(const MIROutput &other) const ;
     virtual void print(std::ostream &out) const;
+    virtual bool sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const;
 
     // -- Class members
     // None

@@ -33,7 +33,8 @@ Save::~Save() {
 
 bool Save::sameAs(const Action& other) const {
     const Save* o = dynamic_cast<const Save*>(&other);
-    return o && input_.sameAs(o->input_) && output_.sameAs(o->output_);
+    return o && input_.sameAs(o->input_) && output_.sameAs(o->output_)
+        && o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
 }
 
 void Save::print(std::ostream &out) const {

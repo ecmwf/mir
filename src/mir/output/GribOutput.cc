@@ -94,6 +94,42 @@ static double round_ne(double x, double scale) {
 #define FIX_NE(x) x=round_ne(x, scale)
 
 
+bool GribOutput::sameParametrisation(const param::MIRParametrisation &param1,
+                                     const param::MIRParametrisation & param2) const {
+    long bits1 = -1;
+    long bits2 = -1;
+
+    param1.get("user.accuracy", bits1);
+    param2.get("user.accuracy", bits2);
+
+    if (bits1 != bits2) {
+        return false;
+    }
+
+    std::string packing1;
+    std::string packing2;
+
+    param1.get("user.packing", packing1);
+    param1.get("user.packing", packing2);
+
+    if (packing1 != packing2) {
+        return false;
+    }
+
+    long edition1 = -1;
+    long edition2 = -1;
+
+    param1.get("user.edition", edition1);
+    param2.get("user.edition", edition2);
+
+    if (edition1 != edition2) {
+        return false;
+    }
+
+
+    return true;
+}
+
 size_t GribOutput::save(const param::MIRParametrisation &parametrisation, context::Context& ctx) {
 
 
@@ -148,6 +184,11 @@ size_t GribOutput::save(const param::MIRParametrisation &parametrisation, contex
             info.packing.bitsPerValue = bits;
         }
 
+        long edition;
+        if (parametrisation.get("user.edition", edition)) {
+            info.packing.editionNumber = edition;
+        }
+
         // Ask last representation to update info
 
         field.representation()->fill(info);
@@ -171,10 +212,10 @@ size_t GribOutput::save(const param::MIRParametrisation &parametrisation, contex
                 // There is a bug in grib_api if the user ask 1 value and select second-order
                 // Once this fixed, remove this code
                 eckit::Log::debug<LibMir>() << "Field has "
-                                         << eckit::Plural(field.values(i).size(), "value")
-                                         << ", ignoring packer "
-                                         << packer
-                                         << std::endl;
+                                            << eckit::Plural(field.values(i).size(), "value")
+                                            << ", ignoring packer "
+                                            << packer
+                                            << std::endl;
 
 
             } else {
@@ -184,12 +225,12 @@ size_t GribOutput::save(const param::MIRParametrisation &parametrisation, contex
 #endif
         }
 
-        long edition = info.packing.editionNumber;
-        if(!edition) {
+        edition = info.packing.editionNumber;
+        if (!edition) {
             GRIB_CALL(grib_get_long(h, "editionNumber", &edition));
         }
 
-        double scale = edition == 1 ? 1000: 1000000;
+        double scale = edition == 1 ? 1000 : 1000000;
 
         FIX_NE(info.grid.latitudeOfFirstGridPointInDegrees);
         FIX_SW(info.grid.longitudeOfFirstGridPointInDegrees);
@@ -200,7 +241,7 @@ size_t GribOutput::save(const param::MIRParametrisation &parametrisation, contex
 // FIX(info.grid.iDirectionIncrementInDegrees);
 //             FIX(info.grid.jDirectionIncrementInDegrees);
 
-        if (LibMir::instance().debug()) {
+        if (eckit::Log::debug<LibMir>()) {
             X(info.grid.grid_type);
             X(info.grid.Ni);
             X(info.grid.Nj);
@@ -265,7 +306,7 @@ size_t GribOutput::save(const param::MIRParametrisation &parametrisation, contex
         const std::vector<double> &values = field.values(i);
 
 
-        for(auto j = values.begin(); j != values.end(); ++j) {
+        for (auto j = values.begin(); j != values.end(); ++j) {
             double x = *j;
             ASSERT(x < 3e38);
             ASSERT(x > -3e38);
@@ -276,7 +317,7 @@ size_t GribOutput::save(const param::MIRParametrisation &parametrisation, contex
         HandleFree hf(result); // Make sure handle deleted even in case of exception
 
 
-        if(err == GRIB_WRONG_GRID) {
+        if (err == GRIB_WRONG_GRID) {
             std::ostringstream oss;
 
             oss << "GRIB_WRONG_GRID: ";

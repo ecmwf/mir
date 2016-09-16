@@ -50,9 +50,16 @@ static const char* keys[] = {"class", "type", "stream", "expver",
                              "levelist", "param", 0
                             };
 
+
+
+bool GeoPointsOutput::sameParametrisation(const param::MIRParametrisation &param1,
+        const param::MIRParametrisation & param2) const {
+    return true;
+}
+
 size_t GeoPointsOutput::save(const param::MIRParametrisation &param, context::Context &ctx) {
 
-    if(!once_) {
+    if (!once_) {
         std::ostringstream oss;
         oss << "Attempt to write more than once to " << *this;
         throw eckit::SeriousBug(oss.str());

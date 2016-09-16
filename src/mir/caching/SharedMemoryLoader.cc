@@ -34,6 +34,7 @@
 
 #include "eckit/log/Bytes.h"
 #include "eckit/log/BigNum.h"
+#include "eckit/config/Resource.h"
 
 #include "eckit/log/Timer.h"
 #include "eckit/io/StdFile.h"
@@ -74,7 +75,6 @@ class AutoFDClose {
 
 class SemLocker {
 
-    static const int MAX_WAIT_LOCK = 60;
     static const int SLEEP = 1;
 
     int sem_;
@@ -85,6 +85,8 @@ class SemLocker {
     SemLocker(int s, const eckit::PathName& path) :
         sem_(s),
         path_(path) {
+
+        static const int MAX_WAIT_LOCK = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
 
         int retry = 0;
         while (retry < MAX_WAIT_LOCK) {
@@ -114,6 +116,9 @@ class SemLocker {
 
     ~SemLocker() {
         int retry = 0;
+
+        static const int MAX_WAIT_LOCK = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
+
         while (retry < MAX_WAIT_LOCK) {
             if (semop(sem_, _unlock, 1) < 0) {
                 int save = errno;

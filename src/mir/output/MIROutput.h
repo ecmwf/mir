@@ -32,7 +32,7 @@ namespace output {
 
 
 class MIROutput {
-  public:
+public:
 
 // -- Exceptions
     // None
@@ -56,7 +56,7 @@ class MIROutput {
     virtual size_t copy(const param::MIRParametrisation &, context::Context &) = 0; // Not iterpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&) = 0;
     virtual bool sameAs(const MIROutput& other) const = 0;
-
+    virtual bool sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const = 0;
 // -- Overridden methods
     // None
 
@@ -66,7 +66,7 @@ class MIROutput {
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
     // None
@@ -84,7 +84,7 @@ class MIROutput {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 
@@ -108,7 +108,7 @@ class MIROutput {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const MIROutput& p) {
+    friend std::ostream& operator<<(std::ostream& s, const MIROutput& p) {
         p.print(s);
         return s;
     }
