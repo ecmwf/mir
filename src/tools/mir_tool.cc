@@ -151,6 +151,7 @@ void MIRTool::run() {
     options.push_back(new Separator("GRIB Output"));
     options.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
     options.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
+    options.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
 
     //==============================================
     options.push_back(new Separator("Miscellaneous"));

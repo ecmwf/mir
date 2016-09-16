@@ -170,6 +170,7 @@ bool MIRJob::matches(const param::MIRParametrisation &metadata) const {
                                    "frame",
                                    "packing",
                                    "accuracy",
+                                   "edition",
                                    "checkerboard",
                                    "formula",
                                    "pattern",
