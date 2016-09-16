@@ -23,7 +23,6 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Tool.h"
-#include "mir/action/compare/Compare.h"
 #include "mir/action/statistics/Statistics.h"
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
@@ -151,9 +150,7 @@ void MIRTool::run() {
     options.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
     options.push_back(new FactoryOption<mir::caching::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
     options.push_back(new FactoryOption<mir::action::Executor>("executor", "Select wether threads are used on not"));
-    options.push_back(new SimpleOption<eckit::PathName>("compare.file", "TODO :)"));
-    options.push_back(new FactoryOption<mir::action::compare::ComparisonFactory>("compare", "TODO :)"));
-    options.push_back(new FactoryOption<mir::action::statistics::StatisticsFactory>("statistics", "TODO :)"));
+    options.push_back(new FactoryOption<mir::action::statistics::StatisticsFactory>("statistics", "Statistics methods for interpreting field values"));
 
     //==============================================
     options.push_back(new Separator("Debugging"));
