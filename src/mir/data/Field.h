@@ -78,8 +78,9 @@ public:
     const std::vector<double> &values(size_t which) const;
     std::vector<double> &direct(size_t which);   // Non-const version for direct update (Filter)
 
-    size_t paramId(size_t which) const;
-    void paramId(size_t which, size_t param);
+    void metadata(size_t which, const std::map<std::string, long>&);
+    void metadata(size_t which, const std::string& name, long value);
+    const std::map<std::string, long>& metadata(size_t which) const;
 
     void missingValue(double value);
     double missingValue() const;
@@ -131,7 +132,7 @@ private:
     // -- Members
 
     std::vector<std::vector<double> > values_;
-    std::vector<size_t > paramId_;
+    std::vector<std::map<std::string, long> > metadata_;
 
     bool hasMissing_;
     double missingValue_;

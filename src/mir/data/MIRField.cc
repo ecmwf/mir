@@ -144,19 +144,29 @@ std::vector<double> &MIRField::direct(size_t which)  {
     return field_->direct(which);
 }
 
-void MIRField::paramId(size_t which, size_t param) {
+
+void MIRField::metadata(size_t which, const std::map<std::string, long>& md) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     // std::cout << "MIRField::paramId " << *field_ << std::endl;
 
     copyOnWrite();
-    field_->paramId(which, param);
+    field_->metadata(which, md);
 }
 
-size_t MIRField::paramId(size_t which) const {
+void MIRField::metadata(size_t which, const std::string& name, long value) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    return field_->paramId(which);
+    // std::cout << "MIRField::paramId " << *field_ << std::endl;
+
+    copyOnWrite();
+    field_->metadata(which, name, value);
+}
+
+const std::map<std::string, long>& MIRField::metadata(size_t which) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    return field_->metadata(which);
 }
 
 bool MIRField::hasMissing() const {

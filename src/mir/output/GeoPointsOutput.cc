@@ -82,9 +82,10 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, context::Co
         // ASSERT(field.dimensions() == 1);
 
         param::RuntimeParametrisation runtime(param);
-        if (field.paramId(j)) {
+        auto md = field.metadata(j);
+        if (md.find("paramId") != md.end()) {
             std::ostringstream oss;
-            oss << field.paramId(j);
+            oss << md["paramId"];
             runtime.set("param", oss.str());
         }
 

@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/types/Types.h"
 
 #include "mir/data/Field.h"
 #include "mir/repres/Representation.h"
@@ -52,7 +53,7 @@ Field::Field(const repres::Representation *repres, bool hasMissing, double missi
 
 Field::Field(const Field& other):
     values_(other.values_),
-    paramId_(other.paramId_),
+    metadata_(other.metadata_),
     hasMissing_(other.hasMissing_),
     missingValue_(other.missingValue_),
     representation_(other.representation_)
@@ -126,11 +127,11 @@ void Field::print(std::ostream &out) const {
         out << ",representation=" << *representation_;
     }
 
-    if (paramId_.size()) {
+    if (metadata_.size()) {
         out << ",params=";
         char sep = '(';
-        for (size_t i = 0; i < paramId_.size(); i++) {
-            out << sep << paramId_[i];
+        for (size_t i = 0; i < metadata_.size(); i++) {
+            out << sep << metadata_[i];
             sep = ',';
         }
         out << ')';
@@ -209,24 +210,35 @@ std::vector<double> &Field::direct(size_t which)  {
     return values_[which];
 }
 
-void Field::paramId(size_t which, size_t param) {
+
+void Field::metadata(size_t which, const std::map<std::string, long>& md) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
-    while (paramId_.size() <= which) {
-        paramId_.push_back(0);
+    while (metadata_.size() <= which) {
+        metadata_.push_back(std::map<std::string, long>());
     }
-    paramId_[which] = param;
+    metadata_[which] = md;
 }
 
-size_t Field::paramId(size_t which) const {
+void Field::metadata(size_t which, const std::string& name, long value) {
+    eckit::AutoLock<const eckit::Counted> lock(this);
+
+    while (metadata_.size() <= which) {
+        metadata_.push_back(std::map<std::string, long>());
+    }
+    metadata_[which][name] = value;
+}
+
+const std::map<std::string, long>& Field::metadata(size_t which) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
 
-    if (paramId_.size() <= which) {
-        return 0;
+    if (metadata_.size() <= which) {
+        static std::map<std::string, long> empty;
+        return empty;
     }
 
-    return paramId_[which];
+    return metadata_[which];
 }
 
 bool Field::hasMissing() const {

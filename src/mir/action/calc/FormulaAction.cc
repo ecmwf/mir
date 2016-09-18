@@ -67,8 +67,7 @@ void FormulaAction::execute(context::Context & ctx) const {
 
     data::MIRField& field = ctx.field();
     for (size_t i = 0; i < field.dimensions(); i++) {
-        field.paramId(i, param_);
-
+        field.metadata(i, "paramId", param_);
     }
 
 }

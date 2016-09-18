@@ -173,8 +173,8 @@ void VOD2UVTransform::execute(context::Context & ctx) const {
     field.update(result_v, 1);
 
     // TODO: Find a way to get these numbers
-    field.paramId(0, 131);
-    field.paramId(1, 132);
+    field.metadata(0, "paramId", 131);
+    field.metadata(1, "paramId", 132);
 }
 
 
