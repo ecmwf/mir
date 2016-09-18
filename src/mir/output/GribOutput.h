@@ -19,6 +19,7 @@
 #include "mir/output/MIROutput.h"
 
 struct grib_info;
+struct grib_handle;
 
 namespace eckit {
 class DataHandle;
@@ -70,7 +71,7 @@ protected:
 
 // -- Methods
 
-    virtual void fill(grib_info& info, const param::MIRParametrisation &parametrisation, context::Context& ctx, size_t i) const;
+    virtual void fill(grib_handle* handle, grib_info& info) const;
 
 // -- Overridden methods
     // From MIROutput
