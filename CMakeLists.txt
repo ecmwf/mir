@@ -16,7 +16,7 @@ ecbuild_requires_macro_version( 1.9 )
 
 ###############################################################################
 # project
-ecbuild_add_option( FEATURE ECCODES DESCRIPTION "" DEFAULT ONb )
+ecbuild_add_option( FEATURE ECCODES DESCRIPTION "" DEFAULT ON )
 
 if( HAVE_ECCODES)
   ecbuild_use_package( PROJECT eccodes VERSION 0.14 REQUIRED )
