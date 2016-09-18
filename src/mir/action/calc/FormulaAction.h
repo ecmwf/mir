@@ -89,7 +89,7 @@ class FormulaAction : public Action {
 // -- Members
 
     eckit::ScopedPtr<util::Formula> formula_;
-    long param_;
+    std::map<std::string, long> metadata_;
 
 // -- Methods
     // None

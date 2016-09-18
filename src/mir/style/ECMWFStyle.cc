@@ -86,21 +86,21 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
         sh2sh(plan);
 
         if (parametrisation_.get("user.formula.spectral", formula)) {
-            long param = 0;
+            std::string metadata;
             // paramId for the results of formulas
-            parametrisation_.get("user.formula.spectral.param", param);
+            parametrisation_.get("user.formula.spectral.metadata", metadata);
 
-            plan.add("calc.formula", "formula", formula, "formula.param", param);
+            plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
         }
 
         if (user_wants_gridded) {
             sh2grid(plan);
 
             if (parametrisation_.get("user.formula.gridded", formula)) {
-                long param = 0;
+                std::string metadata;
                 // paramId for the results of formulas
-                parametrisation_.get("user.formula.gridded.param", param);
-                plan.add("calc.formula", "formula", formula, "formula.param", param);
+                parametrisation_.get("user.formula.gridded.metadata", metadata);
+                plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
             }
         }
     }
@@ -108,10 +108,10 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
     if (field_gridded) {
 
         if (parametrisation_.get("user.formula.gridded", formula)) {
-            long param = 0;
+            std::string metadata;
             // paramId for the results of formulas
-            parametrisation_.get("user.formula.gridded.param", param);
-            plan.add("calc.formula", "formula", formula, "formula.param", param);
+            parametrisation_.get("user.formula.gridded.metadata", metadata);
+            plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
         }
         grid2grid(plan);
     }
@@ -225,10 +225,10 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
     std::string formula;
     if (parametrisation_.get("user.formula.prologue", formula)) {
-        long param = 0;
+        std::string metadata;
         // paramId for the results of formulas
-        parametrisation_.get("user.formula.prologue.param", param);
-        plan.add("calc.formula", "formula", formula, "formula.param", param);
+        parametrisation_.get("user.formula.prologue.metadata", metadata);
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 }
 
@@ -248,10 +248,10 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 
     std::string formula;
     if (parametrisation_.get("user.formula.epilogue", formula)) {
-        long param = 0;
+        std::string metadata;
         // paramId for the results of formulas
-        parametrisation_.get("user.formula.epilogue.param", param);
-        plan.add("calc.formula", "formula", formula, "formula.param", param);
+        parametrisation_.get("user.formula.epilogue.metadata", metadata);
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
     std::string epilogue;

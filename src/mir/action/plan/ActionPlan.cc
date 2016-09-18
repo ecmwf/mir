@@ -95,6 +95,16 @@ void ActionPlan::add(const std::string &name, const std::string &param1,  const 
     actions_.push_back(ActionFactory::build(name, *runtime));
 }
 
+void ActionPlan::add(const std::string &name, const std::string &param1,  const std::string& value1, const std::string &param2, const std::string& value2) {
+    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
+    runtimes_.push_back(runtime);
+
+    runtime->set(param1, value1);
+    runtime->set(param2, value2);
+
+    actions_.push_back(ActionFactory::build(name, *runtime));
+}
+
 
 void ActionPlan::execute(context::Context & ctx) const {
     for (std::vector<Action *>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {

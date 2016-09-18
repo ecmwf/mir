@@ -62,6 +62,7 @@ class ActionPlan {
     void add(const std::string& name, const std::string&, param::DelayedParametrisation*);
     void add(const std::string& name, const std::string&, const std::string&);
     void add(const std::string& name, const std::string&, const std::string&, const std::string&, long);
+    void add(const std::string& name, const std::string&, const std::string&, const std::string&, const std::string&);
 
     void add(Action* action);
 

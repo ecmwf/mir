@@ -25,18 +25,36 @@
 #include "mir/util/Formula.h"
 #include "mir/data/MIRField.h"
 
+#include "eckit/parser/Tokenizer.h"
+#include "eckit/types/Types.h"
+#include "eckit/utils/Translator.h"
 namespace mir {
 namespace action {
 
 FormulaAction::FormulaAction(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation),
-    param_(0) {
+    Action(parametrisation) {
 
     std::string formula;
     ASSERT(parametrisation.get("formula", formula));
 
-    ASSERT(parametrisation.get("formula.param", param_));
-    ASSERT(param_);
+    std::string metadata;
+    ASSERT(parametrisation.get("formula.metadata", metadata));
+
+    // TODO: create a parser
+    eckit::Tokenizer parse1(",");
+    eckit::Tokenizer parse2("=");
+    eckit::Translator<std::string, long> s2l;
+
+    std::vector<std::string> v;
+    parse1(metadata, v);
+
+    for (auto j = v.begin(); j != v.end(); ++j) {
+        std::vector<std::string> w;
+        parse2(*j, w);
+        ASSERT(w.size() == 2);
+
+        metadata_[w[0]] = s2l(w[1]);
+    }
 
     std::istringstream in(formula);
     mir::util::FormulaParser p(in);
@@ -55,7 +73,7 @@ bool FormulaAction::sameAs(const Action& other) const {
 
 
 void FormulaAction::print(std::ostream &out) const {
-    out << "FormulaAction[" << *formula_ << ", param=" << param_ << "]";
+    out << "FormulaAction[" << *formula_ << ", metadata=" << metadata_ << "]";
 }
 
 
@@ -67,7 +85,7 @@ void FormulaAction::execute(context::Context & ctx) const {
 
     data::MIRField& field = ctx.field();
     for (size_t i = 0; i < field.dimensions(); i++) {
-        field.metadata(i, "paramId", param_);
+        field.metadata(i, metadata_);
     }
 
 }
