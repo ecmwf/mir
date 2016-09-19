@@ -71,6 +71,8 @@ protected:
     virtual void grid2grid(action::ActionPlan&) const;
     virtual void epilogue(action::ActionPlan&) const;
 
+    virtual void selectWindComponents(action::ActionPlan&) const;
+
 // -- Overridden methods
     // None
 

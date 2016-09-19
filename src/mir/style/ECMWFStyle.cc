@@ -34,6 +34,17 @@ ECMWFStyle::ECMWFStyle(const param::MIRParametrisation &parametrisation):
 ECMWFStyle::~ECMWFStyle() {
 }
 
+void ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
+    bool u_only = false;
+    if (parametrisation_.get("u-only", u_only) && u_only) {
+        plan.add("select.field", "which", long(0));
+    }
+    bool v_only = false;
+    if (parametrisation_.get("v-only", v_only) && v_only) {
+        plan.add("select.field", "which", long(1));
+    }
+}
+
 
 void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
@@ -103,6 +114,9 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
                 plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
             }
         }
+        else {
+            selectWindComponents(plan);
+        }
     }
 
     if (field_gridded) {
@@ -134,6 +148,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
             plan.add("interpolate.grid2rotated-regular-ll");
             if (wind || vod2uv) {
                 plan.add("filter.adjust-winds");
+                selectWindComponents(plan);
             }
         } else {
             plan.add("interpolate.grid2regular-ll");
@@ -145,6 +160,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
             plan.add("interpolate.grid2rotated-reduced-gg");
             if (wind || vod2uv) {
                 plan.add("filter.adjust-winds");
+                selectWindComponents(plan);
             }
         } else {
             plan.add("interpolate.grid2reduced-gg");
@@ -156,6 +172,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
             plan.add("interpolate.grid2rotated-regular-gg");
             if (wind || vod2uv) {
                 plan.add("filter.adjust-winds");
+                selectWindComponents(plan);
             }
         } else {
             plan.add("interpolate.grid2regular-gg");
@@ -167,6 +184,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
             plan.add("interpolate.grid2rotated-octahedral-gg");
             if (wind || vod2uv) {
                 plan.add("filter.adjust-winds");
+                selectWindComponents(plan);
             }
         } else {
             plan.add("interpolate.grid2octahedral-gg");
@@ -186,6 +204,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
             plan.add("interpolate.grid2rotated-namedgrid");
             if (wind || vod2uv) {
                 plan.add("filter.adjust-winds");
+                selectWindComponents(plan);
             }
         } else {
             plan.add("interpolate.grid2namedgrid");
@@ -200,6 +219,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
             plan.add("interpolate.grid2rotated-griddef");
             if (wind || vod2uv) {
                 plan.add("filter.adjust-winds");
+                selectWindComponents(plan);
             }
         } else {
             plan.add("interpolate.grid2griddef");

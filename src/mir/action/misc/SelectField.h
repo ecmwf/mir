@@ -13,30 +13,29 @@
 /// @date Apr 2015
 
 
-#ifndef VOD2UVTransform_H
-#define VOD2UVTransform_H
+#ifndef SelectField_H
+#define SelectField_H
 
 #include "mir/action/plan/Action.h"
 
-#include <vector>
 
 namespace mir {
 namespace action {
 
 
-class VOD2UVTransform : public Action {
-  public:
+class SelectField : public Action {
+public:
 
 // -- Exceptions
     // None
 
 // -- Contructors
 
-    VOD2UVTransform(const param::MIRParametrisation&);
+    SelectField(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~VOD2UVTransform(); // Change to virtual if base class
+    virtual ~SelectField(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -50,13 +49,15 @@ class VOD2UVTransform : public Action {
 // -- Overridden methods
     // None
 
+    virtual void execute(context::Context & ctx) const;
+
 // -- Class members
     // None
 
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
     // None
@@ -74,23 +75,23 @@ class VOD2UVTransform : public Action {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 
-    VOD2UVTransform(const VOD2UVTransform&);
-    VOD2UVTransform& operator=(const VOD2UVTransform&);
+    SelectField(const SelectField&);
+    SelectField& operator=(const SelectField&);
 
 // -- Members
 
-// -- Methods
+    size_t which_;
 
+// -- Methods
+    // None
 
 // -- Overridden methods
 
     virtual bool sameAs(const Action& other) const;
-
-    virtual void execute(context::Context & ctx) const;
 
 // -- Class members
     // None
@@ -100,8 +101,8 @@ class VOD2UVTransform : public Action {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const VOD2UVTransform& p)
-    //	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const SelectField& p)
+    //  { p.print(s); return s; }
 
 };
 

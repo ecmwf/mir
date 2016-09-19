@@ -72,6 +72,10 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
         }
     }
 
+     if (!parametrisation_.has("user.rotation")) {
+        selectWindComponents(plan);
+    }
+
     if (parametrisation_.has("user.grid")) {
 
         long intermediate_gaussian = 0;
@@ -95,6 +99,7 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
 
             if (wind || vod2uv) {
                 plan.add("filter.adjust-winds");
+                selectWindComponents(plan);
             }
         }
 

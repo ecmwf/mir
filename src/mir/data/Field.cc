@@ -100,11 +100,18 @@ void Field::dimensions(size_t size)  {
 void Field::select(size_t which)  {
     eckit::AutoLock<const eckit::Counted> lock(this);
     ASSERT(which < values_.size());
+
+    metadata_.resize(values_.size());
+
+
     if (which != 0) {
+        std::swap(metadata_[0], metadata_[which]);
         std::swap(values_[0], values_[which]);
+
     }
 
-    return values_.resize(1);
+    metadata_.resize(1);
+    values_.resize(1);
 }
 
 Field::~Field() {

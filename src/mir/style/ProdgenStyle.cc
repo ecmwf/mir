@@ -45,6 +45,10 @@ void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("autoresol", autoresol);
     ASSERT(!autoresol);
 
+    if (!parametrisation_.has("user.rotation")) {
+        selectWindComponents(plan);
+    }
+
     if (parametrisation_.has("user.rotation")) {
 
         plan.add("transform.sh2octahedral-gg",

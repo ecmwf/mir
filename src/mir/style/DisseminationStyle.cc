@@ -44,6 +44,10 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("autoresol", autoresol);
     ASSERT(!autoresol);
 
+    if (!parametrisation_.has("user.rotation")) {
+        selectWindComponents(plan);
+    }
+
     plan.add("transform.sh2octahedral-gg",
              "octahedral", new AutoGaussian(parametrisation_));
 

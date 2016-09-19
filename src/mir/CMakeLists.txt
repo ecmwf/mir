@@ -70,6 +70,8 @@ list(
     action/io/Save.h
     action/misc/AreaCropper.cc
     action/misc/AreaCropper.h
+    action/misc/SelectField.cc
+    action/misc/SelectField.h
     action/misc/CheckerBoard.cc
     action/misc/CheckerBoard.h
     action/misc/ReferencePattern.cc
