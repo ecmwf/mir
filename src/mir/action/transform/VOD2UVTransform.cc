@@ -78,8 +78,8 @@ void VOD2UVTransform::execute(context::Context & ctx) const {
     const std::vector<double> &field_d = field.values(1);
 
     eckit::Log::debug<LibMir>() << "VOD2UVTransform truncation=" << truncation
-                             << ", size=" << size
-                             << ", values=" << field_vo.size() << std::endl;
+                                << ", size=" << size
+                                << ", values=" << field_vo.size() << std::endl;
 
     ASSERT(field_vo.size() == size);
     ASSERT(field_d.size() == size);
@@ -166,15 +166,38 @@ void VOD2UVTransform::execute(context::Context & ctx) const {
         k++;
     }
 
-    // std::cout << k << " " << size << std::endl;
-    // ASSERT(k == size);
+    bool u_only = false;
+    parametrisation_.get("u-only", u_only);
 
-    field.update(result_u, 0);
-    field.update(result_v, 1);
+    bool v_only = false;
+    parametrisation_.get("v-only", v_only);
 
-    // TODO: Find a way to get these numbers
-    field.metadata(0, "paramId", 131);
-    field.metadata(1, "paramId", 132);
+    if (u_only || v_only) {
+        ASSERT(u_only != v_only);
+
+        field.dimensions(1);
+
+        if (u_only) {
+            field.update(result_u, 0);
+            field.metadata(0, "paramId", 131);
+        }
+
+        if (v_only) {
+            field.update(result_v, 0);
+            field.metadata(0, "paramId", 132);
+        }
+    }
+    else {
+        // std::cout << k << " " << size << std::endl;
+        // ASSERT(k == size);
+
+        field.update(result_u, 0);
+        field.update(result_v, 1);
+
+        // TODO: Find a way to get these numbers
+        field.metadata(0, "paramId", 131);
+        field.metadata(1, "paramId", 132);
+    }
 }
 
 
