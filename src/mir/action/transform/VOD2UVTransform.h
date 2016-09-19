@@ -83,6 +83,9 @@ class VOD2UVTransform : public Action {
 
 // -- Members
 
+    bool u_only_;
+    bool v_only_;
+
 // -- Methods
 
 

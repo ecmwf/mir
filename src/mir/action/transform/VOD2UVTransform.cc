@@ -34,7 +34,11 @@ namespace action {
 
 
 VOD2UVTransform::VOD2UVTransform(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation) {
+    Action(parametrisation),
+    u_only_(false),
+    v_only_(false) {
+    parametrisation_.get("u-only", u_only_);
+    parametrisation_.get("v-only", v_only_);
 }
 
 VOD2UVTransform::~VOD2UVTransform() {
@@ -43,12 +47,16 @@ VOD2UVTransform::~VOD2UVTransform() {
 
 bool VOD2UVTransform::sameAs(const Action& other) const {
     const VOD2UVTransform* o = dynamic_cast<const VOD2UVTransform*>(&other);
-    return o;
+    return o && (u_only_ == o->u_only_) && (v_only_ == o->v_only_);
 }
 
 
 void VOD2UVTransform::print(std::ostream &out) const {
     out << "VOD2UVTransform[";
+
+    if (u_only_) {out << "u-only";}
+    if (v_only_) {out << "v-only";}
+
     out << "]";
 }
 
@@ -166,23 +174,17 @@ void VOD2UVTransform::execute(context::Context & ctx) const {
         k++;
     }
 
-    bool u_only = false;
-    parametrisation_.get("u-only", u_only);
-
-    bool v_only = false;
-    parametrisation_.get("v-only", v_only);
-
-    if (u_only || v_only) {
-        ASSERT(u_only != v_only);
+    if (u_only_ || v_only_) {
+        ASSERT(u_only_ != v_only_);
 
         field.dimensions(1);
 
-        if (u_only) {
+        if (u_only_) {
             field.update(result_u, 0);
             field.metadata(0, "paramId", 131);
         }
 
-        if (v_only) {
+        if (v_only_) {
             field.update(result_v, 0);
             field.metadata(0, "paramId", 132);
         }
