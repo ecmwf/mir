@@ -13,24 +13,32 @@
 /// @date Apr 2015
 
 
-#include "eckit/runtime/Tool.h"
 #include "eckit/parser/Tokenizer.h"
-
+#include "mir/tools/MIRTool.h"
 #include "mir/input/GribFileInput.h"
 
 
-class MIRInspect : public eckit::Tool {
+class MIRInspect : public mir::tools::MIRTool {
 
-    virtual void run();
+    void execute(const eckit::option::CmdArgs&);
 
     void usage(const std::string &tool);
 
-  public:
-    MIRInspect(int argc, char **argv) :
-        eckit::Tool(argc, argv) {
+    options_t& getOptions() {
+        return options_;
     }
 
+  public:
+
+    MIRInspect(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+    }
+
+private:
+
+    options_t options_;
+
 };
+
 
 void MIRInspect::usage(const std::string &tool) {
     eckit::Log::info()
@@ -44,7 +52,7 @@ void MIRInspect::usage(const std::string &tool) {
             << std::endl;
 }
 
-void MIRInspect::run() {
+void MIRInspect::execute(const eckit::option::CmdArgs&) {
     if (argc() <= 2) {
         usage(name());
     }
