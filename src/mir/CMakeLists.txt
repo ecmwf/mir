@@ -162,6 +162,16 @@ list(
     caching/SharedMemoryLoader.h
     caching/WeightCache.cc
     caching/WeightCache.h
+    compare/Comparator.cc
+    compare/Comparator.h
+    compare/Field.cc
+    compare/Field.h
+    compare/FieldInfo.cc
+    compare/FieldInfo.h
+    compare/FieldSet.cc
+    compare/FieldSet.h
+    compare/MultiFile.cc
+    compare/MultiFile.h
     config/LibMir.cc
     config/LibMir.h
     data/Field.cc
