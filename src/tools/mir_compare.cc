@@ -14,21 +14,19 @@
 
 
 #include <cmath>
+#include "eckit/log/Log.h"
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/runtime/Tool.h"
 #include "eckit/types/FloatCompare.h"
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
 
-
-using eckit::option::Option;
-using eckit::option::SimpleOption;
 
 static struct {
     size_t paramId_;
@@ -39,11 +37,17 @@ static struct {
 };
 
 
-class MIRCompare : public eckit::Tool {
+class MIRCompare : public mir::tools::MIRTool {
 
-    virtual void run();
+    void execute(const eckit::option::CmdArgs&);
 
-    static void usage(const std::string &tool);
+    void usage(const std::string &tool);
+
+    int minimumPositionalArguments() const {
+        return 2;
+    }
+
+    options_t& getOptions();
 
     void compare(size_t n, mir::data::MIRField &field1, mir::data::MIRField &field2) const;
     void l2norm(size_t n, mir::data::MIRField &field1, mir::data::MIRField &field2) const;
@@ -52,8 +56,9 @@ class MIRCompare : public eckit::Tool {
     bool compare(const double *, const double *, size_t) const;
 
   public:
+
     MIRCompare(int argc, char **argv) :
-        eckit::Tool(argc, argv),
+        mir::tools::MIRTool(argc, argv),
         user_absolute_(1e-9),
         user_relative_(1e-9),
         user_percent_(1e-9),
@@ -72,22 +77,15 @@ class MIRCompare : public eckit::Tool {
 
     eckit::ScopedPtr< eckit::FloatApproxCompare<double> > real_same_;
 
+    options_t options_;
+
 };
 
+
 void MIRCompare::usage(const std::string &tool) {
-
     eckit::Log::info()
-            << '\n'
-            << "Usage: " << tool << " [options] file1.grib file2.grib" << '\n'
-            << "  [--absolute=a]: Maximum absolute error"                           << '\n'
-            << "  [--relative=r]: Maximum relative error"                           << '\n'
-            << "  [--percent=p]:  Maximum percentage of different values"           << '\n'
-            << "  [--packing=f]:  Comparing to packing error, with provided factor" << '\n'
-            << "  [--ulps=u]:     Comparing with ULPs"                              << '\n'
-            << "  [--l2norm]:     Compute L2 norm between 2 fields"                 << '\n'
+            << "\n" "Usage: " << tool << " [options] file1.grib file2.grib"
             << std::endl;
-
-    ::exit(1);
 }
 
 
@@ -121,6 +119,7 @@ bool MIRCompare::compare(double a, double b) const {
     else
         return same(a, b);
 }
+
 
 bool MIRCompare::compare(const double *a, const double *b, size_t size) const {
 
@@ -161,6 +160,7 @@ bool MIRCompare::compare(const double *a, const double *b, size_t size) const {
     }
     return count == 0;
 }
+
 
 void MIRCompare::compare(size_t n, mir::data::MIRField &field1, mir::data::MIRField &field2) const {
 
@@ -231,14 +231,15 @@ void MIRCompare::l2norm(size_t n, mir::data::MIRField &field1, mir::data::MIRFie
     std::cout << "L2-norm " << sqrt(norm) << " " << v1.size() << " " << sqrt(norm)/v1.size() << " " << sqrt(norm)/sqrt(v1.size()) << std::endl;
 }
 
-void MIRCompare::run() {
 
-    using eckit::FloatApproxCompare;
+mir::tools::MIRTool::options_t& MIRCompare::getOptions() {
+    if (options_.size()) {
+        return options_;
+    }
 
-    std::vector<Option *> options;
+    using namespace eckit::option;
+    options_t& options = options_;
 
-
-    //==============================================
     options.push_back(new SimpleOption< double >("absolute", "Maximum absolute error"));
     options.push_back(new SimpleOption< double >("relative", "Maximum relative error"));
     options.push_back(new SimpleOption< double >("percent",  "Maximum percentage of different values"));
@@ -246,7 +247,13 @@ void MIRCompare::run() {
     options.push_back(new SimpleOption< bool   >("ulps",     "Comparing with ULPS (?)"));
     options.push_back(new SimpleOption< bool   >("l2norm",   "Compute L2 norm between 2 fields"));
 
-    eckit::option::CmdArgs args(&usage, options, 2);
+    return options;
+}
+
+
+void MIRCompare::execute(const eckit::option::CmdArgs& args) {
+
+    using eckit::FloatApproxCompare;
 
     args.get("absolute", user_absolute_);
     args.get("relative", user_relative_);

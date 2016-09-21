@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -22,9 +22,8 @@
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
-#include "eckit/runtime/Tool.h"
-#include "mir/action/statistics/Statistics.h"
 #include "mir/action/plan/Executor.h"
+#include "mir/action/statistics/Statistics.h"
 #include "mir/api/MIRJob.h"
 #include "mir/caching/LegendreLoader.h"
 #include "mir/config/LibMir.h"
@@ -39,37 +38,55 @@
 #include "mir/output/GribFileOutput.h"
 #include "mir/packing/Packer.h"
 #include "mir/style/MIRStyle.h"
+#include "mir/tools/MIRTool.h"
 
 
-class MIRTool : public eckit::Tool {
+class mir_tool : public mir::tools::MIRTool {
+private:
 
-    virtual void run();
-    void process(mir::api::MIRJob &, mir::input::MIRInput &, mir::output::MIROutput &, const std::string &);
+    void execute(const eckit::option::CmdArgs&);
 
-    static void usage(const std::string &tool);
+    void usage(const std::string& tool);
 
-  public:
-    MIRTool(int argc, char **argv) : eckit::Tool(argc, argv, "MIR_HOME" ) {
+    int minimumPositionalArguments() const {
+        return 2;
+    }
+
+    options_t& getOptions();
+
+    void process(mir::api::MIRJob&, mir::input::MIRInput&, mir::output::MIROutput&, const std::string&);
+
+private:
+
+    options_t options_;
+
+public:
+
+    mir_tool(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
     }
 
 };
 
-void MIRTool::usage(const std::string &tool) {
 
+void mir_tool::usage(const std::string &tool) {
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " [--key1=value --key2=value ...] input.grib output.grib" << std::endl
-            << std::endl << "Examples: " << std::endl
-            << "  % " << tool << " --grid=2/2 --area=90/-8/12/80 input.grib output.grib" << std::endl
-            << "  % " << tool << " --reduced=80 input.grib output.grib" << std::endl
-            << "  % " << tool << " --regular=80 input.grib output.grib" << std::endl
-            << "  % " << tool << " --truncation=63 input.grib output.grib" << std::endl
-            ;
+            << "\n" "Usage: " << tool << " [--key1=value [--key2=value [...]]] input.grib output.grib"
+               "\n" "Examples: "
+               "\n" "  % " << tool << " --grid=2/2 --area=90/-8/12/80 input.grib output.grib"
+               "\n" "  % " << tool << " --reduced=80 input.grib output.grib"
+               "\n" "  % " << tool << " --regular=80 input.grib output.grib"
+               "\n" "  % " << tool << " --truncation=63 input.grib output.grib"
+            << std::endl;
 }
 
-void MIRTool::run() {
-    using namespace eckit::option;
-    std::vector<Option *> options;
 
+mir::tools::MIRTool::options_t& mir_tool::getOptions() {
+    if (options_.size()) {
+        return options_;
+    }
+
+    using namespace eckit::option;
+    options_t& options = options_;
 
     //==============================================
     options.push_back(new Separator("Transform"));
@@ -161,12 +178,16 @@ void MIRTool::run() {
     options.push_back(new SimpleOption<bool>("0-1", "Set pattern and checkerboard values between 0 and 1"));
     options.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
 
+    return options;
+}
+
+
+void mir_tool::execute(const eckit::option::CmdArgs& args) {
+
     // {"", 0, "GRIB Output"},
     // {"accuracy", "n", "number of bits per value",},
     // {"packing", "p", "e.g. second-order",},
 
-
-    CmdArgs args(&usage, options, 2);
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;
@@ -256,10 +277,10 @@ void MIRTool::run() {
     }
 
     process(job, input, output, "field");
-
 }
 
-void MIRTool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
+
+void mir_tool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
     eckit::Timer timer("Total time");
 
     eckit::Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
@@ -272,12 +293,11 @@ void MIRTool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::o
 
     eckit::Log::info() << eckit::Plural(i, what) << " in " << eckit::Seconds(timer.elapsed()) <<
                        ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
-
 }
 
 
 int main( int argc, char **argv ) {
-    MIRTool tool(argc, argv);
+    mir_tool tool(argc, argv);
 #if (ECKIT_MAJOR_VERSION == 0) && (ECKIT_MINOR_VERSION <= 10)
     tool.start();
     return 0;
