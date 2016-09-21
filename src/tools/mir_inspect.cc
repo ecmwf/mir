@@ -1,11 +1,5 @@
-
-
-
-
-
-
 /*
-* (C) Copyright 1996-2015 ECMWF.
+* (C) Copyright 1996-2016 ECMWF.
 *
 * This software is licensed under the terms of the Apache Licence Version 2.0
 * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -39,24 +33,18 @@ class MIRInspect : public eckit::Tool {
 };
 
 void MIRInspect::usage(const std::string &tool) {
-
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " [key1 key2 ...] file.grib" << std::endl
-            << std::endl << "Examples: " << std::endl
-            << "% " << tool << " grid area file.grib" << std::endl
-            << "% " << tool << " reduced file.grib" << std::endl << std::endl
-            << "% " << tool << " regular file.grib" << std::endl << std::endl
-            << "% " << tool << " truncation file.grib" << std::endl << std::endl
-            << "% " << tool << " octahedral file.grib" << std::endl << std::endl
-
-            ;
-
-    ::exit(1);
+            << "\n" "Usage: " << tool << " [key1 key2 ...] file.grib"
+               "\n" "Examples:"
+               "\n" "% " << tool << " grid area file.grib"
+               "\n" "% " << tool << " reduced file.grib"
+               "\n" "% " << tool << " regular file.grib"
+               "\n" "% " << tool << " truncation file.grib"
+               "\n" "% " << tool << " octahedral file.grib"
+            << std::endl;
 }
 
 void MIRInspect::run() {
-
-
     if (argc() <= 2) {
         usage(name());
     }
@@ -71,7 +59,7 @@ void MIRInspect::run() {
         const char *sep = "";
         std::string value;
 
-        for (size_t i = 1; i < argc() - 1; i++) {
+        for (int i = 1; i < argc() - 1; i++) {
             std::cout << sep << argv(i) << "=";
             if (parametrisation.get(argv(i), value)) {
                 std::cout << value;
@@ -83,17 +71,11 @@ void MIRInspect::run() {
 
         std::cout << std::endl;
     }
-
 }
 
 
 int main( int argc, char **argv ) {
     MIRInspect tool(argc, argv);
-#if (ECKIT_MAJOR_VERSION == 0) && (ECKIT_MINOR_VERSION <= 10)
-    tool.start();
-    return 0;
-#else
     return tool.start();
-#endif
 }
 

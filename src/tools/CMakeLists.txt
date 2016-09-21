@@ -59,6 +59,12 @@ ecbuild_add_executable(
     INCLUDES    ${ATLAS_INCLUDE_DIRS}
     LIBS        mir eckit_option )
 
+ecbuild_add_executable(
+    TARGET      mir_list
+    SOURCES     mir_list.cc
+    INCLUDES    ${ATLAS_INCLUDE_DIRS}
+    LIBS        mir eckit_option )
+
 #ecbuild_add_executable(
 #    TARGET      mir_cmp
 #    SOURCES     mir_cmp.cc

@@ -296,13 +296,8 @@ void mir_tool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::
 }
 
 
-int main( int argc, char **argv ) {
+int main( int argc, char **argv) {
     mir_tool tool(argc, argv);
-#if (ECKIT_MAJOR_VERSION == 0) && (ECKIT_MINOR_VERSION <= 10)
-    tool.start();
-    return 0;
-#else
     return tool.start();
-#endif
 }
 
