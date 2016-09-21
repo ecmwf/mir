@@ -152,11 +152,22 @@ void FieldInfo::get(const std::string& info, size_t& dimension, FieldInfo::Compo
 
     // FIXME: improve on ugly parsing
     std::vector<std::string> split = eckit::StringTools::split(".", info);
-    if (split[0] == "vector") {
-        dimension = split[1] == "1d"? 1 : split[1] == "2d"? 2 : 3;
-        component = split[2] == "cartesian"?
-              (split[3] == "x"?     CARTESIAN_X       : split[3] == "y"?      CARTESIAN_Y        : CARTESIAN_Z)
-            : (split[3] == "angle"? CYLINDRICAL_ANGLE : split[3] == "radius"? CYLINDRICAL_RADIUS : CYLINDRICAL_HEIGHT);
+    if (split.size() == 4 && split[0] == "vector") {
+
+        size_t dim = split[1] == "1d"? 1 : split[1] == "2d"? 2 : split[1] == "3d"? 3 : 0;
+        if (!dim) {
+            return;
+        }
+        dimension = dim;
+
+        const std::string comp = split[2] + "." + split[3];
+        component = comp == "cartesian.x"?  CARTESIAN_X :
+                    comp == "cartesian.y"?  CARTESIAN_Y :
+                    comp == "cartesian.z"?  CARTESIAN_Z :
+                    comp == "polar.angle"?  CYLINDRICAL_ANGLE  :
+                    comp == "polar.radius"? CYLINDRICAL_RADIUS :
+                    comp == "polar.height"? CYLINDRICAL_HEIGHT :
+                                            NONE;
     }
 }
 
