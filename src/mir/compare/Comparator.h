@@ -19,8 +19,6 @@
 #include <string>
 #include <vector>
 
-//include "mir/compare/FieldSet.h"
-
 
 namespace eckit {
 class Buffer;

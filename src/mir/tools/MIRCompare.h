@@ -26,8 +26,8 @@ protected:
 
     virtual void execute(const eckit::option::CmdArgs& args);
 
-    virtual int minimumPositionalArguments() const {
-        return -1;
+    virtual int numberOfPositionalArguments() const {
+        return 2;
     }
 
     virtual void usage(const std::string& tool) const;

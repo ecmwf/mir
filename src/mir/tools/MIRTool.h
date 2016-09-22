@@ -39,8 +39,12 @@ protected:
 
     virtual void execute(const eckit::option::CmdArgs& args) = 0;
 
-    virtual int minimumPositionalArguments() const {
+    virtual int numberOfPositionalArguments() const {
         return -1;
+    }
+
+    virtual int minimumPositionalArguments() const {
+        return numberOfPositionalArguments();
     }
 
     virtual void init(const eckit::option::CmdArgs&) {}

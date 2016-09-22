@@ -13,7 +13,9 @@
 
 #include "mir/tools/MIRCompare.h"
 
+#include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
+#include "mir/compare/Comparator.h"
 
 
 namespace mir {
@@ -45,13 +47,16 @@ MIRCompare::MIRCompare(int argc, char** argv) : MIRTool(argc, argv) {
 
 void MIRCompare::usage(const std::string& tool) const {
     eckit::Log::info()
-            << "\n" << "Usage: " << tool << " [options]"
+            << "\n" << "Usage: " << tool << " [options] file1 file2"
             << std::endl;
 }
 
-void mir::tools::MIRCompare::execute(const eckit::option::CmdArgs&) {
-}
+void mir::tools::MIRCompare::execute(const eckit::option::CmdArgs& args) {
 
+    // Straightforward two-file comparison
+    compare::Comparator(args).compare(args(0), args(1));
+
+}
 
 
 }  // namespace tools
