@@ -32,35 +32,30 @@ class MIRStats : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool);
-
-    void getOptions(options_t&);
+    void usage(const std::string &tool) const;
 
 public:
 
     // -- Contructors
 
-    MIRStats(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
+    MIRStats(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+        using namespace eckit::option;
+
+        options_.push_back(new SimpleOption<size_t>("buckets", "Bucket count for computing entropy (default 65536)"));
+        options_.push_back(new SimpleOption<size_t>("bits", "Bucket count (as 2^bits) for computing entropy (default 16)"));
+
+        // options_.push_back(new SimpleOption<double>("relative", "Maximum relative error"));
+        // options_.push_back(new SimpleOption<double>("percent", "Maximum percentage of different values"));
+        // options_.push_back(new SimpleOption<bool>("ulps", "Comparing with ULPS (?)"));
+    }
 
 };
 
 
-void MIRStats::usage(const std::string &tool) {
+void MIRStats::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\n" << "Usage: " << tool << " file.grib"
             << std::endl;
-}
-
-
-void MIRStats::getOptions(mir::tools::MIRTool::options_t& options) {
-    using namespace eckit::option;
-
-    options.push_back(new SimpleOption<size_t>("buckets", "Bucket count for computing entropy (default 65536)"));
-    options.push_back(new SimpleOption<size_t>("bits", "Bucket count (as 2^bits) for computing entropy (default 16)"));
-
-    // options.push_back(new SimpleOption<double>("relative", "Maximum relative error"));
-    // options.push_back(new SimpleOption<double>("percent", "Maximum percentage of different values"));
-    // options.push_back(new SimpleOption<bool>("ulps", "Comparing with ULPS (?)"));
 }
 
 

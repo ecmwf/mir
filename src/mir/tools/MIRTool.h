@@ -39,18 +39,19 @@ protected:
 
     virtual void execute(const eckit::option::CmdArgs& args) = 0;
 
-    virtual void getOptions(options_t&) {}
-
     virtual int minimumPositionalArguments() const {
         return -1;
     }
 
     virtual void init(const eckit::option::CmdArgs&) {}
+
     virtual void finish(const eckit::option::CmdArgs&) {}
+
+    options_t options_;
 
 public:
 
-    virtual void usage(const std::string&) = 0;
+    virtual void usage(const std::string& tool) const = 0;
 
     MIRTool(int argc, char **argv);
 

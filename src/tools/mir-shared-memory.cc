@@ -25,31 +25,26 @@ class MIRSharedMemory : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool);
-
-    void getOptions(options_t&);
+    void usage(const std::string &tool) const;
 
 public:
 
     // -- Contructors
 
-    MIRSharedMemory(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
+    MIRSharedMemory(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+        using namespace eckit::option;
+
+        options_.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
+        options_.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
+    }
 
 };
 
 
-void MIRSharedMemory::usage(const std::string &tool) {
+void MIRSharedMemory::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\n" << "Usage: " << tool << " [--load=file] [--unload=file]"
             << std::endl;
-}
-
-
-void MIRSharedMemory::getOptions(options_t& options) {
-    using namespace eckit::option;
-
-    options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
-    options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
 }
 
 

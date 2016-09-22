@@ -43,11 +43,7 @@ MIRTool::MIRTool(int argc, char **argv) :
 
 
 void MIRTool::run() {
-    options_t options;
-    getOptions(options);
-
-    eckit::option::CmdArgs args(&mir::tools::usage, options, -1, minimumPositionalArguments());
-
+    eckit::option::CmdArgs args(&mir::tools::usage, options_, -1, minimumPositionalArguments());
     init(args);
     execute(args);
     finish(args);

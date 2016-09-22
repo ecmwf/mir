@@ -25,7 +25,7 @@ class MIRMakeLSM : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool);
+    void usage(const std::string &tool) const;
 
     int minimumPositionalArguments() const {
         return 2;
@@ -40,7 +40,7 @@ public:
 };
 
 
-void MIRMakeLSM::usage(const std::string &tool) {
+void MIRMakeLSM::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\n" << "Usage: " << tool << " file.grib file.lsm"
             << std::endl;

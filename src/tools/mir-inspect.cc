@@ -24,7 +24,7 @@ class MIRInspect : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool);
+    void usage(const std::string &tool) const;
 
     int minimumPositionalArguments() const {
         return 1;
@@ -39,7 +39,7 @@ public:
 };
 
 
-void MIRInspect::usage(const std::string &tool) {
+void MIRInspect::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\n" "Usage: " << tool << " [key1 key2 ...] file.grib"
                "\n" "Examples:"

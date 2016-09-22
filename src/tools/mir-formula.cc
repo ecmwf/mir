@@ -26,7 +26,7 @@ class MIRFormula : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool);
+    void usage(const std::string &tool) const;
 
 public:
 
@@ -37,7 +37,7 @@ public:
 };
 
 
-void MIRFormula::usage(const std::string &tool) {
+void MIRFormula::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\n" "Usage: " << tool
             << std::endl;

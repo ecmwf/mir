@@ -32,9 +32,7 @@ class MIRPlotLSM : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool);
-
-    void getOptions(options_t&);
+    void usage(const std::string &tool) const;
 
     int minimumPositionalArguments() const {
         return 1;
@@ -44,26 +42,23 @@ public:
 
     // -- Contructors
 
-    MIRPlotLSM(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
+    MIRPlotLSM(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+        using namespace eckit::option;
+
+        options_.push_back(new VectorOption<double>("grid", "Default 1/1", 2));
+        options_.push_back(new VectorOption<long>("ninj", "Default 360/181", 2));
+
+        // options_.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
+        // options_.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
+    }
 
 };
 
 
-void MIRPlotLSM::usage(const std::string &tool) {
+void MIRPlotLSM::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\n" << "Usage: " << tool << " file.grib file.lsm"
             << std::endl;
-}
-
-
-void MIRPlotLSM::getOptions(mir::tools::MIRTool::options_t& options) {
-    using namespace eckit::option;
-
-    options.push_back(new VectorOption<double>("grid", "Default 1/1", 2));
-    options.push_back(new VectorOption<long>("ninj", "Default 360/181", 2));
-
-    // options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
-    // options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
 }
 
 
@@ -112,7 +107,6 @@ void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
         unsigned char c = (*j) ? 0xff : 0;
         ASSERT(fwrite(&c, 1, 1, out));
     }
-
 }
 
 

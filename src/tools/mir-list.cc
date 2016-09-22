@@ -23,7 +23,7 @@ class MIRList : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs &args);
 
-    void usage(const std::string &tool);
+    void usage(const std::string &tool) const;
 
     int minimumPositionalArguments() const {
         return 1;
@@ -40,7 +40,7 @@ public:
 };
 
 
-void MIRList::usage(const std::string &tool) {
+void MIRList::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\n" << "Usage: " << tool << " ..."
             << std::endl;

@@ -43,7 +43,7 @@ class MIRIntegrate : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool);
+    void usage(const std::string &tool) const;
 
     int minimumPositionalArguments() const {
         return 1;
@@ -58,7 +58,7 @@ public:
 };
 
 
-void MIRIntegrate::usage(const std::string &tool) {
+void MIRIntegrate::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\n" << "Usage: " << tool << " file.grib"
             << std::endl;
