@@ -261,6 +261,7 @@ data::MIRField GribInput::field() const {
     long id;
     GRIB_CALL(grib_get_long(grib_, "paramId", &id));
 
+    // TODO: temporary, should be in mir::param::FieldParametrisation (check with Baudouin)
     data::FieldInfo info;  // (defaults to scalar)
     if (id != 0) {
         const param::MIRConfiguration& configuration = param::MIRConfiguration::instance();
