@@ -26,29 +26,21 @@ namespace mir {
 namespace data {
 
 
-MIRField::MIRField(const param::MIRParametrisation& param, bool hasMissing, double missingValue, const FieldInfo& info) :
-    field_(new Field(param, hasMissing, missingValue)),
-    info_(info) {
+MIRField::MIRField(const param::MIRParametrisation& param, bool hasMissing, double missingValue) :
+    field_(new Field(param, hasMissing, missingValue)) {
     field_->attach();
 }
 
 
-MIRField::MIRField(const repres::Representation* repres, bool hasMissing, double missingValue, const FieldInfo& info) :
-    field_(new Field(repres, hasMissing, missingValue)),
-    info_(info) {
+MIRField::MIRField(const repres::Representation* repres, bool hasMissing, double missingValue) :
+    field_(new Field(repres, hasMissing, missingValue)) {
     field_->attach();
 }
 
 
 MIRField::MIRField(const MIRField& other) :
-    field_(other.field_),
-    info_(other.info_) {
+    field_(other.field_) {
     field_->attach();
-}
-
-
-FieldInfo MIRField::info() const {
-    return info_;
 }
 
 

@@ -50,8 +50,8 @@ public:
 
     /// @note not in Field
     MIRField(const MIRField& other);
-    MIRField(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0, const FieldInfo& info=FieldInfo(0));
-    MIRField(const repres::Representation*, bool hasMissing = false, double missingValue = 0, const FieldInfo& info=FieldInfo(0));
+    MIRField(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
+    MIRField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
     // -- Destructor
 
@@ -66,9 +66,6 @@ public:
     MIRField& operator=(const MIRField& other);
 
     // -- Methods
-
-    /// @note not in Field
-    FieldInfo info() const;
 
     size_t dimensions() const;
     void dimensions(size_t);
@@ -132,7 +129,6 @@ private:
 
     mutable eckit::Mutex mutex_;
     Field *field_;
-    FieldInfo info_;
 
     // -- Methods
 
