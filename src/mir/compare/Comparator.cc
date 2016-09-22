@@ -369,6 +369,14 @@ void Comparator::getField(const MultiFile& multi,
 
 
 
+    long scanningMode = 0;
+    if(grib_get_long(h, "scanningMode", &scanningMode) == 0) {
+        std::ostringstream oss;
+        oss << scanningMode;
+        field.insert("scanning", oss.str());
+    }
+
+
     long edition;
     if (grib_get_long(h, "edition", &edition) == 0) {
         field.format("grib" + l2s(edition));
