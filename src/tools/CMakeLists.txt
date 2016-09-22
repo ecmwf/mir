@@ -1,67 +1,67 @@
 
 ecbuild_add_executable(
-    TARGET      mir_tool
-    SOURCES     mir_tool.cc
+    TARGET      mir-tool
+    SOURCES     mir-tool.cc
     INCLUDES    ${ATLAS_INCLUDE_DIRS}
     LIBS        mir eckit_option )
 
 ecbuild_add_executable(
-    TARGET      mir_formula
-    SOURCES     mir_formula.cc
+    TARGET      mir-formula
+    SOURCES     mir-formula.cc
     INCLUDES    ${ATLAS_INCLUDE_DIRS}
     LIBS        mir )
 
 ecbuild_add_executable(
-    TARGET      mir_inspect
-    SOURCES     mir_inspect.cc
+    TARGET      mir-inspect
+    SOURCES     mir-inspect.cc
     INCLUDES    ${ATLAS_INCLUDE_DIRS}
     LIBS        mir )
 
 ecbuild_add_executable(
-    TARGET      mir_compare
-    SOURCES     mir_compare.cc
+    TARGET      mir-compare
+    SOURCES     mir-compare.cc
     INCLUDES    ${ATLAS_INCLUDE_DIRS}
     LIBS        mir eckit_option )
 
 ecbuild_add_executable(
-    TARGET      mir_config
-    SOURCES     mir_config.cc
+    TARGET      mir-config
+    SOURCES     mir-config.cc
     INCLUDES    ${ATLAS_INCLUDE_DIRS}
     LIBS        mir )
 
 ecbuild_add_executable(
-    TARGET      mir_shared_memory
-    SOURCES     mir_shared_memory.cc
+    TARGET      mir-shared-memory
+    SOURCES     mir-shared-memory.cc
     INCLUDES    ${ATLAS_INCLUDE_DIRS}
     LIBS        mir eckit_option )
 
 ecbuild_add_executable(
-    TARGET      mir_make_lsm
-    SOURCES     mir_make_lsm.cc
+    TARGET      mir-make-lsm
+    SOURCES     mir-make-lsm.cc
     INCLUDES    ${ATLAS_INCLUDE_DIRS}
     LIBS        mir )
 
 ecbuild_add_executable(
-    TARGET      mir_plot_lsm
-    SOURCES     mir_plot_lsm.cc
+    TARGET      mir-plot-lsm
+    SOURCES     mir-plot-lsm.cc
     INCLUDES    ${ATLAS_INCLUDE_DIRS}
     LIBS        mir eckit_option )
 
 ecbuild_add_executable(
-    TARGET      mir_stats
-    SOURCES     mir_stats.cc
+    TARGET      mir-stats
+    SOURCES     mir-stats.cc
     INCLUDES    ${ATLAS_INCLUDE_DIRS}
     LIBS        mir eckit_option )
 
 ecbuild_add_executable(
-    TARGET      mir_integrate
-    SOURCES     mir_integrate.cc
+    TARGET      mir-integrate
+    SOURCES     mir-integrate.cc
     INCLUDES    ${ATLAS_INCLUDE_DIRS}
     LIBS        mir eckit_option )
 
 ecbuild_add_executable(
-    TARGET      mir_list
-    SOURCES     mir_list.cc
+    TARGET      mir-list
+    SOURCES     mir-list.cc
     INCLUDES    ${ATLAS_INCLUDE_DIRS}
     LIBS        mir eckit_option )
 

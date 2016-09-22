@@ -41,7 +41,7 @@
 #include "mir/tools/MIRTool.h"
 
 
-class mir_tool : public mir::tools::MIRTool {
+class MIRToolConcrete : public mir::tools::MIRTool {
 private:
 
     void execute(const eckit::option::CmdArgs&);
@@ -62,13 +62,13 @@ private:
 
 public:
 
-    mir_tool(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+    MIRToolConcrete(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
     }
 
 };
 
 
-void mir_tool::usage(const std::string &tool) {
+void MIRToolConcrete::usage(const std::string &tool) {
     eckit::Log::info()
             << "\n" "Usage: " << tool << " [--key1=value [--key2=value [...]]] input.grib output.grib"
                "\n" "Examples: "
@@ -80,7 +80,7 @@ void mir_tool::usage(const std::string &tool) {
 }
 
 
-void mir_tool::getOptions(mir::tools::MIRTool::options_t& options) {
+void MIRToolConcrete::getOptions(mir::tools::MIRTool::options_t& options) {
     using namespace eckit::option;
 
     //==============================================
@@ -175,7 +175,7 @@ void mir_tool::getOptions(mir::tools::MIRTool::options_t& options) {
 }
 
 
-void mir_tool::execute(const eckit::option::CmdArgs& args) {
+void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
 
     // {"", 0, "GRIB Output"},
     // {"accuracy", "n", "number of bits per value",},
@@ -273,7 +273,7 @@ void mir_tool::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-void mir_tool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
+void MIRToolConcrete::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
     eckit::Timer timer("Total time");
 
     eckit::Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
@@ -290,7 +290,7 @@ void mir_tool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::
 
 
 int main(int argc, char **argv) {
-    mir_tool tool(argc, argv);
+    MIRToolConcrete tool(argc, argv);
     return tool.start();
 }
 
