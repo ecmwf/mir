@@ -14,16 +14,7 @@
 #ifndef mir_tools_MIRCompare_h
 #define mir_tools_MIRCompare_h
 
-#include "eckit/memory/ScopedPtr.h"
-#include "eckit/types/FloatCompare.h"
 #include "mir/tools/MIRTool.h"
-
-
-namespace mir {
-namespace data {
-class MIRField;
-}
-}
 
 
 namespace mir {
@@ -33,40 +24,17 @@ namespace tools {
 class MIRCompare : public MIRTool {
 protected:
 
-    // -- Overridden methods
-
     virtual void execute(const eckit::option::CmdArgs& args);
 
-    virtual void usage(const std::string& tool) const;
-
     virtual int minimumPositionalArguments() const {
-        return 2;
+        return -1;
     }
 
-    // -- Methods
-
-    void compare(size_t n, mir::data::MIRField& field1, mir::data::MIRField& field2) const;
-    void l2norm(size_t n, mir::data::MIRField& field1, mir::data::MIRField& field2) const;
-
-    bool compare( double,  double) const;
-    bool compare(const double *, const double *, size_t) const;
+    virtual void usage(const std::string& tool) const;
 
 public:
 
     MIRCompare(int argc, char **argv);
-
-private:
-
-    // -- Members
-
-    double user_absolute_;
-    double user_relative_;
-    double user_percent_;
-    long   user_ulps_;
-    double user_pack_factor_;
-    bool   l2norm_;
-
-    eckit::ScopedPtr< eckit::FloatApproxCompare<double> > real_same_;
 
 };
 
