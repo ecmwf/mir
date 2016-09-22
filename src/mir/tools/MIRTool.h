@@ -39,7 +39,7 @@ protected:
 
     virtual void execute(const eckit::option::CmdArgs& args) = 0;
 
-    virtual options_t& getOptions() = 0;
+    virtual void getOptions(options_t&) {}
 
     virtual int minimumPositionalArguments() const {
         return -1;

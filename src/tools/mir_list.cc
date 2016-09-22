@@ -18,15 +18,6 @@
 
 
 class MIRList : public mir::tools::MIRTool {
-public:
-
-    // -- Contructors
-
-    MIRList(int argc, char **argv) :
-        mir::tools::MIRTool(argc, argv) {
-    }
-
-private:
 
     // -- Overridden methods
 
@@ -38,15 +29,13 @@ private:
         return 1;
     }
 
-    options_t& getOptions() {
-        return options_;
+public:
+
+    // -- Contructors
+
+    MIRList(int argc, char **argv) :
+        mir::tools::MIRTool(argc, argv) {
     }
-
-private:
-
-    // -- Members
-
-    options_t options_;
 
 };
 

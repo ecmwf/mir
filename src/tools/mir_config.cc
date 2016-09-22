@@ -13,25 +13,36 @@
 /// @date Apr 2015
 
 
-#include "eckit/runtime/Tool.h"
 #include "eckit/filesystem/PathName.h"
 #include "mir/param/MIRConfiguration.h"
+#include "mir/tools/MIRTool.h"
 
 
-class MIRConfig : public eckit::Tool {
+class MIRConfig : public mir::tools::MIRTool {
 
-    virtual void run();
+    // -- Overridden methods
 
+    void execute(const eckit::option::CmdArgs&);
 
-  public:
-    MIRConfig(int argc, char **argv) :
-        eckit::Tool(argc, argv) {
-    }
+    void usage(const std::string &tool);
+
+public:
+
+    // -- Contructors
+
+    MIRConfig(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
 
 };
 
 
-void MIRConfig::run() {
+void MIRConfig::usage(const std::string &tool) {
+    eckit::Log::info()
+            << "\n" "Usage: " << tool
+            << std::endl;
+}
+
+
+void MIRConfig::execute(const eckit::option::CmdArgs&) {
 
     // const param::MIRConfiguration& conf = param::MIRConfiguration::instance();
 
@@ -46,7 +57,7 @@ void MIRConfig::run() {
 }
 
 
-int main( int argc, char **argv ) {
+int main(int argc, char **argv) {
     MIRConfig tool(argc, argv);
     return tool.start();
 }

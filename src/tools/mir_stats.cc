@@ -12,8 +12,8 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include <cmath>
 
+#include <cmath>
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
@@ -21,61 +21,52 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/types/FloatCompare.h"
-
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
-
-using eckit::option::Option;
-using eckit::option::SimpleOption;
+#include "mir/tools/MIRTool.h"
 
 
-class MIRStats : public eckit::Tool {
+class MIRStats : public mir::tools::MIRTool {
 
-    virtual void run();
+    // -- Overridden methods
 
-    static void usage(const std::string &tool);
+    void execute(const eckit::option::CmdArgs&);
 
+    void usage(const std::string &tool);
 
-  public:
-    MIRStats(int argc, char **argv) :
-        eckit::Tool(argc, argv) {
-    }
+    void getOptions(options_t&);
 
+public:
 
+    // -- Contructors
+
+    MIRStats(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
 
 };
 
+
 void MIRStats::usage(const std::string &tool) {
-
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " file.grib" << std::endl
-            ;
-
-    ::exit(1);
+            << "\n" << "Usage: " << tool << " file.grib"
+            << std::endl;
 }
 
 
+void MIRStats::getOptions(mir::tools::MIRTool::options_t& options) {
+    using namespace eckit::option;
 
-void MIRStats::run() {
-
-    using eckit::FloatApproxCompare;
-
-    std::vector<Option *> options;
-
-
-    //==============================================
     options.push_back(new SimpleOption<size_t>("buckets", "Bucket count for computing entropy (default 65536)"));
     options.push_back(new SimpleOption<size_t>("bits", "Bucket count (as 2^bits) for computing entropy (default 16)"));
 
     // options.push_back(new SimpleOption<double>("relative", "Maximum relative error"));
     // options.push_back(new SimpleOption<double>("percent", "Maximum percentage of different values"));
     // options.push_back(new SimpleOption<bool>("ulps", "Comparing with ULPS (?)"));
+}
 
-    eckit::option::CmdArgs args(&usage, options, 1, 0);
 
+void MIRStats::execute(const eckit::option::CmdArgs& args) {
 
     mir::input::GribFileInput file(args(0));
-
     mir::input::MIRInput &input = file;
 
     size_t bucket_count = 65536;
@@ -160,13 +151,10 @@ void MIRStats::run() {
         std::cout << "Entropy " << e << std::endl;
 
     }
-
-
-
 }
 
 
-int main( int argc, char **argv ) {
+int main(int argc, char **argv) {
     MIRStats tool(argc, argv);
     return tool.start();
 }

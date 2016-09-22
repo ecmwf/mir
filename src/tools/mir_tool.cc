@@ -52,7 +52,7 @@ private:
         return 2;
     }
 
-    options_t& getOptions();
+    void getOptions(options_t&);
 
     void process(mir::api::MIRJob&, mir::input::MIRInput&, mir::output::MIROutput&, const std::string&);
 
@@ -80,13 +80,8 @@ void mir_tool::usage(const std::string &tool) {
 }
 
 
-mir::tools::MIRTool::options_t& mir_tool::getOptions() {
-    if (options_.size()) {
-        return options_;
-    }
-
+void mir_tool::getOptions(mir::tools::MIRTool::options_t& options) {
     using namespace eckit::option;
-    options_t& options = options_;
 
     //==============================================
     options.push_back(new Separator("Transform"));
@@ -177,8 +172,6 @@ mir::tools::MIRTool::options_t& mir_tool::getOptions() {
     options.push_back(new SimpleOption<size_t>("param-id", "Set parameter id"));
     options.push_back(new SimpleOption<bool>("0-1", "Set pattern and checkerboard values between 0 and 1"));
     options.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
-
-    return options;
 }
 
 
@@ -296,7 +289,7 @@ void mir_tool::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::
 }
 
 
-int main( int argc, char **argv) {
+int main(int argc, char **argv) {
     mir_tool tool(argc, argv);
     return tool.start();
 }

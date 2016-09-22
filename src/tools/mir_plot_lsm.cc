@@ -23,48 +23,53 @@
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
+#include "mir/tools/MIRTool.h"
 
 
-using eckit::option::Option;
-using eckit::option::VectorOption;
+class MIRPlotLSM : public mir::tools::MIRTool {
 
+    // -- Overridden methods
 
-class MIRMakeLSM : public eckit::Tool {
+    void execute(const eckit::option::CmdArgs&);
 
-    virtual void run();
+    void usage(const std::string &tool);
 
-    static void usage(const std::string &tool);
+    void getOptions(options_t&);
 
-  public:
-    MIRMakeLSM(int argc, char **argv) :
-        eckit::Tool(argc, argv) {
+    int minimumPositionalArguments() const {
+        return 1;
     }
+
+public:
+
+    // -- Contructors
+
+    MIRPlotLSM(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
 
 };
 
 
-void MIRMakeLSM::usage(const std::string &tool) {
-
+void MIRPlotLSM::usage(const std::string &tool) {
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " file.grib file.lsm" << std::endl
-            ;
-
-    ::exit(1);
+            << "\n" << "Usage: " << tool << " file.grib file.lsm"
+            << std::endl;
 }
 
 
-void MIRMakeLSM::run() {
+void MIRPlotLSM::getOptions(mir::tools::MIRTool::options_t& options) {
+    using namespace eckit::option;
 
-
-    std::vector<Option *> options;
     options.push_back(new VectorOption<double>("grid", "Default 1/1", 2));
     options.push_back(new VectorOption<long>("ninj", "Default 360/181", 2));
 
     // options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
     // options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
+}
 
-    eckit::option::CmdArgs args(&usage, options, 1, 0);
-    args.set("lsm", true); // Force LSM
+
+void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
+
+    const_cast<eckit::option::CmdArgs&>(args).set("lsm", true); // Force LSM
 
     size_t Ni = 360;
     size_t Nj = 181;
@@ -77,8 +82,8 @@ void MIRMakeLSM::run() {
 
     std::vector<long> n;
     if (args.get("ninj", n)) {
-        Ni = n[0];
-        Nj = n[1];
+        Ni = size_t(n[0]);
+        Nj = size_t(n[1]);
     }
 
     eckit::Log::info() << "Ni=" << Ni << ", Nj=" << Nj << std::endl;
@@ -86,15 +91,13 @@ void MIRMakeLSM::run() {
     eckit::StdFile out(args(0), "w");
 
     // Wrap the arguments, so that they behave as a MIRParameter
-    mir::param::ConfigurationWrapper wrapped_args(args);
+    mir::param::ConfigurationWrapper wrapped_args(const_cast<eckit::option::CmdArgs&>(args));
 
     const mir::param::MIRParametrisation &defaults = mir::param::MIRDefaults::instance();
     mir::param::MIRCombinedParametrisation combined(wrapped_args, defaults, defaults);
 
     eckit::ScopedPtr<atlas::grid::Grid> grid(
-        new atlas::grid::lonlat::RegularLonLat(
-            (const size_t) Ni,
-            (const size_t) Nj ));
+        new atlas::grid::lonlat::RegularLonLat(Ni, Nj) );
 
 
     mir::lsm::Mask &mask = mir::lsm::Mask::lookupOutput(combined, *grid);
@@ -113,8 +116,8 @@ void MIRMakeLSM::run() {
 }
 
 
-int main( int argc, char **argv ) {
-    MIRMakeLSM tool(argc, argv);
+int main(int argc, char **argv) {
+    MIRPlotLSM tool(argc, argv);
     return tool.start();
 }
 

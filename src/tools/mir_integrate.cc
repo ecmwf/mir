@@ -18,7 +18,6 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/runtime/Tool.h"
 #include "eckit/types/FloatCompare.h"
 #include "atlas/array/IndexView.h"
 #include "atlas/functionspace/FunctionSpace.h"
@@ -35,54 +34,47 @@
 #include "mir/repres/Gridded.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/tools/MIRTool.h"
 
 
-using atlas::interpolation::Triag3D;
-using atlas::interpolation::Quad3D;
-using atlas::util::Constants;
+class MIRIntegrate : public mir::tools::MIRTool {
 
-using eckit::option::Option;
-using eckit::option::SimpleOption;
+    // -- Overridden methods
 
-using namespace mir;
+    void execute(const eckit::option::CmdArgs&);
 
+    void usage(const std::string &tool);
 
-class MIRIntegrate : public eckit::Tool {
-
-    virtual void run();
-
-    static void usage(const std::string &tool);
-
-  public:
-    MIRIntegrate(int argc, char **argv) :
-        eckit::Tool(argc, argv) {
+    int minimumPositionalArguments() const {
+        return 1;
     }
+
+public:
+
+    // -- Contructors
+
+    MIRIntegrate(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
 
 };
 
 
 void MIRIntegrate::usage(const std::string &tool) {
-
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " file.grib" << std::endl;
-
-    ::exit(1);
+            << "\n" << "Usage: " << tool << " file.grib"
+            << std::endl;
 }
 
 
+void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
 
-void MIRIntegrate::run() {
+    using atlas::interpolation::Triag3D;
+    using atlas::interpolation::Quad3D;
+    using atlas::util::Constants;
 
-    using eckit::FloatApproxCompare;
-
-    std::vector<Option *> options;
-
-//     options.push_back(new SimpleOption<size_t>("buckets", "Bucket count for computing entropy (default 65536)"));
-
-    eckit::option::CmdArgs args(&usage, options, 1, 0);
+//    options_t options;
+//    options.push_back(new eckit::option::SimpleOption<size_t>("buckets", "Bucket count for computing entropy (default 65536)"));
 
     mir::input::GribFileInput file(args(0));
-
     mir::input::MIRInput &input = file;
 
     size_t n = 0;
@@ -96,7 +88,7 @@ void MIRIntegrate::run() {
 
         ASSERT(!field.hasMissing());
 
-        const repres::Representation* rep = field.representation();
+        const mir::repres::Representation* rep = field.representation();
 
         ASSERT(rep);
         // ASSERT(rep->atlasDomain().isGlobal());
@@ -191,7 +183,7 @@ void MIRIntegrate::run() {
 }
 
 
-int main( int argc, char **argv ) {
+int main(int argc, char **argv) {
     MIRIntegrate tool(argc, argv);
     return tool.start();
 }

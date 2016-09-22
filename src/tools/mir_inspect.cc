@@ -14,28 +14,27 @@
 
 
 #include "eckit/parser/Tokenizer.h"
-#include "mir/tools/MIRTool.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/tools/MIRTool.h"
 
 
 class MIRInspect : public mir::tools::MIRTool {
+
+    // -- Overridden methods
 
     void execute(const eckit::option::CmdArgs&);
 
     void usage(const std::string &tool);
 
-    options_t& getOptions() {
-        return options_;
+    int minimumPositionalArguments() const {
+        return 1;
     }
 
-  public:
+public:
 
-    MIRInspect(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
-    }
+    // -- Contructors
 
-private:
-
-    options_t options_;
+    MIRInspect(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
 
 };
 
@@ -53,12 +52,8 @@ void MIRInspect::usage(const std::string &tool) {
 }
 
 void MIRInspect::execute(const eckit::option::CmdArgs&) {
-    if (argc() <= 2) {
-        usage(name());
-    }
 
     mir::input::GribFileInput file(argv(argc() - 1));
-
     while (file.next()) {
         mir::input::MIRInput &input = file;
 
@@ -82,7 +77,7 @@ void MIRInspect::execute(const eckit::option::CmdArgs&) {
 }
 
 
-int main( int argc, char **argv ) {
+int main(int argc, char **argv) {
     MIRInspect tool(argc, argv);
     return tool.start();
 }

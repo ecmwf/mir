@@ -13,41 +13,41 @@
 /// @date Apr 2015
 
 
-#include "eckit/runtime/Tool.h"
 #include "eckit/io/StdFile.h"
-
 #include "mir/input/GribFileInput.h"
 #include "mir/data/MIRField.h"
+#include "mir/tools/MIRTool.h"
 
 
-class MIRMakeLSM : public eckit::Tool {
+class MIRMakeLSM : public mir::tools::MIRTool {
 
-    virtual void run();
+    // -- Overridden methods
+
+    void execute(const eckit::option::CmdArgs&);
 
     void usage(const std::string &tool);
 
-  public:
-    MIRMakeLSM(int argc, char **argv) :
-        eckit::Tool(argc, argv) {
+    int minimumPositionalArguments() const {
+        return 2;
     }
+
+public:
+
+    // -- Contructors
+
+    MIRMakeLSM(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
 
 };
 
+
 void MIRMakeLSM::usage(const std::string &tool) {
-
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " file.grib file.lsm" << std::endl
-            ;
-
-    ::exit(1);
+            << "\n" << "Usage: " << tool << " file.grib file.lsm"
+            << std::endl;
 }
 
-void MIRMakeLSM::run() {
 
-
-    if (argc() <= 2) {
-        usage(name());
-    }
+void MIRMakeLSM::execute(const eckit::option::CmdArgs&) {
 
     mir::input::GribFileInput file(argv(1));
     eckit::StdFile out(argv(2), "w");
@@ -101,7 +101,7 @@ void MIRMakeLSM::run() {
 }
 
 
-int main( int argc, char **argv ) {
+int main(int argc, char **argv) {
     MIRMakeLSM tool(argc, argv);
     return tool.start();
 }

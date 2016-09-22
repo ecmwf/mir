@@ -39,6 +39,8 @@ static struct {
 
 class MIRCompare : public mir::tools::MIRTool {
 
+    // -- Overridden methods
+
     void execute(const eckit::option::CmdArgs&);
 
     void usage(const std::string &tool);
@@ -47,7 +49,9 @@ class MIRCompare : public mir::tools::MIRTool {
         return 2;
     }
 
-    options_t& getOptions();
+    void getOptions(options_t&);
+
+    // -- Methods
 
     void compare(size_t n, mir::data::MIRField &field1, mir::data::MIRField &field2) const;
     void l2norm(size_t n, mir::data::MIRField &field1, mir::data::MIRField &field2) const;
@@ -56,6 +60,8 @@ class MIRCompare : public mir::tools::MIRTool {
     bool compare(const double *, const double *, size_t) const;
 
   public:
+
+    // -- Contructors
 
     MIRCompare(int argc, char **argv) :
         mir::tools::MIRTool(argc, argv),
@@ -232,13 +238,8 @@ void MIRCompare::l2norm(size_t n, mir::data::MIRField &field1, mir::data::MIRFie
 }
 
 
-mir::tools::MIRTool::options_t& MIRCompare::getOptions() {
-    if (options_.size()) {
-        return options_;
-    }
-
+void MIRCompare::getOptions(mir::tools::MIRTool::options_t& options) {
     using namespace eckit::option;
-    options_t& options = options_;
 
     options.push_back(new SimpleOption< double >("absolute", "Maximum absolute error"));
     options.push_back(new SimpleOption< double >("relative", "Maximum relative error"));
@@ -246,8 +247,6 @@ mir::tools::MIRTool::options_t& MIRCompare::getOptions() {
     options.push_back(new SimpleOption< double >("packing",  "Comparing to packing error, with provided factor"));
     options.push_back(new SimpleOption< bool   >("ulps",     "Comparing with ULPS (?)"));
     options.push_back(new SimpleOption< bool   >("l2norm",   "Compute L2 norm between 2 fields"));
-
-    return options;
 }
 
 
@@ -388,7 +387,7 @@ void MIRCompare::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-int main( int argc, char **argv ) {
+int main(int argc, char **argv) {
     MIRCompare tool(argc, argv);
     return tool.start();
 }

@@ -13,27 +13,38 @@
 /// @date Apr 2015
 
 
-#include "eckit/runtime/Tool.h"
-#include "mir/util/FormulaParser.h"
-#include "mir/util/Formula.h"
 #include "mir/action/context/Context.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/tools/MIRTool.h"
+#include "mir/util/Formula.h"
+#include "mir/util/FormulaParser.h"
 
 
-class MIRFormula : public eckit::Tool {
+class MIRFormula : public mir::tools::MIRTool {
 
-    virtual void run();
+    // -- Overridden methods
 
+    void execute(const eckit::option::CmdArgs&);
+
+    void usage(const std::string &tool);
 
 public:
-    MIRFormula(int argc, char **argv) :
-        eckit::Tool(argc, argv) {
-    }
+
+    // -- Contructors
+
+    MIRFormula(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
 
 };
 
 
-void MIRFormula::run() {
+void MIRFormula::usage(const std::string &tool) {
+    eckit::Log::info()
+            << "\n" "Usage: " << tool
+            << std::endl;
+}
+
+
+void MIRFormula::execute(const eckit::option::CmdArgs&) {
     // std::istringstream in("sqrt(-(-2 + 3 - 4   - 5*10/2))");
     std::istringstream in("2 ^ 10");
     mir::util::FormulaParser p(in);
@@ -47,11 +58,10 @@ void MIRFormula::run() {
     f->execute(ctx);
 
     std::cout << ctx << std::endl;
-
 }
 
 
-int main( int argc, char **argv ) {
+int main(int argc, char **argv) {
     MIRFormula tool(argc, argv);
     return tool.start();
 }

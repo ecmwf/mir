@@ -12,47 +12,48 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "eckit/runtime/Tool.h"
+
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-
 #include "mir/caching/SharedMemoryLoader.h"
-
-using eckit::option::Option;
-using eckit::option::SimpleOption;
-using eckit::option::CmdArgs;
+#include "mir/tools/MIRTool.h"
 
 
-class MIRSharedMemory : public eckit::Tool {
+class MIRSharedMemory : public mir::tools::MIRTool {
 
-    virtual void run();
-    static void usage(const std::string &tool);
+    // -- Overridden methods
 
-  public:
-    MIRSharedMemory(int argc, char **argv) :
-        eckit::Tool(argc, argv) {
-    }
+    void execute(const eckit::option::CmdArgs&);
+
+    void usage(const std::string &tool);
+
+    void getOptions(options_t&);
+
+public:
+
+    // -- Contructors
+
+    MIRSharedMemory(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
 
 };
 
 
 void MIRSharedMemory::usage(const std::string &tool) {
-
     eckit::Log::info()
-            << std::endl << "Usage: " << tool << " --load=file | --unload=file" << std::endl
-            ;
-
+            << "\n" << "Usage: " << tool << " [--load=file] [--unload=file]"
+            << std::endl;
 }
 
-void MIRSharedMemory::run() {
 
+void MIRSharedMemory::getOptions(options_t& options) {
+    using namespace eckit::option;
 
-    std::vector<Option*> options;
     options.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
     options.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
+}
 
-    CmdArgs args(&usage, options, 0, 0);
 
+void MIRSharedMemory::execute(const eckit::option::CmdArgs& args) {
     std::string path;
 
     if (args.get("load", path)) {
@@ -62,11 +63,10 @@ void MIRSharedMemory::run() {
     if (args.get("unload", path)) {
         mir::caching::SharedMemoryLoader::unloadSharedMemory(path);
     }
-
 }
 
 
-int main( int argc, char **argv ) {
+int main(int argc, char **argv) {
     MIRSharedMemory tool(argc, argv);
     return tool.start();
 }
