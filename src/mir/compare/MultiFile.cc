@@ -11,28 +11,35 @@
 /// @author Baudouin Raoult
 /// @date   Jul 2016
 
-
 #include "mir/compare/MultiFile.h"
-
 #include "eckit/serialisation/Stream.h"
-
+#include "eckit/filesystem/PathName.h"
+#include "eckit/io/MultiHandle.h"
+#include "eckit/memory/ScopedPtr.h"
 
 namespace mir {
 namespace compare {
 
 MultiFile::MultiFile(const std::string& name, const std::string& from):
     name_(name),
-    from_(from) {
+    from_(from)
+{
 }
 
 
-bool MultiFile::operator<(const MultiFile& other) const {
+MultiFile::MultiFile(const std::string& path):
+    name_(path),
+    from_(path)
+{
+    add(path);
+}
+
+bool MultiFile::operator<(const MultiFile& other) const  {
     if (name_ == other.name_) {
         return from_ < other.from_;
     }
     return name_ < other.name_;
 }
-
 
 MultiFile::MultiFile(eckit::Stream& s) {
     s >> name_;
@@ -47,10 +54,21 @@ MultiFile::MultiFile(eckit::Stream& s) {
 }
 
 
+void MultiFile::save() const {
+    eckit::PathName out(name_ + "." + from_);
+    eckit::MultiHandle mh;
+    for (size_t i = 0; i < paths_.size(); i++) {
+        eckit::PathName p(paths_[i]);
+        mh += p.fileHandle();
+    }
+    eckit::ScopedPtr<eckit::DataHandle> h(out.fileHandle());
+    std::cout << "Save " << mh << " into " << (*h) << std::endl;
+    mh.saveInto(*h);
+}
+
 void MultiFile::add(const std::string& path) {
     paths_.push_back(path);
 }
-
 
 void MultiFile::encode(eckit::Stream& s) const {
     s << name_;
@@ -61,9 +79,13 @@ void MultiFile::encode(eckit::Stream& s) const {
     }
 }
 
-
-void MultiFile::print(std::ostream& out) const {
-    out << name_ << " (" << from_ << ")";
+void MultiFile::print(std::ostream& out)  const {
+    if (name_ == from_) {
+        out << name_;
+    }
+    else {
+        out << name_ << " (" << from_ << ")";
+    }
 }
 
 
@@ -71,7 +93,5 @@ const std::vector<std::string>& MultiFile::paths() const {
     return paths_;
 }
 
-
-}  // namespace compare
-}  // namespace mir
-
+} // namespace compare
+} // namespace mir

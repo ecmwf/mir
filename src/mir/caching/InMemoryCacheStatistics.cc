@@ -90,4 +90,4 @@ void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace pgen
+} // namespace mir

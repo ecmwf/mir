@@ -14,6 +14,7 @@
 #ifndef mir_action_statistics_detail_ScalarpNormsFn_h
 #define mir_action_statistics_detail_ScalarpNormsFn_h
 
+#include <cmath>
 
 namespace mir {
 namespace action {

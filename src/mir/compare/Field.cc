@@ -8,20 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Sep 2016
 
+#include <iostream>
+#include <cmath>
 
 #include "mir/compare/Field.h"
-
-#include <cmath>
-#include <iostream>
-#include "eckit/exception/Exceptions.h"
 #include "mir/compare/FieldSet.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Colour.h"
 
 
 namespace mir {
 namespace compare {
-
 
 Field::Field(const std::string& path, off_t offset, size_t length):
     info_(path, offset, length),
@@ -39,34 +37,27 @@ Field::Field(const std::string& path, off_t offset, size_t length):
     rotation_latitude_(0),
     rotation_longitude_(0),
     bitmap_(false),
-    resol_(0) {
-}
-
+    resol_(0) {}
 
 void Field::insert(const std::string& key, const std::string& value) {
     values_[key] = value;
 }
 
-
 void Field::erase(const std::string& key) {
     values_.erase(key);
 }
-
 
 off_t Field::offset() const {
     return info_.offset();
 }
 
-
 size_t Field::length() const {
     return info_.length();
 }
 
-
 const std::string& Field::path() const {
     return info_.path();
 }
-
 
 double Field::compare(const Field& other) const {
     return compareAreas(other);
@@ -227,31 +218,25 @@ void Field::bitmap(bool on)  {
     bitmap_ = on;
 }
 
-
 void Field::resol(size_t resol)  {
     resol_ = resol;
 }
-
 
 void Field::param(long param)  {
     param_ = param;
 }
 
-
 void Field::gridname(const std::string& name)  {
     gridname_ = name;
 }
-
 
 void Field::format(const std::string& format)  {
     format_ = format;
 }
 
-
 void Field::gridtype(const std::string& type)  {
     gridtype_ = type;
 }
-
 
 bool Field::samePacking(const Field& other) const {
     return true;
@@ -267,28 +252,29 @@ bool Field::samePacking(const Field& other) const {
     return packing_ == other.packing_;
 }
 
-
 bool Field::sameResol(const Field& other) const {
     return resol_ == other.resol_;
 }
-
 
 bool Field::sameGridname(const Field& other) const {
     return gridname_ == other.gridname_;
 }
 
-
 bool Field::sameGridtype(const Field& other) const {
+    return true;
+
     return gridtype_ == other.gridtype_;
 }
 
-
 bool Field::sameFormat(const Field& other) const {
+    return true;
+
     return format_ == other.format_;
 }
 
 
 bool Field::sameParam(const Field& other) const {
+
 
     if (param_ == 139 && other.param_ == 228095) {
         return true;
@@ -297,9 +283,9 @@ bool Field::sameParam(const Field& other) const {
         return true;
     }
 
+
     return param_ == other.param_;
 }
-
 
 bool Field::sameAccuracy(const Field& other) const {
     return true;
@@ -310,11 +296,9 @@ bool Field::sameAccuracy(const Field& other) const {
     return accuracy_  == other.accuracy_;
 }
 
-
 bool Field::sameBitmap(const Field& other) const {
     return true;
 }
-
 
 bool Field::sameGrid(const Field& other) const {
 
@@ -358,43 +342,79 @@ bool Field::sameRotation(const Field& other) const {
     return true;
 }
 
-
 bool Field::operator<(const Field & other) const {
 
     if (param_ < other.param_) {
         return true;
     }
 
+    if (param_ > other.param_) {
+        return false;
+    }
+
     if (format_ < other.format_) {
         return true;
+    }
+
+    if (format_ > other.format_) {
+        return false;
     }
 
     if (packing_ < other.packing_) {
         return true;
     }
 
+    if (packing_ > other.packing_) {
+        return false;
+    }
+
     if (gridtype_ < other.gridtype_) {
         return true;
+    }
+
+    if (gridtype_ > other.gridtype_) {
+        return false;
     }
 
     if (gridname_ < other.gridname_) {
         return true;
     }
 
+    if (gridname_ > other.gridname_) {
+        return false;
+    }
+
     if (resol_ < other.resol_) {
         return true;
+    }
+
+    if (resol_ > other.resol_) {
+        return false;
     }
 
     if (accuracy_ < other.accuracy_) {
         return true;
     }
 
+    if (accuracy_ > other.accuracy_) {
+        return false;
+    }
+
     if (bitmap_ < other.bitmap_) {
         return true;
     }
 
+    if (bitmap_ > other.bitmap_) {
+        return false;
+    }
+
     if (grid_ < other.grid_) {
         return true;
+    }
+
+
+    if (grid_ > other.grid_) {
+        return false;
     }
 
     if (grid_) {
@@ -403,13 +423,25 @@ bool Field::operator<(const Field & other) const {
             return true;
         }
 
+        if (north_south_ > other.north_south_) {
+            return false;
+        }
+
         if (west_east_ < other.west_east_) {
             return true;
+        }
+
+        if (west_east_ > other.west_east_) {
+            return false;
         }
     }
 
     if (area_ < other.area_) {
         return true;
+    }
+
+    if (area_ > other.area_) {
+        return false;
     }
 
     if (area_) {
@@ -418,21 +450,41 @@ bool Field::operator<(const Field & other) const {
             return true;
         }
 
+        if (north_ > other.north_) {
+            return false;
+        }
+
         if (west_ < other.west_) {
             return true;
+        }
+
+        if (west_ > other.west_) {
+            return false;
         }
 
         if (south_ < other.south_) {
             return true;
         }
 
+        if (south_ > other.south_) {
+            return false;
+        }
+
         if (east_ < other.east_) {
             return true;
+        }
+
+        if (east_ > other.east_) {
+            return false;
         }
     }
 
     if (rotation_ < other.rotation_) {
         return true;
+    }
+
+    if (rotation_ > other.rotation_) {
+        return false;
     }
 
     if (rotation_) {
@@ -441,29 +493,31 @@ bool Field::operator<(const Field & other) const {
             return true;
         }
 
+        if (rotation_latitude_ > other.rotation_latitude_) {
+            return false;
+        }
+
         if (rotation_longitude_ < other.rotation_longitude_) {
             return true;
         }
 
+        if (rotation_longitude_ > other.rotation_longitude_) {
+            return false;
+        }
+
     }
 
-    if (values_ < other.values_) {
-        return true;
-    }
+    return values_ < other.values_;
 
-    return false;
 }
-
 
 std::map<std::string, std::string>::const_iterator Field::begin() const {
     return values_.begin();
 }
 
-
 std::map<std::string, std::string>::const_iterator Field::end() const {
     return values_.end();
 }
-
 
 std::map<std::string, std::string>::const_iterator Field::find(const std::string & key) const {
     return values_.find(key);
@@ -484,11 +538,9 @@ void Field::area(double n, double w, double s, double e) {
     }
 }
 
-
 void Field::accuracy(long n) {
     accuracy_ = n;
 }
-
 
 void Field::packing(const std::string & packing) {
     packing_ = packing;
@@ -501,13 +553,11 @@ void Field::grid(double ns, double we) {
     west_east_ = we;
 }
 
-
 void Field::rotation(double lat, double lon) {
     rotation_ = true;
     rotation_latitude_ = lat;
     rotation_longitude_ = lon;
 }
-
 
 void Field::print(std::ostream & out) const {
 
@@ -553,10 +603,9 @@ void Field::print(std::ostream & out) const {
     for (auto j = values_.begin(); j != values_.end(); ++j) {
         out << "," << (*j).first << "=" << (*j).second;
     }
-    out << " - " << info_;
+    // out << " - " << info_;
     out << "]";
 }
-
 
 bool Field::sameField(const Field & other) const {
     return (values_ == other.values_) ;
@@ -590,6 +639,7 @@ bool Field::same(const Field & other) const {
 }
 
 
+
 std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
     std::vector<Field> matches;
 
@@ -603,9 +653,74 @@ std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
     }
 
     return matches;
+
+}
+
+template<class T>
+static void pdiff(std::ostream & out, const char* name, const T& v1, const T& v2) {
+    out << name;
+    if (v1 != v2) {
+        out << eckit::Colour::red << v1 << eckit::Colour::reset;
+    }
+    else {
+        out << v1;
+    }
+}
+
+void Field::printDifference(std::ostream & out, const Field & other) const {
+
+    pdiff(out, "[param=", param_, other.param_);
+    pdiff(out, ",format=", format_, other.format_);
+
+
+    if (!packing_.empty()) {
+        out << ",packing=" << packing_;
+    }
+
+    if (!gridtype_.empty()) {
+        out << ",gridtype=" << gridtype_;
+    }
+
+    if (!gridname_.empty()) {
+        out << ",gridname=" << gridname_;
+    }
+
+    if (resol_) {
+        out << ",resol=" << resol_;
+    }
+
+    if (accuracy_ >= 0) {
+        pdiff(out, ",accuracy=", accuracy_, other.accuracy_);
+    }
+
+    if (bitmap_) {
+        out << ",bitmap=yes";
+    }
+
+    if (grid_) {
+        out << ",grid=" << north_south_ << "/" << west_east_;
+    }
+
+    if (area_) {
+        out << ",area=" << north_ << "/" << west_ << "/" << south_ << "/" << east_;
+    }
+
+    if (rotation_) {
+        out << ",rotation=" << rotation_latitude_ << "/" << rotation_longitude_;
+    }
+
+    for (auto j = values_.begin(); j != values_.end(); ++j) {
+        out << "," << (*j).first << "=" << (*j).second;
+    }
+    // out << " - " << info_;
+    out << "]";
 }
 
 
-}  // namespace compare
-}  // namespace mir
+//----------------------------------------------------------------------------------------------------------------------
 
+
+//----------------------------------------------------------------------------------------------------------------------
+}  // namespace compare
+
+}  // namespace mir

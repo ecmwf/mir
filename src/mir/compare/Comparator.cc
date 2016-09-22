@@ -8,20 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Sep 2016
-
 #include "mir/compare/Comparator.h"
-// #include "pgen/distributed/Transport.h"
+#include "mir/compare/MultiFile.h"
 #include "mir/compare/FieldSet.h"
 #include "mir/compare/MultiFile.h"
-#include "eckit/io/StdFile.h"
 
-// #include "eckit/log/TimeStamp.h"
+#include "eckit/io/StdFile.h"
 #include "eckit/option/CmdArgs.h"
-// #include "pgen/prodgen/Output.h"
-// #include "pgen/distributed/Message.h"
 #include "eckit/parser/Tokenizer.h"
-// #include "pgen/distributed/Transport.h"
 #include "eckit/log/Plural.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/serialisation/MemoryStream.h"
@@ -57,10 +51,6 @@ Comparator::Comparator(const eckit::option::CmdArgs &args):
     args.get("compare-statistics", compareStatistics_);
     args.get("requirements", requirements_);
     args.get("save-fields", saveFields_);
-    if (saveFields_) {
-        throw eckit::SeriousBug("Cannot save fields, MultiFile::save does not exist", Here());
-        //FIXME fix handling below as well
-    }
 
     long digits = 0;
     roundDegrees_ = args.get("round-degrees", digits);
@@ -105,11 +95,10 @@ void Comparator::compare(const std::string& name,
     }
     else {
         if (!requirements_.empty()) {
-            const std::string filename = name + ".compare";
-            std::ofstream out(filename);
+            std::ofstream out(name + ".pgen");
             std::ifstream in(requirements_);
 
-            std::cout << "Save " << filename << std::endl;
+            std::cout << "Save " << name << ".pgen" << std::endl;
 
             std::string dstream = name.substr(0, 2);
             std::string destination = name.substr(24, 3);
@@ -124,9 +113,8 @@ void Comparator::compare(const std::string& name,
 
         }
         if (saveFields_) {
-            // FIXME implement this? Remove exception above
-            // multi1.save();
-            // multi2.save();
+            multi1.save();
+            multi2.save();
         }
     }
 
@@ -135,13 +123,10 @@ void Comparator::compare(const std::string& name,
 
 void Comparator::compare(const std::string& path1,
                          const std::string& path2) {
-    MultiFile multi1(path1, path1);
-    multi1.add(path1);
+    MultiFile multi1(path1);
+    MultiFile multi2(path2);
 
-    MultiFile multi2(path2, path2);
-    multi1.add(path2);
-
-    compare("", multi1, multi2);
+    compare("COMPARE", multi1, multi2);
 }
 
 void Comparator::error(const char* what) {
@@ -220,9 +205,9 @@ static void setGrid(Field& field, grib_handle *h) {
     field.grid(ns, we);
 }
 
-void Comparator::getField(const Comparator::MultiFile& multi,
+void Comparator::getField(const MultiFile& multi,
                           const eckit::Buffer& buffer,
-                          Comparator::FieldSet& fields,
+                          FieldSet& fields,
                           const std::string& path,
                           off_t offset,
                           size_t size) {
@@ -443,7 +428,7 @@ void Comparator::getField(const Comparator::MultiFile& multi,
 
 }
 
-size_t Comparator::count(const Comparator::MultiFile& multi, Comparator::FieldSet& fields) {
+size_t Comparator::count(const MultiFile& multi, FieldSet& fields) {
 
     eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
 
@@ -615,8 +600,8 @@ static void getStats(const Field& field, Statistics& stats) {
 }
 
 
-void Comparator::compareField(const Comparator::MultiFile & multi1,
-                              const Comparator::MultiFile & multi2,
+void Comparator::compareField(const MultiFile & multi1,
+                              const MultiFile & multi2,
                               const Field & field1,
                               const Field & field2) {
 
@@ -680,10 +665,10 @@ void Comparator::compareField(const Comparator::MultiFile & multi1,
 }
 
 
-void Comparator::missingField(const Comparator::MultiFile & multi1,
-                              const Comparator::MultiFile & multi2,
+void Comparator::missingField(const MultiFile & multi1,
+                              const MultiFile & multi2,
                               const Field & field,
-                              const Comparator::FieldSet & fields,
+                              const FieldSet & fields,
                               bool & show) {
 
     if (show) {
@@ -700,27 +685,37 @@ void Comparator::missingField(const Comparator::MultiFile & multi1,
 
     std::vector<Field> matches = field.bestMatches(fields);
     if (matches.size() == 0) {
-        std::cout << " ? " << "No match found, list of fields are:" << std::endl;
+        std::cout << " ? " << "No match found in " << multi2 <<  std::endl;
+        size_t cnt = 0;
         for (auto m = fields.begin(); m != fields.end(); ++m) {
             const auto& other = (*m);
             if (other.match(field)) {
-                std::cout << " @ " << other << " (" << other.compare(field) << ")" << std::endl;
+                std::cout << " @ " ; other.printDifference(std::cout, field); std::cout << " (" << other.compare(field) << ")" << std::endl;
+                cnt++;
             }
         }
-    }
+        if (!cnt) {
+            for (auto m = fields.begin(); m != fields.end(); ++m) {
+                const auto& other = (*m);
+                std::cout << " # ";  other.printDifference(std::cout, field); std::cout << " (" << other.compare(field) << ")" << std::endl;
+                cnt++;
+            }
+        }
+    } else {
 
 
-    for (auto m = matches.begin(); m != matches.end(); ++m) {
-        const auto& other = (*m);
-        std::cout << " ? " << other << " (" << other.compare(field) << ")" << std::endl;
+        for (auto m = matches.begin(); m != matches.end(); ++m) {
+            const auto& other = (*m);
+            std::cout << " ? "; other.printDifference(std::cout, field); std::cout << " (" << other.compare(field) << ")" << std::endl;
+        }
     }
     std::cout << std::endl;
 }
 
-void Comparator::compareFields(const Comparator::MultiFile & multi1,
-                               const Comparator::MultiFile & multi2,
-                               const Comparator::FieldSet & fields1,
-                               const Comparator::FieldSet & fields2,
+void Comparator::compareFields(const MultiFile & multi1,
+                               const MultiFile & multi2,
+                               const FieldSet & fields1,
+                               const FieldSet & fields2,
                                bool compareData) {
 
     bool show = true;
@@ -746,10 +741,10 @@ void Comparator::compareFields(const Comparator::MultiFile & multi1,
 
 
 void Comparator::compareCounts(const std::string & name,
-                               const Comparator::MultiFile & multi1,
-                               const Comparator::MultiFile & multi2,
-                               Comparator::FieldSet & fields1,
-                               Comparator::FieldSet & fields2) {
+                               const MultiFile & multi1,
+                               const MultiFile & multi2,
+                               FieldSet & fields1,
+                               FieldSet & fields2) {
 
 
     size_t n1 = count(multi1, fields1);

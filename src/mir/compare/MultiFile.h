@@ -12,39 +12,41 @@
 /// @author Florian Rathgeber
 /// @date   Jul 2016
 
-
-#ifndef mir_compare_MultiFile_h
-#define mir_compare_MultiFile_h
+#ifndef mir_MultiFile_H
+#define mir_MultiFile_H
 
 #include <map>
 #include <string>
 #include <vector>
 
-
 namespace eckit {
 class Stream;
 }
 
-
 namespace mir {
 namespace compare {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 class MultiFile {
 public:
 
-    MultiFile(const std::string& name = "", const std::string& from = "");
-    MultiFile(eckit::Stream& s);
+    MultiFile(const std::string& path);
+    MultiFile(const std::string& name, const std::string& from);
+    MultiFile(eckit::Stream& s) ;
 
-    bool operator<(const MultiFile& other) const;
+    bool operator<(const MultiFile& other) const ;
 
     void add(const std::string& path);
 
     const std::vector<std::string>& paths() const;
 
-    void encode(eckit::Stream& s) const;
+    void encode(eckit::Stream& s) const ;
 
-    void print(std::ostream& out) const;
+    void print(std::ostream& out)  const;
+
+    void save() const;
 
 private:
 
@@ -64,12 +66,15 @@ private:
         return out;
     }
 
+
+
+
 };
 
 
-}  // namespace compare
-}  // namespace mir
+//----------------------------------------------------------------------------------------------------------------------
 
+} // namespace compare
+} // namespace mir
 
 #endif
-

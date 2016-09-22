@@ -13,27 +13,23 @@
 /// @author Tiago Quintino
 /// @date   May 2016
 
-
-#ifndef mir_compare_Field_h
-#define mir_compare_Field_h
+#ifndef mir_compare_Field_H
+#define mir_compare_Field_H
 
 #include <iosfwd>
-#include <set>
 #include <string>
+#include <set>
 #include <vector>
+
 #include "mir/compare/FieldInfo.h"
 
-
 namespace mir {
 namespace compare {
+
 class FieldSet;
-}
-}
 
-
-namespace mir {
-namespace compare {
-
+//----------------------------------------------------------------------------------------------------------------------
+//
 
 class Field {
 public:
@@ -95,6 +91,8 @@ public:
 
     const std::string& path() const ;
 
+    void printDifference(std::ostream & out, const Field & other) const;
+
 private:
 
     bool operator==(const Field& other) const;
@@ -144,9 +142,9 @@ private:
 };
 
 
-}  // namespace compare
-}  // namespace mir
+//----------------------------------------------------------------------------------------------------------------------
 
+} // namespace mir
+} // namespace compare
 
 #endif
-
