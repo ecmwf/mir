@@ -19,6 +19,7 @@
 #include <iostream>
 #include <vector>
 #include "eckit/filesystem/PathName.h"
+#include "eckit/parser/StringTools.h"
 #include "eckit/utils/Translator.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/ParamClass.h"
@@ -33,11 +34,15 @@ namespace  {
 
 
 // fill params (recursively) with settings from settingsParams[setting]
-bool flatten_params_on_setting(const ParamClass& settingsParams, const std::string& setting, const size_t& recurseLevelMax, SimpleParametrisation& params) {
+bool flatten_params_on_setting(const ParamClass& settingsParams, const std::string& setting, const std::string& defaultSetting, const std::string& trackSetting, const size_t& recurseLevelMax, SimpleParametrisation& params) {
     ASSERT(setting.length());
 
     // track recursivity depth and values (to detect loops)
     std::vector< std::string > recurse;
+
+    if (settingsParams.has(defaultSetting)) {
+        settingsParams.lookup(defaultSetting)->copyValuesTo(params, false);
+    }
 
     while (static_cast< const MIRParametrisation& >(params).has(setting)) {
 
@@ -58,31 +63,22 @@ bool flatten_params_on_setting(const ParamClass& settingsParams, const std::stri
         }
         recurse.push_back(value);
 
-        // copy the non-parameter-specific parametrization
-        SimpleParametrisation paramsModif;
-        settingsParams.lookup(value)->copyValuesTo(paramsModif);
-
-        // overwrite with parameter-specific settings (exclude the "flattening" setting)
+        // remove recursed parameter
         params.clear(setting);
-        params.copyValuesTo(paramsModif);
-        paramsModif.copyValuesTo(params);
+
+        // copy the parameter-specific settings (exclude the "flattening" setting, and don't overwrite)
+        settingsParams.lookup(value)->copyValuesTo(params, false);
 
     }
 
-#if 0
-    // add the "flattened" setting under a slightly different name (for reference)
-    if (recurse.size()) {
-        const char* sep = "";
-
-        std::string flat;
-        for (std::vector< std::string >::const_iterator i = recurse.begin(); i != recurse.end(); ++i) {
-            flat += sep + *i;
-            sep = ", ";
-        }
-
-        params.set("_" + setting, flat);
+    // track the "flattened" setting
+    if (recurse.size() && trackSetting.length()) {
+        ASSERT(setting != trackSetting);
+        const std::string track = eckit::StringTools::join(", ", recurse);
+        params.set(trackSetting, track);
+        eckit::Log::debug<LibMir>() << "flatten_on_setting: recurse: \"" << track << "\"" << std::endl;
     }
-#endif
+
     return true;
 }
 
@@ -93,6 +89,8 @@ bool flatten_params_on_setting(const ParamClass& settingsParams, const std::stri
 MIRConfiguration::MIRConfiguration() :
     scope_(0),
     flattenSetting_("class"),
+    flattenDefaultSetting_("class.default"),
+    flattenTrackSetting_("class.debug"),
     flattenDepth_(3) {
 
     eckit::PathName path("~mir/etc/mir/param-info.cfg");
@@ -178,7 +176,7 @@ const SimpleParametrisation* MIRConfiguration::lookup(long paramId) const {
         return 0;
     }
 
-    if (!flatten_params_on_setting(ParamClass::instance(), flattenSetting_, flattenDepth_, *(j->second))) {
+    if (!flatten_params_on_setting(ParamClass::instance(), flattenSetting_, flattenDefaultSetting_, flattenTrackSetting_, flattenDepth_, *(j->second))) {
         throw eckit::UserError("Cannot flatten paramId=" + eckit::Translator< long, std::string >()(j->first) + " on \"class\"", Here());
     }
     eckit::Log::debug<LibMir>() << "MIRConfiguration paramId=" << j->first << ": ["  << *(j->second) << "]" << std::endl;

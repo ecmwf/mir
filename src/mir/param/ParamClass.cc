@@ -114,6 +114,11 @@ const SimpleParametrisation* ParamClass::lookup(const std::string& paramClass) c
 }
 
 
+bool ParamClass::has(const std::string& paramClass) const {
+    return (settings_.find(paramClass) != settings_.end());
+}
+
+
 }  // namespace param
 }  // namespace mir
 

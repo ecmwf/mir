@@ -34,27 +34,27 @@ class Setting;
 class DelayedParametrisation;
 
 class SimpleParametrisation : public MIRParametrisation {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     SimpleParametrisation();
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~SimpleParametrisation();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
-    void copyValuesTo(SimpleParametrisation& other) const;
+    // -- Methods
+    void copyValuesTo(SimpleParametrisation& other, bool overwrite=true) const;
 
 
     SimpleParametrisation& set(const std::string& name, const char* value);
@@ -72,22 +72,21 @@ class SimpleParametrisation : public MIRParametrisation {
     SimpleParametrisation& clear(const std::string& name);
     SimpleParametrisation& reset();
 
-// -- Overridden methods
-
-
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-  protected:
+    // -- Class methods
+    // None
 
-// -- Members
+protected:
 
+    // -- Members
+    // None
 
-
-// -- Methods
+    // -- Methods
 
     virtual void print(std::ostream&) const;
     void json(eckit::JSON&) const;
@@ -96,7 +95,7 @@ class SimpleParametrisation : public MIRParametrisation {
 
     size_t size() const;
 
-// -- Overridden methods
+    // -- Overridden methods
     virtual bool has(const std::string& name) const;
 
     virtual bool get(const std::string& name, std::string& value) const;
@@ -106,36 +105,31 @@ class SimpleParametrisation : public MIRParametrisation {
     virtual bool get(const std::string& name, std::vector<long>& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
 
-
-
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
     // Types
     typedef std::map<std::string, Setting*> SettingsMap;
 
-// No copy allowed
+    // No copy allowed
 
     SimpleParametrisation(const SimpleParametrisation&);
     SimpleParametrisation& operator=(const SimpleParametrisation&);
 
-// -- Members
+    // -- Members
 
     SettingsMap settings_;
 
-
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
-
-
 
     template<class T>
     bool _get(const std::string& name, T& value) const;
@@ -143,20 +137,19 @@ class SimpleParametrisation : public MIRParametrisation {
     template<class T>
     void _set(const std::string& name, const T& value);
 
-
-
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     friend eckit::JSON& operator<<(eckit::JSON& s, const SimpleParametrisation& p) {
         p.json(s);
         return s;
     }
+
 };
 
 

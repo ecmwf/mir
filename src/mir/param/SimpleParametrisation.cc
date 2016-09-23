@@ -522,9 +522,11 @@ bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
     return ok;
 }
 
-void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other) const {
+void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other, bool overwrite) const {
     for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-        (*j).second->copyValueTo((*j).first, other);
+        if (overwrite || !other.has((*j).first)) {
+            (*j).second->copyValueTo((*j).first, other);
+        }
     }
 }
 
