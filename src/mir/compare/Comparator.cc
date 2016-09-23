@@ -429,8 +429,8 @@ void Comparator::getField(const MultiFile& multi,
                   << "  ==> "
                   << field << std::endl
                   << "  ==> ";
-                  other.printDifference(std::cout, field);
-                  std::cout << std::endl
+        other.printDifference(std::cout, field);
+        std::cout << std::endl
                   // << "  ==> "
                   // << field.compare(other)
                   // << std::endl
@@ -687,15 +687,12 @@ void Comparator::missingField(const MultiFile & multi1,
                               bool & show) {
 
     if (show) {
-                error("fields-not-found");
-
+        error("fields-not-found");
         std::cout << "Fields in " << multi1 << " not in " << multi2 << std::endl;
         show = false;
     }
 
-
     std::cout << "   " << field << std::endl;
-
 
     // Find the best mismaches
 
