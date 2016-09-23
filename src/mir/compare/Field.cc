@@ -239,7 +239,6 @@ void Field::gridtype(const std::string& type)  {
 }
 
 bool Field::samePacking(const Field& other) const {
-    return true;
 
     if (packing_ == "grid_simple_matrix" && other.packing_ == "grid_simple") {
         return true;
@@ -267,11 +266,8 @@ bool Field::sameGridtype(const Field& other) const {
 }
 
 bool Field::sameFormat(const Field& other) const {
-    return true;
-
     return format_ == other.format_;
 }
-
 
 bool Field::sameParam(const Field& other) const {
 
@@ -288,8 +284,6 @@ bool Field::sameParam(const Field& other) const {
 }
 
 bool Field::sameAccuracy(const Field& other) const {
-    return true;
-
     if (accuracy_ == 0 || other.accuracy_ == 0) {
         return true;
     }
