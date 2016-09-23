@@ -654,7 +654,7 @@ template<class T>
 static void pdiff(std::ostream & out, const char* name, const T& v1, const T& v2) {
     out << name;
     if (v1 != v2) {
-        out << eckit::Colour::red << v1 << eckit::Colour::reset;
+        out << eckit::Colour::red <<eckit::Colour::bold << v1 << eckit::Colour::reset;
     }
     else {
         out << v1;
