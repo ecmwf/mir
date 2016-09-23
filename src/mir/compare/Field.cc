@@ -43,6 +43,13 @@ void Field::insert(const std::string& key, const std::string& value) {
     values_[key] = value;
 }
 
+void Field::insert(const std::string& key, long value) {
+    std::ostringstream oss;
+    oss << value;
+    insert(key, oss.str());
+}
+
+
 void Field::erase(const std::string& key) {
     values_.erase(key);
 }
@@ -657,8 +664,7 @@ std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
 }
 
 template<class T>
-static void pdiff(std::ostream & out, const char* name, const T& v1, const T& v2) {
-    out << name;
+static void pdiff(std::ostream & out, const T& v1, const T& v2) {
     if (v1 != v2) {
         out << eckit::Colour::red << v1 << eckit::Colour::reset;
     }
@@ -669,28 +675,32 @@ static void pdiff(std::ostream & out, const char* name, const T& v1, const T& v2
 
 void Field::printDifference(std::ostream & out, const Field & other) const {
 
-    pdiff(out, "[param=", param_, other.param_);
-    pdiff(out, ",format=", format_, other.format_);
+    out << "[param=";
+    pdiff(out, param_, other.param_);
+
+    out << ",format=";
+    pdiff(out, format_, other.format_);
 
 
     if (!packing_.empty()) {
-        out << ",packing=" << packing_;
+        out << ",packing=" ; pdiff(out, packing_, other.packing_);
     }
 
     if (!gridtype_.empty()) {
-        out << ",gridtype=" << gridtype_;
+        out << ",gridtype=" ; pdiff(out, gridtype_, other.gridtype_);
     }
 
     if (!gridname_.empty()) {
-        out << ",gridname=" << gridname_;
+        out << ",gridname="; pdiff(out, gridname_, other.gridname_);
     }
 
     if (resol_) {
-        out << ",resol=" << resol_;
+        out << ",resol="; pdiff(out, resol_, other.resol_);
     }
 
     if (accuracy_ >= 0) {
-        pdiff(out, ",accuracy=", accuracy_, other.accuracy_);
+        out << ",accuracy=";
+        pdiff(out, accuracy_, other.accuracy_);
     }
 
     if (bitmap_) {
@@ -698,19 +708,41 @@ void Field::printDifference(std::ostream & out, const Field & other) const {
     }
 
     if (grid_) {
-        out << ",grid=" << north_south_ << "/" << west_east_;
+        out << ",grid=" ; pdiff(out, north_south_, other.north_south_);
+        out  << "/";
+        pdiff(out, west_east_, other.west_east_);
     }
 
     if (area_) {
-        out << ",area=" << north_ << "/" << west_ << "/" << south_ << "/" << east_;
+        out << ",area=" ;
+        pdiff(out, north_, other.north_);
+        out << "/" ;
+        pdiff(out, west_, other.west_);
+        out << "/";
+        pdiff(out, south_, other.south_);
+        out << "/";
+        pdiff(out, east_, other.east_);
     }
 
     if (rotation_) {
-        out << ",rotation=" << rotation_latitude_ << "/" << rotation_longitude_;
+        out << ",rotation=" ;
+        pdiff(out, rotation_latitude_, other.rotation_latitude_);
+        out << "/" ;
+        pdiff(out, rotation_longitude_, other.rotation_longitude_);
     }
 
     for (auto j = values_.begin(); j != values_.end(); ++j) {
-        out << "," << (*j).first << "=" << (*j).second;
+        out << "," << (*j).first << "=";
+
+        auto k = other.values_.find((*j).first);
+
+        if (k == other.values_.end()) {
+            pdiff(out, (*j).second , std::string());
+        }
+        else {
+            pdiff(out, (*j).second , (*k).second);
+        }
+
     }
     // out << " - " << info_;
     out << "]";

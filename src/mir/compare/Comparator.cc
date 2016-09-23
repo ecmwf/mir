@@ -13,6 +13,8 @@
 #include "mir/compare/FieldSet.h"
 #include "mir/compare/MultiFile.h"
 
+#include "eckit/filesystem/PathName.h"
+
 #include "eckit/io/StdFile.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/parser/Tokenizer.h"
@@ -95,10 +97,12 @@ void Comparator::compare(const std::string& name,
     }
     else {
         if (!requirements_.empty()) {
-            std::ofstream out(name + ".pgen");
+            std::string ext = eckit::PathName(requirements_).extension();
+
+            std::ofstream out(name + ext);
             std::ifstream in(requirements_);
 
-            std::cout << "Save " << name << ".pgen" << std::endl;
+            std::cout << "Save " << name << ext << std::endl;
 
             std::string dstream = name.substr(0, 2);
             std::string destination = name.substr(24, 3);
@@ -369,12 +373,15 @@ void Comparator::getField(const MultiFile& multi,
 
 
 
-    long scanningMode = 0;
-    if(grib_get_long(h, "scanningMode", &scanningMode) == 0) {
-        std::ostringstream oss;
-        oss << scanningMode;
-        field.insert("scanning", oss.str());
-    }
+    // long scanningMode = 0;
+    // if (grib_get_long(h, "scanningMode", &scanningMode) == 0) {
+    //     field.insert("scanningMode", scanningMode);
+    // }
+
+    // long decimalScaleFactor = 0;
+    // if (grib_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
+    //     field.insert("decimalScaleFactor", decimalScaleFactor);
+    // }
 
 
     long edition;
@@ -698,14 +705,18 @@ void Comparator::missingField(const MultiFile & multi1,
         for (auto m = fields.begin(); m != fields.end(); ++m) {
             const auto& other = (*m);
             if (other.match(field)) {
-                std::cout << " @ " ; other.printDifference(std::cout, field); std::cout << " (" << other.compare(field) << ")" << std::endl;
+                std::cout << " @ ";
+                other.printDifference(std::cout, field);
+                std::cout << " (" << other.compare(field) << ")" << std::endl;
                 cnt++;
             }
         }
         if (!cnt) {
             for (auto m = fields.begin(); m != fields.end(); ++m) {
                 const auto& other = (*m);
-                std::cout << " # ";  other.printDifference(std::cout, field); std::cout << " (" << other.compare(field) << ")" << std::endl;
+                std::cout << " # ";
+                other.printDifference(std::cout, field);
+                std::cout << " (" << other.compare(field) << ")" << std::endl;
                 cnt++;
             }
         }
@@ -714,7 +725,9 @@ void Comparator::missingField(const MultiFile & multi1,
 
         for (auto m = matches.begin(); m != matches.end(); ++m) {
             const auto& other = (*m);
-            std::cout << " ? "; other.printDifference(std::cout, field); std::cout << " (" << other.compare(field) << ")" << std::endl;
+            std::cout << " ? ";
+            other.printDifference(std::cout, field);
+            std::cout << " (" << other.compare(field) << ")" << std::endl;
         }
     }
     std::cout << std::endl;
