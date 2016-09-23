@@ -25,7 +25,7 @@ namespace tools {
 MIRCompare::MIRCompare(int argc, char** argv) : MIRTool(argc, argv) {
     using namespace eckit::option;
 
-    options_.push_back(new SimpleOption<bool>("mutli-files",             "Arguments are text files containing the names of GRIB/BUFR files"));
+    options_.push_back(new SimpleOption<bool>("multi-files",             "Arguments are text files containing the names of GRIB/BUFR files"));
     options_.push_back(new SimpleOption<bool>("save-fields",             "Save fields that do not compare"));
 
     options_.push_back(new SimpleOption<bool>("normalise-longitudes",    "(Not yet used) Compare normalised values of east/west longitude (e.g. -1 == 359)"));
