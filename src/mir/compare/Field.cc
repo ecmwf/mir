@@ -387,9 +387,9 @@ bool Field::operator<(const Field & other) const {
     }
 
 
-    if(sameAccuracy(other)) {
-        return false;
-    }
+    // if(sameAccuracy(other)) {
+    //     return false;
+    // }
 
     if (accuracy_ < other.accuracy_) {
         return true;
@@ -666,7 +666,7 @@ static void pdiff(std::ostream & out, const char* name, const T& v1, const T& v2
     }
 }
 
-void Field::printDifference(std::ostream & out, const Field & other) const {
+std::ostream& Field::printDifference(std::ostream & out, const Field & other) const {
 
     pdiff(out, "[param=", param_, other.param_);
     pdiff(out, ",format=", format_, other.format_);
@@ -713,6 +713,8 @@ void Field::printDifference(std::ostream & out, const Field & other) const {
     }
     // out << " - " << info_;
     out << "]";
+
+    return out;
 }
 
 
