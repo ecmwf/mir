@@ -398,17 +398,19 @@ bool Field::operator<(const Field & other) const {
     //     return false;
     // }
 
-    if(accuracy_ == 0 || other.accuracy_) {
-        return false;
-    }
+{
+    long accuracy = accuracy_ ? accuracy_ : other.accuracy_;
+    long other_accuracy = other.accuracy_ ? other.accuracy_ : accuracy_;
 
-    if (accuracy_ < other.accuracy_) {
+
+    if (accuracy < other_accuracy) {
         return true;
     }
 
-    if (accuracy_ > other.accuracy_) {
+    if (accuracy > other_accuracy) {
         return false;
     }
+}
 
     if (bitmap_ < other.bitmap_) {
         return true;
