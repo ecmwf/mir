@@ -37,6 +37,7 @@ public:
     Field(const std::string& path, off_t offset, size_t length);
 
     void insert(const std::string& key, const std::string& value);
+    void insert(const std::string& key, long value);
 
     void erase(const std::string& key);
 
