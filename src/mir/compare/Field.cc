@@ -271,8 +271,6 @@ bool Field::sameGridname(const Field& other) const {
 }
 
 bool Field::sameGridtype(const Field& other) const {
-    return true;
-
     return gridtype_ == other.gridtype_;
 }
 
@@ -281,16 +279,6 @@ bool Field::sameFormat(const Field& other) const {
 }
 
 bool Field::sameParam(const Field& other) const {
-
-
-    if (param_ == 139 && other.param_ == 228095) {
-        return true;
-    }
-    if (param_ == 228095 && other.param_ == 139) {
-        return true;
-    }
-
-
     return param_ == other.param_;
 }
 
