@@ -687,6 +687,8 @@ void Comparator::missingField(const MultiFile & multi1,
                               bool & show) {
 
     if (show) {
+                error("fields-not-found");
+
         std::cout << "Fields in " << multi1 << " not in " << multi2 << std::endl;
         show = false;
     }
@@ -730,7 +732,6 @@ void Comparator::missingField(const MultiFile & multi1,
         }
     }
     std::cout << std::endl;
-        error("fields-not-found");
 
 }
 
