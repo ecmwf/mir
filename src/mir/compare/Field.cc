@@ -361,11 +361,24 @@ bool Field::operator<(const Field & other) const {
         return false;
     }
 
-    if (packing_ < other.packing_) {
+
+    std::string packing = packing_;
+    std::string other_packing = other.packing_;
+
+    // If the field is contant, the packing is set to 'grid_simple'
+    if (accuracy_ == 0) {
+        packing = other.packing_;
+    }
+
+    if (other.accuracy_ == 0) {
+        other_packing = packing_;
+    }
+
+    if (packing < other_packing) {
         return true;
     }
 
-    if (packing_ > other.packing_) {
+    if (packing > other_packing) {
         return false;
     }
 
@@ -398,7 +411,6 @@ bool Field::operator<(const Field & other) const {
     //     return false;
     // }
 
-{
     long accuracy = accuracy_ ? accuracy_ : other.accuracy_;
     long other_accuracy = other.accuracy_ ? other.accuracy_ : accuracy_;
 
@@ -410,7 +422,6 @@ bool Field::operator<(const Field & other) const {
     if (accuracy > other_accuracy) {
         return false;
     }
-}
 
     if (bitmap_ < other.bitmap_) {
         return true;
@@ -671,7 +682,7 @@ std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
 template<class T>
 static void pdiff(std::ostream & out, const T& v1, const T& v2) {
     if (v1 != v2) {
-        out << eckit::Colour::red <<eckit::Colour::bold << v1 << eckit::Colour::reset;
+        out << eckit::Colour::red << eckit::Colour::bold << v1 << eckit::Colour::reset;
     }
     else {
         out << v1;
