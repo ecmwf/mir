@@ -418,12 +418,12 @@ void Comparator::getField(const MultiFile& multi,
         //const auto& other = *fields.duplicate(field);
         std::cout << "Duplicate field in "
                   << multi
-                  // << std::endl
+                  << std::endl
                   << "  ==> "
                   << field << std::endl
-                  // << "  ==> "
-                  // << other
-                  // << std::endl
+                  << "  ==> "
+                  << other.printDifference(field);
+                  << std::endl
                   // << "  ==> "
                   // << field.compare(other)
                   // << std::endl
