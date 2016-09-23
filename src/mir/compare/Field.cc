@@ -362,23 +362,27 @@ bool Field::operator<(const Field & other) const {
     }
 
 
-    std::string packing = packing_;
+    std::string this_packing = packing_;
     std::string other_packing = other.packing_;
 
     // If the field is contant, the packing is set to 'grid_simple'
     if (accuracy_ == 0) {
-        packing = other.packing_;
+        this_packing = other.packing_;
     }
 
     if (other.accuracy_ == 0) {
         other_packing = packing_;
     }
 
-    if (packing < other_packing) {
+    if (accuracy_ == 0 && other.accuracy_ == 0) {
+        this_packing = other_packing = packing_;
+    }
+
+    if (this_packing < other_packing) {
         return true;
     }
 
-    if (packing > other_packing) {
+    if (this_packing > other_packing) {
         return false;
     }
 
@@ -411,15 +415,15 @@ bool Field::operator<(const Field & other) const {
     //     return false;
     // }
 
-    long accuracy = accuracy_ ? accuracy_ : other.accuracy_;
+    long this_accuracy = accuracy_ ? accuracy_ : other.accuracy_;
     long other_accuracy = other.accuracy_ ? other.accuracy_ : accuracy_;
 
 
-    if (accuracy < other_accuracy) {
+    if (this_accuracy < other_accuracy) {
         return true;
     }
 
-    if (accuracy > other_accuracy) {
+    if (this_accuracy > other_accuracy) {
         return false;
     }
 
