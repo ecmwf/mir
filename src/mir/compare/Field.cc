@@ -398,6 +398,10 @@ bool Field::operator<(const Field & other) const {
     //     return false;
     // }
 
+    if(accuracy_ == 0 || other.accuracy_) {
+        return false;
+    }
+
     if (accuracy_ < other.accuracy_) {
         return true;
     }
