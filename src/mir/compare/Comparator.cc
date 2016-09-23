@@ -693,7 +693,6 @@ void Comparator::missingField(const MultiFile & multi1,
 
 
     std::cout << "   " << field << std::endl;
-    error("fields-not-found");
 
 
     // Find the best mismaches
@@ -731,6 +730,8 @@ void Comparator::missingField(const MultiFile & multi1,
         }
     }
     std::cout << std::endl;
+        error("fields-not-found");
+
 }
 
 void Comparator::compareFields(const MultiFile & multi1,
