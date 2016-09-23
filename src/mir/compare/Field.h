@@ -91,7 +91,7 @@ public:
 
     const std::string& path() const ;
 
-    void printDifference(std::ostream & out, const Field & other) const;
+    std::ostream& printDifference(std::ostream& out, const Field & other) const;
 
 private:
 
