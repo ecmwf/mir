@@ -428,9 +428,9 @@ void Comparator::getField(const MultiFile& multi,
                   << std::endl
                   << "  ==> "
                   << field << std::endl
-                  << "  ==> "
-                  << other.printDifference(std::cout, field)
-                  << std::endl
+                  << "  ==> ";
+                  other.printDifference(std::cout, field);
+                  std::cout << std::endl
                   // << "  ==> "
                   // << field.compare(other)
                   // << std::endl
