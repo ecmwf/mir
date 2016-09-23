@@ -386,6 +386,11 @@ bool Field::operator<(const Field & other) const {
         return false;
     }
 
+
+    if(sameAccuracy(other)) {
+        return false;
+    }
+
     if (accuracy_ < other.accuracy_) {
         return true;
     }
