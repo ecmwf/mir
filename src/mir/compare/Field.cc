@@ -246,7 +246,6 @@ void Field::gridtype(const std::string& type)  {
 }
 
 bool Field::samePacking(const Field& other) const {
-    return true;
 
     if (packing_ == "grid_simple_matrix" && other.packing_ == "grid_simple") {
         return true;
@@ -274,11 +273,8 @@ bool Field::sameGridtype(const Field& other) const {
 }
 
 bool Field::sameFormat(const Field& other) const {
-    return true;
-
     return format_ == other.format_;
 }
-
 
 bool Field::sameParam(const Field& other) const {
 
@@ -295,8 +291,6 @@ bool Field::sameParam(const Field& other) const {
 }
 
 bool Field::sameAccuracy(const Field& other) const {
-    return true;
-
     if (accuracy_ == 0 || other.accuracy_ == 0) {
         return true;
     }
@@ -398,6 +392,11 @@ bool Field::operator<(const Field & other) const {
     if (resol_ > other.resol_) {
         return false;
     }
+
+
+    // if(sameAccuracy(other)) {
+    //     return false;
+    // }
 
     if (accuracy_ < other.accuracy_) {
         return true;
@@ -666,14 +665,14 @@ std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
 template<class T>
 static void pdiff(std::ostream & out, const T& v1, const T& v2) {
     if (v1 != v2) {
-        out << eckit::Colour::red << v1 << eckit::Colour::reset;
+        out << eckit::Colour::red <<eckit::Colour::bold << v1 << eckit::Colour::reset;
     }
     else {
         out << v1;
     }
 }
 
-void Field::printDifference(std::ostream & out, const Field & other) const {
+std::ostream& Field::printDifference(std::ostream & out, const Field & other) const {
 
     out << "[param=";
     pdiff(out, param_, other.param_);
@@ -746,6 +745,8 @@ void Field::printDifference(std::ostream & out, const Field & other) const {
     }
     // out << " - " << info_;
     out << "]";
+
+    return out;
 }
 
 
