@@ -48,9 +48,10 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
         selectWindComponents(plan);
     }
 
-    plan.add("transform.sh2octahedral-gg",
-             "octahedral", new AutoGaussian(parametrisation_));
-
+    if (!parametrisation_.has("user.truncation")) {
+        plan.add("transform.sh2octahedral-gg",
+                 "octahedral", new AutoGaussian(parametrisation_));
+    }
 
     grid2grid(plan);
 }
@@ -58,7 +59,7 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
 
 void DisseminationStyle::sh2sh(action::ActionPlan& plan) const {
 
- if (parametrisation_.has("user.truncation")) {
+    if (parametrisation_.has("user.truncation")) {
         plan.add("transform.sh2sh");
     }
 
