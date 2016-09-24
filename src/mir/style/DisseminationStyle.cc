@@ -48,12 +48,16 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
         selectWindComponents(plan);
     }
 
-    if (!parametrisation_.has("user.truncation")) {
+    if (parametrisation_.has("user.truncation")) {
+        ECMWFStyle::sh2grid(plan);
+    }
+    else {
         plan.add("transform.sh2octahedral-gg",
                  "octahedral", new AutoGaussian(parametrisation_));
-    }
 
-    grid2grid(plan);
+
+        grid2grid(plan);
+    }
 }
 
 
