@@ -267,11 +267,11 @@ bool Field::samePacking(const Field& other) const {
     //     return true;
     // }
 
-     if (packing_ == "grib_jpeg" && other.packing_ == "grid_simple") {
+     if (packing_ == "grid_jpeg" && other.packing_ == "grid_simple") {
         return true;
     }
 
-    if (packing_ == "grid_simple" && other.packing_ == "grib_jpeg") {
+    if (packing_ == "grid_simple" && other.packing_ == "grid_jpeg") {
         return true;
     }
 
