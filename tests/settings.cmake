@@ -52,7 +52,7 @@ function( interpolation_add_test_interpol
     ecbuild_add_test(
         TARGET       ${_label}_interpol
         TEST_DEPENDS ${_depends}
-        DEPENDS      mir_tool
+        DEPENDS      mir-tool
         COMMAND      ${CMAKE_BINARY_DIR}/bin/mir_tool
         ARGS         ${_options} "${_file1}" "${_file2}"
         ENVIRONMENT  ${_environment} ${_grib_environment} )
