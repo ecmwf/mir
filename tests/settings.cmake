@@ -86,7 +86,7 @@ function( interpolation_add_test_compare
     ecbuild_add_test(
         TARGET       ${_label}_compare
         TEST_DEPENDS ${_label}_interpol ${_depends}
-        DEPENDS      mir_compare
+        DEPENDS      mir-compare
         COMMAND      ${CMAKE_BINARY_DIR}/bin/mir_compare
         ARGS         ${_tolerate} "${_file1}" "${_file2}"
         ENVIRONMENT  ${_grib_environment} )
