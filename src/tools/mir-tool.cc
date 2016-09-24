@@ -132,6 +132,7 @@ public:
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
         options_.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
+        options_.push_back(new SimpleOption<bool>("remove-local-extension", "Remove GRIB local extension"));
 
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
