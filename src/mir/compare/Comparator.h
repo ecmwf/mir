@@ -64,6 +64,8 @@ public: // methods
 
     size_t list(const std::string& path);
 
+    static void addOptions(std::vector<eckit::option::Option*>&);
+
 protected: // members
 
     size_t count(const MultiFile& multi,

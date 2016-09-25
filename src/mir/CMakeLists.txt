@@ -472,8 +472,6 @@ list(
     util/RotatedIterator.h
     util/Rotation.cc
     util/Rotation.h
-    tools/MIRCompare.cc
-    tools/MIRCompare.h
     tools/MIRTool.cc
     tools/MIRTool.h
   )

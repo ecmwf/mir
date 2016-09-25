@@ -27,6 +27,9 @@
 #include "eckit/io/StdFile.h"
 #include "mir/util/Grib.h"
 
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
+#include "mir/compare/Comparator.h"
 
 #include <cmath>
 
@@ -36,6 +39,31 @@ namespace compare {
 static mir::InMemoryCache<eckit::StdFile> cache_("files", 256, "PGEN_COMPARE_FILE_CACHE");
 
 //----------------------------------------------------------------------------------------------------------------------
+
+void Comparator::addOptions(std::vector<eckit::option::Option*>& options) {
+    using namespace eckit::option;
+
+    options.push_back(new SimpleOption<bool>("save-fields",             "Save fields that do not compare"));
+
+    options.push_back(new SimpleOption<bool>("normalise-longitudes",    "(Not yet used) Compare normalised values of east/west longitude (e.g. -1 == 359)"));
+    options.push_back(new SimpleOption<long>("round-degrees",           "(Not yet used) Number of decimal digits to round degrees to (away from zero)"));
+
+    options.push_back(new SimpleOption<bool>("file-names-only",         "Only check that the list of files created are the same"));
+    options.push_back(new SimpleOption<bool>("list-file-names",         "Create two files with extension '.list' containing the files names"));
+
+    options.push_back(new SimpleOption<bool>("ignore-exceptions",       "Ignore exceptions"));
+    options.push_back(new SimpleOption<bool>("ignore-count-mismatches", "Ignore field count mismatches"));
+    options.push_back(new SimpleOption<bool>("ignore-fields-not-found", "Ignore fields not found"));
+
+    options.push_back(new SimpleOption<bool>("ignore-duplicates",       "Ignore duplicate fields"));
+    options.push_back(new SimpleOption<bool>("compare-statistics",      "Compare field statistics"));
+
+    options.push_back(new SimpleOption<std::string>("ignore",           "Slash separated list of request keys to ignore when comparing fields"));
+    options.push_back(new SimpleOption<std::string>("parameters-white-list",       "Slash separated list of parameters to ignore"));
+
+}
+
+
 
 //----------------------------------------------------------------------------------------------------------------------
 
