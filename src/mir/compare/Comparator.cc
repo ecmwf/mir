@@ -543,6 +543,10 @@ size_t Comparator::list(const std::string& path) {
         size = buffer.size();
     }
 
+    if(err != GRIB_END_OF_FILE) {
+        GRIB_CALL(err);
+    }
+
     for (auto f = fields.begin(); f != fields.end(); ++f) {
         std::cout << *f << std::endl;
     }
