@@ -512,6 +512,9 @@ size_t Comparator::count(const MultiFile& multi, FieldSet& fields) {
             size = buffer.size();
         }
 
+ if (err != GRIB_END_OF_FILE) {
+        GRIB_CALL(err);
+    }
 
     }
 
@@ -543,7 +546,7 @@ size_t Comparator::list(const std::string& path) {
         size = buffer.size();
     }
 
-    if(err != GRIB_END_OF_FILE) {
+    if (err != GRIB_END_OF_FILE) {
         GRIB_CALL(err);
     }
 
