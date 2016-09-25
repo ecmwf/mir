@@ -72,6 +72,16 @@ Comparator::Comparator(const eckit::option::CmdArgs &args):
     eckit::Tokenizer parse("/");
     parse(ignore, ignore_);
 
+
+    eckit::Translator<std::string, long> s2l;
+    std::string params;
+    args.get("parameters-white-list", params);
+    std::vector<std::string> v;
+    parse(params, v);
+    for (auto j = v.begin(); j != v.end(); ++j) {
+        parametersWhiteList_.insert(s2l(*j));
+    }
+
 }
 
 Comparator::~Comparator() {
@@ -252,6 +262,11 @@ void Comparator::getField(const MultiFile& multi,
     long paramId;
     GRIB_CALL (grib_get_long(h, "paramId", &paramId));
     field.param(paramId);
+
+    if (parametersWhiteList_.find(paramId) != parametersWhiteList_.end()) {
+        eckit::Log::warning() << "Ignoring white-listed parameter " << paramId << " in " << multi << std::endl;
+        return;
+    }
 
 
     // Look for request embbeded in GRIB message

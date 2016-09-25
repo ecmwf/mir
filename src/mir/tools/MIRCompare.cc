@@ -41,7 +41,9 @@ MIRCompare::MIRCompare(int argc, char** argv) : MIRTool(argc, argv) {
     options_.push_back(new SimpleOption<bool>("compare-statistics",      "Compare field statistics"));
 
     options_.push_back(new SimpleOption<std::string>("ignore",           "Slash separated list of request keys to ignore when comparing fields"));
-    options_.push_back(new SimpleOption<std::string>("white-list",       "Slash separated list regex if file names to ignore"));
+    options_.push_back(new SimpleOption<std::string>("files-white-list",       "Slash separated list regex if file names to ignore"));
+    options_.push_back(new SimpleOption<std::string>("parameters-white-list",       "Slash separated list of parameters to ignore"));
+
 }
 
 

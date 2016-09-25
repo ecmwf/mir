@@ -18,6 +18,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 
 namespace eckit {
@@ -124,6 +125,8 @@ private:
     bool compareStatistics_;
     std::string requirements_;
     bool saveFields_;
+
+    std::set<long> parametersWhiteList_;
 
 
 
