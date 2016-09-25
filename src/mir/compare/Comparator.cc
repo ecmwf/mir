@@ -473,11 +473,11 @@ void Comparator::getField(const MultiFile& multi,
                   << field << std::endl
                   << "  ==> ";
         other.printDifference(std::cout, field);
-        std::cout << std::endl
-                  // << "  ==> "
-                  // << field.compare(other)
-                  // << std::endl
-                  ;
+        std::cout << std::endl;
+        // << "  ==> "
+        // << field.compare(other)
+        // << std::endl
+        ;
         error("duplicates");
     }
 
@@ -498,7 +498,7 @@ size_t Comparator::count(const MultiFile& multi, FieldSet& fields) {
         size_t size = buffer.size();
 
         eckit::StdFile f(*p);
-        while ( (err = wmo_read_any_from_file(f, buffer, &size) == 0) ) {
+        while ( (err = wmo_read_any_from_file(f, buffer, &size)) == 0 ) {
 
 
             try {
@@ -512,9 +512,9 @@ size_t Comparator::count(const MultiFile& multi, FieldSet& fields) {
             size = buffer.size();
         }
 
- if (err != GRIB_END_OF_FILE) {
-        GRIB_CALL(err);
-    }
+        if (err != GRIB_END_OF_FILE) {
+            GRIB_CALL(err);
+        }
 
     }
 
@@ -533,7 +533,7 @@ size_t Comparator::list(const std::string& path) {
     size_t size = buffer.size();
 
     eckit::StdFile f(path);
-    while ( (err = wmo_read_any_from_file(f, buffer, &size) == 0) ) {
+    while ( (err = wmo_read_any_from_file(f, buffer, &size)) == 0 ) {
 
 
         try {
