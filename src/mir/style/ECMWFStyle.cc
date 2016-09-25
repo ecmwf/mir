@@ -297,6 +297,11 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
+    std::string parameter;
+    if (parametrisation_.get("set.parameter", parameter)) {
+        plan.add("set.parameter", "parameter", parameter);
+    }
+
     std::string epilogue;
     if (parametrisation_.get("epilogue", epilogue)) {
         plan.add(epilogue);

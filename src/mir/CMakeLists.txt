@@ -72,6 +72,8 @@ list(
     action/misc/AreaCropper.h
     action/misc/SelectField.cc
     action/misc/SelectField.h
+    action/misc/SetParameter.cc
+    action/misc/SetParameter.h
     action/misc/CheckerBoard.cc
     action/misc/CheckerBoard.h
     action/misc/ReferencePattern.cc
