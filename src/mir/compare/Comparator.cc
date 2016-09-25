@@ -498,10 +498,11 @@ size_t Comparator::count(const MultiFile& multi, FieldSet& fields) {
         size_t size = buffer.size();
 
         eckit::StdFile f(*p);
-        while ( (err = wmo_read_any_from_file(f, buffer, &size)) == 0 ) {
+        while ( (err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE ) {
 
 
             try {
+                GRIB_CALL(err);
                 getField(multi, buffer, fields, *p, ftello(f) - size, size);
             } catch (std::exception& e) {
                 std::cout << "Error in " << *p << " " << e.what() << std::endl;
@@ -510,10 +511,6 @@ size_t Comparator::count(const MultiFile& multi, FieldSet& fields) {
 
             result++;
             size = buffer.size();
-        }
-
-        if (err != GRIB_END_OF_FILE) {
-            GRIB_CALL(err);
         }
 
     }
@@ -533,10 +530,11 @@ size_t Comparator::list(const std::string& path) {
     size_t size = buffer.size();
 
     eckit::StdFile f(path);
-    while ( (err = wmo_read_any_from_file(f, buffer, &size)) == 0 ) {
+    while ( (err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE ) {
 
 
         try {
+            GRIB_CALL(err);
             getField(multi, buffer, fields, path, ftello(f) - size, size);
         } catch (std::exception& e) {
             std::cout << "Error in " << path << " " << e.what() << std::endl;
@@ -546,9 +544,6 @@ size_t Comparator::list(const std::string& path) {
         size = buffer.size();
     }
 
-    if (err != GRIB_END_OF_FILE) {
-        GRIB_CALL(err);
-    }
 
     for (auto f = fields.begin(); f != fields.end(); ++f) {
         std::cout << *f << std::endl;
