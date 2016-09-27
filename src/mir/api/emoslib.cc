@@ -1239,10 +1239,6 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
 }
 
 
-extern "C" int emosPrecision() {
-    return 64;
-}
-
 }  // (anonymous namespace)
 
 //----------------------------------------------------------------------------------------------------------------------

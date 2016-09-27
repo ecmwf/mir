@@ -183,5 +183,3 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
                             fortint &nlon,
                             fortint &nlat);
 
-///@returns 64 (always assume "double precision")
-extern "C" int emosPrecision();
