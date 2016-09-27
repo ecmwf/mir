@@ -116,6 +116,8 @@ protected:
 
 private:
 
+    size_t maximumNumberOfErrors_;
+
 
     const eckit::option::CmdArgs &args_;
     bool normaliseLongitudes_;
