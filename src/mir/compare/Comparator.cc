@@ -43,6 +43,8 @@ static mir::InMemoryCache<eckit::StdFile> cache_("files", 256, "PGEN_COMPARE_FIL
 void Comparator::addOptions(std::vector<eckit::option::Option*>& options) {
     using namespace eckit::option;
 
+    options.push_back(new SimpleOption<size_t>("maximum-number-of-errors", "Maximum number of errors per task"));
+
     options.push_back(new SimpleOption<bool>("save-fields",             "Save fields that do not compare"));
 
     options.push_back(new SimpleOption<bool>("normalise-longitudes",    "(Not yet used) Compare normalised values of east/west longitude (e.g. -1 == 359)"));
@@ -75,8 +77,10 @@ Comparator::Comparator(const eckit::option::CmdArgs &args):
     roundDegrees_(false),
     rounding_(1),
     compareStatistics_(false),
-    saveFields_(false) {
+    saveFields_(false),
+    maximumNumberOfErrors_(5) {
 
+    args.get("maximum-number-of-errors", maximumNumberOfErrors_);
     args.get("normalise-longitudes", normaliseLongitudes_);
     args.get("compare-statistics", compareStatistics_);
     args.get("requirements", requirements_);
@@ -180,6 +184,10 @@ void Comparator::error(const char* what) {
     else {
         fatals_++;
         std::cout << "ERROR " << what << std::endl;
+        if (fatals_ > maximumNumberOfErrors_) {
+            std::cout << "Maximum number of errors reached (" << maximumNumberOfErrors_ << ")" << std::endl;
+            ::exit(1);
+        }
     }
 }
 
