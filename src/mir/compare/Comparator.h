@@ -79,7 +79,7 @@ protected: // members
                        FieldSet& fields2);
 
     void getField(const MultiFile& multi,
-                  const eckit::Buffer& buffer,
+                  eckit::Buffer& buffer,
                   FieldSet& fields,
                   const std::string& path,
                   off_t offset,

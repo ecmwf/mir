@@ -256,7 +256,7 @@ static void setGrid(Field& field, grib_handle *h) {
 }
 
 void Comparator::getField(const MultiFile& multi,
-                          const eckit::Buffer& buffer,
+                          eckit::Buffer& buffer,
                           FieldSet& fields,
                           const std::string& path,
                           off_t offset,
