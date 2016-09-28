@@ -9,7 +9,7 @@ include("${PROJECT_SOURCE_DIR}/tests/settings.cmake")
 
 # Set list of input data files
 
-set(TEST_INPUT_FILES 
+set(TEST_INPUT_FILES
         "2t_O640.grib"
         "msl_N640.grib"
         "msl_regular_ll_1-1.grib"
@@ -19,7 +19,7 @@ set(TEST_INPUT_FILES
 
 # Add input data with spherical harmonic if possible
 if(ATLAS_HAVE_TRANS)
-    list(APPEND TEST_INPUT_FILES 
+    list(APPEND TEST_INPUT_FILES
         "vo-d_sh.grib"
         "z_sh.grib" )
 endif(ATLAS_HAVE_TRANS)
@@ -101,4 +101,8 @@ endforeach()
 if( HAVE_MIR_TESTS_REGRESS )
   add_subdirectory("regress")
 endif()
+
+# if( HAVE_MIR_TESTS_REGRESS )
+  add_subdirectory(assertions)
+# endif()
 
