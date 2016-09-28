@@ -258,7 +258,6 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
                 // Assumes compiler does return value optimization
                 // otherwise we need to pass result matrix as parameter
                 WeightMatrix MW = applyMissingValues(W, fieldMissingValues);
-                MW.validate("applyMissingValues");
 
                 MW.multiply(vi, vo);
             } else {
@@ -371,6 +370,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, const std
         }
     }
 
+    X.validate("MethodWeighted::applyMissingValues");
     return X;
 }
 

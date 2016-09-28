@@ -160,7 +160,7 @@ void WeightMatrix::validate(const char *when) const {
         if (!ok) {
             if (errors < 50) {
                 if (!errors) {
-                    eckit::Log::debug<LibMir>() << "checkMatrixWeights(" << when << ") failed " << std::endl;
+                    eckit::Log::debug<LibMir>() << "WeightMatrix::validate(" << when << ") failed " << std::endl;
                 }
 
                 eckit::Log::debug<LibMir>() << "Row: " << i;
@@ -184,7 +184,7 @@ void WeightMatrix::validate(const char *when) const {
 
     if (errors) {
         std::ostringstream os;
-        os << "checkMatrixWeights(" << when << ") failed ";
+        os << "WeightMatrix::validate(" << when << ") failed ";
     }
 }
 
