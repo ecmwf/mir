@@ -91,12 +91,17 @@ protected: // members
                        const FieldSet& fields2,
                        bool compareData);
 
+    void compareFieldStatistics(
+            const MultiFile& multi1,
+            const MultiFile& multi2,
+            const Field& field1,
+            const Field& field2);
 
-    void compareField(const MultiFile& multi1,
-                      const MultiFile& multi2,
-                      const Field& field1,
-                      const Field& field2);
-
+    void compareFieldValues(
+            const MultiFile& multi1,
+            const MultiFile& multi2,
+            const Field& field1,
+            const Field& field2);
 
     void missingField(const MultiFile& multi1,
                       const MultiFile& multi2,
@@ -120,17 +125,10 @@ private:
     bool normaliseLongitudes_;
 
     bool roundDegrees_;
-    double rounding_;
-
     std::vector<std::string> ignore_;
-    bool compareStatistics_;
-    std::string requirements_;
-    bool saveFields_;
     size_t maximumNumberOfErrors_;
 
     std::set<long> parametersWhiteList_;
-
-
 
 };
 

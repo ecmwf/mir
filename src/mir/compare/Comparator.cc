@@ -27,7 +27,6 @@
 #include "eckit/io/StdFile.h"
 #include "mir/util/Grib.h"
 
-#include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "mir/compare/Comparator.h"
 
@@ -75,27 +74,22 @@ Comparator::Comparator(const eckit::option::CmdArgs &args):
     args_(args),
     normaliseLongitudes_(false),
     roundDegrees_(false),
-    rounding_(1),
-    compareStatistics_(false),
-    saveFields_(false),
     maximumNumberOfErrors_(5) {
 
-    args.get("maximum-number-of-errors", maximumNumberOfErrors_);
     args.get("normalise-longitudes", normaliseLongitudes_);
-    args.get("compare-statistics", compareStatistics_);
-    args.get("requirements", requirements_);
-    args.get("save-fields", saveFields_);
+    args.get("maximum-number-of-errors", maximumNumberOfErrors_);
 
+    double rounding = 1;
     long digits = 0;
     roundDegrees_ = args.get("round-degrees", digits);
 
     while (digits > 0) {
-        rounding_ *= 10.0;
+        rounding *= 10.0;
         digits--;
     }
 
     while (digits < 0) {
-        rounding_ /= 10.0;
+        rounding /= 10.0;
         digits++;
     }
 
@@ -123,6 +117,11 @@ void Comparator::compare(const std::string& name,
                          const MultiFile& multi1,
                          const MultiFile& multi2) {
 
+    bool saveFields = false;
+    args_.get("save-fields", saveFields);
+
+    std::string requirements;
+    args_.get("requirements", requirements);
 
     size_t save = fatals_;
 
@@ -136,13 +135,12 @@ void Comparator::compare(const std::string& name,
 
     if (fatals_ == save) {
         std::cout << name << " OK." << std::endl;
-    }
-    else {
-        if (!requirements_.empty()) {
-            std::string ext = eckit::PathName(requirements_).extension();
+    } else {
+        if (!requirements.empty()) {
+            std::string ext = eckit::PathName(requirements).extension();
 
             std::ofstream out(name + ext);
-            std::ifstream in(requirements_);
+            std::ifstream in(requirements);
 
             std::cout << "Save " << name << ext << std::endl;
 
@@ -158,7 +156,7 @@ void Comparator::compare(const std::string& name,
             }
 
         }
-        if (saveFields_) {
+        if (saveFields) {
             multi1.save();
             multi2.save();
         }
@@ -668,16 +666,11 @@ static void getStats(const Field& field, Statistics& stats) {
 }
 
 
-void Comparator::compareField(const MultiFile & multi1,
-                              const MultiFile & multi2,
-                              const Field & field1,
-                              const Field & field2) {
-
-
-    if (!compareStatistics_) {
-        return;
-    }
-
+void Comparator::compareFieldStatistics(
+        const MultiFile & multi1,
+        const MultiFile & multi2,
+        const Field & field1,
+        const Field & field2) {
 
     mir::InMemoryCacheStatistics ignore;
     mir::InMemoryCacheUser<eckit::StdFile> lock(cache_, ignore);
@@ -687,7 +680,6 @@ void Comparator::compareField(const MultiFile & multi1,
 
     Statistics s2;
     getStats(field2, s2);
-//====================
 
     if (s1.values_ != s2.values_ ) {
         std::cout << "Number of data values mismatch: "
@@ -729,6 +721,16 @@ void Comparator::compareField(const MultiFile & multi1,
                   << "  " << multi2 << ": " << s2.average_ << " " << field2 << std::endl;
         error("statistics-mismatches");
     }
+
+}
+
+void Comparator::compareFieldValues(
+        const Comparator::MultiFile& multi1,
+        const Comparator::MultiFile& multi2,
+        const Field& field1,
+        const Field& field2) {
+
+    // TODO
 
 }
 
@@ -792,22 +794,20 @@ void Comparator::compareFields(const MultiFile & multi1,
                                bool compareData) {
 
     bool show = true;
+    bool compareStatistics = false;
+    args_.get("compare-statistics", compareStatistics);
 
     for (auto j = fields1.begin(); j != fields1.end(); ++j) {
         auto other = fields2.same(*j);
         if (other != fields2.end()) {
+            if (compareData && compareStatistics) {
+                compareFieldStatistics(multi1, multi2, *j, *other);
+            }
             if (compareData) {
-                compareField(multi1,
-                             multi2,
-                             *j,
-                             *other);
+                compareFieldValues(multi1, multi2, *j, *other);
             }
         } else {
-            missingField(multi1,
-                         multi2,
-                         *j,
-                         fields2,
-                         show);
+            missingField(multi1, multi2, *j, fields2, show);
         }
     }
 }
