@@ -44,10 +44,9 @@ ecbuild_declare_project()
 ecbuild_add_cxx11_flags()
 ecbuild_check_cxx11( PRINT )
 
-ecbuild_add_option( FEATURE OMP               DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
-ecbuild_add_option( FEATURE MPI               DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
-ecbuild_add_option( FEATURE NETCDF            DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
-ecbuild_add_option( FEATURE MIR_TESTS_REGRESS DEFAULT OFF DESCRIPTION "additional tests: regression" )
+ecbuild_add_option( FEATURE OMP    DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
+ecbuild_add_option( FEATURE MPI    DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
+ecbuild_add_option( FEATURE NETCDF DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
 
 # OMP/MPI features handling
 if( ENABLE_OMP )
@@ -78,12 +77,12 @@ set( MIR_LIBRARIES      mir )
 get_directory_property( COMPILE_DEFINITIONS MIR_DEFINITIONS )
 
 foreach( _tpl ${MIR_TPLS} )
-	string( TOUPPER ${_tpl} TPL )
-	if( ${TPL}_FOUND )
-		list( APPEND MIR_EXTRA_DEFINITIONS   ${${TPL}_DEFINITIONS} ${${TPL}_TPL_DEFINITIONS})
-		list( APPEND MIR_EXTRA_INCLUDE_DIRS  ${${TPL}_INCLUDE_DIRS} ${${TPL}_TPL_INCLUDE_DIRS} )
-		list( APPEND MIR_EXTRA_LIBRARIES     ${${TPL}_LIBRARIES} ${${TPL}_TPL_LIBRARIES})
-	endif()
+  string( TOUPPER ${_tpl} TPL )
+  if( ${TPL}_FOUND )
+    list( APPEND MIR_EXTRA_DEFINITIONS   ${${TPL}_DEFINITIONS} ${${TPL}_TPL_DEFINITIONS})
+    list( APPEND MIR_EXTRA_INCLUDE_DIRS  ${${TPL}_INCLUDE_DIRS} ${${TPL}_TPL_INCLUDE_DIRS} )
+    list( APPEND MIR_EXTRA_LIBRARIES     ${${TPL}_LIBRARIES} ${${TPL}_TPL_LIBRARIES})
+  endif()
 endforeach()
 
 ### include directories
