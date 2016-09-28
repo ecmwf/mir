@@ -55,12 +55,8 @@ static eckit::Mutex *local_mutex = 0;
 
 
 static void init() {
-    int argc = 1;
-    char* argv[] = { "undefined" };
-    eckit::Main::initialise(argc, argv);
     local_mutex = new eckit::Mutex();
 }
-
 
 static eckit::ScopedPtr<ProdgenJob> intin(0);
 static eckit::ScopedPtr<MIRJob> job(0);
@@ -94,6 +90,17 @@ static void clear(MIRJob &job) {
     job.clear("reduced");
 }
 
+
+extern "C" int mir_initialise(int argc, char** argv) {
+    try {
+        eckit::Main::initialise(argc, argv);
+    }
+    catch ( std::exception& e ) {
+        eckit::Log::error() << "** " << e.what() << " Caught in "  << Here() << std::endl;
+        return -1;
+    }
+    return 0;
+}
 
 extern "C" fortint intout_(const char *name,
                            const fortint ints[],
