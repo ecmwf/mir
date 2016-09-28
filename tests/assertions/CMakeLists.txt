@@ -7,7 +7,12 @@ file(GLOB_RECURSE test_files LIST_DIRECTORIES false RELATIVE ${CMAKE_CURRENT_BIN
 # set(GRIB_GET     "$<TARGET_FILE:grib_get>")
 # set(GRIB_COMPARE "$<TARGET_FILE:grib_compare>")
 
-file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/mir-test.py INPUT  ${CMAKE_CURRENT_SOURCE_DIR}/mir-test.py )
+get_target_property( MIR_TOOL      "mir-tool"      LOCATION )
+get_target_property( MIR_COMPARE   "mir-compare"   LOCATION )
+get_target_property( GRIB_GET      "grib_get"      LOCATION )
+get_target_property( GRIB_COMPARE  "grib_compare"  LOCATION )
+
+configure_file( mir-test.py.in mir-test.py @ONLY )
 
 ecbuild_info(${test_files})
 
@@ -24,5 +29,3 @@ foreach( _t ${test_files} )
   )
 
 endforeach()
-
-
