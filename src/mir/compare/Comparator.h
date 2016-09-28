@@ -116,9 +116,6 @@ protected:
 
 private:
 
-    size_t maximumNumberOfErrors_;
-
-
     const eckit::option::CmdArgs &args_;
     bool normaliseLongitudes_;
 
@@ -129,6 +126,7 @@ private:
     bool compareStatistics_;
     std::string requirements_;
     bool saveFields_;
+    size_t maximumNumberOfErrors_;
 
     std::set<long> parametersWhiteList_;
 
