@@ -40,10 +40,10 @@ eckit::PathName LibMir::cacheDir()
 
     if(!defaultCacheDir) {
         defaultCacheDir = "/tmp/cache";
-        const char* ppdir = ::getenv("PPDIR"); // mars sets this variable
-        if(ppdir) {
-            defaultCacheDir = ppdir;
-        }
+//        const char* ppdir = ::getenv("PPDIR"); // mars sets this variable
+//        if(ppdir) {
+//            defaultCacheDir = ppdir;
+//        }
     }
 
     return Resource<PathName>("mirCacheDirectory;$MIR_CACHE_DIRECTORY", defaultCacheDir);
