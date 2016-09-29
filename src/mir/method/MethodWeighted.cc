@@ -37,6 +37,7 @@
 #include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/method/GridSpace.h"
+#include "mir/method/decompose/Decompose.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/MIRStatistics.h"
@@ -242,16 +243,23 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
         const std::vector<double> &values = field.values(i);
         ASSERT(values.size() == npts_inp);
 
-        // This should be local to the loop as field.value() will take ownership of result with std::swap()
-        // For optimisation, one can also create result outside the loop, and resize() it here
-        std::vector<double> result(npts_out);
-
         {
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
             // FIXME: remove this const cast once Matrix provides read-only view
             WeightMatrix::Matrix mi(const_cast<double *>(values.data()), values.size(), 1);
-            WeightMatrix::Matrix mo(result.data(), result.size(), 1);
+
+            eckit::ScopedPtr<decompose::Decompose> decomp(decompose::DecomposeFactory::build("DecomposeSkip"));
+            if (true) {
+                decomp.reset(decompose::DecomposeFactory::build("DecomposePolarAngleDegreesAssymmetric"));
+            }
+
+            WeightMatrix::Matrix mi_decomposed;
+            decomp->decompose(mi, mi_decomposed);
+
+            // This should be local to the loop as field.value() will take ownership of result with std::swap()
+            // For optimisation, one can also create result outside the loop, and resize() it here
+            WeightMatrix::Matrix mo_decomposed(npts_out, mi_decomposed.cols());
 
             if ( field.hasMissing() ) {
 
@@ -262,16 +270,21 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
                 // otherwise we need to pass result matrix as parameter
                 WeightMatrix MW = applyMissingValues(W, fieldMissingValues);
 
-                MW.multiply(mi, mo);
+                MW.multiply(mi_decomposed, mo_decomposed);
 
             } else {
 
-                W.multiply(mi, mo);
+                W.multiply(mi_decomposed, mo_decomposed);
 
             }
+
+            std::vector<double> result(npts_out);
+            WeightMatrix::Matrix mo(result.data(), result.size(), 1);
+            decomp->recompose(mo_decomposed, mo);
+
+            field.update(result, i);  // Update field with result
         }
 
-        field.update(result, i);  // Update field with result
 
         if (check_stats) {
             // compute some statistics on the result
