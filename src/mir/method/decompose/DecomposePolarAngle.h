@@ -22,6 +22,7 @@ namespace method {
 namespace decompose {
 
 
+template< int FIELDINFO_COMPONENT >
 class DecomposePolarAngle : public Decompose {
 public:
 
@@ -30,7 +31,9 @@ public:
 
     // -- Constructors
 
-    DecomposePolarAngle();
+    DecomposePolarAngle() {
+        NOTIMP;
+    }
 
     // -- Destructor
     // None
