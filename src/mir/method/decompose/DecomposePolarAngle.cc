@@ -30,6 +30,11 @@ static bool degrees   = true;
 static bool symmetric = false;
 
 
+namespace {
+static DecomposeBuilder<DecomposePolarAngle> __decomposePolarAngle("DecomposePolarAngle");
+}
+
+
 }  // (anonymous namespace)
 
 

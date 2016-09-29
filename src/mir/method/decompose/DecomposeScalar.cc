@@ -17,6 +17,11 @@ namespace method {
 namespace decompose {
 
 
+namespace {
+static DecomposeBuilder<DecomposeScalar> __decomposeScalar("DecomposeScalar");
+}
+
+
 DecomposeScalar::DecomposeScalar() {
 }
 

@@ -100,6 +100,29 @@ private:
 };
 
 
+class DecomposeFactory {
+private:
+    std::string name_;
+    virtual Decompose* make() = 0;
+protected:
+    DecomposeFactory(const std::string&);
+    virtual ~DecomposeFactory();
+public:
+    static Decompose* build(const std::string&);
+};
+
+
+template<class T>
+class DecomposeBuilder : public DecomposeFactory {
+private:
+    Decompose* make() {
+        return new T();
+    }
+public:
+    DecomposeBuilder(const std::string& name) : DecomposeFactory(name) {}
+};
+
+
 }  // namespace decompose
 }  // namespace method
 }  // namespace mir
