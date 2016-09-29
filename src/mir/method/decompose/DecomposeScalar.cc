@@ -26,6 +26,14 @@ DecomposeScalar::DecomposeScalar() {
 }
 
 
+void DecomposeScalar::decompose(WeightMatrix::Vector&) {
+}
+
+
+void DecomposeScalar::recompose(WeightMatrix::Vector&) const {
+}
+
+
 }  // namespace decompose
 }  // namespace method
 }  // namespace mir

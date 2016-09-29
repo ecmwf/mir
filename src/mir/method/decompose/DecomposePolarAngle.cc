@@ -53,19 +53,19 @@ DecomposePolarAngle::DecomposePolarAngle() :
 
 
 void DecomposePolarAngle::decompose(WeightMatrix::Vector& v) {
-    xy_.resize(v.size(), 2);
+    matrix_.resize(v.size(), 2);
     for (WeightMatrix::Size i = 0; i < v.size(); ++i) {
         std::complex<double> xy = (*fp_angle2xy_)(v[i]);
-        xy_(i, 0) = xy.real();
-        xy_(i, 1) = xy.imag();
+        matrix_(i, 0) = xy.real();
+        matrix_(i, 1) = xy.imag();
     }
 }
 
 
 void DecomposePolarAngle::recompose(WeightMatrix::Vector& v) const {
-    ASSERT(v.size() == xy_.rows());
-    for (WeightMatrix::Size i = 0; i < xy_.rows(); ++i) {
-        v[i] = fp_normalize_( (*fp_xy2angle_)(std::complex<double>(xy_(i, 0), xy_(i, 1))) );
+    ASSERT(v.size() == matrix_.rows());
+    for (WeightMatrix::Size i = 0; i < matrix_.rows(); ++i) {
+        v[i] = fp_normalize_( (*fp_xy2angle_)(std::complex<double>(matrix_(i, 0), matrix_(i, 1))) );
     }
 }
 

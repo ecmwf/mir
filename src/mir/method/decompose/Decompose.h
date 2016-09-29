@@ -47,7 +47,7 @@ public:
     virtual void recompose(WeightMatrix::Vector&) const = 0;
 
     WeightMatrix::Matrix& getMatrix() {
-        return xy_;
+        return matrix_;
     }
 
     // -- Overridden methods
@@ -63,7 +63,7 @@ protected:
 
     // -- Members
 
-    WeightMatrix::Matrix xy_;
+    WeightMatrix::Matrix matrix_;
 
     // -- Methods
     // None
