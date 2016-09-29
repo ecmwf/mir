@@ -21,7 +21,6 @@
 #include <sstream>
 #include <string>
 #include "eckit/config/Resource.h"
-#include "eckit/linalg/Vector.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
@@ -248,12 +247,13 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
         std::vector<double> result(npts_out);
 
         {
-            // FIXME: remove this const cast once Vector provides read-only view
-            WeightMatrix::Vector vi(const_cast<double *>(values.data()), values.size());
-            WeightMatrix::Vector vo(result.data(), result.size());
+            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
+
+            // FIXME: remove this const cast once Matrix provides read-only view
+            WeightMatrix::Matrix mi(const_cast<double *>(values.data()), values.size(), 1);
+            WeightMatrix::Matrix mo(result.data(), result.size(), 1);
 
             if ( field.hasMissing() ) {
-                eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
                 std::vector<bool> fieldMissingValues(npts_inp, false);
                 std::transform(values.begin(), values.end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
@@ -262,11 +262,12 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
                 // otherwise we need to pass result matrix as parameter
                 WeightMatrix MW = applyMissingValues(W, fieldMissingValues);
 
-                MW.multiply(vi, vo);
-            } else {
-                eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
+                MW.multiply(mi, mo);
 
-                W.multiply(vi, vo);
+            } else {
+
+                W.multiply(mi, mo);
+
             }
         }
 
