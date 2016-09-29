@@ -9,8 +9,8 @@
  */
 
 
-#ifndef mir_method_decompose_DecomposeScalar_h
-#define mir_method_decompose_DecomposeScalar_h
+#ifndef mir_method_decompose_DecomposeSkip_h
+#define mir_method_decompose_DecomposeSkip_h
 
 #include "mir/method/decompose/Decompose.h"
 
@@ -20,7 +20,7 @@ namespace method {
 namespace decompose {
 
 
-class DecomposeScalar : public Decompose {
+class DecomposeSkip : public Decompose {
 public:
 
     // -- Exceptions
@@ -28,7 +28,7 @@ public:
 
     // -- Constructors
 
-    DecomposeScalar();
+    DecomposeSkip();
 
     // -- Destructor
     // None

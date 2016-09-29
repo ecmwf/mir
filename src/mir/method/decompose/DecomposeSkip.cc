@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/method/decompose/DecomposeScalar.h"
+#include "mir/method/decompose/DecomposeSkip.h"
 
 
 namespace mir {
@@ -18,15 +18,15 @@ namespace decompose {
 
 
 namespace {
-static DecomposeBuilder<DecomposeScalar> __decomposeScalar("DecomposeScalar");
+static DecomposeBuilder<DecomposeSkip> __decomposeSkip("DecomposeSkip");
 }
 
 
-DecomposeScalar::DecomposeScalar() {
+DecomposeSkip::DecomposeSkip() {
 }
 
 
-void DecomposeScalar::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
+void DecomposeSkip::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
 
     // shallow-copy input to output
     using eckit::linalg::Scalar;
@@ -37,7 +37,7 @@ void DecomposeScalar::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatr
 }
 
 
-void DecomposeScalar::recompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
+void DecomposeSkip::recompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
 
     // shallow-copy input to output
     using eckit::linalg::Scalar;
