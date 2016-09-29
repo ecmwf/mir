@@ -65,29 +65,30 @@ DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC>::Decom
 
 
 template< int FIELDINFO_COMPONENT >
-void DecomposePolarAngle<FIELDINFO_COMPONENT>::decompose(WeightMatrix::Vector& v) {
-
-    matrix_.resize(v.size(), 2);  // allocates memory, not initialised
+void DecomposePolarAngle<FIELDINFO_COMPONENT>::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
+    ASSERT(matrixIn.cols() == 1);
+    matrixOut.resize(matrixIn.rows(), 2);  // allocates memory, not initialised
 
     std::complex<double> xy;
-    for (WeightMatrix::Size i = 0; i < v.size(); ++i) {
-        xy = (*fp_angle2xy_)(v[i]);
-        matrix_(i, 0) = xy.real();
-        matrix_(i, 1) = xy.imag();
+    for (WeightMatrix::Size i = 0; i < matrixIn.size(); ++i) {
+        xy = (*fp_angle2xy_)(matrixIn[i]);
+        matrixOut(i, 0) = xy.real();
+        matrixOut(i, 1) = xy.imag();
     }
 }
 
 
 template< int FIELDINFO_COMPONENT >
-void DecomposePolarAngle<FIELDINFO_COMPONENT>::recompose(WeightMatrix::Vector& v) const {
-    ASSERT(v.size() == matrix_.rows());
+void DecomposePolarAngle<FIELDINFO_COMPONENT>::recompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
+    ASSERT(matrixIn.cols() == 2);
+    matrixOut.resize(matrixIn.rows(), 1);
 
     std::complex<double> xy;
     double th;
-    for (WeightMatrix::Size i = 0; i < matrix_.rows(); ++i) {
-        xy = std::complex<double>(matrix_(i, 0), matrix_(i, 1));
+    for (WeightMatrix::Size i = 0; i < matrixIn.rows(); ++i) {
+        xy = std::complex<double>(matrixIn(i, 0), matrixIn(i, 1));
         th = (*fp_xy2angle_)(xy);
-        v[i] = fp_normalize_(th);
+        matrixOut[i] = fp_normalize_(th);
     }
 }
 

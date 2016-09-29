@@ -44,9 +44,9 @@ public:
 
     // -- Overridden methods
 
-    void decompose(WeightMatrix::Vector&);
+    void decompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const;
 
-    void recompose(WeightMatrix::Vector&) const;
+    void recompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const;
 
     // -- Class members
     // None

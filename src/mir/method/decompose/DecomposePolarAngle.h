@@ -32,6 +32,7 @@ public:
     // -- Constructors
 
     DecomposePolarAngle() {
+        // ensure constructor is specialized
         NOTIMP;
     }
 
@@ -49,9 +50,9 @@ public:
 
     // -- Overridden methods
 
-    void decompose(WeightMatrix::Vector& v);
+    void decompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const;
 
-    void recompose(WeightMatrix::Vector& v) const;
+    void recompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const;
 
     // -- Class members
     // None

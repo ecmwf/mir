@@ -26,11 +26,25 @@ DecomposeScalar::DecomposeScalar() {
 }
 
 
-void DecomposeScalar::decompose(WeightMatrix::Vector&) {
+void DecomposeScalar::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
+
+    // shallow-copy input to output
+    using eckit::linalg::Scalar;
+    Scalar* data = const_cast<Scalar*>(matrixIn.data());
+    WeightMatrix::Matrix shallow(data, matrixIn.rows(), matrixIn.cols());
+
+    matrixOut.swap(shallow);
 }
 
 
-void DecomposeScalar::recompose(WeightMatrix::Vector&) const {
+void DecomposeScalar::recompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
+
+    // shallow-copy input to output
+    using eckit::linalg::Scalar;
+    Scalar* data = const_cast<Scalar*>(matrixIn.data());
+    WeightMatrix::Matrix shallow(data, matrixIn.rows(), matrixIn.cols());
+
+    matrixOut.swap(shallow);
 }
 
 

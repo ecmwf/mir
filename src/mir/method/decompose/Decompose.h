@@ -42,13 +42,9 @@ public:
 
     // -- Methods
 
-    virtual void decompose(WeightMatrix::Vector&) = 0;
+    virtual void decompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const = 0;
 
-    virtual void recompose(WeightMatrix::Vector&) const = 0;
-
-    WeightMatrix::Matrix& getMatrix() {
-        return matrix_;
-    }
+    virtual void recompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const = 0;
 
     // -- Overridden methods
     // None
@@ -62,8 +58,7 @@ public:
 protected:
 
     // -- Members
-
-    WeightMatrix::Matrix matrix_;
+    // None
 
     // -- Methods
     // None
