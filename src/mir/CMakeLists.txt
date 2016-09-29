@@ -260,6 +260,12 @@ list(
     method/Tessellation.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
+    method/decompose/Decompose.cc
+    method/decompose/Decompose.h
+    method/decompose/DecomposePolarAngle.cc
+    method/decompose/DecomposePolarAngle.h
+    method/decompose/DecomposeScalar.cc
+    method/decompose/DecomposeScalar.h
     namedgrids/ClassicPattern.cc
     namedgrids/ClassicPattern.h
     namedgrids/NamedClassic.cc
