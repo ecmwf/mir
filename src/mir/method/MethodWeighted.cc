@@ -249,7 +249,7 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
             // FIXME: remove this const cast once Matrix provides read-only view
             WeightMatrix::Matrix mi(const_cast<double *>(values.data()), values.size(), 1);
 
-            eckit::ScopedPtr<decompose::Decompose> decomp(decompose::DecomposeFactory::build("DecomposeSkip"));
+            eckit::ScopedPtr<decompose::Decompose> decomp(decompose::DecomposeFactory::build("none"));
             if (true) {
                 decomp.reset(decompose::DecomposeFactory::build("DecomposePolarAngleDegreesAssymmetric"));
             }

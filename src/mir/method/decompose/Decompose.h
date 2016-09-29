@@ -103,7 +103,8 @@ protected:
     DecomposeFactory(const std::string&);
     virtual ~DecomposeFactory();
 public:
-    static Decompose* build(const std::string&);
+    static Decompose* build(const std::string& name=std::string());
+    static void list(std::ostream&);
 };
 
 

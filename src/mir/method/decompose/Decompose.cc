@@ -74,14 +74,20 @@ Decompose* DecomposeFactory::build(const std::string& name) {
     if (j == m->end()) {
         eckit::Log::error() << "No DecomposeFactory for [" << name << "]"
                                "\nDecomposeFactories are:" << std::endl;
-        for (j = m->begin(); j != m->end(); ++j) {
-            eckit::Log::error() << "   " << (*j).first << "\n";
-        }
-        eckit::Log::error() << std::endl;
-        throw eckit::SeriousBug(std::string("No DecomposeFactory called ") + name);
+        list(eckit::Log::error());
+        throw eckit::SeriousBug("No DecomposeFactory called \"" + name + "\"");
     }
 
     return (*j).second->make();
+}
+
+
+void DecomposeFactory::list(std::ostream& out) {
+    std::map< std::string, DecomposeFactory* >::const_iterator j;
+    for (j = m->begin(); j != m->end(); ++j) {
+        out << "   " << (*j).first << "\n";
+    }
+    eckit::Log::error() << std::endl;
 }
 
 

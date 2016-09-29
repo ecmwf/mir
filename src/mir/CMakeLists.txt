@@ -262,10 +262,10 @@ list(
     method/WeightMatrix.h
     method/decompose/Decompose.cc
     method/decompose/Decompose.h
+    method/decompose/DecomposeNone.cc
+    method/decompose/DecomposeNone.h
     method/decompose/DecomposePolarAngle.cc
     method/decompose/DecomposePolarAngle.h
-    method/decompose/DecomposeSkip.cc
-    method/decompose/DecomposeSkip.h
     namedgrids/ClassicPattern.cc
     namedgrids/ClassicPattern.h
     namedgrids/NamedClassic.cc

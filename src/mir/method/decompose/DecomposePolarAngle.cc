@@ -21,10 +21,10 @@ namespace decompose {
 
 
 namespace {
-static DecomposeBuilder<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC> > __decomposePolarAngleDegreesAssymmetric( "DecomposePolarAngleDegreesAssymmetric");
-static DecomposeBuilder<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC>   > __decomposePolarAngleDegreesSymmetric(   "DecomposePolarAngleDegreesSymmetric");
-static DecomposeBuilder<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_ASSYMMETRIC> > __decomposePolarAngleRadiansAssymmetric( "DecomposePolarAngleRadiansAssymmetric");
-static DecomposeBuilder<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC>   > __decomposePolarAngleRadiansSymmetric(   "DecomposePolarAngleRadiansSymmetric");
+static DecomposeBuilder<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC> > __decomposePolarAngleDegreesAssymmetric( "PolarAngleDegreesAssymmetric" );
+static DecomposeBuilder<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC>   > __decomposePolarAngleDegreesSymmetric(   "PolarAngleDegreesSymmetric"   );
+static DecomposeBuilder<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_ASSYMMETRIC> > __decomposePolarAngleRadiansAssymmetric( "PolarAngleRadiansAssymmetric" );
+static DecomposeBuilder<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC>   > __decomposePolarAngleRadiansSymmetric(   "PolarAngleRadiansSymmetric"   );
 }
 
 
@@ -64,7 +64,7 @@ DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC>::Decom
 }
 
 
-template< int FIELDINFO_COMPONENT >
+template<int FIELDINFO_COMPONENT>
 void DecomposePolarAngle<FIELDINFO_COMPONENT>::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
     ASSERT(matrixIn.cols() == 1);
     matrixOut.resize(matrixIn.rows(), 2);  // allocates memory, not initialised
@@ -78,7 +78,7 @@ void DecomposePolarAngle<FIELDINFO_COMPONENT>::decompose(const WeightMatrix::Mat
 }
 
 
-template< int FIELDINFO_COMPONENT >
+template<int FIELDINFO_COMPONENT>
 void DecomposePolarAngle<FIELDINFO_COMPONENT>::recompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
     ASSERT(matrixIn.cols() == 2);
     matrixOut.resize(matrixIn.rows(), 1);
