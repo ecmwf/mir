@@ -32,11 +32,7 @@ namespace param {
 
 
 MIRConfiguration::MIRConfiguration() :
-    scope_(0),
-    flattenSetting_("class"),
-    flattenDefaultSetting_("class.default"),
-    flattenTrackSetting_("class.debug"),
-    flattenDepth_(3) {
+    scope_(0) {
 
     eckit::PathName path("~mir/etc/mir/param-info.cfg");
     eckit::Log::debug<LibMir>() << "Loading MIR configuration from " << path << std::endl;
