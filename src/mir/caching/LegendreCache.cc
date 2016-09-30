@@ -12,6 +12,7 @@
 
 #include "mir/api/mir_version.h"
 #include "mir/config/LibMir.h"
+#include "eckit/config/Resource.h"
 
 #include "eckit/filesystem/PathName.h"
 
@@ -23,7 +24,7 @@ namespace caching {
 //----------------------------------------------------------------------------------------------------------------------
 
 LegendreCache::LegendreCache() :
-    CacheManager("mir/coeffs", LibMir::cacheDir()) {}
+    CacheManager("mir/coeffs", LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false)) {}
 
 const char* LegendreCache::version() const {
     return "1"; // Change me if the cache file structure changes
