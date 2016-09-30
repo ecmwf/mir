@@ -18,8 +18,8 @@ namespace decompose {
 
 
 namespace {
-static DecomposeBuilder<DecomposeNone> __decomposeNone1("none");
-static DecomposeBuilder<DecomposeNone> __decomposeNone2("");
+static DecomposeChoice<DecomposeNone> __decomposeNone1("none");
+static DecomposeChoice<DecomposeNone> __decomposeNone2("");
 }
 
 

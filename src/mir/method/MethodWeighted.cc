@@ -22,7 +22,6 @@
 #include <string>
 #include "eckit/config/Resource.h"
 #include "eckit/log/Plural.h"
-#include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -218,6 +217,11 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
     const size_t npts_inp = in.npts();
     const size_t npts_out = out.npts();
 
+    // setup decomposition
+    std::string decomposition;
+    parametrisation_.get("decomposition", decomposition);
+    const decompose::Decompose& decomp = decompose::DecomposeChooser::lookup(decomposition);
+
     const WeightMatrix &W = getMatrix(ctx, in, out);
 
     ASSERT( W.rows() == npts_out );
@@ -240,50 +244,51 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
         }
 
 
-        const std::vector<double> &values = field.values(i);
-        ASSERT(values.size() == npts_inp);
+        // Input field matrix
+        // FIXME: remove const_cast once Matrix provides read-only view
+        WeightMatrix::Matrix mi;
 
+        const std::vector<double>& values = field.values(i);
+        ASSERT(values.size() == npts_inp);
         {
+            WeightMatrix::Matrix mat(const_cast<double *>(values.data()), values.size(), 1);
+            decomp.decompose(mat, mi);
+        }
+
+        // Output field matrix
+        WeightMatrix::Matrix mo(npts_out, mi.cols());
+
+        if ( field.hasMissing() ) {
+
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
-            // FIXME: remove this const cast once Matrix provides read-only view
-            WeightMatrix::Matrix mi(const_cast<double *>(values.data()), values.size(), 1);
+            std::vector<bool> fieldMissingValues(npts_inp, false);
+            std::transform(values.begin(), values.end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
 
-            eckit::ScopedPtr<decompose::Decompose> decomp(decompose::DecomposeFactory::build("none"));
-            if (true) {
-                decomp.reset(decompose::DecomposeFactory::build("DecomposePolarAngleDegreesAssymmetric"));
-            }
+            // Assumes compiler does return value optimization
+            // otherwise we need to pass result matrix as parameter
+            WeightMatrix MW = applyMissingValues(W, fieldMissingValues);
 
-            WeightMatrix::Matrix mi_decomposed;
-            decomp->decompose(mi, mi_decomposed);
+            MW.multiply(mi, mo);
 
-            // This should be local to the loop as field.value() will take ownership of result with std::swap()
-            // For optimisation, one can also create result outside the loop, and resize() it here
-            WeightMatrix::Matrix mo_decomposed(npts_out, mi_decomposed.cols());
+        } else {
 
-            if ( field.hasMissing() ) {
+            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
-                std::vector<bool> fieldMissingValues(npts_inp, false);
-                std::transform(values.begin(), values.end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
+            W.multiply(mi, mo);
 
-                // Assumes compiler does return value optimization
-                // otherwise we need to pass result matrix as parameter
-                WeightMatrix MW = applyMissingValues(W, fieldMissingValues);
-
-                MW.multiply(mi_decomposed, mo_decomposed);
-
-            } else {
-
-                W.multiply(mi_decomposed, mo_decomposed);
-
-            }
-
-            std::vector<double> result(npts_out);
-            WeightMatrix::Matrix mo(result.data(), result.size(), 1);
-            decomp->recompose(mo_decomposed, mo);
-
-            field.update(result, i);  // Update field with result
         }
+
+        // Output field values: recomposed from output matrix
+        // results should be local to the loop as field.value() will take ownership of result with std::swap()
+        // For optimisation, one can also create result outside the loop, and resize() it here
+        std::vector<double> result(npts_out);
+        ASSERT(result.size() == mo.rows());
+        {
+            WeightMatrix::Matrix mat(result.data(), result.size(), 1);
+            decomp.recompose(mo, mat);
+        }
+        field.update(result, i);  // Update field with result
 
 
         if (check_stats) {
@@ -336,6 +341,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const atlas::gr
         W.cleanup();
     }
 }
+
 
 WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, const std::vector<bool>& fieldMissingValues) const {
 

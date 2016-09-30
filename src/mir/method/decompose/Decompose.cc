@@ -26,13 +26,13 @@ namespace {
 
 
 static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, DecomposeFactory* > *m = 0;
+static std::map< std::string, Decompose* > *m = 0;
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, DecomposeFactory* >();
+    m = new std::map< std::string, Decompose* >();
 }
 
 
@@ -43,47 +43,47 @@ Decompose::Decompose() {
 }
 
 
-DecomposeFactory::DecomposeFactory(const std::string& name) :
+DecomposeChooser::DecomposeChooser(const std::string& name, Decompose* choice) :
     name_(name) {
     pthread_once(&once, init);
 
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("DecomposeFactory: duplicated Decompose: " + name);
+        throw eckit::SeriousBug("DecomposeChooser: duplicated Decompose: " + name);
     }
 
     ASSERT(m->find(name) == m->end());
-    (*m)[name] = this;
+    (*m)[name] = choice;
 }
 
 
-DecomposeFactory::~DecomposeFactory() {
+DecomposeChooser::~DecomposeChooser() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
 }
 
 
-Decompose* DecomposeFactory::build(const std::string& name) {
+const Decompose& DecomposeChooser::lookup(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "Looking for DecomposeFactory [" << name << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "Looking for DecomposeChooser [" << name << "]" << std::endl;
 
-    std::map< std::string, DecomposeFactory* >::const_iterator j = m->find(name);
+    std::map< std::string, Decompose* >::const_iterator j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No DecomposeFactory for [" << name << "]"
-                               "\nDecomposeFactories are:" << std::endl;
+        eckit::Log::error() << "No DecomposeChooser for [" << name << "]"
+                               "\nDecomposeChoices are:" << std::endl;
         list(eckit::Log::error());
-        throw eckit::SeriousBug("No DecomposeFactory called \"" + name + "\"");
+        throw eckit::SeriousBug("No DecomposeChooser called \"" + name + "\"");
     }
 
-    return (*j).second->make();
+    return *(j->second);
 }
 
 
-void DecomposeFactory::list(std::ostream& out) {
-    std::map< std::string, DecomposeFactory* >::const_iterator j;
+void DecomposeChooser::list(std::ostream& out) {
+    std::map< std::string, Decompose* >::const_iterator j;
     for (j = m->begin(); j != m->end(); ++j) {
         out << "   " << (*j).first << "\n";
     }

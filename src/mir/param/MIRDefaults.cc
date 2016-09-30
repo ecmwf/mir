@@ -19,8 +19,8 @@
 #include <limits>
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/StdFile.h"
-#include "mir/util/Parser.h"
 #include "mir/config/LibMir.h"
+#include "mir/util/Parser.h"
 
 
 namespace mir {
@@ -35,6 +35,7 @@ MIRDefaults::MIRDefaults() {
     set("executor", "simple");
 
     set("interpolation", "linear"); // The word 'method' is used in grib
+    set("decomposition", "none");
     set("caching", true);
 
     set("lsm.selection", "auto");

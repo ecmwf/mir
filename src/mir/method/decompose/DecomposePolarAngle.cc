@@ -21,10 +21,10 @@ namespace decompose {
 
 
 namespace {
-static DecomposeBuilder<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC> > __decomposePolarAngleDegreesAssymmetric( "PolarAngleDegreesAssymmetric" );
-static DecomposeBuilder<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC>   > __decomposePolarAngleDegreesSymmetric(   "PolarAngleDegreesSymmetric"   );
-static DecomposeBuilder<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_ASSYMMETRIC> > __decomposePolarAngleRadiansAssymmetric( "PolarAngleRadiansAssymmetric" );
-static DecomposeBuilder<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC>   > __decomposePolarAngleRadiansSymmetric(   "PolarAngleRadiansSymmetric"   );
+static DecomposeChoice<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC> > __decomposePolarAngleDegreesAssymmetric( "PolarAngleDegreesAssymmetric" );
+static DecomposeChoice<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC>   > __decomposePolarAngleDegreesSymmetric(   "PolarAngleDegreesSymmetric"   );
+static DecomposeChoice<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_ASSYMMETRIC> > __decomposePolarAngleRadiansAssymmetric( "PolarAngleRadiansAssymmetric" );
+static DecomposeChoice<DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC>   > __decomposePolarAngleRadiansSymmetric(   "PolarAngleRadiansSymmetric"   );
 }
 
 

@@ -95,27 +95,22 @@ private:
 };
 
 
-class DecomposeFactory {
+class DecomposeChooser {
 private:
     std::string name_;
-    virtual Decompose* make() = 0;
 protected:
-    DecomposeFactory(const std::string&);
-    virtual ~DecomposeFactory();
+    DecomposeChooser(const std::string&, Decompose* choice);
+    virtual ~DecomposeChooser();
 public:
-    static Decompose* build(const std::string& name=std::string());
+    static const Decompose& lookup(const std::string& name);
     static void list(std::ostream&);
 };
 
 
 template<class T>
-class DecomposeBuilder : public DecomposeFactory {
-private:
-    Decompose* make() {
-        return new T();
-    }
+class DecomposeChoice : public DecomposeChooser {
 public:
-    DecomposeBuilder(const std::string& name) : DecomposeFactory(name) {}
+    DecomposeChoice(const std::string& name) : DecomposeChooser(name, new T) {}
 };
 
 
