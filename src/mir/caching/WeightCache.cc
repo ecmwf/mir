@@ -79,6 +79,8 @@ void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) 
 
 bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) const {
 
+    eckit::Log::info() << "WeightCache::retrieve  " << key << std::endl;
+
     eckit::PathName path;
 
     if (!get(key, path))
