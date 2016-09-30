@@ -56,7 +56,7 @@ PHILOSOPHY:
 --- TESTING (MAKE IT CORRECT)
     - Metabuilder
         --- Clear cache in metabuilder before each run: or select a new directory, better as it will not affect production when mir is operational
-        - Test mir_tool with valgrind
+        - Test mir-tool with valgrind
         - Make sure we compare mir and emoslib for speed
             - Write MARS timers in JSON
         - Make sure we run diss_requests in metabuilder with date for which the seasonal exists

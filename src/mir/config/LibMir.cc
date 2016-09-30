@@ -15,12 +15,18 @@
 #include "mir/config/LibMir.h"
 
 #include "eckit/config/Resource.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/thread/Once.h"
 
 #include "mir/api/mir_version.h"
 
 using namespace eckit;
 
 namespace mir {
+
+static Once<Mutex> local_mutex;
+static const char* defaultCacheDir = 0;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -30,7 +36,17 @@ LibMir::LibMir() : Library("mir") {}
 
 eckit::PathName LibMir::cacheDir()
 {
-    return Resource<PathName>("mirCacheDirectory;$MIR_CACHE_DIRECTORY", "/tmp/cache");
+    AutoLock<Mutex> lock(local_mutex);
+
+    if(!defaultCacheDir) {
+        defaultCacheDir = "/tmp/cache";
+//        const char* ppdir = ::getenv("PPDIR"); // mars sets this variable
+//        if(ppdir) {
+//            defaultCacheDir = ppdir;
+//        }
+    }
+
+    return Resource<PathName>("mirCacheDirectory;$MIR_CACHE_DIRECTORY", defaultCacheDir);
 }
 
 const LibMir& LibMir::instance()

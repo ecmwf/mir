@@ -4,12 +4,8 @@ set( TEST_ECKIT_CACHE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/cache/ )
 file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
 
-# Test settings and helper functions
-include("${PROJECT_SOURCE_DIR}/tests/settings.cmake")
-
 # Set list of input data files
-
-set(TEST_INPUT_FILES 
+set(TEST_INPUT_FILES
         "2t_O640.grib"
         "msl_N640.grib"
         "msl_regular_ll_1-1.grib"
@@ -19,7 +15,7 @@ set(TEST_INPUT_FILES
 
 # Add input data with spherical harmonic if possible
 if(ATLAS_HAVE_TRANS)
-    list(APPEND TEST_INPUT_FILES 
+    list(APPEND TEST_INPUT_FILES
         "vo-d_sh.grib"
         "z_sh.grib" )
 endif(ATLAS_HAVE_TRANS)
@@ -74,7 +70,7 @@ foreach(_t ${_test_reqs})
 
   ecbuild_add_test(
       TARGET       ${_label}
-      COMMAND      mir_tool
+      COMMAND      $<TARGET_FILE:mir-tool>
       ARGS         "--caching=0" ${_t}
       TEST_DEPENDS download_mir_tests_files
       ENVIRONMENT
@@ -92,13 +88,12 @@ foreach(_t "mir_tests_RotateGrid")
       SOURCES "${_t}.cc"
       LIBS    mir
       ENVIRONMENT
-        "MIR_TRACE=1"
+        "MIR_DEBUG=1"
         "MIRHOME=${CMAKE_BINARY_DIR}"  )
 endforeach()
 
 
-# Regression tests
-if( HAVE_MIR_TESTS_REGRESS )
-  add_subdirectory("regress")
-endif()
+# if( HAVE_MIR_TESTS_REGRESS )
+  add_subdirectory(assertions)
+# endif()
 

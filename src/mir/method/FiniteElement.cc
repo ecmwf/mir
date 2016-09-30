@@ -323,25 +323,18 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     if( i_nodes.metadata().has("NbRealPts") )
         firstVirtualPoint = i_nodes.metadata().get<size_t>("NbRealPts");
 
-    // output mesh
-    out.mesh().createNodes(out.grid());
-
-    // In case xyz field in the out mesh, build it
-    atlas::mesh::actions::BuildXYZField("xyz")(out.mesh());
-
-    atlas::mesh::Nodes  &o_nodes  = out.mesh().nodes();
-    atlas::array::ArrayView<double, 2> ocoords ( o_nodes.field( "xyz" ) );
-    atlas::array::ArrayView<double, 2> olonlat ( o_nodes.lonlat() );
+    atlas::array::ArrayView<double, 2> ocoords = out.coordsXYZ();
+    atlas::array::ArrayView<double, 2> olonlat = out.coordsLonLat();
 
     stats.inp_npts  = i_nodes.size();
-    stats.out_npts  = o_nodes.size();
+    stats.out_npts  = out.grid().npts();
 
     eckit::Log::debug<LibMir>() << stats << std::endl;
 
     // weights -- one per vertex of element, triangles (3) or quads (4)
 
     std::vector< WeightMatrix::Triplet > weights_triplets; // structure to fill-in sparse matrix
-    weights_triplets.reserve( stats.out_npts * 4 );         // preallocate space as if all elements where quads
+    weights_triplets.reserve( stats.out_npts * 4 );        // preallocate space as if all elements where quads
 
     // search nearest k cell centres
 

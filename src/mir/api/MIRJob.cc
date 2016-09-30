@@ -50,7 +50,7 @@ void MIRJob::execute(input::MIRInput &input, output::MIROutput &output) const {
 
 void MIRJob::print(std::ostream &out) const {
     if (eckit::format(out) == eckit::Log::applicationFormat) {
-        out << "mir_tool ";
+        out << "mir-tool ";
         SimpleParametrisation::print(out);
         out << " in.grib out.grib";
     } else {
