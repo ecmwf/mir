@@ -78,7 +78,7 @@ struct TransCache {
     ~TransCache() {
         if (inited_) {
             std::cout << "Delete " << *this << std::endl;
-            //trans_delete(&trans_);
+            trans_delete(&trans_);
         }
         else {
             std::cout << "Not Deleting " << *this << std::endl;
