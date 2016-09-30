@@ -86,7 +86,7 @@ bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) cons
     if (!get(key, path))
         return false;
 
-        eckit::Log::info() << "WeightCache::retrieve  " << key << " (" << eckit::Bytes(path.size()) << ")" <<  std::endl;
+    // eckit::Log::info() << "WeightCache::retrieve  " << key << " (" << eckit::Bytes(path.size()) << ")" <<  std::endl;
 
 
     // eckit::Log::info() << "Found weights in cache : " << path << "" << std::endl;
