@@ -119,10 +119,10 @@ const MIRParametrisation& MIRConfiguration::lookup(long paramId) const {
 
     if (j == settings_.end()) {
 
-        std::ostringstream oss;
-        oss << "MIRConfiguration::lookup(" << paramId << ") failed";
+        // std::ostringstream oss;
+        // oss << "MIRConfiguration::lookup(" << paramId << ") failed";
 
-        throw eckit::SeriousBug(oss.str());
+        // throw eckit::SeriousBug(oss.str());
 
         static SimpleParametrisation empty;
         return empty;
