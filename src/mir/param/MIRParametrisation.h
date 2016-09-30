@@ -23,6 +23,8 @@
 namespace mir {
 namespace param {
 
+class SimpleParametrisation;
+
 
 class MIRParametrisation : public eckit::Parametrisation {
   public:
@@ -46,6 +48,7 @@ class MIRParametrisation : public eckit::Parametrisation {
 
 // -- Methods
     // None
+
 // -- Overridden methods
 
  // From eckit::Parametrisation

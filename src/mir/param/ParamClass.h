@@ -45,9 +45,8 @@ public:
 
     // -- Methods
 
-    const SimpleParametrisation* lookup(const std::string& paramClass) const;
+    const SimpleParametrisation& lookup(const std::string& paramClass) const;
 
-    bool has(const std::string& paramClass) const;
 
     // -- Overridden methods
     // None

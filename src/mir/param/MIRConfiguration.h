@@ -47,7 +47,7 @@ public:
 
     // -- Methods
 
-    const SimpleParametrisation* lookup(long paramId) const;
+    const MIRParametrisation& lookup(long paramId) const;
 
     // -- Overridden methods
     // None
