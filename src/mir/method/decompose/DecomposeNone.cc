@@ -27,7 +27,7 @@ DecomposeNone::DecomposeNone() {
 }
 
 
-void DecomposeNone::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
+void DecomposeNone::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut, double) const {
 
     // shallow-copy input to output
     using eckit::linalg::Scalar;
@@ -38,7 +38,7 @@ void DecomposeNone::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix
 }
 
 
-void DecomposeNone::recompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
+void DecomposeNone::recompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut, double) const {
 
     // shallow-copy input to output
     using eckit::linalg::Scalar;

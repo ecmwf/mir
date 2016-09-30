@@ -50,9 +50,9 @@ public:
 
     // -- Overridden methods
 
-    void decompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const;
+    void decompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
 
-    void recompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const;
+    void recompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
 
     // -- Class members
     // None

@@ -65,30 +65,45 @@ DecomposePolarAngle<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC>::Decom
 
 
 template<int FIELDINFO_COMPONENT>
-void DecomposePolarAngle<FIELDINFO_COMPONENT>::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
+void DecomposePolarAngle<FIELDINFO_COMPONENT>::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut, double missingValue) const {
     ASSERT(matrixIn.cols() == 1);
     matrixOut.resize(matrixIn.rows(), 2);  // allocates memory, not initialised
 
+    // check if a missingValue is defined
+    const bool hasMissing(missingValue == missingValue);
+
     std::complex<double> xy;
     for (WeightMatrix::Size i = 0; i < matrixIn.size(); ++i) {
-        xy = (*fp_angle2xy_)(matrixIn[i]);
-        matrixOut(i, 0) = xy.real();
-        matrixOut(i, 1) = xy.imag();
+        if (hasMissing && (matrixIn(i, 0) == missingValue)) {
+            matrixOut(i, 0) = missingValue;
+            matrixOut(i, 1) = missingValue;
+        } else {
+            xy = (*fp_angle2xy_)(matrixIn[i]);
+            matrixOut(i, 0) = xy.real();
+            matrixOut(i, 1) = xy.imag();
+        }
     }
 }
 
 
 template<int FIELDINFO_COMPONENT>
-void DecomposePolarAngle<FIELDINFO_COMPONENT>::recompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut) const {
+void DecomposePolarAngle<FIELDINFO_COMPONENT>::recompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut, double missingValue) const {
     ASSERT(matrixIn.cols() == 2);
     matrixOut.resize(matrixIn.rows(), 1);
+
+    // check if a missingValue is defined
+    const bool hasMissing(missingValue == missingValue);
 
     std::complex<double> xy;
     double th;
     for (WeightMatrix::Size i = 0; i < matrixIn.rows(); ++i) {
-        xy = std::complex<double>(matrixIn(i, 0), matrixIn(i, 1));
-        th = (*fp_xy2angle_)(xy);
-        matrixOut[i] = fp_normalize_(th);
+        if (hasMissing && (matrixIn(i, 0) == missingValue || matrixIn(i, 1) == missingValue)) {
+            matrixOut[i] = missingValue;
+        } else {
+            xy = std::complex<double>(matrixIn(i, 0), matrixIn(i, 1));
+            th = (*fp_xy2angle_)(xy);
+            matrixOut[i] = fp_normalize_(th);
+        }
     }
 }
 

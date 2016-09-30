@@ -12,6 +12,7 @@
 #ifndef mir_method_decompose_Decompose_h
 #define mir_method_decompose_Decompose_h
 
+#include <limits>
 #include "mir/method/WeightMatrix.h"
 
 
@@ -42,9 +43,13 @@ public:
 
     // -- Methods
 
-    virtual void decompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const = 0;
+    virtual void decompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&, double missingValue=std::numeric_limits<double>::quiet_NaN()) const = 0;
 
-    virtual void recompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const = 0;
+    virtual void recompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&, double missingValue=std::numeric_limits<double>::quiet_NaN()) const = 0;
+
+    void setMatrixFromFieldVector(WeightMatrix::Matrix& matrix, const std::vector<double>& vector, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
+
+    void setFieldVectorFromMatrix(const WeightMatrix::Matrix& matrix, std::vector<double>& outputVector, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
 
     // -- Overridden methods
     // None
