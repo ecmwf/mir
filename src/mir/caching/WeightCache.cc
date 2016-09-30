@@ -15,6 +15,7 @@
 #include "eckit/log/Plural.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/config/Resource.h"
+#include "eckit/log/Bytes.h"
 
 #include "eckit/log/Seconds.h"
 #include "mir/api/mir_version.h"
@@ -79,12 +80,14 @@ void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) 
 
 bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) const {
 
-    eckit::Log::info() << "WeightCache::retrieve  " << key << std::endl;
 
     eckit::PathName path;
 
     if (!get(key, path))
         return false;
+
+        eckit::Log::info() << "WeightCache::retrieve  " << key << " (" << eckit::Bytes(path.size()) << ")" <<  std::endl;
+
 
     // eckit::Log::info() << "Found weights in cache : " << path << "" << std::endl;
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
