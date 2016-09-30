@@ -132,9 +132,9 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
 
 void DisseminationStyle::sh2sh(action::ActionPlan& plan) const {
 
-    if (parametrisation_.has("user.truncation")) {
-        plan.add("transform.sh2sh");
-    }
+    // if (parametrisation_.has("user.truncation")) {
+    //     plan.add("transform.sh2sh");
+    // }
 
     bool vod2uv = false;
     parametrisation_.get("vod2uv", vod2uv);
