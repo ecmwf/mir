@@ -61,12 +61,11 @@ bool FieldParametrisation::_get(const std::string &name, T &value) const {
 
     ASSERT(name != "paramId");
 
-    const param::MIRConfiguration &configuration = param::MIRConfiguration::instance();
-
     // This assumes that other input (NetCDF, etc) also return a paramId
     long paramId = 0;
     if (get("paramId", paramId)) {
-        // return paramId specific paramaretirsaion
+        // return paramId specific parametrisation
+        const param::MIRConfiguration& configuration = param::MIRConfiguration::instance();
         return configuration.lookup(paramId).get(name, value);
     }
 

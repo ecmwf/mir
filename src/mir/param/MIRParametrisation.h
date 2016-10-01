@@ -16,42 +16,40 @@
 #ifndef MIRParametrisation_H
 #define MIRParametrisation_H
 
-#include "eckit/config/Parametrisation.h"
 #include <iosfwd>
+#include "eckit/config/Parametrisation.h"
 
 
 namespace mir {
 namespace param {
 
-class SimpleParametrisation;
-
 
 class MIRParametrisation : public eckit::Parametrisation {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     MIRParametrisation();
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~MIRParametrisation(); // Change to virtual if base class
+    virtual ~MIRParametrisation();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
- // From eckit::Parametrisation
+    // From eckit::Parametrisation
     virtual bool has(const std::string& name) const = 0;
 
     virtual bool get(const std::string& name, std::string& value) const = 0;
@@ -63,56 +61,53 @@ class MIRParametrisation : public eckit::Parametrisation {
     virtual bool get(const std::string& name, std::vector<double>& value) const = 0;
     virtual bool get(const std::string& name, size_t& value) const;
 
+    // -- Class members
     // None
 
-// -- Class members
+    // -- Class methods
     // None
 
-// -- Class methods
+protected:
+
+    // -- Members
     // None
 
-  protected:
-
-// -- Members
-    // None
-
-// -- Methods
+    // -- Methods
 
     virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
-// -- Overridden methods
-
-
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-  private:
+    // -- Class methods
+    // None
 
-// No copy allowed
+private:
+
+    // No copy allowed
 
     MIRParametrisation(const MIRParametrisation&);
     MIRParametrisation& operator=(const MIRParametrisation&);
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
-
-
-
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-// -- Friends
+    // -- Class methods
+    // None
+
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const MIRParametrisation& p) {
         p.print(s);
@@ -124,5 +119,7 @@ class MIRParametrisation : public eckit::Parametrisation {
 
 }  // namespace param
 }  // namespace mir
+
+
 #endif
 
