@@ -101,7 +101,7 @@ void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const
     reportTime(out, (t + ", youngest eviction").c_str(), youngest_, indent);
 
     reportCount(out, (t + ", unique keys").c_str(), unique_, indent);
-    reportCount(out, (t + ", required capacity").c_str(), unique_, indent);
+    reportCount(out, (t + ", required capacity").c_str(), required_, indent);
 
 
 }
