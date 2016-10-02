@@ -57,6 +57,8 @@ class Bitmap {
         return bitmap_[j][i];
     }
 
+    size_t footprint() const;
+
     // -- Overridden methods
     // None
 

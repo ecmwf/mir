@@ -36,6 +36,9 @@ struct CroppingCacheEntry {
     void print(std::ostream& s) const;
     friend std::ostream& operator<<(std::ostream& out, const CroppingCacheEntry& e) { e.print(out); return out; }
 
+    size_t footprint() const;
+
+
 };
 
 class CroppingCache : public eckit::CacheManager {

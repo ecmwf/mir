@@ -91,7 +91,7 @@ Bitmap::Bitmap(const std::string& path):
     eckit::Tokenizer parse(":");
     parse(path, v);
 
-    if(v.size() == 3) {
+    if (v.size() == 3) {
         prodgenBitmap(v[0], v[1], v[2]);
     }
     else {
@@ -229,21 +229,21 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
             in.getline(line, sizeof(line));
             len += strlen(line);
 
-            if(ok) {
+            if (ok) {
                 const char *p = line;
 
                 while (*p) {
                     bitmap[k++] = (*p == '1');
                     p++;
                 }
-             }
+            }
 
             if (len >= size) {
                 break;
             }
         }
 
-        if(ok)
+        if (ok)
         {
             height_ = 1;
             width_ = bitmap.size();
@@ -265,6 +265,20 @@ Bitmap::~Bitmap() {
 void Bitmap::print(std::ostream &out) const {
     out << "Bitmap[path=" << path_ << "]";
 }
+
+
+size_t Bitmap::footprint() const {
+    size_t result = sizeof(*this);
+    result += path_.capacity();
+    result += bitmap_.capacity() * sizeof(std::vector<bool>);
+
+    for(auto j = bitmap_.begin(); j != bitmap_.end(); ++j) {
+        result += (*j).capacity() * sizeof(bool);
+    }
+
+    return result;
+}
+
 
 
 }  // namespace util

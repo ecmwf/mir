@@ -64,10 +64,17 @@ T* InMemoryCache<T>::find(const std::string& key) const {
 template<class T>
 void InMemoryCache<T>::footprint(const std::string& key, size_t size) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " " << key << " => " << size << std::endl;
+
+
     auto j = cache_.find(key);
     ASSERT(j != cache_.end());
     (*j).second->footprint_ = size;
     footprint(); //  Update stats
+
+    eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " total " << footprint() << std::endl;
+
 }
 
 

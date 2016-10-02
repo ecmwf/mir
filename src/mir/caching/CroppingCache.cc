@@ -118,6 +118,10 @@ CroppingCacheEntry::~CroppingCacheEntry() {
     // std::cout << "Delete " << *this << std::endl;
 }
 
+//--------------------------------------------------------------------------
+size_t CroppingCacheEntry::footprint() const {
+    return sizeof(*this) + mapping_.capacity() * sizeof(size_t);
+}
 
 }  // namespace method
 }  // namespace mir

@@ -55,8 +55,7 @@ struct LL {
 
 static eckit::Mutex local_mutex;
 
-
-static InMemoryCache<caching::CroppingCacheEntry> cache("mirAreas", 10, "$MIR_AREA_CACHE");
+static InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", 256 * 1024 * 1024, "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
 
 
 AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):
@@ -113,6 +112,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
 
     caching::CroppingCacheEntry& c = cache[key];
     if (caching && disk.retrieve(key, c)) {
+        cache.footprint(key, c.footprint());
         return c;
     }
 
@@ -186,6 +186,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
         disk.insert(key, c);
     }
 
+    cache.footprint(key, c.footprint());
     return c;
 
 }

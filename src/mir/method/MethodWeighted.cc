@@ -54,8 +54,8 @@ namespace method {
 
 namespace {
 static eckit::Mutex local_mutex;
-static InMemoryCache<WeightMatrix> matrix_cache("mirMatrices", 2, "$MIR_MATRIX_CACHE");
-static InMemoryCache<atlas::mesh::Mesh> mesh_cache("mirMeshes", 2, "$MIR_MATRIX_CACHE");
+static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", 512 * 1024 * 1024, "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
+static InMemoryCache<atlas::mesh::Mesh> mesh_cache("mirMesh",  512 * 1024 * 1024, "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
 }
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation) :
