@@ -191,6 +191,9 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas
 
     WeightMatrix& w = matrix_cache[key_with_masks];
     std::swap(w, W);
+
+    matrix_cache.footprint(key_with_masks, w.footprint());
+
     return w;
 }
 

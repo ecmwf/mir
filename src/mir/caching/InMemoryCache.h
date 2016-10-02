@@ -46,6 +46,9 @@ public:  // methods
 
     iterator end() const { return 0; }
 
+    void footprint(const std::string& key, size_t size);
+
+
     void erase(const std::string& key);
 
     void startUsing(InMemoryCacheStatistics&);

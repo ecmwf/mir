@@ -89,6 +89,8 @@ class WeightMatrix {
         return matrix_;
     }
 
+    size_t footprint() const;
+
   private: // members
 
     SparseMatrix matrix_;

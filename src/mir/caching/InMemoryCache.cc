@@ -46,7 +46,7 @@ template<class T>
 T* InMemoryCache<T>::find(const std::string& key) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    typename std::map<std::string, Entry*>::const_iterator j = cache_.find(key);
+    auto j = cache_.find(key);
     if (j != cache_.end()) {
         if (statistics_) {
             statistics_->hits_++;
@@ -56,10 +56,20 @@ T* InMemoryCache<T>::find(const std::string& key) const {
         return (*j).second->ptr_.get();
     }
     if (statistics_) {
-            statistics_->misses_++;
-        }
+        statistics_->misses_++;
+    }
     return 0;
 }
+
+template<class T>
+void InMemoryCache<T>::footprint(const std::string& key, size_t size) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    auto j = cache_.find(key);
+    ASSERT(j != cache_.end());
+    (*j).second->footprint_ = size;
+    footprint(); //  Update stats
+}
+
 
 
 template<class T>
@@ -162,7 +172,7 @@ size_t InMemoryCache<T>::footprint() const {
         result += (*j).second->footprint_;
 
     }
-    if(statistics_ && result > statistics_->footprint_) {
+    if (statistics_ && result > statistics_->footprint_) {
         statistics_->footprint_ = result;
     }
     return result;

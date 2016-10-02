@@ -188,5 +188,9 @@ void WeightMatrix::validate(const char *when) const {
     }
 }
 
+size_t WeightMatrix::footprint() const {
+    return matrix_.footprint();
+}
+
 }  // namespace method
 }  // namespace mir
