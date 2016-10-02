@@ -47,6 +47,7 @@ public:
     unsigned long long footprint_;
 
     size_t unique_;
+    unsigned long long required_;
 
     void report(const char *title, std::ostream &out, const char *indent = "") const;
 

@@ -68,7 +68,7 @@ private:
 
     mutable InMemoryCacheStatistics* statistics_;
     mutable eckit::Mutex mutex_;
-    mutable std::set<std::string> keys_;
+    mutable std::map<std::string, unsigned long long> keys_;
 
     struct Entry {
         eckit::ScopedPtr<T> ptr_;

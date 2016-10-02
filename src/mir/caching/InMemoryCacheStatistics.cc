@@ -27,7 +27,8 @@ InMemoryCacheStatistics::InMemoryCacheStatistics():
     youngest_(0),
     capacity_(0),
     footprint_(0),
-    unique_(0) {
+    unique_(0),
+    required_(0) {
 }
 
 InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream &s) {
@@ -40,6 +41,7 @@ InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream &s) {
     s >> capacity_;
     s >> footprint_;
     s >> unique_;
+    s >> required_;
 }
 
 void InMemoryCacheStatistics::encode(eckit::Stream &s) const {
@@ -52,6 +54,7 @@ void InMemoryCacheStatistics::encode(eckit::Stream &s) const {
     s << capacity_;
     s << footprint_;
     s << unique_;
+    s << required_;
 }
 
 InMemoryCacheStatistics &InMemoryCacheStatistics::operator+=(const InMemoryCacheStatistics &other) {
@@ -64,6 +67,7 @@ InMemoryCacheStatistics &InMemoryCacheStatistics::operator+=(const InMemoryCache
     capacity_ += other.capacity_;
     footprint_ += other.footprint_;
     unique_ += other.unique_;
+    required_ += other.required_;
     return *this;
 }
 
@@ -78,6 +82,7 @@ InMemoryCacheStatistics &InMemoryCacheStatistics::operator/=(size_t n) {
     capacity_ /= n;
     footprint_ /= n;
     unique_ /= n;
+    required_ /= n;
     return *this;
 }
 
@@ -87,7 +92,6 @@ void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const
     reportCount(out, (t + ", capacity").c_str(), capacity_, indent);
     reportCount(out, (t + ", footprint").c_str(), footprint_, indent);
 
-    reportCount(out, (t + ", unique keys").c_str(), unique_, indent);
     reportCount(out, (t + ", insertions").c_str(), insertions_, indent);
     reportCount(out, (t + ", evictions").c_str(), evictions_, indent);
     reportCount(out, (t + ", hits").c_str(), hits_, indent);
@@ -96,6 +100,8 @@ void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const
     reportTime(out, (t + ", oldest eviction").c_str(), oldest_, indent);
     reportTime(out, (t + ", youngest eviction").c_str(), youngest_, indent);
 
+    reportCount(out, (t + ", unique keys").c_str(), unique_, indent);
+    reportCount(out, (t + ", required capacity").c_str(), unique_, indent);
 
 
 }

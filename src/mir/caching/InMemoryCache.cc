@@ -71,9 +71,20 @@ void InMemoryCache<T>::footprint(const std::string& key, size_t size) {
     auto j = cache_.find(key);
     ASSERT(j != cache_.end());
     (*j).second->footprint_ = size;
-    footprint(); //  Update stats
 
-    eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " total " << footprint() << std::endl;
+    if (statistics_) {
+        footprint(); //  Update stats
+
+
+        unsigned long long result = 0;
+        for (auto j = keys_.begin(); j != keys_.end(); ++j) {
+            result += (*j).second;
+
+        }
+        statistics_->required_ = result;
+
+        eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " total " << footprint() << std::endl;
+    }
 
 }
 
@@ -118,6 +129,7 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
     if (k != cache_.end()) {
         delete (*k).second;
         (*k).second = new Entry(ptr);
+        keys_[key] = 1;
         return *ptr;
     }
 
@@ -128,8 +140,7 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
     cache_[key] = new Entry(ptr);
 
     if (statistics_) {
-        keys_.insert(key);
-        statistics_->insertions_++;
+        keys_[key] = 1;
         statistics_->unique_ = keys_.size();
     }
 
