@@ -36,7 +36,7 @@ InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity, const 
 template<class T>
 InMemoryCache<T>::~InMemoryCache() {
     // std::cout << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
-    // for (typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
+    // for (auto j = cache_.begin(); j != cache_.end(); ++j) {
     //     std::cout << "Deleting InMemoryCache " << name_ << " " << *((*j).second->ptr_) << std::endl;
     //     delete (*j).second;
     // }
@@ -97,7 +97,7 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
     }
     // std::cout << "Insert in InMemoryCache " << *ptr << std::endl;
 
-    typename std::map<std::string, Entry*>::iterator k = cache_.find(key);
+    auto k = cache_.find(key);
     if (k != cache_.end()) {
         delete (*k).second;
         (*k).second = new Entry(ptr);
@@ -126,10 +126,10 @@ void InMemoryCache<T>::purge() {
     while (footprint() > capacity_) {
 
         double now = utime();
-        typename std::map<std::string, Entry*>::iterator best = cache_.begin();
+        auto best = cache_.begin();
         double m = 0;
 
-        for (typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
+        for (auto j = cache_.begin(); j != cache_.end(); ++j) {
             double s = score((*j).second->hits_, now - (*j).second->last_, now - (*j).second->insert_);
             if (s > m) {
                 m = s;
@@ -204,7 +204,7 @@ template<class T>
 void InMemoryCache<T>::erase(const std::string& key) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    typename std::map<std::string, Entry*>::iterator j = cache_.find(key);
+    auto j = cache_.find(key);
     if (j != cache_.end()) {
         delete (*j).second;
         cache_.erase(j);
