@@ -12,6 +12,8 @@
 #include "CroppingCache.h"
 
 #include "eckit/io/BufferedHandle.h"
+#include "eckit/config/Resource.h"
+
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Plural.h"
@@ -26,7 +28,7 @@ namespace caching {
 
 
 CroppingCache::CroppingCache():
-    CacheManager("mir/cropping", LibMir::cacheDir()) {
+    CacheManager("mir/cropping", LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false)) {
 }
 
 

@@ -14,10 +14,11 @@
 #include "eckit/log/Timer.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/BigNum.h"
+#include "eckit/config/Resource.h"
+#include "eckit/log/Bytes.h"
 
 #include "eckit/log/Seconds.h"
 #include "mir/api/mir_version.h"
-#include "mir/config/LibMir.h"
 #include "mir/config/LibMir.h"
 
 namespace mir {
@@ -45,7 +46,7 @@ b - Code should ASSERT() that what their are decoding looks correct. This can be
 
 
 WeightCache::WeightCache():
-    CacheManager("mir/weights", LibMir::cacheDir()) {
+    CacheManager("mir/weights", LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false)) {
 }
 
 const char *WeightCache::version() const {
@@ -79,10 +80,14 @@ void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) 
 
 bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) const {
 
+
     eckit::PathName path;
 
     if (!get(key, path))
         return false;
+
+    // eckit::Log::info() << "WeightCache::retrieve  " << key << " (" << eckit::Bytes(path.size()) << ")" <<  std::endl;
+
 
     // eckit::Log::info() << "Found weights in cache : " << path << "" << std::endl;
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");

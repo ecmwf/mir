@@ -48,84 +48,93 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
         selectWindComponents(plan);
     }
 
-    if (parametrisation_.has("user.truncation")) {
+// if(false) {
+//     if (parametrisation_.has("user.truncation")) {
 
-// FROM MARS STYLE: TO FACTORISE
+// // FROM MARS STYLE: TO FACTORISE
 
-        if (parametrisation_.has("user.grid")) {
+//         if (parametrisation_.has("user.grid")) {
 
-        long intermediate_gaussian = 0;
-        parametrisation_.get("intermediate_gaussian", intermediate_gaussian);
+//             long intermediate_gaussian = 0;
+//             parametrisation_.get("intermediate_gaussian", intermediate_gaussian);
 
-        if (intermediate_gaussian) {
-            plan.add("transform.sh2reduced-gg", "reduced", intermediate_gaussian);
-            plan.add("interpolate.grid2regular-ll");
-        } else {
-            plan.add("transform.sh2regular-ll");
-        }
+//             if (intermediate_gaussian) {
+//                 plan.add("transform.sh2reduced-gg", "reduced", intermediate_gaussian);
+//                 plan.add("interpolate.grid2regular-ll");
+//             } else {
+//                 plan.add("transform.sh2regular-ll");
+//             }
 
-        if (parametrisation_.has("user.rotation")) {
-            plan.add("interpolate.grid2rotated-regular-ll");
+//             if (parametrisation_.has("user.rotation")) {
+//                 plan.add("interpolate.grid2rotated-regular-ll");
 
-            bool vod2uv = false;
-            bool wind = false;
+//                 bool vod2uv = false;
+//                 bool wind = false;
 
-            parametrisation_.get("vod2uv", vod2uv);
-            parametrisation_.get("wind", wind);
+//                 parametrisation_.get("vod2uv", vod2uv);
+//                 parametrisation_.get("wind", wind);
 
-            if (wind || vod2uv) {
-                plan.add("filter.adjust-winds");
-                selectWindComponents(plan);
-            }
-        }
+//                 if (wind || vod2uv) {
+//                     plan.add("filter.adjust-winds");
+//                     selectWindComponents(plan);
+//                 }
+//             }
 
-    }
+//         }
 
-    if (parametrisation_.has("user.reduced")) {
-        plan.add("transform.sh2reduced-gg");
-    }
+//         if (parametrisation_.has("user.reduced")) {
+//             plan.add("transform.sh2reduced-gg");
+//         }
 
-    if (parametrisation_.has("user.regular")) {
-        plan.add("transform.sh2regular-gg");
-    }
+//         if (parametrisation_.has("user.regular")) {
+//             plan.add("transform.sh2regular-gg");
+//         }
 
-    if (parametrisation_.has("user.octahedral")) {
-        plan.add("transform.sh2octahedral-gg");
-    }
+//         if (parametrisation_.has("user.octahedral")) {
+//             plan.add("transform.sh2octahedral-gg");
+//         }
 
-    if (parametrisation_.has("user.pl")) {
-        plan.add("transform.sh2reduced-gg-pl-given");
-    }
+//         if (parametrisation_.has("user.pl")) {
+//             plan.add("transform.sh2reduced-gg-pl-given");
+//         }
 
-    if (parametrisation_.has("user.gridname")) {
-        std::string gridname;
-        ASSERT (parametrisation_.get("gridname", gridname));
-        plan.add("transform.sh2namedgrid");
-    }
+//         if (parametrisation_.has("user.gridname")) {
+//             std::string gridname;
+//             ASSERT (parametrisation_.get("gridname", gridname));
+//             plan.add("transform.sh2namedgrid");
+//         }
 
-    if (parametrisation_.has("user.griddef")) {
-        std::string griddef;
-        ASSERT (parametrisation_.get("griddef", griddef));
-        // TODO: this is temporary
-        plan.add("transform.sh2octahedral-gg", "octahedral", 64L);
-        plan.add("interpolate.grid2griddef");
-    }
-    }
-    else {
-        plan.add("transform.sh2octahedral-gg",
-                 "octahedral", new AutoGaussian(parametrisation_));
+//         if (parametrisation_.has("user.griddef")) {
+//             std::string griddef;
+//             ASSERT (parametrisation_.get("griddef", griddef));
+//             // TODO: this is temporary
+//             plan.add("transform.sh2octahedral-gg", "octahedral", 64L);
+//             plan.add("interpolate.grid2griddef");
+//         }
+//     }
+//     else {
+//         plan.add("transform.sh2octahedral-gg",
+//                  "octahedral", new AutoGaussian(parametrisation_));
 
 
-        grid2grid(plan);
-    }
+//         grid2grid(plan);
+//     }
+
+
+    plan.add("transform.sh2octahedral-gg",
+             "octahedral", new AutoGaussian(parametrisation_));
+
+
+    grid2grid(plan);
+
 }
 
 
 void DisseminationStyle::sh2sh(action::ActionPlan& plan) const {
 
-    if (parametrisation_.has("user.truncation")) {
-        plan.add("transform.sh2sh");
-    }
+    // if (parametrisation_.has("user.truncation")) {
+    //     plan.add("transform.sh2sh");
+    // }
 
     bool vod2uv = false;
     parametrisation_.get("vod2uv", vod2uv);

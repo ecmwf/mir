@@ -47,7 +47,7 @@ public:
 
     // -- Methods
 
-    const SimpleParametrisation* lookup(long paramId) const;
+    const MIRParametrisation& lookup(long paramId) const;
 
     // -- Overridden methods
     // None
@@ -100,10 +100,7 @@ private:
     long current_;
     SimpleParametrisation* scope_;
     map_t settings_;
-    const std::string flattenSetting_;
-    const std::string flattenDefaultSetting_;
-    const std::string flattenTrackSetting_;
-    const size_t flattenDepth_;
+
 
     // -- Methods
     // None

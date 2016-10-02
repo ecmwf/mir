@@ -23,7 +23,7 @@ namespace mir {
 namespace param {
 
 
-FieldParametrisation::FieldParametrisation(): check_(false), style_(0) {
+FieldParametrisation::FieldParametrisation() {
 }
 
 
@@ -59,28 +59,14 @@ void FieldParametrisation::longitudes(std::vector<double> &) const {
 template<class T>
 bool FieldParametrisation::_get(const std::string &name, T &value) const {
 
-    const param::MIRConfiguration &configuration = param::MIRConfiguration::instance();
+    ASSERT(name != "paramId");
 
-    if (!style_ && !check_) {
-        check_ = true;
-
-        long paramId = 0;
-
-        // This assumes that other input (NetCDF, etc) also return a paramId
-        if (get("paramId", paramId)) {
-            style_ = configuration.lookup(paramId);
-            if (style_) {
-                eckit::Log::debug<LibMir>() << "paramId=" << paramId << " " << *style_ << std::endl;
-            }
-        } else {
-            eckit::Log::debug<LibMir>() << "ERROR: " << *this << " has no paramId" << std::endl;
-        }
-    }
-
-    eckit::Log::debug<LibMir>() << "FieldParametrisation::_get(" << name << ") " <<  *this << std::endl;
-
-    if (style_) {
-        return style_->get(name, value);
+    // This assumes that other input (NetCDF, etc) also return a paramId
+    long paramId = 0;
+    if (get("paramId", paramId)) {
+        // return paramId specific parametrisation
+        const param::MIRConfiguration& configuration = param::MIRConfiguration::instance();
+        return configuration.lookup(paramId).get(name, value);
     }
 
     return false;

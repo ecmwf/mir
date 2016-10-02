@@ -105,17 +105,12 @@ void ParamClass::scope(const std::string& name) {
 }
 
 
-const SimpleParametrisation* ParamClass::lookup(const std::string& paramClass) const {
+const SimpleParametrisation& ParamClass::lookup(const std::string& paramClass) const {
     map_t::const_iterator j = settings_.find(paramClass);
     if (j != settings_.end()) {
-        return (*j).second;
+        return *(*j).second;
     }
-    throw eckit::UserError("Cannot find a definition for parameter class \"" + paramClass + "\"", Here());
-}
-
-
-bool ParamClass::has(const std::string& paramClass) const {
-    return (settings_.find(paramClass) != settings_.end());
+    throw eckit::UserError("Cannot find a definition for parameter class '" + paramClass + "'", Here());
 }
 
 
