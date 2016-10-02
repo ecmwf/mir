@@ -56,6 +56,7 @@ private:
     void purge();
     T& create(const std::string& key);
 
+    size_t footprint() const;
 
     std::string name_;
     eckit::Resource<size_t> capacity_;
@@ -68,10 +69,11 @@ private:
 
     struct Entry {
         eckit::ScopedPtr<T> ptr_;
-        size_t access_;
+        size_t hits_;
         double last_;
         double insert_;
-        Entry(T* ptr): ptr_(ptr), access_(1), last_(::time(0)), insert_(::time(0)) {}
+        size_t footprint_;
+        Entry(T* ptr): ptr_(ptr), hits_(1), last_(::time(0)), insert_(::time(0)), footprint_(1) {}
     };
 
     std::map<std::string, Entry*> cache_;

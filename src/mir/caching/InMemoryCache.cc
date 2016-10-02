@@ -49,12 +49,15 @@ T* InMemoryCache<T>::find(const std::string& key) const {
     typename std::map<std::string, Entry*>::const_iterator j = cache_.find(key);
     if (j != cache_.end()) {
         if (statistics_) {
-            statistics_->accesses_++;
+            statistics_->hits_++;
         }
-        (*j).second->access_++;
+        (*j).second->hits_++;
         (*j).second->last_ = utime();
         return (*j).second->ptr_.get();
     }
+    if (statistics_) {
+            statistics_->misses_++;
+        }
     return 0;
 }
 
@@ -120,14 +123,14 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
 
 template<class T>
 void InMemoryCache<T>::purge() {
-    while (cache_.size() > capacity_) {
+    while (footprint() > capacity_) {
 
         double now = utime();
         typename std::map<std::string, Entry*>::iterator best = cache_.begin();
         double m = 0;
 
         for (typename std::map<std::string, Entry*>::iterator j = cache_.begin(); j != cache_.end(); ++j) {
-            double s = score((*j).second->access_, now - (*j).second->last_, now - (*j).second->insert_);
+            double s = score((*j).second->hits_, now - (*j).second->last_, now - (*j).second->insert_);
             if (s > m) {
                 m = s;
                 best = j;
@@ -149,6 +152,20 @@ void InMemoryCache<T>::purge() {
         delete (*best).second;
         cache_.erase(best);
     }
+}
+
+
+template<class T>
+size_t InMemoryCache<T>::footprint() const {
+    size_t result = 0;
+    for (auto j = cache_.begin(); j != cache_.end(); ++j) {
+        result += (*j).second->footprint_;
+
+    }
+    if(statistics_ && result > statistics_->footprint_) {
+        statistics_->footprint_ = result;
+    }
+    return result;
 }
 
 template<class T>

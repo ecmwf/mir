@@ -37,12 +37,15 @@ public:
     InMemoryCacheStatistics &operator/=(size_t) ;
 
 
-    size_t accesses_;
+    size_t hits_;
+    size_t misses_;
     size_t evictions_;
     size_t insertions_;
     double oldest_;
     double youngest_;
     size_t capacity_;
+    size_t footprint_;
+
     size_t unique_;
 
     void report(const char *title, std::ostream &out, const char *indent = "") const;

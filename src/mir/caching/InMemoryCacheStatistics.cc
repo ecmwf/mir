@@ -19,42 +19,50 @@ namespace mir {
 //----------------------------------------------------------------------------------------------------------------------
 
 InMemoryCacheStatistics::InMemoryCacheStatistics():
-    accesses_(0),
+    hits_(0),
+    misses_(0),
     evictions_(0),
     insertions_(0),
     oldest_(0),
     youngest_(0),
     capacity_(0),
+    footprint_(0),
     unique_(0) {
 }
 
 InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream &s) {
     s >> insertions_;
     s >> evictions_;
-    s >> accesses_;
+    s >> hits_;
+    s >> misses_;
     s >> youngest_;
     s >> oldest_;
     s >> capacity_;
+    s >> footprint_;
     s >> unique_;
 }
 
 void InMemoryCacheStatistics::encode(eckit::Stream &s) const {
     s << insertions_;
     s << evictions_;
-    s << accesses_;
+    s << hits_;
+    s << misses_;
     s << youngest_;
     s << oldest_;
     s << capacity_;
+    s << footprint_;
     s << unique_;
 }
 
 InMemoryCacheStatistics &InMemoryCacheStatistics::operator+=(const InMemoryCacheStatistics &other) {
     insertions_ += other.insertions_;
     evictions_ += other.evictions_;
-    accesses_ += other.accesses_;
+    hits_ += other.hits_;
+    misses_ += other.misses_;
     youngest_ += other.youngest_;
     oldest_ += other.oldest_;
     capacity_ += other.capacity_;
+    footprint_ += other.footprint_;
     unique_ += other.unique_;
     return *this;
 }
@@ -63,10 +71,12 @@ InMemoryCacheStatistics &InMemoryCacheStatistics::operator+=(const InMemoryCache
 InMemoryCacheStatistics &InMemoryCacheStatistics::operator/=(size_t n) {
     insertions_ /= n;
     evictions_ /= n;
-    accesses_ /= n;
+    hits_ /= n;
+    misses_ /= n;
     youngest_ /= n;
     oldest_ /= n;
     capacity_ /= n;
+    footprint_ /= n;
     unique_ /= n;
     return *this;
 }
@@ -75,10 +85,14 @@ void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const
 
     std::string t(title);
     reportCount(out, (t + ", capacity").c_str(), capacity_, indent);
+    reportCount(out, (t + ", footprint").c_str(), footprint_, indent);
+
     reportCount(out, (t + ", unique keys").c_str(), unique_, indent);
     reportCount(out, (t + ", insertions").c_str(), insertions_, indent);
     reportCount(out, (t + ", evictions").c_str(), evictions_, indent);
-    reportCount(out, (t + ", accesses").c_str(), accesses_, indent);
+    reportCount(out, (t + ", hits").c_str(), hits_, indent);
+    reportCount(out, (t + ", misses").c_str(), misses_, indent);
+
     reportTime(out, (t + ", oldest eviction").c_str(), oldest_, indent);
     reportTime(out, (t + ", youngest eviction").c_str(), youngest_, indent);
 
