@@ -71,6 +71,7 @@ void InMemoryCache<T>::footprint(const std::string& key, size_t size) {
     auto j = cache_.find(key);
     ASSERT(j != cache_.end());
     (*j).second->footprint_ = size;
+    keys_[key] = size;
 
     if (statistics_) {
         footprint(); //  Update stats
