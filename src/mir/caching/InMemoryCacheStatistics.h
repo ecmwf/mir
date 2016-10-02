@@ -43,8 +43,8 @@ public:
     size_t insertions_;
     double oldest_;
     double youngest_;
-    size_t capacity_;
-    size_t footprint_;
+    unsigned long long capacity_;
+    unsigned long long footprint_;
 
     size_t unique_;
 

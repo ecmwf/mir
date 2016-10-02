@@ -25,7 +25,7 @@ inline static double utime() {
 }
 
 template<class T>
-InMemoryCache<T>::InMemoryCache(const std::string& name, size_t capacity, const char* variable):
+InMemoryCache<T>::InMemoryCache(const std::string& name, unsigned long long capacity, const char* variable):
     name_(name),
     capacity_(name + "InMemoryCacheCapacity;"  + variable, capacity),
     users_(0),
@@ -166,8 +166,8 @@ void InMemoryCache<T>::purge() {
 
 
 template<class T>
-size_t InMemoryCache<T>::footprint() const {
-    size_t result = 0;
+unsigned long long InMemoryCache<T>::footprint() const {
+    unsigned long long result = 0;
     for (auto j = cache_.begin(); j != cache_.end(); ++j) {
         result += (*j).second->footprint_;
 
