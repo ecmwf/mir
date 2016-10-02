@@ -85,6 +85,8 @@ void InMemoryCache<T>::footprint(const std::string& key, size_t size) {
         statistics_->required_ = result;
 
         eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " total " << footprint() << std::endl;
+        eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " required " << result << std::endl;
+
     }
 
 }
