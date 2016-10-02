@@ -55,9 +55,9 @@ T* InMemoryCache<T>::find(const std::string& key) const {
         (*j).second->last_ = utime();
         return (*j).second->ptr_.get();
     }
-    if (statistics_) {
-        statistics_->misses_++;
-    }
+    // if (statistics_) {
+    //     statistics_->misses_++;
+    // }
     return 0;
 }
 
@@ -130,6 +130,7 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
 
     auto k = cache_.find(key);
     if (k != cache_.end()) {
+        NOTIMP; // Needs to think more about it
         delete (*k).second;
         (*k).second = new Entry(ptr);
         keys_[key] = 1;
