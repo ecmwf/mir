@@ -9,8 +9,8 @@
  */
 
 
-#ifndef mir_method_decompose_DecomposeNone_h
-#define mir_method_decompose_DecomposeNone_h
+#ifndef mir_method_decompose_None_h
+#define mir_method_decompose_None_h
 
 #include "mir/method/decompose/Decompose.h"
 
@@ -20,7 +20,7 @@ namespace method {
 namespace decompose {
 
 
-class DecomposeNone : public Decompose {
+class None : public Decompose {
 public:
 
     // -- Exceptions
@@ -28,7 +28,7 @@ public:
 
     // -- Constructors
 
-    DecomposeNone();
+    None();
 
     // -- Destructor
     // None

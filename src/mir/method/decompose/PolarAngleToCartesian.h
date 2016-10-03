@@ -9,8 +9,8 @@
  */
 
 
-#ifndef mir_method_decompose_DecomposePolarAngle_h
-#define mir_method_decompose_DecomposePolarAngle_h
+#ifndef mir_method_decompose_PolarAngleToCartesian_h
+#define mir_method_decompose_PolarAngleToCartesian_h
 
 #include "mir/method/decompose/Decompose.h"
 
@@ -23,7 +23,7 @@ namespace decompose {
 
 
 template< int FIELDINFO_COMPONENT >
-class DecomposePolarAngle : public Decompose {
+class PolarAngleToCartesian : public Decompose {
 public:
 
     // -- Exceptions
@@ -31,7 +31,7 @@ public:
 
     // -- Constructors
 
-    DecomposePolarAngle() {
+    PolarAngleToCartesian() {
         // ensure constructor is specialized
         NOTIMP;
     }
@@ -65,13 +65,13 @@ private:
     // -- Types
 
     typedef double (*fp_normalize_t)(double);
-    typedef double (*fp_xy2angle_t)(const std::complex<double>&);
-    typedef std::complex<double> (*fp_angle2xy_t)(const double&);
+    typedef double (*fp_cartesian_to_angle_t)(const std::complex<double>&);
+    typedef std::complex<double> (*fp_angle_to_cartesian_t)(const double&);
 
     // -- Members
 
-    const fp_angle2xy_t fp_angle2xy_;
-    const fp_xy2angle_t fp_xy2angle_;
+    const fp_angle_to_cartesian_t fp_angle_to_cartesian_;
+    const fp_cartesian_to_angle_t fp_cartesian_to_angle_;
     const fp_normalize_t fp_normalize_;
 
     // -- Methods

@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/method/decompose/DecomposeNone.h"
+#include "mir/method/decompose/None.h"
 
 
 namespace mir {
@@ -18,16 +18,16 @@ namespace decompose {
 
 
 namespace {
-static DecomposeChoice<DecomposeNone> __decomposeNone1("none");
-static DecomposeChoice<DecomposeNone> __decomposeNone2("");
+static DecomposeChoice<None> __none1("none");
+static DecomposeChoice<None> __none2("");
 }
 
 
-DecomposeNone::DecomposeNone() {
+None::None() {
 }
 
 
-void DecomposeNone::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut, double) const {
+void None::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut, double) const {
 
     // shallow-copy input to output
     using eckit::linalg::Scalar;
@@ -38,7 +38,7 @@ void DecomposeNone::decompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix
 }
 
 
-void DecomposeNone::recompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut, double) const {
+void None::recompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut, double) const {
 
     // shallow-copy input to output
     using eckit::linalg::Scalar;
