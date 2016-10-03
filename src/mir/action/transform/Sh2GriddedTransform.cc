@@ -12,6 +12,8 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include <malloc.h>
+
 
 #include "mir/action/transform/Sh2GriddedTransform.h"
 
@@ -125,6 +127,10 @@ static void transform(
         TransCache &tc = trans_handles[key];
         struct Trans_t &trans = tc.trans_;
 
+        struct mallinfo before = mallinfo();
+
+
+
         ASSERT(trans_new(&trans) == 0);
 
         ASSERT(trans_set_trunc(&trans, truncation) == 0);
@@ -172,6 +178,11 @@ static void transform(
             ASSERT(trans_setup(&trans) == 0);
 
         }
+
+        struct mallinfo after = mallinfo();
+
+        eckit::Log::info() << "TRANS-HANDLE FOOTPRINT: "  << (after.arena = before.arena) << std::endl;
+
     }
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
