@@ -184,7 +184,7 @@ void Comparator::error(const char* what) {
         std::cout << "ERROR " << what << std::endl;
         if (fatals_ > maximumNumberOfErrors_) {
             std::cout << "Maximum number of errors reached (" << maximumNumberOfErrors_ << ")" << std::endl;
-            ::exit(1);
+            throw eckit::SeriousBug("Maximum number of errors reached");
         }
     }
 }
