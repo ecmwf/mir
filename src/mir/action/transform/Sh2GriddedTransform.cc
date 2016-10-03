@@ -12,7 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include <malloc.h>
+// #include <malloc.h>
 
 
 #include "mir/action/transform/Sh2GriddedTransform.h"
@@ -127,7 +127,7 @@ static void transform(
         TransCache &tc = trans_handles[key];
         struct Trans_t &trans = tc.trans_;
 
-        struct mallinfo before = mallinfo();
+        // struct mallinfo before = mallinfo();
 
 
 
@@ -179,9 +179,9 @@ static void transform(
 
         }
 
-        struct mallinfo after = mallinfo();
+        // struct mallinfo after = mallinfo();
 
-        eckit::Log::info() << "TRANS-HANDLE FOOTPRINT: "  << (after.arena = before.arena) << std::endl;
+        // eckit::Log::info() << "TRANS-HANDLE FOOTPRINT: "  << (after.arena = before.arena) << std::endl;
 
     }
 
