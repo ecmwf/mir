@@ -616,7 +616,7 @@ void Field::print(std::ostream & out) const {
 
     out << "[param=" << param_ ;
 
-    if (resol_ >= 0) {
+    if (numberOfPoints_ >= 0) {
         out << ",values=" << numberOfPoints_;
     }
 

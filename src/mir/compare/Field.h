@@ -125,7 +125,7 @@ private:
     std::string packing_;
 
     bool bitmap_;
-    size_t resol_;
+    long resol_;
     std::string gridname_;
     std::string gridtype_;
     std::string format_;
