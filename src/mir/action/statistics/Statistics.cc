@@ -74,7 +74,7 @@ StatisticsFactory::StatisticsFactory(const std::string& name) :
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     if(m->find(name) != m->end()) {
-        throw eckit::SeriousBug("StatisticsFactory: duplication action: " + name);
+        throw eckit::SeriousBug("StatisticsFactory: duplicated Statistics '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -97,21 +97,20 @@ void StatisticsFactory::list(std::ostream& out) {
         out << sep << (*j).first;
         sep = ", ";
     }
+    out << std::endl;
 }
 
 
 Statistics* StatisticsFactory::build(const std::string& name, const param::MIRParametrisation& params) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    eckit::Log::debug<LibMir>() << "Looking for ActionFactory [" << name << "]" << std::endl;
+
+    eckit::Log::debug<LibMir>() << "StatisticsFactory: looking for '" << name << "'" << std::endl;
 
     std::map< std::string, StatisticsFactory* >::const_iterator j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No StatisticsFactory for [" << name << "]" << std::endl;
-        eckit::Log::error() << "StatisticsFactories are:" << std::endl;
-        for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No StatisticsFactory called ") + name);
+        list(eckit::Log::error() << "No StatisticsFactory '" << name << "', choices are:\n");
+        throw eckit::SeriousBug("No StatisticsFactory '" + name + "'");
     }
 
     return (*j).second->make(params);
