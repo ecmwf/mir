@@ -47,10 +47,6 @@ public:
 
     virtual void recompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&, double missingValue=std::numeric_limits<double>::quiet_NaN()) const = 0;
 
-    void setMatrixFromFieldVector(WeightMatrix::Matrix& matrix, const std::vector<double>& vector, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
-
-    void setFieldVectorFromMatrix(const WeightMatrix::Matrix& matrix, std::vector<double>& outputVector, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
-
     // -- Overridden methods
     // None
 

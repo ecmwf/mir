@@ -196,9 +196,52 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas
     return w;
 }
 
+
+void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B, const std::vector<double>& Avector, const std::vector<double>& Bvector, const double& missingValue) const {
+
+    // set input matrix B (from A = W × B)
+    // FIXME: remove const_cast once Matrix provides read-only view
+    WeightMatrix::Matrix Bwrap(const_cast<double *>(Bvector.data()), Bvector.size(), 1);
+
+    std::string decomposition;
+    parametrisation_.get("decomposition", decomposition);
+    decompose::DecomposeChooser::lookup(decomposition).decompose(Bwrap, B, missingValue);
+
+    // set output matrix A (from A = W × B)
+    // reuses output values vector if handling a column vector, otherwise allocates new matrix
+    if (B.cols() == 1) {
+
+        // FIXME: remove const_cast once Matrix provides read-only view
+        WeightMatrix::Matrix Awrap(const_cast<double *>(Avector.data()), Avector.size(), 1);
+        A.swap(Awrap);
+
+    } else {
+
+        WeightMatrix::Matrix Awrap(Avector.size(), B.cols());
+        Awrap.setZero();
+        A.swap(Awrap);
+
+    }
+}
+
+
+void MethodWeighted::setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, std::vector<double>& Avector, const double& missingValue) const {
+
+    // set output vector A (from A = W × B)
+    // FIXME: remove const_cast once Matrix provides read-only view
+    ASSERT(Avector.size() == A.rows());
+    WeightMatrix::Matrix Awrap(const_cast<double *>(Avector.data()), Avector.size(), 1);
+
+    std::string decomposition;
+    parametrisation_.get("decomposition", decomposition);
+    decompose::DecomposeChooser::lookup(decomposition).recompose(A, Awrap, missingValue);
+}
+
+
 lsm::LandSeaMasks MethodWeighted::getMasks(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
     return lsm::LandSeaMasks::lookup(parametrisation_, in, out);
 }
+
 
 void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
     using util::compare::IsMissingFn;
@@ -217,17 +260,13 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
     const size_t npts_inp = in.npts();
     const size_t npts_out = out.npts();
 
-    // setup decomposition
-    std::string decomposition;
-    parametrisation_.get("decomposition", decomposition);
-    const decompose::Decompose& decomp = decompose::DecomposeChooser::lookup(decomposition);
-
     const WeightMatrix &W = getMatrix(ctx, in, out);
 
     ASSERT( W.rows() == npts_out );
     ASSERT( W.cols() == npts_inp );
 
     data::MIRField& field = ctx.field();
+    const double missingValue = field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
 
     for (size_t i = 0; i < field.dimensions(); i++) {
 
@@ -244,26 +283,23 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
         }
 
 
-        // Input field matrix
-        // FIXME: remove const_cast once Matrix provides read-only view
+        // results should be local to the loop as field.update() will take ownership of result with std::swap()
+        // For optimisation, one can also create result outside the loop, and resize() it here
+        std::vector<double> result(npts_out);
+
+        // Get input/output matrices
         WeightMatrix::Matrix mi;
+        WeightMatrix::Matrix mo;
+        setOperandMatricesFromVectors(mo, mi, result, field.values(i), missingValue);
+        ASSERT(mi.rows() == npts_inp);
+        ASSERT(mo.rows() == npts_out);
 
-        const std::vector<double>& values = field.values(i);
-        ASSERT(values.size() == npts_inp);
-        {
-            WeightMatrix::Matrix mat(const_cast<double *>(values.data()), values.size(), 1);
-            decomp.decompose(mat, mi);
-        }
-
-        // Output field matrix
-        WeightMatrix::Matrix mo(npts_out, mi.cols());
-
-        if ( field.hasMissing() ) {
+        if (field.hasMissing()) {
 
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
             std::vector<bool> fieldMissingValues(npts_inp, false);
-            std::transform(values.begin(), values.end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
+            std::transform(field.values(i).begin(), field.values(i).end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
 
             // Assumes compiler does return value optimization
             // otherwise we need to pass result matrix as parameter
@@ -279,16 +315,9 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
 
         }
 
-        // Output field values: recomposed from output matrix
-        // results should be local to the loop as field.value() will take ownership of result with std::swap()
-        // For optimisation, one can also create result outside the loop, and resize() it here
-        std::vector<double> result(npts_out);
-        ASSERT(result.size() == mo.rows());
-        {
-            WeightMatrix::Matrix mat(result.data(), result.size(), 1);
-            decomp.recompose(mo, mat);
-        }
-        field.update(result, i);  // Update field with result
+        // update field values with interpolation result
+        setVectorFromOperandMatrix(mo, result, missingValue);
+        field.update(result, i);
 
 
         if (check_stats) {
@@ -396,6 +425,9 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix &W, const std
     X.validate("MethodWeighted::applyMissingValues");
     return X;
 }
+
+
+
 
 
 void MethodWeighted::applyMasks(WeightMatrix &W,

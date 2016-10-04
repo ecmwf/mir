@@ -88,8 +88,9 @@ void PolarAngleToCartesian<FIELDINFO_COMPONENT>::decompose(const WeightMatrix::M
 
 template<int FIELDINFO_COMPONENT>
 void PolarAngleToCartesian<FIELDINFO_COMPONENT>::recompose(const WeightMatrix::Matrix& matrixIn, WeightMatrix::Matrix& matrixOut, double missingValue) const {
+    ASSERT(matrixIn.rows() == matrixOut.rows());
     ASSERT(matrixIn.cols() == 2);
-    matrixOut.resize(matrixIn.rows(), 1);
+    ASSERT(matrixOut.cols() == 1);
 
     // check if a missingValue is defined
     const bool hasMissing(missingValue == missingValue);

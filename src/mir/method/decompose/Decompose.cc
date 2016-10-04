@@ -43,18 +43,6 @@ Decompose::Decompose() {
 }
 
 
-void Decompose::setMatrixFromFieldVector(WeightMatrix::Matrix& matrix, const std::vector<double>& vector, double missingValue) const {
-    WeightMatrix::Matrix wrap(const_cast<double *>(vector.data()), vector.size(), 1);
-    decompose(wrap, matrix, missingValue);
-}
-
-
-void Decompose::setFieldVectorFromMatrix(const WeightMatrix::Matrix& matrix, std::vector<double>& vector, double missingValue) const {
-    WeightMatrix::Matrix wrap(vector.data(), vector.size(), 1);
-    recompose(matrix, wrap, missingValue);
-}
-
-
 DecomposeChooser::DecomposeChooser(const std::string& name, Decompose* choice) :
     name_(name) {
     pthread_once(&once, init);
