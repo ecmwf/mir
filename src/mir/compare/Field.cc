@@ -38,7 +38,7 @@ Field::Field(const std::string& path, off_t offset, size_t length):
     rotation_longitude_(0),
     bitmap_(false),
     resol_(-1),
-    numberOfPoints_(0) {}
+    numberOfPoints_(-1) {}
 
 void Field::insert(const std::string& key, const std::string& value) {
     values_[key] = value;
@@ -615,6 +615,11 @@ void Field::rotation(double lat, double lon) {
 void Field::print(std::ostream & out) const {
 
     out << "[param=" << param_ ;
+
+    if (resol_ >= 0) {
+        out << ",values=" << numberOfPoints_;
+    }
+
     out << ",format=" << format_;
 
     if (!packing_.empty()) {
@@ -629,7 +634,7 @@ void Field::print(std::ostream & out) const {
         out << ",gridname=" << gridname_;
     }
 
-    if (resol_) {
+    if (resol_ >= 0) {
         out << ",resol=" << resol_;
     }
 
@@ -725,16 +730,15 @@ std::ostream& Field::printDifference(std::ostream & out, const Field & other) co
     out << "[param=";
     pdiff(out, param_, other.param_);
 
+    if (numberOfPoints_ >= 0) {
+        out << ",values=" ; pdiff(out, numberOfPoints_, other.numberOfPoints_);
+    }
+
     out << ",format=";
     pdiff(out, format_, other.format_);
 
-
     if (!packing_.empty()) {
         out << ",packing=" ; pdiff(out, packing_, other.packing_);
-    }
-
-    if (numberOfPoints_ > 0) {
-        out << ",values=" ; pdiff(out, numberOfPoints_, other.numberOfPoints_);
     }
 
     if (!gridtype_.empty()) {
@@ -745,7 +749,7 @@ std::ostream& Field::printDifference(std::ostream & out, const Field & other) co
         out << ",gridname="; pdiff(out, gridname_, other.gridname_);
     }
 
-    if (resol_) {
+    if (resol_ >= 0) {
         out << ",resol="; pdiff(out, resol_, other.resol_);
     }
 
