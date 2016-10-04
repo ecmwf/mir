@@ -62,6 +62,27 @@ ecbuild_get_test_multidata(
     NAMES  ${_tests_src_files} )
 
 
+# Set testing environment
+if( NOT eccodes_BASE_DIR )
+    if( TARGET "grib_compare" )
+        get_target_property( CMD_GRIB_COMPARE "grib_compare" LOCATION )
+    endif()
+    if( NOT CMD_GRIB_COMPARE )
+        find_program( CMD_GRIB_COMPARE "grib_compare" )
+    endif()
+    if( CMD_GRIB_COMPARE )
+        get_filename_component( _grib_compare_dir "${CMD_GRIB_COMPARE}" PATH )
+        get_filename_component( eccodes_BASE_DIR "${_grib_compare_dir}" ABSOLUTE )
+        set( eccodes_BASE_DIR "${eccodes_BASE_DIR}/../" )
+    else()
+        ecbuild_critical("Could not guess eccodes_BASE_DIR, nor find grib_compare (in bundle nor in path) as an alternative" )
+    endif()
+endif()
+set( eccodes_environment
+    ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/${grib_handling_pkg}/definitions
+    ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/${grib_handling_pkg}/samples )
+
+
 # Unit tests: simple interpolations
 foreach(_t ${_test_reqs})
   separate_arguments(_t)
@@ -74,9 +95,10 @@ foreach(_t ${_test_reqs})
       ARGS         "--caching=0" ${_t}
       TEST_DEPENDS download_mir_tests_files
       ENVIRONMENT
-        "MIRHOME=${CMAKE_BINARY_DIR}"
+        "MIR_DEBUG=1"
+        "MIR_HOME=${CMAKE_BINARY_DIR}"
         "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
-        ${_grib_environment} )
+        ${eccodes_environment} )
 
 endforeach()
 
@@ -89,7 +111,7 @@ foreach(_t "mir_tests_RotateGrid")
       LIBS    mir
       ENVIRONMENT
         "MIR_DEBUG=1"
-        "MIRHOME=${CMAKE_BINARY_DIR}"  )
+        "MIR_HOME=${CMAKE_BINARY_DIR}"  )
 endforeach()
 
 
