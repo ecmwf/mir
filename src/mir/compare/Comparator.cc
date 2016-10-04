@@ -302,9 +302,9 @@ void Comparator::getField(const MultiFile& multi,
         return;
     }
 
-    long numberOfValues;
-    GRIB_CALL (grib_get_long(h, "numberOfValues", &numberOfValues));
-    field.numberOfPoints(numberOfValues);
+    long numberOfDataPoints;
+    GRIB_CALL (grib_get_long(h, "numberOfDataPoints", &numberOfDataPoints));
+    field.numberOfPoints(numberOfDataPoints);
 
     // Look for request embbeded in GRIB message
     long local;
