@@ -85,22 +85,39 @@ inline double between_mPI_and_pPI(double a) {
 }
 
 
-/// @return degree from a complex number
+/// @return angle [radian] from a complex number
 template< typename T>
-T convert_complex_to_degrees(const std::complex<T>& c) {
+T convert_complex_to_radians(const std::complex<T>& c) {
     if ( eckit::FloatCompare<T>::isApproximatelyEqual(c.real(), 0) &&
          eckit::FloatCompare<T>::isApproximatelyEqual(c.imag(), 0) ) {
         return T(0);
     }
     // [-π, π] -> [-180°, 180°]
-    return radian_to_degree(std::arg(c));
+    return std::arg(c);
+}
+
+
+/// @return complex number from an angle [radian]
+template< typename T>
+static std::complex<T> convert_radians_to_complex(const T& theta) {
+    // TODO optionaly operate on radius != 1
+    return std::polar<T>(1, theta);
+}
+
+
+/// @return angle [°] from a complex number
+template< typename T>
+T convert_complex_to_degrees(const std::complex<T>& c) {
+    // [-π, π] -> [-180°, 180°]
+    return radian_to_degree(convert_complex_to_radians<T>(c));
 }
 
 
 /// @return complex number from an angle [°]
 template< typename T>
 static std::complex<T> convert_degrees_to_complex(const T& theta) {
-    return std::polar<T>(1, degree_to_radian(theta));
+    // TODO optionaly operate on radius != 1
+    return convert_radians_to_complex<T>(degree_to_radian(theta));
 }
 
 
