@@ -50,7 +50,7 @@ DecomposeChooser::DecomposeChooser(const std::string& name, Decompose* choice) :
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("DecomposeChooser: duplicated Decompose: " + name);
+        throw eckit::SeriousBug("DecomposeChooser: duplicated Decompose '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -68,14 +68,12 @@ const Decompose& DecomposeChooser::lookup(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "Looking for DecomposeChooser [" << name << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "DecomposeChooser: looking for '" << name << "'" << std::endl;
 
     std::map< std::string, Decompose* >::const_iterator j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No DecomposeChooser for [" << name << "]"
-                               "\nDecomposeChoices are:" << std::endl;
-        list(eckit::Log::error());
-        throw eckit::SeriousBug("No DecomposeChooser called \"" + name + "\"");
+        list(eckit::Log::error() << "No DecomposeChooser '" << name << "', choices are:\n");
+        throw eckit::SeriousBug("No DecomposeChooser '" + name + "'");
     }
 
     return *(j->second);
@@ -83,11 +81,14 @@ const Decompose& DecomposeChooser::lookup(const std::string& name) {
 
 
 void DecomposeChooser::list(std::ostream& out) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
     std::map< std::string, Decompose* >::const_iterator j;
     for (j = m->begin(); j != m->end(); ++j) {
-        out << "   " << (*j).first << "\n";
+        out << (*j).first << "\n";
     }
-    eckit::Log::error() << std::endl;
+    out << std::endl;
 }
 
 
