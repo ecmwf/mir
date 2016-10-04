@@ -252,7 +252,7 @@ void Field::gridtype(const std::string& type)  {
 
 bool Field::samePacking(const Field& other) const {
 
-     if (accuracy_ == 0 || other.accuracy_ == 0) {
+    if (accuracy_ == 0 || other.accuracy_ == 0) {
         return true;
     }
 
@@ -264,21 +264,21 @@ bool Field::samePacking(const Field& other) const {
         return true;
     }
 
-     if (packing_ == "grid_second_order" && other.packing_ == "grid_simple") {
-        return true;
-    }
+    //  if (packing_ == "grid_second_order" && other.packing_ == "grid_simple") {
+    //     return true;
+    // }
 
-    if (packing_ == "grid_simple" && other.packing_ == "grid_second_order") {
-        return true;
-    }
+    // if (packing_ == "grid_simple" && other.packing_ == "grid_second_order") {
+    //     return true;
+    // }
 
-     if (packing_ == "grid_jpeg" && other.packing_ == "grid_simple") {
-        return true;
-    }
+    //  if (packing_ == "grid_jpeg" && other.packing_ == "grid_simple") {
+    //     return true;
+    // }
 
-    if (packing_ == "grid_simple" && other.packing_ == "grid_jpeg") {
-        return true;
-    }
+    // if (packing_ == "grid_simple" && other.packing_ == "grid_jpeg") {
+    //     return true;
+    // }
 
     return packing_ == other.packing_;
 }
@@ -452,7 +452,7 @@ bool Field::operator<(const Field & other) const {
         return false;
     }
 
-   if (numberOfPoints_ < other.numberOfPoints_) {
+    if (numberOfPoints_ < other.numberOfPoints_) {
         return true;
     }
 
@@ -680,7 +680,7 @@ bool Field::match(const Field & other) const {
 bool Field::same(const Field & other) const {
     return sameParam(other) &&
            sameField(other) &&
-                      sameNumberOfPoints(other) &&
+           sameNumberOfPoints(other) &&
            sameGrid(other) &&
            sameAccuracy(other) &&
            samePacking(other) &&
@@ -733,7 +733,7 @@ std::ostream& Field::printDifference(std::ostream & out, const Field & other) co
         out << ",packing=" ; pdiff(out, packing_, other.packing_);
     }
 
-     if (numberOfPoints_ > 0) {
+    if (numberOfPoints_ > 0) {
         out << ",values=" ; pdiff(out, numberOfPoints_, other.numberOfPoints_);
     }
 
