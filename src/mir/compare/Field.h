@@ -50,6 +50,7 @@ public:
     void gridname(const std::string&);
 
     void resol(size_t resol);
+    void numberOfPoints(long n);
 
     void param(long n);
     void accuracy(long n);
@@ -85,6 +86,7 @@ public:
     bool sameGridname(const Field& other) const;
     bool sameGridtype(const Field& other) const;
     bool sameParam(const Field& other) const;
+    bool sameNumberOfPoints(const Field& other) const;
 
     off_t offset() const ;
 
@@ -127,6 +129,8 @@ private:
     std::string gridname_;
     std::string gridtype_;
     std::string format_;
+
+    long numberOfPoints_;
 
 private:
 

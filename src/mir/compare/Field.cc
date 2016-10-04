@@ -37,7 +37,8 @@ Field::Field(const std::string& path, off_t offset, size_t length):
     rotation_latitude_(0),
     rotation_longitude_(0),
     bitmap_(false),
-    resol_(0) {}
+    resol_(-1),
+    numberOfPoints_(0) {}
 
 void Field::insert(const std::string& key, const std::string& value) {
     values_[key] = value;
@@ -233,6 +234,10 @@ void Field::param(long param)  {
     param_ = param;
 }
 
+void Field::numberOfPoints(long n)  {
+    numberOfPoints_ = n;
+}
+
 void Field::gridname(const std::string& name)  {
     gridname_ = name;
 }
@@ -299,11 +304,14 @@ bool Field::sameParam(const Field& other) const {
 }
 
 bool Field::sameAccuracy(const Field& other) const {
-    return true;
     if (accuracy_ == 0 || other.accuracy_ == 0) {
         return true;
     }
     return accuracy_  == other.accuracy_;
+}
+
+bool Field::sameNumberOfPoints(const Field& other) const {
+    return numberOfPoints_  == other.numberOfPoints_;
 }
 
 bool Field::sameBitmap(const Field& other) const {
@@ -443,6 +451,15 @@ bool Field::operator<(const Field & other) const {
     if (bitmap_ > other.bitmap_) {
         return false;
     }
+
+   if (numberOfPoints_ < other.numberOfPoints_) {
+        return true;
+    }
+
+    if (numberOfPoints_ > other.numberOfPoints_) {
+        return false;
+    }
+
 
     if (grid_ < other.grid_) {
         return true;
@@ -663,6 +680,7 @@ bool Field::match(const Field & other) const {
 bool Field::same(const Field & other) const {
     return sameParam(other) &&
            sameField(other) &&
+                      sameNumberOfPoints(other) &&
            sameGrid(other) &&
            sameAccuracy(other) &&
            samePacking(other) &&
@@ -713,6 +731,10 @@ std::ostream& Field::printDifference(std::ostream & out, const Field & other) co
 
     if (!packing_.empty()) {
         out << ",packing=" ; pdiff(out, packing_, other.packing_);
+    }
+
+     if (numberOfPoints_ > 0) {
+        out << ",values=" ; pdiff(out, numberOfPoints_, other.numberOfPoints_);
     }
 
     if (!gridtype_.empty()) {

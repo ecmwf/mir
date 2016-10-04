@@ -302,6 +302,9 @@ void Comparator::getField(const MultiFile& multi,
         return;
     }
 
+    long numberOfValues;
+    GRIB_CALL (grib_get_long(h, "numberOfValues", &numberOfValues));
+    field.numberOfPoints(numberOfValues);
 
     // Look for request embbeded in GRIB message
     long local;
@@ -667,10 +670,10 @@ static void getStats(const Field& field, Statistics& stats) {
 
 
 void Comparator::compareFieldStatistics(
-        const MultiFile & multi1,
-        const MultiFile & multi2,
-        const Field & field1,
-        const Field & field2) {
+    const MultiFile & multi1,
+    const MultiFile & multi2,
+    const Field & field1,
+    const Field & field2) {
 
     mir::InMemoryCacheStatistics ignore;
     mir::InMemoryCacheUser<eckit::StdFile> lock(cache_, ignore);
@@ -725,10 +728,10 @@ void Comparator::compareFieldStatistics(
 }
 
 void Comparator::compareFieldValues(
-        const Comparator::MultiFile& multi1,
-        const Comparator::MultiFile& multi2,
-        const Field& field1,
-        const Field& field2) {
+    const Comparator::MultiFile& multi1,
+    const Comparator::MultiFile& multi2,
+    const Field& field1,
+    const Field& field2) {
 
     // TODO
 
