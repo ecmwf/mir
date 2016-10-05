@@ -102,6 +102,8 @@ list(
     action/statistics/CountOutsideRange.h
     action/statistics/PNorms.cc
     action/statistics/PNorms.h
+    action/statistics/SHStatistics.cc
+    action/statistics/SHStatistics.h
     action/statistics/ScalarCentralMoments.cc
     action/statistics/ScalarCentralMoments.h
     action/statistics/ScalarStatistics.cc
