@@ -13,6 +13,7 @@
 
 #include "mir/action/statistics/SHStatistics.h"
 
+#include <cmath>
 #include <sstream>
 #include "mir/repres/sh/SphericalHarmonics.h"
 
