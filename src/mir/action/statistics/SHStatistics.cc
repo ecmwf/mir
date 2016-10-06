@@ -52,48 +52,29 @@ void SHStatistics::calculate(const data::MIRField& field, Results& results) cons
 
         // set truncation
         // Note: assumes triangular truncation (from GribInput.cc)
-        size_t truncation = field.representation()->truncation();
-        size_t N = repres::sh::SphericalHarmonics::number_of_complex_coefficients(truncation);
+        const size_t J = field.representation()->truncation();
+        const size_t N = repres::sh::SphericalHarmonics::number_of_complex_coefficients(J);
         ASSERT(2*N == values.size());
 
-        const size_t J = truncation;
 
-
-        // set mean
+        // calculate mean, variance and energy norm
+        // Note: GRIB-283 suggests alternate method for variance
         const double mean = values[0];
 
-
-        // set variances
-        // Note: the _alt variant is pending GRIB-283 decision on how to calculate correctly spectral variance
-        double var       = 0;
-        double var_alt   = 0;
-
-        for (size_t i = 2; i < 2*J ; i += 2) {
-            var += values[i]*values[i];
+        double var = 0;
+        for (size_t i = 2; i < values.size(); i += 2) {
+            var += values[i]*values[i] - (i < 2*J? 0 : values[i+1]*values[i+1]);
         }
-        var_alt = var;
-
-        for (size_t i = 2*J; i < values.size(); i += 2) {
-            var     += values[i]*values[i] - values[i+1]*values[i+1];
-            var_alt += values[i]*values[i] + values[i+1]*values[i+1];
-        }
-
-
-        // set spectral energy norms
         ASSERT(var >= 0);
-        ASSERT(var_alt >= 0);
-        const double enorm     = std::sqrt(mean * mean + var    );
-        const double enorm_alt = std::sqrt(mean * mean + var_alt);
+
+        const double enorm = std::sqrt(mean * mean + var);
 
 
         // set statistics results
         results.set(head + "mean",              mean);
         results.set(head + "variance",          var);
         results.set(head + "standardDeviation", std::sqrt(var));
-
         results.set(head + "enorm",             enorm);
-        results.set(head + "enorm_alt",         enorm_alt);
-        results.set(head + "const",             static_cast<bool>(var == 0));
 
     }
 }
