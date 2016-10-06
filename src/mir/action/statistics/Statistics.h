@@ -18,7 +18,6 @@
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/plan/Action.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/util/MapKeyValue.h"
 
 
 namespace mir {
@@ -45,7 +44,7 @@ public:
     // -- Types
 
     /// Results type
-    typedef util::MapKeyValue Results;
+    typedef param::SimpleParametrisation Results;
 
     // -- Exceptions
     // None

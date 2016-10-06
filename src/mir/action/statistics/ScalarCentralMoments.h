@@ -16,7 +16,6 @@
 
 #include "mir/action/statistics/Statistics.h"
 #include "mir/action/statistics/detail/ScalarCentralMomentsFn.h"
-#include "mir/util/MapKeyValue.h"
 
 
 namespace mir {

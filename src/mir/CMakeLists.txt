@@ -468,8 +468,6 @@ list(
     util/Increments.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
-    util/MapKeyValue.cc
-    util/MapKeyValue.h
     util/Parser.cc
     util/Parser.h
     util/ParserConsumer.cc
