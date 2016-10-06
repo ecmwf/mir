@@ -109,6 +109,29 @@ void PolarAngleToCartesian<FIELDINFO_COMPONENT>::recompose(const WeightMatrix::M
 }
 
 
+template<int FIELDINFO_COMPONENT>
+std::complex<double> PolarAngleToCartesian<FIELDINFO_COMPONENT>::decompose(const double& angle, double missingValue) const {
+    return (missingValue == angle)? std::complex<double>(missingValue, missingValue)
+                                  : (*fp_angle_to_cartesian_)(angle);
+}
+
+
+template<int FIELDINFO_COMPONENT>
+double PolarAngleToCartesian<FIELDINFO_COMPONENT>::recompose(const std::complex<double>& xy, double missingValue) const {
+    if (missingValue == xy.real() || missingValue == xy.imag()) {
+        return missingValue;
+    }
+    return (*fp_normalize_)(
+                (*fp_cartesian_to_angle_)(xy) );
+}
+
+
+template<int FIELDINFO_COMPONENT>
+double PolarAngleToCartesian<FIELDINFO_COMPONENT>::normalize(const double& angle) const {
+    return (*fp_normalize_)(angle);
+}
+
+
 }  // namespace decompose
 }  // namespace method
 }  // namespace mir

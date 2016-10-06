@@ -27,7 +27,7 @@ AngleStatistics::AngleStatistics(const param::MIRParametrisation& parametrisatio
 
 
 void AngleStatistics::operator+=(const AngleStatistics& other) {
-    stats_ += other.stats_;
+//    stats_ += other.stats_;
 }
 
 

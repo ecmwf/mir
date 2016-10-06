@@ -94,8 +94,6 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/statistics/AngleCentralMoments.cc
-    action/statistics/AngleCentralMoments.h
     action/statistics/AngleStatistics.cc
     action/statistics/AngleStatistics.h
     action/statistics/Auto.cc
@@ -112,7 +110,6 @@ list(
     action/statistics/ScalarStatistics.h
     action/statistics/Statistics.cc
     action/statistics/Statistics.h
-    action/statistics/detail/AngleCentralMomentsFn.h
     action/statistics/detail/AngleStatistics.h
     action/statistics/detail/CountMissingValuesFn.h
     action/statistics/detail/CountOutsideRangeFn.h

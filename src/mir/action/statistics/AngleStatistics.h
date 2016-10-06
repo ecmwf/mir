@@ -86,7 +86,7 @@ private:
 
     // -- Members
 
-    mutable detail::AngleStatistics<double> stats_;
+//    mutable detail::AngleStatistics<double> stats_;
 
     // -- Methods
     // None

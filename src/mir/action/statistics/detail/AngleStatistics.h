@@ -14,9 +14,11 @@
 #ifndef mir_action_statistics_detail_AngleStatistics_H
 #define mir_action_statistics_detail_AngleStatistics_H
 
-#include "mir/action/statistics/detail/AngleCentralMomentsFn.h"
+#include <complex>
 #include "mir/action/statistics/detail/CountMissingValuesFn.h"
+#include "mir/action/statistics/detail/ScalarCentralMomentsFn.h"
 #include "mir/action/statistics/detail/ScalarMinMaxFn.h"
+#include "mir/method/decompose/PolarAngleToCartesian.h"
 
 
 namespace mir {
@@ -28,13 +30,15 @@ namespace detail {
 /**
  * Statistics unary operator functor: composition of above functionality (suitable for angles in [0°, 360°[)
  */
-template< typename T >
+template< typename T, int FIELDINFO_COMPONENT >
 struct AngleStatistics : CountMissingValuesFn<T> {
 private:
-    ScalarMinMaxFn<T>        calculateMinMax_;
-    AngleCentralMomentsFn<T> calculateCentralMoments_;
     typedef CountMissingValuesFn<T> missing_t;
-    //NOTE: not using difference mode for the moment (2nd argument to missing_t)
+    typedef method::decompose::PolarAngleToCartesian< FIELDINFO_COMPONENT > decompose_t;
+
+    decompose_t decompose_;
+    ScalarMinMaxFn<T> calculateMinMax_;
+    ScalarCentralMomentsFn< std::complex<T> > calculateCentralMoments_;
 
 public:
 
@@ -42,13 +46,10 @@ public:
         reset(missingValue);
     }
 
-    void reset(
-            double missingValue=std::numeric_limits<double>::quiet_NaN(),
-            bool degrees=true,
-            bool symmetric=false ) {
+    void reset(double missingValue=std::numeric_limits<double>::quiet_NaN()) {
         missing_t::reset(missingValue);
         calculateMinMax_.reset();
-        calculateCentralMoments_.reset(degrees, symmetric);
+        calculateCentralMoments_.reset();
     }
 
     T min()               const { return calculateMinMax_.min(); }
@@ -56,24 +57,24 @@ public:
     size_t minIndex()     const { return calculateMinMax_.minIndex(); }
     size_t maxIndex()     const { return calculateMinMax_.maxIndex(); }
 
-    T mean()              const { return calculateCentralMoments_.mean(); }
-    T variance()          const { return calculateCentralMoments_.variance(); }
-//  T skewness()          const { return calculateCentralMoments_.skewness(); }  // works, but is it meaningful for circular quantities?
-//  T kurtosis()          const { return calculateCentralMoments_.kurtosis(); }  // works, but is it meaningful for circular quantities?
-    T standardDeviation() const { return calculateCentralMoments_.standardDeviation(); }
+    T mean()              const { return decompose_.recompose(calculateCentralMoments_.mean()); }
+    T variance()          const { return decompose_.recompose(calculateCentralMoments_.variance()); }
+//  T skewness()          const { return decompose_.recompose(calculateCentralMoments_.skewness()); }  // works, but is it meaningful for circular quantities?
+//  T kurtosis()          const { return decompose_.recompose(calculateCentralMoments_.kurtosis()); }  // works, but is it meaningful for circular quantities?
+    T standardDeviation() const { return std::sqrt(std::abs(variance()));; }
 
     bool operator()(const T& v) {
         return missing_t::operator()(v)
-                && calculateMinMax_        (v)
-                && calculateCentralMoments_(v);
+                && calculateMinMax_        (decompose_.normalize(v))
+                && calculateCentralMoments_(decompose_.decompose(v));
     }
 
     bool operator()(const T& v1, const T& v2) {
         if (missing_t::operator()(v1, v2)) {
             // if value is good for comparison
-            const T v = std::abs(v1 - v2);
-            return calculateMinMax_        (v)
-                && calculateCentralMoments_(v);
+            const T v = decompose_.normalize(v1 - v2);
+            return calculateMinMax_        (decompose_.normalize(v))
+                && calculateCentralMoments_(decompose_.decompose(v));
         }
         return false;
     }

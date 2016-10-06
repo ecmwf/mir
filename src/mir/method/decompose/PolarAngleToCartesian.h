@@ -54,6 +54,12 @@ public:
 
     void recompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
 
+    inline std::complex<double> decompose(const double&, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
+
+    inline double recompose(const std::complex<double>&, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
+
+    inline double normalize(const double&) const;
+
     // -- Class members
     // None
 
