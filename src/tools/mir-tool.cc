@@ -139,7 +139,7 @@ public:
         options_.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
         options_.push_back(new FactoryOption<mir::caching::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select wether threads are used on not"));
-        options_.push_back(new FactoryOption<mir::action::statistics::StatisticsFactory>("statistics", "Statistics methods for interpreting field values"));
+        options_.push_back(new FactoryOption<mir::action::statistics::StatisticsFactory>("stats", "Statistics methods for interpreting field values"));
 
         //==============================================
         options_.push_back(new Separator("Debugging"));

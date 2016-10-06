@@ -62,8 +62,11 @@ void SHStatistics::calculate(const data::MIRField& field, Results& results) cons
         const double mean = values[0];
 
         double var = 0;
-        for (size_t i = 2; i < values.size(); i += 2) {
-            var += values[i]*values[i] - (i < 2*J? 0 : values[i+1]*values[i+1]);
+        for (size_t i = 2; i < 2*J; i += 2) {
+            var += values[i]*values[i];
+        }
+        for (size_t i = 2*J; i < values.size(); i += 2) {
+            var += values[i]*values[i] - values[i+1]*values[i+1];
         }
         ASSERT(var >= 0);
 

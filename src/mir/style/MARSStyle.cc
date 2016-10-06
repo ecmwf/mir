@@ -53,9 +53,9 @@ void MARSStyle::sh2sh(action::ActionPlan& plan) const {
         plan.add("transform.vod2uv");
     }
 
-    if (parametrisation_.has("user.statistics")) {
+    if (parametrisation_.has("user.stats")) {
         std::string statistics;
-        ASSERT (parametrisation_.get("statistics", statistics));
+        ASSERT (parametrisation_.get("stats", statistics));
 
         plan.add("statistics." + statistics);
     }

@@ -36,7 +36,7 @@ void Auto::calculate(const data::MIRField& field, Results& results) const {
     results.reset();
 
     std::string stats;
-    parametrisation_.get("statistics", stats);
+    parametrisation_.get("stats", stats);
     if (stats == "auto" || stats == "") {
         throw eckit::UserError("Cannot determine a suitable statistics method", Here());
     }

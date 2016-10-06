@@ -174,7 +174,7 @@ bool MIRJob::matches(const param::MIRParametrisation &metadata) const {
                                    "checkerboard",
                                    "formula",
                                    "pattern",
-                                   "statistics",
+                                   "stats",
                                    0
                                  }; // Move to MIRStyle
     size_t i = 0;
