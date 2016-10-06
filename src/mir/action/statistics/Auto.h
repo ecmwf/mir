@@ -11,8 +11,8 @@
 /// @date Oct 2016
 
 
-#ifndef mir_action_statistics_SHStatistics_h
-#define mir_action_statistics_SHStatistics_h
+#ifndef mir_action_statistics_Auto_h
+#define mir_action_statistics_Auto_h
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/statistics/Statistics.h"
@@ -25,9 +25,9 @@ namespace statistics {
 
 
 /**
- * @brief Calculate Spherical Harmonics statistics on a MIRField
+ * @brief Calculate a parameter configuration-dependent statistics on a MIRField
  */
-class SHStatistics : public Statistics {
+class Auto : public Statistics {
 public:
 
     // -- Exceptions
@@ -35,11 +35,11 @@ public:
 
     // -- Constructors
 
-    SHStatistics(const param::MIRParametrisation&);
+    Auto(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~SHStatistics() {}
+    virtual ~Auto() {}
 
     // -- Convertors
     // None

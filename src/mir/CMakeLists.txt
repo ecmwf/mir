@@ -98,6 +98,8 @@ list(
     action/statistics/AngleCentralMoments.h
     action/statistics/AngleStatistics.cc
     action/statistics/AngleStatistics.h
+    action/statistics/Auto.cc
+    action/statistics/Auto.h
     action/statistics/CountOutsideRange.cc
     action/statistics/CountOutsideRange.h
     action/statistics/PNorms.cc
