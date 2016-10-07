@@ -14,10 +14,7 @@
 #ifndef mir_action_statistics_AngleStatistics_h
 #define mir_action_statistics_AngleStatistics_h
 
-#include "eckit/exception/Exceptions.h"
 #include "mir/action/statistics/Statistics.h"
-#include "mir/action/statistics/detail/AngleStatistics.h"
-#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -26,7 +23,8 @@ namespace statistics {
 
 
 /**
- * @brief Calculate statistics on a MIRField
+ * @brief Calculate angle statistics on a MIRField
+ * Note: requires parameter "decomposition" which should point to a valid DecomposeToCartesian object
  */
 class AngleStatistics : public Statistics {
 public:
@@ -86,7 +84,7 @@ private:
 
     // -- Members
 
-//    mutable detail::AngleStatistics<double> stats_;
+    std::string decomposition_;
 
     // -- Methods
     // None

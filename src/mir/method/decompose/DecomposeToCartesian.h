@@ -9,12 +9,11 @@
  */
 
 
-#ifndef mir_method_decompose_Decompose_h
-#define mir_method_decompose_Decompose_h
+#ifndef mir_method_decompose_DecomposeToCartesian_h
+#define mir_method_decompose_DecomposeToCartesian_h
 
-#include <limits>
-#include "mir/method/WeightMatrix.h"
-#include "mir/util/Compare.h"
+#include <complex>
+#include "mir/method/decompose/Decompose.h"
 
 
 namespace mir {
@@ -22,7 +21,7 @@ namespace method {
 namespace decompose {
 
 
-class Decompose {
+class DecomposeToCartesian : public Decompose {
 public:
 
     // -- Exceptions
@@ -30,25 +29,24 @@ public:
 
     // -- Constructors
 
-    Decompose(double missingValue=std::numeric_limits<double>::quiet_NaN());
+    DecomposeToCartesian(double missingValue=std::numeric_limits<double>::quiet_NaN()) : Decompose(missingValue) {}
 
     // -- Destructor
 
-    virtual ~Decompose() {}
+    virtual ~DecomposeToCartesian() {}
 
     // -- Convertors
-    // None
+    void a();
 
     // -- Operators
     // None
 
     // -- Methods
 
-    void setMissingValue(double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
+    virtual std::complex<double> decomposeValue(const double& angle) const = 0;
 
-    virtual void decompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const = 0;
 
-    virtual void recompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const = 0;
+    virtual double recomposeValue(const std::complex<double>&) const = 0;
 
     // -- Overridden methods
     // None
@@ -62,8 +60,7 @@ public:
 protected:
 
     // -- Members
-
-    mutable util::compare::IsMissingFn isMissing_;
+    // None
 
     // -- Methods
     // None
@@ -100,22 +97,23 @@ private:
 };
 
 
-class DecomposeChooser {
+class DecomposeToCartesianChooser {
 private:
     std::string name_;
 protected:
-    DecomposeChooser(const std::string&, Decompose* choice);
-    virtual ~DecomposeChooser();
+    DecomposeToCartesianChooser(const std::string&, DecomposeToCartesian* choice);
+    virtual ~DecomposeToCartesianChooser();
 public:
-    static const Decompose& lookup(const std::string& name);
-    static void list(std::ostream&);
+    static const DecomposeToCartesian& lookup(const std::string& name);
 };
 
 
 template<class T>
-class DecomposeChoice : public DecomposeChooser {
+class DecomposeToCartesianChoice : public DecomposeToCartesianChooser {
 public:
-    DecomposeChoice(const std::string& name) : DecomposeChooser(name, new T) {}
+    DecomposeToCartesianChoice(const std::string& name) : DecomposeToCartesianChooser(name, new T) {
+        static DecomposeChoice<T> decomposeChoice(name);
+    }
 };
 
 

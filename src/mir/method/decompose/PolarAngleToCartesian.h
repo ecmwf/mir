@@ -12,7 +12,7 @@
 #ifndef mir_method_decompose_PolarAngleToCartesian_h
 #define mir_method_decompose_PolarAngleToCartesian_h
 
-#include "mir/method/decompose/Decompose.h"
+#include "mir/method/decompose/DecomposeToCartesian.h"
 
 #include "mir/util/Angles.h"
 
@@ -23,7 +23,7 @@ namespace decompose {
 
 
 template< int FIELDINFO_COMPONENT >
-class PolarAngleToCartesian : public Decompose {
+class PolarAngleToCartesian : public DecomposeToCartesian {
 public:
 
     // -- Exceptions
@@ -31,7 +31,15 @@ public:
 
     // -- Constructors
 
-    PolarAngleToCartesian() {
+    PolarAngleToCartesian(double missingValue=std::numeric_limits<double>::quiet_NaN()) :
+        DecomposeToCartesian(missingValue),
+        fp_angle_to_complex_(NULL),
+        fp_complex_to_angle_(NULL),
+        fp_normalize_(NULL) {
+        ASSERT(fp_angle_to_complex_);
+        ASSERT(fp_complex_to_angle_);
+        ASSERT(fp_normalize_);
+
         // ensure constructor is specialized
         NOTIMP;
     }
@@ -50,15 +58,23 @@ public:
 
     // -- Overridden methods
 
-    void decompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
+    void decompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const;
 
-    void recompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
+    void recompose(const WeightMatrix::Matrix&, WeightMatrix::Matrix&) const;
 
-    inline std::complex<double> decompose(const double&, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
+    inline std::complex<double> decomposeValue(const double& angle) const {
+        if (isMissing_(angle)) {
+            return std::complex<double>(isMissing_.missingValue_, isMissing_.missingValue_);
+        }
+        return (*fp_angle_to_complex_)(angle);
+    }
 
-    inline double recompose(const std::complex<double>&, double missingValue=std::numeric_limits<double>::quiet_NaN()) const;
-
-    inline double normalize(const double&) const;
+    inline double recomposeValue(const std::complex<double>& complex) const {
+        if (isMissing_(complex.real()) || isMissing_(complex.imag())) {
+            return isMissing_.missingValue_;
+        }
+        return (*fp_normalize_)((*fp_complex_to_angle_)(complex));
+    }
 
     // -- Class members
     // None
@@ -71,13 +87,13 @@ private:
     // -- Types
 
     typedef double (*fp_normalize_t)(double);
-    typedef double (*fp_cartesian_to_angle_t)(const std::complex<double>&);
-    typedef std::complex<double> (*fp_angle_to_cartesian_t)(const double&);
+    typedef double (*fp_complex_to_angle_t)(const std::complex<double>&);
+    typedef std::complex<double> (*fp_angle_to_complex_t)(const double&);
 
     // -- Members
 
-    const fp_angle_to_cartesian_t fp_angle_to_cartesian_;
-    const fp_cartesian_to_angle_t fp_cartesian_to_angle_;
+    const fp_angle_to_complex_t fp_angle_to_complex_;
+    const fp_complex_to_angle_t fp_complex_to_angle_;
     const fp_normalize_t fp_normalize_;
 
     // -- Methods

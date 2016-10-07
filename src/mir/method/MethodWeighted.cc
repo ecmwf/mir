@@ -205,7 +205,10 @@ void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix& A, Weig
 
     std::string decomposition;
     parametrisation_.get("decomposition", decomposition);
-    decompose::DecomposeChooser::lookup(decomposition).decompose(Bwrap, B, missingValue);
+
+    const decompose::Decompose& decomp = decompose::DecomposeChooser::lookup(decomposition);
+    decomp.setMissingValue(missingValue);
+    decomp.decompose(Bwrap, B);
 
     // set output matrix A (from A = W × B)
     // reuses output values vector if handling a column vector, otherwise allocates new matrix
@@ -234,11 +237,14 @@ void MethodWeighted::setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, s
 
     std::string decomposition;
     parametrisation_.get("decomposition", decomposition);
-    decompose::DecomposeChooser::lookup(decomposition).recompose(A, Awrap, missingValue);
+
+    const decompose::Decompose& decomp = decompose::DecomposeChooser::lookup(decomposition);
+    decomp.setMissingValue(missingValue);
+    decomp.recompose(A, Awrap);
 }
 
 
-lsm::LandSeaMasks MethodWeighted::getMasks(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
+lsm::LandSeaMasks MethodWeighted::getMasks(context::Context&, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
     return lsm::LandSeaMasks::lookup(parametrisation_, in, out);
 }
 

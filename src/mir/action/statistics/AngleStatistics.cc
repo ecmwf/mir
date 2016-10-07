@@ -14,6 +14,38 @@
 #include "mir/action/statistics/AngleStatistics.h"
 
 #include <sstream>
+#include "eckit/exception/Exceptions.h"
+#include "mir/action/statistics/detail/AngleStatistics.h"
+#include "mir/data/MIRField.h"
+#include "mir/method/decompose/DecomposeToCartesian.h"
+
+
+#if 0
+#include "eckit/utils/Translator.h"
+namespace eckit {
+template<>
+struct Translator< std::complex<double>, std::string > {
+    std::string operator()(const std::complex<double>& from)  {
+        std::ostringstream o;
+        o << from;
+        return o.str();
+    }
+};
+}  // namespace eckit (temporary)
+
+
+namespace {
+static eckit::Translator< std::complex<double>, std::string > pretty_complex;
+}  // (anonymous namespace)
+#else
+namespace {
+std::string pretty_complex(const std::complex<double>& complex) {
+    std::ostringstream o;
+    o << complex;
+    return o.str();
+}
+}  // (anonymous namespace)
+#endif
 
 
 namespace mir {
@@ -22,7 +54,9 @@ namespace statistics {
 
 
 AngleStatistics::AngleStatistics(const param::MIRParametrisation& parametrisation) :
-    Statistics(parametrisation) {
+    Statistics(parametrisation),
+    decomposition_("") {
+    parametrisation.get("decomposition", decomposition_);
 }
 
 
@@ -38,52 +72,44 @@ bool AngleStatistics::sameAs(const action::Action& other) const {
 
 
 void AngleStatistics::calculate(const data::MIRField& field, Results& results) const {
+
+    // set statistics calculation based on decomposition
+    const method::decompose::DecomposeToCartesian& decomp = method::decompose::DecomposeToCartesianChooser::lookup(decomposition_);
+    const double missingValue = field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
+
+    detail::AngleStatistics stats(decomp, missingValue);
+
+    // analyse and repoer
     results.reset();
+    for (size_t w = 0; w < field.dimensions(); ++w) {
 
-    NOTIMP;
+        const std::vector<double>& values = field.values(w);
+        for (size_t i = 0; i < values.size(); ++i) {
+            stats(values[i]);
+        }
 
-//     data::FieldInfo info = field.info();
-//     bool degrees   = info.isAngleInDegrees();
-//     bool symmetric = info.isAngleSymmetric();
+        std::string head;
+        if (field.dimensions()>1) {
+            std::ostringstream s;
+            s << '#' << (w+1) << ' ';
+            head = s.str();
+        }
 
-//     for (size_t w = 0; w < field.dimensions(); ++w) {
-//         const std::vector<double>& values = field.values(w);
+        results.set(head + "mean",              stats.mean());
+        results.set(head + "standardDeviation", stats.standardDeviation());
+        results.set(head + "variance",          stats.variance());
+        results.set(head + "skewness",          pretty_complex(stats.skewness()));
+        results.set(head + "kurtosis",          pretty_complex(stats.kurtosis()));
 
-//         stats_.reset(
-//                     field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN(),
-//                     degrees,
-//                     symmetric );
-//         for (size_t i = 0; i < values.size(); ++ i) {
-//             stats_(values[i]);
-//         }
+        results.set(head + "count",   stats.countNonMissing());
+        results.set(head + "missing", stats.countMissing());
 
-//         std::string head;
-//         if (field.dimensions()>1) {
-//             std::ostringstream s;
-//             s << '#' << (w+1) << ' ';
-//             head = s.str();
-//         }
-
-//         results.set(head + "min",               stats_.min());
-//         results.set(head + "max",               stats_.max());
-//         results.set(head + "minIndex",          stats_.minIndex());
-//         results.set(head + "maxIndex",          stats_.maxIndex());
-
-//         results.set(head + "mean",              stats_.mean());
-//         results.set(head + "variance",          stats_.variance());
-// //      results.set(head + "skewness",          stats_.skewness());    // works, but is it meaningful for circular quantities?
-// //      results.set(head + "kurtosis",          stats_.kurtosis());    // works, but is it meaningful for circular quantities?
-//         results.set(head + "standardDeviation", stats_.standardDeviation());
-
-//         results.set(head + "count",   stats_.countNonMissing());
-//         results.set(head + "missing", stats_.countMissing());
-
-//     }
+    }
 }
 
 
 namespace {
-static StatisticsBuilder<AngleStatistics> statistics("AngleStatistics");
+static StatisticsBuilder<AngleStatistics> __angleStatistics( "AngleStatistics" );
 }
 
 

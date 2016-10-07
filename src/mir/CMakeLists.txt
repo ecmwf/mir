@@ -263,6 +263,8 @@ list(
     method/WeightMatrix.h
     method/decompose/Decompose.cc
     method/decompose/Decompose.h
+    method/decompose/DecomposeToCartesian.cc
+    method/decompose/DecomposeToCartesian.h
     method/decompose/None.cc
     method/decompose/None.h
     method/decompose/PolarAngleToCartesian.cc

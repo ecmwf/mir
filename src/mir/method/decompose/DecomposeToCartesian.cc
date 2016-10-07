@@ -8,13 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
+/// @date Oct 2016
 
-#include "eckit/exception/Exceptions.h"
+
+#include "mir/method/decompose/DecomposeToCartesian.h"
+
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/decompose/Decompose.h"
 
 
 namespace mir {
@@ -26,37 +28,27 @@ namespace {
 
 
 static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, Decompose* > *m = 0;
+static std::map< std::string, DecomposeToCartesian* > *m = 0;
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, Decompose* >();
+    m = new std::map< std::string, DecomposeToCartesian* >();
 }
 
 
 }  // (anonymous namespace)
 
 
-Decompose::Decompose(double missingValue) :
-    isMissing_(missingValue) {
-}
-
-
-void Decompose::setMissingValue(double missingValue) const {
-    isMissing_.reset(missingValue);
-}
-
-
-DecomposeChooser::DecomposeChooser(const std::string& name, Decompose* choice) :
+DecomposeToCartesianChooser::DecomposeToCartesianChooser(const std::string& name, DecomposeToCartesian* choice) :
     name_(name) {
     pthread_once(&once, init);
 
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("DecomposeChooser: duplicated Decompose '" + name + "'");
+        throw eckit::SeriousBug("DecomposeToCartesianChooser: duplicated DecomposeToCartesian '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -64,37 +56,25 @@ DecomposeChooser::DecomposeChooser(const std::string& name, Decompose* choice) :
 }
 
 
-DecomposeChooser::~DecomposeChooser() {
+DecomposeToCartesianChooser::~DecomposeToCartesianChooser() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
 }
 
 
-const Decompose& DecomposeChooser::lookup(const std::string& name) {
+const DecomposeToCartesian& DecomposeToCartesianChooser::lookup(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "DecomposeChooser: looking for '" << name << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "DecomposeToCartesianChooser: looking for '" << name << "'" << std::endl;
 
-    std::map< std::string, Decompose* >::const_iterator j = m->find(name);
+    std::map< std::string, DecomposeToCartesian* >::const_iterator j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "No DecomposeChooser '" << name << "', choices are:\n");
-        throw eckit::SeriousBug("No DecomposeChooser '" + name + "'");
+        eckit::Log::error() << "No DecomposeToCartesianChooser '" << name << "'.";
+        throw eckit::SeriousBug("No DecomposeToCartesianChooser '" + name + "'");
     }
 
     return *(j->second);
-}
-
-
-void DecomposeChooser::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
-    std::map< std::string, Decompose* >::const_iterator j;
-    for (j = m->begin(); j != m->end(); ++j) {
-        out << (*j).first << "\n";
-    }
-    out << std::endl;
 }
 
 
