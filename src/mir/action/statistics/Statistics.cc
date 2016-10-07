@@ -55,8 +55,6 @@ void Statistics::execute(context::Context& ctx) const {
     // update internal results
     calculate(ctx.field(), const_cast<Results&>(results_));
 
-    // display
-    eckit::Log::info() << *this << std::endl;
 }
 
 

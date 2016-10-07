@@ -8,30 +8,25 @@
  * does it submit to any jurisdiction.
  */
 
-#include "mir/compare/Comparator.h"
-#include "mir/compare/MultiFile.h"
-#include "mir/compare/FieldSet.h"
-#include "mir/compare/MultiFile.h"
 
-#include "eckit/filesystem/PathName.h"
-
-#include "eckit/io/StdFile.h"
-#include "eckit/option/CmdArgs.h"
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/log/Plural.h"
-#include "eckit/io/Buffer.h"
-#include "eckit/serialisation/MemoryStream.h"
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/utils/Translator.h"
-#include "mir/caching/InMemoryCache.h"
-#include "eckit/io/StdFile.h"
-#include "mir/util/Grib.h"
-#include "mir/input/GribFileInput.h"
-
-#include "eckit/option/SimpleOption.h"
 #include "mir/compare/Comparator.h"
 
 #include <cmath>
+#include "eckit/filesystem/PathName.h"
+#include "eckit/io/Buffer.h"
+#include "eckit/io/StdFile.h"
+#include "eckit/log/Plural.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
+#include "eckit/parser/Tokenizer.h"
+#include "eckit/serialisation/MemoryStream.h"
+#include "eckit/utils/Translator.h"
+#include "mir/caching/InMemoryCache.h"
+#include "mir/compare/FieldSet.h"
+#include "mir/compare/MultiFile.h"
+#include "mir/util/Grib.h"
+#include "mir/input/GribFileInput.h"
+
 
 namespace mir {
 namespace compare {

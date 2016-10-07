@@ -8,15 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Aug 2016
+/// @date Oct 2016
 
 
-#ifndef mir_action_statistics_AngleCentralMoments_h
-#define mir_action_statistics_AngleCentralMoments_h
+#ifndef mir_action_statistics_Auto_h
+#define mir_action_statistics_Auto_h
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/statistics/Statistics.h"
-#include "mir/action/statistics/detail/AngleCentralMomentsFn.h"
 #include "mir/data/MIRField.h"
 
 
@@ -26,9 +25,9 @@ namespace statistics {
 
 
 /**
- * @brief Calculate statistics on a MIRField
+ * @brief Calculate a parameter configuration-dependent statistics on a MIRField
  */
-class AngleCentralMoments : public Statistics {
+class Auto : public Statistics {
 public:
 
     // -- Exceptions
@@ -36,11 +35,11 @@ public:
 
     // -- Constructors
 
-    AngleCentralMoments(const param::MIRParametrisation&);
+    Auto(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~AngleCentralMoments() {}
+    virtual ~Auto() {}
 
     // -- Convertors
     // None
@@ -49,9 +48,7 @@ public:
     // None
 
     // -- Methods
-
-    /// Online statistics update
-    void operator+=(const AngleCentralMoments&);
+    // None
 
     // -- Overridden methods
 
@@ -85,8 +82,7 @@ protected:
 private:
 
     // -- Members
-
-    mutable detail::AngleCentralMomentsFn<double> stats_;
+    // None
 
     // -- Methods
     // None

@@ -15,7 +15,8 @@
 #define mir_action_statistics_detail_ScalarCentralMomentsFn_h
 
 #include <cmath>
-
+#include <cstddef>
+#include <limits>
 
 namespace mir {
 namespace action {

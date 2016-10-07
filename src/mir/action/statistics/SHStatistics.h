@@ -8,21 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Aug 2016
+/// @date Oct 2016
 
 
-#ifndef mir_action_statistics_ScalarCentralMoments_h
-#define mir_action_statistics_ScalarCentralMoments_h
+#ifndef mir_action_statistics_SHStatistics_h
+#define mir_action_statistics_SHStatistics_h
 
+#include "eckit/exception/Exceptions.h"
 #include "mir/action/statistics/Statistics.h"
-#include "mir/action/statistics/detail/ScalarCentralMomentsFn.h"
+#include "mir/data/MIRField.h"
 
-
-namespace mir {
-namespace action {
-class MIRField;
-}
-}
 
 namespace mir {
 namespace action {
@@ -30,9 +25,9 @@ namespace statistics {
 
 
 /**
- * @brief Calculate statistics on a MIRField
+ * @brief Calculate Spherical Harmonics statistics on a MIRField
  */
-class ScalarCentralMoments : public Statistics {
+class SHStatistics : public Statistics {
 public:
 
     // -- Exceptions
@@ -40,11 +35,11 @@ public:
 
     // -- Constructors
 
-    ScalarCentralMoments(const param::MIRParametrisation&);
+    SHStatistics(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~ScalarCentralMoments() {}
+    virtual ~SHStatistics() {}
 
     // -- Convertors
     // None
@@ -53,9 +48,7 @@ public:
     // None
 
     // -- Methods
-
-    /// Online statistics update
-    void operator+=(const ScalarCentralMoments&);
+    // None
 
     // -- Overridden methods
 
@@ -89,8 +82,7 @@ protected:
 private:
 
     // -- Members
-
-    mutable detail::ScalarCentralMomentsFn<double> stats_;
+    // None
 
     // -- Methods
     // None

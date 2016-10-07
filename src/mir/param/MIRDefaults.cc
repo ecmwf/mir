@@ -36,6 +36,7 @@ MIRDefaults::MIRDefaults() {
 
     set("interpolation", "linear"); // The word 'method' is used in grib
     set("decomposition", "none");
+    set("stats", "ScalarStatistics");
     set("caching", true);
 
     set("lsm.selection", "auto");

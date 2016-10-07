@@ -242,9 +242,9 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
         }
     }
 
-    if (parametrisation_.has("user.statistics")) {
+    if (parametrisation_.has("user.stats")) {
         std::string statistics;
-        ASSERT (parametrisation_.get("statistics", statistics));
+        ASSERT (parametrisation_.get("stats", statistics));
 
         plan.add("statistics." + statistics);
     }

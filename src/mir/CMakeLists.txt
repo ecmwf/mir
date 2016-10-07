@@ -94,21 +94,22 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/statistics/AngleCentralMoments.cc
-    action/statistics/AngleCentralMoments.h
     action/statistics/AngleStatistics.cc
     action/statistics/AngleStatistics.h
+    action/statistics/Auto.cc
+    action/statistics/Auto.h
     action/statistics/CountOutsideRange.cc
     action/statistics/CountOutsideRange.h
     action/statistics/PNorms.cc
     action/statistics/PNorms.h
+    action/statistics/SHStatistics.cc
+    action/statistics/SHStatistics.h
     action/statistics/ScalarCentralMoments.cc
     action/statistics/ScalarCentralMoments.h
     action/statistics/ScalarStatistics.cc
     action/statistics/ScalarStatistics.h
     action/statistics/Statistics.cc
     action/statistics/Statistics.h
-    action/statistics/detail/AngleCentralMomentsFn.h
     action/statistics/detail/AngleStatistics.h
     action/statistics/detail/CountMissingValuesFn.h
     action/statistics/detail/CountOutsideRangeFn.h
@@ -464,8 +465,6 @@ list(
     util/Increments.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
-    util/MapKeyValue.cc
-    util/MapKeyValue.h
     util/Parser.cc
     util/Parser.h
     util/ParserConsumer.cc
