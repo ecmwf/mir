@@ -26,6 +26,7 @@
 #include "mir/caching/InMemoryCache.h"
 #include "eckit/io/StdFile.h"
 #include "mir/util/Grib.h"
+#include "mir/input/GribFileInput.h"
 
 #include "eckit/option/SimpleOption.h"
 #include "mir/compare/Comparator.h"
@@ -734,6 +735,22 @@ void Comparator::compareFieldValues(
     const Field& field2) {
 
     // TODO
+
+    input::GribFileInput grib1(field1.path(), field1.offset());
+    input::GribFileInput grib2(field2.path(), field2.offset());
+
+    grib1.next();
+    grib2.next();
+
+
+    input::MIRInput& input1 = grib1;
+    input::MIRInput& input2 = grib2;
+
+
+    const param::MIRParametrisation &metadata1 = input1.parametrisation(0);
+    const param::MIRParametrisation &metadata2 = input2.parametrisation(0);
+
+
 
 }
 
