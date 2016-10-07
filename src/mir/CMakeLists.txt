@@ -108,11 +108,14 @@ list(
     action/statistics/ScalarCentralMoments.h
     action/statistics/ScalarStatistics.cc
     action/statistics/ScalarStatistics.h
+    action/statistics/SimplePackingEntropy.cc
+    action/statistics/SimplePackingEntropy.h
     action/statistics/Statistics.cc
     action/statistics/Statistics.h
     action/statistics/detail/AngleStatistics.h
     action/statistics/detail/CountMissingValuesFn.h
     action/statistics/detail/CountOutsideRangeFn.h
+    action/statistics/detail/MinMaxStatistics.h
     action/statistics/detail/ScalarCentralMomentsFn.h
     action/statistics/detail/ScalarMinMaxFn.h
     action/statistics/detail/ScalarStatistics.h

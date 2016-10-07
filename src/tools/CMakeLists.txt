@@ -7,7 +7,7 @@ foreach(tool mir-config mir-formula mir-inspect mir-make-lsm)
         LIBS        mir )
 endforeach()
 
-foreach(tool mir-compare mir-integrate mir-list mir-plot-lsm mir-shared-memory mir-stats mir-statistics mir-tool)
+foreach(tool mir-compare mir-integrate mir-list mir-plot-lsm mir-shared-memory mir-statistics mir-tool)
     ecbuild_add_executable(
         TARGET      ${tool}
         SOURCES     ${tool}.cc
