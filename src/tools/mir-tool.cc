@@ -72,6 +72,7 @@ public:
         options_.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular gaussian grid N (pre 2016)"));
         options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular gaussian grid N"));
         options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
+        options_.push_back(new SimpleOption<bool>("bounding-box-defines-grid", "Bounding box defines grid (only applicable to regular latitude/longitude grids"));
 
         options_.push_back(new SimpleOption<bool>("wind", "Use vector interpolation for wind (not yet)"));
         options_.push_back(new SimpleOption<eckit::PathName>("same", "Inperpolate to the same grid as the one provided in the first GRIB of the grib file"));

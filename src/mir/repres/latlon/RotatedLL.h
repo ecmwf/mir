@@ -34,12 +34,11 @@ class RotatedLL : public RegularLL {
     // -- Contructors
 
     RotatedLL(const param::MIRParametrisation &);
-    RotatedLL(const util::BoundingBox &bbox, const util::Increments &increments, const util::Rotation &rotation);
-
+    RotatedLL(const util::BoundingBox &bbox, const util::Increments &increments, const util::Rotation &rotation, bool bboxDefinesGrid);
 
     // -- Destructor
 
-    virtual ~RotatedLL(); // Change to virtual if base class
+    virtual ~RotatedLL();
 
     // -- Convertors
     // None
@@ -48,6 +47,7 @@ class RotatedLL : public RegularLL {
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -87,11 +87,10 @@ class RotatedLL : public RegularLL {
     RotatedLL &operator=(const RotatedLL &);
 
     // -- Members
-
+    // None
 
     // -- Methods
     // None
-
 
     // -- Overridden methods
 
@@ -103,8 +102,6 @@ class RotatedLL : public RegularLL {
     // From RegularLL
     virtual const RotatedLL *cropped(const util::BoundingBox &bbox) const;
 
-
-
     // -- Class members
     // None
 
@@ -112,14 +109,15 @@ class RotatedLL : public RegularLL {
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const RotatedLL& p)
-    //  { p.print(s); return s; }
+    // None
 
 };
+
 
 }  // namespace latlon
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

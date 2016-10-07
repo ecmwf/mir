@@ -36,7 +36,7 @@ class RegularLL : public LatLon {
     // -- Contructors
 
     RegularLL(const param::MIRParametrisation &);
-    RegularLL(const util::BoundingBox &bbox, const util::Increments &increments);
+    RegularLL(const util::BoundingBox &bbox, const util::Increments &increments, bool bboxDefinesGrid);
 
 
     // -- Destructor
@@ -64,7 +64,8 @@ class RegularLL : public LatLon {
   protected:
 
     // -- Members
-    // None
+
+    bool bboxDefinesGrid_;
 
     // -- Methods
 
