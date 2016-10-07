@@ -34,7 +34,7 @@ Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation &parametris
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
-    ASSERT(parametrisation_.get("user.bounding-box-defines-grid", bboxDefinesGrid_));
+    parametrisation_.get("user.bounding-box-defines-grid", bboxDefinesGrid_);
 }
 
 

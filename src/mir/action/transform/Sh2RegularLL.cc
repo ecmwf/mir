@@ -34,7 +34,7 @@ Sh2RegularLL::Sh2RegularLL(const param::MIRParametrisation &parametrisation):
     ASSERT(value.size() == 2);
     grid_ = util::Increments(value[0], value[1]);
 
-    ASSERT(parametrisation_.get("user.bounding-box-defines-grid", bboxDefinesGrid_));
+    parametrisation_.get("user.bounding-box-defines-grid", bboxDefinesGrid_);
 }
 
 

@@ -40,7 +40,7 @@ Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation &parametris
     ASSERT(parametrisation_.get("user.rotation", value));
     ASSERT(value.size() == 2);
 
-    ASSERT(parametrisation_.get("user.bounding-box-defines-grid", bboxDefinesGrid_));
+    parametrisation_.get("user.bounding-box-defines-grid", bboxDefinesGrid_);
 
     rotation_ = util::Rotation(value[0], value[1]);
 }
