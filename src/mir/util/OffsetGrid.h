@@ -53,15 +53,19 @@ private:  // methods
 
     virtual void print(std::ostream&) const;
 
+
+    void computePoints() const;
+
 private: // members
+
 
     eckit::ScopedPtr<Grid> grid_;
 
     double northwards_;
-
     double eastwards_;
 
     mutable std::string shortName_;
+    mutable std::vector<Point> points_;
 
 };
 

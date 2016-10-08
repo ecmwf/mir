@@ -28,29 +28,37 @@ OffsetGrid::~OffsetGrid() {
 
 
 size_t OffsetGrid::npts() const {
-    std::vector<Point> pts;
-    lonlat(pts);
-    return pts.size();
+    computePoints();
+    return points_.size();
 }
 
-
 void OffsetGrid::lonlat(std::vector<Point>& pts) const {
+    computePoints();
+    pts = points_;
+}
 
-    pts.resize(grid_->npts());
+void OffsetGrid::computePoints() const {
 
-    std::vector<Point> original;
-    grid_->lonlat(original);
+    if (points_.empty()) {
 
-    for (std::vector<Point>::const_iterator j = original.begin(); j != original.end(); ++j) {
-        double lon = (*j).lon() + eastwards_;
-        double lat = (*j).lat() + northwards_;
+        std::vector<Point> original;
+        grid_->lonlat(original);
 
-        if(lat > 90 || lat < -90) {
-            continue;
+        for (std::vector<Point>::const_iterator j = original.begin(); j != original.end(); ++j) {
+            double lon = (*j).lon() + eastwards_;
+            double lat = (*j).lat() + northwards_;
+
+            if (lat > 90 || lat < -90) {
+                continue;
+            }
+
+            while (lon < 0) { lon += 360; }
+            while (lon > 360) { lon -= 360; }
+
+            points_.push_back(Grid::Point( lon, lat ));
         }
-
-        pts.push_back(Grid::Point( lon, lat ));
     }
+
 }
 
 

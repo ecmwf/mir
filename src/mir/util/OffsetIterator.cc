@@ -51,6 +51,7 @@ bool OffsetIterator::next(double& lat, double& lon) {
             continue;
         }
 
+
         return true;
     }
     return false;
