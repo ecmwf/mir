@@ -41,8 +41,18 @@ Gridded2RotatedLLOffset::Gridded2RotatedLLOffset(const param::MIRParametrisation
 
     rotation_ = util::Rotation(value[0], value[1]);
 
-    northwards_ = 0.5;
-    eastwards_ = 0.5;
+    ASSERT(parametrisation_.get("user.area", value));
+    ASSERT(value.size() == 4);
+    util::BoundingBox bbox(value[0], value[1], value[2], value[3]);
+    // We use the north/west corner as a reference. To review.
+
+    double n = ::fabs(bbox.north()) / increments_.south_north();
+    northwards_ = n - long(n);
+
+    double e = ::fabs(bbox.west()) / increments_.west_east();
+    eastwards_ = e - long(e);
+
+    std::cout << *this << std::endl;
 }
 
 
@@ -60,9 +70,9 @@ bool Gridded2RotatedLLOffset::sameAs(const Action& other) const {
 
 void Gridded2RotatedLLOffset::print(std::ostream &out) const {
     out << "Gridded2RotatedLLOffset[increments=" << increments_
-        << ",rotation" << rotation_
-        << ",northwards" << northwards_
-        << ",eastwards" << eastwards_ << "]";
+        << ",rotation=" << rotation_
+        << ",northwards=" << northwards_
+        << ",eastwards=" << eastwards_ << "]";
 }
 
 

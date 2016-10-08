@@ -36,8 +36,18 @@ Gridded2RegularLLOffset::Gridded2RegularLLOffset(const param::MIRParametrisation
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
-    northwards_ = 0.5;
-    eastwards_ = 0.5;
+    ASSERT(parametrisation_.get("user.area", value));
+    ASSERT(value.size() == 4);
+    util::BoundingBox bbox(value[0], value[1], value[2], value[3]);
+    // We use the north/west corner as a reference. To review.
+
+    double n = ::fabs(bbox.north()) / increments_.south_north();
+    northwards_ = n - long(n);
+
+    double e = ::fabs(bbox.west()) / increments_.west_east();
+    eastwards_ = e - long(e);
+
+    std::cout << *this << std::endl;
 
 }
 
@@ -53,8 +63,8 @@ bool Gridded2RegularLLOffset::sameAs(const Action& other) const {
 
 void Gridded2RegularLLOffset::print(std::ostream &out) const {
     out << "Gridded2RegularLLOffset[increments=" << increments_
-        << ",northwards" << northwards_
-        << ",eastwards" << eastwards_
+        << ",northwards=" << northwards_
+        << ",eastwards=" << eastwards_
         << "]";
 }
 
