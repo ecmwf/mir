@@ -9,8 +9,8 @@
  */
 
 
-#ifndef mir_util_RotatedGrid_h
-#define mir_util_RotatedGrid_h
+#ifndef mir_util_OffsetGrid_h
+#define mir_util_OffsetGrid_h
 
 #include <cstddef>
 #include <vector>
