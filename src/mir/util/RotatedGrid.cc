@@ -81,9 +81,9 @@ const atlas::grid::Domain& RotatedGrid::domain() const {
 
 void RotatedGrid::print(std::ostream& out) const {
     out << "Rotated["
-        <<  "south_pole_latitude:"       << south_pole_latitude_
-        << ",south_pole_longitude:"      << south_pole_longitude_
-        << ",south_pole_rotation_angle:" << south_pole_rotation_angle_
+        <<  "south_pole_latitude="       << south_pole_latitude_
+        << ",south_pole_longitude="      << south_pole_longitude_
+        << ",south_pole_rotation_angle=" << south_pole_rotation_angle_
         << "," << *grid_
         << "]";
 }

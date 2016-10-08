@@ -1,4 +1,4 @@
-ecbuild_find_python( VERSION 2.7 )
+# ecbuild_find_python( VERSION 2.7 )
 
 file(GLOB_RECURSE test_files LIST_DIRECTORIES false RELATIVE ${CMAKE_CURRENT_BINARY_DIR} *.test)
 
@@ -12,7 +12,7 @@ get_target_property( MIR_COMPARE   "mir-compare"   LOCATION )
 get_target_property( GRIB_GET      "grib_get"      LOCATION )
 get_target_property( GRIB_COMPARE  "grib_compare"  LOCATION )
 
-configure_file( mir-test.py.in mir-test.py @ONLY )
+configure_file( mir-test.sh.in mir-test.sh @ONLY )
 
 ecbuild_info(${test_files})
 
@@ -20,9 +20,9 @@ foreach( _t ${test_files} )
 
   ecbuild_add_test(
 
-      TYPE       PYTHON
+      # TYPE       PYTHON
 
-      COMMAND    mir-test.py
+      COMMAND    mir-test.sh
 
       ARGS       ${_t}
 

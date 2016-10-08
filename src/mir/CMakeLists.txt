@@ -477,6 +477,8 @@ list(
     util/RotateGrid.h
     util/RotatedGrid.cc
     util/RotatedGrid.h
+    util/OffsetGrid.cc
+    util/OffsetGrid.h
     util/RotatedIterator.cc
     util/RotatedIterator.h
     util/Rotation.cc
