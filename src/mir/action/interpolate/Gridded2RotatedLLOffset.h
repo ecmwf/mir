@@ -13,32 +13,31 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedLL_H
-#define RotatedLL_H
+#ifndef Gridded2RotatedLLOffset_H
+#define Gridded2RotatedLLOffset_H
 
-#include "mir/repres/latlon/RegularLL.h"
+#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
+#include "mir/util/Increments.h"
 #include "mir/util/Rotation.h"
 
 
 namespace mir {
-namespace repres {
-namespace latlon {
+namespace action {
 
 
-class RotatedLL : public RegularLL {
-  public:
+class Gridded2RotatedLLOffset : public Gridded2GriddedInterpolation {
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    RotatedLL(const param::MIRParametrisation &);
-    RotatedLL(const util::BoundingBox &bbox, const util::Increments &increments, const util::Rotation &rotation);
+    Gridded2RotatedLLOffset(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~RotatedLL();
+    virtual ~Gridded2RotatedLLOffset(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -58,21 +57,17 @@ class RotatedLL : public RegularLL {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
-
-    util::Rotation rotation_;
+    // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
-
-    virtual atlas::grid::Grid *atlasGrid() const;
-    virtual Iterator* rotatedIterator() const;
 
     // -- Class members
     // None
@@ -80,29 +75,29 @@ class RotatedLL : public RegularLL {
     // -- Class methods
     // None
 
-  private:
-
-    // RotatedLL();
+private:
 
     // No copy allowed
 
-    RotatedLL(const RotatedLL &);
-    RotatedLL &operator=(const RotatedLL &);
+    Gridded2RotatedLLOffset(const Gridded2RotatedLLOffset&);
+    Gridded2RotatedLLOffset& operator=(const Gridded2RotatedLLOffset&);
 
     // -- Members
-    // None
+
+    util::Increments increments_;
+    util::Rotation rotation_;
+    double northwards_;
+    double eastwards_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
+    virtual bool sameAs(const Action& other) const;
 
-
-    // From RegularLL
-    virtual const RotatedLL *cropped(const util::BoundingBox &bbox) const;
+    // From Gridded2GriddedInterpolation
+    virtual const repres::Representation* outputRepresentation() const;
 
     // -- Class members
     // None
@@ -111,13 +106,14 @@ class RotatedLL : public RegularLL {
     // None
 
     // -- Friends
-    // None
+
+    //friend ostream& operator<<(ostream& s,const Gridded2RotatedLLOffset& p)
+    //  { p.print(s); return s; }
 
 };
 
 
-}  // namespace latlon
-}  // namespace repres
+}  // namespace action
 }  // namespace mir
 
 

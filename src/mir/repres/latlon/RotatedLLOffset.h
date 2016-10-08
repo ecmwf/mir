@@ -13,11 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedLL_H
-#define RotatedLL_H
+#ifndef RotatedLLOffset_H
+#define RotatedLLOffset_H
 
-#include "mir/repres/latlon/RegularLL.h"
-#include "mir/util/Rotation.h"
+#include "mir/repres/latlon/RotatedLL.h"
 
 
 namespace mir {
@@ -25,7 +24,7 @@ namespace repres {
 namespace latlon {
 
 
-class RotatedLL : public RegularLL {
+class RotatedLLOffset : public RotatedLL {
   public:
 
     // -- Exceptions
@@ -33,12 +32,14 @@ class RotatedLL : public RegularLL {
 
     // -- Contructors
 
-    RotatedLL(const param::MIRParametrisation &);
-    RotatedLL(const util::BoundingBox &bbox, const util::Increments &increments, const util::Rotation &rotation);
+    RotatedLLOffset(const util::BoundingBox &bbox,
+        const util::Increments &increments,
+        const util::Rotation &rotation,
+        double northwards, double eastwards);
 
     // -- Destructor
 
-    virtual ~RotatedLL();
+    virtual ~RotatedLLOffset();
 
     // -- Convertors
     // None
@@ -63,6 +64,8 @@ class RotatedLL : public RegularLL {
     // -- Members
 
     util::Rotation rotation_;
+    double northwards_;
+    double eastwards_;
 
     // -- Methods
 
@@ -70,9 +73,6 @@ class RotatedLL : public RegularLL {
 
     // -- Overridden methods
     // None
-
-    virtual atlas::grid::Grid *atlasGrid() const;
-    virtual Iterator* rotatedIterator() const;
 
     // -- Class members
     // None
@@ -82,12 +82,12 @@ class RotatedLL : public RegularLL {
 
   private:
 
-    // RotatedLL();
+    // RotatedLLOffset();
 
     // No copy allowed
 
-    RotatedLL(const RotatedLL &);
-    RotatedLL &operator=(const RotatedLL &);
+    RotatedLLOffset(const RotatedLLOffset &);
+    RotatedLLOffset &operator=(const RotatedLLOffset &);
 
     // -- Members
     // None
@@ -97,12 +97,12 @@ class RotatedLL : public RegularLL {
 
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
-
+    virtual atlas::grid::Grid *atlasGrid() const;
+    virtual Iterator* unrotatedIterator() const; // Before rotation
+    virtual Iterator* rotatedIterator() const; // Before rotation
 
     // From RegularLL
-    virtual const RotatedLL *cropped(const util::BoundingBox &bbox) const;
+    virtual const RotatedLLOffset *cropped(const util::BoundingBox &bbox) const;
 
     // -- Class members
     // None
