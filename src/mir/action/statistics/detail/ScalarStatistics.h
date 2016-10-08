@@ -11,13 +11,12 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_detail_ScalarStatistics_H
-#define mir_action_statistics_detail_ScalarStatistics_H
+#ifndef mir_action_statistics_detail_ScalarStatistics_h
+#define mir_action_statistics_detail_ScalarStatistics_h
 
 #include "mir/action/statistics/detail/CountMissingValuesFn.h"
 #include "mir/action/statistics/detail/ScalarCentralMomentsFn.h"
 #include "mir/action/statistics/detail/ScalarMinMaxFn.h"
-#include "mir/action/statistics/detail/ScalarStatistics.h"
 #include "mir/action/statistics/detail/ScalarpNormsFn.h"
 
 
