@@ -11,7 +11,7 @@
 /// @date Oct 2016
 
 
-#include "mir/action/statistics/SHStatistics.h"
+#include "mir/action/statistics/SH.h"
 
 #include <cmath>
 #include <sstream>
@@ -23,18 +23,18 @@ namespace action {
 namespace statistics {
 
 
-SHStatistics::SHStatistics(const param::MIRParametrisation& parametrisation) :
+SH::SH(const param::MIRParametrisation& parametrisation) :
     Statistics(parametrisation) {
 }
 
 
-bool SHStatistics::sameAs(const action::Action& other) const {
-    const SHStatistics* o = dynamic_cast<const SHStatistics*>(&other);
+bool SH::sameAs(const action::Action& other) const {
+    const SH* o = dynamic_cast<const SH*>(&other);
     return o; //(o && options_ == o->options_);
 }
 
 
-void SHStatistics::calculate(const data::MIRField& field, Results& results) const {
+void SH::calculate(const data::MIRField& field, Results& results) const {
     results.reset();
     ASSERT(!field.hasMissing());
 
@@ -84,7 +84,7 @@ void SHStatistics::calculate(const data::MIRField& field, Results& results) cons
 
 
 namespace {
-static StatisticsBuilder<SHStatistics> statistics("SHStatistics");
+static StatisticsBuilder<SH> __sH("SH");
 }
 
 

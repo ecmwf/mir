@@ -77,7 +77,7 @@ void PNorms::calculate(const data::MIRField& field, Results& results) const {
 
 namespace {
 // Name (non-)capitalized according to: https://en.wikipedia.org/wiki/Lp_space
-static StatisticsBuilder<PNorms> statistics("p-norms");
+static StatisticsBuilder<PNorms> __pNorms("p-norms");
 }
 
 

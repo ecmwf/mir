@@ -11,7 +11,7 @@
 /// @date Aug 2016
 
 
-#include "mir/action/statistics/AngleStatistics.h"
+#include "mir/action/statistics/AngleDecomposition.h"
 
 #include <sstream>
 #include "eckit/exception/Exceptions.h"
@@ -53,25 +53,26 @@ namespace action {
 namespace statistics {
 
 
-AngleStatistics::AngleStatistics(const param::MIRParametrisation& parametrisation) :
+AngleDecomposition::AngleDecomposition(const param::MIRParametrisation& parametrisation) :
     Statistics(parametrisation),
     decomposition_("") {
     parametrisation.get("decomposition", decomposition_);
 }
 
 
-void AngleStatistics::operator+=(const AngleStatistics& other) {
+void AngleDecomposition::operator+=(const AngleDecomposition& other) {
 //    stats_ += other.stats_;
 }
 
 
-bool AngleStatistics::sameAs(const action::Action& other) const {
-    const AngleStatistics* o = dynamic_cast<const AngleStatistics*>(&other);
+bool AngleDecomposition::sameAs(const action::Action& other) const {
+    const AngleDecomposition* o = dynamic_cast<const AngleDecomposition*>(&other);
     return o; //(o && options_ == o->options_);
 }
 
 
-void AngleStatistics::calculate(const data::MIRField& field, Results& results) const {
+void AngleDecomposition::calculate(const data::MIRField& field, Results& results) const {
+    results.reset();
 
     // set statistics calculation based on decomposition
     const method::decompose::DecomposeToCartesian& decomp = method::decompose::DecomposeToCartesianChooser::lookup(decomposition_);
@@ -79,8 +80,7 @@ void AngleStatistics::calculate(const data::MIRField& field, Results& results) c
 
     detail::AngleStatistics stats(decomp, missingValue);
 
-    // analyse and repoer
-    results.reset();
+    // analyse
     for (size_t w = 0; w < field.dimensions(); ++w) {
 
         const std::vector<double>& values = field.values(w);
@@ -109,7 +109,7 @@ void AngleStatistics::calculate(const data::MIRField& field, Results& results) c
 
 
 namespace {
-static StatisticsBuilder<AngleStatistics> __angleStatistics( "AngleStatistics" );
+static StatisticsBuilder<AngleDecomposition> __angleDecomposition( "AngleDecomposition" );
 }
 
 

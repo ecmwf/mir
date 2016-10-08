@@ -84,7 +84,7 @@ void ScalarCentralMoments::calculate(const data::MIRField& field, Results& resul
 
 
 namespace {
-static StatisticsBuilder<ScalarCentralMoments> statistics("ScalarCentralMoments");
+static StatisticsBuilder<ScalarCentralMoments> __scalarCentralMoments("ScalarCentralMoments");
 }
 
 

@@ -11,8 +11,8 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_ScalarStatistics_h
-#define mir_action_statistics_ScalarStatistics_h
+#ifndef mir_action_statistics_Scalar_h
+#define mir_action_statistics_Scalar_h
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/statistics/Statistics.h"
@@ -28,7 +28,7 @@ namespace statistics {
 /**
  * @brief Calculate statistics on a MIRField
  */
-class ScalarStatistics : public Statistics {
+class Scalar : public Statistics {
 public:
 
     // -- Exceptions
@@ -36,11 +36,11 @@ public:
 
     // -- Constructors
 
-    ScalarStatistics(const param::MIRParametrisation&);
+    Scalar(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~ScalarStatistics() {}
+    virtual ~Scalar() {}
 
     // -- Convertors
     // None
@@ -51,7 +51,7 @@ public:
     // -- Methods
 
     /// Online statistics update
-    void operator+=(const ScalarStatistics&);
+    void operator+=(const Scalar&);
 
     // -- Overridden methods
 

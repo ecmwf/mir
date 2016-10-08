@@ -98,20 +98,20 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/statistics/AngleStatistics.cc
-    action/statistics/AngleStatistics.h
+    action/statistics/AngleDecomposition.cc
+    action/statistics/AngleDecomposition.h
     action/statistics/Auto.cc
     action/statistics/Auto.h
     action/statistics/CountOutsideRange.cc
     action/statistics/CountOutsideRange.h
     action/statistics/PNorms.cc
     action/statistics/PNorms.h
-    action/statistics/SHStatistics.cc
-    action/statistics/SHStatistics.h
+    action/statistics/SH.cc
+    action/statistics/SH.h
+    action/statistics/Scalar.cc
+    action/statistics/Scalar.h
     action/statistics/ScalarCentralMoments.cc
     action/statistics/ScalarCentralMoments.h
-    action/statistics/ScalarStatistics.cc
-    action/statistics/ScalarStatistics.h
     action/statistics/SimplePackingEntropy.cc
     action/statistics/SimplePackingEntropy.h
     action/statistics/Statistics.cc

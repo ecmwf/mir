@@ -11,8 +11,8 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_AngleStatistics_h
-#define mir_action_statistics_AngleStatistics_h
+#ifndef mir_action_statistics_AngleDecomposition_h
+#define mir_action_statistics_AngleDecomposition_h
 
 #include "mir/action/statistics/Statistics.h"
 
@@ -26,7 +26,7 @@ namespace statistics {
  * @brief Calculate angle statistics on a MIRField
  * Note: requires parameter "decomposition" which should point to a valid DecomposeToCartesian object
  */
-class AngleStatistics : public Statistics {
+class AngleDecomposition : public Statistics {
 public:
 
     // -- Exceptions
@@ -34,11 +34,11 @@ public:
 
     // -- Constructors
 
-    AngleStatistics(const param::MIRParametrisation&);
+    AngleDecomposition(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~AngleStatistics() {}
+    virtual ~AngleDecomposition() {}
 
     // -- Convertors
     // None
@@ -49,7 +49,7 @@ public:
     // -- Methods
 
     /// Online statistics update
-    void operator+=(const AngleStatistics&);
+    void operator+=(const AngleDecomposition&);
 
     // -- Overridden methods
 

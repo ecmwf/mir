@@ -11,7 +11,7 @@
 /// @date Aug 2016
 
 
-#include "mir/action/statistics/ScalarStatistics.h"
+#include "mir/action/statistics/Scalar.h"
 
 #include <sstream>
 
@@ -21,23 +21,23 @@ namespace action {
 namespace statistics {
 
 
-ScalarStatistics::ScalarStatistics(const param::MIRParametrisation& parametrisation) :
+Scalar::Scalar(const param::MIRParametrisation& parametrisation) :
     Statistics(parametrisation) {
 }
 
 
-void ScalarStatistics::operator+=(const ScalarStatistics& other) {
+void Scalar::operator+=(const Scalar& other) {
     stats_ += other.stats_;
 }
 
 
-bool ScalarStatistics::sameAs(const action::Action& other) const {
-    const ScalarStatistics* o = dynamic_cast<const ScalarStatistics*>(&other);
+bool Scalar::sameAs(const action::Action& other) const {
+    const Scalar* o = dynamic_cast<const Scalar*>(&other);
     return o; //(o && options_ == o->options_);
 }
 
 
-void ScalarStatistics::calculate(const data::MIRField& field, Results& results) const {
+void Scalar::calculate(const data::MIRField& field, Results& results) const {
     results.reset();
 
     for (size_t w = 0; w < field.dimensions(); ++w) {
@@ -80,7 +80,7 @@ void ScalarStatistics::calculate(const data::MIRField& field, Results& results) 
 
 
 namespace {
-static StatisticsBuilder<ScalarStatistics> statistics("ScalarStatistics");
+static StatisticsBuilder<Scalar> __scalar("Scalar");
 }
 
 

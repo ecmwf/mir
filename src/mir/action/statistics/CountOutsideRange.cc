@@ -75,7 +75,7 @@ void CountOutsideRange::calculate(const data::MIRField& field, Results& results)
 
 
 namespace {
-static StatisticsBuilder<CountOutsideRange> statistics("CountOutsideRange");
+static StatisticsBuilder<CountOutsideRange> __countOutsideRange("CountOutsideRange");
 }
 
 
