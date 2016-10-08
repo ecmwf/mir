@@ -26,15 +26,13 @@ namespace action {
 
 
 Sh2RegularLL::Sh2RegularLL(const param::MIRParametrisation &parametrisation):
-    Sh2GriddedTransform(parametrisation),
-    bboxDefinesGrid_(false) {
+    Sh2GriddedTransform(parametrisation) {
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
     ASSERT(value.size() == 2);
     grid_ = util::Increments(value[0], value[1]);
 
-    parametrisation_.get("user.bounding-box-defines-grid", bboxDefinesGrid_);
 }
 
 
@@ -56,8 +54,7 @@ void Sh2RegularLL::print(std::ostream &out) const {
 const repres::Representation *Sh2RegularLL::outputRepresentation() const {
     return new repres::latlon::RegularLL(
                 util::BoundingBox(90, 0, -90, 360 - grid_.west_east()),
-                grid_,
-                bboxDefinesGrid_);
+                grid_);
 }
 
 

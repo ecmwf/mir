@@ -85,7 +85,6 @@ private:
     // -- Members
 
     util::Increments increments_;
-    bool bboxDefinesGrid_;
 
     // -- Methods
     // None

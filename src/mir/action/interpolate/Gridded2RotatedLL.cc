@@ -29,8 +29,7 @@ namespace action {
 
 
 Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation &parametrisation):
-    Gridded2GriddedInterpolation(parametrisation),
-    bboxDefinesGrid_(false) {
+    Gridded2GriddedInterpolation(parametrisation) {
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
@@ -39,8 +38,6 @@ Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation &parametris
 
     ASSERT(parametrisation_.get("user.rotation", value));
     ASSERT(value.size() == 2);
-
-    parametrisation_.get("user.bounding-box-defines-grid", bboxDefinesGrid_);
 
     rotation_ = util::Rotation(value[0], value[1]);
 }
@@ -64,8 +61,7 @@ const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
     return new repres::latlon::RotatedLL(
                 util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
                 increments_,
-                rotation_,
-                bboxDefinesGrid_ );
+                rotation_ );
 }
 
 

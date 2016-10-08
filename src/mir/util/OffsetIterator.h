@@ -13,18 +13,20 @@
 /// @date Apr 2015
 
 
-#ifndef Sh2RegularLL_H
-#define Sh2RegularLL_H
+#ifndef OffsetIterator_H
+#define OffsetIterator_H
 
-#include "mir/action/transform/Sh2GriddedTransform.h"
-#include "mir/util/Increments.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/repres/Iterator.h"
+#include "mir/util/RotateGrid.h"
+#include "mir/util/Rotation.h"
 
 
 namespace mir {
-namespace action {
+namespace util {
 
 
-class Sh2RegularLL : public Sh2GriddedTransform {
+class OffsetIterator : public repres::Iterator {
 public:
 
     // -- Exceptions
@@ -32,11 +34,11 @@ public:
 
     // -- Contructors
 
-    Sh2RegularLL(const param::MIRParametrisation&);
+    OffsetIterator(Iterator* iterator, double northwards, double eastwards);
 
     // -- Destructor
 
-    virtual ~Sh2RegularLL(); // Change to virtual if base class
+    virtual ~OffsetIterator(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -62,8 +64,7 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const; // Change to virtual if base class
+    // None
 
     // -- Overridden methods
     // None
@@ -78,22 +79,23 @@ private:
 
     // No copy allowed
 
-    Sh2RegularLL(const Sh2RegularLL&);
-    Sh2RegularLL& operator=(const Sh2RegularLL&);
+    OffsetIterator(const OffsetIterator&);
+    OffsetIterator& operator=(const OffsetIterator&);
 
     // -- Members
 
-    util::Increments grid_;
+    eckit::ScopedPtr<Iterator> iterator_;
+    double northwards_;
+    double eastwards_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    virtual bool next(double& lat, double& lon);
 
-    // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    virtual void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Class members
     // None
@@ -102,12 +104,16 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    friend std::ostream &operator<<(std::ostream& s, const OffsetIterator& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
 
-}  // namespace action
+}  // namespace util
 }  // namespace mir
 
 

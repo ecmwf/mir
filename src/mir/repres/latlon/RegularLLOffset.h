@@ -13,30 +13,32 @@
 /// @date Apr 2015
 
 
-#ifndef Sh2RegularLL_H
-#define Sh2RegularLL_H
+#ifndef RegularLLOffset_H
+#define RegularLLOffset_H
 
-#include "mir/action/transform/Sh2GriddedTransform.h"
-#include "mir/util/Increments.h"
+#include "mir/repres/latlon/RegularLL.h"
+#include "mir/util/Rotation.h"
 
 
 namespace mir {
-namespace action {
+namespace repres {
+namespace latlon {
 
 
-class Sh2RegularLL : public Sh2GriddedTransform {
-public:
+class RegularLLOffset : public RegularLL {
+  public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    Sh2RegularLL(const param::MIRParametrisation&);
+    RegularLLOffset(const util::BoundingBox &bbox, const util::Increments &increments,
+        double northwards, double eastwards);
 
     // -- Destructor
 
-    virtual ~Sh2RegularLL(); // Change to virtual if base class
+    virtual ~RegularLLOffset();
 
     // -- Convertors
     // None
@@ -56,14 +58,16 @@ public:
     // -- Class methods
     // None
 
-protected:
+  protected:
 
     // -- Members
-    // None
+
+    double northwards_;
+    double eastwards_;
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -74,26 +78,30 @@ protected:
     // -- Class methods
     // None
 
-private:
+  private:
+
+    // RegularLLOffset();
 
     // No copy allowed
 
-    Sh2RegularLL(const Sh2RegularLL&);
-    Sh2RegularLL& operator=(const Sh2RegularLL&);
+    RegularLLOffset(const RegularLLOffset &);
+    RegularLLOffset &operator=(const RegularLLOffset &);
 
     // -- Members
-
-    util::Increments grid_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    virtual void fill(grib_info &) const;
+    virtual void fill(api::MIRJob &) const;
+    virtual atlas::grid::Grid *atlasGrid() const;
+    virtual Iterator* unrotatedIterator() const; // Before rotation
 
-    // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    // From RegularLL
+    virtual const RegularLLOffset *cropped(const util::BoundingBox &bbox) const;
 
     // -- Class members
     // None
@@ -107,7 +115,8 @@ private:
 };
 
 
-}  // namespace action
+}  // namespace latlon
+}  // namespace repres
 }  // namespace mir
 
 

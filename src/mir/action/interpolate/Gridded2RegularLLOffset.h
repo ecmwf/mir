@@ -13,18 +13,19 @@
 /// @date Apr 2015
 
 
-#ifndef Sh2RegularLL_H
-#define Sh2RegularLL_H
+#ifndef Gridded2RegularLLOffset_H
+#define Gridded2RegularLLOffset_H
 
-#include "mir/action/transform/Sh2GriddedTransform.h"
+#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 #include "mir/util/Increments.h"
+#include "mir/util/Rotation.h"
 
 
 namespace mir {
 namespace action {
 
 
-class Sh2RegularLL : public Sh2GriddedTransform {
+class Gridded2RegularLLOffset : public Gridded2GriddedInterpolation {
 public:
 
     // -- Exceptions
@@ -32,11 +33,11 @@ public:
 
     // -- Contructors
 
-    Sh2RegularLL(const param::MIRParametrisation&);
+    Gridded2RegularLLOffset(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~Sh2RegularLL(); // Change to virtual if base class
+    virtual ~Gridded2RegularLLOffset(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -78,12 +79,14 @@ private:
 
     // No copy allowed
 
-    Sh2RegularLL(const Sh2RegularLL&);
-    Sh2RegularLL& operator=(const Sh2RegularLL&);
+    Gridded2RegularLLOffset(const Gridded2RegularLLOffset&);
+    Gridded2RegularLLOffset& operator=(const Gridded2RegularLLOffset&);
 
     // -- Members
 
-    util::Increments grid_;
+    util::Increments increments_;
+    double northwards_;
+    double eastwards_;
 
     // -- Methods
     // None
@@ -102,7 +105,9 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    //friend ostream& operator<<(ostream& s,const Gridded2RegularLLOffset& p)
+    //	{ p.print(s); return s; }
 
 };
 

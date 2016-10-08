@@ -86,7 +86,6 @@ private:
 
     util::Increments increments_;
     util::Rotation rotation_;
-    bool bboxDefinesGrid_;
 
     // -- Methods
     // None

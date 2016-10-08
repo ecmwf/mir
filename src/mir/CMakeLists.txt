@@ -56,6 +56,10 @@ list(
     action/interpolate/Gridded2RegularLL.h
     action/interpolate/Gridded2RotatedLL.cc
     action/interpolate/Gridded2RotatedLL.h
+    action/interpolate/Gridded2RegularLLOffset.cc
+    action/interpolate/Gridded2RegularLLOffset.h
+    #action/interpolate/Gridded2RotatedLLOffset.cc
+    #action/interpolate/Gridded2RotatedLLOffset.h
     action/interpolate/Gridded2RotatedNamedGrid.cc
     action/interpolate/Gridded2RotatedNamedGrid.h
     action/interpolate/Gridded2RotatedOctahedral.cc
@@ -384,6 +388,8 @@ list(
     repres/latlon/RegularLL.h
     repres/latlon/RotatedLL.cc
     repres/latlon/RotatedLL.h
+    repres/latlon/RegularLLOffset.cc
+    repres/latlon/RegularLLOffset.h
     repres/other/None.cc
     repres/other/None.h
     repres/other/UnstructuredGrid.cc
@@ -482,6 +488,8 @@ list(
     util/RotatedGrid.h
     util/OffsetGrid.cc
     util/OffsetGrid.h
+    util/OffsetIterator.cc
+    util/OffsetIterator.h
     util/RotatedIterator.cc
     util/RotatedIterator.h
     util/Rotation.cc

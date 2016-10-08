@@ -130,25 +130,8 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
         grid2grid(plan);
     }
 
-
-#if 0
-    std::string x;
-    if (parametrisation_.has("compare")) {
-        parametrisation_.get("compare", x);
-        eckit::PathName k(x);
-        std::cout << parametrisation_ << std::endl;
-        std::cout << "x = \"" << x << "\"" << std::endl;
-        std::cout << "k = \"" << k << "\"" << std::endl;
-    }
-    else {
-        std::cout << parametrisation_ << std::endl;
-    }
-#endif
-
-
     epilogue(plan);
 
-    // std::cout << plan << std::endl;
 }
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
@@ -159,15 +142,38 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     bool wind = false;
     parametrisation_.get("wind", wind);
 
+    bool areaDefinesGrid = false;
+    bool areaDefinesGridUsed = false;
+
+    parametrisation_.get("area-defines-grid", areaDefinesGrid);
+
+
     if (parametrisation_.has("user.grid")) {
         if (parametrisation_.has("user.rotation")) {
-            plan.add("interpolate.grid2rotated-regular-ll");
+
+            if (areaDefinesGrid) {
+                plan.add("interpolate.grid2rotated-regular-ll-offset");
+                areaDefinesGridUsed = true;
+            } else {
+                if (areaDefinesGrid) {
+                    plan.add("interpolate.grid2rotated-regular-ll-offset");
+                    areaDefinesGridUsed = true;
+                } else {
+                    plan.add("interpolate.grid2rotated-regular-ll");
+                }
+            }
+
             if (wind || vod2uv) {
                 plan.add("filter.adjust-winds");
                 selectWindComponents(plan);
             }
         } else {
-            plan.add("interpolate.grid2regular-ll");
+            if (areaDefinesGrid) {
+                plan.add("interpolate.grid2regular-ll-offset");
+                areaDefinesGridUsed = true;
+            } else {
+                plan.add("interpolate.grid2regular-ll");
+            }
         }
     }
 
@@ -242,11 +248,8 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
         }
     }
 
-    if (parametrisation_.has("user.stats")) {
-        std::string statistics;
-        ASSERT (parametrisation_.get("stats", statistics));
-
-        plan.add("statistics." + statistics);
+    if (areaDefinesGrid != areaDefinesGridUsed) {
+        throw eckit::UserError("'area-defines-grid' option not used.");
     }
 
 }

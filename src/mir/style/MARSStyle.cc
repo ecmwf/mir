@@ -63,6 +63,13 @@ void MARSStyle::sh2sh(action::ActionPlan& plan) const {
 
 
 void MARSStyle::sh2grid(action::ActionPlan& plan) const {
+
+
+    bool areaDefinesGrid = false;
+    bool areaDefinesGridUsed = false;
+
+    parametrisation_.get("area-defines-grid", areaDefinesGrid);
+
     bool autoresol = true;
     parametrisation_.get("autoresol", autoresol);
 
@@ -79,7 +86,7 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
         }
     }
 
-     if (!parametrisation_.has("user.rotation")) {
+    if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);
     }
 
@@ -130,16 +137,20 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (parametrisation_.has("user.gridname")) {
         std::string gridname;
-        ASSERT (parametrisation_.get("gridname", gridname));
+        ASSERT(parametrisation_.get("gridname", gridname));
         plan.add("transform.sh2namedgrid");
     }
 
     if (parametrisation_.has("user.griddef")) {
         std::string griddef;
-        ASSERT (parametrisation_.get("griddef", griddef));
+        ASSERT(parametrisation_.get("griddef", griddef));
         // TODO: this is temporary
         plan.add("transform.sh2octahedral-gg", "octahedral", 64L);
         plan.add("interpolate.grid2griddef");
+    }
+
+    if (areaDefinesGrid != areaDefinesGridUsed) {
+        throw eckit::UserError("'area-defines-grid' option not used (is input spherical?).");
     }
 
 }

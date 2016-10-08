@@ -34,7 +34,7 @@ class RotatedLL : public RegularLL {
     // -- Contructors
 
     RotatedLL(const param::MIRParametrisation &);
-    RotatedLL(const util::BoundingBox &bbox, const util::Increments &increments, const util::Rotation &rotation, bool bboxDefinesGrid);
+    RotatedLL(const util::BoundingBox &bbox, const util::Increments &increments, const util::Rotation &rotation);
 
     // -- Destructor
 
