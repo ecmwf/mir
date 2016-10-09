@@ -23,7 +23,8 @@ ecbuild_info(${test_files})
 foreach( _t ${test_files} )
 
   ecbuild_add_test(
-      # TYPE       PYTHON
+
+      TARGET ${_t}
 
       COMMAND    mir-test.sh
 
