@@ -16,9 +16,6 @@
 #include "mir/util/OffsetIterator.h"
 
 
-using eckit::geometry::LLPoint2;
-
-
 namespace mir {
 namespace util {
 

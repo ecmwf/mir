@@ -14,18 +14,26 @@ get_target_property( GRIB_COMPARE  "grib_compare"  LOCATION )
 
 configure_file( mir-test.sh.in mir-test.sh @ONLY )
 
+set( eccodes_environment
+    ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/${grib_handling_pkg}/definitions
+    ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/${grib_handling_pkg}/samples )
+
 ecbuild_info(${test_files})
 
 foreach( _t ${test_files} )
 
   ecbuild_add_test(
-
       # TYPE       PYTHON
 
       COMMAND    mir-test.sh
 
       ARGS       ${_t}
 
+    ENVIRONMENT
+        "MIR_DEBUG=1"
+        "MIR_HOME=${CMAKE_BINARY_DIR}"
+        "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
+        ${eccodes_environment}
   )
 
 endforeach()

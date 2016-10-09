@@ -18,8 +18,8 @@
 
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/repres/Iterator.h"
-#include "mir/util/RotateGrid.h"
-#include "mir/util/Rotation.h"
+// #include "mir/util/RotateGrid.h"
+// #include "mir/util/Rotation.h"
 
 
 namespace mir {

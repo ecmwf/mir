@@ -2,9 +2,53 @@
 
 set -eaux
 
+echo "======> $1"
+
 mir_tool="@MIR_TOOL@"
 mir_compare="@MIR_COMPARE@"
 grib_get="@GRIB_GET@"
 grib_compare="@GRIB_COMPARE@"
 
-exit
+
+state=mars
+while read n
+do
+    if [[ "$n" = "" ]]
+    then
+        continue
+    fi
+    echo $n
+    case $n in
+        \#*)
+            ;;
+
+        *)
+        case $state in
+
+            mars)
+            echo "retrieve,$n,target=data.in" > mars.r
+            mars mars.r
+            state=mir
+            ;;
+
+            mir)
+            $mir_tool $n data.in data.out
+            state=gribapi
+            ;;
+
+            gribapi)
+            set $(echo $n | tr '=' ' ')
+            g=$($grib_get -p $1 data.out)
+            if [[ $g -ne $2 ]]
+            then
+                echo "$1: expected [$2], got [$g]" 1>&2
+                exit 1
+            fi
+            ;;
+
+        esac
+        ;;
+
+
+    esac
+done < $1

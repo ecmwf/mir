@@ -12,11 +12,7 @@
 #ifndef mir_util_OffsetGrid_h
 #define mir_util_OffsetGrid_h
 
-#include <cstddef>
-#include <vector>
-#include "eckit/memory/Builder.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "atlas/grid/Domain.h"
 #include "atlas/grid/Grid.h"
 
 
