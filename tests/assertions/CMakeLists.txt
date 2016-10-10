@@ -12,6 +12,8 @@ get_target_property( MIR_COMPARE   "mir-compare"   LOCATION )
 get_target_property( GRIB_GET      "grib_get"      LOCATION )
 get_target_property( GRIB_COMPARE  "grib_compare"  LOCATION )
 
+find_program( MARS_SCRIPT mars )
+
 configure_file( mir-test.sh.in mir-test.sh @ONLY )
 
 set( eccodes_environment
@@ -25,6 +27,8 @@ foreach( _t ${test_files} )
   ecbuild_add_test(
 
       TARGET ${_t}
+
+	  CONDITION  MARS_SCRIPT
 
       COMMAND    mir-test.sh
 

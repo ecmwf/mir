@@ -8,6 +8,7 @@ mir_tool="@MIR_TOOL@"
 mir_compare="@MIR_COMPARE@"
 grib_get="@GRIB_GET@"
 grib_compare="@GRIB_COMPARE@"
+mars_script="@MARS_SCRIPT@"
 
 
 state=mars
@@ -27,7 +28,7 @@ do
 
             mars)
             echo "retrieve,$n,target=data.in" > mars.r
-            mars mars.r
+            $mars_script mars.r
             state=mir
             ;;
 
