@@ -1,6 +1,6 @@
 # ecbuild_find_python( VERSION 2.7 )
 
-file(GLOB_RECURSE test_files LIST_DIRECTORIES false RELATIVE ${CMAKE_CURRENT_BINARY_DIR} *.test)
+file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
 
 # set(MIR_TOOL     "$<TARGET_FILE:mir-tool>")
 # set(MIR_COMPARE  "$<TARGET_FILE:mir-compare>")

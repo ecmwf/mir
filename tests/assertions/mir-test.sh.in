@@ -4,12 +4,13 @@ set -eaux
 
 echo "======> $1"
 
+t=$(basename $1)
+
 mir_tool="@MIR_TOOL@"
 mir_compare="@MIR_COMPARE@"
 grib_get="@GRIB_GET@"
 grib_compare="@GRIB_COMPARE@"
 mars_script="@MARS_SCRIPT@"
-
 
 state=mars
 while read n
@@ -27,19 +28,19 @@ do
         case $state in
 
             mars)
-            echo "retrieve,$n,target=data.in" > mars.r
-            $mars_script mars.r
+            echo "retrieve,$n,target=data.in.$t" > mars.r.$t
+            $mars_script mars.r.$t
             state=mir
             ;;
 
             mir)
-            $mir_tool $n data.in data.out
+            $mir_tool $n data.in.$t data.out.$t
             state=gribapi
             ;;
 
             gribapi)
             set $(echo $n | tr '=' ' ')
-            g=$($grib_get -p $1 data.out)
+            g=$($grib_get -p $1 data.out.$t)
             if [[ $g -ne $2 ]]
             then
                 echo "$1: expected [$2], got [$g]" 1>&2
