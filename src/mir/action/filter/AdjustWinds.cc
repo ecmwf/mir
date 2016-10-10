@@ -151,7 +151,8 @@ void AdjustWinds::execute(context::Context & ctx) const {
     windDirections(field.representation(), directions);
 
     if (directions.size() != size) {
-        std::cout << "AdjustWinds::windDirections " << directions.size() << " " << size << std::endl;
+        std::cout << "AdjustWinds::windDirections after=" << directions.size()
+                  << " before=" << size << std::endl;
 
     }
     ASSERT(directions.size() == size);
