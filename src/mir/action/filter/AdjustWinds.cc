@@ -72,9 +72,17 @@ inline double sign(double a, double b) {
 
 
 void AdjustWinds::windDirections(const repres::Representation* representation, std::vector<double> &result) const {
+
+    ASSERT(representation);
+
     result.clear();
 
+    std::cout << "AdjustWinds::windDirections " << *representation << std::endl;
+
     eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
+
+    std::cout << "AdjustWinds::windDirections " << *iter << std::endl;
+
 
     double lat = 0;
     double lon = 0;
