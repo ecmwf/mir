@@ -52,7 +52,6 @@ Gridded2RotatedLLOffset::Gridded2RotatedLLOffset(const param::MIRParametrisation
     double e = ::fabs(bbox.west()) / increments_.west_east();
     eastwards_ = e - long(e);
 
-    std::cout << *this << std::endl;
 }
 
 
