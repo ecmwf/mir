@@ -33,8 +33,8 @@ OffsetIterator::~OffsetIterator() {
 
 void OffsetIterator::print(std::ostream& out) const {
     out << "OffsetIterator[iterator=" << *iterator_
-        << ",northwards" << northwards_
-        << ",eastwards" << eastwards_ << "]";
+        << ",northwards=" << northwards_
+        << ",eastwards=" << eastwards_ << "]";
 }
 
 

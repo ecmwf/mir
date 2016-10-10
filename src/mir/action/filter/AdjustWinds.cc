@@ -142,14 +142,20 @@ void AdjustWinds::execute(context::Context & ctx) const {
     ASSERT((field.dimensions() % 2) == 0);
 
     std::vector<double> directions;
+
+    size_t size = field.values(0).size();
     directions.reserve(field.values(0).size());
 
     ASSERT(!field.hasMissing()); // For now
 
     windDirections(field.representation(), directions);
-    ASSERT(directions.size() == field.values(0).size());
 
-    size_t size = directions.size();
+    if (directions.size() != size) {
+        std::cout << "AdjustWinds::windDirections " << directions.size() << " " << size << std::endl;
+
+    }
+    ASSERT(directions.size() == size);
+
 
     std::vector<double> c(size);
     std::vector<double> s(size);
