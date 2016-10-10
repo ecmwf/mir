@@ -14,6 +14,7 @@
 
 
 #include "mir/util/OffsetIterator.h"
+#include "eckit/types/FloatCompare.h"
 
 
 namespace mir {
@@ -39,12 +40,15 @@ void OffsetIterator::print(std::ostream& out) const {
 
 
 bool OffsetIterator::next(double& lat, double& lon) {
+
+    typedef eckit::FloatCompare<double> cmp;
+
     while (iterator_->next(lat, lon)) {
 
         lon += eastwards_;
         lat += northwards_;
 
-        if (lat > 90 || lat < -90) {
+        if (cmp::isStrictlyGreater(lat, 90) || cmp::isStrictlyGreater(-90, lat)) {
             continue;
         }
 

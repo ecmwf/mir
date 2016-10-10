@@ -10,6 +10,7 @@
 
 
 #include "mir/util/OffsetGrid.h"
+#include "eckit/types/FloatCompare.h"
 
 
 namespace mir {
@@ -39,16 +40,20 @@ void OffsetGrid::lonlat(std::vector<Point>& pts) const {
 
 void OffsetGrid::computePoints() const {
 
+    typedef eckit::FloatCompare<double> cmp;
+
+
     if (points_.empty()) {
 
         std::vector<Point> original;
         grid_->lonlat(original);
 
         for (std::vector<Point>::const_iterator j = original.begin(); j != original.end(); ++j) {
+
             double lon = (*j).lon() + eastwards_;
             double lat = (*j).lat() + northwards_;
 
-            if (lat > 90 || lat < -90) {
+            if (cmp::isStrictlyGreater(lat, 90) || cmp::isStrictlyGreater(-90, lat)) {
                 continue;
             }
 
