@@ -369,11 +369,14 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const atlas::gr
         eckit::Log::debug<LibMir>() << "Matrix is indentity" << std::endl;
         W.setIdentity();        // grids are the same, use identity matrix
     } else {
+        double pruneEpsilon = 0;
+        parametrisation_.get("prune-epsilon", pruneEpsilon);
+
         eckit::TraceTimer<LibMir> timer("Assemble matrix");
         GridSpace iSpace(in, *this);
         GridSpace oSpace(out, *this);
         assemble(ctx, W, iSpace, oSpace);   // assemble matrix of coefficients
-        W.cleanup();
+        W.cleanup(pruneEpsilon);
     }
 }
 

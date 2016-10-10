@@ -83,7 +83,6 @@ public:
         options_.push_back(new Separator("Methods"));
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
         options_.push_back(new SimpleOption<size_t>("intermediate_gaussian", "Transform from SH to this gaussian number first"));
-        options_.push_back(new SimpleOption<double>("epsilon", "Used by methods k-nearest and nearest-neighbour"));
         options_.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));

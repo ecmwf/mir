@@ -40,11 +40,7 @@ enum { LON=0, LAT=1 };
 }
 
 Nearest::Nearest(const param::MIRParametrisation &param) :
-    MethodWeighted(param),
-    epsilon_(std::numeric_limits<double>::epsilon()) {
-
-    param.get("epsilon", epsilon_);
-
+    MethodWeighted(param) {
 }
 
 
@@ -54,12 +50,6 @@ Nearest::~Nearest() {
 
 const char *Nearest::name() const {
     return  "k-nearest";
-}
-
-
-void Nearest::hash(eckit::MD5 &md5) const {
-    MethodWeighted::hash(md5);
-    md5 << epsilon_;
 }
 
 

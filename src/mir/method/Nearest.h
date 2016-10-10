@@ -33,10 +33,6 @@ public:
 
 protected:
 
-    double epsilon_;
-
-    virtual void hash(eckit::MD5&) const;
-
     virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
 
 private:
