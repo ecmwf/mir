@@ -63,7 +63,7 @@ public:
         options_.push_back(new Separator("Transform"));
         options_.push_back(new SimpleOption<bool>("autoresol", "Turn on automatic truncation"));
         options_.push_back(new SimpleOption<size_t>("truncation", "Truncation input field"));
-        options_.push_back(new SimpleOption<bool>("vod2uv", "Input is Vorticity and Divergence, convertion to U/V requested"));
+        options_.push_back(new SimpleOption<bool>("vod2uv", "Input is Vorticity and Divergence, conversion to U/V requested"));
 
         //==============================================
         options_.push_back(new Separator("Interpolation"));
@@ -75,7 +75,7 @@ public:
         options_.push_back(new SimpleOption<bool>("area-defines-grid", "Bounding box defines grid (only applicable to regular latitude/longitude grids"));
 
         options_.push_back(new SimpleOption<bool>("wind", "Use vector interpolation for wind (not yet)"));
-        options_.push_back(new SimpleOption<eckit::PathName>("same", "Inperpolate to the same grid as the one provided in the first GRIB of the grib file"));
+        options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid as the one provided in the first GRIB of the grib file"));
         options_.push_back(new SimpleOption<eckit::PathName>("griddef", "File containing a list of lat/lon pairs"));
 
 
@@ -119,7 +119,7 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("lsm.file.output", "Path to lsm to use for output lsm, in grib, only if --lsm.selection=file"));
 
         options_.push_back(new SimpleOption<double>("lsm.weight.adjustment", "Weight adjustment factor when applying LSM (default 0.2)"));
-        options_.push_back(new SimpleOption<double>("lsm.value.threshold", "Value threshold when convering LSM field to mask (default 0.5)"));
+        options_.push_back(new SimpleOption<double>("lsm.value.threshold", "Value threshold when converting LSM field to mask (default 0.5)"));
 
         //==============================================
         options_.push_back(new Separator("Unstructured grids support"));
@@ -139,7 +139,7 @@ public:
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
         options_.push_back(new FactoryOption<mir::caching::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
-        options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select wether threads are used on not"));
+        options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used on not"));
         options_.push_back(new FactoryOption<mir::action::statistics::StatisticsFactory>("stats", "Statistics methods for interpreting field values"));
 
         //==============================================

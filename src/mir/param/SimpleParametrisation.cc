@@ -183,11 +183,11 @@ class CannotConvert : public eckit::Exception {
 };
 
 template<class T>
-static void convertion_warning(const char *from, const char *to, const std::string &name, const T &value) {
+static void conversion_warning(const char *from, const char *to, const std::string &name, const T &value) {
     // eckit::Log::warning() << "   +++ WARNING: Converting " << value << " from " << from << " to " << to << " (requesting " << name << ")" << std::endl;
 }
 
-// We will implement convertion as needed
+// We will implement conversion as needed
 
 template<> void TSettings<bool>::get(const std::string &name, std::string &value) const {
     throw CannotConvert("bool", "string", name, value_);
@@ -254,18 +254,18 @@ template<> void TSettings<std::string>::get(const std::string &name, std::string
     value = value_;
 }
 template<> void TSettings<std::string>::get(const std::string &name, bool &value) const {
-    convertion_warning("string", "bool", name, value_);
+    conversion_warning("string", "bool", name, value_);
     eckit::Translator<std::string, long> translate;
     value = translate(value_) != 0;
 }
 
 template<> void TSettings<std::string>::get(const std::string &name, long &value) const {
-    convertion_warning("string", "long", name, value_);
+    conversion_warning("string", "long", name, value_);
     eckit::Translator<std::string, long> translate;
     value = translate(value_);
 }
 template<> void TSettings<std::string>::get(const std::string &name, double &value) const {
-    convertion_warning("string", "double", name, value_);
+    conversion_warning("string", "double", name, value_);
     eckit::Translator<std::string, double> translate;
     value = translate(value_);
 }
@@ -273,7 +273,7 @@ template<> void TSettings<std::string>::get(const std::string &name, std::vector
     throw CannotConvert("string", "vector<long>", name, value_);
 }
 template<> void TSettings<std::string>::get(const std::string &name, std::vector<double> &value) const {
-    convertion_warning("string", "vector<double>", name, value_);
+    conversion_warning("string", "vector<double>", name, value_);
     eckit::Translator<std::string, double> translate;
     eckit::Tokenizer parse("/");
 
