@@ -69,7 +69,7 @@ class WeightMatrix {
 
     void multiply(const Matrix& values, Matrix& result) const;
 
-    void cleanup();
+    void cleanup(const double& pruneEpsilon = 0);
 
     void validate(const char *when) const;
 

@@ -42,7 +42,7 @@ MIRDefaults::MIRDefaults() {
     set("lsm.selection", "auto");
     set("lsm.interpolation", "nearest-neighbour");
 
-    set("epsilon", std::numeric_limits<double>::epsilon());
+    set("prune-epsilon", 1e-10);
     set("nclosest", 4L);
 
     set("lsm.weight.adjustment", 0.2);

@@ -54,7 +54,7 @@ void KNearest::hash( eckit::MD5& md5) const {
 
 
 void KNearest::print(std::ostream &out) const {
-    out << "KNearest[nclosest=" << nclosest_ << ",epsilon=" << epsilon_ << "]";
+    out << "KNearest[nclosest=" << nclosest_ << "]";
 }
 
 

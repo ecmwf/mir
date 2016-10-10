@@ -84,7 +84,7 @@ void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Ma
     }
 }
 
-void WeightMatrix::cleanup() {
+void WeightMatrix::cleanup(const double& pruneEpsilon) {
     using eckit::linalg::Index;
 
     size_t fixed = 0;
@@ -95,7 +95,7 @@ void WeightMatrix::cleanup() {
 
         for (WeightMatrix::inner_iterator j(*this, i); j; ++j) {
             const double a = *j;
-            if (fabs(a) < atlas::interpolation::parametricEpsilon) {
+            if (fabs(a) < pruneEpsilon) {
                 removed += a;
                 *j = 0;
                 fixed++;
