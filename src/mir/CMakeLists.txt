@@ -264,6 +264,8 @@ list(
     method/NearestNeighbour.h
     method/PseudoLaplace.cc
     method/PseudoLaplace.h
+    method/StructuredLinear.cc
+    method/StructuredLinear.h
     method/Tessellation.cc
     method/Tessellation.h
     method/WeightMatrix.cc
