@@ -16,6 +16,7 @@ ecbuild_requires_macro_version( 1.9 )
 
 ###############################################################################
 # project
+
 ecbuild_add_option( FEATURE ECCODES DESCRIPTION "" DEFAULT ON )
 
 if( HAVE_ECCODES)
@@ -30,11 +31,11 @@ else()
   set( grib_handling_pkg grib_api )
 endif()
 
+ecbuild_add_option( FEATURE TEST_ASSERTIONS DESCRIPTION "Enable assertion tests" DEFAULT ON )
+
 
 ecbuild_use_package( PROJECT eckit  VERSION  0.9  REQUIRED )
 ecbuild_use_package( PROJECT atlas  VERSION  0.6  REQUIRED )
-
-# this will be replaced once ecbuild exports subcomponents between packages
 
 ecbuild_declare_project()
 

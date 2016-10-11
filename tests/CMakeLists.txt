@@ -114,8 +114,5 @@ foreach(_t "mir_tests_RotateGrid")
         "MIR_HOME=${CMAKE_BINARY_DIR}"  )
 endforeach()
 
-
-# if( HAVE_MIR_TESTS_REGRESS )
-  add_subdirectory(assertions)
-# endif()
+add_subdirectory(assertions)
 

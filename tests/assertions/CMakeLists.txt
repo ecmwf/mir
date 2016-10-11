@@ -28,7 +28,7 @@ foreach( _t ${test_files} )
 
       TARGET ${_t}
 
-	  CONDITION  MARS_SCRIPT
+      CONDITION  MARS_SCRIPT AND HAVE_TEST_ASSERTIONS
 
       COMMAND    mir-test.sh
 
