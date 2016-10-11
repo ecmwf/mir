@@ -50,6 +50,9 @@ namespace {
 // try to project to 20% of total number elements before giving up
 static const double maxFractionElemsToTry = 0.2;
 
+// epsilon used to scale edge tolerance when projecting ray to intesect element
+static const double parametricEpsilon = 1e-16;
+
 
 enum { LON=0, LAT=1 };
 
@@ -143,7 +146,12 @@ static Triplets projectPointToElements(
                     icoords[idx[1]].data(),
                     icoords[idx[2]].data());
 
-            atlas::interpolation::Intersect is = triag.intersects(ray);
+            // pick an epsilon based on a characteristic length (sqrt(area))
+            // (this scales linearly so it better compares with linear weights u,v,w)
+            const double edgeEpsilon = parametricEpsilon * std::sqrt(triag.area());
+            ASSERT(edgeEpsilon >= 0);
+
+            atlas::interpolation::Intersect is = triag.intersects(ray, edgeEpsilon);
 
             if (is) {
 
@@ -188,7 +196,12 @@ static Triplets projectPointToElements(
                 throw eckit::SeriousBug("Found invalid quadrilateral in mesh", Here());
             }
 
-            atlas::interpolation::Intersect is = quad.intersects(ray);
+            // pick an epsilon based on a characteristic length (sqrt(area))
+            // (this scales linearly so it better compares with linear weights u,v,w)
+            const double edgeEpsilon = parametricEpsilon * std::sqrt(quad.area());
+            ASSERT(edgeEpsilon >= 0);
+
+            atlas::interpolation::Intersect is = quad.intersects(ray, edgeEpsilon);
 
             if (is) {
 
