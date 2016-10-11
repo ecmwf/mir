@@ -158,14 +158,22 @@ static void transform(
         eckit::PathName path;
         if (!cache.get(key, path)) {
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
+
+            struct Trans_t tmp_trans;
 //            eckit::TraceTimer<LibMir> timer("Caching coefficients");
             // std::cout << "LegendreCache " << key << " does not exists" << std::endl;
             eckit::PathName tmp = cache.stage(key);
-            ASSERT( trans_set_write(&trans, tmp.asString().c_str())  == 0);
-            ASSERT(trans_setup(&trans) == 0); // This will create the cache
+            ASSERT( trans_set_write(&tmp_trans, tmp.asString().c_str())  == 0);
+            ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
+
 
             ASSERT(cache.commit(key, tmp));
-        } else {
+            ASSERT(cache.get(key, path));
+            trans_delete(&tmp_trans);
+        }
+
+        // Use the loader
+        {
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
 
             eckit::Timer timer("Loading coefficients");
