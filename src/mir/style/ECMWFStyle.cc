@@ -155,12 +155,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
                 plan.add("interpolate.grid2rotated-regular-ll-offset");
                 areaDefinesGridUsed = true;
             } else {
-                if (areaDefinesGrid) {
-                    plan.add("interpolate.grid2rotated-regular-ll-offset");
-                    areaDefinesGridUsed = true;
-                } else {
-                    plan.add("interpolate.grid2rotated-regular-ll");
-                }
+                plan.add("interpolate.grid2rotated-regular-ll");
             }
 
             if (wind || vod2uv) {
