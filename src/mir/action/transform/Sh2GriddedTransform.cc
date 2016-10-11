@@ -13,7 +13,10 @@
 /// @date Apr 2015
 
 // #include <malloc.h>
-
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "mir/action/transform/Sh2GriddedTransform.h"
 
@@ -31,6 +34,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
+#include "eckit/os/Semaphore.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
@@ -44,6 +48,16 @@
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
+
+
+class AutoUmask {
+    mode_t umask_;
+
+public:
+    explicit AutoUmask(mode_t u = 0) : umask_(::umask(u)) {}
+    ~AutoUmask() { ::umask(umask_); }
+};
+
 
 class TransInitor {
 public:
@@ -157,19 +171,60 @@ static void transform(
         caching::LegendreCache cache;
         eckit::PathName path;
         if (!cache.get(key, path)) {
-            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
 
-            struct Trans_t tmp_trans;
+            AutoUmask umaks(0);
+
+            eckit::PathName lock("/tmp/LegendreCache.lock");
+            ::close(::open(lock.asString().c_str(), O_CREAT, 0777));
+
+            eckit::Semaphore sem(lock);
+            eckit::AutoLock<eckit::Semaphore> lck(sem);
+
+
+            if (!cache.get(key, path)) {
+
+                eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
+
+                struct Trans_t tmp_trans;
+
+
+                ASSERT(trans_new(&tmp_trans) == 0);
+
+                ASSERT(trans_set_trunc(&tmp_trans, truncation) == 0);
+
+                if (latlon) {
+                    ASSERT(trans_set_resol_lonlat(&tmp_trans, latlon->nlon(), latlon->nlat()) == 0);
+                } else {
+
+                    const std::vector<long>& pl = reduced->pl();
+                    ASSERT(pl.size());
+
+                    std::vector<int> pli(pl.size());
+                    ASSERT(pl.size() == pli.size());
+
+                    for (size_t i = 0; i < pl.size(); ++i) {
+                        pli[i] = pl[i];
+                    }
+
+                    ASSERT(trans_set_resol(&tmp_trans, pli.size(), &pli[0]) == 0);
+                }
+
+
+
 //            eckit::TraceTimer<LibMir> timer("Caching coefficients");
-            // std::cout << "LegendreCache " << key << " does not exists" << std::endl;
-            eckit::PathName tmp = cache.stage(key);
-            ASSERT( trans_set_write(&tmp_trans, tmp.asString().c_str())  == 0);
-            ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
+                // std::cout << "LegendreCache " << key << " does not exists" << std::endl;
+                eckit::PathName tmp = cache.stage(key);
+                ASSERT( trans_set_write(&tmp_trans, tmp.asString().c_str())  == 0);
+                ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
 
 
-            ASSERT(cache.commit(key, tmp));
-            ASSERT(cache.get(key, path));
-            trans_delete(&tmp_trans);
+                ASSERT(cache.commit(key, tmp));
+                ASSERT(cache.get(key, path));
+                trans_delete(&tmp_trans);
+
+            }
+
+
         }
 
         // Use the loader
