@@ -35,6 +35,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/os/Semaphore.h"
+#include "eckit/os/AutoUmask.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
@@ -48,15 +49,6 @@
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
-
-
-class AutoUmask {
-    mode_t umask_;
-
-public:
-    explicit AutoUmask(mode_t u = 0) : umask_(::umask(u)) {}
-    ~AutoUmask() { ::umask(umask_); }
-};
 
 
 class TransInitor {
@@ -116,9 +108,64 @@ namespace action {
 
 #ifdef ATLAS_HAVE_TRANS
 
+static void fillTrans(struct Trans_t &trans,
+                      size_t truncation,
+                      const atlas::grid::Grid &grid) {
+
+    const atlas::grid::Structured* reduced = dynamic_cast<const atlas::grid::Structured*>(&grid);
+
+    if (!reduced) {
+        throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
+    }
+
+    const atlas::grid::lonlat::RegularLonLat* latlon = dynamic_cast<const atlas::grid::lonlat::RegularLonLat* >(&grid);
+
+
+    ASSERT(trans_new(&trans) == 0);
+
+    ASSERT(trans_set_trunc(&trans, truncation) == 0);
+
+    if (latlon) {
+        ASSERT(trans_set_resol_lonlat(&trans, latlon->nlon(), latlon->nlat()) == 0);
+    } else {
+
+        const std::vector<long>& pl = reduced->pl();
+        ASSERT(pl.size());
+
+        std::vector<int> pli(pl.size());
+        ASSERT(pl.size() == pli.size());
+
+        for (size_t i = 0; i < pl.size(); ++i) {
+            pli[i] = pl[i];
+        }
+
+        ASSERT(trans_set_resol(&trans, pli.size(), &pli[0]) == 0);
+    }
+}
+
+static void createCoefficients(caching::LegendreCache& cache,
+                               const std::string& key,
+                               size_t truncation,
+                               const atlas::grid::Grid &grid,
+                               context::Context& ctx) {
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
+
+    struct Trans_t tmp_trans;
+    fillTrans(tmp_trans, truncation, grid);
+
+    eckit::PathName tmp = cache.stage(key);
+    ASSERT(trans_set_write(&tmp_trans, tmp.asString().c_str()) == 0);
+    ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
+
+    ASSERT(cache.commit(key, tmp));
+
+    trans_delete(&tmp_trans);
+}
+
 static void transform(
     const std::string& key,
-    const param::MIRParametrisation &parametrisation, size_t truncation,
+    const param::MIRParametrisation &parametrisation,
+    size_t truncation,
     const std::vector<double> &input, std::vector<double> &output,
     const atlas::grid::Grid &grid,
     context::Context& ctx) {
@@ -137,114 +184,52 @@ static void transform(
 
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
 
-
-        TransCache &tc = trans_handles[key];
-        struct Trans_t &trans = tc.trans_;
-
-        // struct mallinfo before = mallinfo();
-
-
-
-        ASSERT(trans_new(&trans) == 0);
-
-        ASSERT(trans_set_trunc(&trans, truncation) == 0);
-
-        if (latlon) {
-            ASSERT(trans_set_resol_lonlat(&trans, latlon->nlon(), latlon->nlat()) == 0);
-        } else {
-
-            const std::vector<long>& pl = reduced->pl();
-            ASSERT(pl.size());
-
-            std::vector<int> pli(pl.size());
-            ASSERT(pl.size() == pli.size());
-
-            for (size_t i = 0; i < pl.size(); ++i) {
-                pli[i] = pl[i];
-            }
-
-            ASSERT(trans_set_resol(&trans, pli.size(), &pli[0]) == 0);
-        }
-
-        tc.inited_ = true;
-
         caching::LegendreCache cache;
         eckit::PathName path;
+
+        // If not in cache
+
         if (!cache.get(key, path)) {
 
-            AutoUmask umaks(0);
+            eckit::AutoUmask umaks(0);
 
-            eckit::PathName lock("/tmp/LegendreCache.lock");
-            ::close(::open(lock.asString().c_str(), O_CREAT, 0777));
+            std::ostringstream oss;
+            oss << cache.entry(key) << ".lock";
 
-            eckit::Semaphore sem(lock);
-            eckit::AutoLock<eckit::Semaphore> lck(sem);
+            eckit::PathName lockFile(oss.str());
 
+            ::close(::open(lockFile.asString().c_str(), O_CREAT, 0777));
 
+            eckit::Semaphore sem(lockFile);
+            eckit::AutoLock<eckit::Semaphore> lock(sem);
+
+            // Some
             if (!cache.get(key, path)) {
-
-                eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
-
-                struct Trans_t tmp_trans;
-
-
-                ASSERT(trans_new(&tmp_trans) == 0);
-
-                ASSERT(trans_set_trunc(&tmp_trans, truncation) == 0);
-
-                if (latlon) {
-                    ASSERT(trans_set_resol_lonlat(&tmp_trans, latlon->nlon(), latlon->nlat()) == 0);
-                } else {
-
-                    const std::vector<long>& pl = reduced->pl();
-                    ASSERT(pl.size());
-
-                    std::vector<int> pli(pl.size());
-                    ASSERT(pl.size() == pli.size());
-
-                    for (size_t i = 0; i < pl.size(); ++i) {
-                        pli[i] = pl[i];
-                    }
-
-                    ASSERT(trans_set_resol(&tmp_trans, pli.size(), &pli[0]) == 0);
-                }
-
-
-
-//            eckit::TraceTimer<LibMir> timer("Caching coefficients");
-                // std::cout << "LegendreCache " << key << " does not exists" << std::endl;
-                eckit::PathName tmp = cache.stage(key);
-                ASSERT( trans_set_write(&tmp_trans, tmp.asString().c_str())  == 0);
-                ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
-
-
-                ASSERT(cache.commit(key, tmp));
-                ASSERT(cache.get(key, path));
-                trans_delete(&tmp_trans);
-
+                createCoefficients(cache, key, truncation, grid, ctx);
             }
 
+            ASSERT(cache.get(key, path));
 
         }
 
-        // Use the loader
         {
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
 
             eckit::Timer timer("Loading coefficients");
 
+            TransCache &tc = trans_handles[key];
+
+            struct Trans_t &trans = tc.trans_;
+            fillTrans(trans, truncation, grid);
+
+            tc.inited_ = true;
             tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
             // std::cout << "LegendreLoader " << *tc.loader_ << std::endl;
 
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 
             ASSERT(trans_setup(&trans) == 0);
-
         }
-
-        // struct mallinfo after = mallinfo();
-
-        // eckit::Log::info() << "TRANS-HANDLE FOOTPRINT: "  << (after.arena = before.arena) << std::endl;
 
     }
 
