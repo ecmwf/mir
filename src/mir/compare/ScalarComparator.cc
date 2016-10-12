@@ -12,6 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include <cmath>
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/compare/ScalarComparator.h"

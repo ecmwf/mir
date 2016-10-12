@@ -13,10 +13,6 @@
 /// @date Apr 2015
 
 // #include <malloc.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 
 #include "mir/action/transform/Sh2GriddedTransform.h"
 
@@ -34,8 +30,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
-#include "eckit/os/Semaphore.h"
-#include "eckit/os/AutoUmask.h"
+#include "eckit/io/FileLock.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
@@ -191,21 +186,25 @@ static void transform(
 
         if (!cache.get(key, path)) {
 
-            eckit::AutoUmask umaks(0);
+            eckit::Log::info() << "Coefficient cache file " << cache.entry(key) << " does not exist" << std::endl;
+
 
             std::ostringstream oss;
             oss << cache.entry(key) << ".lock";
 
             eckit::PathName lockFile(oss.str());
 
-            ::close(::open(lockFile.asString().c_str(), O_CREAT, 0777));
+            eckit::FileLock locker(lockFile);
 
-            eckit::Semaphore sem(lockFile);
-            eckit::AutoLock<eckit::Semaphore> lock(sem);
+            eckit::AutoLock<eckit::FileLock> lock(locker);
 
             // Some
             if (!cache.get(key, path)) {
+                eckit::Log::info() << "Creating coefficient cache file " << cache.entry(key) << std::endl;
                 createCoefficients(cache, key, truncation, grid, ctx);
+            }
+            else {
+                eckit::Log::info() << "Coefficient cache file " << cache.entry(key) << " created by another process" << std::endl;
             }
 
             ASSERT(cache.get(key, path));
