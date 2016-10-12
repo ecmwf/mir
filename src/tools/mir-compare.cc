@@ -13,7 +13,7 @@
 
 #include "mir/tools/MIRTool.h"
 #include "eckit/log/Log.h"
-#include "mir/compare/Comparator.h"
+#include "mir/compare/FieldComparator.h"
 #include "eckit/option/CmdArgs.h"
 
 
@@ -36,7 +36,7 @@ public:
 
 
 MIRCompare::MIRCompare(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
-    mir::compare::Comparator::addOptions(options_);
+    mir::compare::FieldComparator::addOptions(options_);
 }
 
 
@@ -49,7 +49,7 @@ void MIRCompare::usage(const std::string& tool) const {
 void MIRCompare::execute(const eckit::option::CmdArgs& args) {
 
     // Straightforward two-file comparison
-    mir::compare::Comparator c(args);
+    mir::compare::FieldComparator c(args);
 
     c.compare(args(0), args(1));
 }

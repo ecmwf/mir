@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2016 ECMWF.
+ * (C) Copyright 1996-2015 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,33 +8,31 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   Comparator.h
 /// @author Baudouin Raoult
-/// @author Tiago Quintino
-/// @date   May 2016
+/// @author Pedro Maciel
+/// @date Apr 2015
 
-#ifndef mir_compare_Comparator_h
-#define mir_compare_Comparator_h
 
+#ifndef mir_compare_Comparator_H
+#define mir_compare_Comparator_H
+
+#include <iosfwd>
 #include <string>
-#include <vector>
-#include <set>
-
-
-namespace eckit {
-class Buffer;
-namespace option {
-class Option;
-class CmdArgs;
-}
-}
+#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
-namespace compare {
-class Field;
-class FieldSet;
-class MultiFile;
+namespace context {
+class Context;
+}
+namespace data {
+class MIRField;
+}
+namespace param {
+class MIRParametrisation;
+}
+namespace util {
+class MIRStatistics;
 }
 }
 
@@ -43,95 +41,118 @@ namespace mir {
 namespace compare {
 
 
-class Comparator {
-public: // types
+class Comparator : public eckit::NonCopyable {
+  public:
 
-    typedef mir::compare::FieldSet  FieldSet;
-    typedef mir::compare::MultiFile MultiFile;
+    // -- Exceptions
+    // None
 
-public: // methods
+    // -- Contructors
 
-    Comparator(const eckit::option::CmdArgs &args);
-    ~Comparator();
+    Comparator();
 
-    void compare(const std::string& path1,
-                 const std::string& path2);
+    // -- Destructor
 
-    void compare(const std::string& name,
-                 const MultiFile& multi1,
-                 const MultiFile& multi2);
+    virtual ~Comparator(); // Change to virtual if base class
 
+    // -- Convertors
+    // None
 
-    size_t list(const std::string& path);
+    // -- Operators
+    // None
 
-    static void addOptions(std::vector<eckit::option::Option*>&);
+    // -- Methods
 
-protected: // members
+    virtual void execute(const data::MIRField&, const data::MIRField&) const = 0;
 
-    size_t count(const MultiFile& multi,
-                 FieldSet& fields);
+    // -- Overridden methods
+    // None
 
+    // -- Class members
+    // None
 
-    void compareCounts(const std::string& name,
-                       const MultiFile& multi1,
-                       const MultiFile& multi2,
-                       FieldSet& fields1,
-                       FieldSet& fields2);
+    // -- Class methods
+    // None
 
-    void getField(const MultiFile& multi,
-                  eckit::Buffer& buffer,
-                  FieldSet& fields,
-                  const std::string& path,
-                  off_t offset,
-                  size_t size);
+  protected:
 
-    void compareFields(const MultiFile& multi1,
-                       const MultiFile& multi2,
-                       const FieldSet& fields1,
-                       const FieldSet& fields2,
-                       bool compareData);
+    // -- Members
+    // None
 
-    void compareFieldStatistics(
-            const MultiFile& multi1,
-            const MultiFile& multi2,
-            const Field& field1,
-            const Field& field2);
+    // -- Methods
 
-    void compareFieldValues(
-            const MultiFile& multi1,
-            const MultiFile& multi2,
-            const Field& field1,
-            const Field& field2);
+    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
 
-    void missingField(const MultiFile& multi1,
-                      const MultiFile& multi2,
-                      const Field& field,
-                      const FieldSet& fields,
-                      bool& show);
+    // -- Overridden methods
+    // None
 
-    void error(const char* string);
+    // -- Class members
+    // None
 
-    double normalised(double) const;
-    double rounded(double) const;
+    // -- Class methods
+    // None
 
-protected:
+  private:
 
-    mutable size_t fatals_;
-    mutable size_t warnings_;
+    // No copy allowed
 
-private:
+    Comparator(const Comparator &);
+    Comparator &operator=(const Comparator &);
 
-    const eckit::option::CmdArgs &args_;
-    bool normaliseLongitudes_;
+    // -- Members
+    // None
 
-    bool roundDegrees_;
-    std::vector<std::string> ignore_;
-    size_t maximumNumberOfErrors_;
+    // -- Methods
+    // None
 
-    std::set<long> parametersWhiteList_;
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+    // -- Friends
+
+    friend std::ostream &operator<<(std::ostream &s, const Comparator &p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
+
+class ComparatorFactory {
+
+    std::string name_;
+
+    virtual Comparator *make(const param::MIRParametrisation&, const param::MIRParametrisation&) = 0;
+
+  protected:
+
+    ComparatorFactory(const std::string &);
+
+    virtual ~ComparatorFactory();
+
+  public:
+
+    static Comparator *build(const std::string&, const param::MIRParametrisation&, const param::MIRParametrisation&);
+
+    static void list(std::ostream&);
+
+};
+
+
+template<class T>
+class ComparatorBuilder : public ComparatorFactory {
+    virtual Comparator *make(const param::MIRParametrisation &param1, const param::MIRParametrisation& param2) {
+        return new T(param1, param2);
+    }
+  public:
+    ComparatorBuilder(const std::string &name) : ComparatorFactory(name) {}
+};
 
 
 }  // namespace compare

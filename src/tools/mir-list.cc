@@ -13,7 +13,7 @@
 
 #include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
-#include "mir/compare/Comparator.h"
+#include "mir/compare/FieldComparator.h"
 #include "mir/tools/MIRTool.h"
 
 
@@ -49,7 +49,7 @@ void MIRList::usage(const std::string &tool) const {
 
 void MIRList::execute(const eckit::option::CmdArgs &args) {
 
-    mir::compare::Comparator comparator(args);
+    mir::compare::FieldComparator comparator(args);
 
     for (size_t i = 0; i < args.count(); i++) {
         eckit::Log::info() << args(i) << " ==> " << std::endl;

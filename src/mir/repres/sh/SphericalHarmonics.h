@@ -108,6 +108,8 @@ class SphericalHarmonics : public Representation {
                                            const std::vector<double>&, std::vector<double>&) const;
     virtual size_t truncation() const;
 
+    virtual void comparison(std::string&) const;
+
     virtual void validate(const std::vector<double>&) const;
 
     virtual void setComplexPacking(grib_info&) const;

@@ -105,6 +105,8 @@ class Representation : public eckit::Counted {
 
     virtual size_t truncation() const;
 
+    virtual void comparison(std::string&) const;
+
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
 
     virtual void setComplexPacking(grib_info&) const;

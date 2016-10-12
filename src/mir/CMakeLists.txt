@@ -176,12 +176,16 @@ list(
     compare/Comparator.h
     compare/Field.cc
     compare/Field.h
+    compare/FieldComparator.cc
+    compare/FieldComparator.h
     compare/FieldInfo.cc
     compare/FieldInfo.h
     compare/FieldSet.cc
     compare/FieldSet.h
     compare/MultiFile.cc
     compare/MultiFile.h
+    compare/ScalarComparator.cc
+    compare/ScalarComparator.h
     config/LibMir.cc
     config/LibMir.h
     data/Field.cc
