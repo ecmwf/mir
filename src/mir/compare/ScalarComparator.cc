@@ -97,7 +97,7 @@ void ScalarComparator::print(std::ostream& out) const {
 
 
 namespace {
-ComparatorBuilder<ScalarComparator> __scalarComparator("scalar-comparator");
+ComparatorBuilder<ScalarComparator> __scalarComparator("scalar");
 }
 
 
