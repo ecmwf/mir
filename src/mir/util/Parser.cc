@@ -143,7 +143,7 @@ void Parser::fill(ParserConsumer& consumer) {
             break;
 
         default:
-            if (isalpha(c) || (c == '_') || (c == '.') || (c == '-'))  {
+            if (isalpha(c) || (c == '_') || (c == '.') || (c == '-') || (c == '/'))  {
                 c = next();
                 tmp += c;
                 word = true;

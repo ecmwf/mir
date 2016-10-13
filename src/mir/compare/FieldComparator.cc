@@ -18,17 +18,18 @@
 #include "eckit/log/Plural.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
+#include "eckit/parser/StringTools.h"
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/serialisation/MemoryStream.h"
 #include "eckit/utils/Translator.h"
 #include "mir/caching/InMemoryCache.h"
+#include "mir/compare/Comparator.h"
 #include "mir/compare/FieldSet.h"
 #include "mir/compare/MultiFile.h"
-#include "mir/util/Grib.h"
+#include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Representation.h"
-#include "mir/data/MIRField.h"
-#include "mir/compare/Comparator.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir {
@@ -761,9 +762,11 @@ void FieldComparator::compareFieldValues(
 
     ASSERT(comparison1 == comparison2);
 
-
-    eckit::ScopedPtr<Comparator> c(ComparatorFactory::build(comparison1, metadata1, metadata2));
-    c->execute(input1.field(), input2.field());
+    std::vector<std::string> comparators=eckit::StringTools::split("/", comparison1);
+    for (auto c = comparators.begin(); c != comparators.end(); ++c) {
+        eckit::ScopedPtr<Comparator> comp(ComparatorFactory::build(*c, metadata1, metadata2));
+        comp->execute(input1.field(), input2.field());
+    }
 
 }
 
