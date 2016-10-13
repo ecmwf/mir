@@ -13,6 +13,7 @@
 
 #include "mir/action/statistics/PNorms.h"
 
+#include <limits>
 #include <sstream>
 #include "mir/util/Compare.h"
 

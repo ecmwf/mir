@@ -14,6 +14,7 @@
 #include "mir/action/statistics/SimplePackingEntropy.h"
 
 #include <cmath>
+#include <limits>
 #include "mir/action/statistics/detail/MinMaxStatistics.h"
 
 

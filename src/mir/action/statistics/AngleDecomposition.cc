@@ -13,6 +13,7 @@
 
 #include "mir/action/statistics/AngleDecomposition.h"
 
+#include <limits>
 #include <sstream>
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/statistics/detail/AngleStatistics.h"

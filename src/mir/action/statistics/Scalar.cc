@@ -13,6 +13,7 @@
 
 #include "mir/action/statistics/Scalar.h"
 
+#include <limits>
 #include <sstream>
 
 
