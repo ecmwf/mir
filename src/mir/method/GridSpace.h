@@ -60,7 +60,7 @@ private: // members
 
     const atlas::grid::Grid& grid_;
 
-    mutable eckit::ScopedPtr<atlas::mesh::Mesh> mesh_;
+    mutable atlas::mesh::Mesh* mesh_;
 
     mutable std::vector<double> coordsLonLat_;
     mutable std::vector<double> coordsXYZ_;

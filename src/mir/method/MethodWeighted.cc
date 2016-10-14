@@ -23,8 +23,11 @@
 #include "eckit/config/Resource.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
+#include "eckit/os/Malloc.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+#include "eckit/log/Bytes.h"
+
 #include "atlas/grid/Grid.h"
 #include "atlas/mesh/Mesh.h"
 #include "mir/action/context/Context.h"
@@ -69,6 +72,9 @@ MethodWeighted::~MethodWeighted() {
 atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid& grid) const {
 
 
+    eckit::Log::info() << "MESH for " << grid << std::endl;
+
+
     eckit::MD5 md5;
     grid.hash(md5);
 
@@ -79,9 +85,11 @@ atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     InMemoryCache<atlas::mesh::Mesh>::iterator j = mesh_cache.find(md5);
     if (j != mesh_cache.end()) {
+        eckit::Log::info() << "MESH in cache" << std::endl;
         return *j;
     }
 
+    size_t before = eckit::Malloc::allocated();
     atlas::mesh::Mesh& mesh = mesh_cache[md5];
 
     try {
@@ -92,6 +100,10 @@ atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
         mesh_cache.erase(md5);
         throw;
     }
+
+    size_t after = eckit::Malloc::allocated();
+    eckit::Log::info() << "Mesh for " << grid << ", memory footprint " << eckit::Bytes(after - before) << std::endl;
+    mesh_cache.footprint(md5, after - before);
 
     return mesh;
 }
@@ -272,7 +284,7 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
     ASSERT( W.cols() == npts_inp );
 
     data::MIRField& field = ctx.field();
-    const double missingValue = field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
+    const double missingValue = field.hasMissing() ? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
 
     for (size_t i = 0; i < field.dimensions(); i++) {
 

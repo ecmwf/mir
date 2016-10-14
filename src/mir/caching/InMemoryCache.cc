@@ -11,6 +11,8 @@
 #include "eckit/config/Resource.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/BigNum.h"
+#include "eckit/log/Bytes.h"
+
 #include "mir/caching/InMemoryCacheStatistics.h"
 
 #include <time.h>
@@ -65,7 +67,7 @@ template<class T>
 void InMemoryCache<T>::footprint(const std::string& key, size_t size) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " " << key << " => " << size << std::endl;
+    eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " " << key << " => " << eckit::Bytes(size) << std::endl;
 
 
     auto j = cache_.find(key);
@@ -84,8 +86,8 @@ void InMemoryCache<T>::footprint(const std::string& key, size_t size) {
         }
         statistics_->required_ = result;
 
-        eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " total " << footprint() << std::endl;
-        eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " required " << result << std::endl;
+        eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " total " << eckit::Bytes(footprint()) << std::endl;
+        eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " required " << eckit::Bytes(result) << std::endl;
 
     }
 

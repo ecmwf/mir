@@ -165,13 +165,6 @@ static void transform(
     const atlas::grid::Grid &grid,
     context::Context& ctx) {
 
-    const atlas::grid::Structured* reduced = dynamic_cast<const atlas::grid::Structured*>(&grid);
-
-    if (!reduced) {
-        throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
-    }
-
-    const atlas::grid::lonlat::RegularLonLat* latlon = dynamic_cast<const atlas::grid::lonlat::RegularLonLat* >(&grid);
 
     // Warning: we keep the coefficient in memory for all the resolution used
     if (trans_handles.find(key) == trans_handles.end()) {
