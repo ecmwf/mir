@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-// #include "eckit/config/Resource.h"
+#include "eckit/config/Resource.h"
 // #include "eckit/log/Seconds.h"
 // #include "eckit/log/BigNum.h"
 // #include "eckit/log/Bytes.h"
@@ -53,14 +53,10 @@ unsigned long long InMemoryCacheBase::totalFootprint() {
 
     unsigned long long result = 0;
 
-    eckit::Log::info() << "CACHE-checkTotalFootprint =>";
-
     for (auto j = m->begin(); j != m->end(); ++j) {
         result += (*j)->footprint();
-        eckit::Log::info() << " " << (*j)->name() << "=" << eckit::Bytes((*j)->footprint()) ;
     }
 
-    eckit::Log::info() << " = " << eckit::Bytes(result) << std::endl;
 
     return result;
 }
@@ -69,10 +65,38 @@ void InMemoryCacheBase::checkTotalFootprint() {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    unsigned long long total = totalFootprint();
-    // eckit::Log::info() << "CACHE-checkTotalFootprint => " << eckit::Bytes(total) << std::endl;
+    static const unsigned long long maximumCapacity = eckit::Resource<unsigned long long>("mirTotalInMemoryCacheCapacity;$MIR_TOTAL_CACHE_MEMORY_FOOTPRINT", 1L * 1024 * 1024 * 1024);
 
+    bool more = true;
+    while (more) {
+
+        more = false;
+
+        unsigned long long totalFootprint = 0;
+
+        for (auto j = m->begin(); j != m->end(); ++j) {
+            totalFootprint += (*j)->footprint();
+        }
+
+        eckit::Log::info() << "CACHE-checkTotalFootprint size="
+                           << eckit::Bytes(totalFootprint)
+                           << ", max is "
+                           <<  eckit::Bytes(maximumCapacity)
+                           <<  std::endl;
+
+        if (totalFootprint > maximumCapacity) {
+
+            for (auto j = m->begin(); j != m->end(); ++j) {
+                if ((*j)->purge(1)) {
+                    more = true;
+                }
+            }
+        }
+
+    }
 }
+
+
 
 }  // namespace mir
 

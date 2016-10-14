@@ -34,7 +34,7 @@ namespace caching {
 
 
 class LegendreLoader {
-  public:
+public:
 
 // -- Exceptions
     // None
@@ -67,7 +67,7 @@ class LegendreLoader {
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
 
@@ -88,7 +88,7 @@ class LegendreLoader {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 
@@ -112,7 +112,7 @@ class LegendreLoader {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const LegendreLoader& p) {
+    friend std::ostream& operator<<(std::ostream& s, const LegendreLoader& p) {
         p.print(s);
         return s;
     }
@@ -124,12 +124,12 @@ class LegendreLoaderFactory {
     std::string name_;
     virtual LegendreLoader* make(const param::MIRParametrisation&, const eckit::PathName& path) = 0 ;
 
-  protected:
+protected:
 
     LegendreLoaderFactory(const std::string&);
     virtual ~LegendreLoaderFactory();
 
-  public:
+public:
     static LegendreLoader* build(const param::MIRParametrisation&, const eckit::PathName& path);
     static void list(std::ostream &);
 
@@ -141,7 +141,7 @@ class LegendreLoaderBuilder : public LegendreLoaderFactory {
     virtual LegendreLoader* make(const param::MIRParametrisation& param, const eckit::PathName& path) {
         return new T(param, path);
     }
-  public:
+public:
     LegendreLoaderBuilder(const std::string& name) : LegendreLoaderFactory(name) {}
 };
 

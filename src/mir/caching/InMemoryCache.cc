@@ -160,33 +160,9 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
 template<class T>
 void InMemoryCache<T>::purge() {
     while (footprint() > capacity_) {
-
-        double now = utime();
-        auto best = cache_.begin();
-        double m = 0;
-
-        for (auto j = cache_.begin(); j != cache_.end(); ++j) {
-            double s = score((*j).second->hits_, now - (*j).second->last_, now - (*j).second->insert_);
-            if (s > m) {
-                m = s;
-                best = j;
-            }
+        if(!purge(1)) {
+            break;
         }
-
-        if (statistics_) {
-
-            if (m < statistics_->youngest_ || statistics_->youngest_ == 0 ) {
-                statistics_->youngest_ = m;
-            }
-
-            if (m > statistics_->oldest_) {
-                statistics_->oldest_ = m;
-            }
-
-            statistics_->evictions_++;
-        }
-        delete (*best).second;
-        cache_.erase(best);
     }
 }
 
@@ -261,9 +237,52 @@ const std::string& InMemoryCache<T>::name() const {
 
 
 template<class T>
-void InMemoryCache<T>::purge(size_t amount) {
+bool InMemoryCache<T>::purge(size_t count) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
-    eckit::Log::info() << "CACHE-PURGE-" << name_ << " => " << eckit::Bytes(amount) << std::endl;
+    eckit::Log::info() << "CACHE-PURGE-" << name_ << std::endl;
+    if (users_) {
+        return false;
+    }
+
+    bool done = false;
+
+    for (size_t i = 0; i < count; i++) {
+
+        if (cache_.empty()) {
+            break;
+        }
+
+        double now = utime();
+        auto best = cache_.begin();
+        double m = 0;
+
+        for (auto j = cache_.begin(); j != cache_.end(); ++j) {
+            double s = score((*j).second->hits_, now - (*j).second->last_, now - (*j).second->insert_);
+            if (s > m) {
+                m = s;
+                best = j;
+            }
+        }
+
+        if (statistics_) {
+
+            if (m < statistics_->youngest_ || statistics_->youngest_ == 0 ) {
+                statistics_->youngest_ = m;
+            }
+
+            if (m > statistics_->oldest_) {
+                statistics_->oldest_ = m;
+            }
+
+            statistics_->evictions_++;
+        }
+        delete (*best).second;
+        cache_.erase(best);
+
+        done = true;
+    }
+
+    return done;
 
 }
 
