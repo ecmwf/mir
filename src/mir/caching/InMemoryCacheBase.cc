@@ -57,7 +57,7 @@ unsigned long long InMemoryCacheBase::totalFootprint() {
 
     for (auto j = m->begin(); j != m->end(); ++j) {
         result += (*j)->footprint();
-        eckit::Log::info() << " " << (*j)->name() << "=" << eckit::Bytes((*j)->footprint()) << std::endl;
+        eckit::Log::info() << " " << (*j)->name() << "=" << eckit::Bytes((*j)->footprint()) ;
     }
 
     eckit::Log::info() << " = " << eckit::Bytes(result) << std::endl;
