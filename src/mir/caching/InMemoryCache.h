@@ -15,22 +15,16 @@
 #ifndef mir_caching_InMemoryCache_H
 #define mir_caching_InMemoryCache_H
 
-#include <string>
-#include <map>
-
-#include "eckit/memory/NonCopyable.h"
-#include "eckit/memory/ScopedPtr.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
+#include "mir/caching/InMemoryCacheBase.h"
 #include "eckit/config/Resource.h"
+#include "eckit/memory/ScopedPtr.h"
 
 namespace mir {
-class InMemoryCacheStatistics;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 template<class T>
-class InMemoryCache : public eckit::NonCopyable {
+class InMemoryCache : public InMemoryCacheBase {
 
 public:  // methods
 
@@ -48,7 +42,6 @@ public:  // methods
 
     void footprint(const std::string& key, size_t size);
 
-
     void erase(const std::string& key);
 
     void startUsing(InMemoryCacheStatistics&);
@@ -59,7 +52,9 @@ private:
     void purge();
     T& create(const std::string& key);
 
-    unsigned long long footprint() const;
+    virtual unsigned long long footprint() const;
+    virtual unsigned long long capacity() const;
+    virtual void purge(size_t amount);
 
     std::string name_;
     eckit::Resource<unsigned long long> capacity_;

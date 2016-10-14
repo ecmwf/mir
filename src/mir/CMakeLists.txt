@@ -156,6 +156,8 @@ list(
     caching/FileLoader.h
     caching/InMemoryCache.cc
     caching/InMemoryCache.h
+    caching/InMemoryCacheBase.cc
+    caching/InMemoryCacheBase.h
     caching/InMemoryCacheStatistics.cc
     caching/InMemoryCacheStatistics.h
     caching/LegendreCache.cc

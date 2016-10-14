@@ -12,6 +12,8 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Bytes.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/thread/AutoLock.h"
 
 #include "mir/caching/InMemoryCacheStatistics.h"
 
@@ -231,6 +233,7 @@ void InMemoryCache<T>::stopUsing() {
     // The statistics will not be correct as each thread
     // overrides statistics_ to their own version
     statistics_ = 0;
+    checkTotalFootprint();
 }
 
 
@@ -244,6 +247,20 @@ void InMemoryCache<T>::erase(const std::string& key) {
         cache_.erase(j);
     }
 }
+
+template<class T>
+unsigned long long InMemoryCache<T>::capacity() const {
+    return capacity_;
+}
+
+
+template<class T>
+void InMemoryCache<T>::purge(size_t amount) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    eckit::Log::info() << "CACHE-PURGE-" << name_ << " => " << eckit::Bytes(amount) << std::endl;
+
+}
+
 
 }  // namespace mir
 
