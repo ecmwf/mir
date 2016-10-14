@@ -31,6 +31,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/io/FileLock.h"
+#include "eckit/os/Malloc.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
@@ -93,7 +94,7 @@ struct TransCache {
 
 
 static eckit::Mutex amutex;
-static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient", 2, "$MIR_COEFFICIENT_CACHE");
+static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient", 8L * 1024 * 1024 * 1024, "$MIR_COEFFICIENT_CACHE");
 
 #endif
 
@@ -205,6 +206,9 @@ static void transform(
         }
 
         {
+
+            size_t before = eckit::Malloc::allocated();
+
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
 
             eckit::Timer timer("Loading coefficients");
@@ -221,6 +225,11 @@ static void transform(
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 
             ASSERT(trans_setup(&trans) == 0);
+
+            size_t after = eckit::Malloc::allocated();
+
+            trans_handles.footprint(key, after - before);
+
         }
 
     }
