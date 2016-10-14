@@ -255,6 +255,12 @@ unsigned long long InMemoryCache<T>::capacity() const {
 
 
 template<class T>
+const std::string& InMemoryCache<T>::name() const {
+    return name_;
+}
+
+
+template<class T>
 void InMemoryCache<T>::purge(size_t amount) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
     eckit::Log::info() << "CACHE-PURGE-" << name_ << " => " << eckit::Bytes(amount) << std::endl;

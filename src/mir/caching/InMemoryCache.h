@@ -55,6 +55,7 @@ private:
     virtual unsigned long long footprint() const;
     virtual unsigned long long capacity() const;
     virtual void purge(size_t amount);
+    virtual const std::string& name() const;
 
     std::string name_;
     eckit::Resource<unsigned long long> capacity_;

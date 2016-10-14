@@ -53,9 +53,14 @@ unsigned long long InMemoryCacheBase::totalFootprint() {
 
     unsigned long long result = 0;
 
+    eckit::Log::info() << "CACHE-checkTotalFootprint =>";
+
     for (auto j = m->begin(); j != m->end(); ++j) {
         result += (*j)->footprint();
+        eckit::Log::info() << " " << (*j)->name() << "=" << eckit::Bytes((*j)->footprint()) << std::endl;
     }
+
+    eckit::Log::info() << " = " << eckit::Bytes(result) << std::endl;
 
     return result;
 }
@@ -65,7 +70,7 @@ void InMemoryCacheBase::checkTotalFootprint() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     unsigned long long total = totalFootprint();
-    eckit::Log::info() << "CACHE-checkTotalFootprint => " << eckit::Bytes(total) << std::endl;
+    // eckit::Log::info() << "CACHE-checkTotalFootprint => " << eckit::Bytes(total) << std::endl;
 
 }
 
