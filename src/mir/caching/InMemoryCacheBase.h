@@ -48,7 +48,7 @@ private:
 
     virtual unsigned long long footprint() const = 0;
     virtual unsigned long long capacity() const = 0;
-    virtual bool purge(size_t count) = 0;
+    virtual size_t purge(size_t count) = 0;
     virtual const std::string& name() const = 0;
 
 };

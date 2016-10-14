@@ -57,7 +57,6 @@ unsigned long long InMemoryCacheBase::totalFootprint() {
         result += (*j)->footprint();
     }
 
-
     return result;
 }
 
@@ -87,7 +86,13 @@ void InMemoryCacheBase::checkTotalFootprint() {
         if (totalFootprint > maximumCapacity) {
 
             for (auto j = m->begin(); j != m->end(); ++j) {
-                if ((*j)->purge(1)) {
+                size_t purged = (*j)->purge(1);
+                if (purged) {
+                    eckit::Log::info() << "CACHE-checkTotalFootprint purged "
+                                       << eckit::Bytes(purged)
+                                       << " from "
+                                       << (*j)->name()
+                                       << std::endl;
                     more = true;
                 }
             }

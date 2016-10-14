@@ -237,14 +237,14 @@ const std::string& InMemoryCache<T>::name() const {
 
 
 template<class T>
-bool InMemoryCache<T>::purge(size_t count) {
+size_t InMemoryCache<T>::purge(size_t count) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
     eckit::Log::info() << "CACHE-PURGE-" << name_ << std::endl;
     if (users_) {
-        return false;
+        return 0;
     }
 
-    bool done = false;
+    size_t purged = 0;
 
     for (size_t i = 0; i < count; i++) {
 
@@ -276,13 +276,15 @@ bool InMemoryCache<T>::purge(size_t count) {
 
             statistics_->evictions_++;
         }
+
+        purged += (*best).second->footprint_;
+
         delete (*best).second;
         cache_.erase(best);
 
-        done = true;
     }
 
-    return done;
+    return purged;
 
 }
 
