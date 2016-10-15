@@ -58,7 +58,7 @@ namespace method {
 namespace {
 static eckit::Mutex local_mutex;
 static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", 512 * 1024 * 1024, "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
-static InMemoryCache<atlas::mesh::Mesh> mesh_cache("mirMesh",  512 * 1024 * 1024, "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
+static InMemoryCache<atlas::mesh::Mesh> mesh_cache("mirMesh",  0, "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
 }
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation) :
@@ -71,6 +71,8 @@ MethodWeighted::~MethodWeighted() {
 }
 
 atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid& grid) const {
+
+    InMemoryCacheUser<atlas::mesh::Mesh> cache_use(mesh_cache, ctx.statistics().meshCache_);
 
     std::ostringstream oss;
     oss << "MESH for " << grid;
@@ -270,7 +272,6 @@ void MethodWeighted::execute(context::Context &ctx, const atlas::grid::Grid &in,
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<WeightMatrix>      matrix_use(matrix_cache, ctx.statistics().matrixCache_);
-    InMemoryCacheUser<atlas::mesh::Mesh> cache_use(mesh_cache, ctx.statistics().meshCache_);
 
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
