@@ -72,8 +72,6 @@ MethodWeighted::~MethodWeighted() {
 
 atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid& grid) const {
 
-    InMemoryCacheUser<atlas::mesh::Mesh> cache_use(mesh_cache, ctx.statistics().meshCache_);
-
     std::ostringstream oss;
     oss << "MESH for " << grid;
     eckit::ResourceUsage usage(oss.str());
@@ -386,6 +384,8 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const atlas::gr
         eckit::Log::debug<LibMir>() << "Matrix is indentity" << std::endl;
         W.setIdentity();        // grids are the same, use identity matrix
     } else {
+        InMemoryCacheUser<atlas::mesh::Mesh> cache_use(mesh_cache, ctx.statistics().meshCache_);
+
         double pruneEpsilon = 0;
         parametrisation_.get("prune-epsilon", pruneEpsilon);
 
