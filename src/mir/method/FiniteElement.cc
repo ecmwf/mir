@@ -38,6 +38,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/method/GridSpace.h"
 #include "mir/param/MIRParametrisation.h"
+#include "eckit/log/ResourceUsage.h"
 
 
 namespace mir {
@@ -420,6 +421,9 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
 
 void FiniteElement::generateMesh(const atlas::grid::Grid &grid, atlas::mesh::Mesh &mesh) const {
+
+    eckit::ResourceUsage usage("FiniteElement::generateMesh");
+
 
     std::string meshgenerator( grid.getOptimalMeshGenerator() );
 

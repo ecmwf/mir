@@ -39,6 +39,7 @@
 #include "mir/packing/Packer.h"
 #include "mir/style/MIRStyle.h"
 #include "mir/tools/MIRTool.h"
+#include "eckit/log/ResourceUsage.h"
 
 
 class MIRToolConcrete : public mir::tools::MIRTool {
@@ -157,16 +158,18 @@ public:
 void MIRToolConcrete::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\n" "Usage: " << tool << " [--key1=value [--key2=value [...]]] input.grib output.grib"
-               "\n" "Examples: "
-               "\n" "  % " << tool << " --grid=2/2 --area=90/-8/12/80 input.grib output.grib"
-               "\n" "  % " << tool << " --reduced=80 input.grib output.grib"
-               "\n" "  % " << tool << " --regular=80 input.grib output.grib"
-               "\n" "  % " << tool << " --truncation=63 input.grib output.grib"
+            "\n" "Examples: "
+            "\n" "  % " << tool << " --grid=2/2 --area=90/-8/12/80 input.grib output.grib"
+            "\n" "  % " << tool << " --reduced=80 input.grib output.grib"
+            "\n" "  % " << tool << " --regular=80 input.grib output.grib"
+            "\n" "  % " << tool << " --truncation=63 input.grib output.grib"
             << std::endl;
 }
 
 
 void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
+
+    eckit::ResourceUsage usage("mir-tool");
 
     // {"", 0, "GRIB Output"},
     // {"accuracy", "n", "number of bits per value",},

@@ -15,6 +15,7 @@
 
 #include "mir/method/Tessellation.h"
 #include "atlas/mesh/generators/Delaunay.h"
+#include "eckit/log/ResourceUsage.h"
 
 namespace mir {
 namespace method {
@@ -45,6 +46,8 @@ void Tessellation::hash( eckit::MD5 &md5) const {
 
 
 void Tessellation::generateMesh(const atlas::grid::Grid &grid, atlas::mesh::Mesh &mesh) const {
+    eckit::ResourceUsage usage("Tessellation::generateMesh");
+
     eckit::ScopedPtr<MeshGenerator> gen (new Delaunay());
     gen->generate(grid, mesh);
 }
