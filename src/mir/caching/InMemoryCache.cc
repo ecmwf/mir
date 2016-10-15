@@ -284,6 +284,7 @@ size_t InMemoryCache<T>::purge(size_t count) {
 
         purged += (*best).second->footprint_;
 
+        eckit::Log::info() << name_ << " decache " << (*best).first << std::endl;
         delete (*best).second;
         cache_.erase(best);
 
