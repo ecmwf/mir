@@ -27,6 +27,7 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/log/Bytes.h"
+#include "eckit/log/ResourceUsage.h"
 
 #include "atlas/grid/Grid.h"
 #include "atlas/mesh/Mesh.h"
@@ -71,6 +72,9 @@ MethodWeighted::~MethodWeighted() {
 
 atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid& grid) const {
 
+    std::ostringstream oss;
+    oss << "MESH for " << grid;
+    eckit::ResourceUsage usage(oss.str());
 
     eckit::Log::info() << "MESH for " << grid << std::endl;
 

@@ -21,6 +21,7 @@
 #include "mir/action/plan/Executor.h"
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/ResourceUsage.h"
 
 
 
@@ -46,6 +47,11 @@ void ActionNode::execute(context::Context& ctx, const Executor& executor) const 
     // std::cout << " BEFORE -----> " << action_  << "  " << field << std::endl;
     bool ok = false;
     try {
+
+        std::ostringstream oss;
+        oss << "ACTION " << action_ ;
+        eckit::ResourceUsage usage(oss.str());
+
         action_.execute(ctx);
         ok = true;
     } catch (std::exception& e) {
@@ -60,7 +66,7 @@ void ActionNode::execute(context::Context& ctx, const Executor& executor) const 
     }
     // std::cout << " AFTER -----> " << action_  << "  " << field << std::endl;
 
-    if(ok) {
+    if (ok) {
         graph_.execute(ctx, executor);
     }
 }
