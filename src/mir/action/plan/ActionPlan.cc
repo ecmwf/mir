@@ -110,10 +110,10 @@ void ActionPlan::add(const std::string &name, const std::string &param1,  const 
 void ActionPlan::execute(context::Context & ctx) const {
     for (std::vector<Action *>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
         std::ostringstream oss;
-        oss << "ACTION " << *j ;
+        oss << "ACTION " << **j ;
         eckit::ResourceUsage usage(oss.str());
 
-        eckit::Log::debug<LibMir>() << "Executing " << *j << std::endl;
+        eckit::Log::debug<LibMir>() << "Executing " << **j << std::endl;
 
         (*j)->execute(ctx);
     }
