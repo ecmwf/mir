@@ -94,7 +94,10 @@ struct TransCache {
 
 
 static eckit::Mutex amutex;
-static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient", 8L * 1024 * 1024 * 1024, "$MIR_COEFFICIENT_CACHE");
+static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient",
+        8L * 1024 * 1024 * 1024,
+        "$MIR_COEFFICIENT_CACHE",
+        false); // Don't cleanup at exit: the Fortran part will dump core
 
 #endif
 

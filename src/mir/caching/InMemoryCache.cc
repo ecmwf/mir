@@ -30,25 +30,29 @@ inline static double utime() {
 }
 
 template<class T>
-InMemoryCache<T>::InMemoryCache(const std::string& name, unsigned long long capacity, const char* variable):
+InMemoryCache<T>::InMemoryCache(const std::string& name, unsigned long long capacity, const char* variable, bool cleanupAtExit):
     name_(name),
     capacity_(name + "InMemoryCacheCapacity;"  + variable, capacity),
     users_(0),
-    statistics_(0) {
+    statistics_(0),
+    cleanupAtExit_(cleanupAtExit) {
 }
 
 
 template<class T>
 InMemoryCache<T>::~InMemoryCache() {
-    // std::cout << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
-    // for (auto j = cache_.begin(); j != cache_.end(); ++j) {
-    //     std::cout << "Deleting InMemoryCache " << name_ << " " << *((*j).second->ptr_) << std::endl;
-    //     delete (*j).second;
-    // }
+    if (cleanupAtExit_) {
+        std::cout << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
+        for (auto j = cache_.begin(); j != cache_.end(); ++j) {
+            std::cout << "Deleting InMemoryCache " << name_ << " " << *((*j).second->ptr_) << std::endl;
+            delete (*j).second;
+        }
+    }
 }
 
+
 template<class T>
-T* InMemoryCache<T>::find(const std::string& key) const {
+T* InMemoryCache<T>::find(const std::string & key) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     auto j = cache_.find(key);
@@ -67,7 +71,7 @@ T* InMemoryCache<T>::find(const std::string& key) const {
 }
 
 template<class T>
-void InMemoryCache<T>::footprint(const std::string& key, size_t size) {
+void InMemoryCache<T>::footprint(const std::string & key, size_t size) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " " << key << " => " << eckit::Bytes(size) << std::endl;
@@ -99,7 +103,7 @@ void InMemoryCache<T>::footprint(const std::string& key, size_t size) {
 
 
 template<class T>
-T& InMemoryCache<T>::operator[](const std::string& key) {
+T& InMemoryCache<T>::operator[](const std::string & key) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     T* ptr = find(key);
@@ -123,7 +127,7 @@ static inline double score(size_t count, double recent, double age) {
 
 
 template<class T>
-T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
+T& InMemoryCache<T>::insert(const std::string & key, T * ptr) {
     ASSERT(ptr);
 
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
@@ -161,7 +165,7 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
 template<class T>
 void InMemoryCache<T>::purge() {
     while (footprint() > capacity_) {
-        if(!purge(1)) {
+        if (!purge(1)) {
             break;
         }
     }
@@ -182,12 +186,12 @@ unsigned long long InMemoryCache<T>::footprint() const {
 }
 
 template<class T>
-T& InMemoryCache<T>::create(const std::string& key) {
+T& InMemoryCache<T>::create(const std::string & key) {
     return insert(key, new T());
 }
 
 template<class T>
-void InMemoryCache<T>::startUsing(InMemoryCacheStatistics& statistics) {
+void InMemoryCache<T>::startUsing(InMemoryCacheStatistics & statistics) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
     users_++;
     // TODO: This does not work with threads
@@ -215,7 +219,7 @@ void InMemoryCache<T>::stopUsing() {
 
 
 template<class T>
-void InMemoryCache<T>::erase(const std::string& key) {
+void InMemoryCache<T>::erase(const std::string & key) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     auto j = cache_.find(key);
@@ -241,10 +245,10 @@ template<class T>
 size_t InMemoryCache<T>::purge(size_t count) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
     eckit::Log::info() << "CACHE-PURGE-"
-    << name_
-    << " allocated "
-    << eckit::Bytes(eckit::Malloc::allocated())
-        << std::endl;
+                       << name_
+                       << " allocated "
+                       << eckit::Bytes(eckit::Malloc::allocated())
+                       << std::endl;
     if (users_) {
         return 0;
     }

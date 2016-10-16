@@ -30,7 +30,10 @@ public:  // methods
 
     typedef T* iterator;
 
-    explicit InMemoryCache(const std::string& name, unsigned long long capacity, const char* variable);
+    explicit InMemoryCache(const std::string& name,
+                           unsigned long long capacity,
+                           const char* variable,
+                           bool cleanupAtExit = true);
 
     ~InMemoryCache();
 
@@ -59,6 +62,7 @@ private:
 
     std::string name_;
     eckit::Resource<unsigned long long> capacity_;
+    bool cleanupAtExit_;
 
     size_t users_;
 

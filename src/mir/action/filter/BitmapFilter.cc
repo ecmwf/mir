@@ -34,7 +34,7 @@ namespace action {
 
 namespace {
 static eckit::Mutex local_mutex;
-static InMemoryCache<util::Bitmap> cache("mirBitmap", 256 * 1024 * 1024, "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT");
+static InMemoryCache<util::Bitmap> cache("mirBitmap", 256 * 1024 * 1024, "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT", true);
 }
 
 
