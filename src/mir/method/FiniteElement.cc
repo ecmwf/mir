@@ -299,12 +299,14 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
     // generate barycenters of each triangle & insert them on a kd-tree
     {
+        eckit::ResourceUsage usage("create_cell_centres");
         eckit::TraceTimer<LibMir> timer("Tesselation::create_cell_centres");
         atlas::mesh::actions::BuildCellCentres()(in.mesh());
     }
 
     eckit::ScopedPtr<atlas::interpolation::ElemIndex3> eTree;
     {
+        eckit::ResourceUsage usage("create_element_centre_index");
         eckit::TraceTimer<LibMir> timer("create_element_centre_index");
         eTree.reset( atlas::interpolation::create_element_centre_index(in.mesh()) );
     }
