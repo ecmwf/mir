@@ -14,7 +14,6 @@
 #include "eckit/log/Bytes.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/AutoLock.h"
-#include "eckit/os/Malloc.h"
 
 #include "mir/caching/InMemoryCacheStatistics.h"
 
@@ -244,11 +243,7 @@ const std::string& InMemoryCache<T>::name() const {
 template<class T>
 size_t InMemoryCache<T>::purge(size_t count) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
-    eckit::Log::info() << "CACHE-PURGE-"
-                       << name_
-                       << " allocated "
-                       << eckit::Bytes(eckit::Malloc::allocated())
-                       << std::endl;
+
     if (users_) {
         return 0;
     }

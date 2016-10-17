@@ -78,6 +78,16 @@ void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) 
     ASSERT(commit(key, tmp));
 }
 
+
+void WeightCache::retrieveOrCreate(const std::string &key,
+    eckit::CacheContentCreator& creator,
+    method::WeightMatrix &W) const {
+
+    eckit::PathName path = getOrCreate(key, creator);
+
+    ASSERT(retrieve(key, W));
+}
+
 bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) const {
 
 
@@ -93,6 +103,7 @@ bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) cons
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
 
     W.load(path);
+    W.validate("fromCache");
 
     return true;
 }

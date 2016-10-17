@@ -29,7 +29,7 @@ namespace caching {
 
 class WeightCache : public eckit::CacheManager {
 
-  public:  // methods
+public:  // methods
 
     explicit WeightCache();
 
@@ -41,11 +41,16 @@ class WeightCache : public eckit::CacheManager {
     /// @returns true if insertion successful cache
     void insert(const std::string &key, const method::WeightMatrix &W) const;
 
-  protected:
+    // Calls the creator if needed
+    void retrieveOrCreate(const std::string &key,
+                          eckit::CacheContentCreator& creator,
+                          method::WeightMatrix &W) const;
+
+protected:
 
     virtual void print(std::ostream& s) const;
 
-  private:
+private:
 
     virtual const char* version() const;
     virtual const char* extension() const;

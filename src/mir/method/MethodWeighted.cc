@@ -23,12 +23,10 @@
 #include "eckit/config/Resource.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
-#include "eckit/os/Malloc.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/ResourceUsage.h"
-#include "eckit/io/FileLock.h"
 
 #include "atlas/grid/Grid.h"
 #include "atlas/mesh/Mesh.h"
@@ -59,7 +57,7 @@ namespace method {
 namespace {
 static eckit::Mutex local_mutex;
 static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", 512 * 1024 * 1024, "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
-static InMemoryCache<atlas::mesh::Mesh> mesh_cache("mirMesh",  0, "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
+static InMemoryCache<atlas::mesh::Mesh> mesh_cache("mirMesh",  512 * 1024 * 1024, "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
 }
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation) :
@@ -90,11 +88,9 @@ atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     InMemoryCache<atlas::mesh::Mesh>::iterator j = mesh_cache.find(md5);
     if (j != mesh_cache.end()) {
-        eckit::Log::info() << "MESH in cache" << std::endl;
         return *j;
     }
 
-    size_t before = eckit::Malloc::allocated();
     atlas::mesh::Mesh& mesh = mesh_cache[md5];
 
     try {
@@ -106,9 +102,7 @@ atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
         throw;
     }
 
-    size_t after = eckit::Malloc::allocated();
-    eckit::Log::info() << "Mesh for " << grid << ", memory footprint " << eckit::Bytes(after - before) << std::endl;
-    mesh_cache.footprint(md5, after - before);
+    mesh_cache.footprint(md5, mesh.footprint());
 
     return mesh;
 }
@@ -119,6 +113,20 @@ void MethodWeighted::generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh&
         << " needs a mesh() but does not implement generateMesh()"
         << std::endl;
     throw eckit::SeriousBug(oss.str(), Here());
+}
+
+void MethodWeighted::createMatrix(context::Context& ctx,
+                                  const atlas::grid::Grid &in,
+                                  const atlas::grid::Grid &out,
+                                  WeightMatrix& W,
+                                  const lsm::LandSeaMasks& masks) const {
+    computeMatrixWeights(ctx, in, out, W);
+    W.validate("computeMatrixWeights");
+
+    if (masks.active() && masks.cacheable()) {
+        applyMasks(W, masks, ctx.statistics());
+        W.validate("applyMasks");
+    }
 }
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
@@ -184,51 +192,40 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas
         // The WeightCache is parametrised by 'caching', as caching may be disabled on a field by field basis (unstructured grids)
         static caching::WeightCache cache;
 
-        if (!cache.retrieve(cache_key, W)) {
+        class MatrixCacheCreator: public eckit::CacheContentCreator {
 
+            const MethodWeighted& owner_;
+            context::Context& ctx_;
+            const atlas::grid::Grid& in_;
+            const atlas::grid::Grid& out_;
+            const lsm::LandSeaMasks& masks_;
 
-            eckit::Log::info() << "Matrix file " << cache.entry(cache_key) << " does not exist" << std::endl;
+            virtual void create(const eckit::PathName& path) {
 
-
-            std::ostringstream oss;
-            oss << cache.entry(cache_key) << ".lock";
-
-            eckit::PathName lockFile(oss.str());
-
-            eckit::FileLock locker(lockFile);
-
-            eckit::AutoLock<eckit::FileLock> lock(locker);
-
-            // Some
-            if (!cache.retrieve(cache_key, W)) {
-                eckit::Log::info() << "Matrix  cache file " << cache.entry(cache_key) << std::endl;
-                computeMatrixWeights(ctx, in, out, W);
-                W.validate("computeMatrixWeights");
-
-                if (masks.active() && masks.cacheable()) {
-                    applyMasks(W, masks, ctx.statistics());
-                    W.validate("applyMasks");
-                }
-
-                cache.insert(cache_key, W);
-            }
-            else {
-                eckit::Log::info() << "Matrix cache file " << cache.entry(cache_key) << " created by another process" << std::endl;
-                ASSERT(cache.retrieve(cache_key, W));
+                WeightMatrix W(out_.npts(), in_.npts());
+                owner_.createMatrix(ctx_, in_, out_, W, masks_);
+                W.save(path);
             }
 
+        public:
+            MatrixCacheCreator(const MethodWeighted& owner,
+                               context::Context& ctx,
+                               const atlas::grid::Grid& in,
+                               const atlas::grid::Grid & out,
+                               const lsm::LandSeaMasks & masks):
+                owner_(owner),
+                ctx_(ctx),
+                in_(in),
+                out_(out),
+                masks_(masks) {}
+        };
 
-            W.validate("fromCache");
-        }
+        MatrixCacheCreator creator(*this, ctx, in, out, masks);
+        cache.retrieveOrCreate(cache_key, creator, W);
+
     }
     else {
-        computeMatrixWeights(ctx, in, out, W);
-        W.validate("computeMatrixWeights");
-
-        if (masks.active() && masks.cacheable()) {
-            applyMasks(W, masks, ctx.statistics());
-            W.validate("applyMasks");
-        }
+        createMatrix(ctx, in, out, W, masks);
     }
 
 

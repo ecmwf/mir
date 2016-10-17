@@ -31,7 +31,6 @@
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/io/FileLock.h"
-#include "eckit/os/Malloc.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
@@ -142,8 +141,7 @@ static void fillTrans(struct Trans_t &trans,
     }
 }
 
-static void createCoefficients(caching::LegendreCache& cache,
-                               const std::string& key,
+static void createCoefficients(const eckit::PathName& path,
                                size_t truncation,
                                const atlas::grid::Grid &grid,
                                context::Context& ctx) {
@@ -152,11 +150,8 @@ static void createCoefficients(caching::LegendreCache& cache,
     struct Trans_t tmp_trans;
     fillTrans(tmp_trans, truncation, grid);
 
-    eckit::PathName tmp = cache.stage(key);
-    ASSERT(trans_set_write(&tmp_trans, tmp.asString().c_str()) == 0);
+    ASSERT(trans_set_write(&tmp_trans, path.asString().c_str()) == 0);
     ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
-
-    ASSERT(cache.commit(key, tmp));
 
     trans_delete(&tmp_trans);
 }
@@ -170,47 +165,36 @@ static void transform(
     context::Context& ctx) {
 
 
-    // Warning: we keep the coefficient in memory for all the resolution used
     if (trans_handles.find(key) == trans_handles.end()) {
-        // std::cout << "Creating a new TRANS handle for " << key << std::endl;
-
-        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
-
-        caching::LegendreCache cache;
         eckit::PathName path;
 
-        // If not in cache
+        {   // Block for timers
 
-        if (!cache.get(key, path)) {
+            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
 
-            eckit::Log::info() << "Coefficient cache file " << cache.entry(key) << " does not exist" << std::endl;
+            class LegendreCacheCreator: public eckit::CacheContentCreator {
 
+                size_t truncation_;
+                const atlas::grid::Grid & grid_;
+                context::Context & ctx_;
 
-            std::ostringstream oss;
-            oss << cache.entry(key) << ".lock";
+                virtual void create(const eckit::PathName& path) {
+                    createCoefficients(path, truncation_, grid_, ctx_);
+                }
+            public:
+                LegendreCacheCreator(size_t truncation,
+                                     const atlas::grid::Grid & grid,
+                                     context::Context & ctx):
+                    truncation_(truncation), grid_(grid), ctx_(ctx) {}
+            };
 
-            eckit::PathName lockFile(oss.str());
+            static caching::LegendreCache cache;
+            LegendreCacheCreator creator(truncation, grid, ctx);
 
-            eckit::FileLock locker(lockFile);
-
-            eckit::AutoLock<eckit::FileLock> lock(locker);
-
-            // Some
-            if (!cache.get(key, path)) {
-                eckit::Log::info() << "Creating coefficient cache file " << cache.entry(key) << std::endl;
-                createCoefficients(cache, key, truncation, grid, ctx);
-            }
-            else {
-                eckit::Log::info() << "Coefficient cache file " << cache.entry(key) << " created by another process" << std::endl;
-            }
-
-            ASSERT(cache.get(key, path));
-
+            path = cache.getOrCreate(key, creator);
         }
 
-        {
-
-            size_t before = eckit::Malloc::allocated();
+        {   // Block for timers
 
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
 
@@ -228,12 +212,10 @@ static void transform(
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 
             ASSERT(trans_setup(&trans) == 0);
-
-            size_t after = eckit::Malloc::allocated();
-
-            trans_handles.footprint(key, after - before);
-
         }
+
+        // trans_handles.footprint(key, after - before);
+
 
     }
 

@@ -92,7 +92,9 @@ private:
 
     virtual lsm::LandSeaMasks getMasks(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const;
 
-    void computeMatrixWeights(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out, WeightMatrix &W) const;
+    void computeMatrixWeights(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out, WeightMatrix& W) const;
+
+    void createMatrix(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out, WeightMatrix& W, const lsm::LandSeaMasks& masks) const;
 
 };
 
