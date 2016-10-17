@@ -172,13 +172,13 @@ static void transform(
 
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
 
-            class LegendreCacheCreator: public eckit::CacheContentCreator {
+            class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
 
                 size_t truncation_;
                 const atlas::grid::Grid & grid_;
                 context::Context & ctx_;
 
-                virtual void create(const eckit::PathName& path) {
+                virtual void create(const eckit::PathName& path, int& ignore) {
                     createCoefficients(path, truncation_, grid_, ctx_);
                 }
             public:
@@ -191,7 +191,8 @@ static void transform(
             static caching::LegendreCache cache;
             LegendreCacheCreator creator(truncation, grid, ctx);
 
-            path = cache.getOrCreate(key, creator);
+            int dummy = 0;
+            path = cache.getOrCreate(key, creator, dummy);
         }
 
         {   // Block for timers

@@ -23,22 +23,22 @@ namespace caching {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class LegendreCache : public eckit::CacheManager {
+struct LegendreCacheTraits {
+    static const char* name() { return "mir/coeffs"; }
+    static int version() { return 1; }
+    static const char* extension() { return ".leg"; }
 
-  public:  // methods
+    // Below are dummy types and functions
+    typedef int value_type;
+
+    static void save(value_type&, const eckit::PathName& path) {}
+    static void load(value_type&, const eckit::PathName& path) {}
+};
+
+class LegendreCache : public eckit::CacheManager<LegendreCacheTraits> {
+public:  // methods
 
     LegendreCache();
-
-
-  protected:
-
-    virtual void print(std::ostream& s) const;
-
-  private:
-
-    virtual const char* version() const;
-    virtual const char* extension() const;
-
 };
 
 //----------------------------------------------------------------------------------------------------------------------

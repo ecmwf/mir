@@ -111,10 +111,10 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
     static caching::CroppingCache disk;
 
     caching::CroppingCacheEntry& c = cache[key];
-    if (caching && disk.retrieve(key, c)) {
-        cache.footprint(key, c.footprint());
-        return c;
-    }
+    // if (caching && disk.retrieve(key, c)) {
+    //     cache.footprint(key, c.footprint());
+    //     return c;
+    // }
 
 //    eckit::TraceTimer<LibMir> timer("Compute crop mapping");
 
@@ -182,9 +182,9 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
         c.mapping_.push_back((*j).second);
     }
 
-    if (caching) {
-        disk.insert(key, c);
-    }
+    // if (caching) {
+    //     disk.insert(key, c);
+    // }
 
     cache.footprint(key, c.footprint());
     return c;

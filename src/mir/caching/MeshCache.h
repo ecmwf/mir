@@ -28,27 +28,23 @@ namespace caching {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class MeshCache : public eckit::CacheManager {
+struct MeshCacheTraits {
+    static const char* name() { return "mir/meshes"; }
+    static int version() { return 1; }
+    static const char* extension() { return ".leg"; }
+
+    // Below are dummy types and functions
+    typedef int value_type;
+
+    static void save(value_type&, const eckit::PathName& path);
+    static void load(value_type&, const eckit::PathName& path);
+};
+
+class MeshCache : public eckit::CacheManager<MeshCacheTraits> {
 public:  // methods
 
     explicit MeshCache();
 
-    /// Tries to retrieve a cached WeightMatrix
-    /// @returns true if found cache
-    bool retrieve(const std::string &key, atlas::mesh::Mesh &) const;
-
-    /// Inserts a cached WeightMatrix, overwriting any existing entry
-    /// @returns true if insertion successful cache
-    void insert(const std::string &key, const atlas::mesh::Mesh &) const;
-
-protected:
-
-    virtual void print(std::ostream& s) const;
-
-private:
-
-    virtual const char* version() const;
-    virtual const char* extension() const;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

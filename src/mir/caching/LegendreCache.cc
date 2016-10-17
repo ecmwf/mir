@@ -24,24 +24,9 @@ namespace caching {
 //----------------------------------------------------------------------------------------------------------------------
 
 LegendreCache::LegendreCache() :
-    CacheManager("mir/coeffs", LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false)) {}
-
-const char* LegendreCache::version() const {
-    return "1"; // Change me if the cache file structure changes
-}
-const char* LegendreCache::extension() const {
-    return ".leg";
-}
-
-
-void LegendreCache::print(std::ostream &s) const {
-    s << "LegendreCache[";
-    CacheManager::print(s);
-    s << "name=" << name() << ","
-      << "version=" << version() << ","
-      << "extention=" << extension() << ","
-      << "]";
-}
+    CacheManager(LibMir::cacheDir(),
+        eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
+            false)) {}
 
 //----------------------------------------------------------------------------------------------------------------------
 

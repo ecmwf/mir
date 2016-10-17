@@ -26,56 +26,13 @@ namespace caching {
 
 
 MeshCache::MeshCache():
-    CacheManager("mir/meshes", LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false)) {
+    CacheManager(LibMir::cacheDir(),
+                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
+                                       false)) {
 }
 
-const char *MeshCache::version() const {
-    return "1"; // Change me if the cache file structure changes
-}
-
-const char *MeshCache::extension() const {
-    return ".gmsh";
-}
-
-void MeshCache::print(std::ostream &s) const {
-    s << "MeshCache[";
-    CacheManager::print(s);
-    s << "name=" << name() << ","
-      << "version=" << version() << ","
-      << "extention=" << extension() << ","
-      << "]";
-}
-
-void MeshCache::insert(const std::string &key, const atlas::mesh::Mesh &mesh) const {
-
-    eckit::PathName tmp = stage(key);
-
-
-    eckit::FileStream s(tmp, "w");
-    mesh.encode(s);
-
-
-    ASSERT(commit(key, tmp));
-}
-
-bool MeshCache::retrieve(const std::string &key, atlas::mesh::Mesh &mesh) const {
-
-    eckit::PathName path;
-
-    if (!get(key, path))
-        return false;
-
-    // eckit::Log::info() << "Found cropping in cache : " << path << "" << std::endl;
-    // eckit::TraceTimer<LibMir> timer("Loading cropping from cache");
-
-
-    eckit::FileStream s(path, "r");
-    NOTIMP;
-    //mesh = atlas::mesh::Mesh(s);
-
-    return true;
-}
-
+void MeshCacheTraits::save(value_type&, const eckit::PathName& path) {NOTIMP;}
+void MeshCacheTraits::load(value_type&, const eckit::PathName& path) {NOTIMP;}
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace caching

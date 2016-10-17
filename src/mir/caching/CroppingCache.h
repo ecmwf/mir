@@ -38,31 +38,35 @@ struct CroppingCacheEntry {
 
     size_t footprint() const;
 
+    void save(const eckit::PathName& path) const;
+    void load(const eckit::PathName& path);
+
 
 };
 
-class CroppingCache : public eckit::CacheManager {
+struct CroppingCacheTraits {
 
+    typedef CroppingCacheEntry value_type;
+
+    static const char* name() { return "mir/cropping"; }
+    static int version() { return 1; }
+    static const char* extension() { return ".area"; }
+
+    static void save(const value_type& c, const eckit::PathName& path) {
+        c.save(path);
+    }
+
+    static void load(value_type& c, const eckit::PathName& path) {
+        c.load(path);
+    }
+};
+
+
+class CroppingCache : public eckit::CacheManager<CroppingCacheTraits> {
 public:  // methods
-
     explicit CroppingCache();
 
-    /// Tries to retrieve a cached WeightMatrix
-    /// @returns true if found cache
-    bool retrieve(const std::string &key, CroppingCacheEntry &W) const;
 
-    /// Inserts a cached WeightMatrix, overwriting any existing entry
-    /// @returns true if insertion successful cache
-    void insert(const std::string &key, const CroppingCacheEntry &W) const;
-
-protected:
-
-    virtual void print(std::ostream& s) const;
-
-private:
-
-    virtual const char* version() const;
-    virtual const char* extension() const;
 
 };
 

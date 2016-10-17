@@ -192,7 +192,7 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas
         // The WeightCache is parametrised by 'caching', as caching may be disabled on a field by field basis (unstructured grids)
         static caching::WeightCache cache;
 
-        class MatrixCacheCreator: public eckit::CacheContentCreator {
+        class MatrixCacheCreator: public caching::WeightCache::CacheContentCreator {
 
             const MethodWeighted& owner_;
             context::Context& ctx_;
@@ -200,11 +200,8 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas
             const atlas::grid::Grid& out_;
             const lsm::LandSeaMasks& masks_;
 
-            virtual void create(const eckit::PathName& path) {
-
-                WeightMatrix W(out_.npts(), in_.npts());
+            virtual void create(const eckit::PathName& path, WeightMatrix& W) {
                 owner_.createMatrix(ctx_, in_, out_, W, masks_);
-                W.save(path);
             }
 
         public:
@@ -221,7 +218,7 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx, const atlas
         };
 
         MatrixCacheCreator creator(*this, ctx, in, out, masks);
-        cache.retrieveOrCreate(cache_key, creator, W);
+        cache.getOrCreate(cache_key, creator, W);
 
     }
     else {

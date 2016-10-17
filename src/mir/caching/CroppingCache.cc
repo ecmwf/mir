@@ -13,13 +13,13 @@
 
 #include "eckit/io/BufferedHandle.h"
 #include "eckit/config/Resource.h"
+#include "eckit/serialisation/FileStream.h"
 
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
-#include "eckit/serialisation/FileStream.h"
 #include "mir/api/mir_version.h"
 #include "mir/config/LibMir.h"
 
@@ -28,89 +28,17 @@ namespace caching {
 
 
 CroppingCache::CroppingCache():
-    CacheManager("mir/cropping", LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false)) {
-}
-
-
-const char *CroppingCache::version() const {
-    return "1"; // Change me if the cache file structure changes
-}
-
-
-const char *CroppingCache::extension() const {
-    return ".area";
-}
-
-
-void CroppingCache::print(std::ostream &s) const {
-    s << "CroppingCache[";
-    CacheManager::print(s);
-    s << ",name=" << name()
-      << ",version=" << version()
-      << ",extention=" << extension()
-      << "]";
-}
-
-
-void CroppingCache::insert(const std::string &key, const CroppingCacheEntry &c) const {
-
-    eckit::PathName tmp = stage(key);
-
-    // eckit::Log::info() << "Inserting cropping in cache : " << tmp << "" << std::endl;
-
-    eckit::TraceTimer<LibMir> timer("Saving cropping to cache");
-
-    eckit::FileStream f(tmp, "w");
-    f << c.bbox_.north();
-    f << c.bbox_.west();
-    f << c.bbox_.south();
-    f << c.bbox_.east();
-
-    f << c.mapping_.size();
-    for (size_t i = 0; i < c.mapping_.size(); ++i) {
-        f << c.mapping_[i];
-    }
-
-    ASSERT(commit(key, tmp));
-}
-
-
-bool CroppingCache::retrieve(const std::string &key, CroppingCacheEntry &c) const {
-
-    eckit::PathName path;
-
-    if (!get(key, path))
-        return false;
-
-    // eckit::Log::info() << "Found cropping in cache : " << path << "" << std::endl;
-    eckit::TraceTimer<LibMir> timer("Loading cropping from cache");
-
-    eckit::FileStream f(path, "r");
-    double n, w, s, e;
-    f >> n;
-    f >> w;
-    f >> s;
-    f >> e;
-
-    c.bbox_ = util::BoundingBox(n, w, s, e);
-
-    size_t size;
-    f >> size;
-
-    c.mapping_.clear();
-    c.mapping_.reserve(size);
-    for (size_t i = 0; i < size; ++i) {
-        size_t j;
-        f >> j;
-        c.mapping_.push_back(j);
-    }
-
-    return true;
+    CacheManager(LibMir::cacheDir(),
+        eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
+            false)) {
 }
 
 
 void CroppingCacheEntry::print(std::ostream& out) const {
-    out << "CroppingCacheEntry[size=" <<  mapping_.size() << ",bbox=" << bbox_ << ",size=" << eckit::Bytes(sizeof(size_t) * mapping_.size()) << "]";
+    out << "CroppingCacheEntry[size="
+    <<  mapping_.size()
+    << ",bbox=" << bbox_
+    << ",size=" << eckit::Bytes(sizeof(size_t) * mapping_.size()) << "]";
 }
 
 
@@ -122,6 +50,48 @@ CroppingCacheEntry::~CroppingCacheEntry() {
 size_t CroppingCacheEntry::footprint() const {
     return sizeof(*this) + mapping_.capacity() * sizeof(size_t);
 }
+
+void CroppingCacheEntry::save(const eckit::PathName& path) const {
+
+    eckit::TraceTimer<LibMir> timer("Saving cropping to cache");
+
+    eckit::FileStream f(path, "w");
+    f << bbox_.north();
+    f << bbox_.west();
+    f << bbox_.south();
+    f << bbox_.east();
+
+    f << mapping_.size();
+    for (size_t i = 0; i < mapping_.size(); ++i) {
+        f << mapping_[i];
+    }
+}
+
+void CroppingCacheEntry::load(const eckit::PathName& path)  {
+
+    eckit::TraceTimer<LibMir> timer("Loading cropping from cache");
+
+    eckit::FileStream f(path, "r");
+    double n, w, s, e;
+    f >> n;
+    f >> w;
+    f >> s;
+    f >> e;
+
+    bbox_ = util::BoundingBox(n, w, s, e);
+
+    size_t size;
+    f >> size;
+
+    mapping_.clear();
+    mapping_.reserve(size);
+    for (size_t i = 0; i < size; ++i) {
+        size_t j;
+        f >> j;
+        mapping_.push_back(j);
+    }
+}
+
 
 }  // namespace method
 }  // namespace mir

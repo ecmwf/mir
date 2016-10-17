@@ -20,6 +20,7 @@
 #include "eckit/log/Seconds.h"
 #include "mir/api/mir_version.h"
 #include "mir/config/LibMir.h"
+#include "mir/method/WeightMatrix.h"
 
 namespace mir {
 namespace caching {
@@ -46,67 +47,83 @@ b - Code should ASSERT() that what their are decoding looks correct. This can be
 
 
 WeightCache::WeightCache():
-    CacheManager("mir/weights", LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false)) {
+    CacheManager(LibMir::cacheDir(),
+        eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
+            false)) {
 }
 
-const char *WeightCache::version() const {
-    return "1"; // Change me if the cache file structure changes
-}
-
-const char *WeightCache::extension() const {
-    return ".mat";
-}
-
-void WeightCache::print(std::ostream &s) const {
-    s << "WeightCache[";
-    CacheManager::print(s);
-    s << "name=" << name() << ","
-      << "version=" << version() << ","
-      << "extention=" << extension() << ","
-      << "]";
-}
-
-void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) const {
-
-    eckit::PathName tmp = stage(key);
-
-    eckit::Log::info() << "Inserting weights in cache : " << tmp << "" << std::endl;
+  void WeightCacheTraits::save(const value_type& W, const eckit::PathName& path) {
+        eckit::Log::info() << "Inserting weights in cache : " << path << "" << std::endl;
 
     eckit::TraceTimer<LibMir> timer("Saving weights to cache");
-    W.save(tmp);
+        W.save(path);
+    }
 
-    ASSERT(commit(key, tmp));
-}
+     void WeightCacheTraits::load(value_type& W, const eckit::PathName& path) {
+        eckit::TraceTimer<LibMir> timer("Loading weights from cache");
+
+        W.load(path);
+         W.validate("fromCache");
+    }
+
+// const char *WeightCache::version() const {
+//     return "1"; // Change me if the cache file structure changes
+// }
+
+// const char *WeightCache::extension() const {
+//     return ".mat";
+// }
+
+// void WeightCache::print(std::ostream &s) const {
+//     s << "WeightCache[";
+//     CacheManager::print(s);
+//     s << "name=" << name() << ","
+//       << "version=" << version() << ","
+//       << "extention=" << extension() << ","
+//       << "]";
+// }
+
+// void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) const {
+
+//     eckit::PathName tmp = stage(key);
+
+//     eckit::Log::info() << "Inserting weights in cache : " << tmp << "" << std::endl;
+
+//     eckit::TraceTimer<LibMir> timer("Saving weights to cache");
+//     W.save(tmp);
+
+//     ASSERT(commit(key, tmp));
+// }
 
 
-void WeightCache::retrieveOrCreate(const std::string &key,
-    eckit::CacheContentCreator& creator,
-    method::WeightMatrix &W) const {
+// void WeightCache::retrieveOrCreate(const std::string &key,
+//     eckit::CacheContentCreator& creator,
+//     method::WeightMatrix &W) const {
 
-    eckit::PathName path = getOrCreate(key, creator);
+//     eckit::PathName path = getOrCreate(key, creator);
 
-    ASSERT(retrieve(key, W));
-}
+//     ASSERT(retrieve(key, W));
+// }
 
-bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) const {
-
-
-    eckit::PathName path;
-
-    if (!get(key, path))
-        return false;
-
-    // eckit::Log::info() << "WeightCache::retrieve  " << key << " (" << eckit::Bytes(path.size()) << ")" <<  std::endl;
+// bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) const {
 
 
-    // eckit::Log::info() << "Found weights in cache : " << path << "" << std::endl;
-    eckit::TraceTimer<LibMir> timer("Loading weights from cache");
+//     eckit::PathName path;
 
-    W.load(path);
-    W.validate("fromCache");
+//     if (!get(key, path))
+//         return false;
 
-    return true;
-}
+//     // eckit::Log::info() << "WeightCache::retrieve  " << key << " (" << eckit::Bytes(path.size()) << ")" <<  std::endl;
+
+
+//     // eckit::Log::info() << "Found weights in cache : " << path << "" << std::endl;
+//     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
+
+//     W.load(path);
+//     W.validate("fromCache");
+
+//     return true;
+// }
 
 
 }  // namespace method
