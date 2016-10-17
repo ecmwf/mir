@@ -14,6 +14,7 @@
 #ifndef mir_action_statistics_detail_CountOutsideRangeFn_h
 #define mir_action_statistics_detail_CountOutsideRangeFn_h
 
+#include <limits>
 
 namespace mir {
 namespace action {
