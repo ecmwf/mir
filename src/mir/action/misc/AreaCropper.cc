@@ -95,30 +95,9 @@ void AreaCropper::print(std::ostream &out) const {
 }
 
 
-static const caching::CroppingCacheEntry &getMapping(const std::string& key,
-        const repres::Representation *representation,
-        const util::BoundingBox &bbox,
-        bool caching) {
-
-
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
-    InMemoryCache<caching::CroppingCacheEntry>::iterator a = cache.find(key);
-    if (a != cache.end()) {
-        return *a;
-    }
-
-    static caching::CroppingCache disk;
-
-    caching::CroppingCacheEntry& c = cache[key];
-    // if (caching && disk.retrieve(key, c)) {
-    //     cache.footprint(key, c.footprint());
-    //     return c;
-    // }
-
-//    eckit::TraceTimer<LibMir> timer("Compute crop mapping");
-
-    // TODO: Consider caching these maps (e.g. cache map LL -> index instead)
+static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
+                                     const repres::Representation *representation,
+                                     const util::BoundingBox &bbox) {
     std::map<LL, size_t> m;
 
     double n = 0;
@@ -181,10 +160,50 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
     for (std::map<LL, size_t>::const_iterator j = m.begin(); j != m.end(); ++j) {
         c.mapping_.push_back((*j).second);
     }
+}
 
-    // if (caching) {
-    //     disk.insert(key, c);
-    // }
+
+static const caching::CroppingCacheEntry &getMapping(const std::string& key,
+        const repres::Representation *representation,
+        const util::BoundingBox &bbox,
+        bool caching) {
+
+
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    InMemoryCache<caching::CroppingCacheEntry>::iterator a = cache.find(key);
+    if (a != cache.end()) {
+        return *a;
+    }
+
+    caching::CroppingCacheEntry& c = cache[key];
+    if (caching) {
+        static caching::CroppingCache disk;
+
+        class CroppingCacheCreator: public caching::CroppingCache::CacheContentCreator {
+
+            const repres::Representation *representation_;
+            const util::BoundingBox &bbox_;
+
+            virtual void create(const eckit::PathName& path, caching::CroppingCacheEntry& c) {
+                createCroppingCacheEntry(c, representation_, bbox_);
+            }
+
+        public:
+            CroppingCacheCreator(const repres::Representation *representation,
+                                 const util::BoundingBox &bbox):
+                representation_(representation),
+                bbox_(bbox) {}
+        };
+
+        CroppingCacheCreator creator(representation, bbox);
+        disk.getOrCreate(key, creator, c);
+
+    } else {
+
+        createCroppingCacheEntry(c, representation, bbox);
+
+    }
 
     cache.footprint(key, c.footprint());
     return c;

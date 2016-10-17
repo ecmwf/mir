@@ -46,6 +46,15 @@ CroppingCacheEntry::~CroppingCacheEntry() {
     // std::cout << "Delete " << *this << std::endl;
 }
 
+
+//--------------------------------------------------------------------------
+ void CroppingCacheTraits::save(const value_type& c, const eckit::PathName& path) {
+        c.save(path);
+    }
+
+     void CroppingCacheTraits::load(value_type& c, const eckit::PathName& path) {
+        c.load(path);
+    }
 //--------------------------------------------------------------------------
 size_t CroppingCacheEntry::footprint() const {
     return sizeof(*this) + mapping_.capacity() * sizeof(size_t);

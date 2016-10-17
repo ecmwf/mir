@@ -33,14 +33,18 @@ struct CroppingCacheEntry {
 
     std::vector<size_t> mapping_;
     util::BoundingBox bbox_;
+
     void print(std::ostream& s) const;
-    friend std::ostream& operator<<(std::ostream& out, const CroppingCacheEntry& e) { e.print(out); return out; }
+
+    friend std::ostream& operator<<(std::ostream& out, const CroppingCacheEntry& e) {
+        e.print(out);
+        return out;
+    }
 
     size_t footprint() const;
 
     void save(const eckit::PathName& path) const;
     void load(const eckit::PathName& path);
-
 
 };
 
@@ -52,13 +56,9 @@ struct CroppingCacheTraits {
     static int version() { return 1; }
     static const char* extension() { return ".area"; }
 
-    static void save(const value_type& c, const eckit::PathName& path) {
-        c.save(path);
-    }
+    static void save(const value_type& c, const eckit::PathName& path);
 
-    static void load(value_type& c, const eckit::PathName& path) {
-        c.load(path);
-    }
+    static void load(value_type& c, const eckit::PathName& path);
 };
 
 
