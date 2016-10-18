@@ -32,7 +32,8 @@ struct CroppingCacheEntry {
 
     void print(std::ostream& s) const;
 
-    friend std::ostream& operator<<(std::ostream& out, const CroppingCacheEntry& e) {
+    friend std::ostream& operator<<(std::ostream& out,
+                                    const CroppingCacheEntry& e) {
         e.print(out);
         return out;
     }
