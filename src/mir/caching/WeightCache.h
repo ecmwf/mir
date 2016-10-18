@@ -21,7 +21,7 @@
 namespace mir {
 
 namespace method {
-    class WeightMatrix;
+class WeightMatrix;
 }
 
 namespace caching {
@@ -33,9 +33,9 @@ struct WeightCacheTraits {
 
     typedef method::WeightMatrix value_type;
 
-    static const char* name() { return "mir/weights"; }
-    static int version() { return 1; }
-    static const char* extension() { return ".mat"; }
+    static const char* name();
+    static int version();
+    static const char* extension();
 
     static void save(const value_type& W, const eckit::PathName& path);
 

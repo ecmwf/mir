@@ -24,15 +24,15 @@ namespace caching {
 //----------------------------------------------------------------------------------------------------------------------
 
 struct LegendreCacheTraits {
-    static const char* name() { return "mir/coeffs"; }
-    static int version() { return 1; }
-    static const char* extension() { return ".leg"; }
+    static const char* name();
+    static int version();
+    static const char* extension();
 
     // Below are dummy types and functions
     typedef int value_type;
 
-    static void save(value_type&, const eckit::PathName& path) {}
-    static void load(value_type&, const eckit::PathName& path) {}
+    static void save(value_type&, const eckit::PathName& path);
+    static void load(value_type&, const eckit::PathName& path);
 };
 
 class LegendreCache : public eckit::CacheManager<LegendreCacheTraits> {

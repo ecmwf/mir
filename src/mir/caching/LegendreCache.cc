@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include "LegendreCache.h"
+#include "mir/caching/LegendreCache.h"
 
-#include "mir/api/mir_version.h"
+// #include "mir/api/mir_version.h"
 #include "mir/config/LibMir.h"
-#include "eckit/config/Resource.h"
+// #include "eckit/config/Resource.h"
 
-#include "eckit/filesystem/PathName.h"
+// #include "eckit/filesystem/PathName.h"
 
 using namespace eckit;
 
@@ -25,8 +25,27 @@ namespace caching {
 
 LegendreCache::LegendreCache() :
     CacheManager(LibMir::cacheDir(),
-        eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
-            false)) {}
+                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
+                                       false)) {
+}
+
+const char *LegendreCacheTraits::name() {
+    return "mir/coeffs";
+}
+
+int LegendreCacheTraits::version() {
+    return 1;
+}
+
+const char *LegendreCacheTraits::extension() {
+    return ".leg";
+}
+
+void LegendreCacheTraits::save(LegendreCacheTraits::value_type &, const PathName &path) {
+}
+
+void LegendreCacheTraits::load(LegendreCacheTraits::value_type &, const PathName &path) {
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 

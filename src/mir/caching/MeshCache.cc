@@ -10,14 +10,14 @@
 
 #include "mir/caching/MeshCache.h"
 
-#include "eckit/filesystem/PathName.h"
-#include "eckit/serialisation/FileStream.h"
-#include "eckit/config/Resource.h"
+// #include "eckit/filesystem/PathName.h"
+// #include "eckit/serialisation/FileStream.h"
+// #include "eckit/config/Resource.h"
 
-#include "atlas/mesh/Mesh.h"
+// #include "atlas/mesh/Mesh.h"
 
 #include "mir/config/LibMir.h"
-#include "eckit/config/Resource.h"
+// #include "eckit/config/Resource.h"
 
 using namespace eckit;
 
@@ -31,8 +31,25 @@ MeshCache::MeshCache():
                                        false)) {
 }
 
-void MeshCacheTraits::save(value_type&, const eckit::PathName& path) {NOTIMP;}
-void MeshCacheTraits::load(value_type&, const eckit::PathName& path) {NOTIMP;}
+const char *MeshCacheTraits::name() {
+    return "mir/meshes";
+}
+
+int MeshCacheTraits::version() {
+    return 1;
+}
+
+const char *MeshCacheTraits::extension() {
+    return ".mesh";
+}
+
+void MeshCacheTraits::save(value_type&, const eckit::PathName& path) {
+    NOTIMP;
+}
+
+void MeshCacheTraits::load(value_type&, const eckit::PathName& path) {
+    NOTIMP;
+}
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace caching

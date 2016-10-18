@@ -9,18 +9,18 @@
  */
 
 
-#include "CroppingCache.h"
+#include "mir/caching/CroppingCache.h"
 
-#include "eckit/io/BufferedHandle.h"
-#include "eckit/config/Resource.h"
+// #include "eckit/io/BufferedHandle.h"
+// #include "eckit/config/Resource.h"
 #include "eckit/serialisation/FileStream.h"
 
-#include "eckit/log/BigNum.h"
+// #include "eckit/log/BigNum.h"
 #include "eckit/log/Bytes.h"
-#include "eckit/log/Plural.h"
-#include "eckit/log/Seconds.h"
-#include "eckit/log/Timer.h"
-#include "mir/api/mir_version.h"
+// #include "eckit/log/Plural.h"
+// #include "eckit/log/Seconds.h"
+// #include "eckit/log/Timer.h"
+// #include "mir/api/mir_version.h"
 #include "mir/config/LibMir.h"
 
 namespace mir {
@@ -29,16 +29,16 @@ namespace caching {
 
 CroppingCache::CroppingCache():
     CacheManager(LibMir::cacheDir(),
-        eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
-            false)) {
+                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
+                                       false)) {
 }
 
 
 void CroppingCacheEntry::print(std::ostream& out) const {
     out << "CroppingCacheEntry[size="
-    <<  mapping_.size()
-    << ",bbox=" << bbox_
-    << ",size=" << eckit::Bytes(sizeof(size_t) * mapping_.size()) << "]";
+        <<  mapping_.size()
+        << ",bbox=" << bbox_
+        << ",size=" << eckit::Bytes(sizeof(size_t) * mapping_.size()) << "]";
 }
 
 
@@ -48,13 +48,25 @@ CroppingCacheEntry::~CroppingCacheEntry() {
 
 
 //--------------------------------------------------------------------------
- void CroppingCacheTraits::save(const value_type& c, const eckit::PathName& path) {
-        c.save(path);
-    }
+const char *CroppingCacheTraits::name() {
+    return "mir/cropping";
+}
 
-     void CroppingCacheTraits::load(value_type& c, const eckit::PathName& path) {
-        c.load(path);
-    }
+int CroppingCacheTraits::version() {
+    return 1;
+}
+
+const char *CroppingCacheTraits::extension() {
+    return ".area";
+}
+
+void CroppingCacheTraits::save(const value_type& c, const eckit::PathName& path) {
+    c.save(path);
+}
+
+void CroppingCacheTraits::load(value_type& c, const eckit::PathName& path) {
+    c.load(path);
+}
 //--------------------------------------------------------------------------
 size_t CroppingCacheEntry::footprint() const {
     return sizeof(*this) + mapping_.capacity() * sizeof(size_t);

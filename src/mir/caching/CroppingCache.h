@@ -15,11 +15,7 @@
 #ifndef mir_method_WeightCache_H
 #define mir_method_WeightCache_H
 
-#include <string>
-
 #include "eckit/container/CacheManager.h"
-
-#include "mir/method/WeightMatrix.h"
 #include "mir/util/BoundingBox.h"
 
 
@@ -52,9 +48,9 @@ struct CroppingCacheTraits {
 
     typedef CroppingCacheEntry value_type;
 
-    static const char* name() { return "mir/cropping"; }
-    static int version() { return 1; }
-    static const char* extension() { return ".area"; }
+    static const char* name();
+    static int version();
+    static const char* extension();
 
     static void save(const value_type& c, const eckit::PathName& path);
 
@@ -65,9 +61,6 @@ struct CroppingCacheTraits {
 class CroppingCache : public eckit::CacheManager<CroppingCacheTraits> {
 public:  // methods
     explicit CroppingCache();
-
-
-
 };
 
 //----------------------------------------------------------------------------------------------------------------------
