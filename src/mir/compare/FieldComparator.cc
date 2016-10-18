@@ -58,6 +58,7 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
 
     options.push_back(new SimpleOption<bool>("ignore-duplicates",       "Ignore duplicate fields"));
     options.push_back(new SimpleOption<bool>("compare-statistics",      "Compare field statistics"));
+    options.push_back(new SimpleOption<bool>("compare-values",          "Compare field values"));
 
     options.push_back(new SimpleOption<std::string>("ignore",           "Slash separated list of request keys to ignore when comparing fields"));
     options.push_back(new SimpleOption<std::string>("parameters-white-list",       "Slash separated list of parameters to ignore"));
@@ -114,8 +115,8 @@ FieldComparator::~FieldComparator() {
 }
 
 void FieldComparator::compare(const std::string& name,
-                         const MultiFile& multi1,
-                         const MultiFile& multi2) {
+                              const MultiFile& multi1,
+                              const MultiFile& multi2) {
 
     bool saveFields = false;
     args_.get("save-fields", saveFields);
@@ -128,8 +129,12 @@ void FieldComparator::compare(const std::string& name,
     FieldSet fields1;
     FieldSet fields2;
 
+    bool compareValues = false;
+    args_.get("compare-values", compareValues);
+
+
     compareCounts(name, multi1, multi2, fields1, fields2);
-    compareFields(multi1, multi2, fields1, fields2, true);
+    compareFields(multi1, multi2, fields1, fields2, compareValues);
     compareFields(multi2, multi1, fields2, fields1, false);
 
 
@@ -166,7 +171,7 @@ void FieldComparator::compare(const std::string& name,
 
 
 void FieldComparator::compare(const std::string& path1,
-                         const std::string& path2) {
+                              const std::string& path2) {
     MultiFile multi1(path1);
     MultiFile multi2(path2);
 
@@ -254,11 +259,11 @@ static void setGrid(Field& field, grib_handle *h) {
 }
 
 void FieldComparator::getField(const MultiFile& multi,
-                          eckit::Buffer& buffer,
-                          FieldSet& fields,
-                          const std::string& path,
-                          off_t offset,
-                          size_t size) {
+                               eckit::Buffer& buffer,
+                               FieldSet& fields,
+                               const std::string& path,
+                               off_t offset,
+                               size_t size) {
 
     Field field(path, offset, size);
 
@@ -762,7 +767,7 @@ void FieldComparator::compareFieldValues(
 
     ASSERT(comparison1 == comparison2);
 
-    std::vector<std::string> comparators=eckit::StringTools::split("/", comparison1);
+    std::vector<std::string> comparators = eckit::StringTools::split("/", comparison1);
     for (auto c = comparators.begin(); c != comparators.end(); ++c) {
         eckit::ScopedPtr<Comparator> comp(ComparatorFactory::build(*c, metadata1, metadata2));
         comp->execute(input1.field(), input2.field());
@@ -772,10 +777,10 @@ void FieldComparator::compareFieldValues(
 
 
 void FieldComparator::missingField(const MultiFile & multi1,
-                              const MultiFile & multi2,
-                              const Field & field,
-                              const FieldSet & fields,
-                              bool & show) {
+                                   const MultiFile & multi2,
+                                   const Field & field,
+                                   const FieldSet & fields,
+                                   bool & show) {
 
     if (show) {
         error("fields-not-found");
@@ -824,10 +829,10 @@ void FieldComparator::missingField(const MultiFile & multi1,
 }
 
 void FieldComparator::compareFields(const MultiFile & multi1,
-                               const MultiFile & multi2,
-                               const FieldSet & fields1,
-                               const FieldSet & fields2,
-                               bool compareData) {
+                                    const MultiFile & multi2,
+                                    const FieldSet & fields1,
+                                    const FieldSet & fields2,
+                                    bool compareData) {
 
     bool show = true;
     bool compareStatistics = false;
@@ -850,10 +855,10 @@ void FieldComparator::compareFields(const MultiFile & multi1,
 
 
 void FieldComparator::compareCounts(const std::string & name,
-                               const MultiFile & multi1,
-                               const MultiFile & multi2,
-                               FieldSet & fields1,
-                               FieldSet & fields2) {
+                                    const MultiFile & multi1,
+                                    const MultiFile & multi2,
+                                    FieldSet & fields1,
+                                    FieldSet & fields2) {
 
 
     size_t n1 = count(multi1, fields1);
