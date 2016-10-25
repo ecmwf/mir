@@ -17,6 +17,7 @@
 #define mir_method_WeightMatrix_H
 
 #include <sstream>
+
 #include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/SparseMatrix.h"
 
@@ -51,6 +52,9 @@ class WeightMatrix {
     void save(const eckit::PathName &path) const;
 
     void load(const eckit::PathName &path);
+
+    void setIdentity();
+    void setFromTriplets(const std::vector<Triplet>& triplets);
 
     Size rows() const {
         return matrix_.rows();

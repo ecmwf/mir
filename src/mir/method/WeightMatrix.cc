@@ -38,6 +38,27 @@ void WeightMatrix::load(const eckit::PathName &path)  {
     matrix_.load(path);
 }
 
+void WeightMatrix::setIdentity()
+{
+    ASSERT(matrix_.rows());
+    ASSERT(matrix_.cols());
+
+    SparseMatrix M;
+    M.setIdentity(matrix_.rows(), matrix_.cols());
+
+    matrix_.swap(M);
+}
+
+void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& triplets)
+{
+    ASSERT(matrix_.rows());
+    ASSERT(matrix_.cols());
+
+    SparseMatrix M(matrix_.rows(), matrix_.cols(), triplets);
+
+    matrix_.swap(M);
+}
+
 void WeightMatrix::prune(double value) {
     matrix_.prune(value);
 }
