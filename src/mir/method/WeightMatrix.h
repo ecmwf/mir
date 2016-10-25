@@ -29,6 +29,7 @@ class PathName;
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class WeightMatrix {
 
@@ -37,7 +38,7 @@ class WeightMatrix {
     typedef eckit::linalg::SparseMatrix SparseMatrix;
     typedef eckit::linalg::Matrix       Matrix;
     typedef eckit::linalg::Vector       Vector;
-    typedef SparseMatrix::Size          Size;
+    typedef eckit::linalg::Size         Size;
 
   public: // methods
 
@@ -58,10 +59,6 @@ class WeightMatrix {
     Size cols() const {
         return matrix_.cols();
     }
-
-    void setFromTriplets(const std::vector<Triplet>& triplets);
-
-    void setIdentity();
 
     void prune(double value);
 
@@ -102,6 +99,8 @@ class WeightMatrix {
         return out;
     }
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 }  // namespace method

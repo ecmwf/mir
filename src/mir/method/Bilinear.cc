@@ -102,7 +102,7 @@ void Bilinear::hash(eckit::MD5 &md5) const {
 }
 
 
-void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
+void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace& in, const GridSpace& out) const {
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
@@ -130,8 +130,11 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 
 
     // pre-allocate matrix entries
+
+    const size_t onpts = out.grid().npts();
+
     std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
-    weights_triplets.reserve( out.grid().npts() );
+    weights_triplets.reserve( onpts );
 
     // access the input/output fields coordinates
 
@@ -168,7 +171,6 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 //    outfile.precision(2);
 
     // interpolate each output point in turn
-    const size_t onpts = out.grid().npts();
     for (size_t i = 0; i < onpts; ++i) {
 
         const double lat = ocoords(i, LAT);
@@ -354,11 +356,11 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 
     }
 
-//    outfile.close();
+    // outfile.close();
 
-    // set sparse matrix
-    W.setFromTriplets(weights_triplets);
+    eckit::linalg::SparseMatrix M(onpts, inpts, weights_triplets); // build matrix
 
+    W.matrix().swap(M);
 }
 
 

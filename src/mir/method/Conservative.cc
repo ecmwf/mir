@@ -159,7 +159,7 @@ void Conservative::assemble(context::Context& ctx, WeightMatrix &W, const GridSp
 
     // 4) W = M_d^{-1} . I^{T} . M_s
 
-    W.matrix().reserve( IM.matrix().nonZeros() ); // reserve same space as IM
+    W.matrix().reserve(IM.matrix().rows(), IM.matrix().cols(), IM.matrix().nonZeros()); // reserve same space as IM
 
     LinearAlgebra::backend().dsptd(M_d, IM.matrix(), M_s, W.matrix());
 }

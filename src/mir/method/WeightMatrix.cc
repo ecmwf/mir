@@ -38,14 +38,6 @@ void WeightMatrix::load(const eckit::PathName &path)  {
     matrix_.load(path);
 }
 
-void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& triplets) {
-    matrix_.setFromTriplets(triplets);
-}
-
-void WeightMatrix::setIdentity() {
-    matrix_.setIdentity();
-}
-
 void WeightMatrix::prune(double value) {
     matrix_.prune(value);
 }
@@ -129,6 +121,7 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 }
 
 void WeightMatrix::validate(const char *when) const {
+
     using eckit::linalg::Index;
     using mir::util::compare::is_approx_one;
     using mir::util::compare::is_approx_zero;
