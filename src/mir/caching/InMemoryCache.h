@@ -16,6 +16,7 @@
 #define mir_caching_InMemoryCache_H
 
 #include "mir/caching/InMemoryCacheBase.h"
+#include "eckit/thread/Mutex.h"
 #include "eckit/config/Resource.h"
 #include "eckit/memory/ScopedPtr.h"
 

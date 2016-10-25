@@ -32,9 +32,9 @@ template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, unsigned long long capacity, const char* variable, bool cleanupAtExit):
     name_(name),
     capacity_(name + "InMemoryCacheCapacity;"  + variable, capacity),
+    cleanupAtExit_(cleanupAtExit),
     users_(0),
-    statistics_(0),
-    cleanupAtExit_(cleanupAtExit) {
+    statistics_(0) {
 }
 
 
