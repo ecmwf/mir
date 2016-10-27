@@ -15,7 +15,7 @@
 
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "mir/caching/SharedMemoryLoader.h"
+#include "mir/caching/legendre/SharedMemoryLoader.h"
 #include "mir/tools/MIRTool.h"
 
 
@@ -52,11 +52,11 @@ void MIRSharedMemory::execute(const eckit::option::CmdArgs& args) {
     std::string path;
 
     if (args.get("load", path)) {
-        mir::caching::SharedMemoryLoader::loadSharedMemory(path);
+        mir::caching::legendre::SharedMemoryLoader::loadSharedMemory(path);
     }
 
     if (args.get("unload", path)) {
-        mir::caching::SharedMemoryLoader::unloadSharedMemory(path);
+        mir::caching::legendre::SharedMemoryLoader::unloadSharedMemory(path);
     }
 }
 

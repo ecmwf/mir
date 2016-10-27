@@ -10,6 +10,8 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
+///
 /// @date Apr 2015
 
 // #include <malloc.h>
@@ -36,7 +38,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/caching/LegendreCache.h"
-#include "mir/caching/LegendreLoader.h"
+#include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/caching/InMemoryCache.h"
@@ -61,7 +63,7 @@ struct TransCache {
 
     bool inited_;
     struct Trans_t trans_;
-    mir::caching::LegendreLoader *loader_;
+    mir::caching::legendre::LegendreLoader *loader_;
 
     TransCache():
         inited_(false),
@@ -207,7 +209,7 @@ static void transform(
             fillTrans(trans, truncation, grid);
 
             tc.inited_ = true;
-            tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
+            tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation, path);
             // std::cout << "LegendreLoader " << *tc.loader_ << std::endl;
 
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);

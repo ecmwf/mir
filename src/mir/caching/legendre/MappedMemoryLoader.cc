@@ -10,31 +10,29 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
+///
 /// @date Apr 2015
 
+#include "mir/caching/legendre/MappedMemoryLoader.h"
 
-#include <iostream>
-
-#include "mir/caching/MappedMemoryLoader.h"
-
-#include <sys/mman.h>
 #include <fcntl.h>
+#include <sys/mman.h>
+#include <iostream>
 
 #include "eckit/eckit.h"
 #include "eckit/os/Stat.h"
 
 #include "eckit/log/Bytes.h"
 
-
 namespace mir {
 namespace caching {
+namespace legendre {
 
+//----------------------------------------------------------------------------------------------------------------------
 
-MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName &path):
-    LegendreLoader(parametrisation, path),
-    fd_(-1),
-    address_(0),
-    size_(0) {
+MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
+    : LegendreLoader(parametrisation, path), fd_(-1), address_(0), size_(0) {
 
     ASSERT(sizeof(size_) > 4);
 
@@ -49,31 +47,23 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation &parametr
 
     size_ = s.st_size;
 
-
     address_ = ::mmap(0, size_, PROT_READ, MAP_SHARED, fd_, 0);
     if (address_ == MAP_FAILED) {
-        eckit::Log::error() << "open(" << path << ',' << size_ << ')'
-                            << eckit::Log::syserr << std::endl;
+        eckit::Log::error() << "open(" << path << ',' << size_ << ')' << eckit::Log::syserr << std::endl;
         throw eckit::FailedSystemCall("mmap");
     }
-
-
 }
-
 
 MappedMemoryLoader::~MappedMemoryLoader() {
-    if (address_)
-        SYSCALL(::munmap(address_, size_));
-    if (fd_ >= 0)
-        SYSCALL(::close(fd_));
+    if (address_) SYSCALL(::munmap(address_, size_));
+    if (fd_ >= 0) SYSCALL(::close(fd_));
 }
 
-
-void MappedMemoryLoader::print(std::ostream &out) const {
+void MappedMemoryLoader::print(std::ostream& out) const {
     out << "MappedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(size_) << "]";
 }
 
-const void *MappedMemoryLoader::address() const {
+const void* MappedMemoryLoader::address() const {
     return address_;
 }
 
@@ -84,10 +74,10 @@ size_t MappedMemoryLoader::size() const {
 namespace {
 static LegendreLoaderBuilder<MappedMemoryLoader> loader1("mapped-memory");
 static LegendreLoaderBuilder<MappedMemoryLoader> loader2("mmap");
-
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
-}  // namespace caching
-}  // namespace mir
-
+} // namespace legendre
+} // namespace caching
+} // namespace mir

@@ -10,13 +10,13 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
+///
 /// @date Apr 2015
 
+#include "mir/caching/legendre/SharedMemoryLoader.h"
 
 #include <sys/sem.h>
-
-#include "mir/caching/SharedMemoryLoader.h"
-#include "mir/param/SimpleParametrisation.h"
 
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -38,11 +38,14 @@
 
 #include "eckit/log/Timer.h"
 #include "eckit/io/StdFile.h"
+
+#include "mir/param/SimpleParametrisation.h"
 #include "mir/config/LibMir.h"
 
 
 namespace mir {
 namespace caching {
+namespace legendre {
 
 namespace {
 struct sembuf _lock[] = {
@@ -389,15 +392,15 @@ size_t SharedMemoryLoader::size() const {
 }
 
 namespace {
+
 static LegendreLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
 static LegendreLoaderBuilder<SharedMemoryLoader> loader2("shmem");
 static LegendreLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
 static LegendreLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
 
-
 }
 
-
+}  // namespace legendre
 }  // namespace caching
 }  // namespace mir
 

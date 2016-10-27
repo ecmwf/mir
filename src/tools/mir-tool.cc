@@ -25,7 +25,7 @@
 #include "mir/action/plan/Executor.h"
 #include "mir/action/statistics/Statistics.h"
 #include "mir/api/MIRJob.h"
-#include "mir/caching/LegendreLoader.h"
+#include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/input/DummyInput.h"
 #include "mir/input/GeoPointsFileInput.h"
@@ -138,7 +138,7 @@ public:
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
-        options_.push_back(new FactoryOption<mir::caching::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
+        options_.push_back(new FactoryOption<mir::caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used on not"));
         options_.push_back(new FactoryOption<mir::action::statistics::StatisticsFactory>("stats", "Statistics methods for interpreting field values"));
 

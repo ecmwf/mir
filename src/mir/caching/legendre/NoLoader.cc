@@ -10,44 +10,35 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
+///
 /// @date Apr 2015
 
-
-#include <iostream>
-
-#include "mir/caching/NoLoader.h"
-
-#include <sys/mman.h>
 #include <fcntl.h>
+#include <iostream>
+#include <sys/mman.h>
+
+#include "mir/caching/legendre/NoLoader.h"
 
 #include "eckit/eckit.h"
 #include "eckit/os/Stat.h"
 
 #include "eckit/log/Bytes.h"
 
-
 namespace mir {
 namespace caching {
+namespace legendre {
 
+NoLoader::NoLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
+    : LegendreLoader(parametrisation, path) {}
 
-// Class o turn off loading of coefficients
-// Will not prevent the creation of the file
+NoLoader::~NoLoader() {}
 
-NoLoader::NoLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName &path):
-    LegendreLoader(parametrisation, path) {
-
-}
-
-NoLoader::~NoLoader() {
-
-}
-
-
-void NoLoader::print(std::ostream &out) const {
+void NoLoader::print(std::ostream& out) const {
     out << "NoLoader[]";
 }
 
-const void *NoLoader::address() const {
+const void* NoLoader::address() const {
     return 0;
 }
 
@@ -59,7 +50,6 @@ namespace {
 static LegendreLoaderBuilder<NoLoader> loader("none");
 }
 
-
-}  // namespace caching
-}  // namespace mir
-
+} // namespace legendre
+} // namespace caching
+} // namespace mir

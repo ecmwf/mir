@@ -10,50 +10,47 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
+///
 /// @date Apr 2015
 
-
-#include <iostream>
-
-#include "mir/caching/FileLoader.h"
-
-#include <sys/mman.h>
 #include <fcntl.h>
+#include <iostream>
+#include <sys/mman.h>
+
+#include "mir/caching/legendre/FileLoader.h"
 
 #include "eckit/eckit.h"
 #include "eckit/os/Stat.h"
 
-#include "eckit/log/Bytes.h"
-#include "eckit/io/StdFile.h"
-#include "eckit/log/Timer.h"
-#include "mir/config/LibMir.h"
 #include "mir/config/LibMir.h"
 
+#include "eckit/io/StdFile.h"
+#include "eckit/log/Bytes.h"
+#include "eckit/log/Timer.h"
+#include "mir/config/LibMir.h"
 
 namespace mir {
 namespace caching {
+namespace legendre {
 
+FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
+    : LegendreLoader(parametrisation, path), buffer_(path.size()) {
 
-FileLoader::FileLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName &path):
-    LegendreLoader(parametrisation, path),
-    buffer_(path.size()) {
-//    eckit::TraceTimer<LibMir> timer("Loading legendre coefficients from file");
+    //    eckit::TraceTimer<LibMir> timer("Loading legendre coefficients from file");
     eckit::Log::debug<LibMir>() << "Loading legendre coefficients from " << path << std::endl;
 
     eckit::StdFile file(path);
     ASSERT(::fread(buffer_, 1, buffer_.size(), file) == buffer_.size());
 }
 
+FileLoader::~FileLoader() {}
 
-FileLoader::~FileLoader() {
-}
-
-
-void FileLoader::print(std::ostream &out) const {
+void FileLoader::print(std::ostream& out) const {
     out << "FileLoader[path=" << path_ << ",size=" << eckit::Bytes(buffer_.size()) << "]";
 }
 
-const void *FileLoader::address() const {
+const void* FileLoader::address() const {
     return buffer_;
 }
 
@@ -65,7 +62,6 @@ namespace {
 static LegendreLoaderBuilder<FileLoader> loader("file-io");
 }
 
-
-}  // namespace caching
-}  // namespace mir
-
+} // namespace legendre
+} // namespace caching
+} // namespace mir

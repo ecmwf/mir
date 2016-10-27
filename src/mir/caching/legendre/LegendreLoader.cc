@@ -10,54 +10,47 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
+///
 /// @date Apr 2015
 
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Once.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/thread/Once.h"
 
-#include "mir/caching/LegendreLoader.h"
-#include "mir/param/MIRParametrisation.h"
+#include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/config/LibMir.h"
-
+#include "mir/param/MIRParametrisation.h"
 
 namespace mir {
 namespace caching {
-namespace {
+namespace legendre {
 
+//----------------------------------------------------------------------------------------------------------------------
 
-static eckit::Mutex *local_mutex = 0;
-static std::map<std::string,LegendreLoaderFactory*> *m = 0;
+static eckit::Mutex* local_mutex = 0;
+static std::map<std::string, LegendreLoaderFactory*>* m = 0;
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map<std::string,LegendreLoaderFactory*>();
+    m = new std::map<std::string, LegendreLoaderFactory*>();
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
-}  // (anonymous namespace)
+LegendreLoader::LegendreLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
+    : parametrisation_(parametrisation), path_(path.realName()) {}
 
+LegendreLoader::~LegendreLoader() {}
 
-LegendreLoader::LegendreLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName& path):
-    parametrisation_(parametrisation),
-    path_(path.realName()) {
-}
+//----------------------------------------------------------------------------------------------------------------------
 
+LegendreLoaderFactory::LegendreLoaderFactory(const std::string& name) : name_(name) {
 
-LegendreLoader::~LegendreLoader() {
-}
-
-//-----------------------------------------------------------------------------
-
-
-LegendreLoaderFactory::LegendreLoaderFactory(const std::string& name):
-    name_(name) {
-
-    pthread_once(&once,init);
+    pthread_once(&once, init);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -65,21 +58,18 @@ LegendreLoaderFactory::LegendreLoaderFactory(const std::string& name):
     (*m)[name] = this;
 }
 
-
 LegendreLoaderFactory::~LegendreLoaderFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
-
 }
-
 
 LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& params, const eckit::PathName& path) {
 
-    pthread_once(&once,init);
+    pthread_once(&once, init);
 
     std::string name;
 
-    if(!params.get("legendre-loader", name)) {
+    if (!params.get("legendre-loader", name)) {
         throw eckit::SeriousBug("LegendreLoaderFactory cannot get legendre.loader");
     }
 
@@ -91,14 +81,12 @@ LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& pa
     if (j == m->end()) {
         eckit::Log::error() << "No LegendreLoaderFactory for [" << name << "]" << std::endl;
         eckit::Log::error() << "LegendreLoaderFactories are:" << std::endl;
-        for(j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
+        for (j = m->begin(); j != m->end(); ++j) eckit::Log::error() << "   " << (*j).first << std::endl;
         throw eckit::SeriousBug(std::string("No LegendreLoaderFactory called ") + name);
     }
 
     return (*j).second->make(params, path);
 }
-
 
 void LegendreLoaderFactory::list(std::ostream& out) {
     pthread_once(&once, init);
@@ -106,12 +94,14 @@ void LegendreLoaderFactory::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (std::map<std::string, LegendreLoaderFactory *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
+    for (std::map<std::string, LegendreLoaderFactory*>::const_iterator j = m->begin(); j != m->end(); ++j) {
         out << sep << (*j).first;
         sep = ", ";
     }
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+
+}  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-
