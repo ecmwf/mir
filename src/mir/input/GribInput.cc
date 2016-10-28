@@ -15,12 +15,15 @@
 
 #include <iomanip>
 #include <iostream>
+
+#include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/BufferedHandle.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/thread/AutoLock.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
@@ -541,7 +544,9 @@ void GribInput::marsRequest(std::ostream &out) const {
 
     ASSERT(grib_);
 
-    grib_keys_iterator *keys =  grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, "mars");
+    static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
+
+    grib_keys_iterator *keys =  grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(keys);
 
     const char *sep = "";

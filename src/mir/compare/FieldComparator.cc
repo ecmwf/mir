@@ -12,6 +12,8 @@
 #include "mir/compare/FieldComparator.h"
 
 #include <cmath>
+
+#include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/StdFile.h"
@@ -22,6 +24,7 @@
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/serialisation/MemoryStream.h"
 #include "eckit/utils/Translator.h"
+
 #include "mir/caching/InMemoryCache.h"
 #include "mir/compare/Comparator.h"
 #include "mir/compare/FieldSet.h"
@@ -276,9 +279,12 @@ void FieldComparator::getField(const MultiFile& multi,
     ASSERT(h);
     HandleDeleter del(h);
 
-    char mars_str [] = "mars";
-    grib_keys_iterator *ks = grib_keys_iterator_new(h, GRIB_KEYS_ITERATOR_ALL_KEYS, mars_str);
+    static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
+
+    grib_keys_iterator *ks = grib_keys_iterator_new(h, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(ks);
+
+    /// @todo this code should be factored out into metkit
 
     while (grib_keys_iterator_next(ks)) {
         const char *name = grib_keys_iterator_get_name(ks);
