@@ -73,9 +73,7 @@ class SpectralComparator : public Comparator {
 
     // -- Members
 
-#if 0
     double absoluteError_;
-#endif
 
     // -- Methods
     // None

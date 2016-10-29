@@ -28,13 +28,7 @@ namespace compare {
 
 
 ScalarComparator::ScalarComparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) {
-    double absoluteError1;
-    double absoluteError2;
-    ASSERT(param1.get("absolute-error", absoluteError1));
-    ASSERT(param2.get("absolute-error", absoluteError2));
-    ASSERT(absoluteError1 == absoluteError2);
-
-    absoluteError_ = absoluteError1;
+    absoluteError_ = getSameParameter<double>("absolute-error", param1, param2);
     ASSERT(absoluteError_ > 0);
 }
 

@@ -26,16 +26,8 @@ namespace compare {
 
 
 SpectralComparator::SpectralComparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) {
-#if 0
-    double absoluteError1;
-    double absoluteError2;
-    ASSERT(param1.get("absolute-error", absoluteError1));
-    ASSERT(param2.get("absolute-error", absoluteError2));
-    ASSERT(absoluteError1 == absoluteError2);
-
-    absoluteError_ = absoluteError1;
+    absoluteError_ = getSameParameter<double>("absolute-error", param1, param2);
     ASSERT(absoluteError_ > 0);
-#endif
 }
 
 
@@ -93,9 +85,7 @@ void SpectralComparator::execute(const data::MIRField& field1, const data::MIRFi
 
 void SpectralComparator::print(std::ostream& out) const {
     out << "SpectralComparator["
-#if 0
         << "absoluteError=" << absoluteError_
-#endif
         << "]";
 }
 
