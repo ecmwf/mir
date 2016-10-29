@@ -198,6 +198,8 @@ list(
     compare/MultiFile.h
     compare/ScalarComparator.cc
     compare/ScalarComparator.h
+    compare/SpectralComparator.cc
+    compare/SpectralComparator.h
     config/LibMir.cc
     config/LibMir.h
     data/Field.cc

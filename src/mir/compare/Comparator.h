@@ -19,6 +19,7 @@
 #include <iosfwd>
 #include <string>
 #include "eckit/memory/NonCopyable.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -82,6 +83,18 @@ class Comparator : public eckit::NonCopyable {
     // -- Methods
 
     virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+
+    template< typename T >
+    T getSameParameter(const std::string& parameter, const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) {
+        T value1;
+        T value2;
+
+        ASSERT(param1.get(parameter, value1));
+        ASSERT(param2.get(parameter, value2));
+
+        ASSERT(value1 == value2);
+        return value1;
+    }
 
     // -- Overridden methods
     // None

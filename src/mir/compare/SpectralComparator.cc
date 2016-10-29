@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,14 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Oct 2016
 
 #include <cmath>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/compare/ScalarComparator.h"
+#include "mir/compare/SpectralComparator.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -27,22 +25,23 @@ namespace mir {
 namespace compare {
 
 
-ScalarComparator::ScalarComparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) {
+SpectralComparator::SpectralComparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) {
     absoluteError_ = getSameParameter<double>("absolute-error", param1, param2);
     ASSERT(absoluteError_ > 0);
 }
 
 
-ScalarComparator::~ScalarComparator() {
+SpectralComparator::~SpectralComparator() {
 }
 
-void ScalarComparator::execute(const data::MIRField& field1, const data::MIRField& field2) const {
+void SpectralComparator::execute(const data::MIRField& field1, const data::MIRField& field2) const {
     ASSERT(field1.dimensions() == field2.dimensions());
 
     for (size_t w = 0; w < field1.dimensions(); ++w) {
 
         const std::vector<double>& values1 = field1.values(w);
         const std::vector<double>& values2 = field2.values(w);
+#if 0
         ASSERT(values1.size() == values2.size());
 
         if (field1.hasMissing() || field2.hasMissing()) {
@@ -78,20 +77,21 @@ void ScalarComparator::execute(const data::MIRField& field1, const data::MIRFiel
             }
 
         }
+#endif
 
     }
 }
 
 
-void ScalarComparator::print(std::ostream& out) const {
-    out << "ScalarComparator["
+void SpectralComparator::print(std::ostream& out) const {
+    out << "SpectralComparator["
         << "absoluteError=" << absoluteError_
         << "]";
 }
 
 
 namespace {
-ComparatorBuilder<ScalarComparator> __scalarComparator("scalar");
+ComparatorBuilder<SpectralComparator> __spectralComparator("spectral");
 }
 
 
