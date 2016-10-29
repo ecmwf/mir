@@ -170,6 +170,16 @@ list(
     caching/legendre/NoLoader.h
     caching/legendre/SharedMemoryLoader.cc
     caching/legendre/SharedMemoryLoader.h
+    caching/interpolator/FileLoader.cc
+    caching/interpolator/FileLoader.h
+    caching/interpolator/InterpolatorLoader.cc
+    caching/interpolator/InterpolatorLoader.h
+    caching/interpolator/MappedMemoryLoader.cc
+    caching/interpolator/MappedMemoryLoader.h
+    caching/interpolator/NoLoader.cc
+    caching/interpolator/NoLoader.h
+    caching/interpolator/SharedMemoryLoader.cc
+    caching/interpolator/SharedMemoryLoader.h
     caching/MeshCache.cc
     caching/MeshCache.h
     caching/WeightCache.cc
