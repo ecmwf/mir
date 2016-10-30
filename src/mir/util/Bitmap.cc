@@ -91,7 +91,7 @@ Bitmap::Bitmap(const std::string& path):
     eckit::Tokenizer parse(":");
     parse(path, v);
 
-    if (v.size() == 3) {
+    if (path[0] != '/' && v.size() == 3) {
         prodgenBitmap(v[0], v[1], v[2]);
     }
     else {
