@@ -10,15 +10,16 @@
 
 /// @date Oct 2016
 
-#include <cmath>
 
+#include <algorithm>
+#include <cmath>
 #include "eckit/exception/Exceptions.h"
 #include "mir/compare/SpectralComparator.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
-#include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
@@ -34,50 +35,46 @@ SpectralComparator::SpectralComparator(const param::MIRParametrisation& param1, 
 SpectralComparator::~SpectralComparator() {
 }
 
-void SpectralComparator::execute(const data::MIRField& field1, const data::MIRField& field2) const {
-    ASSERT(field1.dimensions() == field2.dimensions());
 
+void SpectralComparator::execute(const data::MIRField& field1, const data::MIRField& field2) const {
+
+    // access unpacked SH values to compare with absolute tolerance
+    const repres::Representation *repres1 = field1.representation();
+    const repres::Representation *repres2 = field2.representation();
+
+    const size_t Ts = std::min(repres1->pentagonalResolutionTs(), repres2->pentagonalResolutionTs());
+    if (!Ts) {
+        std::ostringstream oss;
+        oss << "SpectralComparator: cannot compare unpacked coefficients, as TS=0";
+        throw eckit::UserError(oss.str());
+    }
+
+    // compare unpacked coefficients (up to TS, with i >= TS they are packed)
+    ASSERT(field1.dimensions() == field2.dimensions());
     for (size_t w = 0; w < field1.dimensions(); ++w) {
 
         const std::vector<double>& values1 = field1.values(w);
         const std::vector<double>& values2 = field2.values(w);
-#if 0
         ASSERT(values1.size() == values2.size());
+        ASSERT(values1.size() >= Ts);
 
-        if (field1.hasMissing() || field2.hasMissing()) {
-            NOTIMP;
+        for (size_t i = 0; i < Ts; ++i) {
 
-            util::compare::IsMissingFn isMissing1(field1.hasMissing()? field1.missingValue() : std::numeric_limits<double>::quiet_NaN());
-            util::compare::IsMissingFn isMissing2(field2.hasMissing()? field2.missingValue() : std::numeric_limits<double>::quiet_NaN());
+            double diff = std::abs(values1[i] - values2[i]);
+            if (diff > absoluteError_) {
 
-            for (size_t i = 0; i < values1.size(); ++i) {
-                if (isMissing1(values1[i] != isMissing1(values2[i]))) {
+                std::ostringstream oss;
+                oss << "value mismatch at "
+                       "point " << (i+1) << " < TS=" << Ts << ": "
+                       "V1=" << values1[i] << ", "
+                       "V2=" << values2[i] << ", "
+                       "|V2-V1|=" << diff;
+                throw eckit::UserError(oss.str());
 
-                    std::ostringstream oss;
-                    oss << "missing value mismatch at point " << (i+1);
-                    throw eckit::UserError(oss.str());
-
-                } else if (!isMissing1(values1[i] && !isMissing1(values2[i]))) {
-
-
-                }
-            }
-
-        } else {
-
-            for (size_t i = 0; i < values1.size(); ++i) {
-                double diff = std::abs(values1[i] - values2[i]);
-                if (diff > absoluteError_) {
-
-                    std::ostringstream oss;
-                    oss << "value mismatch at point " << (i+1) << ": V1=" << values1[i] << ", V2=" << values2[i] << ", |V2-V1|=" << diff;
-                    throw eckit::UserError(oss.str());
-
-                }
             }
 
         }
-#endif
+
 
     }
 }
