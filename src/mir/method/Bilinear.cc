@@ -15,21 +15,13 @@
 
 #include "mir/method/Bilinear.h"
 
-#include <algorithm>
-#include <cmath>
-#include <string>
+//#include <cmath>
 #include "eckit/log/Log.h"
 #include "atlas/array/ArrayView.h"
-#include "atlas/field/Field.h"
-#include "atlas/functionspace/FunctionSpace.h"
 #include "atlas/grid/Structured.h"
-#include "atlas/mesh/Nodes.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/GridSpace.h"
 #include "mir/util/Compare.h"
-
-
-using eckit::FloatCompare;
 
 
 namespace mir {
@@ -97,16 +89,16 @@ const char* Bilinear::name() const {
 }
 
 
-void Bilinear::hash(eckit::MD5 &md5) const {
+void Bilinear::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
 }
 
 
 void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
+    using eckit::FloatCompare;
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
-    eckit::FloatApproxCompare< double > eq(10e-10);  //FIXME
 
     eckit::Log::debug<LibMir>() << "Bilinear::assemble " << *this << std::endl;
 
@@ -123,6 +115,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 
     const std::vector<long>& lons = igg->pl();
     const size_t inpts = igg->npts();
+    const size_t onpts = out.grid().npts();
 
     ASSERT(lons.size());
     ASSERT(lons.front());
@@ -168,7 +161,6 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 //    outfile.precision(2);
 
     // interpolate each output point in turn
-    const size_t onpts = out.grid().npts();
     for (size_t i = 0; i < onpts; ++i) {
 
         const double lat = ocoords(i, LAT);
