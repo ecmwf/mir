@@ -141,6 +141,9 @@ public:
         options_.push_back(new FactoryOption<mir::caching::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used on not"));
         options_.push_back(new FactoryOption<mir::action::statistics::StatisticsFactory>("stats", "Statistics methods for interpreting field values"));
+        options_.push_back(new SimpleOption<bool>("precipitation", "Clip precipitation values, if target value below threshold"));
+        options_.push_back(new SimpleOption<bool>("precipitation-neighbour", "Clip precipitation values also if source closest neighbour is below threshold"));
+        options_.push_back(new SimpleOption<bool>("precipitation-threshold", "Clip precipitation threshold (minimum value above zero)"));
 
         //==============================================
         options_.push_back(new Separator("Debugging"));
