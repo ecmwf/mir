@@ -456,17 +456,19 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
     ASSERT( W.cols() == fieldMissingValues.size() );
     WeightMatrix X(W);
 
-    for (size_t i = 0; i < X.rows(); i++) {
+    WeightMatrix::iterator it(X);
+    for (WeightMatrix::Size i = 0; i < X.rows(); i++) {
+        it.row(i);
 
         // count missing values and accumulate weights
         double sum = 0.; // accumulated row weight, disregarding field missing values
         size_t Nmiss = 0;
         size_t Ncol  = 0;
-        for (WeightMatrix::inner_const_iterator j(X, i); j; ++j, ++Ncol) {
-            if (fieldMissingValues[static_cast<size_t>(j.col())])
+        for (; it; ++it, ++Ncol) {
+            if (fieldMissingValues[static_cast<size_t>(it.col())])
                 ++Nmiss;
             else
-                sum += *j;
+                sum += *it;
         }
         const bool missingSome = (Nmiss > 0);
         const bool missingAll  = (Ncol == Nmiss);
@@ -477,10 +479,10 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
         if ((missingAll || is_approx_zero(sum)) && (Ncol > 0)) {
 
             bool found = false;
-            for (WeightMatrix::inner_iterator j(X, i); j; ++j) {
-                *j = 0.;
-                if (!found && fieldMissingValues[static_cast<size_t>(j.col())]) {
-                    *j = 1.;
+            for (it.row(i); it; ++it) {
+                *it = 0.;
+                if (!found && fieldMissingValues[static_cast<size_t>(it.col())]) {
+                    *it = 1.;
                     found = true;
                 }
             }
@@ -489,11 +491,11 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
         } else if (missingSome) {
 
             ASSERT(!is_approx_zero(sum));
-            for (WeightMatrix::inner_iterator j(X, i); j; ++j) {
-                if (fieldMissingValues[static_cast<size_t>(j.col())]) {
-                    *j = 0.;
+            for (it.row(i); it; ++it) {
+                if (fieldMissingValues[static_cast<size_t>(it.col())]) {
+                    *it = 0.;
                 } else {
-                    *j /= sum;
+                    *it /= sum;
                 }
             }
 
@@ -504,16 +506,13 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
     return X;
 }
 
-void MethodWeighted::applyMasks(WeightMatrix & W,
-                                const lsm::LandSeaMasks & masks,
-                                util::MIRStatistics&) const {
+void MethodWeighted::applyMasks(
+        WeightMatrix& W,
+        const lsm::LandSeaMasks& masks,
+        util::MIRStatistics& ) const {
 
     eckit::TraceTimer<LibMir> timer("MethodWeighted::applyMasks");
-
-    eckit::Log::debug<LibMir>() << "======== MethodWeighted::applyMasks("
-                                << masks
-                                << ")"
-                                << std::endl;
+    eckit::Log::debug<LibMir>() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
 
     ASSERT(masks.active());
 
@@ -535,6 +534,7 @@ void MethodWeighted::applyMasks(WeightMatrix & W,
     // - output mask (omask) operates on matrix row index, here i
     // - input mask (imask) operates on matrix column index, here j.col()
 
+    WeightMatrix::iterator it(W);
     size_t fix = 0;
     for (size_t i = 0; i < W.rows(); i++) {
 
@@ -543,22 +543,22 @@ void MethodWeighted::applyMasks(WeightMatrix & W,
         // correct weight of non-matching input point weight contribution
         double sum = 0.;
         bool row_changed = false;
-        for (WeightMatrix::inner_iterator j(W, i); j; ++j) {
+        for (it.row(i); it; ++it) {
 
-            ASSERT(j.col() < int(imask.size()));
+            ASSERT(it.col() < int(imask.size()));
 
-            if (omask[i] != imask[j.col()]) {
-                *j *= lsmWeightAdjustement_;
+            if (omask[i] != imask[it.col()]) {
+                *it *= lsmWeightAdjustement_;
                 row_changed = true;
             }
-            sum += *j;
+            sum += *it;
         }
 
         // apply linear redistribution if necessary
         if (row_changed && !is_approx_zero(sum)) {
             ++fix;
-            for (WeightMatrix::inner_iterator j(W, i); j; ++j) {
-                *j /= sum;
+            for (it.row(i); it; ++it) {
+                *it /= sum;
             }
         }
 

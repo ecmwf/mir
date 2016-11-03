@@ -74,16 +74,12 @@ class WeightMatrix {
 
     void validate(const char *when) const;
 
-    class inner_iterator : public SparseMatrix::InnerIterator {
-    public:
-        inner_iterator(WeightMatrix &m, eckit::linalg::Index outer) :
-            SparseMatrix::InnerIterator(m.matrix_, outer) {}
+    struct iterator : SparseMatrix::iterator {
+        iterator(WeightMatrix& m) : SparseMatrix::iterator(m.matrix_) {}
     };
 
-    class inner_const_iterator : public SparseMatrix::ConstInnerIterator {
-    public:
-        inner_const_iterator(const WeightMatrix &m, eckit::linalg::Index outer) :
-            SparseMatrix::ConstInnerIterator(m.matrix_, outer) {}
+    struct const_iterator : SparseMatrix::const_iterator {
+        const_iterator(const WeightMatrix& m) : SparseMatrix::const_iterator(m.matrix_) {}
     };
 
     SparseMatrix& matrix() {

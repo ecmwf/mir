@@ -99,6 +99,7 @@ void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Ma
 
 void WeightMatrix::cleanup(const double& pruneEpsilon) {
     using eckit::linalg::Index;
+    WeightMatrix::iterator it(*this);
 
     size_t fixed = 0;
     size_t count = 0;
@@ -106,11 +107,11 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
         double removed = 0;
         size_t non_zero = 0;
 
-        for (WeightMatrix::inner_iterator j(*this, i); j; ++j) {
-            const double a = *j;
+        for (it.row(i); it; ++it) {
+            const double a = *it;
             if (fabs(a) < pruneEpsilon) {
                 removed += a;
-                *j = 0;
+                *it = 0;
                 fixed++;
             } else {
                 non_zero++;
@@ -120,10 +121,10 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 
         if (removed && non_zero) {
             double d = removed / non_zero;
-            for (WeightMatrix::inner_iterator j(*this, i); j; ++j) {
-                const double a = *j;
+            for (it.row(i); it; ++it) {
+                const double a = *it;
                 if (a) {
-                    *j = a + d;
+                    *it = a + d;
                 }
             }
         }
@@ -135,8 +136,8 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
         size_t total = r * c;
         eckit::Log::debug<LibMir>() << "MethodWeighted::cleanupMatrix fixed "
                                     << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
-                                    << " (matrix is " << eckit::BigNum(r) << "x" << eckit::BigNum(c) << ", total=" <<
-                                    eckit::BigNum(total) << ")" << std::endl;
+                                    << " (matrix is " << eckit::BigNum(r) << "x" << eckit::BigNum(c) << ", total="
+                                    << eckit::BigNum(total) << ")" << std::endl;
     }
     prune(0.0);
 }
@@ -144,6 +145,8 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 void WeightMatrix::validate(const char *when) const {
 
     using eckit::linalg::Index;
+    WeightMatrix::const_iterator it(*this);
+
     using mir::util::compare::is_approx_one;
     using mir::util::compare::is_approx_zero;
 
@@ -155,8 +158,8 @@ void WeightMatrix::validate(const char *when) const {
         double sum = 0.;
         bool ok  = true;
 
-        for (WeightMatrix::inner_const_iterator j(*this, i); j; ++j) {
-            const double &a = *j;
+        for (it.row(i); it; ++it) {
+            const double &a = *it;
             if (!eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(a, 0)) {
                 ok = false;
             }
@@ -179,12 +182,12 @@ void WeightMatrix::validate(const char *when) const {
 
                 eckit::Log::debug<LibMir>() << "Row: " << i;
                 size_t n = 0;
-                for (WeightMatrix::inner_const_iterator j(*this, i); j; ++j, ++n) {
+                for (it.row(i); it; ++it, ++n) {
                     if (n > 10) {
                         eckit::Log::debug<LibMir>() << " ...";
                         break;
                     }
-                    eckit::Log::debug<LibMir>() << " [" << *j << "]";
+                    eckit::Log::debug<LibMir>() << " [" << *it << "]";
                 }
 
                 eckit::Log::debug<LibMir>() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
