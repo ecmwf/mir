@@ -16,10 +16,14 @@
 #include "mir/method/Bilinear.h"
 
 //#include <cmath>
+#include <vector>
+#include "eckit/log/BigNum.h"
 #include "eckit/log/Log.h"
 #include "atlas/array/ArrayView.h"
 #include "atlas/grid/Structured.h"
+#include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
 #include "mir/method/GridSpace.h"
 #include "mir/util/Compare.h"
 
@@ -77,10 +81,94 @@ void left_right_lon_indexes(
 
 Bilinear::Bilinear(const param::MIRParametrisation& param) :
     MethodWeighted(param) {
+
+    precipitation_          = false;
+    precipitationNeighbour_ = true;
+    precipitationThreshold_ = 0.00005;
+
+    param.get("precipitation",           precipitation_);
+    param.get("precipitation-neighbour", precipitationNeighbour_);
+    param.get("precipitation-threshold", precipitationThreshold_);
+
+    ASSERT(precipitationThreshold_ >= 0);
 }
 
 
 Bilinear::~Bilinear() {
+}
+
+
+void Bilinear::execute(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const {
+
+    // remember which source points are below precipitation threshold
+    std::vector<bool> dry_points;
+    if (precipitation_ && precipitationNeighbour_) {
+
+        data::MIRField& field = ctx.field();
+        ASSERT(field.dimensions() == 1);
+
+        const std::vector<double>& values = field.values(0);
+        ASSERT(values.size() == in.npts());
+
+        dry_points.assign(values.size(), false);
+        for (size_t i = 0; i < values.size(); ++i) {
+            dry_points[i] = values[i] < precipitationThreshold_;
+        }
+
+    }
+
+
+    // apply interpolation
+    MethodWeighted::execute(ctx, in, out);
+
+
+    // "precipitation" clipping: zero values below threshold when any (or both) conditions happen:
+    // 1. the target (interpolated) precipitation is less than the threshold value
+    // 2. the source nearest neighbouring point is less than the threshold value
+    if (precipitation_) {
+        eckit::Log::debug<LibMir>() << "Bilinear: precipitation clipping..." << std::endl;
+
+        // ideally, interpolant matrix is already built by MethodWeighted::execute and retrieved from cache
+        const WeightMatrix& W = MethodWeighted::getMatrix(ctx, in, out);
+
+        data::MIRField& field = ctx.field();
+        ASSERT(field.dimensions() == 1);
+
+        std::vector<double> values = field.values(0);
+        ASSERT(values.size() == W.rows());
+
+        util::compare::IsMissingFn isMissing(field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN());
+
+        size_t Nclip = 0;
+        for (WeightMatrix::Index i = 0; i < WeightMatrix::Index(W.rows()); ++i) {
+            if (!isMissing(values[i]) && (values[i] < precipitationThreshold_)) {
+
+                values[i] = 0;
+                ++Nclip;
+
+            } else if (precipitationNeighbour_) {
+                ASSERT(dry_points.size());
+
+                // nearest neighbouring point should have the heaviest interpolating weight
+                WeightMatrix::Index j = -1;
+                double w = 0.;
+                for (WeightMatrix::inner_const_iterator it(W, i); it; ++it) {
+                    if (!isMissing(*it) && (*it > w)) {
+                        j = it.col();
+                        w = *it;
+                    }
+                }
+
+                if (j >= 0) {
+                    values[i] = 0;
+                    ++Nclip;
+                }
+
+            }
+        }
+
+        eckit::Log::debug<LibMir>() << "Bilinear: precipitation clipping applied to " << eckit::BigNum(Nclip) << " points of " << eckit::BigNum(W.rows()) << " total" << std::endl;
+    }
 }
 
 
@@ -355,7 +443,11 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 
 
 void Bilinear::print(std::ostream& out) const {
-    out << "Bilinear[]";
+    out << "Bilinear["
+        <<  "precipitation="               << precipitation_
+        << ",precipitationNeighbourCheck=" << precipitationNeighbour_
+        << ",precipitationThreshold="      << precipitationThreshold_
+        << "]";
 }
 
 

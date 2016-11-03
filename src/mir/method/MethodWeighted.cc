@@ -502,16 +502,13 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
     return X;
 }
 
-void MethodWeighted::applyMasks(WeightMatrix & W,
-                                const lsm::LandSeaMasks & masks,
-                                util::MIRStatistics&) const {
+void MethodWeighted::applyMasks(
+        WeightMatrix& W,
+        const lsm::LandSeaMasks& masks,
+        util::MIRStatistics& ) const {
 
     eckit::TraceTimer<LibMir> timer("MethodWeighted::applyMasks");
-
-    eckit::Log::debug<LibMir>() << "======== MethodWeighted::applyMasks("
-                                << masks
-                                << ")"
-                                << std::endl;
+    eckit::Log::debug<LibMir>() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
 
     ASSERT(masks.active());
 

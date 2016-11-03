@@ -33,6 +33,8 @@ public:
 
 private: // methods
 
+    virtual void execute(context::Context&, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
+
     virtual void assemble(context::Context&, WeightMatrix&, const GridSpace& in, const GridSpace& out) const;
 
     virtual void print(std::ostream&) const;
@@ -40,6 +42,14 @@ private: // methods
     virtual const char* name() const;
 
     virtual void hash(eckit::MD5&) const;
+
+private:  // variables
+
+    bool precipitation_;
+
+    bool precipitationNeighbour_;
+
+    double precipitationThreshold_;
 
 };
 
