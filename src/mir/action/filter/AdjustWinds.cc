@@ -77,11 +77,11 @@ void AdjustWinds::windDirections(const repres::Representation* representation, s
 
     result.clear();
 
-    std::cout << "AdjustWinds::windDirections " << *representation << std::endl;
+    // std::cout << "AdjustWinds::windDirections " << *representation << std::endl;
 
     eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
 
-    std::cout << "AdjustWinds::windDirections " << *iter << std::endl;
+    // std::cout << "AdjustWinds::windDirections " << *iter << std::endl;
 
 
     double lat = 0;
