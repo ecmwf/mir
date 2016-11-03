@@ -26,9 +26,9 @@ namespace caching {
 
 
 MeshCache::MeshCache():
-    CacheManager(LibMir::cacheDir(),
-                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
-                                       false)) {
+    CacheManager<MeshCacheTraits>(LibMir::cacheDir(),
+                                  eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
+                                                        false)) {
 }
 
 const char *MeshCacheTraits::name() {
