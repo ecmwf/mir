@@ -111,7 +111,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
     // Ensure the input is a reduced grid, and get the pl array
     const atlas::grid::Structured* igg = dynamic_cast<const atlas::grid::Structured*>(&in.grid());
     if (!igg)
-        throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
+        throw eckit::UserError("Bilinear currently only supports Structured grids as input");
 
     const std::vector<long>& lons = igg->pl();
     const size_t inpts = igg->npts();
@@ -124,7 +124,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace&
 
     // pre-allocate matrix entries
     std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
-    weights_triplets.reserve( out.grid().npts() );
+    weights_triplets.reserve( onpts * 4 );
 
     // access the input/output fields coordinates
 
