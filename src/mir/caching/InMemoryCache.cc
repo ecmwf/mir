@@ -92,8 +92,8 @@ void InMemoryCache<T>::footprint(const std::string & key, size_t size) {
         }
         statistics_->required_ = result;
 
-        // eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " total " << eckit::Bytes(footprint()) << std::endl;
-        // eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " required " << eckit::Bytes(result) << std::endl;
+        eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " total " << eckit::Bytes(footprint()) << std::endl;
+        eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " required " << eckit::Bytes(result) << std::endl;
 
     }
 
@@ -283,7 +283,7 @@ size_t InMemoryCache<T>::purge(size_t count) {
 
         purged += (*best).second->footprint_;
 
-        // eckit::Log::info() << name_ << " decache " << (*best).first << std::endl;
+        eckit::Log::info() << name_ << " decache " << (*best).first << std::endl;
         delete (*best).second;
         cache_.erase(best);
 
