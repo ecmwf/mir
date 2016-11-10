@@ -191,6 +191,8 @@ static struct {
 
     {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
 
+    {"gridname", "gridName"},
+
     {"spectral", "pentagonalResolutionParameterJ"},
 
     /// FIXME: Find something that does no clash
