@@ -46,7 +46,7 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
 
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
-    if (job.empty() || (!style->forcedPrepare(job) && job.matches(metadata))) {
+    if (job.empty() || (!style->forcedPrepare(job) && job.matches(metadata, defaults))) {
         plan_.reset(new action::ActionPlan(job));
         plan_->add(new action::Copy(job, output_));
         return;

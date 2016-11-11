@@ -80,6 +80,7 @@ public:
 
     bool empty() const;
     bool matches(const param::MIRParametrisation& other) const;
+    bool matches(const param::MIRParametrisation& other, const param::MIRParametrisation& ignore) const;
 
     // -- Overridden methods
 
