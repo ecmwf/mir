@@ -13,22 +13,20 @@
 /// @date Apr 2015
 
 
+#include "mir/action/plan/Job.h"
+
 #include <iostream>
-
-#include "mir/action/plan/ActionPlan.h"
-#include "mir/action/io/Save.h"
-#include "mir/action/io/Copy.h"
-
 #include "mir/action/context/Context.h"
+#include "mir/action/io/Copy.h"
+#include "mir/action/io/Save.h"
+#include "mir/action/plan/ActionPlan.h"
+#include "mir/api/MIRJob.h"
+#include "mir/config/LibMir.h"
 #include "mir/input/MIRInput.h"
-#include "mir/style/MIRStyle.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/MIRDefaults.h"
-#include "mir/config/LibMir.h"
-
-#include "mir/action/plan/Job.h"
-#include "mir/api/MIRJob.h"
+#include "mir/style/MIRStyle.h"
 
 
 namespace mir {
@@ -39,20 +37,23 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
     input_(input),
     output_(output)  {
 
-    const param::MIRParametrisation &metadata = input.parametrisation();
-    const param::MIRParametrisation &defaults = param::MIRDefaults::instance();
+    const param::MIRParametrisation& metadata = input.parametrisation();
+    const param::MIRParametrisation& defaults = param::MIRDefaults::instance();
 
     combined_.reset(new param::MIRCombinedParametrisation(job, metadata, defaults));
 
-    if (job.empty() || job.matches(metadata)) {
+    eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
+
+    // skip preparing an Action plan if nothing to do, or
+    // input is already what was specified
+    if (job.empty() || (!style->forcedPrepare(job) && job.matches(metadata))) {
         plan_.reset(new action::ActionPlan(job));
         plan_->add(new action::Copy(job, output_));
         return;
     }
 
-    plan_.reset(new action::ActionPlan(*combined_));
 
-    eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
+    plan_.reset(new action::ActionPlan(*combined_));
     style->prepare(*plan_);
 
 
@@ -65,8 +66,10 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
     eckit::Log::debug<LibMir>() << "Action plan is: " << *plan_ << std::endl;
 }
 
+
 Job::~Job() {
 }
+
 
 void Job::execute(util::MIRStatistics &statistics) const {
 
@@ -79,6 +82,7 @@ void Job::execute(util::MIRStatistics &statistics) const {
 const ActionPlan &Job::plan() const {
     return *plan_;
 }
+
 
 const param::MIRParametrisation& Job::parametrisation() const {
     ASSERT(combined_);

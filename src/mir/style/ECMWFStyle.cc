@@ -16,10 +16,11 @@
 #include "mir/style/ECMWFStyle.h"
 
 #include <iostream>
-#include "eckit/filesystem/PathName.h"
 #include "eckit/exception/Exceptions.h"
-#include "mir/param/MIRParametrisation.h"
+#include "eckit/filesystem/PathName.h"
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/config/LibMir.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -34,6 +35,7 @@ ECMWFStyle::ECMWFStyle(const param::MIRParametrisation &parametrisation):
 
 ECMWFStyle::~ECMWFStyle() {
 }
+
 
 void ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
     bool u_only = false;
@@ -133,6 +135,30 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
     epilogue(plan);
 
 }
+
+
+bool ECMWFStyle::forcedPrepare(const param::MIRParametrisation& parametrisation) const {
+    static const char *force[] = {
+        "accuracy",
+        "bitmap",
+        "checkerboard",
+        "edition",
+        "formula",
+        "frame",
+        "packing",
+        "pattern",
+        "stats",
+        "vod2uv",
+        0
+    };
+
+    bool forced = false;
+    for (size_t i = 0; force[i] && !forced; ++i) {
+        forced = parametrisation.has(force[i]);
+    }
+    return forced;
+}
+
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
@@ -249,6 +275,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
 }
 
+
 void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
     std::string prologue;
@@ -272,6 +299,7 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 }
+
 
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 

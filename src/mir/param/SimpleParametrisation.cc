@@ -511,6 +511,10 @@ void SimpleParametrisation::json(eckit::JSON& s) const {
     s.endObject();
 }
 
+bool SimpleParametrisation::empty() const {
+    return size() == 0;
+}
+
 bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
     eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches " << other << std::endl;
     bool ok = true;

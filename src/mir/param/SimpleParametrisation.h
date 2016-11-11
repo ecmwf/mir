@@ -16,22 +16,26 @@
 #ifndef SimpleParametrisation_H
 #define SimpleParametrisation_H
 
-#include "mir/param/MIRParametrisation.h"
-
-#include <string>
 #include <map>
 #include <set>
+#include <string>
+#include "mir/param/MIRParametrisation.h"
+
 
 namespace eckit {
 class JSON;
 }
+namespace mir {
+namespace param {
+class DelayedParametrisation;
+class Setting;
+}
+}
+
 
 namespace mir {
 namespace param {
 
-
-class Setting;
-class DelayedParametrisation;
 
 class SimpleParametrisation : public MIRParametrisation {
 public:
@@ -54,8 +58,8 @@ public:
     // None
 
     // -- Methods
-    void copyValuesTo(SimpleParametrisation& other, bool overwrite=true) const;
 
+    void copyValuesTo(SimpleParametrisation& other, bool overwrite=true) const;
 
     SimpleParametrisation& set(const std::string& name, const char* value);
     SimpleParametrisation& set(const std::string& name, const std::string& value);
@@ -72,6 +76,11 @@ public:
     SimpleParametrisation& clear(const std::string& name);
     SimpleParametrisation& reset();
 
+    // Used by Job
+
+    bool empty() const;
+    bool matches(const param::MIRParametrisation& other) const;
+
     // -- Overridden methods
 
     virtual bool get(const std::string& name, std::string& value) const;
@@ -80,6 +89,7 @@ public:
     virtual bool get(const std::string& name, double& value) const;
     virtual bool get(const std::string& name, std::vector<long>& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
+
     // -- Class members
     // None
 
@@ -96,13 +106,11 @@ protected:
     virtual void print(std::ostream&) const;
     void json(eckit::JSON&) const;
 
-    bool matches(const param::MIRParametrisation& metadata) const;
-
     size_t size() const;
 
     // -- Overridden methods
-    virtual bool has(const std::string& name) const;
 
+    virtual bool has(const std::string& name) const;
 
     // -- Class members
     // None
@@ -112,7 +120,8 @@ protected:
 
 private:
 
-    // Types
+    // -- Types
+
     typedef std::map<std::string, Setting*> SettingsMap;
 
     // No copy allowed
@@ -154,5 +163,7 @@ private:
 
 }  // namespace param
 }  // namespace mir
+
+
 #endif
 
