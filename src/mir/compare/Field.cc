@@ -651,7 +651,7 @@ void Field::print(std::ostream & out) const {
     }
 
     if (grid_) {
-        out << ",grid=" << north_south_ << "/" << west_east_;
+        out << ",grid=" << west_east_ << "/" << north_south_;
     }
 
     if (area_) {
