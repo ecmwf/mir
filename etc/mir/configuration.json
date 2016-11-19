@@ -1,0 +1,23 @@
+{
+
+  "interpolation": "somethingelse",
+
+  "class": {
+      "intensity": {
+          "interpolation": "nn"
+      }
+  },
+
+  "66": {
+    "interpolation": "linear",
+    "class": "intensity",
+    "gridType=regular_ll" : {
+      "interpolation": "bilinear"
+    }
+  },
+
+  "77/78": {
+    "class": "intensity"
+  }
+
+}

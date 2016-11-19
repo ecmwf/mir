@@ -11,8 +11,8 @@
 /// @date Nov 2016
 
 
-#ifndef mir_config_InheritParam_h
-#define mir_config_InheritParam_h
+#ifndef mir_config_InheritParametrisation_h
+#define mir_config_InheritParametrisation_h
 
 #include <algorithm>
 #include <iosfwd>
@@ -31,33 +31,38 @@ namespace mir {
 namespace config {
 
 
-class InheritParam : protected param::SimpleParametrisation {
+class InheritParametrisation : protected param::SimpleParametrisation {
 public:
 
     // -- Contructors
 
-    InheritParam();
+    InheritParametrisation();
 
-    InheritParam(const InheritParam* parent, const std::string& key, const std::string& value);
+    InheritParametrisation(const InheritParametrisation* parent, const std::string& key, const std::string& value);
 
-    InheritParam(const InheritParam* parent, const std::vector<long>& paramIds);
+    InheritParametrisation(const InheritParametrisation* parent, const std::vector<long>& paramIds);
 
     // -- Destructor
 
-    ~InheritParam();
+    ~InheritParametrisation();
 
     // -- Methods
 
     // Add a child
-    void child(const InheritParam* who);
+    void child(const InheritParametrisation* who);
 
     /// Find best matching descendant according to paramId and metadata
-    bool pick(const InheritParam* who, const long& paramId, const param::MIRParametrisation& metadata) const;
+    bool pick(const InheritParametrisation* who, const long& paramId, const param::MIRParametrisation& metadata) const;
+
+    /// Find best matching descendant according to (key,value) pair
+    bool pick(const InheritParametrisation* who, const std::string& key, const std::string& value) const;
 
     /// Collect all inherited traits, prioritizing younger/children traits
     void inherit(param::SimpleParametrisation& who) const;
 
     bool matches(const long& paramId, const param::MIRParametrisation& metadata) const;
+
+    bool matches(const std::string& key, const std::string& value) const;
 
     const std::vector<long>& paramIds() const;
 
@@ -71,13 +76,13 @@ public:
 private:
 
     // No copy allowed
-    InheritParam(const InheritParam&);
-    InheritParam& operator=(const InheritParam&);
+    InheritParametrisation(const InheritParametrisation&);
+    InheritParametrisation& operator=(const InheritParametrisation&);
 
     // -- Members
 
-    const InheritParam* parent_;
-    std::vector< const InheritParam* > children_;
+    const InheritParametrisation* parent_;
+    std::vector< const InheritParametrisation* > children_;
     std::vector<long> paramIds_;
     const std::string key_;
     const std::string value_;
@@ -85,7 +90,7 @@ private:
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const InheritParam& p) {
+    friend std::ostream& operator<<(std::ostream& s, const InheritParametrisation& p) {
         p.print(s);
         return s;
     }

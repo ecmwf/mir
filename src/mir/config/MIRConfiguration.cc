@@ -77,7 +77,7 @@ const MIRConfiguration& MIRConfiguration::instance() {
 
 MIRConfiguration::MIRConfiguration() {
 
-    configFill_ = "class";
+    fillKey_ = "class";
     configFile_ = "configuration.json";
     configDir_  = "~mir/etc/mir";
 
@@ -97,7 +97,7 @@ MIRConfiguration::MIRConfiguration() {
     eckit::JSONParser parser(in);
     const eckit::ValueMap j = parser.parse();
 
-    root_.reset(new InheritParam());
+    root_.reset(new InheritParametrisation());
     parseInheritMap(root_.get(), j);
     eckit::Log::debug<LibMir>() << "root: " << *root_ << std::endl;
 
@@ -120,7 +120,7 @@ MIRConfiguration::MIRConfiguration() {
 }
 
 
-bool MIRConfiguration::parseInheritMap(InheritParam* who, const eckit::ValueMap& map) const {
+bool MIRConfiguration::parseInheritMap(InheritParametrisation* who, const eckit::ValueMap& map) const {
 
     for (eckit::ValueMap::const_iterator i = map.begin(); i != map.end(); ++i) {
         std::vector<long> ids;
@@ -129,14 +129,14 @@ bool MIRConfiguration::parseInheritMap(InheritParam* who, const eckit::ValueMap&
 
         eckit::Log::info() << "+++ key=val: '" << i->first << "'='" << i->second << "'" << std::endl;
 
-        if (i->first == configFill_) {
+        if (i->first == fillKey_) {
             // skip
         }
         else if (string_contains_paramIds(i->first, ids)) {
             eckit::Log::info() << "+++ key=val: '" << i->first << "'='" << i->second << "'" << std::endl;
             ASSERT(i->second.isMap());
 
-            InheritParam* me = new InheritParam(who, ids);
+            InheritParametrisation* me = new InheritParametrisation(who, ids);
             parseInheritMap(me, i->second);
             who->child(me);
 
@@ -145,7 +145,7 @@ bool MIRConfiguration::parseInheritMap(InheritParam* who, const eckit::ValueMap&
             eckit::Log::info() << "+++ key=val: '" << i->first << "'='" << i->second << "'" << std::endl;
             ASSERT(i->second.isMap());
 
-            InheritParam* me = new InheritParam(who, key, value);
+            InheritParametrisation* me = new InheritParametrisation(who, key, value);
             parseInheritMap(me, i->second);
             who->child(me);
 
@@ -176,7 +176,7 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
 
     // inherit from most-specific paramId/metadata individual and its parents
     {
-        const InheritParam* who = NULL;
+        const InheritParametrisation* who = NULL;
         root_->pick(who, paramId, metadata);
         ASSERT(who);
 
@@ -185,17 +185,17 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
     }
 
     // inherit recursively from a "filling" key
-    std::string fill;
+    std::string fillValue;
     size_t check = 0;
-    while (param->get(configFill_, fill)) {
+    while (param->get(fillKey_, fillValue)) {
         ASSERT(check++ < 50);
-        param->clear(configFill_);
+        param->clear(fillKey_);
 
-        const InheritFill* who = NULL;
-        fill_->pick(who, fill);
+        const InheritParametrisation* who = NULL;
+        fill_->pick(who, fillKey_, fillValue);
         ASSERT(who);
 
-        eckit::Log::debug<LibMir>() << "MIRConfiguration::lookup: inheriting from '" << configFill_ << "=" << fill << "': " << (*who) << std::endl;
+        eckit::Log::debug<LibMir>() << "MIRConfiguration::lookup: inheriting from '" << fillKey_ << "=" << fillValue << "': " << (*who) << std::endl;
         who->inherit(*param);
     }
 

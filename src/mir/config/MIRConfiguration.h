@@ -20,8 +20,7 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/value/Value.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/config/InheritFill.h"
-#include "mir/config/InheritParam.h"
+#include "mir/config/InheritParametrisation.h"
 
 
 namespace mir {
@@ -78,16 +77,16 @@ private:
 
     // -- Members
 
-    std::string configFill_;
+    std::string fillKey_;
     std::string configFile_;
     std::string configDir_;
 
-    eckit::ScopedPtr<InheritParam> root_;
-    eckit::ScopedPtr<InheritFill> fill_;
+    eckit::ScopedPtr<InheritParametrisation> root_;
+    eckit::ScopedPtr<InheritParametrisation> fill_;
 
     // -- Methods
 
-    bool parseInheritMap(InheritParam*, const eckit::ValueMap&) const;
+    bool parseInheritMap(InheritParametrisation*, const eckit::ValueMap&) const;
 
     void print(std::ostream&) const;
 

@@ -200,10 +200,8 @@ list(
     compare/ScalarComparator.h
     compare/SpectralComparator.cc
     compare/SpectralComparator.h
-    config/InheritFill.cc
-    config/InheritFill.h
-    config/InheritParam.cc
-    config/InheritParam.h
+    config/InheritParametrisation.cc
+    config/InheritParametrisation.h
     config/LibMir.cc
     config/LibMir.h
     config/MIRConfiguration.cc

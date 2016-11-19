@@ -15,7 +15,7 @@
 #include <iostream>
 #include <iterator>
 #include "eckit/exception/Exceptions.h"
-#include "mir/config/InheritParam.h"
+#include "mir/config/InheritParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -23,36 +23,35 @@ namespace mir {
 namespace config {
 
 
-InheritParam::InheritParam() : parent_(NULL) {}
+InheritParametrisation::InheritParametrisation() : parent_(NULL) {}
 
 
-InheritParam::InheritParam(const InheritParam* parent, const std::string& key, const std::string& value) :
+InheritParametrisation::InheritParametrisation(const InheritParametrisation* parent, const std::string& key, const std::string& value) :
     parent_(parent), key_(key), value_(value) {
     ASSERT(parent_);
 }
 
 
-InheritParam::InheritParam(const InheritParam* parent, const std::vector<long>& paramIds) :
+InheritParametrisation::InheritParametrisation(const InheritParametrisation* parent, const std::vector<long>& paramIds) :
     parent_(parent), paramIds_(paramIds) {
     ASSERT(parent_);
     ASSERT(std::find(paramIds_.begin(), paramIds_.end(), 0) == paramIds_.end());
 }
 
 
-InheritParam::~InheritParam() {
-
+InheritParametrisation::~InheritParametrisation() {
 }
 
 
-void InheritParam::child(const InheritParam* who) {
+void InheritParametrisation::child(const InheritParametrisation* who) {
     children_.push_back(who);
 }
 
 
-bool InheritParam::pick(const InheritParam* who, const long& paramId, const param::MIRParametrisation& metadata) const {
+bool InheritParametrisation::pick(const InheritParametrisation* who, const long& paramId, const param::MIRParametrisation& metadata) const {
     who = this;
     size_t check = 0;
-    for (std::vector< const InheritParam* >::const_iterator me=children_.begin(); me!= children_.end(); ++me) {
+    for (std::vector< const InheritParametrisation* >::const_iterator me=children_.begin(); me!= children_.end(); ++me) {
         ASSERT(check++ < 50);
         ASSERT(*me != this);
         ASSERT(*me);
@@ -64,7 +63,22 @@ bool InheritParam::pick(const InheritParam* who, const long& paramId, const para
 }
 
 
-void InheritParam::inherit(param::SimpleParametrisation& who) const {
+bool InheritParametrisation::pick(const InheritParametrisation* who, const std::__cxx11::string& key, const std::__cxx11::string& value) const {
+    who = this;
+    size_t check = 0;
+    for (std::vector< const InheritParametrisation* >::const_iterator me=children_.begin(); me!= children_.end(); ++me) {
+        ASSERT(check++ < 50);
+        ASSERT(*me != this);
+        ASSERT(*me);
+        if ((*me)->matches(key, value)) {
+            return pick(*me, key, value);
+        }
+    }
+    return false;
+}
+
+
+void InheritParametrisation::inherit(param::SimpleParametrisation& who) const {
     copyValuesTo(who, false);
     if (parent_ != NULL) {
         parent_->inherit(who);
@@ -72,8 +86,8 @@ void InheritParam::inherit(param::SimpleParametrisation& who) const {
 }
 
 
-bool InheritParam::matches(const long& paramId, const param::MIRParametrisation& metadata) const {
-    const std::vector<long>&  ids = paramIds();
+bool InheritParametrisation::matches(const long& paramId, const param::MIRParametrisation& metadata) const {
+    const std::vector<long>& ids = paramIds();
     if (std::find(ids.begin(), ids.end(), paramId) != ids.end()) {
         std::string value;
         return metadata.get(key_, value) && (value_ == value);
@@ -82,8 +96,16 @@ bool InheritParam::matches(const long& paramId, const param::MIRParametrisation&
 }
 
 
-const std::vector<long>& InheritParam::paramIds() const {
-    const InheritParam* who = this;
+bool InheritParametrisation::matches(const std::__cxx11::string& key, const std::__cxx11::string& value) const {
+    if (key_.length() && value_.length()) {
+        return (key == key_) && (value == value_);
+    }
+    return false;
+}
+
+
+const std::vector<long>& InheritParametrisation::paramIds() const {
+    const InheritParametrisation* who = this;
     size_t check = 0;
     while (!(who->paramIds_.size()) && (who->parent_ != NULL)) {
         ASSERT(check++ < 50);
@@ -93,13 +115,13 @@ const std::vector<long>& InheritParam::paramIds() const {
 }
 
 
-bool InheritParam::empty() const {
+bool InheritParametrisation::empty() const {
     return children_.size()==0 && SimpleParametrisation::empty();
 }
 
 
-void InheritParam::print(std::ostream& out) const {
-    out << "InheritParam["
+void InheritParametrisation::print(std::ostream& out) const {
+    out << "InheritParametrisation["
            "parent?"   << (parent_!=NULL)
         << ",empty?"    << empty()
         << ",paramIds=[";
@@ -111,7 +133,7 @@ void InheritParam::print(std::ostream& out) const {
     out << "]"
            ",children[";
     const char* sep = "";
-    for (std::vector< const InheritParam* >::const_iterator me=children_.begin(); me!= children_.end(); ++me) {
+    for (std::vector< const InheritParametrisation* >::const_iterator me=children_.begin(); me!= children_.end(); ++me) {
         out << sep << *(*me);
         sep = ",";
     }
