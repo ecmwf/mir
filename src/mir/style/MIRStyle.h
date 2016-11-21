@@ -23,96 +23,96 @@
 
 
 namespace mir {
-
 namespace action {
-class Action;
 class ActionPlan;
 }
-
 namespace param {
 class MIRParametrisation;
-class RuntimeParametrisation;
+}
 }
 
+
+namespace mir {
 namespace style {
 
 
 class MIRStyle {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
-    MIRStyle(const param::MIRParametrisation& parametrisation);
+    MIRStyle(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~MIRStyle(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-    virtual void prepare(action::ActionPlan &) const = 0;
+    virtual void prepare(action::ActionPlan&) const = 0;
 
-// -- Overridden methods
+    virtual bool forcedPrepare(const param::MIRParametrisation&) const = 0;
+
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
 
     const param::MIRParametrisation& parametrisation_;
 
-// -- Methods
-
+    // -- Methods
 
     virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // No copy allowed
 
     MIRStyle(const MIRStyle&);
     MIRStyle& operator=(const MIRStyle&);
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s,const MIRStyle& p) {
         p.print(s);
@@ -126,12 +126,12 @@ class MIRStyleFactory {
     std::string name_;
     virtual MIRStyle* make(const param::MIRParametrisation&) = 0 ;
 
-  protected:
+protected:
 
     MIRStyleFactory(const std::string&);
     virtual ~MIRStyleFactory();
 
-  public:
+public:
     static MIRStyle* build(const param::MIRParametrisation&);
     static void list(std::ostream &);
 
@@ -143,12 +143,14 @@ class MIRStyleBuilder : public MIRStyleFactory {
     virtual MIRStyle* make(const param::MIRParametrisation& param) {
         return new T(param);
     }
-  public:
+public:
     MIRStyleBuilder(const std::string& name) : MIRStyleFactory(name) {}
 };
 
 
 }  // namespace style
 }  // namespace mir
+
+
 #endif
 

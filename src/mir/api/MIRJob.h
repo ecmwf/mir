@@ -39,26 +39,26 @@ namespace api {
 
 
 class MIRJob : public param::SimpleParametrisation, public eckit::Configured {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     MIRJob();
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~MIRJob();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
     void execute(input::MIRInput&, output::MIROutput&) const;
     void execute(input::MIRInput&, output::MIROutput&, util::MIRStatistics& statistics) const;
@@ -83,72 +83,66 @@ class MIRJob : public param::SimpleParametrisation, public eckit::Configured {
 
     MIRJob& representationFrom(input::MIRInput&);
 
-
     // For debugging only
     void mirToolCall(std::ostream&) const;
 
     void json(eckit::JSON&) const;
 
-    // Used by Job
-
-    bool empty() const;
-    bool matches(const param::MIRParametrisation&) const;
-
-
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
-
-
-
-// -- Overridden methods
-
-
-// -- Class members
+    // -- Methods
     // None
 
-// -- Class methods
+    // -- Overridden methods
     // None
 
-  private:
+    // -- Class members
+    // None
 
+    // -- Class methods
+    // None
 
-// -- Members
+private:
 
+    // -- Members
+    // None
 
-// -- Methods
+    // -- Methods
+    // None
 
-
-// -- Overridden methods
+    // -- Overridden methods
 
     // From MIRParametrisation
 
     virtual void print(std::ostream&) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
+    // None
 
 };
 
 
 }  // namespace api
 }  // namespace mir
+
+
 #endif
 

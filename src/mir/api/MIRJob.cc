@@ -13,18 +13,16 @@
 /// @date Apr 2015
 
 
-#include <iostream>
+#include "mir/api/MIRJob.h"
 
+#include <iostream>
 #include "eckit/log/Plural.h"
+#include "mir/action/plan/Job.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
-#include "mir/config/LibMir.h"
-#include "mir/action/plan/Job.h"
-
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
-
-#include "mir/api/MIRJob.h"
 
 
 namespace mir {
@@ -58,10 +56,6 @@ void MIRJob::print(std::ostream &out) const {
         SimpleParametrisation::print(out);
         out << "]";
     }
-}
-
-bool MIRJob::empty() const {
-    return size() == 0;
 }
 
 MIRJob &MIRJob::reset() {
@@ -161,37 +155,6 @@ MIRJob& MIRJob::representationFrom(input::MIRInput& input) {
     repres->fill(*this);
 
     return *this;
-}
-
-
-bool MIRJob::matches(const param::MIRParametrisation &metadata) const {
-    static const char *force[] = { "vod2uv",
-                                   "bitmap",
-                                   "frame",
-                                   "packing",
-                                   "accuracy",
-                                   "edition",
-                                   "checkerboard",
-                                   "formula",
-                                   "pattern",
-                                   "stats",
-                                   0
-                                 }; // Move to MIRStyle
-    size_t i = 0;
-    while (force[i]) {
-        if (has(force[i])) {
-            // eckit::Log::debug<LibMir>() << "MIRJob will perform transformation/interpolation ('"
-                                     // << force[i] << "' specified)" << std::endl;
-            return false;
-        }
-        i++;
-    }
-
-    bool ok = SimpleParametrisation::matches(metadata);
-    if (!ok) {
-        // eckit::Log::debug<LibMir>() << "MIRJob will perform transformation/interpolation" << std::endl;
-    }
-    return ok;
 }
 
 void MIRJob::mirToolCall(std::ostream &out) const {

@@ -104,6 +104,7 @@ class Representation : public eckit::Counted {
     virtual atlas::grid::Domain atlasDomain(const util::BoundingBox&) const;
 
     virtual size_t truncation() const;
+    virtual size_t pentagonalResolutionTs() const;
 
     virtual void comparison(std::string&) const;
 

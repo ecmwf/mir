@@ -48,6 +48,8 @@ MIRDefaults::MIRDefaults() {
     set("lsm.weight.adjustment", 0.2);
     set("lsm.value.threshold", 0.5);
 
+    set ("autoresol", false);
+
     // Read the rest for the file
     eckit::PathName path("~mir/etc/mir/defaults.cfg");
     if (!path.exists())  {

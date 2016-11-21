@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -10,7 +10,8 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date   Apr 2015
+/// @date Apr 2015
+
 
 #ifndef mir_method_Bilinear_H
 #define mir_method_Bilinear_H
@@ -18,18 +19,12 @@
 #include "mir/method/MethodWeighted.h"
 
 
-namespace eckit {
-namespace geometry {
-class Point3;
-}
-}
-
 namespace mir {
 namespace method {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class Bilinear: public MethodWeighted {
+class Bilinear : public MethodWeighted {
 public:
 
     Bilinear(const param::MIRParametrisation&);
@@ -38,19 +33,23 @@ public:
 
 private: // methods
 
-    double crossProduct(const eckit::geometry::Point3& a, const eckit::geometry::Point3& b) const;
+    virtual void execute(context::Context&, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
 
-    bool formClockwiseTriangle(const eckit::geometry::Point3& a, const eckit::geometry::Point3& b, const eckit::geometry::Point3& c) const;
-
-    void sort4Clockwise(std::vector<eckit::geometry::Point3>& points) const ;
-
-    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
+    virtual void assemble(context::Context&, WeightMatrix&, const GridSpace& in, const GridSpace& out) const;
 
     virtual void print(std::ostream&) const;
 
     virtual const char* name() const;
 
-    virtual void hash( eckit::MD5 & ) const;
+    virtual void hash(eckit::MD5&) const;
+
+private:  // variables
+
+    bool precipitation_;
+
+    bool precipitationNeighbour_;
+
+    double precipitationThreshold_;
 
 };
 
@@ -58,6 +57,7 @@ private: // methods
 
 }  // namespace method
 }  // namespace mir
+
 
 #endif
 

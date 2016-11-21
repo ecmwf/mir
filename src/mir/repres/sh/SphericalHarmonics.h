@@ -96,6 +96,9 @@ class SphericalHarmonics : public Representation {
 
     size_t truncation_;
 
+    // Number of values (complex packing unpacked subset) for which scaling and packing are not applied
+    size_t Ts_;
+
     // -- Methods
     // None
 
@@ -107,6 +110,7 @@ class SphericalHarmonics : public Representation {
     virtual const Representation* truncate(size_t truncation,
                                            const std::vector<double>&, std::vector<double>&) const;
     virtual size_t truncation() const;
+    virtual size_t pentagonalResolutionTs() const;
 
     virtual void comparison(std::string&) const;
 

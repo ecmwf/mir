@@ -22,47 +22,46 @@
 namespace mir {
 namespace style {
 
-struct Requirements;
 
 class ECMWFStyle : public MIRStyle {
 public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     ECMWFStyle(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
     ~ECMWFStyle(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
 
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
 
     virtual void prologue(action::ActionPlan&) const;
@@ -73,38 +72,39 @@ protected:
 
     virtual void selectWindComponents(action::ActionPlan&) const;
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 private:
 
-// No copy allowed
+    // No copy allowed
 
     ECMWFStyle(const ECMWFStyle&);
     ECMWFStyle& operator=(const ECMWFStyle&);
 
-// -- Members
+    // -- Members
 
-// -- Methods
+    // -- Methods
 
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual void prepare(action::ActionPlan&) const;
 
+    virtual bool forcedPrepare(const param::MIRParametrisation&) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     // friend std::ostream& operator<<(std::ostream& s, const ECMWFStyle& p)
     // { p.print(s); return s; }
@@ -114,5 +114,7 @@ private:
 
 }  // namespace style
 }  // namespace mir
+
+
 #endif
 
