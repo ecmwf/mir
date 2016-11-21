@@ -54,7 +54,6 @@ const char *Nearest::name() const {
 
 
 void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
-    using eckit::linalg::Index;
 
     eckit::TraceTimer<LibMir> timer("Nearest::assemble");
     eckit::Log::debug<LibMir>() << "Nearest::assemble" << std::endl;
@@ -141,7 +140,7 @@ void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& 
         for (size_t i = 0; i < npts; ++i) {
             size_t index = closest[i].payload();
             double t = timer.elapsed();
-            weights_triplets.push_back(WeightMatrix::Triplet(Index(ip), Index(index), weights[i]));
+            weights_triplets.push_back(WeightMatrix::Triplet(ip, index, weights[i]));
             push_back += timer.elapsed() - t;
 
         }

@@ -98,16 +98,15 @@ void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Ma
 }
 
 void WeightMatrix::cleanup(const double& pruneEpsilon) {
-    using eckit::linalg::Index;
-    WeightMatrix::iterator it(*this);
 
     size_t fixed = 0;
     size_t count = 0;
-    for (Index i = 0; Size(i) < rows(); i++) {
+    for (Size i = 0; i < rows(); ++i) {
+
         double removed = 0;
         size_t non_zero = 0;
 
-        for (it.row(i); it; ++it) {
+        for (SparseMatrix::iterator it = matrix_.row(i); it != matrix_.row(i+1); ++it) {
             const double a = *it;
             if (fabs(a) < pruneEpsilon) {
                 removed += a;

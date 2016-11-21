@@ -458,7 +458,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
 
     WeightMatrix::iterator it(X);
     for (WeightMatrix::Size i = 0; i < X.rows(); i++) {
-        it.row(i);
+
+        it = X.row(i);
 
         // count missing values and accumulate weights
         double sum = 0.; // accumulated row weight, disregarding field missing values

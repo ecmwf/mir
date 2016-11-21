@@ -140,7 +140,8 @@ void Bilinear::execute(context::Context& ctx, const atlas::grid::Grid& in, const
         util::compare::IsMissingFn isMissing(field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN());
 
         size_t Nclip = 0;
-        for (WeightMatrix::Index i = 0; i < WeightMatrix::Index(W.rows()); ++i) {
+        WeightMatrix::const_iterator it(W);
+        for (size_t i = 0; i < size_t(W.rows()); ++i) {
             if (!isMissing(values[i]) && (values[i] < precipitationThreshold_)) {
 
                 values[i] = 0;
@@ -150,16 +151,16 @@ void Bilinear::execute(context::Context& ctx, const atlas::grid::Grid& in, const
                 ASSERT(dry_points.size());
 
                 // nearest neighbouring point should have the heaviest interpolating weight
-                WeightMatrix::Index j = -1;
+                bool found = false;
                 double w = 0.;
-                for (WeightMatrix::inner_const_iterator it(W, i); it; ++it) {
+                for (it = W.row(i); it != W.row(i+1); ++it) {
                     if (!isMissing(*it) && (*it > w)) {
-                        j = it.col();
+                        found = true;
                         w = *it;
                     }
                 }
 
-                if (j >= 0) {
+                if(found) {
                     values[i] = 0;
                     ++Nclip;
                 }
