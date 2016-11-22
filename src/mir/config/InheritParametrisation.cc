@@ -63,7 +63,7 @@ bool InheritParametrisation::pick(const InheritParametrisation* who, const long&
 }
 
 
-bool InheritParametrisation::pick(const InheritParametrisation* who, const std::__cxx11::string& key, const std::__cxx11::string& value) const {
+bool InheritParametrisation::pick(const InheritParametrisation* who, const std::string& key, const std::string& value) const {
     who = this;
     size_t check = 0;
     for (std::vector< const InheritParametrisation* >::const_iterator me=children_.begin(); me!= children_.end(); ++me) {
@@ -96,7 +96,7 @@ bool InheritParametrisation::matches(const long& paramId, const param::MIRParame
 }
 
 
-bool InheritParametrisation::matches(const std::__cxx11::string& key, const std::__cxx11::string& value) const {
+bool InheritParametrisation::matches(const std::string& key, const std::string& value) const {
     if (key_.length() && value_.length()) {
         return (key == key_) && (value == value_);
     }
