@@ -12,55 +12,28 @@
 /// @date May 2015
 
 
+#include "mir/method/WeightMatrix.h"
+
 #include <cmath>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Plural.h"
-#include "atlas/interpolation/Intersect.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/WeightMatrix.h"
 #include "mir/util/Compare.h"
 
 
 namespace mir {
 namespace method {
 
-WeightMatrix::WeightMatrix() : matrix_() {}
 
-WeightMatrix::WeightMatrix(Size rows, Size cols) : matrix_(rows, cols) {}
+void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& triplets) {
+    ASSERT(rows());
+    ASSERT(cols());
 
-void WeightMatrix::save(const eckit::PathName &path) const {
-    matrix_.save(path);
-}
+    SparseMatrix M(rows(), cols(), triplets);
 
-void WeightMatrix::load(const eckit::PathName &path)  {
-    matrix_.load(path);
-}
-
-void WeightMatrix::setIdentity()
-{
-    ASSERT(matrix_.rows());
-    ASSERT(matrix_.cols());
-
-    SparseMatrix M;
-    M.setIdentity(matrix_.rows(), matrix_.cols());
-
-    matrix_.swap(M);
-}
-
-void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& triplets)
-{
-    ASSERT(matrix_.rows());
-    ASSERT(matrix_.cols());
-
-    SparseMatrix M(matrix_.rows(), matrix_.cols(), triplets);
-
-    matrix_.swap(M);
-}
-
-void WeightMatrix::prune(double value) {
-    matrix_.prune(value);
+    swap(M);
 }
 
 void WeightMatrix::print(std::ostream& out) const {
@@ -73,7 +46,7 @@ void WeightMatrix::print(std::ostream& out) const {
 void WeightMatrix::multiply(const WeightMatrix::Vector& values, WeightMatrix::Vector& result) const {
 
     // TODO: linear algebra backend should depend on parametrisation
-    eckit::linalg::LinearAlgebra::backend().spmv(matrix_, values, result);
+    eckit::linalg::LinearAlgebra::backend().spmv(*this, values, result);
 }
 
 void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Matrix& result) const {
@@ -91,9 +64,9 @@ void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Ma
         eckit::linalg::Vector vi(const_cast<double *>(values.data()), values.rows());
         eckit::linalg::Vector vo(result.data(), result.rows());
 
-        eckit::linalg::LinearAlgebra::backend().spmv(matrix_, vi, vo);
+        eckit::linalg::LinearAlgebra::backend().spmv(*this, vi, vo);
     } else {
-        eckit::linalg::LinearAlgebra::backend().spmm(matrix_, values, result);
+        eckit::linalg::LinearAlgebra::backend().spmm(*this, values, result);
     }
 }
 
@@ -203,9 +176,6 @@ void WeightMatrix::validate(const char *when) const {
     }
 }
 
-size_t WeightMatrix::footprint() const {
-    return matrix_.footprint();
-}
 
 }  // namespace method
 }  // namespace mir

@@ -433,7 +433,7 @@ void MethodWeighted::computeMatrixWeights(context::Context & ctx,
 
     if (in.same(out)) {
         eckit::Log::debug<LibMir>() << "Matrix is indentity" << std::endl;
-        W.setIdentity();        // grids are the same, use identity matrix
+        W.setIdentity(W.rows(), W.cols());        // grids are the same, use identity matrix
     } else {
         InMemoryCacheUser<atlas::mesh::Mesh> cache_use(mesh_cache, ctx.statistics().meshCache_);
 

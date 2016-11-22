@@ -440,7 +440,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 
     eckit::linalg::SparseMatrix M(onpts, inpts, weights_triplets); // build matrix
 
-    W.matrix().swap(M);
+    W.swap(M);
 }
 
 

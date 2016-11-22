@@ -17,14 +17,8 @@
 #define mir_method_WeightMatrix_H
 
 #include <sstream>
-
 #include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/SparseMatrix.h"
-
-
-namespace eckit {
-class PathName;
-}
 
 
 namespace mir {
@@ -32,39 +26,24 @@ namespace method {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class WeightMatrix {
+class WeightMatrix : public eckit::linalg::SparseMatrix {
+    // NOTE: protected inheritance would be better but
+    // there are issues interfacing the iterators
 
-  public: // types
-
-    typedef eckit::linalg::SparseMatrix SparseMatrix;
-    typedef eckit::linalg::Matrix       Matrix;
-    typedef eckit::linalg::Vector       Vector;
-    typedef eckit::linalg::Size         Size;
-
-  public: // methods
+public: // types
 
     typedef eckit::linalg::Triplet Triplet;
+    typedef eckit::linalg::Matrix  Matrix;
+    typedef eckit::linalg::Vector  Vector;
+    typedef eckit::linalg::Size    Size;
 
-    WeightMatrix();
+public: // methods
 
-    WeightMatrix(Size rows, Size cols);
+    WeightMatrix() {}
 
-    void save(const eckit::PathName &path) const;
+    WeightMatrix(Size rows, Size cols) : SparseMatrix(rows, cols) {}
 
-    void load(const eckit::PathName &path);
-
-    void setIdentity();
-    void setFromTriplets(const std::vector<Triplet>& triplets);
-
-    Size rows() const {
-        return matrix_.rows();
-    }
-
-    Size cols() const {
-        return matrix_.cols();
-    }
-
-    void prune(double value);
+    void setFromTriplets(const std::vector<Triplet>&);
 
     void multiply(const Vector& values, Vector& result) const;
 
@@ -74,38 +53,29 @@ class WeightMatrix {
 
     void validate(const char *when) const;
 
-    struct iterator : SparseMatrix::iterator {
-        iterator(WeightMatrix& m, Size rowIndex = 0) : SparseMatrix::iterator(m.matrix_, rowIndex) {}
-    };
+    using SparseMatrix::rows;
+    using SparseMatrix::cols;
 
-    struct const_iterator : SparseMatrix::const_iterator {
-        const_iterator(const WeightMatrix& m, Size rowIndex = 0) : SparseMatrix::const_iterator(m.matrix_, rowIndex) {}
-    };
+    using SparseMatrix::save;
+    using SparseMatrix::load;
+    using SparseMatrix::setIdentity;
+    using SparseMatrix::prune;
+    using SparseMatrix::footprint;
 
-    const_iterator begin(Size rowIndex=0) const { return const_iterator(*this, rowIndex); }
-    const_iterator end()                  const { return const_iterator(*this, rows()); }
-    const_iterator end(Size rowIndex)     const { return const_iterator(*this, rowIndex+1); }
+    using SparseMatrix::const_iterator;
+    using SparseMatrix::iterator;
+    using SparseMatrix::begin;
+    using SparseMatrix::end;
 
-    iterator       begin(Size rowIndex=0)   { return iterator(*this, rowIndex); }
-    iterator       end()                    { return iterator(*this, rows()); }
-    iterator       end(Size rowIndex)       { return iterator(*this, rowIndex+1); }
-
-    SparseMatrix& matrix() {
-        return matrix_;
-    }
-
-    size_t footprint() const;
-
-  private: // members
-
-    SparseMatrix matrix_;
+private: // members
 
     void print(std::ostream& s) const;
 
-    friend std::ostream& operator<<(std::ostream& out, const WeightMatrix& e) {
-        e.print(out);
+    friend std::ostream& operator<<(std::ostream& out, const WeightMatrix& m) {
+        m.print(out);
         return out;
     }
+
 };
 
 //----------------------------------------------------------------------------------------------------------------------
