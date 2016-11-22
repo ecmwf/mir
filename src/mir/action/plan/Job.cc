@@ -22,6 +22,7 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
+#include "mir/config/MIRConfiguration.h"
 #include "mir/input/MIRInput.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRCombinedParametrisation.h"
@@ -39,6 +40,12 @@ Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &outp
 
     const param::MIRParametrisation& metadata = input.parametrisation();
     const param::MIRParametrisation& defaults = param::MIRDefaults::instance();
+
+
+    const config::MIRConfiguration& c = config::MIRConfiguration::instance();
+    eckit::ScopedPtr< const param::MIRParametrisation > def(c.lookupDefaults());
+    std::cout << def << std::endl;
+
 
     combined_.reset(new param::MIRCombinedParametrisation(job, metadata, defaults));
 

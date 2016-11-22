@@ -48,21 +48,14 @@ bool string_contains_paramIds(const std::string& str, std::vector<long>& ids) {
 }
 
 
-bool string_contains_metadata(const std::string& str, std::string& key, std::string& value) {
-    using eckit::StringTools;
-    key.clear();
-    value.clear();
+bool string_contains_keys(const std::string& str, std::vector<std::string>& keys) {
 
-    std::vector<std::string> v = StringTools::split("=", str);
-    if (v.size() == 2) {
-        v[0] = StringTools::trim(v[0]);
-        v[1] = StringTools::trim(v[1]);
-        if (v[0].length() && v[1].length()) {
-            key   = v[0];
-            value = v[1];
-        }
+    keys = eckit::StringTools::split("=", str);
+    for (std::vector<std::string>::iterator sit = keys.begin(); sit != keys.end(); ++sit) {
+        *sit = eckit::StringTools::trim(*sit);
     }
-    return key.length() && value.length();
+
+    return keys.size();
 }
 
 
@@ -82,6 +75,7 @@ MIRConfiguration::MIRConfiguration() {
     configDir_  = "~mir/etc/mir";
 
 
+    // open and parse configuration file
     eckit::PathName path(configFile_);
     if (!path.exists()){
         path = eckit::PathName(configDir_) / path;
@@ -93,66 +87,64 @@ MIRConfiguration::MIRConfiguration() {
         throw eckit::CantOpenFile(path);
     }
 
-
     eckit::JSONParser parser(in);
     const eckit::ValueMap j = parser.parse();
 
+
+    // create paramId/metadata hierarchy
     root_.reset(new InheritParametrisation());
     parseInheritMap(root_.get(), j);
-    eckit::Log::debug<LibMir>() << "root: " << *root_ << std::endl;
+    eckit::Log::debug<LibMir>() << "MIRConfiguration root: " << *root_ << std::endl;
 
 
-//    fill_.clear();
-//    parseFillingMap(*fill_, j, configFill_e);
-//    eckit::Log::debug<LibMir>() << "fill: " << fill_ << std::endl;
+    // create filling ("class") hierarchy
+    fill_.reset(new InheritParametrisation());
+    eckit::ValueMap::const_iterator fill_it = j.find(fillKey_);
+    if (fill_it != j.end()) {
 
+        ASSERT(fill_it->second.isMap());
+        parseInheritMap(fill_.get(), fill_it->second);
+        eckit::Log::debug<LibMir>() << "MIRConfiguration fill: " << *fill_ << std::endl;
 
-#if 0
-    eckit::Log::debug<LibMir>() << "Configure: parse filling..." << std::endl;
-    root_.reset(new Inherit());
-    parseFillingMap(*root_, j);
-    eckit::Log::debug<LibMir>() << root_ << std::endl;
-    eckit::Log::debug<LibMir>() << "Configure: parse filling." << std::endl;
-#endif
+    }
 
 
     eckit::Log::info() << "done" << std::endl;
 }
 
 
-bool MIRConfiguration::parseInheritMap(InheritParametrisation* who, const eckit::ValueMap& map) const {
-
+void MIRConfiguration::parseInheritMap(InheritParametrisation* who, const eckit::ValueMap& map) const {
     for (eckit::ValueMap::const_iterator i = map.begin(); i != map.end(); ++i) {
-        std::vector<long> ids;
-        std::string key;
-        std::string value;
-
-        eckit::Log::info() << "+++ key=val: '" << i->first << "'='" << i->second << "'" << std::endl;
+        std::string empty;
 
         if (i->first == fillKey_) {
-            // skip
-        }
-        else if (string_contains_paramIds(i->first, ids)) {
-            eckit::Log::info() << "+++ key=val: '" << i->first << "'='" << i->second << "'" << std::endl;
-            ASSERT(i->second.isMap());
 
-            InheritParametrisation* me = new InheritParametrisation(who, ids);
-            parseInheritMap(me, i->second);
-            who->child(me);
+            // handled separately in fill_
 
-        }
-        else if (string_contains_metadata(i->first, key, value)) {
-            eckit::Log::info() << "+++ key=val: '" << i->first << "'='" << i->second << "'" << std::endl;
-            ASSERT(i->second.isMap());
+        } else if (i->second.isMap()) {
 
-            InheritParametrisation* me = new InheritParametrisation(who, key, value);
-            parseInheritMap(me, i->second);
-            who->child(me);
+            std::vector<long> ids;
+            std::vector<std::string> keys;
 
-        }
-        else {
-            eckit::Log::info() << "+++ key=val: '" << i->first << "'='" << i->second << "'" << std::endl;
-            ASSERT(!i->second.isMap());
+            if (string_contains_paramIds(i->first, ids)) {
+
+                ASSERT(i->second.isMap());
+                InheritParametrisation* me = new InheritParametrisation(who, ids);
+                parseInheritMap(me, i->second);
+                who->child(me);
+
+            } else if (string_contains_keys(i->first, keys)) {
+
+                ASSERT(keys.size() <= 2);
+                InheritParametrisation* me = new InheritParametrisation(who,
+                    keys.size()>0? keys[0] : empty,
+                    keys.size()>1? keys[1] : empty );
+                parseInheritMap(me, i->second);
+                who->child(me);
+
+            }
+
+        } else {
 
             if (!(who->has(i->first))) {
                 who->set(i->first, std::string(i->second));
@@ -160,8 +152,6 @@ bool MIRConfiguration::parseInheritMap(InheritParametrisation* who, const eckit:
 
         }
     }
-
-    return false;
 }
 
 

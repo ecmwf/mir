@@ -29,6 +29,7 @@ InheritParametrisation::InheritParametrisation() : parent_(NULL) {}
 InheritParametrisation::InheritParametrisation(const InheritParametrisation* parent, const std::string& key, const std::string& value) :
     parent_(parent), key_(key), value_(value) {
     ASSERT(parent_);
+    ASSERT(key_.length());
 }
 
 

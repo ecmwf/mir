@@ -88,7 +88,7 @@ private:
 
     // -- Methods
 
-    bool parseInheritMap(InheritParametrisation*, const eckit::ValueMap&) const;
+    void parseInheritMap(InheritParametrisation*, const eckit::ValueMap&) const;
 
     void print(std::ostream&) const;
 
