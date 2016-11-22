@@ -116,13 +116,7 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 
 void WeightMatrix::validate(const char *when) const {
 
-    using eckit::linalg::Index;
-
-    using mir::util::compare::is_approx_one;
-    using mir::util::compare::is_approx_zero;
-
     size_t errors = 0;
-
     for (Size i = 0; i < rows(); i++) {
 
         // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
@@ -131,18 +125,15 @@ void WeightMatrix::validate(const char *when) const {
 
         for (const_iterator it = begin(i); it != end(i); ++it) {
             const double &a = *it;
-            if (!eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(a, 0)) {
-                ok = false;
-            }
-            if (!eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(1, a)) {
-                ok = false;
-            }
+            ok = ok &&
+                 eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(a, 0) &&
+                 eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(1, a);
             sum += a;
         }
 
-        if (!is_approx_zero(sum) && !is_approx_one(sum)) {
-            ok = false;
-        }
+        ok = ok &&
+             util::compare::is_approx_zero(sum) &&
+             util::compare::is_approx_one(sum);
 
         // log issues, per row
         if (!ok) {
