@@ -98,15 +98,15 @@ void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Ma
 }
 
 void WeightMatrix::cleanup(const double& pruneEpsilon) {
-
     size_t fixed = 0;
     size_t count = 0;
+
     for (Size i = 0; i < rows(); ++i) {
 
         double removed = 0;
         size_t non_zero = 0;
 
-        for (SparseMatrix::iterator it = matrix_.row(i); it != matrix_.row(i+1); ++it) {
+        for (iterator it = begin(i); it != end(i); ++it) {
             const double a = *it;
             if (fabs(a) < pruneEpsilon) {
                 removed += a;
@@ -120,7 +120,7 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 
         if (removed && non_zero) {
             double d = removed / non_zero;
-            for (it.row(i); it; ++it) {
+            for (iterator it = begin(i); it != end(i); ++it) {
                 const double a = *it;
                 if (a) {
                     *it = a + d;
@@ -144,20 +144,19 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 void WeightMatrix::validate(const char *when) const {
 
     using eckit::linalg::Index;
-    WeightMatrix::const_iterator it(*this);
 
     using mir::util::compare::is_approx_one;
     using mir::util::compare::is_approx_zero;
 
     size_t errors = 0;
 
-    for (Index i = 0; Size(i) < rows(); i++) {
+    for (Size i = 0; i < rows(); i++) {
 
         // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
         double sum = 0.;
         bool ok  = true;
 
-        for (it.row(i); it; ++it) {
+        for (const_iterator it = begin(i); it != end(i); ++it) {
             const double &a = *it;
             if (!eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(a, 0)) {
                 ok = false;
@@ -181,7 +180,7 @@ void WeightMatrix::validate(const char *when) const {
 
                 eckit::Log::debug<LibMir>() << "Row: " << i;
                 size_t n = 0;
-                for (it.row(i); it; ++it, ++n) {
+                for (const_iterator it = begin(i); it != end(i); ++it, ++n) {
                     if (n > 10) {
                         eckit::Log::debug<LibMir>() << " ...";
                         break;

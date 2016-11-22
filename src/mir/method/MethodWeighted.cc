@@ -459,13 +459,11 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
     WeightMatrix::iterator it(X);
     for (WeightMatrix::Size i = 0; i < X.rows(); i++) {
 
-        it = X.row(i);
-
         // count missing values and accumulate weights
         double sum = 0.; // accumulated row weight, disregarding field missing values
         size_t Nmiss = 0;
         size_t Ncol  = 0;
-        for (; it; ++it, ++Ncol) {
+        for (it = X.begin(i); it != X.end(i); ++it, ++Ncol) {
             if (fieldMissingValues[static_cast<size_t>(it.col())])
                 ++Nmiss;
             else
@@ -480,7 +478,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
         if ((missingAll || is_approx_zero(sum)) && (Ncol > 0)) {
 
             bool found = false;
-            for (it.row(i); it; ++it) {
+            for (it = X.begin(i); it != X.end(i); ++it) {
                 *it = 0.;
                 if (!found && fieldMissingValues[static_cast<size_t>(it.col())]) {
                     *it = 1.;
@@ -492,7 +490,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
         } else if (missingSome) {
 
             ASSERT(!is_approx_zero(sum));
-            for (it.row(i); it; ++it) {
+            for (it = X.begin(i); it != X.end(i); ++it) {
                 if (fieldMissingValues[static_cast<size_t>(it.col())]) {
                     *it = 0.;
                 } else {
@@ -544,9 +542,9 @@ void MethodWeighted::applyMasks(
         // correct weight of non-matching input point weight contribution
         double sum = 0.;
         bool row_changed = false;
-        for (it.row(i); it; ++it) {
+        for (it = W.begin(i); it != W.end(i); ++it) {
 
-            ASSERT(it.col() < int(imask.size()));
+            ASSERT(it.col() < imask.size());
 
             if (omask[i] != imask[it.col()]) {
                 *it *= lsmWeightAdjustement_;
@@ -558,7 +556,7 @@ void MethodWeighted::applyMasks(
         // apply linear redistribution if necessary
         if (row_changed && !is_approx_zero(sum)) {
             ++fix;
-            for (it.row(i); it; ++it) {
+            for (it = W.begin(i); it != W.end(i); ++it) {
                 *it /= sum;
             }
         }

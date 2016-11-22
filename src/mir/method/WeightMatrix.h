@@ -75,12 +75,20 @@ class WeightMatrix {
     void validate(const char *when) const;
 
     struct iterator : SparseMatrix::iterator {
-        iterator(WeightMatrix& m) : SparseMatrix::iterator(m.matrix_) {}
+        iterator(WeightMatrix& m, Size rowIndex = 0) : SparseMatrix::iterator(m.matrix_, rowIndex) {}
     };
 
     struct const_iterator : SparseMatrix::const_iterator {
-        const_iterator(const WeightMatrix& m) : SparseMatrix::const_iterator(m.matrix_) {}
+        const_iterator(const WeightMatrix& m, Size rowIndex = 0) : SparseMatrix::const_iterator(m.matrix_, rowIndex) {}
     };
+
+    const_iterator begin(Size rowIndex=0) const { return const_iterator(*this, rowIndex); }
+    const_iterator end()                  const { return const_iterator(*this, rows()); }
+    const_iterator end(Size rowIndex)     const { return const_iterator(*this, rowIndex+1); }
+
+    iterator       begin(Size rowIndex=0)   { return iterator(*this, rowIndex); }
+    iterator       end()                    { return iterator(*this, rows()); }
+    iterator       end(Size rowIndex)       { return iterator(*this, rowIndex+1); }
 
     SparseMatrix& matrix() {
         return matrix_;

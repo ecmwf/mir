@@ -153,7 +153,7 @@ void Bilinear::execute(context::Context& ctx, const atlas::grid::Grid& in, const
                 // nearest neighbouring point should have the heaviest interpolating weight
                 bool found = false;
                 double w = 0.;
-                for (it = W.row(i); it != W.row(i+1); ++it) {
+                for (it = W.begin(i); it != W.end(i); ++it) {
                     if (!isMissing(*it) && (*it > w)) {
                         found = true;
                         w = *it;
