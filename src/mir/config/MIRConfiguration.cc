@@ -166,12 +166,9 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
 
     // inherit from most-specific paramId/metadata individual and its parents
     {
-        const InheritParametrisation* who = NULL;
-        root_->pick(who, paramId, metadata);
-
-        ASSERT(who);
-        eckit::Log::debug<LibMir>() << "MIRConfiguration::lookup: inheriting from " << (*who) << std::endl;
-        who->inherit(*param);
+        const InheritParametrisation& who = root_->pick(paramId, metadata);
+        eckit::Log::debug<LibMir>() << "MIRConfiguration::lookup: inheriting from " << who << std::endl;
+        who.inherit(*param);
     }
 
     // inherit recursively from a "filling" key
@@ -181,18 +178,9 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
         param->clear(fillKey_);
         ASSERT(check++ < 50);
 
-        const InheritParametrisation* who = NULL;
-        if (!fill_->pick(who, fillKey_, fillValue)) {
-            std::ostringstream msg;
-            msg << "MIRConfiguration::lookup: not found '" << fillKey_ << "=" << fillValue << "' in " << *fill_;
-            throw eckit::UserError(msg.str());
-
-        }
-
-        ASSERT(who);
+        const InheritParametrisation& who = fill_->pick(fillKey_, fillValue);
         eckit::Log::debug<LibMir>() << "MIRConfiguration::lookup: inheriting from '" << fillKey_ << "=" << fillValue << std::endl;
-        who->inherit(*param);
-
+        who.inherit(*param);
     }
 
     return param;

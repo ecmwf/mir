@@ -52,10 +52,10 @@ public:
     void child(const InheritParametrisation* who);
 
     /// Find best matching descendant according to paramId and metadata
-    bool pick(const InheritParametrisation* who, const long& paramId, const param::MIRParametrisation& metadata) const;
+    const InheritParametrisation& pick(const long& paramId, const param::MIRParametrisation& metadata) const;
 
     /// Find best matching descendant according to (key,value) pair
-    bool pick(const InheritParametrisation* who, const std::string& key, const std::string& value) const;
+    const InheritParametrisation& pick(const std::string& key, const std::string& value) const;
 
     /// Collect all inherited traits, prioritizing younger/children traits
     void inherit(param::SimpleParametrisation& who) const;
