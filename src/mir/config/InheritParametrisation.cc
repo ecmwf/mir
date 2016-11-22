@@ -50,9 +50,7 @@ void InheritParametrisation::child(const InheritParametrisation* who) {
 
 bool InheritParametrisation::pick(const InheritParametrisation* who, const long& paramId, const param::MIRParametrisation& metadata) const {
     who = this;
-    size_t check = 0;
-    for (std::vector< const InheritParametrisation* >::const_iterator me=children_.begin(); me!= children_.end(); ++me) {
-        ASSERT(check++ < 50);
+    for (std::vector< const InheritParametrisation* >::const_iterator me=children_.begin(); paramId > 0 && me!= children_.end(); ++me) {
         ASSERT(*me != this);
         ASSERT(*me);
         if ((*me)->matches(paramId, metadata)) {
@@ -65,9 +63,7 @@ bool InheritParametrisation::pick(const InheritParametrisation* who, const long&
 
 bool InheritParametrisation::pick(const InheritParametrisation* who, const std::string& key, const std::string& value) const {
     who = this;
-    size_t check = 0;
     for (std::vector< const InheritParametrisation* >::const_iterator me=children_.begin(); me!= children_.end(); ++me) {
-        ASSERT(check++ < 50);
         ASSERT(*me != this);
         ASSERT(*me);
         if ((*me)->matches(key, value)) {

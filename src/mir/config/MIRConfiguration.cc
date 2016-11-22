@@ -178,8 +178,8 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
     {
         const InheritParametrisation* who = NULL;
         root_->pick(who, paramId, metadata);
-        ASSERT(who);
 
+        ASSERT(who);
         eckit::Log::debug<LibMir>() << "MIRConfiguration::lookup: inheriting from " << (*who) << std::endl;
         who->inherit(*param);
     }
@@ -188,112 +188,32 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
     std::string fillValue;
     size_t check = 0;
     while (param->get(fillKey_, fillValue)) {
-        ASSERT(check++ < 50);
         param->clear(fillKey_);
+        ASSERT(check++ < 50);
 
         const InheritParametrisation* who = NULL;
-        fill_->pick(who, fillKey_, fillValue);
-        ASSERT(who);
+        if (!fill_->pick(who, fillKey_, fillValue)) {
+            std::ostringstream msg;
+            msg << "MIRConfiguration::lookup: not found '" << fillKey_ << "=" << fillValue << "' in " << *fill_;
+            throw eckit::UserError(msg.str());
 
-        eckit::Log::debug<LibMir>() << "MIRConfiguration::lookup: inheriting from '" << fillKey_ << "=" << fillValue << "': " << (*who) << std::endl;
+        }
+
+        ASSERT(who);
+        eckit::Log::debug<LibMir>() << "MIRConfiguration::lookup: inheriting from '" << fillKey_ << "=" << fillValue << std::endl;
         who->inherit(*param);
+
     }
 
     return param;
 }
 
 
+const param::MIRParametrisation* MIRConfiguration::lookupDefaults() const {
+    static param::SimpleParametrisation empty;
+    return lookup(0, empty);
+}
+
+
 }  // namespace config
 }  // namespace mir
-
-
-#if 0
-#include "eckit/io/Buffer.h"
-#include "eckit/parser/JSON.h"
-#include "eckit/parser/JSONParser.h"
-#include "eckit/testing/Setup.h"
-
-
-void test_eckit_parser_parse_to_value() {
-    std::istringstream in("{ \"a\" : [true, false, 3], \"b\" : 42.3 , \"c\" : null, \"d\" : \"y\n\tr\rh\", \"e\" : \"867017db84f4bc2b5078ca56ffd3b9b9\"}");
-    eckit::JSONParser p(in);
-
-    eckit::Value v = p.parse();
-
-    BOOST_TEST_MESSAGE( v );
-    BOOST_TEST_MESSAGE( v["a"] );
-    BOOST_TEST_MESSAGE( v["a"][2] );
-
-    eckit::JSON j(std::cout);
-    j << v;
-
-    BOOST_CHECK( v.isMap() );
-    BOOST_CHECK_EQUAL( v.as<eckit::ValueMap>().size(), 5 );
-
-    BOOST_CHECK( v["a"].isList() );
-    BOOST_CHECK_EQUAL( v["a"].as<eckit::ValueList>().size(), 3 );
-
-
-    BOOST_CHECK( v["a"][0].isBool() );
-    BOOST_CHECK_EQUAL( v["a"][0].as<bool>(), true );
-
-    BOOST_CHECK( v["a"][1].isBool() );
-    BOOST_CHECK_EQUAL( v["a"][1].as<bool>(), false );
-
-    BOOST_CHECK( v["a"][2].isNumber() );
-    BOOST_CHECK_EQUAL( (int) v["a"][2], 3 );
-
-    BOOST_CHECK( v["b"].isDouble() );
-    BOOST_CHECK_LT( v["b"].as<double>() - 42.3, 1E-12 );
-
-    BOOST_CHECK( v["c"].isNil() );
-
-    BOOST_CHECK( v["d"].isString() );
-
-    BOOST_CHECK( v["e"].isString() );
-    BOOST_CHECK_EQUAL( v["e"].as<std::string>(), "867017db84f4bc2b5078ca56ffd3b9b9" );
-}
-
-void test_eckit_parser_parse_to_set() {
-    std::istringstream in("[ \"a\" , \"b\", \"c\" ]" );
-    eckit::JSONParser p(in);
-    eckit::Value v = p.parse();
-
-    BOOST_TEST_MESSAGE( v );
-
-    BOOST_CHECK( v.isList() );
-    BOOST_CHECK_EQUAL( v.as<eckit::ValueList>().size(), 3 );
-
-    BOOST_CHECK( v[0].isString() );
-    BOOST_CHECK_EQUAL( v[0].as<std::string>(), "a" );
-
-    BOOST_CHECK( v[1].isString() );
-    BOOST_CHECK_EQUAL( v[1].as<std::string>(), "b" );
-
-    BOOST_CHECK( v[2].isString() );
-    BOOST_CHECK_EQUAL( v[2].as<std::string>(), "c" );
-}
-
-void test_eckit_parser_parse_to_map() {
-    std::istringstream in("{ \"a\" : \"AAA\", \"b\" : 0.0 , \"c\" : \"null\", \"d\" : \"\"}" );
-    eckit::JSONParser p(in);
-    eckit::Value v = p.parse();
-
-    BOOST_TEST_MESSAGE( v );
-
-    BOOST_CHECK( v.isMap() );
-    BOOST_CHECK_EQUAL( v.as<eckit::ValueMap>().size(), 4 );
-
-    BOOST_CHECK( v["a"].isString() );
-    BOOST_CHECK_EQUAL( v["a"].as<std::string>(), "AAA" );
-
-    BOOST_CHECK( v["b"].isDouble() );
-    BOOST_CHECK_EQUAL( v["b"].as<double>(), 0.0 );
-
-    BOOST_CHECK( v["c"].isString() );
-    BOOST_CHECK_EQUAL( v["c"].as<std::string>(), "null" );
-
-    BOOST_CHECK( v["d"].isString() );
-    BOOST_CHECK_EQUAL( v["d"].as<std::string>(), "" );
-}
-#endif

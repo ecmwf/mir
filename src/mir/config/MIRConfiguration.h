@@ -58,6 +58,8 @@ public:
 
     const param::MIRParametrisation* lookup(const long& paramId, const param::MIRParametrisation& metadata) const;
 
+    const param::MIRParametrisation* lookupDefaults() const;
+
 private:
 
     // No copy allowed
