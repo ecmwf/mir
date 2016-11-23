@@ -128,7 +128,6 @@ void MIRConfiguration::parseInheritMap(InheritParametrisation* who, const eckit:
 
             if (string_contains_paramIds(i->first, ids)) {
 
-                ASSERT(i->second.isMap());
                 InheritParametrisation* me = new InheritParametrisation(who, ids);
                 parseInheritMap(me, i->second);
                 who->child(me);
@@ -165,11 +164,7 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
     ASSERT(param);
 
     // inherit from most-specific paramId/metadata individual and its parents
-    {
-        const InheritParametrisation& who = root_->pick(paramId, metadata);
-        eckit::Log::debug<LibMir>() << "MIRConfiguration::lookup: inheriting from " << who << std::endl;
-        who.inherit(*param);
-    }
+    root_->pick(paramId, metadata).inherit(*param);
 
     // inherit recursively from a "filling" key
     std::string fillValue;
@@ -177,10 +172,7 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
     while (param->get(fillKey_, fillValue)) {
         param->clear(fillKey_);
         ASSERT(check++ < 50);
-
-        const InheritParametrisation& who = fill_->pick(fillKey_, fillValue);
-        eckit::Log::debug<LibMir>() << "MIRConfiguration::lookup: inheriting from '" << fillKey_ << "=" << fillValue << std::endl;
-        who.inherit(*param);
+        fill_->pick(fillKey_, fillValue).inherit(*param);
     }
 
     return param;
