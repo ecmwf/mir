@@ -82,13 +82,9 @@ private:
     std::string fillKey_;
     std::string configFile_;
     std::string configDir_;
-
     eckit::ScopedPtr<InheritParametrisation> root_;
-    eckit::ScopedPtr<InheritParametrisation> fill_;
 
     // -- Methods
-
-    void parseInheritMap(InheritParametrisation*, const eckit::ValueMap&) const;
 
     void print(std::ostream&) const;
 

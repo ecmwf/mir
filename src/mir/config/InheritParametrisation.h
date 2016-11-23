@@ -14,9 +14,9 @@
 #ifndef mir_config_InheritParametrisation_h
 #define mir_config_InheritParametrisation_h
 
-#include <algorithm>
 #include <iosfwd>
 #include <vector>
+#include "eckit/value/Value.h"
 #include "mir/param/SimpleParametrisation.h"
 
 
@@ -49,7 +49,10 @@ public:
     // -- Methods
 
     // Add a child
-    void child(const InheritParametrisation* who);
+    InheritParametrisation& child(InheritParametrisation* who);
+
+    // Fill contents provided a map
+    void fill(const eckit::ValueMap&);
 
     /// Find best matching descendant according to paramId and metadata
     const InheritParametrisation& pick(const long& paramId, const param::MIRParametrisation& metadata) const;

@@ -11,12 +11,52 @@
 /// @date Nov 2016
 
 
+#include "mir/config/InheritParametrisation.h"
+
 #include <algorithm>
 #include <iostream>
 #include <iterator>
 #include "eckit/exception/Exceptions.h"
-#include "mir/config/InheritParametrisation.h"
+#include "eckit/parser/StringTools.h"
+#include "eckit/utils/Translator.h"
 #include "mir/param/MIRParametrisation.h"
+
+
+namespace {
+
+
+bool string_contains_paramIds(const std::string& str, std::vector<long>& ids) {
+    ids.clear();
+    if (str.find_first_not_of("0123456789/") != std::string::npos) {
+        return false;
+    }
+
+    std::vector<std::string> v = eckit::StringTools::split("/", str);
+    ids.reserve(v.size());
+
+    for (std::vector<std::string>::const_iterator i = v.begin(); i != v.end(); ++i) {
+        long id = 0;
+        if (i->length() && (id = eckit::Translator<std::string, long>()(*i))) {
+            ids.push_back(id);
+        }
+    }
+
+    return ids.size();
+}
+
+
+bool string_contains_keys(const std::string& str, std::vector<std::string>& keys) {
+
+    keys = eckit::StringTools::split("=", str);
+    for (std::vector<std::string>::iterator sit = keys.begin(); sit != keys.end(); ++sit) {
+        *sit = eckit::StringTools::trim(*sit);
+    }
+
+    return keys.size();
+}
+
+
+}  // (anonymous namespace)
 
 
 namespace mir {
@@ -44,8 +84,35 @@ InheritParametrisation::~InheritParametrisation() {
 }
 
 
-void InheritParametrisation::child(const InheritParametrisation* who) {
+InheritParametrisation& InheritParametrisation::child(InheritParametrisation* who) {
+    ASSERT(who);
     children_.push_back(who);
+    return *who;
+}
+
+
+void InheritParametrisation::fill(const eckit::ValueMap& map) {
+    for (eckit::ValueMap::const_iterator i = map.begin(); i != map.end(); ++i) {
+        if (i->second.isMap()) {
+
+            std::vector<long> ids;
+            std::vector<std::string> keys;
+
+            if (string_contains_paramIds(i->first, ids)) {
+                child(new InheritParametrisation(this, ids)).fill(i->second);
+            } else if (string_contains_keys(i->first, keys)) {
+                if (keys.size() < 2) {
+                    keys.resize(2);
+                }
+                child(new InheritParametrisation(this, keys[0], keys[1])).fill(i->second);
+            }
+
+        } else if (!has(i->first)) {
+
+            set(i->first, std::string(i->second));
+
+        }
+    }
 }
 
 
