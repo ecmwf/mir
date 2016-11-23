@@ -1,23 +1,65 @@
 {
 
-  "interpolation": "somethingelse",
+	"interpolation": "somethingelse",
 
-  "class": {
-      "intensity": {
-          "interpolation": "nn"
-      }
-  },
+	"class": {
 
-  "66": {
-    "interpolation": "linear",
-    "class": "intensity",
-    "gridType=regular_ll" : {
-      "interpolation": "bilinear"
-    }
-  },
+		"intensity": {
+			"comparison": "scalar/scalar"
+		},
 
-  "77/78": {
-    "class": "intensity"
-  }
+		"ratio": {
+
+			"fraction": {
+			},
+
+			"percentage": {
+			},
+
+			"probability": {
+			},
+
+			"cover": {
+			}
+
+		},
+
+		"rate": {
+		},
+
+		"flux": {
+		},
+
+		"direction": {
+			"FieldInfo":     "vector.1d.polar.angle",
+			"degree":        "true",
+			"symmetric":     "false",
+			"decomposition": "PolarAngleDegreesAssymmetricToCartesian",
+			"stats":         "AngleDecomposition"
+		},
+
+		"concentration": {
+		},
+
+		"index": {
+			"interpolation": "nearest-neighbour"
+		},
+
+		"unknown": {
+		}
+	},
+
+	"66": {
+		"interpolation": "linear",
+		"class": "intensity",
+		"gridType=regular_ll" : {
+			"interpolation": "bilinear"
+		}
+	},
+
+	"77/78": {
+		"class": "intensity"
+	}
 
 }
+
