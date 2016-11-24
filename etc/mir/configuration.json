@@ -10,16 +10,16 @@
 
 		"ratio": {
 
-			"fraction": {
+			"ratio/fraction": {
 			},
 
-			"percentage": {
+			"ratio/percentage": {
 			},
 
-			"probability": {
+			"ratio/probability": {
 			},
 
-			"cover": {
+			"ratio/cover": {
 			}
 
 		},

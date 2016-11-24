@@ -38,7 +38,7 @@ public:
 
     InheritParametrisation();
 
-    InheritParametrisation(const InheritParametrisation* parent, const std::string& key, const std::string& value);
+    InheritParametrisation(const InheritParametrisation* parent, const std::vector<std::string>& labels);
 
     InheritParametrisation(const InheritParametrisation* parent, const std::vector<long>& paramIds);
 
@@ -57,17 +57,13 @@ public:
     /// Find best matching descendant according to paramId and metadata
     const InheritParametrisation& pick(const long& paramId, const param::MIRParametrisation& metadata) const;
 
-    /// Find best matching descendant according to (key,value) pair
-    const InheritParametrisation& pick(const std::string& key, const std::string& value) const;
+    /// Find best matching descendant according to label
+    const InheritParametrisation& pick(const std::string& label) const;
 
     /// Collect all inherited traits, prioritizing younger/children traits
-    void inherit(param::SimpleParametrisation& who) const;
+    void inherit(param::SimpleParametrisation& param) const;
 
-    bool matches(const long& paramId, const param::MIRParametrisation& metadata) const;
-
-    bool matches(const std::string& key, const std::string& value) const;
-
-    const std::vector<long>& paramIds() const;
+    std::string label(size_t which=0) const;
 
     bool empty() const;
 
@@ -82,14 +78,17 @@ private:
     InheritParametrisation(const InheritParametrisation&);
     InheritParametrisation& operator=(const InheritParametrisation&);
 
+    // -- Methods
+
+    bool matches(const long& paramId, const param::MIRParametrisation& metadata) const;
+    bool matches(const std::string& label) const;
+
     // -- Members
 
     const InheritParametrisation* parent_;
     std::vector< const InheritParametrisation* > children_;
-    std::vector<long> paramIds_;
-    const std::string key_;
-    const std::string value_;
-    const std::string fill_;
+    std::vector< long >        paramIds_;
+    std::vector< std::string > labels_;
 
     // -- Friends
 

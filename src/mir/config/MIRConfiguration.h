@@ -56,9 +56,9 @@ public:
 
     static const MIRConfiguration& instance();
 
-    const param::MIRParametrisation* lookup(const long& paramId, const param::MIRParametrisation& metadata) const;
+    const param::MIRParametrisation* lookup(const long& paramId, const param::MIRParametrisation& metadata, const std::string& fillKey="class") const;
 
-    const param::MIRParametrisation* lookupDefaults() const;
+    const param::MIRParametrisation* lookupDefaults(const std::string& fillKey="class") const;
 
 private:
 
