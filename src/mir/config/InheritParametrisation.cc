@@ -157,7 +157,7 @@ bool InheritParametrisation::matches(const long& paramId, const param::MIRParame
 
 
 bool InheritParametrisation::matches(const std::string& key, const std::string& value) const {
-    if (key_.length() && value_.length()) {
+    if (key_.length()) {
         return (key == key_) && (value == value_);
     }
     return false;

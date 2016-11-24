@@ -79,7 +79,6 @@ private:
 
     // -- Members
 
-    std::string fillKey_;
     std::string configFile_;
     std::string configDir_;
     eckit::ScopedPtr<InheritParametrisation> root_;

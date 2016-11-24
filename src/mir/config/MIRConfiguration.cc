@@ -31,7 +31,6 @@ const MIRConfiguration& MIRConfiguration::instance() {
 
 MIRConfiguration::MIRConfiguration() {
 
-    fillKey_ = "class";
     configFile_ = "configuration.json";
     configDir_  = "~mir/etc/mir";
 
@@ -55,7 +54,7 @@ MIRConfiguration::MIRConfiguration() {
     // create hierarchy
     root_.reset(new InheritParametrisation());
     root_->fill(j);
-    eckit::Log::debug<LibMir>() << "MIRConfiguration root: " << *root_ << std::endl;
+    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *root_ << std::endl;
 
 
     eckit::Log::info() << "done" << std::endl;
@@ -78,12 +77,14 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
 
 
     // inherit recursively from a "filling" key
+    const std::string fillKey = "class";
+
     std::string fillValue;
     size_t check = 0;
-    while (fillKey_.length() && param->get(fillKey_, fillValue)) {
+    while (fillKey.length() && param->get(fillKey, fillValue)) {
         ASSERT(check++ < 50);
-        param->clear(fillKey_);
-        root_->pick(fillKey_, fillValue).inherit(*param);
+        param->clear(fillKey);
+        root_->pick(fillKey, fillValue).inherit(*param);
     }
 
     return param;
