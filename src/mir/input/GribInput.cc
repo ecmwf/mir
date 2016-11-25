@@ -13,9 +13,10 @@
 /// @date Apr 2015
 
 
+#include "mir/input/GribInput.h"
+
 #include <iomanip>
 #include <iostream>
-
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/BufferedHandle.h"
@@ -23,12 +24,8 @@
 #include "eckit/io/StdFile.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/thread/AutoLock.h"
-
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
-#include "mir/input/GribFileInput.h"
-#include "mir/input/GribInput.h"
-#include "mir/param/MIRConfiguration.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 

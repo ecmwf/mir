@@ -13,35 +13,65 @@
 
 #include "mir/config/MIRConfiguration.h"
 
+#include <algorithm>
 #include <iostream>
+#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/JSONParser.h"
+#include "mir/config/InheritParametrisation.h"
 #include "mir/config/LibMir.h"
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
 namespace config {
 
 
-const MIRConfiguration& MIRConfiguration::instance() {
+namespace  {
+
+
+struct Defaults : param::SimpleParametrisation {
+    Defaults() {
+        // these options are (can be) overridden by the configuration file
+
+        set("configuration-fill", "class");  // very meta
+
+        set("style", "mars");
+        set("legendre-loader", "mapped-memory");
+        set("executor", "simple");
+
+        set("interpolation", "linear"); // The word 'method' is used in grib
+        set("decomposition", "none");
+        set("stats", "Scalar");
+        set("caching", true);
+
+        set("prune-epsilon", 1e-10);
+        set("nclosest", 4L);
+
+        set("lsm-selection", "auto");
+        set("lsm-interpolation", "nearest-neighbour");
+        set("lsm-weight-adjustment", 0.2);
+        set("lsm-value-threshold", 0.5);
+
+        set("autoresol", false);
+    }
+};
+
+
+}  // (anonymous namespace)
+
+
+MIRConfiguration& MIRConfiguration::instance() {
     static MIRConfiguration instance_;
     return instance_;
 }
 
 
-MIRConfiguration::MIRConfiguration() {
+void MIRConfiguration::configure(const eckit::PathName& path) {
+    eckit::Log::debug<LibMir>() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
+    Defaults defaults;
 
-    configFile_ = "configuration.json";
-    configDir_  = "~mir/etc/mir";
 
-
-    // open and parse configuration file
-    eckit::PathName path(configFile_);
-    if (!path.exists()){
-        path = eckit::PathName(configDir_) / path;
-    }
-
-    eckit::Log::debug<LibMir>() << "Loading configuration from '" << path << "'" << std::endl;
     std::ifstream in(path.asString().c_str());
     if (!in) {
         throw eckit::CantOpenFile(path);
@@ -51,13 +81,19 @@ MIRConfiguration::MIRConfiguration() {
     const eckit::ValueMap j = parser.parse();
 
 
-    // create hierarchy
+    // create hierarchy and fill (not overwriting) with defaults
     root_.reset(new InheritParametrisation());
+
     root_->fill(j);
+    defaults.copyValuesTo(*root_, false);
+
+
+    configPath_ = path;
     eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *root_ << std::endl;
+}
 
 
-    eckit::Log::info() << "done" << std::endl;
+MIRConfiguration::MIRConfiguration() {
 }
 
 
@@ -66,7 +102,7 @@ void MIRConfiguration::print(std::ostream& out) const {
 }
 
 
-const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, const param::MIRParametrisation& metadata, const std::string& fillKey) const {
+const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, const param::MIRParametrisation& metadata) const {
     param::SimpleParametrisation* param = new param::SimpleParametrisation();
 
 
@@ -75,27 +111,41 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
     root_->pick(paramId, metadata).inherit(*param);
 
 
-    // inherit from "filling" key(s), ensuring we has a "filling" map
-    if (fillKey.length()) {
-        const InheritParametrisation& fill = root_->pick(fillKey);
-        ASSERT(fillKey == fill.label());
+    // inherit from configurable "filling" key(s), ensuring we has a "filling" map
+    std::string fill_root_label;
+    if (param->get("configuration-fill", fill_root_label) && fill_root_label.length()) {
 
-        std::string fillLabel;
-        size_t check = 0;
-        while (param->get(fillKey, fillLabel)) {
-            ASSERT(check++ < 50);
-            param->clear(fillKey);
-            fill.pick(fillLabel).inherit(*param);
+        const InheritParametrisation& fill_root = root_->pick(fill_root_label);
+        if (!fill_root.matches(fill_root_label)) {
+            std::ostringstream msg;
+            msg << "MIRConfiguration: could not find (root) fill key '" << fill_root_label << "'";
+            throw eckit::UserError(msg.str());
         }
+
+        std::string fill_label;
+        size_t check = 0;
+        while (param->get(fill_root_label, fill_label)) {
+            ASSERT(check++ < 50);
+            param->clear(fill_root_label);
+
+            const InheritParametrisation& fill = fill_root.pick(fill_label);
+            if (!fill.matches(fill_label)) {
+                std::ostringstream msg;
+                msg << "MIRConfiguration: could not find fill key '" << fill_root_label << "'";
+                throw eckit::UserError(msg.str());
+            }
+            fill.inherit(*param);
+        }
+
     }
 
     return param;
 }
 
 
-const param::MIRParametrisation* MIRConfiguration::lookupDefaults(const std::string& fillKey) const {
+const param::MIRParametrisation* MIRConfiguration::lookupDefaults() const {
     static param::SimpleParametrisation empty;
-    return lookup(0, empty, fillKey);
+    return lookup(0, empty);
 }
 
 

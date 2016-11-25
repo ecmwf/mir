@@ -1,6 +1,7 @@
 {
 
 	"interpolation": "somethingelse",
+    "configuration-fill": "class",
 
 	"class": {
 

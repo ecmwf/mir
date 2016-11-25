@@ -13,11 +13,9 @@
 /// @date Apr 2015
 
 
-
 #include "mir/lsm/UserFileLSM.h"
 
 #include <iostream>
-
 #include "atlas/grid/Grid.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
@@ -37,6 +35,7 @@ UserFileLSM::UserFileLSM(const std::string &name, const std::string& which):
 UserFileLSM::~UserFileLSM() {
 }
 
+
 void UserFileLSM::print(std::ostream& out) const {
     out << "UserFileLSM[" << name_ << ",which=" << which_ << "]";
 }
@@ -44,8 +43,8 @@ void UserFileLSM::print(std::ostream& out) const {
 
 std::string UserFileLSM::path(const param::MIRParametrisation &param) const {
     std::string path;
-    if (!param.get("lsm.path." + which_, path)) {
-        if (!param.get("lsm.path", path)) {
+    if (!param.get("lsm-path-" + which_, path)) {
+        if (!param.get("lsm-path", path)) {
             std::ostringstream os;
             os << *this << " no path specified";
             throw eckit::UserError(os.str());
@@ -54,12 +53,14 @@ std::string UserFileLSM::path(const param::MIRParametrisation &param) const {
     return path;
 }
 
+
 Mask *UserFileLSM::create(const std::string &name,
                           const param::MIRParametrisation &param,
                           const atlas::grid::Grid &grid,
                           const std::string& which) const {
     return new GribFileLSM(name, path(param), param, grid, which);
 }
+
 
 std::string UserFileLSM::cacheKey(const std::string &name,
                                   const param::MIRParametrisation &param,
@@ -76,7 +77,6 @@ std::string UserFileLSM::cacheKey(const std::string &name,
 namespace {
 static UserFileLSM input("file.input", "input");
 static UserFileLSM output("file.output", "output");
-
 }
 
 

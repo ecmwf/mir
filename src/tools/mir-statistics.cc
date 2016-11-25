@@ -17,12 +17,12 @@
 #include "eckit/option/FactoryOption.h"
 #include "mir/action/context/Context.h"
 #include "mir/action/statistics/Statistics.h"
+#include "mir/config/MIRConfiguration.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/MIRCombinedParametrisation.h"
-#include "mir/param/MIRDefaults.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/param/ConfigurationWrapper.h"
 
 
 class MIRStatistics : public mir::tools::MIRTool {
@@ -68,8 +68,11 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
     for (size_t i = 0; i < args.count(); ++i) {
         mir::input::GribFileInput input(args(i));
 
+        // Wrap the arguments, so that they behave as a MIRParameter
         const ConfigurationWrapper wrap(const_cast<eckit::option::CmdArgs&>(args));
-        MIRCombinedParametrisation parametrisation(wrap, input, MIRDefaults::instance());
+        eckit::ScopedPtr<const mir::param::MIRParametrisation> defaults(mir::config::MIRConfiguration::instance().defaults());
+
+        MIRCombinedParametrisation parametrisation(wrap, input, *defaults);
 
         size_t count = 0;
         while (input.next()) {

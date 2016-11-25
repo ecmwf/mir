@@ -81,7 +81,7 @@ bool CompareStatistics::compare(
         const data::MIRField& field2, const param::MIRParametrisation& ) const {
 
     bool compareAngles =
-               options_.get<bool>("compare.compare_angle_in_polar")
+               options_.get<bool>(".compare-angle-in-polar")
             && field_is_angle_degrees(field1)
             && field_is_angle_degrees(field2);
 

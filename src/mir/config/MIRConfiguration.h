@@ -14,16 +14,18 @@
 #ifndef mir_config_MIRConfiguration_h
 #define mir_config_MIRConfiguration_h
 
-#include <algorithm>
 #include <iosfwd>
 #include <vector>
 #include "eckit/memory/ScopedPtr.h"
-#include "eckit/value/Value.h"
-#include "mir/param/SimpleParametrisation.h"
-#include "mir/config/InheritParametrisation.h"
 
 
+namespace eckit {
+class PathName;
+}
 namespace mir {
+namespace config {
+class InheritParametrisation;
+}
 namespace param {
 class MIRParametrisation;
 }
@@ -54,11 +56,16 @@ public:
 
     // -- Methods
 
-    static const MIRConfiguration& instance();
+    static MIRConfiguration& instance();
 
-    const param::MIRParametrisation* lookup(const long& paramId, const param::MIRParametrisation& metadata, const std::string& fillKey="class") const;
+    // Configure (or reconfigure) using a file
+    void configure(const eckit::PathName&);
 
-    const param::MIRParametrisation* lookupDefaults(const std::string& fillKey="class") const;
+    // Lookup parametrisation according to paramId and metadata
+    const param::MIRParametrisation* lookup(const long& paramId, const param::MIRParametrisation& metadata) const;
+
+    // Lookup default parametrisation
+    const param::MIRParametrisation* lookupDefaults() const;
 
 private:
 
@@ -79,8 +86,7 @@ private:
 
     // -- Members
 
-    std::string configFile_;
-    std::string configDir_;
+    std::string configPath_;
     eckit::ScopedPtr<InheritParametrisation> root_;
 
     // -- Methods

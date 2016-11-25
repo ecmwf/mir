@@ -39,7 +39,7 @@ const size_t COLS = 2160;
 
 /*
 From EMOSLIB:
-     The 10 minute land sea mask file contains 1080 lines of 2160
+     The 10 minute land-sea mask file contains 1080 lines of 2160
      values with each value stored as one bit. (Each line of latitude
      is packed in 68*32 = 2176 bits). Each value consists
      of a 0 for sea or a 1 for land. The bits are assumed to be in

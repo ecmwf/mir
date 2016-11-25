@@ -63,7 +63,7 @@ static InMemoryCache<atlas::mesh::Mesh> mesh_cache("mirMesh",
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation) :
     Method(parametrisation) {
-    ASSERT(parametrisation.get("lsm.weight.adjustment", lsmWeightAdjustement_));
+    ASSERT(parametrisation.get("lsm-weight-adjustment", lsmWeightAdjustement_));
 }
 
 

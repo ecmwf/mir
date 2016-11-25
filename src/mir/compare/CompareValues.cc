@@ -176,10 +176,10 @@ public:
 
 
 CompareValues::CompareValuesFn* CompareValues::getCompareFunctor(double missingValue1, double missingValue2, double packingError) const {
-    const std::string compareMode = options_.get< std::string >("compare.mode");
+    const std::string compareMode = options_.get< std::string >("compare-mode");
     if (compareMode=="packing") {
 
-        const double packing_factor = options_.get< double >("compare.eps_packingfactor");
+        const double packing_factor = options_.get< double >("compare-eps-packingfactor");
         const double eps = std::max(1., packing_factor) * packingError;
         eckit::Log::debug() << "Compare: |ε| = max(1, " << packing_factor << ")*ε|packing = " << eps << std::endl;
         return new util::compare::CompareValuesAbsoluteToleranceFn< double >(eps, missingValue1, missingValue2);
@@ -187,14 +187,14 @@ CompareValues::CompareValuesFn* CompareValues::getCompareFunctor(double missingV
     }
     else if (compareMode=="absolute") {
 
-        const double eps = std::max(packingError, options_.get< double >("compare.eps_absolute"));
+        const double eps = std::max(packingError, options_.get< double >("compare-eps-absolute"));
         eckit::Log::debug() << "Compare: |ε| =  max(ε|absolute, ε|packing) = " << eps << std::endl;
         return new util::compare::CompareValuesAbsoluteToleranceFn< double >(eps, missingValue1, missingValue2);
 
     }
     else if (compareMode=="relative") {
 
-        const double eps = options_.get< double >("compare.eps_relative");
+        const double eps = options_.get< double >("compare-eps-relative");
         eckit::Log::debug() << "Compare: |ε| =  ε|relative = " << eps << std::endl;
         return new util::compare::CompareValuesRelativeToleranceFn< double >(eps, missingValue1, missingValue2);
 
@@ -205,7 +205,7 @@ CompareValues::CompareValuesFn* CompareValues::getCompareFunctor(double missingV
 
 
 CompareValues::CompareValuesFn* CompareValues::getCompareAnglesFunctor(double missingValue1, double missingValue2, double packingError) const {
-    const double eps = std::max(packingError, options_.get< double >("compare.eps_angle"));
+    const double eps = std::max(packingError, options_.get< double >("compare-eps-angle"));
     eckit::Log::debug() << "Compare: |ε| =  max(ε|angle, ε|packing) = " << eps << "°" << std::endl;
     return new util::compare::CompareValuesAbsoluteToleranceFn< double >(eps, missingValue1, missingValue2);
 }
@@ -215,7 +215,7 @@ bool CompareValues::compareFieldsValuesScalar(
         const data::MIRField& field1, const data::MIRField& field2,
         const CompareOptions& options, const double& packingError ) const {
 
-    bool verbose = options.get< bool >("compare.verbose");
+    bool verbose = options.get< bool >("compare-verbose");
     const double missingValue1 = field1.hasMissing()? field1.missingValue() : std::numeric_limits<double>::quiet_NaN();
     const double missingValue2 = field2.hasMissing()? field2.missingValue() : std::numeric_limits<double>::quiet_NaN();
     const size_t dim1 = field1.dimensions();
@@ -279,7 +279,7 @@ bool CompareValues::compareFieldsValuesAngleDegrees(
         const data::MIRField& field1, const data::MIRField& field2,
         const CompareValues::CompareOptions& options, const double& packingError ) const {
 
-    bool verbose = options.get< bool >("compare.verbose");
+    bool verbose = options.get< bool >("compare-verbose");
     const double missingValue1 = field1.hasMissing()? field1.missingValue() : std::numeric_limits<double>::quiet_NaN();
     const double missingValue2 = field2.hasMissing()? field2.missingValue() : std::numeric_limits<double>::quiet_NaN();
     const size_t dim1 = field1.dimensions();
@@ -384,7 +384,7 @@ bool CompareValues::compareFieldsValuesVectorCartesian2D(
     // set comparison results
     size_t Ndiff = std::max(compareMag.countDifferences(), compareAng.countDifferences());
     const bool cmp = (Ndiff <= Ndiffmax);
-    if (!cmp || options.get< bool >("compare.verbose")) {
+    if (!cmp || options.get< bool >("compare-verbose")) {
         double p = double(Ndiff) / double(N) * 100;
         eckit::Log::info() << "\t" << Ndiff << " out of " << eckit::Plural(N, "value") << (Ndiff!=1 ? " are " : " is ") << "different (" << p << "%)\n"
                               "\tpolar r: ε|max = |field A - field B|[" << compareMag.maxIndex() << "] = " << compareMag.max() << "\n"
@@ -403,14 +403,14 @@ bool CompareValues::compare(
                 (param1.get("packingError", d)? d : 0.),
                 (param2.get("packingError", d)? d : 0.) );
 
-    if ( options_.get<bool>("compare.compare_vector_in_polar") &&
+    if ( options_.get<bool>("compare-vector-in-polar") &&
               field_is_vector_cartedian2d(field1) &&
               field_is_vector_cartedian2d(field2) ) {
 
         return compareFieldsValuesVectorCartesian2D(field1, field2, options_, packingError);
 
     }
-    else if ( options_.get<bool>("compare.compare_angle_in_polar") &&
+    else if ( options_.get<bool>("compare-angle-in-polar") &&
               field_is_angle_degrees(field1) &&
               field_is_angle_degrees(field2) ) {
 

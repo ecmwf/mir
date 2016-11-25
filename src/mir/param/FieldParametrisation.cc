@@ -13,11 +13,12 @@
 /// @date Apr 2015
 
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/param/FieldParametrisation.h"
-#include "mir/param/MIRConfiguration.h"
+
+#include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
+#include "mir/config/MIRConfiguration.h"
+
 
 namespace mir {
 namespace param {
@@ -64,9 +65,11 @@ bool FieldParametrisation::_get(const std::string &name, T &value) const {
     // This assumes that other input (NetCDF, etc) also return a paramId
     long paramId = 0;
     if (get("paramId", paramId)) {
+        //FIXME remove???
         // return paramId specific parametrisation
-        const param::MIRConfiguration& configuration = param::MIRConfiguration::instance();
-        return configuration.lookup(paramId).get(name, value);
+//        const config::MIRConfiguration& configuration = config::MIRConfiguration::instance();
+//        eckit::ScopedPtr<const param::MIRParametrisation> param(configuration)
+//        return configuration.lookup(paramId).get(name, value);
     }
 
     return false;

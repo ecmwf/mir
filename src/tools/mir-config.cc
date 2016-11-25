@@ -14,7 +14,7 @@
 
 
 #include "eckit/filesystem/PathName.h"
-#include "mir/param/MIRConfiguration.h"
+#include "mir/config/MIRConfiguration.h"
 #include "mir/tools/MIRTool.h"
 
 
@@ -44,9 +44,9 @@ void MIRConfig::usage(const std::string &tool) const {
 
 void MIRConfig::execute(const eckit::option::CmdArgs&) {
 
-    // const param::MIRConfiguration& conf = param::MIRConfiguration::instance();
+    // const config::MIRConfiguration& conf = config::MIRConfiguration::instance();
 
-    eckit::PathName path("~mir/etc/mir/interpolation-methods.cfg");
+    eckit::PathName path("~mir/etc/mir/configuration.json");
     eckit::Log::info() << "Path is " << path << std::endl;
     if(path.exists()) {
         eckit::Log::info() << "File exists" << std::endl;

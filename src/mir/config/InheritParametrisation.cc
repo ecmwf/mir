@@ -46,11 +46,11 @@ bool string_contains_paramIds(const std::string& str, std::vector<long>& ids) {
 
 
 bool string_contains_labels(const std::string& str, std::vector<std::string>& labels) {
+    labels.clear();
     const char* alnum =
             "ABCDEFGHIJKLMNOPQRSTUWXYZ"
             "abcdefghijklmnopqrstuwxyz"
-            "0123456789_/=";
-    labels.clear();
+            "0123456789_/=-";
     if (str.find_first_not_of(alnum) != std::string::npos) {
         return false;
     }
@@ -85,14 +85,18 @@ InheritParametrisation::InheritParametrisation(const InheritParametrisation* par
 }
 
 
-InheritParametrisation::InheritParametrisation(const InheritParametrisation* parent, const std::vector<long>& paramIds) :
-    parent_(parent), paramIds_(paramIds) {
+InheritParametrisation::InheritParametrisation(const InheritParametrisation* parent, const std::vector<long>& ids) :
+    parent_(parent), paramIds_(ids) {
     ASSERT(parent_);
     ASSERT(std::find(paramIds_.begin(), paramIds_.end(), 0) == paramIds_.end());
 }
 
 
 InheritParametrisation::~InheritParametrisation() {
+    while (children_.size()) {
+        delete children_.back();
+        children_.pop_back();
+    }
 }
 
 
@@ -160,14 +164,6 @@ void InheritParametrisation::inherit(param::SimpleParametrisation& param) const 
 }
 
 
-std::string InheritParametrisation::label(size_t which) const {
-    if (which > labels_.size()) {
-        return "";
-    }
-    return labels_[which];
-}
-
-
 bool InheritParametrisation::matches(const long& paramId, const param::MIRParametrisation& metadata) const {
 
     // check if a parent node (or this one) has a list of parameters to check with
@@ -231,7 +227,9 @@ void InheritParametrisation::print(std::ostream& out) const {
     SimpleParametrisation::print(out);
     out << "]"
            ",children[";
-    std::copy(children_.begin(), children_.end(), std::ostream_iterator<const InheritParametrisation*>(out, ", \n"));
+    for (std::vector< const InheritParametrisation* >::const_iterator me=children_.begin(); me!= children_.end(); ++me) {
+        out << "\t" << *(*me) << ",\n";
+    }
     out << "]]";
 }
 

@@ -31,7 +31,7 @@ namespace mir {
 namespace config {
 
 
-class InheritParametrisation : protected param::SimpleParametrisation {
+class InheritParametrisation : public param::SimpleParametrisation {
 public:
 
     // -- Contructors
@@ -40,7 +40,7 @@ public:
 
     InheritParametrisation(const InheritParametrisation* parent, const std::vector<std::string>& labels);
 
-    InheritParametrisation(const InheritParametrisation* parent, const std::vector<long>& paramIds);
+    InheritParametrisation(const InheritParametrisation* parent, const std::vector<long>& ids);
 
     // -- Destructor
 
@@ -51,7 +51,7 @@ public:
     // Add a child
     InheritParametrisation& child(InheritParametrisation* who);
 
-    // Fill contents provided a map
+    // Fill contents provided a ValueMap (not overwriting)
     void fill(const eckit::ValueMap&);
 
     /// Find best matching descendant according to paramId and metadata
@@ -60,17 +60,18 @@ public:
     /// Find best matching descendant according to label
     const InheritParametrisation& pick(const std::string& label) const;
 
+    /// Check if ithis matches given paramId and metadata
+    bool matches(const long& paramId, const param::MIRParametrisation& metadata) const;
+
+    /// Check if ithis matches given label
+    bool matches(const std::string& label) const;
+
     /// Collect all inherited traits, prioritizing younger/children traits
     void inherit(param::SimpleParametrisation& param) const;
-
-    std::string label(size_t which=0) const;
 
     bool empty() const;
 
     void print(std::ostream&) const;
-
-    using SimpleParametrisation::has;
-    using SimpleParametrisation::set;
 
 private:
 
@@ -79,9 +80,7 @@ private:
     InheritParametrisation& operator=(const InheritParametrisation&);
 
     // -- Methods
-
-    bool matches(const long& paramId, const param::MIRParametrisation& metadata) const;
-    bool matches(const std::string& label) const;
+    // None
 
     // -- Members
 

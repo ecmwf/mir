@@ -22,10 +22,10 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
+#include "mir/config/MIRConfiguration.h"
 #include "mir/input/MIRInput.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRCombinedParametrisation.h"
-#include "mir/param/MIRDefaults.h"
 #include "mir/style/MIRStyle.h"
 
 
@@ -33,20 +33,34 @@ namespace mir {
 namespace action {
 
 
-Job::Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &output):
+Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output) :
     input_(input),
     output_(output)  {
 
-    const param::MIRParametrisation& metadata = input.parametrisation();
-    const param::MIRParametrisation& defaults = param::MIRDefaults::instance();
 
-    combined_.reset(new param::MIRCombinedParametrisation(job, metadata, defaults));
+    // open and parse configuration file
+    std::string config_file = "~mir/etc/mir/configuration.json";
+    job.get("configuration", config_file);
+
+    config::MIRConfiguration& config = config::MIRConfiguration::instance();
+    config.configure(config_file);
+
+
+    // get input and parameter-specific parametrisations
+    const param::MIRParametrisation& metadata = input.parametrisation();
+    long paramId = 0;
+    eckit::ScopedPtr<const param::MIRParametrisation> defaults(
+                metadata.get("paramId", paramId)? config.lookup(paramId, metadata)
+                                                : config.lookupDefaults() );
+    std::cout << *defaults << std::endl;
+
+    combined_.reset(new param::MIRCombinedParametrisation(job, metadata, *defaults));
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
 
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
-    if (job.empty() || (!style->forcedPrepare(job) && job.matches(metadata, defaults))) {
+    if (job.empty() || (!style->forcedPrepare(job) && job.matches(metadata, *defaults))) {
         plan_.reset(new action::ActionPlan(job));
         plan_->add(new action::Copy(job, output_));
         return;

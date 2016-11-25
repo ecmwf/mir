@@ -19,10 +19,10 @@
 #include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Tool.h"
 #include "atlas/grid/lonlat/RegularLonLat.h"
+#include "mir/config/MIRConfiguration.h"
 #include "mir/lsm/Mask.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/MIRCombinedParametrisation.h"
-#include "mir/param/MIRDefaults.h"
 #include "mir/tools/MIRTool.h"
 
 
@@ -86,16 +86,16 @@ void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
     eckit::StdFile out(args(0), "w");
 
     // Wrap the arguments, so that they behave as a MIRParameter
-    mir::param::ConfigurationWrapper wrapped_args(const_cast<eckit::option::CmdArgs&>(args));
+    mir::param::ConfigurationWrapper wrap(const_cast<eckit::option::CmdArgs&>(args));
+    eckit::ScopedPtr<const mir::param::MIRParametrisation> defaults(mir::config::MIRConfiguration::instance().defaults());
 
-    const mir::param::MIRParametrisation &defaults = mir::param::MIRDefaults::instance();
-    mir::param::MIRCombinedParametrisation combined(wrapped_args, defaults, defaults);
+    mir::param::MIRCombinedParametrisation parametrisation(wrap, *defaults, *defaults);
 
     eckit::ScopedPtr<atlas::grid::Grid> grid(
         new atlas::grid::lonlat::RegularLonLat(Ni, Nj) );
 
 
-    mir::lsm::Mask &mask = mir::lsm::Mask::lookupOutput(combined, *grid);
+    mir::lsm::Mask &mask = mir::lsm::Mask::lookupOutput(parametrisation, *grid);
 
     eckit::Log::info() << "MASK IS => " << mask << std::endl;
 

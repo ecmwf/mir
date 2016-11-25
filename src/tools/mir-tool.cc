@@ -79,7 +79,6 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid as the one provided in the first GRIB of the grib file"));
         options_.push_back(new SimpleOption<eckit::PathName>("griddef", "File containing a list of lat/lon pairs"));
 
-
         //==============================================
         options_.push_back(new Separator("Methods"));
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
@@ -103,23 +102,23 @@ public:
         options_.push_back(new SimpleOption<std::string>("formula", "Formula to apply on field"));
 
         //==============================================
-        options_.push_back(new Separator("Land sea mask management"));
-        options_.push_back(new SimpleOption<bool>("lsm", "Use land sea mask (lsm) when interpolating grid to grid"));
+        options_.push_back(new Separator("Land-sea mask management"));
+        options_.push_back(new SimpleOption<bool>("lsm", "Use land-sea mask (lsm) when interpolating grid to grid"));
 
-        options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm.interpolation", "Interpolation method for both input and output lsm, default nearest-neighbour"));
-        options_.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm.selection", "Selection method for both input and output lsm"));
-        options_.push_back(new SimpleOption<eckit::PathName>("lsm.file", "Path to lsm to use for both input and output, in grib, only if --lsm.selection=file"));
+        options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm-interpolation", "Interpolation method for both input and output lsm, default nearest-neighbour"));
+        options_.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm-selection", "Selection method for both input and output lsm"));
+        options_.push_back(new SimpleOption<eckit::PathName>("lsm-file", "Path to lsm to use for both input and output, in grib, only if --lsm-selection=file"));
 
-        options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm.interpolation.input", "Interpolation method for lsm, default nearest-neighbour"));
-        options_.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm.selection.input", "Selection method for input lsm"));
-        options_.push_back(new SimpleOption<eckit::PathName>("lsm.file.input", "Path to lsm to use for input lsm, in grib, only if --lsm.selection=file"));
+        options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm-interpolation-input", "Interpolation method for lsm, default nearest-neighbour"));
+        options_.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm-selection-input", "Selection method for input lsm"));
+        options_.push_back(new SimpleOption<eckit::PathName>("lsm-file-input", "Path to lsm to use for input lsm, in grib, only if --lsm-selection=file"));
 
-        options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm.interpolation.output", "Interpolation method for lsm, default nearest-neighbour"));
-        options_.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm.selection.output", "Selection method for output lsm"));
-        options_.push_back(new SimpleOption<eckit::PathName>("lsm.file.output", "Path to lsm to use for output lsm, in grib, only if --lsm.selection=file"));
+        options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm-interpolation-output", "Interpolation method for lsm, default nearest-neighbour"));
+        options_.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm-selection-output", "Selection method for output lsm"));
+        options_.push_back(new SimpleOption<eckit::PathName>("lsm-file-output", "Path to lsm to use for output lsm, in grib, only if --lsm-selection=file"));
 
-        options_.push_back(new SimpleOption<double>("lsm.weight.adjustment", "Weight adjustment factor when applying LSM (default 0.2)"));
-        options_.push_back(new SimpleOption<double>("lsm.value.threshold", "Value threshold when converting LSM field to mask (default 0.5)"));
+        options_.push_back(new SimpleOption<double>("lsm-weight-adjustment", "Weight adjustment factor when applying LSM (default 0.2)"));
+        options_.push_back(new SimpleOption<double>("lsm-value-threshold", "Value threshold when converting LSM field to mask (default 0.5)"));
 
         //==============================================
         options_.push_back(new Separator("Unstructured grids support"));
@@ -127,6 +126,9 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("latitudes", "Path GRIB file of latitudes"));
         options_.push_back(new SimpleOption<eckit::PathName>("longitudes", "Path GRIB file of longitudes"));
 
+        //==============================================
+        options_.push_back(new Separator("Configuration"));
+        options_.push_back(new SimpleOption<eckit::PathName>("configuration", "Configuration JSON path (default ~mir/etc/mir/configuration.json)"));
 
         //==============================================
         options_.push_back(new Separator("GRIB Output"));

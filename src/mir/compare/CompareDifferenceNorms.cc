@@ -69,7 +69,7 @@ bool CompareDifferenceNorms::compare(
         const data::MIRField& field1, const param::MIRParametrisation&,
         const data::MIRField& field2, const param::MIRParametrisation& ) const {
 
-    bool verbose = options_.get< bool >("compare.verbose");
+    bool verbose = options_.get< bool >("compare-verbose");
     const double missingValue1 = field1.hasMissing()? field1.missingValue() : std::numeric_limits<double>::quiet_NaN();
     const double missingValue2 = field2.hasMissing()? field2.missingValue() : std::numeric_limits<double>::quiet_NaN();
     const size_t dim1 = field1.dimensions();
@@ -105,9 +105,9 @@ bool CompareDifferenceNorms::compare(
 
         // set comparison results
         const double
-                maxL1 = options_.get< double>("compare.max_norm_L1"),
-                maxL2 = options_.get< double>("compare.max_norm_L2"),
-                maxLi = options_.get< double>("compare.max_norm_Li");
+                maxL1 = options_.get< double>("compare-max-L1"),
+                maxL2 = options_.get< double>("compare-max-L2"),
+                maxLi = options_.get< double>("compare-max-Li");
         cmp = (maxL1 != maxL1 || calc.normL1()   <= maxL1)
                 && (maxL2 != maxL2 || calc.normL2()   <= maxL2)
                 && (maxLi != maxLi || calc.normLinfinity() <= maxLi);

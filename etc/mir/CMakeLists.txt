@@ -1,4 +1,4 @@
-file( GLOB config_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cfg" "*.json" )
+file( GLOB config_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.json" )
 
 install(
     FILES       ${config_files}

@@ -86,9 +86,9 @@ Bilinear::Bilinear(const param::MIRParametrisation& param) :
     precipitationNeighbour_ = true;
     precipitationThreshold_ = 0.00005;
 
-    param.get("precipitation",           precipitation_);
-    param.get("precipitation-neighbour", precipitationNeighbour_);
-    param.get("precipitation-threshold", precipitationThreshold_);
+    param.get("bilinear-precipitation",           precipitation_);
+    param.get("bilinear-precipitation-neighbour", precipitationNeighbour_);
+    param.get("bilinear-precipitation-threshold", precipitationThreshold_);
 
     ASSERT(precipitationThreshold_ >= 0);
 }

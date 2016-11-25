@@ -17,21 +17,21 @@
 #include "mir/lsm/GribFileLSM.h"
 
 #include "eckit/memory/ScopedPtr.h"
-
 #include "atlas/grid/Grid.h"
-
+#include "mir/action/context/Context.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/method/Method.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
-#include "mir/config/LibMir.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/action/context/Context.h"
+
 
 namespace mir {
 namespace lsm {
+
 
 GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
                          const param::MIRParametrisation &parametrisation,
@@ -56,9 +56,9 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     runtime.set("lsm", false);
 
     std::string interpolation;
-    if (!parametrisation.get("lsm.interpolation" + which, interpolation)) {
-        if (!parametrisation.get("lsm.interpolation", interpolation)) {
-            throw eckit::SeriousBug("Not interpolation method defined for land sea mask");
+    if (!parametrisation.get("lsm-interpolation-" + which, interpolation)) {
+        if (!parametrisation.get("lsm-interpolation", interpolation)) {
+            throw eckit::SeriousBug("Not interpolation method defined for land-sea mask");
         }
     }
 
@@ -72,7 +72,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     method->execute(ctx, *gin, grid);
 
     double threshold;
-    ASSERT(parametrisation.get("lsm.value.threshold", threshold));
+    ASSERT(parametrisation.get("lsm-value-threshold", threshold));
     const util::compare::IsGreaterOrEqualFn< double > check_lsm(threshold);
 
     ASSERT(!field.hasMissing());
@@ -81,20 +81,23 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     const std::vector< double > &values = field.values(0);
     mask_.resize(values.size());
     std::transform(values.begin(), values.end(), mask_.begin(), check_lsm);
-
 }
+
 
 GribFileLSM::~GribFileLSM() {
 }
+
 
 void GribFileLSM::hash(eckit::MD5 &md5) const {
     Mask::hash(md5);
     md5.add(path_.asString());
 }
 
+
 void GribFileLSM::print(std::ostream &out) const {
     out << "GribFileLSM[name=" << name_ << ",path=" << path_ << "]";
 }
+
 
 void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
                                const param::MIRParametrisation &parametrisation,
@@ -102,9 +105,9 @@ void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
                                const std::string &which) {
 
     std::string interpolation;
-    if (!parametrisation.get("lsm.interpolation" + which, interpolation)) {
-        if (!parametrisation.get("lsm.interpolation", interpolation)) {
-            throw eckit::SeriousBug("Not interpolation method defined for land sea mask");
+    if (!parametrisation.get("lsm-interpolation-" + which, interpolation)) {
+        if (!parametrisation.get("lsm-interpolation", interpolation)) {
+            throw eckit::SeriousBug("Not interpolation method defined for land-sea mask");
         }
     }
 
@@ -117,8 +120,6 @@ void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
 const std::vector<bool> &GribFileLSM::mask() const {
     return mask_;
 }
-
-//-----------------------------------------------------------------------------
 
 
 }  // namespace lsm

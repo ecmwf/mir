@@ -358,14 +358,8 @@ list(
     param/FieldParametrisation.h
     param/MIRCombinedParametrisation.cc
     param/MIRCombinedParametrisation.h
-    param/MIRConfiguration.cc
-    param/MIRConfiguration.h
-    param/MIRDefaults.cc
-    param/MIRDefaults.h
     param/MIRParametrisation.cc
     param/MIRParametrisation.h
-    param/ParamClass.cc
-    param/ParamClass.h
     param/RuntimeParametrisation.cc
     param/RuntimeParametrisation.h
     param/SimpleParametrisation.cc
@@ -502,10 +496,6 @@ list(
     util/Increments.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
-    util/Parser.cc
-    util/Parser.h
-    util/ParserConsumer.cc
-    util/ParserConsumer.h
     util/PointSearch.cc
     util/PointSearch.h
     util/RotateGrid.cc
