@@ -228,9 +228,9 @@ void InheritParametrisation::print(std::ostream& out) const {
     out << "]"
            ",children[";
     for (std::vector< const InheritParametrisation* >::const_iterator me=children_.begin(); me!= children_.end(); ++me) {
-        out << "\t" << *(*me) << ",\n";
+        out << "\n\t" << *(*me) << ",";
     }
-    out << "]]";
+    out << "]]\n";
 }
 
 

@@ -61,6 +61,9 @@ public:
     // Configure (or reconfigure) using a file
     void configure(const eckit::PathName&);
 
+    // Configure (or reconfigure) using the default file
+    void configure();
+
     // Lookup parametrisation according to paramId and metadata
     const param::MIRParametrisation* lookup(const long& paramId, const param::MIRParametrisation& metadata) const;
 

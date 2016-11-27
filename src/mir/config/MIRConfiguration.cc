@@ -13,7 +13,6 @@
 
 #include "mir/config/MIRConfiguration.h"
 
-#include <algorithm>
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
@@ -69,7 +68,11 @@ MIRConfiguration& MIRConfiguration::instance() {
 
 void MIRConfiguration::configure(const eckit::PathName& path) {
     eckit::Log::debug<LibMir>() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
-    Defaults defaults;
+    if (configPath_ == path.asString()) {
+        return;
+    } else if (!configPath_.empty()) {
+        eckit::Log::warning() << "MIRConfiguration: configuration has happened before!'" << std::endl;
+    }
 
 
     std::ifstream in(path.asString().c_str());
@@ -83,22 +86,35 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
 
     // create hierarchy and fill (not overwriting) with defaults
     root_.reset(new InheritParametrisation());
+    ASSERT(root_);
 
     root_->fill(j);
-    defaults.copyValuesTo(*root_, false);
+    Defaults().copyValuesTo(*root_, false);
 
 
     configPath_ = path;
-    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *root_ << std::endl;
+    //    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *root_ << std::endl;
+}
+
+
+void MIRConfiguration::configure() {
+    configure("~mir/etc/mir/configuration.json");
 }
 
 
 MIRConfiguration::MIRConfiguration() {
+    // Always start with defaults
+    root_.reset(new InheritParametrisation());
+    ASSERT(root_);
+    Defaults().copyValuesTo(*root_, false);
 }
 
 
 void MIRConfiguration::print(std::ostream& out) const {
-    out << "MIRConfiguration[...]";
+    out << "MIRConfiguration["
+        <<  "configPath=" << configPath_
+        << ",root=" << *root_
+        << "]";
 }
 
 
@@ -114,6 +130,7 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
     // inherit from configurable "filling" key(s), ensuring we has a "filling" map
     std::string fill_root_label;
     if (param->get("configuration-fill", fill_root_label) && fill_root_label.length()) {
+        param->clear("configuration-fill");
 
         const InheritParametrisation& fill_root = root_->pick(fill_root_label);
         if (!fill_root.matches(fill_root_label)) {
