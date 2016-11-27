@@ -51,7 +51,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     long paramId = 0;
     eckit::ScopedPtr<const param::MIRParametrisation> defaults(
                 metadata.get("paramId", paramId)? config.lookup(paramId, metadata)
-                                                : config.lookupDefaults() );
+                                                : config.defaults() );
     std::cout << *defaults << std::endl;
 
     combined_.reset(new param::MIRCombinedParametrisation(job, metadata, *defaults));

@@ -65,7 +65,7 @@ public:
     const param::MIRParametrisation* lookup(const long& paramId, const param::MIRParametrisation& metadata) const;
 
     // Lookup default parametrisation
-    const param::MIRParametrisation* lookupDefaults() const;
+    const param::MIRParametrisation* defaults() const;
 
 private:
 

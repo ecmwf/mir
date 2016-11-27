@@ -143,7 +143,7 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
 }
 
 
-const param::MIRParametrisation* MIRConfiguration::lookupDefaults() const {
+const param::MIRParametrisation* MIRConfiguration::defaults() const {
     static param::SimpleParametrisation empty;
     return lookup(0, empty);
 }
