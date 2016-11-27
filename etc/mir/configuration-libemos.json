@@ -12,8 +12,8 @@
 
         "file_forced_nearest_neighbour": {
             "interpolation": "nearest-neighbour",
-            "file_forced_nearest_neighbour/index-associated": {},
-            "file_forced_nearest_neighbour/index": {}
+            "index-associated": {},
+            "index": {}
         },
 
         "file_is_wave_direction": {
