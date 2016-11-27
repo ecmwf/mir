@@ -13,8 +13,11 @@
 /// @date Apr 2015
 
 
-#include "eckit/filesystem/PathName.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
 #include "mir/config/MIRConfiguration.h"
+#include "mir/input/GribFileInput.h"
+#include "mir/param/SimpleParametrisation.h"
 #include "mir/tools/MIRTool.h"
 
 
@@ -30,7 +33,12 @@ public:
 
     // -- Contructors
 
-    MIRConfig(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
+    MIRConfig(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+        using namespace eckit::option;
+        options_.push_back(new SimpleOption<eckit::PathName>("configuration", "Configuration JSON path"));
+        options_.push_back(new SimpleOption<eckit::PathName>("metadata", "Test configuration with metadata from file"));
+        options_.push_back(new SimpleOption<long>("param-id", "Test configuration with paramId"));
+    }
 
 };
 
@@ -42,17 +50,54 @@ void MIRConfig::usage(const std::string &tool) const {
 }
 
 
-void MIRConfig::execute(const eckit::option::CmdArgs&) {
+void MIRConfig::execute(const eckit::option::CmdArgs& args) {
+    using mir::config::MIRConfiguration;
+    using mir::param::MIRParametrisation;
 
-    // const config::MIRConfiguration& conf = config::MIRConfiguration::instance();
 
-    eckit::PathName path("~mir/etc/mir/configuration.json");
-    eckit::Log::info() << "Path is " << path << std::endl;
-    if(path.exists()) {
-        eckit::Log::info() << "File exists" << std::endl;
+    // get options
+    std::string path_config = "";
+    std::string path_metadata = "";
+    long param_id = 0;
+    args.get("configuration", path_config);
+    args.get("metadata", path_metadata);
+    args.get("param-id", param_id);
+
+
+    // configure with file (or use internal defaults)
+    MIRConfiguration& config = MIRConfiguration::instance();
+    path_config.length()? config.configure(path_config)
+                        : config.configure();
+
+    if (path_metadata.length()) {
+
+        // Display configuration for a (specific or not) paramId and metadata
+        mir::input::GribFileInput file(argv(argc() - 1));
+        while (file.next()) {
+            mir::input::MIRInput& input = file;
+
+            const MIRParametrisation& metadata = input.parametrisation();
+            long id = param_id? param_id: metadata.get("paramId", id);
+
+            eckit::ScopedPtr< const MIRParametrisation > p(config.lookup(id, metadata));
+            eckit::Log::info() << "MIRConfiguration::lookup(" << id << ", metadata): " << *p << std::endl;
+
+        }
+
+    } else if (param_id) {
+
+        // Display configuration for a paramId
+        const MIRParametrisation& metadata = mir::param::SimpleParametrisation();
+
+        eckit::ScopedPtr< const MIRParametrisation > p(config.lookup(param_id, metadata));
+        eckit::Log::info() << "MIRConfiguration::lookup(" << param_id << ", empty): " << *p << std::endl;
+
     } else {
-        eckit::Log::info() << "File does not exist" << std::endl;
-        ::exit(1);
+
+        // Display configuration defaults
+        eckit::ScopedPtr< const MIRParametrisation > p(config.defaults());
+        eckit::Log::info() << "MIRConfiguration::defaults(): " << *p << std::endl;
+
     }
 }
 
@@ -61,5 +106,4 @@ int main(int argc, char **argv) {
     MIRConfig tool(argc, argv);
     return tool.start();
 }
-
 
