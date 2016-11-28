@@ -84,12 +84,18 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
     const eckit::ValueMap j = parser.parse();
 
 
-    // create hierarchy and fill (not overwriting) with defaults
+    // create hierarchy, fill (not overwriting) with defaults and filling key
     root_.reset(new InheritParametrisation());
     ASSERT(root_);
 
     root_->fill(j);
     Defaults().copyValuesTo(*root_, false);
+
+    std::string fill_label;
+    if (root_->get("configuration-fill", fill_label) && fill_label.length()) {
+        root_->fill(root_->pick(fill_label));
+        root_->clear("configuration-fill");
+    }
 
 
     configPath_ = path;
@@ -103,9 +109,11 @@ void MIRConfiguration::configure() {
 
 
 MIRConfiguration::MIRConfiguration() {
+
     // Always start with defaults
     root_.reset(new InheritParametrisation());
     ASSERT(root_);
+
     Defaults().copyValuesTo(*root_, false);
 }
 
@@ -119,43 +127,11 @@ void MIRConfiguration::print(std::ostream& out) const {
 
 
 const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, const param::MIRParametrisation& metadata) const {
-    param::SimpleParametrisation* param = new param::SimpleParametrisation();
-
 
     // inherit from most-specific paramId/metadata individual and its parents
+    param::SimpleParametrisation* param = new param::SimpleParametrisation();
     ASSERT(root_);
     root_->pick(paramId, metadata).inherit(*param);
-
-
-    // inherit from configurable "filling" key(s), ensuring we has a "filling" map
-    std::string fill_root_label;
-    if (param->get("configuration-fill", fill_root_label) && fill_root_label.length()) {
-        param->clear("configuration-fill");
-
-        const InheritParametrisation& fill_root = root_->pick(fill_root_label);
-        if (!fill_root.matches(fill_root_label)) {
-            std::ostringstream msg;
-            msg << "MIRConfiguration: could not find (root) fill key '" << fill_root_label << "'";
-            throw eckit::UserError(msg.str());
-        }
-
-        std::string fill_label;
-        size_t check = 0;
-        while (param->get(fill_root_label, fill_label)) {
-            ASSERT(check++ < 50);
-            param->clear(fill_root_label);
-
-            const InheritParametrisation& fill = fill_root.pick(fill_label);
-            if (!fill.matches(fill_label)) {
-                std::ostringstream msg;
-                msg << "MIRConfiguration: could not find fill key '" << fill_root_label << "'";
-                throw eckit::UserError(msg.str());
-            }
-            fill.inherit(*param);
-        }
-
-    }
-
     return param;
 }
 

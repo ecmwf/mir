@@ -58,10 +58,8 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
     // get options
     std::string path_config = "";
     std::string path_metadata = "";
-    long param_id = 0;
     args.get("configuration", path_config);
     args.get("metadata", path_metadata);
-    args.get("param-id", param_id);
 
 
     // configure with file (or use internal defaults)
@@ -72,25 +70,28 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
     if (path_metadata.length()) {
 
         // Display configuration for a (specific or not) paramId and metadata
-        mir::input::GribFileInput file(argv(argc() - 1));
+        mir::input::GribFileInput file(path_metadata);
         while (file.next()) {
             mir::input::MIRInput& input = file;
 
             const MIRParametrisation& metadata = input.parametrisation();
-            long id = param_id? param_id: metadata.get("paramId", id);
+            long id = 0;
+            args.get("param-id", id) || metadata.get("paramId", id);
 
             eckit::ScopedPtr< const MIRParametrisation > p(config.lookup(id, metadata));
             eckit::Log::info() << "MIRConfiguration::lookup(" << id << ", metadata): " << *p << std::endl;
 
         }
 
-    } else if (param_id) {
+    } else if (args.has("param-id")) {
 
         // Display configuration for a paramId
         const MIRParametrisation& metadata = mir::param::SimpleParametrisation();
+        long id = 0;
+        args.get("param-id", id);
 
-        eckit::ScopedPtr< const MIRParametrisation > p(config.lookup(param_id, metadata));
-        eckit::Log::info() << "MIRConfiguration::lookup(" << param_id << ", empty): " << *p << std::endl;
+        eckit::ScopedPtr< const MIRParametrisation > p(config.lookup(id, metadata));
+        eckit::Log::info() << "MIRConfiguration::lookup(" << id << ", empty): " << *p << std::endl;
 
     } else {
 

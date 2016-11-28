@@ -38,7 +38,7 @@ public:
 
     InheritParametrisation();
 
-    InheritParametrisation(const InheritParametrisation* parent, const std::vector<std::string>& labels);
+    InheritParametrisation(const InheritParametrisation* parent, const std::string& label);
 
     InheritParametrisation(const InheritParametrisation* parent, const std::vector<long>& ids);
 
@@ -51,14 +51,20 @@ public:
     // Add a child
     InheritParametrisation& child(InheritParametrisation* who);
 
-    // Fill contents provided a ValueMap (not overwriting)
+    // Fill parametrisation provided a ValueMap (not overwriting)
     void fill(const eckit::ValueMap&);
+
+    // Fill parametrisation provided a InheritParametrisation
+    void fill(const InheritParametrisation&);
 
     /// Find best matching descendant according to paramId and metadata
     const InheritParametrisation& pick(const long& paramId, const param::MIRParametrisation& metadata) const;
 
-    /// Find best matching descendant according to label
-    const InheritParametrisation& pick(const std::string& label) const;
+    /// Find best matching descendant according to labels (separated by /)
+    const InheritParametrisation& pick(const std::string& str) const;
+
+    /// Find best matching descendant according to label hierarchy
+    const InheritParametrisation& pick(const std::vector< std::string >& labels) const;
 
     /// Check if ithis matches given paramId and metadata
     bool matches(const long& paramId, const param::MIRParametrisation& metadata) const;
@@ -68,6 +74,8 @@ public:
 
     /// Collect all inherited traits, prioritizing younger/children traits
     void inherit(param::SimpleParametrisation& param) const;
+
+    std::string labelHierarchy() const;
 
     bool empty() const;
 
@@ -85,9 +93,9 @@ private:
     // -- Members
 
     const InheritParametrisation* parent_;
-    std::vector< const InheritParametrisation* > children_;
-    std::vector< long >        paramIds_;
-    std::vector< std::string > labels_;
+    std::vector< InheritParametrisation* > children_;
+    std::vector< long > paramIds_;
+    std::string label_;
 
     // -- Friends
 
