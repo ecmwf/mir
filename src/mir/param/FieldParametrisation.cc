@@ -65,11 +65,10 @@ bool FieldParametrisation::_get(const std::string &name, T &value) const {
     // This assumes that other input (NetCDF, etc) also return a paramId
     long paramId = 0;
     if (get("paramId", paramId)) {
-        //FIXME remove???
         // return paramId specific parametrisation
-//        const config::MIRConfiguration& configuration = config::MIRConfiguration::instance();
-//        eckit::ScopedPtr<const param::MIRParametrisation> param(configuration)
-//        return configuration.lookup(paramId).get(name, value);
+        const config::MIRConfiguration& configuration = config::MIRConfiguration::instance();
+        eckit::ScopedPtr<const param::MIRParametrisation> param(configuration.lookup(paramId, *this));
+        return param->get(name, value);
     }
 
     return false;
