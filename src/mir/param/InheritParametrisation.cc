@@ -133,7 +133,7 @@ void InheritParametrisation::fill(const InheritParametrisation& filler) {
 }
 
 
-const InheritParametrisation& InheritParametrisation::pick(const long& paramId, const param::MIRParametrisation& metadata) const {
+const InheritParametrisation& InheritParametrisation::pick(const long& paramId, const MIRParametrisation& metadata) const {
     for (std::vector< InheritParametrisation* >::const_iterator me = children_.begin(); paramId > 0 && me!= children_.end(); ++me) {
         ASSERT(*me != this);
         if ((*me)->matches(paramId, metadata)) {
@@ -170,10 +170,10 @@ const InheritParametrisation& InheritParametrisation::pick(const std::vector< st
 }
 
 
-void InheritParametrisation::inherit(param::SimpleParametrisation& param) const {
-    copyValuesTo(param, false);
+void InheritParametrisation::inherit(SimpleParametrisation& parametrisation) const {
+    copyValuesTo(parametrisation, false);
     if (parent_ != NULL) {
-        parent_->inherit(param);
+        parent_->inherit(parametrisation);
     }
 }
 
