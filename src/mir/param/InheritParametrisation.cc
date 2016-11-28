@@ -154,7 +154,7 @@ const InheritParametrisation& InheritParametrisation::pick(const std::vector< st
         const std::string& label = labels[0];
         if (!string_contains_label(label)) {
             std::ostringstream msg;
-            msg << "MIRConfiguration: invalid label '" << label << "' (from '" << eckit::StringTools::join("/", labels) << "')";
+            msg << "InheritParametrisation: invalid label '" << label << "' (from '" << eckit::StringTools::join("/", labels) << "')";
             throw eckit::UserError(msg.str());
         }
         if ((*me)->matches(label)) {
@@ -163,7 +163,7 @@ const InheritParametrisation& InheritParametrisation::pick(const std::vector< st
     }
     if (labels.size()) {
         std::ostringstream msg;
-        msg << "MIRConfiguration: cannot locate label '" << eckit::StringTools::join("/", labels) << "' under '" << labelHierarchy() << "'";
+        msg << "InheritParametrisation: cannot locate label '" << eckit::StringTools::join("/", labels) << "' under '" << labelHierarchy() << "'";
         throw eckit::UserError(msg.str());
     }
     return *this;

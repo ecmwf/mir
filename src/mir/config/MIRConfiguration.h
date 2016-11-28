@@ -20,9 +20,6 @@
 #include "eckit/memory/ScopedPtr.h"
 
 
-namespace eckit {
-class PathName;
-}
 namespace mir {
 namespace param {
 class InheritParametrisation;

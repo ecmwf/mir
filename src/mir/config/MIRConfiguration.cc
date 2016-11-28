@@ -83,18 +83,18 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
     const eckit::ValueMap j = parser.parse();
 
 
-    // create hierarchy, fill (not overwriting) with defaults and filling key
+    // create hierarchy, usin filling keys and defaults (not overwriting)
     root_.reset(new param::InheritParametrisation());
     ASSERT(root_);
 
     root_->fill(j);
-    Defaults().copyValuesTo(*root_, false);
-
     std::string fill_label;
     if (root_->get("configuration-fill", fill_label) && fill_label.length()) {
         root_->fill(root_->pick(fill_label));
         root_->clear("configuration-fill");
     }
+
+    Defaults().copyValuesTo(*root_, false);
 
 
     configPath_ = path;
