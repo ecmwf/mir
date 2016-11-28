@@ -15,7 +15,6 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/filesystem/PathName.h"
 #include "eckit/parser/JSONParser.h"
 #include "mir/config/InheritParametrisation.h"
 #include "mir/config/LibMir.h"
@@ -99,13 +98,11 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
 
 
     configPath_ = path;
-        eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *root_ << std::endl;
+    //    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *root_ << std::endl;
 }
 
 
-void MIRConfiguration::configure() {
-    configure("~mir/etc/mir/configuration.json");
-}
+
 
 
 MIRConfiguration::MIRConfiguration() {

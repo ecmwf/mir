@@ -16,6 +16,7 @@
 
 #include <iosfwd>
 #include <vector>
+#include "eckit/filesystem/PathName.h"
 #include "eckit/memory/ScopedPtr.h"
 
 
@@ -59,10 +60,7 @@ public:
     static MIRConfiguration& instance();
 
     // Configure (or reconfigure) using a file
-    void configure(const eckit::PathName&);
-
-    // Configure (or reconfigure) using the default file
-    void configure();
+    void configure(const eckit::PathName& path="~mir/etc/mir/configuration.json");
 
     // Lookup parametrisation according to paramId and metadata
     const param::MIRParametrisation* lookup(const long& paramId, const param::MIRParametrisation& metadata) const;
