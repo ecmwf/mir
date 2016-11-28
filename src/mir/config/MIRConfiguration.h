@@ -24,10 +24,8 @@ namespace eckit {
 class PathName;
 }
 namespace mir {
-namespace config {
-class InheritParametrisation;
-}
 namespace param {
+class InheritParametrisation;
 class MIRParametrisation;
 }
 }
@@ -88,7 +86,7 @@ private:
     // -- Members
 
     std::string configPath_;
-    eckit::ScopedPtr<InheritParametrisation> root_;
+    eckit::ScopedPtr<param::InheritParametrisation> root_;
 
     // -- Methods
 

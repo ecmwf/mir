@@ -11,8 +11,8 @@
 /// @date Nov 2016
 
 
-#ifndef mir_config_InheritParametrisation_h
-#define mir_config_InheritParametrisation_h
+#ifndef mir_param_InheritParametrisation_h
+#define mir_param_InheritParametrisation_h
 
 #include <iosfwd>
 #include <vector>
@@ -22,16 +22,9 @@
 
 namespace mir {
 namespace param {
-class MIRParametrisation;
-}
-}
 
 
-namespace mir {
-namespace config {
-
-
-class InheritParametrisation : public param::SimpleParametrisation {
+class InheritParametrisation : public SimpleParametrisation {
 public:
 
     // -- Contructors
@@ -49,7 +42,7 @@ public:
     // -- Methods
 
     // Add a child
-    InheritParametrisation& child(InheritParametrisation* who);
+    InheritParametrisation& child(InheritParametrisation*);
 
     // Fill parametrisation provided a ValueMap (not overwriting)
     void fill(const eckit::ValueMap&);
@@ -58,7 +51,7 @@ public:
     void fill(const InheritParametrisation&);
 
     /// Find best matching descendant according to paramId and metadata
-    const InheritParametrisation& pick(const long& paramId, const param::MIRParametrisation& metadata) const;
+    const InheritParametrisation& pick(const long& paramId, const MIRParametrisation& metadata) const;
 
     /// Find best matching descendant according to labels (separated by /)
     const InheritParametrisation& pick(const std::string& str) const;
@@ -67,13 +60,13 @@ public:
     const InheritParametrisation& pick(const std::vector< std::string >& labels) const;
 
     /// Check if ithis matches given paramId and metadata
-    bool matches(const long& paramId, const param::MIRParametrisation& metadata) const;
+    bool matches(const long& paramId, const MIRParametrisation& metadata) const;
 
     /// Check if ithis matches given label
     bool matches(const std::string& label) const;
 
     /// Collect all inherited traits, prioritizing younger/children traits
-    void inherit(param::SimpleParametrisation& param) const;
+    void inherit(SimpleParametrisation&) const;
 
     std::string labelHierarchy() const;
 
@@ -107,7 +100,7 @@ private:
 };
 
 
-}  // namespace config
+}  // namespace param
 }  // namespace mir
 
 

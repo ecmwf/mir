@@ -16,8 +16,8 @@
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/JSONParser.h"
-#include "mir/config/InheritParametrisation.h"
 #include "mir/config/LibMir.h"
+#include "mir/param/InheritParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 
 
@@ -84,7 +84,7 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
 
 
     // create hierarchy, fill (not overwriting) with defaults and filling key
-    root_.reset(new InheritParametrisation());
+    root_.reset(new param::InheritParametrisation());
     ASSERT(root_);
 
     root_->fill(j);
@@ -108,7 +108,7 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
 MIRConfiguration::MIRConfiguration() {
 
     // Always start with defaults
-    root_.reset(new InheritParametrisation());
+    root_.reset(new param::InheritParametrisation());
     ASSERT(root_);
 
     Defaults().copyValuesTo(*root_, false);

@@ -11,7 +11,7 @@
 /// @date Nov 2016
 
 
-#include "mir/config/InheritParametrisation.h"
+#include "mir/param/InheritParametrisation.h"
 
 #include <algorithm>
 #include <iostream>
@@ -19,7 +19,6 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/StringTools.h"
 #include "eckit/utils/Translator.h"
-#include "mir/param/MIRParametrisation.h"
 
 
 namespace {
@@ -59,7 +58,7 @@ bool string_contains_label(const std::string& str) {
 
 
 namespace mir {
-namespace config {
+namespace param {
 
 
 InheritParametrisation::InheritParametrisation() : parent_(NULL) {}
@@ -188,7 +187,7 @@ std::string InheritParametrisation::labelHierarchy() const {
 }
 
 
-bool InheritParametrisation::matches(const long& paramId, const param::MIRParametrisation& metadata) const {
+bool InheritParametrisation::matches(const long& paramId, const MIRParametrisation& metadata) const {
 
     // check if a parent node (or this one) has a list of parameters to check with
     const InheritParametrisation* who = this;
@@ -248,5 +247,5 @@ void InheritParametrisation::print(std::ostream& out) const {
 }
 
 
-}  // namespace config
+}  // namespace param
 }  // namespace mir

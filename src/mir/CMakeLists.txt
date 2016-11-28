@@ -200,8 +200,6 @@ list(
     compare/ScalarComparator.h
     compare/SpectralComparator.cc
     compare/SpectralComparator.h
-    config/InheritParametrisation.cc
-    config/InheritParametrisation.h
     config/LibMir.cc
     config/LibMir.h
     config/MIRConfiguration.cc
@@ -356,6 +354,8 @@ list(
     param/DelayedParametrisation.h
     param/FieldParametrisation.cc
     param/FieldParametrisation.h
+    param/InheritParametrisation.cc
+    param/InheritParametrisation.h
     param/MIRCombinedParametrisation.cc
     param/MIRCombinedParametrisation.h
     param/MIRParametrisation.cc
