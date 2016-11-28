@@ -66,14 +66,12 @@ MIRConfiguration& MIRConfiguration::instance() {
 
 
 void MIRConfiguration::configure(const eckit::PathName& path) {
-    eckit::Log::debug<LibMir>() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
     if (configPath_ == path.asString()) {
         return;
-    } else if (!configPath_.empty()) {
-        eckit::Log::warning() << "MIRConfiguration: configuration has happened before!'" << std::endl;
     }
 
 
+    eckit::Log::debug<LibMir>() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
     std::ifstream in(path.asString().c_str());
     if (!in) {
         throw eckit::CantOpenFile(path);
@@ -100,9 +98,6 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
     configPath_ = path;
     //    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *root_ << std::endl;
 }
-
-
-
 
 
 MIRConfiguration::MIRConfiguration() {

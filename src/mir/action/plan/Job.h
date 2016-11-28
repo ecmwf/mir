@@ -13,43 +13,46 @@
 /// @date Apr 2015
 
 
-#ifndef Job_H
-#define Job_H
+#ifndef mir_action_Job_h
+#define mir_action_Job_h
 
 #include <string>
-
 #include "eckit/memory/ScopedPtr.h"
-
 #include "mir/param/SimpleParametrisation.h"
 
+
 namespace mir {
+namespace action {
+class ActionPlan;
+}
+namespace api {
+class MIRJob;
+}
 namespace input {
 class MIRInput;
 }
 namespace output {
 class MIROutput;
 }
-namespace api {
-class MIRJob;
-}
-
 namespace util {
 class MIRStatistics;
 }
+}
 
+
+namespace mir {
 namespace action {
 
-class ActionPlan;
 
 class Job  {
-  public:
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    Job(const api::MIRJob &job, input::MIRInput &input, output::MIROutput &output);
+    Job(const api::MIRJob&, input::MIRInput&, output::MIROutput&);
 
     // -- Destructor
 
@@ -66,6 +69,7 @@ class Job  {
     void execute(util::MIRStatistics& statistics) const;
 
     const ActionPlan& plan() const;
+
     const param::MIRParametrisation& parametrisation() const;
 
     // -- Overridden methods
@@ -77,17 +81,16 @@ class Job  {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
 
     // -- Methods
-
-
+    // None
 
     // -- Overridden methods
-
+    // None
 
     // -- Class members
     // None
@@ -95,23 +98,22 @@ class Job  {
     // -- Class methods
     // None
 
-  private:
-
+private:
 
     // -- Members
 
-    input::MIRInput &input_;
-    output::MIROutput &output_;
+    input::MIRInput& input_;
+    output::MIROutput& output_;
 
-    eckit::ScopedPtr<param::MIRParametrisation> combined_;
-    eckit::ScopedPtr<action::ActionPlan> plan_;
+    eckit::ScopedPtr< const param::MIRParametrisation > combined_;
+    eckit::ScopedPtr< const param::MIRParametrisation > defaults_;
+    eckit::ScopedPtr< action::ActionPlan > plan_;
+
     // -- Methods
-
+    // None
 
     // -- Overridden methods
-
-    // From MIRParametrisation
-
+    // None
 
     // -- Class members
     // None
@@ -120,10 +122,14 @@ class Job  {
     // None
 
     // -- Friends
+    // None
 
 };
 
+
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 
