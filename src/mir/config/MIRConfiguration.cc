@@ -33,7 +33,7 @@ struct Defaults : param::SimpleParametrisation {
     Defaults() {
         // these options are (can be) overridden by the configuration file
 
-        set("configuration-fill", "class");  // very meta
+        set("configuration-fill", "");  // very meta
 
         set("style", "mars");
         set("legendre-loader", "mapped-memory");
@@ -99,7 +99,7 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
 
 
     configPath_ = path;
-    //    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *root_ << std::endl;
+        eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *root_ << std::endl;
 }
 
 
@@ -137,8 +137,12 @@ const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, c
 
 
 const param::MIRParametrisation* MIRConfiguration::defaults() const {
-    static param::SimpleParametrisation empty;
-    return lookup(0, empty);
+
+    // inherit from top-level only (where defaults are held)
+    param::SimpleParametrisation* param = new param::SimpleParametrisation();
+    ASSERT(root_);
+    root_->inherit(*param);
+    return param;
 }
 
 

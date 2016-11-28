@@ -47,11 +47,11 @@ bool string_contains_paramIds(const std::string& str, std::vector<long>& ids) {
 
 bool string_contains_label(const std::string& str) {
     const char* alnum =
-            "ABCDEFGHIJKLMNOPQRSTUWXYZ"
-            "abcdefghijklmnopqrstuwxyz"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz"
             "0123456789"
             "_=-";
-    return (str.find_first_of(alnum) == std::string::npos);
+    return (str.find_first_not_of(alnum) == std::string::npos);
 }
 
 
@@ -150,21 +150,21 @@ const InheritParametrisation& InheritParametrisation::pick(const std::string& st
 }
 
 
-const InheritParametrisation&InheritParametrisation::pick(const std::vector< std::string >& labels) const {
+const InheritParametrisation& InheritParametrisation::pick(const std::vector< std::string >& labels) const {
     for (std::vector< InheritParametrisation* >::const_iterator me = children_.begin(); labels.size() && me!= children_.end(); ++me) {
         const std::string& label = labels[0];
         if (!string_contains_label(label)) {
             std::ostringstream msg;
-            msg << "MIRConfiguration: invalid label '" << label << "' (from " << eckit::StringTools::join("/", labels);
+            msg << "MIRConfiguration: invalid label '" << label << "' (from '" << eckit::StringTools::join("/", labels) << "')";
             throw eckit::UserError(msg.str());
         }
         if ((*me)->matches(label)) {
             return (*me)->pick(std::vector<std::string>(labels.begin()+1, labels.end()));
         }
     }
-    if (!labels.size()) {
+    if (labels.size()) {
         std::ostringstream msg;
-        msg << "MIRConfiguration: cannot locate label '" << eckit::StringTools::join("/", labels) << "' under location '" << labelHierarchy() << "'";
+        msg << "MIRConfiguration: cannot locate label '" << eckit::StringTools::join("/", labels) << "' under '" << labelHierarchy() << "'";
         throw eckit::UserError(msg.str());
     }
     return *this;
