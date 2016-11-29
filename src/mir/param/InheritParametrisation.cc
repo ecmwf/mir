@@ -49,7 +49,7 @@ bool string_contains_label(const std::string& str) {
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             "abcdefghijklmnopqrstuvwxyz"
             "0123456789"
-            "_=-";
+            "_=-.";
     return (str.find_first_not_of(alnum) == std::string::npos);
 }
 

@@ -1,8 +1,9 @@
 {
     "configuration-fill": "class",
     "configuration-skip": "NOTE",
-    "interpolation": "linear",
 
+
+    "interpolation": "linear",
 
 
     "class": {
@@ -69,6 +70,10 @@
         }
     },
 
+    "138": {
+        "transform.vod2uv.u": "131",
+        "transform.vod2uv.v": "132"
+    },
 
     "130": {
         "class": "intensity",

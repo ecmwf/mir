@@ -12,21 +12,19 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/transform/VOD2UVTransform.h"
 
-#include <iostream>
 #include <complex>
-
+#include <iostream>
 #include "eckit/exception/Exceptions.h"
-
 #include "atlas/util/Constants.h"
-
 #include "mir/action/context/Context.h"
+#include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
-#include "mir/config/LibMir.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -36,6 +34,7 @@ namespace action {
 VOD2UVTransform::VOD2UVTransform(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 }
+
 
 VOD2UVTransform::~VOD2UVTransform() {
 }
@@ -52,13 +51,16 @@ void VOD2UVTransform::print(std::ostream &out) const {
     out << "]";
 }
 
+
 inline double dd(double pm, double pn) {
     return -sqrt((pn * pn - pm * pm) / (4.*pn * pn - 1)) / pn;
 }
 
+
 inline double ss(double pm, double pn) {
     return -pm / (pn * (pn + 1));
 }
+
 
 void VOD2UVTransform::execute(context::Context & ctx) const {
     data::MIRField& field = ctx.field();
@@ -169,9 +171,15 @@ void VOD2UVTransform::execute(context::Context & ctx) const {
     field.update(result_u, 0);
     field.update(result_v, 1);
 
-    // TODO: Find a way to get these numbers
-    field.metadata(0, "paramId", 131);
-    field.metadata(1, "paramId", 132);
+
+    // configure paramIds for u/v
+    long id_u = 99131;
+    long id_v = 99132;
+    parametrisation_.get("transform.vod2uv.u", id_u);
+    parametrisation_.get("transform.vod2uv.v", id_v);
+
+    field.metadata(0, "paramId", id_u);
+    field.metadata(1, "paramId", id_v);
 }
 
 
