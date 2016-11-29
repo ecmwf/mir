@@ -47,7 +47,7 @@ const char *WeightCacheTraits::name() {
 }
 
 int WeightCacheTraits::version() {
-    return 1;
+    return 2;
 }
 
 const char *WeightCacheTraits::extension() {
