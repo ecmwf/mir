@@ -42,6 +42,18 @@ void SpectralComparator::execute(const data::MIRField& field1, const data::MIRFi
     const repres::Representation *repres1 = field1.representation();
     const repres::Representation *repres2 = field2.representation();
 
+
+    // compare truncation
+    const size_t trunc1 = repres1->truncation();
+    const size_t trunc2 = repres2->truncation();
+    if (trunc1 != trunc2) {
+        std::ostringstream oss;
+        oss << "SpectralComparator: truncation mismatch: " << trunc1 << " != " << trunc2;
+        throw eckit::UserError(oss.str());
+    }
+
+
+    // compare unpacked coefficients (up to TS, with i >= TS they are packed)
     const size_t Ts = std::min(repres1->pentagonalResolutionTs(), repres2->pentagonalResolutionTs());
     if (!Ts) {
         std::ostringstream oss;
@@ -49,7 +61,6 @@ void SpectralComparator::execute(const data::MIRField& field1, const data::MIRFi
         throw eckit::UserError(oss.str());
     }
 
-    // compare unpacked coefficients (up to TS, with i >= TS they are packed)
     ASSERT(field1.dimensions() == field2.dimensions());
     for (size_t w = 0; w < field1.dimensions(); ++w) {
 
