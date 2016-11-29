@@ -59,12 +59,6 @@ public:
     /// Find best matching descendant according to label hierarchy
     const InheritParametrisation& pick(const std::vector< std::string >& labels) const;
 
-    /// Check if ithis matches given paramId and metadata
-    bool matches(const long& paramId, const MIRParametrisation& metadata) const;
-
-    /// Check if ithis matches given label
-    bool matches(const std::string& label) const;
-
     /// Collect all inherited traits, prioritizing younger/children traits
     void inherit(SimpleParametrisation&) const;
 
@@ -83,7 +77,15 @@ private:
     InheritParametrisation& operator=(const InheritParametrisation&);
 
     // -- Methods
-    // None
+
+    // Check if this (or a parent node) matches requested paramId
+    bool matchesId(long) const;
+
+    // Check if this matches requested metadata
+    bool matchesMetadata(const MIRParametrisation&) const;
+
+    /// Check if this matches requested label
+    bool matchesLabel(const std::string&) const;
 
     // -- Overridden methods
 

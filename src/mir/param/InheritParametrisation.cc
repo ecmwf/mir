@@ -136,7 +136,7 @@ void InheritParametrisation::fill(const InheritParametrisation& filler) {
 const InheritParametrisation& InheritParametrisation::pick(const long& paramId, const MIRParametrisation& metadata) const {
     for (std::vector< InheritParametrisation* >::const_iterator me = children_.begin(); paramId > 0 && me!= children_.end(); ++me) {
         ASSERT(*me != this);
-        if ((*me)->matches(paramId, metadata)) {
+        if ((*me)->matchesId(paramId) && (*me)->matchesMetadata(metadata)) {
             return (*me)->pick(paramId, metadata);
         }
     }
@@ -157,7 +157,7 @@ const InheritParametrisation& InheritParametrisation::pick(const std::vector< st
             msg << "InheritParametrisation: invalid label '" << label << "' (from '" << eckit::StringTools::join("/", labels) << "')";
             throw eckit::UserError(msg.str());
         }
-        if ((*me)->matches(label)) {
+        if ((*me)->matchesLabel(label)) {
             return (*me)->pick(std::vector<std::string>(labels.begin()+1, labels.end()));
         }
     }
@@ -187,43 +187,6 @@ std::string InheritParametrisation::labelHierarchy() const {
 }
 
 
-bool InheritParametrisation::matches(const long& paramId, const MIRParametrisation& metadata) const {
-
-    // check if a parent node (or this one) has a list of parameters to check with
-    const InheritParametrisation* who = this;
-    size_t check = 0;
-    while (!(who->paramIds_.size()) && (who->parent_ != NULL)) {
-        ASSERT(check++ < 50);
-        who = who->parent_;
-    }
-
-    const std::vector<long>& ids = who->paramIds_;
-    if (std::find(ids.begin(), ids.end(), paramId) == ids.end()) {
-        return false;
-    }
-
-    // check if label is according to given metadata
-    if (!label_.empty()) {
-        std::vector<std::string> key_value = eckit::StringTools::split("=", label_);
-        key_value.resize(2);
-        const std::string& key = key_value[0];
-        const std::string& val = key_value[1];
-
-        std::string meta_value;
-        return key.length()
-                && metadata.get(key, meta_value)
-                && (val == meta_value);
-    }
-    return true;
-}
-
-
-bool InheritParametrisation::matches(const std::string& label) const {
-    ASSERT(label.length());
-    return label_.length() && (label_ == label);
-}
-
-
 bool InheritParametrisation::empty() const {
     return children_.size()==0 && SimpleParametrisation::empty();
 }
@@ -234,6 +197,43 @@ SimpleParametrisation& InheritParametrisation::clear(const std::string& name) {
         (*me)->clear(name);
     }
     return SimpleParametrisation::clear(name);
+}
+
+
+bool InheritParametrisation::matchesId(long id) const {
+
+    const InheritParametrisation* who = this;
+    size_t check = 0;
+    while (!(who->paramIds_.size()) && (who->parent_ != NULL)) {
+        ASSERT(check++ < 50);
+        who = who->parent_;
+    }
+
+    const std::vector<long>& ids = who->paramIds_;
+    return (std::find(ids.begin(), ids.end(), id) != ids.end());
+}
+
+
+bool InheritParametrisation::matchesMetadata(const MIRParametrisation& metadata) const {
+    if (label_.empty()) {
+        return true;
+    }
+
+    std::vector<std::string> key_value = eckit::StringTools::split("=", label_);
+    key_value.resize(2);
+    const std::string& key = key_value[0];
+    const std::string& val = key_value[1];
+
+    std::string meta_value;
+    return key.length()
+            && metadata.get(key, meta_value)
+            && (val == meta_value);
+}
+
+
+bool InheritParametrisation::matchesLabel(const std::string& label) const {
+    ASSERT(label.length());
+    return label_.length() && (label_ == label);
 }
 
 
