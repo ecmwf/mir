@@ -23,6 +23,10 @@
 
 class MIRConfig : public mir::tools::MIRTool {
 
+    // -- Methods
+
+    void display(const mir::param::MIRParametrisation&, const std::string& key="");
+
     // -- Overridden methods
 
     void execute(const eckit::option::CmdArgs&);
@@ -41,6 +45,7 @@ public:
         using namespace eckit::option;
         options_.push_back(new SimpleOption<eckit::PathName>("configuration", "Configuration JSON path"));
         options_.push_back(new SimpleOption<long>("param-id", "Test configuration with paramId"));
+        options_.push_back(new SimpleOption<std::string>("key", "Test configuration with specific key"));
     }
 
 };
@@ -48,12 +53,22 @@ public:
 
 void MIRConfig::usage(const std::string &tool) const {
     eckit::Log::info()
-            << "\n" "Usage: " << tool << " [--configuration=configuration.json [--param-id=value]] [input1.grib [input2.grib [...]]]"
+            << "\n" "Usage: " << tool << " [--configuration=configuration.json] [--param-id=value] [--key=key] [input1.grib [input2.grib [...]]]"
                "\n" "Examples: "
                "\n" "  % " << tool << ""
                "\n" "  % " << tool << " --param-id=157 input.grib"
                "\n" "  % " << tool << " --param-id=157 --configuration=test.json input1.grib input2.grib"
             << std::endl;
+}
+
+
+void MIRConfig::display(const mir::param::MIRParametrisation& parametrisation, const std::string& key) {
+    if (key.length()) {
+        std::string value;
+        eckit::Log::info() << (parametrisation.get(key, value)? value : "<not found>") << std::endl;
+    } else {
+        eckit::Log::info() << parametrisation << std::endl;
+    }
 }
 
 
@@ -69,6 +84,9 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
     file.length()? configuration.configure(file)
                  : configuration.configure();
 
+    std::string key = "";
+    args.get("key", key);
+
 
     for (size_t i = 0; i < args.count(); i++) {
 
@@ -82,7 +100,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             args.get("param-id", id) || metadata.get("paramId", id);
 
             eckit::ScopedPtr< const MIRParametrisation > p(configuration.lookup(id, metadata));
-            eckit::Log::info() << "MIRConfiguration::lookup(" << id << ", metadata): " << *p << std::endl;
+            display(*p, key);
 
         }
 
@@ -97,13 +115,13 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             args.get("param-id", id);
 
             eckit::ScopedPtr< const MIRParametrisation > p(configuration.lookup(id, *metadata));
-            eckit::Log::info() << "MIRConfiguration::lookup(" << id << ", empty): " << *p << std::endl;
+            display(*p, key);
 
         } else {
 
             // Display configuration defaults
             eckit::ScopedPtr< const MIRParametrisation > p(configuration.defaults());
-            eckit::Log::info() << "MIRConfiguration::defaults(): " << *p << std::endl;
+            display(*p, key);
 
         }
     }
