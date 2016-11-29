@@ -13,100 +13,105 @@
 /// @date Apr 2015
 
 
-#ifndef VOD2UVTransform_H
-#define VOD2UVTransform_H
-
-#include "mir/action/plan/Action.h"
+#ifndef mir_action_transform_Vod2uv_h
+#define mir_action_transform_Vod2uv_h
 
 #include <vector>
+#include "mir/action/plan/Action.h"
+
 
 namespace mir {
 namespace action {
+namespace transform {
 
 
-class VOD2UVTransform : public Action {
-  public:
+class Vod2uv : public Action {
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
-    VOD2UVTransform(const param::MIRParametrisation&);
+    Vod2uv(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~VOD2UVTransform(); // Change to virtual if base class
+    virtual ~Vod2uv(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // No copy allowed
 
-    VOD2UVTransform(const VOD2UVTransform&);
-    VOD2UVTransform& operator=(const VOD2UVTransform&);
+    Vod2uv(const Vod2uv&);
+    Vod2uv& operator=(const Vod2uv&);
 
-// -- Members
+    // -- Members
+    // None
 
-// -- Methods
+    // -- Methods
+    // None
 
-
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual bool sameAs(const Action& other) const;
 
     virtual void execute(context::Context & ctx) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const VOD2UVTransform& p)
+    //friend ostream& operator<<(ostream& s,const Vod2uv& p)
     //	{ p.print(s); return s; }
 
 };
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

@@ -138,8 +138,8 @@ list(
     action/transform/Sh2RegularLL.h
     action/transform/Sh2ShTransform.cc
     action/transform/Sh2ShTransform.h
-    action/transform/VOD2UVTransform.cc
-    action/transform/VOD2UVTransform.h
+    action/transform/Vod2uv.cc
+    action/transform/Vod2uv.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc

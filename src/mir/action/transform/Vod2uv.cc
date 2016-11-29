@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/action/transform/VOD2UVTransform.h"
+#include "mir/action/transform/Vod2uv.h"
 
 #include <complex>
 #include <iostream>
@@ -29,25 +29,26 @@
 
 namespace mir {
 namespace action {
+namespace transform {
 
 
-VOD2UVTransform::VOD2UVTransform(const param::MIRParametrisation &parametrisation):
+Vod2uv::Vod2uv(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 }
 
 
-VOD2UVTransform::~VOD2UVTransform() {
+Vod2uv::~Vod2uv() {
 }
 
 
-bool VOD2UVTransform::sameAs(const Action& other) const {
-    const VOD2UVTransform* o = dynamic_cast<const VOD2UVTransform*>(&other);
+bool Vod2uv::sameAs(const Action& other) const {
+    const Vod2uv* o = dynamic_cast<const Vod2uv*>(&other);
     return o;
 }
 
 
-void VOD2UVTransform::print(std::ostream &out) const {
-    out << "VOD2UVTransform[";
+void Vod2uv::print(std::ostream &out) const {
+    out << "Vod2uv[";
     out << "]";
 }
 
@@ -62,7 +63,7 @@ inline double ss(double pm, double pn) {
 }
 
 
-void VOD2UVTransform::execute(context::Context & ctx) const {
+void Vod2uv::execute(context::Context & ctx) const {
     data::MIRField& field = ctx.field();
 
     ASSERT(field.dimensions() == 2);
@@ -79,7 +80,7 @@ void VOD2UVTransform::execute(context::Context & ctx) const {
     const std::vector<double> &field_vo = field.values(0);
     const std::vector<double> &field_d = field.values(1);
 
-    eckit::Log::debug<LibMir>() << "VOD2UVTransform truncation=" << truncation
+    eckit::Log::debug<LibMir>() << "Vod2uv truncation=" << truncation
                                 << ", size=" << size
                                 << ", values=" << field_vo.size() << std::endl;
 
@@ -184,10 +185,11 @@ void VOD2UVTransform::execute(context::Context & ctx) const {
 
 
 namespace {
-static ActionBuilder< VOD2UVTransform > transform("transform.vod2uv");
+static ActionBuilder< Vod2uv > transform("transform.vod2uv");
 }
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
 
