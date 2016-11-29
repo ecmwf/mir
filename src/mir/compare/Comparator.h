@@ -50,7 +50,7 @@ class Comparator : public eckit::NonCopyable {
 
     // -- Contructors
 
-    Comparator();
+    Comparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2);
 
     // -- Destructor
 
@@ -85,12 +85,12 @@ class Comparator : public eckit::NonCopyable {
     virtual void print(std::ostream &) const = 0; // Change to virtual if base class
 
     template< typename T >
-    T getSameParameter(const std::string& parameter, const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) {
+    T getSameParameter(const std::string& parameter) {
         T value1;
         T value2;
 
-        ASSERT(param1.get(parameter, value1));
-        ASSERT(param2.get(parameter, value2));
+        ASSERT(parametrisation1_.get(parameter, value1));
+        ASSERT(parametrisation2_.get(parameter, value2));
 
         ASSERT(value1 == value2);
         return value1;
@@ -113,7 +113,9 @@ class Comparator : public eckit::NonCopyable {
     Comparator &operator=(const Comparator &);
 
     // -- Members
-    // None
+
+    const param::MIRParametrisation& parametrisation1_;
+    const param::MIRParametrisation& parametrisation2_;
 
     // -- Methods
     // None

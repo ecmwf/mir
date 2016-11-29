@@ -42,7 +42,9 @@ static void init() {
 }  // (anonymous namespace)
 
 
-Comparator::Comparator() {
+Comparator::Comparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) :
+    parametrisation1_(param1),
+    parametrisation2_(param2) {
 }
 
 

@@ -27,8 +27,9 @@ namespace mir {
 namespace compare {
 
 
-ScalarComparator::ScalarComparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) {
-    absoluteError_ = getSameParameter<double>("absolute-error", param1, param2);
+ScalarComparator::ScalarComparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) :
+    Comparator(param1, param2) {
+    absoluteError_ = getSameParameter<double>("absolute-error");
     ASSERT(absoluteError_ > 0);
 }
 

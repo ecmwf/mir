@@ -45,7 +45,7 @@ class SpectralComparator : public Comparator {
 
     // -- Contructors
 
-    SpectralComparator(const param::MIRParametrisation &param1, const param::MIRParametrisation& param2);
+    SpectralComparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2);
 
     // -- Destructor
 
