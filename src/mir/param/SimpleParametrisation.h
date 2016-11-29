@@ -73,12 +73,12 @@ public:
     SimpleParametrisation& set(const std::string& name, const std::vector<long>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<double>& value);
 
-    SimpleParametrisation& clear(const std::string& name);
+    virtual SimpleParametrisation& clear(const std::string& name);
     SimpleParametrisation& reset();
 
     // Used by Job
 
-    bool empty() const;
+    virtual bool empty() const;
     bool matches(const param::MIRParametrisation& other) const;
     bool matches(const param::MIRParametrisation& other, const param::MIRParametrisation& ignore) const;
 

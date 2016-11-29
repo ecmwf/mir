@@ -33,6 +33,7 @@ struct Defaults : param::SimpleParametrisation {
         // these options are (can be) overridden by the configuration file
 
         set("configuration-fill", "");  // very meta
+        set("configuration-skip", "");
 
         set("style", "mars");
         set("legendre-loader", "mapped-memory");
@@ -86,13 +87,19 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
     ASSERT(root_);
 
     root_->fill(j);
-    std::string fill_label;
-    if (root_->get("configuration-fill", fill_label) && fill_label.length()) {
-        root_->fill(root_->pick(fill_label));
+    std::string configurationfill;
+    if (root_->get("configuration-fill", configurationfill) && configurationfill.length()) {
+        root_->fill(root_->pick(configurationfill));
         root_->clear("configuration-fill");
     }
 
     Defaults().copyValuesTo(*root_, false);
+
+    std::string configuration_skip;
+    if (root_->get("configuration-skip", configuration_skip) && configuration_skip.length()) {
+        root_->clear(configuration_skip);
+    }
+    root_->clear("configuration-skip");
 
 
     configPath_ = path;

@@ -70,9 +70,11 @@ public:
 
     std::string labelHierarchy() const;
 
-    bool empty() const;
+    // -- Overridden methods
 
-    void print(std::ostream&) const;
+    virtual bool empty() const;
+
+    virtual SimpleParametrisation& clear(const std::string&);
 
 private:
 
@@ -82,6 +84,10 @@ private:
 
     // -- Methods
     // None
+
+    // -- Overridden methods
+
+    void print(std::ostream&) const;
 
     // -- Members
 

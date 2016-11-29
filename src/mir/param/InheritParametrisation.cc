@@ -229,6 +229,14 @@ bool InheritParametrisation::empty() const {
 }
 
 
+SimpleParametrisation& InheritParametrisation::clear(const std::string& name) {
+    for (std::vector< InheritParametrisation* >::iterator me=children_.begin(); me!= children_.end(); ++me) {
+        (*me)->clear(name);
+    }
+    return SimpleParametrisation::clear(name);
+}
+
+
 void InheritParametrisation::print(std::ostream& out) const {
     out << "InheritParametrisation["
         <<  "empty?" << empty()
