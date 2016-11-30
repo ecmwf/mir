@@ -127,18 +127,22 @@ void FieldComparator::compare(const std::string& name,
     std::string requirements;
     args_.get("requirements", requirements);
 
+    bool compareValues = false;
+    args_.get("compare-values", compareValues);
+
+    bool compareStatistics = false;
+    args_.get("compare-statistics", compareStatistics);
+
+
     size_t save = fatals_;
 
     FieldSet fields1;
     FieldSet fields2;
 
-    bool compareValues = false;
-    args_.get("compare-values", compareValues);
-
 
     compareCounts(name, multi1, multi2, fields1, fields2);
-    compareFields(multi1, multi2, fields1, fields2, compareValues);
-    compareFields(multi2, multi1, fields2, fields1, false);
+    compareFields(multi1, multi2, fields1, fields2, compareValues, compareStatistics);
+    compareFields(multi2, multi1, fields2, fields1, false,         compareStatistics);
 
 
     if (fatals_ == save) {
@@ -838,19 +842,18 @@ void FieldComparator::compareFields(const MultiFile & multi1,
                                     const MultiFile & multi2,
                                     const FieldSet & fields1,
                                     const FieldSet & fields2,
-                                    bool compareData) {
+                                    bool compareValues,
+                                    bool compareStatistics) {
 
     bool show = true;
-    bool compareStatistics = false;
-    args_.get("compare-statistics", compareStatistics);
 
     for (auto j = fields1.begin(); j != fields1.end(); ++j) {
         auto other = fields2.same(*j);
         if (other != fields2.end()) {
-            if (compareData && compareStatistics) {
+            if (compareValues && compareStatistics) {
                 compareFieldStatistics(multi1, multi2, *j, *other);
             }
-            if (compareData) {
+            if (compareValues) {
                 compareFieldValues(multi1, multi2, *j, *other);
             }
         } else {

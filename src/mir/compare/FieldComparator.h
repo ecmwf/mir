@@ -89,7 +89,8 @@ protected: // members
                        const MultiFile& multi2,
                        const FieldSet& fields1,
                        const FieldSet& fields2,
-                       bool compareData);
+                       bool compareValues,
+                       bool compareStatistics);
 
     void compareFieldStatistics(
             const MultiFile& multi1,
