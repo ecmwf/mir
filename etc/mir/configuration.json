@@ -77,10 +77,7 @@
 
     "130": {
         "class": "intensity",
-        "comparison-absolute-error": "0.1",
-        "gridType=sh": {
-            "comparison": "spectral"
-        }
+        "comparison-absolute-error": "0.1"
     },
     "131165:": {
         "class": "ratio/percentage"
