@@ -140,9 +140,26 @@ void FieldComparator::compare(const std::string& name,
     FieldSet fields2;
 
 
+    // compare counts
     compareCounts(name, multi1, multi2, fields1, fields2);
-    compareFields(multi1, multi2, fields1, fields2, compareValues, compareStatistics);
-    compareFields(multi2, multi1, fields2, fields1, false,         compareStatistics);
+
+
+    // check for missing
+    compareMissingFields(multi1, multi2, fields1, fields2);
+
+
+    // compare field statistics and/or values
+    for (auto j = fields1.begin(); j != fields1.end(); ++j) {
+        auto other = fields2.same(*j);
+        if (other != fields2.end()) {
+            if (compareValues && compareStatistics) {
+                compareFieldStatistics(multi1, multi2, *j, *other);
+            }
+            if (compareValues) {
+                compareFieldValues(multi1, multi2, *j, *other);
+            }
+        }
+    }
 
 
     if (fatals_ == save) {
@@ -838,30 +855,6 @@ void FieldComparator::missingField(const MultiFile & multi1,
 
 }
 
-void FieldComparator::compareFields(const MultiFile & multi1,
-                                    const MultiFile & multi2,
-                                    const FieldSet & fields1,
-                                    const FieldSet & fields2,
-                                    bool compareValues,
-                                    bool compareStatistics) {
-
-    bool show = true;
-
-    for (auto j = fields1.begin(); j != fields1.end(); ++j) {
-        auto other = fields2.same(*j);
-        if (other != fields2.end()) {
-            if (compareValues && compareStatistics) {
-                compareFieldStatistics(multi1, multi2, *j, *other);
-            }
-            if (compareValues) {
-                compareFieldValues(multi1, multi2, *j, *other);
-            }
-        } else {
-            missingField(multi1, multi2, *j, fields2, show);
-        }
-    }
-}
-
 
 void FieldComparator::compareCounts(const std::string & name,
                                     const MultiFile & multi1,
@@ -885,6 +878,27 @@ void FieldComparator::compareCounts(const std::string & name,
 
     }
 
+}
+
+
+void FieldComparator::compareMissingFields(
+        const MultiFile& multi1,
+        const MultiFile& multi2,
+        const FieldSet& fields1,
+        const FieldSet& fields2 ) {
+    bool show = true;
+    for (auto j = fields1.begin(); j != fields1.end(); ++j) {
+        if (fields2.same(*j) == fields2.end()) {
+            missingField(multi1, multi2, *j, fields2, show);
+        }
+    }
+
+    show = true;
+    for (auto j = fields2.begin(); j != fields2.end(); ++j) {
+        if (fields1.same(*j) == fields1.end()) {
+            missingField(multi2, multi1, *j, fields1, show);
+        }
+    }
 }
 
 
