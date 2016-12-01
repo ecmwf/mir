@@ -174,8 +174,8 @@ void Vod2uv::execute(context::Context & ctx) const {
 
 
     // configure paramIds for u/v
-    long id_u = 99131;
-    long id_v = 99132;
+    long id_u = 131;
+    long id_v = 132;
     parametrisation_.get("transform.vod2uv.u", id_u);
     parametrisation_.get("transform.vod2uv.v", id_v);
 
