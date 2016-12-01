@@ -67,33 +67,36 @@ MIRConfiguration& MIRConfiguration::instance() {
 
 
 void MIRConfiguration::configure(const eckit::PathName& path) {
-    if (configPath_ == path.asString()) {
-        return;
-    }
 
-
-    eckit::Log::debug<LibMir>() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
-    std::ifstream in(path.asString().c_str());
-    if (!in) {
-        throw eckit::CantOpenFile(path);
-    }
-
-    eckit::JSONParser parser(in);
-    const eckit::ValueMap j = parser.parse();
-
-
-    // create hierarchy, usin filling keys and defaults (not overwriting)
+    // initialize hierarchy
     root_.reset(new param::InheritParametrisation());
     ASSERT(root_);
 
-    root_->fill(j);
-    std::string configurationfill;
-    if (root_->get("configuration-fill", configurationfill) && configurationfill.length()) {
-        root_->fill(root_->pick(configurationfill));
-        root_->clear("configuration-fill");
+
+    // configure from file, skip if this was already done
+    if (!path.asString().empty() && path.asString() != configPath_) {
+        eckit::Log::debug<LibMir>() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
+        std::ifstream in(path.asString().c_str());
+        if (!in) {
+            throw eckit::CantOpenFile(path);
+        }
+
+        eckit::JSONParser parser(in);
+        const eckit::ValueMap j = parser.parse();
+
+        // create hierarchy (using non-overwriting filling keys)
+        root_->fill(j);
+        std::string configuration_fill;
+        if (root_->get("configuration-fill", configuration_fill) && configuration_fill.length()) {
+            root_->fill(root_->pick(configuration_fill));
+            root_->clear("configuration-fill");
+        }
     }
 
+
+    // use defaults (non-overwriting)
     Defaults().copyValuesTo(*root_, false);
+
 
     std::string configuration_skip;
     if (root_->get("configuration-skip", configuration_skip) && configuration_skip.length()) {
@@ -109,11 +112,8 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
 
 MIRConfiguration::MIRConfiguration() {
 
-    // Always start with defaults
-    root_.reset(new param::InheritParametrisation());
-    ASSERT(root_);
-
-    Defaults().copyValuesTo(*root_, false);
+    // Always start with internal defaults, not from file
+    configure("");
 }
 
 

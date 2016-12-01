@@ -81,8 +81,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
     std::string file = "";
     args.get("configuration", file);
-    file.length()? configuration.configure(file)
-                 : configuration.configure();
+    configuration.configure(file);
 
     std::string key = "";
     args.get("key", key);
