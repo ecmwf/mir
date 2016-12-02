@@ -35,17 +35,17 @@ namespace mir {
 namespace util {
 
 class Rotation {
-  public:
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    Rotation(const param::MIRParametrisation &);
-    Rotation(double south_pole_latitude = 0,
-             double south_pole_longitude = 0,
-             double south_pole_rotation_angle = 0);
+    explicit Rotation(const param::MIRParametrisation &);
+    explicit Rotation(double south_pole_latitude = 0,
+                      double south_pole_longitude = 0,
+                      double south_pole_rotation_angle = 0);
 
     // -- Destructor
 
@@ -56,9 +56,7 @@ class Rotation {
 
     // -- Operators
 
-    // bool operator==(const Rotation& other) const {
-    //     return (west_east_ == other.west_east_) && (south_north_ == other.south_north_);
-    // }
+    bool operator==(const Rotation& other) const;
 
     // bool operator!=(const Rotation& other) const {
     //     return (west_east_ != other.west_east_) || (south_north_ != other.south_north_);
@@ -94,7 +92,7 @@ class Rotation {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -112,7 +110,7 @@ class Rotation {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
@@ -124,6 +122,8 @@ class Rotation {
     double south_pole_rotation_angle_;
 
     // -- Methods
+
+    void normalize();
 
     // -- Overridden methods
     // None

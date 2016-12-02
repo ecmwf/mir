@@ -18,6 +18,8 @@
 
 #include "mir/output/MIROutput.h"
 
+struct grib_info;
+struct grib_handle;
 
 namespace eckit {
 class DataHandle;
@@ -25,11 +27,13 @@ class DataHandle;
 
 
 namespace mir {
+
+
 namespace output {
 
 
 class GribOutput : public MIROutput {
-  public:
+public:
 
 // -- Exceptions
     // None
@@ -60,16 +64,22 @@ class GribOutput : public MIROutput {
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
     // None
 
 // -- Methods
 
+    virtual void fill(grib_handle* handle, grib_info& info) const;
 
 // -- Overridden methods
-    // None
+    // From MIROutput
+
+    virtual size_t copy(const param::MIRParametrisation &, context::Context &); // Not iterpolation performed
+    virtual size_t save(const param::MIRParametrisation&, context::Context&);
+    virtual bool sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const;
+    virtual bool printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const;
 
 // -- Class members
     // None
@@ -77,7 +87,7 @@ class GribOutput : public MIROutput {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 
@@ -86,15 +96,13 @@ class GribOutput : public MIROutput {
 
 // -- Members
 
+    unsigned long long total_;
+
 // -- Methods
 
     virtual void out(const void* message, size_t length, bool iterpolated) = 0;
 
 // -- Overridden methods
-    // From MIROutput
-
-    virtual void copy(const param::MIRParametrisation&, input::MIRInput&); // Not iterpolation performed
-    virtual void save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&);
 
 
 // -- Class members

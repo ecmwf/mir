@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,15 +13,15 @@
 /// @date Apr 2015
 
 
+#include "mir/repres/Representation.h"
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
-#include "eckit/thread/Once.h"
-
+#include "atlas/grid/Domain.h"
+#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
-
-#include "mir/repres/Representation.h"
 
 
 namespace mir {
@@ -43,21 +43,11 @@ static void init() {
 }  // (anonymous namespace)
 
 
-Representation::Representation(): count_(0) {
+Representation::Representation() {
 }
 
 
 Representation::~Representation() {
-}
-
-void Representation::attach() const {
-    count_++;
-}
-
-void Representation::detach() const {
-    if (--count_ == 0) {
-        delete this;
-    }
 }
 
 RepresentationHandle::RepresentationHandle(const Representation *representation):
@@ -67,11 +57,13 @@ RepresentationHandle::RepresentationHandle(const Representation *representation)
     }
 }
 
+
 RepresentationHandle::~RepresentationHandle() {
     if (representation_) {
         representation_->detach();
     }
 }
+
 
 void Representation::setComplexPacking(grib_info &) const {
     std::ostringstream os;
@@ -79,17 +71,20 @@ void Representation::setComplexPacking(grib_info &) const {
     throw eckit::SeriousBug(os.str());
 }
 
+
 void Representation::setSimplePacking(grib_info &) const {
     std::ostringstream os;
     os << "Representation::setSimplePacking() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Representation::setSecondOrderPacking(grib_info &) const {
+
+void Representation::setGivenPacking(grib_info &) const {
     std::ostringstream os;
-    os << "Representation::setSecondOrderPacking() not implemented for " << *this;
+    os << "Representation::setGivenPacking() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 void Representation::validate(const std::vector<double> &) const {
     std::ostringstream os;
@@ -97,11 +92,13 @@ void Representation::validate(const std::vector<double> &) const {
     throw eckit::SeriousBug(os.str());
 }
 
+
 void Representation::fill(grib_info&) const {
     std::ostringstream os;
     os << "Representation::fill(grib_info&) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 void Representation::fill(api::MIRJob&) const {
     std::ostringstream os;
@@ -109,11 +106,13 @@ void Representation::fill(api::MIRJob&) const {
     throw eckit::SeriousBug(os.str());
 }
 
+
 void Representation::shape(size_t &ni, size_t &nj) const {
     std::ostringstream os;
     os << "Representation::shape() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 const Representation *Representation::cropped(const util::BoundingBox &bbox) const {
     std::ostringstream os;
@@ -130,11 +129,26 @@ const Representation *Representation::truncate(size_t truncation,
 }
 
 
-atlas::Grid *Representation::atlasGrid() const {
+atlas::grid::Grid *Representation::atlasGrid() const {
     std::ostringstream os;
     os << "Representation::atlasGrid() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
+
+atlas::grid::Domain Representation::atlasDomain() const {
+    std::ostringstream os;
+    os << "Representation::atlasDomain() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+atlas::grid::Domain Representation::atlasDomain(const util::BoundingBox&) const {
+    std::ostringstream os;
+    os << "Representation::atlasDomain(BoundingBox) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
 
 size_t Representation::truncation() const {
     std::ostringstream os;
@@ -142,11 +156,25 @@ size_t Representation::truncation() const {
     throw eckit::SeriousBug(os.str());
 }
 
+
+size_t Representation::pentagonalResolutionTs() const {
+    std::ostringstream os;
+    os << "Representation::pentagonalResolutionTs() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+void Representation::comparison(std::string&) const {
+    // do nothing
+}
+
+
 size_t Representation::frame(std::vector<double> &values, size_t size, double missingValue) const {
     std::ostringstream os;
     os << "Representation::frame() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 void Representation::reorder(long scanningMode, std::vector<double> &values) const {
     std::ostringstream os;
@@ -154,11 +182,13 @@ void Representation::reorder(long scanningMode, std::vector<double> &values) con
     throw eckit::SeriousBug(os.str());
 }
 
-void Representation::cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField &) const {
+
+void Representation::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
     std::ostringstream os;
     os << "Representation::cropToDomain() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 Iterator *Representation::unrotatedIterator() const {
     std::ostringstream os;
@@ -166,11 +196,13 @@ Iterator *Representation::unrotatedIterator() const {
     throw eckit::SeriousBug(os.str());
 }
 
+
 Iterator *Representation::rotatedIterator() const {
     std::ostringstream os;
     os << "Representation::rotatedIterator() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 RepresentationFactory::RepresentationFactory(const std::string &name):
     name_(name) {
@@ -187,8 +219,8 @@ RepresentationFactory::RepresentationFactory(const std::string &name):
 RepresentationFactory::~RepresentationFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
-
 }
+
 
 const Representation *RepresentationFactory::build(const param::MIRParametrisation &params) {
 
@@ -204,7 +236,7 @@ const Representation *RepresentationFactory::build(const param::MIRParametrisati
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, RepresentationFactory *>::const_iterator j = m->find(name);
 
-    eckit::Log::info() << "Looking for RepresentationFactory [" << name << "]" << std::endl;
+    // eckit::Log::debug<LibMir>() << "Looking for RepresentationFactory [" << name << "]" << std::endl;
 
     if (j == m->end()) {
         eckit::Log::error() << "No RepresentationFactory for [" << name << "]" << std::endl;

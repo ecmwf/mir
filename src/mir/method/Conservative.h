@@ -17,10 +17,13 @@
 
 #include "mir/method/FELinear.h"
 
-namespace eckit { namespace la { class Vector; } }
+namespace eckit { namespace linalg { class Vector; } }
+namespace atlas { namespace mesh { class Mesh; } }
 
 namespace mir {
 namespace method {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class Conservative: public FELinear {
 
@@ -34,9 +37,9 @@ protected:
 
     virtual void hash(eckit::MD5&) const;
 
-    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
 
-    void computeLumpedMassMatrix(eckit::la::Vector&, const atlas::Grid& g) const;
+    void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
 
 private:
 
@@ -44,6 +47,8 @@ private:
   virtual const char* name() const;
 
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

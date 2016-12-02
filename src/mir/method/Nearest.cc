@@ -12,35 +12,35 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-
 #include "mir/method/Nearest.h"
 
 #include <string>
 #include <limits>
 #include <vector>
 
-#include "mir/util/PointSearch.h"
-#include "mir/param/MIRParametrisation.h"
 #include "eckit/log/Timer.h"
-
 #include "eckit/log/BigNum.h"
 #include "eckit/log/ETA.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 
-#include "atlas/mesh/Nodes.h"
-#include "atlas/actions/BuildXYZField.h"
+#include "mir/method/GridSpace.h"
+#include "mir/util/PointSearch.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/config/LibMir.h"
+
 
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
+
+namespace {
+enum { LON=0, LAT=1 };
+}
 
 Nearest::Nearest(const param::MIRParametrisation &param) :
-    MethodWeighted(param),
-    epsilon_(std::numeric_limits<double>::epsilon()) {
-
-    param.get("epsilon", epsilon_);
-
+    MethodWeighted(param) {
 }
 
 
@@ -53,38 +53,28 @@ const char *Nearest::name() const {
 }
 
 
-void Nearest::hash(eckit::MD5 &md5) const {
-    MethodWeighted::hash(md5);
-    md5 << epsilon_;
-}
+void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
-
-void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
-
-    eckit::Timer timer("Nearest::assemble");
-    eckit::Log::info() << "Nearest::assemble" << std::endl;
+    eckit::TraceTimer<LibMir> timer("Nearest::assemble");
+    eckit::Log::debug<LibMir>() << "Nearest::assemble" << std::endl;
 
     const size_t nclosest = this->nclosest();
 
-    const util::PointSearch sptree(in.mesh());
+    const util::PointSearch sptree(in);
 
-    atlas::Mesh &o_mesh = const_cast<atlas::Mesh&>(out.mesh());
-    const atlas::Domain &inDomain = in.domain();
+    const atlas::grid::Domain& inDomain = in.grid().domain();
 
-    // output points
-    atlas::mesh::Nodes &o_nodes = o_mesh.nodes();
-    atlas::actions::BuildXYZField("xyz")(o_nodes);
-    atlas::ArrayView<double, 2> ocoords(o_nodes.field("xyz"));
-    atlas::ArrayView<double, 2> olonlat ( o_nodes.lonlat());
+    atlas::array::ArrayView<double, 2> ocoords = out.coordsXYZ();
+    atlas::array::ArrayView<double, 2> olonlat = out.coordsLonLat();
 
-    const size_t out_npts = o_nodes.size();
+    const size_t out_npts = out.grid().npts();
     double nearest = 0;
     double push_back = 0;
 
     // init structure used to fill in sparse matrix
     std::vector<WeightMatrix::Triplet > weights_triplets;
     weights_triplets.reserve(out_npts * nclosest);
-    eckit::Log::info() << "Reserve " << eckit::BigNum(out_npts * nclosest) << std::endl;
+    eckit::Log::debug<LibMir>() << "Reserve " << eckit::BigNum(out_npts * nclosest) << std::endl;
 
     std::vector<util::PointSearch::PointValueType> closest;
 
@@ -95,19 +85,19 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
 
         if (ip && (ip % 50000 == 0)) {
             double rate = ip / timer.elapsed();
-            eckit::Log::info() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timer.elapsed())
+            eckit::Log::debug<LibMir>() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timer.elapsed())
                                << ", rate: " << rate << " points/s, ETA: "
                                << eckit::ETA( (out_npts - ip) / rate )
                                << std::endl;
 
-            eckit::Log::info() << "Nearest: " << nearest << ", Push back:" << push_back << std::endl;
-            sptree.statsPrint(eckit::Log::info(), false);
-            eckit::Log::info() << std::endl;
+            eckit::Log::debug<LibMir>() << "Nearest: " << nearest << ", Push back:" << push_back << std::endl;
+            sptree.statsPrint(eckit::Log::debug<LibMir>(), false);
+            eckit::Log::debug<LibMir>() << std::endl;
             sptree.statsReset();
             nearest = push_back = 0;
         }
 
-        if (!inDomain.contains(olonlat[ip][atlas::LON], olonlat[ip][atlas::LAT])) {
+        if (!inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
             continue;
         }
 
@@ -147,7 +137,7 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
         }
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
-        for (int i = 0; i < npts; ++i) {
+        for (size_t i = 0; i < npts; ++i) {
             size_t index = closest[i].payload();
             double t = timer.elapsed();
             weights_triplets.push_back(WeightMatrix::Triplet(ip, index, weights[i]));
@@ -160,6 +150,7 @@ void Nearest::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid
     W.setFromTriplets(weights_triplets);
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

@@ -1,0 +1,47 @@
+all fluxes should conservative
+avoid interpolation?
+clarify?
+clarify? concentation
+clarify? copernicus
+concentration
+concentration, global conservative
+cover
+cover (as per other covers) definitely not bilinear!
+difference
+difference, may be negative (as in all anomalies)
+fail
+flux
+flux, copernicus
+flux?
+fraction
+fraction (see cloud cover)
+fraction/cover clarify? richard forbes
+index
+intensity
+like cloud water
+like temperature
+ocean?
+probability
+rate
+rate (anomaly)
+rate grib should be renamed
+ratio
+ratio (see albedo)
+ratio? clarify?
+spectral coefficiencts, truncation possible for interpolation
+spectral coefficient
+spectral, truncation possible
+spectral, could be truncated
+this parameter (14021) goes with 140122 to define a vector
+unknown?
+vector angle, needs review! probably not to interpolate.
+wave?
+
+spectral coefficient, n.b. u*cos(lat) returned by emoslib ! we should change the parameter [paul dando]
+
+spectral coefficient, n.b. v*cos(lat) returned by emoslib ! we should change the parameter [paul dando]
+
+the 2D spectra are actually archived in such a way that small values are discarded and encoded as missing data. therefore for a given frequency and direction there will be a certain number of sea points with missing data but they might be different for the next frequency and direction bin
+
+the 2D wave spectra are actually archived as a 2D matrix at each grid point in such a way that small values are discarder and set to missing. it is therefore not possible to use interpolation.
+

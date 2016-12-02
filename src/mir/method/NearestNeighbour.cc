@@ -47,7 +47,7 @@ void NearestNeighbour::hash( eckit::MD5& md5) const {
 
 
 void NearestNeighbour::print(std::ostream &out) const {
-    out << "NearestNeighbour[epsilon=" << epsilon_ << "]";
+    out << "NearestNeighbour[]";
 }
 
 

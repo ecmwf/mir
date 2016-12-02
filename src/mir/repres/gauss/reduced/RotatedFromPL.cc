@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,13 +12,14 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/repres/gauss/reduced/RotatedFromPL.h"
 
 #include <iostream>
-
 #include "mir/util/Grib.h"
-#include "atlas/grids/RotatedGrid.h"
+#include "mir/util/RotatedGrid.h"
 #include "mir/util/RotatedIterator.h"
+
 
 namespace mir {
 namespace repres {
@@ -34,14 +35,17 @@ RotatedFromPL::RotatedFromPL(const param::MIRParametrisation &parametrisation):
 RotatedFromPL::~RotatedFromPL() {
 }
 
+
 RotatedFromPL::RotatedFromPL(long N, const std::vector<long> &pl, const util::BoundingBox &bbox, const util::Rotation& rotation):
     FromPL(N, pl, bbox),
     rotation_(rotation) {
 }
 
+
 void RotatedFromPL::print(std::ostream &out) const {
     out << "RotatedGGFromPL[N" << N_ << "]";
 }
+
 
 void RotatedFromPL::fill(grib_info &info) const  {
 #ifdef GRIB_UTIL_GRID_SPEC_REDUCED_ROTATED_GG
@@ -53,20 +57,22 @@ void RotatedFromPL::fill(grib_info &info) const  {
 #endif
 }
 
+
 void RotatedFromPL::fill(api::MIRJob &job) const  {
     NOTIMP;
 }
 
-atlas::Grid *RotatedFromPL::atlasGrid() const {
-    ASSERT(globalDomain()); // Atlas support needed for non global grids
-    return new atlas::grids::RotatedGrid(FromPL::atlasGrid(),
-                                         rotation_.south_pole_latitude(),
-                                         rotation_.south_pole_longitude(),
-                                         rotation_.south_pole_rotation_angle());
+
+atlas::grid::Grid *RotatedFromPL::atlasGrid() const {
+    return new util::RotatedGrid(
+                FromPL::atlasGrid(),
+                rotation_.south_pole_latitude(),
+                rotation_.south_pole_longitude(),
+                rotation_.south_pole_rotation_angle() );
 }
 
 
-Reduced *RotatedFromPL::cropped(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
+const Reduced* RotatedFromPL::cropped(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
     return new RotatedFromPL(N_, pl, bbox, rotation_);
 }
 
@@ -75,14 +81,11 @@ Iterator* RotatedFromPL::rotatedIterator() const {
     return new util::RotatedIterator(FromPL::unrotatedIterator(), rotation_);
 }
 
+
 namespace {
 static RepresentationBuilder<RotatedFromPL> rotatedGG("reduced_rotated_gg"); // Name is what is returned by grib_api
 }
 
-
-// namespace {
-// static RepresentationBuilder<RotatedFromPL> reducedGGFromPL("reduced_gg"); // Name is what is returned by grib_api
-// }
 
 }  // namespace reduced
 }  // namespace repres

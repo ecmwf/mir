@@ -18,10 +18,11 @@
 
 #include "eckit/memory/ScopedPtr.h"
 
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -37,12 +38,17 @@ CheckerBoard::~CheckerBoard() {
 }
 
 
+bool CheckerBoard::sameAs(const Action& other) const {
+    return false;
+}
+
 void CheckerBoard::print(std::ostream &out) const {
     out << "CheckerBoard[]";
 }
 
 
-void CheckerBoard::execute(data::MIRField &field) const {
+void CheckerBoard::execute(context::Context & ctx) const {
+    data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle representation(field.representation());
     bool normalize = false;
@@ -58,7 +64,7 @@ void CheckerBoard::execute(data::MIRField &field) const {
     double missingValue = field.missingValue();
 
     for (size_t k = 0; k < field.dimensions(); k++) {
-        std::vector<double> &values = field.values(k);
+        std::vector<double> &values = field.direct(k);
 
         double minvalue = 0;
         double maxvalue = 0;

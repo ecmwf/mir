@@ -25,89 +25,90 @@ namespace regular {
 
 
 class RegularGG : public Regular {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     RegularGG(const param::MIRParametrisation&);
     RegularGG(size_t N);
     RegularGG(size_t N, const util::BoundingBox&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~RegularGG(); // Change to virtual if base class
+    virtual ~RegularGG();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;
 
-// -- Overridden methods
+    // -- Overridden methods
+
+    virtual void cropToDomain(const param::MIRParametrisation&, context::Context&) const;
+
+    // -- Class members
     // None
 
-// -- Class members
+    // -- Class methods
     // None
 
-// -- Class methods
-    // None
-
-  private:
+private:
 
     RegularGG();
 
-// No copy allowed
+    // No copy allowed
 
     RegularGG(const RegularGG&);
     RegularGG& operator=(const RegularGG&);
 
-// -- Members
+    // -- Members
 
 
-// -- Methods
+    // -- Methods
     // None
 
 
-// -- Overridden methods
+    // -- Overridden methods
 
     //virtual void fill(grib_info&) const;
-    //virtual atlas::Grid* atlasGrid() const;
+    //virtual atlas::grid::Grid* atlasGrid() const;
 
     virtual const Gridded* cropped(const util::BoundingBox &bbox) const;
 
     //virtual void validate(const std::vector<double>&) const;
 
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const RegularGG& p)
     // { p.print(s); return s; }

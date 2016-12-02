@@ -20,6 +20,7 @@
 
 #include "mir/input/RawInput.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
@@ -35,23 +36,28 @@ RawInput::RawInput(const RawMetadata &metadata, const double *values, size_t cou
 RawInput::~RawInput() {
 }
 
+bool RawInput::sameAs(const MIRInput& other) const {
+    return this == &other;
+}
+
 bool RawInput::next() {
     NOTIMP;
 }
 
-const param::MIRParametrisation &RawInput::parametrisation() const {
+const param::MIRParametrisation &RawInput::parametrisation(size_t which) const {
+    ASSERT(which == 0);
     return *this;
 }
 
-data::MIRField *RawInput::field() const {
+data::MIRField RawInput::field() const {
 
-    data::MIRField *field = new data::MIRField(*this, metadata_.hasMissing(), metadata_.missingValue());
+    data::MIRField field(*this, metadata_.hasMissing(), metadata_.missingValue());
 
     std::vector< double > values(count_);
     ::memcpy(&values[0], values_, sizeof(double) * count_);
-    field->values(values, 0);
+    field.update(values, 0);
 
-    eckit::Log::info() << "RawInput::field: " << *field << std::endl;
+    // eckit::Log::debug<LibMir>() << "RawInput::field: " << field << std::endl;
 
     return field;
 }
@@ -68,7 +74,7 @@ size_t RawInput::copy(double *values, size_t size) const {
 }
 
 bool RawInput::has(const std::string &name) const {
-    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::has (" << name << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << ">>>>>>>>>>>>> RawInput::has (" << name << ")" << std::endl;
 
     if (name == "gridded") {
         return metadata_.gridded();
@@ -82,7 +88,7 @@ bool RawInput::has(const std::string &name) const {
 }
 
 bool RawInput::get(const std::string &name, std::string &value) const {
-    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::get string (" << name << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << ">>>>>>>>>>>>> RawInput::get string (" << name << ")" << std::endl;
 
     if (name == "gridType") {
         value = metadata_.gridType();
@@ -93,12 +99,12 @@ bool RawInput::get(const std::string &name, std::string &value) const {
 }
 
 bool RawInput::get(const std::string &name, bool &value) const {
-    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::get bool (" << name << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << ">>>>>>>>>>>>> RawInput::get bool (" << name << ")" << std::endl;
     return false;
 }
 
 bool RawInput::get(const std::string &name, long &value) const {
-    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::get long (" << name << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << ">>>>>>>>>>>>> RawInput::get long (" << name << ")" << std::endl;
 
     if (name == "N") {
         value = metadata_.N();
@@ -124,7 +130,7 @@ bool RawInput::get(const std::string &name, long &value) const {
 }
 
 bool RawInput::get(const std::string &name, double &value) const {
-    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::get double (" << name << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << ">>>>>>>>>>>>> RawInput::get double (" << name << ")" << std::endl;
 
     if (name == "north") {
         value = metadata_.bbox().north();
@@ -150,7 +156,7 @@ bool RawInput::get(const std::string &name, double &value) const {
 }
 
 bool RawInput::get(const std::string &name, std::vector<long> &value) const {
-    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::get vector<long> (" << name << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << ">>>>>>>>>>>>> RawInput::get vector<long> (" << name << ")" << std::endl;
 
     if (name == "pl") {
         value = metadata_.pl();
@@ -175,7 +181,7 @@ bool RawInput::get(const std::string &name, std::vector<double> &value) const {
         return false;
     }
 
-    eckit::Log::info() << ">>>>>>>>>>>>> RawInput::get vector<double> (" << name << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << ">>>>>>>>>>>>> RawInput::get vector<double> (" << name << ")" << std::endl;
     return false;
 }
 

@@ -27,6 +27,12 @@ namespace input {
 
 
 GribMemoryInput::GribMemoryInput(const void* message, size_t length) {
+    const char* p = static_cast<const char*>(message);
+    ASSERT(p[0] == 'G' && p[1] == 'R' && p[2] == 'I' && p[3] == 'B');
+
+    // p += length - 4;
+    // ASSERT(p[0] == '7' && p[1] == '7' && p[2] == '7' && p[3] == '7');
+
     ASSERT(handle(grib_handle_new_from_message(0, const_cast<void*>(message), length)));
 }
 
@@ -34,11 +40,19 @@ GribMemoryInput::GribMemoryInput(const void* message, size_t length) {
 GribMemoryInput::~GribMemoryInput() {
 }
 
+bool GribMemoryInput::sameAs(const MIRInput& other) const {
+    return this == &other;
+}
 
 void GribMemoryInput::print(std::ostream& out) const {
     out << "GribMemoryInput[]";
 }
 
+size_t GribMemoryInput::dimensions() const {
+    // FIXME
+    eckit::Log::warning() << "GribMemoryInput::dimensions() returning 1 (hardcoded!)" << std::endl;
+    return 1;
+}
 
 }  // namespace input
 }  // namespace mir

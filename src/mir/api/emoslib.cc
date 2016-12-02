@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,47 +12,56 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/api/emoslib.h"
 
-
 #include <memory>
+#include <typeinfo>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
-#include "eckit/runtime/LibBehavior.h"
-#include "eckit/runtime/Context.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/log/Log.h"
+#include "eckit/runtime/Main.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/gaussian/RegularGaussian.h"
+#include "atlas/grid/gaussian/ClassicGaussian.h"
+#include "atlas/grid/gaussian/latitudes/Latitudes.h"
+#include "atlas/grid/grids.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/api/ProdgenJob.h"
 #include "mir/input/GribMemoryInput.h"
-#include "mir/output/GribMemoryOutput.h"
-
-#include "atlas/grids/GaussianLatitudes.h"
-
-#include "mir/input/VODInput.h"
-#include "mir/output/UVOutput.h"
-
-#include "mir/input/WindInput.h"
-#include "mir/output/WindOutput.h"
-
 #include "mir/input/RawInput.h"
+#include "mir/input/VectorInput.h"
+#include "mir/input/VectorInput.h"
+#include "mir/config/LibMir.h"
+#include "mir/output/GribMemoryOutput.h"
 #include "mir/output/RawOutput.h"
+#include "mir/output/VectorOutput.h"
 
-
-#include "atlas/Grid.h"
-#include "atlas/grids/grids.h"
-#include "atlas/grids/GaussianLatitudes.h"
 
 namespace mir {
 namespace api {
+
+//----------------------------------------------------------------------------------------------------------------------
+
 namespace {
 
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex *local_mutex = 0;
+
+
+static void init() {
+    local_mutex = new eckit::Mutex();
+}
 
 static eckit::ScopedPtr<ProdgenJob> intin(0);
-
 static eckit::ScopedPtr<MIRJob> job(0);
 static bool unpacked = false;
+
 
 static void tidy(const char *in, char *out, size_t max) {
     size_t n = 0;
@@ -72,6 +81,7 @@ static bool boolean(const char *in) {
     throw eckit::SeriousBug(std::string("Invalid boolean: ") + in);
 }
 
+
 static void clear(MIRJob &job) {
     job.clear("grid");
     job.clear("truncation");
@@ -80,15 +90,31 @@ static void clear(MIRJob &job) {
     job.clear("reduced");
 }
 
+
+extern "C" int mir_initialise(int argc, char** argv) {
+    try {
+        eckit::Main::initialise(argc, argv);
+    }
+    catch ( std::exception& e ) {
+        eckit::Log::error() << "** " << e.what() << " Caught in "  << Here() << std::endl;
+        return -1;
+    }
+    return 0;
+}
+
 extern "C" fortint intout_(const char *name,
                            const fortint ints[],
                            const fortfloat reals[],
                            const char *value,
                            const fortint name_len,
                            const fortint value_len) {
+
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
     std::string n(name);
     n = n.substr(0, name_len);
-    eckit::Log::info() << "++++++ intout [" << n << "]" <<  std::endl;
+    eckit::Log::debug<LibMir>() << "++++++ intout [" << n << "]" <<  std::endl;
     char buffer[1024];
 
     try {
@@ -114,6 +140,12 @@ extern "C" fortint intout_(const char *name,
             } else {
                 job->clear("grid");
             }
+            return 0;
+        }
+
+        if (strncasecmp(name, "gridname", name_len) == 0) {
+            clear(*job);
+            job->set("gridname", value);
             return 0;
         }
 
@@ -197,7 +229,7 @@ extern "C" fortint intout_(const char *name,
         }
         std::string v(value);
         v = v.substr(0, value_len);
-        eckit::Log::info() << "INTOUT " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
+        eckit::Log::debug<LibMir>() << "INTOUT " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
         throw eckit::SeriousBug(std::string("Unexpected name in INTOUT: [") + n + "]");
 
     } catch (std::exception &e) {
@@ -208,6 +240,7 @@ extern "C" fortint intout_(const char *name,
     return 0;
 }
 
+
 extern "C" fortint intin_(const char *name,
                           const fortint ints[],
                           const fortfloat reals[],
@@ -215,19 +248,22 @@ extern "C" fortint intin_(const char *name,
                           const fortint name_len,
                           const fortint value_len) {
 
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
     std::string n(name);
     n = n.substr(0, name_len);
 
     std::string v(value);
     v = v.substr(0, value_len);
 
-    eckit::Log::info() << "++++++ intin [" << n << "] v=[" <<  v << "] r=" << reals[0] << " i=" << ints[0] << std::endl;
+    eckit::Log::debug<LibMir>() << "++++++ intin [" << n << "] v=[" <<  v << "] r=" << reals[0] << " i=" << ints[0] << std::endl;
 
     char buffer[1024];
 
     try {
 
-        eckit::Log::info() << "INTIN " << n << ", s=[" << v << "] - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
+        eckit::Log::debug<LibMir>() << "INTIN " << n << ", s=[" << v << "] - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
 
 
         if (!intin.get()) {
@@ -294,7 +330,7 @@ extern "C" fortint intin_(const char *name,
             }
         }
 
-        eckit::Log::info() << "INTIN " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
+        eckit::Log::debug<LibMir>() << "INTIN " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;
         throw eckit::SeriousBug(std::string("Unexpected name in INTIN: [") + n + "]");
 
     } catch (std::exception &e) {
@@ -306,6 +342,7 @@ extern "C" fortint intin_(const char *name,
 
 }
 
+
 extern "C" fortint intf_(const void *grib_in,
                          const fortint &length_in,
                          const fortfloat values_in[],
@@ -313,7 +350,10 @@ extern "C" fortint intf_(const void *grib_in,
                          fortint &length_out,
                          fortfloat values_out[]) {
 
-    eckit::Log::info() << "++++++ intf in="  << length_in << ", out=" << length_out << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ intf in="  << length_in << ", out=" << length_out << std::endl;
 
     try {
 
@@ -341,12 +381,16 @@ extern "C" fortint intf_(const void *grib_in,
     return 0;
 }
 
+
 extern "C" fortint intf2(const void *grib_in,
                          const fortint &length_in,
                          void *grib_out,
                          fortint &length_out) {
 
-    eckit::Log::info() << "++++++ intf2" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ intf2" << std::endl;
 
     try {
 
@@ -387,6 +431,7 @@ extern "C" fortint intf2(const void *grib_in,
     return 0;
 }
 
+
 extern "C" fortint intuvs2_(char *vort_grib_in,
                             char *div_grib_in,
                             const fortint &length_in,
@@ -394,7 +439,10 @@ extern "C" fortint intuvs2_(char *vort_grib_in,
                             char *v_grib_out,
                             const fortint &length_out) {
 
-    eckit::Log::info() << "++++++ intuvs2" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ intuvs2" << std::endl;
 
     try {
         NOTIMP;
@@ -406,6 +454,7 @@ extern "C" fortint intuvs2_(char *vort_grib_in,
     return 0;
 }
 
+
 extern "C" fortint intuvp2_(const void *vort_grib_in,
                             const void *div_grib_in,
                             const fortint &length_in,
@@ -413,7 +462,10 @@ extern "C" fortint intuvp2_(const void *vort_grib_in,
                             void *v_grib_out,
                             fortint &length_out) {
 
-    eckit::Log::info() << "++++++ intuvp2" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ intuvp2" << std::endl;
 
     try {
 
@@ -432,8 +484,8 @@ extern "C" fortint intuvp2_(const void *vort_grib_in,
         mir::output::GribMemoryOutput u_output(u_grib_out, length_out);
         mir::output::GribMemoryOutput v_output(v_grib_out, length_out);
 
-        mir::input::VODInput input(vort_input, div_input);
-        mir::output::UVOutput output(u_output, v_output);
+        mir::input::VectorInput input(vort_input, div_input);
+        mir::output::VectorOutput output(u_output, v_output);
 
         job->set("vod2uv", true);
 
@@ -482,6 +534,7 @@ extern "C" fortint intuvp2_(const void *vort_grib_in,
     return 0;
 }
 
+
 extern "C" fortint intvect2_(const void *u_grib_in,
                              const void *v_grib_in,
                              const fortint &length_in,
@@ -489,7 +542,10 @@ extern "C" fortint intvect2_(const void *u_grib_in,
                              void *v_grib_out,
                              fortint &length_out) {
 
-    eckit::Log::info() << "++++++ intvect2" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ intvect2" << std::endl;
 
     try {
         if (!job.get()) {
@@ -502,8 +558,8 @@ extern "C" fortint intvect2_(const void *u_grib_in,
         mir::output::GribMemoryOutput u_output(u_grib_out, length_out);
         mir::output::GribMemoryOutput v_output(v_grib_out, length_out);
 
-        mir::input::WindInput input(vort_input, div_input);
-        mir::output::WindOutput output(u_output, v_output);
+        mir::input::VectorInput input(vort_input, div_input);
+        mir::output::VectorOutput output(u_output, v_output);
 
         job->set("wind", true);
 
@@ -534,6 +590,7 @@ extern "C" fortint intvect2_(const void *u_grib_in,
     return 0;
 }
 
+
 extern "C" fortint intuvs_(const void *vort_grib_in,
                            const void *div_grib_in,
                            const fortint &length_in,
@@ -541,7 +598,10 @@ extern "C" fortint intuvs_(const void *vort_grib_in,
                            void *v_grib_out,
                            fortint &length_out) {
 
-    eckit::Log::info() << "++++++ intuvs" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ intuvs" << std::endl;
 
     try {
         NOTIMP;
@@ -552,6 +612,7 @@ extern "C" fortint intuvs_(const void *vort_grib_in,
 
     return 0;
 }
+
 
 extern "C" fortint intuvp_(const void *vort_grib_in,
                            const void *div_grib_in,
@@ -560,7 +621,10 @@ extern "C" fortint intuvp_(const void *vort_grib_in,
                            void *v_grib_out,
                            fortint &length_out) {
 
-    eckit::Log::info() << "++++++ intuvp" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ intuvp" << std::endl;
 
     try {
         NOTIMP;
@@ -570,6 +634,7 @@ extern "C" fortint intuvp_(const void *vort_grib_in,
     }
     return 0;
 }
+
 
 extern "C" fortint intvect_(const void *u_grib_in,
                             const void *v_grib_in,
@@ -578,7 +643,10 @@ extern "C" fortint intvect_(const void *u_grib_in,
                             void *v_grib_out,
                             fortint &length_out) {
 
-    eckit::Log::info() << "++++++ intvect" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ intvect" << std::endl;
 
     try {
         NOTIMP;
@@ -588,10 +656,14 @@ extern "C" fortint intvect_(const void *u_grib_in,
     }
     return 0;
 }
+
 
 extern "C" fortint iscrsz_() {
 
-    eckit::Log::info() << "++++++ iscrsz" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ iscrsz" << std::endl;
 
     try {
         NOTIMP;
@@ -602,9 +674,13 @@ extern "C" fortint iscrsz_() {
     return 0;
 }
 
+
 extern "C" fortint ibasini_(const fortint &force) {
 
-    eckit::Log::info() << "++++++ ibasini" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ ibasini" << std::endl;
 
     // Init interpolation package
     job.reset(0);
@@ -613,9 +689,13 @@ extern "C" fortint ibasini_(const fortint &force) {
     return 0;
 }
 
+
 extern "C" void intlogm_(fortint (*)(char *, fortint)) {
 
-    eckit::Log::info() << "++++++ intlogm" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ intlogm" << std::endl;
 
     try {
         NOTIMP;
@@ -625,34 +705,37 @@ extern "C" void intlogm_(fortint (*)(char *, fortint)) {
     }
 }
 
+
 typedef void (*emos_cb_proc)(char *);
+
 
 struct emos_cb_ctx {
     emos_cb_proc proc;
 };
 
+
 static emos_cb_ctx emos_ctx;
+
 
 static void callback(void *ctxt, const char *msg) {
     emos_cb_ctx *c = reinterpret_cast<emos_cb_ctx *>(ctxt);
     c->proc(const_cast<char *>(msg));
 }
 
+
 extern "C" void intlogs(emos_cb_proc proc) {
 
-    eckit::Log::info() << "++++++ intlogs" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ intlogs" << std::endl;
 
     emos_ctx.proc = proc;
 
+    eckit::Log::setCallback(&callback, &emos_ctx);
 
-    eckit::ContextBehavior &behavior = eckit::Context::instance().behavior();
-    try {
-        eckit::LibBehavior &libbehavior = dynamic_cast<eckit::LibBehavior &>(behavior);
-        libbehavior.default_callback(&callback, &emos_ctx);
-    } catch (std::bad_cast &) {
-        eckit::Log::warning() << "INTLOGS: ContextBehavior is not a LibBehavior" << std::endl;
-    }
 }
+
 
 extern "C" fortint areachk_(const fortfloat &we,
                             const fortfloat &ns,
@@ -662,7 +745,10 @@ extern "C" fortint areachk_(const fortfloat &we,
                             fortfloat &east) {
 
 
-    eckit::Log::info() << "++++++ areachk" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ areachk" << std::endl;
 
     try {
 
@@ -726,19 +812,25 @@ extern "C" fortint areachk_(const fortfloat &we,
     return 0;
 }
 
+
 extern "C" fortint emosnum_(fortint &value) {
 
-    eckit::Log::info() << "++++++ emosnum" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ emosnum" << std::endl;
     value = 0;
     return 42424242;
 }
+
 
 extern "C" void freecf_(const fortint &flag) {
     // C     KFLAG - Flag indicating whether flushing of memory is done or not
     // C              = 1 to turn on flushing
     // C              = any other value to turn off flushing (default)
-    eckit::Log::info() << "++++++ freecf flag=" << flag << std::endl;
+    eckit::Log::debug<LibMir>() << "++++++ freecf flag=" << flag << std::endl;
 }
+
 
 extern "C" void jvod2uv_(const fortfloat vor[],
                          const fortfloat div[],
@@ -746,7 +838,12 @@ extern "C" void jvod2uv_(const fortfloat vor[],
                          fortfloat u[],
                          fortfloat v[],
                          const fortint &ktout) {
-    eckit::Log::info() << "++++++ jvod2uv in=" << ktin << ", out=" << ktout << std::endl;
+
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ jvod2uv in=" << ktin << ", out=" << ktout << std::endl;
+
     try {
 
         if (!intin.get()) {
@@ -768,8 +865,8 @@ extern "C" void jvod2uv_(const fortfloat vor[],
         mir::output::RawOutput u_output(u, size_out * 2);
         mir::output::RawOutput v_output(v, size_out * 2);
 
-        mir::input::VODInput input(vort_input, div_input);
-        mir::output::UVOutput output(u_output, v_output);
+        mir::input::VectorInput input(vort_input, div_input);
+        mir::output::VectorOutput output(u_output, v_output);
 
         job.set("vod2uv", true);
         job.set("truncation", long(ktout));
@@ -785,15 +882,18 @@ extern "C" void jvod2uv_(const fortfloat vor[],
 }
 
 
-
 extern "C" fortint jgglat_(const fortint &KLAT, fortfloat PGAUSS[]) {
 
-    eckit::Log::info() << "++++++ jgglat " << KLAT << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ jgglat " << KLAT << std::endl;
     size_t N = KLAT / 2;
-    atlas::grids::gaussian_latitudes_npole_equator(N, PGAUSS);
+    atlas::grid::gaussian::latitudes::gaussian_latitudes_npole_equator(N, PGAUSS);
 
     return 0;
 }
+
 
 extern "C" void jnumgg_(const fortint &knum,
                         const char *htype,
@@ -801,25 +901,21 @@ extern "C" void jnumgg_(const fortint &knum,
                         fortint &kret,
                         fortint htype_len) {
 
-    eckit::Log::info() << "++++++ jnumgg " << htype[0] << " " << knum << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ jnumgg " << htype[0] << " " << knum << std::endl;
 
     kret = 0;
     try {
-        eckit::ScopedPtr<atlas::grids::ReducedGrid> grid(0);
-
-        if (htype[0] == 'R') {
-            std::ostringstream os;
-            os << "rgg.N" << knum;
-            grid.reset(dynamic_cast<atlas::grids::ReducedGrid *>(atlas::Grid::create(os.str())));
-        }
-
-        if (htype[0] == 'F') {
-            grid.reset(dynamic_cast<atlas::grids::ReducedGrid *>(new atlas::grids::GaussianGrid(knum)));
-        }
-
+        eckit::ScopedPtr<atlas::grid::Structured> grid(
+            dynamic_cast<atlas::grid::Structured*>(
+                  htype[0] == 'R'? new atlas::grid::gaussian::ClassicGaussian(knum)
+                : htype[0] == 'F'? new atlas::grid::gaussian::RegularGaussian(knum)
+                : (atlas::grid::gaussian::Gaussian*) NULL ));
         ASSERT(grid.get());
 
-        const std::vector<int> &v = grid->npts_per_lat();
+        const std::vector<long> &v = grid->pl();
         for (size_t i = 0; i < v.size(); i++) {
             kpts[i] = v[i];
         }
@@ -828,8 +924,8 @@ extern "C" void jnumgg_(const fortint &knum,
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         kret = -2;
     }
-
 }
+
 
 extern "C" fortint wvqlint_(const fortint &knum,
                             const fortint numpts[],
@@ -843,6 +939,11 @@ extern "C" fortint wvqlint_(const fortint &knum,
                             const fortint &kparam,
                             const fortfloat &pmiss,
                             const fortfloat &rns) {
+
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+
     //     C     KNUM    - No. of meridians from North to South pole (input field)
     // C     NUMPTS  - Array giving number of points along each latitude
     // C               (empty latitudes have entry 0)
@@ -857,16 +958,16 @@ extern "C" fortint wvqlint_(const fortint &knum,
     // C     KPARAM  - Field parameter code
     // C     PMISS   - Missing value indicator
     // C     RNS     - Difference in degrees in NS disrection
-    eckit::Log::info() << "++++++ wvqlint knum=" << knum
-                       << ", ke_w=" << ke_w
-                       << ", kn_s=" << kn_s
-                       << ", reson=" << reson
-                       << ", north=" << north
-                       << ", west=" << west
-                       << ", kparam=" << kparam
-                       << ", pmiss=" << pmiss
-                       << ", rns=" << rns
-                       << std::endl;
+    eckit::Log::debug<LibMir>() << "++++++ wvqlint knum=" << knum
+                             << ", ke_w=" << ke_w
+                             << ", kn_s=" << kn_s
+                             << ", reson=" << reson
+                             << ", north=" << north
+                             << ", west=" << west
+                             << ", kparam=" << kparam
+                             << ", pmiss=" << pmiss
+                             << ", rns=" << rns
+                             << std::endl;
     try {
 
         // Only global for now
@@ -901,6 +1002,7 @@ extern "C" fortint wvqlint_(const fortint &knum,
     return 0;
 }
 
+
 extern "C" void wv2dint_(const fortint &knum,
                          const fortint numpts[],
                          const fortint &ke_w,
@@ -914,16 +1016,20 @@ extern "C" void wv2dint_(const fortint &knum,
                          const fortfloat &pmiss,
                          const fortfloat &rns) {
 
-    eckit::Log::info() << "++++++ wv2dint knum=" << knum
-                       << ", ke_w=" << ke_w
-                       << ", kn_s=" << kn_s
-                       << ", reson=" << reson
-                       << ", north=" << north
-                       << ", west=" << west
-                       << ", knspec=" << knspec
-                       << ", pmiss=" << pmiss
-                       << ", rns=" << rns
-                       << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+
+    eckit::Log::debug<LibMir>() << "++++++ wv2dint knum=" << knum
+                             << ", ke_w=" << ke_w
+                             << ", kn_s=" << kn_s
+                             << ", reson=" << reson
+                             << ", north=" << north
+                             << ", west=" << west
+                             << ", knspec=" << knspec
+                             << ", pmiss=" << pmiss
+                             << ", rns=" << rns
+                             << std::endl;
     try {
 
         // Only global for now
@@ -954,8 +1060,8 @@ extern "C" void wv2dint_(const fortint &knum,
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
         throw;
     }
-
 }
+
 
 extern "C" fortint hirlam_( const fortint &l12pnt,
                             const fortfloat oldfld[],
@@ -969,7 +1075,10 @@ extern "C" fortint hirlam_( const fortint &l12pnt,
                             fortint &nlon,
                             fortint &nlat) {
 
-    eckit::Log::info() << "++++++ hirlam" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ hirlam" << std::endl;
 
     // C     L12PNT - Chooses between 12-point and 4-point interpolation
     // C              = .TRUE. for 12-point horizontal
@@ -1018,6 +1127,7 @@ extern "C" fortint hirlam_( const fortint &l12pnt,
     return 0;
 }
 
+
 extern "C" fortint hirlsm_( const fortint &l12pnt,
                             const fortfloat oldfld[],
                             const fortint &kount,
@@ -1030,7 +1140,10 @@ extern "C" fortint hirlsm_( const fortint &l12pnt,
                             fortint &nlon,
                             fortint &nlat) {
 
-    eckit::Log::info() << "++++++ hirlsm" << std::endl;
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ hirlsm" << std::endl;
 
     try {
         // ASSERT(unpacked); // Only for PRODGEN
@@ -1067,6 +1180,7 @@ extern "C" fortint hirlsm_( const fortint &l12pnt,
     return 0;
 }
 
+
 extern "C" fortint hirlamw_(const fortint &l12pnt,
                             const fortfloat oldfldu[],
                             const fortfloat oldfldv[],
@@ -1080,7 +1194,11 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
                             const fortint &ksize,
                             fortint &nlon,
                             fortint &nlat) {
-    eckit::Log::info() << "++++++ hirlamw" << std::endl;
+
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "++++++ hirlamw" << std::endl;
 
     try {
         ProdgenJob u_intin;
@@ -1094,8 +1212,8 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
         mir::output::RawOutput u_output(newfldu, ksize);
         mir::output::RawOutput v_output(newfldv, ksize);
 
-        mir::input::WindInput input(u_input, v_input);
-        mir::output::WindOutput output(u_output, v_output);
+        mir::input::VectorInput input(u_input, v_input);
+        mir::output::VectorOutput output(u_output, v_output);
 
         u_intin.reduced(kgauss);
         u_intin.auto_pl();
@@ -1127,7 +1245,10 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
     return 0;
 }
 
+
 }  // (anonymous namespace)
+
+//----------------------------------------------------------------------------------------------------------------------
+
 }  // namespace api
 }  // namespace mir
-

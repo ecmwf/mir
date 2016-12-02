@@ -20,86 +20,90 @@
 #include "mir/util/Increments.h"
 #include "mir/util/Rotation.h"
 
+
 namespace mir {
 namespace action {
 
 
 class Gridded2RotatedLL : public Gridded2GriddedInterpolation {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     Gridded2RotatedLL(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~Gridded2RotatedLL(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // No copy allowed
 
     Gridded2RotatedLL(const Gridded2RotatedLL&);
     Gridded2RotatedLL& operator=(const Gridded2RotatedLL&);
 
-// -- Members
+    // -- Members
+
     util::Increments increments_;
     util::Rotation rotation_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
+
+    virtual bool sameAs(const Action& other) const;
 
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const Gridded2RotatedLL& p)
     //	{ p.print(s); return s; }
@@ -109,5 +113,7 @@ class Gridded2RotatedLL : public Gridded2GriddedInterpolation {
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,36 +12,39 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/repres/gauss/reduced/Classic.h"
 
-#include "atlas/Grid.h"
-#include "atlas/grids/grids.h"
-#include "atlas/grids/GaussianLatitudes.h"
-#include "mir/util/Grib.h"
-#include "eckit/log/Timer.h"
+#include "atlas/grid/Structured.h"
+#include "atlas/grid/grids.h"
 #include "mir/api/MIRJob.h"
+#include "mir/util/Grib.h"
+
 
 namespace mir {
 namespace repres {
 namespace reduced {
 
+
 Classic::Classic(size_t N):
     Reduced(N) {
-
 }
+
 
 Classic::~Classic() {
 }
 
+
 Classic::Classic(size_t N, const util::BoundingBox &bbox):
     Reduced(N, bbox) {
-
 }
+
 
 void Classic::fill(grib_info &info) const  {
     Reduced::fill(info);
 // NOTE: We assume that grib_api will put the proper PL
 }
+
 
 void Classic::fill(api::MIRJob &job) const  {
     Reduced::fill(job);
@@ -50,29 +53,31 @@ void Classic::fill(api::MIRJob &job) const  {
     job.set("gridname", os.str());
 }
 
-atlas::Grid *Classic::atlasGrid() const {
-    ASSERT(globalDomain()); // Atlas support needed for non global grids
-    std::ostringstream os;
-    os << "rgg.N" << N_;
-    return atlas::Grid::create(os.str());
+
+atlas::grid::Grid* Classic::atlasGrid() const {
+    return new atlas::grid::gaussian::ClassicGaussian(N_, atlasDomain());
 }
 
-const std::vector<long> &Classic::pls() const {
-    if (pl_.size() == 0) {
-        std::ostringstream os;
-        os << "rgg.N" << N_;
-        eckit::ScopedPtr<atlas::grids::ReducedGrid> grid(dynamic_cast<atlas::grids::ReducedGrid *>(atlas::Grid::create(os.str())));
 
+const std::vector<long>& Classic::pls() const {
+    if (pl_.size() == 0) {
+
+        eckit::ScopedPtr<atlas::grid::Structured> grid(
+                    dynamic_cast<atlas::grid::Structured*>(
+                        new atlas::grid::gaussian::ClassicGaussian(N_) ));
         ASSERT(grid.get());
 
-        const std::vector<int> &v = grid->npts_per_lat();
-        pl_.resize(v.size());
+        const std::vector<long> &v = grid->pl();
+        ASSERT(v.size() == N_ * 2);
         for (size_t i = 0; i < v.size(); i++) {
-            pl_[i] = v[i];
+            ASSERT(v[i] > 0);
         }
+
+        pl_ = v;
     }
     return pl_;
 }
+
 
 }  // namespace reduced
 }  // namespace repres

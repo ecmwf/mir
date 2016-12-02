@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,15 +13,17 @@
 /// @date Apr 2015
 
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
-
-#include "mir/param/MIRParametrisation.h"
-
 #include "mir/repres/other/UnstructuredGrid.h"
 
-#include "atlas/grids/Unstructured.h"
+#include <iostream>
+#include <fstream>
+#include "eckit/exception/Exceptions.h"
+#include "eckit/filesystem/PathName.h"
+#include "atlas/grid/Unstructured.h"
+#include "mir/config/LibMir.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
+
 
 namespace mir {
 namespace repres {
@@ -31,15 +33,36 @@ namespace other {
 UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("latitudes", latitudes_));
     ASSERT(parametrisation.get("longitudes", longitudes_));
+    ASSERT(latitudes_.size() == longitudes_.size());
+    ASSERT(longitudes_.size() > 0);
 }
 
+UnstructuredGrid::UnstructuredGrid(const eckit::PathName &path) {
+    std::ifstream in(path.asString().c_str());
+    if (!in) {
+        throw eckit::CantOpenFile(path);
+    }
+    double lat;
+    double lon;
+    while (in >> lat >> lon) {
+        latitudes_.push_back(lat);
+        longitudes_.push_back(lon);
+    }
+}
+
+// Take ownership of vectors
+UnstructuredGrid::UnstructuredGrid(std::vector<double>& latitudes, std::vector<double>& longitudes) {
+    std::swap(latitudes_, latitudes);
+    std::swap(longitudes_, longitudes);
+    ASSERT(latitudes_.size() == longitudes_.size());
+}
 
 UnstructuredGrid::~UnstructuredGrid() {
 }
 
 
 void UnstructuredGrid::print(std::ostream &out) const {
-    out << "UnstructuredGrid["
+    out << "UnstructuredGrid[points=" << latitudes_.size()
         << "]";
 }
 
@@ -48,36 +71,98 @@ void UnstructuredGrid::fill(grib_info &info) const  {
     NOTIMP;
 }
 
+
 void UnstructuredGrid::fill(api::MIRJob &job) const  {
     NOTIMP;
 }
 
-bool UnstructuredGrid::globalDomain() const {
-    eckit::Log::warning() << "UnstructuredGrid::globalDomain: assuming grid is global" << std::endl;
-    return true;
+
+atlas::grid::Domain UnstructuredGrid::atlasDomain() const {
+    eckit::Log::warning() << "UnstructuredGrid::atlasDomain(): assuming grid is global" << std::endl;
+    return atlas::grid::Domain::makeGlobal();
 }
 
 
-atlas::Grid *UnstructuredGrid::atlasGrid() const {
-    std::vector<atlas::Grid::Point> *pts = new std::vector<atlas::Grid::Point>();
+atlas::grid::Domain UnstructuredGrid::atlasDomain(const util::BoundingBox&) const {
+    eckit::Log::warning() << "UnstructuredGrid::atlasDomain(BoundingBox): assuming grid is global" << std::endl;
+    return atlas::grid::Domain::makeGlobal();
+}
+
+
+atlas::grid::Grid *UnstructuredGrid::atlasGrid() const {
+    std::vector<atlas::grid::Grid::Point> *pts = new std::vector<atlas::grid::Grid::Point>();
     ASSERT(latitudes_.size() == longitudes_.size());
     pts->reserve(latitudes_.size());
 
     for (size_t i = 0; i < latitudes_.size(); i++) {
-        pts->push_back(atlas::Grid::Point(longitudes_[i], latitudes_[i]));
+        pts->push_back(atlas::grid::Grid::Point(longitudes_[i], latitudes_[i]));
         if (i < 10) {
-            eckit::Log::info() << "UnstructuredGrid::atlasGrid lon=" << longitudes_[i] << ", lat=" << latitudes_[i] << std::endl;
+            eckit::Log::debug<LibMir>() << "UnstructuredGrid::atlasGrid lon=" << longitudes_[i] << ", lat=" << latitudes_[i] << std::endl;
         }
     }
 
-    return new atlas::grids::Unstructured(pts);
+    return new atlas::grid::Unstructured(pts);
 
     // so constructor takes a vector<Point> (where point is LLPoint2)
 }
 
+
 void UnstructuredGrid::validate(const std::vector<double> &values) const {
     ASSERT(values.size() == latitudes_.size());
     ASSERT(values.size() == longitudes_.size());
+}
+
+double UnstructuredGrid::increment() const {
+    // double inc = 360.0;
+    // TODO:
+    return 0.1;
+}
+
+
+class UnstructuredGridIterator: public Iterator {
+
+    size_t i_;
+    size_t size_;
+
+    const std::vector<double> &latitudes_;
+    const std::vector<double> &longitudes_;
+
+    virtual void print(std::ostream &out) const {
+        out << "UnstructuredGridIterator[]";
+    }
+
+    virtual bool next(double &lat, double &lon) {
+        lat = latitudes_[i_];
+        lon = longitudes_[i_];
+        return i_++ < size_;
+    }
+
+  public:
+
+    // TODO: Consider keeping a reference on the latitudes and bbox, to avoid copying
+
+    UnstructuredGridIterator(const std::vector<double> &latitudes, const std::vector<double> &longitudes):
+        i_(0),
+        size_(latitudes.size()),
+        latitudes_(latitudes),
+        longitudes_(longitudes) {
+        ASSERT(latitudes_.size() == longitudes_.size());
+    }
+
+    ~UnstructuredGridIterator() {
+
+    }
+
+};
+
+
+Iterator *UnstructuredGrid::unrotatedIterator() const {
+    return new UnstructuredGridIterator(latitudes_, longitudes_);
+}
+
+
+Iterator* UnstructuredGrid::rotatedIterator() const {
+    return unrotatedIterator();
 }
 
 

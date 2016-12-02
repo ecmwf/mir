@@ -17,6 +17,7 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
@@ -78,7 +79,7 @@ const Packer& Packer::lookup(const std::string &name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, Packer *>::const_iterator j = m->find(name);
 
-    eckit::Log::info() << "Looking for Packer [" << name << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "Looking for Packer [" << name << "]" << std::endl;
 
     if (j == m->end()) {
         eckit::Log::error() << "No Packer for [" << name << "]" << std::endl;
@@ -92,6 +93,6 @@ const Packer& Packer::lookup(const std::string &name) {
 }
 
 
-}  // namespace logic
+}  // namespace packing
 }  // namespace mir
 

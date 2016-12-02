@@ -14,10 +14,16 @@
 
 
 #include "mir/method/Tessellation.h"
-#include "atlas/meshgen/Delaunay.h"
+#include "atlas/mesh/generators/Delaunay.h"
+#include "eckit/log/ResourceUsage.h"
 
 namespace mir {
 namespace method {
+
+using atlas::mesh::generators::MeshGenerator;
+using atlas::mesh::generators::Delaunay;
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 Tessellation::Tessellation(const param::MIRParametrisation &param) :
@@ -39,8 +45,11 @@ void Tessellation::hash( eckit::MD5 &md5) const {
 }
 
 
-void Tessellation::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) const {
-  atlas::meshgen::Delaunay().generate(grid, mesh);
+void Tessellation::generateMesh(const atlas::grid::Grid &grid, atlas::mesh::Mesh &mesh) const {
+    eckit::ResourceUsage usage("Tessellation::generateMesh");
+
+    eckit::ScopedPtr<MeshGenerator> gen (new Delaunay());
+    gen->generate(grid, mesh);
 }
 
 void Tessellation::print(std::ostream &out) const {
@@ -51,6 +60,8 @@ void Tessellation::print(std::ostream &out) const {
 namespace {
 static MethodBuilder< Tessellation > __name("tessellation");
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 }  // namespace method

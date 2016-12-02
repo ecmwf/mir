@@ -1,0 +1,127 @@
+{
+    "configuration-fill": "class",
+    "configuration-skip": "NOTE",
+
+
+    "interpolation": "linear",
+
+
+    "class": {
+        "NOTE": "Parameter classes (should) mirror https://software.ecmwf.int/wiki/display/MIR/Parameters+classification",
+        "FIXME": {
+            "direction-associated-to-wave-spectra": {
+                "class": "direction",
+                "interpolation": "nearest-neighbour"
+            },
+            "intensity-associated-to-wave-spectra": {
+                "interpolation": "nearest-neighbour"
+            },
+            "vegetation-cover": {
+                "class": "ratio/cover",
+                "interpolation": "nearest-lsm"
+            },
+            "wave-spectra": {
+                "class": "unknown",
+                "interpolation": "nearest-neighbour"
+            }
+        },
+        "concentration": {
+            "NOTE": "composition of a mixture (mass, amount, volume, ...) with respect to the volume of the mixture (typical units: [... m**-3])"
+        },
+        "direction": {
+            "FieldInfo": "vector.1d.polar.angle",
+            "NOTE": "planar angle (typical units: radians or degrees)",
+            "decomposition": "PolarAngleDegreesAssymmetricToCartesian",
+            "degree": "true",
+            "stats": "AngleDecomposition",
+            "symmetric": "false"
+        },
+        "flux": {
+            "NOTE": "rate of flow of a property per unit area (typical units: [... s**-1 m**-2])"
+        },
+        "index": {
+            "NOTE": "associated to a table",
+            "interpolation": "nearest-neighbour"
+        },
+        "intensity": {
+            "NOTE": "physical quantity whose magnitude is independent of the extent (size) of the system (typical case, no typical units)",
+            "comparison": "scalar/scalar"
+        },
+        "rate": {
+            "NOTE": "ratio between two related quantities (time, mass, length, etc., typical units: [... s**-1])"
+        },
+        "ratio": {
+            "NOTE": "quotient of quantities of the same kind (typical units: <non-dimensional>)",
+            "cover": {
+                "NOTE": "ratio representing a box average (typical units: <non-dimensional>)"
+            },
+            "fraction": {
+                "NOTE": "(typical units: <non-dimensional>, [0, 1], [-1, 1]?)"
+            },
+            "percentage": {
+                "NOTE": "(typical units: <non-dimensional>, %)"
+            },
+            "probability": {
+                "NOTE": "(typical units: <non-dimensional>, [0, 1])"
+            }
+        },
+        "unknown": {
+            "FIXME": "issue warning?"
+        }
+    },
+
+    "138": {
+        "transform.vod2uv.u": "131",
+        "transform.vod2uv.v": "132"
+    },
+
+    "130": {
+        "class": "intensity",
+        "comparison-absolute-error": "0.1"
+    },
+    "131165:": {
+        "class": "ratio/percentage"
+    },
+    "140113/140230/140235/140238/140242/140249": {
+        "class": "direction"
+    },
+    "140121/140123/140124/140126/140127/140129": {
+        "class": "FIXME/intensity-associated-to-wave-spectra"
+    },
+    "140122/140125/140128": {
+        "class": "FIXME/direction-associated-to-wave-spectra"
+    },
+    "140250/140251": {
+        "class": "FIXME/wave-spectra"
+    },
+    "167": {
+        "FIXME-interpolation": "k-nearest",
+        "class": "intensity",
+        "lsm": "true",
+        "nclosest": "16"
+    },
+    "203:": {
+        "class": "ratio"
+    },
+    "231": {
+        "class": "flux"
+    },
+    "240016:": {
+        "class": "ratio/fraction"
+    },
+    "260619": {
+        "class": "concentration"
+    },
+    "27/28": {
+        "class": "FIXME/vegetation-cover"
+    },
+    "29/30/43": {
+        "class": "index"
+    },
+    "3059": {
+        "class": "rate"
+    },
+    "3060:": {
+        "class": "ratio/probability"
+    }
+}

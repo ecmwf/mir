@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -9,38 +9,62 @@
  */
 
 /// @author Baudouin Raoult
-/// @LatLon Pedro Maciel
+/// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/repres/latlon/LatLon.h"
-#include "mir/repres/Iterator.h"
-#include "mir/param/MIRParametrisation.h"
 
+#include <cmath>
 #include <iostream>
-
-#include "atlas/grids/LonLatGrid.h"
-
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/Timer.h"
-
-#include "mir/util/Grib.h"
-#include "mir/util/Compare.h"
+#include "eckit/types/FloatCompare.h"
+#include "atlas/grid/Domain.h"
 #include "mir/action/misc/AreaCropper.h"
+#include "mir/config/LibMir.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
+#include "mir/util/Grib.h"
+
 
 namespace mir {
 namespace repres {
 namespace latlon {
 
-LatLon::LatLon(const param::MIRParametrisation &parametrisation):
-    bbox_(parametrisation), increments_(parametrisation) {
-    ASSERT(parametrisation.get("Ni", ni_));
-    ASSERT(parametrisation.get("Nj", nj_));
+static size_t computeN(double first, double last, double inc, const char* n_name) {
+    typedef eckit::FloatCompare<double> cmp;
 
+    ASSERT(first <= last);
+    ASSERT(inc > 0);
+
+    size_t p = size_t((last - first) / inc);
+    double d0 = fabs(last - (first + p * inc));
+    double d1 = fabs(last - (first + (p + 1) * inc));
+    ASSERT(d0 != d1);
+
+    size_t n = p + (d0<d1? 0 : 1);
+    // eckit::Log::debug<LibMir>() << p << " " << d0 << " " << d1 << " " << inc << " " << first << " " << last << std::endl;
+
+    if (!cmp::isApproximatelyEqual(n*inc + first, last)) {
+        std::ostringstream os;
+        os << "computeN: cannot compute accurately " << n_name << " from " << first << "/to/" << last << "/by/" << inc;
+        eckit::Log::debug<LibMir>() << os.str() << std::endl;
+        throw eckit::BadValue(os.str());
+    }
+
+    return n + 1;
 }
 
 
-LatLon::LatLon(const util::BoundingBox &bbox,
-               const util::Increments &increments):
+LatLon::LatLon(const param::MIRParametrisation &parametrisation) :
+    bbox_(parametrisation),
+    increments_(parametrisation) {
+    ASSERT(parametrisation.get("Ni", ni_));
+    ASSERT(parametrisation.get("Nj", nj_));
+}
+
+
+LatLon::LatLon(const util::BoundingBox &bbox, const util::Increments &increments) :
     bbox_(bbox),
     increments_(increments) {
     setNiNj();
@@ -50,61 +74,26 @@ LatLon::LatLon(const util::BoundingBox &bbox,
 LatLon::~LatLon() {
 }
 
-bool LatLon::globalDomain() const {
 
-    // Special case for shifted grids
-    double ns = bbox_.north() - bbox_.south() ;
-    double ew = bbox_.east() - bbox_.west() ;
-
-    bool all_lons = eckit::FloatCompare<double>::isApproximatelyEqual(ew + increments_.west_east() , 360);
-    bool all_lats = eckit::FloatCompare<double>::isApproximatelyEqual(ns, 180) ||
-                    eckit::FloatCompare<double>::isApproximatelyEqual(ns + increments_.south_north(), 180);
-
-    return all_lats && all_lons;
-    //     if (all_lats && all_lons)  {
-    //         eckit::Log::info() << "WARNING: global shifted grid (before): " << bbox_ << " ===== " << increments_ << std::endl;
-    //         bbox_ = util::BoundingBox::Global(bbox_.north(), bbox_.west(), bbox_.south(), bbox_.east());
-    //         eckit::Log::info() << "WARNING: global shifted grid (after): " << bbox_ << " ===== " << increments_ << std::endl;
-    //     }
-
-    // }
-}
-
-
-void LatLon::cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField &field) const {
-    if (!globalDomain()) {
+void LatLon::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
+    if (!atlasDomain().isGlobal()) {
         action::AreaCropper cropper(parametrisation, bbox_);
-        cropper.execute(field);
+        cropper.execute(ctx);
     }
 }
-// size_t LatLon::ni() const {
-//     return ni_;
-// }
-
-// size_t LatLon::nj() const {
-//     return nj_;
-// }
 
 
 void LatLon::setNiNj() {
-
-    computeNiNj(ni_, nj_, bbox_, increments_);
+    ni_ = computeN(bbox_.west(),  bbox_.east(),  increments_.west_east(),   "Ni");
+    nj_ = computeN(bbox_.south(), bbox_.north(), increments_.south_north(), "Nj");
 }
 
-void LatLon::computeNiNj(size_t &ni,
-                         size_t &nj,
-                         const util::BoundingBox &bbox,
-                         const util::Increments &increments) {
-
-    ni = computeN(bbox.west(), bbox.east(), increments.west_east(), "Ni", "west", "east");
-    nj = computeN(bbox.south(), bbox.north(), increments.south_north(), "Nj", "south", "north");
-}
 
 void LatLon::reorder(long scanningMode, std::vector<double> &values) const {
     // Code from ecRegrid, UNTESTED!!!
 
-    eckit::Log::info() << "WARNING: UNTESTED!!! ";
-    eckit::Log::info() << "LatLon::reorder scanning mode 0x" << std::hex << scanningMode << std::dec << std::endl;
+    eckit::Log::debug<LibMir>() << "WARNING: UNTESTED!!! ";
+    eckit::Log::debug<LibMir>() << "LatLon::reorder scanning mode 0x" << std::hex << scanningMode << std::dec << std::endl;
 
     ASSERT(values.size() == ni_ * nj_);
 
@@ -172,15 +161,17 @@ void LatLon::fill(grib_info &info) const  {
 
     increments_.fill(info);
     bbox_.fill(info);
-
 }
+
 
 void LatLon::fill(api::MIRJob &job) const  {
     increments_.fill(job);
     bbox_.fill(job);
 }
 
-class LatLonIterator: public Iterator {
+
+class LatLonIterator : public Iterator {
+
     size_t ni_;
     size_t nj_;
 
@@ -195,22 +186,29 @@ class LatLonIterator: public Iterator {
 
     size_t count_;
 
-
-
     virtual void print(std::ostream &out) const {
-        out << "LatLonIterator[]";
+        out << "LatLonIterator["
+            <<  "ni="     << ni_
+            << ",nj="     << nj_
+            << ",north="  << north_
+            << ",west="   << west_
+            << ",we="     << we_
+            << ",ns="     << ns_
+            << ",i="      << i_
+            << ",j="      << j_
+            << ",count="  << count_
+            << "]";
     }
 
     virtual bool next(double &lat, double &lon) {
         if (j_ < nj_) {
             if (i_ < ni_) {
                 lat = north_ - j_ * ns_; // This is slower, but looks more precise
-                lon = west_ + i_ * we_; // This is slower, but looks more precise
+                lon = west_  + i_ * we_; // This is slower, but looks more precise
                 i_++;
                 if (i_ == ni_) {
                     j_++;
                     i_ = 0;
-
                 }
                 count_++;
                 return true;
@@ -219,7 +217,7 @@ class LatLonIterator: public Iterator {
         return false;
     }
 
-  public:
+public:
     LatLonIterator(size_t ni,
                    size_t nj,
                    double north,
@@ -244,6 +242,7 @@ class LatLonIterator: public Iterator {
 
 };
 
+
 Iterator *LatLon::unrotatedIterator() const {
     return new LatLonIterator(ni_, nj_, bbox_.north(), bbox_.west(), increments_.west_east(), increments_.south_north());
 }
@@ -252,6 +251,7 @@ Iterator *LatLon::unrotatedIterator() const {
 Iterator* LatLon::rotatedIterator() const {
     return unrotatedIterator();
 }
+
 
 size_t LatLon::frame(std::vector<double> &values, size_t size, double missingValue) const {
 
@@ -276,14 +276,41 @@ size_t LatLon::frame(std::vector<double> &values, size_t size, double missingVal
 
 }
 
+
 void LatLon::validate(const std::vector<double> &values) const {
-    eckit::Log::info() << "LatLon::validate " << values.size() << " ni*nj " << ni_ * nj_ << std::endl;
+    eckit::Log::debug<LibMir>() << "LatLon::validate " << values.size() << " ni*nj " << ni_ * nj_ << std::endl;
     ASSERT(values.size() == ni_ * nj_);
 }
+
 
 void LatLon::shape(size_t &ni, size_t &nj) const {
     ni = ni_;
     nj = nj_;
+}
+
+
+atlas::grid::Domain LatLon::atlasDomain() const {
+    return atlasDomain(bbox_);
+}
+
+
+atlas::grid::Domain LatLon::atlasDomain(const util::BoundingBox& bbox) const {
+    typedef eckit::FloatCompare<double> cmp;
+
+    // Special case for shifted grids
+    const double ns = bbox.north() - bbox.south() ;
+    const double ew = bbox.east()  - bbox.west() ;
+
+    const bool isPeriodicEastWest = cmp::isApproximatelyEqual(ew + increments_.west_east(), 360.);
+    const bool includesPoles = cmp::isApproximatelyEqual(ns, 180.)
+                            || cmp::isApproximatelyEqual(ns + increments_.south_north(), 180.);
+
+    const double
+            north = includesPoles?   90 : bbox.north(),
+            south = includesPoles?  -90 : bbox.south(),
+            west = bbox.west(),
+            east = isPeriodicEastWest? bbox.west() + 360 : bbox.east();
+    return atlas::grid::Domain(north, west, south, east);
 }
 
 

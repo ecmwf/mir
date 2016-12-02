@@ -42,8 +42,8 @@ class Increments {
 
     // -- Contructors
 
-    Increments(const param::MIRParametrisation &);
-    Increments(double west_east=0, double south_north=0);
+    explicit Increments(const param::MIRParametrisation &);
+    explicit Increments(double west_east=0, double south_north=0);
 
     // -- Destructor
 

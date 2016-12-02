@@ -101,7 +101,7 @@ class RegularPattern : public NamedGridPattern {
 };
 
 
-}  // namespace logic
+}  // namespace namedgrids
 }  // namespace mir
 #endif
 

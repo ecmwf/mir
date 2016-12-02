@@ -1,4 +1,14 @@
-Language:        Cpp
-BasedOnStyle:  Google
-ColumnLimit:     120
-AccessModifierOffset: -2
+Language:                          Cpp
+BasedOnStyle:                      LLVM
+AccessModifierOffset:              -4
+AllowShortFunctionsOnASingleLine:  Inline
+ColumnLimit:                       120
+DerivePointerAlignment:            false
+KeepEmptyLinesAtTheStartOfBlocks:  true
+PointerAlignment:                  Left
+IndentWidth:                       4
+AllowShortFunctionsOnASingleLine:  Inline
+ConstructorInitializerAllOnOneLineOrOnePerLine : true
+BreakConstructorInitializersBeforeComma: true
+KeepEmptyLinesAtTheStartOfBlocks:  true
+SortIncludes: true

@@ -23,14 +23,10 @@
 #include "eckit/value/Value.h"
 
 #include "mir/param/DelayedParametrisation.h"
+#include "mir/config/LibMir.h"
 
 namespace mir {
 namespace param {
-
-template<class T>
-inline std::ostream &operator<<(std::ostream &s, const std::vector<T> &v) {
-    return eckit::__print_list(s, v);
-}
 
 class Setting {
   public:
@@ -71,11 +67,11 @@ class DelayedSetting : public Setting {
     };
 
     virtual void get(const std::string &name, std::string &value) const {
-        NOTIMP;
+        delayed_->get(name, value);
     }
 
     virtual void get(const std::string &name, bool &value) const {
-        NOTIMP;
+        delayed_->get(name, value);
     }
 
     virtual void get(const std::string &name, long &value) const {
@@ -83,15 +79,15 @@ class DelayedSetting : public Setting {
     }
 
     virtual void get(const std::string &name, double &value) const {
-        NOTIMP;
+        delayed_->get(name, value);
     }
 
     virtual void get(const std::string &name, std::vector<long> &value) const {
-        NOTIMP;
+        delayed_->get(name, value);
     }
 
     virtual void get(const std::string &name, std::vector<double> &value) const {
-        NOTIMP;
+        delayed_->get(name, value);
     }
 
     virtual bool match(const std::string &name, const MIRParametrisation &) const {
@@ -187,11 +183,11 @@ class CannotConvert : public eckit::Exception {
 };
 
 template<class T>
-static void convertion_warning(const char *from, const char *to, const std::string &name, const T &value) {
-    eckit::Log::warning() << "   +++ WARNING: Converting " << value << " from " << from << " to " << to << " (requesting " << name << ")" << std::endl;
+static void conversion_warning(const char *from, const char *to, const std::string &name, const T &value) {
+    // eckit::Log::warning() << "   +++ WARNING: Converting " << value << " from " << from << " to " << to << " (requesting " << name << ")" << std::endl;
 }
 
-// We will implement convertion as needed
+// We will implement conversion as needed
 
 template<> void TSettings<bool>::get(const std::string &name, std::string &value) const {
     throw CannotConvert("bool", "string", name, value_);
@@ -258,18 +254,18 @@ template<> void TSettings<std::string>::get(const std::string &name, std::string
     value = value_;
 }
 template<> void TSettings<std::string>::get(const std::string &name, bool &value) const {
-    convertion_warning("string", "bool", name, value_);
+    conversion_warning("string", "bool", name, value_);
     eckit::Translator<std::string, long> translate;
     value = translate(value_) != 0;
 }
 
 template<> void TSettings<std::string>::get(const std::string &name, long &value) const {
-    convertion_warning("string", "long", name, value_);
+    conversion_warning("string", "long", name, value_);
     eckit::Translator<std::string, long> translate;
     value = translate(value_);
 }
 template<> void TSettings<std::string>::get(const std::string &name, double &value) const {
-    convertion_warning("string", "double", name, value_);
+    conversion_warning("string", "double", name, value_);
     eckit::Translator<std::string, double> translate;
     value = translate(value_);
 }
@@ -277,7 +273,7 @@ template<> void TSettings<std::string>::get(const std::string &name, std::vector
     throw CannotConvert("string", "vector<long>", name, value_);
 }
 template<> void TSettings<std::string>::get(const std::string &name, std::vector<double> &value) const {
-    convertion_warning("string", "vector<double>", name, value_);
+    conversion_warning("string", "vector<double>", name, value_);
     eckit::Translator<std::string, double> translate;
     eckit::Tokenizer parse("/");
 
@@ -337,9 +333,7 @@ SimpleParametrisation::SimpleParametrisation() {
 
 
 SimpleParametrisation::~SimpleParametrisation() {
-    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-        delete (*j).second;
-    }
+   reset();
 }
 
 bool SimpleParametrisation::has(const std::string &name) const {
@@ -357,7 +351,7 @@ bool SimpleParametrisation::_get(const std::string &name, T &value) const {
         return false;
     }
     (*j).second->get(name, value);
-    eckit::Log::info() << "SimpleParametrisation::get(" << name << ") => " << value << std::endl;
+    // eckit::Log::debug<LibMir>() << "SimpleParametrisation::get(" << name << ") => " << value << std::endl;
     return true;
 }
 
@@ -395,35 +389,35 @@ void SimpleParametrisation::_set(const std::string &name, const T &value) {
 }
 
 // FIXME: can we do this in a more elegant way?
-template<>
-void SimpleParametrisation::_set(const std::string &name, const eckit::Value& value) {
-    if (value.isBool()) {
-        _set<bool>(name, value);
-    } else if (value.isDouble()) {
-        _set<double>(name, value);
-    } else if (value.isNumber()) {
-        _set<long>(name, value);
-    } else if (value.isString()) {
-        _set<std::string>(name, value);
-    } else if (value.isList()) {
-        eckit::ValueList v = value;
-        if (v[0].isDouble()) {
-            std::vector<double> d;
-            for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
-                d.push_back(double(*it));
-            _set(name, d);
-        } else if (v[0].isNumber()) {
-            std::vector<long> l;
-            for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
-                l.push_back(long(*it));
-            _set(name, l);
-        } else {
-            throw eckit::BadParameter("Vector contains invalid type", Here());
-        }
-    } else {
-        throw eckit::BadParameter("Map contains invalid type", Here());
-    }
-}
+// template<>
+// void SimpleParametrisation::_set(const std::string &name, const eckit::Value& value) {
+//     if (value.isBool()) {
+//         _set<bool>(name, value);
+//     } else if (value.isDouble()) {
+//         _set<double>(name, value);
+//     } else if (value.isNumber()) {
+//         _set<long>(name, value);
+//     } else if (value.isString()) {
+//         _set<std::string>(name, value);
+//     } else if (value.isList()) {
+//         eckit::ValueList v = value;
+//         if (v[0].isDouble()) {
+//             std::vector<double> d;
+//             for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
+//                 d.push_back(double(*it));
+//             _set(name, d);
+//         } else if (v[0].isNumber()) {
+//             std::vector<long> l;
+//             for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
+//                 l.push_back(long(*it));
+//             _set(name, l);
+//         } else {
+//             throw eckit::BadParameter("Vector contains invalid type", Here());
+//         }
+//     } else {
+//         throw eckit::BadParameter("Map contains invalid type", Here());
+//     }
+// }
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const char *value) {
     _set(name, std::string(value));
@@ -446,8 +440,8 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, long 
 }
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, size_t value) {
-    // TODO: Support unigned properly
-    ASSERT(long(value) == value);
+    // TODO: Support unsigned properly
+    ASSERT(size_t(long(value)) == value);
     _set(name, long(value));
     return *this;
 }
@@ -475,6 +469,14 @@ SimpleParametrisation& SimpleParametrisation::clear(const std::string &name) {
     return *this;
 }
 
+SimpleParametrisation& SimpleParametrisation::reset() {
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+        delete (*j).second;
+    }
+    settings_.clear();
+    return *this;
+}
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const std::vector<long> &value) {
     _set(name, value);
     return *this;
@@ -482,14 +484,6 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const std::vector<double> &value) {
     _set(name, value);
-    return *this;
-}
-
-SimpleParametrisation& SimpleParametrisation::set(const eckit::Value& map) {
-    ASSERT( map.isMap() );
-    eckit::ValueMap m = map;
-    for( eckit::ValueMap::const_iterator vit = m.begin(); vit != m.end(); ++vit )
-      _set(vit->first, vit->second);
     return *this;
 }
 
@@ -517,26 +511,41 @@ void SimpleParametrisation::json(eckit::JSON& s) const {
     s.endObject();
 }
 
-bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
-    eckit::Log::info() << "SimpleParametrisation::matches " << other << std::endl;
-    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-
-        if ((*j).second->match((*j).first, other)) {
-            eckit::Log::info() << "Matching parametrisation: " << (*j).first << "="
-                               << *((*j).second) << std::endl;
-            return true;
-        } else {
-            eckit::Log::info() << "Not matching parametrisation: " << (*j).first << "="
-                               << *((*j).second) << std::endl;
-        }
-
-    }
-    return false;
+bool SimpleParametrisation::empty() const {
+    return size() == 0;
 }
 
-void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other) const {
+bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
+    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches " << other << std::endl;
+    bool ok = true;
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end() && ok; ++j) {
+        ok = (*j).second->match((*j).first, other);
+        eckit::Log::debug<LibMir>() << "parametrisation " << (*j).first << "=" << *((*j).second) << "? "
+                                    << (ok? "matching":"not matching") << std::endl;
+
+    }
+    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches? " << (ok? "yes":"no") << std::endl;
+    return ok;
+}
+
+bool SimpleParametrisation::matches(const MIRParametrisation& other, const MIRParametrisation& ignore) const {
+    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches " << other << " (ignoring some keys)" << std::endl;
+    bool ok = true;
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end() && ok; ++j) {
+        bool ignored = ignore.has((*j).first);
+        ok = ignored || (*j).second->match((*j).first, other);
+        eckit::Log::debug<LibMir>() << "parametrisation " << (*j).first << "=" << *((*j).second) <<  "? "
+                                    << (ignored? "ignored" : (ok? "matching":"not matching")) << std::endl;
+    }
+    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches? " << (ok? "yes":"no") << std::endl;
+    return ok;
+}
+
+void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other, bool overwrite) const {
     for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-        (*j).second->copyValueTo((*j).first, other);
+        if (overwrite || !other.has((*j).first)) {
+            (*j).second->copyValueTo((*j).first, other);
+        }
     }
 }
 

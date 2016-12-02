@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,26 +13,27 @@
 /// @date Apr 2015
 
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
-
-#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
-#include "mir/util/Grib.h"
+
+#include <iostream>
+#include "eckit/exception/Exceptions.h"
 #include "mir/api/MIRJob.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir {
 namespace repres {
 namespace sh {
 
+
 SphericalHarmonics::SphericalHarmonics(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("truncation", truncation_));
+    ASSERT(parametrisation.get("TS", Ts_));
 }
 
 
-SphericalHarmonics::SphericalHarmonics(size_t truncation):
+SphericalHarmonics::SphericalHarmonics(size_t truncation) :
     truncation_(truncation) {
 }
 
@@ -47,28 +48,46 @@ void SphericalHarmonics::print(std::ostream &out) const {
         << "]";
 }
 
+
 void SphericalHarmonics::fill(grib_info &info) const  {
     // See copy_spec_from_ksec.c in libemos for info
 
     info.grid.grid_type = GRIB_UTIL_GRID_SPEC_SH;
-    info.grid.truncation = truncation_;
-    // This may be usefulle after vod2uv
+    info.grid.truncation = static_cast<long>(truncation_);
+
+    // Decision: MIR-131
+    info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX; // Check if this is needed, why does grib_api not copy input?
     info.packing.computeLaplacianOperator = 1;
     info.packing.truncateLaplacian = 1;
     // info.packing.laplacianOperator = 0;
-    info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX; // Check if this is needed, why does grib_api not copy input?
 }
+
 
 void SphericalHarmonics::fill(api::MIRJob& job) const {
     job.set("resol", truncation_);
 }
 
+
 size_t SphericalHarmonics::truncation() const {
     return truncation_;
 }
 
-void SphericalHarmonics::truncate(size_t truncation_from, size_t truncation_to,
-                                  const std::vector<double> &in, std::vector<double> &out) {
+
+size_t SphericalHarmonics::pentagonalResolutionTs() const {
+    return Ts_;
+}
+
+
+void SphericalHarmonics::comparison(std::string& comparator) const {
+    comparator = "spectral";
+}
+
+
+void SphericalHarmonics::truncate(
+        size_t truncation_from,
+        size_t truncation_to,
+        const std::vector<double>& in,
+        std::vector<double>& out ) {
 
     ASSERT(truncation_to != truncation_from);
 
@@ -129,13 +148,16 @@ const Representation *SphericalHarmonics::truncate(size_t truncation,
     return new SphericalHarmonics(truncation);
 }
 
+
 void SphericalHarmonics::validate(const std::vector<double>& values) const {
     ASSERT(values.size() == number_of_complex_coefficients(truncation_) * 2);
 }
 
+
 void SphericalHarmonics::setComplexPacking(grib_info& info) const {
     info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX;
 }
+
 
 void SphericalHarmonics::setSimplePacking(grib_info& info) const {
     info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_SPECTRAL_SIMPLE;
@@ -146,8 +168,8 @@ namespace {
 static RepresentationBuilder<SphericalHarmonics> sphericalHarmonics("sh"); // Name is what is returned by grib_api
 }
 
-}  // namespace sh
 
+}  // namespace sh
 }  // namespace repres
 }  // namespace mir
 

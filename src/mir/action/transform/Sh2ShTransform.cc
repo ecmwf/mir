@@ -19,9 +19,10 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
 
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -39,6 +40,11 @@ Sh2ShTransform::~Sh2ShTransform() {
 }
 
 
+bool Sh2ShTransform::sameAs(const Action& other) const {
+    const Sh2ShTransform* o = dynamic_cast<const Sh2ShTransform*>(&other);
+    return o && (truncation_ == o->truncation_);
+}
+
 void Sh2ShTransform::print(std::ostream &out) const {
     out << "Sh2ShTransform[";
     out << "truncation=" << truncation_;
@@ -46,14 +52,14 @@ void Sh2ShTransform::print(std::ostream &out) const {
 }
 
 
-void Sh2ShTransform::execute(data::MIRField &field) const {
-
+void Sh2ShTransform::execute(context::Context & ctx) const {
+    data::MIRField& field = ctx.field();
     // Keep a pointer on the original representation, as the one in the field will
     // be changed in the loop
     repres::RepresentationHandle representation(field.representation());
 
 
-    for(size_t i = 0; i < field.dimensions(); i++) {
+    for (size_t i = 0; i < field.dimensions(); i++) {
         const std::vector<double> &values = field.values(i);
         std::vector<double> result;
 
@@ -61,7 +67,7 @@ void Sh2ShTransform::execute(data::MIRField &field) const {
 
         if (repres) { // NULL if nothing happend
             field.representation(repres); // Assumes representation will be the same
-            field.values(result, i);
+            field.update(result, i);
         }
     }
 

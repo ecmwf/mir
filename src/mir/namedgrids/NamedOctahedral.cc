@@ -46,6 +46,10 @@ const repres::Representation *NamedOctahedral::representation(const util::Rotati
     return new repres::reduced::RotatedOctahedral(N_, util::BoundingBox(), rotation);
 }
 
-}  // namespace logic
+size_t NamedOctahedral::gaussianNumber() const {
+    return N_;
+}
+
+}  // namespace namedgrids
 }  // namespace mir
 

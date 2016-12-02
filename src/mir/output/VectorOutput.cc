@@ -20,17 +20,17 @@
 #include "mir/input/VectorInput.h"
 #include "eckit/exception/Exceptions.h"
 #include "mir/data/MIRField.h"
-#include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/action/context/Context.h"
 
 
 namespace mir {
 namespace output {
 
 
-VectorOutput::VectorOutput(MIROutput &component1, MIROutput &v_component):
+VectorOutput::VectorOutput(MIROutput &component1, MIROutput &component2):
     component1_(component1),
-    component2_(v_component) {
+    component2_(component2) {
 }
 
 
@@ -38,11 +38,21 @@ VectorOutput::~VectorOutput() {
 }
 
 
-void VectorOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+size_t VectorOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
+
+    input::MIRInput& input = ctx.input();
+
     try {
         input::VectorInput& v = dynamic_cast<input::VectorInput&>(input);
-        component1_.copy(param, v.component1_);
-        component2_.copy(param, v.component2_);
+        size_t size = 0;
+
+        context::Context ctx1(v.component1_, ctx.statistics());
+        size += component1_.copy(param, ctx1);
+
+        context::Context ctx2(v.component2_, ctx.statistics());
+        size += component2_.copy(param, ctx2);
+
+        return size;
 
     } catch (std::bad_cast &) {
         std::ostringstream os;
@@ -51,57 +61,50 @@ void VectorOutput::copy(const param::MIRParametrisation &param, input::MIRInput 
     }
 }
 
-void VectorOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+size_t VectorOutput::save(const param::MIRParametrisation &param, context::Context& ctx) {
+    data::MIRField& field = ctx.field();
 
     ASSERT(field.dimensions() == 2);
 
     data::MIRField u(field.representation(), field.hasMissing(), field.missingValue());
-    u.values(field.values(0), 0);
+    u.update(field.direct(0), 0);
+    u.metadata(0, field.metadata(0));
 
     data::MIRField v(field.representation(), field.hasMissing(), field.missingValue());
-    v.values(field.values(1), 0);
+    v.update(field.direct(1), 0);
+    v.metadata(0, field.metadata(1));
 
-    param::RuntimeParametrisation u_runtime(param);
-    u_runtime.set("param-id", component1ParamId(input));
-    component1_.save(u_runtime, input, u);
+    size_t size = 0;
 
-    param::RuntimeParametrisation v_runtime(param);
-    v_runtime.set("param-id", component2ParamId(input)); // TODO: Find something better
-    component2_.save(v_runtime, input, v);
+    context::Context ctx1(u, ctx.statistics());
+    size += component1_.save(param, ctx1);
+
+    context::Context ctx2(v, ctx.statistics());
+    size += component2_.save(param, ctx2);
+
+    return size;
 }
 
 
-// Default is same as input
-// TODO: Something more elegant
-
-long VectorOutput::component1ParamId(input::MIRInput &input) const  {
-    try {
-        input::VectorInput& v = dynamic_cast<input::VectorInput&>(input);
-        const param::MIRParametrisation& metadata = v.component1_.parametrisation();
-        long paramId;
-        ASSERT(metadata.get("paramId", paramId));
-        return paramId;
-    } catch (std::bad_cast &) {
-        std::ostringstream os;
-        os << "VectorOutput::component1ParamId() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
-    }
+bool VectorOutput::sameAs(const MIROutput& other) const {
+    const VectorOutput* o = dynamic_cast<const VectorOutput*>(&other);
+    return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
 }
 
-long VectorOutput::component2ParamId(input::MIRInput &input) const {
-    try {
-        input::VectorInput& v = dynamic_cast<input::VectorInput&>(input);
-        const param::MIRParametrisation& metadata = v.component2_.parametrisation();
-        long paramId;
-        ASSERT(metadata.get("paramId", paramId));
-        return paramId;
-    } catch (std::bad_cast &) {
-        std::ostringstream os;
-        os << "VectorOutput::component2ParamId() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
-    }
+
+bool VectorOutput::sameParametrisation(const param::MIRParametrisation &param1,
+                                    const param::MIRParametrisation & param2) const {
+    return component1_.sameParametrisation(param1, param2) &&
+           component2_.sameParametrisation(param1, param2);
 }
 
+bool VectorOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
+    return component1_.printParametrisation(out, param);
+}
+
+void VectorOutput::print(std::ostream &out) const {
+    out << "VectorOutput[" << component1_ << "," << component2_ << "]";
+}
 }  // namespace output
 }  // namespace mir
 

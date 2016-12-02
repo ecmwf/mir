@@ -16,7 +16,7 @@
 #ifndef Sh2GriddedTransform_H
 #define Sh2GriddedTransform_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 
 
@@ -95,7 +95,7 @@ class Sh2GriddedTransform : public Action {
 
 // -- Overridden methods
 
-    virtual void execute(data::MIRField&) const;
+    virtual void execute(context::Context & ctx) const;
 
 // -- Class members
     // None

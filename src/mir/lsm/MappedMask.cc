@@ -21,18 +21,22 @@
 
 #include <cmath>
 
-#include "atlas/Grid.h"
+#include "atlas/grid/Grid.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Timer.h"
 #include "eckit/os/Stat.h"
+#include "mir/config/LibMir.h"
 
+// On CRAY/Brodwell, the rounding of areas is incorrect
+// 90 is actually 90 +- 1e-14
+#pragma GCC target ("no-fma")
 
 namespace {
 
 class FDClose {
     int fd_;
-  public:
+public:
     FDClose(int fd): fd_(fd) {}
     ~FDClose() {
         SYSCALL(::close(fd_));
@@ -42,7 +46,7 @@ class FDClose {
 class Unmapper {
     void *address_;
     size_t size_;
-  public:
+public:
     Unmapper(void *address, size_t size): address_(address), size_(size) {}
     ~Unmapper() {
         SYSCALL(::munmap(address_, size_));
@@ -60,10 +64,10 @@ namespace lsm {
 
 MappedMask::MappedMask(const std::string &name,
                        const param::MIRParametrisation &parametrisation,
-                       const atlas::Grid &grid,
+                       const atlas::grid::Grid &grid,
                        const std::string &which):
     Mask(name),
-    path_("~mir/etc/1km-lsm.mask") {
+    path_("~mir/share/mir/masks/1km-lsm.mask") {
 
 
 
@@ -100,23 +104,38 @@ MappedMask::MappedMask(const std::string &name,
     const size_t ROWS = Nj;
     const size_t COLS = Ni;
 
-    eckit::Log::info() << "LSM: Ni=" << Ni << ", Nj=" << Nj << std::endl;
+    eckit::Log::debug<LibMir>() << "LSM: Ni=" << Ni << ", Nj=" << Nj << std::endl;
 
-    eckit::Timer timer("Extract points from  LSM");
+    eckit::TraceTimer<LibMir> timer("Extract points from  LSM");
 
 
     // NOTE: this is not using 3D coordinate systems
 
-    std::vector<atlas::Grid::Point> points(grid.npts());
+    std::vector<atlas::grid::Grid::Point> points(grid.npts());
     grid.lonlat(points);
 
     mask_.reserve(points.size());
 
     const unsigned char *mask = reinterpret_cast<unsigned char *>(address);
 
-    for (std::vector<atlas::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
+    for (std::vector<atlas::grid::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
         double lat = (*j).lat();
+
+        if (lat < -90) {
+            std::ostringstream oss;
+            oss << "GRID " << grid << " returns a latitude of " << lat << " (lat+90)=" << (lat + 90);
+            throw eckit::SeriousBug(oss.str());
+        }
+
         ASSERT(lat >= -90);
+
+        if (lat > 90) {
+            std::ostringstream oss;
+            oss << "GRID " << grid << " returns a latitude of " << lat << " (lat-90)=" << (lat - 90);
+            throw eckit::SeriousBug(oss.str());
+        }
+
+
         ASSERT(lat <= 90);
 
         double lon = (*j).lon();
@@ -129,10 +148,10 @@ MappedMask::MappedMask(const std::string &name,
         }
 
         int row = (90.0 - lat) * (ROWS - 1) / 180;
-        ASSERT(row >= 0 && row < ROWS);
+        ASSERT(row >= 0 && row < int(ROWS));
 
         int col = lon * COLS / 360.0;
-        ASSERT(col >= 0 && col < COLS);
+        ASSERT(col >= 0 && col < int(COLS));
 
         size_t pos = COLS * row + col;
         size_t byte = pos / 8;
@@ -164,6 +183,6 @@ const std::vector<bool> &MappedMask::mask() const {
 //-----------------------------------------------------------------------------
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

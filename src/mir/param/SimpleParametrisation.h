@@ -16,46 +16,50 @@
 #ifndef SimpleParametrisation_H
 #define SimpleParametrisation_H
 
-#include "mir/param/MIRParametrisation.h"
-#include <string>
 #include <map>
 #include <set>
+#include <string>
+#include "mir/param/MIRParametrisation.h"
+
 
 namespace eckit {
 class JSON;
-class Value;
 }
+namespace mir {
+namespace param {
+class DelayedParametrisation;
+class Setting;
+}
+}
+
 
 namespace mir {
 namespace param {
 
 
-class Setting;
-class DelayedParametrisation;
-
 class SimpleParametrisation : public MIRParametrisation {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     SimpleParametrisation();
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~SimpleParametrisation();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
-    void copyValuesTo(SimpleParametrisation& other) const;
+    // -- Methods
 
+    void copyValuesTo(SimpleParametrisation& other, bool overwrite=true) const;
 
     SimpleParametrisation& set(const std::string& name, const char* value);
     SimpleParametrisation& set(const std::string& name, const std::string& value);
@@ -69,35 +73,16 @@ class SimpleParametrisation : public MIRParametrisation {
     SimpleParametrisation& set(const std::string& name, const std::vector<long>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<double>& value);
 
-    SimpleParametrisation& set(const eckit::Value& map);
+    virtual SimpleParametrisation& clear(const std::string& name);
+    SimpleParametrisation& reset();
 
-    SimpleParametrisation& clear(const std::string& name);
-// -- Overridden methods
+    // Used by Job
 
+    virtual bool empty() const;
+    bool matches(const param::MIRParametrisation& other) const;
+    bool matches(const param::MIRParametrisation& other, const param::MIRParametrisation& ignore) const;
 
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-  protected:
-
-// -- Members
-
-
-
-// -- Methods
-
-    virtual void print(std::ostream&) const;
-    void json(eckit::JSON&) const;
-
-    bool matches(const param::MIRParametrisation& metadata) const;
-
-    size_t size() const;
-
-// -- Overridden methods
-    virtual bool has(const std::string& name) const;
+    // -- Overridden methods
 
     virtual bool get(const std::string& name, std::string& value) const;
     virtual bool get(const std::string& name, bool& value) const;
@@ -106,36 +91,54 @@ class SimpleParametrisation : public MIRParametrisation {
     virtual bool get(const std::string& name, std::vector<long>& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
 
-
-
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+protected:
 
-    // Types
+    // -- Members
+    // None
+
+    // -- Methods
+
+    virtual void print(std::ostream&) const;
+    void json(eckit::JSON&) const;
+
+    size_t size() const;
+
+    // -- Overridden methods
+
+    virtual bool has(const std::string& name) const;
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+private:
+
+    // -- Types
+
     typedef std::map<std::string, Setting*> SettingsMap;
 
-// No copy allowed
+    // No copy allowed
 
     SimpleParametrisation(const SimpleParametrisation&);
     SimpleParametrisation& operator=(const SimpleParametrisation&);
 
-// -- Members
+    // -- Members
 
     SettingsMap settings_;
 
-
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
-
-
 
     template<class T>
     bool _get(const std::string& name, T& value) const;
@@ -143,24 +146,25 @@ class SimpleParametrisation : public MIRParametrisation {
     template<class T>
     void _set(const std::string& name, const T& value);
 
-
-
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     friend eckit::JSON& operator<<(eckit::JSON& s, const SimpleParametrisation& p) {
         p.json(s);
         return s;
     }
+
 };
 
 
 }  // namespace param
 }  // namespace mir
+
+
 #endif
 

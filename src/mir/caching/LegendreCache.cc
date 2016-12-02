@@ -8,35 +8,46 @@
  * does it submit to any jurisdiction.
  */
 
-#include "LegendreCache.h"
+#include "mir/caching/LegendreCache.h"
 
-#include "mir/api/mir_version.h"
+// #include "mir/api/mir_version.h"
+#include "mir/config/LibMir.h"
+// #include "eckit/config/Resource.h"
+
+// #include "eckit/filesystem/PathName.h"
+
+using namespace eckit;
 
 namespace mir {
 namespace caching {
 
+//----------------------------------------------------------------------------------------------------------------------
 
-
-LegendreCache::LegendreCache() : CacheManager("mir/coeffs") {
+LegendreCache::LegendreCache() :
+    CacheManager<LegendreCacheTraits>(LibMir::cacheDir(),
+                                      eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
+                                                            false)) {
 }
 
-const char* LegendreCache::version() const {
-    return mir_version_str();
+const char *LegendreCacheTraits::name() {
+    return "mir/coeffs";
 }
-const char* LegendreCache::extension() const {
+
+int LegendreCacheTraits::version() {
+    return 1;
+}
+
+const char *LegendreCacheTraits::extension() {
     return ".leg";
 }
 
-
-void LegendreCache::print(std::ostream &s) const {
-    s << "LegendreCache[";
-    CacheManager::print(s);
-    s << "name=" << name() << ","
-      << "version=" << version() << ","
-      << "extention=" << extension() << ","
-      << "]";
+void LegendreCacheTraits::save(LegendreCacheTraits::value_type &, const PathName &path) {
 }
 
+void LegendreCacheTraits::load(LegendreCacheTraits::value_type &, const PathName &path) {
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

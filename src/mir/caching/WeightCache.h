@@ -15,40 +15,38 @@
 #ifndef mir_method_WeightCache_H
 #define mir_method_WeightCache_H
 
-#include <string>
 
 #include "eckit/container/CacheManager.h"
 
-#include "mir/method/WeightMatrix.h"
-
-
 namespace mir {
+
+namespace method {
+class WeightMatrix;
+}
+
 namespace caching {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class WeightCache : public eckit::CacheManager {
 
-  public:  // methods
+struct WeightCacheTraits {
 
+    typedef method::WeightMatrix value_type;
+
+    static const char* name();
+    static int version();
+    static const char* extension();
+
+    static void save(const value_type& W, const eckit::PathName& path);
+
+    static void load(value_type& W, const eckit::PathName& path);
+
+};
+
+
+class WeightCache : public eckit::CacheManager<WeightCacheTraits> {
+public:  // methods
     explicit WeightCache();
-
-    /// Tries to retrieve a cached WeightMatrix
-    /// @returns true if found cache
-    bool retrieve(const std::string &key, method::WeightMatrix &W) const;
-
-    /// Inserts a cached WeightMatrix, overwritting any existing entry
-    /// @returns true if insertion successful cache
-    void insert(const std::string &key, const method::WeightMatrix &W) const;
-
-  protected:
-
-    virtual void print(std::ostream& s) const;
-
-  private:
-
-    virtual const char* version() const;
-    virtual const char* extension() const;
 
 };
 

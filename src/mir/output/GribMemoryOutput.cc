@@ -37,6 +37,10 @@ GribMemoryOutput::~GribMemoryOutput() {
 }
 
 
+bool GribMemoryOutput::sameAs(const MIROutput& other) const {
+    return this == &other;
+}
+
 void GribMemoryOutput::out(const void* message, size_t length, bool iterpolated) {
     ASSERT(length <= size_);
     length_ = length;

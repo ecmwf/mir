@@ -18,6 +18,9 @@
 
 #include "mir/repres/Gridded.h"
 
+namespace eckit {
+class PathName;
+}
 
 namespace mir {
 namespace repres {
@@ -32,7 +35,11 @@ class UnstructuredGrid : public Gridded {
 
     // -- Contructors
 
+    UnstructuredGrid(const eckit::PathName& path);
     UnstructuredGrid(const param::MIRParametrisation &);
+
+    // Take ownership of vectors
+    UnstructuredGrid(std::vector<double>& latitudes, std::vector<double>& longitudes);
 
     // -- Destructor
 
@@ -45,6 +52,8 @@ class UnstructuredGrid : public Gridded {
     // None
 
     // -- Methods
+
+    double increment() const;
 
     // -- Overridden methods
     // None
@@ -93,11 +102,13 @@ class UnstructuredGrid : public Gridded {
 
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
-    virtual atlas::Grid *atlasGrid() const;
+    virtual atlas::grid::Grid *atlasGrid() const;
     virtual void validate(const std::vector<double> &values) const;
-    virtual bool globalDomain() const;
 
-
+    virtual atlas::grid::Domain atlasDomain() const;
+    virtual atlas::grid::Domain atlasDomain(const util::BoundingBox&) const;
+    virtual Iterator* rotatedIterator() const; // After rotation
+    virtual Iterator* unrotatedIterator() const; // Before rotation
 
     // -- Class members
     // None

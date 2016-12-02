@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,96 +12,52 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#ifndef soyuz_method_Bilinear_H
-#define soyuz_method_Bilinear_H
+
+#ifndef mir_method_Bilinear_H
+#define mir_method_Bilinear_H
 
 #include "mir/method/MethodWeighted.h"
-
-
-namespace eckit {
-namespace geometry {
-class Point3;
-}
-}
 
 
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
-class Bilinear: public MethodWeighted {
-  public:
+class Bilinear : public MethodWeighted {
+public:
 
-// -- Exceptions
-    // None
-
-// -- Contructors
     Bilinear(const param::MIRParametrisation&);
 
-// -- Destructor
     virtual ~Bilinear();
 
-// -- Convertors
-    // None
+private: // methods
 
-// -- Operators
-    // None
+    virtual void execute(context::Context&, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
 
-// -- Methods
-    // None
+    virtual void assemble(context::Context&, WeightMatrix&, const GridSpace& in, const GridSpace& out) const;
 
-// -- Overridden methods
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-  protected:
-
-// -- Members
-
-
-// -- Methods
-
-
-// -- Overridden methods
-    // None
-
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-  private:
-
-// -- Methods
-    double crossProduct(const eckit::geometry::Point3& a, const eckit::geometry::Point3& b) const;
-    bool formClockwiseTriangle(const eckit::geometry::Point3& a, const eckit::geometry::Point3& b, const eckit::geometry::Point3& c) const;
-    void sort4Clockwise(std::vector<eckit::geometry::Point3>& points) const ;
-
-// -- Overridden methods
-
-    virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const;
     virtual void print(std::ostream&) const;
+
     virtual const char* name() const;
-    virtual void hash( eckit::MD5 & ) const;
 
-// -- Class members
-    // None
+    virtual void hash(eckit::MD5&) const;
 
-// -- Class methods
-    // None
+private:  // variables
 
-// -- Friends
+    bool precipitation_;
 
+    bool precipitationNeighbour_;
+
+    double precipitationThreshold_;
 
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
+
 #endif
 

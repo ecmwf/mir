@@ -1,10 +1,10 @@
 ############################################################################################
 #
-#   MIR - ECMWF Meterological Interpolation and Regriding
+#   MIR - Meteorological Interpolation and Regridding      ECMWF
 #
 ############################################################################################
 
-cmake_minimum_required( VERSION 2.8.4 FATAL_ERROR )
+cmake_minimum_required( VERSION 2.8.11 FATAL_ERROR )
 
 project( mir C CXX )
 
@@ -12,28 +12,30 @@ set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} 
 
 include( ecbuild_system NO_POLICY_SCOPE )
 
-ecbuild_requires_macro_version( 1.9 )
+ecbuild_requires_macro_version( 2.4 )
 
 ###############################################################################
 # project
 
-ecbuild_use_package( PROJECT grib_api VERSION  1.14 REQUIRED )
+ecbuild_add_option( FEATURE ECCODES DESCRIPTION "" DEFAULT ON )
+
+if( HAVE_ECCODES)
+  ecbuild_use_package( PROJECT eccodes VERSION 0.14 REQUIRED )
+  set( GRIB_API_INCLUDE_DIRS ${ECCODES_INCLUDE_DIRS} )
+  set( GRIB_API_LIBRARIES    ${ECCODES_LIBRARIES} )
+  set( GRIB_API_DEFINITIONS  ${ECCODES_DEFINITIONS} )
+  set( grib_api_BASE_DIR     ${eccodes_BASE_DIR} )
+  set( grib_handling_pkg eccodes )
+else()
+  ecbuild_use_package( PROJECT grib_api VERSION 1.14 REQUIRED )
+  set( grib_handling_pkg grib_api )
+endif()
+
+ecbuild_add_option( FEATURE TEST_ASSERTIONS DESCRIPTION "Enable assertion tests" DEFAULT ON )
+
+
 ecbuild_use_package( PROJECT eckit  VERSION  0.9  REQUIRED )
-ecbuild_use_package( PROJECT atlas  VERSION  0.4  REQUIRED )
-# ecbuild_use_package( PROJECT libemos  )
-
-# Experimental features in eckit are required
-# TODO: remove requirement when no longer necessary
-if( NOT ECKIT_HAVE_EXPERIMENTAL )
-  message( FATAL_ERROR "Experimental features in eckit are required" )
-endif()
-
-# Either Eigen support or Armadillo support in eckit is required
-if( NOT ECKIT_HAVE_EIGEN AND NOT ECKIT_HAVE_ARMADILLO )
-  message( FATAL_ERROR "Either Eigen support or Armadillo support in eckit is required" )
-endif()
-
-# this will be replaced once ecbuild exports subcomponents between packages
+ecbuild_use_package( PROJECT atlas  VERSION  0.6  REQUIRED )
 
 ecbuild_declare_project()
 
@@ -43,38 +45,23 @@ ecbuild_declare_project()
 ecbuild_add_cxx11_flags()
 ecbuild_check_cxx11( PRINT )
 
-### OMP
+ecbuild_add_option( FEATURE OMP    DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
+ecbuild_add_option( FEATURE MPI    DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
+ecbuild_add_option( FEATURE NETCDF DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
 
-ecbuild_add_option( FEATURE OMP
-                    DESCRIPTION "support for OpenMP shared memory parallelism"
-                    DEFAULT ON )
-
+# OMP/MPI features handling
 if( ENABLE_OMP )
   ecbuild_enable_omp()
 else()
   ecbuild_enable_ompstubs()
 endif()
 
-### MPI
-
-ecbuild_add_option( FEATURE MPI
-                    DEFAULT OFF
-                    DESCRIPTION "support for MPI distributed parallelism" )
-
 if( ENABLE_MPI )
-
   ecbuild_enable_mpi()
-
   if( NOT MPI_CXX_FOUND )
     set( HAVE_MPI 0 )
   endif()
-
 endif()
-
-ecbuild_add_option( FEATURE NETCDF
-                    DEFAULT ON
-                    DESCRIPTION "support for NetCDF4"
-                    REQUIRED_PACKAGES NetCDF4 )
 
 if( HAVE_NETCDF )
   list( APPEND MIR_FEATURE_LIBRARIES ${NETCDF_LIBRARIES} )
@@ -91,21 +78,22 @@ set( MIR_LIBRARIES      mir )
 get_directory_property( COMPILE_DEFINITIONS MIR_DEFINITIONS )
 
 foreach( _tpl ${MIR_TPLS} )
-	string( TOUPPER ${_tpl} TPL )
-	if( ${TPL}_FOUND )
-		list( APPEND MIR_EXTRA_DEFINITIONS   ${${TPL}_DEFINITIONS} ${${TPL}_TPL_DEFINITIONS})
-		list( APPEND MIR_EXTRA_INCLUDE_DIRS  ${${TPL}_INCLUDE_DIRS} ${${TPL}_TPL_INCLUDE_DIRS} )
-		list( APPEND MIR_EXTRA_LIBRARIES     ${${TPL}_LIBRARIES} ${${TPL}_TPL_LIBRARIES})
-	endif()
+  string( TOUPPER ${_tpl} TPL )
+  if( ${TPL}_FOUND )
+    list( APPEND MIR_EXTRA_DEFINITIONS   ${${TPL}_DEFINITIONS} ${${TPL}_TPL_DEFINITIONS})
+    list( APPEND MIR_EXTRA_INCLUDE_DIRS  ${${TPL}_INCLUDE_DIRS} ${${TPL}_TPL_INCLUDE_DIRS} )
+    list( APPEND MIR_EXTRA_LIBRARIES     ${${TPL}_LIBRARIES} ${${TPL}_TPL_LIBRARIES})
+  endif()
 endforeach()
 
 ### include directories
 
 include_directories( ${MIR_INCLUDE_DIRS} ${MIR_EXTRA_INCLUDE_DIRS}  )
 
-add_subdirectory( src )
-add_subdirectory( etc )
-add_subdirectory( tests )
+add_subdirectory( "src" )
+add_subdirectory( "etc" )
+add_subdirectory( "share" )
+add_subdirectory( "tests" )
 
 ### installation
 

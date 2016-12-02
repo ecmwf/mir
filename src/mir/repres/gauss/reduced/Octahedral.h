@@ -68,7 +68,7 @@ class Octahedral : public Reduced {
     // -- Overridden methods
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
-    virtual atlas::Grid *atlasGrid() const;
+    virtual atlas::grid::Grid *atlasGrid() const;
 
     // -- Class members
     // None

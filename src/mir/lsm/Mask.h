@@ -27,7 +27,9 @@ namespace eckit {
 class MD5;
 }
 namespace atlas {
+namespace grid {
 class Grid;
+}
 }
 namespace mir {
 namespace param {
@@ -70,8 +72,8 @@ class Mask : private eckit::NonCopyable {
 
     // -- Class methods
 
-    static  Mask &lookupInput(const param::MIRParametrisation &param, const atlas::Grid &grid);
-    static  Mask &lookupOutput(const param::MIRParametrisation &param, const atlas::Grid &grid);
+    static  Mask &lookupInput(const param::MIRParametrisation &param, const atlas::grid::Grid &grid);
+    static  Mask &lookupOutput(const param::MIRParametrisation &param, const atlas::grid::Grid &grid);
 
   protected:
 
@@ -108,7 +110,7 @@ class Mask : private eckit::NonCopyable {
 
     // -- Class methods
     static  Mask &lookup(const param::MIRParametrisation &param,
-                         const atlas::Grid &grid,
+                         const atlas::grid::Grid &grid,
                          const std::string &which);
 
 
@@ -121,7 +123,7 @@ class Mask : private eckit::NonCopyable {
 
 };
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 
 #endif

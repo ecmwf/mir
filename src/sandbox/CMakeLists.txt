@@ -4,22 +4,22 @@
 ecbuild_add_executable( TARGET  vod2uv
                         SOURCES  vod2uv.cc
                         CONDITION NOT CMAKE_CXX_COMPILER_ID STREQUAL "Intel"
-                        INCLUDES ${ECKIT_INCLUDE_DIRS}
+                        INCLUDES ${ATLAS_INCLUDE_DIRS}
                         LIBS     mir ${LIBEMOS_LIBRARIES} )
 
 ecbuild_add_executable( TARGET  grids
                         SOURCES  grids.cc
-                        INCLUDES ${ECKIT_INCLUDE_DIRS}
+                        INCLUDES ${ATLAS_INCLUDE_DIRS}
                         LIBS     mir ${LIBEMOS_LIBRARIES} )
 
 ecbuild_add_executable( TARGET  lsm
                         SOURCES  lsm.cc
-                        INCLUDES ${ECKIT_INCLUDE_DIRS}
+                        INCLUDES ${ATLAS_INCLUDE_DIRS}
                         LIBS     mir ${LIBEMOS_LIBRARIES} )
 
 #ecbuild_add_executable( TARGET  json_config
 #                        SOURCES  json_config.cc
-#                        INCLUDES ${ECKIT_INCLUDE_DIRS}
+#                        INCLUDES ${ATLAS_INCLUDE_DIRS}
 #                        LIBS     mir ${LIBEMOS_LIBRARIES} )
 
 # ecbuild_add_executable( TARGET  eigen_sparse

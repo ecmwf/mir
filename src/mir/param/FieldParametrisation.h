@@ -89,9 +89,6 @@ class FieldParametrisation : public MIRParametrisation {
 
     // -- Members
 
-    mutable bool check_;
-    mutable const MIRParametrisation *logic_;
-
     // -- Methods
 
     template<class T>

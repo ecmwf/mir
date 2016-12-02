@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef MIRInput_H
-#define MIRInput_H
+#ifndef mir_input_MIRInput_h
+#define mir_input_MIRInput_h
 
 #include <iosfwd>
 
@@ -30,88 +30,93 @@ class MIRField;
 namespace param {
 class MIRParametrisation;
 }
+}
+
+
+namespace mir {
 namespace input {
 
 
 class MIRInput {
-  public:
 
-// -- Exceptions
-    // None
-
-// -- Contructors
+protected:
 
     MIRInput();
 
-// -- Destructor
+public:
 
-    virtual ~MIRInput(); // Change to virtual if base class
+    virtual ~MIRInput();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
     virtual bool next();
+    virtual size_t dimensions() const;
 
-    virtual const param::MIRParametrisation& parametrisation() const = 0;
-    virtual data::MIRField* field() const = 0;
-    virtual grib_handle* gribHandle() const;
+    virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const = 0;
+
+    virtual data::MIRField field() const = 0;
+    virtual grib_handle* gribHandle(size_t which = 0) const;
+
     virtual size_t copy(double* values, size_t size) const;
 
-// -- Overridden methods
+    virtual bool sameAs(const MIRInput& other) const = 0;
+
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // No copy allowed
 
     MIRInput(const MIRInput&);
     MIRInput& operator=(const MIRInput&);
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s,const MIRInput& p) {
         p.print(s);
@@ -123,5 +128,7 @@ class MIRInput {
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif
 

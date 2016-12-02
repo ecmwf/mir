@@ -105,8 +105,8 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
-    virtual const param::MIRParametrisation &parametrisation() const;
-    virtual data::MIRField *field() const;
+    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
+    virtual data::MIRField field() const;
 
     // From MIRParametrisation
     virtual bool has(const std::string& name) const;

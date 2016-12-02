@@ -13,29 +13,32 @@
 /// @date Apr 2015
 
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/io/BufferedHandle.h"
-#include "eckit/io/StdFile.h"
-
-#include "mir/data/MIRField.h"
-#include "mir/util/Grib.h"
-
 #include "mir/input/GribInput.h"
-#include "mir/repres/Representation.h"
-#include "mir/input/GribFileInput.h"
 
 #include <iomanip>
 #include <iostream>
-
-#include "eckit/serialisation/HandleStream.h"
+#include "eckit/config/Resource.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/io/BufferedHandle.h"
 #include "eckit/io/MemoryHandle.h"
+#include "eckit/io/StdFile.h"
+#include "eckit/serialisation/HandleStream.h"
+#include "eckit/thread/AutoLock.h"
+#include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
+#include "mir/repres/Representation.h"
+#include "mir/util/Grib.h"
+
 
 namespace mir {
 namespace input {
+
+
 namespace {
 
+
 class Condition {
-  public:
+public:
     virtual bool eval(grib_handle *) const = 0;
 };
 
@@ -44,13 +47,14 @@ class ConditionT : public Condition {
     const char *key_;
     T value_;
     virtual bool eval(grib_handle *) const;
-  public:
+public:
     ConditionT(const char *key, const T &value): key_(key), value_(value) {}
 };
 
 template<>
 bool ConditionT<long>::eval(grib_handle *h ) const {
     long value;
+    ASSERT(h);
     int err = grib_get_long(h, key_, &value);
 
     if (err == GRIB_NOT_FOUND) {
@@ -58,7 +62,7 @@ bool ConditionT<long>::eval(grib_handle *h ) const {
     }
 
     if (err) {
-        eckit::Log::info() << "ConditionT<long>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
+        // eckit::Log::debug<LibMir>() << "ConditionT<long>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
         GRIB_ERROR(err, key_);
     }
 
@@ -68,6 +72,7 @@ bool ConditionT<long>::eval(grib_handle *h ) const {
 template<>
 bool ConditionT<double>::eval(grib_handle *h ) const {
     double value;
+    ASSERT(h);
     int err = grib_get_double(h, key_, &value);
 
     if (err == GRIB_NOT_FOUND) {
@@ -75,7 +80,7 @@ bool ConditionT<double>::eval(grib_handle *h ) const {
     }
 
     if (err) {
-        eckit::Log::info() << "ConditionT<double>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
+        // eckit::Log::debug<LibMir>() << "ConditionT<double>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
         GRIB_ERROR(err, key_);
     }
 
@@ -86,6 +91,7 @@ template<>
 bool ConditionT<std::string>::eval(grib_handle *h ) const {
     char buffer[10240];
     size_t size = sizeof(buffer);
+    ASSERT(h);
     int err = grib_get_string(h, key_, buffer, &size);
 
     if (err == GRIB_NOT_FOUND) {
@@ -93,7 +99,7 @@ bool ConditionT<std::string>::eval(grib_handle *h ) const {
     }
 
     if (err) {
-        eckit::Log::info() << "ConditionT<std::string>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
+        eckit::Log::debug<LibMir>() << "ConditionT<std::string>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
         GRIB_ERROR(err, key_);
     }
 
@@ -106,7 +112,7 @@ class ConditionOR : public Condition {
     virtual bool eval(grib_handle *h) const {
         return left_->eval(h) || right_->eval(h);
     }
-  public:
+public:
     ConditionOR(const Condition *left, const Condition *right): left_(left), right_(right) {}
 };
 
@@ -116,7 +122,7 @@ class ConditionAND : public Condition {
     virtual bool eval(grib_handle *h) const {
         return left_->eval(h) && right_->eval(h);
     }
-  public:
+public:
     ConditionAND(const Condition *left, const Condition *right): left_(left), right_(right) {}
 };
 
@@ -125,7 +131,7 @@ class ConditionNOT : public Condition {
     virtual bool eval(grib_handle *h) const {
         return !c_->eval(h);
     }
-  public:
+public:
     ConditionNOT(const Condition *c) : c_(c) {}
 };
 
@@ -182,6 +188,8 @@ static struct {
 
     {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
 
+    {"gridname", "gridName"},
+
     {"spectral", "pentagonalResolutionParameterJ"},
 
     /// FIXME: Find something that does no clash
@@ -189,6 +197,8 @@ static struct {
     {"regular", "N", is("gridType", "regular_gg")},
     {"octahedral", "numberOfParallelsBetweenAPoleAndTheEquator", is("isOctahedral", 1L)},
 
+    /// TODO: is that a good idea?
+    {"param", "paramId"},
 
     {0, 0},
 };
@@ -212,8 +222,6 @@ static const char *get_key(const std::string &name, grib_handle *h) {
 }  // (anonymous namespace)
 
 
-
-
 GribInput::GribInput(): grib_(0) {
 }
 
@@ -223,15 +231,20 @@ GribInput::~GribInput() {
 }
 
 
-const param::MIRParametrisation &GribInput::parametrisation() const {
+const param::MIRParametrisation &GribInput::parametrisation(size_t which) const {
+    ASSERT(which == 0);
     return *this;
 }
 
 
-data::MIRField *GribInput::field() const {
+data::MIRField GribInput::field() const {
+
+    // Protect the grib_handle, as eccodes may update its internals
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(grib_);
     // TODO: this is only here for debugging purposes
-    GRIB_CALL(grib_set_double(grib_, "missingValue", 1.e15));
+    // GRIB_CALL(grib_set_double(grib_, "missingValue", 1.e15));
 
     size_t count;
     GRIB_CALL(grib_get_size(grib_, "values", &count));
@@ -247,35 +260,45 @@ data::MIRField *GribInput::field() const {
     double missing;
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
 
-
-    data::MIRField *field = new data::MIRField(*this, bitmap != 0, missing);
+    data::MIRField field(*this, bitmap != 0, missing);
 
     long scanningMode = 0;
     if (grib_get_long(grib_, "scanningMode", &scanningMode) == GRIB_SUCCESS && scanningMode != 0) {
-        field->representation()->reorder(scanningMode, values);
+        field.representation()->reorder(scanningMode, values);
     }
 
-    field->values(values, 0);
-    field->validate();
+    field.update(values, 0);
+    field.validate();
 
     return field;
-
 }
 
-grib_handle *GribInput::gribHandle() const {
+
+grib_handle *GribInput::gribHandle(size_t which) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    ASSERT(which == 0);
     return grib_;
 }
 
+
 bool GribInput::has(const std::string &name) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
     bool    ok = grib_is_defined(grib_, key);
 
-    eckit::Log::info() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") << std::endl;
+    // eckit::Log::debug<LibMir>() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") << std::endl;
     return ok;
 }
 
+
 bool GribInput::get(const std::string &name, bool &value) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    ASSERT(grib_);
     long temp = GRIB_MISSING_LONG;
     const char *key = get_key(name, grib_);
     int err = grib_get_long(grib_, key, &temp);
@@ -285,17 +308,21 @@ bool GribInput::get(const std::string &name, bool &value) const {
     }
 
     if (err) {
-        eckit::Log::info() << "grib_get_bool(" << name << ",key=" << key << ") failed " << err << std::endl;
+        // eckit::Log::debug<LibMir>() << "grib_get_bool(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
 
     value = temp != 0;
 
-    eckit::Log::info() << "grib_get_bool(" << name << ",key=" << key << ") " << value << std::endl;
+    // eckit::Log::debug<LibMir>() << "grib_get_bool(" << name << ",key=" << key << ") " << value << std::endl;
     return true;
 }
 
+
 bool GribInput::get(const std::string &name, long &value) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    ASSERT(grib_);
     const char *key = get_key(name, grib_);
     int err = grib_get_long(grib_, key, &value);
 
@@ -305,15 +332,19 @@ bool GribInput::get(const std::string &name, long &value) const {
     }
 
     if (err) {
-        eckit::Log::info() << "grib_get_long(" << name << ",key=" << key << ") failed " << err << std::endl;
+        eckit::Log::debug<LibMir>() << "grib_get_long(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
 
-    // eckit::Log::info() << "grib_get_long(" << name << ",key=" << key << ") " << value << std::endl;
+    // eckit::Log::debug<LibMir>() << "grib_get_long(" << name << ",key=" << key << ") " << value << std::endl;
     return true;
 }
 
+
 bool GribInput::get(const std::string &name, double &value) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    ASSERT(grib_);
     const char *key = get_key(name, grib_);
     int err = grib_get_double(grib_, key, &value);
 
@@ -323,15 +354,19 @@ bool GribInput::get(const std::string &name, double &value) const {
     }
 
     if (err) {
-        eckit::Log::info() << "grib_get_double(" << name << ",key=" << key << ") failed " << err << std::endl;
+        // eckit::Log::debug<LibMir>() << "grib_get_double(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
 
-    // eckit::Log::info() << "grib_get_double(" << name << ",key=" << key << ") " << value << std::endl;
+    // eckit::Log::debug<LibMir>() << "grib_get_double(" << name << ",key=" << key << ") " << value << std::endl;
     return true;
 }
 
+
 bool GribInput::get(const std::string &name, std::vector<long> &value) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
     size_t count = 0;
@@ -342,7 +377,7 @@ bool GribInput::get(const std::string &name, std::vector<long> &value) const {
     }
 
     if (err) {
-        eckit::Log::info() << "grib_get_long_array(" << name << ",key=" << key << ") failed " << err << " count=" << count << std::endl;
+        eckit::Log::debug<LibMir>() << "grib_get_long_array(" << name << ",key=" << key << ") failed " << err << " count=" << count << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -355,13 +390,17 @@ bool GribInput::get(const std::string &name, std::vector<long> &value) const {
 
     ASSERT(value.size());
 
-    eckit::Log::info() << "grib_get_long_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
+    // eckit::Log::debug<LibMir>() << "grib_get_long_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
 
 
     return true;
 }
 
+
 bool GribInput::get(const std::string &name, std::string &value) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
     char buffer[10240];
@@ -373,9 +412,11 @@ bool GribInput::get(const std::string &name, std::string &value) const {
     }
 
     if (err) {
-        eckit::Log::info() << "grib_get_string(" << name << ",key=" << key << ") failed " << err << std::endl;
+        // eckit::Log::debug<LibMir>() << "grib_get_string(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
+
+    // std::cout << err << "  " << size << " " << name << std::endl;
 
     ASSERT(size < sizeof(buffer) - 1);
 
@@ -385,12 +426,16 @@ bool GribInput::get(const std::string &name, std::string &value) const {
 
     value = buffer;
 
-    eckit::Log::info() << "grib_get_string(" << name << ",key=" << key << ") " << value << std::endl;
+    // eckit::Log::debug<LibMir>() << "grib_get_string(" << name << ",key=" << key << ") " << value << std::endl;
 
     return true;
 }
 
+
 bool GribInput::get(const std::string &name, std::vector<double> &value) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
     size_t count = 0;
@@ -401,7 +446,7 @@ bool GribInput::get(const std::string &name, std::vector<double> &value) const {
     }
 
     if (err) {
-        eckit::Log::info() << "grib_get_double_array(" << name << ",key=" << key << ") failed " << err << " count=" << count << std::endl;
+        // eckit::Log::debug<LibMir>() << "grib_get_double_array(" << name << ",key=" << key << ") failed " << err << " count=" << count << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -414,13 +459,16 @@ bool GribInput::get(const std::string &name, std::vector<double> &value) const {
 
     ASSERT(value.size());
 
-    eckit::Log::info() << "grib_get_double_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
+    // eckit::Log::debug<LibMir>() << "grib_get_double_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
 
 
     return true;
 }
 
+
 bool GribInput::handle(grib_handle *h) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     if (grib_) {
         grib_handle_delete(grib_);
     }
@@ -430,6 +478,8 @@ bool GribInput::handle(grib_handle *h) {
 
 
 void GribInput::auxilaryValues(const std::string &path, std::vector<double> &values) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     eckit::StdFile f(path);
     int e;
     grib_handle *h = 0;
@@ -461,34 +511,46 @@ void GribInput::auxilaryValues(const std::string &path, std::vector<double> &val
 
 
 void GribInput::setAuxilaryFiles(const std::string &pathToLatitudes, const std::string &pathToLongitudes) {
-    eckit::Log::info() << "Loading auxilary files " << pathToLatitudes << " and " << pathToLongitudes << std::endl;
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    // eckit::Log::debug<LibMir>() << "Loading auxilary files " << pathToLatitudes << " and " << pathToLongitudes << std::endl;
     auxilaryValues(pathToLatitudes, latitudes_);
     auxilaryValues(pathToLongitudes, longitudes_);
 }
 
+
 // TODO: some caching, also next() should maybe advance the auxilary files
 void GribInput::latitudes(std::vector<double> &values) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     values.clear();
     values.reserve(latitudes_.size());
     std::copy(latitudes_.begin(), latitudes_.end(), std::back_inserter(values));
 }
 
+
 void GribInput::longitudes(std::vector<double> &values) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     values.clear();
     values.reserve(longitudes_.size());
     std::copy(longitudes_.begin(), longitudes_.end(), std::back_inserter(values));
 }
 
 
-void GribInput::marsRequest(std::ostream& out) const {
+void GribInput::marsRequest(std::ostream &out) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     ASSERT(grib_);
 
-    grib_keys_iterator* keys =  grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, "mars");
+    static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
+
+    grib_keys_iterator *keys =  grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(keys);
 
-    const char* sep = "";
+    const char *sep = "";
     try {
-        while(grib_keys_iterator_next(keys)) {
+        while (grib_keys_iterator_next(keys)) {
 
             char value[1024];
             size_t size = sizeof(value);
@@ -503,11 +565,11 @@ void GribInput::marsRequest(std::ostream& out) const {
         size_t size = 0;
         int err = grib_get_size(grib_, "freeFormData", &size);
 
-        if(err == 0) {
+        if (err == 0) {
             eckit::Buffer buffer(size);
             char *b = buffer;
 
-            GRIB_CALL(grib_get_bytes(grib_ ,"freeFormData", (unsigned char*)b, &size));
+            GRIB_CALL(grib_get_bytes(grib_ , "freeFormData", (unsigned char *)b, &size));
             ASSERT(size == buffer.size());
 
             eckit::MemoryHandle h(buffer);
@@ -519,14 +581,14 @@ void GribInput::marsRequest(std::ostream& out) const {
             in >> verb;
 
             in >> n;
-            for(size_t i = 0; i < n ; i++) {
+            for (int i = 0; i < n ; i++) {
                 std::string param;
                 in >> param;
                 out << sep << param;
                 const char *slash = "=";
                 int m;
                 in >> m;
-                for(size_t j = 0; j < m; j++) {
+                for (int j = 0; j < m; j++) {
                     std::string value;
                     in >> value;
                     out << slash << value;
@@ -543,14 +605,14 @@ void GribInput::marsRequest(std::ostream& out) const {
             grib_call(err, "freeFormData");
         }
 
-    } catch(...) {
-        if(keys) {
+    } catch (...) {
+        if (keys) {
             grib_keys_iterator_delete(keys);
         }
         throw;
     }
-
 }
+
 
 }  // namespace input
 }  // namespace mir

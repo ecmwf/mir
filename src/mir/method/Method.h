@@ -30,16 +30,22 @@ class MD5;
 
 
 namespace atlas {
+namespace grid {
 class Grid;
+}
 }
 
 
 namespace mir {
-namespace data {
-class MIRField;
+namespace context {
+class Context;
 }
 namespace param {
 class MIRParametrisation;
+}
+
+namespace util {
+class MIRStatistics;
 }
 }
 
@@ -57,7 +63,7 @@ class Method : private eckit::NonCopyable {
 
     virtual void hash( eckit::MD5 & ) const = 0;
 
-    virtual void execute(data::MIRField &, const atlas::Grid &, const atlas::Grid &) const = 0;
+    virtual void execute(context::Context & ctx, const atlas::grid::Grid &, const atlas::grid::Grid &) const = 0;
 
   protected:
 

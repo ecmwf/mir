@@ -34,13 +34,12 @@ class LatLon : public Gridded {
 
     // -- Contructors
 
-    LatLon(const param::MIRParametrisation &);
-    LatLon(const util::BoundingBox &bbox, const util::Increments &increments);
-
+    LatLon(const param::MIRParametrisation&);
+    LatLon(const util::BoundingBox&, const util::Increments&);
 
     // -- Destructor
 
-    virtual ~LatLon(); // Change to virtual if base class
+    virtual ~LatLon();
 
     // -- Convertors
     // None
@@ -49,9 +48,7 @@ class LatLon : public Gridded {
     // None
 
     // -- Methods
-
-    // size_t ni() const;
-    // size_t nj() const;
+    // None
 
     // -- Overridden methods
     // None
@@ -73,20 +70,25 @@ class LatLon : public Gridded {
 
     // -- Methods
 
-    static void computeNiNj(size_t& ni,
-                            size_t& nj,
-                            const util::BoundingBox& box,
-                            const util::Increments& increments);
-
-    virtual bool globalDomain() const;
     virtual Iterator* rotatedIterator() const; // After rotation
+
     virtual Iterator* unrotatedIterator() const; // Before rotation
 
+    void setNiNj();
+
     // -- Overridden methods
-    void print(std::ostream &) const; // Change to virtual if base class
+
+    virtual atlas::grid::Domain atlasDomain() const;
+
+    virtual atlas::grid::Domain atlasDomain(const util::BoundingBox&) const;
+
     virtual void fill(grib_info &) const;
+
     virtual void fill(api::MIRJob &) const;
+
     virtual void shape(size_t& ni, size_t& nj) const;
+
+    virtual void print(std::ostream &) const;
 
     // -- Class members
     // None
@@ -96,32 +98,26 @@ class LatLon : public Gridded {
 
 private:
 
-
     // No copy allowed
 
     LatLon(const LatLon &);
     LatLon &operator=(const LatLon &);
 
     // -- Members
-
-
-
+    // None
 
     // -- Methods
     // None
 
-    void setNiNj();
-
-
-
     // -- Overridden methods
 
-
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
+
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
 
     virtual void validate(const std::vector<double>&) const;
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField& field) const;
+
+    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context& ctx) const;
 
     // -- Class members
     // None
@@ -136,8 +132,11 @@ private:
 
 };
 
+
 }  // namespace latlon
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

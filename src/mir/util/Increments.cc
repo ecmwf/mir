@@ -29,11 +29,15 @@ namespace util {
 Increments::Increments(double west_east, double south_north):
     west_east_(west_east),
     south_north_(south_north) {
+    // ASSERT(west_east_ > 0);
+    // ASSERT(south_north_ > 0);
 }
 
 Increments::Increments(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("west_east_increment", west_east_));
     ASSERT(parametrisation.get("south_north_increment", south_north_));
+    ASSERT(west_east_ > 0);
+    ASSERT(south_north_ > 0);
 }
 
 Increments::~Increments() {
@@ -54,7 +58,7 @@ void Increments::fill(grib_info &info) const  {
 
 
 void Increments::fill(api::MIRJob &job) const  {
-   job.set("grid", west_east_, south_north_);
+    job.set("grid", west_east_, south_north_);
 }
 
 

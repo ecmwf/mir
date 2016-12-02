@@ -15,6 +15,7 @@
 
 
 #include "mir/lsm/AutoLSM.h"
+#include "mir/config/LibMir.h"
 
 #include <iostream>
 
@@ -41,25 +42,25 @@ void AutoLSM::print(std::ostream& out) const {
 
 std::string AutoLSM::path(const param::MIRParametrisation &parametrisation) const {
     // TODO: Implement clever selection
-    return  "~mir/etc/lsm.N640.grib";
+    return  "~mir/share/mir/masks/lsm.N640.grib";
 }
 
 Mask *AutoLSM::create(const std::string &name,
                       const param::MIRParametrisation &param,
-                      const atlas::Grid &grid,
+                      const atlas::grid::Grid &grid,
                       const std::string& which) const {
 
     // Mask* mask = new TenMinutesLSM(name, param, grid, which);
     Mask* mask = new MappedMask(name, param, grid, which);
     // Mask* mask = new GribFileLSM(name, path(param), param, grid, which);
 
-    eckit::Log::info() << "AutoLSM::create => " << *mask << std::endl;
+    eckit::Log::debug<LibMir>() << "AutoLSM::create => " << *mask << std::endl;
     return mask;
 }
 
 std::string AutoLSM::cacheKey(const std::string &name,
                               const param::MIRParametrisation &param,
-                              const atlas::Grid &grid,
+                              const atlas::grid::Grid &grid,
                               const std::string& which) const {
     eckit::MD5 md5;
     GribFileLSM::hashCacheKey(md5, path(param), param, grid, which); // We need to take the lsm interpolation method into account
@@ -74,6 +75,6 @@ static AutoLSM output("auto.output");
 }
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

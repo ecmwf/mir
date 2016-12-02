@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -10,35 +10,46 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
+///
 /// @date Apr 2015
 
+// #include <malloc.h>
 
 #include "mir/action/transform/Sh2GriddedTransform.h"
 
 #include <iostream>
 #include <vector>
 
-#include "atlas/atlas_config.h"
-#include "atlas/Grid.h"
-#include "atlas/grids/grids.h"
+#include "atlas/atlas.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/grid/Structured.h"
+#include "atlas/grid/lonlat/RegularLonLat.h"
+#include "atlas/grid/grids.h"
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
+#include "eckit/io/FileLock.h"
 
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/caching/LegendreCache.h"
-#include "mir/caching/LegendreLoader.h"
+#include "mir/caching/legendre/LegendreLoader.h"
+#include "mir/config/LibMir.h"
+#include "mir/util/MIRStatistics.h"
+#include "mir/caching/InMemoryCache.h"
+#include "mir/data/MIRField.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
 
+
 class TransInitor {
-  public:
+public:
     TransInitor() {
         trans_use_mpi(false); // So that even if MPI is enabled, we don't use it.
         trans_init();
@@ -49,81 +60,171 @@ class TransInitor {
 };
 
 struct TransCache {
+
+    bool inited_;
     struct Trans_t trans_;
-    mir::caching::LegendreLoader *loader_;
-    TransCache(): loader_(0) {}
+    mir::caching::legendre::LegendreLoader *loader_;
+
+    TransCache():
+        inited_(false),
+        loader_(0) {}
+
+    void print(std::ostream& s) const {
+        s << "TransCache[";
+        if (loader_) s << *loader_;
+        s << "]";
+    }
+
+    friend std::ostream& operator<<(std::ostream& out, const TransCache& e) {
+        e.print(out);
+        return out;
+    }
+
+    ~TransCache() {
+        if (inited_) {
+            std::cout << "Delete " << *this << std::endl;
+            trans_delete(&trans_);
+        }
+        else {
+            std::cout << "Not Deleting " << *this << std::endl;
+
+        }
+        delete loader_;
+    }
 };
 
+
 static eckit::Mutex amutex;
-static std::map<std::string, TransCache> trans_handles;
+static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient",
+        8L * 1024 * 1024 * 1024,
+        "$MIR_COEFFICIENT_CACHE",
+        false); // Don't cleanup at exit: the Fortran part will dump core
 
 #endif
+
 
 namespace mir {
 namespace action {
 
-
-static void transform(const param::MIRParametrisation &parametrisation, size_t truncation,
-                      const std::vector<double> &input, std::vector<double> &output, const atlas::Grid &grid) {
 #ifdef ATLAS_HAVE_TRANS
 
-    eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
+static void fillTrans(struct Trans_t &trans,
+                      size_t truncation,
+                      const atlas::grid::Grid &grid) {
 
-    static TransInitor initor; // Will init trans if needed
-
-    const atlas::grids::ReducedGrid *reduced = dynamic_cast<const atlas::grids::ReducedGrid *>(&grid);
+    const atlas::grid::Structured* reduced = dynamic_cast<const atlas::grid::Structured*>(&grid);
 
     if (!reduced) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
     }
 
-    const atlas::grids::LonLatGrid *latlon = dynamic_cast<const atlas::grids::LonLatGrid *>(&grid);
-
-    std::ostringstream os;
-
-    os << "T" << truncation << ":" << grid.uniqueId();
-    std::string key(os.str());
+    const atlas::grid::lonlat::RegularLonLat* latlon = dynamic_cast<const atlas::grid::lonlat::RegularLonLat* >(&grid);
 
 
-    // Warning: we keep the coefficient in memory for all the resolution used
-    if (trans_handles.find(key) == trans_handles.end()) {
-        eckit::Log::info() << "Creating a new TRANS handle for " << key << std::endl;
+    ASSERT(trans_new(&trans) == 0);
 
-        TransCache &tc = trans_handles[key];
-        struct Trans_t &trans = tc.trans_;
+    ASSERT(trans_set_trunc(&trans, truncation) == 0);
 
-        ASSERT(trans_new(&trans) == 0);
+    if (latlon) {
+        ASSERT(trans_set_resol_lonlat(&trans, latlon->nlon(), latlon->nlat()) == 0);
+    } else {
 
-        ASSERT(trans_set_trunc(&trans, truncation) == 0);
+        const std::vector<long>& pl = reduced->pl();
+        ASSERT(pl.size());
 
-        if (latlon) {
-            ASSERT(trans_set_resol_lonlat(&trans, latlon->nlon(), latlon->nlat()) == 0);
-        } else {
-            const std::vector<int> &points_per_latitudes = reduced->npts_per_lat();
-            ASSERT(trans_set_resol(&trans, points_per_latitudes.size(), &points_per_latitudes[0]) == 0);
+        std::vector<int> pli(pl.size());
+        ASSERT(pl.size() == pli.size());
+
+        for (size_t i = 0; i < pl.size(); ++i) {
+            pli[i] = pl[i];
         }
 
-        caching::LegendreCache cache;
-        eckit::PathName path;
-        if (!cache.get(key, path)) {
-            eckit::Timer timer("Caching coefficients");
-            eckit::Log::info() << "LegendreCache " << key << " does not exists" << std::endl;
-            eckit::PathName tmp = cache.stage(key);
-            ASSERT( trans_set_write(&trans, tmp.asString().c_str())  == 0);
-            ASSERT(trans_setup(&trans) == 0); // This will create the cache
+        ASSERT(trans_set_resol(&trans, pli.size(), &pli[0]) == 0);
+    }
+}
 
-            ASSERT(cache.commit(key, tmp));
-        } else {
+static void createCoefficients(const eckit::PathName& path,
+                               size_t truncation,
+                               const atlas::grid::Grid &grid,
+                               context::Context& ctx) {
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
+
+    struct Trans_t tmp_trans;
+    fillTrans(tmp_trans, truncation, grid);
+
+    ASSERT(trans_set_write(&tmp_trans, path.asString().c_str()) == 0);
+    ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
+
+    trans_delete(&tmp_trans);
+}
+
+static void transform(
+    const std::string& key,
+    const param::MIRParametrisation &parametrisation,
+    size_t truncation,
+    const std::vector<double> &input, std::vector<double> &output,
+    const atlas::grid::Grid &grid,
+    context::Context& ctx) {
+
+
+    if (trans_handles.find(key) == trans_handles.end()) {
+        eckit::PathName path;
+
+        {   // Block for timers
+
+            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
+
+            class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
+
+                size_t truncation_;
+                const atlas::grid::Grid & grid_;
+                context::Context & ctx_;
+
+                virtual void create(const eckit::PathName& path, int& ignore) {
+                    createCoefficients(path, truncation_, grid_, ctx_);
+                }
+            public:
+                LegendreCacheCreator(size_t truncation,
+                                     const atlas::grid::Grid & grid,
+                                     context::Context & ctx):
+                    truncation_(truncation), grid_(grid), ctx_(ctx) {}
+            };
+
+            static caching::LegendreCache cache;
+            LegendreCacheCreator creator(truncation, grid, ctx);
+
+            int dummy = 0;
+            path = cache.getOrCreate(key, creator, dummy);
+        }
+
+        {   // Block for timers
+
+            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
+
             eckit::Timer timer("Loading coefficients");
 
-            tc.loader_ = caching::LegendreLoaderFactory::build(parametrisation, path);
-            eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
+            TransCache &tc = trans_handles[key];
+
+            struct Trans_t &trans = tc.trans_;
+            fillTrans(trans, truncation, grid);
+
+            tc.inited_ = true;
+            tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation, path);
+            // std::cout << "LegendreLoader " << *tc.loader_ << std::endl;
 
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 
             ASSERT(trans_setup(&trans) == 0);
         }
+
+        // trans_handles.footprint(key, after - before);
+
+
     }
+
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
+    eckit::Timer timer("SH2GRID");
+
 
     TransCache &tc = trans_handles[key];
     struct Trans_t &trans = tc.trans_;
@@ -178,14 +279,38 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
 
     // trans_delete(&trans);
+}
+#endif
+
+
+static void transform(const param::MIRParametrisation &parametrisation, size_t truncation,
+                      const std::vector<double> &input, std::vector<double> &output,
+                      const atlas::grid::Grid &grid,
+                      context::Context& ctx) {
+#ifdef ATLAS_HAVE_TRANS
+
+    eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
+
+    static TransInitor initor; // Will init trans if needed
+
+    std::ostringstream os;
+
+    os << "T" << truncation << ":" << grid.uniqueId();
+    std::string key(os.str());
+
+    try {
+        transform(key, parametrisation, truncation, input, output, grid, ctx);
+    } catch (std::exception& e) {
+        eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
+        trans_handles.erase(key);
+        throw;
+    }
 
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported."
-                            " Please recompile ATLAS was not compiled with TRANS support.");
+                            " Please recompile ATLAS with TRANS support enabled.");
 #endif
 }
-
-
 
 
 Sh2GriddedTransform::Sh2GriddedTransform(const param::MIRParametrisation &parametrisation):
@@ -197,10 +322,19 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 }
 
 
-void Sh2GriddedTransform::execute(data::MIRField &field) const {
+void Sh2GriddedTransform::execute(context::Context & ctx) const {
     // ASSERT(field.dimensions() == 1); // For now
+#ifdef ATLAS_HAVE_TRANS
+    // Make sure another thread to no evict anything from the cache while we are using it
+    InMemoryCacheUser<TransCache> use(trans_handles, ctx.statistics().transHandleCache_);
+#endif
+
+    data::MIRField& field = ctx.field();
+
 
     repres::RepresentationHandle out(outputRepresentation());
+
+    // std::cout << *out << std::endl;
 
     // TODO: Transform all the fields together
     for (size_t i = 0; i < field.dimensions(); i++) {
@@ -208,10 +342,15 @@ void Sh2GriddedTransform::execute(data::MIRField &field) const {
         const std::vector<double> &values = field.values(i);
         std::vector<double> result;
 
-        eckit::ScopedPtr<atlas::Grid> grid(out->atlasGrid());
-        transform(parametrisation_, field.representation()->truncation(), values, result, *grid);
+        eckit::ScopedPtr<atlas::grid::Grid> grid(out->atlasGrid());
+        transform(parametrisation_,
+                  field.representation()->truncation(),
+                  values,
+                  result,
+                  *grid,
+                  ctx);
 
-        field.values(result, i);
+        field.update(result, i);
 
     }
 

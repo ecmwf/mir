@@ -47,6 +47,6 @@ static ArchivedValue packing2("av"); // For the lazy
 }
 
 
-}  // namespace logic
+}  // namespace packing
 }  // namespace mir
 

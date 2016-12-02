@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,18 +12,19 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/repres/latlon/RegularLL.h"
 
 #include <iostream>
-
-#include "atlas/grids/LocalGrid.h"
-#include "atlas/grids/LonLatGrid.h"
-
-#include "eckit/exception/Exceptions.h"
-#include "eckit/types/Types.h"
-
+#include "eckit/types/FloatCompare.h"
+#include "atlas/grid/lonlat/RegularLonLat.h"
+#include "atlas/grid/lonlat/ShiftedLat.h"
+#include "atlas/grid/lonlat/ShiftedLon.h"
+#include "atlas/grid/lonlat/ShiftedLonLat.h"
+#include "mir/config/LibMir.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
-#include "mir/util/Compare.h"
+#include "mir/util/OffsetGrid.h"
 
 
 namespace mir {
@@ -32,12 +33,11 @@ namespace latlon {
 
 
 RegularLL::RegularLL(const param::MIRParametrisation &parametrisation):
-    LatLon(parametrisation) {
-}
+    LatLon(parametrisation) {}
 
 
 RegularLL::RegularLL(const util::BoundingBox &bbox,
-                     const util::Increments &increments):
+                     const util::Increments &increments) :
     LatLon(bbox, increments) {
 }
 
@@ -45,9 +45,10 @@ RegularLL::RegularLL(const util::BoundingBox &bbox,
 RegularLL::~RegularLL() {
 }
 
+
 // Called by RegularLL::crop()
 const RegularLL *RegularLL::cropped(const util::BoundingBox &bbox) const {
-    eckit::Log::info() << "Create cropped copy as RegularLL bbox=" << bbox << std::endl;
+    // eckit::Log::debug<LibMir>() << "Create cropped copy as RegularLL bbox=" << bbox << std::endl;
     return new RegularLL(bbox, increments_);
 }
 
@@ -68,79 +69,61 @@ void RegularLL::fill(grib_info &info) const  {
 
 }
 
+
 void RegularLL::fill(api::MIRJob &job) const  {
     LatLon::fill(job);
 }
 
-static bool check(double x, double dx) {
-    double a = (x > 0 ? x : -x) / dx;
-    return eckit::FloatCompare<double>::isApproximatelyEqual(size_t(a), a);
+
+atlas::grid::lonlat::Shift RegularLL::atlasShift() const {
+    typedef eckit::FloatCompare<double> cmp;
+
+    // locate latitude/longitude origin via accumulation of increments, in range [0,inc[
+    // NOTE: shift is assumed half-increment origin dispacement; Domain is checked for
+    // global NS/EW range (this could/should be revised).
+    const double inc_we = increments_.west_east();
+    const double inc_sn = increments_.south_north();
+    ASSERT(cmp::isStrictlyGreater(inc_we, 0));
+    ASSERT(cmp::isStrictlyGreater(inc_sn, 0));
+
+    int i = 0, j = 0;
+    while (bbox_.west()  + i * inc_we < inc_we) { ++i; }
+    while (bbox_.west()  + i * inc_we > inc_we) { --i; }
+    while (bbox_.south() + j * inc_sn < inc_sn) { ++j; }
+    while (bbox_.south() + j * inc_sn > inc_sn) { --j; }
+    const double
+    lon_origin = bbox_.west()  + i * inc_we,
+    lat_origin = bbox_.south() + j * inc_sn;
+
+    const atlas::grid::Domain dom = atlasDomain();
+    const bool
+    includesBothPoles = dom.includesPoleNorth() && dom.includesPoleSouth(),
+    isShiftedLon = dom.isPeriodicEastWest() && cmp::isApproximatelyEqual(lon_origin, inc_we / 2.),
+    isShiftedLat = includesBothPoles        && cmp::isApproximatelyEqual(lat_origin, inc_sn / 2.);
+
+    return atlas::grid::lonlat::Shift(isShiftedLon, isShiftedLat);
 }
 
 
-atlas::Grid *RegularLL::atlasGrid() const {
+atlas::grid::Grid* RegularLL::atlasGrid() const {
+    using namespace atlas::grid::lonlat;
+    const Shift shift = atlasShift();
 
-    eckit::Log::info() << "RegularLL::atlasGrid BBox is " << bbox_ << std::endl;
-
-    atlas::Grid* grid = 0;
-
-    if (globalDomain()) {
-
-        grid = new atlas::grids::LonLatGrid(ni_,nj_,
-                atlas::grids::LonLatGrid::INCLUDES_POLES);
-
-        // FIXME: an assertion for shift global grids
-        ASSERT(bbox_.north() == 90);
-        ASSERT(bbox_.south() == -90);
-        ASSERT(bbox_.east() == 360 - increments_.west_east());
-        ASSERT(bbox_.west() == 0);
-
-    } else {
-
-        size_t global_ni = 0;
-        size_t global_nj = 0;
-
-        computeNiNj(global_ni,
-                    global_nj,
-                    util::BoundingBox(90, bbox_.west(), -90, bbox_.west() + 360. - increments_.west_east()),
-                    increments_ );
-
-        grid = new atlas::grids::LonLatGrid(
-                                global_ni,
-                                global_nj,
-                                atlas::grids::LonLatGrid::INCLUDES_POLES);
+    // TODO: missing assertion for non-global, or shifted by not 1/2 grid
 
 
-        // FIXME: assert if non-global shifted grid
-        ASSERT(check(bbox_.north(), increments_.south_north()));
-        ASSERT(check(bbox_.south(), increments_.south_north()));
-        ASSERT(check(bbox_.west(), increments_.west_east()));
-        ASSERT(check(bbox_.east(), increments_.west_east()));
-
-        atlas::Domain domain(bbox_.north(), bbox_.west(), bbox_.south(), bbox_.east());
-        grid = new atlas::grids::LocalGrid(grid, domain);
-    }
-
-    eckit::Log::info() << "RegularLL::atlasGrid is " << *grid << " BoundBox " << bbox_ << std::endl;
-
-
-    if(!globalDomain()) {
-        std::vector<atlas::Grid::Point> pts;
-        grid->lonlat(pts);
-        for( size_t i = 0; i < pts.size(); ++i)
-            eckit::Log::info() << pts[i] << " ";
-        eckit::Log::info() << std::endl;
-    }
-
-    return grid;
-
+    // return non-shifted/shifted grid
+    return shift(Shift::LON | Shift::LAT) ? static_cast<LonLat*>(new ShiftedLonLat (ni_, nj_, atlasDomain()))
+           : shift(Shift::LON) ?            static_cast<LonLat*>(new ShiftedLon    (ni_, nj_, atlasDomain()))
+           : shift(Shift::LAT) ?            static_cast<LonLat*>(new ShiftedLat    (ni_, nj_, atlasDomain()))
+           :                               static_cast<LonLat*>(new RegularLonLat (ni_, nj_, atlasDomain()));
 }
-
 
 
 namespace {
 static RepresentationBuilder<RegularLL> regularLL("regular_ll"); // Name is what is returned by grib_api
 }
+
 
 }  // namespace latlon
 }  // namespace repres

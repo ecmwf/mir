@@ -36,8 +36,6 @@
 #include "mir/input/GribFileInput.h"
 // #include "mir/output/GribFileOutput.h"
 #include "mir/data/MIRField.h"
-#include "mir/param/MIRArgs.h"
-
 
 
 class LSM : public eckit::Tool {
@@ -53,7 +51,7 @@ class LSM : public eckit::Tool {
 
 };
 
-// void LSM::grid(const atlas::grids::ReducedGrid &grid) {
+// void LSM::grid(const atlas::grid::ReducedGrid &grid) {
 
 //     const std::vector<int> &points_per_latitudes = grid.npts_per_lat();
 //     size_t half = points_per_latitudes.size() / 2;
@@ -64,11 +62,11 @@ class LSM : public eckit::Tool {
 //     std::vector<int> rle;
 //     eckit::RLEencode2(diff.begin(), diff.end(), std::back_inserter(rle), 1000);
 
-//     const atlas::Grid& g = grid;
+//     const atlas::grid::Grid& g = grid;
 
-//     eckit::Log::info() << "uid " << g.uniqueID() << " hash " << g.hash() << " rle ";
-//     eckit::RLEprint(eckit::Log::info(), rle.begin(), rle.end());
-//     eckit::Log::info() << std::endl;
+//     eckit::Log::debug<LibMir>() << "uid " << g.uniqueID() << " hash " << g.hash() << " rle ";
+//     eckit::RLEprint(eckit::Log::debug<LibMir>(), rle.begin(), rle.end());
+//     eckit::Log::debug<LibMir>() << std::endl;
 // }
 
 void LSM::run() {
@@ -79,9 +77,9 @@ void LSM::run() {
     while (file.next()) {
 
         input.parametrisation(); //
-        eckit::ScopedPtr<mir::data::MIRField> field(input.field());
+        mir::data::MIRField field(input.field());
 
-        const std::vector<double> &v = field->values(0);
+        const std::vector<double> &v = field.values(0);
         std::vector<int32_t> p(v.size());
 
         eckit::StdFile f("zzzzz", "w");

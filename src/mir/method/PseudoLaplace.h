@@ -21,28 +21,31 @@
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class PseudoLaplace: public MethodWeighted {
 
     size_t nclosest_;  ///< Number of closest points to search for
 
-  public:
+public:
 
     PseudoLaplace(const param::MIRParametrisation&);
 
     virtual ~PseudoLaplace();
 
-  protected:
+protected:
 
     virtual void hash( eckit::MD5& ) const;
 
-  private:
+private:
 
-    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

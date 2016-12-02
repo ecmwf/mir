@@ -103,7 +103,7 @@ class ArchivedValue : public Packer {
 };
 
 
-}  // namespace logic
+}  // namespace packing
 }  // namespace mir
 #endif
 

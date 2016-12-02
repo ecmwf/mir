@@ -45,6 +45,10 @@ const repres::Representation *NamedClassic::representation(const util::Rotation 
     return new repres::reduced::RotatedClassic(N_, util::BoundingBox(), rotation);
 }
 
-}  // namespace logic
+size_t NamedClassic::gaussianNumber() const {
+    return N_;
+}
+
+}  // namespace namedgrids
 }  // namespace mir
 

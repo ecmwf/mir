@@ -17,87 +17,92 @@
 #define Gridded2RegularLL_H
 
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
+
 #include "mir/util/Increments.h"
+
 
 namespace mir {
 namespace action {
 
 
 class Gridded2RegularLL : public Gridded2GriddedInterpolation {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     Gridded2RegularLL(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~Gridded2RegularLL(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // No copy allowed
 
     Gridded2RegularLL(const Gridded2RegularLL&);
     Gridded2RegularLL& operator=(const Gridded2RegularLL&);
 
-// -- Members
+    // -- Members
+
     util::Increments increments_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
+
+    virtual bool sameAs(const Action& other) const;
 
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const Gridded2RegularLL& p)
     //	{ p.print(s); return s; }
@@ -107,5 +112,7 @@ class Gridded2RegularLL : public Gridded2GriddedInterpolation {
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

@@ -32,6 +32,10 @@ Gridded2ReducedLL::~Gridded2ReducedLL() {
 }
 
 
+bool Gridded2ReducedLL::sameAs(const Action& other) const {
+    NOTIMP;
+}
+
 void Gridded2ReducedLL::print(std::ostream& out) const {
     out << "Gridded2ReducedLL[]";
 }

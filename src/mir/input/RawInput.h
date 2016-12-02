@@ -95,12 +95,13 @@ class RawInput : public MIRInput, public param::MIRParametrisation {
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
-    virtual const param::MIRParametrisation &parametrisation() const;
-    virtual data::MIRField *field() const;
+    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
+    virtual data::MIRField field() const;
 
     virtual bool next();
     virtual size_t copy(double* values, size_t size) const;
 
+    virtual bool sameAs(const MIRInput& other) const;
 
     // From MIRParametrisation
     virtual bool has(const std::string& name) const;

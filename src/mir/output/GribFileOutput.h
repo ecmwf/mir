@@ -33,7 +33,7 @@ class GribFileOutput : public GribStreamOutput {
 
 // -- Contructors
 
-    GribFileOutput(const eckit::PathName&);
+    GribFileOutput(const eckit::PathName&, bool append = false);
 
 // -- Destructor
 
@@ -85,13 +85,14 @@ class GribFileOutput : public GribStreamOutput {
 
     eckit::PathName path_;
     eckit::DataHandle* handle_;
+    bool append_;
 
 // -- Methods
     // None
 
 // -- Overridden methods
     // From MIROutput
-
+    virtual bool sameAs(const MIROutput& other) const;
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
     // From GribInput

@@ -91,11 +91,15 @@ class VectorInput : public MIRInput {
 
     // -- Overridden methods
 
-    virtual const param::MIRParametrisation& parametrisation() const;
-    virtual data::MIRField* field() const;
-    virtual grib_handle* gribHandle() const;
+    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
+    virtual data::MIRField field() const;
     virtual bool next();
 
+    virtual bool sameAs(const MIRInput &other) const ;
+    virtual void print(std::ostream &out) const;
+
+    virtual grib_handle* gribHandle(size_t which = 0) const;
+    virtual size_t dimensions() const;
 
     // -- Class members
     // None

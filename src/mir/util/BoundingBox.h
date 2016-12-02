@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,26 +13,31 @@
 /// @date Apr 2015
 
 
-#ifndef BoundingBox_H
-#define BoundingBox_H
-
+#ifndef mir_util_BoundingBox_h
+#define mir_util_BoundingBox_h
 
 #include <iosfwd>
 
+
 struct grib_info;
 
-namespace mir {
-namespace param {
-class MIRParametrisation;
+namespace eckit {
+class MD5;
 }
 
+namespace mir {
 namespace api {
 class MIRJob;
 }
+namespace param {
+class MIRParametrisation;
 }
+}
+
 
 namespace mir {
 namespace util {
+
 
 class BoundingBox {
   public:
@@ -40,12 +45,12 @@ class BoundingBox {
     // -- Exceptions
     // None
 
-    // -- Contructors
-
-    BoundingBox(const param::MIRParametrisation &);
+    // -- Constructors
 
     BoundingBox();
     BoundingBox(double north, double west, double south, double east);
+    BoundingBox(const param::MIRParametrisation&);
+    BoundingBox(const BoundingBox& other);
 
     // -- Destructor
 
@@ -56,6 +61,14 @@ class BoundingBox {
 
     // -- Operators
 
+    BoundingBox& operator=(const BoundingBox& other) {
+        north_ = other.north_;
+        west_  = other.west_;
+        south_ = other.south_;
+        east_  = other.east_;
+        return *this;
+    }
+
     bool operator==(const BoundingBox& other) const {
         return (north_ == other.north_) && (south_ == other.south_) && (west_ == other.west_) && (east_ == other.east_);
     }
@@ -64,12 +77,9 @@ class BoundingBox {
         return (north_ != other.north_) || (south_ != other.south_) || (west_ != other.west_) || (east_ != other.east_);
     }
 
-    bool contains(double lat, double lon) const;
-    double normalise(double lon) const;
-
     // -- Methods
 
-    // DONT IMPLEMENT SETTERS
+    // DON'T IMPLEMENT SETTERS
 
     double north() const {
         return north_;
@@ -87,16 +97,24 @@ class BoundingBox {
         return east_;
     }
 
-    //
-    void fill(grib_info &) const;
-    void fill(api::MIRJob &) const;
+    bool contains(double lat, double lon) const;
+
+    double normalise(double lon) const;
+
+    void fill(grib_info&) const;
+
+    void fill(api::MIRJob&) const;
+
+    void hash(eckit::MD5&) const;
 
     // -- Overridden methods
     // None
 
     // -- Class members
+    // None
 
     // -- Class methods
+    // None
 
   protected:
 
@@ -116,10 +134,10 @@ class BoundingBox {
     // -- Class methods
     // None
 
+    // -- Friends
+    // None
+
   private:
-
-    // No copy allowed
-
 
     // -- Members
 
@@ -153,5 +171,7 @@ class BoundingBox {
 
 }  // namespace util
 }  // namespace mir
+
+
 #endif
 

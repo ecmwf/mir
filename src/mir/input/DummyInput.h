@@ -18,14 +18,14 @@
 
 
 #include "mir/input/MIRInput.h"
-#include "mir/param/FieldParametrisation.h"
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
 namespace input {
 
 
-class DummyInput : public MIRInput, public param::FieldParametrisation {
+class DummyInput : public MIRInput {
   public:
 
     // -- Exceptions
@@ -83,7 +83,8 @@ class DummyInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Members
 
-    int calls_;
+    size_t calls_;
+    param::SimpleParametrisation parametrisation_;
 
     // -- Methods
 
@@ -91,16 +92,12 @@ class DummyInput : public MIRInput, public param::FieldParametrisation {
     // From MIRInput
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual bool sameAs(const MIRInput& other) const;
 
-    virtual const param::MIRParametrisation &parametrisation() const;
-    virtual data::MIRField *field() const;
+    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
+    virtual data::MIRField field() const;
 
     virtual bool next();
-
-    // From MIRParametrisation
-    virtual bool has(const std::string& name) const;
-    virtual bool get(const std::string&, std::string&) const;
-    virtual bool get(const std::string&, double&) const;
 
     // -- Class members
     // None

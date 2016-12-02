@@ -31,6 +31,9 @@ Gridded2ReducedLLPLGiven::Gridded2ReducedLLPLGiven(const param::MIRParametrisati
 Gridded2ReducedLLPLGiven::~Gridded2ReducedLLPLGiven() {
 }
 
+bool Gridded2ReducedLLPLGiven::sameAs(const Action& other) const {
+    NOTIMP;
+}
 
 void Gridded2ReducedLLPLGiven::print(std::ostream& out) const {
     out << "Gridded2ReducedLLPLGiven[]";

@@ -141,7 +141,8 @@ if args.diff or args.error:
 
 if not args.output:
     view = True
-    args.output = "/tmp/plot%d.%s" % (os.getpid(), args.format)
+    bn = ''.join(x for x in os.path.basename(args.grib[0]) if x.isalnum() or x in "_-.")  # sanitize input grib basename
+    args.output = "/tmp/plot.%s.%d.%s" % (bn, os.getpid(), args.format)
 else:
     view = False
 

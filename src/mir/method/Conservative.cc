@@ -16,27 +16,34 @@
 
 #include "eckit/log/Log.h"
 
-#include "eckit/la/Vector.h"
-#include "eckit/la/LinearAlgebra.h"
+#include "eckit/linalg/Vector.h"
+#include "eckit/linalg/LinearAlgebra.h"
 
-#include "atlas/Grid.h"
-#include "atlas/Mesh.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/field/Field.h"
+#include "atlas/mesh/Mesh.h"
 #include "atlas/mesh/Nodes.h"
-#include "atlas/util/IndexView.h"
-#include "atlas/actions/BuildXYZField.h"
-#include "atlas/geometry/Triag3D.h"
-#include "atlas/geometry/Quad3D.h"
+#include "atlas/mesh/Elements.h"
+#include "atlas/mesh/ElementType.h"
+#include "atlas/array/IndexView.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/interpolation/Triag3D.h"
+#include "atlas/interpolation/Quad3D.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/method/GridSpace.h"
+#include "mir/config/LibMir.h"
 
-using eckit::la::Vector;
-using eckit::la::LinearAlgebra;
-using atlas::Mesh;
-using atlas::geometry::Triag3D;
-using atlas::geometry::Quad3D;
+using eckit::linalg::Vector;
+using eckit::linalg::LinearAlgebra;
+using atlas::mesh::Mesh;
+using atlas::interpolation::Triag3D;
+using atlas::interpolation::Quad3D;
 
 namespace mir {
 namespace method {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 static const double oneThird  = 1./ 3.;
 static const double oneFourth = 1./ 4.;
@@ -48,28 +55,20 @@ Conservative::Conservative(const param::MIRParametrisation &param) :
 Conservative::~Conservative() {
 }
 
-void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::Grid& g) const
+void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const
 {
-    eckit::Log::info() << "Conservative::computeLumpedMassMatrix" << std::endl;
+    eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix" << std::endl;
 
-    Mesh& mesh = g.mesh();
-
-    eckit::Log::info() << "Mesh " << mesh << std::endl;
+    eckit::Log::debug<LibMir>() << "Mesh " << mesh << std::endl;
 
     d.resize(g.npts());
 
     d.setZero();
 
-    atlas::actions::BuildXYZField("xyz")(mesh); // ensure we have a 'xyz' field (output mesh may not have it)
+    atlas::mesh::actions::BuildXYZField("xyz")(mesh); // ensure we have a 'xyz' field (output mesh may not have it)
 
     const atlas::mesh::Nodes& nodes  = mesh.nodes();
-    atlas::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
-
-    atlas::FunctionSpace& triags = mesh.function_space( "triags" );
-    atlas::IndexView<int, 2> triag_nodes ( triags.field( "nodes" ) );
-
-    atlas::FunctionSpace& quads = mesh.function_space( "quads" );
-    atlas::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
+    atlas::array::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
 
 // TODO we need to consider points that are virtual
 //    size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
@@ -78,82 +77,91 @@ void Conservative::computeLumpedMassMatrix(eckit::la::Vector& d, const atlas::Gr
 
 /// TODO Must handle missing values
 
-    size_t nb_triags = triags.metadata().has("nb_owned") ? triags.metadata().get<size_t>("nb_owned") : triags.shape(0);
-    size_t nb_quads = quads.metadata().has("nb_owned") ? quads.metadata().get<size_t>("nb_owned") : quads.shape(0);
-
-    // loop on all the elements
-
-    for(size_t e = 0; e < nb_triags; ++e)
+    const atlas::mesh::Cells& cells = mesh.cells();
+    for( size_t jtype=0; jtype<cells.nb_types(); ++jtype )
     {
-        size_t idx [3];
-        for(size_t n = 0; n<3; ++n)
-          idx[n] = triag_nodes(e,n);
+      const atlas::mesh::Elements& elements = cells.elements(jtype);
+      const atlas::mesh::ElementType& element_type = elements.element_type();
+      const atlas::mesh::Elements::Connectivity& node_connectivity = elements.node_connectivity();
 
-        Triag3D triag(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data());
+      if( element_type.name() == "Triangle" )
+      {
+        const size_t nb_triags = elements.size();
+        for(size_t e = 0; e < nb_triags; ++e)
+        {
+            size_t idx [3];
+            for(size_t n = 0; n<3; ++n)
+              idx[n] = node_connectivity(e,n);
 
-        const double area = triag.area();
+            Triag3D triag(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data());
 
-        /// TODO add check for virtuals
+            const double area = triag.area();
 
-        for(size_t n = 0; n<3; ++n)
-            d[ idx[n] ] += area * oneThird;
+            /// TODO add check for virtuals
+
+            for(size_t n = 0; n<3; ++n)
+                d[ idx[n] ] += area * oneThird;
+        }
+      }
+
+      if( element_type.name() == "Quadrilateral" )
+      {
+        const size_t nb_quads = elements.size();
+        for(size_t e = 0; e < nb_quads; ++e)
+        {
+            size_t idx [4];
+            for(size_t n = 0; n<4; ++n)
+              idx[n] = node_connectivity(e,n);
+
+            Quad3D quad(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data(), coords[idx[3]].data());
+
+            const double area = quad.area();
+
+            /// TODO add check for virtuals
+
+            for(size_t n = 0; n<4; ++n)
+                d[ idx[n] ] += area * oneFourth;
+        }
+      }
+
     }
-
-    for(size_t e = 0; e < nb_quads; ++e)
-    {
-        size_t idx [4];
-        for(size_t n = 0; n<4; ++n)
-          idx[n] = quads_nodes(e,n);
-
-        Quad3D quad(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data(), coords[idx[3]].data());
-
-        const double area = quad.area();
-
-        /// TODO add check for virtuals
-
-        for(size_t n = 0; n<4; ++n)
-            d[ idx[n] ] += area * oneFourth;
-    }
-
 }
 
-void Conservative::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const
-{
-
-    eckit::Log::info() << "Input  pts " << in.npts()
-                       << "Output pts " << out.npts() << std::endl;
+void Conservative::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
+    eckit::Log::debug<LibMir>()
+            << "Input  pts " << in.grid().npts()
+            << "Output pts " << out.grid().npts() << std::endl;
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
 
-    WeightMatrix IM(in.npts(), out.npts());
+    WeightMatrix IM(in.grid().npts(), out.grid().npts());
 
-    FELinear::assemble(IM, out, in);
+    FELinear::assemble(ctx, IM, out, in);
 
-    eckit::Log::info() << "IM rows " << IM.rows()
-                       << " cols "   << IM.cols() << std::endl;
+    eckit::Log::debug<LibMir>()
+            << "IM rows " << IM.rows()
+            << " cols "   << IM.cols() << std::endl;
 
 //    IM.save("IM.mat");
 
     // 2) M_s compute the lumped mass matrix of the source mesh
 
-    generateMesh(in, in.mesh()); // input grid hasn't been tesselated mesh yet ...
-
     Vector M_s;
-    computeLumpedMassMatrix(M_s, in);
+    computeLumpedMassMatrix(M_s, in.grid(), in.mesh());
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix of the destination mesh
 
     Vector M_d;
-    computeLumpedMassMatrix(M_d, out);
+    computeLumpedMassMatrix(M_d, out.grid(), out.mesh());
 
     for(size_t i = 0; i < M_d.size(); ++i)
         M_d[i] = 1./M_d[i];
 
     // 4) W = M_d^{-1} . I^{T} . M_s
 
-    W.matrix().reserve( IM.matrix().nonZeros() ); // reserve same space as IM
+    W.reserve(IM.rows(), IM.cols(), IM.nonZeros()); // reserve same space as IM
 
-    LinearAlgebra::backend().dsptd(M_d, IM.matrix(), M_s, W.matrix());
+    LinearAlgebra::backend().dsptd(M_d, IM, M_s, W);
 }
 
 const char* Conservative::name() const {
@@ -171,6 +179,8 @@ void Conservative::print(std::ostream &out) const {
 namespace {
 static MethodBuilder< Conservative > __conservative("conservative");
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

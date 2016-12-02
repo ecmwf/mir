@@ -54,7 +54,7 @@ class NamedGrid {
 
     virtual const repres::Representation *representation() const = 0;
     virtual const repres::Representation *representation(const util::Rotation& rotation) const = 0;
-
+    virtual size_t gaussianNumber() const = 0;
     // -- Overridden methods
     // None
 
@@ -124,7 +124,7 @@ class NamedGrid {
 
 
 
-}  // namespace logic
+}  // namespace namedgrids
 }  // namespace mir
 #endif
 

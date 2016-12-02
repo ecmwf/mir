@@ -17,19 +17,25 @@
 #ifndef mir_method_MethodWeighted_H
 #define mir_method_MethodWeighted_H
 
-#include "mir/method/Method.h"
 #include "mir/caching/WeightCache.h"
+#include "mir/method/Method.h"
 #include "mir/method/WeightMatrix.h"
 
 
 namespace atlas {
+namespace grid {
 class Grid;
 }
-
-
+namespace mesh {
+class Mesh;
+}
+}
 namespace mir {
 namespace lsm {
 class LandSeaMasks;
+}
+namespace util {
+class MIRStatistics;
 }
 }
 
@@ -37,41 +43,57 @@ class LandSeaMasks;
 namespace mir {
 namespace method {
 
+class GridSpace;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 class MethodWeighted : public Method {
 
-  public:
+public:
 
-    explicit MethodWeighted(const param::MIRParametrisation &);
+    explicit MethodWeighted(const param::MIRParametrisation&);
 
     virtual ~MethodWeighted();
 
-    virtual void execute(data::MIRField &field, const atlas::Grid &in, const atlas::Grid &out) const;
+    virtual void execute(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
 
-    virtual void hash( eckit::MD5 & ) const;
+    virtual void hash(eckit::MD5&) const;
 
-  private:
+    atlas::mesh::Mesh& generateMeshAndCache(const atlas::grid::Grid& grid) const;
 
-    double lsmWeightAdjustement_;
+    virtual void generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
+
+protected:
+
+    virtual const WeightMatrix& getMatrix(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
+
+private:
 
     virtual const char *name() const = 0;
 
-    virtual void assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const = 0;
+    virtual void assemble(context::Context& ctx, WeightMatrix& W, const GridSpace& in, const GridSpace& out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
-    WeightMatrix applyMissingValues(const WeightMatrix &W, data::MIRField &field, size_t which) const;
+    WeightMatrix applyMissingValues(const WeightMatrix& W, const std::vector<bool>& fieldMissingValues) const;
 
     /// Update interpolation weigths matrix to account for field masked values
-    virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &) const;
+    virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &, util::MIRStatistics& statistics) const;
 
-    virtual const WeightMatrix &getMatrix(const atlas::Grid &in, const atlas::Grid &out) const;
+    /// Get interpolation operand matrices, from A = W × B
+    virtual void setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B, const std::vector<double>& Avector, const std::vector<double>& Bvector, const double& missingValue) const;
 
-    virtual lsm::LandSeaMasks getMasks(const atlas::Grid &in, const atlas::Grid &out) const;
+    /// Get interpolation operand matrices, from A = W × B
+    virtual void setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, std::vector<double>& Avector, const double& missingValue) const;
 
+    virtual lsm::LandSeaMasks getMasks(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
 
-    void computeMatrixWeights(const atlas::Grid &in, const atlas::Grid &out, WeightMatrix &W) const;
+    void computeMatrixWeights(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out, WeightMatrix& W) const;
 
+    void createMatrix(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out, WeightMatrix& W, const lsm::LandSeaMasks& masks) const;
+
+private:
+
+    double lsmWeightAdjustement_;
 
 };
 

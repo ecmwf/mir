@@ -41,7 +41,7 @@ class MappedMask : public Mask {
 
     MappedMask(const std::string& name,
                 const param::MIRParametrisation& parametrisation,
-                const atlas::Grid& grid, const std::string& which);
+                const atlas::grid::Grid& grid, const std::string& which);
 
 // -- Destructor
 
@@ -114,7 +114,7 @@ class MappedMask : public Mask {
 
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 #endif
 

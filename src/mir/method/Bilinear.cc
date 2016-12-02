@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,35 +12,33 @@
 /// @author Pedro Maciel
 /// @date July 2015
 
+
 #include "mir/method/Bilinear.h"
 
-#include <cmath>
-#include <algorithm>
-#include <string>
-
+//#include <cmath>
+#include <vector>
+#include "eckit/log/BigNum.h"
 #include "eckit/log/Log.h"
-
-#include "atlas/Field.h"
-#include "atlas/FunctionSpace.h"
-#include "atlas/Mesh.h"
-#include "atlas/mesh/Nodes.h"
-#include "atlas/grids/ReducedGaussianGrid.h"
-#include "atlas/util/ArrayView.h"
-
+#include "atlas/array/ArrayView.h"
+#include "atlas/grid/Structured.h"
+#include "mir/action/context/Context.h"
+#include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
+#include "mir/method/GridSpace.h"
 #include "mir/util/Compare.h"
 
-using eckit::FloatCompare;
 
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 namespace {
 
 
 void left_right_lon_indexes(
     const double& in,
-    const atlas::ArrayView<double, 2>& coords,
+    const atlas::array::ArrayView<double, 2>& coords,
     const size_t start,
     const size_t end,
     size_t& left,
@@ -79,13 +77,99 @@ void left_right_lon_indexes(
 
 }  // (utilities namespace)
 
+//----------------------------------------------------------------------------------------------------------------------
 
 Bilinear::Bilinear(const param::MIRParametrisation& param) :
     MethodWeighted(param) {
+
+    precipitation_          = false;
+    precipitationNeighbour_ = true;
+    precipitationThreshold_ = 0.00005;
+
+    param.get("bilinear-precipitation",           precipitation_);
+    param.get("bilinear-precipitation-neighbour", precipitationNeighbour_);
+    param.get("bilinear-precipitation-threshold", precipitationThreshold_);
+
+    ASSERT(precipitationThreshold_ >= 0);
 }
 
 
 Bilinear::~Bilinear() {
+}
+
+
+void Bilinear::execute(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const {
+
+    // remember which source points are below precipitation threshold
+    std::vector<bool> dry_points;
+    if (precipitation_ && precipitationNeighbour_) {
+
+        data::MIRField& field = ctx.field();
+        ASSERT(field.dimensions() == 1);
+
+        const std::vector<double>& values = field.values(0);
+        ASSERT(values.size() == in.npts());
+
+        dry_points.assign(values.size(), false);
+        for (size_t i = 0; i < values.size(); ++i) {
+            dry_points[i] = values[i] < precipitationThreshold_;
+        }
+
+    }
+
+
+    // apply interpolation
+    MethodWeighted::execute(ctx, in, out);
+
+
+    // "precipitation" clipping: zero values below threshold when any (or both) conditions happen:
+    // 1. the target (interpolated) precipitation is less than the threshold value
+    // 2. the source nearest neighbouring point is less than the threshold value
+    if (precipitation_) {
+        eckit::Log::debug<LibMir>() << "Bilinear: precipitation clipping..." << std::endl;
+
+        // ideally, interpolant matrix is already built by MethodWeighted::execute and retrieved from cache
+        const WeightMatrix& W = MethodWeighted::getMatrix(ctx, in, out);
+
+        data::MIRField& field = ctx.field();
+        ASSERT(field.dimensions() == 1);
+
+        std::vector<double> values = field.values(0);
+        ASSERT(values.size() == W.rows());
+
+        util::compare::IsMissingFn isMissing(field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN());
+
+        size_t Nclip = 0;
+        WeightMatrix::const_iterator it(W);
+        for (size_t i = 0; i < size_t(W.rows()); ++i) {
+            if (!isMissing(values[i]) && (values[i] < precipitationThreshold_)) {
+
+                values[i] = 0;
+                ++Nclip;
+
+            } else if (precipitationNeighbour_) {
+                ASSERT(dry_points.size());
+
+                // nearest neighbouring point should have the heaviest interpolating weight
+                bool found = false;
+                double w = 0.;
+                for (it = W.begin(i); it != W.end(i); ++it) {
+                    if (!isMissing(*it) && (*it > w)) {
+                        found = true;
+                        w = *it;
+                    }
+                }
+
+                if(found) {
+                    values[i] = 0;
+                    ++Nclip;
+                }
+
+            }
+        }
+
+        eckit::Log::debug<LibMir>() << "Bilinear: precipitation clipping applied to " << eckit::BigNum(Nclip) << " points of " << eckit::BigNum(W.rows()) << " total" << std::endl;
+    }
 }
 
 
@@ -94,18 +178,18 @@ const char* Bilinear::name() const {
 }
 
 
-void Bilinear::hash(eckit::MD5 &md5) const {
+void Bilinear::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
 }
 
 
-void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Grid &out) const {
+void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace& in, const GridSpace& out) const {
 
+    using eckit::FloatCompare;
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
-    eckit::FloatApproxCompare< double > eq(10e-10);  //FIXME
 
-    eckit::Log::info() << "Bilinear::assemble " << *this << std::endl;
+    eckit::Log::debug<LibMir>() << "Bilinear::assemble " << *this << std::endl;
 
 
     // NOTE: use bilinear interpolation assuming quasi-regular grid
@@ -114,12 +198,13 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
 
     // Ensure the input is a reduced grid, and get the pl array
-    const atlas::grids::ReducedGrid* igg = dynamic_cast<const atlas::grids::ReducedGrid*>(&in);
+    const atlas::grid::Structured* igg = dynamic_cast<const atlas::grid::Structured*>(&in.grid());
     if (!igg)
-        throw eckit::UserError("Bilinear currently only supports Reduced Grids as input");
+        throw eckit::UserError("Bilinear currently only supports Structured grids as input");
 
-    const std::vector<long>& lons = igg->points_per_latitude();
+    const std::vector<long>& lons = igg->pl();
     const size_t inpts = igg->npts();
+    const size_t onpts = out.grid().npts();
 
     ASSERT(lons.size());
     ASSERT(lons.front());
@@ -127,14 +212,14 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
 
     // pre-allocate matrix entries
-    std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
-    weights_triplets.reserve( out.npts() );
 
+    std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
+    weights_triplets.reserve( onpts * 4 );
 
     // access the input/output fields coordinates
-    atlas::ArrayView<double, 2> icoords( in .mesh().nodes().lonlat() );
-    atlas::ArrayView<double, 2> ocoords( out.mesh().nodes().lonlat() );
 
+    atlas::array::ArrayView<double, 2> icoords = in.coordsLonLat();
+    atlas::array::ArrayView<double, 2> ocoords = out.coordsLonLat();
 
     // check input min/max latitudes (gaussian grids exclude the poles)
     double min_lat = icoords(0, LAT);
@@ -145,28 +230,27 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
         if (lat > max_lat) max_lat = lat;
     }
     ASSERT(min_lat < max_lat);
-    eckit::Log::info() << "Bilinear::assemble max_lat=" << max_lat << ", min_lat=" << min_lat << std::endl;
+    eckit::Log::debug<LibMir>() << "Bilinear::assemble max_lat=" << max_lat << ", min_lat=" << min_lat << std::endl;
 
 
     // set northern & southern-most parallel point indices
     std::vector<size_t> parallel_north(lons.front());
     std::vector<size_t> parallel_south(lons.back());
 
-    eckit::Log::info() << "Bilinear::assemble first row: " << lons.front() << std::endl;
-    for (size_t i = 0; i < lons.front(); ++i) {
-        parallel_north[i] = i;
+    eckit::Log::debug<LibMir>() << "Bilinear::assemble first row: " << lons.front() << std::endl;
+    for (long i = 0; i < lons.front(); ++i) {
+        parallel_north[i] = size_t(i);
     }
 
-    eckit::Log::info() << "Bilinear::assemble last row: " << lons.back() << std::endl;
-    for (size_t i = lons.back(), j = 0; i > 0; i--, j++) {
-        parallel_south[j] = inpts - i;
+    eckit::Log::debug<LibMir>() << "Bilinear::assemble last row: " << lons.back() << std::endl;
+    for (long i = lons.back(), j = 0; i > 0; i--, j++) {
+        parallel_south[j] = size_t(inpts - i);
     }
 
 //    std::ofstream outfile ("mir.coeffs");
 //    outfile.precision(2);
 
     // interpolate each output point in turn
-    const size_t onpts = out.npts();
     for (size_t i = 0; i < onpts; ++i) {
 
         const double lat = ocoords(i, LAT);
@@ -207,8 +291,7 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
             ASSERT(lons.size() >= 2); // at least 2 lines of latitude
 
-            if( FloatCompare<double>::isApproximatelyEqual(max_lat, lat) )
-            {
+            if( FloatCompare<double>::isApproximatelyEqual(max_lat, lat) ) {
                 top_n = lons[0];
                 bot_n = lons[1];
                 top_i = 0;
@@ -216,22 +299,18 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
             } else {
 
-                if( FloatCompare<double>::isApproximatelyEqual(min_lat, lat) )
-                {
+                if( FloatCompare<double>::isApproximatelyEqual(min_lat, lat) ) {
                     top_n = lons[ lons.size() - 2 ];
                     bot_n = lons[ lons.size() - 1 ];
                     bot_i = inpts - bot_n;
                     top_i = bot_i - top_n;
-                }
-                else
-                {
+                } else {
                     top_lat = icoords(top_i, LAT);
                     bot_lat = icoords(bot_i, LAT);
 
                     size_t n = 1;
                     while ( !( bot_lat < lat && FloatCompare<double>::isApproximatelyGreaterOrEqual(top_lat, lat) )
-                            && n != lons.size() )
-                    {
+                            && n != lons.size() ) {
 
                         top_n = lons[n - 1];
                         bot_n = lons[n];
@@ -357,16 +436,20 @@ void Bilinear::assemble(WeightMatrix &W, const atlas::Grid &in, const atlas::Gri
 
     }
 
-//    outfile.close();
+    // outfile.close();
 
-    // set sparse matrix
-    W.setFromTriplets(weights_triplets);
+    eckit::linalg::SparseMatrix M(onpts, inpts, weights_triplets); // build matrix
 
+    W.swap(M);
 }
 
 
 void Bilinear::print(std::ostream& out) const {
-    out << "Bilinear[]";
+    out << "Bilinear["
+        <<  "precipitation="               << precipitation_
+        << ",precipitationNeighbourCheck=" << precipitationNeighbour_
+        << ",precipitationThreshold="      << precipitationThreshold_
+        << "]";
 }
 
 
@@ -374,6 +457,7 @@ namespace {
 static MethodBuilder< Bilinear > __bilinear("bilinear");
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

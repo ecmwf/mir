@@ -32,7 +32,8 @@ MIRInput::~MIRInput() {
 }
 
 
-grib_handle *MIRInput::gribHandle() const {
+grib_handle *MIRInput::gribHandle(size_t which) const {
+     ASSERT(which == 0);
     static grib_handle *handle = 0;
     if (!handle) {
         handle = grib_handle_new_from_samples(0, "GRIB1");
@@ -52,6 +53,13 @@ bool MIRInput::next() {
 size_t MIRInput::copy(double *values, size_t size) const {
     std::ostringstream os;
     os << "MIRInput::copy() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+size_t MIRInput::dimensions() const {
+    std::ostringstream os;
+    os << "MIRInput::dimensions() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 

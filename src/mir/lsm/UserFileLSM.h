@@ -98,12 +98,12 @@ class UserFileLSM : public LSMChooser {
 
     virtual Mask *create(const std::string &,
                          const param::MIRParametrisation &param,
-                         const atlas::Grid &grid,
+                         const atlas::grid::Grid &grid,
                          const std::string& which) const ;
 
     virtual std::string cacheKey(const std::string &,
                                  const param::MIRParametrisation &param,
-                                 const atlas::Grid &grid,
+                                 const atlas::grid::Grid &grid,
                                  const std::string& which) const ;
 
 
@@ -114,7 +114,7 @@ class UserFileLSM : public LSMChooser {
 };
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 #endif
 

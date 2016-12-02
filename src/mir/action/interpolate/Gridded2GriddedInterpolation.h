@@ -16,14 +16,16 @@
 #ifndef Gridded2GriddedInterpolation_H
 #define Gridded2GriddedInterpolation_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 namespace mir {
-
 namespace repres {
 class Representation;
 }
+}
 
+
+namespace mir {
 namespace action {
 
 
@@ -93,7 +95,7 @@ class Gridded2GriddedInterpolation : public Action {
 
 // -- Overridden methods
 
-    virtual void execute(data::MIRField&) const;
+    virtual void execute(context::Context & ctx) const;
 
 // -- Class members
     // None

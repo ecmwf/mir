@@ -22,6 +22,7 @@
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class Tessellation: public FiniteElement {
   public:
@@ -36,25 +37,13 @@ class Tessellation: public FiniteElement {
 
   private:
 
-// -- Methods
-    // None
-
-// -- Overridden methods
-
-    virtual void generateMesh(const atlas::Grid& g, atlas::Mesh& mesh) const;
+    virtual void generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
-// -- Class members
-    // None
-
-// -- Class methods
-    // None
-
-// -- Friends
-
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

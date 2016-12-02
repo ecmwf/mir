@@ -13,18 +13,18 @@
 /// @author Tiago Quintino
 /// @date Apr 2015
 
+
 #include "mir/lsm/Mask.h"
 
-
-#include "atlas/Grid.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
-
+#include "atlas/grid/Grid.h"
+#include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
 #include "mir/lsm/NoneLSM.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/data/MIRField.h"
 
 namespace mir {
 namespace lsm {
@@ -33,12 +33,13 @@ namespace {
 
 static eckit::Mutex *local_mutex = 0;
 
-static std::map<std::string, Mask *> cache;
+static std::map<std::string, Mask *> *cache = 0;
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 static void init() {
     local_mutex = new eckit::Mutex();
+    cache = new std::map<std::string, Mask *>();
 }
 
 
@@ -59,7 +60,7 @@ void Mask::hash(eckit::MD5 &md5) const {
 }
 
 
-Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atlas::Grid &grid, const std::string &which) {
+Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const atlas::grid::Grid& grid, const std::string& which) {
 
     bool lsm = false;
     parametrisation.get("lsm", lsm);
@@ -71,13 +72,13 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
 
     std::string name;
 
-    if (!parametrisation.get("lsm.selection" + which, name)) {
-        if (!parametrisation.get("lsm.selection", name)) {
+    if (!parametrisation.get("lsm-selection-" + which, name)) {
+        if (!parametrisation.get("lsm-selection", name)) {
             throw eckit::SeriousBug("No lsm selection method provided");
         }
     }
 
-    name = name +  which;
+    name = name + "-" + which;
     const LSMChooser &chooser = LSMChooser::lookup(name);
     std::string key = chooser.cacheKey(name, parametrisation, grid, which);
 
@@ -85,38 +86,41 @@ Mask &Mask::lookup(const param::MIRParametrisation  &parametrisation, const atla
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::info() << "Mask::lookup(" << key << ")" << std::endl;
-    std::map<std::string, Mask *>::iterator j = cache.find(key);
+    eckit::Log::debug<LibMir>() << "Mask::lookup(" << key << ")" << std::endl;
+    std::map<std::string, Mask *>::iterator j = cache->find(key);
 
-    if (j != cache.end()) {
+    if (j != cache->end()) {
         return *(*j).second;
     }
 
     Mask *mask = chooser.create(name, parametrisation, grid, which);
 
-    cache[key] = mask;
+    (*cache)[key] = mask;
 
-    return *cache[key];
-}
-
-Mask &Mask::lookupInput(const param::MIRParametrisation   &parametrisation, const atlas::Grid &grid) {
-    return lookup(parametrisation, grid, ".input");
+    return *(*cache)[key];
 }
 
 
-Mask &Mask::lookupOutput(const param::MIRParametrisation   &parametrisation, const atlas::Grid &grid) {
-    return lookup(parametrisation, grid, ".output");
+Mask &Mask::lookupInput(const param::MIRParametrisation   &parametrisation, const atlas::grid::Grid &grid) {
+    return lookup(parametrisation, grid, "input");
 }
+
+
+Mask &Mask::lookupOutput(const param::MIRParametrisation   &parametrisation, const atlas::grid::Grid &grid) {
+    return lookup(parametrisation, grid, "output");
+}
+
 
 bool Mask::cacheable() const {
     return true;
 }
+
 
 bool Mask::active() const {
     return true;
 }
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

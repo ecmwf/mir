@@ -19,6 +19,7 @@
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/FieldParametrisation.h"
+#include "eckit/thread/Mutex.h"
 
 
 namespace mir {
@@ -93,6 +94,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Members
 
+    mutable eckit::Mutex mutex_;
     grib_handle *grib_;
 
     // --- For unstructured grids
@@ -109,9 +111,9 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     // -- Overridden methods
     // From MIRInput
 
-    virtual const param::MIRParametrisation &parametrisation() const;
-    virtual data::MIRField *field() const;
-    virtual grib_handle *gribHandle() const;
+    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
+    virtual data::MIRField field() const;
+    virtual grib_handle *gribHandle(size_t which = 0) const;
 
     /// From MIRParametrisation
     virtual bool get(const std::string &name, std::string &value) const;

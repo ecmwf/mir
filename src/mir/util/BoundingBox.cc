@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,77 +12,94 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/util/BoundingBox.h"
 
 #include <iostream>
-
-#include "mir/util/Compare.h"
 #include "eckit/exception/Exceptions.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
-#include "mir/util/Grib.h"
+#include "eckit/types/FloatCompare.h"
+#include "eckit/utils/MD5.h"
 #include "mir/api/MIRJob.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/util/Grib.h"
+
 
 namespace mir {
 namespace util {
 
-BoundingBox::BoundingBox():
-    north_(90),
-    west_(0),
-    south_(-90),
-    east_(360) {
+
+typedef eckit::FloatCompare<double> cmp;
+
+
+BoundingBox::BoundingBox() :
+    north_(90), west_(0), south_(-90), east_(360) {
     normalise();
 }
 
 
-BoundingBox::BoundingBox(double north,
-                         double west,
-                         double south,
-                         double east):
-    north_(north),
-    west_(west),
-    south_(south),
-    east_(east) {
+BoundingBox::BoundingBox(double north, double west, double south, double east) :
+    north_(north), west_(west), south_(south), east_(east) {
     normalise();
 }
+
 
 BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
-
     ASSERT(parametrisation.get("north", north_));
-    ASSERT(parametrisation.get("west", west_));
+    ASSERT(parametrisation.get("west",  west_ ));
     ASSERT(parametrisation.get("south", south_));
-    ASSERT(parametrisation.get("east", east_));
-
+    ASSERT(parametrisation.get("east",  east_ ));
     normalise();
 }
+
+
+BoundingBox::BoundingBox(const BoundingBox& other) {
+    operator=(other);
+}
+
 
 BoundingBox::~BoundingBox() {
 }
 
+
 void BoundingBox::print(std::ostream &out) const {
     out << "BoundingBox["
-
-        << "north=" << north_
+        <<  "north=" << north_
         << ",west=" << west_
         << ",south=" << south_
         << ",east=" << east_
         << "]";
 }
 
-void BoundingBox::fill(grib_info &info) const  {
 
-    // Warning: scanning mode not considered
 
-    info.grid.longitudeOfFirstGridPointInDegrees = west_;
-    info.grid.longitudeOfLastGridPointInDegrees = east_;
+const double ROUNDING = 1e14;
 
-    info.grid.latitudeOfFirstGridPointInDegrees = north_;
-    info.grid.latitudeOfLastGridPointInDegrees = south_;
+static double rounded(double x) {
+    return round(x * ROUNDING) / ROUNDING;
 }
+
+
+void BoundingBox::fill(grib_info &info) const  {
+    // Warning: scanning mode not considered
+    info.grid.latitudeOfFirstGridPointInDegrees  = rounded(north_);
+    info.grid.longitudeOfFirstGridPointInDegrees = rounded(west_);
+    info.grid.latitudeOfLastGridPointInDegrees   = rounded(south_);
+    info.grid.longitudeOfLastGridPointInDegrees  = rounded(east_);
+}
+
+
+void BoundingBox::hash(eckit::MD5 &md5) const {
+    md5.add(north_);
+    md5.add(west_);
+    md5.add(south_);
+    md5.add(east_);
+}
+
 
 void BoundingBox::fill(api::MIRJob &job) const  {
-   job.set("area", north_, west_, south_, east_);
+    job.set("area", north_, west_, south_, east_);
 }
+
 
 void BoundingBox::normalise() {
     while (east_ > 360) {
@@ -103,6 +120,7 @@ void BoundingBox::normalise() {
     ASSERT(west_ <= east_);
 }
 
+
 double BoundingBox::normalise(double lon) const {
     while (lon > east_) {
         lon -= 360;
@@ -114,15 +132,16 @@ double BoundingBox::normalise(double lon) const {
     return lon;
 }
 
+
 bool BoundingBox::contains(double lat, double lon) const {
     lon = normalise(lon);
-    return eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(north_, lat) &&
-           eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(lat, south_) &&
-           eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(lon , west_) &&
-           eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(east_, lon);
+    return cmp::isApproximatelyGreaterOrEqual(north_, lat) &&
+           cmp::isApproximatelyGreaterOrEqual(lat, south_) &&
+           cmp::isApproximatelyGreaterOrEqual(lon , west_) &&
+           cmp::isApproximatelyGreaterOrEqual(east_, lon);
 }
 
 
-}  // namespace data
+}  // namespace util
 }  // namespace mir
 

@@ -17,6 +17,7 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/config/LibMir.h"
 
 #include <sstream>
 
@@ -79,12 +80,12 @@ const NamedGrid *NamedGridPattern::build(const std::string &name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, NamedGridPattern *>::const_iterator j;
 
-    eckit::Log::info() << "Looking for NamedGridPattern [" << name << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "Looking for NamedGridPattern [" << name << "]" << std::endl;
 
     std::map<std::string, NamedGridPattern *>::const_iterator k = m->end();
     for (j = m->begin() ; j != m->end() ; ++j) {
         if (j->second->pattern_.match(name)) {
-            eckit::Log::info() << "Regex " << j->second->pattern_ << " and " << name << " (match)" << std::endl;
+            eckit::Log::debug<LibMir>() << "Regex " << j->second->pattern_ << " and " << name << " (match)" << std::endl;
 
             if (k != m->end()) {
                 std::stringstream os;
@@ -93,7 +94,7 @@ const NamedGrid *NamedGridPattern::build(const std::string &name) {
             }
             k = j;
         } else {
-            eckit::Log::info() << "Regex " << j->second->pattern_ << " and " << name << " (no match)" << std::endl;
+            eckit::Log::debug<LibMir>() << "Regex " << j->second->pattern_ << " and " << name << " (no match)" << std::endl;
         }
     }
 
@@ -113,6 +114,6 @@ const NamedGrid *NamedGridPattern::build(const std::string &name) {
 }
 
 
-}  // namespace logic
+}  // namespace namedgrids
 }  // namespace mir
 

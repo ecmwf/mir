@@ -8,15 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include "WeightCache.h"
-
-#include "eckit/io/BufferedHandle.h"
-#include "eckit/log/Timer.h"
-#include "eckit/log/Plural.h"
-#include "eckit/log/BigNum.h"
-
-#include "eckit/log/Seconds.h"
-#include "mir/api/mir_version.h"
+#include "mir/caching/WeightCache.h"
+#include "mir/config/LibMir.h"
+#include "mir/method/WeightMatrix.h"
 
 namespace mir {
 namespace caching {
@@ -26,10 +20,10 @@ namespace caching {
 
 4 - Writting is done with std::fstream which does not throw exception unless asked explicitally
     like so: ofs.exceptions ( std::ofstream::failbit | std::ofstream::badbit );
-    this means that no error checking is done on writting, this will lead the truncated files
+    this means that no error checking is done on writing, this will lead the truncated files
     when file systems become full
 
-    --> class atlas::MeshCache must use DataHandle() to write and read
+    --> class atlas::mesh::MeshCache must use DataHandle() to write and read
 
 8 - File names do not take compiler, number of bits, architecture, etc... in account.
     In certain cases we will have to put these files in shared filesytems (e.g. $SCRATCH).
@@ -43,50 +37,35 @@ b - Code should ASSERT() that what their are decoding looks correct. This can be
 
 
 WeightCache::WeightCache():
-    CacheManager("mir/weights") {
+    CacheManager(LibMir::cacheDir(),
+                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
+                                       false)) {
 }
 
-const char *WeightCache::version() const {
-    return mir_version_str();
+const char *WeightCacheTraits::name() {
+    return "mir/weights";
 }
-const char *WeightCache::extension() const {
+
+int WeightCacheTraits::version() {
+    return 2;
+}
+
+const char *WeightCacheTraits::extension() {
     return ".mat";
 }
 
-void WeightCache::print(std::ostream &s) const {
-    s << "WeightCache[";
-    CacheManager::print(s);
-    s << "name=" << name() << ","
-      << "version=" << version() << ","
-      << "extention=" << extension() << ","
-      << "]";
+void WeightCacheTraits::save(const value_type& W, const eckit::PathName& path) {
+    eckit::Log::info() << "Inserting weights in cache : " << path << "" << std::endl;
+
+    eckit::TraceTimer<LibMir> timer("Saving weights to cache");
+    W.save(path);
 }
 
-void WeightCache::insert(const std::string &key, const method::WeightMatrix &W) const {
-
-    eckit::PathName tmp = stage(key);
-
-    eckit::Log::info() << "Inserting weights in cache : " << tmp << "" << std::endl;
-
-    eckit::Timer timer("Saving weights to cache");
-    W.save(tmp);
-
-    ASSERT(commit(key, tmp));
-}
-
-bool WeightCache::retrieve(const std::string &key, method::WeightMatrix &W) const {
-
-    eckit::PathName path;
-
-    if (!get(key, path))
-        return false;
-
-    eckit::Log::info() << "Found weights in cache : " << path << "" << std::endl;
-    eckit::Timer timer("Loading weights from cache");
+void WeightCacheTraits::load(value_type& W, const eckit::PathName& path) {
+    eckit::TraceTimer<LibMir> timer("Loading weights from cache");
 
     W.load(path);
-
-    return true;
+    W.validate("fromCache");
 }
 
 

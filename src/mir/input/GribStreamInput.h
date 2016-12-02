@@ -38,7 +38,9 @@ class GribStreamInput : public GribInput {
 
     // -- Contructors
 
-    GribStreamInput(size_t skip=0, size_t step=1);
+    GribStreamInput();
+    GribStreamInput(size_t skip, size_t step);
+    GribStreamInput(off_t offset);
 
     // -- Destructor
 
@@ -72,6 +74,7 @@ class GribStreamInput : public GribInput {
     // -- Members
     size_t skip_;
     size_t step_;
+    off_t  offset_;
 
     // -- Methods
 

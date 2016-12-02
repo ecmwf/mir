@@ -17,9 +17,11 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/data/MIRField.h"
+#include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/MIRStatistics.h"
+#include "mir/data/MIRField.h"
 
 namespace mir {
 namespace action {
@@ -36,16 +38,25 @@ FrameFilter::~FrameFilter() {
 }
 
 
+bool FrameFilter::sameAs(const Action& other) const {
+    const FrameFilter* o = dynamic_cast<const FrameFilter*>(&other);
+    return o && (size_ == o->size_);
+}
+
 void FrameFilter::print(std::ostream &out) const {
     out << "FrameFilter[size=" << size_ << "]";
 }
 
 
-void FrameFilter::execute(data::MIRField &field) const {
+void FrameFilter::execute(context::Context & ctx) const {
+
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().frameTiming_);
+    data::MIRField& field = ctx.field();
+
     for (size_t i = 0; i < field.dimensions(); i++ ) {
 
         double missingValue = field.missingValue();
-        std::vector<double> &values = field.values(i);
+        std::vector<double> &values = field.direct(i);
 
         const repres::Representation *representation = field.representation();
         size_t count = representation->frame(values, size_, missingValue);

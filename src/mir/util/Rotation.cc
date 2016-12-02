@@ -32,12 +32,27 @@ Rotation::Rotation(double south_pole_latitude,
     south_pole_latitude_(south_pole_latitude),
     south_pole_longitude_(south_pole_longitude),
     south_pole_rotation_angle_(south_pole_rotation_angle) {
+
+    normalize();
 }
 
 Rotation::Rotation(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("south_pole_latitude", south_pole_latitude_));
     ASSERT(parametrisation.get("south_pole_longitude", south_pole_longitude_));
     ASSERT(parametrisation.get("south_pole_rotation_angle", south_pole_rotation_angle_));
+
+    normalize();
+}
+
+void Rotation::normalize() {
+    // while (south_pole_longitude_ < 0 ) {
+    //     south_pole_longitude_ += 360;
+    // }
+
+    // while (south_pole_longitude_ >= 360) {
+    //     south_pole_longitude_ -= 360;
+    // }
+
 }
 
 Rotation::~Rotation() {
@@ -64,16 +79,22 @@ void Rotation::fill(grib_info &info) const  {
 
     // This is missing from the grib_spec
     // Remove that when supported
-    if(south_pole_rotation_angle_) {
-        int n = info.packing.extra_settings_count++;
-        info.packing.extra_settings[n].name = "angleOfRotationInDegrees";
-        info.packing.extra_settings[n].type = GRIB_TYPE_DOUBLE;
-        info.packing.extra_settings[n].long_value = south_pole_rotation_angle_;
+    if (south_pole_rotation_angle_) {
+        long j = info.packing.extra_settings_count++;
+        info.packing.extra_settings[j].name = "angleOfRotationInDegrees";
+        info.packing.extra_settings[j].type = GRIB_TYPE_DOUBLE;
+        info.packing.extra_settings[j].long_value = south_pole_rotation_angle_;
     }
 }
 
 void Rotation::fill(api::MIRJob &job) const  {
     job.set("rotation", south_pole_latitude_, south_pole_longitude_);
+}
+
+bool Rotation::operator==(const Rotation &other) const {
+    return south_pole_latitude_ == other.south_pole_latitude_
+           && south_pole_longitude_ == other.south_pole_longitude_
+           && south_pole_rotation_angle_ == other.south_pole_rotation_angle_;
 }
 
 }  // namespace data

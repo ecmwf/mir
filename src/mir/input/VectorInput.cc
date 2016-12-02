@@ -36,26 +36,27 @@ VectorInput::~VectorInput() {
 }
 
 
-const param::MIRParametrisation &VectorInput::parametrisation() const {
+const param::MIRParametrisation &VectorInput::parametrisation(size_t which) const {
     // Assumes that both component (e.g. U and V) have the same parametrisation
-    return component1_.parametrisation();
+    ASSERT(which <= 1);
+    return (which == 0) ? component1_.parametrisation() : component2_.parametrisation();
 }
 
-grib_handle* VectorInput::gribHandle() const {
+grib_handle* VectorInput::gribHandle(size_t which) const {
     // Assumes that both component (e.g. U and V) have the same parametrisation
-    return component1_.gribHandle();
+    ASSERT(which <= 1);
+    return (which == 0) ? component1_.gribHandle() : component2_.gribHandle();
 }
 
-data::MIRField *VectorInput::field() const {
+data::MIRField VectorInput::field() const {
     // Assumes that both component (e.g. U and V) have the same parametrisation
-    data::MIRField *u = component1_.field();
-    data::MIRField *v = component2_.field();
+    data::MIRField u = component1_.field();
+    data::MIRField v = component2_.field();
 
-    ASSERT(u->dimensions() == 1);
-    ASSERT(v->dimensions() == 1);
+    ASSERT(u.dimensions() == 1);
+    ASSERT(v.dimensions() == 1);
 
-    u->values(v->values(0), 1);
-    delete v;
+    u.update(v.direct(0), 1);
 
     return u;
 }
@@ -68,6 +69,19 @@ bool VectorInput::next() {
 }
 
 
+bool VectorInput::sameAs(const MIRInput& other) const {
+    const VectorInput* o = dynamic_cast<const VectorInput*>(&other);
+    return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
+}
+
+
+void VectorInput::print(std::ostream &out) const {
+    out << "VectorInput[" << component1_ << "," << component2_ << "]";
+}
+
+size_t VectorInput::dimensions() const {
+    return 2;
+}
 
 }  // namespace input
 }  // namespace mir

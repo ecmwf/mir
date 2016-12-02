@@ -16,6 +16,7 @@
 #ifndef RegularLL_H
 #define RegularLL_H
 
+#include "atlas/grid/lonlat/LonLat.h"
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
@@ -49,6 +50,7 @@ class RegularLL : public LatLon {
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -63,12 +65,14 @@ class RegularLL : public LatLon {
 
     // -- Members
 
+
     // -- Methods
 
+    atlas::grid::lonlat::Shift atlasShift() const;
 
     // -- Overridden methods
     void print(std::ostream &) const; // Change to virtual if base class
-    virtual atlas::Grid *atlasGrid() const;
+    virtual atlas::grid::Grid *atlasGrid() const;
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
 
@@ -87,16 +91,15 @@ class RegularLL : public LatLon {
     RegularLL &operator=(const RegularLL &);
 
     // -- Members
-
-
-    // -- Methods
     // None
 
+    // -- Methods
 
     // Called by crop()
     virtual const RegularLL *cropped(const util::BoundingBox &bbox) const;
 
     // -- Overridden methods
+    // None
 
     // -- Class members
     // None

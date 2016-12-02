@@ -17,12 +17,12 @@
 #define Reduced_H
 
 #include "mir/repres/gauss/Gaussian.h"
-#include "mir/util/BoundingBox.h"
 
 
 namespace mir {
 namespace repres {
 namespace reduced {
+
 
 class Reduced : public Gaussian {
   public:
@@ -38,7 +38,7 @@ class Reduced : public Gaussian {
 
     // -- Destructor
 
-    virtual ~Reduced(); // Change to virtual if base class
+    virtual ~Reduced();
 
     // -- Convertors
     // None
@@ -47,6 +47,7 @@ class Reduced : public Gaussian {
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -60,20 +61,25 @@ class Reduced : public Gaussian {
   protected:
 
     // -- Members
+    // None
 
     // -- Methods
-
-    virtual bool globalDomain() const;
 
     // void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
-    virtual Iterator* rotatedIterator() const; // After rotation
-    virtual Iterator* unrotatedIterator() const; // Before rotation
+    virtual atlas::grid::Domain atlasDomain() const;
 
+    virtual atlas::grid::Domain atlasDomain(const util::BoundingBox&) const;
+
+    virtual void fill(grib_info &) const;
+
+    virtual void fill(api::MIRJob &) const;
+
+    virtual Iterator* rotatedIterator() const; // After rotation
+
+    virtual Iterator* unrotatedIterator() const; // Before rotation
 
     // -- Class members
     // None
@@ -83,22 +89,19 @@ class Reduced : public Gaussian {
 
   private:
 
-
-
     // No copy allowed
 
     Reduced(const Reduced &);
     Reduced &operator=(const Reduced &);
 
     // -- Members
+    // None
 
     // -- Methods
 
-    virtual const Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
-
+    virtual const Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const;
 
     virtual const std::vector<long> &pls() const = 0;
-
 
     // -- Overridden methods
 
@@ -119,8 +122,11 @@ class Reduced : public Gaussian {
 
 };
 
+
 }  // namespace
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

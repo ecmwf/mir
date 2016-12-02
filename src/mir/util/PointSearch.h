@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Peter Bispham
+/// @author Baudouin Raoult
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date   Apr 2015
 
 
 #ifndef mir_method_PointSearch_H
@@ -19,37 +19,41 @@
 
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "atlas/Grid.h"
-#include "atlas/util/PointIndex3.h"
+#include "atlas/grid/Grid.h"
+#include "atlas/interpolation/PointIndex3.h"
 #include "mir/util/Compare.h"
 
 
 namespace mir {
+
+namespace method { class GridSpace; }
+
 namespace util {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 /// Class for fast searches in point clouds following kd-tree algorithms
 /// @todo test kd-tree stored in shared memory?
 class PointSearch : private eckit::NonCopyable {
 private:
 
-    typedef atlas::util::PointIndex3           TreeType;
-    typedef atlas::util::PointIndex3::Point    Point;
-    typedef atlas::util::PointIndex3::iterator iterator;
+    typedef atlas::interpolation::PointIndex3           TreeType;
+    typedef atlas::interpolation::PointIndex3::Point    Point;
+    typedef atlas::interpolation::PointIndex3::iterator iterator;
 
 public:
 
-    typedef atlas::util::PointIndex3::Value PointValueType;
+    typedef atlas::interpolation::PointIndex3::Value PointValueType;
     typedef eckit::geometry::Point3   PointType;
 
-    typedef compare::compare_fn     <size_t> CompareType;
-    typedef compare::is_anything_fn <size_t> CompareTypeNone;
+    typedef compare::ACompareFn  <size_t> CompareType;
+    typedef compare::IsAnythingFn<size_t> CompareTypeNone;
 
 public:
 
     PointSearch(const std::vector<Point>& ipts);
 
-    PointSearch(const atlas::Mesh& mesh, const CompareType& isok=CompareTypeNone());
+    PointSearch(const method::GridSpace& sp, const CompareType& isok=CompareTypeNone());
 
 public:
 
@@ -73,13 +77,13 @@ private:
 
     void init(const std::vector<PointType>& points);
 
-    void init(const atlas::Mesh& mesh, const CompareType& isok=CompareTypeNone());
-
-
+    void init(const method::GridSpace& sp, const CompareType& isok=CompareTypeNone());
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace util
 }  // namespace mir
+
 #endif
 

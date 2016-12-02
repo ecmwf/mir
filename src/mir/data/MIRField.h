@@ -13,26 +13,34 @@
 /// @date Apr 2015
 
 
-#ifndef MIRField_H
-#define MIRField_H
+#ifndef mir_data_MIRField_h
+#define mir_data_MIRField_h
 
 #include <iosfwd>
 #include <vector>
+#include "eckit/thread/Mutex.h"
+#include "mir/data/FieldInfo.h"
 
 
 namespace mir {
-namespace repres {
-class Representation;
+namespace data {
+class Field;
+class MIRFieldStats;
 }
 namespace param {
 class MIRParametrisation;
 }
+namespace repres {
+class Representation;
+}
+}
+
+
+namespace mir {
 namespace data {
 
-class MIRFieldStats;
 
 class MIRField {
-
 public:
 
     // -- Exceptions
@@ -40,7 +48,8 @@ public:
 
     // -- Contructors
 
-    //
+    /// @note not in Field
+    MIRField(const MIRField& other);
     MIRField(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
     MIRField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
@@ -52,32 +61,40 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    /// @note not in Field
+    MIRField& operator=(const MIRField& other);
 
     // -- Methods
 
     size_t dimensions() const;
+    void dimensions(size_t);
 
+    /// Resize to one, and keep only which
+    void select(size_t which);
 
     void representation(const repres::Representation *);
     const repres::Representation *representation() const;
 
-    void values(std::vector<double> &, size_t which /*=0*/);  // Warning Takes ownership of the vector
+    /// @warning Takes ownership of the vector
+    void update(std::vector<double> &, size_t which);
 
-    const std::vector<double> &values(size_t which /*=0*/) const;
-    std::vector<double> &values(size_t which /*=0*/);   // Non-const version for direct update (Filter)
+    const std::vector<double> &values(size_t which) const;
+    std::vector<double> &direct(size_t which);   // Non-const version for direct update (Filter)
+
+    void metadata(size_t which, const std::map<std::string, long>&);
+    void metadata(size_t which, const std::string& name, long value);
+    const std::map<std::string, long>& metadata(size_t which) const;
 
     void missingValue(double value);
     double missingValue() const;
 
     void hasMissing(bool on);
-    bool hasMissing() const ;
+    bool hasMissing() const;
 
     void validate() const;
 
     MIRFieldStats statistics(size_t i) const;
-
-    //
 
     // -- Overridden methods
     // None
@@ -88,7 +105,7 @@ public:
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -106,20 +123,17 @@ public:
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
+private:
 
     // -- Members
 
-    std::vector<std::vector<double> > values_;
-    bool hasMissing_;
-    double missingValue_;
-    const repres::Representation* representation_;
+    mutable eckit::Mutex mutex_;
+    Field *field_;
 
     // -- Methods
-    // None
+
+    /// @note note in Field
+    void copyOnWrite();
 
     // -- Overridden methods
     // None
@@ -142,5 +156,6 @@ public:
 
 }  // namespace data
 }  // namespace mir
-#endif
 
+
+#endif

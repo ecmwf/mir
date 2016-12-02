@@ -62,6 +62,7 @@ class NamedClassic : public NamedGrid {
 
 
     virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual size_t gaussianNumber() const;
 
     // -- Overridden methods
     // None
@@ -103,7 +104,7 @@ class NamedClassic : public NamedGrid {
 };
 
 
-}  // namespace logic
+}  // namespace namedgrids
 }  // namespace mir
 #endif
 

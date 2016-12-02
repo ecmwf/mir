@@ -28,87 +28,95 @@ namespace latlon {
 class ReducedLL : public Gridded {
   public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     ReducedLL(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~ReducedLL(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
+    // None
+
+    // -- Class methods
     // None
 
   protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
+
+    virtual atlas::grid::Grid* atlasGrid() const;
+
+    virtual atlas::grid::Domain atlasDomain() const;
+
+    virtual atlas::grid::Domain atlasDomain(const util::BoundingBox&) const;
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   private:
 
-// No copy allowed
+    // No copy allowed
 
     ReducedLL(const ReducedLL&);
     ReducedLL& operator=(const ReducedLL&);
 
-// -- Members
+    // -- Members
 
     util::BoundingBox bbox_;
     std::vector<long> pl_;
     size_t Nj_;
 
-// -- Methods
+    // -- Methods
 
-    virtual bool globalDomain() const;
+    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
 
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField&) const;
-
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual void fill(grib_info&) const;
+
     virtual void fill(api::MIRJob &) const;
-    virtual atlas::Grid* atlasGrid() const;
+
     virtual void validate(const std::vector<double>&) const;
+
     virtual Iterator* rotatedIterator() const; // After rotation
+
     virtual Iterator* unrotatedIterator() const; // Before rotation
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const ReducedLL& p)
     // { p.print(s); return s; }
@@ -119,5 +127,7 @@ class ReducedLL : public Gridded {
 }  // namespace latlon
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

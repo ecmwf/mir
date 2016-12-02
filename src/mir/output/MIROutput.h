@@ -18,10 +18,9 @@
 
 #include <iosfwd>
 
-
 namespace mir {
-namespace data {
-class MIRField;
+namespace context {
+class Context;
 }
 namespace input {
 class MIRInput;
@@ -33,7 +32,7 @@ namespace output {
 
 
 class MIROutput {
-  public:
+public:
 
 // -- Exceptions
     // None
@@ -54,8 +53,11 @@ class MIROutput {
 
 // -- Methods
 
-    virtual void copy(const param::MIRParametrisation&, input::MIRInput&) = 0; // Not iterpolation performed
-    virtual void save(const param::MIRParametrisation&, input::MIRInput&, data::MIRField&) = 0;
+    virtual size_t copy(const param::MIRParametrisation &, context::Context &) = 0; // Not iterpolation performed
+    virtual size_t save(const param::MIRParametrisation&, context::Context&) = 0;
+    virtual bool sameAs(const MIROutput& other) const = 0;
+    virtual bool sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const = 0;
+    virtual bool printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const = 0;
 
 // -- Overridden methods
     // None
@@ -66,7 +68,7 @@ class MIROutput {
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
     // None
@@ -84,7 +86,7 @@ class MIROutput {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 
@@ -108,7 +110,7 @@ class MIROutput {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const MIROutput& p) {
+    friend std::ostream& operator<<(std::ostream& s, const MIROutput& p) {
         p.print(s);
         return s;
     }

@@ -30,17 +30,26 @@ DummyOutput::~DummyOutput() {
 }
 
 
-void DummyOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+bool DummyOutput::sameAs(const MIROutput& other) const {
+    const DummyOutput* o = dynamic_cast<const DummyOutput*>(&other);
+    return o;
 }
 
 
-void DummyOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+size_t DummyOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
+    return 0;
+}
+
+
+size_t DummyOutput::save(const param::MIRParametrisation &param, context::Context& ctx) {
+    return 0;
 }
 
 
 void DummyOutput::print(std::ostream &out) const {
     out << "DummyOutput[...]";
 }
+
 
 
 }  // namespace output

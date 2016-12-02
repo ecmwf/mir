@@ -16,7 +16,7 @@
 #ifndef BitmapFilter_H
 #define BitmapFilter_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 #include "eckit/filesystem/PathName.h"
 
@@ -87,14 +87,16 @@ class BitmapFilter : public Action {
 
 // -- Members
 
-    const util::Bitmap* bitmap_;
+    std::string path_;
 
 // -- Methods
-    // None
+
+    util::Bitmap& bitmap() const;
 
 // -- Overridden methods
 
-    virtual void execute(data::MIRField&) const;
+    virtual void execute(context::Context & ctx) const;
+    virtual bool sameAs(const Action& other) const;
 
 
 // -- Class members

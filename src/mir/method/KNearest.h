@@ -22,6 +22,7 @@
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class KNearest: public Nearest {
 public:
@@ -36,11 +37,7 @@ protected:
 
 private:
 
-    // -- Members
-
     size_t nclosest_;
-
-    // -- Methods
 
     virtual void print(std::ostream&) const;
 
@@ -48,14 +45,9 @@ private:
 
     virtual size_t nclosest() const;
 
-    // -- Class members
-    // None
-
-    // -- Friends
-    // None
-
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

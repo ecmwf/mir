@@ -13,16 +13,18 @@
 /// @date Apr 2015
 
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/param/FieldParametrisation.h"
-#include "mir/param/MIRConfiguration.h"
+
+#include "eckit/exception/Exceptions.h"
+#include "mir/config/LibMir.h"
+#include "mir/config/MIRConfiguration.h"
+
 
 namespace mir {
 namespace param {
 
 
-FieldParametrisation::FieldParametrisation(): check_(false), logic_(0) {
+FieldParametrisation::FieldParametrisation() {
 }
 
 
@@ -38,7 +40,7 @@ bool FieldParametrisation::has(const std::string &name) const {
     //     return get("truncation", dummy);
     // }
 
-    eckit::Log::info() << "FieldParametrisation::has(" << name << ") " << *this << std::endl;
+    eckit::Log::debug<LibMir>() << "FieldParametrisation::has(" << name << ") " << *this << std::endl;
     return false;
 }
 
@@ -58,28 +60,15 @@ void FieldParametrisation::longitudes(std::vector<double> &) const {
 template<class T>
 bool FieldParametrisation::_get(const std::string &name, T &value) const {
 
-    const param::MIRConfiguration &configuration = param::MIRConfiguration::instance();
+    ASSERT(name != "paramId");
 
-    if (!logic_ && !check_) {
-        check_ = true;
-
-        long paramId = 0;
-
-        // This assumes that other input (NetCDF, etc) also return a paramId
-        if (get("paramId", paramId)) {
-            logic_ = configuration.lookup(paramId);
-            if (logic_) {
-                eckit::Log::info() << "paramId=" << paramId << " " << *logic_ << std::endl;
-            }
-        } else {
-            eckit::Log::info() << "ERROR: " << *this << " has no paramId" << std::endl;
-        }
-    }
-
-    eckit::Log::info() << "FieldParametrisation::_get(" << name << ") " <<  *this << std::endl;
-
-    if (logic_) {
-        return logic_->get(name, value);
+    // This assumes that other input (NetCDF, etc) also return a paramId
+    long paramId = 0;
+    if (get("paramId", paramId)) {
+        // return paramId specific parametrisation
+        const config::MIRConfiguration& configuration = config::MIRConfiguration::instance();
+        eckit::ScopedPtr<const param::MIRParametrisation> param(configuration.lookup(paramId, *this));
+        return param->get(name, value);
     }
 
     return false;
@@ -107,7 +96,7 @@ bool FieldParametrisation::get(const std::string &name, std::vector<long> &value
 
 bool FieldParametrisation::get(const std::string &name, std::vector<double> &value) const {
 
-    if (_get(name, value)) { // This will check if this in the logic paramaretirsaion
+    if (_get(name, value)) { // This will check if this in the style paramaretirsaion
         return true;
     }
 

@@ -24,6 +24,7 @@ namespace data {
 class MIRFieldStats {
 public:
 
+    MIRFieldStats();
     MIRFieldStats(const std::vector<double>& vs, size_t missing);
 
     double maximum() const;

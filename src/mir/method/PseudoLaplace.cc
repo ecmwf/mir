@@ -12,21 +12,26 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-#include "eckit/la/Vector.h"
-
 #include "mir/method/PseudoLaplace.h"
 
 #include <string>
 
+#include "eckit/linalg/Vector.h"
+#include "eckit/log/Timer.h"
+
+#include "mir/method/GridSpace.h"
 #include "mir/util/PointSearch.h"
 #include "mir/param/MIRParametrisation.h"
-#include "atlas/actions/BuildXYZField.h"
-#include "atlas/mesh/Nodes.h"
-#include "eckit/log/Timer.h"
+#include "mir/config/LibMir.h"
 
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
+
+namespace {
+enum { XX=0, YY=1, ZZ=2 };
+}
 
 PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
     MethodWeighted(param),
@@ -48,22 +53,16 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
     md5 << nclosest_;
 }
 
-void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const {
+void PseudoLaplace::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
-    eckit::Timer timer("PseudoLaplace::assemble");
-    eckit::Log::info() << "PseudoLaplace::assemble" << std::endl;
+    eckit::TraceTimer<LibMir> timer("PseudoLaplace::assemble");
+    eckit::Log::debug<LibMir>() << "PseudoLaplace::assemble" << std::endl;
 
-    util::PointSearch  sptree(in.mesh());
+    util::PointSearch  sptree(in);
 
-    atlas::Mesh& o_mesh = const_cast<atlas::Mesh&>(out.mesh());
+    atlas::array::ArrayView<double,2> ocoords = out.coordsXYZ();
 
-    // output points
-    atlas::mesh::Nodes& o_nodes = o_mesh.nodes();
-
-    atlas::actions::BuildXYZField("xyz")(o_nodes);
-    atlas::ArrayView<double,2> ocoords ( o_nodes.field( "xyz" ) );
-
-    const size_t out_npts = o_nodes.size();
+    const size_t out_npts = out.grid().npts();
 
     // init structure used to fill in sparse matrix
     std::vector< WeightMatrix::Triplet > weights_triplets;
@@ -71,9 +70,9 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
 
     std::vector<util::PointSearch::PointValueType> closest;
 
-    eckit::la::Vector Dx(nclosest_);
-    eckit::la::Vector Dy(nclosest_);
-    eckit::la::Vector Dz(nclosest_);
+    eckit::linalg::Vector Dx(nclosest_);
+    eckit::linalg::Vector Dy(nclosest_);
+    eckit::linalg::Vector Dz(nclosest_);
 
     std::vector<double> weights;
     weights.reserve(nclosest_);
@@ -94,9 +93,6 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
 
         for( size_t j = 0; j < npts; ++j) {
             eckit::geometry::Point3 np  = closest[j].point();
-            using atlas::XX;
-            using atlas::YY;
-            using atlas::ZZ;
 
             dx = np[XX] - p[XX];
             dy = np[YY] - p[YY];
@@ -146,13 +142,16 @@ void PseudoLaplace::assemble(WeightMatrix& W, const atlas::Grid& in, const atlas
 }
 
 
-void PseudoLaplace::print(std::ostream&) const {
+void PseudoLaplace::print(std::ostream& os) const {
+    os << "PseudoLaplace()";
 }
 
 
 namespace {
 static MethodBuilder< PseudoLaplace > __pseudolaplace("pseudo-laplace");
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 }  // namespace method

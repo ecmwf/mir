@@ -17,9 +17,12 @@
 
 #include "mir/output/RawOutput.h"
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/input/RawInput.h"
+#include "mir/config/LibMir.h"
+#include "mir/action/context/Context.h"
 
 
 namespace mir {
@@ -40,14 +43,28 @@ RawOutput::~RawOutput() {
     }
 }
 
+bool RawOutput::sameAs(const MIROutput& other) const {
+    return this == &other;
+}
 
-void RawOutput::copy(const param::MIRParametrisation &param, input::MIRInput &input) {
+bool RawOutput::sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const {
     NOTIMP;
-    size_ = input.copy(values_, count_);
+}
+
+bool RawOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
+    NOTIMP;
+}
+
+size_t RawOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
+    NOTIMP;
+    // size_ = input.copy(values_, count_);
+    // return size_ * sizeof(double);
 }
 
 
-void RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &input, data::MIRField &field) {
+size_t RawOutput::save(const param::MIRParametrisation &param, context::Context& ctx) {
+    data::MIRField& field = ctx.field();
+
     field.validate();
     // field.hasMissing();
     // field.missingValue();
@@ -56,7 +73,7 @@ void RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &in
     ASSERT(field.dimensions() == 1);
     const std::vector<double> &values = field.values(0);
 
-    eckit::Log::info() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
+    eckit::Log::debug<LibMir>() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
 
     size_ = values.size();
     ASSERT(size_ <= count_);
@@ -66,6 +83,8 @@ void RawOutput::save(const param::MIRParametrisation &param, input::MIRInput &in
     ASSERT(!representation_);
     representation_ = field.representation();
     representation_->attach();
+
+    return size_ * sizeof(double);
 
 }
 

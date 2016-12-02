@@ -16,7 +16,7 @@
 #ifndef AreaCropper_H
 #define AreaCropper_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 #include "mir/util/BoundingBox.h"
 
 
@@ -52,7 +52,7 @@ class AreaCropper : public Action {
 // -- Overridden methods
     // None
 
-    virtual void execute(data::MIRField&) const;
+    virtual void execute(context::Context & ctx) const;
 
 // -- Class members
     // None
@@ -88,10 +88,14 @@ class AreaCropper : public Action {
 // -- Members
 
     util::BoundingBox bbox_;
+    bool caching_;
+
 // -- Methods
     // None
 
 // -- Overridden methods
+
+    virtual bool sameAs(const Action& other) const;
 
 
 // -- Class members

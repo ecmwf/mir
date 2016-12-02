@@ -16,7 +16,7 @@
 #ifndef FrameFilter_H
 #define FrameFilter_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {
@@ -89,7 +89,8 @@ class FrameFilter : public Action {
 
 // -- Overridden methods
 
-    virtual void execute(data::MIRField&) const;
+    virtual void execute(context::Context & ctx) const;
+    virtual bool sameAs(const Action& other) const;
 
 
 // -- Class members

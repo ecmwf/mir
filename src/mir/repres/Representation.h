@@ -19,71 +19,68 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
+#include "eckit/memory/Counted.h"
 
-namespace atlas {
-class Grid;
-}
 
 struct grib_info;
 
+namespace atlas {
+namespace grid {
+class Grid;
+class Domain;
+}
+}
 
 namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-
+namespace repres {
+class Iterator;
+}
 namespace util {
 class BoundingBox;
-class Rotation;
+class MIRStatistics;
 }
-
-namespace data {
-class MIRField;
+namespace context {
+class Context;
 }
-
 namespace api {
 class MIRJob;
 }
+}
 
+
+namespace mir {
 namespace repres {
 
-class Iterator;
 
-
-class Representation {
+class Representation : public eckit::Counted {
   public:
 
-    // Sanning mode bits
+    // Scanning mode bits
     enum {
-        iScansNegatively = 1 << 7,
-        jScansPositively = 1 << 6,
+        iScansNegatively      = 1 << 7,
+        jScansPositively      = 1 << 6,
         jPointsAreConsecutive = 1 << 5,
-        alternateRowScanning = 1 << 4,
+        alternateRowScanning  = 1 << 4
     };
 
-
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Constructors
 
     Representation();
 
-// -- Destructor
-
-
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-    // For refenrence counting
-    void attach() const;
-
-    void detach() const;
 
     // --------------------
 
@@ -100,77 +97,81 @@ class Representation {
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
-    virtual const Representation* truncate(size_t truncation,
-                                     const std::vector<double>&, std::vector<double>&) const;
+    virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
-    virtual atlas::Grid* atlasGrid() const;
+    virtual atlas::grid::Grid* atlasGrid() const;
+    virtual atlas::grid::Domain atlasDomain() const;
+    virtual atlas::grid::Domain atlasDomain(const util::BoundingBox&) const;
 
     virtual size_t truncation() const;
+    virtual size_t pentagonalResolutionTs() const;
+
+    virtual void comparison(std::string&) const;
 
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
 
     virtual void setComplexPacking(grib_info&) const;
     virtual void setSimplePacking(grib_info&) const;
-    virtual void setSecondOrderPacking(grib_info&) const;
+    virtual void setGivenPacking(grib_info&) const;
 
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField &field) const;
+    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
 
     virtual void shape(size_t& ni, size_t& nj) const;
 
-
-
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   protected:
 
-// -- Members
+    // -- Destructor
 
-    virtual ~Representation(); // Change to virtual if base class
+    virtual ~Representation();
 
-// -- Methods
-
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
-
-// -- Overridden methods
+    // -- Members
     // None
 
-// -- Class members
+    // -- Methods
+
+    virtual void print(std::ostream&) const = 0;
+
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
+    // None
+
+    // -- Class methods
     // None
 
   private:
 
-// No copy allowed
+    // No copy allowed
 
     Representation(const Representation&);
     Representation& operator=(const Representation&);
 
-// -- Members
-
-    mutable size_t count_;
-
-// -- Methods
+    // -- Members
     // None
 
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-// -- Friends
+    // -- Class methods
+    // None
+
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const Representation& p) {
         p.print(s);
@@ -179,29 +180,27 @@ class Representation {
 
 };
 
-//========================================================
 
 class RepresentationHandle {
     const Representation* representation_;
-public:
+  public:
     RepresentationHandle(const Representation* r);
     ~RepresentationHandle();
-
-    const Representation* operator->() const { return representation_; }
-    operator const Representation*() const { return representation_; }
+    const Representation* operator->() const {
+        return representation_;
+    }
+    operator const Representation*() const {
+        return representation_;
+    }
 };
 
-//================================================
 
 class RepresentationFactory {
     std::string name_;
     virtual Representation* make(const param::MIRParametrisation&) = 0 ;
-
   protected:
-
     RepresentationFactory(const std::string&);
     virtual ~RepresentationFactory();
-
   public:
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable
@@ -220,8 +219,8 @@ class RepresentationBuilder : public RepresentationFactory {
 };
 
 
-
 }  // namespace repres
 }  // namespace mir
-#endif
 
+
+#endif

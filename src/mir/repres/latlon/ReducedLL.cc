@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,19 +12,58 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/repres/latlon/ReducedLL.h"
 
 #include <iostream>
-
-#include "atlas/grids/LocalGrid.h"
-#include "atlas/grids/ReducedLonLatGrid.h"
-
-#include "mir/param/MIRParametrisation.h"
-#include "mir/util/Compare.h"
+#include "atlas/grid/lonlat/ReducedLonLat.h"
 #include "mir/action/misc/AreaCropper.h"
-#include "mir/repres/Iterator.h"
 #include "mir/api/MIRJob.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
+#include "mir/util/Compare.h"
 
+
+namespace {
+
+
+void clipPlArray(std::vector<long>& pl, mir::util::BoundingBox& bbox) {
+    const long N = long(pl.size());
+    ASSERT(N);
+
+    long NZerosNorth = 0;
+    for (size_t i=0; i<pl.size() && pl[i]==0; ++i) {
+        ++NZerosNorth;
+    }
+
+    long NZerosSouth = 0;
+    if (NZerosNorth<N) {
+        for (size_t i=size_t(N-1); i>0 && pl[i]==0; --i) {
+            ++NZerosSouth;
+        }
+    }
+
+    if (!NZerosNorth && !NZerosSouth) {
+        return;
+    }
+
+    // adjust bounding box, as if without leading/trailing zeros
+    ASSERT(NZerosNorth + NZerosSouth < N);
+
+    const double inc_north_south = (bbox.north() - bbox.south()) / (N - 1);
+    double adjustedNorth = bbox.north() - NZerosNorth * inc_north_south;
+    double adjustedSouth = bbox.south() + NZerosSouth * inc_north_south;
+    bbox = mir::util::BoundingBox(
+                adjustedNorth, bbox.west(),
+                adjustedSouth, bbox.east() );
+
+    // clip pl array
+    std::vector<long> plClipped(pl.begin() + NZerosNorth, pl.end() - NZerosSouth);
+    pl.swap(plClipped);
+}
+
+
+}  // (anonymous namespace)
 namespace mir {
 namespace repres {
 namespace latlon {
@@ -34,7 +73,16 @@ ReducedLL::ReducedLL(const param::MIRParametrisation &parametrisation):
     bbox_(parametrisation) {
     ASSERT(parametrisation.get("pl", pl_));
     ASSERT(parametrisation.get("Nj", Nj_));
+    ASSERT(Nj_);
+    ASSERT(pl_.size()==Nj_);
+
+    // clip pl array if it starts/ends with zeros, and adjust the bbox
+    if (pl_.front()==0 || pl_.back()==0) {
+        clipPlArray(pl_, bbox_);
+        Nj_ = pl_.size();
+    }
 }
+
 
 ReducedLL::~ReducedLL() {
 }
@@ -49,6 +97,7 @@ void ReducedLL::fill(grib_info &info) const  {
     NOTIMP;
 }
 
+
 void ReducedLL::fill(api::MIRJob &job) const  {
     bbox_.fill(job);
     job.set("pl", pl_);
@@ -56,45 +105,55 @@ void ReducedLL::fill(api::MIRJob &job) const  {
     NOTIMP;
 }
 
-void ReducedLL::cropToDomain(const param::MIRParametrisation &parametrisation, data::MIRField &field) const {
-    if (!globalDomain()) {
+
+void ReducedLL::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
+    if (!atlasDomain().isGlobal()) {
         action::AreaCropper cropper(parametrisation, bbox_);
-        cropper.execute(field);
+        cropper.execute(ctx);
     }
 }
 
-bool ReducedLL::globalDomain() const {
 
-    // FIXME: cache
-    if (bbox_.north() == 90 && bbox_.south() == -90) {
-        if (Nj_ == pl_.size()) {
-            ASSERT(pl_.size());
-            long maxpl = pl_[0];
-            for (size_t i = 1; i < pl_.size(); i++) {
-                maxpl = std::max(maxpl, pl_[i]);
-            }
-
-            double ew = 360.0 / maxpl;
-
-            if (eckit::FloatCompare<double>::isApproximatelyEqual(bbox_.east() - bbox_.west() + ew, 360.)) {
-                return true;
-            }
-        }
-
-    }
-    return false;
+atlas::grid::Grid *ReducedLL::atlasGrid() const {
+    return new atlas::grid::lonlat::ReducedLonLat(pl_.size(), &pl_[0], atlasDomain());
 }
 
-atlas::Grid *ReducedLL::atlasGrid() const {
 
-    if ( globalDomain() ) {
-        // FIXME: we are missing the distrubution of latitudes
-        return new atlas::grids::ReducedLonLatGrid(pl_.size(), &pl_[0], atlas::grids::ReducedLonLatGrid::INCLUDES_POLES);
-    } else {
-        atlas::Domain domain(bbox_.north(), bbox_.west(), bbox_.south(), bbox_.east() );
-        // FIXME: we are missing the distrubution of latitudes
-        return new atlas::grids::ReducedLonLatGrid(pl_.size(), &pl_[0], atlas::grids::ReducedLonLatGrid::INCLUDES_POLES, domain);
+atlas::grid::Domain ReducedLL::atlasDomain() const {
+  return atlasDomain(bbox_);
+}
+
+
+atlas::grid::Domain ReducedLL::atlasDomain(const util::BoundingBox& bbox) const {
+    typedef eckit::FloatCompare<double> cmp;
+
+    ASSERT(pl_.size());
+
+    long maxpl = pl_[0];
+    for (size_t i=1; i<pl_.size(); ++i) {
+        maxpl = std::max(maxpl, pl_[i]);
     }
+
+    const double ew = bbox.east() - bbox.west();
+    const double inc_west_east = maxpl? ew/double(maxpl) : 0.;
+
+    // confirm domain limits
+    const double epsilon_grib1 = 1.0 / 1000.0;
+
+    const bool isPeriodicEastWest =
+               cmp::isApproximatelyEqual(ew + inc_west_east, 360.)
+
+            // FIXME: GRIB=1 is in millidegree, GRIB-2 in in micro-degree. Use the precision given by GRIB in this check
+            || cmp::isApproximatelyEqual(ew + inc_west_east, 360., epsilon_grib1);
+    const bool includesPoleNorth  = cmp::isApproximatelyEqual(bbox.north(),  90.);
+    const bool includesPoleSouth  = cmp::isApproximatelyEqual(bbox.south(), -90.);
+
+    const double
+            north = includesPoleNorth?   90 : bbox.north(),
+            south = includesPoleSouth?  -90 : bbox.south(),
+            west = bbox.west(),
+            east = isPeriodicEastWest? bbox.west() + 360 : bbox.east();
+    return atlas::grid::Domain(north, west, south, east);
 }
 
 
@@ -109,31 +168,40 @@ void ReducedLL::validate(const std::vector<double> &values) const {
 
 class ReducedLLIterator: public Iterator {
 
-    const std::vector<long> &pl_;
-    util::BoundingBox bbox_;
+    const std::vector<long>& pl_;
+    const atlas::grid::Domain domain_;
 
     size_t ni_;
-    size_t nj_;
+    const size_t nj_;
 
     size_t i_;
     size_t j_;
     size_t p_;
 
     size_t count_;
-    double north_;
-    double west_;
-    double east_;
-    double ns_;
-
 
     virtual void print(std::ostream &out) const {
-        out << "ReducedLLIterator[]";
+        out << "ReducedLLIterator["
+            <<  "domain=" << domain_
+            << ",ni="     << ni_
+            << ",nj="     << nj_
+            << ",i="      << i_
+            << ",j="      << j_
+            << ",p="      << p_
+            << ",count="  << count_
+            << "]";
     }
 
     virtual bool next(double &lat, double &lon) {
+
+        const double ew = (domain_.east() - domain_.west());
+        const double inc_north_south = (domain_.north() - domain_.south()) / (nj_ - 1);
+
         while (j_ < nj_ && i_ < ni_) {
-            lat = north_ - j_ * ns_;
-            lon = west_ + (i_ * (east_ - west_)) / ni_;
+
+            lat = domain_.north() - j_ * inc_north_south;
+            lon = domain_.west() + (i_ * ew) / ni_;
+
             i_++;
             if (i_ == ni_) {
 
@@ -143,14 +211,11 @@ class ReducedLLIterator: public Iterator {
                 if (j_ < nj_) {
                     ASSERT(p_ < pl_.size());
                     ni_ = pl_[p_++];
-                    // eckit::Log::info() << "ni = " << ni_ << std::endl;
                 }
 
             }
 
-            // eckit::Log::info() << "++++++ " << lat << " " << lon << " - " << bbox_ << " -> " << bbox_.contains(lat, lon) << std::endl;
-
-            if (bbox_.contains(lat, lon)) {
+            if (domain_.contains(lon,lat)) {
                 count_++;
                 return true;
             }
@@ -158,52 +223,39 @@ class ReducedLLIterator: public Iterator {
         return false;
     }
 
-  public:
+public:
 
-    // TODO: Consider keeping a reference on the latitudes and bbox, to avoid copying
-
-    ReducedLLIterator(size_t nj, const std::vector<long> &pl, const util::BoundingBox &bbox):
+    ReducedLLIterator(size_t nj, const std::vector<long>& pl, const atlas::grid::Domain& dom) :
         pl_(pl),
-        bbox_(bbox),
+        domain_(dom),
         nj_(nj),
         i_(0),
         j_(0),
         p_(0),
         count_(0) {
 
-
-        north_ = bbox_.north();
-        west_ = bbox_.west();
-        east_ = bbox_.east();
-        ns_ = (bbox_.north() - bbox_.south()) / (nj_ - 1);
         ni_ = pl_[p_++];
 
-        // eckit::Log::info() << "ReducedLLIterator ni=" << ni_ << " nj=" << nj_
-        // << " j=" << j_ << " " << bbox_ << " ns=" << ns_ << std::endl;
-
-
-    }
-
-    ~ReducedLLIterator() {
-        std::cout << "~ReducedLLIterator " << count_ << std::endl;
-        // ASSERT(count_ == ni_ * nj_);
+        // eckit::Log::debug<LibMir>() << *this << std::endl;
     }
 
 };
 
+
 Iterator *ReducedLL::unrotatedIterator() const {
-    // Use a global bounding box if global domain, to avoid rounding issues
-    // due to GRIB (in)accuracies
-    return new ReducedLLIterator(Nj_, pl_, globalDomain() ? util::BoundingBox() : bbox_);
+    return new ReducedLLIterator(Nj_, pl_, atlasDomain());
 }
+
 
 Iterator* ReducedLL::rotatedIterator() const {
     return unrotatedIterator();
 }
 
+
 namespace {
 static RepresentationBuilder<ReducedLL> reducedLL("reduced_ll"); // Name is what is returned by grib_api
 }
+
 
 }  // namespace latlon
 }  // namespace repres

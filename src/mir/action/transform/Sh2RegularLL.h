@@ -19,93 +19,97 @@
 #include "mir/action/transform/Sh2GriddedTransform.h"
 #include "mir/util/Increments.h"
 
+
 namespace mir {
 namespace action {
 
 
 class Sh2RegularLL : public Sh2GriddedTransform {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     Sh2RegularLL(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~Sh2RegularLL(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // No copy allowed
 
     Sh2RegularLL(const Sh2RegularLL&);
     Sh2RegularLL& operator=(const Sh2RegularLL&);
 
-// -- Members
+    // -- Members
+
     util::Increments grid_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
+
+    virtual bool sameAs(const Action& other) const;
 
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Sh2RegularLL& p)
-    //	{ p.print(s); return s; }
+    // -- Friends
+    // None
 
 };
 
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

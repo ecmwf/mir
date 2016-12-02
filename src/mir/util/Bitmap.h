@@ -12,15 +12,17 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #ifndef Bitmap_H
 #define Bitmap_H
 
+#include <string>
 #include <vector>
 
-#include "eckit/filesystem/PathName.h"
 
 namespace mir {
 namespace util {
+
 
 class Bitmap {
   public:
@@ -29,7 +31,7 @@ class Bitmap {
 
     // -- Contructors
 
-    explicit Bitmap(const eckit::PathName&);
+    explicit Bitmap(const std::string&);
 
     // -- Destructor
 
@@ -46,6 +48,7 @@ class Bitmap {
     size_t width() const {
         return width_;
     }
+
     size_t height() const {
         return height_;
     }
@@ -53,6 +56,8 @@ class Bitmap {
     bool on(size_t j, size_t i) const {
         return bitmap_[j][i];
     }
+
+    size_t footprint() const;
 
     // -- Overridden methods
     // None
@@ -87,13 +92,15 @@ class Bitmap {
 
     // -- Members
 
-    eckit::PathName path_;
+    std::string path_;
     std::vector<std::vector<bool> > bitmap_;
     size_t width_;
     size_t height_;
 
     // -- Methods
-    // None
+
+    void disseminationBitmap(const std::string& path);
+    void prodgenBitmap(const std::string& path, const std::string& destination, const std::string& number);
 
     // -- Overridden methods
 
@@ -112,7 +119,9 @@ class Bitmap {
 
 };
 
+
 }  // namespace util
 }  // namespace mir
+
 
 #endif

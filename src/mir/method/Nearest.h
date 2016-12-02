@@ -22,6 +22,7 @@
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class Nearest : public MethodWeighted {
 public:
@@ -32,26 +33,18 @@ public:
 
 protected:
 
-    double epsilon_;
-
-    virtual void hash(eckit::MD5&) const;
-
-    virtual void assemble(WeightMatrix& W, const atlas::Grid& in, const atlas::Grid& out) const;
+    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
 
 private:
-    // -- Methods
 
     virtual size_t nclosest() const = 0;
 
     // virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
-    // -- Class members
-
-    // -- Friends
-
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

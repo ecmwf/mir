@@ -16,7 +16,7 @@
 #ifndef ReferencePattern_H
 #define ReferencePattern_H
 
-#include "mir/action/Action.h"
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {
@@ -49,7 +49,7 @@ class ReferencePattern : public Action {
 // -- Overridden methods
     // None
 
-    virtual void execute(data::MIRField&) const;
+    virtual void execute(context::Context & ctx) const;
 
 // -- Class members
     // None
@@ -89,6 +89,7 @@ class ReferencePattern : public Action {
 
 // -- Overridden methods
 
+    virtual bool sameAs(const Action& other) const;
 
 // -- Class members
     // None

@@ -36,10 +36,9 @@ class RotatedLL : public RegularLL {
     RotatedLL(const param::MIRParametrisation &);
     RotatedLL(const util::BoundingBox &bbox, const util::Increments &increments, const util::Rotation &rotation);
 
-
     // -- Destructor
 
-    virtual ~RotatedLL(); // Change to virtual if base class
+    virtual ~RotatedLL();
 
     // -- Convertors
     // None
@@ -48,6 +47,7 @@ class RotatedLL : public RegularLL {
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -71,6 +71,9 @@ class RotatedLL : public RegularLL {
     // -- Overridden methods
     // None
 
+    virtual atlas::grid::Grid *atlasGrid() const;
+    virtual Iterator* rotatedIterator() const;
+
     // -- Class members
     // None
 
@@ -87,23 +90,19 @@ class RotatedLL : public RegularLL {
     RotatedLL &operator=(const RotatedLL &);
 
     // -- Members
-
+    // None
 
     // -- Methods
     // None
-
 
     // -- Overridden methods
 
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
-    virtual atlas::Grid *atlasGrid() const;
-    virtual Iterator* rotatedIterator() const;
+
 
     // From RegularLL
     virtual const RotatedLL *cropped(const util::BoundingBox &bbox) const;
-
-
 
     // -- Class members
     // None
@@ -112,14 +111,15 @@ class RotatedLL : public RegularLL {
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const RotatedLL& p)
-    //  { p.print(s); return s; }
+    // None
 
 };
+
 
 }  // namespace latlon
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

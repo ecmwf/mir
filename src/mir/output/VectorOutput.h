@@ -67,7 +67,13 @@ class VectorOutput : public MIROutput {
 
 
     // -- Overridden methods
-    // None
+
+    virtual size_t copy(const param::MIRParametrisation &, context::Context &) ; // Not iterpolation performed
+    virtual size_t save(const param::MIRParametrisation &, context::Context &);
+    virtual bool sameAs(const MIROutput &other) const ;
+    virtual void print(std::ostream &out) const;
+    virtual bool sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const;
+    virtual bool printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const;
 
     // -- Class members
     // None
@@ -87,13 +93,9 @@ class VectorOutput : public MIROutput {
 
     // -- Methods
 
-    virtual long component1ParamId(input::MIRInput &) const;
-    virtual long component2ParamId(input::MIRInput &) const;
-
     // -- Overridden methods
 
-    virtual void copy(const param::MIRParametrisation &, input::MIRInput &) ; // Not iterpolation performed
-    virtual void save(const param::MIRParametrisation &, input::MIRInput &, data::MIRField &);
+
 
     // -- Class members
     // None

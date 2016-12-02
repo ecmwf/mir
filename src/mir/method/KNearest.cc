@@ -24,6 +24,7 @@
 namespace mir {
 namespace method {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 KNearest::KNearest(const param::MIRParametrisation &param) :
     Nearest(param),
@@ -53,7 +54,7 @@ void KNearest::hash( eckit::MD5& md5) const {
 
 
 void KNearest::print(std::ostream &out) const {
-    out << "KNearest[nclosest=" << nclosest_ << ",epsilon=" << epsilon_ << "]";
+    out << "KNearest[nclosest=" << nclosest_ << "]";
 }
 
 
@@ -61,6 +62,7 @@ namespace {
 static MethodBuilder< KNearest > __knearest("k-nearest");
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

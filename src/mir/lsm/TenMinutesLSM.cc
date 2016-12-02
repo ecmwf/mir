@@ -16,12 +16,13 @@
 
 #include "TenMinutesLSM.h"
 
-#include "atlas/Grid.h"
+#include "atlas/grid/Grid.h"
 
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+#include "mir/config/LibMir.h"
 
 namespace {
 
@@ -38,29 +39,29 @@ const size_t COLS = 2160;
 
 /*
 From EMOSLIB:
-     The 10 minute land sea mask file contains 1080 lines of 2160
+     The 10 minute land-sea mask file contains 1080 lines of 2160
      values with each value stored as one bit. (Each line of latitude
      is packed in 68*32 = 2176 bits). Each value consists
      of a 0 for sea or a 1 for land. The bits are assumed to be in
      the centre of a 10 minute square (e.g. the first value is
      assumed to be at 0  5' East and 89  55' North).
 
-    ~mir/etc/ten-minutes.mask is a copy of ~emos/tables/interpolation/lsm_32_lsm10m01
+    ~mir/share/mir/masks/ten-minutes.mask is a copy of ~emos/tables/interpolation/lsm_32_lsm10m01
 */
 
 TenMinutesLSM::TenMinutesLSM(const std::string &name,
                              const param::MIRParametrisation &parametrisation,
-                             const atlas::Grid &grid,
+                             const atlas::grid::Grid &grid,
                              const std::string &which):
     Mask(name),
-    path_("~mir/etc/ten-minutes.mask") {
+    path_("~mir/share/mir/masks/ten-minutes.mask") {
 
 
     if (ten_minutes_.size() == 0) {
 
-        eckit::Timer timer("Load 10 minutes LSM");
+        eckit::TraceTimer<LibMir> timer("Load 10 minutes LSM");
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-        eckit::Log::info() << "TenMinutesLSM loading " << path_ << std::endl;
+        eckit::Log::debug<LibMir>() << "TenMinutesLSM loading " << path_ << std::endl;
 
         eckit::StdFile file(path_);
         ten_minutes_.resize(ROWS);
@@ -81,17 +82,17 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 
     }
 
-    eckit::Timer timer("Extract point from 10 minutes LSM");
+    eckit::TraceTimer<LibMir> timer("Extract point from 10 minutes LSM");
 
 
     // NOTE: this is not using 3D coordinate systems
 
-    std::vector<atlas::Grid::Point> points(grid.npts());
+    std::vector<atlas::grid::Grid::Point> points(grid.npts());
     grid.lonlat(points);
 
     mask_.reserve(points.size());
 
-    for (std::vector<atlas::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
+    for (std::vector<atlas::grid::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
         double lat = (*j).lat();
         ASSERT(lat >= -90);
         ASSERT(lat <= 90);
@@ -106,10 +107,10 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
         }
 
         int row = (90.0 - lat) * (ROWS-1) / 180;
-        ASSERT(row >= 0 && row < ROWS);
+        ASSERT(row >= 0 && row < int(ROWS));
 
         int col = lon * COLS / 360.0;
-        ASSERT(col >= 0 && col < COLS);
+        ASSERT(col >= 0 && col < int(COLS));
 
         mask_.push_back(ten_minutes_[row][col]);
     }
@@ -136,6 +137,6 @@ const std::vector<bool> &TenMinutesLSM::mask() const {
 //-----------------------------------------------------------------------------
 
 
-}  // namespace logic
+}  // namespace lsm
 }  // namespace mir
 

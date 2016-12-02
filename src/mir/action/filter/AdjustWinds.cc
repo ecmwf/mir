@@ -12,18 +12,21 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/filter/AdjustWinds.h"
 
-#include <iostream>
 #include <cmath>
-
+#include <iostream>
 #include "eckit/exception/Exceptions.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "mir/repres/Iterator.h"
+#include "mir/repres/Representation.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Compare.h"
+
 
 namespace mir {
 namespace action {
@@ -43,13 +46,22 @@ AdjustWinds::AdjustWinds(const param::MIRParametrisation &parametrisation):
 AdjustWinds::~AdjustWinds() {
 }
 
+
+bool AdjustWinds::sameAs(const Action& other) const {
+    const AdjustWinds* o = dynamic_cast<const AdjustWinds*>(&other);
+    return o && (rotation_ == o->rotation_);
+}
+
+
 void AdjustWinds::print(std::ostream &out) const {
     out << "AdjustWinds[rotation=" << rotation_ << "]";
 }
 
-inline double radian(double x) { return x * (M_PI / 180.0); }
-inline double degree(double x) { return x * (180.0 / M_PI);}
-inline double normalize(double x) { return std::max(std::min(x, 1.0), -1.0); }
+
+inline double normalize(double x) {
+    return std::max(std::min(x, 1.0), -1.0);
+}
+
 
 inline double sign(double a, double b) {
     if (b >= 0.0 ) {
@@ -60,9 +72,17 @@ inline double sign(double a, double b) {
 
 
 void AdjustWinds::windDirections(const repres::Representation* representation, std::vector<double> &result) const {
+
+    ASSERT(representation);
+
     result.clear();
 
+    // std::cout << "AdjustWinds::windDirections " << *representation << std::endl;
+
     eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
+
+    // std::cout << "AdjustWinds::windDirections " << *iter << std::endl;
+
 
     double lat = 0;
     double lon = 0;
@@ -70,27 +90,25 @@ void AdjustWinds::windDirections(const repres::Representation* representation, s
     // Inspired from HPSHGPW
 
     double pole_longitude = -rotation_.south_pole_longitude();
-    double theta = radian(rotation_.south_pole_latitude());
+    double theta = util::angles::degree_to_radian(rotation_.south_pole_latitude());
     double sin_theta = -sin(theta);
     double cos_theta = -cos(theta);
 
     while (iter->next(lat, lon)) {
 
-        double radian_lat = radian(lat);
+        double radian_lat = util::angles::degree_to_radian(lat);
         double sin_lat = sin(radian_lat);
         double cos_lat = cos(radian_lat);
 
         lon += pole_longitude;
 
-        // For some reason, the algorithms only work between in (-180,180]
-        while(lon < -180) { lon += 360; }
-        while(lon >  180) { lon -= 360; }
-
+        // For some reason, the algorithms only work between in ]-180,180]
+        lon = util::angles::between_m180_and_p180(lon);
         if (eckit::FloatCompare<double>::isApproximatelyEqual(lon, -180)) {
             lon = 180.0;
         }
 
-        double radian_lon = radian(lon);
+        double radian_lon = util::angles::degree_to_radian(lon);
         double sin_lon = sin(radian_lon);
         double cos_lon = cos(radian_lon);
         double z = normalize(sin_theta * sin_lat + cos_theta * cos_lat * cos_lon);
@@ -118,16 +136,27 @@ void AdjustWinds::windDirections(const repres::Representation* representation, s
 }
 
 
-void AdjustWinds::execute(data::MIRField &field) const {
+void AdjustWinds::execute(context::Context & ctx) const {
+    data::MIRField& field = ctx.field();
+
     ASSERT((field.dimensions() % 2) == 0);
 
     std::vector<double> directions;
+
+    size_t size = field.values(0).size();
     directions.reserve(field.values(0).size());
 
     ASSERT(!field.hasMissing()); // For now
 
     windDirections(field.representation(), directions);
-    size_t size = directions.size();
+
+    if (directions.size() != size) {
+        std::cout << "AdjustWinds::windDirections after=" << directions.size()
+                  << " before=" << size << std::endl;
+
+    }
+    ASSERT(directions.size() == size);
+
 
     std::vector<double> c(size);
     std::vector<double> s(size);
@@ -156,8 +185,8 @@ void AdjustWinds::execute(data::MIRField &field) const {
             new_v_values[j] = u_values[j] * s[j] + v_values[j] * c[j];
         }
 
-        field.values(new_u_values, i);
-        field.values(new_v_values, i + 1);
+        field.update(new_u_values, i);
+        field.update(new_v_values, i + 1);
     }
 }
 

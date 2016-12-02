@@ -1,101 +1,118 @@
-# define the grib environment
 
+# Setup cache directory
 set( TEST_ECKIT_CACHE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/cache/ )
-
 file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
-get_target_property( MIR_TOOL mir_tool LOCATION )
 
-########################################################################################################################
-#### TESTS
+# Set list of input data files
+set(TEST_INPUT_FILES
+        "2t_O640.grib"
+        "msl_N640.grib"
+        "msl_regular_ll_1-1.grib"
+        "msl_regular_ll_2-2.grib"
+        "msl_regular_ll_3-3.grib"
+        "q_F640.grib" )
 
-# each line is a request,
-# we parse the line and take the last entry as the file to download
+# Add input data with spherical harmonic if possible
+if(ATLAS_HAVE_TRANS)
+    list(APPEND TEST_INPUT_FILES
+        "vo-d_sh.grib"
+        "z_sh.grib" )
+endif(ATLAS_HAVE_TRANS)
 
-list( APPEND _test_reqs
-  "--grid=2/2 --area=40/20/20/40 ll11_msl.grib"
-  "--grid=1/1 ll22_msl.grib"
-  "ll33_msl.grib"
-)
+# Set interpolation tests
+# (each line is an interpolation, the previous-to-last entry in each line is a file to download)
+unset(_test_reqs)
+foreach( _in ${TEST_INPUT_FILES})
+  foreach( _pproc
+          ""
+          "--grid=1/1 --area=40/20/20/40"
+          "--grid=1/1 --area=40/20/20/40 --frame=2"
+          "--grid=2/2"
+          "--grid=3/3"
+          "--rotation=-90/0"
+          "--rotation=-89/1" )
+      if( "${_pproc}" STREQUAL "" )
+        set(_label "mir_tests_nointerpol ${_in}")
+      else()
+        set(_label "mir_tests_interpol ${_in} to ${_pproc}")
+      endif()
+      string(REGEX REPLACE "[.]grib"      ""  _label ${_label})
+      string(REGEX REPLACE "[^A-Za-z0-9]" "_" _label ${_label})
+      string(REGEX REPLACE "[ _]+"        "_" _label ${_label})
+      if( NOT (_in MATCHES ".*_sh.grib$" AND _pproc MATCHES "--frame=.*") )
 
-foreach( _t ${_test_reqs} )
-  separate_arguments(_t)
-  list( GET       _t -1 _f )
-  list( APPEND _test_data ${_f} )
+        set(_out "${_label}.grib")
+        list(APPEND _test_reqs "${_pproc} ${_in} ${_out}")
+
+      endif()
+  endforeach()
 endforeach()
 
-ecbuild_get_test_multidata( TARGET mir_get_test_data NAMES ${_test_data} )
-
-foreach( _t ${_test_reqs} )
+unset(_tests_src_files)
+foreach(_t ${_test_reqs})
   separate_arguments(_t)
-  list( GET _t -1 _file )
-  string(REGEX REPLACE "[^A-Za-z0-9]" "_" _tst ${_file})
-
-  ecbuild_add_test( TARGET test_${_tst}
-                    COMMAND ${MIR_TOOL}
-                    ARGS ${_t} ${_file}.test
-                    ENVIRONMENT
-                      TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}
-                      GRIB_DEFINITION_PATH=${GRIB_API_DEFINITION_PATH}
-                      GRIB_SAMPLES_PATH=${GRIB_API_SAMPLES_PATH}
-                    TEST_DEPENDS mir_get_test_data
-                  )
+  list(GET    _t -2 _file)
+  list(APPEND _tests_src_files ${_file})
 endforeach()
+list(REMOVE_DUPLICATES _tests_src_files)
 
-########################################################################################################################
-#### TEST ALL GRIB_API templates
-
-file(GLOB_RECURSE testGribTemplates ${GRIB_API_SAMPLES_PATH}/*.tmpl)
-
-# ecbuild_debug_var(GRIB_SAMPLES_PATH)
-# ecbuild_debug_var(testGribTemplates)
+ecbuild_get_test_multidata(
+    TARGET download_mir_tests_files
+    NAMES  ${_tests_src_files} )
 
 
-# skip these samples
-
-list( APPEND skipTmpl
-    ".*budg.tmpl"
-    ".*polar_stereographic_pl_grib.*"
-    ".*polar_stereographic_sfc_grib.*"
-    ".*reduced_gg_pl_1280_grib.*"
-    ".*reduced_gg_pl_2000_grib.*"
-    ".*reduced_ll_sfc_grib.*"
-    ".*reduced_rotated_gg_pl_1280_grib.*"
-    ".*reduced_rotated_gg_pl_2000_grib.*"
-    ".*rotated_ll_pl_grib.*"
-    ".*rotated_ll_sfc_grib.*"
-)
-
-if( ECBUILD_MACRO_VERSION VERSION_LESS 2.0 )
-
-    foreach( item ${testGribTemplates} )
-        foreach( pattern ${skipTmpl} )
-            if( NOT ${item} MATCHES ${pattern} )
-                list( APPEND sanitizedGribTemplates )
-            endif()
-        endforeach()
-    endforeach()
-
-else()
-
-    ecbuild_list_exclude_pattern( LIST testGribTemplates REGEX ${skipTmpl} )
-    set( sanitizedGribTemplates ${testGribTemplates})
-
+# Set testing environment
+if( NOT eccodes_BASE_DIR )
+    if( TARGET "grib_compare" )
+        get_target_property( CMD_GRIB_COMPARE "grib_compare" LOCATION )
+    endif()
+    if( NOT CMD_GRIB_COMPARE )
+        find_program( CMD_GRIB_COMPARE "grib_compare" )
+    endif()
+    if( CMD_GRIB_COMPARE )
+        get_filename_component( _grib_compare_dir "${CMD_GRIB_COMPARE}" PATH )
+        get_filename_component( eccodes_BASE_DIR "${_grib_compare_dir}" ABSOLUTE )
+        set( eccodes_BASE_DIR "${eccodes_BASE_DIR}/../" )
+    else()
+        ecbuild_critical("Could not guess eccodes_BASE_DIR, nor find grib_compare (in bundle nor in path) as an alternative" )
+    endif()
 endif()
+set( eccodes_environment
+    ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/${grib_handling_pkg}/definitions
+    ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/${grib_handling_pkg}/samples )
 
-# ecbuild_debug_var(sanitizedGribTemplates)
 
-foreach( _t ${sanitizedGribTemplates} )
+# Unit tests: simple interpolations
+foreach(_t ${_test_reqs})
+  separate_arguments(_t)
+  list(GET _t -1 _out)
+  string(REGEX REPLACE "[.]grib$" "" _label ${_out})
 
-    get_filename_component(_tst ${_t} NAME_WE)
-
-    ecbuild_add_test( TARGET test_grib_sample_${_tst}
-                      COMMAND ${MIR_TOOL}
-                      ARGS "--grid=1/1" ${_t} /dev/null
-                      ENVIRONMENT
-                        TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}
-                        GRIB_DEFINITION_PATH=${GRIB_API_DEFINITION_PATH}
-                        GRIB_SAMPLES_PATH=${GRIB_API_SAMPLES_PATH}
-                    )
+  ecbuild_add_test(
+      TARGET       ${_label}
+      COMMAND      $<TARGET_FILE:mir-tool>
+      ARGS         "--caching=0" ${_t}
+      TEST_DEPENDS download_mir_tests_files
+      ENVIRONMENT
+        "MIR_DEBUG=1"
+        "MIR_HOME=${CMAKE_BINARY_DIR}"
+        "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
+        ${eccodes_environment} )
 
 endforeach()
+
+
+# Unit tests: other
+foreach(_t "mir_tests_RotateGrid")
+  ecbuild_add_test(
+      TARGET   ${_t}
+      SOURCES "${_t}.cc"
+      LIBS    mir
+      ENVIRONMENT
+        "MIR_DEBUG=1"
+        "MIR_HOME=${CMAKE_BINARY_DIR}"  )
+endforeach()
+
+add_subdirectory(assertions)
+
