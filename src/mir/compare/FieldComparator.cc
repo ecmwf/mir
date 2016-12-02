@@ -80,12 +80,12 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args):
     roundDegrees_(false),
     maximumNumberOfErrors_(5) {
 
-    args.get("normalise-longitudes", normaliseLongitudes_);
-    args.get("maximum-number-of-errors", maximumNumberOfErrors_);
+    args_.get("normalise-longitudes", normaliseLongitudes_);
+    args_.get("maximum-number-of-errors", maximumNumberOfErrors_);
 
     double rounding = 1;
     long digits = 0;
-    roundDegrees_ = args.get("round-degrees", digits);
+    roundDegrees_ = args_.get("round-degrees", digits);
 
     while (digits > 0) {
         rounding *= 10.0;
@@ -98,14 +98,14 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args):
     }
 
     std::string ignore;
-    args.get("ignore", ignore);
+    args_.get("ignore", ignore);
     eckit::Tokenizer parse("/");
     parse(ignore, ignore_);
 
 
     eckit::Translator<std::string, long> s2l;
     std::string params;
-    args.get("parameters-white-list", params);
+    args_.get("parameters-white-list", params);
     std::vector<std::string> v;
     parse(params, v);
     for (auto j = v.begin(); j != v.end(); ++j) {
