@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "mir/compare/FieldInfo.h"
+#include "mir/compare/Same.h"
 
 namespace mir {
 namespace compare {
@@ -143,6 +144,8 @@ private:
         x.print(s);
         return s;
     }
+
+    friend class Same;
 
 };
 
