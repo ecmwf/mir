@@ -13,26 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef mir_compare_ScalarComparator_H
-#define mir_compare_ScalarComparator_H
+#ifndef mir_compare_ScalarComparator_h
+#define mir_compare_ScalarComparator_h
 
 #include "mir/compare/Comparator.h"
-
-
-namespace mir {
-namespace context {
-class Context;
-}
-namespace data {
-class MIRField;
-}
-namespace param {
-class MIRParametrisation;
-}
-namespace util {
-class MIRStatistics;
-}
-}
 
 
 namespace mir {

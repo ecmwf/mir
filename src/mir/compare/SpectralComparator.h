@@ -11,26 +11,10 @@
 /// @date Oct 2016
 
 
-#ifndef mir_compare_SpectralComparator_H
-#define mir_compare_SpectralComparator_H
+#ifndef mir_compare_SpectralComparator_h
+#define mir_compare_SpectralComparator_h
 
 #include "mir/compare/Comparator.h"
-
-
-namespace mir {
-namespace context {
-class Context;
-}
-namespace data {
-class MIRField;
-}
-namespace param {
-class MIRParametrisation;
-}
-namespace util {
-class MIRStatistics;
-}
-}
 
 
 namespace mir {

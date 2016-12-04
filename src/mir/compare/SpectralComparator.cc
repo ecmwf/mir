@@ -13,7 +13,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include "eckit/exception/Exceptions.h"
 #include "mir/compare/SpectralComparator.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"

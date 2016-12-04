@@ -18,6 +18,7 @@
 
 #include <iosfwd>
 #include <string>
+#include "eckit/exception/Exceptions.h"
 #include "eckit/memory/NonCopyable.h"
 #include "mir/param/MIRParametrisation.h"
 

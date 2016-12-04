@@ -14,7 +14,6 @@
 
 #include <cmath>
 
-#include "eckit/exception/Exceptions.h"
 #include "mir/compare/ScalarComparator.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
