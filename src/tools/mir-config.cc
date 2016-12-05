@@ -81,7 +81,11 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
     std::string file = "";
     args.get("configuration", file);
-    configuration.configure(file);
+    if (file.length()) {
+        configuration.configure(file);
+    } else {
+        configuration.configure();
+    }
 
     std::string key = "";
     args.get("key", key);
@@ -113,7 +117,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             long id = 0;
             args.get("param-id", id);
 
-            eckit::ScopedPtr< const MIRParametrisation > p(configuration.lookup(id, *metadata));
+            eckit::ScopedPtr< const MIRParametrisation > p(configuration.lookup(*metadata));
             display(*p, key);
 
         } else {

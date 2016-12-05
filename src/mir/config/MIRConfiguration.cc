@@ -125,6 +125,13 @@ void MIRConfiguration::print(std::ostream& out) const {
 }
 
 
+const param::MIRParametrisation*MIRConfiguration::lookup(const param::MIRParametrisation& metadata) const {
+    long id = 0;
+    return metadata.get("paramId", id)? lookup(id, metadata)
+                                      : defaults();
+}
+
+
 const param::MIRParametrisation* MIRConfiguration::lookup(const long& paramId, const param::MIRParametrisation& metadata) const {
 
     // inherit from most-specific paramId/metadata individual and its parents

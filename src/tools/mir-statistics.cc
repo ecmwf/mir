@@ -66,6 +66,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
     mir::util::MIRStatistics mir_statistics;
 
     const ConfigurationWrapper args_wrap(const_cast<eckit::option::CmdArgs&>(args));
+    const mir::config::MIRConfiguration& config = mir::config::MIRConfiguration::instance();
 
 
     for (size_t i = 0; i < args.count(); ++i) {
@@ -81,13 +82,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
             // - get the input as a MIRParametrisation, so to get the paramId
             // - lookup configuration for this paramId/metadata, to get specific "stats" parameter
 
-            const MIRParametrisation& metadata = static_cast<const MIRInput&>(input).parametrisation();
-
-            long id = 0;
-            args.get("param-id", id) || metadata.get("paramId", id);
-            eckit::ScopedPtr<const MIRParametrisation> defaults(mir::config::MIRConfiguration::instance().lookup(id, metadata));
-
-            std::cout << *defaults << std::endl;
+            eckit::ScopedPtr<const MIRParametrisation> defaults(config.lookup(static_cast<const MIRInput&>(input).parametrisation()));
             MIRCombinedParametrisation parametrisation(args_wrap, input, *defaults);
 
 
