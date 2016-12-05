@@ -11,24 +11,23 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_CountOutsideRange_h
-#define mir_action_statistics_CountOutsideRange_h
+#ifndef mir_stats_pNorms_h
+#define mir_stats_pNorms_h
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/statistics/Statistics.h"
-#include "mir/action/statistics/detail/CountOutsideRangeFn.h"
 #include "mir/data/MIRField.h"
+#include "mir/stats/Statistics.h"
+#include "mir/stats/detail/ScalarpNormsFn.h"
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
 /**
  * @brief Calculate statistics on a MIRField
  */
-class CountOutsideRange : public Statistics {
+class PNorms : public Statistics {
 public:
 
     // -- Exceptions
@@ -36,11 +35,11 @@ public:
 
     // -- Constructors
 
-    CountOutsideRange(const param::MIRParametrisation&);
+    PNorms(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~CountOutsideRange() {}
+    virtual ~PNorms() {}
 
     // -- Convertors
     // None
@@ -51,11 +50,11 @@ public:
     // -- Methods
 
     /// Online statistics update
-    void operator+=(const CountOutsideRange&);
+    void operator+=(const PNorms&);
 
     // -- Overridden methods
 
-    bool sameAs(const Action&) const;
+    bool sameAs(const Statistics&) const;
 
     // -- Class members
     // None
@@ -86,7 +85,7 @@ private:
 
     // -- Members
 
-    mutable detail::CountOutsideRangeFn<double> stats_;
+    mutable detail::ScalarpNormsFn<double> stats_;
 
     // -- Methods
     // None
@@ -106,8 +105,7 @@ private:
 };
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 
 

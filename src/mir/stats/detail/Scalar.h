@@ -11,18 +11,17 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_detail_ScalarStatistics_h
-#define mir_action_statistics_detail_ScalarStatistics_h
+#ifndef mir_stats_detail_Scalar_h
+#define mir_stats_detail_Scalar_h
 
-#include "mir/action/statistics/detail/CountMissingValuesFn.h"
-#include "mir/action/statistics/detail/ScalarCentralMomentsFn.h"
-#include "mir/action/statistics/detail/ScalarMinMaxFn.h"
-#include "mir/action/statistics/detail/ScalarpNormsFn.h"
+#include "mir/stats/detail/CountMissingValuesFn.h"
+#include "mir/stats/detail/ScalarCentralMomentsFn.h"
+#include "mir/stats/detail/ScalarMinMaxFn.h"
+#include "mir/stats/detail/ScalarpNormsFn.h"
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 namespace detail {
 
 
@@ -30,7 +29,7 @@ namespace detail {
  * Statistics unary operator functor: composition of above functionality (suitable for scalars)
  */
 template< typename T >
-struct ScalarStatistics : CountMissingValuesFn<T> {
+struct Scalar : CountMissingValuesFn<T> {
 private:
     ScalarMinMaxFn<T>         calculateMinMax_;
     ScalarCentralMomentsFn<T> calculateCentralMoments_;
@@ -40,7 +39,7 @@ private:
 
 public:
 
-    ScalarStatistics(const double& missingValue=std::numeric_limits<double>::quiet_NaN()) {
+    Scalar(const double& missingValue=std::numeric_limits<double>::quiet_NaN()) {
         reset(missingValue);
     }
 
@@ -84,7 +83,7 @@ public:
         return false;
     }
 
-    bool operator+=(const ScalarStatistics& other) {
+    bool operator+=(const Scalar& other) {
         missing_t::operator+=(other);
         calculateMinMax_         += other.calculateMinMax_;
         calculateCentralMoments_ += other.calculateCentralMoments_;
@@ -95,8 +94,7 @@ public:
 
 
 }  // namespace detail
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 
 

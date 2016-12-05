@@ -11,16 +11,15 @@
 /// @date Oct 2016
 
 
-#include "mir/action/statistics/SimplePackingEntropy.h"
+#include "mir/stats/SimplePackingEntropy.h"
 
 #include <cmath>
 #include <limits>
-#include "mir/action/statistics/detail/MinMaxStatistics.h"
+#include "mir/stats/detail/MinMaxStatistics.h"
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
 SimplePackingEntropy::SimplePackingEntropy(const param::MIRParametrisation& parametrisation) :
@@ -38,7 +37,7 @@ SimplePackingEntropy::SimplePackingEntropy(const param::MIRParametrisation& para
 }
 
 
-bool SimplePackingEntropy::sameAs(const action::Action& other) const {
+bool SimplePackingEntropy::sameAs(const Statistics& other) const {
     const SimplePackingEntropy* o = dynamic_cast<const SimplePackingEntropy*>(&other);
     return o; //(o && options_ == o->options_);
 }
@@ -122,11 +121,10 @@ void SimplePackingEntropy::print(std::ostream& out) const {
 
 
 namespace {
-static StatisticsBuilder<SimplePackingEntropy> __simplePackingEntropy("SimplePackingEntropy");
+static StatisticsBuilder<SimplePackingEntropy> __stats("simple-packing-entropy");
 }
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 

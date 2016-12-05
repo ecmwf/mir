@@ -11,22 +11,23 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_AngleDecomposition_h
-#define mir_action_statistics_AngleDecomposition_h
+#ifndef mir_stats_CountOutsideRange_h
+#define mir_stats_CountOutsideRange_h
 
-#include "mir/action/statistics/Statistics.h"
+#include "eckit/exception/Exceptions.h"
+#include "mir/data/MIRField.h"
+#include "mir/stats/Statistics.h"
+#include "mir/stats/detail/CountOutsideRangeFn.h"
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
 /**
- * @brief Calculate angle statistics on a MIRField
- * Note: requires parameter "decomposition" which should point to a valid DecomposeToCartesian object
+ * @brief Calculate statistics on a MIRField
  */
-class AngleDecomposition : public Statistics {
+class CountOutsideRange : public Statistics {
 public:
 
     // -- Exceptions
@@ -34,11 +35,11 @@ public:
 
     // -- Constructors
 
-    AngleDecomposition(const param::MIRParametrisation&);
+    CountOutsideRange(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~AngleDecomposition() {}
+    virtual ~CountOutsideRange() {}
 
     // -- Convertors
     // None
@@ -49,11 +50,11 @@ public:
     // -- Methods
 
     /// Online statistics update
-    void operator+=(const AngleDecomposition&);
+    void operator+=(const CountOutsideRange&);
 
     // -- Overridden methods
 
-    bool sameAs(const Action&) const;
+    bool sameAs(const Statistics&) const;
 
     // -- Class members
     // None
@@ -84,7 +85,7 @@ private:
 
     // -- Members
 
-    std::string decomposition_;
+    mutable detail::CountOutsideRangeFn<double> stats_;
 
     // -- Methods
     // None
@@ -104,8 +105,7 @@ private:
 };
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 
 

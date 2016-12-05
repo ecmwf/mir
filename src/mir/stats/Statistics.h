@@ -11,12 +11,11 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_Statistics_h
-#define mir_action_statistics_Statistics_h
+#ifndef mir_stats_Statistics_h
+#define mir_stats_Statistics_h
 
 #include <iosfwd>
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/plan/Action.h"
 #include "mir/param/SimpleParametrisation.h"
 
 
@@ -31,14 +30,13 @@ class MIRField;
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
 /**
  * @brief Calculate statistics on a MIRField
  */
-class Statistics : public Action {
+class Statistics {
 public:
 
     // -- Types
@@ -68,16 +66,11 @@ public:
     /// Calculate statistics
     virtual void calculate(const data::MIRField&, Results&) const = 0;
 
-    /// @return statistics
-    const Results& results() const {
-        return results_;
-    }
-
     // -- Overridden methods
 
-    void execute(context::Context&) const;
+    void execute(context::Context&, Results& results) const;
 
-    virtual bool sameAs(const Action&) const = 0;
+    virtual bool sameAs(const Statistics&) const = 0;
 
     // -- Class members
     // None
@@ -88,14 +81,10 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    const param::MIRParametrisation& parametrisation_;
 
     // -- Methods
-
-    /// @return statistics
-    Results& results() {
-        return results_;
-    }
 
     // -- Overridden methods
 
@@ -110,8 +99,7 @@ protected:
 private:
 
     // -- Members
-
-    Results results_;
+    // None
 
     // -- Methods
     // None
@@ -152,14 +140,11 @@ private:
     }
 public:
     StatisticsBuilder(const std::string& name) : StatisticsFactory(name) {
-        // register in the ActionFactory as well (Statistics is an Action)
-        // static ActionBuilder<T> actionBuilder("statistics." + name);
     }
 };
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 
 

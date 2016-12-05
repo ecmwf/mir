@@ -11,13 +11,12 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_detail_ScalarMinMaxFn_h
-#define mir_action_statistics_detail_ScalarMinMaxFn_h
+#ifndef mir_stats_detail_ScalarMinMaxFn_h
+#define mir_stats_detail_ScalarMinMaxFn_h
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 namespace detail {
 
 
@@ -69,8 +68,7 @@ public:
 
 
 }  // namespace detail
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 
 

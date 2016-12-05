@@ -11,23 +11,22 @@
 /// @date Oct 2016
 
 
-#ifndef mir_action_statistics_SimplePackingEntropy_h
-#define mir_action_statistics_SimplePackingEntropy_h
+#ifndef mir_stats_Spectral_h
+#define mir_stats_Spectral_h
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/statistics/Statistics.h"
 #include "mir/data/MIRField.h"
+#include "mir/stats/Statistics.h"
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
 /**
- * @brief Calculate entropy statistics on a MIRField
+ * @brief Calculate spectral statistics on a MIRField
  */
-class SimplePackingEntropy : public Statistics {
+class Spectral : public Statistics {
 public:
 
     // -- Exceptions
@@ -35,11 +34,11 @@ public:
 
     // -- Constructors
 
-    SimplePackingEntropy(const param::MIRParametrisation&);
+    Spectral(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    ~SimplePackingEntropy() {}
+    virtual ~Spectral() {}
 
     // -- Convertors
     // None
@@ -52,7 +51,26 @@ public:
 
     // -- Overridden methods
 
-    bool sameAs(const Action&) const;
+    bool sameAs(const Statistics&) const;
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+protected:
+
+    // -- Members
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+
+    /// Calculate statistics
+    void calculate(const data::MIRField&, Results&) const;
 
     // -- Class members
     // None
@@ -63,19 +81,13 @@ public:
 private:
 
     // -- Members
-
-    size_t bucketCount_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-    /// Calculate statistics
-    void calculate(const data::MIRField&, Results&) const;
-
-    void print(std::ostream&) const;
-
+    // None
 
     // -- Class members
     // None
@@ -89,8 +101,7 @@ private:
 };
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 
 

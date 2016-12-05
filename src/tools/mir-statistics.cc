@@ -16,7 +16,7 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "mir/action/context/Context.h"
-#include "mir/action/statistics/Statistics.h"
+#include "mir/stats/Statistics.h"
 #include "mir/config/MIRConfiguration.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/ConfigurationWrapper.h"
@@ -40,7 +40,7 @@ public:
 
     MIRStatistics(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
-        options_.push_back(new FactoryOption<mir::action::statistics::StatisticsFactory>("stats", "Statistics methods for interpreting field values"));
+        options_.push_back(new FactoryOption<mir::stats::StatisticsFactory>("stats", "Statistics methods for interpreting field values"));
     }
 };
 
@@ -50,39 +50,60 @@ void MIRStatistics::usage(const std::string &tool) const {
             << "\nUsage: " << tool << " [--stats=option] file.grib [file.grib [...]]"
                "\nExamples:"
                "\n  % " << tool << " file.grib"
-               "\n  % " << tool << " --stats=ScalarStatistics file1.grib file2.grib file3.grib"
-               "\n  % " << tool << " --stats=SHStatistics file.grib"
+               "\n  % " << tool << " --stats=scalar file1.grib file2.grib file3.grib"
+               "\n  % " << tool << " --stats=spectral file.grib"
             << std::endl;
 }
 
 
 void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
-    using namespace mir::action::statistics;
+    using namespace mir::input;
     using namespace mir::param;
+    using namespace mir::stats;
 
-    std::string opt;
-    args.get("stats", opt);
 
-    mir::util::MIRStatistics stats;
+    // runtime statistics
+    mir::util::MIRStatistics mir_statistics;
+
+    const ConfigurationWrapper args_wrap(const_cast<eckit::option::CmdArgs&>(args));
+
 
     for (size_t i = 0; i < args.count(); ++i) {
-        mir::input::GribFileInput input(args(i));
+        GribFileInput input(args(i));
 
-        // Wrap the arguments, so that they behave as a MIRParameter
-        const ConfigurationWrapper wrap(const_cast<eckit::option::CmdArgs&>(args));
-        eckit::ScopedPtr<const mir::param::MIRParametrisation> defaults(mir::config::MIRConfiguration::instance().defaults());
-
-        MIRCombinedParametrisation parametrisation(wrap, input, *defaults);
 
         size_t count = 0;
         while (input.next()) {
             eckit::Log::info() << "\n'" << args(i) << "' #" << ++count << std::endl;
 
-            eckit::ScopedPtr<const Statistics> statistics(StatisticsFactory::build(opt, parametrisation));
-            mir::context::Context ctx(input, stats);
-            statistics->execute(ctx);
+            // Build MIRCombinedParametrisation from a few parts:
+            // - wrap the arguments, so that they behave as a MIRParametrisation
+            // - get the input as a MIRParametrisation, so to get the paramId
+            // - lookup configuration for this paramId/metadata, to get specific "stats" parameter
 
-            eckit::Log::info() << statistics->results() << std::endl;
+            const MIRParametrisation& metadata = static_cast<const MIRInput&>(input).parametrisation();
+
+            long id = 0;
+            args.get("param-id", id) || metadata.get("paramId", id);
+            eckit::ScopedPtr<const MIRParametrisation> defaults(mir::config::MIRConfiguration::instance().lookup(id, metadata));
+
+            std::cout << *defaults << std::endl;
+            MIRCombinedParametrisation parametrisation(args_wrap, input, *defaults);
+
+
+            // Get paramId/metadata-specific "stats" method
+            std::string stats;
+            static_cast<const MIRParametrisation&>(parametrisation).get("stats", stats);
+
+
+            // Calculate and show statistics
+            Statistics::Results results;
+
+            eckit::ScopedPtr<const Statistics> s(StatisticsFactory::build(stats, parametrisation));
+            mir::context::Context ctx(input, mir_statistics);
+            s->execute(ctx, results);
+
+            eckit::Log::info() << results << std::endl;
         }
     }
 

@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/action/statistics/Statistics.h"
+#include "mir/stats/Statistics.h"
 
 #include <map>
 #include <ostream>
@@ -24,8 +24,7 @@
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
 namespace {
@@ -46,21 +45,21 @@ static void init() {
 
 
 Statistics::Statistics(const param::MIRParametrisation& parametrisation) :
-    action::Action(parametrisation) {
+    parametrisation_(parametrisation) {
 }
 
 
-void Statistics::execute(context::Context& ctx) const {
+void Statistics::execute(context::Context& ctx, Results& results) const {
 
     // update internal results
-    calculate(ctx.field(), const_cast<Results&>(results_));
+    calculate(ctx.field(), results);
 
 }
 
 
 void Statistics::print(std::ostream& out) const {
     out << "Statistics["
-        <<  "results[" << results_ << "]"
+//        <<  "me[" << too << "]"
         << "]";
 }
 
@@ -115,7 +114,6 @@ Statistics* StatisticsFactory::build(const std::string& name, const param::MIRPa
 }
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 

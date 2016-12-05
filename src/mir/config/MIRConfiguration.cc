@@ -41,7 +41,7 @@ struct Defaults : param::SimpleParametrisation {
 
         set("interpolation", "linear"); // The word 'method' is used in grib
         set("decomposition", "none");
-        set("stats", "Scalar");
+        set("stats", "scalar");
         set("caching", true);
 
         set("prune-epsilon", 1e-10);

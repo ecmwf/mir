@@ -7,7 +7,7 @@
             "degree":        "true",
             "symmetric":     "false",
             "decomposition": "PolarAngleDegreesAssymmetricToCartesian",
-            "stats":         "AngleDecomposition"
+            "stats":         "angle"
         },
 
         "file_forced_nearest_neighbour": {

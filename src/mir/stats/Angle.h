@@ -8,26 +8,24 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Oct 2016
+/// @date Aug 2016
 
 
-#ifndef mir_action_statistics_SH_h
-#define mir_action_statistics_SH_h
+#ifndef mir_stats_Angle_h
+#define mir_stats_Angle_h
 
-#include "eckit/exception/Exceptions.h"
-#include "mir/action/statistics/Statistics.h"
-#include "mir/data/MIRField.h"
+#include "mir/stats/Statistics.h"
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
 /**
- * @brief Calculate Spherical Harmonics statistics on a MIRField
+ * @brief Calculate angle statistics on a MIRField
+ * Note: requires parameter "decomposition" which should point to a valid DecomposeToCartesian object
  */
-class SH : public Statistics {
+class Angle : public Statistics {
 public:
 
     // -- Exceptions
@@ -35,11 +33,11 @@ public:
 
     // -- Constructors
 
-    SH(const param::MIRParametrisation&);
+    Angle(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~SH() {}
+    virtual ~Angle() {}
 
     // -- Convertors
     // None
@@ -48,11 +46,13 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    /// Online statistics update
+    void operator+=(const Angle&);
 
     // -- Overridden methods
 
-    bool sameAs(const Action&) const;
+    bool sameAs(const Statistics&) const;
 
     // -- Class members
     // None
@@ -82,7 +82,8 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    std::string decomposition_;
 
     // -- Methods
     // None
@@ -102,8 +103,7 @@ private:
 };
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 
 

@@ -11,25 +11,24 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_detail_AngleStatistics_H
-#define mir_action_statistics_detail_AngleStatistics_H
+#ifndef mir_stats_detail_Angle_H
+#define mir_stats_detail_Angle_H
 
 #include <complex>  // defines std::pow(std::complex) used in ScalarCentralMomentsFn
-#include "mir/action/statistics/detail/CountMissingValuesFn.h"
-#include "mir/action/statistics/detail/ScalarCentralMomentsFn.h"
+#include "mir/stats/detail/CountMissingValuesFn.h"
+#include "mir/stats/detail/ScalarCentralMomentsFn.h"
 #include "mir/method/decompose/DecomposeToCartesian.h"
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 namespace detail {
 
 
 /**
  * Angles statistics unary operator functor, suitable for angles in [r] or [°]
  */
-struct AngleStatistics : CountMissingValuesFn<double> {
+struct Angle : CountMissingValuesFn<double> {
 private:
     typedef CountMissingValuesFn<double> missing_t;
     typedef method::decompose::DecomposeToCartesian decompose_t;
@@ -39,7 +38,7 @@ private:
 
 public:
 
-    AngleStatistics(const method::decompose::DecomposeToCartesian& decompose, const double& missingValue) :
+    Angle(const method::decompose::DecomposeToCartesian& decompose, const double& missingValue) :
         decompose_(decompose) {
         reset(missingValue);
     }
@@ -68,7 +67,7 @@ public:
                 && calculateCentralMoments_(decompose_.decomposeValue(std::abs(v1 - v2)));
     }
 
-    bool operator+=(const AngleStatistics& other) {
+    bool operator+=(const Angle& other) {
         missing_t::operator+=(other);
         calculateCentralMoments_ += other.calculateCentralMoments_;
         return true;
@@ -77,8 +76,7 @@ public:
 
 
 }  // namespace detail
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 
 

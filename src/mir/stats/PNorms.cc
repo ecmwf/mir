@@ -10,34 +10,35 @@
 
 /// @date Aug 2016
 
-#include "mir/action/statistics/ScalarCentralMoments.h"
 
+#include "mir/stats/PNorms.h"
+
+#include <limits>
 #include <sstream>
-#include "mir/data/MIRField.h"
 #include "mir/util/Compare.h"
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
-ScalarCentralMoments::ScalarCentralMoments(const param::MIRParametrisation& parametrisation) :
+PNorms::PNorms(const param::MIRParametrisation& parametrisation) :
     Statistics(parametrisation) {
 }
 
-void ScalarCentralMoments::operator+=(const ScalarCentralMoments& other) {
+
+void PNorms::operator+=(const PNorms& other) {
     stats_ += other.stats_;
 }
 
 
-bool ScalarCentralMoments::sameAs(const action::Action& other) const {
-    const ScalarCentralMoments* o = dynamic_cast<const ScalarCentralMoments*>(&other);
+bool PNorms::sameAs(const Statistics& other) const {
+    const PNorms* o = dynamic_cast<const PNorms*>(&other);
     return o; //(o && options_ == o->options_);
 }
 
 
-void ScalarCentralMoments::calculate(const data::MIRField& field, Results& results) const {
+void PNorms::calculate(const data::MIRField& field, Results& results) const {
     results.reset();
 
     util::compare::IsMissingFn isMissing( field.hasMissing()?
@@ -66,29 +67,20 @@ void ScalarCentralMoments::calculate(const data::MIRField& field, Results& resul
             head = s.str();
         }
 
-        results.set(head + " centralMoment1",     stats_.centralMoment1());
-        results.set(head + " centralMoment2",     stats_.centralMoment2());
-        results.set(head + " centralMoment3",     stats_.centralMoment3());
-        results.set(head + " centralMoment4",     stats_.centralMoment4());
-
-        results.set(head + " mean",               stats_.mean());
-        results.set(head + " variance",           stats_.variance());
-        results.set(head + " skewness",           stats_.skewness());
-        results.set(head + " kurtosis",           stats_.kurtosis());
-        results.set(head + " standardDeviation",  stats_.standardDeviation());
-        results.set(head + " count",              stats_.count());
-
+        results.set(head + " normL1", stats_.normL1());
+        results.set(head + " normL2", stats_.normL2());
+        results.set(head + " normLinfinity", stats_.normLinfinity());
         results.set(head + " missing", missing);
     }
 }
 
 
 namespace {
-static StatisticsBuilder<ScalarCentralMoments> __scalarCentralMoments("ScalarCentralMoments");
+// Name (non-)capitalized according to: https://en.wikipedia.org/wiki/Lp_space
+static StatisticsBuilder<PNorms> __stats("scalar-p-norms");
 }
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 

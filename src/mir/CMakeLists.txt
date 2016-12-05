@@ -98,32 +98,6 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/statistics/AngleDecomposition.cc
-    action/statistics/AngleDecomposition.h
-    action/statistics/Auto.cc
-    action/statistics/Auto.h
-    action/statistics/CountOutsideRange.cc
-    action/statistics/CountOutsideRange.h
-    action/statistics/PNorms.cc
-    action/statistics/PNorms.h
-    action/statistics/SH.cc
-    action/statistics/SH.h
-    action/statistics/Scalar.cc
-    action/statistics/Scalar.h
-    action/statistics/ScalarCentralMoments.cc
-    action/statistics/ScalarCentralMoments.h
-    action/statistics/SimplePackingEntropy.cc
-    action/statistics/SimplePackingEntropy.h
-    action/statistics/Statistics.cc
-    action/statistics/Statistics.h
-    action/statistics/detail/AngleStatistics.h
-    action/statistics/detail/CountMissingValuesFn.h
-    action/statistics/detail/CountOutsideRangeFn.h
-    action/statistics/detail/MinMaxStatistics.h
-    action/statistics/detail/ScalarCentralMomentsFn.h
-    action/statistics/detail/ScalarMinMaxFn.h
-    action/statistics/detail/ScalarStatistics.h
-    action/statistics/detail/ScalarpNormsFn.h
     action/transform/Sh2GriddedTransform.cc
     action/transform/Sh2GriddedTransform.h
     action/transform/Sh2NamedGrid.cc
@@ -450,6 +424,30 @@ list(
     repres/unsupported/StretchedSH.h
     repres/unsupported/TransverseMercator.cc
     repres/unsupported/TransverseMercator.h
+    stats/Angle.cc
+    stats/Angle.h
+    stats/CountOutsideRange.cc
+    stats/CountOutsideRange.h
+    stats/PNorms.cc
+    stats/PNorms.h
+    stats/Scalar.cc
+    stats/Scalar.h
+    stats/ScalarCentralMoments.cc
+    stats/ScalarCentralMoments.h
+    stats/SimplePackingEntropy.cc
+    stats/SimplePackingEntropy.h
+    stats/Spectral.cc
+    stats/Spectral.h
+    stats/Statistics.cc
+    stats/Statistics.h
+    stats/detail/Angle.h
+    stats/detail/CountMissingValuesFn.h
+    stats/detail/CountOutsideRangeFn.h
+    stats/detail/MinMaxStatistics.h
+    stats/detail/Scalar.h
+    stats/detail/ScalarCentralMomentsFn.h
+    stats/detail/ScalarMinMaxFn.h
+    stats/detail/ScalarpNormsFn.h
     style/AutoGaussian.cc
     style/AutoGaussian.h
     style/AutoReduced.cc

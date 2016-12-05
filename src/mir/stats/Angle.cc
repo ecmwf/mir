@@ -11,14 +11,18 @@
 /// @date Aug 2016
 
 
-#include "mir/action/statistics/AngleDecomposition.h"
+#include "mir/stats/Angle.h"
 
 #include <limits>
 #include <sstream>
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/statistics/detail/AngleStatistics.h"
 #include "mir/data/MIRField.h"
 #include "mir/method/decompose/DecomposeToCartesian.h"
+#include "mir/stats/detail/Angle.h"
+
+
+namespace mir {
+namespace stats {
 
 
 #if 0
@@ -49,37 +53,32 @@ std::string pretty_complex(const std::complex<double>& complex) {
 #endif
 
 
-namespace mir {
-namespace action {
-namespace statistics {
-
-
-AngleDecomposition::AngleDecomposition(const param::MIRParametrisation& parametrisation) :
+Angle::Angle(const param::MIRParametrisation& parametrisation) :
     Statistics(parametrisation),
     decomposition_("") {
     parametrisation.get("decomposition", decomposition_);
 }
 
 
-void AngleDecomposition::operator+=(const AngleDecomposition& other) {
+void Angle::operator+=(const Angle& other) {
 //    stats_ += other.stats_;
 }
 
 
-bool AngleDecomposition::sameAs(const action::Action& other) const {
-    const AngleDecomposition* o = dynamic_cast<const AngleDecomposition*>(&other);
+bool Angle::sameAs(const Statistics& other) const {
+    const Angle* o = dynamic_cast<const Angle*>(&other);
     return o; //(o && options_ == o->options_);
 }
 
 
-void AngleDecomposition::calculate(const data::MIRField& field, Results& results) const {
+void Angle::calculate(const data::MIRField& field, Results& results) const {
     results.reset();
 
     // set statistics calculation based on decomposition
     const method::decompose::DecomposeToCartesian& decomp = method::decompose::DecomposeToCartesianChooser::lookup(decomposition_);
     const double missingValue = field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
 
-    detail::AngleStatistics stats(decomp, missingValue);
+    detail::Angle stats(decomp, missingValue);
 
     // analyse
     for (size_t w = 0; w < field.dimensions(); ++w) {
@@ -110,11 +109,10 @@ void AngleDecomposition::calculate(const data::MIRField& field, Results& results
 
 
 namespace {
-static StatisticsBuilder<AngleDecomposition> __angleDecomposition( "AngleDecomposition" );
+static StatisticsBuilder<Angle> __stats( "angle" );
 }
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 

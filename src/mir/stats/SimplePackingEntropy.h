@@ -11,23 +11,22 @@
 /// @date Oct 2016
 
 
-#ifndef mir_action_statistics_Auto_h
-#define mir_action_statistics_Auto_h
+#ifndef mir_stats_SimplePackingEntropy_h
+#define mir_stats_SimplePackingEntropy_h
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/statistics/Statistics.h"
 #include "mir/data/MIRField.h"
+#include "mir/stats/Statistics.h"
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
 /**
- * @brief Calculate a parameter configuration-dependent statistics on a MIRField
+ * @brief Calculate entropy statistics on a MIRField
  */
-class Auto : public Statistics {
+class SimplePackingEntropy : public Statistics {
 public:
 
     // -- Exceptions
@@ -35,11 +34,11 @@ public:
 
     // -- Constructors
 
-    Auto(const param::MIRParametrisation&);
+    SimplePackingEntropy(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~Auto() {}
+    ~SimplePackingEntropy() {}
 
     // -- Convertors
     // None
@@ -52,26 +51,7 @@ public:
 
     // -- Overridden methods
 
-    bool sameAs(const Action&) const;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-
-    /// Calculate statistics
-    void calculate(const data::MIRField&, Results&) const;
+    bool sameAs(const Statistics&) const;
 
     // -- Class members
     // None
@@ -82,13 +62,19 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    size_t bucketCount_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-    // None
+
+    /// Calculate statistics
+    void calculate(const data::MIRField&, Results&) const;
+
+    void print(std::ostream&) const;
+
 
     // -- Class members
     // None
@@ -102,8 +88,7 @@ private:
 };
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 
 

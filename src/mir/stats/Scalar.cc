@@ -11,15 +11,14 @@
 /// @date Aug 2016
 
 
-#include "mir/action/statistics/Scalar.h"
+#include "mir/stats/Scalar.h"
 
 #include <limits>
 #include <sstream>
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
 Scalar::Scalar(const param::MIRParametrisation& parametrisation) :
@@ -32,7 +31,7 @@ void Scalar::operator+=(const Scalar& other) {
 }
 
 
-bool Scalar::sameAs(const action::Action& other) const {
+bool Scalar::sameAs(const Statistics& other) const {
     const Scalar* o = dynamic_cast<const Scalar*>(&other);
     return o; //(o && options_ == o->options_);
 }
@@ -81,11 +80,10 @@ void Scalar::calculate(const data::MIRField& field, Results& results) const {
 
 
 namespace {
-static StatisticsBuilder<Scalar> __scalar("Scalar");
+static StatisticsBuilder<Scalar> __stats("scalar");
 }
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 

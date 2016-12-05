@@ -33,7 +33,7 @@
             "NOTE": "planar angle (typical units: radians or degrees)",
             "decomposition": "PolarAngleDegreesAssymmetricToCartesian",
             "degree": "true",
-            "stats": "AngleDecomposition",
+            "stats": "angle",
             "symmetric": "false"
         },
         "flux": {

@@ -11,15 +11,14 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_detail_CountMissingValuesFn_h
-#define mir_action_statistics_detail_CountMissingValuesFn_h
+#ifndef mir_stats_detail_CountMissingValuesFn_h
+#define mir_stats_detail_CountMissingValuesFn_h
 
 #include "mir/util/Compare.h"
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 namespace detail {
 
 
@@ -105,8 +104,7 @@ public:
 
 
 }  // namespace detail
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 
 

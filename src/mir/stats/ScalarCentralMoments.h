@@ -11,11 +11,11 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_ScalarCentralMoments_h
-#define mir_action_statistics_ScalarCentralMoments_h
+#ifndef mir_stats_ScalarCentralMoments_h
+#define mir_stats_ScalarCentralMoments_h
 
-#include "mir/action/statistics/Statistics.h"
-#include "mir/action/statistics/detail/ScalarCentralMomentsFn.h"
+#include "mir/stats/Statistics.h"
+#include "mir/stats/detail/ScalarCentralMomentsFn.h"
 
 
 namespace mir {
@@ -25,8 +25,7 @@ class MIRField;
 }
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
 /**
@@ -59,7 +58,7 @@ public:
 
     // -- Overridden methods
 
-    bool sameAs(const Action&) const;
+    bool sameAs(const Statistics&) const;
 
     // -- Class members
     // None
@@ -110,8 +109,7 @@ private:
 };
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 
 

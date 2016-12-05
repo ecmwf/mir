@@ -11,7 +11,7 @@
 /// @date Oct 2016
 
 
-#include "mir/action/statistics/SH.h"
+#include "mir/stats/Spectral.h"
 
 #include <cmath>
 #include <sstream>
@@ -19,22 +19,21 @@
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
-SH::SH(const param::MIRParametrisation& parametrisation) :
+Spectral::Spectral(const param::MIRParametrisation& parametrisation) :
     Statistics(parametrisation) {
 }
 
 
-bool SH::sameAs(const action::Action& other) const {
-    const SH* o = dynamic_cast<const SH*>(&other);
+bool Spectral::sameAs(const Statistics& other) const {
+    const Spectral* o = dynamic_cast<const Spectral*>(&other);
     return o; //(o && options_ == o->options_);
 }
 
 
-void SH::calculate(const data::MIRField& field, Results& results) const {
+void Spectral::calculate(const data::MIRField& field, Results& results) const {
     results.reset();
     ASSERT(!field.hasMissing());
 
@@ -84,11 +83,10 @@ void SH::calculate(const data::MIRField& field, Results& results) const {
 
 
 namespace {
-static StatisticsBuilder<SH> __sH("SH");
+static StatisticsBuilder<Spectral> __stats("spectral");
 }
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 

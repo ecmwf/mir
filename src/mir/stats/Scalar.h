@@ -11,24 +11,23 @@
 /// @date Aug 2016
 
 
-#ifndef mir_action_statistics_pNorms_h
-#define mir_action_statistics_pNorms_h
+#ifndef mir_stats_Scalar_h
+#define mir_stats_Scalar_h
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/statistics/Statistics.h"
-#include "mir/action/statistics/detail/ScalarpNormsFn.h"
 #include "mir/data/MIRField.h"
+#include "mir/stats/Statistics.h"
+#include "mir/stats/detail/Scalar.h"
 
 
 namespace mir {
-namespace action {
-namespace statistics {
+namespace stats {
 
 
 /**
  * @brief Calculate statistics on a MIRField
  */
-class PNorms : public Statistics {
+class Scalar : public Statistics {
 public:
 
     // -- Exceptions
@@ -36,11 +35,11 @@ public:
 
     // -- Constructors
 
-    PNorms(const param::MIRParametrisation&);
+    Scalar(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~PNorms() {}
+    virtual ~Scalar() {}
 
     // -- Convertors
     // None
@@ -51,11 +50,11 @@ public:
     // -- Methods
 
     /// Online statistics update
-    void operator+=(const PNorms&);
+    void operator+=(const Scalar&);
 
     // -- Overridden methods
 
-    bool sameAs(const Action&) const;
+    bool sameAs(const Statistics&) const;
 
     // -- Class members
     // None
@@ -86,7 +85,7 @@ private:
 
     // -- Members
 
-    mutable detail::ScalarpNormsFn<double> stats_;
+    mutable detail::Scalar<double> stats_;
 
     // -- Methods
     // None
@@ -106,8 +105,7 @@ private:
 };
 
 
-}  // namespace statistics
-}  // namespace action
+}  // namespace stats
 }  // namespace mir
 
 
