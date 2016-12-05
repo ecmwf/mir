@@ -196,8 +196,6 @@ list(
     compare/FieldSet.h
     compare/MultiFile.cc
     compare/MultiFile.h
-    compare/Same.cc
-    compare/Same.h
     compare/ScalarComparator.cc
     compare/ScalarComparator.h
     compare/SpectralComparator.cc
