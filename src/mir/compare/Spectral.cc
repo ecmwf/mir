@@ -11,9 +11,10 @@
 /// @date Oct 2016
 
 
+#include "mir/compare/Spectral.h"
+
 #include <algorithm>
 #include <cmath>
-#include "mir/compare/SpectralComparator.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -25,18 +26,18 @@ namespace mir {
 namespace compare {
 
 
-SpectralComparator::SpectralComparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) :
+Spectral::Spectral(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) :
     Comparator(param1, param2) {
     absoluteError_ = getSameParameter<double>("absolute-error");
     ASSERT(absoluteError_ > 0);
 }
 
 
-SpectralComparator::~SpectralComparator() {
+Spectral::~Spectral() {
 }
 
 
-void SpectralComparator::execute(const data::MIRField& field1, const data::MIRField& field2) const {
+void Spectral::execute(const data::MIRField& field1, const data::MIRField& field2) const {
 
     // access unpacked SH values to compare with absolute tolerance
     const repres::Representation *repres1 = field1.representation();
@@ -48,7 +49,7 @@ void SpectralComparator::execute(const data::MIRField& field1, const data::MIRFi
     const size_t trunc2 = repres2->truncation();
     if (trunc1 != trunc2) {
         std::ostringstream oss;
-        oss << "SpectralComparator: truncation mismatch: " << trunc1 << " != " << trunc2;
+        oss << "Spectral: truncation mismatch: " << trunc1 << " != " << trunc2;
         throw eckit::UserError(oss.str());
     }
 
@@ -57,7 +58,7 @@ void SpectralComparator::execute(const data::MIRField& field1, const data::MIRFi
     const size_t Ts = std::min(repres1->pentagonalResolutionTs(), repres2->pentagonalResolutionTs());
     if (!Ts) {
         std::ostringstream oss;
-        oss << "SpectralComparator: cannot compare unpacked coefficients, as TS=0";
+        oss << "Spectral: cannot compare unpacked coefficients, as TS=0";
         throw eckit::UserError(oss.str());
     }
 
@@ -91,15 +92,15 @@ void SpectralComparator::execute(const data::MIRField& field1, const data::MIRFi
 }
 
 
-void SpectralComparator::print(std::ostream& out) const {
-    out << "SpectralComparator["
+void Spectral::print(std::ostream& out) const {
+    out << "Spectral["
         << "absoluteError=" << absoluteError_
         << "]";
 }
 
 
 namespace {
-ComparatorBuilder<SpectralComparator> __spectralComparator("spectral");
+ComparatorBuilder<Spectral> __spectral("spectral");
 }
 
 

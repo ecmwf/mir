@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2016 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,13 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Oct 2016
 
 
-#ifndef mir_compare_ScalarComparator_h
-#define mir_compare_ScalarComparator_h
+#ifndef mir_compare_Spectral_h
+#define mir_compare_Spectral_h
 
 #include "mir/compare/Comparator.h"
 
@@ -23,7 +21,7 @@ namespace mir {
 namespace compare {
 
 
-class ScalarComparator : public Comparator {
+class Spectral : public Comparator {
   public:
 
     // -- Exceptions
@@ -31,11 +29,11 @@ class ScalarComparator : public Comparator {
 
     // -- Contructors
 
-    ScalarComparator(const param::MIRParametrisation &param1, const param::MIRParametrisation& param2);
+    Spectral(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2);
 
     // -- Destructor
 
-    virtual ~ScalarComparator(); // Change to virtual if base class
+    virtual ~Spectral(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -77,8 +75,8 @@ class ScalarComparator : public Comparator {
 
     // No copy allowed
 
-    ScalarComparator(const ScalarComparator &);
-    ScalarComparator &operator=(const ScalarComparator &);
+    Spectral(const Spectral &);
+    Spectral &operator=(const Spectral &);
 
     // -- Members
     // None

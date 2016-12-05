@@ -12,9 +12,10 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include <cmath>
 
-#include "mir/compare/ScalarComparator.h"
+#include "mir/compare/Scalar.h"
+
+#include <cmath>
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -26,17 +27,18 @@ namespace mir {
 namespace compare {
 
 
-ScalarComparator::ScalarComparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) :
+Scalar::Scalar(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) :
     Comparator(param1, param2) {
     absoluteError_ = getSameParameter<double>("absolute-error");
     ASSERT(absoluteError_ > 0);
 }
 
 
-ScalarComparator::~ScalarComparator() {
+Scalar::~Scalar() {
 }
 
-void ScalarComparator::execute(const data::MIRField& field1, const data::MIRField& field2) const {
+
+void Scalar::execute(const data::MIRField& field1, const data::MIRField& field2) const {
     ASSERT(field1.dimensions() == field2.dimensions());
 
     for (size_t w = 0; w < field1.dimensions(); ++w) {
@@ -83,7 +85,7 @@ void ScalarComparator::execute(const data::MIRField& field1, const data::MIRFiel
 }
 
 
-void ScalarComparator::print(std::ostream& out) const {
+void Scalar::print(std::ostream& out) const {
     out << "ScalarComparator["
         << "absoluteError=" << absoluteError_
         << "]";
@@ -91,7 +93,7 @@ void ScalarComparator::print(std::ostream& out) const {
 
 
 namespace {
-ComparatorBuilder<ScalarComparator> __scalarComparator("scalar");
+ComparatorBuilder<Scalar> __scalar("scalar");
 }
 
 
