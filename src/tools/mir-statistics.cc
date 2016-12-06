@@ -67,7 +67,8 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
     // - lookup configuration for metadata, to get specific "stats" parameter
 
     const ConfigurationWrapper args_wrap(const_cast<eckit::option::CmdArgs&>(args));
-    const mir::config::MIRConfiguration& config = mir::config::MIRConfiguration::instance();
+    mir::config::MIRConfiguration& config = mir::config::MIRConfiguration::instance();
+    config.configure();
 
 
     for (size_t i = 0; i < args.count(); ++i) {
@@ -90,12 +91,9 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
 
             // Calculate and show statistics
-            Statistics::Results results;
-
             eckit::ScopedPtr<const Statistics> s(StatisticsFactory::build(stats, parametrisation));
-            s->calculate(input.field(), results);
+            eckit::Log::info() << s->calculate(input.field()) << std::endl;
 
-            eckit::Log::info() << results << std::endl;
         }
     }
 

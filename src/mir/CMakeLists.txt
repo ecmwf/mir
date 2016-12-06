@@ -430,6 +430,8 @@ list(
     stats/CountOutsideRange.h
     stats/PNorms.cc
     stats/PNorms.h
+    stats/Results.cc
+    stats/Results.h
     stats/Scalar.cc
     stats/Scalar.h
     stats/ScalarCentralMoments.cc
