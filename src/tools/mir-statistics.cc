@@ -15,6 +15,7 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
+#include "eckit/option/SimpleOption.h"
 #include "mir/config/MIRConfiguration.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
@@ -41,6 +42,9 @@ public:
     MIRStatistics(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
         options_.push_back(new FactoryOption<mir::stats::StatisticsFactory>("stats", "Statistics methods for interpreting field values"));
+
+        options_.push_back(new SimpleOption< double >("lower-limit", "count lower limit (count-outside-range)"));
+        options_.push_back(new SimpleOption< double >("upper-limit", "count upper limit (count-outside-range)"));
     }
 };
 
