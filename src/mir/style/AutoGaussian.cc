@@ -44,31 +44,13 @@ void AutoGaussian::get(const std::string &name, long &value) const {
 
     ASSERT(parametrisation_.get("field.truncation", truncation));
 
-    value = 0;
-
     // TODO: a config file
-
-    if (truncation == 1279) {
-        value = 1280;
-    }
-
-    if (truncation == 639) {
-        value = 640;
-    }
-
-    if (truncation == 255) {
-        // TODO: Should be N256, not O256
-        value = 256;
-    }
-
-    if (truncation == 63) {
-        // TODO: Should be N64, not O64
-        value = 64;
-    }
-
-    if (truncation == 319) {
-        value = 320;
-    }
+    value = (truncation == 1279)? 1280
+          : (truncation ==  639)?  640
+          : (truncation ==  319)?  320
+          : (truncation ==  255)?  256  // TODO: Should be N256, not O256
+          : (truncation ==   63)?   64  // TODO: Should be N64, not O64
+          :                          0;
 
     if (value == 0) {
         std::ostringstream oss;
