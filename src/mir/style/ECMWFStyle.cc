@@ -147,7 +147,6 @@ bool ECMWFStyle::forcedPrepare(const param::MIRParametrisation& parametrisation)
         "frame",
         "packing",
         "pattern",
-        "stats",
         "vod2uv",
         0
     };

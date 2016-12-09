@@ -41,7 +41,7 @@ struct Defaults : param::SimpleParametrisation {
 
         set("interpolation", "linear"); // The word 'method' is used in grib
         set("decomposition", "none");
-        set("stats", "Scalar");
+        set("stats", "scalar");
         set("caching", true);
 
         set("prune-epsilon", 1e-10);
@@ -122,6 +122,13 @@ void MIRConfiguration::print(std::ostream& out) const {
         <<  "configPath=" << configPath_
         << ",root=" << *root_
         << "]";
+}
+
+
+const param::MIRParametrisation*MIRConfiguration::lookup(const param::MIRParametrisation& metadata) const {
+    long id = 0;
+    return metadata.get("paramId", id)? lookup(id, metadata)
+                                      : defaults();
 }
 
 

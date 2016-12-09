@@ -15,12 +15,13 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
-#include "mir/action/context/Context.h"
-#include "mir/action/statistics/Statistics.h"
+#include "eckit/option/SimpleOption.h"
 #include "mir/config/MIRConfiguration.h"
+#include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/MIRCombinedParametrisation.h"
+#include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
 
@@ -40,7 +41,10 @@ public:
 
     MIRStatistics(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
-        options_.push_back(new FactoryOption<mir::action::statistics::StatisticsFactory>("stats", "Statistics methods for interpreting field values"));
+        options_.push_back(new FactoryOption<mir::stats::StatisticsFactory>("stats", "Statistics methods for interpreting field values"));
+
+        options_.push_back(new SimpleOption< double >("lower-limit", "count lower limit (count-outside-range)"));
+        options_.push_back(new SimpleOption< double >("upper-limit", "count upper limit (count-outside-range)"));
     }
 };
 
@@ -50,39 +54,50 @@ void MIRStatistics::usage(const std::string &tool) const {
             << "\nUsage: " << tool << " [--stats=option] file.grib [file.grib [...]]"
                "\nExamples:"
                "\n  % " << tool << " file.grib"
-               "\n  % " << tool << " --stats=ScalarStatistics file1.grib file2.grib file3.grib"
-               "\n  % " << tool << " --stats=SHStatistics file.grib"
+               "\n  % " << tool << " --stats=scalar file1.grib file2.grib file3.grib"
+               "\n  % " << tool << " --stats=spectral file.grib"
             << std::endl;
 }
 
 
 void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
-    using namespace mir::action::statistics;
     using namespace mir::param;
+    using namespace mir::stats;
 
-    std::string opt;
-    args.get("stats", opt);
 
-    mir::util::MIRStatistics stats;
+    // Build MIRCombinedParametrisation from a few parts:
+    // - wrap the arguments, so that they behave as a MIRParametrisation
+    // - get the input metadata as a MIRParametrisation
+    // - lookup configuration for metadata, to get specific "stats" parameter
+
+    const ConfigurationWrapper args_wrap(const_cast<eckit::option::CmdArgs&>(args));
+    mir::config::MIRConfiguration& config = mir::config::MIRConfiguration::instance();
+    config.configure();
+
 
     for (size_t i = 0; i < args.count(); ++i) {
-        mir::input::GribFileInput input(args(i));
+        mir::input::GribFileInput grib(args(i));
+        const mir::input::MIRInput& input = grib;
 
-        // Wrap the arguments, so that they behave as a MIRParameter
-        const ConfigurationWrapper wrap(const_cast<eckit::option::CmdArgs&>(args));
-        eckit::ScopedPtr<const mir::param::MIRParametrisation> defaults(mir::config::MIRConfiguration::instance().defaults());
-
-        MIRCombinedParametrisation parametrisation(wrap, input, *defaults);
 
         size_t count = 0;
-        while (input.next()) {
+        while (grib.next()) {
             eckit::Log::info() << "\n'" << args(i) << "' #" << ++count << std::endl;
 
-            eckit::ScopedPtr<const Statistics> statistics(StatisticsFactory::build(opt, parametrisation));
-            mir::context::Context ctx(input, stats);
-            statistics->execute(ctx);
+            // Metadata-specific defaults
+            eckit::ScopedPtr<const MIRParametrisation> defaults(config.lookup(input.parametrisation()));
+            MIRCombinedParametrisation parametrisation(args_wrap, grib, *defaults);
 
-            eckit::Log::info() << statistics->results() << std::endl;
+
+            // Get paramId/metadata-specific "stats" method
+            std::string stats;
+            static_cast<const MIRParametrisation&>(parametrisation).get("stats", stats);
+
+
+            // Calculate and show statistics
+            eckit::ScopedPtr<const Statistics> s(StatisticsFactory::build(stats, parametrisation));
+            eckit::Log::info() << s->calculate(input.field()) << std::endl;
+
         }
     }
 

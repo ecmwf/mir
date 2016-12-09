@@ -78,7 +78,7 @@ Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const atlas
         }
     }
 
-    name = name + "-" + which;
+    name = name + "." + which;
     const LSMChooser &chooser = LSMChooser::lookup(name);
     std::string key = chooser.cacheKey(name, parametrisation, grid, which);
 

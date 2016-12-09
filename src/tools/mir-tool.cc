@@ -22,8 +22,8 @@
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
+#include "eckit/log/ResourceUsage.h"
 #include "mir/action/plan/Executor.h"
-#include "mir/action/statistics/Statistics.h"
 #include "mir/api/MIRJob.h"
 #include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/config/LibMir.h"
@@ -39,7 +39,6 @@
 #include "mir/packing/Packer.h"
 #include "mir/style/MIRStyle.h"
 #include "mir/tools/MIRTool.h"
-#include "eckit/log/ResourceUsage.h"
 
 
 class MIRToolConcrete : public mir::tools::MIRTool {
@@ -142,7 +141,6 @@ public:
         options_.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
         options_.push_back(new FactoryOption<mir::caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used on not"));
-        options_.push_back(new FactoryOption<mir::action::statistics::StatisticsFactory>("stats", "Statistics methods for interpreting field values"));
         options_.push_back(new SimpleOption<bool>("precipitation", "Clip precipitation values, if target value below threshold"));
         options_.push_back(new SimpleOption<bool>("precipitation-neighbour", "Clip precipitation values also if source closest neighbour is below threshold"));
         options_.push_back(new SimpleOption<bool>("precipitation-threshold", "Clip precipitation threshold (minimum value above zero)"));

@@ -13,13 +13,12 @@
 /// @author Tiago Quintino
 /// @date   May 2016
 
-
 #ifndef mir_compare_FieldComparator_h
 #define mir_compare_FieldComparator_h
 
-#include <set>
 #include <string>
 #include <vector>
+#include <set>
 
 
 namespace eckit {
@@ -72,12 +71,6 @@ protected: // members
     size_t count(const MultiFile& multi,
                  FieldSet& fields);
 
-    void getField(const MultiFile& multi,
-                  eckit::Buffer& buffer,
-                  FieldSet& fields,
-                  const std::string& path,
-                  off_t offset,
-                  size_t size);
 
     void compareCounts(const std::string& name,
                        const MultiFile& multi1,
@@ -85,10 +78,19 @@ protected: // members
                        FieldSet& fields1,
                        FieldSet& fields2);
 
-    void compareMissingFields(const MultiFile& multi1,
-                              const MultiFile& multi2,
-                              const FieldSet& fields1,
-                              const FieldSet& fields2);
+    void getField(const MultiFile& multi,
+                  eckit::Buffer& buffer,
+                  FieldSet& fields,
+                  const std::string& path,
+                  off_t offset,
+                  size_t size);
+
+    void compareFields(const MultiFile& multi1,
+                       const MultiFile& multi2,
+                       const FieldSet& fields1,
+                       const FieldSet& fields2,
+                       bool compareValues,
+                       bool compareStatistics);
 
     void compareFieldStatistics(
             const MultiFile& multi1,
@@ -130,6 +132,7 @@ private:
     std::set<long> parametersWhiteList_;
 
 };
+
 
 
 }  // namespace compare

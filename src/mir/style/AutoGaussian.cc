@@ -44,31 +44,32 @@ void AutoGaussian::get(const std::string &name, long &value) const {
 
     ASSERT(parametrisation_.get("field.truncation", truncation));
 
-    value = 0;
-
     // TODO: a config file
-
-    if (truncation == 1279) {
-        value = 1280;
-    }
-
-    if (truncation == 639) {
-        value = 640;
-    }
-
-    if (truncation == 255) {
-        // TODO: Should be N256, not O256
-        value = 256;
-    }
-
-    if (truncation == 63) {
-        // TODO: Should be N64, not O64
-        value = 64;
-    }
-
-    if (truncation == 319) {
-        value = 320;
-    }
+#if 0
+    value = (truncation == 1279)? 1280
+          : (truncation ==  639)?  640
+          : (truncation ==  319)?  320
+          : (truncation ==  255)?  256  // TODO: Should be N256, not O256
+          : (truncation ==   63)?   64  // TODO: Should be N64, not O64
+          :                          0;
+#else
+    // from libemos/interpolation/hsh2gg.F
+    value = (truncation == 2047 || truncation == 2048)? 1024
+          : (truncation == 1279 || truncation == 1280)?  640
+          : (truncation ==  799 || truncation ==  800)?  400
+          : (truncation ==  639 || truncation ==  640)?  320
+          : (truncation ==  511 || truncation ==  512)?  256
+          : (truncation ==  399 || truncation ==  400)?  200
+          : (truncation ==  319 || truncation ==  320)?  160
+          : (truncation ==  255 || truncation ==  256)?  128
+          : (truncation ==  213 || truncation ==  214)?  128
+          : (truncation ==  191 || truncation ==  192)?   96
+          : (truncation ==  159 || truncation ==  160)?   80
+          : (truncation ==  106 || truncation ==  107)?   80
+          : (truncation ==   95 || truncation ==   96)?   48
+          : (truncation ==   63 || truncation ==   64)?   48
+          :                                                0;
+#endif
 
     if (value == 0) {
         std::ostringstream oss;
