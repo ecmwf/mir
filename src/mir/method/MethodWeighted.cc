@@ -459,20 +459,25 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
         const std::vector<bool>& fieldMissingValues,
         WeightMatrix& MW) const {
 
-    eckit::Timer t("applyMissingValues");
+    eckit::Timer t1("applyMissingValues start");
 
     // correct matrix weigths for the missing values (matrix copy happens here)
     ASSERT( W.cols() == fieldMissingValues.size() );
     WeightMatrix X(W);
 
+    eckit::Timer t2("applyMissingValues after matrix alloc");
+
     WeightMatrix::iterator it(X);
     for (WeightMatrix::Size i = 0; i < X.rows(); i++) {
+
+        const WeightMatrix::iterator begin = X.begin(i);
+        const WeightMatrix::iterator end   = X.end(i);
 
         // count missing values and accumulate weights
         double sum = 0.; // accumulated row weight, disregarding field missing values
         size_t Nmiss = 0;
         size_t Ncol  = 0;
-        for (it = X.begin(i); it != X.end(i); ++it, ++Ncol) {
+        for (it = begin; it != end; ++it, ++Ncol) {
             if (fieldMissingValues[static_cast<size_t>(it.col())])
                 ++Nmiss;
             else
@@ -487,7 +492,7 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
         if ((missingAll || is_approx_zero(sum)) && (Ncol > 0)) {
 
             bool found = false;
-            for (it = X.begin(i); it != X.end(i); ++it) {
+            for (it = begin; it != end; ++it) {
                 *it = 0.;
                 if (!found && fieldMissingValues[static_cast<size_t>(it.col())]) {
                     *it = 1.;
@@ -499,7 +504,7 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
         } else if (missingSome) {
 
             ASSERT(!is_approx_zero(sum));
-            for (it = X.begin(i); it != X.end(i); ++it) {
+            for (it = begin; it != end; ++it) {
                 if (fieldMissingValues[static_cast<size_t>(it.col())]) {
                     *it = 0.;
                 } else {
@@ -509,6 +514,8 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
 
         }
     }
+
+    eckit::Timer t3("applyMissingValues before validate");
 
     X.validate("MethodWeighted::applyMissingValues");
 
