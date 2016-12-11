@@ -367,6 +367,8 @@ void MethodWeighted::execute(context::Context & ctx,
 
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
+            eckit::Timer t("Matrix-Multiply-MissingValues");
+
             std::vector<bool> fieldMissingValues(npts_inp, false);
             std::transform(field.values(i).begin(), field.values(i).end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
 
@@ -378,6 +380,8 @@ void MethodWeighted::execute(context::Context & ctx,
         } else {
 
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
+
+            eckit::Timer t("Matrix-Multiply-Standard");
 
             W.multiply(mi, mo);
 
