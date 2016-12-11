@@ -520,6 +520,10 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
     X.validate("MethodWeighted::applyMissingValues");
 
     MW.swap(X);
+
+    if(t1.elapsed() > 60) {
+        throw eckit::BadParameter("************* This request takes a LOT of TIME!!!");
+    }
 }
 
 void MethodWeighted::applyMasks(
