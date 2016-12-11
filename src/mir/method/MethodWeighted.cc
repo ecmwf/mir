@@ -370,7 +370,10 @@ void MethodWeighted::execute(context::Context & ctx,
             eckit::Timer t("Matrix-Multiply-MissingValues");
 
             std::vector<bool> fieldMissingValues(npts_inp, false);
-            std::transform(field.values(i).begin(), field.values(i).end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
+            {
+                eckit::Timer t("calculateFieldMissingValues");
+                std::transform(field.values(i).begin(), field.values(i).end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
+            }
 
             WeightMatrix MW;
             applyMissingValues(W, fieldMissingValues, MW); // Don't assume compiler can do return value optimization !!!
@@ -455,6 +458,8 @@ void MethodWeighted::computeMatrixWeights(context::Context & ctx,
 void MethodWeighted::applyMissingValues(const WeightMatrix & W,
         const std::vector<bool>& fieldMissingValues,
         WeightMatrix& MW) const {
+
+    eckit::Timer t("applyMissingValues");
 
     // correct matrix weigths for the missing values (matrix copy happens here)
     ASSERT( W.cols() == fieldMissingValues.size() );
