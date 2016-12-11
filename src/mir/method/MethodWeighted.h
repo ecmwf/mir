@@ -74,7 +74,7 @@ private:
     virtual void assemble(context::Context& ctx, WeightMatrix& W, const GridSpace& in, const GridSpace& out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
-    WeightMatrix applyMissingValues(const WeightMatrix& W, const std::vector<bool>& fieldMissingValues) const;
+    void applyMissingValues(const WeightMatrix& W, const std::vector<bool>& fieldMissingValues, WeightMatrix& MW) const;
 
     /// Update interpolation weigths matrix to account for field masked values
     virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &, util::MIRStatistics& statistics) const;

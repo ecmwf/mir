@@ -370,9 +370,8 @@ void MethodWeighted::execute(context::Context & ctx,
             std::vector<bool> fieldMissingValues(npts_inp, false);
             std::transform(field.values(i).begin(), field.values(i).end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
 
-            // Assumes compiler does return value optimization
-            // otherwise we need to pass result matrix as parameter
-            WeightMatrix MW = applyMissingValues(W, fieldMissingValues);
+            WeightMatrix MW;
+            applyMissingValues(W, fieldMissingValues, MW); // Don't assume compiler can do return value optimization !!!
 
             MW.multiply(mi, mo);
 
@@ -449,8 +448,9 @@ void MethodWeighted::computeMatrixWeights(context::Context & ctx,
 }
 
 
-WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
-        const std::vector<bool>& fieldMissingValues) const {
+void MethodWeighted::applyMissingValues(const WeightMatrix & W,
+        const std::vector<bool>& fieldMissingValues,
+        WeightMatrix& MW) const {
 
     // correct matrix weigths for the missing values (matrix copy happens here)
     ASSERT( W.cols() == fieldMissingValues.size() );
@@ -502,7 +502,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
     }
 
     X.validate("MethodWeighted::applyMissingValues");
-    return X;
+
+    MW.swap(X);
 }
 
 void MethodWeighted::applyMasks(
