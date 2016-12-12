@@ -459,13 +459,11 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
         const std::vector<bool>& fieldMissingValues,
         WeightMatrix& MW) const {
 
-    eckit::Timer t1("applyMissingValues start");
+    eckit::Timer t1("applyMissingValues", eckit::Log::debug<LibMir>());
 
     // correct matrix weigths for the missing values (matrix copy happens here)
     ASSERT( W.cols() == fieldMissingValues.size() );
     WeightMatrix X(W);
-
-    eckit::Timer t2("applyMissingValues after matrix alloc");
 
     WeightMatrix::iterator it(X);
     for (WeightMatrix::Size i = 0; i < X.rows(); i++) {
@@ -515,15 +513,9 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
         }
     }
 
-    eckit::Timer t3("applyMissingValues before validate");
-
     X.validate("MethodWeighted::applyMissingValues");
 
     MW.swap(X);
-
-    if(t1.elapsed() > 60) {
-        throw eckit::BadParameter("************* This request takes a LOT of TIME!!!");
-    }
 }
 
 void MethodWeighted::applyMasks(
