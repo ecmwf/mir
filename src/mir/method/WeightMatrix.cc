@@ -123,7 +123,10 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 
 void WeightMatrix::validate(const char *when) const {
 
+    bool logErrors = (eckit::Log::debug<LibMir>());
+
     size_t errors = 0;
+
     for (Size i = 0; i < rows(); i++) {
 
         // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
@@ -143,7 +146,8 @@ void WeightMatrix::validate(const char *when) const {
              util::compare::is_approx_one(sum);
 
         // log issues, per row
-        if (!ok) {
+        if (!ok && logErrors) {
+
             if (errors < 50) {
                 if (!errors) {
                     eckit::Log::debug<LibMir>() << "WeightMatrix::validate(" << when << ") failed " << std::endl;
@@ -164,13 +168,7 @@ void WeightMatrix::validate(const char *when) const {
                 eckit::Log::debug<LibMir>() << "..." << std::endl;
             }
             errors++;
-
         }
-    }
-
-    if (errors) {
-        std::ostringstream os;
-        os << "WeightMatrix::validate(" << when << ") failed ";
     }
 }
 
