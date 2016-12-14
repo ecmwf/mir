@@ -26,6 +26,7 @@
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
 #include "mir/caching/legendre/LegendreLoader.h"
+#include "mir/caching/interpolator/InterpolatorLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/input/DummyInput.h"
 #include "mir/input/GeoPointsFileInput.h"
@@ -140,6 +141,7 @@ public:
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
         options_.push_back(new FactoryOption<mir::caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
+        options_.push_back(new FactoryOption<mir::caching::interpolator::InterpolatorLoaderFactory>("interpolator-loader", "Select the scheme to load interpolation weights"));
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used on not"));
         options_.push_back(new SimpleOption<bool>("precipitation", "Clip precipitation values, if target value below threshold"));
         options_.push_back(new SimpleOption<bool>("precipitation-neighbour", "Clip precipitation values also if source closest neighbour is below threshold"));

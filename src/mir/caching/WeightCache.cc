@@ -9,6 +9,9 @@
  */
 
 #include "mir/caching/WeightCache.h"
+
+#include "eckit/io/Buffer.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/caching/interpolator/InterpolatorLoader.h"
@@ -54,8 +57,11 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
 
     InterpolatorLoader* loader_ = InterpolatorLoaderFactory::build(wcache.parametrisation_, path);
 
-    value_type w;
-//    value_type w(loader_->address(), loader_->size());
+
+    bool notown = true;
+    eckit::Buffer buffer(const_cast<void*>(loader_->address()), loader_->size(), notown);
+
+    value_type w(buffer);
 
     std::swap(W, w);
 

@@ -37,6 +37,7 @@ struct Defaults : param::SimpleParametrisation {
 
         set("style", "mars");
         set("legendre-loader", "mapped-memory");
+        set("interpolator-loader", "file-io");
         set("executor", "simple");
 
         set("interpolation", "linear"); // The word 'method' is used in grib
