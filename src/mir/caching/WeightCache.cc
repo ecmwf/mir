@@ -51,17 +51,20 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
 
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
 
+#if 0
     const WeightCache& wcache = static_cast<const WeightCache&>(manager);
 
     using namespace mir::caching::interpolator;
 
     InterpolatorLoader* loader_ = InterpolatorLoaderFactory::build(wcache.parametrisation_, path);
 
-
     bool notown = true;
     eckit::Buffer buffer(const_cast<void*>(loader_->address()), loader_->size(), notown);
 
     value_type w(buffer);
+#endif
+
+    value_type w(path);
 
     std::swap(W, w);
 
