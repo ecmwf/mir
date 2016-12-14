@@ -14,34 +14,40 @@
 ///
 /// @date Oct 2016
 
+#include "mir/caching/interpolator/FileLoader.h"
+
 #include <fcntl.h>
 #include <iostream>
 #include <sys/mman.h>
 
-#include "mir/caching/interpolator/FileLoader.h"
-
-#include "eckit/eckit.h"
-#include "eckit/os/Stat.h"
-
-#include "mir/config/LibMir.h"
-
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Timer.h"
+
 #include "mir/config/LibMir.h"
+#include "mir/method/WeightMatrix.h"
+
+using mir::method::WeightMatrix;
 
 namespace mir {
 namespace caching {
 namespace interpolator {
 
-FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
-    : InterpolatorLoader(parametrisation, path), buffer_(path.size()) {
 
-    //    eckit::TraceTimer<LibMir> timer("Loading interpolator coefficients from file");
+//----------------------------------------------------------------------------------------------------------------------
+
+
+FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
+    InterpolatorLoader(parametrisation, path),
+    buffer_(path.size()) {
+
+    /// FIXME buffer size is based on file.size() -- which is assumed to be bigger than the memory footprint
+
     eckit::Log::debug<LibMir>() << "Loading interpolator coefficients from " << path << std::endl;
 
-    eckit::StdFile file(path);
-    ASSERT(::fread(buffer_, 1, buffer_.size(), file) == buffer_.size());
+    WeightMatrix w(path);
+
+    w.dump(buffer_);
 }
 
 FileLoader::~FileLoader() {}
@@ -61,6 +67,11 @@ size_t FileLoader::size() const {
 namespace {
 static InterpolatorLoaderBuilder<FileLoader> loader("file-io");
 }
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 
 } // namespace interpolator
 } // namespace caching

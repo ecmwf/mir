@@ -16,21 +16,21 @@
 
 #include "mir/caching/legendre/SharedMemoryLoader.h"
 
-#include <sys/sem.h>
+#include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include <errno.h>
-
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <sys/time.h>
-
 #include <sys/sem.h>
+
 
 #include "eckit/eckit.h"
 #include "eckit/os/Stat.h"
+#include "eckit/os/SemLocker.h"
 
 #include "eckit/log/Bytes.h"
 #include "eckit/log/BigNum.h"
@@ -47,15 +47,11 @@ namespace mir {
 namespace caching {
 namespace legendre {
 
-namespace {
-struct sembuf _lock[] = {
-    { 0, 0,  SEM_UNDO }, /* test */
-    { 0, 1,  SEM_UNDO }, /* lock */
-};
 
-struct sembuf _unlock[] = {
-    { 0, -1, SEM_UNDO }, /* ulck */
-};
+//----------------------------------------------------------------------------------------------------------------------
+
+
+namespace {
 
 const int MAGIC  =  1234567890;
 const size_t INFO_PATH = 1024;
@@ -73,80 +69,6 @@ class AutoFDClose {
     ~AutoFDClose() {
         ::close(fd_);
     }
-};
-
-
-class SemLocker {
-
-    static const int SLEEP = 1;
-
-    int sem_;
-    eckit::PathName path_;
-
-  public:
-
-    SemLocker(int s, const eckit::PathName& path) :
-        sem_(s),
-        path_(path) {
-
-        static const int MAX_WAIT_LOCK = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
-
-        int retry = 0;
-        while (retry < MAX_WAIT_LOCK) {
-            if (semop(sem_, _lock, 2 ) < 0) {
-                int save = errno;
-                retry++;
-
-                if (save == EINTR && retry < MAX_WAIT_LOCK) {
-                    continue;
-                }
-                eckit::Log::warning() << "SharedMemoryLoader: Failed to acquire exclusive lock on " << path_ << " " << eckit::Log::syserr << std::endl;
-
-                // sprintf(message,"ERR: sharedmem:semop:lock(%s)",path);
-                if (retry >= MAX_WAIT_LOCK) {
-                    std::ostringstream os;
-                    os << "Failed to acquire semaphore lock for " << path_;
-                    throw eckit::FailedSystemCall(os.str());
-                } else {
-                    eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << std::endl;
-                    sleep(SLEEP);
-                }
-            } else {
-                break;
-            }
-        }
-    }
-
-    ~SemLocker() {
-        int retry = 0;
-
-        static const int MAX_WAIT_LOCK = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
-
-        while (retry < MAX_WAIT_LOCK) {
-            if (semop(sem_, _unlock, 1) < 0) {
-                int save = errno;
-                retry++;
-
-                if (save == EINTR && retry < MAX_WAIT_LOCK) {
-                    continue;
-                }
-
-                eckit::Log::warning() << "SharedMemoryLoader: Failed to realease exclusive lock on " << path_ << " " << eckit::Log::syserr << std::endl;
-
-                if (retry >= MAX_WAIT_LOCK) {
-                    std::ostringstream os;
-                    os << "Failed to realease semaphore lock for " << path_;
-                    throw eckit::SeriousBug(os.str());
-                } else {
-                    eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << std::endl;
-                    sleep(SLEEP);
-                }
-            } else {
-                break;
-            }
-        }
-    }
-
 };
 
 }
@@ -172,14 +94,17 @@ class Unloader {
 
 static Unloader unloader;
 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName &path):
     LegendreLoader(parametrisation, path),
     address_(0),
     size_(path.size()),
     unload_(false) {
 
-    // eckit::Log::info() << "Loading shared memory from " << path << std::endl;
-
+    eckit::Log::debug<LibMir>() << "Loading shared memory interpolator from " << path << std::endl;
 
     std::string name;
 
@@ -193,6 +118,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
     eckit::TraceTimer<LibMir> timer("Loading legendre coefficients from shared memory");
     eckit::PathName real = path.realName();
+
     // eckit::Log::debug<LibMir>() << "Loading legendre coefficients from " << real << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
@@ -206,19 +132,20 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         throw eckit::FailedSystemCall("ftok(" + real.asString() + ")");
     }
 
+    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
 
     // Try to get an exclusing lock, we may be waiting for another process
     // to create the memory segment and load it with the file content
     int sem;
-    SYSCALL(sem = semget(key, 1, IPC_CREAT | 0600));
-    SemLocker locker(sem, real);
+    SYSCALL(sem = ::semget(key, 1, IPC_CREAT | 0600));
+    eckit::SemLocker locker(sem, real, max_wait_lock);
 
     // O_LARGEFILE ?
     int fd;
     SYSCALL(fd = ::open(real.asString().c_str(), O_RDONLY));
     AutoFDClose c(fd);
 
-    int page_size = getpagesize();
+    int page_size = ::getpagesize();
     ASSERT(page_size > 0);
     size_t shmsize = ((size_ + page_size - 1) / page_size) * page_size + sizeof(struct info) ;
 
@@ -399,6 +326,11 @@ static LegendreLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
 static LegendreLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
 
 }
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 
 }  // namespace legendre
 }  // namespace caching

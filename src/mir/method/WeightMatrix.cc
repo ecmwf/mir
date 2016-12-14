@@ -15,10 +15,13 @@
 #include "mir/method/WeightMatrix.h"
 
 #include <cmath>
+
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Plural.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/util/Compare.h"
 
@@ -26,6 +29,25 @@
 namespace mir {
 namespace method {
 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+WeightMatrix::WeightMatrix(const eckit::PathName& path) :
+    SparseMatrix()
+{
+    load(path);
+}
+
+WeightMatrix::WeightMatrix(WeightMatrix::Size rows, WeightMatrix::Size cols) :
+    SparseMatrix(rows, cols)
+{
+}
+
+WeightMatrix::WeightMatrix(const eckit::Buffer& buffer) :
+    SparseMatrix(buffer)
+{
+}
 
 void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& triplets) {
     ASSERT(rows());
@@ -45,7 +67,7 @@ void WeightMatrix::print(std::ostream& out) const {
 
 void WeightMatrix::multiply(const WeightMatrix::Vector& values, WeightMatrix::Vector& result) const {
 
-    // TODO: linear algebra backend should depend on parametrisation
+    /// @todo linear algebra backend should depend on parametrisation
     eckit::linalg::LinearAlgebra::backend().spmv(*this, values, result);
 }
 
@@ -56,7 +78,7 @@ void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Ma
                                    "B[" << values.rows() << ',' << values.cols() << "] = "
                                    "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
 
-    eckit::Log::info() << "MethodWeighted::multiply: "
+    eckit::Log::info() << "Multiply: "
                                    "A[" << rows()        << ',' << cols()        << "] * "
                                    "B[" << values.rows() << ',' << values.cols() << "] = "
                                    "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
@@ -78,6 +100,7 @@ void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Ma
 }
 
 void WeightMatrix::cleanup(const double& pruneEpsilon) {
+
     size_t fixed = 0;
     size_t count = 0;
 
@@ -172,6 +195,8 @@ void WeightMatrix::validate(const char *when) const {
     }
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

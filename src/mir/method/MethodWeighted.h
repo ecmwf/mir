@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Peter Bispham
+/// @author Baudouin Raoult
 /// @author Tiago Quintino
 /// @author Pedro Maciel
 /// @date May 2015

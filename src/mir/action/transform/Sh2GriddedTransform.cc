@@ -168,6 +168,7 @@ static void transform(
 
 
     if (trans_handles.find(key) == trans_handles.end()) {
+
         eckit::PathName path;
 
         {   // Block for timers

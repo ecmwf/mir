@@ -126,6 +126,7 @@ void MethodWeighted::createMatrix(context::Context& ctx,
                                   const lsm::LandSeaMasks& masks) const {
 
     computeMatrixWeights(ctx, in, out, W);
+
     W.validate("computeMatrixWeights");
 
     if (masks.active() && masks.cacheable()) {
@@ -195,9 +196,13 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
     bool caching = true;
     parametrisation_.get("caching", caching);
 
+    eckit::PathName path;
+
     if (caching) {
-        // The WeightCache is parametrised by 'caching', as caching may be disabled on a field by field basis (unstructured grids)
-        static caching::WeightCache cache;
+
+        /// The WeightCache is parametrised by 'caching',
+        /// as caching may be disabled on a field by field basis (unstructured grids)
+        static caching::WeightCache cache(parametrisation_);
 
         class MatrixCacheCreator: public caching::WeightCache::CacheContentCreator {
 
@@ -225,7 +230,7 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
         };
 
         MatrixCacheCreator creator(*this, ctx, in, out, masks);
-        cache.getOrCreate(cache_key, creator, W);
+        path = cache.getOrCreate(cache_key, creator, W);
 
     }
     else {
@@ -233,15 +238,17 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
     }
 
 
-// If LSM not cacheabe, e.g. user provided, we apply the mask after
+    // If LSM not cacheabe, e.g. user provided, we apply the mask after
     if (masks.active() && !masks.cacheable())  {
         applyMasks(W, masks, ctx.statistics());
         W.validate("applyMasks");
     }
 
+    // inserts the matrix in the cache
     WeightMatrix& w = matrix_cache[key_with_masks];
     std::swap(w, W);
 
+    // update memory footprint
     matrix_cache.footprint(key_with_masks, w.footprint());
 
     return w;
@@ -370,10 +377,7 @@ void MethodWeighted::execute(context::Context & ctx,
             eckit::Timer t("Matrix-Multiply-MissingValues");
 
             std::vector<bool> fieldMissingValues(npts_inp, false);
-            {
-                eckit::Timer t("calculateFieldMissingValues");
-                std::transform(field.values(i).begin(), field.values(i).end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
-            }
+            std::transform(field.values(i).begin(), field.values(i).end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
 
             WeightMatrix MW;
             applyMissingValues(W, fieldMissingValues, MW); // Don't assume compiler can do return value optimization !!!

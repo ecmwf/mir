@@ -31,6 +31,10 @@ class MIRParametrisation;
 namespace caching {
 namespace interpolator {
 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 class InterpolatorLoader : public eckit::NonCopyable {
 
 public:
@@ -54,6 +58,10 @@ private:
     }
 };
 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 class InterpolatorLoaderFactory {
     std::string name_;
     virtual InterpolatorLoader* make(const param::MIRParametrisation&, const eckit::PathName& path) = 0;
@@ -76,6 +84,10 @@ class InterpolatorLoaderBuilder : public InterpolatorLoaderFactory {
 public:
     InterpolatorLoaderBuilder(const std::string& name) : InterpolatorLoaderFactory(name) {}
 };
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
 
 }  // namespace interpolator
 }  // namespace caching

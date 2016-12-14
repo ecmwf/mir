@@ -10,11 +10,7 @@
 
 #include "mir/caching/LegendreCache.h"
 
-// #include "mir/api/mir_version.h"
 #include "mir/config/LibMir.h"
-// #include "eckit/config/Resource.h"
-
-// #include "eckit/filesystem/PathName.h"
 
 using namespace eckit;
 
@@ -41,10 +37,10 @@ const char *LegendreCacheTraits::extension() {
     return ".leg";
 }
 
-void LegendreCacheTraits::save(LegendreCacheTraits::value_type &, const PathName &path) {
+void LegendreCacheTraits::save(const eckit::CacheManagerBase&, LegendreCacheTraits::value_type&, const PathName&) {
 }
 
-void LegendreCacheTraits::load(LegendreCacheTraits::value_type &, const PathName &path) {
+void LegendreCacheTraits::load(const eckit::CacheManagerBase&, LegendreCacheTraits::value_type &, const PathName&) {
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -17,6 +17,7 @@
 
 
 #include "eckit/container/CacheManager.h"
+#include "mir/param/MIRParametrisation.h"
 
 namespace mir {
 
@@ -37,17 +38,23 @@ struct WeightCacheTraits {
     static int version();
     static const char* extension();
 
-    static void save(const value_type& W, const eckit::PathName& path);
+    static void save(const eckit::CacheManagerBase& manager, const value_type& W, const eckit::PathName& path);
 
-    static void load(value_type& W, const eckit::PathName& path);
-
+    static void load(const eckit::CacheManagerBase& manager, value_type& W, const eckit::PathName& path);
 };
 
 
 class WeightCache : public eckit::CacheManager<WeightCacheTraits> {
-public:  // methods
-    explicit WeightCache();
 
+public:  // methods
+
+    explicit WeightCache(const param::MIRParametrisation& parametrisation);
+
+private: // members
+
+    const param::MIRParametrisation& parametrisation_;
+
+    friend WeightCacheTraits;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

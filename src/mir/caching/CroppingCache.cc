@@ -60,11 +60,11 @@ const char *CroppingCacheTraits::extension() {
     return ".area";
 }
 
-void CroppingCacheTraits::save(const value_type& c, const eckit::PathName& path) {
+void CroppingCacheTraits::save(const eckit::CacheManagerBase&, const value_type& c, const eckit::PathName& path) {
     c.save(path);
 }
 
-void CroppingCacheTraits::load(value_type& c, const eckit::PathName& path) {
+void CroppingCacheTraits::load(const eckit::CacheManagerBase&, value_type& c, const eckit::PathName& path) {
     c.load(path);
 }
 //--------------------------------------------------------------------------

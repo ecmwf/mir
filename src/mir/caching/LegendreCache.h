@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Peter Bispham
+/// @author Baudouin Raoult
 /// @author Tiago Quintino
-/// @date Oct 2013
+/// @date   Oct 2016
 
 #ifndef mir_method_LegendreCache_H
 #define mir_method_LegendreCache_H
@@ -24,6 +24,7 @@ namespace caching {
 //----------------------------------------------------------------------------------------------------------------------
 
 struct LegendreCacheTraits {
+
     static const char* name();
     static int version();
     static const char* extension();
@@ -31,8 +32,8 @@ struct LegendreCacheTraits {
     // Below are dummy types and functions
     typedef int value_type;
 
-    static void save(value_type&, const eckit::PathName& path);
-    static void load(value_type&, const eckit::PathName& path);
+    static void save(const eckit::CacheManagerBase&, value_type&, const eckit::PathName&);
+    static void load(const eckit::CacheManagerBase&, value_type&, const eckit::PathName&);
 };
 
 class LegendreCache : public eckit::CacheManager<LegendreCacheTraits> {
