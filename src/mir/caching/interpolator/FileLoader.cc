@@ -37,8 +37,8 @@ namespace interpolator {
 //----------------------------------------------------------------------------------------------------------------------
 
 
-FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
-    InterpolatorLoader(parametrisation, path),
+FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
+    InterpolatorLoader(name, path),
     buffer_(path.size()) {
 
     /// FIXME buffer size is based on file.size() -- which is assumed to be bigger than the memory footprint

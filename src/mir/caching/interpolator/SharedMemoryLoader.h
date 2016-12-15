@@ -32,7 +32,7 @@ namespace interpolator {
 class SharedMemoryLoader : public InterpolatorLoader {
 public:
 
-    SharedMemoryLoader(const param::MIRParametrisation&, const eckit::PathName& path);
+    SharedMemoryLoader(const std::string& name, const eckit::PathName& path);
 
     ~SharedMemoryLoader();
 

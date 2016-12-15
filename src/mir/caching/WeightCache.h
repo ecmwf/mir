@@ -52,8 +52,6 @@ public:  // methods
 
 private: // members
 
-    const param::MIRParametrisation& parametrisation_;
-
     friend WeightCacheTraits;
 };
 

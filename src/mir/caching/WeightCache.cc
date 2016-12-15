@@ -22,10 +22,17 @@ namespace caching {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-WeightCache::WeightCache(const param::MIRParametrisation& parametrisation):
-    CacheManager(LibMir::cacheDir(),
-                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false)),
-    parametrisation_(parametrisation) {
+static std::string extract_loader(const param::MIRParametrisation& param) {
+    std::string name;
+    param.get("interpolator-loader", name);
+    return name;
+}
+
+WeightCache::WeightCache(const param::MIRParametrisation& param):
+    CacheManager(extract_loader(param),
+                 LibMir::cacheDir(),
+                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false))
+{
 }
 
 const char *WeightCacheTraits::name() {
@@ -51,21 +58,19 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
 
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
 
-#if 0
-    const WeightCache& wcache = static_cast<const WeightCache&>(manager);
-
+#if 1
     using namespace mir::caching::interpolator;
 
-    InterpolatorLoader* loader_ = InterpolatorLoaderFactory::build(wcache.parametrisation_, path);
+    InterpolatorLoader* loader_ = InterpolatorLoaderFactory::build(manager.loader(), path);
 
     bool notown = true;
     eckit::Buffer buffer(const_cast<void*>(loader_->address()), loader_->size(), notown);
 
     value_type w(buffer);
-#endif
+#else
 
     value_type w(path);
-
+#endif
     std::swap(W, w);
 
     W.validate("fromCache");

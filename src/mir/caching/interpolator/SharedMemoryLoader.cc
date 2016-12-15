@@ -92,8 +92,8 @@ static Unloader unloader;
 //----------------------------------------------------------------------------------------------------------------------
 
 
-SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName &path) :
-    InterpolatorLoader(parametrisation, path),
+SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::PathName& path) :
+    InterpolatorLoader(name, path),
     address_(0),
     size_(0),
     unload_(false) {
@@ -110,11 +110,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
     size_ = shmsize;
 
-    std::string name;
-
-    if (parametrisation.get("interpolator-loader", name)) {
-        unload_ = name.substr(0, 4) == "tmp-";
-    }
+    unload_ = name.substr(0, 4) == "tmp-";
 
     if (unload_) {
         unloader.add(path);
@@ -256,8 +252,8 @@ SharedMemoryLoader::~SharedMemoryLoader() {
 }
 
 void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path, method::WeightMatrix& W) {
-    param::SimpleParametrisation param;
-    SharedMemoryLoader loader(param, path);
+
+    SharedMemoryLoader loader("shmem", path);
 
     bool notown = true;
     eckit::Buffer buffer(const_cast<void*>(loader.address()), loader.size(), notown);

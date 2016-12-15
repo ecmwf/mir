@@ -38,7 +38,7 @@ namespace interpolator {
 class InterpolatorLoader : public eckit::NonCopyable {
 
 public:
-    InterpolatorLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName&);
+    InterpolatorLoader(const std::string&, const eckit::PathName&);
 
     virtual ~InterpolatorLoader();
 
@@ -46,7 +46,6 @@ public:
     virtual size_t size() const = 0;
 
 protected:
-    const param::MIRParametrisation& parametrisation_;
     eckit::PathName path_;
 
     virtual void print(std::ostream&) const = 0;
@@ -64,21 +63,21 @@ private:
 
 class InterpolatorLoaderFactory {
     std::string name_;
-    virtual InterpolatorLoader* make(const param::MIRParametrisation&, const eckit::PathName& path) = 0;
+    virtual InterpolatorLoader* make(const std::string& name, const eckit::PathName& path) = 0;
 
 protected:
     InterpolatorLoaderFactory(const std::string&);
     virtual ~InterpolatorLoaderFactory();
 
 public:
-    static InterpolatorLoader* build(const param::MIRParametrisation&, const eckit::PathName& path);
+    static InterpolatorLoader* build(const std::string&, const eckit::PathName& path);
     static void list(std::ostream&);
 };
 
 template <class T>
 class InterpolatorLoaderBuilder : public InterpolatorLoaderFactory {
-    virtual InterpolatorLoader* make(const param::MIRParametrisation& param, const eckit::PathName& path) {
-        return new T(param, path);
+    virtual InterpolatorLoader* make(const std::string& name, const eckit::PathName& path) {
+        return new T(name, path);
     }
 
 public:

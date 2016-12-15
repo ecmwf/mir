@@ -31,7 +31,7 @@ namespace interpolator {
 
 class FileLoader : public InterpolatorLoader {
 public:
-    FileLoader(const param::MIRParametrisation&, const eckit::PathName& path);
+    FileLoader(const std::string& name, const eckit::PathName& path);
 
     ~FileLoader();
 
