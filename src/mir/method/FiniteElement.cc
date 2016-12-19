@@ -63,22 +63,18 @@ typedef std::vector< WeightMatrix::Triplet > Triplets;
 
 struct MeshStats {
 
-    size_t nb_triags;
-    size_t nb_quads;
+    size_t inp_ncells;
     size_t inp_npts;
     size_t out_npts;
 
-    MeshStats(): nb_triags(0), nb_quads(0), inp_npts(0), out_npts(0) {}
-
-    size_t size() const {
-        return nb_triags + nb_quads;
-    }
+    MeshStats(): inp_ncells(0), inp_npts(0), out_npts(0) {}
 
     void print(std::ostream &s) const {
-        s << "MeshStats[nb_triags=" << eckit::BigNum(nb_triags)
-          << ",nb_quads=" << eckit::BigNum(nb_quads)
+        s << "MeshStats["
+              "nb_cells=" << eckit::BigNum(inp_ncells)
           << ",inp_npts=" << eckit::BigNum(inp_npts)
-          << ",out_npts=" << eckit::BigNum(out_npts) << "]";
+          << ",out_npts=" << eckit::BigNum(out_npts)
+          << "]";
     }
 
     friend std::ostream &operator<<(std::ostream &s, const MeshStats &p) {
@@ -109,8 +105,7 @@ static void normalise(Triplets& triplets)
 static Triplets projectPointToElements(
         const MeshStats &stats,
         const atlas::array::ArrayView<double, 2> &icoords,
-        const atlas::mesh::Elements::Connectivity &triag_nodes,
-        const atlas::mesh::Elements::Connectivity &quads_nodes,
+        const atlas::mesh::Connectivity& connectivity,
         const FiniteElement::Point &p,
         size_t ip,
         size_t firstVirtualPoint,
@@ -128,20 +123,25 @@ static Triplets projectPointToElements(
 
     for (atlas::interpolation::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
 
-        atlas::interpolation::ElemPayload elem = (*itc).value().payload();
+        const size_t elem_id = (*itc).value().payload();
+        ASSERT(elem_id < connectivity.rows());
 
-        if ( elem.triangle() ) { /* triags */
+        /* assumes:
+         * - nb_cols == 3 implies triangle
+         * - nb_cols == 4 implies quadrilateral
+         * - no other element is supported at the time
+         */
+        const size_t nb_cols = connectivity.cols(elem_id);
+        ASSERT(nb_cols == 3 || nb_cols == 4);
 
-            const size_t &tid = elem.id_;
+        for (size_t i = 0; i < nb_cols; ++i) {
+            idx[i] = size_t(connectivity(elem_id, i));
+            ASSERT(idx[i] < stats.inp_npts);
+        }
 
-            ASSERT( tid < stats.nb_triags );
+        if (nb_cols == 3) {
 
-            idx[0] = triag_nodes(tid, 0);
-            idx[1] = triag_nodes(tid, 1);
-            idx[2] = triag_nodes(tid, 2);
-
-            ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts && idx[2] < stats.inp_npts );
-
+            /* triangle */
             atlas::interpolation::Triag3D triag(
                     icoords[idx[0]].data(),
                     icoords[idx[1]].data(),
@@ -172,20 +172,9 @@ static Triplets projectPointToElements(
                 break; // stop looking for elements
             }
 
-        } else if( elem.quadrilateral() ) {  /* quads */
+        } else {
 
-            const size_t &qid = elem.id_;
-
-            ASSERT( qid < stats.nb_quads );
-
-            idx[0] = quads_nodes(qid, 0);
-            idx[1] = quads_nodes(qid, 1);
-            idx[2] = quads_nodes(qid, 2);
-            idx[3] = quads_nodes(qid, 3);
-
-            ASSERT( idx[0] < stats.inp_npts && idx[1] < stats.inp_npts &&
-                    idx[2] < stats.inp_npts && idx[3] < stats.inp_npts );
-
+            /* quadrilateral */
             atlas::interpolation::Quad3D quad(
                     icoords[idx[0]].data(),
                     icoords[idx[1]].data(),
@@ -213,8 +202,7 @@ static Triplets projectPointToElements(
                 w[3] = (1. - is.u) *       is.v ;
 
 
-                for (size_t i = 0; i < 4; ++i)
-                {
+                for (size_t i = 0; i < 4; ++i) {
                     if(idx[i] < firstVirtualPoint)
                         triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
                     else
@@ -223,8 +211,6 @@ static Triplets projectPointToElements(
 
                 break; // stop looking for elements
             }
-        } else {
-            throw eckit::SeriousBug("Element type is not triangle or quadrilateral", Here());
         }
 
     } // loop over nearest elements
@@ -317,33 +303,17 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     const atlas::mesh::Nodes  &i_nodes  = in.mesh().nodes();
     atlas::array::ArrayView<double, 2> icoords  ( i_nodes.field( "xyz" ));
 
-    atlas::mesh::Elements::Connectivity const *triag_nodes;
-    atlas::mesh::Elements::Connectivity const *quads_nodes;
-
-    for( size_t jtype=0; jtype<in.mesh().cells().nb_types(); ++jtype )
-    {
-        const atlas::mesh::Elements& elements =  in.mesh().cells().elements(jtype);
-        if( elements.element_type().name() == "Triangle" )
-        {
-            stats.nb_triags = elements.size();
-            triag_nodes = &elements.node_connectivity();
-        }
-        if( elements.element_type().name() == "Quadrilateral" )
-        {
-            stats.nb_quads  = elements.size();
-            quads_nodes = &elements.node_connectivity();
-        }
-    }
-
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
-    if( i_nodes.metadata().has("NbRealPts") )
+    if (i_nodes.metadata().has("NbRealPts")) {
         firstVirtualPoint = i_nodes.metadata().get<size_t>("NbRealPts");
+    }
 
     atlas::array::ArrayView<double, 2> ocoords = out.coordsXYZ();
     atlas::array::ArrayView<double, 2> olonlat = out.coordsLonLat();
 
-    stats.inp_npts  = i_nodes.size();
-    stats.out_npts  = out.grid().npts();
+    stats.inp_ncells = in.mesh().cells().size();
+    stats.inp_npts   = i_nodes.size();
+    stats.out_npts   = out.grid().npts();
 
     eckit::Log::debug<LibMir>() << stats << std::endl;
 
@@ -354,7 +324,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
     // search nearest k cell centres
 
-    const size_t maxNbElemsToTry = std::max<size_t>(64, stats.size() * maxFractionElemsToTry);
+    const size_t maxNbElemsToTry = std::max<size_t>(64, stats.inp_ncells);
     size_t max_neighbours = 0;
 
     eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().shortName() << std::endl;
@@ -366,10 +336,11 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
             if (ip && (ip % 10000 == 0)) {
                 double rate = ip / timerProj.elapsed();
-                eckit::Log::debug<LibMir>() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timerProj.elapsed())
-                                         << ", rate: " << rate << " points/s, ETA: "
-                                         << eckit::ETA( (stats.out_npts - ip) / rate )
-                                         << std::endl;
+                eckit::Log::debug<LibMir>()
+                        << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timerProj.elapsed())
+                        << ", rate: " << rate << " points/s, ETA: "
+                        << eckit::ETA( (stats.out_npts - ip) / rate )
+                        << std::endl;
             }
 
             if (!inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
@@ -389,8 +360,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
                 Triplets triplets = projectPointToElements(
                             stats,
                             icoords,
-                            *triag_nodes,
-                            *quads_nodes,
+                            in.mesh().cells().node_connectivity(),
                             p,
                             ip,
                             firstVirtualPoint,
@@ -407,9 +377,10 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
             if (!success) {
                 // If this fails, consider lowering atlas::grid::parametricEpsilon
-                eckit::Log::debug<LibMir>() << "Failed to project point " << ip << " " << p
-                                         << " with coordinates lon=" << olonlat[ip][LON] << ", lat=" << olonlat[ip][LAT]
-                                         << " after " << eckit::Plural(kpts, "attempt") << std::endl;
+                eckit::Log::debug<LibMir>()
+                        << "Failed to project point " << ip << " " << p
+                        << " with coordinates lon=" << olonlat[ip][LON] << ", lat=" << olonlat[ip][LAT]
+                        << " after " << eckit::Plural(kpts, "attempt") << std::endl;
                 throw eckit::SeriousBug("Could not project point");
             }
         }
