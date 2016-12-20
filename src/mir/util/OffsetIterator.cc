@@ -41,14 +41,14 @@ void OffsetIterator::print(std::ostream& out) const {
 
 bool OffsetIterator::next(double& lat, double& lon) {
 
-    typedef eckit::FloatCompare<double> cmp;
+    
 
     while (iterator_->next(lat, lon)) {
 
         lon += eastwards_;
         lat += northwards_;
 
-        if (cmp::isStrictlyGreater(lat, 90) || cmp::isStrictlyGreater(-90, lat)) {
+        if (eckit::types::is_strictly_greater(lat, 90.) || eckit::types::is_strictly_greater(-90., lat)) {
             continue;
         }
 

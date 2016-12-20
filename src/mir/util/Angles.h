@@ -88,8 +88,8 @@ inline double between_mPI_and_pPI(double a) {
 /// @return angle [radian] from a complex number
 template< typename T>
 T convert_complex_to_radians(const std::complex<T>& c) {
-    if ( eckit::FloatCompare<T>::isApproximatelyEqual(c.real(), 0) &&
-         eckit::FloatCompare<T>::isApproximatelyEqual(c.imag(), 0) ) {
+    if ( eckit::types::is_approximately_equal(c.real(), 0.) &&
+         eckit::types::is_approximately_equal(c.imag(), 0.) ) {
         return T(0);
     }
     // [-π, π] -> [-180°, 180°]

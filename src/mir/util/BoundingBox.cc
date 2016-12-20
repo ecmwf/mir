@@ -28,7 +28,7 @@ namespace mir {
 namespace util {
 
 
-typedef eckit::FloatCompare<double> cmp;
+
 
 
 BoundingBox::BoundingBox() :
@@ -135,10 +135,10 @@ double BoundingBox::normalise(double lon) const {
 
 bool BoundingBox::contains(double lat, double lon) const {
     lon = normalise(lon);
-    return cmp::isApproximatelyGreaterOrEqual(north_, lat) &&
-           cmp::isApproximatelyGreaterOrEqual(lat, south_) &&
-           cmp::isApproximatelyGreaterOrEqual(lon , west_) &&
-           cmp::isApproximatelyGreaterOrEqual(east_, lon);
+    return eckit::types::is_approximately_greater_or_equal(north_, lat) &&
+           eckit::types::is_approximately_greater_or_equal(lat, south_) &&
+           eckit::types::is_approximately_greater_or_equal(lon , west_) &&
+           eckit::types::is_approximately_greater_or_equal(east_, lon);
 }
 
 

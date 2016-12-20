@@ -266,7 +266,7 @@ void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::Structured& 
 
             // project on first triangle (0 or 2) depending on split, if that fails try next (1 or 3)
             const size_t T[4][3] = {{1,0,2}, {2,3,1}, {0,2,3}, {3,1,0}};
-            size_t w = eckit::FloatCompare<double>::isStrictlyGreater(dist2_q0_q3, dist2_q1_q2)? 0 : 2;
+            size_t w = eckit::types::is_strictly_greater(dist2_q0_q3, dist2_q1_q2)? 0 : 2;
 
             using namespace atlas::interpolation;
             Intersect inter;

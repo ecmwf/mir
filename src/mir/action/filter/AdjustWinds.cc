@@ -104,7 +104,7 @@ void AdjustWinds::windDirections(const repres::Representation* representation, s
 
         // For some reason, the algorithms only work between in ]-180,180]
         lon = util::angles::between_m180_and_p180(lon);
-        if (eckit::FloatCompare<double>::isApproximatelyEqual(lon, -180)) {
+        if (eckit::types::is_approximately_equal<double>(lon, -180)) {
             lon = 180.0;
         }
 
@@ -115,12 +115,12 @@ void AdjustWinds::windDirections(const repres::Representation* representation, s
 
         double ncos_lat = 0;
 
-        if ( !(eckit::FloatCompare<double>::isApproximatelyEqual(z, 1.0) ||
-                eckit::FloatCompare<double>::isApproximatelyEqual(z, -1.0))) {
+        if ( !(eckit::types::is_approximately_equal<double>(z, 1.0) ||
+                eckit::types::is_approximately_equal<double>(z, -1.0))) {
             ncos_lat = cos(asin(z));
         }
 
-        if (eckit::FloatCompare<double>::isApproximatelyEqual(ncos_lat, 0.0)) {
+        if (eckit::types::is_approximately_equal<double>(ncos_lat, 0.0)) {
             ncos_lat = 1.0;
         }
 

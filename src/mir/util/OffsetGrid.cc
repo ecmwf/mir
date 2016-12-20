@@ -40,7 +40,7 @@ void OffsetGrid::lonlat(std::vector<Point>& pts) const {
 
 void OffsetGrid::computePoints() const {
 
-    typedef eckit::FloatCompare<double> cmp;
+    
 
 
     if (points_.empty()) {
@@ -53,7 +53,7 @@ void OffsetGrid::computePoints() const {
             double lon = (*j).lon() + eastwards_;
             double lat = (*j).lat() + northwards_;
 
-            if (cmp::isStrictlyGreater(lat, 90) || cmp::isStrictlyGreater(-90, lat)) {
+            if (eckit::types::is_strictly_greater(lat, 90.) || eckit::types::is_strictly_greater(-90., lat)) {
                 continue;
             }
 

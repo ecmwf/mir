@@ -158,8 +158,8 @@ void WeightMatrix::validate(const char *when) const {
 
         for (const_iterator it = begin(i); it != end(i); ++it) {
             const double &a = *it;
-            ok &= eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(a, 0) &&
-                  eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(1, a);
+            ok &= eckit::types::is_approximately_greater_or_equal(a, 0.) &&
+                  eckit::types::is_approximately_greater_or_equal(1., a);
             sum += a;
         }
 

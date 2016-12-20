@@ -413,8 +413,8 @@ void MethodWeighted::execute(context::Context & ctx,
             ///        UNLESS, we compute the statistics based on only points contained in the Domain
 
             if ( in.domain().isGlobal() ) {
-                ASSERT(eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(ostats.minimum(), istats.minimum()));
-                ASSERT(eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(istats.maximum(), ostats.maximum()));
+                ASSERT(eckit::types::is_approximately_greater_or_equal(ostats.minimum(), istats.minimum()));
+                ASSERT(eckit::types::is_approximately_greater_or_equal(istats.maximum(), ostats.maximum()));
             }
         }
 
