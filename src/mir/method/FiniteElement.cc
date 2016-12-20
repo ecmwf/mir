@@ -324,7 +324,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
     // search nearest k cell centres
 
-    const size_t maxNbElemsToTry = std::max<size_t>(64, stats.inp_ncells);
+    const size_t maxNbElemsToTry = std::max<size_t>(64, stats.inp_ncells * maxFractionElemsToTry);
     size_t max_neighbours = 0;
 
     eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().shortName() << std::endl;
