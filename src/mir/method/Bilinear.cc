@@ -404,12 +404,13 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 //                      << wb << " "
 //                      << std::endl;
 
-            ASSERT( eckit::types::is_approximately_greater_or_equal(w1, 0.) );
-            ASSERT( eckit::types::is_approximately_greater_or_equal(w2, 0.) );
-            ASSERT( eckit::types::is_approximately_greater_or_equal(w3, 0.) );
-            ASSERT( eckit::types::is_approximately_greater_or_equal(w4, 0.) );
-            ASSERT( eckit::types::is_approximately_greater_or_equal(wt, 0.) );
-            ASSERT( eckit::types::is_approximately_greater_or_equal(wb, 0.) );
+            const double eps = double(std::numeric_limits<float>::epsilon());
+            ASSERT( eckit::types::is_approximately_greater_or_equal(w1, 0., eps) );
+            ASSERT( eckit::types::is_approximately_greater_or_equal(w2, 0., eps) );
+            ASSERT( eckit::types::is_approximately_greater_or_equal(w3, 0., eps) );
+            ASSERT( eckit::types::is_approximately_greater_or_equal(w4, 0., eps) );
+            ASSERT( eckit::types::is_approximately_greater_or_equal(wt, 0., eps) );
+            ASSERT( eckit::types::is_approximately_greater_or_equal(wb, 0., eps) );
 
             const double sum = w_br + w_bl + w_tr + w_tl;
 
