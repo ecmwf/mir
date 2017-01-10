@@ -13,22 +13,21 @@
 /// @date Apr 2015
 
 
-#ifndef GribAllFileInput_H
-#define GribAllFileInput_H
+#ifndef mir_input_GribAllFileInput_h
+#define mir_input_GribAllFileInput_h
 
 
-#include "eckit/io/Buffer.h"
-
+#include <string>
+#include <vector>
 #include "mir/input/MIRInput.h"
 
-namespace mir { namespace output { class VectorOutput; }}
 
 namespace mir {
 namespace input {
 
 
 class GribAllFileInput : public MIRInput {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -48,7 +47,7 @@ class GribAllFileInput : public MIRInput {
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -59,12 +58,13 @@ class GribAllFileInput : public MIRInput {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
+    // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -75,7 +75,7 @@ class GribAllFileInput : public MIRInput {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
@@ -89,6 +89,7 @@ class GribAllFileInput : public MIRInput {
     size_t count_;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
 
@@ -109,11 +110,7 @@ class GribAllFileInput : public MIRInput {
     // None
 
     // -- Friends
-
-    friend class output::VectorOutput;
-
-    //friend ostream& operator<<(ostream& s,const GribAllFileInput& p)
-    //  { p.print(s); return s; }
+    // None
 
 };
 

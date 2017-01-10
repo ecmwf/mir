@@ -12,16 +12,14 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/output/VectorOutput.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
-#include "mir/input/VectorInput.h"
-#include "eckit/exception/Exceptions.h"
-#include "mir/data/MIRField.h"
-#include "mir/repres/Representation.h"
 #include "mir/action/context/Context.h"
+#include "mir/data/MIRField.h"
+#include "mir/input/VectorInput.h"
 
 
 namespace mir {
@@ -61,6 +59,7 @@ size_t VectorOutput::copy(const param::MIRParametrisation &param, context::Conte
     }
 }
 
+
 size_t VectorOutput::save(const param::MIRParametrisation &param, context::Context& ctx) {
     data::MIRField& field = ctx.field();
 
@@ -98,13 +97,17 @@ bool VectorOutput::sameParametrisation(const param::MIRParametrisation &param1,
            component2_.sameParametrisation(param1, param2);
 }
 
+
 bool VectorOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
     return component1_.printParametrisation(out, param);
 }
 
+
 void VectorOutput::print(std::ostream &out) const {
     out << "VectorOutput[" << component1_ << "," << component2_ << "]";
 }
+
+
 }  // namespace output
 }  // namespace mir
 

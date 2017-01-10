@@ -12,17 +12,17 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/input/GribAllFileInput.h"
-#include "mir/input/GribFileInput.h"
 
 #include <iostream>
-
-#include "mir/data/MIRField.h"
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/StdFile.h"
 #include "eckit/io/Buffer.h"
+#include "eckit/io/StdFile.h"
+#include "mir/data/MIRField.h"
+#include "mir/input/GribFileInput.h"
 #include "mir/util/Grib.h"
-#include "eckit/memory/ScopedPtr.h"
+
 
 namespace mir {
 namespace input {
@@ -68,10 +68,12 @@ const param::MIRParametrisation &GribAllFileInput::parametrisation(size_t which)
     return inputs_[which]->parametrisation();
 }
 
+
 grib_handle *GribAllFileInput::gribHandle(size_t which) const {
     ASSERT(which < inputs_.size());
     return inputs_[which]->gribHandle();
 }
+
 
 data::MIRField GribAllFileInput::field() const {
     ASSERT(inputs_.size());
@@ -85,6 +87,7 @@ data::MIRField GribAllFileInput::field() const {
 
     return f;
 }
+
 
 bool GribAllFileInput::next() {
     if (count_ == 0) {
@@ -108,9 +111,11 @@ void GribAllFileInput::print(std::ostream &out) const {
     out << "GribAllFileInput[" << path_ << ",size=" << inputs_.size() << "]";
 }
 
+
 size_t GribAllFileInput::dimensions() const {
     return inputs_.size();
 }
+
 
 }  // namespace input
 }  // namespace mir
