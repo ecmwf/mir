@@ -15,6 +15,7 @@
 
 #include "mir/api/emoslib.h"
 
+#include <cstring>
 #include <memory>
 #include <typeinfo>
 
@@ -106,14 +107,16 @@ extern "C" fortint intout_(const char *name,
                            const fortint ints[],
                            const fortfloat reals[],
                            const char *value,
-                           const fortint name_len,
+                           const fortint name_len_,
                            const fortint value_len) {
 
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     std::string n(name);
+    const size_t name_len(name_len_? name_len_ : strnlen(name, 21 /*"intermediate_gaussian"*/));
     n = n.substr(0, name_len);
+
     eckit::Log::debug<LibMir>() << "++++++ intout [" << n << "]" <<  std::endl;
     char buffer[1024];
 
@@ -245,16 +248,18 @@ extern "C" fortint intin_(const char *name,
                           const fortint ints[],
                           const fortfloat reals[],
                           const char *value,
-                          const fortint name_len,
-                          const fortint value_len) {
+                          const fortint name_len_,
+                          const fortint value_len_) {
 
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     std::string n(name);
+    const size_t name_len(name_len_? name_len_ : strnlen(name, 12 /*"missingvalue"*/));
     n = n.substr(0, name_len);
 
     std::string v(value);
+    const size_t value_len(value_len_? value_len_ : strlen(value));
     v = v.substr(0, value_len);
 
     eckit::Log::debug<LibMir>() << "++++++ intin [" << n << "] v=[" <<  v << "] r=" << reals[0] << " i=" << ints[0] << std::endl;
