@@ -209,6 +209,10 @@ input::MIRInput &Context::input() {
     return input_;
 }
 
+void Context::field(data::MIRField& other) {
+    content_.reset(new FieldContent(other));
+}
+
 util::MIRStatistics& Context::statistics() {
     return statistics_;
 }

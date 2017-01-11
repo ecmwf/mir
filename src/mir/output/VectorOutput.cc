@@ -75,11 +75,11 @@ size_t VectorOutput::save(const param::MIRParametrisation &param, context::Conte
 
     size_t size = 0;
 
-    context::Context ctx1(u, ctx.statistics());
-    size += component1_.save(param, ctx1);
+    ctx.field(u);
+    size += component1_.save(param, ctx);
 
-    context::Context ctx2(v, ctx.statistics());
-    size += component2_.save(param, ctx2);
+    ctx.field(v);
+    size += component2_.save(param, ctx);
 
     return size;
 }

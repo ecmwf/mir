@@ -81,6 +81,8 @@ public:
     data::MIRField& field();
     input::MIRInput& input();
 
+    void field(data::MIRField& other);
+
     // Select only one field
     void select(size_t which);
 
