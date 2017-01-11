@@ -224,8 +224,8 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
         mir::output::GribFileOutput output(args(1));
 
 
-        mir::input::VectorInput winput(input1, input2);
-        process(job, winput, output, "wind");
+        mir::input::VectorInput input(input1, input2);
+        process(job, input, output, "wind");
         return;
 
     }
@@ -234,12 +234,12 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
         ASSERT(!wind);
         ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
 
-        mir::input::GribFileInput input1(args(0), 0, 2);
-        mir::input::GribFileInput input2(args(0), 1, 2);
+        mir::input::GribFileInput vort_input(args(0), 0, 2);
+        mir::input::GribFileInput div_input(args(0), 1, 2);
         mir::output::GribFileOutput output(args(1));
 
-        mir::input::VectorInput winput(input1, input2);
-        process(job, winput, output, "wind");
+        mir::input::VectorInput input(vort_input, div_input);
+        process(job, input, output, "wind");
         return;
 
     }
