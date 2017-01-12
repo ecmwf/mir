@@ -212,14 +212,14 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 
 
     // pre-allocate matrix entries
-
     std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
     weights_triplets.reserve( onpts * 4 );
 
-    // access the input/output fields coordinates
 
+    // access the input/output fields coordinates
     atlas::array::ArrayView<double, 2> icoords = in.coordsLonLat();
     atlas::array::ArrayView<double, 2> ocoords = out.coordsLonLat();
+
 
     // check input min/max latitudes (gaussian grids exclude the poles)
     double min_lat = icoords(0, LAT);
@@ -292,41 +292,41 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
             ASSERT(lons.size() >= 2); // at least 2 lines of latitude
 
             if( eckit::types::is_approximately_equal<double>(max_lat, lat) ) {
+
                 top_n = lons[0];
                 bot_n = lons[1];
                 top_i = 0;
                 bot_i = top_i + top_n;
 
+            } else if( eckit::types::is_approximately_equal<double>(min_lat, lat) ) {
+
+                top_n = lons[ lons.size() - 2 ];
+                bot_n = lons[ lons.size() - 1 ];
+                bot_i = inpts - bot_n;
+                top_i = bot_i - top_n;
+
             } else {
 
-                if( eckit::types::is_approximately_equal<double>(min_lat, lat) ) {
-                    top_n = lons[ lons.size() - 2 ];
-                    bot_n = lons[ lons.size() - 1 ];
-                    bot_i = inpts - bot_n;
-                    top_i = bot_i - top_n;
-                } else {
+                top_lat = icoords(top_i, LAT);
+                bot_lat = icoords(bot_i, LAT);
+
+                size_t n = 1;
+                while ( !( bot_lat < lat && eckit::types::is_approximately_greater_or_equal(top_lat, lat) )
+                        && n != lons.size() ) {
+
+                    top_n = lons[n - 1];
+                    bot_n = lons[n];
+
+                    top_i  = bot_i;
+                    bot_i += lons[n - 1];
+
                     top_lat = icoords(top_i, LAT);
                     bot_lat = icoords(bot_i, LAT);
 
-                    size_t n = 1;
-                    while ( !( bot_lat < lat && eckit::types::is_approximately_greater_or_equal(top_lat, lat) )
-                            && n != lons.size() ) {
+                    ASSERT(top_lat > bot_lat);
 
-                        top_n = lons[n - 1];
-                        bot_n = lons[n];
-
-                        top_i  = bot_i;
-                        bot_i += lons[n - 1];
-
-                        top_lat = icoords(top_i, LAT);
-                        bot_lat = icoords(bot_i, LAT);
-
-                        ASSERT(top_lat > bot_lat);
-
-                        ++n;
-                    }
+                    ++n;
                 }
-
             }
 
             top_lat = icoords(top_i, LAT);
