@@ -53,9 +53,9 @@ struct CroppingCacheTraits {
     static int version();
     static const char* extension();
 
-    static void save(const value_type& c, const eckit::PathName& path);
+    static void save(const eckit::CacheManagerBase&, const value_type& c, const eckit::PathName& path);
 
-    static void load(value_type& c, const eckit::PathName& path);
+    static void load(const eckit::CacheManagerBase&, value_type& c, const eckit::PathName& path);
 };
 
 

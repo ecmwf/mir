@@ -126,6 +126,7 @@ void MethodWeighted::createMatrix(context::Context& ctx,
                                   const lsm::LandSeaMasks& masks) const {
 
     computeMatrixWeights(ctx, in, out, W);
+
     W.validate("computeMatrixWeights");
 
     if (masks.active() && masks.cacheable()) {
@@ -195,9 +196,13 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
     bool caching = true;
     parametrisation_.get("caching", caching);
 
+    eckit::PathName path;
+
     if (caching) {
-        // The WeightCache is parametrised by 'caching', as caching may be disabled on a field by field basis (unstructured grids)
-        static caching::WeightCache cache;
+
+        /// The WeightCache is parametrised by 'caching',
+        /// as caching may be disabled on a field by field basis (unstructured grids)
+        static caching::WeightCache cache(parametrisation_);
 
         class MatrixCacheCreator: public caching::WeightCache::CacheContentCreator {
 
@@ -225,7 +230,7 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
         };
 
         MatrixCacheCreator creator(*this, ctx, in, out, masks);
-        cache.getOrCreate(cache_key, creator, W);
+        path = cache.getOrCreate(cache_key, creator, W);
 
     }
     else {
@@ -233,15 +238,17 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
     }
 
 
-// If LSM not cacheabe, e.g. user provided, we apply the mask after
+    // If LSM not cacheabe, e.g. user provided, we apply the mask after
     if (masks.active() && !masks.cacheable())  {
         applyMasks(W, masks, ctx.statistics());
         W.validate("applyMasks");
     }
 
+    // inserts the matrix in the cache
     WeightMatrix& w = matrix_cache[key_with_masks];
     std::swap(w, W);
 
+    // update memory footprint
     matrix_cache.footprint(key_with_masks, w.footprint());
 
     return w;
@@ -367,18 +374,21 @@ void MethodWeighted::execute(context::Context & ctx,
 
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
+            eckit::Timer t("Matrix-Multiply-MissingValues", eckit::Log::debug<LibMir>());
+
             std::vector<bool> fieldMissingValues(npts_inp, false);
             std::transform(field.values(i).begin(), field.values(i).end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
 
-            // Assumes compiler does return value optimization
-            // otherwise we need to pass result matrix as parameter
-            WeightMatrix MW = applyMissingValues(W, fieldMissingValues);
+            WeightMatrix MW;
+            applyMissingValues(W, fieldMissingValues, MW); // Don't assume compiler can do return value optimization !!!
 
             MW.multiply(mi, mo);
 
         } else {
 
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
+
+            eckit::Timer t("Matrix-Multiply-Standard", eckit::Log::debug<LibMir>());
 
             W.multiply(mi, mo);
 
@@ -403,8 +413,8 @@ void MethodWeighted::execute(context::Context & ctx,
             ///        UNLESS, we compute the statistics based on only points contained in the Domain
 
             if ( in.domain().isGlobal() ) {
-                ASSERT(eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(ostats.minimum(), istats.minimum()));
-                ASSERT(eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(istats.maximum(), ostats.maximum()));
+                ASSERT(eckit::types::is_approximately_greater_or_equal(ostats.minimum(), istats.minimum()));
+                ASSERT(eckit::types::is_approximately_greater_or_equal(istats.maximum(), ostats.maximum()));
             }
         }
 
@@ -449,8 +459,11 @@ void MethodWeighted::computeMatrixWeights(context::Context & ctx,
 }
 
 
-WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
-        const std::vector<bool>& fieldMissingValues) const {
+void MethodWeighted::applyMissingValues(const WeightMatrix & W,
+        const std::vector<bool>& fieldMissingValues,
+        WeightMatrix& MW) const {
+
+    eckit::Timer t1("applyMissingValues", eckit::Log::debug<LibMir>());
 
     // correct matrix weigths for the missing values (matrix copy happens here)
     ASSERT( W.cols() == fieldMissingValues.size() );
@@ -459,11 +472,14 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
     WeightMatrix::iterator it(X);
     for (WeightMatrix::Size i = 0; i < X.rows(); i++) {
 
+        const WeightMatrix::iterator begin = X.begin(i);
+        const WeightMatrix::iterator end   = X.end(i);
+
         // count missing values and accumulate weights
         double sum = 0.; // accumulated row weight, disregarding field missing values
         size_t Nmiss = 0;
         size_t Ncol  = 0;
-        for (it = X.begin(i); it != X.end(i); ++it, ++Ncol) {
+        for (it = begin; it != end; ++it, ++Ncol) {
             if (fieldMissingValues[static_cast<size_t>(it.col())])
                 ++Nmiss;
             else
@@ -478,7 +494,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
         if ((missingAll || is_approx_zero(sum)) && (Ncol > 0)) {
 
             bool found = false;
-            for (it = X.begin(i); it != X.end(i); ++it) {
+            for (it = begin; it != end; ++it) {
                 *it = 0.;
                 if (!found && fieldMissingValues[static_cast<size_t>(it.col())]) {
                     *it = 1.;
@@ -490,7 +506,7 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
         } else if (missingSome) {
 
             ASSERT(!is_approx_zero(sum));
-            for (it = X.begin(i); it != X.end(i); ++it) {
+            for (it = begin; it != end; ++it) {
                 if (fieldMissingValues[static_cast<size_t>(it.col())]) {
                     *it = 0.;
                 } else {
@@ -502,7 +518,8 @@ WeightMatrix MethodWeighted::applyMissingValues(const WeightMatrix & W,
     }
 
     X.validate("MethodWeighted::applyMissingValues");
-    return X;
+
+    MW.swap(X);
 }
 
 void MethodWeighted::applyMasks(

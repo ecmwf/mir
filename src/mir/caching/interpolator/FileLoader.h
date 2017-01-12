@@ -24,14 +24,19 @@ namespace mir {
 namespace caching {
 namespace interpolator {
 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
 class FileLoader : public InterpolatorLoader {
 public:
-    FileLoader(const param::MIRParametrisation&, const eckit::PathName& path);
+    FileLoader(const std::string& name, const eckit::PathName& path);
 
-    ~FileLoader(); // Change to virtual if base class
+    ~FileLoader();
 
 protected:
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;
 
 private:
     eckit::Buffer buffer_;
@@ -39,6 +44,10 @@ private:
     virtual const void* address() const;
     virtual size_t size() const;
 };
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
 
 } // namespace interpolator
 } // namespace caching

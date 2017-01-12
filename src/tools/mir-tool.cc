@@ -26,6 +26,7 @@
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
 #include "mir/caching/legendre/LegendreLoader.h"
+#include "mir/caching/interpolator/InterpolatorLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/input/DummyInput.h"
 #include "mir/input/GeoPointsFileInput.h"
@@ -140,6 +141,7 @@ public:
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
         options_.push_back(new FactoryOption<mir::caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
+        options_.push_back(new FactoryOption<mir::caching::interpolator::InterpolatorLoaderFactory>("interpolator-loader", "Select the scheme to load interpolation weights"));
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used on not"));
         options_.push_back(new SimpleOption<bool>("precipitation", "Clip precipitation values, if target value below threshold"));
         options_.push_back(new SimpleOption<bool>("precipitation-neighbour", "Clip precipitation values also if source closest neighbour is below threshold"));
@@ -222,8 +224,8 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
         mir::output::GribFileOutput output(args(1));
 
 
-        mir::input::VectorInput winput(input1, input2);
-        process(job, winput, output, "wind");
+        mir::input::VectorInput input(input1, input2);
+        process(job, input, output, "wind");
         return;
 
     }
@@ -232,12 +234,12 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
         ASSERT(!wind);
         ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
 
-        mir::input::GribFileInput input1(args(0), 0, 2);
-        mir::input::GribFileInput input2(args(0), 1, 2);
+        mir::input::GribFileInput vort_input(args(0), 0, 2);
+        mir::input::GribFileInput div_input(args(0), 1, 2);
         mir::output::GribFileOutput output(args(1));
 
-        mir::input::VectorInput winput(input1, input2);
-        process(job, winput, output, "wind");
+        mir::input::VectorInput input(vort_input, div_input);
+        process(job, input, output, "wind");
         return;
 
     }

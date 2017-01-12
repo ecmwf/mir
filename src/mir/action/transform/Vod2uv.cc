@@ -106,6 +106,8 @@ void Vod2uv::execute(context::Context & ctx) const {
     veccomp &v_component = reinterpret_cast<veccomp &>(result_v);
 
 
+    // ref. libemos/gribex/vod2uv.F
+
     std::complex<double> zi(0.0, 1.0);
     const double kRadiusOfTheEarth = atlas::util::Earth::radiusInMeters();
     size_t k = 0;

@@ -16,138 +16,54 @@
 
 #include "mir/caching/interpolator/SharedMemoryLoader.h"
 
-#include <sys/sem.h>
+#include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include <errno.h>
-
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <sys/time.h>
-
 #include <sys/sem.h>
 
 #include "eckit/eckit.h"
-#include "eckit/os/Stat.h"
+#include "eckit/os/SemLocker.h"
 
+#include "eckit/memory/Padded.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/config/Resource.h"
+#include "eckit/maths/Functions.h"
 
 #include "eckit/log/Timer.h"
 #include "eckit/io/StdFile.h"
 
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/config/LibMir.h"
+#include "mir/method/WeightMatrix.h"
 
+using mir::method::WeightMatrix;
 
 namespace mir {
 namespace caching {
 namespace interpolator {
 
+//----------------------------------------------------------------------------------------------------------------------
+
 namespace {
-struct sembuf _lock[] = {
-    { 0, 0,  SEM_UNDO }, /* test */
-    { 0, 1,  SEM_UNDO }, /* lock */
-};
 
-struct sembuf _unlock[] = {
-    { 0, -1, SEM_UNDO }, /* ulck */
-};
-
-const int MAGIC  =  1234567890;
+const int MAGIC  =  987654321;
 const size_t INFO_PATH = 1024;
-struct info {
+
+struct SHM_Info_ {
     int ready;
     int magic;
     char path[INFO_PATH];
 };
 
 
-class AutoFDClose {
-    int fd_;
-  public:
-    AutoFDClose(int fd): fd_(fd) {}
-    ~AutoFDClose() {
-        ::close(fd_);
-    }
-};
-
-
-class SemLocker {
-
-    static const int SLEEP = 1;
-
-    int sem_;
-    eckit::PathName path_;
-
-  public:
-
-    SemLocker(int s, const eckit::PathName& path) :
-        sem_(s),
-        path_(path) {
-
-        static const int MAX_WAIT_LOCK = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
-
-        int retry = 0;
-        while (retry < MAX_WAIT_LOCK) {
-            if (semop(sem_, _lock, 2 ) < 0) {
-                int save = errno;
-                retry++;
-
-                if (save == EINTR && retry < MAX_WAIT_LOCK) {
-                    continue;
-                }
-                eckit::Log::warning() << "SharedMemoryLoader: Failed to acquire exclusive lock on " << path_ << " " << eckit::Log::syserr << std::endl;
-
-                // sprintf(message,"ERR: sharedmem:semop:lock(%s)",path);
-                if (retry >= MAX_WAIT_LOCK) {
-                    std::ostringstream os;
-                    os << "Failed to acquire semaphore lock for " << path_;
-                    throw eckit::FailedSystemCall(os.str());
-                } else {
-                    eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << std::endl;
-                    sleep(SLEEP);
-                }
-            } else {
-                break;
-            }
-        }
-    }
-
-    ~SemLocker() {
-        int retry = 0;
-
-        static const int MAX_WAIT_LOCK = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
-
-        while (retry < MAX_WAIT_LOCK) {
-            if (semop(sem_, _unlock, 1) < 0) {
-                int save = errno;
-                retry++;
-
-                if (save == EINTR && retry < MAX_WAIT_LOCK) {
-                    continue;
-                }
-
-                eckit::Log::warning() << "SharedMemoryLoader: Failed to realease exclusive lock on " << path_ << " " << eckit::Log::syserr << std::endl;
-
-                if (retry >= MAX_WAIT_LOCK) {
-                    std::ostringstream os;
-                    os << "Failed to realease semaphore lock for " << path_;
-                    throw eckit::SeriousBug(os.str());
-                } else {
-                    eckit::Log::warning() << "Sleeping for " << SLEEP << " seconds" << std::endl;
-                    sleep(SLEEP);
-                }
-            } else {
-                break;
-            }
-        }
-    }
-
-};
+typedef eckit::Padded<SHM_Info_,1280> SHMInfo; /* aligned to 64 bytes */
 
 }
 
@@ -172,20 +88,29 @@ class Unloader {
 
 static Unloader unloader;
 
-SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName &path):
-    InterpolatorLoader(parametrisation, path),
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::PathName& path) :
+    InterpolatorLoader(name, path),
     address_(0),
-    size_(path.size()),
+    size_(0),
     unload_(false) {
 
-    // eckit::Log::info() << "Loading shared memory from " << path << std::endl;
+    eckit::Log::debug<LibMir>() << "Loading shared memory interpolator from " << path << std::endl;
 
+    /// FIXME size is based on file.size() -- which is assumed to be bigger than the memory footprint
+    /** size_t sz = sizeof(SHMInfo) + w.footprint(); **/
 
-    std::string name;
+    size_t sz = size_t(path.size()) + sizeof(SHMInfo);
+    long page_size = ::sysconf(_SC_PAGESIZE);
+    ASSERT(page_size > 0);
+    size_t shmsize = eckit::round(sz, page_size);
 
-    if (parametrisation.get("interpolator-loader", name)) {
-        unload_ = name.substr(0, 4) == "tmp-";
-    }
+    size_ = shmsize;
+
+    unload_ = name.substr(0, 4) == "tmp-";
 
     if (unload_) {
         unloader.add(path);
@@ -193,6 +118,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
     eckit::TraceTimer<LibMir> timer("Loading interpolator coefficients from shared memory");
     eckit::PathName real = path.realName();
+
     // eckit::Log::debug<LibMir>() << "Loading interpolator coefficients from " << real << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
@@ -206,21 +132,13 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         throw eckit::FailedSystemCall("ftok(" + real.asString() + ")");
     }
 
+     static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
 
     // Try to get an exclusing lock, we may be waiting for another process
     // to create the memory segment and load it with the file content
     int sem;
-    SYSCALL(sem = semget(key, 1, IPC_CREAT | 0600));
-    SemLocker locker(sem, real);
-
-    // O_LARGEFILE ?
-    int fd;
-    SYSCALL(fd = ::open(real.asString().c_str(), O_RDONLY));
-    AutoFDClose c(fd);
-
-    int page_size = getpagesize();
-    ASSERT(page_size > 0);
-    size_t shmsize = ((size_ + page_size - 1) / page_size) * page_size + sizeof(struct info) ;
+    SYSCALL(sem = ::semget(key, 1, IPC_CREAT | 0600));
+    eckit::SemLocker locker(sem, real, max_wait_lock);
 
 #ifdef IPC_INFO
     // Only on Linux?
@@ -275,12 +193,12 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
         char *addr = reinterpret_cast<char*>(address_);
 
-        info* nfo  = reinterpret_cast<info*>(addr + (((size_ + page_size - 1) / page_size) * page_size));
+        SHMInfo* nfo  = reinterpret_cast<SHMInfo*>(addr);
 
         // Check if the file has been loaded in memory
-        bool loadfile = true;
+        bool load_matrix_to_memory = true;
         if (nfo->ready) {
-            loadfile = false;
+            load_matrix_to_memory = false;
             if (nfo->magic != MAGIC) {
                 std::ostringstream os;
                 os << "SharedMemoryLoader: bad magic found " << nfo->magic;
@@ -297,26 +215,30 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         }
 
 
-        if (loadfile) {
-            // eckit::Log::info() << "SharedMemoryLoader: loading " << path_ << std::endl;
-            // eckit::Timer("Loading file into shared memory");
-            eckit::StdFile file(real);
-            ASSERT(::fread(address_, 1, size_, file) == size_);
+        if (load_matrix_to_memory) {
+
+            WeightMatrix w(path);
+
+            bool notowned = true;
+            eckit::Buffer buffer(addr + sizeof(SHMInfo), size(), notowned);
+
+            w.dump(buffer);
 
             // Set info record for checkes
 
             nfo->magic = MAGIC;
             strcpy(nfo->path, real.asString().c_str());
             nfo->ready = 1;
-        } else {
-            // eckit::Log::info() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
+
+        }
+        else {
+            eckit::Log::debug<LibMir>() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
         }
 
     } catch (...) {
         shmdt(address_);
         throw;
     }
-
 }
 
 
@@ -329,13 +251,21 @@ SharedMemoryLoader::~SharedMemoryLoader() {
     }
 }
 
-void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
-    param::SimpleParametrisation param;
-    SharedMemoryLoader loader(param, path);
+void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path, method::WeightMatrix& W) {
+
+    SharedMemoryLoader loader("shmem", path);
+
+    bool notown = true;
+    eckit::Buffer buffer(const_cast<void*>(loader.address()), loader.size(), notown);
+
+    WeightMatrix w(buffer);
+
+    std::swap(w, W);
 }
 
 void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
-    // std::cout << "Unloading SharedMemory from " << path << std::endl;
+
+    eckit::Log::debug<LibMir>() << "Unloading SharedMemory from " << path << std::endl;
 
     eckit::PathName real = path.realName();
     int shmid = 0;
@@ -359,7 +289,8 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
         if (shmctl(shmid, IPC_RMID, 0) < 0) {
             std::cout << "Cannot delete memory for " << path << eckit::Log::syserr << std::endl;
         }
-        // std::cout << "Succefully unloaded SharedMemory from " << path  << std::endl;
+
+        eckit::Log::debug<LibMir>() << "Succefully unloaded SharedMemory from " << path << std::endl;
     }
 #if 0
     sem = semget(key, 1, 0600);
@@ -383,12 +314,12 @@ void SharedMemoryLoader::print(std::ostream &out) const {
     out << "SharedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(size_) << ",unload=" << unload_ << "]";
 }
 
-const void *SharedMemoryLoader::address() const {
-    return address_;
+const void* SharedMemoryLoader::address() const {
+    return reinterpret_cast<const char*>(address_) + sizeof(SHMInfo);
 }
 
 size_t SharedMemoryLoader::size() const {
-    return size_;
+    return size_ -  sizeof(SHMInfo);
 }
 
 namespace {
@@ -399,6 +330,9 @@ static InterpolatorLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
 static InterpolatorLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
 
 }
+
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace interpolator
 }  // namespace caching

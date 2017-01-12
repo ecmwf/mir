@@ -9,37 +9,30 @@
  */
 
 #include "mir/caching/WeightCache.h"
+
+#include "eckit/io/Buffer.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
+#include "mir/caching/interpolator/InterpolatorLoader.h"
+
 
 namespace mir {
 namespace caching {
 
-/*
-    What's left todo from Baudouin's code review:
+//----------------------------------------------------------------------------------------------------------------------
 
-4 - Writting is done with std::fstream which does not throw exception unless asked explicitally
-    like so: ofs.exceptions ( std::ofstream::failbit | std::ofstream::badbit );
-    this means that no error checking is done on writing, this will lead the truncated files
-    when file systems become full
+static std::string extract_loader(const param::MIRParametrisation& param) {
+    std::string name;
+    param.get("interpolator-loader", name);
+    return name;
+}
 
-    --> class atlas::mesh::MeshCache must use DataHandle() to write and read
-
-8 - File names do not take compiler, number of bits, architecture, etc... in account.
-    In certain cases we will have to put these files in shared filesytems (e.g. $SCRATCH).
-b - Code should ASSERT() that what their are decoding looks correct. This can be done by sticking a header
-    in front of the files, and cheching that the decoder can understand the header correctly.
-
-    --> We'll use the eckitCacheDir to create caches that have the compiler and architecture in them
-        However, TODO: stick a header with versions & platform info (compiler, architecture, etc)
-
-*/
-
-
-WeightCache::WeightCache():
-    CacheManager(LibMir::cacheDir(),
-                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
-                                       false)) {
+WeightCache::WeightCache(const param::MIRParametrisation& param):
+    CacheManager(extract_loader(param),
+                 LibMir::cacheDir(),
+                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false))
+{
 }
 
 const char *WeightCacheTraits::name() {
@@ -54,20 +47,36 @@ const char *WeightCacheTraits::extension() {
     return ".mat";
 }
 
-void WeightCacheTraits::save(const value_type& W, const eckit::PathName& path) {
+void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W, const eckit::PathName& path) {
     eckit::Log::info() << "Inserting weights in cache : " << path << "" << std::endl;
 
     eckit::TraceTimer<LibMir> timer("Saving weights to cache");
     W.save(path);
 }
 
-void WeightCacheTraits::load(value_type& W, const eckit::PathName& path) {
+void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type& W, const eckit::PathName& path) {
+
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
 
-    W.load(path);
+#if 1
+    using namespace mir::caching::interpolator;
+
+    InterpolatorLoader* loader_ = InterpolatorLoaderFactory::build(manager.loader(), path);
+
+    bool notown = true;
+    eckit::Buffer buffer(const_cast<void*>(loader_->address()), loader_->size(), notown);
+
+    value_type w(buffer);
+#else
+
+    value_type w(path);
+#endif
+    std::swap(W, w);
+
     W.validate("fromCache");
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

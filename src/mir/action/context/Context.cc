@@ -13,17 +13,18 @@
 /// @date Apr 2015
 
 
-#include <iostream>
-
 #include "mir/action/context/Context.h"
+
+#include <iostream>
+#include "eckit/thread/AutoLock.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 #include "mir/util/MIRStatistics.h"
-#include "eckit/thread/AutoLock.h"
 
 
 namespace mir {
 namespace context {
+
 
 namespace {
 class MissingInput : public input::MIRInput
@@ -54,14 +55,16 @@ public:
 static MissingInput missing;
 static util::MIRStatistics stats;
 
-}
 
-class Content  {
+}  // (anonymous namespace)
 
-    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+
+class Content {
+
+    virtual void print(std::ostream &) const = 0;
 
 public:
-    Content() {}
+
     virtual ~Content() {}
 
     virtual data::MIRField& field() {
@@ -92,6 +95,7 @@ public:
     }
 };
 
+
 class ScalarContent : public Content {
 
     double value_;
@@ -112,12 +116,12 @@ class ScalarContent : public Content {
         return new ScalarContent(value_);
     }
 
-
 public:
 
     ScalarContent(double value): value_(value) {}
 
 };
+
 
 class FieldContent : public Content {
     data::MIRField field_;
@@ -139,22 +143,20 @@ class FieldContent : public Content {
     }
 
 public:
-    FieldContent(const data::MIRField& field):
-        field_(field) {  }
 
+    FieldContent(const data::MIRField& field) : field_(field) {}
 
 };
 
 
-Context::Context():
+Context::Context() :
     input_(missing),
     statistics_(stats),
     content_(0) {
-
 }
 
 
-Context::Context(const Context& other):
+Context::Context(const Context& other) :
     input_(other.input_),
     statistics_(other.statistics_),
     content_(0) {
@@ -164,25 +166,24 @@ Context::Context(const Context& other):
     }
 }
 
-Context::Context(mir::data::MIRField& field,
-                 mir::util::MIRStatistics& statistics):
+
+Context::Context(data::MIRField& field, util::MIRStatistics& statistics) :
     input_(missing),
     statistics_(statistics),
     content_(new FieldContent(field)) {
-
 }
 
 
-Context::Context(input::MIRInput &input,
-                 util::MIRStatistics& statistics):
+Context::Context(input::MIRInput &input, util::MIRStatistics& statistics) :
     input_(input),
     statistics_(statistics),
     content_(0)  {
-
 }
+
 
 Context::~Context() {
 }
+
 
 bool Context::isField() const {
 
@@ -193,6 +194,7 @@ bool Context::isField() const {
     }
     return content_->isField();
 }
+
 
 bool Context::isScalar() const {
 
@@ -205,34 +207,45 @@ bool Context::isScalar() const {
     return content_->isScalar();
 }
 
+
 input::MIRInput &Context::input() {
     return input_;
 }
+
+
+void Context::field(data::MIRField& other) {
+    content_.reset(new FieldContent(other));
+}
+
 
 util::MIRStatistics& Context::statistics() {
     return statistics_;
 }
 
-data::MIRField& Context::field() {
 
+data::MIRField& Context::field() {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     if (!content_) {
         content_.reset(new FieldContent(input_.field()));
     }
     return content_->field();
 }
 
-void Context::select(size_t which) {
 
+void Context::select(size_t which) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     field().select(which);
 }
+
 
 void Context::scalar(double value) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     content_.reset(new ScalarContent(value));
 }
+
 
 double Context::scalar() const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
@@ -241,8 +254,10 @@ double Context::scalar() const {
     return content_->scalar();
 }
 
+
 void Context::print(std::ostream& out) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
     out << "Context[content=";
     if (content_) {
         out << *content_;
@@ -271,14 +286,17 @@ Context Context::pop() {
     return ctx;
 }
 
+
 void Context::lock() const {
     mutex_.lock();
 }
+
 
 void Context::unlock() const {
     mutex_.unlock();
 }
 
-}  // namespace action
+
+}  // namespace context
 }  // namespace mir
 

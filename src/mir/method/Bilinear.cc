@@ -46,7 +46,8 @@ void left_right_lon_indexes(
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
-    eckit::FloatApproxCompare< double > eq(10e-10);  //FIXME
+
+    eckit::types::CompareApproximatelyEqual<double> eq(10e-10);  //FIXME
 
     right = start; // take the first if there's a wrap
     left  = start;
@@ -185,7 +186,6 @@ void Bilinear::hash(eckit::MD5& md5) const {
 
 void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace& in, const GridSpace& out) const {
 
-    using eckit::FloatCompare;
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
 
@@ -212,14 +212,18 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 
 
     // pre-allocate matrix entries
-
     std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
     weights_triplets.reserve( onpts * 4 );
 
-    // access the input/output fields coordinates
 
+    // access the input/output fields coordinates
     atlas::array::ArrayView<double, 2> icoords = in.coordsLonLat();
     atlas::array::ArrayView<double, 2> ocoords = out.coordsLonLat();
+
+
+    // access the input domain
+    atlas::grid::Domain idomain = in.grid().domain();
+
 
     // check input min/max latitudes (gaussian grids exclude the poles)
     double min_lat = icoords(0, LAT);
@@ -256,8 +260,8 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
         const double lat = ocoords(i, LAT);
         const double lon = ocoords(i, LON);
 
-        const bool too_much_north = FloatCompare<double>::isStrictlyGreater(lat, max_lat);
-        const bool too_much_south = FloatCompare<double>::isStrictlyGreater(min_lat, lat);
+        const bool too_much_north = eckit::types::is_strictly_greater(lat, max_lat);
+        const bool too_much_south = eckit::types::is_strictly_greater(min_lat, lat);
 
         if (too_much_north || too_much_south) {
 
@@ -276,7 +280,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 //                    << w << " "
 //                    << w << std::endl;
 
-        } else {
+        } else if (idomain.contains(lon, lat)) {
 
             // find encompassing latitudes ("bottom/top")
 
@@ -291,42 +295,42 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 
             ASSERT(lons.size() >= 2); // at least 2 lines of latitude
 
-            if( FloatCompare<double>::isApproximatelyEqual(max_lat, lat) ) {
+            if( eckit::types::is_approximately_equal<double>(max_lat, lat) ) {
+
                 top_n = lons[0];
                 bot_n = lons[1];
                 top_i = 0;
                 bot_i = top_i + top_n;
 
+            } else if( eckit::types::is_approximately_equal<double>(min_lat, lat) ) {
+
+                top_n = lons[ lons.size() - 2 ];
+                bot_n = lons[ lons.size() - 1 ];
+                bot_i = inpts - bot_n;
+                top_i = bot_i - top_n;
+
             } else {
 
-                if( FloatCompare<double>::isApproximatelyEqual(min_lat, lat) ) {
-                    top_n = lons[ lons.size() - 2 ];
-                    bot_n = lons[ lons.size() - 1 ];
-                    bot_i = inpts - bot_n;
-                    top_i = bot_i - top_n;
-                } else {
+                top_lat = icoords(top_i, LAT);
+                bot_lat = icoords(bot_i, LAT);
+
+                size_t n = 1;
+                while ( !( bot_lat < lat && eckit::types::is_approximately_greater_or_equal(top_lat, lat) )
+                        && n != lons.size() ) {
+
+                    top_n = lons[n - 1];
+                    bot_n = lons[n];
+
+                    top_i  = bot_i;
+                    bot_i += lons[n - 1];
+
                     top_lat = icoords(top_i, LAT);
                     bot_lat = icoords(bot_i, LAT);
 
-                    size_t n = 1;
-                    while ( !( bot_lat < lat && FloatCompare<double>::isApproximatelyGreaterOrEqual(top_lat, lat) )
-                            && n != lons.size() ) {
+                    ASSERT(top_lat > bot_lat);
 
-                        top_n = lons[n - 1];
-                        bot_n = lons[n];
-
-                        top_i  = bot_i;
-                        bot_i += lons[n - 1];
-
-                        top_lat = icoords(top_i, LAT);
-                        bot_lat = icoords(bot_i, LAT);
-
-                        ASSERT(top_lat > bot_lat);
-
-                        ++n;
-                    }
+                    ++n;
                 }
-
             }
 
             top_lat = icoords(top_i, LAT);
@@ -404,12 +408,13 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 //                      << wb << " "
 //                      << std::endl;
 
-            ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(w1, 0.) );
-            ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(w2, 0.) );
-            ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(w3, 0.) );
-            ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(w4, 0.) );
-            ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(wt, 0.) );
-            ASSERT( FloatCompare<double>::isApproximatelyGreaterOrEqual(wb, 0.) );
+            const double eps = double(std::numeric_limits<float>::epsilon());
+            ASSERT( eckit::types::is_approximately_greater_or_equal(w1, 0., eps) );
+            ASSERT( eckit::types::is_approximately_greater_or_equal(w2, 0., eps) );
+            ASSERT( eckit::types::is_approximately_greater_or_equal(w3, 0., eps) );
+            ASSERT( eckit::types::is_approximately_greater_or_equal(w4, 0., eps) );
+            ASSERT( eckit::types::is_approximately_greater_or_equal(wt, 0., eps) );
+            ASSERT( eckit::types::is_approximately_greater_or_equal(wb, 0., eps) );
 
             const double sum = w_br + w_bl + w_tr + w_tl;
 

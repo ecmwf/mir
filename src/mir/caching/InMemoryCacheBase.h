@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Peter Bispham
+/// @author Baudouin Raoult
 /// @author Tiago Quintino
-/// @date May 2015
+/// @date   Oct 2016
 
 #ifndef mir_caching_InMemoryCacheBase_H
 #define mir_caching_InMemoryCacheBase_H
@@ -19,10 +19,6 @@
 #include <map>
 
 #include "eckit/memory/NonCopyable.h"
-// #include "eckit/memory/ScopedPtr.h"
-// #include "eckit/thread/AutoLock.h"
-// #include "eckit/thread/Mutex.h"
-// #include "eckit/config/Resource.h"
 
 namespace mir {
 class InMemoryCacheStatistics;

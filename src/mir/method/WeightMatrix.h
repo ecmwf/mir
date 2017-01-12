@@ -8,15 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Tiago Quintino
+/// @author Baudouin Raoult
 /// @author Florian Rathgeber
-/// @date May 2015
+/// @author Pedro Maciel
+/// @author Tiago Quintino
+/// @date   May 2015
 
 
 #ifndef mir_method_WeightMatrix_H
 #define mir_method_WeightMatrix_H
 
-#include <sstream>
+
+#include <vector>
+#include <iosfwd>
+
 #include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/SparseMatrix.h"
 
@@ -27,21 +32,25 @@ namespace method {
 //----------------------------------------------------------------------------------------------------------------------
 
 class WeightMatrix : public eckit::linalg::SparseMatrix {
-    // NOTE: protected inheritance would be better but
-    // there are issues interfacing the iterators
 
 public: // types
 
     typedef eckit::linalg::Triplet Triplet;
     typedef eckit::linalg::Matrix  Matrix;
     typedef eckit::linalg::Vector  Vector;
+    typedef eckit::linalg::Scalar  Scalar;
     typedef eckit::linalg::Size    Size;
+    typedef eckit::linalg::Index   Index;
 
 public: // methods
 
     WeightMatrix() {}
 
-    WeightMatrix(Size rows, Size cols) : SparseMatrix(rows, cols) {}
+    WeightMatrix(const eckit::PathName&);
+
+    WeightMatrix(Size rows, Size cols);
+
+    WeightMatrix(const eckit::Buffer& buffer);
 
     void setFromTriplets(const std::vector<Triplet>&);
 

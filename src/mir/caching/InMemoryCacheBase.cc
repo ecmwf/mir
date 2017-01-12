@@ -9,9 +9,6 @@
  */
 
 #include "eckit/config/Resource.h"
-// #include "eckit/log/Seconds.h"
-// #include "eckit/log/BigNum.h"
-// #include "eckit/log/Bytes.h"
 
 #include "mir/caching/InMemoryCacheBase.h"
 

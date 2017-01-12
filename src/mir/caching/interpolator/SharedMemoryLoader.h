@@ -19,24 +19,32 @@
 #define mir_caching_SharedMemoryLoader_H
 
 #include "mir/caching/interpolator/InterpolatorLoader.h"
+#include "mir/method/WeightMatrix.h"
 
 namespace mir {
 namespace caching {
 namespace interpolator {
 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 class SharedMemoryLoader : public InterpolatorLoader {
 public:
-    SharedMemoryLoader(const param::MIRParametrisation&, const eckit::PathName& path);
 
-    ~SharedMemoryLoader(); // Change to virtual if base class
+    SharedMemoryLoader(const std::string& name, const eckit::PathName& path);
+
+    ~SharedMemoryLoader();
 
     static void unloadSharedMemory(const eckit::PathName& path);
-    static void loadSharedMemory(const eckit::PathName& path);
+    static void loadSharedMemory(const eckit::PathName& path, method::WeightMatrix& W );
 
 protected:
+
     void print(std::ostream&) const; // Change to virtual if base class
 
 private:
+
     int fd_;
     void* address_;
     size_t size_;
@@ -46,8 +54,13 @@ private:
     virtual size_t size() const;
 };
 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 } // namespace interpolator
 } // namespace caching
 } // namespace mir
+
 
 #endif

@@ -15,10 +15,13 @@
 #include "mir/method/WeightMatrix.h"
 
 #include <cmath>
+
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Plural.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/util/Compare.h"
 
@@ -26,6 +29,25 @@
 namespace mir {
 namespace method {
 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+WeightMatrix::WeightMatrix(const eckit::PathName& path) :
+    SparseMatrix()
+{
+    load(path);
+}
+
+WeightMatrix::WeightMatrix(WeightMatrix::Size rows, WeightMatrix::Size cols) :
+    SparseMatrix(rows, cols)
+{
+}
+
+WeightMatrix::WeightMatrix(const eckit::Buffer& buffer) :
+    SparseMatrix(buffer)
+{
+}
 
 void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& triplets) {
     ASSERT(rows());
@@ -45,15 +67,22 @@ void WeightMatrix::print(std::ostream& out) const {
 
 void WeightMatrix::multiply(const WeightMatrix::Vector& values, WeightMatrix::Vector& result) const {
 
-    // TODO: linear algebra backend should depend on parametrisation
+    /// @todo linear algebra backend should depend on parametrisation
     eckit::linalg::LinearAlgebra::backend().spmv(*this, values, result);
 }
 
 void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Matrix& result) const {
+
     eckit::Log::debug<LibMir>() << "MethodWeighted::multiply: "
                                    "A[" << rows()        << ',' << cols()        << "] * "
                                    "B[" << values.rows() << ',' << values.cols() << "] = "
                                    "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
+
+    eckit::Log::info() << "Multiply: "
+                                   "A[" << rows()        << ',' << cols()        << "] * "
+                                   "B[" << values.rows() << ',' << values.cols() << "] = "
+                                   "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
+
     ASSERT(values.rows() == cols());
     ASSERT(result.rows() == rows());
     ASSERT(values.cols() == result.cols());
@@ -71,6 +100,7 @@ void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Ma
 }
 
 void WeightMatrix::cleanup(const double& pruneEpsilon) {
+
     size_t fixed = 0;
     size_t count = 0;
 
@@ -116,7 +146,10 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 
 void WeightMatrix::validate(const char *when) const {
 
+    bool logErrors = (eckit::Log::debug<LibMir>());
+
     size_t errors = 0;
+
     for (Size i = 0; i < rows(); i++) {
 
         // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
@@ -125,18 +158,16 @@ void WeightMatrix::validate(const char *when) const {
 
         for (const_iterator it = begin(i); it != end(i); ++it) {
             const double &a = *it;
-            ok = ok &&
-                 eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(a, 0) &&
-                 eckit::FloatCompare<double>::isApproximatelyGreaterOrEqual(1, a);
+            ok &= eckit::types::is_approximately_greater_or_equal(a, 0.) &&
+                  eckit::types::is_approximately_greater_or_equal(1., a);
             sum += a;
         }
 
-        ok = ok &&
-             util::compare::is_approx_zero(sum) &&
-             util::compare::is_approx_one(sum);
+        ok &= (util::compare::is_approx_zero(sum) || util::compare::is_approx_one(sum));
 
         // log issues, per row
-        if (!ok) {
+        if (!ok && logErrors) {
+
             if (errors < 50) {
                 if (!errors) {
                     eckit::Log::debug<LibMir>() << "WeightMatrix::validate(" << when << ") failed " << std::endl;
@@ -157,16 +188,12 @@ void WeightMatrix::validate(const char *when) const {
                 eckit::Log::debug<LibMir>() << "..." << std::endl;
             }
             errors++;
-
         }
-    }
-
-    if (errors) {
-        std::ostringstream os;
-        os << "WeightMatrix::validate(" << when << ") failed ";
     }
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

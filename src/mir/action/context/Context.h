@@ -13,37 +13,36 @@
 /// @date Apr 2015
 
 
-#ifndef Context_H
-#define Context_H
+#ifndef mir_action_context_Context_h
+#define mir_action_context_Context_h
 
 #include <string>
-
+#include <vector>
 #include "eckit/memory/ScopedPtr.h"
-#include "eckit/memory/NonCopyable.h"
-
-#include "mir/param/SimpleParametrisation.h"
 #include "eckit/thread/Mutex.h"
+
 
 namespace mir {
 namespace input {
 class MIRInput;
 }
-
 namespace util {
 class MIRStatistics;
 }
-
 namespace data {
 class MIRField;
 }
+namespace context {
+class Content;
+}
+}
 
+
+namespace mir {
 namespace context {
 
-class Content;
 
-class Context  {
-
-
+class Context {
 public:
 
     // -- Exceptions
@@ -52,16 +51,12 @@ public:
     // -- Contructors
 
     Context();
-    Context(const Context& other);
-    Context& operator=(const Context& other);
+    Context(const Context&);
+    Context& operator=(const Context&);
 
-    // Context(Context*);
+    Context(input::MIRInput&, util::MIRStatistics&);
+    Context(data::MIRField&, util::MIRStatistics&);
 
-    Context(input::MIRInput &input,
-            util::MIRStatistics& statistics);
-
-    Context(data::MIRField &field,
-            util::MIRStatistics& statistics);
     // -- Destructor
 
     ~Context();
@@ -70,7 +65,7 @@ public:
     // None
 
     // -- Operators
-
+    // None
 
     // -- Methods
 
@@ -81,6 +76,9 @@ public:
     data::MIRField& field();
     input::MIRInput& input();
 
+    // Substitute context's field
+    void field(data::MIRField&);
+
     // Select only one field
     void select(size_t which);
 
@@ -89,8 +87,6 @@ public:
 
     bool isField() const;
     bool isScalar() const;
-
-    std::vector<Context> stack_;
 
     void lock() const;
     void unlock() const;
@@ -111,11 +107,10 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream& s) const;
-
+    void print(std::ostream&) const;
 
     // -- Overridden methods
-
+    // None
 
     // -- Class members
     // None
@@ -125,22 +120,20 @@ protected:
 
 private:
 
-
     // -- Members
 
     mutable eckit::Mutex mutex_;
+    std::vector<Context> stack_;
 
     input::MIRInput &input_;
     util::MIRStatistics& statistics_;
     eckit::ScopedPtr<Content> content_;
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
-
-    // From MIRParametrisation
-
+    // None
 
     // -- Class members
     // None
@@ -150,7 +143,6 @@ private:
 
     // -- Friends
 
-
     friend std::ostream &operator<<(std::ostream &s, const Context &p) {
         p.print(s);
         return s;
@@ -158,7 +150,10 @@ private:
 
 };
 
-}  // namespace action
+
+}  // namespace context
 }  // namespace mir
+
+
 #endif
 

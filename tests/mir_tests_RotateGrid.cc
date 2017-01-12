@@ -55,7 +55,7 @@ int main() {
 
 bool CHECK_CLOSE_FAIL = 0;
 #define CHECK_CLOSE(A,B,EPS) {\
-    if (!eckit::isApproxEqualUlps<double>((A),(B),(EPS))) {\
+    if (!eckit::types::is_approximately_equal<double>((A),(B),(EPS))) {\
        CHECK_CLOSE_FAIL = 1;\
        cout << "  FAIL\n";\
     }\

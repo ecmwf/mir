@@ -36,8 +36,8 @@ struct MeshCacheTraits {
     // Below are dummy types and functions
     typedef int value_type;
 
-    static void save(value_type&, const eckit::PathName& path);
-    static void load(value_type&, const eckit::PathName& path);
+    static void save(const eckit::CacheManagerBase&, value_type&, const eckit::PathName& path);
+    static void load(const eckit::CacheManagerBase&, value_type&, const eckit::PathName& path);
 };
 
 class MeshCache : public eckit::CacheManager<MeshCacheTraits> {

@@ -41,8 +41,10 @@ static void init() {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-InterpolatorLoader::InterpolatorLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
-    : parametrisation_(parametrisation), path_(path.realName()) {}
+InterpolatorLoader::InterpolatorLoader(const std::string&, const eckit::PathName& path) :
+    path_(path.realName())
+{
+}
 
 InterpolatorLoader::~InterpolatorLoader() {}
 
@@ -63,15 +65,9 @@ InterpolatorLoaderFactory::~InterpolatorLoaderFactory() {
     m->erase(name_);
 }
 
-InterpolatorLoader* InterpolatorLoaderFactory::build(const param::MIRParametrisation& params, const eckit::PathName& path) {
+InterpolatorLoader* InterpolatorLoaderFactory::build(const std::string& name, const eckit::PathName& path) {
 
     pthread_once(&once, init);
-
-    std::string name;
-
-    if (!params.get("interpolator-loader", name)) {
-        throw eckit::SeriousBug("InterpolatorLoaderFactory cannot get interpolator.loader");
-    }
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, InterpolatorLoaderFactory*>::const_iterator j = m->find(name);
@@ -85,7 +81,7 @@ InterpolatorLoader* InterpolatorLoaderFactory::build(const param::MIRParametrisa
         throw eckit::SeriousBug(std::string("No InterpolatorLoaderFactory called ") + name);
     }
 
-    return (*j).second->make(params, path);
+    return (*j).second->make(name, path);
 }
 
 void InterpolatorLoaderFactory::list(std::ostream& out) {

@@ -1,6 +1,6 @@
 ### config headers
 
-ecbuild_generate_config_headers( DESTINATION $ {INSTALL_INCLUDE_DIR}/mir )
+ecbuild_generate_config_headers( DESTINATION ${INSTALL_INCLUDE_DIR}/mir )
 
 configure_file( api/mir_config.h.in   api/mir_config.h  )
 configure_file( api/mir_version.h.in  api/mir_version.h )
@@ -148,10 +148,6 @@ list(
     caching/interpolator/FileLoader.h
     caching/interpolator/InterpolatorLoader.cc
     caching/interpolator/InterpolatorLoader.h
-    caching/interpolator/MappedMemoryLoader.cc
-    caching/interpolator/MappedMemoryLoader.h
-    caching/interpolator/NoLoader.cc
-    caching/interpolator/NoLoader.h
     caching/interpolator/SharedMemoryLoader.cc
     caching/interpolator/SharedMemoryLoader.h
     caching/MeshCache.cc
