@@ -221,6 +221,10 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
     atlas::array::ArrayView<double, 2> ocoords = out.coordsLonLat();
 
 
+    // access the input domain
+    atlas::grid::Domain idomain = in.grid().domain();
+
+
     // check input min/max latitudes (gaussian grids exclude the poles)
     double min_lat = icoords(0, LAT);
     double max_lat = icoords(0, LAT);
@@ -276,7 +280,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 //                    << w << " "
 //                    << w << std::endl;
 
-        } else {
+        } else if (idomain.contains(lon, lat)) {
 
             // find encompassing latitudes ("bottom/top")
 
