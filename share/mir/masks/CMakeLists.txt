@@ -18,7 +18,7 @@ foreach( _f
   # install mask
   install(
     FILES       "${CMAKE_BINARY_DIR}/${_dir}/${_f}"
-    DESTINATION "${INSTALL_DATA_DIR}/masks"
+    DESTINATION "share/${PROJECT_NAME}/masks"
     PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
 
 endforeach()
