@@ -384,6 +384,15 @@ void MethodWeighted::execute(context::Context & ctx,
 
             MW.multiply(mi, mo);
 
+            // set to missing value the output nodes without contribution from any input nodes (empty row)
+            for (WeightMatrix::Size i = 0; i < MW.rows(); i++) {
+                if (MW.begin(i) == MW.end(i)) {
+                    for (WeightMatrix::Size j = 0; j < mo.cols(); ++j) {
+                        mo(i, j) = missingValue;
+                    }
+                }
+            }
+
         } else {
 
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
