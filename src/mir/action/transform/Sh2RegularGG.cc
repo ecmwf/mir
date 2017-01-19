@@ -24,6 +24,7 @@
 
 namespace mir {
 namespace action {
+namespace transform {
 
 
 Sh2RegularGG::Sh2RegularGG(const param::MIRParametrisation& parametrisation):
@@ -55,6 +56,7 @@ static ActionBuilder< Sh2RegularGG > grid2grid("transform.sh2regular-gg");
 }
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
 

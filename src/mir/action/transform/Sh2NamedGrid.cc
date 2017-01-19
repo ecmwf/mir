@@ -22,6 +22,7 @@
 
 namespace mir {
 namespace action {
+namespace transform {
 
 
 Sh2NamedGrid::Sh2NamedGrid(const param::MIRParametrisation& parametrisation):
@@ -57,6 +58,7 @@ static ActionBuilder< Sh2NamedGrid > grid2grid("transform.sh2namedgrid");
 }
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
 

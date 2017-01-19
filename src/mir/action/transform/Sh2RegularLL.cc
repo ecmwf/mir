@@ -23,6 +23,7 @@
 
 namespace mir {
 namespace action {
+namespace transform {
 
 
 Sh2RegularLL::Sh2RegularLL(const param::MIRParametrisation &parametrisation):
@@ -63,6 +64,7 @@ static ActionBuilder< Sh2RegularLL > grid2grid("transform.sh2regular-ll");
 }
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
 

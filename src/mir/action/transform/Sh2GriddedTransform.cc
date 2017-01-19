@@ -14,50 +14,45 @@
 ///
 /// @date Apr 2015
 
-// #include <malloc.h>
 
 #include "mir/action/transform/Sh2GriddedTransform.h"
 
 #include <iostream>
 #include <vector>
-
+#include "eckit/exception/Exceptions.h"
+#include "eckit/io/FileLock.h"
+#include "eckit/log/Timer.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/utils/MD5.h"
 #include "atlas/atlas.h"
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Structured.h"
-#include "atlas/grid/lonlat/RegularLonLat.h"
 #include "atlas/grid/grids.h"
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Timer.h"
-#include "eckit/utils/MD5.h"
-#include "eckit/io/FileLock.h"
-
+#include "atlas/grid/lonlat/RegularLonLat.h"
 #include "mir/action/context/Context.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
+#include "mir/action/transform/TransInitor.h"
+#include "mir/caching/InMemoryCache.h"
 #include "mir/caching/LegendreCache.h"
 #include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/config/LibMir.h"
-#include "mir/util/MIRStatistics.h"
-#include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Representation.h"
+#include "mir/util/MIRStatistics.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
+#endif
 
 
-class TransInitor {
-public:
-    TransInitor() {
-        trans_use_mpi(false); // So that even if MPI is enabled, we don't use it.
-        trans_init();
-    }
-    ~TransInitor() {
-        trans_finalize();
-    }
-};
+namespace mir {
+namespace action {
+namespace transform {
+
+#ifdef ATLAS_HAVE_TRANS
+namespace {
+
 
 struct TransCache {
 
@@ -99,14 +94,6 @@ static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient",
         8L * 1024 * 1024 * 1024,
         "$MIR_COEFFICIENT_CACHE",
         false); // Don't cleanup at exit: the Fortran part will dump core
-
-#endif
-
-
-namespace mir {
-namespace action {
-
-#ifdef ATLAS_HAVE_TRANS
 
 static void fillTrans(struct Trans_t &trans,
                       size_t truncation,
@@ -281,6 +268,9 @@ static void transform(
 
     // trans_delete(&trans);
 }
+
+
+}  // (anonymous namespace)
 #endif
 
 
@@ -292,7 +282,7 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
 
-    static TransInitor initor; // Will init trans if needed
+    TransInitor::instance(); // Will init trans if needed
 
     std::ostringstream os;
 
@@ -308,8 +298,8 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
     }
 
 #else
-    throw eckit::SeriousBug("Spherical harmonics transforms are not supported."
-                            " Please recompile ATLAS with TRANS support enabled.");
+    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
+                            "Please recompile ATLAS with TRANS support enabled.");
 #endif
 }
 
@@ -359,6 +349,7 @@ void Sh2GriddedTransform::execute(context::Context & ctx) const {
 }
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
 

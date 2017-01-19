@@ -22,6 +22,7 @@
 
 namespace mir {
 namespace action {
+namespace transform {
 
 
 class Sh2RegularLL : public Sh2GriddedTransform {
@@ -107,6 +108,7 @@ private:
 };
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
 

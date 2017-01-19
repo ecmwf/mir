@@ -13,97 +13,98 @@
 /// @date Apr 2015
 
 
-#ifndef Sh2GriddedTransform_H
-#define Sh2GriddedTransform_H
+#ifndef mir_action_transform_Sh2GriddedTransform_h
+#define mir_action_transform_Sh2GriddedTransform_h
 
 #include "mir/action/plan/Action.h"
 
 
-
 namespace mir {
-
 namespace repres {
 class Representation;
 }
+}
 
+
+namespace mir {
 namespace action {
+namespace transform {
 
 
 class Sh2GriddedTransform : public Action {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     Sh2GriddedTransform(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~Sh2GriddedTransform(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
-
-    // void print(std::ostream&) const; // Change to virtual if base class
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-  private:
+    // -- Class methods
+    // None
 
-// No copy allowed
+private:
+
+    // No copy allowed
 
     Sh2GriddedTransform(const Sh2GriddedTransform&);
     Sh2GriddedTransform& operator=(const Sh2GriddedTransform&);
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     virtual const repres::Representation* outputRepresentation() const = 0;
 
-// -- Overridden methods
+    // -- Overridden methods
 
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context&) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const Sh2GriddedTransform& p)
     //	{ p.print(s); return s; }
@@ -111,7 +112,9 @@ class Sh2GriddedTransform : public Action {
 };
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
-#endif
 
+
+#endif

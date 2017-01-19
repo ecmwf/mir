@@ -23,6 +23,7 @@
 
 namespace mir {
 namespace action {
+namespace transform {
 
 
 Sh2ReducedGG::Sh2ReducedGG(const param::MIRParametrisation& parametrisation):
@@ -57,6 +58,7 @@ static ActionBuilder< Sh2ReducedGG > grid2grid("transform.sh2reduced-gg");
 }
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
 

@@ -27,6 +27,7 @@
 
 namespace mir {
 namespace action {
+namespace transform {
 
 
 Sh2ShTransform::Sh2ShTransform(const param::MIRParametrisation &parametrisation):
@@ -79,6 +80,7 @@ static ActionBuilder< Sh2ShTransform > subSh2ShTransform("transform.sh2sh");
 }
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
 

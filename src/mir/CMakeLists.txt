@@ -56,10 +56,10 @@ list(
     action/interpolate/Gridded2RegularGG.h
     action/interpolate/Gridded2RegularLL.cc
     action/interpolate/Gridded2RegularLL.h
-    action/interpolate/Gridded2RotatedLL.cc
-    action/interpolate/Gridded2RotatedLL.h
     action/interpolate/Gridded2RegularLLOffset.cc
     action/interpolate/Gridded2RegularLLOffset.h
+    action/interpolate/Gridded2RotatedLL.cc
+    action/interpolate/Gridded2RotatedLL.h
     action/interpolate/Gridded2RotatedLLOffset.cc
     action/interpolate/Gridded2RotatedLLOffset.h
     action/interpolate/Gridded2RotatedNamedGrid.cc
@@ -76,14 +76,14 @@ list(
     action/io/Save.h
     action/misc/AreaCropper.cc
     action/misc/AreaCropper.h
-    action/misc/SelectField.cc
-    action/misc/SelectField.h
-    action/misc/SetParameter.cc
-    action/misc/SetParameter.h
     action/misc/CheckerBoard.cc
     action/misc/CheckerBoard.h
     action/misc/ReferencePattern.cc
     action/misc/ReferencePattern.h
+    action/misc/SelectField.cc
+    action/misc/SelectField.h
+    action/misc/SetParameter.cc
+    action/misc/SetParameter.h
     action/plan/Action.cc
     action/plan/Action.h
     action/plan/ActionGraph.cc
@@ -114,6 +114,8 @@ list(
     action/transform/Sh2RegularLL.h
     action/transform/Sh2ShTransform.cc
     action/transform/Sh2ShTransform.h
+    action/transform/TransInitor.cc
+    action/transform/TransInitor.h
     action/transform/Vod2uv.cc
     action/transform/Vod2uv.h
     api/MIRComplexJob.cc
@@ -136,6 +138,16 @@ list(
     caching/InMemoryCacheStatistics.h
     caching/LegendreCache.cc
     caching/LegendreCache.h
+    caching/MeshCache.cc
+    caching/MeshCache.h
+    caching/WeightCache.cc
+    caching/WeightCache.h
+    caching/interpolator/FileLoader.cc
+    caching/interpolator/FileLoader.h
+    caching/interpolator/InterpolatorLoader.cc
+    caching/interpolator/InterpolatorLoader.h
+    caching/interpolator/SharedMemoryLoader.cc
+    caching/interpolator/SharedMemoryLoader.h
     caching/legendre/FileLoader.cc
     caching/legendre/FileLoader.h
     caching/legendre/LegendreLoader.cc
@@ -146,16 +158,6 @@ list(
     caching/legendre/NoLoader.h
     caching/legendre/SharedMemoryLoader.cc
     caching/legendre/SharedMemoryLoader.h
-    caching/interpolator/FileLoader.cc
-    caching/interpolator/FileLoader.h
-    caching/interpolator/InterpolatorLoader.cc
-    caching/interpolator/InterpolatorLoader.h
-    caching/interpolator/SharedMemoryLoader.cc
-    caching/interpolator/SharedMemoryLoader.h
-    caching/MeshCache.cc
-    caching/MeshCache.h
-    caching/WeightCache.cc
-    caching/WeightCache.h
     compare/Comparator.cc
     compare/Comparator.h
     compare/Field.cc
@@ -312,10 +314,10 @@ list(
     packing/ArchivedValue.h
     packing/Complex.cc
     packing/Complex.h
-    packing/Packer.cc
-    packing/Packer.h
     packing/JPEG2000.cc
     packing/JPEG2000.h
+    packing/Packer.cc
+    packing/Packer.h
     packing/SecondOrder.cc
     packing/SecondOrder.h
     packing/Simple.cc
@@ -376,10 +378,10 @@ list(
     repres/latlon/ReducedLL.h
     repres/latlon/RegularLL.cc
     repres/latlon/RegularLL.h
-    repres/latlon/RotatedLL.cc
-    repres/latlon/RotatedLL.h
     repres/latlon/RegularLLOffset.cc
     repres/latlon/RegularLLOffset.h
+    repres/latlon/RotatedLL.cc
+    repres/latlon/RotatedLL.h
     repres/latlon/RotatedLLOffset.cc
     repres/latlon/RotatedLLOffset.h
     repres/other/None.cc
@@ -466,6 +468,8 @@ list(
     style/ProdgenGrid.h
     style/ProdgenStyle.cc
     style/ProdgenStyle.h
+    tools/MIRTool.cc
+    tools/MIRTool.h
     util/Angles.h
     util/Bitmap.cc
     util/Bitmap.h
@@ -494,22 +498,20 @@ list(
     util/Increments.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
+    util/OffsetGrid.cc
+    util/OffsetGrid.h
+    util/OffsetIterator.cc
+    util/OffsetIterator.h
     util/PointSearch.cc
     util/PointSearch.h
     util/RotateGrid.cc
     util/RotateGrid.h
     util/RotatedGrid.cc
     util/RotatedGrid.h
-    util/OffsetGrid.cc
-    util/OffsetGrid.h
-    util/OffsetIterator.cc
-    util/OffsetIterator.h
     util/RotatedIterator.cc
     util/RotatedIterator.h
     util/Rotation.cc
     util/Rotation.h
-    tools/MIRTool.cc
-    tools/MIRTool.h
   )
 
 list(APPEND mir_tmpls caching/InMemoryCache.cc)

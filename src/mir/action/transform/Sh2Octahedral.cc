@@ -23,6 +23,7 @@
 
 namespace mir {
 namespace action {
+namespace transform {
 
 
 Sh2Octahedral::Sh2Octahedral(const param::MIRParametrisation& parametrisation):
@@ -56,6 +57,7 @@ static ActionBuilder< Sh2Octahedral > grid2grid("transform.sh2octahedral-gg");
 }
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
 
