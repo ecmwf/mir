@@ -26,8 +26,8 @@ list(
     action/calc/FormulaAction.h
     action/context/Context.cc
     action/context/Context.h
-    action/filter/AdjustWinds.cc
-    action/filter/AdjustWinds.h
+    action/filter/AdjustWindsDirections.cc
+    action/filter/AdjustWindsDirections.h
     action/filter/BitmapFilter.cc
     action/filter/BitmapFilter.h
     action/filter/FrameFilter.cc

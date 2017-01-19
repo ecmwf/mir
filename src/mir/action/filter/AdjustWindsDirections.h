@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef AdjustWinds_H
-#define AdjustWinds_H
+#ifndef mir_action_AdjustWindsDirections_h
+#define mir_action_AdjustWindsDirections_h
 
 #include "mir/action/plan/Action.h"
 #include "mir/util/Rotation.h"
@@ -28,7 +28,7 @@ namespace repres { class Representation; }
 namespace action {
 
 
-class AdjustWinds : public Action {
+class AdjustWindsDirections : public Action {
   public:
 
 // -- Exceptions
@@ -36,11 +36,11 @@ class AdjustWinds : public Action {
 
 // -- Contructors
 
-    AdjustWinds(const param::MIRParametrisation&);
+    AdjustWindsDirections(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~AdjustWinds(); // Change to virtual if base class
+    virtual ~AdjustWindsDirections(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -82,8 +82,8 @@ class AdjustWinds : public Action {
 
 // No copy allowed
 
-    AdjustWinds(const AdjustWinds&);
-    AdjustWinds& operator=(const AdjustWinds&);
+    AdjustWindsDirections(const AdjustWindsDirections&);
+    AdjustWindsDirections& operator=(const AdjustWindsDirections&);
 
 // -- Members
     util::Rotation rotation_;

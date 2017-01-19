@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/action/filter/AdjustWinds.h"
+#include "mir/action/filter/AdjustWindsDirections.h"
 
 #include <cmath>
 #include <iostream>
@@ -32,7 +32,7 @@ namespace mir {
 namespace action {
 
 
-AdjustWinds::AdjustWinds(const param::MIRParametrisation &parametrisation):
+AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 
     std::vector<double> value;
@@ -43,18 +43,18 @@ AdjustWinds::AdjustWinds(const param::MIRParametrisation &parametrisation):
 }
 
 
-AdjustWinds::~AdjustWinds() {
+AdjustWindsDirections::~AdjustWindsDirections() {
 }
 
 
-bool AdjustWinds::sameAs(const Action& other) const {
-    const AdjustWinds* o = dynamic_cast<const AdjustWinds*>(&other);
+bool AdjustWindsDirections::sameAs(const Action& other) const {
+    const AdjustWindsDirections* o = dynamic_cast<const AdjustWindsDirections*>(&other);
     return o && (rotation_ == o->rotation_);
 }
 
 
-void AdjustWinds::print(std::ostream &out) const {
-    out << "AdjustWinds[rotation=" << rotation_ << "]";
+void AdjustWindsDirections::print(std::ostream &out) const {
+    out << "AdjustWindsDirections[rotation=" << rotation_ << "]";
 }
 
 
@@ -71,17 +71,17 @@ inline double sign(double a, double b) {
 }
 
 
-void AdjustWinds::windDirections(const repres::Representation* representation, std::vector<double> &result) const {
+void AdjustWindsDirections::windDirections(const repres::Representation* representation, std::vector<double> &result) const {
 
     ASSERT(representation);
 
     result.clear();
 
-    // std::cout << "AdjustWinds::windDirections " << *representation << std::endl;
+    // std::cout << "AdjustWindsDirections::windDirections " << *representation << std::endl;
 
     eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
 
-    // std::cout << "AdjustWinds::windDirections " << *iter << std::endl;
+    // std::cout << "AdjustWindsDirections::windDirections " << *iter << std::endl;
 
 
     double lat = 0;
@@ -136,7 +136,7 @@ void AdjustWinds::windDirections(const repres::Representation* representation, s
 }
 
 
-void AdjustWinds::execute(context::Context & ctx) const {
+void AdjustWindsDirections::execute(context::Context & ctx) const {
     data::MIRField& field = ctx.field();
 
     ASSERT((field.dimensions() % 2) == 0);
@@ -151,7 +151,7 @@ void AdjustWinds::execute(context::Context & ctx) const {
     windDirections(field.representation(), directions);
 
     if (directions.size() != size) {
-        std::cout << "AdjustWinds::windDirections after=" << directions.size()
+        std::cout << "AdjustWindsDirections::windDirections after=" << directions.size()
                   << " before=" << size << std::endl;
 
     }
@@ -192,7 +192,7 @@ void AdjustWinds::execute(context::Context & ctx) const {
 
 
 namespace {
-static ActionBuilder< AdjustWinds > filter("filter.adjust-winds");
+static ActionBuilder< AdjustWindsDirections > filter("filter.adjust-winds-directions");
 }
 
 
