@@ -1236,6 +1236,7 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
 
         job.execute(input, output);
 
+        // job->clear("wind");  FIXME this is probably necessary
         size_t ni = 0;
         size_t nj = 0;
         u_output.shape(ni, nj);
