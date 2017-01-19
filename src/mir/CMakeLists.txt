@@ -28,6 +28,8 @@ list(
     action/context/Context.h
     action/filter/AdjustWindsDirections.cc
     action/filter/AdjustWindsDirections.h
+    action/filter/AdjustWindsScaleCosLatitude.cc
+    action/filter/AdjustWindsScaleCosLatitude.h
     action/filter/BitmapFilter.cc
     action/filter/BitmapFilter.h
     action/filter/FrameFilter.cc
