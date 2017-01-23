@@ -94,9 +94,6 @@ class ReducedLL : public Gridded {
     std::vector<long> pl_;
     size_t Nj_;
 
-    util::BoundingBox clipped_bbox_;
-    std::vector<long> clipped_pl_;
-
     // -- Methods
 
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
