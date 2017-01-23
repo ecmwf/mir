@@ -148,7 +148,6 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
 
 }
 
-// register MARS-specialized style
 namespace {
 static MIRStyleBuilder<MARSStyle> mars("mars");
 }

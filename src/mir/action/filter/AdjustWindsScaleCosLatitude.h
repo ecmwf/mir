@@ -8,24 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Jan 2017
 
 
-#ifndef Sh2RegularLL_H
-#define Sh2RegularLL_H
+#ifndef mir_action_AdjustWindsScaleCosLatitude_h
+#define mir_action_AdjustWindsScaleCosLatitude_h
 
-#include "mir/action/transform/Sh2GriddedTransform.h"
-#include "mir/util/Increments.h"
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {
 namespace action {
-namespace transform {
 
 
-class Sh2RegularLL : public Sh2GriddedTransform {
+class AdjustWindsScaleCosLatitude : public Action {
 public:
 
     // -- Exceptions
@@ -33,11 +29,10 @@ public:
 
     // -- Contructors
 
-    Sh2RegularLL(const param::MIRParametrisation&);
+    AdjustWindsScaleCosLatitude(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    virtual ~Sh2RegularLL(); // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
@@ -64,7 +59,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -79,22 +74,19 @@ private:
 
     // No copy allowed
 
-    Sh2RegularLL(const Sh2RegularLL&);
-    Sh2RegularLL& operator=(const Sh2RegularLL&);
+    AdjustWindsScaleCosLatitude(const AdjustWindsScaleCosLatitude&);
+    AdjustWindsScaleCosLatitude& operator=(const AdjustWindsScaleCosLatitude&);
 
     // -- Members
-
-    util::Increments grid_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
-
-    // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    virtual void execute(context::Context&) const;
+    virtual bool sameAs(const Action&) const;
 
     // -- Class members
     // None
@@ -103,12 +95,13 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    //friend ostream& operator<<(ostream& s,const AdjustWinds& p)
+    //	{ p.print(s); return s; }
 
 };
 
 
-}  // namespace transform
 }  // namespace action
 }  // namespace mir
 

@@ -102,7 +102,6 @@ void ProdgenStyle::grid2grid(action::ActionPlan& plan) const {
              new ProdgenGrid(parametrisation_));
 }
 
-// register MARS-specialized style
 namespace {
 static MIRStyleBuilder<ProdgenStyle> prodgen("prodgen");
 }

@@ -85,7 +85,6 @@ static bool boolean(const char *in) {
 
 static void clear(MIRJob &job) {
     job.clear("grid");
-    job.clear("truncation");
     job.clear("gaussian");
     job.clear("regular");
     job.clear("reduced");
@@ -158,15 +157,14 @@ extern "C" fortint intout_(const char *name,
             return 0;
         }
 
-        if (strncasecmp(name, "truncation", name_len) == 0) {
-            clear(*job);
-            job->set("truncation", long(ints[0]));
-            return 0;
-        }
-
         if (strncasecmp(name, "regular", name_len) == 0) {
             clear(*job);
             job->set("regular", long(ints[0]));
+            return 0;
+        }
+
+        if (strncasecmp(name, "truncation", name_len) == 0) {
+            job->set("truncation", long(ints[0]));
             return 0;
         }
 
@@ -1236,6 +1234,7 @@ extern "C" fortint hirlamw_(const fortint &l12pnt,
 
         job.execute(input, output);
 
+        // job->clear("wind");  FIXME this is probably necessary
         size_t ni = 0;
         size_t nj = 0;
         u_output.shape(ni, nj);

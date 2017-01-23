@@ -112,10 +112,6 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     unload_ = name.substr(0, 4) == "tmp-";
 
-    if (unload_) {
-        unloader.add(path);
-    }
-
     eckit::TraceTimer<LibMir> timer("Loading interpolator coefficients from shared memory");
     eckit::PathName real = path.realName();
 
@@ -161,6 +157,11 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
         std::ostringstream oss;
         oss << "Failed to aquire shared memory for " << eckit::Bytes(shmsize) << ", check the maximum authorised on this system (Linux ipcs -l, Mac/BSD ipcs -M)";
         throw eckit::FailedSystemCall(oss.str());
+    }
+
+    // Make sure memory is unloaded on exit
+    if (unload_) {
+        unloader.add(path);
     }
 
 #ifdef SHM_PAGESIZE

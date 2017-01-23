@@ -480,7 +480,7 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
         size_t Nmiss = 0;
         size_t Ncol  = 0;
         for (it = begin; it != end; ++it, ++Ncol) {
-            if (fieldMissingValues[static_cast<size_t>(it.col())])
+            if (fieldMissingValues[it.col()])
                 ++Nmiss;
             else
                 sum += *it;
@@ -496,7 +496,7 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
             bool found = false;
             for (it = begin; it != end; ++it) {
                 *it = 0.;
-                if (!found && fieldMissingValues[static_cast<size_t>(it.col())]) {
+                if (!found && fieldMissingValues[it.col()]) {
                     *it = 1.;
                     found = true;
                 }
@@ -507,7 +507,7 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
 
             ASSERT(!is_approx_zero(sum));
             for (it = begin; it != end; ++it) {
-                if (fieldMissingValues[static_cast<size_t>(it.col())]) {
+                if (fieldMissingValues[it.col()]) {
                     *it = 0.;
                 } else {
                     *it /= sum;

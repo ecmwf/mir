@@ -15,8 +15,10 @@
 
 #include "mir/input/GribInput.h"
 
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
+#include <numeric>
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/BufferedHandle.h"
@@ -219,6 +221,63 @@ static const char *get_key(const std::string &name, grib_handle *h) {
 }
 
 
+void get_unique_missing_value(const std::vector<double>& values, double& missing) {
+    ASSERT(values.size());
+
+    if (!std::count(values.begin(), values.end(), missing)) {
+        return;
+    }
+
+    missing = *std::max_element(values.begin(), values.end()) + 1.;
+    if (missing == missing) {
+        return;
+    }
+
+    missing = *std::min_element(values.begin(), values.end()) - 1.;
+    if (missing == missing) {
+        return;
+    }
+
+    throw eckit::SeriousBug("GribInput: get_unique_missing_value: failed to get a unique missing value.");
+}
+
+
+size_t fix_pl_array_zeros(std::vector<long>& pl) {
+    size_t new_entries = 0;
+
+    // if a zero is found, copy the *following* non-zero value into the range "current entry -> non-zero entry"
+    for (std::vector<long>::iterator p = pl.begin(); p != pl.end(); ++p) {
+        if (*p == 0) {
+
+            std::vector<long>::iterator nz = std::find_if(p, pl.end(), [](long x) { return x != 0; });
+            if (nz != pl.end()) {
+                new_entries += size_t(*nz) * size_t(std::distance(p, nz));
+                std::fill(p, nz, *nz);
+            }
+
+        }
+    }
+
+    // if a zero is found, copy the *previous* non-zero value into the range "non-zero entry -> current entry"
+    for (std::vector<long>::reverse_iterator p = pl.rbegin(); p != pl.rend(); ++p) {
+        if (*p == 0) {
+
+            std::vector<long>::reverse_iterator nz = std::find_if(p, pl.rend(), [](long x) { return x != 0; });
+            if (nz != pl.rend()) {
+                new_entries += size_t(*nz) * size_t(std::distance(p, nz));
+                std::fill(p, nz, *nz);
+            }
+
+        }
+    }
+
+    ASSERT(0 == std::count(pl.begin(), pl.end(), 0));
+    ASSERT(new_entries);
+    return new_entries;
+}
+
+
+
 }  // (anonymous namespace)
 
 
@@ -259,6 +318,68 @@ data::MIRField GribInput::field() const {
 
     double missing;
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
+
+    // If grib has a 0-containing pl array, add missing values in their place
+    if (has("pl")) {
+        size_t count_pl = 0;
+        GRIB_CALL(grib_get_size(grib_, "pl", &count_pl));
+        ASSERT(count_pl);
+
+        std::vector<long> pl(count_pl, 0);
+        size = count_pl;
+        GRIB_CALL(grib_get_long_array(grib_, "pl", pl.data(), &size));
+        ASSERT(count_pl == size);
+
+        // NOTE: this fix ties with the method get(const std::string &name, std::vector<long> &value)
+        if (std::find(pl.rbegin(), pl.rend(), 0) != pl.rend()) {
+
+            // if there are no missing values yet, set them
+            if (!bitmap) {
+                eckit::Log::debug<LibMir>() << "GribInput::field(): introducing missing values (setting bitmap)." << std::endl;
+                bitmap = 1;
+                get_unique_missing_value(values, missing);
+            }
+
+            // pl array: insert entries in place of zeros
+            std::vector<long> pl_fixed = pl;
+            size_t new_values = fix_pl_array_zeros(pl_fixed);
+            ASSERT(new_values > 0);
+
+
+            // values array: copy values row by row, and when a fixed (0) entry is found, insert missing values
+            eckit::Log::debug<LibMir>() << "GribInput::field(): correcting values array with " << new_values << " new missing values." << std::endl;
+
+            std::vector<double> values_extended;
+            values_extended.reserve(count + new_values);
+
+            ASSERT(pl.size() == pl_fixed.size());
+            size_t i = 0;
+            for (std::vector<long>::iterator p1 = pl.begin(), p2 = pl_fixed.begin(); p1 != pl.end(); ++p1, ++p2) {
+                if (*p1 == 0) {
+                    ASSERT(*p2 > 0);
+                    size_t Ni = size_t(*p2);
+
+                    values_extended.insert(values_extended.end(), Ni, missing);
+
+                } else {
+                    size_t Ni = size_t(*p1);
+                    ASSERT(i + Ni <= count);
+
+                    values_extended.insert(values_extended.end(), &values[i], &values[i + Ni]);
+                    i += Ni;
+
+                }
+            }
+
+            // set the new (extended) values vector, confirm it is compatible with a returned pl array
+            ASSERT(values.size() + new_values == values_extended.size());
+            values.swap(values_extended);
+
+            ASSERT(get("pl", pl));
+            size_t pl_sum = size_t(std::accumulate(pl.begin(), pl.end(), 0));
+            ASSERT(pl_sum == values.size());
+        }
+    }
 
     data::MIRField field(*this, bitmap != 0, missing);
 
@@ -391,7 +512,15 @@ bool GribInput::get(const std::string &name, std::vector<long> &value) const {
     ASSERT(value.size());
 
     // eckit::Log::debug<LibMir>() << "grib_get_long_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
+    if (name == "pl") {
 
+        // try locating a zero in the pl array, in which case adjust it before continuing
+        // NOTE: reverse search is more suitable for latest global reduced_ll grids
+        if (std::find(value.rbegin(), value.rend(), 0) != value.rend()) {
+            fix_pl_array_zeros(value);
+        }
+
+    }
 
     return true;
 }

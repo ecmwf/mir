@@ -20,6 +20,7 @@
 
 namespace mir {
 namespace action {
+namespace transform {
 
 
 class Sh2ReducedGG : public Sh2GriddedTransform {
@@ -106,7 +107,10 @@ class Sh2ReducedGG : public Sh2GriddedTransform {
 };
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

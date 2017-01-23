@@ -47,14 +47,11 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     // None
 
     // -- Methods
-    // None
-
 
     void setAuxilaryFiles(const std::string &pathToLatitudes, const std::string &pathToLongitudes);
 
     // For debugging only
     void marsRequest(std::ostream&) const;
-
 
     // -- Overridden methods
     // None
@@ -68,13 +65,11 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
   protected:
 
     // -- Members
-
-
+    // None
 
     // -- Methods
 
     bool handle(grib_handle *);
-
 
     // -- Overridden methods
     // None
@@ -97,9 +92,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     mutable eckit::Mutex mutex_;
     grib_handle *grib_;
 
-    // --- For unstructured grids
-
-
+    // For unstructured grids
     std::vector<double> latitudes_;
     std::vector<double> longitudes_;
 
@@ -107,10 +100,9 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
     void auxilaryValues(const std::string&, std::vector<double> &values) const;
 
-
     // -- Overridden methods
-    // From MIRInput
 
+    // From MIRInput
     virtual const param::MIRParametrisation &parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual grib_handle *gribHandle(size_t which = 0) const;
@@ -122,13 +114,11 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     virtual bool get(const std::string &name, double &value) const;
     virtual bool get(const std::string &name, std::vector<long> &value) const;
     virtual bool get(const std::string &name, std::vector<double> &value) const;
-
     virtual bool has(const std::string &name) const;
 
     // From FieldParametrisation
     virtual void latitudes(std::vector<double> &) const;
     virtual void longitudes(std::vector<double> &) const;
-
 
     // -- Class members
     // None
@@ -146,5 +136,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif
 

@@ -13,13 +13,15 @@
 /// @date Apr 2015
 
 
-#ifndef Sh2RegularGG_H
-#define Sh2RegularGG_H
+#ifndef mir_action_transform_Sh2RegularGG_h
+#define mir_action_transform_Sh2RegularGG_h
 
 #include "mir/action/transform/Sh2GriddedTransform.h"
 
+
 namespace mir {
 namespace action {
+namespace transform {
 
 
 class Sh2RegularGG : public Sh2GriddedTransform {
@@ -106,7 +108,10 @@ class Sh2RegularGG : public Sh2GriddedTransform {
 };
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

@@ -21,6 +21,7 @@
 
 namespace mir {
 namespace action {
+namespace transform {
 
 
 class Sh2ShTransform : public Action {
@@ -107,7 +108,10 @@ class Sh2ShTransform : public Action {
 };
 
 
+}  // namespace transform
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 
