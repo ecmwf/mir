@@ -84,10 +84,12 @@ class Unloader {
             }
         }
     }
+
+    static Unloader& instance() {
+        static Unloader unloader;
+        return unloader;
+    }
 };
-
-static Unloader unloader;
-
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -161,7 +163,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     // Make sure memory is unloaded on exit
     if (unload_) {
-        unloader.add(path);
+        Unloader::instance().add(path);
     }
 
 #ifdef SHM_PAGESIZE
