@@ -69,8 +69,17 @@ typedef eckit::Padded<SHM_Info_,1280> SHMInfo; /* aligned to 64 bytes */
 
 
 class Unloader {
+
     std::vector<eckit::PathName> paths_;
-  public:
+
+public:
+
+    /// This ensures unloader is destructed in correct order with other static objects (like eckit::Log)
+    static Unloader& instance() {
+        static Unloader unloader;
+        return unloader;
+    }
+
     void add(const eckit::PathName& path) {
         paths_.push_back(path);
     }
@@ -83,11 +92,6 @@ class Unloader {
                 std::cout << e.what() << std::endl;
             }
         }
-    }
-
-    static Unloader& instance() {
-        static Unloader unloader;
-        return unloader;
     }
 };
 
