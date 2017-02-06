@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef Sh2ShTransform_H
-#define Sh2ShTransform_H
+#ifndef mir_action_transform_ShTruncate_h
+#define mir_action_transform_ShTruncate_h
 
 #include "mir/action/plan/Action.h"
 
@@ -24,83 +24,83 @@ namespace action {
 namespace transform {
 
 
-class Sh2ShTransform : public Action {
-  public:
+class ShTruncate : public Action {
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
-    Sh2ShTransform(const param::MIRParametrisation&);
+    ShTruncate(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~Sh2ShTransform(); // Change to virtual if base class
+    virtual ~ShTruncate(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
 
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // No copy allowed
 
-    Sh2ShTransform(const Sh2ShTransform&);
-    Sh2ShTransform& operator=(const Sh2ShTransform&);
+    ShTruncate(const ShTruncate&);
+    ShTruncate& operator=(const ShTruncate&);
 
-// -- Members
+    // -- Members
 
     size_t truncation_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual bool sameAs(const Action& other) const;
 
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context&) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const Sh2ShTransform& p)
     //	{ p.print(s); return s; }

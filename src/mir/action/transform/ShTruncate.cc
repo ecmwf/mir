@@ -12,17 +12,16 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/action/transform/Sh2ShTransform.h"
+
+#include "mir/action/transform/ShTruncate.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
-
 #include "mir/action/context/Context.h"
+#include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -30,38 +29,40 @@ namespace action {
 namespace transform {
 
 
-Sh2ShTransform::Sh2ShTransform(const param::MIRParametrisation &parametrisation):
+ShTruncate::ShTruncate(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
     truncation_(0) {
     ASSERT(parametrisation.get("user.truncation", truncation_));
 }
 
 
-Sh2ShTransform::~Sh2ShTransform() {
+ShTruncate::~ShTruncate() {
 }
 
 
-bool Sh2ShTransform::sameAs(const Action& other) const {
-    const Sh2ShTransform* o = dynamic_cast<const Sh2ShTransform*>(&other);
+bool ShTruncate::sameAs(const Action& other) const {
+    const ShTruncate* o = dynamic_cast<const ShTruncate*>(&other);
     return o && (truncation_ == o->truncation_);
 }
 
-void Sh2ShTransform::print(std::ostream &out) const {
+
+void ShTruncate::print(std::ostream &out) const {
     out << "Sh2ShTransform[";
     out << "truncation=" << truncation_;
     out << "]";
 }
 
 
-void Sh2ShTransform::execute(context::Context & ctx) const {
+void ShTruncate::execute(context::Context& ctx) const {
     data::MIRField& field = ctx.field();
+
     // Keep a pointer on the original representation, as the one in the field will
     // be changed in the loop
     repres::RepresentationHandle representation(field.representation());
 
 
     for (size_t i = 0; i < field.dimensions(); i++) {
-        const std::vector<double> &values = field.values(i);
+        const std::vector<double>& values = field.values(i);
         std::vector<double> result;
 
         const repres::Representation* repres = representation->truncate(truncation_, values, result);
@@ -71,12 +72,11 @@ void Sh2ShTransform::execute(context::Context & ctx) const {
             field.update(result, i);
         }
     }
-
 }
 
 
 namespace {
-static ActionBuilder< Sh2ShTransform > subSh2ShTransform("transform.sh2sh");
+static ActionBuilder< ShTruncate > __action("transform.sh-truncate");
 }
 
 

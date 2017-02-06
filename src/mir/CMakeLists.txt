@@ -112,8 +112,8 @@ list(
     action/transform/Sh2RegularGG.h
     action/transform/Sh2RegularLL.cc
     action/transform/Sh2RegularLL.h
-    action/transform/Sh2ShTransform.cc
-    action/transform/Sh2ShTransform.h
+    action/transform/ShTruncate.cc
+    action/transform/ShTruncate.h
     action/transform/TransInitor.cc
     action/transform/TransInitor.h
     action/transform/Vod2uv.cc

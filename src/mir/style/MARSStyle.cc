@@ -43,7 +43,7 @@ void MARSStyle::print(std::ostream &out) const {
 void MARSStyle::sh2sh(action::ActionPlan& plan) const {
 
     if (parametrisation_.has("user.truncation")) {
-        plan.add("transform.sh2sh");
+        plan.add("transform.sh-truncate");
     }
 
     bool vod2uv = false;
@@ -72,10 +72,10 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
 
         if (griddef) {
             // TODO: this is temporary
-            plan.add("transform.sh2sh", "truncation", 63L);
+            plan.add("transform.sh-truncate", "truncation", 63L);
         }
         else {
-            plan.add("transform.sh2sh", "truncation", new AutoResol(parametrisation_));
+            plan.add("transform.sh-truncate", "truncation", new AutoResol(parametrisation_));
         }
     }
 
