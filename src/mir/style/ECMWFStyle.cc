@@ -95,7 +95,7 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
 
     if (field_spectral) {
-        sh2sh(plan);
+        shTruncate(plan);
 
         bool vod2uv = false;
         parametrisation_.get("vod2uv", vod2uv);
@@ -126,9 +126,9 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
                 plan.add("filter.adjust-winds-scale-cos-latitude");
             }
 
-        }
-        else {
-            selectWindComponents(plan);
+        } else {
+            // "user wants spectral"
+            sh2sh(plan);
         }
     }
 
@@ -309,6 +309,11 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
         parametrisation_.get("user.formula.prologue.metadata", metadata);
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
+}
+
+
+void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
+    selectWindComponents(plan);
 }
 
 

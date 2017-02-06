@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef ECMWFStyle_H
-#define ECMWFStyle_H
+#ifndef mir_style_ECMWFStyle_h
+#define mir_style_ECMWFStyle_h
 
 #include "mir/style/MIRStyle.h"
 
@@ -44,8 +44,7 @@ public:
     // None
 
     // -- Methods
-
-
+    // None
 
     // -- Overridden methods
     // None
@@ -63,14 +62,13 @@ protected:
 
     // -- Methods
 
-
     virtual void prologue(action::ActionPlan&) const;
-    virtual void sh2sh(action::ActionPlan&) const = 0;
+    virtual void shTruncate(action::ActionPlan&) const = 0;
     virtual void sh2grid(action::ActionPlan&) const = 0;
+    virtual void sh2sh(action::ActionPlan&) const;
     virtual void grid2grid(action::ActionPlan&) const;
     virtual void epilogue(action::ActionPlan&) const;
-
-    virtual void selectWindComponents(action::ActionPlan&) const;
+    void selectWindComponents(action::ActionPlan&) const;
 
     // -- Overridden methods
     // None
@@ -89,8 +87,10 @@ private:
     ECMWFStyle& operator=(const ECMWFStyle&);
 
     // -- Members
+    // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
 

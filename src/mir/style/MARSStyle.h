@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef MARSStyle_H
-#define MARSStyle_H
+#ifndef mir_style_MARSStyle_h
+#define mir_style_MARSStyle_h
 
 #include "mir/style/ECMWFStyle.h"
 
@@ -24,79 +24,79 @@ namespace style {
 
 
 class MARSStyle : public ECMWFStyle {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     MARSStyle(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
     ~MARSStyle(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
-
-
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-  protected:
-
-// -- Members
+    // -- Class methods
     // None
 
-// -- Methods
+protected:
+
+    // -- Members
+    // None
+
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
-
+    // No copy allowed
     MARSStyle(const MARSStyle&);
     MARSStyle& operator=(const MARSStyle&);
 
-// -- Members
+    // -- Members
+    // None
 
-// -- Methods
+    // -- Methods
+    // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
+    virtual void shTruncate(action::ActionPlan&) const;
     virtual void sh2grid(action::ActionPlan&) const;
-    virtual void sh2sh(action::ActionPlan&) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     // friend std::ostream& operator<<(std::ostream& s, const MARSStyle& p)
     // { p.print(s); return s; }
@@ -106,5 +106,7 @@ class MARSStyle : public ECMWFStyle {
 
 }  // namespace style
 }  // namespace mir
+
+
 #endif
 

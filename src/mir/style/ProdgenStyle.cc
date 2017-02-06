@@ -77,7 +77,7 @@ void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
 }
 
 
-void ProdgenStyle::sh2sh(action::ActionPlan&) const {
+void ProdgenStyle::shTruncate(action::ActionPlan&) const {
     ASSERT(!parametrisation_.has("user.truncation"));
 }
 

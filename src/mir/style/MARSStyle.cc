@@ -41,7 +41,7 @@ void MARSStyle::print(std::ostream &out) const {
 }
 
 
-void MARSStyle::sh2sh(action::ActionPlan& plan) const {
+void MARSStyle::shTruncate(action::ActionPlan& plan) const {
     if (parametrisation_.has("user.truncation")) {
         plan.add("transform.sh-truncate");
     }
