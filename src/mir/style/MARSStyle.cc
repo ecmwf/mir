@@ -105,7 +105,7 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
             parametrisation_.get("wind", wind);
 
             if (wind || vod2uv) {
-                plan.add("filter.adjust-winds");
+                plan.add("filter.adjust-winds-directions");
                 selectWindComponents(plan);
             }
         }
