@@ -12,15 +12,16 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/style/ProdgenStyle.h"
 
 #include <iostream>
-
-#include "mir/param/MIRParametrisation.h"
-#include "mir/action/plan/ActionPlan.h"
-#include "mir/style/AutoGaussian.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/action/plan/ActionPlan.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/style/AutoGaussian.h"
 #include "mir/style/ProdgenGrid.h"
+
 
 namespace mir {
 namespace style {
@@ -39,6 +40,7 @@ ProdgenStyle::~ProdgenStyle() {
 void ProdgenStyle::print(std::ostream &out) const {
     out << "ProdgenStyle[]";
 }
+
 
 void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
     bool autoresol = false;
@@ -75,17 +77,10 @@ void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
 }
 
 
-void ProdgenStyle::sh2sh(action::ActionPlan& plan) const {
-
-    ASSERT (!parametrisation_.has("user.truncation")) ;
-
-    bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
-
-    if (vod2uv) {
-        plan.add("transform.vod2uv");
-    }
+void ProdgenStyle::sh2sh(action::ActionPlan&) const {
+    ASSERT(!parametrisation_.has("user.truncation"));
 }
+
 
 void ProdgenStyle::grid2grid(action::ActionPlan& plan) const {
 
@@ -102,8 +97,9 @@ void ProdgenStyle::grid2grid(action::ActionPlan& plan) const {
              new ProdgenGrid(parametrisation_));
 }
 
+
 namespace {
-static MIRStyleBuilder<ProdgenStyle> prodgen("prodgen");
+static MIRStyleBuilder<ProdgenStyle> __style("prodgen");
 }
 
 

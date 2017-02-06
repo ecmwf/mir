@@ -12,14 +12,15 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/style/DisseminationStyle.h"
 
 #include <iostream>
-
-#include "mir/param/MIRParametrisation.h"
-#include "mir/action/plan/ActionPlan.h"
-#include "mir/style/AutoGaussian.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/action/plan/ActionPlan.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/style/AutoGaussian.h"
+
 
 namespace mir {
 namespace style {
@@ -38,6 +39,7 @@ DisseminationStyle::~DisseminationStyle() {
 void DisseminationStyle::print(std::ostream &out) const {
     out << "DisseminationStyle[]";
 }
+
 
 void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
     bool autoresol = false;
@@ -58,24 +60,12 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
 
 
 void DisseminationStyle::sh2sh(action::ActionPlan& plan) const {
-
-    // if (parametrisation_.has("user.truncation")) {
-    //     plan.add("transform.sh-truncate");
-    // }
-
-    bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
-
-    if (vod2uv) {
-        plan.add("transform.vod2uv");
-    }
+    // do nothing
 }
 
 
-
-// register MARS-specialized style
 namespace {
-static MIRStyleBuilder<DisseminationStyle> prodgen("dissemination");
+static MIRStyleBuilder<DisseminationStyle> __style("dissemination");
 }
 
 
