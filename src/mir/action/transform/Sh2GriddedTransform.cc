@@ -180,56 +180,22 @@ static void transform(
     eckit::Timer timer("SH2GRID");
 
 
+    // Transform sp to gp fields =====================================
+
     TransCache &tc = trans_handles[key];
     struct Trans_t &trans = tc.trans_;
 
-    // Initialise grid ===============================================
-
-
-
     ASSERT(trans.myproc == 1);
-
     ASSERT(trans.nspec2g == (int) input.size());
 
-    int number_of_fields = 1; // number of fields
-
-    std::vector<int> nfrom(number_of_fields, 1); // processors responsible for distributing each field
-    std::vector<double> rspec(number_of_fields * trans.nspec2 );
-
-    //==============================================================================
-
-    struct DistSpec_t distspec = new_distspec(&trans);
-    distspec.nfrom  = &nfrom[0];
-    distspec.rspecg = &input[0];
-    distspec.rspec  = &rspec[0];
-    distspec.nfld   = number_of_fields;
-    ASSERT(trans_distspec(&distspec) == 0);
-
-
-    // Transform sp to gp fields
-
-    std::vector<double> rgp (number_of_fields * trans.ngptot);
+    int number_of_fields = 1;
+    output.resize(size_t(number_of_fields * trans.ngptotg));
 
     struct InvTrans_t invtrans = new_invtrans(&trans);
     invtrans.nscalar   = number_of_fields;
-    invtrans.rspscalar = &rspec[0];
-    invtrans.rgp       = &rgp[0];
+    invtrans.rspscalar = input.data();
+    invtrans.rgp       = output.data();
     ASSERT(trans_invtrans(&invtrans) == 0);
-
-
-    // Gather all gridpoint fields
-
-    output.resize(number_of_fields * trans.ngptotg);
-
-    std::vector<int> nto (number_of_fields, 1);
-
-
-    struct GathGrid_t gathgrid = new_gathgrid(&trans);
-    gathgrid.rgp  = &rgp[0];
-    gathgrid.rgpg = &output[0];
-    gathgrid.nfld = number_of_fields;
-    gathgrid.nto  = &nto[0];
-    ASSERT(trans_gathgrid(&gathgrid) == 0);
 
 
     // trans_delete(&trans);
