@@ -31,6 +31,7 @@
 #include "atlas/grid/grids.h"
 #include "atlas/grid/lonlat/RegularLonLat.h"
 #include "mir/action/context/Context.h"
+#include "mir/action/transform/TransCache.h"
 #include "mir/action/transform/TransInitor.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/caching/LegendreCache.h"
@@ -52,41 +53,6 @@ namespace transform {
 
 #ifdef ATLAS_HAVE_TRANS
 namespace {
-
-
-struct TransCache {
-
-    bool inited_;
-    struct Trans_t trans_;
-    mir::caching::legendre::LegendreLoader *loader_;
-
-    TransCache():
-        inited_(false),
-        loader_(0) {}
-
-    void print(std::ostream& s) const {
-        s << "TransCache[";
-        if (loader_) s << *loader_;
-        s << "]";
-    }
-
-    friend std::ostream& operator<<(std::ostream& out, const TransCache& e) {
-        e.print(out);
-        return out;
-    }
-
-    ~TransCache() {
-        if (inited_) {
-            std::cout << "Delete " << *this << std::endl;
-            trans_delete(&trans_);
-        }
-        else {
-            std::cout << "Not Deleting " << *this << std::endl;
-
-        }
-        delete loader_;
-    }
-};
 
 
 static eckit::Mutex amutex;
@@ -278,14 +244,11 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
                       const std::vector<double> &input, std::vector<double> &output,
                       const atlas::grid::Grid &grid,
                       context::Context& ctx) {
-#ifdef ATLAS_HAVE_TRANS
-
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
 
     TransInitor::instance(); // Will init trans if needed
 
     std::ostringstream os;
-
     os << "T" << truncation << ":" << grid.uniqueId();
     std::string key(os.str());
 
@@ -296,11 +259,6 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
         trans_handles.erase(key);
         throw;
     }
-
-#else
-    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
-#endif
 }
 
 
@@ -315,17 +273,12 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 
 void Sh2GriddedTransform::execute(context::Context & ctx) const {
     // ASSERT(field.dimensions() == 1); // For now
-#ifdef ATLAS_HAVE_TRANS
+
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<TransCache> use(trans_handles, ctx.statistics().transHandleCache_);
-#endif
 
     data::MIRField& field = ctx.field();
-
-
     repres::RepresentationHandle out(outputRepresentation());
-
-    // std::cout << *out << std::endl;
 
     // TODO: Transform all the fields together
     for (size_t i = 0; i < field.dimensions(); i++) {

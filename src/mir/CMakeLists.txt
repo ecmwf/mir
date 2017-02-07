@@ -114,6 +114,8 @@ list(
     action/transform/Sh2RegularLL.h
     action/transform/ShTruncate.cc
     action/transform/ShTruncate.h
+    action/transform/TransCache.cc
+    action/transform/TransCache.h
     action/transform/TransInitor.cc
     action/transform/TransInitor.h
     action/transform/Vod2uv.cc

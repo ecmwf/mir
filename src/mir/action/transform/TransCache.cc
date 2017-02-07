@@ -11,14 +11,9 @@
 /// @date Jan 2017
 
 
-#include "mir/action/transform/TransInitor.h"
+#include "mir/action/transform/TransCache.h"
 
 #include "eckit/exception/Exceptions.h"
-#include "atlas/internals/atlas_config.h"
-
-#ifdef ATLAS_HAVE_TRANS
-#include "transi/trans.h"
-#endif
 
 
 namespace mir {
@@ -26,10 +21,10 @@ namespace action {
 namespace transform {
 
 
-const TransInitor& TransInitor::instance() {
+TransCache::TransCache() :
+    inited_(false),
+    loader_(0) {
 #ifdef ATLAS_HAVE_TRANS
-    static TransInitor initor;
-    return initor;
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
                             "Please recompile ATLAS with TRANS support enabled.");
@@ -37,10 +32,16 @@ const TransInitor& TransInitor::instance() {
 }
 
 
-TransInitor::TransInitor() {
+TransCache::~TransCache() {
 #ifdef ATLAS_HAVE_TRANS
-    trans_use_mpi(false); // So that even if MPI is enabled, we don't use it.
-    trans_init();
+        if (inited_) {
+            std::cout << "Delete " << *this << std::endl;
+            trans_delete(&trans_);
+        }
+        else {
+            std::cout << "Not Deleting " << *this << std::endl;
+        }
+        delete loader_;
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
                             "Please recompile ATLAS with TRANS support enabled.");
@@ -48,14 +49,10 @@ TransInitor::TransInitor() {
 }
 
 
-TransInitor::~TransInitor() {
-#ifdef ATLAS_HAVE_TRANS
-    trans_use_mpi(false); // So that even if MPI is enabled, we don't use it.
-    trans_finalize();
-#else
-    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
-#endif
+void TransCache::print(std::ostream& s) const {
+    s << "TransCache[";
+    if (loader_) s << *loader_;
+    s << "]";
 }
 
 
