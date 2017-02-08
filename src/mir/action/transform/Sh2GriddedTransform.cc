@@ -17,6 +17,7 @@
 
 #include "mir/action/transform/Sh2GriddedTransform.h"
 
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include "eckit/exception/Exceptions.h"
@@ -180,31 +181,56 @@ static void transform(
 
 
     // Transform sp to gp fields =====================================
-    // TODO: Transform all the fields together
 
     TransCache& tc = trans_handles[key];
     struct Trans_t& trans = tc.trans_;
 
-    ASSERT(field.dimensions() > 0);
+    size_t number_of_fields = field.dimensions();
+    ASSERT(number_of_fields > 0);
     ASSERT(trans.myproc == 1);
     ASSERT(trans.nspec2g == int(field.values(0).size()));
 
-    int number_of_fields = 1;
-    for (size_t i = 0; i < field.dimensions(); i++) {
-        struct InvTrans_t invtrans = new_invtrans(&trans);
 
-        const std::vector<double>& input = field.values(i);
-        ASSERT(trans.nspec2g == int(input.size()));
+    // set input & output working area (avoid copies if transforming one field only)
+    std::vector<double> output(number_of_fields * size_t(trans.ngptotg));
+    std::vector<double> input;
+    if (number_of_fields > 1) {
+        long size = long(field.values(0).size());
+        input.resize(number_of_fields * size_t(size));
 
-        std::vector<double> output(size_t(number_of_fields * trans.ngptotg));
+        // spectral coefficients are "interlaced"
+        for (size_t i = 0; i < number_of_fields; i++) {
+            const std::vector<double>& values = field.values(i);
+            ASSERT(int(values.size()) == trans.nspec2g);
 
-        invtrans.nscalar   = number_of_fields;
-        invtrans.rspscalar = input.data();
-        invtrans.rgp       = output.data();
-        ASSERT(trans_invtrans(&invtrans) == 0);
-
-        field.update(output, i);
+            for (size_t j = 0; j < size_t(size); ++j) {
+                input[ j*number_of_fields + i ] = values[j];
+            }
+        }
     }
+
+
+    // transform
+    struct InvTrans_t invtrans = new_invtrans(&trans);
+    invtrans.nscalar   = int(number_of_fields);
+    invtrans.rspscalar = number_of_fields > 1? input.data() : field.values(0).data();
+    invtrans.rgp       = output.data();
+    ASSERT(trans_invtrans(&invtrans) == 0);
+
+
+    // set field values (again, avoid copies for one field only)
+    if (number_of_fields == 1) {
+        field.update(output, 0);
+    } else {
+        std::vector<double>::const_iterator here = output.begin();
+        for (size_t i = 0; i < number_of_fields; i++) {
+            std::vector<double> output_field(here, here + trans.ngptotg);
+
+            field.update(output_field, i);
+            here += trans.ngptotg;
+        }
+    }
+
 
     // trans_delete(&trans);
 }
