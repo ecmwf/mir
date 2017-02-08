@@ -129,7 +129,7 @@ void Vod2uv::execute(context::Context & ctx) const {
 
 
 namespace {
-static ActionBuilder< Vod2uv > transform("transform.vod2uv");
+static ActionBuilder< Vod2uv > transform("transform.vod2UV");
 }
 
 

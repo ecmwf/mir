@@ -192,9 +192,13 @@ static void transform(
 
 
     // set input & output working area (avoid copies if transforming one field only)
+    bool vod2uv = false;
+    parametrisation.get("vod2uv", vod2uv);
+    ASSERT(!vod2uv || number_of_fields == 2);
+
     std::vector<double> output(number_of_fields * size_t(trans.ngptotg));
     std::vector<double> input;
-    if (number_of_fields > 1) {
+    if (!vod2uv && number_of_fields > 1) {
         long size = long(field.values(0).size());
         input.resize(number_of_fields * size_t(size));
 
@@ -212,9 +216,15 @@ static void transform(
 
     // transform
     struct InvTrans_t invtrans = new_invtrans(&trans);
-    invtrans.nscalar   = int(number_of_fields);
-    invtrans.rspscalar = number_of_fields > 1? input.data() : field.values(0).data();
-    invtrans.rgp       = output.data();
+    invtrans.rgp = output.data();
+    if (vod2uv) {
+        invtrans.nvordiv = 1;
+        invtrans.rspvor  = field.values(0).data();
+        invtrans.rspdiv  = field.values(1).data();
+    } else {
+        invtrans.nscalar   = int(number_of_fields);
+        invtrans.rspscalar = number_of_fields > 1? input.data() : field.values(0).data();
+    }
     ASSERT(trans_invtrans(&invtrans) == 0);
 
 
@@ -228,6 +238,16 @@ static void transform(
 
             field.update(output_field, i);
             here += trans.ngptotg;
+        }
+
+        if (vod2uv) {
+            long id_u = 131;
+            long id_v = 132;
+            parametrisation.get("transform.vod2uv.u", id_u);
+            parametrisation.get("transform.vod2uv.v", id_v);
+
+            field.metadata(0, "paramId", id_u);
+            field.metadata(1, "paramId", id_v);
         }
     }
 

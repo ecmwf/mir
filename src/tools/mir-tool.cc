@@ -64,7 +64,7 @@ public:
         options_.push_back(new Separator("Transform"));
         options_.push_back(new SimpleOption<bool>("autoresol", "Turn on automatic truncation"));
         options_.push_back(new SimpleOption<size_t>("truncation", "Truncation input field"));
-        options_.push_back(new SimpleOption<bool>("vod2uv", "Input is Vorticity and Divergence, conversion to U/V requested"));
+        options_.push_back(new SimpleOption<bool>("vod2uv", "Input is Vorticity and Divergence, conversion to u/v or U/V requested"));
 
         //==============================================
         options_.push_back(new Separator("Interpolation"));

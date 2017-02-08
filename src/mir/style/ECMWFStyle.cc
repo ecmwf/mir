@@ -97,12 +97,12 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
     if (field_spectral) {
         shTruncate(plan);
 
-        bool vod2uv = false;
-        parametrisation_.get("vod2uv", vod2uv);
+//        bool vod2uv = false;
+//        parametrisation_.get("vod2uv", vod2uv);
 
-        if (vod2uv) {
-            plan.add("transform.vod2uv");
-        }
+//        if (vod2uv) {
+//            plan.add("transform.vod2UV");
+//        }
 
         if (parametrisation_.get("user.formula.spectral", formula)) {
             std::string metadata;
@@ -122,9 +122,9 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
                 plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
             }
 
-            if (vod2uv) {
-                plan.add("filter.adjust-winds-scale-cos-latitude");
-            }
+//            if (vod2uv) {
+//                plan.add("filter.adjust-winds-scale-cos-latitude");
+//            }
 
         } else {
             // "user wants spectral"
