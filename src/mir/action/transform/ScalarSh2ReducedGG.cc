@@ -27,7 +27,7 @@ namespace transform {
 
 
 ScalarSh2ReducedGG::ScalarSh2ReducedGG(const param::MIRParametrisation& parametrisation):
-    Sh2Gridded(parametrisation) {
+    ScalarSh2Gridded(parametrisation) {
 
     ASSERT(parametrisation_.get("user.reduced", N_));
 

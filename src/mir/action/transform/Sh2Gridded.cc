@@ -119,74 +119,6 @@ static void createCoefficients(const eckit::PathName& path,
 }  // (anonymous namespace)
 
 
-void Sh2Gridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
-    size_t number_of_fields = field.dimensions();
-    ASSERT(number_of_fields > 0);
-    ASSERT(trans.myproc == 1);
-    ASSERT(trans.nspec2g == int(field.values(0).size()));
-
-
-    // set input & output working area (avoid copies if transforming one field only)
-    bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
-    ASSERT(!vod2uv || number_of_fields == 2);
-
-    std::vector<double> output(number_of_fields * size_t(trans.ngptotg));
-    std::vector<double> input;
-    if (!vod2uv && number_of_fields > 1) {
-        long size = long(field.values(0).size());
-        input.resize(number_of_fields * size_t(size));
-
-        // spectral coefficients are "interlaced"
-        for (size_t i = 0; i < number_of_fields; i++) {
-            const std::vector<double>& values = field.values(i);
-            ASSERT(int(values.size()) == trans.nspec2g);
-
-            for (size_t j = 0; j < size_t(size); ++j) {
-                input[ j*number_of_fields + i ] = values[j];
-            }
-        }
-    }
-
-
-    // transform
-    struct InvTrans_t invtrans = new_invtrans(&trans);
-    invtrans.rgp = output.data();
-    if (vod2uv) {
-        invtrans.nvordiv = 1;
-        invtrans.rspvor  = field.values(0).data();
-        invtrans.rspdiv  = field.values(1).data();
-    } else {
-        invtrans.nscalar   = int(number_of_fields);
-        invtrans.rspscalar = number_of_fields > 1? input.data() : field.values(0).data();
-    }
-    ASSERT(trans_invtrans(&invtrans) == 0);
-
-
-    // set field values (again, avoid copies for one field only)
-    if (number_of_fields == 1) {
-        field.update(output, 0);
-    } else {
-        std::vector<double>::const_iterator here = output.begin();
-        for (size_t i = 0; i < number_of_fields; i++) {
-            std::vector<double> output_field(here, here + trans.ngptotg);
-
-            field.update(output_field, i);
-            here += trans.ngptotg;
-        }
-
-        if (vod2uv) {
-            long id_u = 131;
-            long id_v = 132;
-            parametrisation_.get("transform.vod2uv.u", id_u);
-            parametrisation_.get("transform.vod2uv.v", id_v);
-
-            field.metadata(0, "paramId", id_u);
-            field.metadata(1, "paramId", id_v);
-        }
-    }
-}
-
 void Sh2Gridded::transform(
         data::MIRField& field,
         const atlas::grid::Grid& grid,
@@ -213,8 +145,8 @@ void Sh2Gridded::transform(
                 }
             public:
                 LegendreCacheCreator(size_t truncation,
-                                     const atlas::grid::Grid & grid,
-                                     context::Context & ctx):
+                                     const atlas::grid::Grid& grid,
+                                     context::Context& ctx):
                     truncation_(truncation), grid_(grid), ctx_(ctx) {}
             };
 

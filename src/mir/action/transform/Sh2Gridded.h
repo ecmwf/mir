@@ -56,7 +56,7 @@ public:
     Sh2Gridded(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~Sh2Gridded(); // Change to virtual if base class
+    virtual ~Sh2Gridded();
 
     // -- Convertors
     // None
@@ -82,7 +82,7 @@ protected:
     // None
 
     // -- Methods
-    void sh2grid(struct Trans_t& trans, data::MIRField& field) const;
+    virtual void sh2grid(struct Trans_t& trans, data::MIRField& field) const = 0;
 
     // -- Overridden methods
     // None

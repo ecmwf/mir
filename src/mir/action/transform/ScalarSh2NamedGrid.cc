@@ -26,7 +26,7 @@ namespace transform {
 
 
 ScalarSh2NamedGrid::ScalarSh2NamedGrid(const param::MIRParametrisation& parametrisation):
-    Sh2Gridded(parametrisation) {
+    ScalarSh2Gridded(parametrisation) {
 
     ASSERT(parametrisation_.get("user.gridname", gridname_));
 

@@ -16,7 +16,7 @@
 #ifndef mir_action_transform_ScalarSh2RegularLL_h
 #define mir_action_transform_ScalarSh2RegularLL_h
 
-#include "mir/action/transform/Sh2Gridded.h"
+#include "mir/action/transform/ScalarSh2Gridded.h"
 #include "mir/util/Increments.h"
 
 
@@ -25,18 +25,16 @@ namespace action {
 namespace transform {
 
 
-class ScalarSh2RegularLL : public Sh2Gridded {
+class ScalarSh2RegularLL : public ScalarSh2Gridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-
     ScalarSh2RegularLL(const param::MIRParametrisation&);
 
     // -- Destructor
-
     virtual ~ScalarSh2RegularLL(); // Change to virtual if base class
 
     // -- Convertors
@@ -63,7 +61,6 @@ protected:
     // None
 
     // -- Methods
-
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -78,23 +75,18 @@ protected:
 private:
 
     // No copy allowed
-
     ScalarSh2RegularLL(const ScalarSh2RegularLL&);
     ScalarSh2RegularLL& operator=(const ScalarSh2RegularLL&);
 
     // -- Members
-
     util::Increments grid_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
     virtual bool sameAs(const Action& other) const;
-
-    // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    virtual const repres::Representation* outputRepresentation() const;  // from Sh2Gridded
 
     // -- Class members
     // None

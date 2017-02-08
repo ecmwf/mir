@@ -8,15 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#ifndef mir_action_transform_ScalarSh2Octahedral_h
-#define mir_action_transform_ScalarSh2Octahedral_h
+#ifndef mir_action_transform_ScalarSh2Gridded_h
+#define mir_action_transform_ScalarSh2Gridded_h
 
-#include "mir/action/transform/ScalarSh2Gridded.h"
+#include "mir/action/transform/Sh2Gridded.h"
 
 
 namespace mir {
@@ -24,17 +22,17 @@ namespace action {
 namespace transform {
 
 
-class ScalarSh2Octahedral : public ScalarSh2Gridded {
+class ScalarSh2Gridded : public Sh2Gridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    ScalarSh2Octahedral(const param::MIRParametrisation&);
+    ScalarSh2Gridded(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~ScalarSh2Octahedral(); // Change to virtual if base class
+    virtual ~ScalarSh2Gridded();
 
     // -- Convertors
     // None
@@ -60,7 +58,7 @@ protected:
     // None
 
     // -- Methods
-    void print(std::ostream&) const; // Change to virtual if base class
+    void sh2grid(struct Trans_t&, data::MIRField&) const;
 
     // -- Overridden methods
     // None
@@ -73,19 +71,14 @@ protected:
 
 private:
 
-    // No copy allowed
-    ScalarSh2Octahedral(const ScalarSh2Octahedral&);
-    ScalarSh2Octahedral& operator=(const ScalarSh2Octahedral&);
-
     // -- Members
-    size_t N_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
-    virtual bool sameAs(const Action& other) const;
-    virtual const repres::Representation* outputRepresentation() const;  // from Sh2Gridded
+    // None
 
     // -- Class members
     // None
@@ -105,4 +98,3 @@ private:
 
 
 #endif
-

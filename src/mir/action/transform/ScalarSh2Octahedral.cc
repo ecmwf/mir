@@ -27,7 +27,7 @@ namespace transform {
 
 
 ScalarSh2Octahedral::ScalarSh2Octahedral(const param::MIRParametrisation& parametrisation):
-    Sh2Gridded(parametrisation) {
+    ScalarSh2Gridded(parametrisation) {
 
     ASSERT(parametrisation_.get("user.octahedral", N_));
 

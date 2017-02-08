@@ -27,7 +27,7 @@ namespace transform {
 
 
 ScalarSh2RegularGG::ScalarSh2RegularGG(const param::MIRParametrisation& parametrisation):
-    Sh2Gridded(parametrisation) {
+    ScalarSh2Gridded(parametrisation) {
     ASSERT(parametrisation_.get("user.regular", N_));
 }
 

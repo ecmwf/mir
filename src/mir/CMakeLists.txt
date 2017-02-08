@@ -100,8 +100,8 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/transform/Sh2Gridded.cc
-    action/transform/Sh2Gridded.h
+    action/transform/ScalarSh2Gridded.cc
+    action/transform/ScalarSh2Gridded.h
     action/transform/ScalarSh2NamedGrid.cc
     action/transform/ScalarSh2NamedGrid.h
     action/transform/ScalarSh2Octahedral.cc
@@ -112,6 +112,8 @@ list(
     action/transform/ScalarSh2RegularGG.h
     action/transform/ScalarSh2RegularLL.cc
     action/transform/ScalarSh2RegularLL.h
+    action/transform/Sh2Gridded.cc
+    action/transform/Sh2Gridded.h
     action/transform/ShTruncate.cc
     action/transform/ShTruncate.h
     action/transform/TransCache.cc
@@ -120,6 +122,8 @@ list(
     action/transform/TransInitor.h
     action/transform/Vod2uv.cc
     action/transform/Vod2uv.h
+    action/transform/VodSh2uvGridded.cc
+    action/transform/VodSh2uvGridded.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc

@@ -16,7 +16,7 @@
 #ifndef mir_action_transform_ScalarSh2ReducedGG_h
 #define mir_action_transform_ScalarSh2ReducedGG_h
 
-#include "mir/action/transform/Sh2Gridded.h"
+#include "mir/action/transform/ScalarSh2Gridded.h"
 
 
 namespace mir {
@@ -24,18 +24,16 @@ namespace action {
 namespace transform {
 
 
-class ScalarSh2ReducedGG : public Sh2Gridded {
+class ScalarSh2ReducedGG : public ScalarSh2Gridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-
     ScalarSh2ReducedGG(const param::MIRParametrisation&);
 
     // -- Destructor
-
     virtual ~ScalarSh2ReducedGG(); // Change to virtual if base class
 
     // -- Convertors
@@ -62,7 +60,6 @@ protected:
     // None
 
     // -- Methods
-
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -77,7 +74,6 @@ protected:
 private:
 
     // No copy allowed
-
     ScalarSh2ReducedGG(const ScalarSh2ReducedGG&);
     ScalarSh2ReducedGG& operator=(const ScalarSh2ReducedGG&);
 
@@ -88,11 +84,8 @@ private:
     // None
 
     // -- Overridden methods
-
     virtual bool sameAs(const Action& other) const;
-
-    // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    virtual const repres::Representation* outputRepresentation() const;  // from Sh2Gridded
 
     // -- Class members
     // None
@@ -101,9 +94,7 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Sh2ReducedGG& p)
-    //	{ p.print(s); return s; }
+    // None
 
 };
 

@@ -27,7 +27,7 @@ namespace transform {
 
 
 ScalarSh2RegularLL::ScalarSh2RegularLL(const param::MIRParametrisation &parametrisation):
-    Sh2Gridded(parametrisation) {
+    ScalarSh2Gridded(parametrisation) {
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
