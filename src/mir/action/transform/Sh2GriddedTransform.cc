@@ -51,8 +51,8 @@ namespace mir {
 namespace action {
 namespace transform {
 
-#ifdef ATLAS_HAVE_TRANS
 namespace {
+#ifdef ATLAS_HAVE_TRANS
 
 
 static eckit::Mutex amutex;
@@ -112,13 +112,12 @@ static void createCoefficients(const eckit::PathName& path,
 }
 
 static void transform(
-    const std::string& key,
-    const param::MIRParametrisation &parametrisation,
-    size_t truncation,
-    const std::vector<double> &input, std::vector<double> &output,
-    const atlas::grid::Grid &grid,
-    context::Context& ctx) {
-
+        const std::string& key,
+        const param::MIRParametrisation& parametrisation,
+        size_t truncation,
+        data::MIRField& field,
+        const atlas::grid::Grid& grid,
+        context::Context& ctx) {
 
     if (trans_handles.find(key) == trans_handles.end()) {
 
@@ -181,51 +180,62 @@ static void transform(
 
 
     // Transform sp to gp fields =====================================
+    // TODO: Transform all the fields together
 
-    TransCache &tc = trans_handles[key];
-    struct Trans_t &trans = tc.trans_;
+    TransCache& tc = trans_handles[key];
+    struct Trans_t& trans = tc.trans_;
 
+    ASSERT(field.dimensions() > 0);
     ASSERT(trans.myproc == 1);
-    ASSERT(trans.nspec2g == (int) input.size());
+    ASSERT(trans.nspec2g == int(field.values(0).size()));
 
     int number_of_fields = 1;
-    output.resize(size_t(number_of_fields * trans.ngptotg));
+    for (size_t i = 0; i < field.dimensions(); i++) {
+        struct InvTrans_t invtrans = new_invtrans(&trans);
 
-    struct InvTrans_t invtrans = new_invtrans(&trans);
-    invtrans.nscalar   = number_of_fields;
-    invtrans.rspscalar = input.data();
-    invtrans.rgp       = output.data();
-    ASSERT(trans_invtrans(&invtrans) == 0);
+        const std::vector<double>& input = field.values(i);
+        ASSERT(trans.nspec2g == int(input.size()));
 
+        std::vector<double> output(size_t(number_of_fields * trans.ngptotg));
+
+        invtrans.nscalar   = number_of_fields;
+        invtrans.rspscalar = input.data();
+        invtrans.rgp       = output.data();
+        ASSERT(trans_invtrans(&invtrans) == 0);
+
+        field.update(output, i);
+    }
 
     // trans_delete(&trans);
 }
-
-
-}  // (anonymous namespace)
 #endif
 
 
-static void transform(const param::MIRParametrisation &parametrisation, size_t truncation,
-                      const std::vector<double> &input, std::vector<double> &output,
-                      const atlas::grid::Grid &grid,
-                      context::Context& ctx) {
+static void transform(
+        const param::MIRParametrisation& parametrisation,
+        data::MIRField& field,
+        const atlas::grid::Grid& grid,
+        context::Context& ctx ) {
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
 
     TransInitor::instance(); // Will init trans if needed
 
+    size_t truncation = field.representation()->truncation();
     std::ostringstream os;
     os << "T" << truncation << ":" << grid.uniqueId();
     std::string key(os.str());
 
     try {
-        transform(key, parametrisation, truncation, input, output, grid, ctx);
+        transform(key, parametrisation, truncation, field, grid, ctx);
     } catch (std::exception& e) {
         eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
         trans_handles.erase(key);
         throw;
     }
 }
+
+
+}  // (anonymous namespace)
 
 
 Sh2GriddedTransform::Sh2GriddedTransform(const param::MIRParametrisation &parametrisation):
@@ -237,34 +247,17 @@ Sh2GriddedTransform::~Sh2GriddedTransform() {
 }
 
 
-void Sh2GriddedTransform::execute(context::Context & ctx) const {
-    // ASSERT(field.dimensions() == 1); // For now
+void Sh2GriddedTransform::execute(context::Context& ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<TransCache> use(trans_handles, ctx.statistics().transHandleCache_);
 
-    data::MIRField& field = ctx.field();
     repres::RepresentationHandle out(outputRepresentation());
+    eckit::ScopedPtr<atlas::grid::Grid> grid(out->atlasGrid());
 
-    // TODO: Transform all the fields together
-    for (size_t i = 0; i < field.dimensions(); i++) {
+    transform(parametrisation_, ctx.field(), *grid, ctx);
 
-        const std::vector<double> &values = field.values(i);
-        std::vector<double> result;
-
-        eckit::ScopedPtr<atlas::grid::Grid> grid(out->atlasGrid());
-        transform(parametrisation_,
-                  field.representation()->truncation(),
-                  values,
-                  result,
-                  *grid,
-                  ctx);
-
-        field.update(result, i);
-
-    }
-
-    field.representation(out);
+    ctx.field().representation(out);
 }
 
 
