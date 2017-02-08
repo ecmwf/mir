@@ -16,7 +16,14 @@
 #ifndef mir_action_transform_Sh2Gridded_h
 #define mir_action_transform_Sh2Gridded_h
 
+#include "atlas/internals/atlas_config.h"
 #include "mir/action/plan/Action.h"
+
+#ifdef ATLAS_HAVE_TRANS
+#include "transi/trans.h"
+#else
+struct Trans_t {};
+#endif
 
 
 namespace atlas {
@@ -75,7 +82,7 @@ protected:
     // None
 
     // -- Methods
-    // None
+    void sh2grid(struct Trans_t& trans, data::MIRField& field) const;
 
     // -- Overridden methods
     // None
@@ -97,8 +104,9 @@ private:
 
     // -- Methods
     virtual const repres::Representation* outputRepresentation() const = 0;
-    static void transform(const std::string& key, const param::MIRParametrisation& parametrisation, size_t truncation, data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx);
-    static void transform(const param::MIRParametrisation& parametrisation, data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx);
+
+    void transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx, const std::string& key, size_t truncation) const;
+    void transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx) const;
 
     // -- Overridden methods
     virtual void execute(context::Context&) const;

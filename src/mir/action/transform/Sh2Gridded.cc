@@ -40,10 +40,6 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
-#ifdef ATLAS_HAVE_TRANS
-#include "transi/trans.h"
-#endif
-
 
 namespace mir {
 namespace action {
@@ -123,79 +119,7 @@ static void createCoefficients(const eckit::PathName& path,
 }  // (anonymous namespace)
 
 
-void Sh2Gridded::transform(
-        const std::string& key,
-        const param::MIRParametrisation& parametrisation,
-        size_t truncation,
-        data::MIRField& field,
-        const atlas::grid::Grid& grid,
-        context::Context& ctx) {
-#ifdef ATLAS_HAVE_TRANS
-    if (trans_handles.find(key) == trans_handles.end()) {
-
-        eckit::PathName path;
-
-        {   // Block for timers
-
-            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
-
-            class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
-
-                size_t truncation_;
-                const atlas::grid::Grid & grid_;
-                context::Context & ctx_;
-
-                virtual void create(const eckit::PathName& path, int& ignore) {
-                    createCoefficients(path, truncation_, grid_, ctx_);
-                }
-            public:
-                LegendreCacheCreator(size_t truncation,
-                                     const atlas::grid::Grid & grid,
-                                     context::Context & ctx):
-                    truncation_(truncation), grid_(grid), ctx_(ctx) {}
-            };
-
-            static caching::LegendreCache cache;
-            LegendreCacheCreator creator(truncation, grid, ctx);
-
-            int dummy = 0;
-            path = cache.getOrCreate(key, creator, dummy);
-        }
-
-        {   // Block for timers
-
-            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
-
-            eckit::Timer timer("Loading coefficients");
-
-            TransCache &tc = trans_handles[key];
-
-            struct Trans_t &trans = tc.trans_;
-            fillTrans(trans, truncation, grid);
-
-            tc.inited_ = true;
-            tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation, path);
-            // std::cout << "LegendreLoader " << *tc.loader_ << std::endl;
-
-            ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
-
-            ASSERT(trans_setup(&trans) == 0);
-        }
-
-        // trans_handles.footprint(key, after - before);
-
-
-    }
-
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
-    eckit::Timer timer("SH2GRID");
-
-
-    // Transform sp to gp fields =====================================
-
-    TransCache& tc = trans_handles[key];
-    struct Trans_t& trans = tc.trans_;
-
+void Sh2Gridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields > 0);
     ASSERT(trans.myproc == 1);
@@ -204,7 +128,7 @@ void Sh2Gridded::transform(
 
     // set input & output working area (avoid copies if transforming one field only)
     bool vod2uv = false;
-    parametrisation.get("vod2uv", vod2uv);
+    parametrisation_.get("vod2uv", vod2uv);
     ASSERT(!vod2uv || number_of_fields == 2);
 
     std::vector<double> output(number_of_fields * size_t(trans.ngptotg));
@@ -254,13 +178,88 @@ void Sh2Gridded::transform(
         if (vod2uv) {
             long id_u = 131;
             long id_v = 132;
-            parametrisation.get("transform.vod2uv.u", id_u);
-            parametrisation.get("transform.vod2uv.v", id_v);
+            parametrisation_.get("transform.vod2uv.u", id_u);
+            parametrisation_.get("transform.vod2uv.v", id_v);
 
             field.metadata(0, "paramId", id_u);
             field.metadata(1, "paramId", id_v);
         }
     }
+}
+
+void Sh2Gridded::transform(
+        data::MIRField& field,
+        const atlas::grid::Grid& grid,
+        context::Context& ctx,
+        const std::string& key,
+        size_t truncation ) const {
+#ifdef ATLAS_HAVE_TRANS
+    if (trans_handles.find(key) == trans_handles.end()) {
+
+        eckit::PathName path;
+
+        {   // Block for timers
+
+            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
+
+            class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
+
+                size_t truncation_;
+                const atlas::grid::Grid & grid_;
+                context::Context & ctx_;
+
+                virtual void create(const eckit::PathName& path, int& ignore) {
+                    createCoefficients(path, truncation_, grid_, ctx_);
+                }
+            public:
+                LegendreCacheCreator(size_t truncation,
+                                     const atlas::grid::Grid & grid,
+                                     context::Context & ctx):
+                    truncation_(truncation), grid_(grid), ctx_(ctx) {}
+            };
+
+            static caching::LegendreCache cache;
+            LegendreCacheCreator creator(truncation, grid, ctx);
+
+            int dummy = 0;
+            path = cache.getOrCreate(key, creator, dummy);
+        }
+
+        {   // Block for timers
+
+            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
+
+            eckit::Timer timer("Loading coefficients");
+
+            TransCache &tc = trans_handles[key];
+
+            struct Trans_t &trans = tc.trans_;
+            fillTrans(trans, truncation, grid);
+
+            tc.inited_ = true;
+            tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation_, path);
+            // std::cout << "LegendreLoader " << *tc.loader_ << std::endl;
+
+            ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
+
+            ASSERT(trans_setup(&trans) == 0);
+        }
+
+        // trans_handles.footprint(key, after - before);
+
+
+    }
+
+
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
+    eckit::Timer timer("SH2GRID");
+
+    TransCache& tc = trans_handles[key];
+    struct Trans_t& trans = tc.trans_;
+
+
+    // transform sp to gp fields
+    sh2grid(trans, field);
 
 
     // trans_delete(&trans);
@@ -271,11 +270,7 @@ void Sh2Gridded::transform(
 }
 
 
-void Sh2Gridded::transform(
-        const param::MIRParametrisation& parametrisation,
-        data::MIRField& field,
-        const atlas::grid::Grid& grid,
-        context::Context& ctx ) {
+void Sh2Gridded::transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx) const {
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
 
     TransInitor::instance(); // Will init trans if needed
@@ -286,7 +281,7 @@ void Sh2Gridded::transform(
     std::string key(os.str());
 
     try {
-        transform(key, parametrisation, truncation, field, grid, ctx);
+        transform(field, grid, ctx, key, truncation);
     } catch (std::exception& e) {
         eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
         trans_handles.erase(key);
@@ -312,7 +307,7 @@ void Sh2Gridded::execute(context::Context& ctx) const {
     repres::RepresentationHandle out(outputRepresentation());
     eckit::ScopedPtr<atlas::grid::Grid> grid(out->atlasGrid());
 
-    transform(parametrisation_, ctx.field(), *grid, ctx);
+    transform(ctx.field(), *grid, ctx);
 
     ctx.field().representation(out);
 }
