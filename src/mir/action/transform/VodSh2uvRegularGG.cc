@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,12 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#include "mir/action/transform/ScalarSh2RegularGG.h"
+#include "mir/action/transform/VodSh2uvRegularGG.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -26,34 +24,34 @@ namespace action {
 namespace transform {
 
 
-ScalarSh2RegularGG::ScalarSh2RegularGG(const param::MIRParametrisation& parametrisation):
-    ScalarSh2Gridded(parametrisation) {
+VodSh2uvRegularGG::VodSh2uvRegularGG(const param::MIRParametrisation& parametrisation):
+    VodSh2uvGridded(parametrisation) {
     ASSERT(parametrisation_.get("user.regular", N_));
 }
 
 
-ScalarSh2RegularGG::~ScalarSh2RegularGG() {
+VodSh2uvRegularGG::~VodSh2uvRegularGG() {
 }
 
 
-bool ScalarSh2RegularGG::sameAs(const Action& other) const {
-    const ScalarSh2RegularGG* o = dynamic_cast<const ScalarSh2RegularGG*>(&other);
+bool VodSh2uvRegularGG::sameAs(const Action& other) const {
+    const VodSh2uvRegularGG* o = dynamic_cast<const VodSh2uvRegularGG*>(&other);
     return o && (N_ == o->N_);
 }
 
 
-void ScalarSh2RegularGG::print(std::ostream& out) const {
-    out << "ScalarSh2RegularGG[N=" << N_ << "]";
+void VodSh2uvRegularGG::print(std::ostream& out) const {
+    out << "VodSh2uvRegularGG[N=" << N_ << "]";
 }
 
 
-const repres::Representation* ScalarSh2RegularGG::outputRepresentation() const {
+const repres::Representation* VodSh2uvRegularGG::outputRepresentation() const {
     return new repres::regular::RegularGG(N_);
 }
 
 
 namespace {
-static ActionBuilder< ScalarSh2RegularGG > __action("transform.scalar-sh-to-regular-gg");
+static ActionBuilder< VodSh2uvRegularGG > __action("transform.vod-sh-to-uv-regular-gg");
 }
 
 

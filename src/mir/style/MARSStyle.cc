@@ -82,10 +82,10 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
         parametrisation_.get("intermediate_gaussian", intermediate_gaussian);
 
         if (intermediate_gaussian) {
-            plan.add("transform.scalar-sh2reduced-gg", "reduced", intermediate_gaussian);
+            plan.add("transform.scalar-sh-to-reduced-gg", "reduced", intermediate_gaussian);
             plan.add("interpolate.grid2regular-ll");
         } else {
-            plan.add("transform.scalar-sh2regular-ll");
+            plan.add("transform.scalar-sh-to-regular-ll");
         }
 
         if (parametrisation_.has("user.rotation")) {
@@ -106,32 +106,32 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
     }
 
     if (parametrisation_.has("user.reduced")) {
-        plan.add("transform.scalar-sh2reduced-gg");
+        plan.add("transform.scalar-sh-to-reduced-gg");
     }
 
     if (parametrisation_.has("user.regular")) {
-        plan.add("transform.scalar-sh2regular-gg");
+        plan.add("transform.scalar-sh-to-regular-gg");
     }
 
     if (parametrisation_.has("user.octahedral")) {
-        plan.add("transform.scalar-sh2octahedral-gg");
+        plan.add("transform.scalar-sh-to-octahedral-gg");
     }
 
     if (parametrisation_.has("user.pl")) {
-        plan.add("transform.scalar-sh2reduced-gg-pl-given");
+        plan.add("transform.scalar-sh-to-reduced-gg-pl-given");
     }
 
     if (parametrisation_.has("user.gridname")) {
         std::string gridname;
         ASSERT(parametrisation_.get("gridname", gridname));
-        plan.add("transform.scalar-sh2namedgrid");
+        plan.add("transform.scalar-sh-to-namedgrid");
     }
 
     if (parametrisation_.has("user.griddef")) {
         std::string griddef;
         ASSERT(parametrisation_.get("griddef", griddef));
         // TODO: this is temporary
-        plan.add("transform.scalar-sh2octahedral-gg", "octahedral", 64L);
+        plan.add("transform.scalar-sh-to-octahedral-gg", "octahedral", 64L);
         plan.add("interpolate.grid2griddef");
     }
 

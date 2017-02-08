@@ -11,10 +11,11 @@
 /// @date Feb 2017
 
 
-#ifndef mir_action_transform_VodSh2uvGridded_h
-#define mir_action_transform_VodSh2uvGridded_h
+#ifndef mir_action_transform_VodSh2uvRegularLL_h
+#define mir_action_transform_VodSh2uvRegularLL_h
 
-#include "mir/action/transform/Sh2Gridded.h"
+#include "mir/action/transform/VodSh2uvGridded.h"
+#include "mir/util/Increments.h"
 
 
 namespace mir {
@@ -22,17 +23,17 @@ namespace action {
 namespace transform {
 
 
-class VodSh2uvGridded : public Sh2Gridded {
+class VodSh2uvRegularLL : public VodSh2uvGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    VodSh2uvGridded(const param::MIRParametrisation&);
+    VodSh2uvRegularLL(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~VodSh2uvGridded();
+    virtual ~VodSh2uvRegularLL(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -58,7 +59,7 @@ protected:
     // None
 
     // -- Methods
-    void sh2grid(struct Trans_t&, data::MIRField&) const;
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -71,14 +72,19 @@ protected:
 
 private:
 
+    // No copy allowed
+    VodSh2uvRegularLL(const VodSh2uvRegularLL&);
+    VodSh2uvRegularLL& operator=(const VodSh2uvRegularLL&);
+
     // -- Members
-    // None
+    util::Increments grid_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-    // None
+    virtual bool sameAs(const Action& other) const;
+    virtual const repres::Representation* outputRepresentation() const;  // from Sh2Gridded
 
     // -- Class members
     // None
@@ -98,3 +104,4 @@ private:
 
 
 #endif
+

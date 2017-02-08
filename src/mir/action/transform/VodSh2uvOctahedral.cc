@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,12 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#include "mir/action/transform/ScalarSh2Octahedral.h"
+#include "mir/action/transform/VodSh2uvOctahedral.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -26,36 +24,36 @@ namespace action {
 namespace transform {
 
 
-ScalarSh2Octahedral::ScalarSh2Octahedral(const param::MIRParametrisation& parametrisation):
-    ScalarSh2Gridded(parametrisation) {
+VodSh2uvOctahedral::VodSh2uvOctahedral(const param::MIRParametrisation& parametrisation):
+    VodSh2uvGridded(parametrisation) {
 
     ASSERT(parametrisation_.get("user.octahedral", N_));
 
 }
 
 
-bool ScalarSh2Octahedral::sameAs(const Action& other) const {
-    const ScalarSh2Octahedral* o = dynamic_cast<const ScalarSh2Octahedral*>(&other);
+bool VodSh2uvOctahedral::sameAs(const Action& other) const {
+    const VodSh2uvOctahedral* o = dynamic_cast<const VodSh2uvOctahedral*>(&other);
     return o && (N_ == o->N_);
 }
 
 
-ScalarSh2Octahedral::~ScalarSh2Octahedral() {
+VodSh2uvOctahedral::~VodSh2uvOctahedral() {
 }
 
 
-void ScalarSh2Octahedral::print(std::ostream& out) const {
-    out << "ScalarSh2Octahedral[N=" << N_ << "]";
+void VodSh2uvOctahedral::print(std::ostream& out) const {
+    out << "VodSh2uvOctahedral[N=" << N_ << "]";
 }
 
 
-const repres::Representation* ScalarSh2Octahedral::outputRepresentation() const {
+const repres::Representation* VodSh2uvOctahedral::outputRepresentation() const {
     return new repres::reduced::ReducedOctahedral(N_);
 }
 
 
 namespace {
-static ActionBuilder< ScalarSh2Octahedral > __action("transform.scalar-sh-to-octahedral-gg");
+static ActionBuilder< VodSh2uvOctahedral > __action("transform.vod-sh-to-uv-octahedral-gg");
 }
 
 

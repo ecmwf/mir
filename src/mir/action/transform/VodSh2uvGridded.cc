@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2016 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -56,8 +56,8 @@ void VodSh2uvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) cons
     // set u/v field values
     long id_u = 131;
     long id_v = 132;
-    parametrisation_.get("transform.vod2uv.u", id_u);
-    parametrisation_.get("transform.vod2uv.v", id_v);
+    parametrisation_.get("transform.u", id_u);
+    parametrisation_.get("transform.v", id_v);
 
     std::vector<double> result(output.begin(), output.begin() + trans.ngptotg);
     field.update(result, 0);

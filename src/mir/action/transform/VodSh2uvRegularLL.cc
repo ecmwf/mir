@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,12 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#include "mir/action/transform/ScalarSh2RegularLL.h"
+#include "mir/action/transform/VodSh2uvRegularLL.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -26,8 +24,8 @@ namespace action {
 namespace transform {
 
 
-ScalarSh2RegularLL::ScalarSh2RegularLL(const param::MIRParametrisation &parametrisation):
-    ScalarSh2Gridded(parametrisation) {
+VodSh2uvRegularLL::VodSh2uvRegularLL(const param::MIRParametrisation &parametrisation):
+    VodSh2uvGridded(parametrisation) {
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
@@ -37,22 +35,22 @@ ScalarSh2RegularLL::ScalarSh2RegularLL(const param::MIRParametrisation &parametr
 }
 
 
-ScalarSh2RegularLL::~ScalarSh2RegularLL() {
+VodSh2uvRegularLL::~VodSh2uvRegularLL() {
 }
 
 
-bool ScalarSh2RegularLL::sameAs(const Action& other) const {
-    const ScalarSh2RegularLL* o = dynamic_cast<const ScalarSh2RegularLL*>(&other);
+bool VodSh2uvRegularLL::sameAs(const Action& other) const {
+    const VodSh2uvRegularLL* o = dynamic_cast<const VodSh2uvRegularLL*>(&other);
     return o && (grid_ == o->grid_);
 }
 
 
-void ScalarSh2RegularLL::print(std::ostream &out) const {
-    out << "ScalarSh2RegularLL[grib=" << grid_ << "]";
+void VodSh2uvRegularLL::print(std::ostream &out) const {
+    out << "VodSh2uvRegularLL[grib=" << grid_ << "]";
 }
 
 
-const repres::Representation *ScalarSh2RegularLL::outputRepresentation() const {
+const repres::Representation *VodSh2uvRegularLL::outputRepresentation() const {
     return new repres::latlon::RegularLL(
                 util::BoundingBox(90, 0, -90, 360 - grid_.west_east()),
                 grid_);
@@ -60,7 +58,7 @@ const repres::Representation *ScalarSh2RegularLL::outputRepresentation() const {
 
 
 namespace {
-static ActionBuilder< ScalarSh2RegularLL > __action("transform.scalar-sh-to-regular-ll");
+static ActionBuilder< VodSh2uvRegularLL > __action("transform.vod-sh-to-uv-regular-ll");
 }
 
 

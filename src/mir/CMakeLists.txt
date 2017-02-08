@@ -120,10 +120,20 @@ list(
     action/transform/TransCache.h
     action/transform/TransInitor.cc
     action/transform/TransInitor.h
-    action/transform/Vod2uv.cc
-    action/transform/Vod2uv.h
+    action/transform/VodSh2UVSh.cc
+    action/transform/VodSh2UVSh.h
     action/transform/VodSh2uvGridded.cc
     action/transform/VodSh2uvGridded.h
+    action/transform/VodSh2uvNamedGrid.cc
+    action/transform/VodSh2uvNamedGrid.h
+    action/transform/VodSh2uvOctahedral.cc
+    action/transform/VodSh2uvOctahedral.h
+    action/transform/VodSh2uvReducedGG.cc
+    action/transform/VodSh2uvReducedGG.h
+    action/transform/VodSh2uvRegularGG.cc
+    action/transform/VodSh2uvRegularGG.h
+    action/transform/VodSh2uvRegularLL.cc
+    action/transform/VodSh2uvRegularLL.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc

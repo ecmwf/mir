@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/action/transform/Vod2uv.h"
+#include "mir/action/transform/VodSh2UVSh.h"
 
 #include <complex>
 #include <iostream>
@@ -46,28 +46,28 @@ namespace action {
 namespace transform {
 
 
-Vod2uv::Vod2uv(const param::MIRParametrisation &parametrisation):
+VodSh2UVSh::VodSh2UVSh(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 }
 
 
-Vod2uv::~Vod2uv() {
+VodSh2UVSh::~VodSh2UVSh() {
 }
 
 
-bool Vod2uv::sameAs(const Action& other) const {
-    const Vod2uv* o = dynamic_cast<const Vod2uv*>(&other);
+bool VodSh2UVSh::sameAs(const Action& other) const {
+    const VodSh2UVSh* o = dynamic_cast<const VodSh2UVSh*>(&other);
     return o;
 }
 
 
-void Vod2uv::print(std::ostream &out) const {
+void VodSh2UVSh::print(std::ostream &out) const {
     out << "Vod2uv[";
     out << "]";
 }
 
 
-void Vod2uv::execute(context::Context & ctx) const {
+void VodSh2UVSh::execute(context::Context & ctx) const {
 #ifdef ATLAS_HAVE_TRANS
     data::MIRField& field = ctx.field();
 
@@ -116,8 +116,8 @@ void Vod2uv::execute(context::Context & ctx) const {
     // configure paramIds for U/V
     long id_u = 131;
     long id_v = 132;
-    parametrisation_.get("transform.vod2uv.u", id_u);
-    parametrisation_.get("transform.vod2uv.v", id_v);
+    parametrisation_.get("transform.u", id_u);
+    parametrisation_.get("transform.v", id_v);
 
     field.metadata(0, "paramId", id_u);
     field.metadata(1, "paramId", id_v);
@@ -129,7 +129,7 @@ void Vod2uv::execute(context::Context & ctx) const {
 
 
 namespace {
-static ActionBuilder< Vod2uv > transform("transform.vod2UV");
+static ActionBuilder< VodSh2UVSh > __action("transform.vod-sh-to-UV-sh");
 }
 
 

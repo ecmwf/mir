@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,16 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#ifndef mir_action_transform_Vod2uv_h
-#define mir_action_transform_Vod2uv_h
+#ifndef mir_action_transform_VodSh2uvReducedGG_h
+#define mir_action_transform_VodSh2uvReducedGG_h
 
-#include <vector>
-#include "mir/action/plan/Action.h"
+#include "mir/action/transform/VodSh2uvGridded.h"
 
 
 namespace mir {
@@ -25,19 +22,17 @@ namespace action {
 namespace transform {
 
 
-class Vod2uv : public Action {
+class VodSh2uvReducedGG : public VodSh2uvGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-
-    Vod2uv(const param::MIRParametrisation&);
+    VodSh2uvReducedGG(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    virtual ~Vod2uv(); // Change to virtual if base class
+    virtual ~VodSh2uvReducedGG(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -63,7 +58,6 @@ protected:
     // None
 
     // -- Methods
-
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -78,21 +72,18 @@ protected:
 private:
 
     // No copy allowed
-
-    Vod2uv(const Vod2uv&);
-    Vod2uv& operator=(const Vod2uv&);
+    VodSh2uvReducedGG(const VodSh2uvReducedGG&);
+    VodSh2uvReducedGG& operator=(const VodSh2uvReducedGG&);
 
     // -- Members
-    // None
+    size_t N_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
     virtual bool sameAs(const Action& other) const;
-
-    virtual void execute(context::Context & ctx) const;
+    virtual const repres::Representation* outputRepresentation() const;  // from Sh2Gridded
 
     // -- Class members
     // None
@@ -101,9 +92,7 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Vod2uv& p)
-    //	{ p.print(s); return s; }
+    // None
 
 };
 

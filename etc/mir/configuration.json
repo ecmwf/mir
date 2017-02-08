@@ -66,8 +66,8 @@
     },
 
     "138": {
-        "transform.vod2uv.u": "131",
-        "transform.vod2uv.v": "132"
+        "transform.u": "131",
+        "transform.v": "132"
     },
 
     "130": {

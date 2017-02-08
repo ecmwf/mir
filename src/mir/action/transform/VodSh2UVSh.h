@@ -8,13 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Feb 2017
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 
-#ifndef mir_action_transform_VodSh2uvGridded_h
-#define mir_action_transform_VodSh2uvGridded_h
+#ifndef mir_action_transform_VodSh2UVSh_h
+#define mir_action_transform_VodSh2UVSh_h
 
-#include "mir/action/transform/Sh2Gridded.h"
+#include <vector>
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {
@@ -22,17 +25,17 @@ namespace action {
 namespace transform {
 
 
-class VodSh2uvGridded : public Sh2Gridded {
+class VodSh2UVSh : public Action {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    VodSh2uvGridded(const param::MIRParametrisation&);
+    VodSh2UVSh(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~VodSh2uvGridded();
+    virtual ~VodSh2UVSh(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -58,7 +61,7 @@ protected:
     // None
 
     // -- Methods
-    void sh2grid(struct Trans_t&, data::MIRField&) const;
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -71,6 +74,10 @@ protected:
 
 private:
 
+    // No copy allowed
+    VodSh2UVSh(const VodSh2UVSh&);
+    VodSh2UVSh& operator=(const VodSh2UVSh&);
+
     // -- Members
     // None
 
@@ -78,7 +85,8 @@ private:
     // None
 
     // -- Overridden methods
-    // None
+    virtual bool sameAs(const Action& other) const;
+    virtual void execute(context::Context & ctx) const;
 
     // -- Class members
     // None
@@ -98,3 +106,4 @@ private:
 
 
 #endif
+

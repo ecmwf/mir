@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,12 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#include "mir/action/transform/ScalarSh2ReducedGG.h"
+#include "mir/action/transform/VodSh2uvReducedGG.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -26,36 +24,36 @@ namespace action {
 namespace transform {
 
 
-ScalarSh2ReducedGG::ScalarSh2ReducedGG(const param::MIRParametrisation& parametrisation):
-    ScalarSh2Gridded(parametrisation) {
+VodSh2uvReducedGG::VodSh2uvReducedGG(const param::MIRParametrisation& parametrisation):
+    VodSh2uvGridded(parametrisation) {
 
     ASSERT(parametrisation_.get("user.reduced", N_));
 
 }
 
 
-ScalarSh2ReducedGG::~ScalarSh2ReducedGG() {
+VodSh2uvReducedGG::~VodSh2uvReducedGG() {
 }
 
 
-bool ScalarSh2ReducedGG::sameAs(const Action& other) const {
-    const ScalarSh2ReducedGG* o = dynamic_cast<const ScalarSh2ReducedGG*>(&other);
+bool VodSh2uvReducedGG::sameAs(const Action& other) const {
+    const VodSh2uvReducedGG* o = dynamic_cast<const VodSh2uvReducedGG*>(&other);
     return o && (N_ == o->N_);
 }
 
 
-void ScalarSh2ReducedGG::print(std::ostream& out) const {
-    out << "ScalarSh2ReducedGG[N=" << N_ << "]";
+void VodSh2uvReducedGG::print(std::ostream& out) const {
+    out << "VodSh2uvReducedGG[N=" << N_ << "]";
 }
 
 
-const repres::Representation* ScalarSh2ReducedGG::outputRepresentation() const {
+const repres::Representation* VodSh2uvReducedGG::outputRepresentation() const {
     return new repres::reduced::ReducedClassic(N_);
 }
 
 
 namespace {
-static ActionBuilder< ScalarSh2ReducedGG > __action("transform.scalar-sh-to-reduced-gg");
+static ActionBuilder< VodSh2uvReducedGG > __action("transform.vod-sh-to-uv-reduced-gg");
 }
 
 
