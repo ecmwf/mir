@@ -13,96 +13,96 @@
 /// @date Apr 2015
 
 
-#ifndef Sh2Octahedral_H
-#define Sh2Octahedral_H
+#ifndef mir_action_transform_ScalarSh2NamedGrid_h
+#define mir_action_transform_ScalarSh2NamedGrid_h
 
-#include "mir/action/transform/Sh2GriddedTransform.h"
+#include "mir/action/transform/Sh2Gridded.h"
+
 
 namespace mir {
 namespace action {
 namespace transform {
 
 
-class Sh2Octahedral : public Sh2GriddedTransform {
-  public:
+class ScalarSh2NamedGrid : public Sh2Gridded {
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
-    Sh2Octahedral(const param::MIRParametrisation&);
+    ScalarSh2NamedGrid(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~Sh2Octahedral(); // Change to virtual if base class
+    virtual ~ScalarSh2NamedGrid(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // No copy allowed
+    ScalarSh2NamedGrid(const ScalarSh2NamedGrid&);
+    ScalarSh2NamedGrid& operator=(const ScalarSh2NamedGrid&);
 
-    Sh2Octahedral(const Sh2Octahedral&);
-    Sh2Octahedral& operator=(const Sh2Octahedral&);
+    // -- Members
 
-// -- Members
+    std::string gridname_;
 
-    size_t N_;
-
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual bool sameAs(const Action& other) const;
 
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Sh2Octahedral& p)
+    //friend ostream& operator<<(ostream& s,const Sh2NamedGrid& p)
     //	{ p.print(s); return s; }
 
 };

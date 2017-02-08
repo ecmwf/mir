@@ -100,18 +100,18 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/transform/Sh2GriddedTransform.cc
-    action/transform/Sh2GriddedTransform.h
-    action/transform/Sh2NamedGrid.cc
-    action/transform/Sh2NamedGrid.h
-    action/transform/Sh2Octahedral.cc
-    action/transform/Sh2Octahedral.h
-    action/transform/Sh2ReducedGG.cc
-    action/transform/Sh2ReducedGG.h
-    action/transform/Sh2RegularGG.cc
-    action/transform/Sh2RegularGG.h
-    action/transform/Sh2RegularLL.cc
-    action/transform/Sh2RegularLL.h
+    action/transform/Sh2Gridded.cc
+    action/transform/Sh2Gridded.h
+    action/transform/ScalarSh2NamedGrid.cc
+    action/transform/ScalarSh2NamedGrid.h
+    action/transform/ScalarSh2Octahedral.cc
+    action/transform/ScalarSh2Octahedral.h
+    action/transform/ScalarSh2ReducedGG.cc
+    action/transform/ScalarSh2ReducedGG.h
+    action/transform/ScalarSh2RegularGG.cc
+    action/transform/ScalarSh2RegularGG.h
+    action/transform/ScalarSh2RegularLL.cc
+    action/transform/ScalarSh2RegularLL.h
     action/transform/ShTruncate.cc
     action/transform/ShTruncate.h
     action/transform/TransCache.cc

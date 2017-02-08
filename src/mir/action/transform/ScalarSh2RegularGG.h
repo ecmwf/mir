@@ -13,17 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef mir_action_transform_Sh2GriddedTransform_h
-#define mir_action_transform_Sh2GriddedTransform_h
+#ifndef mir_action_transform_ScalarSh2RegularGG_h
+#define mir_action_transform_ScalarSh2RegularGG_h
 
-#include "mir/action/plan/Action.h"
-
-
-namespace mir {
-namespace repres {
-class Representation;
-}
-}
+#include "mir/action/transform/Sh2Gridded.h"
 
 
 namespace mir {
@@ -31,7 +24,7 @@ namespace action {
 namespace transform {
 
 
-class Sh2GriddedTransform : public Action {
+class ScalarSh2RegularGG : public Sh2Gridded {
 public:
 
     // -- Exceptions
@@ -39,11 +32,11 @@ public:
 
     // -- Contructors
 
-    Sh2GriddedTransform(const param::MIRParametrisation&);
+    ScalarSh2RegularGG(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~Sh2GriddedTransform(); // Change to virtual if base class
+    virtual ~ScalarSh2RegularGG(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -69,7 +62,8 @@ protected:
     // None
 
     // -- Methods
-    // None
+
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -84,19 +78,21 @@ private:
 
     // No copy allowed
 
-    Sh2GriddedTransform(const Sh2GriddedTransform&);
-    Sh2GriddedTransform& operator=(const Sh2GriddedTransform&);
+    ScalarSh2RegularGG(const ScalarSh2RegularGG&);
+    ScalarSh2RegularGG& operator=(const ScalarSh2RegularGG&);
 
     // -- Members
-    // None
+    size_t N_;
 
     // -- Methods
-
-    virtual const repres::Representation* outputRepresentation() const = 0;
+    // None
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const;
+    virtual bool sameAs(const Action& other) const;
+
+    // From Gridded2GriddedInterpolation
+    virtual const repres::Representation* outputRepresentation() const;
 
     // -- Class members
     // None
@@ -106,7 +102,7 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Sh2GriddedTransform& p)
+    //friend ostream& operator<<(ostream& s,const Sh2RegularGG& p)
     //	{ p.print(s); return s; }
 
 };
@@ -118,3 +114,4 @@ private:
 
 
 #endif
+

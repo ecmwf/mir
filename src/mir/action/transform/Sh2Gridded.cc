@@ -15,21 +15,18 @@
 /// @date Apr 2015
 
 
-#include "mir/action/transform/Sh2GriddedTransform.h"
+#include "mir/action/transform/Sh2Gridded.h"
 
 #include <algorithm>
 #include <iostream>
 #include <vector>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/FileLock.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/utils/MD5.h"
 #include "atlas/atlas.h"
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Structured.h"
-#include "atlas/grid/grids.h"
 #include "atlas/grid/lonlat/RegularLonLat.h"
 #include "mir/action/context/Context.h"
 #include "mir/action/transform/TransCache.h"
@@ -284,16 +281,16 @@ static void transform(
 }  // (anonymous namespace)
 
 
-Sh2GriddedTransform::Sh2GriddedTransform(const param::MIRParametrisation &parametrisation):
+Sh2Gridded::Sh2Gridded(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 }
 
 
-Sh2GriddedTransform::~Sh2GriddedTransform() {
+Sh2Gridded::~Sh2Gridded() {
 }
 
 
-void Sh2GriddedTransform::execute(context::Context& ctx) const {
+void Sh2Gridded::execute(context::Context& ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<TransCache> use(trans_handles, ctx.statistics().transHandleCache_);

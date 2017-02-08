@@ -13,10 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef mir_action_transform_Sh2RegularGG_h
-#define mir_action_transform_Sh2RegularGG_h
+#ifndef mir_action_transform_ScalarSh2ReducedGG_h
+#define mir_action_transform_ScalarSh2ReducedGG_h
 
-#include "mir/action/transform/Sh2GriddedTransform.h"
+#include "mir/action/transform/Sh2Gridded.h"
 
 
 namespace mir {
@@ -24,85 +24,85 @@ namespace action {
 namespace transform {
 
 
-class Sh2RegularGG : public Sh2GriddedTransform {
-  public:
+class ScalarSh2ReducedGG : public Sh2Gridded {
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
-    Sh2RegularGG(const param::MIRParametrisation&);
+    ScalarSh2ReducedGG(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~Sh2RegularGG(); // Change to virtual if base class
+    virtual ~ScalarSh2ReducedGG(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // No copy allowed
 
-    Sh2RegularGG(const Sh2RegularGG&);
-    Sh2RegularGG& operator=(const Sh2RegularGG&);
+    ScalarSh2ReducedGG(const ScalarSh2ReducedGG&);
+    ScalarSh2ReducedGG& operator=(const ScalarSh2ReducedGG&);
 
-// -- Members
+    // -- Members
     size_t N_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual bool sameAs(const Action& other) const;
 
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Sh2RegularGG& p)
+    //friend ostream& operator<<(ostream& s,const Sh2ReducedGG& p)
     //	{ p.print(s); return s; }
 
 };

@@ -12,10 +12,10 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/action/transform/Sh2NamedGrid.h"
+
+#include "mir/action/transform/ScalarSh2NamedGrid.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/namedgrids/NamedGrid.h"
@@ -25,36 +25,37 @@ namespace action {
 namespace transform {
 
 
-Sh2NamedGrid::Sh2NamedGrid(const param::MIRParametrisation& parametrisation):
-    Sh2GriddedTransform(parametrisation) {
+ScalarSh2NamedGrid::ScalarSh2NamedGrid(const param::MIRParametrisation& parametrisation):
+    Sh2Gridded(parametrisation) {
 
     ASSERT(parametrisation_.get("user.gridname", gridname_));
 
 }
 
 
-Sh2NamedGrid::~Sh2NamedGrid() {
+ScalarSh2NamedGrid::~ScalarSh2NamedGrid() {
 }
 
 
-bool Sh2NamedGrid::sameAs(const Action& other) const {
-    const Sh2NamedGrid* o = dynamic_cast<const Sh2NamedGrid*>(&other);
+bool ScalarSh2NamedGrid::sameAs(const Action& other) const {
+    const ScalarSh2NamedGrid* o = dynamic_cast<const ScalarSh2NamedGrid*>(&other);
     return o && (gridname_ == o->gridname_);
 }
 
-void Sh2NamedGrid::print(std::ostream& out) const {
-    out << "Sh2NamedGrid[gridname=" << gridname_ << "]";
+
+void ScalarSh2NamedGrid::print(std::ostream& out) const {
+    out << "ScalarSh2NamedGrid[gridname=" << gridname_ << "]";
 }
 
 
-const repres::Representation* Sh2NamedGrid::outputRepresentation() const {
+const repres::Representation* ScalarSh2NamedGrid::outputRepresentation() const {
     const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
     return ng.representation();
 }
 
 
 namespace {
-static ActionBuilder< Sh2NamedGrid > grid2grid("transform.sh2namedgrid");
+static ActionBuilder< ScalarSh2NamedGrid > __action("transform.scalar-sh2namedgrid");
 }
 
 

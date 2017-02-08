@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/action/transform/Sh2RegularLL.h"
+#include "mir/action/transform/ScalarSh2RegularLL.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -26,8 +26,8 @@ namespace action {
 namespace transform {
 
 
-Sh2RegularLL::Sh2RegularLL(const param::MIRParametrisation &parametrisation):
-    Sh2GriddedTransform(parametrisation) {
+ScalarSh2RegularLL::ScalarSh2RegularLL(const param::MIRParametrisation &parametrisation):
+    Sh2Gridded(parametrisation) {
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
@@ -37,22 +37,22 @@ Sh2RegularLL::Sh2RegularLL(const param::MIRParametrisation &parametrisation):
 }
 
 
-Sh2RegularLL::~Sh2RegularLL() {
+ScalarSh2RegularLL::~ScalarSh2RegularLL() {
 }
 
 
-bool Sh2RegularLL::sameAs(const Action& other) const {
-    const Sh2RegularLL* o = dynamic_cast<const Sh2RegularLL*>(&other);
+bool ScalarSh2RegularLL::sameAs(const Action& other) const {
+    const ScalarSh2RegularLL* o = dynamic_cast<const ScalarSh2RegularLL*>(&other);
     return o && (grid_ == o->grid_);
 }
 
 
-void Sh2RegularLL::print(std::ostream &out) const {
-    out << "Sh2RegularLL[grib=" << grid_ << "]";
+void ScalarSh2RegularLL::print(std::ostream &out) const {
+    out << "ScalarSh2RegularLL[grib=" << grid_ << "]";
 }
 
 
-const repres::Representation *Sh2RegularLL::outputRepresentation() const {
+const repres::Representation *ScalarSh2RegularLL::outputRepresentation() const {
     return new repres::latlon::RegularLL(
                 util::BoundingBox(90, 0, -90, 360 - grid_.west_east()),
                 grid_);
@@ -60,7 +60,7 @@ const repres::Representation *Sh2RegularLL::outputRepresentation() const {
 
 
 namespace {
-static ActionBuilder< Sh2RegularLL > grid2grid("transform.sh2regular-ll");
+static ActionBuilder< ScalarSh2RegularLL > __action("transform.scalar-sh2regular-ll");
 }
 
 

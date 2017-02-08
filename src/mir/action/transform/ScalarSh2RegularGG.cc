@@ -12,12 +12,11 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/action/transform/Sh2RegularGG.h"
+
+#include "mir/action/transform/ScalarSh2RegularGG.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
-
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/regular/RegularGG.h"
 
@@ -27,32 +26,34 @@ namespace action {
 namespace transform {
 
 
-Sh2RegularGG::Sh2RegularGG(const param::MIRParametrisation& parametrisation):
-    Sh2GriddedTransform(parametrisation) {
+ScalarSh2RegularGG::ScalarSh2RegularGG(const param::MIRParametrisation& parametrisation):
+    Sh2Gridded(parametrisation) {
     ASSERT(parametrisation_.get("user.regular", N_));
 }
 
 
-Sh2RegularGG::~Sh2RegularGG() {
+ScalarSh2RegularGG::~ScalarSh2RegularGG() {
 }
 
-bool Sh2RegularGG::sameAs(const Action& other) const {
-    const Sh2RegularGG* o = dynamic_cast<const Sh2RegularGG*>(&other);
+
+bool ScalarSh2RegularGG::sameAs(const Action& other) const {
+    const ScalarSh2RegularGG* o = dynamic_cast<const ScalarSh2RegularGG*>(&other);
     return o && (N_ == o->N_);
 }
 
-void Sh2RegularGG::print(std::ostream& out) const {
-    out << "Sh2RegularGG[N=" << N_ << "]";
+
+void ScalarSh2RegularGG::print(std::ostream& out) const {
+    out << "ScalarSh2RegularGG[N=" << N_ << "]";
 }
 
 
-const repres::Representation* Sh2RegularGG::outputRepresentation() const {
+const repres::Representation* ScalarSh2RegularGG::outputRepresentation() const {
     return new repres::regular::RegularGG(N_);
 }
 
 
 namespace {
-static ActionBuilder< Sh2RegularGG > grid2grid("transform.sh2regular-gg");
+static ActionBuilder< ScalarSh2RegularGG > __action("transform.scalar-sh2regular-gg");
 }
 
 

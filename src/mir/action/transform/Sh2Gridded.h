@@ -13,11 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef Sh2RegularLL_H
-#define Sh2RegularLL_H
+#ifndef mir_action_transform_Sh2Gridded_h
+#define mir_action_transform_Sh2Gridded_h
 
-#include "mir/action/transform/Sh2GriddedTransform.h"
-#include "mir/util/Increments.h"
+#include "mir/action/plan/Action.h"
+
+
+namespace mir {
+namespace repres {
+class Representation;
+}
+}
 
 
 namespace mir {
@@ -25,7 +31,7 @@ namespace action {
 namespace transform {
 
 
-class Sh2RegularLL : public Sh2GriddedTransform {
+class Sh2Gridded : public Action {
 public:
 
     // -- Exceptions
@@ -33,11 +39,11 @@ public:
 
     // -- Contructors
 
-    Sh2RegularLL(const param::MIRParametrisation&);
+    Sh2Gridded(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~Sh2RegularLL(); // Change to virtual if base class
+    virtual ~Sh2Gridded(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -63,8 +69,7 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const; // Change to virtual if base class
+    // None
 
     // -- Overridden methods
     // None
@@ -79,22 +84,19 @@ private:
 
     // No copy allowed
 
-    Sh2RegularLL(const Sh2RegularLL&);
-    Sh2RegularLL& operator=(const Sh2RegularLL&);
+    Sh2Gridded(const Sh2Gridded&);
+    Sh2Gridded& operator=(const Sh2Gridded&);
 
     // -- Members
-
-    util::Increments grid_;
+    // None
 
     // -- Methods
-    // None
+
+    virtual const repres::Representation* outputRepresentation() const = 0;
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
-
-    // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    virtual void execute(context::Context&) const;
 
     // -- Class members
     // None
@@ -103,7 +105,9 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    //friend ostream& operator<<(ostream& s,const Sh2GriddedTransform& p)
+    //	{ p.print(s); return s; }
 
 };
 
@@ -114,4 +118,3 @@ private:
 
 
 #endif
-
