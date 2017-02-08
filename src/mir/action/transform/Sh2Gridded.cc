@@ -49,8 +49,8 @@ namespace mir {
 namespace action {
 namespace transform {
 
+
 namespace {
-#ifdef ATLAS_HAVE_TRANS
 
 
 static eckit::Mutex amutex;
@@ -59,12 +59,12 @@ static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient",
         "$MIR_COEFFICIENT_CACHE",
         false); // Don't cleanup at exit: the Fortran part will dump core
 
+
 static void fillTrans(struct Trans_t &trans,
                       size_t truncation,
                       const atlas::grid::Grid &grid) {
-
+#ifdef ATLAS_HAVE_TRANS
     const atlas::grid::Structured* reduced = dynamic_cast<const atlas::grid::Structured*>(&grid);
-
     if (!reduced) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
     }
@@ -92,12 +92,18 @@ static void fillTrans(struct Trans_t &trans,
 
         ASSERT(trans_set_resol(&trans, pli.size(), &pli[0]) == 0);
     }
+#else
+    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
+                            "Please recompile ATLAS with TRANS support enabled.");
+#endif
 }
+
 
 static void createCoefficients(const eckit::PathName& path,
                                size_t truncation,
                                const atlas::grid::Grid &grid,
                                context::Context& ctx) {
+#ifdef ATLAS_HAVE_TRANS
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
 
     struct Trans_t tmp_trans;
@@ -107,16 +113,24 @@ static void createCoefficients(const eckit::PathName& path,
     ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
 
     trans_delete(&tmp_trans);
+#else
+    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
+                            "Please recompile ATLAS with TRANS support enabled.");
+#endif
 }
 
-static void transform(
+
+}  // (anonymous namespace)
+
+
+void Sh2Gridded::transform(
         const std::string& key,
         const param::MIRParametrisation& parametrisation,
         size_t truncation,
         data::MIRField& field,
         const atlas::grid::Grid& grid,
         context::Context& ctx) {
-
+#ifdef ATLAS_HAVE_TRANS
     if (trans_handles.find(key) == trans_handles.end()) {
 
         eckit::PathName path;
@@ -250,11 +264,14 @@ static void transform(
 
 
     // trans_delete(&trans);
-}
+#else
+    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
+                            "Please recompile ATLAS with TRANS support enabled.");
 #endif
+}
 
 
-static void transform(
+void Sh2Gridded::transform(
         const param::MIRParametrisation& parametrisation,
         data::MIRField& field,
         const atlas::grid::Grid& grid,
@@ -276,9 +293,6 @@ static void transform(
         throw;
     }
 }
-
-
-}  // (anonymous namespace)
 
 
 Sh2Gridded::Sh2Gridded(const param::MIRParametrisation &parametrisation):

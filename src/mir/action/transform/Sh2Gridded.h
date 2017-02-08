@@ -19,7 +19,15 @@
 #include "mir/action/plan/Action.h"
 
 
+namespace atlas {
+namespace grid {
+class Grid;
+}
+}
 namespace mir {
+namespace data {
+class MIRField;
+}
 namespace repres {
 class Representation;
 }
@@ -38,11 +46,9 @@ public:
     // None
 
     // -- Contructors
-
     Sh2Gridded(const param::MIRParametrisation&);
 
     // -- Destructor
-
     virtual ~Sh2Gridded(); // Change to virtual if base class
 
     // -- Convertors
@@ -83,7 +89,6 @@ protected:
 private:
 
     // No copy allowed
-
     Sh2Gridded(const Sh2Gridded&);
     Sh2Gridded& operator=(const Sh2Gridded&);
 
@@ -91,11 +96,11 @@ private:
     // None
 
     // -- Methods
-
     virtual const repres::Representation* outputRepresentation() const = 0;
+    static void transform(const std::string& key, const param::MIRParametrisation& parametrisation, size_t truncation, data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx);
+    static void transform(const param::MIRParametrisation& parametrisation, data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx);
 
     // -- Overridden methods
-
     virtual void execute(context::Context&) const;
 
     // -- Class members
