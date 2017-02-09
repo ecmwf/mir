@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,10 +13,32 @@
 /// @date Apr 2015
 
 
-#ifndef mir_action_transform_ScalarSh2NamedGrid_h
-#define mir_action_transform_ScalarSh2NamedGrid_h
+#ifndef mir_action_transform_ShToGridded_h
+#define mir_action_transform_ShToGridded_h
 
-#include "mir/action/transform/ScalarSh2Gridded.h"
+#include "atlas/internals/atlas_config.h"
+#include "mir/action/plan/Action.h"
+
+#ifdef ATLAS_HAVE_TRANS
+#include "transi/trans.h"
+#else
+struct Trans_t {};
+#endif
+
+
+namespace atlas {
+namespace grid {
+class Grid;
+}
+}
+namespace mir {
+namespace data {
+class MIRField;
+}
+namespace repres {
+class Representation;
+}
+}
 
 
 namespace mir {
@@ -24,17 +46,17 @@ namespace action {
 namespace transform {
 
 
-class ScalarSh2NamedGrid : public ScalarSh2Gridded {
+class ShToGridded : public Action {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    ScalarSh2NamedGrid(const param::MIRParametrisation&);
+    ShToGridded(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~ScalarSh2NamedGrid(); // Change to virtual if base class
+    virtual ~ShToGridded();
 
     // -- Convertors
     // None
@@ -60,7 +82,7 @@ protected:
     // None
 
     // -- Methods
-    void print(std::ostream&) const; // Change to virtual if base class
+    // None
 
     // -- Overridden methods
     // None
@@ -74,18 +96,21 @@ protected:
 private:
 
     // No copy allowed
-    ScalarSh2NamedGrid(const ScalarSh2NamedGrid&);
-    ScalarSh2NamedGrid& operator=(const ScalarSh2NamedGrid&);
+    ShToGridded(const ShToGridded&);
+    ShToGridded& operator=(const ShToGridded&);
 
     // -- Members
-    std::string gridname_;
-
-    // -- Methods
     // None
 
+    // -- Methods
+    virtual void sh2grid(struct Trans_t& trans, data::MIRField& field) const = 0;
+    virtual const repres::Representation* outputRepresentation() const = 0;
+
+    void transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx, const std::string& key, size_t truncation) const;
+    void transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx) const;
+
     // -- Overridden methods
-    virtual bool sameAs(const Action& other) const;
-    virtual const repres::Representation* outputRepresentation() const;  // from Sh2Gridded
+    virtual void execute(context::Context&) const;
 
     // -- Class members
     // None
@@ -94,7 +119,9 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    //friend ostream& operator<<(ostream& s,const ShToGriddedTransform& p)
+    //	{ p.print(s); return s; }
 
 };
 
@@ -105,4 +132,3 @@ private:
 
 
 #endif
-

@@ -8,10 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Feb 2017
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 
-#include "mir/action/transform/VodSh2uvRegularLL.h"
+#include "mir/action/transform/ShScalarToRegularLL.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -24,8 +26,8 @@ namespace action {
 namespace transform {
 
 
-VodSh2uvRegularLL::VodSh2uvRegularLL(const param::MIRParametrisation &parametrisation):
-    VodSh2uvGridded(parametrisation) {
+ShScalarToRegularLL::ShScalarToRegularLL(const param::MIRParametrisation &parametrisation):
+    ShScalarToGridded(parametrisation) {
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
@@ -35,22 +37,22 @@ VodSh2uvRegularLL::VodSh2uvRegularLL(const param::MIRParametrisation &parametris
 }
 
 
-VodSh2uvRegularLL::~VodSh2uvRegularLL() {
+ShScalarToRegularLL::~ShScalarToRegularLL() {
 }
 
 
-bool VodSh2uvRegularLL::sameAs(const Action& other) const {
-    const VodSh2uvRegularLL* o = dynamic_cast<const VodSh2uvRegularLL*>(&other);
+bool ShScalarToRegularLL::sameAs(const Action& other) const {
+    const ShScalarToRegularLL* o = dynamic_cast<const ShScalarToRegularLL*>(&other);
     return o && (grid_ == o->grid_);
 }
 
 
-void VodSh2uvRegularLL::print(std::ostream &out) const {
-    out << "VodSh2uvRegularLL[grib=" << grid_ << "]";
+void ShScalarToRegularLL::print(std::ostream &out) const {
+    out << "ShScalarToRegularLL[grib=" << grid_ << "]";
 }
 
 
-const repres::Representation *VodSh2uvRegularLL::outputRepresentation() const {
+const repres::Representation *ShScalarToRegularLL::outputRepresentation() const {
     return new repres::latlon::RegularLL(
                 util::BoundingBox(90, 0, -90, 360 - grid_.west_east()),
                 grid_);
@@ -58,7 +60,7 @@ const repres::Representation *VodSh2uvRegularLL::outputRepresentation() const {
 
 
 namespace {
-static ActionBuilder< VodSh2uvRegularLL > __action("transform.vod-sh-to-uv-regular-ll");
+static ActionBuilder< ShScalarToRegularLL > __action("transform.sh-scalar-to-regular-ll");
 }
 
 

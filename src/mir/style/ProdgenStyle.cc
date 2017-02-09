@@ -53,16 +53,16 @@ void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (parametrisation_.has("user.rotation")) {
 
-        plan.add("transform.scalar-sh-to-octahedral-gg", "octahedral", new AutoGaussian(parametrisation_));
+        plan.add("transform.sh-scalar-to-octahedral-gg", "octahedral", new AutoGaussian(parametrisation_));
     }
     else if (parametrisation_.has("user.grid")) {
 
-        plan.add("transform.scalar-sh-to-regular-ll", "grid", new ProdgenGrid(parametrisation_));
+        plan.add("transform.sh-scalar-to-regular-ll", "grid", new ProdgenGrid(parametrisation_));
         plan.add("interpolate.grid2regular-ll");
 
     }
     else {
-        plan.add("transform.scalar-sh-to-octahedral-gg", "octahedral", new AutoGaussian(parametrisation_));
+        plan.add("transform.sh-scalar-to-octahedral-gg", "octahedral", new AutoGaussian(parametrisation_));
     }
 
 

@@ -11,10 +11,10 @@
 /// @date Feb 2017
 
 
-#ifndef mir_action_transform_VodSh2uvGridded_h
-#define mir_action_transform_VodSh2uvGridded_h
+#ifndef mir_action_transform_ShScalarToGridded_h
+#define mir_action_transform_ShScalarToGridded_h
 
-#include "mir/action/transform/Sh2Gridded.h"
+#include "mir/action/transform/ShToGridded.h"
 
 
 namespace mir {
@@ -22,17 +22,17 @@ namespace action {
 namespace transform {
 
 
-class VodSh2uvGridded : public Sh2Gridded {
+class ShScalarToGridded : public ShToGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    VodSh2uvGridded(const param::MIRParametrisation&);
+    ShScalarToGridded(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~VodSh2uvGridded();
+    virtual ~ShScalarToGridded();
 
     // -- Convertors
     // None
@@ -58,7 +58,7 @@ protected:
     // None
 
     // -- Methods
-    void sh2grid(struct Trans_t&, data::MIRField&) const;
+    // None
 
     // -- Overridden methods
     // None
@@ -78,7 +78,7 @@ private:
     // None
 
     // -- Overridden methods
-    // None
+    void sh2grid(struct Trans_t&, data::MIRField&) const;
 
     // -- Class members
     // None

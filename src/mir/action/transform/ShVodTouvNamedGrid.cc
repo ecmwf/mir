@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,12 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#include "mir/action/transform/ScalarSh2NamedGrid.h"
+#include "mir/action/transform/ShVodTouvNamedGrid.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -25,37 +23,37 @@ namespace action {
 namespace transform {
 
 
-ScalarSh2NamedGrid::ScalarSh2NamedGrid(const param::MIRParametrisation& parametrisation):
-    ScalarSh2Gridded(parametrisation) {
+ShVodTouvNamedGrid::ShVodTouvNamedGrid(const param::MIRParametrisation& parametrisation):
+    ShVodTouvGridded(parametrisation) {
 
     ASSERT(parametrisation_.get("user.gridname", gridname_));
 
 }
 
 
-ScalarSh2NamedGrid::~ScalarSh2NamedGrid() {
+ShVodTouvNamedGrid::~ShVodTouvNamedGrid() {
 }
 
 
-bool ScalarSh2NamedGrid::sameAs(const Action& other) const {
-    const ScalarSh2NamedGrid* o = dynamic_cast<const ScalarSh2NamedGrid*>(&other);
+bool ShVodTouvNamedGrid::sameAs(const Action& other) const {
+    const ShVodTouvNamedGrid* o = dynamic_cast<const ShVodTouvNamedGrid*>(&other);
     return o && (gridname_ == o->gridname_);
 }
 
 
-void ScalarSh2NamedGrid::print(std::ostream& out) const {
-    out << "ScalarSh2NamedGrid[gridname=" << gridname_ << "]";
+void ShVodTouvNamedGrid::print(std::ostream& out) const {
+    out << "ShVodTouvNamedGrid[gridname=" << gridname_ << "]";
 }
 
 
-const repres::Representation* ScalarSh2NamedGrid::outputRepresentation() const {
+const repres::Representation* ShVodTouvNamedGrid::outputRepresentation() const {
     const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
     return ng.representation();
 }
 
 
 namespace {
-static ActionBuilder< ScalarSh2NamedGrid > __action("transform.scalar-sh-to-namedgrid");
+static ActionBuilder< ShVodTouvNamedGrid > __action("transform.sh-vod-to-uv-namedgrid");
 }
 
 

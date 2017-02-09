@@ -50,7 +50,7 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
         selectWindComponents(plan);
     }
 
-    plan.add("transform.scalar-sh-to-octahedral-gg",
+    plan.add("transform.sh-scalar-to-octahedral-gg",
              "octahedral", new AutoGaussian(parametrisation_));
 
 

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,10 +11,11 @@
 /// @date Feb 2017
 
 
-#ifndef mir_action_transform_ScalarSh2Gridded_h
-#define mir_action_transform_ScalarSh2Gridded_h
+#ifndef mir_action_transform_ShVodTouvRegularLL_h
+#define mir_action_transform_ShVodTouvRegularLL_h
 
-#include "mir/action/transform/Sh2Gridded.h"
+#include "mir/action/transform/ShVodTouvGridded.h"
+#include "mir/util/Increments.h"
 
 
 namespace mir {
@@ -22,17 +23,17 @@ namespace action {
 namespace transform {
 
 
-class ScalarSh2Gridded : public Sh2Gridded {
+class ShVodTouvRegularLL : public ShVodTouvGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    ScalarSh2Gridded(const param::MIRParametrisation&);
+    ShVodTouvRegularLL(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~ScalarSh2Gridded();
+    virtual ~ShVodTouvRegularLL(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -58,7 +59,7 @@ protected:
     // None
 
     // -- Methods
-    void sh2grid(struct Trans_t&, data::MIRField&) const;
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -71,14 +72,19 @@ protected:
 
 private:
 
+    // No copy allowed
+    ShVodTouvRegularLL(const ShVodTouvRegularLL&);
+    ShVodTouvRegularLL& operator=(const ShVodTouvRegularLL&);
+
     // -- Members
-    // None
+    util::Increments grid_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-    // None
+    virtual bool sameAs(const Action& other) const;
+    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
 
     // -- Class members
     // None
@@ -98,3 +104,4 @@ private:
 
 
 #endif
+

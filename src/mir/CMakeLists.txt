@@ -100,40 +100,40 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/transform/ScalarSh2Gridded.cc
-    action/transform/ScalarSh2Gridded.h
-    action/transform/ScalarSh2NamedGrid.cc
-    action/transform/ScalarSh2NamedGrid.h
-    action/transform/ScalarSh2Octahedral.cc
-    action/transform/ScalarSh2Octahedral.h
-    action/transform/ScalarSh2ReducedGG.cc
-    action/transform/ScalarSh2ReducedGG.h
-    action/transform/ScalarSh2RegularGG.cc
-    action/transform/ScalarSh2RegularGG.h
-    action/transform/ScalarSh2RegularLL.cc
-    action/transform/ScalarSh2RegularLL.h
-    action/transform/Sh2Gridded.cc
-    action/transform/Sh2Gridded.h
+    action/transform/ShScalarToGridded.cc
+    action/transform/ShScalarToGridded.h
+    action/transform/ShScalarToNamedGrid.cc
+    action/transform/ShScalarToNamedGrid.h
+    action/transform/ShScalarToOctahedralGG.cc
+    action/transform/ShScalarToOctahedralGG.h
+    action/transform/ShScalarToReducedGG.cc
+    action/transform/ShScalarToReducedGG.h
+    action/transform/ShScalarToRegularGG.cc
+    action/transform/ShScalarToRegularGG.h
+    action/transform/ShScalarToRegularLL.cc
+    action/transform/ShScalarToRegularLL.h
+    action/transform/ShToGridded.cc
+    action/transform/ShToGridded.h
     action/transform/ShTruncate.cc
     action/transform/ShTruncate.h
+    action/transform/ShVodToUV.cc
+    action/transform/ShVodToUV.h
+    action/transform/ShVodTouvGridded.cc
+    action/transform/ShVodTouvGridded.h
+    action/transform/ShVodTouvNamedGrid.cc
+    action/transform/ShVodTouvNamedGrid.h
+    action/transform/ShVodTouvOctahedralGG.cc
+    action/transform/ShVodTouvOctahedralGG.h
+    action/transform/ShVodTouvReducedGG.cc
+    action/transform/ShVodTouvReducedGG.h
+    action/transform/ShVodTouvRegularGG.cc
+    action/transform/ShVodTouvRegularGG.h
+    action/transform/ShVodTouvRegularLL.cc
+    action/transform/ShVodTouvRegularLL.h
     action/transform/TransCache.cc
     action/transform/TransCache.h
     action/transform/TransInitor.cc
     action/transform/TransInitor.h
-    action/transform/VodSh2UVSh.cc
-    action/transform/VodSh2UVSh.h
-    action/transform/VodSh2uvGridded.cc
-    action/transform/VodSh2uvGridded.h
-    action/transform/VodSh2uvNamedGrid.cc
-    action/transform/VodSh2uvNamedGrid.h
-    action/transform/VodSh2uvOctahedral.cc
-    action/transform/VodSh2uvOctahedral.h
-    action/transform/VodSh2uvReducedGG.cc
-    action/transform/VodSh2uvReducedGG.h
-    action/transform/VodSh2uvRegularGG.cc
-    action/transform/VodSh2uvRegularGG.h
-    action/transform/VodSh2uvRegularLL.cc
-    action/transform/VodSh2uvRegularLL.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc

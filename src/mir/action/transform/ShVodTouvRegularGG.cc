@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,12 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#include "mir/action/transform/ScalarSh2RegularGG.h"
+#include "mir/action/transform/ShVodTouvRegularGG.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -26,34 +24,34 @@ namespace action {
 namespace transform {
 
 
-ScalarSh2RegularGG::ScalarSh2RegularGG(const param::MIRParametrisation& parametrisation):
-    ScalarSh2Gridded(parametrisation) {
+ShVodTouvRegularGG::ShVodTouvRegularGG(const param::MIRParametrisation& parametrisation):
+    ShVodTouvGridded(parametrisation) {
     ASSERT(parametrisation_.get("user.regular", N_));
 }
 
 
-ScalarSh2RegularGG::~ScalarSh2RegularGG() {
+ShVodTouvRegularGG::~ShVodTouvRegularGG() {
 }
 
 
-bool ScalarSh2RegularGG::sameAs(const Action& other) const {
-    const ScalarSh2RegularGG* o = dynamic_cast<const ScalarSh2RegularGG*>(&other);
+bool ShVodTouvRegularGG::sameAs(const Action& other) const {
+    const ShVodTouvRegularGG* o = dynamic_cast<const ShVodTouvRegularGG*>(&other);
     return o && (N_ == o->N_);
 }
 
 
-void ScalarSh2RegularGG::print(std::ostream& out) const {
-    out << "ScalarSh2RegularGG[N=" << N_ << "]";
+void ShVodTouvRegularGG::print(std::ostream& out) const {
+    out << "ShVodTouvRegularGG[N=" << N_ << "]";
 }
 
 
-const repres::Representation* ScalarSh2RegularGG::outputRepresentation() const {
+const repres::Representation* ShVodTouvRegularGG::outputRepresentation() const {
     return new repres::regular::RegularGG(N_);
 }
 
 
 namespace {
-static ActionBuilder< ScalarSh2RegularGG > __action("transform.scalar-sh-to-regular-gg");
+static ActionBuilder< ShVodTouvRegularGG > __action("transform.sh-vod-to-uv-regular-gg");
 }
 
 

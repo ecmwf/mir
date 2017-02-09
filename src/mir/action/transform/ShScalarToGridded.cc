@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2016 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,7 +11,7 @@
 /// @date Feb 2017
 
 
-#include "mir/action/transform/ScalarSh2Gridded.h"
+#include "mir/action/transform/ShScalarToGridded.h"
 
 #include <vector>
 #include "eckit/exception/Exceptions.h"
@@ -23,16 +23,16 @@ namespace action {
 namespace transform {
 
 
-ScalarSh2Gridded::ScalarSh2Gridded(const param::MIRParametrisation& parametrisation):
-    Sh2Gridded(parametrisation) {
+ShScalarToGridded::ShScalarToGridded(const param::MIRParametrisation& parametrisation):
+    ShToGridded(parametrisation) {
 }
 
 
-ScalarSh2Gridded::~ScalarSh2Gridded() {
+ShScalarToGridded::~ShScalarToGridded() {
 }
 
 
-void ScalarSh2Gridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
+void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields > 0);
     ASSERT(trans.myproc == 1);

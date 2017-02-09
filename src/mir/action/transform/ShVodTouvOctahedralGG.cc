@@ -11,7 +11,7 @@
 /// @date Feb 2017
 
 
-#include "mir/action/transform/VodSh2uvOctahedral.h"
+#include "mir/action/transform/ShVodTouvOctahedralGG.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -24,36 +24,36 @@ namespace action {
 namespace transform {
 
 
-VodSh2uvOctahedral::VodSh2uvOctahedral(const param::MIRParametrisation& parametrisation):
-    VodSh2uvGridded(parametrisation) {
+ShVodTouvOctahedralGG::ShVodTouvOctahedralGG(const param::MIRParametrisation& parametrisation):
+    ShVodTouvGridded(parametrisation) {
 
     ASSERT(parametrisation_.get("user.octahedral", N_));
 
 }
 
 
-bool VodSh2uvOctahedral::sameAs(const Action& other) const {
-    const VodSh2uvOctahedral* o = dynamic_cast<const VodSh2uvOctahedral*>(&other);
+bool ShVodTouvOctahedralGG::sameAs(const Action& other) const {
+    const ShVodTouvOctahedralGG* o = dynamic_cast<const ShVodTouvOctahedralGG*>(&other);
     return o && (N_ == o->N_);
 }
 
 
-VodSh2uvOctahedral::~VodSh2uvOctahedral() {
+ShVodTouvOctahedralGG::~ShVodTouvOctahedralGG() {
 }
 
 
-void VodSh2uvOctahedral::print(std::ostream& out) const {
-    out << "VodSh2uvOctahedral[N=" << N_ << "]";
+void ShVodTouvOctahedralGG::print(std::ostream& out) const {
+    out << "ShVodTouvOctahedralGG[N=" << N_ << "]";
 }
 
 
-const repres::Representation* VodSh2uvOctahedral::outputRepresentation() const {
+const repres::Representation* ShVodTouvOctahedralGG::outputRepresentation() const {
     return new repres::reduced::ReducedOctahedral(N_);
 }
 
 
 namespace {
-static ActionBuilder< VodSh2uvOctahedral > __action("transform.vod-sh-to-uv-octahedral-gg");
+static ActionBuilder< ShVodTouvOctahedralGG > __action("transform.sh-vod-to-uv-octahedral-gg");
 }
 
 

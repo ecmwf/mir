@@ -8,10 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Feb 2017
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 
-#include "mir/action/transform/VodSh2uvNamedGrid.h"
+#include "mir/action/transform/ShScalarToNamedGrid.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -23,37 +25,37 @@ namespace action {
 namespace transform {
 
 
-VodSh2uvNamedGrid::VodSh2uvNamedGrid(const param::MIRParametrisation& parametrisation):
-    VodSh2uvGridded(parametrisation) {
+ShScalarToNamedGrid::ShScalarToNamedGrid(const param::MIRParametrisation& parametrisation):
+    ShScalarToGridded(parametrisation) {
 
     ASSERT(parametrisation_.get("user.gridname", gridname_));
 
 }
 
 
-VodSh2uvNamedGrid::~VodSh2uvNamedGrid() {
+ShScalarToNamedGrid::~ShScalarToNamedGrid() {
 }
 
 
-bool VodSh2uvNamedGrid::sameAs(const Action& other) const {
-    const VodSh2uvNamedGrid* o = dynamic_cast<const VodSh2uvNamedGrid*>(&other);
+bool ShScalarToNamedGrid::sameAs(const Action& other) const {
+    const ShScalarToNamedGrid* o = dynamic_cast<const ShScalarToNamedGrid*>(&other);
     return o && (gridname_ == o->gridname_);
 }
 
 
-void VodSh2uvNamedGrid::print(std::ostream& out) const {
-    out << "VodSh2uvNamedGrid[gridname=" << gridname_ << "]";
+void ShScalarToNamedGrid::print(std::ostream& out) const {
+    out << "ShScalarToNamedGrid[gridname=" << gridname_ << "]";
 }
 
 
-const repres::Representation* VodSh2uvNamedGrid::outputRepresentation() const {
+const repres::Representation* ShScalarToNamedGrid::outputRepresentation() const {
     const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
     return ng.representation();
 }
 
 
 namespace {
-static ActionBuilder< VodSh2uvNamedGrid > __action("transform.vod-sh-to-uv-namedgrid");
+static ActionBuilder< ShScalarToNamedGrid > __action("transform.sh-scalar-to-namedgrid");
 }
 
 

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,32 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef mir_action_transform_Sh2Gridded_h
-#define mir_action_transform_Sh2Gridded_h
+#ifndef mir_action_transform_ShScalarToRegularGG_h
+#define mir_action_transform_ShScalarToRegularGG_h
 
-#include "atlas/internals/atlas_config.h"
-#include "mir/action/plan/Action.h"
-
-#ifdef ATLAS_HAVE_TRANS
-#include "transi/trans.h"
-#else
-struct Trans_t {};
-#endif
-
-
-namespace atlas {
-namespace grid {
-class Grid;
-}
-}
-namespace mir {
-namespace data {
-class MIRField;
-}
-namespace repres {
-class Representation;
-}
-}
+#include "mir/action/transform/ShScalarToGridded.h"
 
 
 namespace mir {
@@ -46,17 +24,17 @@ namespace action {
 namespace transform {
 
 
-class Sh2Gridded : public Action {
+class ShScalarToRegularGG : public ShScalarToGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    Sh2Gridded(const param::MIRParametrisation&);
+    ShScalarToRegularGG(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~Sh2Gridded();
+    virtual ~ShScalarToRegularGG(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -82,7 +60,7 @@ protected:
     // None
 
     // -- Methods
-    virtual void sh2grid(struct Trans_t& trans, data::MIRField& field) const = 0;
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -96,20 +74,18 @@ protected:
 private:
 
     // No copy allowed
-    Sh2Gridded(const Sh2Gridded&);
-    Sh2Gridded& operator=(const Sh2Gridded&);
+    ShScalarToRegularGG(const ShScalarToRegularGG&);
+    ShScalarToRegularGG& operator=(const ShScalarToRegularGG&);
 
     // -- Members
-    // None
+    size_t N_;
 
     // -- Methods
-    virtual const repres::Representation* outputRepresentation() const = 0;
-
-    void transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx, const std::string& key, size_t truncation) const;
-    void transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx) const;
+    // None
 
     // -- Overridden methods
-    virtual void execute(context::Context&) const;
+    virtual bool sameAs(const Action& other) const;
+    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
 
     // -- Class members
     // None
@@ -118,9 +94,7 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Sh2GriddedTransform& p)
-    //	{ p.print(s); return s; }
+    // None
 
 };
 
@@ -131,3 +105,4 @@ private:
 
 
 #endif
+

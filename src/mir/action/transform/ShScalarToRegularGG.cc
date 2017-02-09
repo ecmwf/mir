@@ -8,10 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Feb 2017
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 
-#include "mir/action/transform/VodSh2uvRegularGG.h"
+#include "mir/action/transform/ShScalarToRegularGG.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -24,34 +26,34 @@ namespace action {
 namespace transform {
 
 
-VodSh2uvRegularGG::VodSh2uvRegularGG(const param::MIRParametrisation& parametrisation):
-    VodSh2uvGridded(parametrisation) {
+ShScalarToRegularGG::ShScalarToRegularGG(const param::MIRParametrisation& parametrisation):
+    ShScalarToGridded(parametrisation) {
     ASSERT(parametrisation_.get("user.regular", N_));
 }
 
 
-VodSh2uvRegularGG::~VodSh2uvRegularGG() {
+ShScalarToRegularGG::~ShScalarToRegularGG() {
 }
 
 
-bool VodSh2uvRegularGG::sameAs(const Action& other) const {
-    const VodSh2uvRegularGG* o = dynamic_cast<const VodSh2uvRegularGG*>(&other);
+bool ShScalarToRegularGG::sameAs(const Action& other) const {
+    const ShScalarToRegularGG* o = dynamic_cast<const ShScalarToRegularGG*>(&other);
     return o && (N_ == o->N_);
 }
 
 
-void VodSh2uvRegularGG::print(std::ostream& out) const {
-    out << "VodSh2uvRegularGG[N=" << N_ << "]";
+void ShScalarToRegularGG::print(std::ostream& out) const {
+    out << "ShScalarToRegularGG[N=" << N_ << "]";
 }
 
 
-const repres::Representation* VodSh2uvRegularGG::outputRepresentation() const {
+const repres::Representation* ShScalarToRegularGG::outputRepresentation() const {
     return new repres::regular::RegularGG(N_);
 }
 
 
 namespace {
-static ActionBuilder< VodSh2uvRegularGG > __action("transform.vod-sh-to-uv-regular-gg");
+static ActionBuilder< ShScalarToRegularGG > __action("transform.sh-scalar-to-regular-gg");
 }
 
 

@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/action/transform/VodSh2UVSh.h"
+#include "mir/action/transform/ShVodToUV.h"
 
 #include <complex>
 #include <iostream>
@@ -46,28 +46,28 @@ namespace action {
 namespace transform {
 
 
-VodSh2UVSh::VodSh2UVSh(const param::MIRParametrisation &parametrisation):
+ShVodToUV::ShVodToUV(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 }
 
 
-VodSh2UVSh::~VodSh2UVSh() {
+ShVodToUV::~ShVodToUV() {
 }
 
 
-bool VodSh2UVSh::sameAs(const Action& other) const {
-    const VodSh2UVSh* o = dynamic_cast<const VodSh2UVSh*>(&other);
+bool ShVodToUV::sameAs(const Action& other) const {
+    const ShVodToUV* o = dynamic_cast<const ShVodToUV*>(&other);
     return o;
 }
 
 
-void VodSh2UVSh::print(std::ostream &out) const {
-    out << "Vod2uv[";
-    out << "]";
+void ShVodToUV::print(std::ostream &out) const {
+    out << "ShVodToUV["
+        << "]";
 }
 
 
-void VodSh2UVSh::execute(context::Context & ctx) const {
+void ShVodToUV::execute(context::Context & ctx) const {
 #ifdef ATLAS_HAVE_TRANS
     data::MIRField& field = ctx.field();
 
@@ -85,7 +85,7 @@ void VodSh2UVSh::execute(context::Context & ctx) const {
     const std::vector<double> &field_vo = field.values(0);
     const std::vector<double> &field_d = field.values(1);
 
-    eckit::Log::debug<LibMir>() << "Vod2uv truncation=" << truncation
+    eckit::Log::debug<LibMir>() << "ShVodToUV truncation=" << truncation
                                 << ", size=" << size
                                 << ", values=" << field_vo.size() << std::endl;
 
@@ -129,7 +129,7 @@ void VodSh2UVSh::execute(context::Context & ctx) const {
 
 
 namespace {
-static ActionBuilder< VodSh2UVSh > __action("transform.vod-sh-to-UV-sh");
+static ActionBuilder< ShVodToUV > __action("transform.sh-vod-to-UV");
 }
 
 

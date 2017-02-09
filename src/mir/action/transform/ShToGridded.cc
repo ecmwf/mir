@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2016 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -15,7 +15,7 @@
 /// @date Apr 2015
 
 
-#include "mir/action/transform/Sh2Gridded.h"
+#include "mir/action/transform/ShToGridded.h"
 
 #include <algorithm>
 #include <iostream>
@@ -119,7 +119,7 @@ static void createCoefficients(const eckit::PathName& path,
 }  // (anonymous namespace)
 
 
-void Sh2Gridded::transform(
+void ShToGridded::transform(
         data::MIRField& field,
         const atlas::grid::Grid& grid,
         context::Context& ctx,
@@ -202,7 +202,7 @@ void Sh2Gridded::transform(
 }
 
 
-void Sh2Gridded::transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx) const {
+void ShToGridded::transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx) const {
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
 
     TransInitor::instance(); // Will init trans if needed
@@ -222,16 +222,16 @@ void Sh2Gridded::transform(data::MIRField& field, const atlas::grid::Grid& grid,
 }
 
 
-Sh2Gridded::Sh2Gridded(const param::MIRParametrisation &parametrisation):
+ShToGridded::ShToGridded(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 }
 
 
-Sh2Gridded::~Sh2Gridded() {
+ShToGridded::~ShToGridded() {
 }
 
 
-void Sh2Gridded::execute(context::Context& ctx) const {
+void ShToGridded::execute(context::Context& ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<TransCache> use(trans_handles, ctx.statistics().transHandleCache_);

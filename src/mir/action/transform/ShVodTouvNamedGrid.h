@@ -8,16 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#ifndef mir_action_transform_VodSh2UVSh_h
-#define mir_action_transform_VodSh2UVSh_h
+#ifndef mir_action_transform_ShVodTouvNamedGrid_h
+#define mir_action_transform_ShVodTouvNamedGrid_h
 
-#include <vector>
-#include "mir/action/plan/Action.h"
+#include "mir/action/transform/ShVodTouvGridded.h"
 
 
 namespace mir {
@@ -25,17 +22,17 @@ namespace action {
 namespace transform {
 
 
-class VodSh2UVSh : public Action {
+class ShVodTouvNamedGrid : public ShVodTouvGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    VodSh2UVSh(const param::MIRParametrisation&);
+    ShVodTouvNamedGrid(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~VodSh2UVSh(); // Change to virtual if base class
+    virtual ~ShVodTouvNamedGrid(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -75,18 +72,18 @@ protected:
 private:
 
     // No copy allowed
-    VodSh2UVSh(const VodSh2UVSh&);
-    VodSh2UVSh& operator=(const VodSh2UVSh&);
+    ShVodTouvNamedGrid(const ShVodTouvNamedGrid&);
+    ShVodTouvNamedGrid& operator=(const ShVodTouvNamedGrid&);
 
     // -- Members
-    // None
+    std::string gridname_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
     virtual bool sameAs(const Action& other) const;
-    virtual void execute(context::Context & ctx) const;
+    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
 
     // -- Class members
     // None

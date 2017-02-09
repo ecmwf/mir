@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,10 +13,11 @@
 /// @date Apr 2015
 
 
-#ifndef mir_action_transform_ScalarSh2Octahedral_h
-#define mir_action_transform_ScalarSh2Octahedral_h
+#ifndef mir_action_transform_ShVodToUV_h
+#define mir_action_transform_ShVodToUV_h
 
-#include "mir/action/transform/ScalarSh2Gridded.h"
+#include <vector>
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {
@@ -24,17 +25,17 @@ namespace action {
 namespace transform {
 
 
-class ScalarSh2Octahedral : public ScalarSh2Gridded {
+class ShVodToUV : public Action {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    ScalarSh2Octahedral(const param::MIRParametrisation&);
+    ShVodToUV(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~ScalarSh2Octahedral(); // Change to virtual if base class
+    virtual ~ShVodToUV(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -74,18 +75,18 @@ protected:
 private:
 
     // No copy allowed
-    ScalarSh2Octahedral(const ScalarSh2Octahedral&);
-    ScalarSh2Octahedral& operator=(const ScalarSh2Octahedral&);
+    ShVodToUV(const ShVodToUV&);
+    ShVodToUV& operator=(const ShVodToUV&);
 
     // -- Members
-    size_t N_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
     virtual bool sameAs(const Action& other) const;
-    virtual const repres::Representation* outputRepresentation() const;  // from Sh2Gridded
+    virtual void execute(context::Context & ctx) const;
 
     // -- Class members
     // None

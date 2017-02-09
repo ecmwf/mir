@@ -8,13 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Feb 2017
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 
-#ifndef mir_action_transform_VodSh2uvNamedGrid_h
-#define mir_action_transform_VodSh2uvNamedGrid_h
+#ifndef mir_action_transform_ShScalarToOctahedralGG_h
+#define mir_action_transform_ShScalarToOctahedralGG_h
 
-#include "mir/action/transform/VodSh2uvGridded.h"
+#include "mir/action/transform/ShScalarToGridded.h"
 
 
 namespace mir {
@@ -22,17 +24,17 @@ namespace action {
 namespace transform {
 
 
-class VodSh2uvNamedGrid : public VodSh2uvGridded {
+class ShScalarToOctahedralGG : public ShScalarToGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    VodSh2uvNamedGrid(const param::MIRParametrisation&);
+    ShScalarToOctahedralGG(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~VodSh2uvNamedGrid(); // Change to virtual if base class
+    virtual ~ShScalarToOctahedralGG(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -72,18 +74,18 @@ protected:
 private:
 
     // No copy allowed
-    VodSh2uvNamedGrid(const VodSh2uvNamedGrid&);
-    VodSh2uvNamedGrid& operator=(const VodSh2uvNamedGrid&);
+    ShScalarToOctahedralGG(const ShScalarToOctahedralGG&);
+    ShScalarToOctahedralGG& operator=(const ShScalarToOctahedralGG&);
 
     // -- Members
-    std::string gridname_;
+    size_t N_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
     virtual bool sameAs(const Action& other) const;
-    virtual const repres::Representation* outputRepresentation() const;  // from Sh2Gridded
+    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
 
     // -- Class members
     // None

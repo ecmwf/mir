@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,16 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#ifndef mir_action_transform_ScalarSh2RegularLL_h
-#define mir_action_transform_ScalarSh2RegularLL_h
+#ifndef mir_action_transform_ShVodTouvReducedGG_h
+#define mir_action_transform_ShVodTouvReducedGG_h
 
-#include "mir/action/transform/ScalarSh2Gridded.h"
-#include "mir/util/Increments.h"
+#include "mir/action/transform/ShVodTouvGridded.h"
 
 
 namespace mir {
@@ -25,17 +22,17 @@ namespace action {
 namespace transform {
 
 
-class ScalarSh2RegularLL : public ScalarSh2Gridded {
+class ShVodTouvReducedGG : public ShVodTouvGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    ScalarSh2RegularLL(const param::MIRParametrisation&);
+    ShVodTouvReducedGG(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~ScalarSh2RegularLL(); // Change to virtual if base class
+    virtual ~ShVodTouvReducedGG(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -75,18 +72,18 @@ protected:
 private:
 
     // No copy allowed
-    ScalarSh2RegularLL(const ScalarSh2RegularLL&);
-    ScalarSh2RegularLL& operator=(const ScalarSh2RegularLL&);
+    ShVodTouvReducedGG(const ShVodTouvReducedGG&);
+    ShVodTouvReducedGG& operator=(const ShVodTouvReducedGG&);
 
     // -- Members
-    util::Increments grid_;
+    size_t N_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
     virtual bool sameAs(const Action& other) const;
-    virtual const repres::Representation* outputRepresentation() const;  // from Sh2Gridded
+    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
 
     // -- Class members
     // None

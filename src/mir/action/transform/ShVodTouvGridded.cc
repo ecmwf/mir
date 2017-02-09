@@ -11,7 +11,7 @@
 /// @date Feb 2017
 
 
-#include "mir/action/transform/VodSh2uvGridded.h"
+#include "mir/action/transform/ShVodTouvGridded.h"
 
 #include <vector>
 #include "eckit/exception/Exceptions.h"
@@ -24,16 +24,16 @@ namespace action {
 namespace transform {
 
 
-VodSh2uvGridded::VodSh2uvGridded(const param::MIRParametrisation& parametrisation):
-    Sh2Gridded(parametrisation) {
+ShVodTouvGridded::ShVodTouvGridded(const param::MIRParametrisation& parametrisation):
+    ShToGridded(parametrisation) {
 }
 
 
-VodSh2uvGridded::~VodSh2uvGridded() {
+ShVodTouvGridded::~ShVodTouvGridded() {
 }
 
 
-void VodSh2uvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
+void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields == 2);
     ASSERT(trans.myproc == 1);

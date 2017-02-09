@@ -8,13 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Feb 2017
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 
-#ifndef mir_action_transform_VodSh2uvRegularGG_h
-#define mir_action_transform_VodSh2uvRegularGG_h
+#ifndef mir_action_transform_ShScalarToReducedGG_h
+#define mir_action_transform_ShScalarToReducedGG_h
 
-#include "mir/action/transform/VodSh2uvGridded.h"
+#include "mir/action/transform/ShScalarToGridded.h"
 
 
 namespace mir {
@@ -22,17 +24,17 @@ namespace action {
 namespace transform {
 
 
-class VodSh2uvRegularGG : public VodSh2uvGridded {
+class ShScalarToReducedGG : public ShScalarToGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    VodSh2uvRegularGG(const param::MIRParametrisation&);
+    ShScalarToReducedGG(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~VodSh2uvRegularGG(); // Change to virtual if base class
+    virtual ~ShScalarToReducedGG(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -72,8 +74,8 @@ protected:
 private:
 
     // No copy allowed
-    VodSh2uvRegularGG(const VodSh2uvRegularGG&);
-    VodSh2uvRegularGG& operator=(const VodSh2uvRegularGG&);
+    ShScalarToReducedGG(const ShScalarToReducedGG&);
+    ShScalarToReducedGG& operator=(const ShScalarToReducedGG&);
 
     // -- Members
     size_t N_;
@@ -83,7 +85,7 @@ private:
 
     // -- Overridden methods
     virtual bool sameAs(const Action& other) const;
-    virtual const repres::Representation* outputRepresentation() const;  // from Sh2Gridded
+    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
 
     // -- Class members
     // None

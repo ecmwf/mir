@@ -8,10 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Feb 2017
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 
-#include "mir/action/transform/VodSh2uvReducedGG.h"
+#include "mir/action/transform/ShScalarToReducedGG.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -24,36 +26,36 @@ namespace action {
 namespace transform {
 
 
-VodSh2uvReducedGG::VodSh2uvReducedGG(const param::MIRParametrisation& parametrisation):
-    VodSh2uvGridded(parametrisation) {
+ShScalarToReducedGG::ShScalarToReducedGG(const param::MIRParametrisation& parametrisation):
+    ShScalarToGridded(parametrisation) {
 
     ASSERT(parametrisation_.get("user.reduced", N_));
 
 }
 
 
-VodSh2uvReducedGG::~VodSh2uvReducedGG() {
+ShScalarToReducedGG::~ShScalarToReducedGG() {
 }
 
 
-bool VodSh2uvReducedGG::sameAs(const Action& other) const {
-    const VodSh2uvReducedGG* o = dynamic_cast<const VodSh2uvReducedGG*>(&other);
+bool ShScalarToReducedGG::sameAs(const Action& other) const {
+    const ShScalarToReducedGG* o = dynamic_cast<const ShScalarToReducedGG*>(&other);
     return o && (N_ == o->N_);
 }
 
 
-void VodSh2uvReducedGG::print(std::ostream& out) const {
-    out << "VodSh2uvReducedGG[N=" << N_ << "]";
+void ShScalarToReducedGG::print(std::ostream& out) const {
+    out << "ShScalarToReducedGG[N=" << N_ << "]";
 }
 
 
-const repres::Representation* VodSh2uvReducedGG::outputRepresentation() const {
+const repres::Representation* ShScalarToReducedGG::outputRepresentation() const {
     return new repres::reduced::ReducedClassic(N_);
 }
 
 
 namespace {
-static ActionBuilder< VodSh2uvReducedGG > __action("transform.vod-sh-to-uv-reduced-gg");
+static ActionBuilder< ShScalarToReducedGG > __action("transform.sh-scalar-to-reduced-gg");
 }
 
 

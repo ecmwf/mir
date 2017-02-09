@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,15 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#ifndef mir_action_transform_ScalarSh2ReducedGG_h
-#define mir_action_transform_ScalarSh2ReducedGG_h
+#ifndef mir_action_transform_ShVodTouvRegularGG_h
+#define mir_action_transform_ShVodTouvRegularGG_h
 
-#include "mir/action/transform/ScalarSh2Gridded.h"
+#include "mir/action/transform/ShVodTouvGridded.h"
 
 
 namespace mir {
@@ -24,17 +22,17 @@ namespace action {
 namespace transform {
 
 
-class ScalarSh2ReducedGG : public ScalarSh2Gridded {
+class ShVodTouvRegularGG : public ShVodTouvGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    ScalarSh2ReducedGG(const param::MIRParametrisation&);
+    ShVodTouvRegularGG(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~ScalarSh2ReducedGG(); // Change to virtual if base class
+    virtual ~ShVodTouvRegularGG(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -74,8 +72,8 @@ protected:
 private:
 
     // No copy allowed
-    ScalarSh2ReducedGG(const ScalarSh2ReducedGG&);
-    ScalarSh2ReducedGG& operator=(const ScalarSh2ReducedGG&);
+    ShVodTouvRegularGG(const ShVodTouvRegularGG&);
+    ShVodTouvRegularGG& operator=(const ShVodTouvRegularGG&);
 
     // -- Members
     size_t N_;
@@ -85,7 +83,7 @@ private:
 
     // -- Overridden methods
     virtual bool sameAs(const Action& other) const;
-    virtual const repres::Representation* outputRepresentation() const;  // from Sh2Gridded
+    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
 
     // -- Class members
     // None

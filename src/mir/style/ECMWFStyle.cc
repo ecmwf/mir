@@ -101,7 +101,7 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 //        parametrisation_.get("vod2uv", vod2uv);
 
 //        if (vod2uv) {
-//            plan.add("transform.vod-sh-to-UV-sh");
+//            plan.add("transform.sh-vod-to-UV");
 //        }
 
         if (parametrisation_.get("user.formula.spectral", formula)) {

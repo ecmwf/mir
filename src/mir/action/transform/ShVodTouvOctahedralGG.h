@@ -11,10 +11,10 @@
 /// @date Feb 2017
 
 
-#ifndef mir_action_transform_VodSh2uvOctahedral_h
-#define mir_action_transform_VodSh2uvOctahedral_h
+#ifndef mir_action_transform_ShVodTouvOctahedralGG_h
+#define mir_action_transform_ShVodTouvOctahedralGG_h
 
-#include "mir/action/transform/VodSh2uvGridded.h"
+#include "mir/action/transform/ShVodTouvGridded.h"
 
 
 namespace mir {
@@ -22,17 +22,17 @@ namespace action {
 namespace transform {
 
 
-class VodSh2uvOctahedral : public VodSh2uvGridded {
+class ShVodTouvOctahedralGG : public ShVodTouvGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    VodSh2uvOctahedral(const param::MIRParametrisation&);
+    ShVodTouvOctahedralGG(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~VodSh2uvOctahedral(); // Change to virtual if base class
+    virtual ~ShVodTouvOctahedralGG(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -72,8 +72,8 @@ protected:
 private:
 
     // No copy allowed
-    VodSh2uvOctahedral(const VodSh2uvOctahedral&);
-    VodSh2uvOctahedral& operator=(const VodSh2uvOctahedral&);
+    ShVodTouvOctahedralGG(const ShVodTouvOctahedralGG&);
+    ShVodTouvOctahedralGG& operator=(const ShVodTouvOctahedralGG&);
 
     // -- Members
     size_t N_;
@@ -83,7 +83,7 @@ private:
 
     // -- Overridden methods
     virtual bool sameAs(const Action& other) const;
-    virtual const repres::Representation* outputRepresentation() const;  // from Sh2Gridded
+    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
 
     // -- Class members
     // None
