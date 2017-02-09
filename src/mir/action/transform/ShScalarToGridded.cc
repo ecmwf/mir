@@ -58,16 +58,51 @@ void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) co
     }
 
 
+#if 0
     // transform
     struct InvTrans_t invtrans = new_invtrans(&trans);
     invtrans.rgp       = output.data();
     invtrans.nscalar   = int(number_of_fields);
     invtrans.rspscalar = number_of_fields > 1? input.data() : field.values(0).data();
     ASSERT(trans_invtrans(&invtrans) == 0);
+#else
+    std::vector<int>    nfrom (number_of_fields, 1); // processors responsible for distributing each field
+    std::vector<int>    nto   (number_of_fields, 1);
+    std::vector<double> rspec (number_of_fields * trans.nspec2);
+    std::vector<double> rgp   (number_of_fields * trans.ngptot);
+    int nfld = int(number_of_fields);
+
+
+    // distribute
+    struct DistSpec_t distspec = new_distspec(&trans);
+    distspec.nfrom  = nfrom.data();
+    distspec.rspecg = number_of_fields > 1? input.data() : field.values(0).data();
+    distspec.rspec  = rspec.data();
+    distspec.nfld   = nfld;
+    ASSERT(trans_distspec(&distspec) == 0);
+
+
+    // transform
+    struct InvTrans_t invtrans = new_invtrans(&trans);
+    invtrans.nscalar   = nfld;
+    invtrans.rspscalar = rspec.data();
+    invtrans.rgp       = rgp.data();
+    ASSERT(trans_invtrans(&invtrans) == 0);
+
+
+    // gather
+    struct GathGrid_t gathgrid = new_gathgrid(&trans);
+    gathgrid.rgp  = rgp.data();
+    gathgrid.rgpg = output.data();
+    gathgrid.nfld = nfld;
+    gathgrid.nto  = nto.data();
+    ASSERT(trans_gathgrid(&gathgrid) == 0);
+#endif
 
 
     // set field values (again, avoid copies for one field only)
     if (number_of_fields == 1) {
+//        output.resize(size_t(trans.ngptotg));
         field.update(output, 0);
     } else {
         std::vector<double>::const_iterator here = output.begin();

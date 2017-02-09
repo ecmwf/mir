@@ -44,6 +44,7 @@ void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) con
     std::vector<double> output(number_of_fields * size_t(trans.ngptotg));
 
 
+#if 0
     // transform
     struct InvTrans_t invtrans = new_invtrans(&trans);
     invtrans.rgp     = output.data();
@@ -51,6 +52,47 @@ void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) con
     invtrans.rspvor  = field.values(0).data();
     invtrans.rspdiv  = field.values(1).data();
     ASSERT(trans_invtrans(&invtrans) == 0);
+#else
+    std::vector<int>    nfrom (number_of_fields, 1); // processors responsible for distributing each field
+    std::vector<int>    nto   (number_of_fields, 1);
+    std::vector<double> rgp   (number_of_fields * size_t(trans.ngptot));
+    std::vector<double> rspec_vo (size_t(trans.nspec2));
+    std::vector<double> rspec_d  (size_t(trans.nspec2));
+
+
+    // distribute
+    struct DistSpec_t distspec = new_distspec(&trans);
+    distspec.nfrom  = nfrom.data();
+    distspec.nfld   = 1;
+    distspec.rspecg = field.values(0).data();
+    distspec.rspec  = rspec_vo.data();
+    ASSERT(trans_distspec(&distspec) == 0);
+
+    distspec = new_distspec(&trans);
+    distspec.nfrom  = nfrom.data();
+    distspec.nfld   = 1;
+    distspec.rspecg = field.values(1).data();
+    distspec.rspec  = rspec_d.data();
+    ASSERT(trans_distspec(&distspec) == 0);
+
+
+    // transform
+    struct InvTrans_t invtrans = new_invtrans(&trans);
+    invtrans.nvordiv = 1;
+    invtrans.rspvor  = rspec_vo.data();
+    invtrans.rspdiv  = rspec_d.data();
+    invtrans.rgp     = rgp.data();
+    ASSERT(trans_invtrans(&invtrans) == 0);
+
+
+    // gather
+    struct GathGrid_t gathgrid = new_gathgrid(&trans);
+    gathgrid.rgp  = rgp.data();
+    gathgrid.rgpg = output.data();
+    gathgrid.nfld = 2;
+    gathgrid.nto  = nto.data();
+    ASSERT(trans_gathgrid(&gathgrid) == 0);
+#endif
 
 
     // set u/v field values
