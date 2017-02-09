@@ -113,7 +113,6 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
     }
 
     if (parametrisation_.has("user.pl")) {
-        NOTIMP;  // FIXME
         plan.add("transform." + transform + "reduced-gg-pl-given");
     }
 

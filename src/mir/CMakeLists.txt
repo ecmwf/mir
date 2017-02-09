@@ -108,6 +108,8 @@ list(
     action/transform/ShScalarToOctahedralGG.h
     action/transform/ShScalarToReducedGG.cc
     action/transform/ShScalarToReducedGG.h
+    action/transform/ShScalarToReducedGGPLGiven.cc
+    action/transform/ShScalarToReducedGGPLGiven.h
     action/transform/ShScalarToRegularGG.cc
     action/transform/ShScalarToRegularGG.h
     action/transform/ShScalarToRegularLL.cc
@@ -126,6 +128,8 @@ list(
     action/transform/ShVodTouvOctahedralGG.h
     action/transform/ShVodTouvReducedGG.cc
     action/transform/ShVodTouvReducedGG.h
+    action/transform/ShVodTouvReducedGGPLGiven.cc
+    action/transform/ShVodTouvReducedGGPLGiven.h
     action/transform/ShVodTouvRegularGG.cc
     action/transform/ShVodTouvRegularGG.h
     action/transform/ShVodTouvRegularLL.cc
