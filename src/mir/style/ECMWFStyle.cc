@@ -37,15 +37,17 @@ ECMWFStyle::~ECMWFStyle() {
 }
 
 
-void ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
+bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
     bool u_only = false;
     if (parametrisation_.get("u-only", u_only) && u_only) {
         plan.add("select.field", "which", long(0));
     }
     bool v_only = false;
     if (parametrisation_.get("v-only", v_only) && v_only) {
+        ASSERT(!u_only);
         plan.add("select.field", "which", long(1));
     }
+    return (u_only || v_only);
 }
 
 

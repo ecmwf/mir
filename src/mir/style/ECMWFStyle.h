@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -68,7 +68,7 @@ protected:
     virtual void sh2sh(action::ActionPlan&) const;
     virtual void grid2grid(action::ActionPlan&) const;
     virtual void epilogue(action::ActionPlan&) const;
-    void selectWindComponents(action::ActionPlan&) const;
+    bool selectWindComponents(action::ActionPlan&) const;
 
     // -- Overridden methods
     // None
