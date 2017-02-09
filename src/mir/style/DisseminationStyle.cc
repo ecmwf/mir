@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -46,16 +46,17 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("autoresol", autoresol);
     ASSERT(!autoresol);
 
+    bool vod2uv = false;
+    parametrisation_.get("vod2uv", vod2uv);
+    std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";
+
+    plan.add("transform." + transform + "octahedral-gg", "octahedral", new AutoGaussian(parametrisation_));
+
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);
     }
 
-    plan.add("transform.sh-scalar-to-octahedral-gg",
-             "octahedral", new AutoGaussian(parametrisation_));
-
-
     grid2grid(plan);
-
 }
 
 

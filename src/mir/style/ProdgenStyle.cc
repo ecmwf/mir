@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -47,24 +47,22 @@ void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("autoresol", autoresol);
     ASSERT(!autoresol);
 
+    bool vod2uv = false;
+    parametrisation_.get("vod2uv", vod2uv);
+    std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
+
+    if (!parametrisation_.has("user.rotation") &&
+         parametrisation_.has("user.grid")) {
+        plan.add("transform." + transform + "regular-ll", "grid", new ProdgenGrid(parametrisation_));
+        plan.add("interpolate.grid2regular-ll");
+    }
+    else {
+        plan.add("transform." + transform + "octahedral-gg", "octahedral", new AutoGaussian(parametrisation_));
+    }
+
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);
     }
-
-    if (parametrisation_.has("user.rotation")) {
-
-        plan.add("transform.sh-scalar-to-octahedral-gg", "octahedral", new AutoGaussian(parametrisation_));
-    }
-    else if (parametrisation_.has("user.grid")) {
-
-        plan.add("transform.sh-scalar-to-regular-ll", "grid", new ProdgenGrid(parametrisation_));
-        plan.add("interpolate.grid2regular-ll");
-
-    }
-    else {
-        plan.add("transform.sh-scalar-to-octahedral-gg", "octahedral", new AutoGaussian(parametrisation_));
-    }
-
 
     grid2grid(plan);
 }
@@ -76,18 +74,12 @@ void ProdgenStyle::shTruncate(action::ActionPlan&) const {
 
 
 void ProdgenStyle::grid2grid(action::ActionPlan& plan) const {
-
-    // bool field_gridded  = parametrisation_.has("field.gridded");
-    // bool field_spectral = parametrisation_.has("field.spectral");
-
     if (!parametrisation_.has("user.grid")) {
         ECMWFStyle::grid2grid(plan);
         return;
     }
 
-    plan.add("interpolate.grid2regular-ll",
-             "grid",
-             new ProdgenGrid(parametrisation_));
+    plan.add("interpolate.grid2regular-ll", "grid", new ProdgenGrid(parametrisation_));
 }
 
 

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -99,13 +99,6 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
     if (field_spectral) {
         shTruncate(plan);
 
-//        bool vod2uv = false;
-//        parametrisation_.get("vod2uv", vod2uv);
-
-//        if (vod2uv) {
-//            plan.add("transform.sh-vod-to-UV");
-//        }
-
         if (parametrisation_.get("user.formula.spectral", formula)) {
             std::string metadata;
             // paramId for the results of formulas
@@ -123,10 +116,6 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
                 parametrisation_.get("user.formula.gridded.metadata", metadata);
                 plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
             }
-
-//            if (vod2uv) {
-//                plan.add("filter.adjust-winds-scale-cos-latitude");
-//            }
 
         } else {
             // "user wants spectral"
@@ -315,6 +304,14 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
+
+    bool vod2uv = false;
+    parametrisation_.get("vod2uv", vod2uv);
+
+    if (vod2uv) {
+        plan.add("transform.sh-vod-to-UV");
+    }
+
     selectWindComponents(plan);
 }
 
