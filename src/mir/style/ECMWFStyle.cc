@@ -284,6 +284,19 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 }
 
 
+bool ECMWFStyle::isWindComponent() const {
+    long id = 0;
+    parametrisation_.get("paramId", id);
+
+    long id_u = 131;
+    long id_v = 132;
+    parametrisation_.get("paramId.u", id_u);
+    parametrisation_.get("paramId.v", id_v);
+
+    return (id == id_u || id == id_v);
+}
+
+
 }  // namespace style
 }  // namespace mir
 

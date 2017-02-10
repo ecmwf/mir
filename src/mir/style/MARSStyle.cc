@@ -51,7 +51,6 @@ void MARSStyle::shTruncate(action::ActionPlan& plan) const {
 void MARSStyle::sh2grid(action::ActionPlan& plan) const {
 
     bool areaDefinesGrid = false;
-    bool areaDefinesGridUsed = false;
     parametrisation_.get("area-defines-grid", areaDefinesGrid);
 
     bool autoresol = true;
@@ -130,8 +129,8 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
         plan.add("interpolate.grid2griddef");
     }
 
-    if (areaDefinesGrid != areaDefinesGridUsed) {
-        throw eckit::UserError("'area-defines-grid' option not used (is input spherical?).");
+    if (isWindComponent()) {
+        plan.add("filter.adjust-winds-scale-cos-latitude");
     }
 
     if (!parametrisation_.has("user.rotation")) {
