@@ -116,8 +116,8 @@ void ShVodToUV::execute(context::Context & ctx) const {
     // configure paramIds for U/V
     long id_u = 131;
     long id_v = 132;
-    parametrisation_.get("transform.u", id_u);
-    parametrisation_.get("transform.v", id_v);
+    parametrisation_.get("paramId.u", id_u);
+    parametrisation_.get("paramId.v", id_v);
 
     field.metadata(0, "paramId", id_u);
     field.metadata(1, "paramId", id_v);

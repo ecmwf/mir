@@ -98,8 +98,8 @@ void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) con
     // set u/v field values
     long id_u = 131;
     long id_v = 132;
-    parametrisation_.get("transform.u", id_u);
-    parametrisation_.get("transform.v", id_v);
+    parametrisation_.get("paramId.u", id_u);
+    parametrisation_.get("paramId.v", id_v);
 
     std::vector<double> result(output.begin(), output.begin() + trans.ngptotg);
     field.update(result, 0);
