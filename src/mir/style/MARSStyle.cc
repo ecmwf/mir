@@ -60,11 +60,8 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
 
-    bool griddef = parametrisation_.has("griddef");
-
     if (autoresol) {
-
-        if (griddef) {
+        if (parametrisation_.has("griddef")) {
             // TODO: this is temporary
             plan.add("transform.sh-truncate", "truncation", 63L);
         }
