@@ -2,27 +2,24 @@
     "configuration-fill": "class",
     "configuration-skip": "NOTE",
 
+    "paramId.u": "131",
+    "paramId.v": "132",
 
     "interpolation": "linear",
 
 
     "class": {
         "NOTE": "Parameter classes (should) mirror https://software.ecmwf.int/wiki/display/MIR/Parameters+classification",
+        "spectra": {
+            "NOTE": "(FIXME not yet in the web page)",
+            "interpolation": "nearest-neighbour",
+            "associated-direction": {},
+            "associated-intensity": {}
+        },
         "FIXME": {
-            "direction-associated-to-wave-spectra": {
-                "class": "direction",
-                "interpolation": "nearest-neighbour"
-            },
-            "intensity-associated-to-wave-spectra": {
-                "interpolation": "nearest-neighbour"
-            },
             "vegetation-cover": {
                 "class": "ratio/cover",
                 "interpolation": "nearest-lsm"
-            },
-            "wave-spectra": {
-                "class": "unknown",
-                "interpolation": "nearest-neighbour"
             }
         },
         "concentration": {
@@ -70,11 +67,6 @@
         }
     },
 
-    "138": {
-        "transform.vod2uv.u": "131",
-        "transform.vod2uv.v": "132"
-    },
-
     "130": {
         "class": "intensity",
         "comparison-absolute-error": "0.1"
@@ -85,14 +77,14 @@
     "140113/140230/140235/140238/140242/140249": {
         "class": "direction"
     },
-    "140121/140123/140124/140126/140127/140129": {
-        "class": "FIXME/intensity-associated-to-wave-spectra"
+    "140121/140123/140124/140126/140127/140129/140208/140209/140210/140211/140212/140213/140214/140219/140231/140233/140245/140246/140247/140248": {
+        "class": "spectra/associated-intensity"
     },
     "140122/140125/140128": {
-        "class": "FIXME/direction-associated-to-wave-spectra"
+        "class": "spectra/associated-direction"
     },
     "140250/140251": {
-        "class": "FIXME/wave-spectra"
+        "class": "spectra"
     },
     "167": {
         "FIXME-interpolation": "k-nearest",

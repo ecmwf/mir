@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -37,15 +37,17 @@ ECMWFStyle::~ECMWFStyle() {
 }
 
 
-void ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
+bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
     bool u_only = false;
     if (parametrisation_.get("u-only", u_only) && u_only) {
         plan.add("select.field", "which", long(0));
     }
     bool v_only = false;
     if (parametrisation_.get("v-only", v_only) && v_only) {
+        ASSERT(!u_only);
         plan.add("select.field", "which", long(1));
     }
+    return (u_only || v_only);
 }
 
 
@@ -95,7 +97,7 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
 
     if (field_spectral) {
-        sh2sh(plan);
+        shTruncate(plan);
 
         if (parametrisation_.get("user.formula.spectral", formula)) {
             std::string metadata;
@@ -115,14 +117,9 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
                 plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
             }
 
-            bool vod2uv = false;
-            if (parametrisation_.get("vod2uv", vod2uv) && vod2uv) {
-                plan.add("filter.adjust-winds-scale-cos-latitude");
-            }
-
-        }
-        else {
-            selectWindComponents(plan);
+        } else {
+            // "user wants spectral"
+            sh2sh(plan);
         }
     }
 
@@ -174,110 +171,43 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     parametrisation_.get("wind", wind);
 
     bool areaDefinesGrid = false;
-    bool areaDefinesGridUsed = false;
-
     parametrisation_.get("area-defines-grid", areaDefinesGrid);
 
+    const std::string grid =
+            parametrisation_.has("user.grid")?       "regular-ll" + std::string(areaDefinesGrid? "-offset" : "") :
+            parametrisation_.has("user.reduced")?    "reduced-gg" :
+            parametrisation_.has("user.regular")?    "regular-gg" :
+            parametrisation_.has("user.octahedral")? "octahedral-gg" :
+            parametrisation_.has("user.pl")?         "reduced-gg-pl-given" :
+            parametrisation_.has("user.gridname")?   "namedgrid" :
+            parametrisation_.has("user.griddef")?    "griddef" :
+                                                     "";
+    if (grid.length()) {
+        std::string required;
 
-    if (parametrisation_.has("user.grid")) {
+        if (!parametrisation_.has("user.grid") && areaDefinesGrid) {
+            throw eckit::UserError("'area-defines-grid' requires 'user.grid'.");
+        }
+        if (!parametrisation_.get("gridname", required) && (grid == "namedgrid")) {
+            throw eckit::UserError("'user.gridname' requires parameter 'gridname'.");
+        }
+        if (!parametrisation_.get("griddef", required) && (grid == "griddef")) {
+            throw eckit::UserError("'user.griddef' requires parameter 'griddef'.");
+        }
+        if (parametrisation_.has("user.rotation") && (grid == "reduced-gg-pl-given")) {
+            throw eckit::UserError("'user.pl' is incompatible with 'user.rotation'.");
+        }
+
         if (parametrisation_.has("user.rotation")) {
-
-            if (areaDefinesGrid) {
-                plan.add("interpolate.grid2rotated-regular-ll-offset");
-                areaDefinesGridUsed = true;
-            } else {
-                plan.add("interpolate.grid2rotated-regular-ll");
-            }
-
+            plan.add("interpolate.grid2rotated-" + grid);
             if (wind || vod2uv) {
                 plan.add("filter.adjust-winds-directions");
                 selectWindComponents(plan);
             }
         } else {
-            if (areaDefinesGrid) {
-                plan.add("interpolate.grid2regular-ll-offset");
-                areaDefinesGridUsed = true;
-            } else {
-                plan.add("interpolate.grid2regular-ll");
-            }
+            plan.add("interpolate.grid2" + grid);
         }
     }
-
-    if (parametrisation_.has("user.reduced")) {
-        if (parametrisation_.has("user.rotation")) {
-            plan.add("interpolate.grid2rotated-reduced-gg");
-            if (wind || vod2uv) {
-                plan.add("filter.adjust-winds-directions");
-                selectWindComponents(plan);
-            }
-        } else {
-            plan.add("interpolate.grid2reduced-gg");
-        }
-    }
-
-    if (parametrisation_.has("user.regular")) {
-        if (parametrisation_.has("user.rotation")) {
-            plan.add("interpolate.grid2rotated-regular-gg");
-            if (wind || vod2uv) {
-                plan.add("filter.adjust-winds-directions");
-                selectWindComponents(plan);
-            }
-        } else {
-            plan.add("interpolate.grid2regular-gg");
-        }
-    }
-
-    if (parametrisation_.has("user.octahedral")) {
-        if (parametrisation_.has("user.rotation")) {
-            plan.add("interpolate.grid2rotated-octahedral-gg");
-            if (wind || vod2uv) {
-                plan.add("filter.adjust-winds-directions");
-                selectWindComponents(plan);
-            }
-        } else {
-            plan.add("interpolate.grid2octahedral-gg");
-        }
-    }
-
-    if (parametrisation_.has("user.pl")) {
-        ASSERT(!parametrisation_.has("user.rotation"));
-        plan.add("interpolate.grid2reduced-gg-pl-given");
-    }
-
-    if (parametrisation_.has("user.gridname")) {
-        std::string gridname;
-        ASSERT (parametrisation_.get("gridname", gridname));
-
-        if (parametrisation_.has("user.rotation")) {
-            plan.add("interpolate.grid2rotated-namedgrid");
-            if (wind || vod2uv) {
-                plan.add("filter.adjust-winds-directions");
-                selectWindComponents(plan);
-            }
-        } else {
-            plan.add("interpolate.grid2namedgrid");
-        }
-    }
-
-    if (parametrisation_.has("user.griddef")) {
-        std::string griddef;
-        ASSERT (parametrisation_.get("griddef", griddef));
-
-        if (parametrisation_.has("user.rotation")) {
-            plan.add("interpolate.grid2rotated-griddef");
-            if (wind || vod2uv) {
-                plan.add("filter.adjust-winds-directions");
-                selectWindComponents(plan);
-            }
-        } else {
-            plan.add("interpolate.grid2griddef");
-        }
-    }
-
-    if (areaDefinesGrid != areaDefinesGridUsed) {
-        throw eckit::UserError("'area-defines-grid' option not used.");
-    }
-
 }
 
 
@@ -303,6 +233,19 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
         parametrisation_.get("user.formula.prologue.metadata", metadata);
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
+}
+
+
+void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
+
+    bool vod2uv = false;
+    parametrisation_.get("vod2uv", vod2uv);
+
+    if (vod2uv) {
+        plan.add("transform.sh-vod-to-UV");
+    }
+
+    selectWindComponents(plan);
 }
 
 
@@ -338,6 +281,19 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
         plan.add(epilogue);
     }
 
+}
+
+
+bool ECMWFStyle::isWindComponent() const {
+    long id = 0;
+    parametrisation_.get("paramId", id);
+
+    long id_u = 131;
+    long id_v = 132;
+    parametrisation_.get("paramId.u", id_u);
+    parametrisation_.get("paramId.v", id_v);
+
+    return (id == id_u || id == id_v);
 }
 
 

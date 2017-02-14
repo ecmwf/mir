@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,15 +12,16 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/style/ProdgenStyle.h"
 
 #include <iostream>
-
-#include "mir/param/MIRParametrisation.h"
-#include "mir/action/plan/ActionPlan.h"
-#include "mir/style/AutoGaussian.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/action/plan/ActionPlan.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/style/AutoGaussian.h"
 #include "mir/style/ProdgenGrid.h"
+
 
 namespace mir {
 namespace style {
@@ -40,70 +41,50 @@ void ProdgenStyle::print(std::ostream &out) const {
     out << "ProdgenStyle[]";
 }
 
+
 void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
     bool autoresol = false;
     parametrisation_.get("autoresol", autoresol);
     ASSERT(!autoresol);
 
+    bool vod2uv = false;
+    parametrisation_.get("vod2uv", vod2uv);
+    std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
+
+    if (!parametrisation_.has("user.rotation") &&
+         parametrisation_.has("user.grid")) {
+        plan.add("transform." + transform + "regular-ll", "grid", new ProdgenGrid(parametrisation_));
+        plan.add("interpolate.grid2regular-ll");
+    }
+    else {
+        plan.add("transform." + transform + "octahedral-gg", "octahedral", new AutoGaussian(parametrisation_));
+    }
+
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);
     }
-
-    if (parametrisation_.has("user.rotation")) {
-
-        plan.add("transform.sh2octahedral-gg",
-                 "octahedral",
-                 new AutoGaussian(parametrisation_));
-    }
-    else if (parametrisation_.has("user.grid")) {
-
-        plan.add("transform.sh2regular-ll",
-                 "grid",
-                 new ProdgenGrid(parametrisation_));
-
-        plan.add("interpolate.grid2regular-ll");
-
-    }
-    else {
-        plan.add("transform.sh2octahedral-gg",
-                 "octahedral",
-                 new AutoGaussian(parametrisation_));
-    }
-
 
     grid2grid(plan);
 }
 
 
-void ProdgenStyle::sh2sh(action::ActionPlan& plan) const {
-
-    ASSERT (!parametrisation_.has("user.truncation")) ;
-
-    bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
-
-    if (vod2uv) {
-        plan.add("transform.vod2uv");
-    }
+void ProdgenStyle::shTruncate(action::ActionPlan&) const {
+    ASSERT(!parametrisation_.has("user.truncation"));
 }
 
+
 void ProdgenStyle::grid2grid(action::ActionPlan& plan) const {
-
-    // bool field_gridded  = parametrisation_.has("field.gridded");
-    // bool field_spectral = parametrisation_.has("field.spectral");
-
     if (!parametrisation_.has("user.grid")) {
         ECMWFStyle::grid2grid(plan);
         return;
     }
 
-    plan.add("interpolate.grid2regular-ll",
-             "grid",
-             new ProdgenGrid(parametrisation_));
+    plan.add("interpolate.grid2regular-ll", "grid", new ProdgenGrid(parametrisation_));
 }
 
+
 namespace {
-static MIRStyleBuilder<ProdgenStyle> prodgen("prodgen");
+static MIRStyleBuilder<ProdgenStyle> __style("prodgen");
 }
 
 

@@ -13,29 +13,28 @@
 /// @date Apr 2015
 
 
-#ifndef mir_style_ProdgenStyle_h
-#define mir_style_ProdgenStyle_h
+#ifndef mir_action_transform_ShScalarToReducedGG_h
+#define mir_action_transform_ShScalarToReducedGG_h
 
-#include "mir/style/ECMWFStyle.h"
+#include "mir/action/transform/ShScalarToGridded.h"
 
 
 namespace mir {
-namespace style {
+namespace action {
+namespace transform {
 
 
-class ProdgenStyle : public ECMWFStyle {
+class ShScalarToReducedGG : public ShScalarToGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-
-    ProdgenStyle(const param::MIRParametrisation&);
+    ShScalarToReducedGG(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ProdgenStyle(); // Change to virtual if base class
+    virtual ~ShScalarToReducedGG(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -61,7 +60,6 @@ protected:
     // None
 
     // -- Methods
-
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -76,20 +74,18 @@ protected:
 private:
 
     // No copy allowed
-    ProdgenStyle(const ProdgenStyle&);
-    ProdgenStyle& operator=(const ProdgenStyle&);
+    ShScalarToReducedGG(const ShScalarToReducedGG&);
+    ShScalarToReducedGG& operator=(const ShScalarToReducedGG&);
 
     // -- Members
-    // None
+    size_t N_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-    void shTruncate(action::ActionPlan&) const;
-    void sh2grid(action::ActionPlan&) const;
-    void grid2grid(action::ActionPlan&) const;
+    virtual bool sameAs(const Action& other) const;
+    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
 
     // -- Class members
     // None
@@ -98,14 +94,13 @@ private:
     // None
 
     // -- Friends
-
-    // friend std::ostream& operator<<(std::ostream& s, const ProdgenStyle& p)
-    // { p.print(s); return s; }
+    // None
 
 };
 
 
-}  // namespace style
+}  // namespace transform
+}  // namespace action
 }  // namespace mir
 
 

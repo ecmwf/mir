@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,14 +12,15 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/style/DisseminationStyle.h"
 
 #include <iostream>
-
-#include "mir/param/MIRParametrisation.h"
-#include "mir/action/plan/ActionPlan.h"
-#include "mir/style/AutoGaussian.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/action/plan/ActionPlan.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/style/AutoGaussian.h"
+
 
 namespace mir {
 namespace style {
@@ -39,43 +40,33 @@ void DisseminationStyle::print(std::ostream &out) const {
     out << "DisseminationStyle[]";
 }
 
+
 void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
     bool autoresol = false;
     parametrisation_.get("autoresol", autoresol);
     ASSERT(!autoresol);
 
+    bool vod2uv = false;
+    parametrisation_.get("vod2uv", vod2uv);
+    std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";
+
+    plan.add("transform." + transform + "octahedral-gg", "octahedral", new AutoGaussian(parametrisation_));
+
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);
     }
 
-    plan.add("transform.sh2octahedral-gg",
-             "octahedral", new AutoGaussian(parametrisation_));
-
-
     grid2grid(plan);
-
 }
 
 
-void DisseminationStyle::sh2sh(action::ActionPlan& plan) const {
-
-    // if (parametrisation_.has("user.truncation")) {
-    //     plan.add("transform.sh2sh");
-    // }
-
-    bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
-
-    if (vod2uv) {
-        plan.add("transform.vod2uv");
-    }
+void DisseminationStyle::shTruncate(action::ActionPlan& plan) const {
+    // do nothing
 }
 
 
-
-// register MARS-specialized style
 namespace {
-static MIRStyleBuilder<DisseminationStyle> prodgen("dissemination");
+static MIRStyleBuilder<DisseminationStyle> __style("dissemination");
 }
 
 

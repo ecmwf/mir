@@ -8,34 +8,31 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#ifndef mir_style_ProdgenStyle_h
-#define mir_style_ProdgenStyle_h
+#ifndef mir_action_transform_ShVodTouvReducedGG_h
+#define mir_action_transform_ShVodTouvReducedGG_h
 
-#include "mir/style/ECMWFStyle.h"
+#include "mir/action/transform/ShVodTouvGridded.h"
 
 
 namespace mir {
-namespace style {
+namespace action {
+namespace transform {
 
 
-class ProdgenStyle : public ECMWFStyle {
+class ShVodTouvReducedGG : public ShVodTouvGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-
-    ProdgenStyle(const param::MIRParametrisation&);
+    ShVodTouvReducedGG(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ProdgenStyle(); // Change to virtual if base class
+    virtual ~ShVodTouvReducedGG(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -61,7 +58,6 @@ protected:
     // None
 
     // -- Methods
-
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -76,20 +72,18 @@ protected:
 private:
 
     // No copy allowed
-    ProdgenStyle(const ProdgenStyle&);
-    ProdgenStyle& operator=(const ProdgenStyle&);
+    ShVodTouvReducedGG(const ShVodTouvReducedGG&);
+    ShVodTouvReducedGG& operator=(const ShVodTouvReducedGG&);
 
     // -- Members
-    // None
+    size_t N_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-    void shTruncate(action::ActionPlan&) const;
-    void sh2grid(action::ActionPlan&) const;
-    void grid2grid(action::ActionPlan&) const;
+    virtual bool sameAs(const Action& other) const;
+    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
 
     // -- Class members
     // None
@@ -98,14 +92,13 @@ private:
     // None
 
     // -- Friends
-
-    // friend std::ostream& operator<<(std::ostream& s, const ProdgenStyle& p)
-    // { p.print(s); return s; }
+    // None
 
 };
 
 
-}  // namespace style
+}  // namespace transform
+}  // namespace action
 }  // namespace mir
 
 

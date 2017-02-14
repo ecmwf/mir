@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,12 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
 
-#include "mir/action/transform/Sh2RegularLL.h"
+#include "mir/action/transform/ShVodTouvRegularLL.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -26,8 +24,8 @@ namespace action {
 namespace transform {
 
 
-Sh2RegularLL::Sh2RegularLL(const param::MIRParametrisation &parametrisation):
-    Sh2GriddedTransform(parametrisation) {
+ShVodTouvRegularLL::ShVodTouvRegularLL(const param::MIRParametrisation &parametrisation):
+    ShVodTouvGridded(parametrisation) {
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
@@ -37,22 +35,22 @@ Sh2RegularLL::Sh2RegularLL(const param::MIRParametrisation &parametrisation):
 }
 
 
-Sh2RegularLL::~Sh2RegularLL() {
+ShVodTouvRegularLL::~ShVodTouvRegularLL() {
 }
 
 
-bool Sh2RegularLL::sameAs(const Action& other) const {
-    const Sh2RegularLL* o = dynamic_cast<const Sh2RegularLL*>(&other);
+bool ShVodTouvRegularLL::sameAs(const Action& other) const {
+    const ShVodTouvRegularLL* o = dynamic_cast<const ShVodTouvRegularLL*>(&other);
     return o && (grid_ == o->grid_);
 }
 
 
-void Sh2RegularLL::print(std::ostream &out) const {
-    out << "Sh2RegularLL[grib=" << grid_ << "]";
+void ShVodTouvRegularLL::print(std::ostream &out) const {
+    out << "ShVodTouvRegularLL[grib=" << grid_ << "]";
 }
 
 
-const repres::Representation *Sh2RegularLL::outputRepresentation() const {
+const repres::Representation *ShVodTouvRegularLL::outputRepresentation() const {
     return new repres::latlon::RegularLL(
                 util::BoundingBox(90, 0, -90, 360 - grid_.west_east()),
                 grid_);
@@ -60,7 +58,7 @@ const repres::Representation *Sh2RegularLL::outputRepresentation() const {
 
 
 namespace {
-static ActionBuilder< Sh2RegularLL > grid2grid("transform.sh2regular-ll");
+static ActionBuilder< ShVodTouvRegularLL > __action("transform.sh-vod-to-uv-regular-ll");
 }
 
 

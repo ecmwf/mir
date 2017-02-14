@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,10 +12,10 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/action/transform/Sh2Octahedral.h"
+
+#include "mir/action/transform/ShScalarToOctahedralGG.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
@@ -26,34 +26,36 @@ namespace action {
 namespace transform {
 
 
-Sh2Octahedral::Sh2Octahedral(const param::MIRParametrisation& parametrisation):
-    Sh2GriddedTransform(parametrisation) {
+ShScalarToOctahedralGG::ShScalarToOctahedralGG(const param::MIRParametrisation& parametrisation):
+    ShScalarToGridded(parametrisation) {
 
     ASSERT(parametrisation_.get("user.octahedral", N_));
 
 }
 
-bool Sh2Octahedral::sameAs(const Action& other) const {
-    const Sh2Octahedral* o = dynamic_cast<const Sh2Octahedral*>(&other);
+
+bool ShScalarToOctahedralGG::sameAs(const Action& other) const {
+    const ShScalarToOctahedralGG* o = dynamic_cast<const ShScalarToOctahedralGG*>(&other);
     return o && (N_ == o->N_);
 }
 
-Sh2Octahedral::~Sh2Octahedral() {
+
+ShScalarToOctahedralGG::~ShScalarToOctahedralGG() {
 }
 
 
-void Sh2Octahedral::print(std::ostream& out) const {
-    out << "Sh2Octahedral[N=" << N_ << "]";
+void ShScalarToOctahedralGG::print(std::ostream& out) const {
+    out << "ShScalarToOctahedralGG[N=" << N_ << "]";
 }
 
 
-const repres::Representation* Sh2Octahedral::outputRepresentation() const {
+const repres::Representation* ShScalarToOctahedralGG::outputRepresentation() const {
     return new repres::reduced::ReducedOctahedral(N_);
 }
 
 
 namespace {
-static ActionBuilder< Sh2Octahedral > grid2grid("transform.sh2octahedral-gg");
+static ActionBuilder< ShScalarToOctahedralGG > __action("transform.sh-scalar-to-octahedral-gg");
 }
 
 

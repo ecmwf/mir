@@ -75,8 +75,18 @@ class AutoFDClose {
 
 
 class Unloader {
+
     std::vector<eckit::PathName> paths_;
-  public:
+
+public:
+
+    /// This ensures unloader is destructed in correct order with other static objects (like eckit::Log)
+    static Unloader& instance() {
+        static Unloader unloader;
+        return unloader;
+    }
+
+
     void add(const eckit::PathName& path) {
         paths_.push_back(path);
     }
@@ -86,13 +96,11 @@ class Unloader {
             try {
                 SharedMemoryLoader::unloadSharedMemory(*j);
             } catch (std::exception& e) {
-                std::cout << e.what() << std::endl;
+                eckit::Log::error() << e.what() << std::endl;
             }
         }
     }
 };
-
-static Unloader unloader;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -110,10 +118,6 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
     if (parametrisation.get("legendre-loader", name)) {
         unload_ = name.substr(0, 4) == "tmp-";
-    }
-
-    if (unload_) {
-        unloader.add(path);
     }
 
     eckit::TraceTimer<LibMir> timer("Loading legendre coefficients from shared memory");
@@ -239,11 +243,14 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
             // eckit::Log::info() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
         }
 
+        if (unload_) {
+            Unloader::instance().add(path);
+        }
+
     } catch (...) {
         shmdt(address_);
         throw;
     }
-
 }
 
 

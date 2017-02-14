@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef DisseminationStyle_H
-#define DisseminationStyle_H
+#ifndef mir_style_DisseminationStyle_h
+#define mir_style_DisseminationStyle_h
 
 #include "mir/style/ECMWFStyle.h"
 
@@ -24,80 +24,79 @@ namespace style {
 
 
 class DisseminationStyle : public ECMWFStyle {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     DisseminationStyle(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
     ~DisseminationStyle(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
-
-
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-  protected:
-
-// -- Members
+    // -- Class methods
     // None
 
-// -- Methods
+protected:
+
+    // -- Members
+    // None
+
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
-
+    // No copy allowed
     DisseminationStyle(const DisseminationStyle&);
     DisseminationStyle& operator=(const DisseminationStyle&);
 
-// -- Members
-
-// -- Methods
-
-// -- Overridden methods
-
-    void sh2sh(action::ActionPlan& plan) const;
-    void sh2grid(action::ActionPlan& plan) const;
-
-
-// -- Class members
+    // -- Members
     // None
 
-// -- Class methods
+    // -- Methods
     // None
 
-// -- Friends
+    // -- Overridden methods
+
+    void shTruncate(action::ActionPlan&) const;
+    void sh2grid(action::ActionPlan&) const;
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+    // -- Friends
 
     // friend std::ostream& operator<<(std::ostream& s, const DisseminationStyle& p)
     // { p.print(s); return s; }
@@ -107,5 +106,7 @@ class DisseminationStyle : public ECMWFStyle {
 
 }  // namespace style
 }  // namespace mir
+
+
 #endif
 

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/action/transform/Vod2uv.h"
+#include "mir/action/transform/ShVodToUV.h"
 
 #include <complex>
 #include <iostream>
@@ -46,28 +46,28 @@ namespace action {
 namespace transform {
 
 
-Vod2uv::Vod2uv(const param::MIRParametrisation &parametrisation):
+ShVodToUV::ShVodToUV(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 }
 
 
-Vod2uv::~Vod2uv() {
+ShVodToUV::~ShVodToUV() {
 }
 
 
-bool Vod2uv::sameAs(const Action& other) const {
-    const Vod2uv* o = dynamic_cast<const Vod2uv*>(&other);
+bool ShVodToUV::sameAs(const Action& other) const {
+    const ShVodToUV* o = dynamic_cast<const ShVodToUV*>(&other);
     return o;
 }
 
 
-void Vod2uv::print(std::ostream &out) const {
-    out << "Vod2uv[";
-    out << "]";
+void ShVodToUV::print(std::ostream &out) const {
+    out << "ShVodToUV["
+        << "]";
 }
 
 
-void Vod2uv::execute(context::Context & ctx) const {
+void ShVodToUV::execute(context::Context & ctx) const {
 #ifdef ATLAS_HAVE_TRANS
     data::MIRField& field = ctx.field();
 
@@ -85,7 +85,7 @@ void Vod2uv::execute(context::Context & ctx) const {
     const std::vector<double> &field_vo = field.values(0);
     const std::vector<double> &field_d = field.values(1);
 
-    eckit::Log::debug<LibMir>() << "Vod2uv truncation=" << truncation
+    eckit::Log::debug<LibMir>() << "ShVodToUV truncation=" << truncation
                                 << ", size=" << size
                                 << ", values=" << field_vo.size() << std::endl;
 
@@ -116,8 +116,8 @@ void Vod2uv::execute(context::Context & ctx) const {
     // configure paramIds for U/V
     long id_u = 131;
     long id_v = 132;
-    parametrisation_.get("transform.vod2uv.u", id_u);
-    parametrisation_.get("transform.vod2uv.v", id_v);
+    parametrisation_.get("paramId.u", id_u);
+    parametrisation_.get("paramId.v", id_v);
 
     field.metadata(0, "paramId", id_u);
     field.metadata(1, "paramId", id_v);
@@ -129,7 +129,7 @@ void Vod2uv::execute(context::Context & ctx) const {
 
 
 namespace {
-static ActionBuilder< Vod2uv > transform("transform.vod2uv");
+static ActionBuilder< ShVodToUV > __action("transform.sh-vod-to-UV");
 }
 
 

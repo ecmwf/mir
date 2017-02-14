@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2016 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -15,22 +15,21 @@
 /// @date Apr 2015
 
 
-#include "mir/action/transform/Sh2GriddedTransform.h"
+#include "mir/action/transform/ShToGridded.h"
 
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/FileLock.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/utils/MD5.h"
 #include "atlas/atlas.h"
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Structured.h"
-#include "atlas/grid/grids.h"
 #include "atlas/grid/lonlat/RegularLonLat.h"
 #include "mir/action/context/Context.h"
+#include "mir/action/transform/TransCache.h"
 #include "mir/action/transform/TransInitor.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/caching/LegendreCache.h"
@@ -41,52 +40,13 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
-#ifdef ATLAS_HAVE_TRANS
-#include "transi/trans.h"
-#endif
-
 
 namespace mir {
 namespace action {
 namespace transform {
 
-#ifdef ATLAS_HAVE_TRANS
+
 namespace {
-
-
-struct TransCache {
-
-    bool inited_;
-    struct Trans_t trans_;
-    mir::caching::legendre::LegendreLoader *loader_;
-
-    TransCache():
-        inited_(false),
-        loader_(0) {}
-
-    void print(std::ostream& s) const {
-        s << "TransCache[";
-        if (loader_) s << *loader_;
-        s << "]";
-    }
-
-    friend std::ostream& operator<<(std::ostream& out, const TransCache& e) {
-        e.print(out);
-        return out;
-    }
-
-    ~TransCache() {
-        if (inited_) {
-            std::cout << "Delete " << *this << std::endl;
-            trans_delete(&trans_);
-        }
-        else {
-            std::cout << "Not Deleting " << *this << std::endl;
-
-        }
-        delete loader_;
-    }
-};
 
 
 static eckit::Mutex amutex;
@@ -95,12 +55,12 @@ static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient",
         "$MIR_COEFFICIENT_CACHE",
         false); // Don't cleanup at exit: the Fortran part will dump core
 
+
 static void fillTrans(struct Trans_t &trans,
                       size_t truncation,
                       const atlas::grid::Grid &grid) {
-
+#ifdef ATLAS_HAVE_TRANS
     const atlas::grid::Structured* reduced = dynamic_cast<const atlas::grid::Structured*>(&grid);
-
     if (!reduced) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
     }
@@ -128,12 +88,18 @@ static void fillTrans(struct Trans_t &trans,
 
         ASSERT(trans_set_resol(&trans, pli.size(), &pli[0]) == 0);
     }
+#else
+    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
+                            "Please recompile ATLAS with TRANS support enabled.");
+#endif
 }
+
 
 static void createCoefficients(const eckit::PathName& path,
                                size_t truncation,
                                const atlas::grid::Grid &grid,
                                context::Context& ctx) {
+#ifdef ATLAS_HAVE_TRANS
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
 
     struct Trans_t tmp_trans;
@@ -143,17 +109,23 @@ static void createCoefficients(const eckit::PathName& path,
     ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
 
     trans_delete(&tmp_trans);
+#else
+    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
+                            "Please recompile ATLAS with TRANS support enabled.");
+#endif
 }
 
-static void transform(
-    const std::string& key,
-    const param::MIRParametrisation &parametrisation,
-    size_t truncation,
-    const std::vector<double> &input, std::vector<double> &output,
-    const atlas::grid::Grid &grid,
-    context::Context& ctx) {
+
+}  // (anonymous namespace)
 
 
+void ShToGridded::transform(
+        data::MIRField& field,
+        const atlas::grid::Grid& grid,
+        context::Context& ctx,
+        const std::string& key,
+        size_t truncation ) const {
+#ifdef ATLAS_HAVE_TRANS
     if (trans_handles.find(key) == trans_handles.end()) {
 
         eckit::PathName path;
@@ -173,8 +145,8 @@ static void transform(
                 }
             public:
                 LegendreCacheCreator(size_t truncation,
-                                     const atlas::grid::Grid & grid,
-                                     context::Context & ctx):
+                                     const atlas::grid::Grid& grid,
+                                     context::Context& ctx):
                     truncation_(truncation), grid_(grid), ctx_(ctx) {}
             };
 
@@ -197,7 +169,7 @@ static void transform(
             fillTrans(trans, truncation, grid);
 
             tc.inited_ = true;
-            tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation, path);
+            tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation_, path);
             // std::cout << "LegendreLoader " << *tc.loader_ << std::endl;
 
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
@@ -210,93 +182,19 @@ static void transform(
 
     }
 
+
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
     eckit::Timer timer("SH2GRID");
 
-
-    TransCache &tc = trans_handles[key];
-    struct Trans_t &trans = tc.trans_;
-
-    // Initialise grid ===============================================
+    TransCache& tc = trans_handles[key];
+    struct Trans_t& trans = tc.trans_;
 
 
-
-    ASSERT(trans.myproc == 1);
-
-    ASSERT(trans.nspec2g == (int) input.size());
-
-    int number_of_fields = 1; // number of fields
-
-    std::vector<int> nfrom(number_of_fields, 1); // processors responsible for distributing each field
-    std::vector<double> rspec(number_of_fields * trans.nspec2 );
-
-    //==============================================================================
-
-    struct DistSpec_t distspec = new_distspec(&trans);
-    distspec.nfrom  = &nfrom[0];
-    distspec.rspecg = &input[0];
-    distspec.rspec  = &rspec[0];
-    distspec.nfld   = number_of_fields;
-    ASSERT(trans_distspec(&distspec) == 0);
-
-
-    // Transform sp to gp fields
-
-    std::vector<double> rgp (number_of_fields * trans.ngptot);
-
-    struct InvTrans_t invtrans = new_invtrans(&trans);
-    invtrans.nscalar   = number_of_fields;
-    invtrans.rspscalar = &rspec[0];
-    invtrans.rgp       = &rgp[0];
-    ASSERT(trans_invtrans(&invtrans) == 0);
-
-
-    // Gather all gridpoint fields
-
-    output.resize(number_of_fields * trans.ngptotg);
-
-    std::vector<int> nto (number_of_fields, 1);
-
-
-    struct GathGrid_t gathgrid = new_gathgrid(&trans);
-    gathgrid.rgp  = &rgp[0];
-    gathgrid.rgpg = &output[0];
-    gathgrid.nfld = number_of_fields;
-    gathgrid.nto  = &nto[0];
-    ASSERT(trans_gathgrid(&gathgrid) == 0);
+    // transform sp to gp fields
+    sh2grid(trans, field);
 
 
     // trans_delete(&trans);
-}
-
-
-}  // (anonymous namespace)
-#endif
-
-
-static void transform(const param::MIRParametrisation &parametrisation, size_t truncation,
-                      const std::vector<double> &input, std::vector<double> &output,
-                      const atlas::grid::Grid &grid,
-                      context::Context& ctx) {
-#ifdef ATLAS_HAVE_TRANS
-
-    eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
-
-    TransInitor::instance(); // Will init trans if needed
-
-    std::ostringstream os;
-
-    os << "T" << truncation << ":" << grid.uniqueId();
-    std::string key(os.str());
-
-    try {
-        transform(key, parametrisation, truncation, input, output, grid, ctx);
-    } catch (std::exception& e) {
-        eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
-        trans_handles.erase(key);
-        throw;
-    }
-
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
                             "Please recompile ATLAS with TRANS support enabled.");
@@ -304,48 +202,46 @@ static void transform(const param::MIRParametrisation &parametrisation, size_t t
 }
 
 
-Sh2GriddedTransform::Sh2GriddedTransform(const param::MIRParametrisation &parametrisation):
+void ShToGridded::transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx) const {
+    eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
+
+    TransInitor::instance(); // Will init trans if needed
+
+    size_t truncation = field.representation()->truncation();
+    std::ostringstream os;
+    os << "T" << truncation << ":" << grid.uniqueId();
+    std::string key(os.str());
+
+    try {
+        transform(field, grid, ctx, key, truncation);
+    } catch (std::exception& e) {
+        eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
+        trans_handles.erase(key);
+        throw;
+    }
+}
+
+
+ShToGridded::ShToGridded(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 }
 
 
-Sh2GriddedTransform::~Sh2GriddedTransform() {
+ShToGridded::~ShToGridded() {
 }
 
 
-void Sh2GriddedTransform::execute(context::Context & ctx) const {
-    // ASSERT(field.dimensions() == 1); // For now
-#ifdef ATLAS_HAVE_TRANS
+void ShToGridded::execute(context::Context& ctx) const {
+
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<TransCache> use(trans_handles, ctx.statistics().transHandleCache_);
-#endif
-
-    data::MIRField& field = ctx.field();
-
 
     repres::RepresentationHandle out(outputRepresentation());
+    eckit::ScopedPtr<atlas::grid::Grid> grid(out->atlasGrid());
 
-    // std::cout << *out << std::endl;
+    transform(ctx.field(), *grid, ctx);
 
-    // TODO: Transform all the fields together
-    for (size_t i = 0; i < field.dimensions(); i++) {
-
-        const std::vector<double> &values = field.values(i);
-        std::vector<double> result;
-
-        eckit::ScopedPtr<atlas::grid::Grid> grid(out->atlasGrid());
-        transform(parametrisation_,
-                  field.representation()->truncation(),
-                  values,
-                  result,
-                  *grid,
-                  ctx);
-
-        field.update(result, i);
-
-    }
-
-    field.representation(out);
+    ctx.field().representation(out);
 }
 
 

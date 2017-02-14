@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef mir_action_transform_Vod2uv_h
-#define mir_action_transform_Vod2uv_h
+#ifndef mir_action_transform_ShVodToUV_h
+#define mir_action_transform_ShVodToUV_h
 
 #include <vector>
 #include "mir/action/plan/Action.h"
@@ -25,19 +25,17 @@ namespace action {
 namespace transform {
 
 
-class Vod2uv : public Action {
+class ShVodToUV : public Action {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-
-    Vod2uv(const param::MIRParametrisation&);
+    ShVodToUV(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    virtual ~Vod2uv(); // Change to virtual if base class
+    virtual ~ShVodToUV(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -63,7 +61,6 @@ protected:
     // None
 
     // -- Methods
-
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -78,9 +75,8 @@ protected:
 private:
 
     // No copy allowed
-
-    Vod2uv(const Vod2uv&);
-    Vod2uv& operator=(const Vod2uv&);
+    ShVodToUV(const ShVodToUV&);
+    ShVodToUV& operator=(const ShVodToUV&);
 
     // -- Members
     // None
@@ -89,9 +85,7 @@ private:
     // None
 
     // -- Overridden methods
-
     virtual bool sameAs(const Action& other) const;
-
     virtual void execute(context::Context & ctx) const;
 
     // -- Class members
@@ -101,9 +95,7 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Vod2uv& p)
-    //	{ p.print(s); return s; }
+    // None
 
 };
 

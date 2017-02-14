@@ -100,24 +100,44 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/transform/Sh2GriddedTransform.cc
-    action/transform/Sh2GriddedTransform.h
-    action/transform/Sh2NamedGrid.cc
-    action/transform/Sh2NamedGrid.h
-    action/transform/Sh2Octahedral.cc
-    action/transform/Sh2Octahedral.h
-    action/transform/Sh2ReducedGG.cc
-    action/transform/Sh2ReducedGG.h
-    action/transform/Sh2RegularGG.cc
-    action/transform/Sh2RegularGG.h
-    action/transform/Sh2RegularLL.cc
-    action/transform/Sh2RegularLL.h
-    action/transform/Sh2ShTransform.cc
-    action/transform/Sh2ShTransform.h
+    action/transform/ShScalarToGridded.cc
+    action/transform/ShScalarToGridded.h
+    action/transform/ShScalarToNamedGrid.cc
+    action/transform/ShScalarToNamedGrid.h
+    action/transform/ShScalarToOctahedralGG.cc
+    action/transform/ShScalarToOctahedralGG.h
+    action/transform/ShScalarToReducedGG.cc
+    action/transform/ShScalarToReducedGG.h
+    action/transform/ShScalarToReducedGGPLGiven.cc
+    action/transform/ShScalarToReducedGGPLGiven.h
+    action/transform/ShScalarToRegularGG.cc
+    action/transform/ShScalarToRegularGG.h
+    action/transform/ShScalarToRegularLL.cc
+    action/transform/ShScalarToRegularLL.h
+    action/transform/ShToGridded.cc
+    action/transform/ShToGridded.h
+    action/transform/ShTruncate.cc
+    action/transform/ShTruncate.h
+    action/transform/ShVodToUV.cc
+    action/transform/ShVodToUV.h
+    action/transform/ShVodTouvGridded.cc
+    action/transform/ShVodTouvGridded.h
+    action/transform/ShVodTouvNamedGrid.cc
+    action/transform/ShVodTouvNamedGrid.h
+    action/transform/ShVodTouvOctahedralGG.cc
+    action/transform/ShVodTouvOctahedralGG.h
+    action/transform/ShVodTouvReducedGG.cc
+    action/transform/ShVodTouvReducedGG.h
+    action/transform/ShVodTouvReducedGGPLGiven.cc
+    action/transform/ShVodTouvReducedGGPLGiven.h
+    action/transform/ShVodTouvRegularGG.cc
+    action/transform/ShVodTouvRegularGG.h
+    action/transform/ShVodTouvRegularLL.cc
+    action/transform/ShVodTouvRegularLL.h
+    action/transform/TransCache.cc
+    action/transform/TransCache.h
     action/transform/TransInitor.cc
     action/transform/TransInitor.h
-    action/transform/Vod2uv.cc
-    action/transform/Vod2uv.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc

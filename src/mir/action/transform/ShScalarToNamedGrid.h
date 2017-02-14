@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,11 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef Sh2RegularLL_H
-#define Sh2RegularLL_H
+#ifndef mir_action_transform_ShScalarToNamedGrid_h
+#define mir_action_transform_ShScalarToNamedGrid_h
 
-#include "mir/action/transform/Sh2GriddedTransform.h"
-#include "mir/util/Increments.h"
+#include "mir/action/transform/ShScalarToGridded.h"
 
 
 namespace mir {
@@ -25,19 +24,17 @@ namespace action {
 namespace transform {
 
 
-class Sh2RegularLL : public Sh2GriddedTransform {
+class ShScalarToNamedGrid : public ShScalarToGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-
-    Sh2RegularLL(const param::MIRParametrisation&);
+    ShScalarToNamedGrid(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    virtual ~Sh2RegularLL(); // Change to virtual if base class
+    virtual ~ShScalarToNamedGrid(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -63,7 +60,6 @@ protected:
     // None
 
     // -- Methods
-
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -78,23 +74,18 @@ protected:
 private:
 
     // No copy allowed
-
-    Sh2RegularLL(const Sh2RegularLL&);
-    Sh2RegularLL& operator=(const Sh2RegularLL&);
+    ShScalarToNamedGrid(const ShScalarToNamedGrid&);
+    ShScalarToNamedGrid& operator=(const ShScalarToNamedGrid&);
 
     // -- Members
-
-    util::Increments grid_;
+    std::string gridname_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
     virtual bool sameAs(const Action& other) const;
-
-    // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
 
     // -- Class members
     // None

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,17 +13,11 @@
 /// @date Apr 2015
 
 
-#ifndef mir_action_transform_Sh2GriddedTransform_h
-#define mir_action_transform_Sh2GriddedTransform_h
+#ifndef mir_action_transform_shScalarToRegularLL_h
+#define mir_action_transform_shScalarToRegularLL_h
 
-#include "mir/action/plan/Action.h"
-
-
-namespace mir {
-namespace repres {
-class Representation;
-}
-}
+#include "mir/action/transform/ShScalarToGridded.h"
+#include "mir/util/Increments.h"
 
 
 namespace mir {
@@ -31,19 +25,17 @@ namespace action {
 namespace transform {
 
 
-class Sh2GriddedTransform : public Action {
+class ShScalarToRegularLL : public ShScalarToGridded {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-
-    Sh2GriddedTransform(const param::MIRParametrisation&);
+    ShScalarToRegularLL(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    virtual ~Sh2GriddedTransform(); // Change to virtual if base class
+    virtual ~ShScalarToRegularLL(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -69,7 +61,7 @@ protected:
     // None
 
     // -- Methods
-    // None
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -83,20 +75,18 @@ protected:
 private:
 
     // No copy allowed
-
-    Sh2GriddedTransform(const Sh2GriddedTransform&);
-    Sh2GriddedTransform& operator=(const Sh2GriddedTransform&);
+    ShScalarToRegularLL(const ShScalarToRegularLL&);
+    ShScalarToRegularLL& operator=(const ShScalarToRegularLL&);
 
     // -- Members
-    // None
+    util::Increments grid_;
 
     // -- Methods
-
-    virtual const repres::Representation* outputRepresentation() const = 0;
+    // None
 
     // -- Overridden methods
-
-    virtual void execute(context::Context&) const;
+    virtual bool sameAs(const Action& other) const;
+    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
 
     // -- Class members
     // None
@@ -105,9 +95,7 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Sh2GriddedTransform& p)
-    //	{ p.print(s); return s; }
+    // None
 
 };
 
@@ -118,3 +106,4 @@ private:
 
 
 #endif
+

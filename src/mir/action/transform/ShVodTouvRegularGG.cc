@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,16 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Feb 2017
 
-#include "mir/action/transform/Sh2RegularGG.h"
+
+#include "mir/action/transform/ShVodTouvRegularGG.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
-
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/regular/RegularGG.h"
 
@@ -27,32 +24,34 @@ namespace action {
 namespace transform {
 
 
-Sh2RegularGG::Sh2RegularGG(const param::MIRParametrisation& parametrisation):
-    Sh2GriddedTransform(parametrisation) {
+ShVodTouvRegularGG::ShVodTouvRegularGG(const param::MIRParametrisation& parametrisation):
+    ShVodTouvGridded(parametrisation) {
     ASSERT(parametrisation_.get("user.regular", N_));
 }
 
 
-Sh2RegularGG::~Sh2RegularGG() {
+ShVodTouvRegularGG::~ShVodTouvRegularGG() {
 }
 
-bool Sh2RegularGG::sameAs(const Action& other) const {
-    const Sh2RegularGG* o = dynamic_cast<const Sh2RegularGG*>(&other);
+
+bool ShVodTouvRegularGG::sameAs(const Action& other) const {
+    const ShVodTouvRegularGG* o = dynamic_cast<const ShVodTouvRegularGG*>(&other);
     return o && (N_ == o->N_);
 }
 
-void Sh2RegularGG::print(std::ostream& out) const {
-    out << "Sh2RegularGG[N=" << N_ << "]";
+
+void ShVodTouvRegularGG::print(std::ostream& out) const {
+    out << "ShVodTouvRegularGG[N=" << N_ << "]";
 }
 
 
-const repres::Representation* Sh2RegularGG::outputRepresentation() const {
+const repres::Representation* ShVodTouvRegularGG::outputRepresentation() const {
     return new repres::regular::RegularGG(N_);
 }
 
 
 namespace {
-static ActionBuilder< Sh2RegularGG > grid2grid("transform.sh2regular-gg");
+static ActionBuilder< ShVodTouvRegularGG > __action("transform.sh-vod-to-uv-regular-gg");
 }
 
 
