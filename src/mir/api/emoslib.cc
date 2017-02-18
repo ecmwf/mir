@@ -18,27 +18,25 @@
 #include <cstring>
 #include <memory>
 #include <typeinfo>
-
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Log.h"
 #include "eckit/runtime/Main.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-
+#include "eckit/types/FloatCompare.h"
 #include "atlas/grid/Grid.h"
-#include "atlas/grid/gaussian/RegularGaussian.h"
 #include "atlas/grid/gaussian/ClassicGaussian.h"
+#include "atlas/grid/gaussian/RegularGaussian.h"
 #include "atlas/grid/gaussian/latitudes/Latitudes.h"
 #include "atlas/grid/grids.h"
-
 #include "mir/api/MIRJob.h"
 #include "mir/api/ProdgenJob.h"
+#include "mir/config/LibMir.h"
 #include "mir/input/GribMemoryInput.h"
 #include "mir/input/RawInput.h"
 #include "mir/input/VectorInput.h"
 #include "mir/input/VectorInput.h"
-#include "mir/config/LibMir.h"
 #include "mir/output/GribMemoryOutput.h"
 #include "mir/output/RawOutput.h"
 #include "mir/output/VectorOutput.h"
@@ -88,6 +86,11 @@ static void clear(MIRJob &job) {
     job.clear("gaussian");
     job.clear("regular");
     job.clear("reduced");
+}
+
+
+static bool is_approximately_equal(fortfloat& a, fortfloat& b) {
+return eckit::types::is_approximately_equal<fortfloat>(a, b);
 }
 
 
@@ -766,25 +769,26 @@ extern "C" fortint areachk_(const fortfloat &we,
         double w = long(west / we) * we;
         double e = long(east / we) * we;
 
-        if (north != n) {
+        // use is_approximately_equal to adjust area only if boundaries are strictly different
+        if (!is_approximately_equal(north, n)) {
             n += ns;
             if (n > 90) {
                 n = 90;
             }
         }
 
-        if (south != s) {
+        if (!is_approximately_equal(south, s)) {
             s += ns;
             if (s < -90) {
                 s = -90;
             }
         }
 
-        if (west != w) {
+        if (!is_approximately_equal(west, w)) {
             w -= we;
         }
 
-        if (east != e) {
+        if (!is_approximately_equal(east, e)) {
             e += we;
         }
 
@@ -802,10 +806,18 @@ extern "C" fortint areachk_(const fortfloat &we,
             w -= 360;
         }
 
-        north = n;
-        south = s;
-        west = w;
-        east = e;
+        if (!is_approximately_equal(north, n)) {
+            north = n;
+        }
+        if (!is_approximately_equal(south, s)) {
+            south = s;
+        }
+        if (!is_approximately_equal(west, w)) {
+            west = w;
+        }
+        if (!is_approximately_equal(east, e)) {
+            east = e;
+        }
 
     } catch (std::exception &e) {
         eckit::Log::error() << "EMOSLIB/MIR wrapper: " << e.what() << std::endl;
