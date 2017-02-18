@@ -108,7 +108,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     size_t p = 0;
     size_t count = 0;
     bool first = true;
-    double lat, lon;
+    double lat, lon, dummy;
 
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
@@ -122,13 +122,11 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
 
             if (first) {
                 n = s = lat;
-                w = e = lon;
+                e = w = lon;
                 first = false;
             } else {
-                n = std::max(n, lat);
-                s = std::min(s, lat);
-                e = std::max(e, lon);
-                w = std::min(w, lon);
+                (n < lat? n : s > lat? s : dummy) = lat;
+                (e < lon? e : w > lon? w : dummy) = lon;
             }
 
             // if(m.find(LL(lat, lon)) != m.end()) {
@@ -141,17 +139,15 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
         p++;
     }
 
-    // Make sure we did not visit duplicate points
-    // eckit::Log::debug<LibMir>() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
-    ASSERT(count == m.size());
-
     // Don't support empty results
     if (!m.size()) {
         std::ostringstream oss;
         oss << "Cropping " << *representation << " to " << bbox << " returns no points";
         throw eckit::UserError(oss.str());
     }
-    // ASSERT(m.size() > 0);
+
+    // Make sure we did not visit duplicate points
+    ASSERT(count == m.size());
 
     c.bbox_ = util::BoundingBox(n, w, s, e);
 
