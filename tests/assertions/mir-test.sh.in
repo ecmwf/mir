@@ -12,6 +12,8 @@ grib_get="@GRIB_GET@"
 grib_compare="@GRIB_COMPARE@"
 mars_script="@MARS_SCRIPT@"
 
+tests_assertions_dir="@CMAKE_CURRENT_SOURCE_DIR@"
+
 state=mars
 while read n
 do
@@ -28,8 +30,13 @@ do
         case $state in
 
             mars)
-            echo "retrieve,$n,target=data.in.$t" > mars.r.$t
-            $mars_script mars.r.$t
+            if [ -f "${tests_assertions_dir}/$n" ]
+            then
+                ln -sf "${tests_assertions_dir}/$n" data.in.$t
+            else
+                echo "retrieve,$n,target=data.in.$t" > mars.r.$t
+                $mars_script mars.r.$t
+            fi
             state=mir
             ;;
 
