@@ -1,6 +1,5 @@
 # MIR-180 (case 3)
-# Mars request
-param=msl,levtype=sfc
+regular_ll.2-2.grib1
 # Mir tool options
 --area=45/23.85/32.94/47.97 --grid=0.09/0.09
 # grib_get assertions
