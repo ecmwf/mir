@@ -33,7 +33,7 @@ struct Defaults : param::SimpleParametrisation {
         // these options are (can be) overridden by the configuration file
 
         set("configuration-fill", "");  // very meta
-        set("configuration-skip", "");
+        set("configuration-clear", "");
 
         set("style", "mars");
         set("legendre-loader", "mapped-memory");
@@ -69,49 +69,27 @@ MIRConfiguration& MIRConfiguration::instance() {
 
 void MIRConfiguration::configure(const eckit::PathName& path) {
 
-    // initialize hierarchy
-    root_.reset(new param::InheritParametrisation());
-    ASSERT(root_);
-
-
-    // configure from file, skip if this was already done
-    if (!path.asString().empty() && path.asString() != configPath_) {
-        eckit::Log::debug<LibMir>() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
-        std::ifstream in(path.asString().c_str());
-        if (!in) {
-            throw eckit::CantOpenFile(path);
-        }
-
-        eckit::JSONParser parser(in);
-        const eckit::ValueMap j = parser.parse();
-
-        // create hierarchy (using non-overwriting filling keys)
-        root_->fill(j);
-        std::string configuration_fill;
-        if (root_->get("configuration-fill", configuration_fill) && configuration_fill.length()) {
-            root_->fill(root_->pick(configuration_fill));
-            root_->clear("configuration-fill");
-        }
-    }
+    // Base configuration
+    AConfiguration::configure(path);
 
 
     // use defaults (non-overwriting)
     Defaults().copyValuesTo(*root_, false);
 
 
-    std::string configuration_skip;
-    if (root_->get("configuration-skip", configuration_skip) && configuration_skip.length()) {
-        root_->clear(configuration_skip);
+    // Special manipulation keys
+    std::string configuration_clear;
+    if (root_->get("configuration-clear", configuration_clear) && configuration_clear.length()) {
+        root_->clear(configuration_clear);
     }
-    root_->clear("configuration-skip");
+    root_->clear("configuration-clear");
 
 
-    configPath_ = path;
     //    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *root_ << std::endl;
 }
 
 
-MIRConfiguration::MIRConfiguration() {
+MIRConfiguration::MIRConfiguration() : AConfiguration() {
 
     // Always start with internal defaults, not from file
     configure("");
@@ -120,8 +98,7 @@ MIRConfiguration::MIRConfiguration() {
 
 void MIRConfiguration::print(std::ostream& out) const {
     out << "MIRConfiguration["
-        <<  "configPath=" << configPath_
-        << ",root=" << *root_
+        << static_cast<const AConfiguration&>(*this)
         << "]";
 }
 

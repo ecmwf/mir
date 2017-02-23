@@ -1,6 +1,6 @@
 {
     "configuration-fill": "class",
-    "configuration-skip": "NOTE",
+    "configuration-clear": "NOTE",
 
     "paramId.u": "131",
     "paramId.v": "132",
