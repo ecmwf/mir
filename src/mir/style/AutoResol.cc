@@ -118,7 +118,7 @@ void AutoResol::get(const std::string& name, long& value) const {
 
 
     typedef eckit::Translator< std::string, double > string_to_step_t;
-    typedef eckit::Translator< std::string, long > string_to_truncation_t;
+    typedef eckit::Translator< std::string, long > string_to_number_t;
 
 
     // pick entry with highest resolution (where step is not below the table's step entries)
@@ -130,7 +130,7 @@ void AutoResol::get(const std::string& name, long& value) const {
 
             const std::vector<std::string>& entry = table->lookUp(*j);
             ASSERT(entry.size() == 2);
-            value = string_to_truncation_t()(entry.back());
+            value = string_to_number_t()(entry.back());
 
         }
     }

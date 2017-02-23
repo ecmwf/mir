@@ -69,18 +69,11 @@ void AutoGaussian::get(const std::string& name, long& value) const {
     ASSERT(parametrisation_.get("field.truncation", T));
     ASSERT(T > 1);
 
-    typedef eckit::Translator< std::string, long > string_to_value_t;
-    typedef eckit::Translator< long, std::string > value_to_string_t;
+    typedef eckit::Translator< std::string, long > string_to_number_t;
+    typedef eckit::Translator< long, std::string > number_to_string_t;
 
-    const std::vector<std::string>& entry = table->lookUp(value_to_string_t()(T));
-    value = entry.size() < 2? 0 : string_to_value_t()(entry.back());
-
-    if (!value) {
-        eckit::Log::warning() << "AutoGaussian::get(" << name << "): attempting to map truncation " << (T+1) << " (T+1)" << std::endl;
-
-        const std::vector<std::string>& again = table->lookUp(value_to_string_t()(T + 1));
-        value = again.size() < 2? 0 : string_to_value_t()(again.back());
-    }
+    const std::vector<std::string>& entry = table->lookUp(number_to_string_t()(T));
+    value = entry.size() < 2? 0 : string_to_number_t()(entry.back());
 
     if (!value) {
         std::ostringstream oss;
