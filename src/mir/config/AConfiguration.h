@@ -72,6 +72,9 @@ protected:
     // Configure (or reconfigure) using a file
     virtual void configure(const eckit::PathName& path);
 
+    // Show useful information
+    virtual void print(std::ostream&) const;
+
 private:
 
     // -- Types
@@ -81,7 +84,7 @@ private:
     // None
 
     // -- Methods
-    void print(std::ostream&) const;
+    // None
 
     // -- Friends
 

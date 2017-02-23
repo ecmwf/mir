@@ -198,6 +198,8 @@ list(
     config/LibMir.h
     config/AConfiguration.cc
     config/AConfiguration.h
+    config/MIRCompareConfiguration.cc
+    config/MIRCompareConfiguration.h
     config/MIRConfiguration.cc
     config/MIRConfiguration.h
     data/Field.cc

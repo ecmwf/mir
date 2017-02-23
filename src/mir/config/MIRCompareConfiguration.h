@@ -8,11 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Nov 2016
+/// @date Feb 2017
 
 
-#ifndef mir_config_MIRConfiguration_h
-#define mir_config_MIRConfiguration_h
+#ifndef mir_config_MIRCompareConfiguration_h
+#define mir_config_MIRCompareConfiguration_h
 
 #include <iosfwd>
 #include "eckit/filesystem/PathName.h"
@@ -23,7 +23,7 @@ namespace mir {
 namespace config {
 
 
-class MIRConfiguration : public AConfiguration {
+class MIRCompareConfiguration : public AConfiguration {
 public:
 
     // -- Exceptions
@@ -43,7 +43,7 @@ public:
 
     // -- Methods
 
-    static MIRConfiguration& instance();
+    static MIRCompareConfiguration& instance();
 
     // Lookup parametrisation according to metadata
     const param::MIRParametrisation* lookup(const param::MIRParametrisation& metadata) const;
@@ -56,7 +56,7 @@ public:
     // From AConfiguration
 
     // Configure (or reconfigure) using a file
-    void configure(const eckit::PathName& path="~mir/etc/mir/configuration.json");
+    void configure(const eckit::PathName& path="~mir/etc/mir/mir-compare.json");
 
     // Return configuration defaults
     const param::MIRParametrisation* defaults() const;
@@ -65,12 +65,12 @@ private:
 
     // No copy allowed
 
-    MIRConfiguration(const MIRConfiguration&);
-    MIRConfiguration& operator=(const MIRConfiguration&);
+    MIRCompareConfiguration(const MIRCompareConfiguration&);
+    MIRCompareConfiguration& operator=(const MIRCompareConfiguration&);
 
     // -- Contructors
 
-    MIRConfiguration();
+    MIRCompareConfiguration();
 
     // -- Destructor
     // None
@@ -87,7 +87,7 @@ private:
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const MIRConfiguration& p) {
+    friend std::ostream& operator<<(std::ostream& s, const MIRCompareConfiguration& p) {
         p.print(s);
         return s;
     }

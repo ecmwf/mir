@@ -40,16 +40,22 @@ void AConfiguration::configure(const eckit::PathName& path) {
             throw eckit::CantOpenFile(path);
         }
 
+        // Create hierarchy (using non-overwriting filling keys)
         eckit::JSONParser parser(in);
         const eckit::ValueMap j = parser.parse();
-
-        // create hierarchy (using non-overwriting filling keys)
         root_->fill(j);
+
         std::string configuration_fill;
         if (root_->get("configuration-fill", configuration_fill) && configuration_fill.length()) {
             root_->fill(root_->pick(configuration_fill));
             root_->clear("configuration-fill");
         }
+
+        std::string configuration_clear;
+        if (root_->get("configuration-clear", configuration_clear) && configuration_clear.length()) {
+            root_->clear(configuration_clear);
+        }
+        root_->clear("configuration-clear");
     }
 
 
