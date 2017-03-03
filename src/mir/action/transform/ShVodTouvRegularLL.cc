@@ -46,7 +46,7 @@ bool ShVodTouvRegularLL::sameAs(const Action& other) const {
 
 
 void ShVodTouvRegularLL::print(std::ostream &out) const {
-    out << "ShVodTouvRegularLL[grib=" << increments_ << "]";
+    out << "ShVodTouvRegularLL[increments=" << increments_ << "]";
 }
 
 

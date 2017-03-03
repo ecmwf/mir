@@ -48,7 +48,7 @@ bool ShScalarToRegularLL::sameAs(const Action& other) const {
 
 
 void ShScalarToRegularLL::print(std::ostream &out) const {
-    out << "ShScalarToRegularLL[grib=" << increments_ << "]";
+    out << "ShScalarToRegularLL[increments=" << increments_ << "]";
 }
 
 
