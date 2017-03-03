@@ -30,7 +30,7 @@ ShVodTouvRegularLL::ShVodTouvRegularLL(const param::MIRParametrisation &parametr
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
     ASSERT(value.size() == 2);
-    grid_ = util::Increments(value[0], value[1]);
+    increments_ = util::Increments(value[0], value[1]);
 
 }
 
@@ -41,19 +41,38 @@ ShVodTouvRegularLL::~ShVodTouvRegularLL() {
 
 bool ShVodTouvRegularLL::sameAs(const Action& other) const {
     const ShVodTouvRegularLL* o = dynamic_cast<const ShVodTouvRegularLL*>(&other);
-    return o && (grid_ == o->grid_);
+    return o && (increments_ == o->increments_);
 }
 
 
 void ShVodTouvRegularLL::print(std::ostream &out) const {
-    out << "ShVodTouvRegularLL[grib=" << grid_ << "]";
+    out << "ShVodTouvRegularLL[grib=" << increments_ << "]";
 }
 
 
 const repres::Representation *ShVodTouvRegularLL::outputRepresentation() const {
+    double ns = increments_.south_north();
+    double we = increments_.west_east();
+
+    // Latitude range: cater for grids that are regular, but do not reach the pole (e.g. 1.6)
+    double pole = size_t(90 / ns) * ns;
+
+    // Longitude range
+    // - periodic grids have East-most longitude at 360 - increment
+    // - non-periodic grids are symmetric to Greenwhich and do not reach the date line (e.g. 1.1)
+    double west = 0;
+    double east = size_t(360 / we) * we;
+    if (east == 360) {
+        east -= we;
+    }
+    else {
+        east = size_t(180 / we) * we;
+        west = -east;
+    }
+
     return new repres::latlon::RegularLL(
-                util::BoundingBox(90, 0, -90, 360 - grid_.west_east()),
-                grid_);
+                util::BoundingBox(pole, west, -pole, east),
+                increments_);
 }
 
 
