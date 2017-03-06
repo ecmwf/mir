@@ -736,14 +736,10 @@ extern "C" void intlogs(emos_cb_proc proc) {
 
     eckit::Log::debug<LibMir>() << "++++++ intlogs" << std::endl;
 
-    bool debugChannelActive = eckit::Log::debug<LibMir>();
     emos_ctx.proc = proc;
 
     eckit::Log::setCallback(&callback, &emos_ctx);
 
-    if (!debugChannelActive) {
-        eckit::Log::debug<LibMir>().reset();
-    }
 }
 
 
