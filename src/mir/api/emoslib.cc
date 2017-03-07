@@ -89,8 +89,27 @@ static void clear(MIRJob &job) {
 }
 
 
-static bool is_approximately_equal(fortfloat& a, fortfloat& b) {
-return eckit::types::is_approximately_equal<fortfloat>(a, b);
+static void adjust_to_increment(fortfloat& value, const fortfloat& increment, bool exceed) {
+    ASSERT(increment > 0);
+
+    fortfloat r = long(value / increment) * increment;
+    while (r > value) {
+        r -= increment;
+    }
+    while (r < value) {
+        r += increment;
+    }
+
+    // adjust range only if boundary is strictly different
+    if (!eckit::types::is_approximately_equal<fortfloat>(value, r)) {
+        if (!exceed && r > value) {
+            r -= increment;
+        }
+    }
+
+    if (!eckit::types::is_approximately_equal<fortfloat>(value, r)) {
+        value = r;
+    }
 }
 
 
@@ -764,59 +783,32 @@ extern "C" fortint areachk_(const fortfloat &we,
 
         ASSERT(we > 0 && ns > 0); // Only regular LL for now
         // This is not the code in EMOSLIB, just a guess
-        double n = long(north / ns) * ns;
-        double s = long(south / ns) * ns;
-        double w = long(west / we) * we;
-        double e = long(east / we) * we;
 
-        // use is_approximately_equal to adjust area only if boundaries are strictly different
-        if (!is_approximately_equal(north, n)) {
-            n += ns;
-            if (n > 90) {
-                n = 90;
-            }
+        adjust_to_increment(north, ns, true);
+        adjust_to_increment(south, ns, false);
+        adjust_to_increment(west,  we, false);
+        adjust_to_increment(east,  we, true);
+
+        if (north > 90) {
+            north = 90;
         }
 
-        if (!is_approximately_equal(south, s)) {
-            s += ns;
-            if (s < -90) {
-                s = -90;
-            }
+        if (south < -90) {
+            south = -90;
         }
 
-        if (!is_approximately_equal(west, w)) {
-            w -= we;
+        while (east > 360) {
+            east -= 360;
+            west -= 360;
         }
 
-        if (!is_approximately_equal(east, e)) {
-            e += we;
+        while (east < -180) {
+            east += 360;
+            west += 360;
         }
 
-        while (e > 360) {
-            e -= 360;
-            w -= 360;
-        }
-
-        while (e < -180) {
-            e += 360;
-            w += 360;
-        }
-
-        while (w > e) {
-            w -= 360;
-        }
-
-        if (!is_approximately_equal(north, n)) {
-            north = n;
-        }
-        if (!is_approximately_equal(south, s)) {
-            south = s;
-        }
-        if (!is_approximately_equal(west, w)) {
-            west = w;
-        }
-        if (!is_approximately_equal(east, e)) {
-            east = e;
+        while (west > east) {
+            west -= 360;
         }
 
     } catch (std::exception &e) {
