@@ -27,8 +27,8 @@
 #include "atlas/mesh/ElementType.h"
 #include "atlas/array/IndexView.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
-#include "atlas/interpolation/Triag3D.h"
-#include "atlas/interpolation/Quad3D.h"
+#include "atlas/interpolation/element/Triag3D.h"
+#include "atlas/interpolation/element/Quad3D.h"
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/method/GridSpace.h"
@@ -37,8 +37,8 @@
 using eckit::linalg::Vector;
 using eckit::linalg::LinearAlgebra;
 using atlas::mesh::Mesh;
-using atlas::interpolation::Triag3D;
-using atlas::interpolation::Quad3D;
+using atlas::interpolation::element::Triag3D;
+using atlas::interpolation::element::Quad3D;
 
 namespace mir {
 namespace method {
