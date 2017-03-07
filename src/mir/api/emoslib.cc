@@ -93,21 +93,19 @@ static void adjust_to_increment(fortfloat& value, const fortfloat& increment, bo
     ASSERT(increment > 0);
 
     fortfloat r = long(value / increment) * increment;
-    while (r > value) {
+
+    while (eckit::types::is_strictly_greater(r, value)) {
         r -= increment;
     }
-    while (r < value) {
+    while (eckit::types::is_strictly_greater(value, r)) {
         r += increment;
+    }
+    if (!eckit::types::is_approximately_equal(value, r) && !exceed) {
+        r -= increment;
     }
 
     // adjust range only if boundary is strictly different
-    if (!eckit::types::is_approximately_equal<fortfloat>(value, r)) {
-        if (!exceed && r > value) {
-            r -= increment;
-        }
-    }
-
-    if (!eckit::types::is_approximately_equal<fortfloat>(value, r)) {
+    if (!eckit::types::is_approximately_equal(value, r)) {
         value = r;
     }
 }
@@ -784,10 +782,13 @@ extern "C" fortint areachk_(const fortfloat &we,
         ASSERT(we > 0 && ns > 0); // Only regular LL for now
         // This is not the code in EMOSLIB, just a guess
 
-        adjust_to_increment(north, ns, true);
-        adjust_to_increment(south, ns, false);
-        adjust_to_increment(west,  we, false);
-        adjust_to_increment(east,  we, true);
+        static const char* inwards = getenv("MARS_INTERPOLATION_INWARDS");
+        bool exceed = !inwards || strncmp(inwards, "1", 1);
+
+        adjust_to_increment(north, ns,  exceed);
+        adjust_to_increment(south, ns, !exceed);
+        adjust_to_increment(west,  we, !exceed);
+        adjust_to_increment(east,  we,  exceed);
 
         if (north > 90) {
             north = 90;
