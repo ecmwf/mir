@@ -6,6 +6,6 @@ regular_ll.2-2.grib1
 Ni=255
 Nj=234
 latitudeOfFirstGridPointInDegrees=15
-longitudeOfFirstGridPointInDegrees=279.75
+longitudeOfFirstGridPointInDegrees=279.9
 latitudeOfLastGridPointInDegrees=-19.95
 longitudeOfLastGridPointInDegrees=318
