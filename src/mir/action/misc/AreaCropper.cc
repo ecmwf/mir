@@ -115,19 +115,18 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
     const atlas::grid::Domain domain = representation->atlasDomain(bbox);
     while (iter->next(lat, lon)) {
-
-        lon = domain.normalise(lon);
         if (domain.contains(lon, lat)) {
 
+            lon = domain.normalise(lon);
             if (first) {
                 n = s = lat;
                 e = w = lon;
                 first = false;
             } else {
-		if(n < lat) { n = lat; }
-		if(s > lat) { s = lat; }
-		if(e < lon) { e = lon; }
-		if(w > lon) { w = lon; }
+                if     (n < lat) { n = lat; }
+                else if(s > lat) { s = lat; }
+                if     (e < lon) { e = lon; }
+                else if(w > lon) { w = lon; }
             }
 
             // if(m.find(LL(lat, lon)) != m.end()) {
