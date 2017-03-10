@@ -772,6 +772,7 @@ extern "C" fortint areachk_(const fortfloat &we,
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     eckit::Log::debug<LibMir>() << "++++++ areachk" << std::endl;
+    return 0;
 
     try {
 
