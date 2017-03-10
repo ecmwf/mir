@@ -108,14 +108,13 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     size_t p = 0;
     size_t count = 0;
     bool first = true;
-    double lat, lon, dummy;
+    double lat, lon;
 
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
     eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
     const atlas::grid::Domain domain = representation->atlasDomain(bbox);
     while (iter->next(lat, lon)) {
-        // std::cout << lat << " " << lon << std::endl;
 
         lon = domain.normalise(lon);
         if (domain.contains(lon, lat)) {
@@ -125,8 +124,10 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
                 e = w = lon;
                 first = false;
             } else {
-                (n < lat? n : s > lat? s : dummy) = lat;
-                (e < lon? e : w > lon? w : dummy) = lon;
+		if(n < lat) { n = lat; }
+		if(s > lat) { s = lat; }
+		if(e < lon) { e = lon; }
+		if(w > lon) { w = lon; }
             }
 
             // if(m.find(LL(lat, lon)) != m.end()) {
@@ -149,7 +150,10 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     // Make sure we did not visit duplicate points
     ASSERT(count == m.size());
 
+
     c.bbox_ = util::BoundingBox(n, w, s, e);
+
+    eckit::Log::info() << "request " << bbox << " domain=" << domain << " bbox=" << c.bbox_ << std::endl;
 
     c.mapping_.clear();
     c.mapping_.reserve(m.size());
