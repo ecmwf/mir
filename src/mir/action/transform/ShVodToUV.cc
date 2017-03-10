@@ -30,14 +30,6 @@
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
 
-#define TRANS_CHECK( CALL ) do {\
-  int errcode = CALL;\
-  if( errcode != TRANS_SUCCESS) {\
-    printf("ERROR: %s failed @%s:%d:\n%s\n",#CALL,__FILE__,__LINE__,trans_error_msg(errcode));\
-    abort();\
-  }\
-} while(0)
-
 #endif
 
 
@@ -106,7 +98,13 @@ void ShVodToUV::execute(context::Context & ctx) const {
 
 
     TransInitor::instance(); // Will init trans if needed
-    TRANS_CHECK( trans_vordiv_to_UV(&vod_to_UV) );
+    int err = trans_vordiv_to_UV(&vod_to_UV);
+
+	if(err != TRANS_SUCCESS) {
+		std::ostringstream oss;
+		oss << "trans_vordiv_to_UV failed: " << trans_error_msg(err);
+		throw eckit::SeriousBug(oss.str());
+	}
 
 
     field.update(result_U, 0);
