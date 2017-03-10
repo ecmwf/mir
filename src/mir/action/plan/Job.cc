@@ -26,6 +26,7 @@
 #include "mir/input/MIRInput.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRCombinedParametrisation.h"
+#include "mir/param/InheritParametrisation.h"
 #include "mir/style/MIRStyle.h"
 
 
