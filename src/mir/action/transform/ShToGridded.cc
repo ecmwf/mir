@@ -232,7 +232,7 @@ ShToGridded::ShToGridded(const param::MIRParametrisation &parametrisation):
 
     // MIR-183: optimal solution is setting flt = -1 to let Trans decide the best Legendre transform method
     transOptions_.flt = 0;
-    parametrisation.get("trans-flt", transOptions_.flt);
+    parametrisation.get("trans-fast-legendre-transform", transOptions_.flt);
 }
 
 

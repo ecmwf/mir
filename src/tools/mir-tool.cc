@@ -143,7 +143,7 @@ public:
         options_.push_back(new FactoryOption<mir::caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
         options_.push_back(new FactoryOption<mir::caching::interpolator::InterpolatorLoaderFactory>("interpolator-loader", "Select the scheme to load interpolation weights"));
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used on not"));
-        options_.push_back(new SimpleOption<long>("trans-flt", "Trans Fast Legendre Transform method"));
+        options_.push_back(new SimpleOption<long>("trans-fast-legendre-transform", "Trans Fast Legendre Transform method"));
 
         //==============================================
         options_.push_back(new Separator("Debugging"));
