@@ -152,8 +152,6 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
 
     c.bbox_ = util::BoundingBox(n, w, s, e);
 
-    eckit::Log::info() << "request " << bbox << " domain=" << domain << " bbox=" << c.bbox_ << std::endl;
-
     c.mapping_.clear();
     c.mapping_.reserve(m.size());
     for (std::map<LL, size_t>::const_iterator j = m.begin(); j != m.end(); ++j) {
