@@ -114,6 +114,9 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     // is expressed in before the rotation is applied
     eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
     const atlas::grid::Domain domain = representation->atlasDomain(bbox);
+
+    std::cout << "ITER " << *iter << std::endl;
+
     while (iter->next(lat, lon)) {
         std::cout << lat << " " << lon << std::endl;
         if (domain.contains(lon, lat)) {
