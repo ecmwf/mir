@@ -133,7 +133,6 @@ void FieldComparator::compare(const std::string& name,
     bool compareStatistics = false;
     args_.get("compare-statistics", compareStatistics);
 
-
     size_t save = fatals_;
 
     FieldSet fields1;
@@ -149,12 +148,12 @@ void FieldComparator::compare(const std::string& name,
         std::cout << name << " OK." << std::endl;
     } else {
         if (!requirements.empty()) {
-            std::string ext = eckit::PathName(requirements).extension();
+            std::string output = name + eckit::PathName(requirements).extension();
 
-            std::ofstream out(name + ext);
-            std::ifstream in(requirements);
+            std::ofstream out(output.c_str());
+            std::ifstream in(requirements.c_str());
 
-            std::cout << "Save " << name << ext << std::endl;
+            std::cout << "Save " << output << std::endl;
 
             std::string dstream = name.substr(0, 2);
             std::string destination = name.substr(24, 3);

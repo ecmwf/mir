@@ -1,0 +1,11 @@
+# Hit Broadwell arch. precision (Cray)
+regular_ll.2-2.grib1
+# Mir tool options
+--area=70/-77/-7/7 --grid=0.7/0.7
+# grib_get assertions
+Ni=121
+Nj=111
+latitudeOfFirstGridPointInDegrees=70
+longitudeOfFirstGridPointInDegrees=-77
+latitudeOfLastGridPointInDegrees=-7
+longitudeOfLastGridPointInDegrees=7

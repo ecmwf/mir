@@ -46,7 +46,7 @@ public:
 
 private:
 
-    const std::string& path_;
+    std::string path_;
     off_t offset_;
     size_t length_;
 
