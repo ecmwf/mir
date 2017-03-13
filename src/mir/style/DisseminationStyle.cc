@@ -61,7 +61,9 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
 
 
 void DisseminationStyle::shTruncate(action::ActionPlan& plan) const {
-    // do nothing
+    if (parametrisation_.has("user.truncation")) {
+        plan.add("transform.sh-truncate");
+    }
 }
 
 
