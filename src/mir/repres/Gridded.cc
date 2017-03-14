@@ -15,8 +15,8 @@
 
 #include "mir/repres/Gridded.h"
 
-#include "atlas/grid/Domain.h"
 #include "mir/config/LibMir.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
 

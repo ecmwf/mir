@@ -78,9 +78,9 @@ class LatLon : public Gridded {
 
     // -- Overridden methods
 
-    virtual atlas::grid::Domain domain() const;
+    virtual util::Domain domain() const;
 
-    virtual atlas::grid::Domain domain(const util::BoundingBox&) const;
+    virtual util::Domain domain(const util::BoundingBox&) const;
 
     virtual void fill(grib_info &) const;
 

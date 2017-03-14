@@ -9,10 +9,12 @@
  * does it submit to any jurisdiction.
  */
 
+
 #ifndef mir_util_Domain_h
 #define mir_util_Domain_h
 
 #include <iostream>
+#include "atlas/grid/Domain.h"
 
 
 namespace mir {
@@ -49,7 +51,10 @@ public:
     ~Domain() {}
 
     // -- Convertors
-    // None
+
+    operator atlas::grid::Domain() const {
+        return atlas::grid::Domain(north(), west(), south(), east());
+    }
 
     // -- Operators
 

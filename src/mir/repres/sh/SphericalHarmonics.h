@@ -13,11 +13,11 @@
 /// @date Apr 2015
 
 
-#ifndef SphericalHarmonics_H
-#define SphericalHarmonics_H
+#ifndef mir_repres_sh_SphericalHarmonics_h
+#define mir_repres_sh_SphericalHarmonics_h
 
-#include "atlas/grid/Domain.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Domain.h"
 
 
 namespace mir {
@@ -50,8 +50,8 @@ class SphericalHarmonics : public Representation {
 
     // -- Overridden methods
 
-    atlas::grid::Domain domain() const {
-        return atlas::grid::Domain::makeGlobal();
+    util::Domain domain() const {
+        return util::Domain::makeGlobal();
     }
 
     // -- Class members

@@ -18,7 +18,6 @@
 #include <map>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Timer.h"
-#include "atlas/grid/Domain.h"
 #include "atlas/grid/gaussian/latitudes/Latitudes.h"
 #include "mir/param/MIRParametrisation.h"
 

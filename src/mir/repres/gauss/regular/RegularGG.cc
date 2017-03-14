@@ -16,8 +16,8 @@
 #include "mir/repres/gauss/regular/RegularGG.h"
 
 #include <iostream>
-#include "atlas/grid/Domain.h"
 #include "mir/action/misc/AreaCropper.h"
+#include "mir/util/Domain.h"
 
 
 namespace mir {

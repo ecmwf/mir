@@ -31,6 +31,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -113,7 +114,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
     eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
-    const atlas::grid::Domain domain = representation->domain(bbox);
+    const util::Domain domain = representation->domain(bbox);
 
     while (iter->next(lat, lon)) {
         if (domain.contains(lon, lat)) {
