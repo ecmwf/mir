@@ -26,10 +26,10 @@
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
 #include "atlas/grid/Structured.h"
-#include "atlas/interpolation/Quad3D.h"
-#include "atlas/interpolation/Triag3D.h"
-#include "atlas/interpolation/PointIndex3.h"
-#include "atlas/interpolation/Ray.h"
+#include "atlas/interpolation/element/Quad3D.h"
+#include "atlas/interpolation/element/Triag3D.h"
+#include "atlas/interpolation/method/PointIndex3.h"
+#include "atlas/interpolation/method/Ray.h"
 #include "atlas/mesh/ElementType.h"
 #include "atlas/mesh/Elements.h"
 #include "atlas/mesh/Nodes.h"
@@ -109,8 +109,8 @@ static Triplets projectPointToElements(
         const FiniteElement::Point &p,
         size_t ip,
         size_t firstVirtualPoint,
-        atlas::interpolation::ElemIndex3::NodeList::const_iterator start,
-        atlas::interpolation::ElemIndex3::NodeList::const_iterator finish ) {
+        atlas::interpolation::method::ElemIndex3::NodeList::const_iterator start,
+        atlas::interpolation::method::ElemIndex3::NodeList::const_iterator finish ) {
 
     ASSERT(start != finish);
 
@@ -119,9 +119,9 @@ static Triplets projectPointToElements(
     bool mustNormalise = false;
     size_t idx[4];
     double w[4];
-    atlas::interpolation::Ray ray( p.data() );
+    atlas::interpolation::method::Ray ray( p.data() );
 
-    for (atlas::interpolation::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
+    for (atlas::interpolation::method::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
 
         const size_t elem_id = (*itc).value().payload();
         ASSERT(elem_id < connectivity.rows());
@@ -142,7 +142,7 @@ static Triplets projectPointToElements(
         if (nb_cols == 3) {
 
             /* triangle */
-            atlas::interpolation::Triag3D triag(
+            atlas::interpolation::element::Triag3D triag(
                     icoords[idx[0]].data(),
                     icoords[idx[1]].data(),
                     icoords[idx[2]].data());
@@ -152,7 +152,7 @@ static Triplets projectPointToElements(
             const double edgeEpsilon = parametricEpsilon * std::sqrt(triag.area());
             ASSERT(edgeEpsilon >= 0);
 
-            atlas::interpolation::Intersect is = triag.intersects(ray, edgeEpsilon);
+            atlas::interpolation::method::Intersect is = triag.intersects(ray, edgeEpsilon);
 
             if (is) {
 
@@ -175,7 +175,7 @@ static Triplets projectPointToElements(
         } else {
 
             /* quadrilateral */
-            atlas::interpolation::Quad3D quad(
+            atlas::interpolation::element::Quad3D quad(
                     icoords[idx[0]].data(),
                     icoords[idx[1]].data(),
                     icoords[idx[2]].data(),
@@ -191,7 +191,7 @@ static Triplets projectPointToElements(
             const double edgeEpsilon = parametricEpsilon * std::sqrt(quad.area());
             ASSERT(edgeEpsilon >= 0);
 
-            atlas::interpolation::Intersect is = quad.intersects(ray, edgeEpsilon);
+            atlas::interpolation::method::Intersect is = quad.intersects(ray, edgeEpsilon);
 
             if (is) {
 
@@ -290,11 +290,11 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
         atlas::mesh::actions::BuildCellCentres()(in.mesh());
     }
 
-    eckit::ScopedPtr<atlas::interpolation::ElemIndex3> eTree;
+    eckit::ScopedPtr<atlas::interpolation::method::ElemIndex3> eTree;
     {
         eckit::ResourceUsage usage("create_element_centre_index");
         eckit::TraceTimer<LibMir> timer("create_element_centre_index");
-        eTree.reset( atlas::interpolation::create_element_centre_index(in.mesh()) );
+        eTree.reset( atlas::interpolation::method::create_element_centre_index(in.mesh()) );
     }
 
     // input mesh
@@ -356,7 +356,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
                 max_neighbours = std::max(kpts, max_neighbours);
 
-                atlas::interpolation::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
+                atlas::interpolation::method::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
                 Triplets triplets = projectPointToElements(
                             stats,
                             icoords,
