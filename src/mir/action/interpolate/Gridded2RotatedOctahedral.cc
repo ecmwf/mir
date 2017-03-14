@@ -55,7 +55,7 @@ void Gridded2RotatedOctahedral::print(std::ostream &out) const {
 
 
 const repres::Representation *Gridded2RotatedOctahedral::outputRepresentation() const {
-    return new repres::reduced::RotatedOctahedral(N_, util::BoundingBox(), rotation_);
+    return new repres::gauss::reduced::RotatedOctahedral(N_, util::BoundingBox(), rotation_);
 }
 
 

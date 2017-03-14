@@ -20,6 +20,7 @@
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace reduced {
 
 
@@ -43,6 +44,7 @@ Reduced *ReducedClassic::cropped(const util::BoundingBox &bbox, const std::vecto
 
 
 }  // namespace reduced
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 

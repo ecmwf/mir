@@ -48,7 +48,7 @@ void ShVodTouvReducedGG::print(std::ostream& out) const {
 
 
 const repres::Representation* ShVodTouvReducedGG::outputRepresentation() const {
-    return new repres::reduced::ReducedClassic(N_);
+    return new repres::gauss::reduced::ReducedClassic(N_);
 }
 
 

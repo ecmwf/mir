@@ -50,7 +50,7 @@ void ShScalarToReducedGG::print(std::ostream& out) const {
 
 
 const repres::Representation* ShScalarToReducedGG::outputRepresentation() const {
-    return new repres::reduced::ReducedClassic(N_);
+    return new repres::gauss::reduced::ReducedClassic(N_);
 }
 
 

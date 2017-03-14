@@ -46,7 +46,7 @@ void ShVodTouvReducedGGPLGiven::print(std::ostream& out) const {
 
 
 const repres::Representation* ShVodTouvReducedGGPLGiven::outputRepresentation() const {
-    return new repres::reduced::ReducedFromPL(pl_);
+    return new repres::gauss::reduced::ReducedFromPL(pl_);
 }
 
 

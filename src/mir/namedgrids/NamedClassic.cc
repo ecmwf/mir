@@ -38,11 +38,11 @@ void NamedClassic::print(std::ostream &out) const {
 }
 
 const repres::Representation *NamedClassic::representation() const {
-    return new repres::reduced::ReducedClassic(N_);
+    return new repres::gauss::reduced::ReducedClassic(N_);
 }
 
 const repres::Representation *NamedClassic::representation(const util::Rotation &rotation) const {
-    return new repres::reduced::RotatedClassic(N_, util::BoundingBox(), rotation);
+    return new repres::gauss::reduced::RotatedClassic(N_, util::BoundingBox(), rotation);
 }
 
 size_t NamedClassic::gaussianNumber() const {

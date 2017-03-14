@@ -38,12 +38,12 @@ void NamedOctahedral::print(std::ostream &out) const {
 }
 
 const repres::Representation *NamedOctahedral::representation() const {
-    return new repres::reduced::ReducedOctahedral(N_);
+    return new repres::gauss::reduced::ReducedOctahedral(N_);
 
 }
 
 const repres::Representation *NamedOctahedral::representation(const util::Rotation &rotation) const {
-    return new repres::reduced::RotatedOctahedral(N_, util::BoundingBox(), rotation);
+    return new repres::gauss::reduced::RotatedOctahedral(N_, util::BoundingBox(), rotation);
 }
 
 size_t NamedOctahedral::gaussianNumber() const {

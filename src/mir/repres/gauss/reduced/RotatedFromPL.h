@@ -23,6 +23,7 @@
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace reduced {
 
 
@@ -115,6 +116,7 @@ class RotatedFromPL : public FromPL {
 
 
 }  // namespace reduced
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 #endif

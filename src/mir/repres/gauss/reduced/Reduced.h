@@ -21,6 +21,7 @@
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace reduced {
 
 
@@ -123,7 +124,8 @@ class Reduced : public Gaussian {
 };
 
 
-}  // namespace
+}  // namespace reduced
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 
