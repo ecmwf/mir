@@ -52,6 +52,7 @@ public:
 
     // -- Convertors
 
+    // Note: careful with this conversion, the interface is very similar but not the same!
     operator atlas::grid::Domain() const {
         return atlas::grid::Domain(north(), west(), south(), east());
     }
@@ -66,9 +67,6 @@ public:
         east_ = other.east_;
         return *this;
     }
-
-    /// Comparison
-    bool operator==(const Domain &other);
 
     // -- Methods
 
@@ -92,11 +90,8 @@ public:
         return includesPoleNorth() && includesPoleSouth() && isPeriodicEastWest();
     }
 
-    /// Check if domain does not represent any area on the globe surface
-    bool isEmpty() const;
-
     /// Checks if the point is contained in the domain
-    bool contains(double lon, double lat) const;
+    bool contains(double lat, double lon) const;
 
     /// Normalises the longitude of a query point
     double normalise(double lon) const;

@@ -25,21 +25,7 @@ using eckit::types::is_strictly_greater;
 using eckit::types::is_approximately_greater_or_equal;
 
 
-bool Domain::operator==(const Domain &other) {
-    return  is_approximately_equal(north_, other.north_) &&
-            is_approximately_equal(west_,  other.west_)  &&
-            is_approximately_equal(south_, other.south_) &&
-            is_approximately_equal(east_,  other.east_);
-}
-
-
-bool Domain::isEmpty() const {
-    return  !is_strictly_greater(north_, south_) ||
-            !is_strictly_greater(east_, west_);
-}
-
-
-bool Domain::contains(double lon, double lat) const {
+bool Domain::contains(double lat, double lon) const {
     // approximate comparisons include boundary coordinates
     lon = normalise(lon);
     return  is_approximately_greater_or_equal(north_, lat) &&
@@ -81,10 +67,12 @@ void Domain::normalise() {
         east_ -= 360;
         west_ -= 360;
     }
+
     while (east_ < -180) {
         east_ += 360;
         west_ += 360;
     }
+
     while (east_ < west_) {
         east_ += 360;
     }
@@ -119,7 +107,6 @@ void Domain::print(std::ostream &os) const {
        << ",south=" << south_
        << ",east="  << east_
        << ",isGlobal=" << isGlobal()
-       << ",isEmpty=" << isEmpty()
        << "]";
 }
 

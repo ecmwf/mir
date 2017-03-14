@@ -117,7 +117,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     const util::Domain domain = representation->domain(bbox);
 
     while (iter->next(lat, lon)) {
-        if (domain.contains(lon, lat)) {
+        if (domain.contains(lat, lon)) {
 
             lon = domain.normalise(lon);
             if (first) {
