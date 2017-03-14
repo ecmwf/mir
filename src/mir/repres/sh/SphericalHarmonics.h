@@ -50,7 +50,7 @@ class SphericalHarmonics : public Representation {
 
     // -- Overridden methods
 
-    atlas::grid::Domain atlasDomain() const {
+    atlas::grid::Domain domain() const {
         return atlas::grid::Domain::makeGlobal();
     }
 

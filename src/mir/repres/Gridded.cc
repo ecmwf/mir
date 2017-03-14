@@ -49,7 +49,7 @@ void Gridded::setGivenPacking(grib_info &info) const {
 
 
 void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
-    if (!atlasDomain().isGlobal()) {
+    if (!domain().isGlobal()) {
         Representation::cropToDomain(parametrisation, ctx); // This will throw an exception
     }
 }

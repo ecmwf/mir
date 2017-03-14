@@ -93,7 +93,7 @@ class None : public Representation {
     // virtual void fill(grib_info &) const;
     // virtual void fill(api::MIRJob &) const;
     // virtual atlas::grid::Grid *atlasGrid() const;
-    // virtual atlas::grid::Domain atlasDomain() const;
+    // virtual atlas::grid::Domain domain() const;
     // virtual void validate(const std::vector<double> &values) const;
     // virtual Iterator* rotatedIterator() const; // After rotation
     // virtual Iterator* unrotatedIterator() const; // Before rotation

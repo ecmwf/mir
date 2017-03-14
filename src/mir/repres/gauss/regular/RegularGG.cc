@@ -55,7 +55,7 @@ const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
 
 
 void RegularGG::cropToDomain(const param::MIRParametrisation& param, context::Context& ctx) const {
-    if (!atlasDomain().isGlobal()) {
+    if (!domain().isGlobal()) {
         action::AreaCropper cropper(param, bbox_);
         cropper.execute(ctx);
     }

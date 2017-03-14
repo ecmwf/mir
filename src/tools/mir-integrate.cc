@@ -91,7 +91,7 @@ void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
         const mir::repres::Representation* rep = field.representation();
 
         ASSERT(rep);
-        // ASSERT(rep->atlasDomain().isGlobal());
+        // ASSERT(rep->domain().isGlobal());
 
 #if 0
         eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );

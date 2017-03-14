@@ -100,8 +100,8 @@ class Representation : public eckit::Counted {
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
     virtual atlas::grid::Grid* atlasGrid() const;
-    virtual atlas::grid::Domain atlasDomain() const;
-    virtual atlas::grid::Domain atlasDomain(const util::BoundingBox&) const;
+    virtual atlas::grid::Domain domain() const;
+    virtual atlas::grid::Domain domain(const util::BoundingBox&) const;
 
     virtual size_t truncation() const;
     virtual size_t pentagonalResolutionTs() const;
