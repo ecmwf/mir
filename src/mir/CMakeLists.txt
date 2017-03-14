@@ -501,6 +501,8 @@ list(
     util/BoundingBox.h
     util/Compare.cc
     util/Compare.h
+    util/Domain.cc
+    util/Domain.h
     util/Formula.cc
     util/Formula.h
     util/FormulaBinop.cc
