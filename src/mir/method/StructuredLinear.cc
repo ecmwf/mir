@@ -17,8 +17,8 @@
 #include "eckit/geometry/Point3.h"
 #include "eckit/utils/MD5.h"
 #include "atlas/grid/Structured.h"
-#include "atlas/interpolation/element/Triag3D.h"
-#include "atlas/interpolation/method/Ray.h"
+#include "atlas/interpolation/Triag3D.h"
+#include "atlas/interpolation/Ray.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/GridSpace.h"
 #include "mir/param/MIRParametrisation.h"
@@ -268,9 +268,9 @@ void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::Structured& 
             const size_t T[4][3] = {{1,0,2}, {2,3,1}, {0,2,3}, {3,1,0}};
             size_t w = eckit::types::is_strictly_greater(dist2_q0_q3, dist2_q1_q2)? 0 : 2;
 
-            using atlas::interpolation::element::Triag3D;
-            using atlas::interpolation::method::Intersect;
-            using atlas::interpolation::method::Ray;
+            using atlas::interpolation::Triag3D;
+            using atlas::interpolation::Intersect;
+            using atlas::interpolation::Ray;
 
             Intersect inter;
             Triag3D tri = Triag3D(qp[T[w][0]].data(), qp[T[w][1]].data(), qp[T[w][2]].data());

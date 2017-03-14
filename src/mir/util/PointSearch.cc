@@ -44,13 +44,13 @@ void PointSearch::statsReset() const {
 }
 
 PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType& pt) const {
-    const atlas::interpolation::method::PointIndex3::NodeInfo nn = tree_->nearestNeighbour(pt);
+    const atlas::interpolation::PointIndex3::NodeInfo nn = tree_->nearestNeighbour(pt);
     return nn.value();
 }
 
 
 void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest) const {
-    using atlas::interpolation::method::PointIndex3;
+    using atlas::interpolation::PointIndex3;
 
     // Small optimisation
     if(n == 1) {
@@ -69,7 +69,7 @@ void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<Poin
 
 
 void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest) const {
-    using atlas::interpolation::method::PointIndex3;
+    using atlas::interpolation::PointIndex3;
 
     PointIndex3::NodeList r = tree_->findInSphere(pt,radius);
 
@@ -82,7 +82,7 @@ void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::v
 
 void PointSearch::init(const std::vector<PointType>& points) {
 
-    using atlas::interpolation::method::PointIndex3;
+    using atlas::interpolation::PointIndex3;
 
     std::vector<PointIndex3::Value> pidx;
     pidx.reserve(points.size());
