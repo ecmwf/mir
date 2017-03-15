@@ -42,10 +42,8 @@ void Complex::fill(grib_info& info, const repres::Representation& repres) const 
 }
 
 
-namespace {
-static Complex packing("complex");
-
-}
+static Complex packing1("complex");
+static Complex packing1("co");
 
 
 }  // namespace packing
