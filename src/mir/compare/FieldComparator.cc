@@ -189,6 +189,7 @@ void FieldComparator::error(const char* what) {
     args_.get(std::string("ignore-") + what, ignore);
     if (ignore) {
         warnings_++;
+        std::cout << "WARNING " << what << std::endl;
     }
     else {
         fatals_++;
