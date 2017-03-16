@@ -28,7 +28,7 @@ namespace latlon {
 
 
 class RegularLL : public LatLon {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -61,14 +61,13 @@ class RegularLL : public LatLon {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
-
+    // None
 
     // -- Methods
-
-    atlas::grid::lonlat::Shift atlasShift() const;
+    // None
 
     // -- Overridden methods
     void print(std::ostream &) const; // Change to virtual if base class
@@ -82,13 +81,11 @@ class RegularLL : public LatLon {
     // -- Class methods
     // None
 
-  private:
-
+private:
 
     // No copy allowed
-
-    RegularLL(const RegularLL &);
-    RegularLL &operator=(const RegularLL &);
+    RegularLL(const RegularLL&);
+    RegularLL &operator=(const RegularLL&);
 
     // -- Members
     // None
@@ -96,7 +93,7 @@ class RegularLL : public LatLon {
     // -- Methods
 
     // Called by crop()
-    virtual const RegularLL *cropped(const util::BoundingBox &bbox) const;
+    virtual const RegularLL* cropped(const util::BoundingBox& bbox) const;
 
     // -- Overridden methods
     // None
@@ -114,8 +111,11 @@ class RegularLL : public LatLon {
 
 };
 
+
 }  // namespace latlon
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

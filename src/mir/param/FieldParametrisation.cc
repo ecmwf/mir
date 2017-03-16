@@ -14,6 +14,7 @@
 
 
 #include "mir/param/FieldParametrisation.h"
+#include "mir/param/InheritParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"

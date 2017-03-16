@@ -102,6 +102,9 @@ void BoundingBox::fill(api::MIRJob &job) const  {
 
 
 void BoundingBox::normalise() {
+    ASSERT(north_ <= 90 && south_ >= -90);
+    ASSERT(north_ >= south_);
+
     while (east_ > 360) {
         east_ -= 360;
         west_ -= 360;
@@ -116,7 +119,6 @@ void BoundingBox::normalise() {
         east_ += 360;
     }
 
-    ASSERT(north_ >= south_);
     ASSERT(west_ <= east_);
 }
 

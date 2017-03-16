@@ -23,6 +23,7 @@
 #include "atlas/grid/lonlat/ShiftedLonLat.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 #include "mir/util/OffsetGrid.h"
 
@@ -75,8 +76,9 @@ void RegularLL::fill(api::MIRJob &job) const  {
 }
 
 
-atlas::grid::lonlat::Shift RegularLL::atlasShift() const {
-    
+atlas::grid::Grid* RegularLL::atlasGrid() const {
+    using namespace atlas::grid::lonlat;
+
 
     // locate latitude/longitude origin via accumulation of increments, in range [0,inc[
     // NOTE: shift is assumed half-increment origin dispacement; Domain is checked for
@@ -95,28 +97,20 @@ atlas::grid::lonlat::Shift RegularLL::atlasShift() const {
     lon_origin = bbox_.west()  + i * inc_we,
     lat_origin = bbox_.south() + j * inc_sn;
 
-    const atlas::grid::Domain dom = atlasDomain();
+    const util::Domain dom = domain();
     const bool
     includesBothPoles = dom.includesPoleNorth() && dom.includesPoleSouth(),
     isShiftedLon = dom.isPeriodicEastWest() && eckit::types::is_approximately_equal(lon_origin, inc_we / 2.),
     isShiftedLat = includesBothPoles        && eckit::types::is_approximately_equal(lat_origin, inc_sn / 2.);
 
-    return atlas::grid::lonlat::Shift(isShiftedLon, isShiftedLat);
-}
-
-
-atlas::grid::Grid* RegularLL::atlasGrid() const {
-    using namespace atlas::grid::lonlat;
-    const Shift shift = atlasShift();
-
     // TODO: missing assertion for non-global, or shifted by not 1/2 grid
 
-
     // return non-shifted/shifted grid
-    return shift(Shift::LON | Shift::LAT) ? static_cast<LonLat*>(new ShiftedLonLat (ni_, nj_, atlasDomain()))
-           : shift(Shift::LON) ?            static_cast<LonLat*>(new ShiftedLon    (ni_, nj_, atlasDomain()))
-           : shift(Shift::LAT) ?            static_cast<LonLat*>(new ShiftedLat    (ni_, nj_, atlasDomain()))
-           :                               static_cast<LonLat*>(new RegularLonLat (ni_, nj_, atlasDomain()));
+    atlas::grid::Domain atlasDomain(dom.north(), dom.west(), dom.south(), dom.east());
+    return isShiftedLon || isShiftedLat? static_cast<LonLat*>(new ShiftedLonLat (ni_, nj_, atlasDomain))
+           : isShiftedLon?               static_cast<LonLat*>(new ShiftedLon    (ni_, nj_, atlasDomain))
+           : isShiftedLat?               static_cast<LonLat*>(new ShiftedLat    (ni_, nj_, atlasDomain))
+           :                             static_cast<LonLat*>(new RegularLonLat (ni_, nj_, atlasDomain));
 }
 
 

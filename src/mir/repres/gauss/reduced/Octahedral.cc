@@ -16,12 +16,14 @@
 #include "mir/repres/gauss/reduced/Octahedral.h"
 
 #include "atlas/grid/gaussian/OctahedralGaussian.h"
-#include "mir/util/Grib.h"
 #include "mir/api/MIRJob.h"
+#include "mir/util/Domain.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace reduced {
 
 
@@ -54,7 +56,10 @@ void Octahedral::fill(api::MIRJob &job) const  {
 
 
 atlas::grid::Grid *Octahedral::atlasGrid() const {
-    return new atlas::grid::gaussian::OctahedralGaussian(N_, atlasDomain());
+    util::Domain dom = domain();
+    atlas::grid::Domain atlasDomain(dom.north(), dom.west(), dom.south(), dom.east());
+
+    return new atlas::grid::gaussian::OctahedralGaussian(N_, atlasDomain);
 }
 
 
@@ -68,6 +73,7 @@ const std::vector<long>& Octahedral::pls() const {
 
 
 }  // namespace reduced
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 

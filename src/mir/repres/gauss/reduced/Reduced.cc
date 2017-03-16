@@ -19,19 +19,21 @@
 #include <limits>
 #include <sstream>
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/types/FloatCompare.h"
-#include "atlas/grid/Domain.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
-#include "mir/util/Angles.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
+#include "eckit/types/Fraction.h"
 
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace reduced {
 
 
@@ -84,7 +86,7 @@ void Reduced::fill(grib_info &info) const  {
     */
 
     // for GRIB, a global field is also aligned with Greenwich
-    bool global = atlasDomain().isGlobal();
+    bool global = domain().isGlobal();
     bool westAtGreenwich = eckit::types::is_approximately_equal<double>(0, bbox_.west());
 
     long j = info.packing.extra_settings_count++;
@@ -95,7 +97,7 @@ void Reduced::fill(grib_info &info) const  {
 
 
 void Reduced::fill(api::MIRJob &job) const  {
-    ASSERT(atlasDomain().isGlobal());
+    ASSERT(domain().isGlobal());
     job.set("pl", pls());
 }
 
@@ -104,16 +106,18 @@ class GaussianIterator : public Iterator {
 
     const std::vector<double>& latitudes_;
     const std::vector<long>& pl_;
-    const atlas::grid::Domain domain_;
+    const util::Domain domain_;
 
     size_t ni_;
     const size_t nj_;
+
+    eckit::Fraction lon_;
+    eckit::Fraction inc_;
 
     size_t i_;
     size_t j_;
     size_t k_;
     size_t p_;
-    size_t imax_;
 
     size_t count_;
 
@@ -126,29 +130,35 @@ class GaussianIterator : public Iterator {
             << ",j="      << j_
             << ",k="      << k_
             << ",p="      << p_
-            << ",imax="   << imax_
             << ",count="  << count_
             << "]";
     }
 
     virtual bool next(double &lat, double &lon) {
-        while (j_ < nj_ && i_ < imax_) {
+        while (j_ < nj_ && i_ < ni_) {
 
             ASSERT(j_ + k_ < latitudes_.size());
+
             lat = latitudes_[j_ + k_];
-            lon = (i_ * 360.) / ni_;
+            lon = lon_;
 
             i_++;
-            if (i_ == imax_) {
+            lon_ += inc_;
+
+            if (i_ == ni_) {
                 j_++;
                 if (j_ < nj_) {
                     ASSERT(p_ < pl_.size());
-                    ni_ = static_cast<size_t>(pl_[p_++]);
+                    ni_ = size_t(pl_[p_++]);
+                    lon_ = 0;
+                    inc_ = eckit::Fraction(360, ni_);
+                    i_ = 0;
+
+
                 }
-                repositionToFirstLongitudeIndex(i_, imax_, domain_, ni_);
             }
 
-            if (domain_.contains(lon, lat)) {
+            if (domain_.contains(lat, lon)) {
                 count_++;
                 return true;
             }
@@ -158,12 +168,14 @@ class GaussianIterator : public Iterator {
 
 public:
 
-    GaussianIterator(const std::vector<double>& latitudes, const std::vector<long>& pl, const atlas::grid::Domain& dom) :
+    GaussianIterator(const std::vector<double>& latitudes, const std::vector<long>& pl, const util::Domain& dom) :
         latitudes_(latitudes),
         pl_(pl),
         domain_(dom),
         nj_(pl_.size()),
+        i_(0),
         j_(0),
+        k_(0),
         p_(0),
         count_(0) {
 
@@ -172,53 +184,51 @@ public:
         ASSERT(pl_.size() >= 2);
 
         // position to first latitude and first/last longitude
-        ni_ = static_cast<size_t>(pl_[p_++]);
-        repositionToFirstLatitudeIndex (k_,        domain_, latitudes_);
-        repositionToFirstLongitudeIndex(i_, imax_, domain_, ni_);
+
+        while (k_ < latitudes_.size() && domain_.north() < latitudes_[k_]) {
+            k_++;
+        }
+        ASSERT(k_ < latitudes_.size());
+
+        ni_ = size_t(pl_[p_++]);
+        inc_ = eckit::Fraction(360, ni_);
+        lon_ = 0;
+
 
         // eckit::Log::debug<LibMir>() << *this << std::endl;
     }
 
-private:
+    // static void repositionToFirstLongitudeIndex(size_t& imin, size_t& imax, const util::Domain& dom, const size_t& n) {
 
-    static void repositionToFirstLatitudeIndex(size_t& j, const atlas::grid::Domain& dom, const std::vector<double>& lats) {
-        j = 0;
-        while (j < lats.size() && dom.north() < lats[j]) {
-            j++;
-        }
-        ASSERT(j < lats.size());
-    }
+    //     const double west_positive = dom.west() + (eckit::types::is_strictly_greater(0., dom.west()) ? 360. : 0.);
+    //     const double east_positive = dom.east() + (eckit::types::is_strictly_greater(0., dom.west()) ? 360. : 0.);
+    //     ASSERT(eckit::types::is_approximately_greater_or_equal(360., east_positive - west_positive));
 
-    static void repositionToFirstLongitudeIndex(size_t& imin, size_t& imax, const atlas::grid::Domain& dom, const size_t& n) {
+    //     ASSERT(n);
 
-        const double west_positive = dom.west() + (eckit::types::is_strictly_greater(0., dom.west()) ? 360. : 0.);
-        const double east_positive = dom.east() + (eckit::types::is_strictly_greater(0., dom.west()) ? 360. : 0.);
-        ASSERT(eckit::types::is_approximately_greater_or_equal(360., east_positive - west_positive));
-        
-        ASSERT(n);
+    //     // assuming n>0, returned range satisfies: 0 <= imin < imax; and imax - imin <= n
+    //     imin = 0;
+    //     while (imin < n && eckit::types::is_strictly_greater(west_positive, (imin * 360.) / n)) {
+    //         ++imin;
+    //     }
+    //     imin = imin % n;
+    //     imax = imin;
+    //     while (imax - imin < n && eckit::types::is_approximately_greater_or_equal(east_positive, (imax * 360.) / n)) {
+    //         ++imax;
+    //     }
+    //     ASSERT(imax > imin);
+    // }
 
-        // assuming n>0, returned range satisfies: 0 <= imin < imax; and imax - imin <= n
-        imin = 0;
-        while (imin < n && eckit::types::is_strictly_greater(west_positive, (imin * 360.) / n)) {
-            ++imin;
-        }
-        imin = imin % n;
-        imax = imin;
-        while (imax - imin < n && eckit::types::is_approximately_greater_or_equal(east_positive, (imax * 360.) / n)) {
-            ++imax;
-        }
-        ASSERT(imax > imin);
-    }
 
 };
 
 
-atlas::grid::Domain Reduced::atlasDomain() const {
-    return atlasDomain(bbox_);
+util::Domain Reduced::domain() const {
+    return domain(bbox_);
 }
 
 
-atlas::grid::Domain Reduced::atlasDomain(const util::BoundingBox& bbox) const {
+util::Domain Reduced::domain(const util::BoundingBox& bbox) const {
 
 
     // calculate EW and NS increments
@@ -266,12 +276,12 @@ atlas::grid::Domain Reduced::atlasDomain(const util::BoundingBox& bbox) const {
     south = includesPoleSouth ?  -90 : isSouthAtEquator ? 0 : bbox.south(),
     west = bbox.west(),
     east = isPeriodicEastWest ? bbox.west() + 360 : bbox.east();
-    return atlas::grid::Domain(north, west, south, east);
+    return util::Domain(north, west, south, east);
 }
 
 
 Iterator *Reduced::unrotatedIterator() const {
-    return new GaussianIterator(latitudes(), pls(), atlasDomain());
+    return new GaussianIterator(latitudes(), pls(), domain());
 }
 
 
@@ -342,17 +352,16 @@ size_t Reduced::frame(std::vector<double> &values, size_t size, double missingVa
 }
 
 
-void Reduced::validate(const std::vector<double> &values) const {
+void Reduced::validate(const std::vector<double>& values) const {
+    const util::Domain dom = domain();
+    long long count = 0;
 
-    size_t count = 0;
-
-    if (atlasDomain().isGlobal()) {
-        const std::vector<long> &pl = pls();
+    if (dom.isGlobal()) {
+        const std::vector<long>& pl = pls();
         for (size_t i = 0; i < pl.size(); i++) {
-            count += static_cast<size_t>(pl[i]);
+            count += pl[i];
         }
-    }
-    else {
+    } else {
         eckit::ScopedPtr<Iterator> it(unrotatedIterator());
         double lat;
         double lon;
@@ -361,8 +370,8 @@ void Reduced::validate(const std::vector<double> &values) const {
         }
     }
 
-    eckit::Log::debug<LibMir>() << "Reduced::validate " << values.size() << " count=" << count << std::endl;
-    ASSERT(values.size() == count);
+    eckit::Log::debug<LibMir>() << "Reduced::validate checked " << eckit::Plural(values.size(), "value") << ", within domain: " << eckit::BigNum(count) << "." << std::endl;
+    ASSERT(values.size() == size_t(count));
 }
 
 
@@ -395,6 +404,7 @@ const Reduced *Reduced::cropped(const util::BoundingBox&, const std::vector<long
 
 
 }  // namespace reduced
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 

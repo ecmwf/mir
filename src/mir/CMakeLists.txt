@@ -196,6 +196,10 @@ list(
     compare/Spectral.h
     config/LibMir.cc
     config/LibMir.h
+    config/AConfiguration.cc
+    config/AConfiguration.h
+    config/MIRCompareConfiguration.cc
+    config/MIRCompareConfiguration.h
     config/MIRConfiguration.cc
     config/MIRConfiguration.h
     data/Field.cc
@@ -497,6 +501,8 @@ list(
     util/BoundingBox.h
     util/Compare.cc
     util/Compare.h
+    util/Domain.cc
+    util/Domain.h
     util/Formula.cc
     util/Formula.h
     util/FormulaBinop.cc

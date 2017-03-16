@@ -66,9 +66,9 @@ class ReducedLL : public Gridded {
 
     virtual atlas::grid::Grid* atlasGrid() const;
 
-    virtual atlas::grid::Domain atlasDomain() const;
+    virtual util::Domain domain() const;
 
-    virtual atlas::grid::Domain atlasDomain(const util::BoundingBox&) const;
+    virtual util::Domain domain(const util::BoundingBox&) const;
 
     void print(std::ostream&) const; // Change to virtual if base class
 

@@ -23,8 +23,8 @@
 #include "atlas/functionspace/FunctionSpace.h"
 #include "atlas/grid/Grid.h"
 #include "atlas/grid/Structured.h"
-#include "atlas/interpolation/Quad3D.h"
-#include "atlas/interpolation/Triag3D.h"
+#include "atlas/interpolation/element/Quad3D.h"
+#include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/mesh/Mesh.h"
 #include "atlas/mesh/actions/BuildConvexHull3D.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
@@ -67,8 +67,8 @@ void MIRIntegrate::usage(const std::string &tool) const {
 
 void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
 
-    using atlas::interpolation::Triag3D;
-    using atlas::interpolation::Quad3D;
+    using atlas::interpolation::element::Triag3D;
+    using atlas::interpolation::element::Quad3D;
     using atlas::util::Constants;
 
 //    options_t options;
@@ -91,7 +91,7 @@ void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
         const mir::repres::Representation* rep = field.representation();
 
         ASSERT(rep);
-        // ASSERT(rep->atlasDomain().isGlobal());
+        // ASSERT(rep->domain().isGlobal());
 
 #if 0
         eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );

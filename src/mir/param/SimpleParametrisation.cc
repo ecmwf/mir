@@ -529,7 +529,7 @@ bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
 }
 
 bool SimpleParametrisation::matches(const MIRParametrisation& other, const MIRParametrisation& ignore) const {
-    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches " << other << " (ignoring some keys)" << std::endl;
+    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches " << other << ", ignoring " << ignore << std::endl;
     bool ok = true;
     for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end() && ok; ++j) {
         bool ignored = ignore.has((*j).first);

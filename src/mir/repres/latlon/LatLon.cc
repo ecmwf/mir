@@ -19,11 +19,12 @@
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
-#include "atlas/grid/Domain.h"
+#include "eckit/types/Fraction.h"
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
 
@@ -32,25 +33,15 @@ namespace repres {
 namespace latlon {
 
 
-static size_t computeN(double first, double last, double inc, const char* n_name) {
+static size_t computeN(double first, double last, double inc) {
     ASSERT(first <= last);
     ASSERT(inc > 0);
 
-    size_t p = size_t((last - first) / inc);
-    double d0 = std::abs(last - (first + p * inc));
-    double d1 = std::abs(last - (first + (p + 1) * inc));
-    ASSERT(d0 != d1);
+    eckit::Fraction f(first);
+    eckit::Fraction l(last);
+    eckit::Fraction i(inc);
 
-    size_t n = p + (d0<d1? 0 : 1);
-    // eckit::Log::debug<LibMir>() << p << " " << d0 << " " << d1 << " " << inc << " " << first << " " << last << std::endl;
-
-    const double eps = double(std::numeric_limits<float>::epsilon());
-    if (!eckit::types::is_approximately_equal(n*inc + first, last, eps)) {
-        std::ostringstream os;
-        os << "computeN: cannot compute accurately " << n_name << " from " << first << "/to/" << last << "/by/" << inc;
-        eckit::Log::debug<LibMir>() << os.str() << std::endl;
-        throw eckit::BadValue(os.str());
-    }
+    long long n = (l - f) / i;
 
     return n + 1;
 }
@@ -76,7 +67,7 @@ LatLon::~LatLon() {
 
 
 void LatLon::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
-    if (!atlasDomain().isGlobal()) {
+    if (!domain().isGlobal()) {
         action::AreaCropper cropper(parametrisation, bbox_);
         cropper.execute(ctx);
     }
@@ -84,8 +75,8 @@ void LatLon::cropToDomain(const param::MIRParametrisation &parametrisation, cont
 
 
 void LatLon::setNiNj() {
-    ni_ = computeN(bbox_.west(),  bbox_.east(),  increments_.west_east(),   "Ni");
-    nj_ = computeN(bbox_.south(), bbox_.north(), increments_.south_north(), "Nj");
+    ni_ = computeN(bbox_.west(),  bbox_.east(),  increments_.west_east());
+    nj_ = computeN(bbox_.south(), bbox_.north(), increments_.south_north());
 }
 
 
@@ -175,11 +166,13 @@ class LatLonIterator : public Iterator {
     size_t ni_;
     size_t nj_;
 
-    double north_;
-    double west_;
+    eckit::Fraction north_;
+    eckit::Fraction west_;
+    eckit::Fraction lat_;
+    eckit::Fraction lon_;
 
-    double we_;
-    double ns_;
+    eckit::Fraction we_;
+    eckit::Fraction ns_;
 
     size_t i_;
     size_t j_;
@@ -203,12 +196,15 @@ class LatLonIterator : public Iterator {
     virtual bool next(double &lat, double &lon) {
         if (j_ < nj_) {
             if (i_ < ni_) {
-                lat = north_ - j_ * ns_; // This is slower, but looks more precise
-                lon = west_  + i_ * we_; // This is slower, but looks more precise
+                lat = lat_;
+                lon = lon_;
+                lon_ += we_;
                 i_++;
                 if (i_ == ni_) {
                     j_++;
+                    lat_ -= ns_;
                     i_ = 0;
+                    lon_ = west_;
                 }
                 count_++;
                 return true;
@@ -228,6 +224,8 @@ public:
         nj_(nj),
         north_(north),
         west_(west),
+        lat_(north),
+        lon_(west_),
         we_(we),
         ns_(ns),
         i_(0),
@@ -244,7 +242,12 @@ public:
 
 
 Iterator *LatLon::unrotatedIterator() const {
-    return new LatLonIterator(ni_, nj_, bbox_.north(), bbox_.west(), increments_.west_east(), increments_.south_north());
+    return new LatLonIterator(ni_,
+                              nj_,
+                              bbox_.north(),
+                              bbox_.west(),
+                              increments_.west_east(),
+                              increments_.south_north());
 }
 
 
@@ -289,12 +292,12 @@ void LatLon::shape(size_t &ni, size_t &nj) const {
 }
 
 
-atlas::grid::Domain LatLon::atlasDomain() const {
-    return atlasDomain(bbox_);
+util::Domain LatLon::domain() const {
+    return domain(bbox_);
 }
 
 
-atlas::grid::Domain LatLon::atlasDomain(const util::BoundingBox& bbox) const {
+util::Domain LatLon::domain(const util::BoundingBox& bbox) const {
 
 
     // Special case for shifted grids
@@ -303,14 +306,14 @@ atlas::grid::Domain LatLon::atlasDomain(const util::BoundingBox& bbox) const {
 
     const bool isPeriodicEastWest = eckit::types::is_approximately_equal(ew + increments_.west_east(), 360.);
     const bool includesPoles = eckit::types::is_approximately_equal(ns, 180.)
-                            || eckit::types::is_approximately_equal(ns + increments_.south_north(), 180.);
+                               || eckit::types::is_approximately_equal(ns + increments_.south_north(), 180.);
 
     const double
-            north = includesPoles?   90 : bbox.north(),
-            south = includesPoles?  -90 : bbox.south(),
-            west = bbox.west(),
-            east = isPeriodicEastWest? bbox.west() + 360 : bbox.east();
-    return atlas::grid::Domain(north, west, south, east);
+    north = includesPoles ?   90 : bbox.north(),
+    south = includesPoles ?  -90 : bbox.south(),
+    west = bbox.west(),
+    east = isPeriodicEastWest ? bbox.west() + 360 : bbox.east();
+    return util::Domain(north, west, south, east);
 }
 
 

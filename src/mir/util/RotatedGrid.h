@@ -16,7 +16,6 @@
 #include <vector>
 #include "eckit/memory/Builder.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "atlas/grid/Domain.h"
 #include "atlas/grid/Grid.h"
 
 

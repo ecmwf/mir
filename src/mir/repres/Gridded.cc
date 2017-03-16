@@ -15,8 +15,8 @@
 
 #include "mir/repres/Gridded.h"
 
-#include "atlas/grid/Domain.h"
 #include "mir/config/LibMir.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
 
@@ -49,7 +49,7 @@ void Gridded::setGivenPacking(grib_info &info) const {
 
 
 void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
-    if (!atlasDomain().isGlobal()) {
+    if (!domain().isGlobal()) {
         Representation::cropToDomain(parametrisation, ctx); // This will throw an exception
     }
 }

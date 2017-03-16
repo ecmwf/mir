@@ -44,7 +44,7 @@ void Gridded2ReducedGG::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2ReducedGG::outputRepresentation() const {
-    return new repres::reduced::ReducedClassic(N_);
+    return new repres::gauss::reduced::ReducedClassic(N_);
 }
 
 

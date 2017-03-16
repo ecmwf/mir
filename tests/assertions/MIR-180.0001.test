@@ -1,0 +1,11 @@
+# MIR-180 (case 1)
+regular_ll.2-2.grib1
+# Mir tool options
+--area=84/-165/23.9/165 --grid=0.1/0.1
+# grib_get assertions
+Ni=3301
+Nj=602
+latitudeOfFirstGridPointInDegrees=84
+longitudeOfFirstGridPointInDegrees=-165
+latitudeOfLastGridPointInDegrees=23.9
+longitudeOfLastGridPointInDegrees=165

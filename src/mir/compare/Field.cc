@@ -17,9 +17,34 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Colour.h"
 
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
 
 namespace mir {
 namespace compare {
+
+
+static bool normaliseLongitudes_ = false;
+static double areaComparaisonThreshold_ = 0.7; // Observed for N320
+
+void Field::addOptions(std::vector<eckit::option::Option*>& options) {
+    using namespace eckit::option;
+
+    options.push_back(new SimpleOption<bool>("normalise-longitudes",
+                      "Normalise longitudes between 0 and 360"));
+
+    options.push_back(new SimpleOption<double>("compare-areas-threshold",
+                      "Threshold when comparing areas with Jaccard distance"));
+
+}
+
+void Field::setOptions(const eckit::option::CmdArgs &args) {
+    args.get("normalise-longitudes", normaliseLongitudes_);
+    args.get("compare-areas-threshold", areaComparaisonThreshold_);
+}
+
+
+
 
 Field::Field(const std::string& path, off_t offset, size_t length):
     info_(path, offset, length),
@@ -218,7 +243,7 @@ bool Field::sameArea(const Field& other) const {
     if (area_ != other.area_)
         return false;
 
-    return compareAreas(other) > 0.7; // Observed for N320
+    return compareAreas(other) > areaComparaisonThreshold_;
 }
 
 
@@ -337,8 +362,12 @@ bool Field::sameGrid(const Field& other) const {
     return true;
 }
 
-
 static double normalize(double longitude) {
+
+    if (!normaliseLongitudes_) {
+        return longitude;
+    }
+
     while (longitude < 0) {
         longitude += 360;
     }
@@ -511,11 +540,11 @@ bool Field::operator<(const Field & other) const {
             return false;
         }
 
-        if (west_ < other.west_) {
+        if (normalize(west_) < normalize(other.west_)) {
             return true;
         }
 
-        if (west_ > other.west_) {
+        if (normalize(west_) > normalize(other.west_)) {
             return false;
         }
 
@@ -527,11 +556,11 @@ bool Field::operator<(const Field & other) const {
             return false;
         }
 
-        if (east_ < other.east_) {
+        if (normalize(east_) < normalize(other.east_)) {
             return true;
         }
 
-        if (east_ > other.east_) {
+        if (normalize(east_) > normalize(other.east_)) {
             return false;
         }
     }
@@ -554,11 +583,11 @@ bool Field::operator<(const Field & other) const {
             return false;
         }
 
-        if (rotation_longitude_ < other.rotation_longitude_) {
+        if (normalize(rotation_longitude_) < normalize(other.rotation_longitude_)) {
             return true;
         }
 
-        if (rotation_longitude_ > other.rotation_longitude_) {
+        if (normalize(rotation_longitude_) > normalize(other.rotation_longitude_)) {
             return false;
         }
 

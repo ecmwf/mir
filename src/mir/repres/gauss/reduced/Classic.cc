@@ -18,11 +18,13 @@
 #include "atlas/grid/Structured.h"
 #include "atlas/grid/grids.h"
 #include "mir/api/MIRJob.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace reduced {
 
 
@@ -55,7 +57,10 @@ void Classic::fill(api::MIRJob &job) const  {
 
 
 atlas::grid::Grid* Classic::atlasGrid() const {
-    return new atlas::grid::gaussian::ClassicGaussian(N_, atlasDomain());
+    util::Domain dom = domain();
+    atlas::grid::Domain atlasDomain(dom.north(), dom.west(), dom.south(), dom.east());
+
+    return new atlas::grid::gaussian::ClassicGaussian(N_, atlasDomain);
 }
 
 
@@ -80,6 +85,7 @@ const std::vector<long>& Classic::pls() const {
 
 
 }  // namespace reduced
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 

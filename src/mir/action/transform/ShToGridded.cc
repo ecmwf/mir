@@ -56,9 +56,9 @@ static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient",
         false); // Don't cleanup at exit: the Fortran part will dump core
 
 
-static void fillTrans(struct Trans_t &trans,
-                      size_t truncation,
-                      const atlas::grid::Grid &grid) {
+static void fillTrans(struct Trans_t& trans,
+                      trans_options_t& options,
+                      const atlas::grid::Grid& grid) {
 #ifdef ATLAS_HAVE_TRANS
     const atlas::grid::Structured* reduced = dynamic_cast<const atlas::grid::Structured*>(&grid);
     if (!reduced) {
@@ -69,8 +69,9 @@ static void fillTrans(struct Trans_t &trans,
 
 
     ASSERT(trans_new(&trans) == 0);
+    trans.flt = int(options.flt);
 
-    ASSERT(trans_set_trunc(&trans, truncation) == 0);
+    ASSERT(trans_set_trunc(&trans, options.truncation) == 0);
 
     if (latlon) {
         ASSERT(trans_set_resol_lonlat(&trans, latlon->nlon(), latlon->nlat()) == 0);
@@ -96,14 +97,14 @@ static void fillTrans(struct Trans_t &trans,
 
 
 static void createCoefficients(const eckit::PathName& path,
-                               size_t truncation,
-                               const atlas::grid::Grid &grid,
+                               trans_options_t& options,
+                               const atlas::grid::Grid& grid,
                                context::Context& ctx) {
 #ifdef ATLAS_HAVE_TRANS
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
 
     struct Trans_t tmp_trans;
-    fillTrans(tmp_trans, truncation, grid);
+    fillTrans(tmp_trans, options, grid);
 
     ASSERT(trans_set_write(&tmp_trans, path.asString().c_str()) == 0);
     ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
@@ -124,7 +125,7 @@ void ShToGridded::transform(
         const atlas::grid::Grid& grid,
         context::Context& ctx,
         const std::string& key,
-        size_t truncation ) const {
+        trans_options_t& options ) const {
 #ifdef ATLAS_HAVE_TRANS
     if (trans_handles.find(key) == trans_handles.end()) {
 
@@ -136,22 +137,22 @@ void ShToGridded::transform(
 
             class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
 
-                size_t truncation_;
+                trans_options_t options_;
                 const atlas::grid::Grid & grid_;
                 context::Context & ctx_;
 
                 virtual void create(const eckit::PathName& path, int& ignore) {
-                    createCoefficients(path, truncation_, grid_, ctx_);
+                    createCoefficients(path, options_, grid_, ctx_);
                 }
             public:
-                LegendreCacheCreator(size_t truncation,
+                LegendreCacheCreator(trans_options_t& options,
                                      const atlas::grid::Grid& grid,
                                      context::Context& ctx):
-                    truncation_(truncation), grid_(grid), ctx_(ctx) {}
+                    options_(options), grid_(grid), ctx_(ctx) {}
             };
 
             static caching::LegendreCache cache;
-            LegendreCacheCreator creator(truncation, grid, ctx);
+            LegendreCacheCreator creator(options, grid, ctx);
 
             int dummy = 0;
             path = cache.getOrCreate(key, creator, dummy);
@@ -166,7 +167,7 @@ void ShToGridded::transform(
             TransCache &tc = trans_handles[key];
 
             struct Trans_t &trans = tc.trans_;
-            fillTrans(trans, truncation, grid);
+            fillTrans(trans, options, grid);
 
             tc.inited_ = true;
             tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation_, path);
@@ -207,13 +208,17 @@ void ShToGridded::transform(data::MIRField& field, const atlas::grid::Grid& grid
 
     TransInitor::instance(); // Will init trans if needed
 
-    size_t truncation = field.representation()->truncation();
+    trans_options_t options(transOptions_);
+    options.truncation = field.representation()->truncation();
+
     std::ostringstream os;
-    os << "T" << truncation << ":" << grid.uniqueId();
+    os << "T" << options.truncation
+       << ":" << "flt" << options.flt
+       << ":" << grid.uniqueId();
     std::string key(os.str());
 
     try {
-        transform(field, grid, ctx, key, truncation);
+        transform(field, grid, ctx, key, options);
     } catch (std::exception& e) {
         eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
         trans_handles.erase(key);
@@ -224,6 +229,10 @@ void ShToGridded::transform(data::MIRField& field, const atlas::grid::Grid& grid
 
 ShToGridded::ShToGridded(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
+
+    // MIR-183: optimal solution is setting flt = -1 to let Trans decide the best Legendre transform method
+    transOptions_.flt = 0;
+    parametrisation.get("trans-fast-legendre-transform", transOptions_.flt);
 }
 
 

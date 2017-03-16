@@ -18,11 +18,13 @@
 #include "eckit/exception/Exceptions.h"
 #include "atlas/grid/gaussian/ReducedGaussian.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace reduced {
 
 
@@ -59,7 +61,11 @@ void FromPL::fill(api::MIRJob &job) const  {
 
 atlas::grid::Grid *FromPL::atlasGrid() const {
     ASSERT (pl_.size());
-    return new atlas::grid::gaussian::ReducedGaussian(N_, &pl_[0], atlasDomain());
+
+    util::Domain dom = domain();
+    atlas::grid::Domain atlasDomain(dom.north(), dom.west(), dom.south(), dom.east());
+
+    return new atlas::grid::gaussian::ReducedGaussian(N_, &pl_[0], atlasDomain);
 }
 
 
@@ -69,6 +75,7 @@ const std::vector<long> &FromPL::pls() const {
 
 
 }  // namespace reduced
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 

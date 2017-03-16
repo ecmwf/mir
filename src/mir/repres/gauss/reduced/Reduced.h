@@ -21,6 +21,7 @@
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace reduced {
 
 
@@ -69,9 +70,9 @@ class Reduced : public Gaussian {
 
     // -- Overridden methods
 
-    virtual atlas::grid::Domain atlasDomain() const;
+    virtual util::Domain domain() const;
 
-    virtual atlas::grid::Domain atlasDomain(const util::BoundingBox&) const;
+    virtual util::Domain domain(const util::BoundingBox&) const;
 
     virtual void fill(grib_info &) const;
 
@@ -123,7 +124,8 @@ class Reduced : public Gaussian {
 };
 
 
-}  // namespace
+}  // namespace reduced
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 

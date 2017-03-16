@@ -16,8 +16,11 @@
 #include "mir/style/AutoGaussian.h"
 
 #include <iostream>
-
+#include "eckit/config/EtcTable.h"
 #include "eckit/exception/Exceptions.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/utils/Translator.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/config/LibMir.h"
 
@@ -26,64 +29,68 @@ namespace mir {
 namespace style {
 
 
-//==========================================================
-AutoGaussian::AutoGaussian(const param::MIRParametrisation &parametrisation):
+namespace  {
+
+
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex = 0;
+
+static eckit::ScopedPtr<eckit::EtcKeyTable> table;
+
+static void init() {
+    local_mutex = new eckit::Mutex();
+    table.reset(new eckit::EtcKeyTable("auto-gaussian.table", 0, "etc/mir"));
+}
+
+
+}  // (anonymous namespace)
+
+
+AutoGaussian::AutoGaussian(const param::MIRParametrisation& parametrisation) :
     parametrisation_(parametrisation) {
 }
 
 
 AutoGaussian::~AutoGaussian() {
-
 }
 
-void AutoGaussian::get(const std::string &name, long &value) const {
+
+void AutoGaussian::get(const std::string& name, long& value) const {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    ASSERT(table);
+
     eckit::Log::debug<LibMir>() << "AutoGaussian::get(" << name << ")" << std::endl;
     ASSERT(name == "octahedral"); // For now
 
-    long truncation = 0;
 
-    ASSERT(parametrisation_.get("field.truncation", truncation));
+    // ensure field.truncation converts to long
+    long T = 0;
+    ASSERT(parametrisation_.get("field.truncation", T));
+    ASSERT(T > 1);
 
-    // TODO: a config file
-#if 0
-    value = (truncation == 1279)? 1280
-          : (truncation ==  639)?  640
-          : (truncation ==  319)?  320
-          : (truncation ==  255)?  256  // TODO: Should be N256, not O256
-          : (truncation ==   63)?   64  // TODO: Should be N64, not O64
-          :                          0;
-#else
-    // from libemos/interpolation/hsh2gg.F
-    value = (truncation == 2047 || truncation == 2048)? 1024
-          : (truncation == 1279 || truncation == 1280)?  640
-          : (truncation ==  799 || truncation ==  800)?  400
-          : (truncation ==  639 || truncation ==  640)?  320
-          : (truncation ==  511 || truncation ==  512)?  256
-          : (truncation ==  399 || truncation ==  400)?  200
-          : (truncation ==  319 || truncation ==  320)?  160
-          : (truncation ==  255 || truncation ==  256)?  128
-          : (truncation ==  213 || truncation ==  214)?  128
-          : (truncation ==  191 || truncation ==  192)?   96
-          : (truncation ==  159 || truncation ==  160)?   80
-          : (truncation ==  106 || truncation ==  107)?   80
-          : (truncation ==   95 || truncation ==   96)?   48
-          : (truncation ==   63 || truncation ==   64)?   48
-          :                                                0;
-#endif
+    typedef eckit::Translator< std::string, long > string_to_number_t;
+    typedef eckit::Translator< long, std::string > number_to_string_t;
 
-    if (value == 0) {
+    const std::vector<std::string>& entry = table->lookUp(number_to_string_t()(T));
+    value = entry.size() < 2? 0 : string_to_number_t()(entry.back());
+
+    if (!value) {
         std::ostringstream oss;
-        oss << "AutoGaussian: cannot establish N for truncation " << truncation;
+        oss << "AutoGaussian: cannot establish N for truncation " << T;
         throw eckit::SeriousBug(oss.str());
     }
 
-    // eckit::Log::debug<LibMir>() << "AutoGaussian: N is " << N << ", selecting reduced N" << value << std::endl;
+
+    eckit::Log::debug<LibMir>() << "AutoGaussian::get(" << name << "): truncation " << T << " maps to N " << value << std::endl;
 }
 
-void AutoGaussian::print(std::ostream &out) const {
+
+void AutoGaussian::print(std::ostream& out) const {
     out << "<AutoGaussian>";
 }
 
-}  // namespace param
+
+}  // namespace style
 }  // namespace mir
 

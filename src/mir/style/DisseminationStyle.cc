@@ -60,11 +60,6 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
 }
 
 
-void DisseminationStyle::shTruncate(action::ActionPlan& plan) const {
-    // do nothing
-}
-
-
 namespace {
 static MIRStyleBuilder<DisseminationStyle> __style("dissemination");
 }

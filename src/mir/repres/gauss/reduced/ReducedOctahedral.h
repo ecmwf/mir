@@ -21,6 +21,7 @@
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace reduced {
 
 class ReducedOctahedral : public Octahedral {
@@ -103,7 +104,8 @@ class ReducedOctahedral : public Octahedral {
 
 };
 
-}
+}  // namespace reduced
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 #endif

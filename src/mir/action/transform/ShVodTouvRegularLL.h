@@ -77,7 +77,7 @@ private:
     ShVodTouvRegularLL& operator=(const ShVodTouvRegularLL&);
 
     // -- Members
-    util::Increments grid_;
+    util::Increments increments_;
 
     // -- Methods
     // None

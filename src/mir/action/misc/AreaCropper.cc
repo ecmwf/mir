@@ -31,6 +31,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -113,22 +114,21 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
     eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
-    const atlas::grid::Domain domain = representation->atlasDomain(bbox);
+    const util::Domain domain = representation->domain(bbox);
+
     while (iter->next(lat, lon)) {
-        // std::cout << lat << " " << lon << std::endl;
+        if (domain.contains(lat, lon)) {
 
-        lon = domain.normalise(lon);
-        if (domain.contains(lon, lat)) {
-
+            lon = domain.normalise(lon);
             if (first) {
                 n = s = lat;
-                w = e = lon;
+                e = w = lon;
                 first = false;
             } else {
-                n = std::max(n, lat);
-                s = std::min(s, lat);
-                e = std::max(e, lon);
-                w = std::min(w, lon);
+                if (n < lat) { n = lat; }
+                if (s > lat) { s = lat; }
+                if (e < lon) { e = lon; }
+                if (w > lon) { w = lon; }
             }
 
             // if(m.find(LL(lat, lon)) != m.end()) {
@@ -141,17 +141,16 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
         p++;
     }
 
-    // Make sure we did not visit duplicate points
-    // eckit::Log::debug<LibMir>() << "CROP inserted points " << count << ", unique points " << m.size() << std::endl;
-    ASSERT(count == m.size());
-
     // Don't support empty results
     if (!m.size()) {
         std::ostringstream oss;
         oss << "Cropping " << *representation << " to " << bbox << " returns no points";
         throw eckit::UserError(oss.str());
     }
-    // ASSERT(m.size() > 0);
+
+    // Make sure we did not visit duplicate points
+    ASSERT(count == m.size());
+
 
     c.bbox_ = util::BoundingBox(n, w, s, e);
 

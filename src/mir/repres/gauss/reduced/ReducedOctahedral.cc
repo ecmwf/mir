@@ -19,6 +19,7 @@
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace reduced {
 
 
@@ -40,6 +41,7 @@ const Reduced *ReducedOctahedral::cropped(const util::BoundingBox &bbox, const s
 }
 
 }  // namespace reduced
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 

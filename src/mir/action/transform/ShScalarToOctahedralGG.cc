@@ -50,7 +50,7 @@ void ShScalarToOctahedralGG::print(std::ostream& out) const {
 
 
 const repres::Representation* ShScalarToOctahedralGG::outputRepresentation() const {
-    return new repres::reduced::ReducedOctahedral(N_);
+    return new repres::gauss::reduced::ReducedOctahedral(N_);
 }
 
 

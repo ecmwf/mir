@@ -16,15 +16,10 @@
 
 #include <iostream>
 
-// #include "atlas/grid/Grid.h"
-// #include "atlas/grid/grids.h"
-// #include "atlas/grid/ReducedGaussianGrid.h"
-// #include "eckit/exception/Exceptions.h"
-// #include "mir/param/MIRParametrisation.h"
-// #include "mir/util/Grib.h"
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace reduced {
 
 
@@ -59,6 +54,7 @@ static RepresentationBuilder<ReducedFromPL> reducedGGFromPL("reduced_gg"); // Na
 }
 
 }  // namespace reduced
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 

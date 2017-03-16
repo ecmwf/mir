@@ -37,20 +37,6 @@ ECMWFStyle::~ECMWFStyle() {
 }
 
 
-bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
-    bool u_only = false;
-    if (parametrisation_.get("u-only", u_only) && u_only) {
-        plan.add("select.field", "which", long(0));
-    }
-    bool v_only = false;
-    if (parametrisation_.get("v-only", v_only) && v_only) {
-        ASSERT(!u_only);
-        plan.add("select.field", "which", long(1));
-    }
-    return (u_only || v_only);
-}
-
-
 void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
     // All the nasty style goes there
@@ -284,6 +270,13 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 }
 
 
+void ECMWFStyle::shTruncate(action::ActionPlan& plan) const {
+    if (parametrisation_.has("user.truncation")) {
+        plan.add("transform.sh-truncate");
+    }
+}
+
+
 bool ECMWFStyle::isWindComponent() const {
     long id = 0;
     parametrisation_.get("paramId", id);
@@ -294,6 +287,20 @@ bool ECMWFStyle::isWindComponent() const {
     parametrisation_.get("paramId.v", id_v);
 
     return (id == id_u || id == id_v);
+}
+
+
+bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
+    bool u_only = false;
+    if (parametrisation_.get("u-only", u_only) && u_only) {
+        plan.add("select.field", "which", long(0));
+    }
+    bool v_only = false;
+    if (parametrisation_.get("v-only", v_only) && v_only) {
+        ASSERT(!u_only);
+        plan.add("select.field", "which", long(1));
+    }
+    return (u_only || v_only);
 }
 
 

@@ -66,6 +66,7 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<std::string>("ignore",           "Slash separated list of request keys to ignore when comparing fields"));
     options.push_back(new SimpleOption<std::string>("parameters-white-list",       "Slash separated list of parameters to ignore"));
 
+    Field::addOptions(options);
 }
 
 
@@ -79,6 +80,8 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args):
     normaliseLongitudes_(false),
     roundDegrees_(false),
     maximumNumberOfErrors_(5) {
+
+    Field::setOptions(args);
 
     args_.get("normalise-longitudes", normaliseLongitudes_);
     args_.get("maximum-number-of-errors", maximumNumberOfErrors_);
@@ -133,7 +136,6 @@ void FieldComparator::compare(const std::string& name,
     bool compareStatistics = false;
     args_.get("compare-statistics", compareStatistics);
 
-
     size_t save = fatals_;
 
     FieldSet fields1;
@@ -149,12 +151,12 @@ void FieldComparator::compare(const std::string& name,
         std::cout << name << " OK." << std::endl;
     } else {
         if (!requirements.empty()) {
-            std::string ext = eckit::PathName(requirements).extension();
+            std::string output = name + eckit::PathName(requirements).extension();
 
-            std::ofstream out(name + ext);
-            std::ifstream in(requirements);
+            std::ofstream out(output.c_str());
+            std::ifstream in(requirements.c_str());
 
-            std::cout << "Save " << name << ext << std::endl;
+            std::cout << "Save " << output << std::endl;
 
             std::string dstream = name.substr(0, 2);
             std::string destination = name.substr(24, 3);
@@ -190,6 +192,7 @@ void FieldComparator::error(const char* what) {
     args_.get(std::string("ignore-") + what, ignore);
     if (ignore) {
         warnings_++;
+        std::cout << "WARNING " << what << std::endl;
     }
     else {
         fatals_++;

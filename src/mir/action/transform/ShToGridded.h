@@ -46,6 +46,12 @@ namespace action {
 namespace transform {
 
 
+struct trans_options_t {
+    size_t truncation;
+    long flt;
+};
+
+
 class ShToGridded : public Action {
 public:
 
@@ -100,13 +106,13 @@ private:
     ShToGridded& operator=(const ShToGridded&);
 
     // -- Members
-    // None
+    trans_options_t transOptions_;
 
     // -- Methods
     virtual void sh2grid(struct Trans_t& trans, data::MIRField& field) const = 0;
     virtual const repres::Representation* outputRepresentation() const = 0;
 
-    void transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx, const std::string& key, size_t truncation) const;
+    void transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx, const std::string& key, trans_options_t& options) const;
     void transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx) const;
 
     // -- Overridden methods

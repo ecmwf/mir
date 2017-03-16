@@ -79,7 +79,7 @@ private:
     ShScalarToRegularLL& operator=(const ShScalarToRegularLL&);
 
     // -- Members
-    util::Increments grid_;
+    util::Increments increments_;
 
     // -- Methods
     // None
