@@ -1,0 +1,10 @@
+# Problem with ecCodes/2.2.0 handling a reduced_gg with bounding box
+# - grid= forces O1280 which is the current HRES, request does not interpolate
+# - area= was been simplified from original area=37.6025/-114.891/27.7626/-105.188
+#
+# Mars request
+param=msl,levtype=sfc,grid=O1280
+# Mir tool options
+--area=27.9/253/27.8/254
+# grib_get assertions
+numberOfPoints=19
