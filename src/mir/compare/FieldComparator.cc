@@ -66,6 +66,7 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<std::string>("ignore",           "Slash separated list of request keys to ignore when comparing fields"));
     options.push_back(new SimpleOption<std::string>("parameters-white-list",       "Slash separated list of parameters to ignore"));
 
+    Field::addOptions(options);
 }
 
 
