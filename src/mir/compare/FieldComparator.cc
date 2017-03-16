@@ -49,7 +49,6 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
 
     options.push_back(new SimpleOption<bool>("save-fields",             "Save fields that do not compare"));
 
-    options.push_back(new SimpleOption<bool>("normalise-longitudes",    "(Not yet used) Compare normalised values of east/west longitude (e.g. -1 == 359)"));
     options.push_back(new SimpleOption<long>("round-degrees",           "(Not yet used) Number of decimal digits to round degrees to (away from zero)"));
 
     options.push_back(new SimpleOption<bool>("file-names-only",         "Only check that the list of files created are the same"));
