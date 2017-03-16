@@ -63,12 +63,12 @@ protected:
     // -- Methods
 
     virtual void prologue(action::ActionPlan&) const;
-    virtual void shTruncate(action::ActionPlan&) const = 0;
     virtual void sh2grid(action::ActionPlan&) const = 0;
     virtual void sh2sh(action::ActionPlan&) const;
     virtual void grid2grid(action::ActionPlan&) const;
     virtual void epilogue(action::ActionPlan&) const;
 
+    void shTruncate(action::ActionPlan&) const;
     bool isWindComponent() const;
     bool selectWindComponents(action::ActionPlan&) const;
 

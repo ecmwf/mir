@@ -68,11 +68,6 @@ void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
 }
 
 
-void ProdgenStyle::shTruncate(action::ActionPlan&) const {
-    ASSERT(!parametrisation_.has("user.truncation"));
-}
-
-
 void ProdgenStyle::grid2grid(action::ActionPlan& plan) const {
     if (!parametrisation_.has("user.grid")) {
         ECMWFStyle::grid2grid(plan);

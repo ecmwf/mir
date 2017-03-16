@@ -87,7 +87,6 @@ private:
 
     // -- Overridden methods
 
-    void shTruncate(action::ActionPlan&) const;
     void sh2grid(action::ActionPlan&) const;
 
     // -- Class members
