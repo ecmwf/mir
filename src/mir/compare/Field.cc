@@ -252,8 +252,6 @@ void Field::gridtype(const std::string& type)  {
 
 bool Field::samePacking(const Field& other) const {
 
-    return true;
-
     if (accuracy_ == 0 || other.accuracy_ == 0) {
         return true;
     }
@@ -306,7 +304,6 @@ bool Field::sameParam(const Field& other) const {
 }
 
 bool Field::sameAccuracy(const Field& other) const {
-    return true;
     if (accuracy_ == 0 || other.accuracy_ == 0) {
         return true;
     }
@@ -314,7 +311,6 @@ bool Field::sameAccuracy(const Field& other) const {
 }
 
 bool Field::sameNumberOfPoints(const Field& other) const {
-    return true;
     return numberOfPoints_  == other.numberOfPoints_;
 }
 
