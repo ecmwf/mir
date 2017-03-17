@@ -23,6 +23,14 @@
 
 #include "mir/compare/FieldInfo.h"
 
+
+namespace eckit {
+namespace option {
+class Option;
+class CmdArgs;
+}
+}
+
 namespace mir {
 namespace compare {
 
@@ -95,6 +103,9 @@ public:
     const std::string& path() const ;
 
     std::ostream& printDifference(std::ostream& out, const Field & other) const;
+
+    static void addOptions(std::vector<eckit::option::Option*>& options);
+    static void setOptions(const eckit::option::CmdArgs &args);
 
 private:
 

@@ -49,7 +49,6 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
 
     options.push_back(new SimpleOption<bool>("save-fields",             "Save fields that do not compare"));
 
-    options.push_back(new SimpleOption<bool>("normalise-longitudes",    "(Not yet used) Compare normalised values of east/west longitude (e.g. -1 == 359)"));
     options.push_back(new SimpleOption<long>("round-degrees",           "(Not yet used) Number of decimal digits to round degrees to (away from zero)"));
 
     options.push_back(new SimpleOption<bool>("file-names-only",         "Only check that the list of files created are the same"));
@@ -66,6 +65,7 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<std::string>("ignore",           "Slash separated list of request keys to ignore when comparing fields"));
     options.push_back(new SimpleOption<std::string>("parameters-white-list",       "Slash separated list of parameters to ignore"));
 
+    Field::addOptions(options);
 }
 
 
@@ -79,6 +79,8 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args):
     normaliseLongitudes_(false),
     roundDegrees_(false),
     maximumNumberOfErrors_(5) {
+
+    Field::setOptions(args);
 
     args_.get("normalise-longitudes", normaliseLongitudes_);
     args_.get("maximum-number-of-errors", maximumNumberOfErrors_);

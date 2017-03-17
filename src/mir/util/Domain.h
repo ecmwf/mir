@@ -14,7 +14,6 @@
 #define mir_util_Domain_h
 
 #include <iostream>
-#include "atlas/grid/Domain.h"
 
 
 namespace mir {
@@ -51,11 +50,7 @@ public:
     ~Domain() {}
 
     // -- Convertors
-
-    // Note: careful with this conversion, the interface is very similar but not the same!
-    operator atlas::grid::Domain() const {
-        return atlas::grid::Domain(north(), west(), south(), east());
-    }
+    // None
 
     // -- Operators
 
