@@ -59,9 +59,6 @@ void MIRCompareConfiguration::configure(const eckit::PathName& path) {
 
 
 MIRCompareConfiguration::MIRCompareConfiguration() : AConfiguration() {
-
-    // Always start with internal defaults, not from file
-    configure("");
 }
 
 

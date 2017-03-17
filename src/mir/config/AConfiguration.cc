@@ -61,9 +61,6 @@ void AConfiguration::configure(const eckit::PathName& path) {
 
 
 AConfiguration::AConfiguration() {
-
-    // Always start with internal defaults, not from file
-    configure("");
 }
 
 

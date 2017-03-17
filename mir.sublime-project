@@ -14,13 +14,13 @@
 		{
 			"file_regex": "([/\\w\\-\\.]+):(\\d+):(\\d+:)?",
 			"name": "mir",
-			"shell_cmd": "make -j4",
+			"shell_cmd": "make",
 			"syntax": "Packages/CMakeBuilder/Syntax/Make.sublime-syntax",
 			"working_dir": "${project_path}/../../build/mir",
 			"variants" : [
 				{
 					"name":"clean",
-					"shell_cmd": "make -j4 clean",
+					"shell_cmd": "make clean",
 				}
 			]
 		},
@@ -34,7 +34,11 @@
 	],
 	"cmake":
 	{
-		"build_folder": "${project_path}/../../build/mir"
+		"build_folder": "${project_path}/../../build/mir",
+		"command_line_overrides":
+		{
+			"DEVELOPER_MODE": 1
+		}
 	},
 	"folders":
 	[
