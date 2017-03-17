@@ -142,8 +142,13 @@ void FieldComparator::compare(const std::string& name,
 
 
     compareCounts(name, multi1, multi2, fields1, fields2);
+
+    long save = fatals_;
     compareFields(multi1, multi2, fields1, fields2, compareValues, compareStatistics);
-    compareFields(multi2, multi1, fields2, fields1, false,         compareStatistics);
+
+    if (fatals_ != save) {
+        compareFields(multi2, multi1, fields2, fields1, false,         compareStatistics);
+    }
 
 
     if (fatals_ == save) {
