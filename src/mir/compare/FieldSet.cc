@@ -50,6 +50,12 @@ std::set<Field>::const_iterator FieldSet::same(const Field& field) const {
         }
     }
 
+    eckit::Log::warning() << "Cannot find " << field << std::endl;
+    for (j = fields_.begin(); j != fields_.end(); ++j) {
+        eckit::Log::warning() << *j << std::endl;
+        eckit::Log::warning() << " " << ((*j) < field ) << " " << (field < (*j)) << std::endl;
+    }
+
     return end();
 }
 
