@@ -751,7 +751,8 @@ std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
 template<class T>
 static void pdiff(std::ostream & out, const T& v1, const T& v2) {
     if (v1 != v2) {
-        out << eckit::Colour::red << eckit::Colour::bold << v1 << eckit::Colour::reset;
+        // out << eckit::Colour::red << eckit::Colour::bold << v1 << eckit::Colour::reset;
+        out << "**" << v1 << "**";
     }
     else {
         out << v1;
