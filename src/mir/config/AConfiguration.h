@@ -18,11 +18,11 @@
 #include <vector>
 #include "eckit/filesystem/PathName.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "mir/param/InheritParametrisation.h"
 
 
 namespace mir {
 namespace param {
-class InheritParametrisation;
 class MIRParametrisation;
 }
 }
@@ -65,7 +65,7 @@ protected:
 
     // -- Members
     std::string configPath_;
-    eckit::ScopedPtr<param::InheritParametrisation> root_;
+    param::InheritParametrisation root_;
 
     // -- Methods
 

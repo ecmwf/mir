@@ -12,21 +12,30 @@
 	"build_systems":
 	[
 		{
-			"cmd":
-			[
-				"make"
-			],
 			"file_regex": "([/\\w\\-\\.]+):(\\d+):(\\d+:)?",
-			"name": "ecbuild",
-			"working_dir": "${project_path}/../../build/mir"
+			"name": "mir",
+			"shell_cmd": "make -j4",
+			"syntax": "Packages/CMakeBuilder/Syntax/Make.sublime-syntax",
+			"working_dir": "${project_path}/../../build/mir",
+			"variants" : [
+				{
+					"name":"clean",
+					"shell_cmd": "make -j4 clean",
+				}
+			]
 		},
 		{
 			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
 			"name": "Anaconda Python Builder",
 			"selector": "source.python",
 			"shell_cmd": "\"python\" -u \"$file\""
-		}
+		},
+
 	],
+	"cmake":
+	{
+		"build_folder": "${project_path}/../../build/mir"
+	},
 	"folders":
 	[
 		{

@@ -20,6 +20,7 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 
+
 namespace mir {
 namespace compare {
 

@@ -52,7 +52,7 @@ void MIRCompareConfiguration::configure(const eckit::PathName& path) {
     AConfiguration::configure(path);
 
     // Use defaults (non-overwriting)
-    Defaults().copyValuesTo(*root_, false);
+    Defaults().copyValuesTo(root_, false);
 
     //    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *root_ << std::endl;
 }
@@ -83,8 +83,7 @@ const param::MIRParametrisation* MIRCompareConfiguration::lookup(const long& par
 
     // inherit from most-specific paramId/metadata individual and its parents
     param::SimpleParametrisation* param = new param::SimpleParametrisation();
-    ASSERT(root_);
-    root_->pick(paramId, metadata).inherit(*param);
+    root_.pick(paramId, metadata).inherit(*param);
 
     eckit::Log::info() << "MIRCompareConfiguration::lookup: " << *param << std::endl;
     return param;
@@ -95,8 +94,7 @@ const param::MIRParametrisation* MIRCompareConfiguration::defaults() const {
 
     // inherit from top-level only (where defaults are held)
     param::SimpleParametrisation* param = new param::SimpleParametrisation();
-    ASSERT(root_);
-    root_->inherit(*param);
+    root_.inherit(*param);
     return param;
 }
 

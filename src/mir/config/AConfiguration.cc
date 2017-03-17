@@ -27,10 +27,6 @@ namespace config {
 
 void AConfiguration::configure(const eckit::PathName& path) {
 
-    // initialize hierarchy
-    root_.reset(new param::InheritParametrisation());
-    ASSERT(root_);
-
 
     // configure from file, skip if this was already done
     if (!path.asString().empty() && path.asString() != configPath_) {
@@ -43,19 +39,19 @@ void AConfiguration::configure(const eckit::PathName& path) {
         // Create hierarchy (using non-overwriting filling keys)
         eckit::JSONParser parser(in);
         const eckit::ValueMap j = parser.parse();
-        root_->fill(j);
+        root_.fill(j);
 
         std::string configuration_fill;
-        if (root_->get("configuration-fill", configuration_fill) && configuration_fill.length()) {
-            root_->fill(root_->pick(configuration_fill));
-            root_->clear("configuration-fill");
+        if (root_.get("configuration-fill", configuration_fill) && configuration_fill.length()) {
+            root_.fill(root_.pick(configuration_fill));
+            root_.clear("configuration-fill");
         }
 
         std::string configuration_clear;
-        if (root_->get("configuration-clear", configuration_clear) && configuration_clear.length()) {
-            root_->clear(configuration_clear);
+        if (root_.get("configuration-clear", configuration_clear) && configuration_clear.length()) {
+            root_.clear(configuration_clear);
         }
-        root_->clear("configuration-clear");
+        root_.clear("configuration-clear");
     }
 
 
@@ -74,7 +70,7 @@ AConfiguration::AConfiguration() {
 void AConfiguration::print(std::ostream& out) const {
     out << "AConfiguration["
         <<  "configPath=" << configPath_
-        << ",root=" << *root_
+        << ",root=" << root_
         << "]";
 }
 
