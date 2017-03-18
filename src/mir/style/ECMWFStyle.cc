@@ -150,6 +150,14 @@ bool ECMWFStyle::forcedPrepare(const param::MIRParametrisation& parametrisation)
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
+    bool globalise = false;
+    parametrisation_.get("globalise", globalise);
+
+    if (globalise) {
+        plan.add("filter.globalise");
+    }
+
+
     bool vod2uv = false;
     parametrisation_.get("vod2uv", vod2uv);
 
@@ -160,14 +168,14 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     parametrisation_.get("area-defines-grid", areaDefinesGrid);
 
     const std::string grid =
-            parametrisation_.has("user.grid")?       "regular-ll" + std::string(areaDefinesGrid? "-offset" : "") :
-            parametrisation_.has("user.reduced")?    "reduced-gg" :
-            parametrisation_.has("user.regular")?    "regular-gg" :
-            parametrisation_.has("user.octahedral")? "octahedral-gg" :
-            parametrisation_.has("user.pl")?         "reduced-gg-pl-given" :
-            parametrisation_.has("user.gridname")?   "namedgrid" :
-            parametrisation_.has("user.griddef")?    "griddef" :
-                                                     "";
+        parametrisation_.has("user.grid") ?       "regular-ll" + std::string(areaDefinesGrid ? "-offset" : "") :
+        parametrisation_.has("user.reduced") ?    "reduced-gg" :
+        parametrisation_.has("user.regular") ?    "regular-gg" :
+        parametrisation_.has("user.octahedral") ? "octahedral-gg" :
+        parametrisation_.has("user.pl") ?         "reduced-gg-pl-given" :
+        parametrisation_.has("user.gridname") ?   "namedgrid" :
+        parametrisation_.has("user.griddef") ?    "griddef" :
+        "";
     if (grid.length()) {
         std::string required;
 

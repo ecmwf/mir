@@ -96,6 +96,7 @@ public:
         options_.push_back(new VectorOption<double>("area", "Specify the cropping area: north/west/south/east", 4));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Path to the bitmap to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
+        options_.push_back(new SimpleOption<bool>("globalise", "Make the field global, adding missing values if needed"));
 
         //==============================================
         options_.push_back(new Separator("Compute"));

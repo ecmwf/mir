@@ -47,6 +47,9 @@ class Context;
 namespace api {
 class MIRJob;
 }
+namespace data {
+class MIRField;
+}
 }
 
 
@@ -95,6 +98,7 @@ class Representation : public eckit::Counted {
     virtual const Representation* cropped(const util::BoundingBox &bbox) const;
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
+    virtual Representation* globalise(data::MIRField& field) const;
 
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 

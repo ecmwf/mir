@@ -46,6 +46,8 @@ public:
 
     eckit::Timing cropTiming_;
     eckit::Timing frameTiming_;
+    eckit::Timing globalTiming_;
+
     eckit::Timing bitmapTiming_;
 
     eckit::Timing coefficientTiming_;
