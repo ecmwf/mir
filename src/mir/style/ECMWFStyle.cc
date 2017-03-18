@@ -150,13 +150,6 @@ bool ECMWFStyle::forcedPrepare(const param::MIRParametrisation& parametrisation)
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
-    bool globalise = false;
-    parametrisation_.get("globalise", globalise);
-
-    if (globalise) {
-        plan.add("filter.globalise");
-    }
-
 
     bool vod2uv = false;
     parametrisation_.get("vod2uv", vod2uv);
@@ -244,6 +237,13 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
+
+    bool globalise = false;
+    parametrisation_.get("user.globalise", globalise);
+
+    if (globalise) {
+        plan.add("filter.globalise");
+    }
 
     if (parametrisation_.has("user.area")) {
         plan.add("crop.area");
