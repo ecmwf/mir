@@ -74,6 +74,7 @@ protected:
     virtual atlas::grid::Grid *atlasGrid() const;
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
+    virtual Representation* globalise(data::MIRField& field) const;
 
     // -- Class members
     // None

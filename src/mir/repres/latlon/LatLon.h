@@ -113,8 +113,6 @@ private:
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
-    virtual Representation* globalise(data::MIRField& field) const;
-
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
 
     virtual void validate(const std::vector<double>&) const;
