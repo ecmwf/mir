@@ -31,8 +31,8 @@ namespace util {
 Increments::Increments(double west_east, double south_north):
     west_east_(west_east),
     south_north_(south_north) {
-    ASSERT(west_east_ > 0);
-    ASSERT(south_north_ > 0);
+    // ASSERT(west_east_ > 0);
+    // ASSERT(south_north_ > 0);
 }
 
 Increments::Increments(const param::MIRParametrisation &parametrisation) {
