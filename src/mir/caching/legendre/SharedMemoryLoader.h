@@ -37,7 +37,7 @@ protected:
     void print(std::ostream&) const; // Change to virtual if base class
 
 private:
-    int fd_;
+
     void* address_;
     size_t size_;
     bool unload_;

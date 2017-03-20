@@ -40,6 +40,7 @@ class Iterator;
 namespace util {
 class BoundingBox;
 class Domain;
+class Increments;
 }
 namespace context {
 class Context;
@@ -58,7 +59,7 @@ namespace repres {
 
 
 class Representation : public eckit::Counted {
-  public:
+public:
 
     // Scanning mode bits
     enum {
@@ -99,6 +100,8 @@ class Representation : public eckit::Counted {
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
     virtual Representation* globalise(data::MIRField& field) const;
+    virtual Representation* subset(data::MIRField& field,
+                                   const util::Increments& increments) const;
 
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
@@ -130,7 +133,7 @@ class Representation : public eckit::Counted {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Destructor
 
@@ -152,7 +155,7 @@ class Representation : public eckit::Counted {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
@@ -186,7 +189,7 @@ class Representation : public eckit::Counted {
 
 class RepresentationHandle {
     const Representation* representation_;
-  public:
+public:
     RepresentationHandle(const Representation* r);
     ~RepresentationHandle();
     const Representation* operator->() const {
@@ -201,10 +204,10 @@ class RepresentationHandle {
 class RepresentationFactory {
     std::string name_;
     virtual Representation* make(const param::MIRParametrisation&) = 0 ;
-  protected:
+protected:
     RepresentationFactory(const std::string&);
     virtual ~RepresentationFactory();
-  public:
+public:
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable
     static const Representation* build(const param::MIRParametrisation&);
@@ -217,7 +220,7 @@ class RepresentationBuilder : public RepresentationFactory {
     virtual Representation* make(const param::MIRParametrisation& param) {
         return new T(param);
     }
-  public:
+public:
     RepresentationBuilder(const std::string& name) : RepresentationFactory(name) {}
 };
 

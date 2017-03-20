@@ -35,7 +35,7 @@ namespace mir {
 namespace util {
 
 class Increments {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -43,7 +43,7 @@ class Increments {
     // -- Contructors
 
     explicit Increments(const param::MIRParametrisation &);
-    explicit Increments(double west_east=0, double south_north=0);
+    explicit Increments(double west_east = 0, double south_north = 0);
 
     // -- Destructor
 
@@ -63,6 +63,11 @@ class Increments {
     }
 
     // -- Methods
+
+    // Retrurn true is this is a multiple of other
+    // e.g. 2/2 is a multiple of 1/1
+    bool multipleOf(const Increments& other) const;
+    void ratio(const Increments& other, size_t& we, size_t& ns) const;
 
     double west_east() const {
         return west_east_;
@@ -86,7 +91,7 @@ class Increments {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -104,7 +109,7 @@ class Increments {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 

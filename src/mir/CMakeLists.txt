@@ -34,8 +34,10 @@ list(
     action/filter/BitmapFilter.h
     action/filter/FrameFilter.cc
     action/filter/FrameFilter.h
-    action/filter/GlobalFilter.cc
-    action/filter/GlobalFilter.h
+    action/filter/SubsetFilter.cc
+    action/filter/SubsetFilter.h
+    action/filter/GlobaliseFilter.cc
+    action/filter/GlobaliseFilter.h
     action/interpolate/Gridded2GridDef.cc
     action/interpolate/Gridded2GridDef.h
     action/interpolate/Gridded2GriddedInterpolation.cc

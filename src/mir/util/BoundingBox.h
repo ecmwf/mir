@@ -38,6 +38,7 @@ class MIRParametrisation;
 namespace mir {
 namespace util {
 
+class Increments;
 
 class BoundingBox {
   public:
@@ -106,6 +107,9 @@ class BoundingBox {
     void fill(api::MIRJob&) const;
 
     void hash(eckit::MD5&) const;
+
+    size_t computeNi(const util::Increments&) const;
+    size_t computeNj(const util::Increments&) const;
 
     // -- Overridden methods
     // None

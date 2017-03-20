@@ -12,7 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/action/filter/GlobalFilter.h"
+#include "mir/action/filter/GlobaliseFilter.h"
 
 #include <iostream>
 
@@ -27,29 +27,29 @@ namespace mir {
 namespace action {
 
 
-GlobalFilter::GlobalFilter(const param::MIRParametrisation &parametrisation):
+GlobaliseFilter::GlobaliseFilter(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
     // ASSERT(parametrisation.get("user.global", size_));
 }
 
 
-GlobalFilter::~GlobalFilter() {
+GlobaliseFilter::~GlobaliseFilter() {
 }
 
 
-bool GlobalFilter::sameAs(const Action& other) const {
-    const GlobalFilter* o = dynamic_cast<const GlobalFilter*>(&other);
+bool GlobaliseFilter::sameAs(const Action& other) const {
+    const GlobaliseFilter* o = dynamic_cast<const GlobaliseFilter*>(&other);
     return o;
 }
 
-void GlobalFilter::print(std::ostream &out) const {
-    out << "GlobalFilter[]";
+void GlobaliseFilter::print(std::ostream &out) const {
+    out << "GlobaliseFilter[]";
 }
 
 
-void GlobalFilter::execute(context::Context & ctx) const {
+void GlobaliseFilter::execute(context::Context & ctx) const {
 
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().globalTiming_);
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().globaliseTiming_);
     data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
@@ -64,7 +64,7 @@ void GlobalFilter::execute(context::Context & ctx) const {
 
 
 namespace {
-static ActionBuilder< GlobalFilter > bitmapFilter("filter.globalise");
+static ActionBuilder< GlobaliseFilter > bitmapFilter("filter.globalise");
 }
 
 

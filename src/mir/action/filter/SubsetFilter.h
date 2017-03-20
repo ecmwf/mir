@@ -13,17 +13,18 @@
 /// @date Apr 2015
 
 
-#ifndef GlobalFilter_H
-#define GlobalFilter_H
+#ifndef SubsetFilter_H
+#define SubsetFilter_H
 
 #include "mir/action/plan/Action.h"
+#include "mir/util/Increments.h"
 
 
 namespace mir {
 namespace action {
 
 
-class GlobalFilter : public Action {
+class SubsetFilter : public Action {
   public:
 
 // -- Exceptions
@@ -31,11 +32,11 @@ class GlobalFilter : public Action {
 
 // -- Contructors
 
-    GlobalFilter(const param::MIRParametrisation&);
+    SubsetFilter(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~GlobalFilter(); // Change to virtual if base class
+    virtual ~SubsetFilter(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -77,11 +78,12 @@ class GlobalFilter : public Action {
 
 // No copy allowed
 
-    GlobalFilter(const GlobalFilter&);
-    GlobalFilter& operator=(const GlobalFilter&);
+    SubsetFilter(const SubsetFilter&);
+    SubsetFilter& operator=(const SubsetFilter&);
 
 // -- Members
 
+    util::Increments increments_;
 
 // -- Methods
     // None
@@ -100,7 +102,7 @@ class GlobalFilter : public Action {
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GlobalFilter& p)
+    //friend ostream& operator<<(ostream& s,const SubsetFilter& p)
     //	{ p.print(s); return s; }
 
 };

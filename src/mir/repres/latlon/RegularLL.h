@@ -75,6 +75,8 @@ protected:
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
     virtual Representation* globalise(data::MIRField& field) const;
+    virtual Representation* subset(data::MIRField& field,
+                                   const util::Increments& increments) const;
 
     // -- Class members
     // None

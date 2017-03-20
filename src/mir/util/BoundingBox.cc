@@ -22,6 +22,8 @@
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Increments.h"
+#include "eckit/types/Fraction.h"
 
 
 namespace mir {
@@ -142,6 +144,30 @@ bool BoundingBox::contains(double lat, double lon) const {
            eckit::types::is_approximately_greater_or_equal(lon , west_) &&
            eckit::types::is_approximately_greater_or_equal(east_, lon);
 }
+
+
+static size_t computeN(double first, double last, double inc) {
+    ASSERT(first <= last);
+    ASSERT(inc > 0);
+
+    eckit::Fraction f(first);
+    eckit::Fraction l(last);
+    eckit::Fraction i(inc);
+
+    long long n = (l - f) / i;
+
+    return n + 1;
+}
+
+size_t BoundingBox::computeNi(const util::Increments& increments) const {
+
+    return computeN(west_,  east_,  increments.west_east());
+}
+
+size_t BoundingBox::computeNj(const util::Increments& increments) const {
+    return computeN(south_, north_, increments.south_north());
+}
+
 
 
 }  // namespace util

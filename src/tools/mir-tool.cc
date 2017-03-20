@@ -97,6 +97,7 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Path to the bitmap to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
         options_.push_back(new SimpleOption<bool>("globalise", "Make the field global, adding missing values if needed"));
+        options_.push_back(new VectorOption<double>("subset", "Subset field to given grid", 2));
 
         //==============================================
         options_.push_back(new Separator("Compute"));
