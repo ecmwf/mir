@@ -22,6 +22,7 @@
 #include "mir/util/Grib.h"
 #include "mir/api/MIRJob.h"
 #include "eckit/types/Fraction.h"
+#include "mir/util/BoundingBox.h"
 
 namespace mir {
 namespace util {
@@ -30,8 +31,8 @@ namespace util {
 Increments::Increments(double west_east, double south_north):
     west_east_(west_east),
     south_north_(south_north) {
-    // ASSERT(west_east_ > 0);
-    // ASSERT(south_north_ > 0);
+    ASSERT(west_east_ > 0);
+    ASSERT(south_north_ > 0);
 }
 
 Increments::Increments(const param::MIRParametrisation &parametrisation) {
@@ -70,6 +71,12 @@ bool Increments::multipleOf(const Increments& other) const {
 void Increments::ratio(const Increments& other, size_t& we, size_t& ns) const {
     we = static_cast<long long>(eckit::Fraction(west_east_) / eckit::Fraction(other.west_east_));
     ns = static_cast<long long>(eckit::Fraction(south_north_) / eckit::Fraction(other.south_north_));
+}
+
+bool Increments::matches(const BoundingBox& bbox) const {
+    eckit::Fraction we = (eckit::Fraction(bbox.east()) -  eckit::Fraction(bbox.west())) / eckit::Fraction(west_east_);
+    eckit::Fraction ns = (eckit::Fraction(bbox.north()) -  eckit::Fraction(bbox.south())) / eckit::Fraction(south_north_);
+    return we.integer() && ns.integer();
 }
 
 

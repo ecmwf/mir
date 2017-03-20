@@ -44,7 +44,6 @@ BoundingBox::BoundingBox(double north, double west, double south, double east) :
     normalise();
 }
 
-
 BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("north", north_));
     ASSERT(parametrisation.get("west",  west_ ));

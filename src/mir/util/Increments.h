@@ -34,6 +34,8 @@ class MIRJob;
 namespace mir {
 namespace util {
 
+class BoundingBox;
+
 class Increments {
 public:
 
@@ -68,6 +70,8 @@ public:
     // e.g. 2/2 is a multiple of 1/1
     bool multipleOf(const Increments& other) const;
     void ratio(const Increments& other, size_t& we, size_t& ns) const;
+
+    bool matches(const BoundingBox& bbox) const;
 
     double west_east() const {
         return west_east_;
