@@ -79,6 +79,22 @@ bool Increments::matches(const BoundingBox& bbox) const {
     return we.integer() && ns.integer();
 }
 
+static eckit::Fraction multiple(const eckit::Fraction& box, const eckit::Fraction& inc) {
+    for (size_t i = 2; i < 100; i++) {
+        eckit::Fraction x = inc * i;
+        if ((box / x).integer()) {
+            return x;
+        }
+    }
+    NOTIMP;
+}
+
+Increments Increments::matchingMultiple(const BoundingBox& bbox) const {
+    eckit::Fraction we = multiple(eckit::Fraction(bbox.east()) -  eckit::Fraction(bbox.west()), west_east_);
+    eckit::Fraction ns = multiple(eckit::Fraction(bbox.north()) -  eckit::Fraction(bbox.south()), south_north_);
+    return Increments(we, ns);
+}
+
 
 }  // namespace data
 }  // namespace mir
