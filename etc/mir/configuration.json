@@ -32,7 +32,9 @@
         },
         "index": {
             "NOTE": "associated to a table",
-            "interpolation": "nearest-neighbour"
+            "interpolation": "nearest-neighbour",
+            "associated": {
+            }
         },
         "intensity": {
             "NOTE": "physical quantity whose magnitude is independent of the extent (size) of the system (typical case, no typical units)",
