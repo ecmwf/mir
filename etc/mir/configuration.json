@@ -106,7 +106,7 @@
         "class": "ratio/cover"
     },
     "27/28": {
-        "class": "ratio/cover/vegetation-cover"
+        "class": "ratio/cover/vegetation"
     },
     "29/30/43/260015": {
         "class": "index"
