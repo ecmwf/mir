@@ -79,20 +79,30 @@ bool Increments::matches(const BoundingBox& bbox) const {
     return we.integer() && ns.integer();
 }
 
-static eckit::Fraction multiple(const eckit::Fraction& box, const eckit::Fraction& inc) {
-    for (size_t i = 2; i < 100; i++) {
-        eckit::Fraction x = inc * i;
-        if ((box / x).integer()) {
+static eckit::Fraction multiple(const eckit::Fraction& box1, const eckit::Fraction& box2, const eckit::Fraction& inc) {
+    for (size_t i = 2; i < 1000; i++) {
+        eckit::Fraction x = inc / i;
+        if ((box1 / x).integer() && (box2 / x).integer()) {
             return x;
         }
     }
     NOTIMP;
 }
 
-Increments Increments::matchingMultiple(const BoundingBox& bbox) const {
-    eckit::Fraction we = multiple(eckit::Fraction(bbox.east()) -  eckit::Fraction(bbox.west()), west_east_);
-    eckit::Fraction ns = multiple(eckit::Fraction(bbox.north()) -  eckit::Fraction(bbox.south()), south_north_);
-    return Increments(we, ns);
+
+Increments Increments::bestSubsetting(const BoundingBox& bbox) const {
+    bool zero_zero = (bbox.north() / eckit::Fraction(south_north_)).integer()
+                     && (bbox.south() / eckit::Fraction(south_north_)).integer()
+                     && (bbox.west() / eckit::Fraction(west_east_)).integer()
+                     && (bbox.east() / eckit::Fraction(west_east_)).integer();
+
+    if (!zero_zero) {
+        eckit::Fraction we = multiple(bbox.east(), bbox.west(), west_east_);
+        eckit::Fraction ns = multiple(bbox.north(), bbox.south(), south_north_);
+        return Increments(we, ns);
+    }
+
+    return *this;
 }
 
 

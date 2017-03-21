@@ -72,7 +72,7 @@ public:
     void ratio(const Increments& other, size_t& we, size_t& ns) const;
 
     bool matches(const BoundingBox& bbox) const;
-    Increments matchingMultiple(const BoundingBox& bbox) const;
+    Increments bestSubsetting(const BoundingBox& bbox) const;
 
     double west_east() const {
         return west_east_;
