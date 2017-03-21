@@ -142,6 +142,10 @@ list(
     action/transform/TransCache.h
     action/transform/TransInitor.cc
     action/transform/TransInitor.h
+    action/transform/mapping/AutoGaussian.cc
+    action/transform/mapping/AutoGaussian.h
+    action/transform/mapping/AutoResol.cc
+    action/transform/mapping/AutoResol.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc
@@ -478,12 +482,8 @@ list(
     stats/detail/ScalarCentralMomentsFn.h
     stats/detail/ScalarMinMaxFn.h
     stats/detail/ScalarpNormsFn.h
-    style/AutoGaussian.cc
-    style/AutoGaussian.h
     style/AutoReduced.cc
     style/AutoReduced.h
-    style/AutoResol.cc
-    style/AutoResol.h
     style/DisseminationStyle.cc
     style/DisseminationStyle.h
     style/ECMWFStyle.cc

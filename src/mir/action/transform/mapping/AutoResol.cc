@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/style/AutoResol.h"
+#include "mir/action/transform/mapping/AutoResol.h"
 
 #include <iostream>
 #include "eckit/config/EtcTable.h"
@@ -30,7 +30,9 @@
 
 
 namespace mir {
-namespace style {
+namespace action {
+namespace transform {
+namespace mapping {
 
 
 namespace {
@@ -152,9 +154,14 @@ void AutoResol::get(const std::string& name, long& value) const {
     eckit::Log::debug<LibMir>() << "AutoResol::get(" << name << ") step " << step << " maps to truncation " << value << (limited? " (input limited)":"") << std::endl;
 }
 
+
 void AutoResol::print(std::ostream& out) const {
     out << "<AutoResol>";
 }
 
-} // namespace param
-} // namespace mir
+
+}  // namespace mapping
+}  // namespace transform
+}  // namespace action
+}  // namespace mir
+

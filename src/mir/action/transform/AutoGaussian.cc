@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/style/AutoGaussian.h"
+#include "mir/action/transform/mapping/AutoGaussian.h"
 
 #include <iostream>
 #include "eckit/config/EtcTable.h"
@@ -26,7 +26,9 @@
 
 
 namespace mir {
-namespace style {
+namespace action {
+namespace transform {
+namespace mapping {
 
 
 namespace  {
@@ -94,6 +96,8 @@ void AutoGaussian::print(std::ostream& out) const {
 }
 
 
-}  // namespace style
+}  // namespace mapping
+}  // namespace transform
+}  // namespace action
 }  // namespace mir
 

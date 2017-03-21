@@ -13,20 +13,24 @@
 /// @date Apr 2015
 
 
-#ifndef AutoResol_H
-#define AutoResol_H
+#ifndef mir_action_transform_mapping_AutoResol_h
+#define mir_action_transform_mapping_AutoResol_h
 
-#include "mir/param/DelayedParametrisation.h"
 #include <vector>
+#include "mir/param/DelayedParametrisation.h"
 
 
 namespace mir {
-
 namespace param {
 class MIRParametrisation;
 }
+}
 
-namespace style {
+
+namespace mir {
+namespace action {
+namespace transform {
+namespace mapping {
 
 
 class AutoResol : public param::DelayedParametrisation {
@@ -119,7 +123,11 @@ private:
 };
 
 
-}  // namespace param
+}  // namespace mapping
+}  // namespace transform
+}  // namespace action
 }  // namespace mir
+
+
 #endif
 
