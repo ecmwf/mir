@@ -117,8 +117,8 @@ void AutoResol::get(const std::string& name, long& value) const {
     }
 
 
-    typedef eckit::Translator< std::string, double > string_to_step_t;
-    typedef eckit::Translator< std::string, long > string_to_number_t;
+    eckit::Translator< std::string, double > stringToStep;
+    eckit::Translator< std::string, long > stringToNumber;
 
 
     // pick entry with highest resolution (where step is not below the table's step entries)
@@ -126,11 +126,11 @@ void AutoResol::get(const std::string& name, long& value) const {
 
     std::vector<std::string> steps = table->keys();
     for (std::vector<std::string>::const_iterator j = steps.begin(); j != steps.end(); ++j) {
-        if (eckit::types::is_approximately_greater_or_equal<double>(step, string_to_step_t()(*j))) {
+        if (eckit::types::is_approximately_greater_or_equal<double>(step, stringToStep(*j))) {
 
             const std::vector<std::string>& entry = table->lookUp(*j);
             ASSERT(entry.size() == 2);
-            value = string_to_number_t()(entry.back());
+            value = stringToNumber(entry.back());
 
         }
     }

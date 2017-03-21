@@ -72,11 +72,11 @@ void AutoGaussian::get(const std::string& name, long& value) const {
     value = T+1;
     return;
 
-    typedef eckit::Translator< std::string, long > string_to_number_t;
-    typedef eckit::Translator< long, std::string > number_to_string_t;
+    eckit::Translator< std::string, long > stringToNumber;
+    eckit::Translator< long, std::string > numberToString;
 
-    const std::vector<std::string>& entry = table->lookUp(number_to_string_t()(T));
-    value = entry.size() < 2? 0 : string_to_number_t()(entry.back());
+    const std::vector<std::string>& entry = table->lookUp(numberToString(T));
+    value = entry.size() < 2? 0 : stringToNumber(entry.back());
 
     if (!value) {
         std::ostringstream oss;
