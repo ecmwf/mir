@@ -6,7 +6,7 @@
             "FieldInfo":     "vector.1d.polar.angle",
             "degree":        "true",
             "symmetric":     "false",
-            "decomposition": "PolarAngleDegreesAssymmetricToCartesian",
+            "decomposition": "PolarAngleDegreesAsymmetricToCartesian",
             "stats":         "angle"
         },
 
