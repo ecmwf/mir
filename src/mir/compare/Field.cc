@@ -27,6 +27,7 @@ namespace compare {
 
 static bool normaliseLongitudes_ = false;
 static double areaComparaisonThreshold_ = 0.7; // Observed for N320
+static double valueCountComparaisonThreshold_ = 1;
 
 void Field::addOptions(std::vector<eckit::option::Option*>& options) {
     using namespace eckit::option;
@@ -37,6 +38,8 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<double>("compare-areas-threshold",
                       "Threshold when comparing areas with Jaccard distance"));
 
+    options.push_back(new SimpleOption<double>("value-count-comparaison-threshold",
+                      "Threshold when comparing number of values"));
 }
 
 void Field::setOptions(const eckit::option::CmdArgs &args) {
@@ -337,7 +340,12 @@ bool Field::sameAccuracy(const Field& other) const {
 }
 
 bool Field::sameNumberOfPoints(const Field& other) const {
-    return numberOfPoints_  == other.numberOfPoints_;
+
+    double mn = std::min(numberOfPoints_, other.numberOfPoints_);
+    double mx = std::max(numberOfPoints_, other.numberOfPoints_);
+
+    return std::abs(mn / mx) >= valueCountComparaisonThreshold_;
+
 }
 
 bool Field::sameBitmap(const Field& other) const {
@@ -696,7 +704,7 @@ void Field::print(std::ostream & out) const {
 }
 
 bool Field::sameField(const Field & other) const {
-    return (values_ == other.values_) ;
+    return values_ == other.values_;
 }
 
 
