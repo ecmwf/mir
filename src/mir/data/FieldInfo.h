@@ -48,10 +48,10 @@ public:
         // Cylindrical/polar representations
         // @note angles in degrees [0,360[/[-180,180] or radians [0,2π[/[-π,π]
         CYLINDRICAL_ANGLE = 4,
-        CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC = 4,
-        CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC   = 5,
-        CYLINDRICAL_ANGLE_RADIANS_ASSYMMETRIC = 6,
-        CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC   = 7,
+        CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC = 4,
+        CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC  = 5,
+        CYLINDRICAL_ANGLE_RADIANS_ASYMMETRIC = 6,
+        CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC  = 7,
         ALL_CYLINDRICAL_ANGLES = 8,
         CYLINDRICAL_RADIUS =  9,
         CYLINDRICAL_HEIGHT = 10,
@@ -106,7 +106,7 @@ public:
     }
 
     bool isAngleInDegrees() const {
-        return component_ == CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC
+        return component_ == CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC
             || component_ == CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC;
     }
 
