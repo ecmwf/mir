@@ -55,7 +55,7 @@ static double computeStep(const param::MIRParametrisation& parametrisation) {
     std::vector<double> grid;
     if (parametrisation.get("user.grid", grid)) {
         ASSERT(grid.size() == 2);
-        step = std::min(grid[0], grid[1]);
+        step = grid[1];
     }
 
     long N = 0;
