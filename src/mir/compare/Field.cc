@@ -45,6 +45,7 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
 void Field::setOptions(const eckit::option::CmdArgs &args) {
     args.get("normalise-longitudes", normaliseLongitudes_);
     args.get("compare-areas-threshold", areaComparaisonThreshold_);
+    args.get("value-count-comparaison-threshold", valueCountComparaisonThreshold_);
 }
 
 
