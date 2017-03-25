@@ -26,6 +26,8 @@ namespace compare {
 
 
 static bool normaliseLongitudes_ = false;
+static bool ignoreAccuracy_ = false;
+
 static double areaComparaisonThreshold_ = 0.7; // Observed for N320
 static double valueCountComparaisonThreshold_ = 1;
 
@@ -40,12 +42,16 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
 
     options.push_back(new SimpleOption<double>("value-count-comparaison-threshold",
                       "Threshold when comparing number of values"));
+
+    options.push_back(new SimpleOption<bool>("ignore-accuracy",
+                      "Ignore accuracy when comparing"));
 }
 
 void Field::setOptions(const eckit::option::CmdArgs &args) {
     args.get("normalise-longitudes", normaliseLongitudes_);
     args.get("compare-areas-threshold", areaComparaisonThreshold_);
     args.get("value-count-comparaison-threshold", valueCountComparaisonThreshold_);
+    args.get("ignore-accuracy", ignoreAccuracy_);
 }
 
 
@@ -334,6 +340,12 @@ bool Field::sameParam(const Field& other) const {
 }
 
 bool Field::sameAccuracy(const Field& other) const {
+
+    if (ignoreAccuracy_) {
+        return true;
+    }
+
+
     if (accuracy_ == 0 || other.accuracy_ == 0) {
         return true;
     }
