@@ -27,6 +27,7 @@ namespace compare {
 
 static bool normaliseLongitudes_ = false;
 static bool ignoreAccuracy_ = false;
+static bool ignorePacking_ = false;
 
 static double areaComparaisonThreshold_ = 0.7; // Observed for N320
 static double valueCountComparaisonThreshold_ = 1;
@@ -45,6 +46,9 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
 
     options.push_back(new SimpleOption<bool>("ignore-accuracy",
                       "Ignore accuracy when comparing"));
+
+    options.push_back(new SimpleOption<bool>("ignore-packing",
+                      "Ignore packing when comparing"));
 }
 
 void Field::setOptions(const eckit::option::CmdArgs &args) {
@@ -52,6 +56,7 @@ void Field::setOptions(const eckit::option::CmdArgs &args) {
     args.get("compare-areas-threshold", areaComparaisonThreshold_);
     args.get("value-count-comparaison-threshold", valueCountComparaisonThreshold_);
     args.get("ignore-accuracy", ignoreAccuracy_);
+    args.get("ignore-packing", ignorePacking_);
 }
 
 
@@ -300,21 +305,24 @@ bool Field::samePacking(const Field& other) const {
         return true;
     }
 
-    //  if (packing_ == "grid_second_order" && other.packing_ == "grid_simple") {
-    //     return true;
-    // }
+    if (ignorePacking_) {
 
-    // if (packing_ == "grid_simple" && other.packing_ == "grid_second_order") {
-    //     return true;
-    // }
+        if (packing_ == "grid_second_order" && other.packing_ == "grid_simple") {
+            return true;
+        }
 
-    //  if (packing_ == "grid_jpeg" && other.packing_ == "grid_simple") {
-    //     return true;
-    // }
+        if (packing_ == "grid_simple" && other.packing_ == "grid_second_order") {
+            return true;
+        }
 
-    // if (packing_ == "grid_simple" && other.packing_ == "grid_jpeg") {
-    //     return true;
-    // }
+        if (packing_ == "grid_jpeg" && other.packing_ == "grid_simple") {
+            return true;
+        }
+
+        if (packing_ == "grid_simple" && other.packing_ == "grid_jpeg") {
+            return true;
+        }
+    }
 
     return packing_ == other.packing_;
 }
