@@ -475,44 +475,34 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
 
         // count missing values and accumulate weights
         double sum = 0.; // accumulated row weight, disregarding field missing values
-        size_t Nmiss = 0;
-        size_t Ncol  = 0;
-        for (it = begin; it != end; ++it, ++Ncol) {
+        size_t Nmissing = 0;
+        size_t Nentries = 0;
+        for (it = begin; it != end; ++it, ++Nentries) {
             if (values[it.col()] == missingValue)
-                ++Nmiss;
+                ++Nmissing;
             else
                 sum += *it;
         }
-        const bool missingSome = (Nmiss > 0);
-        const bool missingAll  = (Ncol == Nmiss);
 
-        // redistribution; either:
-        // - all values are missing (or weights wrongly computed), erase row & force missing value, or
-        // - some values are missing, so apply linear redistribution
-        if ((missingAll || is_approx_zero(sum)) && (Ncol > 0)) {
+        // weights redistribution: zero-weight all missing values, linear re-weighting for the others;
+        // if all values are missing, force missing value on first row entry
+        if (Nmissing > 0) {
 
-            bool found = false;
-            for (it = begin; it != end; ++it) {
-                *it = 0.;
-                if (!found && values[it.col()] == missingValue) {
-                    *it = 1.;
-                    found = true;
-                }
-            }
-            ASSERT(found);
-
-        } else if (missingSome) {
-
-            ASSERT(!is_approx_zero(sum));
+            const double factor = is_approx_zero(sum)? 0 : 1./sum;
             for (it = begin; it != end; ++it) {
                 if (values[it.col()] == missingValue) {
                     *it = 0.;
                 } else {
-                    *it /= sum;
+                    *it *= factor;
                 }
             }
 
+            if (Nentries == Nmissing) {
+                it = begin;
+                *it = 1.;
+            }
         }
+
     }
 
     X.validate("MethodWeighted::applyMissingValues");
