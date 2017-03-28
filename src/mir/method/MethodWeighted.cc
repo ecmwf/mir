@@ -376,11 +376,8 @@ void MethodWeighted::execute(context::Context & ctx,
 
             eckit::Timer t("Matrix-Multiply-MissingValues", eckit::Log::debug<LibMir>());
 
-            std::vector<bool> fieldMissingValues(npts_inp, false);
-            std::transform(field.values(i).begin(), field.values(i).end(), fieldMissingValues.begin(), IsMissingFn(field.missingValue()));
-
             WeightMatrix MW;
-            applyMissingValues(W, fieldMissingValues, MW); // Don't assume compiler can do return value optimization !!!
+            applyMissingValues(W, field.values(i), field.missingValue(), MW); // Don't assume compiler can do return value optimization !!!
 
             MW.multiply(mi, mo);
 
@@ -460,13 +457,14 @@ void MethodWeighted::computeMatrixWeights(context::Context & ctx,
 
 
 void MethodWeighted::applyMissingValues(const WeightMatrix & W,
-        const std::vector<bool>& fieldMissingValues,
+        const std::vector<double>& values,
+        const double& missingValue,
         WeightMatrix& MW) const {
 
     eckit::Timer t1("applyMissingValues", eckit::Log::debug<LibMir>());
 
     // correct matrix weigths for the missing values (matrix copy happens here)
-    ASSERT( W.cols() == fieldMissingValues.size() );
+    ASSERT( W.cols() == values.size() );
     WeightMatrix X(W);
 
     WeightMatrix::iterator it(X);
@@ -477,50 +475,41 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
 
         // count missing values and accumulate weights
         double sum = 0.; // accumulated row weight, disregarding field missing values
-        size_t Nmiss = 0;
-        size_t Ncol  = 0;
-        for (it = begin; it != end; ++it, ++Ncol) {
-            if (fieldMissingValues[it.col()])
-                ++Nmiss;
+        size_t Nmissing = 0;
+        size_t Nentries = 0;
+        for (it = begin; it != end; ++it, ++Nentries) {
+            if (values[it.col()] == missingValue)
+                ++Nmissing;
             else
                 sum += *it;
         }
-        const bool missingSome = (Nmiss > 0);
-        const bool missingAll  = (Ncol == Nmiss);
 
-        // redistribution; either:
-        // - all values are missing (or weights wrongly computed), erase row & force missing value, or
-        // - some values are missing, so apply linear redistribution
-        if ((missingAll || is_approx_zero(sum)) && (Ncol > 0)) {
+        // weights redistribution: zero-weight all missing values, linear re-weighting for the others;
+        // if all values are missing, force missing value on first row entry
+        if (Nmissing > 0) {
 
-            bool found = false;
+            const double factor = is_approx_zero(sum)? 0 : 1./sum;
             for (it = begin; it != end; ++it) {
-                *it = 0.;
-                if (!found && fieldMissingValues[it.col()]) {
-                    *it = 1.;
-                    found = true;
-                }
-            }
-            ASSERT(found);
-
-        } else if (missingSome) {
-
-            ASSERT(!is_approx_zero(sum));
-            for (it = begin; it != end; ++it) {
-                if (fieldMissingValues[it.col()]) {
+                if (values[it.col()] == missingValue) {
                     *it = 0.;
                 } else {
-                    *it /= sum;
+                    *it *= factor;
                 }
             }
 
+            if (Nentries == Nmissing) {
+                it = begin;
+                *it = 1.;
+            }
         }
+
     }
 
     X.validate("MethodWeighted::applyMissingValues");
 
     MW.swap(X);
 }
+
 
 void MethodWeighted::applyMasks(
         WeightMatrix& W,
