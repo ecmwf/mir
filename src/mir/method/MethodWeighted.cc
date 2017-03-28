@@ -469,37 +469,50 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
 
     WeightMatrix::iterator it(X);
     for (WeightMatrix::Size i = 0; i < X.rows(); i++) {
-
         const WeightMatrix::iterator begin = X.begin(i);
         const WeightMatrix::iterator end   = X.end(i);
 
-        // count missing values and accumulate weights
-        double sum = 0.; // accumulated row weight, disregarding field missing values
+        // count missing values, accumulate weights (disregarding missing values) and find closest value (maximum weight)
         size_t Nmissing = 0;
         size_t Nentries = 0;
+        double sum = 0.;
+        WeightMatrix::const_iterator closest = begin;
+
         for (it = begin; it != end; ++it, ++Nentries) {
             if (values[it.col()] == missingValue)
                 ++Nmissing;
             else
                 sum += *it;
+            if (*closest < *it)
+                closest = it;
         }
 
         // weights redistribution: zero-weight all missing values, linear re-weighting for the others;
-        // if all values are missing, force missing value on first row entry
+        // if all values are missing, or the closest value is missing, force missing value
         if (Nmissing > 0) {
+            if (Nmissing == Nentries || values[closest.col()] == missingValue) {
 
-            const double factor = is_approx_zero(sum)? 0 : 1./sum;
-            for (it = begin; it != end; ++it) {
-                if (values[it.col()] == missingValue) {
+                bool found = false;
+                for (it = begin; it != end; ++it) {
                     *it = 0.;
-                } else {
-                    *it *= factor;
+                    if (values[it.col()] == missingValue && !found) {
+                        *it = 1.;
+                        found = true;
+                    }
                 }
-            }
+                ASSERT(found);
 
-            if (Nentries == Nmissing) {
-                it = begin;
-                *it = 1.;
+            } else {
+
+                const double factor = is_approx_zero(sum)? 0 : 1./sum;
+                for (it = begin; it != end; ++it) {
+                    if (values[it.col()] == missingValue) {
+                        *it = 0.;
+                    } else {
+                        *it *= factor;
+                    }
+                }
+
             }
         }
 
