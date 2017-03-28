@@ -79,12 +79,19 @@ bool Increments::matches(const BoundingBox& bbox) const {
     return we.integer() && ns.integer();
 }
 
-static eckit::Fraction multiple(const eckit::Fraction& box1, const eckit::Fraction& box2, const eckit::Fraction& inc) {
+static eckit::Fraction multiple(const eckit::Fraction& box1,
+                                const eckit::Fraction& box2,
+                                const eckit::Fraction& inc) {
+
+    static const eckit::Fraction min(1, 100);
+
     for (size_t i = 2; i < 1000; i++) {
         eckit::Fraction x = inc / i;
         if ((box1 / x).integer() && (box2 / x).integer()) {
             return x;
         }
+
+        ASSERT(x > min);
     }
     NOTIMP;
 }
