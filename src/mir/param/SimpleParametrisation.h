@@ -79,8 +79,7 @@ public:
     // Used by Job
 
     virtual bool empty() const;
-    bool matches(const param::MIRParametrisation& other) const;
-    bool matches(const param::MIRParametrisation& other, const param::MIRParametrisation& ignore) const;
+    bool matches(const MIRParametrisation& other, const MIRParametrisation& ignore=SimpleParametrisation()) const;
 
     // -- Overridden methods
 

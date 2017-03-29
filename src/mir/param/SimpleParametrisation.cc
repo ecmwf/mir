@@ -515,29 +515,19 @@ bool SimpleParametrisation::empty() const {
     return size() == 0;
 }
 
-bool SimpleParametrisation::matches(const MIRParametrisation &other) const {
-    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches " << other << std::endl;
-    bool ok = true;
-    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end() && ok; ++j) {
-        ok = (*j).second->match((*j).first, other);
-        eckit::Log::debug<LibMir>() << "parametrisation " << (*j).first << "=" << *((*j).second) << "? "
-                                    << (ok? "matching":"not matching") << std::endl;
-
-    }
-    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches? " << (ok? "yes":"no") << std::endl;
-    return ok;
-}
-
 bool SimpleParametrisation::matches(const MIRParametrisation& other, const MIRParametrisation& ignore) const {
-    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches " << other << ", ignoring " << ignore << std::endl;
+    std::ostringstream reason;
+    const char* sep = "";
     bool ok = true;
+
     for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end() && ok; ++j) {
-        bool ignored = ignore.has((*j).first);
-        ok = ignored || (*j).second->match((*j).first, other);
-        eckit::Log::debug<LibMir>() << "parametrisation " << (*j).first << "=" << *((*j).second) <<  "? "
-                                    << (ignored? "ignored" : (ok? "matching":"not matching")) << std::endl;
+        if (!ignore.has((*j).first) && !(*j).second->match((*j).first, other)) {
+            reason << sep << (*j).first << " different to " << *((*j).second);
+            sep = ", ";
+            ok = false;
+        }
     }
-    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches? " << (ok? "yes":"no") << std::endl;
+    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches? " << (ok? "yes":"no ("+ reason.str() +")") << std::endl;
     return ok;
 }
 
