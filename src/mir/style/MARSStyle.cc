@@ -44,7 +44,6 @@ void MARSStyle::print(std::ostream &out) const {
 void MARSStyle::sh2grid(action::ActionPlan& plan) const {
 
     bool areaDefinesGrid = false;
-    parametrisation_.get("area-defines-grid", areaDefinesGrid);
 
     bool autoresol = true;
     parametrisation_.get("autoresol", autoresol);

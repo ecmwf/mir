@@ -157,11 +157,14 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     bool wind = false;
     parametrisation_.get("wind", wind);
 
-    bool areaDefinesGrid = false;
-    parametrisation_.get("area-defines-grid", areaDefinesGrid);
+
+    bool shift = parametrisation_.has("user.shift");
+    if(shift) {
+        ASSERT(parametrisation_.has("user.grid"));
+    }
 
     const std::string grid =
-        parametrisation_.has("user.grid") ?       "regular-ll" + std::string(areaDefinesGrid ? "-offset" : "") :
+        parametrisation_.has("user.grid") ?       "regular-ll" + std::string(shift ? "-offset" : "") :
         parametrisation_.has("user.reduced") ?    "reduced-gg" :
         parametrisation_.has("user.regular") ?    "regular-gg" :
         parametrisation_.has("user.octahedral") ? "octahedral-gg" :
@@ -169,12 +172,10 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
         parametrisation_.has("user.gridname") ?   "namedgrid" :
         parametrisation_.has("user.griddef") ?    "griddef" :
         "";
+
     if (grid.length()) {
         std::string required;
 
-        if (!parametrisation_.has("user.grid") && areaDefinesGrid) {
-            throw eckit::UserError("'area-defines-grid' requires 'user.grid'.");
-        }
         if (!parametrisation_.get("gridname", required) && (grid == "namedgrid")) {
             throw eckit::UserError("'user.gridname' requires parameter 'gridname'.");
         }

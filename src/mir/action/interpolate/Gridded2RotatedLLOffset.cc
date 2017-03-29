@@ -31,6 +31,8 @@ namespace action {
 Gridded2RotatedLLOffset::Gridded2RotatedLLOffset(const param::MIRParametrisation &parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
 
+      NOTIMP;
+
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
     ASSERT(value.size() == 2);
@@ -41,16 +43,11 @@ Gridded2RotatedLLOffset::Gridded2RotatedLLOffset(const param::MIRParametrisation
 
     rotation_ = util::Rotation(value[0], value[1]);
 
-    ASSERT(parametrisation_.get("user.area", value));
-    ASSERT(value.size() == 4);
-    util::BoundingBox bbox(value[0], value[1], value[2], value[3]);
-    // We use the north/west corner as a reference. To review.
+    ASSERT(parametrisation_.get("user.shift", value));
+    ASSERT(value.size() == 2);
 
-    double n = ::fabs(bbox.north()) / increments_.south_north();
-    northwards_ = n - long(n);
-
-    double e = ::fabs(bbox.west()) / increments_.west_east();
-    eastwards_ = e - long(e);
+    eastwards_ = value[0];
+    northwards_ = value[1];
 
 }
 

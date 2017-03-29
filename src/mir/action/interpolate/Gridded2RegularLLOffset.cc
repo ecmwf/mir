@@ -38,15 +38,12 @@ Gridded2RegularLLOffset::Gridded2RegularLLOffset(const param::MIRParametrisation
 
     ASSERT(parametrisation_.get("user.area", value));
     ASSERT(value.size() == 4);
-    util::BoundingBox bbox(value[0], value[1], value[2], value[3]);
-    // We use the north/west corner as a reference. To review.
 
-    double n = ::fabs(bbox.north()) / increments_.south_north();
-    northwards_ = n - long(n);
+    ASSERT(parametrisation_.get("user.shift", value));
+    ASSERT(value.size() == 2);
 
-    double e = ::fabs(bbox.west()) / increments_.west_east();
-    eastwards_ = e - long(e);
-
+    eastwards_ = value[0];
+    northwards_ = value[1];
 
 }
 
