@@ -84,16 +84,8 @@ void ShVodToUV::execute(context::Context & ctx) const {
     ASSERT(field_vo.size() == size);
     ASSERT(field_d.size() == size);
 
-    std::vector<double> result_U(size, 0.0);
-    std::vector<double> result_V(size, 0.0);
-
-	double a = 0;
-	double b = 0;
-	for(int i = 0; i < size; i++) { 
-		a += result_U[i];
-		b += result_V[i];
-	}
-	std::cout << a << " " << b << std::endl;
+    std::vector<double> result_U(size, 0);
+    std::vector<double> result_V(size, 0);
 
     struct VorDivToUV_t vod_to_UV = new_vordiv_to_UV();
     vod_to_UV.nfld   = 1;
@@ -114,12 +106,6 @@ void ShVodToUV::execute(context::Context & ctx) const {
 		throw eckit::SeriousBug(oss.str());
 	}
 
-	for(int i = 0; i < size; i++) { 
-		a += result_U[i];
-		b += result_V[i];
-	}
-
-	std::cout << "size= " << size << " " << truncation << " " << a << " " << b << std::endl;
 
     field.update(result_U, 0);
     field.update(result_V, 1);
