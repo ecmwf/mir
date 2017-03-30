@@ -65,23 +65,21 @@ void Gridded2RegularLLShift::print(std::ostream &out) const {
 
 
 const repres::Representation *Gridded2RegularLLShift::outputRepresentation() const {
-    
+
     eckit::Fraction we(increments_.west_east());
     eckit::Fraction sn(increments_.south_north());
-    
+
     double north = 90 - (90/sn).decimalPart() * sn;
     double south = -90 -(-90/sn).decimalPart() * sn;
-    
+
     double west = 0;
     double east = 360 -(360/we).decimalPart() * we;
-    
-    util::BoundingBox bbox(north + shift_.south_north(),
-                           west + shift_.west_east(),
-                           south + shift_.south_north(),
-                           east - increments_.west_east() + shift_.west_east());
-    
-    
-    
+
+    util::BoundingBox bbox(north,
+                           west,
+                           south,
+                           east - increments_.west_east());
+
     return new repres::latlon::RegularLLShift(bbox,
                                               increments_,
                                               shift_);
