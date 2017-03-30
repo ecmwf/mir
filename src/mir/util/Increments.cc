@@ -23,6 +23,7 @@
 #include "mir/api/MIRJob.h"
 #include "eckit/types/Fraction.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Shift.h"
 
 namespace mir {
 namespace util {
@@ -112,22 +113,17 @@ Increments Increments::bestSubsetting(const BoundingBox& bbox) const {
     return *this;
 }
 
-// Increments Increments::shiftFromZeroZero(const BoundingBox& bbox) const {
+Shift Increments::shiftFromZeroZero(const BoundingBox& bbox) const {
 
-//     bool zero_zero = (bbox.north() / eckit::Fraction(south_north_)).integer()
-//                      && (bbox.south() / eckit::Fraction(south_north_)).integer()
-//                      && (bbox.west() / eckit::Fraction(west_east_)).integer()
-//                      && (bbox.east() / eckit::Fraction(west_east_)).integer();
+    eckit::Fraction sn(south_north_);
+    eckit::Fraction we(west_east_);
 
-//     if (!zero_zero) {
-//         eckit::Fraction we = multiple(bbox.east(), bbox.west(), west_east_);
-//         eckit::Fraction ns = multiple(bbox.north(), bbox.south(), south_north_);
-//         return Increments(we, ns);
-//     }
+    eckit::Fraction s = (bbox.south() / sn).floor() * sn;
+    eckit::Fraction w = (bbox.west() / we).floor() * we;
 
-//     return Increments(0, 0);
+    return Shift(w, s);
 
-// }
+}
 
 }  // namespace data
 }  // namespace mir

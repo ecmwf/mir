@@ -35,6 +35,7 @@ namespace mir {
 namespace util {
 
 class BoundingBox;
+class Shift;
 
 class Increments {
 public:
@@ -73,6 +74,7 @@ public:
 
     bool matches(const BoundingBox& bbox) const;
     Increments bestSubsetting(const BoundingBox& bbox) const;
+    Shift shiftFromZeroZero(const BoundingBox& bbox) const;
 
     double west_east() const {
         return west_east_;
