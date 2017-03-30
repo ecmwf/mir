@@ -146,6 +146,16 @@ list(
     action/transform/mapping/AutoGaussian.h
     action/transform/mapping/AutoResol.cc
     action/transform/mapping/AutoResol.h
+    action/transform/mapping/Cubic.cc
+    action/transform/mapping/Cubic.h
+    action/transform/mapping/Linear.cc
+    action/transform/mapping/Linear.h
+    action/transform/mapping/Mapping.cc
+    action/transform/mapping/Mapping.h
+    action/transform/mapping/Quadratic.cc
+    action/transform/mapping/Quadratic.h
+    action/transform/mapping/Quartic.cc
+    action/transform/mapping/Quartic.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc

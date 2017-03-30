@@ -200,8 +200,7 @@ extern "C" fortint intout_(const char *name,
         }
 
         if (strncasecmp(name, "autoresol", name_len) == 0) {
-            job->set("autoresol", ints[0] != 0);
-            return 0;
+            ASSERT(false);
         }
 
         if (strncasecmp(name, "style", name_len) == 0) {
@@ -248,6 +247,13 @@ extern "C" fortint intout_(const char *name,
                 return 0;
             }
         }
+
+        if (strncasecmp(name, "resol", name_len) == 0) {
+            // not strictly part of EMOSLIB interface
+            job->set("resol", value);
+            return 0;
+        }
+
         std::string v(value);
         v = v.substr(0, value_len);
         eckit::Log::debug<LibMir>() << "INTOUT " << n << ", s=" << v << " - i[0]=" << ints[0] << " -r[0]=" << reals[0] << std::endl;

@@ -15,6 +15,7 @@
 
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/log/Plural.h"
+#include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 #include "eckit/option/CmdArgs.h"
@@ -22,11 +23,11 @@
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
-#include "eckit/log/ResourceUsage.h"
 #include "mir/action/plan/Executor.h"
+#include "mir/action/transform/mapping/Mapping.h"
 #include "mir/api/MIRJob.h"
-#include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/caching/interpolator/InterpolatorLoader.h"
+#include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/input/DummyInput.h"
 #include "mir/input/GeoPointsFileInput.h"
@@ -40,10 +41,10 @@
 #include "mir/packing/Packer.h"
 #include "mir/style/MIRStyle.h"
 #include "mir/tools/MIRTool.h"
-
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 #include "mir/util/Shift.h"
+
 
 class MIRToolConcrete : public mir::tools::MIRTool {
 private:
@@ -65,7 +66,7 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Transform"));
-        options_.push_back(new SimpleOption<bool>("autoresol", "Turn on automatic truncation"));
+        options_.push_back(new FactoryOption<mir::action::transform::mapping::MappingFactory>("resol", "spectral/gridded mapping"));
         options_.push_back(new SimpleOption<size_t>("truncation", "Truncation input field"));
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is Vorticity and Divergence, conversion to u/v or U/V requested"));
 
