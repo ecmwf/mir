@@ -13,31 +13,34 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded2RegularLLOffset_H
-#define Gridded2RegularLLOffset_H
+#ifndef RegularLLShift_H
+#define RegularLLShift_H
 
-#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
-#include "mir/util/Increments.h"
+#include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Rotation.h"
+#include "mir/util/Shift.h"
 
 
 namespace mir {
-namespace action {
+namespace repres {
+namespace latlon {
 
 
-class Gridded2RegularLLOffset : public Gridded2GriddedInterpolation {
-public:
+class RegularLLShift : public RegularLL {
+  public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    Gridded2RegularLLOffset(const param::MIRParametrisation&);
+    RegularLLShift(const util::BoundingBox &bbox,
+        const util::Increments &increments,
+        const util::Shift& shift);
 
     // -- Destructor
 
-    virtual ~Gridded2RegularLLOffset(); // Change to virtual if base class
+    virtual ~RegularLLShift();
 
     // -- Convertors
     // None
@@ -57,17 +60,19 @@ public:
     // -- Class methods
     // None
 
-protected:
+  protected:
 
     // -- Members
-    // None
+
+    util::Shift shift_;
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
+    virtual atlas::grid::Grid *atlasGrid() const;
 
     // -- Class members
     // None
@@ -75,28 +80,27 @@ protected:
     // -- Class methods
     // None
 
-private:
+  private:
+
+    // RegularLLShift();
 
     // No copy allowed
 
-    Gridded2RegularLLOffset(const Gridded2RegularLLOffset&);
-    Gridded2RegularLLOffset& operator=(const Gridded2RegularLLOffset&);
+    RegularLLShift(const RegularLLShift &);
+    RegularLLShift &operator=(const RegularLLShift &);
 
     // -- Members
-
-    util::Increments increments_;
-    double northwards_;
-    double eastwards_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    virtual Iterator* unrotatedIterator() const; // Before rotation
 
-    // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    // From RegularLL
+    virtual const RegularLLShift *cropped(const util::BoundingBox &bbox) const;
 
     // -- Class members
     // None
@@ -105,14 +109,13 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Gridded2RegularLLOffset& p)
-    //	{ p.print(s); return s; }
+    // None
 
 };
 
 
-}  // namespace action
+}  // namespace latlon
+}  // namespace repres
 }  // namespace mir
 
 

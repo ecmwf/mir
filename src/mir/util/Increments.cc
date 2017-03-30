@@ -112,6 +112,22 @@ Increments Increments::bestSubsetting(const BoundingBox& bbox) const {
     return *this;
 }
 
+// Increments Increments::shiftFromZeroZero(const BoundingBox& bbox) const {
+
+//     bool zero_zero = (bbox.north() / eckit::Fraction(south_north_)).integer()
+//                      && (bbox.south() / eckit::Fraction(south_north_)).integer()
+//                      && (bbox.west() / eckit::Fraction(west_east_)).integer()
+//                      && (bbox.east() / eckit::Fraction(west_east_)).integer();
+
+//     if (!zero_zero) {
+//         eckit::Fraction we = multiple(bbox.east(), bbox.west(), west_east_);
+//         eckit::Fraction ns = multiple(bbox.north(), bbox.south(), south_north_);
+//         return Increments(we, ns);
+//     }
+
+//     return Increments(0, 0);
+
+// }
 
 }  // namespace data
 }  // namespace mir

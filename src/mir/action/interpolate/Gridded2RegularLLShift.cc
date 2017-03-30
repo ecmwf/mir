@@ -12,14 +12,14 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/action/interpolate/Gridded2RegularLLOffset.h"
+#include "mir/action/interpolate/Gridded2RegularLLShift.h"
 
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
 
 
-#include "mir/repres/latlon/RegularLLOffset.h"
+#include "mir/repres/latlon/RegularLLShift.h"
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -28,7 +28,7 @@ namespace mir {
 namespace action {
 
 
-Gridded2RegularLLOffset::Gridded2RegularLLOffset(const param::MIRParametrisation &parametrisation):
+Gridded2RegularLLShift::Gridded2RegularLLShift(const param::MIRParametrisation &parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
 
     std::vector<double> value;
@@ -42,40 +42,37 @@ Gridded2RegularLLOffset::Gridded2RegularLLOffset(const param::MIRParametrisation
     ASSERT(parametrisation_.get("user.shift", value));
     ASSERT(value.size() == 2);
 
-    eastwards_ = value[0];
-    northwards_ = value[1];
+    shift_ = util::Shift(value[0], value[1]);
 
 }
 
 
-Gridded2RegularLLOffset::~Gridded2RegularLLOffset() {
+Gridded2RegularLLShift::~Gridded2RegularLLShift() {
 }
 
 
-bool Gridded2RegularLLOffset::sameAs(const Action& other) const {
-    const Gridded2RegularLLOffset* o = dynamic_cast<const Gridded2RegularLLOffset*>(&other);
-    return o && (increments_ == o->increments_) && (northwards_ == o->northwards_) && (eastwards_ == o->eastwards_);
+bool Gridded2RegularLLShift::sameAs(const Action& other) const {
+    const Gridded2RegularLLShift* o = dynamic_cast<const Gridded2RegularLLShift*>(&other);
+    return o && (increments_ == o->increments_) && (shift_ == o->shift_);
 }
 
-void Gridded2RegularLLOffset::print(std::ostream &out) const {
-    out << "Gridded2RegularLLOffset[increments=" << increments_
-        << ",northwards=" << northwards_
-        << ",eastwards=" << eastwards_
+void Gridded2RegularLLShift::print(std::ostream &out) const {
+    out << "Gridded2RegularLLShift[increments=" << increments_
+        << ",shift=" << shift_
         << "]";
 }
 
 
-const repres::Representation *Gridded2RegularLLOffset::outputRepresentation() const {
-    return new repres::latlon::RegularLLOffset(
+const repres::Representation *Gridded2RegularLLShift::outputRepresentation() const {
+    return new repres::latlon::RegularLLShift(
                util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
                increments_,
-               northwards_,
-               eastwards_ );
+               shift_);
 }
 
 
 namespace {
-static ActionBuilder< Gridded2RegularLLOffset > grid2grid("interpolate.grid2regular-ll-offset");
+static ActionBuilder< Gridded2RegularLLShift > grid2grid("interpolate.grid2regular-ll-shift");
 }
 
 

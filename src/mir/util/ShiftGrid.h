@@ -15,18 +15,19 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "atlas/grid/Grid.h"
 
+#include "mir/util/Shift.h"
 
 namespace mir {
 namespace util {
 
 
-class OffsetGrid : public atlas::grid::Grid {
+class ShiftGrid : public atlas::grid::Grid {
 
 public: // methods
 
-    OffsetGrid(Grid *grid, double northwards, double eastwards);
+    ShiftGrid(Grid *grid, const Shift& shift);
 
-    virtual ~OffsetGrid();
+    virtual ~ShiftGrid();
 
     virtual size_t npts() const;
 
@@ -57,8 +58,7 @@ private: // members
 
     eckit::ScopedPtr<Grid> grid_;
 
-    double northwards_;
-    double eastwards_;
+    Shift shift_;
 
     mutable std::string shortName_;
     mutable std::vector<Point> points_;

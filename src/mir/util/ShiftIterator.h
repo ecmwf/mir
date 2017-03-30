@@ -13,33 +13,32 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedLLOffset_H
-#define RotatedLLOffset_H
+#ifndef ShiftIterator_H
+#define ShiftIterator_H
 
-#include "mir/repres/latlon/RegularLLOffset.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/repres/Iterator.h"
+// #include "mir/util/RotateGrid.h"
+#include "mir/util/Shift.h"
 
 
 namespace mir {
-namespace repres {
-namespace latlon {
+namespace util {
 
 
-class RotatedLLOffset : public RegularLLOffset {
-  public:
+class ShiftIterator : public repres::Iterator {
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    RotatedLLOffset(const util::BoundingBox &bbox,
-        const util::Increments &increments,
-        const util::Rotation &rotation,
-        double northwards, double eastwards);
+    ShiftIterator(Iterator* iterator, const Shift& shift);
 
     // -- Destructor
 
-    virtual ~RotatedLLOffset();
+    virtual ~ShiftIterator(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -59,17 +58,13 @@ class RotatedLLOffset : public RegularLLOffset {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
-
-    util::Rotation rotation_;
-    double northwards_;
-    double eastwards_;
+    // None
 
     // -- Methods
-
-    void print(std::ostream &) const; // Change to virtual if base class
+    // None
 
     // -- Overridden methods
     // None
@@ -80,31 +75,26 @@ class RotatedLLOffset : public RegularLLOffset {
     // -- Class methods
     // None
 
-  private:
-
-    // RotatedLLOffset();
+private:
 
     // No copy allowed
 
-    RotatedLLOffset(const RotatedLLOffset &);
-    RotatedLLOffset &operator=(const RotatedLLOffset &);
+    ShiftIterator(const ShiftIterator&);
+    ShiftIterator& operator=(const ShiftIterator&);
 
     // -- Members
-    // None
+
+    eckit::ScopedPtr<Iterator> iterator_;
+    Shift shift_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
+    virtual bool next(double& lat, double& lon);
 
-    virtual atlas::grid::Grid *atlasGrid() const;
-    virtual Iterator* rotatedIterator() const; // Before rotation
-
-    // From RegularLL
-    virtual const RotatedLLOffset *cropped(const util::BoundingBox &bbox) const;
+    virtual void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Class members
     // None
@@ -113,13 +103,16 @@ class RotatedLLOffset : public RegularLLOffset {
     // None
 
     // -- Friends
-    // None
+
+    friend std::ostream &operator<<(std::ostream& s, const ShiftIterator& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
 
-}  // namespace latlon
-}  // namespace repres
+}  // namespace util
 }  // namespace mir
 
 

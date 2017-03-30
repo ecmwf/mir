@@ -13,19 +13,25 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded2RotatedLLOffset_H
-#define Gridded2RotatedLLOffset_H
+#ifndef Shift_H
+#define Shift_H
 
-#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
-#include "mir/util/Increments.h"
-#include "mir/util/Rotation.h"
+
+#include <iosfwd>
 
 
 namespace mir {
-namespace action {
+
+namespace api {
+class MIRJob;
+}
+}
+
+namespace mir {
+namespace util {
 
 
-class Gridded2RotatedLLOffset : public Gridded2GriddedInterpolation {
+class Shift {
 public:
 
     // -- Exceptions
@@ -33,20 +39,37 @@ public:
 
     // -- Contructors
 
-    Gridded2RotatedLLOffset(const param::MIRParametrisation&);
+    explicit Shift(double west_east = 0, double south_north = 0);
 
     // -- Destructor
 
-    virtual ~Gridded2RotatedLLOffset(); // Change to virtual if base class
+    ~Shift(); // Change to virtual if base class
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    bool operator==(const Shift& other) const {
+        return (west_east_ == other.west_east_) && (south_north_ == other.south_north_);
+    }
+
+    bool operator!=(const Shift& other) const {
+        return (west_east_ != other.west_east_) || (south_north_ != other.south_north_);
+    }
 
     // -- Methods
-    // None
+
+    double west_east() const {
+        return west_east_;
+    }
+
+    double south_north() const {
+        return south_north_;
+    }
+
+    void fill(api::MIRJob &) const;
+
 
     // -- Overridden methods
     // None
@@ -64,7 +87,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -79,25 +102,16 @@ private:
 
     // No copy allowed
 
-    Gridded2RotatedLLOffset(const Gridded2RotatedLLOffset&);
-    Gridded2RotatedLLOffset& operator=(const Gridded2RotatedLLOffset&);
 
     // -- Members
 
-    util::Increments increments_;
-    util::Rotation rotation_;
-    double northwards_;
-    double eastwards_;
+    double west_east_;
+    double south_north_;
 
     // -- Methods
-    // None
 
     // -- Overridden methods
-
-    virtual bool sameAs(const Action& other) const;
-
-    // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    // None
 
     // -- Class members
     // None
@@ -107,15 +121,15 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Gridded2RotatedLLOffset& p)
-    //  { p.print(s); return s; }
+    friend std::ostream &operator<<(std::ostream &s, const Shift &p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
 
-}  // namespace action
+}  // namespace util
 }  // namespace mir
-
-
 #endif
 

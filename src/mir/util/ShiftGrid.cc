@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/util/OffsetGrid.h"
+#include "mir/util/ShiftGrid.h"
 #include "eckit/types/FloatCompare.h"
 
 
@@ -17,30 +17,31 @@ namespace mir {
 namespace util {
 
 
-OffsetGrid::OffsetGrid(Grid *grid, double northwards, double eastwards):
+ShiftGrid::ShiftGrid(Grid *grid, const Shift& shift):
     grid_(grid),
-    northwards_(northwards),
-    eastwards_(eastwards) {
+    shift_(shift) {
 }
 
 
-OffsetGrid::~OffsetGrid() {
+ShiftGrid::~ShiftGrid() {
 }
 
 
-size_t OffsetGrid::npts() const {
+size_t ShiftGrid::npts() const {
     computePoints();
     return points_.size();
 }
 
-void OffsetGrid::lonlat(std::vector<Point>& pts) const {
+void ShiftGrid::lonlat(std::vector<Point>& pts) const {
     computePoints();
     pts = points_;
 }
 
-void OffsetGrid::computePoints() const {
+void ShiftGrid::computePoints() const {
 
-    
+
+    const double eastwards = shift_.west_east();
+    const double northwards = shift_.south_north();
 
 
     if (points_.empty()) {
@@ -50,8 +51,8 @@ void OffsetGrid::computePoints() const {
 
         for (std::vector<Point>::const_iterator j = original.begin(); j != original.end(); ++j) {
 
-            double lon = (*j).lon() + eastwards_;
-            double lat = (*j).lat() + northwards_;
+            double lon = (*j).lon() + eastwards;
+            double lat = (*j).lat() + northwards;
 
             if (eckit::types::is_strictly_greater(lat, 90.) || eckit::types::is_strictly_greater(-90., lat)) {
                 continue;
@@ -67,41 +68,40 @@ void OffsetGrid::computePoints() const {
 }
 
 
-std::string OffsetGrid::gridType() const {
+std::string ShiftGrid::gridType() const {
     NOTIMP;
 }
 
 
-eckit::Properties OffsetGrid::spec() const {
+eckit::Properties ShiftGrid::spec() const {
     NOTIMP;
 }
 
 
-std::string OffsetGrid::shortName() const {
+std::string ShiftGrid::shortName() const {
     if (shortName_.empty()) {
-        shortName_ = "offset." + grid_->shortName();
+        shortName_ = "shift." + grid_->shortName();
     }
     return shortName_;
 }
 
 
-void OffsetGrid::hash(eckit::MD5& md5) const {
-    md5.add("offset.");
+void ShiftGrid::hash(eckit::MD5& md5) const {
+    md5.add("shift.");
     grid_->hash(md5);
-    md5.add(eastwards_);
-    md5.add(northwards_);
+    md5.add(shift_.west_east());
+    md5.add(shift_.south_north());
 }
 
 
-const atlas::grid::Domain& OffsetGrid::domain() const {
+const atlas::grid::Domain& ShiftGrid::domain() const {
     return grid_->domain();
 }
 
 
-void OffsetGrid::print(std::ostream& out) const {
-    out << "OffsetGrid["
-        <<  "northwards="       << northwards_
-        << ",eastwards="      << eastwards_
+void ShiftGrid::print(std::ostream& out) const {
+    out << "ShiftGrid["
+        <<  "shift="       << shift_
         << "," << *grid_
         << "]";
 }

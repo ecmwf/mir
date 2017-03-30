@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/util/OffsetIterator.h"
+#include "mir/util/ShiftIterator.h"
 #include "eckit/types/FloatCompare.h"
 
 
@@ -21,32 +21,33 @@ namespace mir {
 namespace util {
 
 
-OffsetIterator::OffsetIterator(Iterator* iterator, double northwards, double eastwards) :
+ShiftIterator::ShiftIterator(Iterator* iterator, const util::Shift& shift) :
     iterator_(iterator),
-    northwards_(northwards),
-    eastwards_(eastwards) {
+    shift_(shift) {
 }
 
 
-OffsetIterator::~OffsetIterator() {
+ShiftIterator::~ShiftIterator() {
 }
 
 
-void OffsetIterator::print(std::ostream& out) const {
-    out << "OffsetIterator[iterator=" << *iterator_
-        << ",northwards=" << northwards_
-        << ",eastwards=" << eastwards_ << "]";
+void ShiftIterator::print(std::ostream& out) const {
+    out << "ShiftIterator[iterator=" << *iterator_
+        << ",shift=" << shift_ << "]";
 }
 
 
-bool OffsetIterator::next(double& lat, double& lon) {
+bool ShiftIterator::next(double& lat, double& lon) {
 
-    
+
+    const double eastwards = shift_.west_east();
+    const double northwards = shift_.south_north();
+
 
     while (iterator_->next(lat, lon)) {
 
-        lon += eastwards_;
-        lat += northwards_;
+        lon += eastwards;
+        lat += northwards;
 
         if (eckit::types::is_strictly_greater(lat, 90.) || eckit::types::is_strictly_greater(-90., lat)) {
             continue;

@@ -13,20 +13,20 @@
 /// @date Apr 2015
 
 
-#ifndef OffsetIterator_H
-#define OffsetIterator_H
+#ifndef Gridded2RotatedLLShift_H
+#define Gridded2RotatedLLShift_H
 
-#include "eckit/memory/ScopedPtr.h"
-#include "mir/repres/Iterator.h"
-// #include "mir/util/RotateGrid.h"
-// #include "mir/util/Rotation.h"
+#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
+#include "mir/util/Increments.h"
+#include "mir/util/Rotation.h"
+#include "mir/util/Shift.h"
 
 
 namespace mir {
-namespace util {
+namespace action {
 
 
-class OffsetIterator : public repres::Iterator {
+class Gridded2RotatedLLShift : public Gridded2GriddedInterpolation {
 public:
 
     // -- Exceptions
@@ -34,11 +34,11 @@ public:
 
     // -- Contructors
 
-    OffsetIterator(Iterator* iterator, double northwards, double eastwards);
+    Gridded2RotatedLLShift(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~OffsetIterator(); // Change to virtual if base class
+    virtual ~Gridded2RotatedLLShift(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -64,7 +64,8 @@ protected:
     // None
 
     // -- Methods
-    // None
+
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -79,23 +80,23 @@ private:
 
     // No copy allowed
 
-    OffsetIterator(const OffsetIterator&);
-    OffsetIterator& operator=(const OffsetIterator&);
+    Gridded2RotatedLLShift(const Gridded2RotatedLLShift&);
+    Gridded2RotatedLLShift& operator=(const Gridded2RotatedLLShift&);
 
     // -- Members
 
-    eckit::ScopedPtr<Iterator> iterator_;
-    double northwards_;
-    double eastwards_;
-
+    util::Increments increments_;
+    util::Rotation rotation_;
+    util::Shift shift_;
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool next(double& lat, double& lon);
+    virtual bool sameAs(const Action& other) const;
 
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    // From Gridded2GriddedInterpolation
+    virtual const repres::Representation* outputRepresentation() const;
 
     // -- Class members
     // None
@@ -105,15 +106,13 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream& s, const OffsetIterator& p) {
-        p.print(s);
-        return s;
-    }
+    //friend ostream& operator<<(ostream& s,const Gridded2RotatedLLShift& p)
+    //  { p.print(s); return s; }
 
 };
 
 
-}  // namespace util
+}  // namespace action
 }  // namespace mir
 
 

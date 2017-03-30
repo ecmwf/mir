@@ -60,12 +60,12 @@ list(
     action/interpolate/Gridded2RegularGG.h
     action/interpolate/Gridded2RegularLL.cc
     action/interpolate/Gridded2RegularLL.h
-    action/interpolate/Gridded2RegularLLOffset.cc
-    action/interpolate/Gridded2RegularLLOffset.h
+    action/interpolate/Gridded2RegularLLShift.cc
+    action/interpolate/Gridded2RegularLLShift.h
     action/interpolate/Gridded2RotatedLL.cc
     action/interpolate/Gridded2RotatedLL.h
-    action/interpolate/Gridded2RotatedLLOffset.cc
-    action/interpolate/Gridded2RotatedLLOffset.h
+    action/interpolate/Gridded2RotatedLLShift.cc
+    action/interpolate/Gridded2RotatedLLShift.h
     action/interpolate/Gridded2RotatedNamedGrid.cc
     action/interpolate/Gridded2RotatedNamedGrid.h
     action/interpolate/Gridded2RotatedOctahedral.cc
@@ -406,12 +406,12 @@ list(
     repres/latlon/ReducedLL.h
     repres/latlon/RegularLL.cc
     repres/latlon/RegularLL.h
-    repres/latlon/RegularLLOffset.cc
-    repres/latlon/RegularLLOffset.h
+    repres/latlon/RegularLLShift.cc
+    repres/latlon/RegularLLShift.h
     repres/latlon/RotatedLL.cc
     repres/latlon/RotatedLL.h
-    repres/latlon/RotatedLLOffset.cc
-    repres/latlon/RotatedLLOffset.h
+    repres/latlon/RotatedLLShift.cc
+    repres/latlon/RotatedLLShift.h
     repres/other/None.cc
     repres/other/None.h
     repres/other/UnstructuredGrid.cc
@@ -526,12 +526,14 @@ list(
     util/Grib.h
     util/Increments.cc
     util/Increments.h
+    util/Shift.cc
+    util/Shift.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
-    util/OffsetGrid.cc
-    util/OffsetGrid.h
-    util/OffsetIterator.cc
-    util/OffsetIterator.h
+    util/ShiftGrid.cc
+    util/ShiftGrid.h
+    util/ShiftIterator.cc
+    util/ShiftIterator.h
     util/PointSearch.cc
     util/PointSearch.h
     util/RotateGrid.cc

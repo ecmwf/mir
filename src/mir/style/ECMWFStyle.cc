@@ -164,7 +164,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     }
 
     const std::string grid =
-        parametrisation_.has("user.grid") ?       "regular-ll" + std::string(shift ? "-offset" : "") :
+        parametrisation_.has("user.grid") ?       "regular-ll" + std::string(shift ? "-shift" : "") :
         parametrisation_.has("user.reduced") ?    "reduced-gg" :
         parametrisation_.has("user.regular") ?    "regular-gg" :
         parametrisation_.has("user.octahedral") ? "octahedral-gg" :
