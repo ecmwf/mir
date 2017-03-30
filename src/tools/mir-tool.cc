@@ -43,6 +43,7 @@
 
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
+#include "mir/util/Shift.h"
 
 class MIRToolConcrete : public mir::tools::MIRTool {
 private:
@@ -76,6 +77,7 @@ public:
         options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular gaussian grid N"));
         options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
         options_.push_back(new VectorOption<double>("shift", "Shift the target grid by a west_east/south_north increment" , 2));
+        options_.push_back(new SimpleOption<bool>("autoshift", "Shift so that south/west is on grid"));
 
         options_.push_back(new SimpleOption<bool>("wind", "Use vector interpolation for wind (not yet)"));
         options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid as the one provided in the first GRIB of the grib file"));
@@ -192,6 +194,26 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
 
     mir::api::MIRJob job;
     args.configure(job);
+
+    if (args.has("autoshift")) {
+
+        std::vector<double> area;
+        ASSERT(args.get("area", area));
+        job.set("area", area);
+
+        std::vector<double> grid;
+        ASSERT(args.get("grid", grid));
+
+        mir::util::BoundingBox bbox(area[0], area[1], area[2], area[3]);
+
+        mir::util::Increments inc(grid[0], grid[1]);
+
+        mir::util::Shift shift = inc.shiftFromZeroZero(bbox);
+        std::cout << "Shift is " << shift << std::endl;
+
+        job.set("shift", shift.west_east() , shift.south_north());
+
+    }
 
     if (args.has("subset-area")) {
 

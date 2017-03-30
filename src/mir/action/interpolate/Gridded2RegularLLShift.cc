@@ -17,6 +17,7 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/types/Fraction.h"
 
 
 #include "mir/repres/latlon/RegularLLShift.h"
@@ -64,10 +65,26 @@ void Gridded2RegularLLShift::print(std::ostream &out) const {
 
 
 const repres::Representation *Gridded2RegularLLShift::outputRepresentation() const {
-    return new repres::latlon::RegularLLShift(
-               util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
-               increments_,
-               shift_);
+    
+    eckit::Fraction we(increments_.west_east());
+    eckit::Fraction sn(increments_.south_north());
+    
+    double north = 90 - (90/sn).decimalPart() * sn;
+    double south = -90 -(-90/sn).decimalPart() * sn;
+    
+    double west = 0;
+    double east = 360 -(360/we).decimalPart() * we;
+    
+    util::BoundingBox bbox(north + shift_.south_north(),
+                           west + shift_.west_east(),
+                           south + shift_.south_north(),
+                           east - increments_.west_east() + shift_.west_east());
+    
+    
+    
+    return new repres::latlon::RegularLLShift(bbox,
+                                              increments_,
+                                              shift_);
 }
 
 
