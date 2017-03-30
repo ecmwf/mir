@@ -118,8 +118,8 @@ Shift Increments::shiftFromZeroZero(const BoundingBox& bbox) const {
     eckit::Fraction sn(south_north_);
     eckit::Fraction we(west_east_);
 
-    eckit::Fraction s = (bbox.south() / sn).floor() * sn;
-    eckit::Fraction w = (bbox.west() / we).floor() * we;
+    eckit::Fraction s = (bbox.south() / sn).decimalPart() * sn;
+    eckit::Fraction w = (bbox.west() / we).decimalPart() * we;
 
     return Shift(w, s);
 
