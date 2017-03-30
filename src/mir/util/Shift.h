@@ -58,6 +58,10 @@ public:
         return (west_east_ != other.west_east_) || (south_north_ != other.south_north_);
     }
 
+    operator bool() const {
+        return west_east_ != 0 || south_north_ != 0;
+    }
+
     // -- Methods
 
     double west_east() const {
