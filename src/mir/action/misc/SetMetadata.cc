@@ -80,7 +80,7 @@ void SetMetadata::execute(context::Context & ctx) const {
 
 
 namespace {
-static ActionBuilder< SetMetadata > action("set.parameter");
+static ActionBuilder< SetMetadata > action("set.metadata");
 }
 
 
