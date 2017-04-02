@@ -12,33 +12,31 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/action/calc/FormulaAction.h"
+#include "mir/action/misc/SetMetadata.h"
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
+// #include "eckit/memory/ScopedPtr.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
-#include "mir/util/MIRStatistics.h"
-#include "mir/util/FormulaParser.h"
-#include "mir/util/Formula.h"
+// #include "mir/repres/Iterator.h"
+// #include "mir/repres/Representation.h"
 #include "mir/data/MIRField.h"
 
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/types/Types.h"
 #include "eckit/utils/Translator.h"
+
 namespace mir {
 namespace action {
 
-FormulaAction::FormulaAction(const param::MIRParametrisation &parametrisation):
+
+SetMetadata::SetMetadata(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 
-    std::string formula;
-    ASSERT(parametrisation.get("formula", formula));
-
     std::string metadata;
-    ASSERT(parametrisation.get("formula.metadata", metadata));
+    ASSERT(parametrisation.get("metadata", metadata));
 
     // TODO: create a parser
     eckit::Tokenizer parse1(",");
@@ -56,46 +54,34 @@ FormulaAction::FormulaAction(const param::MIRParametrisation &parametrisation):
         metadata_[w[0]] = s2l(w[1]);
     }
 
-    std::istringstream in(formula);
-    mir::util::FormulaParser p(in);
-    formula_.reset(p.parse(parametrisation));
 }
 
 
-FormulaAction::~FormulaAction() {
+SetMetadata::~SetMetadata() {
 }
 
 
-bool FormulaAction::sameAs(const Action& other) const {
-    const FormulaAction* o = dynamic_cast<const FormulaAction*>(&other);
-    return o && (formula_->sameAs(*o->formula_)) && (metadata_ == o->metadata_);
+bool SetMetadata::sameAs(const Action& other) const {
+    const SetMetadata* o = dynamic_cast<const SetMetadata*>(&other);
+    return o && (metadata_ == o->metadata_);
+}
+
+void SetMetadata::print(std::ostream &out) const {
+    out << "SetMetadata[" << metadata_ << "]";
 }
 
 
-void FormulaAction::print(std::ostream &out) const {
-    out << "FormulaAction[" << *formula_ << ", metadata=" << metadata_ << "]";
-}
-
-
-void FormulaAction::execute(context::Context & ctx) const {
-
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
-
-    formula_->execute(ctx);
-
+void SetMetadata::execute(context::Context & ctx) const {
     data::MIRField& field = ctx.field();
-    for (size_t i = 0; i < field.dimensions(); i++) {
+     for (size_t i = 0; i < field.dimensions(); i++) {
         field.metadata(i, metadata_);
     }
-
 }
+
 
 namespace {
-
-static ActionBuilder< FormulaAction > formula("calc.formula");
-
+static ActionBuilder< SetMetadata > action("set.parameter");
 }
-
 
 
 }  // namespace action

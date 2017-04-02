@@ -13,17 +13,18 @@
 /// @date Apr 2015
 
 
-#ifndef SetParameter_H
-#define SetParameter_H
+#ifndef SetMetadata_H
+#define SetMetadata_H
 
 #include "mir/action/plan/Action.h"
+#include <map>
 
 
 namespace mir {
 namespace action {
 
 
-class SetParameter : public Action {
+class SetMetadata : public Action {
 public:
 
 // -- Exceptions
@@ -31,11 +32,11 @@ public:
 
 // -- Contructors
 
-    SetParameter(const param::MIRParametrisation&);
+    SetMetadata(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~SetParameter(); // Change to virtual if base class
+    virtual ~SetMetadata(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -60,7 +61,8 @@ public:
 protected:
 
 // -- Members
-    // None
+
+    std::map<std::string, long> metadata_;
 
 // -- Methods
 
@@ -79,12 +81,10 @@ private:
 
 // No copy allowed
 
-    SetParameter(const SetParameter&);
-    SetParameter& operator=(const SetParameter&);
+    SetMetadata(const SetMetadata&);
+    SetMetadata& operator=(const SetMetadata&);
 
 // -- Members
-
-    long parameter_;
 
 // -- Methods
     // None
@@ -101,7 +101,7 @@ private:
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const SetParameter& p)
+    //friend ostream& operator<<(ostream& s,const SetMetadata& p)
     //  { p.print(s); return s; }
 
 };

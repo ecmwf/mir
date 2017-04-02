@@ -143,6 +143,7 @@ public:
         options_.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
         options_.push_back(new SimpleOption<bool>("remove-local-extension", "Remove GRIB local extension"));
+        options_.push_back(new SimpleOption<std::string>("metadata", "Set eccodes keys to integer values (a=b,c=d,..)"));
 
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));

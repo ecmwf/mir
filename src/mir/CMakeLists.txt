@@ -86,8 +86,8 @@ list(
     action/misc/ReferencePattern.h
     action/misc/SelectField.cc
     action/misc/SelectField.h
-    action/misc/SetParameter.cc
-    action/misc/SetParameter.h
+    action/misc/SetMetadata.cc
+    action/misc/SetMetadata.h
     action/plan/Action.cc
     action/plan/Action.h
     action/plan/ActionGraph.cc
