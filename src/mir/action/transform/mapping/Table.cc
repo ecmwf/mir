@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "mir/action/transform/mapping/AutoResol.h"
+#include "mir/action/transform/mapping/Table.h"
 
 #include <iostream>
 #include "eckit/config/EtcTable.h"
@@ -38,14 +38,19 @@ namespace mapping {
 namespace {
 
 
+static MappingBuilder< Table > __mapping("table");
+
+
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex = 0;
 
-static eckit::ScopedPtr<eckit::EtcKeyTable> table;
+static eckit::ScopedPtr<eckit::EtcKeyTable> table_n_to_truncation;
+static eckit::ScopedPtr<eckit::EtcKeyTable> table_truncation_to_n;
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    table.reset(new eckit::EtcKeyTable("auto-resol.table", 0, "etc/mir"));
+    table_n_to_truncation.reset(new eckit::EtcKeyTable("auto-resol.table", 0, "etc/mir"));
+    table_truncation_to_n.reset(new eckit::EtcKeyTable("auto-gaussian.table", 0, "etc/mir"));
 }
 
 
@@ -89,74 +94,89 @@ static double computeStep(const param::MIRParametrisation& parametrisation) {
 }
 
 
+eckit::Translator< std::string, double > stringToStep;
+eckit::Translator< std::string, size_t > stringToNumber;
+eckit::Translator< size_t, std::string > numberToString;
+
+
 } // (anonymous namespace)
 
 
-AutoResol::AutoResol(const param::MIRParametrisation& parametrisation) :
-    parametrisation_(parametrisation) {
+Table::Table(const param::MIRParametrisation& parametrisation) : Mapping(parametrisation) {
 }
 
 
-AutoResol::~AutoResol() {
+void Table::print(std::ostream& out) const {
+    out << "<Table>";
 }
 
 
-void AutoResol::get(const std::string& name, long& value) const {
+size_t Table::getTruncationFromPointsPerLatitude(const size_t& N) const {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    ASSERT(table);
-
-    eckit::Log::debug<LibMir>() << "AutoResol::get(" << name << ")" << std::endl;
-    ASSERT(name == "truncation"); // For now
-
+    ASSERT(table_n_to_truncation);
+    eckit::Log::debug<LibMir>() << "Table::getTruncationFromPointsPerLatitude(" << N << "):" << std::endl;
 
     // calculate a reference step (grid increment)
     double step = computeStep(parametrisation_);
-    if (!eckit::types::is_strictly_greater<double>(step, 0)) {
-        std::ostringstream oss;
-        oss << "AutoResol: cannot compute grid step from parametrisation (step = " << step << ")";
-        throw eckit::SeriousBug(oss.str());
-    }
-
-
-    eckit::Translator< std::string, double > stringToStep;
-    eckit::Translator< std::string, long > stringToNumber;
 
 
     // pick entry with highest resolution (where step is not below the table's step entries)
-    value = 0;
+    size_t T = 0;
 
-    std::vector<std::string> steps = table->keys();
+    std::vector<std::string> steps = table_n_to_truncation->keys();
     for (std::vector<std::string>::const_iterator j = steps.begin(); j != steps.end(); ++j) {
         if (eckit::types::is_approximately_greater_or_equal<double>(step, stringToStep(*j))) {
 
-            const std::vector<std::string>& entry = table->lookUp(*j);
+            const std::vector<std::string>& entry = table_n_to_truncation->lookUp(*j);
             ASSERT(entry.size() == 2);
-            value = stringToNumber(entry.back());
+            T = stringToNumber(entry.back());
 
         }
     }
 
-    if (!value) {
+    if (!T) {
         std::ostringstream oss;
-        oss << "AutoResol::get(" << name << "): cannot establish truncation for step " << step;
+        oss << "Table::getTruncationFromPointsPerLatitude(" << N << "): cannot establish truncation for step " << step;
         throw eckit::SeriousBug(oss.str());
     }
 
 
-    long truncation;
-    bool limited = (parametrisation_.get("field.truncation", truncation) && (truncation < value));
+    size_t truncation;
+    bool limited = (get("field.truncation", truncation) && (truncation < T));
     if (limited) {
-        value = truncation;
+        T = truncation;
     }
 
 
-    eckit::Log::debug<LibMir>() << "AutoResol::get(" << name << ") step " << step << " maps to truncation " << value << (limited? " (input limited)":"") << std::endl;
+    eckit::Log::debug<LibMir>() << "Table::getTruncationFromPointsPerLatitude(" << N << ") maps to truncation " << T << (limited? " (input limited)":"") << std::endl;
+    return T;
 }
 
 
-void AutoResol::print(std::ostream& out) const {
-    out << "<AutoResol>";
+size_t Table::getPointsPerLatitudeFromTruncation(const std::size_t& T) const {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    ASSERT(table_truncation_to_n);
+    eckit::Log::debug<LibMir>() << "Table::getPointsPerLatitudegeFromTruncation(" << T << "):" << std::endl;
+
+
+    // ensure field.truncation converts to long
+    size_t N = 0;
+    ASSERT(T > 1);
+
+    const std::vector<std::string>& entry = table_truncation_to_n->lookUp(numberToString(T));
+    N = entry.size() < 2? 0 : stringToNumber(entry.back());
+
+    if (!N) {
+        std::ostringstream oss;
+        oss << "Table: cannot establish N for truncation " << T;
+        throw eckit::SeriousBug(oss.str());
+    }
+
+
+    eckit::Log::debug<LibMir>() << "Table::getPointsPerLatitudegeFromTruncation(" << T << "): truncation " << T << " maps to N " << N << std::endl;
+    return N;
 }
 
 

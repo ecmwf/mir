@@ -18,7 +18,7 @@
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/transform/mapping/AutoGaussian.h"
+#include "mir/action/transform/mapping/Table.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -50,7 +50,7 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";
 
-    plan.add("transform." + transform + "octahedral-gg", "octahedral", new action::transform::mapping::AutoGaussian(parametrisation_));
+    plan.add("transform." + transform + "octahedral-gg", "octahedral", new action::transform::mapping::Table(parametrisation_));
 
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);

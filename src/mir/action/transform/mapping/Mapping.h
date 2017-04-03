@@ -17,6 +17,7 @@
 #include <iosfwd>
 #include <string>
 #include "eckit/memory/NonCopyable.h"
+#include "mir/param/DelayedParametrisation.h"
 
 
 namespace mir {
@@ -32,17 +33,16 @@ namespace transform {
 namespace mapping {
 
 
-class Mapping : public eckit::NonCopyable {
+class Mapping : public eckit::NonCopyable, public param::DelayedParametrisation {
 public:
+
     // -- Exceptions
     // None
 
     // -- Contructors
-
     Mapping(const param::MIRParametrisation& parametrisation);
 
     // -- Destructor
-
     virtual ~Mapping();
 
     // -- Convertors
@@ -52,10 +52,11 @@ public:
     // None
 
     // -- Methods
-    // None
+    virtual size_t getTruncationFromPointsPerLatitude(const size_t&) const;
+    virtual size_t getPointsPerLatitudeFromTruncation(const size_t&) const;
 
     // -- Overridden methods
-    // None
+    bool get(const std::string& name, size_t& value) const;
 
     // -- Class members
     // None
@@ -64,12 +65,11 @@ public:
     // None
 
 protected:
-    // -- Members
 
+    // -- Members
     const param::MIRParametrisation& parametrisation_;
 
     // -- Methods
-
     virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
@@ -82,10 +82,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    Mapping(const Mapping&);
-    Mapping& operator=(const Mapping&);
 
     // -- Members
     // None
@@ -127,7 +123,6 @@ template <class T> class MappingBuilder : public MappingFactory {
     virtual Mapping *make(const param::MIRParametrisation& param) {
         return new T(param);
     }
-
 public:
     MappingBuilder(const std::string& name) : MappingFactory(name) {}
 };

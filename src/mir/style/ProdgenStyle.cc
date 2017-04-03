@@ -18,7 +18,7 @@
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/transform/mapping/AutoGaussian.h"
+#include "mir/action/transform/mapping/Table.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/style/ProdgenGrid.h"
 
@@ -57,7 +57,7 @@ void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
         plan.add("interpolate.grid2regular-ll");
     }
     else {
-        plan.add("transform." + transform + "octahedral-gg", "octahedral", new action::transform::mapping::AutoGaussian(parametrisation_));
+        plan.add("transform." + transform + "octahedral-gg", "octahedral", new action::transform::mapping::Table(parametrisation_));
     }
 
     if (!parametrisation_.has("user.rotation")) {

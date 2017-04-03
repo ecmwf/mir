@@ -18,7 +18,7 @@
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/transform/mapping/AutoResol.h"
+#include "mir/action/transform/mapping/Table.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -58,7 +58,7 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
             plan.add("transform.sh-truncate", "truncation", 63L);
         }
         else {
-            plan.add("transform.sh-truncate", "truncation", new action::transform::mapping::AutoResol(parametrisation_));
+            plan.add("transform.sh-truncate", "truncation", new action::transform::mapping::Table(parametrisation_));
         }
     }
 

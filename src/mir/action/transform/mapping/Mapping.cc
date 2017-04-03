@@ -47,6 +47,41 @@ Mapping::Mapping(const param::MIRParametrisation& parametrisation)
 Mapping::~Mapping() {}
 
 
+size_t Mapping::getTruncationFromPointsPerLatitude(const size_t&) const {
+    std::ostringstream os;
+    os << "Mapping::getTruncationFromPointsPerLatitude() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+size_t Mapping::getPointsPerLatitudeFromTruncation(const size_t&) const {
+    std::ostringstream os;
+    os << "Mapping::getPointsPerLatitudeFromTruncation() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+bool Mapping::get(const std::string& name, size_t& value) const {
+    eckit::Log::debug<LibMir>() << "Mapping::get(" << name << ")" << std::endl;
+
+    if (name == "truncation") {
+        size_t N = 0;  // FIXME
+        value = getTruncationFromPointsPerLatitude(N);
+        return true;
+    }
+
+    if (name == "points-per-latitude") {
+        size_t T = 0;  // FIXME
+        value = getPointsPerLatitudeFromTruncation(T);
+        return true;
+    }
+
+    std::ostringstream os;
+    os << "Mapping::get(" << name <<") not implemented, expected 'truncation' or 'points-per-latitude' (" << *this << ")";
+    throw eckit::SeriousBug(os.str());
+}
+
+
 MappingFactory::MappingFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
 

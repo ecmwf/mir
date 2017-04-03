@@ -13,11 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef mir_action_transform_mapping_AutoResol_h
-#define mir_action_transform_mapping_AutoResol_h
+#ifndef mir_action_transform_mapping_Table_h
+#define mir_action_transform_mapping_Table_h
 
-#include <vector>
-#include "mir/param/DelayedParametrisation.h"
+#include "mir/action/transform/mapping/Mapping.h"
 
 
 namespace mir {
@@ -33,19 +32,17 @@ namespace transform {
 namespace mapping {
 
 
-class AutoResol : public param::DelayedParametrisation {
+class Table : public Mapping {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-
-    AutoResol(const param::MIRParametrisation &parametrisation);
+    Table(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    virtual ~AutoResol(); // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
@@ -55,8 +52,6 @@ public:
 
     // -- Methods
     // None
-
-
 
     // -- Overridden methods
     // None
@@ -70,18 +65,14 @@ public:
 protected:
 
     // -- Members
-
-
+    // None
 
     // -- Methods
-
-    virtual void print(std::ostream &) const; // Change to virtual if base class
-
+    void print(std::ostream&) const;
 
     // -- Overridden methods
-    // virtual bool has(const std::string& name) const;
-
-    virtual void get(const std::string &name, long &value) const;
+    size_t getTruncationFromPointsPerLatitude(const size_t& N) const;
+    size_t getPointsPerLatitudeFromTruncation(const size_t& T) const;
 
     // -- Class members
     // None
@@ -91,21 +82,14 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    AutoResol(const AutoResol &);
-    AutoResol &operator=(const AutoResol &);
-
     // -- Members
-
-    const param::MIRParametrisation &parametrisation_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
     // None
-
 
     // -- Class members
     // None
@@ -115,7 +99,7 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const AutoResol &p) {
+    friend std::ostream &operator<<(std::ostream& s, const Table& p) {
         p.print(s);
         return s;
     }

@@ -71,6 +71,9 @@ void AutoGaussian::get(const std::string& name, long& value) const {
     ASSERT(parametrisation_.get("field.truncation", T));
     ASSERT(T > 1);
 
+    value = T+1;
+    return;
+
     eckit::Translator< std::string, long > stringToNumber;
     eckit::Translator< long, std::string > numberToString;
 
