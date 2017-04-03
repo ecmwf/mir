@@ -56,6 +56,7 @@ public:
     virtual size_t getPointsPerLatitudeFromTruncation(const size_t&) const;
 
     // -- Overridden methods
+    bool get(const std::string& name, long& value) const;
     bool get(const std::string& name, size_t& value) const;
 
     // -- Class members

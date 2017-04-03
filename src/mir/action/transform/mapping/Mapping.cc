@@ -61,6 +61,16 @@ size_t Mapping::getPointsPerLatitudeFromTruncation(const size_t&) const {
 }
 
 
+bool Mapping::get(const std::string& name, long& value) const {
+    size_t another_value = 0;
+    if (get(name, another_value)) {
+        value = long(another_value);
+        return true;
+    }
+    return false;
+}
+
+
 bool Mapping::get(const std::string& name, size_t& value) const {
     eckit::Log::debug<LibMir>() << "Mapping::get(" << name << ")" << std::endl;
 
