@@ -13,55 +13,59 @@
 /// @date Apr 2015
 
 
-#include "mir/param/DelayedParametrisation.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/param/DelayedParametrisation.h"
 
 
 namespace mir {
 namespace param {
 
-//==========================================================
+
 DelayedParametrisation::DelayedParametrisation() {
 }
 
-
 DelayedParametrisation::~DelayedParametrisation() {
-
 }
 
-void DelayedParametrisation::get(const std::string &name, std::string &value) const {
+bool DelayedParametrisation::get(const std::string &name, std::string&) const {
     std::ostringstream os;
     os << "DelayedParametrisation::get(" << name << ") [string] not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void DelayedParametrisation::get(const std::string &name, bool &value) const {
+bool DelayedParametrisation::get(const std::string &name, bool&) const {
     std::ostringstream os;
     os << "DelayedParametrisation::get(" << name << ") [bool] not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void DelayedParametrisation::get(const std::string &name, long &value) const {
+bool DelayedParametrisation::get(const std::string &name, long&) const {
     std::ostringstream os;
     os << "DelayedParametrisation::get(" << name << ") [long] not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void DelayedParametrisation::get(const std::string &name, double &value) const {
+bool DelayedParametrisation::get(const std::string &name, double&) const {
     std::ostringstream os;
     os << "DelayedParametrisation::get(" << name << ") [double] not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void DelayedParametrisation::get(const std::string &name, std::vector<long> &value) const {
+bool DelayedParametrisation::get(const std::string &name, std::vector<long>&) const {
     std::ostringstream os;
     os << "DelayedParametrisation::get(" << name << ") [vector<long>] not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void DelayedParametrisation::get(const std::string &name, std::vector<double> &value) const {
+bool DelayedParametrisation::get(const std::string &name, std::vector<double>&) const {
     std::ostringstream os;
-    os << "DelayedParametrisation::get(" << name << ") [vector<double] not implemented for " << *this;
+    os << "DelayedParametrisation::get(" << name << ") [vector<double>] not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+bool DelayedParametrisation::get(const std::string &name, size_t&) const {
+    std::ostringstream os;
+    os << "DelayedParametrisation::get(" << name << ") [size_t] not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 

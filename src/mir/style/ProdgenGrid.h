@@ -21,95 +21,91 @@
 
 
 namespace mir {
-
 namespace param {
 class MIRParametrisation;
 }
+}
 
+
+namespace mir {
 namespace style {
 
 
 class ProdgenGrid : public param::DelayedParametrisation {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     ProdgenGrid(const param::MIRParametrisation &parametrisation);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~ProdgenGrid(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-
-
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
+    // None
 
-
-
-// -- Methods
+    // -- Methods
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
-
-// -- Overridden methods
+    // -- Overridden methods
     // virtual bool has(const std::string& name) const;
 
-    virtual void get(const std::string& name, std::vector<double>& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
-
+    // No copy allowed
     ProdgenGrid(const ProdgenGrid&);
     ProdgenGrid& operator=(const ProdgenGrid&);
 
-// -- Members
+    // -- Members
 
     const param::MIRParametrisation &parametrisation_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s,const ProdgenGrid& p) {
         p.print(s);
@@ -119,7 +115,9 @@ class ProdgenGrid : public param::DelayedParametrisation {
 };
 
 
-}  // namespace param
+}  // namespace style
 }  // namespace mir
+
+
 #endif
 
