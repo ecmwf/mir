@@ -81,6 +81,7 @@ public:
         options_.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular Gaussian grid N (pre 2016)"));
         options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular Gaussian grid N"));
         options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
+        options_.push_back(new SimpleOption<std::string>("meshgenerator", "Interpolate using the given meshgenerator"));
         options_.push_back(new VectorOption<double>("shift", "Shift the target grid by a west_east/south_north increment" , 2));
         options_.push_back(new SimpleOption<bool>("autoshift", "Shift so that south/west is on grid"));
 

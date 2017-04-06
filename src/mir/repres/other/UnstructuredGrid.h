@@ -102,7 +102,7 @@ class UnstructuredGrid : public Gridded {
 
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
-    virtual atlas::grid::Grid *atlasGrid() const;
+    virtual atlas::grid::Grid atlasGrid() const;
     virtual void validate(const std::vector<double> &values) const;
 
     virtual util::Domain domain() const;

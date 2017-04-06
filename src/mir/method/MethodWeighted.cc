@@ -22,11 +22,10 @@
 #include <map>
 #include <sstream>
 #include <string>
-
 #include "eckit/log/Plural.h"
 #include "eckit/log/ResourceUsage.h"
-
-#include "atlas/grid/Grid.h"
+#include "eckit/utils/MD5.h"
+#include "atlas/grid.h"
 #include "atlas/mesh/Mesh.h"
 #include "mir/action/context/Context.h"
 #include "mir/caching/InMemoryCache.h"
@@ -38,6 +37,7 @@
 #include "mir/method/decompose/Decompose.h"
 #include "mir/util/Compare.h"
 #include "mir/util/MIRStatistics.h"
+
 
 using mir::util::compare::is_approx_zero;
 using mir::util::compare::is_approx_one;
@@ -163,8 +163,8 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
     eckit::Log::debug<LibMir>() << "Compute md5 " << timer.elapsed() - here << std::endl;
 
 
-    const std::string shortName_in  = in.shortName();
-    const std::string shortName_out = out.shortName();
+    const std::string shortName_in  = in.name()  + (in.projection()?  "." + in.projection().type() :  "");
+    const std::string shortName_out = out.name() + (out.projection()? "." + out.projection().type() : "");
     ASSERT(!shortName_in.empty());
     ASSERT(!shortName_out.empty());
 
@@ -190,7 +190,7 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
     eckit::Log::debug<LibMir>() << "Elapsed 1 " << timer.elapsed()  << std::endl;
 
     here = timer.elapsed();
-    WeightMatrix W(out.npts(), in.npts());
+    WeightMatrix W(out.size(), in.size());
     eckit::Log::debug<LibMir>() << "Create matrix " << timer.elapsed() - here << std::endl;
 
     bool caching = true;
@@ -220,8 +220,8 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
             MatrixCacheCreator(const MethodWeighted& owner,
                                context::Context& ctx,
                                const atlas::grid::Grid& in,
-                               const atlas::grid::Grid & out,
-                               const lsm::LandSeaMasks & masks):
+                               const atlas::grid::Grid& out,
+                               const lsm::LandSeaMasks& masks):
                 owner_(owner),
                 ctx_(ctx),
                 in_(in),
@@ -333,8 +333,8 @@ void MethodWeighted::execute(context::Context & ctx,
     eckit::Log::debug<LibMir>() << "MethodWeighted::execute" << std::endl;
 
     // setup sizes & checks
-    const size_t npts_inp = in.npts();
-    const size_t npts_out = out.npts();
+    const size_t npts_inp = in.size();
+    const size_t npts_out = out.size();
 
     const WeightMatrix &W = getMatrix(ctx, in, out);
 
@@ -409,7 +409,7 @@ void MethodWeighted::execute(context::Context & ctx,
             ///        but later should be cropped out
             ///        UNLESS, we compute the statistics based on only points contained in the Domain
 
-            if ( in.domain().isGlobal() ) {
+            if ( in.domain().global() ) {
                 ASSERT(eckit::types::is_approximately_greater_or_equal(ostats.minimum(), istats.minimum()));
                 ASSERT(eckit::types::is_approximately_greater_or_equal(istats.maximum(), ostats.maximum()));
             }
@@ -438,7 +438,7 @@ void MethodWeighted::computeMatrixWeights(context::Context & ctx,
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
 
-    if (in.same(out)) {
+    if (in.uid() == out.uid()) {
         eckit::Log::debug<LibMir>() << "Matrix is indentity" << std::endl;
         W.setIdentity(W.rows(), W.cols());        // grids are the same, use identity matrix
     } else {

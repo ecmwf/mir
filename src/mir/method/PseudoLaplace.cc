@@ -12,26 +12,28 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
+
 #include "mir/method/PseudoLaplace.h"
 
 #include <string>
-
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Timer.h"
-
-#include "mir/method/GridSpace.h"
-#include "mir/util/PointSearch.h"
-#include "mir/param/MIRParametrisation.h"
+#include "eckit/utils/MD5.h"
+#include "atlas/grid.h"
 #include "mir/config/LibMir.h"
+#include "mir/method/GridSpace.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/util/PointSearch.h"
+
 
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 namespace {
 enum { XX=0, YY=1, ZZ=2 };
 }
+
 
 PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
     MethodWeighted(param),
@@ -41,17 +43,21 @@ PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
 
 }
 
+
 PseudoLaplace::~PseudoLaplace() {
 }
+
 
 const char* PseudoLaplace::name() const {
     return  "pseudo-laplace";
 }
 
+
 void PseudoLaplace::hash( eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
     md5 << nclosest_;
 }
+
 
 void PseudoLaplace::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
@@ -60,9 +66,9 @@ void PseudoLaplace::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
     util::PointSearch  sptree(in);
 
-    atlas::array::ArrayView<double,2> ocoords = out.coordsXYZ();
+    atlas::array::ArrayView<double,2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
 
-    const size_t out_npts = out.grid().npts();
+    const size_t out_npts = out.grid().size();
 
     // init structure used to fill in sparse matrix
     std::vector< WeightMatrix::Triplet > weights_triplets;
@@ -150,8 +156,6 @@ void PseudoLaplace::print(std::ostream& os) const {
 namespace {
 static MethodBuilder< PseudoLaplace > __pseudolaplace("pseudo-laplace");
 }
-
-//----------------------------------------------------------------------------------------------------------------------
 
 
 }  // namespace method

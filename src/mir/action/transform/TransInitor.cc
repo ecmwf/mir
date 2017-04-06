@@ -14,7 +14,7 @@
 #include "mir/action/transform/TransInitor.h"
 
 #include "eckit/exception/Exceptions.h"
-#include "atlas/internals/atlas_config.h"
+#include "atlas/library/config.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"

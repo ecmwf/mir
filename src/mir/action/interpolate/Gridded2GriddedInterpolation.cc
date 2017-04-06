@@ -16,9 +16,7 @@
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
 #include "eckit/memory/ScopedPtr.h"
-
 #include "atlas/grid/Grid.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
@@ -55,10 +53,10 @@ void Gridded2GriddedInterpolation::execute(context::Context & ctx) const {
     repres::RepresentationHandle in(field.representation());
     repres::RepresentationHandle out(outputRepresentation());
 
-    eckit::ScopedPtr<atlas::grid::Grid> gin(in->atlasGrid()); // We do it here as ATLAS does not respect constness
-    eckit::ScopedPtr<atlas::grid::Grid> gout(out->atlasGrid());
+    atlas::grid::Grid gin = in->atlasGrid(); // We do it here as ATLAS does not respect constness
+    atlas::grid::Grid gout = out->atlasGrid();
 
-    method->execute(ctx, *gin, *gout);
+    method->execute(ctx, gin, gout);
 
     field.representation(out);
 

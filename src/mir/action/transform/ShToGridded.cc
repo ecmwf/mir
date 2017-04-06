@@ -24,10 +24,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "atlas/atlas.h"
-#include "atlas/grid/Grid.h"
-#include "atlas/grid/Structured.h"
-#include "atlas/grid/lonlat/RegularLonLat.h"
+#include "atlas/grid.h"
 #include "mir/action/context/Context.h"
 #include "mir/action/transform/TransCache.h"
 #include "mir/action/transform/TransInitor.h"
@@ -60,12 +57,12 @@ static void fillTrans(struct Trans_t& trans,
                       trans_options_t& options,
                       const atlas::grid::Grid& grid) {
 #ifdef ATLAS_HAVE_TRANS
-    const atlas::grid::Structured* reduced = dynamic_cast<const atlas::grid::Structured*>(&grid);
+    const atlas::grid::StructuredGrid reduced(grid);
     if (!reduced) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
     }
 
-    const atlas::grid::lonlat::RegularLonLat* latlon = dynamic_cast<const atlas::grid::lonlat::RegularLonLat* >(&grid);
+    const atlas::grid::RegularLonLatGrid latlon(grid);
 
 
     ASSERT(trans_new(&trans) == 0);
@@ -74,10 +71,10 @@ static void fillTrans(struct Trans_t& trans,
     ASSERT(trans_set_trunc(&trans, options.truncation) == 0);
 
     if (latlon) {
-        ASSERT(trans_set_resol_lonlat(&trans, latlon->nlon(), latlon->nlat()) == 0);
+        ASSERT(trans_set_resol_lonlat(&trans, latlon.nx(), latlon.ny()) == 0);
     } else {
 
-        const std::vector<long>& pl = reduced->pl();
+        const std::vector<long>& pl = reduced.nx();
         ASSERT(pl.size());
 
         std::vector<int> pli(pl.size());
@@ -214,7 +211,7 @@ void ShToGridded::transform(data::MIRField& field, const atlas::grid::Grid& grid
     std::ostringstream os;
     os << "T" << options.truncation
        << ":" << "flt" << options.flt
-       << ":" << grid.uniqueId();
+       << ":" << grid.uid();
     std::string key(os.str());
 
     try {
@@ -246,9 +243,9 @@ void ShToGridded::execute(context::Context& ctx) const {
     InMemoryCacheUser<TransCache> use(trans_handles, ctx.statistics().transHandleCache_);
 
     repres::RepresentationHandle out(outputRepresentation());
-    eckit::ScopedPtr<atlas::grid::Grid> grid(out->atlasGrid());
+    atlas::grid::Grid grid = out->atlasGrid();
 
-    transform(ctx.field(), *grid, ctx);
+    transform(ctx.field(), grid, ctx);
 
     ctx.field().representation(out);
 }

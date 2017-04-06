@@ -79,7 +79,7 @@ void NearestLSM::assemble(context::Context& ctx, WeightMatrix &W, const GridSpac
     // compute the output nodes coordinates
     here = timer.elapsed();
 
-    atlas::array::ArrayView< double, 2 > ocoords = out.coordsXYZ();
+    atlas::array::ArrayView< double, 2 > ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
 
     Log::debug<LibMir>() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
 

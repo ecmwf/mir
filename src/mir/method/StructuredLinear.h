@@ -16,7 +16,7 @@
 
 #include "mir/method/MethodWeighted.h"
 
-#include "atlas/grid/Structured.h"
+#include "atlas/grid.h"
 
 
 namespace mir {
@@ -38,7 +38,7 @@ private:
 
     void assemble(context::Context&, WeightMatrix&, const GridSpace& in, const GridSpace& out) const;
 
-    void assemble(WeightMatrix& W, const atlas::grid::Structured& in, const atlas::grid::Grid& out) const;
+    void assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const atlas::grid::Grid& out) const;
 
 };
 

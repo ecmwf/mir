@@ -16,17 +16,17 @@
 
 #include "MappedMask.h"
 
-#include <sys/mman.h>
-#include <fcntl.h>
-
 #include <cmath>
-
-#include "atlas/grid/Grid.h"
+#include <fcntl.h>
+#include <sys/mman.h>
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Timer.h"
 #include "eckit/os/Stat.h"
+#include "eckit/utils/MD5.h"
+#include "atlas/grid.h"
 #include "mir/config/LibMir.h"
+
 
 // On CRAY/Brodwell, the rounding of areas is incorrect
 // 90 is actually 90 +- 1e-14
@@ -110,16 +110,12 @@ MappedMask::MappedMask(const std::string &name,
 
 
     // NOTE: this is not using 3D coordinate systems
-
-    std::vector<atlas::grid::Grid::Point> points(grid.npts());
-    grid.lonlat(points);
-
-    mask_.reserve(points.size());
+    mask_.reserve(grid.size());
 
     const unsigned char *mask = reinterpret_cast<unsigned char *>(address);
 
-    for (std::vector<atlas::grid::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
-        double lat = (*j).lat();
+    for (atlas::PointLonLat j : grid.lonlat()) {
+        double lat = j.lat();
 
         if (lat < -90) {
             std::ostringstream oss;
@@ -138,7 +134,7 @@ MappedMask::MappedMask(const std::string &name,
 
         ASSERT(lat <= 90);
 
-        double lon = (*j).lon();
+        double lon = j.lon();
 
         while (lon >= 360) {
             lon -= 360;
@@ -147,10 +143,10 @@ MappedMask::MappedMask(const std::string &name,
             lon += 360;
         }
 
-        int row = (90.0 - lat) * (ROWS - 1) / 180;
+        int row = int((90.0 - lat) * (ROWS - 1) / 180);
         ASSERT(row >= 0 && row < int(ROWS));
 
-        int col = lon * COLS / 360.0;
+        int col = int(lon * COLS / 360.0);
         ASSERT(col >= 0 && col < int(COLS));
 
         size_t pos = COLS * row + col;
@@ -179,8 +175,6 @@ void MappedMask::print(std::ostream &out) const {
 const std::vector<bool> &MappedMask::mask() const {
     return mask_;
 }
-
-//-----------------------------------------------------------------------------
 
 
 }  // namespace lsm

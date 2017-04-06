@@ -17,12 +17,9 @@
 
 #include <iostream>
 // #include <fstream>
-
 // #include "eckit/exception/Exceptions.h"
 // #include "eckit/filesystem/PathName.h"
-
-// #include "atlas/grid/Unstructured.h"
-
+// #include "atlas/grid.h"
 // #include "mir/param/MIRParametrisation.h"
 // #include "mir/config/LibMir.h"
 // #include "mir/repres/Iterator.h"

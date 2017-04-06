@@ -15,9 +15,7 @@
 
 #include "mir/method/FELinear.h"
 
-#include "atlas/mesh/generators/MeshGenerator.h"
-#include "atlas/mesh/generators/Delaunay.h"
-
+#include "atlas/meshgenerator.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -27,7 +25,7 @@ namespace method {
 
 FELinear::FELinear(const param::MIRParametrisation &param) :
     FiniteElement(param) {
-  meshgenparams_.set("triangulate", true); // No quads allowed
+    meshgenparams_.set("triangulate", true); // No quads allowed
 }
 
 

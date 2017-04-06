@@ -19,18 +19,20 @@
 
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "atlas/grid/Grid.h"
 #include "atlas/interpolation/method/PointIndex3.h"
 #include "mir/util/Compare.h"
 
 
 namespace mir {
+namespace method {
+class GridSpace;
+}
+}
 
-namespace method { class GridSpace; }
 
+namespace mir {
 namespace util {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 /// Class for fast searches in point clouds following kd-tree algorithms
 /// @todo test kd-tree stored in shared memory?
@@ -80,10 +82,10 @@ private:
     void init(const method::GridSpace& sp, const CompareType& isok=CompareTypeNone());
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace util
 }  // namespace mir
+
 
 #endif
 

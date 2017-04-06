@@ -12,28 +12,27 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
+
 #include "mir/method/Nearest.h"
 
-#include <string>
 #include <limits>
+#include <string>
 #include <vector>
-
-#include "eckit/log/Timer.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/ETA.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
-
-#include "mir/method/GridSpace.h"
-#include "mir/util/PointSearch.h"
-#include "mir/param/MIRParametrisation.h"
+#include "eckit/log/Timer.h"
+#include "atlas/grid.h"
 #include "mir/config/LibMir.h"
+#include "mir/method/GridSpace.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/util/PointSearch.h"
 
 
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 namespace {
 enum { LON=0, LAT=1 };
@@ -64,10 +63,10 @@ void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& 
 
     const atlas::grid::Domain& inDomain = in.grid().domain();
 
-    atlas::array::ArrayView<double, 2> ocoords = out.coordsXYZ();
-    atlas::array::ArrayView<double, 2> olonlat = out.coordsLonLat();
+    atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
+    atlas::array::ArrayView<double, 2> olonlat = atlas::array::make_view< double, 2 >(out.coordsLonLat());
 
-    const size_t out_npts = out.grid().npts();
+    const size_t out_npts = out.grid().size();
     double nearest = 0;
     double push_back = 0;
 
@@ -97,7 +96,7 @@ void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& 
             nearest = push_back = 0;
         }
 
-        if (!inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
+        if (!inDomain.contains(olonlat(ip, LON), olonlat(ip, LAT))) {
             continue;
         }
 
@@ -150,7 +149,6 @@ void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& 
     W.setFromTriplets(weights_triplets);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

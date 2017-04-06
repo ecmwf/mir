@@ -16,7 +16,7 @@
 #ifndef mir_action_transform_ShToGridded_h
 #define mir_action_transform_ShToGridded_h
 
-#include "atlas/internals/atlas_config.h"
+#include "atlas/library/config.h"
 #include "mir/action/plan/Action.h"
 
 #ifdef ATLAS_HAVE_TRANS

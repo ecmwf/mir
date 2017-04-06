@@ -16,13 +16,14 @@
 
 #include "TenMinutesLSM.h"
 
-#include "atlas/grid/Grid.h"
-
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+#include "eckit/utils/MD5.h"
+#include "atlas/grid.h"
 #include "mir/config/LibMir.h"
+
 
 namespace {
 
@@ -86,18 +87,14 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 
 
     // NOTE: this is not using 3D coordinate systems
+    mask_.reserve(grid.size());
 
-    std::vector<atlas::grid::Grid::Point> points(grid.npts());
-    grid.lonlat(points);
-
-    mask_.reserve(points.size());
-
-    for (std::vector<atlas::grid::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
-        double lat = (*j).lat();
+    for (atlas::PointLonLat j : grid.lonlat()) {
+        double lat = j.lat();
         ASSERT(lat >= -90);
         ASSERT(lat <= 90);
 
-        double lon = (*j).lon();
+        double lon = j.lon();
 
         while (lon >= 360) {
             lon -= 360;
@@ -106,10 +103,10 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
             lon += 360;
         }
 
-        int row = (90.0 - lat) * (ROWS-1) / 180;
+        int row = int((90.0 - lat) * (ROWS-1) / 180);
         ASSERT(row >= 0 && row < int(ROWS));
 
-        int col = lon * COLS / 360.0;
+        int col = int(lon * COLS / 360.0);
         ASSERT(col >= 0 && col < int(COLS));
 
         mask_.push_back(ten_minutes_[row][col]);
@@ -133,8 +130,6 @@ void TenMinutesLSM::print(std::ostream &out) const {
 const std::vector<bool> &TenMinutesLSM::mask() const {
     return mask_;
 }
-
-//-----------------------------------------------------------------------------
 
 
 }  // namespace lsm

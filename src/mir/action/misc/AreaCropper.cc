@@ -22,7 +22,8 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "atlas/grid/Grid.h"
+#include "eckit/utils/MD5.h"
+#include "atlas/grid.h"
 #include "mir/action/context/Context.h"
 #include "mir/caching/CroppingCache.h"
 #include "mir/caching/InMemoryCache.h"
@@ -213,9 +214,9 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
         const util::BoundingBox &bbox,
         bool caching) {
 
-    eckit::ScopedPtr<atlas::grid::Grid> gin(representation->atlasGrid()); // This should disapear once we move Representation to atlas
+    atlas::grid::Grid gin = representation->atlasGrid(); // This should disapear once we move Representation to atlas
     eckit::MD5 md5;
-    md5 << *gin << bbox;
+    md5 << gin << bbox;
 
     std::string key(md5);
 

@@ -64,7 +64,7 @@ protected:
 
     // -- Methods
 
-    virtual atlas::grid::Grid* atlasGrid() const;
+    virtual atlas::grid::Grid atlasGrid() const;
 
     virtual util::Domain domain() const;
 

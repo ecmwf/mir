@@ -18,10 +18,10 @@
 
 #include "mir/method/MethodWeighted.h"
 
+
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class PseudoLaplace: public MethodWeighted {
 
@@ -45,10 +45,10 @@ private:
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
 
 #endif
 

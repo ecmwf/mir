@@ -13,6 +13,7 @@
 #define mir_util_RotateGrid_h
 
 #include "eckit/geometry/Point2.h"
+#include "atlas/grid/Projection.h"
 
 
 namespace mir {
@@ -49,19 +50,19 @@ public:
    eckit::geometry::LLPoint2 magics_unrotate( const eckit::geometry::LLPoint2&) const;
 
    // Input point is in the un-rotated grid. returns point in the rotated grid
-   eckit::geometry::LLPoint2 rotate( const eckit::geometry::LLPoint2&) const;
+   eckit::geometry::LLPoint2 rotate(const eckit::geometry::LLPoint2&) const;
 
    // Input is in the rotated grid, return back to un-rotated grid
-   eckit::geometry::LLPoint2 unrotate( const eckit::geometry::LLPoint2&) const;
+   eckit::geometry::LLPoint2 unrotate(const eckit::geometry::LLPoint2&) const;
 
 private:
-   double degree_to_radian_;
-   double radian_to_degree_;
 
+   atlas::grid::Projection atlas_rotation_;
    eckit::geometry::LLPoint2 south_pole_;
    double south_pole_rot_angle_;
    double lonmin_;
    double lonmax_;
+
 };
 
 
@@ -152,9 +153,6 @@ private:
                double cosdlon, double sindlon, double coslat, double sinlat) const;
 
 private:
-   double degree_to_radian_;
-   double radian_to_degree_;
-
    double south_pole_lat_;
    double south_pole_lon_;
    double south_pole_rot_angle_;

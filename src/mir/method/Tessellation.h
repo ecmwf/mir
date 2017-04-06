@@ -22,20 +22,19 @@
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class Tessellation: public FiniteElement {
-  public:
+public:
 
     Tessellation(const param::MIRParametrisation&);
 
     virtual ~Tessellation();
 
-  protected:
+protected:
 
     virtual void hash( eckit::MD5& ) const;
 
-  private:
+private:
 
     virtual void generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
     virtual void print(std::ostream&) const;
@@ -43,10 +42,10 @@ class Tessellation: public FiniteElement {
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
 
 #endif
 

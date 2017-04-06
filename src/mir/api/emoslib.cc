@@ -25,11 +25,8 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/types/FloatCompare.h"
-#include "atlas/grid/Grid.h"
-#include "atlas/grid/gaussian/ClassicGaussian.h"
-#include "atlas/grid/gaussian/RegularGaussian.h"
-#include "atlas/grid/gaussian/latitudes/Latitudes.h"
-#include "atlas/grid/grids.h"
+#include "atlas/grid.h"
+#include "atlas/util/GaussianLatitudes.h"
 #include "mir/api/MIRJob.h"
 #include "mir/api/ProdgenJob.h"
 #include "mir/config/LibMir.h"
@@ -894,14 +891,14 @@ extern "C" void jvod2uv_(const fortfloat vor[],
 }
 
 
-extern "C" fortint jgglat_(const fortint &KLAT, fortfloat PGAUSS[]) {
+extern "C" fortint jgglat_(const fortint& KLAT, fortfloat PGAUSS[]) {
 
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     eckit::Log::debug<LibMir>() << "++++++ jgglat " << KLAT << std::endl;
-    size_t N = KLAT / 2;
-    atlas::grid::gaussian::latitudes::gaussian_latitudes_npole_equator(N, PGAUSS);
+    size_t N = size_t(KLAT / 2);
+    atlas::util::gaussian_latitudes_npole_equator(N, PGAUSS);
 
     return 0;
 }
@@ -920,16 +917,15 @@ extern "C" void jnumgg_(const fortint &knum,
 
     kret = 0;
     try {
-        eckit::ScopedPtr<atlas::grid::Structured> grid(
-            dynamic_cast<atlas::grid::Structured*>(
-                  htype[0] == 'R'? new atlas::grid::gaussian::ClassicGaussian(knum)
-                : htype[0] == 'F'? new atlas::grid::gaussian::RegularGaussian(knum)
-                : (atlas::grid::gaussian::Gaussian*) NULL ));
-        ASSERT(grid.get());
+        ASSERT(htype[0] == 'R' || htype[0] == 'F');
 
-        const std::vector<long> &v = grid->pl();
-        for (size_t i = 0; i < v.size(); i++) {
-            kpts[i] = v[i];
+        std::string gridname = (htype[0] == 'R'? "N":"F") + std::to_string(knum);
+        atlas::grid::GaussianGrid grid(gridname);
+        ASSERT(grid);
+
+        const std::vector<long>& pl = grid.nx();
+        for (size_t i = 0; i < pl.size(); i++) {
+            kpts[i] = fortint(pl[i]);
         }
 
     } catch (std::exception &e) {

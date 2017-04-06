@@ -13,10 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef RegularLL_H
-#define RegularLL_H
+#ifndef mir_repres_latlon_RegularLL_h
+#define mir_repres_latlon_RegularLL_h
 
-#include "atlas/grid/lonlat/LonLat.h"
+#include "atlas/grid.h"
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
@@ -71,7 +71,7 @@ protected:
 
     // -- Overridden methods
     void print(std::ostream &) const; // Change to virtual if base class
-    virtual atlas::grid::Grid *atlasGrid() const;
+    virtual atlas::grid::Grid atlasGrid() const;
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
     virtual Representation* globalise(data::MIRField& field) const;

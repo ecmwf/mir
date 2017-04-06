@@ -17,7 +17,8 @@
 #include "mir/lsm/GribFileLSM.h"
 
 #include "eckit/memory/ScopedPtr.h"
-#include "atlas/grid/Grid.h"
+#include "eckit/utils/MD5.h"
+#include "atlas/grid.h"
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -65,11 +66,11 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::debug<LibMir>() << "LSM interpolation method is " << *method << std::endl;
 
-    eckit::ScopedPtr<atlas::grid::Grid> gin(field.representation()->atlasGrid());
+    atlas::grid::Grid gin = field.representation()->atlasGrid();
 
     util::MIRStatistics dummy; // TODO: use the global one
     context::Context ctx(field, dummy);
-    method->execute(ctx, *gin, grid);
+    method->execute(ctx, gin, grid);
 
     double threshold;
     ASSERT(parametrisation.get("lsm-value-threshold", threshold));

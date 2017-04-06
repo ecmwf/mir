@@ -20,7 +20,8 @@
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Log.h"
 #include "atlas/array/ArrayView.h"
-#include "atlas/grid/Structured.h"
+#include "atlas/array_fwd.h"
+#include "atlas/grid.h"
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -109,7 +110,7 @@ void Bilinear::execute(context::Context& ctx, const atlas::grid::Grid& in, const
         ASSERT(field.dimensions() == 1);
 
         const std::vector<double>& values = field.values(0);
-        ASSERT(values.size() == in.npts());
+        ASSERT(values.size() == in.size());
 
         dry_points.assign(values.size(), false);
         for (size_t i = 0; i < values.size(); ++i) {
@@ -198,13 +199,14 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 
 
     // Ensure the input is a reduced grid, and get the pl array
-    const atlas::grid::Structured* igg = dynamic_cast<const atlas::grid::Structured*>(&in.grid());
-    if (!igg)
+    const atlas::grid::StructuredGrid igg = in.grid();
+    if (!igg) {
         throw eckit::UserError("Bilinear currently only supports Structured grids as input");
+    }
 
-    const std::vector<long>& lons = igg->pl();
-    const size_t inpts = igg->npts();
-    const size_t onpts = out.grid().npts();
+    const std::vector<long>& lons = igg.nx();
+    const size_t inpts = igg.size();
+    const size_t onpts = out.grid().size();
 
     ASSERT(lons.size());
     ASSERT(lons.front());
@@ -217,8 +219,8 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 
 
     // access the input/output fields coordinates
-    atlas::array::ArrayView<double, 2> icoords = in.coordsLonLat();
-    atlas::array::ArrayView<double, 2> ocoords = out.coordsLonLat();
+    atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view< double, 2 >(in.coordsLonLat());
+    atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsLonLat());
 
 
     // access the input domain

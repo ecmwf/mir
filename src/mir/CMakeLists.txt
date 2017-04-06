@@ -532,24 +532,20 @@ list(
     util/Grib.h
     util/Increments.cc
     util/Increments.h
-    util/Shift.cc
-    util/Shift.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
-    util/ShiftGrid.cc
-    util/ShiftGrid.h
-    util/ShiftIterator.cc
-    util/ShiftIterator.h
     util/PointSearch.cc
     util/PointSearch.h
     util/RotateGrid.cc
     util/RotateGrid.h
-    util/RotatedGrid.cc
-    util/RotatedGrid.h
     util/RotatedIterator.cc
     util/RotatedIterator.h
     util/Rotation.cc
     util/Rotation.h
+    util/Shift.cc
+    util/Shift.h
+    util/ShiftIterator.cc
+    util/ShiftIterator.h
   )
 
 list(APPEND mir_tmpls caching/InMemoryCache.cc)

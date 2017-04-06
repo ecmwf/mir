@@ -93,8 +93,24 @@ void Rotation::fill(api::MIRJob &job) const  {
 
 bool Rotation::operator==(const Rotation &other) const {
     return south_pole_latitude_ == other.south_pole_latitude_
-           && south_pole_longitude_ == other.south_pole_longitude_
-           && south_pole_rotation_angle_ == other.south_pole_rotation_angle_;
+        && south_pole_longitude_ == other.south_pole_longitude_
+        && south_pole_rotation_angle_ == other.south_pole_rotation_angle_;
+}
+
+atlas::grid::StructuredGrid Rotation::rotate(const atlas::grid::StructuredGrid& grid) const {
+
+    // ensure grid is not rotated already
+    ASSERT(!grid.projection());
+
+    atlas::util::Config projection;
+    projection.set("type", "rotated_lonlat");
+    projection.set("south_pole", std::vector<double>({ south_pole_longitude_, south_pole_latitude_ }));
+    projection.set("rotation_angle", south_pole_rotation_angle_);
+
+    atlas::util::Config config(grid.spec());
+    config.set("projection", projection);
+
+    return atlas::grid::StructuredGrid(config);
 }
 
 }  // namespace data

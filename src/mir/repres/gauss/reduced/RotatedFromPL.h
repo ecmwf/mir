@@ -96,7 +96,7 @@ class RotatedFromPL : public FromPL {
 
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
-    virtual atlas::grid::Grid *atlasGrid() const;
+    virtual atlas::grid::Grid atlasGrid() const;
     virtual Iterator* rotatedIterator() const;
 
     virtual const Reduced* cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;

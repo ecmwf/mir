@@ -15,7 +15,7 @@
 #define mir_action_transform_TransCache_h
 
 #include <iosfwd>
-#include "atlas/internals/atlas_config.h"
+#include "atlas/library/config.h"
 #include "mir/caching/legendre/LegendreLoader.h"
 
 #ifdef ATLAS_HAVE_TRANS

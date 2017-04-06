@@ -14,62 +14,61 @@
 /// @date May 2015
 
 
-#ifndef mir_method_FiniteElement_H
-#define mir_method_FiniteElement_H
+#ifndef mir_method_FiniteElement_h
+#define mir_method_FiniteElement_h
 
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/geometry/Point3.h"
-
-#include "atlas/mesh/generators/MeshGenerator.h"
-
+#include "eckit/memory/ScopedPtr.h"
+#include "atlas/meshgenerator.h"
 #include "mir/method/MethodWeighted.h"
+
 
 namespace atlas {
 namespace grid { class Grid; }
 namespace mesh { class Mesh; }
 }
 
+
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class FiniteElement: public MethodWeighted {
 
-  public:
+public:
 
     typedef eckit::geometry::Point3 Point;
 
-  public:
+public:
 
     FiniteElement(const param::MIRParametrisation&);
 
     virtual ~FiniteElement();
 
-  protected:
+protected:
 
     virtual void hash(eckit::MD5&) const;
     virtual void generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
 
-  protected: // methods
+protected: // methods
 
     // Deriving from any eckit::Parametrisation should work
-    class MeshGenParams: public atlas::mesh::generators::MeshGenerator::Parameters {
-      public:
+    class MeshGenParams: public atlas::meshgenerator::MeshGenerator::Parameters {
+    public:
         MeshGenParams();
     };
 
     virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
 
-  protected: // members
+protected: // members
 
     MeshGenParams meshgenparams_;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
 
 #endif
 

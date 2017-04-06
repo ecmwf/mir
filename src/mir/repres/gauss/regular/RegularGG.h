@@ -86,16 +86,12 @@ private:
     RegularGG& operator=(const RegularGG&);
 
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    //virtual void fill(grib_info&) const;
-    //virtual atlas::grid::Grid* atlasGrid() const;
 
     virtual const Gridded* cropped(const util::BoundingBox &bbox) const;
 
