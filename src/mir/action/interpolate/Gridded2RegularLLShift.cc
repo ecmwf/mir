@@ -12,17 +12,14 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/interpolate/Gridded2RegularLLShift.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/Fraction.h"
-
-
-#include "mir/repres/latlon/RegularLLShift.h"
-
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/latlon/RegularLLShift.h"
 
 
 namespace mir {

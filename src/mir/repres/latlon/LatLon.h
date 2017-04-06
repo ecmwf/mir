@@ -76,6 +76,8 @@ class LatLon : public Gridded {
 
     void setNiNj();
 
+    static bool shifted(const util::BoundingBox&, const util::Increments&, bool check_lon=true, bool check_lat=true);
+
     // -- Overridden methods
 
     virtual util::Domain domain() const;
