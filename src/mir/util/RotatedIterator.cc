@@ -15,6 +15,8 @@
 
 #include "mir/util/RotatedIterator.h"
 
+#include "mir/util/Angles.h"
+
 
 using eckit::geometry::LLPoint2;
 
@@ -43,6 +45,10 @@ void RotatedIterator::print(std::ostream& out) const {
 bool RotatedIterator::next(double& lat, double& lon) {
     if(iterator_->next(lat, lon)) {
         LLPoint2 p = rotate_.unrotate(LLPoint2(lon, lat)); // <== notice order
+
+        // to be reviewed
+        p.lon( util::angles::between_m180_and_p180(p.lon()) );
+
         lat = p.lat();
         lon = p.lon();
         return true;
