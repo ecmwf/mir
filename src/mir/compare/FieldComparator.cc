@@ -296,6 +296,8 @@ void FieldComparator::getField(const MultiFile& multi,
 
     /// @todo this code should be factored out into metkit
 
+    bool sfc = false;
+
     while (grib_keys_iterator_next(ks)) {
         const char *name = grib_keys_iterator_get_name(ks);
         ASSERT(name);
@@ -309,6 +311,10 @@ void FieldComparator::getField(const MultiFile& multi,
         GRIB_CALL( grib_keys_iterator_get_string(ks, val, &len) );
 
         field.insert(name, val);
+
+        if (::strcmp(val,"sfc") == 0) {
+            sfc = true;
+        }
     }
 
     grib_keys_iterator_delete(ks);
@@ -316,6 +322,17 @@ void FieldComparator::getField(const MultiFile& multi,
 
     long paramId;
     GRIB_CALL (grib_get_long(h, "paramId", &paramId));
+
+    // Some of the surface parameters produced by prodgen are badly
+    // coded (missing level=2m or level=10m)
+
+    if (sfc) {
+        if (paramId == 130 ) { paramId = 167; }
+        if (paramId == 131 ) { paramId = 165; }
+        if (paramId == 132 ) { paramId = 166; }
+    }
+
+
     field.param(paramId);
 
     if (parametersWhiteList_.find(paramId) != parametersWhiteList_.end()) {
