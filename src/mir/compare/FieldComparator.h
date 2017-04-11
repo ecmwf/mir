@@ -83,7 +83,8 @@ protected: // members
                   FieldSet& fields,
                   const std::string& path,
                   off_t offset,
-                  size_t size);
+                  size_t size,
+                  bool fail);
 
     void compareFields(const MultiFile& multi1,
                        const MultiFile& multi2,

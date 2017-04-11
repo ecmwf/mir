@@ -276,7 +276,8 @@ void FieldComparator::getField(const MultiFile& multi,
                                FieldSet& fields,
                                const std::string& path,
                                off_t offset,
-                               size_t size) {
+                               size_t size,
+                               bool fail) {
 
     Field field(path, offset, size);
 
@@ -312,7 +313,7 @@ void FieldComparator::getField(const MultiFile& multi,
 
         field.insert(name, val);
 
-        if (::strcmp(val,"sfc") == 0) {
+        if (::strcmp(val, "sfc") == 0) {
             sfc = true;
         }
     }
@@ -524,8 +525,9 @@ void FieldComparator::getField(const MultiFile& multi,
         // << "  ==> "
         // << field.compare(other)
         // << std::endl
-        ;
-        error("duplicates");
+        if (fail) {
+            error("duplicates");
+        }
     }
 
 
@@ -550,7 +552,7 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
 
             try {
                 GRIB_CALL(err);
-                getField(multi, buffer, fields, *p, ftello(f) - size, size);
+                getField(multi, buffer, fields, *p, ftello(f) - size, size, true);
             } catch (std::exception& e) {
                 std::cout << "Error in " << *p << " " << e.what() << std::endl;
                 error("exceptions");
@@ -582,7 +584,7 @@ size_t FieldComparator::list(const std::string& path) {
 
         try {
             GRIB_CALL(err);
-            getField(multi, buffer, fields, path, ftello(f) - size, size);
+            getField(multi, buffer, fields, path, ftello(f) - size, size, false);
         } catch (std::exception& e) {
             std::cout << "Error in " << path << " " << e.what() << std::endl;
         }
