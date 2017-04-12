@@ -115,7 +115,7 @@ size_t Table::getTruncationFromPointsPerLatitude(const size_t& N) const {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     ASSERT(table_n_to_truncation);
-    eckit::Log::debug<LibMir>() << "Table::getTruncationFromPointsPerLatitude(" << N << "):" << std::endl;
+//    eckit::Log::debug<LibMir>() << "Table::getTruncationFromPointsPerLatitude(" << N << "):" << std::endl;
 
     // calculate a reference step (grid increment)
     double step = computeStep(parametrisation_);
@@ -142,14 +142,14 @@ size_t Table::getTruncationFromPointsPerLatitude(const size_t& N) const {
     }
 
 
-    size_t truncation;
-    bool limited = (get("field.truncation", truncation) && (truncation < T));
-    if (limited) {
-        T = truncation;
-    }
+//    size_t truncation;
+//    bool limited = (get("field.truncation", truncation) && (truncation < T));
+//    if (limited) {
+//        T = truncation;
+//    }
 
 
-    eckit::Log::debug<LibMir>() << "Table::getTruncationFromPointsPerLatitude(" << N << ") maps to truncation " << T << (limited? " (input limited)":"") << std::endl;
+//    eckit::Log::debug<LibMir>() << "Table::getTruncationFromPointsPerLatitude(" << N << ") maps to truncation " << T /*<< (limited? " (input limited)":"")*/ << std::endl;
     return T;
 }
 
@@ -158,7 +158,7 @@ size_t Table::getPointsPerLatitudeFromTruncation(const std::size_t& T) const {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     ASSERT(table_truncation_to_n);
-    eckit::Log::debug<LibMir>() << "Table::getPointsPerLatitudegeFromTruncation(" << T << "):" << std::endl;
+//    eckit::Log::debug<LibMir>() << "Table::getPointsPerLatitudeFromTruncation(" << T << "):" << std::endl;
 
 
     // ensure field.truncation converts to long
@@ -175,7 +175,7 @@ size_t Table::getPointsPerLatitudeFromTruncation(const std::size_t& T) const {
     }
 
 
-    eckit::Log::debug<LibMir>() << "Table::getPointsPerLatitudegeFromTruncation(" << T << "): truncation " << T << " maps to N " << N << std::endl;
+//    eckit::Log::debug<LibMir>() << "Table::getPointsPerLatitudeFromTruncation(" << T << "): truncation " << T << " maps to N " << N << std::endl;
     return N;
 }
 
