@@ -31,8 +31,24 @@ static MappingBuilder< Linear > __mapping("linear");
 Linear::~Linear() {}
 
 
+size_t Linear::getTruncationFromPointsPerLatitude(const size_t& N) const {
+    ASSERT(N);
+
+    size_t T = 2 * N - 1;
+    return T;
+}
+
+
+size_t Linear::getPointsPerLatitudeFromTruncation(const size_t& T) const {
+    ASSERT(T);
+
+    size_t N = size_t(double(T + 1)/2.);
+    return N;
+}
+
+
 void Linear::print(std::ostream& out) const {
-    //TODO
+    out << "Linear[]";
 }
 
 

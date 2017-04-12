@@ -31,8 +31,26 @@ static MappingBuilder< Cubic > __mapping("cubic");
 Cubic::~Cubic() {}
 
 
+size_t Cubic::getTruncationFromPointsPerLatitude(const size_t& N) const {
+    ASSERT(N);
+
+    size_t T = N - 1;
+    ASSERT(T);
+
+    return T;
+}
+
+
+size_t Cubic::getPointsPerLatitudeFromTruncation(const size_t& T) const {
+    ASSERT(T);
+
+    size_t N = T + 1;
+    return N;
+}
+
+
 void Cubic::print(std::ostream& out) const {
-    //TODO
+    out << "Cubic[]";
 }
 
 

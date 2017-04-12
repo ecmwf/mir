@@ -49,7 +49,8 @@ public:
     // None
 
     // -- Overridden methods
-    // None
+    size_t getTruncationFromPointsPerLatitude(const size_t&) const;
+    size_t getPointsPerLatitudeFromTruncation(const size_t&) const;
 
     // -- Class members
     // None

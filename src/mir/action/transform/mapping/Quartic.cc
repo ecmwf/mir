@@ -31,8 +31,26 @@ static MappingBuilder< Quartic > __mapping("quartic");
 Quartic::~Quartic() {}
 
 
+size_t Quartic::getTruncationFromPointsPerLatitude(const size_t& N) const {
+    ASSERT(N);
+
+    size_t T = size_t(ceil( double(4./5.) * N) - 1);
+    ASSERT(T);
+
+    return T;
+}
+
+
+size_t Quartic::getPointsPerLatitudeFromTruncation(const size_t& T) const {
+    ASSERT(T);
+
+    size_t N = size_t(double(T + 1) * (5./4.));
+    return N;
+}
+
+
 void Quartic::print(std::ostream& out) const {
-    //TODO
+    out << "Quartic[]";
 }
 
 

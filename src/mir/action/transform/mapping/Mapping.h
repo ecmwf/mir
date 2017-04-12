@@ -58,6 +58,7 @@ public:
     // -- Overridden methods
     bool get(const std::string& name, long& value) const;
     bool get(const std::string& name, size_t& value) const;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Class members
     // None
@@ -71,7 +72,7 @@ protected:
     const param::MIRParametrisation& parametrisation_;
 
     // -- Methods
-    virtual void print(std::ostream&) const = 0;
+    // None
 
     // -- Overridden methods
     // None
