@@ -165,8 +165,20 @@ size_t Table::getPointsPerLatitudeFromTruncation(const std::size_t& T) const {
     size_t N = 0;
     ASSERT(T > 1);
 
-    const std::vector<std::string>& entry = table_truncation_to_n->lookUp(numberToString(T));
-    N = entry.size() < 2? 0 : stringToNumber(entry.back());
+    std::vector<std::string> truncations = table_truncation_to_n->keys();
+    size_t Tlast = 0;
+
+    for (std::vector<std::string>::const_iterator j = truncations.begin(); j != truncations.end(); ++j) {
+        const size_t Tentry = stringToNumber(*j);
+        if (Tlast < Tentry && Tentry <= T) {
+            Tlast = Tentry;
+
+            const std::vector<std::string>& entry = table_truncation_to_n->lookUp(*j);
+            ASSERT(entry.size() == 2);
+            N = stringToNumber(entry.back());
+
+        }
+    }
 
     if (!N) {
         std::ostringstream oss;
