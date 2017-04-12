@@ -42,13 +42,32 @@ void TestingStyle::prepare(action::ActionPlan &) const {
         eckit::ScopedPtr<Mapping> map(action::transform::mapping::MappingFactory::build(m, parametrisation_));
         ASSERT(map.get());
 
-        std::cout << "" << std::endl;
-        for (const size_t& T : std::vector<size_t>({2047, 1279, 799, 639, 511, 399, 319, 255, 213, 191, 159, 106, 95, 63})) {
-            std::cout << "\"" << m << "\""
-                      << "\tT=" << T
-                      << "\tN=" << T << map->getPointsPerLatitudeFromTruncation(T) << std::endl;
+        std::cout << std::endl;
+        map->print(std::cout);
+        std::cout << std::endl;
+
+        for (const size_t& T : std::vector<size_t>({
+            2048, 2047, 2046,
+            1280, 1279, 1278,
+             800,  799,  798,
+             640,  639,  638,
+             512,  511,  510,
+             400,  399,  398,
+             320,  319,  318,
+             256,  255,  254,
+             214,  213,  212,
+             192,  191,  190,
+             160,  159,  158,
+             107,  106,  105,
+              96,   95,   94,
+              64,   63,   62
+            })) {
+            size_t N = map->getPointsPerLatitudeFromTruncation(T);
+            std::cout << "\tT=" << T
+                      << "\tN=" << N
+                      << "\tT=" << map->getTruncationFromPointsPerLatitude(N)
+                      << std::endl;
         }
-        std::cout << "" << std::endl;
     }
     std::cout << "" << std::endl;
 }
