@@ -60,7 +60,7 @@ void TestingStyle::prepare(action::ActionPlan &) const {
              160,  159,  158,
              107,  106,  105,
               96,   95,   94,
-              64,   63,   62
+              64,   63 //,   62
             })) {
             size_t N = map->getPointsPerLatitudeFromTruncation(T);
             std::cout << "\tT=" << T
