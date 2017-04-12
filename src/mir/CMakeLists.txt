@@ -502,6 +502,8 @@ list(
     style/ProdgenGrid.h
     style/ProdgenStyle.cc
     style/ProdgenStyle.h
+    style/TestingStyle.cc
+    style/TestingStyle.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
