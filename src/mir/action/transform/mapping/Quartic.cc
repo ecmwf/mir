@@ -13,6 +13,7 @@
 
 #include "mir/action/transform/mapping/Quartic.h"
 
+#include <cmath>
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
 
