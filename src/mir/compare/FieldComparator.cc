@@ -78,7 +78,7 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args):
     args_(args),
     normaliseLongitudes_(false),
     roundDegrees_(false),
-    maximumNumberOfErrors_(5) {
+    maximumNumberOfErrors_(1) {
 
     Field::setOptions(args);
 
