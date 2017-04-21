@@ -44,7 +44,7 @@ void CroppingCacheEntry::print(std::ostream& out) const {
 
 
 CroppingCacheEntry::~CroppingCacheEntry() {
-    // std::cout << "Delete " << *this << std::endl;
+    // eckit::Log::info() << "Delete " << *this << std::endl;
 }
 
 

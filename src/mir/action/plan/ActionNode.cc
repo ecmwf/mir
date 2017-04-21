@@ -42,7 +42,7 @@ void ActionNode::print(std::ostream& out) const {
 }
 
 void ActionNode::execute(context::Context& ctx, const Executor& executor) const {
-    // std::cout << " BEFORE -----> " << action_  << "  " << field << std::endl;
+    // eckit::Log::info() << " BEFORE -----> " << action_  << "  " << field << std::endl;
     bool ok = false;
     try {
         action_.execute(ctx);
@@ -57,7 +57,7 @@ void ActionNode::execute(context::Context& ctx, const Executor& executor) const 
             throw;
         }
     }
-    // std::cout << " AFTER -----> " << action_  << "  " << field << std::endl;
+    // eckit::Log::info() << " AFTER -----> " << action_  << "  " << field << std::endl;
 
     if (ok) {
         graph_.execute(ctx, executor);

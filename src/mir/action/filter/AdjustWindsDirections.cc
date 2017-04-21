@@ -77,11 +77,11 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
 
     result.clear();
 
-    // std::cout << "AdjustWindsDirections::windDirections " << *representation << std::endl;
+    // eckit::Log::info() << "AdjustWindsDirections::windDirections " << *representation << std::endl;
 
     eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
 
-    // std::cout << "AdjustWindsDirections::windDirections " << *iter << std::endl;
+    // eckit::Log::info() << "AdjustWindsDirections::windDirections " << *iter << std::endl;
 
 
     double lat = 0;
@@ -151,7 +151,7 @@ void AdjustWindsDirections::execute(context::Context & ctx) const {
     windDirections(field.representation(), directions);
 
     if (directions.size() != size) {
-        std::cout << "AdjustWindsDirections::windDirections after=" << directions.size()
+        eckit::Log::info() << "AdjustWindsDirections::windDirections after=" << directions.size()
                   << " before=" << size << std::endl;
 
     }

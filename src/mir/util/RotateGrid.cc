@@ -274,7 +274,7 @@ std::pair<double,double> RotgridPy::transform(double lat, double lon, bool inver
    while (lonrot < lonmin_) lonrot += 360.0;
    while (lonrot >= lonmax_) lonrot -= 360.0;
 
-//   std::cout << "Transform returning (" << lonrot << "," <<  latrot << ")\n";
+//   eckit::Log::info() << "Transform returning (" << lonrot << "," <<  latrot << ")\n";
    return std::pair<double,double>(latrot,lonrot);
 }
 

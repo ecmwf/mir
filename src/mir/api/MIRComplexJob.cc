@@ -89,29 +89,29 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     eckit::ScopedPtr<eckit::Timer> timer;
 
     if (printActionGraph) {
-        timer.reset(new eckit::Timer ("MIRComplexJob::execute", std::cout));
+        timer.reset(new eckit::Timer ("MIRComplexJob::execute", eckit::Log::info()));
     }
 
     context::Context ctx(*input_, statistics);
 
     if (printActionGraph) {
-        std::cout << ">>>>>>>>>>>> ====== " << std::endl;
+        eckit::Log::info() << ">>>>>>>>>>>> ====== " << std::endl;
 
-        std::cout << *input_ << std::endl;
+        eckit::Log::info() << *input_ << std::endl;
     }
 
     // action::SimpleExecutor executor;
     const action::Executor& executor = action::Executor::lookup((*jobs_.begin())->parametrisation());
 
     if (printActionGraph) {
-        graph.dump(std::cout, 1);
+        graph.dump(eckit::Log::info(), 1);
     }
     graph.execute(ctx, executor);
 
     executor.wait();
 
     if (printActionGraph) {
-        std::cout << "<<<<<<<<<<< ======" << std::endl;
+        eckit::Log::info() << "<<<<<<<<<<< ======" << std::endl;
     }
 
 

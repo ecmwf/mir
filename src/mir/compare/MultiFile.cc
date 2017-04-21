@@ -62,7 +62,7 @@ void MultiFile::save() const {
         mh += p.fileHandle();
     }
     eckit::ScopedPtr<eckit::DataHandle> h(out.fileHandle());
-    std::cout << "Save " << mh << " into " << (*h) << std::endl;
+    eckit::Log::info() << "Save " << mh << " into " << (*h) << std::endl;
     mh.saveInto(*h);
 }
 

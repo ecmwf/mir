@@ -50,60 +50,60 @@ void JSONTool::run() {
 
     eckit::JSONConfiguration config(in);
 
-    std::cout << config << std::endl;
+    eckit::Log::info() << config << std::endl;
 
     size_t n;
     if (config.get("a", n)) {
-        std::cout << "a = " << n << std::endl;
+        eckit::Log::info() << "a = " << n << std::endl;
     } else {
-        std::cout << "a not found" << std::endl;
+        eckit::Log::info() << "a not found" << std::endl;
     }
 
     double x;
     if (config.get("c.b", x)) {
-        std::cout << "c.b = " << x << std::endl;
+        eckit::Log::info() << "c.b = " << x << std::endl;
     } else {
-        std::cout << "c.b not found" << std::endl;
+        eckit::Log::info() << "c.b not found" << std::endl;
     }
 
     if (config.get("c.d", x)) {
-        std::cout << "c.d = " << x << std::endl;
+        eckit::Log::info() << "c.d = " << x << std::endl;
     } else {
-        std::cout << "c.d not found" << std::endl;
+        eckit::Log::info() << "c.d not found" << std::endl;
     }
 
     std::vector<double> v;
     if (config.get("b", v)) {
         for (size_t i = 0; i < v.size(); i++) {
-            std::cout << "b = " << v[i] << std::endl;
+            eckit::Log::info() << "b = " << v[i] << std::endl;
         }
     } else {
-        std::cout << "b not found" << std::endl;
+        eckit::Log::info() << "b not found" << std::endl;
     }
 
     eckit::LocalConfiguration sub(config, "c");
-    std::cout << "++++++++ " << sub << std::endl;
+    eckit::Log::info() << "++++++++ " << sub << std::endl;
     sub.set("a.s", 2L);
     sub.set("a.b.c.d", 2.6);
-    std::cout << "++++++++ " << sub << std::endl;
+    eckit::Log::info() << "++++++++ " << sub << std::endl;
     sub.set("a.b.c.r", false);
-    std::cout << "++++++++ " << sub << std::endl;
-    std::cout << config << std::endl;
+    eckit::Log::info() << "++++++++ " << sub << std::endl;
+    eckit::Log::info() << config << std::endl;
 
     eckit::LocalConfiguration sub2(config);
     sub2.set("p", "p");
-    std::cout << "++++++++ " << sub2 << std::endl;
+    eckit::Log::info() << "++++++++ " << sub2 << std::endl;
 
     eckit::LocalConfiguration sub3;
     sub3.set("p", "p");
-    std::cout << "++++++++ " << sub3 << std::endl;
+    eckit::Log::info() << "++++++++ " << sub3 << std::endl;
 
 
     std::vector<eckit::LocalConfiguration> fields;
     config.get("fields", fields);
 
     for (size_t i = 0; i < fields.size(); i++) {
-        std::cout << fields[i] << std::endl;
+        eckit::Log::info() << fields[i] << std::endl;
     }
 }
 

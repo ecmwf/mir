@@ -210,7 +210,7 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
         mir::util::Increments inc(grid[0], grid[1]);
 
         mir::util::Shift shift = inc.shiftFromZeroZero(bbox);
-        std::cout << "Shift is " << shift << std::endl;
+        eckit::Log::info() << "Shift is " << shift << std::endl;
 
         job.set("shift", shift.west_east() , shift.south_north());
 

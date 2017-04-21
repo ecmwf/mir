@@ -52,12 +52,12 @@ void MIRFormula::execute(const eckit::option::CmdArgs&) {
     mir::param::SimpleParametrisation param;
 
     mir::util::Formula * f = p.parse(param);
-    std::cout << (*f) << std::endl;
+    eckit::Log::info() << (*f) << std::endl;
 
     mir::context::Context ctx;
     f->execute(ctx);
 
-    std::cout << ctx << std::endl;
+    eckit::Log::info() << ctx << std::endl;
 }
 
 

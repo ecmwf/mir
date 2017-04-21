@@ -171,7 +171,7 @@ void ShToGridded::transform(
 
             tc.inited_ = true;
             tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation_, path);
-            // std::cout << "LegendreLoader " << *tc.loader_ << std::endl;
+            // eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
 
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 

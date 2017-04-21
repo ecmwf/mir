@@ -545,7 +545,7 @@ bool GribInput::get(const std::string &name, std::string &value) const {
         GRIB_ERROR(err, key);
     }
 
-    // std::cout << err << "  " << size << " " << name << std::endl;
+    // eckit::Log::info() << err << "  " << size << " " << name << std::endl;
 
     ASSERT(size < sizeof(buffer) - 1);
 

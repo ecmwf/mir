@@ -388,7 +388,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
             double w_tr =  w1 * wt;
             double w_tl =  w2 * wt;
 
-            //            std::cout << " --> LL "
+            //            eckit::Log::info() << " --> LL "
             //                      << lon << " ["
             //                      << tl_lon << "/" << tr_lon << ","
             //                      << bl_lon << "/" << br_lon << "] "
