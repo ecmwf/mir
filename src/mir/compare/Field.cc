@@ -32,6 +32,9 @@ static bool ignorePacking_ = false;
 static double areaComparaisonThreshold_ = 0.7; // Observed for N320
 static double valueCountComparaisonThreshold_ = 1;
 
+static double areaPrecision_ = 0.0001;
+
+
 void Field::addOptions(std::vector<eckit::option::Option*>& options) {
     using namespace eckit::option;
 
@@ -49,6 +52,9 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
 
     options.push_back(new SimpleOption<bool>("ignore-packing",
                       "Ignore packing when comparing"));
+
+    options.push_back(new SimpleOption<double>("area-precision",
+                      "Epsilon when comparing latitude and logitude of bounding box"));
 }
 
 void Field::setOptions(const eckit::option::CmdArgs &args) {
@@ -57,6 +63,8 @@ void Field::setOptions(const eckit::option::CmdArgs &args) {
     args.get("value-count-comparaison-threshold", valueCountComparaisonThreshold_);
     args.get("ignore-accuracy", ignoreAccuracy_);
     args.get("ignore-packing", ignorePacking_);
+    args.get("area-precision", areaPrecision_);
+
 }
 
 
@@ -251,6 +259,11 @@ double Field::compareAreas(const Field& other) const {
 }
 
 
+inline bool sameLatLon(double a, double b) {
+    return ::fabs(a - b) <= areaPrecision_;
+}
+
+
 bool Field::sameArea(const Field& other) const {
 
     if (!area_ && !other.area_)
@@ -259,7 +272,35 @@ bool Field::sameArea(const Field& other) const {
     if (area_ != other.area_)
         return false;
 
-    return compareAreas(other) > areaComparaisonThreshold_;
+    double w1 = west_;
+    double e1 = east_;
+    double n1 = north_;
+    double s1 = south_;
+
+    double w2 = other.west_;
+    double e2 = other.east_;
+    double n2 = other.north_;
+    double s2 = other.south_;
+
+    if (!sameLatLon(n1, n2)) {
+        return false;
+    }
+
+    if (!sameLatLon(w1, w2)) {
+        return false;
+    }
+
+    if (!sameLatLon(s1, s2)) {
+        return false;
+    }
+
+    if (!sameLatLon(e1, e2)) {
+        return false;
+    }
+
+    return true;
+
+    // return compareAreas(other) > areaComparaisonThreshold_;
 }
 
 
