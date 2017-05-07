@@ -106,6 +106,10 @@ void BoundingBox::normalise() {
     ASSERT(north_ <= 90 && south_ >= -90);
     ASSERT(north_ >= south_);
 
+    while (east_ < west_) {
+        east_ += 360;
+    }
+
     while (east_ > 360) {
         east_ -= 360;
         west_ -= 360;
@@ -114,10 +118,6 @@ void BoundingBox::normalise() {
     while (east_ < -180) {
         east_ += 360;
         west_ += 360;
-    }
-
-    while (east_ < west_) {
-        east_ += 360;
     }
 
     ASSERT(west_ <= east_);
