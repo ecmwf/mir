@@ -96,6 +96,8 @@ public:
     bool sameParam(const Field& other) const;
     bool sameNumberOfPoints(const Field& other) const;
 
+    bool match(const std::string&, const std::string&) const;
+
     bool wrapped() const;
 
     off_t offset() const ;

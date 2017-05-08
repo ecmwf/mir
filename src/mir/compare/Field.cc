@@ -162,7 +162,7 @@ void Field::compareAreas(std::ostream& out, const Field& other) const {
     double n2 = other.north_;
     double s2 = other.south_;
 
-    out << ::fabs(n1-n2) << '/' << ::fabs(w1-w2) << '/' << ::fabs(s1-s2) << '/' << ::fabs(e1-e2);
+    out << ::fabs(n1 - n2) << '/' << ::fabs(w1 - w2) << '/' << ::fabs(s1 - s2) << '/' << ::fabs(e1 - e2);
 
 }
 
@@ -807,6 +807,38 @@ bool Field::wrapped() const {
     return w == e;
 }
 
+bool Field::match(const std::string& name, const std::string& value) const {
+    auto j = values_.find(name);
+    if (j != values_.end()) {
+        return (*j).second == value;
+    }
+
+    if (name == "area") {
+        std::ostringstream oss;
+        if (area_) {
+            oss << north_
+                << '/'
+                << west_
+                << '/'
+                << south_
+                << '/'
+                << east_;
+        }
+        return value == oss.str();
+    }
+
+    if (name == "grid") {
+        std::ostringstream oss;
+        if (grid_) {
+            oss << west_east_
+                << '/'
+                << north_south_;
+        }
+        return value == oss.str();
+    }
+
+    return false;
+}
 
 
 //----------------------------------------------------------------------------------------------------------------------
