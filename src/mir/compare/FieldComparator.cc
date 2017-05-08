@@ -40,6 +40,12 @@ namespace compare {
 
 static mir::InMemoryCache<eckit::StdFile> cache_("files", 256, "PGEN_COMPARE_FILE_CACHE");
 
+
+ const WhiteLister& DefaultWhiteLister::instance() {
+    static DefaultWhiteLister i;
+    return i;
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
