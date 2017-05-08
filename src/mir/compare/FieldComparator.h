@@ -46,91 +46,93 @@ namespace compare {
 class FieldComparator {
 public: // types
 
-    typedef mir::compare::FieldSet  FieldSet;
-    typedef mir::compare::MultiFile MultiFile;
+  typedef mir::compare::FieldSet  FieldSet;
+  typedef mir::compare::MultiFile MultiFile;
 
 public: // methods
 
-    FieldComparator(const eckit::option::CmdArgs &args);
-    ~FieldComparator();
+  FieldComparator(const eckit::option::CmdArgs &args);
+  ~FieldComparator();
 
-    void compare(const std::string& path1,
-                 const std::string& path2);
+  void compare(const std::string& path1,
+               const std::string& path2);
 
-    void compare(const std::string& name,
-                 const MultiFile& multi1,
-                 const MultiFile& multi2);
+  void compare(const std::string& name,
+               const MultiFile& multi1,
+               const MultiFile& multi2);
 
 
-    size_t list(const std::string& path);
+  size_t list(const std::string& path);
 
-    static void addOptions(std::vector<eckit::option::Option*>&);
+  static void addOptions(std::vector<eckit::option::Option*>&);
 
 protected: // members
 
-    size_t count(const MultiFile& multi,
-                 FieldSet& fields);
+  size_t count(const MultiFile& multi,
+               FieldSet& fields);
 
 
-    void compareCounts(const std::string& name,
-                       const MultiFile& multi1,
-                       const MultiFile& multi2,
-                       FieldSet& fields1,
-                       FieldSet& fields2);
+  void compareCounts(const std::string& name,
+                     const MultiFile& multi1,
+                     const MultiFile& multi2,
+                     FieldSet& fields1,
+                     FieldSet& fields2);
 
-    void getField(const MultiFile& multi,
-                  eckit::Buffer& buffer,
-                  FieldSet& fields,
-                  const std::string& path,
-                  off_t offset,
-                  size_t size,
-                  bool fail);
+  void getField(const MultiFile& multi,
+                eckit::Buffer& buffer,
+                FieldSet& fields,
+                const std::string& path,
+                off_t offset,
+                size_t size,
+                bool fail);
 
-    void compareFields(const MultiFile& multi1,
-                       const MultiFile& multi2,
-                       const FieldSet& fields1,
-                       const FieldSet& fields2,
-                       bool compareValues,
-                       bool compareStatistics);
+  void compareFields(const MultiFile& multi1,
+                     const MultiFile& multi2,
+                     const FieldSet& fields1,
+                     const FieldSet& fields2,
+                     bool compareValues,
+                     bool compareStatistics);
 
-    void compareFieldStatistics(
-            const MultiFile& multi1,
-            const MultiFile& multi2,
-            const Field& field1,
-            const Field& field2);
+  void compareFieldStatistics(
+    const MultiFile& multi1,
+    const MultiFile& multi2,
+    const Field& field1,
+    const Field& field2);
 
-    void compareFieldValues(
-            const MultiFile& multi1,
-            const MultiFile& multi2,
-            const Field& field1,
-            const Field& field2);
+  void compareFieldValues(
+    const MultiFile& multi1,
+    const MultiFile& multi2,
+    const Field& field1,
+    const Field& field2);
 
-    void missingField(const MultiFile& multi1,
-                      const MultiFile& multi2,
-                      const Field& field,
-                      const FieldSet& fields,
-                      bool& show);
+  void missingField(const MultiFile& multi1,
+                    const MultiFile& multi2,
+                    const Field& field,
+                    const FieldSet& fields,
+                    bool& show);
 
-    void error(const char* string);
+  void error(const char* string);
 
-    double normalised(double) const;
-    double rounded(double) const;
+  double normalised(double) const;
+  double rounded(double) const;
 
 protected:
 
-    mutable size_t fatals_;
-    mutable size_t warnings_;
+  mutable size_t fatals_;
+  mutable size_t warnings_;
 
 private:
 
-    const eckit::option::CmdArgs &args_;
-    bool normaliseLongitudes_;
+  const eckit::option::CmdArgs &args_;
+  bool normaliseLongitudes_;
+  bool ignoreWrappingAreas_;
 
-    bool roundDegrees_;
-    std::vector<std::string> ignore_;
-    size_t maximumNumberOfErrors_;
 
-    std::set<long> parametersWhiteList_;
+  bool roundDegrees_;
+  std::vector<std::string> ignore_;
+  size_t maximumNumberOfErrors_;
+
+  std::set<long> parametersWhiteList_;
 
 };
 

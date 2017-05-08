@@ -96,6 +96,8 @@ public:
     bool sameParam(const Field& other) const;
     bool sameNumberOfPoints(const Field& other) const;
 
+    bool wrapped() const;
+
     off_t offset() const ;
 
     size_t length() const ;
