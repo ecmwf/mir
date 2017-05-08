@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <map>
 
 
 namespace eckit {
@@ -42,6 +43,15 @@ class MultiFile;
 namespace mir {
 namespace compare {
 
+class WhiteLister {
+public:
+    virtual bool whiteListed(const Field&) const = 0;
+};
+
+class DefaultWhiteLister : public WhiteLister {
+    virtual bool whiteListed(const Field&) const { return false; };
+};
+
 
 class FieldComparator {
 public: // types
@@ -51,7 +61,7 @@ public: // types
 
 public: // methods
 
-  FieldComparator(const eckit::option::CmdArgs &args);
+  FieldComparator(const eckit::option::CmdArgs &args, const WhiteLister& = DefaultWhiteLister());
   ~FieldComparator();
 
   void compare(const std::string& path1,
@@ -132,7 +142,7 @@ private:
   std::vector<std::string> ignore_;
   size_t maximumNumberOfErrors_;
 
-  std::set<long> parametersWhiteList_;
+  const WhiteLister& whiteLister_;
 
 };
 

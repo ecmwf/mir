@@ -45,27 +45,41 @@ static mir::InMemoryCache<eckit::StdFile> cache_("files", 256, "PGEN_COMPARE_FIL
 void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     using namespace eckit::option;
 
-    options.push_back(new SimpleOption<size_t>("maximum-number-of-errors", "Maximum number of errors per task"));
+    options.push_back(new SimpleOption<size_t>("maximum-number-of-errors",
+        "Maximum number of errors per task"));
 
-    options.push_back(new SimpleOption<bool>("save-fields",             "Save fields that do not compare"));
+    options.push_back(new SimpleOption<bool>("save-fields",
+        "Save fields that do not compare"));
 
-    options.push_back(new SimpleOption<long>("round-degrees",           "(Not yet used) Number of decimal digits to round degrees to (away from zero)"));
+    options.push_back(new SimpleOption<bool>("file-names-only",
+        "Only check that the list of files created are the same"));
 
-    options.push_back(new SimpleOption<bool>("file-names-only",         "Only check that the list of files created are the same"));
-    options.push_back(new SimpleOption<bool>("list-file-names",         "Create two files with extension '.list' containing the files names"));
+    options.push_back(new SimpleOption<bool>("list-file-names",
+        "Create two files with extension '.list' containing the files names"));
 
-    options.push_back(new SimpleOption<bool>("ignore-exceptions",       "Ignore exceptions"));
-    options.push_back(new SimpleOption<bool>("ignore-count-mismatches", "Ignore field count mismatches"));
-    options.push_back(new SimpleOption<bool>("ignore-fields-not-found", "Ignore fields not found"));
+    options.push_back(new SimpleOption<bool>("ignore-exceptions",
+        "Ignore exceptions"));
 
-    options.push_back(new SimpleOption<bool>("ignore-duplicates",       "Ignore duplicate fields"));
-    options.push_back(new SimpleOption<bool>("compare-statistics",      "Compare field statistics"));
-    options.push_back(new SimpleOption<bool>("compare-values",          "Compare field values"));
+    options.push_back(new SimpleOption<bool>("ignore-count-mismatches",
+        "Ignore field count mismatches"));
 
-    options.push_back(new SimpleOption<std::string>("ignore",           "Slash separated list of request keys to ignore when comparing fields"));
-    options.push_back(new SimpleOption<std::string>("parameters-white-list",       "Slash separated list of parameters to ignore"));
+    options.push_back(new SimpleOption<bool>("ignore-fields-not-found",
+        "Ignore fields not found"));
 
-    options.push_back(new SimpleOption<bool>("ignore-wrapping-areas",       "Ignore fields with an area that wraps around the globe (e.g. 0-360)"));
+    options.push_back(new SimpleOption<bool>("ignore-duplicates",
+        "Ignore duplicate fields"));
+
+    options.push_back(new SimpleOption<bool>("compare-statistics",
+        "Compare field statistics"));
+
+    options.push_back(new SimpleOption<bool>("compare-values",
+        "Compare field values"));
+
+    options.push_back(new SimpleOption<std::string>("ignore",
+        "Slash separated list of request keys to ignore when comparing fields"));
+
+    options.push_back(new SimpleOption<bool>("ignore-wrapping-areas",
+        "Ignore fields with an area that wraps around the globe (e.g. 0-360)"));
 
     Field::addOptions(options);
 }
@@ -74,13 +88,14 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-FieldComparator::FieldComparator(const eckit::option::CmdArgs &args):
+FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const WhiteLister& whiteLister):
     fatals_(0),
     warnings_(0),
     args_(args),
     normaliseLongitudes_(false),
     ignoreWrappingAreas_(false),
     roundDegrees_(false),
+    whiteLister_(whiteLister),
     maximumNumberOfErrors_(5) {
 
     Field::setOptions(args);
@@ -89,34 +104,11 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args):
     args_.get("maximum-number-of-errors", maximumNumberOfErrors_);
     args_.get("ignore-wrapping-areas", ignoreWrappingAreas_);
 
-    double rounding = 1;
-    long digits = 0;
-    roundDegrees_ = args_.get("round-degrees", digits);
-
-    while (digits > 0) {
-        rounding *= 10.0;
-        digits--;
-    }
-
-    while (digits < 0) {
-        rounding /= 10.0;
-        digits++;
-    }
 
     std::string ignore;
     args_.get("ignore", ignore);
     eckit::Tokenizer parse("/");
     parse(ignore, ignore_);
-
-
-    eckit::Translator<std::string, long> s2l;
-    std::string params;
-    args_.get("parameters-white-list", params);
-    std::vector<std::string> v;
-    parse(params, v);
-    for (auto j = v.begin(); j != v.end(); ++j) {
-        parametersWhiteList_.insert(s2l(*j));
-    }
 
 }
 
@@ -303,6 +295,8 @@ void FieldComparator::getField(const MultiFile& multi,
 
     bool sfc = false;
 
+    std::map<std::string, std::string> req;
+
     while (grib_keys_iterator_next(ks)) {
         const char *name = grib_keys_iterator_get_name(ks);
         ASSERT(name);
@@ -320,6 +314,8 @@ void FieldComparator::getField(const MultiFile& multi,
         if (::strcmp(val, "sfc") == 0) {
             sfc = true;
         }
+
+        req[name] = val;
     }
 
     grib_keys_iterator_delete(ks);
@@ -328,23 +324,7 @@ void FieldComparator::getField(const MultiFile& multi,
     long paramId;
     GRIB_CALL (grib_get_long(h, "paramId", &paramId));
 
-    // Some of the surface parameters produced by prodgen are badly
-    // coded (missing level=2m or level=10m)
-
-    if (sfc) {
-        if (paramId == 130 ) { paramId = 167; }
-        if (paramId == 131 ) { paramId = 165; }
-        if (paramId == 132 ) { paramId = 166; }
-    }
-
-
     field.param(paramId);
-
-    if (parametersWhiteList_.find(paramId) != parametersWhiteList_.end()) {
-        eckit::Log::warning() << "Ignoring white-listed parameter " << paramId << " in " << multi << std::endl;
-        return;
-    }
-
 
     long numberOfDataPoints;
     GRIB_CALL (grib_get_long(h, "numberOfDataPoints", &numberOfDataPoints));
@@ -378,6 +358,7 @@ void FieldComparator::getField(const MultiFile& multi,
                 s >> value;
                 std::transform(value.begin(), value.end(), value.begin(), tolower);
                 field.insert(keyword, value);
+                req[keyword] = value;
             }
         }
     }
@@ -533,6 +514,10 @@ void FieldComparator::getField(const MultiFile& multi,
         if (fail) {
             error("duplicates");
         }
+    }
+
+    if(whiteLister_.whiteListed(field)) {
+        eckit::Log::info() << "Field white listed " << field << std::endl;
     }
 
     fields.insert(field);
