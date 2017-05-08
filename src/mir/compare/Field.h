@@ -76,7 +76,7 @@ public:
 
     std::vector<Field> bestMatches(const FieldSet& fields) const;
 
-    double compare(const Field& other) const;
+    void compareAreas(std::ostream& out, const Field& other) const;
 
     bool same(const Field& other) const;
     bool match(const Field& other) const;
@@ -148,7 +148,6 @@ private:
 private:
 
 
-    double compareAreas(const Field& other) const;
 
     void print(std::ostream &out) const;
 

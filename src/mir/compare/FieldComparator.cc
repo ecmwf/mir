@@ -860,7 +860,9 @@ void FieldComparator::missingField(const MultiFile & multi1,
             if (other.match(field)) {
                 eckit::Log::info() << " @ ";
                 other.printDifference(eckit::Log::info(), field);
-                eckit::Log::info() << " (" << other.compare(field) << ")" << std::endl;
+                eckit::Log::info() << " (" ;
+                other.compareAreas(eckit::Log::info(), field);
+                eckit::Log::info() << ")" << std::endl;
                 cnt++;
             }
         }
@@ -869,7 +871,9 @@ void FieldComparator::missingField(const MultiFile & multi1,
                 const auto& other = (*m);
                 eckit::Log::info() << " # ";
                 other.printDifference(eckit::Log::info(), field);
-                eckit::Log::info() << " (" << other.compare(field) << ")" << std::endl;
+                eckit::Log::info() << " (" ;
+                other.compareAreas(eckit::Log::info(), field);
+                eckit::Log::info() << ")" << std::endl;
                 cnt++;
             }
         }
@@ -880,7 +884,9 @@ void FieldComparator::missingField(const MultiFile & multi1,
             const auto& other = (*m);
             eckit::Log::info() << " ? ";
             other.printDifference(eckit::Log::info(), field);
-            eckit::Log::info() << " (" << other.compare(field) << ")" << std::endl;
+            eckit::Log::info() << " (" ;
+            other.compareAreas(eckit::Log::info(), field);
+            eckit::Log::info() << ")" << std::endl;
         }
     }
     eckit::Log::info() << std::endl;

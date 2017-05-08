@@ -29,8 +29,6 @@ static bool normaliseLongitudes_ = false;
 static bool ignoreAccuracy_ = false;
 static bool ignorePacking_ = false;
 
-static double areaComparaisonThreshold_ = 0.7; // Observed for N320
-static double valueCountComparaisonThreshold_ = 1;
 
 static double areaPrecisionN_ = 0.;
 static double areaPrecisionW_ = 0.;
@@ -86,8 +84,6 @@ static double normalize(double longitude) {
 
 void Field::setOptions(const eckit::option::CmdArgs &args) {
     args.get("normalise-longitudes", normaliseLongitudes_);
-    args.get("compare-areas-threshold", areaComparaisonThreshold_);
-    args.get("value-count-comparaison-threshold", valueCountComparaisonThreshold_);
     args.get("ignore-accuracy", ignoreAccuracy_);
     args.get("ignore-packing", ignorePacking_);
     args.get("area-precision-north", areaPrecisionN_);
@@ -145,145 +141,28 @@ const std::string& Field::path() const {
     return info_.path();
 }
 
-double Field::compare(const Field& other) const {
-    return compareAreas(other);
-}
+// double Field::compare(const Field& other) const {
+//     return compareAreas(other);
+// }
 
 
-double Field::compareAreas(const Field& other) const {
+void Field::compareAreas(std::ostream& out, const Field& other) const {
 
     if (!area_ || !other.area_) {
-        return -1;
+        return;
     }
 
-    double w1 = west_;
-    double e1 = east_;
+    double w1 = normalize(west_);
+    double e1 = normalize(east_);
     double n1 = north_;
     double s1 = south_;
 
-    double w2 = other.west_;
-    double e2 = other.east_;
+    double w2 = normalize(other.west_);
+    double e2 = normalize(other.east_);
     double n2 = other.north_;
     double s2 = other.south_;
 
-    if (s1 <= -78) {
-        auto j = values_.find("param");
-        if (j != values_.end()) {
-            auto s = (*j).second;
-            if (s.length() == 6 && s.substr(0, 3) == "140") {
-                s1 = -90;
-            }
-        }
-    }
-
-    if (s2 <= -78) {
-        auto j = other.values_.find("param");
-        if (j != other.values_.end()) {
-            auto s = (*j).second;
-            if (s.length() == 6 && s.substr(0, 3) == "140") {
-                s2 = -90;
-            }
-        }
-    }
-
-
-
-    while (w1 >= e1) {
-        w1 -= 360;
-    }
-
-    while (w2 >= e2) {
-        w2 -= 360;
-    }
-
-    while (w1 < 0) {
-        w1 += 360;
-        e1 += 360;
-    }
-
-    while (w2 < 0) {
-        w2 += 360;
-        e2 += 360;
-    }
-
-    double ww = std::min(w1, w2);
-
-    while (w1 >= ww + 360) {
-        w1 -= 360;
-        e1 -= 360;
-    }
-
-    while (w2 >= ww + 360) {
-        w2 -= 360;
-        e2 -= 360;
-    }
-
-//==========
-
-    // Union
-    double un = std::max(n1, n2);
-    double us = std::min(s1, s2);
-    double ue = std::max(e1, e2);
-    double uw = std::min(w1, w2);
-
-    double uarea = (un - us) * (ue - uw);
-
-
-    if ((un - us) < 0 || (ue - uw) < 0) {
-        std::ostringstream oss;
-        oss << "Cannot compute union: "
-            << n1 << "/" << w1 << "/" << s1 << "/" << e1 << " and "
-            << n2 << "/" << w2 << "/" << s2 << "/" << e2 << " ==> "
-            << un << "/" << uw << "/" << us << "/" << ue;
-        oss << std::endl << *this;
-        oss << std::endl << other;
-        throw eckit::SeriousBug(oss.str());
-
-    }
-
-
-    // Intersction
-    double in = std::min(n1, n2);
-    double is = std::max(s1, s2);
-    double ie = std::min(e1, e2);
-    double iw = std::max(w1, w2);
-
-    double iarea = (in - is) * (ie - iw);
-
-    if (uarea == 0) {
-
-
-        if (un == us) {
-            ASSERT(ue > uw);
-
-            if (in != is) {
-                return 0;
-            }
-
-            uarea = ue - uw;
-            iarea = ie - iw;
-        }
-
-        if (ue == uw) {
-            ASSERT(un != us);
-
-            if (ie != iw) {
-                return 0;
-            }
-
-            uarea = un - us;
-            iarea = in - is;
-        }
-
-        ASSERT(uarea > 0);
-
-    }
-
-    if ((in - is) < 0 || (ie - iw) < 0) {
-        iarea = 0;
-    }
-
-    return iarea / uarea;
+    out << ::fabs(n1-n2) << '/' << ::fabs(w1-w2) << '/' << ::fabs(s1-s2) << '/' << ::fabs(e1-e2);
 
 }
 
@@ -431,12 +310,7 @@ bool Field::sameAccuracy(const Field& other) const {
 }
 
 bool Field::sameNumberOfPoints(const Field& other) const {
-
-    double mn = std::min(numberOfPoints_, other.numberOfPoints_);
-    double mx = std::max(numberOfPoints_, other.numberOfPoints_);
-
-    return std::abs(mn / mx) >= valueCountComparaisonThreshold_;
-
+    return numberOfPoints_ == other.numberOfPoints_;
 }
 
 bool Field::sameBitmap(const Field& other) const {
