@@ -67,6 +67,23 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
 
 }
 
+
+static double normalize(double longitude) {
+
+    if (!normaliseLongitudes_) {
+        return longitude;
+    }
+
+    while (longitude < 0) {
+        longitude += 360;
+    }
+    while (longitude >= 360) {
+        longitude -= 360;
+    }
+    return longitude;
+}
+
+
 void Field::setOptions(const eckit::option::CmdArgs &args) {
     args.get("normalise-longitudes", normaliseLongitudes_);
     args.get("compare-areas-threshold", areaComparaisonThreshold_);
@@ -284,20 +301,15 @@ bool Field::sameArea(const Field& other) const {
     if (area_ != other.area_)
         return false;
 
-    double w1 = west_;
-    double e1 = east_;
+    double w1 = normalize(west_);
+    double e1 = normalize(east_);
     double n1 = north_;
     double s1 = south_;
 
-    double w2 = other.west_;
-    double e2 = other.east_;
+    double w2 = normalize(other.west_);
+    double e2 = normalize(other.east_);
     double n2 = other.north_;
     double s2 = other.south_;
-
-    while (w1 < 0) { w1 += 360; } while (w1 > 360) { w1 -= 360; }
-    while (w2 < 0) { w2 += 360; } while (w2 > 360) { w2 -= 360; }
-    while (e1 < 0) { e1 += 360; } while (e1 > 360) { e1 -= 360; }
-    while (e2 < 0) { e2 += 360; } while (e2 > 360) { e2 -= 360; }
 
     if (!sameLatLon(n1, n2, areaPrecisionN_)) {
         return false;
@@ -444,21 +456,6 @@ bool Field::sameGrid(const Field& other) const {
     }
 
     return true;
-}
-
-static double normalize(double longitude) {
-
-    if (!normaliseLongitudes_) {
-        return longitude;
-    }
-
-    while (longitude < 0) {
-        longitude += 360;
-    }
-    while (longitude >= 360) {
-        longitude -= 360;
-    }
-    return longitude;
 }
 
 
@@ -917,6 +914,7 @@ std::ostream& Field::printDifference(std::ostream & out, const Field & other) co
         }
 
     }
+    out << ",wrapped=" << wrapped();
     // out << " - " << info_;
     out << "]";
 
@@ -929,11 +927,8 @@ bool Field::wrapped() const {
         return false;
     }
 
-    double w = west_;
-    double e = east_;
-
-    while (w < 0) { w += 360; } while (w > 360) { w -= 360; }
-    while (e < 0) { e += 360; } while (e > 360) { e -= 360; }
+    double w = normalize(west_);
+    double e = normalize(east_);
 
     return w == e;
 }
