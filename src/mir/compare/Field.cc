@@ -294,6 +294,11 @@ bool Field::sameArea(const Field& other) const {
     double n2 = other.north_;
     double s2 = other.south_;
 
+    while(w1 < 0) { w1 += 360; } while(w1 > 360) { w1 -= 360; }
+    while(w2 < 0) { w2 += 360; } while(w2 > 360) { w2 -= 360; }
+    while(e1 < 0) { e1 += 360; } while(e1 > 360) { e1 -= 360; }
+    while(e2 < 0) { e2 += 360; } while(e2 > 360) { e2 -= 360; }
+
     if (!sameLatLon(n1, n2, areaPrecisionN_)) {
         return false;
     }
