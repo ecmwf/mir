@@ -838,76 +838,61 @@ bool Field::match(const std::string& name, const std::string& value) const {
     }
 
 
- if (name == "param") {
+    if (name == "param") {
         std::ostringstream oss;
-            oss << param_;
+        oss << param_;
         return value == oss.str();
     }
 
 
- if (name == "values") {
+    if (name == "values") {
         std::ostringstream oss;
-            oss << numberOfPoints_;
+        oss << numberOfPoints_;
         return value == oss.str();
     }
 
-     if (name == "format") {
+    if (name == "format") {
         return value == format_;
     }
 
-      if (name == "packing") {
+    if (name == "packing") {
         return value == packing_;
     }
 
-       if (name == "gridtype") {
+    if (name == "gridtype") {
         return value == gridtype_;
     }
 
-       if (name == "gridname") {
+    if (name == "gridname") {
         return value == gridname_;
     }
 
-     if (name == "resol") {
+    if (name == "resol") {
         std::ostringstream oss;
-            oss << resol_;
+        oss << resol_;
         return value == oss.str();
     }
 
-  if (name == "accuracy") {
+    if (name == "accuracy") {
         std::ostringstream oss;
-            oss << accuracy_;
+        oss << accuracy_;
         return value == oss.str();
     }
 
-      if (name == "bitmap") {
+    if (name == "bitmap") {
         std::ostringstream oss;
-            oss << bitmap_ ? "yes" : "no";
+        oss << (bitmap_ ? "yes" : "no");
         return value == oss.str();
     }
 
-
-    if (grid_) {
-        out << ",grid=" ; pdiff(out, north_south_, other.north_south_);
-        out  << "/";
-        pdiff(out, west_east_, other.west_east_);
-    }
-
-    if (area_) {
-        out << ",area=" ;
-        pdiff(out, north_, other.north_);
-        out << "/" ;
-        pdiff(out, west_, other.west_);
-        out << "/";
-        pdiff(out, south_, other.south_);
-        out << "/";
-        pdiff(out, east_, other.east_);
-    }
-
-    if (rotation_) {
-        out << ",rotation=" ;
-        pdiff(out, rotation_latitude_, other.rotation_latitude_);
-        out << "/" ;
-        pdiff(out, rotation_longitude_, other.rotation_longitude_);
+    if (name == "rotation") {
+        std::ostringstream oss;
+        if (rotation_) {
+            oss << rotation_latitude_
+                << '/'
+                << rotation_longitude_;
+        }
+        return value == oss.str();
     }
 
     return false;
