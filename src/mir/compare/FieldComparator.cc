@@ -156,6 +156,7 @@ void FieldComparator::compare(const std::string& name,
         eckit::Log::info() << name << " OK." << std::endl;
     } else {
         if (!requirements.empty()) {
+            /*
             std::string output = name + eckit::PathName(requirements).extension();
 
             std::ofstream out(output.c_str());
@@ -173,6 +174,7 @@ void FieldComparator::compare(const std::string& name,
                     out << line << std::endl;
                 }
             }
+            */
 
         }
         if (saveFields) {
@@ -299,7 +301,7 @@ void FieldComparator::getField(const MultiFile& multi,
 
     /// @todo this code should be factored out into metkit
 
-    bool sfc = false;
+    // bool sfc = false;
 
     std::map<std::string, std::string> req;
 
@@ -317,9 +319,9 @@ void FieldComparator::getField(const MultiFile& multi,
 
         field.insert(name, val);
 
-        if (::strcmp(val, "sfc") == 0) {
-            sfc = true;
-        }
+        // if (::strcmp(val, "sfc") == 0) {
+        //     sfc = true;
+        // }
 
         req[name] = val;
     }
@@ -535,7 +537,7 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
 
     eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
 
-    size_t result = 0;
+    fields.clear();
 
     for (auto p = multi.paths().begin(); p != multi.paths().end(); ++p) {
 
@@ -554,13 +556,12 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
                 error("exceptions");
             }
 
-            result++;
             size = buffer.size();
         }
 
     }
 
-    return result;
+    return fields.size();
 }
 
 

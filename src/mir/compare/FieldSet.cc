@@ -25,6 +25,9 @@ void FieldSet::clear() {
     fields_.clear();
 }
 
+size_t FieldSet::size() const {
+    return fields_.size();
+}
 
 void FieldSet::insert(const Field& field) {
     fields_.insert(field);

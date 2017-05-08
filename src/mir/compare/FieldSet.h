@@ -31,6 +31,7 @@ class FieldSet {
 public: // methods
 
     void clear();
+    size_t size() const;
 
     void insert(const Field& field);
 
