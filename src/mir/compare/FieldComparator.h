@@ -50,6 +50,8 @@ public:
 
 class DefaultWhiteLister : public WhiteLister {
     virtual bool whiteListed(const std::string& name, const Field&) const { return false; };
+public:
+    static const WhiteLister& instance();
 };
 
 
@@ -61,7 +63,7 @@ public: // types
 
 public: // methods
 
-  FieldComparator(const eckit::option::CmdArgs &args, const WhiteLister& = DefaultWhiteLister());
+  FieldComparator(const eckit::option::CmdArgs &args, const WhiteLister& = DefaultWhiteLister::instance());
   ~FieldComparator();
 
   void compare(const std::string& path1,
