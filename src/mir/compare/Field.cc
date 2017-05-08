@@ -32,7 +32,10 @@ static bool ignorePacking_ = false;
 static double areaComparaisonThreshold_ = 0.7; // Observed for N320
 static double valueCountComparaisonThreshold_ = 1;
 
-static double areaPrecision_ = 0.0001;
+static double areaPrecisionN_ = 0.;
+static double areaPrecisionW_ = 0.;
+static double areaPrecisionS_ = 0.;
+static double areaPrecisionE_ = 0.;
 
 
 void Field::addOptions(std::vector<eckit::option::Option*>& options) {
@@ -53,8 +56,15 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<bool>("ignore-packing",
                       "Ignore packing when comparing"));
 
-    options.push_back(new SimpleOption<double>("area-precision",
+    options.push_back(new SimpleOption<double>("area-precision-north",
                       "Epsilon when comparing latitude and logitude of bounding box"));
+    options.push_back(new SimpleOption<double>("area-precision-west",
+                      "Epsilon when comparing latitude and logitude of bounding box"));
+    options.push_back(new SimpleOption<double>("area-precision-south",
+                      "Epsilon when comparing latitude and logitude of bounding box"));
+    options.push_back(new SimpleOption<double>("area-precision-east",
+                      "Epsilon when comparing latitude and logitude of bounding box"));
+
 }
 
 void Field::setOptions(const eckit::option::CmdArgs &args) {
@@ -63,10 +73,12 @@ void Field::setOptions(const eckit::option::CmdArgs &args) {
     args.get("value-count-comparaison-threshold", valueCountComparaisonThreshold_);
     args.get("ignore-accuracy", ignoreAccuracy_);
     args.get("ignore-packing", ignorePacking_);
-    args.get("area-precision", areaPrecision_);
+    args.get("area-precision-north", areaPrecisionN_);
+    args.get("area-precision-west", areaPrecisionW_);
+    args.get("area-precision-south", areaPrecisionS_);
+    args.get("area-precision-east", areaPrecisionE_);
 
 }
-
 
 
 
@@ -259,8 +271,8 @@ double Field::compareAreas(const Field& other) const {
 }
 
 
-inline bool sameLatLon(double a, double b) {
-    return ::fabs(a - b) <= areaPrecision_;
+inline bool sameLatLon(double a, double b, double e) {
+    return ::fabs(a - b) <= e;
 }
 
 
@@ -282,19 +294,19 @@ bool Field::sameArea(const Field& other) const {
     double n2 = other.north_;
     double s2 = other.south_;
 
-    if (!sameLatLon(n1, n2)) {
+    if (!sameLatLon(n1, n2, areaPrecisionN_)) {
         return false;
     }
 
-    if (!sameLatLon(w1, w2)) {
+    if (!sameLatLon(w1, w2, areaPrecisionW_)) {
         return false;
     }
 
-    if (!sameLatLon(s1, s2)) {
+    if (!sameLatLon(s1, s2, areaPrecisionS_)) {
         return false;
     }
 
-    if (!sameLatLon(e1, e2)) {
+    if (!sameLatLon(e1, e2, areaPrecisionE_)) {
         return false;
     }
 
