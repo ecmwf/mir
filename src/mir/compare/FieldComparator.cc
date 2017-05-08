@@ -524,7 +524,7 @@ void FieldComparator::getField(const MultiFile& multi,
         }
     }
 
-    if(whiteLister_.whiteListed(path, field)) {
+    if(whiteLister_.whiteListed(multi.name(), field)) {
         eckit::Log::info() << "Field white listed " << field << std::endl;
         return;
     }
