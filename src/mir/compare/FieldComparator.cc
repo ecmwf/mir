@@ -421,6 +421,8 @@ void FieldComparator::getField(const MultiFile& multi,
                         GRIB_CALL(grib_get_size(h, "pl", &pl_size) );
                         long pl[pl_size];
 
+                        GRIB_CALL(grib_get_long_array(h, "pl", pl, &pl_size) );
+
                         bool isOctahedral = true;
                         for(size_t i = 1 ; i < pl_size; i++) {
                             long diff = std::abs(pl[i] - pl[i-1]);
