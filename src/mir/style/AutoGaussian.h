@@ -75,7 +75,7 @@ class AutoGaussian : public param::DelayedParametrisation {
 
 
 // -- Overridden methods
-    // virtual bool has(const std::string& name) const;
+// virtual bool has(const std::string& name) const;
 
     virtual void get(const std::string& name, long& value) const;
 
