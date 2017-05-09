@@ -41,7 +41,7 @@ namespace compare {
 static mir::InMemoryCache<eckit::StdFile> cache_("files", 256, "PGEN_COMPARE_FILE_CACHE");
 
 
- const WhiteLister& DefaultWhiteLister::instance() {
+const WhiteLister& DefaultWhiteLister::instance() {
     static DefaultWhiteLister i;
     return i;
 }
@@ -52,40 +52,40 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     using namespace eckit::option;
 
     options.push_back(new SimpleOption<size_t>("maximum-number-of-errors",
-        "Maximum number of errors per task"));
+                      "Maximum number of errors per task"));
 
     options.push_back(new SimpleOption<bool>("save-fields",
-        "Save fields that do not compare"));
+                      "Save fields that do not compare"));
 
     options.push_back(new SimpleOption<bool>("file-names-only",
-        "Only check that the list of files created are the same"));
+                      "Only check that the list of files created are the same"));
 
     options.push_back(new SimpleOption<bool>("list-file-names",
-        "Create two files with extension '.list' containing the files names"));
+                      "Create two files with extension '.list' containing the files names"));
 
     options.push_back(new SimpleOption<bool>("ignore-exceptions",
-        "Ignore exceptions"));
+                      "Ignore exceptions"));
 
     options.push_back(new SimpleOption<bool>("ignore-count-mismatches",
-        "Ignore field count mismatches"));
+                      "Ignore field count mismatches"));
 
     options.push_back(new SimpleOption<bool>("ignore-fields-not-found",
-        "Ignore fields not found"));
+                      "Ignore fields not found"));
 
     options.push_back(new SimpleOption<bool>("ignore-duplicates",
-        "Ignore duplicate fields"));
+                      "Ignore duplicate fields"));
 
     options.push_back(new SimpleOption<bool>("compare-statistics",
-        "Compare field statistics"));
+                      "Compare field statistics"));
 
     options.push_back(new SimpleOption<bool>("compare-values",
-        "Compare field values"));
+                      "Compare field values"));
 
     options.push_back(new SimpleOption<std::string>("ignore",
-        "Slash separated list of request keys to ignore when comparing fields"));
+                      "Slash separated list of request keys to ignore when comparing fields"));
 
     options.push_back(new SimpleOption<bool>("ignore-wrapping-areas",
-        "Ignore fields with an area that wraps around the globe (e.g. 0-360)"));
+                      "Ignore fields with an area that wraps around the globe (e.g. 0-360)"));
 
     Field::addOptions(options);
 }
@@ -415,7 +415,27 @@ void FieldComparator::getField(const MultiFile& multi,
                         oss << "O";
                     }
                     else {
-                        oss << "N";
+
+                        // Don't trust eccodes
+                        size_t pl_size = 0;
+                        GRIB_CALL(grib_get_size(h, "pl", &pl_size) );
+                        long pl[pl_size];
+
+                        bool isOctahedral = true;
+                        for(size_t i = 1 ; i < pl_size; i++) {
+                            long diff = std::abs(pl[i] - pl[i-1]);
+                            if(diff != 4 && diff != 0) {
+                                isOctahedral = false;
+                                break;
+                            }
+                        }
+
+                        if (isOctahedral) {
+                            oss << "O";
+                        }
+                        else {
+                            oss << "N";
+                        }
                     }
 
                     GRIB_CALL(grib_get_long(h, "N", &n) );
@@ -524,7 +544,7 @@ void FieldComparator::getField(const MultiFile& multi,
         }
     }
 
-    if(whiteLister_.whiteListed(multi.name(), field)) {
+    if (whiteLister_.whiteListed(multi.name(), field)) {
         eckit::Log::info() << "Field white listed " << field << std::endl;
         return;
     }
