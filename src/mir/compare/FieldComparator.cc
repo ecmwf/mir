@@ -424,6 +424,7 @@ void FieldComparator::getField(const MultiFile& multi,
                         bool isOctahedral = true;
                         for(size_t i = 1 ; i < pl_size; i++) {
                             long diff = std::abs(pl[i] - pl[i-1]);
+                            std::cout << diff << std::endl;
                             if(diff != 4 && diff != 0) {
                                 isOctahedral = false;
                                 break;
