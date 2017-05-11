@@ -60,7 +60,7 @@ void SubsetFilter::execute(context::Context & ctx) const {
     data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
-    repres::Representation* out = in->subset(field, increments_);
+    const repres::Representation* out = in->subset(field, increments_);
     ASSERT(out);
 
     field.representation(out);

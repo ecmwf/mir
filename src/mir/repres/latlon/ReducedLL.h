@@ -26,7 +26,7 @@ namespace latlon {
 
 
 class ReducedLL : public Gridded {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -57,7 +57,7 @@ class ReducedLL : public Gridded {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -81,7 +81,7 @@ class ReducedLL : public Gridded {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 

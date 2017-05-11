@@ -53,7 +53,7 @@ void GlobaliseFilter::execute(context::Context & ctx) const {
     data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
-    repres::Representation* out = in->globalise(field);
+    const repres::Representation* out = in->globalise(field);
     if(out) {
         field.representation(out);
     }
