@@ -38,7 +38,7 @@ TestingStyle::~TestingStyle() {
 void TestingStyle::prepare(action::ActionPlan &) const {
     using namespace action::transform::mapping;
 
-    for (auto m : {"table", "linear", "quadratic", "cubic"}) {
+    for (auto m : {"linear", "quadratic", "cubic"}) {
         eckit::ScopedPtr<Mapping> map(action::transform::mapping::MappingFactory::build(m, parametrisation_));
         ASSERT(map.get());
 
