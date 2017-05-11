@@ -17,8 +17,9 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/transform/mapping/Table.h"
+#include "mir/action/transform/mapping/Mapping.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -50,7 +51,11 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";
 
-    plan.add("transform." + transform + "octahedral-gg", "octahedral", new action::transform::mapping::Table(parametrisation_));
+    // use spectral mapping to cubic grid
+    using namespace action::transform::mapping;
+    eckit::ScopedPtr<Mapping> map(MappingFactory::build("cubic", parametrisation_));
+
+    plan.add("transform." + transform + "octahedral-gg", "octahedral", map);
 
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);

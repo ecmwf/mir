@@ -152,8 +152,6 @@ list(
     action/transform/mapping/Quadratic.h
     action/transform/mapping/Quartic.cc
     action/transform/mapping/Quartic.h
-    action/transform/mapping/Table.cc
-    action/transform/mapping/Table.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc

@@ -17,8 +17,9 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/transform/mapping/Table.h"
+#include "mir/action/transform/mapping/Mapping.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -58,7 +59,12 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
             plan.add("transform.sh-truncate", "truncation", 63L);
         }
         else {
-            plan.add("transform.sh-truncate", "truncation", new action::transform::mapping::Table(parametrisation_));
+
+            // use spectral mapping from linear grid
+            using namespace action::transform::mapping;
+            eckit::ScopedPtr<Mapping> map(MappingFactory::build("linear", parametrisation_));
+
+            plan.add("transform.sh-truncate", "truncation", map);
         }
     }
 
