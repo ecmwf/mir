@@ -11,8 +11,8 @@
 /// @date May 2017
 
 
-#ifndef mir_action_transform_mapping_Auto_h
-#define mir_action_transform_mapping_Auto_h
+#ifndef mir_action_transform_mapping_AutomaticResolution_h
+#define mir_action_transform_mapping_AutomaticResolution_h
 
 #include <iosfwd>
 #include <string>
@@ -27,7 +27,7 @@ namespace transform {
 namespace mapping {
 
 
-class Auto : public Mapping {
+class AutomaticResolution : public Mapping {
 public:
 
     // -- Exceptions
@@ -35,11 +35,11 @@ public:
 
     // -- Contructors
 
-    Auto(const param::MIRParametrisation&);
+    AutomaticResolution(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~Auto();
+    virtual ~AutomaticResolution();
 
     // -- Convertors
     // None
@@ -98,7 +98,7 @@ private:
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const Auto& p) {
+    friend std::ostream& operator<<(std::ostream& s, const AutomaticResolution& p) {
         p.print(s);
         return s;
     }

@@ -44,29 +44,26 @@ void MARSStyle::print(std::ostream &out) const {
 
 void MARSStyle::sh2grid(action::ActionPlan& plan) const {
 
-    bool areaDefinesGrid = false;
-
-    bool autoresol = true;
-    parametrisation_.get("autoresol", autoresol);
-
+    std::string resol = "linear";
+    parametrisation_.get("resol", resol);
+    
     bool vod2uv = false;
     parametrisation_.get("vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
 
-    if (autoresol) {
+    if (resol == "auto" || resol == "automatic resolution") {
         if (parametrisation_.has("griddef")) {
             // TODO: this is temporary
             plan.add("transform.sh-truncate", "truncation", 63L);
-        }
-        else {
+        } else {
 
-            // use spectral mapping from linear grid
             using namespace action::transform::mapping;
-            eckit::ScopedPtr<Mapping> map(MappingFactory::build("linear", parametrisation_));
-
+            eckit::ScopedPtr<Mapping> map(MappingFactory::build(resol, parametrisation_));
             plan.add("transform.sh-truncate", "truncation", map);
+
         }
     }
+
 
     if (parametrisation_.has("user.grid")) {
 

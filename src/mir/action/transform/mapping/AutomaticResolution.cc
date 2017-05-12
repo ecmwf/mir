@@ -11,7 +11,7 @@
 /// @date May 2017
 
 
-#include "mir/action/transform/mapping/Auto.h"
+#include "mir/action/transform/mapping/AutomaticResolution.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
@@ -25,19 +25,19 @@ namespace mapping {
 
 
 namespace {
-static MappingBuilder< Auto > __mapping("auto");
+static MappingBuilder< AutomaticResolution > __mapping1("auto");
+static MappingBuilder< AutomaticResolution > __mapping2("automatic resolution");
 }
 
 
-Auto::Auto(const param::MIRParametrisation& parametrisation) : Mapping(parametrisation) {
+AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parametrisation) : Mapping(parametrisation) {
 
-    // defaults to linear truncation
     std::string resol = "linear";
     parametrisation.get("resol", resol);
     ASSERT(resol.length());
 
-    if (resol == "auto") {
-        resol = "linear";
+    if (resol == "auto" || resol == "automatic resolution") {
+        throw eckit::UserError("Mapping 'AutomaticResolution' cannot be parametrised with 'auto' or 'automatic resolution'.");
     }
 
     eckit::ScopedPtr<Mapping> map(MappingFactory::build(resol, parametrisation));
@@ -47,22 +47,22 @@ Auto::Auto(const param::MIRParametrisation& parametrisation) : Mapping(parametri
 }
 
 
-Auto::~Auto() {}
+AutomaticResolution::~AutomaticResolution() {}
 
 
-size_t Auto::getTruncationFromPointsPerLatitude(const size_t& N) const {
+size_t AutomaticResolution::getTruncationFromPointsPerLatitude(const size_t& N) const {
     return map_->getTruncationFromPointsPerLatitude(N);
 }
 
 
-size_t Auto::getPointsPerLatitudeFromTruncation(const size_t& T) const {
+size_t AutomaticResolution::getPointsPerLatitudeFromTruncation(const size_t& T) const {
     return map_->getPointsPerLatitudeFromTruncation(T);
 }
 
 
-void Auto::print(std::ostream& out) const {
+void AutomaticResolution::print(std::ostream& out) const {
     ASSERT(map_);
-    out << "Auto[";
+    out << "AutomaticResolution[";
     map_->print(out);
     out << "]";
 }

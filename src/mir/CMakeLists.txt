@@ -142,8 +142,10 @@ list(
     action/transform/TransCache.h
     action/transform/TransInitor.cc
     action/transform/TransInitor.h
-    action/transform/mapping/Auto.cc
-    action/transform/mapping/Auto.h
+    action/transform/mapping/ArchivedValue.cc
+    action/transform/mapping/ArchivedValue.h
+    action/transform/mapping/AutomaticResolution.cc
+    action/transform/mapping/AutomaticResolution.h
     action/transform/mapping/Cubic.cc
     action/transform/mapping/Cubic.h
     action/transform/mapping/Linear.cc

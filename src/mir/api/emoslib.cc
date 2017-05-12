@@ -250,7 +250,8 @@ extern "C" fortint intout_(const char *name,
 
         if (strncasecmp(name, "resol", name_len) == 0) {
             // not strictly part of EMOSLIB interface
-            job->set("resol", value);
+            tidy(value, buffer, sizeof(buffer));
+            job->set("resol", buffer);
             return 0;
         }
 
