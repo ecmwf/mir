@@ -19,7 +19,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/transform/mapping/Mapping.h"
+#include "mir/action/transform/mapping/ArchivedValue.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -51,11 +51,8 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";
 
-    // use spectral mapping to cubic grid
-    using namespace action::transform::mapping;
-    eckit::ScopedPtr<Mapping> map(MappingFactory::build("cubic", parametrisation_));
-
-    plan.add("transform." + transform + "octahedral-gg", "octahedral", map);
+    action::transform::mapping::ArchivedValue av(parametrisation_);
+    plan.add("transform." + transform + "octahedral-gg", "octahedral", static_cast<param::DelayedParametrisation*>(&av));
 
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);

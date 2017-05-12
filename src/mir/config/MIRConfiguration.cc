@@ -50,7 +50,7 @@ struct Defaults : param::SimpleParametrisation {
         set("lsm-weight-adjustment", 0.2);
         set("lsm-value-threshold", 0.5);
 
-        set("resol", "linear");
+        set("spectral-mapping", "linear");
     }
 };
 

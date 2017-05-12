@@ -200,7 +200,8 @@ extern "C" fortint intout_(const char *name,
         }
 
         if (strncasecmp(name, "autoresol", name_len) == 0) {
-            ASSERT(false);
+            job->set("autoresol", ints[0] != 0);
+            return 0;
         }
 
         if (strncasecmp(name, "style", name_len) == 0) {
@@ -246,13 +247,6 @@ extern "C" fortint intout_(const char *name,
                 unpacked = true;
                 return 0;
             }
-        }
-
-        if (strncasecmp(name, "resol", name_len) == 0) {
-            // not strictly part of EMOSLIB interface
-            tidy(value, buffer, sizeof(buffer));
-            job->set("resol", buffer);
-            return 0;
         }
 
         std::string v(value);

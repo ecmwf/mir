@@ -33,7 +33,7 @@ static MappingBuilder< AutomaticResolution > __mapping2("automatic resolution");
 AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parametrisation) : Mapping(parametrisation) {
 
     std::string resol = "linear";
-    parametrisation.get("resol", resol);
+    parametrisation.get("spectral-mapping", resol);
     ASSERT(resol.length());
 
     if (resol == "auto" || resol == "automatic resolution") {
