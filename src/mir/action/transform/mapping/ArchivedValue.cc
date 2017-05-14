@@ -25,12 +25,12 @@ namespace mapping {
 
 
 namespace {
-static MappingBuilder< ArchivedValue > __mapping1("av");
-static MappingBuilder< ArchivedValue > __mapping2("archived value");
+static ResolBuilder< ArchivedValue > __mapping1("av");
+static ResolBuilder< ArchivedValue > __mapping2("archived value");
 }
 
 
-ArchivedValue::ArchivedValue(const param::MIRParametrisation& parametrisation) : Mapping(parametrisation) {
+ArchivedValue::ArchivedValue(const param::MIRParametrisation& parametrisation) : Resol(parametrisation) {
     ASSERT(parametrisation.get("truncation", truncation_));
     ASSERT(truncation_);
 }
@@ -39,13 +39,13 @@ ArchivedValue::ArchivedValue(const param::MIRParametrisation& parametrisation) :
 ArchivedValue::~ArchivedValue() {}
 
 
-size_t ArchivedValue::getTruncationFromPointsPerLatitude(const size_t&) const {
-    return truncation_;
+size_t ArchivedValue::getTruncation() const {
+    return 0;  // FIXME
 }
 
 
-size_t ArchivedValue::getPointsPerLatitudeFromTruncation(const size_t& T) const {
-    NOTIMP;
+size_t ArchivedValue::getPointsPerLatitude() const {
+    return 0;  // FIXME
 }
 
 

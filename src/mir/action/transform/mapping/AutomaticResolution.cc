@@ -15,7 +15,6 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
-#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -25,45 +24,31 @@ namespace mapping {
 
 
 namespace {
-static MappingBuilder< AutomaticResolution > __mapping1("auto");
-static MappingBuilder< AutomaticResolution > __mapping2("automatic resolution");
+static ResolBuilder< AutomaticResolution > __mapping1("auto");
+static ResolBuilder< AutomaticResolution > __mapping2("automatic resolution");
 }
 
 
-AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parametrisation) : Mapping(parametrisation) {
-
-    std::string resol = "linear";
-    parametrisation.get("spectral-mapping", resol);
-    ASSERT(resol.length());
-
-    if (resol == "auto" || resol == "automatic resolution") {
-        throw eckit::UserError("Mapping 'AutomaticResolution' cannot be parametrised with 'auto' or 'automatic resolution'.");
-    }
-
-    eckit::ScopedPtr<Mapping> map(MappingFactory::build(resol, parametrisation));
-    ASSERT(map);
-
-    map_.swap(map);
-}
+AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parametrisation) : Resol(parametrisation) {}
 
 
 AutomaticResolution::~AutomaticResolution() {}
 
 
-size_t AutomaticResolution::getTruncationFromPointsPerLatitude(const size_t& N) const {
-    return map_->getTruncationFromPointsPerLatitude(N);
+size_t AutomaticResolution::getTruncation() const {
+    return 0;  // FIXME
 }
 
 
-size_t AutomaticResolution::getPointsPerLatitudeFromTruncation(const size_t& T) const {
-    return map_->getPointsPerLatitudeFromTruncation(T);
+size_t AutomaticResolution::getPointsPerLatitude() const {
+    return 0;  // FIXME
 }
 
 
 void AutomaticResolution::print(std::ostream& out) const {
-    ASSERT(map_);
+    ASSERT(mapping_);
     out << "AutomaticResolution[";
-    map_->print(out);
+    mapping_->print(out);
     out << "]";
 }
 

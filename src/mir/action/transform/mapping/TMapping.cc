@@ -8,13 +8,10 @@
  * nor does it submit to any jurisdiction.
  */
 
-/// @date Mar 2017
+/// @date May 2017
 
 
-#include "mir/action/transform/mapping/Cubic.h"
-
-#include "eckit/exception/Exceptions.h"
-#include "mir/config/LibMir.h"
+#include "mir/action/transform/mapping/TMapping.h"
 
 
 namespace mir {
@@ -24,33 +21,10 @@ namespace mapping {
 
 
 namespace {
-static MappingBuilder< Cubic > __mapping("cubic");
-}
-
-
-Cubic::~Cubic() {}
-
-
-size_t Cubic::getTruncationFromPointsPerLatitude(const size_t& N) const {
-    ASSERT(N);
-
-    size_t T = N - 1;
-    ASSERT(T);
-
-    return T;
-}
-
-
-size_t Cubic::getPointsPerLatitudeFromTruncation(const size_t& T) const {
-    ASSERT(T);
-
-    size_t N = T + 1;
-    return N;
-}
-
-
-void Cubic::print(std::ostream& out) const {
-    out << "Cubic[]";
+static MappingBuilder< TMapping<1> > __mapping1("linear");
+static MappingBuilder< TMapping<2> > __mapping2("quadratic");
+static MappingBuilder< TMapping<3> > __mapping3("cubic");
+static MappingBuilder< TMapping<4> > __mapping4("quartic");
 }
 
 
@@ -58,3 +32,4 @@ void Cubic::print(std::ostream& out) const {
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
+

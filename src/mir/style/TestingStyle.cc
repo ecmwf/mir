@@ -38,8 +38,8 @@ TestingStyle::~TestingStyle() {
 void TestingStyle::prepare(action::ActionPlan &) const {
     using namespace action::transform::mapping;
 
-    for (auto m : {"auto", "linear", "quadratic", "cubic"}) {
-        eckit::ScopedPtr<Mapping> map(action::transform::mapping::MappingFactory::build(m, parametrisation_));
+    for (auto m : {"linear", "quadratic", "cubic"}) {
+        eckit::ScopedPtr<Mapping> map(action::transform::mapping::MappingFactory::build(m));
         ASSERT(map.get());
 
         std::cout << std::endl;

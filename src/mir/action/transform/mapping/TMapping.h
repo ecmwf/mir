@@ -8,15 +8,15 @@
  * nor does it submit to any jurisdiction.
  */
 
-/// @date Mar 2017
+/// @date May 2017
 
 
-#ifndef mir_action_transform_mapping_Cubic_h
-#define mir_action_transform_mapping_Cubic_h
+#ifndef mir_action_transform_mapping_TMapping_h
+#define mir_action_transform_mapping_TMapping_h
 
-#include <iosfwd>
+#include <cmath>
 #include <string>
-#include "eckit/memory/NonCopyable.h"
+#include "eckit/exception/Exceptions.h"
 #include "mir/action/transform/mapping/Mapping.h"
 
 
@@ -26,18 +26,19 @@ namespace transform {
 namespace mapping {
 
 
-class Cubic : public Mapping {
+template< int ORDER >
+class TMapping : public Mapping {
 public:
     // -- Exceptions
     // None
 
     // -- Contructors
-
-    Cubic(const param::MIRParametrisation& parametrisation) : Mapping(parametrisation) {}
+    TMapping() {
+        ASSERT(ORDER);
+    }
 
     // -- Destructor
-
-    virtual ~Cubic();
+    // None
 
     // -- Convertors
     // None
@@ -49,8 +50,27 @@ public:
     // None
 
     // -- Overridden methods
-    size_t getTruncationFromPointsPerLatitude(const size_t&) const;
-    size_t getPointsPerLatitudeFromTruncation(const size_t&) const;
+    size_t getTruncationFromPointsPerLatitude(const size_t& N) const {
+        ASSERT(N);
+    
+        size_t T = size_t(ceil( 4. / double(ORDER + 1) * N) - 1);
+        ASSERT(T);
+    
+        return T;
+    }
+
+    size_t getPointsPerLatitudeFromTruncation(const size_t& T) const {
+        ASSERT(T);
+
+        size_t N = size_t(double(T + 1) * double(ORDER + 1) / 4.);
+        ASSERT(N);
+
+        return N;
+    }
+
+    void print(std::ostream& out) const {
+        out << "TMapping<ORDER=" << ORDER << ">[]";
+    }
 
     // -- Class members
     // None
@@ -63,8 +83,7 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const;
+    // None
 
     // -- Overridden methods
     // None
@@ -93,11 +112,7 @@ private:
     // None
 
     // -- Friends
-
-    friend std::ostream& operator<<(std::ostream& s, const Cubic& p) {
-        p.print(s);
-        return s;
-    }
+    // None
 };
 
 
@@ -108,3 +123,4 @@ private:
 
 
 #endif
+

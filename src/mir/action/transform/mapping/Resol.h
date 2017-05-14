@@ -11,12 +11,15 @@
 /// @date Mar 2017
 
 
-#ifndef mir_action_transform_mapping_Mapping_h
-#define mir_action_transform_mapping_Mapping_h
+#ifndef mir_action_transform_mapping_Resol_h
+#define mir_action_transform_mapping_Resol_h
 
 #include <iosfwd>
 #include <string>
 #include "eckit/memory/NonCopyable.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/action/transform/mapping/Mapping.h"
+#include "mir/param/DelayedParametrisation.h"
 
 
 namespace mir {
@@ -32,17 +35,17 @@ namespace transform {
 namespace mapping {
 
 
-class Mapping : public eckit::NonCopyable {
+class Resol : public eckit::NonCopyable, public param::DelayedParametrisation {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    Mapping() {}
+    Resol(const param::MIRParametrisation& parametrisation);
 
     // -- Destructor
-    virtual ~Mapping() {}
+    virtual ~Resol();
 
     // -- Convertors
     // None
@@ -51,12 +54,16 @@ public:
     // None
 
     // -- Methods
-    virtual size_t getTruncationFromPointsPerLatitude(const size_t&) const;
-    virtual size_t getPointsPerLatitudeFromTruncation(const size_t&) const;
+
     virtual void print(std::ostream&) const = 0;
 
+    size_t getTruncationFromPointsPerLatitude() const;
+    size_t getPointsPerLatitudeFromTruncation() const;
+
     // -- Overridden methods
-    // None
+
+    bool get(const std::string& name, long& value) const;
+    bool get(const std::string& name, size_t& value) const;
 
     // -- Class members
     // None
@@ -67,10 +74,14 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    const param::MIRParametrisation& parametrisation_;
+    eckit::ScopedPtr<Mapping> mapping_;
 
     // -- Methods
-    // None
+
+    virtual size_t getTruncation() const = 0;
+    virtual size_t getPointsPerLatitude() const = 0;
 
     // -- Overridden methods
     // None
@@ -100,31 +111,31 @@ private:
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const Mapping& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Resol& p) {
         p.print(s);
         return s;
     }
 };
 
 
-class MappingFactory {
+class ResolFactory {
     std::string name_;
-    virtual Mapping *make() = 0;
+    virtual Resol *make(const param::MIRParametrisation&) = 0;
 protected:
-    MappingFactory(const std::string&);
-    virtual ~MappingFactory();
+    ResolFactory(const std::string&);
+    virtual ~ResolFactory();
 public:
-    static Mapping *build(const std::string&);
+    static Resol *build(const std::string&, const param::MIRParametrisation&);
     static void list(std::ostream&);
 };
 
 
-template <class T> class MappingBuilder : public MappingFactory {
-    virtual Mapping *make() {
-        return new T();
+template <class T> class ResolBuilder : public ResolFactory {
+    virtual Resol *make(const param::MIRParametrisation& param) {
+        return new T(param);
     }
 public:
-    MappingBuilder(const std::string& name) : MappingFactory(name) {}
+    ResolBuilder(const std::string& name) : ResolFactory(name) {}
 };
 
 

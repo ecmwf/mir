@@ -40,13 +40,6 @@ static void init() {
 } // (anonymous namespace)
 
 
-Mapping::Mapping(const param::MIRParametrisation& parametrisation)
-    : parametrisation_(parametrisation) {}
-
-
-Mapping::~Mapping() {}
-
-
 size_t Mapping::getTruncationFromPointsPerLatitude(const size_t&) const {
     std::ostringstream os;
     os << "Mapping::getTruncationFromPointsPerLatitude() not implemented for " << *this;
@@ -57,37 +50,6 @@ size_t Mapping::getTruncationFromPointsPerLatitude(const size_t&) const {
 size_t Mapping::getPointsPerLatitudeFromTruncation(const size_t&) const {
     std::ostringstream os;
     os << "Mapping::getPointsPerLatitudeFromTruncation() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
-}
-
-
-bool Mapping::get(const std::string& name, long& value) const {
-    size_t another_value = 0;
-    if (get(name, another_value)) {
-        value = long(another_value);
-        return true;
-    }
-    return false;
-}
-
-
-bool Mapping::get(const std::string& name, size_t& value) const {
-    eckit::Log::debug<LibMir>() << "Mapping::get(" << name << ")" << std::endl;
-
-    if (name == "truncation") {
-        size_t N = 0;  // FIXME
-        value = getTruncationFromPointsPerLatitude(N);
-        return true;
-    }
-
-    if (name == "points-per-latitude") {
-        size_t T = 0;  // FIXME
-        value = getPointsPerLatitudeFromTruncation(T);
-        return true;
-    }
-
-    std::ostringstream os;
-    os << "Mapping::get(" << name <<") not implemented, expected 'truncation' or 'points-per-latitude' (" << *this << ")";
     throw eckit::SeriousBug(os.str());
 }
 
@@ -112,7 +74,7 @@ MappingFactory::~MappingFactory() {
 }
 
 
-Mapping* MappingFactory::build(const std::string& name, const param::MIRParametrisation& params) {
+Mapping* MappingFactory::build(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
@@ -129,7 +91,7 @@ Mapping* MappingFactory::build(const std::string& name, const param::MIRParametr
         throw eckit::SeriousBug(std::string("No MappingFactory called ") + name);
     }
 
-    return (*j).second->make(params);
+    return (*j).second->make();
 }
 
 

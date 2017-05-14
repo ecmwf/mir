@@ -14,11 +14,7 @@
 #ifndef mir_action_transform_mapping_ArchivedValue_h
 #define mir_action_transform_mapping_ArchivedValue_h
 
-#include <iosfwd>
-#include <string>
-#include "eckit/memory/NonCopyable.h"
-#include "eckit/memory/ScopedPtr.h"
-#include "mir/action/transform/mapping/Mapping.h"
+#include "mir/action/transform/mapping/Resol.h"
 
 
 namespace mir {
@@ -27,7 +23,7 @@ namespace transform {
 namespace mapping {
 
 
-class ArchivedValue : public Mapping {
+class ArchivedValue : public Resol {
 public:
 
     // -- Exceptions
@@ -51,8 +47,7 @@ public:
     // None
 
     // -- Overridden methods
-    size_t getTruncationFromPointsPerLatitude(const size_t&) const;
-    size_t getPointsPerLatitudeFromTruncation(const size_t&) const;
+    // None
 
     // -- Class members
     // None
@@ -66,11 +61,13 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const;
+    // None
 
     // -- Overridden methods
-    // None
+
+    size_t getTruncation() const;
+    size_t getPointsPerLatitude() const;
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -97,11 +94,8 @@ private:
     // None
 
     // -- Friends
+    // None
 
-    friend std::ostream& operator<<(std::ostream& s, const ArchivedValue& p) {
-        p.print(s);
-        return s;
-    }
 };
 
 

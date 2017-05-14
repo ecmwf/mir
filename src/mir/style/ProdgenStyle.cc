@@ -61,7 +61,7 @@ void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
 
         // use spectral mapping to cubic grid
         using namespace action::transform::mapping;
-        eckit::ScopedPtr<Mapping> map(MappingFactory::build("cubic", parametrisation_));
+        eckit::ScopedPtr<Mapping> map(MappingFactory::build("cubic"));
 
         plan.add("transform." + transform + "octahedral-gg", "octahedral", map);
     }

@@ -146,16 +146,12 @@ list(
     action/transform/mapping/ArchivedValue.h
     action/transform/mapping/AutomaticResolution.cc
     action/transform/mapping/AutomaticResolution.h
-    action/transform/mapping/Cubic.cc
-    action/transform/mapping/Cubic.h
-    action/transform/mapping/Linear.cc
-    action/transform/mapping/Linear.h
     action/transform/mapping/Mapping.cc
     action/transform/mapping/Mapping.h
-    action/transform/mapping/Quadratic.cc
-    action/transform/mapping/Quadratic.h
-    action/transform/mapping/Quartic.cc
-    action/transform/mapping/Quartic.h
+    action/transform/mapping/Resol.cc
+    action/transform/mapping/Resol.h
+    action/transform/mapping/TMapping.cc
+    action/transform/mapping/TMapping.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc
