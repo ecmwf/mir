@@ -56,22 +56,6 @@ Resol::Resol(const param::MIRParametrisation& parametrisation) :
 Resol::~Resol() {}
 
 
-size_t Resol::getTruncationFromPointsPerLatitude() const {
-    const size_t N = getPointsPerLatitude();
-    ASSERT(N);
-
-    return mapping_->getTruncationFromPointsPerLatitude(N);
-}
-
-
-size_t Resol::getPointsPerLatitudeFromTruncation() const {
-    const size_t T = getTruncation();
-    ASSERT(T);
-
-    return mapping_->getPointsPerLatitudeFromTruncation(T);
-}
-
-
 bool Resol::get(const std::string& name, long& value) const {
     size_t another_value = 0;
     if (get(name, another_value)) {
@@ -86,12 +70,20 @@ bool Resol::get(const std::string& name, size_t& value) const {
     eckit::Log::debug<LibMir>() << "Resol::get(" << name << ")" << std::endl;
 
     if (name == "truncation") {
-        value = getTruncationFromPointsPerLatitude();
+        size_t N = 0;  // FIXME something intelligent
+
+        value = mapping_->getTruncationFromPointsPerLatitude(N);
+        ASSERT(value);
+
         return true;
     }
 
     if (name == "points-per-latitude") {
-        value = getPointsPerLatitudeFromTruncation();
+        size_t T = 0;  // FIXME something intelligent
+
+        value = mapping_->getPointsPerLatitudeFromTruncation(T);
+        ASSERT(value);
+
         return true;
     }
 

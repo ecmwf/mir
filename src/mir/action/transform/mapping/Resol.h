@@ -57,9 +57,6 @@ public:
 
     virtual void print(std::ostream&) const = 0;
 
-    size_t getTruncationFromPointsPerLatitude() const;
-    size_t getPointsPerLatitudeFromTruncation() const;
-
     // -- Overridden methods
 
     bool get(const std::string& name, long& value) const;
