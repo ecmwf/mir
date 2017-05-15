@@ -19,7 +19,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/transform/mapping/AutomaticResolution.h"
+#include "mir/action/transform/mapping/Resol.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -57,10 +57,9 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
             // TODO: this is temporary
             plan.add("transform.sh-truncate", "truncation", 63L);
         } else {
-
-            action::transform::mapping::AutomaticResolution ar(parametrisation_);
-            plan.add("transform.sh-truncate", "truncation", static_cast<param::DelayedParametrisation*>(&ar));
-
+            using namespace action::transform::mapping;
+            eckit::ScopedPtr<Resol> resol(ResolFactory::build("auto", parametrisation_));
+            plan.add("transform.sh-truncate", "truncation", resol.get());
         }
     }
 
