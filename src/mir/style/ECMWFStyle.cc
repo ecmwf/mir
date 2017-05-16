@@ -19,6 +19,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/action/transform/mapping/AutomaticResolution.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -83,17 +84,28 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
 
     if (field_spectral) {
-        shTruncate(plan);
-
-        if (parametrisation_.get("user.formula.spectral", formula)) {
-            std::string metadata;
-            // paramId for the results of formulas
-            parametrisation_.get("user.formula.spectral.metadata", metadata);
-
-            plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-        }
-
         if (user_wants_gridded) {
+
+            bool autoresol = true;
+            parametrisation_.get("autoresol", autoresol);
+
+            if (autoresol) {
+                eckit::ScopedPtr<param::DelayedParametrisation> automatic(new action::transform::mapping::AutomaticResolution(parametrisation_));
+                plan.add("transform.sh-truncate", "truncation", automatic);
+            } else {
+                if (parametrisation_.has("user.truncation")) {
+                    plan.add("transform.sh-truncate");
+                }
+            }
+
+            if (parametrisation_.get("user.formula.spectral", formula)) {
+                std::string metadata;
+                // paramId for the results of formulas
+                parametrisation_.get("user.formula.spectral.metadata", metadata);
+
+                plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+            }
+
             sh2grid(plan);
 
             if (parametrisation_.get("user.formula.gridded", formula)) {
@@ -105,7 +117,17 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
         } else {
             // "user wants spectral"
+
+            if (parametrisation_.get("user.formula.spectral", formula)) {
+                std::string metadata;
+                // paramId for the results of formulas
+                parametrisation_.get("user.formula.spectral.metadata", metadata);
+
+                plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+            }
+
             sh2sh(plan);
+
         }
     }
 
@@ -280,13 +302,6 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
         plan.add(epilogue);
     }
 
-}
-
-
-void ECMWFStyle::shTruncate(action::ActionPlan& plan) const {
-    if (parametrisation_.has("user.truncation")) {
-        plan.add("transform.sh-truncate");
-    }
 }
 
 

@@ -51,8 +51,8 @@ public:
     // None
 
     // -- Methods
-    virtual size_t getTruncationFromPointsPerLatitude(const size_t&) const;
-    virtual size_t getPointsPerLatitudeFromTruncation(const size_t&) const;
+    virtual long getTruncationFromPointsPerLatitude(const long&) const;
+    virtual long getPointsPerLatitudeFromTruncation(const long&) const;
     virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods

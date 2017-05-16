@@ -15,6 +15,7 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -23,25 +24,50 @@ namespace transform {
 namespace mapping {
 
 
-namespace {
-static ResolBuilder< AutomaticResolution > __mapping1("auto");
-static ResolBuilder< AutomaticResolution > __mapping2("automatic resolution");
+AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parametrisation) :
+    parametrisation_(parametrisation) {
+
+    std::string map;
+    parametrisation_.get("spectral-mapping", map);
+
+    mapping_.reset(action::transform::mapping::MappingFactory::build(map));
+    ASSERT(mapping_);
 }
 
 
-AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parametrisation) : Resol(parametrisation) {}
+bool AutomaticResolution::get(const std::string &name, long &value) const {
+    ASSERT(name == "truncation");
+
+    if (parametrisation_.has("griddef")) {
+        // TODO: this is temporary
+        value = 63L;
+        return true;
+    }
 
 
-AutomaticResolution::~AutomaticResolution() {}
+    long Ni = 0;  // points-per-latitude
+
+    if (parametrisation_.has("user.grid")) {}
+    if (parametrisation_.has("user.reduced")) {}
+    if (parametrisation_.has("user.regular")) {}
+    if (parametrisation_.has("user.octahedral")) {}
+    if (parametrisation_.has("user.pl")) {}
+    if (parametrisation_.has("user.gridname")) {}
+    if (parametrisation_.has("user.griddef")) {}
 
 
-size_t AutomaticResolution::getTruncation() const {
-    return 0;  // FIXME
+    ASSERT(Ni > 0);
+    return mapping_->getTruncationFromPointsPerLatitude(Ni);
 }
 
 
-size_t AutomaticResolution::getPointsPerLatitude() const {
-    return 0;  // FIXME
+bool AutomaticResolution::get(const std::string& name, size_t& value) const {
+    long T;
+    if (get(name, T)) {
+        value = size_t(T);
+        return true;
+    }
+    return false;
 }
 
 

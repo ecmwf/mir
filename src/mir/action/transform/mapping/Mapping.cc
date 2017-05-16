@@ -40,14 +40,14 @@ static void init() {
 } // (anonymous namespace)
 
 
-size_t Mapping::getTruncationFromPointsPerLatitude(const size_t&) const {
+long Mapping::getTruncationFromPointsPerLatitude(const long&) const {
     std::ostringstream os;
     os << "Mapping::getTruncationFromPointsPerLatitude() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 
-size_t Mapping::getPointsPerLatitudeFromTruncation(const size_t&) const {
+long Mapping::getPointsPerLatitudeFromTruncation(const long&) const {
     std::ostringstream os;
     os << "Mapping::getPointsPerLatitudeFromTruncation() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());

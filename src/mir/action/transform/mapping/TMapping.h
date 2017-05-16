@@ -50,19 +50,19 @@ public:
     // None
 
     // -- Overridden methods
-    size_t getTruncationFromPointsPerLatitude(const size_t& N) const {
+    long getTruncationFromPointsPerLatitude(const long& N) const {
         ASSERT(N);
     
-        size_t T = size_t(ceil( 4. / double(ORDER + 1) * N) - 1);
+        long T = long(ceil( 4. / double(ORDER + 1) * N) - 1);
         ASSERT(T);
     
         return T;
     }
 
-    size_t getPointsPerLatitudeFromTruncation(const size_t& T) const {
+    long getPointsPerLatitudeFromTruncation(const long& T) const {
         ASSERT(T);
 
-        size_t N = size_t(double(T + 1) * double(ORDER + 1) / 4.);
+        long N = long(double(T + 1) * double(ORDER + 1) / 4.);
         ASSERT(N);
 
         return N;

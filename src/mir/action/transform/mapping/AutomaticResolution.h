@@ -14,7 +14,12 @@
 #ifndef mir_action_transform_mapping_AutomaticResolution_h
 #define mir_action_transform_mapping_AutomaticResolution_h
 
-#include "mir/action/transform/mapping/Resol.h"
+#include <iosfwd>
+#include <string>
+#include "eckit/memory/NonCopyable.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/action/transform/mapping/Mapping.h"
+#include "mir/param/DelayedParametrisation.h"
 
 
 namespace mir {
@@ -23,7 +28,7 @@ namespace transform {
 namespace mapping {
 
 
-class AutomaticResolution : public Resol {
+class AutomaticResolution : public eckit::NonCopyable, public param::DelayedParametrisation {
 public:
 
     // -- Exceptions
@@ -34,8 +39,7 @@ public:
     AutomaticResolution(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    virtual ~AutomaticResolution();
+    // None
 
     // -- Convertors
     // None
@@ -58,15 +62,17 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    const param::MIRParametrisation& parametrisation_;
+    eckit::ScopedPtr<Mapping> mapping_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    size_t getTruncation() const;
-    size_t getPointsPerLatitude() const;
+    bool get(const std::string&, long&) const;
+    bool get(const std::string&, size_t&) const;
     void print(std::ostream&) const;
 
     // -- Class members
