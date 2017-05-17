@@ -19,7 +19,6 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/transform/mapping/Resol.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -43,24 +42,29 @@ void DisseminationStyle::print(std::ostream &out) const {
 
 
 void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
-    bool autoresol = false;
-    parametrisation_.get("autoresol", autoresol);
-    ASSERT(!autoresol);
 
     bool vod2uv = false;
     parametrisation_.get("vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";
 
-    using namespace action::transform::mapping;
-    eckit::ScopedPtr<Resol> resol(ResolFactory::build("av", parametrisation_));
-
-    plan.add("transform." + transform + "octahedral-gg", "octahedral", resol.get());
+//    using namespace action::transform::mapping;
+//    eckit::ScopedPtr<Resol> resol(ResolFactory::build("av", parametrisation_));
+//
+//    plan.add("transform." + transform + "octahedral-gg", "octahedral", resol.get());
 
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);
     }
 
     grid2grid(plan);
+}
+
+
+void DisseminationStyle::shTruncate(action::ActionPlan&) const {
+
+    bool autoresol = false;
+    parametrisation_.get("autoresol", autoresol);
+    ASSERT(!autoresol);
 }
 
 

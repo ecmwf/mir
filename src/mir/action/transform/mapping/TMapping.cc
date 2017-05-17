@@ -28,6 +28,12 @@ static MappingBuilder< TMapping<4> > __mapping4("quartic");
 }
 
 
+template<> void TMapping<1>::print(std::ostream& out) const { out << "TMapping[linear]"; }
+template<> void TMapping<2>::print(std::ostream& out) const { out << "TMapping[quadratic]"; }
+template<> void TMapping<3>::print(std::ostream& out) const { out << "TMapping[cubic]"; }
+template<> void TMapping<4>::print(std::ostream& out) const { out << "TMapping[quartic]"; }
+
+
 }  // namespace mapping
 }  // namespace transform
 }  // namespace action

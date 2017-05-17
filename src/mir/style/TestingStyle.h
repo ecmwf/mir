@@ -82,6 +82,7 @@ private:
     void sh2grid(action::ActionPlan&) const {}
     bool forcedPrepare(const param::MIRParametrisation&) const { return true; }
     void prepare(action::ActionPlan&) const;
+    void shTruncate(action::ActionPlan&) const {}
 
     // -- Class members
     // None

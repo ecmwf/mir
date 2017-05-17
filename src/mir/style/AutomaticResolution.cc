@@ -11,7 +11,7 @@
 /// @date May 2017
 
 
-#include "mir/action/transform/mapping/AutomaticResolution.h"
+#include "mir/style/AutomaticResolution.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
@@ -22,9 +22,7 @@
 
 
 namespace mir {
-namespace action {
-namespace transform {
-namespace mapping {
+namespace style {
 
 
 AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parametrisation) :
@@ -108,7 +106,5 @@ void AutomaticResolution::print(std::ostream& out) const {
 }
 
 
-}  // namespace mapping
-}  // namespace transform
-}  // namespace action
+}  // namespace style
 }  // namespace mir

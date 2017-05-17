@@ -89,6 +89,7 @@ private:
 
     void sh2grid(action::ActionPlan&) const;
     void grid2grid(action::ActionPlan&) const;
+    void shTruncate(action::ActionPlan&) const;
 
     // -- Class members
     // None

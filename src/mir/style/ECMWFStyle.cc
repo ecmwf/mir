@@ -19,7 +19,6 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/transform/mapping/AutomaticResolution.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -78,26 +77,17 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
     bool field_gridded  = parametrisation_.has("field.gridded");
     bool field_spectral = parametrisation_.has("field.spectral");
-    std::string formula;
 
     ASSERT(field_gridded != field_spectral);
 
 
     if (field_spectral) {
+
+        shTruncate(plan);
+
         if (user_wants_gridded) {
 
-            bool autoresol = false;
-            parametrisation_.get("autoresol", autoresol);
-
-            if (autoresol) {
-                eckit::ScopedPtr<param::DelayedParametrisation> automatic(new action::transform::mapping::AutomaticResolution(parametrisation_));
-                plan.add("transform.sh-truncate", "truncation", automatic.get());
-            } else {
-                if (parametrisation_.has("user.truncation")) {
-                    plan.add("transform.sh-truncate");
-                }
-            }
-
+            std::string formula;
             if (parametrisation_.get("user.formula.spectral", formula)) {
                 std::string metadata;
                 // paramId for the results of formulas
@@ -117,23 +107,14 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
         } else {
             // "user wants spectral"
-
-            if (parametrisation_.get("user.formula.spectral", formula)) {
-                std::string metadata;
-                // paramId for the results of formulas
-                parametrisation_.get("user.formula.spectral.metadata", metadata);
-
-                plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-            }
-
             sh2sh(plan);
-
         }
     }
 
 
     if (field_gridded) {
 
+        std::string formula;
         if (parametrisation_.get("user.formula.gridded", formula)) {
             std::string metadata;
             // paramId for the results of formulas
@@ -247,6 +228,15 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
+
+    std::string formula;
+    if (parametrisation_.get("user.formula.spectral", formula)) {
+        std::string metadata;
+        // paramId for the results of formulas
+        parametrisation_.get("user.formula.spectral.metadata", metadata);
+
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+    }
 
     bool vod2uv = false;
     parametrisation_.get("vod2uv", vod2uv);

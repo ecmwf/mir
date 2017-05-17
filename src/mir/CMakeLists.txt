@@ -142,14 +142,8 @@ list(
     action/transform/TransCache.h
     action/transform/TransInitor.cc
     action/transform/TransInitor.h
-    action/transform/mapping/ArchivedValue.cc
-    action/transform/mapping/ArchivedValue.h
-    action/transform/mapping/AutomaticResolution.cc
-    action/transform/mapping/AutomaticResolution.h
     action/transform/mapping/Mapping.cc
     action/transform/mapping/Mapping.h
-    action/transform/mapping/Resol.cc
-    action/transform/mapping/Resol.h
     action/transform/mapping/TMapping.cc
     action/transform/mapping/TMapping.h
     api/MIRComplexJob.cc
@@ -488,6 +482,8 @@ list(
     stats/detail/ScalarCentralMomentsFn.h
     stats/detail/ScalarMinMaxFn.h
     stats/detail/ScalarpNormsFn.h
+    style/AutomaticResolution.cc
+    style/AutomaticResolution.h
     style/DisseminationStyle.cc
     style/DisseminationStyle.h
     style/ECMWFStyle.cc

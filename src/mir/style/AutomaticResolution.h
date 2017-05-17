@@ -11,19 +11,22 @@
 /// @date May 2017
 
 
-#ifndef mir_action_transform_mapping_ArchivedValue_h
-#define mir_action_transform_mapping_ArchivedValue_h
+#ifndef mir_style_AutomaticResolution_h
+#define mir_style_AutomaticResolution_h
 
-#include "mir/action/transform/mapping/Resol.h"
+#include <iosfwd>
+#include <string>
+#include "eckit/memory/NonCopyable.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/action/transform/mapping/Mapping.h"
+#include "mir/param/DelayedParametrisation.h"
 
 
 namespace mir {
-namespace action {
-namespace transform {
-namespace mapping {
+namespace style {
 
 
-class ArchivedValue : public Resol {
+class AutomaticResolution : public eckit::NonCopyable, public param::DelayedParametrisation {
 public:
 
     // -- Exceptions
@@ -31,11 +34,10 @@ public:
 
     // -- Contructors
 
-    ArchivedValue(const param::MIRParametrisation&);
+    AutomaticResolution(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    virtual ~ArchivedValue();
+    // None
 
     // -- Convertors
     // None
@@ -44,7 +46,8 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    static long computeNi(const param::MIRParametrisation&);
 
     // -- Overridden methods
     // None
@@ -58,15 +61,17 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    const param::MIRParametrisation& parametrisation_;
+    eckit::ScopedPtr<action::transform::mapping::Mapping> mapping_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    size_t getTruncation() const;
-    size_t getPointsPerLatitude() const;
+    bool get(const std::string&, long&) const;
+    bool get(const std::string&, size_t&) const;
     void print(std::ostream&) const;
 
     // -- Class members
@@ -78,8 +83,7 @@ protected:
 private:
 
     // -- Members
-
-    size_t truncation_;
+    // None
 
     // -- Methods
     // None
@@ -99,9 +103,7 @@ private:
 };
 
 
-}  // namespace mapping
-}  // namespace transform
-}  // namespace action
+}  // namespace style
 }  // namespace mir
 
 

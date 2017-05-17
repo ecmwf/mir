@@ -25,7 +25,6 @@
 #include "eckit/option/VectorOption.h"
 #include "mir/action/plan/Executor.h"
 #include "mir/action/transform/mapping/Mapping.h"
-#include "mir/action/transform/mapping/Resol.h"
 #include "mir/api/MIRJob.h"
 #include "mir/caching/interpolator/InterpolatorLoader.h"
 #include "mir/caching/legendre/LegendreLoader.h"
@@ -67,7 +66,6 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Transform"));
-        options_.push_back(new FactoryOption<mir::action::transform::mapping::ResolFactory>("resol", "Spectral/gridded resolution setting"));
         options_.push_back(new FactoryOption<mir::action::transform::mapping::MappingFactory>("spectral-mapping", "Spectral/gridded mapping"));
         options_.push_back(new SimpleOption<std::string>("spectral-intermediate-gridname", "Spectral/gridded intermediate grid (via)"));
         options_.push_back(new SimpleOption<size_t>("truncation", "Truncation input field"));

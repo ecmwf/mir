@@ -20,6 +20,7 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/style/AutomaticResolution.h"
 
 
 namespace mir {
@@ -121,6 +122,22 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);
+    }
+}
+
+
+void MARSStyle::shTruncate(action::ActionPlan& plan) const {
+
+    bool autoresol = true;
+    parametrisation_.get("autoresol", autoresol);
+
+    if (autoresol) {
+        eckit::ScopedPtr<param::DelayedParametrisation> automatic(new AutomaticResolution(parametrisation_));
+        plan.add("transform.sh-truncate", "truncation", automatic.get());
+    } else {
+        if (parametrisation_.has("user.truncation")) {
+            plan.add("transform.sh-truncate");
+        }
     }
 }
 

@@ -44,9 +44,6 @@ void ProdgenStyle::print(std::ostream &out) const {
 
 
 void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
-    bool autoresol = false;
-    parametrisation_.get("autoresol", autoresol);
-    ASSERT(!autoresol);
 
     bool vod2uv = false;
     parametrisation_.get("vod2uv", vod2uv);
@@ -54,16 +51,13 @@ void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (!parametrisation_.has("user.rotation") &&
          parametrisation_.has("user.grid")) {
-        plan.add("transform." + transform + "regular-ll", "grid", new ProdgenGrid(parametrisation_));
+        eckit::ScopedPtr<param::DelayedParametrisation> grid(new ProdgenGrid(parametrisation_));
+        plan.add("transform." + transform + "regular-ll", "grid", grid.get());
         plan.add("interpolate.grid2regular-ll");
     }
     else {
 
-        // use spectral mapping to cubic grid
-        using namespace action::transform::mapping;
-        eckit::ScopedPtr<Mapping> map(MappingFactory::build("cubic"));
-
-        plan.add("transform." + transform + "octahedral-gg", "octahedral", map);
+        plan.add("transform." + transform + "namedgrid", "gridname", "O1280");
     }
 
     if (!parametrisation_.has("user.rotation")) {
@@ -81,6 +75,14 @@ void ProdgenStyle::grid2grid(action::ActionPlan& plan) const {
     }
 
     plan.add("interpolate.grid2regular-ll", "grid", new ProdgenGrid(parametrisation_));
+}
+
+
+void ProdgenStyle::shTruncate(action::ActionPlan&) const {
+
+    bool autoresol = false;
+    parametrisation_.get("autoresol", autoresol);
+    ASSERT(!autoresol);
 }
 
 

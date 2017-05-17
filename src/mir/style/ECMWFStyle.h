@@ -67,6 +67,7 @@ protected:
     virtual void sh2sh(action::ActionPlan&) const;
     virtual void grid2grid(action::ActionPlan&) const;
     virtual void epilogue(action::ActionPlan&) const;
+    virtual void shTruncate(action::ActionPlan&) const = 0;
 
     bool isWindComponent() const;
     bool selectWindComponents(action::ActionPlan&) const;
