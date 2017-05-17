@@ -12,14 +12,14 @@
 #ifndef mir_style_TestingStyle_h
 #define mir_style_TestingStyle_h
 
-#include "mir/style/ECMWFStyle.h"
+#include "mir/style/MIRStyle.h"
 
 
 namespace mir {
 namespace style {
 
 
-class TestingStyle : public ECMWFStyle {
+class TestingStyle : public MIRStyle {
 public:
 
     // -- Exceptions
@@ -79,10 +79,8 @@ private:
     // None
 
     // -- Overridden methods
-    void sh2grid(action::ActionPlan&) const {}
     bool forcedPrepare(const param::MIRParametrisation&) const { return true; }
     void prepare(action::ActionPlan&) const;
-    void shTruncate(action::ActionPlan&) const {}
 
     // -- Class members
     // None

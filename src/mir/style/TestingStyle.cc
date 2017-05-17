@@ -27,7 +27,7 @@ static MIRStyleBuilder<TestingStyle> __style("testing");
 
 
 TestingStyle::TestingStyle(const param::MIRParametrisation &parametrisation) :
-    ECMWFStyle(parametrisation) {
+    MIRStyle(parametrisation) {
 }
 
 
@@ -46,7 +46,7 @@ void TestingStyle::prepare(action::ActionPlan &) const {
         map->print(std::cout);
         std::cout << std::endl;
 
-        for (const size_t& T : std::vector<size_t>({
+        for (const long& T : std::vector<long>({
             2048, 2047, 2046,
             1280, 1279, 1278,
              800,  799,  798,
@@ -62,7 +62,7 @@ void TestingStyle::prepare(action::ActionPlan &) const {
               96,   95,   94,
               64,   63 //,   62
             })) {
-            size_t N = map->getPointsPerLatitudeFromTruncation(T);
+            long N = map->getPointsPerLatitudeFromTruncation(T);
             std::cout << "\tT=" << T
                       << "\tN=" << N
                       << "\tT=" << map->getTruncationFromPointsPerLatitude(N)
