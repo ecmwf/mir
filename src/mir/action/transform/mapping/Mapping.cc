@@ -12,6 +12,7 @@
 
 
 #include "mir/action/transform/mapping/Mapping.h"
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -37,7 +38,7 @@ static void init() {
 }
 
 
-} // (anonymous namespace)
+}  // (anonymous namespace)
 
 
 long Mapping::getTruncationFromPointsPerLatitude(const long&) const {

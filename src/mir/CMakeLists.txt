@@ -488,6 +488,12 @@ list(
     style/DisseminationStyle.h
     style/ECMWFStyle.cc
     style/ECMWFStyle.h
+    style/IntermediateGaussianGrid.cc
+    style/IntermediateGaussianGrid.h
+    style/IntermediateGrid.cc
+    style/IntermediateGrid.h
+    style/IntermediateNamedGrid.cc
+    style/IntermediateNamedGrid.h
     style/MARSStyle.cc
     style/MARSStyle.h
     style/MIRStyle.cc
