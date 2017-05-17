@@ -21,7 +21,7 @@ namespace mir {
 namespace style {
 
 
-class IntermediateNamedGrid: public IntermediateGrid {
+class IntermediateNamedGrid : public IntermediateGrid {
 public:
 
     // -- Exceptions
@@ -41,30 +41,13 @@ public:
     // None
 
     // -- Methods
-
-    size_t gaussianNumber() const { return 0; }
-    std::string gaussianGridType() const { return ""; }
-
-    // -- Overridden methods
-
-    void print(std::ostream& out) const;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-
-    // -- Members
-    // None
-
-    // -- Methods
     // None
 
     // -- Overridden methods
-    // None
+
+    std::string getGridname() const;
+
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -75,7 +58,8 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    std::string gridname_;
 
     // -- Methods
     // None

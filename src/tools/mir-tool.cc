@@ -68,8 +68,8 @@ public:
         //==============================================
         options_.push_back(new Separator("Transform"));
         options_.push_back(new FactoryOption<mir::action::transform::mapping::MappingFactory>("spectral-mapping", "Spectral/gridded mapping"));
-        options_.push_back(new SimpleOption<std::string>("spectral-intermediate-gridname", "Spectral/gridded intermediate grid name"));
-        options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded intermediate grid (via)"));
+        options_.push_back(new SimpleOption<std::string>("spectral-intermediate-named-grid", "Spectral/gridded intermediate grid name (via)"));
+        options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded intermediate Gaussian grid type"));
         options_.push_back(new SimpleOption<size_t>("truncation", "Truncation input field"));
         options_.push_back(new SimpleOption<bool>("autoresol", "Simulate MARS RESOL=AUTO"));
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is Vorticity and Divergence, conversion to u/v or U/V requested"));
@@ -77,9 +77,9 @@ public:
         //==============================================
         options_.push_back(new Separator("Interpolation"));
         options_.push_back(new VectorOption<double>("grid", "Interpolate to the regular grid: west_east/south_north", 2));
-        options_.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular gaussian grid N"));
-        options_.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular gaussian grid N (pre 2016)"));
-        options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular gaussian grid N"));
+        options_.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular Gaussian grid N"));
+        options_.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular Gaussian grid N (pre 2016)"));
+        options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular Gaussian grid N"));
         options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
         options_.push_back(new VectorOption<double>("shift", "Shift the target grid by a west_east/south_north increment" , 2));
         options_.push_back(new SimpleOption<bool>("autoshift", "Shift so that south/west is on grid"));
@@ -91,7 +91,7 @@ public:
         //==============================================
         options_.push_back(new Separator("Methods"));
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
-        options_.push_back(new SimpleOption<size_t>("intermediate_gaussian", "Transform from SH to this gaussian number first"));
+        options_.push_back(new SimpleOption<size_t>("intermediate_gaussian", "Transform from SH to this Gaussian number first"));
         options_.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));

@@ -45,9 +45,7 @@ public:
     // None
 
     // -- Methods
-
-    virtual size_t gaussianNumber() const = 0;
-    virtual std::string gaussianGridType() const = 0;
+    // None
 
     // -- Overridden methods
     // None
@@ -65,12 +63,12 @@ protected:
     const param::MIRParametrisation& parametrisation_;
 
     // -- Methods
-    // None
+
+    virtual std::string getGridname() const = 0;
 
     // -- Overridden methods
 
-    bool get(const std::string&, long&) const;
-    bool get(const std::string&, size_t&) const;
+    bool get(const std::string&, std::string&) const;
 
     // -- Class members
     // None

@@ -26,7 +26,7 @@ namespace style {
 
 
 template< typename GRIDTYPE >
-class IntermediateGaussianGrid: public IntermediateGrid {
+class IntermediateGaussianGrid : public IntermediateGrid {
 public:
 
     // -- Exceptions
@@ -35,23 +35,21 @@ public:
     // -- Contructors
 
     IntermediateGaussianGrid(const param::MIRParametrisation& parametrisation) :
-        IntermediateGrid(parametrisation) {
+        IntermediateGrid(parametrisation),
+        truncation_(0),
+        mapping_("linear") {
 
-        mapping_ = "linear";
+        parametrisation_.get("truncation", truncation_);
         parametrisation_.get("spectral-mapping", mapping_);
 
         using namespace action::transform::mapping;
         eckit::ScopedPtr<Mapping> map(MappingFactory::build(mapping_));
         ASSERT(map);
 
-        truncation_ = 0;
-        ASSERT(parametrisation_.get("truncation", truncation_));
+        long N = map->getPointsPerLatitudeFromTruncation(long(truncation_));
+        ASSERT(N > 0);
 
-        long Ni = map->getPointsPerLatitudeFromTruncation(long(truncation_));
-        ASSERT(Ni > 0);
-
-        N_ = size_t(Ni/4L);
-        ASSERT(N_);
+        gridname_ = gaussianGridTypeLetter() + std::to_string(N);
     }
 
     // -- Destructor
@@ -65,24 +63,23 @@ public:
 
     // -- Methods
 
-    size_t gaussianNumber() const {
-        return N_;
-    }
-
-    std::string gaussianGridType() const {
+    std::string gaussianGridTypeLetter() const {
         std::ostringstream os;
-        os << "IntermediateGaussianGrid::gaussianGridType() not implemented for " << *this;
+        os << "IntermediateGaussianGrid::gaussianGridTypeLetter() not implemented for " << *this;
         throw eckit::SeriousBug(os.str());
     }
 
     // -- Overridden methods
 
+    std::string getGridname() const {
+        return gridname_;
+    }
+
     void print(std::ostream& out) const {
         out << "IntermediateGaussianGrid["
-                "mapping=" << mapping_
-            << ",truncation=" << truncation_
-            << ",gridType=" << gaussianGridType()
-            << ",N=" << gaussianNumber()
+               "truncation=" << truncation_
+            << ",mapping=" << mapping_
+            << ",gridname=" << gridname_
             << "]";
     }
 
@@ -96,9 +93,9 @@ private:
 
     // -- Members
 
-    std::string mapping_;
     size_t truncation_;
-    size_t N_;
+    std::string mapping_;
+    std::string gridname_;
 
     // -- Methods
     // None

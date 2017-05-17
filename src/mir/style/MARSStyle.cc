@@ -21,6 +21,7 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/style/AutomaticResolution.h"
+#include "mir/style/IntermediateGrid.h"
 
 
 namespace mir {
@@ -48,17 +49,16 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
 
+    std::string intermediate_grid;
+    parametrisation_.get("spectral-intermediate-grid", intermediate_grid);
 
-    std::string spectralIntermediateGridname;
-    parametrisation_.get("spectral-intermediate-gridname", spectralIntermediateGridname);
-
-    if (spectralIntermediateGridname.length()) {
-        plan.add("transform." + transform + "namedgrid", "gridname", spectralIntermediateGridname);
-
+    if (intermediate_grid.length()) {
+        eckit::ScopedPtr<param::DelayedParametrisation> intermediate_gridname(
+                    IntermediateGridFactory::build(intermediate_grid, parametrisation_) );
+        plan.add("transform." + transform + "namedgrid", "gridname", intermediate_gridname.get());
         grid2grid(plan);
         return;
     }
-
 
     if (parametrisation_.has("user.grid")) {
 

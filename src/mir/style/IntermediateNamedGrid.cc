@@ -29,11 +29,19 @@ static IntermediateGridBuilder< IntermediateNamedGrid > __intermediate_named_gri
 
 IntermediateNamedGrid::IntermediateNamedGrid(const param::MIRParametrisation& parametrisation) :
     IntermediateGrid(parametrisation) {
+
+    parametrisation_.get("spectral-intermediate-named-grid", gridname_);
+    ASSERT(gridname_.length());
 }
 
 
 void IntermediateNamedGrid::print(std::ostream &out) const {
-    out << "IntermediateNamedGrid[]";
+    out << "IntermediateNamedGrid[gridname=" << gridname_ << "]";
+}
+
+
+std::string IntermediateNamedGrid::getGridname() const {
+    return gridname_;
 }
 
 

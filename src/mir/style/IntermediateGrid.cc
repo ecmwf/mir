@@ -46,19 +46,11 @@ IntermediateGrid::IntermediateGrid(const param::MIRParametrisation& parametrisat
 }
 
 
-bool IntermediateGrid::get(const std::string &name, long &value) const {
-//    ASSERT(name == "truncation");
+bool IntermediateGrid::get(const std::string& name, std::string& value) const {
+    ASSERT(name == "gridname");
+
+    value = getGridname();
     return true;
-}
-
-
-bool IntermediateGrid::get(const std::string& name, size_t& value) const {
-    long T;
-    if (get(name, T)) {
-        value = size_t(T);
-        return true;
-    }
-    return false;
 }
 
 
@@ -93,10 +85,10 @@ IntermediateGrid* IntermediateGridFactory::build(const std::string& name, const 
     if (j == m->end()) {
         eckit::Log::error() << "No IntermediateGridFactory for [" << name << "]"
                             << std::endl;
-        eckit::Log::error() << "IntermediateFactories are:" << std::endl;
+        eckit::Log::error() << "IntermediateGridFactories are:" << std::endl;
         for (j = m->begin(); j != m->end(); ++j)
             eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No IntermediateGridFactory called ") + name);
+        throw eckit::UserError(std::string("No IntermediateGridFactory called ") + name);
     }
 
     return (*j).second->make(parametrisation);

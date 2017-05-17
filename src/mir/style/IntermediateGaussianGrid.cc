@@ -34,9 +34,9 @@ static IntermediateGridBuilder< IntermediateGaussianGrid<octahedral_gg_t> > __in
 }
 
 
-template<> std::string IntermediateGaussianGrid<regular_gg_t>::gaussianGridType()    const { return "regular-gg"; }
-template<> std::string IntermediateGaussianGrid<reduced_gg_t>::gaussianGridType()    const { return "reduced-gg"; }
-template<> std::string IntermediateGaussianGrid<octahedral_gg_t>::gaussianGridType() const { return "octahedral-gg"; }
+template<> std::string IntermediateGaussianGrid<regular_gg_t>   ::gaussianGridTypeLetter() const { return "F"; }
+template<> std::string IntermediateGaussianGrid<reduced_gg_t>   ::gaussianGridTypeLetter() const { return "N"; }
+template<> std::string IntermediateGaussianGrid<octahedral_gg_t>::gaussianGridTypeLetter() const { return "O"; }
 
 
 }  // namespace style
