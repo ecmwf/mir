@@ -43,12 +43,6 @@ static void init() {
 
 IntermediateGrid::IntermediateGrid(const param::MIRParametrisation& parametrisation) :
     parametrisation_(parametrisation) {
-
-    std::string map;
-    parametrisation_.get("spectral-mapping", map);
-
-    mapping_.reset(action::transform::mapping::MappingFactory::build(map));
-    ASSERT(mapping_);
 }
 
 
@@ -65,14 +59,6 @@ bool IntermediateGrid::get(const std::string& name, size_t& value) const {
         return true;
     }
     return false;
-}
-
-
-void IntermediateGrid::print(std::ostream& out) const {
-    ASSERT(mapping_);
-    out << "IntermediateGrid[";
-    mapping_->print(out);
-    out << "]";
 }
 
 

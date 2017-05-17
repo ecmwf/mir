@@ -17,9 +17,8 @@
 #include <iosfwd>
 #include <string>
 #include "eckit/memory/NonCopyable.h"
-#include "eckit/memory/ScopedPtr.h"
-#include "mir/action/transform/mapping/Mapping.h"
 #include "mir/param/DelayedParametrisation.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -64,7 +63,6 @@ protected:
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
-    eckit::ScopedPtr<action::transform::mapping::Mapping> mapping_;
 
     // -- Methods
     // None
@@ -73,7 +71,6 @@ protected:
 
     bool get(const std::string&, long&) const;
     bool get(const std::string&, size_t&) const;
-    void print(std::ostream&) const;
 
     // -- Class members
     // None

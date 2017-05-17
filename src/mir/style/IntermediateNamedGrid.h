@@ -42,11 +42,12 @@ public:
 
     // -- Methods
 
-    virtual size_t gaussianNumber() const { return 0; }
-    virtual std::string gaussianGridType() const { return ""; }
+    size_t gaussianNumber() const { return 0; }
+    std::string gaussianGridType() const { return ""; }
 
     // -- Overridden methods
-    // None
+
+    void print(std::ostream& out) const;
 
     // -- Class members
     // None

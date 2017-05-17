@@ -13,22 +13,30 @@
 
 #include "mir/style/IntermediateGaussianGrid.h"
 
-#include "eckit/exception/Exceptions.h"
-#include "mir/param/MIRParametrisation.h"
-
 
 namespace mir {
 namespace style {
 
 
 namespace {
-static IntermediateGridBuilder< IntermediateGaussianGrid > __intermediate_gaussian_grid1("octahedral");
+
+
+struct regular_gg_t {};
+struct reduced_gg_t {};
+struct octahedral_gg_t {};
+
+
+static IntermediateGridBuilder< IntermediateGaussianGrid<regular_gg_t> >    __intermediate_regular_gg("regular");
+static IntermediateGridBuilder< IntermediateGaussianGrid<reduced_gg_t> >    __intermediate_reduced_gg("reduced");
+static IntermediateGridBuilder< IntermediateGaussianGrid<octahedral_gg_t> > __intermediate_octahedral_gg("octahedral");
+
+
 }
 
 
-IntermediateGaussianGrid::IntermediateGaussianGrid(const param::MIRParametrisation& parametrisation) :
-    IntermediateGrid(parametrisation) {
-}
+template<> std::string IntermediateGaussianGrid<regular_gg_t>::gaussianGridType()    const { return "regular-gg"; }
+template<> std::string IntermediateGaussianGrid<reduced_gg_t>::gaussianGridType()    const { return "reduced-gg"; }
+template<> std::string IntermediateGaussianGrid<octahedral_gg_t>::gaussianGridType() const { return "octahedral-gg"; }
 
 
 }  // namespace style

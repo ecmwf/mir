@@ -32,6 +32,11 @@ IntermediateNamedGrid::IntermediateNamedGrid(const param::MIRParametrisation& pa
 }
 
 
+void IntermediateNamedGrid::print(std::ostream &out) const {
+    out << "IntermediateNamedGrid[]";
+}
+
+
 }  // namespace style
 }  // namespace mir
 
