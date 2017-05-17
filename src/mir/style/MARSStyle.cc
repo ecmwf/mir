@@ -134,10 +134,8 @@ void MARSStyle::shTruncate(action::ActionPlan& plan) const {
     if (autoresol) {
         eckit::ScopedPtr<param::DelayedParametrisation> automatic(new AutomaticResolution(parametrisation_));
         plan.add("transform.sh-truncate", "truncation", automatic.get());
-    } else {
-        if (parametrisation_.has("user.truncation")) {
-            plan.add("transform.sh-truncate");
-        }
+    } else if (parametrisation_.has("user.truncation")) {
+        plan.add("transform.sh-truncate");
     }
 }
 

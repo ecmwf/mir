@@ -83,9 +83,9 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
     if (field_spectral) {
 
-        shTruncate(plan);
-
         if (user_wants_gridded) {
+
+            shTruncate(plan);
 
             std::string formula;
             if (parametrisation_.get("user.formula.spectral", formula)) {
@@ -228,6 +228,10 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
+
+    if (parametrisation_.has("user.truncation")) {
+        plan.add("transform.sh-truncate");
+    }
 
     std::string formula;
     if (parametrisation_.get("user.formula.spectral", formula)) {
