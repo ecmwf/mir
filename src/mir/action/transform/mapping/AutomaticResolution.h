@@ -48,7 +48,8 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    static long computeNi(const param::MIRParametrisation &parametrisation);
 
     // -- Overridden methods
     // None

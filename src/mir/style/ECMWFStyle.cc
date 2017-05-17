@@ -86,12 +86,12 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
     if (field_spectral) {
         if (user_wants_gridded) {
 
-            bool autoresol = true;
+            bool autoresol = false;
             parametrisation_.get("autoresol", autoresol);
 
             if (autoresol) {
                 eckit::ScopedPtr<param::DelayedParametrisation> automatic(new action::transform::mapping::AutomaticResolution(parametrisation_));
-                plan.add("transform.sh-truncate", "truncation", automatic);
+                plan.add("transform.sh-truncate", "truncation", automatic.get());
             } else {
                 if (parametrisation_.has("user.truncation")) {
                     plan.add("transform.sh-truncate");

@@ -15,7 +15,10 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
+#include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/util/Increments.h"
 
 
 namespace mir {
@@ -35,29 +38,55 @@ AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parame
 }
 
 
+long AutomaticResolution::computeNi(const param::MIRParametrisation& parametrisation) {
+    long Ni = 0;
+
+    std::vector<double> grid;
+    if (parametrisation.get("user.grid", grid)) {
+        ASSERT(grid.size() == 2);
+
+        // get Nj: only South-North increment (grid[1]) is used
+        util::BoundingBox bbox;
+        ASSERT(bbox.contains( 90, 0));
+        ASSERT(bbox.contains(-90, 0));
+        long Nj = long(bbox.computeNj(util::Increments(grid[0], grid[1])));
+
+        // get Ni(Nj): -1 corrects periodicity
+        Ni = 2 * (Nj - 1);
+    }
+
+    long N = 0;
+    if (parametrisation.get("user.reduced", N) ||
+        parametrisation.get("user.regular", N) ||
+        parametrisation.get("user.octahedral", N)) {
+        Ni = 4 * N;
+    }
+
+    std::string gridname;
+    if (parametrisation.get("user.gridname", gridname)) {
+        N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
+        Ni = 4 * N;
+    }
+
+    return Ni;
+}
+
+
 bool AutomaticResolution::get(const std::string &name, long &value) const {
     ASSERT(name == "truncation");
 
     if (parametrisation_.has("griddef")) {
-        // TODO: this is temporary
+        // TODO: this is temporary, no support yet for unstuctured grids
         value = 63L;
         return true;
     }
 
-
-    long Ni = 0;  // points-per-latitude
-
-    if (parametrisation_.has("user.grid")) {}
-    if (parametrisation_.has("user.reduced")) {}
-    if (parametrisation_.has("user.regular")) {}
-    if (parametrisation_.has("user.octahedral")) {}
-    if (parametrisation_.has("user.pl")) {}
-    if (parametrisation_.has("user.gridname")) {}
-    if (parametrisation_.has("user.griddef")) {}
-
-
+    // get points-per-latitude
+    long Ni = computeNi(parametrisation_);
     ASSERT(Ni > 0);
-    return mapping_->getTruncationFromPointsPerLatitude(Ni);
+
+    value = mapping_->getTruncationFromPointsPerLatitude(Ni);
+    return true;
 }
 
 
