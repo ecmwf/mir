@@ -53,9 +53,8 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("spectral-intermediate-grid", intermediate_grid);
 
     if (intermediate_grid.length()) {
-        eckit::ScopedPtr<param::DelayedParametrisation> intermediate_gridname(
-                    IntermediateGridFactory::build(intermediate_grid, parametrisation_) );
-        plan.add("transform." + transform + "namedgrid", "gridname", intermediate_gridname.get());
+        param::DelayedParametrisation* dp = IntermediateGridFactory::build(intermediate_grid, parametrisation_);
+        plan.add("transform." + transform + "namedgrid", "gridname", dp);
         grid2grid(plan);
         return;
     }
@@ -123,8 +122,8 @@ void MARSStyle::shTruncate(action::ActionPlan& plan) const {
     parametrisation_.get("autoresol", autoresol);
 
     if (autoresol) {
-        eckit::ScopedPtr<param::DelayedParametrisation> automatic(new AutomaticResolution(parametrisation_));
-        plan.add("transform.sh-truncate", "truncation", automatic.get());
+        param::DelayedParametrisation* dp = new AutomaticResolution(parametrisation_);
+        plan.add("transform.sh-truncate", "truncation", dp);
     } else if (parametrisation_.has("user.truncation")) {
         plan.add("transform.sh-truncate");
     }
