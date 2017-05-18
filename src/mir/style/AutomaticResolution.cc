@@ -84,6 +84,14 @@ bool AutomaticResolution::get(const std::string &name, long &value) const {
     ASSERT(Ni > 0);
 
     value = mapping_->getTruncationFromPointsPerLatitude(Ni);
+
+    long input = 0L;
+    ASSERT(parametrisation_.get("field.truncation", input));
+    if (value > input) {
+        eckit::Log::warning() << "AutomaticResolution: truncation " << value << " limited by input truncation " << input << std::endl;
+        value = input;
+    }
+
     return true;
 }
 
