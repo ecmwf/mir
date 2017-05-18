@@ -16,9 +16,9 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "mir/action/transform/mapping/Mapping.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/style/IntermediateGrid.h"
+#include "mir/style/Mapping.h"
 
 
 namespace mir {
@@ -42,7 +42,6 @@ public:
         parametrisation_.get("truncation", truncation_);
         parametrisation_.get("spectral-mapping", mapping_);
 
-        using namespace action::transform::mapping;
         eckit::ScopedPtr<Mapping> map(MappingFactory::build(mapping_));
         ASSERT(map);
 

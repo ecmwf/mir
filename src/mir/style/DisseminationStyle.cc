@@ -16,6 +16,7 @@
 #include "mir/style/DisseminationStyle.h"
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/style/IntermediateGrid.h"
@@ -50,11 +51,9 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";
 
     // set an intermediate cubic-order octahedral Gaussian grid
-    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
-    runtime->set("spectral-mapping", "cubic");
-
-    param::DelayedParametrisation *dp = IntermediateGridFactory::build("octahedral", *runtime);
-    plan.add("transform." + transform + "namedgrid", "gridname", dp);
+    plan.add("transform." + transform + "namedgrid",
+             "gridname", IntermediateGridFactory::build("octahedral", parametrisation_),
+             "spectral-mapping", "cubic" );
 
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);

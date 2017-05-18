@@ -16,26 +16,27 @@
 #include "mir/style/ProdgenGrid.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
 namespace style {
 
 
-
+//==========================================================
 ProdgenGrid::ProdgenGrid(const param::MIRParametrisation &parametrisation):
     parametrisation_(parametrisation) {
 }
 
 
 ProdgenGrid::~ProdgenGrid() {
+
 }
 
-
-bool ProdgenGrid::get(const std::string &name, std::vector<double>& value) const {
+void ProdgenGrid::get(const std::string &name, std::vector<double>& value) const {
     eckit::Log::debug<LibMir>() << "ProdgenGrid::get(" << name << ")" << std::endl;
     ASSERT(name == "grid"); // For now
 
@@ -52,21 +53,18 @@ bool ProdgenGrid::get(const std::string &name, std::vector<double>& value) const
     if(size_t(x) == x && size_t(y) == y) {
         value[0] = 1./10.;
         value[1] = 1./10.;
-        return true;
+        return;
     }
 
     value[0] = 1./8.;
     value[1] = 1./8.;
 
     // eckit::Log::debug<LibMir>() << "ProdgenGrid: N is " << N << ", selecting reduced N" << value << std::endl;
-    return true;
 }
-
 
 void ProdgenGrid::print(std::ostream &out) const {
     out << "<ProdgenGrid>";
 }
-
 
 }  // namespace param
 }  // namespace mir

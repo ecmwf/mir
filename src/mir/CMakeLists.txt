@@ -142,10 +142,6 @@ list(
     action/transform/TransCache.h
     action/transform/TransInitor.cc
     action/transform/TransInitor.h
-    action/transform/mapping/Mapping.cc
-    action/transform/mapping/Mapping.h
-    action/transform/mapping/TMapping.cc
-    action/transform/mapping/TMapping.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc
@@ -482,8 +478,6 @@ list(
     stats/detail/ScalarCentralMomentsFn.h
     stats/detail/ScalarMinMaxFn.h
     stats/detail/ScalarpNormsFn.h
-    style/AutomaticTruncation.cc
-    style/AutomaticTruncation.h
     style/DisseminationStyle.cc
     style/DisseminationStyle.h
     style/ECMWFStyle.cc
@@ -498,10 +492,14 @@ list(
     style/MARSStyle.h
     style/MIRStyle.cc
     style/MIRStyle.h
+    style/Mapping.cc
+    style/Mapping.h
     style/ProdgenGrid.cc
     style/ProdgenGrid.h
     style/ProdgenStyle.cc
     style/ProdgenStyle.h
+    style/TMapping.cc
+    style/TMapping.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h

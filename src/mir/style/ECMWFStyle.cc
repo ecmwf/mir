@@ -77,6 +77,7 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
     bool field_gridded  = parametrisation_.has("field.gridded");
     bool field_spectral = parametrisation_.has("field.spectral");
+    std::string formula;
 
     ASSERT(field_gridded != field_spectral);
 
@@ -84,7 +85,6 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
     if (field_spectral) {
         if (user_wants_gridded) {
 
-            std::string formula;
             if (parametrisation_.get("user.formula.spectral", formula)) {
                 std::string metadata;
                 // paramId for the results of formulas
@@ -111,7 +111,6 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
     if (field_gridded) {
 
-        std::string formula;
         if (parametrisation_.get("user.formula.gridded", formula)) {
             std::string metadata;
             // paramId for the results of formulas

@@ -11,7 +11,7 @@
 /// @date Mar 2017
 
 
-#include "mir/action/transform/mapping/Mapping.h"
+#include "mir/style/Mapping.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
@@ -21,9 +21,7 @@
 
 
 namespace mir {
-namespace action {
-namespace transform {
-namespace mapping {
+namespace style {
 
 
 namespace {
@@ -109,7 +107,5 @@ void MappingFactory::list(std::ostream& out) {
 }
 
 
-} // namespace mapping
-} // namespace transform
-} // namespace action
-} // namespace mir
+}  // namespace style
+}  // namespace mir

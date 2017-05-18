@@ -19,8 +19,9 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/transform/mapping/Mapping.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/param/RuntimeParametrisation.h"
+#include "mir/style/IntermediateGrid.h"
 #include "mir/style/ProdgenGrid.h"
 
 
@@ -55,13 +56,14 @@ void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (!parametrisation_.has("user.rotation") &&
          parametrisation_.has("user.grid")) {
-        eckit::ScopedPtr<param::DelayedParametrisation> grid(new ProdgenGrid(parametrisation_));
-        plan.add("transform." + transform + "regular-ll", "grid", grid.get());
+        plan.add("transform." + transform + "regular-ll", "grid", new ProdgenGrid(parametrisation_));
         plan.add("interpolate.grid2regular-ll");
     }
     else {
-
-        plan.add("transform." + transform + "namedgrid", "gridname", "O1280");
+        // set an intermediate cubic-order octahedral Gaussian grid
+        plan.add("transform." + transform + "namedgrid",
+                 "gridname", IntermediateGridFactory::build("octahedral", parametrisation_),
+                 "spectral-mapping", "cubic" );
     }
 
     if (!parametrisation_.has("user.rotation")) {

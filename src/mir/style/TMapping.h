@@ -11,29 +11,29 @@
 /// @date May 2017
 
 
-#ifndef mir_style_AutomaticTruncation_h
-#define mir_style_AutomaticTruncation_h
+#ifndef mir_style_TMapping_h
+#define mir_style_TMapping_h
 
-#include <iosfwd>
+#include <cmath>
 #include <string>
-#include "eckit/memory/NonCopyable.h"
-#include "mir/param/DelayedParametrisation.h"
-#include "mir/param/MIRParametrisation.h"
+#include "eckit/exception/Exceptions.h"
+#include "mir/style/Mapping.h"
 
 
 namespace mir {
 namespace style {
 
 
-class AutomaticTruncation : public eckit::NonCopyable, public param::DelayedParametrisation {
+template< int ORDER >
+class TMapping : public Mapping {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
-
-    AutomaticTruncation(const param::MIRParametrisation&);
+    TMapping() {
+        ASSERT(ORDER);
+    }
 
     // -- Destructor
     // None
@@ -45,11 +45,30 @@ public:
     // None
 
     // -- Methods
-
-    static long getGaussianNumber(const param::MIRParametrisation&);
+    // None
 
     // -- Overridden methods
-    // None
+    long getTruncationFromGaussianNumber(const long& N) const {
+        ASSERT(N);
+    
+        long T = long(ceil( 4. / double(ORDER + 1) * N) - 1);
+        ASSERT(T);
+    
+        return T;
+    }
+
+    long getGaussianNumberFromTruncation(const long& T) const {
+        ASSERT(T);
+
+        long N = long(double(T + 1) * double(ORDER + 1) / 4.);
+        ASSERT(N);
+
+        return N;
+    }
+
+    void print(std::ostream& out) const {
+        out << "TMapping<ORDER=" << ORDER << ">[]";
+    }
 
     // -- Class members
     // None
@@ -58,21 +77,14 @@ public:
     // None
 
 protected:
-
     // -- Members
-
-    const param::MIRParametrisation& parametrisation_;
-    std::string mapping_;
-    long truncation_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-    bool get(const std::string&, long&) const;
-    bool get(const std::string&, size_t&) const;
-    void print(std::ostream&) const;
+    // None
 
     // -- Class members
     // None
@@ -99,7 +111,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -108,3 +119,4 @@ private:
 
 
 #endif
+

@@ -226,8 +226,8 @@ extern "C" fortint intout_(const char *name,
 
         if (strncasecmp(name, "intermediate_gaussian", name_len) == 0) {
             const std::string gridname = "N" + std::to_string(ints[0]);
-            job->set("spectral-intermediate-grid", "named-grid");
-            job->set("spectral-intermediate-named-grid", gridname);
+            job->set("spectral-intermediate-grid", "gridname");
+            job->set("spectral-intermediate-gridname", gridname);
             return 0;
         }
 

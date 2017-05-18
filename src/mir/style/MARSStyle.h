@@ -83,7 +83,9 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    long getTargetGaussianNumber() const;
+    long getIntendedTruncation() const;
 
     // -- Overridden methods
 

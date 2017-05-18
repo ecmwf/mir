@@ -24,7 +24,6 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 #include "mir/action/plan/Executor.h"
-#include "mir/action/transform/mapping/Mapping.h"
 #include "mir/api/MIRJob.h"
 #include "mir/caching/interpolator/InterpolatorLoader.h"
 #include "mir/caching/legendre/LegendreLoader.h"
@@ -41,6 +40,7 @@
 #include "mir/packing/Packer.h"
 #include "mir/style/IntermediateGrid.h"
 #include "mir/style/MIRStyle.h"
+#include "mir/style/Mapping.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
@@ -67,11 +67,11 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Transform"));
-        options_.push_back(new FactoryOption<mir::action::transform::mapping::MappingFactory>("spectral-mapping", "Spectral/gridded mapping"));
-        options_.push_back(new SimpleOption<std::string>("spectral-intermediate-named-grid", "Spectral/gridded intermediate grid name (via)"));
-        options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded intermediate Gaussian grid type"));
+        options_.push_back(new SimpleOption<bool>("autoresol", "Turn on automatic truncation"));
+        options_.push_back(new FactoryOption<mir::style::MappingFactory>("spectral-mapping", "Spectral/gridded mapping"));
+        options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded intermediate Gaussian grid type (via)"));
+        options_.push_back(new SimpleOption<std::string>("spectral-intermediate-gridname", "Spectral/gridded intermediate grid name (via)"));
         options_.push_back(new SimpleOption<size_t>("truncation", "Truncation input field"));
-        options_.push_back(new SimpleOption<bool>("autoresol", "Simulate MARS RESOL=AUTO"));
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is Vorticity and Divergence, conversion to u/v or U/V requested"));
 
         //==============================================

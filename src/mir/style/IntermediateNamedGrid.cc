@@ -23,14 +23,14 @@ namespace style {
 
 
 namespace {
-static IntermediateGridBuilder< IntermediateNamedGrid > __intermediate_named_grid("named-grid");
+static IntermediateGridBuilder< IntermediateNamedGrid > __intermediate_gridname("gridname");
 }
 
 
 IntermediateNamedGrid::IntermediateNamedGrid(const param::MIRParametrisation& parametrisation) :
     IntermediateGrid(parametrisation) {
 
-    parametrisation_.get("spectral-intermediate-named-grid", gridname_);
+    parametrisation_.get("spectral-intermediate-gridname", gridname_);
     ASSERT(gridname_.length());
 }
 

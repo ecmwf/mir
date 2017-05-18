@@ -11,13 +11,11 @@
 /// @date May 2017
 
 
-#include "mir/action/transform/mapping/TMapping.h"
+#include "mir/style/TMapping.h"
 
 
 namespace mir {
-namespace action {
-namespace transform {
-namespace mapping {
+namespace style {
 
 
 namespace {
@@ -28,14 +26,12 @@ static MappingBuilder< TMapping<4> > __mapping4("quartic");
 }
 
 
-template<> void TMapping<1>::print(std::ostream& out) const { out << "TMapping[linear]"; }
-template<> void TMapping<2>::print(std::ostream& out) const { out << "TMapping[quadratic]"; }
-template<> void TMapping<3>::print(std::ostream& out) const { out << "TMapping[cubic]"; }
-template<> void TMapping<4>::print(std::ostream& out) const { out << "TMapping[quartic]"; }
+template<> void TMapping<1>::print(std::ostream& out) const { out << "LinearMapping[]"; }
+template<> void TMapping<2>::print(std::ostream& out) const { out << "QuadraticMapping[]"; }
+template<> void TMapping<3>::print(std::ostream& out) const { out << "CubicMapping[]"; }
+template<> void TMapping<4>::print(std::ostream& out) const { out << "QuarticMapping[]"; }
 
 
-}  // namespace mapping
-}  // namespace transform
-}  // namespace action
+}  // namespace style
 }  // namespace mir
 

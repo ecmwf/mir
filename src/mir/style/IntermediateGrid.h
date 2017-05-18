@@ -68,7 +68,7 @@ protected:
 
     // -- Overridden methods
 
-    bool get(const std::string&, std::string&) const;
+    void get(const std::string&, std::string&) const;
 
     // -- Class members
     // None

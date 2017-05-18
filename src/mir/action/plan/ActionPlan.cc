@@ -12,18 +12,18 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/plan/Action.h"
-#include "mir/param/RuntimeParametrisation.h"
-#include "mir/action/context/Context.h"
-#include "mir/config/LibMir.h"
 
 #include "eckit/exception/Exceptions.h"
-
+#include "mir/action/plan/Action.h"
+#include "mir/config/LibMir.h"
+#include "mir/param/RuntimeParametrisation.h"
 
 
 namespace mir {
 namespace action {
+
 
 ActionPlan::ActionPlan(const param::MIRParametrisation &parametrisation):
     parametrisation_(parametrisation) {
@@ -40,69 +40,74 @@ ActionPlan::~ActionPlan() {
     }
 }
 
-bool ActionPlan::empty() const {
-    return actions_.empty();
-}
 
 void ActionPlan::add(const std::string &name)  {
     actions_.push_back(ActionFactory::build(name, parametrisation_));
 }
 
-void ActionPlan::add(Action *action)  {
-    actions_.push_back(action);
-}
 
-size_t ActionPlan::size() const {
-    return actions_.size();
-}
-
-const Action &ActionPlan::action(size_t n) const {
-    ASSERT(n < actions_.size());
-    return *actions_[n];
-}
-
-void ActionPlan::add(const std::string &name, const std::string &param, long value)  {
+void ActionPlan::add(const std::string &name, const std::string &param, long value) {
     param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
-
     runtime->set(param, value);
     actions_.push_back(ActionFactory::build(name, *runtime));
 }
+
 
 void ActionPlan::add(const std::string &name, const std::string &param, const std::string& value)  {
     param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
-
     runtime->set(param, value);
     actions_.push_back(ActionFactory::build(name, *runtime));
 }
+
+
+void ActionPlan::add(const std::string &name, const std::string &param1,  const std::string &value1, const std::string &param2, long value2) {
+    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
+    runtimes_.push_back(runtime);
+    runtime->set(param1, value1);
+    runtime->set(param2, value2);
+    actions_.push_back(ActionFactory::build(name, *runtime));
+}
+
+
+void ActionPlan::add(const std::string &name, const std::string &param1,  const std::string &value1, const std::string &param2, const std::string &value2) {
+    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
+    runtimes_.push_back(runtime);
+    runtime->set(param1, value1);
+    runtime->set(param2, value2);
+    actions_.push_back(ActionFactory::build(name, *runtime));
+}
+
 
 void ActionPlan::add(const std::string &name, const std::string &param, param::DelayedParametrisation *value) {
     param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
-
     runtime->set(param, value);
     actions_.push_back(ActionFactory::build(name, *runtime));
 }
 
-void ActionPlan::add(const std::string &name, const std::string &param1,  const std::string& value1, const std::string &param2, long value2) {
+
+void ActionPlan::add(const std::string &name, const std::string &param1, param::DelayedParametrisation *value1, const std::string &param2, long value2) {
     param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
-
     runtime->set(param1, value1);
     runtime->set(param2, value2);
-
     actions_.push_back(ActionFactory::build(name, *runtime));
 }
 
-void ActionPlan::add(const std::string &name, const std::string &param1,  const std::string& value1, const std::string &param2, const std::string& value2) {
+
+void ActionPlan::add(const std::string &name, const std::string &param1, param::DelayedParametrisation *value1, const std::string &param2, const std::string &value2) {
     param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
-
     runtime->set(param1, value1);
     runtime->set(param2, value2);
-
     actions_.push_back(ActionFactory::build(name, *runtime));
+}
+
+
+void ActionPlan::add(Action *action)  {
+    actions_.push_back(action);
 }
 
 
@@ -111,6 +116,22 @@ void ActionPlan::execute(context::Context & ctx) const {
         eckit::Log::debug<LibMir>() << "Executing " << **j << std::endl;
         (*j)->execute(ctx);
     }
+}
+
+
+bool ActionPlan::empty() const {
+    return actions_.empty();
+}
+
+
+size_t ActionPlan::size() const {
+    return actions_.size();
+}
+
+
+const Action &ActionPlan::action(size_t n) const {
+    ASSERT(n < actions_.size());
+    return *actions_[n];
 }
 
 
@@ -123,6 +144,7 @@ void ActionPlan::print(std::ostream &out) const {
     }
     out << "]";
 }
+
 
 }  // namespace action
 }  // namespace mir

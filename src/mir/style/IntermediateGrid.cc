@@ -19,7 +19,7 @@
 #include "eckit/thread/Once.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/action/transform/mapping/Mapping.h"
+#include "mir/style/Mapping.h"
 
 
 namespace mir {
@@ -46,11 +46,9 @@ IntermediateGrid::IntermediateGrid(const param::MIRParametrisation& parametrisat
 }
 
 
-bool IntermediateGrid::get(const std::string& name, std::string& value) const {
+void IntermediateGrid::get(const std::string& name, std::string& value) const {
     ASSERT(name == "gridname");
-
     value = getGridname();
-    return true;
 }
 
 

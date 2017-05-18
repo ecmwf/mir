@@ -8,37 +8,32 @@
  * nor does it submit to any jurisdiction.
  */
 
-/// @date May 2017
+/// @date Mar 2017
 
 
-#ifndef mir_action_transform_mapping_TMapping_h
-#define mir_action_transform_mapping_TMapping_h
+#ifndef mir_style_Mapping_h
+#define mir_style_Mapping_h
 
-#include <cmath>
+#include <iosfwd>
 #include <string>
-#include "eckit/exception/Exceptions.h"
-#include "mir/action/transform/mapping/Mapping.h"
+#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
-namespace action {
-namespace transform {
-namespace mapping {
+namespace style {
 
 
-template< int ORDER >
-class TMapping : public Mapping {
+class Mapping : public eckit::NonCopyable {
 public:
+
     // -- Exceptions
     // None
 
     // -- Contructors
-    TMapping() {
-        ASSERT(ORDER);
-    }
+    Mapping() {}
 
     // -- Destructor
-    // None
+    virtual ~Mapping() {}
 
     // -- Convertors
     // None
@@ -47,30 +42,12 @@ public:
     // None
 
     // -- Methods
-    // None
+    virtual long getTruncationFromGaussianNumber(const long&) const;
+    virtual long getGaussianNumberFromTruncation(const long&) const;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
-    long getTruncationFromGaussianNumber(const long& N) const {
-        ASSERT(N);
-    
-        long T = long(ceil( 4. / double(ORDER + 1) * N) - 1);
-        ASSERT(T);
-    
-        return T;
-    }
-
-    long getGaussianNumberFromTruncation(const long& T) const {
-        ASSERT(T);
-
-        long N = long(double(T + 1) * double(ORDER + 1) / 4.);
-        ASSERT(N);
-
-        return N;
-    }
-
-    void print(std::ostream& out) const {
-        out << "TMapping<ORDER=" << ORDER << ">[]";
-    }
+    // None
 
     // -- Class members
     // None
@@ -79,6 +56,7 @@ public:
     // None
 
 protected:
+
     // -- Members
     // None
 
@@ -112,15 +90,37 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    friend std::ostream& operator<<(std::ostream& s, const Mapping& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 
-}  // namespace mapping
-}  // namespace transform
-}  // namespace action
+class MappingFactory {
+    std::string name_;
+    virtual Mapping *make() = 0;
+protected:
+    MappingFactory(const std::string&);
+    virtual ~MappingFactory();
+public:
+    static Mapping *build(const std::string&);
+    static void list(std::ostream&);
+};
+
+
+template <class T> class MappingBuilder : public MappingFactory {
+    virtual Mapping *make() {
+        return new T();
+    }
+public:
+    MappingBuilder(const std::string& name) : MappingFactory(name) {}
+};
+
+
+}  // namespace style
 }  // namespace mir
 
 
 #endif
-
