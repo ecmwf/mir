@@ -61,16 +61,7 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
     }
 
     if (parametrisation_.has("user.grid")) {
-
-        long intermediate_gaussian = 0;
-        parametrisation_.get("intermediate_gaussian", intermediate_gaussian);
-
-        if (intermediate_gaussian) {
-            plan.add("transform." + transform + "reduced-gg", "reduced", intermediate_gaussian);
-            plan.add("interpolate.grid2regular-ll");
-        } else {
-            plan.add("transform." + transform + "regular-ll");
-        }
+        plan.add("transform." + transform + "regular-ll");
 
         if (parametrisation_.has("user.rotation")) {
             plan.add("interpolate.grid2rotated-regular-ll");
