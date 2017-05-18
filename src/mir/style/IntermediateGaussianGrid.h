@@ -46,7 +46,7 @@ public:
         eckit::ScopedPtr<Mapping> map(MappingFactory::build(mapping_));
         ASSERT(map);
 
-        long N = map->getPointsPerLatitudeFromTruncation(long(truncation_));
+        long N = map->getGaussianNumberFromTruncation(long(truncation_));
         ASSERT(N > 0);
 
         gridname_ = gaussianGridTypeLetter() + std::to_string(N);

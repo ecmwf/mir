@@ -20,7 +20,7 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/AutomaticResolution.h"
+#include "mir/style/AutomaticTruncation.h"
 #include "mir/style/IntermediateGrid.h"
 
 
@@ -30,7 +30,6 @@ namespace style {
 
 MARSStyle::MARSStyle(const param::MIRParametrisation &parametrisation):
     ECMWFStyle(parametrisation) {
-
 }
 
 
@@ -45,6 +44,17 @@ void MARSStyle::print(std::ostream &out) const {
 
 void MARSStyle::sh2grid(action::ActionPlan& plan) const {
 
+    bool autoresol = true;
+    parametrisation_.get("autoresol", autoresol);
+
+    long current_truncation = 0;
+    if (autoresol) {
+        param::DelayedParametrisation *dp = new AutomaticTruncation(parametrisation_);
+        plan.add("transform.sh-truncate", "truncation", dp);
+    } else if (parametrisation_.has("user.truncation")) {
+        plan.add("transform.sh-truncate");
+    }
+
     bool vod2uv = false;
     parametrisation_.get("vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
@@ -53,8 +63,15 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("spectral-intermediate-grid", intermediate_grid);
 
     if (intermediate_grid.length()) {
-        param::DelayedParametrisation* dp = IntermediateGridFactory::build(intermediate_grid, parametrisation_);
+
+        // set an intermediate Gaussian grid with current truncation
+        param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
+        if (current_truncation > 0) {
+            runtime->set("truncation", current_truncation);
+        }
+        param::DelayedParametrisation *dp = IntermediateGridFactory::build(intermediate_grid, *runtime);
         plan.add("transform." + transform + "namedgrid", "gridname", dp);
+
         grid2grid(plan);
         return;
     }
@@ -112,20 +129,6 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);
-    }
-}
-
-
-void MARSStyle::shTruncate(action::ActionPlan& plan) const {
-
-    bool autoresol = true;
-    parametrisation_.get("autoresol", autoresol);
-
-    if (autoresol) {
-        param::DelayedParametrisation* dp = new AutomaticResolution(parametrisation_);
-        plan.add("transform.sh-truncate", "truncation", dp);
-    } else if (parametrisation_.has("user.truncation")) {
-        plan.add("transform.sh-truncate");
     }
 }
 

@@ -82,10 +82,7 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 
 
     if (field_spectral) {
-
         if (user_wants_gridded) {
-
-            shTruncate(plan);
 
             std::string formula;
             if (parametrisation_.get("user.formula.spectral", formula)) {

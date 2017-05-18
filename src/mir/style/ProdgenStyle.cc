@@ -45,6 +45,10 @@ void ProdgenStyle::print(std::ostream &out) const {
 
 void ProdgenStyle::sh2grid(action::ActionPlan& plan) const {
 
+    bool autoresol = false;
+    parametrisation_.get("autoresol", autoresol);
+    ASSERT(!autoresol);
+
     bool vod2uv = false;
     parametrisation_.get("vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
@@ -75,14 +79,6 @@ void ProdgenStyle::grid2grid(action::ActionPlan& plan) const {
     }
 
     plan.add("interpolate.grid2regular-ll", "grid", new ProdgenGrid(parametrisation_));
-}
-
-
-void ProdgenStyle::shTruncate(action::ActionPlan&) const {
-
-    bool autoresol = false;
-    parametrisation_.get("autoresol", autoresol);
-    ASSERT(!autoresol);
 }
 
 

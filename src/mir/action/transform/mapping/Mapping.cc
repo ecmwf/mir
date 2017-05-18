@@ -41,16 +41,16 @@ static void init() {
 }  // (anonymous namespace)
 
 
-long Mapping::getTruncationFromPointsPerLatitude(const long&) const {
+long Mapping::getTruncationFromGaussianNumber(const long&) const {
     std::ostringstream os;
-    os << "Mapping::getTruncationFromPointsPerLatitude() not implemented for " << *this;
+    os << "Mapping::getTruncationFromGaussianNumber() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 
-long Mapping::getPointsPerLatitudeFromTruncation(const long&) const {
+long Mapping::getGaussianNumberFromTruncation(const long&) const {
     std::ostringstream os;
-    os << "Mapping::getPointsPerLatitudeFromTruncation() not implemented for " << *this;
+    os << "Mapping::getGaussianNumberFromTruncation() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 

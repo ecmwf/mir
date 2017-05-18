@@ -482,8 +482,8 @@ list(
     stats/detail/ScalarCentralMomentsFn.h
     stats/detail/ScalarMinMaxFn.h
     stats/detail/ScalarpNormsFn.h
-    style/AutomaticResolution.cc
-    style/AutomaticResolution.h
+    style/AutomaticTruncation.cc
+    style/AutomaticTruncation.h
     style/DisseminationStyle.cc
     style/DisseminationStyle.h
     style/ECMWFStyle.cc
@@ -502,8 +502,6 @@ list(
     style/ProdgenGrid.h
     style/ProdgenStyle.cc
     style/ProdgenStyle.h
-    style/TestingStyle.cc
-    style/TestingStyle.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h

@@ -41,6 +41,10 @@ void DisseminationStyle::print(std::ostream &out) const {
 
 void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
 
+    bool autoresol = false;
+    parametrisation_.get("autoresol", autoresol);
+    ASSERT(!autoresol);
+
     bool vod2uv = false;
     parametrisation_.get("vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";
@@ -57,14 +61,6 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
     }
 
     grid2grid(plan);
-}
-
-
-void DisseminationStyle::shTruncate(action::ActionPlan&) const {
-
-    bool autoresol = false;
-    parametrisation_.get("autoresol", autoresol);
-    ASSERT(!autoresol);
 }
 
 

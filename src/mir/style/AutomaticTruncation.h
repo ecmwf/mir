@@ -1,35 +1,42 @@
 /*
- * (C) Copyright 1996-2016 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
  * In applying this licence, ECMWF does not waive the privileges and immunities
- * granted to it by virtue of its status as an intergovernmental organisation nor
- * does it submit to any jurisdiction.
+ * granted to it by virtue of its status as an intergovernmental organisation
+ * nor does it submit to any jurisdiction.
  */
 
+/// @date May 2017
 
-#ifndef mir_style_TestingStyle_h
-#define mir_style_TestingStyle_h
 
-#include "mir/style/MIRStyle.h"
+#ifndef mir_style_AutomaticTruncation_h
+#define mir_style_AutomaticTruncation_h
+
+#include <iosfwd>
+#include <string>
+#include "eckit/memory/NonCopyable.h"
+#include "mir/param/DelayedParametrisation.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace style {
 
 
-class TestingStyle : public MIRStyle {
+class AutomaticTruncation : public eckit::NonCopyable, public param::DelayedParametrisation {
 public:
 
     // -- Exceptions
     // None
 
-    // -- Constructors
-    TestingStyle(const param::MIRParametrisation& parametrisation);
+    // -- Contructors
+
+    AutomaticTruncation(const param::MIRParametrisation&);
 
     // -- Destructor
-    ~TestingStyle();
+    // None
 
     // -- Convertors
     // None
@@ -38,7 +45,8 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    static long getGaussianNumber(const param::MIRParametrisation&);
 
     // -- Overridden methods
     // None
@@ -52,13 +60,19 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    const param::MIRParametrisation& parametrisation_;
+    std::string mapping_;
+    long truncation_;
 
     // -- Methods
-    void print(std::ostream&) const;
+    // None
 
     // -- Overridden methods
-    // None
+
+    bool get(const std::string&, long&) const;
+    bool get(const std::string&, size_t&) const;
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -68,10 +82,6 @@ protected:
 
 private:
 
-    // No copy allowed
-    TestingStyle(const TestingStyle&);
-    TestingStyle& operator=(const TestingStyle&);
-
     // -- Members
     // None
 
@@ -79,8 +89,7 @@ private:
     // None
 
     // -- Overridden methods
-    bool forcedPrepare(const param::MIRParametrisation&) const { return true; }
-    void prepare(action::ActionPlan&) const;
+    // None
 
     // -- Class members
     // None
@@ -99,4 +108,3 @@ private:
 
 
 #endif
-

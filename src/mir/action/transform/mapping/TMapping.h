@@ -50,7 +50,7 @@ public:
     // None
 
     // -- Overridden methods
-    long getTruncationFromPointsPerLatitude(const long& N) const {
+    long getTruncationFromGaussianNumber(const long& N) const {
         ASSERT(N);
     
         long T = long(ceil( 4. / double(ORDER + 1) * N) - 1);
@@ -59,7 +59,7 @@ public:
         return T;
     }
 
-    long getPointsPerLatitudeFromTruncation(const long& T) const {
+    long getGaussianNumberFromTruncation(const long& T) const {
         ASSERT(T);
 
         long N = long(double(T + 1) * double(ORDER + 1) / 4.);

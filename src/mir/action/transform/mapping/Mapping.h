@@ -51,8 +51,8 @@ public:
     // None
 
     // -- Methods
-    virtual long getTruncationFromPointsPerLatitude(const long&) const;
-    virtual long getPointsPerLatitudeFromTruncation(const long&) const;
+    virtual long getTruncationFromGaussianNumber(const long&) const;
+    virtual long getGaussianNumberFromTruncation(const long&) const;
     virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
