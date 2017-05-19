@@ -308,7 +308,7 @@ static Triplets projectPointTo3DElements(
 
             // pick an epsilon based on a characteristic length (sqrt(area))
             // (this scales linearly so it better compares with linear weights u,v,w)
-            const double edgeEpsilon = parametricEpsilon * std::sqrt(quad.area());
+            const double edgeEpsilon = parametricEpsilon;  // FIXME * std::sqrt(quad.area());
             ASSERT(edgeEpsilon >= 0);
 
             atlas::interpolation::method::Intersect is = quad.intersects(ray, edgeEpsilon);
