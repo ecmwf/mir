@@ -26,8 +26,10 @@
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
 #include "atlas/grid/Structured.h"
+#include "atlas/interpolation/element/Quad2D.h"
 #include "atlas/interpolation/element/Quad3D.h"
 #include "atlas/interpolation/element/Triag3D.h"
+#include "atlas/interpolation/element/Triag2D.h"
 #include "atlas/interpolation/method/PointIndex3.h"
 #include "atlas/interpolation/method/Ray.h"
 #include "atlas/mesh/ElementType.h"
@@ -224,6 +226,127 @@ static Triplets projectPointToElements(
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+/// Find in which element the point is contained by projecting the point with each nearest element
+static Triplets projectPointToElements2D(
+        const MeshStats &stats,
+        const atlas::array::ArrayView<double, 2> &ilonlat,
+        const atlas::mesh::Connectivity& connectivity,
+        const eckit::geometry::Point2 &p,
+        size_t ip ) {
+
+    Triplets triplets;
+
+    size_t idx[4];
+    double w[4];
+    atlas::interpolation::Vector2D ray = atlas::interpolation::Vector2D::Map( p.data() );
+
+
+
+    for (size_t elem_id = 0; elem_id < connectivity.rows(); ++elem_id) {
+
+        /* assumes:
+         * - nb_cols == 3 implies triangle
+         * - nb_cols == 4 implies quadrilateral
+         * - no other element is supported at the time
+         */
+        const size_t nb_cols = connectivity.cols(elem_id);
+        ASSERT(nb_cols == 3 || nb_cols == 4);
+
+        for (size_t i = 0; i < nb_cols; ++i) {
+            idx[i] = size_t(connectivity(elem_id, i));
+            ASSERT(idx[i] < stats.inp_npts);
+        }
+
+        if (nb_cols == 3) {
+
+            /* triangle */
+            atlas::interpolation::element::Triag2D triag(
+                    ilonlat[idx[0]].data(),
+                    ilonlat[idx[1]].data(),
+                    ilonlat[idx[2]].data());
+
+            // pick an epsilon based on a characteristic length (sqrt(area))
+            // (this scales linearly so it better compares with linear weights u,v,w)
+            const double edgeEpsilon = parametricEpsilon;  // FIXME * std::sqrt(triag.area());
+            ASSERT(edgeEpsilon >= 0);
+
+            atlas::interpolation::method::Intersect is = triag.intersects(ray, edgeEpsilon);
+
+            if (is) {
+
+                // weights are the linear Lagrange function evaluated at u,v (aka barycentric coordinates)
+                w[0] = 1. - is.u - is.v;
+                w[1] = is.u;
+                w[2] = is.v;
+
+                for (size_t i = 0; i < 3; ++i) {
+                        triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
+                }
+
+                break; // stop looking for elements
+            }
+
+        } else {
+
+            /* quadrilateral */
+            atlas::interpolation::element::Quad2D quad(
+                    ilonlat[idx[0]].data(),
+                    ilonlat[idx[1]].data(),
+                    ilonlat[idx[2]].data(),
+                    ilonlat[idx[3]].data() );
+
+            if ( !quad.validate() ) { // somewhat expensive sanity check
+                eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
+                throw eckit::SeriousBug("Found invalid quadrilateral in mesh", Here());
+            }
+
+            // pick an epsilon based on a characteristic length (sqrt(area))
+            // (this scales linearly so it better compares with linear weights u,v,w)
+            const double edgeEpsilon = parametricEpsilon * std::sqrt(quad.area());
+            ASSERT(edgeEpsilon >= 0);
+
+            atlas::interpolation::method::Intersect is = quad.intersects(ray, edgeEpsilon);
+
+            if (is) {
+
+                // weights are the bilinear Lagrange function evaluated at u,v
+                w[0] = (1. - is.u) * (1. - is.v);
+                w[1] =       is.u  * (1. - is.v);
+                w[2] =       is.u  *       is.v ;
+                w[3] = (1. - is.u) *       is.v ;
+
+
+                for (size_t i = 0; i < 4; ++i) {
+                    triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
+                }
+
+                break; // stop looking for elements
+            }
+        }
+
+    } // loop over nearest elements
+
+    return triplets;
+}
+
+
+
+
+
+
+
+
 }  // (anonymous namespace)
 
 
@@ -302,6 +425,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
     const atlas::mesh::Nodes  &i_nodes  = in.mesh().nodes();
     atlas::array::ArrayView<double, 2> icoords  ( i_nodes.field( "xyz" ));
+    atlas::array::ArrayView<double, 2> ilonlat = in.coordsLonLat();
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
     if (i_nodes.metadata().has("NbRealPts")) {
@@ -326,6 +450,8 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
     const size_t maxNbElemsToTry = std::max<size_t>(64, stats.inp_ncells * maxFractionElemsToTry);
     size_t max_neighbours = 0;
+
+    std::vector<size_t> failures;
 
     eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().shortName() << std::endl;
 
@@ -376,15 +502,41 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
             }
 
             if (!success) {
+                eckit::geometry::Point2 p(olonlat[ip].data());
+                Triplets triplets = projectPointToElements2D(
+                            stats,
+                            ilonlat,
+                            in.mesh().cells().node_connectivity(),
+                            p,
+                            ip);
+
+                if (triplets.size()) {
+                    std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
+                    success = true;
+                }
+            }
+
+            if (!success) {
                 // If this fails, consider lowering atlas::grid::parametricEpsilon
-                eckit::Log::debug<LibMir>()
-                        << "Failed to project point " << ip << " " << p
-                        << " with coordinates lon=" << olonlat[ip][LON] << ", lat=" << olonlat[ip][LAT]
-                        << " after " << eckit::Plural(kpts, "attempt") << std::endl;
-                throw eckit::SeriousBug("Could not project point");
+                failures.push_back(ip);
             }
         }
     }
+
+    if (failures.size()) {
+        for (const size_t& ip: failures) {
+            Point p ( ocoords[ip].data() ); // lookup point
+            eckit::Log::debug<LibMir>()
+                    << "Failed to project point " << ip << " " << p
+                    << " with coordinates lon=" << olonlat[ip][LON] << ", lat=" << olonlat[ip][LAT]
+                       << std::endl;
+        }
+
+        std::stringstream msg;
+        msg << "Could not project " << eckit::Plural(failures.size(), "point");
+        throw eckit::SeriousBug(msg.str());
+    }
+
 
     eckit::Log::debug<LibMir>() << "Projected " << eckit::Plural(stats.out_npts, "point") << std::endl;
     eckit::Log::debug<LibMir>() << "Maximum neighbours searched was " << eckit::Plural(max_neighbours, "element") << std::endl;
