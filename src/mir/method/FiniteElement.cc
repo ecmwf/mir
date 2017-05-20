@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <list>
 #include "eckit/config/Resource.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/ETA.h"
@@ -104,7 +105,7 @@ static void normalise(Triplets& triplets)
 
 
 /// Find in which element the point is contained by projecting the point with each nearest element
-static Triplets projectPointToElements(
+static Triplets projectPointTo3DElements(
         const MeshStats &stats,
         const atlas::array::ArrayView<double, 2> &icoords,
         const atlas::mesh::Connectivity& connectivity,
@@ -226,24 +227,17 @@ static Triplets projectPointToElements(
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 /// Find in which element the point is contained by projecting the point with each nearest element
-static Triplets projectPointToElements2D(
+static Triplets projectPointTo2DElements(
         const MeshStats &stats,
         const atlas::array::ArrayView<double, 2> &ilonlat,
         const atlas::mesh::Connectivity& connectivity,
         const eckit::geometry::Point2 &p,
-        size_t ip ) {
+        size_t ip,
+        atlas::interpolation::method::ElemIndex3::NodeList::const_iterator start,
+        atlas::interpolation::method::ElemIndex3::NodeList::const_iterator finish ) {
+
+    ASSERT(start != finish);
 
     Triplets triplets;
 
@@ -251,9 +245,10 @@ static Triplets projectPointToElements2D(
     double w[4];
     atlas::interpolation::Vector2D ray = atlas::interpolation::Vector2D::Map( p.data() );
 
+    for (atlas::interpolation::method::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
 
-
-    for (size_t elem_id = 0; elem_id < connectivity.rows(); ++elem_id) {
+        const size_t elem_id = (*itc).value().payload();
+        ASSERT(elem_id < connectivity.rows());
 
         /* assumes:
          * - nb_cols == 3 implies triangle
@@ -341,12 +336,6 @@ static Triplets projectPointToElements2D(
 }
 
 
-
-
-
-
-
-
 }  // (anonymous namespace)
 
 
@@ -368,8 +357,7 @@ FiniteElement::~FiniteElement() {
 }
 
 
-void FiniteElement::hash(eckit::MD5&) const
-{
+void FiniteElement::hash(eckit::MD5&) const {
 }
 
 
@@ -451,10 +439,9 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     const size_t maxNbElemsToTry = std::max<size_t>(64, stats.inp_ncells * maxFractionElemsToTry);
     size_t max_neighbours = 0;
 
-    std::vector<size_t> failures;
-
     eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().shortName() << std::endl;
-
+    size_t Nsuccesses = 0;
+    std::list<size_t> failures;
     {
         eckit::TraceTimer<LibMir> timerProj("Projecting");
 
@@ -469,79 +456,107 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
                         << std::endl;
             }
 
-            if (!inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
-                continue;
-            }
+            if (inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
 
-            Point p ( ocoords[ip].data() ); // lookup point
+                // lookup point
+                Point p ( ocoords[ip].data() );
 
-            size_t kpts = 1;
-            bool success = false;
+                size_t kpts = 1;
+                bool success = false;
+                while (!success && kpts <= maxNbElemsToTry) {
+                    max_neighbours = std::max(kpts, max_neighbours);
 
-            while (!success && kpts <= maxNbElemsToTry) {
+                    atlas::interpolation::method::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
+                    Triplets triplets = projectPointTo3DElements(
+                                stats,
+                                icoords,
+                                in.mesh().cells().node_connectivity(),
+                                p,
+                                ip,
+                                firstVirtualPoint,
+                                cs.begin(),
+                                cs.end() );
 
-                max_neighbours = std::max(kpts, max_neighbours);
+                    if (triplets.size()) {
+                        std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
+                        success = true;
+                        ++Nsuccesses;
+                    }
+                    kpts *= 2;
 
-                atlas::interpolation::method::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
-                Triplets triplets = projectPointToElements(
-                            stats,
-                            icoords,
-                            in.mesh().cells().node_connectivity(),
-                            p,
-                            ip,
-                            firstVirtualPoint,
-                            cs.begin(),
-                            cs.end() );
-
-                if (triplets.size()) {
-                    std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
-                    success = true;
                 }
-                kpts *= 2;
 
-            }
-
-            if (!success) {
-                eckit::geometry::Point2 p(olonlat[ip].data());
-                Triplets triplets = projectPointToElements2D(
-                            stats,
-                            ilonlat,
-                            in.mesh().cells().node_connectivity(),
-                            p,
-                            ip);
-
-                if (triplets.size()) {
-                    std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
-                    success = true;
+                if (!success) {
+                    // If this fails, consider lowering atlas::grid::parametricEpsilon
+                    failures.push_front(ip);
                 }
-            }
-
-            if (!success) {
-                // If this fails, consider lowering atlas::grid::parametricEpsilon
-                failures.push_back(ip);
             }
         }
     }
+    size_t Nfailures = failures.size();
+    eckit::Log::debug<LibMir>() << "Projected " << eckit::BigNum(Nsuccesses) << " of " << eckit::Plural(stats.out_npts, "point")
+                                << ", with " << eckit::Plural(Nfailures, "projection failure") << std::endl;
 
-    if (failures.size()) {
-        for (const size_t& ip: failures) {
-            Point p ( ocoords[ip].data() ); // lookup point
-            eckit::Log::debug<LibMir>()
-                    << "Failed to project point " << ip << " " << p
-                    << " with coordinates lon=" << olonlat[ip][LON] << ", lat=" << olonlat[ip][LAT]
-                       << std::endl;
+
+    if (Nfailures) {
+        const size_t goodIndex = std::numeric_limits<size_t>::max();
+        eckit::TraceTimer<LibMir> timerProj("Recovering");
+
+        for (size_t& ip : failures) {
+            if (inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
+
+                // lookup point
+                Point p (ocoords[ip].data());
+
+                size_t kpts = 1;
+                while (ip != goodIndex && kpts <= maxNbElemsToTry) {
+                    max_neighbours = std::max(kpts, max_neighbours);
+
+                    atlas::interpolation::method::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
+                    Triplets triplets = projectPointTo2DElements(
+                                stats,
+                                ilonlat,
+                                in.mesh().cells().node_connectivity(),
+                                eckit::geometry::Point2(olonlat[ip].data()),
+                                ip,
+                                cs.begin(),
+                                cs.end() );
+
+                    if (triplets.size()) {
+                        // triplets have to be in row-order (follows Triplet::operator<)
+                        Triplets::const_iterator here = std::upper_bound(weights_triplets.begin(), weights_triplets.end(), triplets[0]);
+                        weights_triplets.insert(here, triplets.begin(), triplets.end());
+                        ip = goodIndex;
+                    }
+                    kpts *= 2;
+
+                }
+            }
         }
 
+        // clear up the failed projections with the recoveries
+        failures.remove(goodIndex);
+        eckit::Log::debug<LibMir>() << "Recovered " << eckit::Plural(Nfailures - failures.size(), "projection failure") << std::endl;
+        Nfailures = failures.size();
+    }
+
+
+    eckit::Log::debug<LibMir>() << "Maximum neighbours searched was " << eckit::Plural(max_neighbours, "element") << std::endl;
+    if (!failures.empty()) {
         std::stringstream msg;
-        msg << "Could not project " << eckit::Plural(failures.size(), "point");
+        msg << "Failed to project " << eckit::Plural(Nfailures, "point") << " out of " << eckit::Plural(stats.out_npts, "point");
+
+        eckit::Log::debug<LibMir>() << msg.str() << ":";
+        for (const size_t& ip: failures) {
+            eckit::Log::debug<LibMir>() << "\n\tpoint " << ip << " (lon, lat) = (" << olonlat[ip][LON] << ", " << olonlat[ip][LAT];
+        }
+        eckit::Log::debug<LibMir>() << std::endl;
         throw eckit::SeriousBug(msg.str());
     }
 
 
-    eckit::Log::debug<LibMir>() << "Projected " << eckit::Plural(stats.out_npts, "point") << std::endl;
-    eckit::Log::debug<LibMir>() << "Maximum neighbours searched was " << eckit::Plural(max_neighbours, "element") << std::endl;
-
-    W.setFromTriplets(weights_triplets); // fill sparse matrix
+    // fill sparse matrix
+    W.setFromTriplets(weights_triplets);
 }
 
 
