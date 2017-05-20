@@ -27,7 +27,7 @@ namespace mir {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-static LibMir libmir;
+REGISTER_LIBRARY(LibMir);
 
 LibMir::LibMir() : Library("mir") {}
 
@@ -39,6 +39,7 @@ eckit::PathName LibMir::cacheDir()
 
 const LibMir& LibMir::instance()
 {
+    static LibMir libmir;
     return libmir;
 }
 
