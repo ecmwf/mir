@@ -260,6 +260,8 @@ list(
     lsm/TenMinutesLSM.h
     lsm/UserFileLSM.cc
     lsm/UserFileLSM.h
+    method/AddPoint.cc
+    method/AddPoint.h
     method/Bilinear.cc
     method/Bilinear.h
     method/Conservative.cc
