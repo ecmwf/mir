@@ -10,74 +10,73 @@
 
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   May 2016
 
 
 #include "mir/method/GridSpace.h"
 
 #include "eckit/geometry/Point3.h"
-
+#include "atlas/array/ArrayView.h"
 #include "atlas/grid/Grid.h"
 #include "atlas/mesh/Mesh.h"
-#include "atlas/array/ArrayView.h"
-
 #include "mir/method/MethodWeighted.h"
 
-using atlas::array::ArrayView;
 
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
-GridSpace::GridSpace(const atlas::grid::Grid& grid, const mir::method::MethodWeighted& method) :
+using namespace atlas::array;
+
+
+GridSpace::GridSpace(const atlas::grid::Grid& grid, const MethodWeighted& method) :
     method_(method),
     grid_(grid),
     mesh_(0),
     coordsLonLat_(0) {
 }
 
-GridSpace::~GridSpace() {
+
+const atlas::grid::Grid& GridSpace::grid() const {
+    return grid_;
 }
 
-atlas::mesh::Mesh& GridSpace::mesh() const
-{
-    if(mesh_ == 0) {
+
+atlas::mesh::Mesh& GridSpace::mesh() const {
+    if (mesh_ == 0) {
         mesh_ = &method_.generateMeshAndCache(grid_);
     }
     return *mesh_;
 }
 
-const std::vector<double>& GridSpace::coords() const
-{
-    if(!coordsLonLat_.size()) {
-        coordsLonLat_.resize(grid_.npts()*2);
+
+const std::vector<double>& GridSpace::coords() const {
+    if (!coordsLonLat_.size()) {
+        coordsLonLat_.resize(grid_.npts() * 2);
         grid_.fillLonLat(coordsLonLat_);
     }
     return coordsLonLat_;
 }
 
-atlas::array::ArrayView<double,2> GridSpace::coordsLonLat() const
-{
-    return atlas::array::ArrayView<double,2>( &coords()[0], atlas::array::make_shape(grid_.npts(), 2));
+
+ArrayView<double, 2> GridSpace::coordsLonLat() const {
+    return ArrayView<double, 2>(&coords()[0], make_shape(grid_.npts(), 2));
 }
 
-atlas::array::ArrayView<double,2> GridSpace::coordsXYZ() const
-{
-    if(!coordsXYZ_.size()) {
+
+ArrayView<double, 2> GridSpace::coordsXYZ() const {
+    if (!coordsXYZ_.size()) {
         const size_t npts = grid_.npts();
-        coordsXYZ_.resize(npts*3);
-        ArrayView<double,2> lonlat = coordsLonLat();
-        for( size_t n=0; n<npts; ++n )
-        {
-            eckit::geometry::lonlat_to_3d(lonlat[n].data(), &coordsXYZ_[3*n]);
+        coordsXYZ_.resize(npts * 3);
+        ArrayView<double, 2> lonlat = coordsLonLat();
+        for (size_t n = 0; n < npts; ++n) {
+            eckit::geometry::lonlat_to_3d(lonlat[n].data(), &coordsXYZ_[3 * n]);
         }
     }
-    return atlas::array::ArrayView<double,2>( &coordsXYZ_[0], atlas::array::make_shape(grid_.npts(), 3));
+    return ArrayView<double, 2>(&coordsXYZ_[0], make_shape(grid_.npts(), 3));
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
-

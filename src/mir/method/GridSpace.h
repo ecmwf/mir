@@ -10,66 +10,64 @@
 
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   May 2016
 
-#ifndef mir_method_GridSpace_H
-#define mir_method_GridSpace_H
+
+#ifndef mir_method_GridSpace_h
+#define mir_method_GridSpace_h
 
 #include <vector>
-
 #include "eckit/memory/NonCopyable.h"
-#include "eckit/memory/ScopedPtr.h"
+
 
 namespace atlas {
-    namespace grid { class Grid; }
-    namespace mesh { class Mesh; }
-
-    namespace array {
-    class Array;
-    template <typename DATA_TYPE, int RANK > class ArrayView;
-    }
+namespace grid { class Grid; }
+namespace mesh { class Mesh; }
+namespace array { template< typename DATA_TYPE, int RANK > class ArrayView; }
 }
+namespace mir {
+namespace method {
+class MethodWeighted;
+}
+}
+
 
 namespace mir {
 namespace method {
 
-class MethodWeighted;
-
-//----------------------------------------------------------------------------------------------------------------------
 
 class GridSpace : private eckit::NonCopyable {
+public:
 
-public: // methods
+    // -- Contructors
 
-    GridSpace(const atlas::grid::Grid& grid, const mir::method::MethodWeighted& method);
+    GridSpace(const atlas::grid::Grid&, const MethodWeighted&);
 
-    ~GridSpace();
+    // -- Methods
 
-    const atlas::grid::Grid& grid() const { return grid_; }
-
+    const atlas::grid::Grid& grid() const;
     atlas::mesh::Mesh& mesh() const;
-
     const std::vector<double>& coords() const;
-
     atlas::array::ArrayView<double,2> coordsLonLat() const;
     atlas::array::ArrayView<double,2> coordsXYZ() const;
 
-private: // members
+private:
 
-    const mir::method::MethodWeighted& method_;
+    // -- Members
 
+    const MethodWeighted& method_;
     const atlas::grid::Grid& grid_;
-
     mutable atlas::mesh::Mesh* mesh_;
-
     mutable std::vector<double> coordsLonLat_;
     mutable std::vector<double> coordsXYZ_;
+
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
 
 #endif
 
