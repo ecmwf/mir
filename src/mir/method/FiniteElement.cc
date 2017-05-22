@@ -281,6 +281,14 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
         }
     }
 
+
+    // if domain does not include poles, we might need to recover the parallel edges
+    {
+        eckit::TraceTimer<LibMir> timer("AddParallelEdgesConnectivity");
+        AddParallelEdgesConnectivity()(in.grid().domain(), in.mesh());
+    }
+
+
     // generate barycenters of each triangle & insert them on a kd-tree
     {
         eckit::ResourceUsage usage("create_cell_centres");
@@ -328,7 +336,6 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     const size_t maxNbElemsToTry = std::max<size_t>(64, stats.inp_ncells * maxFractionElemsToTry);
     size_t maxNbNeighbours = 0;
     size_t nbProjections = 0;
-    size_t nbRecoveries = 0;
     size_t nbFailures = 0;
     std::forward_list<size_t> failures;
 
@@ -356,13 +363,14 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
                 // 3D projection
                 size_t kpts = 1;
+                size_t previous_kpts = 0;
                 while (!success && kpts <= maxNbElemsToTry) {
                     maxNbNeighbours = std::max(kpts, maxNbNeighbours);
 
                     // loop over closest elements (enlarging range if failing projection)
                     element_tree_t::NodeList cs = eTree->kNearestNeighbours(p, kpts);
-                    element_id_vector_t eList(cs.size());
-                    std::transform(cs.begin(), cs.end(), eList.begin(), [](element_tree_t::NodeInfo& ni) { return ni.value().payload(); });
+                    element_id_vector_t eList(cs.size() - previous_kpts);
+                    std::transform(cs.begin() + previous_kpts, cs.end(), eList.begin(), [](element_tree_t::NodeInfo& ni) { return ni.value().payload(); });
 
                     triplet_vector_t triplets = projectPointTo3DElements(
                                 stats,
@@ -380,6 +388,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
                         ++nbProjections;
                     }
 
+                    previous_kpts = kpts;
                     kpts *= 2;
                 }
 
@@ -392,68 +401,8 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
         }
     }
 
-    if (nbFailures) {
-        const atlas::mesh::Connectivity* connectivity = NULL;
-        {
-            eckit::TraceTimer<LibMir> timer("AddParallelEdgesConnectivity");
-            AddParallelEdgesConnectivity()(inDomain, in.mesh());
-            try {
-                connectivity = &(in.mesh().nodes().connectivity("parallel-edges"));
-            } catch (const eckit::Exception& e) {
-                eckit::Log::debug<LibMir>() << "Cannot recover failed projections, could not create parallel edges elements (" << e.what() << ")" << std::endl;
-            }
-        }
-
-        if (connectivity != NULL) {
-            eckit::Log::debug<LibMir>() << "Recovering " << eckit::Plural(nbFailures, "failed projection") << std::endl;
-            eckit::TraceTimer<LibMir> timerRecovery("Recovering");
-
-            // FIXME shouldn't have to correct these variables...
-            firstVirtualPoint = in.mesh().nodes().metadata().get<size_t>("NbRealPts");
-            stats.inp_npts = in.mesh().nodes().size();
-            atlas::array::ArrayView<double, 2> icoords(i_nodes.field("xyz"));
-
-            // loop over all recovery elements (0-based, don't use k-d tree)
-            element_id_vector_t eList(connectivity->rows());
-            std::iota(eList.begin(), eList.end(), 0);
-
-            const size_t goodIndex = std::numeric_limits<size_t>::max();
-            for (size_t& ip: failures) {
-
-                // lookup point (confirmed to be inside input domain)
-                Point p(ocoords[ip].data());
-
-                // parallel edge recovery
-                triplet_vector_t triplets = projectPointTo3DElements(
-                            stats,
-                            icoords,
-                            *connectivity,
-                            p,
-                            ip,
-                            firstVirtualPoint,
-                            eList.begin(),
-                            eList.end() );
-
-                if (triplets.size()) {
-                    // triplets have to be in row-order (follows Triplet::operator<)
-                    triplet_vector_t::iterator here = std::upper_bound(weights_triplets.begin(), weights_triplets.end(), triplets[0]);
-                    weights_triplets.insert(here, triplets.begin(), triplets.end());
-
-                    ip = goodIndex;
-                    ++nbRecoveries;
-                    --nbFailures;
-                }
-
-            }
-
-            // clear up the recovered points from the failures
-            failures.remove(goodIndex);
-        }
-    }
-
     eckit::Log::debug<LibMir>()
             << "Projected " << eckit::BigNum(nbProjections)
-            << " and recovered " << eckit::BigNum(nbRecoveries)
             << " of " << eckit::Plural(stats.out_npts, "point")
             << " (" << eckit::Plural(nbFailures, "failure") << ")\n"
             << "Maximum neighbours searched was " << eckit::Plural(maxNbNeighbours, "element")

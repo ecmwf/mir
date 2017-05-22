@@ -73,7 +73,7 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
 
     // build list of North and South parallels edges
     edge_list_t edgesNorth;
-    if (!domain.includesPoleNorth()) {
+    if (!domain.includesPoleNorth() && domain.north() < 0.) {
         edgesNorth = getParallelEdges(
                     atlas::grid::Domain(domain.north(), 0, domain.north(), 360),
                     mesh.cells().node_connectivity(),
@@ -81,7 +81,7 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
     }
 
     edge_list_t edgesSouth;
-    if (!domain.includesPoleSouth()) {
+    if (!domain.includesPoleSouth() && domain.south() > 0.) {
         edgesSouth = getParallelEdges(
                     atlas::grid::Domain(domain.south(), 0, domain.south(), 360),
                     mesh.cells().node_connectivity(),
@@ -94,22 +94,24 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
     }
 
 
-    // resize nodes and set poles coordinates and indices
+    // resize nodes
     atlas::mesh::Nodes& nodes = mesh.nodes();
     const size_t nbRealPts = nodes.size();
     nodes.metadata().set<size_t>("NbRealPts", nbRealPts);
     nodes.resize(nbRealPts + (edgesNorth.empty()? 0:1) + (edgesSouth.empty()? 0:1));
 
+
+    // resize connectivity
+    atlas::mesh::Connectivity& connect = mesh.cells().node_connectivity();
+    size_t lastIndex = nbRealPts;
+    size_t lastElement = connect.rows();
+    idx_t triangle[3];
+    connect.add(edgesNorth.size() + edgesSouth.size(), 3);
+
+
     atlas::array::ArrayView<double, 2> coords(nodes.field("xyz"));
     atlas::array::ArrayView<double, 2> lonlat(nodes.lonlat());
     atlas::array::ArrayView<atlas::gidx_t, 1> gidx(nodes.global_index());
-
-    atlas::mesh::Connectivity* connect = new atlas::mesh::Connectivity();
-    connect->add(edgesNorth.size() + edgesSouth.size(), 3);
-
-    size_t lastIndex = nbRealPts;
-    size_t lastElement = 0;
-    idx_t triangle[3];
 
 
     // add North parallel elements touching pole
@@ -125,7 +127,7 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
         for (const edge_t& edge: edgesNorth) {
             triangle[1] = edge.second;  // order is {pole, E2, E1}
             triangle[2] = edge.first;   // ...
-            connect->set(lastElement++, triangle);
+            connect.set(lastElement++, triangle);
         }
     }
 
@@ -143,14 +145,9 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
         for (const edge_t& edge: edgesSouth) {
             triangle[1] = edge.second;  // order is {pole, E2, E1}
             triangle[2] = edge.first;   // ...
-            connect->set(lastElement++, triangle);
+            connect.set(lastElement++, triangle);
         }
     }
-
-
-    // a nice name
-    connect->rename("parallel-edges");
-    nodes.add(connect);
 }
 
 
