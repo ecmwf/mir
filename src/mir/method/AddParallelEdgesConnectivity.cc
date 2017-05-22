@@ -72,23 +72,22 @@ static edge_list_t getParallelEdges(
 void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain, atlas::mesh::Mesh& mesh) const {
 
     // build list of North and South parallels edges
-    edge_list_t edgesNorth;
+    edge_list_t edges;
+    bool north = false;
     if (!domain.includesPoleNorth() && domain.north() < 0.) {
-        edgesNorth = getParallelEdges(
+        north = true;
+        edges = getParallelEdges(
                     atlas::grid::Domain(domain.north(), 0, domain.north(), 360),
                     mesh.cells().node_connectivity(),
                     atlas::array::ArrayView<double, 2>(mesh.nodes().lonlat()) );
-    }
-
-    edge_list_t edgesSouth;
-    if (!domain.includesPoleSouth() && domain.south() > 0.) {
-        edgesSouth = getParallelEdges(
+    } else if (!domain.includesPoleSouth() && domain.south() > 0.) {
+        edges = getParallelEdges(
                     atlas::grid::Domain(domain.south(), 0, domain.south(), 360),
                     mesh.cells().node_connectivity(),
                     atlas::array::ArrayView<double, 2>(mesh.nodes().lonlat()) );
     }
 
-    if (edgesNorth.empty() && edgesSouth.empty()) {
+    if (edges.empty()) {
         // nothing to do
         return;
     }
@@ -98,15 +97,14 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
     atlas::mesh::Nodes& nodes = mesh.nodes();
     const size_t nbRealPts = nodes.size();
     nodes.metadata().set<size_t>("NbRealPts", nbRealPts);
-    nodes.resize(nbRealPts + (edgesNorth.empty()? 0:1) + (edgesSouth.empty()? 0:1));
+    nodes.resize(nbRealPts + 1);
 
 
     // resize connectivity
     atlas::mesh::Connectivity& connect = mesh.cells().node_connectivity();
-    size_t lastIndex = nbRealPts;
     size_t lastElement = connect.rows();
     idx_t triangle[3];
-    connect.add(edgesNorth.size() + edgesSouth.size(), 3);
+    connect.add(edges.size(), 3);
 
 
     atlas::array::ArrayView<double, 2> coords(nodes.field("xyz"));
@@ -114,39 +112,19 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
     atlas::array::ArrayView<atlas::gidx_t, 1> gidx(nodes.global_index());
 
 
-    // add North parallel elements touching pole
-    if (edgesNorth.size()) {
-        const size_t i = lastIndex++;
+    // add parallel elements touching pole
+    const size_t i = nbRealPts;
 
-        lonlat(i, LON) = 0;
-        lonlat(i, LAT) = 90;
-        eckit::geometry::lonlat_to_3d(lonlat[i].data(), coords[i].data());
-        gidx(i) = idx_t(i + 1);
+    lonlat(i, LON) = 0;
+    lonlat(i, LAT) = north? 90 : -90;
+    eckit::geometry::lonlat_to_3d(lonlat[i].data(), coords[i].data());
+    gidx(i) = idx_t(i + 1);
 
-        triangle[0] = i;
-        for (const edge_t& edge: edgesNorth) {
-            triangle[1] = edge.second;  // order is {pole, E2, E1}
-            triangle[2] = edge.first;   // ...
-            connect.set(lastElement++, triangle);
-        }
-    }
-
-
-    // add South parallel elements touching pole
-    if (edgesSouth.size()) {
-        const size_t i = lastIndex++;
-
-        lonlat(i, LON) = 0;
-        lonlat(i, LAT) = -90;
-        eckit::geometry::lonlat_to_3d(lonlat[i].data(), coords[i].data());
-        gidx(i) = idx_t(i + 1);
-
-        triangle[0] = i;
-        for (const edge_t& edge: edgesSouth) {
-            triangle[1] = edge.second;  // order is {pole, E2, E1}
-            triangle[2] = edge.first;   // ...
-            connect.set(lastElement++, triangle);
-        }
+    triangle[0] = i;
+    for (const edge_t& edge: edges) {
+        triangle[1] = edge.second;  // order is {pole, E2, E1}
+        triangle[2] = edge.first;   // ...
+        connect.set(lastElement++, triangle);
     }
 }
 
