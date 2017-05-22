@@ -262,8 +262,6 @@ list(
     lsm/UserFileLSM.h
     method/AddParallelEdgesConnectivity.cc
     method/AddParallelEdgesConnectivity.h
-    method/AddPoint.cc
-    method/AddPoint.h
     method/Bilinear.cc
     method/Bilinear.h
     method/Conservative.cc
