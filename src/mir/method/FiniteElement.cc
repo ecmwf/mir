@@ -62,7 +62,8 @@ static const double parametricEpsilon = 1e-16;
 enum { LON=0, LAT=1 };
 
 
-typedef std::vector< WeightMatrix::Triplet > Triplets;
+typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
+typedef std::vector< size_t > element_id_vector_t;
 
 
 struct MeshStats {
@@ -88,7 +89,7 @@ struct MeshStats {
 };
 
 
-static void normalise(Triplets& triplets)
+static void normalise(triplet_vector_t& triplets)
 {
     // sum all calculated weights for normalisation
     double sum = 0.0;
@@ -106,28 +107,27 @@ static void normalise(Triplets& triplets)
 
 
 /// Find in which element the point is contained by projecting the point with each nearest element
-static Triplets projectPointTo3DElements(
+static triplet_vector_t projectPointTo3DElements(
         const MeshStats &stats,
         const atlas::array::ArrayView<double, 2> &icoords,
         const atlas::mesh::Connectivity& connectivity,
         const FiniteElement::Point &p,
         size_t ip,
         size_t firstVirtualPoint,
-        atlas::interpolation::method::ElemIndex3::NodeList::const_iterator start,
-        atlas::interpolation::method::ElemIndex3::NodeList::const_iterator finish ) {
+        element_id_vector_t::const_iterator start,
+        element_id_vector_t::const_iterator finish ) {
 
     ASSERT(start != finish);
 
-    Triplets triplets;
+    triplet_vector_t triplets;
 
     bool mustNormalise = false;
     size_t idx[4];
     double w[4];
     atlas::interpolation::method::Ray ray( p.data() );
 
-    for (atlas::interpolation::method::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
-
-        const size_t elem_id = (*itc).value().payload();
+    for (element_id_vector_t::const_iterator itc = start; itc != finish; ++itc) {
+        const size_t elem_id = (*itc);
         ASSERT(elem_id < connectivity.rows());
 
         /* assumes:
@@ -228,122 +228,6 @@ static Triplets projectPointTo3DElements(
 }
 
 
-/// Find in which element the point is contained by projecting the point with each nearest element
-static Triplets projectPointTo3DElements(
-        const MeshStats &stats,
-        const atlas::array::ArrayView<double, 2> &icoords,
-        const atlas::mesh::Connectivity& connectivity,
-        const FiniteElement::Point &p,
-        size_t ip,
-        size_t firstVirtualPoint ) {
-
-    Triplets triplets;
-
-    bool mustNormalise = false;
-    size_t idx[4];
-    double w[4];
-    atlas::interpolation::method::Ray ray( p.data() );
-
-    for (size_t elem_id = 0; elem_id < connectivity.rows(); ++elem_id) {
-
-        /* assumes:
-         * - nb_cols == 3 implies triangle
-         * - nb_cols == 4 implies quadrilateral
-         * - no other element is supported at the time
-         */
-        const size_t nb_cols = connectivity.cols(elem_id);
-        ASSERT(nb_cols == 3 || nb_cols == 4);
-
-        for (size_t i = 0; i < nb_cols; ++i) {
-            idx[i] = size_t(connectivity(elem_id, i));
-//            ASSERT(idx[i] < stats.inp_npts);                //FIXME uncomment
-        }
-
-        if (nb_cols == 3) {
-
-            /* triangle */
-            atlas::interpolation::element::Triag3D triag(
-                    icoords[idx[0]].data(),
-                    icoords[idx[1]].data(),
-                    icoords[idx[2]].data());
-
-            // pick an epsilon based on a characteristic length (sqrt(area))
-            // (this scales linearly so it better compares with linear weights u,v,w)
-            const double edgeEpsilon = parametricEpsilon * std::sqrt(triag.area());
-            ASSERT(edgeEpsilon >= 0);
-
-            atlas::interpolation::method::Intersect is = triag.intersects(ray, edgeEpsilon);
-
-            if (is) {
-
-                // weights are the linear Lagrange function evaluated at u,v (aka barycentric coordinates)
-                w[0] = 1. - is.u - is.v;
-                w[1] = is.u;
-                w[2] = is.v;
-
-                for (size_t i = 0; i < 3; ++i)
-                {
-                    if(idx[i] < firstVirtualPoint)
-                        triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
-                    else
-                        mustNormalise = true;
-                }
-
-                break; // stop looking for elements
-            }
-
-        } else {
-
-            /* quadrilateral */
-            atlas::interpolation::element::Quad3D quad(
-                    icoords[idx[0]].data(),
-                    icoords[idx[1]].data(),
-                    icoords[idx[2]].data(),
-                    icoords[idx[3]].data() );
-
-            if ( !quad.validate() ) { // somewhat expensive sanity check
-                eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
-                throw eckit::SeriousBug("Found invalid quadrilateral in mesh", Here());
-            }
-
-            // pick an epsilon based on a characteristic length (sqrt(area))
-            // (this scales linearly so it better compares with linear weights u,v,w)
-            const double edgeEpsilon = parametricEpsilon;  // FIXME * std::sqrt(quad.area());
-            ASSERT(edgeEpsilon >= 0);
-
-            atlas::interpolation::method::Intersect is = quad.intersects(ray, edgeEpsilon);
-
-            if (is) {
-
-                // weights are the bilinear Lagrange function evaluated at u,v
-                w[0] = (1. - is.u) * (1. - is.v);
-                w[1] =       is.u  * (1. - is.v);
-                w[2] =       is.u  *       is.v ;
-                w[3] = (1. - is.u) *       is.v ;
-
-
-                for (size_t i = 0; i < 4; ++i) {
-                    if(idx[i] < firstVirtualPoint)
-                        triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
-                    else
-                        mustNormalise = true;
-                }
-
-                break; // stop looking for elements
-            }
-        }
-
-    } // loop over nearest elements
-
-    // at least one of the nodes of element shouldn't be virtual
-    if (!triplets.empty() && mustNormalise) {
-        normalise(triplets);
-    }
-
-    return triplets;
-}
-
-
 }  // (anonymous namespace)
 
 
@@ -370,6 +254,7 @@ void FiniteElement::hash(eckit::MD5&) const {
 
 
 void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
+    typedef atlas::interpolation::method::ElemIndex3 element_tree_t;
 
     // FIXME: arguments
     eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in.grid() << ", output: " << out.grid() << ")" << std::endl;
@@ -403,7 +288,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
         atlas::mesh::actions::BuildCellCentres()(in.mesh());
     }
 
-    eckit::ScopedPtr<atlas::interpolation::method::ElemIndex3> eTree;
+    eckit::ScopedPtr<element_tree_t> eTree;
     {
         eckit::ResourceUsage usage("create_element_centre_index");
         eckit::TraceTimer<LibMir> timer("create_element_centre_index");
@@ -435,7 +320,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
 
     // weights -- one per vertex of element, triangles (3) or quads (4)
-    std::vector< WeightMatrix::Triplet > weights_triplets; // structure to fill-in sparse matrix
+    triplet_vector_t weights_triplets; // structure to fill-in sparse matrix
     weights_triplets.reserve( stats.out_npts * 4 );        // preallocate space as if all elements where quads
 
 
@@ -473,17 +358,21 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
                 size_t kpts = 1;
                 while (!success && kpts <= maxNbElemsToTry) {
                     maxNbNeighbours = std::max(kpts, maxNbNeighbours);
-                    atlas::interpolation::method::ElemIndex3::NodeList cs = eTree->kNearestNeighbours(p, kpts);
 
-                    Triplets triplets = projectPointTo3DElements(
+                    // loop over closest elements (enlarging range if failing projection)
+                    element_tree_t::NodeList cs = eTree->kNearestNeighbours(p, kpts);
+                    element_id_vector_t eList(cs.size());
+                    std::transform(cs.begin(), cs.end(), eList.begin(), [](element_tree_t::NodeInfo& ni) { return ni.value().payload(); });
+
+                    triplet_vector_t triplets = projectPointTo3DElements(
                                 stats,
                                 icoords,
                                 connectivity,
                                 p,
                                 ip,
                                 firstVirtualPoint,
-                                cs.begin(),
-                                cs.end() );
+                                eList.begin(),
+                                eList.end() );
 
                     if (triplets.size()) {
                         std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
@@ -510,6 +399,10 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
         AddParallelEdgesConnectivity()(inDomain, in.mesh());
         const atlas::mesh::Connectivity& connectivity = in.mesh().nodes().connectivity("parallel-edges-south");
 
+        // loop over all recovery elements (0-based, don't use k-d tree)
+        element_id_vector_t eList(connectivity.rows());
+        std::iota(eList.begin(), eList.end(), 0);
+
         const size_t goodIndex = std::numeric_limits<size_t>::max();
         for (size_t& ip: failures) {
 
@@ -517,17 +410,19 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
             Point p(ocoords[ip].data());
 
             // parallel edge recovery
-            Triplets triplets = projectPointTo3DElements(
+            triplet_vector_t triplets = projectPointTo3DElements(
                         stats,
                         icoords,
                         connectivity,
                         p,
                         ip,
-                        firstVirtualPoint );
+                        firstVirtualPoint,
+                        eList.begin(),
+                        eList.end() );
 
             if (triplets.size()) {
                 // triplets have to be in row-order (follows Triplet::operator<)
-                Triplets::const_iterator here = std::upper_bound(weights_triplets.begin(), weights_triplets.end(), triplets[0]);
+                triplet_vector_t::iterator here = std::upper_bound(weights_triplets.begin(), weights_triplets.end(), triplets[0]);
                 weights_triplets.insert(here, triplets.begin(), triplets.end());
 
                 ip = goodIndex;
