@@ -57,10 +57,10 @@ static const double maxFractionElemsToTry = 0.2;
 static const double parametricEpsilon = 1e-16;
 
 
-enum { LON=0, LAT=1 };
-
-
+using atlas::internals::LON;
+using atlas::internals::LAT;
 typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
+typedef atlas::interpolation::method::ElemIndex3 element_tree_t;
 
 
 struct MeshStats {
@@ -111,8 +111,8 @@ static triplet_vector_t projectPointTo3DElements(
         const FiniteElement::Point &p,
         size_t ip,
         size_t firstVirtualPoint,
-        atlas::interpolation::method::ElemIndex3::NodeList::const_iterator start,
-        atlas::interpolation::method::ElemIndex3::NodeList::const_iterator finish ) {
+        element_tree_t::NodeList::const_iterator start,
+        element_tree_t::NodeList::const_iterator finish ) {
 
     ASSERT(start != finish);
 
@@ -123,7 +123,7 @@ static triplet_vector_t projectPointTo3DElements(
     double w[4];
     atlas::interpolation::method::Ray ray( p.data() );
 
-    for (atlas::interpolation::method::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
+    for (element_tree_t::NodeList::const_iterator itc = start; itc != finish; ++itc) {
 
         const size_t elem_id = (*itc).value().payload();
         ASSERT(elem_id < connectivity.rows());
@@ -252,7 +252,6 @@ void FiniteElement::hash(eckit::MD5&) const {
 
 
 void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
-    typedef atlas::interpolation::method::ElemIndex3 element_tree_t;
 
     // FIXME: arguments
     eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in.grid() << ", output: " << out.grid() << ")" << std::endl;
