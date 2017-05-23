@@ -63,7 +63,6 @@ enum { LON=0, LAT=1 };
 
 
 typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
-typedef std::vector< size_t > element_id_vector_t;
 
 
 struct MeshStats {
@@ -114,8 +113,8 @@ static triplet_vector_t projectPointTo3DElements(
         const FiniteElement::Point &p,
         size_t ip,
         size_t firstVirtualPoint,
-        element_id_vector_t::const_iterator start,
-        element_id_vector_t::const_iterator finish ) {
+        atlas::interpolation::method::ElemIndex3::NodeList::const_iterator start,
+        atlas::interpolation::method::ElemIndex3::NodeList::const_iterator finish ) {
 
     ASSERT(start != finish);
 
@@ -126,8 +125,9 @@ static triplet_vector_t projectPointTo3DElements(
     double w[4];
     atlas::interpolation::method::Ray ray( p.data() );
 
-    for (element_id_vector_t::const_iterator itc = start; itc != finish; ++itc) {
-        const size_t elem_id = (*itc);
+    for (atlas::interpolation::method::ElemIndex3::NodeList::const_iterator itc = start; itc != finish; ++itc) {
+
+        const size_t elem_id = (*itc).value().payload();
         ASSERT(elem_id < connectivity.rows());
 
         /* assumes:
@@ -369,8 +369,6 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
                     // loop over closest elements (enlarging range if failing projection)
                     element_tree_t::NodeList cs = eTree->kNearestNeighbours(p, kpts);
-                    element_id_vector_t eList(cs.size() - previous_kpts);
-                    std::transform(cs.begin() + previous_kpts, cs.end(), eList.begin(), [](element_tree_t::NodeInfo& ni) { return ni.value().payload(); });
 
                     triplet_vector_t triplets = projectPointTo3DElements(
                                 stats,
@@ -379,8 +377,8 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
                                 p,
                                 ip,
                                 firstVirtualPoint,
-                                eList.begin(),
-                                eList.end() );
+                                cs.begin() + previous_kpts,
+                                cs.end() );
 
                     if (triplets.size()) {
                         std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
