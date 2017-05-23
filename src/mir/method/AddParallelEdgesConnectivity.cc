@@ -13,15 +13,17 @@
 
 #include <list>
 #include <utility>
+#include "eckit/exception/Exceptions.h"
+#include "eckit/geometry/Point3.h"
 #include "atlas/array/ArrayView.h"
 #include "atlas/field/Field.h"
 #include "atlas/grid/Grid.h"
 #include "atlas/internals/Parameters.h"  // for LON, LAT
 #include "atlas/mesh/Connectivity.h"
+#include "atlas/mesh/ElementType.h"
 #include "atlas/mesh/Elements.h"
 #include "atlas/mesh/Mesh.h"
 #include "atlas/mesh/Nodes.h"
-#include "eckit/geometry/Point3.h"
 
 
 namespace mir {
@@ -66,6 +68,16 @@ static edge_list_t getParallelEdges(
 }
 
 
+size_t getTriangleType(const atlas::mesh::Mesh& mesh) {
+    for (size_t t = 0; t < mesh.cells().nb_types(); ++t) {
+        if (mesh.cells().element_type(t).name() == "Triangle") {
+            return t;
+        }
+    }
+    throw eckit::SeriousBug("Could not find element type 'Triangle'");
+}
+
+
 }  // (anonymous namespace)
 
 
@@ -73,14 +85,15 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
 
     // build list of North and South parallels edges
     edge_list_t edges;
-    bool north = false;
-    if (!domain.includesPoleNorth() && domain.north() < 0.) {
-        north = true;
+    bool addNorthPole = false;
+
+    if (domain.north() < 0.) {
+        addNorthPole = true;
         edges = getParallelEdges(
                     atlas::grid::Domain(domain.north(), 0, domain.north(), 360),
                     mesh.cells().node_connectivity(),
                     atlas::array::ArrayView<double, 2>(mesh.nodes().lonlat()) );
-    } else if (!domain.includesPoleSouth() && domain.south() > 0.) {
+    } else if (domain.south() > 0.) {
         edges = getParallelEdges(
                     atlas::grid::Domain(domain.south(), 0, domain.south(), 360),
                     mesh.cells().node_connectivity(),
@@ -93,34 +106,41 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
     }
 
 
-    // resize nodes and connectivity
+    // resize nodes: add North/South pole
+    const size_t nbOriginalPoints = mesh.nodes().size();
+    const size_t P = nbOriginalPoints;  // North/South pole index
+    mesh.nodes().resize(nbOriginalPoints + 1);
+
     atlas::mesh::Nodes& nodes = mesh.nodes();
-    const size_t nbRealPts = nodes.size();
-    nodes.metadata().set<size_t>("NbRealPts", nbRealPts);
-    nodes.resize(nbRealPts + 1);
+    nodes.metadata().set<size_t>("NbRealPts", nbOriginalPoints);
 
-    atlas::mesh::Connectivity& connect = mesh.cells().node_connectivity();
-    size_t lastElement = connect.rows();
-    connect.add(edges.size(), 3);
-
-
-    // add parallel elements touching pole
     atlas::array::ArrayView<double, 2> coords(nodes.field("xyz"));
     atlas::array::ArrayView<double, 2> lonlat(nodes.lonlat());
-    atlas::array::ArrayView<atlas::gidx_t, 1> gidx(nodes.global_index());
+    atlas::array::ArrayView<atlas::gidx_t, 1> index_nodes(nodes.global_index());
 
-    const size_t i = nbRealPts;  // North/South pole index
-    lonlat(i, LON) = 0;
-    lonlat(i, LAT) = north? 90 : -90;
-    eckit::geometry::lonlat_to_3d(lonlat[i].data(), coords[i].data());
-    gidx(i) = idx_t(i + 1);
+    lonlat(P, LON) = 0;
+    lonlat(P, LAT) = addNorthPole? 90 : -90;
+    eckit::geometry::lonlat_to_3d(lonlat[P].data(), coords[P].data());
+    index_nodes(P) = idx_t(P + 1);
 
+
+    // resize connectivity: add number-of-edges "parallel" elements touching pole
+    atlas::mesh::Elements& elems = mesh.cells().elements(getTriangleType(mesh));
+    const size_t nbOriginalTriags = elems.size();
+    elems.add(edges.size());
+
+    atlas::mesh::BlockConnectivity& connect = elems.node_connectivity();
+    atlas::array::ArrayView<atlas::gidx_t, 1> index_elems(elems.global_index());
+
+    const size_t offset = elems.begin();
+    size_t j = nbOriginalTriags;
     idx_t triangle[3];
-    triangle[0] = i;
+    triangle[0] = P;
     for (const edge_t& edge: edges) {
         triangle[1] = edge.second;  // order is {pole, E2, E1}
         triangle[2] = edge.first;   // ...
-        connect.set(lastElement++, triangle);
+        index_elems(offset + j) = idx_t(j + 1);
+        connect.set(j++, triangle);
     }
 }
 
