@@ -93,33 +93,29 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
     }
 
 
-    // resize nodes
+    // resize nodes and connectivity
     atlas::mesh::Nodes& nodes = mesh.nodes();
     const size_t nbRealPts = nodes.size();
     nodes.metadata().set<size_t>("NbRealPts", nbRealPts);
     nodes.resize(nbRealPts + 1);
 
-
-    // resize connectivity
     atlas::mesh::Connectivity& connect = mesh.cells().node_connectivity();
     size_t lastElement = connect.rows();
-    idx_t triangle[3];
     connect.add(edges.size(), 3);
 
 
+    // add parallel elements touching pole
     atlas::array::ArrayView<double, 2> coords(nodes.field("xyz"));
     atlas::array::ArrayView<double, 2> lonlat(nodes.lonlat());
     atlas::array::ArrayView<atlas::gidx_t, 1> gidx(nodes.global_index());
 
-
-    // add parallel elements touching pole
-    const size_t i = nbRealPts;
-
+    const size_t i = nbRealPts;  // North/South pole index
     lonlat(i, LON) = 0;
     lonlat(i, LAT) = north? 90 : -90;
     eckit::geometry::lonlat_to_3d(lonlat[i].data(), coords[i].data());
     gidx(i) = idx_t(i + 1);
 
+    idx_t triangle[3];
     triangle[0] = i;
     for (const edge_t& edge: edges) {
         triangle[1] = edge.second;  // order is {pole, E2, E1}
