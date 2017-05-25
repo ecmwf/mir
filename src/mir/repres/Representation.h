@@ -25,9 +25,7 @@
 struct grib_info;
 
 namespace atlas {
-namespace grid {
 class Grid;
-}
 }
 
 namespace mir {
@@ -109,7 +107,7 @@ public:
 
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
-    virtual atlas::grid::Grid atlasGrid() const;
+    virtual atlas::Grid atlasGrid() const;
     virtual util::Domain domain() const;
     virtual util::Domain domain(const util::BoundingBox&) const;
 

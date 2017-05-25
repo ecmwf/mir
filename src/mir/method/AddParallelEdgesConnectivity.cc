@@ -18,12 +18,12 @@
 #include "atlas/array/ArrayView.h"
 #include "atlas/field/Field.h"
 #include "atlas/grid/Grid.h"
-#include "atlas/internals/Parameters.h"  // for LON, LAT
 #include "atlas/mesh/Connectivity.h"
 #include "atlas/mesh/ElementType.h"
 #include "atlas/mesh/Elements.h"
 #include "atlas/mesh/Mesh.h"
 #include "atlas/mesh/Nodes.h"
+#include "mir/util/Domain.h"
 
 
 namespace mir {
@@ -33,22 +33,23 @@ namespace method {
 namespace {
 
 
+using eckit::geometry::LON;
+using eckit::geometry::LAT;
+using atlas::gidx_t;
 using atlas::idx_t;
-using atlas::internals::LON;
-using atlas::internals::LAT;
 typedef std::pair< idx_t, idx_t > edge_t;
 typedef std::list< edge_t > edge_list_t;
 
 
 static edge_list_t getParallelEdges(
-        const atlas::grid::Domain& parallel,
-        const atlas::mesh::Connectivity& cells_nodes_connectivity,
+        const util::Domain& parallel,
+        const atlas::mesh::MultiBlockConnectivity& cells_nodes_connectivity,
         const atlas::array::ArrayView<double, 2>& coords ) {
     edge_list_t edges;
 
     std::vector<bool> onParallel(coords.shape(0));
     for (size_t ip = 0; ip < coords.shape(0); ++ip) {
-        onParallel[ip] = parallel.contains(coords[ip][LON], coords[ip][LAT]);
+        onParallel[ip] = parallel.contains(coords(ip, LON), coords(ip, LAT));
     }
 
     for (size_t elem_id = 0; elem_id < cells_nodes_connectivity.rows(); ++elem_id) {
@@ -68,7 +69,7 @@ static edge_list_t getParallelEdges(
 }
 
 
-size_t getTriangleType(const atlas::mesh::Mesh& mesh) {
+size_t getTriangleType(const atlas::Mesh& mesh) {
     for (size_t t = 0; t < mesh.cells().nb_types(); ++t) {
         if (mesh.cells().element_type(t).name() == "Triangle") {
             return t;
@@ -81,7 +82,7 @@ size_t getTriangleType(const atlas::mesh::Mesh& mesh) {
 }  // (anonymous namespace)
 
 
-void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain, atlas::mesh::Mesh& mesh) const {
+void AddParallelEdgesConnectivity::operator()(const util::Domain& domain, atlas::Mesh& mesh) const {
 
     // build list of North and South parallels edges
     edge_list_t edges;
@@ -90,14 +91,14 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
     if (domain.north() < 0.) {
         addNorthPole = true;
         edges = getParallelEdges(
-                    atlas::grid::Domain(domain.north(), 0, domain.north(), 360),
+                    util::Domain(domain.north(), 0, domain.north(), 360),
                     mesh.cells().node_connectivity(),
-                    atlas::array::ArrayView<double, 2>(mesh.nodes().lonlat()) );
+                    atlas::array::make_view< double, 2 >(mesh.nodes().lonlat()) );
     } else if (domain.south() > 0.) {
         edges = getParallelEdges(
-                    atlas::grid::Domain(domain.south(), 0, domain.south(), 360),
+                    util::Domain(domain.south(), 0, domain.south(), 360),
                     mesh.cells().node_connectivity(),
-                    atlas::array::ArrayView<double, 2>(mesh.nodes().lonlat()) );
+                    atlas::array::make_view< double, 2 >(mesh.nodes().lonlat()) );
     }
 
     if (edges.empty()) {
@@ -114,9 +115,9 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
     atlas::mesh::Nodes& nodes = mesh.nodes();
     nodes.metadata().set<size_t>("NbRealPts", nbOriginalPoints);
 
-    atlas::array::ArrayView<double, 2> coords(nodes.field("xyz"));
-    atlas::array::ArrayView<double, 2> lonlat(nodes.lonlat());
-    atlas::array::ArrayView<atlas::gidx_t, 1> index_nodes(nodes.global_index());
+    atlas::array::ArrayView<double, 2> coords = atlas::array::make_view< double, 2 >(nodes.field("xyz"));
+    atlas::array::ArrayView<double, 2> lonlat = atlas::array::make_view< double, 2 >(nodes.lonlat());
+    atlas::array::ArrayView<gidx_t, 1> index_nodes = atlas::array::make_view< gidx_t, 1 >(nodes.global_index());
 
     lonlat(P, LON) = 0;
     lonlat(P, LAT) = addNorthPole? 90 : -90;
@@ -130,7 +131,7 @@ void AddParallelEdgesConnectivity::operator()(const atlas::grid::Domain& domain,
     elems.add(edges.size());
 
     atlas::mesh::BlockConnectivity& connect = elems.node_connectivity();
-    atlas::array::ArrayView<atlas::gidx_t, 1> index_elems(elems.global_index());
+    atlas::array::ArrayView<gidx_t, 1> index_elems = atlas::array::make_view< gidx_t, 1 >(elems.global_index());
 
     const size_t offset = elems.begin();
     size_t j = nbOriginalTriags;

@@ -100,7 +100,7 @@ Bilinear::~Bilinear() {
 }
 
 
-void Bilinear::execute(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const {
+void Bilinear::execute(context::Context& ctx, const atlas::Grid& in, const atlas::Grid& out) const {
 
     // remember which source points are below precipitation threshold
     std::vector<bool> dry_points;
@@ -224,7 +224,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 
 
     // access the input domain
-    atlas::grid::Domain idomain = in.grid().domain();
+    util::Domain idomain = in.domain();
 
 
     // check input min/max latitudes (gaussian grids exclude the poles)

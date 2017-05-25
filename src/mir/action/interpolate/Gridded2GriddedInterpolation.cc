@@ -53,8 +53,8 @@ void Gridded2GriddedInterpolation::execute(context::Context & ctx) const {
     repres::RepresentationHandle in(field.representation());
     repres::RepresentationHandle out(outputRepresentation());
 
-    atlas::grid::Grid gin = in->atlasGrid(); // We do it here as ATLAS does not respect constness
-    atlas::grid::Grid gout = out->atlasGrid();
+    atlas::Grid gin = in->atlasGrid(); // We do it here as ATLAS does not respect constness
+    atlas::Grid gout = out->atlasGrid();
 
     method->execute(ctx, gin, gout);
 

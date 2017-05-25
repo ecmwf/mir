@@ -83,7 +83,7 @@ protected:
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
-    virtual atlas::grid::Grid atlasGrid() const;
+    virtual atlas::Grid atlasGrid() const;
 
     virtual util::Domain domain() const;
 

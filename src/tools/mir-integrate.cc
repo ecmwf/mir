@@ -93,9 +93,9 @@ void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
         // ASSERT(rep->domain().isGlobal());
 
 #if 0
-        eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );
+        eckit::ScopedPtr<atlas::Grid> grid( rep->atlasGrid() );
 
-        atlas::mesh::Mesh& mesh = grid->mesh();
+        atlas::Mesh& mesh = grid->mesh();
 
         atlas::mesh::actions::BuildXYZField()(mesh);
         atlas::mesh::actions::BuildConvexHull3D builder;

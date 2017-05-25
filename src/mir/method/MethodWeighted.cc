@@ -55,7 +55,7 @@ static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix",
         512 * 1024 * 1024,
         "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
 
-static InMemoryCache<atlas::mesh::Mesh> mesh_cache("mirMesh",
+static InMemoryCache<atlas::Mesh> mesh_cache("mirMesh",
         512 * 1024 * 1024,
         "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
 
@@ -70,7 +70,7 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation)
 MethodWeighted::~MethodWeighted() {
 }
 
-atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid& grid) const {
+atlas::Mesh& MethodWeighted::generateMeshAndCache(const atlas::Grid& grid) const {
 
     std::ostringstream oss;
     oss << "MESH for " << grid;
@@ -87,12 +87,12 @@ atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
 //    if((mesh = mir::caching::MeshCache::get(md5.digest()))) { return mesh; }
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    InMemoryCache<atlas::mesh::Mesh>::iterator j = mesh_cache.find(md5);
+    InMemoryCache<atlas::Mesh>::iterator j = mesh_cache.find(md5);
     if (j != mesh_cache.end()) {
         return *j;
     }
 
-    atlas::mesh::Mesh& mesh = mesh_cache[md5];
+    atlas::Mesh& mesh = mesh_cache[md5];
 
     try {
         generateMesh(grid, mesh);
@@ -108,8 +108,8 @@ atlas::mesh::Mesh& MethodWeighted::generateMeshAndCache(const atlas::grid::Grid&
     return mesh;
 }
 
-void MethodWeighted::generateMesh(const atlas::grid::Grid& g,
-                                  atlas::mesh::Mesh& mesh) const {
+void MethodWeighted::generateMesh(const atlas::Grid& g,
+                                  atlas::Mesh& mesh) const {
 
     std::ostringstream oss;
     oss << "Method " << name()
@@ -120,8 +120,8 @@ void MethodWeighted::generateMesh(const atlas::grid::Grid& g,
 }
 
 void MethodWeighted::createMatrix(context::Context& ctx,
-                                  const atlas::grid::Grid &in,
-                                  const atlas::grid::Grid &out,
+                                  const atlas::Grid &in,
+                                  const atlas::Grid &out,
                                   WeightMatrix& W,
                                   const lsm::LandSeaMasks& masks) const {
 
@@ -137,8 +137,8 @@ void MethodWeighted::createMatrix(context::Context& ctx,
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
 const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
-        const atlas::grid::Grid &in,
-        const atlas::grid::Grid &out) const {
+        const atlas::Grid &in,
+        const atlas::Grid &out) const {
 
     eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix " << *this << std::endl;
 
@@ -208,8 +208,8 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
 
             const MethodWeighted& owner_;
             context::Context& ctx_;
-            const atlas::grid::Grid& in_;
-            const atlas::grid::Grid& out_;
+            const atlas::Grid& in_;
+            const atlas::Grid& out_;
             const lsm::LandSeaMasks& masks_;
 
             virtual void create(const eckit::PathName& path, WeightMatrix& W) {
@@ -219,8 +219,8 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
         public:
             MatrixCacheCreator(const MethodWeighted& owner,
                                context::Context& ctx,
-                               const atlas::grid::Grid& in,
-                               const atlas::grid::Grid& out,
+                               const atlas::Grid& in,
+                               const atlas::Grid& out,
                                const lsm::LandSeaMasks& masks):
                 owner_(owner),
                 ctx_(ctx),
@@ -309,8 +309,8 @@ void MethodWeighted::setVectorFromOperandMatrix(const WeightMatrix::Matrix & A,
 
 
 lsm::LandSeaMasks MethodWeighted::getMasks(context::Context&,
-        const atlas::grid::Grid & in,
-        const atlas::grid::Grid & out) const {
+        const atlas::Grid & in,
+        const atlas::Grid & out) const {
 
     return lsm::LandSeaMasks::lookup(parametrisation_, in, out);
 
@@ -318,8 +318,8 @@ lsm::LandSeaMasks MethodWeighted::getMasks(context::Context&,
 
 
 void MethodWeighted::execute(context::Context & ctx,
-                             const atlas::grid::Grid & in,
-                             const atlas::grid::Grid & out) const {
+                             const atlas::Grid & in,
+                             const atlas::Grid & out) const {
 
     using util::compare::IsMissingFn;
 
@@ -432,8 +432,8 @@ void MethodWeighted::execute(context::Context & ctx,
 
 
 void MethodWeighted::computeMatrixWeights(context::Context & ctx,
-        const atlas::grid::Grid & in,
-        const atlas::grid::Grid & out,
+        const atlas::Grid & in,
+        const atlas::Grid & out,
         WeightMatrix & W) const {
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
@@ -442,7 +442,7 @@ void MethodWeighted::computeMatrixWeights(context::Context & ctx,
         eckit::Log::debug<LibMir>() << "Matrix is indentity" << std::endl;
         W.setIdentity(W.rows(), W.cols());        // grids are the same, use identity matrix
     } else {
-        InMemoryCacheUser<atlas::mesh::Mesh> cache_use(mesh_cache, ctx.statistics().meshCache_);
+        InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, ctx.statistics().meshCache_);
 
         double pruneEpsilon = 0;
         parametrisation_.get("prune-epsilon", pruneEpsilon);

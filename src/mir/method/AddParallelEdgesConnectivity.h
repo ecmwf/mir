@@ -13,11 +13,11 @@
 
 
 namespace atlas {
-namespace grid {
-class Domain;
-}
-namespace mesh {
 class Mesh;
+}
+namespace mir {
+namespace util {
+class Domain;
 }
 }
 
@@ -29,7 +29,7 @@ namespace method {  // ...
 /// Adds traiangles connecting the poles and parallel edges to the mesh
 class AddParallelEdgesConnectivity {
 public:
-    void operator()(const atlas::grid::Domain&, atlas::mesh::Mesh&) const;
+    void operator()(const util::Domain&, atlas::Mesh&) const;
 };
 
 

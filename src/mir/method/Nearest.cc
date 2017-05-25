@@ -61,7 +61,7 @@ void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& 
 
     const util::PointSearch sptree(in);
 
-    const atlas::grid::Domain& inDomain = in.grid().domain();
+    const util::Domain& inDomain = in.domain();
 
     atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
     atlas::array::ArrayView<double, 2> olonlat = atlas::array::make_view< double, 2 >(out.coordsLonLat());

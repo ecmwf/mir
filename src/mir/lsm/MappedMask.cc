@@ -64,7 +64,7 @@ namespace lsm {
 
 MappedMask::MappedMask(const std::string &name,
                        const param::MIRParametrisation &parametrisation,
-                       const atlas::grid::Grid &grid,
+                       const atlas::Grid &grid,
                        const std::string &which):
     Mask(name),
     path_("~mir/share/mir/masks/1km-lsm.mask") {

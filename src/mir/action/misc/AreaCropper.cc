@@ -214,7 +214,7 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
         const util::BoundingBox &bbox,
         bool caching) {
 
-    atlas::grid::Grid gin = representation->atlasGrid(); // This should disapear once we move Representation to atlas
+    atlas::Grid gin = representation->atlasGrid(); // This should disapear once we move Representation to atlas
     eckit::MD5 md5;
     md5 << gin << bbox;
 

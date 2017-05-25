@@ -133,7 +133,7 @@ void StructuredLinear::assemble(context::Context&, WeightMatrix &W, const GridSp
 }
 
 
-void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const atlas::grid::Grid& out) const {
+void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const atlas::Grid& out) const {
     eckit::TraceTimer<LibMir> timer("assemble");
 
     /*
@@ -160,7 +160,7 @@ void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGr
     triplets_t triplets;
     triplets.reserve(3 * out.size());
 
-    const atlas::grid::Domain& inDomain = in.domain();
+    const util::Domain& inDomain = in.domain();
 
     index_t i = 0;
     for (atlas::PointLonLat p : out.lonlat()) {

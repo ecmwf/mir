@@ -62,7 +62,7 @@ class LSM : public eckit::Tool {
 //     std::vector<int> rle;
 //     eckit::RLEencode2(diff.begin(), diff.end(), std::back_inserter(rle), 1000);
 
-//     const atlas::grid::Grid& g = grid;
+//     const atlas::Grid& g = grid;
 
 //     eckit::Log::debug<LibMir>() << "uid " << g.uniqueID() << " hash " << g.hash() << " rle ";
 //     eckit::RLEprint(eckit::Log::debug<LibMir>(), rle.begin(), rle.end());

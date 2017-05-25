@@ -13,7 +13,7 @@
 #define mir_util_RotateGrid_h
 
 #include "eckit/geometry/Point2.h"
-#include "atlas/grid/Projection.h"
+#include "atlas/projection.h"
 
 
 namespace mir {
@@ -57,7 +57,7 @@ public:
 
 private:
 
-   atlas::grid::Projection atlas_rotation_;
+   atlas::Projection atlas_rotation_;
    eckit::geometry::LLPoint2 south_pole_;
    double south_pole_rot_angle_;
    double lonmin_;

@@ -96,12 +96,12 @@ class AutoLSM : public LSMChooser {
 
     virtual Mask *create(const std::string &,
                          const param::MIRParametrisation &param,
-                         const atlas::grid::Grid &grid,
+                         const atlas::Grid &grid,
                          const std::string& which) const ;
 
     virtual std::string cacheKey(const std::string &,
                                  const param::MIRParametrisation &param,
-                                 const atlas::grid::Grid &grid,
+                                 const atlas::Grid &grid,
                                  const std::string& which) const ;
 
 

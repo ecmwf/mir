@@ -34,7 +34,7 @@
 
 using eckit::linalg::Vector;
 using eckit::linalg::LinearAlgebra;
-using atlas::mesh::Mesh;
+using atlas::Mesh;
 using atlas::interpolation::element::Triag3D;
 using atlas::interpolation::element::Quad3D;
 
@@ -53,7 +53,7 @@ Conservative::Conservative(const param::MIRParametrisation &param) :
 Conservative::~Conservative() {
 }
 
-void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const
+void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::Grid& g, atlas::Mesh& mesh) const
 {
     eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix" << std::endl;
 

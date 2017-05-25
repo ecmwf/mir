@@ -55,7 +55,7 @@ static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient",
 
 static void fillTrans(struct Trans_t& trans,
                       trans_options_t& options,
-                      const atlas::grid::Grid& grid) {
+                      const atlas::Grid& grid) {
 #ifdef ATLAS_HAVE_TRANS
     const atlas::grid::StructuredGrid reduced(grid);
     if (!reduced) {
@@ -95,7 +95,7 @@ static void fillTrans(struct Trans_t& trans,
 
 static void createCoefficients(const eckit::PathName& path,
                                trans_options_t& options,
-                               const atlas::grid::Grid& grid,
+                               const atlas::Grid& grid,
                                context::Context& ctx) {
 #ifdef ATLAS_HAVE_TRANS
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
@@ -119,7 +119,7 @@ static void createCoefficients(const eckit::PathName& path,
 
 void ShToGridded::transform(
         data::MIRField& field,
-        const atlas::grid::Grid& grid,
+        const atlas::Grid& grid,
         context::Context& ctx,
         const std::string& key,
         trans_options_t& options ) const {
@@ -135,7 +135,7 @@ void ShToGridded::transform(
             class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
 
                 trans_options_t options_;
-                const atlas::grid::Grid & grid_;
+                const atlas::Grid & grid_;
                 context::Context & ctx_;
 
                 virtual void create(const eckit::PathName& path, int& ignore) {
@@ -143,7 +143,7 @@ void ShToGridded::transform(
                 }
             public:
                 LegendreCacheCreator(trans_options_t& options,
-                                     const atlas::grid::Grid& grid,
+                                     const atlas::Grid& grid,
                                      context::Context& ctx):
                     options_(options), grid_(grid), ctx_(ctx) {}
             };
@@ -200,7 +200,7 @@ void ShToGridded::transform(
 }
 
 
-void ShToGridded::transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx) const {
+void ShToGridded::transform(data::MIRField& field, const atlas::Grid& grid, context::Context& ctx) const {
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
 
     TransInitor::instance(); // Will init trans if needed
@@ -243,7 +243,7 @@ void ShToGridded::execute(context::Context& ctx) const {
     InMemoryCacheUser<TransCache> use(trans_handles, ctx.statistics().transHandleCache_);
 
     repres::RepresentationHandle out(outputRepresentation());
-    atlas::grid::Grid grid = out->atlasGrid();
+    atlas::Grid grid = out->atlasGrid();
 
     transform(ctx.field(), grid, ctx);
 

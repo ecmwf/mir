@@ -38,7 +38,7 @@ private:
 
     void assemble(context::Context&, WeightMatrix&, const GridSpace& in, const GridSpace& out) const;
 
-    void assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const atlas::grid::Grid& out) const;
+    void assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const atlas::Grid& out) const;
 
 };
 

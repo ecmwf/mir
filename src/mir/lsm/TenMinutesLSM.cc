@@ -52,7 +52,7 @@ From EMOSLIB:
 
 TenMinutesLSM::TenMinutesLSM(const std::string &name,
                              const param::MIRParametrisation &parametrisation,
-                             const atlas::grid::Grid &grid,
+                             const atlas::Grid &grid,
                              const std::string &which):
     Mask(name),
     path_("~mir/share/mir/masks/ten-minutes.mask") {

@@ -41,10 +41,10 @@ void Tessellation::hash( eckit::MD5 &md5) const {
 }
 
 
-void Tessellation::generateMesh(const atlas::grid::Grid &grid, atlas::mesh::Mesh &mesh) const {
+void Tessellation::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) const {
     eckit::ResourceUsage usage("Tessellation::generateMesh");
 
-    atlas::meshgenerator::MeshGenerator generator("delaunay", meshgenparams_);
+    atlas::MeshGenerator generator("delaunay", meshgenparams_);
     mesh = generator.generate(grid);
 }
 

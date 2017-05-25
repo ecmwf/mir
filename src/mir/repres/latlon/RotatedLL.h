@@ -69,7 +69,7 @@ class RotatedLL : public RegularLL {
     void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
-    virtual atlas::grid::Grid atlasGrid() const;
+    virtual atlas::Grid atlasGrid() const;
     virtual Iterator* rotatedIterator() const;
 
     // -- Class members

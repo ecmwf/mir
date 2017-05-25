@@ -33,7 +33,7 @@ public:
 
 private: // methods
 
-    virtual void execute(context::Context&, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
+    virtual void execute(context::Context&, const atlas::Grid& in, const atlas::Grid& out) const;
 
     virtual void assemble(context::Context&, WeightMatrix&, const GridSpace& in, const GridSpace& out) const;
 

@@ -23,12 +23,8 @@
 
 
 namespace atlas {
-namespace grid {
 class Grid;
-}
-namespace mesh {
 class Mesh;
-}
 }
 namespace mir {
 namespace lsm {
@@ -55,17 +51,17 @@ public:
 
     virtual ~MethodWeighted();
 
-    virtual void execute(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
+    virtual void execute(context::Context& ctx, const atlas::Grid& in, const atlas::Grid& out) const;
 
     virtual void hash(eckit::MD5&) const;
 
-    atlas::mesh::Mesh& generateMeshAndCache(const atlas::grid::Grid& grid) const;
+    atlas::Mesh& generateMeshAndCache(const atlas::Grid& grid) const;
 
-    virtual void generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
+    virtual void generateMesh(const atlas::Grid&, atlas::Mesh&) const;
 
 protected:
 
-    virtual const WeightMatrix& getMatrix(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
+    virtual const WeightMatrix& getMatrix(context::Context& ctx, const atlas::Grid& in, const atlas::Grid& out) const;
 
 private:
 
@@ -85,11 +81,11 @@ private:
     /// Get interpolation operand matrices, from A = W × B
     virtual void setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, std::vector<double>& Avector, const double& missingValue) const;
 
-    virtual lsm::LandSeaMasks getMasks(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const;
+    virtual lsm::LandSeaMasks getMasks(context::Context& ctx, const atlas::Grid& in, const atlas::Grid& out) const;
 
-    void computeMatrixWeights(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out, WeightMatrix& W) const;
+    void computeMatrixWeights(context::Context& ctx, const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W) const;
 
-    void createMatrix(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out, WeightMatrix& W, const lsm::LandSeaMasks& masks) const;
+    void createMatrix(context::Context& ctx, const atlas::Grid& in, const atlas::Grid& out, WeightMatrix& W, const lsm::LandSeaMasks& masks) const;
 
 private:
 

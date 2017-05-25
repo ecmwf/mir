@@ -52,7 +52,7 @@ void Grids::grid(const atlas::grid::StructuredGrid& grid) {
     std::vector<int> rle;
     eckit::RLEencode2(diff.begin(), diff.end(), std::back_inserter(rle), 1000);
 
-    const atlas::grid::Grid& g = grid;
+    const atlas::Grid& g = grid;
 
     eckit::Log::info() << "uid " << g.uid() << " rle ";
     eckit::RLEprint(eckit::Log::info(), rle.begin(), rle.end());

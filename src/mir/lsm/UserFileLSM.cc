@@ -56,7 +56,7 @@ std::string UserFileLSM::path(const param::MIRParametrisation &param) const {
 
 Mask *UserFileLSM::create(const std::string &name,
                           const param::MIRParametrisation &param,
-                          const atlas::grid::Grid &grid,
+                          const atlas::Grid &grid,
                           const std::string& which) const {
     return new GribFileLSM(name, path(param), param, grid, which);
 }
@@ -64,7 +64,7 @@ Mask *UserFileLSM::create(const std::string &name,
 
 std::string UserFileLSM::cacheKey(const std::string &name,
                                   const param::MIRParametrisation &param,
-                                  const atlas::grid::Grid &grid,
+                                  const atlas::Grid &grid,
                                   const std::string& which) const {
 
     eckit::MD5 md5;

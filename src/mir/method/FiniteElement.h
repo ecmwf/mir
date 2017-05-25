@@ -24,8 +24,8 @@
 
 
 namespace atlas {
-namespace grid { class Grid; }
-namespace mesh { class Mesh; }
+class Grid;
+class Mesh;
 }
 
 
@@ -48,12 +48,12 @@ public:
 protected:
 
     virtual void hash(eckit::MD5&) const;
-    virtual void generateMesh(const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
+    virtual void generateMesh(const atlas::Grid&, atlas::Mesh&) const;
 
 protected: // methods
 
     // Deriving from any eckit::Parametrisation should work
-    class MeshGenParams: public atlas::meshgenerator::MeshGenerator::Parameters {
+    class MeshGenParams: public atlas::MeshGenerator::Parameters {
     public:
         MeshGenParams();
     };

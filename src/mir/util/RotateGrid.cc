@@ -38,7 +38,7 @@ RotateGrid::RotateGrid(const eckit::geometry::LLPoint2& south_pole,
     config.set("south_pole", std::vector<double>({ south_pole_.lon(), south_pole_.lat() }));
     config.set("rotation_angle", south_pole_rot_angle_);
 
-    atlas_rotation_ = atlas::grid::Projection(config);
+    atlas_rotation_ = atlas::Projection(config);
 }
 
 // For reference, this what magics uses, it appears as if it originated from fortran code

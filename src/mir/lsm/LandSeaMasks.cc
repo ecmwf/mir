@@ -47,7 +47,7 @@ void LandSeaMasks::hash(eckit::MD5& md5) const {
     md5 << input_ << output_;
 }
 
-LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation &parametrisation, const atlas::grid::Grid &in, const atlas::grid::Grid &out) {
+LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation &parametrisation, const atlas::Grid &in, const atlas::Grid &out) {
     eckit::TraceTimer<LibMir>("LandSeaMasks::lookup");
     return LandSeaMasks(Mask::lookupInput(parametrisation, in), Mask::lookupOutput(parametrisation, out));
 }

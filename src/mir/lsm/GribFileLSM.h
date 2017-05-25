@@ -13,14 +13,14 @@
 /// @date Apr 2015
 
 
-#ifndef GribFileLSM_H
-#define GribFileLSM_H
+#ifndef mir_lsm_GribFileLSM_h
+#define mir_lsm_GribFileLSM_h
 
 #include <iosfwd>
 
 #include "eckit/filesystem/PathName.h"
-
 #include "mir/lsm/Mask.h"
+
 
 namespace mir {
 namespace param {
@@ -28,8 +28,10 @@ class MIRParametrisation;
 }
 }
 
+
 namespace mir {
 namespace lsm {
+
 
 class GribFileLSM : public Mask {
 public:
@@ -123,8 +125,9 @@ private:
 };
 
 
-
 }  // namespace lsm
 }  // namespace mir
+
+
 #endif
 

@@ -59,7 +59,7 @@ void Mask::hash(eckit::MD5 &md5) const {
 }
 
 
-Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const atlas::grid::Grid& grid, const std::string& which) {
+Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const atlas::Grid& grid, const std::string& which) {
 
     bool lsm = false;
     parametrisation.get("lsm", lsm);

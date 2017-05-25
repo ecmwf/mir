@@ -26,7 +26,6 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/grid/Structured.h"
 #include "atlas/interpolation/element/Quad3D.h"
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/PointIndex3.h"
@@ -36,7 +35,7 @@
 #include "atlas/mesh/Nodes.h"
 #include "atlas/mesh/actions/BuildCellCentres.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
-#include "atlas/util/io/Gmsh.h"
+#include "atlas/output/Gmsh.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/AddParallelEdgesConnectivity.h"
 #include "mir/method/GridSpace.h"
@@ -56,9 +55,8 @@ static const double maxFractionElemsToTry = 0.2;
 // epsilon used to scale edge tolerance when projecting ray to intesect element
 static const double parametricEpsilon = 1e-16;
 
-
-using atlas::internals::LON;
-using atlas::internals::LAT;
+using eckit::geometry::LON;
+using eckit::geometry::LAT;
 typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
 typedef atlas::interpolation::method::ElemIndex3 element_tree_t;
 
@@ -107,7 +105,7 @@ static void normalise(triplet_vector_t& triplets)
 static triplet_vector_t projectPointTo3DElements(
         const MeshStats &stats,
         const atlas::array::ArrayView<double, 2> &icoords,
-        const atlas::mesh::Connectivity& connectivity,
+        const atlas::mesh::HybridElements::Connectivity& connectivity,
         const FiniteElement::Point &p,
         size_t ip,
         size_t firstVirtualPoint,
@@ -266,15 +264,15 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
         static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
         if (dumpMesh) {
-            atlas::util::io::Gmsh gmsh;
-            gmsh.options.set<std::string>("nodes", "xyz");
-
             eckit::Log::debug<LibMir>() << "Dumping input mesh to input.msh" << std::endl;
-            gmsh.write(in.mesh(), "input.msh");
+            atlas::output::Gmsh gi("input.msh");
+//            gi.options.set<std::string>("nodes", "xyz");  FIXME!!!
+//            gi.write(in.mesh(), "input.msh");
 
             eckit::Log::debug<LibMir>() << "Dumping output mesh to output.msh" << std::endl;
-            atlas::mesh::actions::BuildXYZField("xyz")(out.mesh());
-            gmsh.write(out.mesh(), "output.msh");
+            atlas::output::Gmsh go("ouput.msh");
+//            atlas::mesh::actions::BuildXYZField("xyz")(out.mesh());  FIXME!!!
+//            go.write(out.mesh(), "output.msh");
         }
     }
 
@@ -282,7 +280,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     // if domain does not include poles, we might need to recover the parallel edges
     {
         eckit::TraceTimer<LibMir> timer("AddParallelEdgesConnectivity");
-        AddParallelEdgesConnectivity()(in.grid().domain(), in.mesh());
+        AddParallelEdgesConnectivity()(in.domain(), in.mesh());
     }
 
 
@@ -302,9 +300,9 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
 
     // input mesh
-    const atlas::grid::Domain& inDomain = in.grid().domain();
+    const util::Domain& inDomain = in.domain();
     const atlas::mesh::Nodes& i_nodes = in.mesh().nodes();
-    atlas::array::ArrayView<double, 2> icoords(i_nodes.field("xyz"));
+    atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view< double, 2 >( i_nodes.field( "xyz" ));
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
     if (i_nodes.metadata().has("NbRealPts")) {
@@ -313,14 +311,14 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
 
     // output mesh
-    atlas::array::ArrayView<double, 2> ocoords = out.coordsXYZ();
-    atlas::array::ArrayView<double, 2> olonlat = out.coordsLonLat();
+    atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
+    atlas::array::ArrayView<double, 2> olonlat = atlas::array::make_view< double, 2 >(out.coordsLonLat());
 
 
     MeshStats stats;
     stats.inp_ncells = in.mesh().cells().size();
     stats.inp_npts   = i_nodes.size();
-    stats.out_npts   = out.grid().npts();
+    stats.out_npts   = out.grid().size();
     eckit::Log::debug<LibMir>() << stats << std::endl;
 
 
@@ -337,10 +335,10 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     std::forward_list<size_t> failures;
 
     {
-        eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().shortName() << std::endl;
+        eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().name() << std::endl;
         eckit::TraceTimer<LibMir> timerProj("Projecting");
 
-        const atlas::mesh::Connectivity& connectivity = in.mesh().cells().node_connectivity();
+        const atlas::mesh::HybridElements::Connectivity& connectivity = in.mesh().cells().node_connectivity();
         for ( size_t ip = 0; ip < stats.out_npts; ++ip ) {
 
             if (ip && (ip % 10000 == 0)) {
@@ -352,7 +350,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
                         << std::endl;
             }
 
-            if (inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
+            if (inDomain.contains(olonlat(ip, LON), olonlat(ip, LAT))) {
                 bool success = false;
 
                 // lookup point
@@ -409,7 +407,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
         eckit::Log::debug<LibMir>() << msg.str() << ":";
         size_t count = 0;
         for (const size_t& ip: failures) {
-            eckit::Log::debug<LibMir>() << "\n\tpoint " << ip << " (lon, lat) = (" << olonlat[ip][LON] << ", " << olonlat[ip][LAT] << ")";
+            eckit::Log::debug<LibMir>() << "\n\tpoint " << ip << " (lon, lat) = (" << olonlat(ip, LON) << ", " << olonlat(ip, LAT) << ")";
             if (++count > 10) {
                 eckit::Log::debug<LibMir>() << "\n\t...";
                 break;
@@ -425,17 +423,21 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 }
 
 
-void FiniteElement::generateMesh(const atlas::grid::Grid &grid, atlas::mesh::Mesh &mesh) const {
+void FiniteElement::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) const {
     eckit::ResourceUsage usage("FiniteElement::generateMesh");
 
-    std::string meshgenerator(grid.getOptimalMeshGenerator());
+    // TODO: make a factory grid <-> meshgenerator
+    std::string meshgenerator = "delaunay";
+    if (atlas::grid::StructuredGrid(grid)) {
+        meshgenerator = "structured";
+    }
+
     parametrisation_.get("meshgenerator", meshgenerator);
-    eckit::Log::debug<LibMir>() << "MeshGenerator parametrisation is '" << meshgenerator << "'" << std::endl;
 
-    using namespace atlas::mesh::generators;
-    eckit::ScopedPtr<MeshGenerator> generator(MeshGeneratorFactory::build(meshgenerator, meshgenparams_));
+    eckit::Log::debug<LibMir>() << "MeshGenerator is '" << meshgenerator << "'" << std::endl;
 
-    generator->generate(grid, mesh);
+    atlas::MeshGenerator generator(meshgenerator, meshgenparams_);
+    mesh = generator.generate(grid);
 
     // If meshgenerator did not create xyz field already, do it now.
     atlas::mesh::actions::BuildXYZField()(mesh);

@@ -36,7 +36,7 @@ namespace lsm {
 
 GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
                          const param::MIRParametrisation &parametrisation,
-                         const atlas::grid::Grid &grid,
+                         const atlas::Grid &grid,
                          const std::string &which):
     Mask(name),
     path_(path) {
@@ -66,7 +66,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::debug<LibMir>() << "LSM interpolation method is " << *method << std::endl;
 
-    atlas::grid::Grid gin = field.representation()->atlasGrid();
+    atlas::Grid gin = field.representation()->atlasGrid();
 
     util::MIRStatistics dummy; // TODO: use the global one
     context::Context ctx(field, dummy);
@@ -102,7 +102,7 @@ void GribFileLSM::print(std::ostream &out) const {
 
 void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
                                const param::MIRParametrisation &parametrisation,
-                               const atlas::grid::Grid &grid,
+                               const atlas::Grid &grid,
                                const std::string &which) {
 
     std::string interpolation;

@@ -19,12 +19,14 @@
 
 #include <vector>
 #include "eckit/memory/NonCopyable.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "atlas/array/Array.h"
+#include "mir/util/Domain.h"
 
 
 namespace atlas {
-namespace grid { class Grid; }
-namespace mesh { class Mesh; }
-namespace array { template< typename DATA_TYPE, int RANK > class ArrayView; }
+class Grid;
+class Mesh;
 }
 namespace mir {
 namespace method {
@@ -42,25 +44,27 @@ public:
 
     // -- Contructors
 
-    GridSpace(const atlas::grid::Grid&, const MethodWeighted&);
+    GridSpace(const util::Domain&, const atlas::Grid&, const MethodWeighted&);
 
     // -- Methods
 
-    const atlas::grid::Grid& grid() const;
-    atlas::mesh::Mesh& mesh() const;
+    const util::Domain& domain() const;
+    const atlas::Grid& grid() const;
+    atlas::Mesh& mesh() const;
     const std::vector<double>& coords() const;
-    atlas::array::ArrayView<double,2> coordsLonLat() const;
-    atlas::array::ArrayView<double,2> coordsXYZ() const;
+    const atlas::array::Array& coordsLonLat() const;
+    const atlas::array::Array& coordsXYZ() const;
 
 private:
 
     // -- Members
 
+    const util::Domain domain_;
     const MethodWeighted& method_;
-    const atlas::grid::Grid& grid_;
-    mutable atlas::mesh::Mesh* mesh_;
-    mutable std::vector<double> coordsLonLat_;
-    mutable std::vector<double> coordsXYZ_;
+    const atlas::Grid& grid_;
+    mutable atlas::Mesh* mesh_;
+    mutable eckit::ScopedPtr< atlas::array::Array > coordsLonLat_;
+    mutable eckit::ScopedPtr< atlas::array::Array > coordsXYZ_;
 
 };
 
