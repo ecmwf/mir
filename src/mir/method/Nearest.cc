@@ -27,6 +27,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/method/GridSpace.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Domain.h"
 #include "mir/util/PointSearch.h"
 
 
@@ -37,6 +38,7 @@ namespace method {
 namespace {
 enum { LON=0, LAT=1 };
 }
+
 
 Nearest::Nearest(const param::MIRParametrisation &param) :
     MethodWeighted(param) {
@@ -61,7 +63,7 @@ void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& 
 
     const util::PointSearch sptree(in);
 
-    const util::Domain& inDomain = in.domain();
+    const util::Domain inDomain = in.domain();
 
     atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
     atlas::array::ArrayView<double, 2> olonlat = atlas::array::make_view< double, 2 >(out.coordsLonLat());

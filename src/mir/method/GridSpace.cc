@@ -21,14 +21,14 @@
 #include "atlas/grid/Grid.h"
 #include "atlas/mesh/Mesh.h"
 #include "mir/method/MethodWeighted.h"
+#include "mir/util/Domain.h"
 
 
 namespace mir {
 namespace method {
 
 
-GridSpace::GridSpace(const util::Domain& domain, const atlas::Grid& grid, const MethodWeighted& method) :
-    domain_(domain),
+GridSpace::GridSpace(const atlas::Grid& grid, const MethodWeighted& method) :
     method_(method),
     grid_(grid),
     mesh_(0),
@@ -36,8 +36,9 @@ GridSpace::GridSpace(const util::Domain& domain, const atlas::Grid& grid, const 
 }
 
 
-const util::Domain &GridSpace::domain() const {
-    return domain_;
+util::Domain GridSpace::domain() const {
+    atlas::Domain domain = grid_.domain();
+    return util::Domain();
 }
 
 

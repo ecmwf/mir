@@ -40,6 +40,7 @@
 #include "mir/method/AddParallelEdgesConnectivity.h"
 #include "mir/method/GridSpace.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Domain.h"
 
 
 namespace mir {
@@ -300,7 +301,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
 
     // input mesh
-    const util::Domain& inDomain = in.domain();
+    const util::Domain inDomain = in.domain();
     const atlas::mesh::Nodes& i_nodes = in.mesh().nodes();
     atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view< double, 2 >( i_nodes.field( "xyz" ));
 

@@ -160,8 +160,6 @@ void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGr
     triplets_t triplets;
     triplets.reserve(3 * out.size());
 
-    const util::Domain& inDomain = in.domain();
-
     index_t i = 0;
     for (atlas::PointLonLat p : out.lonlat()) {
 
@@ -169,12 +167,14 @@ void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGr
         const double lon = p.lon();
         const double lat = p.lat();
 
-        if (!inDomain.contains(lon, lat)) {
+//        if (inDomain.contains(lon, lat)*/) {
+//
+//            ++i;
+//            continue;
+//
+//        }
 
-            ++i;
-            continue;
-
-        } else if (lat > latitudes.front()) {
+        if (lat > latitudes.front()) {
 
             // interpolate on above-North latitudes
             const size_t Ni = size_t(in.nx().front());

@@ -21,7 +21,6 @@
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "atlas/array/Array.h"
-#include "mir/util/Domain.h"
 
 
 namespace atlas {
@@ -31,6 +30,9 @@ class Mesh;
 namespace mir {
 namespace method {
 class MethodWeighted;
+}
+namespace util {
+class Domain;
 }
 }
 
@@ -44,11 +46,11 @@ public:
 
     // -- Contructors
 
-    GridSpace(const util::Domain&, const atlas::Grid&, const MethodWeighted&);
+    GridSpace(const atlas::Grid&, const MethodWeighted&);
 
     // -- Methods
 
-    const util::Domain& domain() const;
+    util::Domain domain() const;
     const atlas::Grid& grid() const;
     atlas::Mesh& mesh() const;
     const std::vector<double>& coords() const;
@@ -59,7 +61,6 @@ private:
 
     // -- Members
 
-    const util::Domain domain_;
     const MethodWeighted& method_;
     const atlas::Grid& grid_;
     mutable atlas::Mesh* mesh_;
