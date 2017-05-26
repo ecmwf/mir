@@ -15,7 +15,6 @@
 
 #include "mir/method/Bilinear.h"
 
-//#include <cmath>
 #include <vector>
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Log.h"
@@ -27,7 +26,6 @@
 #include "mir/data/MIRField.h"
 #include "mir/method/GridSpace.h"
 #include "mir/util/Compare.h"
-#include "mir/util/Domain.h"
 
 
 namespace mir {
@@ -225,7 +223,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 
 
     // access the input domain
-    const util::Domain idomain = in.domain();
+    const util::Domain& idomain = in.domain();
 
 
     // check input min/max latitudes (gaussian grids exclude the poles)

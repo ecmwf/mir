@@ -21,7 +21,7 @@
 #include "atlas/grid/Grid.h"
 #include "atlas/mesh/Mesh.h"
 #include "mir/method/MethodWeighted.h"
-#include "mir/util/Domain.h"
+#include "atlas/domain/detail/RectangularDomain.h"
 
 
 namespace mir {
@@ -33,12 +33,27 @@ GridSpace::GridSpace(const atlas::Grid& grid, const MethodWeighted& method) :
     grid_(grid),
     mesh_(0),
     coordsLonLat_(0) {
+
+    // FIXME this is the ugliest code ever, it needs to be redesigned
+    try {
+        const atlas::Domain::Implementation* impl = grid_.domain().get();
+        ASSERT(impl);
+
+        const atlas::domain::RectangularDomain& rectangle = dynamic_cast< const atlas::domain::RectangularDomain& >(*impl);
+        double N = rectangle.ymax();
+        double W = rectangle.xmin();
+        double S = rectangle.ymin();
+        double E = rectangle.xmax();
+        domain_ = util::Domain(N, W, S, E);
+
+    } catch (const std::bad_cast&) {
+        throw eckit::SeriousBug("Could not get a RectangularDomain from an Atlas grid", Here());
+    }
 }
 
 
-util::Domain GridSpace::domain() const {
-    atlas::Domain domain = grid_.domain();
-    return util::Domain();
+const util::Domain& GridSpace::domain() const {
+    return domain_;
 }
 
 

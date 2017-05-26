@@ -18,6 +18,7 @@
 #include <limits>
 #include <string>
 #include <vector>
+#include "eckit/geometry/KPoint.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/ETA.h"
 #include "eckit/log/Plural.h"
@@ -27,17 +28,11 @@
 #include "mir/config/LibMir.h"
 #include "mir/method/GridSpace.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/Domain.h"
 #include "mir/util/PointSearch.h"
 
 
 namespace mir {
 namespace method {
-
-
-namespace {
-enum { LON=0, LAT=1 };
-}
 
 
 Nearest::Nearest(const param::MIRParametrisation &param) :
@@ -55,6 +50,8 @@ const char *Nearest::name() const {
 
 
 void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
+    using eckit::geometry::LON;
+    using eckit::geometry::LAT;
 
     eckit::TraceTimer<LibMir> timer("Nearest::assemble");
     eckit::Log::debug<LibMir>() << "Nearest::assemble" << std::endl;
@@ -63,7 +60,7 @@ void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& 
 
     const util::PointSearch sptree(in);
 
-    const util::Domain inDomain = in.domain();
+    const util::Domain& inDomain = in.domain();
 
     atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
     atlas::array::ArrayView<double, 2> olonlat = atlas::array::make_view< double, 2 >(out.coordsLonLat());
