@@ -76,8 +76,8 @@ class LatLon : public Gridded {
 
     void setNiNj();
 
-    static bool shiftedLon(const util::BoundingBox&, const util::Increments&);
-    static bool shiftedLat(const util::BoundingBox&, const util::Increments&);
+    static bool shiftedLon(const double& west, const double& we);
+    static bool shiftedLat(const double& south, const double& north, const double& sn);
 
     // -- Overridden methods
 
