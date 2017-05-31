@@ -167,7 +167,7 @@ void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGr
         const double lon = p.lon();
         const double lat = p.lat();
 
-//        if (inDomain.contains(lon, lat)*/) {
+//        if (inDomain.contains(lat, lon)*/) {
 //
 //            ++i;
 //            continue;

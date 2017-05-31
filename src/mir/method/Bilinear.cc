@@ -281,7 +281,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 //                    << w << " "
 //                    << w << std::endl;
 
-        } else if (idomain.contains(lon, lat)) {
+        } else if (idomain.contains(lat, lon)) {
 
             // find encompassing latitudes ("bottom/top")
 

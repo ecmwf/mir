@@ -350,7 +350,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
                         << std::endl;
             }
 
-            if (inDomain.contains(olonlat(ip, LON), olonlat(ip, LAT))) {
+            if (inDomain.contains(olonlat(ip, LAT), olonlat(ip, LON))) {
                 bool success = false;
 
                 // lookup point
@@ -408,7 +408,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
         size_t count = 0;
         for (const size_t& ip: failures) {
             eckit::Log::debug<LibMir>() << "\n\tpoint " << ip << " (lon, lat) = (" << olonlat(ip, LON) << ", " << olonlat(ip, LAT) << ")";
-            if (++count > 10) {
+            if (false && ++count > 10) {
                 eckit::Log::debug<LibMir>() << "\n\t...";
                 break;
             }

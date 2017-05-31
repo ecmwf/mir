@@ -49,7 +49,7 @@ static edge_list_t getParallelEdges(
 
     std::vector<bool> onParallel(coords.shape(0));
     for (size_t ip = 0; ip < coords.shape(0); ++ip) {
-        onParallel[ip] = parallel.contains(coords(ip, LON), coords(ip, LAT));
+        onParallel[ip] = parallel.contains(coords(ip, LAT), coords(ip, LON));
     }
 
     for (size_t elem_id = 0; elem_id < cells_nodes_connectivity.rows(); ++elem_id) {

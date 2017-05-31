@@ -95,7 +95,7 @@ void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& 
             nearest = push_back = 0;
         }
 
-        if (!inDomain.contains(olonlat(ip, LON), olonlat(ip, LAT))) {
+        if (!inDomain.contains(olonlat(ip, LAT), olonlat(ip, LON))) {
             continue;
         }
 
