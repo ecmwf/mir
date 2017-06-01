@@ -11,11 +11,12 @@
 /// @date Jun 2017
 
 
+#include "eckit/geometry/Point2.h"
 #include "eckit/log/Log.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "atlas/grid/Grid.h"
+#include "atlas/grid.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Iterator.h"
@@ -23,7 +24,6 @@
 #include "mir/stats/detail/Angle.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/method/decompose/PolarAngleToCartesian.h"
-
 
 class MIRGetData : public mir::tools::MIRTool {
 private:
@@ -34,26 +34,37 @@ private:
     }
 public:
     MIRGetData(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::SimpleOption< bool >("atlas", "output Atlas coordinates, default false"));
-        options_.push_back(new eckit::option::SimpleOption< bool >("diff", "default false"));
+        using eckit::option::SimpleOption;
+        options_.push_back(new SimpleOption< bool >("sizes", "compare sizes of coordinates and values vectors, default false"));
+        options_.push_back(new SimpleOption< bool >("atlas-diff", "compare Atlas/MIR coordinates, default false"));
+        options_.push_back(new SimpleOption< bool >("atlas", "output Atlas coordinates instead of MIR coordinates, default false"));
     }
 };
 
 
 void MIRGetData::usage(const std::string &tool) const {
     eckit::Log::info()
-            << "\nUsage: " << tool << " [--atlas=[true|false]] file.grib [file.grib [...]]"
-               "\nExample:"
-               "\n  % " << tool << " --atlas=true file1.grib file2.grib file3.grib"
+            << "\nPrint a latitude, longitude, data values list."
+               "\n"
+               "\nUsage: " << tool << " [--sizes=[true|false]] [--diff=[true|false]] [--atlas=[true|false]] file.grib [file.grib [...]]"
+               "\nExamples:"
+               "\n  % " << tool << " 1.grib"
+               "\n  % " << tool << " --sizes 1.grib"
+               "\n  % " << tool << " --atlas-diff 1.grib 2.grib 3.grib"
             << std::endl;
 }
 
 
 void MIRGetData::execute(const eckit::option::CmdArgs& args) {
+    typedef eckit::geometry::Point2 point_t;
+
+
+    bool sizes = false;
+    args.get("sizes", sizes);
 
 
     bool diff = false;
-    args.get("diff", diff);
+    args.get("atlas-diff", diff);
 
 
     bool atlas = false;
@@ -74,7 +85,61 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             mir::repres::RepresentationHandle rep(field.representation());
 
-            if (diff) {
+            if (sizes) {
+
+                size_t lonlat_size_mir = 0;
+                point_t bbox_min_mir, bbox_max_mir;
+
+                bool first = true;
+                double lon;
+                double lat;
+                eckit::ScopedPtr< mir::repres::Iterator > it(rep->rotatedIterator());
+                while (it->next(lat, lon)) {
+                    point_t P(lon, lat);
+                    if (first) {
+                        bbox_min_mir = bbox_max_mir = P;
+                        first = false;
+                    } else {
+                        bbox_min_mir = point_t::componentsMin(bbox_min_mir, P);
+                        bbox_max_mir = point_t::componentsMax(bbox_max_mir, P);
+                    }
+                    ++lonlat_size_mir;
+                }
+
+                size_t lonlat_size_atlas = 0;
+                point_t bbox_min_atlas, bbox_max_atlas;
+
+                atlas::Grid grid = rep->atlasGrid();
+                first = true;
+                for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
+//                    point_t P(eckit::types::CompareApproximatelyEqual<double>()(std::abs(p.lat()), 90.)? std::numeric_limits<double>::quiet_NaN() : p.lon(), p.lat());
+                    point_t P(p.lon(), p.lat());
+                    if (first) {
+                        bbox_min_atlas = bbox_max_atlas = P;
+                        first = false;
+                    } else {
+                        bbox_min_atlas = point_t::componentsMin(bbox_min_atlas, P);
+                        bbox_max_atlas = point_t::componentsMax(bbox_max_atlas, P);
+                    }
+                    ++lonlat_size_atlas;
+                }
+
+                eckit::Log::info()
+                        << "\n\t" "#values             = " << field.values(0).size()
+                        << "\n\t" "#[(lon, lat)] MIR   = " << lonlat_size_mir   << "\t" "bbox(N, W, S, E) = (" << bbox_max_mir[1]   << ", " << bbox_min_mir[0]   << ", " << bbox_min_mir[1]   << ", " << bbox_max_mir[0]   << ")"
+                        << "\n\t" "#[(lon, lat)] Atlas = " << lonlat_size_atlas << "\t" "bbox(N, W, S, E) = (" << bbox_max_atlas[1] << ", " << bbox_min_atlas[0] << ", " << bbox_min_atlas[1] << ", " << bbox_max_atlas[0] << ")"
+                        << std::endl;
+
+                eckit::Log::info() << "\t" "validates? ";
+                bool validates = false;
+                try {
+                    rep->validate(field.values(0));
+                    validates = true;
+                } catch (...) {
+                }
+                eckit::Log::info() << (validates? "yes":"no") << std::endl;
+
+            } else if (diff) {
 
                 mir::method::decompose::PolarAngleToCartesian<mir::data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC>
                         decompose(std::numeric_limits<double>::quiet_NaN());
@@ -83,16 +148,14 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                         stats_lat(decompose, std::numeric_limits<double>::quiet_NaN()),
                         stats_lon(decompose, std::numeric_limits<double>::quiet_NaN());
 
-                eckit::ScopedPtr<atlas::grid::Grid> grid(rep->atlasGrid());
+                atlas::Grid grid = rep->atlasGrid();
                 eckit::ScopedPtr< mir::repres::Iterator > it(rep->rotatedIterator());
 
                 std::vector<double>::const_iterator v = field.values(0).begin();
-                std::vector<atlas::grid::Grid::Point> lonlat;
-                grid->lonlat(lonlat);
 
                 double lon;
                 double lat;
-                for (const atlas::grid::Grid::Point& p: lonlat) {
+                for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
                     ASSERT(it->next(lat, lon));
 
                     stats_lat(p.lat() - lat);
@@ -111,13 +174,10 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             } else if (atlas) {
 
-                eckit::ScopedPtr<atlas::grid::Grid> grid(rep->atlasGrid());
+                atlas::Grid grid = rep->atlasGrid();
 
                 std::vector<double>::const_iterator v = field.values(0).begin();
-                std::vector<atlas::grid::Grid::Point> lonlat;
-                grid->lonlat(lonlat);
-
-                for (const atlas::grid::Grid::Point& p: lonlat) {
+                for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
                     eckit::Log::info() << "\n\t" << p.lat() << '\t' << p.lon() << '\t' << *v;
                     ++v;
                 }
