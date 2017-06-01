@@ -48,8 +48,7 @@ public:
     // -- Methods
 
     // -- Overridden methods
-
-    virtual void cropToDomain(const param::MIRParametrisation&, context::Context&) const;
+    // None
 
     // -- Class members
     // None
