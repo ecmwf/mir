@@ -42,10 +42,10 @@ do
 
             mir)
             $mir_tool $n data.in.$t data.out.$t
-            state=gribapi
+            state=eccodes
             ;;
 
-            gribapi)
+            eccodes)
             set $(echo $n | tr '=' ' ')
             g=$($grib_get -p $1 data.out.$t)
             if [ "$g" != "$2" ]  # compares strings not floats (( $(echo "$g != $2" | bc) ))

@@ -101,8 +101,8 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
     normaliseLongitudes_(false),
     ignoreWrappingAreas_(false),
     roundDegrees_(false),
-    whiteLister_(whiteLister),
-    maximumNumberOfErrors_(5) {
+    maximumNumberOfErrors_(5),
+    whiteLister_(whiteLister) {
 
     Field::setOptions(args);
 
