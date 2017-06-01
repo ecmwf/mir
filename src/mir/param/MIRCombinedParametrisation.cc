@@ -13,11 +13,10 @@
 /// @date Apr 2015
 
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/param/MIRCombinedParametrisation.h"
+
+#include <iostream>
+#include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
 
 
@@ -38,36 +37,6 @@ MIRCombinedParametrisation::MIRCombinedParametrisation(
 MIRCombinedParametrisation::~MIRCombinedParametrisation() {
 }
 
-
-void MIRCombinedParametrisation::print(std::ostream& out) const {
-    out << "MIRCombinedParametrisation["
-        // << "user="
-        // << user_ <<
-        // ",metadata=" << metadata_ <<
-        // ",configuration=" << configuration_ <<
-        // ",defaults=" << defaults_
-        << "]";
-}
-
-bool MIRCombinedParametrisation::has(const std::string& name) const {
-    // eckit::Log::debug<LibMir>() << "MIRCombinedParametrisation::has(" << name << ")" << std::endl;
-
-    if (name.find("user.") == 0) {
-        return user_.has(name.substr(5));
-    }
-
-    if (name.find("field.") == 0) {
-        return metadata_.has(name.substr(6));
-    }
-
-// This could be a loop
-    if (user_.has(name)) return true;
-    if (metadata_.has(name)) return true;
-    if (defaults_.has(name)) return true;
-
-    // eckit::Log::debug<LibMir>() << "**** MIRCombinedParametrisation::has(" << name << ") unanswered" << std::endl;
-    return false;
-}
 
 template<class T>
 bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
@@ -91,27 +60,88 @@ bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
     return false;
 }
 
+
+void MIRCombinedParametrisation::print(std::ostream& out) const {
+    out << "MIRCombinedParametrisation["
+        // << "user="
+        // << user_ <<
+        // ",metadata=" << metadata_ <<
+        // ",configuration=" << configuration_ <<
+        // ",defaults=" << defaults_
+        << "]";
+}
+
+
+bool MIRCombinedParametrisation::has(const std::string& name) const {
+    // eckit::Log::debug<LibMir>() << "MIRCombinedParametrisation::has(" << name << ")" << std::endl;
+
+    if (name.find("user.") == 0) {
+        return user_.has(name.substr(5));
+    }
+
+    if (name.find("field.") == 0) {
+        return metadata_.has(name.substr(6));
+    }
+
+    // This could be a loop
+    if (user_.has(name)) return true;
+    if (metadata_.has(name)) return true;
+    if (defaults_.has(name)) return true;
+
+    // eckit::Log::debug<LibMir>() << "**** MIRCombinedParametrisation::has(" << name << ") unanswered" << std::endl;
+    return false;
+}
+
+
 bool MIRCombinedParametrisation::get(const std::string& name, std::string& value) const {
     return _get(name, value);
 }
+
 
 bool MIRCombinedParametrisation::get(const std::string& name, bool& value) const {
     return _get(name, value);
 }
 
+bool MIRCombinedParametrisation::get(const std::string& name, int& value) const {
+    return _get(name, value);
+}
+
+
 bool MIRCombinedParametrisation::get(const std::string& name, long& value) const {
     return _get(name, value);
 }
+
+
+bool MIRCombinedParametrisation::get(const std::string& name, float& value) const {
+    return _get(name, value);
+}
+
 
 bool MIRCombinedParametrisation::get(const std::string& name, double& value) const {
     return _get(name, value);
 }
 
+
+bool MIRCombinedParametrisation::get(const std::string& name, std::vector<int>& value) const {
+    return _get(name, value);
+}
+
+
+bool MIRCombinedParametrisation::get(const std::string& name, std::vector<float>& value) const {
+    return _get(name, value);
+}
+
+
 bool MIRCombinedParametrisation::get(const std::string& name, std::vector<long>& value) const {
     return _get(name, value);
 }
 
+
 bool MIRCombinedParametrisation::get(const std::string& name, std::vector<double>& value) const {
+    return _get(name, value);
+}
+
+bool MIRCombinedParametrisation::get(const std::string& name, std::vector<std::string>& value) const {
     return _get(name, value);
 }
 

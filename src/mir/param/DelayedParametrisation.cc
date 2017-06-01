@@ -14,52 +14,107 @@
 
 
 #include "mir/param/DelayedParametrisation.h"
+
 #include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
 namespace param {
 
-//==========================================================
+
 DelayedParametrisation::DelayedParametrisation() {
 }
 
 
 DelayedParametrisation::~DelayedParametrisation() {
-
 }
 
-void DelayedParametrisation::get(const std::string &name, std::string &value) const {
+
+void DelayedParametrisation::get(const std::string& name, std::string&) const {
     std::ostringstream os;
     os << "DelayedParametrisation::get(" << name << ") [string] not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void DelayedParametrisation::get(const std::string &name, bool &value) const {
+
+void DelayedParametrisation::get(const std::string& name, bool&) const {
     std::ostringstream os;
     os << "DelayedParametrisation::get(" << name << ") [bool] not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void DelayedParametrisation::get(const std::string &name, long &value) const {
+
+void DelayedParametrisation::get(const std::string& name, int&) const {
+    std::ostringstream os;
+    os << "DelayedParametrisation::get(" << name << ") [int] not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+void DelayedParametrisation::get(const std::string& name, long&) const {
     std::ostringstream os;
     os << "DelayedParametrisation::get(" << name << ") [long] not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void DelayedParametrisation::get(const std::string &name, double &value) const {
+
+void DelayedParametrisation::get(const std::string& name, size_t&) const {
+    std::ostringstream os;
+    os << "DelayedParametrisation::get(" << name << ") [size_t] not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+void DelayedParametrisation::get(const std::string& name, float&) const {
+    std::ostringstream os;
+    os << "DelayedParametrisation::get(" << name << ") [float] not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+void DelayedParametrisation::get(const std::string& name, double&) const {
     std::ostringstream os;
     os << "DelayedParametrisation::get(" << name << ") [double] not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void DelayedParametrisation::get(const std::string &name, std::vector<long> &value) const {
+
+void DelayedParametrisation::get(const std::string& name, std::vector<int>&) const {
+    std::ostringstream os;
+    os << "DelayedParametrisation::get(" << name << ") [vector<int>] not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+void DelayedParametrisation::get(const std::string& name, std::vector<size_t>&) const {
+    std::ostringstream os;
+    os << "DelayedParametrisation::get(" << name << ") [vector<size_t>] not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+void DelayedParametrisation::get(const std::string& name, std::vector<float>&) const {
+    std::ostringstream os;
+    os << "DelayedParametrisation::get(" << name << ") [vector<float>] not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+void DelayedParametrisation::get(const std::string& name, std::vector<std::string>&) const {
+    std::ostringstream os;
+    os << "DelayedParametrisation::get(" << name << ") [vector<string>] not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+void DelayedParametrisation::get(const std::string& name, std::vector<long>&) const {
     std::ostringstream os;
     os << "DelayedParametrisation::get(" << name << ") [vector<long>] not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void DelayedParametrisation::get(const std::string &name, std::vector<double> &value) const {
+
+void DelayedParametrisation::get(const std::string& name, std::vector<double>&) const {
     std::ostringstream os;
     os << "DelayedParametrisation::get(" << name << ") [vector<double] not implemented for " << *this;
     throw eckit::SeriousBug(os.str());

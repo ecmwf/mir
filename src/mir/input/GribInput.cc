@@ -403,7 +403,7 @@ grib_handle *GribInput::gribHandle(size_t which) const {
 }
 
 
-bool GribInput::has(const std::string &name) const {
+bool GribInput::has(const std::string& name) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
@@ -416,7 +416,7 @@ bool GribInput::has(const std::string &name) const {
 }
 
 
-bool GribInput::get(const std::string &name, bool &value) const {
+bool GribInput::get(const std::string& name, bool& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
@@ -440,7 +440,18 @@ bool GribInput::get(const std::string &name, bool &value) const {
 }
 
 
-bool GribInput::get(const std::string &name, long &value) const {
+bool GribInput::get(const std::string& name, int& value) const {
+    long v;
+    if (get(name, v)) {
+        ASSERT(long(int(v)) == v);
+        value = int(v);
+        return true;
+    }
+    return false;
+}
+
+
+bool GribInput::get(const std::string& name, long& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
@@ -462,7 +473,18 @@ bool GribInput::get(const std::string &name, long &value) const {
 }
 
 
-bool GribInput::get(const std::string &name, double &value) const {
+bool GribInput::get(const std::string& name, float& value) const {
+    double v;
+    if (get(name, v)) {
+        value = float(v);
+        return true;
+    }
+    return false;
+
+}
+
+
+bool GribInput::get(const std::string& name, double& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
@@ -484,7 +506,22 @@ bool GribInput::get(const std::string &name, double &value) const {
 }
 
 
-bool GribInput::get(const std::string &name, std::vector<long> &value) const {
+bool GribInput::get(const std::string& name, std::vector<int>& value) const {
+    std::vector<long> v;
+    if (get(name, v)) {
+        value.clear();
+        value.reserve(v.size());
+        for (const long& l: v) {
+            ASSERT(long(int(l)) == l);
+            value.push_back(int(l));
+        }
+        return true;
+    }
+    return false;
+}
+
+
+bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
@@ -526,7 +563,22 @@ bool GribInput::get(const std::string &name, std::vector<long> &value) const {
 }
 
 
-bool GribInput::get(const std::string &name, std::string &value) const {
+bool GribInput::get(const std::string& name, std::vector<float>& value) const {
+    std::vector<double> v;
+    if (get(name, v)) {
+        value.clear();
+        value.reserve(v.size());
+        for (const double& l: v) {
+            ASSERT(l >= 0);
+            value.push_back(float(l));
+        }
+        return true;
+    }
+    return false;
+}
+
+
+bool GribInput::get(const std::string& name, std::string& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
@@ -561,7 +613,7 @@ bool GribInput::get(const std::string &name, std::string &value) const {
 }
 
 
-bool GribInput::get(const std::string &name, std::vector<double> &value) const {
+bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
@@ -594,6 +646,10 @@ bool GribInput::get(const std::string &name, std::vector<double> &value) const {
     return true;
 }
 
+bool GribInput::get(const std::string& name, std::vector<std::string>& value) const {
+    NOTIMP;
+}
+
 
 bool GribInput::handle(grib_handle *h) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
@@ -606,7 +662,7 @@ bool GribInput::handle(grib_handle *h) {
 }
 
 
-void GribInput::auxilaryValues(const std::string &path, std::vector<double> &values) const {
+void GribInput::auxilaryValues(const std::string& path, std::vector<double>& values) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     eckit::StdFile f(path);
@@ -639,7 +695,7 @@ void GribInput::auxilaryValues(const std::string &path, std::vector<double> &val
 }
 
 
-void GribInput::setAuxilaryFiles(const std::string &pathToLatitudes, const std::string &pathToLongitudes) {
+void GribInput::setAuxilaryFiles(const std::string& pathToLatitudes, const std::string& pathToLongitudes) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     // eckit::Log::debug<LibMir>() << "Loading auxilary files " << pathToLatitudes << " and " << pathToLongitudes << std::endl;
@@ -649,7 +705,7 @@ void GribInput::setAuxilaryFiles(const std::string &pathToLatitudes, const std::
 
 
 // TODO: some caching, also next() should maybe advance the auxilary files
-void GribInput::latitudes(std::vector<double> &values) const {
+void GribInput::latitudes(std::vector<double>& values) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     values.clear();
@@ -658,7 +714,7 @@ void GribInput::latitudes(std::vector<double> &values) const {
 }
 
 
-void GribInput::longitudes(std::vector<double> &values) const {
+void GribInput::longitudes(std::vector<double>& values) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     values.clear();
@@ -667,7 +723,7 @@ void GribInput::longitudes(std::vector<double> &values) const {
 }
 
 
-void GribInput::marsRequest(std::ostream &out) const {
+void GribInput::marsRequest(std::ostream& out) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);

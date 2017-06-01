@@ -29,12 +29,13 @@ class MIRInput;
 namespace output {
 class MIROutput;
 }
-
-
 namespace util {
 class MIRStatistics;
 }
+}
 
+
+namespace mir {
 namespace api {
 
 
@@ -63,20 +64,25 @@ public:
     void execute(input::MIRInput&, output::MIROutput&) const;
     void execute(input::MIRInput&, output::MIROutput&, util::MIRStatistics& statistics) const;
 
-    MIRJob& set(const std::string& name, const char* value);
-    MIRJob& set(const std::string& name, const std::string& value);
-    MIRJob& set(const std::string& name, bool value);
-    MIRJob& set(const std::string& name, long value);
+    MIRJob& set(const std::string &name, const std::string &value);
+    MIRJob& set(const std::string &name, const char *value);
+    MIRJob& set(const std::string &name, float value);
+    MIRJob& set(const std::string &name, double value);
+    MIRJob& set(const std::string &name, int value);
+    MIRJob& set(const std::string &name, long value);
+    MIRJob& set(const std::string &name, bool value);
     MIRJob& set(const std::string& name, size_t value);
 
-    MIRJob& set(const std::string& name, double value);
+    MIRJob& set(const std::string& name, const std::vector<int>& value);
+    MIRJob& set(const std::string& name, const std::vector<long>& value);
+    MIRJob& set(const std::string& name, const std::vector<size_t>& value);
+    MIRJob& set(const std::string& name, const std::vector<float>& value);
+    MIRJob& set(const std::string& name, const std::vector<double>& value);
+    MIRJob& set(const std::string& name, const std::vector<std::string>& value);
+
     MIRJob& set(const std::string& name, param::DelayedParametrisation* value);
     MIRJob& set(const std::string& name, double v1, double v2);
     MIRJob& set(const std::string& name, double v1, double v2, double v3, double v4);
-
-    MIRJob& set(const std::string& name, const std::vector<long>&);
-    MIRJob& set(const std::string& name, const std::vector<size_t>&);
-    MIRJob& set(const std::string& name, const std::vector<double>& value);
 
     MIRJob& clear(const std::string& name);
     MIRJob& reset();

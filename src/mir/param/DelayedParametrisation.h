@@ -13,101 +13,104 @@
 /// @date Apr 2015
 
 
-#ifndef DelayedParametrisation_H
-#define DelayedParametrisation_H
+#ifndef mir_param_DelayedParametrisation_h
+#define mir_param_DelayedParametrisation_h
 
 #include <iosfwd>
 #include <vector>
+
 
 namespace mir {
 namespace param {
 
 
 class DelayedParametrisation  {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     DelayedParametrisation();
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~DelayedParametrisation(); // Change to virtual if base class
+    virtual ~DelayedParametrisation();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
     virtual void get(const std::string& name, std::string& value) const;
     virtual void get(const std::string& name, bool& value) const;
+    virtual void get(const std::string& name, int& value) const;
     virtual void get(const std::string& name, long& value) const;
+    virtual void get(const std::string& name, size_t& value) const;
+    virtual void get(const std::string& name, float& value) const;
     virtual void get(const std::string& name, double& value) const;
+
+    virtual void get(const std::string& name, std::vector<int>& value) const;
     virtual void get(const std::string& name, std::vector<long>& value) const;
+    virtual void get(const std::string& name, std::vector<size_t>& value) const;
+    virtual void get(const std::string& name, std::vector<float>& value) const;
     virtual void get(const std::string& name, std::vector<double>& value) const;
+    virtual void get(const std::string& name, std::vector<std::string>& value) const;
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
-
-
-
-// -- Methods
-
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
-
-
-// -- Overridden methods
-    // virtual bool has(const std::string& name) const;
-
-
-
-// -- Class members
+    // -- Members
     // None
 
-// -- Class methods
+    // -- Methods
+
+    virtual void print(std::ostream&) const = 0;
+
+    // -- Overridden methods
     // None
 
-  private:
+    // -- Class members
+    // None
 
-// No copy allowed
+    // -- Class methods
+    // None
 
+private:
+
+    // No copy allowed
     DelayedParametrisation(const DelayedParametrisation&);
     DelayedParametrisation& operator=(const DelayedParametrisation&);
 
-// -- Members
-
-
-// -- Methods
+    // -- Members
     // None
 
-// -- Overridden methods
+    // -- Methods
     // None
 
-
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-// -- Friends
+    // -- Class methods
+    // None
+
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s,const DelayedParametrisation& p) {
         p.print(s);
@@ -119,5 +122,7 @@ class DelayedParametrisation  {
 
 }  // namespace param
 }  // namespace mir
+
+
 #endif
 

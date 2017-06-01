@@ -24,103 +24,109 @@ namespace param {
 
 
 class MIRCombinedParametrisation : public MIRParametrisation {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     MIRCombinedParametrisation(const MIRParametrisation& user,
                                const MIRParametrisation& metadata,
                                const MIRParametrisation& defaults);
 
-// -- Destructor
+    // -- Destructor
 
     ~MIRCombinedParametrisation(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
-
-    // void print(ostream&) const; // Change to virtual if base class
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-  private:
+    // -- Class methods
+    // None
 
-// No copy allowed
+private:
+
+    // No copy allowed
 
     MIRCombinedParametrisation(const MIRCombinedParametrisation&);
     MIRCombinedParametrisation& operator=(const MIRCombinedParametrisation&);
 
-// -- Members
+    // -- Members
     const MIRParametrisation& user_;
     const MIRParametrisation& metadata_;
     const MIRParametrisation& defaults_;
 
-// -- Methods
+    // -- Methods
     // None
 
     template<class T>
     bool _get(const std::string&, T&) const;
 
-// -- Overridden methods
+    // -- Overridden methods
 
     // From MIRParametrisation
-    virtual void print(std::ostream&) const;
-    virtual bool get(const std::string&, std::string&) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, double& value) const;
-    virtual bool get(const std::string& name, std::vector<long>& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
+    void print(std::ostream&) const;
 
-    virtual bool has(const std::string& name) const;
+    bool has(const std::string& name) const;
 
-// -- Class members
+    bool get(const std::string&, std::string&) const;
+    bool get(const std::string& name, bool& value) const;
+    bool get(const std::string& name, int& value) const;
+    bool get(const std::string& name, long& value) const;
+    bool get(const std::string& name, float& value) const;
+    bool get(const std::string& name, double& value) const;
+
+    bool get(const std::string& name, std::vector<int>& value) const;
+    bool get(const std::string& name, std::vector<long>& value) const;
+    bool get(const std::string& name, std::vector<float>& value) const;
+    bool get(const std::string& name, std::vector<double>& value) const;
+    bool get(const std::string& name, std::vector<std::string>& value) const;
+
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
-
-    //friend ostream& operator<<(ostream& s,const MIRCombinedParametrisation& p)
-    //	{ p.print(s); return s; }
+    // -- Friends
+    // None
 
 };
 
 
 }  // namespace param
 }  // namespace mir
+
+
 #endif
 

@@ -41,10 +41,12 @@ void MIRJob::execute(input::MIRInput &input, output::MIROutput &output, util::MI
     action::Job(*this, input, output).execute(statistics);
 }
 
+
 void MIRJob::execute(input::MIRInput &input, output::MIROutput &output) const {
     util::MIRStatistics statistics;
     execute(input, output, statistics);
 }
+
 
 void MIRJob::print(std::ostream &out) const {
     if (eckit::format(out) == eckit::Log::applicationFormat) {
@@ -58,38 +60,44 @@ void MIRJob::print(std::ostream &out) const {
     }
 }
 
+
 MIRJob &MIRJob::reset() {
-    // eckit::Log::debug<LibMir>() << "************* MIRJob::reset()" << std::endl;
     SimpleParametrisation::reset();
     return *this;
 }
 
+
 MIRJob &MIRJob::clear(const std::string &name) {
-    // eckit::Log::debug<LibMir>() << "************* MIRJob::clear [" << name << "]" << std::endl;
     SimpleParametrisation::clear(name);
     return *this;
 }
+
+
 MIRJob &MIRJob::set(const std::string &name, const std::string &value) {
-    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << value << "] (string)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
+
 
 MIRJob &MIRJob::set(const std::string &name, const char *value) {
-    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << value << "] (char)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
+
+MIRJob &MIRJob::set(const std::string &name, float value) {
+    SimpleParametrisation::set(name, value);
+    return *this;
+}
+
+
 MIRJob &MIRJob::set(const std::string &name, bool value) {
-    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << value << "] (bool)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, long value) {
-    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << value << "] (long)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
@@ -101,33 +109,62 @@ MIRJob &MIRJob::set(const std::string &name, size_t value) {
     return *this;
 }
 
+
 MIRJob &MIRJob::set(const std::string &name, double value) {
-    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << value << "] (double)" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
 
-MIRJob &MIRJob::set(const std::string &name, param::DelayedParametrisation *value) {
-    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << value << "] (delayed)" << std::endl;
+
+MIRJob &MIRJob::set(const std::string &name, int value) {
     SimpleParametrisation::set(name, value);
     return *this;
 }
+
+
+MIRJob &MIRJob::set(const std::string &name, const std::vector<int> &value) {
+    SimpleParametrisation::set(name, value);
+    return *this;
+}
+
 
 MIRJob &MIRJob::set(const std::string &name, const std::vector<long>& v) {
-    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << eckit::Plural(v.size(), "value") << "] (vector<long>)" << std::endl;
     SimpleParametrisation::set(name, v);
+    return *this;
+}
+
+
+MIRJob &MIRJob::set(const std::string &name, const std::vector<size_t> &value) {
+    SimpleParametrisation::set(name, value);
+    return *this;
+}
+
+
+MIRJob &MIRJob::set(const std::string &name, const std::vector<float> &value) {
+    SimpleParametrisation::set(name, value);
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, const std::vector<double>& v) {
-    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << eckit::Plural(v.size(), "value") << "] (vector<double>)" << std::endl;
     SimpleParametrisation::set(name, v);
     return *this;
 }
 
+
+MIRJob &MIRJob::set(const std::string &name, const std::vector<std::string> &value) {
+    SimpleParametrisation::set(name, value);
+    return *this;
+}
+
+
+MIRJob &MIRJob::set(const std::string &name, param::DelayedParametrisation *value) {
+    SimpleParametrisation::set(name, value);
+    return *this;
+}
+
+
 MIRJob &MIRJob::set(const std::string &name, double v1, double v2) {
-    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] = [" << v1 << ", "  << v2 << "] (double)" << std::endl;
     std::vector<double> v(2);
     v[0] = v1;
     v[1] = v2;
@@ -135,9 +172,8 @@ MIRJob &MIRJob::set(const std::string &name, double v1, double v2) {
     return *this;
 }
 
+
 MIRJob &MIRJob::set(const std::string &name, double v1, double v2, double v3, double v4) {
-    // eckit::Log::debug<LibMir>() << "************* MIRJob::set [" << name << "] =  [" << v1
-                             // << ", "  << v2 << ", "  << v3 << ", "  << v4 << "] (double)" << std::endl;
     std::vector<double> v(4);
     v[0] = v1;
     v[1] = v2;
@@ -146,6 +182,7 @@ MIRJob &MIRJob::set(const std::string &name, double v1, double v2, double v3, do
     SimpleParametrisation::set(name, v);
     return *this;
 }
+
 
 MIRJob& MIRJob::representationFrom(input::MIRInput& input) {
 
@@ -157,6 +194,7 @@ MIRJob& MIRJob::representationFrom(input::MIRInput& input) {
     return *this;
 }
 
+
 void MIRJob::mirToolCall(std::ostream &out) const {
     int fmt = eckit::format(out);
     eckit::setformat(out, eckit::Log::applicationFormat);
@@ -164,9 +202,11 @@ void MIRJob::mirToolCall(std::ostream &out) const {
     eckit::setformat(out, fmt);
 }
 
+
 void MIRJob::json(eckit::JSON& json) const {
     SimpleParametrisation::json(json);
 }
+
 
 }  // namespace api
 }  // namespace mir

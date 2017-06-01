@@ -12,50 +12,38 @@
 /// @date March 2016
 
 
-#ifndef mir_param_ConfigurationWrapper_H
-#define mir_param_ConfigurationWrapper_H
-
-#include <string>
+#ifndef mir_param_ConfigurationWrapper_h
+#define mir_param_ConfigurationWrapper_h
 
 #include "eckit/config/Configuration.h"
 #include "eckit/memory/NonCopyable.h"
-
 #include "mir/param/MIRParametrisation.h"
-
-
-
-namespace eckit {
-    class JSON;
-}
-
 
 
 namespace mir {
 namespace param {
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
-
 class ConfigurationWrapper : public MIRParametrisation, private eckit::NonCopyable {
 
 public: // methods
 
-    ConfigurationWrapper(eckit::Configuration&);
-    virtual ~ConfigurationWrapper();
+    ConfigurationWrapper(const eckit::Configuration&);
 
+    bool has(const std::string& name) const;
 
-    virtual bool has(const std::string& name) const;
+    bool get(const std::string& name, std::string& value) const;
+    bool get(const std::string& name, bool& value) const;
+    bool get(const std::string& name, int& value) const;
+    bool get(const std::string& name, long& value) const;
+    bool get(const std::string& name, float& value) const;
+    bool get(const std::string& name, double& value) const;
 
-    virtual bool get(const std::string& name, std::string& value) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, double& value) const;
-    virtual bool get(const std::string& name, size_t& value) const;
-
-    virtual bool get(const std::string& name, std::vector<long>& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
-
+    bool get(const std::string& name, std::vector<int>& value) const;
+    bool get(const std::string& name, std::vector<long>& value) const;
+    bool get(const std::string& name, std::vector<float>& value) const;
+    bool get(const std::string& name, std::vector<double>& value) const;
+    bool get(const std::string& name, std::vector<std::string>& value) const;
 
 protected: // methods
 
@@ -64,14 +52,13 @@ protected: // methods
 private: // members
 
     // Store a reference to the configuration, so that the wrapper can mimic a MIRParametrisation
-    // on top.
-    eckit::Configuration& configuration_;
+    const eckit::Configuration& configuration_;
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace param
 }  // namespace mir
 
-#endif // mir_param_ConfigurationWrapper_H
+
+#endif
