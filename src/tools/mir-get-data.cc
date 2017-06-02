@@ -20,7 +20,9 @@
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/stats/detail/Angle.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/method/decompose/PolarAngleToCartesian.h"
 
 
 class MIRGetData : public mir::tools::MIRTool {
@@ -33,6 +35,7 @@ private:
 public:
     MIRGetData(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         options_.push_back(new eckit::option::SimpleOption< bool >("atlas", "output Atlas coordinates, default false"));
+        options_.push_back(new eckit::option::SimpleOption< bool >("diff", "default false"));
     }
 };
 
@@ -49,6 +52,10 @@ void MIRGetData::usage(const std::string &tool) const {
 void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
 
+    bool diff = false;
+    args.get("diff", diff);
+
+
     bool atlas = false;
     args.get("atlas", atlas);
 
@@ -60,14 +67,49 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
         size_t count = 0;
         while (grib.next()) {
-            eckit::Log::info() << "\n" << args(i) << "' #" << ++count << std::endl;
+            eckit::Log::info() << "\n'" << args(i) << "' #" << ++count << std::endl;
 
             mir::data::MIRField field = input.field();
             ASSERT(field.dimensions() == 1);
 
             mir::repres::RepresentationHandle rep(field.representation());
 
-            if (atlas) {
+            if (diff) {
+
+                mir::method::decompose::PolarAngleToCartesian<mir::data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC>
+                        decompose(std::numeric_limits<double>::quiet_NaN());
+
+                mir::stats::detail::Angle
+                        stats_lat(decompose, std::numeric_limits<double>::quiet_NaN()),
+                        stats_lon(decompose, std::numeric_limits<double>::quiet_NaN());
+
+                eckit::ScopedPtr<atlas::grid::Grid> grid(rep->atlasGrid());
+                eckit::ScopedPtr< mir::repres::Iterator > it(rep->rotatedIterator());
+
+                std::vector<double>::const_iterator v = field.values(0).begin();
+                std::vector<atlas::grid::Grid::Point> lonlat;
+                grid->lonlat(lonlat);
+
+                double lon;
+                double lat;
+                for (const atlas::grid::Grid::Point& p: lonlat) {
+                    ASSERT(it->next(lat, lon));
+
+                    stats_lat(p.lat() - lat);
+                    stats_lon(p.lon() - lon);
+
+                    ++v;
+                }
+
+                eckit::Log::info()
+                        << "\n\t" "Δlat (mean, variance, std) = (" << stats_lat.mean() << ", " << stats_lat.variance() << ", " << stats_lat.standardDeviation() << ")"
+                        << "\n\t" "Δlon (mean, variance, std) = (" << stats_lon.mean() << ", " << stats_lon.variance() << ", " << stats_lon.standardDeviation() << ")"
+                        << std::endl;
+
+                ASSERT(v == field.values(0).end());
+                ASSERT(!it->next(lat, lon));
+
+            } else if (atlas) {
 
                 eckit::ScopedPtr<atlas::grid::Grid> grid(rep->atlasGrid());
 
