@@ -69,8 +69,8 @@ std::string AutoLSM::cacheKey(const std::string &name,
 
 
 namespace {
-static AutoLSM input("auto.input");
-static AutoLSM output("auto.output");
+static AutoLSM input("auto-input");
+static AutoLSM output("auto-output");
 
 }
 

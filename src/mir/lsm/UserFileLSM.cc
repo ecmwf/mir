@@ -75,8 +75,8 @@ std::string UserFileLSM::cacheKey(const std::string &name,
 
 
 namespace {
-static UserFileLSM input("file.input", "input");
-static UserFileLSM output("file.output", "output");
+static UserFileLSM input("file-input", "input");
+static UserFileLSM output("file-output", "output");
 }
 
 

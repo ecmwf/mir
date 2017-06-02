@@ -20,11 +20,10 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/grid/Grid.h"
 #include "mir/config/LibMir.h"
-#include "mir/data/MIRField.h"
 #include "mir/lsm/NoneLSM.h"
 #include "mir/param/MIRParametrisation.h"
+
 
 namespace mir {
 namespace lsm {
@@ -78,7 +77,7 @@ Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const atlas
         }
     }
 
-    name = name + "." + which;
+    name = name + "-" + which;
     const LSMChooser &chooser = LSMChooser::lookup(name);
     std::string key = chooser.cacheKey(name, parametrisation, grid, which);
 
@@ -101,12 +100,12 @@ Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const atlas
 }
 
 
-Mask &Mask::lookupInput(const param::MIRParametrisation   &parametrisation, const atlas::grid::Grid &grid) {
+Mask &Mask::lookupInput(const param::MIRParametrisation& parametrisation, const atlas::grid::Grid& grid) {
     return lookup(parametrisation, grid, "input");
 }
 
 
-Mask &Mask::lookupOutput(const param::MIRParametrisation   &parametrisation, const atlas::grid::Grid &grid) {
+Mask &Mask::lookupOutput(const param::MIRParametrisation& parametrisation, const atlas::grid::Grid& grid) {
     return lookup(parametrisation, grid, "output");
 }
 

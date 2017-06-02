@@ -77,8 +77,8 @@ std::string NoneLSM::cacheKey(const std::string &name,
 }
 
 namespace {
-static NoneLSM input("none.input");
-static NoneLSM output("none.output");
+static NoneLSM input("none-input");
+static NoneLSM output("none-output");
 
 }
 
