@@ -67,7 +67,7 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
 
     eckit::ScopedPtr<atlas::grid::Grid> gin(field.representation()->atlasGrid());
 
-    util::MIRStatistics dummy; // TODO: use the gloabl one
+    util::MIRStatistics dummy; // TODO: use the global one
     context::Context ctx(field, dummy);
     method->execute(ctx, *gin, grid);
 
@@ -75,10 +75,10 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     ASSERT(parametrisation.get("lsm-value-threshold", threshold));
     const util::compare::IsGreaterOrEqualFn< double > check_lsm(threshold);
 
-    ASSERT(!field.hasMissing());
-    ASSERT(field.dimensions() == 1);
+    ASSERT(!ctx.field().hasMissing());
+    ASSERT(ctx.field().dimensions() == 1);
 
-    const std::vector< double > &values = field.values(0);
+    const std::vector< double > &values = ctx.field().values(0);
     mask_.resize(values.size());
     std::transform(values.begin(), values.end(), mask_.begin(), check_lsm);
 }

@@ -32,88 +32,93 @@ namespace mir {
 namespace lsm {
 
 class GribFileLSM : public Mask {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
-    GribFileLSM(const std::string& name, const eckit::PathName& path,
-                const param::MIRParametrisation& parametrisation,
-                const atlas::grid::Grid& grid, const std::string& which);
+    GribFileLSM(
+            const std::string& name,
+            const eckit::PathName&,
+            const param::MIRParametrisation&,
+            const atlas::grid::Grid&,
+            const std::string& which );
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~GribFileLSM(); // Change to virtual if base class
+    ~GribFileLSM(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
-
-    static void hashCacheKey(eckit::MD5&, const eckit::PathName& path,
-                             const param::MIRParametrisation& parametrisation,
-                             const atlas::grid::Grid& grid,
-                             const std::string& which);
-
-  protected:
-
-// -- Members
-
-// -- Methods
-
-    virtual void hash(eckit::MD5&) const;
-
-    virtual void print(std::ostream&) const;
-
-// -- Overridden methods
+    // -- Class members
     // None
 
-// -- Class members
+    // -- Class methods
+
+    static void hashCacheKey(
+            eckit::MD5&,
+            const eckit::PathName&,
+            const param::MIRParametrisation&,
+            const atlas::grid::Grid&,
+            const std::string& which );
+
+protected:
+
+    // -- Members
     // None
 
-// -- Class methods
+    // -- Methods
+
+    void hash(eckit::MD5&) const;
+    void print(std::ostream&) const;
+
+    // -- Overridden methods
     // None
 
-  private:
+    // -- Class members
+    // None
 
-// No copy allowed
+    // -- Class methods
+    // None
 
+private:
+
+    // No copy allowed
     GribFileLSM(const GribFileLSM&);
     GribFileLSM& operator=(const GribFileLSM&);
 
-// -- Members
+    // -- Members
 
     eckit::PathName path_;
     std::vector<bool> mask_;
 
-// -- Methods
-
-
-// -- Overridden methods
-    virtual const std::vector<bool> &mask() const;
-
-
-// -- Class members
+    // -- Methods
     // None
 
-// -- Class methods
+    // -- Overridden methods
+
+    const std::vector<bool> &mask() const;
+
+    // -- Class members
     // None
 
-// -- Friends
+    // -- Class methods
+    // None
 
+    // -- Friends
+    // None
 
 };
 
