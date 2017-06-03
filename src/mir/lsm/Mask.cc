@@ -100,12 +100,12 @@ Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const atlas
 }
 
 
-Mask &Mask::lookupInput(const param::MIRParametrisation& parametrisation, const atlas::grid::Grid& grid) {
+Mask &Mask::lookupInput(const param::MIRParametrisation& parametrisation, const atlas::Grid& grid) {
     return lookup(parametrisation, grid, "input");
 }
 
 
-Mask &Mask::lookupOutput(const param::MIRParametrisation& parametrisation, const atlas::grid::Grid& grid) {
+Mask &Mask::lookupOutput(const param::MIRParametrisation& parametrisation, const atlas::Grid& grid) {
     return lookup(parametrisation, grid, "output");
 }
 

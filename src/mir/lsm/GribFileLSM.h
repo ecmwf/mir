@@ -45,7 +45,7 @@ public:
             const std::string& name,
             const eckit::PathName&,
             const param::MIRParametrisation&,
-            const atlas::grid::Grid&,
+            const atlas::Grid&,
             const std::string& which );
 
     // -- Destructor
@@ -73,7 +73,7 @@ public:
             eckit::MD5&,
             const eckit::PathName&,
             const param::MIRParametrisation&,
-            const atlas::grid::Grid&,
+            const atlas::Grid&,
             const std::string& which );
 
 protected:
