@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -15,10 +15,9 @@
 
 #include "mir/util/RotatedIterator.h"
 
-#include "mir/util/Angles.h"
-
-
-using eckit::geometry::LLPoint2;
+#include "eckit/exception/Exceptions.h"
+#include "eckit/geometry/Point2.h"
+#include "atlas/util/Config.h"
 
 
 namespace mir {
@@ -27,9 +26,18 @@ namespace util {
 
 RotatedIterator::RotatedIterator(Iterator* iterator, const util::Rotation& rotation) :
     iterator_(iterator),
-    rotation_(rotation),
-    rotate_(LLPoint2(rotation.south_pole_longitude(), rotation.south_pole_latitude()),
-            rotation.south_pole_rotation_angle()) {
+    rotation_(rotation) {
+
+    // Setup projection using South Pole rotated position, as seen from the non-rotated frame
+    const eckit::geometry::LLPoint2 pole(rotation_.south_pole_longitude(), rotation_.south_pole_latitude());
+
+    atlas::util::Config config;
+    config.set("type", "rotated_lonlat");
+    config.set("south_pole", std::vector<double>({pole.lon(), pole.lat()}));
+    config.set("rotation_angle", rotation_.south_pole_rotation_angle());
+
+    projection_ = atlas::Projection(config);
+//    ASSERT(projection_);  // should also work even if South Pole is (-90, 0)
 }
 
 
@@ -43,20 +51,19 @@ void RotatedIterator::print(std::ostream& out) const {
 
 
 bool RotatedIterator::next(double& lat, double& lon) {
-    if(iterator_->next(lat, lon)) {
-        LLPoint2 p = rotate_.unrotate(LLPoint2(lon, lat)); // <== notice order
+    if (iterator_->next(lat, lon)) {
 
-        // FIXME this should probably use BoundingBox::normalise, or we shouldn't use LLPoint2 (which does it's own thing) and use Point2 instead
-        p.lon( util::angles::between_0_and_360( p.lon()) );
+        // use Point2 to avoid the LLPoint2 normalising, notice the order
+        eckit::geometry::Point2 p = projection_.lonlat(eckit::geometry::Point2(lon, lat));
 
-        lat = p.lat();
-        lon = p.lon();
+        lat = p[eckit::geometry::LAT];
+        lon = p[eckit::geometry::LON];
         return true;
     }
     return false;
 }
 
 
-}  // namespace repres
+}  // namespace util
 }  // namespace mir
 

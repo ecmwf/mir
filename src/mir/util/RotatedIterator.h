@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -13,12 +13,12 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedIterator_H
-#define RotatedIterator_H
+#ifndef mir_util_RotatedIterator_h
+#define mir_util_RotatedIterator_h
 
 #include "eckit/memory/ScopedPtr.h"
+#include "atlas/projection.h"
 #include "mir/repres/Iterator.h"
-#include "mir/util/RotateGrid.h"
 #include "mir/util/Rotation.h"
 
 
@@ -27,7 +27,7 @@ namespace util {
 
 
 class RotatedIterator : public repres::Iterator {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -38,7 +38,7 @@ class RotatedIterator : public repres::Iterator {
 
     // -- Destructor
 
-    virtual ~RotatedIterator(); // Change to virtual if base class
+    ~RotatedIterator(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -58,7 +58,7 @@ class RotatedIterator : public repres::Iterator {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -75,10 +75,9 @@ class RotatedIterator : public repres::Iterator {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
-
     RotatedIterator(const RotatedIterator&);
     RotatedIterator& operator=(const RotatedIterator&);
 
@@ -86,16 +85,16 @@ class RotatedIterator : public repres::Iterator {
 
     eckit::ScopedPtr<Iterator> iterator_;
     util::Rotation rotation_;
-    util::RotateGrid rotate_;
+    atlas::Projection projection_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool next(double& lat, double& lon);
+    bool next(double& lat, double& lon);
 
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Class members
     // None
@@ -118,4 +117,3 @@ class RotatedIterator : public repres::Iterator {
 
 
 #endif
-

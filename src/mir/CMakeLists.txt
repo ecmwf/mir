@@ -536,8 +536,6 @@ list(
     util/MIRStatistics.h
     util/PointSearch.cc
     util/PointSearch.h
-    util/RotateGrid.cc
-    util/RotateGrid.h
     util/RotatedIterator.cc
     util/RotatedIterator.h
     util/Rotation.cc
