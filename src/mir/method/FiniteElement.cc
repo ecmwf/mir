@@ -255,25 +255,15 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in.grid() << ", output: " << out.grid() << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("Compute weights");
 
-    // FIXME: using the name() is not the right thing, although it should work, but create too many cached meshes.
-    // We need to use the mesh-generator
-    {
-        eckit::TraceTimer<LibMir> timer("Generate mesh");
 
-        // generateMeshAndCache(in.grid(), in.mesh()); // mesh generation will be done lazily
+    // write input/output meshes
+    static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
+    if (dumpMesh) {
+        eckit::Log::debug<LibMir>() << "Dumping input mesh to 'input.msh'" << std::endl;
+        atlas::output::Gmsh("input.msh", atlas::util::Config("coordinates", "xyz")).write(in.mesh());
 
-        static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
-        if (dumpMesh) {
-            eckit::Log::debug<LibMir>() << "Dumping input mesh to input.msh" << std::endl;
-            atlas::output::Gmsh gi("input.msh");
-//            gi.options.set<std::string>("nodes", "xyz");  FIXME!!!
-//            gi.write(in.mesh(), "input.msh");
-
-            eckit::Log::debug<LibMir>() << "Dumping output mesh to output.msh" << std::endl;
-            atlas::output::Gmsh go("ouput.msh");
-//            atlas::mesh::actions::BuildXYZField("xyz")(out.mesh());  FIXME!!!
-//            go.write(out.mesh(), "output.msh");
-        }
+        eckit::Log::debug<LibMir>() << "Dumping output mesh to 'output.msh'" << std::endl;
+        atlas::output::Gmsh("output.msh", atlas::util::Config("coordinates", "xyz")).write(out.mesh());
     }
 
 
