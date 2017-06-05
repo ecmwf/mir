@@ -103,7 +103,7 @@ static void normalise(triplet_vector_t& triplets)
 
 /// Find in which element the point is contained by projecting the point with each nearest element
 static triplet_vector_t projectPointTo3DElements(
-        const MeshStats &stats,
+        size_t nbInputPoints,
         const atlas::array::ArrayView<double, 2> &icoords,
         const atlas::mesh::HybridElements::Connectivity& connectivity,
         const FiniteElement::Point &p,
@@ -136,7 +136,7 @@ static triplet_vector_t projectPointTo3DElements(
 
         for (size_t i = 0; i < nb_cols; ++i) {
             idx[i] = size_t(connectivity(elem_id, i));
-            ASSERT(idx[i] < stats.inp_npts);
+            ASSERT(idx[i] < nbInputPoints);
         }
 
         if (nb_cols == 3) {
@@ -356,7 +356,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
                     element_tree_t::NodeList cs = eTree->kNearestNeighbours(p, kpts);
 
                     triplet_vector_t triplets = projectPointTo3DElements(
-                                stats,
+                                stats.inp_npts,
                                 icoords,
                                 connectivity,
                                 p,
@@ -398,7 +398,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
         size_t count = 0;
         for (const size_t& ip: failures) {
             eckit::Log::debug<LibMir>() << "\n\tpoint " << ip << " (lon, lat) = (" << olonlat(ip, LON) << ", " << olonlat(ip, LAT) << ")";
-            if (false && ++count > 10) {
+            if (++count > 10) {
                 eckit::Log::debug<LibMir>() << "\n\t...";
                 break;
             }
