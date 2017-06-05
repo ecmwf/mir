@@ -32,8 +32,6 @@ namespace action {
 Gridded2RotatedLLShift::Gridded2RotatedLLShift(const param::MIRParametrisation &parametrisation):
   Gridded2GriddedInterpolation(parametrisation) {
 
-  NOTIMP;
-
   std::vector<double> value;
   ASSERT(parametrisation_.get("user.grid", value));
   ASSERT(value.size() == 2);
