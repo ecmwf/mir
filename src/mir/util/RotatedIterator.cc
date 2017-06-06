@@ -37,7 +37,6 @@ RotatedIterator::RotatedIterator(Iterator* iterator, const util::Rotation& rotat
     config.set("rotation_angle", rotation_.south_pole_rotation_angle());
 
     projection_ = atlas::Projection(config);
-//    ASSERT(projection_);  // should also work even if South Pole is (-90, 0)
 }
 
 
