@@ -112,7 +112,6 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 atlas::Grid grid = rep->atlasGrid();
                 first = true;
                 for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
-//                    point_t P(eckit::types::CompareApproximatelyEqual<double>()(std::abs(p.lat()), 90.)? std::numeric_limits<double>::quiet_NaN() : p.lon(), p.lat());
                     point_t P(p.lon(), p.lat());
                     if (first) {
                         bbox_min_atlas = bbox_max_atlas = P;
@@ -124,20 +123,18 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                     ++lonlat_size_atlas;
                 }
 
-                eckit::Log::info()
-                        << "\n\t" "#values             = " << field.values(0).size()
-                        << "\n\t" "#[(lon, lat)] MIR   = " << lonlat_size_mir   << "\t" "bbox(N, W, S, E) = (" << bbox_max_mir[1]   << ", " << bbox_min_mir[0]   << ", " << bbox_min_mir[1]   << ", " << bbox_max_mir[0]   << ")"
-                        << "\n\t" "#[(lon, lat)] Atlas = " << lonlat_size_atlas << "\t" "bbox(N, W, S, E) = (" << bbox_max_atlas[1] << ", " << bbox_min_atlas[0] << ", " << bbox_min_atlas[1] << ", " << bbox_max_atlas[0] << ")"
-                        << std::endl;
-
-                eckit::Log::info() << "\t" "validates? ";
                 bool validates = false;
                 try {
                     rep->validate(field.values(0));
                     validates = true;
                 } catch (...) {
                 }
-                eckit::Log::info() << (validates? "yes":"no") << std::endl;
+
+                eckit::Log::info()
+                        <<   "\t" "MIR   #values       = " << field.values(0).size() << "\t" "validates? " << (validates? "yes":"no")
+                        << "\n\t" "MIR   #[(lon, lat)] = " << lonlat_size_mir   << "\t" "bbox(N, W, S, E) = (" << bbox_max_mir[1]   << ", " << bbox_min_mir[0]   << ", " << bbox_min_mir[1]   << ", " << bbox_max_mir[0]   << ")"
+                        << "\n\t" "Atlas #[(lon, lat)] = " << lonlat_size_atlas << "\t" "bbox(N, W, S, E) = (" << bbox_max_atlas[1] << ", " << bbox_min_atlas[0] << ", " << bbox_min_atlas[1] << ", " << bbox_max_atlas[0] << ")"
+                        << std::endl;
 
             } else if (diff) {
 
