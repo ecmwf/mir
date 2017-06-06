@@ -97,7 +97,7 @@ bool Rotation::operator==(const Rotation &other) const {
         && south_pole_rotation_angle_ == other.south_pole_rotation_angle_;
 }
 
-atlas::grid::StructuredGrid Rotation::rotate(const atlas::grid::StructuredGrid& grid) const {
+atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
 
     // ensure grid is not rotated already
     ASSERT(!grid.projection());
@@ -110,7 +110,7 @@ atlas::grid::StructuredGrid Rotation::rotate(const atlas::grid::StructuredGrid& 
     atlas::util::Config config(grid.spec());
     config.set("projection", projection);
 
-    return atlas::grid::StructuredGrid(config);
+    return atlas::Grid(config);
 }
 
 }  // namespace data

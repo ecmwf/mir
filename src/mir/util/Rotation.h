@@ -95,7 +95,7 @@ public:
 
     // -- Methods
 
-    atlas::grid::StructuredGrid rotate(const atlas::grid::StructuredGrid&) const;
+    atlas::Grid rotate(const atlas::Grid&) const;
 
     double south_pole_latitude() const {
         return south_pole_latitude_;
