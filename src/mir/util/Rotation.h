@@ -75,7 +75,7 @@ public:
 
     // -- Contructors
     explicit Rotation(const param::MIRParametrisation&);
-    explicit Rotation(double south_pole_latitude = 0,
+    explicit Rotation(double south_pole_latitude = -90,
                       double south_pole_longitude = 0,
                       double south_pole_rotation_angle = 0);
 
