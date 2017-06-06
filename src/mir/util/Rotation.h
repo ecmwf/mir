@@ -13,6 +13,31 @@
 /// @date Apr 2015
 
 
+#ifndef mir_util_Rotation_h
+#define mir_util_Rotation_h
+
+#include <iosfwd>
+
+
+struct grib_info;
+
+namespace atlas {
+class Grid;
+}
+namespace mir {
+namespace param {
+class MIRParametrisation;
+}
+namespace api {
+class MIRJob;
+}
+}
+
+
+namespace mir {
+namespace util {
+
+
 /**
  * @brief WMO specification on rotated grids
  *
@@ -37,36 +62,7 @@
  *
  * The way I verified this was to look at our SAMPLE files (which IFS uses). I also verified that IFS does
  * not modify the scanning modes so whatever the samples say, is the convention
- *
- * @todo Do we check the area? Can we assume area is multiple of the grids?
  */
-
-
-#ifndef Rotation_H
-#define Rotation_H
-
-
-#include <iosfwd>
-#include "eckit/memory/NonCopyable.h"
-#include "atlas/grid.h"
-
-
-struct grib_info;
-
-namespace mir {
-namespace param {
-class MIRParametrisation;
-}
-namespace api {
-class MIRJob;
-}
-}
-
-
-namespace mir {
-namespace util {
-
-
 class Rotation {
 public:
 
@@ -89,10 +85,6 @@ public:
 
     bool operator==(const Rotation& other) const;
 
-    // bool operator!=(const Rotation& other) const {
-    //     return (west_east_ != other.west_east_) || (south_north_ != other.south_north_);
-    // }
-
     // -- Methods
 
     atlas::Grid rotate(const atlas::Grid&) const;
@@ -109,8 +101,8 @@ public:
         return south_pole_rotation_angle_;
     }
 
-    void fill(grib_info &) const;
-    void fill(api::MIRJob &) const;
+    void fill(grib_info&) const;
+    void fill(api::MIRJob&) const;
 
     // -- Overridden methods
     // None
@@ -128,7 +120,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -162,7 +154,7 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const Rotation &p) {
+    friend std::ostream&operator<<(std::ostream& s, const Rotation& p) {
         p.print(s);
         return s;
     }
