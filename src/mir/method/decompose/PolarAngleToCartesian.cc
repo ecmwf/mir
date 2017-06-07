@@ -72,6 +72,42 @@ void PolarAngleToCartesian<FIELDINFO_COMPONENT>::recompose(const WeightMatrix::M
 }
 
 
+template<>
+PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC>::PolarAngleToCartesian(double missingValue) :
+    DecomposeToCartesian(missingValue),
+    fp_angle_to_complex_(&util::angles::convert_degrees_to_complex<double>),
+    fp_complex_to_angle_(&util::angles::convert_complex_to_degrees<double>),
+    fp_normalize_(&util::angles::between_0_and_360) {
+}
+
+
+template<>
+PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC>::PolarAngleToCartesian(double missingValue) :
+    DecomposeToCartesian(missingValue),
+    fp_angle_to_complex_(&util::angles::convert_degrees_to_complex<double>),
+    fp_complex_to_angle_(&util::angles::convert_complex_to_degrees<double>),
+    fp_normalize_(&util::angles::between_m180_and_p180) {
+}
+
+
+template<>
+PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_ASYMMETRIC>::PolarAngleToCartesian(double missingValue) :
+    DecomposeToCartesian(missingValue),
+    fp_angle_to_complex_(&util::angles::convert_radians_to_complex<double>),
+    fp_complex_to_angle_(&util::angles::convert_complex_to_radians<double>),
+    fp_normalize_(&util::angles::between_0_and_2PI) {
+}
+
+
+template<>
+PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC>::PolarAngleToCartesian(double missingValue) :
+    DecomposeToCartesian(missingValue),
+    fp_angle_to_complex_(&util::angles::convert_radians_to_complex<double>),
+    fp_complex_to_angle_(&util::angles::convert_complex_to_radians<double>),
+    fp_normalize_(&util::angles::between_mPI_and_pPI) {
+}
+
+
 }  // namespace decompose
 }  // namespace method
 }  // namespace mir
