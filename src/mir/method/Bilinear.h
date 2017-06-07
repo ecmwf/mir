@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef mir_method_Bilinear_H
-#define mir_method_Bilinear_H
+#ifndef mir_method_Bilinear_h
+#define mir_method_Bilinear_h
 
 #include "mir/method/MethodWeighted.h"
 
@@ -22,38 +22,26 @@
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class Bilinear : public MethodWeighted {
 public:
 
     Bilinear(const param::MIRParametrisation&);
 
-    virtual ~Bilinear();
+    ~Bilinear();
 
 private: // methods
 
-    virtual void execute(context::Context&, const atlas::Grid& in, const atlas::Grid& out) const;
+    void assemble(context::Context&, WeightMatrix&, const GridSpace& in, const GridSpace& out) const;
 
-    virtual void assemble(context::Context&, WeightMatrix&, const GridSpace& in, const GridSpace& out) const;
+    void print(std::ostream&) const;
 
-    virtual void print(std::ostream&) const;
+    const char* name() const;
 
-    virtual const char* name() const;
-
-    virtual void hash(eckit::MD5&) const;
-
-private:  // variables
-
-    bool precipitation_;
-
-    bool precipitationNeighbour_;
-
-    double precipitationThreshold_;
+    void hash(eckit::MD5&) const;
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

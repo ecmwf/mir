@@ -82,95 +82,10 @@ void left_right_lon_indexes(
 
 Bilinear::Bilinear(const param::MIRParametrisation& param) :
     MethodWeighted(param) {
-
-    precipitation_          = false;
-    precipitationNeighbour_ = true;
-    precipitationThreshold_ = 0.00005;
-
-    param.get("bilinear-precipitation",           precipitation_);
-    param.get("bilinear-precipitation-neighbour", precipitationNeighbour_);
-    param.get("bilinear-precipitation-threshold", precipitationThreshold_);
-
-    ASSERT(precipitationThreshold_ >= 0);
 }
 
 
 Bilinear::~Bilinear() {
-}
-
-
-void Bilinear::execute(context::Context& ctx, const atlas::Grid& in, const atlas::Grid& out) const {
-
-    // remember which source points are below precipitation threshold
-    std::vector<bool> dry_points;
-    if (precipitation_ && precipitationNeighbour_) {
-
-        data::MIRField& field = ctx.field();
-        ASSERT(field.dimensions() == 1);
-
-        const std::vector<double>& values = field.values(0);
-        ASSERT(values.size() == in.size());
-
-        dry_points.assign(values.size(), false);
-        for (size_t i = 0; i < values.size(); ++i) {
-            dry_points[i] = values[i] < precipitationThreshold_;
-        }
-
-    }
-
-
-    // apply interpolation
-    MethodWeighted::execute(ctx, in, out);
-
-
-    // "precipitation" clipping: zero values below threshold when any (or both) conditions happen:
-    // 1. the target (interpolated) precipitation is less than the threshold value
-    // 2. the source nearest neighbouring point is less than the threshold value
-    if (precipitation_) {
-        eckit::Log::debug<LibMir>() << "Bilinear: precipitation clipping..." << std::endl;
-
-        // ideally, interpolant matrix is already built by MethodWeighted::execute and retrieved from cache
-        const WeightMatrix& W = MethodWeighted::getMatrix(ctx, in, out);
-
-        data::MIRField& field = ctx.field();
-        ASSERT(field.dimensions() == 1);
-
-        std::vector<double> values = field.values(0);
-        ASSERT(values.size() == W.rows());
-
-        util::compare::IsMissingFn isMissing(field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN());
-
-        size_t Nclip = 0;
-        WeightMatrix::const_iterator it(W);
-        for (size_t i = 0; i < size_t(W.rows()); ++i) {
-            if (!isMissing(values[i]) && (values[i] < precipitationThreshold_)) {
-
-                values[i] = 0;
-                ++Nclip;
-
-            } else if (precipitationNeighbour_) {
-                ASSERT(dry_points.size());
-
-                // nearest neighbouring point should have the heaviest interpolating weight
-                bool found = false;
-                double w = 0.;
-                for (it = W.begin(i); it != W.end(i); ++it) {
-                    if (!isMissing(*it) && (*it > w)) {
-                        found = true;
-                        w = *it;
-                    }
-                }
-
-                if(found) {
-                    values[i] = 0;
-                    ++Nclip;
-                }
-
-            }
-        }
-
-        eckit::Log::debug<LibMir>() << "Bilinear: precipitation clipping applied to " << eckit::BigNum(Nclip) << " points of " << eckit::BigNum(W.rows()) << " total" << std::endl;
-    }
 }
 
 
@@ -451,11 +366,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 
 
 void Bilinear::print(std::ostream& out) const {
-    out << "Bilinear["
-        <<  "precipitation="               << precipitation_
-        << ",precipitationNeighbourCheck=" << precipitationNeighbour_
-        << ",precipitationThreshold="      << precipitationThreshold_
-        << "]";
+    out << "Bilinear[]";
 }
 
 
