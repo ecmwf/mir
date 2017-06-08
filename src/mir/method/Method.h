@@ -32,7 +32,7 @@ namespace context {
 class Context;
 }
 namespace method {
-class GridSpace;
+class MIRGrid;
 }
 namespace param {
 class MIRParametrisation;
@@ -53,7 +53,7 @@ public:
 
     virtual void hash(eckit::MD5&) const = 0;
 
-    virtual void execute(context::Context&, const GridSpace& in, const GridSpace& out) const = 0;
+    virtual void execute(context::Context&, const MIRGrid& in, const MIRGrid& out) const = 0;
 
 protected:
 

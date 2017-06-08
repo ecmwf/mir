@@ -25,7 +25,7 @@
 
 namespace mir {
 namespace method {
-class GridSpace;
+class MIRGrid;
 }
 }
 
@@ -55,7 +55,7 @@ public:
 
     PointSearch(const std::vector<Point>& ipts);
 
-    PointSearch(const method::GridSpace& sp, const CompareType& isok=CompareTypeNone());
+    PointSearch(const method::MIRGrid& sp, const CompareType& isok=CompareTypeNone());
 
 public:
 
@@ -79,7 +79,7 @@ private:
 
     void init(const std::vector<PointType>& points);
 
-    void init(const method::GridSpace& sp, const CompareType& isok=CompareTypeNone());
+    void init(const method::MIRGrid& sp, const CompareType& isok=CompareTypeNone());
 };
 
 

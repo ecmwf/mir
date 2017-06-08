@@ -45,7 +45,7 @@ public:
 
     virtual ~MethodWeighted();
 
-    virtual void execute(context::Context&, const GridSpace& in, const GridSpace& out) const;
+    virtual void execute(context::Context&, const MIRGrid& in, const MIRGrid& out) const;
 
     virtual void hash(eckit::MD5&) const;
 
@@ -55,13 +55,13 @@ public:
 
 protected:
 
-    virtual const WeightMatrix& getMatrix(context::Context&, const GridSpace& in, const GridSpace& out) const;
+    virtual const WeightMatrix& getMatrix(context::Context&, const MIRGrid& in, const MIRGrid& out) const;
 
 private:
 
     virtual const char *name() const = 0;
 
-    virtual void assemble(context::Context&, WeightMatrix&, const GridSpace& in, const GridSpace& out) const = 0;
+    virtual void assemble(WeightMatrix&, const MIRGrid& in, const MIRGrid& out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
     void applyMissingValues(const WeightMatrix& W, const std::vector<double>& values, const double& missingValue, WeightMatrix& MW) const;
@@ -77,9 +77,9 @@ private:
 
     virtual lsm::LandSeaMasks getMasks(const atlas::Grid& in, const atlas::Grid& out) const;
 
-    void computeMatrixWeights(context::Context&, const GridSpace& in, const GridSpace& out, WeightMatrix&) const;
+    void computeMatrixWeights(context::Context&, const MIRGrid& in, const MIRGrid& out, WeightMatrix&) const;
 
-    void createMatrix(context::Context&, const GridSpace& in, const GridSpace& out, WeightMatrix&, const lsm::LandSeaMasks&) const;
+    void createMatrix(context::Context&, const MIRGrid& in, const MIRGrid& out, WeightMatrix&, const lsm::LandSeaMasks&) const;
 
 private:
 

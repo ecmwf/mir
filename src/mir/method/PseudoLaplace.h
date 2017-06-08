@@ -39,7 +39,7 @@ protected:
 
 private:
 
-    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
+    virtual void assemble(WeightMatrix&, const MIRGrid& in, const MIRGrid& out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 

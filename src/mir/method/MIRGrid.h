@@ -14,8 +14,8 @@
 /// @date   May 2016
 
 
-#ifndef mir_method_GridSpace_h
-#define mir_method_GridSpace_h
+#ifndef mir_method_MIRGrid_h
+#define mir_method_MIRGrid_h
 
 #include <vector>
 #include "eckit/memory/NonCopyable.h"
@@ -39,12 +39,12 @@ namespace mir {
 namespace method {
 
 
-class GridSpace : private eckit::NonCopyable {
+class MIRGrid : private eckit::NonCopyable {
 public:
 
     // -- Contructors
 
-    explicit GridSpace(const atlas::Grid&, const util::Domain&);
+    explicit MIRGrid(const atlas::Grid&, const util::Domain&);
 
     // -- Methods
 

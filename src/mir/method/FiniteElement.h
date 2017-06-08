@@ -58,7 +58,7 @@ protected: // methods
         MeshGenParams();
     };
 
-    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
+    virtual void assemble(WeightMatrix&, const MIRGrid& in, const MIRGrid& out) const;
 
 protected: // members
 

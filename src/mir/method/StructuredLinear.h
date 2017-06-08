@@ -36,9 +36,9 @@ private:
 
     void print(std::ostream&) const;
 
-    void assemble(context::Context&, WeightMatrix&, const GridSpace& in, const GridSpace& out) const;
+    void assemble(WeightMatrix&, const MIRGrid& in, const MIRGrid& out) const;
 
-    void assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const atlas::Grid& out) const;
+    void assemble(WeightMatrix&, const atlas::grid::StructuredGrid& in, const atlas::Grid& out) const;
 
 };
 

@@ -20,7 +20,7 @@
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/Ray.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/GridSpace.h"
+#include "mir/method/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Compare.h"
 
@@ -114,11 +114,8 @@ void StructuredLinear::print(std::ostream &out) const {
 }
 
 
-void StructuredLinear::assemble(context::Context&, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
-    eckit::Log::debug<LibMir>() << "StructuredLinear::assemble..."
-                                << "\n  Input grid:  " << in.grid()
-                                << "\n  Output grid: " << out.grid()
-                                << std::endl;
+void StructuredLinear::assemble(WeightMatrix &W, const MIRGrid& in, const MIRGrid& out) const {
+    eckit::Log::debug<LibMir>() << "StructuredLinear::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
 
     ASSERT(in.grid().domain().global());   // FIXME for the moment
     ASSERT(out.grid().domain().global());  // ...
@@ -134,7 +131,6 @@ void StructuredLinear::assemble(context::Context&, WeightMatrix &W, const GridSp
 
 
 void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const atlas::Grid& out) const {
-    eckit::TraceTimer<LibMir> timer("assemble");
 
     /*
      * get from input grid:
@@ -294,7 +290,6 @@ void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGr
 
     // fill sparse matrix
     W.setFromTriplets(triplets);
-
 }
 
 

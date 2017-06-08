@@ -18,7 +18,7 @@
 #include <vector>
 #include "atlas/grid.h"
 #include "mir/util/PointSearch.h"
-#include "mir/method/GridSpace.h"
+#include "mir/method/MIRGrid.h"
 
 
 namespace mir {
@@ -30,7 +30,7 @@ PointSearch::PointSearch(const std::vector<PointType>& points) {
 }
 
 
-PointSearch::PointSearch(const mir::method::GridSpace& sp, const CompareType& isok) {
+PointSearch::PointSearch(const mir::method::MIRGrid& sp, const CompareType& isok) {
     init(sp,isok);
 }
 
@@ -99,7 +99,7 @@ void PointSearch::init(const std::vector<PointType>& points) {
 }
 
 
-void PointSearch::init(const method::GridSpace& sp, const CompareType& isok) {
+void PointSearch::init(const method::MIRGrid& sp, const CompareType& isok) {
 
     const size_t npts = sp.grid().size();
     ASSERT(npts > 0);

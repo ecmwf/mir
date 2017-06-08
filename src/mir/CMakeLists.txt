@@ -272,10 +272,10 @@ list(
     method/FELinear.h
     method/FiniteElement.cc
     method/FiniteElement.h
-    method/GridSpace.cc
-    method/GridSpace.h
     method/KNearest.cc
     method/KNearest.h
+    method/MIRGrid.cc
+    method/MIRGrid.h
     method/Method.cc
     method/Method.h
     method/MethodWeighted.cc

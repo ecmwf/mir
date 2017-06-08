@@ -35,7 +35,7 @@ private:
 
     virtual const char *name() const;
 
-    virtual void assemble(context::Context&, WeightMatrix&, const GridSpace& in, const GridSpace& out) const;
+    virtual void assemble(WeightMatrix&, const MIRGrid& in, const MIRGrid& out) const;
 
     /// Update interpolation weigths matrix to account for field masked values
     virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;

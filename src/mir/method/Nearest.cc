@@ -26,7 +26,7 @@
 #include "eckit/log/Timer.h"
 #include "atlas/grid.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/GridSpace.h"
+#include "mir/method/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/PointSearch.h"
 
@@ -49,12 +49,12 @@ const char *Nearest::name() const {
 }
 
 
-void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
+void Nearest::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out) const {
+    eckit::Log::debug<LibMir>() << "Nearest::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
+    eckit::TraceTimer<LibMir> timer("Nearest::assemble");
+
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
-
-    eckit::TraceTimer<LibMir> timer("Nearest::assemble");
-    eckit::Log::debug<LibMir>() << "Nearest::assemble" << std::endl;
 
     const size_t nclosest = this->nclosest();
 

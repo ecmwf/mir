@@ -33,7 +33,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/method/GridSpace.h"
+#include "mir/method/MIRGrid.h"
 #include "mir/method/decompose/Decompose.h"
 #include "mir/util/Compare.h"
 #include "mir/util/MIRStatistics.h"
@@ -119,7 +119,7 @@ void MethodWeighted::generateMesh(const atlas::Grid& g,
     throw eckit::SeriousBug(oss.str(), Here());
 }
 
-void MethodWeighted::createMatrix(context::Context& ctx, const GridSpace& in, const GridSpace& out, WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
+void MethodWeighted::createMatrix(context::Context& ctx, const MIRGrid& in, const MIRGrid& out, WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
 
     computeMatrixWeights(ctx, in, out, W);
 
@@ -132,7 +132,7 @@ void MethodWeighted::createMatrix(context::Context& ctx, const GridSpace& in, co
 }
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
-const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const GridSpace& in, const GridSpace& out) const {
+const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const MIRGrid& in, const MIRGrid& out) const {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix " << *this << std::endl;
@@ -199,8 +199,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const GridS
 
             const MethodWeighted& owner_;
             context::Context& ctx_;
-            const GridSpace& in_;
-            const GridSpace& out_;
+            const MIRGrid& in_;
+            const MIRGrid& out_;
             const lsm::LandSeaMasks& masks_;
 
             virtual void create(const eckit::PathName& path, WeightMatrix& W) {
@@ -210,8 +210,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const GridS
         public:
             MatrixCacheCreator(const MethodWeighted& owner,
                                context::Context& ctx,
-                               const GridSpace& in,
-                               const GridSpace& out,
+                               const MIRGrid& in,
+                               const MIRGrid& out,
                                const lsm::LandSeaMasks& masks):
                 owner_(owner),
                 ctx_(ctx),
@@ -306,7 +306,7 @@ lsm::LandSeaMasks MethodWeighted::getMasks(const atlas::Grid& in, const atlas::G
 }
 
 
-void MethodWeighted::execute(context::Context& ctx, const GridSpace& in, const GridSpace& out) const {
+void MethodWeighted::execute(context::Context& ctx, const MIRGrid& in, const MIRGrid& out) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<WeightMatrix> matrix_use(matrix_cache, ctx.statistics().matrixCache_);
@@ -415,7 +415,7 @@ void MethodWeighted::execute(context::Context& ctx, const GridSpace& in, const G
 }
 
 
-void MethodWeighted::computeMatrixWeights(context::Context& ctx, const GridSpace& in, const GridSpace& out, WeightMatrix& W) const {
+void MethodWeighted::computeMatrixWeights(context::Context& ctx, const MIRGrid& in, const MIRGrid& out, WeightMatrix& W) const {
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
 
@@ -429,7 +429,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const GridSpace
         parametrisation_.get("prune-epsilon", pruneEpsilon);
 
         eckit::TraceTimer<LibMir> timer("Assemble matrix");
-        assemble(ctx, W, in, out);
+        assemble(W, in, out);
         W.cleanup(pruneEpsilon);
     }
 }

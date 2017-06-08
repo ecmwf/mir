@@ -29,7 +29,7 @@
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/element/Quad3D.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/GridSpace.h"
+#include "mir/method/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
 
 using eckit::linalg::Vector;
@@ -125,16 +125,14 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
     }
 }
 
-void Conservative::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
-    eckit::Log::debug<LibMir>()
-            << "Input  pts " << in.grid().size()
-            << "Output pts " << out.grid().size() << std::endl;
+void Conservative::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out) const {
+    eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
 
     WeightMatrix IM(in.grid().size(), out.grid().size());
 
-    FELinear::assemble(ctx, IM, out, in);
+    FELinear::assemble(IM, out, in);
 
     eckit::Log::debug<LibMir>()
             << "IM rows " << IM.rows()

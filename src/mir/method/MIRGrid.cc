@@ -14,7 +14,7 @@
 /// @date   May 2016
 
 
-#include "mir/method/GridSpace.h"
+#include "mir/method/MIRGrid.h"
 
 #include "eckit/geometry/Point3.h"
 #include "atlas/array.h"
@@ -26,7 +26,7 @@ namespace mir {
 namespace method {
 
 
-GridSpace::GridSpace(const atlas::Grid& grid, const util::Domain& domain) :
+MIRGrid::MIRGrid(const atlas::Grid& grid, const util::Domain& domain) :
     domain_(domain),
     grid_(grid),
     mesh_(0),
@@ -34,17 +34,17 @@ GridSpace::GridSpace(const atlas::Grid& grid, const util::Domain& domain) :
 }
 
 
-const util::Domain& GridSpace::domain() const {
+const util::Domain& MIRGrid::domain() const {
     return domain_;
 }
 
 
-const atlas::Grid& GridSpace::grid() const {
+const atlas::Grid& MIRGrid::grid() const {
     return grid_;
 }
 
 
-atlas::Mesh& GridSpace::mesh(const MethodWeighted& method) const {
+atlas::Mesh& MIRGrid::mesh(const MethodWeighted& method) const {
     if (mesh_ == 0) {
         mesh_ = &(method.generateMeshAndCache(grid_));
     }
@@ -52,7 +52,7 @@ atlas::Mesh& GridSpace::mesh(const MethodWeighted& method) const {
 }
 
 
-const atlas::array::Array& GridSpace::coordsLonLat() const {
+const atlas::array::Array& MIRGrid::coordsLonLat() const {
     using namespace atlas::array;
 
     if (!coordsLonLat_) {
@@ -71,7 +71,7 @@ const atlas::array::Array& GridSpace::coordsLonLat() const {
 }
 
 
-const atlas::array::Array& GridSpace::coordsXYZ() const {
+const atlas::array::Array& MIRGrid::coordsXYZ() const {
     using namespace atlas::array;
 
     if (!coordsXYZ_) {

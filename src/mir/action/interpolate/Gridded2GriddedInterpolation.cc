@@ -20,7 +20,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
-#include "mir/method/GridSpace.h"
+#include "mir/method/MIRGrid.h"
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -55,8 +55,8 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     repres::RepresentationHandle out(outputRepresentation());
 
     // We do it here as ATLAS does not respect constness
-    method::GridSpace gin(in->atlasGrid(), in->domain());
-    method::GridSpace gout(out->atlasGrid(), out->domain());
+    method::MIRGrid gin(in->atlasGrid(), in->domain());
+    method::MIRGrid gout(out->atlasGrid(), out->domain());
 
     method->execute(ctx, gin, gout);
 

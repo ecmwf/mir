@@ -24,7 +24,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
-#include "mir/method/GridSpace.h"
+#include "mir/method/MIRGrid.h"
 #include "mir/util/Compare.h"
 
 
@@ -99,12 +99,11 @@ void Bilinear::hash(eckit::MD5& md5) const {
 }
 
 
-void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace& in, const GridSpace& out) const {
+void Bilinear::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out) const {
+    eckit::Log::debug<LibMir>() << "Bilinear::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
-
-    eckit::Log::debug<LibMir>() << "Bilinear::assemble " << *this << std::endl;
 
 
     // NOTE: use bilinear interpolation assuming quasi-regular grid

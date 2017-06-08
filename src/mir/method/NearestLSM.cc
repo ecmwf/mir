@@ -20,7 +20,7 @@
 #include "eckit/log/Timer.h"
 #include "mir/config/LibMir.h"
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/method/GridSpace.h"
+#include "mir/method/MIRGrid.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/PointSearch.h"
@@ -44,10 +44,9 @@ const char *NearestLSM::name() const {
 }
 
 
-void NearestLSM::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
-
+void NearestLSM::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out) const {
+    eckit::Log::debug<LibMir>() << "NearestLSM::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("NearestLSM::assemble");
-    eckit::Log::debug<LibMir>() << "NearestLSM::assemble" << std::endl;
 
 
     // get the land-sea masks, with boolean masking on point (node) indices

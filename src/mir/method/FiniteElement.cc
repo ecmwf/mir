@@ -38,7 +38,7 @@
 #include "atlas/output/Gmsh.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/AddParallelEdgesConnectivity.h"
-#include "mir/method/GridSpace.h"
+#include "mir/method/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -54,6 +54,7 @@ static const double maxFractionElemsToTry = 0.2;
 
 // epsilon used to scale edge tolerance when projecting ray to intesect element
 static const double parametricEpsilon = 1e-16;
+
 
 using eckit::geometry::LON;
 using eckit::geometry::LAT;
@@ -88,7 +89,6 @@ static void normalise(triplet_vector_t& triplets)
 {
     // sum all calculated weights for normalisation
     double sum = 0.0;
-
     for (size_t j = 0; j < triplets.size(); ++j) {
         sum += triplets[j].value();
     }
@@ -249,11 +249,8 @@ void FiniteElement::hash(eckit::MD5&) const {
 }
 
 
-void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
-
-    // FIXME: arguments
+void FiniteElement::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out) const {
     eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
-    eckit::TraceTimer<LibMir> timer("Compute weights");
 
 
     // write input/output meshes
@@ -343,7 +340,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
             if (inDomain.contains(olonlat(ip, LAT), olonlat(ip, LON))) {
                 bool success = false;
 
-                // lookup point
+                // 3D point to lookup
                 Point p(ocoords[ip].data());
 
                 // 3D projection
