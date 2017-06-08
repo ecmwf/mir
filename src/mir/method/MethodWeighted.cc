@@ -61,7 +61,7 @@ static InMemoryCache<atlas::Mesh> mesh_cache("mirMesh",
 
 }
 
-MethodWeighted::MethodWeighted(const param::MIRParametrisation &parametrisation) :
+MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) :
     Method(parametrisation) {
     ASSERT(parametrisation.get("lsm-weight-adjustment", lsmWeightAdjustement_));
 }
@@ -119,43 +119,36 @@ void MethodWeighted::generateMesh(const atlas::Grid& g,
     throw eckit::SeriousBug(oss.str(), Here());
 }
 
-void MethodWeighted::createMatrix(context::Context& ctx,
-                                  const atlas::Grid &in,
-                                  const atlas::Grid &out,
-                                  WeightMatrix& W,
-                                  const lsm::LandSeaMasks& masks) const {
+void MethodWeighted::createMatrix(context::Context& ctx, const GridSpace& in, const GridSpace& out, WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
 
     computeMatrixWeights(ctx, in, out, W);
 
     W.validate("computeMatrixWeights");
 
     if (masks.active() && masks.cacheable()) {
-        applyMasks(W, masks, ctx.statistics());
+        applyMasks(W, masks);
         W.validate("applyMasks");
     }
 }
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
-const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
-        const atlas::Grid &in,
-        const atlas::Grid &out) const {
-
-    eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix " << *this << std::endl;
-
-    eckit::TraceTimer<LibMir> timer("MethodWeighted::getMatrix");
-
+const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const GridSpace& in, const GridSpace& out) const {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
+    eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix " << *this << std::endl;
+    eckit::TraceTimer<LibMir> timer("MethodWeighted::getMatrix");
+
+    const atlas::Grid& gin = in.grid();
+    const atlas::Grid& gout = out.grid();
+
     double here = timer.elapsed();
-    const lsm::LandSeaMasks masks = getMasks(ctx, in, out);
+    const lsm::LandSeaMasks masks = getMasks(gin, gout);
     eckit::Log::debug<LibMir>() << "Compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
     eckit::Log::debug<LibMir>() << "++++ LSM masks " << masks << std::endl;
     here = timer.elapsed();
     eckit::MD5 md5;
-    md5 << *this;
-    md5 << in;
-    md5 << out;
+    md5 << *this << gin << gout;
 
     const eckit::MD5::digest_t md5_no_masks(md5.digest());
     md5 << masks;
@@ -163,8 +156,8 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
     eckit::Log::debug<LibMir>() << "Compute md5 " << timer.elapsed() - here << std::endl;
 
 
-    const std::string shortName_in  = in.name()  + (in.projection()?  "." + in.projection().type() :  "");
-    const std::string shortName_out = out.name() + (out.projection()? "." + out.projection().type() : "");
+    const std::string shortName_in  = gin.name()  + (gin.projection()?  "." + gin.projection().type() :  "");
+    const std::string shortName_out = gout.name() + (gout.projection()? "." + gout.projection().type() : "");
     ASSERT(!shortName_in.empty());
     ASSERT(!shortName_out.empty());
 
@@ -178,11 +171,9 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
         return *j;
     }
 
-    const std::string cache_key = (masks.active() && masks.cacheable()) ?
-                                  key_with_masks
-                                  : key_no_masks;
+    const std::string cache_key = (masks.active() && masks.cacheable()) ? key_with_masks : key_no_masks;
 
-    // Shorten the key, to avoid "file name to long" errors
+    // Shorten the key, to avoid "file name too long" errors
 
 
     // calculate weights matrix, apply mask if necessary
@@ -190,7 +181,7 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
     eckit::Log::debug<LibMir>() << "Elapsed 1 " << timer.elapsed()  << std::endl;
 
     here = timer.elapsed();
-    WeightMatrix W(out.size(), in.size());
+    WeightMatrix W(gout.size(), gin.size());
     eckit::Log::debug<LibMir>() << "Create matrix " << timer.elapsed() - here << std::endl;
 
     bool caching = true;
@@ -208,8 +199,8 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
 
             const MethodWeighted& owner_;
             context::Context& ctx_;
-            const atlas::Grid& in_;
-            const atlas::Grid& out_;
+            const GridSpace& in_;
+            const GridSpace& out_;
             const lsm::LandSeaMasks& masks_;
 
             virtual void create(const eckit::PathName& path, WeightMatrix& W) {
@@ -219,8 +210,8 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
         public:
             MatrixCacheCreator(const MethodWeighted& owner,
                                context::Context& ctx,
-                               const atlas::Grid& in,
-                               const atlas::Grid& out,
+                               const GridSpace& in,
+                               const GridSpace& out,
                                const lsm::LandSeaMasks& masks):
                 owner_(owner),
                 ctx_(ctx),
@@ -240,7 +231,7 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
 
     // If LSM not cacheabe, e.g. user provided, we apply the mask after
     if (masks.active() && !masks.cacheable())  {
-        applyMasks(W, masks, ctx.statistics());
+        applyMasks(W, masks);
         W.validate("applyMasks");
     }
 
@@ -255,11 +246,12 @@ const WeightMatrix &MethodWeighted::getMatrix(context::Context& ctx,
 }
 
 
-void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix & A,
-        WeightMatrix::Matrix & B,
+void MethodWeighted::setOperandMatricesFromVectors(
+        WeightMatrix::Matrix& A,
+        WeightMatrix::Matrix& B,
         const std::vector<double>& Avector,
         const std::vector<double>& Bvector,
-        const double& missingValue) const {
+        const double& missingValue ) const {
 
     // set input matrix B (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
@@ -290,9 +282,10 @@ void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix & A,
 }
 
 
-void MethodWeighted::setVectorFromOperandMatrix(const WeightMatrix::Matrix & A,
+void MethodWeighted::setVectorFromOperandMatrix(
+        const WeightMatrix::Matrix& A,
         std::vector<double>& Avector,
-        const double & missingValue) const {
+        const double& missingValue) const {
 
     // set output vector A (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
@@ -308,23 +301,15 @@ void MethodWeighted::setVectorFromOperandMatrix(const WeightMatrix::Matrix & A,
 }
 
 
-lsm::LandSeaMasks MethodWeighted::getMasks(context::Context&,
-        const atlas::Grid & in,
-        const atlas::Grid & out) const {
-
+lsm::LandSeaMasks MethodWeighted::getMasks(const atlas::Grid& in, const atlas::Grid& out) const {
     return lsm::LandSeaMasks::lookup(parametrisation_, in, out);
-
 }
 
 
-void MethodWeighted::execute(context::Context & ctx,
-                             const atlas::Grid & in,
-                             const atlas::Grid & out) const {
-
-    using util::compare::IsMissingFn;
+void MethodWeighted::execute(context::Context& ctx, const GridSpace& in, const GridSpace& out) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    InMemoryCacheUser<WeightMatrix>      matrix_use(matrix_cache, ctx.statistics().matrixCache_);
+    InMemoryCacheUser<WeightMatrix> matrix_use(matrix_cache, ctx.statistics().matrixCache_);
 
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
@@ -333,11 +318,10 @@ void MethodWeighted::execute(context::Context & ctx,
     eckit::Log::debug<LibMir>() << "MethodWeighted::execute" << std::endl;
 
     // setup sizes & checks
-    const size_t npts_inp = in.size();
-    const size_t npts_out = out.size();
+    const size_t npts_inp = in.grid().size();
+    const size_t npts_out = out.grid().size();
 
-    const WeightMatrix &W = getMatrix(ctx, in, out);
-
+    const WeightMatrix& W = getMatrix(ctx, in, out);
     ASSERT( W.rows() == npts_out );
     ASSERT( W.cols() == npts_inp );
 
@@ -409,7 +393,7 @@ void MethodWeighted::execute(context::Context & ctx,
             ///        but later should be cropped out
             ///        UNLESS, we compute the statistics based on only points contained in the Domain
 
-            if ( in.domain().global() ) {
+            if (in.domain().isGlobal()) {
                 ASSERT(eckit::types::is_approximately_greater_or_equal(ostats.minimum(), istats.minimum()));
                 ASSERT(eckit::types::is_approximately_greater_or_equal(istats.maximum(), ostats.maximum()));
             }
@@ -420,10 +404,10 @@ void MethodWeighted::execute(context::Context & ctx,
     // TODO: move logic to MIRField
     // update if missing values are present
     if (field.hasMissing()) {
-        const IsMissingFn isMissing(field.missingValue());
+        const util::compare::IsMissingFn isMissing(field.missingValue());
         bool still_has_missing = false;
         for (size_t i = 0; i < field.dimensions() && !still_has_missing; ++i) {
-            const std::vector< double > &values = field.values(i);
+            const std::vector< double >& values = field.values(i);
             still_has_missing = (std::find_if(values.begin(), values.end(), isMissing) != values.end());
         }
         field.hasMissing(still_has_missing);
@@ -431,16 +415,13 @@ void MethodWeighted::execute(context::Context & ctx,
 }
 
 
-void MethodWeighted::computeMatrixWeights(context::Context & ctx,
-        const atlas::Grid & in,
-        const atlas::Grid & out,
-        WeightMatrix & W) const {
+void MethodWeighted::computeMatrixWeights(context::Context& ctx, const GridSpace& in, const GridSpace& out, WeightMatrix& W) const {
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
 
-    if (in.uid() == out.uid()) {
+    if (in.grid().uid() == out.grid().uid()) {
         eckit::Log::debug<LibMir>() << "Matrix is indentity" << std::endl;
-        W.setIdentity(W.rows(), W.cols());        // grids are the same, use identity matrix
+        W.setIdentity(W.rows(), W.cols());
     } else {
         InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, ctx.statistics().meshCache_);
 
@@ -448,15 +429,14 @@ void MethodWeighted::computeMatrixWeights(context::Context & ctx,
         parametrisation_.get("prune-epsilon", pruneEpsilon);
 
         eckit::TraceTimer<LibMir> timer("Assemble matrix");
-        GridSpace iSpace(in, *this);
-        GridSpace oSpace(out, *this);
-        assemble(ctx, W, iSpace, oSpace);   // assemble matrix of coefficients
+        assemble(ctx, W, in, out);
         W.cleanup(pruneEpsilon);
     }
 }
 
 
-void MethodWeighted::applyMissingValues(const WeightMatrix & W,
+void MethodWeighted::applyMissingValues(
+        const WeightMatrix& W,
         const std::vector<double>& values,
         const double& missingValue,
         WeightMatrix& MW) const {
@@ -524,18 +504,15 @@ void MethodWeighted::applyMissingValues(const WeightMatrix & W,
 }
 
 
-void MethodWeighted::applyMasks(
-        WeightMatrix& W,
-        const lsm::LandSeaMasks& masks,
-        util::MIRStatistics& ) const {
+void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
 
     eckit::TraceTimer<LibMir> timer("MethodWeighted::applyMasks");
     eckit::Log::debug<LibMir>() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
 
     ASSERT(masks.active());
 
-    const std::vector< bool > &imask = masks.inputMask();
-    const std::vector< bool > &omask = masks.outputMask();
+    const std::vector< bool >& imask = masks.inputMask();
+    const std::vector< bool >& omask = masks.outputMask();
 
     eckit::Log::debug<LibMir>() << "imask size " << imask.size() << std::endl;
     eckit::Log::debug<LibMir>() << "omask size " << omask.size() << std::endl;
@@ -591,7 +568,7 @@ void MethodWeighted::applyMasks(
 }
 
 
-void MethodWeighted::hash(eckit::MD5 & md5) const {
+void MethodWeighted::hash(eckit::MD5& md5) const {
     md5.add(name());
 }
 

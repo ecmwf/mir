@@ -252,7 +252,7 @@ void FiniteElement::hash(eckit::MD5&) const {
 void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
 
     // FIXME: arguments
-    eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in.grid() << ", output: " << out.grid() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("Compute weights");
 
 
@@ -260,17 +260,17 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
     if (dumpMesh) {
         eckit::Log::debug<LibMir>() << "Dumping input mesh to 'input.msh'" << std::endl;
-        atlas::output::Gmsh("input.msh", atlas::util::Config("coordinates", "xyz")).write(in.mesh());
+        atlas::output::Gmsh("input.msh", atlas::util::Config("coordinates", "xyz")).write(in.mesh(*this));
 
         eckit::Log::debug<LibMir>() << "Dumping output mesh to 'output.msh'" << std::endl;
-        atlas::output::Gmsh("output.msh", atlas::util::Config("coordinates", "xyz")).write(out.mesh());
+        atlas::output::Gmsh("output.msh", atlas::util::Config("coordinates", "xyz")).write(out.mesh(*this));
     }
 
 
     // if domain does not include poles, we might need to recover the parallel edges
     {
         eckit::TraceTimer<LibMir> timer("AddParallelEdgesConnectivity");
-        AddParallelEdgesConnectivity()(in.domain(), in.mesh());
+        AddParallelEdgesConnectivity()(in.domain(), in.mesh(*this));
     }
 
 
@@ -278,20 +278,20 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
     {
         eckit::ResourceUsage usage("create_cell_centres");
         eckit::TraceTimer<LibMir> timer("Tesselation::create_cell_centres");
-        atlas::mesh::actions::BuildCellCentres()(in.mesh());
+        atlas::mesh::actions::BuildCellCentres()(in.mesh(*this));
     }
 
     eckit::ScopedPtr<element_tree_t> eTree;
     {
         eckit::ResourceUsage usage("create_element_centre_index");
         eckit::TraceTimer<LibMir> timer("create_element_centre_index");
-        eTree.reset( atlas::interpolation::method::create_element_centre_index(in.mesh()) );
+        eTree.reset( atlas::interpolation::method::create_element_centre_index(in.mesh(*this)) );
     }
 
 
     // input mesh
     const util::Domain& inDomain = in.domain();
-    const atlas::mesh::Nodes& i_nodes = in.mesh().nodes();
+    const atlas::mesh::Nodes& i_nodes = in.mesh(*this).nodes();
     atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view< double, 2 >( i_nodes.field( "xyz" ));
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
@@ -306,7 +306,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
 
 
     MeshStats stats;
-    stats.inp_ncells = in.mesh().cells().size();
+    stats.inp_ncells = in.mesh(*this).cells().size();
     stats.inp_npts   = i_nodes.size();
     stats.out_npts   = out.grid().size();
     eckit::Log::debug<LibMir>() << stats << std::endl;
@@ -328,7 +328,7 @@ void FiniteElement::assemble(context::Context& ctx, WeightMatrix &W, const GridS
         eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().name() << std::endl;
         eckit::TraceTimer<LibMir> timerProj("Projecting");
 
-        const atlas::mesh::HybridElements::Connectivity& connectivity = in.mesh().cells().node_connectivity();
+        const atlas::mesh::HybridElements::Connectivity& connectivity = in.mesh(*this).cells().node_connectivity();
         for ( size_t ip = 0; ip < stats.out_npts; ++ip ) {
 
             if (ip && (ip % 10000 == 0)) {

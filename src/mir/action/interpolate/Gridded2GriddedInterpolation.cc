@@ -18,12 +18,13 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "atlas/grid/Grid.h"
 #include "mir/action/context/Context.h"
+#include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
+#include "mir/method/GridSpace.h"
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/config/LibMir.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -39,7 +40,7 @@ Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 }
 
 
-void Gridded2GriddedInterpolation::execute(context::Context & ctx) const {
+void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().grid2gridTiming_);
     data::MIRField& field = ctx.field();
@@ -53,8 +54,9 @@ void Gridded2GriddedInterpolation::execute(context::Context & ctx) const {
     repres::RepresentationHandle in(field.representation());
     repres::RepresentationHandle out(outputRepresentation());
 
-    atlas::Grid gin = in->atlasGrid(); // We do it here as ATLAS does not respect constness
-    atlas::Grid gout = out->atlasGrid();
+    // We do it here as ATLAS does not respect constness
+    method::GridSpace gin(in->atlasGrid(), in->domain());
+    method::GridSpace gout(out->atlasGrid(), out->domain());
 
     method->execute(ctx, gin, gout);
 

@@ -13,25 +13,22 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
+
 #include "mir/method/NearestLSM.h"
 
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
-
-#include "mir/method/GridSpace.h"
 #include "mir/config/LibMir.h"
 #include "mir/lsm/LandSeaMasks.h"
+#include "mir/method/GridSpace.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/PointSearch.h"
 
 
-using eckit::Log;
-
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
     MethodWeighted(param) {
@@ -56,10 +53,10 @@ void NearestLSM::assemble(context::Context& ctx, WeightMatrix &W, const GridSpac
     // get the land-sea masks, with boolean masking on point (node) indices
     double here = timer.elapsed();
 
-    const lsm::LandSeaMasks masks = getMasks(ctx, in.grid(), out.grid());
+    const lsm::LandSeaMasks masks = getMasks(in.grid(), out.grid());
     ASSERT(masks.active());
 
-    Log::debug<LibMir>() << "NearestLSM compute LandSeaMasks " << timer.elapsed() - here << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
 
     // compute masked/not-masked search trees
@@ -73,7 +70,7 @@ void NearestLSM::assemble(context::Context& ctx, WeightMatrix &W, const GridSpac
     util::PointSearch sptree_masked    (in, util::compare::IsMaskedFn   (imask));
     util::PointSearch sptree_notmasked (in, util::compare::IsNotMaskedFn(imask));
 
-    Log::debug<LibMir>() << "NearestLSM compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
 
 
     // compute the output nodes coordinates
@@ -81,7 +78,7 @@ void NearestLSM::assemble(context::Context& ctx, WeightMatrix &W, const GridSpac
 
     atlas::array::ArrayView< double, 2 > ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
 
-    Log::debug<LibMir>() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
 
 
     // search nearest neighbours matching in/output masks
@@ -110,24 +107,24 @@ void NearestLSM::assemble(context::Context& ctx, WeightMatrix &W, const GridSpac
         mat.push_back(WeightMatrix::Triplet( i, j, 1. ));
 
     }
-    Log::debug<LibMir>() << "NearestLSM search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;
 
 
     // fill-in sparse matrix
     here = timer.elapsed();
     W.setFromTriplets(mat);
-    Log::debug<LibMir>() << "NearestLSM fill-in sparse matrix " << timer.elapsed() - here << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM fill-in sparse matrix " << timer.elapsed() - here << std::endl;
 }
 
 
-lsm::LandSeaMasks NearestLSM::getMasks(context::Context& ctx, const atlas::Grid &in, const atlas::Grid &out) const {
+lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid& in, const atlas::Grid &out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
     return lsm::LandSeaMasks::lookup(runtime, in, out);
 }
 
 
-void NearestLSM::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &, util::MIRStatistics& statistics) const {
+void NearestLSM::applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const {
     // FIXME this function should not be overriding to do nothing
 }
 
@@ -141,7 +138,6 @@ namespace {
 static MethodBuilder< NearestLSM > __method("nearest-lsm");
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

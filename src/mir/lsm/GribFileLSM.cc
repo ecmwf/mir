@@ -16,6 +16,7 @@
 
 #include "mir/lsm/GribFileLSM.h"
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/utils/MD5.h"
 #include "atlas/grid.h"
@@ -23,6 +24,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/method/GridSpace.h"
 #include "mir/method/Method.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -66,11 +68,16 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::debug<LibMir>() << "LSM interpolation method is " << *method << std::endl;
 
-    atlas::Grid gin = field.representation()->atlasGrid();
+    if (!(field.representation()->domain().isGlobal())) {
+        throw eckit::UserError("Input LSM file '" + path_ + "' should be global");
+    }
+
+    method::GridSpace gin(field.representation()->atlasGrid(), field.representation()->domain());
+    method::GridSpace gout(grid, util::Domain::makeGlobal());  // FIXME use grid's domain
 
     util::MIRStatistics dummy; // TODO: use the global one
     context::Context ctx(field, dummy);
-    method->execute(ctx, gin, grid);
+    method->execute(ctx, gin, gout);
 
     double threshold;
     ASSERT(parametrisation.get("lsm-value-threshold", threshold));

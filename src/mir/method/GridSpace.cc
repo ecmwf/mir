@@ -18,37 +18,19 @@
 
 #include "eckit/geometry/Point3.h"
 #include "atlas/array.h"
-#include "atlas/grid/Grid.h"
 #include "atlas/mesh/Mesh.h"
 #include "mir/method/MethodWeighted.h"
-#include "atlas/domain/detail/RectangularDomain.h"
 
 
 namespace mir {
 namespace method {
 
 
-GridSpace::GridSpace(const atlas::Grid& grid, const MethodWeighted& method) :
-    method_(method),
+GridSpace::GridSpace(const atlas::Grid& grid, const util::Domain& domain) :
+    domain_(domain),
     grid_(grid),
     mesh_(0),
     coordsLonLat_(0) {
-
-    // FIXME this is the ugliest code ever, it needs to be redesigned
-    try {
-        const atlas::Domain::Implementation* impl = grid_.domain().get();
-        ASSERT(impl);
-
-        const atlas::domain::RectangularDomain& rectangle = dynamic_cast< const atlas::domain::RectangularDomain& >(*impl);
-        double N = rectangle.ymax();
-        double W = rectangle.xmin();
-        double S = rectangle.ymin();
-        double E = rectangle.xmax();
-        domain_ = util::Domain(N, W, S, E);
-
-    } catch (const std::bad_cast&) {
-        throw eckit::SeriousBug("Could not get a RectangularDomain from an Atlas grid", Here());
-    }
 }
 
 
@@ -62,9 +44,9 @@ const atlas::Grid& GridSpace::grid() const {
 }
 
 
-atlas::Mesh& GridSpace::mesh() const {
+atlas::Mesh& GridSpace::mesh(const MethodWeighted& method) const {
     if (mesh_ == 0) {
-        mesh_ = &method_.generateMeshAndCache(grid_);
+        mesh_ = &(method.generateMeshAndCache(grid_));
     }
     return *mesh_;
 }

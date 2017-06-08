@@ -21,11 +21,11 @@
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "atlas/array/Array.h"
+#include "atlas/grid/Grid.h"
 #include "mir/util/Domain.h"
 
 
 namespace atlas {
-class Grid;
 class Mesh;
 }
 namespace mir {
@@ -44,13 +44,13 @@ public:
 
     // -- Contructors
 
-    GridSpace(const atlas::Grid&, const MethodWeighted&);
+    explicit GridSpace(const atlas::Grid&, const util::Domain&);
 
     // -- Methods
 
     const util::Domain& domain() const;
     const atlas::Grid& grid() const;
-    atlas::Mesh& mesh() const;
+    atlas::Mesh& mesh(const MethodWeighted&) const;
     const atlas::array::Array& coordsLonLat() const;
     const atlas::array::Array& coordsXYZ() const;
 
@@ -58,9 +58,8 @@ private:
 
     // -- Members
 
-    util::Domain domain_;
-    const MethodWeighted& method_;
-    const atlas::Grid& grid_;
+    const util::Domain domain_;
+    const atlas::Grid grid_;
     mutable atlas::Mesh* mesh_;
     mutable eckit::ScopedPtr< atlas::array::Array > coordsLonLat_;
     mutable eckit::ScopedPtr< atlas::array::Array > coordsXYZ_;
