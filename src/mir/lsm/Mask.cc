@@ -59,7 +59,7 @@ void Mask::hash(eckit::MD5 &md5) const {
 }
 
 
-Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const atlas::Grid& grid, const std::string& which) {
+Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& representation, const std::string& which) {
 
     bool lsm = false;
     parametrisation.get("lsm", lsm);
@@ -79,7 +79,7 @@ Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const atlas
 
     name = name + "-" + which;
     const LSMChooser &chooser = LSMChooser::lookup(name);
-    std::string key = chooser.cacheKey(name, parametrisation, grid, which);
+    std::string key = chooser.cacheKey(name, parametrisation, representation, which);
 
     pthread_once(&once, init);
 
@@ -92,7 +92,7 @@ Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const atlas
         return *(*j).second;
     }
 
-    Mask *mask = chooser.create(name, parametrisation, grid, which);
+    Mask *mask = chooser.create(name, parametrisation, representation, which);
 
     (*cache)[key] = mask;
 
@@ -100,13 +100,13 @@ Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const atlas
 }
 
 
-Mask &Mask::lookupInput(const param::MIRParametrisation& parametrisation, const atlas::Grid& grid) {
-    return lookup(parametrisation, grid, "input");
+Mask &Mask::lookupInput(const param::MIRParametrisation& parametrisation, const repres::Representation& representation) {
+    return lookup(parametrisation, representation, "input");
 }
 
 
-Mask &Mask::lookupOutput(const param::MIRParametrisation& parametrisation, const atlas::Grid& grid) {
-    return lookup(parametrisation, grid, "output");
+Mask &Mask::lookupOutput(const param::MIRParametrisation& parametrisation, const repres::Representation& representation) {
+    return lookup(parametrisation, representation, "output");
 }
 
 

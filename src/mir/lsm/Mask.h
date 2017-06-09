@@ -33,13 +33,16 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
+namespace repres {
+class Representation;
+}
 }
 
 namespace mir {
 namespace lsm {
 
 class Mask : private eckit::NonCopyable {
-  public:
+public:
 
     Mask(const std::string &name);
 
@@ -70,10 +73,10 @@ class Mask : private eckit::NonCopyable {
 
     // -- Class methods
 
-    static  Mask &lookupInput(const param::MIRParametrisation &param, const atlas::Grid &grid);
-    static  Mask &lookupOutput(const param::MIRParametrisation &param, const atlas::Grid &grid);
+    static  Mask &lookupInput(const param::MIRParametrisation &param, const repres::Representation& representation);
+    static  Mask &lookupOutput(const param::MIRParametrisation &param, const repres::Representation& representation);
 
-  protected:
+protected:
 
     // -- Members
 
@@ -93,7 +96,7 @@ class Mask : private eckit::NonCopyable {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // -- Members
     // None
@@ -108,7 +111,7 @@ class Mask : private eckit::NonCopyable {
 
     // -- Class methods
     static  Mask &lookup(const param::MIRParametrisation &param,
-                         const atlas::Grid &grid,
+                         const repres::Representation& representation,
                          const std::string &which);
 
 

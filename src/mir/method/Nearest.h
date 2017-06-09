@@ -33,7 +33,7 @@ public:
 
 protected:
 
-    virtual void assemble(WeightMatrix&, const MIRGrid& in, const MIRGrid& out) const;
+    virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
 private:
 

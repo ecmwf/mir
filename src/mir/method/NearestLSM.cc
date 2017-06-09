@@ -24,6 +24,7 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/PointSearch.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir {
@@ -44,7 +45,12 @@ const char *NearestLSM::name() const {
 }
 
 
-void NearestLSM::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out) const {
+void NearestLSM::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+
+    MIRGrid in(rin.atlasGrid(), rin.domain());
+    MIRGrid out(rout.atlasGrid(), rout.domain());
+
+
     eckit::Log::debug<LibMir>() << "NearestLSM::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("NearestLSM::assemble");
 
@@ -52,7 +58,7 @@ void NearestLSM::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out
     // get the land-sea masks, with boolean masking on point (node) indices
     double here = timer.elapsed();
 
-    const lsm::LandSeaMasks masks = getMasks(in.grid(), out.grid());
+    const lsm::LandSeaMasks masks = getMasks(rin, rout);
     ASSERT(masks.active());
 
     eckit::Log::debug<LibMir>() << "NearestLSM compute LandSeaMasks " << timer.elapsed() - here << std::endl;
@@ -87,12 +93,12 @@ void NearestLSM::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out
 
     std::vector<WeightMatrix::Triplet> mat;
     mat.reserve(W.rows());
-    for (WeightMatrix::Size i=0; i<W.rows(); ++i) {
+    for (WeightMatrix::Size i = 0; i < W.rows(); ++i) {
 
         // pick the (input) search tree matching the output mask
         util::PointSearch& sptree(
-                    omask[i]? sptree_masked
-                            : sptree_notmasked );
+            omask[i] ? sptree_masked
+            : sptree_notmasked );
 
         // perform nearest neighbour search
         // - p: output grid node to look neighbours for
@@ -116,7 +122,7 @@ void NearestLSM::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out
 }
 
 
-lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid& in, const atlas::Grid &out) const {
+lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const repres::Representation& out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
     return lsm::LandSeaMasks::lookup(runtime, in, out);

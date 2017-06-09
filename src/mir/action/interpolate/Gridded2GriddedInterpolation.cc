@@ -54,11 +54,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     repres::RepresentationHandle in(field.representation());
     repres::RepresentationHandle out(outputRepresentation());
 
-    // We do it here as ATLAS does not respect constness
-    method::MIRGrid gin(in->atlasGrid(), in->domain());
-    method::MIRGrid gout(out->atlasGrid(), out->domain());
-
-    method->execute(ctx, gin, gout);
+    method->execute(ctx, *in, *out);
 
     field.representation(out);
 

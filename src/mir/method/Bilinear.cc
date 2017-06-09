@@ -26,7 +26,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/method/MIRGrid.h"
 #include "mir/util/Compare.h"
-
+#include "mir/repres/Representation.h"
 
 namespace mir {
 namespace method {
@@ -99,7 +99,12 @@ void Bilinear::hash(eckit::MD5& md5) const {
 }
 
 
-void Bilinear::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out) const {
+void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+
+    MIRGrid in(rin.atlasGrid(), rin.domain());
+    MIRGrid out(rout.atlasGrid(), rout.domain());
+
+
     eckit::Log::debug<LibMir>() << "Bilinear::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
 
     using eckit::geometry::LON;

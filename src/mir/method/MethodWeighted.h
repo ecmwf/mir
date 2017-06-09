@@ -30,6 +30,9 @@ namespace mir {
 namespace lsm {
 class LandSeaMasks;
 }
+namespace repres {
+class Representation;
+}
 }
 
 
@@ -45,7 +48,7 @@ public:
 
     virtual ~MethodWeighted();
 
-    virtual void execute(context::Context&, const MIRGrid& in, const MIRGrid& out) const;
+    virtual void execute(context::Context&, const repres::Representation &in, const repres::Representation& out) const;
 
     virtual void hash(eckit::MD5&) const;
 
@@ -55,13 +58,13 @@ public:
 
 protected:
 
-    virtual const WeightMatrix& getMatrix(context::Context&, const MIRGrid& in, const MIRGrid& out) const;
+    virtual const WeightMatrix& getMatrix(context::Context&, const repres::Representation& in, const repres::Representation& out) const;
 
 private:
 
     virtual const char *name() const = 0;
 
-    virtual void assemble(WeightMatrix&, const MIRGrid& in, const MIRGrid& out) const = 0;
+    virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
     void applyMissingValues(const WeightMatrix& W, const std::vector<double>& values, const double& missingValue, WeightMatrix& MW) const;
@@ -75,11 +78,11 @@ private:
     /// Get interpolation operand matrices, from A = W × B
     virtual void setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, std::vector<double>& Avector, const double& missingValue) const;
 
-    virtual lsm::LandSeaMasks getMasks(const atlas::Grid& in, const atlas::Grid& out) const;
+    virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
 
-    void computeMatrixWeights(context::Context&, const MIRGrid& in, const MIRGrid& out, WeightMatrix&) const;
+    void computeMatrixWeights(context::Context&, const repres::Representation& in, const repres::Representation& out, WeightMatrix&) const;
 
-    void createMatrix(context::Context&, const MIRGrid& in, const MIRGrid& out, WeightMatrix&, const lsm::LandSeaMasks&) const;
+    void createMatrix(context::Context&, const repres::Representation& in, const repres::Representation& out, WeightMatrix&, const lsm::LandSeaMasks&) const;
 
 private:
 

@@ -47,11 +47,11 @@ std::string AutoLSM::path(const param::MIRParametrisation &parametrisation) cons
 
 Mask *AutoLSM::create(const std::string &name,
                       const param::MIRParametrisation &param,
-                      const atlas::Grid &grid,
+                      const repres::Representation& representation,
                       const std::string& which) const {
 
     // Mask* mask = new TenMinutesLSM(name, param, grid, which);
-    Mask* mask = new MappedMask(name, param, grid, which);
+    Mask* mask = new MappedMask(name, param, representation, which);
     // Mask* mask = new GribFileLSM(name, path(param), param, grid, which);
 
     eckit::Log::debug<LibMir>() << "AutoLSM::create => " << *mask << std::endl;
@@ -60,10 +60,10 @@ Mask *AutoLSM::create(const std::string &name,
 
 std::string AutoLSM::cacheKey(const std::string &name,
                               const param::MIRParametrisation &param,
-                              const atlas::Grid &grid,
+                              const repres::Representation& representation,
                               const std::string& which) const {
     eckit::MD5 md5;
-    GribFileLSM::hashCacheKey(md5, path(param), param, grid, which); // We need to take the lsm interpolation method into account
+    GribFileLSM::hashCacheKey(md5, path(param), param, representation, which); // We need to take the lsm interpolation method into account
     return "auto." + md5.digest();
 }
 
