@@ -40,6 +40,7 @@
 #include "mir/method/AddParallelEdgesConnectivity.h"
 #include "mir/method/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir {
@@ -249,7 +250,11 @@ void FiniteElement::hash(eckit::MD5&) const {
 }
 
 
-void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
+void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+
+    MIRGrid in(rin.atlasGrid(), rin.domain());
+    MIRGrid out(rout.atlasGrid(), rout.domain());
+
     eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
 
 

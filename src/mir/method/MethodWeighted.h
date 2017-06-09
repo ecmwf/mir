@@ -78,7 +78,7 @@ private:
     /// Get interpolation operand matrices, from A = W × B
     virtual void setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, std::vector<double>& Avector, const double& missingValue) const;
 
-    virtual lsm::LandSeaMasks getMasks(const atlas::Grid& in, const atlas::Grid& out) const;
+    virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
 
     void computeMatrixWeights(context::Context&, const repres::Representation& in, const repres::Representation& out, WeightMatrix&) const;
 

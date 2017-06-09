@@ -223,10 +223,6 @@
 					"shell_cmd": "make -j4 mir-tool"
 				},
 				{
-					"name": "mir-plot-lsm",
-					"shell_cmd": "make -j4 mir-plot-lsm"
-				},
-				{
 					"name": "mir-list",
 					"shell_cmd": "make -j4 mir-list"
 				},
@@ -279,14 +275,6 @@
 					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_msl_regular_ll_3-3_grib"
 				},
 				{
-					"name": "__get_data_download_mir_tests_files_2t_O640_grib",
-					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_2t_O640_grib"
-				},
-				{
-					"name": "mir_tests_RotateGrid",
-					"shell_cmd": "make -j4 mir_tests_RotateGrid"
-				},
-				{
 					"name": "__get_data_download_mir_tests_files_vo-d_sh_grib",
 					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_vo-d_sh_grib"
 				},
@@ -309,6 +297,10 @@
 				{
 					"name": "__get_data_download_mir_tests_files_msl_regular_ll_2-2_grib",
 					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_msl_regular_ll_2-2_grib"
+				},
+				{
+					"name": "__get_data_download_mir_tests_files_2t_O640_grib",
+					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_2t_O640_grib"
 				}
 			],
 			"working_dir": "${project_path}/../../build/mir"

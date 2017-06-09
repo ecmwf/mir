@@ -26,6 +26,8 @@
 #include "eckit/utils/MD5.h"
 #include "atlas/grid.h"
 #include "mir/config/LibMir.h"
+#include "mir/repres/Iterator.h"
+#include "mir/repres/Representation.h"
 
 
 // On CRAY/Brodwell, the rounding of areas is incorrect
@@ -69,9 +71,6 @@ MappedMask::MappedMask(const std::string &name,
     Mask(name),
     path_("~mir/share/mir/masks/1km-lsm.mask") {
 
-NOTIMP;
-/*
-
     int fd = ::open(path_.localPath(), O_RDONLY);
     if (fd < 0) {
         eckit::Log::error() << "open(" << path_ << ')' << eckit::Log::syserr << std::endl;
@@ -111,16 +110,18 @@ NOTIMP;
 
 
     // NOTE: this is not using 3D coordinate systems
-    mask_.reserve(grid.size());
+    // mask_.reserve(grid.size());
 
     const unsigned char *mask = reinterpret_cast<unsigned char *>(address);
 
-    for (atlas::PointLonLat j : grid.lonlat()) {
-        double lat = j.lat();
+    eckit::ScopedPtr<repres::Iterator> iter(representation.unrotatedIterator());
+    double lat, lon;
+
+    while (iter->next(lat, lon)) {
 
         if (lat < -90) {
             std::ostringstream oss;
-            oss << "GRID " << grid << " returns a latitude of " << lat << " (lat+90)=" << (lat + 90);
+            oss << "GRID " << " returns a latitude of " << lat << " (lat+90)=" << (lat + 90);
             throw eckit::SeriousBug(oss.str());
         }
 
@@ -128,14 +129,12 @@ NOTIMP;
 
         if (lat > 90) {
             std::ostringstream oss;
-            oss << "GRID " << grid << " returns a latitude of " << lat << " (lat-90)=" << (lat - 90);
+            oss << "GRID " << " returns a latitude of " << lat << " (lat-90)=" << (lat - 90);
             throw eckit::SeriousBug(oss.str());
         }
 
 
         ASSERT(lat <= 90);
-
-        double lon = j.lon();
 
         while (lon >= 360) {
             lon -= 360;
@@ -157,7 +156,6 @@ NOTIMP;
         // TODO: Check me
         mask_.push_back((mask[byte] & MASKS[bit]) != 0);
     }
-*/
 }
 
 MappedMask::~MappedMask() {

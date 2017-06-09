@@ -37,7 +37,7 @@
 #include "mir/method/decompose/Decompose.h"
 #include "mir/util/Compare.h"
 #include "mir/util/MIRStatistics.h"
-
+#include "mir/repres/Representation.h"
 
 using mir::util::compare::is_approx_zero;
 using mir::util::compare::is_approx_one;
@@ -119,7 +119,11 @@ void MethodWeighted::generateMesh(const atlas::Grid& g,
     throw eckit::SeriousBug(oss.str(), Here());
 }
 
-void MethodWeighted::createMatrix(context::Context& ctx, const MIRGrid& in, const MIRGrid& out, WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
+void MethodWeighted::createMatrix(context::Context& ctx,
+                                  const repres::Representation& in,
+                                  const repres::Representation& out,
+                                  WeightMatrix& W,
+                                  const lsm::LandSeaMasks& masks) const {
 
     computeMatrixWeights(ctx, in, out, W);
 
@@ -132,7 +136,13 @@ void MethodWeighted::createMatrix(context::Context& ctx, const MIRGrid& in, cons
 }
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
-const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const MIRGrid& in, const MIRGrid& out) const {
+const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
+        const repres::Representation& rin,
+        const repres::Representation& rout) const {
+
+    MIRGrid in(rin.atlasGrid(), rin.domain());
+    MIRGrid out(rout.atlasGrid(), rout.domain());
+
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix " << *this << std::endl;
@@ -142,7 +152,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const MIRGr
     const atlas::Grid& gout = out.grid();
 
     double here = timer.elapsed();
-    const lsm::LandSeaMasks masks = getMasks(gin, gout);
+    const lsm::LandSeaMasks masks = getMasks(rin, rout);
     eckit::Log::debug<LibMir>() << "Compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
     eckit::Log::debug<LibMir>() << "++++ LSM masks " << masks << std::endl;
@@ -156,8 +166,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const MIRGr
     eckit::Log::debug<LibMir>() << "Compute md5 " << timer.elapsed() - here << std::endl;
 
 
-    const std::string shortName_in  = gin.name()  + (gin.projection()?  "." + gin.projection().type() :  "");
-    const std::string shortName_out = gout.name() + (gout.projection()? "." + gout.projection().type() : "");
+    const std::string shortName_in  = gin.name()  + (gin.projection() ?  "." + gin.projection().type() :  "");
+    const std::string shortName_out = gout.name() + (gout.projection() ? "." + gout.projection().type() : "");
     ASSERT(!shortName_in.empty());
     ASSERT(!shortName_out.empty());
 
@@ -199,8 +209,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const MIRGr
 
             const MethodWeighted& owner_;
             context::Context& ctx_;
-            const MIRGrid& in_;
-            const MIRGrid& out_;
+            const repres::Representation& in_;
+            const repres::Representation& out_;
             const lsm::LandSeaMasks& masks_;
 
             virtual void create(const eckit::PathName& path, WeightMatrix& W) {
@@ -210,8 +220,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const MIRGr
         public:
             MatrixCacheCreator(const MethodWeighted& owner,
                                context::Context& ctx,
-                               const MIRGrid& in,
-                               const MIRGrid& out,
+                               const repres::Representation& in,
+                               const repres::Representation& out,
                                const lsm::LandSeaMasks& masks):
                 owner_(owner),
                 ctx_(ctx),
@@ -220,12 +230,12 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const MIRGr
                 masks_(masks) {}
         };
 
-        MatrixCacheCreator creator(*this, ctx, in, out, masks);
+        MatrixCacheCreator creator(*this, ctx, rin, rout, masks);
         path = cache.getOrCreate(cache_key, creator, W);
 
     }
     else {
-        createMatrix(ctx, in, out, W, masks);
+        createMatrix(ctx, rin, rout, W, masks);
     }
 
 
@@ -247,11 +257,11 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const MIRGr
 
 
 void MethodWeighted::setOperandMatricesFromVectors(
-        WeightMatrix::Matrix& A,
-        WeightMatrix::Matrix& B,
-        const std::vector<double>& Avector,
-        const std::vector<double>& Bvector,
-        const double& missingValue ) const {
+    WeightMatrix::Matrix& A,
+    WeightMatrix::Matrix& B,
+    const std::vector<double>& Avector,
+    const std::vector<double>& Bvector,
+    const double& missingValue ) const {
 
     // set input matrix B (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
@@ -283,9 +293,9 @@ void MethodWeighted::setOperandMatricesFromVectors(
 
 
 void MethodWeighted::setVectorFromOperandMatrix(
-        const WeightMatrix::Matrix& A,
-        std::vector<double>& Avector,
-        const double& missingValue) const {
+    const WeightMatrix::Matrix& A,
+    std::vector<double>& Avector,
+    const double& missingValue) const {
 
     // set output vector A (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
@@ -306,7 +316,10 @@ lsm::LandSeaMasks MethodWeighted::getMasks(const repres::Representation& in, con
 }
 
 
-void MethodWeighted::execute(context::Context& ctx, const MIRGrid& in, const MIRGrid& out) const {
+void MethodWeighted::execute(context::Context& ctx, const repres::Representation& rin, const repres::Representation& rout) const {
+
+    MIRGrid in(rin.atlasGrid(), rin.domain());
+    MIRGrid out(rout.atlasGrid(), rout.domain());
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<WeightMatrix> matrix_use(matrix_cache, ctx.statistics().matrixCache_);
@@ -321,7 +334,7 @@ void MethodWeighted::execute(context::Context& ctx, const MIRGrid& in, const MIR
     const size_t npts_inp = in.grid().size();
     const size_t npts_out = out.grid().size();
 
-    const WeightMatrix& W = getMatrix(ctx, in, out);
+    const WeightMatrix& W = getMatrix(ctx, rin, rout);
     ASSERT( W.rows() == npts_out );
     ASSERT( W.cols() == npts_inp );
 
@@ -415,7 +428,13 @@ void MethodWeighted::execute(context::Context& ctx, const MIRGrid& in, const MIR
 }
 
 
-void MethodWeighted::computeMatrixWeights(context::Context& ctx, const MIRGrid& in, const MIRGrid& out, WeightMatrix& W) const {
+void MethodWeighted::computeMatrixWeights(context::Context& ctx,
+    const repres::Representation& rin,
+    const repres::Representation& rout,
+    WeightMatrix& W) const {
+
+        MIRGrid in(rin.atlasGrid(), rin.domain());
+    MIRGrid out(rout.atlasGrid(), rout.domain());
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
 
@@ -429,17 +448,17 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const MIRGrid& 
         parametrisation_.get("prune-epsilon", pruneEpsilon);
 
         eckit::TraceTimer<LibMir> timer("Assemble matrix");
-        assemble(W, in, out);
+        assemble(W, rin, rout);
         W.cleanup(pruneEpsilon);
     }
 }
 
 
 void MethodWeighted::applyMissingValues(
-        const WeightMatrix& W,
-        const std::vector<double>& values,
-        const double& missingValue,
-        WeightMatrix& MW) const {
+    const WeightMatrix& W,
+    const std::vector<double>& values,
+    const double& missingValue,
+    WeightMatrix& MW) const {
 
     eckit::Timer t1("applyMissingValues", eckit::Log::debug<LibMir>());
 
@@ -484,7 +503,7 @@ void MethodWeighted::applyMissingValues(
 
             } else {
 
-                const double factor = is_approx_zero(sum)? 0 : 1./sum;
+                const double factor = is_approx_zero(sum) ? 0 : 1. / sum;
                 for (it = begin; it != end; ++it) {
                     if (values[it.col()] == missingValue) {
                         *it = 0.;

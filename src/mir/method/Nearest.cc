@@ -29,7 +29,7 @@
 #include "mir/method/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/PointSearch.h"
-
+#include "mir/repres/Representation.h"
 
 namespace mir {
 namespace method {
@@ -49,7 +49,10 @@ const char *Nearest::name() const {
 }
 
 
-void Nearest::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out) const {
+void Nearest::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+    MIRGrid in(rin.atlasGrid(), rin.domain());
+    MIRGrid out(rout.atlasGrid(), rout.domain());
+
     eckit::Log::debug<LibMir>() << "Nearest::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("Nearest::assemble");
 
@@ -84,9 +87,9 @@ void Nearest::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out) c
         if (ip && (ip % 50000 == 0)) {
             double rate = ip / timer.elapsed();
             eckit::Log::debug<LibMir>() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timer.elapsed())
-                               << ", rate: " << rate << " points/s, ETA: "
-                               << eckit::ETA( (out_npts - ip) / rate )
-                               << std::endl;
+                                        << ", rate: " << rate << " points/s, ETA: "
+                                        << eckit::ETA( (out_npts - ip) / rate )
+                                        << std::endl;
 
             eckit::Log::debug<LibMir>() << "Nearest: " << nearest << ", Push back:" << push_back << std::endl;
             sptree.statsPrint(eckit::Log::debug<LibMir>(), false);
