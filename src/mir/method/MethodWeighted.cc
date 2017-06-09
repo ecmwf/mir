@@ -140,16 +140,14 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
         const repres::Representation& rin,
         const repres::Representation& rout) const {
 
-    MIRGrid in(rin.atlasGrid(), rin.domain());
-    MIRGrid out(rout.atlasGrid(), rout.domain());
+    atlas::Grid gin(rin.grid());
+    atlas::Grid gout(rout.grid());
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix " << *this << std::endl;
     eckit::TraceTimer<LibMir> timer("MethodWeighted::getMatrix");
 
-    const atlas::Grid& gin = in.grid();
-    const atlas::Grid& gout = out.grid();
 
     double here = timer.elapsed();
     const lsm::LandSeaMasks masks = getMasks(rin, rout);
@@ -318,8 +316,8 @@ lsm::LandSeaMasks MethodWeighted::getMasks(const repres::Representation& in, con
 
 void MethodWeighted::execute(context::Context& ctx, const repres::Representation& rin, const repres::Representation& rout) const {
 
-    MIRGrid in(rin.atlasGrid(), rin.domain());
-    MIRGrid out(rout.atlasGrid(), rout.domain());
+    MIRGrid in(rin.grid());
+    MIRGrid out(rout.grid());
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<WeightMatrix> matrix_use(matrix_cache, ctx.statistics().matrixCache_);
@@ -331,8 +329,8 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     eckit::Log::debug<LibMir>() << "MethodWeighted::execute" << std::endl;
 
     // setup sizes & checks
-    const size_t npts_inp = in.grid().size();
-    const size_t npts_out = out.grid().size();
+    const size_t npts_inp = in.size();
+    const size_t npts_out = out.size();
 
     const WeightMatrix& W = getMatrix(ctx, rin, rout);
     ASSERT( W.rows() == npts_out );
@@ -429,16 +427,16 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
 void MethodWeighted::computeMatrixWeights(context::Context& ctx,
-    const repres::Representation& rin,
-    const repres::Representation& rout,
-    WeightMatrix& W) const {
+        const repres::Representation& rin,
+        const repres::Representation& rout,
+        WeightMatrix& W) const {
 
-        MIRGrid in(rin.atlasGrid(), rin.domain());
-    MIRGrid out(rout.atlasGrid(), rout.domain());
+    MIRGrid in(rin.grid());
+    MIRGrid out(rout.grid());
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
 
-    if (in.grid().uid() == out.grid().uid()) {
+    if (in.uid() == out.uid()) {
         eckit::Log::debug<LibMir>() << "Matrix is indentity" << std::endl;
         W.setIdentity(W.rows(), W.cols());
     } else {

@@ -34,6 +34,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/method/MIRGrid.h"
 
 
 namespace mir {
@@ -214,9 +215,8 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
         const util::BoundingBox &bbox,
         bool caching) {
 
-    atlas::Grid gin = representation->atlasGrid(); // This should disapear once we move Representation to atlas
     eckit::MD5 md5;
-    md5 << gin << bbox;
+    md5 << representation->grid() << bbox;
 
     std::string key(md5);
 

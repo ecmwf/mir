@@ -24,6 +24,8 @@
 #include "atlas/grid.h"
 #include "mir/config/LibMir.h"
 
+#include "mir/repres/Iterator.h"
+#include "mir/repres/Representation.h"
 
 namespace {
 
@@ -52,7 +54,7 @@ From EMOSLIB:
 
 TenMinutesLSM::TenMinutesLSM(const std::string &name,
                              const param::MIRParametrisation &parametrisation,
-                             const atlas::Grid &grid,
+                             const repres::Representation& representation,
                              const std::string &which):
     Mask(name),
     path_("~mir/share/mir/masks/ten-minutes.mask") {
@@ -87,14 +89,16 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 
 
     // NOTE: this is not using 3D coordinate systems
-    mask_.reserve(grid.size());
+    // mask_.reserve(grid.size());
 
-    for (atlas::PointLonLat j : grid.lonlat()) {
-        double lat = j.lat();
+     eckit::ScopedPtr<repres::Iterator> iter(representation.unrotatedIterator());
+    double lat, lon;
+
+    while (iter->next(lat, lon)) {
+
         ASSERT(lat >= -90);
         ASSERT(lat <= 90);
 
-        double lon = j.lon();
 
         while (lon >= 360) {
             lon -= 360;

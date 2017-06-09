@@ -20,6 +20,7 @@
 #include "atlas/array.h"
 #include "atlas/mesh/Mesh.h"
 #include "mir/method/MethodWeighted.h"
+#include "eckit/utils/MD5.h"
 
 
 namespace mir {
@@ -34,12 +35,20 @@ MIRGrid::MIRGrid(const atlas::Grid& grid, const util::Domain& domain) :
 }
 
 
+
+MIRGrid::MIRGrid(const MIRGrid& other) :
+    domain_(other.domain_),
+    grid_(other.grid_),
+    mesh_(0),
+    coordsLonLat_(0) {
+}
+
 const util::Domain& MIRGrid::domain() const {
     return domain_;
 }
 
 
-const atlas::Grid& MIRGrid::grid() const {
+MIRGrid::operator const atlas::Grid&() const {
     return grid_;
 }
 
@@ -89,6 +98,23 @@ const atlas::array::Array& MIRGrid::coordsXYZ() const {
     }
 
     return *coordsXYZ_;
+}
+
+void MIRGrid::hash(eckit::MD5 &md5) const {
+    md5 << grid_ << domain_;
+}
+
+std::string MIRGrid::name() const {
+    return grid_.name();
+}
+
+
+std::string MIRGrid::uid() const {
+    return grid_.uid();
+}
+
+size_t MIRGrid::size() const {
+    return grid_.size();
 }
 
 

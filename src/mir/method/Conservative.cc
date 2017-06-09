@@ -54,13 +54,16 @@ Conservative::Conservative(const param::MIRParametrisation &param) :
 Conservative::~Conservative() {
 }
 
-void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::Grid& g, atlas::Mesh& mesh) const
+void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const repres::Representation& representation, atlas::Mesh& mesh) const
 {
+
+    const method::MIRGrid& grid = representation.grid();
+
     eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix" << std::endl;
 
     eckit::Log::debug<LibMir>() << "Mesh " << mesh << std::endl;
 
-    d.resize(g.size());
+    d.resize(grid.size());
 
     d.setZero();
 
@@ -128,14 +131,14 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
 
 void Conservative::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
 
-    MIRGrid in(rin.atlasGrid(), rin.domain());
-    MIRGrid out(rout.atlasGrid(), rout.domain());
+    MIRGrid in(rin.grid());
+    MIRGrid out(rout.grid());
 
-    eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
 
-    WeightMatrix IM(in.grid().size(), out.grid().size());
+    WeightMatrix IM(in.size(), out.size());
 
     FELinear::assemble(IM, rout, rin);
 
@@ -148,12 +151,12 @@ void Conservative::assemble(WeightMatrix& W, const repres::Representation& rin, 
     // 2) M_s compute the lumped mass matrix of the source mesh
 
     Vector M_s;
-    computeLumpedMassMatrix(M_s, in.grid(), in.mesh(*this));
+    computeLumpedMassMatrix(M_s, rin, in.mesh(*this));
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix of the destination mesh
 
     Vector M_d;
-    computeLumpedMassMatrix(M_d, out.grid(), out.mesh(*this));
+    computeLumpedMassMatrix(M_d, rout, out.mesh(*this));
 
     for(size_t i = 0; i < M_d.size(); ++i)
         M_d[i] = 1./M_d[i];

@@ -36,6 +36,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/method/MIRGrid.h"
 
 
 namespace mir {
@@ -55,14 +56,14 @@ static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient",
 
 static void fillTrans(struct Trans_t& trans,
                       trans_options_t& options,
-                      const atlas::Grid& grid) {
+                      const repres::Representation& representation) {
 #ifdef ATLAS_HAVE_TRANS
-    const atlas::grid::StructuredGrid reduced(grid);
+    const atlas::grid::StructuredGrid reduced(representation.grid());
     if (!reduced) {
         throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
     }
 
-    const atlas::grid::RegularLonLatGrid latlon(grid);
+    const atlas::grid::RegularLonLatGrid latlon(representation.grid());
 
 
     ASSERT(trans_new(&trans) == 0);
@@ -95,13 +96,13 @@ static void fillTrans(struct Trans_t& trans,
 
 static void createCoefficients(const eckit::PathName& path,
                                trans_options_t& options,
-                               const atlas::Grid& grid,
+                               const repres::Representation& representation,
                                context::Context& ctx) {
 #ifdef ATLAS_HAVE_TRANS
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
 
     struct Trans_t tmp_trans;
-    fillTrans(tmp_trans, options, grid);
+    fillTrans(tmp_trans, options, representation);
 
     ASSERT(trans_set_write(&tmp_trans, path.asString().c_str()) == 0);
     ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
@@ -119,7 +120,7 @@ static void createCoefficients(const eckit::PathName& path,
 
 void ShToGridded::transform(
         data::MIRField& field,
-        const atlas::Grid& grid,
+        const repres::Representation& representation,
         context::Context& ctx,
         const std::string& key,
         trans_options_t& options ) const {
@@ -135,21 +136,21 @@ void ShToGridded::transform(
             class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
 
                 trans_options_t options_;
-                const atlas::Grid & grid_;
+                const repres::Representation& representation_;
                 context::Context & ctx_;
 
                 virtual void create(const eckit::PathName& path, int& ignore) {
-                    createCoefficients(path, options_, grid_, ctx_);
+                    createCoefficients(path, options_, representation_, ctx_);
                 }
             public:
                 LegendreCacheCreator(trans_options_t& options,
-                                     const atlas::Grid& grid,
+                                     const repres::Representation& representation,
                                      context::Context& ctx):
-                    options_(options), grid_(grid), ctx_(ctx) {}
+                    options_(options), representation_(representation), ctx_(ctx) {}
             };
 
             static caching::LegendreCache cache;
-            LegendreCacheCreator creator(options, grid, ctx);
+            LegendreCacheCreator creator(options, representation, ctx);
 
             int dummy = 0;
             path = cache.getOrCreate(key, creator, dummy);
@@ -164,7 +165,7 @@ void ShToGridded::transform(
             TransCache &tc = trans_handles[key];
 
             struct Trans_t &trans = tc.trans_;
-            fillTrans(trans, options, grid);
+            fillTrans(trans, options, representation);
 
             tc.inited_ = true;
             tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation_, path);
@@ -200,7 +201,7 @@ void ShToGridded::transform(
 }
 
 
-void ShToGridded::transform(data::MIRField& field, const atlas::Grid& grid, context::Context& ctx) const {
+void ShToGridded::transform(data::MIRField& field, const repres::Representation& representation, context::Context& ctx) const {
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
 
     TransInitor::instance(); // Will init trans if needed
@@ -211,11 +212,11 @@ void ShToGridded::transform(data::MIRField& field, const atlas::Grid& grid, cont
     std::ostringstream os;
     os << "T" << options.truncation
        << ":" << "flt" << options.flt
-       << ":" << grid.uid();
+       << ":" << representation.grid().uid();
     std::string key(os.str());
 
     try {
-        transform(field, grid, ctx, key, options);
+        transform(field, representation, ctx, key, options);
     } catch (std::exception& e) {
         eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
         trans_handles.erase(key);
@@ -243,9 +244,8 @@ void ShToGridded::execute(context::Context& ctx) const {
     InMemoryCacheUser<TransCache> use(trans_handles, ctx.statistics().transHandleCache_);
 
     repres::RepresentationHandle out(outputRepresentation());
-    atlas::Grid grid = out->atlasGrid();
 
-    transform(ctx.field(), grid, ctx);
+    transform(ctx.field(), *out, ctx);
 
     ctx.field().representation(out);
 }

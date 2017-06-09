@@ -49,6 +49,10 @@ class MIRJob;
 namespace data {
 class MIRField;
 }
+
+namespace method {
+class MIRGrid;
+}
 }
 
 
@@ -99,7 +103,7 @@ public:
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
     virtual const Representation* globalise(data::MIRField& field) const;
     virtual const Representation* subset(data::MIRField& field,
-                                   const util::Increments& increments) const;
+                                         const util::Increments& increments) const;
 
     // Make a global
     virtual size_t numberOfPoints() const;
@@ -107,7 +111,7 @@ public:
 
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
-    virtual atlas::Grid atlasGrid() const;
+    virtual method::MIRGrid grid() const;
     virtual util::Domain domain() const;
     virtual util::Domain domain(const util::BoundingBox&) const;
 
@@ -147,6 +151,8 @@ protected:
     // -- Methods
 
     virtual void print(std::ostream&) const = 0;
+
+    virtual atlas::Grid atlasGrid() const;
 
     // -- Overridden methods
     // None

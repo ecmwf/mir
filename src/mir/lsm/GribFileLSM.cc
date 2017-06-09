@@ -121,7 +121,7 @@ void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
 
     md5 << path.asString();
     md5 << interpolation;
-    md5 << representation.atlasGrid();
+    md5 << representation.grid();
 }
 
 

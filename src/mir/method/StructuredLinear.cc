@@ -116,20 +116,20 @@ void StructuredLinear::print(std::ostream &out) const {
 
 
 void StructuredLinear::assemble(WeightMatrix &W, const repres::Representation& rin, const repres::Representation& rout) const {
-    MIRGrid in(rin.atlasGrid(), rin.domain());
-    MIRGrid out(rout.atlasGrid(), rout.domain());
+    atlas::Grid in(rin.grid());
+    atlas::Grid out(rout.grid());
 
-    eckit::Log::debug<LibMir>() << "StructuredLinear::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "StructuredLinear::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
 
-    ASSERT(in.grid().domain().global());   // FIXME for the moment
-    ASSERT(out.grid().domain().global());  // ...
+    ASSERT(in.domain().global());   // FIXME for the moment
+    ASSERT(out.domain().global());  // ...
 
-    const atlas::grid::StructuredGrid gin(in.grid());
+    const atlas::grid::StructuredGrid gin(in);
     if (!gin) {
         throw eckit::UserError("This interpolation method is only for Structured grids as input.", Here());
     }
 
-    assemble(W, gin, out.grid());
+    assemble(W, gin, out);
     eckit::Log::debug<LibMir>() << "StructuredLinear::assemble." << std::endl;
 }
 

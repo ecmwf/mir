@@ -15,6 +15,9 @@
 
 #include <iostream>
 
+namespace eckit {
+class MD5;
+}
 
 namespace mir {
 namespace util {
@@ -98,6 +101,9 @@ public:
     const double &west() const { return west_; }
     const double &south() const { return south_; }
     const double &east() const { return east_; }
+
+    void hash(eckit::MD5&) const;
+
 
     // -- Overridden methods
     // None

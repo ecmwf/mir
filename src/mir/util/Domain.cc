@@ -14,6 +14,7 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
+#include "eckit/utils/MD5.h"
 
 
 namespace mir {
@@ -109,6 +110,16 @@ void Domain::print(std::ostream &os) const {
        << ",isGlobal=" << isGlobal()
        << "]";
 }
+
+
+void Domain::hash(eckit::MD5 &md5) const {
+    md5.add(north_);
+    md5.add(west_);
+    md5.add(south_);
+    md5.add(east_);
+}
+
+
 
 
 } // namespace util

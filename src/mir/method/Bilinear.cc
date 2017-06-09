@@ -101,11 +101,11 @@ void Bilinear::hash(eckit::MD5& md5) const {
 
 void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
 
-    MIRGrid in(rin.atlasGrid(), rin.domain());
-    MIRGrid out(rout.atlasGrid(), rout.domain());
+    MIRGrid in(rin.grid());
+    MIRGrid out(rout.grid());
 
 
-    eckit::Log::debug<LibMir>() << "Bilinear::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "Bilinear::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
@@ -117,14 +117,14 @@ void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, cons
 
 
     // Ensure the input is a reduced grid, and get the pl array
-    const atlas::grid::StructuredGrid igg = in.grid();
+    const atlas::grid::StructuredGrid igg(in);
     if (!igg) {
         throw eckit::UserError("Bilinear currently only supports Structured grids as input");
     }
 
     const std::vector<long>& lons = igg.nx();
     const size_t inpts = igg.size();
-    const size_t onpts = out.grid().size();
+    const size_t onpts = out.size();
 
     ASSERT(lons.size());
     ASSERT(lons.front());

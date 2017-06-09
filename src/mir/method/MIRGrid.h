@@ -32,27 +32,49 @@ namespace mir {
 namespace method {
 class MethodWeighted;
 }
+namespace repres {
+class Representation;
+}
 }
 
+namespace eckit {
+class MD5;
+}
 
 namespace mir {
 namespace method {
 
 
-class MIRGrid : private eckit::NonCopyable {
+class MIRGrid {
 public:
 
     // -- Contructors
 
-    explicit MIRGrid(const atlas::Grid&, const util::Domain&);
+    MIRGrid(const MIRGrid& other);
+
+    explicit MIRGrid(const atlas::Grid& grid, const util::Domain&);
+
+    // -- Operators
+
+    MIRGrid& operator=(const MIRGrid& other);
 
     // -- Methods
 
     const util::Domain& domain() const;
-    const atlas::Grid& grid() const;
+
+    operator const atlas::Grid&() const;
+
     atlas::Mesh& mesh(const MethodWeighted&) const;
     const atlas::array::Array& coordsLonLat() const;
     const atlas::array::Array& coordsXYZ() const;
+
+    void hash(eckit::MD5&) const;
+
+    std::string name() const;
+    std::string uid() const;
+
+    size_t size() const;
+
 
 private:
 

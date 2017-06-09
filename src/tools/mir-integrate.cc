@@ -34,6 +34,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/method/MIRGrid.h"
 
 
 class MIRIntegrate : public mir::tools::MIRTool {
@@ -148,7 +149,7 @@ void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
         double result = 0;
         double weights = 0;
 
-        const atlas::grid::StructuredGrid structured(rep->atlasGrid());
+        const atlas::grid::StructuredGrid structured(rep->grid());
         ASSERT(structured);
 
         size_t i = 0;

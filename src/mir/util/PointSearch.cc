@@ -101,7 +101,7 @@ void PointSearch::init(const std::vector<PointType>& points) {
 
 void PointSearch::init(const method::MIRGrid& sp, const CompareType& isok) {
 
-    const size_t npts = sp.grid().size();
+    const size_t npts = sp.size();
     ASSERT(npts > 0);
 
     const double infty = std::numeric_limits< double >::infinity();

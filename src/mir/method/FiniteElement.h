@@ -48,7 +48,7 @@ public:
 protected:
 
     virtual void hash(eckit::MD5&) const;
-    virtual void generateMesh(const atlas::Grid&, atlas::Mesh&) const;
+    virtual void generateMesh(const atlas::Grid &grid, atlas::Mesh&) const;
 
 protected: // methods
 

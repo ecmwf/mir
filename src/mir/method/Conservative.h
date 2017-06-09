@@ -38,7 +38,7 @@ protected:
 
     virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
-    void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::Grid&, atlas::Mesh&) const;
+    void computeLumpedMassMatrix(eckit::linalg::Vector&, const repres::Representation&, atlas::Mesh&) const;
 
 private:
 

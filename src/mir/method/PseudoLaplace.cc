@@ -61,17 +61,17 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
 
 
 void PseudoLaplace::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
-    MIRGrid in(rin.atlasGrid(), rin.domain());
-    MIRGrid out(rout.atlasGrid(), rout.domain());
+    MIRGrid in(rin.grid());
+    MIRGrid out(rout.grid());
 
-    eckit::Log::debug<LibMir>() << "PseudoLaplace::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "PseudoLaplace::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
 
 
     util::PointSearch  sptree(in);
 
     atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
 
-    const size_t out_npts = out.grid().size();
+    const size_t out_npts = out.size();
 
     // init structure used to fill in sparse matrix
     std::vector< WeightMatrix::Triplet > weights_triplets;

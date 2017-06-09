@@ -252,10 +252,10 @@ void FiniteElement::hash(eckit::MD5&) const {
 
 void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
 
-    MIRGrid in(rin.atlasGrid(), rin.domain());
-    MIRGrid out(rout.atlasGrid(), rout.domain());
+    MIRGrid in(rin.grid());
+    MIRGrid out(rout.grid());
 
-    eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
 
 
     // write input/output meshes
@@ -310,7 +310,7 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
     MeshStats stats;
     stats.inp_ncells = in.mesh(*this).cells().size();
     stats.inp_npts   = i_nodes.size();
-    stats.out_npts   = out.grid().size();
+    stats.out_npts   = out.size();
     eckit::Log::debug<LibMir>() << stats << std::endl;
 
 
@@ -327,7 +327,7 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
     std::forward_list<size_t> failures;
 
     {
-        eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.grid().name() << std::endl;
+        eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.name() << std::endl;
         eckit::TraceTimer<LibMir> timerProj("Projecting");
 
         const atlas::mesh::HybridElements::Connectivity& connectivity = in.mesh(*this).cells().node_connectivity();
@@ -416,6 +416,7 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
 
 
 void FiniteElement::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) const {
+
     eckit::ResourceUsage usage("FiniteElement::generateMesh");
 
     // TODO: make a factory grid <-> meshgenerator

@@ -50,10 +50,10 @@ const char *Nearest::name() const {
 
 
 void Nearest::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
-    MIRGrid in(rin.atlasGrid(), rin.domain());
-    MIRGrid out(rout.atlasGrid(), rout.domain());
+    MIRGrid in(rin.grid());
+    MIRGrid out(rout.grid());
 
-    eckit::Log::debug<LibMir>() << "Nearest::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "Nearest::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("Nearest::assemble");
 
     using eckit::geometry::LON;
@@ -68,7 +68,7 @@ void Nearest::assemble(WeightMatrix& W, const repres::Representation& rin, const
     atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
     atlas::array::ArrayView<double, 2> olonlat = atlas::array::make_view< double, 2 >(out.coordsLonLat());
 
-    const size_t out_npts = out.grid().size();
+    const size_t out_npts = out.size();
     double nearest = 0;
     double push_back = 0;
 

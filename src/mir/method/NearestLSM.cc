@@ -47,11 +47,11 @@ const char *NearestLSM::name() const {
 
 void NearestLSM::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
 
-    MIRGrid in(rin.atlasGrid(), rin.domain());
-    MIRGrid out(rout.atlasGrid(), rout.domain());
+    MIRGrid in(rin.grid());
+    MIRGrid out(rout.grid());
 
 
-    eckit::Log::debug<LibMir>() << "NearestLSM::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("NearestLSM::assemble");
 
 
