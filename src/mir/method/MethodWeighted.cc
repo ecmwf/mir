@@ -301,7 +301,7 @@ void MethodWeighted::setVectorFromOperandMatrix(
 }
 
 
-lsm::LandSeaMasks MethodWeighted::getMasks(const atlas::Grid& in, const atlas::Grid& out) const {
+lsm::LandSeaMasks MethodWeighted::getMasks(const repres::Representation& in, const repres::Representation & out) const {
     return lsm::LandSeaMasks::lookup(parametrisation_, in, out);
 }
 

@@ -20,9 +20,7 @@
 #include <string>
 #include <vector>
 
-namespace atlas {
-class Grid;
-}
+
 namespace eckit {
 class MD5;
 }
@@ -36,6 +34,9 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
+namespace repres {
+class Representation;
+}
 }
 
 namespace mir {
@@ -45,7 +46,7 @@ namespace lsm {
 class Mask;
 
 class LandSeaMasks {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -83,9 +84,11 @@ class LandSeaMasks {
 
     // -- Class methods
 
-    static  LandSeaMasks lookup(const param::MIRParametrisation &param, const atlas::Grid &in, const atlas::Grid &out);
+    static  LandSeaMasks lookup(const param::MIRParametrisation &parametrisation,
+                                const repres::Representation &in,
+                                const repres::Representation &out);
 
-  protected:
+protected:
 
     // -- Members
 
@@ -106,7 +109,7 @@ class LandSeaMasks {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 

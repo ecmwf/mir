@@ -32,7 +32,7 @@ public:
 
 private: // methods
 
-    void assemble(WeightMatrix&, const MIRGrid& in, const MIRGrid& out) const;
+    void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
     void print(std::ostream&) const;
 

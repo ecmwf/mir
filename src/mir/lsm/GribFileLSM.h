@@ -26,6 +26,9 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
+namespace repres {
+class Representation;
+}
 }
 
 
@@ -45,7 +48,7 @@ public:
             const std::string& name,
             const eckit::PathName&,
             const param::MIRParametrisation&,
-            const atlas::Grid&,
+            const repres::Representation &,
             const std::string& which );
 
     // -- Destructor
@@ -73,7 +76,7 @@ public:
             eckit::MD5&,
             const eckit::PathName&,
             const param::MIRParametrisation&,
-            const atlas::Grid&,
+            const repres::Representation &,
             const std::string& which );
 
 protected:

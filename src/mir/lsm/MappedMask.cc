@@ -30,7 +30,7 @@
 
 // On CRAY/Brodwell, the rounding of areas is incorrect
 // 90 is actually 90 +- 1e-14
-#pragma GCC target ("no-fma")
+// #pragma GCC target ("no-fma")
 
 namespace {
 
@@ -64,12 +64,13 @@ namespace lsm {
 
 MappedMask::MappedMask(const std::string &name,
                        const param::MIRParametrisation &parametrisation,
-                       const atlas::Grid &grid,
+                       const repres::Representation& representation,
                        const std::string &which):
     Mask(name),
     path_("~mir/share/mir/masks/1km-lsm.mask") {
 
-
+NOTIMP;
+/*
 
     int fd = ::open(path_.localPath(), O_RDONLY);
     if (fd < 0) {
@@ -156,7 +157,7 @@ MappedMask::MappedMask(const std::string &name,
         // TODO: Check me
         mask_.push_back((mask[byte] & MASKS[bit]) != 0);
     }
-
+*/
 }
 
 MappedMask::~MappedMask() {

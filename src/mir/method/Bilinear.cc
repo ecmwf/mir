@@ -99,7 +99,7 @@ void Bilinear::hash(eckit::MD5& md5) const {
 }
 
 
-void Bilinear::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out) const {
+void Bilinear::assemble(WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
     eckit::Log::debug<LibMir>() << "Bilinear::assemble (input: " << in.grid().name() << ", output: " << out.grid().name() << ")" << std::endl;
 
     using eckit::geometry::LON;

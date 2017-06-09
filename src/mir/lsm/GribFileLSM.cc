@@ -38,7 +38,7 @@ namespace lsm {
 
 GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
                          const param::MIRParametrisation &parametrisation,
-                         const atlas::Grid &grid,
+                         const repres::Representation& representation,
                          const std::string &which):
     Mask(name),
     path_(path) {
@@ -72,12 +72,12 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
         throw eckit::UserError("Input LSM file '" + path_ + "' should be global");
     }
 
-    method::MIRGrid gin(field.representation()->atlasGrid(), field.representation()->domain());
-    method::MIRGrid gout(grid, util::Domain::makeGlobal());  // FIXME use grid's domain
+    // method::MIRGrid gin(field.representation()->atlasGrid(), field.representation()->domain());
+    // method::MIRGrid gout(representation.atlasGrid(), util::Domain::makeGlobal());  // FIXME use grid's domain
 
     util::MIRStatistics dummy; // TODO: use the global one
     context::Context ctx(field, dummy);
-    method->execute(ctx, gin, gout);
+    method->execute(ctx, *field.representation(), representation);
 
     double threshold;
     ASSERT(parametrisation.get("lsm-value-threshold", threshold));
@@ -109,7 +109,7 @@ void GribFileLSM::print(std::ostream &out) const {
 
 void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
                                const param::MIRParametrisation &parametrisation,
-                               const atlas::Grid &grid,
+                               const repres::Representation& representation,
                                const std::string &which) {
 
     std::string interpolation;
@@ -121,7 +121,7 @@ void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
 
     md5 << path.asString();
     md5 << interpolation;
-    md5 << grid;
+    md5 << representation.atlasGrid();
 }
 
 

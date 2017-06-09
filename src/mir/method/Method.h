@@ -37,6 +37,9 @@ class MIRGrid;
 namespace param {
 class MIRParametrisation;
 }
+namespace repres {
+class Representation;
+}
 }
 
 
@@ -53,7 +56,9 @@ public:
 
     virtual void hash(eckit::MD5&) const = 0;
 
-    virtual void execute(context::Context&, const MIRGrid& in, const MIRGrid& out) const = 0;
+    virtual void execute(context::Context&,
+                         const repres::Representation& in,
+                         const repres::Representation& out) const = 0;
 
 protected:
 

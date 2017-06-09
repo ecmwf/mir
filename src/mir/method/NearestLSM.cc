@@ -116,7 +116,7 @@ void NearestLSM::assemble(WeightMatrix& W, const MIRGrid& in, const MIRGrid& out
 }
 
 
-lsm::LandSeaMasks NearestLSM::getMasks(const atlas::Grid& in, const atlas::Grid &out) const {
+lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const repres::Representation& out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
     return lsm::LandSeaMasks::lookup(runtime, in, out);
