@@ -120,7 +120,7 @@ void ShVodToUV::execute(context::Context & ctx) const {
     field.metadata(0, "paramId", id_u);
     field.metadata(1, "paramId", id_v);
 #else
-    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
+    throw eckit::SeriousBug("VO/D to U/V transforms are not supported. "
                             "Please recompile ATLAS with TRANS support enabled.");
 #endif
 }
