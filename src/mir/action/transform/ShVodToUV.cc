@@ -26,6 +26,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/api/mir_config.h"
 
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
