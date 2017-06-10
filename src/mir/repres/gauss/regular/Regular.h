@@ -87,8 +87,6 @@ protected:
 
     virtual util::Domain domain() const;
 
-    virtual util::Domain domain(const util::BoundingBox&) const;
-
     // -- Class members
     // None
 

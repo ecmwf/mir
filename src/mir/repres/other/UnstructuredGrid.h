@@ -106,7 +106,6 @@ class UnstructuredGrid : public Gridded {
     virtual void validate(const std::vector<double> &values) const;
 
     virtual util::Domain domain() const;
-    virtual util::Domain domain(const util::BoundingBox&) const;
     virtual Iterator* rotatedIterator() const; // After rotation
     virtual Iterator* unrotatedIterator() const; // Before rotation
 

@@ -113,7 +113,6 @@ public:
 
     virtual method::MIRGrid grid() const;
     virtual util::Domain domain() const;
-    virtual util::Domain domain(const util::BoundingBox&) const;
 
     virtual size_t truncation() const;
     virtual size_t pentagonalResolutionTs() const;

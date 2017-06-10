@@ -68,8 +68,6 @@ protected:
 
     virtual util::Domain domain() const;
 
-    virtual util::Domain domain(const util::BoundingBox&) const;
-
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
