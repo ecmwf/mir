@@ -116,12 +116,11 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
     eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
-    const util::Domain domain = representation->domain(bbox);
 
     while (iter->next(lat, lon)) {
-        if (domain.contains(lat, lon)) {
+        if (bbox.contains(lat, lon)) {
 
-            lon = domain.normalise(lon);
+            lon = bbox.normalise(lon);
             if (first) {
                 n = s = lat;
                 e = w = lon;
