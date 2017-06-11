@@ -1,0 +1,7 @@
+# Mars request
+param=vo/d,level=500
+# Mir tool options
+--vod2uv
+# grib_get assertions
+packingType=131
+repres=spectral_complex

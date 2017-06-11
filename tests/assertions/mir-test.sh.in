@@ -13,6 +13,7 @@ grib_compare="@GRIB_COMPARE@"
 mars_script="@MARS_SCRIPT@"
 
 tests_assertions_dir="@CMAKE_CURRENT_SOURCE_DIR@"
+tmp_assertions_dir="@CMAKE_CURRENT_BINARY_DIR@"
 
 state=mars
 while read n
@@ -30,12 +31,16 @@ do
         case $state in
 
             mars)
-            if [ -f "${tests_assertions_dir}/$n" ]
+            if [ -f "${tmp_assertions_dir}/$t.data" ]
+            then
+                ln -sf "${tmp_assertions_dir}/$t.data" data.in.$t
+            elif [ -f "${tests_assertions_dir}/$n" ]
             then
                 ln -sf "${tests_assertions_dir}/$n" data.in.$t
             else
                 echo "retrieve,$n,target=data.in.$t" > mars.r.$t
                 $mars_script mars.r.$t
+                cp data.in.$t "${tmp_assertions_dir}/$t.data"
             fi
             state=mir
             ;;
@@ -47,7 +52,7 @@ do
 
             eccodes)
             set $(echo $n | tr '=' ' ')
-            g=$($grib_get -p $1 data.out.$t)
+            g=$($grib_get -wcount=1  -p $1 data.out.$t)
             if [ "$g" != "$2" ]  # compares strings not floats (( $(echo "$g != $2" | bc) ))
             then
                 echo "$1: expected [$2], got [$g]" 1>&2
