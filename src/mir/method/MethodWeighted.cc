@@ -164,8 +164,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     eckit::Log::debug<LibMir>() << "Compute md5 " << timer.elapsed() - here << std::endl;
 
 
-    const std::string shortName_in  = gin.name()  + (gin.projection() ?  "." + gin.projection().type() :  "");
-    const std::string shortName_out = gout.name() + (gout.projection() ? "." + gout.projection().type() : "");
+    const std::string shortName_in  = gin.uid();
+    const std::string shortName_out = gout.uid();
     ASSERT(!shortName_in.empty());
     ASSERT(!shortName_out.empty());
 
