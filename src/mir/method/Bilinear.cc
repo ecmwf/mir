@@ -24,7 +24,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
-#include "mir/method/MIRGrid.h"
+#include "mir/util/MIRGrid.h"
 #include "mir/util/Compare.h"
 #include "mir/repres/Representation.h"
 
@@ -101,8 +101,8 @@ void Bilinear::hash(eckit::MD5& md5) const {
 
 void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
 
-    MIRGrid in(rin.grid());
-    MIRGrid out(rout.grid());
+    util::MIRGrid in(rin.grid());
+    util::MIRGrid out(rout.grid());
 
 
     eckit::Log::debug<LibMir>() << "Bilinear::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;

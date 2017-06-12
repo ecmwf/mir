@@ -20,10 +20,10 @@
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/Ray.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/Compare.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Compare.h"
+#include "mir/util/MIRGrid.h"
 
 
 namespace mir {
@@ -116,8 +116,8 @@ void StructuredLinear::print(std::ostream &out) const {
 
 
 void StructuredLinear::assemble(WeightMatrix &W, const repres::Representation& rin, const repres::Representation& rout) const {
-    atlas::Grid in(rin.grid());
-    atlas::Grid out(rout.grid());
+    atlas::Grid in = rin.grid();
+    atlas::Grid out = rout.grid();
 
     eckit::Log::debug<LibMir>() << "StructuredLinear::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
 

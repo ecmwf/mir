@@ -33,7 +33,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/method/MIRGrid.h"
+#include "mir/util/MIRGrid.h"
 #include "mir/method/decompose/Decompose.h"
 #include "mir/util/Compare.h"
 #include "mir/util/MIRStatistics.h"
@@ -316,8 +316,8 @@ lsm::LandSeaMasks MethodWeighted::getMasks(const repres::Representation& in, con
 
 void MethodWeighted::execute(context::Context& ctx, const repres::Representation& rin, const repres::Representation& rout) const {
 
-    MIRGrid in(rin.grid());
-    MIRGrid out(rout.grid());
+    util::MIRGrid in(rin.grid());
+    util::MIRGrid out(rout.grid());
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<WeightMatrix> matrix_use(matrix_cache, ctx.statistics().matrixCache_);
@@ -430,8 +430,6 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx,
         const repres::Representation& in,
         const repres::Representation& out,
         WeightMatrix& W) const {
-
-
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
 
     if (in.sameAs(out)) {

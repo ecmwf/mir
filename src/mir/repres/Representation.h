@@ -49,8 +49,7 @@ class MIRJob;
 namespace data {
 class MIRField;
 }
-
-namespace method {
+namespace util {
 class MIRGrid;
 }
 }
@@ -114,7 +113,7 @@ public:
 
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
-    virtual method::MIRGrid grid() const;
+    virtual util::MIRGrid grid() const;
     virtual util::Domain domain() const;
 
     virtual size_t truncation() const;

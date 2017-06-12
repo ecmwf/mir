@@ -24,11 +24,11 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/method/MIRGrid.h"
 #include "mir/method/Method.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
+#include "mir/util/MIRGrid.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -36,10 +36,12 @@ namespace mir {
 namespace lsm {
 
 
-GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
-                         const param::MIRParametrisation &parametrisation,
-                         const repres::Representation& representation,
-                         const std::string &which):
+GribFileLSM::GribFileLSM(
+        const std::string& name,
+        const eckit::PathName& path,
+        const param::MIRParametrisation& parametrisation,
+        const repres::Representation& representation,
+        const std::string& which ):
     Mask(name),
     path_(path) {
 
@@ -71,9 +73,6 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     if (!(field.representation()->domain().isGlobal())) {
         throw eckit::UserError("Input LSM file '" + path_ + "' should be global");
     }
-
-    // method::MIRGrid gin(field.representation()->atlasGrid(), field.representation()->domain());
-    // method::MIRGrid gout(representation.atlasGrid(), util::Domain::makeGlobal());  // FIXME use grid's domain
 
     util::MIRStatistics dummy; // TODO: use the global one
     context::Context ctx(field, dummy);

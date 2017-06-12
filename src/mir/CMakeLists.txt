@@ -274,8 +274,6 @@ list(
     method/FiniteElement.h
     method/KNearest.cc
     method/KNearest.h
-    method/MIRGrid.cc
-    method/MIRGrid.h
     method/Method.cc
     method/Method.h
     method/MethodWeighted.cc
@@ -532,6 +530,8 @@ list(
     util/Grib.h
     util/Increments.cc
     util/Increments.h
+    util/MIRGrid.cc
+    util/MIRGrid.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
     util/PointSearch.cc

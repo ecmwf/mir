@@ -14,7 +14,7 @@
 /// @date   May 2016
 
 
-#include "mir/method/MIRGrid.h"
+#include "mir/util/MIRGrid.h"
 
 #include "eckit/geometry/Point3.h"
 #include "atlas/array.h"
@@ -24,10 +24,10 @@
 
 
 namespace mir {
-namespace method {
+namespace util {
 
 
-MIRGrid::MIRGrid(const atlas::Grid& grid, const util::Domain& domain) :
+MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain) :
     domain_(domain),
     grid_(grid),
     mesh_(0),
@@ -43,7 +43,7 @@ MIRGrid::MIRGrid(const MIRGrid& other) :
     coordsLonLat_(0) {
 }
 
-const util::Domain& MIRGrid::domain() const {
+const Domain& MIRGrid::domain() const {
     return domain_;
 }
 
@@ -53,7 +53,7 @@ MIRGrid::operator const atlas::Grid&() const {
 }
 
 
-atlas::Mesh& MIRGrid::mesh(const MethodWeighted& method) const {
+atlas::Mesh& MIRGrid::mesh(const method::MethodWeighted& method) const {
     if (mesh_ == 0) {
         mesh_ = &(method.generateMeshAndCache(grid_));
     }
@@ -118,5 +118,5 @@ size_t MIRGrid::size() const {
 }
 
 
-}  // namespace method
+}  // namespace util
 }  // namespace mir

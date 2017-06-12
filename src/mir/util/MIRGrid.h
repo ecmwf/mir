@@ -42,7 +42,7 @@ class MD5;
 }
 
 namespace mir {
-namespace method {
+namespace util {
 
 
 class MIRGrid {
@@ -52,7 +52,7 @@ public:
 
     MIRGrid(const MIRGrid& other);
 
-    explicit MIRGrid(const atlas::Grid& grid, const util::Domain&);
+    explicit MIRGrid(const atlas::Grid& grid, const Domain&);
 
     // -- Operators
 
@@ -60,11 +60,11 @@ public:
 
     // -- Methods
 
-    const util::Domain& domain() const;
+    const Domain& domain() const;
 
     operator const atlas::Grid&() const;
 
-    atlas::Mesh& mesh(const MethodWeighted&) const;
+    atlas::Mesh& mesh(const method::MethodWeighted&) const;
     const atlas::array::Array& coordsLonLat() const;
     const atlas::array::Array& coordsXYZ() const;
 
@@ -80,7 +80,7 @@ private:
 
     // -- Members
 
-    const util::Domain domain_;
+    const Domain domain_;
     const atlas::Grid grid_;
     mutable atlas::Mesh* mesh_;
     mutable eckit::ScopedPtr< atlas::array::Array > coordsLonLat_;
@@ -89,7 +89,7 @@ private:
 };
 
 
-}  // namespace method
+}  // namespace util
 }  // namespace mir
 
 

@@ -26,7 +26,7 @@
 #include "eckit/log/Timer.h"
 #include "atlas/grid.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/MIRGrid.h"
+#include "mir/util/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/PointSearch.h"
 #include "mir/repres/Representation.h"
@@ -50,8 +50,8 @@ const char *Nearest::name() const {
 
 
 void Nearest::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
-    MIRGrid in(rin.grid());
-    MIRGrid out(rout.grid());
+    util::MIRGrid in(rin.grid());
+    util::MIRGrid out(rout.grid());
 
     eckit::Log::debug<LibMir>() << "Nearest::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("Nearest::assemble");

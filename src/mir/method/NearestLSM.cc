@@ -20,7 +20,7 @@
 #include "eckit/log/Timer.h"
 #include "mir/config/LibMir.h"
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/method/MIRGrid.h"
+#include "mir/util/MIRGrid.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/PointSearch.h"
@@ -47,8 +47,8 @@ const char *NearestLSM::name() const {
 
 void NearestLSM::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
 
-    MIRGrid in(rin.grid());
-    MIRGrid out(rout.grid());
+    util::MIRGrid in(rin.grid());
+    util::MIRGrid out(rout.grid());
 
 
     eckit::Log::debug<LibMir>() << "NearestLSM::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;

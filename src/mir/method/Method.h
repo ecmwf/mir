@@ -25,14 +25,9 @@
 namespace eckit {
 class MD5;
 }
-
-
 namespace mir {
 namespace context {
 class Context;
-}
-namespace method {
-class MIRGrid;
 }
 namespace param {
 class MIRParametrisation;

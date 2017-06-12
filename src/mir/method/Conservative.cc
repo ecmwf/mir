@@ -29,7 +29,7 @@
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/element/Quad3D.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/MIRGrid.h"
+#include "mir/util/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 
@@ -57,7 +57,7 @@ Conservative::~Conservative() {
 void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const repres::Representation& representation, atlas::Mesh& mesh) const
 {
 
-    const method::MIRGrid& grid = representation.grid();
+    const util::MIRGrid& grid = representation.grid();
 
     eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix" << std::endl;
 
@@ -131,8 +131,8 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const repre
 
 void Conservative::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
 
-    MIRGrid in(rin.grid());
-    MIRGrid out(rout.grid());
+    util::MIRGrid in(rin.grid());
+    util::MIRGrid out(rout.grid());
 
     eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
 

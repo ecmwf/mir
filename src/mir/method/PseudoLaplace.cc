@@ -21,7 +21,7 @@
 #include "eckit/utils/MD5.h"
 #include "atlas/grid.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/MIRGrid.h"
+#include "mir/util/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/PointSearch.h"
 #include "mir/repres/Representation.h"
@@ -61,8 +61,8 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
 
 
 void PseudoLaplace::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
-    MIRGrid in(rin.grid());
-    MIRGrid out(rout.grid());
+    util::MIRGrid in(rin.grid());
+    util::MIRGrid out(rout.grid());
 
     eckit::Log::debug<LibMir>() << "PseudoLaplace::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
 

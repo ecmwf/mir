@@ -38,7 +38,7 @@
 #include "atlas/output/Gmsh.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/AddParallelEdgesConnectivity.h"
-#include "mir/method/MIRGrid.h"
+#include "mir/util/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 
@@ -252,8 +252,8 @@ void FiniteElement::hash(eckit::MD5&) const {
 
 void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
 
-    MIRGrid in(rin.grid());
-    MIRGrid out(rout.grid());
+    util::MIRGrid in(rin.grid());
+    util::MIRGrid out(rout.grid());
 
     eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
 
