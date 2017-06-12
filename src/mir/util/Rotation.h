@@ -103,6 +103,7 @@ public:
 
     void fill(grib_info&) const;
     void fill(api::MIRJob&) const;
+    void makeName(std::ostream& out) const;
 
     // -- Overridden methods
     // None

@@ -80,6 +80,8 @@ class Reduced : public Gaussian {
 
     virtual Iterator* unrotatedIterator() const; // Before rotation
 
+    virtual bool sameAs(const Representation& other) const;
+
     // -- Class members
     // None
 

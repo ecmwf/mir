@@ -51,7 +51,7 @@ void NearestLSM::assemble(WeightMatrix& W, const repres::Representation& rin, co
     MIRGrid out(rout.grid());
 
 
-    eckit::Log::debug<LibMir>() << "NearestLSM::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("NearestLSM::assemble");
 
 

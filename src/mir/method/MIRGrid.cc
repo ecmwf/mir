@@ -103,7 +103,7 @@ const atlas::array::Array& MIRGrid::coordsXYZ() const {
 void MIRGrid::hash(eckit::MD5 &md5) const {
     md5 << grid_ << domain_;
 }
-
+/*
 std::string MIRGrid::name() const {
     return grid_.name();
 }
@@ -112,7 +112,7 @@ std::string MIRGrid::name() const {
 std::string MIRGrid::uid() const {
     return grid_.uid();
 }
-
+*/
 size_t MIRGrid::size() const {
     return grid_.size();
 }

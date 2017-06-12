@@ -69,6 +69,8 @@ class Gaussian : public Gridded {
     // -- Methods
 
     const std::vector<double> &latitudes() const;
+    virtual bool sameAs(const Representation& other) const;
+
 
     // -- Overridden methods
     // None

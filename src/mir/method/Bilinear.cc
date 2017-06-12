@@ -105,7 +105,7 @@ void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, cons
     MIRGrid out(rout.grid());
 
 
-    eckit::Log::debug<LibMir>() << "Bilinear::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "Bilinear::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;

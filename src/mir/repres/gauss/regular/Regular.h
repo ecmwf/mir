@@ -87,6 +87,10 @@ protected:
 
     virtual util::Domain domain() const;
 
+    virtual void makeName(std::ostream&) const;
+
+    virtual bool sameAs(const Representation& other) const;
+
     // -- Class members
     // None
 

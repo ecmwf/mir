@@ -41,7 +41,7 @@ namespace util {
 class Increments;
 
 class BoundingBox {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -111,6 +111,8 @@ class BoundingBox {
     size_t computeNi(const util::Increments&) const;
     size_t computeNj(const util::Increments&) const;
 
+    void makeName(std::ostream& out) const;
+
     // -- Overridden methods
     // None
 
@@ -120,7 +122,7 @@ class BoundingBox {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -141,7 +143,7 @@ class BoundingBox {
     // -- Friends
     // None
 
-  private:
+private:
 
     // -- Members
 

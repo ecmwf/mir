@@ -78,6 +78,9 @@ protected:
     virtual Representation* subset(data::MIRField& field,
                                    const util::Increments& increments) const;
 
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
+
     // -- Class members
     // None
 
@@ -97,6 +100,7 @@ private:
 
     // Called by crop()
     virtual const RegularLL* cropped(const util::BoundingBox& bbox) const;
+
 
     // -- Overridden methods
     // None

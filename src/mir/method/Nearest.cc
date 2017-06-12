@@ -53,7 +53,7 @@ void Nearest::assemble(WeightMatrix& W, const repres::Representation& rin, const
     MIRGrid in(rin.grid());
     MIRGrid out(rout.grid());
 
-    eckit::Log::debug<LibMir>() << "Nearest::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "Nearest::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("Nearest::assemble");
 
     using eckit::geometry::LON;

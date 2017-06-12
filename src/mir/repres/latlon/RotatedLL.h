@@ -71,6 +71,8 @@ class RotatedLL : public RegularLL {
     // -- Overridden methods
     virtual atlas::Grid atlasGrid() const;
     virtual Iterator* rotatedIterator() const;
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
     // -- Class members
     // None

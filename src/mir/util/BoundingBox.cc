@@ -176,6 +176,17 @@ size_t BoundingBox::computeNj(const util::Increments& increments) const {
     return computeN(south_, north_, increments.south_north());
 }
 
+void BoundingBox::makeName(std::ostream& out) const {
+    out << "-"
+        << north_
+        << ":"
+        << west_
+        << ":"
+        << south_
+        << ":"
+        << east_;
+}
+
 
 
 }  // namespace util

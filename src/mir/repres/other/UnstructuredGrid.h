@@ -108,6 +108,8 @@ class UnstructuredGrid : public Gridded {
     virtual util::Domain domain() const;
     virtual Iterator* rotatedIterator() const; // After rotation
     virtual Iterator* unrotatedIterator() const; // Before rotation
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
     // -- Class members
     // None

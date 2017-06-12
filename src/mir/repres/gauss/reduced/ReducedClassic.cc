@@ -37,6 +37,10 @@ void ReducedClassic::print(std::ostream &out) const {
 }
 
 
+void ReducedClassic::makeName(std::ostream& out) const { NOTIMP; }
+bool ReducedClassic::sameAs(const Representation& other) const { NOTIMP; }
+
+
 Reduced *ReducedClassic::cropped(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
     // We lose the ReducedClassic nature of the grid
     return new ReducedFromPL(N_, pl, bbox);

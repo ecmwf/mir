@@ -212,7 +212,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     std::ostringstream os;
     os << "T" << options.truncation
        << ":" << "flt" << options.flt
-       << ":" << representation.grid().uid();
+       << ":" << representation.uniqueName();
     std::string key(os.str());
 
     try {

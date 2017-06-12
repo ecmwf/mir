@@ -94,6 +94,8 @@ private:
     // -- Overridden methods
 
     virtual const Gridded* cropped(const util::BoundingBox &bbox) const;
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
     //virtual void validate(const std::vector<double>&) const;
 

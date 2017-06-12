@@ -255,7 +255,7 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
     MIRGrid in(rin.grid());
     MIRGrid out(rout.grid());
 
-    eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
 
 
     // write input/output meshes
@@ -327,7 +327,7 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
     std::forward_list<size_t> failures;
 
     {
-        eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in.name() << std::endl;
+        eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << rin << std::endl;
         eckit::TraceTimer<LibMir> timerProj("Projecting");
 
         const atlas::mesh::HybridElements::Connectivity& connectivity = in.mesh(*this).cells().node_connectivity();

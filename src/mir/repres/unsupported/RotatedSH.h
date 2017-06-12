@@ -91,6 +91,8 @@ class RotatedSH : public sh::SphericalHarmonics {
 // -- Overridden methods
 
     virtual void fill(grib_info&) const;
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
 // -- Class members
     // None

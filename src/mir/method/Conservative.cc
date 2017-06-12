@@ -134,7 +134,7 @@ void Conservative::assemble(WeightMatrix& W, const repres::Representation& rin, 
     MIRGrid in(rin.grid());
     MIRGrid out(rout.grid());
 
-    eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
 

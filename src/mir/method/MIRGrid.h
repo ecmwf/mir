@@ -70,8 +70,8 @@ public:
 
     void hash(eckit::MD5&) const;
 
-    std::string name() const;
-    std::string uid() const;
+    // std::string name() const;
+    // std::string uid() const;
 
     size_t size() const;
 

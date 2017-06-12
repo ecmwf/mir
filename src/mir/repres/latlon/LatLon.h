@@ -88,6 +88,9 @@ class LatLon : public Gridded {
 
     virtual void print(std::ostream &) const;
 
+    virtual void makeName(std::ostream&) const;
+
+    virtual bool sameAs(const Representation& other) const;
     // -- Class members
     // None
 

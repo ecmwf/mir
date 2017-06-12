@@ -90,6 +90,8 @@ class ReducedOctahedral : public Octahedral {
     // -- Overridden methods
 
     virtual const Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
     // -- Class members
     // None

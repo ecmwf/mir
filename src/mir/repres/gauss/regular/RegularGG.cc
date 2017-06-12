@@ -49,6 +49,14 @@ void RegularGG::print(std::ostream &out) const {
 }
 
 
+void RegularGG::makeName(std::ostream& out) const {
+    Regular::makeName(out); }
+
+bool RegularGG::sameAs(const Representation& other) const {
+    const RegularGG* o = dynamic_cast<const RegularGG*>(&other);
+    return o && Regular::sameAs(other);
+}
+
 const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
     return new RegularGG(N_, bbox);
 }

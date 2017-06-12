@@ -100,8 +100,8 @@ void Rotation::fill(api::MIRJob& job) const  {
 
 bool Rotation::operator==(const Rotation& other) const {
     return south_pole_latitude_ == other.south_pole_latitude_
-        && south_pole_longitude_ == other.south_pole_longitude_
-        && south_pole_rotation_angle_ == other.south_pole_rotation_angle_;
+           && south_pole_longitude_ == other.south_pole_longitude_
+           && south_pole_rotation_angle_ == other.south_pole_rotation_angle_;
 }
 
 
@@ -119,6 +119,15 @@ atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
     config.set("projection", projection);
 
     return atlas::Grid(config);
+}
+
+void Rotation::makeName(std::ostream& out) const {
+    out << "-rot:"
+        << south_pole_latitude_
+        << ":"
+        << south_pole_longitude_
+        << ":"
+        << south_pole_rotation_angle_;
 }
 
 

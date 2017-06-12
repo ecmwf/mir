@@ -73,6 +73,8 @@ protected:
     virtual void fill(api::MIRJob &) const;
     virtual atlas::Grid atlasGrid() const;
     virtual const std::vector<long>& pls() const;
+    virtual bool sameAs(const Representation& other) const;
+    virtual void makeName(std::ostream&) const;
 
     // -- Class members
     // None

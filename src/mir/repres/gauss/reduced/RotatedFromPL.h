@@ -100,6 +100,8 @@ class RotatedFromPL : public FromPL {
     virtual Iterator* rotatedIterator() const;
 
     virtual const Reduced* cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
     // -- Class members
     // None

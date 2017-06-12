@@ -118,6 +118,8 @@ class SphericalHarmonics : public Representation {
 
     virtual void setComplexPacking(grib_info&) const;
     virtual void setSimplePacking(grib_info&) const;
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
     // -- Class members
     // None

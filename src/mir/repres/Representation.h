@@ -89,6 +89,9 @@ public:
 
     // --------------------
 
+    virtual const std::string& uniqueName() const;
+    virtual bool sameAs(const Representation& other) const;
+
     virtual Iterator* rotatedIterator() const; // After rotation
     virtual Iterator* unrotatedIterator() const; // Before rotation
 
@@ -150,14 +153,15 @@ protected:
     // -- Methods
 
     virtual void print(std::ostream&) const = 0;
-
     virtual atlas::Grid atlasGrid() const;
+    virtual void makeName(std::ostream&) const;
 
     // -- Overridden methods
     // None
 
     // -- Class members
-    // None
+
+    mutable std::string uniqueName_;
 
     // -- Class methods
     // None

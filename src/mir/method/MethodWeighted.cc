@@ -164,8 +164,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     eckit::Log::debug<LibMir>() << "Compute md5 " << timer.elapsed() - here << std::endl;
 
 
-    const std::string shortName_in  = gin.uid();
-    const std::string shortName_out = gout.uid();
+    const std::string shortName_in  = rin.uniqueName();
+    const std::string shortName_out = rout.uniqueName();
     ASSERT(!shortName_in.empty());
     ASSERT(!shortName_out.empty());
 
@@ -427,16 +427,14 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
 void MethodWeighted::computeMatrixWeights(context::Context& ctx,
-        const repres::Representation& rin,
-        const repres::Representation& rout,
+        const repres::Representation& in,
+        const repres::Representation& out,
         WeightMatrix& W) const {
 
-    MIRGrid in(rin.grid());
-    MIRGrid out(rout.grid());
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
 
-    if (in.uid() == out.uid()) {
+    if (in.sameAs(out)) {
         eckit::Log::debug<LibMir>() << "Matrix is indentity" << std::endl;
         W.setIdentity(W.rows(), W.cols());
     } else {
@@ -446,7 +444,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx,
         parametrisation_.get("prune-epsilon", pruneEpsilon);
 
         eckit::TraceTimer<LibMir> timer("Assemble matrix");
-        assemble(W, rin, rout);
+        assemble(W, in, out);
         W.cleanup(pruneEpsilon);
     }
 }

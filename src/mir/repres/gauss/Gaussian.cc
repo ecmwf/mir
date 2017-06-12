@@ -46,6 +46,11 @@ Gaussian::Gaussian(const param::MIRParametrisation &parametrisation) :
 Gaussian::~Gaussian() {
 }
 
+bool Gaussian::sameAs(const Representation& other) const {
+    const Gaussian* o = dynamic_cast<const Gaussian*>(&other);
+    return o && (N_ == o->N_) && (bbox_ == o->bbox_);
+}
+
 
 std::vector<double> Gaussian::latitudes(size_t N) {
     std::vector<double> latitudes(2 * N);

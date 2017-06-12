@@ -64,7 +64,7 @@ void PseudoLaplace::assemble(WeightMatrix& W, const repres::Representation& rin,
     MIRGrid in(rin.grid());
     MIRGrid out(rout.grid());
 
-    eckit::Log::debug<LibMir>() << "PseudoLaplace::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "PseudoLaplace::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
 
 
     util::PointSearch  sptree(in);

@@ -100,6 +100,8 @@ class RotatedGG : public Regular {
     virtual Iterator* rotatedIterator() const;
 
     virtual const Gridded *cropped(const util::BoundingBox &bbox) const;
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
     // -- Class members
     // None
