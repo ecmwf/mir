@@ -41,8 +41,14 @@ const Reduced *ReducedOctahedral::cropped(const util::BoundingBox &bbox, const s
 }
 
 
-void ReducedOctahedral::makeName(std::ostream& out) const { NOTIMP; }
-bool ReducedOctahedral::sameAs(const Representation& other) const { NOTIMP; }
+void ReducedOctahedral::makeName(std::ostream& out) const {
+    Octahedral::makeName(out);
+}
+
+bool ReducedOctahedral::sameAs(const Representation& other) const {
+    const ReducedOctahedral* o = dynamic_cast<const ReducedOctahedral*>(&other);
+    return o && Octahedral::sameAs(other);
+}
 
 
 
