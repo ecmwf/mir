@@ -134,12 +134,11 @@ void BoundingBox::normalise() {
 
 
 double BoundingBox::normalise(double lon) const {
-    while (lon > east_) {
-        lon -= 360;
-    }
-
-    while (lon < west_) {
+    while (eckit::types::is_strictly_greater(west_, lon)) {
         lon += 360;
+    }
+    while (eckit::types::is_strictly_greater(lon, east_)) {
+        lon -= 360;
     }
     return lon;
 }
