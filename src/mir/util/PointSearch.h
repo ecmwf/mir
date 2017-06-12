@@ -14,9 +14,10 @@
 /// @date   Apr 2015
 
 
-#ifndef mir_method_PointSearch_H
-#define mir_method_PointSearch_H
+#ifndef mir_method_PointSearch_h
+#define mir_method_PointSearch_h
 
+#include <vector>
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "atlas/interpolation/method/PointIndex3.h"

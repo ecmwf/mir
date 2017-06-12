@@ -14,10 +14,9 @@
 /// @date Apr 2015
 
 
-#include <limits>
-#include <vector>
-#include "atlas/grid.h"
 #include "mir/util/PointSearch.h"
+
+#include <limits>
 #include "mir/util/MIRGrid.h"
 
 
@@ -30,7 +29,7 @@ PointSearch::PointSearch(const std::vector<PointType>& points) {
 }
 
 
-PointSearch::PointSearch(const mir::util::MIRGrid& sp, const CompareType& isok) {
+PointSearch::PointSearch(const MIRGrid& sp, const CompareType& isok) {
     init(sp, isok);
 }
 
@@ -46,13 +45,13 @@ void PointSearch::statsReset() const {
 
 
 PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType& pt) const {
-    const atlas::interpolation::method::PointIndex3::NodeInfo nn = tree_->nearestNeighbour(pt);
+    const TreeType::NodeInfo nn = tree_->nearestNeighbour(pt);
+
     return nn.value();
 }
 
 
 void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest) const {
-    using atlas::interpolation::method::PointIndex3;
 
     // Small optimisation
     if(n == 1) {
@@ -61,45 +60,42 @@ void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<Poin
         return;
     }
 
-    PointIndex3::NodeList nn = tree_->kNearestNeighbours(pt, n);
+    TreeType::NodeList nn = tree_->kNearestNeighbours(pt, n);
 
     closest.clear();
     closest.reserve(n);
-    for (PointIndex3::NodeList::iterator it = nn.begin(); it != nn.end(); ++it) {
+    for (TreeType::NodeList::iterator it = nn.begin(); it != nn.end(); ++it) {
         closest.push_back(it->value());
     }
 }
 
 
 void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest) const {
-    using atlas::interpolation::method::PointIndex3;
-
-    PointIndex3::NodeList r = tree_->findInSphere(pt,radius);
+    TreeType::NodeList r = tree_->findInSphere(pt,radius);
 
     closest.clear();
     closest.reserve(r.size());
-    for (PointIndex3::NodeList::iterator it = r.begin(); it != r.end(); ++it) {
+    for (TreeType::NodeList::iterator it = r.begin(); it != r.end(); ++it) {
         closest.push_back(it->value());
     }
 }
 
 
 void PointSearch::init(const std::vector<PointType>& points) {
-    using atlas::interpolation::method::PointIndex3;
 
-    std::vector<PointIndex3::Value> pidx;
+    std::vector<PointValueType> pidx;
     pidx.reserve(points.size());
 
     for (size_t ip = 0; ip < points.size(); ++ip) {
-        pidx.push_back(PointIndex3::Value(PointIndex3::Point(points[ip]), ip));
+        pidx.push_back(PointValueType(TreeType::Point(points[ip]), ip));
     }
 
-    tree_.reset(new PointIndex3());
+    tree_.reset(new TreeType());
     tree_->build(pidx.begin(), pidx.end());
 }
 
 
-void PointSearch::init(const util::MIRGrid& sp, const CompareType& isok) {
+void PointSearch::init(const MIRGrid& sp, const CompareType& isok) {
 
     const size_t npts = sp.size();
     ASSERT(npts > 0);
