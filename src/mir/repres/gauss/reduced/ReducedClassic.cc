@@ -37,8 +37,14 @@ void ReducedClassic::print(std::ostream &out) const {
 }
 
 
-void ReducedClassic::makeName(std::ostream& out) const { NOTIMP; }
-bool ReducedClassic::sameAs(const Representation& other) const { NOTIMP; }
+void ReducedClassic::makeName(std::ostream& out) const {
+    Classic::makeName(out);
+}
+
+bool ReducedClassic::sameAs(const Representation& other) const {
+    const ReducedClassic* o = dynamic_cast<const ReducedClassic*>(&other);
+    return o && Classic::sameAs(other);
+}
 
 
 Reduced *ReducedClassic::cropped(const util::BoundingBox &bbox, const std::vector<long> &pl) const {

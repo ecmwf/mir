@@ -73,6 +73,10 @@ protected:
     virtual atlas::Grid atlasGrid() const;
     virtual const std::vector<long> &pls() const;
 
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
+
+    // -- Class members
     // -- Class members
     // None
 
