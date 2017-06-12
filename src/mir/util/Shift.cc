@@ -50,6 +50,15 @@ void Shift::fill(api::MIRJob &job) const  {
     job.set("shift", west_east_, south_north_);
 }
 
+void Shift::makeName(std::ostream& out) const {
+    out << "-shift:"
+        << west_east_
+        << ":"
+        << south_north_
+        ;
+}
+
+
 
 }  // namespace data
 }  // namespace mir

@@ -125,6 +125,16 @@ Shift Increments::shiftFromZeroZero(const BoundingBox& bbox) const {
 
 }
 
+
+void Increments::makeName(std::ostream& out) const {
+    out << "-"
+        << west_east_
+        << "x"
+        << south_north_
+        ;
+}
+
+
 }  // namespace data
 }  // namespace mir
 

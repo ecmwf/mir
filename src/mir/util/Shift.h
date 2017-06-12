@@ -73,6 +73,7 @@ public:
     }
 
     void fill(api::MIRJob &) const;
+    void makeName(std::ostream& out) const;
 
 
     // -- Overridden methods
