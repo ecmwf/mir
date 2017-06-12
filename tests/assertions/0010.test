@@ -1,0 +1,9 @@
+# Mars request
+param=2t,levtype=sfc
+# Mir tool options
+--grid=0.1/0.1 --area=58.5/353.9/36/20.7
+# grib_get assertions
+latitudeOfFirstGridPointInDegrees=58.5
+longitudeOfFirstGridPointInDegrees=353.9
+latitudeOfLastGridPointInDegrees=36
+longitudeOfLastGridPointInDegrees=20
