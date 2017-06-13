@@ -32,13 +32,13 @@ Gaussian::Gaussian(size_t N) :
 
 
 Gaussian::Gaussian(size_t N, const util::BoundingBox &bbox) :
-    N_(N),
-    bbox_(bbox) {
+    Gridded(bbox),
+    N_(N) {
 }
 
 
 Gaussian::Gaussian(const param::MIRParametrisation &parametrisation) :
-    bbox_(parametrisation) {
+    Gridded(parametrisation) {
     ASSERT(parametrisation.get("N", N_));
 }
 
@@ -46,9 +46,32 @@ Gaussian::Gaussian(const param::MIRParametrisation &parametrisation) :
 Gaussian::~Gaussian() {
 }
 
+
 bool Gaussian::sameAs(const Representation& other) const {
     const Gaussian* o = dynamic_cast<const Gaussian*>(&other);
     return o && (N_ == o->N_) && (bbox_ == o->bbox_);
+}
+
+
+bool Gaussian::includesNorthPole() const {
+    const double GRIB1EPSILON = 0.001;
+    eckit::types::CompareApproximatelyEqual<double> cmp(GRIB1EPSILON);
+
+    const std::vector<double>& lats = latitudes();
+    ASSERT(lats.size() >= 2);
+
+    return cmp(bbox_.north(), lats.front());
+}
+
+
+bool Gaussian::includesSouthPole() const {
+    const double GRIB1EPSILON = 0.001;
+    eckit::types::CompareApproximatelyEqual<double> cmp(GRIB1EPSILON);
+
+    const std::vector<double>& lats = latitudes();
+    ASSERT(lats.size() >= 2);
+
+    return cmp(bbox_.south(), lats.back());
 }
 
 

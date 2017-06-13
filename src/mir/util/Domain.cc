@@ -24,9 +24,9 @@ void Domain::print(std::ostream& os) const {
        << ",south=" << double(south())
        << ",east="  << double(east())
        << ",isGlobal=" << isGlobal()
-       << ",includesPoleNorth=" << includesPoleNorth()
-       << ",includesPoleSouth=" << includesPoleSouth()
-       << ",isPeriodicEastWest=" << isPeriodicEastWest()
+       // << ",includesPoleNorth=" << includesPoleNorth()
+       // << ",includesPoleSouth=" << includesPoleSouth()
+       // << ",isPeriodicEastWest=" << isPeriodicEastWest()
        << "]";
 }
 

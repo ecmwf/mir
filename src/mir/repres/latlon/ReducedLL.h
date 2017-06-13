@@ -13,11 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef ReducedLL_H
-#define ReducedLL_H
+#ifndef mir_repres_latlon_ReducedLL_h
+#define mir_repres_latlon_ReducedLL_h
 
 #include "mir/repres/Gridded.h"
-#include "mir/util/BoundingBox.h"
 
 
 namespace mir {
@@ -37,7 +36,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ReducedLL(); // Change to virtual if base class
+    ~ReducedLL(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -63,15 +62,17 @@ protected:
     // None
 
     // -- Methods
-
-    virtual atlas::Grid atlasGrid() const;
-
-    virtual util::Domain domain() const;
-
-    void print(std::ostream&) const; // Change to virtual if base class
+    // None
 
     // -- Overridden methods
-    // None
+
+    atlas::Grid atlasGrid() const;
+
+    bool isPeriodicWestEast() const;
+    bool includesNorthPole() const;
+    bool includesSouthPole() const;
+
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Class members
     // None
@@ -88,28 +89,27 @@ private:
 
     // -- Members
 
-    util::BoundingBox bbox_;
     std::vector<long> pl_;
     size_t Nj_;
 
     // -- Methods
 
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
+    void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
+    void fill(grib_info&) const;
 
-    virtual void fill(api::MIRJob &) const;
+    void fill(api::MIRJob &) const;
 
-    virtual void validate(const std::vector<double>&) const;
+    void validate(const std::vector<double>&) const;
 
-    virtual Iterator* rotatedIterator() const; // After rotation
+    Iterator* rotatedIterator() const; // After rotation
 
-    virtual Iterator* unrotatedIterator() const; // Before rotation
+    Iterator* unrotatedIterator() const; // Before rotation
 
-    virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
+    void makeName(std::ostream&) const;
+    bool sameAs(const Representation& other) const;
 
     // -- Class members
     // None

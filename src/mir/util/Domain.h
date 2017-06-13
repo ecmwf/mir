@@ -16,9 +16,6 @@
 #include <iostream>
 #include "mir/util/BoundingBox.h"
 
-namespace eckit {
-class MD5;
-}
 
 namespace mir {
 namespace util {
@@ -33,7 +30,7 @@ public:
     // -- Contructors
 
     /// ctor using coordinates
-    Domain(BoundingBox::value_type north,
+    explicit Domain(BoundingBox::value_type north,
            BoundingBox::value_type west,
            BoundingBox::value_type south,
            BoundingBox::value_type east )

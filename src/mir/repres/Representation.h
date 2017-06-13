@@ -127,6 +127,12 @@ public:
     virtual void setSimplePacking(grib_info&) const;
     virtual void setGivenPacking(grib_info&) const;
 
+    // Domain operations
+    virtual bool isGlobal() const;
+    virtual bool isPeriodicWestEast() const;
+    virtual bool includesNorthPole() const;
+    virtual bool includesSouthPole() const;
+
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
 
     virtual void shape(size_t& ni, size_t& nj) const;

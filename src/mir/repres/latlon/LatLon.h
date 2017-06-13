@@ -63,7 +63,6 @@ class LatLon : public Gridded {
 
     // -- Members
 
-    util::BoundingBox bbox_;
     util::Increments increments_;
     size_t ni_;
     size_t nj_;
@@ -78,8 +77,6 @@ class LatLon : public Gridded {
 
     // -- Overridden methods
 
-    virtual util::Domain domain() const;
-
     virtual void fill(grib_info &) const;
 
     virtual void fill(api::MIRJob &) const;
@@ -91,6 +88,11 @@ class LatLon : public Gridded {
     virtual void makeName(std::ostream&) const;
 
     virtual bool sameAs(const Representation& other) const;
+
+    virtual bool isPeriodicWestEast() const;
+    virtual bool includesNorthPole() const;
+    virtual bool includesSouthPole() const;
+
     // -- Class members
     // None
 
