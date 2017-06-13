@@ -37,7 +37,7 @@ void ShiftIterator::print(std::ostream& out) const {
 }
 
 
-bool ShiftIterator::next(double& lat, double& lon) {
+bool ShiftIterator::next(repres::Iterator::value_type& lat, repres::Iterator::value_type& lon) {
 
 
     const double eastwards = shift_.west_east();

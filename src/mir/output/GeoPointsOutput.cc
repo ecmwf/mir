@@ -110,8 +110,8 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, context::Co
 
 
         eckit::ScopedPtr<repres::Iterator> it(field.representation()->rotatedIterator());
-        double lat;
-        double lon;
+        repres::Iterator::value_type lat;
+        repres::Iterator::value_type lon;
 
         std::vector<double>::const_iterator v = values.begin();
 

@@ -103,15 +103,15 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
                                      const util::BoundingBox &bbox) {
     std::map<LL, size_t> m;
 
-    double n = 0;
-    double s = 0;
-    double e = 0;
-    double w = 0;
+    repres::Iterator::value_type n = 0;
+    repres::Iterator::value_type s = 0;
+    repres::Iterator::value_type e = 0;
+    repres::Iterator::value_type w = 0;
 
     size_t p = 0;
     size_t count = 0;
     bool first = true;
-    double lat, lon;
+    repres::Iterator::value_type lat, lon;
 
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied

@@ -92,7 +92,7 @@ private:
 
     // -- Overridden methods
 
-    virtual bool next(double& lat, double& lon);
+    virtual bool next(repres::Iterator::value_type& lat, repres::Iterator::value_type& lon);
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
 

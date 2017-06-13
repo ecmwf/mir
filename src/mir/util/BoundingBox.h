@@ -44,12 +44,15 @@ class Increments;
 class BoundingBox {
 public:
 
+    typedef eckit::Fraction value_type;
+    // typedef double value_type;
 
-    static const eckit::Fraction THREE_SIXTY; // 360
-    static const eckit::Fraction MINUS_ONE_EIGHTY; // -180
-    static const eckit::Fraction ZERO; // 0
-    static const eckit::Fraction SOUTH_POLE; // -90
-    static const eckit::Fraction NORTH_POLE; // 90
+
+    static const value_type THREE_SIXTY; // 360
+    static const value_type MINUS_ONE_EIGHTY; // -180
+    static const value_type ZERO; // 0
+    static const value_type SOUTH_POLE; // -90
+    static const value_type NORTH_POLE; // 90
 
 
     // -- Exceptions
@@ -58,7 +61,7 @@ public:
     // -- Constructors
 
     BoundingBox();
-    BoundingBox(const eckit::Fraction& north, const eckit::Fraction& west, const eckit::Fraction& south, const eckit::Fraction& east);
+    BoundingBox(const value_type& north, const value_type& west, const value_type& south, const value_type& east);
     BoundingBox(const param::MIRParametrisation&);
     BoundingBox(const BoundingBox& other);
 
@@ -91,25 +94,25 @@ public:
 
     // DON'T IMPLEMENT SETTERS
 
-    const eckit::Fraction& north() const {
+    const value_type& north() const {
         return north_;
     }
 
-    const eckit::Fraction& west() const {
+    const value_type& west() const {
         return west_;
     }
 
-    const eckit::Fraction& south() const {
+    const value_type& south() const {
         return south_;
     }
 
-    const eckit::Fraction& east() const {
+    const value_type& east() const {
         return east_;
     }
 
-    bool contains(const eckit::Fraction& lat, const eckit::Fraction& lon) const;
+    bool contains(const value_type& lat, const value_type& lon) const;
 
-    eckit::Fraction normalise(eckit::Fraction lon) const;
+    value_type normalise(value_type lon) const;
 
     void fill(grib_info&) const;
 
@@ -156,10 +159,10 @@ private:
 
     // -- Members
 
-    eckit::Fraction north_;
-    eckit::Fraction west_;
-    eckit::Fraction south_;
-    eckit::Fraction east_;
+    value_type north_;
+    value_type west_;
+    value_type south_;
+    value_type east_;
 
     // -- Methods
 

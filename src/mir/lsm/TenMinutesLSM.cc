@@ -91,8 +91,8 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
     // NOTE: this is not using 3D coordinate systems
     // mask_.reserve(grid.size());
 
-     eckit::ScopedPtr<repres::Iterator> iter(representation.unrotatedIterator());
-    double lat, lon;
+    eckit::ScopedPtr<repres::Iterator> iter(representation.unrotatedIterator());
+    repres::Iterator::value_type lat, lon;
 
     while (iter->next(lat, lon)) {
 
@@ -107,10 +107,10 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
             lon += 360;
         }
 
-        int row = int((90.0 - lat) * (ROWS-1) / 180);
+        int row = int(double((90.0 - lat) * (ROWS - 1) / 180));
         ASSERT(row >= 0 && row < int(ROWS));
 
-        int col = int(lon * COLS / 360.0);
+        int col = int(double(lon * COLS / 360.0));
         ASSERT(col >= 0 && col < int(COLS));
 
         mask_.push_back(ten_minutes_[row][col]);

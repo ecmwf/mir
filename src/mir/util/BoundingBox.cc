@@ -29,11 +29,11 @@
 namespace mir {
 namespace util {
 
-const eckit::Fraction BoundingBox::THREE_SIXTY(360);
-const eckit::Fraction BoundingBox::MINUS_ONE_EIGHTY(-180);
-const eckit::Fraction BoundingBox::ZERO(0);
-const eckit::Fraction BoundingBox::SOUTH_POLE(-90);
-const eckit::Fraction BoundingBox::NORTH_POLE(90);
+const BoundingBox::value_type BoundingBox::THREE_SIXTY(360);
+const BoundingBox::value_type BoundingBox::MINUS_ONE_EIGHTY(-180);
+const BoundingBox::value_type BoundingBox::ZERO(0);
+const BoundingBox::value_type BoundingBox::SOUTH_POLE(-90);
+const BoundingBox::value_type BoundingBox::NORTH_POLE(90);
 
 
 BoundingBox::BoundingBox() :
@@ -45,10 +45,10 @@ BoundingBox::BoundingBox() :
 }
 
 
-BoundingBox::BoundingBox(const eckit::Fraction& north,
-                         const eckit::Fraction& west,
-                         const eckit::Fraction& south,
-                         const eckit::Fraction& east) :
+BoundingBox::BoundingBox(const value_type& north,
+                         const value_type& west,
+                         const value_type& south,
+                         const value_type& east) :
     north_(north), west_(west), south_(south), east_(east) {
     normalise();
 }
@@ -142,7 +142,7 @@ void BoundingBox::normalise() {
 }
 
 
-eckit::Fraction BoundingBox::normalise(eckit::Fraction lon) const {
+BoundingBox::value_type BoundingBox::normalise(value_type lon) const {
 
     while (lon > east_) {
         lon -= THREE_SIXTY;
@@ -156,8 +156,8 @@ eckit::Fraction BoundingBox::normalise(eckit::Fraction lon) const {
 }
 
 
-bool BoundingBox::contains(const eckit::Fraction& lat, const eckit::Fraction& lon) const {
-    const eckit::Fraction nlon = normalise(lon);
+bool BoundingBox::contains(const value_type& lat, const value_type& lon) const {
+    const value_type nlon = normalise(lon);
     return (lat <= north_) && (lat >= south_) && (nlon >= west_) && (nlon <= east_);
 }
 
@@ -166,9 +166,9 @@ static size_t computeN(double first, double last, double inc) {
     ASSERT(first <= last);
     ASSERT(inc > 0);
 
-    eckit::Fraction f(first);
-    eckit::Fraction l(last);
-    eckit::Fraction i(inc);
+    BoundingBox::value_type f(first);
+    BoundingBox::value_type l(last);
+    BoundingBox::value_type i(inc);
 
     long long n = (l - f) / i;
 

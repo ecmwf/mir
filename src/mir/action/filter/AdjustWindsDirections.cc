@@ -84,8 +84,8 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
     // eckit::Log::info() << "AdjustWindsDirections::windDirections " << *iter << std::endl;
 
 
-    double lat = 0;
-    double lon = 0;
+    repres::Iterator::value_type lat = 0;
+    repres::Iterator::value_type lon = 0;
 
     // Inspired from HPSHGPW
 
@@ -104,7 +104,7 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
 
         // For some reason, the algorithms only work between in ]-180,180]
         lon = util::angles::between_m180_and_p180(lon);
-        if (eckit::types::is_approximately_equal<double>(lon, -180)) {
+        if (eckit::types::is_approximately_equal(lon, -180.0)) {
             lon = 180.0;
         }
 

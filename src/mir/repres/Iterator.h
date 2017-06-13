@@ -17,6 +17,7 @@
 #define Iterator_H
 
 #include <iosfwd>
+#include "eckit/types/Fraction.h"
 
 namespace mir {
 namespace repres {
@@ -24,6 +25,8 @@ namespace repres {
 
 class Iterator  {
   public:
+
+    typedef eckit::Fraction value_type;
 
     // -- Exceptions
     // None
@@ -44,7 +47,7 @@ class Iterator  {
 
     // -- Methods
 
-    virtual bool next(double &lat, double &lon) = 0;
+    virtual bool next(value_type &lat, value_type &lon) = 0;
 
     // -- Overridden methods
     // None
