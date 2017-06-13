@@ -55,7 +55,7 @@ const char *CroppingCacheTraits::name() {
 }
 
 int CroppingCacheTraits::version() {
-    return 2;
+    return 3;
 }
 
 const char *CroppingCacheTraits::extension() {
