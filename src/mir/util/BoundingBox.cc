@@ -29,17 +29,26 @@
 namespace mir {
 namespace util {
 
-
-
+static const eckit::Fraction THREE_SIXTY(360);
+static const eckit::Fraction MINUS_ONE_EIGHTY(-180);
+static const eckit::Fraction ZERO(0);
+static const eckit::Fraction SOUTH_POLE(-90);
+static const eckit::Fraction NORTH_POLE(90);
 
 
 BoundingBox::BoundingBox() :
-    north_(90), west_(0), south_(-90), east_(360) {
+    north_(NORTH_POLE),
+    west_(ZERO),
+    south_(SOUTH_POLE),
+    east_(THREE_SIXTY) {
     normalise();
 }
 
 
-BoundingBox::BoundingBox(const eckit::Fraction& north, const eckit::Fraction& west, const eckit::Fraction& south, const eckit::Fraction& east) :
+BoundingBox::BoundingBox(const eckit::Fraction& north,
+                         const eckit::Fraction& west,
+                         const eckit::Fraction& south,
+                         const eckit::Fraction& east) :
     north_(north), west_(west), south_(south), east_(east) {
     normalise();
 }
@@ -106,23 +115,23 @@ void BoundingBox::normalise() {
 
     bool same = west_ == east_;
 
-    ASSERT(north_ <= 90 && south_ >= -90);
+    ASSERT(north_ <= NORTH_POLE && south_ >= SOUTH_POLE);
     ASSERT(north_ >= south_);
 
-    while (west_ < -180) {
-        west_ += 360;
+    while (west_ < MINUS_ONE_EIGHTY) {
+        west_ += THREE_SIXTY;
     }
 
-    while (west_ >= 360) {
-        west_ -= 360;
+    while (west_ >= THREE_SIXTY) {
+        west_ -= THREE_SIXTY;
     }
 
     while (east_ < west_) {
-        east_ += 360;
+        east_ += THREE_SIXTY;
     }
 
-    while ((east_  - west_ ) > 360) {
-        east_ -= 360;
+    while ((east_  - west_ ) > THREE_SIXTY) {
+        east_ -= THREE_SIXTY;
     }
 
     if (same) {
@@ -134,13 +143,15 @@ void BoundingBox::normalise() {
 
 
 eckit::Fraction BoundingBox::normalise(eckit::Fraction lon) const {
+
     while (lon > east_) {
-        lon = lon - eckit::Fraction(360);
+        lon -= THREE_SIXTY;
     }
 
     while (lon < west_) {
-        lon = lon + eckit::Fraction(360);
+        lon += THREE_SIXTY;
     }
+
     return lon;
 }
 
@@ -165,8 +176,7 @@ static size_t computeN(double first, double last, double inc) {
 }
 
 size_t BoundingBox::computeNi(const util::Increments& increments) const {
-
-    return computeN(west_,  east_,  increments.west_east());
+    return computeN(west_, east_, increments.west_east());
 }
 
 size_t BoundingBox::computeNj(const util::Increments& increments) const {
