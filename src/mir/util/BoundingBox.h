@@ -44,6 +44,14 @@ class Increments;
 class BoundingBox {
 public:
 
+
+    static const eckit::Fraction THREE_SIXTY; // 360
+    static const eckit::Fraction MINUS_ONE_EIGHTY; // -180
+    static const eckit::Fraction ZERO; // 0
+    static const eckit::Fraction SOUTH_POLE; // -90
+    static const eckit::Fraction NORTH_POLE; // 90
+
+
     // -- Exceptions
     // None
 

@@ -29,11 +29,11 @@
 namespace mir {
 namespace util {
 
-static const eckit::Fraction THREE_SIXTY(360);
-static const eckit::Fraction MINUS_ONE_EIGHTY(-180);
-static const eckit::Fraction ZERO(0);
-static const eckit::Fraction SOUTH_POLE(-90);
-static const eckit::Fraction NORTH_POLE(90);
+const eckit::Fraction BoundingBox::THREE_SIXTY(360);
+const eckit::Fraction BoundingBox::MINUS_ONE_EIGHTY(-180);
+const eckit::Fraction BoundingBox::ZERO(0);
+const eckit::Fraction BoundingBox::SOUTH_POLE(-90);
+const eckit::Fraction BoundingBox::NORTH_POLE(90);
 
 
 BoundingBox::BoundingBox() :
