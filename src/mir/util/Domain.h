@@ -33,11 +33,12 @@ public:
     // -- Contructors
 
     /// ctor using coordinates
-    Domain(eckit::Fraction north, eckit::Fraction west, eckit::Fraction south, eckit::Fraction east)
+    Domain(BoundingBox::value_type north,
+           BoundingBox::value_type west,
+           BoundingBox::value_type south,
+           BoundingBox::value_type east )
         : BoundingBox(north, west, south, east) {
     }
-
-    /// ctor (default)
 
     // -- Methods
 
@@ -62,8 +63,7 @@ public:
     }
 
     /// Output to stream
-    void print(std::ostream &) const;
-
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -97,8 +97,7 @@ private:
     // None
 
     // -- Methods
-
-    /// Normalises the constructor input
+    // None
 
     // -- Overridden methods
     // None
@@ -118,7 +117,9 @@ private:
     }
 };
 
+
 } // namespace util
 } // namespace mir
+
 
 #endif

@@ -16,16 +16,19 @@
 namespace mir {
 namespace util {
 
-void Domain::print(std::ostream &os) const {
+
+void Domain::print(std::ostream& os) const {
     os << "Domain["
        <<  "north=" << double(north())
        << ",west="  << double(west())
        << ",south=" << double(south())
        << ",east="  << double(east())
        << ",isGlobal=" << isGlobal()
+       << ",includesPoleNorth=" << includesPoleNorth()
+       << ",includesPoleSouth=" << includesPoleSouth()
+       << ",isPeriodicEastWest=" << isPeriodicEastWest()
        << "]";
 }
-
 
 
 } // namespace util
