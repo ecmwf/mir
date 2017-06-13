@@ -71,7 +71,9 @@ GribFileLSM::GribFileLSM(
     eckit::Log::debug<LibMir>() << "LSM interpolation method is " << *method << std::endl;
 
     if (!(field.representation()->domain().isGlobal())) {
-        throw eckit::UserError("Input LSM file '" + path_ + "' should be global");
+        std::ostringstream oss;
+        oss << "Input LSM file '" << path_ << "' should be global";
+        throw eckit::UserError(oss.str());
     }
 
     util::MIRStatistics dummy; // TODO: use the global one
