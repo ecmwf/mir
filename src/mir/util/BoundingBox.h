@@ -17,6 +17,7 @@
 #define mir_util_BoundingBox_h
 
 #include <iosfwd>
+#include "eckit/types/Fraction.h"
 
 
 struct grib_info;
@@ -49,7 +50,7 @@ public:
     // -- Constructors
 
     BoundingBox();
-    BoundingBox(double north, double west, double south, double east);
+    BoundingBox(const eckit::Fraction& north, const eckit::Fraction& west, const eckit::Fraction& south, const eckit::Fraction& east);
     BoundingBox(const param::MIRParametrisation&);
     BoundingBox(const BoundingBox& other);
 
@@ -82,25 +83,25 @@ public:
 
     // DON'T IMPLEMENT SETTERS
 
-    double north() const {
+    const eckit::Fraction& north() const {
         return north_;
     }
 
-    double west() const {
+    const eckit::Fraction& west() const {
         return west_;
     }
 
-    double south() const {
+    const eckit::Fraction& south() const {
         return south_;
     }
 
-    double east() const {
+    const eckit::Fraction& east() const {
         return east_;
     }
 
-    bool contains(double lat, double lon) const;
+    bool contains(const eckit::Fraction& lat, const eckit::Fraction& lon) const;
 
-    double normalise(double lon) const;
+    eckit::Fraction normalise(eckit::Fraction lon) const;
 
     void fill(grib_info&) const;
 
@@ -147,10 +148,10 @@ private:
 
     // -- Members
 
-    double north_;
-    double west_;
-    double south_;
-    double east_;
+    eckit::Fraction north_;
+    eckit::Fraction west_;
+    eckit::Fraction south_;
+    eckit::Fraction east_;
 
     // -- Methods
 

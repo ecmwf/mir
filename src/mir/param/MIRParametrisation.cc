@@ -15,7 +15,7 @@
 
 #include "mir/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
-
+#include "eckit/types/Fraction.h"
 
 namespace mir {
 namespace param {
@@ -45,7 +45,7 @@ bool MIRParametrisation::get(const std::string &name, std::vector<size_t> &value
     if (get(name, v)) {
         value.clear();
         value.reserve(v.size());
-        for (const long& l: v) {
+        for (const long& l : v) {
             ASSERT(l >= 0);
             value.push_back(size_t(l));
         }
@@ -53,6 +53,16 @@ bool MIRParametrisation::get(const std::string &name, std::vector<size_t> &value
     }
     return false;
 }
+
+bool MIRParametrisation::get(const std::string& name, eckit::Fraction& value) const {
+    double v;
+    if(get(name, v)) {
+        value = v;
+        return true;
+    }
+    return false;
+}
+
 
 
 }  // namespace param

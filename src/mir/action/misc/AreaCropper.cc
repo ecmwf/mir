@@ -118,6 +118,9 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
 
     while (iter->next(lat, lon)) {
+
+        // std::cout << lat << " " << lon << " ====> " << iter->next(lat, lon) << std::endl;
+
         if (bbox.contains(lat, lon)) {
 
             lon = bbox.normalise(lon);
@@ -154,6 +157,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
 
 
     c.bbox_ = util::BoundingBox(n, w, s, e);
+    std::cout << "BoundingBox " << c.bbox_ << std::endl;
 
     c.mapping_.clear();
     c.mapping_.reserve(m.size());

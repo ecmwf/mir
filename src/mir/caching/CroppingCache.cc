@@ -19,9 +19,10 @@
 #include "eckit/log/Bytes.h"
 // #include "eckit/log/Plural.h"
 // #include "eckit/log/Seconds.h"
-// #include "eckit/log/Timer.h"
+// #include "eckit/log/Timer.h"§
 // #include "mir/api/mir_version.h"
 #include "mir/config/LibMir.h"
+#include "eckit/types/Fraction.h"
 
 namespace mir {
 namespace caching {
@@ -94,7 +95,7 @@ void CroppingCacheEntry::load(const eckit::PathName& path)  {
     eckit::TraceTimer<LibMir> timer("Loading cropping from cache");
 
     eckit::FileStream f(path, "r");
-    double n, w, s, e;
+    eckit::Fraction n, w, s, e;
     f >> n;
     f >> w;
     f >> s;

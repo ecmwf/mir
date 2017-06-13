@@ -39,7 +39,7 @@ BoundingBox::BoundingBox() :
 }
 
 
-BoundingBox::BoundingBox(double north, double west, double south, double east) :
+BoundingBox::BoundingBox(const eckit::Fraction& north, const eckit::Fraction& west, const eckit::Fraction& south, const eckit::Fraction& east) :
     north_(north), west_(west), south_(south), east_(east) {
     normalise();
 }
@@ -64,10 +64,10 @@ BoundingBox::~BoundingBox() {
 
 void BoundingBox::print(std::ostream &out) const {
     out << "BoundingBox["
-        <<  "north=" << north_
-        << ",west=" << west_
-        << ",south=" << south_
-        << ",east=" << east_
+        <<  "north=" << double(north_)
+        << ",west=" << double(west_)
+        << ",south=" << double(south_)
+        << ",east=" << double(east_)
         << "]";
 }
 
@@ -133,23 +133,21 @@ void BoundingBox::normalise() {
 }
 
 
-double BoundingBox::normalise(double lon) const {
-    while (eckit::types::is_strictly_greater(west_, lon)) {
-        lon += 360;
+eckit::Fraction BoundingBox::normalise(eckit::Fraction lon) const {
+    while (lon > east_) {
+        lon = lon - eckit::Fraction(360);
     }
-    while (eckit::types::is_strictly_greater(lon, east_)) {
-        lon -= 360;
+
+    while (lon < west_) {
+        lon = lon + eckit::Fraction(360);
     }
     return lon;
 }
 
 
-bool BoundingBox::contains(double lat, double lon) const {
-    lon = normalise(lon);
-    return eckit::types::is_approximately_greater_or_equal(north_, lat) &&
-           eckit::types::is_approximately_greater_or_equal(lat, south_) &&
-           eckit::types::is_approximately_greater_or_equal(lon , west_) &&
-           eckit::types::is_approximately_greater_or_equal(east_, lon);
+bool BoundingBox::contains(const eckit::Fraction& lat, const eckit::Fraction& lon) const {
+    const eckit::Fraction nlon = normalise(lon);
+    return (lat <= north_) && (lat >= south_) && (nlon >= west_) && (nlon <= east_);
 }
 
 
@@ -177,13 +175,13 @@ size_t BoundingBox::computeNj(const util::Increments& increments) const {
 
 void BoundingBox::makeName(std::ostream& out) const {
     out << "-"
-        << north_
+        << double(north_)
         << ":"
-        << west_
+        << double(west_)
         << ":"
-        << south_
+        << double(south_)
         << ":"
-        << east_;
+        << double(east_);
 }
 
 

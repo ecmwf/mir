@@ -227,6 +227,18 @@
 					"shell_cmd": "make -j4 mir-list"
 				},
 				{
+					"name": "mir-make-lsm",
+					"shell_cmd": "make -j4 mir-make-lsm"
+				},
+				{
+					"name": "mir-integrate",
+					"shell_cmd": "make -j4 mir-integrate"
+				},
+				{
+					"name": "mir-inspect",
+					"shell_cmd": "make -j4 mir-inspect"
+				},
+				{
 					"name": "mir-compare",
 					"shell_cmd": "make -j4 mir-compare"
 				},
@@ -235,12 +247,12 @@
 					"shell_cmd": "make -j4 mir-get-data"
 				},
 				{
-					"name": "mir-inspect",
-					"shell_cmd": "make -j4 mir-inspect"
+					"name": "mir-gaussian-fractions",
+					"shell_cmd": "make -j4 mir-gaussian-fractions"
 				},
 				{
-					"name": "mir-statistics",
-					"shell_cmd": "make -j4 mir-statistics"
+					"name": "mir-config",
+					"shell_cmd": "make -j4 mir-config"
 				},
 				{
 					"name": "mir-shared-memory",
@@ -251,16 +263,8 @@
 					"shell_cmd": "make -j4 mir-formula"
 				},
 				{
-					"name": "mir-integrate",
-					"shell_cmd": "make -j4 mir-integrate"
-				},
-				{
-					"name": "mir-make-lsm",
-					"shell_cmd": "make -j4 mir-make-lsm"
-				},
-				{
-					"name": "mir-config",
-					"shell_cmd": "make -j4 mir-config"
+					"name": "mir-statistics",
+					"shell_cmd": "make -j4 mir-statistics"
 				},
 				{
 					"name": "lsm",

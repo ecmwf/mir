@@ -18,6 +18,7 @@
 
 
 #include <iosfwd>
+#include "eckit/types/Fraction.h"
 
 
 namespace mir {
@@ -39,7 +40,7 @@ public:
 
     // -- Contructors
 
-    explicit Shift(double west_east = 0, double south_north = 0);
+    explicit Shift(const eckit::Fraction& west_east = 0, const eckit::Fraction& south_north = 0);
 
     // -- Destructor
 
@@ -64,11 +65,11 @@ public:
 
     // -- Methods
 
-    double west_east() const {
+    const eckit::Fraction& west_east() const {
         return west_east_;
     }
 
-    double south_north() const {
+    const eckit::Fraction& south_north() const {
         return south_north_;
     }
 
@@ -110,8 +111,8 @@ private:
 
     // -- Members
 
-    double west_east_;
-    double south_north_;
+    eckit::Fraction west_east_;
+    eckit::Fraction south_north_;
 
     // -- Methods
 

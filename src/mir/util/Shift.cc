@@ -28,7 +28,7 @@ namespace mir {
 namespace util {
 
 
-Shift::Shift(double west_east, double south_north):
+Shift::Shift(const eckit::Fraction& west_east, const eckit::Fraction& south_north):
     west_east_(west_east),
     south_north_(south_north) {
     // ASSERT(west_east_ > 0);
@@ -40,8 +40,8 @@ Shift::~Shift() {
 
 void Shift::print(std::ostream &out) const {
     out << "Shift["
-        << "west_east=" << west_east_
-        << ",south_north=" << south_north_
+        << "west_east=" << double(west_east_)
+        << ",south_north=" << double(south_north_)
         << "]";
 }
 
@@ -52,9 +52,9 @@ void Shift::fill(api::MIRJob &job) const  {
 
 void Shift::makeName(std::ostream& out) const {
     out << "-shift:"
-        << west_east_
+        << double(west_east_)
         << ":"
-        << south_north_
+        << double(south_north_)
         ;
 }
 

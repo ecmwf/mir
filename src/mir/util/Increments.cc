@@ -29,7 +29,9 @@ namespace mir {
 namespace util {
 
 
-Increments::Increments(double west_east, double south_north):
+Increments::Increments(const eckit::Fraction& west_east,
+                       const eckit::Fraction& south_north):
+
     west_east_(west_east),
     south_north_(south_north) {
     // ASSERT(west_east_ > 0);
@@ -37,10 +39,10 @@ Increments::Increments(double west_east, double south_north):
 }
 
 Increments::Increments(const param::MIRParametrisation &parametrisation) {
+
     ASSERT(parametrisation.get("west_east_increment", west_east_));
     ASSERT(parametrisation.get("south_north_increment", south_north_));
-    ASSERT(west_east_ > 0);
-    ASSERT(south_north_ > 0);
+
 }
 
 Increments::~Increments() {
@@ -48,8 +50,8 @@ Increments::~Increments() {
 
 void Increments::print(std::ostream &out) const {
     out << "Increments["
-        << "west_east=" << west_east_
-        << ",south_north=" << south_north_
+        << "west_east=" << double(west_east_)
+        << ",south_north=" << double(south_north_)
         << "]";
 }
 
@@ -128,9 +130,9 @@ Shift Increments::shiftFromZeroZero(const BoundingBox& bbox) const {
 
 void Increments::makeName(std::ostream& out) const {
     out << "-"
-        << west_east_
+        << double(west_east_)
         << "x"
-        << south_north_
+        << double(south_north_)
         ;
 }
 

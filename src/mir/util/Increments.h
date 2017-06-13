@@ -18,6 +18,7 @@
 
 
 #include <iosfwd>
+#include "eckit/types/Fraction.h"
 
 struct grib_info;
 
@@ -46,7 +47,7 @@ public:
     // -- Contructors
 
     explicit Increments(const param::MIRParametrisation &);
-    explicit Increments(double west_east = 0, double south_north = 0);
+    explicit Increments(const eckit::Fraction& west_east = 0, const eckit::Fraction& south_north = 0);
 
     // -- Destructor
 
@@ -76,11 +77,11 @@ public:
     Increments bestSubsetting(const BoundingBox& bbox) const;
     Shift shiftFromZeroZero(const BoundingBox& bbox) const;
 
-    double west_east() const {
+    const eckit::Fraction& west_east() const {
         return west_east_;
     }
 
-    double south_north() const {
+    const eckit::Fraction& south_north() const {
         return south_north_;
     }
 
@@ -124,8 +125,8 @@ private:
 
     // -- Members
 
-    double west_east_;
-    double south_north_;
+    eckit::Fraction west_east_;
+    eckit::Fraction south_north_;
 
     // -- Methods
 

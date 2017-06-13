@@ -20,6 +20,10 @@
 #include "eckit/config/Parametrisation.h"
 
 
+namespace eckit {
+    class Fraction;
+}
+
 namespace mir {
 namespace param {
 
@@ -67,6 +71,7 @@ public:
 
     bool get(const std::string& name, size_t& value) const;
     bool get(const std::string& name, std::vector<size_t>& value) const;
+    bool get(const std::string& name, eckit::Fraction& value) const;
 
     // -- Class members
     // None
