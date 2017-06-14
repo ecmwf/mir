@@ -13,17 +13,12 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded_H
-#define Gridded_H
+#ifndef mir_repres_Gridded_h
+#define mir_repres_Gridded_h
 
+#include "eckit/memory/NonCopyable.h"
 #include "mir/repres/Representation.h"
-
-
-namespace mir {
-namespace util {
-class MIRStatistics;
-}
-}
+#include "mir/util/BoundingBox.h"
 
 
 namespace mir {
@@ -31,7 +26,7 @@ namespace repres {
 
 
 class Gridded : public Representation {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -39,6 +34,7 @@ class Gridded : public Representation {
     // -- Contructors
 
     Gridded(const param::MIRParametrisation&);
+    Gridded(const util::BoundingBox&);
 
     // -- Destructor
 
@@ -62,17 +58,23 @@ class Gridded : public Representation {
     // -- Class methods
     // None
 
-  protected:
+protected:
+
+    // -- Contructors
+
+    Gridded();
 
     // -- Members
 
-    Gridded();
+    util::BoundingBox bbox_;
+//    util::BoundingBox domain_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-    // None
+
+    util::Domain domain() const;
 
     // -- Class members
     // None
@@ -80,12 +82,10 @@ class Gridded : public Representation {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
-
     Gridded(const Gridded&);
-
     Gridded& operator=(const Gridded&);
 
     // -- Members

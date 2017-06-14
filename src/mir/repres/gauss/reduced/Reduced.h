@@ -70,8 +70,6 @@ class Reduced : public Gaussian {
 
     // -- Overridden methods
 
-    virtual util::Domain domain() const;
-
     virtual void fill(grib_info &) const;
 
     virtual void fill(api::MIRJob &) const;
@@ -81,6 +79,8 @@ class Reduced : public Gaussian {
     virtual Iterator* unrotatedIterator() const; // Before rotation
 
     virtual bool sameAs(const Representation& other) const;
+
+    bool isPeriodicWestEast() const;
 
     // -- Class members
     // None

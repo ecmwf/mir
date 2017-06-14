@@ -121,6 +121,10 @@ class SphericalHarmonics : public Representation {
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
 
+    bool isPeriodicWestEast() const;
+    bool includesNorthPole() const;
+    bool includesSouthPole() const;
+
     // -- Class members
     // None
 

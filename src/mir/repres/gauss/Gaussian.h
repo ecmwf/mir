@@ -64,16 +64,16 @@ class Gaussian : public Gridded {
     // -- Members
 
     size_t N_;
-    util::BoundingBox bbox_;
 
     // -- Methods
 
     const std::vector<double> &latitudes() const;
     virtual bool sameAs(const Representation& other) const;
 
-
     // -- Overridden methods
-    // None
+
+    bool includesNorthPole() const;
+    bool includesSouthPole() const;
 
     // -- Class members
     // None

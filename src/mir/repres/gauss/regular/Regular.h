@@ -51,6 +51,7 @@ public:
     // None
 
     // -- Overridden methods
+
     virtual void validate(const std::vector<double>&) const;
 
     // -- Class members
@@ -85,11 +86,11 @@ protected:
 
     virtual atlas::Grid atlasGrid() const;
 
-    virtual util::Domain domain() const;
-
     virtual void makeName(std::ostream&) const;
 
     virtual bool sameAs(const Representation& other) const;
+
+    bool isPeriodicWestEast() const;
 
     // -- Class members
     // None
