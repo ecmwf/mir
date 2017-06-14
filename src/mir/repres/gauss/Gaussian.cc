@@ -54,24 +54,18 @@ bool Gaussian::sameAs(const Representation& other) const {
 
 
 bool Gaussian::includesNorthPole() const {
-    const double GRIB1EPSILON = 0.001;
-    eckit::types::CompareApproximatelyEqual<double> cmp(GRIB1EPSILON);
-
     const std::vector<double>& lats = latitudes();
     ASSERT(lats.size() >= 2);
 
-    return cmp(bbox_.north().value(), lats.front());
+    return bbox_.north().sameWithGrib1Accuracy(lats.front());
 }
 
 
 bool Gaussian::includesSouthPole() const {
-    const double GRIB1EPSILON = 0.001;
-    eckit::types::CompareApproximatelyEqual<double> cmp(GRIB1EPSILON);
-
     const std::vector<double>& lats = latitudes();
     ASSERT(lats.size() >= 2);
 
-    return cmp(bbox_.south().value(), lats.back());
+    return bbox_.south().sameWithGrib1Accuracy(lats.back());
 }
 
 

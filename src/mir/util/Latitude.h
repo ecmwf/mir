@@ -204,6 +204,7 @@ private:
         return Latitude(value - l.value_);
     }
 
+
 };
 
 

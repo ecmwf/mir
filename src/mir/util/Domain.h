@@ -14,6 +14,7 @@
 #define mir_util_Domain_h
 
 #include <iostream>
+#include "atlas/domain/Domain.h"
 #include "mir/util/BoundingBox.h"
 
 
@@ -44,6 +45,8 @@ public:
 
     /// Generator for an empty Domain
     static Domain makeEmpty() { return Domain(0, 0, 0, 0); }
+
+    operator atlas::RectangularDomain() const;
 
     /// Check if grid includes the North pole
     bool includesPoleNorth() const { return north() == Latitude::NORTH_POLE; }
