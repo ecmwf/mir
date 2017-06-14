@@ -404,7 +404,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             ///        but later should be cropped out
             ///        UNLESS, we compute the statistics based on only points contained in the Domain
 
-            if (in.domain().isGlobal()) {
+            if (rin.domain().isGlobal()) {
                 ASSERT(eckit::types::is_approximately_greater_or_equal(ostats.minimum(), istats.minimum()));
                 ASSERT(eckit::types::is_approximately_greater_or_equal(istats.maximum(), ostats.maximum()));
             }

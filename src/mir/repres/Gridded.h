@@ -16,7 +16,6 @@
 #ifndef mir_repres_Gridded_h
 #define mir_repres_Gridded_h
 
-#include "eckit/memory/NonCopyable.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
 
@@ -83,10 +82,6 @@ protected:
     // None
 
 private:
-
-    // No copy allowed
-    Gridded(const Gridded&);
-    Gridded& operator=(const Gridded&);
 
     // -- Members
     // None
