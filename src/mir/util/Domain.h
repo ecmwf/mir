@@ -30,29 +30,29 @@ public:
     // -- Contructors
 
     /// ctor using coordinates
-    explicit Domain(Latitude north,
-                    Longitude west,
-                    Latitude south,
-                    Longitude east )
+    explicit Domain(Latitude north = Latitude::NORTH_POLE,
+                    Longitude west = Longitude::GREENWICH,
+                    Latitude south = Latitude::SOUTH_POLE,
+                    Longitude east = Longitude::GLOBE)
         : BoundingBox(north, west, south, east) {
     }
 
     // -- Methods
 
     /// Generator for a global Domain
-    static Domain makeGlobal() { return Domain(NORTH_POLE, LON_ZERO,SOUTH_POLE, THREE_SIXTY); }
+    static Domain makeGlobal() { return Domain(); }
 
     /// Generator for an empty Domain
-    static Domain makeEmpty() { return Domain(LAT_ZERO, LON_ZERO, LAT_ZERO, LON_ZERO); }
+    static Domain makeEmpty() { return Domain(0, 0, 0, 0); }
 
     /// Check if grid includes the North pole
-    bool includesPoleNorth() const { return north() == NORTH_POLE; }
+    bool includesPoleNorth() const { return north() == Latitude::NORTH_POLE; }
 
     /// Check if grid includes the South pole
-    bool includesPoleSouth() const { return south() == SOUTH_POLE; }
+    bool includesPoleSouth() const { return south() == Latitude::SOUTH_POLE; }
 
     /// Check if grid spans the complete range East-West (periodic)
-    bool isPeriodicEastWest() const { return east() - west() == THREE_SIXTY; }
+    bool isPeriodicEastWest() const { return east() - west() == Longitude::GLOBE; }
 
     /// Check if domain represents the complete globe surface
     bool isGlobal() const {

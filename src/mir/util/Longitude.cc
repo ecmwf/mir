@@ -39,19 +39,19 @@ void Longitude::print(std::ostream& out) const {
 }
 
 bool Longitude::operator<(double value) const {
-    return value_ < value;
+    return eckit::types::is_strictly_greater(value, value_);
 }
 
 bool Longitude::operator<=(double value) const {
-    return (value_ <= value) || eckit::types::is_approximately_equal<double>(value_, value);
+    return eckit::types::is_approximately_lesser_or_equal<double>(value_, value);
 }
 
 bool Longitude::operator>(double value) const {
-    return value_ > value;
+    return eckit::types::is_strictly_greater(value_, value);
 }
 
 bool Longitude::operator>=(double value) const {
-    return (value_ >= value) || eckit::types::is_approximately_equal<double>(value_, value);
+    return eckit::types::is_approximately_greater_or_equal<double>(value_, value);
 }
 
 bool Longitude::operator==(double value) const {

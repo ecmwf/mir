@@ -29,18 +29,11 @@
 namespace mir {
 namespace util {
 
-const Longitude BoundingBox::THREE_SIXTY(360);
-const Longitude BoundingBox::MINUS_ONE_EIGHTY(-180);
-const Longitude BoundingBox::LON_ZERO(0);
-const Latitude BoundingBox::SOUTH_POLE(-90);
-const Latitude BoundingBox::NORTH_POLE(90);
-
-
 BoundingBox::BoundingBox() :
-    north_(NORTH_POLE),
-    west_(LON_ZERO),
-    south_(SOUTH_POLE),
-    east_(THREE_SIXTY) {
+    north_(Latitude::NORTH_POLE),
+    west_(Longitude::GREENWICH),
+    south_(Latitude::SOUTH_POLE),
+    east_(Longitude::GLOBE) {
     normalise();
 }
 
@@ -115,23 +108,23 @@ void BoundingBox::normalise() {
 
     bool same = west_ == east_;
 
-    ASSERT(north_ <= NORTH_POLE && south_ >= SOUTH_POLE);
+    ASSERT(north_ <= Latitude::NORTH_POLE && south_ >= Latitude::SOUTH_POLE);
     ASSERT(north_ >= south_);
 
-    while (west_ < MINUS_ONE_EIGHTY) {
-        west_ += THREE_SIXTY;
+    while (west_ < Longitude::MINUS_DATE_LINE) {
+        west_ += Longitude::GLOBE;
     }
 
-    while (west_ >= THREE_SIXTY) {
-        west_ -= THREE_SIXTY;
+    while (west_ >= Longitude::GLOBE) {
+        west_ -= Longitude::GLOBE;
     }
 
     while (east_ < west_) {
-        east_ += THREE_SIXTY;
+        east_ += Longitude::GLOBE;
     }
 
-    while ((east_  - west_ ) > THREE_SIXTY) {
-        east_ -= THREE_SIXTY;
+    while ((east_  - west_ ) > Longitude::GLOBE) {
+        east_ -= Longitude::GLOBE;
     }
 
     if (same) {
@@ -145,11 +138,11 @@ void BoundingBox::normalise() {
 Longitude BoundingBox::normalise(Longitude lon) const {
 
     while (lon > east_) {
-        lon -= THREE_SIXTY;
+        lon -= Longitude::GLOBE;
     }
 
     while (lon < west_) {
-        lon += THREE_SIXTY;
+        lon += Longitude::GLOBE;
     }
 
     return lon;
@@ -161,7 +154,7 @@ bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
     return (lat <= north_) &&
            (lat >= south_) &&
            (nlon >= west_) &&
-           (nlon < - east_);
+           (nlon <= east_);
 }
 
 

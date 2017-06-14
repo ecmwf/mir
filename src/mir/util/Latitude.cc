@@ -12,9 +12,9 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/util/Latitude.h"
-#include "eckit/types/FloatCompare.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -33,24 +33,25 @@ Latitude Latitude::NORTH_POLE(90);
 Latitude Latitude::SOUTH_POLE(-90);
 Latitude Latitude::EQUATOR(0);
 
+
 void Latitude::print(std::ostream& out) const {
     out << value_;
 }
 
 bool Latitude::operator<(double value) const {
-    return value_ < value;
+    return eckit::types::is_strictly_greater(value, value_);
 }
 
 bool Latitude::operator<=(double value) const {
-    return (value_ <= value) || eckit::types::is_approximately_equal<double>(value_, value);
+    return eckit::types::is_approximately_lesser_or_equal<double>(value_, value);
 }
 
 bool Latitude::operator>(double value) const {
-    return value_ > value;
+    return eckit::types::is_strictly_greater(value_, value);
 }
 
 bool Latitude::operator>=(double value) const {
-    return (value_ >= value) || eckit::types::is_approximately_equal<double>(value_, value);
+    return eckit::types::is_approximately_greater_or_equal<double>(value_, value);
 }
 
 bool Latitude::operator==(double value) const {
@@ -59,66 +60,6 @@ bool Latitude::operator==(double value) const {
 
 bool Latitude::operator!=(double value) const {
     return !eckit::types::is_approximately_equal<double>(value_, value);
-}
-
-Latitude& Latitude::operator-=(double value) {
-    value_ -= value;
-    return *this;
-}
-
-Latitude& Latitude::operator+=(double value) {
-    value_ += value;
-    return *this;
-}
-
-Latitude& Latitude::operator-=(const Latitude& other) {
-    value_ -= other.value_;
-    return *this;
-}
-
-Latitude& Latitude::operator+=(const Latitude& other) {
-    value_ += other.value_;
-    return *this;
-}
-
-Latitude Latitude::operator-(const Latitude& other) const {
-    return Latitude(value_ - other.value_);
-}
-
-Latitude Latitude::operator+(const Latitude& other) const {
-    return Latitude(value_ + other.value_);
-}
-
-Latitude Latitude::operator-(double value) const {
-    return Latitude(value_ - value);
-}
-
-Latitude Latitude::operator+(double value) const {
-    return Latitude(value_ + value);
-}
-
-bool Latitude::operator<(const Latitude& other) const {
-    return value_ < other.value_;
-}
-
-bool Latitude::operator<=(const Latitude& other) const {
-    return value_ <= other.value_;
-}
-
-bool Latitude::operator>(const Latitude& other) const {
-    return value_ <= other.value_;
-}
-
-bool Latitude::operator>=(const Latitude& other) const {
-    return value_ >= other.value_;
-}
-
-bool Latitude::operator==(const Latitude& other) const {
-    return value_ == other.value_;
-}
-
-bool Latitude::operator!=(const Latitude& other) const {
-    return value_ != other.value_;
 }
 
 void Latitude::hash(eckit::MD5& md5) const {

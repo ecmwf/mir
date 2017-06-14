@@ -44,18 +44,6 @@ class Increments;
 class BoundingBox {
 public:
 
-    // typedef double value_type;
-
-
-    static const Longitude THREE_SIXTY; // 360
-    static const Longitude MINUS_ONE_EIGHTY; // -180
-    static const Latitude LAT_ZERO; // 0
-    static const Longitude LON_ZERO; // 0
-
-    static const Latitude SOUTH_POLE; // -90
-    static const Latitude NORTH_POLE; // 90
-
-
     // -- Exceptions
     // None
 
