@@ -197,11 +197,11 @@ private:
     friend bool operator<=(double, const Latitude& other);
 
     friend Latitude operator+(double value, const Latitude& l) {
-        return Latitude(value + l);
+        return Latitude(value + l.value());
     }
 
     friend Latitude operator-(double value, const Latitude& l) {
-        return Latitude(value - l);
+        return Latitude(value - l.value());
     }
 
 };

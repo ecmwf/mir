@@ -202,7 +202,7 @@ private:
     friend Longitude operator+(double, const Longitude& other);
 
     friend Longitude operator-(double value, const Longitude& l) {
-        return Longitude(value - l);
+        return Longitude(value - l.value());
     }
 
 };
