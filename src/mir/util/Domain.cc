@@ -19,8 +19,8 @@ namespace util {
 
 Domain::operator atlas::RectangularDomain() const {
     return atlas::RectangularDomain(
-        {west().value(),  east().value() },
-        {south().value(), north().value() } );
+        {{west().value(),  east().value()} },
+        {{south().value(), north().value()} } );
 }
 
 

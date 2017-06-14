@@ -34,277 +34,277 @@
 		{
 			"file_regex": "(.+[^:]):(\\d+):(\\d+): (?:fatal )?((?:error|warning): .+)$",
 			"name": "mir (OSX)",
-			"shell_cmd": "make -j4",
+			"shell_cmd": "make",
 			"syntax": "Packages/CMakeBuilder/Syntax/Make.sublime-syntax",
 			"variants":
 			[
 				{
 					"name": "clean",
-					"shell_cmd": "make -j4 clean"
+					"shell_cmd": "make clean"
 				},
 				{
 					"name": "install/strip",
-					"shell_cmd": "make -j4 install/strip"
+					"shell_cmd": "make install/strip"
 				},
 				{
 					"name": "install/local",
-					"shell_cmd": "make -j4 install/local"
+					"shell_cmd": "make install/local"
 				},
 				{
 					"name": "list_install_components",
-					"shell_cmd": "make -j4 list_install_components"
+					"shell_cmd": "make list_install_components"
 				},
 				{
 					"name": "rebuild_cache",
-					"shell_cmd": "make -j4 rebuild_cache"
+					"shell_cmd": "make rebuild_cache"
 				},
 				{
 					"name": "execs",
-					"shell_cmd": "make -j4 execs"
+					"shell_cmd": "make execs"
 				},
 				{
 					"name": "package_source",
-					"shell_cmd": "make -j4 package_source"
+					"shell_cmd": "make package_source"
 				},
 				{
 					"name": "ContinuousCoverage",
-					"shell_cmd": "make -j4 ContinuousCoverage"
+					"shell_cmd": "make ContinuousCoverage"
 				},
 				{
 					"name": "mir_top_files",
-					"shell_cmd": "make -j4 mir_top_files"
+					"shell_cmd": "make mir_top_files"
 				},
 				{
 					"name": "ContinuousTest",
-					"shell_cmd": "make -j4 ContinuousTest"
+					"shell_cmd": "make ContinuousTest"
 				},
 				{
 					"name": "ContinuousBuild",
-					"shell_cmd": "make -j4 ContinuousBuild"
+					"shell_cmd": "make ContinuousBuild"
 				},
 				{
 					"name": "ContinuousStart",
-					"shell_cmd": "make -j4 ContinuousStart"
+					"shell_cmd": "make ContinuousStart"
 				},
 				{
 					"name": "ExperimentalBuild",
-					"shell_cmd": "make -j4 ExperimentalBuild"
+					"shell_cmd": "make ExperimentalBuild"
 				},
 				{
 					"name": "ExperimentalCoverage",
-					"shell_cmd": "make -j4 ExperimentalCoverage"
+					"shell_cmd": "make ExperimentalCoverage"
 				},
 				{
 					"name": "ExperimentalSubmit",
-					"shell_cmd": "make -j4 ExperimentalSubmit"
+					"shell_cmd": "make ExperimentalSubmit"
 				},
 				{
 					"name": "ContinuousUpdate",
-					"shell_cmd": "make -j4 ContinuousUpdate"
+					"shell_cmd": "make ContinuousUpdate"
 				},
 				{
 					"name": "ExperimentalUpdate",
-					"shell_cmd": "make -j4 ExperimentalUpdate"
+					"shell_cmd": "make ExperimentalUpdate"
 				},
 				{
 					"name": "install",
-					"shell_cmd": "make -j4 install"
+					"shell_cmd": "make install"
 				},
 				{
 					"name": "ExperimentalStart",
-					"shell_cmd": "make -j4 ExperimentalStart"
+					"shell_cmd": "make ExperimentalStart"
 				},
 				{
 					"name": "NightlyMemCheck",
-					"shell_cmd": "make -j4 NightlyMemCheck"
+					"shell_cmd": "make NightlyMemCheck"
 				},
 				{
 					"name": "test",
-					"shell_cmd": "make -j4 test"
+					"shell_cmd": "make test"
 				},
 				{
 					"name": "package",
-					"shell_cmd": "make -j4 package"
+					"shell_cmd": "make package"
 				},
 				{
 					"name": "ExperimentalConfigure",
-					"shell_cmd": "make -j4 ExperimentalConfigure"
+					"shell_cmd": "make ExperimentalConfigure"
 				},
 				{
 					"name": "NightlyCoverage",
-					"shell_cmd": "make -j4 NightlyCoverage"
+					"shell_cmd": "make NightlyCoverage"
 				},
 				{
 					"name": "NightlyTest",
-					"shell_cmd": "make -j4 NightlyTest"
+					"shell_cmd": "make NightlyTest"
 				},
 				{
 					"name": "ContinuousMemCheck",
-					"shell_cmd": "make -j4 ContinuousMemCheck"
+					"shell_cmd": "make ContinuousMemCheck"
 				},
 				{
 					"name": "uninstall",
-					"shell_cmd": "make -j4 uninstall"
+					"shell_cmd": "make uninstall"
 				},
 				{
 					"name": "NightlyBuild",
-					"shell_cmd": "make -j4 NightlyBuild"
+					"shell_cmd": "make NightlyBuild"
 				},
 				{
 					"name": "NightlyConfigure",
-					"shell_cmd": "make -j4 NightlyConfigure"
+					"shell_cmd": "make NightlyConfigure"
 				},
 				{
 					"name": "ExperimentalMemCheck",
-					"shell_cmd": "make -j4 ExperimentalMemCheck"
+					"shell_cmd": "make ExperimentalMemCheck"
 				},
 				{
 					"name": "check",
-					"shell_cmd": "make -j4 check"
+					"shell_cmd": "make check"
 				},
 				{
 					"name": "ContinuousConfigure",
-					"shell_cmd": "make -j4 ContinuousConfigure"
+					"shell_cmd": "make ContinuousConfigure"
 				},
 				{
 					"name": "NightlyMemoryCheck",
-					"shell_cmd": "make -j4 NightlyMemoryCheck"
+					"shell_cmd": "make NightlyMemoryCheck"
 				},
 				{
 					"name": "Continuous",
-					"shell_cmd": "make -j4 Continuous"
+					"shell_cmd": "make Continuous"
 				},
 				{
 					"name": "Experimental",
-					"shell_cmd": "make -j4 Experimental"
+					"shell_cmd": "make Experimental"
 				},
 				{
 					"name": "libs",
-					"shell_cmd": "make -j4 libs"
+					"shell_cmd": "make libs"
 				},
 				{
 					"name": "NightlyStart",
-					"shell_cmd": "make -j4 NightlyStart"
+					"shell_cmd": "make NightlyStart"
 				},
 				{
 					"name": "Nightly",
-					"shell_cmd": "make -j4 Nightly"
+					"shell_cmd": "make Nightly"
 				},
 				{
 					"name": "NightlyUpdate",
-					"shell_cmd": "make -j4 NightlyUpdate"
+					"shell_cmd": "make NightlyUpdate"
 				},
 				{
 					"name": "ContinuousSubmit",
-					"shell_cmd": "make -j4 ContinuousSubmit"
+					"shell_cmd": "make ContinuousSubmit"
 				},
 				{
 					"name": "ExperimentalTest",
-					"shell_cmd": "make -j4 ExperimentalTest"
+					"shell_cmd": "make ExperimentalTest"
 				},
 				{
 					"name": "NightlySubmit",
-					"shell_cmd": "make -j4 NightlySubmit"
+					"shell_cmd": "make NightlySubmit"
 				},
 				{
 					"name": "mir",
-					"shell_cmd": "make -j4 mir"
+					"shell_cmd": "make mir"
 				},
 				{
 					"name": "mir_templates",
-					"shell_cmd": "make -j4 mir_templates"
+					"shell_cmd": "make mir_templates"
 				},
 				{
 					"name": "mir-weight-matrix",
-					"shell_cmd": "make -j4 mir-weight-matrix"
+					"shell_cmd": "make mir-weight-matrix"
 				},
 				{
 					"name": "mir-tool",
-					"shell_cmd": "make -j4 mir-tool"
+					"shell_cmd": "make mir-tool"
 				},
 				{
 					"name": "mir-list",
-					"shell_cmd": "make -j4 mir-list"
+					"shell_cmd": "make mir-list"
 				},
 				{
 					"name": "mir-make-lsm",
-					"shell_cmd": "make -j4 mir-make-lsm"
+					"shell_cmd": "make mir-make-lsm"
 				},
 				{
 					"name": "mir-integrate",
-					"shell_cmd": "make -j4 mir-integrate"
+					"shell_cmd": "make mir-integrate"
 				},
 				{
 					"name": "mir-inspect",
-					"shell_cmd": "make -j4 mir-inspect"
+					"shell_cmd": "make mir-inspect"
 				},
 				{
 					"name": "mir-compare",
-					"shell_cmd": "make -j4 mir-compare"
+					"shell_cmd": "make mir-compare"
 				},
 				{
 					"name": "mir-get-data",
-					"shell_cmd": "make -j4 mir-get-data"
+					"shell_cmd": "make mir-get-data"
 				},
 				{
 					"name": "mir-gaussian-fractions",
-					"shell_cmd": "make -j4 mir-gaussian-fractions"
+					"shell_cmd": "make mir-gaussian-fractions"
 				},
 				{
 					"name": "mir-config",
-					"shell_cmd": "make -j4 mir-config"
+					"shell_cmd": "make mir-config"
 				},
 				{
 					"name": "mir-shared-memory",
-					"shell_cmd": "make -j4 mir-shared-memory"
+					"shell_cmd": "make mir-shared-memory"
 				},
 				{
 					"name": "mir-formula",
-					"shell_cmd": "make -j4 mir-formula"
+					"shell_cmd": "make mir-formula"
 				},
 				{
 					"name": "mir-statistics",
-					"shell_cmd": "make -j4 mir-statistics"
+					"shell_cmd": "make mir-statistics"
 				},
 				{
 					"name": "lsm",
-					"shell_cmd": "make -j4 lsm"
+					"shell_cmd": "make lsm"
 				},
 				{
 					"name": "grids",
-					"shell_cmd": "make -j4 grids"
+					"shell_cmd": "make grids"
 				},
 				{
 					"name": "__get_data_download_mir_tests_files_msl_regular_ll_3-3_grib",
-					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_msl_regular_ll_3-3_grib"
+					"shell_cmd": "make __get_data_download_mir_tests_files_msl_regular_ll_3-3_grib"
 				},
 				{
 					"name": "__get_data_download_mir_tests_files_vo-d_sh_grib",
-					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_vo-d_sh_grib"
+					"shell_cmd": "make __get_data_download_mir_tests_files_vo-d_sh_grib"
 				},
 				{
 					"name": "__get_data_download_mir_tests_files_msl_N640_grib",
-					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_msl_N640_grib"
+					"shell_cmd": "make __get_data_download_mir_tests_files_msl_N640_grib"
 				},
 				{
 					"name": "__get_data_download_mir_tests_files_q_F640_grib",
-					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_q_F640_grib"
+					"shell_cmd": "make __get_data_download_mir_tests_files_q_F640_grib"
 				},
 				{
 					"name": "__get_data_download_mir_tests_files_msl_regular_ll_1-1_grib",
-					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_msl_regular_ll_1-1_grib"
+					"shell_cmd": "make __get_data_download_mir_tests_files_msl_regular_ll_1-1_grib"
 				},
 				{
 					"name": "__get_data_download_mir_tests_files_z_sh_grib",
-					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_z_sh_grib"
+					"shell_cmd": "make __get_data_download_mir_tests_files_z_sh_grib"
 				},
 				{
 					"name": "__get_data_download_mir_tests_files_msl_regular_ll_2-2_grib",
-					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_msl_regular_ll_2-2_grib"
+					"shell_cmd": "make __get_data_download_mir_tests_files_msl_regular_ll_2-2_grib"
 				},
 				{
 					"name": "__get_data_download_mir_tests_files_2t_O640_grib",
-					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_2t_O640_grib"
+					"shell_cmd": "make __get_data_download_mir_tests_files_2t_O640_grib"
 				}
 			],
 			"working_dir": "${project_path}/../../build/mir"

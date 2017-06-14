@@ -19,6 +19,7 @@
 #include "mir/action/plan/Action.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/RuntimeParametrisation.h"
+#include "mir/action/context/Context.h"
 
 
 namespace mir {
@@ -112,9 +113,27 @@ void ActionPlan::add(Action *action)  {
 
 
 void ActionPlan::execute(context::Context & ctx) const {
+
+    const char* sep = "###################################################################################";
+
     for (std::vector<Action *>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
-        eckit::Log::debug<LibMir>() << "Executing " << **j << std::endl;
+        eckit::Log::debug<LibMir>() << "Executing:"
+                                    << std::endl
+                                    << sep
+                                    << std::endl
+                                    << **j
+                                    << std::endl
+                                    << sep
+                                    << std::endl;
         (*j)->execute(ctx);
+        eckit::Log::debug<LibMir>() << "Result:"
+                                    << std::endl
+                                    << sep
+                                    << std::endl
+                                    << ctx
+                                     << std::endl
+                                    << sep
+                                    << std::endl;
     }
 }
 
@@ -145,6 +164,11 @@ void ActionPlan::print(std::ostream &out) const {
     out << "]";
 }
 
+void ActionPlan::dump(std::ostream &out) const {
+    for (std::vector<Action *>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
+        out << "      ==> " << *(*j) << std::endl;
+    }
+}
 
 }  // namespace action
 }  // namespace mir

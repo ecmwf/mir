@@ -29,7 +29,7 @@ RotatedIterator::RotatedIterator(Iterator* iterator, const util::Rotation& rotat
     rotation_(rotation) {
 
     // Setup projection using South Pole rotated position, as seen from the non-rotated frame
-    const eckit::geometry::LLPoint2 pole(rotation_.south_pole_longitude(), rotation_.south_pole_latitude());
+    const eckit::geometry::LLPoint2 pole(rotation_.south_pole_longitude().value(), rotation_.south_pole_latitude().value());
 
     atlas::util::Config config;
     config.set("type", "rotated_lonlat");

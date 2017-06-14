@@ -17,6 +17,7 @@
 #define mir_util_Rotation_h
 
 #include <iosfwd>
+#include "mir/util/Types.h"
 
 
 struct grib_info;
@@ -71,9 +72,9 @@ public:
 
     // -- Contructors
     explicit Rotation(const param::MIRParametrisation&);
-    explicit Rotation(double south_pole_latitude = -90,
-                      double south_pole_longitude = 0,
-                      double south_pole_rotation_angle = 0);
+    explicit Rotation(const Latitude& south_pole_latitude = Latitude::SOUTH_POLE,
+                      const Longitude& south_pole_longitude = Longitude::GREENWICH,
+                      double south_pole_rotation_angle = 0.0);
 
     // -- Destructor
     ~Rotation();  // Change to virtual if base class
@@ -89,11 +90,11 @@ public:
 
     atlas::Grid rotate(const atlas::Grid&) const;
 
-    double south_pole_latitude() const {
+    const Latitude& south_pole_latitude() const {
         return south_pole_latitude_;
     }
 
-    double south_pole_longitude() const {
+    const Longitude& south_pole_longitude() const {
         return south_pole_longitude_;
     }
 
@@ -136,8 +137,8 @@ private:
 
     // -- Members
 
-    double south_pole_latitude_;
-    double south_pole_longitude_;
+    Latitude south_pole_latitude_;
+    Longitude south_pole_longitude_;
     double south_pole_rotation_angle_;
 
     // -- Methods

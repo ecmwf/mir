@@ -84,13 +84,13 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
     // eckit::Log::info() << "AdjustWindsDirections::windDirections " << *iter << std::endl;
 
 
-    Latitude lat = 0;
-    Longitude lon = 0;
+    Latitude lat;
+    Longitude lon;
 
     // Inspired from HPSHGPW
 
-    double pole_longitude = -rotation_.south_pole_longitude();
-    double theta = util::angles::degree_to_radian(rotation_.south_pole_latitude());
+    double pole_longitude = -rotation_.south_pole_longitude().value();
+    double theta = util::angles::degree_to_radian(rotation_.south_pole_latitude().value());
     double sin_theta = -sin(theta);
     double cos_theta = -cos(theta);
 

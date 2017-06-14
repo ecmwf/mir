@@ -73,6 +73,8 @@ public:
     size_t size() const;
     const Action& action(size_t) const;
 
+    void dump(std::ostream&) const;
+
     // -- Overridden methods
     // None
 

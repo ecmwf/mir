@@ -28,8 +28,8 @@ namespace mir {
 namespace util {
 
 
-Rotation::Rotation(double south_pole_latitude,
-                   double south_pole_longitude,
+Rotation::Rotation(const Latitude& south_pole_latitude,
+                   const Longitude& south_pole_longitude,
                    double south_pole_rotation_angle) :
     south_pole_latitude_(south_pole_latitude),
     south_pole_longitude_(south_pole_longitude),
@@ -78,8 +78,8 @@ void Rotation::fill(grib_info& info) const  {
     info.grid.grid_type = GRIB_UTIL_GRID_SPEC_ROTATED_LL;
 
     // info.grid.uvRelativeToGrid= isec2[18]==8 ? 1 : 0;
-    info.grid.latitudeOfSouthernPoleInDegrees  = south_pole_latitude_;
-    info.grid.longitudeOfSouthernPoleInDegrees = south_pole_longitude_;
+    info.grid.latitudeOfSouthernPoleInDegrees  = south_pole_latitude_.value();
+    info.grid.longitudeOfSouthernPoleInDegrees = south_pole_longitude_.value();
     info.grid.uvRelativeToGrid = 1; // FIXME: only set for winds
 
     // This is missing from the grib_spec
@@ -94,7 +94,7 @@ void Rotation::fill(grib_info& info) const  {
 
 
 void Rotation::fill(api::MIRJob& job) const  {
-    job.set("rotation", south_pole_latitude_, south_pole_longitude_);
+    job.set("rotation", south_pole_latitude_.value(), south_pole_longitude_.value());
 }
 
 
@@ -112,7 +112,7 @@ atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
 
     atlas::util::Config projection;
     projection.set("type", "rotated_lonlat");
-    projection.set("south_pole", std::vector<double>({ south_pole_longitude_, south_pole_latitude_ }));
+    projection.set("south_pole", std::vector<double>({ south_pole_longitude_.value(), south_pole_latitude_.value() }));
     projection.set("rotation_angle", south_pole_rotation_angle_);
 
     atlas::util::Config config(grid.spec());
