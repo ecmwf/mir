@@ -74,6 +74,26 @@ public:
         return Longitude(value_ - value);
     }
 
+    //======================================
+
+    Longitude& operator+=(const eckit::Fraction& value) {
+        value_ += double(value);
+        return *this;
+    }
+
+    Longitude& operator-=(const eckit::Fraction& value){
+        value_ -= double(value);
+        return *this;
+    }
+
+    Longitude operator+(const eckit::Fraction& value) const {
+        return Longitude(value_ + double(value));
+    }
+
+    Longitude operator-(const eckit::Fraction& value) const {
+        return Longitude(value_ - double(value));
+    }
+    //========================================
     //========================================
 
     Longitude& operator+=(const Longitude& other) {

@@ -75,6 +75,25 @@ public:
         return Latitude(value_ - value);
     }
 
+ //======================================
+
+    Latitude& operator+=(const eckit::Fraction& value) {
+        value_ += double(value);
+        return *this;
+    }
+
+    Latitude& operator-=(const eckit::Fraction& value){
+        value_ -= double(value);
+        return *this;
+    }
+
+    Latitude operator+(const eckit::Fraction& value) const {
+        return Latitude(value_ + double(value));
+    }
+
+    Latitude operator-(const eckit::Fraction& value) const {
+        return Latitude(value_ - double(value));
+    }
     //========================================
 
     Latitude& operator+=(const Latitude& other) {
