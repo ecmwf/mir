@@ -62,12 +62,11 @@ void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, con
 
 
 util::Domain Gridded::domain() const {
-    using value_t = util::BoundingBox::value_type;
 
-    const value_t& n = includesNorthPole()? util::BoundingBox::NORTH_POLE : bbox_.north();
-    const value_t& s = includesSouthPole()? util::BoundingBox::SOUTH_POLE : bbox_.south();
-    const value_t& w = bbox_.west();
-    const value_t& e = isPeriodicWestEast()? bbox_.west() + util::BoundingBox::THREE_SIXTY : bbox_.east();
+    const Latitude& n = includesNorthPole()? util::BoundingBox::NORTH_POLE : bbox_.north();
+    const Latitude& s = includesSouthPole()? util::BoundingBox::SOUTH_POLE : bbox_.south();
+    const Longitude& w = bbox_.west();
+    const Longitude& e = isPeriodicWestEast()? bbox_.west() + util::BoundingBox::THREE_SIXTY : bbox_.east();
 
     return util::Domain(n, w, s, e);
 }
