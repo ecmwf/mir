@@ -73,10 +73,10 @@ BoundingBox::~BoundingBox() {
 
 void BoundingBox::print(std::ostream &out) const {
     out << "BoundingBox["
-        <<  "north=" << double(north_)
-        << ",west=" << double(west_)
-        << ",south=" << double(south_)
-        << ",east=" << double(east_)
+        <<  "north=" << north_
+        << ",west=" << west_
+        << ",south=" << south_
+        << ",east=" << east_
         << "]";
 }
 
@@ -144,11 +144,11 @@ void BoundingBox::normalise() {
 
 Longitude BoundingBox::normalise(Longitude lon) const {
 
-    while (eckit::types::is_strictly_greater(lon, east_)) {
+    while (lon > east_) {
         lon -= THREE_SIXTY;
     }
 
-    while (eckit::types::is_strictly_greater(west_, lon)) {
+    while (lon < west_) {
         lon += THREE_SIXTY;
     }
 
@@ -158,10 +158,10 @@ Longitude BoundingBox::normalise(Longitude lon) const {
 
 bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
     const Longitude nlon = normalise(lon);
-    return eckit::types::is_approximately_greater_or_equal(north_, lat) &&
-           eckit::types::is_approximately_greater_or_equal(lat, south_) &&
-           eckit::types::is_approximately_greater_or_equal(nlon, west_) &&
-           eckit::types::is_approximately_greater_or_equal(east_, nlon);
+    return (lat <= north_) &&
+           (lat >= south_) &&
+           (nlon >= west_) &&
+           (nlon < - east_);
 }
 
 
@@ -170,7 +170,7 @@ static size_t computeN(const T& first, const T& last, const U& inc) {
     ASSERT(first <= last);
     ASSERT(inc > 0);
 
-    long long n = (last- first) / inc;
+    long long n = (last - first) / inc;
 
     return n + 1;
 }
@@ -185,13 +185,13 @@ size_t BoundingBox::computeNj(const util::Increments& increments) const {
 
 void BoundingBox::makeName(std::ostream& out) const {
     out << "-"
-        << double(north_)
+        << north_
         << ":"
-        << double(west_)
+        << west_
         << ":"
-        << double(south_)
+        << south_
         << ":"
-        << double(east_);
+        << east_;
 }
 
 

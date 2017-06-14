@@ -47,7 +47,8 @@ public:
     // -- Contructors
 
     explicit Increments(const param::MIRParametrisation &);
-    explicit Increments(const eckit::Fraction& west_east = 0, const eckit::Fraction& south_north = 0);
+    explicit Increments(const eckit::Fraction& west_east = eckit::Fraction(),
+                        const eckit::Fraction& south_north = eckit::Fraction());
 
     // -- Destructor
 

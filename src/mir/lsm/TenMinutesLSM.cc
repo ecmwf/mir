@@ -96,18 +96,18 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 
     while (iter->next(lat, lon)) {
 
-        ASSERT(lat >= -90);
-        ASSERT(lat <= 90);
+        ASSERT(lat >= Latitude::SOUTH_POLE);
+        ASSERT(lat <= Latitude::NORTH_POLE);
 
 
-        while (lon >= 360) {
+        while (lon >= 360.0) {
             lon -= 360;
         }
-        while (lon < 0) {
+        while (lon < 0.0) {
             lon += 360;
         }
 
-        int row = int(double((90.0 - lat) * (ROWS - 1) / 180));
+        int row = int(double((Latitude::NORTH_POLE - lat) * (ROWS - 1) / 180));
         ASSERT(row >= 0 && row < int(ROWS));
 
         int col = int(double(lon * COLS / 360.0));

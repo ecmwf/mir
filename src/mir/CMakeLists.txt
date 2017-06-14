@@ -511,6 +511,10 @@ list(
     util/Compare.h
     util/Domain.cc
     util/Domain.h
+    util/Latitude.cc
+    util/Latitude.h
+    util/Longitude.cc
+    util/Longitude.h
     util/Formula.cc
     util/Formula.h
     util/FormulaBinop.cc

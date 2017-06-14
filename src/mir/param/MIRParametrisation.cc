@@ -54,7 +54,7 @@ bool MIRParametrisation::get(const std::string &name, std::vector<size_t> &value
     return false;
 }
 
-bool MIRParametrisation::get(const std::string& name, eckit::Fraction& value) const {
+bool MIRParametrisation::get(const std::string& name, Latitude& value) const {
     double v;
     if(get(name, v)) {
         value = v;
@@ -63,6 +63,25 @@ bool MIRParametrisation::get(const std::string& name, eckit::Fraction& value) co
     return false;
 }
 
+
+bool MIRParametrisation::get(const std::string& name, Longitude& value) const {
+    double v;
+    if(get(name, v)) {
+        value = v;
+        return true;
+    }
+    return false;
+}
+
+
+bool MIRParametrisation::get(const std::string& name, eckit::Fraction& value) const {
+    double v;
+    if(get(name, v)) {
+        value = v;
+        return true;
+    }
+    return false;
+}
 
 
 }  // namespace param

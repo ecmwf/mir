@@ -120,28 +120,28 @@ MappedMask::MappedMask(const std::string &name,
 
     while (iter->next(lat, lon)) {
 
-        if (lat < -90) {
+        if (lat < Latitude::SOUTH_POLE) {
             std::ostringstream oss;
-            oss << "GRID " << " returns a latitude of " << lat << " (lat+90)=" << (lat + 90);
+            oss << "GRID " << " returns a latitude of " << lat << " (lat+90)=" << (lat + 90.0);
             throw eckit::SeriousBug(oss.str());
         }
 
-        ASSERT(lat >= -90);
+        ASSERT(lat >= Latitude::SOUTH_POLE);
 
-        if (lat > 90) {
+        if (lat > Latitude::NORTH_POLE) {
             std::ostringstream oss;
-            oss << "GRID " << " returns a latitude of " << lat << " (lat-90)=" << (lat - 90);
+            oss << "GRID " << " returns a latitude of " << lat << " (lat-90)=" << (lat - 90.0);
             throw eckit::SeriousBug(oss.str());
         }
 
 
-        ASSERT(lat <= 90);
+        ASSERT(lat <= Latitude::NORTH_POLE);
 
-        while (lon >= 360) {
-            lon -= 360;
+        while (lon >= Longitude::GLOBE) {
+            lon -= Longitude::GLOBE;
         }
-        while (lon < 0) {
-            lon += 360;
+        while (lon < Longitude::GREENWICH) {
+            lon += Longitude::GLOBE;
         }
 
         // std::cout << lat << " " << lon << std::endl;

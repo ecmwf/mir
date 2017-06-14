@@ -104,8 +104,8 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
 
         // For some reason, the algorithms only work between in ]-180,180]
         lon = util::angles::between_m180_and_p180(lon);
-        if (eckit::types::is_approximately_equal(lon, -180.0)) {
-            lon = 180.0;
+        if (lon == Longitude::MINUS_DATE_LINE) {
+            lon = Longitude::DATE_LINE;
         }
 
         double radian_lon = util::angles::degree_to_radian(lon);

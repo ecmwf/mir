@@ -18,11 +18,7 @@
 
 #include <iosfwd>
 #include "eckit/config/Parametrisation.h"
-
-
-namespace eckit {
-    class Fraction;
-}
+#include "mir/util/Types.h"
 
 namespace mir {
 namespace param {
@@ -71,7 +67,10 @@ public:
 
     bool get(const std::string& name, size_t& value) const;
     bool get(const std::string& name, std::vector<size_t>& value) const;
+
     bool get(const std::string& name, eckit::Fraction& value) const;
+    bool get(const std::string& name, Latitude& value) const;
+    bool get(const std::string& name, Longitude& value) const;
 
     // -- Class members
     // None

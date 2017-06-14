@@ -47,7 +47,6 @@ void AdjustWindsScaleCosLatitude::print(std::ostream &out) const {
 
 
 void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
-    using eckit::types::is_approximately_equal;
 
     data::MIRField& field = ctx.field();
     ASSERT(field.dimensions() > 0);
@@ -65,8 +64,8 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
     Latitude lat = 0;
     Longitude lon = 0;
     for (std::vector<double>::iterator s = scale.begin(); s != scale.end() && iter->next(lat, lon); ++s) {
-        *s = is_approximately_equal(lat, -90.)? 0.
-           : is_approximately_equal(lat,  90.)? 0.
+        *s = (lat == Latitude::SOUTH_POLE)? 0.
+           : (lat == Latitude::NORTH_POLE)? 0.
            : 1./std::cos( util::angles::degree_to_radian(lat) );
     }
 

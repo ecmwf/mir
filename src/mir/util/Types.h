@@ -14,18 +14,8 @@
 #ifndef mir_util_Types_H
 #define mir_util_Types_H
 
-#include "eckit/types/FloatCompare.h"
-#include "eckit/types/Fraction.h"
-
-
-namespace mir {
-
-
-	typedef double Latitude;
-	typedef eckit::Fraction Longitude;
-
-
-}  // namespace mir
+#include "mir/util/Latitude.h"
+#include "mir/util/Longitude.h"
 
 
 #endif

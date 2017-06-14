@@ -95,7 +95,12 @@ void CroppingCacheEntry::load(const eckit::PathName& path)  {
     eckit::TraceTimer<LibMir> timer("Loading cropping from cache");
 
     eckit::FileStream f(path, "r");
-    eckit::Fraction n, w, s, e;
+
+    Latitude n;
+    Longitude w;
+    Latitude s;
+    Longitude e;
+
     f >> n;
     f >> w;
     f >> s;

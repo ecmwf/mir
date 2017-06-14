@@ -128,14 +128,14 @@ void CheckerBoard::execute(context::Context & ctx) const {
 
         while (iter->next(lat, lon)) {
 
-            lat = 90 - lat;
+            lat = Latitude::NORTH_POLE - lat;
 
-            while (lon >= 369) {
-                lon -= 360;
+            while (lon >= Longitude::GLOBE) {
+                lon -= Longitude::GLOBE;
             }
 
-            while (lon < 0) {
-                lon += 360;
+            while (lon < Longitude::GREENWICH) {
+                lon += Longitude::GLOBE;
             }
 
             size_t c = size_t(double(lat) / dns);

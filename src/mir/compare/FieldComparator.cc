@@ -285,7 +285,7 @@ void FieldComparator::getField(const MultiFile& multi,
 
     Field field(path, offset, size);
 
-    const char *p = buffer + size - 4;
+    const char *p = ((const char*)buffer) + size - 4;
 
     if (p[0] != '7' || p[1] != '7' || p[2] != '7' || p[3] != '7')
         throw eckit::SeriousBug("No 7777 found");

@@ -49,7 +49,7 @@ bool ShiftIterator::next(Latitude &lat, Longitude &lon) {
         lon += eastwards;
         lat += northwards;
 
-        if (eckit::types::is_strictly_greater(lat, 90.) || eckit::types::is_strictly_greater(-90., lat)) {
+        if (lat > Latitude::NORTH_POLE || lat < Latitude::SOUTH_POLE) {
             continue;
         }
 
