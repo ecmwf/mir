@@ -41,9 +41,10 @@ public:
     Longitude(double value = 0): value_(value) {}
     Longitude(const eckit::Fraction& value): value_(value) {}
 
-    operator double() const { return value_; }
-    operator eckit::Fraction() const { return eckit::Fraction(value_); }
+    double value() const { return value_; }
+    eckit::Fraction fraction() const { return eckit::Fraction(value_); }
 
+    bool sameWithGrib1Accuracy(const Longitude& other) const;
     //========================================
     bool operator==(double other) const;
     bool operator!=(double other) const;
@@ -72,6 +73,14 @@ public:
 
     Longitude operator-(double value) const {
         return Longitude(value_ - value);
+    }
+
+    Longitude operator/(double value) const {
+        return Longitude(value_ / value);
+    }
+
+    Longitude operator*(double value) const {
+        return Longitude(value_ * value);
     }
 
     //======================================

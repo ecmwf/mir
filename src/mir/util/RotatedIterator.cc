@@ -53,7 +53,7 @@ bool RotatedIterator::next(Latitude &lat, Longitude &lon) {
     if (iterator_->next(lat, lon)) {
 
         // use Point2 to avoid the LLPoint2 normalising, notice the order
-        eckit::geometry::Point2 p = projection_.lonlat(eckit::geometry::Point2(lon, lat));
+        eckit::geometry::Point2 p = projection_.lonlat(eckit::geometry::Point2(lon.value(), lat.value()));
 
         lat = p[eckit::geometry::LAT];
         lon = p[eckit::geometry::LON];

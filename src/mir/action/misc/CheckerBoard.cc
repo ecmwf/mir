@@ -138,8 +138,8 @@ void CheckerBoard::execute(context::Context & ctx) const {
                 lon += Longitude::GLOBE;
             }
 
-            size_t c = size_t(double(lat) / dns);
-            size_t r = size_t(double(lon) / dwe);
+            size_t c = size_t(lat.value() / dns);
+            size_t r = size_t(lon.value() / dwe);
 
             if (!hasMissing || values[j] != missingValue) {
                 values[j] = boxes[std::make_pair(r, c)];

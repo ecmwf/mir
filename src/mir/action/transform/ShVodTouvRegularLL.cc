@@ -30,7 +30,8 @@ ShVodTouvRegularLL::ShVodTouvRegularLL(const param::MIRParametrisation &parametr
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
     ASSERT(value.size() == 2);
-    increments_ = util::Increments(value[0], value[1]);
+    increments_ = util::Increments(eckit::Fraction(value[0]),
+            eckit::Fraction(value[1]));
 
 }
 

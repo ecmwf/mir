@@ -18,6 +18,8 @@
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
+#include "eckit/types/Fraction.h"
+
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"

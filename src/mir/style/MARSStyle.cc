@@ -53,7 +53,7 @@ long MARSStyle::getTargetGaussianNumber() const {
         ASSERT(grid.size() == 2);
 
         util::BoundingBox bbox(90, 0, 0, 360);
-        long N = long(bbox.computeNj(util::Increments(grid[0], grid[1]))) - 1;
+        long N = long(bbox.computeNj(util::Increments(eckit::Fraction(grid[0]), eckit::Fraction(grid[1])))) - 1;
         return N;
     }
 

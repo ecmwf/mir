@@ -32,7 +32,8 @@ Gridded2RegularLLShift::Gridded2RegularLLShift(const param::MIRParametrisation &
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
     ASSERT(value.size() == 2);
-    increments_ = util::Increments(value[0], value[1]);
+    increments_ = util::Increments(eckit::Fraction(value[0]),
+                                   eckit::Fraction(value[1]));
 
     ASSERT(parametrisation_.get("user.area", value));
     ASSERT(value.size() == 4);
@@ -40,7 +41,8 @@ Gridded2RegularLLShift::Gridded2RegularLLShift(const param::MIRParametrisation &
     ASSERT(parametrisation_.get("user.shift", value));
     ASSERT(value.size() == 2);
 
-    shift_ = util::Shift(value[0], value[1]);
+    shift_ = util::Shift(eckit::Fraction(value[0]),
+                         eckit::Fraction(value[1]));
 
 }
 
@@ -66,11 +68,11 @@ const repres::Representation *Gridded2RegularLLShift::outputRepresentation() con
     eckit::Fraction we(increments_.west_east());
     eckit::Fraction sn(increments_.south_north());
 
-    double north = 90 - (90/sn).decimalPart() * sn;
-    double south = -90 -(-90/sn).decimalPart() * sn;
+    double north = 90 - (90 / sn).decimalPart() * sn;
+    double south = -90 - (-90 / sn).decimalPart() * sn;
 
     double west = 0;
-    double east = 360 -(360/we).decimalPart() * we;
+    double east = 360 - (360 / we).decimalPart() * we;
 
     util::BoundingBox bbox(north,
                            west,
@@ -78,8 +80,8 @@ const repres::Representation *Gridded2RegularLLShift::outputRepresentation() con
                            east - increments_.west_east());
 
     return new repres::latlon::RegularLLShift(bbox,
-                                              increments_,
-                                              shift_);
+            increments_,
+            shift_);
 }
 
 

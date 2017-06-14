@@ -164,22 +164,22 @@ bool RawInput::get(const std::string& name, double& value) const {
     eckit::Log::debug<LibMir>() << ">>>>>>>>>>>>> RawInput::get double (" << name << ")" << std::endl;
 
     if (name == "north") {
-        value = metadata_.bbox().north();
+        value = metadata_.bbox().north().value();
         return true;
     }
 
     if (name == "south") {
-        value = metadata_.bbox().south();
+        value = metadata_.bbox().south().value();
         return true;
     }
 
     if (name == "west") {
-        value = metadata_.bbox().west();
+        value = metadata_.bbox().west().value();
         return true;
     }
 
     if (name == "east") {
-        value = metadata_.bbox().east();
+        value = metadata_.bbox().east().value();
         return true;
     }
 
@@ -232,10 +232,10 @@ bool RawInput::get(const std::string& name, std::vector<double>& value) const {
 
     if (name == "area") {
         value.resize(4);
-        value[0] = metadata_.bbox().north(); // North
-        value[1] = metadata_.bbox().west(); // West
-        value[2] = metadata_.bbox().south(); // South
-        value[3] = metadata_.bbox().east(); // East
+        value[0] = metadata_.bbox().north().value(); // North
+        value[1] = metadata_.bbox().west().value(); // West
+        value[2] = metadata_.bbox().south().value(); // South
+        value[3] = metadata_.bbox().east().value(); // East
         return true;
     }
 

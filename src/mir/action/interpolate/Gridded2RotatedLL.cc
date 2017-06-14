@@ -34,7 +34,8 @@ Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation &parametris
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
     ASSERT(value.size() == 2);
-    increments_ = util::Increments(value[0], value[1]);
+    increments_ = util::Increments(eckit::Fraction(value[0]),
+                                   eckit::Fraction(value[1]));
 
     ASSERT(parametrisation_.get("user.rotation", value));
     ASSERT(value.size() == 2);
@@ -59,9 +60,9 @@ void Gridded2RotatedLL::print(std::ostream &out) const {
 
 const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
     return new repres::latlon::RotatedLL(
-                util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
-                increments_,
-                rotation_ );
+               util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
+               increments_,
+               rotation_ );
 }
 
 

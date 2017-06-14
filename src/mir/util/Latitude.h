@@ -42,8 +42,10 @@ public:
     Latitude(double value = 0): value_(value) {}
     Latitude(const eckit::Fraction& value): value_(value) {}
 
-    operator double() const { return value_; }
-    operator eckit::Fraction() const { return eckit::Fraction(value_); }
+    double value() const { return value_; }
+    eckit::Fraction fraction() const { return eckit::Fraction(value_); }
+
+    bool sameWithGrib1Accuracy(const Latitude& other) const;
 
     //========================================
     bool operator==(double other) const;
@@ -73,6 +75,10 @@ public:
 
     Latitude operator-(double value) const {
         return Latitude(value_ - value);
+    }
+
+    Latitude operator/(double value) const {
+        return Latitude(value_ / value);
     }
 
  //======================================
@@ -190,7 +196,9 @@ private:
     friend bool operator>=(double, const Latitude& other);
     friend bool operator<=(double, const Latitude& other);
 
-    friend Latitude operator+(double, const Latitude& other);
+    friend Latitude operator+(double value, const Latitude& l) {
+        return Latitude(value + l);
+    }
 
     friend Latitude operator-(double value, const Latitude& l) {
         return Latitude(value - l);

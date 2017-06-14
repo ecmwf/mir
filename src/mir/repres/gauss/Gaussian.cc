@@ -60,7 +60,7 @@ bool Gaussian::includesNorthPole() const {
     const std::vector<double>& lats = latitudes();
     ASSERT(lats.size() >= 2);
 
-    return cmp(bbox_.north(), lats.front());
+    return cmp(bbox_.north().value(), lats.front());
 }
 
 
@@ -71,7 +71,7 @@ bool Gaussian::includesSouthPole() const {
     const std::vector<double>& lats = latitudes();
     ASSERT(lats.size() >= 2);
 
-    return cmp(bbox_.south(), lats.back());
+    return cmp(bbox_.south().value(), lats.back());
 }
 
 

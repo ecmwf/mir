@@ -30,22 +30,24 @@ namespace action {
 
 
 Gridded2RotatedLLShift::Gridded2RotatedLLShift(const param::MIRParametrisation &parametrisation):
-  Gridded2GriddedInterpolation(parametrisation) {
+    Gridded2GriddedInterpolation(parametrisation) {
 
-  std::vector<double> value;
-  ASSERT(parametrisation_.get("user.grid", value));
-  ASSERT(value.size() == 2);
-  increments_ = util::Increments(value[0], value[1]);
+    std::vector<double> value;
+    ASSERT(parametrisation_.get("user.grid", value));
+    ASSERT(value.size() == 2);
+    increments_ = util::Increments(eckit::Fraction(value[0]),
+                                   eckit::Fraction(value[1]));
 
-  ASSERT(parametrisation_.get("user.rotation", value));
-  ASSERT(value.size() == 2);
+    ASSERT(parametrisation_.get("user.rotation", value));
+    ASSERT(value.size() == 2);
 
-  rotation_ = util::Rotation(value[0], value[1]);
+    rotation_ = util::Rotation(value[0], value[1]);
 
-  ASSERT(parametrisation_.get("user.shift", value));
-  ASSERT(value.size() == 2);
+    ASSERT(parametrisation_.get("user.shift", value));
+    ASSERT(value.size() == 2);
 
-  shift_ = util::Shift(value[0], value[1]);
+    shift_ = util::Shift(eckit::Fraction(value[0]),
+                         eckit::Fraction(value[1]));
 
 }
 
@@ -55,40 +57,40 @@ Gridded2RotatedLLShift::~Gridded2RotatedLLShift() {
 
 
 bool Gridded2RotatedLLShift::sameAs(const Action& other) const {
-  const Gridded2RotatedLLShift* o = dynamic_cast<const Gridded2RotatedLLShift*>(&other);
-  return o && (increments_ == o->increments_)
-         && (rotation_ == o->rotation_)
-         && (shift_ == o->shift_);
+    const Gridded2RotatedLLShift* o = dynamic_cast<const Gridded2RotatedLLShift*>(&other);
+    return o && (increments_ == o->increments_)
+           && (rotation_ == o->rotation_)
+           && (shift_ == o->shift_);
 }
 
 void Gridded2RotatedLLShift::print(std::ostream &out) const {
-  out << "Gridded2RotatedLLShift[increments=" << increments_
-      << ",rotation=" << rotation_
-      << ",shift=" << shift_ << "]";
+    out << "Gridded2RotatedLLShift[increments=" << increments_
+        << ",rotation=" << rotation_
+        << ",shift=" << shift_ << "]";
 }
 
 
 const repres::Representation *Gridded2RotatedLLShift::outputRepresentation() const {
 
-  eckit::Fraction we(increments_.west_east());
-  eckit::Fraction sn(increments_.south_north());
+    eckit::Fraction we(increments_.west_east());
+    eckit::Fraction sn(increments_.south_north());
 
-  double north = 90 - (90 / sn).decimalPart() * sn;
-  double south = -90 - (-90 / sn).decimalPart() * sn;
+    double north = 90 - (90 / sn).decimalPart() * sn;
+    double south = -90 - (-90 / sn).decimalPart() * sn;
 
-  double west = 0;
-  double east = 360 - (360 / we).decimalPart() * we;
+    double west = 0;
+    double east = 360 - (360 / we).decimalPart() * we;
 
-  util::BoundingBox bbox(north,
-                         west,
-                         south,
-                         east - increments_.west_east());
+    util::BoundingBox bbox(north,
+                           west,
+                           south,
+                           east - increments_.west_east());
 
-  return new repres::latlon::RotatedLLShift(
-           bbox,
-           increments_,
-           rotation_,
-           shift_);
+    return new repres::latlon::RotatedLLShift(
+               bbox,
+               increments_,
+               rotation_,
+               shift_);
 }
 
 

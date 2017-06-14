@@ -40,9 +40,11 @@ public:
 
     // -- Contructors
 
-    explicit Shift(const eckit::Fraction& west_east = eckit::Fraction(),
-        const eckit::Fraction& south_north = eckit::Fraction());
+    explicit Shift(const eckit::Fraction& west_east,
+                   const eckit::Fraction& south_north);
 
+    explicit Shift(double west_east = 0,
+                   double south_north = 0);
     // -- Destructor
 
     ~Shift(); // Change to virtual if base class

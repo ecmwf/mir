@@ -145,11 +145,11 @@ MappedMask::MappedMask(const std::string &name,
         }
 
         // std::cout << lat << " " << lon << std::endl;
-        int row = int((90.0 - double(lat)) * (ROWS - 1) / 180);
+        int row = int((90.0 - lat.value()) * (ROWS - 1) / 180);
                 // std::cout << " row " << row << std::endl;
         ASSERT(row >= 0 && row < int(ROWS));
 
-        int col = int(double(lon) * COLS / 360.0);
+        int col = int(lon.value() * COLS / 360.0);
         ASSERT(col >= 0 && col < int(COLS));
 
         size_t pos = COLS * row + col;

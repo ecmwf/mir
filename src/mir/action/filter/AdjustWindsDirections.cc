@@ -96,19 +96,19 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
 
     while (iter->next(lat, lon)) {
 
-        double radian_lat = util::angles::degree_to_radian(lat);
+        double radian_lat = util::angles::degree_to_radian(lat.value());
         double sin_lat = sin(radian_lat);
         double cos_lat = cos(radian_lat);
 
         lon += pole_longitude;
 
         // For some reason, the algorithms only work between in ]-180,180]
-        lon = util::angles::between_m180_and_p180(lon);
+        lon = util::angles::between_m180_and_p180(lon.value());
         if (lon == Longitude::MINUS_DATE_LINE) {
             lon = Longitude::DATE_LINE;
         }
 
-        double radian_lon = util::angles::degree_to_radian(lon);
+        double radian_lon = util::angles::degree_to_radian(lon.value());
         double sin_lon = sin(radian_lon);
         double cos_lon = cos(radian_lon);
         double z = normalize(sin_theta * sin_lat + cos_theta * cos_lat * cos_lon);

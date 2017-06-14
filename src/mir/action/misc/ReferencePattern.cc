@@ -113,7 +113,7 @@ void ReferencePattern::execute(context::Context & ctx) const {
         while (iter->next(lat, lon)) {
 
             if (!hasMissing || values[j] != missingValue) {
-                values[j] = range * sin(f1 * lon * deg2rad) * cos(f2 * lat * deg2rad) * 0.5 + median;
+                values[j] = range * sin(f1 * lon.value() * deg2rad) * cos(f2 * lat.value() * deg2rad) * 0.5 + median;
             }
 
             j++;

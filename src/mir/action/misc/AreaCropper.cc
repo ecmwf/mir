@@ -44,7 +44,7 @@ namespace action {
 struct LL {
     double lat_;
     double lon_;
-    LL(double lat, double lon): lat_(lat), lon_(lon) {}
+    LL(Latitude lat, Longitude lon): lat_(lat.value()), lon_(lon.value()) {}
     bool operator<(const LL &other) const {
         // Order must be like natural scanning mode
         if (lat_ == other.lat_) {

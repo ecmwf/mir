@@ -38,12 +38,24 @@ Increments::Increments(const eckit::Fraction& west_east,
     // ASSERT(south_north_ > 0);
 }
 
+
+Increments::Increments(double west_east,
+                       double south_north):
+
+    west_east_(west_east),
+    south_north_(south_north) {
+    // ASSERT(west_east_ > 0);
+    // ASSERT(south_north_ > 0);
+}
+
 Increments::Increments(const param::MIRParametrisation &parametrisation) {
 
     ASSERT(parametrisation.get("west_east_increment", west_east_));
     ASSERT(parametrisation.get("south_north_increment", south_north_));
 
 }
+
+
 
 Increments::~Increments() {
 }
@@ -77,8 +89,8 @@ void Increments::ratio(const Increments& other, size_t& we, size_t& ns) const {
 }
 
 bool Increments::matches(const BoundingBox& bbox) const {
-    eckit::Fraction we = (eckit::Fraction(bbox.east()) -  eckit::Fraction(bbox.west())) / eckit::Fraction(west_east_);
-    eckit::Fraction ns = (eckit::Fraction(bbox.north()) -  eckit::Fraction(bbox.south())) / eckit::Fraction(south_north_);
+    eckit::Fraction we = (bbox.east() - bbox.west()).fraction() / west_east_;
+    eckit::Fraction ns = (bbox.north() - bbox.south()).fraction() / south_north_;
     return we.integer() && ns.integer();
 }
 
@@ -101,14 +113,14 @@ static eckit::Fraction multiple(const eckit::Fraction& box1,
 
 
 Increments Increments::bestSubsetting(const BoundingBox& bbox) const {
-    bool zero_zero = (bbox.north() / eckit::Fraction(south_north_)).integer()
-                     && (bbox.south() / eckit::Fraction(south_north_)).integer()
-                     && (bbox.west() / eckit::Fraction(west_east_)).integer()
-                     && (bbox.east() / eckit::Fraction(west_east_)).integer();
+    bool zero_zero = (bbox.north().fraction() /south_north_).integer()
+                     && (bbox.south().fraction() /south_north_).integer()
+                     && (bbox.west().fraction() /west_east_).integer()
+                     && (bbox.east().fraction() /west_east_).integer();
 
     if (!zero_zero) {
-        eckit::Fraction we = multiple(bbox.east(), bbox.west(), west_east_);
-        eckit::Fraction ns = multiple(bbox.north(), bbox.south(), south_north_);
+        eckit::Fraction we = multiple(bbox.east().fraction(), bbox.west().fraction(), west_east_);
+        eckit::Fraction ns = multiple(bbox.north().fraction(), bbox.south().fraction(), south_north_);
         return Increments(we, ns);
     }
 
@@ -120,8 +132,8 @@ Shift Increments::shiftFromZeroZero(const BoundingBox& bbox) const {
     eckit::Fraction sn(south_north_);
     eckit::Fraction we(west_east_);
 
-    eckit::Fraction s = (bbox.south() / sn).decimalPart() * sn;
-    eckit::Fraction w = (bbox.west() / we).decimalPart() * we;
+    eckit::Fraction s = (bbox.south().fraction() / sn).decimalPart() * sn;
+    eckit::Fraction w = (bbox.west().fraction() / we).decimalPart() * we;
 
     return Shift(w, s);
 

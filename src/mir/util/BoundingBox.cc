@@ -84,10 +84,10 @@ static double rounded(double x) {
 
 void BoundingBox::fill(grib_info &info) const  {
     // Warning: scanning mode not considered
-    info.grid.latitudeOfFirstGridPointInDegrees  = rounded(north_);
-    info.grid.longitudeOfFirstGridPointInDegrees = rounded(west_);
-    info.grid.latitudeOfLastGridPointInDegrees   = rounded(south_);
-    info.grid.longitudeOfLastGridPointInDegrees  = rounded(east_);
+    info.grid.latitudeOfFirstGridPointInDegrees  = rounded(north_.value());
+    info.grid.longitudeOfFirstGridPointInDegrees = rounded(west_.value());
+    info.grid.latitudeOfLastGridPointInDegrees   = rounded(south_.value());
+    info.grid.longitudeOfLastGridPointInDegrees  = rounded(east_.value());
 }
 
 
@@ -100,7 +100,7 @@ void BoundingBox::hash(eckit::MD5 &md5) const {
 
 
 void BoundingBox::fill(api::MIRJob &job) const  {
-    job.set("area", north_, west_, south_, east_);
+    job.set("area", north_.value(), west_.value(), south_.value(), east_.value());
 }
 
 
@@ -158,12 +158,20 @@ bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
 }
 
 
-template<class T, class U>
-static size_t computeN(const T& first, const T& last, const U& inc) {
+template<class T>
+static size_t computeN(const T& first, const T& last, const eckit::Fraction& inc) {
     ASSERT(first <= last);
     ASSERT(inc > 0);
 
-    long long n = (last - first) / inc;
+    eckit::Fraction l = last.fraction();
+    eckit::Fraction f = first.fraction();
+    eckit::Fraction i = inc;
+
+    // std::cout << double(last) << " " << double(first) << " " << double(inc) << std::endl;
+
+    // std::cout << l << " " << f << " " << i << std::endl;
+
+    long long n = (l - f) / i;
 
     return n + 1;
 }

@@ -107,10 +107,10 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
             lon += 360;
         }
 
-        int row = int(double((Latitude::NORTH_POLE - lat) * (ROWS - 1) / 180));
+        int row = int((Latitude::NORTH_POLE - lat).value() * (ROWS - 1) / 180);
         ASSERT(row >= 0 && row < int(ROWS));
 
-        int col = int(double(lon * COLS / 360.0));
+        int col = int(lon.value() * COLS / 360.0);
         ASSERT(col >= 0 && col < int(COLS));
 
         mask_.push_back(ten_minutes_[row][col]);

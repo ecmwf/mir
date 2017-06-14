@@ -77,7 +77,7 @@ bool MIRParametrisation::get(const std::string& name, Longitude& value) const {
 bool MIRParametrisation::get(const std::string& name, eckit::Fraction& value) const {
     double v;
     if(get(name, v)) {
-        value = v;
+        value = eckit::Fraction(v);
         return true;
     }
     return false;

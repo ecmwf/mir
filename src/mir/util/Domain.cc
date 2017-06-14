@@ -19,10 +19,10 @@ namespace util {
 
 void Domain::print(std::ostream& os) const {
     os << "Domain["
-       <<  "north=" << double(north())
-       << ",west="  << double(west())
-       << ",south=" << double(south())
-       << ",east="  << double(east())
+       <<  "north=" << north()
+       << ",west="  << west()
+       << ",south=" << south()
+       << ",east="  << east()
        << ",isGlobal=" << isGlobal()
        // << ",includesPoleNorth=" << includesPoleNorth()
        // << ",includesPoleSouth=" << includesPoleSouth()
