@@ -101,8 +101,8 @@ void ReferencePattern::execute(context::Context & ctx) const {
         double range = maxvalue - minvalue;
 
         eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
-        repres::Iterator::value_type lat = 0;
-        repres::Iterator::value_type lon = 0;
+        Latitude lat = 0;
+        Longitude lon = 0;
 
         double f1 = frequencies[0] / 2.0;
         double f2 = frequencies[1];

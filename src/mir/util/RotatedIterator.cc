@@ -49,7 +49,7 @@ void RotatedIterator::print(std::ostream& out) const {
 }
 
 
-bool RotatedIterator::next(repres::Iterator::value_type& lat, repres::Iterator::value_type& lon) {
+bool RotatedIterator::next(Latitude &lat, Longitude &lon) {
     if (iterator_->next(lat, lon)) {
 
         // use Point2 to avoid the LLPoint2 normalising, notice the order

@@ -62,8 +62,8 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
 
     eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
     std::vector<double> scale(N);
-    repres::Iterator::value_type lat = 0;
-    repres::Iterator::value_type lon = 0;
+    Latitude lat = 0;
+    Longitude lon = 0;
     for (std::vector<double>::iterator s = scale.begin(); s != scale.end() && iter->next(lat, lon); ++s) {
         *s = is_approximately_equal(lat, -90.)? 0.
            : is_approximately_equal(lat,  90.)? 0.

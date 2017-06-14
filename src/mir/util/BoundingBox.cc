@@ -29,26 +29,26 @@
 namespace mir {
 namespace util {
 
-const BoundingBox::value_type BoundingBox::THREE_SIXTY(360);
-const BoundingBox::value_type BoundingBox::MINUS_ONE_EIGHTY(-180);
-const BoundingBox::value_type BoundingBox::ZERO(0);
-const BoundingBox::value_type BoundingBox::SOUTH_POLE(-90);
-const BoundingBox::value_type BoundingBox::NORTH_POLE(90);
+const Longitude BoundingBox::THREE_SIXTY(360);
+const Longitude BoundingBox::MINUS_ONE_EIGHTY(-180);
+const Longitude BoundingBox::LON_ZERO(0);
+const Latitude BoundingBox::SOUTH_POLE(-90);
+const Latitude BoundingBox::NORTH_POLE(90);
 
 
 BoundingBox::BoundingBox() :
     north_(NORTH_POLE),
-    west_(ZERO),
+    west_(LON_ZERO),
     south_(SOUTH_POLE),
     east_(THREE_SIXTY) {
     normalise();
 }
 
 
-BoundingBox::BoundingBox(const value_type& north,
-                         const value_type& west,
-                         const value_type& south,
-                         const value_type& east) :
+BoundingBox::BoundingBox(const Latitude& north,
+                         const Longitude& west,
+                         const Latitude& south,
+                         const Longitude& east) :
     north_(north), west_(west), south_(south), east_(east) {
     normalise();
 }
@@ -142,13 +142,13 @@ void BoundingBox::normalise() {
 }
 
 
-BoundingBox::value_type BoundingBox::normalise(value_type lon) const {
+Longitude BoundingBox::normalise(Longitude lon) const {
 
-    while (lon > east_) {
+    while (eckit::types::is_strictly_greater(lon, east_)) {
         lon -= THREE_SIXTY;
     }
 
-    while (lon < west_) {
+    while (eckit::types::is_strictly_greater(west_, lon)) {
         lon += THREE_SIXTY;
     }
 
@@ -156,21 +156,21 @@ BoundingBox::value_type BoundingBox::normalise(value_type lon) const {
 }
 
 
-bool BoundingBox::contains(const value_type& lat, const value_type& lon) const {
-    const value_type nlon = normalise(lon);
-    return (lat <= north_) && (lat >= south_) && (nlon >= west_) && (nlon <= east_);
+bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
+    const Longitude nlon = normalise(lon);
+    return eckit::types::is_approximately_greater_or_equal(north_, lat) &&
+           eckit::types::is_approximately_greater_or_equal(lat, south_) &&
+           eckit::types::is_approximately_greater_or_equal(nlon, west_) &&
+           eckit::types::is_approximately_greater_or_equal(east_, nlon);
 }
 
 
-static size_t computeN(double first, double last, double inc) {
+template<class T, class U>
+static size_t computeN(const T& first, const T& last, const U& inc) {
     ASSERT(first <= last);
     ASSERT(inc > 0);
 
-    BoundingBox::value_type f(first);
-    BoundingBox::value_type l(last);
-    BoundingBox::value_type i(inc);
-
-    long long n = (l - f) / i;
+    long long n = (last- first) / inc;
 
     return n + 1;
 }

@@ -84,8 +84,8 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
     // eckit::Log::info() << "AdjustWindsDirections::windDirections " << *iter << std::endl;
 
 
-    repres::Iterator::value_type lat = 0;
-    repres::Iterator::value_type lon = 0;
+    Latitude lat = 0;
+    Longitude lon = 0;
 
     // Inspired from HPSHGPW
 

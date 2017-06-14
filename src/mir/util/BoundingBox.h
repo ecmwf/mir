@@ -17,7 +17,7 @@
 #define mir_util_BoundingBox_h
 
 #include <iosfwd>
-#include "eckit/types/Fraction.h"
+#include "mir/util/Types.h"
 
 
 struct grib_info;
@@ -44,15 +44,16 @@ class Increments;
 class BoundingBox {
 public:
 
-    typedef eckit::Fraction value_type;
     // typedef double value_type;
 
 
-    static const value_type THREE_SIXTY; // 360
-    static const value_type MINUS_ONE_EIGHTY; // -180
-    static const value_type ZERO; // 0
-    static const value_type SOUTH_POLE; // -90
-    static const value_type NORTH_POLE; // 90
+    static const Longitude THREE_SIXTY; // 360
+    static const Longitude MINUS_ONE_EIGHTY; // -180
+    static const Latitude LAT_ZERO; // 0
+    static const Longitude LON_ZERO; // 0
+
+    static const Latitude SOUTH_POLE; // -90
+    static const Latitude NORTH_POLE; // 90
 
 
     // -- Exceptions
@@ -61,7 +62,10 @@ public:
     // -- Constructors
 
     BoundingBox();
-    BoundingBox(const value_type& north, const value_type& west, const value_type& south, const value_type& east);
+    BoundingBox(const Latitude& north,
+                const Longitude& west,
+                const Latitude& south,
+                const Longitude& east);
     BoundingBox(const param::MIRParametrisation&);
     BoundingBox(const BoundingBox& other);
 
@@ -94,25 +98,25 @@ public:
 
     // DON'T IMPLEMENT SETTERS
 
-    const value_type& north() const {
+    const Latitude& north() const {
         return north_;
     }
 
-    const value_type& west() const {
+    const Longitude& west() const {
         return west_;
     }
 
-    const value_type& south() const {
+    const Latitude& south() const {
         return south_;
     }
 
-    const value_type& east() const {
+    const Longitude& east() const {
         return east_;
     }
 
-    bool contains(const value_type& lat, const value_type& lon) const;
+    bool contains(const Latitude& lat, const Longitude& lon) const;
 
-    value_type normalise(value_type lon) const;
+    Longitude normalise(Longitude lon) const;
 
     void fill(grib_info&) const;
 
@@ -159,10 +163,10 @@ private:
 
     // -- Members
 
-    value_type north_;
-    value_type west_;
-    value_type south_;
-    value_type east_;
+    Latitude north_;
+    Longitude west_;
+    Latitude south_;
+    Longitude east_;
 
     // -- Methods
 

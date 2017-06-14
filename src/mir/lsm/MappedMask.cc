@@ -115,7 +115,8 @@ MappedMask::MappedMask(const std::string &name,
     const unsigned char *mask = reinterpret_cast<unsigned char *>(address);
 
     eckit::ScopedPtr<repres::Iterator> iter(representation.unrotatedIterator());
-    repres::Iterator::value_type lat, lon;
+    Latitude lat;
+    Longitude lon;
 
     while (iter->next(lat, lon)) {
 
@@ -143,10 +144,12 @@ MappedMask::MappedMask(const std::string &name,
             lon += 360;
         }
 
-        int row = int(double((90.0 - lat) * (ROWS - 1) / 180));
+        // std::cout << lat << " " << lon << std::endl;
+        int row = int((90.0 - double(lat)) * (ROWS - 1) / 180);
+                // std::cout << " row " << row << std::endl;
         ASSERT(row >= 0 && row < int(ROWS));
 
-        int col = int(double(lon * COLS / 360.0));
+        int col = int(double(lon) * COLS / 360.0);
         ASSERT(col >= 0 && col < int(COLS));
 
         size_t pos = COLS * row + col;

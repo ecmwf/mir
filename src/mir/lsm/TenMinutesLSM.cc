@@ -92,7 +92,7 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
     // mask_.reserve(grid.size());
 
     eckit::ScopedPtr<repres::Iterator> iter(representation.unrotatedIterator());
-    repres::Iterator::value_type lat, lon;
+    Latitude lat;Longitude lon;;
 
     while (iter->next(lat, lon)) {
 
