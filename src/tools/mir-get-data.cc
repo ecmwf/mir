@@ -99,7 +99,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
                 eckit::ScopedPtr< mir::repres::Iterator > it(rep->rotatedIterator());
                 while (it->next(lat, lon)) {
-                    point_t P(lon, lat);
+                    point_t P(lon.value(), lat.value());
                     if (first) {
                         bbox_min_mir = bbox_max_mir = P;
                         first = false;
@@ -159,8 +159,8 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
                     ASSERT(it->next(lat, lon));
 
-                    stats_lat(p.lat() - lat);
-                    stats_lon(p.lon() - lon);
+                    stats_lat(p.lat() - lat.value());
+                    stats_lon(p.lon() - lon.value());
 
                     ++v;
                 }
