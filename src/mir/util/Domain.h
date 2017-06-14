@@ -30,20 +30,20 @@ public:
     // -- Contructors
 
     /// ctor using coordinates
-    explicit Domain(BoundingBox::value_type north,
-           BoundingBox::value_type west,
-           BoundingBox::value_type south,
-           BoundingBox::value_type east )
+    explicit Domain(Latitude north,
+           Longitude west,
+           Latitude south,
+           Longitude east )
         : BoundingBox(north, west, south, east) {
     }
 
     // -- Methods
 
     /// Generator for a global Domain
-    static Domain makeGlobal() { return Domain(NORTH_POLE, LON_ZERO,SOUTH_POLE, THREE_SIXTY); }
+    // static Domain makeGlobal() { return Domain(NORTH_POLE, LON_ZERO,SOUTH_POLE, THREE_SIXTY); }
 
     /// Generator for an empty Domain
-    static Domain makeEmpty() { return Domain(LAT_ZERO, LON_ZERO, LAT_ZERO, LON_ZERO); }
+    // static Domain makeEmpty() { return Domain(LAT_ZERO, LON_ZERO, LAT_ZERO, LON_ZERO); }
 
     /// Check if grid includes the North pole
     bool includesPoleNorth() const { return north() == NORTH_POLE; }
