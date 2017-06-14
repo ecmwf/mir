@@ -47,7 +47,7 @@ do
             ;;
 
             mir)
-            $mir_tool $n data.in.$t data.out.$t
+            $mir_tool $n $(pwd)/data.in.$t $(pwd)/data.out.$t
             state=eccodes
             ;;
 
