@@ -127,12 +127,6 @@ public:
     virtual void setSimplePacking(grib_info&) const;
     virtual void setGivenPacking(grib_info&) const;
 
-    // Domain operations
-    virtual bool isGlobal() const;
-    virtual bool isPeriodicWestEast() const;
-    virtual bool includesNorthPole() const;
-    virtual bool includesSouthPole() const;
-
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
 
     virtual void shape(size_t& ni, size_t& nj) const;
@@ -161,6 +155,12 @@ protected:
     virtual atlas::Grid atlasGrid() const;
     virtual void makeName(std::ostream&) const;
 
+    // Domain operations
+    virtual bool isGlobal() const;
+    virtual bool isPeriodicWestEast() const;
+    virtual bool includesNorthPole() const;
+    virtual bool includesSouthPole() const;
+
     // -- Overridden methods
     // None
 
@@ -172,11 +172,6 @@ protected:
     // None
 
 private:
-
-    // No copy allowed
-
-    Representation(const Representation&);
-    Representation& operator=(const Representation&);
 
     // -- Members
     // None
