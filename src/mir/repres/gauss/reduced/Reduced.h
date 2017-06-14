@@ -26,7 +26,7 @@ namespace reduced {
 
 
 class Reduced : public Gaussian {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -59,7 +59,7 @@ class Reduced : public Gaussian {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -88,7 +88,7 @@ class Reduced : public Gaussian {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
@@ -109,6 +109,7 @@ class Reduced : public Gaussian {
     virtual const Reduced* cropped(const util::BoundingBox &bbox) const ;
     virtual void validate(const std::vector<double> &values) const;
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
+    virtual void initTrans(Trans_t& trans) const;
 
     // -- Class members
     // None

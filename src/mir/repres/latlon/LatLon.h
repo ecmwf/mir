@@ -122,6 +122,8 @@ private:
 
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context& ctx) const;
 
+    virtual void initTrans(Trans_t&) const;
+
     // -- Class members
     // None
 

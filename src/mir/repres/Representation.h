@@ -54,6 +54,7 @@ class MIRGrid;
 }
 }
 
+struct Trans_t;
 
 namespace mir {
 namespace repres {
@@ -130,6 +131,7 @@ public:
     virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
 
     virtual void shape(size_t& ni, size_t& nj) const;
+    virtual void initTrans(Trans_t&) const;
 
     // -- Overridden methods
     // None

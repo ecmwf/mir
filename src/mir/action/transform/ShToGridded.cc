@@ -24,7 +24,6 @@
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "atlas/grid.h"
 #include "mir/action/context/Context.h"
 #include "mir/action/transform/TransCache.h"
 #include "mir/action/transform/TransInitor.h"
@@ -58,35 +57,14 @@ static void fillTrans(struct Trans_t& trans,
                       trans_options_t& options,
                       const repres::Representation& representation) {
 #ifdef ATLAS_HAVE_TRANS
-    const atlas::grid::StructuredGrid reduced(representation.grid());
-    if (!reduced) {
-        throw eckit::SeriousBug("Spherical harmonics transforms only supports SH to ReducedGG/RegularGG/RegularLL.");
-    }
-
-    const atlas::grid::RegularLonLatGrid latlon(representation.grid());
-
 
     ASSERT(trans_new(&trans) == 0);
     trans.flt = int(options.flt);
 
     ASSERT(trans_set_trunc(&trans, options.truncation) == 0);
 
-    if (latlon) {
-        ASSERT(trans_set_resol_lonlat(&trans, latlon.nx(), latlon.ny()) == 0);
-    } else {
+    representation.initTrans(trans);
 
-        const std::vector<long>& pl = reduced.nx();
-        ASSERT(pl.size());
-
-        std::vector<int> pli(pl.size());
-        ASSERT(pl.size() == pli.size());
-
-        for (size_t i = 0; i < pl.size(); ++i) {
-            pli[i] = pl[i];
-        }
-
-        ASSERT(trans_set_resol(&trans, pli.size(), &pli[0]) == 0);
-    }
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
                             "Please recompile ATLAS with TRANS support enabled.");
@@ -173,6 +151,8 @@ void ShToGridded::transform(
 
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 
+            ASSERT(trans.ndgl > 0 && (trans.ndgl % 2) == 0);
+            ;
             ASSERT(trans_setup(&trans) == 0);
         }
 
