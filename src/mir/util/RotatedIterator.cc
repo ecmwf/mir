@@ -18,6 +18,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/geometry/Point2.h"
 #include "atlas/util/Config.h"
+#include "atlas/util/Point.h"
 
 
 namespace mir {
@@ -52,11 +53,11 @@ void RotatedIterator::print(std::ostream& out) const {
 bool RotatedIterator::next(Latitude &lat, Longitude &lon) {
     if (iterator_->next(lat, lon)) {
 
-        // use Point2 to avoid the LLPoint2 normalising, notice the order
-        eckit::geometry::Point2 p = projection_.lonlat(eckit::geometry::Point2(lon.value(), lat.value()));
+        // notice the order
+        const atlas::PointLonLat p = projection_.lonlat(atlas::PointXY(lon.value(), lat.value()));
 
-        lat = p[eckit::geometry::LAT];
-        lon = p[eckit::geometry::LON];
+        lat = p.lat();
+        lon = p.lon();
         return true;
     }
     return false;
