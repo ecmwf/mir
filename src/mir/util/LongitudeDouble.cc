@@ -14,7 +14,7 @@
 
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/util/Longitude.h"
+#include "mir/util/LongitudeDouble.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -29,52 +29,52 @@
 namespace mir {
 
 
-Longitude Longitude::GLOBE(360); // 360
-Longitude Longitude::DATE_LINE(180); // 180
-Longitude Longitude::MINUS_DATE_LINE(-180); // -180
-Longitude Longitude::GREENWICH(0); // 0
+LongitudeDouble LongitudeDouble::GLOBE(360); // 360
+LongitudeDouble LongitudeDouble::DATE_LINE(180); // 180
+LongitudeDouble LongitudeDouble::MINUS_DATE_LINE(-180); // -180
+LongitudeDouble LongitudeDouble::GREENWICH(0); // 0
 
-void Longitude::print(std::ostream& out) const {
+void LongitudeDouble::print(std::ostream& out) const {
     out << value_;
 }
 
-bool Longitude::operator<(double value) const {
+bool LongitudeDouble::operator<(double value) const {
     return eckit::types::is_strictly_greater(value, value_);
 }
 
-bool Longitude::operator<=(double value) const {
+bool LongitudeDouble::operator<=(double value) const {
     return eckit::types::is_approximately_lesser_or_equal<double>(value_, value);
 }
 
-bool Longitude::operator>(double value) const {
+bool LongitudeDouble::operator>(double value) const {
     return eckit::types::is_strictly_greater(value_, value);
 }
 
-bool Longitude::operator>=(double value) const {
+bool LongitudeDouble::operator>=(double value) const {
     return eckit::types::is_approximately_greater_or_equal<double>(value_, value);
 }
 
-bool Longitude::operator==(double value) const {
+bool LongitudeDouble::operator==(double value) const {
     return eckit::types::is_approximately_equal<double>(value_, value);
 }
 
-bool Longitude::operator!=(double value) const {
+bool LongitudeDouble::operator!=(double value) const {
     return !eckit::types::is_approximately_equal<double>(value_, value);
 }
 
-void Longitude::hash(eckit::MD5& md5) const {
+void LongitudeDouble::hash(eckit::MD5& md5) const {
     md5 << value_;
 }
 
-void Longitude::encode(eckit::Stream& s) const {
+void LongitudeDouble::encode(eckit::Stream& s) const {
     s << value_;
 }
 
-void Longitude::decode(eckit::Stream& s) {
+void LongitudeDouble::decode(eckit::Stream& s) {
     s >> value_;
 }
 
-bool Longitude::sameWithGrib1Accuracy(const Longitude& other) const {
+bool LongitudeDouble::sameWithGrib1Accuracy(const LongitudeDouble& other) const {
     const double GRIB1EPSILON = 0.001;
     eckit::types::CompareApproximatelyEqual<double> cmp(GRIB1EPSILON);
     return cmp(value_, other.value_);

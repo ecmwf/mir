@@ -35,8 +35,7 @@ Gridded2RotatedLLShift::Gridded2RotatedLLShift(const param::MIRParametrisation &
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
     ASSERT(value.size() == 2);
-    increments_ = util::Increments(eckit::Fraction(value[0]),
-                                   eckit::Fraction(value[1]));
+    increments_ = util::Increments(value[0], value[1]);
 
     ASSERT(parametrisation_.get("user.rotation", value));
     ASSERT(value.size() == 2);
@@ -46,8 +45,7 @@ Gridded2RotatedLLShift::Gridded2RotatedLLShift(const param::MIRParametrisation &
     ASSERT(parametrisation_.get("user.shift", value));
     ASSERT(value.size() == 2);
 
-    shift_ = util::Shift(eckit::Fraction(value[0]),
-                         eckit::Fraction(value[1]));
+    shift_ = util::Shift(value[0], value[1]);
 
 }
 

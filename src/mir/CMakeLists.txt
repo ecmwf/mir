@@ -513,8 +513,10 @@ list(
     util/Domain.h
     util/Latitude.cc
     util/Latitude.h
-    util/Longitude.cc
-    util/Longitude.h
+    util/LongitudeDouble.cc
+    util/LongitudeDouble.h
+    util/LongitudeFraction.cc
+    util/LongitudeFraction.h
     util/Formula.cc
     util/Formula.h
     util/FormulaBinop.cc

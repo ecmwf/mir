@@ -35,8 +35,7 @@ SubsetFilter::SubsetFilter(const param::MIRParametrisation &parametrisation):
     ASSERT(parametrisation.get("user.subset", value));
     ASSERT(value.size() == 2);
 
-    increments_ = util::Increments(eckit::Fraction(value[0]),
-            eckit::Fraction(value[1]));
+    increments_ = util::Increments(value[0], value[1]);
 }
 
 

@@ -15,8 +15,13 @@
 #define mir_util_Types_H
 
 #include "mir/util/Latitude.h"
-#include "mir/util/Longitude.h"
+#include "mir/util/LongitudeDouble.h"
+#include "mir/util/LongitudeFraction.h"
 
+namespace mir {
+// typedef LongitudeDouble Longitude;
+typedef LongitudeFraction Longitude;
+}
 
 #endif
 
