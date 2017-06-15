@@ -48,7 +48,6 @@ void adjustNorthSouth(const std::vector<double>& lats, util::BoundingBox& bbox) 
         }
     }
     if (adjustedNorth || adjustedNorth) {
-        eckit::Log::info() << "Gaussian grid BoundingBox (North, South) adjusted to (" << n << ',' << s << ')' << std::endl;
         bbox = util::BoundingBox(n, bbox.west(), s, bbox.east());
     }
 }
