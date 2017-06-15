@@ -193,7 +193,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 mir::Latitude lat;
                 for (const double& v: field.values(0)) {
                     ASSERT(it->next(lat, lon));
-                    eckit::Log::info() << "\n\t" << lat << '\t' << lon << '\t' << v;
+                    eckit::Log::info() << "\n\t" << lat << '\t' << lon.value() << '\t' << v;
                 }
 
                 eckit::Log::info() << std::endl;
