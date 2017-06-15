@@ -1,0 +1,5 @@
+# Input file with plenty of awkward formats
+multi-format.grib
+# Mir tool options
+--grid=3/3
+# grib_get assertions (none for the moment)
