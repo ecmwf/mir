@@ -39,7 +39,7 @@ void adjustNorthSouth(const std::vector<double>& lats, util::BoundingBox& bbox) 
             adjustedNorth = true;
             n = l;
         }
-        if (!adjustedSouth && (n.value() != l) && bbox.south().sameWithGrib1Accuracy(l)) {
+        if (!adjustedSouth && (s.value() != l) && bbox.south().sameWithGrib1Accuracy(l)) {
             adjustedSouth = true;
             s = l;
         }
