@@ -15,9 +15,7 @@
 
 #include "mir/repres/gauss/Gaussian.h"
 
-#include <map>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/Timer.h"
 #include "atlas/util/GaussianLatitudes.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -26,20 +24,54 @@ namespace mir {
 namespace repres {
 
 
+namespace {
+void adjustNorthSouth(const std::vector<double>& lats, util::BoundingBox& bbox) {
+    ASSERT(lats.size() >= 2);
+
+    Latitude n = bbox.north();
+    Latitude s = bbox.south();
+
+    bool adjustedNorth = false;
+    bool adjustedSouth = false;
+
+    for (const double& l: lats) {
+        if (!adjustedNorth && (n.value() != l) && bbox.north().sameWithGrib1Accuracy(l)) {
+            adjustedNorth = true;
+            n = l;
+        }
+        if (!adjustedSouth && (n.value() != l) && bbox.south().sameWithGrib1Accuracy(l)) {
+            adjustedSouth = true;
+            s = l;
+        }
+        if (adjustedNorth && adjustedSouth) {
+            break;
+        }
+    }
+    if (adjustedNorth || adjustedNorth) {
+        eckit::Log::info() << "Gaussian grid BoundingBox (North, South) adjusted to (" << n << ',' << s << ')' << std::endl;
+        bbox = util::BoundingBox(n, bbox.west(), s, bbox.east());
+    }
+}
+}  // (anonymous namespace)
+
+
 Gaussian::Gaussian(size_t N) :
     N_(N) {
+    adjustNorthSouth(latitudes(), bbox_);
 }
 
 
 Gaussian::Gaussian(size_t N, const util::BoundingBox &bbox) :
     Gridded(bbox),
     N_(N) {
+    adjustNorthSouth(latitudes(), bbox_);
 }
 
 
 Gaussian::Gaussian(const param::MIRParametrisation &parametrisation) :
     Gridded(parametrisation) {
     ASSERT(parametrisation.get("N", N_));
+    adjustNorthSouth(latitudes(), bbox_);
 }
 
 
