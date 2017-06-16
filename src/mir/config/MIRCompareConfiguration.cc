@@ -15,7 +15,6 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/parser/JSONParser.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/InheritParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"

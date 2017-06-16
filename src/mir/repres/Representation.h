@@ -128,7 +128,7 @@ public:
     virtual void setSimplePacking(grib_info&) const;
     virtual void setGivenPacking(grib_info&) const;
 
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
+    virtual void crop(const param::MIRParametrisation&, context::Context&) const;
 
     virtual void shape(size_t& ni, size_t& nj) const;
     virtual void initTrans(Trans_t&) const;

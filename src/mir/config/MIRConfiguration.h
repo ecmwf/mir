@@ -56,7 +56,7 @@ public:
     // From AConfiguration
 
     // Configure (or reconfigure) using a file
-    void configure(const eckit::PathName& path="~mir/etc/mir/configuration.json");
+    void configure(const eckit::PathName& path="~mir/etc/mir/configuration.yaml");
 
     // Return configuration defaults
     const param::MIRParametrisation* defaults() const;

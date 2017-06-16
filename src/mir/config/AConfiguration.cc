@@ -15,7 +15,7 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/parser/JSONParser.h"
+#include "eckit/parser/YAMLParser.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/InheritParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -37,7 +37,7 @@ void AConfiguration::configure(const eckit::PathName& path) {
         }
 
         // Create hierarchy (using non-overwriting filling keys)
-        eckit::JSONParser parser(in);
+        eckit::YAMLParser parser(in);
         const eckit::ValueMap j = parser.parse();
         root_.fill(j);
 

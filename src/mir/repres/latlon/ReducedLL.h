@@ -82,19 +82,13 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    ReducedLL(const ReducedLL&);
-    ReducedLL& operator=(const ReducedLL&);
-
     // -- Members
 
     std::vector<long> pl_;
     size_t Nj_;
 
     // -- Methods
-
-    void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
+    // None
 
     // -- Overridden methods
 

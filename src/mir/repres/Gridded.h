@@ -97,7 +97,7 @@ private:
 
     virtual void setGivenPacking(grib_info&) const;
 
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
+    virtual void crop(const param::MIRParametrisation&, context::Context&) const;
 
     // -- Class members
     // None

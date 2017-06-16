@@ -15,6 +15,7 @@
 
 #include "mir/repres/Gridded.h"
 
+#include "mir/action/misc/AreaCropper.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
@@ -54,9 +55,11 @@ void Gridded::setGivenPacking(grib_info &info) const {
 }
 
 
-void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
+void Gridded::crop(const param::MIRParametrisation& parametrisation, context::Context& ctx) const {
+    // only crop if not global
     if (!domain().isGlobal()) {
-        Representation::cropToDomain(parametrisation, ctx); // This will throw an exception
+        action::AreaCropper cropper(parametrisation, bbox_);
+        cropper.execute(ctx);
     }
 }
 

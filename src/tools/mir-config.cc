@@ -53,11 +53,11 @@ public:
 
 void MIRConfig::usage(const std::string &tool) const {
     eckit::Log::info()
-            << "\n" "Usage: " << tool << " [--configuration=configuration.json] [--param-id=value] [--key=key] [input1.grib [input2.grib [...]]]"
+            << "\n" "Usage: " << tool << " [--configuration=configuration.yaml] [--param-id=value] [--key=key] [input1.grib [input2.grib [...]]]"
                "\n" "Examples: "
                "\n" "  % " << tool << ""
                "\n" "  % " << tool << " --param-id=157 input.grib"
-               "\n" "  % " << tool << " --param-id=157 --configuration=test.json input1.grib input2.grib"
+               "\n" "  % " << tool << " --param-id=157 --configuration=test.yaml input1.grib input2.grib"
             << std::endl;
 }
 
