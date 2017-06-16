@@ -156,43 +156,46 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     bool wind = false;
     parametrisation_.get("wind", wind);
 
+    bool shift = false;
+    parametrisation_.get("user.shift", shift);
 
-    bool shift = parametrisation_.has("user.shift");
-    if(shift) {
-        ASSERT(parametrisation_.has("user.grid"));
+
+    // consistency checks
+    if (shift && !parametrisation_.has("user.grid")) {
+        throw eckit::UserError("'user.shift=true' requires parameter 'grid'.");
+    }
+    if (parametrisation_.has("user.gridname") && !parametrisation_.has("gridname")) {
+        throw eckit::UserError("'user.gridname' requires parameter 'gridname'.");
+    }
+    if (parametrisation_.has("user.griddef") && !parametrisation_.has("griddef")) {
+        throw eckit::UserError("'user.griddef' requires parameter 'griddef'.");
+    }
+    if (parametrisation_.has("user.pl") && parametrisation_.has("user.rotation")) {
+        throw eckit::UserError("'user.pl' is incompatible with 'user.rotation'.");
     }
 
-    const std::string grid =
-        parametrisation_.has("user.grid") ?       "regular-ll" + std::string(shift ? "-shift" : "") :
-        parametrisation_.has("user.reduced") ?    "reduced-gg" :
-        parametrisation_.has("user.regular") ?    "regular-gg" :
-        parametrisation_.has("user.octahedral") ? "octahedral-gg" :
-        parametrisation_.has("user.pl") ?         "reduced-gg-pl-given" :
-        parametrisation_.has("user.gridname") ?   "namedgrid" :
-        parametrisation_.has("user.griddef") ?    "griddef" :
+
+    const std::string userGrid =
+        parametrisation_.has("user.grid") && shift? "regular-ll-shift" :
+        parametrisation_.has("user.grid")?          "regular-ll" :
+        parametrisation_.has("user.reduced") ?      "reduced-gg" :
+        parametrisation_.has("user.regular") ?      "regular-gg" :
+        parametrisation_.has("user.octahedral") ?   "octahedral-gg" :
+        parametrisation_.has("user.pl") ?           "reduced-gg-pl-given" :
+        parametrisation_.has("user.gridname") ?     "namedgrid" :
+        parametrisation_.has("user.griddef") ?      "griddef" :
         "";
 
-    if (grid.length()) {
-        std::string required;
-
-        if (!parametrisation_.get("gridname", required) && (grid == "namedgrid")) {
-            throw eckit::UserError("'user.gridname' requires parameter 'gridname'.");
-        }
-        if (!parametrisation_.get("griddef", required) && (grid == "griddef")) {
-            throw eckit::UserError("'user.griddef' requires parameter 'griddef'.");
-        }
-        if (parametrisation_.has("user.rotation") && (grid == "reduced-gg-pl-given")) {
-            throw eckit::UserError("'user.pl' is incompatible with 'user.rotation'.");
-        }
+    if (userGrid.length()) {
 
         if (parametrisation_.has("user.rotation")) {
-            plan.add("interpolate.grid2rotated-" + grid);
+            plan.add("interpolate.grid2rotated-" + userGrid);
             if (wind || vod2uv) {
                 plan.add("filter.adjust-winds-directions");
                 selectWindComponents(plan);
             }
         } else {
-            plan.add("interpolate.grid2" + grid);
+            plan.add("interpolate.grid2" + userGrid);
         }
     }
 }
