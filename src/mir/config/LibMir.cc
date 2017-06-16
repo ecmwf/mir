@@ -15,9 +15,6 @@
 #include "mir/config/LibMir.h"
 
 #include "eckit/config/Resource.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
 
 #include "mir/api/mir_version.h"
 
@@ -33,7 +30,7 @@ LibMir::LibMir() : Library("mir") {}
 
 eckit::PathName LibMir::cacheDir()
 {
-    static eckit::PathName mirCachePath = Resource<PathName>("mirCachePath;$MIR_CACHE_PATH", "/tmp/cache");
+    static eckit::PathName mirCachePath = LibResource<PathName, LibMir>("mir-cache-path;$MIR_CACHE_PATH", "/tmp/cache");
     return mirCachePath;
 }
 
