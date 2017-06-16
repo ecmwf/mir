@@ -164,12 +164,6 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     if (shift && !parametrisation_.has("user.grid")) {
         throw eckit::UserError("'user.shift=true' requires parameter 'grid'.");
     }
-    if (parametrisation_.has("user.gridname") && !parametrisation_.has("gridname")) {
-        throw eckit::UserError("'user.gridname' requires parameter 'gridname'.");
-    }
-    if (parametrisation_.has("user.griddef") && !parametrisation_.has("griddef")) {
-        throw eckit::UserError("'user.griddef' requires parameter 'griddef'.");
-    }
     if (parametrisation_.has("user.pl") && parametrisation_.has("user.rotation")) {
         throw eckit::UserError("'user.pl' is incompatible with 'user.rotation'.");
     }
