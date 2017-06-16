@@ -35,7 +35,7 @@ LongitudeFraction LongitudeFraction::MINUS_DATE_LINE(-180); // -180
 LongitudeFraction LongitudeFraction::GREENWICH(0); // 0
 
 void LongitudeFraction::print(std::ostream& out) const {
-    out << value_;
+    out << double(value_);
 }
 
 bool LongitudeFraction::operator<(double value) const {
