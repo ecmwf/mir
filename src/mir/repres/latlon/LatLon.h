@@ -13,11 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef LatLon_H
-#define LatLon_H
+#ifndef mir_repres_latlon_LatLon_h
+#define mir_repres_latlon_LatLon_h
 
 #include "mir/repres/Gridded.h"
-#include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 
 
@@ -101,11 +100,6 @@ class LatLon : public Gridded {
 
 private:
 
-    // No copy allowed
-
-    LatLon(const LatLon &);
-    LatLon &operator=(const LatLon &);
-
     // -- Members
     // None
 
@@ -119,8 +113,6 @@ private:
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
 
     virtual void validate(const std::vector<double>&) const;
-
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context& ctx) const;
 
     virtual void initTrans(Trans_t&) const;
 

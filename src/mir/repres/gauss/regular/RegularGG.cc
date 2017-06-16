@@ -62,14 +62,6 @@ const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
 }
 
 
-void RegularGG::cropToDomain(const param::MIRParametrisation& param, context::Context& ctx) const {
-    if (!domain().isGlobal()) {
-        action::AreaCropper cropper(param, bbox_);
-        cropper.execute(ctx);
-    }
-}
-
-
 namespace {
 static RepresentationBuilder<RegularGG> reducedGG("regular_gg"); // Name is what is returned by grib_api
 }
