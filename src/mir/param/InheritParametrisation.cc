@@ -122,7 +122,7 @@ void InheritParametrisation::fill(const InheritParametrisation& filler) {
     // recursively inherit all fill parametrisation traits
     std::string fill_label;
     while (get(fill_root_label, fill_label)) {
-        clear(fill_root_label);
+        clearFromChildren(fill_root_label);
         filler.pick(fill_label).inherit(*this);
     }
 
@@ -192,11 +192,84 @@ bool InheritParametrisation::empty() const {
 }
 
 
-SimpleParametrisation& InheritParametrisation::clear(const std::string& name) {
-    for (std::vector< InheritParametrisation* >::iterator me=children_.begin(); me!= children_.end(); ++me) {
-        (*me)->clear(name);
+InheritParametrisation& InheritParametrisation::clear(const std::string& name) {
+    SimpleParametrisation::clear(name);
+    if (parent_ != NULL) {
+        const_cast< InheritParametrisation* >(parent_)->clear(name);
     }
-    return SimpleParametrisation::clear(name);
+    return *this;
+}
+
+
+bool InheritParametrisation::has(const std::string &name) const {
+    return SimpleParametrisation::has(name) || (parent_ != NULL && parent_->has(name));
+}
+
+
+bool InheritParametrisation::get(const std::string& name, std::string& value) const {
+    return _get(name, value);
+}
+
+
+bool InheritParametrisation::get(const std::string& name, bool& value) const {
+    return _get(name, value);
+}
+
+
+bool InheritParametrisation::get(const std::string& name, int& value) const {
+    return _get(name, value);
+}
+
+
+bool InheritParametrisation::get(const std::string& name, long& value) const {
+    return _get(name, value);
+}
+
+
+bool InheritParametrisation::get(const std::string& name, float& value) const {
+    return _get(name, value);
+}
+
+
+bool InheritParametrisation::get(const std::string& name, double& value) const {
+    return _get(name, value);
+}
+
+
+bool InheritParametrisation::get(const std::string& name, std::vector<int>& value) const {
+    return _get(name, value);
+}
+
+
+bool InheritParametrisation::get(const std::string& name, std::vector<long>& value) const {
+    return _get(name, value);
+}
+
+
+bool InheritParametrisation::get(const std::string& name, std::vector<float>& value) const {
+    return _get(name, value);
+}
+
+
+bool InheritParametrisation::get(const std::string& name, std::vector<double>& value) const {
+    return _get(name, value);
+}
+
+
+bool InheritParametrisation::get(const std::string& name, std::vector<std::string>& value) const {
+    return _get(name, value);
+}
+
+
+template<typename T>
+bool InheritParametrisation::_get(const std::string& name, T& value) const {
+    if (SimpleParametrisation::get(name, value)) {
+        return true;
+    }
+    if (parent_ != NULL) {
+        return parent_->_get(name, value);
+    }
+    return false;
 }
 
 
@@ -234,6 +307,15 @@ bool InheritParametrisation::matchesMetadata(const MIRParametrisation& metadata)
 bool InheritParametrisation::matchesLabel(const std::string& label) const {
     ASSERT(label.length());
     return label_.length() && (label_ == label);
+}
+
+
+InheritParametrisation& InheritParametrisation::clearFromChildren(const std::string& name) {
+    for (std::vector< InheritParametrisation* >::iterator me=children_.begin(); me!= children_.end(); ++me) {
+        (*me)->clearFromChildren(name);
+    }
+    SimpleParametrisation::clear(name);
+    return *this;
 }
 
 

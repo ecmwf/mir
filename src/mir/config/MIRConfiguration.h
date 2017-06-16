@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2016 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -15,15 +15,25 @@
 #define mir_config_MIRConfiguration_h
 
 #include <iosfwd>
-#include "eckit/filesystem/PathName.h"
-#include "mir/config/AConfiguration.h"
+#include "eckit/memory/NonCopyable.h"
+#include "mir/param/InheritParametrisation.h"
+
+
+namespace eckit {
+class PathName;
+}
+namespace mir {
+namespace param {
+class MIRParametrisation;
+}
+}
 
 
 namespace mir {
 namespace config {
 
 
-class MIRConfiguration : public AConfiguration {
+class MIRConfiguration : private eckit::NonCopyable {
 public:
 
     // -- Exceptions
@@ -46,27 +56,21 @@ public:
     static MIRConfiguration& instance();
 
     // Lookup parametrisation according to metadata
-    const param::MIRParametrisation* lookup(const param::MIRParametrisation& metadata) const;
+    const param::MIRParametrisation& lookup(const param::MIRParametrisation& metadata) const;
 
     // Lookup parametrisation according to paramId and metadata
-    const param::MIRParametrisation* lookup(const long& paramId, const param::MIRParametrisation& metadata) const;
-
-    // -- Overridden methods
-
-    // From AConfiguration
+    const param::MIRParametrisation& lookup(const long& paramId, const param::MIRParametrisation& metadata) const;
 
     // Configure (or reconfigure) using a file
     void configure(const eckit::PathName& path="~mir/etc/mir/configuration.yaml");
 
     // Return configuration defaults
-    const param::MIRParametrisation* defaults() const;
+    const param::MIRParametrisation& defaults() const;
+
+    // -- Overridden methods
+    // None
 
 private:
-
-    // No copy allowed
-
-    MIRConfiguration(const MIRConfiguration&);
-    MIRConfiguration& operator=(const MIRConfiguration&);
 
     // -- Contructors
 
@@ -79,7 +83,9 @@ private:
     // None
 
     // -- Members
-    // None
+
+    std::string configPath_;
+    param::InheritParametrisation root_;
 
     // -- Methods
 
@@ -100,3 +106,4 @@ private:
 
 
 #endif
+

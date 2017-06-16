@@ -102,8 +102,8 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             long id = 0;
             args.get("param-id", id) || metadata.get("paramId", id);
 
-            eckit::ScopedPtr< const MIRParametrisation > p(configuration.lookup(id, metadata));
-            display(*p, key);
+            const MIRParametrisation& p(configuration.lookup(id, metadata));
+            display(p, key);
 
         }
 
@@ -113,23 +113,21 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
         if (args.has("param-id")) {
 
             // Display configuration for a paramId
-            eckit::ScopedPtr<const MIRParametrisation> metadata(new mir::param::SimpleParametrisation());
+            mir::param::SimpleParametrisation metadata;
             long id = 0;
             args.get("param-id", id);
 
-            eckit::ScopedPtr< const MIRParametrisation > p(id != 0? configuration.lookup(id, *metadata)
-                                                                  : configuration.lookup(*metadata));
-            display(*p, key);
+            const MIRParametrisation& p(id != 0? configuration.lookup(id, metadata)
+                                               : configuration.lookup(metadata));
+            display(p, key);
 
         } else {
 
             // Display configuration defaults
-            eckit::ScopedPtr< const MIRParametrisation > p(configuration.defaults());
-            display(*p, key);
+            display(configuration.defaults(), key);
 
         }
     }
-
 }
 
 

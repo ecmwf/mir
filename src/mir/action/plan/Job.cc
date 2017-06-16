@@ -49,16 +49,15 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
 
     // get input and parameter-specific parametrisations
     const param::MIRParametrisation& metadata = input.parametrisation();
-
-    defaults_.reset(config.lookup(metadata));
-    combined_.reset(new param::MIRCombinedParametrisation(job, metadata, *defaults_));
+    const param::MIRParametrisation& parameter = config.lookup(metadata);
+    combined_.reset(new param::MIRCombinedParametrisation(job, metadata, parameter));
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
 
 
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
-    if (job.empty() || (!style->forcedPrepare(job) && job.matches(metadata, *defaults_))) {
+    if (job.empty() || (!style->forcedPrepare(job) && job.matches(metadata, parameter))) {
         plan_.reset(new action::ActionPlan(job));
         plan_->add(new action::Copy(job, output_));
         return;

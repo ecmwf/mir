@@ -85,8 +85,8 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
             eckit::Log::info() << "\n'" << args(i) << "' #" << ++count << std::endl;
 
             // Metadata-specific defaults
-            eckit::ScopedPtr<const MIRParametrisation> defaults(config.lookup(input.parametrisation()));
-            MIRCombinedParametrisation parametrisation(args_wrap, grib, *defaults);
+            const MIRParametrisation& defaults(config.lookup(input.parametrisation()));
+            MIRCombinedParametrisation parametrisation(args_wrap, grib, defaults);
 
 
             // Get paramId/metadata-specific "stats" method

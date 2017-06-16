@@ -151,11 +151,9 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
     long paramId = 0;
     if (get("paramId", paramId)) {
         // return paramId specific parametrisation
-        const config::MIRConfiguration& configuration =
-                config::MIRConfiguration::instance();
-        eckit::ScopedPtr<const param::MIRParametrisation> param(
-                    configuration.lookup(paramId, *this));
-        return param->get(name, value);
+        const config::MIRConfiguration& configuration = config::MIRConfiguration::instance();
+        const param::MIRParametrisation& param = configuration.lookup(paramId, *this);
+        return param.get(name, value);
     }
 
     return false;

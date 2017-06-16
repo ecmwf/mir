@@ -106,7 +106,6 @@ private:
     output::MIROutput& output_;
 
     eckit::ScopedPtr< const param::MIRParametrisation > combined_;
-    eckit::ScopedPtr< const param::MIRParametrisation > defaults_;
     eckit::ScopedPtr< action::ActionPlan > plan_;
 
     // -- Methods
