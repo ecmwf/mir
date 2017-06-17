@@ -155,8 +155,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     bool wind = false;
     parametrisation_.get("wind", wind);
 
-    bool shift = false;
-    parametrisation_.get("user.shift", shift);
+    bool shift = parametrisation_.has("user.shift");
 
 
     // consistency checks
