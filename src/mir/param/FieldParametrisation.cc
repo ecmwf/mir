@@ -100,8 +100,8 @@ bool FieldParametrisation::get(const std::string& name, double& value) const {
                 get("west", west) &&
                 get("east", east))
         {
-            value = shift(eckit::Fraction(::fabs(west)),
-                          eckit::Fraction(::fabs(east)),
+            value = shift(eckit::Fraction(west),
+                          eckit::Fraction(east),
                           eckit::Fraction(west_east_increment));
 
             return true;
