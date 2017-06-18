@@ -108,8 +108,6 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Path to the bitmap to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
         options_.push_back(new SimpleOption<bool>("globalise", "Make the field global, adding missing values if needed"));
-        options_.push_back(new VectorOption<double>("subset", "Subset field to given grid", 2));
-        options_.push_back(new VectorOption<double>("subset-area", "Specify the cropping area, and select the best subset", 4));
 
         //==============================================
         options_.push_back(new Separator("Compute"));
@@ -220,32 +218,6 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
         eckit::Log::info() << "Shift is " << shift << std::endl;
 
         job.set("shift", shift.west_east() , shift.south_north());
-
-    }
-
-    if (args.has("subset-area")) {
-
-        ASSERT(!args.has("area"));
-
-        std::vector<double> area;
-        ASSERT(args.get("subset-area", area));
-        job.set("area", area);
-
-        std::vector<double> grid;
-        ASSERT(args.get("grid", grid));
-
-        mir::util::BoundingBox bbox(area[0], area[1], area[2], area[3]);
-
-        mir::util::Increments inc(grid[0], grid[1]);
-        mir::util::Increments sub = inc.bestSubsetting(bbox);
-
-        if (sub != inc) {
-            job.set("subset", grid);
-            eckit::Log::warning() << "subset-area, interpolation grid set to " << sub << std::endl;
-            job.set("grid", sub.west_east() , sub.south_north());
-        } else {
-            eckit::Log::warning() << "subset-area " << inc << " matches " << bbox << ", no sub-setting needed" << std::endl;
-        }
 
     }
 

@@ -14,12 +14,15 @@
 /// @date Apr 2015
 
 
+#include <cmath>
+
 #include "mir/param/FieldParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
 #include "mir/config/MIRConfiguration.h"
 #include "mir/param/InheritParametrisation.h"
+#include "eckit/types/Fraction.h"
 
 
 namespace mir {
@@ -71,7 +74,59 @@ bool FieldParametrisation::get(const std::string& name, float& value) const {
 }
 
 
+inline double shift(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc) {
+    eckit::Fraction a_inc = a - (a / inc).integralPart() * inc;
+    eckit::Fraction b_inc = b - (b / inc).integralPart() * inc;
+
+    if (a_inc != b_inc) {
+        std::ostringstream oss;
+        oss << "Cannot compute shift with a=" << double(a)
+            << ", b=" << double(b) << ", inc=" << double(inc)
+            << " a_inc=" << double(a_inc)
+            << " b_inc=" << double(b_inc);
+        throw eckit::SeriousBug(oss.str());
+    }
+
+    return a_inc;
+}
+
 bool FieldParametrisation::get(const std::string& name, double& value) const {
+
+    if (name == "west_east_shift" ) {
+        double west_east_increment;
+        double west, east;
+
+        if (get("west_east_increment", west_east_increment) &&
+                get("west", west) &&
+                get("east", east))
+        {
+            value = shift(eckit::Fraction(west),
+                          eckit::Fraction(east),
+                          eckit::Fraction(west_east_increment));
+
+            return true;
+        }
+    }
+
+    if (name == "south_north_shift") {
+        double south_north_increment;
+        double north, south;
+
+        if (get("south_north_increment", south_north_increment) &&
+                get("north", north) &&
+                get("south", south))
+        {
+
+            value = shift(eckit::Fraction(::fabs(south)),
+                          eckit::Fraction(::fabs(north)),
+                          eckit::Fraction(south_north_increment));
+
+            return true;
+        }
+    }
+
+
+
     return _get(name, value);
 }
 
@@ -132,6 +187,8 @@ bool FieldParametrisation::get(const std::string& name, std::vector<double>& val
         longitudes(value);
         return true;
     }
+
+
 
     return _get(name, value);
 }

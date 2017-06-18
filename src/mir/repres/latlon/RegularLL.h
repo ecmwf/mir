@@ -36,7 +36,9 @@ public:
     // -- Contructors
 
     RegularLL(const param::MIRParametrisation &);
-    RegularLL(const util::BoundingBox &bbox, const util::Increments &increments);
+    RegularLL(const util::BoundingBox &bbox,
+              const util::Increments &increments,
+              const util::Shift& shift);
 
 
     // -- Destructor
@@ -75,8 +77,6 @@ protected:
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
     virtual Representation* globalise(data::MIRField& field) const;
-    virtual Representation* subset(data::MIRField& field,
-                                   const util::Increments& increments) const;
 
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;

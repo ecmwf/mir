@@ -44,6 +44,11 @@ Shift::Shift(double west_east,
     // ASSERT(south_north_ > 0);
 }
 
+Shift::Shift(const param::MIRParametrisation &parametrisation) {
+    ASSERT(parametrisation.get("west_east_shift", west_east_));
+    ASSERT(parametrisation.get("south_north_shift",  south_north_ ));
+}
+
 Shift::~Shift() {
 }
 
@@ -60,11 +65,13 @@ void Shift::fill(api::MIRJob &job) const  {
 }
 
 void Shift::makeName(std::ostream& out) const {
-    out << "-shift:"
-        << double(west_east_)
-        << ":"
-        << double(south_north_)
-        ;
+    if (*this) {
+        out << "-shift:"
+            << double(west_east_)
+            << ":"
+            << double(south_north_)
+            ;
+    }
 }
 
 

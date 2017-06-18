@@ -26,7 +26,7 @@ namespace latlon {
 
 
 class RotatedLL : public RegularLL {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -34,7 +34,10 @@ class RotatedLL : public RegularLL {
     // -- Contructors
 
     RotatedLL(const param::MIRParametrisation &);
-    RotatedLL(const util::BoundingBox &bbox, const util::Increments &increments, const util::Rotation &rotation);
+    RotatedLL(const util::BoundingBox &bbox,
+              const util::Increments &increments,
+              const util::Shift &shift,
+              const util::Rotation &rotation);
 
     // -- Destructor
 
@@ -58,7 +61,7 @@ class RotatedLL : public RegularLL {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
 
@@ -80,7 +83,7 @@ class RotatedLL : public RegularLL {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // RotatedLL();
 

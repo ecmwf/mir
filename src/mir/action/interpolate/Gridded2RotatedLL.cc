@@ -39,6 +39,11 @@ Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation &parametris
     ASSERT(parametrisation_.get("user.rotation", value));
     ASSERT(value.size() == 2);
 
+    if (parametrisation_.get("user.shift", value)) {
+        ASSERT(value.size() == 2);
+        shift_ = util::Shift(value[0], value[1]);
+    }
+
     rotation_ = util::Rotation(value[0], value[1]);
 }
 
@@ -49,18 +54,24 @@ Gridded2RotatedLL::~Gridded2RotatedLL() {
 
 bool Gridded2RotatedLL::sameAs(const Action& other) const {
     const Gridded2RotatedLL* o = dynamic_cast<const Gridded2RotatedLL*>(&other);
-    return o && (increments_ == o->increments_) && (rotation_ == o->rotation_);
+    return o && (increments_ == o->increments_) && (shift_ == o->shift_) && (rotation_ == o->rotation_);
 }
 
 void Gridded2RotatedLL::print(std::ostream &out) const {
-    out << "Gridded2RotatedLL[increments=" << increments_ << ",rotation" << rotation_ << "]";
+    out << "Gridded2RotatedLL[increments=" << increments_;
+    if (shift_) {
+        out << ",shift" << shift_;
+    }
+    out << ",rotation" << rotation_ << "]";
 }
 
 
 const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
+  ASSERT(!shift_);
     return new repres::latlon::RotatedLL(
                util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
                increments_,
+               shift_,
                rotation_ );
 }
 
