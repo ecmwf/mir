@@ -65,11 +65,13 @@ void Shift::fill(api::MIRJob &job) const  {
 }
 
 void Shift::makeName(std::ostream& out) const {
-    out << "-shift:"
-        << double(west_east_)
-        << ":"
-        << double(south_north_)
-        ;
+    if (*this) {
+        out << "-shift:"
+            << double(west_east_)
+            << ":"
+            << double(south_north_)
+            ;
+    }
 }
 
 

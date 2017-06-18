@@ -14,6 +14,8 @@
 /// @date Apr 2015
 
 
+#include <cmath>
+
 #include "mir/param/FieldParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
@@ -78,7 +80,10 @@ inline double shift(const eckit::Fraction& a, const eckit::Fraction& b, const ec
 
     if (a_inc != b_inc) {
         std::ostringstream oss;
-        oss << "Cannot compute shift with a=" << double(a) << ", b=" << double(b) << ", inc=" << double(inc);
+        oss << "Cannot compute shift with a=" << double(a)
+            << ", b=" << double(b) << ", inc=" << double(inc)
+            << " a_inc=" << double(a_inc)
+            << " b_inc=" << double(b_inc);
         throw eckit::SeriousBug(oss.str());
     }
 
@@ -95,8 +100,8 @@ bool FieldParametrisation::get(const std::string& name, double& value) const {
                 get("west", west) &&
                 get("east", east))
         {
-            value = shift(eckit::Fraction(west),
-                          eckit::Fraction(east),
+            value = shift(eckit::Fraction(::fabs(west)),
+                          eckit::Fraction(::fabs(east)),
                           eckit::Fraction(west_east_increment));
 
             return true;
@@ -112,8 +117,8 @@ bool FieldParametrisation::get(const std::string& name, double& value) const {
                 get("south", south))
         {
 
-            value = shift(eckit::Fraction(south),
-                          eckit::Fraction(north),
+            value = shift(eckit::Fraction(::fabs(south)),
+                          eckit::Fraction(::fabs(north)),
                           eckit::Fraction(south_north_increment));
 
             return true;
