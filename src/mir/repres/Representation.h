@@ -105,8 +105,6 @@ public:
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
     virtual const Representation* globalise(data::MIRField& field) const;
-    virtual const Representation* subset(data::MIRField& field,
-                                         const util::Increments& increments) const;
 
     // Make a global
     virtual size_t numberOfPoints() const;

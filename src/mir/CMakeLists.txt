@@ -34,8 +34,6 @@ list(
     action/filter/BitmapFilter.h
     action/filter/FrameFilter.cc
     action/filter/FrameFilter.h
-    action/filter/SubsetFilter.cc
-    action/filter/SubsetFilter.h
     action/filter/GlobaliseFilter.cc
     action/filter/GlobaliseFilter.h
     action/interpolate/Gridded2GridDef.cc
@@ -60,12 +58,8 @@ list(
     action/interpolate/Gridded2RegularGG.h
     action/interpolate/Gridded2RegularLL.cc
     action/interpolate/Gridded2RegularLL.h
-    action/interpolate/Gridded2RegularLLShift.cc
-    action/interpolate/Gridded2RegularLLShift.h
     action/interpolate/Gridded2RotatedLL.cc
     action/interpolate/Gridded2RotatedLL.h
-    action/interpolate/Gridded2RotatedLLShift.cc
-    action/interpolate/Gridded2RotatedLLShift.h
     action/interpolate/Gridded2RotatedNamedGrid.cc
     action/interpolate/Gridded2RotatedNamedGrid.h
     action/interpolate/Gridded2RotatedOctahedral.cc
@@ -402,12 +396,8 @@ list(
     repres/latlon/ReducedLL.h
     repres/latlon/RegularLL.cc
     repres/latlon/RegularLL.h
-    repres/latlon/RegularLLShift.cc
-    repres/latlon/RegularLLShift.h
     repres/latlon/RotatedLL.cc
     repres/latlon/RotatedLL.h
-    repres/latlon/RotatedLLShift.cc
-    repres/latlon/RotatedLLShift.h
     repres/other/None.cc
     repres/other/None.h
     repres/other/UnstructuredGrid.cc

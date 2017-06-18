@@ -72,7 +72,8 @@ const repres::Representation *ShVodTouvRegularLL::outputRepresentation() const {
 
     return new repres::latlon::RegularLL(
                 util::BoundingBox(pole, west, -pole, east),
-                increments_);
+                increments_,
+                util::Shift(0, 0));
 }
 
 

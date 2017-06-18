@@ -46,8 +46,11 @@ bool ShiftIterator::next(Latitude &lat, Longitude &lon) {
 
     while (iterator_->next(lat, lon)) {
 
+std::cout << "===> " << lat << " " << lon << std::endl;
+
         lon += eastwards;
         lat += northwards;
+std::cout << "<=== " << lat << " " << lon << std::endl;
 
         if (lat > Latitude::NORTH_POLE || lat < Latitude::SOUTH_POLE) {
             continue;

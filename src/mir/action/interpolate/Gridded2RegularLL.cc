@@ -33,6 +33,11 @@ Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation &parametris
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
+    if (parametrisation_.get("user.shift", value)) {
+        ASSERT(value.size() == 2);
+        shift_ = util::Shift(value[0], value[1]);
+    }
+
 }
 
 
@@ -42,16 +47,23 @@ Gridded2RegularLL::~Gridded2RegularLL() {
 
 bool Gridded2RegularLL::sameAs(const Action& other) const {
     const Gridded2RegularLL* o = dynamic_cast<const Gridded2RegularLL*>(&other);
-    return o && (increments_ == o->increments_);
+    return o && (increments_ == o->increments_) && (shift_ == o->shift_);
 }
 
 
 void Gridded2RegularLL::print(std::ostream &out) const {
-    out << "Gridded2RegularLL[increments=" << increments_ << "]";
+    out << "Gridded2RegularLL[increments=" << increments_;
+    if (shift_) {
+        out << ",shift" << shift_;
+    }
+    out << "]";
 }
 
 
 const repres::Representation *Gridded2RegularLL::outputRepresentation() const {
+
+    ASSERT(!shift_);
+
     double ns = increments_.south_north();
     double we = increments_.west_east();
 
@@ -73,7 +85,8 @@ const repres::Representation *Gridded2RegularLL::outputRepresentation() const {
 
     return new repres::latlon::RegularLL(
                util::BoundingBox(pole, west, -pole, east),
-               increments_);
+               increments_,
+               shift_);
 }
 
 

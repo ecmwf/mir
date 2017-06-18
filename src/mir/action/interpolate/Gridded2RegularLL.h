@@ -19,6 +19,7 @@
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
 #include "mir/util/Increments.h"
+#include "mir/util/Shift.h"
 
 
 namespace mir {
@@ -85,6 +86,7 @@ private:
     // -- Members
 
     util::Increments increments_;
+    util::Shift shift_;
 
     // -- Methods
     // None

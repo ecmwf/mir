@@ -26,6 +26,9 @@ namespace mir {
 namespace api {
 class MIRJob;
 }
+namespace param {
+class MIRParametrisation;
+}
 }
 
 namespace mir {
@@ -42,6 +45,8 @@ public:
 
     explicit Shift(const eckit::Fraction& west_east,
                    const eckit::Fraction& south_north);
+
+    explicit Shift(const param::MIRParametrisation&);
 
     explicit Shift(double west_east = 0,
                    double south_north = 0);

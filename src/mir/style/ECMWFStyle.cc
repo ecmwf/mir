@@ -155,20 +155,12 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     bool wind = false;
     parametrisation_.get("wind", wind);
 
-    bool shift = parametrisation_.has("user.shift");
-
-
-    // consistency checks
-    if (shift && !parametrisation_.has("user.grid")) {
-        throw eckit::UserError("option 'shift' requires option 'grid'.");
-    }
     if (parametrisation_.has("user.pl") && parametrisation_.has("user.rotation")) {
         throw eckit::UserError("'user.pl' is incompatible with option 'rotation'.");
     }
 
 
     const std::string userGrid =
-        parametrisation_.has("user.grid") && shift? "regular-ll-shift" :
         parametrisation_.has("user.grid")?          "regular-ll" :
         parametrisation_.has("user.reduced") ?      "reduced-gg" :
         parametrisation_.has("user.regular") ?      "regular-gg" :
