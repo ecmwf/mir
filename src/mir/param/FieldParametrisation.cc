@@ -14,7 +14,6 @@
 /// @date Apr 2015
 
 
-#include <cmath>
 
 #include "mir/param/FieldParametrisation.h"
 
@@ -75,19 +74,18 @@ bool FieldParametrisation::get(const std::string& name, float& value) const {
 
 
 inline double shift(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc) {
-    eckit::Fraction a_inc = a - (a / inc).integralPart() * inc;
-    eckit::Fraction b_inc = b - (b / inc).integralPart() * inc;
+    eckit::Fraction shift = a - (a / inc).integralPart() * inc;
 
-    if (a_inc != b_inc) {
+    if (!((a - b) / inc).integer()) {
         std::ostringstream oss;
         oss << "Cannot compute shift with a=" << double(a)
             << ", b=" << double(b) << ", inc=" << double(inc)
-            << " a_inc=" << double(a_inc)
-            << " b_inc=" << double(b_inc);
+            << " shift=" << double(shift)
+            << " (a-b)/inc=" << double((a - b) / inc);
         throw eckit::SeriousBug(oss.str());
     }
 
-    return a_inc;
+    return shift;
 }
 
 bool FieldParametrisation::get(const std::string& name, double& value) const {
@@ -100,8 +98,8 @@ bool FieldParametrisation::get(const std::string& name, double& value) const {
                 get("west", west) &&
                 get("east", east))
         {
-            value = shift(eckit::Fraction(west),
-                          eckit::Fraction(east),
+            value = shift(eckit::Fraction(east),
+                          eckit::Fraction(west),
                           eckit::Fraction(west_east_increment));
 
             return true;
@@ -117,8 +115,8 @@ bool FieldParametrisation::get(const std::string& name, double& value) const {
                 get("south", south))
         {
 
-            value = shift(eckit::Fraction(::fabs(south)),
-                          eckit::Fraction(::fabs(north)),
+            value = shift(eckit::Fraction(north),
+                          eckit::Fraction(south),
                           eckit::Fraction(south_north_increment));
 
             return true;
