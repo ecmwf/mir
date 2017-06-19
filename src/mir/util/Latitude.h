@@ -30,6 +30,7 @@ class Latitude {
 public:
 
 
+    static Latitude GLOBE; // 180
     static Latitude NORTH_POLE; // 90
     static Latitude SOUTH_POLE; // -90
     static Latitude EQUATOR; // 0

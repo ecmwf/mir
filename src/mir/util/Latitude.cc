@@ -29,6 +29,7 @@
 namespace mir {
 
 
+Latitude Latitude::GLOBE(180);
 Latitude Latitude::NORTH_POLE(90);
 Latitude Latitude::SOUTH_POLE(-90);
 Latitude Latitude::EQUATOR(0);
