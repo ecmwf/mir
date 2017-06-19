@@ -497,12 +497,6 @@ list(
     util/Compare.h
     util/Domain.cc
     util/Domain.h
-    util/Latitude.cc
-    util/Latitude.h
-    util/LongitudeDouble.cc
-    util/LongitudeDouble.h
-    util/LongitudeFraction.cc
-    util/LongitudeFraction.h
     util/Formula.cc
     util/Formula.h
     util/FormulaBinop.cc
@@ -522,6 +516,12 @@ list(
     util/Grib.h
     util/Increments.cc
     util/Increments.h
+    util/Latitude.cc
+    util/Latitude.h
+    util/LongitudeDouble.cc
+    util/LongitudeDouble.h
+    util/LongitudeFraction.cc
+    util/LongitudeFraction.h
     util/MIRGrid.cc
     util/MIRGrid.h
     util/MIRStatistics.cc
@@ -534,8 +534,6 @@ list(
     util/Rotation.h
     util/Shift.cc
     util/Shift.h
-    util/ShiftIterator.cc
-    util/ShiftIterator.h
   )
 
 list(APPEND mir_tmpls caching/InMemoryCache.cc)
