@@ -54,7 +54,7 @@ bool Gridded2RegularLL::sameAs(const Action& other) const {
 void Gridded2RegularLL::print(std::ostream &out) const {
     out << "Gridded2RegularLL[increments=" << increments_;
     if (shift_) {
-        out << ",shift" << shift_;
+        out << ",shift=" << shift_;
     }
     out << "]";
 }

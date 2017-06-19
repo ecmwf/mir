@@ -60,7 +60,7 @@ bool Gridded2RotatedLL::sameAs(const Action& other) const {
 void Gridded2RotatedLL::print(std::ostream &out) const {
     out << "Gridded2RotatedLL[increments=" << increments_;
     if (shift_) {
-        out << ",shift" << shift_;
+        out << ",shift=" << shift_;
     }
     out << ",rotation" << rotation_ << "]";
 }
