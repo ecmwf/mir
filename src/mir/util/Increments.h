@@ -88,6 +88,10 @@ public:
 
     Shift shiftFromZeroZero(const BoundingBox&) const;
 
+    size_t computeNi(const BoundingBox&) const;
+
+    size_t computeNj(const BoundingBox&) const;
+
     const eckit::Fraction& west_east() const {
         return west_east_;
     }

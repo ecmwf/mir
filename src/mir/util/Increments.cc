@@ -29,10 +29,33 @@ namespace util {
 
 
 namespace {
-void check(const Increments& inc) {
+
+
+static void check(const Increments& inc) {
     // ASSERT(inc.west_east_ > 0);
     // ASSERT(inc.south_north_ > 0);
 }
+
+
+template<class T>
+static size_t computeN(const T& first, const T& last, const eckit::Fraction& inc) {
+    ASSERT(first <= last);
+    ASSERT(inc > 0);
+
+    eckit::Fraction l = last.fraction();
+    eckit::Fraction f = first.fraction();
+    eckit::Fraction i = inc;
+
+    // std::cout << double(last) << " " << double(first) << " " << double(inc) << std::endl;
+
+    // std::cout << l << " " << f << " " << i << std::endl;
+
+    long long n = (l - f) / i;
+
+    return n + 1;
+}
+
+
 }
 
 
@@ -165,6 +188,16 @@ Shift Increments::shiftFromZeroZero(const BoundingBox& bbox) const {
 
     return Shift(w, s);
 
+}
+
+
+size_t Increments::computeNi(const BoundingBox& bbox) const {
+    return computeN(bbox.west(), bbox.east(), west_east_);
+}
+
+
+size_t Increments::computeNj(const BoundingBox& bbox) const {
+    return computeN(bbox.south(), bbox.north(), south_north_);
 }
 
 

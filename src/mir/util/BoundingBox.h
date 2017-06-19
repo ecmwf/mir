@@ -21,11 +21,9 @@
 
 
 struct grib_info;
-
 namespace eckit {
 class MD5;
 }
-
 namespace mir {
 namespace api {
 class MIRJob;
@@ -39,7 +37,6 @@ class MIRParametrisation;
 namespace mir {
 namespace util {
 
-class Increments;
 
 class BoundingBox {
 public:
@@ -55,7 +52,7 @@ public:
                 const Latitude& south,
                 const Longitude& east);
     BoundingBox(const param::MIRParametrisation&);
-    BoundingBox(const BoundingBox& other);
+    BoundingBox(const BoundingBox&);
 
     // -- Destructor
 
@@ -112,9 +109,6 @@ public:
 
     void hash(eckit::MD5&) const;
 
-    size_t computeNi(const util::Increments&) const;
-    size_t computeNj(const util::Increments&) const;
-
     void makeName(std::ostream& out) const;
 
     // -- Overridden methods
@@ -133,7 +127,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None

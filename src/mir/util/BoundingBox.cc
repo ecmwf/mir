@@ -17,17 +17,15 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
-#include "mir/util/Increments.h"
-#include "eckit/types/Fraction.h"
 
 
 namespace mir {
 namespace util {
+
 
 BoundingBox::BoundingBox() :
     north_(Latitude::NORTH_POLE),
@@ -45,6 +43,7 @@ BoundingBox::BoundingBox(const Latitude& north,
     north_(north), west_(west), south_(south), east_(east) {
     normalise();
 }
+
 
 BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("north", north_));
@@ -158,32 +157,6 @@ bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
 }
 
 
-template<class T>
-static size_t computeN(const T& first, const T& last, const eckit::Fraction& inc) {
-    ASSERT(first <= last);
-    ASSERT(inc > 0);
-
-    eckit::Fraction l = last.fraction();
-    eckit::Fraction f = first.fraction();
-    eckit::Fraction i = inc;
-
-    // std::cout << double(last) << " " << double(first) << " " << double(inc) << std::endl;
-
-    // std::cout << l << " " << f << " " << i << std::endl;
-
-    long long n = (l - f) / i;
-
-    return n + 1;
-}
-
-size_t BoundingBox::computeNi(const util::Increments& increments) const {
-    return computeN(west_, east_, increments.west_east());
-}
-
-size_t BoundingBox::computeNj(const util::Increments& increments) const {
-    return computeN(south_, north_, increments.south_north());
-}
-
 void BoundingBox::makeName(std::ostream& out) const {
     out << "-"
         << north_
@@ -194,7 +167,6 @@ void BoundingBox::makeName(std::ostream& out) const {
         << ":"
         << east_;
 }
-
 
 
 }  // namespace util

@@ -54,7 +54,7 @@ long MARSStyle::getTargetGaussianNumber() const {
 
         util::BoundingBox bbox(90, 0, 0, 360);
         util::Increments inc(grid[0], grid[1]);
-        long N = long(bbox.computeNj(inc)) - 1;
+        long N = long(inc.computeNj(bbox)) - 1;
         return N;
     }
 
