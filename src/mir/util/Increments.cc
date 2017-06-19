@@ -28,6 +28,14 @@ namespace mir {
 namespace util {
 
 
+namespace {
+void check(const Increments& inc) {
+    // ASSERT(inc.west_east_ > 0);
+    // ASSERT(inc.south_north_ > 0);
+}
+}
+
+
 Increments::Increments(const param::MIRParametrisation& parametrisation) {
     ASSERT(parametrisation.get("west_east_increment", west_east_));
     ASSERT(parametrisation.get("south_north_increment", south_north_));
@@ -37,34 +45,35 @@ Increments::Increments(const param::MIRParametrisation& parametrisation) {
 Increments::Increments(const Increments& other) :
     west_east_(other.west_east_),
     south_north_(other.south_north_) {
+    check(*this);
 }
 
 
 Increments::Increments(double west_east, double south_north) :
     west_east_(west_east),
     south_north_(south_north) {
-    // ASSERT(west_east_ > 0);
-    // ASSERT(south_north_ > 0);
+    check(*this);
 }
 
 
 Increments::Increments(const eckit::Fraction& west_east, const eckit::Fraction& south_north) :
     west_east_(west_east),
     south_north_(south_north) {
-    // ASSERT(west_east_ > 0);
-    // ASSERT(south_north_ > 0);
+    check(*this);
 }
 
 
 Increments::Increments(double west_east, const eckit::Fraction& south_north) :
     west_east_(west_east),
     south_north_(south_north) {
+    check(*this);
 }
 
 
 Increments::Increments(const eckit::Fraction& west_east, double south_north) :
     west_east_(west_east),
     south_north_(south_north) {
+    check(*this);
 }
 
 
