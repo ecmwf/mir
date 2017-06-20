@@ -27,17 +27,7 @@ namespace action {
 
 
 Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametrisation):
-    Gridded2GriddedInterpolation(parametrisation) {
-
-    std::vector<double> value;
-    ASSERT(parametrisation_.get("user.grid", value));
-    ASSERT(value.size() == 2);
-    increments_ = util::Increments(value[0], value[1]);
-
-    if (parametrisation_.get("user.shift", value)) {
-        ASSERT(value.size() == 2);
-        shift_ = util::Shift(value[0], value[1]);
-    }
+    Gridded2LatLon(parametrisation) {
 
 }
 
@@ -48,7 +38,7 @@ Gridded2RegularLL::~Gridded2RegularLL() {
 
 bool Gridded2RegularLL::sameAs(const Action& other) const {
     const Gridded2RegularLL* o = dynamic_cast<const Gridded2RegularLL*>(&other);
-    return o && (increments_ == o->increments_) && (shift_ == o->shift_);
+    return o && Gridded2LatLon::sameAs(*o);
 }
 
 

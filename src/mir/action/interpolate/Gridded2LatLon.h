@@ -13,10 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded2RegularLL_H
-#define Gridded2RegularLL_H
+#ifndef Gridded2LatLon_H
+#define Gridded2LatLon_H
 
-#include "mir/action/interpolate/Gridded2LatLon.h"
+#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
 #include "mir/util/Increments.h"
 #include "mir/util/Shift.h"
@@ -26,7 +26,7 @@ namespace mir {
 namespace action {
 
 
-class Gridded2RegularLL : public Gridded2LatLon {
+class Gridded2LatLon : public Gridded2GriddedInterpolation {
 public:
 
     // -- Exceptions
@@ -34,11 +34,11 @@ public:
 
     // -- Contructors
 
-    Gridded2RegularLL(const param::MIRParametrisation&);
+    Gridded2LatLon(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~Gridded2RegularLL(); // Change to virtual if base class
+    virtual ~Gridded2LatLon(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -61,14 +61,18 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    util::Increments increments_;
+    util::Shift shift_;
+
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
-    // None
+
+    virtual bool sameAs(const Action& other) const;
+
 
     // -- Class members
     // None
@@ -80,8 +84,8 @@ private:
 
     // No copy allowed
 
-    Gridded2RegularLL(const Gridded2RegularLL&);
-    Gridded2RegularLL& operator=(const Gridded2RegularLL&);
+    Gridded2LatLon(const Gridded2LatLon&);
+    Gridded2LatLon& operator=(const Gridded2LatLon&);
 
     // -- Members
 
@@ -90,10 +94,8 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
 
     // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
 
     // -- Class members
     // None
@@ -103,8 +105,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Gridded2RegularLL& p)
-    //	{ p.print(s); return s; }
+    //friend ostream& operator<<(ostream& s,const Gridded2LatLon& p)
+    //  { p.print(s); return s; }
 
 };
 

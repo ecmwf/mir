@@ -16,7 +16,7 @@
 #ifndef Gridded2RotatedLL_H
 #define Gridded2RotatedLL_H
 
-#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
+#include "mir/action/interpolate/Gridded2LatLon.h"
 #include "mir/util/Increments.h"
 #include "mir/util/Rotation.h"
 #include "mir/util/Shift.h"
@@ -26,7 +26,7 @@ namespace mir {
 namespace action {
 
 
-class Gridded2RotatedLL : public Gridded2GriddedInterpolation {
+class Gridded2RotatedLL : public Gridded2LatLon {
 public:
 
     // -- Exceptions
@@ -85,8 +85,6 @@ private:
 
     // -- Members
 
-    util::Increments increments_;
-    util::Shift shift_;
 
     util::Rotation rotation_;
 

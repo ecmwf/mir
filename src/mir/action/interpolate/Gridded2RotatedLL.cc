@@ -29,20 +29,12 @@ namespace action {
 
 
 Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation &parametrisation):
-    Gridded2GriddedInterpolation(parametrisation) {
+    Gridded2LatLon(parametrisation) {
 
     std::vector<double> value;
-    ASSERT(parametrisation_.get("user.grid", value));
-    ASSERT(value.size() == 2);
-    increments_ = util::Increments(value[0], value[1]);
 
     ASSERT(parametrisation_.get("user.rotation", value));
     ASSERT(value.size() == 2);
-
-    if (parametrisation_.get("user.shift", value)) {
-        ASSERT(value.size() == 2);
-        shift_ = util::Shift(value[0], value[1]);
-    }
 
     rotation_ = util::Rotation(value[0], value[1]);
 }
@@ -54,7 +46,7 @@ Gridded2RotatedLL::~Gridded2RotatedLL() {
 
 bool Gridded2RotatedLL::sameAs(const Action& other) const {
     const Gridded2RotatedLL* o = dynamic_cast<const Gridded2RotatedLL*>(&other);
-    return o && (increments_ == o->increments_) && (shift_ == o->shift_) && (rotation_ == o->rotation_);
+    return o && Gridded2LatLon::sameAs(*o) && (rotation_ == o->rotation_);
 }
 
 

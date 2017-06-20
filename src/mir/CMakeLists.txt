@@ -60,6 +60,8 @@ list(
     action/interpolate/Gridded2RegularLL.h
     action/interpolate/Gridded2RotatedLL.cc
     action/interpolate/Gridded2RotatedLL.h
+    action/interpolate/Gridded2LatLon.cc
+    action/interpolate/Gridded2LatLon.h
     action/interpolate/Gridded2RotatedNamedGrid.cc
     action/interpolate/Gridded2RotatedNamedGrid.h
     action/interpolate/Gridded2RotatedOctahedral.cc
