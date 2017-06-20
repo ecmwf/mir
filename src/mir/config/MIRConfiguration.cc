@@ -49,6 +49,8 @@ struct Defaults : param::SimpleParametrisation {
         set("lsm-value-threshold", 0.5);
 
         set("spectral-mapping", "linear");
+
+        set("tolerance", 1e-10);
     }
 };
 }  // (anonymous namespace)
@@ -115,7 +117,7 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
 
 
     configPath_ = path;
-    //    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *root_ << std::endl;
+    //    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << root_ << std::endl;
 
     // Use defaults (non-overwriting)
     Defaults().copyValuesTo(root_, false);
