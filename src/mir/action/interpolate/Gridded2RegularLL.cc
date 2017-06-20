@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
+#include "eckit/types/Fraction.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -25,7 +26,7 @@ namespace mir {
 namespace action {
 
 
-Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation &parametrisation):
+Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
 
     std::vector<double> value;
@@ -51,40 +52,42 @@ bool Gridded2RegularLL::sameAs(const Action& other) const {
 }
 
 
-void Gridded2RegularLL::print(std::ostream &out) const {
-    out << "Gridded2RegularLL[increments=" << increments_;
-    if (shift_) {
-        out << ",shift=" << shift_;
-    }
-    out << "]";
+void Gridded2RegularLL::print(std::ostream& out) const {
+    out << "Gridded2RegularLL["
+            "increments=" << increments_
+        << ",shift=" << shift_
+        << "]";
 }
 
 
-const repres::Representation *Gridded2RegularLL::outputRepresentation() const {
+const repres::Representation* Gridded2RegularLL::outputRepresentation() const {
+    using eckit::Fraction;
 
-    ASSERT(!shift_);
+    auto adjustToIncrements = [](double within, const Fraction& increment, const Fraction& shift) -> Fraction {
+        return ((within + shift) / increment).integralPart() * increment - shift;
+    };
 
-    double ns = increments_.south_north();
-    double we = increments_.west_east();
+    const Fraction& sn = increments_.south_north();
+    const Fraction& we = increments_.west_east();
 
     // Latitude range: cater for grids that are regular, but do not reach the pole (e.g. 1.6)
-    double pole = size_t(90 / ns) * ns;
+    Fraction north = adjustToIncrements( 90, sn, shift_.south_north());
+    Fraction south = adjustToIncrements(-90, sn, shift_.south_north());
 
     // Longitude range
     // - periodic grids have East-most longitude at 360 - increment
     // - non-periodic grids are symmetric to Greenwhich and do not reach the date line (e.g. 1.1)
-    double west = 0;
-    double east = size_t(360 / we) * we;
-    if (east == 360) {
+    Fraction west = adjustToIncrements(  0, we, shift_.west_east());
+    Fraction east = adjustToIncrements(360, we, shift_.west_east());
+    if (east - west == 360) {
         east -= we;
-    }
-    else {
-        east = size_t(180 / we) * we;
+    } else {
+        east = adjustToIncrements(180, we, shift_.west_east());
         west = -east;
     }
 
     return new repres::latlon::RegularLL(
-               util::BoundingBox(pole, west, -pole, east),
+               util::BoundingBox(north, west, south, east),
                increments_,
                shift_);
 }

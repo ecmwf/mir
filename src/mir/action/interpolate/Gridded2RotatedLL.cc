@@ -57,17 +57,17 @@ bool Gridded2RotatedLL::sameAs(const Action& other) const {
     return o && (increments_ == o->increments_) && (shift_ == o->shift_) && (rotation_ == o->rotation_);
 }
 
+
 void Gridded2RotatedLL::print(std::ostream &out) const {
-    out << "Gridded2RotatedLL[increments=" << increments_;
-    if (shift_) {
-        out << ",shift=" << shift_;
-    }
-    out << ",rotation" << rotation_ << "]";
+    out << "Gridded2RotatedLL["
+            "increments=" << increments_
+        << ",shift=" << shift_
+        << ",rotation" << rotation_
+        << "]";
 }
 
 
 const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
-  ASSERT(!shift_);
     return new repres::latlon::RotatedLL(
                util::BoundingBox(90, 0, -90, 360 - increments_.west_east()),
                increments_,
