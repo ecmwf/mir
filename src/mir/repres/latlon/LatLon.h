@@ -75,6 +75,8 @@ class LatLon : public Gridded {
 
     virtual Iterator* unrotatedIterator() const; // Before rotation
 
+    void setNiNj();
+
     // -- Overridden methods
 
     virtual void fill(grib_info &) const;
