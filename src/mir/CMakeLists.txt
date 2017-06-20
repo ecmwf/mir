@@ -534,6 +534,7 @@ list(
     util/Rotation.h
     util/Shift.cc
     util/Shift.h
+    util/Types.h
   )
 
 list(APPEND mir_tmpls caching/InMemoryCache.cc)
