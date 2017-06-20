@@ -60,30 +60,10 @@ void Gridded2RegularLL::print(std::ostream& out) const {
 }
 
 
-static eckit::Fraction NORTH_POLE(90);
-static eckit::Fraction SOUTH_POLE(-90);
-static eckit::Fraction ZERO(0);
-static eckit::Fraction THREE_SIXTY(360);
-
-static eckit::Fraction adjust(eckit::Fraction lat, const eckit::Fraction& sn) {
-    while(lat > NORTH_POLE) { lat -= sn; }
-    while(lat < SOUTH_POLE) { lat += sn; }
-    return lat;
-}
-
-
 const repres::Representation* Gridded2RegularLL::outputRepresentation() const {
-    using eckit::Fraction;
-
-    // Latitude range: cater for grids that are regular, but do not reach the pole (e.g. 1.6)
-    Fraction north = adjust(NORTH_POLE + shift_.south_north(), increments_.south_north());
-    Fraction south = adjust(SOUTH_POLE + shift_.south_north(), increments_.south_north());
-
-    Fraction west = ZERO + shift_.west_east();
-    Fraction east = THREE_SIXTY+ shift_.west_east() - increments_.west_east();
 
     return new repres::latlon::RegularLL(
-               util::BoundingBox(north, west, south, east),
+               repres::latlon::LatLon::globalBoundingBox(increments_, shift_),
                increments_,
                shift_);
 }

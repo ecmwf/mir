@@ -27,7 +27,7 @@ namespace latlon {
 
 
 class LatLon : public Gridded {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -57,9 +57,12 @@ class LatLon : public Gridded {
     // None
 
     // -- Class methods
-    // None
 
-  protected:
+    static util::BoundingBox globalBoundingBox(const util::Increments &increments,
+            const util::Shift& shift);
+
+
+protected:
 
     // -- Members
 
