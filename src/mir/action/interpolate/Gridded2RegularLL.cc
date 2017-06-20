@@ -60,31 +60,27 @@ void Gridded2RegularLL::print(std::ostream& out) const {
 }
 
 
+static eckit::Fraction NORTH_POLE(90);
+static eckit::Fraction SOUTH_POLE(-90);
+static eckit::Fraction ZERO(0);
+static eckit::Fraction THREE_SIXTY(360);
+
+static eckit::Fraction adjust(eckit::Fraction lat, const eckit::Fraction& sn) {
+    while(lat > NORTH_POLE) { lat -= sn; }
+    while(lat < SOUTH_POLE) { lat += sn; }
+    return lat;
+}
+
+
 const repres::Representation* Gridded2RegularLL::outputRepresentation() const {
     using eckit::Fraction;
 
-    auto adjustToIncrements = [](double within, const Fraction& increment, const Fraction& shift) -> Fraction {
-        return ((within + shift) / increment).integralPart() * increment - shift;
-    };
-
-    const Fraction& sn = increments_.south_north();
-    const Fraction& we = increments_.west_east();
-
     // Latitude range: cater for grids that are regular, but do not reach the pole (e.g. 1.6)
-    Fraction north = adjustToIncrements( 90, sn, shift_.south_north());
-    Fraction south = adjustToIncrements(-90, sn, shift_.south_north());
+    Fraction north = adjust(NORTH_POLE + shift_.south_north(), increments_.south_north());
+    Fraction south = adjust(SOUTH_POLE + shift_.south_north(), increments_.south_north());
 
-    // Longitude range
-    // - periodic grids have East-most longitude at 360 - increment
-    // - non-periodic grids are symmetric to Greenwhich and do not reach the date line (e.g. 1.1)
-    Fraction west = adjustToIncrements(  0, we, shift_.west_east());
-    Fraction east = adjustToIncrements(360, we, shift_.west_east());
-    if (east - west == 360) {
-        east -= we;
-    } else {
-        east = adjustToIncrements(180, we, shift_.west_east());
-        west = -east;
-    }
+    Fraction west = ZERO + shift_.west_east();
+    Fraction east = THREE_SIXTY+ shift_.west_east() - increments_.west_east();
 
     return new repres::latlon::RegularLL(
                util::BoundingBox(north, west, south, east),
