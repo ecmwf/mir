@@ -73,57 +73,39 @@ bool FieldParametrisation::get(const std::string& name, float& value) const {
 }
 
 
-inline double shift(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc) {
+inline double shift(const double& a, const double& b, double increment) {
+    const eckit::Fraction inc(increment);
     eckit::Fraction shift = a - (a / inc).integralPart() * inc;
 
     if (!((a - b) / inc).integer()) {
         std::ostringstream oss;
-        oss << "Cannot compute shift with a=" << double(a)
-            << ", b=" << double(b) << ", inc=" << double(inc)
-            << " shift=" << double(shift)
-            << " (a-b)/inc=" << double((a - b) / inc);
+        oss << "Cannot compute shift with a=" << a << ", b=" << b << ", inc=" << double(inc)
+            << " shift=" << double(shift) << " (a-b)/inc=" << double((a - b) / inc);
         throw eckit::SeriousBug(oss.str());
     }
 
     return shift;
 }
 
+
 bool FieldParametrisation::get(const std::string& name, double& value) const {
+    double inc;
+    double a;
+    double b;
 
-    if (name == "west_east_shift" ) {
-        double west_east_increment;
-        double west, east;
-
-        if (get("west_east_increment", west_east_increment) &&
-                get("west", west) &&
-                get("east", east))
-        {
-            value = shift(eckit::Fraction(east),
-                          eckit::Fraction(west),
-                          eckit::Fraction(west_east_increment));
-
+    if (name == "west_east_shift") {
+        if (get("west_east_increment", inc) && get("east", a) && get("west", b)) {
+            value = shift(a, b, inc);
             return true;
         }
     }
 
     if (name == "south_north_shift") {
-        double south_north_increment;
-        double north, south;
-
-        if (get("south_north_increment", south_north_increment) &&
-                get("north", north) &&
-                get("south", south))
-        {
-
-            value = shift(eckit::Fraction(north),
-                          eckit::Fraction(south),
-                          eckit::Fraction(south_north_increment));
-
+        if (get("south_north_increment", inc) && get("north", a) && get("south", b)) {
+            value = shift(a, b, inc);
             return true;
         }
     }
-
-
 
     return _get(name, value);
 }
