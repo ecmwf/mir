@@ -33,18 +33,11 @@ public:
 
     InheritParametrisation();
 
-    InheritParametrisation(const InheritParametrisation* parent, const std::string& label);
-
-    InheritParametrisation(const InheritParametrisation* parent, const std::vector<long>& ids);
-
     // -- Destructor
 
     ~InheritParametrisation();
 
     // -- Methods
-
-    // Add a child
-    InheritParametrisation& child(InheritParametrisation*);
 
     // Fill parametrisation provided a ValueMap (not overwriting)
     void fill(const eckit::ValueMap&);
@@ -61,17 +54,11 @@ public:
     /// Find best matching descendant according to label hierarchy
     const InheritParametrisation& pick(const std::vector< std::string >& labels) const;
 
-    /// Collect all inherited traits, prioritizing younger/children traits
-    void inherit(SimpleParametrisation&) const;
-
-    /// Create a readable label hierarchy
-    std::string labelHierarchy() const;
-
     // -- Overridden methods
 
     // From SimpleParametrisation
     bool empty() const;
-    InheritParametrisation& clear(const std::string&);
+    InheritParametrisation& clear(const std::string& name);
     bool has(const std::string& name) const;
 
     bool get(const std::string& name, std::string& value) const;
@@ -89,6 +76,12 @@ public:
 
 private:
 
+    // -- Constructors
+
+    InheritParametrisation(const InheritParametrisation* parent, const std::string& label);
+
+    InheritParametrisation(const InheritParametrisation* parent, const std::vector<long>& ids);
+
     // -- Methods
 
     // Generic getter
@@ -104,8 +97,17 @@ private:
     /// Check if this matches requested label
     bool matchesLabel(const std::string&) const;
 
+    // Add a child
+    InheritParametrisation& addChild(InheritParametrisation*);
+
     /// Remove traits from children
     InheritParametrisation& clearFromChildren(const std::string&);
+
+    /// Collect all inherited traits, prioritizing younger/children traits
+    void inherit(SimpleParametrisation&) const;
+
+    /// Create a readable label hierarchy
+    std::string labelHierarchy() const;
 
     // -- Overridden methods
 
