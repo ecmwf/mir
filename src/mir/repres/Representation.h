@@ -20,6 +20,7 @@
 #include <string>
 #include <vector>
 #include "eckit/memory/Counted.h"
+#include "mir/util/MIRGrid.h"
 
 
 struct grib_info;
@@ -48,9 +49,6 @@ class MIRJob;
 }
 namespace data {
 class MIRField;
-}
-namespace util {
-class MIRGrid;
 }
 }
 
@@ -112,7 +110,7 @@ public:
 
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
-    virtual util::MIRGrid grid() const;
+    virtual util::MIRGrid grid(const util::MIRGrid::MeshGenParams& = util::MIRGrid::MeshGenParams()) const;
     virtual util::Domain domain() const;
 
     virtual size_t truncation() const;

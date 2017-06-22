@@ -17,34 +17,63 @@
 #include "mir/util/MIRGrid.h"
 
 #include "eckit/geometry/Point3.h"
+#include "eckit/log/ResourceUsage.h"
+#include "eckit/thread/Mutex.h"
 #include "atlas/array.h"
 #include "atlas/mesh/Mesh.h"
-#include "mir/method/MethodWeighted.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
 #include "eckit/utils/MD5.h"
+#include "mir/caching/InMemoryCache.h"
+#include "mir/config/LibMir.h"
+#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
 namespace util {
 
 
-MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain) :
-    domain_(domain),
+namespace {
+static eckit::Mutex local_mutex;
+static InMemoryCache<atlas::Mesh> mesh_cache(
+        "mirMesh",
+        512 * 1024 * 1024,
+        "$MIR_MESH_CACHE_MEMORY_FOOTPRINT" );
+}  // (anonymous namespace)
+
+
+MIRGrid::MeshGenParams::MeshGenParams() {
+    set("three_dimensional", true);
+    set("patch_pole",        true);
+    set("include_pole",      false);
+    set("angle",             0.);
+    set("triangulate",       false);
+}
+
+
+MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain, const MeshGenParams& meshGenParams) :
     grid_(grid),
-    mesh_(0),
-    coordsLonLat_(0) {
+    domain_(domain),
+    meshGenParams_(meshGenParams),
+    coordsLonLat_(0),
+    coordsXYZ_(0) {
 }
 
 
-
-MIRGrid::MIRGrid(const MIRGrid& other) :
-    domain_(other.domain_),
-    grid_(other.grid_),
-    mesh_(0),
-    coordsLonLat_(0) {
+MIRGrid::MIRGrid(const MIRGrid& other) {
+    operator=(other);
 }
 
-const Domain& MIRGrid::domain() const {
-    return domain_;
+
+MIRGrid& MIRGrid::operator=(const MIRGrid& other) {
+    const_cast<atlas::Grid&>(grid_)            = other.grid_;
+    const_cast<Domain&>(domain_)               = other.domain_;
+    const_cast<MeshGenParams&>(meshGenParams_) = other.meshGenParams_;
+
+    mesh_ = atlas::Mesh();
+    coordsLonLat_.reset();
+    coordsXYZ_.reset();
+
+    return *this;
 }
 
 
@@ -53,11 +82,54 @@ MIRGrid::operator const atlas::Grid&() const {
 }
 
 
-atlas::Mesh& MIRGrid::mesh(const method::MethodWeighted& method) const {
-    if (mesh_ == 0) {
-        mesh_ = &(method.generateMeshAndCache(grid_));
+const Domain& MIRGrid::domain() const {
+    return domain_;
+}
+
+
+atlas::Mesh& MIRGrid::mesh() const {
+    if (!mesh_.generated()) {
+        mesh_ = generateMeshAndCache();
+        ASSERT(mesh_.generated());
     }
-    return *mesh_;
+    return mesh_;
+}
+
+
+atlas::Mesh MIRGrid::generateMeshAndCache() const {
+    eckit::ResourceUsage usage("MESH for " + std::to_string(grid_));
+
+    MIRStatistics dummy; // TODO: use the global one
+    InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, dummy.meshCache_ /*statistics.meshCache_*/);
+
+    eckit::MD5 md5;
+    hash(md5);
+
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    InMemoryCache<atlas::Mesh>::iterator j = mesh_cache.find(md5);
+    if (j != mesh_cache.end()) {
+        return *j;
+    }
+
+    atlas::Mesh& mesh = mesh_cache[md5];
+    try {
+
+        atlas::MeshGenerator generator(meshGenParams_.meshGenerator_, meshGenParams_);
+        mesh = generator.generate(grid_);
+
+        // If meshgenerator did not create xyz field already, do it now.
+        atlas::mesh::actions::BuildXYZField()(mesh);
+
+    }
+    catch (...) {
+        // Make sure we don't leave an incomplete entry in the cache
+        mesh_cache.erase(md5);
+        throw;
+    }
+
+    mesh_cache.footprint(md5, mesh.footprint());
+
+    return mesh;
 }
 
 
@@ -101,22 +173,14 @@ const atlas::array::Array& MIRGrid::coordsXYZ() const {
 }
 
 
-void MIRGrid::hash(eckit::MD5 &md5) const {
-    md5 << grid_ << domain_;
+void MIRGrid::hash(eckit::MD5& md5) const {
+    // TODO: missing meshGenParams.meshGenerator_!!!
+    md5 << grid_ << domain_ << meshGenParams_;
 }
 
 
 size_t MIRGrid::size() const {
     return grid_.size();
-}
-
-
-MIRGrid::MeshGenParams::MeshGenParams() {
-    set("three_dimensional", true);
-    set("patch_pole",        true);
-    set("include_pole",      false);
-    set("angle",             0.);
-    set("triangulate",       false);
 }
 
 

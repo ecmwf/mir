@@ -151,12 +151,12 @@ void Conservative::assemble(WeightMatrix& W, const repres::Representation& rin, 
     // 2) M_s compute the lumped mass matrix of the source mesh
 
     Vector M_s;
-    computeLumpedMassMatrix(M_s, rin, in.mesh(*this));
+    computeLumpedMassMatrix(M_s, rin, in.mesh());
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix of the destination mesh
 
     Vector M_d;
-    computeLumpedMassMatrix(M_d, rout, out.mesh(*this));
+    computeLumpedMassMatrix(M_d, rout, out.mesh());
 
     for(size_t i = 0; i < M_d.size(); ++i)
         M_d[i] = 1./M_d[i];

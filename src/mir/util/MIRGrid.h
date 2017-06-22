@@ -17,8 +17,8 @@
 #ifndef mir_method_MIRGrid_h
 #define mir_method_MIRGrid_h
 
+#include <string>
 #include <vector>
-#include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "atlas/array/Array.h"
 #include "atlas/grid/Grid.h"
@@ -29,13 +29,7 @@
 namespace eckit {
 class MD5;
 }
-namespace atlas {
-class Mesh;
-}
 namespace mir {
-namespace method {
-class MethodWeighted;
-}
 namespace repres {
 class Representation;
 }
@@ -52,43 +46,48 @@ public:
     // -- Types
 
     // Deriving from any eckit::Parametrisation should work
-    class MeshGenParams: public atlas::MeshGenerator::Parameters {
+    class MeshGenParams : public atlas::MeshGenerator::Parameters {
     public:
         MeshGenParams();
+        std::string meshGenerator_;
     };
 
     // -- Contructors
 
-    MIRGrid(const MIRGrid& other);
+    explicit MIRGrid(const atlas::Grid& grid, const Domain&, const MeshGenParams& = MeshGenParams());
 
-    explicit MIRGrid(const atlas::Grid& grid, const Domain&);
+    MIRGrid(const MIRGrid&);
 
     // -- Operators
 
-    MIRGrid& operator=(const MIRGrid& other);
+    MIRGrid& operator=(const MIRGrid&);
 
     // -- Methods
 
-    const Domain& domain() const;
-
     operator const atlas::Grid&() const;
+    const Domain& domain() const;
+    atlas::Mesh& mesh() const;
 
-    atlas::Mesh& mesh(const method::MethodWeighted&) const;
     const atlas::array::Array& coordsLonLat() const;
     const atlas::array::Array& coordsXYZ() const;
 
     void hash(eckit::MD5&) const;
-
     size_t size() const;
 
 
 private:
 
+    // -- Methods
+
+    atlas::Mesh generateMeshAndCache() const;
+
     // -- Members
 
-    const Domain domain_;
     const atlas::Grid grid_;
-    mutable atlas::Mesh* mesh_;
+    const Domain domain_;
+    const MeshGenParams meshGenParams_;
+
+    mutable atlas::Mesh mesh_;
     mutable eckit::ScopedPtr< atlas::array::Array > coordsLonLat_;
     mutable eckit::ScopedPtr< atlas::array::Array > coordsXYZ_;
 
