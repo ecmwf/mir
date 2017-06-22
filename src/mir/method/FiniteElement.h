@@ -18,15 +18,8 @@
 #define mir_method_FiniteElement_h
 
 #include "eckit/geometry/Point3.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "mir/method/MethodWeighted.h"
 #include "mir/util/MIRGrid.h"
-
-
-namespace atlas {
-class Grid;
-class Mesh;
-}
 
 
 namespace mir {
@@ -48,7 +41,6 @@ public:
 protected:
 
     virtual void hash(eckit::MD5&) const;
-    virtual void generateMesh(const atlas::Grid &grid, atlas::Mesh&) const;
 
 protected: // methods
 
