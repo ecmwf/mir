@@ -63,16 +63,16 @@ void MIRInspect::execute(const eckit::option::CmdArgs&) {
         std::string value;
 
         for (int i = 1; i < argc() - 1; i++) {
-            std::cout << sep << argv(i) << "=";
+            eckit::Log::info() << sep << argv(i) << "=";
             if (parametrisation.get(argv(i), value)) {
-                std::cout << value;
+                eckit::Log::info() << value;
             } else {
-                std::cout << "<not found>";
+                eckit::Log::info() << "<not found>";
             }
             sep = ", ";
         }
 
-        std::cout << std::endl;
+        eckit::Log::info() << std::endl;
     }
 }
 

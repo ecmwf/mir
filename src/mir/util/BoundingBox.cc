@@ -17,7 +17,6 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
@@ -28,16 +27,19 @@ namespace mir {
 namespace util {
 
 
-
-
-
 BoundingBox::BoundingBox() :
-    north_(90), west_(0), south_(-90), east_(360) {
+    north_(Latitude::NORTH_POLE),
+    west_(Longitude::GREENWICH),
+    south_(Latitude::SOUTH_POLE),
+    east_(Longitude::GLOBE) {
     normalise();
 }
 
 
-BoundingBox::BoundingBox(double north, double west, double south, double east) :
+BoundingBox::BoundingBox(const Latitude& north,
+                         const Longitude& west,
+                         const Latitude& south,
+                         const Longitude& east) :
     north_(north), west_(west), south_(south), east_(east) {
     normalise();
 }
@@ -81,10 +83,10 @@ static double rounded(double x) {
 
 void BoundingBox::fill(grib_info &info) const  {
     // Warning: scanning mode not considered
-    info.grid.latitudeOfFirstGridPointInDegrees  = rounded(north_);
-    info.grid.longitudeOfFirstGridPointInDegrees = rounded(west_);
-    info.grid.latitudeOfLastGridPointInDegrees   = rounded(south_);
-    info.grid.longitudeOfLastGridPointInDegrees  = rounded(east_);
+    info.grid.latitudeOfFirstGridPointInDegrees  = rounded(north_.value());
+    info.grid.longitudeOfFirstGridPointInDegrees = rounded(west_.value());
+    info.grid.latitudeOfLastGridPointInDegrees   = rounded(south_.value());
+    info.grid.longitudeOfLastGridPointInDegrees  = rounded(east_.value());
 }
 
 
@@ -97,50 +99,73 @@ void BoundingBox::hash(eckit::MD5 &md5) const {
 
 
 void BoundingBox::fill(api::MIRJob &job) const  {
-    job.set("area", north_, west_, south_, east_);
+    job.set("area", north_.value(), west_.value(), south_.value(), east_.value());
 }
 
 
 void BoundingBox::normalise() {
-    ASSERT(north_ <= 90 && south_ >= -90);
+
+    bool same = west_ == east_;
+
+    ASSERT(north_ <= Latitude::NORTH_POLE && south_ >= Latitude::SOUTH_POLE);
     ASSERT(north_ >= south_);
 
-    while (east_ > 360) {
-        east_ -= 360;
-        west_ -= 360;
+    while (west_ < Longitude::MINUS_DATE_LINE) {
+        west_ += Longitude::GLOBE;
     }
 
-    while (east_ < -180) {
-        east_ += 360;
-        west_ += 360;
+    while (west_ >= Longitude::GLOBE) {
+        west_ -= Longitude::GLOBE;
     }
 
     while (east_ < west_) {
-        east_ += 360;
+        east_ += Longitude::GLOBE;
+    }
+
+    while ((east_  - west_ ) > Longitude::GLOBE) {
+        east_ -= Longitude::GLOBE;
+    }
+
+    if (same) {
+        east_ = west_;
     }
 
     ASSERT(west_ <= east_);
 }
 
 
-double BoundingBox::normalise(double lon) const {
+Longitude BoundingBox::normalise(Longitude lon) const {
+
     while (lon > east_) {
-        lon -= 360;
+        lon -= Longitude::GLOBE;
     }
 
     while (lon < west_) {
-        lon += 360;
+        lon += Longitude::GLOBE;
     }
+
     return lon;
 }
 
 
-bool BoundingBox::contains(double lat, double lon) const {
-    lon = normalise(lon);
-    return eckit::types::is_approximately_greater_or_equal(north_, lat) &&
-           eckit::types::is_approximately_greater_or_equal(lat, south_) &&
-           eckit::types::is_approximately_greater_or_equal(lon , west_) &&
-           eckit::types::is_approximately_greater_or_equal(east_, lon);
+bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
+    const Longitude nlon = normalise(lon);
+    return (lat <= north_) &&
+           (lat >= south_) &&
+           (nlon >= west_) &&
+           (nlon <= east_);
+}
+
+
+void BoundingBox::makeName(std::ostream& out) const {
+    out << "-"
+        << north_
+        << ":"
+        << west_
+        << ":"
+        << south_
+        << ":"
+        << east_;
 }
 
 

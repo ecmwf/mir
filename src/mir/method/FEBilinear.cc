@@ -15,7 +15,7 @@
 
 #include "mir/method/FEBilinear.h"
 
-#include "atlas/mesh/generators/MeshGenerator.h"
+#include "atlas/meshgenerator.h"
 
 
 namespace mir {

@@ -101,8 +101,8 @@ void ReferencePattern::execute(context::Context & ctx) const {
         double range = maxvalue - minvalue;
 
         eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
-        double lat = 0;
-        double lon = 0;
+        Latitude lat = 0;
+        Longitude lon = 0;
 
         double f1 = frequencies[0] / 2.0;
         double f2 = frequencies[1];
@@ -113,7 +113,7 @@ void ReferencePattern::execute(context::Context & ctx) const {
         while (iter->next(lat, lon)) {
 
             if (!hasMissing || values[j] != missingValue) {
-                values[j] = range * sin(f1 * lon * deg2rad) * cos(f2 * lat * deg2rad) * 0.5 + median;
+                values[j] = range * sin(f1 * lon.value() * deg2rad) * cos(f2 * lat.value() * deg2rad) * 0.5 + median;
             }
 
             j++;

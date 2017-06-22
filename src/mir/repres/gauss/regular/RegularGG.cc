@@ -49,16 +49,16 @@ void RegularGG::print(std::ostream &out) const {
 }
 
 
-const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
-    return new RegularGG(N_, bbox);
+void RegularGG::makeName(std::ostream& out) const {
+    Regular::makeName(out); }
+
+bool RegularGG::sameAs(const Representation& other) const {
+    const RegularGG* o = dynamic_cast<const RegularGG*>(&other);
+    return o && Regular::sameAs(other);
 }
 
-
-void RegularGG::cropToDomain(const param::MIRParametrisation& param, context::Context& ctx) const {
-    if (!domain().isGlobal()) {
-        action::AreaCropper cropper(param, bbox_);
-        cropper.execute(ctx);
-    }
+const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
+    return new RegularGG(N_, bbox);
 }
 
 

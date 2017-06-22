@@ -16,15 +16,14 @@
 #include "mir/method/KNearest.h"
 
 #include <string>
-
-#include "mir/util/PointSearch.h"
+#include "eckit/utils/MD5.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/PointSearch.h"
 
 
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 KNearest::KNearest(const param::MIRParametrisation &param) :
     Nearest(param),
@@ -62,7 +61,6 @@ namespace {
 static MethodBuilder< KNearest > __knearest("k-nearest");
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

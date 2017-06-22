@@ -16,13 +16,16 @@
 
 #include "TenMinutesLSM.h"
 
-#include "atlas/grid/Grid.h"
-
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+#include "eckit/utils/MD5.h"
+#include "atlas/grid.h"
 #include "mir/config/LibMir.h"
+
+#include "mir/repres/Iterator.h"
+#include "mir/repres/Representation.h"
 
 namespace {
 
@@ -51,7 +54,7 @@ From EMOSLIB:
 
 TenMinutesLSM::TenMinutesLSM(const std::string &name,
                              const param::MIRParametrisation &parametrisation,
-                             const atlas::grid::Grid &grid,
+                             const repres::Representation& representation,
                              const std::string &which):
     Mask(name),
     path_("~mir/share/mir/masks/ten-minutes.mask") {
@@ -86,30 +89,28 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 
 
     // NOTE: this is not using 3D coordinate systems
+    // mask_.reserve(grid.size());
 
-    std::vector<atlas::grid::Grid::Point> points(grid.npts());
-    grid.lonlat(points);
+    eckit::ScopedPtr<repres::Iterator> iter(representation.unrotatedIterator());
+    Latitude lat;Longitude lon;;
 
-    mask_.reserve(points.size());
+    while (iter->next(lat, lon)) {
 
-    for (std::vector<atlas::grid::Grid::Point>::const_iterator j = points.begin(); j != points.end(); ++j) {
-        double lat = (*j).lat();
-        ASSERT(lat >= -90);
-        ASSERT(lat <= 90);
+        ASSERT(lat >= Latitude::SOUTH_POLE);
+        ASSERT(lat <= Latitude::NORTH_POLE);
 
-        double lon = (*j).lon();
 
-        while (lon >= 360) {
+        while (lon >= 360.0) {
             lon -= 360;
         }
-        while (lon < 0) {
+        while (lon < 0.0) {
             lon += 360;
         }
 
-        int row = (90.0 - lat) * (ROWS-1) / 180;
+        int row = int((Latitude::NORTH_POLE - lat).value() * (ROWS - 1) / 180);
         ASSERT(row >= 0 && row < int(ROWS));
 
-        int col = lon * COLS / 360.0;
+        int col = int(lon.value() * COLS / 360.0);
         ASSERT(col >= 0 && col < int(COLS));
 
         mask_.push_back(ten_minutes_[row][col]);
@@ -133,8 +134,6 @@ void TenMinutesLSM::print(std::ostream &out) const {
 const std::vector<bool> &TenMinutesLSM::mask() const {
     return mask_;
 }
-
-//-----------------------------------------------------------------------------
 
 
 }  // namespace lsm

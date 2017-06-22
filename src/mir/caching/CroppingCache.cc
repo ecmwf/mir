@@ -19,9 +19,10 @@
 #include "eckit/log/Bytes.h"
 // #include "eckit/log/Plural.h"
 // #include "eckit/log/Seconds.h"
-// #include "eckit/log/Timer.h"
+// #include "eckit/log/Timer.h"§
 // #include "mir/api/mir_version.h"
 #include "mir/config/LibMir.h"
+#include "eckit/types/Fraction.h"
 
 namespace mir {
 namespace caching {
@@ -44,7 +45,7 @@ void CroppingCacheEntry::print(std::ostream& out) const {
 
 
 CroppingCacheEntry::~CroppingCacheEntry() {
-    // std::cout << "Delete " << *this << std::endl;
+    // eckit::Log::info() << "Delete " << *this << std::endl;
 }
 
 
@@ -54,7 +55,7 @@ const char *CroppingCacheTraits::name() {
 }
 
 int CroppingCacheTraits::version() {
-    return 2;
+    return 3;
 }
 
 const char *CroppingCacheTraits::extension() {
@@ -94,7 +95,12 @@ void CroppingCacheEntry::load(const eckit::PathName& path)  {
     eckit::TraceTimer<LibMir> timer("Loading cropping from cache");
 
     eckit::FileStream f(path, "r");
-    double n, w, s, e;
+
+    Latitude n;
+    Longitude w;
+    Latitude s;
+    Longitude e;
+
     f >> n;
     f >> w;
     f >> s;

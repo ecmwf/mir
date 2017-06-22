@@ -16,8 +16,10 @@
 
 #include "mir/lsm/GribFileLSM.h"
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "atlas/grid/Grid.h"
+#include "eckit/utils/MD5.h"
+#include "atlas/grid.h"
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -26,6 +28,7 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
+#include "mir/util/MIRGrid.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -33,10 +36,12 @@ namespace mir {
 namespace lsm {
 
 
-GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
-                         const param::MIRParametrisation &parametrisation,
-                         const atlas::grid::Grid &grid,
-                         const std::string &which):
+GribFileLSM::GribFileLSM(
+        const std::string& name,
+        const eckit::PathName& path,
+        const param::MIRParametrisation& parametrisation,
+        const repres::Representation& representation,
+        const std::string& which ):
     Mask(name),
     path_(path) {
 
@@ -65,20 +70,24 @@ GribFileLSM::GribFileLSM(const std::string &name, const eckit::PathName &path,
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::debug<LibMir>() << "LSM interpolation method is " << *method << std::endl;
 
-    eckit::ScopedPtr<atlas::grid::Grid> gin(field.representation()->atlasGrid());
+    if (!(field.representation()->domain().isGlobal())) {
+        std::ostringstream oss;
+        oss << "Input LSM file '" << path_ << "' should be global";
+        throw eckit::UserError(oss.str());
+    }
 
-    util::MIRStatistics dummy; // TODO: use the gloabl one
+    util::MIRStatistics dummy; // TODO: use the global one
     context::Context ctx(field, dummy);
-    method->execute(ctx, *gin, grid);
+    method->execute(ctx, *field.representation(), representation);
 
     double threshold;
     ASSERT(parametrisation.get("lsm-value-threshold", threshold));
     const util::compare::IsGreaterOrEqualFn< double > check_lsm(threshold);
 
-    ASSERT(!field.hasMissing());
-    ASSERT(field.dimensions() == 1);
+    ASSERT(!ctx.field().hasMissing());
+    ASSERT(ctx.field().dimensions() == 1);
 
-    const std::vector< double > &values = field.values(0);
+    const std::vector< double > &values = ctx.field().values(0);
     mask_.resize(values.size());
     std::transform(values.begin(), values.end(), mask_.begin(), check_lsm);
 }
@@ -101,7 +110,7 @@ void GribFileLSM::print(std::ostream &out) const {
 
 void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
                                const param::MIRParametrisation &parametrisation,
-                               const atlas::grid::Grid &grid,
+                               const repres::Representation& representation,
                                const std::string &which) {
 
     std::string interpolation;
@@ -113,7 +122,7 @@ void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
 
     md5 << path.asString();
     md5 << interpolation;
-    md5 << grid;
+    md5 << representation.grid();
 }
 
 

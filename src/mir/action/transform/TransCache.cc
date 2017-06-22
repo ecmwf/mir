@@ -35,11 +35,11 @@ TransCache::TransCache() :
 TransCache::~TransCache() {
 #ifdef ATLAS_HAVE_TRANS
         if (inited_) {
-            std::cout << "Delete " << *this << std::endl;
+            eckit::Log::info() << "Delete " << *this << std::endl;
             trans_delete(&trans_);
         }
         else {
-            std::cout << "Not Deleting " << *this << std::endl;
+            eckit::Log::info() << "Not Deleting " << *this << std::endl;
         }
         delete loader_;
 #else

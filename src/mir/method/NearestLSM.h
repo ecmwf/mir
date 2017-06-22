@@ -14,35 +14,20 @@
 /// @date May 2015
 
 
-#ifndef mir_method_NearestLSM_H
-#define mir_method_NearestLSM_H
+#ifndef mir_method_NearestLSM_h
+#define mir_method_NearestLSM_h
 
 #include "mir/method/MethodWeighted.h"
-
-
-namespace atlas {
-namespace grid {
-class Grid;
-}
-}
-
-
-namespace mir {
-namespace lsm {
-class LandSeaMasks;
-}
-}
 
 
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class NearestLSM: public MethodWeighted {
 public:
 
-    NearestLSM(const param::MIRParametrisation &);
+    NearestLSM(const param::MIRParametrisation&);
 
     virtual ~NearestLSM();
 
@@ -50,21 +35,21 @@ private:
 
     virtual const char *name() const;
 
-    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
+    virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
     /// Update interpolation weigths matrix to account for field masked values
-    virtual void applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &, util::MIRStatistics& statistics) const;
+    virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
 
-    virtual lsm::LandSeaMasks getMasks(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const;
+    virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
 
-    virtual void print(std::ostream &) const;
+    virtual void print(std::ostream&) const;
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
 
 #endif
 

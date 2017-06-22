@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 #include "eckit/config/Parametrisation.h"
-
+#include "mir/util/Types.h"
 
 namespace mir {
 namespace param {
@@ -54,12 +54,23 @@ public:
 
     virtual bool get(const std::string& name, std::string& value) const = 0;
     virtual bool get(const std::string& name, bool& value) const = 0;
+    virtual bool get(const std::string& name, int& value) const = 0;
     virtual bool get(const std::string& name, long& value) const = 0;
+    virtual bool get(const std::string& name, float& value) const = 0;
     virtual bool get(const std::string& name, double& value) const = 0;
 
+    virtual bool get(const std::string& name, std::vector<int>& value) const = 0;
     virtual bool get(const std::string& name, std::vector<long>& value) const = 0;
+    virtual bool get(const std::string& name, std::vector<float>& value) const = 0;
     virtual bool get(const std::string& name, std::vector<double>& value) const = 0;
-    virtual bool get(const std::string& name, size_t& value) const;
+    virtual bool get(const std::string& name, std::vector<std::string>& value) const = 0;
+
+    bool get(const std::string& name, size_t& value) const;
+    bool get(const std::string& name, std::vector<size_t>& value) const;
+
+    bool get(const std::string& name, eckit::Fraction& value) const;
+    bool get(const std::string& name, Latitude& value) const;
+    bool get(const std::string& name, Longitude& value) const;
 
     // -- Class members
     // None

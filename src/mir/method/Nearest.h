@@ -33,7 +33,7 @@ public:
 
 protected:
 
-    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
+    virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
 private:
 

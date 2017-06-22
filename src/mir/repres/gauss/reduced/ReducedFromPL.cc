@@ -48,6 +48,16 @@ Reduced *ReducedFromPL::cropped(const util::BoundingBox &bbox, const std::vector
     return new ReducedFromPL(N_, pl, bbox);
 }
 
+void ReducedFromPL::makeName(std::ostream& out) const {
+    FromPL::makeName(out);
+}
+
+bool ReducedFromPL::sameAs(const Representation& other) const {
+    const ReducedFromPL* o = dynamic_cast<const ReducedFromPL*>(&other);
+    return o && FromPL::sameAs(other);
+}
+
+
 
 namespace {
 static RepresentationBuilder<ReducedFromPL> reducedGGFromPL("reduced_gg"); // Name is what is returned by grib_api

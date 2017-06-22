@@ -15,18 +15,20 @@
 
 #include "mir/repres/gauss/regular/Regular.h"
 
+#include <cmath>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/types/FloatCompare.h"
-#include "atlas/grid/gaussian/RegularGaussian.h"
+#include "eckit/types/Fraction.h"
+#include "atlas/grid.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
-#include "eckit/types/Fraction.h"
+#include "eckit/utils/MD5.h"
 
 
 namespace mir {
@@ -34,20 +36,56 @@ namespace repres {
 namespace regular {
 
 
+namespace {
+void adjustEastWest(size_t N, util::BoundingBox& bbox) {
+    ASSERT(N);
+
+    Longitude e = bbox.east();
+    Longitude w = bbox.west();
+    const eckit::Fraction inc(90, N);
+
+    bool adjustedEast = false;
+    bool adjustedWest = false;
+
+    const long range = 4 * long(N);
+    for (long i = -range; i <= range; ++i) {
+        const Longitude l = i * inc;
+        if (!adjustedEast && (e.value() != l.value()) && bbox.east().sameWithGrib1Accuracy(l)) {
+            adjustedEast = true;
+            e = l;
+        }
+        if (!adjustedWest && (w.value() != l.value()) && bbox.west().sameWithGrib1Accuracy(l)) {
+            adjustedWest = true;
+            w = l;
+        }
+        if (adjustedEast && adjustedWest) {
+            break;
+        }
+    }
+    if (adjustedEast || adjustedWest) {
+        bbox = util::BoundingBox(bbox.north(), w, bbox.south(), e);
+    }
+}
+}  // (anonymous namespace)
+
+
 Regular::Regular(const param::MIRParametrisation &parametrisation):
     Gaussian(parametrisation) {
+    adjustEastWest(N_, bbox_);
     setNiNj();
 }
 
 
 Regular::Regular(size_t N):
     Gaussian(N) {
+    adjustEastWest(N_, bbox_);
     setNiNj();
 }
 
 
 Regular::Regular(size_t N, const util::BoundingBox &bbox):
     Gaussian(N, bbox) {
+    adjustEastWest(N_, bbox_);
     setNiNj();
 }
 
@@ -79,13 +117,12 @@ void Regular::fill(grib_info &info) const  {
     */
 
     // for GRIB, a global field is also aligned with Greenwich
-    bool global = domain().isGlobal();
-    bool westAtGreenwich = eckit::types::is_approximately_equal<double>(0, bbox_.west());
+    bool westAtGreenwich = bbox_.west() == Longitude::GREENWICH;
 
     long j = info.packing.extra_settings_count++;
     info.packing.extra_settings[j].type = GRIB_TYPE_LONG;
     info.packing.extra_settings[j].name = "global";
-    info.packing.extra_settings[j].long_value = global && westAtGreenwich ? 1 : 0;
+    info.packing.extra_settings[j].long_value = domain().isGlobal() && westAtGreenwich ? 1 : 0;
 }
 
 
@@ -96,73 +133,25 @@ void Regular::fill(api::MIRJob &job) const  {
 }
 
 
-atlas::grid::Grid *Regular::atlasGrid() const {
-    util::Domain dom = domain();
-    atlas::grid::Domain atlasDomain(dom.north(), dom.west(), dom.south(), dom.east());
+void Regular::makeName(std::ostream& out) const {
+    out << "F" << N_;
+    bbox_.makeName(out);
+}
 
-    return new atlas::grid::gaussian::RegularGaussian(N_, atlasDomain);
+bool Regular::sameAs(const Representation& other) const {
+    const Regular* o = dynamic_cast<const Regular*>(&other);
+    return o && (N_ == o->N_) && (bbox_ == o->bbox_);
 }
 
 
-util::Domain Regular::domain() const {
-    return domain(bbox_);
+bool Regular::isPeriodicWestEast() const {
+    const Longitude inc = Longitude(eckit::Fraction(90, N_));
+    return (bbox_.east() - bbox_.west() + inc).sameWithGrib1Accuracy(360.0);
 }
 
 
-util::Domain Regular::domain(const util::BoundingBox& bbox) const {
-
-    const std::vector<double> &lats = latitudes();
-    ASSERT(lats.size() >= 2);
-
-    const double ew = bbox.east() - bbox.west();
-    const double N = static_cast<double>(N_);
-
-    // adjust bounding box on GRIB precision
-    // FIXME: GRIB=1 is in millidegree, GRIB-2 in in micro-degree
-    // Use the precision given by GRIB in this check
-    const double epsilon_grib1 = 1.0 / 1000.0;
-    eckit::types::CompareApproximatelyEqual<double> cmp_eps(epsilon_grib1);
-
-    double adjust_north = bbox.north();
-    double adjust_south = bbox.south();
-
-    for (std::vector<double>::const_iterator lat = lats.begin(); lat != lats.end(); ++lat) {
-        if (cmp_eps(adjust_north, *lat)) {
-            adjust_north = std::max(adjust_north, *lat);
-        }
-        if (cmp_eps(adjust_south, *lat)) {
-            adjust_south = std::min(adjust_south, *lat);
-        }
-    }
-
-    double adjust_west  = bbox.west();
-    double adjust_east  = bbox.east();
-
-    for (size_t i = 0; i < 4 * N_; ++i) {
-
-        const double lon1 = bbox.west() + double(i * 90.0) / N;
-        const double lon2 = bbox.east() - double(i * 90.0) / N;
-
-        if (cmp_eps(adjust_east, lon1) || cmp_eps(adjust_east, lon2)) {
-            adjust_east = std::max(adjust_east, std::max(lon1, lon2));
-        }
-        if (cmp_eps(adjust_west, lon1) || cmp_eps(adjust_west, lon2)) {
-            adjust_west = std::min(adjust_west, std::min(lon1, lon2));
-        }
-    }
-
-    const bool
-    isPeriodicEastWest = cmp_eps(ew + 90.0 / N, 360.0),
-    includesPoleNorth  = cmp_eps(adjust_north, lats.front()),
-    includesPoleSouth  = cmp_eps(adjust_south, lats.back());
-
-    const double
-    north = includesPoleNorth ?  90 : adjust_north,
-    south = includesPoleSouth ? -90 : adjust_south,
-    west = adjust_west,
-    east = isPeriodicEastWest ? adjust_west + 360 : adjust_east;
-
-    return util::Domain(north, west, south, east);
+atlas::Grid Regular::atlasGrid() const {
+    return atlas::grid::RegularGaussianGrid("F" + std::to_string(N_), domain());
 }
 
 
@@ -174,8 +163,8 @@ void Regular::validate(const std::vector<double>& values) const {
         count = (N_ * 2) * (N_ * 4);
     } else {
         eckit::ScopedPtr<Iterator> it(unrotatedIterator());
-        double lat;
-        double lon;
+        Latitude lat;
+        Longitude lon;
         while (it->next(lat, lon)) {
             if (dom.contains(lat, lon)) {
                 ++count;
@@ -190,14 +179,16 @@ void Regular::validate(const std::vector<double>& values) const {
 
 void Regular::setNiNj() {
     const util::Domain dom = domain();
-    const double lon_middle = (dom.west() + dom.east()) / 2.;
-    const double lat_middle = (dom.north() + dom.south()) / 2.;
 
     Ni_ = N_ * 4;
     if (!dom.isPeriodicEastWest()) {
+        const Latitude lat_middle = (dom.north() + dom.south()) / 2.;
+        const eckit::Fraction inc(90, N_);
+
         Ni_ = 0;
+        const eckit::Fraction west = dom.west().fraction();
         for (size_t i = 0; i < N_ * 4; ++i) {
-            const double lon = dom.west() + (i * 90.0) / N_;
+            const eckit::Fraction lon = west + i * inc;
             if (dom.contains(lat_middle, lon)) {
                 ++Ni_;
             }
@@ -207,10 +198,11 @@ void Regular::setNiNj() {
 
     Nj_ = N_ * 2;
     if (!dom.includesPoleNorth() || !dom.includesPoleSouth()) {
+        const Longitude lon_middle = (dom.west() + dom.east()) / 2.;
+
         Nj_ = 0;
-        const std::vector<double>& lats = latitudes();
-        for (std::vector<double>::const_iterator lat = lats.begin(); lat != lats.end(); ++lat) {
-            if (dom.contains(*lat, lon_middle)) {
+        for (const double& lat : latitudes()) {
+            if (dom.contains(lat, lon_middle)) {
                 ++Nj_;
             }
         }
@@ -245,7 +237,7 @@ size_t Regular::frame(std::vector<double>& values, size_t size, double missingVa
 class RegularIterator : public Iterator {
 
     std::vector<double> latitudes_;
-    const double west_;
+    const eckit::Fraction west_;
 
     const size_t N_;
     const size_t Ni_;
@@ -262,7 +254,7 @@ class RegularIterator : public Iterator {
 
     virtual void print(std::ostream &out) const {
         out << "RegularIterator["
-            <<  "west="  << west_
+            <<  "west="  << double(west_)
             << ",N="     << N_
             << ",Ni="    << Ni_
             << ",Nj="    << Nj_
@@ -273,7 +265,7 @@ class RegularIterator : public Iterator {
             << "]";
     }
 
-    virtual bool next(double &lat, double &lon) {
+    virtual bool next(Latitude &lat, Longitude &lon) {
         while (j_ < Nj_ && i_ < Ni_) {
 
             ASSERT(j_ + k_ < latitudes_.size());
@@ -304,7 +296,7 @@ public:
 
     RegularIterator(const std::vector<double>& latitudes, size_t N, size_t Ni, size_t Nj, const util::Domain& dom) :
         latitudes_(latitudes),
-        west_(dom.west()),
+        west_(dom.west().fraction()),
         N_(N),
         Ni_(Ni),
         Nj_(Nj),

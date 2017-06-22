@@ -76,7 +76,7 @@ public:
 
     std::vector<Field> bestMatches(const FieldSet& fields) const;
 
-    double compare(const Field& other) const;
+    void compareAreas(std::ostream& out, const Field& other) const;
 
     bool same(const Field& other) const;
     bool match(const Field& other) const;
@@ -95,6 +95,10 @@ public:
     bool sameGridtype(const Field& other) const;
     bool sameParam(const Field& other) const;
     bool sameNumberOfPoints(const Field& other) const;
+
+    bool match(const std::string&, const std::string&) const;
+
+    bool wrapped() const;
 
     off_t offset() const ;
 
@@ -146,7 +150,6 @@ private:
 private:
 
 
-    double compareAreas(const Field& other) const;
 
     void print(std::ostream &out) const;
 

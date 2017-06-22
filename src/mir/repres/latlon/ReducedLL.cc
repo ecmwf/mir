@@ -15,8 +15,9 @@
 
 #include "mir/repres/latlon/ReducedLL.h"
 
+#include <algorithm>
 #include <iostream>
-#include "atlas/grid/lonlat/ReducedLonLat.h"
+#include "atlas/grid.h"
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
@@ -24,6 +25,7 @@
 #include "mir/util/Compare.h"
 #include "mir/util/Domain.h"
 #include "eckit/types/Fraction.h"
+#include "eckit/utils/MD5.h"
 
 
 
@@ -32,8 +34,8 @@ namespace repres {
 namespace latlon {
 
 
-ReducedLL::ReducedLL(const param::MIRParametrisation &parametrisation):
-    bbox_(parametrisation) {
+ReducedLL::ReducedLL(const param::MIRParametrisation &parametrisation) :
+    Gridded(parametrisation) {
     ASSERT(parametrisation.get("pl", pl_));
     ASSERT(parametrisation.get("Nj", Nj_));
     ASSERT(Nj_);
@@ -50,6 +52,25 @@ void ReducedLL::print(std::ostream &out) const {
 }
 
 
+void ReducedLL::makeName(std::ostream& out) const {
+    out << "RLL" << Nj_ << "-";
+
+    eckit::MD5 md5;
+    for(auto j = pl_.begin(); j != pl_.end(); ++j) {
+        md5 << *j;
+    }
+
+    out << std::string(md5);
+    bbox_.makeName(out);
+}
+
+
+bool ReducedLL::sameAs(const Representation& other) const {
+    const ReducedLL* o = dynamic_cast<const ReducedLL*>(&other);
+    return o && (Nj_ == o->Nj_) && (bbox_ == o->bbox_) && (pl_ == o->pl_);
+}
+
+
 void ReducedLL::fill(grib_info &info) const  {
     NOTIMP;
 }
@@ -63,54 +84,35 @@ void ReducedLL::fill(api::MIRJob &job) const  {
 }
 
 
-void ReducedLL::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
-    if (!domain().isGlobal()) {
-        action::AreaCropper cropper(parametrisation, bbox_);
-        cropper.execute(ctx);
-    }
+atlas::Grid ReducedLL::atlasGrid() const {
+    const util::Domain dom = domain();
+
+    using atlas::grid::StructuredGrid;
+    using atlas::grid::LinearSpacing;
+    StructuredGrid::XSpace xspace({ {dom.west().value(), dom.east().value()} }, pl_, !dom.isPeriodicEastWest() );
+    StructuredGrid::YSpace yspace( LinearSpacing( { {dom.north().value(), dom.south().value()} }, pl_.size()));
+
+    return atlas::grid::StructuredGrid(xspace, yspace);
 }
 
 
-atlas::grid::Grid *ReducedLL::atlasGrid() const {
-    util::Domain dom = domain();
-    atlas::grid::Domain atlasDomain(dom.north(), dom.west(), dom.south(), dom.east());
-
-    return new atlas::grid::lonlat::ReducedLonLat(pl_.size(), &pl_[0], atlasDomain);
-}
-
-
-util::Domain ReducedLL::domain() const {
-    return domain(bbox_);
-}
-
-
-util::Domain ReducedLL::domain(const util::BoundingBox& bbox) const {
+bool ReducedLL::isPeriodicWestEast() const {
     ASSERT(pl_.size());
+    const long maxpl = *std::max_element(pl_.begin(), pl_.end());
 
-    long maxpl = pl_[0];
-    for (size_t i = 1; i < pl_.size(); ++i) {
-        maxpl = std::max(maxpl, pl_[i]);
-    }
+    const Longitude we = bbox_.east() - bbox_.west();
+    const Longitude inc = Longitude::GLOBE - we;
+    return (inc * maxpl).sameWithGrib1Accuracy(Longitude::GLOBE);
+}
 
-    const double ew = bbox.east() - bbox.west();
 
-    // confirm domain limits
-    const double epsilon_grib1 = 1.0 / 1000.0;
+bool ReducedLL::includesNorthPole() const {
+    return bbox_.north() == Latitude::NORTH_POLE;
+}
 
-    const bool isPeriodicEastWest =
-        eckit::types::is_approximately_equal((360. - ew) * maxpl, 360.)
 
-        // FIXME: GRIB=1 is in millidegree, GRIB-2 in in micro-degree. Use the precision given by GRIB in this check
-        || eckit::types::is_approximately_equal((360. - ew) * maxpl, 360., epsilon_grib1);
-    const bool includesPoleNorth  = eckit::types::is_approximately_equal(bbox.north(),  90.);
-    const bool includesPoleSouth  = eckit::types::is_approximately_equal(bbox.south(), -90.);
-
-    const double
-    north = includesPoleNorth ?   90 : bbox.north(),
-    south = includesPoleSouth ?  -90 : bbox.south(),
-    west = bbox.west(),
-    east = isPeriodicEastWest ? bbox.west() + 360 : bbox.east();
-    return util::Domain(north, west, south, east);
+bool ReducedLL::includesSouthPole() const {
+    return bbox_.north() == Latitude::SOUTH_POLE;
 }
 
 
@@ -147,6 +149,7 @@ class ReducedLLIterator: public Iterator {
     size_t p_;
 
     size_t count_;
+    bool periodic_;
 
     virtual void print(std::ostream &out) const {
         out << "ReducedLLIterator["
@@ -160,7 +163,7 @@ class ReducedLLIterator: public Iterator {
             << "]";
     }
 
-    virtual bool next(double &lat, double &lon) {
+    virtual bool next(Latitude &lat, Longitude &lon) {
 
 
         while (j_ < nj_ && i_ < ni_) {
@@ -183,7 +186,8 @@ class ReducedLLIterator: public Iterator {
                 if (j_ < nj_) {
                     ASSERT(p_ < pl_.size());
                     ni_ = pl_[p_++];
-                    inc_west_east_ = ew_ / ni_;
+                    ASSERT(ni_ > 1);
+                    inc_west_east_ = ew_ / (ni_ - (periodic_? 0:1));
                 }
 
             }
@@ -203,21 +207,23 @@ public:
         domain_(dom),
         nj_(nj),
 
-        west_(domain_.west()),
+        west_(domain_.west().fraction()),
 
-        ew_(domain_.east() - domain_.west()),
+        ew_((domain_.east() - domain_.west()).fraction()),
 
-        inc_north_south_(eckit::Fraction(domain_.north() - domain_.south()) / (nj_ - 1)),
+        inc_north_south_( (domain_.north() - domain_.south()).fraction() / eckit::Fraction(nj_ - 1) ),
 
-        lat_(domain_.north()),
+        lat_(domain_.north().fraction()),
         lon_(west_),
         i_(0),
         j_(0),
         p_(0),
-        count_(0) {
+        count_(0),
+        periodic_(dom.isPeriodicEastWest()) {
 
         ni_ = pl_[p_++];
-        inc_west_east_ = ew_ / ni_;
+        ASSERT(ni_ > 1);
+        inc_west_east_ = ew_ / (ni_ - (periodic_? 0:1));
 
         // eckit::Log::debug<LibMir>() << *this << std::endl;
     }

@@ -13,17 +13,13 @@
 /// @date Apr 2015
 
 
-#include <iostream>
+#include "mir/api/ProdgenJob.h"
 
+#include <iostream>
+#include <sstream>
 #include "eckit/log/Log.h"
 #include "eckit/exception/Exceptions.h"
-
-#include "atlas/grid/Grid.h"
-#include "atlas/grid/grids.h"
-#include "atlas/grid/Structured.h"
-#include "atlas/grid/gaussian/ClassicGaussian.h"
-
-#include "mir/api/ProdgenJob.h"
+#include "atlas/grid.h"
 #include "mir/config/LibMir.h"
 
 
@@ -209,11 +205,12 @@ size_t ProdgenJob::nj() const {
 
 
 void ProdgenJob::auto_pl() {
-    eckit::ScopedPtr<atlas::grid::Structured> grid(
-        dynamic_cast<atlas::grid::Structured*>(
-            new atlas::grid::gaussian::ClassicGaussian(N_) ));
-    ASSERT(grid.get());
-    pl_ = grid->pl();
+    std::ostringstream gridname;
+    gridname << "N" << N_;
+    atlas::grid::ReducedGaussianGrid grid(gridname.str());
+    ASSERT(grid);
+
+    pl_ = grid.nx();
 }
 
 

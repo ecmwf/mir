@@ -15,7 +15,7 @@
 
 #include "mir/repres/Gridded.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/action/misc/AreaCropper.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
@@ -27,7 +27,14 @@ namespace repres {
 Gridded::Gridded() {}
 
 
-Gridded::Gridded(const param::MIRParametrisation &parametrisation) {}
+Gridded::Gridded(const param::MIRParametrisation& parametrisation) :
+    bbox_(parametrisation) {
+}
+
+
+Gridded::Gridded(const util::BoundingBox& bbox) :
+    bbox_(bbox) {
+}
 
 
 Gridded::~Gridded() {}
@@ -48,10 +55,23 @@ void Gridded::setGivenPacking(grib_info &info) const {
 }
 
 
-void Gridded::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
+void Gridded::crop(const param::MIRParametrisation& parametrisation, context::Context& ctx) const {
+    // only crop if not global
     if (!domain().isGlobal()) {
-        Representation::cropToDomain(parametrisation, ctx); // This will throw an exception
+        action::AreaCropper cropper(parametrisation, bbox_);
+        cropper.execute(ctx);
     }
+}
+
+
+util::Domain Gridded::domain() const {
+
+    const Latitude& n = includesNorthPole()? Latitude::NORTH_POLE : bbox_.north();
+    const Latitude& s = includesSouthPole()? Latitude::SOUTH_POLE : bbox_.south();
+    const Longitude& w = bbox_.west();
+    const Longitude& e = isPeriodicWestEast()? bbox_.west() + Longitude::GLOBE : bbox_.east();
+
+    return util::Domain(n, w, s, e);
 }
 
 

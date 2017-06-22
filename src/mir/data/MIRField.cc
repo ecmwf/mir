@@ -46,7 +46,7 @@ MIRField::MIRField(const MIRField& other) :
 
 void MIRField::copyOnWrite() {
     if (field_->count() > 1) {
-        // std::cout << "XXXX copyOnWrite " << *field_ << std::endl;
+        // eckit::Log::info() << "XXXX copyOnWrite " << *field_ << std::endl;
         Field *f = field_->clone();
         field_->detach();
         field_ = f;
@@ -59,7 +59,7 @@ void MIRField::copyOnWrite() {
 void MIRField::update(std::vector<double> &values, size_t which) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    // std::cout << "MIRField::update " << *field_ << std::endl;
+    // eckit::Log::info() << "MIRField::update " << *field_ << std::endl;
 
     copyOnWrite();
     field_->update(values, which);
@@ -125,7 +125,7 @@ MIRFieldStats MIRField::statistics(size_t i) const {
 
 
 void MIRField::representation(const repres::Representation *representation) {
-    // std::cout << "MIRField::representation " << *field_ << " => " << *representation << std::endl;
+    // eckit::Log::info() << "MIRField::representation " << *field_ << " => " << *representation << std::endl;
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     copyOnWrite();
@@ -143,7 +143,7 @@ const std::vector<double> &MIRField::values(size_t which) const {
 std::vector<double> &MIRField::direct(size_t which)  {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    // std::cout << "MIRField::direct " << *field_ << std::endl;
+    // eckit::Log::info() << "MIRField::direct " << *field_ << std::endl;
     copyOnWrite();
     return field_->direct(which);
 }
@@ -152,7 +152,7 @@ std::vector<double> &MIRField::direct(size_t which)  {
 void MIRField::metadata(size_t which, const std::map<std::string, long>& md) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    // std::cout << "MIRField::paramId " << *field_ << std::endl;
+    // eckit::Log::info() << "MIRField::paramId " << *field_ << std::endl;
 
     copyOnWrite();
     field_->metadata(which, md);
@@ -161,7 +161,7 @@ void MIRField::metadata(size_t which, const std::map<std::string, long>& md) {
 void MIRField::metadata(size_t which, const std::string& name, long value) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    // std::cout << "MIRField::paramId " << *field_ << std::endl;
+    // eckit::Log::info() << "MIRField::paramId " << *field_ << std::endl;
 
     copyOnWrite();
     field_->metadata(which, name, value);

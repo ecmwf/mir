@@ -14,13 +14,15 @@
 #define mir_util_Domain_h
 
 #include <iostream>
+#include "atlas/domain/Domain.h"
+#include "mir/util/BoundingBox.h"
 
 
 namespace mir {
 namespace util {
 
 
-class Domain {
+class Domain : public BoundingBox {
 public:
 
     // -- Exceptions
@@ -29,75 +31,39 @@ public:
     // -- Contructors
 
     /// ctor using coordinates
-    Domain(double north, double west, double south, double east)
-        : north_(north), west_(west), south_(south), east_(east) {
-        normalise();
-    }
-
-    /// ctor (default)
-    Domain() : north_(90), west_(0), south_(-90), east_(360) { normalise(); }
-
-    /// ctor (copy)
-    Domain(const Domain &other)
-        : north_(other.north_), west_(other.west_), south_(other.south_),
-          east_(other.east_) {
-        normalise();
-    }
-
-    // -- Destructor
-
-    /// dtor
-    ~Domain() {}
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-
-    /// Assignment
-    Domain &operator=(const Domain &other) {
-        north_ = other.north_;
-        west_ = other.west_;
-        south_ = other.south_;
-        east_ = other.east_;
-        return *this;
+    explicit Domain(Latitude north = Latitude::NORTH_POLE,
+                    Longitude west = Longitude::GREENWICH,
+                    Latitude south = Latitude::SOUTH_POLE,
+                    Longitude east = Longitude::GLOBE)
+        : BoundingBox(north, west, south, east) {
     }
 
     // -- Methods
 
     /// Generator for a global Domain
-    static Domain makeGlobal() { return Domain(90, 0, -90, 360); }
+    static Domain makeGlobal() { return Domain(); }
 
     /// Generator for an empty Domain
     static Domain makeEmpty() { return Domain(0, 0, 0, 0); }
 
+    operator atlas::RectangularDomain() const;
+
     /// Check if grid includes the North pole
-    bool includesPoleNorth() const { return north_ == 90; }
+    bool includesPoleNorth() const { return north() == Latitude::NORTH_POLE; }
 
     /// Check if grid includes the South pole
-    bool includesPoleSouth() const { return south_ == -90; }
+    bool includesPoleSouth() const { return south() == Latitude::SOUTH_POLE; }
 
     /// Check if grid spans the complete range East-West (periodic)
-    bool isPeriodicEastWest() const { return east_ - west_ == 360; }
+    bool isPeriodicEastWest() const { return east() - west() == Longitude::GLOBE; }
 
     /// Check if domain represents the complete globe surface
     bool isGlobal() const {
         return includesPoleNorth() && includesPoleSouth() && isPeriodicEastWest();
     }
 
-    /// Checks if the point is contained in the domain
-    bool contains(double lat, double lon) const;
-
-    /// Normalises the longitude of a query point
-    double normalise(double lon) const;
-
     /// Output to stream
-    void print(std::ostream &) const;
-
-    const double &north() const { return north_; }
-    const double &west() const { return west_; }
-    const double &south() const { return south_; }
-    const double &east() const { return east_; }
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -110,13 +76,6 @@ public:
 
 protected:
     // -- Members
-
-    /// Coordinates defining maximum (N,E) and minimum (S,W) latitude and
-    /// longitude
-    double north_;
-    double west_;
-    double south_;
-    double east_;
 
     // -- Methods
     // None
@@ -138,9 +97,7 @@ private:
     // None
 
     // -- Methods
-
-    /// Normalises the constructor input
-    void normalise();
+    // None
 
     // -- Overridden methods
     // None
@@ -160,7 +117,9 @@ private:
     }
 };
 
+
 } // namespace util
 } // namespace mir
+
 
 #endif

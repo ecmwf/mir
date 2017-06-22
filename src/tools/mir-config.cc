@@ -53,11 +53,11 @@ public:
 
 void MIRConfig::usage(const std::string &tool) const {
     eckit::Log::info()
-            << "\n" "Usage: " << tool << " [--configuration=configuration.json] [--param-id=value] [--key=key] [input1.grib [input2.grib [...]]]"
+            << "\n" "Usage: " << tool << " [--configuration=configuration.yaml] [--param-id=value] [--key=key] [input1.grib [input2.grib [...]]]"
                "\n" "Examples: "
                "\n" "  % " << tool << ""
                "\n" "  % " << tool << " --param-id=157 input.grib"
-               "\n" "  % " << tool << " --param-id=157 --configuration=test.json input1.grib input2.grib"
+               "\n" "  % " << tool << " --param-id=157 --configuration=test.yaml input1.grib input2.grib"
             << std::endl;
 }
 
@@ -102,8 +102,8 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             long id = 0;
             args.get("param-id", id) || metadata.get("paramId", id);
 
-            eckit::ScopedPtr< const MIRParametrisation > p(configuration.lookup(id, metadata));
-            display(*p, key);
+            const MIRParametrisation& p(configuration.lookup(id, metadata));
+            display(p, key);
 
         }
 
@@ -113,23 +113,21 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
         if (args.has("param-id")) {
 
             // Display configuration for a paramId
-            eckit::ScopedPtr<const MIRParametrisation> metadata(new mir::param::SimpleParametrisation());
+            mir::param::SimpleParametrisation metadata;
             long id = 0;
             args.get("param-id", id);
 
-            eckit::ScopedPtr< const MIRParametrisation > p(id != 0? configuration.lookup(id, *metadata)
-                                                                  : configuration.lookup(*metadata));
-            display(*p, key);
+            const MIRParametrisation& p(id != 0? configuration.lookup(id, metadata)
+                                               : configuration.lookup(metadata));
+            display(p, key);
 
         } else {
 
             // Display configuration defaults
-            eckit::ScopedPtr< const MIRParametrisation > p(configuration.defaults());
-            display(*p, key);
+            display(configuration.defaults(), key);
 
         }
     }
-
 }
 
 

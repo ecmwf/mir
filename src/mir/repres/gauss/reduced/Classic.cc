@@ -15,8 +15,7 @@
 
 #include "mir/repres/gauss/reduced/Classic.h"
 
-#include "atlas/grid/Structured.h"
-#include "atlas/grid/grids.h"
+#include "atlas/grid.h"
 #include "mir/api/MIRJob.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
@@ -47,7 +46,6 @@ void Classic::fill(grib_info &info) const  {
 // NOTE: We assume that grib_api will put the proper PL
 }
 
-
 void Classic::fill(api::MIRJob &job) const  {
     Reduced::fill(job);
     std::stringstream os;
@@ -55,30 +53,36 @@ void Classic::fill(api::MIRJob &job) const  {
     job.set("gridname", os.str());
 }
 
-
-atlas::grid::Grid* Classic::atlasGrid() const {
-    util::Domain dom = domain();
-    atlas::grid::Domain atlasDomain(dom.north(), dom.west(), dom.south(), dom.east());
-
-    return new atlas::grid::gaussian::ClassicGaussian(N_, atlasDomain);
+void Classic::makeName(std::ostream& out) const {
+    out << "N" << N_;
+    bbox_.makeName(out);
 }
 
+bool Classic::sameAs(const Representation& other) const {
+    const Classic* o = dynamic_cast<const Classic*>(&other);
+    return o && Reduced::sameAs(other);
+}
+
+
+atlas::Grid Classic::atlasGrid() const {
+    return atlas::grid::ReducedGaussianGrid("N" + std::to_string(N_), domain());
+}
 
 const std::vector<long>& Classic::pls() const {
     if (pl_.size() == 0) {
 
-        eckit::ScopedPtr<atlas::grid::Structured> grid(
-                    dynamic_cast<atlas::grid::Structured*>(
-                        new atlas::grid::gaussian::ClassicGaussian(N_) ));
-        ASSERT(grid.get());
+        atlas::Grid::Config config;
+        config.set("name", "N" + std::to_string(N_));
+        atlas::grid::ReducedGaussianGrid grid(config);
+        ASSERT(grid);
 
-        const std::vector<long> &v = grid->pl();
-        ASSERT(v.size() == N_ * 2);
-        for (size_t i = 0; i < v.size(); i++) {
-            ASSERT(v[i] > 0);
+        const std::vector<long>& pl = grid.nx();
+        ASSERT(pl.size() == N_ * 2);
+        for (size_t i = 0; i < pl.size(); i++) {
+            ASSERT(pl[i] > 0);
         }
 
-        pl_ = v;
+        pl_ = pl;
     }
     return pl_;
 }

@@ -4,7 +4,8 @@
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
  * In applying this licence, ECMWF does not waive the privileges and immunities
- * granted to it by virtue of its status as an intergovernmental organisation nor
+ * granted to it by virtue of its status as an intergovernmental organisation
+ * nor
  * does it submit to any jurisdiction.
  */
 
@@ -13,27 +14,27 @@
 /// @date Apr 2015
 
 
+
 #include "mir/param/FieldParametrisation.h"
-#include "mir/param/InheritParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
 #include "mir/config/MIRConfiguration.h"
+#include "mir/param/InheritParametrisation.h"
+#include "eckit/types/Fraction.h"
 
 
 namespace mir {
 namespace param {
 
 
-FieldParametrisation::FieldParametrisation() {
-}
+FieldParametrisation::FieldParametrisation() {}
 
 
-FieldParametrisation::~FieldParametrisation() {
-}
+FieldParametrisation::~FieldParametrisation() {}
 
 
-bool FieldParametrisation::has(const std::string &name) const {
+bool FieldParametrisation::has(const std::string& name) const {
 
     // FIXME: not very elegant
     // if (name == "spectral") {
@@ -41,61 +42,91 @@ bool FieldParametrisation::has(const std::string &name) const {
     //     return get("truncation", dummy);
     // }
 
-    eckit::Log::debug<LibMir>() << "FieldParametrisation::has(" << name << ") " << *this << std::endl;
+    eckit::Log::debug<LibMir>() << "FieldParametrisation::has(" << name << ") "
+                                << *this << std::endl;
     return false;
 }
 
 
-void FieldParametrisation::latitudes(std::vector<double> &) const {
-    std::ostringstream os;
-    os << "FieldParametrisation::latitudes() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+bool FieldParametrisation::get(const std::string& name, std::string& value) const {
+    return _get(name, value);
 }
 
-void FieldParametrisation::longitudes(std::vector<double> &) const {
-    std::ostringstream os;
-    os << "FieldParametrisation::longitudes() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+
+bool FieldParametrisation::get(const std::string& name, bool& value) const {
+    return _get(name, value);
 }
 
-template<class T>
-bool FieldParametrisation::_get(const std::string &name, T &value) const {
 
-    ASSERT(name != "paramId");
+bool FieldParametrisation::get(const std::string& name, int& value) const {
+    return _get(name, value);
+}
 
-    // This assumes that other input (NetCDF, etc) also return a paramId
-    long paramId = 0;
-    if (get("paramId", paramId)) {
-        // return paramId specific parametrisation
-        const config::MIRConfiguration& configuration = config::MIRConfiguration::instance();
-        eckit::ScopedPtr<const param::MIRParametrisation> param(configuration.lookup(paramId, *this));
-        return param->get(name, value);
+
+bool FieldParametrisation::get(const std::string& name, long& value) const {
+    return _get(name, value);
+}
+
+
+bool FieldParametrisation::get(const std::string& name, float& value) const {
+    return _get(name, value);
+}
+
+
+inline double shift(const double& a, const double& b, double increment) {
+    const eckit::Fraction inc(increment);
+    eckit::Fraction shift = a - (a / inc).integralPart() * inc;
+
+    if (!((a - b) / inc).integer()) {
+        std::ostringstream oss;
+        oss << "Cannot compute shift with a=" << a << ", b=" << b << ", inc=" << double(inc)
+            << " shift=" << double(shift) << " (a-b)/inc=" << double((a - b) / inc);
+        throw eckit::SeriousBug(oss.str());
     }
 
-    return false;
+    return shift;
 }
 
-bool FieldParametrisation::get(const std::string &name, std::string &value) const {
+
+bool FieldParametrisation::get(const std::string& name, double& value) const {
+    double inc;
+    double a;
+    double b;
+
+    if (name == "west_east_shift") {
+        if (get("west_east_increment", inc) && get("east", a) && get("west", b)) {
+            value = shift(a, b, inc);
+            return true;
+        }
+    }
+
+    if (name == "south_north_shift") {
+        if (get("south_north_increment", inc) && get("north", a) && get("south", b)) {
+            value = shift(a, b, inc);
+            return true;
+        }
+    }
+
     return _get(name, value);
 }
 
-bool FieldParametrisation::get(const std::string &name, bool &value) const {
+
+bool FieldParametrisation::get(const std::string& name, std::vector<int>& value) const {
     return _get(name, value);
 }
 
-bool FieldParametrisation::get(const std::string &name, long &value) const {
+
+bool FieldParametrisation::get(const std::string& name, std::vector<long>& value) const {
     return _get(name, value);
 }
 
-bool FieldParametrisation::get(const std::string &name, double &value) const {
+
+bool FieldParametrisation::get(const std::string& name, std::vector<float>& value) const {
     return _get(name, value);
 }
 
-bool FieldParametrisation::get(const std::string &name, std::vector<long> &value) const {
-    return _get(name, value);
-}
 
-bool FieldParametrisation::get(const std::string &name, std::vector<double> &value) const {
+bool FieldParametrisation::get(const std::string& name, std::vector<double>& value) const {
 
     if (_get(name, value)) { // This will check if this in the style paramaretirsaion
         return true;
@@ -137,9 +168,48 @@ bool FieldParametrisation::get(const std::string &name, std::vector<double> &val
         return true;
     }
 
+
+
     return _get(name, value);
 }
 
+
+bool FieldParametrisation::get(const std::string& name, std::vector<std::string>& value) const {
+    return _get(name, value);
+}
+
+
+template <class T>
+bool FieldParametrisation::_get(const std::string& name, T& value) const {
+
+    ASSERT(name != "paramId");
+
+    // This assumes that other input (NetCDF, etc) also return a paramId
+    long paramId = 0;
+    if (get("paramId", paramId)) {
+        // return paramId specific parametrisation
+        const config::MIRConfiguration& configuration = config::MIRConfiguration::instance();
+        const param::MIRParametrisation& param = configuration.lookup(paramId, *this);
+        return param.get(name, value);
+    }
+
+    return false;
+}
+
+
+void FieldParametrisation::latitudes(std::vector<double>&) const {
+    std::ostringstream os;
+    os << "FieldParametrisation::latitudes() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+void FieldParametrisation::longitudes(std::vector<double>&) const {
+    std::ostringstream os;
+    os << "FieldParametrisation::longitudes() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
 }  // namespace param
 }  // namespace mir
-

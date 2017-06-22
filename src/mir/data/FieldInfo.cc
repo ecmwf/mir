@@ -78,9 +78,9 @@ FieldInfo::FieldInfo(const param::MIRParametrisation& params) {
 
             component_ = degree?
                              (symmetric? CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC
-                                       : CYLINDRICAL_ANGLE_DEGREES_ASSYMMETRIC)
+                                       : CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC)
                            : (symmetric? CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC
-                                       : CYLINDRICAL_ANGLE_RADIANS_ASSYMMETRIC);
+                                       : CYLINDRICAL_ANGLE_RADIANS_ASYMMETRIC);
 
         }
 

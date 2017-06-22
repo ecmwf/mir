@@ -16,8 +16,8 @@
 #include "mir/repres/gauss/reduced/RotatedFromPL.h"
 
 #include <iostream>
+#include "atlas/grid.h"
 #include "mir/util/Grib.h"
-#include "mir/util/RotatedGrid.h"
 #include "mir/util/RotatedIterator.h"
 
 
@@ -64,12 +64,8 @@ void RotatedFromPL::fill(api::MIRJob &job) const  {
 }
 
 
-atlas::grid::Grid *RotatedFromPL::atlasGrid() const {
-    return new util::RotatedGrid(
-                FromPL::atlasGrid(),
-                rotation_.south_pole_latitude(),
-                rotation_.south_pole_longitude(),
-                rotation_.south_pole_rotation_angle() );
+atlas::Grid RotatedFromPL::atlasGrid() const {
+    return rotation_.rotate(FromPL::atlasGrid());
 }
 
 
@@ -80,6 +76,18 @@ const Reduced* RotatedFromPL::cropped(const util::BoundingBox &bbox, const std::
 
 Iterator* RotatedFromPL::rotatedIterator() const {
     return new util::RotatedIterator(FromPL::unrotatedIterator(), rotation_);
+}
+
+
+void RotatedFromPL::makeName(std::ostream& out) const {
+    FromPL::makeName(out);
+    rotation_.makeName(out);
+}
+
+
+bool RotatedFromPL::sameAs(const Representation& other) const {
+    const RotatedFromPL* o = dynamic_cast<const RotatedFromPL*>(&other);
+    return o && (rotation_ == o->rotation_) && FromPL::sameAs(other);
 }
 
 

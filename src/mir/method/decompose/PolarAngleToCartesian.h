@@ -14,6 +14,7 @@
 
 #include "mir/method/decompose/DecomposeToCartesian.h"
 
+#include "mir/data/FieldInfo.h"
 #include "mir/util/Angles.h"
 
 
@@ -112,6 +113,12 @@ private:
     // None
 
 };
+
+
+template<> PolarAngleToCartesian< data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC >::PolarAngleToCartesian(double missingValue);
+template<> PolarAngleToCartesian< data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC  >::PolarAngleToCartesian(double missingValue);
+template<> PolarAngleToCartesian< data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_ASYMMETRIC >::PolarAngleToCartesian(double missingValue);
+template<> PolarAngleToCartesian< data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC  >::PolarAngleToCartesian(double missingValue);
 
 
 }  // namespace decompose

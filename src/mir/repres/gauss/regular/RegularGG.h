@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef RegularGG_H
-#define RegularGG_H
+#ifndef mir_repres_regular_RegularGG_h
+#define mir_repres_regular_RegularGG_h
 
 #include "mir/repres/gauss/regular/Regular.h"
 
@@ -67,8 +67,7 @@ protected:
     void print(std::ostream&) const;
 
     // -- Overridden methods
-
-    virtual void cropToDomain(const param::MIRParametrisation&, context::Context&) const;
+    // None
 
     // -- Class members
     // None
@@ -80,24 +79,17 @@ private:
 
     RegularGG();
 
-    // No copy allowed
-
-    RegularGG(const RegularGG&);
-    RegularGG& operator=(const RegularGG&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
 
-    //virtual void fill(grib_info&) const;
-    //virtual atlas::grid::Grid* atlasGrid() const;
-
     virtual const Gridded* cropped(const util::BoundingBox &bbox) const;
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
     //virtual void validate(const std::vector<double>&) const;
 

@@ -15,11 +15,11 @@
 
 #include "mir/style/DisseminationStyle.h"
 
-#include <iostream>
 #include "eckit/exception/Exceptions.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/AutoGaussian.h"
+#include "mir/style/IntermediateGrid.h"
 
 
 namespace mir {
@@ -28,7 +28,6 @@ namespace style {
 
 DisseminationStyle::DisseminationStyle(const param::MIRParametrisation &parametrisation):
     ECMWFStyle(parametrisation) {
-
 }
 
 
@@ -42,6 +41,7 @@ void DisseminationStyle::print(std::ostream &out) const {
 
 
 void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
+
     bool autoresol = false;
     parametrisation_.get("autoresol", autoresol);
     ASSERT(!autoresol);
@@ -50,7 +50,10 @@ void DisseminationStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";
 
-    plan.add("transform." + transform + "octahedral-gg", "octahedral", new AutoGaussian(parametrisation_));
+    // set an intermediate cubic-order octahedral Gaussian grid
+    plan.add("transform." + transform + "namedgrid",
+             "gridname", IntermediateGridFactory::build("octahedral", parametrisation_),
+             "spectral-mapping", "cubic" );
 
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);

@@ -10,28 +10,28 @@
 
 /// @author Peter Bispham
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date May 2015
 
-#ifndef mir_method_WeightCache_H
-#define mir_method_WeightCache_H
+#ifndef mir_caching_WeightCache_h
+#define mir_caching_WeightCache_h
 
 
 #include "eckit/container/CacheManager.h"
 #include "mir/param/MIRParametrisation.h"
 
 namespace mir {
-
 namespace method {
 class WeightMatrix;
 }
+}
 
+
+namespace mir {
 namespace caching {
-
-//----------------------------------------------------------------------------------------------------------------------
 
 
 struct WeightCacheTraits {
-
     typedef method::WeightMatrix value_type;
 
     static const char* name();
@@ -39,7 +39,6 @@ struct WeightCacheTraits {
     static const char* extension();
 
     static void save(const eckit::CacheManagerBase& manager, const value_type& W, const eckit::PathName& path);
-
     static void load(const eckit::CacheManagerBase& manager, value_type& W, const eckit::PathName& path);
 };
 
@@ -55,9 +54,9 @@ private: // members
     friend WeightCacheTraits;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
 
 #endif

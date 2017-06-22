@@ -61,17 +61,23 @@ public:
 
     void copyValuesTo(SimpleParametrisation& other, bool overwrite=true) const;
 
-    SimpleParametrisation& set(const std::string& name, const char* value);
-    SimpleParametrisation& set(const std::string& name, const std::string& value);
-    SimpleParametrisation& set(const std::string& name, bool value);
+    SimpleParametrisation& set(const std::string& name, const std::string &value);
+    SimpleParametrisation& set(const std::string& name, const char *value);
+    SimpleParametrisation& set(const std::string& name, float value);
+    SimpleParametrisation& set(const std::string& name, double value);
+    SimpleParametrisation& set(const std::string& name, int value);
     SimpleParametrisation& set(const std::string& name, long value);
+    SimpleParametrisation& set(const std::string& name, bool value);
     SimpleParametrisation& set(const std::string& name, size_t value);
 
-    SimpleParametrisation& set(const std::string& name, double value);
-    SimpleParametrisation& set(const std::string& name, DelayedParametrisation* value);
-
+    SimpleParametrisation& set(const std::string& name, const std::vector<int>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<long>& value);
+    SimpleParametrisation& set(const std::string& name, const std::vector<size_t>& value);
+    SimpleParametrisation& set(const std::string& name, const std::vector<float>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<double>& value);
+    SimpleParametrisation& set(const std::string& name, const std::vector<std::string>& value);
+
+    SimpleParametrisation& set(const std::string& name, DelayedParametrisation* value);
 
     virtual SimpleParametrisation& clear(const std::string& name);
     SimpleParametrisation& reset();
@@ -79,17 +85,23 @@ public:
     // Used by Job
 
     virtual bool empty() const;
-    bool matches(const param::MIRParametrisation& other) const;
-    bool matches(const param::MIRParametrisation& other, const param::MIRParametrisation& ignore) const;
+    bool matches(const MIRParametrisation& other, const MIRParametrisation& ignore=SimpleParametrisation()) const;
 
     // -- Overridden methods
 
+    // From MIRParametrisation
     virtual bool get(const std::string& name, std::string& value) const;
     virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, int& value) const;
     virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, float& value) const;
     virtual bool get(const std::string& name, double& value) const;
+
+    virtual bool get(const std::string& name, std::vector<int>& value) const;
     virtual bool get(const std::string& name, std::vector<long>& value) const;
+    virtual bool get(const std::string& name, std::vector<float>& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
+    virtual bool get(const std::string& name, std::vector<std::string>& value) const;
 
     // -- Class members
     // None
@@ -111,6 +123,7 @@ protected:
 
     // -- Overridden methods
 
+    // From MIRParametrisation
     virtual bool has(const std::string& name) const;
 
     // -- Class members

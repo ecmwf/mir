@@ -34,6 +34,8 @@ list(
     action/filter/BitmapFilter.h
     action/filter/FrameFilter.cc
     action/filter/FrameFilter.h
+    action/filter/GlobaliseFilter.cc
+    action/filter/GlobaliseFilter.h
     action/interpolate/Gridded2GridDef.cc
     action/interpolate/Gridded2GridDef.h
     action/interpolate/Gridded2GriddedInterpolation.cc
@@ -56,12 +58,10 @@ list(
     action/interpolate/Gridded2RegularGG.h
     action/interpolate/Gridded2RegularLL.cc
     action/interpolate/Gridded2RegularLL.h
-    action/interpolate/Gridded2RegularLLOffset.cc
-    action/interpolate/Gridded2RegularLLOffset.h
     action/interpolate/Gridded2RotatedLL.cc
     action/interpolate/Gridded2RotatedLL.h
-    action/interpolate/Gridded2RotatedLLOffset.cc
-    action/interpolate/Gridded2RotatedLLOffset.h
+    action/interpolate/Gridded2LatLon.cc
+    action/interpolate/Gridded2LatLon.h
     action/interpolate/Gridded2RotatedNamedGrid.cc
     action/interpolate/Gridded2RotatedNamedGrid.h
     action/interpolate/Gridded2RotatedOctahedral.cc
@@ -82,8 +82,8 @@ list(
     action/misc/ReferencePattern.h
     action/misc/SelectField.cc
     action/misc/SelectField.h
-    action/misc/SetParameter.cc
-    action/misc/SetParameter.h
+    action/misc/SetMetadata.cc
+    action/misc/SetMetadata.h
     action/plan/Action.cc
     action/plan/Action.h
     action/plan/ActionGraph.cc
@@ -196,10 +196,6 @@ list(
     compare/Spectral.h
     config/LibMir.cc
     config/LibMir.h
-    config/AConfiguration.cc
-    config/AConfiguration.h
-    config/MIRCompareConfiguration.cc
-    config/MIRCompareConfiguration.h
     config/MIRConfiguration.cc
     config/MIRConfiguration.h
     data/Field.cc
@@ -256,6 +252,8 @@ list(
     lsm/TenMinutesLSM.h
     lsm/UserFileLSM.cc
     lsm/UserFileLSM.h
+    method/AddParallelEdgesConnectivity.cc
+    method/AddParallelEdgesConnectivity.h
     method/Bilinear.cc
     method/Bilinear.h
     method/Conservative.cc
@@ -266,8 +264,6 @@ list(
     method/FELinear.h
     method/FiniteElement.cc
     method/FiniteElement.h
-    method/GridSpace.cc
-    method/GridSpace.h
     method/KNearest.cc
     method/KNearest.h
     method/Method.cc
@@ -402,12 +398,8 @@ list(
     repres/latlon/ReducedLL.h
     repres/latlon/RegularLL.cc
     repres/latlon/RegularLL.h
-    repres/latlon/RegularLLOffset.cc
-    repres/latlon/RegularLLOffset.h
     repres/latlon/RotatedLL.cc
     repres/latlon/RotatedLL.h
-    repres/latlon/RotatedLLOffset.cc
-    repres/latlon/RotatedLLOffset.h
     repres/other/None.cc
     repres/other/None.h
     repres/other/UnstructuredGrid.cc
@@ -474,24 +466,28 @@ list(
     stats/detail/ScalarCentralMomentsFn.h
     stats/detail/ScalarMinMaxFn.h
     stats/detail/ScalarpNormsFn.h
-    style/AutoGaussian.cc
-    style/AutoGaussian.h
-    style/AutoReduced.cc
-    style/AutoReduced.h
-    style/AutoResol.cc
-    style/AutoResol.h
     style/DisseminationStyle.cc
     style/DisseminationStyle.h
     style/ECMWFStyle.cc
     style/ECMWFStyle.h
+    style/IntermediateGaussianGrid.cc
+    style/IntermediateGaussianGrid.h
+    style/IntermediateGrid.cc
+    style/IntermediateGrid.h
+    style/IntermediateNamedGrid.cc
+    style/IntermediateNamedGrid.h
     style/MARSStyle.cc
     style/MARSStyle.h
     style/MIRStyle.cc
     style/MIRStyle.h
+    style/Mapping.cc
+    style/Mapping.h
     style/ProdgenGrid.cc
     style/ProdgenGrid.h
     style/ProdgenStyle.cc
     style/ProdgenStyle.h
+    style/TMapping.cc
+    style/TMapping.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
@@ -522,22 +518,25 @@ list(
     util/Grib.h
     util/Increments.cc
     util/Increments.h
+    util/Latitude.cc
+    util/Latitude.h
+    util/LongitudeDouble.cc
+    util/LongitudeDouble.h
+    util/LongitudeFraction.cc
+    util/LongitudeFraction.h
+    util/MIRGrid.cc
+    util/MIRGrid.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
-    util/OffsetGrid.cc
-    util/OffsetGrid.h
-    util/OffsetIterator.cc
-    util/OffsetIterator.h
     util/PointSearch.cc
     util/PointSearch.h
-    util/RotateGrid.cc
-    util/RotateGrid.h
-    util/RotatedGrid.cc
-    util/RotatedGrid.h
     util/RotatedIterator.cc
     util/RotatedIterator.h
     util/Rotation.cc
     util/Rotation.h
+    util/Shift.cc
+    util/Shift.h
+    util/Types.h
   )
 
 list(APPEND mir_tmpls caching/InMemoryCache.cc)

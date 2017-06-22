@@ -103,8 +103,8 @@ void CheckerBoard::execute(context::Context & ctx) const {
 
         // Assumes iterator scans in the same order as the values
         eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
-        double lat = 0;
-        double lon = 0;
+        Latitude lat = 0;
+        Longitude lon = 0;
 
         std::vector<double> v;
         v.push_back(minvalue);
@@ -128,18 +128,18 @@ void CheckerBoard::execute(context::Context & ctx) const {
 
         while (iter->next(lat, lon)) {
 
-            lat = 90 - lat;
+            lat = Latitude::NORTH_POLE - lat;
 
-            while (lon >= 369) {
-                lon -= 360;
+            while (lon >= Longitude::GLOBE) {
+                lon -= Longitude::GLOBE;
             }
 
-            while (lon < 0) {
-                lon += 360;
+            while (lon < Longitude::GREENWICH) {
+                lon += Longitude::GLOBE;
             }
 
-            size_t c = size_t(lat / dns);
-            size_t r = size_t(lon / dwe);
+            size_t c = size_t(lat.value() / dns);
+            size_t r = size_t(lon.value() / dwe);
 
             if (!hasMissing || values[j] != missingValue) {
                 values[j] = boxes[std::make_pair(r, c)];

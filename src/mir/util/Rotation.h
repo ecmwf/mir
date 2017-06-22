@@ -13,27 +13,57 @@
 /// @date Apr 2015
 
 
-#ifndef Rotation_H
-#define Rotation_H
-
+#ifndef mir_util_Rotation_h
+#define mir_util_Rotation_h
 
 #include <iosfwd>
+#include "mir/util/Types.h"
+
 
 struct grib_info;
 
+namespace atlas {
+class Grid;
+}
 namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-
 namespace api {
 class MIRJob;
 }
 }
 
+
 namespace mir {
 namespace util {
 
+
+/**
+ * @brief WMO specification on rotated grids
+ *
+ * (6) Three parameters define a general latitude/longitude coordinate system, formed by a general rotation
+ * of the sphere. One
+ *     choice for these parameters is:
+ *     (a) The geographic latitude in degrees of the southern pole of the coordinate system, θp for example;
+ *
+ *     (b) The geographic longitude in degrees of the southern pole of the coordinate system, λp for example;
+ *
+ *     (c) The angle of rotation in degrees about the new polar axis (measured clockwise when looking from
+ *         the southern to the northern pole) of the coordinate system, assuming the new axis to have been
+ *         obtained by first rotating the sphere through λp degrees about the geographic polar axis, and then
+ *         rotating through (90 + θp) degrees so that the southern pole moved along the (previously rotated)
+ *         Greenwich meridian.
+ * === end WMO specification ===
+ *
+ * gribs use the following convention: (from Shahram)
+ *
+ * Horizontally:  Points scan in the +i (+x) direction
+ * Vertically:    Points scan in the -j (-y) direction
+ *
+ * The way I verified this was to look at our SAMPLE files (which IFS uses). I also verified that IFS does
+ * not modify the scanning modes so whatever the samples say, is the convention
+ */
 class Rotation {
 public:
 
@@ -41,15 +71,13 @@ public:
     // None
 
     // -- Contructors
-
-    explicit Rotation(const param::MIRParametrisation &);
-    explicit Rotation(double south_pole_latitude = 0,
-                      double south_pole_longitude = 0,
-                      double south_pole_rotation_angle = 0);
+    explicit Rotation(const param::MIRParametrisation&);
+    explicit Rotation(const Latitude& south_pole_latitude = Latitude::SOUTH_POLE,
+                      const Longitude& south_pole_longitude = Longitude::GREENWICH,
+                      double south_pole_rotation_angle = 0.0);
 
     // -- Destructor
-
-    ~Rotation(); // Change to virtual if base class
+    ~Rotation();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -58,17 +86,15 @@ public:
 
     bool operator==(const Rotation& other) const;
 
-    // bool operator!=(const Rotation& other) const {
-    //     return (west_east_ != other.west_east_) || (south_north_ != other.south_north_);
-    // }
+    // -- Methods
 
-    // // -- Methods
+    atlas::Grid rotate(const atlas::Grid&) const;
 
-    double south_pole_latitude() const {
+    const Latitude& south_pole_latitude() const {
         return south_pole_latitude_;
     }
 
-    double south_pole_longitude() const {
+    const Longitude& south_pole_longitude() const {
         return south_pole_longitude_;
     }
 
@@ -76,12 +102,9 @@ public:
         return south_pole_rotation_angle_;
     }
 
-
-    //
-    void fill(grib_info &) const;
-    void fill(api::MIRJob &) const;
-
-
+    void fill(grib_info&) const;
+    void fill(api::MIRJob&) const;
+    void makeName(std::ostream& out) const;
 
     // -- Overridden methods
     // None
@@ -99,7 +122,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -112,13 +135,10 @@ protected:
 
 private:
 
-    // No copy allowed
-
-
     // -- Members
 
-    double south_pole_latitude_;
-    double south_pole_longitude_;
+    Latitude south_pole_latitude_;
+    Longitude south_pole_longitude_;
     double south_pole_rotation_angle_;
 
     // -- Methods
@@ -136,7 +156,7 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const Rotation &p) {
+    friend std::ostream&operator<<(std::ostream& s, const Rotation& p) {
         p.print(s);
         return s;
     }
@@ -146,5 +166,7 @@ private:
 
 }  // namespace util
 }  // namespace mir
+
+
 #endif
 

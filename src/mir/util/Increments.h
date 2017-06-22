@@ -13,37 +13,50 @@
 /// @date Apr 2015
 
 
-#ifndef Increments_H
-#define Increments_H
-
+#ifndef mir_util_Increments_h
+#define mir_util_Increments_h
 
 #include <iosfwd>
+#include "eckit/types/Fraction.h"
+
 
 struct grib_info;
-
 namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-
 namespace api {
 class MIRJob;
 }
 }
+namespace mir {
+namespace util {
+class BoundingBox;
+class Shift;
+}
+}
+
 
 namespace mir {
 namespace util {
 
+
 class Increments {
-  public:
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    explicit Increments(const param::MIRParametrisation &);
-    explicit Increments(double west_east=0, double south_north=0);
+    Increments(const param::MIRParametrisation&);
+    Increments(const Increments&);
+
+    // NOTE: maybe to be substituded by (Longitude&, Latitude&), and no defaults
+    explicit Increments(double west_east = 0, double south_north = 0);
+    explicit Increments(const eckit::Fraction& west_east, const eckit::Fraction& south_north);
+    explicit Increments(double west_east, const eckit::Fraction& south_north);
+    explicit Increments(const eckit::Fraction& west_east, double south_north);
 
     // -- Destructor
 
@@ -64,36 +77,34 @@ class Increments {
 
     // -- Methods
 
-    double west_east() const {
+    // Retrurn true is this is a multiple of other, e.g. 2/2 is a multiple of 1/1
+    bool multipleOf(const Increments& other) const;
+
+    void ratio(const Increments& other, size_t& we, size_t& ns) const;
+
+    bool matches(const BoundingBox&) const;
+
+    Increments bestSubsetting(const BoundingBox&) const;
+
+    Shift shiftFromZeroZero(const BoundingBox&) const;
+
+    size_t computeNi(const BoundingBox&) const;
+
+    size_t computeNj(const BoundingBox&) const;
+
+    const eckit::Fraction& west_east() const {
         return west_east_;
     }
 
-    double south_north() const {
+    const eckit::Fraction& south_north() const {
         return south_north_;
     }
 
-    //
-    void fill(grib_info &) const;
-    void fill(api::MIRJob &) const;
+    void fill(grib_info&) const;
 
+    void fill(api::MIRJob&) const;
 
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-  protected:
-
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream &) const; // Change to virtual if base class
+    void makeName(std::ostream& out) const;
 
     // -- Overridden methods
     // None
@@ -104,17 +115,33 @@ class Increments {
     // -- Class methods
     // None
 
-  private:
+protected:
 
-    // No copy allowed
+    // -- Members
+    // None
 
+    // -- Methods
+
+    void print(std::ostream&) const; // Change to virtual if base class
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+private:
 
     // -- Members
 
-    double west_east_;
-    double south_north_;
+    eckit::Fraction west_east_;
+    eckit::Fraction south_north_;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -127,7 +154,7 @@ class Increments {
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const Increments &p) {
+    friend std::ostream &operator<<(std::ostream& s, const Increments& p) {
         p.print(s);
         return s;
     }
@@ -137,5 +164,7 @@ class Increments {
 
 }  // namespace util
 }  // namespace mir
+
+
 #endif
 

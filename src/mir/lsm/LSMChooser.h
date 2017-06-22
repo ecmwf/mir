@@ -19,14 +19,12 @@
 #include <string>
 #include <iosfwd>
 
-namespace atlas {
-namespace grid {
-class Grid;
-}
-}
 namespace mir {
 namespace param {
 class MIRParametrisation;
+}
+namespace repres {
+class Representation;
 }
 }
 
@@ -36,7 +34,7 @@ namespace lsm {
 class Mask;
 
 class LSMChooser {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -57,12 +55,12 @@ class LSMChooser {
 
     virtual Mask *create(const std::string &name,
                          const param::MIRParametrisation &parametrisation,
-                         const atlas::grid::Grid &grid,
+                         const repres::Representation& representation,
                          const std::string& which) const = 0 ;
 
     virtual std::string cacheKey(const std::string &name,
                                  const param::MIRParametrisation &parametrisation,
-                                 const atlas::grid::Grid &grid,
+                                 const repres::Representation& representation,
                                  const std::string& which) const = 0 ;
 
     // -- Overridden methods
@@ -76,7 +74,7 @@ class LSMChooser {
     static const LSMChooser &lookup(const std::string& name);
     static void list(std::ostream &);
 
-  protected:
+protected:
 
     LSMChooser(const std::string &name);
     virtual ~LSMChooser(); // Change to virtual if base class
@@ -100,7 +98,7 @@ class LSMChooser {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 

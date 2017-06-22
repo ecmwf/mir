@@ -16,16 +16,17 @@
 #ifndef Gridded2RegularLL_H
 #define Gridded2RegularLL_H
 
-#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
+#include "mir/action/interpolate/Gridded2LatLon.h"
 
 #include "mir/util/Increments.h"
+#include "mir/util/Shift.h"
 
 
 namespace mir {
 namespace action {
 
 
-class Gridded2RegularLL : public Gridded2GriddedInterpolation {
+class Gridded2RegularLL : public Gridded2LatLon {
 public:
 
     // -- Exceptions
@@ -83,8 +84,6 @@ private:
     Gridded2RegularLL& operator=(const Gridded2RegularLL&);
 
     // -- Members
-
-    util::Increments increments_;
 
     // -- Methods
     // None

@@ -13,10 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef RegularLL_H
-#define RegularLL_H
+#ifndef mir_repres_latlon_RegularLL_h
+#define mir_repres_latlon_RegularLL_h
 
-#include "atlas/grid/lonlat/LonLat.h"
+#include "atlas/grid.h"
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
@@ -36,7 +36,9 @@ public:
     // -- Contructors
 
     RegularLL(const param::MIRParametrisation &);
-    RegularLL(const util::BoundingBox &bbox, const util::Increments &increments);
+    RegularLL(const util::BoundingBox &bbox,
+              const util::Increments &increments,
+              const util::Shift& shift);
 
 
     // -- Destructor
@@ -71,9 +73,13 @@ protected:
 
     // -- Overridden methods
     void print(std::ostream &) const; // Change to virtual if base class
-    virtual atlas::grid::Grid *atlasGrid() const;
+    virtual atlas::Grid atlasGrid() const;
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
+    virtual Representation* globalise(data::MIRField& field) const;
+
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
     // -- Class members
     // None
@@ -94,6 +100,7 @@ private:
 
     // Called by crop()
     virtual const RegularLL* cropped(const util::BoundingBox& bbox) const;
+
 
     // -- Overridden methods
     // None

@@ -1,6 +1,5 @@
 *.autosave
 *.back
-*.grib
 *.old
 *.orig
 *.pyc
@@ -11,3 +10,4 @@ CMakeLists.txt.user*
 suite/check.def
 suite/combinations.pyc
 suite/requests
+.nfs*

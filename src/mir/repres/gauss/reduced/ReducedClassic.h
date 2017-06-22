@@ -89,6 +89,8 @@ class ReducedClassic : public Classic {
     // -- Overridden methods
 
     virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
     // -- Class members
     // None

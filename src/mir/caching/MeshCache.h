@@ -18,9 +18,7 @@
 
 
 namespace atlas {
-namespace mesh {
 class Mesh;
-}
 }
 
 namespace mir {

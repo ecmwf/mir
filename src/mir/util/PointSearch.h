@@ -14,23 +14,26 @@
 /// @date   Apr 2015
 
 
-#ifndef mir_method_PointSearch_H
-#define mir_method_PointSearch_H
+#ifndef mir_method_PointSearch_h
+#define mir_method_PointSearch_h
 
+#include <vector>
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "atlas/grid/Grid.h"
 #include "atlas/interpolation/method/PointIndex3.h"
 #include "mir/util/Compare.h"
 
 
 namespace mir {
+namespace util {
+class MIRGrid;
+}
+}
 
-namespace method { class GridSpace; }
 
+namespace mir {
 namespace util {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 /// Class for fast searches in point clouds following kd-tree algorithms
 /// @todo test kd-tree stored in shared memory?
@@ -53,7 +56,7 @@ public:
 
     PointSearch(const std::vector<Point>& ipts);
 
-    PointSearch(const method::GridSpace& sp, const CompareType& isok=CompareTypeNone());
+    PointSearch(const MIRGrid& sp, const CompareType& isok=CompareTypeNone());
 
 public:
 
@@ -76,14 +79,14 @@ protected:
 private:
 
     void init(const std::vector<PointType>& points);
+    void init(const MIRGrid& sp, const CompareType& isok=CompareTypeNone());
 
-    void init(const method::GridSpace& sp, const CompareType& isok=CompareTypeNone());
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace util
 }  // namespace mir
+
 
 #endif
 

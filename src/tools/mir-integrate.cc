@@ -21,8 +21,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "atlas/array/IndexView.h"
 #include "atlas/functionspace/FunctionSpace.h"
-#include "atlas/grid/Grid.h"
-#include "atlas/grid/Structured.h"
+#include "atlas/grid.h"
 #include "atlas/interpolation/element/Quad3D.h"
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/mesh/Mesh.h"
@@ -35,6 +34,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/MIRGrid.h"
 
 
 class MIRIntegrate : public mir::tools::MIRTool {
@@ -94,9 +94,9 @@ void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
         // ASSERT(rep->domain().isGlobal());
 
 #if 0
-        eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );
+        eckit::ScopedPtr<atlas::Grid> grid( rep->atlasGrid() );
 
-        atlas::mesh::Mesh& mesh = grid->mesh();
+        atlas::Mesh& mesh = grid->mesh();
 
         atlas::mesh::actions::BuildXYZField()(mesh);
         atlas::mesh::actions::BuildConvexHull3D builder;
@@ -149,19 +149,15 @@ void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
         double result = 0;
         double weights = 0;
 
-        eckit::ScopedPtr<atlas::grid::Grid> grid( rep->atlasGrid() );
-
-        const atlas::grid::Structured* reduced =
-            dynamic_cast<const atlas::grid::Structured*>(grid.get());
-
-        ASSERT(reduced);
+        const atlas::grid::StructuredGrid structured(rep->grid());
+        ASSERT(structured);
 
         size_t i = 0;
-        for(size_t jlat = 0; jlat < reduced->nlat(); ++jlat) {
+        for(size_t jlat = 0; jlat < structured.ny(); ++jlat) {
 
-            size_t pts_on_latitude = reduced->nlon(jlat);
+            size_t pts_on_latitude = structured.nx(jlat);
 
-            const double lat = reduced->lat(jlat);
+            const double lat = structured.y(jlat);
 
             for(size_t jlon = 0; jlon < pts_on_latitude; ++jlon) {
                 const double w = cos( lat * Constants::degreesToRadians() ) / pts_on_latitude;

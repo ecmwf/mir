@@ -53,9 +53,10 @@ void FrameFilter::execute(context::Context & ctx) const {
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().frameTiming_);
     data::MIRField& field = ctx.field();
 
+    double missingValue = field.missingValue();
+
     for (size_t i = 0; i < field.dimensions(); i++ ) {
 
-        double missingValue = field.missingValue();
         std::vector<double> &values = field.direct(i);
 
         const repres::Representation *representation = field.representation();

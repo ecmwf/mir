@@ -59,7 +59,7 @@ Field::Field(const Field& other):
     representation_(other.representation_)
 {
 
-    // std::cout << "Field::Field => " << values_.size() << std::endl;
+    // eckit::Log::info() << "Field::Field => " << values_.size() << std::endl;
 
     if (representation_) {
         representation_->attach();
@@ -76,7 +76,7 @@ Field *Field::clone() const {
 void Field::update(std::vector<double> &values, size_t which) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
-    // std::cout << "Field::update => " << values.size() << std::endl;
+    // eckit::Log::info() << "Field::update => " << values.size() << std::endl;
 
     if (values_.size() <= which) {
         values_.resize(which + 1);
@@ -210,7 +210,7 @@ const std::vector<double> &Field::values(size_t which) const {
 std::vector<double> &Field::direct(size_t which)  {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
-    // std::cout << "Field::direct => " << values_.size() << std::endl;
+    // eckit::Log::info() << "Field::direct => " << values_.size() << std::endl;
 
 
     ASSERT(which < values_.size());

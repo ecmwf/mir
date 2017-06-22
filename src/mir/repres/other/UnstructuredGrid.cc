@@ -19,11 +19,12 @@
 #include <fstream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
-#include "atlas/grid/Unstructured.h"
+#include "atlas/grid.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
+#include "eckit/utils/MD5.h"
 
 
 namespace mir {
@@ -38,6 +39,7 @@ UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation &parametrisat
     ASSERT(longitudes_.size() > 0);
 }
 
+
 UnstructuredGrid::UnstructuredGrid(const eckit::PathName &path) {
     std::ifstream in(path.asString().c_str());
     if (!in) {
@@ -51,12 +53,13 @@ UnstructuredGrid::UnstructuredGrid(const eckit::PathName &path) {
     }
 }
 
-// Take ownership of vectors
+
 UnstructuredGrid::UnstructuredGrid(std::vector<double>& latitudes, std::vector<double>& longitudes) {
     std::swap(latitudes_, latitudes);
     std::swap(longitudes_, longitudes);
     ASSERT(latitudes_.size() == longitudes_.size());
 }
+
 
 UnstructuredGrid::~UnstructuredGrid() {
 }
@@ -65,6 +68,23 @@ UnstructuredGrid::~UnstructuredGrid() {
 void UnstructuredGrid::print(std::ostream &out) const {
     out << "UnstructuredGrid[points=" << latitudes_.size()
         << "]";
+}
+
+
+void UnstructuredGrid::makeName(std::ostream& out) const {
+
+    out << "unstructured-" <<latitudes_.size() << "-";
+
+    eckit::MD5 md5;
+    for (auto j: latitudes_)  { md5 << j; }
+    for (auto j: longitudes_) { md5 << j; }
+    out << std::string(md5);
+}
+
+
+bool UnstructuredGrid::sameAs(const Representation& other) const {
+    const UnstructuredGrid* o = dynamic_cast<const UnstructuredGrid*>(&other);
+    return o && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_);
 }
 
 
@@ -83,26 +103,20 @@ util::Domain UnstructuredGrid::domain() const {
     return util::Domain::makeGlobal();
 }
 
-
-util::Domain UnstructuredGrid::domain(const util::BoundingBox&) const {
-    eckit::Log::warning() << "UnstructuredGrid::domain(BoundingBox): assuming grid is global" << std::endl;
-    return util::Domain::makeGlobal();
-}
-
-
-atlas::grid::Grid *UnstructuredGrid::atlasGrid() const {
-    std::vector<atlas::grid::Grid::Point> *pts = new std::vector<atlas::grid::Grid::Point>();
+atlas::Grid UnstructuredGrid::atlasGrid() const {
     ASSERT(latitudes_.size() == longitudes_.size());
+
+    std::vector<atlas::PointXY> *pts = new std::vector<atlas::PointXY>();
     pts->reserve(latitudes_.size());
 
     for (size_t i = 0; i < latitudes_.size(); i++) {
-        pts->push_back(atlas::grid::Grid::Point(longitudes_[i], latitudes_[i]));
+        pts->push_back(atlas::PointXY(longitudes_[i], latitudes_[i]));
         if (i < 10) {
             eckit::Log::debug<LibMir>() << "UnstructuredGrid::atlasGrid lon=" << longitudes_[i] << ", lat=" << latitudes_[i] << std::endl;
         }
     }
 
-    return new atlas::grid::Unstructured(pts);
+    return atlas::grid::UnstructuredGrid(pts);
 
     // so constructor takes a vector<Point> (where point is LLPoint2)
 }
@@ -112,6 +126,7 @@ void UnstructuredGrid::validate(const std::vector<double> &values) const {
     ASSERT(values.size() == latitudes_.size());
     ASSERT(values.size() == longitudes_.size());
 }
+
 
 double UnstructuredGrid::increment() const {
     // double inc = 360.0;
@@ -132,13 +147,13 @@ class UnstructuredGridIterator: public Iterator {
         out << "UnstructuredGridIterator[]";
     }
 
-    virtual bool next(double &lat, double &lon) {
+    virtual bool next(Latitude &lat, Longitude &lon) {
         lat = latitudes_[i_];
         lon = longitudes_[i_];
         return i_++ < size_;
     }
 
-  public:
+public:
 
     // TODO: Consider keeping a reference on the latitudes and bbox, to avoid copying
 
@@ -164,6 +179,24 @@ Iterator *UnstructuredGrid::unrotatedIterator() const {
 
 Iterator* UnstructuredGrid::rotatedIterator() const {
     return unrotatedIterator();
+}
+
+
+bool UnstructuredGrid::isPeriodicWestEast() const {
+    // TODO:
+    return true;
+}
+
+
+bool UnstructuredGrid::includesNorthPole() const {
+    // TODO:
+    return true;
+}
+
+
+bool UnstructuredGrid::includesSouthPole() const {
+    // TODO:
+    return true;
 }
 
 

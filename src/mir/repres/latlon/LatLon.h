@@ -13,12 +13,12 @@
 /// @date Apr 2015
 
 
-#ifndef LatLon_H
-#define LatLon_H
+#ifndef mir_repres_latlon_LatLon_h
+#define mir_repres_latlon_LatLon_h
 
 #include "mir/repres/Gridded.h"
-#include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
+#include "mir/util/Shift.h"
 
 
 namespace mir {
@@ -27,7 +27,7 @@ namespace latlon {
 
 
 class LatLon : public Gridded {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -35,7 +35,7 @@ class LatLon : public Gridded {
     // -- Contructors
 
     LatLon(const param::MIRParametrisation&);
-    LatLon(const util::BoundingBox&, const util::Increments&);
+    LatLon(const util::BoundingBox&, const util::Increments&, const util::Shift&);
 
     // -- Destructor
 
@@ -57,14 +57,18 @@ class LatLon : public Gridded {
     // None
 
     // -- Class methods
-    // None
 
-  protected:
+    static util::BoundingBox globalBoundingBox(const util::Increments &increments,
+            const util::Shift& shift);
+
+
+protected:
 
     // -- Members
 
-    util::BoundingBox bbox_;
     util::Increments increments_;
+    util::Shift shift_;
+
     size_t ni_;
     size_t nj_;
 
@@ -78,10 +82,6 @@ class LatLon : public Gridded {
 
     // -- Overridden methods
 
-    virtual util::Domain domain() const;
-
-    virtual util::Domain domain(const util::BoundingBox&) const;
-
     virtual void fill(grib_info &) const;
 
     virtual void fill(api::MIRJob &) const;
@@ -90,6 +90,14 @@ class LatLon : public Gridded {
 
     virtual void print(std::ostream &) const;
 
+    virtual void makeName(std::ostream&) const;
+
+    virtual bool sameAs(const Representation& other) const;
+
+    virtual bool isPeriodicWestEast() const;
+    virtual bool includesNorthPole() const;
+    virtual bool includesSouthPole() const;
+
     // -- Class members
     // None
 
@@ -97,11 +105,6 @@ class LatLon : public Gridded {
     // None
 
 private:
-
-    // No copy allowed
-
-    LatLon(const LatLon &);
-    LatLon &operator=(const LatLon &);
 
     // -- Members
     // None
@@ -117,7 +120,7 @@ private:
 
     virtual void validate(const std::vector<double>&) const;
 
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context& ctx) const;
+    virtual void initTrans(Trans_t&) const;
 
     // -- Class members
     // None

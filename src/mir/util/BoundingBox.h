@@ -17,14 +17,13 @@
 #define mir_util_BoundingBox_h
 
 #include <iosfwd>
+#include "mir/util/Types.h"
 
 
 struct grib_info;
-
 namespace eckit {
 class MD5;
 }
-
 namespace mir {
 namespace api {
 class MIRJob;
@@ -40,7 +39,7 @@ namespace util {
 
 
 class BoundingBox {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -48,9 +47,12 @@ class BoundingBox {
     // -- Constructors
 
     BoundingBox();
-    BoundingBox(double north, double west, double south, double east);
+    BoundingBox(const Latitude& north,
+                const Longitude& west,
+                const Latitude& south,
+                const Longitude& east);
     BoundingBox(const param::MIRParametrisation&);
-    BoundingBox(const BoundingBox& other);
+    BoundingBox(const BoundingBox&);
 
     // -- Destructor
 
@@ -81,31 +83,33 @@ class BoundingBox {
 
     // DON'T IMPLEMENT SETTERS
 
-    double north() const {
+    const Latitude& north() const {
         return north_;
     }
 
-    double west() const {
+    const Longitude& west() const {
         return west_;
     }
 
-    double south() const {
+    const Latitude& south() const {
         return south_;
     }
 
-    double east() const {
+    const Longitude& east() const {
         return east_;
     }
 
-    bool contains(double lat, double lon) const;
+    bool contains(const Latitude& lat, const Longitude& lon) const;
 
-    double normalise(double lon) const;
+    Longitude normalise(Longitude lon) const;
 
     void fill(grib_info&) const;
 
     void fill(api::MIRJob&) const;
 
     void hash(eckit::MD5&) const;
+
+    void makeName(std::ostream& out) const;
 
     // -- Overridden methods
     // None
@@ -116,14 +120,14 @@ class BoundingBox {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -137,14 +141,14 @@ class BoundingBox {
     // -- Friends
     // None
 
-  private:
+private:
 
     // -- Members
 
-    double north_;
-    double west_;
-    double south_;
-    double east_;
+    Latitude north_;
+    Longitude west_;
+    Latitude south_;
+    Longitude east_;
 
     // -- Methods
 

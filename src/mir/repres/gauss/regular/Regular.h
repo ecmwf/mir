@@ -51,6 +51,7 @@ public:
     // None
 
     // -- Overridden methods
+
     virtual void validate(const std::vector<double>&) const;
 
     // -- Class members
@@ -83,11 +84,13 @@ protected:
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
 
-    virtual atlas::grid::Grid* atlasGrid() const;
+    virtual atlas::Grid atlasGrid() const;
 
-    virtual util::Domain domain() const;
+    virtual void makeName(std::ostream&) const;
 
-    virtual util::Domain domain(const util::BoundingBox&) const;
+    virtual bool sameAs(const Representation& other) const;
+
+    bool isPeriodicWestEast() const;
 
     // -- Class members
     // None

@@ -29,7 +29,13 @@
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 #include "eckit/types/Fraction.h"
+#include "mir/util/BoundingBox.h"
 
+#include "atlas/library/config.h"
+
+#ifdef ATLAS_HAVE_TRANS
+#include "transi/trans.h"
+#endif
 
 namespace mir {
 namespace repres {
@@ -53,6 +59,24 @@ Reduced::Reduced(const param::MIRParametrisation &parametrisation):
 
 
 Reduced::~Reduced() {
+}
+
+
+bool Reduced::sameAs(const Representation& other) const {
+    const Reduced* o = dynamic_cast<const Reduced*>(&other);
+    return o && Gaussian::sameAs(other);
+}
+
+
+bool Reduced::isPeriodicWestEast() const {
+    const std::vector<long>& pl = pls();
+    ASSERT(pl.size());
+    const long maxpl = *std::max_element(pl.begin(), pl.end());
+
+    const Longitude we = bbox_.east() - bbox_.west();
+    const Longitude inc = eckit::Fraction(360, maxpl);
+
+    return (we + inc).sameWithGrib1Accuracy(Longitude::GLOBE.value());
 }
 
 
@@ -86,13 +110,12 @@ void Reduced::fill(grib_info &info) const  {
     */
 
     // for GRIB, a global field is also aligned with Greenwich
-    bool global = domain().isGlobal();
-    bool westAtGreenwich = eckit::types::is_approximately_equal<double>(0, bbox_.west());
+    bool westAtGreenwich = bbox_.west() == Longitude::GREENWICH;;
 
     long j = info.packing.extra_settings_count++;
     info.packing.extra_settings[j].type = GRIB_TYPE_LONG;
     info.packing.extra_settings[j].name = "global";
-    info.packing.extra_settings[j].long_value = global && westAtGreenwich ? 1 : 0;
+    info.packing.extra_settings[j].long_value = domain().isGlobal() && westAtGreenwich ? 1 : 0;
 }
 
 
@@ -134,7 +157,7 @@ class GaussianIterator : public Iterator {
             << "]";
     }
 
-    virtual bool next(double &lat, double &lon) {
+    virtual bool next(Latitude &lat, Longitude &lon) {
         while (j_ < nj_ && i_ < ni_) {
 
             ASSERT(j_ + k_ < latitudes_.size());
@@ -150,7 +173,7 @@ class GaussianIterator : public Iterator {
                 if (j_ < nj_) {
                     ASSERT(p_ < pl_.size());
                     ni_ = size_t(pl_[p_++]);
-                    lon_ = 0;
+                    lon_ = eckit::Fraction(0.0);
                     inc_ = eckit::Fraction(360, ni_);
                     i_ = 0;
 
@@ -192,92 +215,12 @@ public:
 
         ni_ = size_t(pl_[p_++]);
         inc_ = eckit::Fraction(360, ni_);
-        lon_ = 0;
+        lon_ = eckit::Fraction(0.0);
 
-
-        // eckit::Log::debug<LibMir>() << *this << std::endl;
     }
-
-    // static void repositionToFirstLongitudeIndex(size_t& imin, size_t& imax, const util::Domain& dom, const size_t& n) {
-
-    //     const double west_positive = dom.west() + (eckit::types::is_strictly_greater(0., dom.west()) ? 360. : 0.);
-    //     const double east_positive = dom.east() + (eckit::types::is_strictly_greater(0., dom.west()) ? 360. : 0.);
-    //     ASSERT(eckit::types::is_approximately_greater_or_equal(360., east_positive - west_positive));
-
-    //     ASSERT(n);
-
-    //     // assuming n>0, returned range satisfies: 0 <= imin < imax; and imax - imin <= n
-    //     imin = 0;
-    //     while (imin < n && eckit::types::is_strictly_greater(west_positive, (imin * 360.) / n)) {
-    //         ++imin;
-    //     }
-    //     imin = imin % n;
-    //     imax = imin;
-    //     while (imax - imin < n && eckit::types::is_approximately_greater_or_equal(east_positive, (imax * 360.) / n)) {
-    //         ++imax;
-    //     }
-    //     ASSERT(imax > imin);
-    // }
 
 
 };
-
-
-util::Domain Reduced::domain() const {
-    return domain(bbox_);
-}
-
-
-util::Domain Reduced::domain(const util::BoundingBox& bbox) const {
-
-
-    // calculate EW and NS increments
-    const std::vector<long>& pl = pls();
-    const std::vector<double>& lats = latitudes();
-    ASSERT(pl.size());
-    ASSERT(lats.size());
-
-    long max_pl = pl[0];
-    for (size_t i = 0; i < pl.size(); i++) {
-        max_pl = std::max(max_pl, pl[i]);
-    }
-
-    double max_inc_north_south = std::numeric_limits<double>::epsilon();
-    for (size_t j = 1; j < lats.size(); ++j) {
-        max_inc_north_south = std::max(max_inc_north_south, lats[j - 1] - lats[j]);
-    }
-    ASSERT(eckit::types::is_strictly_greater(max_inc_north_south, 0.));
-
-    const double ew = bbox.east() - bbox.west();
-    const double inc_west_east = max_pl ? 360. / double(max_pl) : 0.;
-
-    // confirm domain limits
-    const double epsilon_grib1 = 1.0 / 1000.0;
-
-    const bool isPeriodicEastWest =
-        eckit::types::is_approximately_equal(360., ew + inc_west_east)
-
-        // FIXME: GRIB=1 is in millidegree, GRIB-2 in in micro-degree. Use the precision given by GRIB in this check
-        || eckit::types::is_approximately_equal(360., ew + inc_west_east, epsilon_grib1 )
-
-        // The dissemination will put in the GRIB header what is specified by the user
-        // so, for example if the user specify 359.999999 as the eastern longitude, this
-        // value will end up in the header
-        || (ew + inc_west_east > 360.);
-
-    const bool
-    includesPoleNorth = eckit::types::is_approximately_equal(bbox.north(),  90., max_inc_north_south),
-    includesPoleSouth = eckit::types::is_approximately_equal(bbox.south(), -90., max_inc_north_south),
-    isNorthAtEquator  = eckit::types::is_approximately_equal(bbox.north(),   0., max_inc_north_south),
-    isSouthAtEquator  = eckit::types::is_approximately_equal(bbox.south(),   0., max_inc_north_south);
-
-    const double
-    north = includesPoleNorth ?   90 : isNorthAtEquator ? 0 : bbox.north(),
-    south = includesPoleSouth ?  -90 : isSouthAtEquator ? 0 : bbox.south(),
-    west = bbox.west(),
-    east = isPeriodicEastWest ? bbox.west() + 360 : bbox.east();
-    return util::Domain(north, west, south, east);
-}
 
 
 Iterator *Reduced::unrotatedIterator() const {
@@ -303,11 +246,11 @@ size_t Reduced::frame(std::vector<double> &values, size_t size, double missingVa
     // Iterator is 'unrotated'
     eckit::ScopedPtr<Iterator> iter(unrotatedIterator());
 
-    double prev_lat = std::numeric_limits<double>::max();
-    double prev_lon = -std::numeric_limits<double>::max();
+    Latitude prev_lat = std::numeric_limits<double>::max();
+    Longitude prev_lon = -std::numeric_limits<double>::max();
 
-    double lat;
-    double lon;
+    Latitude lat;
+    Longitude lon;
 
     size_t rows = 0;
 
@@ -353,24 +296,31 @@ size_t Reduced::frame(std::vector<double> &values, size_t size, double missingVa
 
 
 void Reduced::validate(const std::vector<double>& values) const {
-    const util::Domain dom = domain();
-    long long count = 0;
 
-    if (dom.isGlobal()) {
+//    std::cout << "Reduced " << domain() << std::endl;
+
+    long long count = 0;
+    if (domain().isGlobal()) {
         const std::vector<long>& pl = pls();
         for (size_t i = 0; i < pl.size(); i++) {
             count += pl[i];
         }
     } else {
         eckit::ScopedPtr<Iterator> it(unrotatedIterator());
-        double lat;
-        double lon;
+        Latitude lat;
+        Longitude lon;
         while (it->next(lat, lon)) {
             ++count;
         }
     }
 
-    eckit::Log::debug<LibMir>() << "Reduced::validate checked " << eckit::Plural(values.size(), "value") << ", within domain: " << eckit::BigNum(count) << "." << std::endl;
+    eckit::Log::debug<LibMir>() << "Reduced::validate checked "
+                                << eckit::Plural(values.size(), "value")
+                                << ", within domain: "
+                                << eckit::BigNum(count)
+                                << "."
+                                << std::endl;
+
     ASSERT(values.size() == size_t(count));
 }
 
@@ -381,13 +331,14 @@ const Reduced *Reduced::cropped(const util::BoundingBox &bbox) const  {
     newpl.reserve(pl.size());
 
     const std::vector<double> &lats = latitudes();
-    double north = bbox.north();
-    double south = bbox.south();
+    Latitude north = bbox.north();
+    Latitude south = bbox.south();
 
     ASSERT(lats.size() == pl.size());
 
     for (size_t i = 0; i < lats.size(); i++) {
-        if ((lats[i] >= south) && (lats[i] <= north)) {
+        Latitude ll(lats[i]);
+        if ((ll >= south) && (ll <= north)) {
             newpl.push_back(pl[i]);
         }
     }
@@ -401,6 +352,30 @@ const Reduced *Reduced::cropped(const util::BoundingBox&, const std::vector<long
     os << "Reduced::cropped() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
+
+void Reduced::initTrans(Trans_t& trans) const {
+#ifdef ATLAS_HAVE_TRANS
+
+
+    const std::vector<long>& pl = pls();
+    ASSERT(pl.size());
+
+    std::vector<int> pli(pl.size());
+    ASSERT(pl.size() == pli.size());
+
+    for (size_t i = 0; i < pl.size(); ++i) {
+        pli[i] = pl[i];
+    }
+
+    ASSERT(trans_set_resol(&trans, pli.size(), &pli[0]) == 0);
+
+#else
+    NOTIMP;
+#endif
+}
+
+
 
 
 }  // namespace reduced

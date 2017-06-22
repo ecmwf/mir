@@ -25,9 +25,7 @@
 struct grib_info;
 
 namespace atlas {
-namespace grid {
 class Grid;
-}
 }
 
 namespace mir {
@@ -40,6 +38,7 @@ class Iterator;
 namespace util {
 class BoundingBox;
 class Domain;
+class Increments;
 }
 namespace context {
 class Context;
@@ -47,15 +46,22 @@ class Context;
 namespace api {
 class MIRJob;
 }
+namespace data {
+class MIRField;
+}
+namespace util {
+class MIRGrid;
+}
 }
 
+struct Trans_t;
 
 namespace mir {
 namespace repres {
 
 
 class Representation : public eckit::Counted {
-  public:
+public:
 
     // Scanning mode bits
     enum {
@@ -83,6 +89,9 @@ class Representation : public eckit::Counted {
 
     // --------------------
 
+    virtual const std::string& uniqueName() const;
+    virtual bool sameAs(const Representation& other) const;
+
     virtual Iterator* rotatedIterator() const; // After rotation
     virtual Iterator* unrotatedIterator() const; // Before rotation
 
@@ -95,12 +104,16 @@ class Representation : public eckit::Counted {
     virtual const Representation* cropped(const util::BoundingBox &bbox) const;
 
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
+    virtual const Representation* globalise(data::MIRField& field) const;
+
+    // Make a global
+    virtual size_t numberOfPoints() const;
+
 
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
-    virtual atlas::grid::Grid* atlasGrid() const;
+    virtual util::MIRGrid grid() const;
     virtual util::Domain domain() const;
-    virtual util::Domain domain(const util::BoundingBox&) const;
 
     virtual size_t truncation() const;
     virtual size_t pentagonalResolutionTs() const;
@@ -113,9 +126,10 @@ class Representation : public eckit::Counted {
     virtual void setSimplePacking(grib_info&) const;
     virtual void setGivenPacking(grib_info&) const;
 
-    virtual void cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const;
+    virtual void crop(const param::MIRParametrisation&, context::Context&) const;
 
     virtual void shape(size_t& ni, size_t& nj) const;
+    virtual void initTrans(Trans_t&) const;
 
     // -- Overridden methods
     // None
@@ -126,7 +140,7 @@ class Representation : public eckit::Counted {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Destructor
 
@@ -138,22 +152,26 @@ class Representation : public eckit::Counted {
     // -- Methods
 
     virtual void print(std::ostream&) const = 0;
+    virtual atlas::Grid atlasGrid() const;
+    virtual void makeName(std::ostream&) const;
+
+    // Domain operations
+    virtual bool isGlobal() const;
+    virtual bool isPeriodicWestEast() const;
+    virtual bool includesNorthPole() const;
+    virtual bool includesSouthPole() const;
 
     // -- Overridden methods
     // None
 
     // -- Class members
-    // None
+
+    mutable std::string uniqueName_;
 
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    Representation(const Representation&);
-    Representation& operator=(const Representation&);
+private:
 
     // -- Members
     // None
@@ -182,7 +200,7 @@ class Representation : public eckit::Counted {
 
 class RepresentationHandle {
     const Representation* representation_;
-  public:
+public:
     RepresentationHandle(const Representation* r);
     ~RepresentationHandle();
     const Representation* operator->() const {
@@ -197,10 +215,10 @@ class RepresentationHandle {
 class RepresentationFactory {
     std::string name_;
     virtual Representation* make(const param::MIRParametrisation&) = 0 ;
-  protected:
+protected:
     RepresentationFactory(const std::string&);
     virtual ~RepresentationFactory();
-  public:
+public:
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable
     static const Representation* build(const param::MIRParametrisation&);
@@ -213,7 +231,7 @@ class RepresentationBuilder : public RepresentationFactory {
     virtual Representation* make(const param::MIRParametrisation& param) {
         return new T(param);
     }
-  public:
+public:
     RepresentationBuilder(const std::string& name) : RepresentationFactory(name) {}
 };
 

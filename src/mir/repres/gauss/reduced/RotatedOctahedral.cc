@@ -16,9 +16,9 @@
 #include "mir/repres/gauss/reduced/RotatedOctahedral.h"
 
 #include <iostream>
+#include "atlas/grid.h"
 #include "mir/repres/gauss/reduced/RotatedFromPL.h"
 #include "mir/util/Grib.h"
-#include "mir/util/RotatedGrid.h"
 #include "mir/util/RotatedIterator.h"
 
 
@@ -43,6 +43,11 @@ void RotatedOctahedral::print(std::ostream &out) const {
 }
 
 
+void RotatedOctahedral::makeName(std::ostream& out) const { NOTIMP; }
+bool RotatedOctahedral::sameAs(const Representation& other) const { NOTIMP; }
+
+
+
 void RotatedOctahedral::fill(grib_info &info) const  {
 #ifdef GRIB_UTIL_GRID_SPEC_REDUCED_ROTATED_GG
     Octahedral::fill(info);
@@ -64,12 +69,8 @@ Iterator* RotatedOctahedral::rotatedIterator() const {
 }
 
 
-atlas::grid::Grid *RotatedOctahedral::atlasGrid() const {
-    return new util::RotatedGrid(
-                Octahedral::atlasGrid(),
-                rotation_.south_pole_latitude(),
-                rotation_.south_pole_longitude(),
-                rotation_.south_pole_rotation_angle() );
+atlas::Grid RotatedOctahedral::atlasGrid() const {
+    return rotation_.rotate(Octahedral::atlasGrid());
 }
 
 

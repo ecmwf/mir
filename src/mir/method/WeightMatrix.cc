@@ -136,7 +136,7 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
         size_t r = rows();
         size_t c = cols();
         size_t total = r * c;
-        eckit::Log::debug<LibMir>() << "MethodWeighted::cleanupMatrix fixed "
+        eckit::Log::debug<LibMir>() << "WeightMatrix::cleanup fixed "
                                     << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
                                     << " (matrix is " << eckit::BigNum(r) << "x" << eckit::BigNum(c) << ", total="
                                     << eckit::BigNum(total) << ")" << std::endl;

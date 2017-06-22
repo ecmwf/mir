@@ -16,10 +16,11 @@
 #include "mir/repres/gauss/reduced/FromPL.h"
 
 #include "eckit/exception/Exceptions.h"
-#include "atlas/grid/gaussian/ReducedGaussian.h"
+#include "atlas/grid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
+#include "eckit/utils/MD5.h"
 
 
 namespace mir {
@@ -49,6 +50,24 @@ FromPL::FromPL(const std::vector<long> &pl):
 }
 
 
+void FromPL::makeName(std::ostream& out) const {
+    out << "R" << N_ << "-";
+
+    eckit::MD5 md5;
+    for(auto j = pl_.begin(); j != pl_.end(); ++j) {
+        md5 << *j;
+    }
+
+    out << std::string(md5);
+    bbox_.makeName(out);
+}
+
+bool FromPL::sameAs(const Representation& other) const {
+    const FromPL* o = dynamic_cast<const FromPL*>(&other);
+    return o && (pl_ == o->pl_) && Reduced::sameAs(other);
+}
+
+
 void FromPL::fill(grib_info &info) const  {
     Reduced::fill(info);
 }
@@ -59,13 +78,8 @@ void FromPL::fill(api::MIRJob &job) const  {
 }
 
 
-atlas::grid::Grid *FromPL::atlasGrid() const {
-    ASSERT (pl_.size());
-
-    util::Domain dom = domain();
-    atlas::grid::Domain atlasDomain(dom.north(), dom.west(), dom.south(), dom.east());
-
-    return new atlas::grid::gaussian::ReducedGaussian(N_, &pl_[0], atlasDomain);
+atlas::Grid FromPL::atlasGrid() const {
+    return atlas::grid::ReducedGaussianGrid(pl_, domain());
 }
 
 

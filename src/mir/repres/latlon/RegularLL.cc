@@ -17,15 +17,13 @@
 
 #include <iostream>
 #include "eckit/types/FloatCompare.h"
-#include "atlas/grid/lonlat/RegularLonLat.h"
-#include "atlas/grid/lonlat/ShiftedLat.h"
-#include "atlas/grid/lonlat/ShiftedLon.h"
-#include "atlas/grid/lonlat/ShiftedLonLat.h"
+#include "eckit/types/Fraction.h"
+#include "atlas/grid.h"
 #include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
-#include "mir/util/OffsetGrid.h"
 
 
 namespace mir {
@@ -38,8 +36,9 @@ RegularLL::RegularLL(const param::MIRParametrisation &parametrisation):
 
 
 RegularLL::RegularLL(const util::BoundingBox &bbox,
-                     const util::Increments &increments) :
-    LatLon(bbox, increments) {
+                     const util::Increments &increments,
+                     const util::Shift& shift) :
+    LatLon(bbox, increments, shift) {
 }
 
 
@@ -50,7 +49,7 @@ RegularLL::~RegularLL() {
 // Called by RegularLL::crop()
 const RegularLL *RegularLL::cropped(const util::BoundingBox &bbox) const {
     // eckit::Log::debug<LibMir>() << "Create cropped copy as RegularLL bbox=" << bbox << std::endl;
-    return new RegularLL(bbox, increments_);
+    return new RegularLL(bbox, increments_, shift_);
 }
 
 
@@ -61,13 +60,23 @@ void RegularLL::print(std::ostream &out) const {
 }
 
 
+void RegularLL::makeName(std::ostream& out) const {
+    LatLon::makeName(out);
+}
+
+
+bool RegularLL::sameAs(const Representation& other) const {
+    const RegularLL* o = dynamic_cast<const RegularLL*>(&other);
+    return o && LatLon::sameAs(other);
+}
+
+
 void RegularLL::fill(grib_info &info) const  {
     // See copy_spec_from_ksec.c in libemos for info
     // Warning: scanning mode not considered
 
     LatLon::fill(info);
     info.grid.grid_type = GRIB_UTIL_GRID_SPEC_REGULAR_LL;
-
 }
 
 
@@ -76,41 +85,61 @@ void RegularLL::fill(api::MIRJob &job) const  {
 }
 
 
-atlas::grid::Grid* RegularLL::atlasGrid() const {
-    using namespace atlas::grid::lonlat;
+atlas::Grid RegularLL::atlasGrid() const {
 
-
-    // locate latitude/longitude origin via accumulation of increments, in range [0,inc[
-    // NOTE: shift is assumed half-increment origin dispacement; Domain is checked for
-    // global NS/EW range (this could/should be revised).
-    const double inc_we = increments_.west_east();
-    const double inc_sn = increments_.south_north();
-    ASSERT(eckit::types::is_strictly_greater(inc_we, 0.));
-    ASSERT(eckit::types::is_strictly_greater(inc_sn, 0.));
-
-    int i = 0, j = 0;
-    while (bbox_.west()  + i * inc_we < inc_we) { ++i; }
-    while (bbox_.west()  + i * inc_we > inc_we) { --i; }
-    while (bbox_.south() + j * inc_sn < inc_sn) { ++j; }
-    while (bbox_.south() + j * inc_sn > inc_sn) { --j; }
-    const double
-    lon_origin = bbox_.west()  + i * inc_we,
-    lat_origin = bbox_.south() + j * inc_sn;
-
+    // NOTE: for non-shifted/shifted grid, yspace uses bounding box
+    // (this works together with the Atlas RectangularDomain cropping)
     const util::Domain dom = domain();
-    const bool
-    includesBothPoles = dom.includesPoleNorth() && dom.includesPoleSouth(),
-    isShiftedLon = dom.isPeriodicEastWest() && eckit::types::is_approximately_equal(lon_origin, inc_we / 2.),
-    isShiftedLat = includesBothPoles        && eckit::types::is_approximately_equal(lat_origin, inc_sn / 2.);
 
-    // TODO: missing assertion for non-global, or shifted by not 1/2 grid
+    using atlas::grid::StructuredGrid;
+    using atlas::grid::LinearSpacing;
+    StructuredGrid::XSpace xspace( LinearSpacing( dom.west().value(),  dom.east().value(),  long(ni_), !dom.isPeriodicEastWest() ));
+    StructuredGrid::YSpace yspace( LinearSpacing( bbox_.north().value(), bbox_.south().value(), long(nj_) ));
 
-    // return non-shifted/shifted grid
-    atlas::grid::Domain atlasDomain(dom.north(), dom.west(), dom.south(), dom.east());
-    return isShiftedLon || isShiftedLat? static_cast<LonLat*>(new ShiftedLonLat (ni_, nj_, atlasDomain))
-           : isShiftedLon?               static_cast<LonLat*>(new ShiftedLon    (ni_, nj_, atlasDomain))
-           : isShiftedLat?               static_cast<LonLat*>(new ShiftedLat    (ni_, nj_, atlasDomain))
-           :                             static_cast<LonLat*>(new RegularLonLat (ni_, nj_, atlasDomain));
+    return StructuredGrid(xspace, yspace, StructuredGrid::Projection(), domain());
+}
+
+
+Representation* RegularLL::globalise(data::MIRField& field) const {
+    ASSERT(field.representation() == this);
+
+    if (isGlobal()) {
+        return 0;
+    }
+
+    ASSERT(!shift_);
+
+    // For now, we only use that function for the LAW model, so we only grow by the end (south pole)
+    ASSERT(bbox_.north() == Latitude::NORTH_POLE);
+    ASSERT(bbox_.west() == Longitude::GREENWICH);
+    ASSERT(bbox_.east() + increments_.west_east() == Longitude::GLOBE);
+
+    util::BoundingBox newbbox(bbox_.north(), bbox_.west(), -90, bbox_.east());
+
+    eckit::ScopedPtr<RegularLL> newll(new RegularLL(newbbox, increments_, util::Shift(0, 0)));
+
+    ASSERT(newll->nj_ > nj_);
+    ASSERT(newll->ni_ == ni_);
+
+    size_t n = ni_ * nj_;
+    size_t newn = newll->ni_ * newll->nj_;
+    double missingValue = field.missingValue();
+
+    for (size_t i = 0; i < field.dimensions(); i++ ) {
+        std::vector<double> newvalues(newn, missingValue);
+        const std::vector<double> &values = field.direct(i);
+        ASSERT(values.size() == n);
+
+        for (size_t j = 0 ; j < n; ++j) {
+            newvalues[j] = values[j];
+        }
+
+        field.update(newvalues, i);
+    }
+
+    field.hasMissing(true);
+
+    return newll.release();
 }
 
 

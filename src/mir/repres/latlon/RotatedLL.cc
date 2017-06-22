@@ -19,7 +19,6 @@
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/RotatedGrid.h"
 #include "mir/util/RotatedIterator.h"
 
 
@@ -34,8 +33,11 @@ RotatedLL::RotatedLL(const param::MIRParametrisation &parametrisation):
 }
 
 
-RotatedLL::RotatedLL(const util::BoundingBox &bbox, const util::Increments &increments, const util::Rotation &rotation):
-    RegularLL(bbox, increments),
+RotatedLL::RotatedLL(const util::BoundingBox &bbox,
+    const util::Increments &increments,
+    const util::Shift &shift,
+    const util::Rotation &rotation):
+    RegularLL(bbox, increments, shift),
     rotation_(rotation) {
 }
 
@@ -52,10 +54,24 @@ void RotatedLL::print(std::ostream &out) const {
 }
 
 
+void RotatedLL::makeName(std::ostream& out) const {
+    RegularLL::makeName(out);
+    rotation_.makeName(out);
+}
+
+bool RotatedLL::sameAs(const Representation& other) const {
+
+    const RotatedLL* o = dynamic_cast<const RotatedLL*>(&other);
+    return o && (rotation_ == o->rotation_) && RegularLL::sameAs(other);
+
+}
+
+
+
 // Called by RegularLL::crop()
 const RotatedLL *RotatedLL::cropped(const util::BoundingBox &bbox) const {
     eckit::Log::debug<LibMir>() << "Create cropped copy as RotatedLL bbox=" << bbox << std::endl;
-    return new RotatedLL(bbox, increments_, rotation_);
+    return new RotatedLL(bbox, increments_, shift_, rotation_);
 }
 
 
@@ -76,12 +92,8 @@ void RotatedLL::fill(api::MIRJob &job) const  {
 }
 
 
-atlas::grid::Grid *RotatedLL::atlasGrid() const {
-    return new util::RotatedGrid(
-                RegularLL::atlasGrid(),
-                rotation_.south_pole_latitude(),
-                rotation_.south_pole_longitude(),
-                rotation_.south_pole_rotation_angle() );
+atlas::Grid RotatedLL::atlasGrid() const {
+    return rotation_.rotate(RegularLL::atlasGrid());;
 }
 
 

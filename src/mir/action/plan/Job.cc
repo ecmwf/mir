@@ -40,7 +40,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
 
 
     // open and parse configuration file
-    std::string config_file = "~mir/etc/mir/configuration.json";
+    std::string config_file = "~mir/etc/mir/configuration.yaml";
     job.get("configuration", config_file);
 
     config::MIRConfiguration& config = config::MIRConfiguration::instance();
@@ -49,16 +49,15 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
 
     // get input and parameter-specific parametrisations
     const param::MIRParametrisation& metadata = input.parametrisation();
-
-    defaults_.reset(config.lookup(metadata));
-    combined_.reset(new param::MIRCombinedParametrisation(job, metadata, *defaults_));
+    const param::MIRParametrisation& parameter = config.lookup(metadata);
+    combined_.reset(new param::MIRCombinedParametrisation(job, metadata, parameter));
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
 
 
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
-    if (job.empty() || (!style->forcedPrepare(job) && job.matches(metadata, *defaults_))) {
+    if (job.empty() || (!style->forcedPrepare(job) && job.matches(metadata, parameter))) {
         plan_.reset(new action::ActionPlan(job));
         plan_->add(new action::Copy(job, output_));
         return;
@@ -75,7 +74,10 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         plan_->add(new action::Save(*combined_, input_, output_));
     }
 
-    eckit::Log::debug<LibMir>() << "Action plan is: " << *plan_ << std::endl;
+    // eckit::Log::debug<LibMir>() << "Action plan is: " << *plan_ << std::endl;
+    eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
+    plan_->dump(eckit::Log::debug<LibMir>());
+
 }
 
 

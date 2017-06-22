@@ -13,25 +13,23 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
+
 #include "mir/method/NearestLSM.h"
 
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
-
-#include "mir/method/GridSpace.h"
 #include "mir/config/LibMir.h"
 #include "mir/lsm/LandSeaMasks.h"
+#include "mir/util/MIRGrid.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/PointSearch.h"
+#include "mir/repres/Representation.h"
 
-
-using eckit::Log;
 
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
     MethodWeighted(param) {
@@ -47,19 +45,23 @@ const char *NearestLSM::name() const {
 }
 
 
-void NearestLSM::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
+void NearestLSM::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
 
+    util::MIRGrid in(rin.grid());
+    util::MIRGrid out(rout.grid());
+
+
+    eckit::Log::debug<LibMir>() << "NearestLSM::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("NearestLSM::assemble");
-    eckit::Log::debug<LibMir>() << "NearestLSM::assemble" << std::endl;
 
 
     // get the land-sea masks, with boolean masking on point (node) indices
     double here = timer.elapsed();
 
-    const lsm::LandSeaMasks masks = getMasks(ctx, in.grid(), out.grid());
+    const lsm::LandSeaMasks masks = getMasks(rin, rout);
     ASSERT(masks.active());
 
-    Log::debug<LibMir>() << "NearestLSM compute LandSeaMasks " << timer.elapsed() - here << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
 
     // compute masked/not-masked search trees
@@ -73,15 +75,15 @@ void NearestLSM::assemble(context::Context& ctx, WeightMatrix &W, const GridSpac
     util::PointSearch sptree_masked    (in, util::compare::IsMaskedFn   (imask));
     util::PointSearch sptree_notmasked (in, util::compare::IsNotMaskedFn(imask));
 
-    Log::debug<LibMir>() << "NearestLSM compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
 
 
     // compute the output nodes coordinates
     here = timer.elapsed();
 
-    atlas::array::ArrayView< double, 2 > ocoords = out.coordsXYZ();
+    atlas::array::ArrayView< double, 2 > ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
 
-    Log::debug<LibMir>() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
 
 
     // search nearest neighbours matching in/output masks
@@ -91,12 +93,12 @@ void NearestLSM::assemble(context::Context& ctx, WeightMatrix &W, const GridSpac
 
     std::vector<WeightMatrix::Triplet> mat;
     mat.reserve(W.rows());
-    for (WeightMatrix::Size i=0; i<W.rows(); ++i) {
+    for (WeightMatrix::Size i = 0; i < W.rows(); ++i) {
 
         // pick the (input) search tree matching the output mask
         util::PointSearch& sptree(
-                    omask[i]? sptree_masked
-                            : sptree_notmasked );
+            omask[i] ? sptree_masked
+            : sptree_notmasked );
 
         // perform nearest neighbour search
         // - p: output grid node to look neighbours for
@@ -110,24 +112,24 @@ void NearestLSM::assemble(context::Context& ctx, WeightMatrix &W, const GridSpac
         mat.push_back(WeightMatrix::Triplet( i, j, 1. ));
 
     }
-    Log::debug<LibMir>() << "NearestLSM search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;
 
 
     // fill-in sparse matrix
     here = timer.elapsed();
     W.setFromTriplets(mat);
-    Log::debug<LibMir>() << "NearestLSM fill-in sparse matrix " << timer.elapsed() - here << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM fill-in sparse matrix " << timer.elapsed() - here << std::endl;
 }
 
 
-lsm::LandSeaMasks NearestLSM::getMasks(context::Context& ctx, const atlas::grid::Grid &in, const atlas::grid::Grid &out) const {
+lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const repres::Representation& out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
     return lsm::LandSeaMasks::lookup(runtime, in, out);
 }
 
 
-void NearestLSM::applyMasks(WeightMatrix &W, const lsm::LandSeaMasks &, util::MIRStatistics& statistics) const {
+void NearestLSM::applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const {
     // FIXME this function should not be overriding to do nothing
 }
 
@@ -141,7 +143,6 @@ namespace {
 static MethodBuilder< NearestLSM > __method("nearest-lsm");
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

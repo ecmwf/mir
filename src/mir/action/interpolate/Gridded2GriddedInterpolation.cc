@@ -16,16 +16,13 @@
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
 #include "eckit/memory/ScopedPtr.h"
-
-#include "atlas/grid/Grid.h"
-
 #include "mir/action/context/Context.h"
+#include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/config/LibMir.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -41,7 +38,7 @@ Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 }
 
 
-void Gridded2GriddedInterpolation::execute(context::Context & ctx) const {
+void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().grid2gridTiming_);
     data::MIRField& field = ctx.field();
@@ -55,15 +52,12 @@ void Gridded2GriddedInterpolation::execute(context::Context & ctx) const {
     repres::RepresentationHandle in(field.representation());
     repres::RepresentationHandle out(outputRepresentation());
 
-    eckit::ScopedPtr<atlas::grid::Grid> gin(in->atlasGrid()); // We do it here as ATLAS does not respect constness
-    eckit::ScopedPtr<atlas::grid::Grid> gout(out->atlasGrid());
-
-    method->execute(ctx, *gin, *gout);
+    method->execute(ctx, *in, *out);
 
     field.representation(out);
 
-    // Make sure we crop to the input domain if not global
-    in->cropToDomain(parametrisation_, ctx);
+    // Make sure results are cropped to the input
+    in->crop(parametrisation_, ctx);
 }
 
 

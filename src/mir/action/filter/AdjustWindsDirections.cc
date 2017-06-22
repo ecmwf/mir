@@ -77,38 +77,38 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
 
     result.clear();
 
-    // std::cout << "AdjustWindsDirections::windDirections " << *representation << std::endl;
+    // eckit::Log::info() << "AdjustWindsDirections::windDirections " << *representation << std::endl;
 
     eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
 
-    // std::cout << "AdjustWindsDirections::windDirections " << *iter << std::endl;
+    // eckit::Log::info() << "AdjustWindsDirections::windDirections " << *iter << std::endl;
 
 
-    double lat = 0;
-    double lon = 0;
+    Latitude lat;
+    Longitude lon;
 
     // Inspired from HPSHGPW
 
-    double pole_longitude = -rotation_.south_pole_longitude();
-    double theta = util::angles::degree_to_radian(rotation_.south_pole_latitude());
+    double pole_longitude = -rotation_.south_pole_longitude().value();
+    double theta = util::angles::degree_to_radian(rotation_.south_pole_latitude().value());
     double sin_theta = -sin(theta);
     double cos_theta = -cos(theta);
 
     while (iter->next(lat, lon)) {
 
-        double radian_lat = util::angles::degree_to_radian(lat);
+        double radian_lat = util::angles::degree_to_radian(lat.value());
         double sin_lat = sin(radian_lat);
         double cos_lat = cos(radian_lat);
 
         lon += pole_longitude;
 
         // For some reason, the algorithms only work between in ]-180,180]
-        lon = util::angles::between_m180_and_p180(lon);
-        if (eckit::types::is_approximately_equal<double>(lon, -180)) {
-            lon = 180.0;
+        lon = util::angles::between_m180_and_p180(lon.value());
+        if (lon == Longitude::MINUS_DATE_LINE) {
+            lon = Longitude::DATE_LINE;
         }
 
-        double radian_lon = util::angles::degree_to_radian(lon);
+        double radian_lon = util::angles::degree_to_radian(lon.value());
         double sin_lon = sin(radian_lon);
         double cos_lon = cos(radian_lon);
         double z = normalize(sin_theta * sin_lat + cos_theta * cos_lat * cos_lon);
@@ -151,7 +151,7 @@ void AdjustWindsDirections::execute(context::Context & ctx) const {
     windDirections(field.representation(), directions);
 
     if (directions.size() != size) {
-        std::cout << "AdjustWindsDirections::windDirections after=" << directions.size()
+        eckit::Log::info() << "AdjustWindsDirections::windDirections after=" << directions.size()
                   << " before=" << size << std::endl;
 
     }

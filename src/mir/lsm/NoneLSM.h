@@ -95,12 +95,12 @@ class NoneLSM : public LSMChooser {
 
     virtual Mask *create(const std::string &,
                          const param::MIRParametrisation &param,
-                         const atlas::grid::Grid &grid,
+                         const repres::Representation& representation,
                          const std::string& which) const ;
 
     virtual std::string cacheKey(const std::string &,
                                  const param::MIRParametrisation &param,
-                                 const atlas::grid::Grid &grid,
+                                 const repres::Representation& representation,
                                  const std::string& which) const ;
 
     // -- Friends

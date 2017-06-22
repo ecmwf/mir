@@ -16,7 +16,7 @@
 #ifndef mir_action_transform_ShToGridded_h
 #define mir_action_transform_ShToGridded_h
 
-#include "atlas/internals/atlas_config.h"
+#include "atlas/library/config.h"
 #include "mir/action/plan/Action.h"
 
 #ifdef ATLAS_HAVE_TRANS
@@ -27,9 +27,7 @@ struct Trans_t {};
 
 
 namespace atlas {
-namespace grid {
 class Grid;
-}
 }
 namespace mir {
 namespace data {
@@ -112,8 +110,8 @@ private:
     virtual void sh2grid(struct Trans_t& trans, data::MIRField& field) const = 0;
     virtual const repres::Representation* outputRepresentation() const = 0;
 
-    void transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx, const std::string& key, trans_options_t& options) const;
-    void transform(data::MIRField& field, const atlas::grid::Grid& grid, context::Context& ctx) const;
+    void transform(data::MIRField& field, const repres::Representation& representation, context::Context& ctx, const std::string& key, trans_options_t& options) const;
+    void transform(data::MIRField& field, const repres::Representation& representation, context::Context& ctx) const;
 
     // -- Overridden methods
     virtual void execute(context::Context&) const;

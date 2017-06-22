@@ -12,18 +12,17 @@
 /// @author Baudouin Raoult
 /// @date   July 2015
 
-#ifndef mir_method_Conservative_H
-#define mir_method_Conservative_H
+#ifndef mir_method_Conservative_h
+#define mir_method_Conservative_h
 
 #include "mir/method/FELinear.h"
 
 namespace eckit { namespace linalg { class Vector; } }
-namespace atlas { namespace mesh { class Mesh; } }
+namespace atlas { class Mesh; }
 
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class Conservative: public FELinear {
 
@@ -37,9 +36,9 @@ protected:
 
     virtual void hash(eckit::MD5&) const;
 
-    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
+    virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
-    void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::grid::Grid& g, atlas::mesh::Mesh& mesh) const;
+    void computeLumpedMassMatrix(eckit::linalg::Vector&, const repres::Representation&, atlas::Mesh&) const;
 
 private:
 
@@ -48,10 +47,10 @@ private:
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
 
 #endif
 

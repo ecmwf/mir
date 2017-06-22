@@ -13,56 +13,58 @@
 /// @date Apr 2015
 
 
-#ifndef ActionPlan_H
-#define ActionPlan_H
+#ifndef mir_action_ActionPlan_h
+#define mir_action_ActionPlan_h
 
 #include <string>
+#include <vector>
+#include "mir/param/MIRParametrisation.h"
+#include "mir/param/DelayedParametrisation.h"
 
-
-#include "mir/param/RuntimeParametrisation.h"
 
 namespace mir {
-
 namespace context {
 class Context;
 }
-
-namespace util {
-class MIRStatistics;
+namespace action {
+class Action;
+}
 }
 
+
+namespace mir {
 namespace action {
-
-class Action;
-
 class ActionPlan {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     ActionPlan(const param::MIRParametrisation& parametrisation);
 
-// -- Destructor
+    // -- Destructor
 
     ~ActionPlan(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
     void add(const std::string& name);
     void add(const std::string& name, const std::string&, long);
-    void add(const std::string& name, const std::string&, param::DelayedParametrisation*);
     void add(const std::string& name, const std::string&, const std::string&);
     void add(const std::string& name, const std::string&, const std::string&, const std::string&, long);
     void add(const std::string& name, const std::string&, const std::string&, const std::string&, const std::string&);
+
+    void add(const std::string& name, const std::string&, param::DelayedParametrisation*);
+    void add(const std::string& name, const std::string&, param::DelayedParametrisation*, const std::string&, long);
+    void add(const std::string& name, const std::string&, param::DelayedParametrisation*, const std::string&, const std::string&);
 
     void add(Action* action);
 
@@ -71,59 +73,60 @@ class ActionPlan {
     size_t size() const;
     const Action& action(size_t) const;
 
-// -- Overridden methods
+    void dump(std::ostream&) const;
+
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
 
     const param::MIRParametrisation& parametrisation_;
     std::vector<Action*> actions_;
     std::vector<param::MIRParametrisation*> runtimes_;
 
-// -- Methods
+    // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
-
+    // No copy allowed
     ActionPlan(const ActionPlan&);
     ActionPlan& operator=(const ActionPlan&);
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const ActionPlan& p) {
         p.print(s);
@@ -135,5 +138,7 @@ class ActionPlan {
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

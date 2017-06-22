@@ -13,14 +13,16 @@
 /// @date Apr 2015
 
 
-#ifndef UnstructuredGrid_H
-#define UnstructuredGrid_H
+#ifndef mir_repres_other_UnstructuredGrid_h
+#define mir_repres_other_UnstructuredGrid_h
 
 #include "mir/repres/Gridded.h"
+
 
 namespace eckit {
 class PathName;
 }
+
 
 namespace mir {
 namespace repres {
@@ -28,22 +30,22 @@ namespace other {
 
 
 class UnstructuredGrid : public Gridded {
-  public:
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    UnstructuredGrid(const eckit::PathName& path);
-    UnstructuredGrid(const param::MIRParametrisation &);
+    UnstructuredGrid(const eckit::PathName&);
+    UnstructuredGrid(const param::MIRParametrisation&);
 
     // Take ownership of vectors
     UnstructuredGrid(std::vector<double>& latitudes, std::vector<double>& longitudes);
 
     // -- Destructor
 
-    virtual ~UnstructuredGrid(); // Change to virtual if base class
+    ~UnstructuredGrid(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -64,14 +66,14 @@ class UnstructuredGrid : public Gridded {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -82,12 +84,7 @@ class UnstructuredGrid : public Gridded {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    UnstructuredGrid(const UnstructuredGrid &);
-    UnstructuredGrid &operator=(const UnstructuredGrid &);
+private:
 
     // -- Members
 
@@ -97,18 +94,23 @@ class UnstructuredGrid : public Gridded {
     // -- Methods
     // None
 
-
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
-    virtual atlas::grid::Grid *atlasGrid() const;
-    virtual void validate(const std::vector<double> &values) const;
+    void fill(grib_info&) const;
+    void fill(api::MIRJob&) const;
+    atlas::Grid atlasGrid() const;
+    void validate(const std::vector<double>& values) const;
 
-    virtual util::Domain domain() const;
-    virtual util::Domain domain(const util::BoundingBox&) const;
-    virtual Iterator* rotatedIterator() const; // After rotation
-    virtual Iterator* unrotatedIterator() const; // Before rotation
+    util::Domain domain() const;
+    Iterator* rotatedIterator() const; // After rotation
+    Iterator* unrotatedIterator() const; // Before rotation
+    void makeName(std::ostream&) const;
+    bool sameAs(const Representation& other) const;
+
+    // Domain operations
+    bool isPeriodicWestEast() const;
+    bool includesNorthPole() const;
+    bool includesSouthPole() const;
 
     // -- Class members
     // None
@@ -127,5 +129,7 @@ class UnstructuredGrid : public Gridded {
 }  // namespace other
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

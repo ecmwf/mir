@@ -17,6 +17,7 @@
 #define Iterator_H
 
 #include <iosfwd>
+#include "mir/util/Types.h"
 
 namespace mir {
 namespace repres {
@@ -24,6 +25,7 @@ namespace repres {
 
 class Iterator  {
   public:
+
 
     // -- Exceptions
     // None
@@ -44,7 +46,7 @@ class Iterator  {
 
     // -- Methods
 
-    virtual bool next(double &lat, double &lon) = 0;
+    virtual bool next(Latitude &lat, Longitude &lon) = 0;
 
     // -- Overridden methods
     // None

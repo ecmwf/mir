@@ -7,6 +7,7 @@ fi
 
 # Unload modules not available for Intel
 module unload grib_api
+module unload eccodes
 module unload emos
 module unload fftw
 module unload libemos

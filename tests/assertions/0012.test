@@ -1,0 +1,6 @@
+# Mars request
+param=2t,levtype=sfc
+# Mir tool options
+--area=-60/50/-90/180 --gridname=N640
+# grib_get assertions
+numberOfPoints=52671

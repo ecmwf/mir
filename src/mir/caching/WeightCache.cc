@@ -11,16 +11,14 @@
 #include "mir/caching/WeightCache.h"
 
 #include "eckit/io/Buffer.h"
-
+#include "mir/caching/interpolator/InterpolatorLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
-#include "mir/caching/interpolator/InterpolatorLoader.h"
 
 
 namespace mir {
 namespace caching {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 static std::string extract_loader(const param::MIRParametrisation& param) {
     std::string name;
@@ -28,24 +26,28 @@ static std::string extract_loader(const param::MIRParametrisation& param) {
     return name;
 }
 
+
 WeightCache::WeightCache(const param::MIRParametrisation& param):
     CacheManager(extract_loader(param),
                  LibMir::cacheDir(),
-                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false))
-{
+                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false)) {
 }
+
 
 const char *WeightCacheTraits::name() {
     return "mir/weights";
 }
 
+
 int WeightCacheTraits::version() {
-    return 2;
+    return 4;
 }
+
 
 const char *WeightCacheTraits::extension() {
     return ".mat";
 }
+
 
 void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W, const eckit::PathName& path) {
     eckit::Log::info() << "Inserting weights in cache : " << path << "" << std::endl;
@@ -54,30 +56,24 @@ void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W
     W.save(path);
 }
 
+
 void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type& W, const eckit::PathName& path) {
 
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
 
-#if 1
     using namespace mir::caching::interpolator;
-
     InterpolatorLoader* loader_ = InterpolatorLoaderFactory::build(manager.loader(), path);
 
     bool notown = true;
     eckit::Buffer buffer(const_cast<void*>(loader_->address()), loader_->size(), notown);
 
     value_type w(buffer);
-#else
-
-    value_type w(path);
-#endif
     std::swap(W, w);
 
     W.validate("fromCache");
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
-}  // namespace method
+}  // namespace caching
 }  // namespace mir
 

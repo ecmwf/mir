@@ -40,6 +40,18 @@ const Reduced *ReducedOctahedral::cropped(const util::BoundingBox &bbox, const s
     return new ReducedFromPL(N_, pl, bbox);
 }
 
+
+void ReducedOctahedral::makeName(std::ostream& out) const {
+    Octahedral::makeName(out);
+}
+
+bool ReducedOctahedral::sameAs(const Representation& other) const {
+    const ReducedOctahedral* o = dynamic_cast<const ReducedOctahedral*>(&other);
+    return o && Octahedral::sameAs(other);
+}
+
+
+
 }  // namespace reduced
 }  // namespace gauss
 }  // namespace repres

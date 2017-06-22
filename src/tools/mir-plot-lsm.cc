@@ -18,7 +18,7 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Tool.h"
-#include "atlas/grid/lonlat/RegularLonLat.h"
+#include "atlas/grid.h"
 #include "mir/config/MIRConfiguration.h"
 #include "mir/lsm/Mask.h"
 #include "mir/param/ConfigurationWrapper.h"
@@ -91,11 +91,11 @@ void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
 
     mir::param::MIRCombinedParametrisation parametrisation(wrap, *defaults, *defaults);
 
-    eckit::ScopedPtr<atlas::grid::Grid> grid(
-        new atlas::grid::lonlat::RegularLonLat(Ni, Nj) );
+    std::string gridname("L" + std::to_string(Ni) + "x" + std::to_string(Nj));
+    atlas::grid::RegularLonLatGrid grid(gridname);
 
 
-    mir::lsm::Mask &mask = mir::lsm::Mask::lookupOutput(parametrisation, *grid);
+    mir::lsm::Mask &mask = mir::lsm::Mask::lookupOutput(parametrisation, grid);
 
     eckit::Log::info() << "MASK IS => " << mask << std::endl;
 

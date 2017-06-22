@@ -13,13 +13,13 @@
 /// @date Apr 2015
 
 
-#ifndef GribInput_H
-#define GribInput_H
+#ifndef mir_input_GribInput_h
+#define mir_input_GribInput_h
 
 
+#include "eckit/thread/Mutex.h"
 #include "mir/input/MIRInput.h"
 #include "mir/param/FieldParametrisation.h"
-#include "eckit/thread/Mutex.h"
 
 
 namespace mir {
@@ -38,7 +38,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Destructor
 
-    virtual ~GribInput(); // Change to virtual if base class
+    virtual ~GribInput();
 
     // -- Convertors
     // None
@@ -48,7 +48,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Methods
 
-    void setAuxilaryFiles(const std::string &pathToLatitudes, const std::string &pathToLongitudes);
+    void setAuxilaryFiles(const std::string& pathToLatitudes, const std::string& pathToLongitudes);
 
     // For debugging only
     void marsRequest(std::ostream&) const;
@@ -69,7 +69,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Methods
 
-    bool handle(grib_handle *);
+    bool handle(grib_handle*);
 
     // -- Overridden methods
     // None
@@ -83,9 +83,8 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
   private:
 
     // No copy allowed
-
-    GribInput(const GribInput &);
-    GribInput &operator=(const GribInput &);
+    GribInput(const GribInput&);
+    GribInput& operator=(const GribInput&);
 
     // -- Members
 
@@ -98,27 +97,34 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Methods
 
-    void auxilaryValues(const std::string&, std::vector<double> &values) const;
+    void auxilaryValues(const std::string&, std::vector<double>& values) const;
 
     // -- Overridden methods
 
     // From MIRInput
-    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
+    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual grib_handle *gribHandle(size_t which = 0) const;
 
     /// From MIRParametrisation
-    virtual bool get(const std::string &name, std::string &value) const;
-    virtual bool get(const std::string &name, bool &value) const;
-    virtual bool get(const std::string &name, long &value) const;
-    virtual bool get(const std::string &name, double &value) const;
-    virtual bool get(const std::string &name, std::vector<long> &value) const;
-    virtual bool get(const std::string &name, std::vector<double> &value) const;
-    virtual bool has(const std::string &name) const;
+    virtual bool has(const std::string& name) const;
+
+    virtual bool get(const std::string& name, std::string& value) const;
+    virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, int& value) const;
+    virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, float& value) const;
+    virtual bool get(const std::string& name, double& value) const;
+
+    virtual bool get(const std::string& name, std::vector<int>& value) const;
+    virtual bool get(const std::string& name, std::vector<long>& value) const;
+    virtual bool get(const std::string& name, std::vector<float>& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
+    virtual bool get(const std::string& name, std::vector<std::string>& value) const;
 
     // From FieldParametrisation
-    virtual void latitudes(std::vector<double> &) const;
-    virtual void longitudes(std::vector<double> &) const;
+    virtual void latitudes(std::vector<double>&) const;
+    virtual void longitudes(std::vector<double>&) const;
 
     // -- Class members
     // None
@@ -127,9 +133,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const GribInput& p)
-    //  { p.print(s); return s; }
+    // None
 
 };
 

@@ -14,28 +14,17 @@
 /// @date May 2015
 
 
-#ifndef mir_method_Method_H
-#define mir_method_Method_H
+#ifndef mir_method_Method_h
+#define mir_method_Method_h
 
 #include <iosfwd>
 #include <string>
-#include <vector>
-
 #include "eckit/memory/NonCopyable.h"
 
 
 namespace eckit {
 class MD5;
 }
-
-
-namespace atlas {
-namespace grid {
-class Grid;
-}
-}
-
-
 namespace mir {
 namespace context {
 class Context;
@@ -43,9 +32,8 @@ class Context;
 namespace param {
 class MIRParametrisation;
 }
-
-namespace util {
-class MIRStatistics;
+namespace repres {
+class Representation;
 }
 }
 
@@ -55,25 +43,27 @@ namespace method {
 
 
 class Method : private eckit::NonCopyable {
-  public:
+public:
 
-    Method(const param::MIRParametrisation &);
+    Method(const param::MIRParametrisation&);
 
     virtual ~Method();
 
-    virtual void hash( eckit::MD5 & ) const = 0;
+    virtual void hash(eckit::MD5&) const = 0;
 
-    virtual void execute(context::Context & ctx, const atlas::grid::Grid &, const atlas::grid::Grid &) const = 0;
+    virtual void execute(context::Context&,
+                         const repres::Representation& in,
+                         const repres::Representation& out) const = 0;
 
-  protected:
+protected:
 
-    const param::MIRParametrisation &parametrisation_;
+    const param::MIRParametrisation& parametrisation_;
 
-    virtual void print(std::ostream &) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
-  private:
+private:
 
-    friend std::ostream &operator<<(std::ostream &s, const Method &p) {
+    friend std::ostream& operator<<(std::ostream& s, const Method& p) {
         p.print(s);
         return s;
     }
@@ -81,38 +71,36 @@ class Method : private eckit::NonCopyable {
 };
 
 
-
 class MethodFactory {
     std::string name_;
-    virtual Method *make(const param::MIRParametrisation &) = 0;
+    virtual Method *make(const param::MIRParametrisation&) = 0;
 
-  protected:
+protected:
 
-    MethodFactory(const std::string &);
+    MethodFactory(const std::string&);
     virtual ~MethodFactory();
 
-  public:
+public:
 
-    static void list(std::ostream &);
-    static Method *build(const std::string &, const param::MIRParametrisation &);
+    static void list(std::ostream&);
+    static Method *build(const std::string&, const param::MIRParametrisation&);
 
 };
-
 
 
 template< class T>
 class MethodBuilder : public MethodFactory {
-    virtual Method *make(const param::MIRParametrisation &param) {
+    virtual Method *make(const param::MIRParametrisation& param) {
         return new T(param);
     }
-  public:
-    MethodBuilder(const std::string &name) : MethodFactory(name) {}
+public:
+    MethodBuilder(const std::string& name) : MethodFactory(name) {}
 };
-
 
 
 }  // namespace method
 }  // namespace mir
+
 
 #endif
 

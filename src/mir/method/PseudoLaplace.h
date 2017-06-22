@@ -18,10 +18,10 @@
 
 #include "mir/method/MethodWeighted.h"
 
+
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class PseudoLaplace: public MethodWeighted {
 
@@ -39,16 +39,16 @@ protected:
 
 private:
 
-    virtual void assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const;
+    virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir
+
 
 #endif
 

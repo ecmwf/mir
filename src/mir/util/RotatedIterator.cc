@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -15,8 +15,10 @@
 
 #include "mir/util/RotatedIterator.h"
 
-
-using eckit::geometry::LLPoint2;
+#include "eckit/exception/Exceptions.h"
+#include "eckit/geometry/Point2.h"
+#include "atlas/util/Config.h"
+#include "atlas/util/Point.h"
 
 
 namespace mir {
@@ -25,9 +27,17 @@ namespace util {
 
 RotatedIterator::RotatedIterator(Iterator* iterator, const util::Rotation& rotation) :
     iterator_(iterator),
-    rotation_(rotation),
-    rotate_(LLPoint2(rotation.south_pole_longitude(), rotation.south_pole_latitude()),
-            rotation.south_pole_rotation_angle()) {
+    rotation_(rotation) {
+
+    // Setup projection using South Pole rotated position, as seen from the non-rotated frame
+    const eckit::geometry::LLPoint2 pole(rotation_.south_pole_longitude().value(), rotation_.south_pole_latitude().value());
+
+    atlas::util::Config config;
+    config.set("type", "rotated_lonlat");
+    config.set("south_pole", std::vector<double>({pole.lon(), pole.lat()}));
+    config.set("rotation_angle", rotation_.south_pole_rotation_angle());
+
+    projection_ = atlas::Projection(config);
 }
 
 
@@ -40,9 +50,12 @@ void RotatedIterator::print(std::ostream& out) const {
 }
 
 
-bool RotatedIterator::next(double& lat, double& lon) {
-    if(iterator_->next(lat, lon)) {
-        LLPoint2 p = rotate_.unrotate(LLPoint2(lon, lat)); // <== notice order
+bool RotatedIterator::next(Latitude &lat, Longitude &lon) {
+    if (iterator_->next(lat, lon)) {
+
+        // notice the order
+        const atlas::PointLonLat p = projection_.lonlat(atlas::PointXY(lon.value(), lat.value()));
+
         lat = p.lat();
         lon = p.lon();
         return true;
@@ -51,6 +64,6 @@ bool RotatedIterator::next(double& lat, double& lon) {
 }
 
 
-}  // namespace repres
+}  // namespace util
 }  // namespace mir
 

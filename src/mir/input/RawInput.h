@@ -13,13 +13,13 @@
 /// @date Apr 2015
 
 
-#ifndef RawInput_H
-#define RawInput_H
+#ifndef mir_input_RawInput_h
+#define mir_input_RawInput_h
 
 
 #include "mir/input/MIRInput.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/input/RawMetadata.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -27,7 +27,7 @@ namespace input {
 
 
 class RawInput : public MIRInput, public param::MIRParametrisation {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -37,7 +37,7 @@ class RawInput : public MIRInput, public param::MIRParametrisation {
 
     // -- Destructor
 
-    virtual ~RawInput(); // Change to virtual if base class
+    ~RawInput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -58,7 +58,7 @@ class RawInput : public MIRInput, public param::MIRParametrisation {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -75,7 +75,7 @@ class RawInput : public MIRInput, public param::MIRParametrisation {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
@@ -93,26 +93,31 @@ class RawInput : public MIRInput, public param::MIRParametrisation {
     // -- Overridden methods
     // From MIRInput
 
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
-    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
-    virtual data::MIRField field() const;
+    const param::MIRParametrisation &parametrisation(size_t which) const;
+    data::MIRField field() const;
 
-    virtual bool next();
-    virtual size_t copy(double* values, size_t size) const;
+    bool next();
+    size_t copy(double* values, size_t size) const;
 
-    virtual bool sameAs(const MIRInput& other) const;
+    bool sameAs(const MIRInput& other) const;
 
     // From MIRParametrisation
-    virtual bool has(const std::string& name) const;
+    bool has(const std::string& name) const;
 
-    virtual bool get(const std::string& name, std::string& value) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, double& value) const;
+    bool get(const std::string& name, std::string& value) const;
+    bool get(const std::string& name, bool& value) const;
+    bool get(const std::string& name, int& value) const;
+    bool get(const std::string& name, long& value) const;
+    bool get(const std::string& name, float& value) const;
+    bool get(const std::string& name, double& value) const;
 
-    virtual bool get(const std::string& name, std::vector<long>& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
+    bool get(const std::string& name, std::vector<int>& value) const;
+    bool get(const std::string& name, std::vector<long>& value) const;
+    bool get(const std::string& name, std::vector<float>& value) const;
+    bool get(const std::string& name, std::vector<double>& value) const;
+    bool get(const std::string& name, std::vector<std::string>& value) const;
 
     // -- Class members
     // None
@@ -121,14 +126,13 @@ class RawInput : public MIRInput, public param::MIRParametrisation {
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const RawInput& p)
-    //  { p.print(s); return s; }
+    // None
 
 };
 
 
 }  // namespace input
 }  // namespace mir
-#endif
 
+
+#endif

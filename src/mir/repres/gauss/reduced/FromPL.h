@@ -26,7 +26,7 @@ namespace gauss {
 namespace reduced {
 
 class FromPL : public Reduced {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -56,7 +56,7 @@ class FromPL : public Reduced {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     FromPL(size_t, const std::vector<long> &, const util::BoundingBox &);
     FromPL(const std::vector<long> &);
@@ -66,15 +66,15 @@ class FromPL : public Reduced {
     std::vector<long> pl_;
 
     // -- Methods
-
-    // void print(std::ostream &) const; // Change to virtual if base class
+    // None
 
     // -- Overridden methods
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
-    virtual atlas::grid::Grid *atlasGrid() const;
+    virtual atlas::Grid atlasGrid() const;
     virtual const std::vector<long>& pls() const;
-
+    virtual bool sameAs(const Representation& other) const;
+    virtual void makeName(std::ostream&) const;
 
     // -- Class members
     // None
@@ -82,9 +82,7 @@ class FromPL : public Reduced {
     // -- Class methods
     // None
 
-  private:
-
-
+private:
 
     // No copy allowed
 
@@ -92,16 +90,13 @@ class FromPL : public Reduced {
     FromPL &operator=(const FromPL &);
 
     // -- Members
-
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-
+    // None
 
     // -- Class members
     // None
@@ -116,9 +111,12 @@ class FromPL : public Reduced {
 
 };
 
+
 }  // namespace reduced
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

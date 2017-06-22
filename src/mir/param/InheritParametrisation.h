@@ -15,7 +15,9 @@
 #define mir_param_InheritParametrisation_h
 
 #include <iosfwd>
+#include <string>
 #include <vector>
+#include "eckit/memory/NonCopyable.h"
 #include "eckit/value/Value.h"
 #include "mir/param/SimpleParametrisation.h"
 
@@ -24,25 +26,18 @@ namespace mir {
 namespace param {
 
 
-class InheritParametrisation : public SimpleParametrisation {
+class InheritParametrisation : public SimpleParametrisation, private eckit::NonCopyable {
 public:
 
     // -- Contructors
 
     InheritParametrisation();
 
-    InheritParametrisation(const InheritParametrisation* parent, const std::string& label);
-
-    InheritParametrisation(const InheritParametrisation* parent, const std::vector<long>& ids);
-
     // -- Destructor
 
     ~InheritParametrisation();
 
     // -- Methods
-
-    // Add a child
-    InheritParametrisation& child(InheritParametrisation*);
 
     // Fill parametrisation provided a ValueMap (not overwriting)
     void fill(const eckit::ValueMap&);
@@ -59,24 +54,39 @@ public:
     /// Find best matching descendant according to label hierarchy
     const InheritParametrisation& pick(const std::vector< std::string >& labels) const;
 
-    /// Collect all inherited traits, prioritizing younger/children traits
-    void inherit(SimpleParametrisation&) const;
-
-    std::string labelHierarchy() const;
-
     // -- Overridden methods
 
-    virtual bool empty() const;
+    // From SimpleParametrisation
+    bool empty() const;
+    InheritParametrisation& clear(const std::string& name);
+    bool has(const std::string& name) const;
 
-    virtual SimpleParametrisation& clear(const std::string&);
+    bool get(const std::string& name, std::string& value) const;
+    bool get(const std::string& name, bool& value) const;
+    bool get(const std::string& name, int& value) const;
+    bool get(const std::string& name, long& value) const;
+    bool get(const std::string& name, float& value) const;
+    bool get(const std::string& name, double& value) const;
+
+    bool get(const std::string& name, std::vector<int>& value) const;
+    bool get(const std::string& name, std::vector<long>& value) const;
+    bool get(const std::string& name, std::vector<float>& value) const;
+    bool get(const std::string& name, std::vector<double>& value) const;
+    bool get(const std::string& name, std::vector<std::string>& value) const;
 
 private:
 
-    // No copy allowed
-    InheritParametrisation(const InheritParametrisation&);
-    InheritParametrisation& operator=(const InheritParametrisation&);
+    // -- Constructors
+
+    InheritParametrisation(const InheritParametrisation* parent, const std::string& label);
+
+    InheritParametrisation(const InheritParametrisation* parent, const std::vector<long>& ids);
 
     // -- Methods
+
+    // Generic getter
+    template<typename T>
+    bool _get(const std::string& name, T& value) const;
 
     // Check if this (or a parent node) matches requested paramId
     bool matchesId(long) const;
@@ -86,6 +96,18 @@ private:
 
     /// Check if this matches requested label
     bool matchesLabel(const std::string&) const;
+
+    // Add a child
+    InheritParametrisation& addChild(InheritParametrisation*);
+
+    /// Remove traits from children
+    InheritParametrisation& clearFromChildren(const std::string&);
+
+    /// Collect all inherited traits, prioritizing younger/children traits
+    void inherit(SimpleParametrisation&) const;
+
+    /// Create a readable label hierarchy
+    std::string labelHierarchy() const;
 
     // -- Overridden methods
 

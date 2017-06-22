@@ -26,6 +26,9 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
+namespace repres {
+class Representation;
+}
 }
 
 namespace mir {
@@ -41,7 +44,8 @@ class MappedMask : public Mask {
 
     MappedMask(const std::string& name,
                 const param::MIRParametrisation& parametrisation,
-                const atlas::grid::Grid& grid, const std::string& which);
+                const repres::Representation &representation,
+                const std::string& which);
 
 // -- Destructor
 

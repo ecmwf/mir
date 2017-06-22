@@ -22,7 +22,8 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "atlas/grid/Grid.h"
+#include "eckit/utils/MD5.h"
+#include "atlas/grid.h"
 #include "mir/action/context/Context.h"
 #include "mir/caching/CroppingCache.h"
 #include "mir/caching/InMemoryCache.h"
@@ -33,6 +34,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/MIRGrid.h"
 
 
 namespace mir {
@@ -42,7 +44,7 @@ namespace action {
 struct LL {
     double lat_;
     double lon_;
-    LL(double lat, double lon): lat_(lat), lon_(lon) {}
+    LL(Latitude lat, Longitude lon): lat_(lat.value()), lon_(lon.value()) {}
     bool operator<(const LL &other) const {
         // Order must be like natural scanning mode
         if (lat_ == other.lat_) {
@@ -101,25 +103,28 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
                                      const util::BoundingBox &bbox) {
     std::map<LL, size_t> m;
 
-    double n = 0;
-    double s = 0;
-    double e = 0;
-    double w = 0;
+    Latitude n = 0;
+    Latitude s = 0;
+    Longitude e = 0;
+    Longitude w = 0;
 
     size_t p = 0;
     size_t count = 0;
     bool first = true;
-    double lat, lon;
+    Latitude lat;
+    Longitude lon;
 
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
     eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
-    const util::Domain domain = representation->domain(bbox);
 
     while (iter->next(lat, lon)) {
-        if (domain.contains(lat, lon)) {
 
-            lon = domain.normalise(lon);
+        // std::cout << lat << " " << lon << " ====> " << iter->next(lat, lon) << std::endl;
+
+        if (bbox.contains(lat, lon)) {
+
+            lon = bbox.normalise(lon);
             if (first) {
                 n = s = lat;
                 e = w = lon;
@@ -153,6 +158,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
 
 
     c.bbox_ = util::BoundingBox(n, w, s, e);
+    std::cout << "BoundingBox " << c.bbox_ << std::endl;
 
     c.mapping_.clear();
     c.mapping_.reserve(m.size());
@@ -213,9 +219,8 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
         const util::BoundingBox &bbox,
         bool caching) {
 
-    eckit::ScopedPtr<atlas::grid::Grid> gin(representation->atlasGrid()); // This should disapear once we move Representation to atlas
     eckit::MD5 md5;
-    md5 << *gin << bbox;
+    md5 << representation->grid() << bbox;
 
     std::string key(md5);
 

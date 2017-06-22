@@ -15,18 +15,20 @@
 
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/log/Plural.h"
+#include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
+#include "eckit/types/Fraction.h"
+
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
-#include "eckit/log/ResourceUsage.h"
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
-#include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/caching/interpolator/InterpolatorLoader.h"
+#include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/input/DummyInput.h"
 #include "mir/input/GeoPointsFileInput.h"
@@ -38,8 +40,11 @@
 #include "mir/output/GeoPointsFileOutput.h"
 #include "mir/output/GribFileOutput.h"
 #include "mir/packing/Packer.h"
+#include "mir/style/IntermediateGrid.h"
 #include "mir/style/MIRStyle.h"
+#include "mir/style/Mapping.h"
 #include "mir/tools/MIRTool.h"
+
 
 
 class MIRToolConcrete : public mir::tools::MIRTool {
@@ -63,17 +68,20 @@ public:
         //==============================================
         options_.push_back(new Separator("Transform"));
         options_.push_back(new SimpleOption<bool>("autoresol", "Turn on automatic truncation"));
+        options_.push_back(new FactoryOption<mir::style::MappingFactory>("spectral-mapping", "Spectral/gridded mapping"));
+        options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded intermediate Gaussian grid type (via)"));
+        options_.push_back(new SimpleOption<std::string>("spectral-intermediate-gridname", "Spectral/gridded intermediate grid name (via)"));
         options_.push_back(new SimpleOption<size_t>("truncation", "Truncation input field"));
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is Vorticity and Divergence, conversion to u/v or U/V requested"));
 
         //==============================================
         options_.push_back(new Separator("Interpolation"));
         options_.push_back(new VectorOption<double>("grid", "Interpolate to the regular grid: west_east/south_north", 2));
-        options_.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular gaussian grid N"));
-        options_.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular gaussian grid N (pre 2016)"));
-        options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular gaussian grid N"));
+        options_.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular Gaussian grid N"));
+        options_.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular Gaussian grid N (pre 2016)"));
+        options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular Gaussian grid N"));
         options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
-        options_.push_back(new SimpleOption<bool>("area-defines-grid", "Bounding box defines grid (only applicable to regular latitude/longitude grids"));
+        options_.push_back(new SimpleOption<std::string>("meshgenerator", "Interpolate using the given meshgenerator"));
 
         options_.push_back(new SimpleOption<bool>("wind", "Use vector interpolation for wind (not yet)"));
         options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid as the one provided in the first GRIB of the grib file"));
@@ -82,7 +90,6 @@ public:
         //==============================================
         options_.push_back(new Separator("Methods"));
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
-        options_.push_back(new SimpleOption<size_t>("intermediate_gaussian", "Transform from SH to this gaussian number first"));
         options_.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
@@ -96,6 +103,7 @@ public:
         options_.push_back(new VectorOption<double>("area", "Specify the cropping area: north/west/south/east", 4));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Path to the bitmap to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
+        options_.push_back(new SimpleOption<bool>("globalise", "Make the field global, adding missing values if needed"));
 
         //==============================================
         options_.push_back(new Separator("Compute"));
@@ -128,7 +136,7 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Configuration"));
-        options_.push_back(new SimpleOption<eckit::PathName>("configuration", "Configuration JSON path (default ~mir/etc/mir/configuration.json)"));
+        options_.push_back(new SimpleOption<eckit::PathName>("configuration", "Configuration YAML path (default ~mir/etc/mir/configuration.yaml)"));
 
         //==============================================
         options_.push_back(new Separator("GRIB Output"));
@@ -136,6 +144,7 @@ public:
         options_.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
         options_.push_back(new SimpleOption<bool>("remove-local-extension", "Remove GRIB local extension"));
+        options_.push_back(new SimpleOption<std::string>("metadata", "Set eccodes keys to integer values (a=b,c=d,..)"));
 
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
@@ -202,6 +211,7 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
     args.get("wind", wind);
     args.get("vod2uv", vod2uv);
     args.get("dummy", dummy);
+
 
 
 

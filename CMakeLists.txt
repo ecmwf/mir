@@ -34,8 +34,10 @@ endif()
 ecbuild_add_option( FEATURE TEST_ASSERTIONS DESCRIPTION "Enable assertion tests" DEFAULT ON )
 
 
-ecbuild_use_package( PROJECT eckit  VERSION  0.9  REQUIRED )
-ecbuild_use_package( PROJECT atlas  VERSION  0.6  REQUIRED )
+### eckit -- version >= 0.16.5 includes new library registration mechanism
+ecbuild_use_package( PROJECT eckit  VERSION  0.16.5  REQUIRED )
+
+ecbuild_use_package( PROJECT atlas  VERSION  0.9  REQUIRED )
 
 ecbuild_declare_project()
 

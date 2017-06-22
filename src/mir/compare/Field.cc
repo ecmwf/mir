@@ -20,12 +20,21 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 
+
 namespace mir {
 namespace compare {
 
 
 static bool normaliseLongitudes_ = false;
-static double areaComparaisonThreshold_ = 0.7; // Observed for N320
+static bool ignoreAccuracy_ = false;
+static bool ignorePacking_ = false;
+
+
+static double areaPrecisionN_ = 0.;
+static double areaPrecisionW_ = 0.;
+static double areaPrecisionS_ = 0.;
+static double areaPrecisionE_ = 0.;
+
 
 void Field::addOptions(std::vector<eckit::option::Option*>& options) {
     using namespace eckit::option;
@@ -36,13 +45,53 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<double>("compare-areas-threshold",
                       "Threshold when comparing areas with Jaccard distance"));
 
+    options.push_back(new SimpleOption<double>("value-count-comparaison-threshold",
+                      "Threshold when comparing number of values"));
+
+    options.push_back(new SimpleOption<bool>("ignore-accuracy",
+                      "Ignore accuracy when comparing"));
+
+    options.push_back(new SimpleOption<bool>("ignore-packing",
+                      "Ignore packing when comparing"));
+
+    options.push_back(new SimpleOption<double>("area-precision-north",
+                      "Epsilon when comparing latitude and logitude of bounding box"));
+    options.push_back(new SimpleOption<double>("area-precision-west",
+                      "Epsilon when comparing latitude and logitude of bounding box"));
+    options.push_back(new SimpleOption<double>("area-precision-south",
+                      "Epsilon when comparing latitude and logitude of bounding box"));
+    options.push_back(new SimpleOption<double>("area-precision-east",
+                      "Epsilon when comparing latitude and logitude of bounding box"));
+
 }
+
+
+static double normalize(double longitude) {
+
+    if (!normaliseLongitudes_) {
+        return longitude;
+    }
+
+    while (longitude < 0) {
+        longitude += 360;
+    }
+    while (longitude >= 360) {
+        longitude -= 360;
+    }
+    return longitude;
+}
+
 
 void Field::setOptions(const eckit::option::CmdArgs &args) {
     args.get("normalise-longitudes", normaliseLongitudes_);
-    args.get("compare-areas-threshold", areaComparaisonThreshold_);
-}
+    args.get("ignore-accuracy", ignoreAccuracy_);
+    args.get("ignore-packing", ignorePacking_);
+    args.get("area-precision-north", areaPrecisionN_);
+    args.get("area-precision-west", areaPrecisionW_);
+    args.get("area-precision-south", areaPrecisionS_);
+    args.get("area-precision-east", areaPrecisionE_);
 
+}
 
 
 
@@ -92,146 +141,34 @@ const std::string& Field::path() const {
     return info_.path();
 }
 
-double Field::compare(const Field& other) const {
-    return compareAreas(other);
-}
+// double Field::compare(const Field& other) const {
+//     return compareAreas(other);
+// }
 
 
-double Field::compareAreas(const Field& other) const {
+void Field::compareAreas(std::ostream& out, const Field& other) const {
 
     if (!area_ || !other.area_) {
-        return -1;
+        return;
     }
 
-    double w1 = west_;
-    double e1 = east_;
+    double w1 = normalize(west_);
+    double e1 = normalize(east_);
     double n1 = north_;
     double s1 = south_;
 
-    double w2 = other.west_;
-    double e2 = other.east_;
+    double w2 = normalize(other.west_);
+    double e2 = normalize(other.east_);
     double n2 = other.north_;
     double s2 = other.south_;
 
-    if (s1 <= -78) {
-        auto j = values_.find("param");
-        if (j != values_.end()) {
-            auto s = (*j).second;
-            if (s.length() == 6 && s.substr(0, 3) == "140") {
-                s1 = -90;
-            }
-        }
-    }
+    out << ::fabs(n1 - n2) << '/' << ::fabs(w1 - w2) << '/' << ::fabs(s1 - s2) << '/' << ::fabs(e1 - e2);
 
-    if (s2 <= -78) {
-        auto j = other.values_.find("param");
-        if (j != other.values_.end()) {
-            auto s = (*j).second;
-            if (s.length() == 6 && s.substr(0, 3) == "140") {
-                s2 = -90;
-            }
-        }
-    }
+}
 
 
-
-    while (w1 >= e1) {
-        w1 -= 360;
-    }
-
-    while (w2 >= e2) {
-        w2 -= 360;
-    }
-
-    while (w1 < 0) {
-        w1 += 360;
-        e1 += 360;
-    }
-
-    while (w2 < 0) {
-        w2 += 360;
-        e2 += 360;
-    }
-
-    double ww = std::min(w1, w2);
-
-    while (w1 >= ww + 360) {
-        w1 -= 360;
-        e1 -= 360;
-    }
-
-    while (w2 >= ww + 360) {
-        w2 -= 360;
-        e2 -= 360;
-    }
-
-//==========
-
-    // Union
-    double un = std::max(n1, n2);
-    double us = std::min(s1, s2);
-    double ue = std::max(e1, e2);
-    double uw = std::min(w1, w2);
-
-    double uarea = (un - us) * (ue - uw);
-
-
-    if ((un - us) < 0 || (ue - uw) < 0) {
-        std::ostringstream oss;
-        oss << "Cannot compute union: "
-            << n1 << "/" << w1 << "/" << s1 << "/" << e1 << " and "
-            << n2 << "/" << w2 << "/" << s2 << "/" << e2 << " ==> "
-            << un << "/" << uw << "/" << us << "/" << ue;
-        oss << std::endl << *this;
-        oss << std::endl << other;
-        throw eckit::SeriousBug(oss.str());
-
-    }
-
-
-    // Intersction
-    double in = std::min(n1, n2);
-    double is = std::max(s1, s2);
-    double ie = std::min(e1, e2);
-    double iw = std::max(w1, w2);
-
-    double iarea = (in - is) * (ie - iw);
-
-    if (uarea == 0) {
-
-
-        if (un == us) {
-            ASSERT(ue > uw);
-
-            if (in != is) {
-                return 0;
-            }
-
-            uarea = ue - uw;
-            iarea = ie - iw;
-        }
-
-        if (ue == uw) {
-            ASSERT(un != us);
-
-            if (ie != iw) {
-                return 0;
-            }
-
-            uarea = un - us;
-            iarea = in - is;
-        }
-
-        ASSERT(uarea > 0);
-
-    }
-
-    if ((in - is) < 0 || (ie - iw) < 0) {
-        iarea = 0;
-    }
-
-    return iarea / uarea;
-
+inline bool sameLatLon(double a, double b, double e) {
+    return ::fabs(a - b) <= e;
 }
 
 
@@ -243,7 +180,35 @@ bool Field::sameArea(const Field& other) const {
     if (area_ != other.area_)
         return false;
 
-    return compareAreas(other) > areaComparaisonThreshold_;
+    double w1 = normalize(west_);
+    double e1 = normalize(east_);
+    double n1 = north_;
+    double s1 = south_;
+
+    double w2 = normalize(other.west_);
+    double e2 = normalize(other.east_);
+    double n2 = other.north_;
+    double s2 = other.south_;
+
+    if (!sameLatLon(n1, n2, areaPrecisionN_)) {
+        return false;
+    }
+
+    if (!sameLatLon(w1, w2, areaPrecisionW_)) {
+        return false;
+    }
+
+    if (!sameLatLon(s1, s2, areaPrecisionS_)) {
+        return false;
+    }
+
+    if (!sameLatLon(e1, e2, areaPrecisionE_)) {
+        return false;
+    }
+
+    return true;
+
+    // return compareAreas(other) > areaComparaisonThreshold_;
 }
 
 
@@ -277,8 +242,6 @@ void Field::gridtype(const std::string& type)  {
 
 bool Field::samePacking(const Field& other) const {
 
-    return true;
-
     if (accuracy_ == 0 || other.accuracy_ == 0) {
         return true;
     }
@@ -291,21 +254,24 @@ bool Field::samePacking(const Field& other) const {
         return true;
     }
 
-    //  if (packing_ == "grid_second_order" && other.packing_ == "grid_simple") {
-    //     return true;
-    // }
+    if (ignorePacking_) {
 
-    // if (packing_ == "grid_simple" && other.packing_ == "grid_second_order") {
-    //     return true;
-    // }
+        if (packing_ == "grid_second_order" && other.packing_ == "grid_simple") {
+            return true;
+        }
 
-    //  if (packing_ == "grid_jpeg" && other.packing_ == "grid_simple") {
-    //     return true;
-    // }
+        if (packing_ == "grid_simple" && other.packing_ == "grid_second_order") {
+            return true;
+        }
 
-    // if (packing_ == "grid_simple" && other.packing_ == "grid_jpeg") {
-    //     return true;
-    // }
+        if (packing_ == "grid_jpeg" && other.packing_ == "grid_simple") {
+            return true;
+        }
+
+        if (packing_ == "grid_simple" && other.packing_ == "grid_jpeg") {
+            return true;
+        }
+    }
 
     return packing_ == other.packing_;
 }
@@ -331,7 +297,12 @@ bool Field::sameParam(const Field& other) const {
 }
 
 bool Field::sameAccuracy(const Field& other) const {
-    return true;
+
+    if (ignoreAccuracy_) {
+        return true;
+    }
+
+
     if (accuracy_ == 0 || other.accuracy_ == 0) {
         return true;
     }
@@ -339,8 +310,7 @@ bool Field::sameAccuracy(const Field& other) const {
 }
 
 bool Field::sameNumberOfPoints(const Field& other) const {
-    return true;
-    return numberOfPoints_  == other.numberOfPoints_;
+    return numberOfPoints_ == other.numberOfPoints_;
 }
 
 bool Field::sameBitmap(const Field& other) const {
@@ -360,21 +330,6 @@ bool Field::sameGrid(const Field& other) const {
     }
 
     return true;
-}
-
-static double normalize(double longitude) {
-
-    if (!normaliseLongitudes_) {
-        return longitude;
-    }
-
-    while (longitude < 0) {
-        longitude += 360;
-    }
-    while (longitude >= 360) {
-        longitude -= 360;
-    }
-    return longitude;
 }
 
 
@@ -699,7 +654,7 @@ void Field::print(std::ostream & out) const {
 }
 
 bool Field::sameField(const Field & other) const {
-    return (values_ == other.values_) ;
+    return values_ == other.values_;
 }
 
 
@@ -751,7 +706,8 @@ std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
 template<class T>
 static void pdiff(std::ostream & out, const T& v1, const T& v2) {
     if (v1 != v2) {
-        out << eckit::Colour::red << eckit::Colour::bold << v1 << eckit::Colour::reset;
+        // out << eckit::Colour::red << eckit::Colour::bold << v1 << eckit::Colour::reset;
+        out << "**" << v1 << "**";
     }
     else {
         out << v1;
@@ -832,10 +788,114 @@ std::ostream& Field::printDifference(std::ostream & out, const Field & other) co
         }
 
     }
+    out << ",wrapped=" << wrapped();
     // out << " - " << info_;
     out << "]";
 
     return out;
+}
+
+
+bool Field::wrapped() const {
+    if (!area_) {
+        return false;
+    }
+
+    double w = normalize(west_);
+    double e = normalize(east_);
+
+    return w == e;
+}
+
+bool Field::match(const std::string& name, const std::string& value) const {
+    auto j = values_.find(name);
+    if (j != values_.end()) {
+        return (*j).second == value;
+    }
+
+    if (name == "area") {
+        std::ostringstream oss;
+        if (area_) {
+            oss << north_
+                << '/'
+                << west_
+                << '/'
+                << south_
+                << '/'
+                << east_;
+        }
+        return value == oss.str();
+    }
+
+    if (name == "grid") {
+        std::ostringstream oss;
+        if (grid_) {
+            oss << west_east_
+                << '/'
+                << north_south_;
+        }
+        return value == oss.str();
+    }
+
+
+    if (name == "param") {
+        std::ostringstream oss;
+        oss << param_;
+        return value == oss.str();
+    }
+
+
+    if (name == "values") {
+        std::ostringstream oss;
+        oss << numberOfPoints_;
+        return value == oss.str();
+    }
+
+    if (name == "format") {
+        return value == format_;
+    }
+
+    if (name == "packing") {
+        return value == packing_;
+    }
+
+    if (name == "gridtype") {
+        return value == gridtype_;
+    }
+
+    if (name == "gridname") {
+        return value == gridname_;
+    }
+
+    if (name == "resol") {
+        std::ostringstream oss;
+        oss << resol_;
+        return value == oss.str();
+    }
+
+    if (name == "accuracy") {
+        std::ostringstream oss;
+        oss << accuracy_;
+        return value == oss.str();
+    }
+
+    if (name == "bitmap") {
+        std::ostringstream oss;
+        oss << (bitmap_ ? "yes" : "no");
+        return value == oss.str();
+    }
+
+    if (name == "rotation") {
+        std::ostringstream oss;
+        if (rotation_) {
+            oss << rotation_latitude_
+                << '/'
+                << rotation_longitude_;
+        }
+        return value == oss.str();
+    }
+
+    return false;
 }
 
 

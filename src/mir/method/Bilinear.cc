@@ -15,18 +15,18 @@
 
 #include "mir/method/Bilinear.h"
 
-//#include <cmath>
 #include <vector>
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Log.h"
 #include "atlas/array/ArrayView.h"
-#include "atlas/grid/Structured.h"
+#include "atlas/array_fwd.h"
+#include "atlas/grid.h"
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
-#include "mir/method/GridSpace.h"
+#include "mir/util/MIRGrid.h"
 #include "mir/util/Compare.h"
-
+#include "mir/repres/Representation.h"
 
 namespace mir {
 namespace method {
@@ -82,95 +82,10 @@ void left_right_lon_indexes(
 
 Bilinear::Bilinear(const param::MIRParametrisation& param) :
     MethodWeighted(param) {
-
-    precipitation_          = false;
-    precipitationNeighbour_ = true;
-    precipitationThreshold_ = 0.00005;
-
-    param.get("bilinear-precipitation",           precipitation_);
-    param.get("bilinear-precipitation-neighbour", precipitationNeighbour_);
-    param.get("bilinear-precipitation-threshold", precipitationThreshold_);
-
-    ASSERT(precipitationThreshold_ >= 0);
 }
 
 
 Bilinear::~Bilinear() {
-}
-
-
-void Bilinear::execute(context::Context& ctx, const atlas::grid::Grid& in, const atlas::grid::Grid& out) const {
-
-    // remember which source points are below precipitation threshold
-    std::vector<bool> dry_points;
-    if (precipitation_ && precipitationNeighbour_) {
-
-        data::MIRField& field = ctx.field();
-        ASSERT(field.dimensions() == 1);
-
-        const std::vector<double>& values = field.values(0);
-        ASSERT(values.size() == in.npts());
-
-        dry_points.assign(values.size(), false);
-        for (size_t i = 0; i < values.size(); ++i) {
-            dry_points[i] = values[i] < precipitationThreshold_;
-        }
-
-    }
-
-
-    // apply interpolation
-    MethodWeighted::execute(ctx, in, out);
-
-
-    // "precipitation" clipping: zero values below threshold when any (or both) conditions happen:
-    // 1. the target (interpolated) precipitation is less than the threshold value
-    // 2. the source nearest neighbouring point is less than the threshold value
-    if (precipitation_) {
-        eckit::Log::debug<LibMir>() << "Bilinear: precipitation clipping..." << std::endl;
-
-        // ideally, interpolant matrix is already built by MethodWeighted::execute and retrieved from cache
-        const WeightMatrix& W = MethodWeighted::getMatrix(ctx, in, out);
-
-        data::MIRField& field = ctx.field();
-        ASSERT(field.dimensions() == 1);
-
-        std::vector<double> values = field.values(0);
-        ASSERT(values.size() == W.rows());
-
-        util::compare::IsMissingFn isMissing(field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN());
-
-        size_t Nclip = 0;
-        WeightMatrix::const_iterator it(W);
-        for (size_t i = 0; i < size_t(W.rows()); ++i) {
-            if (!isMissing(values[i]) && (values[i] < precipitationThreshold_)) {
-
-                values[i] = 0;
-                ++Nclip;
-
-            } else if (precipitationNeighbour_) {
-                ASSERT(dry_points.size());
-
-                // nearest neighbouring point should have the heaviest interpolating weight
-                bool found = false;
-                double w = 0.;
-                for (it = W.begin(i); it != W.end(i); ++it) {
-                    if (!isMissing(*it) && (*it > w)) {
-                        found = true;
-                        w = *it;
-                    }
-                }
-
-                if(found) {
-                    values[i] = 0;
-                    ++Nclip;
-                }
-
-            }
-        }
-
-        eckit::Log::debug<LibMir>() << "Bilinear: precipitation clipping applied to " << eckit::BigNum(Nclip) << " points of " << eckit::BigNum(W.rows()) << " total" << std::endl;
-    }
 }
 
 
@@ -184,12 +99,16 @@ void Bilinear::hash(eckit::MD5& md5) const {
 }
 
 
-void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace& in, const GridSpace& out) const {
+void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+
+    util::MIRGrid in(rin.grid());
+    util::MIRGrid out(rout.grid());
+
+
+    eckit::Log::debug<LibMir>() << "Bilinear::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
-
-    eckit::Log::debug<LibMir>() << "Bilinear::assemble " << *this << std::endl;
 
 
     // NOTE: use bilinear interpolation assuming quasi-regular grid
@@ -198,13 +117,14 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 
 
     // Ensure the input is a reduced grid, and get the pl array
-    const atlas::grid::Structured* igg = dynamic_cast<const atlas::grid::Structured*>(&in.grid());
-    if (!igg)
+    const atlas::grid::StructuredGrid igg(in);
+    if (!igg) {
         throw eckit::UserError("Bilinear currently only supports Structured grids as input");
+    }
 
-    const std::vector<long>& lons = igg->pl();
-    const size_t inpts = igg->npts();
-    const size_t onpts = out.grid().npts();
+    const std::vector<long>& lons = igg.nx();
+    const size_t inpts = igg.size();
+    const size_t onpts = out.size();
 
     ASSERT(lons.size());
     ASSERT(lons.front());
@@ -217,12 +137,12 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 
 
     // access the input/output fields coordinates
-    atlas::array::ArrayView<double, 2> icoords = in.coordsLonLat();
-    atlas::array::ArrayView<double, 2> ocoords = out.coordsLonLat();
+    atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view< double, 2 >(in.coordsLonLat());
+    atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsLonLat());
 
 
     // access the input domain
-    atlas::grid::Domain idomain = in.grid().domain();
+    const util::Domain& idomain = in.domain();
 
 
     // check input min/max latitudes (gaussian grids exclude the poles)
@@ -280,7 +200,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 //                    << w << " "
 //                    << w << std::endl;
 
-        } else if (idomain.contains(lon, lat)) {
+        } else if (idomain.contains(lat, lon)) {
 
             // find encompassing latitudes ("bottom/top")
 
@@ -388,7 +308,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
             double w_tr =  w1 * wt;
             double w_tl =  w2 * wt;
 
-            //            std::cout << " --> LL "
+            //            eckit::Log::info() << " --> LL "
             //                      << lon << " ["
             //                      << tl_lon << "/" << tr_lon << ","
             //                      << bl_lon << "/" << br_lon << "] "
@@ -450,11 +370,7 @@ void Bilinear::assemble(context::Context& ctx, WeightMatrix& W, const GridSpace&
 
 
 void Bilinear::print(std::ostream& out) const {
-    out << "Bilinear["
-        <<  "precipitation="               << precipitation_
-        << ",precipitationNeighbourCheck=" << precipitationNeighbour_
-        << ",precipitationThreshold="      << precipitationThreshold_
-        << "]";
+    out << "Bilinear[]";
 }
 
 

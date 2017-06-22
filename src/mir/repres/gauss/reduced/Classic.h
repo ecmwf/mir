@@ -26,7 +26,7 @@ namespace gauss {
 namespace reduced {
 
 class Classic : public Reduced {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -56,34 +56,34 @@ class Classic : public Reduced {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
-    Classic(size_t, const util::BoundingBox &);
+    Classic(size_t, const util::BoundingBox&);
 
     // -- Members
 
     mutable std::vector<long> pl_;
 
-
     // -- Methods
-
-    // void print(std::ostream &) const; // Change to virtual if base class
+    // None
 
     // -- Overridden methods
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
-    virtual atlas::grid::Grid *atlasGrid() const;
+    virtual atlas::Grid atlasGrid() const;
     virtual const std::vector<long> &pls() const;
 
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
+
+    // -- Class members
     // -- Class members
     // None
 
     // -- Class methods
     // None
 
-  private:
-
-
+private:
 
     // No copy allowed
 
@@ -91,12 +91,13 @@ class Classic : public Reduced {
     Classic &operator=(const Classic &);
 
     // -- Members
-
+    // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
-
+    // None
 
     // -- Class members
     // None

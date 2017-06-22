@@ -16,8 +16,8 @@
 #include "mir/repres/gauss/regular/RotatedGG.h"
 
 #include <iostream>
+#include "atlas/grid.h"
 #include "mir/util/Grib.h"
-#include "mir/util/RotatedGrid.h"
 #include "mir/util/RotatedIterator.h"
 
 
@@ -52,6 +52,18 @@ void RotatedGG::print(std::ostream &out) const {
 }
 
 
+void RotatedGG::makeName(std::ostream& out) const {
+    Regular::makeName(out);
+    rotation_.makeName(out);
+}
+
+
+bool RotatedGG::sameAs(const Representation& other) const {
+    const RotatedGG* o = dynamic_cast<const RotatedGG*>(&other);
+    return o && (rotation_ == o->rotation_) && RotatedGG::sameAs(other);
+}
+
+
 void RotatedGG::fill(grib_info &info) const  {
     Regular::fill(info);
     rotation_.fill(info);
@@ -70,12 +82,8 @@ Iterator* RotatedGG::rotatedIterator() const {
 }
 
 
-atlas::grid::Grid *RotatedGG::atlasGrid() const {
-    return new util::RotatedGrid(
-                Regular::atlasGrid(),
-                rotation_.south_pole_latitude(),
-                rotation_.south_pole_longitude(),
-                rotation_.south_pole_rotation_angle() );
+atlas::Grid RotatedGG::atlasGrid() const {
+    return rotation_.rotate(Regular::atlasGrid());
 }
 
 

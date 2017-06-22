@@ -15,11 +15,15 @@
 
 #include "mir/repres/latlon/LatLon.h"
 
-#include <cmath>
+#include <algorithm>
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
+#include "atlas/library/config.h"
+#ifdef ATLAS_HAVE_TRANS
+#include "transi/trans.h"
+#endif
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
@@ -33,31 +37,19 @@ namespace repres {
 namespace latlon {
 
 
-static size_t computeN(double first, double last, double inc) {
-    ASSERT(first <= last);
-    ASSERT(inc > 0);
-
-    eckit::Fraction f(first);
-    eckit::Fraction l(last);
-    eckit::Fraction i(inc);
-
-    long long n = (l - f) / i;
-
-    return n + 1;
-}
-
-
-LatLon::LatLon(const param::MIRParametrisation &parametrisation) :
-    bbox_(parametrisation),
-    increments_(parametrisation) {
+LatLon::LatLon(const param::MIRParametrisation& parametrisation) :
+    Gridded(parametrisation),
+    increments_(parametrisation),
+    shift_(parametrisation) {
     ASSERT(parametrisation.get("Ni", ni_));
     ASSERT(parametrisation.get("Nj", nj_));
 }
 
 
-LatLon::LatLon(const util::BoundingBox &bbox, const util::Increments &increments) :
-    bbox_(bbox),
-    increments_(increments) {
+LatLon::LatLon(const util::BoundingBox& bbox, const util::Increments& increments, const util::Shift& shift) :
+    Gridded(bbox),
+    increments_(increments),
+    shift_(shift) {
     setNiNj();
 }
 
@@ -66,21 +58,13 @@ LatLon::~LatLon() {
 }
 
 
-void LatLon::cropToDomain(const param::MIRParametrisation &parametrisation, context::Context & ctx) const {
-    if (!domain().isGlobal()) {
-        action::AreaCropper cropper(parametrisation, bbox_);
-        cropper.execute(ctx);
-    }
-}
-
-
 void LatLon::setNiNj() {
-    ni_ = computeN(bbox_.west(),  bbox_.east(),  increments_.west_east());
-    nj_ = computeN(bbox_.south(), bbox_.north(), increments_.south_north());
+    ni_ = increments_.computeNi(bbox_);
+    nj_ = increments_.computeNj(bbox_);
 }
 
 
-void LatLon::reorder(long scanningMode, std::vector<double> &values) const {
+void LatLon::reorder(long scanningMode, std::vector<double>& values) const {
     // Code from ecRegrid, UNTESTED!!!
 
     eckit::Log::debug<LibMir>() << "WARNING: UNTESTED!!! ";
@@ -132,16 +116,18 @@ void LatLon::reorder(long scanningMode, std::vector<double> &values) const {
 }
 
 
-void LatLon::print(std::ostream &out) const {
-    out << "bbox=" << bbox_
+void LatLon::print(std::ostream& out) const {
+    out << "LatLon["
+        <<  "bbox=" << bbox_
         << ",increments=" << increments_
+        << ",shift=" << shift_
         << ",ni=" << ni_
         << ",nj=" << nj_
-        ;
+        << "]";
 }
 
 
-void LatLon::fill(grib_info &info) const  {
+void LatLon::fill(grib_info& info) const {
     // See copy_spec_from_ksec.c in libemos for info
     // Warning: scanning mode not considered
 
@@ -155,9 +141,54 @@ void LatLon::fill(grib_info &info) const  {
 }
 
 
-void LatLon::fill(api::MIRJob &job) const  {
+void LatLon::fill(api::MIRJob& job) const {
     increments_.fill(job);
     bbox_.fill(job);
+}
+
+
+void LatLon::makeName(std::ostream& out) const {
+    out << "LL";
+    increments_.makeName(out);
+    bbox_.makeName(out);
+    shift_.makeName(out);
+}
+
+
+bool LatLon::sameAs(const Representation& other) const {
+    const LatLon* o = dynamic_cast<const LatLon*>(&other);
+    return o && (bbox_ == o->bbox_) && (increments_ == o->increments_) && (shift_ == o->shift_);
+}
+
+
+bool LatLon::isPeriodicWestEast() const {
+
+    // if longitude range spans the globe
+    const Longitude range = bbox_.east() - bbox_.west() + increments_.west_east();
+
+    return range.sameWithGrib1Accuracy(Longitude::GLOBE);
+}
+
+
+bool LatLon::includesNorthPole() const {
+
+    // if latitude range spans the globe, or within one increment from bounding box North
+    const Latitude range = bbox_.north() - bbox_.south();
+    const Latitude reach = std::min(bbox_.north() + increments_.south_north(), Latitude::NORTH_POLE);
+
+    return  range.sameWithGrib1Accuracy(Latitude::GLOBE) ||
+            reach.sameWithGrib1Accuracy(Latitude::NORTH_POLE);
+}
+
+
+bool LatLon::includesSouthPole() const {
+
+    // if latitude range spans the globe, or within one increment from bounding box South
+    const Latitude range = bbox_.north() - bbox_.south();
+    const Latitude reach = std::max(bbox_.south() - increments_.south_north(), Latitude::SOUTH_POLE);
+
+    return  range.sameWithGrib1Accuracy(Latitude::GLOBE) ||
+            reach.sameWithGrib1Accuracy(Latitude::SOUTH_POLE);
 }
 
 
@@ -168,9 +199,6 @@ class LatLonIterator : public Iterator {
 
     eckit::Fraction north_;
     eckit::Fraction west_;
-    eckit::Fraction lat_;
-    eckit::Fraction lon_;
-
     eckit::Fraction we_;
     eckit::Fraction ns_;
 
@@ -179,7 +207,10 @@ class LatLonIterator : public Iterator {
 
     size_t count_;
 
-    virtual void print(std::ostream &out) const {
+    eckit::Fraction lat_;
+    eckit::Fraction lon_;
+
+    virtual void print(std::ostream& out) const {
         out << "LatLonIterator["
             <<  "ni="     << ni_
             << ",nj="     << nj_
@@ -193,7 +224,7 @@ class LatLonIterator : public Iterator {
             << "]";
     }
 
-    virtual bool next(double &lat, double &lon) {
+    virtual bool next(Latitude& lat, Longitude& lon) {
         if (j_ < nj_) {
             if (i_ < ni_) {
                 lat = lat_;
@@ -202,8 +233,8 @@ class LatLonIterator : public Iterator {
                 i_++;
                 if (i_ == ni_) {
                     j_++;
-                    lat_ -= ns_;
                     i_ = 0;
+                    lat_ -= ns_;
                     lon_ = west_;
                 }
                 count_++;
@@ -214,24 +245,18 @@ class LatLonIterator : public Iterator {
     }
 
 public:
-    LatLonIterator(size_t ni,
-                   size_t nj,
-                   double north,
-                   double west,
-                   double we,
-                   double ns):
+    LatLonIterator(size_t ni, size_t nj, Latitude north, Longitude west, double we, double ns) :
         ni_(ni),
         nj_(nj),
-        north_(north),
-        west_(west),
-        lat_(north),
-        lon_(west_),
+        north_(north.fraction()),
+        west_(west.fraction()),
         we_(we),
         ns_(ns),
         i_(0),
         j_(0),
         count_(0) {
-
+        lat_ = north_;
+        lon_ = west_;
     }
 
     ~LatLonIterator() {
@@ -256,7 +281,7 @@ Iterator* LatLon::rotatedIterator() const {
 }
 
 
-size_t LatLon::frame(std::vector<double> &values, size_t size, double missingValue) const {
+size_t LatLon::frame(std::vector<double>& values, size_t size, double missingValue) const {
 
     // Could be done better, just a demo
     validate(values);
@@ -280,41 +305,74 @@ size_t LatLon::frame(std::vector<double> &values, size_t size, double missingVal
 }
 
 
-void LatLon::validate(const std::vector<double> &values) const {
+void LatLon::validate(const std::vector<double>& values) const {
     eckit::Log::debug<LibMir>() << "LatLon::validate " << values.size() << " ni*nj " << ni_ * nj_ << std::endl;
     ASSERT(values.size() == ni_ * nj_);
 }
 
 
-void LatLon::shape(size_t &ni, size_t &nj) const {
+void LatLon::shape(size_t& ni, size_t& nj) const {
     ni = ni_;
     nj = nj_;
 }
 
 
-util::Domain LatLon::domain() const {
-    return domain(bbox_);
+void LatLon::initTrans(Trans_t& trans) const {
+    ASSERT(!shift_);
+#ifdef ATLAS_HAVE_TRANS
+    ASSERT(trans_set_resol_lonlat(&trans, ni_, nj_) == 0);
+#else
+    NOTIMP;
+#endif
 }
 
 
-util::Domain LatLon::domain(const util::BoundingBox& bbox) const {
 
+static eckit::Fraction NORTH_POLE(90);
+static eckit::Fraction SOUTH_POLE(-90);
+static eckit::Fraction ZERO(0);
+static eckit::Fraction THREE_SIXTY(360);
+static eckit::Fraction DATE_LINE_MINUS(-180);
+static eckit::Fraction DATE_LINE_PLUS(180);
 
-    // Special case for shifted grids
-    const double ns = bbox.north() - bbox.south() ;
-    const double ew = bbox.east()  - bbox.west() ;
+static eckit::Fraction adjust(const eckit::Fraction& target, bool up, const eckit::Fraction& increment, const eckit::Fraction& shift) {
+    eckit::Fraction r = (target - shift) / increment;
 
-    const bool isPeriodicEastWest = eckit::types::is_approximately_equal(ew + increments_.west_east(), 360.);
-    const bool includesPoles = eckit::types::is_approximately_equal(ns, 180.)
-                               || eckit::types::is_approximately_equal(ns + increments_.south_north(), 180.);
+    eckit::Fraction::value_type n = r.integralPart();
+    if (!r.integer() && (r > 0) == up) {
+        n += (up ? 1 : -1);
+    }
 
-    const double
-    north = includesPoles ?   90 : bbox.north(),
-    south = includesPoles ?  -90 : bbox.south(),
-    west = bbox.west(),
-    east = isPeriodicEastWest ? bbox.west() + 360 : bbox.east();
-    return util::Domain(north, west, south, east);
+    return n * increment + shift;
 }
+
+
+util::BoundingBox LatLon::globalBoundingBox(const util::Increments& increments,
+        const util::Shift& shift) {
+
+    const eckit::Fraction& sn = increments.south_north();
+    const eckit::Fraction& we = increments.west_east();
+    ASSERT(sn > 0);
+    ASSERT(we > 0);
+
+    eckit::Fraction north = adjust(NORTH_POLE, false, sn, shift.south_north());
+    eckit::Fraction south = adjust(SOUTH_POLE, true, sn, shift.south_north());
+
+    eckit::Fraction west;
+    eckit::Fraction east;
+    if ((THREE_SIXTY / we).integer()) {
+        // - periodic grids have East-most longitude at 360 - increment
+        west = adjust(ZERO, true, we, shift.west_east());
+        east = THREE_SIXTY + west - we;
+    } else {
+        // non-periodic grids do not include the date line (e.g. 1.1)
+        west = adjust(DATE_LINE_MINUS, true, we, shift.west_east());
+        east = adjust(DATE_LINE_PLUS, false, we, shift.west_east());
+    }
+
+    return util::BoundingBox(north, west, south, east);
+}
+
 
 
 }  // namespace latlon

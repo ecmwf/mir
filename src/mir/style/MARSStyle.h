@@ -83,11 +83,13 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    long getTargetGaussianNumber() const;
+    long getIntendedTruncation() const;
 
     // -- Overridden methods
 
-    virtual void sh2grid(action::ActionPlan&) const;
+    void sh2grid(action::ActionPlan&) const;
 
     // -- Class members
     // None

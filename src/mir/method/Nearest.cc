@@ -12,32 +12,28 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
+
 #include "mir/method/Nearest.h"
 
-#include <string>
 #include <limits>
+#include <string>
 #include <vector>
-
-#include "eckit/log/Timer.h"
+#include "eckit/geometry/KPoint.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/ETA.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
-
-#include "mir/method/GridSpace.h"
-#include "mir/util/PointSearch.h"
-#include "mir/param/MIRParametrisation.h"
+#include "eckit/log/Timer.h"
+#include "atlas/grid.h"
 #include "mir/config/LibMir.h"
-
+#include "mir/util/MIRGrid.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/util/PointSearch.h"
+#include "mir/repres/Representation.h"
 
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
-
-namespace {
-enum { LON=0, LAT=1 };
-}
 
 Nearest::Nearest(const param::MIRParametrisation &param) :
     MethodWeighted(param) {
@@ -53,21 +49,26 @@ const char *Nearest::name() const {
 }
 
 
-void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& in, const GridSpace& out) const {
+void Nearest::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+    util::MIRGrid in(rin.grid());
+    util::MIRGrid out(rout.grid());
 
+    eckit::Log::debug<LibMir>() << "Nearest::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("Nearest::assemble");
-    eckit::Log::debug<LibMir>() << "Nearest::assemble" << std::endl;
+
+    using eckit::geometry::LON;
+    using eckit::geometry::LAT;
 
     const size_t nclosest = this->nclosest();
 
     const util::PointSearch sptree(in);
 
-    const atlas::grid::Domain& inDomain = in.grid().domain();
+    const util::Domain& inDomain = in.domain();
 
-    atlas::array::ArrayView<double, 2> ocoords = out.coordsXYZ();
-    atlas::array::ArrayView<double, 2> olonlat = out.coordsLonLat();
+    atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
+    atlas::array::ArrayView<double, 2> olonlat = atlas::array::make_view< double, 2 >(out.coordsLonLat());
 
-    const size_t out_npts = out.grid().npts();
+    const size_t out_npts = out.size();
     double nearest = 0;
     double push_back = 0;
 
@@ -86,9 +87,9 @@ void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& 
         if (ip && (ip % 50000 == 0)) {
             double rate = ip / timer.elapsed();
             eckit::Log::debug<LibMir>() << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timer.elapsed())
-                               << ", rate: " << rate << " points/s, ETA: "
-                               << eckit::ETA( (out_npts - ip) / rate )
-                               << std::endl;
+                                        << ", rate: " << rate << " points/s, ETA: "
+                                        << eckit::ETA( (out_npts - ip) / rate )
+                                        << std::endl;
 
             eckit::Log::debug<LibMir>() << "Nearest: " << nearest << ", Push back:" << push_back << std::endl;
             sptree.statsPrint(eckit::Log::debug<LibMir>(), false);
@@ -97,7 +98,7 @@ void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& 
             nearest = push_back = 0;
         }
 
-        if (!inDomain.contains(olonlat[ip][LON], olonlat[ip][LAT])) {
+        if (!inDomain.contains(olonlat(ip, LAT), olonlat(ip, LON))) {
             continue;
         }
 
@@ -150,7 +151,6 @@ void Nearest::assemble(context::Context& ctx, WeightMatrix &W, const GridSpace& 
     W.setFromTriplets(weights_triplets);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

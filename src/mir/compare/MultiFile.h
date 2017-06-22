@@ -48,6 +48,8 @@ public:
 
     void save() const;
 
+    const std::string& name() const;
+
 private:
 
     std::string name_;
