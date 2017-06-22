@@ -22,9 +22,13 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "atlas/array/Array.h"
 #include "atlas/grid/Grid.h"
+#include "atlas/meshgenerator.h"
 #include "mir/util/Domain.h"
 
 
+namespace eckit {
+class MD5;
+}
 namespace atlas {
 class Mesh;
 }
@@ -37,9 +41,6 @@ class Representation;
 }
 }
 
-namespace eckit {
-class MD5;
-}
 
 namespace mir {
 namespace util {
@@ -47,6 +48,14 @@ namespace util {
 
 class MIRGrid {
 public:
+
+    // -- Types
+
+    // Deriving from any eckit::Parametrisation should work
+    class MeshGenParams: public atlas::MeshGenerator::Parameters {
+    public:
+        MeshGenParams();
+    };
 
     // -- Contructors
 
@@ -69,9 +78,6 @@ public:
     const atlas::array::Array& coordsXYZ() const;
 
     void hash(eckit::MD5&) const;
-
-    // std::string name() const;
-    // std::string uid() const;
 
     size_t size() const;
 

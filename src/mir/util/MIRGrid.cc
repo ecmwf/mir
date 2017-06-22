@@ -100,21 +100,23 @@ const atlas::array::Array& MIRGrid::coordsXYZ() const {
     return *coordsXYZ_;
 }
 
+
 void MIRGrid::hash(eckit::MD5 &md5) const {
     md5 << grid_ << domain_;
 }
-/*
-std::string MIRGrid::name() const {
-    return grid_.name();
-}
 
 
-std::string MIRGrid::uid() const {
-    return grid_.uid();
-}
-*/
 size_t MIRGrid::size() const {
     return grid_.size();
+}
+
+
+MIRGrid::MeshGenParams::MeshGenParams() {
+    set("three_dimensional", true);
+    set("patch_pole",        true);
+    set("include_pole",      false);
+    set("angle",             0.);
+    set("triangulate",       false);
 }
 
 

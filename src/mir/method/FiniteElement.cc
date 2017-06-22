@@ -228,15 +228,6 @@ static triplet_vector_t projectPointTo3DElements(
 }  // (anonymous namespace)
 
 
-FiniteElement::MeshGenParams::MeshGenParams() {
-    set("three_dimensional", true);
-    set("patch_pole",        true);
-    set("include_pole",      false);
-    set("angle",             0.);
-    set("triangulate",       false);
-}
-
-
 FiniteElement::FiniteElement(const param::MIRParametrisation &param) :
     MethodWeighted(param) {
 }

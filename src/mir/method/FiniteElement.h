@@ -19,8 +19,8 @@
 
 #include "eckit/geometry/Point3.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "atlas/meshgenerator.h"
 #include "mir/method/MethodWeighted.h"
+#include "mir/util/MIRGrid.h"
 
 
 namespace atlas {
@@ -52,17 +52,12 @@ protected:
 
 protected: // methods
 
-    // Deriving from any eckit::Parametrisation should work
-    class MeshGenParams: public atlas::MeshGenerator::Parameters {
-    public:
-        MeshGenParams();
-    };
-
     virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
 protected: // members
 
-    MeshGenParams meshgenparams_;
+    util::MIRGrid::MeshGenParams meshgenparams_;
+
 };
 
 
