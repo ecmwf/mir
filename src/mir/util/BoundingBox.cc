@@ -118,7 +118,7 @@ void BoundingBox::normalise() {
         west_ -= Longitude::GLOBE;
     }
 
-    while (east_ < west_) {
+    while (east_ <= west_) {
         east_ += Longitude::GLOBE;
     }
 
