@@ -66,26 +66,28 @@ public:
         using namespace eckit::option;
 
         //==============================================
-        options_.push_back(new Separator("Transform"));
-        options_.push_back(new SimpleOption<bool>("autoresol", "Turn on automatic truncation"));
-        options_.push_back(new FactoryOption<mir::style::MappingFactory>("spectral-mapping", "Spectral/gridded mapping"));
+        options_.push_back(new Separator("Spectral transforms"));
+        options_.push_back(new SimpleOption<bool>("autoresol", "Control automatic truncation"));
+        options_.push_back(new FactoryOption<mir::style::MappingFactory>("spectral-mapping", "Spectral/gridded order-of-accuracy)"));
         options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded intermediate Gaussian grid type (via)"));
         options_.push_back(new SimpleOption<std::string>("spectral-intermediate-gridname", "Spectral/gridded intermediate grid name (via)"));
-        options_.push_back(new SimpleOption<size_t>("truncation", "Truncation input field"));
-        options_.push_back(new SimpleOption<bool>("vod2uv", "Input is Vorticity and Divergence, conversion to u/v or U/V requested"));
+        options_.push_back(new SimpleOption<size_t>("truncation", "Spectral truncation"));
+        options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (u/v or U/V)"));
 
         //==============================================
         options_.push_back(new Separator("Interpolation"));
-        options_.push_back(new VectorOption<double>("grid", "Interpolate to the regular grid: west_east/south_north", 2));
-        options_.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular Gaussian grid N"));
-        options_.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular Gaussian grid N (pre 2016)"));
-        options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular Gaussian grid N"));
+        options_.push_back(new VectorOption<double>("grid", "Interpolate to a regular latitude/longitude grid (regular_ll), provided the West-East & South-North increments", 2));
+        options_.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular Gaussian grid N (regular_gg), with N the number of parallels between pole and equator (N>=2)"));
+        options_.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the reduced Gaussian grid N (reduced_gg), with N the number of parallels between pole and equator (pre-defined list of N values.) N must be 16, 24, 32, 48, 64, 80, 96, 128, 160, 200, 256, 320, 400, 512, 576, 640 or 800"));
+        options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the octahedral reduced Gaussian grid N (reduced_gg), with N the number of parallels between pole and equator (N>=2)"));
         options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
-        options_.push_back(new SimpleOption<std::string>("meshgenerator", "Interpolate using the given meshgenerator"));
+        options_.push_back(new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
 
-        options_.push_back(new SimpleOption<bool>("wind", "Use vector interpolation for wind (not yet)"));
-        options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid as the one provided in the first GRIB of the grib file"));
-        options_.push_back(new SimpleOption<eckit::PathName>("griddef", "File containing a list of lat/lon pairs"));
+        options_.push_back(new SimpleOption<bool>("wind", "Control vector interpolation for wind (not yet)"));
+        options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid type as the first GRIB message in file"));
+        options_.push_back(new SimpleOption<eckit::PathName>("griddef", "Path to GRIB file containing a list of latitude/longitude pairs"));
+
+        options_.push_back(new SimpleOption<std::string>("meshgenerator", "Interpolate using the given meshgenerator"));
 
         //==============================================
         options_.push_back(new Separator("Methods"));
@@ -93,10 +95,6 @@ public:
         options_.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
-
-        //==============================================
-        options_.push_back(new Separator("Rotation"));
-        options_.push_back(new VectorOption<double>("rotation", "Rotate the grid by moving the south pole to: latitude/longitude", 2));
 
         //==============================================
         options_.push_back(new Separator("Filtering"));
@@ -110,7 +108,7 @@ public:
         options_.push_back(new SimpleOption<std::string>("formula", "Formula to apply on field"));
 
         //==============================================
-        options_.push_back(new Separator("Land-sea mask management"));
+        options_.push_back(new Separator("Land-sea mask handling"));
         options_.push_back(new SimpleOption<bool>("lsm", "Use land-sea mask (lsm) when interpolating grid to grid"));
 
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm-interpolation", "Interpolation method for both input and output lsm, default nearest-neighbour"));
