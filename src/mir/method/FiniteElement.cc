@@ -320,8 +320,8 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
 
 
     // search nearest k cell centres
-    const size_t maxNbElemsToTry = std::max<size_t>(64, stats.inp_ncells * maxFractionElemsToTry);
-    size_t maxNbNeighbours = 0;
+    const size_t nbElementsMaximum = std::max<size_t>(64, stats.inp_ncells * maxFractionElemsToTry);
+    size_t nbElementsSearched = 0;
     size_t nbProjections = 0;
     size_t nbFailures = 0;
     std::forward_list<size_t> failures;
@@ -349,13 +349,12 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
                 Point p(ocoords[ip].data());
 
                 // 3D projection
-                size_t kpts = 1;
-                size_t previous_kpts = 0;
-                while (!success && kpts <= maxNbElemsToTry) {
-                    maxNbNeighbours = std::max(kpts, maxNbNeighbours);
+                for (size_t k = 0, kPrevious = 0; !success && k < nbElementsMaximum; kPrevious = k) {
+                    k = std::min(k? 2 * k : 1, nbElementsMaximum);
+                    nbElementsSearched = std::max(k, nbElementsSearched);
 
                     // loop over closest elements (enlarging range if failing projection)
-                    element_tree_t::NodeList cs = eTree->kNearestNeighbours(p, kpts);
+                    element_tree_t::NodeList cs = eTree->kNearestNeighbours(p, k);
 
                     triplet_vector_t triplets = projectPointTo3DElements(
                                 stats.inp_npts,
@@ -364,7 +363,7 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
                                 p,
                                 ip,
                                 firstVirtualPoint,
-                                cs.begin() + previous_kpts,
+                                cs.begin() + element_tree_t::NodeList::difference_type(kPrevious),
                                 cs.end() );
 
                     if (triplets.size()) {
@@ -372,9 +371,6 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
                         success = true;
                         ++nbProjections;
                     }
-
-                    previous_kpts = kpts;
-                    kpts *= 2;
                 }
 
                 if (!success) {
@@ -390,7 +386,7 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
             << "Projected " << eckit::BigNum(nbProjections)
             << " of " << eckit::Plural(stats.out_npts, "point")
             << " (" << eckit::Plural(nbFailures, "failure") << ")\n"
-            << "Maximum neighbours searched was " << eckit::Plural(maxNbNeighbours, "element")
+            << "Maximum neighbours searched was " << eckit::Plural(nbElementsSearched, "element")
             << std::endl;
 
     if (nbFailures) {
