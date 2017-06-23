@@ -92,6 +92,20 @@ void MultiFile::print(std::ostream& out)  const {
     }
 }
 
+eckit::Length MultiFile::length() const {
+    if (length_ == eckit::Length(0)) {
+        for (size_t i = 0; i < paths_.size(); i++) {
+            eckit::PathName p(paths_[i]);
+            try {
+                length_ += p.size();
+            }
+            catch (std::exception& e) {
+                eckit::Log::error() << e.what() << std::endl;
+            }
+        }
+    }
+    return length_;
+}
 
 const std::vector<std::string>& MultiFile::paths() const {
     return paths_;
