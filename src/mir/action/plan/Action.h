@@ -137,7 +137,7 @@ class ActionFactory {
 
   public:
 
-    static Action *build(const std::string&, const param::MIRParametrisation&);
+    static Action *build(const std::string&, const param::MIRParametrisation&, bool exact=true);
 
     static void list(std::ostream&);
 

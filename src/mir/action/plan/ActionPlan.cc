@@ -116,7 +116,7 @@ void ActionPlan::add(const std::string &name, param::MIRParametrisation* runtime
     // param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
     ASSERT(runtime);
     runtimes_.push_back(runtime);
-    actions_.push_back(ActionFactory::build(name, *runtime));
+    actions_.push_back(ActionFactory::build(name, *runtime, false));
 }
 
 
