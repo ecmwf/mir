@@ -48,15 +48,9 @@ namespace method {
 
 namespace {
 static eckit::Mutex local_mutex;
-
 static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix",
         512 * 1024 * 1024,
         "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
-
-static InMemoryCache<atlas::Mesh> mesh_cache("mirMesh",
-        512 * 1024 * 1024,
-        "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
-
 }  // (anonymous namespace)
 
 
