@@ -67,14 +67,14 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const util:
     for (size_t jtype = 0; jtype < cells.nb_types(); ++jtype) {
         const Elements& elements = cells.elements(jtype);
         const BlockConnectivity& connectivity = elements.node_connectivity();
-        const std::string& type = elements.element_type().name();
-        const size_t number = elements.size();
 
+        const std::string& type = elements.element_type().name();
+        const size_t nbElements = elements.size();
         size_t idx[4];
         d.setZero();
 
         if (type == "Triangle") {
-            for (size_t e = 0; e < number; ++e) {
+            for (size_t e = 0; e < nbElements; ++e) {
                 for (size_t n = 0; n < 3; ++n) {
                     idx[n] = size_t(connectivity(e, n));
                 }
@@ -87,7 +87,7 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const util:
                 }
             }
         } else if (type == "Quadrilateral") {
-            for (size_t e = 0; e < number; ++e) {
+            for (size_t e = 0; e < nbElements; ++e) {
                 for (size_t n = 0; n < 4; ++n) {
                     idx[n] = size_t(connectivity(e, n));
                 }
@@ -110,10 +110,8 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const util:
 
 void Conservative::assemble(WeightMatrix& W, const repres::Representation& rin,
                             const repres::Representation& rout) const {
-    using eckit::linalg::Vector;
-
-    util::MIRGrid in(rin.grid());
-    util::MIRGrid out(rout.grid());
+    util::MIRGrid in(rin.grid(meshgenparams_));
+    util::MIRGrid out(rout.grid(meshgenparams_));
 
     eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
 
@@ -124,11 +122,11 @@ void Conservative::assemble(WeightMatrix& W, const repres::Representation& rin,
     //    IM.save("IM.mat");
 
     // 2) M_s compute the lumped mass matrix (source mesh)
-    Vector M_s;
+    eckit::linalg::Vector M_s;
     computeLumpedMassMatrix(M_s, in);
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix (target mesh)
-    Vector M_d;
+    eckit::linalg::Vector M_d;
     computeLumpedMassMatrix(M_d, out);
     for (eckit::linalg::Scalar& v : M_d) {
         v = 1. / v;
