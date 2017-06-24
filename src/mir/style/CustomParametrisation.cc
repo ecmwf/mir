@@ -20,6 +20,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/config/LibMir.h"
+#include "eckit/utils/Translator.h"
 
 
 namespace mir {
@@ -27,7 +28,10 @@ namespace style {
 
 
 //==========================================================
-CustomParametrisation::CustomParametrisation(const param::MIRParametrisation &parametrisation):
+CustomParametrisation::CustomParametrisation(
+    const std::map<std::string, std::vector<std::string> >& params,
+    const param::MIRParametrisation &parametrisation):
+    params_(params),
     parametrisation_(parametrisation) {
 }
 
@@ -36,70 +40,98 @@ CustomParametrisation::~CustomParametrisation() {
 
 }
 
+template<class T>
+static void fill(T& value, const std::vector<std::string>& params) {
+
+    eckit::Translator<std::string, T> t;
+    ASSERT(params.size() == 1);
+    value = t(params[0]);
+}
+
+
+template<class T>
+static void fill(std::vector<T>& value, const std::vector<std::string>& params) {
+    value.clear();
+
+    eckit::Translator<std::string, T> t;
+
+    for(auto j = params.begin(); j != params.end(); ++j) {
+        value.push_back(t(*j));
+    }
+}
+
+
+template<class T>
+bool CustomParametrisation::_get(const std::string& name,  T& value) const {
+
+    auto j = params_.find(name);
+    if (j != params_.end()) {
+        fill(value, (*j).second);
+        return true;
+    }
+
+    if (name.find("user.") == 0) {
+        return _get(name.substr(5), value);
+    }
+
+    return parametrisation_.get(name, value);
+}
+
 
 bool CustomParametrisation::has(const std::string& name) const {
-    std::cout << "CustomParametrisation::has: " << name << std::endl;
+    if (params_.find(name) != params_.end()) {
+        return true;
+    }
     return parametrisation_.has(name);
 }
 
 bool CustomParametrisation::get(const std::string& name, std::string& value) const {
-    std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return parametrisation_.get(name, value);
+    return _get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, bool& value) const {
-    std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return parametrisation_.get(name, value);
+    return _get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, int& value) const {
-    std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return parametrisation_.get(name, value);
+    return _get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, long& value) const {
-    std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return parametrisation_.get(name, value);
+    return _get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, float& value) const {
-    std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return parametrisation_.get(name, value);
+    return _get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, double& value) const {
-    std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return parametrisation_.get(name, value);
+    return _get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, std::vector<int>& value) const {
-    std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return parametrisation_.get(name, value);
+    return _get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, std::vector<long>& value) const {
-    std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return parametrisation_.get(name, value);
+    return _get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, std::vector<float>& value) const {
-    std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return parametrisation_.get(name, value);
+    return _get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, std::vector<double>& value) const {
-    std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return parametrisation_.get(name, value);
+    return _get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, std::vector<std::string>& value) const {
-    std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return parametrisation_.get(name, value);
+    return _get(name, value);
 }
 
 
 void CustomParametrisation::print(std::ostream &out) const {
-    out << "<CustomParametrisation>";
+    out << "CustomParametrisation[" << params_ << "]";
 }
 
 }  // namespace param

@@ -40,6 +40,8 @@ list(
     action/interpolate/Gridded2GridDef.h
     action/interpolate/Gridded2GriddedInterpolation.cc
     action/interpolate/Gridded2GriddedInterpolation.h
+    action/interpolate/Gridded2LatLon.cc
+    action/interpolate/Gridded2LatLon.h
     action/interpolate/Gridded2NamedGrid.cc
     action/interpolate/Gridded2NamedGrid.h
     action/interpolate/Gridded2Octahedral.cc
@@ -60,8 +62,6 @@ list(
     action/interpolate/Gridded2RegularLL.h
     action/interpolate/Gridded2RotatedLL.cc
     action/interpolate/Gridded2RotatedLL.h
-    action/interpolate/Gridded2LatLon.cc
-    action/interpolate/Gridded2LatLon.h
     action/interpolate/Gridded2RotatedNamedGrid.cc
     action/interpolate/Gridded2RotatedNamedGrid.h
     action/interpolate/Gridded2RotatedOctahedral.cc
@@ -466,14 +466,14 @@ list(
     stats/detail/ScalarCentralMomentsFn.h
     stats/detail/ScalarMinMaxFn.h
     stats/detail/ScalarpNormsFn.h
+    style/CustomParametrisation.cc
+    style/CustomParametrisation.h
+    style/CustomStyle.cc
+    style/CustomStyle.h
     style/DisseminationStyle.cc
     style/DisseminationStyle.h
     style/ECMWFStyle.cc
     style/ECMWFStyle.h
-    style/CustomStyle.cc
-    style/CustomStyle.h
-    style/CustomParametrisation.cc
-    style/CustomParametrisation.h
     style/IntermediateGaussianGrid.cc
     style/IntermediateGaussianGrid.h
     style/IntermediateGrid.cc
@@ -532,6 +532,8 @@ list(
     util/MIRGrid.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
+    util/PlanParser.cc
+    util/PlanParser.h
     util/PointSearch.cc
     util/PointSearch.h
     util/RotatedIterator.cc

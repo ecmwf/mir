@@ -37,7 +37,8 @@ public:
 
 // -- Contructors
 
-    CustomParametrisation(const param::MIRParametrisation &parametrisation);
+    CustomParametrisation( const std::map<std::string, std::vector<std::string> >& params,
+                           const param::MIRParametrisation &parametrisation);
 
 // -- Destructor
 
@@ -71,6 +72,8 @@ protected:
 
 // -- Methods
 
+    template<class T>
+    bool _get(const std::string& name,  T& value) const;
 
 
 // -- Overridden methods
@@ -109,6 +112,7 @@ private:
 
 // -- Members
 
+    std::map<std::string, std::vector<std::string> > params_;
     const param::MIRParametrisation &parametrisation_;
 
 // -- Methods

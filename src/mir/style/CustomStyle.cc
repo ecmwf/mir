@@ -14,14 +14,8 @@
 
 
 #include "mir/style/CustomStyle.h"
-
-#include <iostream>
-#include "eckit/exception/Exceptions.h"
-#include "eckit/filesystem/PathName.h"
-#include "mir/action/plan/ActionPlan.h"
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/CustomParametrisation.h"
+#include "mir/util/PlanParser.h"
 
 
 namespace mir {
@@ -30,7 +24,6 @@ namespace style {
 
 CustomStyle::CustomStyle(const param::MIRParametrisation &parametrisation):
     MIRStyle(parametrisation) {
-
 }
 
 
@@ -40,7 +33,27 @@ CustomStyle::~CustomStyle() {
 
 void CustomStyle::prepare(action::ActionPlan &plan) const {
 
-    plan.add("interpolate.grid2regular-ll", new CustomParametrisation(parametrisation_));
+    std::string s;
+
+    if (parametrisation_.get("plan", s)) {
+        std::istringstream in(s);
+        util::PlanParser parser(in);
+        parser.parse(plan, parametrisation_);
+        return;
+    }
+
+    if (parametrisation_.get("plan-script", s)) {
+        std::ifstream in(s);
+        if (!in) {
+            throw eckit::CantOpenFile(s);
+        }
+        util::PlanParser parser(in);
+        parser.parse(plan, parametrisation_);
+        return;
+    }
+
+    throw eckit::UserError("CustomStyle: no plan specified");
+    // plan.add("interpolate.grid2regular-ll", new CustomParametrisation(parametrisation_));
 }
 
 
