@@ -39,62 +39,62 @@ CustomParametrisation::~CustomParametrisation() {
 
 bool CustomParametrisation::has(const std::string& name) const {
     std::cout << "CustomParametrisation::has: " << name << std::endl;
-    return false;
+    return parametrisation_.has(name);
 }
 
 bool CustomParametrisation::get(const std::string& name, std::string& value) const {
     std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return false;
+    return parametrisation_.get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, bool& value) const {
     std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return false;
+    return parametrisation_.get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, int& value) const {
     std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return false;
+    return parametrisation_.get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, long& value) const {
     std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return false;
+    return parametrisation_.get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, float& value) const {
     std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return false;
+    return parametrisation_.get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, double& value) const {
     std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return false;
+    return parametrisation_.get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, std::vector<int>& value) const {
     std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return false;
+    return parametrisation_.get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, std::vector<long>& value) const {
     std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return false;
+    return parametrisation_.get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, std::vector<float>& value) const {
     std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return false;
+    return parametrisation_.get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, std::vector<double>& value) const {
     std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return false;
+    return parametrisation_.get(name, value);
 }
 
 bool CustomParametrisation::get(const std::string& name, std::vector<std::string>& value) const {
     std::cout << "CustomParametrisation::get: " << name << std::endl;
-    return false;
+    return parametrisation_.get(name, value);
 }
 
 
