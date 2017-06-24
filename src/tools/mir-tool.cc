@@ -152,6 +152,9 @@ public:
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used on not"));
         options_.push_back(new SimpleOption<long>("trans-fast-legendre-transform", "Trans Fast Legendre Transform method"));
 
+        options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
+        options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
+
         //==============================================
         options_.push_back(new Separator("Debugging"));
         options_.push_back(new SimpleOption<bool>("dummy", "Use dummy data"));
@@ -211,6 +214,9 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
     args.get("dummy", dummy);
 
 
+    if(args.has("plan") || args.has("plan-script")) {
+        job.set("style", "custom");
+    }
 
 
     if (dummy) {

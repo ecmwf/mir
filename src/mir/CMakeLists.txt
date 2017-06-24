@@ -470,6 +470,8 @@ list(
     style/DisseminationStyle.h
     style/ECMWFStyle.cc
     style/ECMWFStyle.h
+    style/CustomStyle.cc
+    style/CustomStyle.h
     style/IntermediateGaussianGrid.cc
     style/IntermediateGaussianGrid.h
     style/IntermediateGrid.cc
