@@ -248,10 +248,6 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
         plan.add("crop.area");
     }
 
-    if (parametrisation_.has("user.subset")) {
-        plan.add("filter.subset");
-    }
-
     if (parametrisation_.has("user.bitmap")) {
         plan.add("filter.bitmap");
     }

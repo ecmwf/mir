@@ -31,7 +31,6 @@ MIRStatistics::MIRStatistics(eckit::Stream &s):
     s >> cropTiming_;
     s >> frameTiming_;
     s >> globaliseTiming_;
-    s >> subsetTiming_;
 
 
     s >> bitmapTiming_;
@@ -56,7 +55,6 @@ void MIRStatistics::encode(eckit::Stream &s) const {
     s << cropTiming_;
     s << frameTiming_;
     s << globaliseTiming_;
-    s << subsetTiming_;
 
     s << bitmapTiming_;
     s << coefficientTiming_;
@@ -79,7 +77,6 @@ MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &other) {
     cropTiming_ += other.cropTiming_;
     frameTiming_ += other.frameTiming_;
     globaliseTiming_ += other.globaliseTiming_;
-    subsetTiming_ += other.subsetTiming_;
     bitmapTiming_ += other.bitmapTiming_;
     coefficientTiming_ += other.coefficientTiming_;
     sh2gridTiming_ += other.sh2gridTiming_;
@@ -103,7 +100,6 @@ MIRStatistics &MIRStatistics::operator/=(size_t n) {
     cropTiming_ /= n;
     frameTiming_ /= n;
     globaliseTiming_ /= n;
-    subsetTiming_ /= n;
     bitmapTiming_ /= n;
     coefficientTiming_ /= n;
     sh2gridTiming_ /= n;
@@ -135,7 +131,6 @@ void MIRStatistics::report(std::ostream &out, const char *indent) const {
     reportTime(out, "Time in area-crop", cropTiming_, indent);
     reportTime(out, "Time in extracting frames", frameTiming_, indent);
     reportTime(out, "Time in extending to globe", globaliseTiming_, indent);
-    reportTime(out, "Time in sub-setting", subsetTiming_, indent);
 
     reportTime(out, "Time applying bitmaps", bitmapTiming_, indent);
 
