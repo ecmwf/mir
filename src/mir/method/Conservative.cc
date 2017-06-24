@@ -69,12 +69,11 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const util:
         const BlockConnectivity& connectivity = elements.node_connectivity();
 
         const std::string& type = elements.element_type().name();
-        const size_t nbElements = elements.size();
         size_t idx[4];
         d.setZero();
 
         if (type == "Triangle") {
-            for (size_t e = 0; e < nbElements; ++e) {
+            for (size_t e = 0; e < elements.size(); ++e) {
                 for (size_t n = 0; n < 3; ++n) {
                     idx[n] = size_t(connectivity(e, n));
                 }
@@ -87,7 +86,7 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const util:
                 }
             }
         } else if (type == "Quadrilateral") {
-            for (size_t e = 0; e < nbElements; ++e) {
+            for (size_t e = 0; e < elements.size(); ++e) {
                 for (size_t n = 0; n < 4; ++n) {
                     idx[n] = size_t(connectivity(e, n));
                 }
