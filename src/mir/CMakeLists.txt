@@ -472,6 +472,8 @@ list(
     style/ECMWFStyle.h
     style/CustomStyle.cc
     style/CustomStyle.h
+    style/CustomParametrisation.cc
+    style/CustomParametrisation.h
     style/IntermediateGaussianGrid.cc
     style/IntermediateGaussianGrid.h
     style/IntermediateGrid.cc

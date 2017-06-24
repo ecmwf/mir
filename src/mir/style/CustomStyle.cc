@@ -21,6 +21,7 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/style/CustomParametrisation.h"
 
 
 namespace mir {
@@ -38,7 +39,8 @@ CustomStyle::~CustomStyle() {
 
 
 void CustomStyle::prepare(action::ActionPlan &plan) const {
-    NOTIMP;
+
+    plan.add("interpolate.grid2regular-ll", new CustomParametrisation(parametrisation_));
 }
 
 
