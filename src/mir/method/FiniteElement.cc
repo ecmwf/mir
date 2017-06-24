@@ -325,7 +325,7 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
         eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << rin << std::endl;
         eckit::TraceTimer<LibMir> timerProj("Projecting");
 
-        const atlas::mesh::HybridElements::Connectivity& connectivity = in.mesh(*this).cells().node_connectivity();
+        const atlas::mesh::HybridElements::Connectivity& connectivity = in.mesh().cells().node_connectivity();
         for ( size_t ip = 0; ip < stats.out_npts; ++ip ) {
 
             if (ip && (ip % 10000 == 0)) {
