@@ -13,7 +13,7 @@
 /// @date July 2015
 
 
-#include "mir/method/Bilinear.h"
+#include "mir/method/StructuredBilinearLatLon.h"
 
 #include <vector>
 #include "eckit/log/BigNum.h"
@@ -28,85 +28,32 @@
 #include "mir/util/Compare.h"
 #include "mir/repres/Representation.h"
 
+
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 namespace {
-
-
-void left_right_lon_indexes(
-    const double& in,
-    const atlas::array::ArrayView<double, 2>& coords,
-    const size_t start,
-    const size_t end,
-    size_t& left,
-    size_t& right) {
-
-    using eckit::geometry::LON;
-    using eckit::geometry::LAT;
-
-    eckit::types::CompareApproximatelyEqual<double> eq(10e-10);  //FIXME
-
-    right = start; // take the first if there's a wrap
-    left  = start;
-
-    double right_lon = 360.;
-//    double left_lon  =   0.;
-    for (size_t i = start; i < end; ++i) {
-
-        const double& val = coords[i].data()[LON];
-        ASSERT((0. <= val) && (val <= 360.));
-
-        if (val < in || eq(val, in)) {
-//            left_lon = val;
-            left     = i;
-        } else if (val < right_lon) {
-            right_lon = val;
-            right     = i;
-        }
-
-    }
-
-    ASSERT(left  >= start);
-    ASSERT(right >= start);
-    ASSERT(right != left);
-    ASSERT(eq(coords(left, LAT), coords(right, LAT)));
+static MethodBuilder< StructuredBilinearLatLon > __method("bilinear");
 }
 
 
-}  // (utilities namespace)
-
-//----------------------------------------------------------------------------------------------------------------------
-
-Bilinear::Bilinear(const param::MIRParametrisation& param) :
-    MethodWeighted(param) {
+StructuredBilinearLatLon::StructuredBilinearLatLon(const param::MIRParametrisation& param) :
+    StructuredMethod(param) {
 }
 
 
-Bilinear::~Bilinear() {
+StructuredBilinearLatLon::~StructuredBilinearLatLon() {
 }
 
 
-const char* Bilinear::name() const {
-    return  "bilinear";
-}
+void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const util::MIRGrid& out) const {
+
+    atlas::Grid gout(out);
+    ASSERT(gout);
 
 
-void Bilinear::hash(eckit::MD5& md5) const {
-    MethodWeighted::hash(md5);
-}
-
-
-void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
-
-    util::MIRGrid in(rin.grid());
-    util::MIRGrid out(rout.grid());
-
-
-    eckit::Log::debug<LibMir>() << "Bilinear::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
-
+//    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble (input: " << in<< ", output: " << out << ")" << std::endl;
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
 
@@ -116,14 +63,9 @@ void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, cons
     // FIXME: proper documentation
 
 
-    // Ensure the input is a reduced grid, and get the pl array
-    const atlas::grid::StructuredGrid igg(in);
-    if (!igg) {
-        throw eckit::UserError("Bilinear currently only supports Structured grids as input");
-    }
 
-    const std::vector<long>& lons = igg.nx();
-    const size_t inpts = igg.size();
+    const std::vector<long>& lons = in.nx();
+    const size_t inpts = in.size();
     const size_t onpts = out.size();
 
     ASSERT(lons.size());
@@ -137,36 +79,33 @@ void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, cons
 
 
     // access the input/output fields coordinates
-    atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view< double, 2 >(in.coordsLonLat());
-    atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsLonLat());
-
-
-    // access the input domain
-    const util::Domain& idomain = in.domain();
-
-
     // check input min/max latitudes (gaussian grids exclude the poles)
-    double min_lat = icoords(0, LAT);
-    double max_lat = icoords(0, LAT);
-    for (size_t i = 1; i < inpts; ++i) {
-        const double lat = icoords(i, LAT);
-        if (lat < min_lat) min_lat = lat;
-        if (lat > max_lat) max_lat = lat;
+    std::vector<atlas::PointLonLat> icoords(in.size());
+    double min_lat = 0.;
+    double max_lat = 0.;
+    size_t i = 0;
+    for (const atlas::PointXY p: in.xy()) {
+        double lat = p.y();
+        if (!i || lat < min_lat) min_lat = lat;
+        if (!i || lat > max_lat) max_lat = lat;
+        icoords[i++] = atlas::PointLonLat(p.x(), p.y());
     }
     ASSERT(min_lat < max_lat);
-    eckit::Log::debug<LibMir>() << "Bilinear::assemble max_lat=" << max_lat << ", min_lat=" << min_lat << std::endl;
+    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble max_lat=" << max_lat << ", min_lat=" << min_lat << std::endl;
+
+    atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsLonLat());
 
 
     // set northern & southern-most parallel point indices
     std::vector<size_t> parallel_north(lons.front());
     std::vector<size_t> parallel_south(lons.back());
 
-    eckit::Log::debug<LibMir>() << "Bilinear::assemble first row: " << lons.front() << std::endl;
+    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble first row: " << lons.front() << std::endl;
     for (long i = 0; i < lons.front(); ++i) {
         parallel_north[i] = size_t(i);
     }
 
-    eckit::Log::debug<LibMir>() << "Bilinear::assemble last row: " << lons.back() << std::endl;
+    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble last row: " << lons.back() << std::endl;
     for (long i = lons.back(), j = 0; i > 0; i--, j++) {
         parallel_south[j] = size_t(inpts - i);
     }
@@ -200,7 +139,7 @@ void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, cons
 //                    << w << " "
 //                    << w << std::endl;
 
-        } else if (idomain.contains(lat, lon)) {
+        } else {
 
             // find encompassing latitudes ("bottom/top")
 
@@ -231,8 +170,8 @@ void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, cons
 
             } else {
 
-                top_lat = icoords(top_i, LAT);
-                bot_lat = icoords(bot_i, LAT);
+                top_lat = icoords[top_i].lat();
+                bot_lat = icoords[bot_i].lat();
 
                 size_t n = 1;
                 while ( !( bot_lat < lat && eckit::types::is_approximately_greater_or_equal(top_lat, lat) )
@@ -244,8 +183,8 @@ void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, cons
                     top_i  = bot_i;
                     bot_i += lons[n - 1];
 
-                    top_lat = icoords(top_i, LAT);
-                    bot_lat = icoords(bot_i, LAT);
+                    top_lat = icoords[top_i].lat();
+                    bot_lat = icoords[bot_i].lat();
 
                     ASSERT(top_lat > bot_lat);
 
@@ -253,8 +192,8 @@ void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, cons
                 }
             }
 
-            top_lat = icoords(top_i, LAT);
-            bot_lat = icoords(bot_i, LAT);
+            top_lat = icoords[top_i].lat();
+            bot_lat = icoords[bot_i].lat();
 
             ASSERT( top_lat > bot_lat );
 
@@ -284,10 +223,10 @@ void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, cons
             ASSERT(top_i_rgt < inpts);
             ASSERT(top_i_lft < inpts);
 
-            double tl_lon  = icoords(top_i_lft, LON);
-            double tr_lon  = icoords(top_i_rgt, LON);
-            double bl_lon  = icoords(bot_i_lft, LON);
-            double br_lon  = icoords(bot_i_rgt, LON);
+            double tl_lon  = icoords[top_i_lft].lon();
+            double tr_lon  = icoords[top_i_rgt].lon();
+            double bl_lon  = icoords[bot_i_lft].lon();
+            double br_lon  = icoords[bot_i_rgt].lon();
 
             if( tr_lon < tl_lon ) tr_lon += 360.;
             if( br_lon < bl_lon ) br_lon += 360.;
@@ -369,16 +308,20 @@ void Bilinear::assemble(WeightMatrix& W, const repres::Representation& rin, cons
 }
 
 
-void Bilinear::print(std::ostream& out) const {
-    out << "Bilinear[]";
+const char* StructuredBilinearLatLon::name() const {
+    return  "bilinear";
 }
 
 
-namespace {
-static MethodBuilder< Bilinear > __bilinear("bilinear");
+void StructuredBilinearLatLon::hash(eckit::MD5& md5) const {
+    StructuredMethod::hash(md5);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
+void StructuredBilinearLatLon::print(std::ostream& out) const {
+    out << "StructuredBilinearLatLon[]";
+}
+
 
 }  // namespace method
 }  // namespace mir

@@ -13,32 +13,31 @@
 /// @date Apr 2015
 
 
-#ifndef mir_method_Bilinear_h
-#define mir_method_Bilinear_h
+#ifndef mir_method_StructuredBilinearLatLon_h
+#define mir_method_StructuredBilinearLatLon_h
 
-#include "mir/method/MethodWeighted.h"
+#include "mir/method/StructuredMethod.h"
 
 
 namespace mir {
 namespace method {
 
 
-class Bilinear : public MethodWeighted {
+class StructuredBilinearLatLon : public StructuredMethod {
 public:
 
-    Bilinear(const param::MIRParametrisation&);
+    StructuredBilinearLatLon(const param::MIRParametrisation&);
+    ~StructuredBilinearLatLon();
 
-    ~Bilinear();
+private:
 
-private: // methods
-
-    void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
-
-    void print(std::ostream&) const;
+    void assemble(WeightMatrix&, const atlas::grid::StructuredGrid& in, const util::MIRGrid& out) const;
 
     const char* name() const;
 
     void hash(eckit::MD5&) const;
+
+    void print(std::ostream&) const;
 
 };
 

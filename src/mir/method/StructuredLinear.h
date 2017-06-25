@@ -14,31 +14,28 @@
 #ifndef mir_method_StructuredLinear_h
 #define mir_method_StructuredLinear_h
 
-#include "mir/method/MethodWeighted.h"
-
-#include "atlas/grid.h"
+#include "mir/method/StructuredMethod.h"
 
 
 namespace mir {
 namespace method {
 
 
-class StructuredLinear : public MethodWeighted {
+class StructuredLinear : public StructuredMethod {
 public:
 
     StructuredLinear(const param::MIRParametrisation&);
+    ~StructuredLinear();
 
 private:
+
+    void assemble(WeightMatrix&, const atlas::grid::StructuredGrid& in, const util::MIRGrid& out) const;
 
     const char* name() const;
 
     void hash(eckit::MD5&) const;
 
     void print(std::ostream&) const;
-
-    void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
-
-    void assemble(WeightMatrix&, const atlas::grid::StructuredGrid& in, const atlas::Grid& out) const;
 
 };
 

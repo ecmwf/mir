@@ -254,8 +254,6 @@ list(
     lsm/UserFileLSM.h
     method/AddParallelEdgesConnectivity.cc
     method/AddParallelEdgesConnectivity.h
-    method/Bilinear.cc
-    method/Bilinear.h
     method/Conservative.cc
     method/Conservative.h
     method/FEBilinear.cc
@@ -278,8 +276,12 @@ list(
     method/NearestNeighbour.h
     method/PseudoLaplace.cc
     method/PseudoLaplace.h
+    method/StructuredBilinearLatLon.cc
+    method/StructuredBilinearLatLon.h
     method/StructuredLinear.cc
     method/StructuredLinear.h
+    method/StructuredMethod.cc
+    method/StructuredMethod.h
     method/Tessellation.cc
     method/Tessellation.h
     method/WeightMatrix.cc
