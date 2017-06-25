@@ -48,7 +48,7 @@ private: // methods
                      const param::MIRParametrisation &parametrisation);
 
     std::string parseToken();
-    std::map<std::string, std::vector<std::string> > parseArguments();
+    std::map<std::string, std::vector<std::string> > parseArguments(const std::string& action);
     std::vector<std::string> parseValues();
 
 };

@@ -46,7 +46,7 @@ void PlanParser::parseAction(action::ActionPlan &plan, const
                              param::MIRParametrisation &parametrisation) {
 
     std::string name = parseToken();
-    plan.add(name, new style::CustomParametrisation(parseArguments(), parametrisation));
+    plan.add(name, new style::CustomParametrisation(parseArguments(name), parametrisation));
 
 }
 
@@ -60,7 +60,7 @@ std::string PlanParser::parseToken() {
     return s;
 }
 
-std::map<std::string, std::vector<std::string> > PlanParser::parseArguments() {
+std::map<std::string, std::vector<std::string> > PlanParser::parseArguments(const std::string& action) {
     std::map<std::string, std::vector<std::string> > result;
 
     char c = peek();
@@ -71,16 +71,22 @@ std::map<std::string, std::vector<std::string> > PlanParser::parseArguments() {
 
 
             std::string name = parseToken();
-            consume('=');
-
             c = peek();
-            if (c == '[') {
-                result[name] = parseValues();
-            }
-            else {
-                result[name].push_back(parseToken());
-            }
+            if (c == '=') {
+                consume('=');
 
+                c = peek();
+                if (c == '[') {
+                    result[name] = parseValues();
+                }
+                else {
+                    result[name].push_back(parseToken());
+                }
+            } else {
+                // Implicty name is action
+                // e.g. frame(1) same as frame(frame=1)
+                result[action].push_back(name);
+            }
             c = peek();
             if (c == ',') {
                 consume(c);
