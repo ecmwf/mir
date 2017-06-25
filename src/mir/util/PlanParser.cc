@@ -77,15 +77,15 @@ std::map<std::string, std::vector<std::string> > PlanParser::parseArguments(cons
 
                 c = peek();
                 if (c == '[') {
-                    result[name] = parseValues();
+                    result["user." + name] = parseValues();
                 }
                 else {
-                    result[name].push_back(parseToken());
+                    result["user." + name].push_back(parseToken());
                 }
             } else {
                 // Implicty name is action
                 // e.g. frame(1) same as frame(frame=1)
-                result[action].push_back(name);
+                result["user." + action].push_back(name);
             }
             c = peek();
             if (c == ',') {

@@ -70,9 +70,9 @@ bool CustomParametrisation::_get(const std::string& name,  T& value) const {
         return true;
     }
 
-    if (name.find("user.") == 0) {
-        return _get(name.substr(5), value);
-    }
+    // if (name.find("user.") == 0) {
+    //     return _get(name.substr(5), value);
+    // }
 
     return parametrisation_.get(name, value);
 }
