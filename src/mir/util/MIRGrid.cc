@@ -19,10 +19,10 @@
 #include "eckit/geometry/Point3.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/Mutex.h"
-#include "atlas/array.h"
-#include "atlas/mesh/Mesh.h"
-#include "atlas/mesh/actions/BuildXYZField.h"
 #include "eckit/utils/MD5.h"
+#include "atlas/array.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/mesh/Mesh.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
 #include "mir/util/MIRStatistics.h"
@@ -54,7 +54,6 @@ MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain, const MeshGenPar
     grid_(grid),
     domain_(domain),
     meshGenParams_(meshGenParams),
-    coordsLonLat_(0),
     coordsXYZ_(0) {
 }
 
@@ -70,7 +69,6 @@ MIRGrid& MIRGrid::operator=(const MIRGrid& other) {
     const_cast<MeshGenParams&>(meshGenParams_) = other.meshGenParams_;
 
     mesh_ = atlas::Mesh();
-    coordsLonLat_.reset();
     coordsXYZ_.reset();
 
     return *this;
@@ -133,25 +131,6 @@ atlas::Mesh MIRGrid::generateMeshAndCache() const {
 }
 
 
-const atlas::array::Array& MIRGrid::coordsLonLat() const {
-    using namespace atlas::array;
-
-    if (!coordsLonLat_) {
-        coordsLonLat_.reset(Array::create< double >(grid_.size(), 2));
-        ArrayView< double, 2 > lonlat = make_view< double, 2 >(*coordsLonLat_);
-
-        size_t i = 0;
-        for (atlas::PointLonLat p : grid_.lonlat()) {
-            lonlat(i, 0) = p.lon();
-            lonlat(i, 1) = p.lat();
-            ++i;
-        }
-    }
-
-    return *coordsLonLat_;
-}
-
-
 const atlas::array::Array& MIRGrid::coordsXYZ() const {
     using namespace atlas::array;
 
@@ -174,8 +153,8 @@ const atlas::array::Array& MIRGrid::coordsXYZ() const {
 
 
 void MIRGrid::hash(eckit::MD5& md5) const {
-    // TODO: missing meshGenParams.meshGenerator_!!!
-    md5 << grid_ << domain_ << meshGenParams_;
+    // TODO: make MeshGenParams::hash
+    md5 << grid_ << domain_ << meshGenParams_ << meshGenParams_.meshGenerator_;
 }
 
 

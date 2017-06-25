@@ -54,17 +54,17 @@ protected:
 
     // Utility types
     typedef eckit::geometry::Point3 point_3d_t;
-    typedef eckit::linalg::Index index_t;
+    typedef std::pair<Latitude, Longitude> point_ll_t;
     typedef std::vector< WeightMatrix::Triplet > triplets_t;
 
     // Find nearest West-East bounding i indices
     void left_right_lon_indexes(
-        const double& in,
-        const std::vector<atlas::PointLonLat>& coords,
-        const size_t start,
-        const size_t end,
-        size_t& left,
-        size_t& right) const;
+            Longitude& in,
+            const std::vector<point_ll_t>& coords,
+            const size_t start,
+            const size_t end,
+            size_t& left,
+            size_t& right) const;
 
 
     // Normalize weights triplets such that sum(weights) = 1
@@ -79,7 +79,7 @@ protected:
 private:
 
     void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
-    virtual void assemble(WeightMatrix&, const atlas::grid::StructuredGrid& in, const util::MIRGrid& out) const = 0;
+    virtual void assemble(WeightMatrix&, const atlas::grid::StructuredGrid& in, const repres::Representation& out) const = 0;
 
 };
 

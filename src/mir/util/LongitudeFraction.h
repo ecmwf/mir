@@ -204,7 +204,10 @@ private:
     friend bool operator<(double, const LongitudeFraction& other);
 
     friend bool operator>=(double, const LongitudeFraction& other);
-    friend bool operator<=(double, const LongitudeFraction& other);
+
+    friend bool operator<=(double value, const LongitudeFraction& other) {
+        return value <= other.value();
+    }
 
     friend LongitudeFraction operator+(double, const LongitudeFraction& other);
 

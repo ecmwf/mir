@@ -18,15 +18,17 @@
 #include <vector>
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Log.h"
+#include "eckit/types/FloatCompare.h"
 #include "atlas/array/ArrayView.h"
 #include "atlas/array_fwd.h"
 #include "atlas/grid.h"
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
-#include "mir/util/MIRGrid.h"
-#include "mir/util/Compare.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Compare.h"
+#include "mir/util/MIRGrid.h"
 
 
 namespace mir {
@@ -47,17 +49,13 @@ StructuredBilinearLatLon::~StructuredBilinearLatLon() {
 }
 
 
-void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const util::MIRGrid& out) const {
+void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const repres::Representation& rout) const {
 
-    atlas::Grid gout(out);
-    ASSERT(gout);
+    atlas::Grid out(rout.grid());
+    ASSERT(out);
 
 
 //    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble (input: " << in<< ", output: " << out << ")" << std::endl;
-    using eckit::geometry::LON;
-    using eckit::geometry::LAT;
-
-
     // NOTE: use bilinear interpolation assuming quasi-regular grid
     // (this assumes the points are oriented north-south)
     // FIXME: proper documentation
@@ -74,26 +72,29 @@ void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::Stru
 
 
     // pre-allocate matrix entries
-    std::vector< WeightMatrix::Triplet > weights_triplets; /* structure to fill-in sparse matrix */
-    weights_triplets.reserve( onpts * 4 );
+    triplets_t triplets; /* structure to fill-in sparse matrix */
+    triplets.reserve(4 * onpts);
 
 
-    // access the input/output fields coordinates
-    // check input min/max latitudes (gaussian grids exclude the poles)
-    std::vector<atlas::PointLonLat> icoords(in.size());
-    double min_lat = 0.;
-    double max_lat = 0.;
+    // output points
+    eckit::ScopedPtr<repres::Iterator> it(rout.unrotatedIterator());
+
+
+    // get input coordinates, checking min/max latitudes (Gaussian grids exclude the poles)
+    std::vector<point_ll_t> icoords(in.size());
+    Latitude min_lat = 0.;
+    Latitude max_lat = 0.;
+
+    Latitude lat;
+    Longitude lon;
     size_t i = 0;
-    for (const atlas::PointXY p: in.xy()) {
-        double lat = p.y();
+    while (it->next(lat, lon)) {
         if (!i || lat < min_lat) min_lat = lat;
         if (!i || lat > max_lat) max_lat = lat;
-        icoords[i++] = atlas::PointLonLat(p.x(), p.y());
+        icoords[i++] = point_ll_t(lat, lon);
     }
     ASSERT(min_lat < max_lat);
     eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble max_lat=" << max_lat << ", min_lat=" << min_lat << std::endl;
-
-    atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsLonLat());
 
 
     // set northern & southern-most parallel point indices
@@ -114,13 +115,13 @@ void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::Stru
 //    outfile.precision(2);
 
     // interpolate each output point in turn
-    for (size_t i = 0; i < onpts; ++i) {
+    it.reset(rout.unrotatedIterator());
+    i = 0;
+    while (it->next(lat, lon)) {
+        ASSERT(i < onpts);
 
-        const double lat = ocoords(i, LAT);
-        const double lon = ocoords(i, LON);
-
-        const bool too_much_north = eckit::types::is_strictly_greater(lat, max_lat);
-        const bool too_much_south = eckit::types::is_strictly_greater(min_lat, lat);
+        const bool too_much_north = lat > max_lat;
+        const bool too_much_south = min_lat > lat;
 
         if (too_much_north || too_much_south) {
 
@@ -129,8 +130,9 @@ void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::Stru
             const std::vector<size_t>& par(too_much_north ? parallel_north : parallel_south);
 
             const double w = 1. / double(par.size());
-            for (std::vector<size_t>::const_iterator j = par.begin(); j != par.end(); ++j)
-                weights_triplets.push_back( WeightMatrix::Triplet( i, *j, w ) );
+            for (const size_t& j: par) {
+                triplets.push_back( WeightMatrix::Triplet( i, j, w ) );
+            }
 
 //            outfile << std::fixed
 //                    << " " << (size_t) lat * 100 << " "
@@ -149,19 +151,19 @@ void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::Stru
             size_t top_i = 0;  // index of first point in top latitude line
             size_t bot_i = 0;  // index of first point in bottom latitude line
 
-            double top_lat = 0;
-            double bot_lat = 0;
+            Latitude top_lat = 0;
+            Latitude bot_lat = 0;
 
             ASSERT(lons.size() >= 2); // at least 2 lines of latitude
 
-            if( eckit::types::is_approximately_equal<double>(max_lat, lat) ) {
+            if( eckit::types::is_approximately_equal(max_lat.value(), lat.value()) ) {
 
                 top_n = lons[0];
                 bot_n = lons[1];
                 top_i = 0;
                 bot_i = top_i + top_n;
 
-            } else if( eckit::types::is_approximately_equal<double>(min_lat, lat) ) {
+            } else if( eckit::types::is_approximately_equal(min_lat.value(), lat.value()) ) {
 
                 top_n = lons[ lons.size() - 2 ];
                 bot_n = lons[ lons.size() - 1 ];
@@ -170,11 +172,11 @@ void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::Stru
 
             } else {
 
-                top_lat = icoords[top_i].lat();
-                bot_lat = icoords[bot_i].lat();
+                top_lat = icoords[top_i].first;
+                bot_lat = icoords[bot_i].first;
 
                 size_t n = 1;
-                while ( !( bot_lat < lat && eckit::types::is_approximately_greater_or_equal(top_lat, lat) )
+                while ( !( bot_lat < lat && ( top_lat > lat || eckit::types::is_approximately_equal(top_lat.value(), lat.value())))
                         && n != lons.size() ) {
 
                     top_n = lons[n - 1];
@@ -183,8 +185,8 @@ void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::Stru
                     top_i  = bot_i;
                     bot_i += lons[n - 1];
 
-                    top_lat = icoords[top_i].lat();
-                    bot_lat = icoords[bot_i].lat();
+                    top_lat = icoords[top_i].first;
+                    bot_lat = icoords[bot_i].first;
 
                     ASSERT(top_lat > bot_lat);
 
@@ -192,8 +194,8 @@ void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::Stru
                 }
             }
 
-            top_lat = icoords[top_i].lat();
-            bot_lat = icoords[bot_i].lat();
+            top_lat = icoords[top_i].first;
+            bot_lat = icoords[bot_i].first;
 
             ASSERT( top_lat > bot_lat );
 
@@ -223,29 +225,35 @@ void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::Stru
             ASSERT(top_i_rgt < inpts);
             ASSERT(top_i_lft < inpts);
 
-            double tl_lon  = icoords[top_i_lft].lon();
-            double tr_lon  = icoords[top_i_rgt].lon();
-            double bl_lon  = icoords[bot_i_lft].lon();
-            double br_lon  = icoords[bot_i_rgt].lon();
+            Longitude tl_lon  = icoords[top_i_lft].second;
+            Longitude tr_lon  = icoords[top_i_rgt].second;
+            Longitude bl_lon  = icoords[bot_i_lft].second;
+            Longitude br_lon  = icoords[bot_i_rgt].second;
 
-            if( tr_lon < tl_lon ) tr_lon += 360.;
-            if( br_lon < bl_lon ) br_lon += 360.;
+            if( tr_lon < tl_lon ) tr_lon += 360;
+            if( br_lon < bl_lon ) br_lon += 360;
 
             // calculate the weights
-            double w1 =  lon - tl_lon;
-            double w2 =  tr_lon - lon;
-            double w3 =  lon - bl_lon;
-            double w4 =  br_lon - lon;
+            Longitude w1 =  lon - tl_lon;
+            Longitude w2 =  tr_lon - lon;
+            Longitude w3 =  lon - bl_lon;
+            Longitude w4 =  br_lon - lon;
+            ASSERT(w1 >= 0);
+            ASSERT(w2 >= 0);
+            ASSERT(w3 >= 0);
+            ASSERT(w4 >= 0);
 
             // top and bottom midpoint weights
-            double wt = lat - bot_lat;
-            double wb = top_lat - lat;
+            Latitude wt = lat - bot_lat;
+            Latitude wb = top_lat - lat;
+            ASSERT(wt >= 0);
+            ASSERT(wb >= 0);
 
             // weights for the tl, tr, bl, br points
-            double w_br =  w3 * wb;
-            double w_bl =  w4 * wb;
-            double w_tr =  w1 * wt;
-            double w_tl =  w2 * wt;
+            double w_br =  w3.value() * wb.value();
+            double w_bl =  w4.value() * wb.value();
+            double w_tr =  w1.value() * wt.value();
+            double w_tl =  w2.value() * wt.value();
 
             //            eckit::Log::info() << " --> LL "
             //                      << lon << " ["
@@ -267,44 +275,23 @@ void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::Stru
 //                      << wb << " "
 //                      << std::endl;
 
-            const double eps = double(std::numeric_limits<float>::epsilon());
-            ASSERT( eckit::types::is_approximately_greater_or_equal(w1, 0., eps) );
-            ASSERT( eckit::types::is_approximately_greater_or_equal(w2, 0., eps) );
-            ASSERT( eckit::types::is_approximately_greater_or_equal(w3, 0., eps) );
-            ASSERT( eckit::types::is_approximately_greater_or_equal(w4, 0., eps) );
-            ASSERT( eckit::types::is_approximately_greater_or_equal(wt, 0., eps) );
-            ASSERT( eckit::types::is_approximately_greater_or_equal(wb, 0., eps) );
+            triplets_t trip({ WeightMatrix::Triplet( i, bot_i_rgt, w_br ),
+                              WeightMatrix::Triplet( i, bot_i_lft, w_bl ),
+                              WeightMatrix::Triplet( i, top_i_rgt, w_tr ),
+                              WeightMatrix::Triplet( i, top_i_lft, w_tl ) });
 
-            const double sum = w_br + w_bl + w_tr + w_tl;
-
-            ASSERT( sum > 0. );
-
-            w_br /=  sum;
-            w_bl /=  sum;
-            w_tr /=  sum;
-            w_tl /=  sum;
-
-//            outfile << std::fixed
-//                    << " " << (size_t) ( lat * 100 ) << " "
-//                    << fabs(w_tl) << " "
-//                    << fabs(w_tr) << " "
-//                    << fabs(w_bl) << " "
-//                    << fabs(w_br) << std::endl;
-
-            weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_rgt, w_br ) );
-            weights_triplets.push_back( WeightMatrix::Triplet( i, bot_i_lft, w_bl ) );
-            weights_triplets.push_back( WeightMatrix::Triplet( i, top_i_rgt, w_tr ) );
-            weights_triplets.push_back( WeightMatrix::Triplet( i, top_i_lft, w_tl ) );
-
+            // insert local point weights (normalized) into matrix "filler"
+            normalise(trip);
+            std::copy(trip.begin(), trip.end(), std::back_inserter(triplets));
         }
 
+        ++i;
     }
 
     // outfile.close();
 
-    eckit::linalg::SparseMatrix M(onpts, inpts, weights_triplets); // build matrix
-
-    W.swap(M);
+    // fill sparse matrix
+    W.setFromTriplets(triplets);
 }
 
 

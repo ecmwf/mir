@@ -40,29 +40,27 @@ StructuredMethod::~StructuredMethod() {
 
 
 void StructuredMethod::left_right_lon_indexes(
-    const double& in,
-    const std::vector<atlas::PointLonLat>& coords,
-    const size_t start,
-    const size_t end,
-    size_t& left,
-    size_t& right) const {
+        Longitude& in,
+        const std::vector<point_ll_t>& coords,
+        const size_t start,
+        const size_t end,
+        size_t& left,
+        size_t& right ) const {
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
 
-    eckit::types::CompareApproximatelyEqual<double> eq(10e-10);  //FIXME
-
     right = start; // take the first if there's a wrap
     left  = start;
 
-    double right_lon = 360.;
-//    double left_lon  =   0.;
+    Longitude right_lon = 360.;
+//    Longitude left_lon  =   0.;
     for (size_t i = start; i < end; ++i) {
 
-        const double& val = coords[i].data()[LON];
+        const Longitude& val = coords[i].second;
         ASSERT((0. <= val) && (val <= 360.));
 
-        if (val < in || eq(val, in)) {
+        if (val <= in) {
 //            left_lon = val;
             left     = i;
         } else if (val < right_lon) {
@@ -75,7 +73,7 @@ void StructuredMethod::left_right_lon_indexes(
     ASSERT(left  >= start);
     ASSERT(right >= start);
     ASSERT(right != left);
-    ASSERT(eq(coords[left].lat(), coords[right].lat()));
+    ASSERT(coords[left].first == coords[right].first);
 }
 
 
@@ -84,15 +82,15 @@ void StructuredMethod::normalise(triplets_t& triplets) const {
     ASSERT(triplets.size());
 
     // sum all calculated weights for normalisation
-    double sum = 0.0;
-    for (size_t j = 0; j < triplets.size(); ++j) {
-        sum += triplets[j].value();
+    double sum = 0.;
+    for (const eckit::linalg::Triplet& t: triplets) {
+        sum += t.value();
     }
 
     // now normalise all weights according to the total
     const double invSum = 1.0 / sum;
-    for (size_t j = 0; j < triplets.size(); ++j) {
-        triplets[j].value() *= invSum;
+    for (eckit::linalg::Triplet& t: triplets) {
+        t.value() *= invSum;
     }
 }
 
@@ -131,7 +129,6 @@ void StructuredMethod::boundWestEast(size_t& iWest, size_t& iEast, const double&
 
 void StructuredMethod::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
     util::MIRGrid in = rin.grid();
-    util::MIRGrid out = rout.grid();
 
     eckit::Log::debug<LibMir>() << "StructuredMethod::assemble (input: " << rin << ", output: " << rout << ")..." << std::endl;
 
@@ -139,7 +136,7 @@ void StructuredMethod::assemble(WeightMatrix& W, const repres::Representation& r
     if (!in.domain().isGlobal()) {
         throw eckit::UserError("This interpolation method is only for global input grids.", Here());
     }
-    if (!out.domain().isGlobal()) {
+    if (!rout.domain().isGlobal()) {
         throw eckit::UserError("This interpolation method is only for global output grids.", Here());
     }
 
@@ -148,7 +145,7 @@ void StructuredMethod::assemble(WeightMatrix& W, const repres::Representation& r
         throw eckit::UserError("This interpolation method is only for Structured grids as input.", Here());
     }
 
-    assemble(W, gin, out);
+    assemble(W, gin, rout);
     eckit::Log::debug<LibMir>() << "StructuredMethod::assemble." << std::endl;
 }
 

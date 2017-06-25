@@ -31,7 +31,7 @@ public:
 
 private:
 
-    void assemble(WeightMatrix&, const atlas::grid::StructuredGrid& in, const util::MIRGrid& out) const;
+    void assemble(WeightMatrix&, const atlas::grid::StructuredGrid& in, const repres::Representation& rout) const;
 
     const char* name() const;
 

@@ -16,8 +16,9 @@
 #include "mir/method/FiniteElement.h"
 
 #include <algorithm>
-#include <limits>
 #include <forward_list>
+#include <limits>
+#include <tuple>
 #include "eckit/config/Resource.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/ETA.h"
@@ -31,17 +32,18 @@
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/PointIndex3.h"
 #include "atlas/interpolation/method/Ray.h"
-#include "atlas/mesh/ElementType.h"
-#include "atlas/mesh/Elements.h"
-#include "atlas/mesh/Nodes.h"
 #include "atlas/mesh/actions/BuildCellCentres.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/mesh/Elements.h"
+#include "atlas/mesh/ElementType.h"
+#include "atlas/mesh/Nodes.h"
 #include "atlas/output/Gmsh.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/AddParallelEdgesConnectivity.h"
-#include "mir/util/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/MIRGrid.h"
 
 
 namespace mir {
@@ -58,10 +60,9 @@ static const double maxFractionElemsToTry = 0.2;
 static const double parametricEpsilon = 1e-16;
 
 
-using eckit::geometry::LON;
-using eckit::geometry::LAT;
 typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
 typedef atlas::interpolation::method::ElemIndex3 element_tree_t;
+typedef std::tuple< size_t, Latitude, Longitude > failed_projection_t;
 
 
 struct MeshStats {
@@ -297,9 +298,9 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
     }
 
 
-    // output mesh
+    // output points
     atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
-    atlas::array::ArrayView<double, 2> olonlat = atlas::array::make_view< double, 2 >(out.coordsLonLat());
+    const eckit::ScopedPtr<repres::Iterator> it(rout.unrotatedIterator());
 
 
     MeshStats stats;
@@ -319,14 +320,18 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
     size_t nbElementsSearched = 0;
     size_t nbProjections = 0;
     size_t nbFailures = 0;
-    std::forward_list<size_t> failures;
+    std::forward_list<failed_projection_t> failures;
 
     {
         eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << rin << std::endl;
         eckit::TraceTimer<LibMir> timerProj("Projecting");
 
         const atlas::mesh::HybridElements::Connectivity& connectivity = in.mesh().cells().node_connectivity();
-        for ( size_t ip = 0; ip < stats.out_npts; ++ip ) {
+        Latitude lat;
+        Longitude lon;
+        size_t ip = 0;
+        while (it->next(lat, lon)) {
+            ASSERT(ip < stats.out_npts);
 
             if (ip && (ip % 10000 == 0)) {
                 double rate = ip / timerProj.elapsed();
@@ -337,7 +342,7 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
                         << std::endl;
             }
 
-            if (inDomain.contains(olonlat(ip, LAT), olonlat(ip, LON))) {
+            if (inDomain.contains(lat, lon)) {
                 bool success = false;
 
                 // 3D point to lookup
@@ -370,10 +375,12 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
 
                 if (!success) {
                     // If this fails, consider lowering atlas::grid::parametricEpsilon
-                    failures.push_front(ip);
+                    failures.push_front(failed_projection_t(ip, lat, lon));
                     ++nbFailures;
                 }
             }
+
+            ++ip;
         }
     }
 
@@ -389,8 +396,8 @@ void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin,
         msg << "Failed to project " << eckit::Plural(nbFailures, "point");
         eckit::Log::debug<LibMir>() << msg.str() << ":";
         size_t count = 0;
-        for (const size_t& ip: failures) {
-            eckit::Log::debug<LibMir>() << "\n\tpoint " << ip << " (lon, lat) = (" << olonlat(ip, LON) << ", " << olonlat(ip, LAT) << ")";
+        for (const failed_projection_t& f: failures) {
+            eckit::Log::debug<LibMir>() << "\n\tpoint " << std::get<0>(f) << " (lon, lat) = (" << std::get<2>(f) << ", " << std::get<1>(f) << ")";
             if (++count > 10) {
                 eckit::Log::debug<LibMir>() << "\n\t...";
                 break;

@@ -67,8 +67,6 @@ public:
     operator const atlas::Grid&() const;
     const Domain& domain() const;
     atlas::Mesh& mesh() const;
-
-    const atlas::array::Array& coordsLonLat() const;
     const atlas::array::Array& coordsXYZ() const;
 
     void hash(eckit::MD5&) const;
@@ -88,7 +86,6 @@ private:
     const MeshGenParams meshGenParams_;
 
     mutable atlas::Mesh mesh_;
-    mutable eckit::ScopedPtr< atlas::array::Array > coordsLonLat_;
     mutable eckit::ScopedPtr< atlas::array::Array > coordsXYZ_;
 
 };

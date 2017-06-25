@@ -192,7 +192,9 @@ private:
     friend bool operator!=(double, const Latitude& other);
 
     friend bool operator>(double, const Latitude& other);
-    friend bool operator<(double, const Latitude& other);
+    friend bool operator<(double value, const Latitude& other) {
+        return value < other.value();
+    }
 
     friend bool operator>=(double, const Latitude& other);
     friend bool operator<=(double, const Latitude& other);
