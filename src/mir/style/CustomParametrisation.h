@@ -37,7 +37,8 @@ public:
 
 // -- Contructors
 
-    CustomParametrisation( const std::map<std::string, std::vector<std::string> >& params,
+    CustomParametrisation( const std::string& name,
+        const std::map<std::string, std::vector<std::string> >& params,
                            const param::MIRParametrisation &parametrisation);
 
 // -- Destructor
@@ -111,6 +112,8 @@ private:
     CustomParametrisation& operator=(const CustomParametrisation&);
 
 // -- Members
+
+    std::string name_;
 
     std::map<std::string, std::vector<std::string> > params_;
     const param::MIRParametrisation &parametrisation_;

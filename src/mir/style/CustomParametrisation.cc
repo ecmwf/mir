@@ -29,8 +29,10 @@ namespace style {
 
 //==========================================================
 CustomParametrisation::CustomParametrisation(
+    const std::string& name,
     const std::map<std::string, std::vector<std::string> >& params,
     const param::MIRParametrisation &parametrisation):
+    name_(name),
     params_(params),
     parametrisation_(parametrisation) {
 }
@@ -55,7 +57,7 @@ static void fill(std::vector<T>& value, const std::vector<std::string>& params) 
 
     eckit::Translator<std::string, T> t;
 
-    for(auto j = params.begin(); j != params.end(); ++j) {
+    for (auto j = params.begin(); j != params.end(); ++j) {
         value.push_back(t(*j));
     }
 }
@@ -64,15 +66,27 @@ static void fill(std::vector<T>& value, const std::vector<std::string>& params) 
 template<class T>
 bool CustomParametrisation::_get(const std::string& name,  T& value) const {
 
+
+    std::cout << "+++++++++++++ CustomParametrisation[" << name_
+              << " get ["
+              << name
+              << "]"
+              << std::endl;
+
     auto j = params_.find(name);
     if (j != params_.end()) {
         fill(value, (*j).second);
         return true;
     }
 
-    // if (name.find("user.") == 0) {
-    //     return _get(name.substr(5), value);
-    // }
+    if (name.find("user.") == 0) {
+
+        auto j = params_.find(name.substr(5));
+        if (j != params_.end()) {
+            fill(value, (*j).second);
+            return true;
+        }
+    }
 
     return parametrisation_.get(name, value);
 }
@@ -131,7 +145,11 @@ bool CustomParametrisation::get(const std::string& name, std::vector<std::string
 
 
 void CustomParametrisation::print(std::ostream &out) const {
-    out << "CustomParametrisation[" << params_ << "]";
+    out << "CustomParametrisation[name="
+        << name_
+        << ",params="
+        << params_
+        << "]";
 }
 
 }  // namespace param

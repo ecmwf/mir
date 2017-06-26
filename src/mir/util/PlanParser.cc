@@ -46,7 +46,9 @@ void PlanParser::parseAction(action::ActionPlan &plan, const
                              param::MIRParametrisation &parametrisation) {
 
     std::string name = parseToken();
-    plan.add(name, new style::CustomParametrisation(parseArguments(name), parametrisation));
+    plan.add(name, new style::CustomParametrisation(name,
+             parseArguments(name),
+             parametrisation));
 
 }
 
@@ -77,15 +79,15 @@ std::map<std::string, std::vector<std::string> > PlanParser::parseArguments(cons
 
                 c = peek();
                 if (c == '[') {
-                    result["user." + name] = parseValues();
+                    result[name] = parseValues();
                 }
                 else {
-                    result["user." + name].push_back(parseToken());
+                    result[name].push_back(parseToken());
                 }
             } else {
                 // Implicty name is action
                 // e.g. frame(1) same as frame(frame=1)
-                result["user." + action].push_back(name);
+                result[action].push_back(name);
             }
             c = peek();
             if (c == ',') {
