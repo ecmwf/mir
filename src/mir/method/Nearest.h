@@ -33,7 +33,7 @@ public:
 
 protected:
 
-    virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
 private:
 

@@ -107,16 +107,19 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const util:
 }
 
 
-void Conservative::assemble(WeightMatrix& W, const repres::Representation& rin,
-                            const repres::Representation& rout) const {
-    util::MIRGrid in(rin.grid(meshgenparams_));
-    util::MIRGrid out(rout.grid(meshgenparams_));
+void Conservative::assemble(
+        util::MIRStatistics& statistics,
+        WeightMatrix& W,
+        const repres::Representation& rin,
+        const repres::Representation& rout ) const {
+    util::MIRGrid in(rin.grid(statistics, meshgenparams_));
+    util::MIRGrid out(rout.grid(statistics, meshgenparams_));
 
     eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
     WeightMatrix IM(in.size(), out.size());
-    FELinear::assemble(IM, rout, rin);
+    FELinear::assemble(statistics, IM, rout, rin);
     eckit::Log::debug<LibMir>() << "IM rows " << IM.rows() << " cols " << IM.cols() << std::endl;
     //    IM.save("IM.mat");
 

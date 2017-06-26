@@ -127,7 +127,7 @@ void StructuredMethod::boundWestEast(size_t& iWest, size_t& iEast, const double&
 }
 
 
-void StructuredMethod::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+void StructuredMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
     util::MIRGrid in = rin.grid();
 
     eckit::Log::debug<LibMir>() << "StructuredMethod::assemble (input: " << rin << ", output: " << rout << ")..." << std::endl;

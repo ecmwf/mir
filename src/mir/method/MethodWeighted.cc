@@ -385,7 +385,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx,
         parametrisation_.get("prune-epsilon", pruneEpsilon);
 
         eckit::TraceTimer<LibMir> timer("Assemble matrix");
-        assemble(W, in, out);
+        assemble(ctx.statistics(), W, in, out);
         W.cleanup(pruneEpsilon);
     }
 }

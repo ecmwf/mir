@@ -27,12 +27,12 @@
 #include "mir/config/LibMir.h"
 #include "mir/util/MIRStatistics.h"
 
-
 namespace mir {
 namespace util {
 
 
 namespace {
+static util::MIRStatistics dummyStatistics;
 static eckit::Mutex local_mutex;
 static InMemoryCache<atlas::Mesh> mesh_cache(
         "mirMesh",
@@ -50,28 +50,34 @@ MIRGrid::MeshGenParams::MeshGenParams() {
 }
 
 
-MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain, const MeshGenParams& meshGenParams) :
+
+MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain) :
     grid_(grid),
     domain_(domain),
-    meshGenParams_(meshGenParams),
+    statistics_(dummyStatistics),
     coordsXYZ_(0) {
 }
 
 
-MIRGrid::MIRGrid(const MIRGrid& other) {
-    operator=(other);
+MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain, util::MIRStatistics& statistics, const MeshGenParams& meshGenParams) :
+    grid_(grid),
+    domain_(domain),
+    meshGenParams_(meshGenParams),
+    statistics_(statistics),
+    coordsXYZ_(0) {
 }
 
 
-MIRGrid& MIRGrid::operator=(const MIRGrid& other) {
-    const_cast<atlas::Grid&>(grid_)            = other.grid_;
-    const_cast<Domain&>(domain_)               = other.domain_;
-    const_cast<MeshGenParams&>(meshGenParams_) = other.meshGenParams_;
+MIRGrid::MIRGrid(const MIRGrid& other) :
+    statistics_(other.statistics_) {
+
+    grid_   = other.grid_;
+    domain_ = other.domain_;
+
+    meshGenParams_ = other.meshGenParams_;
 
     mesh_ = atlas::Mesh();
     coordsXYZ_.reset();
-
-    return *this;
 }
 
 
@@ -96,9 +102,7 @@ atlas::Mesh& MIRGrid::mesh() const {
 
 atlas::Mesh MIRGrid::generateMeshAndCache() const {
     eckit::ResourceUsage usage("MESH for " + std::to_string(grid_));
-
-    MIRStatistics dummy; // TODO: use the global one
-    InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, dummy.meshCache_ /*statistics.meshCache_*/);
+    InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics_.meshCache_);
 
     eckit::MD5 md5;
     hash(md5);

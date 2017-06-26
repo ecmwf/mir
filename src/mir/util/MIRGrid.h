@@ -30,8 +30,8 @@ namespace eckit {
 class MD5;
 }
 namespace mir {
-namespace repres {
-class Representation;
+namespace util {
+class MIRStatistics;
 }
 }
 
@@ -54,13 +54,10 @@ public:
 
     // -- Contructors
 
-    explicit MIRGrid(const atlas::Grid& grid, const Domain&, const MeshGenParams& = MeshGenParams());
+    explicit MIRGrid(const atlas::Grid&, const Domain&);
+    explicit MIRGrid(const atlas::Grid&, const Domain&, util::MIRStatistics&, const MeshGenParams&);
 
     MIRGrid(const MIRGrid&);
-
-    // -- Operators
-
-    MIRGrid& operator=(const MIRGrid&);
 
     // -- Methods
 
@@ -81,9 +78,11 @@ private:
 
     // -- Members
 
-    const atlas::Grid grid_;
-    const Domain domain_;
-    const MeshGenParams meshGenParams_;
+    atlas::Grid grid_;
+    Domain domain_;
+
+    MeshGenParams meshGenParams_;
+    util::MIRStatistics& statistics_;
 
     mutable atlas::Mesh mesh_;
     mutable eckit::ScopedPtr< atlas::array::Array > coordsXYZ_;

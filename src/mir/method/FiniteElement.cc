@@ -246,10 +246,10 @@ void FiniteElement::hash(eckit::MD5&) const {
 }
 
 
-void FiniteElement::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
 
-    util::MIRGrid in(rin.grid(meshgenparams_));
-    util::MIRGrid out(rout.grid(meshgenparams_));
+    util::MIRGrid in(rin.grid(statistics, meshgenparams_));
+    util::MIRGrid out(rout.grid(statistics, meshgenparams_));
 
     eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
 

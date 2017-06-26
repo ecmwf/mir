@@ -41,7 +41,7 @@ protected:
 
     void hash(eckit::MD5&) const;
 
-    void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
     void computeLumpedMassMatrix(eckit::linalg::Vector&, const util::MIRGrid&) const;
 
