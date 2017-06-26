@@ -23,7 +23,6 @@
 #include <sstream>
 #include <string>
 #include "eckit/log/Plural.h"
-#include "eckit/log/ResourceUsage.h"
 #include "eckit/utils/MD5.h"
 #include "atlas/grid.h"
 #include "atlas/mesh/Mesh.h"
@@ -46,20 +45,14 @@ using mir::util::compare::is_approx_one;
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 namespace {
 static eckit::Mutex local_mutex;
-
 static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix",
         512 * 1024 * 1024,
         "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
+}  // (anonymous namespace)
 
-static InMemoryCache<atlas::Mesh> mesh_cache("mirMesh",
-        512 * 1024 * 1024,
-        "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
-
-}
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) :
     Method(parametrisation) {
@@ -70,54 +63,6 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
 MethodWeighted::~MethodWeighted() {
 }
 
-atlas::Mesh& MethodWeighted::generateMeshAndCache(const atlas::Grid& grid) const {
-
-    std::ostringstream oss;
-    oss << "MESH for " << grid;
-    eckit::ResourceUsage usage(oss.str());
-
-    eckit::Log::info() << "MESH for " << grid << std::endl;
-
-
-    eckit::MD5 md5;
-    grid.hash(md5);
-
-    hash(md5); // this adds mesh generator settings to make it trully unique key
-
-//    if((mesh = mir::caching::MeshCache::get(md5.digest()))) { return mesh; }
-
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    InMemoryCache<atlas::Mesh>::iterator j = mesh_cache.find(md5);
-    if (j != mesh_cache.end()) {
-        return *j;
-    }
-
-    atlas::Mesh& mesh = mesh_cache[md5];
-
-    try {
-        generateMesh(grid, mesh);
-    }
-    catch (...) {
-        // Make sure we don't leave an incomplete entry in the cache
-        mesh_cache.erase(md5);
-        throw;
-    }
-
-    mesh_cache.footprint(md5, mesh.footprint());
-
-    return mesh;
-}
-
-void MethodWeighted::generateMesh(const atlas::Grid& g,
-                                  atlas::Mesh& mesh) const {
-
-    std::ostringstream oss;
-    oss << "Method " << name()
-        << " needs a mesh() but does not implement generateMesh()"
-        << std::endl;
-
-    throw eckit::SeriousBug(oss.str(), Here());
-}
 
 void MethodWeighted::createMatrix(context::Context& ctx,
                                   const repres::Representation& in,
@@ -436,13 +381,11 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx,
         eckit::Log::debug<LibMir>() << "Matrix is indentity" << std::endl;
         W.setIdentity(W.rows(), W.cols());
     } else {
-        InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, ctx.statistics().meshCache_);
-
         double pruneEpsilon = 0;
         parametrisation_.get("prune-epsilon", pruneEpsilon);
 
         eckit::TraceTimer<LibMir> timer("Assemble matrix");
-        assemble(W, in, out);
+        assemble(ctx.statistics(), W, in, out);
         W.cleanup(pruneEpsilon);
     }
 }

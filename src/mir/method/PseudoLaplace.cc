@@ -60,7 +60,7 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
 }
 
 
-void PseudoLaplace::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
     util::MIRGrid in(rin.grid());
     util::MIRGrid out(rout.grid());
 

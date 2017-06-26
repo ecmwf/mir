@@ -33,6 +33,9 @@ class LandSeaMasks;
 namespace repres {
 class Representation;
 }
+namespace util {
+class MIRStatistics;
+}
 }
 
 
@@ -52,10 +55,6 @@ public:
 
     virtual void hash(eckit::MD5&) const;
 
-    atlas::Mesh& generateMeshAndCache(const atlas::Grid& grid) const;
-
-    virtual void generateMesh(const atlas::Grid &grid, atlas::Mesh&) const;
-
 protected:
 
     virtual const WeightMatrix& getMatrix(context::Context&, const repres::Representation& in, const repres::Representation& out) const;
@@ -64,7 +63,7 @@ private:
 
     virtual const char *name() const = 0;
 
-    virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const = 0;
+    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
     void applyMissingValues(const WeightMatrix& W, const std::vector<double>& values, const double& missingValue, WeightMatrix& MW) const;

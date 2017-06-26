@@ -45,7 +45,7 @@ const char *NearestLSM::name() const {
 }
 
 
-void NearestLSM::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+void NearestLSM::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
 
     util::MIRGrid in(rin.grid());
     util::MIRGrid out(rout.grid());

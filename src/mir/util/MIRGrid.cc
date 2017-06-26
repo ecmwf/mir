@@ -17,34 +17,67 @@
 #include "mir/util/MIRGrid.h"
 
 #include "eckit/geometry/Point3.h"
-#include "atlas/array.h"
-#include "atlas/mesh/Mesh.h"
-#include "mir/method/MethodWeighted.h"
+#include "eckit/log/ResourceUsage.h"
+#include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
-
+#include "atlas/array.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/mesh/Mesh.h"
+#include "mir/caching/InMemoryCache.h"
+#include "mir/config/LibMir.h"
+#include "mir/util/MIRStatistics.h"
 
 namespace mir {
 namespace util {
 
 
-MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain) :
-    domain_(domain),
-    grid_(grid),
-    mesh_(0),
-    coordsLonLat_(0) {
+namespace {
+static util::MIRStatistics dummyStatistics;
+static eckit::Mutex local_mutex;
+static InMemoryCache<atlas::Mesh> mesh_cache(
+        "mirMesh",
+        512 * 1024 * 1024,
+        "$MIR_MESH_CACHE_MEMORY_FOOTPRINT" );
+}  // (anonymous namespace)
+
+
+MIRGrid::MeshGenParams::MeshGenParams() {
+    set("three_dimensional", true);
+    set("patch_pole",        true);
+    set("include_pole",      false);
+    set("angle",             0.);
+    set("triangulate",       false);
 }
 
+
+
+MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain) :
+    grid_(grid),
+    domain_(domain),
+    statistics_(dummyStatistics),
+    coordsXYZ_(0) {
+}
+
+
+MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain, util::MIRStatistics& statistics, const MeshGenParams& meshGenParams) :
+    grid_(grid),
+    domain_(domain),
+    meshGenParams_(meshGenParams),
+    statistics_(statistics),
+    coordsXYZ_(0) {
+}
 
 
 MIRGrid::MIRGrid(const MIRGrid& other) :
-    domain_(other.domain_),
-    grid_(other.grid_),
-    mesh_(0),
-    coordsLonLat_(0) {
-}
+    statistics_(other.statistics_) {
 
-const Domain& MIRGrid::domain() const {
-    return domain_;
+    grid_   = other.grid_;
+    domain_ = other.domain_;
+
+    meshGenParams_ = other.meshGenParams_;
+
+    mesh_ = atlas::Mesh();
+    coordsXYZ_.reset();
 }
 
 
@@ -53,30 +86,52 @@ MIRGrid::operator const atlas::Grid&() const {
 }
 
 
-atlas::Mesh& MIRGrid::mesh(const method::MethodWeighted& method) const {
-    if (mesh_ == 0) {
-        mesh_ = &(method.generateMeshAndCache(grid_));
-    }
-    return *mesh_;
+const Domain& MIRGrid::domain() const {
+    return domain_;
 }
 
 
-const atlas::array::Array& MIRGrid::coordsLonLat() const {
-    using namespace atlas::array;
+atlas::Mesh& MIRGrid::mesh() const {
+    if (!mesh_.generated()) {
+        mesh_ = generateMeshAndCache();
+        ASSERT(mesh_.generated());
+    }
+    return mesh_;
+}
 
-    if (!coordsLonLat_) {
-        coordsLonLat_.reset(Array::create< double >(grid_.size(), 2));
-        ArrayView< double, 2 > lonlat = make_view< double, 2 >(*coordsLonLat_);
 
-        size_t i = 0;
-        for (atlas::PointLonLat p : grid_.lonlat()) {
-            lonlat(i, 0) = p.lon();
-            lonlat(i, 1) = p.lat();
-            ++i;
-        }
+atlas::Mesh MIRGrid::generateMeshAndCache() const {
+    eckit::ResourceUsage usage("MESH for " + std::to_string(grid_));
+    InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics_.meshCache_);
+
+    eckit::MD5 md5;
+    hash(md5);
+
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    InMemoryCache<atlas::Mesh>::iterator j = mesh_cache.find(md5);
+    if (j != mesh_cache.end()) {
+        return *j;
     }
 
-    return *coordsLonLat_;
+    atlas::Mesh& mesh = mesh_cache[md5];
+    try {
+
+        atlas::MeshGenerator generator(meshGenParams_.meshGenerator_, meshGenParams_);
+        mesh = generator.generate(grid_);
+
+        // If meshgenerator did not create xyz field already, do it now.
+        atlas::mesh::actions::BuildXYZField()(mesh);
+
+    }
+    catch (...) {
+        // Make sure we don't leave an incomplete entry in the cache
+        mesh_cache.erase(md5);
+        throw;
+    }
+
+    mesh_cache.footprint(md5, mesh.footprint());
+
+    return mesh;
 }
 
 
@@ -100,19 +155,13 @@ const atlas::array::Array& MIRGrid::coordsXYZ() const {
     return *coordsXYZ_;
 }
 
-void MIRGrid::hash(eckit::MD5 &md5) const {
-    md5 << grid_ << domain_;
-}
-/*
-std::string MIRGrid::name() const {
-    return grid_.name();
+
+void MIRGrid::hash(eckit::MD5& md5) const {
+    // TODO: make MeshGenParams::hash
+    md5 << grid_ << domain_ << meshGenParams_ << meshGenParams_.meshGenerator_;
 }
 
 
-std::string MIRGrid::uid() const {
-    return grid_.uid();
-}
-*/
 size_t MIRGrid::size() const {
     return grid_.size();
 }

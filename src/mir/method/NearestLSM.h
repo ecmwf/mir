@@ -35,7 +35,7 @@ private:
 
     virtual const char *name() const;
 
-    virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
     /// Update interpolation weigths matrix to account for field masked values
     virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;

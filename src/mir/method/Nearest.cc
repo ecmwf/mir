@@ -26,10 +26,12 @@
 #include "eckit/log/Timer.h"
 #include "atlas/grid.h"
 #include "mir/config/LibMir.h"
-#include "mir/util/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/PointSearch.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/MIRGrid.h"
+#include "mir/util/PointSearch.h"
+
 
 namespace mir {
 namespace method {
@@ -49,7 +51,7 @@ const char *Nearest::name() const {
 }
 
 
-void Nearest::assemble(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+void Nearest::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
     util::MIRGrid in(rin.grid());
     util::MIRGrid out(rout.grid());
 
@@ -60,15 +62,16 @@ void Nearest::assemble(WeightMatrix& W, const repres::Representation& rin, const
     using eckit::geometry::LAT;
 
     const size_t nclosest = this->nclosest();
+    const size_t out_npts = out.size();
 
     const util::PointSearch sptree(in);
 
     const util::Domain& inDomain = in.domain();
+    const eckit::ScopedPtr<repres::Iterator> it(rout.unrotatedIterator());
+
 
     atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
-    atlas::array::ArrayView<double, 2> olonlat = atlas::array::make_view< double, 2 >(out.coordsLonLat());
 
-    const size_t out_npts = out.size();
     double nearest = 0;
     double push_back = 0;
 
@@ -82,7 +85,11 @@ void Nearest::assemble(WeightMatrix& W, const repres::Representation& rin, const
     std::vector<double> weights;
     weights.reserve(nclosest);
 
-    for (size_t ip = 0; ip < out_npts; ++ip) {
+    Latitude lat;
+    Longitude lon;
+    size_t ip = 0;
+    while (it->next(lat, lon)) {
+        ASSERT(ip < out_npts);
 
         if (ip && (ip % 50000 == 0)) {
             double rate = ip / timer.elapsed();
@@ -98,7 +105,7 @@ void Nearest::assemble(WeightMatrix& W, const repres::Representation& rin, const
             nearest = push_back = 0;
         }
 
-        if (!inDomain.contains(olonlat(ip, LAT), olonlat(ip, LON))) {
+        if (!inDomain.contains(lat, lon)) {
             continue;
         }
 
@@ -113,10 +120,10 @@ void Nearest::assemble(WeightMatrix& W, const repres::Representation& rin, const
         const size_t npts = closest.size();
 
         // then calculate the nearest neighbour weights
-        weights.resize(npts, 0.0);
+        weights.resize(npts, 0.);
 
         // sum all calculated weights for normalisation
-        double sum = 0.0;
+        double sum = 0.;
 
         for (size_t j = 0; j < npts; ++j) {
             // one of the closest points
@@ -145,6 +152,8 @@ void Nearest::assemble(WeightMatrix& W, const repres::Representation& rin, const
             push_back += timer.elapsed() - t;
 
         }
+
+        ++ip;
     }
 
     // fill-in sparse matrix

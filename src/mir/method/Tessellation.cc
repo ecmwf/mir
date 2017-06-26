@@ -15,8 +15,6 @@
 
 #include "mir/method/Tessellation.h"
 
-#include "eckit/log/ResourceUsage.h"
-
 
 namespace mir {
 namespace method {
@@ -24,6 +22,7 @@ namespace method {
 
 Tessellation::Tessellation(const param::MIRParametrisation &param) :
     FiniteElement(param) {
+    meshgenparams_.meshGenerator_ = "delaunay";
 }
 
 
@@ -38,14 +37,6 @@ const char *Tessellation::name() const {
 
 void Tessellation::hash( eckit::MD5 &md5) const {
     FiniteElement::hash(md5);
-}
-
-
-void Tessellation::generateMesh(const atlas::Grid &grid, atlas::Mesh &mesh) const {
-    eckit::ResourceUsage usage("Tessellation::generateMesh");
-
-    atlas::MeshGenerator generator("delaunay", meshgenparams_);
-    mesh = generator.generate(grid);
 }
 
 
