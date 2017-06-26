@@ -86,6 +86,7 @@ private:
 private:
 
     double lsmWeightAdjustement_;
+    double pruneEpsilon_;
 
 };
 

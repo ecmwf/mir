@@ -19,6 +19,7 @@
 #include "mir/method/MethodWeighted.h"
 
 #include <algorithm>
+#include <ios>
 #include <map>
 #include <sstream>
 #include <string>
@@ -32,11 +33,11 @@
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/util/MIRGrid.h"
 #include "mir/method/decompose/Decompose.h"
-#include "mir/util/Compare.h"
-#include "mir/util/MIRStatistics.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Compare.h"
+#include "mir/util/MIRGrid.h"
+#include "mir/util/MIRStatistics.h"
 
 using mir::util::compare::is_approx_zero;
 using mir::util::compare::is_approx_one;
@@ -57,6 +58,9 @@ static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix",
 MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) :
     Method(parametrisation) {
     ASSERT(parametrisation.get("lsm-weight-adjustment", lsmWeightAdjustement_));
+
+    pruneEpsilon_ = 0;
+    ASSERT(parametrisation_.get("prune-epsilon", pruneEpsilon_));
 }
 
 
@@ -114,10 +118,15 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     ASSERT(!shortName_in.empty());
     ASSERT(!shortName_out.empty());
 
+    std::ostringstream base_name;
+    base_name << name()
+              << "-" << shortName_in
+              << "-" << shortName_out
+              << "-eps:" << std::scientific << pruneEpsilon_
+              << "-lwa:" << std::fixed << lsmWeightAdjustement_;
 
-    const std::string base_name      = std::string(name()) + "-" + shortName_in + "-" + shortName_out;
-    const std::string key_no_masks   = base_name + "-"      + md5_no_masks;
-    const std::string key_with_masks = base_name +  "-LSM-" + md5_with_masks;
+    const std::string key_no_masks   = base_name.str() + "-"      + md5_no_masks;
+    const std::string key_with_masks = base_name.str() +  "-LSM-" + md5_with_masks;
 
     InMemoryCache<WeightMatrix>::iterator j = matrix_cache.find(key_with_masks);
     if (j != matrix_cache.end()) {
@@ -381,12 +390,9 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx,
         eckit::Log::debug<LibMir>() << "Matrix is indentity" << std::endl;
         W.setIdentity(W.rows(), W.cols());
     } else {
-        double pruneEpsilon = 0;
-        parametrisation_.get("prune-epsilon", pruneEpsilon);
-
         eckit::TraceTimer<LibMir> timer("Assemble matrix");
         assemble(ctx.statistics(), W, in, out);
-        W.cleanup(pruneEpsilon);
+        W.cleanup(pruneEpsilon_);
     }
 }
 
