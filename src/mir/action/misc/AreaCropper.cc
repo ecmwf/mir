@@ -158,7 +158,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
 
 
     c.bbox_ = util::BoundingBox(n, w, s, e);
-    std::cout << "BoundingBox " << c.bbox_ << std::endl;
+    eckit::Log::debug() << "Creating cropping cache entry for " << c.bbox_ << std::endl;
 
     c.mapping_.clear();
     c.mapping_.reserve(m.size());
