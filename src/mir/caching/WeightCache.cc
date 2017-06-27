@@ -65,9 +65,8 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
     InterpolatorLoader* loader_ = InterpolatorLoaderFactory::build(manager.loader(), path);
 
     bool notown = true;
-    eckit::Buffer buffer(const_cast<void*>(loader_->address()), loader_->size(), notown);
 
-    value_type w(buffer);
+    value_type w(loader_->address(), loader_->size());
     std::swap(W, w);
 
     W.validate("fromCache");

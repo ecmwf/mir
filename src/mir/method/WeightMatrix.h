@@ -52,6 +52,8 @@ public: // methods
 
     WeightMatrix(const eckit::Buffer& buffer);
 
+    WeightMatrix(const void* buffer, size_t size);
+
     void setFromTriplets(const std::vector<Triplet>&);
 
     void multiply(const Vector& values, Vector& result) const;

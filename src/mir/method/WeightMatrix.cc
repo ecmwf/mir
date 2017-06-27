@@ -49,6 +49,11 @@ WeightMatrix::WeightMatrix(const eckit::Buffer& buffer) :
 {
 }
 
+WeightMatrix::WeightMatrix(const void* buffer, size_t size) :
+    SparseMatrix(buffer, size)
+{
+}
+
 void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& triplets) {
     ASSERT(rows());
     ASSERT(cols());

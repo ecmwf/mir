@@ -226,10 +226,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
             WeightMatrix w(path);
 
-            bool notowned = true;
-            eckit::Buffer buffer(addr + sizeof(SHMInfo), size(), notowned);
-
-            w.dump(buffer);
+            w.dump(addr + sizeof(SHMInfo), size());
 
             // Set info record for checkes
 
@@ -262,10 +259,7 @@ void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path, method::W
 
     SharedMemoryLoader loader("shmem", path);
 
-    bool notown = true;
-    eckit::Buffer buffer(const_cast<void*>(loader.address()), loader.size(), notown);
-
-    WeightMatrix w(buffer);
+    WeightMatrix w(const_cast<void*>(loader.address()), loader.size());
 
     std::swap(w, W);
 }
