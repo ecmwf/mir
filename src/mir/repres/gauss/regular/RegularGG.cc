@@ -19,6 +19,12 @@
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/util/Domain.h"
 
+#include "atlas/library/config.h"
+
+#ifdef ATLAS_HAVE_TRANS
+#include "transi/trans.h"
+#endif
+
 
 namespace mir {
 namespace repres {
@@ -56,6 +62,19 @@ bool RegularGG::sameAs(const Representation& other) const {
     const RegularGG* o = dynamic_cast<const RegularGG*>(&other);
     return o && Regular::sameAs(other);
 }
+
+
+void RegularGG::initTrans(Trans_t &trans) const {
+#ifdef ATLAS_HAVE_TRANS
+
+    const std::vector<int> pl(Nj_, int(Ni_));
+    ASSERT(trans_set_resol(&trans, int(Nj_), pl.data()) == 0);
+
+#else
+    NOTIMP;
+#endif
+}
+
 
 const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
     return new RegularGG(N_, bbox);
