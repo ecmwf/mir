@@ -40,7 +40,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
 
 
     // open and parse configuration file
-    std::string config_file = "~mir/etc/mir/configuration.yaml";
+    std::string config_file = "~mir/etc/mir/config.yaml";
     job.get("configuration", config_file);
 
     config::MIRConfiguration& config = config::MIRConfiguration::instance();

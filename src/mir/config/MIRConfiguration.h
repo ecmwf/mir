@@ -15,25 +15,18 @@
 #define mir_config_MIRConfiguration_h
 
 #include <iosfwd>
+#include "eckit/filesystem/PathName.h"
 #include "eckit/memory/NonCopyable.h"
-#include "mir/param/InheritParametrisation.h"
-
-
-namespace eckit {
-class PathName;
-}
-namespace mir {
-namespace param {
-class MIRParametrisation;
-}
-}
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/config/ParameterConfiguration.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace config {
 
 
-class MIRConfiguration : private eckit::NonCopyable {
+class MIRConfiguration : public param::MIRParametrisation, private eckit::NonCopyable {
 public:
 
     // -- Exceptions
@@ -62,13 +55,25 @@ public:
     const param::MIRParametrisation& lookup(const long& paramId, const param::MIRParametrisation& metadata) const;
 
     // Configure (or reconfigure) using a file
-    void configure(const eckit::PathName& path="~mir/etc/mir/configuration.yaml");
-
-    // Return configuration defaults
-    const param::MIRParametrisation& defaults() const;
+    void configure(const eckit::PathName& path="~mir/etc/mir/config.yaml");
 
     // -- Overridden methods
-    // None
+
+    // For MIRParametrisation
+    bool has(const std::string& name) const;
+
+    bool get(const std::string& name, std::string& value) const;
+    bool get(const std::string& name, bool& value) const;
+    bool get(const std::string& name, int& value) const;
+    bool get(const std::string& name, long& value) const;
+    bool get(const std::string& name, float& value) const;
+    bool get(const std::string& name, double& value) const;
+
+    bool get(const std::string& name, std::vector<int>& value) const;
+    bool get(const std::string& name, std::vector<long>& value) const;
+    bool get(const std::string& name, std::vector<float>& value) const;
+    bool get(const std::string& name, std::vector<double>& value) const;
+    bool get(const std::string& name, std::vector<std::string>& value) const;
 
 private:
 
@@ -86,8 +91,12 @@ private:
 
     std::string configPath_;
     param::InheritParametrisation root_;
+    eckit::ScopedPtr<ParameterConfiguration> parameterConfiguration_;
 
     // -- Methods
+
+    template<class T>
+    bool _get(const std::string& name, T& value) const;
 
     void print(std::ostream&) const;
 

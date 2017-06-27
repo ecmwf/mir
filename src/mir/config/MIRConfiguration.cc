@@ -15,7 +15,6 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/filesystem/PathName.h"
 #include "eckit/parser/YAMLParser.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -26,33 +25,17 @@ namespace config {
 
 
 namespace  {
-struct Defaults : param::SimpleParametrisation {
+static struct Defaults : param::SimpleParametrisation {
     Defaults() {
         // these options are (can be) overridden by the configuration file
+        set("paramId.u", 131);
+        set("paramId.v", 132);
 
-        set("style", "mars");
-        set("legendre-loader", "mapped-memory");
-        set("interpolator-loader", "file-io");
-        set("executor", "simple");
+        set("parameter-configuration", "~mir/etc/mir/parameter.yaml");
 
-        set("interpolation", "linear"); // The word 'method' is used in grib
-        set("decomposition", "none");
-        set("stats", "scalar");
-        set("caching", true);
-
-        set("prune-epsilon", 1e-10);
-        set("nclosest", 4L);
-
-        set("lsm-selection", "auto");
-        set("lsm-interpolation", "nearest-neighbour");
-        set("lsm-weight-adjustment", 0.2);
-        set("lsm-value-threshold", 0.5);
-
-        set("spectral-mapping", "linear");
-
-        set("tolerance", 1e-10);
+        set("mir-cache-path", std::vector<std::string>({"mir-cache-path;$MIR_CACHE_PATH", "/tmp/cache"}));
     }
-};
+} defaults;
 }  // (anonymous namespace)
 
 
@@ -72,18 +55,12 @@ MIRConfiguration::MIRConfiguration() {
 const param::MIRParametrisation& MIRConfiguration::lookup(const param::MIRParametrisation& metadata) const {
     long id = 0;
     metadata.get("paramId", id);
-    return metadata.get("paramId", id)? lookup(id, metadata)
-                                      : defaults();
+    return lookup(id, metadata);
 }
 
 
 const param::MIRParametrisation& MIRConfiguration::lookup(const long& paramId, const param::MIRParametrisation& metadata) const {
-    return root_.pick(paramId, metadata);
-}
-
-
-const param::MIRParametrisation& MIRConfiguration::defaults() const {
-    return root_;
+    return parameterConfiguration_->lookup(paramId, metadata);
 }
 
 
@@ -101,18 +78,6 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
         eckit::YAMLParser parser(in);
         const eckit::ValueMap j = parser.parse();
         root_.fill(j);
-
-        std::string configuration_fill;
-        if (root_.get("configuration-fill", configuration_fill) && configuration_fill.length()) {
-            root_.fill(root_.pick(configuration_fill));
-            root_.clear("configuration-fill");
-        }
-
-        std::string configuration_clear;
-        if (root_.get("configuration-clear", configuration_clear) && configuration_clear.length()) {
-            root_.clear(configuration_clear);
-        }
-        root_.clear("configuration-clear");
     }
 
 
@@ -120,7 +85,80 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
     //    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << root_ << std::endl;
 
     // Use defaults (non-overwriting)
-    Defaults().copyValuesTo(root_, false);
+    defaults.copyValuesTo(root_, false);
+}
+
+
+bool MIRConfiguration::has(const std::string& name) const {
+    //FIXME
+    return true;
+}
+
+
+bool MIRConfiguration::get(const std::string& name, std::string& value) const {
+    return _get(name, value);
+}
+
+
+bool MIRConfiguration::get(const std::string& name, bool& value) const {
+    return _get(name, value);
+}
+
+
+bool MIRConfiguration::get(const std::string& name, int& value) const {
+    return _get(name, value);
+}
+
+
+bool MIRConfiguration::get(const std::string& name, long& value) const {
+    return _get(name, value);
+}
+
+
+bool MIRConfiguration::get(const std::string& name, float& value) const {
+    return _get(name, value);
+}
+
+
+bool MIRConfiguration::get(const std::string& name, double& value) const {
+    return _get(name, value);
+}
+
+
+bool MIRConfiguration::get(const std::string& name, std::vector<int>& value) const {
+    return _get(name, value);
+}
+
+
+bool MIRConfiguration::get(const std::string& name, std::vector<long>& value) const {
+    return _get(name, value);
+}
+
+
+bool MIRConfiguration::get(const std::string& name, std::vector<float>& value) const {
+    return _get(name, value);
+}
+
+
+bool MIRConfiguration::get(const std::string& name, std::vector<double>& value) const {
+    return _get(name, value);
+}
+
+
+bool MIRConfiguration::get(const std::string&, std::vector<std::string>&) const {
+    NOTIMP;
+}
+
+
+template<class T>
+bool MIRConfiguration::_get(const std::string& name, T& value) const {
+//    SettingsMap::const_iterator j = settings_.find(name);
+//    if (j == settings_.end()) {
+//        return false;
+//    }
+//    (*j).second->get(name, value);
+    // eckit::Log::debug<LibMir>() << "SimpleParametrisation::get(" << name << ") => " << value << std::endl;
+    return true;
 }
 
 

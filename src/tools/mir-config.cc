@@ -117,14 +117,13 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             long id = 0;
             args.get("param-id", id);
 
-            const MIRParametrisation& p(id != 0? configuration.lookup(id, metadata)
-                                               : configuration.lookup(metadata));
+            const MIRParametrisation& p(configuration.lookup(id, metadata));
             display(p, key);
 
         } else {
 
             // Display configuration defaults
-            display(configuration.defaults(), key);
+            display(configuration, key);
 
         }
     }

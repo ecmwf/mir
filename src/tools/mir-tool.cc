@@ -134,7 +134,8 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Configuration"));
-        options_.push_back(new SimpleOption<eckit::PathName>("configuration", "Configuration YAML path (default ~mir/etc/mir/configuration.yaml)"));
+        options_.push_back(new SimpleOption<eckit::PathName>("configuration", "Configuration YAML path (default ~mir/etc/mir/config.yaml)"));
+        options_.push_back(new SimpleOption<eckit::PathName>("parameter-configuration", "Configuration YAML path (default ~mir/etc/mir/parameter.yaml)"));
 
         //==============================================
         options_.push_back(new Separator("GRIB Output"));
