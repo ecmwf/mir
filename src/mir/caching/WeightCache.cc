@@ -64,8 +64,6 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
     using namespace mir::caching::interpolator;
     InterpolatorLoader* loader_ = InterpolatorLoaderFactory::build(manager.loader(), path);
 
-    bool notown = true;
-
     value_type w(loader_->address(), loader_->size());
     std::swap(W, w);
 
