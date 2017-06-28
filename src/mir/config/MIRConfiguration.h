@@ -17,7 +17,6 @@
 #include <iosfwd>
 #include <string>
 #include "mir/param/InheritParametrisation.h"
-#include "mir/param/MIRParametrisation.h"
 
 
 namespace eckit {
@@ -51,12 +50,6 @@ public:
 
     static MIRConfiguration& instance();
 
-    // Lookup parametrisation according to metadata
-    const param::MIRParametrisation& lookup(const param::MIRParametrisation& metadata) const;
-
-    // Lookup parametrisation according to paramId and metadata
-    const param::MIRParametrisation& lookup(const long& paramId, const param::MIRParametrisation& metadata) const;
-
     // -- Overridden methods
     // None
 
@@ -79,17 +72,12 @@ private:
     // None
 
     // -- Members
-
-    std::string path_;
-    std::string label_;
+    // None
 
     // -- Methods
 
-    template<class T>
-    bool _get(const std::string& name, T& value) const;
-
     // Configure (or reconfigure) using a file
-    void configure(const eckit::PathName& path, const std::string& label);
+    void configure(const eckit::PathName& path);
 
     void print(std::ostream&) const;
 

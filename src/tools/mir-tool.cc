@@ -133,10 +133,6 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("longitudes", "Path GRIB file of longitudes"));
 
         //==============================================
-        options_.push_back(new Separator("Configuration"));
-        options_.push_back(new SimpleOption<eckit::PathName>("configuration", "Configuration YAML path (default ~mir/etc/mir/config.yaml)"));
-
-        //==============================================
         options_.push_back(new Separator("GRIB Output"));
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
         options_.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
@@ -147,8 +143,6 @@ public:
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
-//        options_.push_back(new FactoryOption<mir::caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
-//        options_.push_back(new FactoryOption<mir::caching::interpolator::InterpolatorLoaderFactory>("interpolator-loader", "Select the scheme to load interpolation weights"));
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used on not"));
         options_.push_back(new SimpleOption<long>("trans-fast-legendre-transform", "Trans Fast Legendre Transform method"));
 

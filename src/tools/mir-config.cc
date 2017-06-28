@@ -96,7 +96,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             long id = 0;
             args.get("param-id", id) || metadata.get("paramId", id);
 
-            const MIRParametrisation& p(MIRConfiguration::instance().lookup(id, metadata));
+            const MIRParametrisation& p(MIRConfiguration::instance().pick(id, metadata));
             display(p, key);
 
         }
@@ -111,7 +111,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             long id = 0;
             args.get("param-id", id);
 
-            const MIRParametrisation& p(MIRConfiguration::instance().lookup(id, metadata));
+            const MIRParametrisation& p(MIRConfiguration::instance().pick(id, metadata));
             display(p, key);
 
         } else {

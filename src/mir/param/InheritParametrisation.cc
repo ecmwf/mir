@@ -108,6 +108,13 @@ void InheritParametrisation::fill(const InheritParametrisation& filler) {
 }
 
 
+const InheritParametrisation& InheritParametrisation::pick(const MIRParametrisation& metadata) const {
+    long id = 0;
+    metadata.get("paramId", id);
+    return pick(id, metadata);
+}
+
+
 const InheritParametrisation& InheritParametrisation::pick(const long& paramId, const MIRParametrisation& metadata) const {
     if (paramId > 0 ) {
         for (InheritParametrisation* me: children_) {

@@ -65,9 +65,8 @@ MIRConfiguration& MIRConfiguration::instance() {
     // Make sure instance is configured
     const eckit::Configuration& config = LibMir::instance().configuration();
 
-    const eckit::PathName path = config.has("parameter-configuration") ? config.getString("parameter-configuration") : "~mir/etc/mir/parameter.yaml";
-    const std::string label = config.has("parameter-configuration-fill") ? config.getString("parameter-configuration-fill") : "class";
-    instance_.configure(path, label);
+    const eckit::PathName path = config.has("parameter-configuration") ? config.getString("parameter-configuration") : defaultPath;
+    instance_.configure(path);
 
     return instance_;
 }
@@ -77,28 +76,17 @@ MIRConfiguration::MIRConfiguration() {
 }
 
 
-const param::MIRParametrisation& MIRConfiguration::lookup(const param::MIRParametrisation& metadata) const {
-    long id = 0;
-    metadata.get("paramId", id);
-    return lookup(id, metadata);
-}
-
-
-const param::MIRParametrisation& MIRConfiguration::lookup(const long& paramId, const param::MIRParametrisation& metadata) const {
-    return pick(paramId, metadata);
-}
-
-
-void MIRConfiguration::configure(const eckit::PathName& path, const std::string& label) {
+void MIRConfiguration::configure(const eckit::PathName& path) {
 
     // skip if this was already done
-    if (path == path_ && label == label_) {
+    std::string oldPath;
+    if (get("parameter-configuration", oldPath) && path == oldPath) {
         return;
     }
 
     clear();
     if (path.exists()) {
-        eckit::Log::debug<LibMir>() << "MIRConfiguration: loading configuration from '" << path << "', dereferrencing '" << label << "'" << std::endl;
+        eckit::Log::debug<LibMir>() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
 
         std::ifstream in(path);
         if (!in) {
@@ -110,23 +98,21 @@ void MIRConfiguration::configure(const eckit::PathName& path, const std::string&
         const eckit::ValueMap j = parser.parse();
         fill(j);
 
-        if (label.length()) {
+        // Dereference
+        std::string label;
+        if (get("parameter-configuration-fill", label) && label.length()) {
             fill(pick(label));
             clear("parameter-configuration-fill");
         }
 
         // log into itself
-        // NOTE: path_ and label_ members could be avoided! :-)
         set("parameter-configuration", path);
-        set("parameter-configuration-fill", label);
-        path_ = path;
-        label_ = label;
 
     } else if (!path.asString().empty()) {
         throw eckit::CantOpenFile(path);
     }
 
-    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *this << std::endl;
+//    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *this << std::endl;
 
 
     // Use defaults (non-overwriting)
@@ -135,10 +121,7 @@ void MIRConfiguration::configure(const eckit::PathName& path, const std::string&
 
 
 void MIRConfiguration::print(std::ostream& out) const {
-    out << "MIRConfiguration["
-        <<  "path=" << path_
-        << ",label=" << label_
-        << ",";
+    out << "MIRConfiguration[";
     InheritParametrisation::print(out);
     out << "]";
 }

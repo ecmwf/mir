@@ -3,7 +3,6 @@
     "parameter-id-v": 132,
 
     "parameter-configuration": "~mir/etc/mir/parameter.yaml",
-    "parameter-configuration-fill": "class",
 
     "legendre-loader": "mapped-memory",
     "interpolator-loader": "file-io",

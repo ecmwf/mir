@@ -189,7 +189,7 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
     if (get("paramId", paramId)) {
         // return paramId specific parametrisation
         const config::MIRConfiguration& configuration = config::MIRConfiguration::instance();
-        const param::MIRParametrisation& param = configuration.lookup(paramId, *this);
+        const param::MIRParametrisation& param = configuration.pick(paramId, *this);
         return param.get(name, value);
     }
 

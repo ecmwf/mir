@@ -45,6 +45,8 @@ public:
     // Fill parametrisation provided a InheritParametrisation
     void fill(const InheritParametrisation&);
 
+    const InheritParametrisation& pick(const param::MIRParametrisation& metadata) const;
+
     /// Find best matching descendant according to paramId and metadata
     const InheritParametrisation& pick(const long& paramId, const MIRParametrisation& metadata) const;
 
