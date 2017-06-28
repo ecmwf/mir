@@ -30,8 +30,6 @@ static struct Defaults : param::SimpleParametrisation {
     Defaults() {
       // default settings, overridden by file or (some) user options
       set("style", "mars");
-      set("legendre-loader", "mapped-memory");
-      set("interpolator-loader", "file-io");
       set("executor", "simple");
 
       set("interpolation", "linear"); // The word 'method' is used in grib
@@ -55,7 +53,7 @@ static struct Defaults : param::SimpleParametrisation {
 }  // (anonymous namespace)
 
 
-const std::string MIRConfiguration::defaultPath = "~mir/etc/mir/config.yaml";
+const std::string MIRConfiguration::defaultPath = "~mir/etc/mir/parameter.yaml";
 std::string MIRConfiguration::path = defaultPath;
 
 
@@ -64,7 +62,6 @@ MIRConfiguration& MIRConfiguration::instance() {
 
     // Make sure instance is configured
     const eckit::Configuration& config = LibMir::instance().configuration();
-
     const eckit::PathName path = config.has("parameter-configuration") ? config.getString("parameter-configuration") : defaultPath;
     instance_.configure(path);
 
