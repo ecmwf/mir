@@ -77,6 +77,8 @@ public:
     bool get(const std::string& name, std::vector<double>& value) const;
     bool get(const std::string& name, std::vector<std::string>& value) const;
 
+    void print(std::ostream&) const;
+
 private:
 
     // -- Constructors
@@ -111,10 +113,6 @@ private:
 
     /// Create a readable label hierarchy
     std::string labelHierarchy() const;
-
-    // -- Overridden methods
-
-    void print(std::ostream&) const;
 
     // -- Members
 

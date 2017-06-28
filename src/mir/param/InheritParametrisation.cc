@@ -13,9 +13,7 @@
 
 #include "mir/param/InheritParametrisation.h"
 
-#include <algorithm>
 #include <iostream>
-#include <iterator>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/StringTools.h"
 #include "eckit/utils/Translator.h"
@@ -93,14 +91,13 @@ void InheritParametrisation::fill(const eckit::ValueMap& map) {
 
 
 void InheritParametrisation::fill(const InheritParametrisation& filler) {
-    const std::string fill_root_hierarchy = filler.labelHierarchy();
-    const std::string fill_root_label = filler.label_;
-    ASSERT(string_contains_label(fill_root_label));
+    const std::string label = filler.label_;
+    ASSERT(string_contains_label(label));
 
     // recursively inherit all fill parametrisation traits
     std::string fill_label;
-    while (get(fill_root_label, fill_label)) {
-        clearFromChildren(fill_root_label);
+    while (get(label, fill_label)) {
+        clearFromChildren(label);
         filler.pick(fill_label).inherit(*this);
     }
 
@@ -147,12 +144,16 @@ const InheritParametrisation& InheritParametrisation::pick(const std::vector< st
 
 
 InheritParametrisation& InheritParametrisation::clear() {
+
+    // clear children
     for (InheritParametrisation* me: children_) {
         me->clear();
     }
     children_.clear();
 
+    // clean ourselves
     SimpleParametrisation::reset();
+    return *this;
 }
 
 
@@ -170,7 +171,7 @@ InheritParametrisation& InheritParametrisation::clear(const std::string& name) {
 }
 
 
-bool InheritParametrisation::has(const std::string &name) const {
+bool InheritParametrisation::has(const std::string& name) const {
     return SimpleParametrisation::has(name) || (parent_ != NULL && parent_->has(name));
 }
 
@@ -227,6 +228,45 @@ bool InheritParametrisation::get(const std::string& name, std::vector<double>& v
 
 bool InheritParametrisation::get(const std::string& name, std::vector<std::string>& value) const {
     return _get(name, value);
+}
+
+
+void InheritParametrisation::print(std::ostream& out) const {
+    out << "InheritParametrisation["
+        <<  "label=" << label_
+        << ",empty?" << empty();
+
+    out << ",paramIds=[";
+    const char* sep = "";
+    size_t count = 0;
+    for (long id: paramIds_) {
+        if (++count > 10) {
+            out << "...";
+            break;
+        }
+        out << sep << id;
+        sep = ",";
+    }
+    out << "]";
+
+    out << ",SimpleParametrisation[";
+    SimpleParametrisation::print(out);
+    out << "]";
+
+    out << ",children[";
+    sep = "\n\t";
+    count = 0;
+    for (const InheritParametrisation* me: children_) {
+        if (++count > 10) {
+            out << "...";
+            break;
+        }
+        out << sep << *me;
+        sep = ",\n\t";
+    }
+    out << "]";
+
+    out << "]";
 }
 
 
@@ -318,24 +358,6 @@ std::string InheritParametrisation::labelHierarchy() const {
         here.insert(0, "/" + who->label_);
     }
     return here;
-}
-
-
-void InheritParametrisation::print(std::ostream& out) const {
-    out << "InheritParametrisation["
-        <<  "empty?" << empty()
-        << ",paramIds=[";
-    std::copy(paramIds_.begin(), paramIds_.end(), std::ostream_iterator<long>(out, ","));
-    out << "]"
-           ",label=" << label_
-        << ",SimpleParametrisation[";
-    SimpleParametrisation::print(out);
-    out << "]"
-           ",children[";
-    for (const InheritParametrisation* me: children_) {
-        out << "\n\t" << *me << ",";
-    }
-    out << "]]\n";
 }
 
 
