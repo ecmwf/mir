@@ -92,7 +92,7 @@ const param::MIRParametrisation& MIRConfiguration::lookup(const long& paramId, c
 void MIRConfiguration::configure(const eckit::PathName& path, const std::string& label) {
 
     // skip if this was already done
-    if (path == path_ || label == label_) {
+    if (path == path_ && label == label_) {
         return;
     }
 
