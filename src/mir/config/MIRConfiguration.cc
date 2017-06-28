@@ -91,67 +91,7 @@ const param::MIRParametrisation& MIRConfiguration::lookup(const param::MIRParame
 
 
 const param::MIRParametrisation& MIRConfiguration::lookup(const long& paramId, const param::MIRParametrisation& metadata) const {
-    return root_.pick(paramId, metadata);
-}
-
-
-bool MIRConfiguration::has(const std::string& name) const {
-    return root_.has(name);
-}
-
-
-bool MIRConfiguration::get(const std::string& name, std::string& value) const {
-    return root_.get(name, value);
-}
-
-
-bool MIRConfiguration::get(const std::string& name, bool& value) const {
-    return root_.get(name, value);
-}
-
-
-bool MIRConfiguration::get(const std::string& name, int& value) const {
-    return root_.get(name, value);
-}
-
-
-bool MIRConfiguration::get(const std::string& name, long& value) const {
-    return root_.get(name, value);
-}
-
-
-bool MIRConfiguration::get(const std::string& name, float& value) const {
-    return root_.get(name, value);
-}
-
-
-bool MIRConfiguration::get(const std::string& name, double& value) const {
-    return root_.get(name, value);
-}
-
-
-bool MIRConfiguration::get(const std::string& name, std::vector<int>& value) const {
-    return root_.get(name, value);
-}
-
-
-bool MIRConfiguration::get(const std::string& name, std::vector<long>& value) const {
-    return root_.get(name, value);
-}
-
-
-bool MIRConfiguration::get(const std::string& name, std::vector<float>& value) const {
-    return root_.get(name, value);
-}
-
-
-bool MIRConfiguration::get(const std::string& name, std::vector<double>& value) const {
-    return root_.get(name, value);
-}
-
-
-bool MIRConfiguration::get(const std::string& name, std::vector<std::string>& value) const {
-    return root_.get(name, value);
+    return pick(paramId, metadata);
 }
 
 
@@ -159,7 +99,7 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
 
     // ensure a clean start
     if (path != configPath_) {
-        root_.clear();
+        clear();
     }
 
     // configure from file, skip if this was already done
@@ -174,17 +114,17 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
         // Create hierarchy (using non-overwriting filling keys)
         eckit::YAMLParser parser(in);
         const eckit::ValueMap j = parser.parse();
-        root_.fill(j);
+        fill(j);
     }
-
-
     configPath_ = path;
+
+
     //    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << root_ << std::endl;
 
 
     // Fill parameter configuration
     std::string parameterConfiguration = "";
-    root_.get("parameter-configuration", parameterConfiguration);
+    get("parameter-configuration", parameterConfiguration);
 
     if (parameterConfiguration.length()) {
 
@@ -217,15 +157,15 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
 
 
     // Use defaults (non-overwriting)
-    defaults.copyValuesTo(root_, false);
-root_.clear();
+    defaults.copyValuesTo(*this, false);
+clear();
 }
 
 
 void MIRConfiguration::print(std::ostream& out) const {
     out << "MIRConfiguration["
         <<  "configPath=" << configPath_
-        << ",root=" << root_
+        << ",InheritParametrisation=" << static_cast<const param::InheritParametrisation&>(*this)
         << "]";
 }
 
