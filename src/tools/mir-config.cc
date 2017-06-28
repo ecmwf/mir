@@ -43,7 +43,6 @@ public:
 
     MIRConfig(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
-        options_.push_back(new SimpleOption<eckit::PathName>("configuration", "Configuration JSON path"));
         options_.push_back(new SimpleOption<long>("param-id", "Test configuration with paramId"));
         options_.push_back(new SimpleOption<std::string>("key", "Test configuration with specific key"));
     }
@@ -53,11 +52,11 @@ public:
 
 void MIRConfig::usage(const std::string &tool) const {
     eckit::Log::info()
-            << "\n" "Usage: " << tool << " [--configuration=configuration.yaml] [--param-id=value] [--key=key] [input1.grib [input2.grib [...]]]"
+            << "\n" "Usage: " << tool << " [--param-id=value] [--key=key] [input1.grib [input2.grib [...]]]"
                "\n" "Examples: "
                "\n" "  % " << tool << ""
-               "\n" "  % " << tool << " --param-id=157 input.grib"
-               "\n" "  % " << tool << " --param-id=157 --configuration=test.yaml input1.grib input2.grib"
+               "\n" "  % " << tool << " --param-id=157"
+               "\n" "  % " << tool << " --param-id=167 --key=lsm input1.grib input2.grib"
             << std::endl;
 }
 
@@ -73,17 +72,12 @@ void MIRConfig::display(const mir::param::MIRParametrisation& parametrisation, c
 
 
 void MIRConfig::execute(const eckit::option::CmdArgs& args) {
-    using namespace mir::config;
     using namespace mir::param;
 
-
-    // set configuration file path
-    args.get("configuration", MIRConfiguration::path);
-
+    mir::config::MIRConfiguration& config = mir::config::MIRConfiguration::instance();
 
     std::string key = "";
     args.get("key", key);
-
 
     for (size_t i = 0; i < args.count(); i++) {
 
@@ -96,7 +90,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             long id = 0;
             args.get("param-id", id) || metadata.get("paramId", id);
 
-            const MIRParametrisation& p(MIRConfiguration::instance().pick(id, metadata));
+            const MIRParametrisation& p(config.pick(id, metadata));
             display(p, key);
 
         }
@@ -111,13 +105,13 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             long id = 0;
             args.get("param-id", id);
 
-            const MIRParametrisation& p(MIRConfiguration::instance().pick(id, metadata));
+            const MIRParametrisation& p(config.pick(id, metadata));
             display(p, key);
 
         } else {
 
             // Display configuration defaults
-            display(MIRConfiguration::instance(), key);
+            display(config, key);
 
         }
     }

@@ -54,10 +54,7 @@ public:
     // None
 
     // -- Members
-
-    static std::string path;
-    static const std::string defaultPath;
-
+    // None
 
 private:
 

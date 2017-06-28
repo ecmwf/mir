@@ -61,13 +61,7 @@ void MIRStatistics::usage(const std::string &tool) const {
 
 
 void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
-    using namespace mir::config;
     using namespace mir::param;
-
-
-    // set configuration file path
-    args.get("configuration", MIRConfiguration::path);
-
 
     // Build MIRCombinedParametrisation from a few parts:
     // - wrap the arguments, so that they behave as a MIRParametrisation
@@ -85,7 +79,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
             eckit::Log::info() << "\n'" << args(i) << "' #" << ++count << std::endl;
 
             // Metadata-specific defaults
-            const MIRParametrisation& parameter = MIRConfiguration::instance().pick(input.parametrisation());
+            const MIRParametrisation& parameter = mir::config::MIRConfiguration::instance().pick(input.parametrisation());
             MIRCombinedParametrisation combined(args_wrap, grib, parameter);
 
 
