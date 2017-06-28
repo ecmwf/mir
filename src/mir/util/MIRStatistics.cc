@@ -138,13 +138,30 @@ void MIRStatistics::report(std::ostream &out, const char *indent) const {
     reportTime(out, "Time matrix multiply", matrixTiming_, indent);
     reportTime(out, "Time creating coefficients", createCoeffTiming_, indent);
     reportTime(out, "Time loading coefficients", loadCoeffTiming_, indent);
-
-
 }
+
+void MIRStatistics::csvHeader(std::ostream& out) const {
+    out << "grid2grid,sh2grid,coefficient,vod2uv,calc,crop,frame,globalise,bitmap,"
+        << "computeMatrix,matrix,createCoeff,loadCoeff";
+}
+
+void MIRStatistics::csvRow(std::ostream& out) const {
+    out << grid2gridTiming_ << ","
+        << sh2gridTiming_ << ","
+        << coefficientTiming_ << ","
+        << vod2uvTiming_ << ","
+        << calcTiming_ << ","
+        << cropTiming_ << ","
+        << frameTiming_ << ","
+        << globaliseTiming_ << ","
+        << bitmapTiming_ << ","
+        << computeMatrixTiming_ << ","
+        << matrixTiming_ << ","
+        << createCoeffTiming_ << ","
+        << loadCoeffTiming_;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-//----------------------------------------------------------------------------------------------------------------------
-
-} // namespace pgen
+} // namespace util
+} // namespace mir
