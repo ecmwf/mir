@@ -15,11 +15,15 @@
 #define mir_config_MIRConfiguration_h
 
 #include <iosfwd>
-#include "eckit/filesystem/PathName.h"
+#include <string>
 #include "eckit/memory/NonCopyable.h"
-#include "eckit/memory/ScopedPtr.h"
-#include "mir/config/ParameterConfiguration.h"
+#include "mir/param/InheritParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
+
+
+namespace eckit {
+class PathName;
+}
 
 
 namespace mir {
@@ -54,9 +58,6 @@ public:
     // Lookup parametrisation according to paramId and metadata
     const param::MIRParametrisation& lookup(const long& paramId, const param::MIRParametrisation& metadata) const;
 
-    // Configure (or reconfigure) using a file
-    void configure(const eckit::PathName& path="~mir/etc/mir/config.yaml");
-
     // -- Overridden methods
 
     // For MIRParametrisation
@@ -75,6 +76,12 @@ public:
     bool get(const std::string& name, std::vector<double>& value) const;
     bool get(const std::string& name, std::vector<std::string>& value) const;
 
+    // -- Members
+
+    static std::string path;
+    static const std::string defaultPath;
+
+
 private:
 
     // -- Contructors
@@ -91,12 +98,14 @@ private:
 
     std::string configPath_;
     param::InheritParametrisation root_;
-    eckit::ScopedPtr<ParameterConfiguration> parameterConfiguration_;
 
     // -- Methods
 
     template<class T>
     bool _get(const std::string& name, T& value) const;
+
+    // Configure (or reconfigure) using a file
+    void configure(const eckit::PathName& path);
 
     void print(std::ostream&) const;
 

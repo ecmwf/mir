@@ -39,17 +39,15 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     output_(output)  {
 
 
-    // open and parse configuration file
-    std::string config_file = "~mir/etc/mir/config.yaml";
-    job.get("configuration", config_file);
-
-    config::MIRConfiguration& config = config::MIRConfiguration::instance();
-    config.configure(config_file);
+    // set configuration file
+    using namespace config;
+    MIRConfiguration::path = MIRConfiguration::defaultPath;
+    job.get("configuration", MIRConfiguration::path);
 
 
     // get input and parameter-specific parametrisations
     const param::MIRParametrisation& metadata = input.parametrisation();
-    const param::MIRParametrisation& parameter = config.lookup(metadata);
+    const param::MIRParametrisation& parameter = MIRConfiguration::instance().lookup(metadata);
     combined_.reset(new param::MIRCombinedParametrisation(job, metadata, parameter));
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
