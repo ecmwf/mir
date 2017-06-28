@@ -4,8 +4,5 @@
 
     "parameter-configuration": "~mir/etc/mir/parameter.yaml",
 
-    "mir-cache-path": [
-        "mir-cache-path;$MIR_CACHE_PATH",
-        "/tmp/cache"
-    ]
+    "mir-cache-path": "mir-cache-path;$MIR_CACHE_PATH;/tmp/cache"
 }
