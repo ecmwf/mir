@@ -80,7 +80,7 @@ private:
 
     // -- Members
 
-    std::string configPath_;
+    std::string configuration_;
 
     // -- Methods
 
