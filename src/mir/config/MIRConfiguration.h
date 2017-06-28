@@ -80,7 +80,8 @@ private:
 
     // -- Members
 
-    std::string configuration_;
+    std::string path_;
+    std::string label_;
 
     // -- Methods
 
@@ -88,7 +89,7 @@ private:
     bool _get(const std::string& name, T& value) const;
 
     // Configure (or reconfigure) using a file
-    void configure(const eckit::PathName& path);
+    void configure(const eckit::PathName& path, const std::string& label);
 
     void print(std::ostream&) const;
 

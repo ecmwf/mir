@@ -241,7 +241,7 @@ void InheritParametrisation::print(std::ostream& out) const {
     size_t count = 0;
     for (long id: paramIds_) {
         if (++count > 10) {
-            out << "...";
+            out << ",...";
             break;
         }
         out << sep << id;
@@ -253,18 +253,20 @@ void InheritParametrisation::print(std::ostream& out) const {
     SimpleParametrisation::print(out);
     out << "]";
 
-    out << ",children[";
-    sep = "\n\t";
-    count = 0;
-    for (const InheritParametrisation* me: children_) {
-        if (++count > 10) {
-            out << "...";
-            break;
+    if (!children_.empty()) {
+        out << ",children[";
+        sep = "\n\t";
+        count = 0;
+        for (const InheritParametrisation* me: children_) {
+            if (++count > 10) {
+                out << ",...";
+                break;
+            }
+            out << sep << *me;
+            sep = ",\n\t";
         }
-        out << sep << *me;
-        sep = ",\n\t";
+        out << "]";
     }
-    out << "]";
 
     out << "]";
 }

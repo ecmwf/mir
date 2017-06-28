@@ -20,15 +20,18 @@ namespace mir {
 namespace caching {
 
 
-static std::string extract_loader(const param::MIRParametrisation& param) {
-    std::string name;
-    param.get("interpolator-loader", name);
+static std::string extract_loader() {
+
+    const eckit::Configuration& config = LibMir::instance().configuration();
+    const std::string name = config.has("interpolator-loader") ? config.getString("interpolator-loader") : "file-io";
+    ASSERT(name.length());
+
     return name;
 }
 
 
-WeightCache::WeightCache(const param::MIRParametrisation& param):
-    CacheManager(extract_loader(param),
+WeightCache::WeightCache(const param::MIRParametrisation&):
+    CacheManager(extract_loader(),
                  LibMir::cacheDir(),
                  eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false)) {
 }

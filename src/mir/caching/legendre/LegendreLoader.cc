@@ -49,7 +49,6 @@ LegendreLoader::~LegendreLoader() {}
 //----------------------------------------------------------------------------------------------------------------------
 
 LegendreLoaderFactory::LegendreLoaderFactory(const std::string& name) : name_(name) {
-
     pthread_once(&once, init);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -64,14 +63,11 @@ LegendreLoaderFactory::~LegendreLoaderFactory() {
 }
 
 LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& params, const eckit::PathName& path) {
-
     pthread_once(&once, init);
 
-    std::string name;
-
-    if (!params.get("legendre-loader", name)) {
-        throw eckit::SeriousBug("LegendreLoaderFactory cannot get legendre.loader");
-    }
+    const eckit::Configuration& config = LibMir::instance().configuration();
+    const std::string name = config.has("legendre-loader") ? config.getString("legendre-loader") : "mapped-memory";
+    ASSERT(name.length());
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, LegendreLoaderFactory*>::const_iterator j = m->find(name);

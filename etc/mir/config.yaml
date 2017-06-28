@@ -1,8 +1,12 @@
 {
-    "paramId.u": "131",
-    "paramId.v": "132",
+    "parameter-id-u": 131,
+    "parameter-id-v": 132,
 
     "parameter-configuration": "~mir/etc/mir/parameter.yaml",
+    "parameter-configuration-fill": "class",
 
-    "mir-cache-path": "mir-cache-path;$MIR_CACHE_PATH;/tmp/cache"
+    "legendre-loader": "mapped-memory",
+    "interpolator-loader": "file-io",
+
+    "mir-cache-path": "/tmp/cache"
 }
