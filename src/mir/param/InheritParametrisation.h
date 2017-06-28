@@ -54,6 +54,9 @@ public:
     /// Find best matching descendant according to label hierarchy
     const InheritParametrisation& pick(const std::vector< std::string >& labels) const;
 
+    /// Clear the parametrisation
+    InheritParametrisation& clear();
+
     // -- Overridden methods
 
     // From SimpleParametrisation

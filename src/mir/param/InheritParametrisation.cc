@@ -146,6 +146,16 @@ const InheritParametrisation& InheritParametrisation::pick(const std::vector< st
 }
 
 
+InheritParametrisation& InheritParametrisation::clear() {
+    for (InheritParametrisation* me: children_) {
+        me->clear();
+    }
+    children_.clear();
+
+    SimpleParametrisation::reset();
+}
+
+
 bool InheritParametrisation::empty() const {
     return children_.size()==0 && SimpleParametrisation::empty();
 }
