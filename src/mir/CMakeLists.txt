@@ -538,8 +538,6 @@ list(
     util/PlanParser.h
     util/PointSearch.cc
     util/PointSearch.h
-    util/RotatedIterator.cc
-    util/RotatedIterator.h
     util/Rotation.cc
     util/Rotation.h
     util/Shift.cc

@@ -97,7 +97,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 mir::Longitude lon;
                 mir::Latitude lat;
 
-                eckit::ScopedPtr< mir::repres::Iterator > it(rep->rotatedIterator());
+                eckit::ScopedPtr< mir::repres::Iterator > it(rep->iterator());
                 while (it->next(lat, lon)) {
                     point_t P(lon.value(), lat.value());
                     if (first) {
@@ -150,7 +150,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                         stats_lon(decompose, std::numeric_limits<double>::quiet_NaN());
 
                 atlas::Grid grid(rep->grid());
-                eckit::ScopedPtr< mir::repres::Iterator > it(rep->rotatedIterator());
+                eckit::ScopedPtr< mir::repres::Iterator > it(rep->iterator());
 
                 std::vector<double>::const_iterator v = field.values(0).begin();
 
@@ -188,7 +188,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             } else {
 
-                eckit::ScopedPtr< mir::repres::Iterator > it(rep->rotatedIterator());
+                eckit::ScopedPtr< mir::repres::Iterator > it(rep->iterator());
                 mir::Longitude lon;
                 mir::Latitude lat;
                 for (const double& v: field.values(0)) {

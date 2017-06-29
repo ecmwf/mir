@@ -85,18 +85,17 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
 
 
     // interpolate each output point in turn
-    eckit::ScopedPtr<repres::Iterator> it(rout.unrotatedIterator());
-    Latitude lat;
-    Longitude lon;
+    eckit::ScopedPtr<repres::Iterator> it(rout.iterator());
     size_t i = 0;
 
-    while (it->next(lat, lon)) {
+    while (it->next()) {
+        const repres::Iterator::point_ll_t& p = it->pointUnrotated();
         ASSERT(i < out.size());
 
         triplets_t trip;
 
-        const bool too_much_north = lat > max_lat;
-        const bool too_much_south = lat < min_lat;
+        const bool too_much_north = p.lat > max_lat;
+        const bool too_much_south = p.lat < min_lat;
 
         if (too_much_north || too_much_south) {
             ASSERT(too_much_north != too_much_south);
@@ -105,12 +104,12 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
             const size_t iStart = too_much_north? 0 : pl_sum.rbegin()[1];
 
             size_t l[2];
-            boundWestEast(lon, Ni, iStart, l[0], l[1]);
+            boundWestEast(p.lon, Ni, iStart, l[0], l[1]);
 
             const Longitude& l0 = icoords[l[0]].second;
             const Longitude& l1 = icoords[l[1]].second;
-            trip = { WeightMatrix::Triplet(i, l[0], (l1 - lon).value() ),
-                     WeightMatrix::Triplet(i, l[1], (lon - l0).value() ) };
+            trip = { WeightMatrix::Triplet(i, l[0], (l1 - p.lon).value() ),
+                     WeightMatrix::Triplet(i, l[1], (p.lon - l0).value() ) };
 
         } else {
 
@@ -129,16 +128,16 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
 
             size_t j_north;
             size_t j_south;
-            boundNorthSouth(lat, latitudes, j_north, j_south);
+            boundNorthSouth(p.lat, latitudes, j_north, j_south);
 
             size_t q[4];
-            boundWestEast(lon, size_t(pl[j_north]), pl_sum[j_north], q[0], q[1]);
-            boundWestEast(lon, size_t(pl[j_south]), pl_sum[j_south], q[2], q[3]);
+            boundWestEast(p.lon, size_t(pl[j_north]), pl_sum[j_north], q[0], q[1]);
+            boundWestEast(p.lon, size_t(pl[j_south]), pl_sum[j_south], q[2], q[3]);
 
             // convert working longitude/latitude coordinates to 3D
             point_3d_t ip;
             point_3d_t qp[4];
-            eckit::geometry::lonlat_to_3d(lon.value(), lat.value(), ip.data());
+            eckit::geometry::lonlat_to_3d(p.lon.value(), p.lat.value(), ip.data());
             for (size_t k = 0; k < 4; ++k) {
                 const point_ll_t& ll = icoords[q[k]];
                 eckit::geometry::Point2 p(ll.second.value(), ll.first.value());

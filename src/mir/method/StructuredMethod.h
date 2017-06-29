@@ -53,7 +53,7 @@ protected:
 
     // Find nearest West-East bounding i indices
     void left_right_lon_indexes(
-            Longitude& in,
+            const Longitude& in,
             const std::vector<point_ll_t>& coords,
             const size_t start,
             const size_t end,

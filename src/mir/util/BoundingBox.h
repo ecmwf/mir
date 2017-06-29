@@ -17,6 +17,7 @@
 #define mir_util_BoundingBox_h
 
 #include <iosfwd>
+#include "mir/repres/Iterator.h"
 #include "mir/util/Types.h"
 
 
@@ -100,6 +101,8 @@ public:
     }
 
     bool contains(const Latitude& lat, const Longitude& lon) const;
+
+    bool contains(const repres::Iterator::point_ll_t&) const;
 
     Longitude normalise(Longitude lon) const;
 

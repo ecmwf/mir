@@ -73,7 +73,7 @@ protected:
 
     // -- Overridden methods
     virtual atlas::Grid atlasGrid() const;
-    virtual Iterator* rotatedIterator() const;
+    virtual Iterator* iterator() const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
 

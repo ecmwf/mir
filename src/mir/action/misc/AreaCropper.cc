@@ -111,20 +111,23 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     size_t p = 0;
     size_t count = 0;
     bool first = true;
-    Latitude lat;
-    Longitude lon;
+//    Latitude lat;
+//    Longitude lon;
 
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
-    eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
+    eckit::ScopedPtr<repres::Iterator> iter(representation->iterator());
 
-    while (iter->next(lat, lon)) {
+    while (iter->next()) {
+        const repres::Iterator::point_ll_t& point = iter->pointUnrotated();
 
         // std::cout << lat << " " << lon << " ====> " << iter->next(lat, lon) << std::endl;
 
-        if (bbox.contains(lat, lon)) {
+        if (bbox.contains(point.lat, point.lon)) {
 
-            lon = bbox.normalise(lon);
+            const Latitude lat = point.lat;
+            Longitude lon = bbox.normalise(point.lon);
+
             if (first) {
                 n = s = lat;
                 e = w = lon;
@@ -139,7 +142,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
             // if(m.find(LL(lat, lon)) != m.end()) {
             //     eckit::Log::debug<LibMir>() << "CROP  duplicate " << lat << ", " << lon << std::endl;
             // }
-            m.insert(std::make_pair(LL(lat, lon), p));
+            m.insert(std::make_pair(LL(point.lat, lon), p));
             count++;
 
         }

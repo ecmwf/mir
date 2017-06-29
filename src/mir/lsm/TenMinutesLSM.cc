@@ -91,26 +91,27 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
     // NOTE: this is not using 3D coordinate systems
     // mask_.reserve(grid.size());
 
-    eckit::ScopedPtr<repres::Iterator> iter(representation.unrotatedIterator());
-    Latitude lat;Longitude lon;;
-
-    while (iter->next(lat, lon)) {
+    eckit::ScopedPtr<repres::Iterator> iter(representation.iterator());
+    while (iter->next()) {
+        const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
+        Latitude lat = p.lat;
+        Longitude lon = p.lon;
 
         ASSERT(lat >= Latitude::SOUTH_POLE);
         ASSERT(lat <= Latitude::NORTH_POLE);
 
 
-        while (lon >= 360.0) {
-            lon -= 360;
+        while (lon >= Longitude::GLOBE) {
+            lon -= Longitude::GLOBE;
         }
-        while (lon < 0.0) {
-            lon += 360;
+        while (lon < Longitude::GREENWICH) {
+            lon += Longitude::GLOBE;
         }
 
-        int row = int((Latitude::NORTH_POLE - lat).value() * (ROWS - 1) / 180);
+        int row = int((Latitude::NORTH_POLE - p.lat).value() * (ROWS - 1) / 180);
         ASSERT(row >= 0 && row < int(ROWS));
 
-        int col = int(lon.value() * COLS / 360.0);
+        int col = int(lon.value() * COLS / 360.);
         ASSERT(col >= 0 && col < int(COLS));
 
         mask_.push_back(ten_minutes_[row][col]);

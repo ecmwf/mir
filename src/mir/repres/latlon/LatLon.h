@@ -74,9 +74,7 @@ protected:
 
     // -- Methods
 
-    virtual Iterator* rotatedIterator() const; // After rotation
-
-    virtual Iterator* unrotatedIterator() const; // Before rotation
+    virtual Iterator* iterator() const;
 
     void setNiNj();
 

@@ -98,9 +98,7 @@ private:
 
     void validate(const std::vector<double>&) const;
 
-    Iterator* rotatedIterator() const; // After rotation
-
-    Iterator* unrotatedIterator() const; // Before rotation
+    Iterator* iterator() const;
 
     void makeName(std::ostream&) const;
     bool sameAs(const Representation& other) const;

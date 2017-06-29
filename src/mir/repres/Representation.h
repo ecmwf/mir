@@ -90,8 +90,7 @@ public:
     virtual const std::string& uniqueName() const;
     virtual bool sameAs(const Representation& other) const;
 
-    virtual Iterator* rotatedIterator() const; // After rotation
-    virtual Iterator* unrotatedIterator() const; // Before rotation
+    virtual Iterator* iterator() const;
 
     virtual void validate(const std::vector<double> &values) const;
 

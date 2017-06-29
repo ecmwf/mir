@@ -74,10 +74,6 @@ protected:
 
     // -- Overridden methods
 
-    virtual Iterator* rotatedIterator() const; // After rotation
-
-    virtual Iterator* unrotatedIterator() const; // Before rotation
-
     virtual void fill(grib_info&) const;
 
     virtual void fill(api::MIRJob&) const;
@@ -93,7 +89,38 @@ protected:
     bool isPeriodicWestEast() const;
 
     // -- Class members
-    // None
+
+    class RegularIterator : public Iterator {
+
+        const std::vector<double>& latitudes_;
+        const eckit::Fraction west_;
+
+        const size_t N_;
+        const size_t Ni_;
+        const size_t Nj_;
+
+        Longitude lon_;
+        const Longitude inc_;
+
+        size_t i_;
+        size_t j_;
+        size_t k_;
+
+        size_t count_;
+
+        virtual void print(std::ostream &out) const;
+        virtual bool next(Latitude &lat, Longitude &lon);
+
+        ~RegularIterator() {
+            ASSERT(count_ == Ni_ * Nj_);
+        }
+
+    public:
+
+        RegularIterator(const std::vector<double>& latitudes, size_t N, size_t Ni, size_t Nj, const util::Domain& dom);
+        RegularIterator(const std::vector<double>& latitudes, size_t N, size_t Ni, size_t Nj, const util::Domain& dom, const util::Rotation&);
+
+    };
 
     // -- Class methods
     // None

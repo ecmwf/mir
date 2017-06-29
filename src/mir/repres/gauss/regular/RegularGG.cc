@@ -75,6 +75,10 @@ void RegularGG::initTrans(Trans_t &trans) const {
 #endif
 }
 
+Iterator* RegularGG::iterator() const {
+    return new regular::Regular::Regular::re RegularIterator(latitudes(), N_, Ni_, Nj_, domain());
+}
+
 
 const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
     return new RegularGG(N_, bbox);

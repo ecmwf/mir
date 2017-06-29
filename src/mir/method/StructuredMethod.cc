@@ -40,7 +40,7 @@ StructuredMethod::~StructuredMethod() {
 
 
 void StructuredMethod::left_right_lon_indexes(
-        Longitude& in,
+        const Longitude& in,
         const std::vector<point_ll_t>& coords,
         const size_t start,
         const size_t end,
@@ -97,16 +97,16 @@ void StructuredMethod::getRepresentationPoints(const repres::Representation& r, 
     minimum = 0;
     maximum = 0;
 
-    eckit::ScopedPtr<repres::Iterator> it(r.unrotatedIterator());
-    Latitude lat;
-    Longitude lon;
+    eckit::ScopedPtr<repres::Iterator> it(r.iterator());
     size_t i = 0;
 
-    while (it->next(lat, lon)) {
-        if (!i || lat < minimum) minimum = lat;
-        if (!i || lat > maximum) maximum = lat;
+    while (it->next()) {
+        const repres::Iterator::point_ll_t& p = it->pointUnrotated();
+
+        if (!i || p.lat < minimum) minimum = p.lat;
+        if (!i || p.lat > maximum) maximum = p.lat;
         ASSERT(i < N);
-        points[i++] = point_ll_t(lat, lon);
+        points[i++] = point_ll_t(p.lat, p.lon);
     }
 
     ASSERT(minimum < maximum);
@@ -123,20 +123,20 @@ void StructuredMethod::getRepresentationLatitudes(const repres::Representation& 
     latitudes.clear();
     latitudes.reserve(pl.size());
 
-    eckit::ScopedPtr<repres::Iterator> it(r.unrotatedIterator());
+    eckit::ScopedPtr<repres::Iterator> it(r.iterator());
     Latitude lat;
     Longitude lon;
     for (long Nj: pl) {
         ASSERT(Nj >= 2);
         for (long i = 0; i < Nj; ++i) {
-            ASSERT(it->next(lat, lon));
+            ASSERT(it->next());
             if (i == 0) {
-                latitudes.push_back(lat);
+                latitudes.push_back(it->pointUnrotated().lat);
             }
         }
     }
 
-    ASSERT(!it->next(lat, lon));
+    ASSERT(!it);
 }
 
 void StructuredMethod::boundNorthSouth(const Latitude& lat, const std::vector<Latitude>& latitudes, size_t& jNorth, size_t& jSouth) const {

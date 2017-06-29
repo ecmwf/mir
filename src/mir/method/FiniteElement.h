@@ -30,10 +30,6 @@ class FiniteElement: public MethodWeighted {
 
 public:
 
-    typedef eckit::geometry::Point3 Point;
-
-public:
-
     FiniteElement(const param::MIRParametrisation&);
 
     virtual ~FiniteElement();

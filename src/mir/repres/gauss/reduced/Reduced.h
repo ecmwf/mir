@@ -74,9 +74,7 @@ protected:
 
     virtual void fill(api::MIRJob &) const;
 
-    virtual Iterator* rotatedIterator() const; // After rotation
-
-    virtual Iterator* unrotatedIterator() const; // Before rotation
+    virtual Iterator* iterator() const;
 
     virtual bool sameAs(const Representation& other) const;
 

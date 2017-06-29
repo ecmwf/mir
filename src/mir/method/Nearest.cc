@@ -67,10 +67,7 @@ void Nearest::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Repr
     const util::PointSearch sptree(in);
 
     const util::Domain& inDomain = in.domain();
-    const eckit::ScopedPtr<repres::Iterator> it(rout.unrotatedIterator());
 
-
-    atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
 
     double nearest = 0;
     double push_back = 0;
@@ -85,10 +82,9 @@ void Nearest::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Repr
     std::vector<double> weights;
     weights.reserve(nclosest);
 
-    Latitude lat;
-    Longitude lon;
+    const eckit::ScopedPtr<repres::Iterator> it(rout.iterator());
     size_t ip = 0;
-    while (it->next(lat, lon)) {
+    while (it->next()) {
         ASSERT(ip < out_npts);
 
         if (ip && (ip % 50000 == 0)) {
@@ -105,12 +101,12 @@ void Nearest::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Repr
             nearest = push_back = 0;
         }
 
-        if (!inDomain.contains(lat, lon)) {
+        if (!inDomain.contains(it->pointUnrotated())) {
             continue;
         }
 
         // get the reference output point
-        eckit::geometry::Point3 p(ocoords[ip].data());
+        eckit::geometry::Point3 p(it->point3D());
 
         // find the closest input points to this output
         double t = timer.elapsed();

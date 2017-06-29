@@ -91,6 +91,8 @@ private:
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
     virtual void initTrans(Trans_t& trans) const;
+    virtual Iterator* iterator() const;
+
 
     //virtual void validate(const std::vector<double>&) const;
 

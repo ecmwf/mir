@@ -34,7 +34,6 @@ class None : public Representation {
     None();
     None(const param::MIRParametrisation &);
 
-
     // -- Destructor
 
     virtual ~None(); // Change to virtual if base class
@@ -46,7 +45,7 @@ class None : public Representation {
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -87,15 +86,8 @@ class None : public Representation {
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    // virtual void fill(grib_info &) const;
-    // virtual void fill(api::MIRJob &) const;
-    // virtual util::Domain domain() const;
-    // virtual void validate(const std::vector<double> &values) const;
-    // virtual Iterator* rotatedIterator() const; // After rotation
-    // virtual Iterator* unrotatedIterator() const; // Before rotation
+    // None
 
     // -- Class members
     // None
@@ -114,5 +106,7 @@ class None : public Representation {
 }  // namespace other
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 
