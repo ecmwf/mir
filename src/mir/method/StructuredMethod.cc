@@ -13,7 +13,6 @@
 
 #include "mir/method/StructuredMethod.h"
 
-#include <vector>
 #include "eckit/geometry/Point3.h"
 #include "eckit/log/Log.h"
 #include "atlas/array/ArrayView.h"
@@ -21,6 +20,7 @@
 #include "atlas/grid.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/MIRGrid.h"
@@ -46,9 +46,6 @@ void StructuredMethod::left_right_lon_indexes(
         const size_t end,
         size_t& left,
         size_t& right ) const {
-
-    using eckit::geometry::LON;
-    using eckit::geometry::LAT;
 
     right = start; // take the first if there's a wrap
     left  = start;
@@ -77,7 +74,6 @@ void StructuredMethod::left_right_lon_indexes(
 }
 
 
-// Normalize weights triplets such that sum(weights) = 1
 void StructuredMethod::normalise(triplets_t& triplets) const {
     ASSERT(triplets.size());
 
@@ -95,14 +91,61 @@ void StructuredMethod::normalise(triplets_t& triplets) const {
 }
 
 
-// Find nearest North-South bounding j indices
-void StructuredMethod::boundNorthSouth(size_t& jNorth, size_t& jSouth, const double& lat, const std::vector<double>& latitudes) const {
+void StructuredMethod::getRepresentationPoints(const repres::Representation& r, std::vector<point_ll_t> &points, Latitude& minimum, Latitude& maximum) const {
+    const size_t N = r.grid().size();
+    points.resize(N);
+    minimum = 0;
+    maximum = 0;
+
+    eckit::ScopedPtr<repres::Iterator> it(r.unrotatedIterator());
+    Latitude lat;
+    Longitude lon;
+    size_t i = 0;
+
+    while (it->next(lat, lon)) {
+        if (!i || lat < minimum) minimum = lat;
+        if (!i || lat > maximum) maximum = lat;
+        ASSERT(i < N);
+        points[i++] = point_ll_t(lat, lon);
+    }
+
+    ASSERT(minimum < maximum);
+}
+
+
+void StructuredMethod::getRepresentationLatitudes(const repres::Representation& r, std::vector<Latitude>& latitudes) const {
+    atlas::grid::StructuredGrid in(r.grid());
+    ASSERT(in);
+
+    const std::vector<long>& pl = in.nx();
+    ASSERT(pl.size() >= 2);
+
+    latitudes.clear();
+    latitudes.reserve(pl.size());
+
+    eckit::ScopedPtr<repres::Iterator> it(r.unrotatedIterator());
+    Latitude lat;
+    Longitude lon;
+    for (long Nj: pl) {
+        ASSERT(Nj >= 2);
+        for (long i = 0; i < Nj; ++i) {
+            ASSERT(it->next(lat, lon));
+            if (i == 0) {
+                latitudes.push_back(lat);
+            }
+        }
+    }
+
+    ASSERT(!it->next(lat, lon));
+}
+
+
+void StructuredMethod::boundNorthSouth(size_t& jNorth, size_t& jSouth, const Latitude& lat, const std::vector<Latitude>& latitudes) const {
     const size_t Nj = latitudes.size();
     ASSERT(Nj > 1);
 
     // locate latitude indices just North and South of given latitude
-    std::vector<double>::const_reverse_iterator above = std::lower_bound(latitudes.rbegin(), latitudes.rend(), lat);
-
+    std::vector<Latitude>::const_reverse_iterator above = std::lower_bound(latitudes.rbegin(), latitudes.rend(), lat);
 
     jNorth = (Nj - static_cast<size_t>(std::distance(latitudes.rbegin(), above))) - 1;
     jSouth = jNorth + 1;
@@ -112,12 +155,11 @@ void StructuredMethod::boundNorthSouth(size_t& jNorth, size_t& jSouth, const dou
 }
 
 
-// Find nearest West-East bounding i indices
-void StructuredMethod::boundWestEast(size_t& iWest, size_t& iEast, const double& lon, const size_t& Ni, const size_t& iStart) const {
+void StructuredMethod::boundWestEast(size_t& iWest, size_t& iEast, const Longitude& lon, const size_t& Ni, const size_t& iStart) const {
     ASSERT(Ni > 1);
 
     // locate longitude indices just West and East of given longitude (in-row)
-    iWest = static_cast<size_t>(std::floor(static_cast<double>(lon * Ni) / 360.));
+    iWest = size_t(Longitude((lon * Ni) / 360.).value());
     iEast = (iWest + 1) % Ni;
     ASSERT(iWest < Ni);
 

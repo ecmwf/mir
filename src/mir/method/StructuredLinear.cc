@@ -15,6 +15,7 @@
 
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/Ray.h"
+#include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRGrid.h"
@@ -51,24 +52,30 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
      * get from input grid:
      * - latitudes (assume they are sorted descending)
      * - accumulated pl array (to know global node indices)
-     * - lon/lat points (TODO not necessary)
+     *   - pl_sum.rbegin() (last position) is total number of points sum(j=0; j=Nj, pl[j]),
+     *   - pl_sum.rbegin()[1] (before-last position) is sum(j=0; j=Nj-1, pl[j])
      */
-    const std::vector<double>& latitudes = in.y();
-    ASSERT(latitudes.front() > latitudes.back());
-    ASSERT(latitudes.size() == in.nx().size());
-    ASSERT(latitudes.size() >= 2);
+    const std::vector<long>& pl = in.nx();
+    const size_t inpts = in.size();
 
-    std::vector<size_t> pl_sum(in.nx().size() + 1, 0);
-    std::partial_sum(in.nx().begin(), in.nx().end(), ++pl_sum.begin());
-    ASSERT(static_cast<size_t>(pl_sum.back()) == in.size());
+    ASSERT(pl.size());
+    ASSERT(pl.front());
+    ASSERT(pl.back());
+
+    std::vector<Latitude> latitudes;
+    getRepresentationLatitudes(rin, latitudes);
+
+    std::vector<size_t> pl_sum(pl.size() + 1, 0);
+    std::partial_sum(pl.begin(), pl.end(), ++pl_sum.begin());
+    ASSERT(static_cast<size_t>(pl_sum.back()) == inpts);
 
 
-    // get from input grid lon/lat points
-    std::vector< atlas::PointXY > in_points;
-    in_points.reserve(in.size());
-    for (const atlas::PointXY p: in.xy()) {
-        in_points.push_back(p);
-    }
+    // get input coordinates, checking min/max latitudes (Gaussian grids exclude the poles)
+    std::vector<point_ll_t> icoords;
+    Latitude min_lat;
+    Latitude max_lat;
+    getRepresentationPoints(rin, icoords, min_lat, max_lat);
+    eckit::Log::debug<LibMir>() << "StructureLinear::assemble latitude (min,max) = (" << min_lat << ", " << max_lat << ")" << std::endl;
 
 
     // fill sparse matrix using triplets (reserve assuming all-triangles interpolations)
@@ -87,38 +94,22 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
 
         triplets_t trip;
 
-//        if (inDomain.contains(lat, lon)*/) {
-//
-//            ++i;
-//            continue;
-//
-//        }
+        const bool too_much_north = lat > max_lat;
+        const bool too_much_south = lat < min_lat;
 
-        if (lat > latitudes.front()) {
+        if (too_much_north || too_much_south) {
+            ASSERT(too_much_north != too_much_south);
 
-            // interpolate on above-North latitudes
-            const size_t Ni = size_t(in.nx().front());
-            const size_t iStart = 0;
+            const size_t Ni = size_t(too_much_north? pl.front() : pl.back());
+            const size_t iStart = too_much_north? 0 : pl_sum.rbegin()[1];
 
             size_t l[2];
-            boundWestEast(l[0], l[1], lon.value(), Ni, iStart);
+            boundWestEast(l[0], l[1], lon, Ni, iStart);
 
-            trip = { WeightMatrix::Triplet(i, l[0], in_points[l[1]].x() - lon.value()),
-                     WeightMatrix::Triplet(i, l[1], lon.value() - in_points[l[0]].x()) };
-
-        } else if (lat < latitudes.back()) {
-
-            // interpolate on below-South latitudes
-            // - pl_sum.rbegin() (last position) is total number of points sum(j=0; j=Nj, pl[j]),
-            // - pl_sum.rbegin()[1] (before-last position) is sum(j=0; j=Nj-1, pl[j])
-            const size_t Ni = size_t(in.nx().back());
-            const size_t iStart = pl_sum.rbegin()[1];
-
-            size_t l[2];
-            boundWestEast(l[0], l[1], lon.value(), Ni, iStart);
-
-            trip = { WeightMatrix::Triplet(i, l[0], in_points[l[1]].x() - lon.value() ),
-                     WeightMatrix::Triplet(i, l[1], lon.value() - in_points[l[0]].x() ) };
+            const Longitude& l0 = icoords[l[0]].second;
+            const Longitude& l1 = icoords[l[1]].second;
+            trip = { WeightMatrix::Triplet(i, l[0], (l1 - lon).value() ),
+                     WeightMatrix::Triplet(i, l[1], (lon - l0).value() ) };
 
         } else {
 
@@ -137,18 +128,20 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
 
             size_t j_north;
             size_t j_south;
-            boundNorthSouth(j_north, j_south, lat.value(), latitudes);
+            boundNorthSouth(j_north, j_south, lat, latitudes);
 
             size_t q[4];
-            boundWestEast(q[0], q[1], lon.value(), in.nx(j_north), pl_sum[j_north]);
-            boundWestEast(q[2], q[3], lon.value(), in.nx(j_south), pl_sum[j_south]);
+            boundWestEast(q[0], q[1], lon, size_t(pl[j_north]), pl_sum[j_north]);
+            boundWestEast(q[2], q[3], lon, size_t(pl[j_south]), pl_sum[j_south]);
 
             // convert working longitude/latitude coordinates to 3D
             point_3d_t ip;
             point_3d_t qp[4];
             eckit::geometry::lonlat_to_3d(lon.value(), lat.value(), ip.data());
             for (size_t k = 0; k < 4; ++k) {
-                eckit::geometry::lonlat_to_3d(in_points[q[k]].data(), qp[k].data());
+                const point_ll_t& ll = icoords[q[k]];
+                eckit::geometry::Point2 p(ll.second.value(), ll.first.value());
+                eckit::geometry::lonlat_to_3d(p.data(), qp[k].data());
             }
 
 

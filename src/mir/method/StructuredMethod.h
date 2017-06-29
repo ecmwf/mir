@@ -70,11 +70,17 @@ protected:
     // Normalize weights triplets such that sum(weights) = 1
     void normalise(triplets_t& triplets) const;
 
+    // Get lat/lon point coordinates from representation
+    void getRepresentationPoints(const repres::Representation&, std::vector<point_ll_t>&, Latitude& minimum, Latitude& maximum) const;
+
+    // Get latitudes list from representation
+    void getRepresentationLatitudes(const repres::Representation&, std::vector<Latitude>&) const;
+
     // Find nearest North-South bounding j indices
-    void boundNorthSouth(size_t& jNorth, size_t& jSouth, const double& lat, const std::vector<double>& latitudes) const;
+    void boundNorthSouth(size_t& jNorth, size_t& jSouth, const Latitude& lat, const std::vector<Latitude>& latitudes) const;
 
     // Find nearest West-East bounding i indices
-    void boundWestEast(size_t& iWest, size_t& iEast, const double& lon, const size_t& Ni, const size_t& iStart) const;
+    void boundWestEast(size_t& iWest, size_t& iEast, const Longitude& lon, const size_t& Ni, const size_t& iStart) const;
 
 private:
 

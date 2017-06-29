@@ -14,7 +14,6 @@
 /// @date Apr 2015
 
 
-
 #include "mir/param/FieldParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
@@ -26,6 +25,23 @@
 
 namespace mir {
 namespace param {
+
+
+namespace {
+inline double shift(const double& a, const double& b, double increment) {
+    const eckit::Fraction inc(increment);
+    eckit::Fraction shift = a - (a / inc).integralPart() * inc;
+
+    if (!((a - b) / inc).integer()) {
+        std::ostringstream oss;
+        oss << "Cannot compute shift with a=" << a << ", b=" << b << ", inc=" << double(inc)
+            << " shift=" << double(shift) << " (a-b)/inc=" << double((a - b) / inc);
+        throw eckit::SeriousBug(oss.str());
+    }
+
+    return shift;
+}
+}  // (anonymous namespace)
 
 
 FieldParametrisation::FieldParametrisation() {}
@@ -73,21 +89,6 @@ bool FieldParametrisation::get(const std::string& name, float& value) const {
 }
 
 
-inline double shift(const double& a, const double& b, double increment) {
-    const eckit::Fraction inc(increment);
-    eckit::Fraction shift = a - (a / inc).integralPart() * inc;
-
-    if (!((a - b) / inc).integer()) {
-        std::ostringstream oss;
-        oss << "Cannot compute shift with a=" << a << ", b=" << b << ", inc=" << double(inc)
-            << " shift=" << double(shift) << " (a-b)/inc=" << double((a - b) / inc);
-        throw eckit::SeriousBug(oss.str());
-    }
-
-    return shift;
-}
-
-
 bool FieldParametrisation::get(const std::string& name, double& value) const {
     double inc;
     double a;
@@ -128,32 +129,27 @@ bool FieldParametrisation::get(const std::string& name, std::vector<float>& valu
 
 bool FieldParametrisation::get(const std::string& name, std::vector<double>& value) const {
 
-    if (_get(name, value)) { // This will check if this in the style paramaretirsaion
+    // Check if this is in the MIRConfiguration
+    if (_get(name, value)) {
         return true;
     }
 
-    // Special case
+    // Special cases
 
     if (name == "grid") {
-        double west_east_increment, south_north_increment;
+        std::vector<double> grid(2, 0.);
 
-        if (get("west_east_increment", west_east_increment) && get("south_north_increment", south_north_increment)) {
-            value.resize(2);
-            value[0] = west_east_increment;
-            value[1] = south_north_increment;
+        if (get("west_east_increment", grid[0]) && get("south_north_increment", grid[1])) {
+            value.swap(grid);
             return true;
         }
     }
 
     if (name == "area") {
-        double north, west, south, east;
+        std::vector<double> area(4, 0.);
 
-        if (get("north", north) && get("west", west) && get("south", south) && get("east", east)) {
-            value.resize(4);
-            value[0] = north;
-            value[1] = west;
-            value[2] = south;
-            value[3] = east;
+        if (get("north", area[0]) && get("west", area[1]) && get("south", area[2]) && get("east", area[3])) {
+            value.swap(area);
             return true;
         }
     }
@@ -168,9 +164,7 @@ bool FieldParametrisation::get(const std::string& name, std::vector<double>& val
         return true;
     }
 
-
-
-    return _get(name, value);
+    return false;
 }
 
 
@@ -185,15 +179,12 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
     ASSERT(name != "paramId");
 
     // This assumes that other input (NetCDF, etc) also return a paramId
-    long paramId = 0;
-    if (get("paramId", paramId)) {
-        // return paramId specific parametrisation
-        const config::MIRConfiguration& configuration = config::MIRConfiguration::instance();
-        const param::MIRParametrisation& param = configuration.pick(paramId, *this);
-        return param.get(name, value);
+    if (!has("paramId")) {
+        return false;
     }
 
-    return false;
+    // return paramId specific parametrisation
+    return config::MIRConfiguration::instance().pick(*this).get(name, value);
 }
 
 

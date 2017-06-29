@@ -65,47 +65,33 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
 
 
 
-    const std::vector<long>& lons = in.nx();
+    const std::vector<long>& pl = in.nx();
     const size_t inpts = in.size();
 
-    ASSERT(lons.size());
-    ASSERT(lons.front());
-    ASSERT(lons.back());
+    ASSERT(pl.size());
+    ASSERT(pl.front());
+    ASSERT(pl.back());
 
 
     // get input coordinates, checking min/max latitudes (Gaussian grids exclude the poles)
-    std::vector<point_ll_t> icoords(in.size());
-    Latitude min_lat = 0.;
-    Latitude max_lat = 0.;
-    {
-        eckit::ScopedPtr<repres::Iterator> it(rin.unrotatedIterator());
-        Latitude lat;
-        Longitude lon;
-        size_t i = 0;
-
-        while (it->next(lat, lon)) {
-            if (!i || lat < min_lat) min_lat = lat;
-            if (!i || lat > max_lat) max_lat = lat;
-            ASSERT(i < icoords.size());
-            icoords[i++] = point_ll_t(lat, lon);
-        }
-
-        ASSERT(min_lat < max_lat);
-    }
-    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble max_lat=" << max_lat << ", min_lat=" << min_lat << std::endl;
+    std::vector<point_ll_t> icoords;
+    Latitude min_lat;
+    Latitude max_lat;
+    getRepresentationPoints(rin, icoords, min_lat, max_lat);
+    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble latitude (min,max) = (" << min_lat << ", " << max_lat << ")" << std::endl;
 
 
     // set northern & southern-most parallel point indices
-    std::vector<size_t> parallel_north(lons.front());
-    std::vector<size_t> parallel_south(lons.back());
+    std::vector<size_t> parallel_north(pl.front());
+    std::vector<size_t> parallel_south(pl.back());
 
-    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble first row: " << lons.front() << std::endl;
-    for (long i = 0; i < lons.front(); ++i) {
+    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble first row: " << pl.front() << std::endl;
+    for (long i = 0; i < pl.front(); ++i) {
         parallel_north[i] = size_t(i);
     }
 
-    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble last row: " << lons.back() << std::endl;
-    for (long i = lons.back(), j = 0; i > 0; i--, j++) {
+    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble last row: " << pl.back() << std::endl;
+    for (long i = pl.back(), j = 0; i > 0; i--, j++) {
         parallel_south[j] = size_t(inpts - i);
     }
 
@@ -161,19 +147,19 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
             Latitude top_lat = 0;
             Latitude bot_lat = 0;
 
-            ASSERT(lons.size() >= 2); // at least 2 lines of latitude
+            ASSERT(pl.size() >= 2); // at least 2 lines of latitude
 
             if( eckit::types::is_approximately_equal(max_lat.value(), lat.value()) ) {
 
-                top_n = lons[0];
-                bot_n = lons[1];
+                top_n = pl[0];
+                bot_n = pl[1];
                 top_i = 0;
                 bot_i = top_i + top_n;
 
             } else if( eckit::types::is_approximately_equal(min_lat.value(), lat.value()) ) {
 
-                top_n = lons[ lons.size() - 2 ];
-                bot_n = lons[ lons.size() - 1 ];
+                top_n = pl[ pl.size() - 2 ];
+                bot_n = pl[ pl.size() - 1 ];
                 bot_i = inpts - bot_n;
                 top_i = bot_i - top_n;
 
@@ -184,13 +170,13 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
 
                 size_t n = 1;
                 while ( !( bot_lat < lat && ( top_lat > lat || eckit::types::is_approximately_equal(top_lat.value(), lat.value())))
-                        && n != lons.size() ) {
+                        && n != pl.size() ) {
 
-                    top_n = lons[n - 1];
-                    bot_n = lons[n];
+                    top_n = pl[n - 1];
+                    bot_n = pl[n];
 
                     top_i  = bot_i;
-                    bot_i += lons[n - 1];
+                    bot_i += pl[n - 1];
 
                     top_lat = icoords[top_i].first;
                     bot_lat = icoords[bot_i].first;
