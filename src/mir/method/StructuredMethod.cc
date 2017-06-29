@@ -128,24 +128,23 @@ void StructuredMethod::boundWestEast(size_t& iWest, size_t& iEast, const double&
 
 
 void StructuredMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
-    util::MIRGrid in = rin.grid();
-
     eckit::Log::debug<LibMir>() << "StructuredMethod::assemble (input: " << rin << ", output: " << rout << ")..." << std::endl;
 
     // FIXME for the moment
-    if (!in.domain().isGlobal()) {
+    if (!rin.domain().isGlobal()) {
         throw eckit::UserError("This interpolation method is only for global input grids.", Here());
     }
     if (!rout.domain().isGlobal()) {
         throw eckit::UserError("This interpolation method is only for global output grids.", Here());
     }
 
-    atlas::grid::StructuredGrid gin(in);
-    if (!gin) {
-        throw eckit::UserError("This interpolation method is only for Structured grids as input.", Here());
+    // ensure grid is structured and non-rotated
+    atlas::Grid in = rin.grid();
+    if (!atlas::grid::StructuredGrid(in) || in.projection()) {
+        throw eckit::UserError("This interpolation method is only for non-rotated structured grids as input.", Here());
     }
 
-    assemble(W, gin, rout);
+    assembleStructuredInput(W, rin, rout);
     eckit::Log::debug<LibMir>() << "StructuredMethod::assemble." << std::endl;
 }
 

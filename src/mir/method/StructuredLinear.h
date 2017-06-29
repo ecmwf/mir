@@ -29,7 +29,7 @@ public:
 
 private:
 
-    void assemble(WeightMatrix&, const atlas::grid::StructuredGrid& in, const repres::Representation& rout) const;
+    void assembleStructuredInput(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const;
 
     const char* name() const;
 

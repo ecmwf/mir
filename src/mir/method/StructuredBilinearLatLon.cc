@@ -49,7 +49,10 @@ StructuredBilinearLatLon::~StructuredBilinearLatLon() {
 }
 
 
-void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const repres::Representation& rout) const {
+void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+
+    atlas::grid::StructuredGrid in(rin.grid());
+    ASSERT(in);
 
     atlas::Grid out(rout.grid());
     ASSERT(out);
@@ -64,36 +67,31 @@ void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::Stru
 
     const std::vector<long>& lons = in.nx();
     const size_t inpts = in.size();
-    const size_t onpts = out.size();
 
     ASSERT(lons.size());
     ASSERT(lons.front());
     ASSERT(lons.back());
 
 
-    // pre-allocate matrix entries
-    triplets_t triplets; /* structure to fill-in sparse matrix */
-    triplets.reserve(4 * onpts);
-
-
-    // output points
-    eckit::ScopedPtr<repres::Iterator> it(rout.unrotatedIterator());
-
-
     // get input coordinates, checking min/max latitudes (Gaussian grids exclude the poles)
     std::vector<point_ll_t> icoords(in.size());
     Latitude min_lat = 0.;
     Latitude max_lat = 0.;
+    {
+        eckit::ScopedPtr<repres::Iterator> it(rin.unrotatedIterator());
+        Latitude lat;
+        Longitude lon;
+        size_t i = 0;
 
-    Latitude lat;
-    Longitude lon;
-    size_t i = 0;
-    while (it->next(lat, lon)) {
-        if (!i || lat < min_lat) min_lat = lat;
-        if (!i || lat > max_lat) max_lat = lat;
-        icoords[i++] = point_ll_t(lat, lon);
+        while (it->next(lat, lon)) {
+            if (!i || lat < min_lat) min_lat = lat;
+            if (!i || lat > max_lat) max_lat = lat;
+            ASSERT(i < icoords.size());
+            icoords[i++] = point_ll_t(lat, lon);
+        }
+
+        ASSERT(min_lat < max_lat);
     }
-    ASSERT(min_lat < max_lat);
     eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble max_lat=" << max_lat << ", min_lat=" << min_lat << std::endl;
 
 
@@ -114,24 +112,33 @@ void StructuredBilinearLatLon::assemble(WeightMatrix& W, const atlas::grid::Stru
 //    std::ofstream outfile ("mir.coeffs");
 //    outfile.precision(2);
 
+
+    // fill sparse matrix using triplets (reserve assuming all-quadrilateral interpolations)
+    triplets_t triplets; /* structure to fill-in sparse matrix */
+    triplets.reserve(4 * out.size());
+
+
     // interpolate each output point in turn
-    it.reset(rout.unrotatedIterator());
-    i = 0;
+    eckit::ScopedPtr<repres::Iterator> it(rout.unrotatedIterator());
+    Latitude lat;
+    Longitude lon;
+    size_t i = 0;
+
     while (it->next(lat, lon)) {
-        ASSERT(i < onpts);
+        ASSERT(i < out.size());
 
         const bool too_much_north = lat > max_lat;
-        const bool too_much_south = min_lat > lat;
+        const bool too_much_south = lat < min_lat;
 
         if (too_much_north || too_much_south) {
-
             ASSERT(too_much_north != too_much_south);
 
             const std::vector<size_t>& par(too_much_north ? parallel_north : parallel_south);
+            ASSERT(par.size());
 
             const double w = 1. / double(par.size());
             for (const size_t& j: par) {
-                triplets.push_back( WeightMatrix::Triplet( i, j, w ) );
+                triplets.push_back( WeightMatrix::Triplet(i, j, w) );
             }
 
 //            outfile << std::fixed

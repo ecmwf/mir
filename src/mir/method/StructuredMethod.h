@@ -79,7 +79,7 @@ protected:
 private:
 
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
-    virtual void assemble(WeightMatrix&, const atlas::grid::StructuredGrid& in, const repres::Representation& out) const = 0;
+    virtual void assembleStructuredInput(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const = 0;
 
 };
 

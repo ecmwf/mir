@@ -38,7 +38,10 @@ StructuredLinear::~StructuredLinear() {
 }
 
 
-void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const repres::Representation& rout) const {
+void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+
+    atlas::grid::StructuredGrid in(rin.grid());
+    ASSERT(in);
 
     atlas::Grid out(rout.grid());
     ASSERT(out);
@@ -68,18 +71,17 @@ void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGr
     }
 
 
-    // output points
-    const eckit::ScopedPtr<repres::Iterator> it(rout.unrotatedIterator());
-
-
-    // fill sparse matrix using triplets (reserve assuming all-triangle interpolations)
+    // fill sparse matrix using triplets (reserve assuming all-triangles interpolations)
     triplets_t triplets;
     triplets.reserve(3 * out.size());
 
+
     // interpolate each output point in turn
+    eckit::ScopedPtr<repres::Iterator> it(rout.unrotatedIterator());
     Latitude lat;
     Longitude lon;
     size_t i = 0;
+
     while (it->next(lat, lon)) {
         ASSERT(i < out.size());
 
