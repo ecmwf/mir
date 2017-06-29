@@ -22,10 +22,6 @@
 #include "mir/method/WeightMatrix.h"
 
 
-namespace atlas {
-class Grid;
-class Mesh;
-}
 namespace mir {
 namespace lsm {
 class LandSeaMasks;

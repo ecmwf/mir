@@ -18,15 +18,9 @@
 
 #include <vector>
 #include "eckit/geometry/Point3.h"
-#include "atlas/grid.h"
 #include "mir/param/MIRParametrisation.h"
 
 
-namespace atlas {
-namespace grid {
-class StructuredGrid;
-}
-}
 namespace mir {
 namespace param {
 class MIRParametrisation;
@@ -77,10 +71,10 @@ protected:
     void getRepresentationLatitudes(const repres::Representation&, std::vector<Latitude>&) const;
 
     // Find nearest North-South bounding j indices
-    void boundNorthSouth(size_t& jNorth, size_t& jSouth, const Latitude& lat, const std::vector<Latitude>& latitudes) const;
+    void boundNorthSouth(const Latitude&, const std::vector<Latitude>&, size_t& jNorth, size_t& jSouth) const;
 
     // Find nearest West-East bounding i indices
-    void boundWestEast(size_t& iWest, size_t& iEast, const Longitude& lon, const size_t& Ni, const size_t& iStart) const;
+    void boundWestEast(const Longitude&, const size_t& Ni, const size_t& iStart, size_t& iWest, size_t& iEast) const;
 
 private:
 

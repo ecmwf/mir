@@ -13,12 +13,13 @@
 
 #include "mir/method/StructuredLinear.h"
 
+#include <vector>
+#include "eckit/log/Log.h"
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/Ray.h"
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/MIRGrid.h"
 
 
 namespace mir {
@@ -104,7 +105,7 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
             const size_t iStart = too_much_north? 0 : pl_sum.rbegin()[1];
 
             size_t l[2];
-            boundWestEast(l[0], l[1], lon, Ni, iStart);
+            boundWestEast(lon, Ni, iStart, l[0], l[1]);
 
             const Longitude& l0 = icoords[l[0]].second;
             const Longitude& l1 = icoords[l[1]].second;
@@ -128,11 +129,11 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
 
             size_t j_north;
             size_t j_south;
-            boundNorthSouth(j_north, j_south, lat, latitudes);
+            boundNorthSouth(lat, latitudes, j_north, j_south);
 
             size_t q[4];
-            boundWestEast(q[0], q[1], lon, size_t(pl[j_north]), pl_sum[j_north]);
-            boundWestEast(q[2], q[3], lon, size_t(pl[j_south]), pl_sum[j_south]);
+            boundWestEast(lon, size_t(pl[j_north]), pl_sum[j_north], q[0], q[1]);
+            boundWestEast(lon, size_t(pl[j_south]), pl_sum[j_south], q[2], q[3]);
 
             // convert working longitude/latitude coordinates to 3D
             point_3d_t ip;

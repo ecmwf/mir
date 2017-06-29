@@ -16,19 +16,11 @@
 #include "mir/method/StructuredBilinearLatLon.h"
 
 #include <vector>
-#include "eckit/log/BigNum.h"
 #include "eckit/log/Log.h"
 #include "eckit/types/FloatCompare.h"
-#include "atlas/array/ArrayView.h"
-#include "atlas/array_fwd.h"
-#include "atlas/grid.h"
-#include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
-#include "mir/data/MIRField.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Compare.h"
-#include "mir/util/MIRGrid.h"
 
 
 namespace mir {

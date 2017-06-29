@@ -139,8 +139,7 @@ void StructuredMethod::getRepresentationLatitudes(const repres::Representation& 
     ASSERT(!it->next(lat, lon));
 }
 
-
-void StructuredMethod::boundNorthSouth(size_t& jNorth, size_t& jSouth, const Latitude& lat, const std::vector<Latitude>& latitudes) const {
+void StructuredMethod::boundNorthSouth(const Latitude& lat, const std::vector<Latitude>& latitudes, size_t& jNorth, size_t& jSouth) const {
     const size_t Nj = latitudes.size();
     ASSERT(Nj > 1);
 
@@ -155,7 +154,7 @@ void StructuredMethod::boundNorthSouth(size_t& jNorth, size_t& jSouth, const Lat
 }
 
 
-void StructuredMethod::boundWestEast(size_t& iWest, size_t& iEast, const Longitude& lon, const size_t& Ni, const size_t& iStart) const {
+void StructuredMethod::boundWestEast(const Longitude& lon, const size_t& Ni, const size_t& iStart, size_t& iWest, size_t& iEast) const {
     ASSERT(Ni > 1);
 
     // locate longitude indices just West and East of given longitude (in-row)
