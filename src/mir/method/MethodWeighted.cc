@@ -19,7 +19,6 @@
 #include "mir/method/MethodWeighted.h"
 
 #include <algorithm>
-#include <ios>
 #include <map>
 #include <sstream>
 #include <string>
@@ -104,8 +103,16 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 
     eckit::Log::debug<LibMir>() << "++++ LSM masks " << masks << std::endl;
     here = timer.elapsed();
+
+    // TODO: add (possibly) missing unique identifiers
+    // NOTE: key has to be relatively short, to avoid filesystem "File name too long" errors
+    // Check with $getconf -a | grep -i name
     eckit::MD5 md5;
-    md5 << *this << gin << gout;
+    md5 << *this
+        << gin
+        << gout
+        << pruneEpsilon_
+        << lsmWeightAdjustement_;
 
     const eckit::MD5::digest_t md5_no_masks(md5.digest());
     md5 << masks;
@@ -118,15 +125,10 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     ASSERT(!shortName_in.empty());
     ASSERT(!shortName_out.empty());
 
-    std::ostringstream base_name;
-    base_name << name()
-              << "-" << shortName_in
-              << "-" << shortName_out
-              << "-eps:" << std::scientific << pruneEpsilon_
-              << "-lwa:" << std::fixed << lsmWeightAdjustement_;
+    const std::string base_name = std::string(name()) + "-" + shortName_in + "-" + shortName_out;
+    const std::string key_no_masks   = base_name + "-"      + md5_no_masks;
+    const std::string key_with_masks = base_name +  "-LSM-" + md5_with_masks;
 
-    const std::string key_no_masks   = base_name.str() + "-"      + md5_no_masks;
-    const std::string key_with_masks = base_name.str() +  "-LSM-" + md5_with_masks;
 
     InMemoryCache<WeightMatrix>::iterator j = matrix_cache.find(key_with_masks);
     if (j != matrix_cache.end()) {
@@ -135,7 +137,6 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 
     const std::string cache_key = (masks.active() && masks.cacheable()) ? key_with_masks : key_no_masks;
 
-    // Shorten the key, to avoid "file name too long" errors
 
 
     // calculate weights matrix, apply mask if necessary
