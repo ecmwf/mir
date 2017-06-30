@@ -75,8 +75,27 @@ void RegularGG::initTrans(Trans_t &trans) const {
 #endif
 }
 
+
 Iterator* RegularGG::iterator() const {
-    return new RegularIterator(latitudes(), N_, Ni_, Nj_, domain());
+
+    class RegularGGIterator : protected RegularIterator, public Iterator {
+        void print(std::ostream& out) const {
+            out << "RegularGGIterator[";
+            Iterator::print(out);
+            out << ",";
+            RegularIterator::print(out);
+            out << "]";
+        }
+        bool next(Latitude& lat, Longitude& lon) {
+            return RegularIterator::next(lat, lon);
+        }
+    public:
+        RegularGGIterator(const std::vector<double>& latitudes, size_t N, size_t Ni, size_t Nj, const util::Domain& dom) :
+            RegularIterator(latitudes, N, Ni, Nj, dom) {
+        }
+    };
+
+    return new RegularGGIterator(latitudes(), N_, Ni_, Nj_, domain());
 }
 
 

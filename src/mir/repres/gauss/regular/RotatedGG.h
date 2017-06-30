@@ -62,6 +62,7 @@ class RotatedGG : public Regular {
   protected:
 
     // -- Members
+
     util::Rotation rotation_;
 
     // -- Methods
@@ -79,18 +80,11 @@ class RotatedGG : public Regular {
 
   private:
 
-
-
-    // No copy allowed
-
-    RotatedGG(const RotatedGG &);
-    RotatedGG &operator=(const RotatedGG &);
-
     // -- Members
+    // None
 
     // -- Methods
     // None
-
 
     // -- Overridden methods
 

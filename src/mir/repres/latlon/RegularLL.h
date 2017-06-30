@@ -40,10 +40,9 @@ public:
               const util::Increments &increments,
               const util::Shift& shift);
 
-
     // -- Destructor
 
-    virtual ~RegularLL(); // Change to virtual if base class
+    virtual ~RegularLL();
 
     // -- Convertors
     // None
@@ -72,7 +71,9 @@ protected:
     // None
 
     // -- Overridden methods
-    void print(std::ostream &) const; // Change to virtual if base class
+
+    virtual Iterator* iterator() const;
+    virtual void print(std::ostream &) const;
     virtual atlas::Grid atlasGrid() const;
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;

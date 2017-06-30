@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef ReducedFromPL_H
-#define ReducedFromPL_H
+#ifndef mir_repres_gauss_reduced_ReducedFromPL_h
+#define mir_repres_gauss_reduced_ReducedFromPL_h
 
 #include "mir/repres/gauss/reduced/FromPL.h"
 
@@ -24,18 +24,18 @@ namespace repres {
 namespace gauss {
 namespace reduced {
 
+
 class ReducedFromPL : public FromPL {
-  public:
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    ReducedFromPL(const param::MIRParametrisation &);
-    ReducedFromPL(long, const std::vector<long> &, const util::BoundingBox &);
-    ReducedFromPL(const std::vector<long> &);
-
+    ReducedFromPL(const param::MIRParametrisation&);
+    ReducedFromPL(long, const std::vector<long>&, const util::BoundingBox&);
+    ReducedFromPL(const std::vector<long>&);
 
     // -- Destructor
 
@@ -48,6 +48,7 @@ class ReducedFromPL : public FromPL {
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -58,14 +59,14 @@ class ReducedFromPL : public FromPL {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -76,27 +77,20 @@ class ReducedFromPL : public FromPL {
     // -- Class methods
     // None
 
-  private:
-
-
-
-    // No copy allowed
-
-    ReducedFromPL(const ReducedFromPL &);
-    ReducedFromPL &operator=(const ReducedFromPL &);
+private:
 
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
 
-    virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    Iterator* iterator() const;
+    virtual Reduced *cropped(const util::BoundingBox&, const std::vector<long>&) const;
     virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
+    virtual bool sameAs(const Representation&) const;
 
     // -- Class members
     // None

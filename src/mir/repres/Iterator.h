@@ -99,8 +99,8 @@ protected:
 
     // -- Methods
 
+    virtual void print(std::ostream&) const = 0;
     virtual bool next(Latitude&, Longitude&) = 0;
-    virtual void print(std::ostream&) const;
 
     // -- Overridden methods
     // None

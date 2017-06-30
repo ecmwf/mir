@@ -12,10 +12,12 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 
 #include <iostream>
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
+
 
 namespace mir {
 namespace repres {
@@ -25,15 +27,22 @@ namespace reduced {
 
 ReducedOctahedral::ReducedOctahedral(size_t N):
     Octahedral(N) {
-
 }
+
 
 ReducedOctahedral::~ReducedOctahedral() {
 }
 
+
 void ReducedOctahedral::print(std::ostream &out) const {
     out << "ReducedGGOctahedral[N" << N_ << ",bbox=" << bbox_ << "]";
 }
+
+
+Iterator *ReducedOctahedral::iterator() const {
+    return unrotatedIterator();
+}
+
 
 const Reduced *ReducedOctahedral::cropped(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
     // We lose the ReducedOctahedral nature of the grid
@@ -45,11 +54,11 @@ void ReducedOctahedral::makeName(std::ostream& out) const {
     Octahedral::makeName(out);
 }
 
+
 bool ReducedOctahedral::sameAs(const Representation& other) const {
     const ReducedOctahedral* o = dynamic_cast<const ReducedOctahedral*>(&other);
     return o && Octahedral::sameAs(other);
 }
-
 
 
 }  // namespace reduced

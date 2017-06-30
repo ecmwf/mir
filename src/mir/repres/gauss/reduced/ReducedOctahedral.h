@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef ReducedOctahedral_H
-#define ReducedOctahedral_H
+#ifndef mir_repres_gauss_reduced_ReducedOctahedral_h
+#define mir_repres_gauss_reduced_ReducedOctahedral_h
 
 #include "mir/repres/gauss/reduced/Octahedral.h"
 
@@ -24,8 +24,9 @@ namespace repres {
 namespace gauss {
 namespace reduced {
 
+
 class ReducedOctahedral : public Octahedral {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -45,6 +46,7 @@ class ReducedOctahedral : public Octahedral {
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -55,14 +57,14 @@ class ReducedOctahedral : public Octahedral {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -73,25 +75,20 @@ class ReducedOctahedral : public Octahedral {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    ReducedOctahedral(const ReducedOctahedral &);
-    ReducedOctahedral &operator=(const ReducedOctahedral &);
+private:
 
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
 
-    virtual const Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    virtual Iterator* iterator() const;
+    virtual const Reduced *cropped(const util::BoundingBox&, const std::vector<long>&) const;
     virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
+    virtual bool sameAs(const Representation&) const;
 
     // -- Class members
     // None
@@ -106,9 +103,12 @@ class ReducedOctahedral : public Octahedral {
 
 };
 
+
 }  // namespace reduced
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedOctahedral_H
-#define RotatedOctahedral_H
+#ifndef mir_repres_gauss_reduced_RotatedOctahedral_h
+#define mir_repres_gauss_reduced_RotatedOctahedral_h
 
 #include "mir/repres/gauss/reduced/Octahedral.h"
 #include "mir/util/BoundingBox.h"
@@ -28,14 +28,14 @@ namespace reduced {
 
 
 class RotatedOctahedral : public  Octahedral {
-  public:
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    RotatedOctahedral(long, const util::BoundingBox &, const util::Rotation&);
+    RotatedOctahedral(long, const util::BoundingBox&, const util::Rotation&);
 
     // -- Destructor
 
@@ -48,6 +48,7 @@ class RotatedOctahedral : public  Octahedral {
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -58,14 +59,15 @@ class RotatedOctahedral : public  Octahedral {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
+
     util::Rotation rotation_;
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -76,29 +78,24 @@ class RotatedOctahedral : public  Octahedral {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    RotatedOctahedral(const RotatedOctahedral &);
-    RotatedOctahedral &operator=(const RotatedOctahedral &);
+private:
 
     // -- Members
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
-    virtual atlas::Grid atlasGrid() const;
     virtual Iterator* iterator() const;
+    virtual void fill(grib_info&) const;
+    virtual void fill(api::MIRJob&) const;
+    virtual atlas::Grid atlasGrid() const;
 
-    virtual const Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    virtual const Reduced *cropped(const util::BoundingBox&, const std::vector<long>&) const ;
     virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
+    virtual bool sameAs(const Representation&) const;
 
     // -- Class members
     // None
@@ -118,5 +115,7 @@ class RotatedOctahedral : public  Octahedral {
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

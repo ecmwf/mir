@@ -78,7 +78,7 @@ protected:
 
     virtual void fill(api::MIRJob&) const;
 
-    virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
+    virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
 
     virtual atlas::Grid atlasGrid() const;
 
@@ -90,36 +90,24 @@ protected:
 
     // -- Class members
 
-    class RegularIterator : public Iterator {
-
+    class RegularIterator {
         const std::vector<double>& latitudes_;
         const eckit::Fraction west_;
-
         const size_t N_;
         const size_t Ni_;
         const size_t Nj_;
-
-        Longitude lon_;
-        const Longitude inc_;
-
+        eckit::Fraction lon_;
+        const eckit::Fraction inc_;
         size_t i_;
         size_t j_;
         size_t k_;
-
         size_t count_;
-
-        virtual void print(std::ostream &out) const;
-        virtual bool next(Latitude &lat, Longitude &lon);
-
-        ~RegularIterator() {
-            ASSERT(count_ == Ni_ * Nj_);
-        }
-
+    protected:
+        ~RegularIterator();
+        void print(std::ostream&) const;
+        bool next(Latitude&, Longitude&);
     public:
-
-        RegularIterator(const std::vector<double>& latitudes, size_t N, size_t Ni, size_t Nj, const util::Domain& dom);
-        RegularIterator(const std::vector<double>& latitudes, size_t N, size_t Ni, size_t Nj, const util::Domain& dom, const util::Rotation&);
-
+        RegularIterator(const std::vector<double>& latitudes, size_t N, size_t Ni, size_t Nj, const util::Domain&);
     };
 
     // -- Class methods
@@ -129,11 +117,6 @@ private:
 
     Regular();
 
-    // No copy allowed
-
-    Regular(const Regular&);
-    Regular& operator=(const Regular&);
-
     // -- Members
     // None
 
@@ -142,7 +125,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void shape(size_t &ni, size_t &nj) const;
+    virtual void shape(size_t& ni, size_t& nj) const;
 
     // -- Class members
     // None
