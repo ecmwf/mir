@@ -20,11 +20,11 @@
 #include "eckit/log/Timer.h"
 #include "mir/config/LibMir.h"
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/util/MIRGrid.h"
 #include "mir/param/RuntimeParametrisation.h"
-#include "mir/util/Compare.h"
-#include "mir/util/PointSearch.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Compare.h"
+#include "mir/util/MIRGrid.h"
+#include "mir/util/PointSearch.h"
 
 
 namespace mir {
@@ -72,18 +72,10 @@ void NearestLSM::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::R
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
 
-    util::PointSearch sptree_masked    (in, util::compare::IsMaskedFn   (imask));
-    util::PointSearch sptree_notmasked (in, util::compare::IsNotMaskedFn(imask));
+    util::PointSearch sptree_masked    (rin, util::compare::IsMaskedFn   (imask));
+    util::PointSearch sptree_notmasked (rin, util::compare::IsNotMaskedFn(imask));
 
     eckit::Log::debug<LibMir>() << "NearestLSM compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
-
-
-    // compute the output nodes coordinates
-    here = timer.elapsed();
-
-    atlas::array::ArrayView< double, 2 > ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
-
-    eckit::Log::debug<LibMir>() << "NearestLSM compute the output nodes coordinates " << timer.elapsed() - here << std::endl;
 
 
     // search nearest neighbours matching in/output masks
@@ -93,23 +85,27 @@ void NearestLSM::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::R
 
     std::vector<WeightMatrix::Triplet> mat;
     mat.reserve(W.rows());
-    for (WeightMatrix::Size i = 0; i < W.rows(); ++i) {
+
+    const eckit::ScopedPtr<repres::Iterator> it(rout.iterator());
+    size_t ip = 0;
+    while (it->next()) {
+        ASSERT(ip++ < W.rows());
 
         // pick the (input) search tree matching the output mask
         util::PointSearch& sptree(
-            omask[i] ? sptree_masked
+            omask[ip] ? sptree_masked
             : sptree_notmasked );
 
         // perform nearest neighbour search
         // - p: output grid node to look neighbours for
         // - q: input grid node closest to p (accessed as qmeta.point())
         // - j: index of q in input grid (or input field)
-        const util::PointSearch::PointType      p(ocoords[i].data());
+        const util::PointSearch::PointType      p(it->point3D());
         const util::PointSearch::PointValueType qmeta = sptree.closestPoint(p);
-        const size_t j = qmeta.payload();
+        const size_t jp = qmeta.payload();
 
         // insert entry into uncompressed matrix structure
-        mat.push_back(WeightMatrix::Triplet( i, j, 1. ));
+        mat.push_back(WeightMatrix::Triplet(ip, jp, 1.));
 
     }
     eckit::Log::debug<LibMir>() << "NearestLSM search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;

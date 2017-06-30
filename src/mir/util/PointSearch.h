@@ -25,8 +25,8 @@
 
 
 namespace mir {
-namespace util {
-class MIRGrid;
+namespace repres {
+class Representation;
 }
 }
 
@@ -56,7 +56,7 @@ public:
 
     PointSearch(const std::vector<Point>& ipts);
 
-    PointSearch(const MIRGrid& sp, const CompareType& isok=CompareTypeNone());
+    PointSearch(const repres::Representation&, const CompareType& =CompareTypeNone());
 
 public:
 
@@ -79,7 +79,7 @@ protected:
 private:
 
     void init(const std::vector<PointType>& points);
-    void init(const MIRGrid& sp, const CompareType& isok=CompareTypeNone());
+    void init(const repres::Representation&, const CompareType& =CompareTypeNone());
 
 };
 

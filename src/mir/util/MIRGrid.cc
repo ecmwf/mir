@@ -16,16 +16,15 @@
 
 #include "mir/util/MIRGrid.h"
 
-#include "eckit/geometry/Point3.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/array.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/mesh/Mesh.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
 #include "mir/util/MIRStatistics.h"
+
 
 namespace mir {
 namespace util {
@@ -54,8 +53,7 @@ MIRGrid::MeshGenParams::MeshGenParams() {
 MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain) :
     grid_(grid),
     domain_(domain),
-    statistics_(dummyStatistics),
-    coordsXYZ_(0) {
+    statistics_(dummyStatistics) {
 }
 
 
@@ -63,8 +61,7 @@ MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain, util::MIRStatist
     grid_(grid),
     domain_(domain),
     meshGenParams_(meshGenParams),
-    statistics_(statistics),
-    coordsXYZ_(0) {
+    statistics_(statistics) {
 }
 
 
@@ -77,7 +74,6 @@ MIRGrid::MIRGrid(const MIRGrid& other) :
     meshGenParams_ = other.meshGenParams_;
 
     mesh_ = atlas::Mesh();
-    coordsXYZ_.reset();
 }
 
 
@@ -132,27 +128,6 @@ atlas::Mesh MIRGrid::generateMeshAndCache() const {
     mesh_cache.footprint(md5, mesh.footprint());
 
     return mesh;
-}
-
-
-const atlas::array::Array& MIRGrid::coordsXYZ() const {
-    using namespace atlas::array;
-
-    if (!coordsXYZ_) {
-        coordsXYZ_.reset(Array::create< double >(grid_.size(), 3));
-        ArrayView< double, 2 > xyz = make_view< double, 2 >(*coordsXYZ_);
-
-        size_t i = 0;
-        for (atlas::PointLonLat p : grid_.lonlat()) {
-            atlas::PointXYZ x = atlas::lonlat_to_geocentric(p);
-            xyz(i, 0) = x.x();
-            xyz(i, 1) = x.y();
-            xyz(i, 2) = x.z();
-            ++i;
-        }
-    }
-
-    return *coordsXYZ_;
 }
 
 

@@ -17,6 +17,7 @@
 #include "mir/util/PointSearch.h"
 
 #include <limits>
+#include "mir/repres/Representation.h"
 #include "mir/util/MIRGrid.h"
 
 
@@ -29,8 +30,8 @@ PointSearch::PointSearch(const std::vector<PointType>& points) {
 }
 
 
-PointSearch::PointSearch(const MIRGrid& sp, const CompareType& isok) {
-    init(sp, isok);
+PointSearch::PointSearch(const repres::Representation& r, const CompareType& isok) {
+    init(r, isok);
 }
 
 
@@ -95,9 +96,9 @@ void PointSearch::init(const std::vector<PointType>& points) {
 }
 
 
-void PointSearch::init(const MIRGrid& sp, const CompareType& isok) {
+void PointSearch::init(const repres::Representation& r, const CompareType& isok) {
 
-    const size_t npts = sp.size();
+    const size_t npts = r.grid().size();
     ASSERT(npts > 0);
 
     const double infty = std::numeric_limits< double >::infinity();
@@ -106,9 +107,11 @@ void PointSearch::init(const MIRGrid& sp, const CompareType& isok) {
     std::vector<PointType> points;
     points.reserve(npts);
 
-    atlas::array::ArrayView<double, 2> coords = atlas::array::make_view< double, 2 >(sp.coordsXYZ());
-    for (size_t ip = 0; ip < npts; ++ip) {
-        points.push_back(isok(ip) ? PointType(coords[ip].data()) : farpoint );
+    const eckit::ScopedPtr<repres::Iterator> it(r.iterator());
+    size_t i = 0;
+    while (it->next()) {
+        ASSERT(i++ < npts);
+        points.push_back(isok(i) ? PointType(it->point3D()) : farpoint );
     }
 
     init(points);

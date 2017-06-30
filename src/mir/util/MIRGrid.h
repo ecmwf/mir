@@ -19,8 +19,6 @@
 
 #include <string>
 #include <vector>
-#include "eckit/memory/ScopedPtr.h"
-#include "atlas/array/Array.h"
 #include "atlas/grid/Grid.h"
 #include "atlas/meshgenerator.h"
 #include "mir/util/Domain.h"
@@ -64,7 +62,6 @@ public:
     operator const atlas::Grid&() const;
     const Domain& domain() const;
     atlas::Mesh& mesh() const;
-    const atlas::array::Array& coordsXYZ() const;
 
     void hash(eckit::MD5&) const;
     size_t size() const;
@@ -85,7 +82,6 @@ private:
     util::MIRStatistics& statistics_;
 
     mutable atlas::Mesh mesh_;
-    mutable eckit::ScopedPtr< atlas::array::Array > coordsXYZ_;
 
 };
 

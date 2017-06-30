@@ -64,7 +64,7 @@ void Nearest::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Repr
     const size_t nclosest = this->nclosest();
     const size_t out_npts = out.size();
 
-    const util::PointSearch sptree(in);
+    const util::PointSearch sptree(rin);
 
     const util::Domain& inDomain = in.domain();
 

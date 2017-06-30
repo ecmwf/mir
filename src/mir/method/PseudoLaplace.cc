@@ -19,7 +19,6 @@
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/grid.h"
 #include "mir/config/LibMir.h"
 #include "mir/util/MIRGrid.h"
 #include "mir/param/MIRParametrisation.h"
@@ -29,11 +28,6 @@
 
 namespace mir {
 namespace method {
-
-
-namespace {
-enum { XX = 0, YY = 1, ZZ = 2 };
-}
 
 
 PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
@@ -61,15 +55,19 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
 
 
 void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+    using eckit::geometry::XX;
+    using eckit::geometry::YY;
+    using eckit::geometry::ZZ;
+
     util::MIRGrid in(rin.grid());
     util::MIRGrid out(rout.grid());
 
+
     eckit::Log::debug<LibMir>() << "PseudoLaplace::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
+    eckit::TraceTimer<LibMir> timer("PseudoLaplace::assemble");
 
 
-    util::PointSearch  sptree(in);
-
-    atlas::array::ArrayView<double, 2> ocoords = atlas::array::make_view< double, 2 >(out.coordsXYZ());
+    util::PointSearch sptree(rin);
 
     const size_t out_npts = out.size();
 
@@ -86,9 +84,13 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     std::vector<double> weights;
     weights.reserve(nclosest_);
 
-    for ( size_t ip = 0; ip < out_npts; ++ip) {
+    const eckit::ScopedPtr<repres::Iterator> it(rout.iterator());
+    size_t ip = 0;
+    while (it->next()) {
+        ASSERT(ip++ < out_npts);
+
         // get the reference output point
-        eckit::geometry::Point3 p ( ocoords[ip].data() );
+        eckit::geometry::Point3 p(it->point3D());
 
         // find the closest input points to this output
         sptree.closestNPoints(p, nclosest_, closest);
@@ -141,23 +143,24 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
         for (size_t i = 0; i < npts; ++i) {
-            size_t index = closest[i].payload();
-            weights_triplets.push_back( WeightMatrix::Triplet( ip, index, weights[i] ) );
+            size_t jp = closest[i].payload();
+            weights_triplets.push_back(WeightMatrix::Triplet(ip, jp, weights[i]));
         }
     }
 
     // fill-in sparse matrix
     W.setFromTriplets(weights_triplets);
+    eckit::Log::debug<LibMir>() << "NearestLSM fill-in sparse matrix " << timer.elapsed() << std::endl;
 }
 
 
 void PseudoLaplace::print(std::ostream& os) const {
-    os << "PseudoLaplace()";
+    os << "PseudoLaplace[]";
 }
 
 
 namespace {
-static MethodBuilder< PseudoLaplace > __pseudolaplace("pseudo-laplace");
+static MethodBuilder< PseudoLaplace > __method("pseudo-laplace");
 }
 
 
