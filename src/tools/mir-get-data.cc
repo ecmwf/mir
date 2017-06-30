@@ -167,7 +167,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                         << std::endl;
 
                 ASSERT(v == field.values(0).end());
-                ASSERT(!it);
+                ASSERT(!it->next());
 
             } else if (atlas) {
 
@@ -192,7 +192,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 }
 
                 eckit::Log::info() << std::endl;
-                ASSERT(!it);
+                ASSERT(!it->next());
 
             }
 

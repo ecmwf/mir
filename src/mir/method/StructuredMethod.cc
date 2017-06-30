@@ -136,7 +136,7 @@ void StructuredMethod::getRepresentationLatitudes(const repres::Representation& 
         }
     }
 
-    ASSERT(!it);
+    ASSERT(!it->next());
 }
 
 void StructuredMethod::boundNorthSouth(const Latitude& lat, const std::vector<Latitude>& latitudes, size_t& jNorth, size_t& jSouth) const {

@@ -54,7 +54,7 @@ void Gridded2RotatedLL::print(std::ostream &out) const {
     out << "Gridded2RotatedLL["
             "increments=" << increments_
         << ",shift=" << shift_
-        << ",rotation" << rotation_
+        << ",rotation=" << rotation_
         << "]";
 }
 const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
