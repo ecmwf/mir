@@ -44,8 +44,8 @@ public:
 
     // -- Types
 
+    typedef TPoint<double> point_t;
     typedef TPoint<Latitude, Longitude> point_ll_t;
-    typedef TPoint<double> point_2d_t;
     typedef eckit::geometry::Point3 point_3d_t;
 
     // -- Exceptions
@@ -67,15 +67,15 @@ public:
     }
 
     // -- Operators
-    // None
+
+    const point_t& operator*() const;
 
     // -- Methods
 
-    Iterator& next();
-
     const point_ll_t& pointUnrotated() const;
-    const point_2d_t& pointRotated() const;
     const point_3d_t point3D() const;
+
+    Iterator& next();
 
     // -- Overridden methods
     // None
@@ -91,8 +91,8 @@ protected:
     // -- Members
 
     bool valid_;
+    point_t point_;
     point_ll_t pointUnrotated_;
-    point_2d_t pointRotated_;
 
     util::Rotation rotation_;
     atlas::Projection projection_;

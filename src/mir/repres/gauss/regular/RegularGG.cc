@@ -76,7 +76,7 @@ void RegularGG::initTrans(Trans_t &trans) const {
 }
 
 Iterator* RegularGG::iterator() const {
-    return new regular::Regular::Regular::re RegularIterator(latitudes(), N_, Ni_, Nj_, domain());
+    return new RegularIterator(latitudes(), N_, Ni_, Nj_, domain());
 }
 
 
