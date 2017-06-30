@@ -87,7 +87,7 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     const eckit::ScopedPtr<repres::Iterator> it(rout.iterator());
     size_t ip = 0;
     while (it->next()) {
-        ASSERT(ip++ < out_npts);
+        ASSERT(ip < out_npts);
 
         // get the reference output point
         eckit::geometry::Point3 p(it->point3D());
@@ -146,6 +146,8 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             size_t jp = closest[i].payload();
             weights_triplets.push_back(WeightMatrix::Triplet(ip, jp, weights[i]));
         }
+
+        ++ip;
     }
 
     // fill-in sparse matrix

@@ -110,8 +110,9 @@ void PointSearch::init(const repres::Representation& r, const CompareType& isok)
     const eckit::ScopedPtr<repres::Iterator> it(r.iterator());
     size_t i = 0;
     while (it->next()) {
-        ASSERT(i++ < npts);
-        points.push_back(isok(i) ? PointType(it->point3D()) : farpoint );
+        ASSERT(i < npts);
+        points.push_back(isok(i) ? PointType(it->point3D()) : farpoint);
+        ++i;
     }
 
     init(points);

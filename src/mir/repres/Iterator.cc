@@ -55,7 +55,7 @@ Iterator::~Iterator() {
 }
 
 
-const Iterator::point_t& Iterator::operator*() const {
+const Iterator::point_2d_t& Iterator::operator*() const {
     ASSERT(valid_);
     return point_;
 }
@@ -78,12 +78,12 @@ Iterator& Iterator::next() {
             const atlas::PointXY pxy(pointUnrotated_.lon.value(), pointUnrotated_.lat.value());
             const atlas::PointLonLat pll = projection_.lonlat(pxy);
 
-            point_.lat = pll.lat();
-            point_.lon = pll.lon();
+            point_[0] = pll.lat();
+            point_[1] = pll.lon();
 
         } else {
-            point_.lat = pointUnrotated_.lat.value();
-            point_.lon = pointUnrotated_.lon.value();
+            point_[0] = pointUnrotated_.lat.value();
+            point_[1] = pointUnrotated_.lon.value();
         }
     }
 
@@ -94,8 +94,9 @@ Iterator& Iterator::next() {
 const Iterator::point_3d_t Iterator::point3D() const {
     ASSERT(valid_);
 
+    // notice the order
     point_3d_t p;
-    eckit::geometry::lonlat_to_3d(point_.lon, point_.lat, p.data());
+    eckit::geometry::lonlat_to_3d(point_[1], point_[0], p.data());
     return p;
 }
 

@@ -29,23 +29,17 @@ namespace repres {
 
 
 class Iterator : private eckit::NonCopyable {
-private:
-
-    // -- Class members
-
-    template< typename LAT, typename LON=LAT >
-    struct TPoint {
-        TPoint(const LAT& latitude=LAT(0), const LON& longitude=LON(0)) : lat(latitude), lon(longitude) {}
-        LAT lat;
-        LON lon;
-    };
-
 public:
 
     // -- Types
 
-    typedef TPoint<double> point_t;
-    typedef TPoint<Latitude, Longitude> point_ll_t;
+    struct point_ll_t {
+        point_ll_t(const Latitude& latitude =0, const Longitude& longitude =0) : lat(latitude), lon(longitude) {}
+        Latitude lat;
+        Longitude lon;
+    };
+
+    typedef eckit::geometry::Point2 point_2d_t;
     typedef eckit::geometry::Point3 point_3d_t;
 
     // -- Exceptions
@@ -68,7 +62,7 @@ public:
 
     // -- Operators
 
-    const point_t& operator*() const;
+    const point_2d_t& operator*() const;
 
     // -- Methods
 
@@ -91,7 +85,7 @@ protected:
     // -- Members
 
     bool valid_;
-    point_t point_;
+    point_2d_t point_;
     point_ll_t pointUnrotated_;
 
     util::Rotation rotation_;

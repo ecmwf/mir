@@ -89,7 +89,7 @@ void NearestLSM::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::R
     const eckit::ScopedPtr<repres::Iterator> it(rout.iterator());
     size_t ip = 0;
     while (it->next()) {
-        ASSERT(ip++ < W.rows());
+        ASSERT(ip < W.rows());
 
         // pick the (input) search tree matching the output mask
         util::PointSearch& sptree(
@@ -107,6 +107,7 @@ void NearestLSM::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::R
         // insert entry into uncompressed matrix structure
         mat.push_back(WeightMatrix::Triplet(ip, jp, 1.));
 
+        ++ip;
     }
     eckit::Log::debug<LibMir>() << "NearestLSM search nearest neighbours matching in/output masks " << timer.elapsed() - here << std::endl;
 
