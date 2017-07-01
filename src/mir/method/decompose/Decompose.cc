@@ -26,13 +26,13 @@ namespace {
 
 
 static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, Decompose* > *m = 0;
+static std::map< std::string, DecomposeChooser* > *m = 0;
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, Decompose* >();
+    m = new std::map< std::string, DecomposeChooser* >();
 }
 
 
@@ -50,7 +50,8 @@ void Decompose::setMissingValue(double missingValue) const {
 
 
 DecomposeChooser::DecomposeChooser(const std::string& name, Decompose* choice) :
-    name_(name) {
+    name_(name),
+    choice_(choice) {
     pthread_once(&once, init);
 
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
@@ -60,12 +61,13 @@ DecomposeChooser::DecomposeChooser(const std::string& name, Decompose* choice) :
     }
 
     ASSERT(m->find(name) == m->end());
-    (*m)[name] = choice;
+    (*m)[name] = this;
 }
 
 
 DecomposeChooser::~DecomposeChooser() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    delete choice_;
     m->erase(name_);
 }
 
@@ -76,13 +78,13 @@ const Decompose& DecomposeChooser::lookup(const std::string& name) {
 
     eckit::Log::debug<LibMir>() << "DecomposeChooser: looking for '" << name << "'" << std::endl;
 
-    std::map< std::string, Decompose* >::const_iterator j = m->find(name);
+    std::map< std::string, DecomposeChooser* >::const_iterator j = m->find(name);
     if (j == m->end()) {
         list(eckit::Log::error() << "No DecomposeChooser '" << name << "', choices are:\n");
         throw eckit::SeriousBug("No DecomposeChooser '" + name + "'");
     }
 
-    return *(j->second);
+    return *((j->second)->choice_);
 }
 
 
@@ -90,7 +92,7 @@ void DecomposeChooser::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    std::map< std::string, Decompose* >::const_iterator j;
+    std::map< std::string, DecomposeChooser* >::const_iterator j;
     for (j = m->begin(); j != m->end(); ++j) {
         out << (*j).first << "\n";
     }

@@ -17,10 +17,8 @@ namespace method {
 namespace decompose {
 
 
-namespace {
 static DecomposeChoice<None> __none1("none");
 static DecomposeChoice<None> __none2("");
-}
 
 
 None::None() {
