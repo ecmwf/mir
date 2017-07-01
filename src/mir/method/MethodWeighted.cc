@@ -85,11 +85,8 @@ void MethodWeighted::createMatrix(context::Context& ctx,
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
 const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
-        const repres::Representation& rin,
-        const repres::Representation& rout) const {
-
-    atlas::Grid gin(rin.grid());
-    atlas::Grid gout(rout.grid());
+        const repres::Representation& in,
+        const repres::Representation& out) const {
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -98,19 +95,24 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 
 
     double here = timer.elapsed();
-    const lsm::LandSeaMasks masks = getMasks(rin, rout);
+    const lsm::LandSeaMasks masks = getMasks(in, out);
     eckit::Log::debug<LibMir>() << "Compute LandSeaMasks " << timer.elapsed() - here << std::endl;
 
     eckit::Log::debug<LibMir>() << "++++ LSM masks " << masks << std::endl;
     here = timer.elapsed();
 
+
+    const std::string shortName_in  = in.uniqueName();
+    const std::string shortName_out = out.uniqueName();
+    ASSERT(!shortName_in.empty());
+    ASSERT(!shortName_out.empty());
     // TODO: add (possibly) missing unique identifiers
     // NOTE: key has to be relatively short, to avoid filesystem "File name too long" errors
     // Check with $getconf -a | grep -i name
     eckit::MD5 md5;
     md5 << *this
-        << gin
-        << gout
+        << shortName_in
+        << shortName_out
         << pruneEpsilon_
         << lsmWeightAdjustement_;
 
@@ -120,10 +122,6 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     eckit::Log::debug<LibMir>() << "Compute md5 " << timer.elapsed() - here << std::endl;
 
 
-    const std::string shortName_in  = rin.uniqueName();
-    const std::string shortName_out = rout.uniqueName();
-    ASSERT(!shortName_in.empty());
-    ASSERT(!shortName_out.empty());
 
     const std::string base_name = std::string(name()) + "-" + shortName_in + "-" + shortName_out;
     const std::string key_no_masks   = base_name + "-"      + md5_no_masks;
@@ -144,7 +142,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     eckit::Log::debug<LibMir>() << "Elapsed 1 " << timer.elapsed()  << std::endl;
 
     here = timer.elapsed();
-    WeightMatrix W(gout.size(), gin.size());
+    WeightMatrix W(out.numberOfPoints(), in.numberOfPoints());
     eckit::Log::debug<LibMir>() << "Create matrix " << timer.elapsed() - here << std::endl;
 
     bool caching = true;
@@ -183,12 +181,12 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
                 masks_(masks) {}
         };
 
-        MatrixCacheCreator creator(*this, ctx, rin, rout, masks);
+        MatrixCacheCreator creator(*this, ctx, in, out, masks);
         path = cache.getOrCreate(cache_key, creator, W);
 
     }
     else {
-        createMatrix(ctx, rin, rout, W, masks);
+        createMatrix(ctx, in, out, W, masks);
     }
 
 
