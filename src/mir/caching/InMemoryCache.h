@@ -34,7 +34,7 @@ public:  // methods
     explicit InMemoryCache(const std::string& name,
                            unsigned long long capacity,
                            const char* variable,
-                           bool cleanupAtExit = false);
+                           bool cleanupAtExit = true);
 
     ~InMemoryCache();
 

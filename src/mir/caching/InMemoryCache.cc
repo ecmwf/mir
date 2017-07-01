@@ -40,13 +40,13 @@ InMemoryCache<T>::InMemoryCache(const std::string& name, unsigned long long capa
 
 template<class T>
 InMemoryCache<T>::~InMemoryCache() {
-    // if (cleanupAtExit_) {
-    //     eckit::Log::info() << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
-    //     for (auto j = cache_.begin(); j != cache_.end(); ++j) {
-    //         eckit::Log::info() << "Deleting InMemoryCache " << name_ << " " << *((*j).second->ptr_) << std::endl;
-    //         delete (*j).second;
-    //     }
-    // }
+    if (cleanupAtExit_) {
+        eckit::Log::info() << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
+        for (auto j = cache_.begin(); j != cache_.end(); ++j) {
+            eckit::Log::info() << "Deleting InMemoryCache " << name_ << " " << *((*j).second->ptr_) << std::endl;
+            delete (*j).second;
+        }
+    }
 }
 
 
