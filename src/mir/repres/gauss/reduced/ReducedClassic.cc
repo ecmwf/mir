@@ -34,7 +34,7 @@ ReducedClassic::~ReducedClassic() {
 
 
 void ReducedClassic::print(std::ostream &out) const {
-    out << "ReducedGGClassic[N" << N_ << ",bbox=" << bbox_ << "]";
+    out << "ReducedClassic[N" << N_ << ",bbox=" << bbox_ << "]";
 }
 
 

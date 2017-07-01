@@ -75,7 +75,6 @@ protected:
     virtual const std::vector<long>& pls() const;
     virtual bool sameAs(const Representation& other) const;
     virtual void makeName(std::ostream&) const;
-    virtual size_t numberOfPoints() const;
 
     // -- Class members
     // None
