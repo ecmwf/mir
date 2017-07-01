@@ -35,7 +35,6 @@
 #include "mir/method/decompose/Decompose.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
-#include "mir/util/MIRGrid.h"
 #include "mir/util/MIRStatistics.h"
 
 using mir::util::compare::is_approx_zero;

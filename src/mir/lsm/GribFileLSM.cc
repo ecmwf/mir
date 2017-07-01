@@ -28,7 +28,7 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
-#include "mir/util/MIRGrid.h"
+
 #include "mir/util/MIRStatistics.h"
 
 

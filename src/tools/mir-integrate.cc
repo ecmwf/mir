@@ -34,7 +34,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
-#include "mir/util/MIRGrid.h"
+
 
 
 class MIRIntegrate : public mir::tools::MIRTool {

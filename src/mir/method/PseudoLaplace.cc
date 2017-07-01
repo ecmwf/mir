@@ -20,7 +20,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
 #include "mir/config/LibMir.h"
-#include "mir/util/MIRGrid.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/PointSearch.h"
 #include "mir/repres/Representation.h"

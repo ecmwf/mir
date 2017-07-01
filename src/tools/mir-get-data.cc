@@ -24,7 +24,7 @@
 #include "mir/stats/detail/Angle.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/method/decompose/PolarAngleToCartesian.h"
-#include "mir/util/MIRGrid.h"
+
 
 
 class MIRGetData : public mir::tools::MIRTool {

@@ -18,7 +18,7 @@
 
 #include <limits>
 #include "mir/repres/Representation.h"
-#include "mir/util/MIRGrid.h"
+
 
 
 namespace mir {

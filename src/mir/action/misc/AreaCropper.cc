@@ -34,7 +34,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/MIRGrid.h"
+
 
 
 namespace mir {

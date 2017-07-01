@@ -14,7 +14,7 @@
 /// @date   May 2016
 
 
-#include "mir/util/MIRGrid.h"
+
 
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/Mutex.h"
@@ -24,6 +24,7 @@
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/MIRGrid.h"
 
 
 namespace mir {
