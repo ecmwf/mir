@@ -223,7 +223,7 @@ static const caching::CroppingCacheEntry &getMapping(const repres::Representatio
         bool caching) {
 
     eckit::MD5 md5;
-    md5 << representation->grid() << bbox;
+    md5 << representation->uniqueName() << bbox;
 
     std::string key(md5);
 
