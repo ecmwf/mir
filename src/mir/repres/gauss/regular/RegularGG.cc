@@ -56,7 +56,8 @@ void RegularGG::print(std::ostream &out) const {
 
 
 void RegularGG::makeName(std::ostream& out) const {
-    Regular::makeName(out); }
+    Regular::makeName(out);
+}
 
 bool RegularGG::sameAs(const Representation& other) const {
     const RegularGG* o = dynamic_cast<const RegularGG*>(&other);
@@ -104,9 +105,17 @@ const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
 }
 
 size_t RegularGG::numberOfPoints() const {
-        ASSERT(domain().isGlobal());
-
-    return Ni_ * Nj_;
+    if (domain().isGlobal()) {
+        return Ni_ * Nj_;
+    }
+    else {
+        size_t total = 0;
+        eckit::ScopedPtr<repres::Iterator> iter(iterator());
+        while (iter->next()) {
+            total++;
+        }
+        return total;
+    }
 }
 
 namespace {
