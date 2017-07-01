@@ -73,8 +73,6 @@ private:
 
     // -- Methods
 
-    // Configure (or reconfigure) using a file
-    void configure(const eckit::PathName& path);
 
     void print(std::ostream&) const;
 

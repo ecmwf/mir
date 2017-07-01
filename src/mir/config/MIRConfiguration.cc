@@ -63,21 +63,10 @@ MIRConfiguration& MIRConfiguration::instance() {
 
 MIRConfiguration::MIRConfiguration() {
     const eckit::Configuration& config = LibMir::instance().configuration();
-    std::string path("~mir/etc/mir/parameter.yaml");
-    config.get("parameter-configuration", path);
-    configure(path);
-}
+    std::string p("~mir/etc/mir/parameter.yaml");
+    config.get("parameter-configuration", p);
 
-
-void MIRConfiguration::configure(const eckit::PathName& path) {
-
-    // skip if this was already done
-    std::string oldPath;
-    if (get("parameter-configuration", oldPath) && path == oldPath) {
-        return;
-    }
-
-    ASSERT(!path.asString().empty());
+    const eckit::PathName path(p);
 
     clear();
     eckit::Log::info() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
@@ -100,11 +89,7 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
     }
 
     // log into itself
-    set("parameter-configuration", path);
-
-
-//    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *this << std::endl;
-
+    // set("parameter-configuration", path);
 
     // Use defaults (non-overwriting)
     defaults.copyValuesTo(*this, false);
