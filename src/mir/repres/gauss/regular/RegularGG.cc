@@ -104,6 +104,8 @@ const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
 }
 
 size_t RegularGG::numberOfPoints() const {
+        ASSERT(domain().isGlobal());
+
     return Ni_ * Nj_;
 }
 
