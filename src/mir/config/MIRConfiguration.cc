@@ -68,7 +68,6 @@ MIRConfiguration::MIRConfiguration() {
 
     const eckit::PathName path(p);
 
-    clear();
     eckit::Log::info() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
 
     std::ifstream in(path);

@@ -148,22 +148,6 @@ const InheritParametrisation& InheritParametrisation::pick(const std::vector< st
     return *this;
 }
 
-
-InheritParametrisation& InheritParametrisation::clear() {
-
-    // clear children
-    for (InheritParametrisation* me: children_) {
-        me->clear();
-        delete me;
-    }
-    children_.clear();
-
-    // clean ourselves
-    SimpleParametrisation::reset();
-    return *this;
-}
-
-
 bool InheritParametrisation::empty() const {
     return children_.size()==0 && SimpleParametrisation::empty();
 }
