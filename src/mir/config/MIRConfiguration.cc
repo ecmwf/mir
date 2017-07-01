@@ -28,26 +28,26 @@ namespace config {
 namespace  {
 static struct Defaults : param::SimpleParametrisation {
     Defaults() {
-      // default settings, overridden by file or (some) user options
-      set("style", "mars");
-      set("executor", "simple");
+        // default settings, overridden by file or (some) user options
+        set("style", "mars");
+        set("executor", "simple");
 
-      set("interpolation", "linear"); // The word 'method' is used in grib
-      set("decomposition", "none");
-      set("stats", "scalar");
-      set("caching", true);
+        set("interpolation", "linear"); // The word 'method' is used in grib
+        set("decomposition", "none");
+        set("stats", "scalar");
+        set("caching", true);
 
-      set("prune-epsilon", 1e-10);
-      set("nclosest", 4L);
+        set("prune-epsilon", 1e-10);
+        set("nclosest", 4L);
 
-      set("lsm-selection", "auto");
-      set("lsm-interpolation", "nearest-neighbour");
-      set("lsm-weight-adjustment", 0.2);
-      set("lsm-value-threshold", 0.5);
+        set("lsm-selection", "auto");
+        set("lsm-interpolation", "nearest-neighbour");
+        set("lsm-weight-adjustment", 0.2);
+        set("lsm-value-threshold", 0.5);
 
-      set("spectral-mapping", "linear");
+        set("spectral-mapping", "linear");
 
-      set("tolerance", 1e-10);
+        set("tolerance", 1e-10);
     }
 } defaults;
 }  // (anonymous namespace)
@@ -77,33 +77,31 @@ void MIRConfiguration::configure(const eckit::PathName& path) {
         return;
     }
 
+    ASSERT(!path.asString().empty());
+
     clear();
-    if (path.exists()) {
-        eckit::Log::debug<LibMir>() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
+    eckit::Log::info() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
 
-        std::ifstream in(path);
-        if (!in) {
-            throw eckit::CantOpenFile(path);
-        }
-
-        // Create hierarchy (using non-overwriting filling keys)
-        eckit::YAMLParser parser(in);
-        const eckit::ValueMap j = parser.parse();
-        fill(j);
-
-        // Dereference
-        std::string label;
-        if (get("parameter-configuration-fill", label) && label.length()) {
-            fill(pick(label));
-            clear("parameter-configuration-fill");
-        }
-
-        // log into itself
-        set("parameter-configuration", path);
-
-    } else if (!path.asString().empty()) {
+    std::ifstream in(path);
+    if (!in) {
         throw eckit::CantOpenFile(path);
     }
+
+    // Create hierarchy (using non-overwriting filling keys)
+    eckit::YAMLParser parser(in);
+    const eckit::ValueMap j = parser.parse();
+    fill(j);
+
+    // Dereference
+    std::string label;
+    if (get("parameter-configuration-fill", label) && label.length()) {
+        fill(pick(label));
+        clear("parameter-configuration-fill");
+    }
+
+    // log into itself
+    set("parameter-configuration", path);
+
 
 //    eckit::Log::debug<LibMir>() << "MIRConfiguration: " << *this << std::endl;
 
