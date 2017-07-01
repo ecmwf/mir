@@ -59,13 +59,12 @@ namespace mir {
 namespace param {
 
 
-InheritParametrisation::InheritParametrisation() : parent_(NULL) {}
+InheritParametrisation::InheritParametrisation() : parent_(0) {}
 
 
 InheritParametrisation::~InheritParametrisation() {
-    while (children_.size()) {
-        delete children_.back();
-        children_.pop_back();
+    for(auto j = children_.begin(); j != children_.end(); ++j) {
+        delete (*j);
     }
 }
 
@@ -155,6 +154,7 @@ InheritParametrisation& InheritParametrisation::clear() {
     // clear children
     for (InheritParametrisation* me: children_) {
         me->clear();
+        delete me;
     }
     children_.clear();
 
