@@ -111,6 +111,8 @@ private:
     bool includesNorthPole() const;
     bool includesSouthPole() const;
 
+    virtual size_t numberOfPoints() const;
+
     // -- Class members
     // None
 
