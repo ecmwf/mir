@@ -77,8 +77,8 @@ MIRConfiguration::MIRConfiguration() {
 
     // Create hierarchy (using non-overwriting filling keys)
     eckit::YAMLParser parser(in);
-    const eckit::ValueMap j = parser.parse();
-    fill(j);
+    eckit::Value v = parser.parse();
+    fill(v);
 
     // Dereference
     std::string label;
