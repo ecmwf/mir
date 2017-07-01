@@ -54,18 +54,18 @@ static struct Defaults : param::SimpleParametrisation {
 
 
 MIRConfiguration& MIRConfiguration::instance() {
-    static MIRConfiguration instance_;
+    static MIRConfiguration instance;
 
-    // Make sure instance is configured
-    const eckit::Configuration& config = LibMir::instance().configuration();
-    const eckit::PathName path = config.has("parameter-configuration") ? config.getString("parameter-configuration") : "~mir/etc/mir/parameter.yaml";
-    instance_.configure(path);
 
-    return instance_;
+    return instance;
 }
 
 
 MIRConfiguration::MIRConfiguration() {
+    const eckit::Configuration& config = LibMir::instance().configuration();
+    std::string path("~mir/etc/mir/parameter.yaml");
+    config.get("parameter-configuration", path);
+    configure(path);
 }
 
 
