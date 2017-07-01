@@ -103,6 +103,9 @@ const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
     return new RegularGG(N_, bbox);
 }
 
+size_t RegularGG::numberOfPoints() const {
+    return Ni_ * Nj_;
+}
 
 namespace {
 static RepresentationBuilder<RegularGG> reducedGG("regular_gg"); // Name is what is returned by grib_api
