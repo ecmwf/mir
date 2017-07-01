@@ -269,10 +269,8 @@ lsm::LandSeaMasks MethodWeighted::getMasks(const repres::Representation& in, con
 }
 
 
-void MethodWeighted::execute(context::Context& ctx, const repres::Representation& rin, const repres::Representation& rout) const {
+void MethodWeighted::execute(context::Context& ctx, const repres::Representation& in, const repres::Representation& out) const {
 
-    util::MIRGrid in(rin.grid());
-    util::MIRGrid out(rout.grid());
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<WeightMatrix> matrix_use(matrix_cache, ctx.statistics().matrixCache_);
@@ -284,10 +282,10 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     eckit::Log::debug<LibMir>() << "MethodWeighted::execute" << std::endl;
 
     // setup sizes & checks
-    const size_t npts_inp = in.size();
-    const size_t npts_out = out.size();
+    const size_t npts_inp = in.numberOfPoints();
+    const size_t npts_out = out.numberOfPoints();
 
-    const WeightMatrix& W = getMatrix(ctx, rin, rout);
+    const WeightMatrix& W = getMatrix(ctx, in, out);
     ASSERT( W.rows() == npts_out );
     ASSERT( W.cols() == npts_inp );
 
@@ -359,7 +357,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             ///        but later should be cropped out
             ///        UNLESS, we compute the statistics based on only points contained in the Domain
 
-            if (rin.domain().isGlobal()) {
+            if (in.domain().isGlobal()) {
                 ASSERT(eckit::types::is_approximately_greater_or_equal(ostats.minimum(), istats.minimum()));
                 ASSERT(eckit::types::is_approximately_greater_or_equal(istats.maximum(), ostats.maximum()));
             }
