@@ -73,7 +73,7 @@ void MethodWeighted::createMatrix(context::Context& ctx,
                                   WeightMatrix& W,
                                   const lsm::LandSeaMasks& masks) const {
 
-    eckit::ResourceUsage usage("MethodWeighted::createMatrix");
+    eckit::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]");
 
     computeMatrixWeights(ctx, in, out, W);
 
