@@ -38,7 +38,7 @@ public:
     // None
 
     // -- Destructor
-    // None
+    ~MIRConfiguration();
 
     // -- Convertors
     // None

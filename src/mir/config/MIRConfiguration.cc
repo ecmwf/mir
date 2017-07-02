@@ -55,8 +55,6 @@ static struct Defaults : param::SimpleParametrisation {
 
 MIRConfiguration& MIRConfiguration::instance() {
     static MIRConfiguration instance;
-
-
     return instance;
 }
 
@@ -96,6 +94,11 @@ MIRConfiguration::MIRConfiguration() {
     // Use defaults (non-overwriting)
     defaults.copyValuesTo(*this, false);
 }
+
+MIRConfiguration::~MIRConfiguration() {
+    std::cout << "MIRConfiguration::~MIRConfiguration" << std::endl;
+}
+
 
 
 void MIRConfiguration::print(std::ostream& out) const {
