@@ -96,7 +96,7 @@ MIRConfiguration::MIRConfiguration() {
 }
 
 MIRConfiguration::~MIRConfiguration() {
-    std::cout << "MIRConfiguration::~MIRConfiguration" << std::endl;
+    // std::cout << "MIRConfiguration::~MIRConfiguration" << std::endl;
 }
 
 
