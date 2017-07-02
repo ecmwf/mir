@@ -36,6 +36,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/MIRStatistics.h"
+#include "eckit/log/ResourceUsage.h"
 
 using mir::util::compare::is_approx_zero;
 using mir::util::compare::is_approx_one;
@@ -71,6 +72,8 @@ void MethodWeighted::createMatrix(context::Context& ctx,
                                   const repres::Representation& out,
                                   WeightMatrix& W,
                                   const lsm::LandSeaMasks& masks) const {
+
+    eckit::ResourceUsage usage("MethodWeighted::createMatrix");
 
     computeMatrixWeights(ctx, in, out, W);
 
