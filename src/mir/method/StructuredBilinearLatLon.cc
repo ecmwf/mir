@@ -41,13 +41,14 @@ StructuredBilinearLatLon::~StructuredBilinearLatLon() {
 }
 
 
-void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
+        const repres::Representation& in,
+        const repres::Representation& out) const {
 
-    atlas::grid::StructuredGrid in(rin.grid());
-    ASSERT(in);
+    atlas::grid::StructuredGrid gin(in.grid());
+    ASSERT(gin);
 
-    atlas::Grid out(rout.grid());
-    ASSERT(out);
+    atlas::Grid gout(out.grid());
 
 
 //    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble (input: " << in<< ", output: " << out << ")" << std::endl;
@@ -57,8 +58,8 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
 
 
 
-    const std::vector<long>& pl = in.nx();
-    const size_t inpts = in.size();
+    const std::vector<long>& pl = gin.nx();
+    const size_t inpts = in.numberOfPoints();
 
     ASSERT(pl.size());
     ASSERT(pl.front());
@@ -69,7 +70,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
     std::vector<point_ll_t> icoords;
     Latitude min_lat;
     Latitude max_lat;
-    getRepresentationPoints(rin, icoords, min_lat, max_lat);
+    getRepresentationPoints(in, icoords, min_lat, max_lat);
     eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble latitude (min,max) = (" << min_lat << ", " << max_lat << ")" << std::endl;
 
 
@@ -90,19 +91,20 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
 //    std::ofstream outfile ("mir.coeffs");
 //    outfile.precision(2);
 
+    size_t numberOfPoints = out.numberOfPoints();
 
     // fill sparse matrix using triplets (reserve assuming all-quadrilateral interpolations)
     triplets_t triplets; /* structure to fill-in sparse matrix */
-    triplets.reserve(4 * out.size());
+    triplets.reserve(4 * numberOfPoints);
 
 
     // interpolate each output point in turn
-    eckit::ScopedPtr<repres::Iterator> it(rout.iterator());
+    eckit::ScopedPtr<repres::Iterator> it(out.iterator());
     size_t i = 0;
 
     while (it->next()) {
         const repres::Iterator::point_ll_t& p = it->pointUnrotated();
-        ASSERT(i < out.size());
+        ASSERT(i < numberOfPoints);
 
         const bool too_much_north = p.lat > max_lat;
         const bool too_much_south = p.lat < min_lat;
@@ -114,7 +116,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
             ASSERT(par.size());
 
             const double w = 1. / double(par.size());
-            for (const size_t& j: par) {
+            for (const size_t& j : par) {
                 triplets.push_back( WeightMatrix::Triplet(i, j, w) );
             }
 
@@ -140,14 +142,14 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
 
             ASSERT(pl.size() >= 2); // at least 2 lines of latitude
 
-            if( eckit::types::is_approximately_equal(max_lat.value(), p.lat.value()) ) {
+            if ( eckit::types::is_approximately_equal(max_lat.value(), p.lat.value()) ) {
 
                 top_n = pl[0];
                 bot_n = pl[1];
                 top_i = 0;
                 bot_i = top_i + top_n;
 
-            } else if( eckit::types::is_approximately_equal(min_lat.value(), p.lat.value()) ) {
+            } else if ( eckit::types::is_approximately_equal(min_lat.value(), p.lat.value()) ) {
 
                 top_n = pl[ pl.size() - 2 ];
                 bot_n = pl[ pl.size() - 1 ];
@@ -214,8 +216,8 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
             Longitude bl_lon  = icoords[bot_i_lft].second;
             Longitude br_lon  = icoords[bot_i_rgt].second;
 
-            if( tr_lon < tl_lon ) tr_lon += 360;
-            if( br_lon < bl_lon ) br_lon += 360;
+            if ( tr_lon < tl_lon ) tr_lon += 360;
+            if ( br_lon < bl_lon ) br_lon += 360;
 
             // calculate the weights
             Longitude w1 =  p.lon - tl_lon;
@@ -262,7 +264,8 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
             triplets_t trip({ WeightMatrix::Triplet( i, bot_i_rgt, w_br ),
                               WeightMatrix::Triplet( i, bot_i_lft, w_bl ),
                               WeightMatrix::Triplet( i, top_i_rgt, w_tr ),
-                              WeightMatrix::Triplet( i, top_i_lft, w_tl ) });
+                              WeightMatrix::Triplet( i, top_i_lft, w_tl )
+                            });
 
             // insert local point weights (normalized) into matrix "filler"
             normalise(trip);

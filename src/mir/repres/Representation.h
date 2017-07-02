@@ -112,6 +112,8 @@ public:
     virtual util::MIRGrid grid() const;
     virtual util::MIRGrid grid(util::MIRStatistics&, const util::MIRGrid::MeshGenParams&) const;
     virtual util::Domain domain() const;
+    virtual bool global() const;
+
 
     virtual size_t truncation() const;
     virtual size_t pentagonalResolutionTs() const;

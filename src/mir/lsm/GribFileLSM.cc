@@ -70,7 +70,7 @@ GribFileLSM::GribFileLSM(
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::debug<LibMir>() << "LSM interpolation method is " << *method << std::endl;
 
-    if (!(field.representation()->domain().isGlobal())) {
+    if (!(field.representation()->global())) {
         std::ostringstream oss;
         oss << "Input LSM file '" << path_ << "' should be global";
         throw eckit::UserError(oss.str());

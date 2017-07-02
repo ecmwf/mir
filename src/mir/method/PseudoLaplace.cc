@@ -54,22 +54,18 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
 }
 
 
-void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
     using eckit::geometry::XX;
     using eckit::geometry::YY;
     using eckit::geometry::ZZ;
 
-    util::MIRGrid in(rin.grid());
-    util::MIRGrid out(rout.grid());
-
-
-    eckit::Log::debug<LibMir>() << "PseudoLaplace::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "PseudoLaplace::assemble (input: " << in << ", output: " << out << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("PseudoLaplace::assemble");
 
 
-    util::PointSearch sptree(rin);
+    util::PointSearch sptree(in);
 
-    const size_t out_npts = out.size();
+    const size_t out_npts = out.numberOfPoints();
 
     // init structure used to fill in sparse matrix
     std::vector< WeightMatrix::Triplet > weights_triplets;
@@ -84,7 +80,7 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     std::vector<double> weights;
     weights.reserve(nclosest_);
 
-    const eckit::ScopedPtr<repres::Iterator> it(rout.iterator());
+    const eckit::ScopedPtr<repres::Iterator> it(out.iterator());
     size_t ip = 0;
     while (it->next()) {
         ASSERT(ip < out_npts);

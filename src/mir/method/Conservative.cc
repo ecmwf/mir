@@ -43,7 +43,10 @@ Conservative::Conservative(const param::MIRParametrisation& param) : FELinear(pa
 }
 
 
-void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const util::MIRGrid& grid) const {
+void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const repres::Representation& r) const {
+
+    util::MIRGrid grid(r.grid());
+
     using namespace atlas::mesh;
 
     eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix"
@@ -107,19 +110,17 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const util:
 }
 
 
-void Conservative::assemble(
-        util::MIRStatistics& statistics,
-        WeightMatrix& W,
-        const repres::Representation& rin,
-        const repres::Representation& rout ) const {
-    util::MIRGrid in(rin.grid(statistics, meshgenparams_));
-    util::MIRGrid out(rout.grid(statistics, meshgenparams_));
+void Conservative::assemble(util::MIRStatistics& statistics,
+                            WeightMatrix& W,
+                            const repres::Representation& in,
+                            const repres::Representation& out ) const {
 
-    eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
+
+    eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
-    WeightMatrix IM(in.size(), out.size());
-    FELinear::assemble(statistics, IM, rout, rin);
+    WeightMatrix IM(in.numberOfPoints(), out.numberOfPoints());
+    FELinear::assemble(statistics, IM, out, in);
     eckit::Log::debug<LibMir>() << "IM rows " << IM.rows() << " cols " << IM.cols() << std::endl;
     //    IM.save("IM.mat");
 

@@ -75,7 +75,7 @@ struct MeshStats {
 
     void print(std::ostream &s) const {
         s << "MeshStats["
-              "nb_cells=" << eckit::BigNum(inp_ncells)
+          "nb_cells=" << eckit::BigNum(inp_ncells)
           << ",inp_npts=" << eckit::BigNum(inp_npts)
           << ",out_npts=" << eckit::BigNum(out_npts)
           << "]";
@@ -106,14 +106,14 @@ static void normalise(triplet_vector_t& triplets)
 
 /// Find in which element the point is contained by projecting the point with each nearest element
 static triplet_vector_t projectPointTo3DElements(
-        size_t nbInputPoints,
-        const atlas::array::ArrayView<double, 2> &icoords,
-        const atlas::mesh::HybridElements::Connectivity& connectivity,
-        const repres::Iterator::point_3d_t& p,
-        size_t ip,
-        size_t firstVirtualPoint,
-        element_tree_t::NodeList::const_iterator start,
-        element_tree_t::NodeList::const_iterator finish ) {
+    size_t nbInputPoints,
+    const atlas::array::ArrayView<double, 2> &icoords,
+    const atlas::mesh::HybridElements::Connectivity& connectivity,
+    const repres::Iterator::point_3d_t& p,
+    size_t ip,
+    size_t firstVirtualPoint,
+    element_tree_t::NodeList::const_iterator start,
+    element_tree_t::NodeList::const_iterator finish ) {
 
     ASSERT(start != finish);
 
@@ -146,9 +146,9 @@ static triplet_vector_t projectPointTo3DElements(
 
             /* triangle */
             atlas::interpolation::element::Triag3D triag(
-                    icoords[idx[0]].data(),
-                    icoords[idx[1]].data(),
-                    icoords[idx[2]].data());
+                icoords[idx[0]].data(),
+                icoords[idx[1]].data(),
+                icoords[idx[2]].data());
 
             // pick an epsilon based on a characteristic length (sqrt(area))
             // (this scales linearly so it better compares with linear weights u,v,w)
@@ -166,7 +166,7 @@ static triplet_vector_t projectPointTo3DElements(
 
                 for (size_t i = 0; i < 3; ++i)
                 {
-                    if(idx[i] < firstVirtualPoint)
+                    if (idx[i] < firstVirtualPoint)
                         triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
                     else
                         mustNormalise = true;
@@ -179,10 +179,10 @@ static triplet_vector_t projectPointTo3DElements(
 
             /* quadrilateral */
             atlas::interpolation::element::Quad3D quad(
-                    icoords[idx[0]].data(),
-                    icoords[idx[1]].data(),
-                    icoords[idx[2]].data(),
-                    icoords[idx[3]].data() );
+                icoords[idx[0]].data(),
+                icoords[idx[1]].data(),
+                icoords[idx[2]].data(),
+                icoords[idx[3]].data() );
 
             if ( !quad.validate() ) { // somewhat expensive sanity check
                 eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
@@ -206,7 +206,7 @@ static triplet_vector_t projectPointTo3DElements(
 
 
                 for (size_t i = 0; i < 4; ++i) {
-                    if(idx[i] < firstVirtualPoint)
+                    if (idx[i] < firstVirtualPoint)
                         triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
                     else
                         mustNormalise = true;
@@ -246,29 +246,32 @@ void FiniteElement::hash(eckit::MD5&) const {
 }
 
 
-void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+void FiniteElement::assemble(util::MIRStatistics& statistics,
+                             WeightMatrix& W,
+                             const repres::Representation& in,
+                             const repres::Representation& out) const {
 
-    util::MIRGrid in(rin.grid(statistics, meshgenparams_));
-    util::MIRGrid out(rout.grid(statistics, meshgenparams_));
+    util::MIRGrid gin(in.grid(statistics, meshgenparams_));
+    util::MIRGrid gout(out.grid(statistics, meshgenparams_));
 
-    eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
 
     // write input/output meshes
     static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
     if (dumpMesh) {
         eckit::Log::debug<LibMir>() << "Dumping input mesh to 'input.msh'" << std::endl;
-        atlas::output::Gmsh("input.msh", atlas::util::Config("coordinates", "xyz")).write(in.mesh());
+        atlas::output::Gmsh("input.msh", atlas::util::Config("coordinates", "xyz")).write(gin.mesh());
 
         eckit::Log::debug<LibMir>() << "Dumping output mesh to 'output.msh'" << std::endl;
-        atlas::output::Gmsh("output.msh", atlas::util::Config("coordinates", "xyz")).write(out.mesh());
+        atlas::output::Gmsh("output.msh", atlas::util::Config("coordinates", "xyz")).write(gout.mesh());
     }
 
 
     // if domain does not include poles, we might need to recover the parallel edges
     {
         eckit::TraceTimer<LibMir> timer("AddParallelEdgesConnectivity");
-        AddParallelEdgesConnectivity()(in.domain(), in.mesh());
+        AddParallelEdgesConnectivity()(in.domain(), gin.mesh());
     }
 
 
@@ -276,20 +279,20 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     {
         eckit::ResourceUsage usage("create_cell_centres");
         eckit::TraceTimer<LibMir> timer("Tesselation::create_cell_centres");
-        atlas::mesh::actions::BuildCellCentres()(in.mesh());
+        atlas::mesh::actions::BuildCellCentres()(gin.mesh());
     }
 
     eckit::ScopedPtr<element_tree_t> eTree;
     {
         eckit::ResourceUsage usage("create_element_centre_index");
         eckit::TraceTimer<LibMir> timer("create_element_centre_index");
-        eTree.reset( atlas::interpolation::method::create_element_centre_index(in.mesh()) );
+        eTree.reset( atlas::interpolation::method::create_element_centre_index(gin.mesh()) );
     }
 
 
     // input mesh
     const util::Domain& inDomain = in.domain();
-    const atlas::mesh::Nodes& i_nodes = in.mesh().nodes();
+    const atlas::mesh::Nodes& i_nodes = gin.mesh().nodes();
     atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view< double, 2 >( i_nodes.field( "xyz" ));
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
@@ -299,9 +302,9 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
 
     MeshStats stats;
-    stats.inp_ncells = in.mesh().cells().size();
+    stats.inp_ncells = gin.mesh().cells().size();
     stats.inp_npts   = i_nodes.size();
-    stats.out_npts   = out.size();
+    stats.out_npts   = out.numberOfPoints();
     eckit::Log::debug<LibMir>() << stats << std::endl;
 
 
@@ -318,14 +321,14 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     std::forward_list<failed_projection_t> failures;
 
     {
-        eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << rin << std::endl;
+        eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in << std::endl;
         eckit::TraceTimer<LibMir> timerProj("Projecting");
 
-        const atlas::mesh::HybridElements::Connectivity& connectivity = in.mesh().cells().node_connectivity();
+        const atlas::mesh::HybridElements::Connectivity& connectivity = gin.mesh().cells().node_connectivity();
 
 
         // output points
-        const eckit::ScopedPtr<repres::Iterator> it(rout.iterator());
+        const eckit::ScopedPtr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
 
         while (it->next()) {
@@ -348,21 +351,21 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
                 // 3D projection
                 for (size_t k = 0, kPrevious = 0; !success && k < nbElementsMaximum; kPrevious = k) {
-                    k = std::min(k? 2 * k : 1, nbElementsMaximum);
+                    k = std::min(k ? 2 * k : 1, nbElementsMaximum);
                     nbElementsSearched = std::max(k, nbElementsSearched);
 
                     // loop over closest elements (enlarging range if failing projection)
                     element_tree_t::NodeList cs = eTree->kNearestNeighbours(p, k);
 
                     triplet_vector_t triplets = projectPointTo3DElements(
-                                stats.inp_npts,
-                                icoords,
-                                connectivity,
-                                p,
-                                ip,
-                                firstVirtualPoint,
-                                cs.begin() + element_tree_t::NodeList::difference_type(kPrevious),
-                                cs.end() );
+                                                    stats.inp_npts,
+                                                    icoords,
+                                                    connectivity,
+                                                    p,
+                                                    ip,
+                                                    firstVirtualPoint,
+                                                    cs.begin() + element_tree_t::NodeList::difference_type(kPrevious),
+                                                    cs.end() );
 
                     if (triplets.size()) {
                         std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
@@ -394,7 +397,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
         msg << "Failed to project " << eckit::Plural(nbFailures, "point");
         eckit::Log::debug<LibMir>() << msg.str() << ":";
         size_t count = 0;
-        for (const failed_projection_t& f: failures) {
+        for (const failed_projection_t& f : failures) {
             eckit::Log::debug<LibMir>() << "\n\tpoint " << f.first << " (lon, lat) = (" << f.second.lon.value() << ", " << f.second.lat.value() << ")";
             if (++count > 10) {
                 eckit::Log::debug<LibMir>() << "\n\t...";

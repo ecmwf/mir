@@ -40,14 +40,12 @@ StructuredLinear::~StructuredLinear() {
 }
 
 
-void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
 
-    atlas::grid::StructuredGrid in(rin.grid());
-    ASSERT(in);
+    atlas::grid::StructuredGrid gin(in.grid());
+    ASSERT(gin);
 
-    atlas::Grid out(rout.grid());
-    ASSERT(out);
-
+    atlas::Grid gout(out.grid());
 
     /*
      * get from input grid:
@@ -56,15 +54,15 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
      *   - pl_sum.rbegin() (last position) is total number of points sum(j=0; j=Nj, pl[j]),
      *   - pl_sum.rbegin()[1] (before-last position) is sum(j=0; j=Nj-1, pl[j])
      */
-    const std::vector<long>& pl = in.nx();
-    const size_t inpts = in.size();
+    const std::vector<long>& pl = gin.nx();
+    const size_t inpts = in.numberOfPoints();
 
     ASSERT(pl.size());
     ASSERT(pl.front());
     ASSERT(pl.back());
 
     std::vector<Latitude> latitudes;
-    getRepresentationLatitudes(rin, latitudes);
+    getRepresentationLatitudes(in, latitudes);
 
     std::vector<size_t> pl_sum(pl.size() + 1, 0);
     std::partial_sum(pl.begin(), pl.end(), ++pl_sum.begin());
@@ -75,22 +73,24 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
     std::vector<point_ll_t> icoords;
     Latitude min_lat;
     Latitude max_lat;
-    getRepresentationPoints(rin, icoords, min_lat, max_lat);
+    getRepresentationPoints(in, icoords, min_lat, max_lat);
     eckit::Log::debug<LibMir>() << "StructureLinear::assemble latitude (min,max) = (" << min_lat << ", " << max_lat << ")" << std::endl;
 
 
+    size_t numberOfPoints = out.numberOfPoints();
+
     // fill sparse matrix using triplets (reserve assuming all-triangles interpolations)
     triplets_t triplets;
-    triplets.reserve(3 * out.size());
+    triplets.reserve(3 * numberOfPoints);
 
 
     // interpolate each output point in turn
-    eckit::ScopedPtr<repres::Iterator> it(rout.iterator());
+    eckit::ScopedPtr<repres::Iterator> it(out.iterator());
     size_t i = 0;
 
     while (it->next()) {
         const repres::Iterator::point_ll_t& p = it->pointUnrotated();
-        ASSERT(i < out.size());
+        ASSERT(i < numberOfPoints);
 
         triplets_t trip;
 

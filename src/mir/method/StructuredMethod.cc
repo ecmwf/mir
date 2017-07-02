@@ -40,12 +40,12 @@ StructuredMethod::~StructuredMethod() {
 
 
 void StructuredMethod::left_right_lon_indexes(
-        const Longitude& in,
-        const std::vector<point_ll_t>& coords,
-        const size_t start,
-        const size_t end,
-        size_t& left,
-        size_t& right ) const {
+    const Longitude& in,
+    const std::vector<point_ll_t>& coords,
+    const size_t start,
+    const size_t end,
+    size_t& left,
+    size_t& right ) const {
 
     right = start; // take the first if there's a wrap
     left  = start;
@@ -79,13 +79,13 @@ void StructuredMethod::normalise(triplets_t& triplets) const {
 
     // sum all calculated weights for normalisation
     double sum = 0.;
-    for (const eckit::linalg::Triplet& t: triplets) {
+    for (const eckit::linalg::Triplet& t : triplets) {
         sum += t.value();
     }
 
     // now normalise all weights according to the total
     const double invSum = 1.0 / sum;
-    for (eckit::linalg::Triplet& t: triplets) {
+    for (eckit::linalg::Triplet& t : triplets) {
         t.value() *= invSum;
     }
 }
@@ -126,7 +126,7 @@ void StructuredMethod::getRepresentationLatitudes(const repres::Representation& 
     eckit::ScopedPtr<repres::Iterator> it(r.iterator());
     Latitude lat;
     Longitude lon;
-    for (long Nj: pl) {
+    for (long Nj : pl) {
         ASSERT(Nj >= 2);
         for (long i = 0; i < Nj; ++i) {
             ASSERT(it->next());
@@ -149,8 +149,8 @@ void StructuredMethod::boundNorthSouth(const Latitude& lat, const std::vector<La
     jNorth = (Nj - static_cast<size_t>(std::distance(latitudes.rbegin(), above))) - 1;
     jSouth = jNorth + 1;
 
-    ASSERT(0 <= jNorth && jNorth < Nj-1);
-    ASSERT(0 < jSouth && jSouth <= Nj-1);
+    ASSERT(0 <= jNorth && jNorth < Nj - 1);
+    ASSERT(0 < jSouth && jSouth <= Nj - 1);
 }
 
 
@@ -168,24 +168,21 @@ void StructuredMethod::boundWestEast(const Longitude& lon, const size_t& Ni, con
 }
 
 
-void StructuredMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
-    eckit::Log::debug<LibMir>() << "StructuredMethod::assemble (input: " << rin << ", output: " << rout << ")..." << std::endl;
+void StructuredMethod::assemble(util::MIRStatistics&,
+                                WeightMatrix& W,
+                                const repres::Representation& in,
+                                const repres::Representation& out) const {
+    eckit::Log::debug<LibMir>() << "StructuredMethod::assemble (input: " << in << ", output: " << out << ")..." << std::endl;
 
     // FIXME for the moment
-    if (!rin.domain().isGlobal()) {
+    if (!in.global()) {
         throw eckit::UserError("This interpolation method is only for global input grids.", Here());
     }
-    if (!rout.domain().isGlobal()) {
+    if (!out.global()) {
         throw eckit::UserError("This interpolation method is only for global output grids.", Here());
     }
 
-    // ensure grid is structured and non-rotated
-    atlas::Grid in = rin.grid();
-    if (!atlas::grid::StructuredGrid(in) || in.projection()) {
-        throw eckit::UserError("This interpolation method is only for non-rotated structured grids as input.", Here());
-    }
-
-    assembleStructuredInput(W, rin, rout);
+    assembleStructuredInput(W, in, out);
     eckit::Log::debug<LibMir>() << "StructuredMethod::assemble." << std::endl;
 }
 

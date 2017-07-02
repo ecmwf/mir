@@ -57,7 +57,7 @@ void Gridded::setGivenPacking(grib_info &info) const {
 
 void Gridded::crop(const param::MIRParametrisation& parametrisation, context::Context& ctx) const {
     // only crop if not global
-    if (!domain().isGlobal()) {
+    if (!global()) {
         action::AreaCropper cropper(parametrisation, bbox_);
         cropper.execute(ctx);
     }

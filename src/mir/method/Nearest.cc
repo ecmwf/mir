@@ -51,20 +51,21 @@ const char *Nearest::name() const {
 }
 
 
-void Nearest::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
-    util::MIRGrid in(rin.grid());
-    util::MIRGrid out(rout.grid());
+void Nearest::assemble(util::MIRStatistics&,
+                       WeightMatrix& W,
+                       const repres::Representation& in,
+                       const repres::Representation& out) const {
 
-    eckit::Log::debug<LibMir>() << "Nearest::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "Nearest::assemble (input: " << in << ", output: " << out << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("Nearest::assemble");
 
     using eckit::geometry::LON;
     using eckit::geometry::LAT;
 
     const size_t nclosest = this->nclosest();
-    const size_t out_npts = out.size();
+    const size_t out_npts = out.numberOfPoints();
 
-    const util::PointSearch sptree(rin);
+    const util::PointSearch sptree(in);
 
     const util::Domain& inDomain = in.domain();
 
@@ -82,7 +83,7 @@ void Nearest::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Repr
     std::vector<double> weights;
     weights.reserve(nclosest);
 
-    const eckit::ScopedPtr<repres::Iterator> it(rout.iterator());
+    const eckit::ScopedPtr<repres::Iterator> it(out.iterator());
     size_t ip = 0;
     while (it->next()) {
         ASSERT(ip < out_npts);
