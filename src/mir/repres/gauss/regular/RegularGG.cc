@@ -105,7 +105,7 @@ const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
 }
 
 size_t RegularGG::numberOfPoints() const {
-    if (global()) {
+    if (isGlobal()) {
         return Ni_ * Nj_;
     }
     else {

@@ -112,7 +112,7 @@ public:
     virtual util::MIRGrid grid() const;
     virtual util::MIRGrid grid(util::MIRStatistics&, const util::MIRGrid::MeshGenParams&) const;
     virtual util::Domain domain() const;
-    virtual bool global() const;
+    virtual bool isGlobal() const;
 
 
     virtual size_t truncation() const;
@@ -156,7 +156,6 @@ protected:
     virtual void makeName(std::ostream&) const;
 
     // Domain operations
-    virtual bool isGlobal() const;
     virtual bool isPeriodicWestEast() const;
     virtual bool includesNorthPole() const;
     virtual bool includesSouthPole() const;

@@ -175,10 +175,10 @@ void StructuredMethod::assemble(util::MIRStatistics&,
     eckit::Log::debug<LibMir>() << "StructuredMethod::assemble (input: " << in << ", output: " << out << ")..." << std::endl;
 
     // FIXME for the moment
-    if (!in.global()) {
+    if (!in.isGlobal()) {
         throw eckit::UserError("This interpolation method is only for global input grids.", Here());
     }
-    if (!out.global()) {
+    if (!out.isGlobal()) {
         throw eckit::UserError("This interpolation method is only for global output grids.", Here());
     }
 
