@@ -12,23 +12,23 @@
             "FieldInfo": "vector.1d.polar.angle",
             # polar vector angle component (typical units: radians or degrees)
             "decomposition": "PolarAngleDegreesAsymmetricToCartesian",
-            "degree": "true",
-            "symmetric": "false",
+            "degree": true,
+            "symmetric": false,
             "degrees-asymmetric": {},
             "degrees-symmetric": {
                 "decomposition": "PolarAngleDegreesSymmetricToCartesian",
-                "degree": "true",
-                "symmetric": "true"
+                "degree": true,
+                "symmetric": true
             },
             "radians-asymmetric": {
                 "decomposition": "PolarAngleRadiansAsymmetricToCartesian",
-                "degree": "false",
-                "symmetric": "false"
+                "degree": false,
+                "symmetric": false
             },
             "radians-symmetric": {
                 "decomposition": "PolarAngleRadiansSymmetricToCartesian",
-                "degree": "false",
-                "symmetric": "true"
+                "degree": false,
+                "symmetric": true
             },
             "stats": "angle"
         },
@@ -150,8 +150,8 @@
     },
     "167/129167/171167/200167": {
         "class": "intensity",
-        "comparison-absolute-error": "0.1",
-        "lsm": "true"
+        "comparison-absolute-error": 0.1,
+        "lsm": true
     },
     "19/20/47/57/58/145/146/147/149/150/169/175/176/177/178/179/197/208/209/210/211/212/129047/129057/129058/129145/129146/129147/129149/129169/129175/129176/129177/129178/129179/129197/129208/129209/129210/129211/129212/129231/130208/130209/130210/130211/150181/150183/151155/151156/151157/151160/151162/160231/160249/170179/171047/171057/171058/171145/171146/171147/171149/171169/171175/171176/171177/171178/171179/171197/171208/171209/171210/171211/171212/171231/173145/173146/173147/173149/173169/173175/173176/173177/173178/173179/173197/173208/173209/173210/173211/174089/174090/174116/174117/175089/175090/180176/180177/180178/180179/200047/200057/200058/200145/200146/200147/200149/200169/200175/200176/200177/200178/200179/200197/200208/200209/200210/200211/200212/200231/201001/201002/201003/201004/201005/201006/201007/201008/201009/201010/201011/201012/201015/201016/201017/228021/228022/228129/228130/228242/228243/230020/230021/230022/230047/230057/230058/230129/230130/230145/230146/230147/230169/230175/230176/230177/230178/230179/230197/230208/230209/230210/230211/230212/260264/260423/260427/260428": {
         "class": "rate/energy-flux/accumulated"
