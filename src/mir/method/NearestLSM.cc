@@ -45,20 +45,20 @@ const char *NearestLSM::name() const {
 }
 
 
-void NearestLSM::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const {
+void NearestLSM::assemble(util::MIRStatistics&,
+                          WeightMatrix& W,
+                          const repres::Representation& in,
+                          const repres::Representation& out) const {
 
-    util::MIRGrid in(rin.grid());
-    util::MIRGrid out(rout.grid());
 
-
-    eckit::Log::debug<LibMir>() << "NearestLSM::assemble (input: " << rin << ", output: " << rout << ")" << std::endl;
+    eckit::Log::debug<LibMir>() << "NearestLSM::assemble (input: " << in << ", output: " << out << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("NearestLSM::assemble");
 
 
     // get the land-sea masks, with boolean masking on point (node) indices
     double here = timer.elapsed();
 
-    const lsm::LandSeaMasks masks = getMasks(rin, rout);
+    const lsm::LandSeaMasks masks = getMasks(in, out);
     ASSERT(masks.active());
 
     eckit::Log::debug<LibMir>() << "NearestLSM compute LandSeaMasks " << timer.elapsed() - here << std::endl;
@@ -72,8 +72,8 @@ void NearestLSM::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::R
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
 
-    util::PointSearch sptree_masked    (rin, util::compare::IsMaskedFn   (imask));
-    util::PointSearch sptree_notmasked (rin, util::compare::IsNotMaskedFn(imask));
+    util::PointSearch sptree_masked(in, util::compare::IsMaskedFn   (imask));
+    util::PointSearch sptree_notmasked(in, util::compare::IsNotMaskedFn(imask));
 
     eckit::Log::debug<LibMir>() << "NearestLSM compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
 
@@ -86,7 +86,7 @@ void NearestLSM::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::R
     std::vector<WeightMatrix::Triplet> mat;
     mat.reserve(W.rows());
 
-    const eckit::ScopedPtr<repres::Iterator> it(rout.iterator());
+    const eckit::ScopedPtr<repres::Iterator> it(out.iterator());
     size_t ip = 0;
     while (it->next()) {
         ASSERT(ip < W.rows());

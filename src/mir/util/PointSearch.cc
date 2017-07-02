@@ -98,7 +98,7 @@ void PointSearch::init(const std::vector<PointType>& points) {
 
 void PointSearch::init(const repres::Representation& r, const CompareType& isok) {
 
-    const size_t npts = r.grid().size();
+    const size_t npts = r.numberOfPoints();
     ASSERT(npts > 0);
 
     const double infty = std::numeric_limits< double >::infinity();

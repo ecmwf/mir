@@ -92,7 +92,7 @@ void StructuredMethod::normalise(triplets_t& triplets) const {
 
 
 void StructuredMethod::getRepresentationPoints(const repres::Representation& r, std::vector<point_ll_t> &points, Latitude& minimum, Latitude& maximum) const {
-    const size_t N = r.grid().size();
+    const size_t N = r.numberOfPoints();
     points.resize(N);
     minimum = 0;
     maximum = 0;
