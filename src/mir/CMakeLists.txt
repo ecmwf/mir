@@ -360,6 +360,8 @@ list(
     param/RuntimeParametrisation.h
     param/SimpleParametrisation.cc
     param/SimpleParametrisation.h
+    param/CachedParametrisation.cc
+    param/CachedParametrisation.h
     repres/Gridded.cc
     repres/Gridded.h
     repres/Iterator.cc
