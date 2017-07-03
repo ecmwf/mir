@@ -77,7 +77,7 @@ MIRConfiguration::MIRConfiguration() {
     eckit::YAMLParser parser(in);
     eckit::Value v = parser.parse();
 
-    v.dump(eckit::Log::info()) << std::endl;
+    // v.dump(eckit::Log::info()) << std::endl;
 
     fill(v);
 
