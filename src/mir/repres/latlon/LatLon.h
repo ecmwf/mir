@@ -72,13 +72,13 @@ protected:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
+    virtual void fill(grib_info&) const;
 
-    virtual void fill(api::MIRJob &) const;
+    virtual void fill(api::MIRJob&) const;
 
     virtual void shape(size_t& ni, size_t& nj) const;
 
-    virtual void print(std::ostream &) const;
+    virtual void print(std::ostream&) const;
 
     virtual void makeName(std::ostream&) const;
 
@@ -87,6 +87,9 @@ protected:
     virtual bool isPeriodicWestEast() const;
     virtual bool includesNorthPole() const;
     virtual bool includesSouthPole() const;
+
+    virtual size_t numberOfPoints() const;
+    virtual Representation* globalise(data::MIRField&) const;
 
     // -- Class members
 
@@ -123,7 +126,7 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
+    virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
 
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
 

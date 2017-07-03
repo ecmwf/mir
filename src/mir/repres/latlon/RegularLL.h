@@ -16,10 +16,7 @@
 #ifndef mir_repres_latlon_RegularLL_h
 #define mir_repres_latlon_RegularLL_h
 
-#include "atlas/grid.h"
 #include "mir/repres/latlon/LatLon.h"
-#include "mir/util/BoundingBox.h"
-#include "mir/util/Increments.h"
 
 
 namespace mir {
@@ -60,50 +57,27 @@ public:
     // -- Class methods
     // None
 
-protected:
-
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-
-    virtual Iterator* iterator() const;
-    virtual void print(std::ostream &) const;
-    virtual atlas::Grid atlasGrid() const;
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
-    virtual Representation* globalise(data::MIRField& field) const;
-
-    virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
-    virtual size_t numberOfPoints() const;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
 
-    // No copy allowed
-    RegularLL(const RegularLL&);
-    RegularLL &operator=(const RegularLL&);
-
     // -- Members
     // None
 
     // -- Methods
-
-    // Called by crop()
-    virtual const RegularLL* cropped(const util::BoundingBox& bbox) const;
-
+    // None
 
     // -- Overridden methods
-    // None
+
+    Iterator* iterator() const;
+    void print(std::ostream&) const;
+    atlas::Grid atlasGrid() const;
+    void fill(grib_info&) const;
+    void fill(api::MIRJob&) const;
+
+    void makeName(std::ostream&) const;
+    bool sameAs(const Representation&) const;
+
+    // Called by crop()
+    const RegularLL* cropped(const util::BoundingBox&) const;
 
     // -- Class members
     // None
