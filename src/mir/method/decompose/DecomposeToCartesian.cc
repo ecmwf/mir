@@ -28,13 +28,13 @@ namespace {
 
 
 static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, DecomposeToCartesian* > *m = 0;
+static std::map< std::string, DecomposeToCartesianChooser* > *m = 0;
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, DecomposeToCartesian* >();
+    m = new std::map< std::string, DecomposeToCartesianChooser* >();
 }
 
 
@@ -42,7 +42,8 @@ static void init() {
 
 
 DecomposeToCartesianChooser::DecomposeToCartesianChooser(const std::string& name, DecomposeToCartesian* choice) :
-    name_(name) {
+    name_(name),
+    choice_(choice) {
     pthread_once(&once, init);
 
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
@@ -52,7 +53,7 @@ DecomposeToCartesianChooser::DecomposeToCartesianChooser(const std::string& name
     }
 
     ASSERT(m->find(name) == m->end());
-    (*m)[name] = choice;
+    (*m)[name] = this;
 }
 
 
@@ -68,13 +69,13 @@ const DecomposeToCartesian& DecomposeToCartesianChooser::lookup(const std::strin
 
     eckit::Log::debug<LibMir>() << "DecomposeToCartesianChooser: looking for '" << name << "'" << std::endl;
 
-    std::map< std::string, DecomposeToCartesian* >::const_iterator j = m->find(name);
+    std::map< std::string, DecomposeToCartesianChooser* >::const_iterator j = m->find(name);
     if (j == m->end()) {
         eckit::Log::error() << "No DecomposeToCartesianChooser '" << name << "'.";
         throw eckit::SeriousBug("No DecomposeToCartesianChooser '" + name + "'");
     }
 
-    return *(j->second);
+    return *(j->second)->choice_;
 }
 
 
