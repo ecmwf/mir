@@ -23,10 +23,13 @@ namespace caching {
 static std::string extract_loader() {
 
     const eckit::Configuration& config = LibMir::instance().configuration();
-    const std::string name = config.has("interpolator-loader") ? config.getString("interpolator-loader") : "file-io";
-    ASSERT(name.length());
 
-    return name;
+    std::string name;
+    if(config.get("interpolator-loader", name)) {
+        return name;
+    }
+
+    return "file-io";
 }
 
 
