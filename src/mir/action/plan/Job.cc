@@ -65,9 +65,11 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         plan_->add(new action::Save(*combined_, input_, output_));
     }
 
-    // eckit::Log::debug<LibMir>() << "Action plan is: " << *plan_ << std::endl;
-    eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
-    plan_->dump(eckit::Log::debug<LibMir>());
+    if(eckit::Log::debug<LibMir>()){
+        // eckit::Log::debug<LibMir>() << "Action plan is: " << *plan_ << std::endl;
+        eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
+        plan_->dump(eckit::Log::debug<LibMir>());
+    }
 
 }
 

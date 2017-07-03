@@ -152,7 +152,7 @@ void ShToGridded::transform(
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 
             ASSERT(trans.ndgl > 0 && (trans.ndgl % 2) == 0);
-            ;
+
             ASSERT(trans_setup(&trans) == 0);
         }
 

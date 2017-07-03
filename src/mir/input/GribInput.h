@@ -20,6 +20,7 @@
 #include "eckit/thread/Mutex.h"
 #include "mir/input/MIRInput.h"
 #include "mir/param/FieldParametrisation.h"
+#include "mir/param/CachedParametrisation.h"
 
 
 namespace mir {
@@ -27,7 +28,7 @@ namespace input {
 
 
 class GribInput : public MIRInput, public param::FieldParametrisation {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -62,7 +63,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -80,13 +81,15 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
     GribInput(const GribInput&);
     GribInput& operator=(const GribInput&);
 
     // -- Members
+
+    param::CachedParametrisation cache_;
 
     mutable eckit::Mutex mutex_;
     grib_handle *grib_;
