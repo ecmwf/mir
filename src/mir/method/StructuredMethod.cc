@@ -15,15 +15,11 @@
 
 #include "eckit/geometry/Point3.h"
 #include "eckit/log/Log.h"
-#include "atlas/array/ArrayView.h"
-#include "atlas/array_fwd.h"
 #include "atlas/grid.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Compare.h"
-
 
 
 namespace mir {
@@ -41,7 +37,7 @@ StructuredMethod::~StructuredMethod() {
 
 void StructuredMethod::left_right_lon_indexes(
     const Longitude& in,
-    const std::vector<point_ll_t>& coords,
+    const std::vector<repres::Iterator::point_ll_t>& coords,
     const size_t start,
     const size_t end,
     size_t& left,
@@ -54,14 +50,14 @@ void StructuredMethod::left_right_lon_indexes(
 //    Longitude left_lon  =   0.;
     for (size_t i = start; i < end; ++i) {
 
-        const Longitude& val = coords[i].second;
-        ASSERT((0. <= val) && (val <= 360.));
+        const Longitude& lon = coords[i].lon;
+        ASSERT((0. <= lon) && (lon <= 360.));
 
-        if (val <= in) {
+        if (lon <= in) {
 //            left_lon = val;
             left     = i;
-        } else if (val < right_lon) {
-            right_lon = val;
+        } else if (lon < right_lon) {
+            right_lon = lon;
             right     = i;
         }
 
@@ -70,11 +66,11 @@ void StructuredMethod::left_right_lon_indexes(
     ASSERT(left  >= start);
     ASSERT(right >= start);
     ASSERT(right != left);
-    ASSERT(coords[left].first == coords[right].first);
+    ASSERT(coords[left].lat == coords[right].lat);
 }
 
 
-void StructuredMethod::normalise(triplets_t& triplets) const {
+void StructuredMethod::normalise(triplet_vector_t& triplets) const {
     ASSERT(triplets.size());
 
     // sum all calculated weights for normalisation
@@ -91,7 +87,7 @@ void StructuredMethod::normalise(triplets_t& triplets) const {
 }
 
 
-void StructuredMethod::getRepresentationPoints(const repres::Representation& r, std::vector<point_ll_t> &points, Latitude& minimum, Latitude& maximum) const {
+void StructuredMethod::getRepresentationPoints(const repres::Representation& r, std::vector<repres::Iterator::point_ll_t> &points, Latitude& minimum, Latitude& maximum) const {
     const size_t N = r.numberOfPoints();
     points.resize(N);
     minimum = 0;
@@ -101,12 +97,13 @@ void StructuredMethod::getRepresentationPoints(const repres::Representation& r, 
     size_t i = 0;
 
     while (it->next()) {
+        ASSERT(i < N);
         const repres::Iterator::point_ll_t& p = it->pointUnrotated();
+
+        points[i++] = repres::Iterator::point_ll_t(p.lat, p.lon);
 
         if (!i || p.lat < minimum) minimum = p.lat;
         if (!i || p.lat > maximum) maximum = p.lat;
-        ASSERT(i < N);
-        points[i++] = point_ll_t(p.lat, p.lon);
     }
 
     ASSERT(minimum < maximum);
@@ -124,8 +121,6 @@ void StructuredMethod::getRepresentationLatitudes(const repres::Representation& 
     latitudes.reserve(pl.size());
 
     eckit::ScopedPtr<repres::Iterator> it(r.iterator());
-    Latitude lat;
-    Longitude lon;
     for (long Nj : pl) {
         ASSERT(Nj >= 2);
         for (long i = 0; i < Nj; ++i) {

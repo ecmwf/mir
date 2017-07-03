@@ -18,7 +18,7 @@
 
 #include <vector>
 #include "eckit/geometry/Point3.h"
-#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
 
 
 namespace mir {
@@ -27,9 +27,6 @@ class MIRParametrisation;
 }
 namespace repres {
 class Representation;
-}
-namespace util {
-class MIRGrid;
 }
 }
 
@@ -47,14 +44,12 @@ public:
 protected:
 
     // Utility types
-    typedef eckit::geometry::Point3 point_3d_t;
-    typedef std::pair<Latitude, Longitude> point_ll_t;
-    typedef std::vector< WeightMatrix::Triplet > triplets_t;
+    typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
 
     // Find nearest West-East bounding i indices
     void left_right_lon_indexes(
             const Longitude& in,
-            const std::vector<point_ll_t>& coords,
+            const std::vector<repres::Iterator::point_ll_t>& coords,
             const size_t start,
             const size_t end,
             size_t& left,
@@ -62,10 +57,10 @@ protected:
 
 
     // Normalize weights triplets such that sum(weights) = 1
-    void normalise(triplets_t& triplets) const;
+    void normalise(triplet_vector_t& triplets) const;
 
     // Get lat/lon point coordinates from representation
-    void getRepresentationPoints(const repres::Representation&, std::vector<point_ll_t>&, Latitude& minimum, Latitude& maximum) const;
+    void getRepresentationPoints(const repres::Representation&, std::vector<repres::Iterator::point_ll_t>&, Latitude& minimum, Latitude& maximum) const;
 
     // Get latitudes list from representation
     void getRepresentationLatitudes(const repres::Representation&, std::vector<Latitude>&) const;

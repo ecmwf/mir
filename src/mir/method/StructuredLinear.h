@@ -29,7 +29,7 @@ public:
 
 private:
 
-    void assembleStructuredInput(WeightMatrix& W, const repres::Representation& rin, const repres::Representation& rout) const;
+    void assembleStructuredInput(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
     const char* name() const;
 

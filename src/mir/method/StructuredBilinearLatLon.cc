@@ -44,23 +44,17 @@ StructuredBilinearLatLon::~StructuredBilinearLatLon() {
 void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
         const repres::Representation& in,
         const repres::Representation& out) const {
-
-    atlas::grid::StructuredGrid gin(in.grid());
-    ASSERT(gin);
-
-    atlas::Grid gout(out.grid());
+    typedef repres::Iterator::point_ll_t point_ll_t;
 
 
-//    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble (input: " << in<< ", output: " << out << ")" << std::endl;
     // NOTE: use bilinear interpolation assuming quasi-regular grid
     // (this assumes the points are oriented north-south)
     // FIXME: proper documentation
 
-
+    atlas::grid::StructuredGrid gin(in.grid());
+    ASSERT(gin);
 
     const std::vector<long>& pl = gin.nx();
-    const size_t inpts = in.numberOfPoints();
-
     ASSERT(pl.size());
     ASSERT(pl.front());
     ASSERT(pl.back());
@@ -84,6 +78,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
     }
 
     eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble last row: " << pl.back() << std::endl;
+    const size_t inpts = in.numberOfPoints();
     for (long i = pl.back(), j = 0; i > 0; i--, j++) {
         parallel_south[j] = size_t(inpts - i);
     }
@@ -91,10 +86,10 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
 //    std::ofstream outfile ("mir.coeffs");
 //    outfile.precision(2);
 
-    size_t numberOfPoints = out.numberOfPoints();
 
     // fill sparse matrix using triplets (reserve assuming all-quadrilateral interpolations)
-    triplets_t triplets; /* structure to fill-in sparse matrix */
+    triplet_vector_t triplets;
+    size_t numberOfPoints = out.numberOfPoints();
     triplets.reserve(4 * numberOfPoints);
 
 
@@ -103,7 +98,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
     size_t i = 0;
 
     while (it->next()) {
-        const repres::Iterator::point_ll_t& p = it->pointUnrotated();
+        const point_ll_t& p = it->pointUnrotated();
         ASSERT(i < numberOfPoints);
 
         const bool too_much_north = p.lat > max_lat;
@@ -158,8 +153,8 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
 
             } else {
 
-                top_lat = icoords[top_i].first;
-                bot_lat = icoords[bot_i].first;
+                top_lat = icoords[top_i].lat;
+                bot_lat = icoords[bot_i].lat;
 
                 size_t n = 1;
                 while ( !( bot_lat < p.lat && ( top_lat > p.lat || eckit::types::is_approximately_equal(top_lat.value(), p.lat.value())))
@@ -171,8 +166,8 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
                     top_i  = bot_i;
                     bot_i += pl[n - 1];
 
-                    top_lat = icoords[top_i].first;
-                    bot_lat = icoords[bot_i].first;
+                    top_lat = icoords[top_i].lat;
+                    bot_lat = icoords[bot_i].lat;
 
                     ASSERT(top_lat > bot_lat);
 
@@ -180,8 +175,8 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
                 }
             }
 
-            top_lat = icoords[top_i].first;
-            bot_lat = icoords[bot_i].first;
+            top_lat = icoords[top_i].lat;
+            bot_lat = icoords[bot_i].lat;
 
             ASSERT( top_lat > bot_lat );
 
@@ -211,10 +206,10 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
             ASSERT(top_i_rgt < inpts);
             ASSERT(top_i_lft < inpts);
 
-            Longitude tl_lon  = icoords[top_i_lft].second;
-            Longitude tr_lon  = icoords[top_i_rgt].second;
-            Longitude bl_lon  = icoords[bot_i_lft].second;
-            Longitude br_lon  = icoords[bot_i_rgt].second;
+            Longitude tl_lon  = icoords[top_i_lft].lon;
+            Longitude tr_lon  = icoords[top_i_rgt].lon;
+            Longitude bl_lon  = icoords[bot_i_lft].lon;
+            Longitude br_lon  = icoords[bot_i_rgt].lon;
 
             if ( tr_lon < tl_lon ) tr_lon += 360;
             if ( br_lon < bl_lon ) br_lon += 360;
@@ -261,7 +256,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
 //                      << wb << " "
 //                      << std::endl;
 
-            triplets_t trip({ WeightMatrix::Triplet( i, bot_i_rgt, w_br ),
+            triplet_vector_t trip({ WeightMatrix::Triplet( i, bot_i_rgt, w_br ),
                               WeightMatrix::Triplet( i, bot_i_lft, w_bl ),
                               WeightMatrix::Triplet( i, top_i_rgt, w_tr ),
                               WeightMatrix::Triplet( i, top_i_lft, w_tl )

@@ -41,11 +41,9 @@ StructuredLinear::~StructuredLinear() {
 
 
 void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
+    typedef repres::Iterator::point_ll_t point_ll_t;
+    typedef repres::Iterator::point_3d_t point_3d_t;
 
-    atlas::grid::StructuredGrid gin(in.grid());
-    ASSERT(gin);
-
-    atlas::Grid gout(out.grid());
 
     /*
      * get from input grid:
@@ -54,9 +52,10 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
      *   - pl_sum.rbegin() (last position) is total number of points sum(j=0; j=Nj, pl[j]),
      *   - pl_sum.rbegin()[1] (before-last position) is sum(j=0; j=Nj-1, pl[j])
      */
-    const std::vector<long>& pl = gin.nx();
-    const size_t inpts = in.numberOfPoints();
+    atlas::grid::StructuredGrid gin(in.grid());
+    ASSERT(gin);
 
+    const std::vector<long>& pl = gin.nx();
     ASSERT(pl.size());
     ASSERT(pl.front());
     ASSERT(pl.back());
@@ -66,7 +65,7 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
 
     std::vector<size_t> pl_sum(pl.size() + 1, 0);
     std::partial_sum(pl.begin(), pl.end(), ++pl_sum.begin());
-    ASSERT(static_cast<size_t>(pl_sum.back()) == inpts);
+    ASSERT(static_cast<size_t>(pl_sum.back()) == in.numberOfPoints());
 
 
     // get input coordinates, checking min/max latitudes (Gaussian grids exclude the poles)
@@ -77,10 +76,9 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
     eckit::Log::debug<LibMir>() << "StructureLinear::assemble latitude (min,max) = (" << min_lat << ", " << max_lat << ")" << std::endl;
 
 
+    // fill sparse matrix using triplets (reserve assuming all-triangle interpolations)
+    triplet_vector_t triplets;
     size_t numberOfPoints = out.numberOfPoints();
-
-    // fill sparse matrix using triplets (reserve assuming all-triangles interpolations)
-    triplets_t triplets;
     triplets.reserve(3 * numberOfPoints);
 
 
@@ -89,10 +87,10 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
     size_t i = 0;
 
     while (it->next()) {
-        const repres::Iterator::point_ll_t& p = it->pointUnrotated();
+        const point_ll_t& p = it->pointUnrotated();
         ASSERT(i < numberOfPoints);
 
-        triplets_t trip;
+        triplet_vector_t trip;
 
         const bool too_much_north = p.lat > max_lat;
         const bool too_much_south = p.lat < min_lat;
@@ -106,8 +104,8 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
             size_t l[2];
             boundWestEast(p.lon, Ni, iStart, l[0], l[1]);
 
-            const Longitude& l0 = icoords[l[0]].second;
-            const Longitude& l1 = icoords[l[1]].second;
+            const Longitude& l0 = icoords[l[0]].lon;
+            const Longitude& l1 = icoords[l[1]].lon;
             trip = { WeightMatrix::Triplet(i, l[0], (l1 - p.lon).value() ),
                      WeightMatrix::Triplet(i, l[1], (p.lon - l0).value() ) };
 
@@ -140,7 +138,9 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
             eckit::geometry::lonlat_to_3d(p.lon.value(), p.lat.value(), ip.data());
             for (size_t k = 0; k < 4; ++k) {
                 const point_ll_t& ll = icoords[q[k]];
-                eckit::geometry::Point2 p(ll.second.value(), ll.first.value());
+
+                // notice the order
+                eckit::geometry::Point2 p(ll.lon.value(), ll.lat.value());
                 eckit::geometry::lonlat_to_3d(p.data(), qp[k].data());
             }
 
