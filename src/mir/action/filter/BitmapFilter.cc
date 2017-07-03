@@ -90,8 +90,11 @@ void BitmapFilter::execute(context::Context & ctx) const {
 
         if (values.size() != b.width() * b.height()) {
             std::ostringstream os;
-            os << "BitmapFilter::execute size mismatch: values=" << values.size()
-               << ", bitmap=" << b.width() << "x" << b.height();
+            os << "BitmapFilter::execute size mismatch: values="
+               << values.size()
+               << ", bitmap=" << b.width() << "x" << b.height()
+               << "="
+               <<  b.width() * b.height();
 
             throw eckit::UserError(os.str());
         }
