@@ -136,18 +136,20 @@ atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const
 
         // If domain does not include poles, we might need to recover the parallel edges
         // TODO: move to Atlas mesh generator
-        if (meshGenParams.meshParallelEdgesConnectivity_) {
+        atlas::Domain domain = grid_.domain();
+        if (meshGenParams.meshParallelEdgesConnectivity_ && !domain.global()) {
             eckit::ResourceUsage usage("AddParallelEdgesConnectivity");
             eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: AddParallelEdgesConnectivity");
 
+            // FIXME hacky way to extract North/South parallels
+            atlas::Domain::Spec spec(domain.spec());
+            double ymin = 0.;
+            double ymax = 0.;
+            ASSERT(spec.get("ymin", ymin));
+            ASSERT(spec.get("ymax", ymax));
 
-
-//            grid_.domain().
-
-
-
-
-//            method::AddParallelEdgesConnectivity()(domain_, mesh);
+            ASSERT(-90. <= ymin && ymin < ymax && ymax <= 90.);
+            method::AddParallelEdgesConnectivity()(mesh, ymax, ymin);
         }
 
         // Generate barycenters of mesh elements
