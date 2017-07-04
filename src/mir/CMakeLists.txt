@@ -196,8 +196,6 @@ list(
     compare/Spectral.h
     config/LibMir.cc
     config/LibMir.h
-    config/MIRConfiguration.cc
-    config/MIRConfiguration.h
     data/Field.cc
     data/Field.h
     data/FieldInfo.cc
@@ -350,8 +348,6 @@ list(
     param/DelayedParametrisation.h
     param/FieldParametrisation.cc
     param/FieldParametrisation.h
-    param/InheritParametrisation.cc
-    param/InheritParametrisation.h
     param/MIRCombinedParametrisation.cc
     param/MIRCombinedParametrisation.h
     param/MIRParametrisation.cc
@@ -362,8 +358,6 @@ list(
     param/SimpleParametrisation.h
     param/CachedParametrisation.cc
     param/CachedParametrisation.h
-    param/LibraryParametrisation.cc
-    param/LibraryParametrisation.h
     param/DefaultParametrisation.cc
     param/DefaultParametrisation.h
     repres/Gridded.cc

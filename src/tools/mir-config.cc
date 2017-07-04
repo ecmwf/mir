@@ -15,7 +15,6 @@
 
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "mir/config/MIRConfiguration.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/tools/MIRTool.h"
@@ -72,6 +71,7 @@ void MIRConfig::display(const mir::param::MIRParametrisation& parametrisation, c
 
 
 void MIRConfig::execute(const eckit::option::CmdArgs& args) {
+#if 0
     using namespace mir::param;
 
     mir::config::MIRConfiguration& config = mir::config::MIRConfiguration::instance();
@@ -115,6 +115,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
         }
     }
+#endif
 }
 
 

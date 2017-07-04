@@ -18,7 +18,6 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
-#include "mir/config/MIRConfiguration.h"
 #include "eckit/types/Fraction.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "eckit/parser/YAMLParser.h"
@@ -58,7 +57,7 @@ static void init() {
 
     eckit::Value c = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
 
-    // c.dump(std::cout) << std::endl;
+    // c.dump(std::cout) << std::endl;MIRConfiguration
 
     eckit::ValueMap classes = c;
 
