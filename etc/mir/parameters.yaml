@@ -167,6 +167,7 @@ intensity:
 - 141  # Snow depth
 - 148  # Charnock
 - 151  # Mean sea level pressure
+- 152  # Logarithm of surface pressure
 - 153  # Short-wave heating rate
 - 154  # Long-wave heating rate
 - 155  # Divergence
