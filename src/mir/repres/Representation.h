@@ -109,7 +109,6 @@ public:
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
     virtual util::MIRGrid grid() const;
-    virtual util::MIRGrid grid(util::MIRStatistics&, const util::MIRGrid::MeshGenParams&) const;
     virtual util::Domain domain() const;
     virtual bool isGlobal() const;
 

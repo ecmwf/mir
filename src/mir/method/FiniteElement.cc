@@ -32,14 +32,11 @@
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/PointIndex3.h"
 #include "atlas/interpolation/method/Ray.h"
-#include "atlas/mesh/actions/BuildCellCentres.h"
-#include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/mesh/Elements.h"
 #include "atlas/mesh/ElementType.h"
 #include "atlas/mesh/Nodes.h"
 #include "atlas/output/Gmsh.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/AddParallelEdgesConnectivity.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
@@ -230,11 +227,14 @@ static triplet_vector_t projectPointTo3DElements(
 }  // (anonymous namespace)
 
 
-FiniteElement::FiniteElement(const param::MIRParametrisation &param) :
+FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
     MethodWeighted(param) {
 
-    meshgenparams_.meshGenerator_ = "structured";
-    parametrisation_.get("meshgenerator", meshgenparams_.meshGenerator_);
+    InputMeshGenerationParams_.meshGenerator_ = "structured";
+    parametrisation_.get("input-mesh-generator", InputMeshGenerationParams_.meshGenerator_);
+
+    OutputMeshGenerationParams_.meshGenerator_ = "structured";
+    parametrisation_.get("output-mesh-generator", OutputMeshGenerationParams_.meshGenerator_);
 }
 
 
@@ -250,60 +250,37 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
                              WeightMatrix& W,
                              const repres::Representation& in,
                              const repres::Representation& out) const {
-
-    util::MIRGrid gin(in.grid(statistics, meshgenparams_));
-    util::MIRGrid gout(out.grid(statistics, meshgenparams_));
-
     eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
 
-    // write input/output meshes
-    static bool dumpMesh = eckit::Resource<bool>("$MIR_DUMP_MESH", false);
-    if (dumpMesh) {
-        eckit::Log::debug<LibMir>() << "Dumping input mesh to 'input.msh'" << std::endl;
-        atlas::output::Gmsh("input.msh", atlas::util::Config("coordinates", "xyz")).write(gin.mesh());
-
-        eckit::Log::debug<LibMir>() << "Dumping output mesh to 'output.msh'" << std::endl;
-        atlas::output::Gmsh("output.msh", atlas::util::Config("coordinates", "xyz")).write(gout.mesh());
-    }
-
-
-    // if domain does not include poles, we might need to recover the parallel edges
-    {
-        eckit::TraceTimer<LibMir> timer("AddParallelEdgesConnectivity");
-        AddParallelEdgesConnectivity()(in.domain(), gin.mesh());
-    }
-
-
-    // generate barycenters of each triangle & insert them on a kd-tree
-    {
-        eckit::ResourceUsage usage("create_cell_centres");
-        eckit::TraceTimer<LibMir> timer("Tesselation::create_cell_centres");
-        atlas::mesh::actions::BuildCellCentres()(gin.mesh());
-    }
-
-    eckit::ScopedPtr<element_tree_t> eTree;
-    {
-        eckit::ResourceUsage usage("create_element_centre_index");
-        eckit::TraceTimer<LibMir> timer("create_element_centre_index");
-        eTree.reset( atlas::interpolation::method::create_element_centre_index(gin.mesh()) );
-    }
-
-
-    // input mesh
+    // get input mesh (cell centres are required for the k-d tree)
+    ASSERT(InputMeshGenerationParams_.meshCellCentres_);
+    util::MIRGrid gin = in.grid();
+    const atlas::Mesh& inMesh = gin.mesh(statistics, InputMeshGenerationParams_);
     const util::Domain& inDomain = in.domain();
-    const atlas::mesh::Nodes& i_nodes = gin.mesh().nodes();
-    atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view< double, 2 >( i_nodes.field( "xyz" ));
+
+    const atlas::mesh::Nodes& inNodes = inMesh.nodes();
+    atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view< double, 2 >( inNodes.field( "xyz" ));
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
-    if (i_nodes.metadata().has("NbRealPts")) {
-        firstVirtualPoint = i_nodes.metadata().get<size_t>("NbRealPts");
+    if (inNodes.metadata().has("NbRealPts")) {
+        firstVirtualPoint = inNodes.metadata().get<size_t>("NbRealPts");
     }
 
 
+    // generate k-d tree with cell centres
+    eckit::ScopedPtr<element_tree_t> eTree;
+    {
+        eckit::ResourceUsage usage("FiniteElement::assemble create k-d tree");
+        eckit::TraceTimer<LibMir> timer("FiniteElement::assemble create k-d tree");
+        eTree.reset( atlas::interpolation::method::create_element_centre_index(inMesh) );
+    }
+
+
+    // some statistics
     MeshStats stats;
-    stats.inp_ncells = gin.mesh().cells().size();
-    stats.inp_npts   = i_nodes.size();
+    stats.inp_ncells = inMesh.cells().size();
+    stats.inp_npts   = inNodes.size();
     stats.out_npts   = out.numberOfPoints();
     eckit::Log::debug<LibMir>() << stats << std::endl;
 
@@ -324,7 +301,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in << std::endl;
         eckit::TraceTimer<LibMir> timerProj("Projecting");
 
-        const atlas::mesh::HybridElements::Connectivity& connectivity = gin.mesh().cells().node_connectivity();
+        const atlas::mesh::HybridElements::Connectivity& connectivity = inMesh.cells().node_connectivity();
 
 
         // output points

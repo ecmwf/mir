@@ -47,41 +47,40 @@ public:
     class MeshGenParams : public atlas::MeshGenerator::Parameters {
     public:
         MeshGenParams();
+        void hash(eckit::MD5&) const;
         std::string meshGenerator_;
+        bool meshParallelEdgesConnectivity_;
+        bool meshXYZField_;
+        bool meshCellCentres_;
+        bool dump_;
     };
 
     // -- Contructors
 
-    explicit MIRGrid(const atlas::Grid&, const Domain&);
-    explicit MIRGrid(const atlas::Grid&, const Domain&, util::MIRStatistics&, const MeshGenParams&);
+    explicit MIRGrid(const atlas::Grid&);
 
     MIRGrid(const MIRGrid&);
 
     // -- Methods
 
     operator const atlas::Grid&() const;
-    const Domain& domain() const;
-    atlas::Mesh& mesh() const;
+    const atlas::Mesh& mesh(util::MIRStatistics&, const MeshGenParams&) const;
+    const atlas::Mesh& mesh() const;
 
     void hash(eckit::MD5&) const;
     size_t size() const;
 
-
 private:
-
-    // -- Methods
-
-    atlas::Mesh generateMeshAndCache() const;
 
     // -- Members
 
     atlas::Grid grid_;
-    Domain domain_;
-
-    MeshGenParams meshGenParams_;
-    util::MIRStatistics& statistics_;
-
     mutable atlas::Mesh mesh_;
+    mutable MeshGenParams meshGenParams_;
+
+    // -- Methods
+
+    atlas::Mesh generateMeshAndCache(util::MIRStatistics&, const MeshGenParams&) const;
 
 };
 

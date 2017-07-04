@@ -14,17 +14,19 @@
 /// @date   May 2016
 
 
-
+#include "mir/util/MIRGrid.h"
 
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/mesh/Mesh.h"
+#include "atlas/mesh/actions/BuildCellCentres.h"
+#include "atlas/mesh/actions/BuildXYZField.h"
+#include "atlas/output/Gmsh.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
+#include "mir/method/AddParallelEdgesConnectivity.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/MIRGrid.h"
 
 
 namespace mir {
@@ -32,7 +34,6 @@ namespace util {
 
 
 namespace {
-static util::MIRStatistics dummyStatistics;
 static eckit::Mutex local_mutex;
 static InMemoryCache<atlas::Mesh> mesh_cache(
         "mirMesh",
@@ -45,35 +46,43 @@ MIRGrid::MeshGenParams::MeshGenParams() {
     set("three_dimensional", true);
     set("patch_pole",        true);
     set("include_pole",      false);
-    set("angle",             0.);
     set("triangulate",       false);
+    set("angle",             0.);
+
+    meshGenerator_ = "structured";
+    meshParallelEdgesConnectivity_ = true;
+    meshXYZField_ = true;
+    meshCellCentres_ = true;
+    dump_ = false;
 }
 
 
+void MIRGrid::MeshGenParams::hash(eckit::MD5& md5) const {
 
-MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain) :
-    grid_(grid),
-    domain_(domain),
-    statistics_(dummyStatistics) {
+    for (const char* p : {"three_dimensional", "patch_pole", "include_pole", "triangulate"}) {
+        bool value = false;
+        ASSERT(get(p, value));
+        md5 << value;
+    }
+
+    double angle = 0.;
+    ASSERT(get("angle", angle));
+
+    md5 << angle
+        << meshGenerator_
+        << meshParallelEdgesConnectivity_
+        << meshXYZField_
+        << meshCellCentres_;
 }
 
 
-MIRGrid::MIRGrid(const atlas::Grid& grid, const Domain& domain, util::MIRStatistics& statistics, const MeshGenParams& meshGenParams) :
-    grid_(grid),
-    domain_(domain),
-    meshGenParams_(meshGenParams),
-    statistics_(statistics) {
+MIRGrid::MIRGrid(const atlas::Grid& grid) :
+    grid_(grid) {
 }
 
 
-MIRGrid::MIRGrid(const MIRGrid& other) :
-    statistics_(other.statistics_) {
-
-    grid_   = other.grid_;
-    domain_ = other.domain_;
-
-    meshGenParams_ = other.meshGenParams_;
-
+MIRGrid::MIRGrid(const MIRGrid& other) {
+    grid_ = other.grid_;
     mesh_ = atlas::Mesh();
 }
 
@@ -83,25 +92,26 @@ MIRGrid::operator const atlas::Grid&() const {
 }
 
 
-const Domain& MIRGrid::domain() const {
-    return domain_;
+const atlas::Mesh& MIRGrid::mesh(util::MIRStatistics& statistics, const MeshGenParams& meshGenParams) const {
+    ASSERT(!mesh_.generated());
+    mesh_ = generateMeshAndCache(statistics, meshGenParams);
+    return mesh();
 }
 
 
-atlas::Mesh& MIRGrid::mesh() const {
-    if (!mesh_.generated()) {
-        mesh_ = generateMeshAndCache();
-        ASSERT(mesh_.generated());
-    }
+const atlas::Mesh& MIRGrid::mesh() const {
+    ASSERT(mesh_.generated());
     return mesh_;
 }
 
 
-atlas::Mesh MIRGrid::generateMeshAndCache() const {
+atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const MeshGenParams& meshGenParams) const {
     eckit::ResourceUsage usage("MESH for " + std::to_string(grid_));
-    InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics_.meshCache_);
+    InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics.meshCache_);
 
+    // generate signature including the mesh generation settings
     eckit::MD5 md5;
+    meshGenParams_ = meshGenParams;
     hash(md5);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -113,11 +123,47 @@ atlas::Mesh MIRGrid::generateMeshAndCache() const {
     atlas::Mesh& mesh = mesh_cache[md5];
     try {
 
-        atlas::MeshGenerator generator(meshGenParams_.meshGenerator_, meshGenParams_);
+        atlas::MeshGenerator generator(meshGenParams.meshGenerator_, meshGenParams);
         mesh = generator.generate(grid_);
+        ASSERT(mesh.generated());
 
         // If meshgenerator did not create xyz field already, do it now.
-        atlas::mesh::actions::BuildXYZField()(mesh);
+        if (meshGenParams.meshXYZField_) {
+            eckit::ResourceUsage usage("BuildXYZField");
+            eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: BuildXYZField");
+            atlas::mesh::actions::BuildXYZField()(mesh);
+        }
+
+        // If domain does not include poles, we might need to recover the parallel edges
+        // TODO: move to Atlas mesh generator
+        if (meshGenParams.meshParallelEdgesConnectivity_) {
+            eckit::ResourceUsage usage("AddParallelEdgesConnectivity");
+            eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: AddParallelEdgesConnectivity");
+
+
+
+//            grid_.domain().
+
+
+
+
+//            method::AddParallelEdgesConnectivity()(domain_, mesh);
+        }
+
+        // Generate barycenters of mesh elements
+        if (meshGenParams.meshCellCentres_) {
+            eckit::ResourceUsage usage("BuildCellCentres");
+            eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: BuildCellCentres");
+            atlas::mesh::actions::BuildCellCentres()(mesh);
+        }
+
+        // Dump
+        if (meshGenParams.dump_) {
+            atlas::output::PathName path = std::string(md5);
+
+            eckit::Log::debug<LibMir>() << "Dumping mesh to '" << path << "'" << std::endl;
+            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xyz")).write(mesh_);
+        }
 
     }
     catch (...) {
@@ -133,8 +179,10 @@ atlas::Mesh MIRGrid::generateMeshAndCache() const {
 
 
 void MIRGrid::hash(eckit::MD5& md5) const {
-    // TODO: make MeshGenParams::hash
-    md5 << grid_ << domain_ << meshGenParams_ << meshGenParams_.meshGenerator_;
+    md5 << grid_;
+    if (mesh_.generated()) {
+        md5 << meshGenParams_;
+    }
 }
 
 

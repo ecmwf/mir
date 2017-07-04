@@ -44,7 +44,8 @@ protected: // methods
 
 protected: // members
 
-    util::MIRGrid::MeshGenParams meshgenparams_;
+    util::MIRGrid::MeshGenParams InputMeshGenerationParams_;
+    util::MIRGrid::MeshGenParams OutputMeshGenerationParams_;
 
 };
 

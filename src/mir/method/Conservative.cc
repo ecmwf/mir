@@ -39,25 +39,21 @@ static const double oneThird = 1. / 3.;
 static const double oneFourth = 1. / 4.;
 
 
-Conservative::Conservative(const param::MIRParametrisation& param) : FELinear(param) {
+Conservative::Conservative(const param::MIRParametrisation& param) :
+    FELinear(param) {
 }
 
 
-void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const repres::Representation& r) const {
-
-    util::MIRGrid grid(r.grid());
-
+void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::Mesh& mesh) const {
     using namespace atlas::mesh;
+    eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix" << "\n" "Mesh " << mesh << std::endl;
 
-    eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix"
-                                << "\n" "Mesh " << grid.mesh()
-                                << std::endl;
-
-    d.resize(grid.size());
+    // FIXME this does not check for "virtual points"
+    ASSERT(d.size() == mesh.nodes().size());
     d.setZero();
 
-    const Nodes& nodes = grid.mesh().nodes();
-    const Cells& cells = grid.mesh().cells();
+    const Nodes& nodes = mesh.nodes();
+    const Cells& cells = mesh.cells();
     atlas::array::ArrayView<double, 2> coords = atlas::array::make_view<double, 2>(nodes.field("xyz"));
 
     // TODO handle missing values
@@ -114,9 +110,8 @@ void Conservative::assemble(util::MIRStatistics& statistics,
                             WeightMatrix& W,
                             const repres::Representation& in,
                             const repres::Representation& out ) const {
-
-
     eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << in << ", output: " << out << ")" << std::endl;
+
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
     WeightMatrix IM(in.numberOfPoints(), out.numberOfPoints());
@@ -124,16 +119,21 @@ void Conservative::assemble(util::MIRStatistics& statistics,
     eckit::Log::debug<LibMir>() << "IM rows " << IM.rows() << " cols " << IM.cols() << std::endl;
     //    IM.save("IM.mat");
 
+
     // 2) M_s compute the lumped mass matrix (source mesh)
-    eckit::linalg::Vector M_s;
-    computeLumpedMassMatrix(M_s, in);
+    eckit::linalg::Vector M_s(in.numberOfPoints());
+    const atlas::Mesh& inputMesh = in.grid().mesh(statistics, InputMeshGenerationParams_);
+    computeLumpedMassMatrix(M_s, inputMesh);
+
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix (target mesh)
-    eckit::linalg::Vector M_d;
-    computeLumpedMassMatrix(M_d, out);
+    eckit::linalg::Vector M_d(out.numberOfPoints());
+    const atlas::Mesh& outputMesh = out.grid().mesh(statistics, OutputMeshGenerationParams_);
+    computeLumpedMassMatrix(M_d, outputMesh);
     for (eckit::linalg::Scalar& v : M_d) {
         v = 1. / v;
     }
+
 
     // 4) W = M_d^{-1} . I^{T} . M_s
     W.reserve(IM.rows(), IM.cols(), IM.nonZeros()); // reserve same space as IM

@@ -22,7 +22,7 @@ namespace method {
 
 Tessellation::Tessellation(const param::MIRParametrisation &param) :
     FiniteElement(param) {
-    meshgenparams_.meshGenerator_ = "delaunay";
+    InputMeshGenerationParams_.meshGenerator_ = "delaunay";
 }
 
 

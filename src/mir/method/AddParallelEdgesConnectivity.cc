@@ -82,21 +82,21 @@ size_t getTriangleType(const atlas::Mesh& mesh) {
 }  // (anonymous namespace)
 
 
-void AddParallelEdgesConnectivity::operator()(const util::Domain& domain, atlas::Mesh& mesh) const {
+void AddParallelEdgesConnectivity::operator()(atlas::Mesh& mesh, const Latitude& north, const Latitude& south) const {
 
     // build list of North and South parallels edges
     edge_list_t edges;
     bool addNorthPole = false;
 
-    if (domain.north() < 0.) {
+    if (north < 0.) {
         addNorthPole = true;
         edges = getParallelEdges(
-                    util::Domain(domain.north(), 0, domain.north(), 360),
+                    util::Domain(north, Longitude::GREENWICH, north, Longitude::GLOBE),
                     mesh.cells().node_connectivity(),
                     atlas::array::make_view< double, 2 >(mesh.nodes().lonlat()) );
-    } else if (domain.south() > 0.) {
+    } else if (south > 0.) {
         edges = getParallelEdges(
-                    util::Domain(domain.south(), 0, domain.south(), 360),
+                    util::Domain(north, Longitude::GREENWICH, north, Longitude::GLOBE),
                     mesh.cells().node_connectivity(),
                     atlas::array::make_view< double, 2 >(mesh.nodes().lonlat()) );
     }

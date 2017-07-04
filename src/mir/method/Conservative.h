@@ -41,12 +41,12 @@ protected:
 
     void hash(eckit::MD5&) const;
 
-    void assemble(util::MIRStatistics&, WeightMatrix&,
+    void assemble(util::MIRStatistics&,
+                  WeightMatrix&,
                   const repres::Representation& in,
                   const repres::Representation& out) const;
 
-    void computeLumpedMassMatrix(eckit::linalg::Vector&,
-                                 const repres::Representation&) const;
+    void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::Mesh&) const;
 
 private:
 
