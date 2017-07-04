@@ -202,6 +202,7 @@ intensity:
 - 219  # Vertical diffusion of meridional wind
 - 220  # East-West gravity wave drag tendency
 - 221  # North-South gravity wave drag tendency
+- 234  # Logarithm of surface roughness length for heat
 - 235  # Skin temperature
 - 236  # Soil temperature level 4
 - 237  # Soil wetness level 4
