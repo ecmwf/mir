@@ -97,9 +97,8 @@ void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) con
 
 
     // configure paramIds for u/v
-    const eckit::Configuration& config = LibMir::instance().configuration();
-    const long id_u = config.has("parameter-id-u") ? config.getLong("parameter-id-u") : 131;
-    const long id_v = config.has("parameter-id-v") ? config.getLong("parameter-id-v") : 132;
+    const long id_u = 131;
+    const long id_v = 132;
 
     std::vector<double> result(output.begin(), output.begin() + trans.ngptotg);
     field.update(result, 0);
