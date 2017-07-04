@@ -553,13 +553,13 @@ bool SimpleParametrisation::empty() const {
     return size() == 0;
 }
 
-bool SimpleParametrisation::matches(const MIRParametrisation& other, const MIRParametrisation& ignore) const {
+bool SimpleParametrisation::matches(const MIRParametrisation& other) const {
     std::ostringstream reason;
     const char* sep = "";
     bool ok = true;
 
     for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end() && ok; ++j) {
-        if (!ignore.has((*j).first) && !(*j).second->match((*j).first, other)) {
+        if (!(*j).second->match((*j).first, other)) {
             reason << sep << (*j).first << " different to " << *((*j).second);
             sep = ", ";
             ok = false;

@@ -26,8 +26,8 @@
 #include "mir/input/MIRInput.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRCombinedParametrisation.h"
-#include "mir/param/InheritParametrisation.h"
 #include "mir/style/MIRStyle.h"
+#include "mir/param/DefaultParametrisation.h"
 
 
 namespace mir {
@@ -39,16 +39,16 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     output_(output)  {
 
     // get input and parameter-specific parametrisations
+    static param::DefaultParametrisation defaults;
     const param::MIRParametrisation& metadata = input.parametrisation();
-    const param::MIRParametrisation& parameter = config::MIRConfiguration::instance().pick(metadata);
-    combined_.reset(new param::MIRCombinedParametrisation(job, metadata, parameter));
+    combined_.reset(new param::MIRCombinedParametrisation(job, metadata, defaults));
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
 
 
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
-    if (job.empty() || (!style->forcedPrepare(job) && job.matches(metadata, parameter))) {
+    if (job.empty() || (!style->forcedPrepare(job) && job.matches(metadata))) {
         plan_.reset(new action::ActionPlan(job));
         plan_->add(new action::Copy(job, output_));
         return;
