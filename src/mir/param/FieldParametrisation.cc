@@ -262,9 +262,9 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
     const auto j = parameters_.find(paramId);
 
     if (j == parameters_.end()) {
-        std::ostringstream oss;
-        oss << "No interpolation information for paramId=" << paramId;
-        eckit::SeriousBug(oss.str());
+        eckit::Log::warning() << "No interpolation information for paramId=" << paramId << ", using defaults" << std::endl;
+        parameters_[paramId] = new SimpleParametrisation();
+        return false;
     }
 
     return (*j).second->get(name, value);
