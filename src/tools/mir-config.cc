@@ -18,13 +18,14 @@
 #include "mir/input/GribFileInput.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/param/DefaultParametrisation.h"
+#include "mir/param/MIRCombinedParametrisation.h"
+#include "mir/param/ConfigurationWrapper.h"
 
 
 class MIRConfig : public mir::tools::MIRTool {
 
     // -- Methods
-
-    void display(const mir::param::MIRParametrisation&, const std::string& key="");
 
     // -- Overridden methods
 
@@ -52,31 +53,20 @@ public:
 void MIRConfig::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\n" "Usage: " << tool << " [--param-id=value] [--key=key] [input1.grib [input2.grib [...]]]"
-               "\n" "Examples: "
-               "\n" "  % " << tool << ""
-               "\n" "  % " << tool << " --param-id=157"
-               "\n" "  % " << tool << " --param-id=167 --key=lsm input1.grib input2.grib"
+            "\n" "Examples: "
+            "\n" "  % " << tool << ""
+            "\n" "  % " << tool << " --param-id=157"
+            "\n" "  % " << tool << " --param-id=167 --key=lsm input1.grib input2.grib"
             << std::endl;
 }
 
 
-void MIRConfig::display(const mir::param::MIRParametrisation& parametrisation, const std::string& key) {
-    if (key.length()) {
-        std::string value;
-        eckit::Log::info() << (parametrisation.get(key, value)? value : "<not found>") << std::endl;
-    } else {
-        eckit::Log::info() << parametrisation << std::endl;
-    }
-}
-
-
 void MIRConfig::execute(const eckit::option::CmdArgs& args) {
-#if 0
+
     using namespace mir::param;
+    const DefaultParametrisation defaults;
 
-    mir::config::MIRConfiguration& config = mir::config::MIRConfiguration::instance();
-
-    std::string key = "";
+    std::string key = "interpolation";
     args.get("key", key);
 
     for (size_t i = 0; i < args.count(); i++) {
@@ -87,35 +77,34 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             mir::input::MIRInput& input = grib;
 
             const MIRParametrisation& metadata = input.parametrisation();
-            long id = 0;
-            args.get("param-id", id) || metadata.get("paramId", id);
+            MIRCombinedParametrisation combined(metadata, defaults, defaults);
+            const MIRParametrisation& c = combined;
 
-            const MIRParametrisation& p(config.pick(id, metadata));
-            display(p, key);
+            long paramId = 0;
+            c.get("paramId", paramId);
+
+            std::string value = "???";
+            c.get(key, value);
+
+            std::cout << "paramId=" << paramId << "," << key << "=" << value << std::endl;
 
         }
 
     }
 
-    if (!args.count()) {
-        if (args.has("param-id")) {
+    // if (!args.count()) {
+    //     if (args.has("param-id")) {
 
-            // Display configuration for a paramId
-            SimpleParametrisation metadata;
-            long id = 0;
-            args.get("param-id", id);
+    //         // Display configuration for a paramId
+    //         SimpleParametrisation metadata;
+    //         long id = 0;
+    //         args.get("param-id", id);
 
-            const MIRParametrisation& p(config.pick(id, metadata));
-            display(p, key);
+    //         const MIRParametrisation& p(config.pick(id, metadata));
+    //         display(p, key);
 
-        } else {
+    // }
 
-            // Display configuration defaults
-            display(config, key);
-
-        }
-    }
-#endif
 }
 
 
