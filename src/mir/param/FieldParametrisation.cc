@@ -58,7 +58,7 @@ static void init() {
 
     eckit::Value c = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
 
-    c.dump(std::cout) << std::endl;
+    // c.dump(std::cout) << std::endl;
 
     eckit::ValueMap classes = c;
 
