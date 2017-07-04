@@ -116,7 +116,7 @@ ratio.cover.cloud: {}
 ratio.cover.vegetation:
   interpolation: nearest-lsm
 
- # (typical units: <non-dimensional>, [0, 1], [-1, 1]?, %)
+# (typical units: <non-dimensional>, [0, 1], [-1, 1]?, %)
 ratio.fraction: {}
 
 # (typical units: [s])

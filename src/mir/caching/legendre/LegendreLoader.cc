@@ -65,9 +65,8 @@ LegendreLoaderFactory::~LegendreLoaderFactory() {
 LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& params, const eckit::PathName& path) {
     pthread_once(&once, init);
 
-    const eckit::Configuration& config = LibMir::instance().configuration();
-    const std::string name = config.has("legendre-loader") ? config.getString("legendre-loader") : "mapped-memory";
-    ASSERT(name.length());
+    std::string name = "mapped-memory";
+    params.get("legendre-loader", name);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<std::string, LegendreLoaderFactory*>::const_iterator j = m->find(name);

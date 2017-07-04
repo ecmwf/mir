@@ -54,7 +54,13 @@ static std::map<long, SimpleParametrisation*> parameters_;
 
 
 static void init() {
-    eckit::ValueMap classes = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
+
+
+    eckit::Value c = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
+
+    c.dump(std::cout) << std::endl;
+
+    eckit::ValueMap classes = c;
 
     std::map<std::string, SimpleParametrisation*> p;
 
@@ -65,7 +71,11 @@ static void init() {
         SimpleParametrisation* s = new SimpleParametrisation();
 
         for (auto j = values.begin(); j != values.end(); ++j) {
-            s->set(std::string((*j).first), std::string((*j).second));
+
+            std::string name = (*j).first;
+            eckit::Value value = (*j).second;
+
+            s->set(name, std::string(value));
         }
 
         p[klass] = s;
@@ -74,24 +84,31 @@ static void init() {
 
     eckit::ValueMap parameters = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameters.yaml");
     for (auto i = parameters.begin(); i != parameters.end(); ++i) {
-        long paramId = (*i).first;
-        const std::string& klass = (*i).second;
+        const std::string& klass = (*i).first;
 
         auto j = p.find(klass);
         if (j == p.end()) {
             std::ostringstream oss;
-            oss << "Unknown class [" << klass << "] for paramId=" << paramId;
+            oss << "Unknown class [" << klass << "]";
             eckit::SeriousBug(oss.str());
         }
 
-        auto k = parameters_.find(paramId);
-        if (k != parameters_.end()) {
-            std::ostringstream oss;
-            oss << "More than one class defined for paramId=" << paramId;
-            eckit::SeriousBug(oss.str());
-        }
+        eckit::ValueList l = (*i).second;
+        // std::cout << l << std::endl;
 
-        parameters_[paramId] = (*j).second;
+        for (auto p = l.begin(); p != l.end(); ++p) {
+
+            long paramId = *p;
+
+            auto k = parameters_.find(paramId);
+            if (k != parameters_.end()) {
+                std::ostringstream oss;
+                oss << "More than one class defined for paramId=" << paramId;
+                eckit::SeriousBug(oss.str());
+            }
+
+            parameters_[paramId] = (*j).second;
+        }
     }
 
 }

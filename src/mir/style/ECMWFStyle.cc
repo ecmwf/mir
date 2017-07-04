@@ -281,9 +281,8 @@ bool ECMWFStyle::isWindComponent() const {
     long id = 0;
     parametrisation_.get("paramId", id);
 
-    const eckit::Configuration& config = LibMir::instance().configuration();
-    const long id_u = config.has("parameter-id-u") ? config.getLong("parameter-id-u") : 131;
-    const long id_v = config.has("parameter-id-v") ? config.getLong("parameter-id-v") : 132;
+    const long id_u = 131;
+    const long id_v = 132;
 
     return (id == id_u || id == id_v);
 }
