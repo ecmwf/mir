@@ -151,13 +151,16 @@ stress.accumulated: {}
 
 unknown.experimental:
   FIXME: issue warning?
-  class: intensity
+  FieldInfo: scalar
+  comparison: scalar
 
 unknown.missing:
   FIXME: issue warning?
-  class: intensity
+  FieldInfo: scalar
+  comparison: scalar
 
 unknown.reserved:
   FIXME: issue warning?
-  class: intensity
+  FieldInfo: scalar
+  comparison: scalar
 

@@ -68,7 +68,7 @@ static void init() {
             s->set(std::string((*j).first), std::string((*j).second));
         }
 
-        p[(*i).first] = s;
+        p[klass] = s;
     }
 
 

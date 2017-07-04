@@ -282,8 +282,8 @@ size_t fix_pl_array_zeros(std::vector<long>& pl) {
 
 
 GribInput::GribInput():
-    grib_(0),
-    cache_(*this) {
+    cache_(*this),
+    grib_(0){
 }
 
 
