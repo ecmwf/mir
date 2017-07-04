@@ -89,7 +89,7 @@ static void init() {
         if (j == p.end()) {
             std::ostringstream oss;
             oss << "Unknown class [" << klass << "]";
-            eckit::SeriousBug(oss.str());
+            throw eckit::SeriousBug(oss.str());
         }
 
         eckit::ValueList l = (*i).second;
@@ -103,7 +103,7 @@ static void init() {
             if (k != parameters_.end()) {
                 std::ostringstream oss;
                 oss << "More than one class defined for paramId=" << paramId;
-                eckit::SeriousBug(oss.str());
+                throw eckit::SeriousBug(oss.str());
             }
 
             parameters_[paramId] = (*j).second;
