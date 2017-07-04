@@ -28,9 +28,6 @@ namespace mir {
 namespace param {
 
 DefaultParametrisation::DefaultParametrisation() {
-}
-
-DefaultParametrisation::~DefaultParametrisation() {
     set("style", "mars");
     set("executor", "simple");
 
@@ -50,7 +47,9 @@ DefaultParametrisation::~DefaultParametrisation() {
     set("spectral-mapping", "linear");
 
     set("tolerance", 1e-10);
+}
 
+DefaultParametrisation::~DefaultParametrisation() {
 }
 
 void DefaultParametrisation::print(std::ostream &out) const {
