@@ -569,13 +569,6 @@ bool SimpleParametrisation::matches(const MIRParametrisation& other, const MIRPa
     return ok;
 }
 
-void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other, bool overwrite) const {
-    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-        if (overwrite || !other.has((*j).first)) {
-            (*j).second->copyValueTo((*j).first, other);
-        }
-    }
-}
 
 }  // namespace param
 }  // namespace mir

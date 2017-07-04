@@ -104,6 +104,9 @@ bool CachedParametrisation::get(const std::string& name, std::vector<std::string
     return _get(name, value);
 }
 
+void CachedParametrisation::reset() {
+    cache_.reset();
+}
 
 }  // namespace param
 }  // namespace mir

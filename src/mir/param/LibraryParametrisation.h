@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef LibraryConfiguration_H
-#define LibraryConfiguration_H
+#ifndef LibraryParametrisation_H
+#define LibraryParametrisation_H
 
 #include <map>
 #include <set>
@@ -23,12 +23,15 @@
 #include "mir/param/SimpleParametrisation.h"
 
 
+namespace eckit {
+class Configuration;
+}
 
 namespace mir {
 namespace param {
 
 
-class LibraryConfiguration : public MIRParametrisation {
+class LibraryParametrisation : public MIRParametrisation {
 public:
 
     // -- Exceptions
@@ -36,11 +39,11 @@ public:
 
     // -- Contructors
 
-    LibraryConfiguration(MIRParametrisation& parametrisation);
+    LibraryParametrisation();
 
     // -- Destructor
 
-    virtual ~LibraryConfiguration();
+    virtual ~LibraryParametrisation();
 
     // -- Convertors
     // None
@@ -97,8 +100,8 @@ private:
 
     // No copy allowed
 
-    LibraryConfiguration(const LibraryConfiguration&);
-    LibraryConfiguration& operator=(const LibraryConfiguration&);
+    LibraryParametrisation(const LibraryParametrisation&);
+    LibraryParametrisation& operator=(const LibraryParametrisation&);
 
     // -- Members
 

@@ -50,6 +50,7 @@ public:
 
     // -- Methods
 
+    void reset();
 
 
     // -- Class members

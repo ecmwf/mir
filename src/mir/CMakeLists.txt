@@ -362,6 +362,10 @@ list(
     param/SimpleParametrisation.h
     param/CachedParametrisation.cc
     param/CachedParametrisation.h
+    param/LibraryParametrisation.cc
+    param/LibraryParametrisation.h
+    param/DefaultParametrisation.cc
+    param/DefaultParametrisation.h
     repres/Gridded.cc
     repres/Gridded.h
     repres/Iterator.cc

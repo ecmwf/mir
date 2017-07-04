@@ -656,6 +656,8 @@ bool GribInput::get(const std::string& name, std::vector<std::string>& value) co
 bool GribInput::handle(grib_handle *h) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
+    cache_.reset();
+
     if (grib_) {
         grib_handle_delete(grib_);
     }

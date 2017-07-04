@@ -12,7 +12,7 @@
 /// @date Jul 2016
 
 
-#include "mir/param/CachedParametrisation.h"
+#include "mir/param/DefaultParametrisation.h"
 
 // #include "eckit/exception/Exceptions.h"
 // #include "eckit/parser/JSON.h"
@@ -27,81 +27,34 @@
 namespace mir {
 namespace param {
 
-CachedParametrisation::CachedParametrisation(MIRParametrisation& parametrisation):
-    parametrisation_(parametrisation) {
+DefaultParametrisation::DefaultParametrisation() {
 }
 
-CachedParametrisation::~CachedParametrisation() {
-}
+DefaultParametrisation::~DefaultParametrisation() {
+    set("style", "mars");
+    set("executor", "simple");
 
-void CachedParametrisation::print(std::ostream &out) const {
-    out << "CachedParametrisation[" << parametrisation_ << "]";
-}
+    set("interpolation", "linear"); // The word 'method' is used in grib
+    set("decomposition", "none");
+    set("stats", "scalar");
+    set("caching", true);
 
-template<class T>
-bool CachedParametrisation::_get(const std::string& name, T& value) const {
-    MIRParametrisation& cache = cache_;
+    set("prune-epsilon", 1e-10);
+    set("nclosest", 4L);
 
-    if(cache.get(name, value)) {
-        return true;
-    }
+    set("lsm-selection", "auto");
+    set("lsm-interpolation", "nearest-neighbour");
+    set("lsm-weight-adjustment", 0.2);
+    set("lsm-value-threshold", 0.5);
 
-    if(parametrisation_.get(name, value)) {
-        cache_.set(name, value);
-        return true;
-    }
+    set("spectral-mapping", "linear");
 
-    return false;
-}
-
-
-bool CachedParametrisation::has(const std::string& name) const {
-    MIRParametrisation& cache = cache_;
-    return cache.has(name) || parametrisation_.has(name);
-}
-
-bool CachedParametrisation::get(const std::string& name, std::string& value) const {
-    return _get(name, value);
+    set("tolerance", 1e-10);
 
 }
-bool CachedParametrisation::get(const std::string& name, bool& value) const {
-    return _get(name, value);
-}
 
-bool CachedParametrisation::get(const std::string& name, int& value) const {
-    return _get(name, value);
-}
-
-bool CachedParametrisation::get(const std::string& name, long& value) const {
-    return _get(name, value);
-}
-
-bool CachedParametrisation::get(const std::string& name, float& value) const {
-    return _get(name, value);
-}
-
-bool CachedParametrisation::get(const std::string& name, double& value) const {
-    return _get(name, value);
-}
-
-bool CachedParametrisation::get(const std::string& name, std::vector<int>& value) const {
-    return _get(name, value);
-}
-
-bool CachedParametrisation::get(const std::string& name, std::vector<long>& value) const {
-    return _get(name, value);
-}
-
-bool CachedParametrisation::get(const std::string& name, std::vector<float>& value) const {
-    return _get(name, value);
-}
-
-bool CachedParametrisation::get(const std::string& name, std::vector<double>& value) const {
-    return _get(name, value);
-}
-
-bool CachedParametrisation::get(const std::string& name, std::vector<std::string>& value) const {
-    return _get(name, value);
+void DefaultParametrisation::print(std::ostream &out) const {
+    out << "DefaultParametrisation[]";
 }
 
 

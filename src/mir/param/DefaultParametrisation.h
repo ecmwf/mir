@@ -13,13 +13,9 @@
 /// @date Apr 2015
 
 
-#ifndef CachedParametrisation_H
-#define CachedParametrisation_H
+#ifndef DefaultParametrisation_H
+#define DefaultParametrisation_H
 
-#include <map>
-#include <set>
-#include <string>
-#include "mir/param/MIRParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 
 
@@ -28,7 +24,7 @@ namespace mir {
 namespace param {
 
 
-class CachedParametrisation : public MIRParametrisation {
+class DefaultParametrisation : public SimpleParametrisation {
 public:
 
     // -- Exceptions
@@ -36,11 +32,11 @@ public:
 
     // -- Contructors
 
-    CachedParametrisation(MIRParametrisation& parametrisation);
+    DefaultParametrisation();
 
     // -- Destructor
 
-    virtual ~CachedParametrisation();
+    virtual ~DefaultParametrisation();
 
     // -- Convertors
     // None
@@ -70,21 +66,6 @@ protected:
 
     // -- Overridden methods
 
-    // From MIRParametrisation
-    virtual bool has(const std::string& name) const;
-
-    virtual bool get(const std::string& name, std::string& value) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, int& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, float& value) const;
-    virtual bool get(const std::string& name, double& value) const;
-
-    virtual bool get(const std::string& name, std::vector<int>& value) const;
-    virtual bool get(const std::string& name, std::vector<long>& value) const;
-    virtual bool get(const std::string& name, std::vector<float>& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
-    virtual bool get(const std::string& name, std::vector<std::string>& value) const;
     // -- Class members
     // None
 
@@ -97,12 +78,10 @@ private:
 
     // No copy allowed
 
-    CachedParametrisation(const CachedParametrisation&);
-    CachedParametrisation& operator=(const CachedParametrisation&);
+    DefaultParametrisation(const DefaultParametrisation&);
+    DefaultParametrisation& operator=(const DefaultParametrisation&);
 
     // -- Members
-
-    MIRParametrisation& parametrisation_;
     mutable SimpleParametrisation cache_;
 
     // -- Methods
@@ -110,9 +89,6 @@ private:
 
     // -- Overridden methods
     // None
-
-    template<class T>
-    bool _get(const std::string& name, T& value) const;
 
 
     // -- Class members

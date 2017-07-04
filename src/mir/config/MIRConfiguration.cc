@@ -20,37 +20,13 @@
 #include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
 
+#include "mir/param/DefaultParametrisation.h"
+#include "mir/param/LibraryParametrisation.h"
 
 namespace mir {
 namespace config {
 
 
-namespace  {
-static struct Defaults : param::SimpleParametrisation {
-    Defaults() {
-        // default settings, overridden by file or (some) user options
-        set("style", "mars");
-        set("executor", "simple");
-
-        set("interpolation", "linear"); // The word 'method' is used in grib
-        set("decomposition", "none");
-        set("stats", "scalar");
-        set("caching", true);
-
-        set("prune-epsilon", 1e-10);
-        set("nclosest", 4L);
-
-        set("lsm-selection", "auto");
-        set("lsm-interpolation", "nearest-neighbour");
-        set("lsm-weight-adjustment", 0.2);
-        set("lsm-value-threshold", 0.5);
-
-        set("spectral-mapping", "linear");
-
-        set("tolerance", 1e-10);
-    }
-} defaults;
-}  // (anonymous namespace)
 
 
 MIRConfiguration& MIRConfiguration::instance() {
@@ -60,39 +36,52 @@ MIRConfiguration& MIRConfiguration::instance() {
 
 
 MIRConfiguration::MIRConfiguration() {
-    const eckit::Configuration& config = LibMir::instance().configuration();
-    std::string p("~mir/etc/mir/parameter.yaml");
-    config.get("parameter-configuration", p);
 
-    const eckit::PathName path(p);
+    // // library
+    // param::DefaultParametrisation defaults;
+    // defaults.configure(*this);
 
-    eckit::Log::info() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
 
-    std::ifstream in(path);
-    if (!in) {
-        throw eckit::CantOpenFile(path);
-    }
+    // // library
+    // param::LibraryParametrisation library;
+    // defaults.configure(*this);
 
-    // Create hierarchy (using non-overwriting filling keys)
-    eckit::YAMLParser parser(in);
-    eckit::Value v = parser.parse();
 
-    // v.dump(eckit::Log::info()) << std::endl;
+    // //
+    // // const eckit::Configuration& config = LibMir::instance().configuration();
+    // // config.copyValuesTo(*this);
 
-    fill(v);
+    // std::string p("~mir/etc/mir/parameter.yaml");
+    // // config.get("parameter-configuration", p);
 
-    // Dereference
-    std::string label;
-    if (get("parameter-configuration-fill", label) && label.length()) {
-        fill(pick(label));
-        clear("parameter-configuration-fill");
-    }
+    // const eckit::PathName path(p);
 
-    // log into itself
-    // set("parameter-configuration", path);
+    // eckit::Log::info() << "MIRConfiguration: loading configuration from '" << path << "'" << std::endl;
 
-    // Use defaults (non-overwriting)
-    defaults.copyValuesTo(*this, false);
+    // std::ifstream in(path);
+    // if (!in) {
+    //     throw eckit::CantOpenFile(path);
+    // }
+
+    // // Create hierarchy (using non-overwriting filling keys)
+    // eckit::YAMLParser parser(in);
+    // eckit::Value v = parser.parse();
+
+    // // v.dump(eckit::Log::info()) << std::endl;
+
+    // fill(v);
+
+    // // Dereference
+    // std::string label;
+    // if (get("parameter-configuration-fill", label) && label.length()) {
+    //     fill(pick(label));
+    //     clear("parameter-configuration-fill");
+    // }
+
+    // // log into itself
+    // // set("parameter-configuration", path);
+
+    // // Use defaults (non-overwriting)
 }
 
 MIRConfiguration::~MIRConfiguration() {

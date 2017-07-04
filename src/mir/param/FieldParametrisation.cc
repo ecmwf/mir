@@ -19,8 +19,9 @@
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
 #include "mir/config/MIRConfiguration.h"
-#include "mir/param/InheritParametrisation.h"
 #include "eckit/types/Fraction.h"
+#include "mir/param/SimpleParametrisation.h"
+#include "eckit/parser/YAMLParser.h"
 
 
 namespace mir {
@@ -28,6 +29,8 @@ namespace param {
 
 
 namespace {
+
+
 inline double shift(const double& a, const double& b, double increment) {
     const eckit::Fraction inc(increment);
     eckit::Fraction shift = a - (a / inc).integralPart() * inc;
@@ -42,6 +45,57 @@ inline double shift(const double& a, const double& b, double increment) {
     return shift;
 }
 }  // (anonymous namespace)
+
+
+
+
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static std::map<long, SimpleParametrisation*> parameters_;
+
+
+static void init() {
+    eckit::ValueMap classes = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
+
+    std::map<std::string, SimpleParametrisation*> p;
+
+    for (auto i = classes.begin(); i != classes.end(); ++i) {
+        const std::string& klass = (*i).first;
+        eckit::ValueMap values = (*i).second;
+
+        SimpleParametrisation* s = new SimpleParametrisation();
+
+        for (auto j = values.begin(); j != values.end(); ++j) {
+            s->set(std::string((*j).first), std::string((*j).second));
+        }
+
+        p[(*i).first] = s;
+    }
+
+
+    eckit::ValueMap parameters = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameters.yaml");
+    for (auto i = parameters.begin(); i != parameters.end(); ++i) {
+        long paramId = (*i).first;
+        const std::string& klass = (*i).second;
+
+        auto j = p.find(klass);
+        if (j == p.end()) {
+            std::ostringstream oss;
+            oss << "Unknown class [" << klass << "] for paramId=" << paramId;
+            eckit::SeriousBug(oss.str());
+        }
+
+        auto k = parameters_.find(paramId);
+        if (k != parameters_.end()) {
+            std::ostringstream oss;
+            oss << "More than one class defined for paramId=" << paramId;
+            eckit::SeriousBug(oss.str());
+        }
+
+        parameters_[paramId] = (*j).second;
+    }
+
+}
+
 
 
 FieldParametrisation::FieldParametrisation() {}
@@ -179,12 +233,25 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
     ASSERT(name != "paramId");
 
     // This assumes that other input (NetCDF, etc) also return a paramId
-    if (!has("paramId")) {
+
+    long paramId;
+    if (!get("paramId", paramId)) {
         return false;
     }
 
     // return paramId specific parametrisation
-    return config::MIRConfiguration::instance().pick(*this).get(name, value);
+
+    pthread_once(&once, init);
+
+    const auto j = parameters_.find(paramId);
+
+    if (j == parameters_.end()) {
+        std::ostringstream oss;
+        oss << "No interpolation information for paramId=" << paramId;
+        eckit::SeriousBug(oss.str());
+    }
+
+    return (*j).second->get(name, value);
 }
 
 

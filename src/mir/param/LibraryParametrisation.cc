@@ -12,7 +12,7 @@
 /// @date Jul 2016
 
 
-#include "mir/param/LibraryConfiguration.h"
+#include "mir/param/LibraryParametrisation.h"
 
 // #include "eckit/exception/Exceptions.h"
 // #include "eckit/parser/JSON.h"
@@ -22,73 +22,73 @@
 // #include "eckit/value/Value.h"
 // #include "mir/config/LibMir.h"
 // #include "mir/param/DelayedParametrisation.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
 namespace param {
 
-LibraryConfiguration::LibraryConfiguration():
+LibraryParametrisation::LibraryParametrisation():
     library_(LibMir::instance().configuration()) {
 }
 
-LibraryConfiguration::~LibraryConfiguration() {
+LibraryParametrisation::~LibraryParametrisation() {
 }
 
-void LibraryConfiguration::print(std::ostream &out) const {
-    out << "LibraryConfiguration[]";
+void LibraryParametrisation::print(std::ostream &out) const {
+    out << "LibraryParametrisation[]";
 }
 
 template<class T>
-bool LibraryConfiguration::_get(const std::string& name, T& value) const {
+bool LibraryParametrisation::_get(const std::string& name, T& value) const {
     return library_.get(name, value);
 }
 
-bool LibraryConfiguration::has(const std::string& name) const {
-    MIRParametrisation& cache = cache_;
-    return cache.has(name) || parametrisation_.has(name);
+bool LibraryParametrisation::has(const std::string& name) const {
+    return library_.has(name);
 }
 
-bool LibraryConfiguration::get(const std::string& name, std::string& value) const {
+bool LibraryParametrisation::get(const std::string& name, std::string& value) const {
     return _get(name, value);
 
 }
-bool LibraryConfiguration::get(const std::string& name, bool& value) const {
+bool LibraryParametrisation::get(const std::string& name, bool& value) const {
     return _get(name, value);
 }
 
-bool LibraryConfiguration::get(const std::string& name, int& value) const {
+bool LibraryParametrisation::get(const std::string& name, int& value) const {
     return _get(name, value);
 }
 
-bool LibraryConfiguration::get(const std::string& name, long& value) const {
+bool LibraryParametrisation::get(const std::string& name, long& value) const {
     return _get(name, value);
 }
 
-bool LibraryConfiguration::get(const std::string& name, float& value) const {
+bool LibraryParametrisation::get(const std::string& name, float& value) const {
     return _get(name, value);
 }
 
-bool LibraryConfiguration::get(const std::string& name, double& value) const {
+bool LibraryParametrisation::get(const std::string& name, double& value) const {
     return _get(name, value);
 }
 
-bool LibraryConfiguration::get(const std::string& name, std::vector<int>& value) const {
+bool LibraryParametrisation::get(const std::string& name, std::vector<int>& value) const {
     return _get(name, value);
 }
 
-bool LibraryConfiguration::get(const std::string& name, std::vector<long>& value) const {
+bool LibraryParametrisation::get(const std::string& name, std::vector<long>& value) const {
     return _get(name, value);
 }
 
-bool LibraryConfiguration::get(const std::string& name, std::vector<float>& value) const {
+bool LibraryParametrisation::get(const std::string& name, std::vector<float>& value) const {
     return _get(name, value);
 }
 
-bool LibraryConfiguration::get(const std::string& name, std::vector<double>& value) const {
+bool LibraryParametrisation::get(const std::string& name, std::vector<double>& value) const {
     return _get(name, value);
 }
 
-bool LibraryConfiguration::get(const std::string& name, std::vector<std::string>& value) const {
+bool LibraryParametrisation::get(const std::string& name, std::vector<std::string>& value) const {
     return _get(name, value);
 }
 

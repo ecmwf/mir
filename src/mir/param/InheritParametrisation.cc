@@ -31,7 +31,7 @@ bool string_contains_paramIds(const std::string& str, std::vector<long>& ids) {
     std::vector<std::string> v = eckit::StringTools::split("/", str);
     ids.reserve(v.size());
 
-    for (const std::string& i: v) {
+    for (const std::string& i : v) {
         long id = 0;
         if (i.length() && (id = eckit::Translator<std::string, long>()(i))) {
             ids.push_back(id);
@@ -44,10 +44,10 @@ bool string_contains_paramIds(const std::string& str, std::vector<long>& ids) {
 
 bool string_contains_label(const std::string& str) {
     const char* alnum =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            "abcdefghijklmnopqrstuvwxyz"
-            "0123456789"
-            "_=-.";
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz"
+        "0123456789"
+        "_=-.";
     return (str.find_first_not_of(alnum) == std::string::npos);
 }
 
@@ -63,7 +63,7 @@ InheritParametrisation::InheritParametrisation() : parent_(0) {}
 
 
 InheritParametrisation::~InheritParametrisation() {
-    for(auto j = children_.begin(); j != children_.end(); ++j) {
+    for (auto j = children_.begin(); j != children_.end(); ++j) {
         delete (*j);
     }
 }
@@ -79,11 +79,17 @@ void InheritParametrisation::fill(const eckit::ValueMap& map) {
             } else if (string_contains_label(i->first)) {
                 addChild(new InheritParametrisation(this, i->first)).fill(i->second);
             }
+            else {
+                NOTIMP;
+            }
 
         } else if (!has(i->first)) {
 
             set(i->first, std::string(i->second));
 
+        }
+        else {
+            NOTIMP;
         }
     }
 }
@@ -101,7 +107,7 @@ void InheritParametrisation::fill(const InheritParametrisation& filler) {
     }
 
     // descendants do the same
-    for (InheritParametrisation* me: children_) {
+    for (InheritParametrisation* me : children_) {
         me->fill(filler);
     }
 }
@@ -116,7 +122,7 @@ const InheritParametrisation& InheritParametrisation::pick(const MIRParametrisat
 
 const InheritParametrisation& InheritParametrisation::pick(const long& paramId, const MIRParametrisation& metadata) const {
     if (paramId > 0 ) {
-        for (InheritParametrisation* me: children_) {
+        for (InheritParametrisation* me : children_) {
             ASSERT(me != this);
             if (me->matchesId(paramId) && me->matchesMetadata(metadata)) {
                 return me->pick(paramId, metadata);
@@ -134,13 +140,13 @@ const InheritParametrisation& InheritParametrisation::pick(const std::string& st
 
 const InheritParametrisation& InheritParametrisation::pick(const std::vector< std::string >& labels) const {
     if (labels.size()) {
-        for (const InheritParametrisation* me: children_) {
+        for (const InheritParametrisation* me : children_) {
             const std::string& label = labels[0];
             if (!string_contains_label(label)) {
                 throw eckit::UserError("InheritParametrisation: invalid label '" + label + "' (from '" + eckit::StringTools::join("/", labels) + "')");
             }
             if (me->matchesLabel(label)) {
-                return me->pick(std::vector<std::string>(labels.begin()+1, labels.end()));
+                return me->pick(std::vector<std::string>(labels.begin() + 1, labels.end()));
             }
         }
         throw eckit::UserError("InheritParametrisation: cannot locate label '" + eckit::StringTools::join("/", labels) + "' under '" + labelHierarchy() + "'");
@@ -149,7 +155,7 @@ const InheritParametrisation& InheritParametrisation::pick(const std::vector< st
 }
 
 bool InheritParametrisation::empty() const {
-    return children_.size()==0 && SimpleParametrisation::empty();
+    return children_.size() == 0 && SimpleParametrisation::empty();
 }
 
 
@@ -230,7 +236,7 @@ void InheritParametrisation::print(std::ostream& out) const {
     out << ",paramIds=[";
     const char* sep = "";
     size_t count = 0;
-    for (long id: paramIds_) {
+    for (long id : paramIds_) {
         if (++count > 10) {
             out << ",...";
             break;
@@ -248,7 +254,7 @@ void InheritParametrisation::print(std::ostream& out) const {
         out << ",children[";
         sep = "\n\t";
         count = 0;
-        for (const InheritParametrisation* me: children_) {
+        for (const InheritParametrisation* me : children_) {
             if (++count > 10) {
                 out << ",...";
                 break;
@@ -309,8 +315,8 @@ bool InheritParametrisation::matchesMetadata(const MIRParametrisation& metadata)
 
     std::string meta_value;
     return key.length()
-            && metadata.get(key, meta_value)
-            && (val == meta_value);
+           && metadata.get(key, meta_value)
+           && (val == meta_value);
 }
 
 
@@ -329,7 +335,7 @@ InheritParametrisation& InheritParametrisation::addChild(InheritParametrisation*
 
 
 InheritParametrisation& InheritParametrisation::clearFromChildren(const std::string& name) {
-    for (InheritParametrisation* me: children_) {
+    for (InheritParametrisation* me : children_) {
         me->clearFromChildren(name);
     }
     SimpleParametrisation::clear(name);
@@ -338,7 +344,6 @@ InheritParametrisation& InheritParametrisation::clearFromChildren(const std::str
 
 
 void InheritParametrisation::inherit(SimpleParametrisation& parametrisation) const {
-    copyValuesTo(parametrisation, false);
     if (parent_ != NULL) {
         parent_->inherit(parametrisation);
     }
