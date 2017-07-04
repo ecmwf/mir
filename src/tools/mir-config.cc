@@ -21,6 +21,7 @@
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
+#include "mir/param/FieldParametrisation.h"
 
 
 class MIRConfig : public mir::tools::MIRTool {
@@ -35,6 +36,20 @@ class MIRConfig : public mir::tools::MIRTool {
 
     int minimumPositionalArguments() const {
         return 0;
+    }
+
+    void display(const mir::param::MIRParametrisation& metadata, const std::string& key) const {
+        static mir::param::DefaultParametrisation defaults;
+        mir::param::MIRCombinedParametrisation combined(metadata, defaults, defaults);
+        const mir::param::MIRParametrisation& c = combined;
+
+        long paramId = 0;
+        c.get("paramId", paramId);
+
+        std::string value = "???";
+        c.get(key, value);
+
+        std::cout << "paramId=" << paramId << "," << key << "=" << value << std::endl;
     }
 
 public:
@@ -64,7 +79,6 @@ void MIRConfig::usage(const std::string &tool) const {
 void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
     using namespace mir::param;
-    const DefaultParametrisation defaults;
 
     std::string key = "interpolation";
     args.get("key", key);
@@ -75,38 +89,40 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
         mir::input::GribFileInput grib(args(i));
         while (grib.next()) {
             mir::input::MIRInput& input = grib;
-
-            const MIRParametrisation& metadata = input.parametrisation();
-            MIRCombinedParametrisation combined(metadata, defaults, defaults);
-            const MIRParametrisation& c = combined;
-
-            long paramId = 0;
-            c.get("paramId", paramId);
-
-            std::string value = "???";
-            c.get(key, value);
-
-            std::cout << "paramId=" << paramId << "," << key << "=" << value << std::endl;
-
+            display(input.parametrisation(), key);
         }
 
     }
 
-    // if (!args.count()) {
-    //     if (args.has("param-id")) {
+    if (!args.count()) {
+        if (args.has("param-id")) {
 
-    //         // Display configuration for a paramId
-    //         SimpleParametrisation metadata;
-    //         long id = 0;
-    //         args.get("param-id", id);
+            // Display configuration for a paramId
+            class DummyField : public FieldParametrisation {
+                long paramId_;
+                virtual void print(std::ostream&) const {}
+                    virtual bool get(const std::string& name, long& value) const {
+                        if(name == "paramId") {
+                            value = paramId_;
+                            return true;
+                        }
+                        return FieldParametrisation::get(name, value);
+                    }
 
-    //         const MIRParametrisation& p(config.pick(id, metadata));
-    //         display(p, key);
+            public:
+                DummyField(long paramId): paramId_(paramId) {}
+            };
 
-    // }
+            long id = 0;
+            args.get("param-id", id);
 
+
+            display(DummyField(id), key);
+
+        }
+
+    }
 }
-
 
 int main(int argc, char **argv) {
     MIRConfig tool(argc, argv);
