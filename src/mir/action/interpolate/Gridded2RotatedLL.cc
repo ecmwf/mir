@@ -54,15 +54,12 @@ void Gridded2RotatedLL::print(std::ostream &out) const {
     out << "Gridded2RotatedLL["
             "increments=" << increments_
         << ",shift=" << shift_
+        << ",bbox=" << bbox_
         << ",rotation=" << rotation_
         << "]";
 }
 const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
-    return new repres::latlon::RotatedLL(
-               repres::latlon::LatLon::globalBoundingBox(increments_, shift_),
-               increments_,
-               shift_,
-               rotation_ );
+    return new repres::latlon::RotatedLL(bbox_, increments_, shift_, rotation_);
 }
 
 

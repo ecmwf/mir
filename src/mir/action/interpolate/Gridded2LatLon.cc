@@ -18,8 +18,8 @@
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/Fraction.h"
-#include "mir/repres/latlon/RegularLL.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/latlon/RegularLL.h"
 
 
 namespace mir {
@@ -50,8 +50,11 @@ Gridded2LatLon::Gridded2LatLon(const param::MIRParametrisation& parametrisation)
                                << shift_
                                << std::endl;
         }
+
+
     }
 
+    bbox_ = increments_.globalBoundingBox(shift_);
 }
 
 
@@ -61,7 +64,9 @@ Gridded2LatLon::~Gridded2LatLon() {
 
 bool Gridded2LatLon::sameAs(const Action& other) const {
     const Gridded2LatLon* o = dynamic_cast<const Gridded2LatLon*>(&other);
-    return o && (increments_ == o->increments_) && (shift_ == o->shift_);
+    return o && (increments_ == o->increments_)
+            && (shift_ == o->shift_)
+            && (bbox_ == o->bbox_);
 }
 
 

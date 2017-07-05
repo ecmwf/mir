@@ -37,6 +37,18 @@ static void check(const Increments& inc) {
 }
 
 
+static eckit::Fraction adjust(const eckit::Fraction& target, bool up, const eckit::Fraction& increment, const eckit::Fraction& shift) {
+    eckit::Fraction r = (target - shift) / increment;
+
+    eckit::Fraction::value_type n = r.integralPart();
+    if (!r.integer() && (r > 0) == up) {
+        n += (up ? 1 : -1);
+    }
+
+    return n * increment + shift;
+}
+
+
 template<class T>
 static size_t computeN(const T& first, const T& last, const eckit::Fraction& inc) {
     ASSERT(first <= last);
@@ -191,6 +203,40 @@ Shift Increments::shiftFromZeroZero(const BoundingBox& bbox) const {
 }
 
 
+BoundingBox Increments::globalBoundingBox(const Shift& shift) const {
+
+    static const eckit::Fraction NORTH_POLE (Latitude::NORTH_POLE.fraction());
+    static const eckit::Fraction SOUTH_POLE (Latitude::SOUTH_POLE.fraction());
+
+    static const eckit::Fraction GREENWICH       (Longitude::GREENWICH.fraction());
+    static const eckit::Fraction GLOBE           (Longitude::GLOBE.fraction());
+    static const eckit::Fraction MINUS_DATE_LINE (Longitude::MINUS_DATE_LINE.fraction());
+    static const eckit::Fraction DATE_LINE       (Longitude::DATE_LINE.fraction());
+
+    const eckit::Fraction& sn = south_north();
+    const eckit::Fraction& we = west_east();
+    ASSERT(sn > 0);
+    ASSERT(we > 0);
+
+    eckit::Fraction north = adjust(NORTH_POLE, false, sn, shift.south_north());
+    eckit::Fraction south = adjust(SOUTH_POLE, true, sn, shift.south_north());
+
+    eckit::Fraction west;
+    eckit::Fraction east;
+    if ((GLOBE / we).integer()) {
+        // - periodic grids have East-most longitude at 360 - increment
+        west = adjust(GREENWICH, true, we, shift.west_east());
+        east = GLOBE + west - we;
+    } else {
+        // non-periodic grids do not include the date line (e.g. 1.1)
+        west = adjust(MINUS_DATE_LINE, true, we, shift.west_east());
+        east = adjust(DATE_LINE, false, we, shift.west_east());
+    }
+
+    return BoundingBox(north, west, south, east);
+}
+
+
 size_t Increments::computeNi(const BoundingBox& bbox) const {
     return computeN(bbox.west(), bbox.east(), west_east_);
 }
@@ -210,6 +256,6 @@ void Increments::makeName(std::ostream& out) const {
 }
 
 
-}  // namespace data
+}  // namespace util
 }  // namespace mir
 

@@ -57,10 +57,7 @@ public:
     // None
 
     // -- Class methods
-
-    static util::BoundingBox globalBoundingBox(const util::Increments &increments,
-                                               const util::Shift& shift);
-
+    // None
 
 protected:
 

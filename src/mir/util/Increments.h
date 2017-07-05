@@ -88,6 +88,8 @@ public:
 
     Shift shiftFromZeroZero(const BoundingBox&) const;
 
+    BoundingBox globalBoundingBox(const Shift&) const;
+
     size_t computeNi(const BoundingBox&) const;
 
     size_t computeNj(const BoundingBox&) const;

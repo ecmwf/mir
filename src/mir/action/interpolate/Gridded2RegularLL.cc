@@ -46,16 +46,13 @@ void Gridded2RegularLL::print(std::ostream& out) const {
     out << "Gridded2RegularLL["
             "increments=" << increments_
         << ",shift=" << shift_
+        << ",bbox=" << bbox_
         << "]";
 }
 
 
 const repres::Representation* Gridded2RegularLL::outputRepresentation() const {
-
-    return new repres::latlon::RegularLL(
-               repres::latlon::LatLon::globalBoundingBox(increments_, shift_),
-               increments_,
-               shift_);
+    return new repres::latlon::RegularLL(bbox_, increments_, shift_);
 }
 
 
