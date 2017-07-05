@@ -44,15 +44,11 @@ public: // types
 
 public: // methods
 
-    WeightMatrix() {}
+    WeightMatrix(SparseMatrix::Allocator* alloc = 0);
 
     WeightMatrix(const eckit::PathName&);
 
     WeightMatrix(Size rows, Size cols);
-
-    WeightMatrix(const eckit::Buffer& buffer);
-
-    WeightMatrix(const void* buffer, size_t size);
 
     void setFromTriplets(const std::vector<Triplet>&);
 

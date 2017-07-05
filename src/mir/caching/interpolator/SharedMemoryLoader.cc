@@ -257,9 +257,7 @@ SharedMemoryLoader::~SharedMemoryLoader() {
 
 void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path, method::WeightMatrix& W) {
 
-    SharedMemoryLoader loader("shmem", path);
-
-    WeightMatrix w(const_cast<void*>(loader.address()), loader.size());
+    WeightMatrix w(new LoaderAllocator(new SharedMemoryLoader("shmem", path)));
 
     std::swap(w, W);
 }

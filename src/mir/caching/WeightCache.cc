@@ -19,6 +19,10 @@
 namespace mir {
 namespace caching {
 
+using namespace mir::caching::interpolator;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 
 static std::string extract_loader(const param::MIRParametrisation& param) {
 
@@ -54,26 +58,24 @@ const char *WeightCacheTraits::extension() {
 
 
 void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W, const eckit::PathName& path) {
-    eckit::Log::info() << "Inserting weights in cache : " << path << "" << std::endl;
-
+    eckit::Log::debug<LibMir>() << "Inserting weights in cache : " << path << "" << std::endl;
     eckit::TraceTimer<LibMir> timer("Saving weights to cache");
     W.save(path);
 }
-
 
 void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type& W, const eckit::PathName& path) {
 
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
 
-    using namespace mir::caching::interpolator;
-    eckit::ScopedPtr<InterpolatorLoader> loader_(InterpolatorLoaderFactory::build(manager.loader(), path));
+    InterpolatorLoader* loader = InterpolatorLoaderFactory::build(manager.loader(), path);
 
-    value_type w(loader_->address(), loader_->size());
+    value_type w(new LoaderAllocator(loader));
     std::swap(W, w);
 
     W.validate("fromCache");
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace caching
 }  // namespace mir

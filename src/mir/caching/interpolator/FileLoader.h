@@ -27,8 +27,6 @@ namespace interpolator {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-
-
 class FileLoader : public InterpolatorLoader {
 public:
     FileLoader(const std::string& name, const eckit::PathName& path);
