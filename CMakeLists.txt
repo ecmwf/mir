@@ -39,6 +39,8 @@ ecbuild_use_package( PROJECT eckit  VERSION  0.18.0  REQUIRED )
 
 ecbuild_use_package( PROJECT atlas  VERSION  0.9  REQUIRED )
 
+ecbuild_use_package( PROJECT metkit  VERSION  0.7.0)
+
 ecbuild_declare_project()
 
 ###############################################################################
@@ -65,8 +67,8 @@ if( ENABLE_MPI )
   endif()
 endif()
 
-if( HAVE_NETCDF )
-  list( APPEND MIR_FEATURE_LIBRARIES ${NETCDF_LIBRARIES} )
+if (METKIT_FOUND AND METKIT_HAVE_NETCDF )
+    list( APPEND MIR_FEATURE_LIBRARIES ${METKIT_LIBRARIES})
 endif()
 
 ###############################################################################

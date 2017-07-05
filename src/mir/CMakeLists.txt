@@ -222,8 +222,6 @@ list(
     input/GribStreamInput.h
     input/MIRInput.cc
     input/MIRInput.h
-    input/NetcdfFileInput.cc
-    input/NetcdfFileInput.h
     input/RawInput.cc
     input/RawInput.h
     input/RawMetadata.cc
@@ -544,6 +542,17 @@ list(
     util/Shift.h
     util/Types.h
   )
+
+
+
+if (METKIT_FOUND AND METKIT_HAVE_NETCDF )
+list(
+    APPEND mir_srcs
+    input/NetcdfFileInput.cc
+    input/NetcdfFileInput.h
+)
+endif()
+
 
 list(APPEND mir_tmpls caching/InMemoryCache.cc)
 

@@ -25,6 +25,7 @@
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/FieldParametrisation.h"
+#include "metkit/netcdf/NCFile.h"
 
 
 namespace mir {
@@ -92,6 +93,8 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
 
     eckit::PathName path_;
     std::string variable_;
+
+    mutable metkit::netcdf::NCFile file_;
     mutable int nc_;
     mutable std::vector<double> latitude_;
     mutable std::vector<double> longitude_;

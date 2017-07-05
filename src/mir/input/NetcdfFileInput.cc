@@ -19,6 +19,9 @@
 #include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 
+
+
+
 #ifdef HAVE_NETCDF
 
 // JUST A DEMO !!!!
@@ -51,6 +54,7 @@ inline int _nc_call(int e, const char *call, const std::string &path) {
 
 NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path, const std::string &variable):
     path_(path),
+    file_(path),
     variable_(variable),
     nc_(-1) {
 }
