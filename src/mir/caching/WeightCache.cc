@@ -63,16 +63,16 @@ void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W
     W.save(path);
 }
 
-void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type& W, const eckit::PathName& path) {
+void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type& w, const eckit::PathName& path) {
 
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
 
     InterpolatorLoader* loader = InterpolatorLoaderFactory::build(manager.loader(), path);
 
-    value_type w(new LoaderAllocator(loader));
-    std::swap(W, w);
+    value_type tmp(new LoaderAllocator(loader));
+    w.swap(tmp);
 
-    W.validate("fromCache");
+    w.validate("fromCache");
 }
 
 //----------------------------------------------------------------------------------------------------------------------
