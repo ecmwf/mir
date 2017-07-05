@@ -36,8 +36,8 @@ public:
 
     ~SharedMemoryLoader();
 
-    static void unloadSharedMemory(const eckit::PathName& path);
     static void loadSharedMemory(const eckit::PathName& path, method::WeightMatrix& W );
+    static void unloadSharedMemory(const eckit::PathName& path);
 
 protected:
 

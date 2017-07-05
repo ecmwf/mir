@@ -33,6 +33,10 @@ namespace method {
 //----------------------------------------------------------------------------------------------------------------------
 
 
+WeightMatrix::WeightMatrix(SparseMatrix::Allocator* alloc) : SparseMatrix(alloc)
+{
+}
+
 WeightMatrix::WeightMatrix(const eckit::PathName& path) :
     SparseMatrix()
 {
@@ -41,16 +45,6 @@ WeightMatrix::WeightMatrix(const eckit::PathName& path) :
 
 WeightMatrix::WeightMatrix(WeightMatrix::Size rows, WeightMatrix::Size cols) :
     SparseMatrix(rows, cols)
-{
-}
-
-WeightMatrix::WeightMatrix(const eckit::Buffer& buffer) :
-    SparseMatrix(buffer)
-{
-}
-
-WeightMatrix::WeightMatrix(const void* buffer, size_t size) :
-    SparseMatrix(buffer, size)
 {
 }
 

@@ -21,6 +21,7 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/memory/NonCopyable.h"
+#include "eckit/linalg/SparseMatrix.h"
 
 namespace mir {
 
@@ -31,9 +32,7 @@ class MIRParametrisation;
 namespace caching {
 namespace interpolator {
 
-
 //----------------------------------------------------------------------------------------------------------------------
-
 
 class InterpolatorLoader : public eckit::NonCopyable {
 
@@ -84,6 +83,30 @@ public:
     InterpolatorLoaderBuilder(const std::string& name) : InterpolatorLoaderFactory(name) {}
 };
 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class LoaderAllocator : public eckit::linalg::SparseMatrix::Allocator {
+public:
+
+    LoaderAllocator(InterpolatorLoader* loader) : loader_(loader) { ASSERT(loader); }
+
+    virtual eckit::linalg::SparseMatrix::Layout allocate(eckit::linalg::SparseMatrix::Shape& shape) {
+
+        using namespace eckit::linalg;
+
+        SparseMatrix::Layout layout;
+
+        eckit::linalg::SparseMatrix::load(loader_->address(), loader_->size(), layout, shape);
+
+        return layout;
+    }
+
+    virtual void deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape) {
+    }
+
+    eckit::ScopedPtr<InterpolatorLoader> loader_;
+};
 
 //----------------------------------------------------------------------------------------------------------------------
 
