@@ -57,7 +57,9 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     field.representation(out);
 
     // Make sure results are cropped to the input
-    in->crop(parametrisation_, ctx);
+    if (!in->isGlobal()) {
+        in->crop(parametrisation_, ctx);
+    }
 }
 
 
