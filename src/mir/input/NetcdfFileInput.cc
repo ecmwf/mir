@@ -47,18 +47,14 @@ inline int _nc_call(int e, const char *call, const std::string &path) {
 }
 
 
-#define NC_CALL(a, path) _nc_call(a, #a, path)
-
-
 }  // (anonymous namespace)
 
 
 NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path):
     path_(path),
-    field_(path, cache_),
-    nc_(-1) {
+    field_(path, cache_) {
 
-    auto& variables =    field_.variables();
+    auto& variables = field_.variables();
 
     for (auto j  = variables.begin(); j != variables.end(); ++j ) {
         std::cout << "NC " << (*j).first << " " << *(*j).second << std::endl;
@@ -68,14 +64,11 @@ NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path):
 
 
 NetcdfFileInput::~NetcdfFileInput() {
-    if (nc_ != -1) {
-        NC_CALL(nc_close(nc_), path_);
-    }
 }
 
 
 void NetcdfFileInput::print(std::ostream &out) const {
-    out << "NetcdfFileInput[path=" << path_ << ",variable=" << variable_ << "]";
+    out << "NetcdfFileInput[path=" << path_ << "]";
 }
 
 
@@ -86,6 +79,7 @@ const param::MIRParametrisation &NetcdfFileInput::parametrisation(size_t which) 
 
 
 void NetcdfFileInput::getVariable(const std::string &variable, std::vector<double> &values) const {
+#if 0
     if (nc_ == -1) {
         NC_CALL(nc_open(path_.asString().c_str(), NC_NOWRITE, &nc_), path_);
     }
@@ -151,11 +145,12 @@ void NetcdfFileInput::getVariable(const std::string &variable, std::vector<doubl
     std::ostringstream os;
     os <<  "NetcdfFileInput: cannot find variable " << variable;
     throw eckit::SeriousBug(os.str());
+#endif
 }
 
 
 data::MIRField NetcdfFileInput::field() const {
-
+#if 0
     std::vector<double> values;
     getVariable(variable_, values);
 
@@ -166,7 +161,7 @@ data::MIRField NetcdfFileInput::field() const {
     field.update(values, 0);
 
     return field;
-
+#endif
 }
 
 

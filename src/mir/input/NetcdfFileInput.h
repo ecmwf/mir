@@ -34,7 +34,7 @@ namespace input {
 
 
 class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -66,7 +66,7 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -83,7 +83,7 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
@@ -93,13 +93,10 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
     // -- Members
 
     eckit::PathName path_;
-    std::string variable_;
 
     metkit::netcdf::NCFileCache cache_;
     metkit::netcdf::InputField field_;
 
-
-    mutable int nc_;
     mutable std::vector<double> latitude_;
     mutable std::vector<double> longitude_;
 
@@ -111,7 +108,7 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
     // From MIRInput
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
-virtual bool sameAs(const MIRInput& other) const;
+    virtual bool sameAs(const MIRInput& other) const;
     virtual const param::MIRParametrisation &parametrisation(size_t which) const;
     virtual data::MIRField field() const;
 
