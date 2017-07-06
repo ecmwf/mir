@@ -125,6 +125,7 @@ private:
     virtual bool get(const std::string &name, double &value) const;
 
     virtual bool next();
+    virtual size_t dimensions() const;
 
     // -- Class members
     // None
