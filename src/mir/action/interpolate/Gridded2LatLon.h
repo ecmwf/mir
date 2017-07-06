@@ -20,7 +20,6 @@
 
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
-#include "mir/util/Shift.h"
 
 
 namespace mir {
@@ -64,7 +63,6 @@ protected:
     // -- Members
 
     util::Increments increments_;
-    util::Shift shift_;
     util::BoundingBox bbox_;
 
 

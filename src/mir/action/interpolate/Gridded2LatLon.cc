@@ -16,6 +16,7 @@
 #include "mir/action/interpolate/Gridded2LatLon.h"
 
 #include "eckit/exception/Exceptions.h"
+#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -38,8 +39,13 @@ Gridded2LatLon::Gridded2LatLon(const param::MIRParametrisation& parametrisation)
         bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
     }
 
-    increments_.globaliseBoundingBox(bbox_, shift_);
-    eckit::Log::info() << "Globalise: " << bbox_ << increments_ << shift_ << std::endl;
+    increments_.globaliseBoundingBox(bbox_);
+    eckit::Log::debug<LibMir>()
+            << "Gridded2LatLon: globalise:"
+            << " " << bbox_
+            << " " << increments_
+            << " Shifted? " << (increments_.isShifted(bbox_)? "yes":"no")
+            << std::endl;
 }
 
 
@@ -49,9 +55,7 @@ Gridded2LatLon::~Gridded2LatLon() {
 
 bool Gridded2LatLon::sameAs(const Action& other) const {
     const Gridded2LatLon* o = dynamic_cast<const Gridded2LatLon*>(&other);
-    return o && (increments_ == o->increments_)
-            && (shift_ == o->shift_)
-            && (bbox_ == o->bbox_);
+    return o && (increments_ == o->increments_) && (bbox_ == o->bbox_);
 }
 
 

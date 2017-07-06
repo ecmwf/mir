@@ -32,7 +32,6 @@ class MIRJob;
 namespace mir {
 namespace util {
 class BoundingBox;
-class Shift;
 }
 }
 
@@ -77,6 +76,10 @@ public:
 
     // -- Methods
 
+    bool isPeriodic() const;
+
+    bool isShifted(const BoundingBox&) const;
+
     // Return true is this is a multiple of other, e.g. 2/2 is a multiple of 1/1
     bool multipleOf(const Increments& other) const;
 
@@ -86,7 +89,7 @@ public:
 
     Increments bestSubsetting(const BoundingBox&) const;
 
-    void globaliseBoundingBox(BoundingBox&, Shift&) const;
+    void globaliseBoundingBox(BoundingBox&) const;
 
     size_t computeNi(const BoundingBox&) const;
 

@@ -36,9 +36,7 @@ public:
     // -- Contructors
 
     RegularLL(const param::MIRParametrisation &);
-    RegularLL(const util::BoundingBox &bbox,
-              const util::Increments &increments,
-              const util::Shift& shift);
+    RegularLL(const util::BoundingBox&, const util::Increments&);
 
     // -- Destructor
 

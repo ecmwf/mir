@@ -18,7 +18,6 @@
 
 #include "mir/repres/Gridded.h"
 #include "mir/util/Increments.h"
-#include "mir/util/Shift.h"
 
 
 namespace mir {
@@ -35,7 +34,7 @@ public:
     // -- Contructors
 
     LatLon(const param::MIRParametrisation&);
-    LatLon(const util::BoundingBox&, const util::Increments&, const util::Shift&);
+    LatLon(const util::BoundingBox&, const util::Increments&);
 
     // -- Destructor
 
@@ -64,8 +63,6 @@ protected:
     // -- Members
 
     util::Increments increments_;
-    util::Shift shift_;
-
     size_t ni_;
     size_t nj_;
 

@@ -538,8 +538,6 @@ list(
     util/PointSearch.h
     util/Rotation.cc
     util/Rotation.h
-    util/Shift.cc
-    util/Shift.h
     util/Types.h
   )
 

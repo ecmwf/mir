@@ -21,7 +21,6 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
-#include "mir/util/Shift.h"
 
 
 namespace mir {
@@ -56,7 +55,7 @@ static size_t computeN(const T& first, const T& last, const eckit::Fraction& inc
 }
 
 
-}
+}  // (anonymous namespace)
 
 
 Increments::Increments(const param::MIRParametrisation& parametrisation) {
@@ -101,6 +100,17 @@ Increments::Increments(const eckit::Fraction& west_east, double south_north) :
 
 
 Increments::~Increments() {
+}
+
+
+bool Increments::isPeriodic() const {
+    return (Longitude::GLOBE.fraction() / west_east_).integer();
+}
+
+
+bool Increments::isShifted(const BoundingBox& bbox) const {
+    return !(bbox.south().fraction() / south_north_).integer() ||
+            !(bbox.west().fraction() / west_east_).integer();
 }
 
 
@@ -178,19 +188,19 @@ Increments Increments::bestSubsetting(const BoundingBox& bbox) const {
 }
 
 
-static eckit::Fraction adjust(bool up, const eckit::Fraction& target, const eckit::Fraction& increment, const eckit::Fraction& shift) {
-    eckit::Fraction r = (target - shift) / increment;
+static eckit::Fraction adjust(bool up, const eckit::Fraction& target, const eckit::Fraction& increment) {
+    eckit::Fraction r = target / increment;
 
     eckit::Fraction::value_type n = r.integralPart();
     if (!r.integer() && (r > 0) == up) {
         n += (up ? 1 : -1);
     }
 
-    return n * increment + shift;
+    return n * increment;
 }
 
 
-void Increments::globaliseBoundingBox(BoundingBox& bbox, Shift& shift) const {
+void Increments::globaliseBoundingBox(BoundingBox& bbox) const {
     using eckit::Fraction;
 
     // shift
@@ -200,28 +210,26 @@ void Increments::globaliseBoundingBox(BoundingBox& bbox, Shift& shift) const {
     Fraction we = (bbox.west().fraction() / west_east_).decimalPart() * west_east_;
 
 
-    // bounding box Latitude limits
-    Fraction n = bbox.north().fraction();
-    Fraction s = bbox.south().fraction();
-    n = adjust(false, Latitude::NORTH_POLE.fraction(), south_north_, sn);
-    s = adjust(true,  Latitude::SOUTH_POLE.fraction(), south_north_, sn);
+    // Latitude limits
+    Fraction n = adjust(false, Latitude::NORTH_POLE.fraction() - sn, south_north_) + sn;
+    Fraction s = adjust(true,  Latitude::SOUTH_POLE.fraction() - sn, south_north_) + sn;
 
 
-    // bounding box Longitude limits
-    // - periodic grids have East-most longitude at 360 - increment
-    // - non-periodic grids do not include the date line (e.g. 1.1)
+    // Longitude limits
+    // - West for non-periodic grids is not corrected!
+    // - East for periodic grids is W + 360 - increment
+    ASSERT(bbox.east() >= bbox.west());
+
     Fraction w = bbox.west().fraction();
-    Fraction e = bbox.east().fraction();
-    if ((Longitude::GLOBE.fraction() / west_east_).integer()) {
-        w = adjust(true,  Longitude::GREENWICH.fraction(), west_east_, we);
-        e = Longitude::GLOBE.fraction() + w - west_east_;
-    } else {
-        ASSERT(bbox.west() < bbox.east());
-        w = adjust(true,  Longitude::MINUS_DATE_LINE.fraction(), west_east_, we);
-        e = adjust(false, Longitude::DATE_LINE.fraction(), west_east_, we);
+    if (isPeriodic()) {
+        w = adjust(true, Longitude::GREENWICH.fraction() - we, west_east_) + we;
     }
 
-    shift = Shift(we, sn);
+    Fraction e = adjust(false, w + Longitude::GLOBE.fraction(), west_east_);
+    if (e - w == Longitude::GLOBE.fraction()) {
+        e -= west_east_;
+    }
+
     bbox = BoundingBox(n, w, s, e);
 }
 

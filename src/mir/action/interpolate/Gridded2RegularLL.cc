@@ -45,14 +45,13 @@ bool Gridded2RegularLL::sameAs(const Action& other) const {
 void Gridded2RegularLL::print(std::ostream& out) const {
     out << "Gridded2RegularLL["
             "increments=" << increments_
-        << ",shift=" << shift_
         << ",bbox=" << bbox_
         << "]";
 }
 
 
 const repres::Representation* Gridded2RegularLL::outputRepresentation() const {
-    return new repres::latlon::RegularLL(bbox_, increments_, shift_);
+    return new repres::latlon::RegularLL(bbox_, increments_);
 }
 
 

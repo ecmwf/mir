@@ -53,29 +53,22 @@ void ShScalarToRegularLL::print(std::ostream &out) const {
 
 
 const repres::Representation *ShScalarToRegularLL::outputRepresentation() const {
-    double ns = increments_.south_north();
-    double we = increments_.west_east();
 
-    // Latitude range: cater for grids that are regular, but do not reach the pole (e.g. 1.6)
-    double pole = size_t(90 / ns) * ns;
-
-    // Longitude range
-    // - periodic grids have East-most longitude at 360 - increment
-    // - non-periodic grids are symmetric to Greenwhich and do not reach the date line (e.g. 1.1)
-    double west = 0;
-    double east = size_t(360 / we) * we;
-    if (east == 360) {
-        east -= we;
-    }
-    else {
-        east = size_t(180 / we) * we;
-        west = -east;
+    if (!increments_.isPeriodic()) {
+        throw eckit::UserError("Spectral transforms only support periodic regular grids", Here());
     }
 
-    return new repres::latlon::RegularLL(
-                util::BoundingBox(pole, west, -pole, east),
-                increments_,
-                util::Shift(0, 0));
+    if (!(90 / increments_.south_north()).integer()) {
+        throw eckit::UserError("Spectral transforms only support Latitude increments which are integer divisions of 90° (Δ=" + std::to_string(double(increments_.south_north())) + "°)", Here());
+    }
+
+    // start from global bounding box, ensure it isn't shifted
+    util::BoundingBox bbox(Latitude::NORTH_POLE, Longitude::GREENWICH,
+                           Latitude::SOUTH_POLE, Longitude::GLOBE);
+    increments_.globaliseBoundingBox(bbox);
+    ASSERT(!increments_.isShifted(bbox));  // protected by the 90/increment condition above
+
+    return new repres::latlon::RegularLL(bbox, increments_);
 }
 
 
