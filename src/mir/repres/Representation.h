@@ -24,6 +24,7 @@
 
 
 struct grib_info;
+struct Trans_t;
 
 namespace atlas {
 class Grid;
@@ -39,7 +40,6 @@ class Iterator;
 namespace util {
 class BoundingBox;
 class Domain;
-class Increments;
 }
 namespace context {
 class Context;
@@ -52,7 +52,6 @@ class MIRField;
 }
 }
 
-struct Trans_t;
 
 namespace mir {
 namespace repres {
