@@ -115,7 +115,7 @@ bool CachedParametrisation::get(const std::string& name, std::vector<std::string
 }
 
 void CachedParametrisation::reset() {
-    std::cout << "Reset " << *this << std::endl;
+//    std::cout << "Reset " << *this << std::endl;
     cache_.reset();
 }
 
