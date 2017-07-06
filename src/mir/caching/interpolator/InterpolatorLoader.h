@@ -34,7 +34,7 @@ namespace interpolator {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class InterpolatorLoader : public eckit::NonCopyable {
+class InterpolatorLoader : public eckit::linalg::SparseMatrix::Allocator {
 
 public:
     InterpolatorLoader(const std::string&, const eckit::PathName&);
@@ -43,6 +43,21 @@ public:
 
     virtual const void* address() const = 0;
     virtual size_t size() const = 0;
+
+    virtual eckit::linalg::SparseMatrix::Layout allocate(eckit::linalg::SparseMatrix::Shape& shape) {
+
+        using namespace eckit::linalg;
+
+        SparseMatrix::Layout layout;
+
+        eckit::linalg::SparseMatrix::load(address(), size(), layout, shape);
+
+        return layout;
+    }
+
+    virtual void deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape) {
+    }
+
 
 protected:
     eckit::PathName path_;
@@ -85,31 +100,6 @@ public:
 
 
 //----------------------------------------------------------------------------------------------------------------------
-
-class LoaderAllocator : public eckit::linalg::SparseMatrix::Allocator {
-public:
-
-    LoaderAllocator(InterpolatorLoader* loader) : loader_(loader) { ASSERT(loader); }
-
-    virtual eckit::linalg::SparseMatrix::Layout allocate(eckit::linalg::SparseMatrix::Shape& shape) {
-
-        using namespace eckit::linalg;
-
-        SparseMatrix::Layout layout;
-
-        eckit::linalg::SparseMatrix::load(loader_->address(), loader_->size(), layout, shape);
-
-        return layout;
-    }
-
-    virtual void deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape) {
-    }
-
-    eckit::ScopedPtr<InterpolatorLoader> loader_;
-};
-
-//----------------------------------------------------------------------------------------------------------------------
-
 
 }  // namespace interpolator
 }  // namespace caching

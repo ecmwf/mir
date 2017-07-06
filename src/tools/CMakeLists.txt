@@ -13,9 +13,11 @@ foreach(tool
     mir-statistics
     mir-tool
     mir-weight-matrix )
+
     ecbuild_add_executable(
         TARGET      ${tool}
         SOURCES     ${tool}.cc
         INCLUDES    ${ATLAS_INCLUDE_DIRS}
         LIBS        mir )
+
 endforeach()
