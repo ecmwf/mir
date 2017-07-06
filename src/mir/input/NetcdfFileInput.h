@@ -26,7 +26,7 @@
 #include "mir/input/MIRInput.h"
 #include "mir/param/FieldParametrisation.h"
 #include "metkit/netcdf/NCFileCache.h"
-#include "metkit/netcdf/InputField.h"
+#include "metkit/netcdf/InputDataset.h"
 
 
 namespace mir {
@@ -95,7 +95,7 @@ private:
     eckit::PathName path_;
 
     metkit::netcdf::NCFileCache cache_;
-    metkit::netcdf::InputField field_;
+    metkit::netcdf::InputDataset field_;
 
     mutable std::vector<double> latitude_;
     mutable std::vector<double> longitude_;
