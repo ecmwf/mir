@@ -18,52 +18,32 @@
 
 #include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
-#include "metkit/netcdf/Variable.h"
-
-
-
-
-#ifdef HAVE_NETCDF
-
-// JUST A DEMO !!!!
-// Assumes that netcdf is single 2D variable, that dimensions are called "latitude" and "longitude"
-// ... and many more assumptions.
-
-#include <netcdf.h>
+#include "metkit/netcdf/Field.h"
 
 
 namespace mir {
 namespace input {
-namespace {
-
-
-inline int _nc_call(int e, const char *call, const std::string &path) {
-    if (e) {
-        std::ostringstream os;
-        os << call << ": " << nc_strerror(e) << " (" << path << ")";
-        throw eckit::SeriousBug(os.str());
-    }
-    return e;
-}
-
-
-}  // (anonymous namespace)
 
 
 NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path):
     path_(path),
-    field_(path, cache_) {
+    cache_(*this),
+    dataset_(path, *this),
+    fields_(dataset_.fields()),
+    current_(-1) {
 
-    auto& variables = field_.variables();
 
-    for (auto j  = variables.begin(); j != variables.end(); ++j ) {
-        std::cout << "NC " << (*j).first << " " << *(*j).second << std::endl;
+    for (auto j  = fields_.begin(); j != fields_.end(); ++j ) {
+        std::cout << "NC " << *(*j) << std::endl;
     }
 
 }
 
 
 NetcdfFileInput::~NetcdfFileInput() {
+    for (auto j = fields_.begin(); j != fields_.end(); ++j) {
+        delete (*j);
+    }
 }
 
 
@@ -74,79 +54,22 @@ void NetcdfFileInput::print(std::ostream &out) const {
 
 const param::MIRParametrisation &NetcdfFileInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
-    return *this;
+    return cache_;
 }
 
 
-void NetcdfFileInput::getVariable(const std::string &variable, std::vector<double> &values) const {
-#if 0
-    if (nc_ == -1) {
-        NC_CALL(nc_open(path_.asString().c_str(), NC_NOWRITE, &nc_), path_);
+bool NetcdfFileInput::next() {
+    cache_.reset();
+    current_++;
+
+    if (current_ >= fields_.size()) {
+        return false;
     }
 
-    int varid = -1;
 
-    char name[NC_MAX_NAME + 1];
-
-    int number_of_dimensions;
-    int number_of_variables;
-    int number_of_global_attributes;
-    int id_of_unlimited_dimension;
-
-    NC_CALL(nc_inq(nc_, &number_of_dimensions, &number_of_variables,
-                   &number_of_global_attributes,
-                   &id_of_unlimited_dimension), path_);
-
-
-    for (size_t i = 0; i < number_of_dimensions; i++) {
-        size_t count;
-        NC_CALL(nc_inq_dim(nc_, i, name, &count), path_);
-    }
-
-    for (int i = 0; i < number_of_variables; i++) {
-        int type;
-        int ndims, nattr;
-        int dims[NC_MAX_VAR_DIMS];
-
-        NC_CALL(nc_inq_var(nc_, i, name, &type, &ndims, dims, &nattr), path_);
-
-        if (variable == name) {
-            varid = i;
-
-            size_t size = 1;
-            for (int d = 0; d < ndims; d++ ) {
-                size_t count;
-                NC_CALL(nc_inq_dim(nc_, dims[d], name, &count), path_);
-                size *= count;
-            }
-
-            std::vector<double> v(size);
-
-            NC_CALL(nc_get_var_double( nc_, varid, &v[0]), path_);
-
-            std::swap(v, values);
-            return;
-
-        }
-
-        // Type &kind = Type::lookup(type);
-
-        // std::vector<Dimension *> dimensions;
-        // for (size_t j = 0; j < ndims; j++) {
-        //     dimensions.push_back(findDimension(dims[j]));
-        // }
-
-        // Variable *v = new SimpleInputVariable(*this, name, i, dimensions);
-        // v->setMatrix(new InputMatrix(kind, i, name, v->numberOfValues(), file));
-        // v->getAttributes(nc, i, nattr);
-        // add(v);
-    }
-
-    std::ostringstream os;
-    os <<  "NetcdfFileInput: cannot find variable " << variable;
-    throw eckit::SeriousBug(os.str());
-#endif
+    return true;
 }
+
 
 
 data::MIRField NetcdfFileInput::field() const {
@@ -164,6 +87,15 @@ data::MIRField NetcdfFileInput::field() const {
 #endif
 }
 
+bool NetcdfFileInput::get(const std::string& name, long& value) const {
+    if (name == "paramId") {
+        value = 1;
+        return true;
+    }
+    return FieldParametrisation::get(name, value);
+}
+
+
 
 bool NetcdfFileInput::has(const std::string& name) const {
     if (name == "gridded") {
@@ -177,7 +109,7 @@ bool NetcdfFileInput::has(const std::string& name) const {
 
 bool NetcdfFileInput::get(const std::string &name, std::string &value) const {
 
-    if (name == "gridType") {
+    if (name == "grid") {
         value = "regular_ll";
         return true;
     }
@@ -186,19 +118,6 @@ bool NetcdfFileInput::get(const std::string &name, std::string &value) const {
 
 bool NetcdfFileInput::get(const std::string &name, double &value) const {
 
-    // Extremly inefficient code:
-
-    if (latitude_.size() == 0) {
-        getVariable("latitude", latitude_);
-        ASSERT(latitude_.size() >= 2);
-        ASSERT(latitude_[0] > latitude_[1]);
-    }
-
-    if (longitude_.size() == 0) {
-        getVariable("longitude", longitude_);
-        ASSERT(longitude_.size() >= 2);
-        ASSERT(longitude_[0] < longitude_[1]);
-    }
 
     if (name == "north") {
         value = latitude_[0];
@@ -234,12 +153,11 @@ bool NetcdfFileInput::get(const std::string &name, double &value) const {
     return FieldParametrisation::get(name, value);
 }
 
- bool NetcdfFileInput::sameAs(const MIRInput& other) const {
-    NOTIMP;
-    return false;
+bool NetcdfFileInput::sameAs(const MIRInput& other) const {
+    const NetcdfFileInput* o = dynamic_cast<const NetcdfFileInput*>(&other);
+    return o && (path_ == o->path_);
 }
 
-#undef NC_CALL
 
 static MIRInputBuilder< NetcdfFileInput > netcdf4(0x89484446); // ".HDF"
 static MIRInputBuilder< NetcdfFileInput > netcdf3(0x43444601); // "CDF."
@@ -249,4 +167,3 @@ static MIRInputBuilder< NetcdfFileInput > netcdf3(0x43444601); // "CDF."
 }  // namespace input
 }  // namespace mir
 
-#endif

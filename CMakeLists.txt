@@ -39,7 +39,7 @@ ecbuild_use_package( PROJECT eckit  VERSION  0.18.0  REQUIRED )
 
 ecbuild_use_package( PROJECT atlas  VERSION  0.9  REQUIRED )
 
-ecbuild_use_package( PROJECT metkit  VERSION  0.7.0)
+ecbuild_use_package( PROJECT metkit  VERSION  0.7.0 )
 
 ecbuild_declare_project()
 

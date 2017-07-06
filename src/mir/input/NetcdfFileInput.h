@@ -27,13 +27,16 @@
 #include "mir/param/FieldParametrisation.h"
 #include "metkit/netcdf/NCFileCache.h"
 #include "metkit/netcdf/InputDataset.h"
+#include "mir/param/CachedParametrisation.h"
 
 
 namespace mir {
 namespace input {
 
 
-class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
+class NetcdfFileInput : public MIRInput,
+    public param::FieldParametrisation,
+    public metkit::netcdf::NCFileCache {
 public:
 
     // -- Exceptions
@@ -94,15 +97,16 @@ private:
 
     eckit::PathName path_;
 
-    metkit::netcdf::NCFileCache cache_;
-    metkit::netcdf::InputDataset field_;
+    param::CachedParametrisation cache_;
+    metkit::netcdf::InputDataset dataset_;
+    std::vector<metkit::netcdf::Field*> fields_;
+    int current_;
 
     mutable std::vector<double> latitude_;
     mutable std::vector<double> longitude_;
 
     // -- Methods
 
-    void getVariable(const std::string& name, std::vector<double>& values) const;
 
     // -- Overridden methods
     // From MIRInput
@@ -114,8 +118,13 @@ private:
 
     // From MIRParametrisation
     virtual bool has(const std::string& name) const;
+
+    virtual bool get(const std::string&, long&) const;
+
     virtual bool get(const std::string&, std::string&) const;
     virtual bool get(const std::string &name, double &value) const;
+
+    virtual bool next();
 
     // -- Class members
     // None

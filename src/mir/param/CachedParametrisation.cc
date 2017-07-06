@@ -17,7 +17,7 @@
 // #include "eckit/exception/Exceptions.h"
 // #include "eckit/parser/JSON.h"
 // #include "eckit/parser/Tokenizer.h"
-// #include "eckit/types/Types.h"
+#include "eckit/types/Types.h"
 // #include "eckit/utils/Translator.h"
 // #include "eckit/value/Value.h"
 // #include "mir/config/LibMir.h"
@@ -42,18 +42,28 @@ template<class T>
 bool CachedParametrisation::_get(const std::string& name, T& value) const {
     MIRParametrisation& cache = cache_;
 
-    if(cache.get(name, value)) {
+    std::cout << "Get (cache) " << parametrisation_ << " " << name << std::endl;;
+
+    if (cache.get(name, value)) {
         return true;
     }
 
-    if(parametrisation_.get(name, value)) {
-        cache_.set(name, value);
+    std::cout << "Get (next) " << parametrisation_ << " " << name << std::endl;;
+
+    if (parametrisation_.get(name, value)) {
+        _set(name, value);
         return true;
     }
 
     return false;
 }
 
+
+template<class T>
+void CachedParametrisation::_set(const std::string& name, const T& value) const {
+    std::cout << "Set " << *this << " " << name << " " << value << std::endl;
+    cache_.set(name, value);
+}
 
 bool CachedParametrisation::has(const std::string& name) const {
     MIRParametrisation& cache = cache_;
@@ -105,8 +115,32 @@ bool CachedParametrisation::get(const std::string& name, std::vector<std::string
 }
 
 void CachedParametrisation::reset() {
+    std::cout << "Reset " << *this << std::endl;
     cache_.reset();
 }
+
+void CachedParametrisation::set(const std::string& name, int value) {
+    _set(name, value);
+}
+
+void CachedParametrisation::set(const std::string& name, long value) {
+    _set(name, value);
+}
+
+void CachedParametrisation::set(const std::string& name, double value) {
+    _set(name, value);
+}
+
+void CachedParametrisation::set(const std::string& name, const std::string& value) {
+    _set(name, value);
+}
+
+void CachedParametrisation::set(const std::string& name, const char* value) {
+    _set(name, std::string(value));
+}
+
+
+
 
 }  // namespace param
 }  // namespace mir

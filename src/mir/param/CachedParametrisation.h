@@ -51,6 +51,12 @@ public:
     // -- Methods
 
     void reset();
+    //
+    void set(const std::string& name, int value);
+    void set(const std::string& name, long value);
+    void set(const std::string& name, double value);
+    void set(const std::string& name, const std::string& value);
+    void set(const std::string& name, const char* value);
 
 
     // -- Class members
@@ -86,6 +92,8 @@ protected:
     virtual bool get(const std::string& name, std::vector<float>& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
     virtual bool get(const std::string& name, std::vector<std::string>& value) const;
+
+
     // -- Class members
     // None
 
@@ -115,7 +123,8 @@ private:
     template<class T>
     bool _get(const std::string& name, T& value) const;
 
-
+    template<class T>
+    void _set(const std::string& name, const T& value) const;
     // -- Class members
     // None
 
