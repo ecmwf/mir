@@ -23,19 +23,20 @@
 
 #include "mir/input/MIRInput.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/StdFile.h"
 
 namespace mir {
 namespace input {
 
 
 static eckit::Mutex *local_mutex = 0;
-static std::map<std::string, MIRInputFactory *> *m = 0;
+static std::map<unsigned long, MIRInputFactory *> *m = 0;
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map<std::string, MIRInputFactory *>();
+    m = new std::map<unsigned long, MIRInputFactory *>();
 }
 
 
@@ -48,7 +49,7 @@ MIRInput::~MIRInput() {
 
 
 grib_handle *MIRInput::gribHandle(size_t which) const {
-     ASSERT(which == 0);
+    ASSERT(which == 0);
     static grib_handle *handle = 0;
     if (!handle) {
         handle = grib_handle_new_from_samples(0, "GRIB1");
@@ -80,24 +81,26 @@ size_t MIRInput::dimensions() const {
 
 //======================================
 
-MIRInputFactory::MIRInputFactory(const std::string &name):
-    name_(name) {
+MIRInputFactory::MIRInputFactory(unsigned long magic):
+    magic_(magic) {
     pthread_once(&once, init);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("MIRInputFactory: duplication factory: " + name);
+    if (m->find(magic) != m->end()) {
+        std::ostringstream oss;
+        oss << "MIRInputFactory: duplication factory: " << std::hex << magic;
+        throw eckit::SeriousBug(oss.str());
     }
 
-    ASSERT(m->find(name) == m->end());
-    (*m)[name] = this;
+    // ASSERT(m->find(magic) == m->end());
+    (*m)[magic] = this;
 }
 
 
 MIRInputFactory::~MIRInputFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    m->erase(name_);
+    m->erase(magic_);
 
 }
 
@@ -106,14 +109,46 @@ MIRInput *MIRInputFactory::build(const std::string& path) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    std::string name = eckit::PathName(path).extension();
+    eckit::StdFile f(path);
+    unsigned long magic = 0;
+    char smagic[] = "????";
+    char *p = smagic;
 
-    eckit::Log::debug<LibMir>() << "Looking for MIRInputFactory [" << name << "]" << std::endl;
+    for (size_t i = 0; i < 4; i++) {
+        unsigned char c;
+        if (fread(&c, 1, 1, f)) {
+            magic <<= 8;
+            magic |= c;
 
-    auto j = m->find(name);
+            if (isprint(c)) {
+                *p++ = c;
+            } else {
+                *p++ = '.';
+            }
+        }
+    }
+
+
+    eckit::Log::debug<LibMir>() << "Looking for MIRInputFactory [0x"
+                                << std::hex
+                                << magic
+                                << std::dec
+                                << " ("
+                                << smagic
+                                << ")"
+                                << "]" << std::endl;
+
+    auto j = m->find(magic);
     if (j == m->end()) {
         if (j == m->end()) {
-            eckit::Log::error() << "No MIRInputFactory for [" << name << "]" << std::endl;
+            eckit::Log::error() << "No MIRInputFactory for [0x" << std::hex
+                                << magic
+                                << std::dec
+                                << " ("
+                                << smagic
+                                << ")"
+                                << "]" << std::endl;
+
             eckit::Log::error() << "MIRInputFactory are:" << std::endl;
             for (j = m->begin() ; j != m->end() ; ++j)
                 eckit::Log::error() << "   " << (*j).first << std::endl;
@@ -126,16 +161,16 @@ MIRInput *MIRInputFactory::build(const std::string& path) {
 }
 
 
-void MIRInputFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+// void MIRInputFactory::list(std::ostream& out) {
+//     pthread_once(&once, init);
+//     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    const char* sep = "";
-    for (std::map<std::string, MIRInputFactory *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
-        out << sep << (*j).first;
-        sep = ", ";
-    }
-}
+//     const char* sep = "";
+//     for (std::map<std::string, MIRInputFactory *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
+//         out << sep << (*j).first;
+//         sep = ", ";
+//     }
+// }
 
 }  // namespace input
 }  // namespace mir

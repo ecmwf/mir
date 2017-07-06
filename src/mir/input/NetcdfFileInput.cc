@@ -18,6 +18,7 @@
 
 #include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
+#include "metkit/netcdf/Variable.h"
 
 
 
@@ -60,7 +61,7 @@ NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path):
     auto& variables =    field_.variables();
 
     for (auto j  = variables.begin(); j != variables.end(); ++j ) {
-        std::cout << "NC " << (*j).first << std::endl;
+        std::cout << "NC " << (*j).first << " " << *(*j).second << std::endl;
     }
 
 }
@@ -245,7 +246,8 @@ bool NetcdfFileInput::get(const std::string &name, double &value) const {
 
 #undef NC_CALL
 
-static MIRInputBuilder< NetcdfFileInput > input(".nc");
+static MIRInputBuilder< NetcdfFileInput > netcdf4(0x89484446); // ".HDF"
+static MIRInputBuilder< NetcdfFileInput > netcdf3(0x43444601); // "CDF."
 
 
 

@@ -68,9 +68,7 @@ eckit::DataHandle &GribFileInput::dataHandle() {
     return *handle_;
 }
 
-static MIRInputBuilder<GribFileInput> grib(".grib");
-static MIRInputBuilder<GribFileInput> grib1(".grib1");
-static MIRInputBuilder<GribFileInput> grib2(".grib2");
+static MIRInputBuilder<GribFileInput> input(0x47524942); // "GRIB"
 
 
 }  // namespace input

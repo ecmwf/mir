@@ -129,13 +129,13 @@ private:
 
 class MIRInputFactory {
 
-    std::string name_;
+    unsigned long magic_;
 
     virtual MIRInput *make(const std::string &path) = 0;
 
   protected:
 
-    MIRInputFactory(const std::string & path);
+    MIRInputFactory(unsigned long magic);
 
     virtual ~MIRInputFactory();
 
@@ -154,7 +154,7 @@ class MIRInputBuilder : public MIRInputFactory {
         return new T(path);
     }
   public:
-    MIRInputBuilder(const std::string &name) : MIRInputFactory(name) {}
+    MIRInputBuilder(unsigned long magic) : MIRInputFactory(magic) {}
 };
 
 }  // namespace input
