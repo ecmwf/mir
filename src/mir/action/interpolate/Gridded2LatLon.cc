@@ -15,11 +15,8 @@
 
 #include "mir/action/interpolate/Gridded2LatLon.h"
 
-#include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/types/Fraction.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/latlon/RegularLL.h"
 
 
 namespace mir {
@@ -31,30 +28,18 @@ Gridded2LatLon::Gridded2LatLon(const param::MIRParametrisation& parametrisation)
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("user.grid", value));
+
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
     // TODO: maybe use 'user.autoshift'
     if (parametrisation_.get("user.area", value)) {
         ASSERT(value.size() == 4);
-
-        util::BoundingBox bbox(value[0], value[1], value[2], value[3]);
-
-        shift_ = increments_.shiftFromZeroZero(bbox);
-        if (shift_) {
-            eckit::Log::info() << "Shifting grid "
-                               << bbox
-                               << " "
-                               << increments_
-                               << " => "
-                               << shift_
-                               << std::endl;
-        }
-
-
+        bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
     }
 
-    bbox_ = increments_.globalBoundingBox(shift_);
+    increments_.globaliseBoundingBox(bbox_, shift_);
+    eckit::Log::info() << "Globalise: " << bbox_ << increments_ << shift_ << std::endl;
 }
 
 

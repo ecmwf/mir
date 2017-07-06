@@ -37,18 +37,6 @@ static void check(const Increments& inc) {
 }
 
 
-static eckit::Fraction adjust(const eckit::Fraction& target, bool up, const eckit::Fraction& increment, const eckit::Fraction& shift) {
-    eckit::Fraction r = (target - shift) / increment;
-
-    eckit::Fraction::value_type n = r.integralPart();
-    if (!r.integer() && (r > 0) == up) {
-        n += (up ? 1 : -1);
-    }
-
-    return n * increment + shift;
-}
-
-
 template<class T>
 static size_t computeN(const T& first, const T& last, const eckit::Fraction& inc) {
     ASSERT(first <= last);
@@ -190,50 +178,51 @@ Increments Increments::bestSubsetting(const BoundingBox& bbox) const {
 }
 
 
-Shift Increments::shiftFromZeroZero(const BoundingBox& bbox) const {
+static eckit::Fraction adjust(bool up, const eckit::Fraction& target, const eckit::Fraction& increment, const eckit::Fraction& shift) {
+    eckit::Fraction r = (target - shift) / increment;
 
-    eckit::Fraction sn(south_north_);
-    eckit::Fraction we(west_east_);
+    eckit::Fraction::value_type n = r.integralPart();
+    if (!r.integer() && (r > 0) == up) {
+        n += (up ? 1 : -1);
+    }
 
-    eckit::Fraction s = (bbox.south().fraction() / sn).decimalPart() * sn;
-    eckit::Fraction w = (bbox.west().fraction() / we).decimalPart() * we;
-
-    return Shift(w, s);
-
+    return n * increment + shift;
 }
 
 
-BoundingBox Increments::globalBoundingBox(const Shift& shift) const {
+void Increments::globaliseBoundingBox(BoundingBox& bbox, Shift& shift) const {
+    using eckit::Fraction;
 
-    static const eckit::Fraction NORTH_POLE (Latitude::NORTH_POLE.fraction());
-    static const eckit::Fraction SOUTH_POLE (Latitude::SOUTH_POLE.fraction());
+    // shift
+    ASSERT(south_north_ > 0);
+    ASSERT(west_east_ > 0);
+    Fraction sn = (bbox.south().fraction() / south_north_).decimalPart() * south_north_;
+    Fraction we = (bbox.west().fraction() / west_east_).decimalPart() * west_east_;
 
-    static const eckit::Fraction GREENWICH       (Longitude::GREENWICH.fraction());
-    static const eckit::Fraction GLOBE           (Longitude::GLOBE.fraction());
-    static const eckit::Fraction MINUS_DATE_LINE (Longitude::MINUS_DATE_LINE.fraction());
-    static const eckit::Fraction DATE_LINE       (Longitude::DATE_LINE.fraction());
 
-    const eckit::Fraction& sn = south_north();
-    const eckit::Fraction& we = west_east();
-    ASSERT(sn > 0);
-    ASSERT(we > 0);
+    // bounding box Latitude limits
+    Fraction n = bbox.north().fraction();
+    Fraction s = bbox.south().fraction();
+    n = adjust(false, Latitude::NORTH_POLE.fraction(), south_north_, sn);
+    s = adjust(true,  Latitude::SOUTH_POLE.fraction(), south_north_, sn);
 
-    eckit::Fraction north = adjust(NORTH_POLE, false, sn, shift.south_north());
-    eckit::Fraction south = adjust(SOUTH_POLE, true, sn, shift.south_north());
 
-    eckit::Fraction west;
-    eckit::Fraction east;
-    if ((GLOBE / we).integer()) {
-        // - periodic grids have East-most longitude at 360 - increment
-        west = adjust(GREENWICH, true, we, shift.west_east());
-        east = GLOBE + west - we;
+    // bounding box Longitude limits
+    // - periodic grids have East-most longitude at 360 - increment
+    // - non-periodic grids do not include the date line (e.g. 1.1)
+    Fraction w = bbox.west().fraction();
+    Fraction e = bbox.east().fraction();
+    if ((Longitude::GLOBE.fraction() / west_east_).integer()) {
+        w = adjust(true,  Longitude::GREENWICH.fraction(), west_east_, we);
+        e = Longitude::GLOBE.fraction() + w - west_east_;
     } else {
-        // non-periodic grids do not include the date line (e.g. 1.1)
-        west = adjust(MINUS_DATE_LINE, true, we, shift.west_east());
-        east = adjust(DATE_LINE, false, we, shift.west_east());
+        ASSERT(bbox.west() < bbox.east());
+        w = adjust(true,  Longitude::MINUS_DATE_LINE.fraction(), west_east_, we);
+        e = adjust(false, Longitude::DATE_LINE.fraction(), west_east_, we);
     }
 
-    return BoundingBox(north, west, south, east);
+    shift = Shift(we, sn);
+    bbox = BoundingBox(n, w, s, e);
 }
 
 

@@ -73,7 +73,7 @@ protected:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    virtual bool sameAs(const Action&) const;
 
 
     // -- Class members
