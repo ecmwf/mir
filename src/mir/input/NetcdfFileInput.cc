@@ -52,11 +52,17 @@ inline int _nc_call(int e, const char *call, const std::string &path) {
 }  // (anonymous namespace)
 
 
-NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path, const std::string &variable):
+NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path):
     path_(path),
-    file_(path),
-    variable_(variable),
+    field_(path, cache_),
     nc_(-1) {
+
+    auto& variables =    field_.variables();
+
+    for (auto j  = variables.begin(); j != variables.end(); ++j ) {
+        std::cout << "NC " << (*j).first << std::endl;
+    }
+
 }
 
 
@@ -164,10 +170,10 @@ data::MIRField NetcdfFileInput::field() const {
 
 
 bool NetcdfFileInput::has(const std::string& name) const {
-    if(name == "gridded") {
+    if (name == "gridded") {
         return true;
     }
-    if(name == "spectral") {
+    if (name == "spectral") {
         return false;
     }
     return FieldParametrisation::has(name);
@@ -232,8 +238,15 @@ bool NetcdfFileInput::get(const std::string &name, double &value) const {
     return FieldParametrisation::get(name, value);
 }
 
+ bool NetcdfFileInput::sameAs(const MIRInput& other) const {
+    NOTIMP;
+    return false;
+}
 
 #undef NC_CALL
+
+static MIRInputBuilder< NetcdfFileInput > input(".nc");
+
 
 
 }  // namespace input

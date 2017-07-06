@@ -25,7 +25,8 @@
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/FieldParametrisation.h"
-#include "metkit/netcdf/NCFile.h"
+#include "metkit/netcdf/NCFileCache.h"
+#include "metkit/netcdf/InputField.h"
 
 
 namespace mir {
@@ -40,7 +41,7 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
 
     // -- Contructors
 
-    NetcdfFileInput(const eckit::PathName&, const std::string& variable);
+    NetcdfFileInput(const eckit::PathName&);
 
     // -- Destructor
 
@@ -94,7 +95,10 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
     eckit::PathName path_;
     std::string variable_;
 
-    mutable metkit::netcdf::NCFile file_;
+    metkit::netcdf::NCFileCache cache_;
+    metkit::netcdf::InputField field_;
+
+
     mutable int nc_;
     mutable std::vector<double> latitude_;
     mutable std::vector<double> longitude_;
@@ -107,7 +111,7 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
     // From MIRInput
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
-
+virtual bool sameAs(const MIRInput& other) const;
     virtual const param::MIRParametrisation &parametrisation(size_t which) const;
     virtual data::MIRField field() const;
 

@@ -265,16 +265,16 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
         return;
     }
 
-    mir::input::GribFileInput input(args(0));
+    eckit::ScopedPtr<mir::input::MIRInput> input(mir::input::MIRInputFactory::build(args(0)));
     mir::output::GribFileOutput output(args(1));
 
-    std::string path_lat, path_lon;
-    ASSERT(args.has("latitudes") ==  args.has("longitudes"));
-    if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
-        input.setAuxilaryFiles(path_lat, path_lon);
-    }
+    // std::string path_lat, path_lon;
+    // ASSERT(args.has("latitudes") ==  args.has("longitudes"));
+    // if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
+    //     input->setAuxilaryFiles(path_lat, path_lon);
+    // }
 
-    process(job, input, output, "field");
+    process(job, *input, output, "field");
 }
 
 

@@ -16,6 +16,7 @@
 #ifndef mir_input_MIRInput_h
 #define mir_input_MIRInput_h
 
+#include <string>
 #include <iosfwd>
 
 
@@ -125,6 +126,36 @@ private:
 
 };
 
+
+class MIRInputFactory {
+
+    std::string name_;
+
+    virtual MIRInput *make(const std::string &path) = 0;
+
+  protected:
+
+    MIRInputFactory(const std::string & path);
+
+    virtual ~MIRInputFactory();
+
+  public:
+
+    static MIRInput *build(const std::string&);
+
+    static void list(std::ostream&);
+
+};
+
+
+template<class T>
+class MIRInputBuilder : public MIRInputFactory {
+    virtual MIRInput *make(const std::string& path) {
+        return new T(path);
+    }
+  public:
+    MIRInputBuilder(const std::string &name) : MIRInputFactory(name) {}
+};
 
 }  // namespace input
 }  // namespace mir
