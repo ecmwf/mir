@@ -15,6 +15,7 @@
 
 #include "mir/repres/gauss/Gaussian.h"
 
+#include <algorithm>
 #include "eckit/exception/Exceptions.h"
 #include "atlas/util/GaussianLatitudes.h"
 #include "mir/param/MIRParametrisation.h"
@@ -24,53 +25,23 @@ namespace mir {
 namespace repres {
 
 
-namespace {
-void adjustNorthSouth(const std::vector<double>& lats, util::BoundingBox& bbox) {
-    ASSERT(lats.size() >= 2);
-
-    Latitude n = bbox.north();
-    Latitude s = bbox.south();
-
-    bool adjustedNorth = false;
-    bool adjustedSouth = false;
-
-    for (const double& l: lats) {
-        if (!adjustedNorth && (n.value() != l) && bbox.north().sameWithGrib1Accuracy(l)) {
-            adjustedNorth = true;
-            n = l;
-        }
-        if (!adjustedSouth && (s.value() != l) && bbox.south().sameWithGrib1Accuracy(l)) {
-            adjustedSouth = true;
-            s = l;
-        }
-        if (adjustedNorth && adjustedSouth) {
-            break;
-        }
-    }
-    if (adjustedNorth || adjustedNorth) {
-        bbox = util::BoundingBox(n, bbox.west(), s, bbox.east());
-    }
-}
-}  // (anonymous namespace)
-
-
 Gaussian::Gaussian(size_t N) :
     N_(N) {
-    adjustNorthSouth(latitudes(), bbox_);
+    adjustBoundingBoxNorthSouth(bbox_);
 }
 
 
-Gaussian::Gaussian(size_t N, const util::BoundingBox &bbox) :
+Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox) :
     Gridded(bbox),
     N_(N) {
-    adjustNorthSouth(latitudes(), bbox_);
+    adjustBoundingBoxNorthSouth(bbox_);
 }
 
 
-Gaussian::Gaussian(const param::MIRParametrisation &parametrisation) :
+Gaussian::Gaussian(const param::MIRParametrisation& parametrisation) :
     Gridded(parametrisation) {
     ASSERT(parametrisation.get("N", N_));
-    adjustNorthSouth(latitudes(), bbox_);
+    adjustBoundingBoxNorthSouth(bbox_);
 }
 
 
@@ -81,6 +52,45 @@ Gaussian::~Gaussian() {
 bool Gaussian::sameAs(const Representation& other) const {
     const Gaussian* o = dynamic_cast<const Gaussian*>(&other);
     return o && (N_ == o->N_) && (bbox_ == o->bbox_);
+}
+
+
+void Gaussian::adjustBoundingBoxNorthSouth(util::BoundingBox& bbox) {
+    Latitude n = bbox.north();
+    Latitude s = bbox.south();
+    bool adjustedNorth = false;
+    bool adjustedSouth = false;
+
+    const std::vector<double>& lats = latitudes();
+    ASSERT(lats.size() >= 2);
+
+    auto range = std::minmax_element(lats.begin(), lats.end());
+    ASSERT(*(range.first) < *(range.second));
+
+    if (n > *(range.second)) {
+        adjustedNorth = true;
+        n = *range.second;
+    }
+    if (s < *(range.first)) {
+        adjustedSouth = true;
+        s = *range.first;
+    }
+
+    for (const double& l : lats) {
+        if (!adjustedNorth && bbox.north().sameWithGrib1Accuracy(l)) {
+            adjustedNorth = true;
+            n = l;
+        }
+        if (!adjustedSouth && bbox.south().sameWithGrib1Accuracy(l)) {
+            adjustedSouth = true;
+            s = l;
+        }
+        if (adjustedNorth && adjustedSouth) {
+            break;
+        }
+    }
+
+    bbox = util::BoundingBox(n, bbox.west(), s, bbox.east());
 }
 
 
@@ -101,17 +111,18 @@ bool Gaussian::includesSouthPole() const {
 
 
 std::vector<double> Gaussian::latitudes(size_t N) {
-    std::vector<double> latitudes(2 * N);
-    atlas::util::gaussian_latitudes_npole_spole(N, &latitudes[0]);
+    ASSERT(N);
+    std::vector<double> latitudes(N * 2);
+    atlas::util::gaussian_latitudes_npole_spole(N, latitudes.data());
     return latitudes;
 }
 
 
 const std::vector<double>& Gaussian::latitudes() const {
     // This returns the Gaussian latitudes of a GLOBAL field
-    if (latitudes_.size() == 0) {
+    if (latitudes_.empty()) {
         latitudes_.resize(N_ * 2);
-        atlas::util::gaussian_latitudes_npole_spole(N_, &latitudes_[0]);
+        atlas::util::gaussian_latitudes_npole_spole(N_, latitudes_.data());
     }
     return latitudes_;
 }

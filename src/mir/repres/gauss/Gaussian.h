@@ -69,6 +69,7 @@ class Gaussian : public Gridded {
 
     const std::vector<double> &latitudes() const;
     virtual bool sameAs(const Representation& other) const;
+    void adjustBoundingBoxNorthSouth(util::BoundingBox&);
 
     // -- Overridden methods
 
@@ -81,7 +82,7 @@ class Gaussian : public Gridded {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
