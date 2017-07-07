@@ -261,7 +261,8 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     // get input mesh (cell centres are required for the k-d tree)
     ASSERT(InputMeshGenerationParams_.meshCellCentres_);
-    const atlas::Mesh& inMesh = in.grid().mesh(statistics, InputMeshGenerationParams_);
+    util::MIRGrid gin = in.grid();
+    const atlas::Mesh& inMesh = gin.mesh(statistics, InputMeshGenerationParams_);
     const util::Domain& inDomain = in.domain();
 
     const atlas::mesh::Nodes& inNodes = inMesh.nodes();
@@ -296,7 +297,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
 
     // search nearest k cell centres
-    const size_t nbElementsMaximum = std::max<size_t>(64, stats.inp_ncells * maxFractionElemsToTry);
+    const size_t nbElementsMaximum = std::max<size_t>(1, stats.inp_ncells * maxFractionElemsToTry);
     size_t nbElementsSearched = 0;
     size_t nbProjections = 0;
     size_t nbFailures = 0;

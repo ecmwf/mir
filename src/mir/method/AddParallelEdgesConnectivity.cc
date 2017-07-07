@@ -98,7 +98,7 @@ void AddParallelEdgesConnectivity::operator()(atlas::Mesh& mesh, const Latitude&
                     make_view< double, 2 >(mesh.nodes().lonlat()) );
     } else if (south > 0.) {
         edges = getParallelEdges(
-                    util::Domain(north, Longitude::GREENWICH, north, Longitude::GLOBE),
+                    util::Domain(south, Longitude::GREENWICH, south, Longitude::GLOBE),
                     mesh.cells().node_connectivity(),
                     make_view< double, 2 >(mesh.nodes().lonlat()) );
     }

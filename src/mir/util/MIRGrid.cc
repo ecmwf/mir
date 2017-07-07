@@ -177,7 +177,7 @@ atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const
             atlas::output::PathName path(meshGenParams.dump_);
 
             eckit::Log::debug<LibMir>() << "Dumping mesh to '" << path << "'" << std::endl;
-            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xyz")).write(mesh_);
+            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xyz")).write(mesh);
         }
 
     }
