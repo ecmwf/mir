@@ -28,6 +28,9 @@ namespace eckit {
 class MD5;
 }
 namespace mir {
+namespace param {
+class MIRParametrisation;
+}
 namespace util {
 class MIRStatistics;
 }
@@ -47,12 +50,13 @@ public:
     class MeshGenParams : public atlas::MeshGenerator::Parameters {
     public:
         MeshGenParams();
+        MeshGenParams(const std::string& label, const param::MIRParametrisation&);
         void hash(eckit::MD5&) const;
         std::string meshGenerator_;
         bool meshParallelEdgesConnectivity_;
         bool meshXYZField_;
         bool meshCellCentres_;
-        bool dump_;
+        std::string dump_;
     };
 
     // -- Contructors

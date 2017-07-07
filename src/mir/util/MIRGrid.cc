@@ -26,6 +26,7 @@
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/AddParallelEdgesConnectivity.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -53,7 +54,19 @@ MIRGrid::MeshGenParams::MeshGenParams() {
     meshParallelEdgesConnectivity_ = true;
     meshXYZField_ = true;
     meshCellCentres_ = true;
-    dump_ = false;
+    dump_ = "";
+}
+
+
+MIRGrid::MeshGenParams::MeshGenParams(const std::string& label, const param::MIRParametrisation& param) {
+
+    *this = MeshGenParams();
+
+//    param.get(label + "-mesh-add-parallel-edges-connectivity", meshParallelEdgesConnectivity_);
+//    param.get(label + "-mesh-add-field-xyz", meshXYZField_);
+//    param.get(label + "-mesh-add-field-cell-centres", meshCellCentres_);
+    param.get(label + "-mesh-generator", meshGenerator_);
+    param.get(label + "-mesh-dump", dump_);
 }
 
 
@@ -160,8 +173,8 @@ atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const
         }
 
         // Dump
-        if (meshGenParams.dump_) {
-            atlas::output::PathName path = std::string(md5);
+        if (!meshGenParams.dump_.empty()) {
+            atlas::output::PathName path(meshGenParams.dump_);
 
             eckit::Log::debug<LibMir>() << "Dumping mesh to '" << path << "'" << std::endl;
             atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xyz")).write(mesh_);

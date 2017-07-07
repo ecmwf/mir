@@ -228,13 +228,19 @@ static triplet_vector_t projectPointTo3DElements(
 
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
-    MethodWeighted(param) {
+    MethodWeighted(param),
+    InputMeshGenerationParams_("input", param),
+    OutputMeshGenerationParams_("output", param) {
 
-    InputMeshGenerationParams_.meshGenerator_ = "structured";
-    parametrisation_.get("input-mesh-generator", InputMeshGenerationParams_.meshGenerator_);
+    // input mesh requirements
+    InputMeshGenerationParams_.meshParallelEdgesConnectivity_ = true;
+    InputMeshGenerationParams_.meshXYZField_ = true;
+    InputMeshGenerationParams_.meshCellCentres_ = true;
 
-    OutputMeshGenerationParams_.meshGenerator_ = "structured";
-    parametrisation_.get("output-mesh-generator", OutputMeshGenerationParams_.meshGenerator_);
+    // output mesh requirements
+    OutputMeshGenerationParams_.meshParallelEdgesConnectivity_ = false;
+    OutputMeshGenerationParams_.meshXYZField_ = false;
+    OutputMeshGenerationParams_.meshCellCentres_ = false;
 }
 
 
@@ -255,8 +261,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     // get input mesh (cell centres are required for the k-d tree)
     ASSERT(InputMeshGenerationParams_.meshCellCentres_);
-    util::MIRGrid gin = in.grid();
-    const atlas::Mesh& inMesh = gin.mesh(statistics, InputMeshGenerationParams_);
+    const atlas::Mesh& inMesh = in.grid().mesh(statistics, InputMeshGenerationParams_);
     const util::Domain& inDomain = in.domain();
 
     const atlas::mesh::Nodes& inNodes = inMesh.nodes();

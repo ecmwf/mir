@@ -88,11 +88,13 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("griddef", "Path to GRIB file containing a list of latitude/longitude pairs"));
 
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
-        options_.push_back(new SimpleOption<std::string>("input-mesh-generator", "Use specific input mesh generator"));
-        options_.push_back(new SimpleOption<std::string>("output-mesh-generator", "Use specific output mesh generator"));
         options_.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
+        options_.push_back(new SimpleOption<std::string>("input-mesh-generator", "Input mesh generator"));
+        options_.push_back(new SimpleOption<std::string>("input-mesh-dump", "Input mesh dump to file (default <empty>)"));
+        options_.push_back(new SimpleOption<std::string>("output-mesh-generator", "Output mesh generator"));
+        options_.push_back(new SimpleOption<std::string>("output-mesh-dump", "Output mesh dump to file (default <empty>)"));
 
         //==============================================
         options_.push_back(new Separator("Filtering"));
