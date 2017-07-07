@@ -35,7 +35,7 @@ public:
 
     Regular(const param::MIRParametrisation&);
     Regular(size_t N);
-    Regular(size_t N, const util::BoundingBox& bbox);
+    Regular(size_t N, const util::BoundingBox&);
 
     // -- Destructor
 
@@ -84,7 +84,11 @@ protected:
 
     virtual void makeName(std::ostream&) const;
 
-    virtual bool sameAs(const Representation& other) const;
+    virtual bool sameAs(const Representation&) const;
+
+    eckit::Fraction getSmallestIncrement() const;
+
+    void adjustBoundingBoxEastWest(util::BoundingBox&);
 
     bool isPeriodicWestEast() const;
 
