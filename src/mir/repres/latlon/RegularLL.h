@@ -76,7 +76,7 @@ private:
     void makeName(std::ostream&) const;
     bool sameAs(const Representation&) const;
 
-    // Called by crop()
+    // From Representation
     const RegularLL* cropped(const util::BoundingBox&) const;
 
     // -- Class members

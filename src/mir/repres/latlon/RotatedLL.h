@@ -77,8 +77,8 @@ private:
     void makeName(std::ostream&) const;
     bool sameAs(const Representation&) const;
 
-    // From RegularLL
-    const RotatedLL *cropped(const util::BoundingBox&) const;
+    // From Representation
+    const RotatedLL* cropped(const util::BoundingBox&) const;
 
     // -- Class members
     // None
