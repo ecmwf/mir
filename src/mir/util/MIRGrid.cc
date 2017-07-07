@@ -81,14 +81,8 @@ MIRGrid::MIRGrid(const atlas::Grid& grid) :
 }
 
 
-MIRGrid::MIRGrid(const MIRGrid& other) :
-    domain_(other.domain_),
-    statistics_(other.statistics_) {
-
+MIRGrid::MIRGrid(const MIRGrid& other) {
     grid_ = other.grid_;
-    meshGenParams_ = other.meshGenParams_;
-
-    // mesh is reset
     mesh_ = atlas::Mesh();
 }
 
