@@ -89,7 +89,7 @@ public:
 
     Increments bestSubsetting(const BoundingBox&) const;
 
-    void globaliseBoundingBox(BoundingBox&) const;
+    void globaliseBoundingBox(BoundingBox&, bool allowLongitudeShift=true, bool allowLatitudeShift=true) const;
 
     size_t computeNi(const BoundingBox&) const;
 
@@ -121,7 +121,9 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    bool isLatitudeShifted(const BoundingBox&) const;
+    bool isLongitudeShifted(const BoundingBox&) const;
 
     // -- Methods
 

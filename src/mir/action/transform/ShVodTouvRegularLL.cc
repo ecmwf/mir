@@ -56,15 +56,9 @@ const repres::Representation *ShVodTouvRegularLL::outputRepresentation() const {
         throw eckit::UserError("Spectral transforms only support periodic regular grids", Here());
     }
 
-    if (!(90 / increments_.south_north()).integer()) {
-        throw eckit::UserError("Spectral transforms only support Latitude increments which are integer divisions of 90° (Δ=" + std::to_string(double(increments_.south_north())) + "°)", Here());
-    }
-
-    // start from global bounding box, ensure it isn't shifted
-    util::BoundingBox bbox(Latitude::NORTH_POLE, Longitude::GREENWICH,
-                           Latitude::SOUTH_POLE, Longitude::GLOBE);
-    increments_.globaliseBoundingBox(bbox);
-    ASSERT(!increments_.isShifted(bbox));  // protected by the 90/increment condition above
+    // use (non-shifted) global bounding box
+    util::BoundingBox bbox;
+    increments_.globaliseBoundingBox(bbox, false, false);
 
     return new repres::latlon::RegularLL(bbox, increments_);
 }

@@ -51,10 +51,13 @@ long MARSStyle::getTargetGaussianNumber() const {
     std::vector<double> grid;
     if (parametrisation_.get("user.grid", grid)) {
         ASSERT(grid.size() == 2);
+        util::Increments increments(grid[0], grid[1]);
 
-        util::BoundingBox bbox(90, 0, 0, 360);
-        util::Increments inc(grid[0], grid[1]);
-        long N = long(inc.computeNj(bbox)) - 1;
+        // use (non-shifted) global bounding box
+        util::BoundingBox bbox;
+        increments.globaliseBoundingBox(bbox, false, false);
+
+        long N = long(increments.computeNj(bbox)) - 1;
         return N;
     }
 

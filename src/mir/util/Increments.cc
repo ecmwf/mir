@@ -109,8 +109,7 @@ bool Increments::isPeriodic() const {
 
 
 bool Increments::isShifted(const BoundingBox& bbox) const {
-    return !(bbox.south().fraction() / south_north_).integer() ||
-            !(bbox.west().fraction() / west_east_).integer();
+    return isLatitudeShifted(bbox) || isLongitudeShifted(bbox);
 }
 
 
@@ -200,37 +199,45 @@ static eckit::Fraction adjust(bool up, const eckit::Fraction& target, const ecki
 }
 
 
-void Increments::globaliseBoundingBox(BoundingBox& bbox) const {
+void Increments::globaliseBoundingBox(BoundingBox& bbox, bool allowLongitudeShift, bool allowLatitudeShift) const {
     using eckit::Fraction;
 
-    // shift
-    ASSERT(south_north_ > 0);
-    ASSERT(west_east_ > 0);
-    Fraction sn = (bbox.south().fraction() / south_north_).decimalPart() * south_north_;
-    Fraction we = (bbox.west().fraction() / west_east_).decimalPart() * west_east_;
-
-
     // Latitude limits
-    Fraction n = adjust(false, Latitude::NORTH_POLE.fraction() - sn, south_north_) + sn;
-    Fraction s = adjust(true,  Latitude::SOUTH_POLE.fraction() - sn, south_north_) + sn;
+
+    ASSERT(south_north_ > 0);
+    Fraction shift_sn = Fraction(0);
+    if (allowLatitudeShift) {
+        shift_sn = (bbox.south().fraction() / south_north_).decimalPart() * south_north_;
+    }
+
+    Fraction n = adjust(false, Latitude::NORTH_POLE.fraction() - shift_sn, south_north_) + shift_sn;
+    Fraction s = adjust(true,  Latitude::SOUTH_POLE.fraction() - shift_sn, south_north_) + shift_sn;
 
 
     // Longitude limits
     // - West for non-periodic grids is not corrected!
     // - East for periodic grids is W + 360 - increment
-    ASSERT(bbox.east() >= bbox.west());
+
+    ASSERT(west_east_ > 0);
+    Fraction shift_we = Fraction(0);
+    if (allowLongitudeShift) {
+        shift_we = (bbox.west().fraction() / west_east_).decimalPart() * west_east_;
+    }
 
     Fraction w = bbox.west().fraction();
     if (isPeriodic()) {
-        w = adjust(true, Longitude::GREENWICH.fraction() - we, west_east_) + we;
+        w = adjust(true, Longitude::GREENWICH.fraction() - shift_we, west_east_) + shift_we;
     }
 
-    Fraction e = adjust(false, w + Longitude::GLOBE.fraction(), west_east_);
+    Fraction e = adjust(false, w + Longitude::GLOBE.fraction() - shift_we, west_east_) + shift_we;
     if (e - w == Longitude::GLOBE.fraction()) {
         e -= west_east_;
     }
 
     bbox = BoundingBox(n, w, s, e);
+
+    ASSERT(allowLatitudeShift || !isLatitudeShifted(bbox));
+    ASSERT(allowLongitudeShift || !isLongitudeShifted(bbox));
 }
 
 
@@ -249,7 +256,17 @@ void Increments::makeName(std::ostream& out) const {
         << double(west_east_)
         << "x"
         << double(south_north_)
-        ;
+           ;
+}
+
+
+bool Increments::isLatitudeShifted(const BoundingBox& bbox) const {
+    return !(bbox.south().fraction() / south_north_).integer();
+}
+
+
+bool Increments::isLongitudeShifted(const BoundingBox& bbox) const {
+    return !(bbox.west().fraction() / west_east_).integer();
 }
 
 
