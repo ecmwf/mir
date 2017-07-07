@@ -35,7 +35,7 @@ ReducedOctahedral::~ReducedOctahedral() {
 
 
 void ReducedOctahedral::print(std::ostream &out) const {
-    out << "ReducedGGOctahedral[N" << N_ << ",bbox=" << bbox_ << "]";
+    out << "ReducedOctahedral[N" << N_ << ",bbox=" << bbox_ << "]";
 }
 
 
