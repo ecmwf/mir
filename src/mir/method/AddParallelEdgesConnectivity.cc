@@ -95,12 +95,12 @@ void AddParallelEdgesConnectivity::operator()(atlas::Mesh& mesh, const Latitude&
         edges = getParallelEdges(
                     util::Domain(north, Longitude::GREENWICH, north, Longitude::GLOBE),
                     mesh.cells().node_connectivity(),
-                    make_view< double, 2 >(mesh.nodes().lonlat()) );
+                    make_view< double, 2 >(mesh.nodes().xy()) );
     } else if (south > 0.) {
         edges = getParallelEdges(
                     util::Domain(south, Longitude::GREENWICH, south, Longitude::GLOBE),
                     mesh.cells().node_connectivity(),
-                    make_view< double, 2 >(mesh.nodes().lonlat()) );
+                    make_view< double, 2 >(mesh.nodes().xy()) );
     }
 
     if (edges.empty()) {
@@ -114,16 +114,22 @@ void AddParallelEdgesConnectivity::operator()(atlas::Mesh& mesh, const Latitude&
     const size_t P = nbOriginalPoints;  // North/South pole index
     mesh.nodes().resize(nbOriginalPoints + 1);
 
+
     Nodes& nodes = mesh.nodes();
     nodes.metadata().set<size_t>("NbRealPts", nbOriginalPoints);
 
-    ArrayView<double, 2> coords = make_view< double, 2 >(nodes.field("xyz"));
-    ArrayView<double, 2> lonlat = make_view< double, 2 >(nodes.lonlat());
-    ArrayView<gidx_t, 1> index_nodes = make_view< gidx_t, 1 >(nodes.global_index());
+    const atlas::Projection& proj = mesh.projection();
+    atlas::PointXY Pxy(0, addNorthPole? 90 : -90);
+    atlas::PointLonLat Pll = proj.lonlat(Pxy);
 
-    lonlat(P, LON) = 0;
-    lonlat(P, LAT) = addNorthPole? 90 : -90;
-    eckit::geometry::lonlat_to_3d(lonlat[P].data(), coords[P].data());
+    ArrayView<double, 2> xy = make_view< double, 2 >(nodes.xy());
+    ArrayView<double, 2> lonlat = make_view< double, 2 >(nodes.lonlat());
+    xy(P, LON) = Pxy.x();
+    xy(P, LAT) = Pxy.y();
+    lonlat(P, LON) = Pll.lon();
+    lonlat(P, LAT) = Pll.lat();
+
+    ArrayView<gidx_t, 1> index_nodes = make_view< gidx_t, 1 >(nodes.global_index());
     index_nodes(P) = idx_t(P + 1);
 
 

@@ -140,13 +140,6 @@ atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const
         mesh = generator.generate(grid_);
         ASSERT(mesh.generated());
 
-        // If meshgenerator did not create xyz field already, do it now.
-        if (meshGenParams.meshXYZField_) {
-            eckit::ResourceUsage usage("BuildXYZField");
-            eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: BuildXYZField");
-            atlas::mesh::actions::BuildXYZField()(mesh);
-        }
-
         // If domain does not include poles, we might need to recover the parallel edges
         // TODO: move to Atlas mesh generator
         atlas::Domain domain = grid_.domain();
@@ -163,6 +156,13 @@ atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const
 
             ASSERT(-90. <= ymin && ymin < ymax && ymax <= 90.);
             method::AddParallelEdgesConnectivity()(mesh, ymax, ymin);
+        }
+
+        // If meshgenerator did not create xyz field already, do it now.
+        if (meshGenParams.meshXYZField_) {
+            eckit::ResourceUsage usage("BuildXYZField");
+            eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: BuildXYZField");
+            atlas::mesh::actions::BuildXYZField()(mesh);
         }
 
         // Generate barycenters of mesh elements
