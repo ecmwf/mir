@@ -17,6 +17,16 @@ namespace mir {
 namespace util {
 
 
+Domain::Domain(Latitude north, Longitude west, Latitude south, Longitude east) :
+    BoundingBox(north, west, south, east) {
+}
+
+
+Domain Domain::makeGlobal() {
+    return Domain(Latitude::NORTH_POLE, Longitude::GREENWICH,
+                  Latitude::SOUTH_POLE, Longitude::GLOBE);
+}
+
 Domain::operator atlas::RectangularDomain() const {
     return atlas::RectangularDomain(
         {{west().value(),  east().value()} },

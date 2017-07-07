@@ -34,14 +34,12 @@ public:
     explicit Domain(Latitude north = Latitude::NORTH_POLE,
                     Longitude west = Longitude::GREENWICH,
                     Latitude south = Latitude::SOUTH_POLE,
-                    Longitude east = Longitude::GLOBE)
-        : BoundingBox(north, west, south, east) {
-    }
+                    Longitude east = Longitude::GLOBE);
 
     // -- Methods
 
     /// Generator for a global Domain
-    static Domain makeGlobal() { return Domain(); }
+    static Domain makeGlobal();
 
     /// Generator for an empty Domain
     static Domain makeEmpty() { return Domain(0, 0, 0, 0); }

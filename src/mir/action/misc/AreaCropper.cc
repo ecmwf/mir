@@ -121,7 +121,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     while (iter->next()) {
         const repres::Iterator::point_ll_t& point = iter->pointUnrotated();
 
-        // std::cout << lat << " " << lon << " ====> " << iter->next(lat, lon) << std::endl;
+        // std::cout << point.lat << " " << point.lon << " ====> " << bbox.contains(point.lat, point.lon) << std::endl;
 
         if (bbox.contains(point.lat, point.lon)) {
 
