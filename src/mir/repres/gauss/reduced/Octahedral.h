@@ -80,27 +80,15 @@ class Octahedral : public Reduced {
 
   private:
 
-
-
-    // No copy allowed
-
-    Octahedral(const Octahedral &);
-    Octahedral &operator=(const Octahedral &);
-
     // -- Members
-
-
+    // None
 
     // -- Methods
     // None
 
-
-    virtual const std::vector<long>& pls() const;
-
-
     // -- Overridden methods
 
-
+    virtual const std::vector<long>& pls() const;
 
     // -- Class members
     // None

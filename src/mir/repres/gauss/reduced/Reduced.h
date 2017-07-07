@@ -40,9 +40,9 @@ public:
 
     // -- Contructors
 
-    Reduced(const param::MIRParametrisation &parametrisation);
+    Reduced(const param::MIRParametrisation&);
     Reduced(size_t N);
-    Reduced(size_t N, const util::BoundingBox &);
+    Reduced(size_t N, const util::BoundingBox&);
 
     // -- Destructor
 
@@ -73,17 +73,21 @@ protected:
 
     // -- Methods
 
-    // void print(std::ostream &) const; // Change to virtual if base class
+    // void print(std::ostream&) const; // Change to virtual if base class
     Iterator* unrotatedIterator() const;
     Iterator* rotatedIterator(const util::Rotation&) const;
 
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
+    virtual void fill(grib_info&) const;
 
-    virtual void fill(api::MIRJob &) const;
+    virtual void fill(api::MIRJob&) const;
 
-    virtual bool sameAs(const Representation& other) const;
+    virtual bool sameAs(const Representation&) const;
+
+    eckit::Fraction getSmallestIncrement() const;
+
+    void adjustBoundingBoxEastWest(util::BoundingBox&);
 
     bool isPeriodicWestEast() const;
 
@@ -115,26 +119,21 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    Reduced(const Reduced &);
-    Reduced &operator=(const Reduced &);
-
     // -- Members
     // None
 
     // -- Methods
 
-    virtual const Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const;
+    virtual const Reduced *cropped(const util::BoundingBox& bbox, const std::vector<long>& pl) const;
 
-    virtual const std::vector<long> &pls() const = 0;
+    virtual const std::vector<long>& pls() const = 0;
 
     // -- Overridden methods
 
-    virtual const Reduced* cropped(const util::BoundingBox &bbox) const ;
-    virtual void validate(const std::vector<double> &values) const;
-    virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
-    virtual void initTrans(Trans_t& trans) const;
+    virtual const Reduced* cropped(const util::BoundingBox&) const ;
+    virtual void validate(const std::vector<double>& values) const;
+    virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
+    virtual void initTrans(Trans_t&) const;
     virtual size_t numberOfPoints() const;
 
     // -- Class members
