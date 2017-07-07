@@ -42,13 +42,13 @@ template<class T>
 bool CachedParametrisation::_get(const std::string& name, T& value) const {
     MIRParametrisation& cache = cache_;
 
-    std::cout << "Get (cache) " << parametrisation_ << " " << name << std::endl;;
+    // std::cout << "Get (cache) " << parametrisation_ << " " << name << std::endl;;
 
     if (cache.get(name, value)) {
         return true;
     }
 
-    std::cout << "Get (next) " << parametrisation_ << " " << name << std::endl;;
+    // std::cout << "Get (next) " << parametrisation_ << " " << name << std::endl;;
 
     if (parametrisation_.get(name, value)) {
         _set(name, value);
@@ -61,7 +61,7 @@ bool CachedParametrisation::_get(const std::string& name, T& value) const {
 
 template<class T>
 void CachedParametrisation::_set(const std::string& name, const T& value) const {
-    std::cout << "Set " << *this << " " << name << " " << value << std::endl;
+    // std::cout << "Set " << *this << " " << name << " " << value << std::endl;
     cache_.set(name, value);
 }
 

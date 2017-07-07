@@ -100,16 +100,19 @@ bool NetcdfFileInput::get(const std::string& name, long& value) const {
         ASSERT(current_ >= 0 && current_ < fields_.size());
         auto d = fields_[current_]->dimensions();
         ASSERT(d.size() >= 2);
-        value = d[d.size()-1];
+        value = d[d.size() - 1];
+        std::cout << "===== Ni " << value << std::endl;
+
         return true;
     }
 
 
     if (name == "Nj") {
-       ASSERT(current_ >= 0 && current_ < fields_.size());
+        ASSERT(current_ >= 0 && current_ < fields_.size());
         auto d = fields_[current_]->dimensions();
         ASSERT(d.size() >= 2);
-        value = d[d.size()-2];
+        value = d[d.size() - 2];
+        std::cout << "===== Nj " << value << std::endl;
         return true;
     }
 
