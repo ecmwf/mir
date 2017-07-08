@@ -18,6 +18,7 @@
 
 #include <limits>
 #include "mir/repres/Representation.h"
+#include "eckit/config/Resource.h"
 
 
 
@@ -25,13 +26,39 @@ namespace mir {
 namespace util {
 
 
-PointSearch::PointSearch(const std::vector<PointType>& points) {
-    init(points);
-}
-
 
 PointSearch::PointSearch(const repres::Representation& r, const CompareType& isok) {
-    init(r, isok);
+    const size_t npts = r.numberOfPoints();
+    ASSERT(npts > 0);
+
+    const double infty = std::numeric_limits< double >::infinity();
+    const PointType farpoint(infty, infty, infty);
+
+    static bool fastBuildKDTrees = eckit::Resource<bool>("$ATLAS_FAST_BUILD_KDTREES", true); // We use the same Resource as ATLAS for now
+
+    if (fastBuildKDTrees) {
+        std::vector<PointValueType> points;
+        points.reserve(npts);
+
+        const eckit::ScopedPtr<repres::Iterator> it(r.iterator());
+        size_t i = 0;
+        while (it->next()) {
+            ASSERT(i < npts);
+            points.push_back(PointValueType(isok(i) ? PointType(it->point3D()) : farpoint, i));
+            ++i;
+        }
+
+        tree_->build(points.begin(), points.end());
+    }
+    else {
+        const eckit::ScopedPtr<repres::Iterator> it(r.iterator());
+        size_t i = 0;
+        while (it->next()) {
+            ASSERT(i < npts);
+            tree_->insert(PointValueType(isok(i) ? PointType(it->point3D()) : farpoint, i));
+            ++i;
+        }
+    }
 }
 
 
@@ -55,7 +82,7 @@ PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointTy
 void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest) const {
 
     // Small optimisation
-    if(n == 1) {
+    if (n == 1) {
         closest.clear();
         closest.push_back(closestPoint(pt));
         return;
@@ -72,7 +99,7 @@ void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<Poin
 
 
 void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest) const {
-    TreeType::NodeList r = tree_->findInSphere(pt,radius);
+    TreeType::NodeList r = tree_->findInSphere(pt, radius);
 
     closest.clear();
     closest.reserve(r.size());
@@ -82,41 +109,7 @@ void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::v
 }
 
 
-void PointSearch::init(const std::vector<PointType>& points) {
 
-    std::vector<PointValueType> pidx;
-    pidx.reserve(points.size());
-
-    for (size_t ip = 0; ip < points.size(); ++ip) {
-        pidx.push_back(PointValueType(TreeType::Point(points[ip]), ip));
-    }
-
-    tree_.reset(new TreeType());
-    tree_->build(pidx.begin(), pidx.end());
-}
-
-
-void PointSearch::init(const repres::Representation& r, const CompareType& isok) {
-
-    const size_t npts = r.numberOfPoints();
-    ASSERT(npts > 0);
-
-    const double infty = std::numeric_limits< double >::infinity();
-    const PointType farpoint(infty,infty,infty);
-
-    std::vector<PointType> points;
-    points.reserve(npts);
-
-    const eckit::ScopedPtr<repres::Iterator> it(r.iterator());
-    size_t i = 0;
-    while (it->next()) {
-        ASSERT(i < npts);
-        points.push_back(isok(i) ? PointType(it->point3D()) : farpoint);
-        ++i;
-    }
-
-    init(points);
-}
 
 
 }  // namespace util

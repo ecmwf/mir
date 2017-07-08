@@ -54,8 +54,6 @@ public:
 
 public:
 
-    PointSearch(const std::vector<Point>& ipts);
-
     PointSearch(const repres::Representation&, const CompareType& =CompareTypeNone());
 
 public:
@@ -75,11 +73,6 @@ public:
 protected:
 
     eckit::ScopedPtr<TreeType> tree_;
-
-private:
-
-    void init(const std::vector<PointType>& points);
-    void init(const repres::Representation&, const CompareType& =CompareTypeNone());
 
 };
 
