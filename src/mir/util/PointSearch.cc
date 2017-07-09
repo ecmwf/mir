@@ -34,6 +34,8 @@ PointSearch::PointSearch(const repres::Representation& r, const CompareType& iso
     const double infty = std::numeric_limits< double >::infinity();
     const PointType farpoint(infty, infty, infty);
 
+    tree_.reset(new TreeType());
+
     static bool fastBuildKDTrees = eckit::Resource<bool>("$ATLAS_FAST_BUILD_KDTREES", true); // We use the same Resource as ATLAS for now
 
     if (fastBuildKDTrees) {
