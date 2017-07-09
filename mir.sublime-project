@@ -43,8 +43,8 @@
 					"shell_cmd": "make -j4 clean"
 				},
 				{
-					"name": "install/strip",
-					"shell_cmd": "make -j4 install/strip"
+					"name": "rebuild_cache",
+					"shell_cmd": "make -j4 rebuild_cache"
 				},
 				{
 					"name": "install/local",
@@ -55,8 +55,8 @@
 					"shell_cmd": "make -j4 list_install_components"
 				},
 				{
-					"name": "rebuild_cache",
-					"shell_cmd": "make -j4 rebuild_cache"
+					"name": "install/strip",
+					"shell_cmd": "make -j4 install/strip"
 				},
 				{
 					"name": "execs",
@@ -119,12 +119,12 @@
 					"shell_cmd": "make -j4 NightlyMemCheck"
 				},
 				{
-					"name": "test",
-					"shell_cmd": "make -j4 test"
-				},
-				{
 					"name": "package",
 					"shell_cmd": "make -j4 package"
+				},
+				{
+					"name": "test",
+					"shell_cmd": "make -j4 test"
 				},
 				{
 					"name": "ExperimentalConfigure",
@@ -267,16 +267,12 @@
 					"shell_cmd": "make -j4 mir-statistics"
 				},
 				{
-					"name": "lsm",
-					"shell_cmd": "make -j4 lsm"
-				},
-				{
 					"name": "grids",
 					"shell_cmd": "make -j4 grids"
 				},
 				{
-					"name": "__get_data_download_mir_tests_files_msl_regular_ll_3-3_grib",
-					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_msl_regular_ll_3-3_grib"
+					"name": "lsm",
+					"shell_cmd": "make -j4 lsm"
 				},
 				{
 					"name": "__get_data_download_mir_tests_files_vo-d_sh_grib",
@@ -285,6 +281,10 @@
 				{
 					"name": "__get_data_download_mir_tests_files_msl_N640_grib",
 					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_msl_N640_grib"
+				},
+				{
+					"name": "__get_data_download_mir_tests_files_msl_regular_ll_3-3_grib",
+					"shell_cmd": "make -j4 __get_data_download_mir_tests_files_msl_regular_ll_3-3_grib"
 				},
 				{
 					"name": "__get_data_download_mir_tests_files_q_F640_grib",
