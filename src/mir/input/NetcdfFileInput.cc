@@ -19,7 +19,7 @@
 #include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 #include "metkit/netcdf/Field.h"
-#include "metkit/netcdf/HyperCube.h"
+#include "metkit/netcdf/GridSpec.h"
 
 
 namespace mir {
@@ -67,7 +67,6 @@ bool NetcdfFileInput::next() {
         return false;
     }
 
-
     return true;
 }
 
@@ -77,7 +76,7 @@ data::MIRField NetcdfFileInput::field() const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
 
     std::vector<double> values;
-    fields_[current_]->values(values);
+    // fields_[current_]->values(values);
 
     bool hasMissing = false; // Should check!
     double missingValue = 9999; // Read from file
@@ -89,94 +88,28 @@ data::MIRField NetcdfFileInput::field() const {
 }
 
 bool NetcdfFileInput::get(const std::string& name, long& value) const {
-    if (name == "paramId") {
-        ASSERT(current_ >= 0 && current_ < fields_.size());
-        value = fields_[current_]->paramId();
-        return true;
-    }
-
-
-    if (name == "Ni") {
-        ASSERT(current_ >= 0 && current_ < fields_.size());
-        auto d = fields_[current_]->dimensions();
-        ASSERT(d.size() >= 2);
-        value = d[d.size() - 1];
-        std::cout << "===== Ni " << value << std::endl;
-
-        return true;
-    }
-
-
-    if (name == "Nj") {
-        ASSERT(current_ >= 0 && current_ < fields_.size());
-        auto d = fields_[current_]->dimensions();
-        ASSERT(d.size() >= 2);
-        value = d[d.size() - 2];
-        std::cout << "===== Nj " << value << std::endl;
-        return true;
-    }
-
+    ASSERT(current_ >= 0 && current_ < fields_.size());
+    if (fields_[current_]->get(name, value)) {return true;}
     return FieldParametrisation::get(name, value);
 }
 
 
 
 bool NetcdfFileInput::has(const std::string& name) const {
-    if (name == "gridded") {
-        return true;
-    }
-    if (name == "spectral") {
-        return false;
-    }
+    ASSERT(current_ >= 0 && current_ < fields_.size());
+    if (fields_[current_]->has(name)) {return true;}
     return FieldParametrisation::has(name);
 }
 
 bool NetcdfFileInput::get(const std::string &name, std::string &value) const {
-
-    if (name == "gridType") {
-        ASSERT(current_ >= 0 && current_ < fields_.size());
-        value = fields_[current_]->gridType();
-        return true;
-    }
+    ASSERT(current_ >= 0 && current_ < fields_.size());
+    if (fields_[current_]->get(name, value)) {return true;}
     return FieldParametrisation::get(name, value);
 }
 
 bool NetcdfFileInput::get(const std::string &name, double &value) const {
-
     ASSERT(current_ >= 0 && current_ < fields_.size());
-
-    if (name == "north") {
-        value = fields_[current_]->north();
-        return true;
-    }
-
-    if (name == "south") {
-        value = fields_[current_]->south();
-        return true;
-    }
-
-    if (name == "west") {
-        value = fields_[current_]->west();
-        return true;
-    }
-
-    if (name == "east") {
-        value = fields_[current_]->east();
-        return true;
-    }
-
-    if (name == "west_east_increment") {
-        value = fields_[current_]->westEastIncrement();
-        return true;
-    }
-
-    if (name == "south_north_increment") {
-        value = fields_[current_]->southNorthIncrement();
-        return true;
-    }
-
-
-    return FieldParametrisation::get(name, value);
+    if (fields_[current_]->get(name, value)) {return true;}
 }
 
 bool NetcdfFileInput::sameAs(const MIRInput& other) const {
@@ -186,22 +119,24 @@ bool NetcdfFileInput::sameAs(const MIRInput& other) const {
 
 size_t NetcdfFileInput::dimensions() const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
-    std::vector<size_t> dims = fields_[current_]->dimensions();
+//     std::vector<size_t> dims = fields_[current_]->dimensions();
 
-    std::cout << "NC dimensions: " << dims << std::endl;
+//     std::cout << "NC dimensions: " << dims << std::endl;
 
-    ASSERT(dims.size() >= 2);
-    // Assumes lat/lon at the end
+//     ASSERT(dims.size() >= 2);
+//     // Assumes lat/lon at the end
 
-    size_t n = 1;
-    for (size_t i = 0; i < dims.size() - 2; ++i) {
-        n *= dims[i];
-    }
+//     size_t n = 1;
+//     for (size_t i = 0; i < dims.size() - 2; ++i) {
+//         n *= dims[i];
+//     }
 
 
-    std::cout << "NC dimensions: " << n << std::endl;
+//     std::cout << "NC dimensions: " << n << std::endl;
 
-    return n;
+//     return n;
+// }
+    return 1;
 }
 
 

@@ -120,7 +120,6 @@ private:
     virtual bool has(const std::string& name) const;
 
     virtual bool get(const std::string&, long&) const;
-
     virtual bool get(const std::string&, std::string&) const;
     virtual bool get(const std::string &name, double &value) const;
 
