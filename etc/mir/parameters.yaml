@@ -1387,7 +1387,7 @@ intensity.vector-3d-cartesian.z:
 - 150135  # Ocean W wind component
 - 151133  # Ocean current vertical component
 
-intensity_2:
+intensity_lsm:
 - 167  # 2 metre temperature
 - 129167  # 2 metre temperature gradient
 - 171167  # 2 metre temperature anomaly
