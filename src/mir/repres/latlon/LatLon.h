@@ -91,6 +91,8 @@ protected:
     virtual size_t numberOfPoints() const;
     virtual Representation* globalise(data::MIRField&) const;
 
+    const LatLon* cropped(const util::BoundingBox&) const;
+
     // -- Class members
 
     class LatLonIterator {
