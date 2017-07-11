@@ -18,8 +18,8 @@
 
 #include <iostream>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 template<class T>
 

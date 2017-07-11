@@ -17,8 +17,8 @@
 
 #include <ostream>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 DummyMatrix::DummyMatrix(const Variable &v):
     Matrix(v.matrix()->type(), v.name(), v.matrix()->size()),

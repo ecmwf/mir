@@ -17,10 +17,13 @@
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Dataset.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
-InputVariable::InputVariable(Dataset &owner, const std::string &name, int id, const std::vector<Dimension *> &dimensions):
+InputVariable::InputVariable(Dataset &owner,
+                             const std::string &name,
+                             int id,
+                             const std::vector<Dimension *> &dimensions):
     Variable(owner, name, dimensions),
     id_(id)
 {
@@ -38,14 +41,14 @@ int InputVariable::varid() const {
 Variable *InputVariable::clone(Dataset &owner) const {
 
     std::vector<Dimension *> dimensions;
-    for (std::vector<Dimension *>::const_iterator j = dimensions_.begin(); j != dimensions_.end(); ++j) {
+    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j) {
         dimensions.push_back(owner.findDimension((*j)->name()));
     }
 
     Variable *v = makeOutputVariable(owner, name_, dimensions);
     v->setMatrix(matrix_);
 
-    for (std::map<std::string, Attribute *>::const_iterator j = attributes_.begin(); j != attributes_.end(); ++j)
+    for (auto j = attributes_.begin(); j != attributes_.end(); ++j)
     {
         (*j).second->clone(*v);
     }

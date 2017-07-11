@@ -17,8 +17,8 @@
 
 #include <ostream>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 MergeDataMatrix::MergeDataMatrix(Matrix *out, Matrix *in, size_t size):
     Matrix(Type::lookup(out->type(), in->type()), out->name(), size),

@@ -15,8 +15,8 @@
 
 #include "mir/netcdf/Dimension.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class VirtualInputDimension : public Dimension {
 public:

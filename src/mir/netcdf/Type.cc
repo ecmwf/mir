@@ -373,8 +373,7 @@ Value *TypeT<std::string>::attributeValue(int nc, int id, const char *name, size
     char value[len + 1];
     memset(value, 0, sizeof(value));
     NC_CALL(nc_get_att_text(nc, id, name, value), path);
-    NOTIMP;
-    // return new ValueT<std::string>(*this, value);
+    return new ValueT<std::string>(*this, value);
 }
 
 template<>

@@ -14,8 +14,8 @@
 
 #include "mir/netcdf/Exceptions.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 Reshape::Reshape(const HyperCube &cube, size_t which, size_t where, size_t count, char tag):
     cube_(cube.dimensions()),

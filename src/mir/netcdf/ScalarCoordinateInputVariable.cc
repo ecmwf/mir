@@ -16,8 +16,8 @@
 #include "mir/netcdf/ScalarCoordinateOutputVariable.h"
 #include "mir/netcdf/VirtualInputDimension.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 ScalarCoordinateInputVariable::ScalarCoordinateInputVariable(Dataset &owner, const std::string &name, int id, const std::vector<Dimension *> &dimensions):
     InputVariable(owner, name, id, dimensions)

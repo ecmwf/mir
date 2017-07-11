@@ -18,8 +18,8 @@
 #include <string>
 #include <vector>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class Dimension;
 class Variable;

@@ -12,8 +12,8 @@
 
 #include "mir/netcdf/SimpleOutputVariable.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 SimpleOutputVariable::SimpleOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions):
     OutputVariable(owner, name, dimensions)

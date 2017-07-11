@@ -29,7 +29,7 @@ namespace netcdf {
 
 static HyperCube::Dimensions cubedims(const std::vector<Dimension *> &dimensions) {
     HyperCube::Dimensions cdims;
-    for (std::vector<Dimension *>::const_iterator j = dimensions.begin(); j != dimensions.end(); ++j) {
+    for (auto j = dimensions.begin(); j != dimensions.end(); ++j) {
         cdims.push_back((*j)->count());
     }
 
@@ -69,8 +69,8 @@ void Variable::setMatrix(Matrix *matrix) {
     matrix_ = matrix;
 
     if (matrix_) {
-        std::map<std::string, Attribute *>::const_iterator j = attributes_.find("_FillValue");
-        std::map<std::string, Attribute *>::const_iterator k = attributes_.find("missing_value");
+        auto j = attributes_.find("_FillValue");
+        auto k = attributes_.find("missing_value");
         if (j != attributes_.end() && k !=  attributes_.end()) {
             eckit::Log::warning() << "Variable '" << name() << "' has both 'missing_value' and '_FillValue' attributes" << std::endl;
             // throw MergeError(std::string("Variable ") + name() + " has both 'missing_value' and '_FillValue' attributes");
@@ -86,7 +86,7 @@ void Variable::setMatrix(Matrix *matrix) {
 
 size_t Variable::numberOfValues() const {
     size_t count = 1;
-    for (std::vector<Dimension *>::const_iterator j = dimensions_.begin(); j != dimensions_.end(); ++j)
+    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j)
     {
         count *= (*j)->count();
     }
@@ -95,7 +95,7 @@ size_t Variable::numberOfValues() const {
 
 std::vector<std::string> Variable::coordinates() const {
     std::vector<std::string> result;
-    std::map<std::string, Attribute *>::const_iterator j = attributes_.find("coordinates");
+    auto j = attributes_.find("coordinates");
     if (j != attributes_.end()) {
         std::string s = (*j).second->asString();
         std::string t;
@@ -121,7 +121,7 @@ const Variable& Variable::coordinateByAttribute(const std::string& attribute,
         const std::string& value) const {
 
     const std::vector<std::string>& coords = coordinates();
-    for (std::vector<std::string>::const_iterator j = coords.begin(); j != coords.end(); ++j) {
+    for (auto j = coords.begin(); j != coords.end(); ++j) {
         if (dataset_.hasVariable(*j)) {
             const Variable& v = dataset_.variable(*j);
             if (v.attribute(attribute) == value) {
@@ -144,7 +144,7 @@ const Variable& Variable::coordinateByAttribute(const std::string& attribute,
 
 std::vector<std::string> Variable::cellMethods() const {
     std::vector<std::string> result;
-    std::map<std::string, Attribute *>::const_iterator j = attributes_.find("bounds");
+    auto j = attributes_.find("bounds");
     if (j != attributes_.end()) {
         std::string s = (*j).second->asString();
         result.push_back(s);
@@ -165,7 +165,7 @@ void Variable::dump(std::ostream &out) const
 
     if (dimensions_.size()) {
         std::string sep = "(";
-        for (std::vector<Dimension *>::const_iterator j = dimensions_.begin(); j != dimensions_.end(); ++j)
+        for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j)
         {
             out << sep << (*j)->name();
             sep = ", ";
@@ -174,7 +174,7 @@ void Variable::dump(std::ostream &out) const
     }
     out << " ;" << std::endl;
 
-    for (std::map<std::string, Attribute *>::const_iterator j = attributes_.begin(); j != attributes_.end(); ++j)
+    for (auto j = attributes_.begin(); j != attributes_.end(); ++j)
     {
         (*j).second->dump(out);
     }
@@ -276,7 +276,7 @@ static const char *not_supported[] = {
 void Variable::validate() const {
     size_t i = 0;
     while (not_supported[i]) {
-        std::map<std::string, Attribute *>::const_iterator j = attributes_.find(not_supported[i]);
+        auto j = attributes_.find(not_supported[i]);
         if (j != attributes_.end()) {
             throw MergeError(std::string("Variable ") + name_ + " has an unsupported attribute: " + not_supported[i]);
         }
@@ -336,12 +336,12 @@ Variable *Variable::makeScalarCoordinateVariable() {
 }
 
 void Variable::initCodecs() {
-    std::map<std::string, Attribute *>::const_iterator j = attributes_.find("units");
+    auto j = attributes_.find("units");
     if (j != attributes_.end()) {
         std::string units = (*j).second->asString();
         if (units.find("seconds since ") == 0) {
             std::string calendar = "gregorian";
-            std::map<std::string, Attribute *>::const_iterator k = attributes_.find("calendar");
+            auto k = attributes_.find("calendar");
             if (k != attributes_.end()) {
                 calendar = (*k).second->asString();
                 if (calendar != "gregorian") {
@@ -369,9 +369,9 @@ const std::string &Variable::ncname() const {
 }
 
 bool Variable::sharesDimensions(const Variable &other) const {
-    for (std::vector<Dimension *>::const_iterator j = dimensions_.begin(); j != dimensions_.end(); ++j)
+    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j)
     {
-        for (std::vector<Dimension *>::const_iterator k = other.dimensions_.begin(); k != other.dimensions_.end(); ++k)
+        for (auto k = other.dimensions_.begin(); k != other.dimensions_.end(); ++k)
         {
             if (*j == *k) {
                 return true;
@@ -392,7 +392,7 @@ void Variable::collectField(std::vector<Field *>&) const {
 // CF part ------------------------
 
 std::string Variable::attribute(const std::string& name) const {
-    std::map<std::string, Attribute *>::const_iterator j = attributes_.find(name);
+    auto j = attributes_.find(name);
     if (j == attributes_.end()) {
         return "<UNDEFINED>";
     }

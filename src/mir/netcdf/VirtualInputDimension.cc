@@ -17,8 +17,8 @@
 
 #include <ostream>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 VirtualInputDimension::VirtualInputDimension(Dataset &owner, const std::string &name):
     Dimension(owner, name, 1)

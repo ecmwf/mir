@@ -32,7 +32,7 @@ public:
 
     // -- Methods
 
-     std::vector<size_t> dimensions() const;
+    std::vector<size_t> dimensions() const;
 
 
     // For MIR

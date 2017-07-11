@@ -16,8 +16,8 @@
 #include "eckit/memory/Counted.h"
 #include "mir/netcdf/HyperCube.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class Remapping : public HyperCube::Remapping, public eckit::Counted {
 

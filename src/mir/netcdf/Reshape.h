@@ -17,8 +17,8 @@
 #include "mir/netcdf/HyperCube.h"
 
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class Reshape : public eckit::Counted {
 public:

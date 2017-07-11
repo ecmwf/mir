@@ -21,8 +21,8 @@
 
 #include <iostream>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 UpdateCoordinateStep::UpdateCoordinateStep( Variable &out, const Variable &in, size_t growth):
     out_(out),

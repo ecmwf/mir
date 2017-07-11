@@ -16,8 +16,8 @@
 #include "mir/netcdf/OutputVariable.h"
 
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class ScalarCoordinateOutputVariable : public OutputVariable {
 public:

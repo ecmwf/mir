@@ -63,7 +63,7 @@ void ReshapeVariableStep::execute(MergePlan &plan) {
     std::vector<size_t> indexes;
 
     size_t idx = dims.size() - 1;
-    for (std::vector<Dimension *>::const_reverse_iterator j = dims.rbegin(); j != dims.rend(); ++j, --idx) {
+    for (auto j = dims.rbegin(); j != dims.rend(); ++j, --idx) {
         ReshapeVariableStep *v = this;
         while (v) {
             if (&v->dimension_ == *j) {
@@ -82,7 +82,7 @@ void ReshapeVariableStep::execute(MergePlan &plan) {
 
     ASSERT(cube.size() == incube.size());
 
-    for (std::vector<Dimension *>::const_iterator j = dimensions.begin(); j != dimensions.end(); ++j, ++i) {
+    for (auto j = dimensions.begin(); j != dimensions.end(); ++j, ++i) {
 
         // Add at end
         size_t where = (*j)->count();
@@ -121,11 +121,11 @@ void ReshapeVariableStep::execute(MergePlan &plan) {
 
     std::cout << "ReshapeVariableStep::execute() - Remapping out " << std::endl;
     const std::vector<Reshape *> a = out_.matrix()->reshape();
-    for (std::vector<Reshape *>::const_iterator j = a.begin(); j != a.end(); ++j) std::cout << *(*j) << std::endl;
+    for (auto j = a.begin(); j != a.end(); ++j) std::cout << *(*j) << std::endl;
 
     std::cout << "ReshapeVariableStep::execute() - Remapping in " << std::endl;
     const std::vector<Reshape *> b = in.matrix()->reshape();
-    for (std::vector<Reshape *>::const_iterator j = b.begin(); j != b.end(); ++j) std::cout << *(*j) << std::endl;
+    for (auto j = b.begin(); j != b.end(); ++j) std::cout << *(*j) << std::endl;
 }
 
 bool ReshapeVariableStep::merge(Step *other) {

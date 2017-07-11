@@ -23,8 +23,8 @@
 
 #include <netcdf.h>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 InputMatrix::InputMatrix(Type &type, int varid, const std::string &name, size_t size, NCFile &file):
     Matrix(type, name, size),

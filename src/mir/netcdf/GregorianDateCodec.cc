@@ -23,8 +23,8 @@
 
 #include <netcdf.h>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 static long long offset = 0;
 

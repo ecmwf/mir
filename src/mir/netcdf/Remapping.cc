@@ -16,8 +16,8 @@
 
 #include <iostream>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 Remapping::Remapping(size_t s) {
     reserve(s);

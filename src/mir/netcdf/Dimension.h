@@ -16,8 +16,8 @@
 #include <iosfwd>
 #include <string>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class Dataset;
 class Remapping;

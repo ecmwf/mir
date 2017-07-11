@@ -42,7 +42,7 @@ void DataOutputVariable::merge(const Variable &other, MergePlan &plan)
 }
 
 const std::string &DataOutputVariable::ncname() const {
-    std::map<std::string, Attribute *>::const_iterator j = attributes_.find("standard_name");
+    auto j = attributes_.find("standard_name");
     if (j != attributes_.end()) {
         ncname_ = (*j).second->asString();
         return ncname_;
@@ -51,7 +51,7 @@ const std::string &DataOutputVariable::ncname() const {
 }
 
 
-void DataOutputVariable::collectField(std::vector<const Field *>&) const {
+void DataOutputVariable::collectField(std::vector<Field *>&) const {
     NOTIMP;
 }
 

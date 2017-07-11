@@ -16,8 +16,8 @@
 #include "mir/netcdf/InputVariable.h"
 
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class ScalarCoordinateInputVariable : public InputVariable {
 public:

@@ -16,8 +16,8 @@
 #include "mir/netcdf/Variable.h"
 
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class DummyInputVariable : public Variable {
 public:

@@ -21,14 +21,13 @@ NCFileCache::NCFileCache() {
 }
 
 NCFileCache::~NCFileCache() {
-    for (std::map<std::string, NCFile *>::iterator j = files_.begin(); j != files_.end(); ++j)
-    {
+    for (auto j = files_.begin(); j != files_.end(); ++j) {
         delete (*j).second;
     }
 }
 
 NCFile &NCFileCache::lookUp(const std::string &path) {
-    std::map<std::string, NCFile *>::iterator j = files_.find(path);
+    auto j = files_.find(path);
     if (j == files_.end()) {
         NCFile *f = new NCFile(path);
         files_[path] = f;

@@ -48,17 +48,17 @@ void OutputDataset::merge( Dataset &other) {
 
     if (dimensions_.size() == 0 && attributes_.size() == 0 && variables_.size() == 0) {
         // First time, just adopt
-        for (std::map<std::string, Dimension *>::const_iterator j = other.dimensions().begin(); j != other.dimensions().end(); ++j)
+        for (auto j = other.dimensions().begin(); j != other.dimensions().end(); ++j)
         {
             (*j).second->clone(*this);
         }
 
-        for (std::map<std::string, Attribute *>::const_iterator j = other.attributes().begin(); j != other.attributes().end(); ++j)
+        for (auto j = other.attributes().begin(); j != other.attributes().end(); ++j)
         {
             (*j).second->clone(*this);
         }
 
-        for (std::map<std::string, Variable *>::const_iterator j = other.variables().begin(); j != other.variables().end(); ++j)
+        for (auto j = other.variables().begin(); j != other.variables().end(); ++j)
         {
             (*j).second->clone(*this);
         }
@@ -68,10 +68,10 @@ void OutputDataset::merge( Dataset &other) {
     bool more = true;
     while (more) {
         more = false;
-        for (std::map<std::string, Variable *>::const_iterator j = other.variables().begin(); j != other.variables().end(); ++j)
+        for (auto j = other.variables().begin(); j != other.variables().end(); ++j)
         {
             bool found = false;
-            for (std::map<std::string, Variable *>::const_iterator k = variables_.begin(); k != variables_.end(); ++k)
+            for (auto k = variables_.begin(); k != variables_.end(); ++k)
             {
                 if ((*k).second->sameAs(*(*j).second)) {
                     found = true;
@@ -92,10 +92,10 @@ void OutputDataset::merge( Dataset &other) {
     more = true;
     while (more) {
         more = false;
-        for (std::map<std::string, Variable *>::const_iterator k = variables_.begin(); k != variables_.end(); ++k)
+        for (auto k = variables_.begin(); k != variables_.end(); ++k)
         {
             bool found = false;
-            for (std::map<std::string, Variable *>::const_iterator j = other.variables().begin(); j != other.variables().end(); ++j)
+            for (auto j = other.variables().begin(); j != other.variables().end(); ++j)
             {
                 if ((*k).second->sameAs(*(*j).second)) {
                     found = true;
@@ -116,10 +116,10 @@ void OutputDataset::merge( Dataset &other) {
 
     mergeAttributes(other);
 
-    for (std::map<std::string, Variable *>::const_iterator j = other.variables().begin(); j != other.variables().end(); ++j)
+    for (auto j = other.variables().begin(); j != other.variables().end(); ++j)
     {
         bool found = false;
-        for (std::map<std::string, Variable *>::const_iterator k = variables_.begin(); k != variables_.end(); ++k)
+        for (auto k = variables_.begin(); k != variables_.end(); ++k)
         {
             if ((*k).second->sameAs(*(*j).second)) {
                 (*k).second->merge(*(*j).second, plan);
@@ -163,7 +163,7 @@ void OutputDataset::save() const
 
 
     // std::cout << "Save dimensions" << std::endl;
-    for (std::map<std::string, Dimension *>::const_iterator j = dimensions_.begin(); j != dimensions_.end(); ++j)
+    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j)
     {
         if ((*j).second->inUse()) {
             // std::cout << "Define " << *((*j).second) << std::endl;
@@ -172,7 +172,7 @@ void OutputDataset::save() const
     }
 
     // std::cout << "Save attributes" << std::endl;
-    for (std::map<std::string, Attribute *>::const_iterator j = attributes_.begin(); j != attributes_.end(); ++j)
+    for (auto j = attributes_.begin(); j != attributes_.end(); ++j)
     {
         // std::cout << "Define " << *((*j).second) << std::endl;
         (*j).second->create(nc);
@@ -180,7 +180,7 @@ void OutputDataset::save() const
 
     // std::cout << "Save variables" << std::endl;
 
-    for (std::map<std::string, Variable *>::const_iterator j = variables_.begin(); j != variables_.end(); ++j)
+    for (auto j = variables_.begin(); j != variables_.end(); ++j)
     {
         // std::cout << "Define " << *((*j).second) << std::endl;
         (*j).second->create(nc);
@@ -188,7 +188,7 @@ void OutputDataset::save() const
 
     NC_CALL(nc_enddef(nc), path_);
 
-    for (std::map<std::string, Variable *>::const_iterator j = variables_.begin(); j != variables_.end(); ++j)
+    for (auto j = variables_.begin(); j != variables_.end(); ++j)
     {
         std::cout << "Save " << *((*j).second) << std::endl;
         (*j).second->save(nc);

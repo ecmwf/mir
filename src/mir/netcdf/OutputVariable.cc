@@ -22,8 +22,8 @@
 
 #include <netcdf.h>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 OutputVariable::OutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions):
     Variable(owner, name, dimensions),
@@ -44,7 +44,7 @@ void OutputVariable::create(int nc) const {
 
     int dims[NC_MAX_VAR_DIMS];
     int ndims = 0;
-    for (std::vector<Dimension *>::const_iterator j = dimensions_.begin(); j != dimensions_.end(); ++j) {
+    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j) {
         if ((*j)->inUse()) {
             dims[ndims++] = (*j)->id();
         }
@@ -62,7 +62,7 @@ void OutputVariable::create(int nc) const {
 
     created_ = true;
 
-    for (std::map<std::string, Attribute *>::const_iterator j = attributes_.begin(); j != attributes_.end(); ++j)
+    for (auto j = attributes_.begin(); j != attributes_.end(); ++j)
     {
         (*j).second->create(nc);
     }

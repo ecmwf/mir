@@ -40,7 +40,7 @@ void DataInputVariable::print(std::ostream &out) const {
 }
 
 const std::string &DataInputVariable::ncname() const {
-    std::map<std::string, Attribute *>::const_iterator j = attributes_.find("standard_name");
+    auto j = attributes_.find("standard_name");
     if (j != attributes_.end()) {
         ncname_ = (*j).second->asString();
         return ncname_;

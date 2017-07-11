@@ -23,8 +23,8 @@
 
 #include <iostream>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 Matrix::Matrix(Type &type, const std::string &name, size_t size):
     type_(&type),
@@ -38,7 +38,7 @@ Matrix::Matrix(Type &type, const std::string &name, size_t size):
 Matrix::~Matrix() {
     delete missingValue_;
 
-    for (std::vector<Reshape *>::iterator j = reshapes_.begin(); j != reshapes_.end(); ++j) {
+    for (auto j = reshapes_.begin(); j != reshapes_.end(); ++j) {
         (*j)->detach();
     }
 

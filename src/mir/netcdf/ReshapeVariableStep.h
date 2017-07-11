@@ -15,8 +15,8 @@
 
 #include "mir/netcdf/Step.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class Variable;
 class Dimension;

@@ -32,8 +32,7 @@ Value::~Value() {
 
 
 Value *Value::newFromString(const std::string &s) {
-    // return new ValueT<std::string>(Type::lookup(NC_CHAR), s);
-    NOTIMP;
+    return new ValueT<std::string>(Type::lookup(NC_CHAR), s);
 }
 
 }

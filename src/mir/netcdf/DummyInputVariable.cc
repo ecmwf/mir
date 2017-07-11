@@ -28,7 +28,7 @@ DummyInputVariable::DummyInputVariable(Dataset &owner, const Variable &parent):
     std::cout << "DummmyInputVariable " << parent_ << std::endl;
     setMatrix(new DummyMatrix(parent));
 
-    for (std::map<std::string, Attribute *>::const_iterator j = parent.attributes().begin(); j != parent.attributes().end(); ++j)
+    for (auto j = parent.attributes().begin(); j != parent.attributes().end(); ++j)
     {
         (*j).second->clone(*this);
     }

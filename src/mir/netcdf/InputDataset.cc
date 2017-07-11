@@ -74,7 +74,7 @@ InputDataset::InputDataset(const std::string &path, NCFileCache &cache):
 
     // Finalise...
 
-    for (std::map<std::string, Variable *>::iterator j = variables_.begin(); j != variables_.end(); ++j)
+    for (auto j = variables_.begin(); j != variables_.end(); ++j)
     {
         Variable *v = (*j).second;
 
@@ -105,10 +105,10 @@ InputDataset::InputDataset(const std::string &path, NCFileCache &cache):
             }
 
             size_t i = 0;
-            for (std::vector<std::string>::iterator k = coordinates.begin(); k != coordinates.end(); ++k, ++i)
+            for (auto k = coordinates.begin(); k != coordinates.end(); ++k, ++i)
             {
                 // This is a coordinate variable
-                std::map<std::string, Variable *>::iterator m = variables_.find(*k);
+                auto m = variables_.find(*k);
                 if (m == variables_.end()) {
                     eckit::Log::error() << "Coordinate '" << *k << "' has no corresponding variable" << std::endl;
 
@@ -147,11 +147,17 @@ InputDataset::InputDataset(const std::string &path, NCFileCache &cache):
 
         if (cellMethods.size()) {
 
-            for (std::vector<std::string>::iterator k = cellMethods.begin(); k != cellMethods.end(); ++k)
+            for (auto k = cellMethods.begin(); k != cellMethods.end(); ++k)
             {
                 // This is a coordinate variable
-                std::map<std::string, Variable *>::iterator m = variables_.find(*k);
-                ASSERT(m != variables_.end());
+                auto m = variables_.find(*k);
+
+                if (m == variables_.end()) {
+                    std::ostringstream oss;
+                    oss << "Cannot find cell_method named '" << *k << "'";
+                    throw eckit::UserError(oss.str());
+                }
+
                 Variable *t = (*m).second;
                 Variable *w = t->makeCellMethodVariable();
                 if (w != t) {
@@ -167,18 +173,18 @@ InputDataset::InputDataset(const std::string &path, NCFileCache &cache):
     }
 
 
-    for (std::map<std::string, Variable *>::iterator j = variables_.begin(); j != variables_.end(); ++j) {
+    for (auto j = variables_.begin(); j != variables_.end(); ++j) {
         Variable *v = (*j).second;
         if (v->timeAxis()) {
             std::vector<std::string> cellMethods = v->cellMethods();
 
-            for (std::vector<std::string>::iterator k = cellMethods.begin(); k != cellMethods.end(); ++k)
+            for (auto k = cellMethods.begin(); k != cellMethods.end(); ++k)
             {
                 // This is a coordinate variable
-                std::map<std::string, Variable *>::iterator m = variables_.find(*k);
+                auto m = variables_.find(*k);
                 ASSERT(m != variables_.end());
                 Variable *t = (*m).second;
-                for (std::map<std::string, Variable *>::iterator j = variables_.begin(); j != variables_.end(); ++j) {
+                for (auto j = variables_.begin(); j != variables_.end(); ++j) {
                     Variable *p = (*j).second;
                     if (p != v && p->timeAxis()) {
                         Dimension *d;
@@ -197,7 +203,7 @@ InputDataset::InputDataset(const std::string &path, NCFileCache &cache):
         }
     }
 
-    for (std::map<std::string, Variable *>::iterator j = variables_.begin(); j != variables_.end(); ++j) {
+    for (auto j = variables_.begin(); j != variables_.end(); ++j) {
         Variable *v = (*j).second;
         v->validate();
     }
@@ -219,7 +225,7 @@ std::vector<Field *> InputDataset::fields() const {
 
     std::vector<Field *> result;
 
-    for (std::map<std::string, Variable *>::const_iterator j = variables_.begin(); j != variables_.end(); ++j) {
+    for (auto j = variables_.begin(); j != variables_.end(); ++j) {
         Variable *v = (*j).second;
         v->collectField(result);
     }

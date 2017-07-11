@@ -15,8 +15,8 @@
 
 #include "mir/netcdf/Dataset.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class NCFileCache;
 

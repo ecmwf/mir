@@ -15,8 +15,8 @@
 
 #include <string>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class NCFile
 {

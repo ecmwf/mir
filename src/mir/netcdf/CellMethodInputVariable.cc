@@ -13,8 +13,8 @@
 #include "mir/netcdf/CellMethodInputVariable.h"
 #include "mir/netcdf/CellMethodOutputVariable.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 CellMethodInputVariable::CellMethodInputVariable(Dataset &owner, const std::string &name, int id, const std::vector<Dimension *> &dimensions):
     InputVariable(owner, name, id, dimensions)

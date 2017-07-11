@@ -15,8 +15,8 @@
 
 #include "mir/netcdf/Attribute.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class OutputAttribute : public Attribute
 {

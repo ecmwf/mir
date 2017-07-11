@@ -18,8 +18,8 @@
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/SimpleOutputVariable.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 SimpleInputVariable::SimpleInputVariable(Dataset &owner, const std::string &name, int id, const std::vector<Dimension *> &dimensions):
     InputVariable(owner, name, id, dimensions)

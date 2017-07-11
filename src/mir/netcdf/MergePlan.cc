@@ -27,13 +27,13 @@ MergePlan::MergePlan(Dataset &field):
 }
 
 MergePlan::~MergePlan() {
-    for (std::vector<Step *>::iterator j = steps_.begin(); j != steps_.end(); ++j) {
+    for (auto j = steps_.begin(); j != steps_.end(); ++j) {
         delete (*j);
     }
 }
 
 void MergePlan::add(Step *s) {
-    for (std::vector<Step *>::iterator j = steps_.begin(); j != steps_.end(); ++j) {
+    for (auto j = steps_.begin(); j != steps_.end(); ++j) {
         if ((*j)->merge(s)) {
             delete s;
             return;

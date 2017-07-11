@@ -19,8 +19,8 @@
 
 #include <iostream>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 MergeCoordinateStep::MergeCoordinateStep( Variable &out, const Variable &in):
     out_(out),
@@ -61,7 +61,7 @@ void MergeCoordinateStep::execute(MergePlan &plan) {
     // Resize dimensions
 
     size_t i = 0;
-    for (std::vector<Dimension *>::const_iterator j =  out_.dimensions().begin(); j != out_.dimensions().end(); ++j, ++i) {
+    for (auto j = out_.dimensions().begin(); j != out_.dimensions().end(); ++j, ++i) {
         (*j)->grow(out_.cube().dimensions(i));
     }
 

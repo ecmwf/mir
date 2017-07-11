@@ -16,8 +16,8 @@
 #include "mir/netcdf/Codec.h"
 #include "eckit/types/DateTime.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class Variable;
 

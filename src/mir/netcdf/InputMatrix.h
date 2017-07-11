@@ -15,8 +15,8 @@
 
 #include "mir/netcdf/Matrix.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class NCFile;
 

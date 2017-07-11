@@ -35,7 +35,7 @@ Dataset::~Dataset()
         delete (*j).second;
     }
 
-    for (std::map<std::string, Variable *>::iterator j = variables_.begin(); j != variables_.end(); ++j)
+    for (auto j = variables_.begin(); j != variables_.end(); ++j)
     {
         delete (*j).second;
     }
@@ -75,7 +75,7 @@ int Dataset::varid() const {
 
 Dimension *Dataset::findDimension(int id) const
 {
-    for (std::map<std::string, Dimension *>::const_iterator j = dimensions_.begin(); j != dimensions_.end(); ++j)
+    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j)
     {
         if ((*j).second->id() == id)
         {
@@ -88,7 +88,7 @@ Dimension *Dataset::findDimension(int id) const
 
 Dimension *Dataset::findDimension(const std::string &name) const
 {
-    for (std::map<std::string, Dimension *>::const_iterator j = dimensions_.begin(); j != dimensions_.end(); ++j)
+    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j)
     {
         if ((*j).second->name() == name)
         {
@@ -105,23 +105,23 @@ void Dataset::dump(std::ostream &out) const
 
     out << "netcdf " << path_ << "{" << std::endl;
     out << "dimensions:" << std::endl;
-    for (std::map<std::string, Dimension *>::const_iterator j = dimensions_.begin(); j != dimensions_.end(); ++j)
+    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j)
     {
         (*j).second->dump(out);
     }
     out << "variables:" << std::endl;
-    for (std::map<std::string, Variable *>::const_iterator j = variables_.begin(); j != variables_.end(); ++j)
+    for (auto j = variables_.begin(); j != variables_.end(); ++j)
     {
         (*j).second->dump(out);
     }
     out << "// global attributes:" << std::endl;
-    for (std::map<std::string, Attribute *>::const_iterator j = attributes_.begin(); j != attributes_.end(); ++j)
+    for (auto j = attributes_.begin(); j != attributes_.end(); ++j)
     {
         (*j).second->dump(out);
     }
 
     out << std::endl << "data:" << std::endl;
-    for (std::map<std::string, Variable *>::const_iterator j = variables_.begin(); j != variables_.end(); ++j)
+    for (auto j = variables_.begin(); j != variables_.end(); ++j)
     {
         (*j).second->dumpData(out);
     }
@@ -130,7 +130,7 @@ void Dataset::dump(std::ostream &out) const
 
 std::vector<Variable *> Dataset::variablesForDimension(const Dimension &dim) const {
     std::vector<Variable *> result;
-    for (std::map<std::string, Variable *>::const_iterator j = variables_.begin(); j != variables_.end(); ++j)
+    for (auto j = variables_.begin(); j != variables_.end(); ++j)
     {
         std::vector<Dimension *> dimensions = (*j).second->dimensions();
         for (std::vector<Dimension *>::iterator k = dimensions.begin(); k != dimensions.end(); ++k) {
@@ -145,7 +145,7 @@ std::vector<Variable *> Dataset::variablesForDimension(const Dimension &dim) con
 
 //======================================================
 const Variable& Dataset::variable(const std::string& name) const {
-    std::map<std::string, Variable *>::const_iterator j = variables_.find(name);
+    auto j = variables_.find(name);
     if (j == variables_.end()) {
         throw eckit::UserError("Cannot find netcdf variable '" + name + "'");
     }
@@ -153,7 +153,7 @@ const Variable& Dataset::variable(const std::string& name) const {
 }
 
 bool Dataset::hasVariable(const std::string& name) const {
-    std::map<std::string, Variable *>::const_iterator j = variables_.find(name);
+    auto j = variables_.find(name);
     return (j != variables_.end()) ;
 }
 

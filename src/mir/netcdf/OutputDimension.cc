@@ -17,8 +17,8 @@
 
 #include <netcdf.h>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 OutputDimension::OutputDimension(Dataset &owner, const std::string &name, size_t len):
     Dimension(owner, name, len),

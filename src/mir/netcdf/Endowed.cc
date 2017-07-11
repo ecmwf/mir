@@ -29,14 +29,14 @@ Endowed::Endowed() {
 }
 
 Endowed::~Endowed() {
-    for (std::map<std::string, Attribute *>::iterator j = attributes_.begin(); j != attributes_.end(); ++j)
+    for (auto j = attributes_.begin(); j != attributes_.end(); ++j)
     {
         delete (*j).second;
     }
 }
 
 void Endowed::add(Attribute *a) {
-    std::map<std::string, Attribute *>::iterator j = attributes_.find(a->name());
+    auto j = attributes_.find(a->name());
     if (j != attributes_.end()) {
         delete (*j).second;
     }
@@ -76,7 +76,7 @@ void Endowed::getAttributes(int nc, int i, int nattr)
 
 void Endowed::copyAttributes(const Endowed &other) {
 
-    for (std::map<std::string, Attribute *>::const_iterator j = other.attributes().begin(); j != other.attributes().end(); ++j)
+    for (auto j = other.attributes().begin(); j != other.attributes().end(); ++j)
     {
         (*j).second->clone(*this);
 
@@ -85,9 +85,9 @@ void Endowed::copyAttributes(const Endowed &other) {
 
 void Endowed::mergeAttributes(const Endowed &other) {
 
-    for (std::map<std::string, Attribute *>::const_iterator j = other.attributes().begin(); j != other.attributes().end(); ++j)
+    for (auto j = other.attributes().begin(); j != other.attributes().end(); ++j)
     {
-        for (std::map<std::string, Attribute *>::const_iterator k = attributes_.begin(); k != attributes_.end(); ++k)
+        for (auto k = attributes_.begin(); k != attributes_.end(); ++k)
         {
             if ((*k).second->sameAs(*(*j).second)) {
                 (*k).second->merge(*(*j).second);
@@ -95,10 +95,10 @@ void Endowed::mergeAttributes(const Endowed &other) {
         }
     }
 
-    for (std::map<std::string, Attribute *>::const_iterator k = attributes_.begin(); k != attributes_.end(); ++k)
+    for (auto k = attributes_.begin(); k != attributes_.end(); ++k)
     {
         bool found  = false;
-        for (std::map<std::string, Attribute *>::const_iterator j = other.attributes().begin(); j != other.attributes().end(); ++j)
+        for (auto j = other.attributes().begin(); j != other.attributes().end(); ++j)
         {
             if ((*k).second->sameAs(*(*j).second)) {
                 found = true;
