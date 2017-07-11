@@ -90,5 +90,18 @@ std::ostream &operator<<(std::ostream &out, const HyperCube &cube) {
     return out;
 }
 
+void HyperCube::coordinates(size_t index, Coordinates& result) const
+{
+    ASSERT(result.size() == dimensions_.size());
+
+    for (int i = dimensions_.size() - 1; i >= 0; i--)
+    {
+        result[i] = (index % dimensions_[i]);
+        index    /= dimensions_[i];
+    }
+
+    ASSERT(index == 0);
+}
+
 }
 }

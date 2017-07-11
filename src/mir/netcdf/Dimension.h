@@ -44,6 +44,7 @@ public:
     virtual void remapping(Remapping *) ;
     virtual const Remapping &remapping() const;
 
+    virtual void realDimensions(std::vector<size_t>& dims) const;
 
 protected:
 

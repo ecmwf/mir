@@ -30,7 +30,8 @@ private:
     virtual const std::string &ncname() const;
     virtual void collectField(std::vector<Field *>&) const;
 
-virtual void get2DValues(std::vector<double>& values, size_t i) const;
+    virtual size_t count2DValues() const;
+    virtual void get2DValues(std::vector<double>& values, size_t i) const;
 
 
     mutable std::string ncname_;

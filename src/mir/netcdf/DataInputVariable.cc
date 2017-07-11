@@ -17,6 +17,7 @@
 #include "mir/netcdf/DataOutputVariable.h"
 #include "mir/netcdf/Field.h"
 #include "mir/netcdf/Matrix.h"
+#include "mir/netcdf/Dimension.h"
 
 namespace mir {
 namespace netcdf {
@@ -55,23 +56,61 @@ void DataInputVariable::collectField(std::vector<Field *>& fields) const {
     fields.push_back(new Field(*this));
 }
 
+size_t DataInputVariable::count2DValues() const {
+
+    std::vector<size_t> dims;
+    for (auto d : dimensions_) {
+        d->realDimensions(dims);
+    }
+
+    // HyperCube::Dimensions dims = cube_.dimensions();
+    ASSERT(dims.size() >= 2);
+    dims.pop_back();
+    dims.pop_back();
+
+    HyperCube c(dims);
+
+    std::cout << "++++++++++++++ " << c << std::endl;
+
+    return c.count();
+}
+
 void DataInputVariable::get2DValues(std::vector<double>& values, size_t i) const {
 
-    size_t size = cube_.dimensions().size();
+    std::vector<size_t> dims;
+    for (auto d : dimensions_) {
+        d->realDimensions(dims);
+    }
 
-    ASSERT(size >= 2);
-
+    size_t size = dims.size();
 
     std::vector<size_t> start(size, 0);
     std::vector<size_t> count(size, 1);
 
-    size_t nx = cube_.dimensions(size - 1);
-    size_t ny = cube_.dimensions(size - 2);
+    size_t nx = dims[size - 1];
+    size_t ny = dims[size - 2];
 
     values.resize(nx * ny);
 
     count[size - 1] = nx;
     count[size - 2] = ny;
+
+    // Get cube from other dimensions
+    dims.pop_back();
+    dims.pop_back();
+
+    HyperCube c(dims);
+    HyperCube::Coordinates coords(dims.size());
+    c.coordinates(i, coords);
+
+    std::cout << i << " --- " << c << " --- " << coords << std::endl;
+
+    for (size_t j = 0; j < coords.size(); ++j) {
+        start[j] = coords[j];
+    }
+
+
+    // =========================
 
     std::cout << "++++++++++++++ " << start << " ------ " << count << std::endl;
 

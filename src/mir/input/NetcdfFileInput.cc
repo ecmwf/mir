@@ -71,7 +71,7 @@ bool NetcdfFileInput::next() {
 }
 
 
-static void get_values(netcdf::Field& nc, data::MIRField& field, const std::vector<size_t>& dims, size_t i) {
+static void get_values(netcdf::Field& nc, data::MIRField& field, size_t i) {
 
     std::vector<double> values;
 
@@ -103,7 +103,12 @@ data::MIRField NetcdfFileInput::field() const {
     ASSERT(dims.size() >= 2);
     // Assumes lat/lon at the end
 
-    get_values(*fields_[current_], field, dims, 0);
+    size_t n = fields_[current_]->count2DValues();
+    for (size_t i = 0; i < n; ++i) {
+        std::vector<double> values;
+        fields_[current_]->get2DValues(values, i);
+        field.update(values, i);
+    }
 
     return field;
 }

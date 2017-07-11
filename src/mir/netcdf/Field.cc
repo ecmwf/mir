@@ -41,6 +41,9 @@ void Field::get2DValues(std::vector<double>& values, size_t i) const {
     variable_.get2DValues(values, i);
 }
 
+size_t Field::count2DValues() const {
+    return variable_.count2DValues();
+}
 
 bool Field::has(const std::string& name) const {
     return gridSpec().has(name);

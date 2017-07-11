@@ -414,6 +414,10 @@ void Variable::get2DValues(std::vector<double>& values, size_t i) const {
     NOTIMP;
 }
 
+size_t Variable::count2DValues() const {
+    NOTIMP;
+}
+
 
 
 }

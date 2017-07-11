@@ -43,5 +43,9 @@ int InputDimension::id() const {
     return id_;
 }
 
+void InputDimension::realDimensions(std::vector<size_t>& dims) const {
+    dims.push_back(len_);
+}
+
 }
 }
