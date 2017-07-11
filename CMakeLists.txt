@@ -51,7 +51,7 @@ ecbuild_check_cxx11( PRINT )
 
 ecbuild_add_option( FEATURE OMP    DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
 ecbuild_add_option( FEATURE MPI    DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
-#ecbuild_add_option( FEATURE NETCDF DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
+ecbuild_add_option( FEATURE NETCDF DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
 
 # OMP/MPI features handling
 if( ENABLE_OMP )
@@ -67,9 +67,6 @@ if( ENABLE_MPI )
   endif()
 endif()
 
-if (METKIT_FOUND AND METKIT_HAVE_NETCDF )
-    list( APPEND MIR_FEATURE_LIBRARIES ${METKIT_LIBRARIES})
-endif()
 
 ###############################################################################
 # contents
