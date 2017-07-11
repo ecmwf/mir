@@ -37,6 +37,9 @@ public:
     size_t count2DValues() const;
     void get2DValues(std::vector<double>& values, size_t i) const;
 
+    bool hasMissing() const;
+    double missingValue() const;
+
     // For MIR
     bool has(const std::string& name) const;
     bool get(const std::string&, long&) const;

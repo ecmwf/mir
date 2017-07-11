@@ -418,7 +418,17 @@ size_t Variable::count2DValues() const {
     NOTIMP;
 }
 
+bool Variable::hasMissing() const {
+    return matrix_->missingValue() != 0;
+}
 
+double Variable::missingValue() const {
+    double v = 9999;
+    if (matrix_->missingValue()) {
+        matrix_->missingValue()->get(v);
+    }
+    return v;
+}
 
 }
 }

@@ -94,13 +94,16 @@ public:
 
     // ====================================================
     virtual const Variable& coordinateByAttribute(const std::string& attribute,
-                                          const std::string& value) const;
+            const std::string& value) const;
     virtual std::string attribute(const std::string& attribute) const;
     virtual size_t numberOfDimensions() const;
 
     virtual size_t count2DValues() const;
     virtual void get2DValues(std::vector<double>& values, size_t i) const;
+    virtual bool hasMissing() const;
+    virtual double missingValue() const;
 
+    // ====================================================
 
     virtual void values(std::vector<double>& values) const;
 

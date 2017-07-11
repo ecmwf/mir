@@ -93,20 +93,19 @@ static void get_values(netcdf::Field& nc, data::MIRField& field, size_t i) {
 data::MIRField NetcdfFileInput::field() const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
 
-    bool hasMissing = false; // Should check!
-    double missingValue = 9999; // Read from file
+    auto& ncField = *fields_[current_];
 
-    data::MIRField field(*this, hasMissing, missingValue);
+    data::MIRField field(*this, ncField.hasMissing(), ncField.missingValue());
 
-    std::vector<size_t> dims = fields_[current_]->dimensions();
+    std::vector<size_t> dims = ncField.dimensions();
 
     ASSERT(dims.size() >= 2);
     // Assumes lat/lon at the end
 
-    size_t n = fields_[current_]->count2DValues();
+    size_t n = ncField.count2DValues();
     for (size_t i = 0; i < n; ++i) {
         std::vector<double> values;
-        fields_[current_]->get2DValues(values, i);
+        ncField.get2DValues(values, i);
         field.update(values, i);
     }
 

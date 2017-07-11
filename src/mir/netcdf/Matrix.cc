@@ -61,6 +61,10 @@ const std::string &Matrix::name() const {
     return name_;
 }
 
+Value *Matrix::missingValue() const {
+    return missingValue_;
+}
+
 Matrix *Matrix::mergeData(Matrix *other, size_t size) {
     Matrix *m = new MergeDataMatrix(this->merged(), other->merged(), size);
     m->codec(codec_);
@@ -95,7 +99,6 @@ void Matrix::missingValue(Value *value) {
     delete missingValue_;
     missingValue_ = value;
 }
-
 
 template<class T>
 void Matrix::_fill(std::vector<T> &v) const {

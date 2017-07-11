@@ -36,6 +36,7 @@ const GridSpec &Field::gridSpec() const {
     }
     return *gridSpec_;
 }
+// ==========================================================
 
 void Field::get2DValues(std::vector<double>& values, size_t i) const {
     variable_.get2DValues(values, i);
@@ -44,6 +45,16 @@ void Field::get2DValues(std::vector<double>& values, size_t i) const {
 size_t Field::count2DValues() const {
     return variable_.count2DValues();
 }
+
+bool Field::hasMissing() const {
+    return variable_.hasMissing();
+}
+
+double Field::missingValue() const {
+    return variable_.missingValue();
+}
+
+// ==========================================================
 
 bool Field::has(const std::string& name) const {
     return gridSpec().has(name);
