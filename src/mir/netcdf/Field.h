@@ -34,6 +34,7 @@ public:
 
     std::vector<size_t> dimensions() const;
 
+    void get2DValues(std::vector<double>& values, size_t i) const;
 
     // For MIR
     bool has(const std::string& name) const;

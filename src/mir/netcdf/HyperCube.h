@@ -40,7 +40,7 @@ public:
 
     // -- Contructors
 
-    HyperCube(const Dimensions &d) : dimensions_(d) {}
+    explicit HyperCube(const Dimensions &d) : dimensions_(d) {}
 
     // -- Methods
 

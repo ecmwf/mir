@@ -10,10 +10,13 @@
 
 // Baudouin Raoult - ECMWF Jan 2015
 
+#include "eckit/types/Types.h"
+
 #include "mir/netcdf/DataInputVariable.h"
 #include "mir/netcdf/Attribute.h"
 #include "mir/netcdf/DataOutputVariable.h"
 #include "mir/netcdf/Field.h"
+#include "mir/netcdf/Matrix.h"
 
 namespace mir {
 namespace netcdf {
@@ -48,9 +51,32 @@ const std::string &DataInputVariable::ncname() const {
     return name();
 }
 
-
 void DataInputVariable::collectField(std::vector<Field *>& fields) const {
     fields.push_back(new Field(*this));
+}
+
+void DataInputVariable::get2DValues(std::vector<double>& values, size_t i) const {
+
+    size_t size = cube_.dimensions().size();
+
+    ASSERT(size >= 2);
+
+
+    std::vector<size_t> start(size, 0);
+    std::vector<size_t> count(size, 1);
+
+    size_t nx = cube_.dimensions(size - 1);
+    size_t ny = cube_.dimensions(size - 2);
+
+    values.resize(nx * ny);
+
+    count[size - 1] = nx;
+    count[size - 2] = ny;
+
+    std::cout << "++++++++++++++ " << start << " ------ " << count << std::endl;
+
+    matrix_->read(values, start, count);
+
 }
 
 

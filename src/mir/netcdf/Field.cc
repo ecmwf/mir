@@ -37,6 +37,11 @@ const GridSpec &Field::gridSpec() const {
     return *gridSpec_;
 }
 
+void Field::get2DValues(std::vector<double>& values, size_t i) const {
+    variable_.get2DValues(values, i);
+}
+
+
 bool Field::has(const std::string& name) const {
     return gridSpec().has(name);
 }

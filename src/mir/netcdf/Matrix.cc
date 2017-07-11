@@ -96,6 +96,7 @@ void Matrix::missingValue(Value *value) {
     missingValue_ = value;
 }
 
+
 template<class T>
 void Matrix::_fill(std::vector<T> &v) const {
 
@@ -261,6 +262,57 @@ void Matrix::decache() const {
     string_cache_.clear();
     longlong_cache_.clear();
 }
+
+void Matrix::read(std::vector<double> &) const  {
+    NOTIMP;
+}
+
+void Matrix::read(std::vector<float> &) const  {
+    NOTIMP;
+}
+
+void Matrix::read(std::vector<long> &) const  {
+    NOTIMP;
+}
+
+void Matrix::read(std::vector<short> &) const  {
+    NOTIMP;
+}
+
+void Matrix::read(std::vector<unsigned char> &) const  {
+    NOTIMP;
+}
+
+void Matrix::read(std::vector<long long> &) const  {
+    NOTIMP;
+}
+
+
+void Matrix::read(std::vector<double> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const  {
+    NOTIMP;
+}
+
+void Matrix::read(std::vector<float> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const  {
+    NOTIMP;
+}
+
+void Matrix::read(std::vector<long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const  {
+    NOTIMP;
+}
+
+void Matrix::read(std::vector<short> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const  {
+    NOTIMP;
+}
+
+void Matrix::read(std::vector<unsigned char> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const  {
+    NOTIMP;
+}
+
+void Matrix::read(std::vector<long long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const  {
+    NOTIMP;
+}
+
+
 
 }
 }

@@ -31,12 +31,20 @@ private:
     NCFile &file_;
 
     // Methods
-    void read(std::vector<double> &) const ;
-    void read(std::vector<float> &) const ;
-    void read(std::vector<long> &) const ;
-    void read(std::vector<short> &) const ;
-    void read(std::vector<unsigned char> &) const ;
-    void read(std::vector<long long> &) const ;
+    virtual void read(std::vector<double> &) const ;
+    virtual void read(std::vector<float> &) const ;
+    virtual void read(std::vector<long> &) const ;
+    virtual void read(std::vector<short> &) const ;
+    virtual void read(std::vector<unsigned char> &) const ;
+    virtual void read(std::vector<long long> &) const ;
+
+    virtual void read(std::vector<double> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+    virtual void read(std::vector<float> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+    virtual void read(std::vector<long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+    virtual void read(std::vector<short> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+    virtual void read(std::vector<unsigned char> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+    virtual void read(std::vector<long long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+
 
     template<class T> void _fill(Mapper<T> &v) const;
 

@@ -138,5 +138,60 @@ void InputMatrix::fill(Mapper<long long> &v) const {
     _fill(v);
 }
 
+
+template<class V, class G>
+static void get_slab(V &v,
+                     const std::vector<size_t>& start,
+                     const std::vector<size_t>& count,
+                     int  varid,
+                     NCFile &file,
+                     G get) {
+    size_t size = std::accumulate(count.begin(), count.end(), 1, std::multiplies<size_t>());
+
+    v.resize(size);
+    int nc = file.open();
+    NC_CALL(get(nc, varid, start.data(), count.data(), v.data()), file.path());
+    file.close();
+}
+
+
+
+void InputMatrix::read(std::vector<double> &values,
+                       const std::vector<size_t>& start,
+                       const std::vector<size_t>& count) const  {
+    get_slab(values, start, count, varid_, file_, &nc_get_vara_double);
+}
+
+void InputMatrix::read(std::vector<float> &,
+                       const std::vector<size_t>& start,
+                       const std::vector<size_t>& count) const  {
+    NOTIMP;
+}
+
+void InputMatrix::read(std::vector<long> &,
+                       const std::vector<size_t>& start,
+                       const std::vector<size_t>& count) const  {
+    NOTIMP;
+}
+
+void InputMatrix::read(std::vector<short> &,
+                       const std::vector<size_t>& start,
+                       const std::vector<size_t>& count) const  {
+    NOTIMP;
+}
+
+void InputMatrix::read(std::vector<unsigned char> &,
+                       const std::vector<size_t>& start,
+                       const std::vector<size_t>& count) const  {
+    NOTIMP;
+}
+
+void InputMatrix::read(std::vector<long long> &,
+                       const std::vector<size_t>& start,
+                       const std::vector<size_t>& count) const  {
+    NOTIMP;
+}
+
+
 }
 }

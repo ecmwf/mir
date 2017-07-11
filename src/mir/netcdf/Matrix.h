@@ -49,6 +49,22 @@ public:
     template<class T>
     const std::vector<T> &values() const;
 
+    // =================================================
+
+    virtual void read(std::vector<double> &) const ;
+    virtual void read(std::vector<float> &) const ;
+    virtual void read(std::vector<long> &) const ;
+    virtual void read(std::vector<short> &) const ;
+    virtual void read(std::vector<unsigned char> &) const ;
+    virtual void read(std::vector<long long> &) const ;
+
+    virtual void read(std::vector<double> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+    virtual void read(std::vector<float> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+    virtual void read(std::vector<long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+    virtual void read(std::vector<short> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+    virtual void read(std::vector<unsigned char> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+    virtual void read(std::vector<long long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+
 public:
 
     void decache() const;

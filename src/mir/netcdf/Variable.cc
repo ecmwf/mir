@@ -410,6 +410,10 @@ void Variable::values(std::vector<double>& v) const {
     v = matrix_->values<double>();
 }
 
+void Variable::get2DValues(std::vector<double>& values, size_t i) const {
+    NOTIMP;
+}
+
 
 
 }

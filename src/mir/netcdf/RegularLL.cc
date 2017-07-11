@@ -63,19 +63,19 @@ void RegularLL::print(std::ostream& s) const
 }
 
 bool RegularLL::has(const std::string& name) const {
-  std::cout << "has " << name << std::endl;
+  // std::cout << "has " << name << std::endl;
   if (name == "gridded") {
     return true;
   }
 
-  std::cout << "RegularLL::has " << name << " failed" << std::endl;
+  // std::cout << "RegularLL::has " << name << " failed" << std::endl;
 
 
   return false;
 }
 
 bool RegularLL::get(const std::string&name, long& value) const {
-  std::cout << "get " << name << std::endl;
+  // std::cout << "get " << name << std::endl;
 
   if (name == "Nj") {
     value = (north_ - south_) / south_north_increments_ + 1;
@@ -87,19 +87,19 @@ bool RegularLL::get(const std::string&name, long& value) const {
     return  true;
   }
 
-  std::cout << "RegularLL::get " << name << " failed" << std::endl;
+  // std::cout << "RegularLL::get " << name << " failed" << std::endl;
 
   return false;
 }
 
 bool RegularLL::get(const std::string&name, std::string& value) const {
-  std::cout << "get " << name << std::endl;
+  // std::cout << "get " << name << std::endl;
   if (name == "gridType") {
     value = "regular_ll";
     return true;
   }
 
-  std::cout << "RegularLL::get " << name << " failed" << std::endl;
+  // std::cout << "RegularLL::get " << name << " failed" << std::endl;
 
 
   return false;
@@ -137,7 +137,7 @@ bool RegularLL::get(const std::string &name, double &value) const {
     return true;
   }
 
-  std::cout << "RegularLL::get " << name << " failed" << std::endl;
+  // std::cout << "RegularLL::get " << name << " failed" << std::endl;
 
 
   return false;
