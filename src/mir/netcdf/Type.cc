@@ -19,7 +19,7 @@
 #include "mir/netcdf/MergePlan.h"
 #include "mir/netcdf/Remapping.h"
 #include "mir/netcdf/UpdateCoordinateStep.h"
-#include "mir/netcdf/Value.h"
+#include "mir/netcdf/ValueT.h"
 #include "mir/netcdf/Variable.h"
 
 #include <iostream>
@@ -46,8 +46,8 @@ Type &Type::lookup(int type)
 {
     ASSERT(type >= 0 && type <= NC_MAX_ATOMIC_TYPE);
 
-    if (types_[type] ) {
-        eckit::Log::error() << "Type::lookup " << type << " is unknown" << std::endl;
+    if (types_[type] == 0) {
+        eckit::Log::error() << "Type::lookup " << type << " is unknown: " ;
 
         switch (type) {
 
@@ -63,6 +63,8 @@ Type &Type::lookup(int type)
         case NC_FLOAT : eckit::Log::error() << "NC_FLOAT" << std::endl; break;
         case NC_DOUBLE : eckit::Log::error() << "NC_DOUBLE" << std::endl; break;
         case NC_STRING : eckit::Log::error() << "NC_STRING" << std::endl; break;
+        default:
+            eckit::Log::error() << "????" << std::endl;
 
         }
 
@@ -264,6 +266,11 @@ void TypeT<long>::save(const Matrix &m, int out, int varid, const std::string &p
 }
 
 template<>
+void TypeT<long long>::save(const Matrix &m, int out, int varid, const std::string &path)  const {
+    save_values<long long>(m, out, varid, path,  &nc_put_var_longlong);
+}
+
+template<>
 void TypeT<short>::save(const Matrix &m, int out, int varid, const std::string &path)  const
 {
     save_values<short>(m, out, varid, path,  &nc_put_var_short);
@@ -350,13 +357,24 @@ Value *TypeT<long>::attributeValue(int nc, int id, const char *name, size_t len,
     return new ValueT<long>(*this, value);
 }
 
+
+template<>
+Value *TypeT<long long>::attributeValue(int nc, int id, const char *name, size_t len, const std::string &path)
+{
+    long long value;
+    ASSERT(len == 1);
+    NC_CALL(nc_get_att_longlong (nc, id, name, &value), path);
+    return new ValueT<long long>(*this, value);
+}
+
 template<>
 Value *TypeT<std::string>::attributeValue(int nc, int id, const char *name, size_t len, const std::string &path)
 {
     char value[len + 1];
     memset(value, 0, sizeof(value));
     NC_CALL(nc_get_att_text(nc, id, name, value), path);
-    return new ValueT<std::string>(*this, value);
+    NOTIMP;
+    // return new ValueT<std::string>(*this, value);
 }
 
 template<>
@@ -384,6 +402,7 @@ Value *TypeT<float>::attributeValue(int nc, int id, const char *name, size_t len
 T(unsigned char , NC_BYTE, NC_SHORT);
 T(short, NC_SHORT, NC_LONG);
 T(long, NC_LONG, NC_DOUBLE);
+T(long long, NC_INT64, -1);
 T(std::string, NC_CHAR, -1);
 T(float, NC_FLOAT, NC_DOUBLE);
 T(double, NC_DOUBLE, -1);

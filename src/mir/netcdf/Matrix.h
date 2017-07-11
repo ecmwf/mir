@@ -20,8 +20,8 @@
 #include <string>
 #include <vector>
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
 class Type;
 class Value;
@@ -77,6 +77,7 @@ public:
     virtual void fill(Mapper<short> &) const;
     virtual void fill(Mapper<long> &) const;
     virtual void fill(Mapper<unsigned char> &) const;
+    virtual void fill(Mapper<long long> &) const;
 
 protected:
 
@@ -102,6 +103,7 @@ private:
     mutable std::vector<long> long_cache_;
     mutable std::vector<short> short_cache_;
     mutable std::vector<unsigned char> unsigned_char_cache_;
+    mutable std::vector<long long> longlong_cache_;
     mutable std::vector<std::string> string_cache_;
 
     void values(std::vector<double> &) const;
@@ -109,6 +111,7 @@ private:
     void values(std::vector<long> &) const;
     void values(std::vector<short> &) const;
     void values(std::vector<unsigned char> &) const;
+    void values(std::vector<long long> &) const;
     void values(std::vector<std::string> &) const;
 
 

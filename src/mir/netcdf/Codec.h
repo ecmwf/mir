@@ -33,12 +33,14 @@ public:
     virtual void decode(std::vector<long> &) const ;
     virtual void decode(std::vector<short> &) const ;
     virtual void decode(std::vector<unsigned char> &) const ;
+    virtual void decode(std::vector<long long> &) const ;
 
     virtual void encode(std::vector<double> &) const ;
     virtual void encode(std::vector<float> &) const ;
     virtual void encode(std::vector<long> &) const ;
     virtual void encode(std::vector<short> &) const ;
     virtual void encode(std::vector<unsigned char> &) const ;
+    virtual void encode(std::vector<long long> &) const ;
 
     virtual void addAttributes(Variable &) const;
     virtual void updateAttributes(int nc, int varid, const std::string &path);

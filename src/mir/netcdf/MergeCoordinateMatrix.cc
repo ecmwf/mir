@@ -79,5 +79,9 @@ void MergeCoordinateMatrix::fill(Mapper<unsigned char> &v) const {
     _fill(v);
 }
 
+void MergeCoordinateMatrix::fill(Mapper<long long> &v) const {
+    _fill(v);
+}
+
 }
 }

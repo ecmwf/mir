@@ -49,6 +49,11 @@ void Codec::decode(std::vector<unsigned char> &) const {
     NOTIMP;
 }
 
+void Codec::decode(std::vector<long long> &) const {
+    std::cout << __FUNCTION__ << " " << *this << std::endl;
+    NOTIMP;
+}
+
 void Codec::encode(std::vector<double> &) const {
     std::cout << __FUNCTION__ << " " << *this << std::endl;
     NOTIMP;
@@ -70,6 +75,11 @@ void Codec::encode(std::vector<short> &) const {
 }
 
 void Codec::encode(std::vector<unsigned char> &) const {
+    std::cout << __FUNCTION__ << " " << *this << std::endl;
+    NOTIMP;
+}
+
+void Codec::encode(std::vector<long long> &) const {
     std::cout << __FUNCTION__ << " " << *this << std::endl;
     NOTIMP;
 }

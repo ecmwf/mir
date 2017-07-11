@@ -84,6 +84,13 @@ void InputMatrix::read(std::vector<unsigned char> &v) const {
     }
 }
 
+void InputMatrix::read(std::vector<long long> &v) const {
+    get(v, size_, varid_, file_, &nc_get_var_longlong);
+    if (codec_) {
+        codec_->decode(v);
+    }
+}
+
 //========================================================================
 
 template<class T>
@@ -126,6 +133,10 @@ void InputMatrix::fill(Mapper<short> &v) const {
 void InputMatrix::fill(Mapper<unsigned char> &v) const {
     _fill(v);
 }
+
+void InputMatrix::fill(Mapper<long long> &v) const {
+    _fill(v);
 }
 
+}
 }

@@ -78,6 +78,11 @@ void GregorianDateCodec::decode(std::vector<unsigned char> &v) const {
     _decode(v);
 }
 
+void GregorianDateCodec::decode(std::vector<long long> &v) const {
+    _decode(v);
+}
+
+
 template<class T>
 static T _encode(std::vector<T> &v) {
     ASSERT(v.size());
@@ -109,6 +114,10 @@ void GregorianDateCodec::encode(std::vector<short> &v) const {
 }
 
 void GregorianDateCodec::encode(std::vector<unsigned char> &v) const {
+    zero_ = _encode(v);
+}
+
+void GregorianDateCodec::encode(std::vector<long long> &v) const {
     zero_ = _encode(v);
 }
 

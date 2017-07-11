@@ -36,6 +36,7 @@ private:
     void read(std::vector<long> &) const ;
     void read(std::vector<short> &) const ;
     void read(std::vector<unsigned char> &) const ;
+    void read(std::vector<long long> &) const ;
 
     template<class T> void _fill(Mapper<T> &v) const;
 
@@ -45,6 +46,7 @@ private:
     virtual void fill(Mapper<long> &) const;
     virtual void fill(Mapper<short> &) const;
     virtual void fill(Mapper<unsigned char> &) const;
+    virtual void fill(Mapper<long long> &) const;
 
     virtual void print(std::ostream &out)  const;
 

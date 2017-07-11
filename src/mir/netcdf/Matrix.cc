@@ -134,6 +134,10 @@ void Matrix::values(std::vector<unsigned char> &v) const {
     _fill(v);
 }
 
+void Matrix::values(std::vector<long long> &v) const {
+    _fill(v);
+}
+
 void Matrix::values(std::vector<std::string> &v) const {
     NOTIMP;
 }
@@ -159,6 +163,11 @@ void Matrix::fill(Mapper<short> &) const {
 }
 
 void Matrix::fill(Mapper<unsigned char> &) const {
+    std::cout << __FUNCTION__ << " " << *this << std::endl;
+    NOTIMP;
+}
+
+void Matrix::fill(Mapper<long long> &) const {
     std::cout << __FUNCTION__ << " " << *this << std::endl;
     NOTIMP;
 }
@@ -238,6 +247,11 @@ const std::vector<std::string> &Matrix::cache<std::string>() const {
     return string_cache_;
 }
 
+template<>
+const std::vector<long long> &Matrix::cache<long long>() const {
+    return longlong_cache_;
+}
+
 void Matrix::decache() const {
     double_cache_.clear();
     float_cache_.clear();
@@ -245,6 +259,7 @@ void Matrix::decache() const {
     short_cache_.clear();
     unsigned_char_cache_.clear();
     string_cache_.clear();
+    longlong_cache_.clear();
 }
 
 }

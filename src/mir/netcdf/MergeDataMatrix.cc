@@ -74,5 +74,9 @@ void MergeDataMatrix::fill(Mapper<unsigned char> &v) const {
     _fill(v);
 }
 
+void MergeDataMatrix::fill(Mapper<long long> &v) const {
+    _fill(v);
+}
+
 }
 }

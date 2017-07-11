@@ -72,6 +72,13 @@ void DummyMatrix::fill(Mapper<unsigned char> &v) const
     }
 }
 
+void DummyMatrix::fill(Mapper<long long> &v) const
+{
+    if (!merged_) {
+        other_->fill(v);
+    }
+}
+
 Matrix *DummyMatrix::merged() {
     // If this is called, the dummy matrix has  been merged with another
     // We should not use 'other_'

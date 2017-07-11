@@ -37,6 +37,7 @@ private:
     virtual void fill(Mapper<long> &) const;
     virtual void fill(Mapper<short> &) const;
     virtual void fill(Mapper<unsigned char> &) const;
+    virtual void fill(Mapper<long long> &) const;
 
     template<class T> void _fill(Mapper<T> &v) const;
 
