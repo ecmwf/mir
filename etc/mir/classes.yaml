@@ -48,7 +48,7 @@ intensity:
   comparison: scalar
 
 # physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
-intensity_2:
+intensity-lsm:
   FieldInfo: scalar
   comparison: scalar
   comparison-absolute-error: 0.1
