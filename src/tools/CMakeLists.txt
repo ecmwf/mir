@@ -12,6 +12,7 @@ foreach(tool
     mir-shared-memory
     mir-statistics
     mir-tool
+    mir-values-statistics
     mir-weight-matrix )
 
     ecbuild_add_executable(
