@@ -42,7 +42,7 @@ void InputMatrix::print(std::ostream &out) const {
 }
 
 template<class V, class G>
-static void get(V &v, size_t size, int varid, NCFile &file, G get) {
+static void _get(V &v, size_t size, int varid, NCFile &file, G get) {
     v.resize(size);
     int nc = file.open();
     NC_CALL(get(nc, varid, &v[0]), file.path());
@@ -50,48 +50,126 @@ static void get(V &v, size_t size, int varid, NCFile &file, G get) {
 }
 
 void InputMatrix::read(std::vector<double> &v) const {
-    get(v, size_, varid_, file_, &nc_get_var_double);
+    _get(v, size_, varid_, file_, &nc_get_var_double);
     if (codec_) {
         codec_->decode(v);
     }
 }
 
 void InputMatrix::read(std::vector<float> &v) const {
-    get(v, size_, varid_, file_, &nc_get_var_float);
+    _get(v, size_, varid_, file_, &nc_get_var_float);
     if (codec_) {
         codec_->decode(v);
     }
 }
 
 void InputMatrix::read(std::vector<long> &v) const {
-    get(v, size_, varid_, file_, &nc_get_var_long);
+    _get(v, size_, varid_, file_, &nc_get_var_long);
     if (codec_) {
         codec_->decode(v);
     }
 }
 
 void InputMatrix::read(std::vector<short> &v) const {
-    get(v, size_, varid_, file_, &nc_get_var_short);
+    _get(v, size_, varid_, file_, &nc_get_var_short);
     if (codec_) {
         codec_->decode(v);
     }
 }
 
 void InputMatrix::read(std::vector<unsigned char> &v) const {
-    get(v, size_, varid_, file_, &nc_get_var_ubyte);
+    _get(v, size_, varid_, file_, &nc_get_var_ubyte);
     if (codec_) {
         codec_->decode(v);
     }
 }
 
 void InputMatrix::read(std::vector<long long> &v) const {
-    get(v, size_, varid_, file_, &nc_get_var_longlong);
+    _get(v, size_, varid_, file_, &nc_get_var_longlong);
     if (codec_) {
         codec_->decode(v);
     }
 }
 
-//========================================================================
+// ========================================================================
+
+template<class V, class G>
+static void _get_slab(V &v,
+                     const std::vector<size_t>& start,
+                     const std::vector<size_t>& count,
+                     int  varid,
+                     NCFile &file,
+                     G get) {
+    size_t size = std::accumulate(count.begin(), count.end(), 1, std::multiplies<size_t>());
+
+    v.resize(size);
+    int nc = file.open();
+    NC_CALL(get(nc, varid, start.data(), count.data(), v.data()), file.path());
+    file.close();
+}
+
+
+void InputMatrix::read(std::vector<double> &values,
+                       const std::vector<size_t>& start,
+                       const std::vector<size_t>& count) const  {
+    _get_slab(values, start, count, varid_, file_, &nc_get_vara_double);
+    if (codec_) {
+        codec_->decode(values);
+    }
+
+}
+
+void InputMatrix::read(std::vector<float> &values,
+                       const std::vector<size_t>& start,
+                       const std::vector<size_t>& count) const  {
+    _get_slab(values, start, count, varid_, file_, &nc_get_vara_float);
+    if (codec_) {
+        codec_->decode(values);
+    }
+
+}
+
+void InputMatrix::read(std::vector<long> &values,
+                       const std::vector<size_t>& start,
+                       const std::vector<size_t>& count) const  {
+    _get_slab(values, start, count, varid_, file_, &nc_get_vara_long);
+    if (codec_) {
+        codec_->decode(values);
+    }
+
+}
+
+void InputMatrix::read(std::vector<short> &values,
+                       const std::vector<size_t>& start,
+                       const std::vector<size_t>& count) const  {
+    _get_slab(values, start, count, varid_, file_, &nc_get_vara_short);
+    if (codec_) {
+        codec_->decode(values);
+    }
+
+}
+
+void InputMatrix::read(std::vector<unsigned char> &values,
+                       const std::vector<size_t>& start,
+                       const std::vector<size_t>& count) const  {
+    _get_slab(values, start, count, varid_, file_, &nc_get_vara_uchar);
+    if (codec_) {
+        codec_->decode(values);
+    }
+
+}
+
+void InputMatrix::read(std::vector<long long> &values,
+                       const std::vector<size_t>& start,
+                       const std::vector<size_t>& count) const  {
+    _get_slab(values, start, count, varid_, file_, &nc_get_vara_longlong);
+    if (codec_) {
+        codec_->decode(values);
+    }
+
+}
+
+// ========================================================================
 
 template<class T>
 void InputMatrix::_fill(Mapper<T> &v) const {
@@ -136,60 +214,6 @@ void InputMatrix::fill(Mapper<unsigned char> &v) const {
 
 void InputMatrix::fill(Mapper<long long> &v) const {
     _fill(v);
-}
-
-
-template<class V, class G>
-static void get_slab(V &v,
-                     const std::vector<size_t>& start,
-                     const std::vector<size_t>& count,
-                     int  varid,
-                     NCFile &file,
-                     G get) {
-    size_t size = std::accumulate(count.begin(), count.end(), 1, std::multiplies<size_t>());
-
-    v.resize(size);
-    int nc = file.open();
-    NC_CALL(get(nc, varid, start.data(), count.data(), v.data()), file.path());
-    file.close();
-}
-
-
-
-void InputMatrix::read(std::vector<double> &values,
-                       const std::vector<size_t>& start,
-                       const std::vector<size_t>& count) const  {
-    get_slab(values, start, count, varid_, file_, &nc_get_vara_double);
-}
-
-void InputMatrix::read(std::vector<float> &,
-                       const std::vector<size_t>& start,
-                       const std::vector<size_t>& count) const  {
-    NOTIMP;
-}
-
-void InputMatrix::read(std::vector<long> &,
-                       const std::vector<size_t>& start,
-                       const std::vector<size_t>& count) const  {
-    NOTIMP;
-}
-
-void InputMatrix::read(std::vector<short> &,
-                       const std::vector<size_t>& start,
-                       const std::vector<size_t>& count) const  {
-    NOTIMP;
-}
-
-void InputMatrix::read(std::vector<unsigned char> &,
-                       const std::vector<size_t>& start,
-                       const std::vector<size_t>& count) const  {
-    NOTIMP;
-}
-
-void InputMatrix::read(std::vector<long long> &,
-                       const std::vector<size_t>& start,
-                       const std::vector<size_t>& count) const  {
-    NOTIMP;
 }
 
 

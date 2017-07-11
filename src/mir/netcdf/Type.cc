@@ -373,6 +373,11 @@ Value *TypeT<std::string>::attributeValue(int nc, int id, const char *name, size
     char value[len + 1];
     memset(value, 0, sizeof(value));
     NC_CALL(nc_get_att_text(nc, id, name, value), path);
+
+
+
+    // NC_CALL(nc_get_att_string(nc, id, name, value), path);
+
     return new ValueT<std::string>(*this, value);
 }
 
@@ -405,6 +410,7 @@ T(long long, NC_INT64, -1);
 T(std::string, NC_CHAR, -1);
 T(float, NC_FLOAT, NC_DOUBLE);
 T(double, NC_DOUBLE, -1);
+T(std::string, NC_STRING, -1);
 
 
 }
