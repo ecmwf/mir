@@ -299,7 +299,7 @@ void FieldComparator::getField(const MultiFile& multi,
     grib_keys_iterator *ks = grib_keys_iterator_new(h, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(ks);
 
-    /// @todo this code should be factored out into metkit
+    /// @todo this code should be factored out into mir
 
     // bool sfc = false;
 

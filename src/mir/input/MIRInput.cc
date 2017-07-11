@@ -104,6 +104,24 @@ MIRInputFactory::~MIRInputFactory() {
 
 }
 
+static void put(std::ostream& out, unsigned long magic) {
+    out << "0x" << std::hex <<  std::setfill('0') << std::setw(8)  << magic << std::dec;
+
+    char p[5] = {0,};
+
+    for (int i = 3; i >= 0; i--) {
+        unsigned char c = magic & 0xff;
+        magic >>= 8;
+        if (isprint(c)) {
+            p[i] = c;
+        } else {
+            p[i] = '.';
+        }
+    }
+
+    out << " (" << p << ")";
+}
+
 
 MIRInput *MIRInputFactory::build(const std::string& path) {
     pthread_once(&once, init);
@@ -150,8 +168,10 @@ MIRInput *MIRInputFactory::build(const std::string& path) {
                                 << "]" << std::endl;
 
             eckit::Log::error() << "MIRInputFactory are:" << std::endl;
-            for (j = m->begin() ; j != m->end() ; ++j)
-                eckit::Log::error() << "   " << (*j).first << std::endl;
+            for (j = m->begin() ; j != m->end() ; ++j) {
+                put(eckit::Log::error(), (*j).first);
+                eckit::Log::error() << std::endl;
+            }
             eckit::Log::error() << "MIRInputFactory assuming grib" << std::endl;
             return new GribFileInput(path);
         }

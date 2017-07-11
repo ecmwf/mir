@@ -25,8 +25,8 @@
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/FieldParametrisation.h"
-#include "metkit/netcdf/NCFileCache.h"
-#include "metkit/netcdf/InputDataset.h"
+#include "mir/netcdf/NCFileCache.h"
+#include "mir/netcdf/InputDataset.h"
 #include "mir/param/CachedParametrisation.h"
 
 
@@ -36,7 +36,7 @@ namespace input {
 
 class NetcdfFileInput : public MIRInput,
     public param::FieldParametrisation,
-    public metkit::netcdf::NCFileCache {
+    public mir::netcdf::NCFileCache {
 public:
 
     // -- Exceptions
@@ -98,8 +98,8 @@ private:
     eckit::PathName path_;
 
     param::CachedParametrisation cache_;
-    metkit::netcdf::InputDataset dataset_;
-    std::vector<metkit::netcdf::Field*> fields_;
+    mir::netcdf::InputDataset dataset_;
+    std::vector<mir::netcdf::Field*> fields_;
     int current_;
 
     mutable std::vector<double> latitude_;

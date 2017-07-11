@@ -39,7 +39,7 @@ ecbuild_use_package( PROJECT eckit  VERSION  0.18.0  REQUIRED )
 
 ecbuild_use_package( PROJECT atlas  VERSION  0.9  REQUIRED )
 
-ecbuild_use_package( PROJECT metkit  VERSION  0.7.0 )
+#ecbuild_use_package( PROJECT metkit  VERSION  0.7.0 )
 
 ecbuild_declare_project()
 
@@ -51,7 +51,7 @@ ecbuild_check_cxx11( PRINT )
 
 ecbuild_add_option( FEATURE OMP    DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
 ecbuild_add_option( FEATURE MPI    DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
-ecbuild_add_option( FEATURE NETCDF DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
+#ecbuild_add_option( FEATURE NETCDF DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
 
 # OMP/MPI features handling
 if( ENABLE_OMP )

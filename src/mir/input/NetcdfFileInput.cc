@@ -18,8 +18,8 @@
 
 #include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
-#include "metkit/netcdf/Field.h"
-#include "metkit/netcdf/GridSpec.h"
+#include "mir/netcdf/Field.h"
+#include "mir/netcdf/GridSpec.h"
 
 
 namespace mir {
@@ -71,18 +71,28 @@ bool NetcdfFileInput::next() {
 }
 
 
+static void get_values(data::MIRField& field, const std::vector<size_t>& dims, size_t i) {
+
+    std::vector<double> values;
+    field.update(values, i);
+
+}
+
 
 data::MIRField NetcdfFileInput::field() const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
-
-    std::vector<double> values;
-    // fields_[current_]->values(values);
 
     bool hasMissing = false; // Should check!
     double missingValue = 9999; // Read from file
 
     data::MIRField field(*this, hasMissing, missingValue);
-    field.update(values, 0);
+
+    std::vector<size_t> dims = fields_[current_]->dimensions();
+
+    ASSERT(dims.size() >= 2);
+    // Assumes lat/lon at the end
+
+    get_values(field, dims, 0);
 
     return field;
 }
@@ -92,8 +102,6 @@ bool NetcdfFileInput::get(const std::string& name, long& value) const {
     if (fields_[current_]->get(name, value)) {return true;}
     return FieldParametrisation::get(name, value);
 }
-
-
 
 bool NetcdfFileInput::has(const std::string& name) const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
@@ -110,6 +118,7 @@ bool NetcdfFileInput::get(const std::string &name, std::string &value) const {
 bool NetcdfFileInput::get(const std::string &name, double &value) const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
     if (fields_[current_]->get(name, value)) {return true;}
+    return FieldParametrisation::get(name, value);
 }
 
 bool NetcdfFileInput::sameAs(const MIRInput& other) const {
@@ -119,29 +128,28 @@ bool NetcdfFileInput::sameAs(const MIRInput& other) const {
 
 size_t NetcdfFileInput::dimensions() const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
-//     std::vector<size_t> dims = fields_[current_]->dimensions();
+    std::vector<size_t> dims = fields_[current_]->dimensions();
 
-//     std::cout << "NC dimensions: " << dims << std::endl;
+    std::cout << "NC dimensions: " << dims << std::endl;
 
-//     ASSERT(dims.size() >= 2);
-//     // Assumes lat/lon at the end
+    ASSERT(dims.size() >= 2);
+    // Assumes lat/lon at the end
 
-//     size_t n = 1;
-//     for (size_t i = 0; i < dims.size() - 2; ++i) {
-//         n *= dims[i];
-//     }
+    size_t n = 1;
+    for (size_t i = 0; i < dims.size() - 2; ++i) {
+        n *= dims[i];
+    }
 
 
-//     std::cout << "NC dimensions: " << n << std::endl;
+    std::cout << "NC dimensions: " << n << std::endl;
 
-//     return n;
-// }
-    return 1;
+    return n;
 }
 
 
 static MIRInputBuilder< NetcdfFileInput > netcdf4(0x89484446); // ".HDF"
-static MIRInputBuilder< NetcdfFileInput > netcdf3(0x43444601); // "CDF."
+static MIRInputBuilder< NetcdfFileInput > netcdf31(0x43444601); // "CDF."
+static MIRInputBuilder< NetcdfFileInput > netcdf32(0x43444602); // "CDF."
 
 
 
