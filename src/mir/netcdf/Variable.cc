@@ -95,7 +95,7 @@ const Variable& Variable::coordinateByAttribute(const std::string& attribute,
     for (auto j = coords.begin(); j != coords.end(); ++j) {
         if (dataset_.hasVariable(*j)) {
             const Variable& v = dataset_.variable(*j);
-            if (v.attribute(attribute) == value) {
+            if (v.getAttributeValue<std::string>(attribute) == value) {
                 return v;
             }
         }
@@ -382,15 +382,22 @@ void Variable::collectField(std::vector<Field *>&) const {
 
 // CF part ------------------------
 
-std::string Variable::attribute(const std::string& name) const {
+void Variable::getAttribute(const std::string& name, std::string& s) const {
     auto j = attributes_.find(name);
     if (j == attributes_.end()) {
-        return "<UNDEFINED>";
+        s = "<UNDEFINED>";
     }
 
-    std::string s;
     (*j).second->value().get(s);
-    return s;
+}
+
+void Variable::getAttribute(const std::string& name, double& s) const {
+    auto j = attributes_.find(name);
+    if (j == attributes_.end()) {
+        s = 0;
+    }
+
+    (*j).second->value().get(s);
 }
 
 size_t Variable::numberOfDimensions() const {

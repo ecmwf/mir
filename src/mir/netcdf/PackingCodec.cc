@@ -29,8 +29,8 @@ namespace netcdf {
 
 
 PackingCodec::PackingCodec(const Variable& variable):
-    scale_factor_(0),
-    add_offset_(0) {
+    scale_factor_(variable.getAttributeValue<double>("scale_factor")),
+    add_offset_(variable.getAttributeValue<double>("add_offset")) {
 
 }
 

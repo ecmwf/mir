@@ -34,10 +34,10 @@ static eckit::DateTime reference(const std::string& units) {
 }
 
 GregorianCalendar::GregorianCalendar(const Variable& variable):
-    reference_(reference(variable.attribute("units"))),
+    reference_(reference(variable.getAttributeValue<std::string>("units"))),
     zero_(0),
-    units_(variable.attribute("units")),
-    calendar_(variable.attribute("calendar"))
+    units_(variable.getAttributeValue<std::string>("units")),
+    calendar_(variable.getAttributeValue<std::string>("calendar"))
 
 {
 

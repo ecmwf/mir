@@ -99,7 +99,15 @@ public:
     // ====================================================
     virtual const Variable& coordinateByAttribute(const std::string& attribute,
             const std::string& value) const;
-    virtual std::string attribute(const std::string& attribute) const;
+
+
+    template<class T>
+    T getAttributeValue(const std::string& name) const {
+        T result;
+        getAttribute(name, result);
+        return result;
+    }
+
     virtual size_t numberOfDimensions() const;
 
     virtual size_t count2DValues() const;
@@ -131,7 +139,11 @@ private:
 
     // -- Methods
 
+    void getAttribute(const std::string& name, std::string& value) const;
+    void getAttribute(const std::string& name, double& value) const;
+
     virtual void print(std::ostream &s) const = 0;
+
 
     // - Friend
     friend std::ostream &operator<<(std::ostream &s, const Variable &v)
