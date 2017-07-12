@@ -20,7 +20,7 @@
 #include "mir/netcdf/MergePlan.h"
 #include "mir/netcdf/Type.h"
 #include "mir/netcdf/Value.h"
-#include "mir/netcdf/GregorianDateCodec.h"
+#include "mir/netcdf/Codec.h"
 
 #include <iostream>
 
@@ -302,21 +302,13 @@ Variable *Variable::makeScalarCoordinateVariable() {
 }
 
 void Variable::initCodecs() {
-    auto j = attributes_.find("units");
-    if (j != attributes_.end()) {
-        std::string units = (*j).second->asString();
-        if (units.find("seconds since ") == 0) {
-            std::string calendar = "gregorian";
-            auto k = attributes_.find("calendar");
-            if (k != attributes_.end()) {
-                calendar = (*k).second->asString();
-                if (calendar != "gregorian") {
-                    throw MergeError(std::string("Unsupported calendar: ") + calendar);
-                }
-            }
-            matrix()->codec(new GregorianDateCodec(units, calendar));
-        }
+
+    auto k = attributes_.find("calendar");
+    if (k != attributes_.end()) {
+        std::string calendar = (*k).second->asString();
+        matrix()->codec(CodecFactory::build(calendar, *this));
     }
+
 }
 
 

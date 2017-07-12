@@ -24,8 +24,7 @@ Field::Field(const Variable &variable):
     variable_(variable) {
 }
 
-Field::~Field()
-{
+Field::~Field() {
 }
 
 const GridSpec &Field::gridSpec() const {
@@ -76,11 +75,9 @@ bool Field::get(const std::string &name, double &value) const {
     return gridSpec().get(name, value);
 }
 
-
 void Field::print(std::ostream &out) const {
     out << "Field[variable=" << variable_ << "]";
 }
-
 
 
 }

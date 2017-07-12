@@ -13,21 +13,20 @@
 #ifndef mir_netcdf_GregorianDateCodec
 #define mir_netcdf_GregorianDateCodec
 
-#include "mir/netcdf/Codec.h"
+#include "mir/netcdf/Calendar.h"
 #include "eckit/types/DateTime.h"
 
 namespace mir {
 namespace netcdf {
 
-class Variable;
 
 
-class GregorianDateCodec : public Codec
+class GregorianCalendar : public Calendar
 {
 public:
 
-    GregorianDateCodec(const std::string &unit, const std::string &calendar);
-    virtual ~GregorianDateCodec();
+    GregorianCalendar(const Variable& variable);
+    virtual ~GregorianCalendar();
 
 private:
 
@@ -62,7 +61,6 @@ private:
     virtual void addAttributes(Variable &) const;
     virtual void updateAttributes(int nc, int varid, const std::string &path);
 
-    virtual bool timeAxis() const;
 
 };
 

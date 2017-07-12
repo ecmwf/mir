@@ -68,6 +68,36 @@ private:
 };
 
 
+class CodecFactory {
+
+    std::string name_;
+
+    virtual Codec *make(const Variable&) = 0;
+
+protected:
+
+    CodecFactory(const std::string &);
+
+    virtual ~CodecFactory();
+
+public:
+
+    static Codec *build(const std::string&, const Variable&);
+
+    static void list(std::ostream&);
+
+};
+
+
+template<class T>
+class CodecBuilder : public CodecFactory {
+    virtual Codec *make(const Variable& variable) {
+        return new T(variable);
+    }
+public:
+    CodecBuilder(const std::string &name) : CodecFactory(name) {}
+};
+
 }
 }
 

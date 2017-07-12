@@ -10,7 +10,7 @@
 
 // Baudouin Raoult - ECMWF Jan 2015
 
-#include "mir/netcdf/GregorianDateCodec.h"
+#include "mir/netcdf/GregorianCalendar.h"
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/OutputAttribute.h"
@@ -28,11 +28,11 @@ namespace netcdf {
 
 static long long offset = 0;
 
-GregorianDateCodec::GregorianDateCodec(const std::string &units, const std::string &calendar):
-    reference_(units.substr(strlen("seconds since "))),
+GregorianCalendar::GregorianCalendar(const Variable& variable):
+    reference_(variable.attribute("units").substr(strlen("seconds since "))),
     zero_(0),
-    units_(units),
-    calendar_(calendar)
+    units_(variable.attribute("units")),
+    calendar_(variable.attribute("calendar"))
 
 {
     offset_ = reference_.date().julian() * 24 * 60 * 60 + eckit::Second(reference_.time());
@@ -42,43 +42,43 @@ GregorianDateCodec::GregorianDateCodec(const std::string &units, const std::stri
     offset_ -= offset;
 }
 
-GregorianDateCodec::~GregorianDateCodec() {
+GregorianCalendar::~GregorianCalendar() {
 
 }
 
-void GregorianDateCodec::print(std::ostream &out) const {
-    out << "GregorianDateCodec[reference=" << reference_ << ", calendar=" << calendar_ << ", offset=" << offset_ << "]";
+void GregorianCalendar::print(std::ostream &out) const {
+    out << "GregorianCalendar[reference=" << reference_ << ", calendar=" << calendar_ << ", offset=" << offset_ << "]";
 }
 
 template<class T>
-void GregorianDateCodec::_decode(std::vector<T> &v) const {
+void GregorianCalendar::_decode(std::vector<T> &v) const {
     for (size_t i = 0; i < v.size(); i++) {
         ASSERT(T(v[i] + offset_) - offset_ == v[i]);
         v[i] += offset_;
     }
 }
 
-void GregorianDateCodec::decode(std::vector<double> &v) const {
+void GregorianCalendar::decode(std::vector<double> &v) const {
     _decode(v);
 }
 
-void GregorianDateCodec::decode(std::vector<float> &v) const {
+void GregorianCalendar::decode(std::vector<float> &v) const {
     _decode(v);
 }
 
-void GregorianDateCodec::decode(std::vector<long> &v) const {
+void GregorianCalendar::decode(std::vector<long> &v) const {
     _decode(v);
 }
 
-void GregorianDateCodec::decode(std::vector<short> &v) const {
+void GregorianCalendar::decode(std::vector<short> &v) const {
     _decode(v);
 }
 
-void GregorianDateCodec::decode(std::vector<unsigned char> &v) const {
+void GregorianCalendar::decode(std::vector<unsigned char> &v) const {
     _decode(v);
 }
 
-void GregorianDateCodec::decode(std::vector<long long> &v) const {
+void GregorianCalendar::decode(std::vector<long long> &v) const {
     _decode(v);
 }
 
@@ -97,36 +97,36 @@ static T _encode(std::vector<T> &v) {
     return 0;
 }
 
-void GregorianDateCodec::encode(std::vector<double> &v) const {
+void GregorianCalendar::encode(std::vector<double> &v) const {
     zero_ = _encode(v);
 }
 
-void GregorianDateCodec::encode(std::vector<float> &v) const {
+void GregorianCalendar::encode(std::vector<float> &v) const {
     zero_ = _encode(v);
 }
 
-void GregorianDateCodec::encode(std::vector<long> &v) const {
+void GregorianCalendar::encode(std::vector<long> &v) const {
     zero_ = _encode(v);
 }
 
-void GregorianDateCodec::encode(std::vector<short> &v) const {
+void GregorianCalendar::encode(std::vector<short> &v) const {
     zero_ = _encode(v);
 }
 
-void GregorianDateCodec::encode(std::vector<unsigned char> &v) const {
+void GregorianCalendar::encode(std::vector<unsigned char> &v) const {
     zero_ = _encode(v);
 }
 
-void GregorianDateCodec::encode(std::vector<long long> &v) const {
+void GregorianCalendar::encode(std::vector<long long> &v) const {
     zero_ = _encode(v);
 }
 
-void GregorianDateCodec::addAttributes(Variable &v) const {
+void GregorianCalendar::addAttributes(Variable &v) const {
     v.add(new OutputAttribute(v, "units", Value::newFromString("seconds since YYYY-MM-DD HH-MM-SS")));
     v.add(new OutputAttribute(v, "calendar", Value::newFromString(calendar_)));
 }
 
-void GregorianDateCodec::updateAttributes(int nc, int varid, const std::string &path) {
+void GregorianCalendar::updateAttributes(int nc, int varid, const std::string &path) {
     std::stringstream s;
     eckit::DateTime dt = reference_ + eckit::Second(zero_);
     s << "seconds since " << dt.date() << " " << dt.time();
@@ -134,9 +134,8 @@ void GregorianDateCodec::updateAttributes(int nc, int varid, const std::string &
     NC_CALL(nc_put_att_text(nc, varid, "units", value.size(), value.c_str()), path);
 }
 
-bool GregorianDateCodec::timeAxis() const {
-    return true;
-}
+
+static CodecBuilder<GregorianCalendar> builder("gregorian");
 
 }
 }

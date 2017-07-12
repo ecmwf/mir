@@ -584,8 +584,10 @@ netcdf/Exceptions.cc
 netcdf/Exceptions.h
 netcdf/Dataset.cc
 netcdf/Dataset.h
-netcdf/GregorianDateCodec.cc
-netcdf/GregorianDateCodec.h
+netcdf/GregorianCalendar.cc
+netcdf/GregorianCalendar.h
+netcdf/Calendar.cc
+netcdf/Calendar.h
 netcdf/HyperCube.cc
 netcdf/HyperCube.h
 netcdf/InputAttribute.cc
