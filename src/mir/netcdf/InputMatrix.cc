@@ -171,51 +171,6 @@ void InputMatrix::read(std::vector<long long> &values,
 
 // ========================================================================
 
-template<class T>
-void InputMatrix::_fill(Mapper<T> &v) const {
-    std::vector<T> values;
-    read(values);
-    if (missingValue_) {
-        T missing;
-        missingValue_->get(missing);
-        for (size_t i = 0; i < values.size(); i++) {
-            if (values[i] != missing)
-            {
-                v.set(i, values[i]);
-            }
-        }
-    }
-    else {
-        for (size_t i = 0; i < values.size(); i++) {
-            v.set(i, values[i]);
-        }
-    }
-}
-
-void InputMatrix::fill(Mapper<double> &v) const {
-    _fill(v);
-}
-
-void InputMatrix::fill(Mapper<float> &v) const {
-    _fill(v);
-}
-
-void InputMatrix::fill(Mapper<long> &v) const {
-    _fill(v);
-}
-
-void InputMatrix::fill(Mapper<short> &v) const {
-    _fill(v);
-}
-
-void InputMatrix::fill(Mapper<unsigned char> &v) const {
-    _fill(v);
-}
-
-void InputMatrix::fill(Mapper<long long> &v) const {
-    _fill(v);
-}
-
 
 }
 }

@@ -193,9 +193,9 @@ void TypeT<T>::printValues(std::ostream &out, const Matrix &matrix) const
 template<>
 bool TypeT<std::string>::cellMethodOutputVariableMerge( Variable &out, const Variable &in, MergePlan &plan)
 {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-    return false;
+    std::ostringstream os;
+    os << "TypeT<std::string>::cellMethodOutputVariableMerge() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 template<class T>
@@ -234,14 +234,14 @@ static void save_values(const Matrix &matrix, int nc, int varid, const std::stri
         NC_CALL(put(nc, varid, &values[0]), path);
     }
 
-    // No need for the values anymore
-    matrix.decache();
 }
 
 template<>
 void TypeT<std::string>::save(const Matrix &, int nc, int varid, const std::string &path) const
 {
-    std::cout << __FUNCTION__ << " " << *this << std::endl; NOTIMP;
+    std::ostringstream os;
+    os << "TypeT<std::string>::save() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 template<>

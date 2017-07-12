@@ -37,54 +37,5 @@ void DummyMatrix::print(std::ostream &out) const {
     out << "DummyMatrix[type=" << *type_ << ",name=" << name_ << ",other=" << *other_ << "]";
 }
 
-void DummyMatrix::fill(Mapper<double> &v) const
-{
-    if (!merged_) {
-        other_->fill(v);
-    }
-}
-
-void DummyMatrix::fill(Mapper<float> &v) const
-{
-    if (!merged_) {
-        other_->fill(v);
-    }
-}
-
-void DummyMatrix::fill(Mapper<long> &v) const
-{
-    if (!merged_) {
-        other_->fill(v);
-    }
-}
-
-void DummyMatrix::fill(Mapper<short> &v) const
-{
-    if (!merged_) {
-        other_->fill(v);
-    }
-}
-
-void DummyMatrix::fill(Mapper<unsigned char> &v) const
-{
-    if (!merged_) {
-        other_->fill(v);
-    }
-}
-
-void DummyMatrix::fill(Mapper<long long> &v) const
-{
-    if (!merged_) {
-        other_->fill(v);
-    }
-}
-
-Matrix *DummyMatrix::merged() {
-    // If this is called, the dummy matrix has  been merged with another
-    // We should not use 'other_'
-    merged_ = true;
-    return this;
-}
-
 }
 }

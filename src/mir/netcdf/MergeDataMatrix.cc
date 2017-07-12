@@ -46,37 +46,5 @@ void MergeDataMatrix::dumpTree(std::ostream &out, size_t depth) const {
     in_->dumpTree(out, depth + 1);
 }
 
-template<class T>
-void MergeDataMatrix::_fill(Mapper<T> &v) const {
-    Mapper<T> omap(v, out_->reshape());
-    Mapper<T> imap(v, in_->reshape());
-    out_->fill(omap);
-    in_->fill(imap);
-}
-
-void MergeDataMatrix::fill(Mapper<double> &v) const {
-    _fill(v);
-}
-
-void MergeDataMatrix::fill(Mapper<float> &v) const {
-    _fill(v);
-}
-
-void MergeDataMatrix::fill(Mapper<long> &v) const {
-    _fill(v);
-}
-
-void MergeDataMatrix::fill(Mapper<short> &v) const {
-    _fill(v);
-}
-
-void MergeDataMatrix::fill(Mapper<unsigned char> &v) const {
-    _fill(v);
-}
-
-void MergeDataMatrix::fill(Mapper<long long> &v) const {
-    _fill(v);
-}
-
 }
 }

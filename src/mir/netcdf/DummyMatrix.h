@@ -33,15 +33,8 @@ private:
     // Methods
 
     virtual void print(std::ostream &out) const;
-    virtual void fill(Mapper<double> &) const;
-    virtual void fill(Mapper<float> &) const;
-    virtual void fill(Mapper<long> &) const;
-    virtual void fill(Mapper<short> &) const;
-    virtual void fill(Mapper<unsigned char> &) const;
-    virtual void fill(Mapper<long long> &) const;
 
 
-    virtual Matrix *merged();
 
 };
 

@@ -43,12 +43,6 @@ public:
     const std::string &name() const;
     size_t size() const;
 
-    Matrix *mergeData(Matrix *other, size_t size);
-    Matrix *mergeCoordinates(Matrix *other, size_t size);
-
-    template<class T>
-    const std::vector<T> &values() const;
-
     // =================================================
 
     virtual void read(std::vector<double> &) const ;
@@ -57,6 +51,7 @@ public:
     virtual void read(std::vector<short> &) const ;
     virtual void read(std::vector<unsigned char> &) const ;
     virtual void read(std::vector<long long> &) const ;
+    virtual void read(std::vector<std::string> &) const ;
 
     virtual void read(std::vector<double> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
     virtual void read(std::vector<float> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
@@ -65,10 +60,14 @@ public:
     virtual void read(std::vector<unsigned char> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
     virtual void read(std::vector<long long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
 
+    template<class T>
+    std::vector<T> values() const {
+        std::vector<T> result;
+        read(result);
+        return result;
+    }
 
 public:
-
-    void decache() const;
 
     void dump(std::ostream &) const;
     virtual void dumpTree(std::ostream &, size_t) const;
@@ -81,20 +80,9 @@ public:
     void codec(Codec *);
     Codec *codec() const;
 
-    virtual Matrix *merged();
     // ========================================================
 
-    void reshape(Reshape *);
-    const std::vector<Reshape *> &reshape() const;
-
     // ========================================================
-
-    virtual void fill(Mapper<double> &) const;
-    virtual void fill(Mapper<float> &) const;
-    virtual void fill(Mapper<short> &) const;
-    virtual void fill(Mapper<long> &) const;
-    virtual void fill(Mapper<unsigned char> &) const;
-    virtual void fill(Mapper<long long> &) const;
 
 protected:
 
@@ -107,7 +95,6 @@ protected:
     Codec *codec_;
     std::string name_;
     size_t size_;
-    std::vector<Reshape *> reshapes_;
 
 private:
 
@@ -115,28 +102,10 @@ private:
     Matrix &operator=(const Matrix &);
 
     // -- Members
-    mutable std::vector<double> double_cache_;
-    mutable std::vector<float> float_cache_;
-    mutable std::vector<long> long_cache_;
-    mutable std::vector<short> short_cache_;
-    mutable std::vector<unsigned char> unsigned_char_cache_;
-    mutable std::vector<long long> longlong_cache_;
-    mutable std::vector<std::string> string_cache_;
-
-    void values(std::vector<double> &) const;
-    void values(std::vector<float> &) const;
-    void values(std::vector<long> &) const;
-    void values(std::vector<short> &) const;
-    void values(std::vector<unsigned char> &) const;
-    void values(std::vector<long long> &) const;
-    void values(std::vector<std::string> &) const;
 
 
     // -- Methods
-    template<class T> void _fill(std::vector<T> &v) const;
 
-    template<class T>
-    const std::vector<T> &cache() const;
 
     virtual void print(std::ostream &out) const = 0;
 
@@ -150,14 +119,6 @@ private:
 };
 
 
-template<class T>
-const std::vector<T> &Matrix::values() const {
-    const std::vector<T> &vals = cache<T>();
-    if (vals.empty()) {
-        values(const_cast<std::vector<T>&>(vals));
-    }
-    return vals;
-}
 
 }
 }

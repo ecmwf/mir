@@ -38,10 +38,6 @@ Matrix::Matrix(Type &type, const std::string &name, size_t size):
 Matrix::~Matrix() {
     delete missingValue_;
 
-    for (auto j = reshapes_.begin(); j != reshapes_.end(); ++j) {
-        (*j)->detach();
-    }
-
     if (codec_) {
         codec_->detach();
     }
@@ -65,17 +61,6 @@ Value *Matrix::missingValue() const {
     return missingValue_;
 }
 
-Matrix *Matrix::mergeData(Matrix *other, size_t size) {
-    Matrix *m = new MergeDataMatrix(this->merged(), other->merged(), size);
-    m->codec(codec_);
-    return m;
-}
-
-Matrix *Matrix::mergeCoordinates(Matrix *other, size_t size)  {
-    Matrix *m = new MergeCoordinateMatrix(this->merged(), other->merged(), size);
-    m->codec(codec_);
-    return m;
-}
 
 void Matrix::dump(std::ostream &out) const {
     type_->dump(out, *this);
@@ -100,92 +85,12 @@ void Matrix::missingValue(Value *value) {
     missingValue_ = value;
 }
 
-template<class T>
-void Matrix::_fill(std::vector<T> &v) const {
-
-    if (missingValue_) {
-        missingValue_->init(v, size());
-    }
-    else {
-        std::vector<T> w(size());
-        std::swap(v, w);
-    }
-
-    std::vector<bool> set(size(), false);
-    bool overlap = false;
-    Mapper<T> mapper(v, set, overlap);
-
-    fill(mapper);
-}
-
-void Matrix::values(std::vector<double> &v) const {
-    _fill(v);
-}
-
-void Matrix::values(std::vector<float> &v) const {
-    _fill(v);
-}
-
-void Matrix::values(std::vector<long> &v) const {
-    _fill(v);
-}
-
-void Matrix::values(std::vector<short> &v) const {
-    _fill(v);
-}
-
-void Matrix::values(std::vector<unsigned char> &v) const {
-    _fill(v);
-}
-
-void Matrix::values(std::vector<long long> &v) const {
-    _fill(v);
-}
-
-void Matrix::values(std::vector<std::string> &v) const {
-    NOTIMP;
-}
-
-void Matrix::fill(Mapper<double> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-}
-
-void Matrix::fill(Mapper<float> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-}
-
-void Matrix::fill(Mapper<long> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-}
-
-void Matrix::fill(Mapper<short> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-}
-
-void Matrix::fill(Mapper<unsigned char> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-}
-
-void Matrix::fill(Mapper<long long> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-}
-
 size_t Matrix::size() const {
     return size_;
 }
 
-Matrix *Matrix::merged() {
-    return this;
-}
 
 void Matrix::codec(Codec *codec) {
-    decache();
 
     ASSERT(!codec_);
     if (codec) {
@@ -197,122 +102,88 @@ void Matrix::codec(Codec *codec) {
     codec_ = codec;
 }
 
-void Matrix::reshape(Reshape *r) {
-    decache();
-    if (reshapes_.size()) {
-        Reshape *s = reshapes_.back();
-        if (s->merge(*r)) {
-            r->attach();
-            r->detach();
-            return;
-        }
-    }
-
-    r->attach();
-    std::cout << "Matrix::reshape " << name() << " " << *r << std::endl;
-    reshapes_.push_back(r);
-}
-
-const std::vector<Reshape *> &Matrix::reshape() const {
-    return reshapes_;
-}
 
 Codec *Matrix::codec() const {
     return codec_;
 }
 
-template<>
-const std::vector<double> &Matrix::cache<double>() const {
-    return double_cache_;
-}
-
-template<>
-const std::vector<short> &Matrix::cache<short>() const {
-    return short_cache_;
-}
-
-template<>
-const std::vector<long> &Matrix::cache<long>() const {
-    return long_cache_;
-}
-
-template<>
-const std::vector<float> &Matrix::cache<float>() const {
-    return float_cache_;
-}
-
-template<>
-const std::vector<unsigned char> &Matrix::cache<unsigned char>() const {
-    return unsigned_char_cache_;
-}
-
-template<>
-const std::vector<std::string> &Matrix::cache<std::string>() const {
-    return string_cache_;
-}
-
-template<>
-const std::vector<long long> &Matrix::cache<long long>() const {
-    return longlong_cache_;
-}
-
-void Matrix::decache() const {
-    double_cache_.clear();
-    float_cache_.clear();
-    long_cache_.clear();
-    short_cache_.clear();
-    unsigned_char_cache_.clear();
-    string_cache_.clear();
-    longlong_cache_.clear();
-}
 
 void Matrix::read(std::vector<double> &) const  {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Matrix::read(std::vector<double>) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Matrix::read(std::vector<float> &) const  {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Matrix::read(std::vector<float>) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Matrix::read(std::vector<long> &) const  {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Matrix::read(std::vector<long>) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Matrix::read(std::vector<short> &) const  {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Matrix::read(std::vector<short>) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Matrix::read(std::vector<unsigned char> &) const  {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Matrix::read(std::vector<unsigned char>) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Matrix::read(std::vector<long long> &) const  {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Matrix::read(std::vector<long long>) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
+void Matrix::read(std::vector<std::string> &) const  {
+    std::ostringstream os;
+    os << "Matrix::read(std::vector<std::string>) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
 
 void Matrix::read(std::vector<double> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const  {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Matrix::read() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Matrix::read(std::vector<float> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const  {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Matrix::read() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Matrix::read(std::vector<long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const  {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Matrix::read() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Matrix::read(std::vector<short> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const  {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Matrix::read() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Matrix::read(std::vector<unsigned char> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const  {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Matrix::read() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Matrix::read(std::vector<long long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const  {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Matrix::read() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 

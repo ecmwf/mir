@@ -66,8 +66,8 @@ void MergeCoordinateStep::execute(MergePlan &plan) {
     }
 
     // Save matrix
-    Matrix *m = out_.matrix()->mergeCoordinates(in_.matrix(), out_.cube().count());
-    out_.setMatrix(m);
+    // Matrix *m = out_.matrix()->mergeCoordinates(in_.matrix(), out_.cube().count());
+    // out_.setMatrix(m);
 }
 
 }

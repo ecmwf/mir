@@ -63,8 +63,8 @@ void MergeDataStep::execute(MergePlan &plan) {
     }
 
     // Save matrix
-    Matrix *m = out_.matrix()->mergeData(in_.matrix(), out_.cube().count());
-    out_.setMatrix(m);
+    // Matrix *m = out_.matrix()->mergeData(in_.matrix(), out_.cube().count());
+    // out_.setMatrix(m);
 }
 
 }

@@ -49,39 +49,5 @@ void MergeCoordinateMatrix::dumpTree(std::ostream &out, size_t depth) const {
     in_->dumpTree(out, depth + 1);
 }
 
-template<class T>
-void MergeCoordinateMatrix::_fill(Mapper<T> &v) const {
-    v.overlap(true);
-    Mapper<T> omap(v, out_->reshape());
-    Mapper<T> imap(v, in_->reshape());
-    out_->fill(omap);
-    in_->fill(imap);
-    v.overlap(false);
-}
-
-void MergeCoordinateMatrix::fill(Mapper<double> &v) const {
-    _fill(v);
-}
-
-void MergeCoordinateMatrix::fill(Mapper<float> &v) const {
-    _fill(v);
-}
-
-void MergeCoordinateMatrix::fill(Mapper<long> &v) const {
-    _fill(v);
-}
-
-void MergeCoordinateMatrix::fill(Mapper<short> &v) const {
-    _fill(v);
-}
-
-void MergeCoordinateMatrix::fill(Mapper<unsigned char> &v) const {
-    _fill(v);
-}
-
-void MergeCoordinateMatrix::fill(Mapper<long long> &v) const {
-    _fill(v);
-}
-
 }
 }

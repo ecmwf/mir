@@ -53,7 +53,7 @@ void ReshapeVariableStep::print(std::ostream &out) const {
 
 void ReshapeVariableStep::execute(MergePlan &plan) {
     std::cout << "ReshapeVariableStep::execute(): " << out_ << std::endl;
-
+#if 0
     const std::vector<Dimension *> &dims = out_.dimensions();
 
     HyperCube &cube = out_.cube();
@@ -126,6 +126,7 @@ void ReshapeVariableStep::execute(MergePlan &plan) {
     std::cout << "ReshapeVariableStep::execute() - Remapping in " << std::endl;
     const std::vector<Reshape *> b = in.matrix()->reshape();
     for (auto j = b.begin(); j != b.end(); ++j) std::cout << *(*j) << std::endl;
+#endif
 }
 
 bool ReshapeVariableStep::merge(Step *other) {

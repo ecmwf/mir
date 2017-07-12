@@ -285,19 +285,21 @@ void Variable::validate() const {
 }
 
 void Variable::create(int nc) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::create() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Variable::save(int nc) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::save() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 Variable *Variable::clone(Dataset &owner) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-    return 0;
+    std::ostringstream os;
+    os << "Variable::clone() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Variable::merge(const Variable &other, MergePlan &plan) {
@@ -306,33 +308,33 @@ void Variable::merge(const Variable &other, MergePlan &plan) {
 }
 
 Variable *Variable::makeDataVariable() {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-    return 0;
+    std::ostringstream os;
+    os << "Variable::makeDataVariable() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 Variable *Variable::makeCoordinateVariable() {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-    return 0;
+    std::ostringstream os;
+    os << "Variable::makeCoordinateVariable() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 Variable *Variable::makeSimpleVariable() {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-    return 0;
+    std::ostringstream os;
+    os << "Variable::makeSimpleVariable() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 Variable *Variable::makeCellMethodVariable() {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-    return 0;
+    std::ostringstream os;
+    os << "Variable::makeCellMethodVariable() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 Variable *Variable::makeScalarCoordinateVariable() {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-    return 0;
+    std::ostringstream os;
+    os << "Variable::makeScalarCoordinateVariable() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Variable::initCodecs() {
@@ -359,9 +361,9 @@ bool Variable::dummy() const {
 }
 
 bool Variable::sameAsDummy(const Variable &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-    return false;
+    std::ostringstream os;
+    os << "Variable::sameAsDummy() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 const std::string &Variable::ncname() const {
@@ -411,11 +413,15 @@ void Variable::values(std::vector<double>& v) const {
 }
 
 void Variable::get2DValues(std::vector<double>& values, size_t i) const {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::get2DValues() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 size_t Variable::count2DValues() const {
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::count2DValues() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 bool Variable::hasMissing() const {
