@@ -15,6 +15,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <vector>
 
 namespace mir {
 namespace netcdf {
