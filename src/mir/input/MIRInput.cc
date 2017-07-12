@@ -53,6 +53,7 @@ grib_handle *MIRInput::gribHandle(size_t which) const {
     static grib_handle *handle = 0;
     if (!handle) {
         handle = grib_handle_new_from_samples(0, "GRIB1");
+        grib_set_long(handle, "paramId", 255);
         ASSERT(handle);
     }
     return handle;

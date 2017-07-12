@@ -184,7 +184,11 @@ InputDataset::InputDataset(const std::string &path, NCFileCache &cache):
 
     for (auto j = variables_.begin(); j != variables_.end(); ++j) {
         Variable *v = (*j).second;
-        v->addMissingCoordinates();
+        Variable *w = v->addMissingCoordinates();
+          if (w != v) {
+                delete v;
+                (*j).second = w;
+            }
     }
 
     std::cout << "Dataset: pass2..." << std::endl;

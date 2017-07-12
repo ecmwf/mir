@@ -72,15 +72,15 @@ void WeightMatrix::multiply(const WeightMatrix::Vector& values, WeightMatrix::Ve
 
 void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Matrix& result) const {
 
-    eckit::Log::debug<LibMir>() << "MethodWeighted::multiply: "
-                                   "A[" << rows()        << ',' << cols()        << "] * "
-                                   "B[" << values.rows() << ',' << values.cols() << "] = "
-                                   "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
+    // eckit::Log::debug<LibMir>() << "MethodWeighted::multiply: "
+    //                                "A[" << rows()        << ',' << cols()        << "] * "
+    //                                "B[" << values.rows() << ',' << values.cols() << "] = "
+    //                                "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
 
-    eckit::Log::info() << "Multiply: "
-                                   "A[" << rows()        << ',' << cols()        << "] * "
-                                   "B[" << values.rows() << ',' << values.cols() << "] = "
-                                   "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
+    // eckit::Log::info() << "Multiply: "
+    //                                "A[" << rows()        << ',' << cols()        << "] * "
+    //                                "B[" << values.rows() << ',' << values.cols() << "] = "
+    //                                "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
 
     ASSERT(values.rows() == cols());
     ASSERT(result.rows() == rows());

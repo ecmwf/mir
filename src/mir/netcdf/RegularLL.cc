@@ -33,11 +33,8 @@ RegularLL::RegularLL(const Variable &variable,
   east_(east),
   west_east_increment_(west_east_increment)
 {
-  if (north_ < south_) {
-    std::swap(north_, south_);
-    // south_north_increments_ = -south_north_increments_;
-  }
-
+    ASSERT(north_ > south_);
+    ASSERT(east_ > west_);
 }
 
 RegularLL::~RegularLL()

@@ -63,7 +63,7 @@ void DataInputVariable::addCoordinateVariable(const Variable* v) {
     coordinates_.push_back(v);
 }
 
-void DataInputVariable::addMissingCoordinates() {
+Variable* DataInputVariable::addMissingCoordinates() {
     for (auto d : dimensions_) {
         bool found = false;
         for (auto c = coordinates_.begin(); !found && c != coordinates_.end(); ++c) {
@@ -81,6 +81,7 @@ void DataInputVariable::addMissingCoordinates() {
 
         }
     }
+    return this;
 }
 
 
@@ -153,7 +154,7 @@ const char* DataInputVariable::kind() const {
 
 void DataInputVariable::dumpAttributes(std::ostream &s, const char* prefix) const {
     s << prefix << "Coordinates:" << std::endl;
-    for(auto c : coordinates_) {
+    for (auto c : coordinates_) {
         s << prefix << "    " << *c << std::endl;
     }
 }
@@ -161,7 +162,7 @@ void DataInputVariable::dumpAttributes(std::ostream &s, const char* prefix) cons
 
 std::vector<std::string> DataInputVariable::coordinates() const {
     std::vector<std::string> result;
-    for(auto c: coordinates_) {
+    for (auto c : coordinates_) {
         result.push_back(c->name());
     }
     return result;

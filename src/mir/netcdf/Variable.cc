@@ -134,9 +134,15 @@ void Variable::dump(std::ostream &out) const
 {
 
     out << std::endl;
-    out << "\t// kind is " << kind() << std::endl;
-    out << "\t// class is " << *this << std::endl;
-    dumpAttributes(out,"\t// ");
+    out << "\t// Kind is " << kind() << std::endl;
+    out << "\t// Class is " << *this << std::endl;
+
+    if (matrix_->codec()) {
+        out << "\t// Codec is " << *matrix_->codec() << std::endl;
+
+    }
+
+    dumpAttributes(out, "\t// ");
     out << std::endl;
 
     out << "\t" ;
@@ -242,8 +248,9 @@ void Variable::addCoordinateVariable(const Variable*) {
     throw eckit::SeriousBug(os.str());
 }
 
-void Variable::addMissingCoordinates() {
+Variable* Variable::addMissingCoordinates() {
     // empty
+    return this;
 }
 
 
@@ -254,8 +261,6 @@ See http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/Attribute-Convention
 */
 
 static const char *not_supported[] = {
-    "scale_factor",
-    "add_offset",
     "signedness",
     "valid_range",
     0
@@ -334,6 +339,9 @@ void Variable::initCodecs() {
         matrix()->codec(CodecFactory::build(calendar, *this));
     }
 
+    if ((attributes_.find("scale_factor") != attributes_.end()) || (attributes_.find("add_offset") != attributes_.end())) {
+        matrix()->codec(CodecFactory::build("packing", *this));
+    }
 }
 
 

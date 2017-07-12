@@ -600,6 +600,8 @@ netcdf/ThreeSixtyCalendar.cc
 netcdf/ThreeSixtyCalendar.h
 netcdf/Calendar.cc
 netcdf/Calendar.h
+netcdf/PackingCodec.cc
+netcdf/PackingCodec.h
 netcdf/HyperCube.cc
 netcdf/HyperCube.h
 netcdf/InputAttribute.cc

@@ -38,7 +38,7 @@ private:
 
     // Used during identtification
     virtual void addCoordinateVariable(const Variable*);
-    virtual void addMissingCoordinates();
+    virtual Variable* addMissingCoordinates();
     const char* kind() const;
     void dumpAttributes(std::ostream &s, const char* prefix) const;
 

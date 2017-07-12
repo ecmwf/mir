@@ -93,7 +93,7 @@ public:
     virtual void initCodecs();
 
     virtual void addCoordinateVariable(const Variable*);
-    virtual void addMissingCoordinates();
+    virtual Variable* addMissingCoordinates();
 
 
     // ====================================================

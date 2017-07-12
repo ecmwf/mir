@@ -45,6 +45,9 @@ private:
     virtual void validate() const;
     virtual bool identified() const;
 
+    Variable* addMissingCoordinates();
+
+
 };
 
 }

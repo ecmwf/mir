@@ -72,6 +72,9 @@ void SimpleInputVariable::validate() const {
     // throw MergeError(std::string("Variable ") + name_ + " is not data, coordinate or cell method.");
 }
 
+Variable* SimpleInputVariable::addMissingCoordinates() {
+    return makeDataVariable()->addMissingCoordinates();
+}
 
 std::vector<std::string> SimpleInputVariable::coordinates() const {
 
