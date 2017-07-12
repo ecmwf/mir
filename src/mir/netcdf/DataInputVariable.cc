@@ -18,6 +18,7 @@
 #include "mir/netcdf/Field.h"
 #include "mir/netcdf/Matrix.h"
 #include "mir/netcdf/Dimension.h"
+#include "mir/netcdf/Dataset.h"
 
 namespace mir {
 namespace netcdf {
@@ -51,6 +52,37 @@ const std::string &DataInputVariable::ncname() const {
     }
     return name();
 }
+
+
+void DataInputVariable::addCoordinateVariable(const Variable* v) {
+    for (auto j = coordinates_.begin(); j != coordinates_.end(); ++j) {
+        if ((*j) == v) {
+            return;
+        }
+    }
+    coordinates_.push_back(v);
+}
+
+void DataInputVariable::addMissingCoordinates() {
+    for (auto d : dimensions_) {
+        bool found = false;
+        for (auto c = coordinates_.begin(); !found && c != coordinates_.end(); ++c) {
+            found = (d->name() == (*c)->name());
+        }
+        if (!found) {
+            eckit::Log::warning() << "Variable '"
+                                  << name()
+                                  << ": dimension '"
+                                  << d->name()
+                                  << "' not listed in coordinates"
+                                  << std::endl;
+
+            addCoordinateVariable(&dataset_.variable(d->name()));
+
+        }
+    }
+}
+
 
 void DataInputVariable::collectField(std::vector<Field *>& fields) const {
     fields.push_back(new Field(*this));
@@ -98,7 +130,7 @@ void DataInputVariable::get2DValues(std::vector<double>& values, size_t index) c
     dims.pop_back();
 
     std::vector<size_t>  coords(dims.size());
-     for (int i = dims.size() - 1; i >= 0; i--)
+    for (int i = dims.size() - 1; i >= 0; i--)
     {
         coords[i] = (index % dims[i]);
         index    /= dims[i];
@@ -113,6 +145,27 @@ void DataInputVariable::get2DValues(std::vector<double>& values, size_t index) c
 }
 
 
+const char* DataInputVariable::kind() const {
+    return "data";
+}
+
+
+
+void DataInputVariable::dumpAttributes(std::ostream &s, const char* prefix) const {
+    s << prefix << "Coordinates:" << std::endl;
+    for(auto c : coordinates_) {
+        s << prefix << "    " << *c << std::endl;
+    }
+}
+
+
+std::vector<std::string> DataInputVariable::coordinates() const {
+    std::vector<std::string> result;
+    for(auto c: coordinates_) {
+        result.push_back(c->name());
+    }
+    return result;
+}
 
 }
 }

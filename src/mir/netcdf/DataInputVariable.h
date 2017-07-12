@@ -25,6 +25,9 @@ public:
     virtual ~DataInputVariable();
 private:
 
+    std::vector<const Variable*> coordinates_;
+
+
     Variable *makeOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions) const ;
     virtual void print(std::ostream &s) const;
     virtual const std::string &ncname() const;
@@ -33,6 +36,13 @@ private:
     virtual size_t count2DValues() const;
     virtual void get2DValues(std::vector<double>& values, size_t i) const;
 
+    // Used during identtification
+    virtual void addCoordinateVariable(const Variable*);
+    virtual void addMissingCoordinates();
+    const char* kind() const;
+    void dumpAttributes(std::ostream &s, const char* prefix) const;
+
+    virtual std::vector<std::string> coordinates() const;
 
     mutable std::string ncname_;
 

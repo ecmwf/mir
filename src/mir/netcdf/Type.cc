@@ -172,6 +172,13 @@ void TypeT<T>::dump(std::ostream &out, const Matrix &matrix) const
         if ((i % 7) == 0) {
             out << std::endl;
         }
+
+        if (i > 13) {
+            if (i < v.size()) {
+                out << " ...";
+            }
+            break;
+        }
     }
 }
 
@@ -371,15 +378,20 @@ Value *TypeT<long long>::attributeValue(int nc, int id, const char *name, size_t
 template<>
 Value *TypeT<std::string>::attributeValue(int nc, int id, const char *name, size_t len, const std::string &path)
 {
-    char value[len + 1];
-    memset(value, 0, sizeof(value));
-    NC_CALL(nc_get_att_text(nc, id, name, value), path);
 
 
-
-    // NC_CALL(nc_get_att_string(nc, id, name, value), path);
-
-    return new ValueT<std::string>(*this, value);
+    if (code_ == NC_STRING) {
+        char *value = 0;
+        NC_CALL(nc_get_att_string(nc, id, name, &value), path);
+        ASSERT(value);
+        return new ValueT<std::string>(*this, value);
+    }
+    else {
+        char value[len + 1];
+        memset(value, 0, sizeof(value));
+        NC_CALL(nc_get_att_text(nc, id, name, value), path);
+        return new ValueT<std::string>(*this, value);
+    }
 }
 
 template<>

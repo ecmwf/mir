@@ -29,7 +29,7 @@ namespace netcdf {
 static long long offset = 0;
 
 static eckit::DateTime reference(const std::string& units) {
-    std::cout << "===== " << units << std::endl;
+    // std::cout << "===== " << units << std::endl;
     return eckit::DateTime();
 }
 
@@ -41,7 +41,7 @@ GregorianCalendar::GregorianCalendar(const Variable& variable):
 
 {
 
-    std::cout << units_ << std::endl;
+    // std::cout << units_ << std::endl;
 
     offset_ = reference_.date().julian() * 24 * 60 * 60 + eckit::Second(reference_.time());
     if (offset == 0) { // Not thread safe

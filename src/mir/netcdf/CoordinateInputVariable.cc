@@ -52,5 +52,9 @@ void CoordinateInputVariable::print(std::ostream &out) const {
     out << "CoordinateInputVariable[name=" << name_ << "]";
 }
 
+const char* CoordinateInputVariable::kind() const {
+    return "coordinate";
+}
+
 }
 }

@@ -42,6 +42,12 @@ Variable::~Variable()
     }
 }
 
+
+bool Variable::identified() const {
+    // Only SimpleInputVariable are not identified
+    return true;
+}
+
 void Variable::setMatrix(Matrix *matrix) {
     if (matrix) {
         matrix->attach();
@@ -77,27 +83,9 @@ size_t Variable::numberOfValues() const {
 }
 
 std::vector<std::string> Variable::coordinates() const {
-    std::vector<std::string> result;
-    auto j = attributes_.find("coordinates");
-    if (j != attributes_.end()) {
-        std::string s = (*j).second->asString();
-        std::string t;
-
-        for (std::string::const_iterator k = s.begin(); k != s.end() ; ++k) {
-            if (*k == ' ') {
-                result.push_back(t);
-                t.clear();
-            }
-            else {
-                t.push_back(*k);
-            }
-        }
-
-        if (t.size()) {
-            result.push_back(t);
-        }
-    }
-    return result;
+    std::ostringstream os;
+    os << "Variable::coordinates() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 const Variable& Variable::coordinateByAttribute(const std::string& attribute,
@@ -119,8 +107,15 @@ const Variable& Variable::coordinateByAttribute(const std::string& attribute,
         << "' has no coordinate with attribute '"
         << attribute
         << "'"
-        << " with value'"
+        << " with value '"
         << value << "'";
+
+    for (size_t i = 0; i < coords.size() ; ++i)
+    {
+        oss << " " << coords[i];
+    }
+
+
     throw eckit::UserError(oss.str());
 
 }
@@ -137,6 +132,13 @@ std::vector<std::string> Variable::cellMethods() const {
 
 void Variable::dump(std::ostream &out) const
 {
+
+    out << std::endl;
+    out << "\t// kind is " << kind() << std::endl;
+    out << "\t// class is " << *this << std::endl;
+    dumpAttributes(out,"\t// ");
+    out << std::endl;
+
     out << "\t" ;
     if (matrix_) {
         matrix_->type().dump(out);
@@ -155,13 +157,23 @@ void Variable::dump(std::ostream &out) const
         }
         out << ")";
     }
-    out << " ;" << std::endl;
+    out << " ;" <<  std::endl;
 
     for (auto j = attributes_.begin(); j != attributes_.end(); ++j)
     {
         (*j).second->dump(out);
     }
 }
+
+void Variable::dumpAttributes(std::ostream &s, const char* prefix) const {
+    // empty
+}
+
+
+const char* Variable::kind() const {
+    return "unknown";
+}
+
 
 void Variable::dumpData(std::ostream &out) const {
     out << " " << name_ << " = " << std::endl;
@@ -223,6 +235,19 @@ Dimension *Variable::getVirtualDimension() {
     os << "Variable::getVirtualDimension() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
+void Variable::addCoordinateVariable(const Variable*) {
+    std::ostringstream os;
+    os << "Variable::addCoordinateVariable() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+void Variable::addMissingCoordinates() {
+    // empty
+}
+
+
+
 
 /*
 See http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/Attribute-Conventions.html

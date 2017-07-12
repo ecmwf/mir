@@ -100,7 +100,7 @@ Dimension *Dataset::findDimension(const std::string &name) const
 }
 
 
-void Dataset::dump(std::ostream &out) const
+void Dataset::dump(std::ostream &out, bool data) const
 {
 
     out << "netcdf " << path_ << "{" << std::endl;
@@ -119,12 +119,15 @@ void Dataset::dump(std::ostream &out) const
     {
         (*j).second->dump(out);
     }
-
-    out << std::endl << "data:" << std::endl;
-    for (auto j = variables_.begin(); j != variables_.end(); ++j)
-    {
-        (*j).second->dumpData(out);
+    if (data) {
+        out << std::endl << "data:" << std::endl;
+        for (auto j = variables_.begin(); j != variables_.end(); ++j)
+        {
+            out << std::endl;
+            (*j).second->dumpData(out);
+        }
     }
+
     out << std::endl << "}" << std::endl;
 }
 

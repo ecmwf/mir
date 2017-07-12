@@ -33,9 +33,15 @@ Variable *ScalarCoordinateInputVariable::makeOutputVariable(Dataset &owner, cons
     return new ScalarCoordinateOutputVariable(owner, name, dimensions);
 }
 
-Variable *ScalarCoordinateInputVariable::makeCoordinateVariable() {
+Variable *ScalarCoordinateInputVariable::makeScalarCoordinateVariable()  {
     return this;
 }
+
+
+Variable *ScalarCoordinateInputVariable::makeCoordinateVariable()  {
+    return this;
+}
+
 
 void ScalarCoordinateInputVariable::print(std::ostream &out) const {
     out << "ScalarCoordinateInputVariable[name=" << name_ << "]";

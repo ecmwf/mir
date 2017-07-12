@@ -34,5 +34,10 @@ void CellMethodInputVariable::print(std::ostream &out) const {
     out << "CellMethodInputVariable[name=" << name_ << "]";
 }
 
+const char* CellMethodInputVariable::kind() const {
+    return "cell method";
+}
+
+
 }
 }

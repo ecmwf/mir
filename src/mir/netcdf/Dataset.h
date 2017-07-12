@@ -38,7 +38,7 @@ public:
     Dimension *findDimension(const std::string &name) const;
     std::vector<Variable *> variablesForDimension(const Dimension &) const;
 
-    virtual void dump(std::ostream &s) const;
+    virtual void dump(std::ostream &s, bool data) const;
 
     void add(Dimension *);
     void add(Variable *);

@@ -29,6 +29,9 @@ InputDataset::InputDataset(const std::string &path, NCFileCache &cache):
     Dataset(path),
     cache_(cache)
 {
+    std::cout << "Dataset: pass1..." << std::endl;
+
+
     char name[NC_MAX_NAME + 1];
 
     NCFile &file = cache.lookUp(path_);
@@ -72,13 +75,100 @@ InputDataset::InputDataset(const std::string &path, NCFileCache &cache):
 
     file.close();
 
+    std::cout << "Dataset: pass1 done" << std::endl;
+    std::cout << "Dataset: pass2..." << std::endl;
+
     // Finalise...
+
+
+    //-----------------------------------------------------------------------
+    // Mark coordinate and cell methods
 
     for (auto j = variables_.begin(); j != variables_.end(); ++j)
     {
+        Variable* v = (*j).second;
+
+        if (v->identified()) {
+            continue;
+        }
+
+        auto coordinates = (*j).second->coordinates();
+
+        if(!coordinates.empty()) {
+            Variable* w = v->makeDataVariable();
+            if (w != v) {
+                delete v;
+                (*j).second = w;
+            }
+            v = w;
+        }
+
+        for (auto k = coordinates.begin(); k != coordinates.end(); ++k)
+        {
+            // This is a coordinate variable
+            auto m = variables_.find(*k);
+            if (m == variables_.end()) {
+                eckit::Log::error() <<  "Coordinate '"
+                                    << *k
+                                    << "' of "
+                                    << *v
+                                    << "has no corresponding variable"
+                                    << std::endl;
+
+                continue;
+            }
+            Variable *t = (*m).second;
+            Variable *w = t->makeCoordinateVariable();
+            if (w != t) {
+                delete t;
+                (*m).second = w;
+            }
+            v->addCoordinateVariable(w);
+        }
+
+
+
+        auto cellMethods = (*j).second->cellMethods();
+        for (auto k = cellMethods.begin(); k != cellMethods.end(); ++k)
+        {
+            // This is a coordinate variable
+            auto m = variables_.find(*k);
+            if (m == variables_.end()) {
+                eckit::Log::error() <<  "Cell method '"
+                                    << *k
+                                    << "' of "
+                                    << *v
+                                    << "has no corresponding variable"
+                                    << std::endl;
+
+                continue;
+            }
+            Variable *t = (*m).second;
+            Variable *w = t->makeCellMethodVariable();
+            if (w != t) {
+                delete t;
+                (*m).second = w;
+            }
+        }
+    }
+
+
+// Check the variables which name is the same as the dimension name
+    for (auto j = variables_.begin(); j != variables_.end(); ++j)
+    {
+
         Variable *v = (*j).second;
 
+        if (v->identified()) {
+            continue;
+        }
+
         if (v->coordinate()) {
+
+            eckit::Log::warning() << "Assuming that "
+                                  << *v
+                                  << " is a coordinate variable"
+                                  << std::endl;
 
             // This is a coordinate variable
             Variable *w = v->makeCoordinateVariable();
@@ -90,123 +180,32 @@ InputDataset::InputDataset(const std::string &path, NCFileCache &cache):
 
         }
 
-        std::vector<std::string> coordinates = v->coordinates();
-        std::vector<std::string> cellMethods = v->cellMethods();
+    }
 
+    for (auto j = variables_.begin(); j != variables_.end(); ++j) {
+        Variable *v = (*j).second;
+        v->addMissingCoordinates();
+    }
 
-        if (coordinates.size()) {
+    std::cout << "Dataset: pass2..." << std::endl;
 
-            // This is a data variable
-            Variable *w = v->makeDataVariable();
-            if (w != v) {
-                delete v;
-                (*j).second = w;
-                v = w;
-            }
-
-            size_t i = 0;
-            for (auto k = coordinates.begin(); k != coordinates.end(); ++k, ++i)
-            {
-                // This is a coordinate variable
-                auto m = variables_.find(*k);
-                if (m == variables_.end()) {
-                    eckit::Log::error() << "Coordinate '" << *k << "' has no corresponding variable" << std::endl;
-
-                    continue;
-                }
-                ASSERT(m != variables_.end());
-                Variable *t = (*m).second;
-                Variable *w = t->makeCoordinateVariable();
-                if (w != t) {
-                    delete t;
-                    (*m).second = w;
-                    t = w;
-                }
-
-                // Some coordinates are scalar
-                if ((*m).second->scalar()) {
-                    Variable *t = (*m).second;
-                    Variable *w = t->makeScalarCoordinateVariable();
-                    if (w != t) {
-                        delete t;
-                        (*m).second = w;
-                        t = w;
-                    }
-
-                    (*j).second->addVirtualDimension(i, (*m).second->getVirtualDimension());
-                }
-                // Check if variable shares dimension with
-
-                if (!(*j).second->sharesDimensions(*(*m).second)) {
-                    eckit::Log::error() << *(*j).second << " must share dimensions with " << *(*m).second << std::endl;
-
-                }
-                //ASSERT((*j).second->sharesDimensions(*(*m).second));
-            }
-        }
-
-        if (cellMethods.size()) {
-
-            for (auto k = cellMethods.begin(); k != cellMethods.end(); ++k)
-            {
-                // This is a coordinate variable
-                auto m = variables_.find(*k);
-
-                if (m == variables_.end()) {
-                    std::ostringstream oss;
-                    oss << "Cannot find cell_method named '" << *k << "'";
-                    throw eckit::UserError(oss.str());
-                }
-
-                Variable *t = (*m).second;
-                Variable *w = t->makeCellMethodVariable();
-                if (w != t) {
-                    delete t;
-                    (*m).second = w;
-                    t = w;
-                }
-
-            }
-        }
-
+    // Check is the variable needs a special codec (calendar or scale_factor/add_offset)
+    for (auto j = variables_.begin(); j != variables_.end(); ++j) {
         (*j).second->initCodecs();
     }
 
 
-    for (auto j = variables_.begin(); j != variables_.end(); ++j) {
-        Variable *v = (*j).second;
-        if (v->timeAxis()) {
-            std::vector<std::string> cellMethods = v->cellMethods();
-
-            for (auto k = cellMethods.begin(); k != cellMethods.end(); ++k)
-            {
-                // This is a coordinate variable
-                auto m = variables_.find(*k);
-                ASSERT(m != variables_.end());
-                Variable *t = (*m).second;
-                for (auto j = variables_.begin(); j != variables_.end(); ++j) {
-                    Variable *p = (*j).second;
-                    if (p != v && p->timeAxis()) {
-                        Dimension *d;
-                        if (!p->scalar()) {
-                            d = p->getVirtualDimension();
-                        }
-                        else {
-                            ASSERT(p->dimensions().size() == 1);
-                            d = p->dimensions()[0];
-                        }
-                        t->addVirtualDimension(0, d); // Add 'reftime' to 'time_bounds'
-                        v->addVirtualDimension(0, d); // Add 'reftime' to 'time'
-                    }
-                }
-            }
-        }
-    }
+    std::cout << "Dataset: pass4..." << std::endl;
 
     for (auto j = variables_.begin(); j != variables_.end(); ++j) {
         Variable *v = (*j).second;
         v->validate();
     }
+
+
+    std::cout << "Dataset: pass4 done" << std::endl;
+    dump(std::cout, false);
+
 
 }
 

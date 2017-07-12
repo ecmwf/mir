@@ -40,29 +40,27 @@ public:
 
     void setMatrix(Matrix *);
     size_t numberOfValues() const;
-    std::vector<std::string> coordinates() const;
-    std::vector<std::string> cellMethods() const;
+    virtual std::vector<std::string> coordinates() const;
+    virtual std::vector<std::string> cellMethods() const;
 
-    bool coordinate() const;
-    bool scalar() const;
+    virtual bool identified() const;
+
+    virtual bool coordinate() const;
+    virtual bool scalar() const;
 
 
     virtual void validate() const;
     virtual bool sameAs(const Variable &) const;
     virtual void dump(std::ostream &s) const;
     virtual void dumpData(std::ostream &s) const;
+    virtual void dumpAttributes(std::ostream &s, const char* prefix) const;
 
     virtual void create(int nc) const;
     virtual void save(int nc) const;
     virtual Variable *clone(Dataset &owner) const;
     virtual void merge(const Variable &, MergePlan &);
 
-    virtual Variable *makeDataVariable();
-    virtual Variable *makeCoordinateVariable();
-    virtual Variable *makeSimpleVariable();
-    virtual Variable *makeCellMethodVariable();
-    virtual Variable *makeScalarCoordinateVariable();
-    virtual void initCodecs();
+
 
     // From Endowed
     virtual const std::string &name() const;
@@ -84,6 +82,19 @@ public:
     virtual const std::string &ncname() const;
     virtual void collectField(std::vector<Field *>&) const;
 
+    // ==========================================================
+    // Used during identtification
+
+    virtual Variable *makeDataVariable();
+    virtual Variable *makeCoordinateVariable();
+    virtual Variable *makeSimpleVariable();
+    virtual Variable *makeCellMethodVariable();
+    virtual Variable *makeScalarCoordinateVariable();
+    virtual void initCodecs();
+
+    virtual void addCoordinateVariable(const Variable*);
+    virtual void addMissingCoordinates();
+
 
     // ====================================================
     virtual const Variable& coordinateByAttribute(const std::string& attribute,
@@ -99,6 +110,8 @@ public:
     // ====================================================
 
     virtual void values(std::vector<double>& values) const;
+
+    virtual const char* kind() const;
 
 protected:
 

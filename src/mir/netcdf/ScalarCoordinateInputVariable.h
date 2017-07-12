@@ -30,6 +30,7 @@ private:
     Variable *makeOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions) const ;
     virtual Dimension *getVirtualDimension();
     virtual Variable *makeCoordinateVariable();
+    virtual Variable *makeScalarCoordinateVariable();
     virtual void print(std::ostream &s) const;
 };
 

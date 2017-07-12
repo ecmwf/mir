@@ -17,6 +17,9 @@
 #include "mir/netcdf/DataInputVariable.h"
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/SimpleOutputVariable.h"
+#include "mir/netcdf/Dimension.h"
+#include "mir/netcdf/Dataset.h"
+#include "mir/netcdf/Attribute.h"
 
 namespace mir {
 namespace netcdf {
@@ -28,6 +31,11 @@ SimpleInputVariable::SimpleInputVariable(Dataset &owner, const std::string &name
 
 SimpleInputVariable::~SimpleInputVariable() {
 
+}
+
+bool SimpleInputVariable::identified() const {
+    // Only SimpleInputVariable are not identified
+    return false;
 }
 
 Variable *SimpleInputVariable::makeDataVariable() {
@@ -62,6 +70,34 @@ void SimpleInputVariable::print(std::ostream &out) const {
 void SimpleInputVariable::validate() const {
     eckit::Log::error() << "Variable '" << name_ << "' is not data, coordinate or cell method." << std::endl;
     // throw MergeError(std::string("Variable ") + name_ + " is not data, coordinate or cell method.");
+}
+
+
+std::vector<std::string> SimpleInputVariable::coordinates() const {
+
+    std::vector<std::string> result;
+
+    auto j = attributes_.find("coordinates");
+    if (j != attributes_.end()) {
+        std::string s = (*j).second->asString();
+        std::string t;
+
+        for (std::string::const_iterator k = s.begin(); k != s.end() ; ++k) {
+            if (*k == ' ') {
+                result.push_back(t);
+                t.clear();
+            }
+            else {
+                t.push_back(*k);
+            }
+        }
+
+        if (t.size()) {
+            result.push_back(t);
+        }
+    }
+
+    return result;
 }
 
 }

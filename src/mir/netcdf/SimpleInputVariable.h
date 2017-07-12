@@ -31,6 +31,8 @@ public:
 
 private:
 
+     std::vector<std::string> coordinates() const;
+
     Variable *makeOutputVariable(Dataset &owner,
                                  const std::string &name,
                                  const std::vector<Dimension *> &dimensions) const ;
@@ -41,6 +43,7 @@ private:
 
     virtual void print(std::ostream &s) const;
     virtual void validate() const;
+    virtual bool identified() const;
 
 };
 

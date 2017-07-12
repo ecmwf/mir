@@ -34,6 +34,7 @@ private:
     // From variable
 
     virtual void print(std::ostream &s) const;
+    const char* kind() const;
 
 };
 
