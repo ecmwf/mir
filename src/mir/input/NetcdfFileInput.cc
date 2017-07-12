@@ -97,11 +97,6 @@ data::MIRField NetcdfFileInput::field() const {
 
     data::MIRField field(*this, ncField.hasMissing(), ncField.missingValue());
 
-    std::vector<size_t> dims = ncField.dimensions();
-
-    ASSERT(dims.size() >= 2);
-    // Assumes lat/lon at the end
-
     size_t n = ncField.count2DValues();
     for (size_t i = 0; i < n; ++i) {
         std::vector<double> values;
@@ -143,22 +138,7 @@ bool NetcdfFileInput::sameAs(const MIRInput& other) const {
 
 size_t NetcdfFileInput::dimensions() const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
-    std::vector<size_t> dims = fields_[current_]->dimensions();
-
-    std::cout << "NC dimensions: " << dims << std::endl;
-
-    ASSERT(dims.size() >= 2);
-    // Assumes lat/lon at the end
-
-    size_t n = 1;
-    for (size_t i = 0; i < dims.size() - 2; ++i) {
-        n *= dims[i];
-    }
-
-
-    std::cout << "NC dimensions: " << n << std::endl;
-
-    return n;
+    return fields_[current_]->count2DValues();
 }
 
 

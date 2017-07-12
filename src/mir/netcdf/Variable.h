@@ -17,7 +17,6 @@
 #include <vector>
 
 #include "mir/netcdf/Endowed.h"
-#include "mir/netcdf/HyperCube.h"
 
 
 namespace mir {
@@ -29,7 +28,6 @@ class Attribute;
 class Dimension;
 class Matrix;
 class MergePlan;
-class HyperCube;
 class Field;
 
 
@@ -73,11 +71,6 @@ public:
     Matrix *matrix() const;
 
     const std::vector<Dimension *> &dimensions() const;
-    HyperCube &cube();
-    const HyperCube &cube() const;
-
-    bool mustMerge() const;
-    void mustMerge(bool);
 
     virtual bool dummy() const;
     virtual bool sameAsDummy(const Variable &) const;
@@ -117,12 +110,6 @@ protected:
     bool scalar_;
 
     std::vector<Dimension *> dimensions_;
-
-    HyperCube::Remapping remapping_;
-    HyperCube cube_;
-    bool mustMerge_;
-
-    void resetCube();
 
 private:
 

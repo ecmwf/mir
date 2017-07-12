@@ -27,29 +27,12 @@
 namespace mir {
 namespace netcdf {
 
-static HyperCube::Dimensions cubedims(const std::vector<Dimension *> &dimensions) {
-    HyperCube::Dimensions cdims;
-    for (auto j = dimensions.begin(); j != dimensions.end(); ++j) {
-        cdims.push_back((*j)->count());
-    }
-
-    if (cdims.size() == 0) // Scalar variable
-    {
-        cdims.push_back(1);
-    }
-
-    return cdims;
-}
-
 Variable::Variable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions):
     dataset_(owner),
     name_(name),
     matrix_(0),
     scalar_(dimensions.size() == 0),
-    dimensions_(dimensions),
-    cube_(cubedims(dimensions)),
-    mustMerge_(false)
-{
+    dimensions_(dimensions) {
 }
 
 Variable::~Variable()
@@ -228,36 +211,17 @@ bool Variable::coordinate() const {
     return (dimensions_.size() == 1 && dimensions_[0]->name() == name_);
 }
 
-HyperCube &Variable::cube()  {
-    return cube_;
-}
 
-const HyperCube &Variable::cube() const {
-    return cube_;
-}
-
-bool Variable::mustMerge() const {
-    return mustMerge_;
-}
-
-void Variable::mustMerge(bool on) {
-    mustMerge_ = on;
-}
-
-void Variable::resetCube() {
-    cube_ = HyperCube(cubedims(dimensions_));
-}
 
 void Variable::addVirtualDimension(size_t where, Dimension *dim) {
     where = std::min(where, dimensions_.size());
     dimensions_.insert(dimensions_.begin() + where, dim);
-    resetCube();
 }
 
 Dimension *Variable::getVirtualDimension() {
-    std::cout << "Variable::getVirtualDimension: " << *this << std::endl;
-    NOTIMP;
-    return 0;
+    std::ostringstream os;
+    os << "Variable::getVirtualDimension() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 /*
@@ -405,7 +369,7 @@ std::string Variable::attribute(const std::string& name) const {
 }
 
 size_t Variable::numberOfDimensions() const {
-    return cube().size();
+    return dimensions_.size();
 }
 
 void Variable::values(std::vector<double>& v) const {

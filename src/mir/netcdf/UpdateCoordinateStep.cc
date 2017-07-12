@@ -44,6 +44,7 @@ void UpdateCoordinateStep::print(std::ostream &out) const {
 }
 
 void UpdateCoordinateStep::execute(MergePlan &plan) {
+#if 0
     const std::vector<Dimension *> &dims = out_.dimensions();
     ASSERT(dims.size() == 1);
 
@@ -57,6 +58,7 @@ void UpdateCoordinateStep::execute(MergePlan &plan) {
     }
 
     plan.add(new MergeCoordinateStep(out_, in_));
+#endif
 }
 
 }

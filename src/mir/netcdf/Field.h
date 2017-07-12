@@ -32,7 +32,7 @@ public:
 
     // -- Methods
 
-    std::vector<size_t> dimensions() const;
+    // std::vector<size_t> dimensions() const;
 
     size_t count2DValues() const;
     void get2DValues(std::vector<double>& values, size_t i) const;

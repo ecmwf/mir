@@ -41,7 +41,7 @@ void MergeDataStep::print(std::ostream &out) const {
 }
 
 void MergeDataStep::execute(MergePlan &plan) {
-
+#if 0
     if (!out_.mustMerge()) {
 
         Type &type1 = in_.matrix()->type();
@@ -65,6 +65,7 @@ void MergeDataStep::execute(MergePlan &plan) {
     // Save matrix
     // Matrix *m = out_.matrix()->mergeData(in_.matrix(), out_.cube().count());
     // out_.setMatrix(m);
+#endif
 }
 
 }

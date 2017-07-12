@@ -76,9 +76,6 @@ bool Field::get(const std::string &name, double &value) const {
     return gridSpec().get(name, value);
 }
 
-std::vector<size_t> Field::dimensions() const {
-    return variable_.cube().dimensions();
-}
 
 void Field::print(std::ostream &out) const {
     out << "Field[variable=" << variable_ << "]";

@@ -15,6 +15,9 @@
 #include "mir/netcdf/MergeDataStep.h"
 #include "mir/netcdf/MergePlan.h"
 
+#include <iostream>
+
+
 namespace mir {
 namespace netcdf {
 

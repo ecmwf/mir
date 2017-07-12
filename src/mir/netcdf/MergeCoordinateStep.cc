@@ -42,7 +42,7 @@ void MergeCoordinateStep::print(std::ostream &out) const {
 }
 
 void MergeCoordinateStep::execute(MergePlan &plan) {
-
+#if 0
     if (!out_.mustMerge()) {
 
         Type &type1 = in_.matrix()->type();
@@ -68,6 +68,7 @@ void MergeCoordinateStep::execute(MergePlan &plan) {
     // Save matrix
     // Matrix *m = out_.matrix()->mergeCoordinates(in_.matrix(), out_.cube().count());
     // out_.setMatrix(m);
+#endif
 }
 
 }

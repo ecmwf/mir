@@ -40,7 +40,7 @@ Variable *DataInputVariable::makeOutputVariable(Dataset &owner,
 }
 
 void DataInputVariable::print(std::ostream &out) const {
-    out << "DataInputVariable[name=" << name_ << ",nc=" << ncname() << ",cube=" << cube() << "]";
+    out << "DataInputVariable[name=" << name_ << ",nc=" << ncname() << "]";
 }
 
 const std::string &DataInputVariable::ncname() const {
@@ -68,14 +68,12 @@ size_t DataInputVariable::count2DValues() const {
     dims.pop_back();
     dims.pop_back();
 
-    HyperCube c(dims);
 
-    std::cout << "++++++++++++++ " << c << std::endl;
+    return std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<size_t>());
 
-    return c.count();
 }
 
-void DataInputVariable::get2DValues(std::vector<double>& values, size_t i) const {
+void DataInputVariable::get2DValues(std::vector<double>& values, size_t index) const {
 
     std::vector<size_t> dims;
     for (auto d : dimensions_) {
@@ -99,18 +97,16 @@ void DataInputVariable::get2DValues(std::vector<double>& values, size_t i) const
     dims.pop_back();
     dims.pop_back();
 
-    HyperCube c(dims);
-    HyperCube::Coordinates coords(dims.size());
-    c.coordinates(i, coords);
-
-    std::cout << i << " --- " << c << " --- " << coords << std::endl;
+    std::vector<size_t>  coords(dims.size());
+     for (int i = dims.size() - 1; i >= 0; i--)
+    {
+        coords[i] = (index % dims[i]);
+        index    /= dims[i];
+    }
 
     for (size_t j = 0; j < coords.size(); ++j) {
         start[j] = coords[j];
     }
-
-
-    // =========================
 
     std::cout << "++++++++++++++ " << start << " ------ " << count << std::endl;
 

@@ -32,7 +32,7 @@ DataOutputVariable::~DataOutputVariable() {
 }
 
 void DataOutputVariable::print(std::ostream &out) const {
-    out << "DataOutputVariable[name=" << name_ << ",nc=" << ncname() << ",cube=" << cube() << "]";
+    out << "DataOutputVariable[name=" << name_ << ",nc=" << ncname() << "]";
 }
 
 void DataOutputVariable::merge(const Variable &other, MergePlan &plan)

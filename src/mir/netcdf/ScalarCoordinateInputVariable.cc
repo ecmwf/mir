@@ -16,6 +16,8 @@
 #include "mir/netcdf/ScalarCoordinateOutputVariable.h"
 #include "mir/netcdf/VirtualInputDimension.h"
 
+#include <iostream>
+
 namespace mir {
 namespace netcdf {
 
@@ -44,7 +46,6 @@ Dimension *ScalarCoordinateInputVariable::getVirtualDimension() {
         Dimension *dim = new VirtualInputDimension(dataset_, name_);
         dataset_.add(dim);
         dimensions_.push_back(dim);
-        resetCube();
     }
     return dimensions_[0];
 }
