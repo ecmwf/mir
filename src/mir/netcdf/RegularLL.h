@@ -24,54 +24,61 @@ namespace netcdf {
 class RegularLL : public GridSpec {
 public:
 
-  RegularLL(const Variable &,
-            double north,
-            double south,
-            double south_north_increment,
-            double west,
-            double east,
-            double west_east_increment);
+    RegularLL(const Variable &,
+              double north,
+              double south,
+              double south_north_increment,
+              double west,
+              double east,
+              double west_east_increment);
 
 
 
-  virtual ~RegularLL();
+    virtual ~RegularLL();
 
-  // -- Methods
+    // -- Methods
 
 
-  static GridSpec* guess(const Variable &variable,
-                         const Variable &latitudes,
-                         const Variable &longitudes);
+    static GridSpec* guess(const Variable &variable,
+                           const Variable &latitudes,
+                           const Variable &longitudes);
 
 
 protected:
 
-  // -- Members
+    // -- Members
 
-  double north_;
-  double south_;
-  double south_north_increments_;
+    bool jScansPositively_;
 
-  double west_;
-  double east_;
-  double west_east_increment_;
+    double north_;
+    double south_;
+    double south_north_increments_;
+
+    double west_;
+    double east_;
+    double west_east_increment_;
+
+    size_t ni_;
+    size_t nj_;
 
 
 private:
 
-  RegularLL(const RegularLL &);
-  RegularLL &operator=(const RegularLL &);
+    RegularLL(const RegularLL &);
+    RegularLL &operator=(const RegularLL &);
 
 
-  // - Methods
+    // - Methods
 
-  virtual void print(std::ostream &s) const;
+    virtual void print(std::ostream &s) const;
 
-  // For MIR
-  virtual bool has(const std::string& name) const;
-  virtual bool get(const std::string&, long&) const;
-  virtual bool get(const std::string&, std::string&) const;
-  virtual bool get(const std::string &name, double &value) const;
+    // For MIR
+    virtual bool has(const std::string& name) const;
+    virtual bool get(const std::string&, long&) const;
+    virtual bool get(const std::string&, std::string&) const;
+    virtual bool get(const std::string &name, double &value) const;
+
+    virtual void reorder(std::vector<double>& values) const;
 
 };
 

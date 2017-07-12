@@ -73,6 +73,19 @@ void SimpleInputVariable::validate() const {
 }
 
 Variable* SimpleInputVariable::addMissingCoordinates() {
+
+    // Check if all dimensions exists as variables
+
+    if(dimensions_.empty()) {
+        return this;
+    }
+
+    for (auto d : dimensions_) {
+        if (!dataset_.hasVariable(d->name())) {
+            return this;
+        }
+    }
+
     return makeDataVariable()->addMissingCoordinates();
 }
 

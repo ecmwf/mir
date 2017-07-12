@@ -39,6 +39,7 @@ const GridSpec &Field::gridSpec() const {
 
 void Field::get2DValues(std::vector<double>& values, size_t i) const {
     variable_.get2DValues(values, i);
+    gridSpec().reorder(values);
 }
 
 size_t Field::count2DValues() const {

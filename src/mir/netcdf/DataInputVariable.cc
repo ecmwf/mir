@@ -77,7 +77,9 @@ Variable* DataInputVariable::addMissingCoordinates() {
                                   << "' not listed in coordinates"
                                   << std::endl;
 
-            addCoordinateVariable(&dataset_.variable(d->name()));
+            if (dataset_.hasVariable(d->name())) {
+                addCoordinateVariable(&dataset_.variable(d->name()));
+            }
 
         }
     }
