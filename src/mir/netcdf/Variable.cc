@@ -48,6 +48,10 @@ bool Variable::identified() const {
     return true;
 }
 
+const Dataset& Variable::dataset() const {
+    return dataset_;
+}
+
 void Variable::setMatrix(Matrix *matrix) {
     if (matrix) {
         matrix->attach();
@@ -88,37 +92,6 @@ std::vector<std::string> Variable::coordinates() const {
     throw eckit::SeriousBug(os.str());
 }
 
-const Variable& Variable::coordinateByAttribute(const std::string& attribute,
-        const std::string& value) const {
-
-    const std::vector<std::string>& coords = coordinates();
-    for (auto j = coords.begin(); j != coords.end(); ++j) {
-        if (dataset_.hasVariable(*j)) {
-            const Variable& v = dataset_.variable(*j);
-            if (v.getAttributeValue<std::string>(attribute) == value) {
-                return v;
-            }
-        }
-    }
-
-    std::ostringstream oss;
-    oss << "Netcdf variable '"
-        << name()
-        << "' has no coordinate with attribute '"
-        << attribute
-        << "'"
-        << " with value '"
-        << value << "'";
-
-    for (size_t i = 0; i < coords.size() ; ++i)
-    {
-        oss << " " << coords[i];
-    }
-
-
-    throw eckit::UserError(oss.str());
-
-}
 
 std::vector<std::string> Variable::cellMethods() const {
     std::vector<std::string> result;

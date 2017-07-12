@@ -96,11 +96,6 @@ public:
     virtual Variable* addMissingCoordinates();
 
 
-    // ====================================================
-    virtual const Variable& coordinateByAttribute(const std::string& attribute,
-            const std::string& value) const;
-
-
     template<class T>
     T getAttributeValue(const std::string& name) const {
         T result;
@@ -120,6 +115,8 @@ public:
     virtual void values(std::vector<double>& values) const;
 
     virtual const char* kind() const;
+
+    const Dataset& dataset() const;
 
 protected:
 

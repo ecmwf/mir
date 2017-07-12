@@ -20,6 +20,7 @@
 // #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Variable.h"
 // #include "mir/netcdf/HyperCube.h"
+#include "mir/netcdf/Dataset.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
@@ -91,8 +92,13 @@ GridSpec* GridSpecGuesser::guess(const Variable &variable) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     std::map<size_t, GridSpecGuesser*>::const_iterator j;
 
-    const Variable &latitudes = variable.coordinateByAttribute("standard_name", "latitude");
-    const Variable &longitudes = variable.coordinateByAttribute("standard_name", "longitude");
+    // We assume lat/lon are the innermost coordinates
+
+    std::vector<std::string> coordinates = variable.coordinates();
+    ASSERT(coordinates.size() >= 2);
+
+    const Variable &latitudes = variable.dataset().variable(coordinates[coordinates.size()-2]);
+    const Variable &longitudes = variable.dataset().variable(coordinates[coordinates.size()-1]);
 
 
     for (j = m->begin(); j != m->end(); ++j) {

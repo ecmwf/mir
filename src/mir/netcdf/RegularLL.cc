@@ -58,16 +58,20 @@ void RegularLL::print(std::ostream& s) const
 {
     s << "RegularLL[bbox="
       << north_
-      << ","
+      << "/"
       << west_
-      << ","
+      << "/"
       << south_
-      << ","
+      << "/"
       << east_
       << ",grid="
       << west_east_increment_
-      << ","
+      << "/"
       << south_north_increments_
+      << ",ni="
+      << ni_
+      << ",nj="
+      << nj_
       << "]";
 }
 
