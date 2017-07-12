@@ -42,73 +42,87 @@ Codec::~Codec() {
 }
 
 void Codec::decode(std::vector<double> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::decode() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::decode(std::vector<float> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::decode() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::decode(std::vector<long> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::decode() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::decode(std::vector<short> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::decode() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::decode(std::vector<unsigned char> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::decode() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::decode(std::vector<long long> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::decode() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::encode(std::vector<double> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::encode() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::encode(std::vector<float> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::encode() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::encode(std::vector<long> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::encode() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::encode(std::vector<short> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::encode() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::encode(std::vector<unsigned char> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::encode() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::encode(std::vector<long long> &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::encode() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::addAttributes(Variable &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::addAttributes() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Codec::updateAttributes(int nc, int varid, const std::string &path) {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Variable::updateAttributes() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 bool Codec::timeAxis() const {
@@ -124,7 +138,7 @@ CodecFactory::CodecFactory(const std::string &name):
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("CodecFactory: duplication action: " + name);
+        throw eckit::SeriousBug("CodecFactory: duplication codec: " + name);
     }
 
     ASSERT(m->find(name) == m->end());

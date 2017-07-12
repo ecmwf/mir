@@ -71,25 +71,6 @@ bool NetcdfFileInput::next() {
 }
 
 
-static void get_values(netcdf::Field& nc, data::MIRField& field, size_t i) {
-
-    std::vector<double> values;
-
-    nc.get2DValues(values, i);
-
-    std::cout << "NetcdfFileInput values "
-              << values.size()
-              << std::endl;
-
-
-    field.update(values, i);
-
-
-
-
-}
-
-
 data::MIRField NetcdfFileInput::field() const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
 

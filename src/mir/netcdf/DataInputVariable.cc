@@ -108,8 +108,6 @@ void DataInputVariable::get2DValues(std::vector<double>& values, size_t index) c
         start[j] = coords[j];
     }
 
-    std::cout << "++++++++++++++ " << start << " ------ " << count << std::endl;
-
     matrix_->read(values, start, count);
 
 }
