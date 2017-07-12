@@ -287,7 +287,7 @@ bool TypeT<std::string>::coordinateOutputVariableMerge( Variable &out, const Var
 
 template<class T>
 bool TypeT<T>::coordinateOutputVariableMerge( Variable &out, const Variable &in, MergePlan &plan) {
-
+#if 0
     const std::vector<T> &a = out.matrix()->values<T>();
     const std::vector<T> &b = in.matrix()->values<T>();
 
@@ -326,6 +326,7 @@ bool TypeT<T>::coordinateOutputVariableMerge( Variable &out, const Variable &in,
     else {
         return false;
     }
+#endif
 }
 
 //=======================================================================================================

@@ -143,7 +143,8 @@ void GregorianCalendar::updateAttributes(int nc, int varid, const std::string &p
 }
 
 
-static CodecBuilder<GregorianCalendar> builder("gregorian");
+static CodecBuilder<GregorianCalendar> builder1("gregorian");
+static CodecBuilder<GregorianCalendar> builder2("standard");
 
 }
 }

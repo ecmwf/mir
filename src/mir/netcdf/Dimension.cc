@@ -24,17 +24,11 @@ namespace netcdf {
 Dimension::Dimension(Dataset &owner, const std::string &name, size_t len):
     owner_(owner),
     name_(name),
-    len_(len),
-    remapping_(new Remapping())
-{
-    remapping_->attach();
+    len_(len) {
 }
 
 Dimension::~Dimension()
 {
-    if (remapping_) {
-        remapping_->detach();
-    }
 }
 
 void Dimension::dump(std::ostream &out) const
@@ -61,40 +55,29 @@ size_t Dimension::count() const {
 
 void Dimension::grow(size_t)
 {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Dimension::grow() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Dimension::clone(Dataset &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Dimension::clone() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 void Dimension::create(int) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
+    std::ostringstream os;
+    os << "Dimension::creat() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 int Dimension::id()const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
-    NOTIMP;
-    return 0;
+    std::ostringstream os;
+    os << "Dimension::id() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
-void Dimension::remapping(Remapping *remapping) {
-    if (remapping) {
-        remapping->attach();
-    }
-    if (remapping_) {
-        remapping_->detach();
-    }
-    remapping_ = remapping;
-}
-
-const Remapping &Dimension::remapping() const {
-    ASSERT(remapping_ != 0);
-    return *remapping_;
-}
 
 void Dimension::realDimensions(std::vector<size_t>& dims) const {
     std::ostringstream os;

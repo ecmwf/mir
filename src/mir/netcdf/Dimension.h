@@ -21,7 +21,6 @@ namespace mir {
 namespace netcdf {
 
 class Dataset;
-class Remapping;
 
 
 class Dimension {
@@ -42,9 +41,6 @@ public:
     virtual void grow(size_t n);
     virtual bool inUse() const;
 
-    virtual void remapping(Remapping *) ;
-    virtual const Remapping &remapping() const;
-
     virtual void realDimensions(std::vector<size_t>& dims) const;
 
 protected:
@@ -54,7 +50,6 @@ protected:
     Dataset &owner_;
     std::string name_;
     size_t len_;
-    Remapping *remapping_;
 
 
 private:
