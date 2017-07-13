@@ -73,6 +73,10 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
         user_wants_gridded++;
     }
 
+    if (parametrisation_.has("user.points")) {
+        user_wants_gridded++;
+    }
+
     ASSERT(user_wants_gridded <= 1);
 
     bool field_gridded  = parametrisation_.has("field.gridded");
@@ -130,6 +134,8 @@ bool ECMWFStyle::forcedPrepare(const param::MIRParametrisation& parametrisation)
         "accuracy",
         "bitmap",
         "checkerboard",
+        "griddef",
+        "points",
         "edition",
         "formula",
         "frame",
@@ -168,6 +174,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
         parametrisation_.has("user.pl") ?           "reduced-gg-pl-given" :
         parametrisation_.has("user.gridname") ?     "namedgrid" :
         parametrisation_.has("user.griddef") ?      "griddef" :
+        parametrisation_.has("user.points") ?       "points" :
         "";
 
     if (userGrid.length()) {

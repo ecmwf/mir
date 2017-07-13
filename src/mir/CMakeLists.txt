@@ -38,6 +38,8 @@ list(
     action/filter/GlobaliseFilter.h
     action/interpolate/Gridded2GridDef.cc
     action/interpolate/Gridded2GridDef.h
+    action/interpolate/Gridded2Points.cc
+    action/interpolate/Gridded2Points.h
     action/interpolate/Gridded2GriddedInterpolation.cc
     action/interpolate/Gridded2GriddedInterpolation.h
     action/interpolate/Gridded2LatLon.cc
@@ -312,6 +314,8 @@ list(
     output/EmptyOutput.h
     output/GeoPointsFileOutput.cc
     output/GeoPointsFileOutput.h
+    output/ValuesOutput.cc
+    output/ValuesOutput.h
     output/GeoPointsOutput.cc
     output/GeoPointsOutput.h
     output/GribFileOutput.cc

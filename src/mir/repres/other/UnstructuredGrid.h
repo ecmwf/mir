@@ -41,7 +41,7 @@ public:
     UnstructuredGrid(const param::MIRParametrisation&);
 
     // Take ownership of vectors
-    UnstructuredGrid(std::vector<double>& latitudes, std::vector<double>& longitudes);
+    UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes);
 
     // -- Destructor
 

@@ -12,6 +12,7 @@ foreach(tool
     mir-shared-memory
     mir-statistics
     mir-tool
+    mir-points
     mir-values-statistics
     mir-weight-matrix )
 
