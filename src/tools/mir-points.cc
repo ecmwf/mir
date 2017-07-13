@@ -62,6 +62,9 @@ void MIRPoints::execute(const eckit::option::CmdArgs& args) {
     job.set("latitudes", latitudes);
     job.set("longitudes", longitudes);
 
+    job.set("interpolation", "k-nearest");
+    job.set("nclosest", 4);
+
     while (input.next()) {
         job.execute(input, output);
 

@@ -61,7 +61,7 @@ bool Field::has(const std::string& name) const {
 }
 
 bool Field::get(const std::string&name, long& value) const {
-    if (name == "paramId") {
+    if (name == "paramId" || name == "param-id") {
         value = 1;
         return true;
     }
