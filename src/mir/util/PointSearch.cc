@@ -21,6 +21,7 @@
 #include "eckit/config/Resource.h"
 #include "eckit/log/Timer.h"
 #include "eckit/log/Plural.h"
+#include "mir/config/LibMir.h"
 
 #include "eckit/container/kdtree/KDNode.h"
 
@@ -90,6 +91,7 @@ class PointSearchTreeMemory: public PointSearchTree {
 
 
 static eckit::PathName treePath(const eckit::PathName& path) {
+    path.dirName().mkdir();
     if (path.exists()) {
         return path;
     }
@@ -163,10 +165,12 @@ class PointSearchTreeMapped: public PointSearchTree {
 
 
 public:
-    PointSearchTreeMapped(const eckit::PathName& path,  size_t itemCount, size_t metadataSize):
+    PointSearchTreeMapped(const eckit::PathName& path,
+                          size_t itemCount,
+                          size_t metadataSize):
         path_(path),
         tmp_(treePath(path)),
-        tree_(tmp_, itemCount, metadataSize) {
+        tree_(tmp_, path_ == tmp_ ? 0 : itemCount, metadataSize) {
 
         if (ready()) {
             eckit::Log::info() << "Loading " << *this << std::endl;
@@ -179,11 +183,23 @@ PointSearch::PointSearch(const repres::Representation& r, const CompareType& iso
     const size_t npts = r.numberOfPoints();
     ASSERT(npts > 0);
 
+    if (true) { // TODO: use a resource
 
-    // std::ostringstream oss;
-    // oss  << r.uniqueName() << ".kdtree";
-    // tree_.reset(new PointSearchTreeMapped(oss.str(), npts, 0));
-    tree_.reset(new PointSearchTreeMemory());
+        const long VERSION = 1;
+        std::ostringstream oss;
+        oss  << LibMir::cacheDir()
+             << "/mir/trees/"
+             << VERSION
+             << "/"
+             << r.uniqueName()
+             << ".kdtree";
+
+
+        tree_.reset(new PointSearchTreeMapped(oss.str(), npts, 0));
+    }
+    else {
+        tree_.reset(new PointSearchTreeMemory());
+    }
 
     if (!tree_->ready()) {
         build(r, isok);
@@ -192,7 +208,7 @@ PointSearch::PointSearch(const repres::Representation& r, const CompareType& iso
 
 }
 
-void PointSearch::build(const repres::Representation& r, const CompareType& isok) {
+void PointSearch::build(const repres::Representation & r, const CompareType & isok) {
     const size_t npts = r.numberOfPoints();
 
     eckit::Timer timer("Building KDTree");
@@ -229,7 +245,7 @@ void PointSearch::build(const repres::Representation& r, const CompareType& isok
 }
 
 
-void PointSearch::statsPrint(std::ostream& s, bool fancy) const {
+void PointSearch::statsPrint(std::ostream & s, bool fancy) const {
     tree_->statsPrint(s, fancy);
 }
 
@@ -239,12 +255,12 @@ void PointSearch::statsReset() const {
 }
 
 
-PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType& pt) const {
+PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType & pt) const {
     return tree_->nearestNeighbour(pt);
 }
 
 
-void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest) const {
+void PointSearch::closestNPoints(const PointType & pt, size_t n, std::vector<PointValueType>& closest) const {
 
     // Small optimisation
     if (n == 1) {
@@ -257,7 +273,7 @@ void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<Poin
 }
 
 
-void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest) const {
+void PointSearch::closestWithinRadius(const PointType & pt, double radius, std::vector<PointValueType>& closest) const {
     closest = tree_->findInSphere(pt, radius);
 }
 
