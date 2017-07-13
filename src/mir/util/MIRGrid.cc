@@ -201,10 +201,5 @@ void MIRGrid::hash(eckit::MD5& md5) const {
 }
 
 
-size_t MIRGrid::size() const {
-    return grid_.size();
-}
-
-
 }  // namespace util
 }  // namespace mir

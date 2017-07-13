@@ -72,7 +72,6 @@ public:
     const atlas::Mesh& mesh() const;
 
     void hash(eckit::MD5&) const;
-    size_t size() const;
 
 private:
 
