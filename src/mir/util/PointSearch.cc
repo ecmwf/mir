@@ -19,7 +19,10 @@
 #include <limits>
 #include "mir/repres/Representation.h"
 #include "eckit/config/Resource.h"
+#include "eckit/log/Timer.h"
+#include "eckit/log/Plural.h"
 
+#include "eckit/container/kdtree/KDNode.h"
 
 
 namespace mir {
@@ -27,14 +30,176 @@ namespace util {
 
 
 
+
+class PointSearchTreeMemory: public PointSearchTree {
+
+    typedef PointSearchTree::Point Point;
+    typedef eckit::KDTreeMemory<PointSearchTree> Tree;
+
+    Tree tree_;
+
+    virtual void build(std::vector<PointValueType>& v) {
+        tree_.build(v);
+    }
+
+    virtual void insert(const PointValueType& pt) {
+        tree_.insert(pt);
+    }
+
+    virtual void statsPrint(std::ostream& out, bool pretty) {
+        tree_.statsPrint(out, pretty);
+    }
+
+    virtual void statsReset() {
+        tree_.statsReset();
+    }
+
+    virtual PointValueType nearestNeighbour(const PointSearchTree::Point& pt) {
+        auto nn = tree_.nearestNeighbour(pt).value();
+        return PointValueType(nn.point(), nn.payload());
+    }
+
+    virtual std::vector<PointValueType> kNearestNeighbours(const Point& pt, size_t k) {
+        std::vector<PointValueType> result;
+        for (auto n : tree_.kNearestNeighbours(pt, k)) {
+            result.push_back(PointValueType(n.point(), n.payload()));
+        }
+        return result;
+    }
+
+    virtual std::vector<PointValueType> findInSphere(const Point& pt, double radius) {
+        std::vector<PointValueType> result;
+        for (auto n : tree_.findInSphere(pt, radius)) {
+            result.push_back(PointValueType(n.point(), n.payload()));
+        }
+        return result;
+    }
+
+    virtual bool ready() const  {
+        return false;
+    }
+
+    virtual void commit() {
+    }
+
+    virtual void print(std::ostream & out)  const {
+        out << "KDTreeMemory[]";
+    }
+
+};
+
+
+static eckit::PathName treePath(const eckit::PathName& path) {
+    if (path.exists()) {
+        return path;
+    }
+
+    return path + ".tmp";
+}
+
+
+
+class PointSearchTreeMapped: public PointSearchTree {
+
+
+    typedef PointSearchTree::Point Point;
+    typedef eckit::KDTreeMapped<PointSearchTree> Tree;
+
+    eckit::PathName path_;
+    eckit::PathName tmp_;
+
+    Tree tree_;
+
+    virtual void build(std::vector<PointValueType>& v) {
+        tree_.build(v);
+    }
+
+    virtual void insert(const PointValueType& pt) {
+        tree_.insert(pt);
+    }
+
+    virtual void statsPrint(std::ostream& out, bool pretty) {
+        tree_.statsPrint(out, pretty);
+    }
+
+    virtual void statsReset() {
+        tree_.statsReset();
+    }
+
+    virtual PointValueType nearestNeighbour(const PointSearchTree::Point& pt) {
+        auto nn = tree_.nearestNeighbour(pt).value();
+        return PointValueType(nn.point(), nn.payload());
+    }
+
+    virtual std::vector<PointValueType> kNearestNeighbours(const Point& pt, size_t k) {
+        std::vector<PointValueType> result;
+        for (auto n : tree_.kNearestNeighbours(pt, k)) {
+            result.push_back(PointValueType(n.point(), n.payload()));
+        }
+        return result;
+    }
+
+    virtual std::vector<PointValueType> findInSphere(const Point& pt, double radius) {
+        std::vector<PointValueType> result;
+        for (auto n : tree_.findInSphere(pt, radius)) {
+            result.push_back(PointValueType(n.point(), n.payload()));
+        }
+        return result;
+    }
+
+
+    virtual bool ready() const  {
+        return path_ == tmp_;
+    }
+
+    virtual void commit() {
+        eckit::PathName::rename(tmp_, path_);
+    }
+
+    virtual void print(std::ostream & out) const  {
+        out << "KDTreeMapped[" << path_ << "]";
+
+    }
+
+
+public:
+    PointSearchTreeMapped(const eckit::PathName& path,  size_t itemCount, size_t metadataSize):
+        path_(path),
+        tmp_(treePath(path)),
+        tree_(tmp_, itemCount, metadataSize) {
+
+        if (ready()) {
+            eckit::Log::info() << "Loading " << *this << std::endl;
+        }
+    }
+
+};
+
 PointSearch::PointSearch(const repres::Representation& r, const CompareType& isok) {
     const size_t npts = r.numberOfPoints();
     ASSERT(npts > 0);
 
+
+    // std::ostringstream oss;
+    // oss  << r.uniqueName() << ".kdtree";
+    // tree_.reset(new PointSearchTreeMapped(oss.str(), npts, 0));
+    tree_.reset(new PointSearchTreeMemory());
+
+    if (!tree_->ready()) {
+        build(r, isok);
+        tree_->commit();
+    }
+
+}
+
+void PointSearch::build(const repres::Representation& r, const CompareType& isok) {
+    const size_t npts = r.numberOfPoints();
+
+    eckit::Timer timer("Building KDTree");
+    eckit::Log::info() << "Building " << *tree_ << " for " << r << " (" << eckit::Plural(npts, "point") << ")" << std::endl;
+
     const double infty = std::numeric_limits< double >::infinity();
     const PointType farpoint(infty, infty, infty);
-
-    tree_.reset(new TreeType());
 
     static bool fastBuildKDTrees = eckit::Resource<bool>("$ATLAS_FAST_BUILD_KDTREES", true); // We use the same Resource as ATLAS for now
 
@@ -50,7 +215,7 @@ PointSearch::PointSearch(const repres::Representation& r, const CompareType& iso
             ++i;
         }
 
-        tree_->build(points.begin(), points.end());
+        tree_->build(points);
     }
     else {
         const eckit::ScopedPtr<repres::Iterator> it(r.iterator());
@@ -75,9 +240,7 @@ void PointSearch::statsReset() const {
 
 
 PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType& pt) const {
-    const TreeType::NodeInfo nn = tree_->nearestNeighbour(pt);
-
-    return nn.value();
+    return tree_->nearestNeighbour(pt);
 }
 
 
@@ -90,24 +253,12 @@ void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<Poin
         return;
     }
 
-    TreeType::NodeList nn = tree_->kNearestNeighbours(pt, n);
-
-    closest.clear();
-    closest.reserve(n);
-    for (TreeType::NodeList::iterator it = nn.begin(); it != nn.end(); ++it) {
-        closest.push_back(it->value());
-    }
+    closest = tree_->kNearestNeighbours(pt, n);
 }
 
 
 void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest) const {
-    TreeType::NodeList r = tree_->findInSphere(pt, radius);
-
-    closest.clear();
-    closest.reserve(r.size());
-    for (TreeType::NodeList::iterator it = r.begin(); it != r.end(); ++it) {
-        closest.push_back(it->value());
-    }
+    closest = tree_->findInSphere(pt, radius);
 }
 
 

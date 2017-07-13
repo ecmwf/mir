@@ -22,6 +22,8 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "atlas/interpolation/method/PointIndex3.h"
 #include "mir/util/Compare.h"
+#include "eckit/container/sptree/SPValue.h"
+#include "eckit/container/sptree/SPNodeInfo.h"
 
 
 namespace mir {
@@ -35,26 +37,51 @@ namespace mir {
 namespace util {
 
 
+class PointSearchTree {
+public:
+    typedef eckit::geometry::Point3             Point;
+    typedef size_t                              Payload;
+    typedef eckit::SPValue<PointSearchTree>     PointValueType;
+
+public:
+    virtual ~PointSearchTree() {};
+
+    virtual void build(std::vector<PointValueType>&) = 0;
+
+    virtual void insert(const PointValueType&) = 0;
+    virtual void statsPrint(std::ostream&, bool) = 0;
+    virtual void statsReset() = 0;
+
+    virtual PointValueType nearestNeighbour(const Point&) = 0;
+    virtual std::vector<PointValueType> kNearestNeighbours(const Point&, size_t k) = 0;
+    virtual std::vector<PointValueType> findInSphere(const Point&, double) = 0;
+
+    virtual bool ready() const = 0;
+    virtual void commit() = 0;
+    virtual void print(std::ostream &) const = 0;
+
+     friend std::ostream &operator<<(std::ostream &s, const PointSearchTree &p) {
+        p.print(s);
+        return s;
+    }
+};
+
+
 /// Class for fast searches in point clouds following kd-tree algorithms
 /// @todo test kd-tree stored in shared memory?
 class PointSearch : private eckit::NonCopyable {
-private:
-
-    typedef atlas::interpolation::method::PointIndex3           TreeType;
-    typedef atlas::interpolation::method::PointIndex3::Point    Point;
-    typedef atlas::interpolation::method::PointIndex3::iterator iterator;
-
 public:
 
-    typedef atlas::interpolation::method::PointIndex3::Value PointValueType;
-    typedef eckit::geometry::Point3   PointType;
+    typedef PointSearchTree::Payload        ValueType;
+    typedef PointSearchTree::Point          PointType;
+    typedef PointSearchTree::PointValueType PointValueType;
 
     typedef compare::ACompareFn  <size_t> CompareType;
     typedef compare::IsAnythingFn<size_t> CompareTypeNone;
 
 public:
 
-    PointSearch(const repres::Representation&, const CompareType& =CompareTypeNone());
+    PointSearch(const repres::Representation&, const CompareType& = CompareTypeNone());
 
 public:
 
@@ -72,7 +99,12 @@ public:
 
 protected:
 
-    eckit::ScopedPtr<TreeType> tree_;
+    eckit::ScopedPtr<PointSearchTree> tree_;
+
+private:
+
+    void build(const repres::Representation& r, const CompareType&);
+
 
 };
 
