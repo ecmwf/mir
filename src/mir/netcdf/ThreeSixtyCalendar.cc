@@ -26,7 +26,6 @@
 namespace mir {
 namespace netcdf {
 
-static long long offset = 0;
 
 ThreeSixtyCalendar::ThreeSixtyCalendar(const Variable& variable)
 {

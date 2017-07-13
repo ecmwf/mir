@@ -41,6 +41,8 @@ RegularLL::RegularLL(const Variable &variable,
     }
 
     ASSERT(east_ > west_);
+    ASSERT(south_north_increments_ > 0);
+    ASSERT(west_east_increment_ > 0);
 
     // TODO: use Fractions
 
@@ -186,7 +188,7 @@ static bool check_axis(const Variable & axis,
 
     first = v[0];
     last = v[v.size() - 1];
-    increment = d;
+    increment = d > 0 ? d : -d;
 
     return true;
 }

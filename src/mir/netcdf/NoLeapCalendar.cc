@@ -26,8 +26,6 @@
 namespace mir {
 namespace netcdf {
 
-static long long offset = 0;
-
 NoLeapCalendar::NoLeapCalendar(const Variable& variable)
 {
 }

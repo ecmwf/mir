@@ -175,7 +175,6 @@ InputDataset::InputDataset(const std::string &path, NCFileCache &cache):
             if (w != v) {
                 delete v;
                 (*j).second = w;
-                v = w;
             }
 
         }
