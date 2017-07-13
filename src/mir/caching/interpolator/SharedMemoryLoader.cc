@@ -158,6 +158,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     //                          << eckit::BigNum(shmsize / page_size)
     //                          << std::endl;
 
+
     int shmid;
     if ((shmid = shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
         std::ostringstream oss;
@@ -193,7 +194,9 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     address_ = shmat( shmid, NULL, 0 );
     if (address_ == (void*) - 1) {
-        throw eckit::FailedSystemCall("sfmat(" + real.asString() + ")");
+         std::ostringstream oss;
+         oss << "sfmat(" << real << "), id=" << shmid << ", size=" << shmsize;
+        throw eckit::FailedSystemCall(oss.str());
     }
 
     try {
