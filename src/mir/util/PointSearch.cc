@@ -96,7 +96,7 @@ static eckit::PathName treePath(const eckit::PathName& path) {
         return path;
     }
 
-    return path + ".tmp";
+    return eckit::PathName::unique(path);
 }
 
 
