@@ -18,18 +18,19 @@
 #include <limits>
 #include <string>
 #include <vector>
+
 #include "eckit/geometry/KPoint.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/ETA.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
-#include "atlas/grid.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-
+#include "mir/util/Domain.h"
 #include "mir/util/PointSearch.h"
 
 

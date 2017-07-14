@@ -25,7 +25,7 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/types/FloatCompare.h"
-#include "atlas/grid.h"
+
 #include "atlas/util/GaussianLatitudes.h"
 #include "mir/api/MIRJob.h"
 #include "mir/api/ProdgenJob.h"

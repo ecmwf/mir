@@ -21,7 +21,7 @@
 #include "eckit/log/Log.h"
 #include "atlas/array/IndexView.h"
 #include "atlas/field/Field.h"
-#include "atlas/grid.h"
+
 #include "atlas/interpolation/element/Quad3D.h"
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/mesh.h"

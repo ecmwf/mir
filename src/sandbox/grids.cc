@@ -16,7 +16,7 @@
 #include "eckit/runtime/Tool.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/RLE.h"
-#include "atlas/grid.h"
+
 
 
 class Grids : public eckit::Tool {

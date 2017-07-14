@@ -148,8 +148,6 @@ list(
     api/MIRWatcher.h
     api/ProdgenJob.cc
     api/ProdgenJob.h
-    api/emoslib.cc
-    api/emoslib.h
     caching/CroppingCache.cc
     caching/CroppingCache.h
     caching/InMemoryCache.cc
@@ -250,16 +248,6 @@ list(
     lsm/TenMinutesLSM.h
     lsm/UserFileLSM.cc
     lsm/UserFileLSM.h
-    method/AddParallelEdgesConnectivity.cc
-    method/AddParallelEdgesConnectivity.h
-    method/Conservative.cc
-    method/Conservative.h
-    method/FEBilinear.cc
-    method/FEBilinear.h
-    method/FELinear.cc
-    method/FELinear.h
-    method/FiniteElement.cc
-    method/FiniteElement.h
     method/KNearest.cc
     method/KNearest.h
     method/Method.cc
@@ -274,14 +262,8 @@ list(
     method/NearestNeighbour.h
     method/PseudoLaplace.cc
     method/PseudoLaplace.h
-    method/StructuredBilinearLatLon.cc
-    method/StructuredBilinearLatLon.h
-    method/StructuredLinear.cc
-    method/StructuredLinear.h
-    method/StructuredMethod.cc
-    method/StructuredMethod.h
-    method/Tessellation.cc
-    method/Tessellation.h
+
+
     method/WeightMatrix.cc
     method/WeightMatrix.h
     method/decompose/Decompose.cc
@@ -532,8 +514,6 @@ list(
     util/LongitudeDouble.h
     util/LongitudeFraction.cc
     util/LongitudeFraction.h
-    util/MIRGrid.cc
-    util/MIRGrid.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
     util/PlanParser.cc
@@ -545,6 +525,34 @@ list(
     util/Types.h
   )
 
+
+if(HAVE_ATLAS)
+list(
+    APPEND mir_srcs
+    util/MIRGrid.cc
+    util/MIRGrid.h
+    api/emoslib.cc
+    api/emoslib.h
+    method/AddParallelEdgesConnectivity.cc
+    method/AddParallelEdgesConnectivity.h
+    method/Conservative.h
+    method/Conservative.cc
+    method/FEBilinear.cc
+    method/FEBilinear.h
+    method/FELinear.cc
+    method/FELinear.h
+    method/FiniteElement.cc
+    method/FiniteElement.h
+    method/Tessellation.cc
+    method/Tessellation.h
+    method/StructuredBilinearLatLon.cc
+    method/StructuredBilinearLatLon.h
+    method/StructuredLinear.cc
+    method/StructuredLinear.h
+    method/StructuredMethod.cc
+    method/StructuredMethod.h
+)
+endif()
 
 
 if (HAVE_NETCDF)

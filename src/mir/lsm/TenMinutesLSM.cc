@@ -21,7 +21,7 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/grid.h"
+
 #include "mir/config/LibMir.h"
 
 #include "mir/repres/Iterator.h"

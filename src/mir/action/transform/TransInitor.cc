@@ -13,13 +13,12 @@
 
 #include "mir/action/transform/TransInitor.h"
 
-#include "eckit/exception/Exceptions.h"
-#include "atlas/library/config.h"
-
+#include "mir/api/mir_config.h"
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
 #endif
 
+#include "eckit/exception/Exceptions.h"
 
 namespace mir {
 namespace action {
@@ -32,7 +31,7 @@ const TransInitor& TransInitor::instance() {
     return initor;
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
+                            "Please link to ATLAS with TRANS support enabled.");
 #endif
 }
 
@@ -43,7 +42,7 @@ TransInitor::TransInitor() {
     trans_init();
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
+                            "Please link to ATLAS with TRANS support enabled.");
 #endif
 }
 
@@ -54,7 +53,7 @@ TransInitor::~TransInitor() {
     trans_finalize();
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
+                            "Please link to ATLAS with TRANS support enabled.");
 #endif
 }
 

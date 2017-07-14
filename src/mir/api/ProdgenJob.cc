@@ -17,9 +17,9 @@
 
 #include <iostream>
 #include <sstream>
+
 #include "eckit/log/Log.h"
 #include "eckit/exception/Exceptions.h"
-#include "atlas/grid.h"
 #include "mir/config/LibMir.h"
 
 
@@ -205,12 +205,16 @@ size_t ProdgenJob::nj() const {
 
 
 void ProdgenJob::auto_pl() {
+#ifdef HAVE_ATLAS
     std::ostringstream gridname;
     gridname << "N" << N_;
     atlas::grid::ReducedGaussianGrid grid(gridname.str());
     ASSERT(grid);
 
     pl_ = grid.nx();
+#else
+    NOTIMP;
+#endif
 }
 
 

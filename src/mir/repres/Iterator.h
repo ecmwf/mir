@@ -17,9 +17,16 @@
 #define mir_repres_Iterator_h
 
 #include <iosfwd>
+
+#include "mir/api/mir_config.h"
+#ifdef HAVE_ATLAS
+#include "atlas/projection.h"
+#endif
+
+#include "eckit/geometry/Point2.h"
 #include "eckit/geometry/Point3.h"
 #include "eckit/memory/NonCopyable.h"
-#include "atlas/projection.h"
+
 #include "mir/util/Rotation.h"
 #include "mir/util/Types.h"
 
@@ -89,7 +96,10 @@ protected:
     point_ll_t pointUnrotated_;
 
     util::Rotation rotation_;
+
+#ifdef HAVE_ATLAS
     atlas::Projection projection_;
+#endif
 
     // -- Methods
 

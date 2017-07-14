@@ -67,7 +67,7 @@ static void fillTrans(struct Trans_t& trans,
 
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
+                            "Please link to ATLAS with TRANS support enabled.");
 #endif
 }
 
@@ -88,7 +88,7 @@ static void createCoefficients(const eckit::PathName& path,
     trans_delete(&tmp_trans);
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
+                            "Please link to ATLAS with TRANS support enabled.");
 #endif
 }
 
@@ -176,7 +176,7 @@ void ShToGridded::transform(
     // trans_delete(&trans);
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
+                            "Please link to ATLAS with TRANS support enabled.");
 #endif
 }
 

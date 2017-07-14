@@ -18,7 +18,7 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Tool.h"
-#include "atlas/grid.h"
+
 #include "mir/config/MIRConfiguration.h"
 #include "mir/lsm/Mask.h"
 #include "mir/param/ConfigurationWrapper.h"

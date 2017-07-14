@@ -21,7 +21,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "atlas/array/IndexView.h"
 #include "atlas/functionspace/FunctionSpace.h"
-#include "atlas/grid.h"
+
 #include "atlas/interpolation/element/Quad3D.h"
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/mesh/Mesh.h"

@@ -18,7 +18,7 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "atlas/grid.h"
+
 #include "atlas/util/Config.h"
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"

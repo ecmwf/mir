@@ -20,7 +20,6 @@
 #include <string>
 #include <vector>
 #include "eckit/memory/Counted.h"
-#include "mir/util/MIRGrid.h"
 
 
 struct grib_info;
@@ -31,25 +30,33 @@ class Grid;
 }
 
 namespace mir {
+
 namespace param {
 class MIRParametrisation;
 }
+
 namespace repres {
 class Iterator;
 }
+
 namespace util {
 class BoundingBox;
 class Domain;
+class MIRGrid;
 }
+
 namespace context {
 class Context;
 }
+
 namespace api {
 class MIRJob;
 }
+
 namespace data {
 class MIRField;
 }
+
 }
 
 

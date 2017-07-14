@@ -24,7 +24,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/os/Stat.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/grid.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"

@@ -16,11 +16,12 @@
 #include "mir/repres/gauss/regular/RegularGG.h"
 
 #include <iostream>
+
+#include "eckit/memory/ScopedPtr.h"
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/util/Domain.h"
 
-#include "atlas/library/config.h"
-
+#include "mir/api/mir_config.h"
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
 #endif
