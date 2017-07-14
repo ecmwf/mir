@@ -36,7 +36,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
 #include "atlas/grid/Grid.h"
-#include "mir/util/MIRGrid.h"
+
 
 
 
@@ -98,7 +98,7 @@ void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
         double result = 0;
         double weights = 0;
 
-        const atlas::grid::StructuredGrid structured(rep->grid());
+        const atlas::grid::StructuredGrid structured(rep->atlasGrid());
         ASSERT(structured);
 
         size_t i = 0;

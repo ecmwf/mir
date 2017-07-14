@@ -261,7 +261,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     // get input mesh (cell centres are required for the k-d tree)
     ASSERT(InputMeshGenerationParams_.meshCellCentres_);
-    util::MIRGrid gin = in.grid();
+    util::MIRGrid gin(in.atlasGrid());
     const atlas::Mesh& inMesh = gin.mesh(statistics, InputMeshGenerationParams_);
     const util::Domain& inDomain = in.domain();
 

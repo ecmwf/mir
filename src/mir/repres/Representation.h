@@ -118,7 +118,7 @@ public:
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
 #ifdef HAVE_ATLAS
-    virtual util::MIRGrid grid() const;
+    virtual atlas::Grid atlasGrid() const;
 #endif
 
     virtual util::Domain domain() const;
@@ -161,10 +161,7 @@ protected:
 
     // -- Methods
 
-    virtual  void print(std::ostream&) const = 0;
-#ifdef HAVE_ATLAS
-    virtual atlas::Grid atlasGrid() const;
-#endif
+    virtual void print(std::ostream&) const = 0;
     virtual void makeName(std::ostream&) const;
 
     // Domain operations

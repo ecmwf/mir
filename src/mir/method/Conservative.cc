@@ -31,6 +31,7 @@
 
 
 
+
 namespace mir {
 namespace method {
 
@@ -121,14 +122,14 @@ void Conservative::assemble(util::MIRStatistics& statistics,
 
 
     // 2) M_s compute the lumped mass matrix (source mesh)
-    util::MIRGrid gin = in.grid();
+    util::MIRGrid gin(in.atlasGrid());
     eckit::linalg::Vector M_s(in.numberOfPoints());
     const atlas::Mesh& inputMesh = gin.mesh(statistics, InputMeshGenerationParams_);
     computeLumpedMassMatrix(M_s, inputMesh);
 
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix (target mesh)
-    util::MIRGrid gout = out.grid();
+    util::MIRGrid gout(out.atlasGrid());
     eckit::linalg::Vector M_d(out.numberOfPoints());
     const atlas::Mesh& outputMesh = gout.mesh(statistics, OutputMeshGenerationParams_);
     computeLumpedMassMatrix(M_d, outputMesh);

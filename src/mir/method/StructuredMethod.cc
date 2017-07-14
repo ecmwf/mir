@@ -20,7 +20,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/MIRGrid.h"
+
 
 
 namespace mir {
@@ -112,7 +112,7 @@ void StructuredMethod::getRepresentationPoints(const repres::Representation& r, 
 
 
 void StructuredMethod::getRepresentationLatitudes(const repres::Representation& r, std::vector<Latitude>& latitudes) const {
-    atlas::grid::StructuredGrid in(r.grid());
+    atlas::grid::StructuredGrid in(r.atlasGrid());
     ASSERT(in);
 
     const std::vector<long>& pl = in.nx();

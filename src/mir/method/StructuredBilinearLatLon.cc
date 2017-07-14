@@ -21,7 +21,6 @@
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/MIRGrid.h"
 
 namespace mir {
 namespace method {
@@ -51,7 +50,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
     // (this assumes the points are oriented north-south)
     // FIXME: proper documentation
 
-    atlas::grid::StructuredGrid gin(in.grid());
+    atlas::grid::StructuredGrid gin(in.atlasGrid());
     ASSERT(gin);
 
     const std::vector<long>& pl = gin.nx();

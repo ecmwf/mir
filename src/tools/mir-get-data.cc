@@ -24,7 +24,7 @@
 #include "mir/stats/detail/Angle.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/method/decompose/PolarAngleToCartesian.h"
-#include "mir/util/MIRGrid.h"
+
 
 #include "atlas/grid/Grid.h"
 
@@ -112,7 +112,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 size_t lonlat_size_atlas = 0;
                 point_t bbox_min_atlas, bbox_max_atlas;
 
-                atlas::Grid grid(rep->grid());
+                atlas::Grid grid(rep->atlasGrid());
                 first = true;
                 for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
                     point_t P(p.lon(), p.lat());
@@ -148,7 +148,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                         stats_lat(decompose, std::numeric_limits<double>::quiet_NaN()),
                         stats_lon(decompose, std::numeric_limits<double>::quiet_NaN());
 
-                atlas::Grid grid(rep->grid());
+                atlas::Grid grid(rep->atlasGrid());
                 eckit::ScopedPtr< mir::repres::Iterator > it(rep->iterator());
 
                 std::vector<double>::const_iterator v = field.values(0).begin();
@@ -173,7 +173,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             } else if (atlas) {
 
-                atlas::Grid grid(rep->grid());
+                atlas::Grid grid(rep->atlasGrid());
 
                 std::vector<double>::const_iterator v = field.values(0).begin();
                 for (const atlas::Grid::PointLonLat p: grid.lonlat()) {

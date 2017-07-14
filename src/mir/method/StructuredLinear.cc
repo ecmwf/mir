@@ -20,7 +20,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/MIRGrid.h"
+
 
 
 namespace mir {
@@ -53,7 +53,7 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
      *   - pl_sum.rbegin() (last position) is total number of points sum(j=0; j=Nj, pl[j]),
      *   - pl_sum.rbegin()[1] (before-last position) is sum(j=0; j=Nj-1, pl[j])
      */
-    atlas::grid::StructuredGrid gin(in.grid());
+    atlas::grid::StructuredGrid gin(in.atlasGrid());
     ASSERT(gin);
 
     const std::vector<long>& pl = gin.nx();
