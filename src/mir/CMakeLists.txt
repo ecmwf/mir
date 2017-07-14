@@ -692,10 +692,11 @@ if ( HAVE_NETCDF )
 endif()
 
 
-
-
-
 list(APPEND mir_tmpls caching/InMemoryCache.cc)
+
+if(HAVE_ATLAS)
+    set(libatlas atlas)
+endif()
 
 ecbuild_add_library(
   TARGET             mir
@@ -705,9 +706,7 @@ ecbuild_add_library(
   GENERATED          api/mir_version.cc
   TEMPLATES          ${mir_tmpls}
   PRIVATE_INCLUDES   ${ATLAS_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} ${NETCDF_INCLUDE_DIRS} ${GRIB_API_INCLUDE_DIRS}
-#  LIBS               atlas eckit_linalg  ${GRIB_API_LIBRARIES} ${MIR_FEATURE_LIBRARIES} ${NETCDF_LIBRARIES}
-    LIBS               eckit_linalg  ${GRIB_API_LIBRARIES} ${MIR_FEATURE_LIBRARIES} ${NETCDF_LIBRARIES}
-
+  LIBS               ${libatlas} eckit_linalg  eckit_geometry eckit_option ${GRIB_API_LIBRARIES} ${MIR_FEATURE_LIBRARIES} ${NETCDF_LIBRARIES}
   )
 
 

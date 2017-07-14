@@ -3,8 +3,6 @@ list(APPEND tools
     mir-compare
     mir-config
     mir-formula
-    mir-gaussian-fractions
-    mir-get-data
     mir-inspect
     mir-list
     mir-make-lsm
@@ -19,6 +17,8 @@ list(APPEND tools
 if(HAVE_ATLAS)
 list(APPEND tools
     mir-integrate
+    mir-get-data
+    mir-gaussian-fractions
 )
 endif()
 
