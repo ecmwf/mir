@@ -44,7 +44,6 @@ class Iterator;
 namespace util {
 class BoundingBox;
 class Domain;
-class MIRGrid;
 }
 
 namespace context {

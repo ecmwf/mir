@@ -26,9 +26,6 @@ struct Trans_t {};
 #endif
 
 
-namespace atlas {
-class Grid;
-}
 namespace mir {
 namespace data {
 class MIRField;

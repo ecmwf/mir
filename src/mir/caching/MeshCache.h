@@ -16,11 +16,6 @@
 
 #include "eckit/container/CacheManager.h"
 
-
-namespace atlas {
-class Mesh;
-}
-
 namespace mir {
 namespace caching {
 

@@ -26,16 +26,18 @@
 namespace eckit {
 class MD5;
 }
-namespace atlas {
-class Grid;
-}
+
+
 namespace mir {
+
 namespace param {
 class MIRParametrisation;
 }
+
 namespace repres {
 class Representation;
 }
+
 }
 
 namespace mir {

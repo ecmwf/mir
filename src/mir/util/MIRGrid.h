@@ -67,7 +67,6 @@ public:
 
     // -- Methods
 
-    operator const atlas::Grid&() const;
     const atlas::Mesh& mesh(util::MIRStatistics&, const MeshGenParams&) const;
     const atlas::Mesh& mesh() const;
 

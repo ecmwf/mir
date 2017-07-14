@@ -101,11 +101,6 @@ MIRGrid::MIRGrid(const MIRGrid& other) {
 }
 
 
-MIRGrid::operator const atlas::Grid&() const {
-    return grid_;
-}
-
-
 const atlas::Mesh& MIRGrid::mesh(util::MIRStatistics& statistics, const MeshGenParams& meshGenParams) const {
     ASSERT(!mesh_.generated());
     mesh_ = generateMeshAndCache(statistics, meshGenParams);
