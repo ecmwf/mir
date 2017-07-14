@@ -58,6 +58,8 @@ void MIRPoints::execute(const eckit::option::CmdArgs& args) {
     std::vector<double> latitudes = {50, 30, 20, 10, 0};
     std::vector<double> longitudes = { -10, 10, 6, 52, 8};
 
+    job.set("caching", false);
+
     job.set("points", true);
     job.set("latitudes", latitudes);
     job.set("longitudes", longitudes);
