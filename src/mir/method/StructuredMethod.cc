@@ -15,7 +15,7 @@
 
 #include "eckit/geometry/Point3.h"
 #include "eckit/log/Log.h"
-#include "atlas/grid.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"

@@ -17,19 +17,21 @@
 #include "mir/util/PointSearch.h"
 
 #include <limits>
-#include "mir/repres/Representation.h"
-#include "eckit/config/Resource.h"
-#include "eckit/log/Timer.h"
-#include "eckit/log/Plural.h"
-#include "mir/config/LibMir.h"
+#include <iostream>
 
+#include "eckit/config/Resource.h"
+#include "eckit/container/KDTree.h"
 #include "eckit/container/kdtree/KDNode.h"
+#include "eckit/log/Plural.h"
+#include "eckit/log/Timer.h"
+
+#include "mir/config/LibMir.h"
+#include "mir/repres/Iterator.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir {
 namespace util {
-
-
 
 
 class PointSearchTreeMemory: public PointSearchTree {

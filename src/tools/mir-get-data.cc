@@ -16,7 +16,7 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "atlas/grid.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Iterator.h"

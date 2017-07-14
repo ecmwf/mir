@@ -14,9 +14,12 @@
 #define mir_util_Domain_h
 
 #include <iostream>
-#include "atlas/domain/Domain.h"
+
 #include "mir/util/BoundingBox.h"
 
+namespace atlas {
+class RectangularDomain;
+}
 
 namespace mir {
 namespace util {

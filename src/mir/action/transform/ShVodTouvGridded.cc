@@ -14,6 +14,12 @@
 #include "mir/action/transform/ShVodTouvGridded.h"
 
 #include <vector>
+
+#ifdef ATLAS_HAVE_TRANS
+#include "atlas/util/Constants.h"
+#include "transi/trans.h"
+#endif
+
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -35,6 +41,7 @@ ShVodTouvGridded::~ShVodTouvGridded() {
 
 
 void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
+#ifdef ATLAS_HAVE_TRANS
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields == 2);
     ASSERT(trans.myproc == 1);
@@ -45,15 +52,6 @@ void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) con
     std::vector<double> output(number_of_fields * size_t(trans.ngptotg));
 
 
-#if 0
-    // transform
-    struct InvTrans_t invtrans = new_invtrans(&trans);
-    invtrans.rgp     = output.data();
-    invtrans.nvordiv = 1;
-    invtrans.rspvor  = field.values(0).data();
-    invtrans.rspdiv  = field.values(1).data();
-    ASSERT(trans_invtrans(&invtrans) == 0);
-#else
     std::vector<int>    nfrom (number_of_fields, 1); // processors responsible for distributing each field
     std::vector<int>    nto   (number_of_fields, 1);
     std::vector<double> rgp   (number_of_fields * size_t(trans.ngptot));
@@ -93,8 +91,6 @@ void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) con
     gathgrid.nfld = 2;
     gathgrid.nto  = nto.data();
     ASSERT(trans_gathgrid(&gathgrid) == 0);
-#endif
-
 
     // configure paramIds for u/v
     const long id_u = 131;
@@ -107,6 +103,10 @@ void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) con
     result.assign(output.begin() + trans.ngptotg, output.end());
     field.update(result, 1);
     field.metadata(1, "paramId", id_v);
+#else
+    throw eckit::SeriousBug("VO/D to U/V transforms are not supported. "
+                            "Please link to ATLAS with TRANS support enabled.");
+#endif
 }
 
 

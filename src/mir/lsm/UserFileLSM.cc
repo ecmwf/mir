@@ -16,7 +16,7 @@
 #include "mir/lsm/UserFileLSM.h"
 
 #include <iostream>
-#include "atlas/grid.h"
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
 #include "mir/lsm/GribFileLSM.h"

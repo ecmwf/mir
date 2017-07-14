@@ -22,10 +22,11 @@
 #include <map>
 #include <sstream>
 #include <string>
+
 #include "eckit/log/Plural.h"
+#include "eckit/log/ResourceUsage.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/grid.h"
-#include "atlas/mesh/Mesh.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
@@ -36,7 +37,6 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
 #include "mir/util/MIRStatistics.h"
-#include "eckit/log/ResourceUsage.h"
 
 using mir::util::compare::is_approx_zero;
 using mir::util::compare::is_approx_one;

@@ -33,6 +33,7 @@ ShScalarToGridded::~ShScalarToGridded() {
 
 
 void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
+#ifdef ATLAS_HAVE_TRANS
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields > 0);
     ASSERT(trans.myproc == 1);
@@ -52,20 +53,11 @@ void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) co
             ASSERT(int(values.size()) == trans.nspec2g);
 
             for (size_t j = 0; j < size_t(size); ++j) {
-                input[ j*number_of_fields + i ] = values[j];
+                input[ j * number_of_fields + i ] = values[j];
             }
         }
     }
 
-
-#if 0
-    // transform
-    struct InvTrans_t invtrans = new_invtrans(&trans);
-    invtrans.rgp       = output.data();
-    invtrans.nscalar   = int(number_of_fields);
-    invtrans.rspscalar = number_of_fields > 1? input.data() : field.values(0).data();
-    ASSERT(trans_invtrans(&invtrans) == 0);
-#else
     std::vector<int>    nfrom (number_of_fields, 1); // processors responsible for distributing each field
     std::vector<int>    nto   (number_of_fields, 1);
     std::vector<double> rspec (number_of_fields * trans.nspec2);
@@ -76,7 +68,7 @@ void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) co
     // distribute
     struct DistSpec_t distspec = new_distspec(&trans);
     distspec.nfrom  = nfrom.data();
-    distspec.rspecg = number_of_fields > 1? input.data() : field.values(0).data();
+    distspec.rspecg = number_of_fields > 1 ? input.data() : field.values(0).data();
     distspec.rspec  = rspec.data();
     distspec.nfld   = nfld;
     ASSERT(trans_distspec(&distspec) == 0);
@@ -97,7 +89,6 @@ void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) co
     gathgrid.nfld = nfld;
     gathgrid.nto  = nto.data();
     ASSERT(trans_gathgrid(&gathgrid) == 0);
-#endif
 
 
     // set field values (again, avoid copies for one field only)
@@ -113,6 +104,10 @@ void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) co
             here += trans.ngptotg;
         }
     }
+#else
+    throw eckit::SeriousBug("Spherical to grid transforms are not supported. "
+                            "Please link to ATLAS with TRANS support enabled.");
+#endif
 }
 
 

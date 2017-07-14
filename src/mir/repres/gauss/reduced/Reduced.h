@@ -93,27 +93,6 @@ protected:
 
     // -- Class members
 
-    class ReducedIterator {
-        const std::vector<double>& latitudes_;
-        const std::vector<long>& pl_;
-        const util::Domain domain_;
-        size_t ni_;
-        const size_t nj_;
-        eckit::Fraction lon_;
-        eckit::Fraction inc_;
-        size_t i_;
-        size_t j_;
-        size_t k_;
-        size_t p_;
-        size_t count_;
-    protected:
-        ~ReducedIterator();
-        void print(std::ostream&) const;
-        bool next(Latitude&, Longitude&);
-    public:
-        ReducedIterator(const std::vector<double>& latitudes, const std::vector<long>& pl, const util::Domain&);
-    };
-
     // -- Class methods
     // None
 

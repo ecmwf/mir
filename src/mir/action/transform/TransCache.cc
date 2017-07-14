@@ -27,7 +27,7 @@ TransCache::TransCache() :
 #ifdef ATLAS_HAVE_TRANS
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
+                            "Please link to ATLAS with TRANS support enabled.");
 #endif
 }
 
@@ -44,7 +44,7 @@ TransCache::~TransCache() {
         delete loader_;
 #else
     throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
+                            "Please link to ATLAS with TRANS support enabled.");
 #endif
 }
 

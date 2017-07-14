@@ -17,8 +17,11 @@
 
 #include <cmath>
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/geometry/Point2.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"

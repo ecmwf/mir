@@ -36,18 +36,18 @@ list(
     action/filter/FrameFilter.h
     action/filter/GlobaliseFilter.cc
     action/filter/GlobaliseFilter.h
-    action/interpolate/Gridded2GridDef.cc
-    action/interpolate/Gridded2GridDef.h
-    action/interpolate/Gridded2Points.cc
-    action/interpolate/Gridded2Points.h
     action/interpolate/Gridded2GriddedInterpolation.cc
     action/interpolate/Gridded2GriddedInterpolation.h
+    action/interpolate/Gridded2GridDef.cc
+    action/interpolate/Gridded2GridDef.h
     action/interpolate/Gridded2LatLon.cc
     action/interpolate/Gridded2LatLon.h
     action/interpolate/Gridded2NamedGrid.cc
     action/interpolate/Gridded2NamedGrid.h
     action/interpolate/Gridded2Octahedral.cc
     action/interpolate/Gridded2Octahedral.h
+    action/interpolate/Gridded2Points.cc
+    action/interpolate/Gridded2Points.h
     action/interpolate/Gridded2PolarStereographic.cc
     action/interpolate/Gridded2PolarStereographic.h
     action/interpolate/Gridded2ReducedGG.cc
@@ -146,10 +146,6 @@ list(
     api/MIRJob.h
     api/MIRWatcher.cc
     api/MIRWatcher.h
-    api/ProdgenJob.cc
-    api/ProdgenJob.h
-    api/emoslib.cc
-    api/emoslib.h
     caching/CroppingCache.cc
     caching/CroppingCache.h
     caching/InMemoryCache.cc
@@ -158,12 +154,6 @@ list(
     caching/InMemoryCacheBase.h
     caching/InMemoryCacheStatistics.cc
     caching/InMemoryCacheStatistics.h
-    caching/LegendreCache.cc
-    caching/LegendreCache.h
-    caching/MeshCache.cc
-    caching/MeshCache.h
-    caching/WeightCache.cc
-    caching/WeightCache.h
     caching/interpolator/FileLoader.cc
     caching/interpolator/FileLoader.h
     caching/interpolator/InterpolatorLoader.cc
@@ -180,6 +170,12 @@ list(
     caching/legendre/NoLoader.h
     caching/legendre/SharedMemoryLoader.cc
     caching/legendre/SharedMemoryLoader.h
+    caching/LegendreCache.cc
+    caching/LegendreCache.h
+    caching/MeshCache.cc
+    caching/MeshCache.h
+    caching/WeightCache.cc
+    caching/WeightCache.h
     compare/Comparator.cc
     compare/Comparator.h
     compare/Field.cc
@@ -236,10 +232,10 @@ list(
     lsm/AutoLSM.h
     lsm/GribFileLSM.cc
     lsm/GribFileLSM.h
-    lsm/LSMChooser.cc
-    lsm/LSMChooser.h
     lsm/LandSeaMasks.cc
     lsm/LandSeaMasks.h
+    lsm/LSMChooser.cc
+    lsm/LSMChooser.h
     lsm/MappedMask.cc
     lsm/MappedMask.h
     lsm/Mask.cc
@@ -250,16 +246,14 @@ list(
     lsm/TenMinutesLSM.h
     lsm/UserFileLSM.cc
     lsm/UserFileLSM.h
-    method/AddParallelEdgesConnectivity.cc
-    method/AddParallelEdgesConnectivity.h
-    method/Conservative.cc
-    method/Conservative.h
-    method/FEBilinear.cc
-    method/FEBilinear.h
-    method/FELinear.cc
-    method/FELinear.h
-    method/FiniteElement.cc
-    method/FiniteElement.h
+    method/decompose/Decompose.cc
+    method/decompose/Decompose.h
+    method/decompose/DecomposeToCartesian.cc
+    method/decompose/DecomposeToCartesian.h
+    method/decompose/None.cc
+    method/decompose/None.h
+    method/decompose/PolarAngleToCartesian.cc
+    method/decompose/PolarAngleToCartesian.h
     method/KNearest.cc
     method/KNearest.h
     method/Method.cc
@@ -274,24 +268,8 @@ list(
     method/NearestNeighbour.h
     method/PseudoLaplace.cc
     method/PseudoLaplace.h
-    method/StructuredBilinearLatLon.cc
-    method/StructuredBilinearLatLon.h
-    method/StructuredLinear.cc
-    method/StructuredLinear.h
-    method/StructuredMethod.cc
-    method/StructuredMethod.h
-    method/Tessellation.cc
-    method/Tessellation.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
-    method/decompose/Decompose.cc
-    method/decompose/Decompose.h
-    method/decompose/DecomposeToCartesian.cc
-    method/decompose/DecomposeToCartesian.h
-    method/decompose/None.cc
-    method/decompose/None.h
-    method/decompose/PolarAngleToCartesian.cc
-    method/decompose/PolarAngleToCartesian.h
     namedgrids/ClassicPattern.cc
     namedgrids/ClassicPattern.h
     namedgrids/NamedClassic.cc
@@ -314,8 +292,6 @@ list(
     output/EmptyOutput.h
     output/GeoPointsFileOutput.cc
     output/GeoPointsFileOutput.h
-    output/ValuesOutput.cc
-    output/ValuesOutput.h
     output/GeoPointsOutput.cc
     output/GeoPointsOutput.h
     output/GribFileOutput.cc
@@ -330,6 +306,8 @@ list(
     output/MIROutput.h
     output/RawOutput.cc
     output/RawOutput.h
+    output/ValuesOutput.cc
+    output/ValuesOutput.h
     output/VectorOutput.cc
     output/VectorOutput.h
     packing/ArchivedValue.cc
@@ -344,8 +322,12 @@ list(
     packing/SecondOrder.h
     packing/Simple.cc
     packing/Simple.h
+    param/CachedParametrisation.cc
+    param/CachedParametrisation.h
     param/ConfigurationWrapper.cc
     param/ConfigurationWrapper.h
+    param/DefaultParametrisation.cc
+    param/DefaultParametrisation.h
     param/DelayedParametrisation.cc
     param/DelayedParametrisation.h
     param/FieldParametrisation.cc
@@ -358,16 +340,6 @@ list(
     param/RuntimeParametrisation.h
     param/SimpleParametrisation.cc
     param/SimpleParametrisation.h
-    param/CachedParametrisation.cc
-    param/CachedParametrisation.h
-    param/DefaultParametrisation.cc
-    param/DefaultParametrisation.h
-    repres/Gridded.cc
-    repres/Gridded.h
-    repres/Iterator.cc
-    repres/Iterator.h
-    repres/Representation.cc
-    repres/Representation.h
     repres/gauss/Gaussian.cc
     repres/gauss/Gaussian.h
     repres/gauss/reduced/Classic.cc
@@ -396,6 +368,10 @@ list(
     repres/gauss/regular/RegularGG.h
     repres/gauss/regular/RotatedGG.cc
     repres/gauss/regular/RotatedGG.h
+    repres/Gridded.cc
+    repres/Gridded.h
+    repres/Iterator.cc
+    repres/Iterator.h
     repres/latlon/LatLon.cc
     repres/latlon/LatLon.h
     repres/latlon/ReducedLL.cc
@@ -408,6 +384,8 @@ list(
     repres/other/None.h
     repres/other/UnstructuredGrid.cc
     repres/other/UnstructuredGrid.h
+    repres/Representation.cc
+    repres/Representation.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
     repres/unsupported/Albers.cc
@@ -448,6 +426,14 @@ list(
     stats/Angle.h
     stats/CountOutsideRange.cc
     stats/CountOutsideRange.h
+    stats/detail/Angle.h
+    stats/detail/CountMissingValuesFn.h
+    stats/detail/CountOutsideRangeFn.h
+    stats/detail/MinMaxStatistics.h
+    stats/detail/Scalar.h
+    stats/detail/ScalarCentralMomentsFn.h
+    stats/detail/ScalarMinMaxFn.h
+    stats/detail/ScalarpNormsFn.h
     stats/PNorms.cc
     stats/PNorms.h
     stats/Results.cc
@@ -462,14 +448,6 @@ list(
     stats/Spectral.h
     stats/Statistics.cc
     stats/Statistics.h
-    stats/detail/Angle.h
-    stats/detail/CountMissingValuesFn.h
-    stats/detail/CountOutsideRangeFn.h
-    stats/detail/MinMaxStatistics.h
-    stats/detail/Scalar.h
-    stats/detail/ScalarCentralMomentsFn.h
-    stats/detail/ScalarMinMaxFn.h
-    stats/detail/ScalarpNormsFn.h
     style/CustomParametrisation.cc
     style/CustomParametrisation.h
     style/CustomStyle.cc
@@ -484,12 +462,12 @@ list(
     style/IntermediateGrid.h
     style/IntermediateNamedGrid.cc
     style/IntermediateNamedGrid.h
+    style/Mapping.cc
+    style/Mapping.h
     style/MARSStyle.cc
     style/MARSStyle.h
     style/MIRStyle.cc
     style/MIRStyle.h
-    style/Mapping.cc
-    style/Mapping.h
     style/ProdgenGrid.cc
     style/ProdgenGrid.h
     style/ProdgenStyle.cc
@@ -532,8 +510,6 @@ list(
     util/LongitudeDouble.h
     util/LongitudeFraction.cc
     util/LongitudeFraction.h
-    util/MIRGrid.cc
-    util/MIRGrid.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
     util/PlanParser.cc
@@ -545,6 +521,36 @@ list(
     util/Types.h
   )
 
+
+if(HAVE_ATLAS)
+list(
+    APPEND mir_srcs
+    api/emoslib.cc
+    api/emoslib.h
+    api/ProdgenJob.cc
+    api/ProdgenJob.h
+    method/AddParallelEdgesConnectivity.cc
+    method/AddParallelEdgesConnectivity.h
+    method/Conservative.cc
+    method/Conservative.h
+    method/FEBilinear.cc
+    method/FEBilinear.h
+    method/FELinear.cc
+    method/FELinear.h
+    method/FiniteElement.cc
+    method/FiniteElement.h
+    method/StructuredBilinearLatLon.cc
+    method/StructuredBilinearLatLon.h
+    method/StructuredLinear.cc
+    method/StructuredLinear.h
+    method/StructuredMethod.cc
+    method/StructuredMethod.h
+    method/Tessellation.cc
+    method/Tessellation.h
+    util/MIRGrid.cc
+    util/MIRGrid.h
+)
+endif()
 
 
 if (HAVE_NETCDF)
@@ -559,126 +565,126 @@ endif()
 if ( HAVE_NETCDF )
 
   list( APPEND mir_srcs
-netcdf/Attribute.cc
-netcdf/Attribute.h
-netcdf/CellMethodInputVariable.cc
-netcdf/CellMethodInputVariable.h
-netcdf/CellMethodOutputVariable.cc
-netcdf/CellMethodOutputVariable.h
-netcdf/Codec.cc
-netcdf/Codec.h
-netcdf/CoordinateInputVariable.cc
-netcdf/CoordinateInputVariable.h
-netcdf/CoordinateOutputVariable.cc
-netcdf/CoordinateOutputVariable.h
-netcdf/DataInputVariable.cc
-netcdf/DataInputVariable.h
-netcdf/DataOutputVariable.cc
-netcdf/DataOutputVariable.h
-netcdf/Dimension.cc
-netcdf/Dimension.h
-netcdf/DummyInputVariable.cc
-netcdf/DummyInputVariable.h
-netcdf/DummyMatrix.cc
-netcdf/DummyMatrix.h
-netcdf/DummyVariable.h
-netcdf/Endowed.cc
-netcdf/Endowed.h
-netcdf/Exceptions.cc
-netcdf/Exceptions.h
-netcdf/Dataset.cc
-netcdf/Dataset.h
-netcdf/GregorianCalendar.cc
-netcdf/GregorianCalendar.h
-netcdf/JulianCalendar.cc
-netcdf/JulianCalendar.h
-netcdf/AllLeapCalendar.cc
-netcdf/AllLeapCalendar.h
-netcdf/NoLeapCalendar.cc
-netcdf/NoLeapCalendar.h
-netcdf/NoneCalendar.cc
-netcdf/NoneCalendar.h
-netcdf/ProlepticCalendar.cc
-netcdf/ProlepticCalendar.h
-netcdf/ThreeSixtyCalendar.cc
-netcdf/ThreeSixtyCalendar.h
-netcdf/Calendar.cc
-netcdf/Calendar.h
-netcdf/PackingCodec.cc
-netcdf/PackingCodec.h
-netcdf/HyperCube.cc
-netcdf/HyperCube.h
-netcdf/InputAttribute.cc
-netcdf/InputAttribute.h
-netcdf/InputDimension.cc
-netcdf/InputDimension.h
-netcdf/InputDataset.cc
-netcdf/InputDataset.h
-netcdf/InputMatrix.cc
-netcdf/InputMatrix.h
-netcdf/InputVariable.cc
-netcdf/InputVariable.h
-netcdf/Mapper.h
-netcdf/Matrix.cc
-netcdf/Matrix.h
-netcdf/MergeCoordinateMatrix.cc
-netcdf/MergeCoordinateMatrix.h
-netcdf/MergeCoordinateStep.cc
-netcdf/MergeCoordinateStep.h
-netcdf/MergeDataMatrix.cc
-netcdf/MergeDataMatrix.h
-netcdf/MergeDataStep.cc
-netcdf/MergeDataStep.h
-netcdf/MergePlan.cc
-netcdf/MergePlan.h
-netcdf/NCFile.cc
-netcdf/NCFile.h
-netcdf/NCFileCache.cc
-netcdf/NCFileCache.h
-netcdf/OutputAttribute.cc
-netcdf/OutputAttribute.h
-netcdf/OutputDimension.cc
-netcdf/OutputDimension.h
-netcdf/OutputDataset.cc
-netcdf/OutputDataset.h
-netcdf/OutputVariable.cc
-netcdf/OutputVariable.h
-netcdf/Remapping.cc
-netcdf/Remapping.h
-netcdf/Reshape.cc
-netcdf/Reshape.h
-netcdf/GridSpec.h
-netcdf/GridSpec.cc
-netcdf/RegularLL.h
-netcdf/RegularLL.cc
-netcdf/Field.h
-netcdf/Field.cc
-netcdf/ReshapeVariableStep.cc
-netcdf/ReshapeVariableStep.h
-netcdf/ScalarCoordinateInputVariable.cc
-netcdf/ScalarCoordinateInputVariable.h
-netcdf/ScalarCoordinateOutputVariable.cc
-netcdf/ScalarCoordinateOutputVariable.h
-netcdf/SimpleInputVariable.cc
-netcdf/SimpleInputVariable.h
-netcdf/SimpleOutputVariable.cc
-netcdf/SimpleOutputVariable.h
-netcdf/Step.cc
-netcdf/Step.h
-netcdf/Type.cc
-netcdf/Type.h
-netcdf/UpdateCoordinateStep.cc
-netcdf/UpdateCoordinateStep.h
-netcdf/Value.cc
-netcdf/Value.h
-netcdf/ValueT.cc
-netcdf/ValueT.h
-netcdf/Variable.cc
-netcdf/Variable.h
-netcdf/VirtualInputDimension.cc
-netcdf/VirtualInputDimension.h
-netcdf/VirtualOutputDimension.cc
-netcdf/VirtualOutputDimension.h
+    netcdf/Attribute.cc
+    netcdf/Attribute.h
+    netcdf/CellMethodInputVariable.cc
+    netcdf/CellMethodInputVariable.h
+    netcdf/CellMethodOutputVariable.cc
+    netcdf/CellMethodOutputVariable.h
+    netcdf/Codec.cc
+    netcdf/Codec.h
+    netcdf/CoordinateInputVariable.cc
+    netcdf/CoordinateInputVariable.h
+    netcdf/CoordinateOutputVariable.cc
+    netcdf/CoordinateOutputVariable.h
+    netcdf/DataInputVariable.cc
+    netcdf/DataInputVariable.h
+    netcdf/DataOutputVariable.cc
+    netcdf/DataOutputVariable.h
+    netcdf/Dimension.cc
+    netcdf/Dimension.h
+    netcdf/DummyInputVariable.cc
+    netcdf/DummyInputVariable.h
+    netcdf/DummyMatrix.cc
+    netcdf/DummyMatrix.h
+    netcdf/DummyVariable.h
+    netcdf/Endowed.cc
+    netcdf/Endowed.h
+    netcdf/Exceptions.cc
+    netcdf/Exceptions.h
+    netcdf/Dataset.cc
+    netcdf/Dataset.h
+    netcdf/GregorianCalendar.cc
+    netcdf/GregorianCalendar.h
+    netcdf/JulianCalendar.cc
+    netcdf/JulianCalendar.h
+    netcdf/AllLeapCalendar.cc
+    netcdf/AllLeapCalendar.h
+    netcdf/NoLeapCalendar.cc
+    netcdf/NoLeapCalendar.h
+    netcdf/NoneCalendar.cc
+    netcdf/NoneCalendar.h
+    netcdf/ProlepticCalendar.cc
+    netcdf/ProlepticCalendar.h
+    netcdf/ThreeSixtyCalendar.cc
+    netcdf/ThreeSixtyCalendar.h
+    netcdf/Calendar.cc
+    netcdf/Calendar.h
+    netcdf/PackingCodec.cc
+    netcdf/PackingCodec.h
+    netcdf/HyperCube.cc
+    netcdf/HyperCube.h
+    netcdf/InputAttribute.cc
+    netcdf/InputAttribute.h
+    netcdf/InputDimension.cc
+    netcdf/InputDimension.h
+    netcdf/InputDataset.cc
+    netcdf/InputDataset.h
+    netcdf/InputMatrix.cc
+    netcdf/InputMatrix.h
+    netcdf/InputVariable.cc
+    netcdf/InputVariable.h
+    netcdf/Mapper.h
+    netcdf/Matrix.cc
+    netcdf/Matrix.h
+    netcdf/MergeCoordinateMatrix.cc
+    netcdf/MergeCoordinateMatrix.h
+    netcdf/MergeCoordinateStep.cc
+    netcdf/MergeCoordinateStep.h
+    netcdf/MergeDataMatrix.cc
+    netcdf/MergeDataMatrix.h
+    netcdf/MergeDataStep.cc
+    netcdf/MergeDataStep.h
+    netcdf/MergePlan.cc
+    netcdf/MergePlan.h
+    netcdf/NCFile.cc
+    netcdf/NCFile.h
+    netcdf/NCFileCache.cc
+    netcdf/NCFileCache.h
+    netcdf/OutputAttribute.cc
+    netcdf/OutputAttribute.h
+    netcdf/OutputDimension.cc
+    netcdf/OutputDimension.h
+    netcdf/OutputDataset.cc
+    netcdf/OutputDataset.h
+    netcdf/OutputVariable.cc
+    netcdf/OutputVariable.h
+    netcdf/Remapping.cc
+    netcdf/Remapping.h
+    netcdf/Reshape.cc
+    netcdf/Reshape.h
+    netcdf/GridSpec.h
+    netcdf/GridSpec.cc
+    netcdf/RegularLL.h
+    netcdf/RegularLL.cc
+    netcdf/Field.h
+    netcdf/Field.cc
+    netcdf/ReshapeVariableStep.cc
+    netcdf/ReshapeVariableStep.h
+    netcdf/ScalarCoordinateInputVariable.cc
+    netcdf/ScalarCoordinateInputVariable.h
+    netcdf/ScalarCoordinateOutputVariable.cc
+    netcdf/ScalarCoordinateOutputVariable.h
+    netcdf/SimpleInputVariable.cc
+    netcdf/SimpleInputVariable.h
+    netcdf/SimpleOutputVariable.cc
+    netcdf/SimpleOutputVariable.h
+    netcdf/Step.cc
+    netcdf/Step.h
+    netcdf/Type.cc
+    netcdf/Type.h
+    netcdf/UpdateCoordinateStep.cc
+    netcdf/UpdateCoordinateStep.h
+    netcdf/Value.cc
+    netcdf/Value.h
+    netcdf/ValueT.cc
+    netcdf/ValueT.h
+    netcdf/Variable.cc
+    netcdf/Variable.h
+    netcdf/VirtualInputDimension.cc
+    netcdf/VirtualInputDimension.h
+    netcdf/VirtualOutputDimension.cc
+    netcdf/VirtualOutputDimension.h
   )
 
   list( APPEND netcdflibs ${NETCDF_LIBRARIES} )
@@ -686,10 +692,11 @@ netcdf/VirtualOutputDimension.h
 endif()
 
 
-
-
-
 list(APPEND mir_tmpls caching/InMemoryCache.cc)
+
+if(HAVE_ATLAS)
+    set(libatlas atlas)
+endif()
 
 ecbuild_add_library(
   TARGET             mir
@@ -699,7 +706,7 @@ ecbuild_add_library(
   GENERATED          api/mir_version.cc
   TEMPLATES          ${mir_tmpls}
   PRIVATE_INCLUDES   ${ATLAS_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} ${NETCDF_INCLUDE_DIRS} ${GRIB_API_INCLUDE_DIRS}
-  LIBS               atlas eckit_linalg  ${GRIB_API_LIBRARIES} ${MIR_FEATURE_LIBRARIES} ${NETCDF_LIBRARIES}
+  LIBS               ${libatlas} eckit_linalg  eckit_geometry eckit_option ${GRIB_API_LIBRARIES} ${MIR_FEATURE_LIBRARIES} ${NETCDF_LIBRARIES}
   )
 
 

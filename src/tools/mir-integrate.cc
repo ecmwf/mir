@@ -19,15 +19,16 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/types/FloatCompare.h"
+
 #include "atlas/array/IndexView.h"
 #include "atlas/functionspace/FunctionSpace.h"
-#include "atlas/grid.h"
 #include "atlas/interpolation/element/Quad3D.h"
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/mesh/Mesh.h"
 #include "atlas/mesh/actions/BuildConvexHull3D.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/util/Constants.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Gridded.h"
@@ -91,61 +92,7 @@ void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
         const mir::repres::Representation* rep = field.representation();
 
         ASSERT(rep);
-        // ASSERT(rep->global());
 
-#if 0
-        eckit::ScopedPtr<atlas::Grid> grid( rep->atlasGrid() );
-
-        atlas::Mesh& mesh = grid->mesh();
-
-        atlas::mesh::actions::BuildXYZField()(mesh);
-        atlas::mesh::actions::BuildConvexHull3D builder;
-        builder(mesh);
-
-        atlas::Nodes& nodes  = mesh.nodes();
-        atlas::array::ArrayView<double, 2> coords  ( nodes.field( "xyz" ));
-
-        atlas::FunctionSpace& triags = mesh.function_space( "triags" );
-        atlas::array::IndexView<int, 2> triag_nodes ( triags.field( "nodes" ) );
-
-        atlas::FunctionSpace& quads = mesh.function_space( "quads" );
-        atlas::array::IndexView<int, 2> quads_nodes ( quads.field( "nodes" ) );
-
-        size_t nb_triags = triags.shape(0);
-        size_t nb_quads  = quads.shape(0);
-
-        double result = 0.;
-
-        for(size_t e = 0; e < nb_triags; ++e) {
-            size_t idx [3];
-            for(size_t n = 0; n<3; ++n)
-                idx[n] = triag_nodes(e,n);
-
-            Triag3D triag(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data());
-
-            const double area = triag.area();
-
-            /// TODO add check for virtuals
-
-            for(size_t i = 0; i<3; ++i)
-                result += area * oneThird * values[idx[i]];
-        }
-
-        for(size_t e = 0; e < nb_quads; ++e) {
-            size_t idx [4];
-            for(size_t n = 0; n<4; ++n)
-                idx[n] = quads_nodes(e,n);
-
-            Quad3D quad(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data(), coords[idx[3]].data());
-
-            const double area = quad.area();
-
-            /// TODO add check for virtuals
-
-            for(size_t i = 0; i<4; ++i)
-                result += area * oneFourth * values[idx[i]];
-        }
-#else
         double result = 0;
         double weights = 0;
 
@@ -169,9 +116,6 @@ void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
         ASSERT(i == values.size());
 
         result /= weights;
-
-#endif
-
 
         eckit::Log::info() << "Integral " << result << std::endl;
 

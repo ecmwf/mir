@@ -17,13 +17,16 @@
 #ifndef mir_method_PointSearch_h
 #define mir_method_PointSearch_h
 
+#include <iostream>
 #include <vector>
+
+#include "eckit/container/sptree/SPNodeInfo.h"
+#include "eckit/container/sptree/SPValue.h"
+#include "eckit/geometry/Point3.h"
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "atlas/interpolation/method/PointIndex3.h"
+
 #include "mir/util/Compare.h"
-#include "eckit/container/sptree/SPValue.h"
-#include "eckit/container/sptree/SPNodeInfo.h"
 
 
 namespace mir {

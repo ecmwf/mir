@@ -19,11 +19,12 @@
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
 #include "mir/config/LibMir.h"
+
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/param/RuntimeParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Compare.h"
-
 #include "mir/util/PointSearch.h"
 
 

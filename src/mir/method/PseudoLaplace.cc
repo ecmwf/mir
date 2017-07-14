@@ -16,14 +16,16 @@
 #include "mir/method/PseudoLaplace.h"
 
 #include <string>
+
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
-#include "mir/config/LibMir.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/PointSearch.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/PointSearch.h"
 
 
 namespace mir {
@@ -34,7 +36,7 @@ PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
     MethodWeighted(param),
     nclosest_(4) {
 
-    param.get("nclosest", nclosest_);
+    param.get("k-nearest", nclosest_);
 
 }
 

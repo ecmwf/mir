@@ -14,10 +14,11 @@
 #ifndef mir_action_transform_TransCache_h
 #define mir_action_transform_TransCache_h
 
-#include <iosfwd>
-#include "atlas/library/config.h"
 #include "mir/caching/legendre/LegendreLoader.h"
 
+#include <iosfwd>
+
+#include "mir/api/mir_config.h"
 #ifdef ATLAS_HAVE_TRANS
 #include "transi/trans.h"
 #endif
