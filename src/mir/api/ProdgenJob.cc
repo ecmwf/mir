@@ -21,6 +21,7 @@
 #include "eckit/log/Log.h"
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
+#include "mir/repres/gauss/Gaussian.h"
 
 
 namespace mir {
@@ -205,16 +206,13 @@ size_t ProdgenJob::nj() const {
 
 
 void ProdgenJob::auto_pl() {
-#ifdef HAVE_ATLAS
     std::ostringstream gridname;
     gridname << "N" << N_;
     atlas::grid::ReducedGaussianGrid grid(gridname.str());
     ASSERT(grid);
 
     pl_ = grid.nx();
-#else
-    NOTIMP;
-#endif
+
 }
 
 

@@ -80,7 +80,9 @@ protected:
 
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
 
-    virtual atlas::Grid atlasGrid() const;
+#ifdef HAVE_ATLAS
+    atlas::Grid atlasGrid() const;
+#endif
 
     virtual void makeName(std::ostream&) const;
 

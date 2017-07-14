@@ -69,7 +69,11 @@ class Octahedral : public Reduced {
     // -- Overridden methods
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
-    virtual atlas::Grid atlasGrid() const;
+
+#ifdef HAVE_ATLAS
+    atlas::Grid atlasGrid() const;
+#endif
+
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
     // -- Class members

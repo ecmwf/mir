@@ -27,11 +27,13 @@ Domain Domain::makeGlobal() {
                   Latitude::SOUTH_POLE, Longitude::GLOBE);
 }
 
+#ifdef HAVE_ATLAS
 Domain::operator atlas::RectangularDomain() const {
     return atlas::RectangularDomain(
         {{west().value(),  east().value()} },
         {{south().value(), north().value()} } );
 }
+#endif
 
 
 void Domain::print(std::ostream& os) const {

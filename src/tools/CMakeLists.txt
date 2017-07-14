@@ -1,12 +1,11 @@
 
-foreach(tool
+list(APPEND tools
     mir-compare
     mir-config
     mir-formula
     mir-gaussian-fractions
     mir-get-data
     mir-inspect
-    mir-integrate
     mir-list
     mir-make-lsm
     mir-shared-memory
@@ -14,7 +13,18 @@ foreach(tool
     mir-tool
     mir-points
     mir-values-statistics
-    mir-weight-matrix )
+    mir-weight-matrix
+)
+
+if(HAVE_ATLAS)
+list(APPEND tools
+    mir-integrate
+)
+endif()
+
+
+
+foreach(tool ${tools})
 
     ecbuild_add_executable(
         TARGET      ${tool}

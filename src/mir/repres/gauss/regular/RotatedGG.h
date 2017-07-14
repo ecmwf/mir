@@ -90,7 +90,11 @@ class RotatedGG : public Regular {
 
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
-    virtual atlas::Grid atlasGrid() const;
+
+#ifdef HAVE_ATLAS
+    atlas::Grid atlasGrid() const;
+#endif
+
     virtual Iterator* iterator() const;
 
     virtual const Gridded *cropped(const util::BoundingBox &bbox) const;

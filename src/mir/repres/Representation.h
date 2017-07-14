@@ -115,7 +115,10 @@ public:
 
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
+#ifdef HAVE_ATLAS
     virtual util::MIRGrid grid() const;
+#endif
+
     virtual util::Domain domain() const;
     virtual bool isGlobal() const;
 
@@ -157,7 +160,9 @@ protected:
     // -- Methods
 
     virtual void print(std::ostream&) const = 0;
-    virtual atlas::Grid atlasGrid() const;
+#ifdef HAVE_ATLAS
+    atlas::Grid atlasGrid() const;
+#endif
     virtual void makeName(std::ostream&) const;
 
     // Domain operations

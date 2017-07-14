@@ -17,6 +17,7 @@
 #ifndef mir_method_PointSearch_h
 #define mir_method_PointSearch_h
 
+#include <iostream>
 #include <vector>
 
 #include "eckit/container/sptree/SPNodeInfo.h"
