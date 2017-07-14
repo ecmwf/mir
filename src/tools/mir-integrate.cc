@@ -35,6 +35,8 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
+#include "atlas/grid/Grid.h"
+#include "mir/util/MIRGrid.h"
 
 
 

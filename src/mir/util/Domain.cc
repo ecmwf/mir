@@ -11,7 +11,9 @@
 
 
 #include "mir/util/Domain.h"
-
+#ifdef HAVE_ATLAS
+#include "atlas/domain/Domain.h"
+#endif
 
 namespace mir {
 namespace util {

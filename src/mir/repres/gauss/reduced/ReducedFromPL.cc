@@ -44,7 +44,7 @@ ReducedFromPL::ReducedFromPL(const std::vector<long> &pl):
 
 
 void ReducedFromPL::print(std::ostream &out) const {
-    out << "ReducedGGFromPL[N" << N_ << "]";
+    out << "ReducedFromPL[N" << N_ << "]";
 }
 
 

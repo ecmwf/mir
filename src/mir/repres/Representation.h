@@ -21,13 +21,15 @@
 #include <vector>
 #include "eckit/memory/Counted.h"
 
+#include "mir/api/mir_config.h"
+#ifdef HAVE_ATLAS
+#include "atlas/grid/Grid.h"
+#endif
+
 
 struct grib_info;
 struct Trans_t;
 
-namespace atlas {
-class Grid;
-}
 
 namespace mir {
 
@@ -159,9 +161,9 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const = 0;
+    virtual  void print(std::ostream&) const = 0;
 #ifdef HAVE_ATLAS
-    atlas::Grid atlasGrid() const;
+    virtual atlas::Grid atlasGrid() const;
 #endif
     virtual void makeName(std::ostream&) const;
 

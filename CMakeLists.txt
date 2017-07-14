@@ -38,6 +38,9 @@ ecbuild_add_option( FEATURE TEST_ASSERTIONS DESCRIPTION "Enable assertion tests"
 ecbuild_use_package( PROJECT eckit  VERSION  0.18.0  REQUIRED )
 
 ecbuild_use_package( PROJECT atlas  VERSION  0.9)
+if(ATLAS_FOUND)
+    set(HAVE_ATLAS 1)
+endif()
 
 #ecbuild_use_package( PROJECT metkit  VERSION  0.7.0 )
 

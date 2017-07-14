@@ -77,7 +77,7 @@ Iterator& Iterator::next() {
     valid_ = next(pointUnrotated_.lat, pointUnrotated_.lon);
 
     if (valid_) {
-#if HAVE_ATLAS
+#ifdef HAVE_ATLAS
         if (projection_) {
 
             // notice the order
@@ -114,7 +114,7 @@ const Iterator::point_3d_t Iterator::point3D() const {
 void Iterator::print(std::ostream& out) const {
     out << "Iterator["
         "valid?" << valid_
-#if HAVE_ATLAS
+#ifdef HAVE_ATLAS
         << ",projection?" << bool(projection_)
 #endif
         << ",rotation=" << rotation_

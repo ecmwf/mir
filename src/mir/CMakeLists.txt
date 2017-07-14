@@ -695,7 +695,7 @@ endif()
 list(APPEND mir_tmpls caching/InMemoryCache.cc)
 
 if(HAVE_ATLAS)
-    set(libatlas atlas)
+    set(libatlas atlas transi)
 endif()
 
 ecbuild_add_library(

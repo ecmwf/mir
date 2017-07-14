@@ -22,7 +22,11 @@
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
+#include "mir/api/mir_config.h"
 
+#ifdef HAVE_ATLAS
+#include "atlas/grid/Grid.h"
+#endif
 
 namespace mir {
 namespace util {

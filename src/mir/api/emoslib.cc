@@ -37,7 +37,7 @@
 #include "mir/output/GribMemoryOutput.h"
 #include "mir/output/RawOutput.h"
 #include "mir/output/VectorOutput.h"
-
+#include "atlas/grid/Grid.h"
 
 namespace mir {
 namespace api {
