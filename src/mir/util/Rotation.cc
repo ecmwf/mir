@@ -24,9 +24,8 @@
 #include "mir/util/Grib.h"
 #include "mir/api/mir_config.h"
 
-#ifdef HAVE_ATLAS
-#include "atlas/grid/Grid.h"
-#endif
+#include "mir/api/Atlas.h"
+
 
 namespace mir {
 namespace util {
@@ -109,7 +108,6 @@ bool Rotation::operator==(const Rotation& other) const {
 }
 
 
-#ifdef HAVE_ATLAS
 atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
 
     // ensure grid is not rotated already
@@ -125,7 +123,6 @@ atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
 
     return atlas::Grid(config);
 }
-#endif
 
 void Rotation::makeName(std::ostream& out) const {
     out << "-rot:"

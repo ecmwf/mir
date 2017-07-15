@@ -33,7 +33,6 @@ ShScalarToGridded::~ShScalarToGridded() {
 
 
 void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
-#ifdef ATLAS_HAVE_TRANS
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields > 0);
     ASSERT(trans.myproc == 1);
@@ -104,10 +103,7 @@ void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) co
             here += trans.ngptotg;
         }
     }
-#else
-    throw eckit::SeriousBug("Spherical to grid transforms are not supported. "
-                            "Please link to ATLAS with TRANS support enabled.");
-#endif
+
 }
 
 

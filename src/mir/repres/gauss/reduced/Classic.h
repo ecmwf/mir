@@ -71,9 +71,7 @@ protected:
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
 
-#ifdef HAVE_ATLAS
     atlas::Grid atlasGrid() const;
-#endif
 
     virtual const std::vector<long> &pls() const;
 

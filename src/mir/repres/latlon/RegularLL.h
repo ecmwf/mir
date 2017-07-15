@@ -70,9 +70,7 @@ private:
     Iterator* iterator() const;
     void print(std::ostream&) const;
 
-#ifdef HAVE_ATLAS
     atlas::Grid atlasGrid() const;
-#endif
 
     void fill(grib_info&) const;
     void fill(api::MIRJob&) const;

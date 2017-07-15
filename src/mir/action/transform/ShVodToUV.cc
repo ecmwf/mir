@@ -25,12 +25,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/util/MIRStatistics.h"
-
-#include "mir/api/mir_config.h"
-#ifdef ATLAS_HAVE_TRANS
-#include "atlas/util/Constants.h"
-#include "transi/trans.h"
-#endif
+#include "mir/api/Atlas.h"
 
 
 namespace mir {
@@ -60,7 +55,6 @@ void ShVodToUV::print(std::ostream &out) const {
 
 
 void ShVodToUV::execute(context::Context & ctx) const {
-#ifdef ATLAS_HAVE_TRANS
     data::MIRField& field = ctx.field();
 
     ASSERT(field.dimensions() == 2);
@@ -117,10 +111,7 @@ void ShVodToUV::execute(context::Context & ctx) const {
 
     field.metadata(0, "paramId", id_u);
     field.metadata(1, "paramId", id_v);
-#else
-    throw eckit::SeriousBug("VO/D to U/V transforms are not supported. "
-                            "Please link to ATLAS with TRANS support enabled.");
-#endif
+
 }
 
 

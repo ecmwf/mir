@@ -146,6 +146,8 @@ list(
     api/MIRJob.h
     api/MIRWatcher.cc
     api/MIRWatcher.h
+    api/Atlas.cc
+    api/Atlas.h
     caching/CroppingCache.cc
     caching/CroppingCache.h
     caching/InMemoryCache.cc

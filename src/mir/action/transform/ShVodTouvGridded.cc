@@ -15,10 +15,8 @@
 
 #include <vector>
 
-#ifdef ATLAS_HAVE_TRANS
-#include "atlas/util/Constants.h"
-#include "transi/trans.h"
-#endif
+#include "mir/api/Atlas.h"
+
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
@@ -41,7 +39,6 @@ ShVodTouvGridded::~ShVodTouvGridded() {
 
 
 void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
-#ifdef ATLAS_HAVE_TRANS
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields == 2);
     ASSERT(trans.myproc == 1);
@@ -103,10 +100,7 @@ void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) con
     result.assign(output.begin() + trans.ngptotg, output.end());
     field.update(result, 1);
     field.metadata(1, "paramId", id_v);
-#else
-    throw eckit::SeriousBug("VO/D to U/V transforms are not supported. "
-                            "Please link to ATLAS with TRANS support enabled.");
-#endif
+
 }
 
 

@@ -44,9 +44,6 @@ public:
     /// Generator for a global Domain
     static Domain makeGlobal();
 
-    /// Generator for an empty Domain
-    static Domain makeEmpty() { return Domain(0, 0, 0, 0); }
-
     operator atlas::RectangularDomain() const;
 
     /// Check if grid includes the North pole

@@ -21,10 +21,8 @@
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/util/Domain.h"
 
-#include "mir/api/mir_config.h"
-#ifdef ATLAS_HAVE_TRANS
-#include "transi/trans.h"
-#endif
+#include "mir/api/Atlas.h"
+
 
 
 namespace mir {
@@ -67,14 +65,9 @@ bool RegularGG::sameAs(const Representation& other) const {
 
 
 void RegularGG::initTrans(Trans_t &trans) const {
-#ifdef ATLAS_HAVE_TRANS
 
     const std::vector<int> pl(Nj_, int(Ni_));
     ASSERT(trans_set_resol(&trans, int(Nj_), pl.data()) == 0);
-
-#else
-    NOTIMP;
-#endif
 }
 
 

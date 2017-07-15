@@ -27,10 +27,8 @@ namespace repres {
 
 Iterator::Iterator() :
     valid_(true),
-    rotation_()
-#ifdef HAVE_ATLAS
-    , projection_(atlas::Projection())
-#endif
+    rotation_(),
+    projection_(atlas::Projection())
 {
 }
 
@@ -38,9 +36,6 @@ Iterator::Iterator() :
 Iterator::Iterator(const util::Rotation& rotation) :
     valid_(true),
     rotation_(rotation) {
-
-#ifdef HAVE_ATLAS
-
     // Setup projection using South Pole rotated position, as seen from the non-rotated frame
     const eckit::geometry::LLPoint2 pole(
         rotation_.south_pole_longitude().value(),
@@ -51,8 +46,6 @@ Iterator::Iterator(const util::Rotation& rotation) :
     config.set("south_pole", std::vector<double>({pole.lon(), pole.lat()}));
     config.set("rotation_angle", rotation_.south_pole_rotation_angle());
     projection_ = atlas::Projection(config);
-#endif
-
 }
 
 
@@ -77,7 +70,6 @@ Iterator& Iterator::next() {
     valid_ = next(pointUnrotated_.lat, pointUnrotated_.lon);
 
     if (valid_) {
-#ifdef HAVE_ATLAS
         if (projection_) {
 
             // notice the order
@@ -91,10 +83,8 @@ Iterator& Iterator::next() {
             point_[0] = pointUnrotated_.lat.value();
             point_[1] = pointUnrotated_.lon.value();
         }
-#else
         point_[0] = pointUnrotated_.lat.value();
         point_[1] = pointUnrotated_.lon.value();
-#endif
     }
 
     return *this;
@@ -114,9 +104,7 @@ const Iterator::point_3d_t Iterator::point3D() const {
 void Iterator::print(std::ostream& out) const {
     out << "Iterator["
         "valid?" << valid_
-#ifdef HAVE_ATLAS
         << ",projection?" << bool(projection_)
-#endif
         << ",rotation=" << rotation_
         << "]";
 }

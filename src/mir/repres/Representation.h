@@ -21,15 +21,14 @@
 #include <vector>
 #include "eckit/memory/Counted.h"
 
-#include "mir/api/mir_config.h"
-#ifdef HAVE_ATLAS
-#include "atlas/grid/Grid.h"
-#endif
-
 
 struct grib_info;
 struct Trans_t;
 
+
+namespace atlas {
+class Grid;
+}
 
 namespace mir {
 
@@ -116,9 +115,7 @@ public:
 
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
-#ifdef HAVE_ATLAS
     virtual atlas::Grid atlasGrid() const;
-#endif
 
     virtual util::Domain domain() const;
     virtual bool isGlobal() const;

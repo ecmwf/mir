@@ -17,13 +17,7 @@
 #define mir_action_transform_ShToGridded_h
 
 #include "mir/action/plan/Action.h"
-
-#include "mir/api/mir_config.h"
-#ifdef ATLAS_HAVE_TRANS
-#include "transi/trans.h"
-#else
-struct Trans_t {};
-#endif
+#include "mir/api/Atlas.h"
 
 
 namespace mir {
@@ -122,7 +116,7 @@ private:
     // -- Friends
 
     //friend ostream& operator<<(ostream& s,const ShToGriddedTransform& p)
-    //	{ p.print(s); return s; }
+    //  { p.print(s); return s; }
 
 };
 

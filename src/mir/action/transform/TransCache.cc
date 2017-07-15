@@ -24,16 +24,10 @@ namespace transform {
 TransCache::TransCache() :
     inited_(false),
     loader_(0) {
-#ifdef ATLAS_HAVE_TRANS
-#else
-    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please link to ATLAS with TRANS support enabled.");
-#endif
 }
 
 
 TransCache::~TransCache() {
-#ifdef ATLAS_HAVE_TRANS
         if (inited_) {
             eckit::Log::info() << "Delete " << *this << std::endl;
             trans_delete(&trans_);
@@ -42,10 +36,6 @@ TransCache::~TransCache() {
             eckit::Log::info() << "Not Deleting " << *this << std::endl;
         }
         delete loader_;
-#else
-    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please link to ATLAS with TRANS support enabled.");
-#endif
 }
 
 

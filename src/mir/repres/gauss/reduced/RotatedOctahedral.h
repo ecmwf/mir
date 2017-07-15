@@ -91,11 +91,7 @@ private:
     virtual Iterator* iterator() const;
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
-
-#ifdef HAVE_ATLAS
-    atlas::Grid atlasGrid() const;
-#endif
-
+    virtual atlas::Grid atlasGrid() const;
     virtual const Reduced *cropped(const util::BoundingBox&, const std::vector<long>&) const ;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation&) const;

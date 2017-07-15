@@ -18,10 +18,7 @@
 #include <algorithm>
 #include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
-
-#ifdef HAVE_ATLAS
-#include "atlas/util/GaussianLatitudes.h"
-#endif
+#include "mir/api/Atlas.h"
 
 
 namespace mir {
@@ -114,28 +111,22 @@ bool Gaussian::includesSouthPole() const {
 
 
 std::vector<double> Gaussian::latitudes(size_t N) {
-#ifdef HAVE_ATLAS
+
     ASSERT(N);
     std::vector<double> latitudes(N * 2);
     atlas::util::gaussian_latitudes_npole_spole(N, latitudes.data());
     return latitudes;
-#else
-    NOTIMP;
-#endif
 }
 
 
 const std::vector<double>& Gaussian::latitudes() const {
-#ifdef HAVE_ATLAS
+
     // This returns the Gaussian latitudes of a GLOBAL field
     if (latitudes_.empty()) {
         latitudes_.resize(N_ * 2);
         atlas::util::gaussian_latitudes_npole_spole(N_, latitudes_.data());
     }
     return latitudes_;
-#else
-    NOTIMP;
-#endif
 }
 
 

@@ -18,10 +18,6 @@
 
 #include <iosfwd>
 
-#include "mir/api/mir_config.h"
-#ifdef HAVE_ATLAS
-#include "atlas/projection.h"
-#endif
 
 #include "eckit/geometry/Point2.h"
 #include "eckit/geometry/Point3.h"
@@ -29,6 +25,7 @@
 
 #include "mir/util/Rotation.h"
 #include "mir/util/Types.h"
+#include "mir/api/Atlas.h"
 
 
 namespace mir {
@@ -97,9 +94,7 @@ protected:
 
     util::Rotation rotation_;
 
-#ifdef HAVE_ATLAS
     atlas::Projection projection_;
-#endif
 
     // -- Methods
 
