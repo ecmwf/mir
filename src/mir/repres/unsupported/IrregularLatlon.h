@@ -81,7 +81,15 @@ private:
     IrregularLatlon(const IrregularLatlon&);
     IrregularLatlon& operator=(const IrregularLatlon&);
 
-// -- Members
+// -- Members;double
+
+    double south_;
+    double north_;
+    double south_north_;
+
+    double west_;
+    double east_;
+    double west_east_;
 
     std::vector<double> latitudes_;
     std::vector<double> longitudes_;

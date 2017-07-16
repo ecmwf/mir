@@ -76,7 +76,7 @@ bool IrregularLatlon::has(const std::string& name) const {
 }
 
 bool IrregularLatlon::get(const std::string &name, std::vector<double> &values) const {
-  std::cout << "get " << name << std::endl;
+  // std::cout << "get " << name << std::endl;
 
   if (name == "latitudes") {
     values = latitudes_;
