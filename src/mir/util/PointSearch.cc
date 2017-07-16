@@ -195,7 +195,7 @@ PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
     const size_t npts = r.numberOfPoints();
     ASSERT(npts > 0);
 
-    bool caching;
+    bool caching = true;
     parametrisation.get("kd-trees.caching", caching);
 
     if (caching) { // TODO: use a resource

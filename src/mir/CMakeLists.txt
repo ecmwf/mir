@@ -659,6 +659,8 @@ if ( HAVE_NETCDF )
     netcdf/GridSpec.cc
     netcdf/RegularLL.h
     netcdf/RegularLL.cc
+    netcdf/IrregularLatlon.h
+    netcdf/IrregularLatlon.cc
     netcdf/Field.h
     netcdf/Field.cc
     netcdf/ReshapeVariableStep.cc

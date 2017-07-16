@@ -45,6 +45,7 @@ public:
     bool get(const std::string&, long&) const;
     bool get(const std::string&, std::string&) const;
     bool get(const std::string &name, double &value) const;
+    bool get(const std::string &name, std::vector<double> &value) const;
 
 protected:
 

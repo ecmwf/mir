@@ -76,6 +76,11 @@ bool Field::get(const std::string &name, double &value) const {
     return gridSpec().get(name, value);
 }
 
+
+bool Field::get(const std::string &name, std::vector<double> &value) const {
+    return gridSpec().get(name, value);
+}
+
 void Field::print(std::ostream &out) const {
     out << "Field[variable=" << variable_ << "]";
 }

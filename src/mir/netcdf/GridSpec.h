@@ -36,6 +36,7 @@ public:
     virtual bool get(const std::string&, long&) const = 0;
     virtual bool get(const std::string&, std::string&) const = 0;
     virtual bool get(const std::string &name, double &value) const = 0;
+    virtual bool get(const std::string &name, std::vector<double> &value) const = 0;
 
     virtual void reorder(std::vector<double>& values) const = 0;
 

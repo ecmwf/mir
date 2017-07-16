@@ -24,7 +24,7 @@ namespace repres {
 
 
 class IrregularLatlon : public Gridded {
-  public:
+public:
 
 // -- Exceptions
     // None
@@ -54,7 +54,7 @@ class IrregularLatlon : public Gridded {
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
     // None
@@ -72,7 +72,7 @@ class IrregularLatlon : public Gridded {
 // -- Class methods
     // None
 
-  private:
+private:
 
     IrregularLatlon();
 
@@ -83,6 +83,8 @@ class IrregularLatlon : public Gridded {
 
 // -- Members
 
+    std::vector<double> latitudes_;
+    std::vector<double> longitudes_;
 
 // -- Methods
     // None
@@ -90,7 +92,11 @@ class IrregularLatlon : public Gridded {
 
 // -- Overridden methods
 
+    virtual size_t numberOfPoints() const;
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
     virtual void fill(grib_info&) const;
+    virtual atlas::Grid atlasGrid() const;
 
 // -- Class members
     // None
@@ -101,7 +107,7 @@ class IrregularLatlon : public Gridded {
 // -- Friends
 
     //friend ostream& operator<<(ostream& s,const IrregularLatlon& p)
-    //	{ p.print(s); return s; }
+    //  { p.print(s); return s; }
 
 };
 

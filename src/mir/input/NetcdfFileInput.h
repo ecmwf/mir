@@ -102,8 +102,8 @@ private:
     std::vector<mir::netcdf::Field*> fields_;
     int current_;
 
-    mutable std::vector<double> latitude_;
-    mutable std::vector<double> longitude_;
+    // mutable std::vector<double> latitude_;
+    // mutable std::vector<double> longitude_;
 
     // -- Methods
 
@@ -122,6 +122,7 @@ private:
     virtual bool get(const std::string&, long&) const;
     virtual bool get(const std::string&, std::string&) const;
     virtual bool get(const std::string &name, double &value) const;
+    virtual bool get(const std::string &name, std::vector<double> &value) const;
 
     virtual bool next();
     virtual size_t dimensions() const;

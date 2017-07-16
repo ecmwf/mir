@@ -112,6 +112,13 @@ bool NetcdfFileInput::get(const std::string &name, double &value) const {
     return FieldParametrisation::get(name, value);
 }
 
+
+bool NetcdfFileInput::get(const std::string &name, std::vector<double> &value) const {
+    ASSERT(current_ >= 0 && current_ < fields_.size());
+    if (fields_[current_]->get(name, value)) {return true;}
+    return FieldParametrisation::get(name, value);
+}
+
 bool NetcdfFileInput::sameAs(const MIRInput& other) const {
     const NetcdfFileInput* o = dynamic_cast<const NetcdfFileInput*>(&other);
     return o && (path_ == o->path_);

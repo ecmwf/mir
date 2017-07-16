@@ -77,6 +77,7 @@ private:
     virtual bool get(const std::string&, long&) const;
     virtual bool get(const std::string&, std::string&) const;
     virtual bool get(const std::string &name, double &value) const;
+    virtual bool get(const std::string &name, std::vector<double> &value) const;
 
     virtual void reorder(std::vector<double>& values) const;
 
