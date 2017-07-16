@@ -24,6 +24,7 @@
 #include "eckit/container/kdtree/KDNode.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
+#include "eckit/os/AutoUmask.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
@@ -93,7 +94,7 @@ class PointSearchTreeMemory: public PointSearchTree {
 
 
 static eckit::PathName treePath(const eckit::PathName& path) {
-    path.dirName().mkdir();
+    path.dirName().mkdir(0777);
     if (path.exists()) {
         return path;
     }
@@ -109,10 +110,12 @@ class PointSearchTreeMapped: public PointSearchTree {
     typedef PointSearchTree::Point Point;
     typedef eckit::KDTreeMapped<PointSearchTree> Tree;
 
-    eckit::PathName path_;
+    eckit::AutoUmask umask_; // Must be first
+
+    eckit::PathName path_; // Must be second
     eckit::PathName tmp_;
 
-    Tree tree_;
+    Tree tree_; // Must be last
 
     virtual void build(std::vector<PointValueType>& v) {
         tree_.build(v);
@@ -157,6 +160,7 @@ class PointSearchTreeMapped: public PointSearchTree {
     }
 
     virtual void commit() {
+        // tmp_.chmod(0777);
         eckit::PathName::rename(tmp_, path_);
     }
 
@@ -170,6 +174,7 @@ public:
     PointSearchTreeMapped(const eckit::PathName& path,
                           size_t itemCount,
                           size_t metadataSize):
+        umask_(0),
         path_(path),
         tmp_(treePath(path)),
         tree_(tmp_, path_ == tmp_ ? 0 : itemCount, metadataSize) {
