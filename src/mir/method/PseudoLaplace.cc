@@ -65,7 +65,7 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     eckit::TraceTimer<LibMir> timer("PseudoLaplace::assemble");
 
 
-    util::PointSearch sptree(in);
+    util::PointSearch sptree(parametrisation_, in);
 
     const size_t out_npts = out.numberOfPoints();
 

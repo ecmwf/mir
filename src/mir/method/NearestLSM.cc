@@ -73,8 +73,8 @@ void NearestLSM::assemble(util::MIRStatistics&,
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
 
-    util::PointSearch sptree_masked(in, util::compare::IsMaskedFn   (imask));
-    util::PointSearch sptree_notmasked(in, util::compare::IsNotMaskedFn(imask));
+    util::PointSearch sptree_masked(parametrisation_, in, util::compare::IsMaskedFn   (imask));
+    util::PointSearch sptree_notmasked(parametrisation_, in, util::compare::IsNotMaskedFn(imask));
 
     eckit::Log::debug<LibMir>() << "NearestLSM compute masked/not-masked search trees " << timer.elapsed() - here << std::endl;
 

@@ -14,15 +14,6 @@
 
 #include "mir/param/DefaultParametrisation.h"
 
-// #include "eckit/exception/Exceptions.h"
-// #include "eckit/parser/JSON.h"
-// #include "eckit/parser/Tokenizer.h"
-// #include "eckit/types/Types.h"
-// #include "eckit/utils/Translator.h"
-// #include "eckit/value/Value.h"
-// #include "mir/config/LibMir.h"
-// #include "mir/param/DelayedParametrisation.h"
-
 
 namespace mir {
 namespace param {
@@ -35,6 +26,7 @@ DefaultParametrisation::DefaultParametrisation() {
     set("decomposition", "none");
     set("stats", "scalar");
     set("caching", true);
+    set("kd-trees.caching", true);
 
     set("prune-epsilon", 1e-10);
     set("nclosest", 4L);
@@ -47,6 +39,8 @@ DefaultParametrisation::DefaultParametrisation() {
     set("spectral-mapping", "linear");
 
     set("tolerance", 1e-10);
+
+
 }
 
 DefaultParametrisation::~DefaultParametrisation() {

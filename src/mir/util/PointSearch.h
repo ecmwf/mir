@@ -30,6 +30,11 @@
 
 
 namespace mir {
+
+namespace param {
+class MIRParametrisation;
+};
+
 namespace repres {
 class Representation;
 }
@@ -63,7 +68,7 @@ public:
     virtual void commit() = 0;
     virtual void print(std::ostream &) const = 0;
 
-     friend std::ostream &operator<<(std::ostream &s, const PointSearchTree &p) {
+    friend std::ostream &operator<<(std::ostream &s, const PointSearchTree &p) {
         p.print(s);
         return s;
     }
@@ -84,7 +89,9 @@ public:
 
 public:
 
-    PointSearch(const repres::Representation&, const CompareType& = CompareTypeNone());
+    PointSearch(const param::MIRParametrisation& parametrisation,
+                const repres::Representation&,
+                const CompareType& = CompareTypeNone());
 
 public:
 
@@ -100,11 +107,11 @@ public:
     void statsPrint(std::ostream& o, bool fancy) const;
     void statsReset() const;
 
-protected:
+private:
 
+    const param::MIRParametrisation& parametrisation_;
     eckit::ScopedPtr<PointSearchTree> tree_;
 
-private:
 
     void build(const repres::Representation& r, const CompareType&);
 

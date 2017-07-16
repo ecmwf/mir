@@ -66,7 +66,7 @@ void Nearest::assemble(util::MIRStatistics&,
     const size_t nclosest = this->nclosest();
     const size_t out_npts = out.numberOfPoints();
 
-    const util::PointSearch sptree(in);
+    const util::PointSearch sptree(parametrisation_, in);
 
     const util::Domain& inDomain = in.domain();
 

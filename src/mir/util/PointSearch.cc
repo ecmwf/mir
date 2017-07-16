@@ -29,6 +29,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -186,11 +187,18 @@ public:
 
 };
 
-PointSearch::PointSearch(const repres::Representation& r, const CompareType& isok) {
+PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
+                         const repres::Representation& r,
+                         const CompareType& isok):
+    parametrisation_(parametrisation)
+{
     const size_t npts = r.numberOfPoints();
     ASSERT(npts > 0);
 
-    if (true) { // TODO: use a resource
+    bool caching;
+    parametrisation.get("kd-trees.caching", caching);
+
+    if (caching) { // TODO: use a resource
 
         const long VERSION = 1;
         std::ostringstream oss;
