@@ -97,6 +97,11 @@ private:
     virtual bool sameAs(const Representation& other) const;
     virtual void fill(grib_info&) const;
     virtual atlas::Grid atlasGrid() const;
+    virtual util::Domain domain() const;
+    virtual Iterator* iterator() const;
+    virtual bool isPeriodicWestEast() const;
+    virtual bool includesNorthPole() const;
+    virtual bool includesSouthPole() const;
 
 // -- Class members
     // None

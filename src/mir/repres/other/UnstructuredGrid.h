@@ -96,20 +96,20 @@ private:
 
     // -- Overridden methods
 
-    void fill(grib_info&) const;
-    void fill(api::MIRJob&) const;
-    atlas::Grid atlasGrid() const;
-    void validate(const std::vector<double>& values) const;
+    virtual void fill(grib_info&) const;
+    virtual void fill(api::MIRJob&) const;
+    virtual atlas::Grid atlasGrid() const;
+    virtual void validate(const std::vector<double>& values) const;
 
-    util::Domain domain() const;
-    Iterator* iterator() const;
-    void makeName(std::ostream&) const;
-    bool sameAs(const Representation& other) const;
+    virtual util::Domain domain() const;
+    virtual Iterator* iterator() const;
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
     // Domain operations
-    bool isPeriodicWestEast() const;
-    bool includesNorthPole() const;
-    bool includesSouthPole() const;
+    virtual bool isPeriodicWestEast() const;
+    virtual bool includesNorthPole() const;
+    virtual bool includesSouthPole() const;
 
     virtual size_t numberOfPoints() const;
 
