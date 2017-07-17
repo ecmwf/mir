@@ -10,7 +10,7 @@ install(
     ${CMAKE_CURRENT_BINARY_DIR}/api/mir_config.h
     ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.h
   DESTINATION
-    ${INSTALL_INCLUDE_DIR}/mir
+    ${INSTALL_INCLUDE_DIR}/mir/api
   )
 
 
