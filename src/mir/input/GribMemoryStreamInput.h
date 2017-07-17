@@ -16,7 +16,6 @@
 #define GribMemoryStreamInput_H
 
 
-#include "eckit/io/MemoryHandle.h"
 #include "mir/input/GribStreamInput.h"
 
 
@@ -84,7 +83,9 @@ private:
 
     // -- Members
 
-    eckit::MemoryHandle handle_;
+    const void* message_;
+    size_t length_;
+    eckit::DataHandle* handle_;
 
     // -- Methods
     // None

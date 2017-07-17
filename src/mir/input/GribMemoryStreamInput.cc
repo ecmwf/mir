@@ -14,6 +14,8 @@
 
 #include "mir/input/GribMemoryStreamInput.h"
 
+#include "eckit/io/BufferedHandle.h"
+#include "eckit/io/MemoryHandle.h"
 #include "mir/config/LibMir.h"
 
 
@@ -22,20 +24,30 @@ namespace input {
 
 GribMemoryStreamInput::GribMemoryStreamInput(const void* message, size_t length, size_t skip, size_t step):
     GribStreamInput(skip, step),
-    handle_(message, length) {
+    message_(message),
+    length_(length),
+    handle_(0) {
 }
 
 GribMemoryStreamInput::GribMemoryStreamInput(const void* message, size_t length, off_t offset):
     GribStreamInput(offset),
-    handle_(message, length) {
+    message_(message),
+    length_(length),
+    handle_(0) {
 }
 
 GribMemoryStreamInput::GribMemoryStreamInput(const void* message, size_t length):
     GribStreamInput(),
-    handle_(message, length) {
+    message_(message),
+    length_(length),
+    handle_(0) {
 }
 
 GribMemoryStreamInput::~GribMemoryStreamInput() {
+    if (handle_) {
+        handle_->close();
+        delete handle_;
+    }
 }
 
 size_t GribMemoryStreamInput::dimensions() const {
@@ -53,7 +65,11 @@ void GribMemoryStreamInput::print(std::ostream &out) const {
 }
 
 eckit::DataHandle &GribMemoryStreamInput::dataHandle() {
-    return handle_;
+    if (!handle_) {
+        handle_ = new eckit::BufferedHandle(new eckit::MemoryHandle(message_, length_));
+        handle_->openForRead();
+    }
+    return *handle_;
 }
 
 }  // namespace input
