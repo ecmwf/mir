@@ -36,7 +36,7 @@ PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
     MethodWeighted(param),
     nclosest_(4) {
 
-    param.get("k-nearest", nclosest_);
+    param.get("nclosest", nclosest_);
 
 }
 
