@@ -26,13 +26,13 @@ RegularLL::RegularLL(const Variable &variable,
                      double east,
                      double west_east_increment):
   GridSpec(variable),
+  jScansPositively_(false),
   north_(north),
   south_(south),
   south_north_increments_(south_north_increment),
   west_(west),
   east_(east),
-  west_east_increment_(west_east_increment),
-  jScansPositively_(false)
+  west_east_increment_(west_east_increment)
 {
 
   if (north_ < south_) {

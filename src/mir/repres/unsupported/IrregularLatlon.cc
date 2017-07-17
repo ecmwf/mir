@@ -147,13 +147,13 @@ public:
     // TODO: Consider keeping a reference on the latitudes and bbox, to avoid copying
 
     IrregularLatlonIterator(const std::vector<double> &latitudes, const std::vector<double> &longitudes):
+        count_(0),
         i_(0),
         ni_(longitudes.size()),
         j_(0),
         nj_(latitudes.size()),
         latitudes_(latitudes),
-        longitudes_(longitudes),
-        count_(0) {
+        longitudes_(longitudes) {
     }
 
     ~IrregularLatlonIterator() {
@@ -200,7 +200,8 @@ atlas::Grid IrregularLatlon::atlasGrid() const {
 
 
 std::string IrregularLatlon::atlasMeshGenerator() const {
-    return "structured";
+    return "delaunay";
+//FIXME    return "structured";
 }
 
 
