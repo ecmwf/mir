@@ -116,6 +116,7 @@ public:
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
     virtual atlas::Grid atlasGrid() const;
+    virtual std::string atlasMeshGenerator() const;
 
     virtual util::Domain domain() const;
     virtual bool isGlobal() const;

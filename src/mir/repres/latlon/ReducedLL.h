@@ -67,6 +67,7 @@ protected:
     // -- Overridden methods
 
     atlas::Grid atlasGrid() const;
+    std::string atlasMeshGenerator() const;
 
     bool isPeriodicWestEast() const;
     bool includesNorthPole() const;

@@ -99,6 +99,7 @@ private:
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
     virtual atlas::Grid atlasGrid() const;
+    virtual std::string atlasMeshGenerator() const;
     virtual void validate(const std::vector<double>& values) const;
 
     virtual util::Domain domain() const;

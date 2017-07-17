@@ -110,6 +110,11 @@ bool Gaussian::includesSouthPole() const {
 }
 
 
+std::string Gaussian::atlasMeshGenerator() const {
+    return "structured";
+}
+
+
 std::vector<double> Gaussian::latitudes(size_t N) {
 
     ASSERT(N);

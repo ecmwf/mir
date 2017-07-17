@@ -44,18 +44,18 @@ static InMemoryCache<atlas::Mesh> mesh_cache(
 }  // (anonymous namespace)
 
 
-MIRGrid::MeshGenParams::MeshGenParams() {
+MIRGrid::MeshGenParams::MeshGenParams() :
+    meshGenerator_(""),  // defined by the representation
+    meshParallelEdgesConnectivity_(true),
+    meshXYZField_(true),
+    meshCellCentres_(true),
+    dump_("") {
     set("three_dimensional", true);
     set("patch_pole",        true);
     set("include_pole",      false);
     set("triangulate",       false);
     set("angle",             0.);
 
-    meshGenerator_ = "structured";
-    meshParallelEdgesConnectivity_ = true;
-    meshXYZField_ = true;
-    meshCellCentres_ = true;
-    dump_ = "";
 }
 
 
@@ -132,7 +132,12 @@ atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const
     atlas::Mesh& mesh = mesh_cache[md5];
     try {
 
-        atlas::MeshGenerator generator(meshGenParams.meshGenerator_, meshGenParams);
+        const std::string meshGenerator = meshGenParams.meshGenerator_;
+        if (meshGenerator.empty()) {
+            throw eckit::SeriousBug("MIRGrid::generateMeshAndCache: no mesh generator defined ('" + meshGenerator + "')");
+        }
+
+        atlas::MeshGenerator generator(meshGenerator, meshGenParams);
         mesh = generator.generate(grid_);
         ASSERT(mesh.generated());
 

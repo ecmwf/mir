@@ -259,6 +259,20 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
 
+    // let representations set the mesh generator
+    if (parametrisation_.has("input-mesh-generator")) {
+        parametrisation_.get("input-mesh-generator", InputMeshGenerationParams_.meshGenerator_);
+    } else {
+        InputMeshGenerationParams_.meshGenerator_ = in.atlasMeshGenerator();
+    }
+
+    if (parametrisation_.has("output-mesh-generator")) {
+        parametrisation_.get("output-mesh-generator", OutputMeshGenerationParams_.meshGenerator_);
+    } else {
+        OutputMeshGenerationParams_.meshGenerator_ = out.atlasMeshGenerator();
+    }
+
+
     // get input mesh (cell centres are required for the k-d tree)
     ASSERT(InputMeshGenerationParams_.meshCellCentres_);
     util::MIRGrid gin(in.atlasGrid());

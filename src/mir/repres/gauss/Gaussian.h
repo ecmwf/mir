@@ -84,17 +84,16 @@ class Gaussian : public Gridded {
 
 private:
 
-    // No copy allowed
-
-    Gaussian(const Gaussian &);
-    Gaussian &operator=(const Gaussian &);
-
     // -- Members
 
     mutable std::vector<double> latitudes_;
 
     // -- Methods
     // None
+
+    // -- Overridden methods
+
+    virtual std::string atlasMeshGenerator() const;
 
     // -- Class members
     // None

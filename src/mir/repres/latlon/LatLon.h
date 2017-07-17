@@ -90,6 +90,7 @@ protected:
 
     virtual size_t numberOfPoints() const;
     virtual Representation* globalise(data::MIRField&) const;
+    virtual std::string atlasMeshGenerator() const;
 
     const LatLon* cropped(const util::BoundingBox&) const;
 
