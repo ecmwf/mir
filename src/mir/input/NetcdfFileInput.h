@@ -127,6 +127,8 @@ private:
     virtual bool next();
     virtual size_t dimensions() const;
 
+    virtual grib_handle *gribHandle(size_t which) const;
+
     // -- Class members
     // None
 

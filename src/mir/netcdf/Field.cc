@@ -15,6 +15,7 @@
 #include "mir/netcdf/GridSpec.h"
 #include "mir/netcdf/Variable.h"
 #include "mir/data/MIRField.h"
+#include "eckit/parser/YAMLParser.h"
 
 #include <iostream>
 
@@ -88,93 +89,35 @@ void Field::print(std::ostream &out) const {
     out << "Field[variable=" << variable_ << "]";
 }
 
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+
+static eckit::Value standard_names;
+
+
+static void init() {
+     standard_names = eckit::YAMLParser::decodeFile("~mir/etc/mir/netcdf.yaml");
+     std::cout << "=========================================="  << std::endl;
+     std::cout << standard_names << std::endl;
+}
+
 void Field::setMetadata(data::MIRField& mirField, size_t i) const {
+     std::cout << "=========================================="  << std::endl;
+
+    pthread_once(&once, init);
+
+    eckit::Value s = standard_names[standardName_];
 
 
-    if (standardName_ == "air_pressure_at_sea_level") {
-        mirField.metadata(i, "paramId", 167);
+    if(s.isMap()) {
+        eckit::ValueMap m = s;
+        for(auto k : m) {
+            mirField.metadata(i, k.first, k.second);
+        }
+
     }
-
-    if (standardName_ == "air_temperature") {
-        mirField.metadata(i, "paramId", 130);
+    else {
+        eckit::Log::warning() << "No mapping for NetCDF standard name [" << standardName_ << "]"<< std::endl;
     }
-
-    if (standardName_ == "dew_point_temperature" ) {
-        mirField.metadata(i, "paramId", 168);
-    }
-
-    if (standardName_ == "eastward_wind") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "land_binary_mask") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "lwe_thickness_of_large_scale_precipitation_amount") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "moisture_content_of_soil_layer") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "precipitation_amount") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "precipitation_flux") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "sea_ice_area_fraction") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "sea_water_temperature") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "snowfall_amount") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "soil_temperature") {
-        mirField.metadata(i, "paramId", 228139);
-    }
-
-    if (standardName_ == "surface_altitude") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "surface_downward_eastward_stress") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "surface_downward_northward_stress") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "surface_upward_water_flux") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "wind") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "wind_speed") {
-        mirField.metadata(i, "paramId", 255);
-    }
-
-    if (standardName_ == "x_wind") {
-        mirField.metadata(i, "paramId", 131);
-    }
-
-    if (standardName_ == "y_wind") {
-        mirField.metadata(i, "paramId", 132);
-    }
-
 }
 
 

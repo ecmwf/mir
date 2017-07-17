@@ -20,6 +20,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/netcdf/Field.h"
 #include "mir/netcdf/GridSpec.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir {
@@ -44,6 +45,19 @@ NetcdfFileInput::~NetcdfFileInput() {
     for (auto j = fields_.begin(); j != fields_.end(); ++j) {
         delete (*j);
     }
+}
+
+
+
+grib_handle *NetcdfFileInput::gribHandle(size_t which) const {
+    //ASSERT(which == 0);
+    static grib_handle *handle = 0;
+    if (!handle) {
+        handle = grib_handle_new_from_samples(0, "GRIB2");
+        // grib_set_long(handle, "paramId", 255);
+        ASSERT(handle);
+    }
+    return handle;
 }
 
 
