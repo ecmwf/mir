@@ -52,6 +52,10 @@ const Dataset& Variable::dataset() const {
     return dataset_;
 }
 
+Dataset& Variable::dataset()  {
+    return dataset_;
+}
+
 void Variable::setMatrix(Matrix *matrix) {
     if (matrix) {
         matrix->attach();
@@ -359,6 +363,7 @@ void Variable::getAttribute(const std::string& name, std::string& s) const {
     auto j = attributes_.find(name);
     if (j == attributes_.end()) {
         s = "<UNDEFINED>";
+        return;
     }
 
     (*j).second->value().get(s);

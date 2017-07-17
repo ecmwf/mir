@@ -15,6 +15,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "mir/netcdf/Endowed.h"
 
@@ -99,7 +100,9 @@ public:
     template<class T>
     T getAttributeValue(const std::string& name) const {
         T result;
+        // std::cout << "getAttributeValue ==> " << name << std::endl;
         getAttribute(name, result);
+        // std::cout << "getAttributeValue <== " << result << std::endl;
         return result;
     }
 
@@ -117,6 +120,7 @@ public:
     virtual const char* kind() const;
 
     const Dataset& dataset() const;
+    Dataset& dataset() ;
 
 protected:
 

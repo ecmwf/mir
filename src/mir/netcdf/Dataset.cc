@@ -155,6 +155,14 @@ const Variable& Dataset::variable(const std::string& name) const {
     return *(*j).second;
 }
 
+Variable& Dataset::variable(const std::string& name)  {
+    auto j = variables_.find(name);
+    if (j == variables_.end()) {
+        throw eckit::UserError("Cannot find netcdf variable '" + name + "'");
+    }
+    return *(*j).second;
+}
+
 bool Dataset::hasVariable(const std::string& name) const {
     auto j = variables_.find(name);
     return (j != variables_.end()) ;

@@ -50,6 +50,7 @@ public:
     //
     bool hasVariable(const std::string& name) const;
     const Variable& variable(const std::string& name) const;
+    Variable& variable(const std::string& name) ;
 
     // From Endowed
 

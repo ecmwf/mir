@@ -85,6 +85,40 @@ GridSpecGuesser::~GridSpecGuesser() {
     m->erase(priority_);
 }
 
+static const Variable& find_variable(const Variable& variable,
+                               const std::string& standardName,
+                               const std::string& units,
+                               size_t n) {
+
+    const Dataset& dataset = variable.dataset();
+
+    for (auto k : dataset.variables()) {
+        Variable& v = *(k.second);
+        if (v.sharesDimensions(variable) && v.getAttributeValue<std::string>("standard_name") == standardName) {
+            std::cout << "XXXXX find_variable" << v << " has standard_name " << standardName << std::endl;
+            return v;
+        }
+    }
+
+    for (auto k : dataset.variables()) {
+        Variable& v = *(k.second);
+        if (v.sharesDimensions(variable) && v.getAttributeValue<std::string>("units") == units) {
+            std::cout  << "XXXXX find_variable"  << v << " has units " << units << std::endl;
+            return v;
+        }
+    }
+
+    std::vector<std::string> coordinates = variable.coordinates();
+    ASSERT(coordinates.size() >= n);
+
+    const Variable& v = dataset.variable(coordinates[coordinates.size() - n]);
+    std::cout  << "XXXXX find_variable"  << v << "is number " << coordinates.size() - n << std::endl;
+    return v;
+
+}
+
+
+
 GridSpec* GridSpecGuesser::guess(const Variable &variable) {
 
     pthread_once(&once, init);
@@ -94,14 +128,18 @@ GridSpec* GridSpecGuesser::guess(const Variable &variable) {
 
     // We assume lat/lon are the innermost coordinates
 
-    std::vector<std::string> coordinates = variable.coordinates();
-    ASSERT(coordinates.size() >= 2);
 
-    const Variable &latitudes = variable.dataset().variable(coordinates[coordinates.size()-1]);
-    const Variable &longitudes = variable.dataset().variable(coordinates[coordinates.size()-2]);
+    const Variable &latitudes = find_variable(variable,
+                                "latitude",
+                                "degrees_north",
+                                2);
 
+    const Variable &longitudes = find_variable(variable,
+                                 "longitude",
+                                 "degrees_east",
+                                 1);
 
-    for (j = m->begin(); j != m->end(); ++j) {
+    for (auto j = m->begin(); j != m->end(); ++j) {
         GridSpec* spec = (*j).second->guess(variable, latitudes, longitudes);
         if (spec) {
             return spec;
