@@ -50,7 +50,7 @@ UnstructuredGrid::~UnstructuredGrid()
 
 void UnstructuredGrid::print(std::ostream& s) const
 {
-    s << "UnstructuredGrid[" << latitudes_.size() << "]";
+    s << "UnstructuredGrid[points=" << latitudes_.size() << "]";
 }
 
 bool UnstructuredGrid::has(const std::string& name) const {

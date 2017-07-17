@@ -19,6 +19,11 @@
 
 
 namespace mir {
+
+namespace data {
+class MIRField;
+}
+
 namespace netcdf {
 
 class Variable;
@@ -47,10 +52,15 @@ public:
     bool get(const std::string &name, double &value) const;
     bool get(const std::string &name, std::vector<double> &value) const;
 
+
+    void setMetadata(data::MIRField& mirField, size_t which) const;
+
 protected:
 
     // -- Members
     const Variable& variable_;
+    std::string standardName_;
+    std::string units_;
 
 private:
 

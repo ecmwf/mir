@@ -33,7 +33,6 @@ NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path):
     fields_(dataset_.fields()),
     current_(-1) {
 
-
     for (auto j  = fields_.begin(); j != fields_.end(); ++j ) {
         std::cout << "NC " << *(*j) << std::endl;
     }
@@ -83,6 +82,8 @@ data::MIRField NetcdfFileInput::field() const {
         std::vector<double> values;
         ncField.get2DValues(values, i);
         field.update(values, i);
+
+        ncField.setMetadata(field, i);
     }
 
     return field;
