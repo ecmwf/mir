@@ -97,8 +97,8 @@ GridSpec* GridSpecGuesser::guess(const Variable &variable) {
     std::vector<std::string> coordinates = variable.coordinates();
     ASSERT(coordinates.size() >= 2);
 
-    const Variable &latitudes = variable.dataset().variable(coordinates[coordinates.size()-2]);
-    const Variable &longitudes = variable.dataset().variable(coordinates[coordinates.size()-1]);
+    const Variable &latitudes = variable.dataset().variable(coordinates[coordinates.size()-1]);
+    const Variable &longitudes = variable.dataset().variable(coordinates[coordinates.size()-2]);
 
 
     for (j = m->begin(); j != m->end(); ++j) {
