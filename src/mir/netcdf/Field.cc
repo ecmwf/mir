@@ -95,28 +95,30 @@ static eckit::Value standard_names;
 
 
 static void init() {
-     standard_names = eckit::YAMLParser::decodeFile("~mir/etc/mir/netcdf.yaml");
-     std::cout << "=========================================="  << std::endl;
-     std::cout << standard_names << std::endl;
+    standard_names = eckit::YAMLParser::decodeFile("~mir/etc/mir/netcdf.yaml");
 }
 
 void Field::setMetadata(data::MIRField& mirField, size_t i) const {
-     std::cout << "=========================================="  << std::endl;
 
     pthread_once(&once, init);
 
     eckit::Value s = standard_names[standardName_];
 
 
-    if(s.isMap()) {
+    if (s.isMap()) {
         eckit::ValueMap m = s;
-        for(auto k : m) {
+        for (auto k : m) {
             mirField.metadata(i, k.first, k.second);
         }
 
     }
     else {
-        eckit::Log::warning() << "No mapping for NetCDF standard name [" << standardName_ << "]"<< std::endl;
+        eckit::Log::warning()
+                << "No mapping for NetCDF standard name ["
+                << standardName_
+                << "] "
+                << variable_
+                << std::endl;
     }
 }
 
