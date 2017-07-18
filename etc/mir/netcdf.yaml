@@ -106,3 +106,61 @@ toa_outgoing_longwave_flux:
   typeOfFirstFixedSurface: 8
   typeOfStatisticalProcessing: 1
 
+# https://software.ecmwf.int/wiki/display/DGOV/The+ultimate+guide+to+encoding+NetCDF+in+C3S
+
+air_temperature:
+  paramId: 167
+
+dew_point_temperature:
+  paramId: 168
+
+x_wind:
+  paramId: 165
+
+y_wind:
+  paramId: 166
+
+wind_speed:
+  paramId: 49 # Wind gust?
+
+air_pressure_at_sea_level:
+  paramId: 151
+
+cloud_area_fraction_assuming_maximum_random_overlap:
+  paramId: 164
+
+surface_temperature:
+  paramId: 235
+
+sea_ice_area_fraction:
+  paramId: 31
+
+open_sea_surface_temperature:
+  paramId: 34
+
+lwe_thickness_of_surface_snow_amount:
+  paramId: 141
+
+snow_density:
+  paramId: 33
+
+surface_albedo:
+  paramId: 243
+
+moisture_content_of_soil_layer:
+  paramId: 39
+
+moisture_content_of_soil_layer:
+  paramId: 40
+
+moisture_content_of_soil_layer:
+  paramId: 41
+
+moisture_content_of_soil_layer:
+  paramId: 42
+
+soil_temperature:
+  paramId: 139
+
+
+
