@@ -90,13 +90,16 @@ void AddParallelEdgesConnectivity::operator()(atlas::Mesh& mesh, const Latitude&
     edge_list_t edges;
     bool addNorthPole = false;
 
+    ASSERT(south < north);
     if (north < 0.) {
         addNorthPole = true;
+        ASSERT(north <= Latitude::NORTH_POLE);
         edges = getParallelEdges(
                     util::Domain(north, Longitude::GREENWICH, north, Longitude::GLOBE),
                     mesh.cells().node_connectivity(),
                     make_view< double, 2 >(mesh.nodes().xy()) );
     } else if (south > 0.) {
+        ASSERT(Latitude::SOUTH_POLE <= south);
         edges = getParallelEdges(
                     util::Domain(south, Longitude::GREENWICH, south, Longitude::GLOBE),
                     mesh.cells().node_connectivity(),
