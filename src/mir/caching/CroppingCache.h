@@ -51,6 +51,7 @@ struct CroppingCacheEntry {
 struct CroppingCacheTraits {
 
     typedef CroppingCacheEntry value_type;
+    typedef eckit::CacheManagerNoLock Locker;
 
     static const char* name();
     static int version();

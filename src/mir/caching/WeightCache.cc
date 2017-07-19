@@ -27,7 +27,7 @@ using namespace mir::caching::interpolator;
 static std::string extract_loader(const param::MIRParametrisation& param) {
 
     std::string name;
-    if(param.get("interpolator-loader", name)) {
+    if (param.get("interpolator-loader", name)) {
         return name;
     }
 
@@ -74,6 +74,30 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+// We only lock per host, not per cluster
+
+static eckit::PathName lockFile(const std::string& path) {
+    eckit::PathName lock(path + ".lock");
+    lock.touch();
+    return lock;
+}
+
+WeightCacheLock::WeightCacheLock(const std::string& path):
+    path_(lockFile(path)),
+    lock_(path_) {
+}
+
+void WeightCacheLock::lock() {
+    lock_.lock();
+}
+
+void WeightCacheLock::unlock() {
+    lock_.unlock();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 
 }  // namespace caching
 }  // namespace mir
