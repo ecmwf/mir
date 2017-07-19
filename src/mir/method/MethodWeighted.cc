@@ -524,7 +524,7 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
     eckit::Log::debug<LibMir>() << "MethodWeighted: applyMasks corrected "
                                 << eckit::BigNum(fix)
                                 << " out of "
-                                << eckit::Plural(W.rows() , "row")
+                                << eckit::Plural(W.rows() , "output point")
                                 << std::endl;
 }
 
