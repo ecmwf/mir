@@ -15,6 +15,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
 
+#include <unistd.h>
 
 namespace mir {
 namespace caching {
@@ -89,10 +90,23 @@ WeightCacheLock::WeightCacheLock(const std::string& path):
 }
 
 void WeightCacheLock::lock() {
+    eckit::Log::info() << "Wait for lock " << path_ << std::endl;
     lock_.lock();
+    eckit::Log::info() << "Got lock " << path_ << std::endl;
+
+
+    char hostname[1024];
+    SYSCALL(gethostname(hostname, sizeof(hostname) - 1));
+
+    std::ofstream os(path_.asString().c_str());
+    os << hostname << " " << ::getpid() << std::endl;
+
 }
 
 void WeightCacheLock::unlock() {
+    eckit::Log::info() << "Unlock " << path_ << std::endl;
+    std::ofstream os(path_.asString().c_str());
+    os << std::endl;
     lock_.unlock();
 }
 
