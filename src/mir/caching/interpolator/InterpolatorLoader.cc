@@ -48,6 +48,19 @@ InterpolatorLoader::InterpolatorLoader(const std::string&, const eckit::PathName
 
 InterpolatorLoader::~InterpolatorLoader() {}
 
+
+//----------------------------------------------------------------------------------------------------------------------
+eckit::linalg::SparseMatrix::Layout InterpolatorLoader::allocate(eckit::linalg::SparseMatrix::Shape& shape) {
+
+    eckit::linalg::SparseMatrix::Layout layout;
+
+    eckit::linalg::SparseMatrix::load(address(), size(), layout, shape);
+
+    return layout;
+}
+
+void InterpolatorLoader::deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape) {
+}
 //----------------------------------------------------------------------------------------------------------------------
 
 InterpolatorLoaderFactory::InterpolatorLoaderFactory(const std::string& name) : name_(name) {
