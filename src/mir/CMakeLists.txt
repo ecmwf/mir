@@ -529,8 +529,6 @@ list(
 if(HAVE_ATLAS)
 list(
     APPEND mir_srcs
-    api/emoslib.cc
-    api/emoslib.h
     api/ProdgenJob.cc
     api/ProdgenJob.h
     method/AddParallelEdgesConnectivity.cc
