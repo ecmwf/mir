@@ -202,10 +202,14 @@ PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
 
         const long VERSION = 1;
         std::ostringstream oss;
-        oss  << LibMir::cacheDir()
-             << "/mir/trees/"
-             << VERSION
-             << "/"
+        // oss  << LibMir::cacheDir()
+        //      << "/mir/trees/"
+        //      << VERSION
+        //      << "/"
+        //      << r.uniqueName()
+        //      << ".kdtree";
+
+  oss  << "/tmp/"
              << r.uniqueName()
              << ".kdtree";
 
