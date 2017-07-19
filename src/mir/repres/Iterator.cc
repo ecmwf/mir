@@ -15,37 +15,16 @@
 
 #include "mir/repres/Iterator.h"
 
+#include <iostream>
 #include <vector>
-
 #include "eckit/exception/Exceptions.h"
-#include "eckit/geometry/Point2.h"
 
 
 namespace mir {
 namespace repres {
 
 
-Iterator::Iterator() :
-    valid_(true),
-    rotation_(),
-    projection_(atlas::Projection())
-{
-}
-
-
-Iterator::Iterator(const util::Rotation& rotation) :
-    valid_(true),
-    rotation_(rotation) {
-    // Setup projection using South Pole rotated position, as seen from the non-rotated frame
-    const eckit::geometry::LLPoint2 pole(
-        rotation_.south_pole_longitude().value(),
-        rotation_.south_pole_latitude().value() );
-
-    atlas::util::Config config;
-    config.set("type", "rotated_lonlat");
-    config.set("south_pole", std::vector<double>({pole.lon(), pole.lat()}));
-    config.set("rotation_angle", rotation_.south_pole_rotation_angle());
-    projection_ = atlas::Projection(config);
+Iterator::Iterator() : valid_(true) {
 }
 
 
@@ -68,25 +47,6 @@ const Iterator::point_ll_t& Iterator::pointUnrotated() const {
 Iterator& Iterator::next() {
     ASSERT(valid_);
     valid_ = next(pointUnrotated_.lat, pointUnrotated_.lon);
-
-    if (valid_) {
-        if (projection_) {
-
-            // notice the order
-            const atlas::PointXY pxy(pointUnrotated_.lon.value(), pointUnrotated_.lat.value());
-            const atlas::PointLonLat pll = projection_.lonlat(pxy);
-
-            point_[0] = pll.lat();
-            point_[1] = pll.lon();
-
-        } else {
-            point_[0] = pointUnrotated_.lat.value();
-            point_[1] = pointUnrotated_.lon.value();
-        }
-        point_[0] = pointUnrotated_.lat.value();
-        point_[1] = pointUnrotated_.lon.value();
-    }
-
     return *this;
 }
 
@@ -101,9 +61,70 @@ const Iterator::point_3d_t Iterator::point3D() const {
 }
 
 
-void Iterator::print(std::ostream& out) const {
-    out << "Iterator["
-        "valid?" << valid_
+UnrotatedIterator::UnrotatedIterator() {
+}
+
+
+UnrotatedIterator::~UnrotatedIterator() {
+}
+
+
+UnrotatedIterator& UnrotatedIterator::next() {
+    if (Iterator::next()) {
+
+        // notice the order
+        point_[0] = pointUnrotated_.lat.value();
+        point_[1] = pointUnrotated_.lon.value();
+
+    }
+    return *this;
+}
+
+
+void UnrotatedIterator::print(std::ostream& out) const {
+    out << "UnrotatedIterator["
+        <<  "valid?" << valid_
+        << "]";
+}
+
+
+RotatedIterator::RotatedIterator(const util::Rotation& rotation) :
+    rotation_(rotation) {
+
+    // Setup projection using South Pole rotated position, as seen from the non-rotated frame
+    const eckit::geometry::LLPoint2 pole(
+        rotation_.south_pole_longitude().value(),
+        rotation_.south_pole_latitude().value() );
+
+    atlas::util::Config config;
+    config.set("type", "rotated_lonlat");
+    config.set("south_pole", std::vector<double>({pole.lon(), pole.lat()}));
+    config.set("rotation_angle", rotation_.south_pole_rotation_angle());
+    projection_ = atlas::Projection(config);
+}
+
+
+RotatedIterator::~RotatedIterator() {
+}
+
+
+RotatedIterator& RotatedIterator::next() {
+    if (Iterator::next()) {
+
+        // notice the order
+        const atlas::PointXY pxy(pointUnrotated_.lon.value(), pointUnrotated_.lat.value());
+        const atlas::PointLonLat pll = projection_.lonlat(pxy);
+        point_[0] = pll.lat();
+        point_[1] = pll.lon();
+
+    }
+    return *this;
+}
+
+
+void RotatedIterator::print(std::ostream& out) const {
+    out << "RotatedIterator["
+        <<  "valid?" << valid_
         << ",projection?" << bool(projection_)
         << ",rotation=" << rotation_
         << "]";

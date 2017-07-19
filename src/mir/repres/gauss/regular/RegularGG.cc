@@ -73,10 +73,10 @@ void RegularGG::initTrans(Trans_t &trans) const {
 
 Iterator* RegularGG::iterator() const {
 
-    class RegularGGIterator : protected RegularIterator, public Iterator {
+    class RegularGGIterator : protected RegularIterator, public UnrotatedIterator {
         void print(std::ostream& out) const {
             out << "RegularGGIterator[";
-            Iterator::print(out);
+            UnrotatedIterator::print(out);
             out << ",";
             RegularIterator::print(out);
             out << "]";

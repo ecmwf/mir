@@ -17,12 +17,9 @@
 #define mir_repres_Iterator_h
 
 #include <iosfwd>
-
-
 #include "eckit/geometry/Point2.h"
 #include "eckit/geometry/Point3.h"
 #include "eckit/memory/NonCopyable.h"
-
 #include "mir/util/Rotation.h"
 #include "mir/util/Types.h"
 #include "mir/api/Atlas.h"
@@ -52,7 +49,6 @@ public:
     // -- Contructors
 
     Iterator();
-    Iterator(const util::Rotation&);
 
     // -- Destructor
 
@@ -92,10 +88,6 @@ protected:
     point_2d_t point_;
     point_ll_t pointUnrotated_;
 
-    util::Rotation rotation_;
-
-    atlas::Projection projection_;
-
     // -- Methods
 
     virtual void print(std::ostream&) const = 0;
@@ -134,6 +126,36 @@ private:
         return s;
     }
 
+};
+
+
+class UnrotatedIterator : public Iterator {
+public:
+    UnrotatedIterator();
+    virtual ~UnrotatedIterator();
+    virtual void print(std::ostream&) const = 0;
+    virtual UnrotatedIterator& next();
+private:
+    friend std::ostream& operator<<(std::ostream& s, const UnrotatedIterator& p) {
+        p.print(s);
+        return s;
+    }
+};
+
+
+class RotatedIterator : public Iterator {
+public:
+    RotatedIterator(const util::Rotation&);
+    virtual ~RotatedIterator();
+    virtual void print(std::ostream&) const = 0;
+    virtual RotatedIterator& next();
+private:
+    util::Rotation rotation_;
+    atlas::Projection projection_;
+    friend std::ostream& operator<<(std::ostream& s, const RotatedIterator& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 
