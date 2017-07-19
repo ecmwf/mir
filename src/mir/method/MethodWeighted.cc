@@ -56,7 +56,7 @@ static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix",
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) :
     Method(parametrisation) {
-    ASSERT(parametrisation.get("lsm-weight-adjustment", lsmWeightAdjustement_));
+    ASSERT(parametrisation.get("lsm-weight-adjustment", lsmWeightAdjustment_));
 
     pruneEpsilon_ = 0;
     ASSERT(parametrisation_.get("prune-epsilon", pruneEpsilon_));
@@ -116,7 +116,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
         << shortName_in
         << shortName_out
         << pruneEpsilon_
-        << lsmWeightAdjustement_;
+        << lsmWeightAdjustment_;
 
     const eckit::MD5::digest_t md5_no_masks(md5.digest());
     md5 << masks;
@@ -504,7 +504,7 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
             ASSERT(it.col() < imask.size());
 
             if (omask[i] != imask[it.col()]) {
-                *it *= lsmWeightAdjustement_;
+                *it *= lsmWeightAdjustment_;
                 row_changed = true;
             }
             sum += *it;
