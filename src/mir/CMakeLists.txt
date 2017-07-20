@@ -268,6 +268,8 @@ list(
     method/Nearest.h
     method/NearestLSM.cc
     method/NearestLSM.h
+    method/NearestLSMSingleKDTree.cc
+    method/NearestLSMSingleKDTree.h
     method/NearestNeighbour.cc
     method/NearestNeighbour.h
     method/PseudoLaplace.cc
