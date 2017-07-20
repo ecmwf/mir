@@ -26,6 +26,9 @@ namespace mir {
 namespace action {
 class ActionPlan;
 }
+namespace api {
+class MIRJob;
+}
 namespace param {
 class MIRParametrisation;
 }
@@ -60,7 +63,8 @@ public:
 
     virtual void prepare(action::ActionPlan&) const = 0;
 
-    virtual bool forcedPrepare(const param::MIRParametrisation&) const = 0;
+    virtual bool forcedPrepare(const api::MIRJob& job,
+                               const param::MIRParametrisation& input) const = 0;
 
     // -- Overridden methods
     // None

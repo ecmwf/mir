@@ -16,9 +16,11 @@
 #include "mir/style/ECMWFStyle.h"
 
 #include <iostream>
+#include <set>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -129,7 +131,8 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 }
 
 
-bool ECMWFStyle::forcedPrepare(const param::MIRParametrisation& parametrisation) const {
+bool ECMWFStyle::forcedPrepare(const api::MIRJob& job,
+                               const param::MIRParametrisation& input) const {
     static const char *force[] = {
         "accuracy",
         "bitmap",
@@ -145,11 +148,18 @@ bool ECMWFStyle::forcedPrepare(const param::MIRParametrisation& parametrisation)
         0
     };
 
-    bool forced = false;
-    for (size_t i = 0; force[i] && !forced; ++i) {
-        forced = parametrisation.has(force[i]);
+    for (size_t i = 0; force[i]; ++i) {
+        if (job.has(force[i])) {
+            return true;
+        }
     }
-    return forced;
+
+    std::set<std::string> ignore;
+    if (input.has("gridded")) {
+        ignore.insert("autoresol");
+    }
+
+    return !job.matches(input, ignore);
 }
 
 
@@ -167,7 +177,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
 
     const std::string userGrid =
-        parametrisation_.has("user.grid")?          "regular-ll" :
+        parametrisation_.has("user.grid") ?         "regular-ll" :
         parametrisation_.has("user.reduced") ?      "reduced-gg" :
         parametrisation_.has("user.regular") ?      "regular-gg" :
         parametrisation_.has("user.octahedral") ?   "octahedral-gg" :
