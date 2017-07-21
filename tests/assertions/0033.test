@@ -1,0 +1,6 @@
+# Mars request
+levtype=sfc,param=42
+# Mir tool options
+--gridname=F640
+# grib_get assertions
+min=0
