@@ -501,7 +501,7 @@ PointSearchTree *PointSearchTreeFactory::build(const repres::Representation& r,
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    std::string name = "memory";
+    std::string name = "mapped-cache-file";
 
     params.get("point-search-trees", name);
 
