@@ -137,7 +137,7 @@ void KNearestLSM::assemble(util::MIRStatistics&,
             ++ip;
         }
     }
-    eckit::Log::debug<LibMir>() << "KNearestLSM search nearest neighbours (up to " << eckit::Plural(nclosest, "point") << ") matching type took " << timer.elapsed() - here << std::endl;
+    eckit::Log::debug<LibMir>() << "KNearestLSM search nearest neighbours (up to " << eckit::Plural(nclosest, "point") << ") matching type took " << timer.elapsed() - here << "s" << std::endl;
     eckit::Log::debug<LibMir>() << "KNearestLSM assigned weights to " << eckit::Plural(nbDifferentTypes, "point") << " of different type, out of " << eckit::BigNum(out_npts) << std::endl;
 
 
