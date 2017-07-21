@@ -35,6 +35,7 @@
 #include "eckit/log/BigNum.h"
 #include "eckit/config/Resource.h"
 #include "eckit/maths/Functions.h"
+#include "eckit/log/TraceTimer.h"
 
 #include "eckit/log/Timer.h"
 #include "eckit/io/StdFile.h"
