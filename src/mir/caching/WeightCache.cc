@@ -14,6 +14,7 @@
 #include "mir/caching/interpolator/InterpolatorLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
+#include "eckit/os/AutoUmask.h"
 
 #include <unistd.h>
 
@@ -79,6 +80,8 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
 // We only lock per host, not per cluster
 
 static eckit::PathName lockFile(const std::string& path) {
+    eckit::AutoUmask umask(0);
+
     eckit::PathName lock(path + ".lock");
     lock.touch();
     return lock;
@@ -90,6 +93,8 @@ WeightCacheLock::WeightCacheLock(const std::string& path):
 }
 
 void WeightCacheLock::lock() {
+    eckit::AutoUmask umask(0);
+
     eckit::Log::info() << "Wait for lock " << path_ << std::endl;
     lock_.lock();
     eckit::Log::info() << "Got lock " << path_ << std::endl;
@@ -104,6 +109,8 @@ void WeightCacheLock::lock() {
 }
 
 void WeightCacheLock::unlock() {
+    eckit::AutoUmask umask(0);
+
     eckit::Log::info() << "Unlock " << path_ << std::endl;
     std::ofstream os(path_.asString().c_str());
     os << std::endl;
