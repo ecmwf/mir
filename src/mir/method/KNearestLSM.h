@@ -14,26 +14,30 @@
 /// @date May 2015
 
 
-#ifndef mir_method_NearestLSMSingleKDTree_h
-#define mir_method_NearestLSMSingleKDTree_h
+#ifndef mir_method_KNearestLSM_h
+#define mir_method_KNearestLSM_h
 
-#include "mir/method/MethodWeighted.h"
+#include "mir/method/Nearest.h"
 
 
 namespace mir {
 namespace method {
 
 
-class NearestLSMSingleKDTree: public MethodWeighted {
+class KNearestLSM: public Nearest {
 public:
 
-    NearestLSMSingleKDTree(const param::MIRParametrisation&);
+    KNearestLSM(const param::MIRParametrisation&);
 
-    virtual ~NearestLSMSingleKDTree();
+    virtual ~KNearestLSM();
+
+protected:
+
+    virtual void hash(eckit::MD5&) const;
 
 private:
 
-    virtual const char *name() const;
+    size_t nclosest_;
 
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
@@ -44,6 +48,9 @@ private:
 
     virtual void print(std::ostream&) const;
 
+    virtual const char* name() const;
+
+    virtual size_t nclosest() const;
 };
 
 

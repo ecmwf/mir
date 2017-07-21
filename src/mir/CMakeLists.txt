@@ -260,6 +260,8 @@ list(
     method/decompose/PolarAngleToCartesian.h
     method/KNearest.cc
     method/KNearest.h
+    method/KNearestLSM.cc
+    method/KNearestLSM.h
     method/Method.cc
     method/Method.h
     method/MethodWeighted.cc
@@ -268,8 +270,6 @@ list(
     method/Nearest.h
     method/NearestLSM.cc
     method/NearestLSM.h
-    method/NearestLSMSingleKDTree.cc
-    method/NearestLSMSingleKDTree.h
     method/NearestNeighbour.cc
     method/NearestNeighbour.h
     method/PseudoLaplace.cc
