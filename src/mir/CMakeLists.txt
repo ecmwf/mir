@@ -212,6 +212,8 @@ list(
     input/GeoPointsFileInput.h
     input/GribAllFileInput.cc
     input/GribAllFileInput.h
+    input/GribDataHandleInput.cc
+    input/GribDataHandleInput.h
     input/GribFileInput.cc
     input/GribFileInput.h
     input/GribInput.cc
