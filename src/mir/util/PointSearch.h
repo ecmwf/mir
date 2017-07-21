@@ -68,6 +68,9 @@ public:
     virtual void commit() = 0;
     virtual void print(std::ostream &) const = 0;
 
+    virtual void lock() {};
+    virtual void unlock(){};
+
     friend std::ostream &operator<<(std::ostream &s, const PointSearchTree &p) {
         p.print(s);
         return s;
@@ -117,6 +120,44 @@ private:
 
 
 };
+
+
+class PointSearchTreeFactory {
+
+    std::string name_;
+
+    virtual PointSearchTree *make(const repres::Representation& r,
+                                  const param::MIRParametrisation &,
+                                  size_t itemCount) = 0;
+
+protected:
+
+    PointSearchTreeFactory(const std::string &);
+
+    virtual  ~PointSearchTreeFactory();
+
+public:
+
+    static PointSearchTree *build( const repres::Representation& r,
+                                   const param::MIRParametrisation&,
+                                   size_t itemCount);
+
+    static void list(std::ostream&);
+
+};
+
+
+template<class T>
+class PointSearchTreeBuilder : public PointSearchTreeFactory {
+    virtual PointSearchTree *make( const repres::Representation& r,
+                                   const param::MIRParametrisation &param,
+                                   size_t itemCount) {
+        return new T(r, param, itemCount);
+    }
+public:
+    PointSearchTreeBuilder(const std::string &name) : PointSearchTreeFactory(name) {}
+};
+
 
 
 }  // namespace util
