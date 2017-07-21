@@ -103,24 +103,23 @@ void Field::setMetadata(data::MIRField& mirField, size_t i) const {
 
     pthread_once(&once, init);
 
-    // eckit::Value s = standard_names[standardName_];
+    eckit::Value s = standard_names[standardName_];
 
+    if (s.isMap()) {
+        eckit::ValueMap m = s;
+        for (auto k : m) {
+            mirField.metadata(i, k.first, k.second);
+        }
 
-    // if (s.isMap()) {
-    //     eckit::ValueMap m = s;
-    //     for (auto k : m) {
-    //         mirField.metadata(i, k.first, k.second);
-    //     }
-
-    // }
-    // else {
-    //     eckit::Log::warning()
-    //             << "No mapping for NetCDF standard name ["
-    //             << standardName_
-    //             << "] "
-    //             << variable_
-    //             << std::endl;
-    // }
+    }
+    else {
+        eckit::Log::warning()
+                << "No mapping for NetCDF standard name ["
+                << standardName_
+                << "] "
+                << variable_
+                << std::endl;
+    }
 }
 
 

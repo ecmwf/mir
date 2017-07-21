@@ -111,12 +111,12 @@ class PointSearchTreeMapped: public PointSearchTree {
     typedef PointSearchTree::Point Point;
     typedef eckit::KDTreeMapped<PointSearchTree> Tree;
 
+protected:
     eckit::AutoUmask umask_; // Must be first
+    eckit::PathName path_;
+    Tree tree_;
 
-    eckit::PathName path_; // Must be second
-    eckit::PathName tmp_;
-
-    Tree tree_; // Must be last
+public:
 
     virtual void build(std::vector<PointValueType>& v) {
         tree_.build(v);
@@ -156,36 +156,66 @@ class PointSearchTreeMapped: public PointSearchTree {
     }
 
 
+public:
+    PointSearchTreeMapped(const eckit::PathName& path, size_t itemCount):
+        umask_(0),
+        path_(path),
+        tree_(path, itemCount, 0) {
+    }
+
+};
+
+
+class PointSearchTreeMappedFile : public PointSearchTreeMapped {
+
+    eckit::PathName real_;
+
     virtual bool ready() const  {
-        return path_ == tmp_;
+        return path_ == real_;
     }
 
     virtual void commit() {
-        // tmp_.chmod(0777);
-        eckit::PathName::rename(tmp_, path_);
+        eckit::PathName::rename(path_, real_);
     }
 
     virtual void print(std::ostream & out) const  {
-        out << "KDTreeMapped[" << path_ << "]";
+        out << "PointSearchTreeMappedFile[" << path_ << "]";
 
     }
 
-
 public:
-    PointSearchTreeMapped(const eckit::PathName& path,
-                          size_t itemCount,
-                          size_t metadataSize):
-        umask_(0),
-        path_(path),
-        tmp_(treePath(path)),
-        tree_(tmp_, path_ == tmp_ ? 0 : itemCount, metadataSize) {
+
+    PointSearchTreeMappedFile(const eckit::PathName& path, size_t itemCount):
+        PointSearchTreeMapped(treePath(path), path.exists() ? 0 : itemCount),
+        real_(path)
+    {
 
         if (ready()) {
             eckit::Log::info() << "Loading " << *this << std::endl;
         }
     }
-
 };
+
+class PointSearchTreeMappedDevZero: public PointSearchTreeMapped {
+
+    virtual bool ready() const  {
+        return false;
+    }
+
+    virtual void commit() {
+    }
+
+    virtual void print(std::ostream & out) const  {
+        out << "PointSearchTreeMappedDevZero[]";
+    }
+
+public:
+    PointSearchTreeMappedDevZero(size_t itemCount):
+        PointSearchTreeMapped("/dev/zero", itemCount) {
+    }
+};
+
+
 
 PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
                          const repres::Representation& r,
@@ -200,8 +230,8 @@ PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
 
     if (caching) { // TODO: use a resource
 
-        const long VERSION = 1;
-        std::ostringstream oss;
+        // const long VERSION = 1;
+        // std::ostringstream oss;
         // oss  << LibMir::cacheDir()
         //      << "/mir/trees/"
         //      << VERSION
@@ -209,12 +239,11 @@ PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
         //      << r.uniqueName()
         //      << ".kdtree";
 
-  oss  << "/tmp/"
-             << r.uniqueName()
-             << ".kdtree";
 
+        // tree_.reset(new PointSearchTreeMappedFile(oss.str(), npts));
 
-        tree_.reset(new PointSearchTreeMapped(oss.str(), npts, 0));
+        tree_.reset(new PointSearchTreeMappedDevZero(npts));
+
     }
     else {
         tree_.reset(new PointSearchTreeMemory());
