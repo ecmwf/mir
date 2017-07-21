@@ -218,8 +218,6 @@ list(
     input/GribInput.h
     input/GribMemoryInput.cc
     input/GribMemoryInput.h
-    input/GribMemoryStreamInput.cc
-    input/GribMemoryStreamInput.h
     input/GribStreamInput.cc
     input/GribStreamInput.h
     input/MIRInput.cc
