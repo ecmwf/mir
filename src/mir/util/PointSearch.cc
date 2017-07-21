@@ -46,6 +46,78 @@ namespace util {
 
 const long VERSION = 1;
 
+PointSearchTree::~PointSearchTree() {
+}
+
+void PointSearchTree::build(std::vector<PointValueType>&) {
+    std::ostringstream os;
+    os << "PointSearchTree::build() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+void PointSearchTree::insert(const PointValueType&) {
+    std::ostringstream os;
+    os << "PointSearchTree::insert() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+void PointSearchTree::statsPrint(std::ostream&, bool) {
+    std::ostringstream os;
+    os << "PointSearchTree::statsPrint() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+void PointSearchTree::statsReset() {
+    std::ostringstream os;
+    os << "PointSearchTree::statsReset() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+PointSearchTree::PointValueType PointSearchTree::nearestNeighbour(const Point&) {
+    std::ostringstream os;
+    os << "PointSearchTree::nearestNeighbour() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+std::vector<PointSearchTree::PointValueType> PointSearchTree::kNearestNeighbours(const Point&, size_t k) {
+    std::ostringstream os;
+    os << "PointSearchTree::kNearestNeighbours() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+std::vector<PointSearchTree::PointValueType> PointSearchTree::findInSphere(const Point&, double) {
+    std::ostringstream os;
+    os << "PointSearchTree::findInSphere() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+bool PointSearchTree::ready() const {
+    std::ostringstream os;
+    os << "PointSearchTree::ready() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+void PointSearchTree::commit() {
+    std::ostringstream os;
+    os << "PointSearchTree::commit() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+void PointSearchTree::print(std::ostream &out) const {
+    out << "PointSearchTree[]" << std::endl;
+}
+
+void PointSearchTree::lock() {
+    // Empty
+}
+
+void PointSearchTree::unlock() {
+    // Empty
+}
+
+//=====================================================================
+
 
 class PointSearchTreeMemory: public PointSearchTree {
 
