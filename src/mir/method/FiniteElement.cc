@@ -21,11 +21,10 @@
 #include <utility>
 #include "eckit/config/Resource.h"
 #include "eckit/log/BigNum.h"
-#include "eckit/log/ETA.h"
 #include "eckit/log/Plural.h"
+#include "eckit/log/ProgressTimer.h"
 #include "eckit/log/ResourceUsage.h"
-#include "eckit/log/Seconds.h"
-#include "eckit/log/Timer.h"
+#include "eckit/log/TraceTimer.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/utils/MD5.h"
 #include "atlas/interpolation/element/Quad3D.h"
@@ -40,7 +39,6 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-
 
 
 namespace mir {
@@ -318,8 +316,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     std::forward_list<failed_projection_t> failures;
 
     {
-        eckit::Log::debug<LibMir>() << "Projecting " << eckit::Plural(stats.out_npts, "output point") << " to input mesh " << in << std::endl;
-        eckit::TraceTimer<LibMir> timerProj("Projecting");
+        eckit::ProgressTimer progress("Projecting", stats.out_npts, "point", double(5), eckit::Log::debug<LibMir>());
 
         const atlas::mesh::HybridElements::Connectivity& connectivity = inMesh.cells().node_connectivity();
 
@@ -330,15 +327,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
         while (it->next()) {
             ASSERT(ip < stats.out_npts);
-
-            if (ip && (ip % 10000 == 0)) {
-                double rate = ip / timerProj.elapsed();
-                eckit::Log::debug<LibMir>()
-                        << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timerProj.elapsed())
-                        << ", rate: " << rate << " points/s, ETA: "
-                        << eckit::ETA( (stats.out_npts - ip) / rate )
-                        << std::endl;
-            }
+            ++progress;
 
             if (inDomain.contains(it->pointUnrotated())) {
                 bool success = false;

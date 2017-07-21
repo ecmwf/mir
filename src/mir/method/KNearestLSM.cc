@@ -17,10 +17,10 @@
 #include "mir/method/KNearestLSM.h"
 
 #include "eckit/log/BigNum.h"
-#include "eckit/log/ETA.h"
 #include "eckit/log/Log.h"
 #include "eckit/log/Plural.h"
-#include "eckit/log/Timer.h"
+#include "eckit/log/ProgressTimer.h"
+#include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 #include "mir/config/LibMir.h"
 #include "mir/lsm/LandSeaMasks.h"
@@ -94,20 +94,13 @@ void KNearestLSM::assemble(util::MIRStatistics&,
     mat.reserve(W.rows());
 
     {
-        eckit::TraceTimer<LibMir> timerLocating("Locating");
+        eckit::ProgressTimer progress("Locating", out_npts, "point", double(5), eckit::Log::debug<LibMir>());
+
         const eckit::ScopedPtr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
         while (it->next()) {
             ASSERT(ip < W.rows());
-
-            if (ip && (ip % 10000 == 0)) {
-                double rate = ip / timerLocating.elapsed();
-                eckit::Log::debug<LibMir>()
-                        << eckit::BigNum(ip) << " ..."  << eckit::Seconds(timerLocating.elapsed())
-                        << ", rate: " << rate << " points/s, ETA: "
-                        << eckit::ETA( (out_npts - ip) / rate )
-                        << std::endl;
-            }
+            ++progress;
 
             const util::PointSearch::PointType p(it->point3D());
             sptree.closestNPoints(p, nclosest, closest);
