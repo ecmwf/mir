@@ -16,30 +16,26 @@
 
 #include "mir/util/PointSearch.h"
 
-#include <limits>
 #include <iostream>
+#include <unistd.h>
 
 #include "eckit/config/Resource.h"
 #include "eckit/container/KDTree.h"
 #include "eckit/container/kdtree/KDNode.h"
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/Timer.h"
 #include "eckit/os/AutoUmask.h"
+#include "eckit/os/Semaphore.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/thread/Once.h"
 
 #include "mir/config/LibMir.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/param/MIRParametrisation.h"
 
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Once.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/os/Semaphore.h"
-
-
-#include <unistd.h>
 
 namespace mir {
 namespace util {
@@ -439,8 +435,7 @@ static PointSearchTreeBuilder<PointSearchTreeMappedDevZero> builder4("mapped-ano
 
 
 PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
-                         const repres::Representation& r,
-                         const CompareType& isok):
+                         const repres::Representation& r):
     parametrisation_(parametrisation)
 {
     const size_t npts = r.numberOfPoints();
@@ -454,20 +449,17 @@ PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
     eckit::Log::info() << "PointSearch using " << *tree_ << std::endl;
 
     if (!tree_->ready()) {
-        build(r, isok);
+        build(r);
         tree_->commit();
     }
 
 }
 
-void PointSearch::build(const repres::Representation & r, const CompareType & isok) {
+void PointSearch::build(const repres::Representation & r) {
     const size_t npts = r.numberOfPoints();
 
     eckit::Timer timer("Building KDTree");
     eckit::Log::info() << "Building " << *tree_ << " for " << r << " (" << eckit::Plural(npts, "point") << ")" << std::endl;
-
-    const double infty = std::numeric_limits< double >::infinity();
-    const PointType farpoint(infty, infty, infty);
 
     static bool fastBuildKDTrees = eckit::Resource<bool>("$ATLAS_FAST_BUILD_KDTREES", true); // We use the same Resource as ATLAS for now
 
@@ -479,7 +471,7 @@ void PointSearch::build(const repres::Representation & r, const CompareType & is
         size_t i = 0;
         while (it->next()) {
             ASSERT(i < npts);
-            points.push_back(PointValueType(isok(i) ? PointType(it->point3D()) : farpoint, i));
+            points.push_back(PointValueType(it->point3D(), i));
             ++i;
         }
 
@@ -490,7 +482,7 @@ void PointSearch::build(const repres::Representation & r, const CompareType & is
         size_t i = 0;
         while (it->next()) {
             ASSERT(i < npts);
-            tree_->insert(PointValueType(isok(i) ? PointType(it->point3D()) : farpoint, i));
+            tree_->insert(PointValueType(it->point3D(), i));
             ++i;
         }
     }

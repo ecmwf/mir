@@ -130,8 +130,9 @@ void KNearestLSM::assemble(util::MIRStatistics&,
             ++ip;
         }
     }
-    eckit::Log::debug<LibMir>() << "KNearestLSM search nearest neighbours (up to " << eckit::Plural(nclosest, "point") << ") matching type took " << timer.elapsed() - here << "s" << std::endl;
-    eckit::Log::debug<LibMir>() << "KNearestLSM assigned weights to " << eckit::Plural(nbDifferentTypes, "point") << " of different type, out of " << eckit::BigNum(out_npts) << std::endl;
+    eckit::Log::debug<LibMir>() << "KNearestLSM search nearest neighbours (up to " << eckit::Plural(nclosest, "point") << ") matching type took " << timer.elapsed() - here << "s"
+                                << ", assigned weights to " << eckit::Plural(nbDifferentTypes, "point") << " of different type, out of " << eckit::BigNum(out_npts)
+                                << std::endl;
 
 
     // fill-in sparse matrix
@@ -169,7 +170,8 @@ size_t KNearestLSM::nclosest() const {
 
 
 namespace {
-static MethodBuilder< KNearestLSM > __method("k-nearest-lsm");
+static MethodBuilder< KNearestLSM > __method1("k-nearest-lsm");
+static MethodBuilder< KNearestLSM > __method2("nearest-lsm");
 }
 
 

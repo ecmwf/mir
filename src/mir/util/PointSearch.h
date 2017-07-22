@@ -87,14 +87,10 @@ public:
     typedef PointSearchTree::Point          PointType;
     typedef PointSearchTree::PointValueType PointValueType;
 
-    typedef compare::ACompareFn  <size_t> CompareType;
-    typedef compare::IsAnythingFn<size_t> CompareTypeNone;
-
 public:
 
     PointSearch(const param::MIRParametrisation& parametrisation,
-                const repres::Representation&,
-                const CompareType& = CompareTypeNone());
+                const repres::Representation&);
 
 public:
 
@@ -116,7 +112,7 @@ private:
     eckit::ScopedPtr<PointSearchTree> tree_;
 
 
-    void build(const repres::Representation& r, const CompareType&);
+    void build(const repres::Representation& r);
 
 
 };
