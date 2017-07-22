@@ -162,54 +162,101 @@ static bool check_axis(const Variable &variable, const Variable & axis, std::vec
     return true;
 }
 
+inline double sign(double x) {
+    return (x > 0) - (x < 0);
+}
+
 GridSpec* Curvilinear::guess(const Variable &variable,
                              const Variable &latitudes,
                              const Variable &longitudes) {
 
-    if (variable.numberOfDimensions() < 2)
+    if (variable.numberOfDimensions() < 2) {
         return 0;
-}
+    }
 
-std::vector<double> lats;
-if (!check_axis(variable, latitudes, lats)) {
-    return 0;
-}
 
-double west, east;
-std::vector<double> lons;
-if (!check_axis(variable, longitudes, lons)) {
-    return 0;
-}
+    std::vector<double> lats;
+    if (!check_axis(variable, latitudes, lats)) {
+        return 0;
+    }
+
+    double west, east;
+    std::vector<double> lons;
+    if (!check_axis(variable, longitudes, lons)) {
+        return 0;
+    }
 
 //
 
-auto dimensions = lats.dimensions();
-ASSERT(dimensions.size() == 2);
+    auto dimensions = latitudes.dimensions();
+    ASSERT(dimensions.size() == 2);
 
 
-struct Index {
-    size_t ni_;
-    size_t nj_;
+    struct Index {
+        size_t ni_;
+        size_t nj_;
 
-    size_t operator()(size_t i, size_t j) { return j + i * nj_; }
-};
+        size_t operator()(size_t i, size_t j) { return j + i * nj_; }
+    };
 
-Index index;
-index_.ni_ = dimensions[0]->count();
-index_.nj_ = dimensions[1]->count();
+    Index index;
+    index.ni_ = dimensions[1]->count();
+    index.nj_ = dimensions[0]->count();
+
+    /*
+
+        (x1, y1) --------------- (x4, y4)
+            |                        |
+            |                        |
+            |                        |
+            |                        |
+        (x2, y2) --------------- (x3, y3)
+    */
 
 
+    std::cout << "Curvilinear " << index.ni_ << " " << index.nj_ << std::endl;
 
-std::cout << "Curvilinear " << index.ni_ << " " << index.nj_ << std::endl;
-for (size_t i = 0; i < index.ni_; i++) {
-    for (size_t j = 0; j < index.nj_; j++) {
+    double s;
 
-        std::cout << lats[index(i, j)] << " " << lons[index(i, j)] << std::endl;
+    for (size_t j = 0; j < index.nj_ - 1; j++) {
 
+        for (size_t i = 0; i < index.ni_ - 1; i++) {
+
+            double x1 = lons[index(i, j)];
+            double y1 = lats[index(i, j)];
+
+            double x2 = lons[index(i, j + 1)];
+            double y2 = lats[index(i, j + 1)];
+
+            double x3 = lons[index(i + 1, j + 1)];
+            double y3 = lats[index(i + 1, j + 1)];
+
+            double x4 = lons[index(i, j + 1)];
+            double y4 = lats[index(i, j + 1)];
+
+            double t1 = x1 * y2 - x2 * y1 + x2 * y3 - x3 * y2 + x3 * y1 - x1 * y3;
+            double t2 = x1 * y3 - x3 * y1 + x3 * y4 - x4 * y3 + x4 * y1 - x1 * y4;
+
+            if (i == 0 && j == 0) {
+                s = sign(t1);
+            }
+
+            if(sign(t1) != s) {
+                return 0;
+            }
+
+             if(sign(t2) != s) {
+                return 0;
+            }
+
+            // double t3 = x1 * y2 - x2 * y1 + x2 * y4 - x4 * y2 + x4 * y1 - x1 * y4;
+            // double t4 = * y3 - x3 * y2 + x3 * y4 - x4 * y3 + x4 * y2 - x2 * y4;
+
+            // std::cout << a << std::endl;
+        }
     }
-}
 
-return new Curvilinear(variable, lats, lons);
+    return new Curvilinear(variable, lats, lons);
 
 }
 
