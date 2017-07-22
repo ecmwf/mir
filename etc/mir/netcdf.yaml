@@ -1,16 +1,15 @@
 air_pressure_at_sea_level:
-  discipline: 0
-  parameterCategory: 3
-  parameterNumber: 0
-  typeOfFirstFixedSurface: 101
+  paramId: 151
 air_temperature:
-  discipline: 0
-  parameterCategory: 0
-  parameterNumber: 0
+  paramId: 167
 atmosphere_relative_vorticity:
   discipline: 0
   parameterCategory: 2
   parameterNumber: 12
+cloud_area_fraction_assuming_maximum_random_overlap:
+  paramId: 164
+dew_point_temperature:
+  paramId: 168
 divergence_of_wind:
   discipline: 0
   parameterCategory: 2
@@ -40,14 +39,26 @@ land_binary_mask:
   parameterCategory: 0
   parameterNumber: 0
   typeOfFirstFixedSurface: 1
+lwe_thickness_of_surface_snow_amount:
+  paramId: 141
+moisture_content_of_soil_layer:
+  paramId: 42
 northward_wind:
   discipline: 0
   parameterCategory: 2
   parameterNumber: 3
+open_sea_surface_temperature:
+  paramId: 34
 relative_humidity:
   discipline: 0
   parameterCategory: 1
   parameterNumber: 1
+sea_ice_area_fraction:
+  paramId: 31
+snow_density:
+  paramId: 33
+soil_temperature:
+  paramId: 139
 specific_humidity:
   discipline: 0
   parameterCategory: 1
@@ -57,6 +68,8 @@ surface_air_pressure:
   parameterCategory: 3
   parameterNumber: 0
   typeOfFirstFixedSurface: 1
+surface_albedo:
+  paramId: 243
 surface_downward_eastward_stress:
   discipline: 0
   parameterCategory: 2
@@ -87,6 +100,8 @@ surface_roughness_length:
   discipline: 2
   parameterCategory: 0
   parameterNumber: 1
+surface_temperature:
+  paramId: 235
 surface_upward_latent_heat_flux:
   discipline: 0
   parameterCategory: 0
@@ -105,62 +120,9 @@ toa_outgoing_longwave_flux:
   parameterNumber: 5
   typeOfFirstFixedSurface: 8
   typeOfStatisticalProcessing: 1
-
-# https://software.ecmwf.int/wiki/display/DGOV/The+ultimate+guide+to+encoding+NetCDF+in+C3S
-
-air_temperature:
-  paramId: 167
-
-dew_point_temperature:
-  paramId: 168
-
+wind_speed:
+  paramId: 49
 x_wind:
   paramId: 165
-
 y_wind:
   paramId: 166
-
-wind_speed:
-  paramId: 49 # Wind gust?
-
-air_pressure_at_sea_level:
-  paramId: 151
-
-cloud_area_fraction_assuming_maximum_random_overlap:
-  paramId: 164
-
-surface_temperature:
-  paramId: 235
-
-sea_ice_area_fraction:
-  paramId: 31
-
-open_sea_surface_temperature:
-  paramId: 34
-
-lwe_thickness_of_surface_snow_amount:
-  paramId: 141
-
-snow_density:
-  paramId: 33
-
-surface_albedo:
-  paramId: 243
-
-moisture_content_of_soil_layer:
-  paramId: 39
-
-moisture_content_of_soil_layer:
-  paramId: 40
-
-moisture_content_of_soil_layer:
-  paramId: 41
-
-moisture_content_of_soil_layer:
-  paramId: 42
-
-soil_temperature:
-  paramId: 139
-
-
-

@@ -19,8 +19,9 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/Timer.h"
+#include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
+#include "eckit/log/TraceTimer.h"
 
 #include "mir/lsm/Mask.h"
 #include "mir/config/LibMir.h"

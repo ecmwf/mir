@@ -14,7 +14,9 @@
 #include "mir/caching/interpolator/InterpolatorLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
+#include "eckit/os/AutoUmask.h"
 
+#include <unistd.h>
 
 namespace mir {
 namespace caching {
@@ -27,7 +29,7 @@ using namespace mir::caching::interpolator;
 static std::string extract_loader(const param::MIRParametrisation& param) {
 
     std::string name;
-    if(param.get("interpolator-loader", name)) {
+    if (param.get("interpolator-loader", name)) {
         return name;
     }
 
@@ -74,6 +76,49 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+// We only lock per host, not per cluster
+
+static eckit::PathName lockFile(const std::string& path) {
+    eckit::AutoUmask umask(0);
+
+    eckit::PathName lock(path + ".lock");
+    lock.touch();
+    return lock;
+}
+
+WeightCacheLock::WeightCacheLock(const std::string& path):
+    path_(lockFile(path)),
+    lock_(path_) {
+}
+
+void WeightCacheLock::lock() {
+    eckit::AutoUmask umask(0);
+
+    eckit::Log::info() << "Wait for lock " << path_ << std::endl;
+    lock_.lock();
+    eckit::Log::info() << "Got lock " << path_ << std::endl;
+
+
+    char hostname[1024];
+    SYSCALL(gethostname(hostname, sizeof(hostname) - 1));
+
+    std::ofstream os(path_.asString().c_str());
+    os << hostname << " " << ::getpid() << std::endl;
+
+}
+
+void WeightCacheLock::unlock() {
+    eckit::AutoUmask umask(0);
+
+    eckit::Log::info() << "Unlock " << path_ << std::endl;
+    std::ofstream os(path_.asString().c_str());
+    os << std::endl;
+    lock_.unlock();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 
 }  // namespace caching
 }  // namespace mir

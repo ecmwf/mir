@@ -19,6 +19,7 @@
 
 #include "eckit/container/CacheManager.h"
 #include "mir/param/MIRParametrisation.h"
+#include "eckit/os/Semaphore.h"
 
 namespace mir {
 namespace method {
@@ -30,8 +31,18 @@ namespace mir {
 namespace caching {
 
 
+class WeightCacheLock {
+    eckit::PathName path_;
+    eckit::Semaphore lock_;
+public:
+    WeightCacheLock(const std::string&);
+    void lock();
+    void unlock();
+};
+
 struct WeightCacheTraits {
 
+    typedef WeightCacheLock Locker;
     typedef method::WeightMatrix value_type;
 
     static const char* name();

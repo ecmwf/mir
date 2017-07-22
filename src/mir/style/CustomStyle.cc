@@ -14,6 +14,7 @@
 
 
 #include "mir/style/CustomStyle.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/PlanParser.h"
 
@@ -22,7 +23,7 @@ namespace mir {
 namespace style {
 
 
-CustomStyle::CustomStyle(const param::MIRParametrisation &parametrisation):
+CustomStyle::CustomStyle(const param::MIRParametrisation& parametrisation):
     MIRStyle(parametrisation) {
 }
 
@@ -31,7 +32,7 @@ CustomStyle::~CustomStyle() {
 }
 
 
-void CustomStyle::prepare(action::ActionPlan &plan) const {
+void CustomStyle::prepare(action::ActionPlan& plan) const {
 
     std::string s;
 
@@ -57,9 +58,11 @@ void CustomStyle::prepare(action::ActionPlan &plan) const {
 }
 
 
-bool CustomStyle::forcedPrepare(const param::MIRParametrisation& parametrisation) const {
+bool CustomStyle::forcedPrepare(const api::MIRJob&,
+                                const param::MIRParametrisation&) const {
     return true;
 }
+
 
 void CustomStyle::print(std::ostream& out) const {
     out << "CustomStyle[]";

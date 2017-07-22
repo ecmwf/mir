@@ -52,21 +52,24 @@ public:
     typedef eckit::SPValue<PointSearchTree>     PointValueType;
 
 public:
-    virtual ~PointSearchTree() {};
+    virtual ~PointSearchTree();
 
-    virtual void build(std::vector<PointValueType>&) = 0;
+    virtual void build(std::vector<PointValueType>&);
 
-    virtual void insert(const PointValueType&) = 0;
-    virtual void statsPrint(std::ostream&, bool) = 0;
-    virtual void statsReset() = 0;
+    virtual void insert(const PointValueType&);
+    virtual void statsPrint(std::ostream&, bool);
+    virtual void statsReset();
 
-    virtual PointValueType nearestNeighbour(const Point&) = 0;
-    virtual std::vector<PointValueType> kNearestNeighbours(const Point&, size_t k) = 0;
-    virtual std::vector<PointValueType> findInSphere(const Point&, double) = 0;
+    virtual PointValueType nearestNeighbour(const Point&);
+    virtual std::vector<PointValueType> kNearestNeighbours(const Point&, size_t k);
+    virtual std::vector<PointValueType> findInSphere(const Point&, double);
 
-    virtual bool ready() const = 0;
-    virtual void commit() = 0;
-    virtual void print(std::ostream &) const = 0;
+    virtual bool ready() const;
+    virtual void commit();
+    virtual void print(std::ostream &) const;
+
+    virtual void lock();
+    virtual void unlock();
 
     friend std::ostream &operator<<(std::ostream &s, const PointSearchTree &p) {
         p.print(s);
@@ -117,6 +120,44 @@ private:
 
 
 };
+
+
+class PointSearchTreeFactory {
+
+    std::string name_;
+
+    virtual PointSearchTree *make(const repres::Representation& r,
+                                  const param::MIRParametrisation &,
+                                  size_t itemCount) = 0;
+
+protected:
+
+    PointSearchTreeFactory(const std::string &);
+
+    virtual  ~PointSearchTreeFactory();
+
+public:
+
+    static PointSearchTree *build( const repres::Representation& r,
+                                   const param::MIRParametrisation&,
+                                   size_t itemCount);
+
+    static void list(std::ostream&);
+
+};
+
+
+template<class T>
+class PointSearchTreeBuilder : public PointSearchTreeFactory {
+    virtual PointSearchTree *make( const repres::Representation& r,
+                                   const param::MIRParametrisation &param,
+                                   size_t itemCount) {
+        return new T(r, param, itemCount);
+    }
+public:
+    PointSearchTreeBuilder(const std::string &name) : PointSearchTreeFactory(name) {}
+};
+
 
 
 }  // namespace util

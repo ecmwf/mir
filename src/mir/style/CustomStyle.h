@@ -89,7 +89,8 @@ private:
 
     virtual void prepare(action::ActionPlan&) const;
 
-    virtual bool forcedPrepare(const param::MIRParametrisation&) const;
+    virtual bool forcedPrepare(const api::MIRJob& job,
+                               const param::MIRParametrisation& input) const;
 
     // -- Class members
     // None

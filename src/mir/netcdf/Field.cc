@@ -96,6 +96,7 @@ static eckit::Value standard_names;
 
 static void init() {
     standard_names = eckit::YAMLParser::decodeFile("~mir/etc/mir/netcdf.yaml");
+    standard_names.dump(std::cout) << std::endl;
 }
 
 void Field::setMetadata(data::MIRField& mirField, size_t i) const {
@@ -103,7 +104,6 @@ void Field::setMetadata(data::MIRField& mirField, size_t i) const {
     pthread_once(&once, init);
 
     eckit::Value s = standard_names[standardName_];
-
 
     if (s.isMap()) {
         eckit::ValueMap m = s;

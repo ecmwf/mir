@@ -44,6 +44,7 @@
 #include "mir/style/MIRStyle.h"
 #include "mir/style/Mapping.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/PointSearch.h"
 
 
 
@@ -95,6 +96,8 @@ public:
         options_.push_back(new SimpleOption<std::string>("input-mesh-dump", "Input mesh dump to file (default <empty>)"));
         options_.push_back(new SimpleOption<std::string>("output-mesh-generator", "Output mesh generator"));
         options_.push_back(new SimpleOption<std::string>("output-mesh-dump", "Output mesh dump to file (default <empty>)"));
+
+        options_.push_back(new FactoryOption<mir::util::PointSearchTreeFactory>("point-search-trees", "Control memory management of KD-trees"));
 
         //==============================================
         options_.push_back(new Separator("Filtering"));

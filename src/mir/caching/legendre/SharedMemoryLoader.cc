@@ -36,8 +36,9 @@
 #include "eckit/log/BigNum.h"
 #include "eckit/config/Resource.h"
 
-#include "eckit/log/Timer.h"
+#include "eckit/log/TraceTimer.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/log/TraceTimer.h"
 
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/config/LibMir.h"

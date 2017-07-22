@@ -83,7 +83,7 @@ public:
     // Used by Job
 
     virtual bool empty() const;
-    bool matches(const MIRParametrisation& other) const;
+    bool matches(const MIRParametrisation& other, const std::set<std::string>& ignore) const;
 
     // -- Overridden methods
 

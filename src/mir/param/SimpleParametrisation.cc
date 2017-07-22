@@ -583,19 +583,28 @@ bool SimpleParametrisation::empty() const {
     return size() == 0;
 }
 
-bool SimpleParametrisation::matches(const MIRParametrisation& other) const {
-    std::ostringstream reason;
+bool SimpleParametrisation::matches(const MIRParametrisation& other, const std::set<std::string>& ignore) const {
+    std::ostringstream ss;
     const char* sep = "";
     bool ok = true;
 
-    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end() && ok; ++j) {
-        if (!(*j).second->match((*j).first, other)) {
-            reason << sep << (*j).first << " different to " << *((*j).second);
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+        if (! j->second->match(j->first, other)) {
+            ss << sep << j->first << " different to " << *(j->second);
+            if (ignore.find(j->first) != ignore.end()) {
+                ss << " ignored";
+            } else {
+                ok = false;
+            }
             sep = ", ";
-            ok = false;
         }
     }
-    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches? " << (ok ? "yes" : "no (" + reason.str() + ")") << std::endl;
+
+    std::string reason = ss.str();
+    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches? "
+                                << (ok ? "yes" : "no")
+                                << (reason.empty() ? "" : " (" + reason + ")")
+                                << std::endl;
     return ok;
 }
 
