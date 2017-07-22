@@ -60,6 +60,8 @@ eckit::linalg::SparseMatrix::Layout InterpolatorLoader::allocate(eckit::linalg::
 }
 
 void InterpolatorLoader::deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape) {
+    // We assume that the InterpolatorLoader is deleted at the same time as the matrix
+    // and release the memory in its destructor
 }
 //----------------------------------------------------------------------------------------------------------------------
 

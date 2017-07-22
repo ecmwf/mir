@@ -10,7 +10,7 @@
 
 // Baudouin Raoult - ECMWF Jan 2015
 
-#include "mir/netcdf/IrregularLatlon.h"
+#include "mir/netcdf/Rectilinear.h"
 #include "mir/netcdf/Variable.h"
 #include "eckit/types/Types.h"
 
@@ -19,7 +19,7 @@
 namespace mir {
 namespace netcdf {
 
-IrregularLatlon::IrregularLatlon(const Variable &variable,
+Rectilinear::Rectilinear(const Variable &variable,
                                  double north,
                                  double south,
                                  const std::vector<double>& latitudes,
@@ -45,14 +45,14 @@ IrregularLatlon::IrregularLatlon(const Variable &variable,
 
 }
 
-IrregularLatlon::~IrregularLatlon()
+Rectilinear::~Rectilinear()
 {
 }
 
 
-void IrregularLatlon::print(std::ostream& s) const
+void Rectilinear::print(std::ostream& s) const
 {
-  s << "IrregularLatlon[bbox="
+  s << "Rectilinear[bbox="
     << north_
     << "/"
     << west_
@@ -63,19 +63,19 @@ void IrregularLatlon::print(std::ostream& s) const
     << "]";
 }
 
-bool IrregularLatlon::has(const std::string& name) const {
+bool Rectilinear::has(const std::string& name) const {
   // std::cout << "has " << name << std::endl;
   if (name == "gridded") {
     return true;
   }
 
-  // std::cout << "IrregularLatlon::has " << name << " failed" << std::endl;
+  // std::cout << "Rectilinear::has " << name << " failed" << std::endl;
 
 
   return false;
 }
 
-bool IrregularLatlon::get(const std::string &name, std::vector<double> &values) const {
+bool Rectilinear::get(const std::string &name, std::vector<double> &values) const {
   // std::cout << "get " << name << std::endl;
 
   if (name == "latitudes") {
@@ -92,28 +92,28 @@ bool IrregularLatlon::get(const std::string &name, std::vector<double> &values) 
 
 }
 
-bool IrregularLatlon::get(const std::string&name, long& value) const {
+bool Rectilinear::get(const std::string&name, long& value) const {
   // std::cout << "get " << name << std::endl;
 
-  // std::cout << "IrregularLatlon::get " << name << " failed" << std::endl;
+  // std::cout << "Rectilinear::get " << name << " failed" << std::endl;
 
   return false;
 }
 
-bool IrregularLatlon::get(const std::string&name, std::string& value) const {
+bool Rectilinear::get(const std::string&name, std::string& value) const {
   // std::cout << "get " << name << std::endl;
   if (name == "gridType") {
     value = "irregular_latlon";
     return true;
   }
 
-  // std::cout << "IrregularLatlon::get " << name << " failed" << std::endl;
+  // std::cout << "Rectilinear::get " << name << " failed" << std::endl;
 
 
   return false;
 }
 
-bool IrregularLatlon::get(const std::string &name, double &value) const {
+bool Rectilinear::get(const std::string &name, double &value) const {
 
   if (name == "north") {
     value = north_;
@@ -137,7 +137,7 @@ bool IrregularLatlon::get(const std::string &name, double &value) const {
 
 
 
-  // std::cout << "IrregularLatlon::get " << name << " failed" << std::endl;
+  // std::cout << "Rectilinear::get " << name << " failed" << std::endl;
 
 
   return false;
@@ -168,7 +168,7 @@ static bool check_axis(const Variable & axis,
   return true;
 }
 
-GridSpec* IrregularLatlon::guess(const Variable &variable,
+GridSpec* Rectilinear::guess(const Variable &variable,
                                  const Variable &latitudes,
                                  const Variable &longitudes) {
 
@@ -185,12 +185,12 @@ GridSpec* IrregularLatlon::guess(const Variable &variable,
   }
 
 
-  return new IrregularLatlon(variable, north, south, lats, west, east, lons);
+  return new Rectilinear(variable, north, south, lats, west, east, lons);
 
 }
 
 
-void IrregularLatlon::reorder(std::vector<double>& values) const {
+void Rectilinear::reorder(std::vector<double>& values) const {
   size_t ni = latitudes_.size();
   size_t nj = longitudes_.size();
 
@@ -212,6 +212,6 @@ void IrregularLatlon::reorder(std::vector<double>& values) const {
 }
 
 
-static GridSpecGuesserBuilder<IrregularLatlon> builder(1);
+static GridSpecGuesserBuilder<Rectilinear> builder(1);
 }
 }

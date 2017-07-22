@@ -10,19 +10,20 @@
 
 // Baudouin Raoult - ECMWF Jan 2015
 
-#include "mir/netcdf/UnstructuredGrid.h"
+#include "mir/netcdf/Curvilinear.h"
 #include "mir/netcdf/Variable.h"
 #include "eckit/types/Types.h"
 #include "mir/netcdf/Dimension.h"
+#include "mir/netcdf/HyperCube.h"
 
 #include <iostream>
 
 namespace mir {
 namespace netcdf {
 
-UnstructuredGrid::UnstructuredGrid(const Variable &variable,
-                                   const std::vector<double>& latitudes,
-                                   const std::vector<double>& longitudes):
+Curvilinear::Curvilinear(const Variable &variable,
+                         const std::vector<double>& latitudes,
+                         const std::vector<double>& longitudes):
     GridSpec(variable),
     latitudes_(latitudes),
     longitudes_(longitudes)
@@ -43,29 +44,29 @@ UnstructuredGrid::UnstructuredGrid(const Variable &variable,
     }
 }
 
-UnstructuredGrid::~UnstructuredGrid()
+Curvilinear::~Curvilinear()
 {
 }
 
 
-void UnstructuredGrid::print(std::ostream& s) const
+void Curvilinear::print(std::ostream& s) const
 {
-    s << "UnstructuredGrid[points=" << latitudes_.size() << "]";
+    s << "Curvilinear[points=" << latitudes_.size() << "]";
 }
 
-bool UnstructuredGrid::has(const std::string& name) const {
+bool Curvilinear::has(const std::string& name) const {
     // std::cout << "has " << name << std::endl;
     if (name == "gridded") {
         return true;
     }
 
-    // std::cout << "UnstructuredGrid::has " << name << " failed" << std::endl;
+    // std::cout << "Curvilinear::has " << name << " failed" << std::endl;
 
 
     return false;
 }
 
-bool UnstructuredGrid::get(const std::string &name, std::vector<double> &values) const {
+bool Curvilinear::get(const std::string &name, std::vector<double> &values) const {
     // std::cout << "get " << name << std::endl;
 
     if (name == "latitudes") {
@@ -82,28 +83,28 @@ bool UnstructuredGrid::get(const std::string &name, std::vector<double> &values)
 
 }
 
-bool UnstructuredGrid::get(const std::string&name, long& value) const {
+bool Curvilinear::get(const std::string&name, long& value) const {
     // std::cout << "get " << name << std::endl;
 
-    // std::cout << "UnstructuredGrid::get " << name << " failed" << std::endl;
+    // std::cout << "Curvilinear::get " << name << " failed" << std::endl;
 
     return false;
 }
 
-bool UnstructuredGrid::get(const std::string&name, std::string& value) const {
+bool Curvilinear::get(const std::string&name, std::string& value) const {
     // std::cout << "get " << name << std::endl;
     if (name == "gridType") {
         value = "unstructured_grid";
         return true;
     }
 
-    // std::cout << "UnstructuredGrid::get " << name << " failed" << std::endl;
+    // std::cout << "Curvilinear::get " << name << " failed" << std::endl;
 
 
     return false;
 }
 
-bool UnstructuredGrid::get(const std::string &name, double &value) const {
+bool Curvilinear::get(const std::string &name, double &value) const {
 
     if (name == "north") {
         value = north_;
@@ -127,7 +128,7 @@ bool UnstructuredGrid::get(const std::string &name, double &value) const {
 
 
 
-    // std::cout << "UnstructuredGrid::get " << name << " failed" << std::endl;
+    // std::cout << "Curvilinear::get " << name << " failed" << std::endl;
 
 
     return false;
@@ -161,43 +162,59 @@ static bool check_axis(const Variable &variable, const Variable & axis, std::vec
     return true;
 }
 
-GridSpec* UnstructuredGrid::guess(const Variable &variable,
-                                  const Variable &latitudes,
-                                  const Variable &longitudes) {
+GridSpec* Curvilinear::guess(const Variable &variable,
+                             const Variable &latitudes,
+                             const Variable &longitudes) {
 
-    if (variable.numberOfDimensions() < 2) {
+    if (variable.numberOfDimensions() < 2)
         return 0;
+}
+
+std::vector<double> lats;
+if (!check_axis(variable, latitudes, lats)) {
+    return 0;
+}
+
+double west, east;
+std::vector<double> lons;
+if (!check_axis(variable, longitudes, lons)) {
+    return 0;
+}
+
+//
+
+auto dimensions = lats.dimensions();
+ASSERT(dimensions.size() == 2);
+
+
+struct Index {
+    size_t ni_;
+    size_t nj_;
+
+    size_t operator()(size_t i, size_t j) { return j + i * nj_; }
+};
+
+Index index;
+index_.ni_ = dimensions[0]->count();
+index_.nj_ = dimensions[1]->count();
+
+
+
+std::cout << "Curvilinear " << index.ni_ << " " << index.nj_ << std::endl;
+for (size_t i = 0; i < index.ni_; i++) {
+    for (size_t j = 0; j < index.nj_; j++) {
+
+        std::cout << lats[index(i, j)] << " " << lons[index(i, j)] << std::endl;
+
     }
+}
 
-
-//  for(auto d: latitudes.dimensions()) {
-//      std::cout << "++++ " << *d << std::endl;
-
-//  }
-// for(auto d: longitudes.dimensions()) {
-//      std::cout << "---- " << *d << std::endl;
-
-//  }
-
-    // double north, south;
-    std::vector<double> lats;
-    if (!check_axis(variable, latitudes, lats)) {
-        return 0;
-    }
-
-    double west, east;
-    std::vector<double> lons;
-    if (!check_axis(variable, longitudes, lons)) {
-        return 0;
-    }
-
-
-    return new UnstructuredGrid(variable, lats, lons);
+return new Curvilinear(variable, lats, lons);
 
 }
 
 
-void UnstructuredGrid::reorder(std::vector<double>& values) const {
+void Curvilinear::reorder(std::vector<double>& values) const {
     // size_t ni = latitudes_.size();
     // size_t nj = longitudes_.size();
 
@@ -219,6 +236,6 @@ void UnstructuredGrid::reorder(std::vector<double>& values) const {
 }
 
 
-static GridSpecGuesserBuilder<UnstructuredGrid> builder(99);
+static GridSpecGuesserBuilder<Curvilinear> builder(3);
 }
 }

@@ -661,8 +661,10 @@ if ( HAVE_NETCDF )
     netcdf/GridSpec.cc
     netcdf/RegularLL.h
     netcdf/RegularLL.cc
-    netcdf/IrregularLatlon.h
-    netcdf/IrregularLatlon.cc
+    netcdf/Rectilinear.h
+    netcdf/Rectilinear.cc
+    netcdf/Curvilinear.h
+    netcdf/Curvilinear.cc
     netcdf/Field.h
     netcdf/Field.cc
     netcdf/ReshapeVariableStep.cc
@@ -679,6 +681,8 @@ if ( HAVE_NETCDF )
     netcdf/Step.h
     netcdf/Type.cc
     netcdf/Type.h
+    netcdf/Curvilinear.cc
+    netcdf/Curvilinear.h
     netcdf/UnstructuredGrid.cc
     netcdf/UnstructuredGrid.h
     netcdf/UpdateCoordinateStep.cc

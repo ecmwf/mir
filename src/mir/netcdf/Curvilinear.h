@@ -21,20 +21,16 @@ namespace mir {
 namespace netcdf {
 
 
-class IrregularLatlon : public GridSpec {
+class Curvilinear : public GridSpec {
 public:
 
-  IrregularLatlon(const Variable &,
-                  double north,
-                  double south,
+  Curvilinear(const Variable &,
                   const std::vector<double>& latitudes,
-                  double west,
-                  double east,
                   const std::vector<double>& longitudes);
 
 
 
-  virtual ~IrregularLatlon();
+  virtual ~Curvilinear();
 
   // -- Methods
 
@@ -48,20 +44,19 @@ protected:
 
   // -- Members
 
-  bool jScansPositively_;
+
+  std::vector<double> latitudes_;
+  std::vector<double> longitudes_;
 
   double north_;
-  double south_;
-  std::vector<double> latitudes_;
-
   double west_;
+  double south_;
   double east_;
-  std::vector<double> longitudes_;
 
 private:
 
-  IrregularLatlon(const IrregularLatlon &);
-  IrregularLatlon &operator=(const IrregularLatlon &);
+  Curvilinear(const Curvilinear &);
+  Curvilinear &operator=(const Curvilinear &);
 
 
   // - Methods
