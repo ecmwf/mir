@@ -104,8 +104,8 @@ struct IsGreaterOrEqualFn : ACompareFn<T> {
 
 /// Compare values inequality, "is greater or approximately equal to"
 template< typename T >
-struct is_approximately_greater_or_equalFn : ACompareFn<T> {
-    is_approximately_greater_or_equalFn(T ref) : ref_(ref) {}
+struct IsApproximatelyGreaterOrEqualFn : ACompareFn<T> {
+    IsApproximatelyGreaterOrEqualFn(T ref) : ref_(ref) {}
     bool operator()(const T& v) const {
 #if 0
         // FIXME: What should it be? give me a resource
@@ -161,11 +161,6 @@ struct IsNotMaskedFn : ACompareFn< size_t > {
     }
     const std::vector< bool >& mask_;
 };
-
-
-/// Utility comparators
-extern const IsApproximatelyEqualFn< double > is_approx_zero;
-extern const IsApproximatelyEqualFn< double > is_approx_one;
 
 
 }  // namespace compare

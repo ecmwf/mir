@@ -19,8 +19,9 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/geometry/Point2.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
@@ -28,7 +29,6 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
-#include "mir/util/Compare.h"
 
 
 namespace mir {
@@ -116,12 +116,12 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
 
         double ncos_lat = 0;
 
-        if ( !(eckit::types::is_approximately_equal<double>(z, 1.0) ||
-                eckit::types::is_approximately_equal<double>(z, -1.0))) {
+        if ( !(eckit::types::is_approximately_equal(z, 1.0) ||
+                eckit::types::is_approximately_equal(z, -1.0))) {
             ncos_lat = cos(asin(z));
         }
 
-        if (eckit::types::is_approximately_equal<double>(ncos_lat, 0.0)) {
+        if (eckit::types::is_approximately_equal(ncos_lat, 0.0)) {
             ncos_lat = 1.0;
         }
 

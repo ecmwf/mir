@@ -26,8 +26,6 @@
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
 
-#include "mir/util/Compare.h"
-
 
 namespace mir {
 

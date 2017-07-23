@@ -17,7 +17,6 @@
 #include <cmath>
 #include <complex>
 #include "eckit/types/FloatCompare.h"
-#include "mir/util/Compare.h"
 
 
 namespace mir {

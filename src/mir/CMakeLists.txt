@@ -485,7 +485,6 @@ list(
     util/Bitmap.h
     util/BoundingBox.cc
     util/BoundingBox.h
-    util/Compare.cc
     util/Compare.h
     util/Domain.cc
     util/Domain.h
