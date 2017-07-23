@@ -196,7 +196,7 @@ GridSpec* Curvilinear::guess(const Variable &variable,
         size_t ni_;
         size_t nj_;
 
-        size_t operator()(size_t i, size_t j) { return j + i * nj_; }
+        size_t operator()(size_t i, size_t j) { return i + j * ni_; }
     };
 
     Index index;
@@ -217,10 +217,10 @@ GridSpec* Curvilinear::guess(const Variable &variable,
     std::cout << "Curvilinear " << index.ni_ << " " << index.nj_ << std::endl;
 
     double s;
+        for (size_t i = 0; i < index.ni_ - 1; i++) {
 
     for (size_t j = 0; j < index.nj_ - 1; j++) {
 
-        for (size_t i = 0; i < index.ni_ - 1; i++) {
 
             double x1 = lons[index(i, j)];
             double y1 = lats[index(i, j)];
@@ -237,15 +237,23 @@ GridSpec* Curvilinear::guess(const Variable &variable,
             double t1 = x1 * y2 - x2 * y1 + x2 * y3 - x3 * y2 + x3 * y1 - x1 * y3;
             double t2 = x1 * y3 - x3 * y1 + x3 * y4 - x4 * y3 + x4 * y1 - x1 * y4;
 
+
+
             if (i == 0 && j == 0) {
-                s = sign(t1);
+                eckit::Log::info() << "First " << t1 << "  " << t2 << std::endl;
+                eckit::Log::info() << x1 << "/" << y1 << " ================ " << x4 << "/" << y4 << std::endl;
+
+                eckit::Log::info() << x2 << "/" << y2  << " ================ " << x3 << "/" << y3 << std::endl;
+                s = sign(t1?t1:t2);
             }
 
-            if(sign(t1) != s) {
+            if (sign(t1) != s) {
+                eckit::Log::info() << "Sign of " << t1 << " is not " << s << std::endl;
                 return 0;
             }
 
-             if(sign(t2) != s) {
+            if (sign(t2) != s) {
+                eckit::Log::info() << "Sign of " << t2 << " is not " << s << std::endl;
                 return 0;
             }
 

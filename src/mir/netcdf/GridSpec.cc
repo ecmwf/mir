@@ -142,6 +142,7 @@ GridSpec* GridSpecGuesser::guess(const Variable &variable) {
     for (auto j = m->begin(); j != m->end(); ++j) {
         GridSpec* spec = (*j).second->guess(variable, latitudes, longitudes);
         if (spec) {
+            eckit::Log::info() << "GRIDSPEC is " << *spec << std::endl;
             return spec;
         }
     }
