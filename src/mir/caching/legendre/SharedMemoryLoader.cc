@@ -27,21 +27,17 @@
 #include <sys/time.h>
 #include <sys/sem.h>
 
-
-#include "eckit/eckit.h"
-#include "eckit/os/Stat.h"
-#include "eckit/os/SemLocker.h"
-
-#include "eckit/log/Bytes.h"
-#include "eckit/log/BigNum.h"
 #include "eckit/config/Resource.h"
-
-#include "eckit/log/TraceTimer.h"
+#include "eckit/eckit.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/log/BigNum.h"
+#include "eckit/log/Bytes.h"
 #include "eckit/log/TraceTimer.h"
+#include "eckit/os/SemLocker.h"
+#include "eckit/os/Stat.h"
 
-#include "mir/param/SimpleParametrisation.h"
 #include "mir/config/LibMir.h"
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {

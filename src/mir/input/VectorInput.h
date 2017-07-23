@@ -16,12 +16,15 @@
 #ifndef VectorInput_H
 #define VectorInput_H
 
-
-#include "eckit/io/Buffer.h"
-
 #include "mir/input/MIRInput.h"
 
-namespace mir { namespace output { class VectorOutput; }}
+
+namespace mir {
+namespace output {
+class VectorOutput;
+}
+}
+
 
 namespace mir {
 namespace input {
@@ -119,5 +122,7 @@ class VectorInput : public MIRInput {
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif
 

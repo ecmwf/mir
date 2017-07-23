@@ -18,7 +18,6 @@
 
 #include <iosfwd>
 #include <string>
-#include "eckit/exception/Exceptions.h"
 #include "eckit/memory/NonCopyable.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -29,9 +28,6 @@ class Context;
 }
 namespace data {
 class MIRField;
-}
-namespace param {
-class MIRParametrisation;
 }
 namespace util {
 class MIRStatistics;

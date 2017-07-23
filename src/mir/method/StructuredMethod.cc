@@ -13,14 +13,11 @@
 
 #include "mir/method/StructuredMethod.h"
 
-#include "eckit/geometry/Point3.h"
 #include "eckit/log/Log.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-
 
 
 namespace mir {

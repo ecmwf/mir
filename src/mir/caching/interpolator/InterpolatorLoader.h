@@ -20,7 +20,6 @@
 #include <iosfwd>
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/memory/NonCopyable.h"
 #include "eckit/linalg/SparseMatrix.h"
 
 namespace mir {

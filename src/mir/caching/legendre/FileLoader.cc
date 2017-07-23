@@ -22,12 +22,10 @@
 
 #include "eckit/eckit.h"
 #include "eckit/os/Stat.h"
-
-#include "mir/config/LibMir.h"
-
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Timer.h"
+
 #include "mir/config/LibMir.h"
 
 namespace mir {

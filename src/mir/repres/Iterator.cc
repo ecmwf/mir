@@ -16,9 +16,7 @@
 #include "mir/repres/Iterator.h"
 
 #include <vector>
-
 #include "eckit/exception/Exceptions.h"
-#include "eckit/geometry/Point2.h"
 
 
 namespace mir {

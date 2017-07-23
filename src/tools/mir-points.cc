@@ -13,15 +13,14 @@
 /// @date Apr 2015
 
 
-#include "mir/action/context/Context.h"
-#include "mir/param/SimpleParametrisation.h"
-#include "mir/tools/MIRTool.h"
-#include "mir/input/GribFileInput.h"
-#include "mir/api/MIRJob.h"
-#include "mir/output/ValuesOutput.h"
-#include "mir/input/GribFileInput.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/types/Types.h"
+#include "mir/action/context/Context.h"
+#include "mir/api/MIRJob.h"
+#include "mir/input/GribFileInput.h"
+#include "mir/output/ValuesOutput.h"
+#include "mir/param/SimpleParametrisation.h"
+#include "mir/tools/MIRTool.h"
 
 
 class MIRPoints : public mir::tools::MIRTool {

@@ -13,22 +13,20 @@
 /// @author Tiago Quintino
 /// @date   April 2016
 
+
 #include <iostream>
 #include <functional>
 #include <cmath>
 
-
-#include "mir/util/FormulaBinop.h"
-#include "mir/util/Function.h"
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/context/Context.h"
 
-#include "eckit/exception/Exceptions.h"
 #include "mir/action/context/Context.h"
+#include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/FormulaBinop.h"
+#include "mir/util/Function.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/data/MIRField.h"
 
 
 namespace mir {

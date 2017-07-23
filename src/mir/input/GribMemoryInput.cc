@@ -13,13 +13,11 @@
 /// @date Apr 2015
 
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
-
-#include "mir/util/Grib.h"
-
 #include "mir/input/GribMemoryInput.h"
+
+#include <iostream>
+#include "eckit/exception/Exceptions.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir {

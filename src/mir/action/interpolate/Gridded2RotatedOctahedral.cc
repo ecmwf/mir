@@ -12,13 +12,11 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/interpolate/Gridded2RotatedOctahedral.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
-
-
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/RotatedOctahedral.h"
 

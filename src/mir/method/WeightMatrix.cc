@@ -16,14 +16,13 @@
 
 #include <cmath>
 
-
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Plural.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/util/Compare.h"
 
 
 namespace mir {
@@ -162,7 +161,7 @@ void WeightMatrix::validate(const char *when) const {
             sum += a;
         }
 
-        ok &= (util::compare::is_approx_zero(sum) || util::compare::is_approx_one(sum));
+        ok &= (eckit::types::is_approximately_equal(sum, 0.) || eckit::types::is_approximately_equal(sum, 1.));
 
         // log issues, per row
         if (!ok && logErrors) {

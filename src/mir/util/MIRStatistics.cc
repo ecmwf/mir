@@ -10,8 +10,6 @@
 
 #include "mir/util/MIRStatistics.h"
 #include "eckit/serialisation/Stream.h"
-#include "mir/util/MIRStatistics.h"
-
 
 namespace mir {
 namespace util {

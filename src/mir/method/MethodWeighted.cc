@@ -25,6 +25,7 @@
 
 #include "eckit/log/Plural.h"
 #include "eckit/log/ResourceUsage.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
@@ -35,11 +36,7 @@
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/method/decompose/Decompose.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Compare.h"
 #include "mir/util/MIRStatistics.h"
-
-using mir::util::compare::is_approx_zero;
-using mir::util::compare::is_approx_one;
 
 
 namespace mir {
@@ -445,7 +442,7 @@ void MethodWeighted::applyMissingValues(
 
             } else {
 
-                const double factor = is_approx_zero(sum) ? 0 : 1. / sum;
+                const double factor = eckit::types::is_approximately_equal(sum, 0.) ? 0 : 1. / sum;
                 for (it = begin; it != end; ++it) {
                     if (values[it.col()] == missingValue) {
                         *it = 0.;
@@ -511,7 +508,7 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
         }
 
         // apply linear redistribution if necessary
-        if (row_changed && !is_approx_zero(sum)) {
+        if (row_changed && !eckit::types::is_approximately_equal(sum, 0.)) {
             ++fix;
             for (it = W.begin(i); it != W.end(i); ++it) {
                 *it /= sum;

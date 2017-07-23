@@ -21,11 +21,6 @@
 
 
 namespace mir {
-
-namespace param {
-class MIRParametrisation;
-}
-
 namespace style {
 
 
