@@ -18,7 +18,6 @@
 
 #include <string>
 #include "eckit/memory/ScopedPtr.h"
-#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
@@ -33,6 +32,9 @@ class MIRInput;
 }
 namespace output {
 class MIROutput;
+}
+namespace param {
+class MIRParametrisation;
 }
 namespace util {
 class MIRStatistics;

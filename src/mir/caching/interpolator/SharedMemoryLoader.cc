@@ -14,6 +14,7 @@
 ///
 /// @date Oct 2016
 
+
 #include "mir/caching/interpolator/SharedMemoryLoader.h"
 
 #include <errno.h>
@@ -27,24 +28,19 @@
 #include <sys/time.h>
 #include <sys/sem.h>
 
+#include "eckit/config/Resource.h"
 #include "eckit/eckit.h"
+#include "eckit/io/StdFile.h"
+#include "eckit/log/BigNum.h"
+#include "eckit/log/Bytes.h"
+#include "eckit/log/TraceTimer.h"
+#include "eckit/maths/Functions.h"
+#include "eckit/memory/Padded.h"
 #include "eckit/os/SemLocker.h"
 
-#include "eckit/memory/Padded.h"
-#include "eckit/log/Bytes.h"
-#include "eckit/log/BigNum.h"
-#include "eckit/config/Resource.h"
-#include "eckit/maths/Functions.h"
-#include "eckit/log/TraceTimer.h"
-
-#include "eckit/log/TraceTimer.h"
-#include "eckit/io/StdFile.h"
-
-#include "mir/param/SimpleParametrisation.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/WeightMatrix.h"
+#include "mir/param/SimpleParametrisation.h"
 
-using mir::method::WeightMatrix;
 
 namespace mir {
 namespace caching {
@@ -228,7 +224,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
         if (load_matrix_to_memory) {
 
-            WeightMatrix w(path);
+            method::WeightMatrix w(path);
 
             w.dump(addr + sizeof(SHMInfo), size());
 
@@ -261,7 +257,7 @@ SharedMemoryLoader::~SharedMemoryLoader() {
 
 void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path, method::WeightMatrix& W) {
 
-    WeightMatrix w(new SharedMemoryLoader("shmem", path));
+    method::WeightMatrix w(new SharedMemoryLoader("shmem", path));
 
     std::swap(w, W);
 }

@@ -13,14 +13,15 @@
 /// @author Tiago Quintino
 /// @date   April 2016
 
-#include <iostream>
+
 #include "mir/util/Function.h"
+
+#include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/context/Context.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Once.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/exception/Exceptions.h"
+#include "mir/action/context/Context.h"
 
 
 namespace mir {

@@ -11,8 +11,6 @@
 
 #include "mir/method/decompose/PolarAngleToCartesian.h"
 
-#include "mir/util/Angles.h"
-
 
 namespace mir {
 namespace method {

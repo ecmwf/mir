@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/config/LibMir.h"
 #include "eckit/utils/Translator.h"
 

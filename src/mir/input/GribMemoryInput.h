@@ -16,15 +16,7 @@
 #ifndef GribMemoryInput_H
 #define GribMemoryInput_H
 
-
-#include "eckit/io/Buffer.h"
-
 #include "mir/input/GribInput.h"
-
-
-namespace eckit {
-class DataHandle;
-}
 
 
 namespace mir {

@@ -18,8 +18,6 @@
 
 #include "mir/action/interpolate/Gridded2LatLon.h"
 
-#include "mir/util/Increments.h"
-
 
 namespace mir {
 namespace action {

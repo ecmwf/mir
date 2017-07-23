@@ -18,8 +18,6 @@
 
 #include "mir/action/plan/Action.h"
 
-#include "eckit/filesystem/PathName.h"
-
 
 namespace mir {
 namespace util {
