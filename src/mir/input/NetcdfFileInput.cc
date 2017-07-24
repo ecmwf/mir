@@ -53,8 +53,8 @@ grib_handle *NetcdfFileInput::gribHandle(size_t which) const {
     //ASSERT(which == 0);
     static grib_handle *handle = 0;
     if (!handle) {
-        handle = grib_handle_new_from_samples(0, "GRIB2");
-        // grib_set_long(handle, "paramId", 255);
+        handle = grib_handle_new_from_samples(0, "GRIB1");
+        grib_set_long(handle, "paramId", 255);
         ASSERT(handle);
     }
     return handle;

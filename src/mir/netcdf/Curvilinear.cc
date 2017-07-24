@@ -192,9 +192,9 @@ GridSpec* Curvilinear::guess(const Variable &variable,
     ASSERT(dimensions.size() == 2);
 
 
-    for(size_t i = 0; i < lats.size(); i++) {
-        std::cout << lats[i] << ' ' << lons[i] << std::endl;
-    }
+    // for(size_t i = 0; i < lats.size(); i++) {
+    //     std::cout << lats[i] << ' ' << lons[i] << std::endl;
+    // }
 
 
     struct Index {

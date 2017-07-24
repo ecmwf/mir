@@ -7,7 +7,7 @@ lats = []
 lons = []
 with open(sys.argv[1]) as f:
     for line in f:
-        x = line.split(line, ' ')
+        x = line.split(' ')
         lats.append(float(x[0]))
         lons.append(float(x[1]))
 
@@ -17,12 +17,14 @@ south = min(lats)
 east = max(lons)
 west = min(lons)
 
-map = Basemap(projection='merc',
+print (north, west, south, east)
+
+map = Basemap(projection='cyl',
               lat_0=(north + south) / 2.0,
-              lon_0=(west + east) / 2.0,
-              # resolution = 'h', area_thresh = 0.1,
-              llcrnrlon=west, llcrnrlat=south,
-              urcrnrlon=east, urcrnrlat=north)
+              lon_0=(west + east) / 2.0)
+              # # resolution = 'h', area_thresh = 0.1,
+              # llcrnrlon=west, llcrnrlat=south,
+              # urcrnrlon=east, urcrnrlat=north)
 
 map.drawcoastlines()
 map.drawcountries()
@@ -30,6 +32,6 @@ map.fillcontinents(color='coral')
 map.drawmapboundary()
 
 x, y = map(lons, lats)
-map.plot(x, y, 'bo', markersize=2)
+map.plot(x, y, 'bo', markersize=0.1)
 
 plt.show()

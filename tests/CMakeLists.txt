@@ -20,6 +20,10 @@ if(ATLAS_HAVE_TRANS)
         "z_sh.grib" )
 endif(ATLAS_HAVE_TRANS)
 
+if(HAVE_NETCDF)
+   list(APPEND TEST_INPUT_FILES "nemo.nc")
+endif()
+
 # Set interpolation tests
 # (each line is an interpolation, the previous-to-last entry in each line is a file to download)
 unset(_test_reqs)
