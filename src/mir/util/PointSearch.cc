@@ -364,7 +364,7 @@ public:
     PointSearchTreeMappedCacheFile( const repres::Representation& r,
                                     const param::MIRParametrisation &param,
                                     size_t itemCount):
-        PointSearchTreeMappedFile(r, param, itemCount) {
+        PointSearchTreeMappedFile<PointSearchTreeMappedCacheFile>(r, param, itemCount) {
     }
 };
 
@@ -401,7 +401,7 @@ public:
     PointSearchTreeMappedTempFile( const repres::Representation& r,
                                    const param::MIRParametrisation &param,
                                    size_t itemCount):
-        PointSearchTreeMappedFile(r, param, itemCount) {}
+        PointSearchTreeMappedFile<PointSearchTreeMappedTempFile>(r, param, itemCount) {}
 };
 
 static PointSearchTreeBuilder<PointSearchTreeMappedCacheFile> builder3("mapped-temporary-file");
