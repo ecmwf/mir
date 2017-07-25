@@ -368,7 +368,7 @@ public:
     }
 };
 
-static PointSearchTreeBuilder<PointSearchTreeMappedCacheFile> builder2("mapped-cache-file");
+// static PointSearchTreeBuilder<PointSearchTreeMappedCacheFile> builder2("mapped-cache-file");
 
 //===============================================================================================================
 
