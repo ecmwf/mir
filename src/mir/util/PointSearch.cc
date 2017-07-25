@@ -368,7 +368,7 @@ public:
     }
 };
 
-static PointSearchTreeBuilder<PointSearchTreeMappedCacheFile> builder2("mapped-cache-file");
+// static PointSearchTreeBuilder<PointSearchTreeMappedCacheFile> builder2("mapped-cache-file");
 
 //===============================================================================================================
 
@@ -568,6 +568,9 @@ PointSearchTree *PointSearchTreeFactory::build(const repres::Representation& r,
     std::string name = "mapped-cache-file";
 
     params.get("point-search-trees", name);
+
+
+    eckit::Log::info() << "PointSearchTreeFactory" << name << " " << r << std::endl;
 
     eckit::Log::debug<LibMir>() << "Looking for PointSearchTreeFactory [" << name << "]" << std::endl;
 
