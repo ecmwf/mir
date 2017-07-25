@@ -27,7 +27,6 @@
 #include "mir/method/Method.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Compare.h"
 
 #include "mir/util/MIRStatistics.h"
 
@@ -82,14 +81,16 @@ GribFileLSM::GribFileLSM(
 
     double threshold;
     ASSERT(parametrisation.get("lsm-value-threshold", threshold));
-    const util::compare::IsGreaterOrEqualFn< double > check_lsm(threshold);
+
 
     ASSERT(!ctx.field().hasMissing());
     ASSERT(ctx.field().dimensions() == 1);
 
     const std::vector< double > &values = ctx.field().values(0);
     mask_.resize(values.size());
-    std::transform(values.begin(), values.end(), mask_.begin(), check_lsm);
+
+    /// Compare values inequality, "is greater or equal to"
+    std::transform(values.begin(), values.end(), mask_.begin(), [&](double value) { return value >= threshold; });
 }
 
 
