@@ -38,6 +38,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
+#include "mir/method/MatrixCacheCreator.h"
 
 namespace mir {
 namespace method {
@@ -154,32 +155,6 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
         /// The WeightCache is parametrised by 'caching',
         /// as caching may be disabled on a field by field basis (unstructured grids)
         static caching::WeightCache cache(parametrisation_);
-
-        class MatrixCacheCreator: public caching::WeightCache::CacheContentCreator {
-
-            const MethodWeighted& owner_;
-            context::Context& ctx_;
-            const repres::Representation& in_;
-            const repres::Representation& out_;
-            const lsm::LandSeaMasks& masks_;
-
-            virtual void create(const eckit::PathName& path, WeightMatrix& W) {
-                owner_.createMatrix(ctx_, in_, out_, W, masks_);
-            }
-
-        public:
-            MatrixCacheCreator(const MethodWeighted& owner,
-                               context::Context& ctx,
-                               const repres::Representation& in,
-                               const repres::Representation& out,
-                               const lsm::LandSeaMasks& masks):
-                owner_(owner),
-                ctx_(ctx),
-                in_(in),
-                out_(out),
-                masks_(masks) {}
-        };
-
         MatrixCacheCreator creator(*this, ctx, in, out, masks);
         path = cache.getOrCreate(cache_key, creator, W);
 

@@ -262,6 +262,8 @@ list(
     method/KNearest.h
     method/KNearestLSM.cc
     method/KNearestLSM.h
+    method/MatrixCacheCreator.cc
+    method/MatrixCacheCreator.h
     method/Method.cc
     method/Method.h
     method/MethodWeighted.cc

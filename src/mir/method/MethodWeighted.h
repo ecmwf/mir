@@ -84,6 +84,8 @@ private:
     double lsmWeightAdjustment_;
     double pruneEpsilon_;
 
+    friend class MatrixCacheCreator;
+
 };
 
 
