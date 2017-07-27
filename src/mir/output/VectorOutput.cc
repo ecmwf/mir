@@ -36,7 +36,7 @@ VectorOutput::~VectorOutput() {
 }
 
 
-size_t VectorOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
+size_t VectorOutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
 
     input::MIRInput& input = ctx.input();
 
@@ -60,28 +60,39 @@ size_t VectorOutput::copy(const param::MIRParametrisation &param, context::Conte
 }
 
 
-size_t VectorOutput::save(const param::MIRParametrisation &param, context::Context& ctx) {
+size_t VectorOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
     data::MIRField& field = ctx.field();
+    input::MIRInput& input = ctx.input();
 
     ASSERT(field.dimensions() == 2);
 
-    data::MIRField u(field.representation(), field.hasMissing(), field.missingValue());
-    u.update(field.direct(0), 0);
-    u.metadata(0, field.metadata(0));
+    try {
+        input::VectorInput& vectorInput = dynamic_cast<input::VectorInput&>(input);
+        size_t size = 0;
 
-    data::MIRField v(field.representation(), field.hasMissing(), field.missingValue());
-    v.update(field.direct(1), 0);
-    v.metadata(0, field.metadata(1));
+        context::Context uCtx(vectorInput.component1_, ctx.statistics());
+        data::MIRField u(field.representation(), field.hasMissing(), field.missingValue());
+        u.update(field.direct(0), 0);
+        u.metadata(0, field.metadata(0));
+        uCtx.field(u);
+        
+        size += component1_.save(param, uCtx);
+        
+        context::Context vCtx(vectorInput.component2_, ctx.statistics());
+        data::MIRField v(field.representation(), field.hasMissing(), field.missingValue());
+        v.update(field.direct(1), 0);
+        v.metadata(0, field.metadata(1));
+        vCtx.field(v);
+        
+        size += component2_.save(param, vCtx);
 
-    size_t size = 0;
+        return size;
 
-    ctx.field(u);
-    size += component1_.save(param, ctx);
-
-    ctx.field(v);
-    size += component2_.save(param, ctx);
-
-    return size;
+    } catch (std::bad_cast &) {
+        std::ostringstream os;
+        os << "VectorOutput::save() not implemented for input of type: " << input;
+        throw eckit::SeriousBug(os.str());
+    }
 }
 
 
