@@ -75,15 +75,15 @@ size_t VectorOutput::save(const param::MIRParametrisation& param, context::Conte
         u.update(field.direct(0), 0);
         u.metadata(0, field.metadata(0));
         uCtx.field(u);
-        
+
         size += component1_.save(param, uCtx);
-        
+
         context::Context vCtx(vectorInput.component2_, ctx.statistics());
         data::MIRField v(field.representation(), field.hasMissing(), field.missingValue());
         v.update(field.direct(1), 0);
         v.metadata(0, field.metadata(1));
         vCtx.field(v);
-        
+
         size += component2_.save(param, vCtx);
 
         return size;
