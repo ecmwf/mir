@@ -193,7 +193,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
             const repres::Representation *representation_;
             const util::BoundingBox &bbox_;
 
-            virtual void create(const eckit::PathName& path, caching::CroppingCacheEntry& c) {
+            virtual void create(const eckit::PathName& path, caching::CroppingCacheEntry& c, bool& saved) {
                 createCroppingCacheEntry(c, representation_, bbox_);
             }
 

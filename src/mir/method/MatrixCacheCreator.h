@@ -55,7 +55,7 @@ public:
 
 private:
 
-    virtual void create(const eckit::PathName & path, WeightMatrix & W) ;
+    virtual void create(const eckit::PathName & path, WeightMatrix & W, bool& saved) ;
 
 private:
 

@@ -19,6 +19,7 @@
 #include "mir/method/MatrixCacheCreator.h"
 #include "mir/method/MethodWeighted.h"
 
+#include <unistd.h>
 
 namespace mir {
 namespace method {
@@ -37,8 +38,46 @@ MatrixCacheCreator::MatrixCacheCreator(const MethodWeighted& owner,
 
 }
 
-void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W) {
-    owner_.createMatrix(ctx_, in_, out_, W, masks_);
+void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bool& saved) {
+
+    pid_t pid = ::fork();
+    switch (pid) {
+
+    case 0:
+        // child
+        eckit::Log::info() << "MatrixCacheCreator::create running in sub-process " << ::getpid() << std::endl;
+
+        try {
+            owner_.createMatrix(ctx_, in_, out_, W, masks_);
+            W.save(path);
+            ::_exit(0);
+        }
+        catch (std::exception& e) {
+            eckit::Log::error() << "MatrixCacheCreator::create failed " << e.what() << std::endl;
+        }
+        ::_exit(1);
+        break;
+
+    case -1:
+        // error
+        eckit::Log::error() << "MatrixCacheCreator::create failed to fork(): "
+                            << eckit::Log::syserr
+                            << std::endl;
+        owner_.createMatrix(ctx_, in_, out_, W, masks_);
+        return;
+        break;
+
+    }
+
+    // Parent
+
+    eckit::Log::info() << "MatrixCacheCreator::create wait for " << pid << std::endl;
+    int code = 0;
+    SYSCALL(::waitpid(pid, &code, 0));
+    saved = true;
+    eckit::Log::info() << "MatrixCacheCreator::create " << pid << " finished with code " << code << std::endl;
+    ASSERT(code == 0);
+
 }
 
 }  // namespace method

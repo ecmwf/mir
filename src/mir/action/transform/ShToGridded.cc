@@ -107,7 +107,7 @@ void ShToGridded::transform(
                 const repres::Representation& representation_;
                 context::Context & ctx_;
 
-                virtual void create(const eckit::PathName& path, int& ignore) {
+                virtual void create(const eckit::PathName& path, int& ignore, bool& saved) {
                     createCoefficients(path, options_, representation_, ctx_);
                 }
             public:
