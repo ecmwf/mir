@@ -150,8 +150,8 @@ intensity:
 - 69  # Minimum stomatal resistance, high vegetation
 - 74  # Standard deviation of filtered subgrid orography
 - 77  # Eta-coordinate vertical velocity
-- 78  # Total column liquid water
-- 79  # Total column ice water
+- 78  # Total column cloud liquid water
+- 79  # Total column cloud ice water
 - 121  # Maximum temperature at 2 metres in the last 6 hours
 - 122  # Minimum temperature at 2 metres in the last 6 hours
 - 123  # 10 metre wind gust in the last 6 hours
@@ -167,7 +167,6 @@ intensity:
 - 141  # Snow depth
 - 148  # Charnock
 - 151  # Mean sea level pressure
-- 152  # Logarithm of surface pressure
 - 153  # Short-wave heating rate
 - 154  # Long-wave heating rate
 - 155  # Divergence
@@ -203,7 +202,6 @@ intensity:
 - 219  # Vertical diffusion of meridional wind
 - 220  # East-West gravity wave drag tendency
 - 221  # North-South gravity wave drag tendency
-- 234  # Logarithm of surface roughness length for heat
 - 235  # Skin temperature
 - 236  # Soil temperature level 4
 - 237  # Soil wetness level 4
@@ -637,8 +635,6 @@ intensity:
 - 174050  # Minimum temperature at 1.5m since previous post-processing
 - 174051  # Maximum temperature at 1.5m since previous post-processing
 - 174055  # 1.5m temperature - mean in the last 24 hours
-- 174085  # 10m U wind over land
-- 174086  # 10m V wind over land
 - 174087  # 1.5m temperature over land
 - 174088  # 1.5m dewpoint temperature over land
 - 174094  # Mean sea surface temperature
@@ -661,8 +657,6 @@ intensity:
 - 175034  # Open-sea surface temperature
 - 175049  # 10m wind gust in the last 24 hours
 - 175055  # 1.5m temperature - mean in the last 24 hours
-- 175085  # 10m U wind over land
-- 175086  # 10m V wind over land
 - 175087  # 1.5m temperature over land
 - 175088  # 1.5m dewpoint temperature over land
 - 175111  # Ocean mean ice depth
@@ -930,12 +924,12 @@ intensity:
 - 228035  # maximum CAPE in the last 6 hours
 - 228036  # maximum CAPES in the last 6 hours
 - 228044  # Convective available potential energy shear
-- 228047  # Height of Zero Deg Wet Bulb Temperature
-- 228048  # Height of One Deg Wet Bulb Temperature
+- 228047  # Height of zero-degree wet-bulb temperature
+- 228048  # Height of one-degree wet-bulb temperature
 - 228050  # Instantaneous total lightning density
-- 228051  # Averaged total lightning density since previous post-processing
+- 228051  # Averaged total lightning density
 - 228052  # Instantaneous cloud-to-ground lightning density
-- 228053  # Averaged cloud-to-ground lightning density since previous post-processing
+- 228053  # Averaged cloud-to-ground lightning density
 - 228078  # GPP coefficient from Biogenic Flux Adjustment System
 - 228079  # Rec coefficient from Biogenic Flux Adjustment System
 - 228080  # Accumulated Carbon Dioxide Net Ecosystem Exchange
@@ -1139,7 +1133,7 @@ intensity:
 - 260606  # Square of Brunt-Vaisala frequency
 - 260617  # Moisture storage on canopy
 - 260618  # Moisture storage on ground or cover
-- 260620  # ???
+- 260620  # Cloud liquid water
 - 300001  # Pressure
 - 300002  # Pressure reduced to msl
 - 300003  # Pressure tendency
@@ -1284,6 +1278,8 @@ intensity.vector-2d-cartesian.x:
 - 171165  # 10 metre U wind component anomaly
 - 171222  # Convective tendency of zonal wind anomaly
 - 171253  # Adiabatic tendency of zonal wind anomaly
+- 174085  # 10m U wind over land
+- 175085  # 10m U wind over land
 - 200011  # U component of divergent wind difference
 - 200013  # U component of rotational wind difference
 - 200131  # U component of wind difference
@@ -1304,8 +1300,8 @@ intensity.vector-2d-cartesian.x:
 - 260484  # Scatterometer Estimated U Wind Component
 - 260607  # Adiabatic zonal acceleration
 - 260613  # Gravity wave zonal acceleration
-- 260626  # Mean zonal momentum flux by long gravity wave
-- 260629  # Mean zonal momentum flux by short gravity wave
+- 260626  # Zonal momentum flux by long gravity wave
+- 260629  # Zonal momentum flux by short gravity wave
 - 260637  # Vertical diffusion zonal acceleration
 - 300033  # Zonal wind (u)
 - 300049  # U-component of current
@@ -1342,6 +1338,8 @@ intensity.vector-2d-cartesian.y:
 - 171166  # 10 metre V wind component anomaly
 - 171223  # Convective tendency of meridional wind anomaly
 - 171254  # Adiabatic tendency of meridional wind anomaly
+- 174086  # 10m V wind over land
+- 175086  # 10m V wind over land
 - 200012  # V component of divergent wind difference
 - 200014  # V component of rotational wind difference
 - 200132  # V component of wind difference
@@ -1362,8 +1360,8 @@ intensity.vector-2d-cartesian.y:
 - 260485  # Scatterometer Estimated V Wind Component
 - 260609  # Adiabatic meridional acceleration
 - 260614  # Gravity wave meridional acceleration
-- 260627  # Mean meridional momentum flux by long gravity wave
-- 260628  # Mean meridional momentum flux by short gravity wave
+- 260627  # Meridional momentum flux by long gravity wave
+- 260628  # Meridional momentum flux by short gravity wave
 - 260638  # Vertical diffusion meridional acceleration
 - 300034  # Meridional wind (v)
 - 300050  # V-component of current
@@ -1655,7 +1653,7 @@ rate.energy-flux:
 - 260478  # Direct evaporation from bare soil
 - 260496  # Net Air-Ocean Heat Flux
 - 260497  # Assimilative Heat Flux
-- 260615  # Mean evapotranspiration
+- 260615  # Evapotranspiration
 - 300111  # Short wave absorbed at ground
 - 300112  # Net long wave at bottom
 - 300113  # Net short-wav rad(top)
@@ -2318,12 +2316,12 @@ rate.volume-flux:
 - 260054  # Convective snowfall rate
 - 260055  # Large scale snowfall rate
 - 260274  # Evaporation - Precipitation
-- 260600  # Mean evaporation
-- 260601  # Mean total precipitation
-- 260602  # Mean large scale precipitation
-- 260603  # Mean convective precipitation
-- 260604  # Mean snowfall rate water equivalent
-- 260605  # Mean surface water runoff
+- 260600  # Evaporation
+- 260601  # Total precipitation
+- 260602  # Large scale precipitation
+- 260603  # Convective precipitation
+- 260604  # Snowfall rate water equivalent
+- 260605  # Water run-off
 
 rate.volume-flux.accumulated:
 - 8  # Surface runoff
@@ -2394,7 +2392,6 @@ ratio:
 - 200157  # Relative humidity difference
 - 228030  # Relative humidity with respect to water
 - 228031  # Relative humidity with respect to ice
-- 228037  # 2 metre relative humidity with respect to water
 - 228040  # Soil wetness index in layer 1
 - 228041  # Soil wetness index in layer 2
 - 228042  # Soil wetness index in layer 3
@@ -2415,7 +2412,7 @@ ratio:
 - 260228  # Reflectance in 0.8 micron channel
 - 260229  # Reflectance in 1.6 micron channel
 - 260230  # Reflectance in 3.9 micron channel
-- 260242  # Surface air relative humidity
+- 260242  # 2 metre relative humidity
 - 260261  # Minimum Relative Humidity
 - 260369  # Richardson Number
 - 260379  # Ozone Concentration (PPB)
@@ -2574,8 +2571,8 @@ ratio.fraction:
 - 200242  # Accumulated liquid water tendency difference
 - 200243  # Forecast albedo difference
 - 200249  # Accumulated ice water tendency difference
-- 201029  # fractional cloud cover
-- 201056  # fog
+- 201029  # Fractional cloud cover
+- 201056  # Fog
 - 210054  # Soil clay content
 - 210093  # Wildfire fraction of C4 plants
 - 210095  # Wildfire Combustion Completeness
