@@ -20,6 +20,8 @@
 #include "mir/method/MethodWeighted.h"
 
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 namespace mir {
 namespace method {
