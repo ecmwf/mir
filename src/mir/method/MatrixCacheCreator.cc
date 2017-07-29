@@ -18,6 +18,8 @@
 
 #include "mir/method/MatrixCacheCreator.h"
 #include "mir/method/MethodWeighted.h"
+#include "mir/caching/WeightCache.h"
+#include "eckit/thread/AutoLock.h"
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -41,6 +43,17 @@ MatrixCacheCreator::MatrixCacheCreator(const MethodWeighted& owner,
 }
 
 void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bool& saved) {
+
+    bool subProcess = true;
+
+    if (!subProcess) {
+        owner_.createMatrix(ctx_, in_, out_, W, masks_);
+        return;
+    }
+
+    caching::WeightCacheLock lockfile("/tmp/mir.fork.lock");
+    eckit::AutoLock<caching::WeightCacheLock> lock(lockfile);
+
 
     pid_t pid = ::fork();
     switch (pid) {
