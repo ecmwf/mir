@@ -110,7 +110,7 @@ Field::Field(const std::string& path, off_t offset, size_t length):
     rotation_(false),
     rotation_latitude_(0),
     rotation_longitude_(0),
-    bitmap_(false),
+    hasMissing_(false),
     resol_(-1),
     numberOfPoints_(-1) {}
 
@@ -212,8 +212,8 @@ bool Field::sameArea(const Field& other) const {
 }
 
 
-void Field::bitmap(bool on)  {
-    bitmap_ = on;
+void Field::missingValuesPresent(bool on)  {
+    hasMissing_ = on;
 }
 
 void Field::resol(size_t resol)  {
@@ -432,11 +432,11 @@ bool Field::operator<(const Field & other) const {
         return false;
     }
 
-    if (bitmap_ < other.bitmap_) {
+    if (hasMissing_ < other.hasMissing_) {
         return true;
     }
 
-    if (bitmap_ > other.bitmap_) {
+    if (hasMissing_ > other.hasMissing_) {
         return false;
     }
 
@@ -630,7 +630,7 @@ void Field::print(std::ostream & out) const {
         out << ",accuracy=" << accuracy_;
     }
 
-    if (bitmap_) {
+    if (hasMissing_) {
         out << ",bitmap=yes";
     }
 
@@ -747,7 +747,7 @@ std::ostream& Field::printDifference(std::ostream & out, const Field & other) co
         pdiff(out, accuracy_, other.accuracy_);
     }
 
-    if (bitmap_) {
+    if (hasMissing_) {
         out << ",bitmap=yes";
     }
 
@@ -881,7 +881,7 @@ bool Field::match(const std::string& name, const std::string& value) const {
 
     if (name == "bitmap") {
         std::ostringstream oss;
-        oss << (bitmap_ ? "yes" : "no");
+        oss << (hasMissing_ ? "yes" : "no");
         return value == oss.str();
     }
 

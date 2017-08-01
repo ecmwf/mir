@@ -496,10 +496,10 @@ void FieldComparator::getField(const MultiFile& multi,
         field.format("grib" + l2s(edition));
     }
 
-    long bitmap;
-    if (grib_get_long(h, "bitmapPresent", &bitmap) == 0) {
-        if (bitmap) {
-            field.bitmap(true);
+    long missingValuesPresent;
+    if (grib_get_long(h, "missingValuesPresent", &missingValuesPresent) == 0) {
+        if (missingValuesPresent) {
+            field.missingValuesPresent(true);
         }
     }
 
@@ -673,8 +673,8 @@ static void getStats(const Field& field, Statistics& stats) {
     size_t count;
     GRIB_CALL(grib_get_size(h, "values", &count));
 
-    long bitmap;
-    GRIB_CALL(grib_get_long(h, "bitmapPresent", &bitmap));
+    long missingValuesPresent;
+    GRIB_CALL(grib_get_long(h, "missingValuesPresent", &missingValuesPresent));
 
     double missingValue;
     GRIB_CALL(grib_get_double(h, "missingValue", &missingValue));
@@ -694,7 +694,7 @@ static void getStats(const Field& field, Statistics& stats) {
 
     size_t first = 0;
     for (size_t i = 0; i < size; i++) {
-        if (bitmap && values[i] == missingValue )  {
+        if (missingValuesPresent && values[i] == missingValue )  {
             stats.missing_++;
         }
         else {
@@ -712,7 +712,7 @@ static void getStats(const Field& field, Statistics& stats) {
     }
 
     for (size_t i = first; i < size; i++) {
-        if (bitmap && values[i] == missingValue) {
+        if (missingValuesPresent && values[i] == missingValue) {
             stats.missing_++;
         }
         else {
