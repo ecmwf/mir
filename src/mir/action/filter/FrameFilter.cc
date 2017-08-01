@@ -72,7 +72,7 @@ void FrameFilter::execute(context::Context & ctx) const {
 
 
 namespace {
-static ActionBuilder< FrameFilter > bitmapFilter("filter.frame");
+static ActionBuilder< FrameFilter > frameFilter("filter.frame");
 }
 
 
