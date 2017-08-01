@@ -20,6 +20,7 @@
 #include "mir/method/MethodWeighted.h"
 #include "mir/caching/WeightCache.h"
 #include "eckit/thread/AutoLock.h"
+#include "eckit/config/Resource.h"
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -44,7 +45,7 @@ MatrixCacheCreator::MatrixCacheCreator(const MethodWeighted& owner,
 
 void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bool& saved) {
 
-    bool subProcess = true;
+    static bool subProcess = eckit::Resource<bool>("$MATRIX_CACHE_CREATOR_FORK", false);
 
     if (!subProcess) {
         owner_.createMatrix(ctx_, in_, out_, W, masks_);
