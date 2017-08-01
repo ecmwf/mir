@@ -37,7 +37,7 @@ ecbuild_add_option( FEATURE TEST_ASSERTIONS DESCRIPTION "Enable assertion tests"
 ### eckit -- version >= 0.16.5 includes new library registration mechanism
 ecbuild_use_package( PROJECT eckit  VERSION  0.18.0  REQUIRED )
 
-ecbuild_use_package( PROJECT atlas  VERSION  0.9)
+ecbuild_use_package( PROJECT atlas  VERSION  0.11)
 if(ATLAS_FOUND)
     set(HAVE_ATLAS 1)
 endif()
