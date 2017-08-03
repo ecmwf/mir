@@ -14,6 +14,7 @@
 ///
 /// @date Oct 2016
 
+
 #include "mir/caching/interpolator/SharedMemoryLoader.h"
 
 #include <errno.h>
@@ -27,23 +28,19 @@
 #include <sys/time.h>
 #include <sys/sem.h>
 
+#include "eckit/config/Resource.h"
 #include "eckit/eckit.h"
+#include "eckit/io/StdFile.h"
+#include "eckit/log/BigNum.h"
+#include "eckit/log/Bytes.h"
+#include "eckit/log/TraceTimer.h"
+#include "eckit/maths/Functions.h"
+#include "eckit/memory/Padded.h"
 #include "eckit/os/SemLocker.h"
 
-#include "eckit/memory/Padded.h"
-#include "eckit/log/Bytes.h"
-#include "eckit/log/BigNum.h"
-#include "eckit/config/Resource.h"
-#include "eckit/maths/Functions.h"
-
-#include "eckit/log/Timer.h"
-#include "eckit/io/StdFile.h"
-
-#include "mir/param/SimpleParametrisation.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/WeightMatrix.h"
+#include "mir/param/SimpleParametrisation.h"
 
-using mir::method::WeightMatrix;
 
 namespace mir {
 namespace caching {
@@ -158,6 +155,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     //                          << eckit::BigNum(shmsize / page_size)
     //                          << std::endl;
 
+
     int shmid;
     if ((shmid = shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
         std::ostringstream oss;
@@ -193,7 +191,9 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     address_ = shmat( shmid, NULL, 0 );
     if (address_ == (void*) - 1) {
-        throw eckit::FailedSystemCall("sfmat(" + real.asString() + ")");
+         std::ostringstream oss;
+         oss << "sfmat(" << real << "), id=" << shmid << ", size=" << shmsize;
+        throw eckit::FailedSystemCall(oss.str());
     }
 
     try {
@@ -224,12 +224,9 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
         if (load_matrix_to_memory) {
 
-            WeightMatrix w(path);
+            method::WeightMatrix w(path);
 
-            bool notowned = true;
-            eckit::Buffer buffer(addr + sizeof(SHMInfo), size(), notowned);
-
-            w.dump(buffer);
+            w.dump(addr + sizeof(SHMInfo), size());
 
             // Set info record for checkes
 
@@ -260,12 +257,7 @@ SharedMemoryLoader::~SharedMemoryLoader() {
 
 void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path, method::WeightMatrix& W) {
 
-    SharedMemoryLoader loader("shmem", path);
-
-    bool notown = true;
-    eckit::Buffer buffer(const_cast<void*>(loader.address()), loader.size(), notown);
-
-    WeightMatrix w(buffer);
+    method::WeightMatrix w(new SharedMemoryLoader("shmem", path));
 
     std::swap(w, W);
 }

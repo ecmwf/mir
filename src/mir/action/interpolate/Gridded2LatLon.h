@@ -13,13 +13,13 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded2LatLon_H
-#define Gridded2LatLon_H
+#ifndef mir_action_interpolate_Gridded2LatLon_h
+#define mir_action_interpolate_Gridded2LatLon_h
 
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
+#include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
-#include "mir/util/Shift.h"
 
 
 namespace mir {
@@ -38,7 +38,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2LatLon(); // Change to virtual if base class
+    virtual ~Gridded2LatLon();
 
     // -- Convertors
     // None
@@ -63,15 +63,15 @@ protected:
     // -- Members
 
     util::Increments increments_;
-    util::Shift shift_;
+    util::BoundingBox bbox_;
 
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    virtual bool sameAs(const Action&) const;
 
 
     // -- Class members
@@ -82,20 +82,14 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    Gridded2LatLon(const Gridded2LatLon&);
-    Gridded2LatLon& operator=(const Gridded2LatLon&);
-
     // -- Members
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-
-    // From Gridded2GriddedInterpolation
+    // None
 
     // -- Class members
     // None

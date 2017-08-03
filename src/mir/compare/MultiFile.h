@@ -19,6 +19,8 @@
 #include <string>
 #include <vector>
 
+#include "eckit/io/Length.h"
+
 namespace eckit {
 class Stream;
 }
@@ -50,11 +52,15 @@ public:
 
     const std::string& name() const;
 
+    eckit::Length length() const;
+
 private:
 
     std::string name_;
     std::string from_;
     std::vector<std::string> paths_;
+
+    mutable eckit::Length length_;
 
 private:
 

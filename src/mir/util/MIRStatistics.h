@@ -47,7 +47,6 @@ public:
     eckit::Timing cropTiming_;
     eckit::Timing frameTiming_;
     eckit::Timing globaliseTiming_;
-    eckit::Timing subsetTiming_;
 
     eckit::Timing bitmapTiming_;
 
@@ -61,9 +60,11 @@ public:
     eckit::Timing createCoeffTiming_;
     eckit::Timing calcTiming_;
 
+    void report(std::ostream& out, const char* indent = "") const;
 
+    void csvHeader(std::ostream& out) const;
 
-    void report(std::ostream &out, const char *indent = "") const;
+    void csvRow(std::ostream& out) const;
 
     void encode(eckit::Stream &) const;
 

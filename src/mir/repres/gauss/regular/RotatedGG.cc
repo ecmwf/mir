@@ -16,9 +16,9 @@
 #include "mir/repres/gauss/regular/RotatedGG.h"
 
 #include <iostream>
-#include "atlas/grid.h"
+
 #include "mir/util/Grib.h"
-#include "mir/util/RotatedIterator.h"
+#include "mir/util/Domain.h"
 
 
 namespace mir {
@@ -26,7 +26,7 @@ namespace repres {
 namespace regular {
 
 
-RotatedGG::RotatedGG(const param::MIRParametrisation &parametrisation):
+RotatedGG::RotatedGG(const param::MIRParametrisation& parametrisation):
     Regular(parametrisation),
     rotation_(parametrisation) {
 }
@@ -36,19 +36,23 @@ RotatedGG::~RotatedGG() {
 }
 
 
-RotatedGG::RotatedGG(size_t N, const util::BoundingBox &bbox, const util::Rotation& rotation):
+RotatedGG::RotatedGG(size_t N, const util::BoundingBox& bbox, const util::Rotation& rotation):
     Regular(N, bbox),
     rotation_(rotation) {
 }
 
 
-const Gridded *RotatedGG::cropped(const util::BoundingBox &bbox) const {
+const Gridded *RotatedGG::cropped(const util::BoundingBox& bbox) const {
     return new RotatedGG(N_, bbox, rotation_);
 }
 
 
-void RotatedGG::print(std::ostream &out) const {
-    out << "RotatedGG[N" << N_ << ",bbox=" << bbox_ << ",rotation" << rotation_ << "]";
+void RotatedGG::print(std::ostream& out) const {
+    out << "RotatedGG["
+        <<  "N" << N_
+        << ",bbox=" << bbox_
+        << ",rotation=" << rotation_
+        << "]";
 }
 
 
@@ -64,27 +68,54 @@ bool RotatedGG::sameAs(const Representation& other) const {
 }
 
 
-void RotatedGG::fill(grib_info &info) const  {
+void RotatedGG::fill(grib_info& info) const  {
     Regular::fill(info);
     rotation_.fill(info);
     info.grid.grid_type = GRIB_UTIL_GRID_SPEC_ROTATED_GG;
 }
 
 
-void RotatedGG::fill(api::MIRJob &job) const  {
+void RotatedGG::fill(api::MIRJob& job) const  {
     Regular::fill(job);
     rotation_.fill(job);
 }
 
 
-Iterator* RotatedGG::rotatedIterator() const {
-    return new util::RotatedIterator(Regular::unrotatedIterator(), rotation_);
+Iterator* RotatedGG::iterator() const {
+
+    class RotatedGGIterator : protected RegularIterator, public Iterator {
+        void print(std::ostream& out) const {
+            out << "RotatedGGIterator[";
+            Iterator::print(out);
+            out << ",";
+            RegularIterator::print(out);
+            out << "]";
+        }
+        bool next(Latitude& lat, Longitude& lon) {
+            return RegularIterator::next(lat, lon);
+        }
+    public:
+        RotatedGGIterator(const std::vector<double>& latitudes, size_t N, size_t Ni, size_t Nj, const util::Domain& dom, const util::Rotation& rotation) :
+            RegularIterator(latitudes, N, Ni, Nj, dom),
+            Iterator(rotation) {
+        }
+    };
+
+    return new RotatedGGIterator(latitudes(), N_, Ni_, Nj_, domain(), rotation_);
+}
+
+
+
+size_t RotatedGG::numberOfPoints() const {
+    ASSERT(isGlobal());
+    return Ni_ * Nj_;
 }
 
 
 atlas::Grid RotatedGG::atlasGrid() const {
     return rotation_.rotate(Regular::atlasGrid());
 }
+
 
 
 namespace {

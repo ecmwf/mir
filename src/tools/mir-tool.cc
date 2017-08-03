@@ -44,6 +44,7 @@
 #include "mir/style/MIRStyle.h"
 #include "mir/style/Mapping.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/PointSearch.h"
 
 
 
@@ -66,37 +67,37 @@ public:
         using namespace eckit::option;
 
         //==============================================
-        options_.push_back(new Separator("Transform"));
-        options_.push_back(new SimpleOption<bool>("autoresol", "Turn on automatic truncation"));
-        options_.push_back(new FactoryOption<mir::style::MappingFactory>("spectral-mapping", "Spectral/gridded mapping"));
+        options_.push_back(new Separator("Spectral transforms"));
+        options_.push_back(new SimpleOption<bool>("autoresol", "Control automatic truncation"));
+        options_.push_back(new FactoryOption<mir::style::MappingFactory>("spectral-mapping", "Spectral/gridded order-of-accuracy)"));
         options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded intermediate Gaussian grid type (via)"));
         options_.push_back(new SimpleOption<std::string>("spectral-intermediate-gridname", "Spectral/gridded intermediate grid name (via)"));
-        options_.push_back(new SimpleOption<size_t>("truncation", "Truncation input field"));
-        options_.push_back(new SimpleOption<bool>("vod2uv", "Input is Vorticity and Divergence, conversion to u/v or U/V requested"));
+        options_.push_back(new SimpleOption<size_t>("truncation", "Spectral truncation"));
+        options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (u/v or U/V)"));
 
         //==============================================
         options_.push_back(new Separator("Interpolation"));
-        options_.push_back(new VectorOption<double>("grid", "Interpolate to the regular grid: west_east/south_north", 2));
-        options_.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular Gaussian grid N"));
-        options_.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the regular Gaussian grid N (pre 2016)"));
-        options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the regular Gaussian grid N"));
+        options_.push_back(new VectorOption<double>("grid", "Interpolate to a regular latitude/longitude grid (regular_ll), provided the West-East & South-North increments", 2));
+        options_.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular Gaussian grid N (regular_gg), with N the number of parallels between pole and equator (N>=2)"));
+        options_.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the reduced Gaussian grid N (reduced_gg), with N the number of parallels between pole and equator (pre-defined list of N values.) N must be 16, 24, 32, 48, 64, 80, 96, 128, 160, 200, 256, 320, 400, 512, 576, 640 or 800"));
+        options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the octahedral reduced Gaussian grid N (reduced_gg), with N the number of parallels between pole and equator (N>=2)"));
         options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
-        options_.push_back(new SimpleOption<std::string>("meshgenerator", "Interpolate using the given meshgenerator"));
+        options_.push_back(new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
 
-        options_.push_back(new SimpleOption<bool>("wind", "Use vector interpolation for wind (not yet)"));
-        options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid as the one provided in the first GRIB of the grib file"));
-        options_.push_back(new SimpleOption<eckit::PathName>("griddef", "File containing a list of lat/lon pairs"));
+        options_.push_back(new SimpleOption<bool>("wind", "Control vector interpolation for wind (not yet)"));
+        options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid type as the first GRIB message in file"));
+        options_.push_back(new SimpleOption<eckit::PathName>("griddef", "Path to GRIB file containing a list of latitude/longitude pairs"));
 
-        //==============================================
-        options_.push_back(new Separator("Methods"));
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
         options_.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
+        options_.push_back(new SimpleOption<std::string>("input-mesh-generator", "Input mesh generator"));
+        options_.push_back(new SimpleOption<std::string>("input-mesh-dump", "Input mesh dump to file (default <empty>)"));
+        options_.push_back(new SimpleOption<std::string>("output-mesh-generator", "Output mesh generator"));
+        options_.push_back(new SimpleOption<std::string>("output-mesh-dump", "Output mesh dump to file (default <empty>)"));
 
-        //==============================================
-        options_.push_back(new Separator("Rotation"));
-        options_.push_back(new VectorOption<double>("rotation", "Rotate the grid by moving the south pole to: latitude/longitude", 2));
+        options_.push_back(new FactoryOption<mir::util::PointSearchTreeFactory>("point-search-trees", "Control memory management of KD-trees"));
 
         //==============================================
         options_.push_back(new Separator("Filtering"));
@@ -110,7 +111,7 @@ public:
         options_.push_back(new SimpleOption<std::string>("formula", "Formula to apply on field"));
 
         //==============================================
-        options_.push_back(new Separator("Land-sea mask management"));
+        options_.push_back(new Separator("Land-sea mask handling"));
         options_.push_back(new SimpleOption<bool>("lsm", "Use land-sea mask (lsm) when interpolating grid to grid"));
 
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm-interpolation", "Interpolation method for both input and output lsm, default nearest-neighbour"));
@@ -135,10 +136,6 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("longitudes", "Path GRIB file of longitudes"));
 
         //==============================================
-        options_.push_back(new Separator("Configuration"));
-        options_.push_back(new SimpleOption<eckit::PathName>("configuration", "Configuration YAML path (default ~mir/etc/mir/configuration.yaml)"));
-
-        //==============================================
         options_.push_back(new Separator("GRIB Output"));
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
         options_.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
@@ -149,10 +146,11 @@ public:
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
-        options_.push_back(new FactoryOption<mir::caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select the scheme to load coefficients"));
-        options_.push_back(new FactoryOption<mir::caching::interpolator::InterpolatorLoaderFactory>("interpolator-loader", "Select the scheme to load interpolation weights"));
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used on not"));
         options_.push_back(new SimpleOption<long>("trans-fast-legendre-transform", "Trans Fast Legendre Transform method"));
+
+        options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
+        options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
 
         //==============================================
         options_.push_back(new Separator("Debugging"));
@@ -213,6 +211,9 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
     args.get("dummy", dummy);
 
 
+    if(args.has("plan") || args.has("plan-script")) {
+        job.set("style", "custom");
+    }
 
 
     if (dummy) {
@@ -267,16 +268,16 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
         return;
     }
 
-    mir::input::GribFileInput input(args(0));
+    eckit::ScopedPtr<mir::input::MIRInput> input(mir::input::MIRInputFactory::build(args(0)));
     mir::output::GribFileOutput output(args(1));
 
-    std::string path_lat, path_lon;
-    ASSERT(args.has("latitudes") ==  args.has("longitudes"));
-    if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
-        input.setAuxilaryFiles(path_lat, path_lon);
-    }
+    // std::string path_lat, path_lon;
+    // ASSERT(args.has("latitudes") ==  args.has("longitudes"));
+    // if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
+    //     input->setAuxilaryFiles(path_lat, path_lon);
+    // }
 
-    process(job, input, output, "field");
+    process(job, *input, output, "field");
 }
 
 

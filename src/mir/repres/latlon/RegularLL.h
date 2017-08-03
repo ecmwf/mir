@@ -16,10 +16,7 @@
 #ifndef mir_repres_latlon_RegularLL_h
 #define mir_repres_latlon_RegularLL_h
 
-#include "atlas/grid.h"
 #include "mir/repres/latlon/LatLon.h"
-#include "mir/util/BoundingBox.h"
-#include "mir/util/Increments.h"
 
 
 namespace mir {
@@ -36,14 +33,11 @@ public:
     // -- Contructors
 
     RegularLL(const param::MIRParametrisation &);
-    RegularLL(const util::BoundingBox &bbox,
-              const util::Increments &increments,
-              const util::Shift& shift);
-
+    RegularLL(const util::BoundingBox&, const util::Increments&);
 
     // -- Destructor
 
-    virtual ~RegularLL(); // Change to virtual if base class
+    virtual ~RegularLL();
 
     // -- Convertors
     // None
@@ -63,47 +57,29 @@ public:
     // -- Class methods
     // None
 
-protected:
-
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    void print(std::ostream &) const; // Change to virtual if base class
-    virtual atlas::Grid atlasGrid() const;
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
-    virtual Representation* globalise(data::MIRField& field) const;
-
-    virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
 
-    // No copy allowed
-    RegularLL(const RegularLL&);
-    RegularLL &operator=(const RegularLL&);
-
     // -- Members
     // None
 
     // -- Methods
-
-    // Called by crop()
-    virtual const RegularLL* cropped(const util::BoundingBox& bbox) const;
-
+    // None
 
     // -- Overridden methods
-    // None
+
+    Iterator* iterator() const;
+    void print(std::ostream&) const;
+
+    atlas::Grid atlasGrid() const;
+
+    void fill(grib_info&) const;
+    void fill(api::MIRJob&) const;
+
+    void makeName(std::ostream&) const;
+    bool sameAs(const Representation&) const;
+
+    // From Representation
+    const RegularLL* cropped(const util::BoundingBox&) const;
 
     // -- Class members
     // None

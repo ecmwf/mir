@@ -16,7 +16,8 @@
 #include "eckit/runtime/Tool.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/RLE.h"
-#include "atlas/grid.h"
+#include "atlas/grid/Grid.h"
+
 
 
 class Grids : public eckit::Tool {
@@ -115,11 +116,6 @@ void Grids::run() {
 
 int main( int argc, char **argv ) {
     Grids tool(argc, argv);
-#if (ECKIT_MAJOR_VERSION == 0) && (ECKIT_MINOR_VERSION <= 10)
-    tool.start();
-    return 0;
-#else
     return tool.start();
-#endif
 }
 

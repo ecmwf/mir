@@ -15,7 +15,7 @@
 
 #include "mir/repres/gauss/reduced/Classic.h"
 
-#include "atlas/grid.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
@@ -29,6 +29,7 @@ namespace reduced {
 
 Classic::Classic(size_t N):
     Reduced(N) {
+    adjustBoundingBoxEastWest(bbox_);
 }
 
 
@@ -38,6 +39,7 @@ Classic::~Classic() {
 
 Classic::Classic(size_t N, const util::BoundingBox &bbox):
     Reduced(N, bbox) {
+    adjustBoundingBoxEastWest(bbox_);
 }
 
 
@@ -68,10 +70,12 @@ atlas::Grid Classic::atlasGrid() const {
     return atlas::grid::ReducedGaussianGrid("N" + std::to_string(N_), domain());
 }
 
+
 const std::vector<long>& Classic::pls() const {
+
     if (pl_.size() == 0) {
 
-        atlas::Grid::Config config;
+        atlas::util::Config config;
         config.set("name", "N" + std::to_string(N_));
         atlas::grid::ReducedGaussianGrid grid(config);
         ASSERT(grid);
@@ -85,6 +89,7 @@ const std::vector<long>& Classic::pls() const {
         pl_ = pl;
     }
     return pl_;
+
 }
 
 

@@ -88,10 +88,14 @@ void BitmapFilter::execute(context::Context & ctx) const {
         double missingValue = field.missingValue();
         std::vector<double> &values = field.direct(f);
 
-        if (values.size() != b.width() * b.height()) {
+        // if (values.size() != b.width() * b.height()) {
+        if (values.size() > b.width() * b.height()) { // TODO: fixe me
             std::ostringstream os;
-            os << "BitmapFilter::execute size mismatch: values=" << values.size()
-               << ", bitmap=" << b.width() << "x" << b.height();
+            os << "BitmapFilter::execute size mismatch: values="
+               << values.size()
+               << ", bitmap=" << b.width() << "x" << b.height()
+               << "="
+               <<  b.width() * b.height();
 
             throw eckit::UserError(os.str());
         }

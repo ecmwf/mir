@@ -15,7 +15,7 @@
 
 #include "mir/repres/gauss/reduced/Octahedral.h"
 
-#include "atlas/grid.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
@@ -29,7 +29,7 @@ namespace reduced {
 
 Octahedral::Octahedral(size_t N):
     Reduced(N) {
-
+    adjustBoundingBoxEastWest(bbox_);
 }
 
 
@@ -39,6 +39,7 @@ Octahedral::~Octahedral() {
 
 Octahedral::Octahedral(long N, const util::BoundingBox &bbox) :
     Reduced(N, bbox) {
+    adjustBoundingBoxEastWest(bbox_);
 }
 
 
@@ -46,15 +47,18 @@ void Octahedral::fill(grib_info &info) const  {
     Reduced::fill(info);
 }
 
+
 void Octahedral::makeName(std::ostream& out) const {
     out << "O" << N_;
     bbox_.makeName(out);
 }
 
+
 bool Octahedral::sameAs(const Representation& other) const {
     const Octahedral* o = dynamic_cast<const Octahedral*>(&other);
     return o && Reduced::sameAs(other);
 }
+
 
 void Octahedral::fill(api::MIRJob &job) const  {
     Reduced::fill(job);
@@ -70,9 +74,10 @@ atlas::Grid Octahedral::atlasGrid() const {
 
 
 const std::vector<long>& Octahedral::pls() const {
+
     if (pl_.size() == 0) {
 
-        atlas::Grid::Config config;
+        atlas::util::Config config;
         config.set("name", "O" + std::to_string(N_));
         atlas::grid::ReducedGaussianGrid grid(config);
         ASSERT(grid);
@@ -86,6 +91,7 @@ const std::vector<long>& Octahedral::pls() const {
         pl_ = pl;
     }
     return pl_;
+
 }
 
 

@@ -12,16 +12,14 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/interpolate/Gridded2RotatedReduced.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
-
-
-
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/RotatedClassic.h"
+
 
 namespace mir {
 namespace action {

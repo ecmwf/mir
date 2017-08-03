@@ -21,7 +21,6 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
-#include "mir/util/Shift.h"
 
 
 namespace mir {
@@ -31,7 +30,7 @@ namespace util {
 namespace {
 
 
-static void check(const Increments& inc) {
+static void check(const Increments& /*inc*/) {
     // ASSERT(inc.west_east_ > 0);
     // ASSERT(inc.south_north_ > 0);
 }
@@ -50,13 +49,13 @@ static size_t computeN(const T& first, const T& last, const eckit::Fraction& inc
 
     // std::cout << l << " " << f << " " << i << std::endl;
 
-    long long n = (l - f) / i;
+    eckit::Fraction::value_type n = (l - f) / i;
 
-    return n + 1;
+    return size_t(n + 1);
 }
 
 
-}
+}  // (anonymous namespace)
 
 
 Increments::Increments(const param::MIRParametrisation& parametrisation) {
@@ -104,6 +103,16 @@ Increments::~Increments() {
 }
 
 
+bool Increments::isPeriodic() const {
+    return (Longitude::GLOBE.fraction() / west_east_).integer();
+}
+
+
+bool Increments::isShifted(const BoundingBox& bbox) const {
+    return isLatitudeShifted(bbox) || isLongitudeShifted(bbox);
+}
+
+
 void Increments::print(std::ostream& out) const {
     out << "Increments["
         << "west_east=" << double(west_east_)
@@ -132,8 +141,8 @@ bool Increments::multipleOf(const Increments& other) const {
 
 
 void Increments::ratio(const Increments& other, size_t& we, size_t& ns) const {
-    we = static_cast<long long>(west_east_ / other.west_east_);
-    ns = static_cast<long long>(south_north_ / other.south_north_);
+    we = size_t(static_cast<eckit::Fraction::value_type>(west_east_ / other.west_east_));
+    ns = size_t(static_cast<eckit::Fraction::value_type>(south_north_ / other.south_north_));
 }
 
 
@@ -178,16 +187,57 @@ Increments Increments::bestSubsetting(const BoundingBox& bbox) const {
 }
 
 
-Shift Increments::shiftFromZeroZero(const BoundingBox& bbox) const {
+static eckit::Fraction adjust(bool up, const eckit::Fraction& target, const eckit::Fraction& increment) {
+    eckit::Fraction r = target / increment;
 
-    eckit::Fraction sn(south_north_);
-    eckit::Fraction we(west_east_);
+    eckit::Fraction::value_type n = r.integralPart();
+    if (!r.integer() && (r > 0) == up) {
+        n += (up ? 1 : -1);
+    }
 
-    eckit::Fraction s = (bbox.south().fraction() / sn).decimalPart() * sn;
-    eckit::Fraction w = (bbox.west().fraction() / we).decimalPart() * we;
+    return n * increment;
+}
 
-    return Shift(w, s);
 
+void Increments::globaliseBoundingBox(BoundingBox& bbox, bool allowLongitudeShift, bool allowLatitudeShift) const {
+    using eckit::Fraction;
+
+    // Latitude limits
+
+    ASSERT(south_north_ > 0);
+    Fraction shift_sn = Fraction(0);
+    if (allowLatitudeShift) {
+        shift_sn = (bbox.south().fraction() / south_north_).decimalPart() * south_north_;
+    }
+
+    Fraction n = adjust(false, Latitude::NORTH_POLE.fraction() - shift_sn, south_north_) + shift_sn;
+    Fraction s = adjust(true,  Latitude::SOUTH_POLE.fraction() - shift_sn, south_north_) + shift_sn;
+
+
+    // Longitude limits
+    // - West for non-periodic grids is not corrected!
+    // - East for periodic grids is W + 360 - increment
+
+    ASSERT(west_east_ > 0);
+    Fraction shift_we = Fraction(0);
+    if (allowLongitudeShift) {
+        shift_we = (bbox.west().fraction() / west_east_).decimalPart() * west_east_;
+    }
+
+    Fraction w = bbox.west().fraction();
+    if (isPeriodic()) {
+        w = adjust(true, Longitude::GREENWICH.fraction() - shift_we, west_east_) + shift_we;
+    }
+
+    Fraction e = adjust(false, w + Longitude::GLOBE.fraction() - shift_we, west_east_) + shift_we;
+    if (e - w == Longitude::GLOBE.fraction()) {
+        e -= west_east_;
+    }
+
+    bbox = BoundingBox(n, w, s, e);
+
+    ASSERT(allowLatitudeShift || !isLatitudeShifted(bbox));
+    ASSERT(allowLongitudeShift || !isLongitudeShifted(bbox));
 }
 
 
@@ -206,10 +256,20 @@ void Increments::makeName(std::ostream& out) const {
         << double(west_east_)
         << "x"
         << double(south_north_)
-        ;
+           ;
 }
 
 
-}  // namespace data
+bool Increments::isLatitudeShifted(const BoundingBox& bbox) const {
+    return !(bbox.south().fraction() / south_north_).integer();
+}
+
+
+bool Increments::isLongitudeShifted(const BoundingBox& bbox) const {
+    return !(bbox.west().fraction() / west_east_).integer();
+}
+
+
+}  // namespace util
 }  // namespace mir
 

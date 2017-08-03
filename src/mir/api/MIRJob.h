@@ -64,6 +64,8 @@ public:
     void execute(input::MIRInput&, output::MIROutput&) const;
     void execute(input::MIRInput&, output::MIROutput&, util::MIRStatistics& statistics) const;
 
+    using SimpleParametrisation::has;
+
     MIRJob& set(const std::string &name, const std::string &value);
     MIRJob& set(const std::string &name, const char *value);
     MIRJob& set(const std::string &name, float value);

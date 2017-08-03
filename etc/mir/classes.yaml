@@ -1,0 +1,166 @@
+---
+# composition of a mixture (mass, amount, volume, ...) with respect to the volume of the mixture (typical units: [kg m**-3])
+concentration: {}
+
+# polar vector angle component (typical units: radians or degrees)
+direction:
+  FieldInfo: vector.1d.polar.angle
+  decomposition: PolarAngleDegreesAsymmetricToCartesian
+  degree: true
+  stats: angle
+  symmetric: false
+
+# polar vector angle component (typical units: radians or degrees)
+direction.degrees-asymmetric:
+  FieldInfo: vector.1d.polar.angle
+  decomposition: PolarAngleDegreesAsymmetricToCartesian
+  degree: true
+  stats: angle
+  symmetric: false
+
+# polar vector angle component (typical units: radians or degrees)
+direction.degrees-symmetric:
+  FieldInfo: vector.1d.polar.angle
+  decomposition: PolarAngleDegreesSymmetricToCartesian
+  degree: true
+  stats: angle
+  symmetric: true
+
+# polar vector angle component (typical units: radians or degrees)
+direction.radians-symmetric:
+  FieldInfo: vector.1d.polar.angle
+  decomposition: PolarAngleRadiansSymmetricToCartesian
+  degree: false
+  stats: angle
+  symmetric: true
+
+# associated to a table
+index:
+  interpolation: nearest-neighbour
+
+# interpretation associated to an index
+index.associated:
+  interpolation: nearest-neighbour
+
+# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
+intensity:
+  FieldInfo: scalar
+  comparison: scalar
+
+# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
+intensity-lsm:
+  FieldInfo: scalar
+  comparison: scalar
+  comparison-absolute-error: 0.1
+  lsm: true
+
+# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
+intensity.vector-2d-cartesian.x:
+  FieldInfo: vector.2d.cartesian.x
+  comparison: scalar
+
+# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
+intensity.vector-2d-cartesian.y:
+  FieldInfo: vector.2d.cartesian.y
+  comparison: scalar
+
+# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
+intensity.vector-3d-cartesian.x:
+  FieldInfo: vector.3d.cartesian.x
+  comparison: scalar
+
+# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
+intensity.vector-3d-cartesian.y:
+  FieldInfo: vector.3d.cartesian.y
+  comparison: scalar
+
+# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
+intensity.vector-3d-cartesian.z:
+  FieldInfo: vector.3d.cartesian.z
+  comparison: scalar
+
+# ratio between two related quantities (time, mass, length, etc.) (typical units: [... s**-1])
+rate: {}
+
+# rate of flow of energy per unit area (typical units: [J m**-2 s**-1], [W m**-2])
+rate.energy-flux: {}
+
+# rate of flow of energy per unit area accumulated in time (typical units: [J m**-2]])
+rate.energy-flux.accumulated: {}
+
+# rate of flow of mass per unit area (typical units: [kg m**-2 s**-1])
+rate.mass-flux: {}
+
+# rate of flow of mass per unit area accumulated in time (typical units: [kg m**-2])
+rate.mass-flux.accumulated: {}
+
+# rate of flow of a volumetric quantity per unit area (typical units [m**3 m**-2 s**-1], [m s**-1])
+rate.volume-flux: {}
+
+# rate of flow of a volumetric quantity per unit area accumulated in time (typical units: [m**3 m**-2], [m])
+rate.volume-flux.accumulated: {}
+
+# quotient of quantities of the same kind (typical units: <non-dimensional>)
+ratio: {}
+
+# area ratio (typical units: [m**2 m**-2])
+ratio.area: {}
+
+# ratio representing a box average (typical units: <non-dimensional>, [0, 1], %)
+ratio.cover: {}
+
+# specific to clouds
+ratio.cover.cloud: {}
+
+# specific to vegetation
+ratio.cover.vegetation:
+  interpolation: nearest-lsm
+
+# (typical units: <non-dimensional>, [0, 1], [-1, 1]?, %)
+ratio.fraction: {}
+
+# (typical units: [s])
+ratio.fraction.accumulated: {}
+
+# mass mixture ratio (typical units: [kg kg**-1])
+ratio.mass: {}
+
+# (typical units: <non-dimensional>, [0, 1])
+ratio.probability: {}
+
+# volumetric ratio (typical units: [m**3 m**-3])
+ratio.volume: {}
+
+# intensity as a function of discrete wavelengths
+spectrum:
+  interpolation: nearest-neighbour
+
+# intensity as a function of discrete wavelengths
+spectrum.associated-direction:
+  interpolation: nearest-neighbour
+
+# intensity as a function of discrete wavelengths
+spectrum.associated-intensity:
+  interpolation: nearest-neighbour
+
+# quantity expressing the internal forces arising from deformation exerted from external forces (typical units: [Pa])
+stress: {}
+
+# stress accumulated in time (typical units: [Pa s])
+stress.accumulated: {}
+
+unknown.experimental:
+  FIXME: issue warning?
+  FieldInfo: scalar
+  comparison: scalar
+
+unknown.missing:
+  FIXME: issue warning?
+  FieldInfo: scalar
+  comparison: scalar
+
+unknown.reserved:
+  FIXME: issue warning?
+  FieldInfo: scalar
+  comparison: scalar
+

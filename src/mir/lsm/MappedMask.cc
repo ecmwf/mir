@@ -24,7 +24,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/os/Stat.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/grid.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
@@ -114,18 +114,17 @@ MappedMask::MappedMask(const std::string &name,
 
     const unsigned char *mask = reinterpret_cast<unsigned char *>(address);
 
-    eckit::ScopedPtr<repres::Iterator> iter(representation.unrotatedIterator());
-    Latitude lat;
-    Longitude lon;
-
-    while (iter->next(lat, lon)) {
+    eckit::ScopedPtr<repres::Iterator> iter(representation.iterator());
+    while (iter->next()) {
+        const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
+        Latitude lat = p.lat;
+        Longitude lon = p.lon;
 
         if (lat < Latitude::SOUTH_POLE) {
             std::ostringstream oss;
             oss << "GRID " << " returns a latitude of " << lat << " (lat+90)=" << (lat + 90.0);
             throw eckit::SeriousBug(oss.str());
         }
-
         ASSERT(lat >= Latitude::SOUTH_POLE);
 
         if (lat > Latitude::NORTH_POLE) {
@@ -133,8 +132,6 @@ MappedMask::MappedMask(const std::string &name,
             oss << "GRID " << " returns a latitude of " << lat << " (lat-90)=" << (lat - 90.0);
             throw eckit::SeriousBug(oss.str());
         }
-
-
         ASSERT(lat <= Latitude::NORTH_POLE);
 
         while (lon >= Longitude::GLOBE) {

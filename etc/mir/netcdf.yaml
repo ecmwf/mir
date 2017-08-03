@@ -1,0 +1,128 @@
+air_pressure_at_sea_level:
+  paramId: 151
+air_temperature:
+  paramId: 167
+atmosphere_relative_vorticity:
+  discipline: 0
+  parameterCategory: 2
+  parameterNumber: 12
+cloud_area_fraction_assuming_maximum_random_overlap:
+  paramId: 164
+dew_point_temperature:
+  paramId: 168
+divergence_of_wind:
+  discipline: 0
+  parameterCategory: 2
+  parameterNumber: 13
+eastward_wind:
+  discipline: 0
+  parameterCategory: 2
+  parameterNumber: 2
+geopotential:
+  discipline: 0
+  parameterCategory: 3
+  parameterNumber: 4
+geopotential_height:
+  discipline: 0
+  parameterCategory: 3
+  parameterNumber: 5
+kinetic_energy_dissipation_in_atmosphere_boundary_layer:
+  discipline: 0
+  parameterCategory: 2
+  parameterNumber: 20
+lagrangian_tendency_of_air_pressure:
+  discipline: 0
+  parameterCategory: 2
+  parameterNumber: 8
+land_binary_mask:
+  discipline: 2
+  parameterCategory: 0
+  parameterNumber: 0
+  typeOfFirstFixedSurface: 1
+lwe_thickness_of_surface_snow_amount:
+  paramId: 141
+moisture_content_of_soil_layer:
+  paramId: 42
+northward_wind:
+  discipline: 0
+  parameterCategory: 2
+  parameterNumber: 3
+open_sea_surface_temperature:
+  paramId: 34
+relative_humidity:
+  discipline: 0
+  parameterCategory: 1
+  parameterNumber: 1
+sea_ice_area_fraction:
+  paramId: 31
+snow_density:
+  paramId: 33
+soil_temperature:
+  paramId: 139
+specific_humidity:
+  discipline: 0
+  parameterCategory: 1
+  parameterNumber: 0
+surface_air_pressure:
+  discipline: 0
+  parameterCategory: 3
+  parameterNumber: 0
+  typeOfFirstFixedSurface: 1
+surface_albedo:
+  paramId: 243
+surface_downward_eastward_stress:
+  discipline: 0
+  parameterCategory: 2
+  parameterNumber: 38
+surface_downward_northward_stress:
+  discipline: 0
+  parameterCategory: 2
+  parameterNumber: 37
+surface_downwelling_shortwave_flux_in_air:
+  discipline: 0
+  parameterCategory: 4
+  parameterNumber: 7
+  typeOfFirstFixedSurface: 1
+  typeOfStatisticalProcessing: 1
+surface_net_downward_shortwave_flux:
+  discipline: 0
+  parameterCategory: 4
+  parameterNumber: 9
+  typeOfFirstFixedSurface: 1
+  typeOfStatisticalProcessing: 1
+surface_net_upward_longwave_flux:
+  discipline: 0
+  parameterCategory: 5
+  parameterNumber: 5
+  typeOfFirstFixedSurface: 1
+  typeOfStatisticalProcessing: 1
+surface_roughness_length:
+  discipline: 2
+  parameterCategory: 0
+  parameterNumber: 1
+surface_temperature:
+  paramId: 235
+surface_upward_latent_heat_flux:
+  discipline: 0
+  parameterCategory: 0
+  parameterNumber: 10
+  typeOfFirstFixedSurface: 1
+  typeOfStatisticalProcessing: 1
+surface_upward_sensible_heat_flux:
+  discipline: 0
+  parameterCategory: 0
+  parameterNumber: 11
+  typeOfFirstFixedSurface: 1
+  typeOfStatisticalProcessing: 1
+toa_outgoing_longwave_flux:
+  discipline: 0
+  parameterCategory: 5
+  parameterNumber: 5
+  typeOfFirstFixedSurface: 8
+  typeOfStatisticalProcessing: 1
+wind_speed:
+  paramId: 49
+x_wind:
+  paramId: 165
+y_wind:
+  paramId: 166

@@ -1,0 +1,6 @@
+# Mars request
+param=2t,levtype=sfc
+# Mir tool options
+--area=48.3/5.2/45.2/11 --gridname=F1280 --interpolation=nearest-lsm
+#--rotation=-40/22
+# grib_get assertions

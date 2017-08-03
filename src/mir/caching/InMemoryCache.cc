@@ -8,17 +8,17 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/config/Resource.h"
-#include "eckit/log/Seconds.h"
-#include "eckit/log/BigNum.h"
-#include "eckit/log/Bytes.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/thread/AutoLock.h"
-
-#include "mir/caching/InMemoryCacheStatistics.h"
 
 #include <time.h>
 #include <sys/time.h>
+
+#include "eckit/log/BigNum.h"
+#include "eckit/log/Bytes.h"
+#include "eckit/log/Seconds.h"
+#include "eckit/thread/AutoLock.h"
+
+#include "mir/caching/InMemoryCache.h"
+#include "mir/caching/InMemoryCacheStatistics.h"
 
 namespace mir {
 
@@ -40,13 +40,13 @@ InMemoryCache<T>::InMemoryCache(const std::string& name, unsigned long long capa
 
 template<class T>
 InMemoryCache<T>::~InMemoryCache() {
-    // if (cleanupAtExit_) {
-    //     eckit::Log::info() << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
-    //     for (auto j = cache_.begin(); j != cache_.end(); ++j) {
-    //         eckit::Log::info() << "Deleting InMemoryCache " << name_ << " " << *((*j).second->ptr_) << std::endl;
-    //         delete (*j).second;
-    //     }
-    // }
+    if (cleanupAtExit_) {
+        // std::cerr << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
+        for (auto j = cache_.begin(); j != cache_.end(); ++j) {
+            // std::cerr << "Deleting InMemoryCache " << name_ << " " << *((*j).second->ptr_) << std::endl;
+            delete (*j).second;
+        }
+    }
 }
 
 

@@ -14,9 +14,12 @@
 #define mir_util_Domain_h
 
 #include <iostream>
-#include "atlas/domain/Domain.h"
+
 #include "mir/util/BoundingBox.h"
 
+namespace atlas {
+class RectangularDomain;
+}
 
 namespace mir {
 namespace util {
@@ -34,17 +37,12 @@ public:
     explicit Domain(Latitude north = Latitude::NORTH_POLE,
                     Longitude west = Longitude::GREENWICH,
                     Latitude south = Latitude::SOUTH_POLE,
-                    Longitude east = Longitude::GLOBE)
-        : BoundingBox(north, west, south, east) {
-    }
+                    Longitude east = Longitude::GLOBE);
 
     // -- Methods
 
     /// Generator for a global Domain
-    static Domain makeGlobal() { return Domain(); }
-
-    /// Generator for an empty Domain
-    static Domain makeEmpty() { return Domain(0, 0, 0, 0); }
+    static Domain makeGlobal();
 
     operator atlas::RectangularDomain() const;
 

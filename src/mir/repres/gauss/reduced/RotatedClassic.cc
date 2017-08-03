@@ -16,10 +16,9 @@
 #include "mir/repres/gauss/reduced/RotatedClassic.h"
 
 #include <iostream>
-#include "atlas/grid.h"
+
 #include "mir/repres/gauss/reduced/RotatedFromPL.h"
 #include "mir/util/Grib.h"
-#include "mir/util/RotatedIterator.h"
 
 
 namespace mir {
@@ -43,28 +42,28 @@ void RotatedClassic::print(std::ostream &out) const {
 }
 
 
-void RotatedClassic::makeName(std::ostream& out) const { NOTIMP; }
+void RotatedClassic::makeName(std::ostream& out) const {
+    Classic::makeName(out);
+    rotation_.makeName(out);
+}
+
 bool RotatedClassic::sameAs(const Representation& other) const { NOTIMP; }
 
 
+Iterator* RotatedClassic::iterator() const {
+    return rotatedIterator(rotation_);
+}
+
+
 void RotatedClassic::fill(grib_info &info) const  {
-#ifdef GRIB_UTIL_GRID_SPEC_REDUCED_ROTATED_GG
     Classic::fill(info);
     rotation_.fill(info);
     info.grid.grid_type = GRIB_UTIL_GRID_SPEC_REDUCED_ROTATED_GG;
-#else
-    NOTIMP;
-#endif
 }
 
 
 void RotatedClassic::fill(api::MIRJob &job) const  {
     NOTIMP;
-}
-
-
-Iterator* RotatedClassic::rotatedIterator() const {
-    return new util::RotatedIterator(Classic::unrotatedIterator(), rotation_);
 }
 
 

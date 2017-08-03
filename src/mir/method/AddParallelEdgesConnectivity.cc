@@ -82,23 +82,28 @@ size_t getTriangleType(const atlas::Mesh& mesh) {
 }  // (anonymous namespace)
 
 
-void AddParallelEdgesConnectivity::operator()(const util::Domain& domain, atlas::Mesh& mesh) const {
+void AddParallelEdgesConnectivity::operator()(atlas::Mesh& mesh, const Latitude& north, const Latitude& south) const {
+    using namespace atlas::array;
+    using namespace atlas::mesh;
 
     // build list of North and South parallels edges
     edge_list_t edges;
     bool addNorthPole = false;
 
-    if (domain.north() < 0.) {
+    ASSERT(south < north);
+    if (north < 0.) {
         addNorthPole = true;
+        ASSERT(north <= Latitude::NORTH_POLE);
         edges = getParallelEdges(
-                    util::Domain(domain.north(), 0, domain.north(), 360),
+                    util::Domain(north, Longitude::GREENWICH, north, Longitude::GLOBE),
                     mesh.cells().node_connectivity(),
-                    atlas::array::make_view< double, 2 >(mesh.nodes().lonlat()) );
-    } else if (domain.south() > 0.) {
+                    make_view< double, 2 >(mesh.nodes().xy()) );
+    } else if (south > 0.) {
+        ASSERT(Latitude::SOUTH_POLE <= south);
         edges = getParallelEdges(
-                    util::Domain(domain.south(), 0, domain.south(), 360),
+                    util::Domain(south, Longitude::GREENWICH, south, Longitude::GLOBE),
                     mesh.cells().node_connectivity(),
-                    atlas::array::make_view< double, 2 >(mesh.nodes().lonlat()) );
+                    make_view< double, 2 >(mesh.nodes().xy()) );
     }
 
     if (edges.empty()) {
@@ -112,26 +117,32 @@ void AddParallelEdgesConnectivity::operator()(const util::Domain& domain, atlas:
     const size_t P = nbOriginalPoints;  // North/South pole index
     mesh.nodes().resize(nbOriginalPoints + 1);
 
-    atlas::mesh::Nodes& nodes = mesh.nodes();
+
+    Nodes& nodes = mesh.nodes();
     nodes.metadata().set<size_t>("NbRealPts", nbOriginalPoints);
 
-    atlas::array::ArrayView<double, 2> coords = atlas::array::make_view< double, 2 >(nodes.field("xyz"));
-    atlas::array::ArrayView<double, 2> lonlat = atlas::array::make_view< double, 2 >(nodes.lonlat());
-    atlas::array::ArrayView<gidx_t, 1> index_nodes = atlas::array::make_view< gidx_t, 1 >(nodes.global_index());
+    const atlas::Projection& proj = mesh.projection();
+    atlas::PointXY Pxy(0, addNorthPole? 90 : -90);
+    atlas::PointLonLat Pll = proj.lonlat(Pxy);
 
-    lonlat(P, LON) = 0;
-    lonlat(P, LAT) = addNorthPole? 90 : -90;
-    eckit::geometry::lonlat_to_3d(lonlat[P].data(), coords[P].data());
+    ArrayView<double, 2> xy = make_view< double, 2 >(nodes.xy());
+    ArrayView<double, 2> lonlat = make_view< double, 2 >(nodes.lonlat());
+    xy(P, LON) = Pxy.x();
+    xy(P, LAT) = Pxy.y();
+    lonlat(P, LON) = Pll.lon();
+    lonlat(P, LAT) = Pll.lat();
+
+    ArrayView<gidx_t, 1> index_nodes = make_view< gidx_t, 1 >(nodes.global_index());
     index_nodes(P) = idx_t(P + 1);
 
 
     // resize connectivity: add number-of-edges "parallel" elements touching pole
-    atlas::mesh::Elements& elems = mesh.cells().elements(getTriangleType(mesh));
+    Elements& elems = mesh.cells().elements(getTriangleType(mesh));
     const size_t nbOriginalTriags = elems.size();
     elems.add(edges.size());
 
-    atlas::mesh::BlockConnectivity& connect = elems.node_connectivity();
-    atlas::array::ArrayView<gidx_t, 1> index_elems = atlas::array::make_view< gidx_t, 1 >(elems.global_index());
+    BlockConnectivity& connect = elems.node_connectivity();
+    ArrayView<gidx_t, 1> index_elems = make_view< gidx_t, 1 >(elems.global_index());
 
     const size_t offset = elems.begin();
     size_t j = nbOriginalTriags;

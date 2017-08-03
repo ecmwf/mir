@@ -17,46 +17,78 @@
 #ifndef mir_method_PointSearch_h
 #define mir_method_PointSearch_h
 
+#include <iostream>
 #include <vector>
+
+#include "eckit/container/sptree/SPNodeInfo.h"
+#include "eckit/container/sptree/SPValue.h"
+#include "eckit/geometry/Point3.h"
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "atlas/interpolation/method/PointIndex3.h"
-#include "mir/util/Compare.h"
 
 
 namespace mir {
-namespace util {
-class MIRGrid;
+
+namespace param {
+class MIRParametrisation;
+};
+
+namespace repres {
+class Representation;
 }
 }
 
 
 namespace mir {
 namespace util {
+
+
+class PointSearchTree {
+public:
+    typedef eckit::geometry::Point3             Point;
+    typedef size_t                              Payload;
+    typedef eckit::SPValue<PointSearchTree>     PointValueType;
+
+public:
+    virtual ~PointSearchTree();
+
+    virtual void build(std::vector<PointValueType>&);
+
+    virtual void insert(const PointValueType&);
+    virtual void statsPrint(std::ostream&, bool);
+    virtual void statsReset();
+
+    virtual PointValueType nearestNeighbour(const Point&);
+    virtual std::vector<PointValueType> kNearestNeighbours(const Point&, size_t k);
+    virtual std::vector<PointValueType> findInSphere(const Point&, double);
+
+    virtual bool ready() const;
+    virtual void commit();
+    virtual void print(std::ostream &) const;
+
+    virtual void lock();
+    virtual void unlock();
+
+    friend std::ostream &operator<<(std::ostream &s, const PointSearchTree &p) {
+        p.print(s);
+        return s;
+    }
+};
 
 
 /// Class for fast searches in point clouds following kd-tree algorithms
 /// @todo test kd-tree stored in shared memory?
 class PointSearch : private eckit::NonCopyable {
-private:
+public:
 
-    typedef atlas::interpolation::method::PointIndex3           TreeType;
-    typedef atlas::interpolation::method::PointIndex3::Point    Point;
-    typedef atlas::interpolation::method::PointIndex3::iterator iterator;
+    typedef PointSearchTree::Payload        ValueType;
+    typedef PointSearchTree::Point          PointType;
+    typedef PointSearchTree::PointValueType PointValueType;
 
 public:
 
-    typedef atlas::interpolation::method::PointIndex3::Value PointValueType;
-    typedef eckit::geometry::Point3   PointType;
-
-    typedef compare::ACompareFn  <size_t> CompareType;
-    typedef compare::IsAnythingFn<size_t> CompareTypeNone;
-
-public:
-
-    PointSearch(const std::vector<Point>& ipts);
-
-    PointSearch(const MIRGrid& sp, const CompareType& isok=CompareTypeNone());
+    PointSearch(const param::MIRParametrisation& parametrisation,
+                const repres::Representation&);
 
 public:
 
@@ -72,16 +104,54 @@ public:
     void statsPrint(std::ostream& o, bool fancy) const;
     void statsReset() const;
 
-protected:
-
-    eckit::ScopedPtr<TreeType> tree_;
-
 private:
 
-    void init(const std::vector<PointType>& points);
-    void init(const MIRGrid& sp, const CompareType& isok=CompareTypeNone());
+    const param::MIRParametrisation& parametrisation_;
+    eckit::ScopedPtr<PointSearchTree> tree_;
+
+
+    void build(const repres::Representation& r);
+
 
 };
+
+
+class PointSearchTreeFactory {
+
+    std::string name_;
+
+    virtual PointSearchTree *make(const repres::Representation& r,
+                                  const param::MIRParametrisation &,
+                                  size_t itemCount) = 0;
+
+protected:
+
+    PointSearchTreeFactory(const std::string &);
+
+    virtual  ~PointSearchTreeFactory();
+
+public:
+
+    static PointSearchTree *build( const repres::Representation& r,
+                                   const param::MIRParametrisation&,
+                                   size_t itemCount);
+
+    static void list(std::ostream&);
+
+};
+
+
+template<class T>
+class PointSearchTreeBuilder : public PointSearchTreeFactory {
+    virtual PointSearchTree *make( const repres::Representation& r,
+                                   const param::MIRParametrisation &param,
+                                   size_t itemCount) {
+        return new T(r, param, itemCount);
+    }
+public:
+    PointSearchTreeBuilder(const std::string &name) : PointSearchTreeFactory(name) {}
+};
+
 
 
 }  // namespace util

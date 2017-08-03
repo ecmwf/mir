@@ -17,29 +17,25 @@
 #ifndef mir_method_MIRGrid_h
 #define mir_method_MIRGrid_h
 
+#include <string>
 #include <vector>
-#include "eckit/memory/NonCopyable.h"
-#include "eckit/memory/ScopedPtr.h"
-#include "atlas/array/Array.h"
 #include "atlas/grid/Grid.h"
+#include "atlas/meshgenerator.h"
 #include "mir/util/Domain.h"
 
-
-namespace atlas {
-class Mesh;
-}
-namespace mir {
-namespace method {
-class MethodWeighted;
-}
-namespace repres {
-class Representation;
-}
-}
 
 namespace eckit {
 class MD5;
 }
+namespace mir {
+namespace param {
+class MIRParametrisation;
+}
+namespace util {
+class MIRStatistics;
+}
+}
+
 
 namespace mir {
 namespace util {
@@ -48,43 +44,45 @@ namespace util {
 class MIRGrid {
 public:
 
+    // -- Types
+
+    // Deriving from any eckit::Parametrisation should work
+    class MeshGenParams : public atlas::MeshGenerator::Parameters {
+    public:
+        MeshGenParams();
+        MeshGenParams(const std::string& label, const param::MIRParametrisation&);
+        void hash(eckit::MD5&) const;
+        std::string meshGenerator_;
+        bool meshParallelEdgesConnectivity_;
+        bool meshXYZField_;
+        bool meshCellCentres_;
+        std::string dump_;
+    };
+
     // -- Contructors
 
-    MIRGrid(const MIRGrid& other);
+    explicit MIRGrid(const atlas::Grid&);
 
-    explicit MIRGrid(const atlas::Grid& grid, const Domain&);
-
-    // -- Operators
-
-    MIRGrid& operator=(const MIRGrid& other);
+    MIRGrid(const MIRGrid&);
 
     // -- Methods
 
-    const Domain& domain() const;
-
-    operator const atlas::Grid&() const;
-
-    atlas::Mesh& mesh(const method::MethodWeighted&) const;
-    const atlas::array::Array& coordsLonLat() const;
-    const atlas::array::Array& coordsXYZ() const;
+    const atlas::Mesh& mesh(util::MIRStatistics&, const MeshGenParams&) const;
+    const atlas::Mesh& mesh() const;
 
     void hash(eckit::MD5&) const;
-
-    // std::string name() const;
-    // std::string uid() const;
-
-    size_t size() const;
-
 
 private:
 
     // -- Members
 
-    const Domain domain_;
-    const atlas::Grid grid_;
-    mutable atlas::Mesh* mesh_;
-    mutable eckit::ScopedPtr< atlas::array::Array > coordsLonLat_;
-    mutable eckit::ScopedPtr< atlas::array::Array > coordsXYZ_;
+    atlas::Grid grid_;
+    mutable atlas::Mesh mesh_;
+    mutable MeshGenParams meshGenParams_;
+
+    // -- Methods
+
+    atlas::Mesh generateMeshAndCache(util::MIRStatistics&, const MeshGenParams&) const;
 
 };
 

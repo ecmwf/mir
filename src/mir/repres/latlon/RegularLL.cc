@@ -16,11 +16,8 @@
 #include "mir/repres/latlon/RegularLL.h"
 
 #include <iostream>
-#include "eckit/types/FloatCompare.h"
-#include "eckit/types/Fraction.h"
-#include "atlas/grid.h"
+
 #include "mir/config/LibMir.h"
-#include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
@@ -31,14 +28,14 @@ namespace repres {
 namespace latlon {
 
 
-RegularLL::RegularLL(const param::MIRParametrisation &parametrisation):
-    LatLon(parametrisation) {}
+RegularLL::RegularLL(const param::MIRParametrisation& parametrisation) :
+    LatLon(parametrisation) {
+}
 
 
-RegularLL::RegularLL(const util::BoundingBox &bbox,
-                     const util::Increments &increments,
-                     const util::Shift& shift) :
-    LatLon(bbox, increments, shift) {
+RegularLL::RegularLL(const util::BoundingBox& bbox,
+                     const util::Increments& increments) :
+    LatLon(bbox, increments) {
 }
 
 
@@ -46,10 +43,26 @@ RegularLL::~RegularLL() {
 }
 
 
-// Called by RegularLL::crop()
-const RegularLL *RegularLL::cropped(const util::BoundingBox &bbox) const {
-    // eckit::Log::debug<LibMir>() << "Create cropped copy as RegularLL bbox=" << bbox << std::endl;
-    return new RegularLL(bbox, increments_, shift_);
+Iterator* RegularLL::iterator() const {
+
+    class RegularLLIterator : protected LatLonIterator, public Iterator {
+        void print(std::ostream& out) const {
+            out << "RegularLLIterator[";
+            Iterator::print(out);
+            out << ",";
+            LatLonIterator::print(out);
+            out << "]";
+        }
+        bool next(Latitude& lat, Longitude& lon) {
+            return LatLonIterator::next(lat, lon);
+        }
+    public:
+        RegularLLIterator(size_t ni, size_t nj, Latitude north, Longitude west, double we, double ns) :
+            LatLonIterator(ni, nj, north, west, we, ns) {
+        }
+    };
+
+    return new RegularLLIterator(ni_, nj_, bbox_.north(), bbox_.west(), increments_.west_east(), increments_.south_north());
 }
 
 
@@ -59,30 +72,6 @@ void RegularLL::print(std::ostream &out) const {
     out << "]";
 }
 
-
-void RegularLL::makeName(std::ostream& out) const {
-    LatLon::makeName(out);
-}
-
-
-bool RegularLL::sameAs(const Representation& other) const {
-    const RegularLL* o = dynamic_cast<const RegularLL*>(&other);
-    return o && LatLon::sameAs(other);
-}
-
-
-void RegularLL::fill(grib_info &info) const  {
-    // See copy_spec_from_ksec.c in libemos for info
-    // Warning: scanning mode not considered
-
-    LatLon::fill(info);
-    info.grid.grid_type = GRIB_UTIL_GRID_SPEC_REGULAR_LL;
-}
-
-
-void RegularLL::fill(api::MIRJob &job) const  {
-    LatLon::fill(job);
-}
 
 
 atlas::Grid RegularLL::atlasGrid() const {
@@ -100,46 +89,34 @@ atlas::Grid RegularLL::atlasGrid() const {
 }
 
 
-Representation* RegularLL::globalise(data::MIRField& field) const {
-    ASSERT(field.representation() == this);
+void RegularLL::fill(grib_info& info) const  {
+    LatLon::fill(info);
 
-    if (isGlobal()) {
-        return 0;
-    }
+    // See copy_spec_from_ksec.c in libemos for info
+    // Warning: scanning mode not considered
+    info.grid.grid_type = GRIB_UTIL_GRID_SPEC_REGULAR_LL;
+}
 
-    ASSERT(!shift_);
 
-    // For now, we only use that function for the LAW model, so we only grow by the end (south pole)
-    ASSERT(bbox_.north() == Latitude::NORTH_POLE);
-    ASSERT(bbox_.west() == Longitude::GREENWICH);
-    ASSERT(bbox_.east() + increments_.west_east() == Longitude::GLOBE);
+void RegularLL::fill(api::MIRJob& job) const  {
+    LatLon::fill(job);
+}
 
-    util::BoundingBox newbbox(bbox_.north(), bbox_.west(), -90, bbox_.east());
 
-    eckit::ScopedPtr<RegularLL> newll(new RegularLL(newbbox, increments_, util::Shift(0, 0)));
+void RegularLL::makeName(std::ostream& out) const {
+    LatLon::makeName(out);
+}
 
-    ASSERT(newll->nj_ > nj_);
-    ASSERT(newll->ni_ == ni_);
 
-    size_t n = ni_ * nj_;
-    size_t newn = newll->ni_ * newll->nj_;
-    double missingValue = field.missingValue();
+bool RegularLL::sameAs(const Representation& other) const {
+    const RegularLL* o = dynamic_cast<const RegularLL*>(&other);
+    return o && LatLon::sameAs(other);
+}
 
-    for (size_t i = 0; i < field.dimensions(); i++ ) {
-        std::vector<double> newvalues(newn, missingValue);
-        const std::vector<double> &values = field.direct(i);
-        ASSERT(values.size() == n);
 
-        for (size_t j = 0 ; j < n; ++j) {
-            newvalues[j] = values[j];
-        }
-
-        field.update(newvalues, i);
-    }
-
-    field.hasMissing(true);
-
-    return newll.release();
+const RegularLL* RegularLL::cropped(const util::BoundingBox& bbox) const {
+    // Called by AreaCropper::execute and GlobaliseFilter::execute
+    return new RegularLL(bbox, increments_);
 }
 
 

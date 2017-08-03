@@ -64,7 +64,7 @@ void GlobaliseFilter::execute(context::Context & ctx) const {
 
 
 namespace {
-static ActionBuilder< GlobaliseFilter > bitmapFilter("filter.globalise");
+static ActionBuilder< GlobaliseFilter > globaliseFilter("filter.globalise");
 }
 
 

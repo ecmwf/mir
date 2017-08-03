@@ -19,7 +19,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/grid.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -27,8 +27,7 @@
 #include "mir/method/Method.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Compare.h"
-#include "mir/util/MIRGrid.h"
+
 #include "mir/util/MIRStatistics.h"
 
 
@@ -70,7 +69,7 @@ GribFileLSM::GribFileLSM(
     eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::debug<LibMir>() << "LSM interpolation method is " << *method << std::endl;
 
-    if (!(field.representation()->domain().isGlobal())) {
+    if (!(field.representation()->isGlobal())) {
         std::ostringstream oss;
         oss << "Input LSM file '" << path_ << "' should be global";
         throw eckit::UserError(oss.str());
@@ -82,14 +81,16 @@ GribFileLSM::GribFileLSM(
 
     double threshold;
     ASSERT(parametrisation.get("lsm-value-threshold", threshold));
-    const util::compare::IsGreaterOrEqualFn< double > check_lsm(threshold);
+
 
     ASSERT(!ctx.field().hasMissing());
     ASSERT(ctx.field().dimensions() == 1);
 
     const std::vector< double > &values = ctx.field().values(0);
     mask_.resize(values.size());
-    std::transform(values.begin(), values.end(), mask_.begin(), check_lsm);
+
+    /// Compare values inequality, "is greater or equal to"
+    std::transform(values.begin(), values.end(), mask_.begin(), [&](double value) { return value >= threshold; });
 }
 
 
@@ -122,7 +123,7 @@ void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
 
     md5 << path.asString();
     md5 << interpolation;
-    md5 << representation.grid();
+    md5 << representation.uniqueName();
 }
 
 

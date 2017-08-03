@@ -7,5 +7,6 @@
 
 #cmakedefine ATLAS_HAVE_TRANS
 #cmakedefine HAVE_NETCDF
+#cmakedefine HAVE_ATLAS
 
 #endif // mir_config_h

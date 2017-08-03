@@ -17,9 +17,7 @@
 #define Gridded2RotatedLL_H
 
 #include "mir/action/interpolate/Gridded2LatLon.h"
-#include "mir/util/Increments.h"
 #include "mir/util/Rotation.h"
-#include "mir/util/Shift.h"
 
 
 namespace mir {

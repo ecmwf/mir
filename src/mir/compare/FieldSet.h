@@ -20,7 +20,6 @@
 //include <deque>
 
 #include "mir/compare/Field.h"
-#include "mir/compare/FieldInfo.h"
 
 
 namespace mir {

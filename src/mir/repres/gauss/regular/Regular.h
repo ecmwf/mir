@@ -35,7 +35,7 @@ public:
 
     Regular(const param::MIRParametrisation&);
     Regular(size_t N);
-    Regular(size_t N, const util::BoundingBox& bbox);
+    Regular(size_t N, const util::BoundingBox&);
 
     // -- Destructor
 
@@ -74,26 +74,45 @@ protected:
 
     // -- Overridden methods
 
-    virtual Iterator* rotatedIterator() const; // After rotation
-
-    virtual Iterator* unrotatedIterator() const; // Before rotation
-
     virtual void fill(grib_info&) const;
 
     virtual void fill(api::MIRJob&) const;
 
-    virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
+    virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
 
     virtual atlas::Grid atlasGrid() const;
 
     virtual void makeName(std::ostream&) const;
 
-    virtual bool sameAs(const Representation& other) const;
+    virtual bool sameAs(const Representation&) const;
+
+    eckit::Fraction getSmallestIncrement() const;
+
+    void adjustBoundingBoxEastWest(util::BoundingBox&);
 
     bool isPeriodicWestEast() const;
 
     // -- Class members
-    // None
+
+    class RegularIterator {
+        const std::vector<double>& latitudes_;
+        const eckit::Fraction west_;
+        const size_t N_;
+        const size_t Ni_;
+        const size_t Nj_;
+        eckit::Fraction lon_;
+        const eckit::Fraction inc_;
+        size_t i_;
+        size_t j_;
+        size_t k_;
+        size_t count_;
+    protected:
+        ~RegularIterator();
+        void print(std::ostream&) const;
+        bool next(Latitude&, Longitude&);
+    public:
+        RegularIterator(const std::vector<double>& latitudes, size_t N, size_t Ni, size_t Nj, const util::Domain&);
+    };
 
     // -- Class methods
     // None
@@ -101,11 +120,6 @@ protected:
 private:
 
     Regular();
-
-    // No copy allowed
-
-    Regular(const Regular&);
-    Regular& operator=(const Regular&);
 
     // -- Members
     // None
@@ -115,7 +129,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void shape(size_t &ni, size_t &nj) const;
+    virtual void shape(size_t& ni, size_t& nj) const;
 
     // -- Class members
     // None

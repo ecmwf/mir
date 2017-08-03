@@ -11,14 +11,11 @@
 #ifndef mir_method_AddParallelEdgesConnectivity_h
 #define mir_method_AddParallelEdgesConnectivity_h
 
+#include "mir/util/Types.h"
+
 
 namespace atlas {
 class Mesh;
-}
-namespace mir {
-namespace util {
-class Domain;
-}
 }
 
 
@@ -26,10 +23,10 @@ namespace mir {     // actually should be namespace atlas::mesh::actions
 namespace method {  // ...
 
 
-/// Adds traiangles connecting the poles and parallel edges to the mesh
+/// Adds triangles connecting the poles and parallel edges to the mesh
 class AddParallelEdgesConnectivity {
 public:
-    void operator()(const util::Domain&, atlas::Mesh&) const;
+    void operator()(atlas::Mesh&, const Latitude& north, const Latitude& south) const;
 };
 
 

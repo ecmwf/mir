@@ -17,16 +17,12 @@
 
 #include <algorithm>
 #include <iostream>
-#include "atlas/grid.h"
-#include "mir/action/misc/AreaCropper.h"
+#include "eckit/types/Fraction.h"
+#include "eckit/utils/MD5.h"
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
-#include "mir/util/Compare.h"
 #include "mir/util/Domain.h"
-#include "eckit/types/Fraction.h"
-#include "eckit/utils/MD5.h"
-
 
 
 namespace mir {
@@ -65,6 +61,15 @@ void ReducedLL::makeName(std::ostream& out) const {
 }
 
 
+size_t ReducedLL::numberOfPoints() const {
+    size_t total = 0;
+    for (auto j = pl_.begin(); j != pl_.end(); ++j) {
+        total += *j;
+    }
+    return total;
+}
+
+
 bool ReducedLL::sameAs(const Representation& other) const {
     const ReducedLL* o = dynamic_cast<const ReducedLL*>(&other);
     return o && (Nj_ == o->Nj_) && (bbox_ == o->bbox_) && (pl_ == o->pl_);
@@ -84,15 +89,19 @@ void ReducedLL::fill(api::MIRJob &job) const  {
 }
 
 
+
 atlas::Grid ReducedLL::atlasGrid() const {
     const util::Domain dom = domain();
 
-    using atlas::grid::StructuredGrid;
-    using atlas::grid::LinearSpacing;
-    StructuredGrid::XSpace xspace({ {dom.west().value(), dom.east().value()} }, pl_, !dom.isPeriodicEastWest() );
-    StructuredGrid::YSpace yspace( LinearSpacing( { {dom.north().value(), dom.south().value()} }, pl_.size()));
+    atlas::grid::StructuredGrid::XSpace xspace({ {dom.west().value(), dom.east().value()} }, pl_, !dom.isPeriodicEastWest() );
+    atlas::grid::StructuredGrid::YSpace yspace( atlas::grid::LinearSpacing( { {dom.north().value(), dom.south().value()} }, pl_.size()));
 
     return atlas::grid::StructuredGrid(xspace, yspace);
+}
+
+
+std::string ReducedLL::atlasMeshGenerator() const {
+    return "structured";
 }
 
 
@@ -112,7 +121,7 @@ bool ReducedLL::includesNorthPole() const {
 
 
 bool ReducedLL::includesSouthPole() const {
-    return bbox_.north() == Latitude::SOUTH_POLE;
+    return bbox_.south() == Latitude::SOUTH_POLE;
 }
 
 
@@ -231,13 +240,8 @@ public:
 };
 
 
-Iterator *ReducedLL::unrotatedIterator() const {
+Iterator *ReducedLL::iterator() const {
     return new ReducedLLIterator(Nj_, pl_, domain());
-}
-
-
-Iterator* ReducedLL::rotatedIterator() const {
-    return unrotatedIterator();
 }
 
 

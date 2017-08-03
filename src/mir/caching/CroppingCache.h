@@ -10,10 +10,12 @@
 
 /// @author Peter Bispham
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date May 2015
 
-#ifndef mir_method_WeightCache_H
-#define mir_method_WeightCache_H
+
+#ifndef mir_method_WeightCache_h
+#define mir_method_WeightCache_h
 
 #include "eckit/container/CacheManager.h"
 #include "mir/util/BoundingBox.h"
@@ -23,6 +25,7 @@ namespace mir {
 namespace caching {
 
 //----------------------------------------------------------------------------------------------------------------------
+
 struct CroppingCacheEntry {
 
     ~CroppingCacheEntry();
@@ -30,7 +33,7 @@ struct CroppingCacheEntry {
     std::vector<size_t> mapping_;
     util::BoundingBox bbox_;
 
-    void print(std::ostream& s) const;
+    void print(std::ostream&) const;
 
     friend std::ostream& operator<<(std::ostream& out,
                                     const CroppingCacheEntry& e) {
@@ -40,22 +43,23 @@ struct CroppingCacheEntry {
 
     size_t footprint() const;
 
-    void save(const eckit::PathName& path) const;
-    void load(const eckit::PathName& path);
+    void save(const eckit::PathName&) const;
+    void load(const eckit::PathName&);
 
 };
 
 struct CroppingCacheTraits {
 
     typedef CroppingCacheEntry value_type;
+    typedef eckit::CacheManagerNoLock Locker;
 
     static const char* name();
     static int version();
     static const char* extension();
 
-    static void save(const eckit::CacheManagerBase&, const value_type& c, const eckit::PathName& path);
+    static void save(const eckit::CacheManagerBase&, const value_type& c, const eckit::PathName&);
 
-    static void load(const eckit::CacheManagerBase&, value_type& c, const eckit::PathName& path);
+    static void load(const eckit::CacheManagerBase&, value_type& c, const eckit::PathName&);
 };
 
 

@@ -37,7 +37,9 @@ static size_t buffer_size() {
 
 static long readcb(void *data, void *buffer, long len) {
     eckit::DataHandle *handle = reinterpret_cast<eckit::DataHandle *>(data);
-    return handle->read(buffer, len);
+    const long l = handle->read(buffer, len);
+    // ecCodes only interprets a -1 as EOF
+    return l == 0 ? -1 : l;
 }
 
 

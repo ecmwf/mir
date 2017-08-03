@@ -59,14 +59,14 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
     const repres::Representation* representation(field.representation());
     ASSERT(representation);
 
-    eckit::ScopedPtr<repres::Iterator> iter(representation->unrotatedIterator());
+    eckit::ScopedPtr<repres::Iterator> iter(representation->iterator());
+
     std::vector<double> scale(N);
-    Latitude lat = 0;
-    Longitude lon = 0;
-    for (std::vector<double>::iterator s = scale.begin(); s != scale.end() && iter->next(lat, lon); ++s) {
-        *s = (lat == Latitude::SOUTH_POLE)? 0.
-           : (lat == Latitude::NORTH_POLE)? 0.
-           : 1./std::cos( util::angles::degree_to_radian(lat.value()) );
+    for (std::vector<double>::iterator s = scale.begin(); s != scale.end() && iter->next(); ++s) {
+        const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
+        *s = (p.lat == Latitude::SOUTH_POLE)? 0.
+           : (p.lat == Latitude::NORTH_POLE)? 0.
+           : 1./std::cos( util::angles::degree_to_radian(p.lat.value()) );
     }
 
 

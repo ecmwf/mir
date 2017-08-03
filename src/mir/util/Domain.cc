@@ -12,9 +12,22 @@
 
 #include "mir/util/Domain.h"
 
+#include "mir/api/Atlas.h"
+
 
 namespace mir {
 namespace util {
+
+
+Domain::Domain(Latitude north, Longitude west, Latitude south, Longitude east) :
+    BoundingBox(north, west, south, east) {
+}
+
+
+Domain Domain::makeGlobal() {
+    return Domain(Latitude::NORTH_POLE, Longitude::GREENWICH,
+                  Latitude::SOUTH_POLE, Longitude::GLOBE);
+}
 
 
 Domain::operator atlas::RectangularDomain() const {
@@ -22,6 +35,7 @@ Domain::operator atlas::RectangularDomain() const {
         {{west().value(),  east().value()} },
         {{south().value(), north().value()} } );
 }
+
 
 
 void Domain::print(std::ostream& os) const {

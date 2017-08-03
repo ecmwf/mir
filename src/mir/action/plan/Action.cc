@@ -31,6 +31,7 @@ namespace {
 static eckit::Mutex *local_mutex = 0;
 static std::map<std::string, ActionFactory *> *m = 0;
 static pthread_once_t once = PTHREAD_ONCE_INIT;
+static std::map<std::string, std::string> aliases;
 
 
 static void init() {
@@ -57,7 +58,7 @@ ActionFactory::ActionFactory(const std::string &name):
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    if(m->find(name) != m->end()) {
+    if (m->find(name) != m->end()) {
         throw eckit::SeriousBug("ActionFactory: duplication action: " + name);
     }
 
@@ -73,19 +74,50 @@ ActionFactory::~ActionFactory() {
 }
 
 
-Action *ActionFactory::build(const std::string& name, const param::MIRParametrisation& params) {
+Action *ActionFactory::build(const std::string& name, const param::MIRParametrisation& params, bool exact) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     eckit::Log::debug<LibMir>() << "Looking for ActionFactory [" << name << "]" << std::endl;
 
-    std::map<std::string, ActionFactory *>::const_iterator j = m->find(name);
+    auto j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No ActionFactory for [" << name << "]" << std::endl;
-        eckit::Log::error() << "ActionFactories are:" << std::endl;
-        for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No ActionFactory called ") + name);
+
+        if (!exact) {
+            // pass
+
+            auto k = aliases.find(name);
+            if (k != aliases.end()) {
+                j = m->find((*k).second);
+            }
+            else {
+                for (auto p = m->begin() ; p != m->end() ; ++p) {
+                    if ((*p).first.find(name) != std::string::npos) {
+
+                        if (j != m->end()) {
+                            std::ostringstream oss;
+                            oss << "ActionFactory [" << name << "] is ambiguaous, could be ["
+                            << (*j).first  << "] or [" << (*p).first << "]";
+                                eckit::Log::error() << "   " << (*j).first << std::endl;
+                            throw eckit::SeriousBug(oss.str());
+                        }
+
+                        j = p;
+                    }
+                }
+
+                if(j != m->end()) {
+                    aliases[name] = (*j).first;
+                }
+            }
+        }
+        if (j == m->end()) {
+            eckit::Log::error() << "No ActionFactory for [" << name << "]" << std::endl;
+            eckit::Log::error() << "ActionFactories are:" << std::endl;
+            for (j = m->begin() ; j != m->end() ; ++j)
+                eckit::Log::error() << "   " << (*j).first << std::endl;
+            throw eckit::SeriousBug(std::string("No ActionFactory called ") + name);
+        }
     }
 
     return (*j).second->make(params);

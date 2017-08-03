@@ -17,19 +17,22 @@
 
 #include <algorithm>
 #include <iostream>
+
+
+#include "mir/api/Atlas.h"
+
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
-#include "atlas/library/config.h"
-#ifdef ATLAS_HAVE_TRANS
-#include "transi/trans.h"
-#endif
+
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -39,17 +42,15 @@ namespace latlon {
 
 LatLon::LatLon(const param::MIRParametrisation& parametrisation) :
     Gridded(parametrisation),
-    increments_(parametrisation),
-    shift_(parametrisation) {
+    increments_(parametrisation) {
     ASSERT(parametrisation.get("Ni", ni_));
     ASSERT(parametrisation.get("Nj", nj_));
 }
 
 
-LatLon::LatLon(const util::BoundingBox& bbox, const util::Increments& increments, const util::Shift& shift) :
+LatLon::LatLon(const util::BoundingBox& bbox, const util::Increments& increments) :
     Gridded(bbox),
-    increments_(increments),
-    shift_(shift) {
+    increments_(increments){
     setNiNj();
 }
 
@@ -120,7 +121,6 @@ void LatLon::print(std::ostream& out) const {
     out << "LatLon["
         <<  "bbox=" << bbox_
         << ",increments=" << increments_
-        << ",shift=" << shift_
         << ",ni=" << ni_
         << ",nj=" << nj_
         << "]";
@@ -130,8 +130,6 @@ void LatLon::print(std::ostream& out) const {
 void LatLon::fill(grib_info& info) const {
     // See copy_spec_from_ksec.c in libemos for info
     // Warning: scanning mode not considered
-
-    info.grid.grid_type = GRIB_UTIL_GRID_SPEC_REGULAR_LL;
 
     info.grid.Ni = ni_;
     info.grid.Nj = nj_;
@@ -151,13 +149,12 @@ void LatLon::makeName(std::ostream& out) const {
     out << "LL";
     increments_.makeName(out);
     bbox_.makeName(out);
-    shift_.makeName(out);
 }
 
 
 bool LatLon::sameAs(const Representation& other) const {
     const LatLon* o = dynamic_cast<const LatLon*>(&other);
-    return o && (bbox_ == o->bbox_) && (increments_ == o->increments_) && (shift_ == o->shift_);
+    return o && (bbox_ == o->bbox_) && (increments_ == o->increments_);
 }
 
 
@@ -192,92 +189,65 @@ bool LatLon::includesSouthPole() const {
 }
 
 
-class LatLonIterator : public Iterator {
-
-    size_t ni_;
-    size_t nj_;
-
-    eckit::Fraction north_;
-    eckit::Fraction west_;
-    eckit::Fraction we_;
-    eckit::Fraction ns_;
-
-    size_t i_;
-    size_t j_;
-
-    size_t count_;
-
-    eckit::Fraction lat_;
-    eckit::Fraction lon_;
-
-    virtual void print(std::ostream& out) const {
-        out << "LatLonIterator["
-            <<  "ni="     << ni_
-            << ",nj="     << nj_
-            << ",north="  << north_
-            << ",west="   << west_
-            << ",we="     << we_
-            << ",ns="     << ns_
-            << ",i="      << i_
-            << ",j="      << j_
-            << ",count="  << count_
-            << "]";
-    }
-
-    virtual bool next(Latitude& lat, Longitude& lon) {
-        if (j_ < nj_) {
-            if (i_ < ni_) {
-                lat = lat_;
-                lon = lon_;
-                lon_ += we_;
-                i_++;
-                if (i_ == ni_) {
-                    j_++;
-                    i_ = 0;
-                    lat_ -= ns_;
-                    lon_ = west_;
-                }
-                count_++;
-                return true;
-            }
-        }
-        return false;
-    }
-
-public:
-    LatLonIterator(size_t ni, size_t nj, Latitude north, Longitude west, double we, double ns) :
-        ni_(ni),
-        nj_(nj),
-        north_(north.fraction()),
-        west_(west.fraction()),
-        we_(we),
-        ns_(ns),
-        i_(0),
-        j_(0),
-        count_(0) {
-        lat_ = north_;
-        lon_ = west_;
-    }
-
-    ~LatLonIterator() {
-        ASSERT(count_ == ni_ * nj_);
-    }
-
-};
-
-
-Iterator *LatLon::unrotatedIterator() const {
-    return new LatLonIterator(ni_,
-                              nj_,
-                              bbox_.north(),
-                              bbox_.west(),
-                              increments_.west_east(),
-                              increments_.south_north());
+size_t LatLon::numberOfPoints() const {
+    ASSERT(ni_);
+    ASSERT(nj_);
+    return ni_ * nj_;
 }
 
 
-Iterator* LatLon::rotatedIterator() const {
-    return unrotatedIterator();
+Representation* LatLon::globalise(data::MIRField& field) const {
+    ASSERT(field.representation() == this);
+
+    if (isGlobal()) {
+        return 0;
+    }
+
+    ASSERT(!increments_.isShifted(bbox_));
+
+    // For now, we only use that function for the LAW model, so we only grow by the end (south pole)
+    ASSERT(bbox_.north() == Latitude::NORTH_POLE);
+    ASSERT(bbox_.west() == Longitude::GREENWICH);
+    ASSERT(bbox_.east() + increments_.west_east() == Longitude::GLOBE);
+
+    util::BoundingBox newbbox(bbox_.north(), bbox_.west(), Latitude::SOUTH_POLE, bbox_.east());
+
+    eckit::ScopedPtr<LatLon> newll(const_cast<LatLon*>(cropped(newbbox)));
+
+    ASSERT(newll->nj_ > nj_);
+    ASSERT(newll->ni_ == ni_);
+
+    size_t n = ni_ * nj_;
+    size_t newn = newll->ni_ * newll->nj_;
+    double missingValue = field.missingValue();
+
+    for (size_t i = 0; i < field.dimensions(); i++ ) {
+        std::vector<double> newvalues(newn, missingValue);
+        const std::vector<double> &values = field.direct(i);
+        ASSERT(values.size() == n);
+
+        for (size_t j = 0 ; j < n; ++j) {
+            newvalues[j] = values[j];
+        }
+
+        field.update(newvalues, i);
+    }
+
+    field.hasMissing(true);
+
+    return newll.release();
+}
+
+
+std::string LatLon::atlasMeshGenerator() const {
+    return "structured";
+}
+
+
+const LatLon* LatLon::cropped(const util::BoundingBox&) const {
+    std::ostringstream os;
+    os << "LatLon::cropped() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 
@@ -318,61 +288,65 @@ void LatLon::shape(size_t& ni, size_t& nj) const {
 
 
 void LatLon::initTrans(Trans_t& trans) const {
-    ASSERT(!shift_);
-#ifdef ATLAS_HAVE_TRANS
+    ASSERT(!increments_.isShifted(bbox_));
     ASSERT(trans_set_resol_lonlat(&trans, ni_, nj_) == 0);
-#else
-    NOTIMP;
-#endif
 }
 
 
+LatLon::LatLonIterator::LatLonIterator(size_t ni, size_t nj, Latitude north, Longitude west, double we, double ns) :
+    ni_(ni),
+    nj_(nj),
+    north_(north.fraction()),
+    west_(west.fraction()),
+    we_(we),
+    ns_(ns),
+    i_(0),
+    j_(0),
+    count_(0) {
+    lat_ = north_;
+    lon_ = west_;
+}
 
-static eckit::Fraction NORTH_POLE(90);
-static eckit::Fraction SOUTH_POLE(-90);
-static eckit::Fraction ZERO(0);
-static eckit::Fraction THREE_SIXTY(360);
-static eckit::Fraction DATE_LINE_MINUS(-180);
-static eckit::Fraction DATE_LINE_PLUS(180);
 
-static eckit::Fraction adjust(const eckit::Fraction& target, bool up, const eckit::Fraction& increment, const eckit::Fraction& shift) {
-    eckit::Fraction r = (target - shift) / increment;
+LatLon::LatLonIterator::~LatLonIterator() {
+    ASSERT(count_ == ni_ * nj_);
+}
 
-    eckit::Fraction::value_type n = r.integralPart();
-    if (!r.integer() && (r > 0) == up) {
-        n += (up ? 1 : -1);
+
+void LatLon::LatLonIterator::print(std::ostream& out) const {
+    out << "LatLonIterator["
+        <<  "ni="     << ni_
+        << ",nj="     << nj_
+        << ",north="  << north_
+        << ",west="   << west_
+        << ",we="     << we_
+        << ",ns="     << ns_
+        << ",i="      << i_
+        << ",j="      << j_
+        << ",count="  << count_
+        << "]";
+}
+
+
+bool LatLon::LatLonIterator::next(Latitude& lat, Longitude& lon) {
+    if (j_ < nj_) {
+        if (i_ < ni_) {
+            lat = lat_;
+            lon = lon_;
+            lon_ += we_;
+            i_++;
+            if (i_ == ni_) {
+                j_++;
+                i_ = 0;
+                lat_ -= ns_;
+                lon_ = west_;
+            }
+            count_++;
+            return true;
+        }
     }
-
-    return n * increment + shift;
+    return false;
 }
-
-
-util::BoundingBox LatLon::globalBoundingBox(const util::Increments& increments,
-        const util::Shift& shift) {
-
-    const eckit::Fraction& sn = increments.south_north();
-    const eckit::Fraction& we = increments.west_east();
-    ASSERT(sn > 0);
-    ASSERT(we > 0);
-
-    eckit::Fraction north = adjust(NORTH_POLE, false, sn, shift.south_north());
-    eckit::Fraction south = adjust(SOUTH_POLE, true, sn, shift.south_north());
-
-    eckit::Fraction west;
-    eckit::Fraction east;
-    if ((THREE_SIXTY / we).integer()) {
-        // - periodic grids have East-most longitude at 360 - increment
-        west = adjust(ZERO, true, we, shift.west_east());
-        east = THREE_SIXTY + west - we;
-    } else {
-        // non-periodic grids do not include the date line (e.g. 1.1)
-        west = adjust(DATE_LINE_MINUS, true, we, shift.west_east());
-        east = adjust(DATE_LINE_PLUS, false, we, shift.west_east());
-    }
-
-    return util::BoundingBox(north, west, south, east);
-}
-
 
 
 }  // namespace latlon

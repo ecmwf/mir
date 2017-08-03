@@ -281,7 +281,9 @@ size_t fix_pl_array_zeros(std::vector<long>& pl) {
 }  // (anonymous namespace)
 
 
-GribInput::GribInput(): grib_(0) {
+GribInput::GribInput():
+    cache_(*this),
+    grib_(0){
 }
 
 
@@ -292,7 +294,7 @@ GribInput::~GribInput() {
 
 const param::MIRParametrisation &GribInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
-    return *this;
+    return cache_;
 }
 
 
@@ -313,8 +315,8 @@ data::MIRField GribInput::field() const {
     GRIB_CALL(grib_get_double_array(grib_, "values", &values[0], &size));
     ASSERT(count == size);
 
-    long bitmap;
-    GRIB_CALL(grib_get_long(grib_, "bitmapPresent", &bitmap));
+    long missingValuesPresent;
+    GRIB_CALL(grib_get_long(grib_, "missingValuesPresent", &missingValuesPresent));
 
     double missing;
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
@@ -334,9 +336,9 @@ data::MIRField GribInput::field() const {
         if (std::find(pl.rbegin(), pl.rend(), 0) != pl.rend()) {
 
             // if there are no missing values yet, set them
-            if (!bitmap) {
+            if (!missingValuesPresent) {
                 eckit::Log::debug<LibMir>() << "GribInput::field(): introducing missing values (setting bitmap)." << std::endl;
-                bitmap = 1;
+                missingValuesPresent = 1;
                 get_unique_missing_value(values, missing);
             }
 
@@ -381,7 +383,7 @@ data::MIRField GribInput::field() const {
         }
     }
 
-    data::MIRField field(*this, bitmap != 0, missing);
+    data::MIRField field(*this, missingValuesPresent != 0, missing);
 
     long scanningMode = 0;
     if (grib_get_long(grib_, "scanningMode", &scanningMode) == GRIB_SUCCESS && scanningMode != 0) {
@@ -511,7 +513,7 @@ bool GribInput::get(const std::string& name, std::vector<int>& value) const {
     if (get(name, v)) {
         value.clear();
         value.reserve(v.size());
-        for (const long& l: v) {
+        for (const long& l : v) {
             ASSERT(long(int(l)) == l);
             value.push_back(int(l));
         }
@@ -568,7 +570,7 @@ bool GribInput::get(const std::string& name, std::vector<float>& value) const {
     if (get(name, v)) {
         value.clear();
         value.reserve(v.size());
-        for (const double& l: v) {
+        for (const double& l : v) {
             ASSERT(l >= 0);
             value.push_back(float(l));
         }
@@ -654,6 +656,8 @@ bool GribInput::get(const std::string& name, std::vector<std::string>& value) co
 bool GribInput::handle(grib_handle *h) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
+    cache_.reset();
+
     if (grib_) {
         grib_handle_delete(grib_);
     }
@@ -683,9 +687,9 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
         GRIB_CALL(grib_get_double_array(h, "values", &values[0], &size));
         ASSERT(count == size);
 
-        long bitmap;
-        GRIB_CALL(grib_get_long(h, "bitmapPresent", &bitmap));
-        ASSERT(!bitmap);
+        long missingValuesPresent;
+        GRIB_CALL(grib_get_long(h, "missingValuesPresent", &missingValuesPresent));
+        ASSERT(!missingValuesPresent);
 
         grib_handle_delete(h);
     } catch (...) {

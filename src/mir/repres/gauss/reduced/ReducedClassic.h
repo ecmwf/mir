@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef ReducedClassic_H
-#define ReducedClassic_H
+#ifndef mir_repres_gauss_reduced_ReducedClassic_h
+#define mir_repres_gauss_reduced_ReducedClassic_h
 
 #include "mir/repres/gauss/reduced/Classic.h"
 
@@ -24,8 +24,9 @@ namespace repres {
 namespace gauss {
 namespace reduced {
 
+
 class ReducedClassic : public Classic {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -45,6 +46,7 @@ class ReducedClassic : public Classic {
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -55,14 +57,14 @@ class ReducedClassic : public Classic {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -73,22 +75,18 @@ class ReducedClassic : public Classic {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    ReducedClassic(const ReducedClassic &);
-    ReducedClassic &operator=(const ReducedClassic &);
+private:
 
     // -- Members
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
 
-    virtual Reduced *cropped(const util::BoundingBox &bbox, const std::vector<long> &) const ;
+    virtual Iterator* iterator() const;
+    virtual Reduced *cropped(const util::BoundingBox&, const std::vector<long>&) const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
 
@@ -105,9 +103,11 @@ class ReducedClassic : public Classic {
 
 };
 
+
 }  // namespace reduced
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-#endif
 
+
+#endif

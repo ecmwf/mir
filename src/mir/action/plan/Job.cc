@@ -22,12 +22,11 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
-#include "mir/config/MIRConfiguration.h"
 #include "mir/input/MIRInput.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRCombinedParametrisation.h"
-#include "mir/param/InheritParametrisation.h"
 #include "mir/style/MIRStyle.h"
+#include "mir/param/DefaultParametrisation.h"
 
 
 namespace mir {
@@ -38,26 +37,18 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     input_(input),
     output_(output)  {
 
-
-    // open and parse configuration file
-    std::string config_file = "~mir/etc/mir/configuration.yaml";
-    job.get("configuration", config_file);
-
-    config::MIRConfiguration& config = config::MIRConfiguration::instance();
-    config.configure(config_file);
-
-
     // get input and parameter-specific parametrisations
+    static param::DefaultParametrisation defaults;
     const param::MIRParametrisation& metadata = input.parametrisation();
-    const param::MIRParametrisation& parameter = config.lookup(metadata);
-    combined_.reset(new param::MIRCombinedParametrisation(job, metadata, parameter));
+    combined_.reset(new param::MIRCombinedParametrisation(job, metadata, defaults));
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
 
 
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
-    if (job.empty() || (!style->forcedPrepare(job) && job.matches(metadata, parameter))) {
+
+    if (job.empty() || (!style->forcedPrepare(job, metadata))) {
         plan_.reset(new action::ActionPlan(job));
         plan_->add(new action::Copy(job, output_));
         return;
@@ -74,9 +65,11 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         plan_->add(new action::Save(*combined_, input_, output_));
     }
 
-    // eckit::Log::debug<LibMir>() << "Action plan is: " << *plan_ << std::endl;
-    eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
-    plan_->dump(eckit::Log::debug<LibMir>());
+    if(eckit::Log::debug<LibMir>()){
+        // eckit::Log::debug<LibMir>() << "Action plan is: " << *plan_ << std::endl;
+        eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
+        plan_->dump(eckit::Log::debug<LibMir>());
+    }
 
 }
 

@@ -18,7 +18,6 @@
 
 #include "mir/repres/Gridded.h"
 #include "mir/util/Increments.h"
-#include "mir/util/Shift.h"
 
 
 namespace mir {
@@ -35,7 +34,7 @@ public:
     // -- Contructors
 
     LatLon(const param::MIRParametrisation&);
-    LatLon(const util::BoundingBox&, const util::Increments&, const util::Shift&);
+    LatLon(const util::BoundingBox&, const util::Increments&);
 
     // -- Destructor
 
@@ -57,38 +56,29 @@ public:
     // None
 
     // -- Class methods
-
-    static util::BoundingBox globalBoundingBox(const util::Increments &increments,
-            const util::Shift& shift);
-
+    // None
 
 protected:
 
     // -- Members
 
     util::Increments increments_;
-    util::Shift shift_;
-
     size_t ni_;
     size_t nj_;
 
     // -- Methods
 
-    virtual Iterator* rotatedIterator() const; // After rotation
-
-    virtual Iterator* unrotatedIterator() const; // Before rotation
-
     void setNiNj();
 
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
+    virtual void fill(grib_info&) const;
 
-    virtual void fill(api::MIRJob &) const;
+    virtual void fill(api::MIRJob&) const;
 
     virtual void shape(size_t& ni, size_t& nj) const;
 
-    virtual void print(std::ostream &) const;
+    virtual void print(std::ostream&) const;
 
     virtual void makeName(std::ostream&) const;
 
@@ -98,8 +88,33 @@ protected:
     virtual bool includesNorthPole() const;
     virtual bool includesSouthPole() const;
 
+    virtual size_t numberOfPoints() const;
+    virtual Representation* globalise(data::MIRField&) const;
+    virtual std::string atlasMeshGenerator() const;
+
+    const LatLon* cropped(const util::BoundingBox&) const;
+
     // -- Class members
-    // None
+
+    class LatLonIterator {
+        size_t ni_;
+        size_t nj_;
+        eckit::Fraction north_;
+        eckit::Fraction west_;
+        eckit::Fraction we_;
+        eckit::Fraction ns_;
+        size_t i_;
+        size_t j_;
+        size_t count_;
+        eckit::Fraction lat_;
+        eckit::Fraction lon_;
+    protected:
+        ~LatLonIterator();
+        void print(std::ostream&) const;
+        bool next(Latitude&, Longitude&);
+    public:
+        LatLonIterator(size_t ni, size_t nj, Latitude north, Longitude west, double we, double ns);
+    };
 
     // -- Class methods
     // None
@@ -114,7 +129,7 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
+    virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
 
     virtual void reorder(long scanningMode, std::vector<double>& values) const;
 

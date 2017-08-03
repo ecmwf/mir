@@ -16,7 +16,6 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
-#include "mir/config/MIRConfiguration.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/ConfigurationWrapper.h"
@@ -24,6 +23,7 @@
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/param/DefaultParametrisation.h"
 
 
 class MIRStatistics : public mir::tools::MIRTool {
@@ -62,40 +62,36 @@ void MIRStatistics::usage(const std::string &tool) const {
 
 void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
     using namespace mir::param;
-    using namespace mir::stats;
-
 
     // Build MIRCombinedParametrisation from a few parts:
     // - wrap the arguments, so that they behave as a MIRParametrisation
-    // - get the input metadata as a MIRParametrisation
-    // - lookup configuration for metadata, to get specific "stats" parameter
+    // - input grib metadata
+    // - lookup configuration for input metadata-specific parametrisation
 
-    const ConfigurationWrapper args_wrap(const_cast<eckit::option::CmdArgs&>(args));
-    mir::config::MIRConfiguration& config = mir::config::MIRConfiguration::instance();
-    config.configure();
-
+    const ConfigurationWrapper args_wrap(args);
+    const DefaultParametrisation defaults;
 
     for (size_t i = 0; i < args.count(); ++i) {
         mir::input::GribFileInput grib(args(i));
         const mir::input::MIRInput& input = grib;
-
 
         size_t count = 0;
         while (grib.next()) {
             eckit::Log::info() << "\n'" << args(i) << "' #" << ++count << std::endl;
 
             // Metadata-specific defaults
-            const MIRParametrisation& defaults(config.lookup(input.parametrisation()));
-            MIRCombinedParametrisation parametrisation(args_wrap, grib, defaults);
+            // const MIRParametrisation& parameter = mir::config::MIRConfiguration::instance().pick(input.parametrisation());
+            MIRCombinedParametrisation combined(args_wrap, grib, defaults);
 
 
             // Get paramId/metadata-specific "stats" method
             std::string stats;
-            static_cast<const MIRParametrisation&>(parametrisation).get("stats", stats);
+            const MIRParametrisation& c = combined;
+            c.get("stats", stats);
 
 
             // Calculate and show statistics
-            eckit::ScopedPtr<const Statistics> s(StatisticsFactory::build(stats, parametrisation));
+            eckit::ScopedPtr<const mir::stats::Statistics> s(mir::stats::StatisticsFactory::build(stats, combined));
             eckit::Log::info() << s->calculate(input.field()) << std::endl;
 
         }

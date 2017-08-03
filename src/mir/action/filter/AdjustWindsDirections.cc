@@ -17,15 +17,18 @@
 
 #include <cmath>
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+#include "eckit/geometry/Point2.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/types/FloatCompare.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
-#include "mir/util/Compare.h"
 
 
 namespace mir {
@@ -77,16 +80,6 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
 
     result.clear();
 
-    // eckit::Log::info() << "AdjustWindsDirections::windDirections " << *representation << std::endl;
-
-    eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
-
-    // eckit::Log::info() << "AdjustWindsDirections::windDirections " << *iter << std::endl;
-
-
-    Latitude lat;
-    Longitude lon;
-
     // Inspired from HPSHGPW
 
     double pole_longitude = -rotation_.south_pole_longitude().value();
@@ -94,33 +87,41 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
     double sin_theta = -sin(theta);
     double cos_theta = -cos(theta);
 
-    while (iter->next(lat, lon)) {
+    eckit::ScopedPtr<repres::Iterator> iter(representation->iterator());
+    while (iter->next()) {
+        const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
+        Longitude lon = p.lon;
 
-        double radian_lat = util::angles::degree_to_radian(lat.value());
+        double radian_lat = util::angles::degree_to_radian(p.lat.value());
         double sin_lat = sin(radian_lat);
         double cos_lat = cos(radian_lat);
 
         lon += pole_longitude;
 
         // For some reason, the algorithms only work between in ]-180,180]
-        lon = util::angles::between_m180_and_p180(lon.value());
+        while (lon >= Longitude::DATE_LINE) {
+            lon -= Longitude::GLOBE;
+        }
+        while (lon < Longitude::MINUS_DATE_LINE) {
+            lon += Longitude::GLOBE;
+        }
         if (lon == Longitude::MINUS_DATE_LINE) {
             lon = Longitude::DATE_LINE;
         }
 
-        double radian_lon = util::angles::degree_to_radian(lon.value());
+        double radian_lon = util::angles::degree_to_radian(p.lon.value());
         double sin_lon = sin(radian_lon);
         double cos_lon = cos(radian_lon);
         double z = normalize(sin_theta * sin_lat + cos_theta * cos_lat * cos_lon);
 
         double ncos_lat = 0;
 
-        if ( !(eckit::types::is_approximately_equal<double>(z, 1.0) ||
-                eckit::types::is_approximately_equal<double>(z, -1.0))) {
+        if ( !(eckit::types::is_approximately_equal(z, 1.0) ||
+                eckit::types::is_approximately_equal(z, -1.0))) {
             ncos_lat = cos(asin(z));
         }
 
-        if (eckit::types::is_approximately_equal<double>(ncos_lat, 0.0)) {
+        if (eckit::types::is_approximately_equal(ncos_lat, 0.0)) {
             ncos_lat = 1.0;
         }
 

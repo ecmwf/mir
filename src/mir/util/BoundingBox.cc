@@ -27,12 +27,28 @@ namespace mir {
 namespace util {
 
 
+namespace {
+
+
+static void check(const BoundingBox& bbox) {
+    ASSERT(bbox.north() >= bbox.south());
+    ASSERT(bbox.north() <= Latitude::NORTH_POLE);
+    ASSERT(bbox.south() >= Latitude::SOUTH_POLE);
+
+    ASSERT(bbox.east() - bbox.west() >= 0);
+    ASSERT(bbox.east() - bbox.west() <= Longitude::GLOBE);
+}
+
+
+}  // (anonymous namespace)
+
+
 BoundingBox::BoundingBox() :
     north_(Latitude::NORTH_POLE),
     west_(Longitude::GREENWICH),
     south_(Latitude::SOUTH_POLE),
     east_(Longitude::GLOBE) {
-    normalise();
+    check(*this);
 }
 
 
@@ -42,6 +58,7 @@ BoundingBox::BoundingBox(const Latitude& north,
                          const Longitude& east) :
     north_(north), west_(west), south_(south), east_(east) {
     normalise();
+    check(*this);
 }
 
 
@@ -50,7 +67,9 @@ BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("west",  west_ ));
     ASSERT(parametrisation.get("south", south_));
     ASSERT(parametrisation.get("east",  east_ ));
+
     normalise();
+    check(*this);
 }
 
 
@@ -63,6 +82,20 @@ BoundingBox::~BoundingBox() {
 }
 
 
+Longitude BoundingBox::normalise(Longitude lon) const {
+
+    while (lon > east_) {
+        lon -= Longitude::GLOBE;
+    }
+
+    while (lon < west_) {
+        lon += Longitude::GLOBE;
+    }
+
+    return lon;
+}
+
+
 void BoundingBox::print(std::ostream &out) const {
     out << "BoundingBox["
         <<  "north=" << north_
@@ -71,7 +104,6 @@ void BoundingBox::print(std::ostream &out) const {
         << ",east=" << east_
         << "]";
 }
-
 
 
 const double ROUNDING = 1e14;
@@ -107,18 +139,15 @@ void BoundingBox::normalise() {
 
     bool same = west_ == east_;
 
-    ASSERT(north_ <= Latitude::NORTH_POLE && south_ >= Latitude::SOUTH_POLE);
-    ASSERT(north_ >= south_);
+//    while (west_ < Longitude::MINUS_DATE_LINE) {
+//        west_ += Longitude::GLOBE;
+//    }
 
-    while (west_ < Longitude::MINUS_DATE_LINE) {
-        west_ += Longitude::GLOBE;
-    }
+//    while (west_ >= Longitude::GLOBE) {
+//        west_ -= Longitude::GLOBE;
+//    }
 
-    while (west_ >= Longitude::GLOBE) {
-        west_ -= Longitude::GLOBE;
-    }
-
-    while (east_ < west_) {
+    while (east_ <= west_) {
         east_ += Longitude::GLOBE;
     }
 
@@ -134,26 +163,17 @@ void BoundingBox::normalise() {
 }
 
 
-Longitude BoundingBox::normalise(Longitude lon) const {
-
-    while (lon > east_) {
-        lon -= Longitude::GLOBE;
-    }
-
-    while (lon < west_) {
-        lon += Longitude::GLOBE;
-    }
-
-    return lon;
-}
-
-
 bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
     const Longitude nlon = normalise(lon);
     return (lat <= north_) &&
            (lat >= south_) &&
            (nlon >= west_) &&
-           (nlon <= east_);
+            (nlon <= east_);
+}
+
+
+bool BoundingBox::contains(const repres::Iterator::point_ll_t& p) const {
+    return contains(p.lat, p.lon);
 }
 
 

@@ -16,7 +16,7 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "atlas/grid.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Iterator.h"
@@ -24,7 +24,9 @@
 #include "mir/stats/detail/Angle.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/method/decompose/PolarAngleToCartesian.h"
-#include "mir/util/MIRGrid.h"
+
+
+#include "atlas/grid/Grid.h"
 
 
 class MIRGetData : public mir::tools::MIRTool {
@@ -94,12 +96,9 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
                 bool first = true;
 
-                mir::Longitude lon;
-                mir::Latitude lat;
-
-                eckit::ScopedPtr< mir::repres::Iterator > it(rep->rotatedIterator());
-                while (it->next(lat, lon)) {
-                    point_t P(lon.value(), lat.value());
+                eckit::ScopedPtr< mir::repres::Iterator > it(rep->iterator());
+                while (it->next()) {
+                    const mir::repres::Iterator::point_2d_t& P(**it);
                     if (first) {
                         bbox_min_mir = bbox_max_mir = P;
                         first = false;
@@ -113,7 +112,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 size_t lonlat_size_atlas = 0;
                 point_t bbox_min_atlas, bbox_max_atlas;
 
-                atlas::Grid grid(rep->grid());
+                atlas::Grid grid(rep->atlasGrid());
                 first = true;
                 for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
                     point_t P(p.lon(), p.lat());
@@ -149,18 +148,17 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                         stats_lat(decompose, std::numeric_limits<double>::quiet_NaN()),
                         stats_lon(decompose, std::numeric_limits<double>::quiet_NaN());
 
-                atlas::Grid grid(rep->grid());
-                eckit::ScopedPtr< mir::repres::Iterator > it(rep->rotatedIterator());
+                atlas::Grid grid(rep->atlasGrid());
+                eckit::ScopedPtr< mir::repres::Iterator > it(rep->iterator());
 
                 std::vector<double>::const_iterator v = field.values(0).begin();
 
-                mir::Longitude lon;
-                mir::Latitude lat;
                 for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
-                    ASSERT(it->next(lat, lon));
+                    ASSERT(it->next());
+                    const mir::repres::Iterator::point_2d_t& P(**it);
 
-                    stats_lat(p.lat() - lat.value());
-                    stats_lon(p.lon() - lon.value());
+                    stats_lat(p.lat() - P[0]);
+                    stats_lon(p.lon() - P[1]);
 
                     ++v;
                 }
@@ -171,11 +169,11 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                         << std::endl;
 
                 ASSERT(v == field.values(0).end());
-                ASSERT(!it->next(lat, lon));
+                ASSERT(!it->next());
 
             } else if (atlas) {
 
-                atlas::Grid grid(rep->grid());
+                atlas::Grid grid(rep->atlasGrid());
 
                 std::vector<double>::const_iterator v = field.values(0).begin();
                 for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
@@ -188,16 +186,15 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             } else {
 
-                eckit::ScopedPtr< mir::repres::Iterator > it(rep->rotatedIterator());
-                mir::Longitude lon;
-                mir::Latitude lat;
+                eckit::ScopedPtr< mir::repres::Iterator > it(rep->iterator());
                 for (const double& v: field.values(0)) {
-                    ASSERT(it->next(lat, lon));
-                    eckit::Log::info() << "\n\t" << lat << '\t' << lon.value() << '\t' << v;
+                    ASSERT(it->next());
+                    const mir::repres::Iterator::point_2d_t& P(**it);
+                    eckit::Log::info() << "\n\t" << P[0] << '\t' << P[1] << '\t' << v;
                 }
 
                 eckit::Log::info() << std::endl;
-                ASSERT(!it->next(lat, lon));
+                ASSERT(!it->next());
 
             }
 

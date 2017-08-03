@@ -100,6 +100,7 @@ private:
 class DecomposeToCartesianChooser {
 private:
     std::string name_;
+    DecomposeToCartesian* choice_;
 protected:
     DecomposeToCartesianChooser(const std::string&, DecomposeToCartesian* choice);
     virtual ~DecomposeToCartesianChooser();

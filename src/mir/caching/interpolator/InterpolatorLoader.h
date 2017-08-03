@@ -20,7 +20,7 @@
 #include <iosfwd>
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/memory/NonCopyable.h"
+#include "eckit/linalg/SparseMatrix.h"
 
 namespace mir {
 
@@ -31,11 +31,9 @@ class MIRParametrisation;
 namespace caching {
 namespace interpolator {
 
-
 //----------------------------------------------------------------------------------------------------------------------
 
-
-class InterpolatorLoader : public eckit::NonCopyable {
+class InterpolatorLoader : public eckit::linalg::SparseMatrix::Allocator {
 
 public:
     InterpolatorLoader(const std::string&, const eckit::PathName&);
@@ -44,6 +42,10 @@ public:
 
     virtual const void* address() const = 0;
     virtual size_t size() const = 0;
+
+    virtual eckit::linalg::SparseMatrix::Layout allocate(eckit::linalg::SparseMatrix::Shape& shape);
+
+    virtual void deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape);
 
 protected:
     eckit::PathName path_;
@@ -86,7 +88,6 @@ public:
 
 
 //----------------------------------------------------------------------------------------------------------------------
-
 
 }  // namespace interpolator
 }  // namespace caching

@@ -16,10 +16,9 @@
 #include "mir/repres/gauss/reduced/RotatedOctahedral.h"
 
 #include <iostream>
-#include "atlas/grid.h"
+
 #include "mir/repres/gauss/reduced/RotatedFromPL.h"
 #include "mir/util/Grib.h"
-#include "mir/util/RotatedIterator.h"
 
 
 namespace mir {
@@ -43,35 +42,36 @@ void RotatedOctahedral::print(std::ostream &out) const {
 }
 
 
-void RotatedOctahedral::makeName(std::ostream& out) const { NOTIMP; }
+void RotatedOctahedral::makeName(std::ostream& out) const {
+    Octahedral::makeName(out);
+    rotation_.makeName(out);
+}
+
+
 bool RotatedOctahedral::sameAs(const Representation& other) const { NOTIMP; }
 
 
+Iterator* RotatedOctahedral::iterator() const {
+    return rotatedIterator(rotation_);
+}
 
-void RotatedOctahedral::fill(grib_info &info) const  {
-#ifdef GRIB_UTIL_GRID_SPEC_REDUCED_ROTATED_GG
+
+void RotatedOctahedral::fill(grib_info& info) const  {
     Octahedral::fill(info);
     rotation_.fill(info);
     info.grid.grid_type = GRIB_UTIL_GRID_SPEC_REDUCED_ROTATED_GG;
-#else
-    NOTIMP;
-#endif
 }
 
 
-void RotatedOctahedral::fill(api::MIRJob &job) const  {
+void RotatedOctahedral::fill(api::MIRJob&) const  {
     NOTIMP;
-}
-
-
-Iterator* RotatedOctahedral::rotatedIterator() const {
-    return new util::RotatedIterator(Octahedral::unrotatedIterator(), rotation_);
 }
 
 
 atlas::Grid RotatedOctahedral::atlasGrid() const {
     return rotation_.rotate(Octahedral::atlasGrid());
 }
+
 
 
 const Reduced *RotatedOctahedral::cropped(const util::BoundingBox &bbox, const std::vector<long> &pl) const {

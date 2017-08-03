@@ -23,38 +23,42 @@
 
 
 struct grib_info;
+struct Trans_t;
+
 
 namespace atlas {
 class Grid;
 }
 
 namespace mir {
+
 namespace param {
 class MIRParametrisation;
 }
+
 namespace repres {
 class Iterator;
 }
+
 namespace util {
 class BoundingBox;
 class Domain;
-class Increments;
 }
+
 namespace context {
 class Context;
 }
+
 namespace api {
 class MIRJob;
 }
+
 namespace data {
 class MIRField;
 }
-namespace util {
-class MIRGrid;
-}
+
 }
 
-struct Trans_t;
 
 namespace mir {
 namespace repres {
@@ -92,8 +96,7 @@ public:
     virtual const std::string& uniqueName() const;
     virtual bool sameAs(const Representation& other) const;
 
-    virtual Iterator* rotatedIterator() const; // After rotation
-    virtual Iterator* unrotatedIterator() const; // Before rotation
+    virtual Iterator* iterator() const;
 
     virtual void validate(const std::vector<double> &values) const;
 
@@ -112,8 +115,12 @@ public:
 
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
-    virtual util::MIRGrid grid() const;
+    virtual atlas::Grid atlasGrid() const;
+    virtual std::string atlasMeshGenerator() const;
+
     virtual util::Domain domain() const;
+    virtual bool isGlobal() const;
+
 
     virtual size_t truncation() const;
     virtual size_t pentagonalResolutionTs() const;
@@ -152,11 +159,9 @@ protected:
     // -- Methods
 
     virtual void print(std::ostream&) const = 0;
-    virtual atlas::Grid atlasGrid() const;
     virtual void makeName(std::ostream&) const;
 
     // Domain operations
-    virtual bool isGlobal() const;
     virtual bool isPeriodicWestEast() const;
     virtual bool includesNorthPole() const;
     virtual bool includesSouthPole() const;

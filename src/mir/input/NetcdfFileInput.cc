@@ -18,221 +18,139 @@
 
 #include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
-
-#ifdef HAVE_NETCDF
-
-// JUST A DEMO !!!!
-// Assumes that netcdf is single 2D variable, that dimensions are called "latitude" and "longitude"
-// ... and many more assumptions.
-
-#include <netcdf.h>
+#include "mir/netcdf/Field.h"
+#include "mir/netcdf/GridSpec.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir {
 namespace input {
-namespace {
 
 
-inline int _nc_call(int e, const char *call, const std::string &path) {
-    if (e) {
-        std::ostringstream os;
-        os << call << ": " << nc_strerror(e) << " (" << path << ")";
-        throw eckit::SeriousBug(os.str());
-    }
-    return e;
-}
-
-
-#define NC_CALL(a, path) _nc_call(a, #a, path)
-
-
-}  // (anonymous namespace)
-
-
-NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path, const std::string &variable):
+NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path):
     path_(path),
-    variable_(variable),
-    nc_(-1) {
+    cache_(*this),
+    dataset_(path, *this),
+    fields_(dataset_.fields()),
+    current_(-1) {
+
+    for (auto j  = fields_.begin(); j != fields_.end(); ++j ) {
+        std::cout << "NC " << *(*j) << std::endl;
+    }
+
 }
 
 
 NetcdfFileInput::~NetcdfFileInput() {
-    if (nc_ != -1) {
-        NC_CALL(nc_close(nc_), path_);
+    for (auto j = fields_.begin(); j != fields_.end(); ++j) {
+        delete (*j);
     }
 }
 
 
+
+grib_handle *NetcdfFileInput::gribHandle(size_t which) const {
+    //ASSERT(which == 0);
+    static grib_handle *handle = 0;
+    if (!handle) {
+        handle = grib_handle_new_from_samples(0, "GRIB1");
+        grib_set_long(handle, "paramId", 255);
+        ASSERT(handle);
+    }
+    return handle;
+}
+
+
 void NetcdfFileInput::print(std::ostream &out) const {
-    out << "NetcdfFileInput[path=" << path_ << ",variable=" << variable_ << "]";
+    out << "NetcdfFileInput[path=" << path_ << "]";
 }
 
 
 const param::MIRParametrisation &NetcdfFileInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
-    return *this;
+    return cache_;
 }
 
 
-void NetcdfFileInput::getVariable(const std::string &variable, std::vector<double> &values) const {
-    if (nc_ == -1) {
-        NC_CALL(nc_open(path_.asString().c_str(), NC_NOWRITE, &nc_), path_);
+bool NetcdfFileInput::next() {
+    cache_.reset();
+    current_++;
+
+    if (current_ >= fields_.size()) {
+        return false;
     }
 
-    int varid = -1;
-
-    char name[NC_MAX_NAME + 1];
-
-    int number_of_dimensions;
-    int number_of_variables;
-    int number_of_global_attributes;
-    int id_of_unlimited_dimension;
-
-    NC_CALL(nc_inq(nc_, &number_of_dimensions, &number_of_variables,
-                   &number_of_global_attributes,
-                   &id_of_unlimited_dimension), path_);
-
-
-    for (size_t i = 0; i < number_of_dimensions; i++) {
-        size_t count;
-        NC_CALL(nc_inq_dim(nc_, i, name, &count), path_);
-    }
-
-    for (int i = 0; i < number_of_variables; i++) {
-        int type;
-        int ndims, nattr;
-        int dims[NC_MAX_VAR_DIMS];
-
-        NC_CALL(nc_inq_var(nc_, i, name, &type, &ndims, dims, &nattr), path_);
-
-        if (variable == name) {
-            varid = i;
-
-            size_t size = 1;
-            for (int d = 0; d < ndims; d++ ) {
-                size_t count;
-                NC_CALL(nc_inq_dim(nc_, dims[d], name, &count), path_);
-                size *= count;
-            }
-
-            std::vector<double> v(size);
-
-            NC_CALL(nc_get_var_double( nc_, varid, &v[0]), path_);
-
-            std::swap(v, values);
-            return;
-
-        }
-
-        // Type &kind = Type::lookup(type);
-
-        // std::vector<Dimension *> dimensions;
-        // for (size_t j = 0; j < ndims; j++) {
-        //     dimensions.push_back(findDimension(dims[j]));
-        // }
-
-        // Variable *v = new SimpleInputVariable(*this, name, i, dimensions);
-        // v->setMatrix(new InputMatrix(kind, i, name, v->numberOfValues(), file));
-        // v->getAttributes(nc, i, nattr);
-        // add(v);
-    }
-
-    std::ostringstream os;
-    os <<  "NetcdfFileInput: cannot find variable " << variable;
-    throw eckit::SeriousBug(os.str());
+    return true;
 }
 
 
 data::MIRField NetcdfFileInput::field() const {
+    ASSERT(current_ >= 0 && current_ < fields_.size());
 
-    std::vector<double> values;
-    getVariable(variable_, values);
+    auto& ncField = *fields_[current_];
 
-    bool hasMissing = false; // Should check!
-    double missingValue = 9999; // Read from file
+    data::MIRField field(*this, ncField.hasMissing(), ncField.missingValue());
 
-    data::MIRField field(*this, hasMissing, missingValue);
-    field.update(values, 0);
+    size_t n = ncField.count2DValues();
+    for (size_t i = 0; i < n; ++i) {
+        std::vector<double> values;
+        ncField.get2DValues(values, i);
+        field.update(values, i);
+
+        ncField.setMetadata(field, i);
+    }
 
     return field;
-
 }
 
+bool NetcdfFileInput::get(const std::string& name, long& value) const {
+    ASSERT(current_ >= 0 && current_ < fields_.size());
+    if (fields_[current_]->get(name, value)) {return true;}
+    return FieldParametrisation::get(name, value);
+}
 
 bool NetcdfFileInput::has(const std::string& name) const {
-    if(name == "gridded") {
-        return true;
-    }
-    if(name == "spectral") {
-        return false;
-    }
+    ASSERT(current_ >= 0 && current_ < fields_.size());
+    if (fields_[current_]->has(name)) {return true;}
     return FieldParametrisation::has(name);
 }
 
 bool NetcdfFileInput::get(const std::string &name, std::string &value) const {
-
-    if (name == "gridType") {
-        value = "regular_ll";
-        return true;
-    }
+    ASSERT(current_ >= 0 && current_ < fields_.size());
+    if (fields_[current_]->get(name, value)) {return true;}
     return FieldParametrisation::get(name, value);
 }
 
 bool NetcdfFileInput::get(const std::string &name, double &value) const {
-
-    // Extremly inefficient code:
-
-    if (latitude_.size() == 0) {
-        getVariable("latitude", latitude_);
-        ASSERT(latitude_.size() >= 2);
-        ASSERT(latitude_[0] > latitude_[1]);
-    }
-
-    if (longitude_.size() == 0) {
-        getVariable("longitude", longitude_);
-        ASSERT(longitude_.size() >= 2);
-        ASSERT(longitude_[0] < longitude_[1]);
-    }
-
-    if (name == "north") {
-        value = latitude_[0];
-        return true;
-    }
-
-    if (name == "south") {
-        value = latitude_[latitude_.size() - 1];
-        return true;
-    }
-
-    if (name == "west") {
-        value = longitude_[0];
-        return true;
-    }
-
-    if (name == "east") {
-        value = longitude_[longitude_.size() - 1];
-        return true;
-    }
-
-    if (name == "west_east_increment") {
-        value = longitude_[1] - longitude_[0];
-        return true;
-    }
-
-    if (name == "south_north_increment") {
-        value = latitude_[0] - latitude_[1];
-        return true;
-    }
-
-
+    ASSERT(current_ >= 0 && current_ < fields_.size());
+    if (fields_[current_]->get(name, value)) {return true;}
     return FieldParametrisation::get(name, value);
 }
 
 
-#undef NC_CALL
+bool NetcdfFileInput::get(const std::string &name, std::vector<double> &value) const {
+    ASSERT(current_ >= 0 && current_ < fields_.size());
+    if (fields_[current_]->get(name, value)) {return true;}
+    return FieldParametrisation::get(name, value);
+}
+
+bool NetcdfFileInput::sameAs(const MIRInput& other) const {
+    const NetcdfFileInput* o = dynamic_cast<const NetcdfFileInput*>(&other);
+    return o && (path_ == o->path_);
+}
+
+size_t NetcdfFileInput::dimensions() const {
+    ASSERT(current_ >= 0 && current_ < fields_.size());
+    return fields_[current_]->count2DValues();
+}
+
+
+static MIRInputBuilder< NetcdfFileInput > netcdf4(0x89484446); // ".HDF"
+static MIRInputBuilder< NetcdfFileInput > netcdf31(0x43444601); // "CDF."
+static MIRInputBuilder< NetcdfFileInput > netcdf32(0x43444602); // "CDF."
+
 
 
 }  // namespace input
 }  // namespace mir
 
-#endif

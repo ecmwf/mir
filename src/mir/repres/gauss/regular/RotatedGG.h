@@ -62,6 +62,7 @@ class RotatedGG : public Regular {
   protected:
 
     // -- Members
+
     util::Rotation rotation_;
 
     // -- Methods
@@ -79,29 +80,24 @@ class RotatedGG : public Regular {
 
   private:
 
-
-
-    // No copy allowed
-
-    RotatedGG(const RotatedGG &);
-    RotatedGG &operator=(const RotatedGG &);
-
     // -- Members
+    // None
 
     // -- Methods
     // None
-
 
     // -- Overridden methods
 
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
+
     virtual atlas::Grid atlasGrid() const;
-    virtual Iterator* rotatedIterator() const;
+    virtual Iterator* iterator() const;
 
     virtual const Gridded *cropped(const util::BoundingBox &bbox) const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
+    virtual size_t numberOfPoints() const;
 
     // -- Class members
     // None

@@ -103,6 +103,7 @@ private:
 class DecomposeChooser {
 private:
     std::string name_;
+    Decompose* choice_;
 protected:
     DecomposeChooser(const std::string&, Decompose* choice);
     virtual ~DecomposeChooser();

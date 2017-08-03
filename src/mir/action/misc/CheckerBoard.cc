@@ -101,11 +101,6 @@ void CheckerBoard::execute(context::Context & ctx) const {
             minvalue = 0;
         }
 
-        // Assumes iterator scans in the same order as the values
-        eckit::ScopedPtr<repres::Iterator> iter(representation->rotatedIterator());
-        Latitude lat = 0;
-        Longitude lon = 0;
-
         std::vector<double> v;
         v.push_back(minvalue);
         v.push_back(maxvalue);
@@ -124,11 +119,15 @@ void CheckerBoard::execute(context::Context & ctx) const {
         }
 
 
+        // Assumes iterator scans in the same order as the values
+        eckit::ScopedPtr<repres::Iterator> iter(representation->iterator());
         size_t j = 0;
 
-        while (iter->next(lat, lon)) {
+        while (iter->next()) {
+            const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
 
-            lat = Latitude::NORTH_POLE - lat;
+            Latitude lat = Latitude::NORTH_POLE - p.lat;
+            Longitude lon = p.lon;
 
             while (lon >= Longitude::GLOBE) {
                 lon -= Longitude::GLOBE;

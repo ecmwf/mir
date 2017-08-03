@@ -16,9 +16,11 @@
 #include "mir/style/ECMWFStyle.h"
 
 #include <iostream>
+#include <set>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -70,6 +72,10 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
     }
 
     if (parametrisation_.has("user.griddef")) {
+        user_wants_gridded++;
+    }
+
+    if (parametrisation_.has("user.points")) {
         user_wants_gridded++;
     }
 
@@ -125,11 +131,14 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
 }
 
 
-bool ECMWFStyle::forcedPrepare(const param::MIRParametrisation& parametrisation) const {
+bool ECMWFStyle::forcedPrepare(const api::MIRJob& job,
+                               const param::MIRParametrisation& input) const {
     static const char *force[] = {
         "accuracy",
         "bitmap",
         "checkerboard",
+        "griddef",
+        "points",
         "edition",
         "formula",
         "frame",
@@ -139,11 +148,18 @@ bool ECMWFStyle::forcedPrepare(const param::MIRParametrisation& parametrisation)
         0
     };
 
-    bool forced = false;
-    for (size_t i = 0; force[i] && !forced; ++i) {
-        forced = parametrisation.has(force[i]);
+    for (size_t i = 0; force[i]; ++i) {
+        if (job.has(force[i])) {
+            return true;
+        }
     }
-    return forced;
+
+    std::set<std::string> ignore;
+    if (input.has("gridded")) {
+        ignore.insert("autoresol");
+    }
+
+    return !job.matches(input, ignore);
 }
 
 
@@ -161,13 +177,14 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
 
     const std::string userGrid =
-        parametrisation_.has("user.grid")?          "regular-ll" :
+        parametrisation_.has("user.grid") ?         "regular-ll" :
         parametrisation_.has("user.reduced") ?      "reduced-gg" :
         parametrisation_.has("user.regular") ?      "regular-gg" :
         parametrisation_.has("user.octahedral") ?   "octahedral-gg" :
         parametrisation_.has("user.pl") ?           "reduced-gg-pl-given" :
         parametrisation_.has("user.gridname") ?     "namedgrid" :
         parametrisation_.has("user.griddef") ?      "griddef" :
+        parametrisation_.has("user.points") ?       "points" :
         "";
 
     if (userGrid.length()) {
@@ -248,10 +265,6 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
         plan.add("crop.area");
     }
 
-    if (parametrisation_.has("user.subset")) {
-        plan.add("filter.subset");
-    }
-
     if (parametrisation_.has("user.bitmap")) {
         plan.add("filter.bitmap");
     }
@@ -285,10 +298,8 @@ bool ECMWFStyle::isWindComponent() const {
     long id = 0;
     parametrisation_.get("paramId", id);
 
-    long id_u = 131;
-    long id_v = 132;
-    parametrisation_.get("paramId.u", id_u);
-    parametrisation_.get("paramId.v", id_v);
+    const long id_u = 131;
+    const long id_v = 132;
 
     return (id == id_u || id == id_v);
 }

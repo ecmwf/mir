@@ -24,89 +24,105 @@ namespace repres {
 
 
 class IrregularLatlon : public Gridded {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     IrregularLatlon(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~IrregularLatlon(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
     IrregularLatlon();
 
-// No copy allowed
+    // -- Members
 
-    IrregularLatlon(const IrregularLatlon&);
-    IrregularLatlon& operator=(const IrregularLatlon&);
+    double south_;
+    double north_;
+    double south_north_;
 
-// -- Members
+    double west_;
+    double east_;
+    double west_east_;
 
+    std::vector<double> latitudes_;
+    std::vector<double> longitudes_;
 
-// -- Methods
+    // -- Methods
     // None
 
+    // -- Overridden methods
 
-// -- Overridden methods
-
+    virtual size_t numberOfPoints() const;
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
     virtual void fill(grib_info&) const;
+    virtual atlas::Grid atlasGrid() const;
+    virtual std::string atlasMeshGenerator() const;
+    virtual util::Domain domain() const;
+    virtual Iterator* iterator() const;
+    virtual bool isPeriodicWestEast() const;
+    virtual bool includesNorthPole() const;
+    virtual bool includesSouthPole() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const IrregularLatlon& p)
-    //	{ p.print(s); return s; }
+    //  { p.print(s); return s; }
 
 };
 
 
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

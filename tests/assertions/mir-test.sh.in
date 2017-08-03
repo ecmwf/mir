@@ -15,6 +15,8 @@ mars_script="@MARS_SCRIPT@"
 tests_assertions_dir="@CMAKE_CURRENT_SOURCE_DIR@"
 tmp_assertions_dir="@CMAKE_CURRENT_BINARY_DIR@"
 
+pwd
+
 state=mars
 while read n
 do
@@ -47,6 +49,7 @@ do
             ;;
 
             mir)
+            eval n=\"$n\"
             $mir_tool $n $(pwd)/data.in.$t $(pwd)/data.out.$t
             state=eccodes
             ;;

@@ -59,8 +59,6 @@ public:
 
     // -- Methods
 
-    void copyValuesTo(SimpleParametrisation& other, bool overwrite=true) const;
-
     SimpleParametrisation& set(const std::string& name, const std::string &value);
     SimpleParametrisation& set(const std::string& name, const char *value);
     SimpleParametrisation& set(const std::string& name, float value);
@@ -85,7 +83,7 @@ public:
     // Used by Job
 
     virtual bool empty() const;
-    bool matches(const MIRParametrisation& other, const MIRParametrisation& ignore=SimpleParametrisation()) const;
+    bool matches(const MIRParametrisation& other, const std::set<std::string>& ignore) const;
 
     // -- Overridden methods
 

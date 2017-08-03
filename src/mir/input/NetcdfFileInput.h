@@ -25,21 +25,26 @@
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/FieldParametrisation.h"
+#include "mir/netcdf/NCFileCache.h"
+#include "mir/netcdf/InputDataset.h"
+#include "mir/param/CachedParametrisation.h"
 
 
 namespace mir {
 namespace input {
 
 
-class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
-  public:
+class NetcdfFileInput : public MIRInput,
+    public param::FieldParametrisation,
+    public mir::netcdf::NCFileCache {
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    NetcdfFileInput(const eckit::PathName&, const std::string& variable);
+    NetcdfFileInput(const eckit::PathName&);
 
     // -- Destructor
 
@@ -64,7 +69,7 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -81,7 +86,7 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
@@ -91,27 +96,38 @@ class NetcdfFileInput : public MIRInput, public param::FieldParametrisation {
     // -- Members
 
     eckit::PathName path_;
-    std::string variable_;
-    mutable int nc_;
-    mutable std::vector<double> latitude_;
-    mutable std::vector<double> longitude_;
+
+    param::CachedParametrisation cache_;
+    mir::netcdf::InputDataset dataset_;
+    std::vector<mir::netcdf::Field*> fields_;
+    int current_;
+
+    // mutable std::vector<double> latitude_;
+    // mutable std::vector<double> longitude_;
 
     // -- Methods
 
-    void getVariable(const std::string& name, std::vector<double>& values) const;
 
     // -- Overridden methods
     // From MIRInput
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
-
+    virtual bool sameAs(const MIRInput& other) const;
     virtual const param::MIRParametrisation &parametrisation(size_t which) const;
     virtual data::MIRField field() const;
 
     // From MIRParametrisation
     virtual bool has(const std::string& name) const;
+
+    virtual bool get(const std::string&, long&) const;
     virtual bool get(const std::string&, std::string&) const;
     virtual bool get(const std::string &name, double &value) const;
+    virtual bool get(const std::string &name, std::vector<double> &value) const;
+
+    virtual bool next();
+    virtual size_t dimensions() const;
+
+    virtual grib_handle *gribHandle(size_t which) const;
 
     // -- Class members
     // None

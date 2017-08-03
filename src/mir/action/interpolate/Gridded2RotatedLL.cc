@@ -12,16 +12,13 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/interpolate/Gridded2RotatedLL.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
-
-
-#include "mir/repres/latlon/RotatedLL.h"
-
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/latlon/RotatedLL.h"
 
 
 namespace mir {
@@ -53,16 +50,12 @@ bool Gridded2RotatedLL::sameAs(const Action& other) const {
 void Gridded2RotatedLL::print(std::ostream &out) const {
     out << "Gridded2RotatedLL["
             "increments=" << increments_
-        << ",shift=" << shift_
-        << ",rotation" << rotation_
+        << ",bbox=" << bbox_
+        << ",rotation=" << rotation_
         << "]";
 }
 const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
-    return new repres::latlon::RotatedLL(
-               repres::latlon::LatLon::globalBoundingBox(increments_, shift_),
-               increments_,
-               shift_,
-               rotation_ );
+    return new repres::latlon::RotatedLL(bbox_, increments_, rotation_);
 }
 
 

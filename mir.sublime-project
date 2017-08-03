@@ -308,6 +308,14 @@
 				}
 			],
 			"working_dir": "${project_path}/../../build/mir"
+		},
+		{
+			"file_regex": "(.+[^:]):(\\d+):(\\d+): (?:fatal )?((?:error|warning): .+)$",
+			"name": "mir (Linux)",
+			"shell_cmd": "make -j8",
+			"syntax": "Packages/CMakeBuilder/Syntax/Make.sublime-syntax",
+			"variants": null,
+			"working_dir": "${project_path}/../../build/mir"
 		}
 	],
 	"folders":

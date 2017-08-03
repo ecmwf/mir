@@ -67,6 +67,8 @@ public:
     void add(const std::string& name, const std::string&, param::DelayedParametrisation*, const std::string&, const std::string&);
 
     void add(Action* action);
+    void add(const std::string &name, param::MIRParametrisation* runtime);
+
 
     void execute(context::Context& ctx) const;
     bool empty() const;

@@ -10,15 +10,22 @@
 
 /// @author Tiago Quintino
 /// @author Baudouin Raoult
+/// @author Pedro Maciel
 /// @date   July 2015
+
 
 #ifndef mir_method_Conservative_h
 #define mir_method_Conservative_h
 
 #include "mir/method/FELinear.h"
 
-namespace eckit { namespace linalg { class Vector; } }
-namespace atlas { class Mesh; }
+
+namespace eckit {
+namespace linalg {
+class Vector;
+}
+}
+
 
 namespace mir {
 namespace method {
@@ -30,20 +37,21 @@ public:
 
     Conservative(const param::MIRParametrisation&);
 
-    virtual ~Conservative();
-
 protected:
 
-    virtual void hash(eckit::MD5&) const;
+    void hash(eckit::MD5&) const;
 
-    virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    void assemble(util::MIRStatistics&,
+                  WeightMatrix&,
+                  const repres::Representation& in,
+                  const repres::Representation& out) const;
 
-    void computeLumpedMassMatrix(eckit::linalg::Vector&, const repres::Representation&, atlas::Mesh&) const;
+    void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::Mesh&) const;
 
 private:
 
-  virtual void print(std::ostream&) const;
-  virtual const char* name() const;
+    void print(std::ostream&) const;
+    const char* name() const;
 
 };
 

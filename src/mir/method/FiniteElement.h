@@ -18,15 +18,8 @@
 #define mir_method_FiniteElement_h
 
 #include "eckit/geometry/Point3.h"
-#include "eckit/memory/ScopedPtr.h"
-#include "atlas/meshgenerator.h"
 #include "mir/method/MethodWeighted.h"
-
-
-namespace atlas {
-class Grid;
-class Mesh;
-}
+#include "mir/util/MIRGrid.h"
 
 
 namespace mir {
@@ -37,10 +30,6 @@ class FiniteElement: public MethodWeighted {
 
 public:
 
-    typedef eckit::geometry::Point3 Point;
-
-public:
-
     FiniteElement(const param::MIRParametrisation&);
 
     virtual ~FiniteElement();
@@ -48,21 +37,16 @@ public:
 protected:
 
     virtual void hash(eckit::MD5&) const;
-    virtual void generateMesh(const atlas::Grid &grid, atlas::Mesh&) const;
 
 protected: // methods
 
-    // Deriving from any eckit::Parametrisation should work
-    class MeshGenParams: public atlas::MeshGenerator::Parameters {
-    public:
-        MeshGenParams();
-    };
-
-    virtual void assemble(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
 protected: // members
 
-    MeshGenParams meshgenparams_;
+    mutable util::MIRGrid::MeshGenParams InputMeshGenerationParams_;
+    mutable util::MIRGrid::MeshGenParams OutputMeshGenerationParams_;
+
 };
 
 

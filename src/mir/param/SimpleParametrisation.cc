@@ -29,7 +29,7 @@ namespace mir {
 namespace param {
 
 class Setting {
-  public:
+public:
     virtual ~Setting() {}
 
     virtual void get(const std::string &name, std::string &value) const = 0;
@@ -231,7 +231,7 @@ static void _put(std::ostream &out, const std::vector<T>& v) {
     if (eckit::format(out) == eckit::Log::applicationFormat) {
         comma = "/";
     }
-    for(size_t i = 0; i < v.size(); i++) {
+    for (size_t i = 0; i < v.size(); i++) {
         out << sep << v[i];
         sep = comma;
     }
@@ -251,50 +251,76 @@ void TSettings<std::vector<double> >::print(std::ostream &out) const {
 
 // We will implement conversion as needed
 
-template<> void TSettings<bool>::get(const std::string &name, bool &value) const {
+template<>
+void TSettings<bool>::get(const std::string &name, bool &value) const {
     value = value_;
 }
 
-template<> void TSettings<long>::get(const std::string &name, long &value) const {
+template<>
+void TSettings<long>::get(const std::string &name, long &value) const {
     value = value_;
 }
-template<> void TSettings<double>::get(const std::string &name, double &value) const {
+
+
+template<>
+void TSettings<int>::get(const std::string &name, long &value) const {
     value = value_;
 }
-template<> void TSettings<std::string>::get(const std::string &name, std::string &value) const {
+
+template<>
+void TSettings<double>::get(const std::string &name, double &value) const {
     value = value_;
 }
-template<> void TSettings<std::string>::get(const std::string &name, bool &value) const {
+
+template<>
+void TSettings<std::string>::get(const std::string &name, std::string &value) const {
+    value = value_;
+}
+
+template<>
+void TSettings<std::string>::get(const std::string &name, bool &value) const {
     conversion_warning("string", "bool", name, value_);
     eckit::Translator<std::string, long> translate;
     value = translate(value_) != 0;
 }
-template<> void TSettings<std::string>::get(const std::string &name, int &value) const {
+
+template<>
+void TSettings<std::string>::get(const std::string &name, int &value) const {
     conversion_warning("string", "int", name, value_);
     eckit::Translator<std::string, int> translate;
     value = translate(value_);
 }
-template<> void TSettings<std::string>::get(const std::string &name, long &value) const {
+
+template<>
+void TSettings<std::string>::get(const std::string &name, long &value) const {
     conversion_warning("string", "long", name, value_);
     eckit::Translator<std::string, long> translate;
     value = translate(value_);
 }
-template<> void TSettings<std::string>::get(const std::string &name, size_t &value) const {
+
+template<>
+void TSettings<std::string>::get(const std::string &name, size_t &value) const {
     conversion_warning("string", "size_t", name, value_);
     eckit::Translator<std::string, size_t> translate;
     value = translate(value_);
 }
-template<> void TSettings<std::string>::get(const std::string &name, float &value) const {
+
+template<>
+void TSettings<std::string>::get(const std::string &name, float &value) const {
     conversion_warning("string", "float", name, value_);
     eckit::Translator<std::string, float> translate;
     value = translate(value_);
 }
-template<> void TSettings<std::string>::get(const std::string &name, double &value) const {
+
+template<>
+void TSettings<std::string>::get(const std::string &name, double &value) const {
     conversion_warning("string", "double", name, value_);
     eckit::Translator<std::string, double> translate;
     value = translate(value_);
 }
-template<> void TSettings<std::string>::get(const std::string &name, std::vector<double> &value) const {
+
+template<>
+void TSettings<std::string>::get(const std::string &name, std::vector<double> &value) const {
     conversion_warning("string", "vector<double>", name, value_);
     eckit::Translator<std::string, double> translate;
     eckit::Tokenizer parse("/");
@@ -303,14 +329,18 @@ template<> void TSettings<std::string>::get(const std::string &name, std::vector
     parse(value_, v);
     value.clear();
     value.reserve(v.size());
-    for (const std::string& j: v) {
+    for (const std::string& j : v) {
         value.push_back(translate(j));
     }
 }
-template<> void TSettings<std::vector<long>>::get(const std::string &name, std::vector<long> &value) const {
+
+template<>
+void TSettings<std::vector<long>>::get(const std::string &name, std::vector<long> &value) const {
     value = value_;
 }
-template<> void TSettings<std::vector<double>>::get(const std::string &name, std::vector<double> &value) const {
+
+template<>
+void TSettings<std::vector<double>>::get(const std::string &name, std::vector<double> &value) const {
     value = value_;
 }
 
@@ -321,7 +351,7 @@ SimpleParametrisation::SimpleParametrisation() {
 
 
 SimpleParametrisation::~SimpleParametrisation() {
-   reset();
+    reset();
 }
 
 bool SimpleParametrisation::has(const std::string& name) const {
@@ -531,7 +561,7 @@ void SimpleParametrisation::print(std::ostream &out) const {
     const char *extra = "";
 
     if (eckit::format(out) == eckit::Log::applicationFormat) {
-        extra ="--";
+        extra = "--";
         comma = " ";
     }
 
@@ -553,29 +583,31 @@ bool SimpleParametrisation::empty() const {
     return size() == 0;
 }
 
-bool SimpleParametrisation::matches(const MIRParametrisation& other, const MIRParametrisation& ignore) const {
-    std::ostringstream reason;
+bool SimpleParametrisation::matches(const MIRParametrisation& other, const std::set<std::string>& ignore) const {
+    std::ostringstream ss;
     const char* sep = "";
     bool ok = true;
 
-    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end() && ok; ++j) {
-        if (!ignore.has((*j).first) && !(*j).second->match((*j).first, other)) {
-            reason << sep << (*j).first << " different to " << *((*j).second);
+    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
+        if (! j->second->match(j->first, other)) {
+            ss << sep << j->first << " different to " << *(j->second);
+            if (ignore.find(j->first) != ignore.end()) {
+                ss << " ignored";
+            } else {
+                ok = false;
+            }
             sep = ", ";
-            ok = false;
         }
     }
-    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches? " << (ok? "yes":"no ("+ reason.str() +")") << std::endl;
+
+    std::string reason = ss.str();
+    eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches? "
+                                << (ok ? "yes" : "no")
+                                << (reason.empty() ? "" : " (" + reason + ")")
+                                << std::endl;
     return ok;
 }
 
-void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other, bool overwrite) const {
-    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-        if (overwrite || !other.has((*j).first)) {
-            (*j).second->copyValueTo((*j).first, other);
-        }
-    }
-}
 
 }  // namespace param
 }  // namespace mir

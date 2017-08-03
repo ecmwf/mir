@@ -69,6 +69,7 @@ class Gaussian : public Gridded {
 
     const std::vector<double> &latitudes() const;
     virtual bool sameAs(const Representation& other) const;
+    void adjustBoundingBoxNorthSouth(util::BoundingBox&);
 
     // -- Overridden methods
 
@@ -81,12 +82,7 @@ class Gaussian : public Gridded {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    Gaussian(const Gaussian &);
-    Gaussian &operator=(const Gaussian &);
+private:
 
     // -- Members
 
@@ -94,6 +90,10 @@ class Gaussian : public Gridded {
 
     // -- Methods
     // None
+
+    // -- Overridden methods
+
+    virtual std::string atlasMeshGenerator() const;
 
     // -- Class members
     // None

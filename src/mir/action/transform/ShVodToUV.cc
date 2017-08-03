@@ -18,7 +18,6 @@
 #include <complex>
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "atlas/util/Constants.h"
 #include "mir/action/context/Context.h"
 #include "mir/action/transform/TransInitor.h"
 #include "mir/config/LibMir.h"
@@ -26,12 +25,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/api/mir_config.h"
-
-#ifdef ATLAS_HAVE_TRANS
-#include "transi/trans.h"
-
-#endif
+#include "mir/api/Atlas.h"
 
 
 namespace mir {
@@ -61,7 +55,6 @@ void ShVodToUV::print(std::ostream &out) const {
 
 
 void ShVodToUV::execute(context::Context & ctx) const {
-#ifdef ATLAS_HAVE_TRANS
     data::MIRField& field = ctx.field();
 
     ASSERT(field.dimensions() == 2);
@@ -101,11 +94,11 @@ void ShVodToUV::execute(context::Context & ctx) const {
     TransInitor::instance(); // Will init trans if needed
     int err = trans_vordiv_to_UV(&vod_to_UV);
 
-	if(err != TRANS_SUCCESS) {
-		std::ostringstream oss;
-		oss << "trans_vordiv_to_UV failed: " << trans_error_msg(err);
-		throw eckit::SeriousBug(oss.str());
-	}
+    if (err != TRANS_SUCCESS) {
+        std::ostringstream oss;
+        oss << "trans_vordiv_to_UV failed: " << trans_error_msg(err);
+        throw eckit::SeriousBug(oss.str());
+    }
 
 
     field.update(result_U, 0);
@@ -113,17 +106,12 @@ void ShVodToUV::execute(context::Context & ctx) const {
 
 
     // configure paramIds for U/V
-    long id_u = 131;
-    long id_v = 132;
-    parametrisation_.get("paramId.u", id_u);
-    parametrisation_.get("paramId.v", id_v);
+    const long id_u = 131;
+    const long id_v = 132;
 
     field.metadata(0, "paramId", id_u);
     field.metadata(1, "paramId", id_v);
-#else
-    throw eckit::SeriousBug("VO/D to U/V transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
-#endif
+
 }
 
 

@@ -16,12 +16,15 @@
 #include "mir/util/Rotation.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
-#include "atlas/grid.h"
-#include "atlas/util/Config.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
+#include "mir/api/mir_config.h"
+
+#include "mir/api/Atlas.h"
 
 
 namespace mir {

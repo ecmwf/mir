@@ -111,11 +111,6 @@ class ProdgenGrid : public param::DelayedParametrisation {
 
 // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const ProdgenGrid& p) {
-        p.print(s);
-        return s;
-    }
-
 };
 
 

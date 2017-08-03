@@ -13,17 +13,14 @@
 
 #include "mir/method/StructuredLinear.h"
 
-#include <algorithm>
-#include "eckit/geometry/Point3.h"
-#include "eckit/utils/MD5.h"
-#include "atlas/grid.h"
+#include <vector>
+#include "eckit/log/Log.h"
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/Ray.h"
 #include "mir/config/LibMir.h"
-#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Compare.h"
-#include "mir/util/MIRGrid.h"
+
 
 
 namespace mir {
@@ -31,176 +28,87 @@ namespace method {
 
 
 namespace {
-
-
-static MethodBuilder< StructuredLinear > __structuredlinear("structured-linear");
-
-
-// Utility types
-typedef eckit::geometry::Point3 point_3d_t;
-typedef eckit::linalg::Index index_t;
-typedef std::vector< WeightMatrix::Triplet > triplets_t;
-
-
-// Normalize weights triplets such that sum(weights) = 1
-void normalise(triplets_t& triplets) {
-    ASSERT(triplets.size());
-
-    // sum all calculated weights for normalisation
-    double sum = 0.0;
-    for (size_t j = 0; j < triplets.size(); ++j) {
-        sum += triplets[j].value();
-    }
-
-    // now normalise all weights according to the total
-    const double invSum = 1.0 / sum;
-    for (size_t j = 0; j < triplets.size(); ++j) {
-        triplets[j].value() *= invSum;
-    }
+static MethodBuilder< StructuredLinear > __method("structured-linear");
 }
 
 
-// Find nearest North-South bounding j indices
-void boundNorthSouth(size_t& jNorth, size_t& jSouth, const double& lat, const std::vector<double>& latitudes) {
-    const size_t Nj = latitudes.size();
-    ASSERT(Nj > 1);
-
-    // locate latitude indices just North and South of given latitude
-    std::vector<double>::const_reverse_iterator above = std::lower_bound(latitudes.rbegin(), latitudes.rend(), lat);
-
-
-    jNorth = (Nj - static_cast<size_t>(std::distance(latitudes.rbegin(), above))) - 1;
-    jSouth = jNorth + 1;
-
-    ASSERT(0 <= jNorth && jNorth < Nj-1);
-    ASSERT(0 < jSouth && jSouth <= Nj-1);
+StructuredLinear::StructuredLinear(const param::MIRParametrisation& param) :
+    StructuredMethod(param) {
 }
 
 
-// Find nearest West-East bounding i indices
-void boundWestEast(size_t& iWest, size_t& iEast, const double& lon, const size_t& Ni, const size_t& iStart) {
-    ASSERT(Ni > 1);
-
-    // locate longitude indices just West and East of given longitude (in-row)
-    iWest = static_cast<size_t>(std::floor(static_cast<double>(lon * Ni) / 360.));
-    iEast = (iWest + 1) % Ni;
-    ASSERT(iWest < Ni);
-
-    // adjust starting indices to value indices (absolute)
-    iWest += iStart;
-    iEast += iStart;
+StructuredLinear::~StructuredLinear() {
 }
 
 
-}  // (anonymous namespace)
+void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
+    typedef repres::Iterator::point_ll_t point_ll_t;
+    typedef repres::Iterator::point_3d_t point_3d_t;
 
-
-StructuredLinear::StructuredLinear(const param::MIRParametrisation &param) :
-    MethodWeighted(param) {
-}
-
-
-const char* StructuredLinear::name() const {
-    return  "structured-linear";
-}
-
-
-void StructuredLinear::hash(eckit::MD5& md5) const {
-    MethodWeighted::hash(md5);
-}
-
-
-void StructuredLinear::print(std::ostream &out) const {
-    out << "StructuredLinear[]";
-}
-
-
-void StructuredLinear::assemble(WeightMatrix &W, const repres::Representation& rin, const repres::Representation& rout) const {
-    atlas::Grid in = rin.grid();
-    atlas::Grid out = rout.grid();
-
-    eckit::Log::debug<LibMir>() << "StructuredLinear::assemble (input: " << in.name() << ", output: " << out.name() << ")" << std::endl;
-
-    ASSERT(in.domain().global());   // FIXME for the moment
-    ASSERT(out.domain().global());  // ...
-
-    const atlas::grid::StructuredGrid gin(in);
-    if (!gin) {
-        throw eckit::UserError("This interpolation method is only for Structured grids as input.", Here());
-    }
-
-    assemble(W, gin, out);
-    eckit::Log::debug<LibMir>() << "StructuredLinear::assemble." << std::endl;
-}
-
-
-void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGrid& in, const atlas::Grid& out) const {
 
     /*
      * get from input grid:
      * - latitudes (assume they are sorted descending)
      * - accumulated pl array (to know global node indices)
-     * - lon/lat points (TODO not necessary)
+     *   - pl_sum.rbegin() (last position) is total number of points sum(j=0; j=Nj, pl[j]),
+     *   - pl_sum.rbegin()[1] (before-last position) is sum(j=0; j=Nj-1, pl[j])
      */
-    const std::vector<double>& latitudes = in.y();
-    ASSERT(latitudes.front() > latitudes.back());
-    ASSERT(latitudes.size() == in.nx().size());
-    ASSERT(latitudes.size() >= 2);
+    atlas::grid::StructuredGrid gin(in.atlasGrid());
+    ASSERT(gin);
 
-    std::vector<size_t> pl_sum(in.nx().size() + 1, 0);
-    std::partial_sum(in.nx().begin(), in.nx().end(), ++pl_sum.begin());
-    ASSERT(static_cast<size_t>(pl_sum.back()) == in.size());
+    const std::vector<long>& pl = gin.nx();
+    ASSERT(pl.size());
+    ASSERT(pl.front());
+    ASSERT(pl.back());
+
+    std::vector<Latitude> latitudes;
+    getRepresentationLatitudes(in, latitudes);
+
+    std::vector<size_t> pl_sum(pl.size() + 1, 0);
+    std::partial_sum(pl.begin(), pl.end(), ++pl_sum.begin());
+    ASSERT(static_cast<size_t>(pl_sum.back()) == in.numberOfPoints());
 
 
-    // get from input grid lon/lat points
-    std::vector< atlas::PointXY > in_points(in);
+    // get input coordinates, checking min/max latitudes (Gaussian grids exclude the poles)
+    std::vector<point_ll_t> icoords;
+    Latitude min_lat;
+    Latitude max_lat;
+    getRepresentationPoints(in, icoords, min_lat, max_lat);
+    eckit::Log::debug<LibMir>() << "StructureLinear::assemble latitude (min,max) = (" << min_lat << ", " << max_lat << ")" << std::endl;
 
 
     // fill sparse matrix using triplets (reserve assuming all-triangle interpolations)
-    triplets_t triplets;
-    triplets.reserve(3 * out.size());
+    triplet_vector_t triplets;
+    size_t numberOfPoints = out.numberOfPoints();
+    triplets.reserve(3 * numberOfPoints);
 
-    index_t i = 0;
-    for (atlas::PointLonLat p : out.lonlat()) {
 
-        triplets_t trip;
-        const double lon = p.lon();
-        const double lat = p.lat();
+    // interpolate each output point in turn
+    eckit::ScopedPtr<repres::Iterator> it(out.iterator());
+    size_t i = 0;
 
-//        if (inDomain.contains(lat, lon)*/) {
-//
-//            ++i;
-//            continue;
-//
-//        }
+    while (it->next()) {
+        const point_ll_t& p = it->pointUnrotated();
+        ASSERT(i < numberOfPoints);
 
-        if (lat > latitudes.front()) {
+        triplet_vector_t trip;
 
-            // interpolate on above-North latitudes
-            const size_t Ni = size_t(in.nx().front());
-            const size_t iStart = 0;
+        const bool too_much_north = p.lat > max_lat;
+        const bool too_much_south = p.lat < min_lat;
 
-            size_t l[2];
-            boundWestEast(l[0], l[1], lon, Ni, iStart);
+        if (too_much_north || too_much_south) {
+            ASSERT(too_much_north != too_much_south);
 
-            trip.resize(2);
-            trip[0] = WeightMatrix::Triplet(i, index_t(l[0]), in_points[l[1]].x() - lon );
-            trip[1] = WeightMatrix::Triplet(i, index_t(l[1]), lon - in_points[l[0]].x() );
-
-        } else if (lat < latitudes.back()) {
-
-            // interpolate on below-South latitudes
-            // - pl_sum.rbegin() (last position) is total number of points sum(j=0; j=Nj, pl[j]),
-            // - pl_sum.rbegin()[1] (before-last position) is sum(j=0; j=Nj-1, pl[j])
-            const size_t Ni = size_t(in.nx().back());
-            const size_t iStart = pl_sum.rbegin()[1];
+            const size_t Ni = size_t(too_much_north? pl.front() : pl.back());
+            const size_t iStart = too_much_north? 0 : pl_sum.rbegin()[1];
 
             size_t l[2];
-            boundWestEast(l[0], l[1], lon, Ni, iStart);
+            boundWestEast(p.lon, Ni, iStart, l[0], l[1]);
 
-            trip.resize(2);
-            trip[0] = WeightMatrix::Triplet(i, index_t(l[0]), in_points[l[1]].x() - lon );
-            trip[1] = WeightMatrix::Triplet(i, index_t(l[1]), lon - in_points[l[0]].x() );
+            const Longitude& l0 = icoords[l[0]].lon;
+            const Longitude& l1 = icoords[l[1]].lon;
+            trip = { WeightMatrix::Triplet(i, l[0], (l1 - p.lon).value() ),
+                     WeightMatrix::Triplet(i, l[1], (p.lon - l0).value() ) };
 
         } else {
 
@@ -219,18 +127,22 @@ void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGr
 
             size_t j_north;
             size_t j_south;
-            boundNorthSouth(j_north, j_south, lat, latitudes);
+            boundNorthSouth(p.lat, latitudes, j_north, j_south);
 
             size_t q[4];
-            boundWestEast(q[0], q[1], lon, in.nx(j_north), pl_sum[j_north]);
-            boundWestEast(q[2], q[3], lon, in.nx(j_south), pl_sum[j_south]);
+            boundWestEast(p.lon, size_t(pl[j_north]), pl_sum[j_north], q[0], q[1]);
+            boundWestEast(p.lon, size_t(pl[j_south]), pl_sum[j_south], q[2], q[3]);
 
             // convert working longitude/latitude coordinates to 3D
             point_3d_t ip;
             point_3d_t qp[4];
-            eckit::geometry::lonlat_to_3d(p.data(), ip.data());
+            eckit::geometry::lonlat_to_3d(p.lon.value(), p.lat.value(), ip.data());
             for (size_t k = 0; k < 4; ++k) {
-                eckit::geometry::lonlat_to_3d(in_points[q[k]].data(), qp[k].data());
+                const point_ll_t& ll = icoords[q[k]];
+
+                // notice the order
+                eckit::geometry::Point2 p(ll.lon.value(), ll.lat.value());
+                eckit::geometry::lonlat_to_3d(p.data(), qp[k].data());
             }
 
 
@@ -277,23 +189,36 @@ void StructuredLinear::assemble(WeightMatrix& W, const atlas::grid::StructuredGr
             ASSERT(inter);
 
             // weights are the linear Lagrange function evaluated at u,v (aka barycentric coordinates)
-            trip.resize(3);
-            trip[0] = WeightMatrix::Triplet(i, index_t(q[T[w][0]]), 1. - inter.u - inter.v);
-            trip[1] = WeightMatrix::Triplet(i, index_t(q[T[w][1]]), inter.u);
-            trip[2] = WeightMatrix::Triplet(i, index_t(q[T[w][2]]), inter.v);
-
+            trip = { WeightMatrix::Triplet(i, q[T[w][0]], 1. - inter.u - inter.v),
+                     WeightMatrix::Triplet(i, q[T[w][1]], inter.u),
+                     WeightMatrix::Triplet(i, q[T[w][2]], inter.v) };
         }
 
 
         // insert local point weights (normalized) into matrix "filler"
         normalise(trip);
         std::copy(trip.begin(), trip.end(), std::back_inserter(triplets));
-        ++i;
 
+        ++i;
     }
 
     // fill sparse matrix
     W.setFromTriplets(triplets);
+}
+
+
+const char* StructuredLinear::name() const {
+    return  "structured-linear";
+}
+
+
+void StructuredLinear::hash(eckit::MD5& md5) const {
+    StructuredMethod::hash(md5);
+}
+
+
+void StructuredLinear::print(std::ostream& out) const {
+    out << "StructuredLinear[]";
 }
 
 

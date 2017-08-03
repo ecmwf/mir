@@ -1,0 +1,3880 @@
+---
+concentration:
+- 33  # Snow density
+- 3089  # Density
+- 129033  # Snow density gradient
+- 171033  # Snow density anomaly
+- 200033  # Snow density difference
+- 210072  # Particulate matter d < 1 um
+- 210073  # Particulate matter d < 2.5 um
+- 210074  # Particulate matter d < 10 um
+- 228039  # Soil Moisture
+- 228086  # Soil moisture top 20 cm
+- 228087  # Soil moisture top 100 cm
+- 228170  # Field capacity
+- 228171  # Wilting point
+- 260014  # Absolute humidity
+- 260024  # Maximum absolute humidity
+- 260202  # Upper layer soil moisture
+- 260203  # Lower layer soil moisture
+- 260212  # Transpiration stress-onset (soil moisture)
+- 260214  # Direct evaporation cease (soil moisture)
+- 260217  # Saturation of soil moisture
+- 260495  # Ocean Mixed Layer Potential Density (Reference 2000m)<br
+- 260619  # Mass concentration of condensed water in soil
+- 300089  # Density
+
+direction:
+- 3031  # Wind direction
+- 3047  # Direction of current
+- 3093  # Direction of ice drift
+- 3101  # Mean direction of wind waves
+- 3104  # Direction of swell waves
+- 3107  # Primary wave direction
+- 3109  # Secondary wave direction
+- 140113  # Wave energy flux mean direction
+- 140230  # Mean wave direction
+- 140235  # Mean direction of wind waves
+- 140238  # Mean direction of total swell
+- 140242  # Mean wind direction
+- 140249  # 10 metre wind direction
+- 210079  # Wildfire viewing angle of observation
+- 260225  # Solar zenith angle
+- 260226  # Relative azimuth angle
+- 260232  # Direction of wind waves
+- 260233  # Primary wave direction
+- 260236  # Current direction
+- 260260  # 10 metre wind direction
+- 300031  # Wind direction
+- 300047  # Direction of current
+- 300093  # Direction of ice drift
+- 300101  # Direction of wind wave
+- 300104  # Direction of swell wave
+- 300107  # Primary wave direction
+- 300109  # Second wave direction
+
+direction.degrees-asymmetric:
+- 260296  # Longitude of U Wind Component of Velocity
+- 260298  # Longitude of V Wind Component of Velocity
+- 260300  # Longitude of Presure Point
+- 260422  # East Longitude (0 - 360)
+- 260426  # East Longitude (nearest neighbor) (0 - 360)
+
+direction.degrees-symmetric:
+- 260295  # Latitude of U Wind Component of Velocity
+- 260297  # Latitude of V Wind Component of Velocity
+- 260299  # Latitude of Presure Point
+- 260421  # Latitude (-90 to +90)
+- 260425  # Latitude (nearest neighbor) (-90 to +90)
+
+direction.radians-symmetric:
+- 162  # Angle of sub-gridscale orography
+- 129162  # Angle of sub-gridscale orography gradient
+- 171162  # Angle of sub-gridscale orography anomaly
+- 200162  # Angle of sub-gridscale orography difference
+
+index:
+- 29  # Type of low vegetation
+- 30  # Type of high vegetation
+- 43  # Soil type
+- 260015  # Precipitation type
+- 260026  # Precipitable water category
+- 260029  # Categorical rain
+- 260030  # Categorical freezing rain
+- 260031  # Categorical ice pellets
+- 260032  # Categorical snow
+- 260104  # Cloud type
+- 260106  # Thunderstorm coverage
+- 260129  # Aerosol type
+- 260148  # Volcanic ash
+- 260151  # Icing
+- 260154  # Turbulence
+- 260156  # Planetary boundary layer regime
+- 260157  # Contrail intensity
+- 260158  # Contrail engine type
+- 260171  # Remotely sensed snow cover
+- 260172  # Elevation of snow covered terrain
+- 260184  # Land use
+- 260221  # Cloud top height quality indicator
+- 260380  # Categorical Ozone Concentration
+- 260394  # Slight risk convective outlook
+- 260395  # Moderate risk convective outlook
+- 260396  # High risk convective outlook
+- 260403  # Categorical Thunderstorm (1-yes, 0-no)
+- 260439  # Vegetation Type
+- 260474  # Surface Slope Type
+- 260537  # Cloud mask
+- 260538  # Pixel scene type
+- 260539  # Fire detection indicator
+
+index.associated:
+- 3059  # Precipitation rate
+- 129029  # Type of low vegetation gradient
+- 129030  # Type of high vegetation gradient
+- 129043  # Soil type gradient
+- 171029  # Type of low vegetation anomaly
+- 171030  # Type of high vegetation anomaly
+- 171043  # Soil type anomaly
+- 200029  # Type of low vegetation difference
+- 200030  # Type of high vegetation difference
+- 200043  # Soil type difference
+
+intensity:
+- 1  # Stream function
+- 2  # Velocity potential
+- 3  # Potential temperature
+- 4  # Equivalent potential temperature
+- 5  # Saturated equivalent potential temperature
+- 10  # Wind speed
+- 21  # Unbalanced component of temperature
+- 23  # Unbalanced component of divergence
+- 34  # Sea surface temperature
+- 35  # Ice temperature layer 1
+- 36  # Ice temperature layer 2
+- 37  # Ice temperature layer 3
+- 38  # Ice temperature layer 4
+- 46  # Solar duration
+- 49  # 10 metre wind gust since previous post-processing
+- 51  # Maximum temperature at 2 metres in the last 24 hours
+- 52  # Minimum temperature at 2 metres in the last 24 hours
+- 53  # Montgomery potential
+- 54  # Pressure
+- 55  # Mean temperature at 2 metres in the last 24 hours
+- 56  # Mean 2 metre dewpoint temperature in the last 24 hours
+- 59  # Convective available potential energy
+- 60  # Potential vorticity
+- 63  # Start time for skin temperature difference
+- 64  # Finish time for skin temperature difference
+- 65  # Skin temperature difference
+- 68  # Minimum stomatal resistance, low vegetation
+- 69  # Minimum stomatal resistance, high vegetation
+- 74  # Standard deviation of filtered subgrid orography
+- 77  # Eta-coordinate vertical velocity
+- 78  # Total column cloud liquid water
+- 79  # Total column cloud ice water
+- 121  # Maximum temperature at 2 metres in the last 6 hours
+- 122  # Minimum temperature at 2 metres in the last 6 hours
+- 123  # 10 metre wind gust in the last 6 hours
+- 129  # Geopotential
+- 130  # Temperature
+- 134  # Surface pressure
+- 135  # Vertical velocity
+- 136  # Total column water
+- 137  # Total column water vapour
+- 138  # Vorticity (relative)
+- 139  # Soil temperature level 1
+- 140  # Soil wetness level 1
+- 141  # Snow depth
+- 148  # Charnock
+- 151  # Mean sea level pressure
+- 153  # Short-wave heating rate
+- 154  # Long-wave heating rate
+- 155  # Divergence
+- 156  # Geopotential Height
+- 158  # Tendency of surface pressure
+- 159  # Boundary layer height
+- 160  # Standard deviation of orography
+- 161  # Anisotropy of sub-gridscale orography
+- 163  # Slope of sub-gridscale orography
+- 168  # 2 metre dewpoint temperature
+- 170  # Soil temperature level 2
+- 171  # Soil wetness level 2
+- 173  # Surface roughness
+- 183  # Soil temperature level 3
+- 184  # Soil wetness level 3
+- 189  # Sunshine duration
+- 190  # East-West component of sub-gridscale orographic variance
+- 191  # North-South component of sub-gridscale orographic variance
+- 192  # North-West/South-East component of sub-gridscale orographic variance
+- 193  # North-East/South-West component of sub-gridscale orographic variance
+- 194  # Brightness temperature
+- 198  # Skin reservoir content
+- 200  # Variance of sub-gridscale orography
+- 201  # Maximum temperature at 2 metres since previous post-processing
+- 202  # Minimum temperature at 2 metres since previous post-processing
+- 206  # Total column ozone
+- 207  # 10 metre wind speed
+- 214  # Diabatic heating by radiation
+- 215  # Diabatic heating by vertical diffusion
+- 216  # Diabatic heating by cumulus convection
+- 217  # Diabatic heating large-scale condensation
+- 218  # Vertical diffusion of zonal wind
+- 219  # Vertical diffusion of meridional wind
+- 220  # East-West gravity wave drag tendency
+- 221  # North-South gravity wave drag tendency
+- 235  # Skin temperature
+- 236  # Soil temperature level 4
+- 237  # Soil wetness level 4
+- 238  # Temperature of snow layer
+- 244  # Forecast surface roughness
+- 251  # Adiabatic tendency of temperature
+- 3003  # Pressure tendency
+- 3005  # ICAO Standard Atmosphere reference height
+- 3008  # Geometrical height
+- 3009  # Standard deviation of height
+- 3012  # Virtual potential temperature
+- 3014  # Pseudo-adiabatic potential temperature
+- 3015  # Maximum temperature
+- 3016  # Minimum temperature
+- 3017  # Dew point temperature
+- 3018  # Dew point depression (or deficit)
+- 3020  # Visibility
+- 3024  # Parcel lifted index (to 500 hPa)
+- 3025  # Temperature anomaly
+- 3026  # Pressure anomaly
+- 3027  # Geopotential height anomaly
+- 3037  # Montgomery stream Function
+- 3038  # Sigma coordinate vertical velocity
+- 3041  # Absolute vorticity
+- 3042  # Absolute divergence
+- 3045  # Vertical u-component shear
+- 3046  # Vertical v-component shear
+- 3048  # Speed of current
+- 3054  # Precipitable water
+- 3055  # Vapour pressure
+- 3056  # Saturation deficit
+- 3066  # Snow depth
+- 3067  # Mixed layer depth
+- 3068  # Transient thermocline depth
+- 3069  # Main thermocline depth
+- 3070  # Main thermocline anomaly
+- 3077  # Best lifted index (to 500 hPa)
+- 3080  # Water temperature
+- 3082  # Deviation of sea-level from mean
+- 3086  # Soil moisture content
+- 3092  # Ice thickness
+- 3094  # Speed of ice drift
+- 3098  # Ice divergence
+- 3100  # Signific.height,combined wind waves+swell
+- 3102  # Significant height of wind waves
+- 3103  # Mean period of wind waves
+- 3105  # Significant height of swell waves
+- 3106  # Mean period of swell waves
+- 3108  # Primary wave mean period
+- 3110  # Secondary wave mean period
+- 3119  # Radiance (with respect to wave number)
+- 3120  # Radiance (with respect to wave length)
+- 3126  # Wind mixing energy
+- 129001  # Stream function gradient
+- 129002  # Velocity potential gradient
+- 129003  # Potential temperature gradient
+- 129004  # Equivalent potential temperature gradient
+- 129005  # Saturated equivalent potential temperature gradient
+- 129021  # Unbalanced component of temperature gradient
+- 129023  # Unbalanced component of divergence gradient
+- 129034  # Sea surface temperature gradient
+- 129035  # Ice surface temperature layer 1 gradient
+- 129036  # Ice surface temperature layer 2 gradient
+- 129037  # Ice surface temperature layer 3 gradient
+- 129038  # Ice surface temperature layer 4 gradient
+- 129046  # Solar duration gradient
+- 129049  # 10 metre wind gust gradient
+- 129051  # Maximum 2 metre temperature gradient
+- 129052  # Minimum 2 metre temperature gradient
+- 129053  # Montgomery potential gradient
+- 129054  # Pressure gradient
+- 129055  # Mean 2 metre temperature in the last 24 hours gradient
+- 129056  # Mean 2 metre dewpoint temperature in the last 24 hours gradient
+- 129059  # Convective available potential energy gradient
+- 129060  # Potential vorticity gradient
+- 129063  # Start time for skin temperature difference
+- 129064  # Finish time for skin temperature difference
+- 129065  # Skin temperature difference
+- 129068  # Minimum stomatal resistance, low vegetation
+- 129069  # Minimum stomatal resistance, high vegetation
+- 129078  # Total column liquid water
+- 129079  # Total column ice water
+- 129121  # Maximum temperature at 2 metres gradient
+- 129122  # Minimum temperature at 2 metres gradient
+- 129123  # 10 metre wind gust in the last 6 hours gradient
+- 129129  # Geopotential gradient
+- 129130  # Temperature gradient
+- 129134  # Surface pressure gradient
+- 129135  # vertical velocity (pressure) gradient
+- 129136  # Total column water gradient
+- 129137  # Total column water vapour gradient
+- 129138  # Vorticity (relative) gradient
+- 129139  # Soil temperature level 1 gradient
+- 129140  # Soil wetness level 1 gradient
+- 129141  # Snow depth gradient
+- 129148  # Charnock gradient
+- 129151  # Mean sea level pressure gradient
+- 129153  # Short-wave heating rate gradient
+- 129154  # Long-wave heating rate gradient
+- 129155  # Divergence gradient
+- 129156  # Height gradient
+- 129158  # Tendency of surface pressure gradient
+- 129159  # Boundary layer height gradient
+- 129160  # Standard deviation of orography gradient
+- 129161  # Anisotropy of sub-gridscale orography gradient
+- 129163  # Slope of sub-gridscale orography gradient
+- 129168  # 2 metre dewpoint temperature gradient
+- 129170  # Soil temperature level 2 gradient
+- 129171  # Soil wetness level 2 gradient
+- 129173  # Surface roughness gradient
+- 129183  # Soil temperature level 3 gradient
+- 129184  # Soil wetness level 3 gradient
+- 129189  # Sunshine duration gradient
+- 129190  # East-West component of sub-gridscale orographic variance gradient
+- 129191  # North-South component of sub-gridscale orographic variance gradient
+- 129192  # North-West/South-East component of sub-gridscale orographic variance gradient
+- 129193  # North-East/South-West component of sub-gridscale orographic variance gradient
+- 129194  # Brightness temperature gradient
+- 129198  # Skin reservoir content gradient
+- 129200  # Variance of sub-gridscale orography gradient
+- 129201  # Maximum temperature at 2 metres since previous post-processing gradient
+- 129202  # Minimum temperature at 2 metres since previous post-processing gradient
+- 129206  # Total column ozone gradient
+- 129207  # 10 metre wind speed gradient
+- 129214  # Diabatic heating by radiation gradient
+- 129215  # Diabatic heating by vertical diffusion gradient
+- 129216  # Diabatic heating by cumulus convection gradient
+- 129217  # Diabatic heating large-scale condensation gradient
+- 129218  # Vertical diffusion of zonal wind gradient
+- 129219  # Vertical diffusion of meridional wind gradient
+- 129220  # East-West gravity wave drag tendency gradient
+- 129221  # North-South gravity wave drag tendency gradient
+- 129235  # Skin temperature gradient
+- 129236  # Soil temperature level 4 gradient
+- 129237  # Soil wetness level 4 gradient
+- 129238  # Temperature of snow layer gradient
+- 129244  # Forecast surface roughness gradient
+- 129251  # Adiabatic tendency of temperature gradient
+- 130214  # Diabatic heating by radiation
+- 130215  # Diabatic heating by vertical diffusion
+- 130216  # Diabatic heating by cumulus convection
+- 130217  # Diabatic heating by large-scale condensation
+- 130218  # Vertical diffusion of zonal wind
+- 130219  # Vertical diffusion of meridional wind
+- 130220  # East-West gravity wave drag
+- 130221  # North-South gravity wave drag
+- 130228  # Adiabatic tendency of temperature
+- 130232  # Mean vertical velocity
+- 140112  # Wave energy flux magnitude
+- 140114  # Significant wave height of all waves with periods within the inclusive range from 10 to 12 seconds
+- 140115  # Significant wave height of all waves with periods within the inclusive range from 12 to 14 seconds
+- 140116  # Significant wave height of all waves with periods within the inclusive range from 14 to 17 seconds
+- 140117  # Significant wave height of all waves with periods within the inclusive range from 17 to 21 seconds
+- 140118  # Significant wave height of all waves with periods within the inclusive range from 21 to 25 seconds
+- 140119  # Significant wave height of all waves with periods within the inclusive range from 25 to 30 seconds
+- 140120  # Significant wave height of all waves with period larger than 10s
+- 140200  # Maximum of significant wave height
+- 140207  # Wave Spectral Skewness
+- 140217  # Period corresponding to maximum individual wave height
+- 140218  # Maximum individual wave height
+- 140220  # Mean wave period based on first moment
+- 140221  # Mean wave period based on second moment
+- 140222  # Wave spectral directional width
+- 140223  # Mean wave period based on first moment for wind waves
+- 140224  # Mean wave period based on second moment for wind waves
+- 140225  # Wave spectral directional width for wind waves
+- 140226  # Mean wave period based on first moment for swell
+- 140227  # Mean wave period based on second moment for swell
+- 140228  # Wave spectral directional width for swell
+- 140229  # Significant height of combined wind waves and swell
+- 140232  # Mean wave period
+- 140234  # Significant height of wind waves
+- 140236  # Mean period of wind waves
+- 140237  # Significant height of total swell
+- 140239  # Mean period of total swell
+- 140240  # Standard deviation wave height
+- 140241  # Mean of 10 metre wind speed
+- 140243  # Standard deviation of 10 metre wind speed
+- 140244  # Mean square slope of waves
+- 140252  # Wave spectral kurtosis
+- 140253  # Benjamin-Feir index
+- 140254  # Wave spectral peakedness
+- 150129  # Ocean potential temperature
+- 150130  # Ocean salinity
+- 150131  # Ocean potential density
+- 150139  # U*V product
+- 150140  # U*T product
+- 150141  # V*T product
+- 150142  # U*U product
+- 150143  # V*V product
+- 150144  # UV - U~V~
+- 150145  # UT - U~T~
+- 150146  # VT - V~T~
+- 150147  # UU - U~U~
+- 150148  # VV - V~V~
+- 150152  # Sea level
+- 150154  # Mixed layer depth
+- 150155  # Depth
+- 150170  # Turbulent kinetic energy input
+- 150171  # Net surface heat flux
+- 150172  # Surface solar radiation
+- 150180  # Diagnosed sea surface temperature error
+- 150182  # Observed sea surface temperature
+- 151128  # In situ Temperature
+- 151129  # Ocean potential temperature
+- 151130  # Salinity
+- 151135  # Vertical viscosity
+- 151136  # Vertical diffusivity
+- 151137  # Bottom level Depth
+- 151140  # UV product
+- 151141  # UT product
+- 151142  # VT product
+- 151143  # UU product
+- 151144  # VV product
+- 151145  # Sea level
+- 151146  # Sea level previous timestep
+- 151147  # Barotropic stream function
+- 151148  # Mixed layer depth
+- 151149  # Bottom Pressure (equivalent height)
+- 151150  # Steric height
+- 151151  # Curl of Wind Stress
+- 151152  # Divergence of wind stress
+- 151159  # Specified sea surface temperature
+- 151161  # Diagnosed sea surface temperature error
+- 151163  # 20 degrees isotherm depth
+- 151164  # Average potential temperature in the upper 300m
+- 151171  # U velocity maximum
+- 151172  # Depth of the velocity maximum
+- 151173  # Salinity maximum
+- 151174  # Depth of salinity maximum
+- 151175  # Average salinity in the upper 300m
+- 151176  # Layer Thickness at scalar points
+- 151177  # Layer Thickness at vector points
+- 151178  # Potential temperature increment
+- 151179  # Potential temperature analysis error
+- 151180  # Background potential temperature
+- 151181  # Analysed potential temperature
+- 151182  # Potential temperature background error
+- 151183  # Analysed salinity
+- 151184  # Salinity increment
+- 151185  # Estimated Bias in Temperature
+- 151186  # Estimated Bias in Salinity
+- 151187  # Zonal Velocity increment (from balance operator)
+- 151190  # Salinity increment (from salinity data)
+- 151191  # Salinity analysis error
+- 151192  # Background Salinity
+- 151194  # Salinity background error
+- 151199  # Estimated temperature bias from assimilation
+- 151200  # Estimated salinity bias from assimilation
+- 151201  # Temperature increment from relaxation term
+- 151203  # Bias in the zonal pressure gradient (applied)
+- 151204  # Bias in the meridional pressure gradient (applied)
+- 151205  # Estimated temperature bias from relaxation
+- 151206  # Estimated salinity bias from relaxation
+- 151207  # First guess bias in temperature
+- 151208  # First guess bias in salinity
+- 151209  # Applied bias in pressure
+- 151210  # FG bias in pressure
+- 151211  # Bias in temperature(applied)
+- 151212  # Bias in salinity (applied)
+- 160049  # 10 metre wind gust during averaging time
+- 160135  # vertical velocity (pressure)
+- 160137  # Precipitable water content
+- 160140  # Soil wetness level 1
+- 160156  # Height
+- 160171  # Soil wetness level 2
+- 160184  # Soil wetness level 3
+- 160198  # Skin reservoir content
+- 160201  # Maximum temperature at 2 metres during averaging time
+- 160202  # Minimum temperature at 2 metres during averaging time
+- 160206  # Standard deviation of geopotential
+- 160207  # Covariance of temperature and geopotential
+- 160208  # Standard deviation of temperature
+- 160209  # Covariance of specific humidity and geopotential
+- 160210  # Covariance of specific humidity and temperature
+- 160212  # Covariance of U component and geopotential
+- 160213  # Covariance of U component and temperature
+- 160214  # Covariance of U component and specific humidity
+- 160215  # Standard deviation of U velocity
+- 160216  # Covariance of V component and geopotential
+- 160217  # Covariance of V component and temperature
+- 160218  # Covariance of V component and specific humidity
+- 160219  # Covariance of V component and U component
+- 160220  # Standard deviation of V component
+- 160221  # Covariance of W component and geopotential
+- 160222  # Covariance of W component and temperature
+- 160223  # Covariance of W component and specific humidity
+- 160224  # Covariance of W component and U component
+- 160225  # Covariance of W component and V component
+- 160226  # Standard deviation of vertical velocity
+- 160246  # 10 metre wind speed
+- 162051  # Surface geopotential
+- 162100  # Tendency of short wave radiation
+- 162101  # Tendency of long wave radiation
+- 162102  # Tendency of clear sky short wave radiation
+- 162103  # Tendency of clear sky long wave radiation
+- 162109  # Turbulent diffusion coefficient for heat
+- 162110  # Tendency of temperature due to physics
+- 162112  # Tendency of u component due to physics
+- 162113  # Tendency of v component due to physics
+- 162114  # U-tendency from dynamics
+- 162115  # V-tendency from dynamics
+- 162116  # T-tendency from dynamics
+- 162118  # T-tendency from radiation
+- 162119  # U-tendency from turbulent diffusion + subgrid orography
+- 162120  # V-tendency from turbulent diffusion + subgrid orography
+- 162121  # T-tendency from turbulent diffusion + subgrid orography
+- 162123  # U-tendency from subgrid orography
+- 162124  # V-tendency from subgrid orography
+- 162125  # T-tendency from subgrid orography
+- 162126  # U-tendency from convection (deep+shallow)
+- 162127  # V-tendency from convection (deep+shallow)
+- 162128  # T-tendency from convection (deep+shallow)
+- 162132  # T-tendency from cloud scheme
+- 162138  # U-tendency from shallow convection
+- 162139  # V-tendency from shallow convection
+- 162140  # T-tendency from shallow convection
+- 162206  # Variance of geopotential
+- 162207  # Covariance of geopotential/temperature
+- 162208  # Variance of temperature
+- 162209  # Covariance of geopotential/specific humidity
+- 162210  # Covariance of temperature/specific humidity
+- 162211  # Variance of specific humidity
+- 162212  # Covariance of u component/geopotential
+- 162213  # Covariance of u component/temperature
+- 162214  # Covariance of u component/specific humidity
+- 162215  # Variance of u component
+- 162216  # Covariance of v component/geopotential
+- 162217  # Covariance of v component/temperature
+- 162218  # Covariance of v component/specific humidity
+- 162219  # Covariance of v component/u component
+- 162220  # Variance of v component
+- 162221  # Covariance of omega/geopotential
+- 162222  # Covariance of omega/temperature
+- 162223  # Covariance of omega/specific humidity
+- 162224  # Covariance of omega/u component
+- 162225  # Covariance of omega/v component
+- 162226  # Variance of omega
+- 162227  # Variance of surface pressure
+- 162230  # Covariance of u component/ozone
+- 162231  # Covariance of v component/ozone
+- 162232  # Covariance of omega/ozone
+- 170149  # Total soil moisture
+- 170171  # Soil wetness level 2
+- 171001  # Stream function anomaly
+- 171002  # Velocity potential anomaly
+- 171003  # Potential temperature anomaly
+- 171004  # Equivalent potential temperature anomaly
+- 171005  # Saturated equivalent potential temperature anomaly
+- 171021  # Unbalanced component of temperature anomaly
+- 171023  # Unbalanced component of divergence anomaly
+- 171034  # Sea surface temperature anomaly
+- 171035  # Ice surface temperature anomaly layer 1
+- 171036  # Ice surface temperature anomaly layer 2
+- 171037  # Ice surface temperature anomaly layer 3
+- 171038  # Ice surface temperature anomaly layer 4
+- 171046  # Solar duration anomaly
+- 171049  # 10 metre wind gust anomaly
+- 171051  # Maximum 2 metre temperature in the last 24 hours anomaly
+- 171052  # Minimum 2 metre temperature in the last 24 hours anomaly
+- 171053  # Montgomery potential anomaly
+- 171054  # Pressure anomaly
+- 171055  # Mean 2 metre temperature in the last 24 hours anomaly
+- 171056  # Mean 2 metre dewpoint temperature in the last 24 hours anomaly
+- 171059  # Convective available potential energy anomaly
+- 171060  # Potential vorticity anomaly
+- 171063  # Start time for skin temperature difference anomaly
+- 171064  # Finish time for skin temperature difference anomaly
+- 171065  # Skin temperature difference anomaly
+- 171078  # Total column liquid water anomaly
+- 171079  # Total column ice water anomaly
+- 171121  # Maximum temperature at 2 metres in the last 6 hours anomaly
+- 171122  # Minimum temperature at 2 metres in the last 6 hours anomaly
+- 171129  # Geopotential anomaly
+- 171130  # Temperature anomaly
+- 171134  # Surface pressure anomaly
+- 171135  # Vertical velocity (pressure) anomaly
+- 171136  # Total column water anomaly
+- 171137  # Total column water vapour anomaly
+- 171138  # Relative vorticity anomaly
+- 171139  # Soil temperature anomaly level 1
+- 171140  # Soil wetness anomaly level 1
+- 171141  # Snow depth anomaly
+- 171148  # Charnock anomaly
+- 171151  # Mean sea level pressure anomaly
+- 171153  # Short-wave heating rate anomaly
+- 171154  # Long-wave heating rate anomaly
+- 171155  # Relative divergence anomaly
+- 171156  # Height anomaly
+- 171158  # Tendency of surface pressure anomaly
+- 171159  # Boundary layer height anomaly
+- 171160  # Standard deviation of orography anomaly
+- 171161  # Anisotropy of sub-gridscale orography anomaly
+- 171163  # Slope of sub-gridscale orography anomaly
+- 171168  # 2 metre dewpoint temperature anomaly
+- 171170  # Soil temperature anomaly level 2
+- 171171  # Soil wetness anomaly level 2
+- 171173  # Surface roughness anomaly
+- 171183  # Soil temperature anomaly level 3
+- 171184  # Soil wetness anomaly level 3
+- 171189  # Sunshine duration anomaly
+- 171190  # East-West component of sub-gridscale orographic variance anomaly
+- 171191  # North-South component of sub-gridscale orographic variance anomaly
+- 171192  # North-West/South-East component of sub-gridscale orographic variance anomaly
+- 171193  # North-East/South-West component of sub-gridscale orographic variance anomaly
+- 171194  # Brightness temperature anomaly
+- 171198  # Skin reservoir content anomaly
+- 171200  # Variance of sub-gridscale orography anomaly
+- 171201  # Maximum temperature at 2 metres anomaly
+- 171202  # Minimum temperature at 2 metres anomaly
+- 171206  # Total column ozone anomaly
+- 171207  # 10 metre wind speed anomaly
+- 171214  # Diabatic heating by radiation anomaly
+- 171215  # Diabatic heating by vertical diffusion anomaly
+- 171216  # Diabatic heating by cumulus convection anomaly
+- 171217  # Diabatic heating by large-scale condensation anomaly
+- 171218  # Vertical diffusion of zonal wind anomaly
+- 171219  # Vertical diffusion of meridional wind anomaly
+- 171220  # East-West gravity wave drag tendency anomaly
+- 171221  # North-South gravity wave drag tendency anomaly
+- 171235  # Skin temperature anomaly
+- 171236  # Soil temperature level 4 anomaly
+- 171237  # Soil wetness level 4 anomaly
+- 171238  # Temperature of snow layer anomaly
+- 171244  # Forecast surface roughness anomaly
+- 171251  # Adiabatic tendency of temperature anomaly
+- 174006  # Total soil moisture
+- 174025  # Visibility at 1.5m
+- 174034  # Open-sea surface temperature
+- 174049  # 10 metre wind gust in the last 24 hours
+- 174050  # Minimum temperature at 1.5m since previous post-processing
+- 174051  # Maximum temperature at 1.5m since previous post-processing
+- 174055  # 1.5m temperature - mean in the last 24 hours
+- 174087  # 1.5m temperature over land
+- 174088  # 1.5m dewpoint temperature over land
+- 174094  # Mean sea surface temperature
+- 174097  # Sea-ice Snow Thickness
+- 174098  # Sea-ice thickness
+- 174099  # Liquid water potential temperature
+- 174111  # Ocean mean ice depth
+- 174137  # Total column water vapour
+- 174139  # Soil temperature layer 1
+- 174164  # Average potential temperature in upper 293.4m
+- 174167  # 1.5m temperature
+- 174168  # 1.5m dewpoint temperature
+- 174170  # Soil temperature layer 2
+- 174175  # Average salinity in upper 293.4m
+- 174183  # Soil temperature layer 3
+- 174201  # 1.5m temperature - maximum in the last 24 hours
+- 174202  # 1.5m temperature - minimum in the last 24 hours
+- 174236  # Soil temperature layer 4
+- 175006  # Total soil moisture
+- 175034  # Open-sea surface temperature
+- 175049  # 10m wind gust in the last 24 hours
+- 175055  # 1.5m temperature - mean in the last 24 hours
+- 175087  # 1.5m temperature over land
+- 175088  # 1.5m dewpoint temperature over land
+- 175111  # Ocean mean ice depth
+- 175139  # Soil temperature layer 1
+- 175164  # Average potential temperature in upper 293.4m
+- 175167  # 1.5m temperature
+- 175168  # 1.5m dewpoint temperature
+- 175170  # Soil temperature layer 2
+- 175175  # Average salinity in upper 293.4m
+- 175183  # Soil temperature layer 3
+- 175201  # 1.5m temperature - maximum in the last 24 hours
+- 175202  # 1.5m temperature - minimum in the last 24 hours
+- 175236  # Soil temperature layer 4
+- 180149  # Total soil wetness
+- 190171  # Wilting point
+- 190173  # Roughness length
+- 200001  # Stream function difference
+- 200002  # Velocity potential difference
+- 200003  # Potential temperature difference
+- 200004  # Equivalent potential temperature difference
+- 200005  # Saturated equivalent potential temperature difference
+- 200021  # Unbalanced component of temperature difference
+- 200023  # Unbalanced component of divergence difference
+- 200034  # Sea surface temperature difference
+- 200035  # Ice surface temperature layer 1 difference
+- 200036  # Ice surface temperature layer 2 difference
+- 200037  # Ice surface temperature layer 3 difference
+- 200038  # Ice surface temperature layer 4 difference
+- 200046  # Solar duration difference
+- 200049  # 10 metre wind gust difference
+- 200051  # Maximum 2 metre temperature difference
+- 200052  # Minimum 2 metre temperature difference
+- 200053  # Montgomery potential difference
+- 200054  # Pressure difference
+- 200055  # Mean 2 metre temperature in the last 24 hours difference
+- 200056  # Mean 2 metre dewpoint temperature in the last 24 hours difference
+- 200059  # Convective available potential energy difference
+- 200060  # Potential vorticity difference
+- 200063  # Start time for skin temperature difference
+- 200064  # Finish time for skin temperature difference
+- 200065  # Skin temperature difference
+- 200068  # Minimum stomatal resistance, low vegetation
+- 200069  # Minimum stomatal resistance, high vegetation
+- 200078  # Total column liquid water
+- 200079  # Total column ice water
+- 200121  # Maximum temperature at 2 metres difference
+- 200122  # Minimum temperature at 2 metres difference
+- 200123  # 10 metre wind gust in the last 6 hours difference
+- 200129  # Geopotential difference
+- 200130  # Temperature difference
+- 200134  # Surface pressure difference
+- 200135  # Vertical velocity (pressure) difference
+- 200136  # Total column water difference
+- 200137  # Total column water vapour difference
+- 200138  # Vorticity (relative) difference
+- 200139  # Soil temperature level 1 difference
+- 200140  # Soil wetness level 1 difference
+- 200141  # Snow depth difference
+- 200148  # Charnock difference
+- 200151  # Mean sea level pressure difference
+- 200153  # Short-wave heating rate difference
+- 200154  # Long-wave heating rate difference
+- 200155  # Divergence difference
+- 200156  # Height difference
+- 200158  # Tendency of surface pressure difference
+- 200159  # Boundary layer height difference
+- 200160  # Standard deviation of orography difference
+- 200161  # Anisotropy of sub-gridscale orography difference
+- 200163  # Slope of sub-gridscale orography difference
+- 200168  # 2 metre dewpoint temperature difference
+- 200170  # Soil temperature level 2 difference
+- 200171  # Soil wetness level 2 difference
+- 200173  # Surface roughness difference
+- 200183  # Soil temperature level 3 difference
+- 200184  # Soil wetness level 3 difference
+- 200189  # Sunshine duration difference
+- 200190  # East-West component of sub-gridscale orographic variance difference
+- 200191  # North-South component of sub-gridscale orographic variance difference
+- 200192  # North-West/South-East component of sub-gridscale orographic variance difference
+- 200193  # North-East/South-West component of sub-gridscale orographic variance difference
+- 200194  # Brightness temperature difference
+- 200198  # Skin reservoir content difference
+- 200200  # Variance of sub-gridscale orography difference
+- 200201  # Maximum temperature at 2 metres since previous post-processing difference
+- 200202  # Minimum temperature at 2 metres since previous post-processing difference
+- 200206  # Total column ozone difference
+- 200207  # 10 metre wind speed difference
+- 200214  # Diabatic heating by radiation difference
+- 200215  # Diabatic heating by vertical diffusion difference
+- 200216  # Diabatic heating by cumulus convection difference
+- 200217  # Diabatic heating large-scale condensation difference
+- 200218  # Vertical diffusion of zonal wind difference
+- 200219  # Vertical diffusion of meridional wind difference
+- 200220  # East-West gravity wave drag tendency difference
+- 200221  # North-South gravity wave drag tendency difference
+- 200235  # Skin temperature difference
+- 200236  # Soil temperature level 4 difference
+- 200237  # Soil wetness level 4 difference
+- 200238  # Temperature of snow layer difference
+- 200244  # Forecast surface roughness difference
+- 200251  # Adiabatic tendency of temperature difference
+- 201041  # total column water
+- 201066  # Updraft velocity, convection
+- 201067  # entrainment parameter, convection
+- 201071  # KO-index
+- 201074  # convective temperature tendency
+- 201075  # convective tendency of specific humidity
+- 201076  # convective tendency of total heat
+- 201077  # convective tendency of total water
+- 201078  # convective momentum tendency (X-component)
+- 201079  # convective momentum tendency (Y-component)
+- 201080  # convective vorticity tendency
+- 201081  # convective divergence tendency
+- 201082  # top of dry convection (above msl)
+- 201084  # height of 0 degree Celsius isotherm above msl
+- 201085  # height of snow-fall limit
+- 201139  # deviation of pressure from reference value
+- 201150  # coefficient of horizontal diffusion
+- 201187  # Maximum wind velocity
+- 201200  # water content of interception store
+- 201203  # snow temperature
+- 201215  # ice surface temperature
+- 201241  # convective available potential energy
+- 210052  # Dust emission potential
+- 210053  # Lifting threshold speed
+- 210064  # Total column Carbon Dioxide
+- 210065  # Total column Methane
+- 210066  # Total column Nitrous oxide
+- 210096  # Wildfire Fuel Load: Carbon per unit area
+- 210101  # Wildfire radiative power maximum
+- 210119  # Mean altitude of maximum injection
+- 210120  # Altitude of plume top
+- 210125  # Total column Nitrogen dioxide
+- 210126  # Total column Sulphur dioxide
+- 210127  # Total column Carbon monoxide
+- 210128  # Total column Formaldehyde
+- 210130  # Total Column Nitrogen Oxides
+- 210132  # Total column GRG tracer 1
+- 210134  # Total column GRG tracer 2
+- 210136  # Total column GRG tracer 3
+- 210138  # Total column GRG tracer 4
+- 210140  # Total column GRG tracer 5
+- 210142  # Total column GRG tracer 6
+- 210144  # Total column GRG tracer 7
+- 210146  # Total column GRG tracer 8
+- 210148  # Total column GRG tracer 9
+- 210150  # Total column GRG tracer 10
+- 210183  # Total column Radon
+- 210184  # Total column Sulphur Hexafluoride
+- 210206  # GEMS Total column ozone
+- 210242  # Altitude of plume bottom
+- 210245  # Profile of total aerosol dry extinction coefficient
+- 210246  # Profile of total aerosol dry absorption coefficient
+- 211052  # Dust emission potential
+- 211053  # Lifting threshold speed
+- 211064  # Total column Carbon Dioxide
+- 211065  # Total column Methane
+- 211066  # Total column Nitrous oxide
+- 211096  # Wildfire Fuel Load: Carbon per unit area
+- 211098  # Wildfire observed area
+- 211101  # Wildfire radiative power maximum
+- 211119  # Altitude of emitter
+- 211120  # Altitude of plume top
+- 211125  # Total column Nitrogen dioxide
+- 211126  # Total column Sulphur dioxide
+- 211127  # Total column Carbon monoxide
+- 211128  # Total column Formaldehyde
+- 211130  # Total Column Nitrogen Oxides
+- 211132  # Total column GRG tracer 1
+- 211134  # Total column GRG tracer 2
+- 211136  # Total column GRG tracer 3
+- 211138  # Total column GRG tracer 4
+- 211140  # Total column GRG tracer 5
+- 211142  # Total column GRG tracer 6
+- 211144  # Total column GRG tracer 7
+- 211146  # Total column GRG tracer 8
+- 211148  # Total column GRG tracer 9
+- 211150  # Total column GRG tracer 10
+- 211183  # Total column Radon
+- 211184  # Total column Sulphur Hexafluoride
+- 211206  # GEMS Total column ozone
+- 215091  # 10 metre wind speed dust emission potential
+- 215092  # 10 metre wind gustiness dust emission potential
+- 215180  # Aerosol extinction coefficient at 355 nm
+- 215181  # Aerosol extinction coefficient at 532 nm
+- 215182  # Aerosol extinction coefficient at 1064 nm
+- 215183  # Aerosol backscatter coefficient at 355 nm (from top of atmosphere)
+- 215184  # Aerosol backscatter coefficient at 532 nm (from top of atmosphere)
+- 215185  # Aerosol backscatter coefficient at 1064 nm (from top of atmosphere)
+- 215186  # Aerosol backscatter coefficient at 355 nm (from ground)
+- 215187  # Aerosol backscatter coefficient at 532 nm (from ground)
+- 215188  # Aerosol backscatter coefficient at 1064 nm (from ground)
+- 218003  # Total column hydrogen peroxide
+- 218004  # Total column methane
+- 218006  # Total column nitric acid
+- 218007  # Total column methyl peroxide
+- 218009  # Total column paraffins
+- 218010  # Total column ethene
+- 218011  # Total column olefins
+- 218012  # Total column aldehydes
+- 218013  # Total column  peroxyacetyl nitrate
+- 218014  # Total column peroxides
+- 218015  # Total column organic nitrates
+- 218016  # Total column  isoprene
+- 218018  # Total column dimethyl sulfide
+- 218019  # Total column ammonia
+- 218020  # Total column  sulfate
+- 218021  # Total column ammonium
+- 218022  # Total column  methane sulfonic acid
+- 218023  # Total column methyl glyoxal
+- 218024  # Total column stratospheric ozone
+- 218026  # Total column  lead
+- 218027  # Total column nitrogen monoxide
+- 218028  # Total column hydroperoxy radical
+- 218029  # Total column methylperoxy radical
+- 218030  # Total column hydroxyl radical
+- 218032  # Total column nitrate radical
+- 218033  # Total column dinitrogen pentoxide
+- 218034  # Total column pernitric acid
+- 218035  # Total column peroxy acetyl radical
+- 218036  # Total column  organic ethers
+- 218037  # Total column PAR budget corrector
+- 218038  # Total column NO to NO2 operator
+- 218039  # Total column NO to alkyl nitrate operator
+- 218040  # Total column amine
+- 218041  # Total column  polar stratospheric cloud
+- 218042  # Total column methanol
+- 218043  # Total column formic acid
+- 218044  # Total column  methacrylic acid
+- 218045  # Total column  ethane
+- 218046  # Total column ethanol
+- 218047  # Total column propane
+- 218048  # Total column propene
+- 218049  # Total column terpenes
+- 218050  # Total column methacrolein MVK
+- 218051  # Total column nitrate
+- 218052  # Total column acetone
+- 218053  # Total column acetone product
+- 218054  # Total column IC3H7O2
+- 218055  # Total column HYPROPO2
+- 218056  # Total column nitrogen oxides Transp
+- 228001  # Convective inhibition
+- 228002  # Orography
+- 228003  # Friction velocity
+- 228004  # Mean temperature at 2 metres
+- 228005  # Mean of 10 metre wind speed
+- 228007  # Lake depth
+- 228008  # Lake mix-layer temperature
+- 228009  # Lake mix-layer depth
+- 228010  # Lake bottom temperature
+- 228011  # Lake total layer temperature
+- 228013  # Lake ice temperature
+- 228014  # Lake ice depth
+- 228015  # Minimum vertical gradient of refractivity inside trapping layer
+- 228016  # Mean vertical gradient of refractivity inside trapping layer
+- 228017  # Duct base height
+- 228018  # Trapping layer base height
+- 228019  # Trapping layer top height
+- 228024  # Zero degree level
+- 228025  # Horizontal visibility
+- 228026  # Maximum temperature at 2 metres in the last 3 hours
+- 228027  # Minimum temperature at 2 metres in the last 3 hours
+- 228028  # 10 metre wind gust in the last 3 hours
+- 228029  # Instantaneous 10 metre wind gust
+- 228035  # maximum CAPE in the last 6 hours
+- 228036  # maximum CAPES in the last 6 hours
+- 228044  # Convective available potential energy shear
+- 228047  # Height of zero-degree wet-bulb temperature
+- 228048  # Height of one-degree wet-bulb temperature
+- 228050  # Instantaneous total lightning density
+- 228051  # Averaged total lightning density
+- 228052  # Instantaneous cloud-to-ground lightning density
+- 228053  # Averaged cloud-to-ground lightning density
+- 228078  # GPP coefficient from Biogenic Flux Adjustment System
+- 228079  # Rec coefficient from Biogenic Flux Adjustment System
+- 228080  # Accumulated Carbon Dioxide Net Ecosystem Exchange
+- 228081  # Accumulated Carbon Dioxide Gross Primary Production
+- 228082  # Accumulated Carbon Dioxide Ecosystem Respiration
+- 228088  # Total column supercooled liquid water
+- 228089  # Total column rain water
+- 228090  # Total column snow water
+- 228094  # Ice temperature
+- 228095  # Soil temperature top 20 cm
+- 228096  # Soil temperature top 100 cm
+- 228134  # V-tendency from non-orographic wave drag
+- 228136  # U-tendency from non-orographic wave drag
+- 228139  # Soil Temperature
+- 228229  # SMOS first Brightness Temperature Bias Correction parameter
+- 228249  # 100 metre wind speed
+- 228252  # Irrigation
+- 230046  # Solar duration (variable resolution)
+- 230080  # Accumulated Carbon Dioxide Net Ecosystem Exchange (variable resolution)
+- 230081  # Accumulated Carbon Dioxide Gross Primary Production (variable resolution)
+- 230082  # Accumulated Carbon Dioxide Ecosystem Respiration (variable resolution)
+- 230189  # Sunshine duration (variable resolution)
+- 230198  # Skin reservoir content (variable resolution)
+- 235001  # Mean temperature tendency due to short-wave radiation
+- 235002  # Mean temperature tendency due to long-wave radiation
+- 235003  # Mean temperature tendency due to short-wave radiation, clear sky
+- 235004  # Mean temperature tendency due to long-wave radiation, clear sky
+- 235005  # Mean temperature tendency due to parametrisations
+- 235007  # Mean eastward wind tendency due to parametrisations
+- 235008  # Mean northward wind tendency due to parametrisations
+- 235014  # Mean turbulent diffusion coefficient for heat
+- 240011  # Cross sectional area of flow in channel
+- 240014  # River storage of water
+- 240015  # Floodplain storage of water
+- 240018  # Frost index
+- 240028  # Groundwater upper storage
+- 240029  # Groundwater lower storage
+- 260004  # Heat index
+- 260005  # Wind chill factor
+- 260006  # Minimum dew point depression
+- 260008  # Vapor pressure
+- 260013  # Snow age
+- 260027  # Hail
+- 260041  # Total column integrated rain
+- 260042  # Total column integrated snow
+- 260047  # Total column water (Vertically integrated total water (vapour + cloud water/ice))
+- 260057  # Total column integrated water vapour
+- 260064  # Maximum wind speed
+- 260065  # Wind speed (gust)
+- 260068  # Vertical speed shear
+- 260073  # Frictional velocity
+- 260074  # Pressure reduced to MSL
+- 260075  # Geometric height
+- 260076  # Altimeter setting
+- 260077  # Thickness
+- 260078  # Pressure altitude
+- 260079  # Density altitude
+- 260080  # 5-wave geopotential height
+- 260083  # Planetary boundary layer height
+- 260084  # 5-wave geopotential height anomaly
+- 260085  # Standard deviation of sub-grid scale orography
+- 260101  # Cloud Ice
+- 260102  # Cloud water
+- 260105  # Thunderstorm maximum tops
+- 260107  # Cloud base
+- 260108  # Cloud top
+- 260109  # Ceiling
+- 260111  # Cloud work function
+- 260114  # Total column-integrated cloud water
+- 260115  # Total column-integrated cloud ice
+- 260116  # Total column-integrated condensate
+- 260121  # K index
+- 260122  # KO index
+- 260123  # Total totals index
+- 260125  # Storm relative helicity
+- 260127  # Surface lifted index
+- 260128  # Best (4-layer) lifted index
+- 260130  # Total ozone
+- 260132  # Total column integrated ozone
+- 260133  # Base spectrum width
+- 260135  # Base radial velocity
+- 260139  # Air concentration of Caesium 137
+- 260140  # Air concentration of Iodine 131
+- 260141  # Air concentration of radioactive pollutant
+- 260142  # Ground deposition of Caesium 137
+- 260143  # Ground deposition of Iodine 131
+- 260144  # Ground deposition of radioactive pollutant
+- 260145  # Time-integrated air concentration of caesium pollutant
+- 260146  # Time-integrated air concentration of iodine pollutant
+- 260147  # Time-integrated air concentration of radioactive pollutant
+- 260149  # Icing top
+- 260150  # Icing base
+- 260152  # Turbulence top
+- 260153  # Turbulence base
+- 260155  # Turbulent kinetic energy
+- 260159  # Contrail top
+- 260160  # Contrail base
+- 260168  # Seconds prior to initial reference time (defined in Section 1)
+- 260169  # Flash flood guidance (Encoded as an accumulation over a floating subinterval of time between the ref
+- 260183  # Model terrain height
+- 260189  # Plant canopy surface water
+- 260190  # Blackadar mixing length scale
+- 260191  # Canopy conductance
+- 260192  # Minimal stomatal resistance
+- 260197  # Column-integrated soil water
+- 260201  # Upper layer soil temperature
+- 260204  # Bottom layer soil temperature
+- 260220  # Cloud top height
+- 260231  # Atmospheric divergence
+- 260234  # Primary wave mean period
+- 260235  # Secondary wave mean period
+- 260237  # Current speed
+- 260238  # Geometric vertical velocity
+- 260239  # Ice temperature
+- 260240  # Deviation of sea level from mean
+- 260241  # Seconds prior to initial reference time (defined in Section 1)
+- 260243  # Temperature tendency by all radiation
+- 260248  # Temperature Tendency By All Physics
+- 260249  # Temperature Tendency By Non-radiation Physics
+- 260250  # Standard Dev. of IR Temp. over 1x1 deg. area
+- 260253  # Potential temperature at top of viscous sublayer
+- 260254  # Tropical Cyclone Heat Potential
+- 260255  # Apparent temperature
+- 260271  # Snow temperature
+- 260272  # Total column-integrated supercooled liquid water
+- 260273  # Total column-integrated melting ice
+- 260279  # Condensation Pressure of Parcali Lifted From Indicate Surface
+- 260285  # Snow temperature, depth-avg
+- 260288  # Freezing Rain
+- 260301  # Vertical Eddy Diffusivity Heat exchange
+- 260302  # Covariance between Meridional and Zonal Components of the wind.
+- 260303  # Covariance between Temperature and Zonal Components of the wind.
+- 260304  # Covariance between Temperature and Meridional Components of the wind.
+- 260311  # Tendency of vertical velocity
+- 260312  # Omega (Dp/Dt) divide by density
+- 260315  # Velocity Point Model Surface
+- 260316  # Potential Vorticity (Mass-Weighted)
+- 260317  # MSLP (Eta model reduction)
+- 260323  # MSLP (MAPS System Reduction)
+- 260324  # 3-hr pressure tendency (Std. Atmos. Reduction)
+- 260325  # Pressure of level from which parcel was lifted
+- 260328  # X-gradient of Height
+- 260329  # Y-gradient of Height
+- 260330  # Layer Thickness
+- 260336  # Geopotential Height (nearest grid point)
+- 260337  # Pressure (nearest grid point)
+- 260360  # Soil temperature
+- 260367  # Soil depth
+- 260372  # Updraft Helicity
+- 260374  # Particulate matter (coarse)
+- 260375  # Particulate matter (fine)
+- 260381  # Ozone vertical diffusion
+- 260382  # Ozone production
+- 260383  # Ozone tendency
+- 260384  # Ozone production from temperature term
+- 260385  # Ozone production from col ozone term
+- 260386  # Derived radar reflectivity backscatter from rain
+- 260387  # Derived radar reflectivity backscatter from ice
+- 260388  # Derived radar reflectivity backscatter from parameterized convection
+- 260449  # Surface exchange coefficients for T and Q divided by delta z
+- 260450  # Surface exchange coefficients for U and V divided by delta z
+- 260451  # Vegetation canopy temperature
+- 260452  # Surface water storage
+- 260453  # Liquid soil moisture content (non-frozen)
+- 260455  # Groundwater recharge
+- 260456  # Flood plain recharge
+- 260457  # Roughness length for heat
+- 260460  # Asymptotic mixing length scale
+- 260463  # Water Vapor Flux Convergance (Vertical Int)
+- 260464  # Water Condensate Flux Convergance (Vertical Int)
+- 260465  # Water Vapor Zonal Flux (Vertical Int)
+- 260466  # Water Vapor Meridional Flux (Vertical Int)
+- 260467  # Water Condensate Zonal Flux (Vertical Int)
+- 260468  # Water Condensate Meridional Flux (Vertical Int)
+- 260469  # Aerodynamic conductance
+- 260480  # Bare soil surface skin temperature
+- 260481  # Average surface skin temperature
+- 260482  # Effective radiative skin temperature
+- 260487  # Ocean Mixed Layer U Velocity
+- 260488  # Ocean Mixed Layer V Velocity
+- 260489  # Barotropic U velocity
+- 260490  # Barotropic V velocity
+- 260491  # Storm Surge
+- 260492  # Extra Tropical Storm Surge
+- 260493  # Ocean Surface Elevation Relative to Geoid
+- 260494  # Sea Surface Height Relative to Geoid
+- 260498  # Surface Temperature Trend
+- 260499  # Surface Salinity Trend
+- 260500  # Kinetic Energy
+- 260502  # 3-D Temperature
+- 260504  # Barotropic Kinectic Energy
+- 260505  # Geometric Depth Below Sea Surface
+- 260506  # Interface Depths
+- 260507  # Ocean Heat Content
+- 260510  # Cloudy brightness temperature
+- 260511  # Clear-sky brightness temperature
+- 260550  # Cloudy radiance (with respect to wave number)
+- 260551  # Clear-sky radiance (with respect to wave number)
+- 260552  # Wind speed
+- 260556  # Angstrom coefficient
+- 260606  # Square of Brunt-Vaisala frequency
+- 260617  # Moisture storage on canopy
+- 260618  # Moisture storage on ground or cover
+- 260620  # Cloud liquid water
+- 300001  # Pressure
+- 300002  # Pressure reduced to msl
+- 300003  # Pressure tendency
+- 300006  # Geopotential
+- 300007  # Geopotential height
+- 300008  # Geometric height
+- 300011  # Absolute temperature
+- 300012  # Virtual temperature
+- 300013  # Potential temperature
+- 300014  # Pseudo-adiabatic potential temperature
+- 300015  # Maximum temperature
+- 300016  # Minimum temperature
+- 300017  # Dew point temperature
+- 300018  # Dew point depression
+- 300025  # Temperature anomaly
+- 300026  # Pressure anomaly
+- 300027  # Geopot height anomaly
+- 300032  # Wind speed
+- 300035  # Stream function
+- 300036  # Velocity potential
+- 300038  # Sigma coord vert vel
+- 300039  # Omega
+- 300040  # Vertical velocity
+- 300041  # Absolute vorticity
+- 300042  # Absolute divergence
+- 300043  # Vorticity
+- 300044  # Divergence
+- 300045  # Vertical u-comp shear
+- 300046  # Vert v-comp shear
+- 300048  # Speed of current
+- 300054  # Inst. precipitable water
+- 300055  # Vapour pressure
+- 300056  # Saturation deficit
+- 300066  # Snow depth
+- 300070  # Main thermocline anom
+- 300076  # Cloud water
+- 300077  # Best lifted index (to 500 hpa)
+- 300082  # Dev sea_lev from mean
+- 300083  # Roughness length
+- 300085  # Deep soil temperature
+- 300086  # Soil moisture content
+- 300092  # Ice thickness
+- 300094  # Speed of ice drift
+- 300095  # U-comp of ice drift
+- 300096  # V-comp of ice drift
+- 300097  # Ice growth
+- 300098  # Ice divergence
+- 300102  # Sig hght of wind waves
+- 300103  # Mean period wind waves
+- 300105  # Sig height swell waves
+- 300106  # Mean period swell waves
+- 300108  # Prim wave mean period
+- 300110  # Second wave mean period
+- 300128  # 2 metre temperature
+- 300129  # 2 metre dewpoint temperature
+- 300132  # Topography
+- 300133  # Geometric mean surface pressure
+- 300135  # Surface pressure
+- 300136  # M s l pressure (mesinger method)
+- 300138  # Maximum u-wind
+- 300139  # Maximum v-wind
+- 300140  # Convective avail. pot.energy
+- 300141  # Convective inhib. energy
+- 300142  # Convective latent heating
+- 300143  # Convective moisture source
+- 300144  # Shallow conv. moisture source
+- 300145  # Shallow convective heating
+- 300146  # Maximum wind press. lvl
+- 300150  # Pressure at cloud base
+- 300151  # Pressure at cloud top
+- 300152  # Freezing level height
+- 300154  # Flight levels temperature
+- 300155  # Flight levels u-wind
+- 300156  # Flight levels v-wind
+- 300157  # Tropopause pressure
+- 300158  # Tropopause temperature
+- 300162  # Gravity wave drag du/dt
+- 300163  # Gravity wave drag dv/dt
+- 300167  # Divergence of specific humidity
+- 300172  # Large scale latent heating
+- 300173  # Large scale moisture source
+- 300175  # Soil temperature of root zone
+- 300176  # Bare soil latent heat
+- 300180  # Vapor pressure of canopy air space
+- 300185  # Storage on canopy
+- 300186  # Storage on ground
+- 300187  # Surface temperature
+- 300188  # Surface absolute temperature
+- 300189  # Temperature of canopy air space
+- 300190  # Temperature at canopy
+- 300191  # Ground/surface cover temperature
+- 300205  # Long wave radiative heating
+- 300206  # Short wave radiative heating
+- 300218  # Horizontal heating diffusion
+- 300219  # Horizontal moisture diffusion
+- 300220  # Horizontal divergence diffusion
+- 300221  # Horizontal vorticity diffusion
+- 300222  # Vertical diff. moisture source
+- 300223  # Vertical diffusion du/dt
+- 300224  # Vertical diffusion dv/dt
+- 300225  # Vertical diffusion heating
+- 300232  # Time mean surface absolute temperature
+- 300234  # Time mean absolute temperature
+- 300235  # Time mean deep soil temperature
+- 300236  # Time mean derived omega
+- 300237  # Time mean divergence
+- 300238  # Time mean geopotential height
+- 300242  # Time mean omega
+- 300243  # Time mean potential temperature
+- 300244  # Time mean precip. water
+- 300246  # Time mean sea level pressure
+- 300247  # Time mean sigmadot
+- 300249  # Time mean stream function
+- 300250  # Time mean surface pressure
+- 300251  # Time mean surface temperature
+- 300252  # Time mean velocity potential
+- 300253  # Time mean virtual temperature
+- 300254  # Time mean vorticity
+
+intensity.vector-2d-cartesian.x:
+- 11  # U component of divergent wind
+- 13  # U component of rotational wind
+- 131  # U component of wind
+- 165  # 10 metre U wind component
+- 222  # Convective tendency of zonal wind
+- 253  # Adiabatic tendency of zonal wind
+- 3049  # U-component of current
+- 3095  # U-component of ice drift
+- 3124  # Momentum flux, u-component
+- 129011  # U component of divergent wind gradient
+- 129013  # U component of rotational wind gradient
+- 129131  # U component of wind gradient
+- 129165  # 10 metre U wind component gradient
+- 129222  # Convective tendency of zonal wind gradient
+- 129253  # Adiabatic tendency of zonal wind gradient
+- 130230  # Adiabatic tendency of zonal wind
+- 140215  # U-component stokes drift
+- 171006  # 100 metre U wind component anomaly
+- 171011  # U component of divergent wind anomaly
+- 171013  # U component of rotational wind anomaly
+- 171131  # U component of wind anomaly
+- 171165  # 10 metre U wind component anomaly
+- 171222  # Convective tendency of zonal wind anomaly
+- 171253  # Adiabatic tendency of zonal wind anomaly
+- 174085  # 10m U wind over land
+- 175085  # 10m U wind over land
+- 200011  # U component of divergent wind difference
+- 200013  # U component of rotational wind difference
+- 200131  # U component of wind difference
+- 200165  # 10 metre U wind component difference
+- 200222  # Convective tendency of zonal wind difference
+- 200253  # Adiabatic tendency of zonal wind difference
+- 228131  # Neutral wind at 10 m u-component
+- 228246  # 100 metre U wind component
+- 260062  # Momentum flux, u component
+- 260066  # u-component of wind (gust)
+- 260070  # U-component storm motion
+- 260081  # Zonal flux of gravity wave stress
+- 260222  # Estimated u component of wind
+- 260305  # Vertical Diffusion Zonal Acceleration
+- 260307  # Gravity wave drag zonal acceleration
+- 260309  # Convective zonal momentum mixing acceleration
+- 260313  # Convective Gravity wave drag zonal acceleration
+- 260484  # Scatterometer Estimated U Wind Component
+- 260607  # Adiabatic zonal acceleration
+- 260613  # Gravity wave zonal acceleration
+- 260626  # Zonal momentum flux by long gravity wave
+- 260629  # Zonal momentum flux by short gravity wave
+- 260637  # Vertical diffusion zonal acceleration
+- 300033  # Zonal wind (u)
+- 300049  # U-component of current
+- 300130  # 10 metre u-wind component
+- 300147  # Storm motion u-component
+- 300159  # Tropopause u-wind component
+- 300164  # Gravity wave drag sfc zonal stress
+- 300192  # Surface zonal wind (u)
+- 300230  # Time mean surface zonal wind (u)
+- 300255  # Time mean zonal wind (u)
+
+intensity.vector-2d-cartesian.y:
+- 12  # V component of divergent wind
+- 14  # V component of rotational wind
+- 132  # V component of wind
+- 166  # 10 metre V wind component
+- 223  # Convective tendency of meridional wind
+- 254  # Adiabatic tendency of meridional wind
+- 3050  # V-component of current
+- 3096  # V-component of ice drift
+- 3125  # Momentum flux, v-component
+- 129012  # V component of divergent wind gradient
+- 129014  # V component of rotational wind gradient
+- 129132  # V component of wind gradient
+- 129166  # 10 metre V wind component gradient
+- 129223  # Convective tendency of meridional wind gradient
+- 129254  # Adiabatic tendency of meridional wind gradient
+- 130231  # Adiabatic tendency of meridional wind
+- 140216  # V-component stokes drift
+- 171007  # 100 metre V wind component anomaly
+- 171012  # V component of divergent wind anomaly
+- 171014  # V component of rotational wind anomaly
+- 171132  # V component of wind anomaly
+- 171166  # 10 metre V wind component anomaly
+- 171223  # Convective tendency of meridional wind anomaly
+- 171254  # Adiabatic tendency of meridional wind anomaly
+- 174086  # 10m V wind over land
+- 175086  # 10m V wind over land
+- 200012  # V component of divergent wind difference
+- 200014  # V component of rotational wind difference
+- 200132  # V component of wind difference
+- 200166  # 10 metre V wind component difference
+- 200223  # Convective tendency of meridional wind difference
+- 200254  # Adiabatic tendency of meridional wind difference
+- 228132  # Neutral wind at 10 m v-component
+- 228247  # 100 metre V wind component
+- 260063  # Momentum flux, v component
+- 260067  # v-component of wind (gust)
+- 260071  # V-component storm motion
+- 260082  # Meridional flux of gravity wave stress
+- 260223  # Estimated v component of wind
+- 260306  # Vertical Diffusion Meridional Acceleration
+- 260308  # Gravity wave drag meridional acceleration
+- 260310  # Convective meridional momentum mixing acceleration
+- 260314  # Convective Gravity wave drag meridional acceleration
+- 260485  # Scatterometer Estimated V Wind Component
+- 260609  # Adiabatic meridional acceleration
+- 260614  # Gravity wave meridional acceleration
+- 260627  # Meridional momentum flux by long gravity wave
+- 260628  # Meridional momentum flux by short gravity wave
+- 260638  # Vertical diffusion meridional acceleration
+- 300034  # Meridional wind (v)
+- 300050  # V-component of current
+- 300131  # 10 metre v-wind component
+- 300148  # Storm motion v-component
+- 300160  # Tropopause v-wind component
+- 300165  # Gravity wave drag sfc meridional stress
+- 300194  # Surface meridional wind (v)
+- 300231  # Time mean surface meridional wind (v)
+- 300241  # Time mean meridional wind (v)
+
+intensity.vector-3d-cartesian.x:
+- 150133  # Ocean U wind component
+- 151131  # Ocean current zonal component
+
+intensity.vector-3d-cartesian.y:
+- 150134  # Ocean V wind component
+- 151132  # Ocean current meridional component
+
+intensity.vector-3d-cartesian.z:
+- 150135  # Ocean W wind component
+- 151133  # Ocean current vertical component
+
+intensity-lsm:
+- 167  # 2 metre temperature
+- 129167  # 2 metre temperature gradient
+- 171167  # 2 metre temperature anomaly
+- 200167  # 2 metre temperature difference
+
+rate:
+- 3019  # Lapse rate
+- 3097  # Ice growth rate
+- 129232  # Instantaneous moisture flux gradient
+- 160247  # Momentum flux
+- 162106  # Updraught detrainment rate
+- 162107  # Downdraught detrainment rate
+- 171232  # Instantaneous moisture flux anomaly
+- 172153  # Short-wave heating rate
+- 172154  # Long-wave heating rate
+- 173153  # Short-wave heating rate anomaly
+- 173154  # Long-wave heating rate anomaly
+- 173189  # Sunshine duration anomalous rate of accumulation
+- 174083  # Net primary productivity
+- 175083  # Net primary productivity
+- 200232  # Instantaneous moisture flux difference
+- 201013  # shortwave radiative heating rate
+- 201014  # longwave radiative heating rate
+- 221001  # Ozone deposition velocity
+- 221002  # Nitrogen oxides deposition velocity
+- 221003  # Hydrogen peroxide deposition velocity
+- 221004  # Methane deposition velocity
+- 221005  # Carbon monoxide deposition velocity
+- 221006  # Nitric acid deposition velocity
+- 221007  # Methyl peroxide deposition velocity
+- 221008  # Formaldehyde deposition velocity
+- 221009  # Paraffins deposition velocity
+- 221010  # Ethene deposition velocity
+- 221011  # Olefins deposition velocity
+- 221012  # Aldehydes deposition velocity
+- 221013  # Peroxyacetyl nitrate deposition velocity
+- 221014  # Peroxides deposition velocity
+- 221015  # Organic nitrates deposition velocity
+- 221016  # Isoprene deposition velocity
+- 221017  # Sulfur dioxide deposition velocity
+- 221018  # Dimethyl sulfide deposition velocity
+- 221019  # Ammonia deposition velocity
+- 221020  # Sulfate deposition velocity
+- 221021  # Ammonium deposition velocity
+- 221022  # Methane sulfonic acid deposition velocity
+- 221023  # Methyl glyoxal deposition velocity
+- 221024  # Stratospheric ozone deposition velocity
+- 221025  # Radon deposition velocity
+- 221026  # Lead deposition velocity
+- 221027  # Nitrogen monoxide deposition velocity
+- 221028  # Hydroperoxy radical deposition velocity
+- 221029  # Methylperoxy radical deposition velocity
+- 221030  # Hydroxyl radical deposition velocity
+- 221031  # Nitrogen dioxide deposition velocity
+- 221032  # Nitrate radical deposition velocity
+- 221033  # Dinitrogen pentoxide deposition velocity
+- 221034  # Pernitric acid deposition velocity
+- 221035  # Peroxy acetyl radical deposition velocity
+- 221036  # Organic ethers deposition velocity
+- 221037  # PAR budget corrector deposition velocity
+- 221038  # NO to NO2 operator deposition velocity
+- 221039  # NO to alkyl nitrate operator deposition velocity
+- 221040  # Amine deposition velocity
+- 221041  # Polar stratospheric cloud deposition velocity
+- 221042  # Methanol deposition velocity
+- 221043  # Formic acid deposition velocity
+- 221044  # Methacrylic acid deposition velocity
+- 221045  # Ethane deposition velocity
+- 221046  # Ethanol deposition velocity
+- 221047  # Propane deposition velocity
+- 221048  # Propene deposition velocity
+- 221049  # Terpenes deposition velocity
+- 221050  # Methacrolein MVK  deposition velocity
+- 221051  # Nitrate deposition velocity
+- 221052  # Acetone deposition velocity
+- 221053  # Acetone product deposition velocity
+- 221054  # IC3H7O2 deposition velocity
+- 221055  # HYPROPO2 deposition velocity
+- 221056  # Nitrogen oxides Transp deposition velocity
+- 235011  # Mean updraught detrainment rate
+- 235012  # Mean downdraught detrainment rate
+- 240012  # Side flow into river channel
+- 240013  # Discharge from rivers or streams
+- 260022  # Horizontal moisture convergence
+- 260069  # Horizontal momentum flux
+- 260245  # Large Scale Condensate Heating rate
+- 260246  # Deep Convective Heating rate
+- 260251  # Shallow Convective Heating rate
+- 260252  # Vertical Diffusion Heating rate
+- 260276  # Deep Convective Moistening Rate
+- 260277  # Shallow Convective Moistening Rate
+- 260278  # Vertical Diffusion Moistening Rate
+- 260280  # Large scale moistening rate
+- 260332  # Convective updraft mass flux
+- 260333  # Convective downdraft mass flux
+- 260334  # Convective detrainment mass flux
+- 260343  # Solar Radiative Heating Rate
+- 260354  # Long-Wave Radiative Heating Rate
+- 260366  # Convective Cloud Mass Flux
+- 260447  # Rate of water dropping from canopy to ground
+- 260501  # Salt Flux
+- 260616  # Adiabatic heating rate
+- 260623  # Adiabatic moistening rate
+- 260633  # Large scale condensation heating rate
+- 260634  # Convective heating rate
+- 260635  # Convective moistening rate
+- 260636  # Vertical diffusion heating rate
+- 260639  # Vertical diffusion moistening rate
+- 260640  # Solar radiative heating rate
+- 260641  # Long wave radiative heating rate
+- 260642  # Large scale moistening rate
+- 300019  # Lapse rate
+- 300168  # Horiz. moisture flux conv.
+
+rate.energy-flux:
+- 72  # Instantaneous surface solar radiation downwards
+- 73  # Instantaneous surface thermal radiation downwards
+- 231  # Instantaneous surface sensible heat flux
+- 3111  # Net short-wave radiation flux (surface)
+- 3112  # Net long-wave radiation flux (surface)
+- 3113  # Net short-wave radiation flux(atmosph.top)
+- 3114  # Net long-wave radiation flux(atmosph.top)
+- 3115  # Long wave radiation flux
+- 3116  # Short wave radiation flux
+- 3117  # Global radiation flux
+- 3121  # Latent heat flux
+- 3122  # Sensible heat flux
+- 3123  # Boundary layer dissipation
+- 172145  # Boundary layer dissipation
+- 172146  # Surface sensible heat flux
+- 172147  # Surface latent heat flux
+- 172149  # Surface net radiation
+- 172169  # Surface solar radiation downwards
+- 172175  # Surface thermal radiation downwards
+- 172176  # Surface solar radiation
+- 172177  # Surface thermal radiation
+- 172178  # Top solar radiation
+- 172179  # Top thermal radiation
+- 172197  # Gravity wave dissipation
+- 172208  # Top net solar radiation, clear sky
+- 172209  # Top net thermal radiation, clear sky
+- 172210  # Surface net solar radiation, clear sky
+- 172211  # Surface net thermal radiation, clear sky
+- 172212  # Solar insolation
+- 174010  # Clear-sky (II) down surface sw flux
+- 174013  # Clear-sky (II) up surface sw flux
+- 210099  # Wildfire radiative power
+- 211099  # Wildfire radiative power
+- 214004  # Total surface UV spectral flux (280-285 nm)
+- 214005  # Total surface UV spectral flux (285-290 nm)
+- 214006  # Total surface UV spectral flux (290-295 nm)
+- 214007  # Total surface UV spectral flux (295-300 nm)
+- 214008  # Total surface UV spectral flux (300-305 nm)
+- 214009  # Total surface UV spectral flux (305-310 nm)
+- 214010  # Total surface UV spectral flux (310-315 nm)
+- 214011  # Total surface UV spectral flux (315-320 nm)
+- 214012  # Total surface UV spectral flux (320-325 nm)
+- 214013  # Total surface UV spectral flux (325-330 nm)
+- 214014  # Total surface UV spectral flux (330-335 nm)
+- 214015  # Total surface UV spectral flux (335-340 nm)
+- 214016  # Total surface UV spectral flux (340-345 nm)
+- 214017  # Total surface UV spectral flux (345-350 nm)
+- 214018  # Total surface UV spectral flux (350-355 nm)
+- 214019  # Total surface UV spectral flux (355-360 nm)
+- 214020  # Total surface UV spectral flux (360-365 nm)
+- 214021  # Total surface UV spectral flux (365-370 nm)
+- 214022  # Total surface UV spectral flux (370-375 nm)
+- 214023  # Total surface UV spectral flux (375-380 nm)
+- 214024  # Total surface UV spectral flux (380-385 nm)
+- 214025  # Total surface UV spectral flux (385-390 nm)
+- 214026  # Total surface UV spectral flux (390-395 nm)
+- 214027  # Total surface UV spectral flux (395-400 nm)
+- 214028  # Clear-sky surface UV spectral flux (280-285 nm)
+- 214029  # Clear-sky surface UV spectral flux (285-290 nm)
+- 214030  # Clear-sky surface UV spectral flux (290-295 nm)
+- 214031  # Clear-sky surface UV spectral flux (295-300 nm)
+- 214032  # Clear-sky surface UV spectral flux (300-305 nm)
+- 214033  # Clear-sky surface UV spectral flux (305-310 nm)
+- 214034  # Clear-sky surface UV spectral flux (310-315 nm)
+- 214035  # Clear-sky surface UV spectral flux (315-320 nm)
+- 214036  # Clear-sky surface UV spectral flux (320-325 nm)
+- 214037  # Clear-sky surface UV spectral flux (325-330 nm)
+- 214038  # Clear-sky surface UV spectral flux (330-335 nm)
+- 214039  # Clear-sky surface UV spectral flux (335-340 nm)
+- 214040  # Clear-sky surface UV spectral flux (340-345 nm)
+- 214041  # Clear-sky surface UV spectral flux (345-350 nm)
+- 214042  # Clear-sky surface UV spectral flux (350-355 nm)
+- 214043  # Clear-sky surface UV spectral flux (355-360 nm)
+- 214044  # Clear-sky surface UV spectral flux (360-365 nm)
+- 214045  # Clear-sky surface UV spectral flux (365-370 nm)
+- 214046  # Clear-sky surface UV spectral flux (370-375 nm)
+- 214047  # Clear-sky surface UV spectral flux (375-380 nm)
+- 214048  # Clear-sky surface UV spectral flux (380-385 nm)
+- 214049  # Clear-sky surface UV spectral flux (385-390 nm)
+- 214050  # Clear-sky surface UV spectral flux (390-395 nm)
+- 214051  # Clear-sky surface UV spectral flux (395-400 nm)
+- 235022  # Mean surface photosynthetically active radiation flux, clear sky
+- 235027  # Mean surface downward UV radiation flux
+- 235028  # Mean surface photosynthetically active radiation flux
+- 235032  # Mean boundary layer dissipation
+- 235033  # Mean surface sensible heat flux
+- 235034  # Mean surface latent heat flux
+- 235035  # Mean surface downward short-wave radiation flux
+- 235036  # Mean surface downward long-wave radiation flux
+- 235037  # Mean surface net short-wave radiation flux
+- 235038  # Mean surface net long-wave radiation flux
+- 235039  # Mean top net short-wave radiation flux
+- 235040  # Mean top net long-wave radiation flux
+- 235047  # Mean gravity wave dissipation
+- 235049  # Mean top net short-wave radiation flux, clear sky
+- 235050  # Mean top net long-wave radiation flux, clear sky
+- 235051  # Mean surface net short-wave radiation flux, clear sky
+- 235052  # Mean surface net long-wave radiation flux, clear sky
+- 235053  # Mean top downward short-wave radiation flux
+- 235058  # Mean surface direct short-wave radiation flux
+- 235059  # Mean surface direct short-wave radiation flux, clear sky
+- 235060  # Mean surface diffuse short-wave radiation flux
+- 235061  # Mean surface diffuse short-wave radiation flux, clear sky
+- 235068  # Mean surface downward short-wave radiation flux, clear sky
+- 235069  # Mean surface downward long-wave radiation flux, clear sky
+- 260002  # Latent heat net flux
+- 260003  # Sensible heat net flux
+- 260007  # Snow phase change heat flux
+- 260037  # Potential evaporation rate
+- 260086  # Net short-wave radiation flux (top of atmosphere)
+- 260087  # Downward short-wave radiation flux
+- 260088  # Upward short-wave radiation flux
+- 260089  # Net short wave radiation flux
+- 260090  # Photosynthetically active radiation
+- 260091  # Net short-wave radiation flux, clear sky
+- 260092  # Downward UV radiation
+- 260095  # Net long wave radiation flux (surface)
+- 260096  # Net long wave radiation flux (top of atmosphere)
+- 260097  # Downward long-wave radiation flux
+- 260098  # Upward long-wave radiation flux
+- 260099  # Net long wave radiation flux
+- 260100  # Net long-wave radiation flux, clear sky
+- 260186  # Ground heat flux
+- 260198  # Heat flux
+- 260247  # Total Downward Heat Flux at Surface
+- 260262  # Direct short wave radiation flux
+- 260263  # Diffuse short wave radiation flux
+- 260275  # Sublimation (evaporation from snow)
+- 260340  # UV-B downward solar flux
+- 260341  # Clear sky UV-B downward solar flux
+- 260342  # Clear Sky Downward Solar Flux
+- 260344  # Clear Sky Upward Solar Flux
+- 260345  # Cloud Forcing Net Solar Flux
+- 260346  # Visible Beam Downward Solar Flux
+- 260347  # Visible Diffuse Downward Solar Flux
+- 260348  # Near IR Beam Downward Solar Flux
+- 260349  # Near IR Diffuse Downward Solar Flux
+- 260350  # Downward Total radiation Flux
+- 260351  # Upward Total radiation Flux
+- 260355  # Clear Sky Upward Long Wave Flux
+- 260356  # Clear Sky Downward Long Wave Flux
+- 260357  # Cloud Forcing Net Long Wave Flux
+- 260361  # Downward short-wave radiation flux, clear sky
+- 260362  # Upward short-wave radiation flux, clear sky
+- 260363  # Downward long-wave radiation flux, clear sky
+- 260364  # Soil heat flux
+- 260454  # Open water evaporation (standing water)
+- 260470  # Canopy water evaporation
+- 260471  # Transpiration
+- 260478  # Direct evaporation from bare soil
+- 260496  # Net Air-Ocean Heat Flux
+- 260497  # Assimilative Heat Flux
+- 260615  # Evapotranspiration
+- 300111  # Short wave absorbed at ground
+- 300112  # Net long wave at bottom
+- 300113  # Net short-wav rad(top)
+- 300114  # Outgoing long wave at top
+- 300115  # Long-wav rad
+- 300116  # Short wave absorbed by earth/atmosphere
+- 300117  # Global radiation
+- 300121  # Latent heat flux from surface
+- 300122  # Sensible heat flux from surface
+- 300123  # Bound layer dissipation
+- 300179  # Interception loss
+- 300196  # Surface momentum flux
+- 300197  # Incident short wave flux
+- 300198  # Time ave ground ht flx
+- 300200  # Net long wave at bottom (clear)
+- 300201  # Outgoing long wave at top (clear)
+- 300202  # Short wv absrbd by earth/atmos (clear)
+- 300203  # Short wave absorbed at ground (clear)
+- 300207  # Downward long wave at bottom
+- 300208  # Downward long wave at bottom (clear)
+- 300209  # Downward short wave at ground
+- 300210  # Downward short wave at ground (clear)
+- 300211  # Upward long wave at bottom
+- 300212  # Upward short wave at ground
+- 300213  # Upward short wave at ground (clear)
+- 300214  # Upward short wave at top
+- 300215  # Upward short wave at top (clear)
+
+rate.energy-flux.accumulated:
+- 19  # Clear sky surface UV
+- 20  # Clear sky surface photosynthetically active radiation
+- 47  # Direct solar radiation
+- 57  # Downward UV radiation at the surface
+- 58  # Photosynthetically active radiation at the surface
+- 145  # Boundary layer dissipation
+- 146  # Surface sensible heat flux
+- 147  # Surface latent heat flux
+- 149  # Surface net radiation
+- 150  # Top net radiation
+- 169  # Surface solar radiation downwards
+- 175  # Surface thermal radiation downwards
+- 176  # Surface net solar radiation
+- 177  # Surface net thermal radiation
+- 178  # Top net solar radiation
+- 179  # Top net thermal radiation
+- 197  # Gravity wave dissipation
+- 208  # Top net solar radiation, clear sky
+- 209  # Top net thermal radiation, clear sky
+- 210  # Surface net solar radiation, clear sky
+- 211  # Surface net thermal radiation, clear sky
+- 212  # TOA incident solar radiation
+- 129047  # Direct solar radiation gradient
+- 129057  # Downward UV radiation at the surface gradient
+- 129058  # Photosynthetically active radiation at the surface gradient
+- 129145  # Boundary layer dissipation gradient
+- 129146  # Surface sensible heat flux gradient
+- 129147  # Surface latent heat flux gradient
+- 129149  # Surface net radiation gradient
+- 129169  # Surface solar radiation downwards gradient
+- 129175  # Surface thermal radiation downwards gradient
+- 129176  # Surface net solar radiation gradient
+- 129177  # Surface net thermal radiation gradient
+- 129178  # Top net solar radiation gradient
+- 129179  # Top net thermal radiation gradient
+- 129197  # Gravity wave dissipation gradient
+- 129208  # Top net solar radiation, clear sky gradient
+- 129209  # Top net thermal radiation, clear sky gradient
+- 129210  # Surface net solar radiation, clear sky gradient
+- 129211  # Surface net thermal radiation, clear sky gradient
+- 129212  # TOA incident solar radiation gradient
+- 129231  # Instantaneous surface heat flux gradient
+- 130208  # Top solar radiation upward
+- 130209  # Top thermal radiation upward
+- 130210  # Top solar radiation upward, clear sky
+- 130211  # Top thermal radiation upward, clear sky
+- 150181  # Heat flux correction
+- 150183  # Observed heat flux
+- 151155  # Turbulent kinetic energy input
+- 151156  # Net surface heat flux
+- 151157  # Absorbed solar radiation
+- 151160  # Specified surface heat flux
+- 151162  # Heat flux correction
+- 160231  # Instantaneous surface heat flux
+- 160249  # Gravity wave dissipation flux
+- 170179  # Top net thermal radiation
+- 171047  # Direct solar radiation anomaly
+- 171057  # Downward UV radiation at the surface anomaly
+- 171058  # Photosynthetically active radiation at the surface anomaly
+- 171145  # Boundary layer dissipation anomaly
+- 171146  # Surface sensible heat flux anomaly
+- 171147  # Surface latent heat flux anomaly
+- 171149  # Surface net radiation anomaly
+- 171169  # Surface solar radiation downwards anomaly
+- 171175  # Surface thermal radiation downwards anomaly
+- 171176  # Surface net solar radiation anomaly
+- 171177  # Surface net thermal radiation anomaly
+- 171178  # Top net solar radiation anomaly
+- 171179  # Top net thermal radiation anomaly
+- 171197  # Gravity wave dissipation anomaly
+- 171208  # Top net solar radiation clear sky anomaly
+- 171209  # Top net thermal radiation clear sky anomaly
+- 171210  # Surface net solar radiation clear sky anomaly
+- 171211  # Surface net thermal radiation, clear sky anomaly
+- 171212  # Solar insolation anomaly
+- 171231  # Instantaneous surface heat flux anomaly
+- 173145  # Boundary layer dissipation anomaly
+- 173146  # Surface sensible heat flux anomaly
+- 173147  # Surface latent heat flux anomaly
+- 173149  # Surface net radiation anomaly
+- 173169  # Surface solar radiation downwards anomaly
+- 173175  # Surface thermal radiation downwards anomaly
+- 173176  # Surface solar radiation anomaly
+- 173177  # Surface thermal radiation anomaly
+- 173178  # Top solar radiation anomaly
+- 173179  # Top thermal radiation anomaly
+- 173197  # Gravity wave dissipation anomaly
+- 173208  # Top net solar radiation, clear sky anomaly
+- 173209  # Top net thermal radiation, clear sky anomaly
+- 173210  # Surface net solar radiation, clear sky anomaly
+- 173211  # Surface net thermal radiation, clear sky anomaly
+- 174089  # Top incoming solar radiation
+- 174090  # Top outgoing solar radiation
+- 174116  # Short wave radiation flux at surface
+- 174117  # Short wave radiation flux at top of atmosphere
+- 175089  # Top incoming solar radiation
+- 175090  # Top outgoing solar radiation
+- 180176  # Surface net solar radiation
+- 180177  # Surface net thermal radiation
+- 180178  # Top net solar radiation
+- 180179  # Top net thermal radiation
+- 200047  # Direct solar radiation difference
+- 200057  # Downward UV radiation at the surface difference
+- 200058  # Photosynthetically active radiation at the surface difference
+- 200145  # Boundary layer dissipation difference
+- 200146  # Surface sensible heat flux difference
+- 200147  # Surface latent heat flux difference
+- 200149  # Surface net radiation difference
+- 200169  # Surface solar radiation downwards difference
+- 200175  # Surface thermal radiation downwards difference
+- 200176  # Surface net solar radiation difference
+- 200177  # Surface net thermal radiation difference
+- 200178  # Top net solar radiation difference
+- 200179  # Top net thermal radiation difference
+- 200197  # Gravity wave dissipation difference
+- 200208  # Top net solar radiation, clear sky difference
+- 200209  # Top net thermal radiation, clear sky difference
+- 200210  # Surface net solar radiation, clear sky difference
+- 200211  # Surface net thermal radiation, clear sky difference
+- 200212  # TOA incident solar radiation difference
+- 200231  # Instantaneous surface heat flux difference
+- 201001  # downward shortwave radiant flux density
+- 201002  # upward shortwave radiant flux density
+- 201003  # downward longwave radiant flux density
+- 201004  # upward longwave radiant flux density
+- 201005  # downwd photosynthetic active radiant flux density
+- 201006  # net shortwave flux
+- 201007  # net longwave flux
+- 201008  # total net radiative flux density
+- 201009  # downw shortw radiant flux density, cloudfree part
+- 201010  # upw shortw radiant flux density, cloudy part
+- 201011  # downw longw radiant flux density, cloudfree part
+- 201012  # upw longw radiant flux density, cloudy part
+- 201015  # total radiative heating rate
+- 201016  # soil heat flux, surface
+- 201017  # soil heat flux, bottom of layer
+- 228021  # Total sky direct solar radiation at surface
+- 228022  # Clear-sky direct solar radiation at surface
+- 228129  # Surface solar radiation downward clear-sky
+- 228130  # Surface thermal radiation downward clear-sky
+- 228242  # Surface solar radiation diffuse total sky
+- 228243  # Surface solar radiation diffuse clear-sky
+- 230020  # Clear sky surface photosynthetically active radiation (variable resolution)
+- 230021  # Total sky direct solar radiation at surface (variable resolution)
+- 230022  # Clear-sky direct solar radiation at surface (variable resolution)
+- 230047  # Direct solar radiation (variable resolution)
+- 230057  # Downward UV radiation at the surface (variable resolution)
+- 230058  # Photosynthetically active radiation at the surface (variable resolution)
+- 230129  # Surface solar radiation downward clear-sky (variable resolution)
+- 230130  # Surface thermal radiation downward clear-sky (variable resolution)
+- 230145  # Boundary layer dissipation (variable resolution)
+- 230146  # Surface sensible heat flux (variable resolution)
+- 230147  # Surface latent heat flux (variable resolution)
+- 230169  # Surface solar radiation downwards (variable resolution)
+- 230175  # Surface thermal radiation downwards (variable resolution)
+- 230176  # Surface net solar radiation (variable resolution)
+- 230177  # Surface net thermal radiation (variable resolution)
+- 230178  # Top net solar radiation (variable resolution)
+- 230179  # Top net thermal radiation (variable resolution)
+- 230197  # Gravity wave dissipation (variable resolution)
+- 230208  # Top net solar radiation, clear sky (variable resolution)
+- 230209  # Top net thermal radiation, clear sky (variable resolution)
+- 230210  # Surface net solar radiation, clear sky (variable resolution)
+- 230211  # Surface net thermal radiation, clear sky (variable resolution)
+- 230212  # TOA incident solar radiation (variable resolution)
+- 260264  # Time-integrated surface direct short wave radiation flux
+- 260423  # Accumulated surface downward short-wave radiation flux, clear sky
+- 260427  # Accumulated surface upward short-wave radiation flux, clear sky
+- 260428  # Accumulated surface downward long-wave radiation flux, clear sky
+
+rate.mass-flux:
+- 232  # Instantaneous moisture flux
+- 3064  # Snow fall rate water equivalent
+- 160142  # Large-scale precipitation
+- 160143  # Convective precipitation
+- 160144  # Snowfall
+- 160182  # Evaporation
+- 160205  # Runoff
+- 160239  # Convective snowfall
+- 160240  # Large scale snowfall
+- 174142  # Large scale rainfall rate
+- 174143  # Convective rainfall rate
+- 174239  # Convective snowfall rate
+- 174240  # Large scale snowfall rate
+- 201065  # convective mass flux
+- 201100  # surface precipitation rate, rain, grid scale
+- 201101  # surface precipitation rate, snow, grid scale
+- 201111  # surface precipitation rate, rain, convective
+- 201112  # surface precipitation rate, snow, convective
+- 210043  # DMS surface emission
+- 210067  # Ocean flux of Carbon Dioxide
+- 210068  # Natural biosphere flux of Carbon Dioxide
+- 210069  # Anthropogenic emissions of Carbon Dioxide
+- 210070  # Methane Surface Fluxes
+- 210080  # Wildfire flux of Carbon Dioxide
+- 210081  # Wildfire flux of Carbon Monoxide
+- 210082  # Wildfire flux of Methane
+- 210083  # Wildfire flux of Non-Methane Hydro-Carbons
+- 210084  # Wildfire flux of Hydrogen
+- 210085  # Wildfire flux of Nitrogen Oxides NOx
+- 210086  # Wildfire flux of Nitrous Oxide
+- 210087  # Wildfire flux of Particulate Matter PM2.5
+- 210088  # Wildfire flux of Total Particulate Matter
+- 210089  # Wildfire flux of Total Carbon in Aerosols
+- 210090  # Wildfire flux of Organic Carbon
+- 210091  # Wildfire flux of Black Carbon
+- 210092  # Wildfire overall flux of burnt Carbon
+- 210100  # Wildfire combustion rate
+- 210102  # Wildfire flux of Sulfur Dioxide
+- 210103  # Wildfire Flux of Methanol (CH3OH)
+- 210104  # Wildfire Flux of Ethanol (C2H5OH)
+- 210105  # Wildfire Flux of Propane (C3H8)
+- 210106  # Wildfire Flux of Ethene (C2H4)
+- 210107  # Wildfire Flux of Propene (C3H6)
+- 210108  # Wildfire Flux of Isoprene (C5H8)
+- 210109  # Wildfire Flux of Terpenes (C5H8)n
+- 210110  # Wildfire Flux of Toluene_lump (C7H8+ C6H6 + C8H10)
+- 210111  # Wildfire Flux of Higher Alkenes (CnH2n, C>=4)
+- 210112  # Wildfire Flux of Higher Alkanes (CnH2n+2, C>=4)
+- 210113  # Wildfire Flux of Formaldehyde (CH2O)
+- 210114  # Wildfire Flux of Acetaldehyde (C2H4O)
+- 210115  # Wildfire Flux of Acetone (C3H6O)
+- 210116  # Wildfire Flux of Ammonia (NH3)
+- 210117  # Wildfire Flux of Dimethyl Sulfide (DMS) (C2H6S)
+- 210118  # Wildfire Flux of Ethane (C2H6)
+- 210151  # Surface flux Nitrogen oxides
+- 210152  # Surface flux Nitrogen dioxide
+- 210153  # Surface flux Sulphur dioxide
+- 210154  # Surface flux Carbon monoxide
+- 210155  # Surface flux Formaldehyde
+- 210156  # Surface flux GEMS Ozone
+- 210157  # Surface flux reactive tracer 1
+- 210158  # Surface flux reactive tracer 2
+- 210159  # Surface flux reactive tracer 3
+- 210160  # Surface flux reactive tracer 4
+- 210161  # Surface flux reactive tracer 5
+- 210162  # Surface flux reactive tracer 6
+- 210163  # Surface flux reactive tracer 7
+- 210164  # Surface flux reactive tracer 8
+- 210165  # Surface flux reactive tracer 9
+- 210166  # Surface flux reactive tracer 10
+- 210185  # Anthropogenic Emissions of Sulphur Hexafluoride
+- 210231  # Wildfire Flux of Toluene (C7H8)
+- 210232  # Wildfire Flux of Benzene (C6H6)
+- 210233  # Wildfire Flux of Xylene (C8H10)
+- 210234  # Wildfire Flux of Butenes (C4H8)
+- 210235  # Wildfire Flux of Pentenes (C5H10)
+- 210236  # Wildfire Flux of Hexene (C6H12)
+- 210237  # Wildfire Flux of Octene (C8H16)
+- 210238  # Wildfire Flux of Butanes (C4H10)
+- 210239  # Wildfire Flux of Pentanes (C5H12)
+- 210240  # Wildfire Flux of Hexanes (C6H14)
+- 210241  # Wildfire Flux of Heptane (C7H16)
+- 211043  # DMS surface emission
+- 211067  # Ocean flux of Carbon Dioxide
+- 211068  # Natural biosphere flux of Carbon Dioxide
+- 211069  # Anthropogenic emissions of Carbon Dioxide
+- 211070  # Methane Surface Fluxes
+- 211080  # Wildfire flux of Carbon Dioxide
+- 211081  # Wildfire flux of Carbon Monoxide
+- 211082  # Wildfire flux of Methane
+- 211083  # Wildfire flux of Non-Methane Hydro-Carbons
+- 211084  # Wildfire flux of Hydrogen
+- 211085  # Wildfire flux of Nitrogen Oxides NOx
+- 211086  # Wildfire flux of Nitrous Oxide
+- 211087  # Wildfire flux of Particulate Matter PM2.5
+- 211088  # Wildfire flux of Total Particulate Matter
+- 211089  # Wildfire flux of Total Carbon in Aerosols
+- 211090  # Wildfire flux of Organic Carbon
+- 211091  # Wildfire flux of Black Carbon
+- 211092  # Wildfire overall flux of burnt Carbon
+- 211100  # Wildfire combustion rate
+- 211102  # Wildfire flux of Sulfur Dioxide
+- 211103  # Wildfire Flux of Methanol (CH3OH)
+- 211104  # Wildfire Flux of Ethanol (C2H5OH)
+- 211105  # Wildfire Flux of Propane (C3H8)
+- 211106  # Wildfire Flux of Ethene (C2H4)
+- 211107  # Wildfire Flux of Propene (C3H6)
+- 211108  # Wildfire Flux of Isoprene (C5H8)
+- 211109  # Wildfire Flux of Terpenes (C5H8)n
+- 211110  # Wildfire Flux of Toluene_lump (C7H8+ C6H6 + C8H10)
+- 211111  # Wildfire Flux of Higher Alkenes (CnH2n, C>=4)
+- 211112  # Wildfire Flux of Higher Alkanes (CnH2n+2, C>=4)
+- 211113  # Wildfire Flux of Formaldehyde (CH2O)
+- 211114  # Wildfire Flux of Acetaldehyde (C2H4O)
+- 211115  # Wildfire Flux of Acetone (C3H6O)
+- 211116  # Wildfire Flux of Ammonia (NH3)
+- 211117  # Wildfire Flux of Dimethyl Sulfide (DMS) (C2H6S)
+- 211118  # Wildfire Flux of Ethane (C2H6)
+- 211151  # Surface flux Nitrogen oxides
+- 211152  # Surface flux Nitrogen dioxide
+- 211153  # Surface flux Sulphur dioxide
+- 211154  # Surface flux Carbon monoxide
+- 211155  # Surface flux Formaldehyde
+- 211156  # Surface flux GEMS Ozone
+- 211157  # Surface flux reactive tracer 1
+- 211158  # Surface flux reactive tracer 2
+- 211159  # Surface flux reactive tracer 3
+- 211160  # Surface flux reactive tracer 4
+- 211161  # Surface flux reactive tracer 5
+- 211162  # Surface flux reactive tracer 6
+- 211163  # Surface flux reactive tracer 7
+- 211164  # Surface flux reactive tracer 8
+- 211165  # Surface flux reactive tracer 9
+- 211166  # Surface flux reactive tracer 10
+- 211185  # Anthropogenic Emissions of Sulphur Hexafluoride
+- 215001  # Source/gain of sea salt aerosol (0.03 - 0.5 um)
+- 215002  # Source/gain of sea salt aerosol (0.5 - 5 um)
+- 215003  # Source/gain of sea salt aerosol (5 - 20 um)
+- 215004  # Dry deposition of sea salt aerosol (0.03 - 0.5 um)
+- 215005  # Dry deposition of sea salt aerosol (0.5 - 5 um)
+- 215006  # Dry deposition of sea salt aerosol (5 - 20 um)
+- 215007  # Sedimentation of sea salt aerosol (0.03 - 0.5 um)
+- 215008  # Sedimentation of sea salt aerosol (0.5 - 5 um)
+- 215009  # Sedimentation of sea salt aerosol (5 - 20 um)
+- 215010  # Wet deposition of sea salt aerosol (0.03 - 0.5 um) by large-scale precipitation
+- 215011  # Wet deposition of sea salt aerosol (0.5 - 5 um) by large-scale precipitation
+- 215012  # Wet deposition of sea salt aerosol (5 - 20 um) by large-scale precipitation
+- 215013  # Wet deposition of sea salt aerosol (0.03 - 0.5 um) by convective precipitation
+- 215014  # Wet deposition of sea salt aerosol (0.5 - 5 um) by convective precipitation
+- 215015  # Wet deposition of sea salt aerosol (5 - 20 um) by convective precipitation
+- 215016  # Negative fixer of sea salt aerosol (0.03 - 0.5 um)
+- 215017  # Negative fixer of sea salt aerosol (0.5 - 5 um)
+- 215018  # Negative fixer of sea salt aerosol (5 - 20 um)
+- 215025  # Source/gain of dust aerosol (0.03 - 0.55 um)
+- 215026  # Source/gain of dust aerosol (0.55 - 9 um)
+- 215027  # Source/gain of dust aerosol (9 - 20 um)
+- 215028  # Dry deposition of dust aerosol (0.03 - 0.55 um)
+- 215029  # Dry deposition of dust aerosol (0.55 - 9 um)
+- 215030  # Dry deposition of dust aerosol (9 - 20 um)
+- 215031  # Sedimentation of dust aerosol (0.03 - 0.55 um)
+- 215032  # Sedimentation of dust aerosol (0.55 - 9 um)
+- 215033  # Sedimentation of dust aerosol (9 - 20 um)
+- 215034  # Wet deposition of dust aerosol (0.03 - 0.55 um) by large-scale precipitation
+- 215035  # Wet deposition of dust aerosol (0.55 - 9 um) by large-scale precipitation
+- 215036  # Wet deposition of dust aerosol (9 - 20 um) by large-scale precipitation
+- 215037  # Wet deposition of dust aerosol (0.03 - 0.55 um) by convective precipitation
+- 215038  # Wet deposition of dust aerosol (0.55 - 9 um) by convective precipitation
+- 215039  # Wet deposition of dust aerosol (9 - 20 um) by convective precipitation
+- 215040  # Negative fixer of dust aerosol (0.03 - 0.55 um)
+- 215041  # Negative fixer of dust aerosol (0.55 - 9 um)
+- 215042  # Negative fixer of dust aerosol (9 - 20 um)
+- 215049  # Source/gain of hydrophobic organic matter aerosol
+- 215050  # Source/gain of hydrophilic organic matter aerosol
+- 215051  # Dry deposition of hydrophobic organic matter aerosol
+- 215052  # Dry deposition of hydrophilic organic matter aerosol
+- 215053  # Sedimentation of hydrophobic organic matter aerosol
+- 215054  # Sedimentation of hydrophilic organic matter aerosol
+- 215055  # Wet deposition of hydrophobic organic matter aerosol by large-scale precipitation
+- 215056  # Wet deposition of hydrophilic organic matter aerosol by large-scale precipitation
+- 215057  # Wet deposition of hydrophobic organic matter aerosol by convective precipitation
+- 215058  # Wet deposition of hydrophilic organic matter aerosol by convective precipitation
+- 215059  # Negative fixer of hydrophobic organic matter aerosol
+- 215060  # Negative fixer of hydrophilic organic matter aerosol
+- 215065  # Source/gain of hydrophobic black carbon aerosol
+- 215066  # Source/gain of hydrophilic black carbon aerosol
+- 215067  # Dry deposition of hydrophobic black carbon aerosol
+- 215068  # Dry deposition of hydrophilic black carbon aerosol
+- 215069  # Sedimentation of hydrophobic black carbon aerosol
+- 215070  # Sedimentation of hydrophilic black carbon aerosol
+- 215071  # Wet deposition of hydrophobic black carbon aerosol by large-scale precipitation
+- 215072  # Wet deposition of hydrophilic black carbon aerosol by large-scale precipitation
+- 215073  # Wet deposition of hydrophobic black carbon aerosol by convective precipitation
+- 215074  # Wet deposition of hydrophilic black carbon aerosol by convective precipitation
+- 215075  # Negative fixer of hydrophobic black carbon aerosol
+- 215076  # Negative fixer of hydrophilic black carbon aerosol
+- 215081  # Source/gain of sulphate aerosol
+- 215082  # Dry deposition of sulphate aerosol
+- 215083  # Sedimentation of sulphate aerosol
+- 215084  # Wet deposition of sulphate aerosol by large-scale precipitation
+- 215085  # Wet deposition of sulphate aerosol by convective precipitation
+- 215086  # Negative fixer of sulphate aerosol
+- 215168  # Source/gain of sulphur dioxide
+- 215169  # Dry deposition of sulphur dioxide
+- 215170  # Sedimentation of sulphur dioxide
+- 215171  # Wet deposition of sulphur dioxide by large-scale precipitation
+- 215172  # Wet deposition of sulphur dioxide by convective precipitation
+- 215173  # Negative fixer of sulphur dioxide
+- 228083  # Flux of Carbon Dioxide Net Ecosystem Exchange
+- 228084  # Flux of Carbon Dioxide Gross Primary Production
+- 228085  # Flux of Carbon Dioxide Ecosystem Respiration
+- 228218  # Convective rain rate
+- 228219  # Large scale rain rate
+- 228220  # Convective snowfall rate water equivalent
+- 228221  # Large scale snowfall rate water equivalent
+- 228222  # Maximum total precipitation rate in the last 3 hours
+- 228223  # Minimum total precipitation rate in the last 3 hours
+- 228224  # Maximum total precipitation rate in the last 6 hours
+- 228225  # Minimum total precipitation rate in the last 6 hours
+- 228226  # Maximum total precipitation rate since previous post-processing
+- 228227  # Minimum total precipitation rate since previous post-processing
+- 235009  # Mean updraught mass flux
+- 235010  # Mean downdraught mass flux
+- 235013  # Mean total precipitation flux
+- 235020  # Mean surface runoff rate
+- 235021  # Mean sub-surface runoff rate
+- 235023  # Mean snow evaporation rate
+- 235024  # Mean snowmelt rate
+- 235029  # Mean large-scale precipitation rate
+- 235030  # Mean convective precipitation rate
+- 235031  # Mean snowfall rate
+- 235043  # Mean evaporation rate
+- 235048  # Mean runoff rate
+- 235054  # Mean vertically integrated moisture divergence
+- 235055  # Mean total precipitation rate
+- 235056  # Mean convective snowfall rate
+- 235057  # Mean large-scale snowfall rate
+- 235062  # Mean carbon dioxide net ecosystem exchange flux
+- 235063  # Mean carbon dioxide gross primary production flux
+- 235064  # Mean carbon dioxide ecosystem respiration flux
+- 235065  # Mean rain rate
+- 235066  # Mean convective rain rate
+- 235067  # Mean large-scale rain rate
+- 235070  # Mean potential evaporation rate
+- 260010  # Snowfall rate water equivalent
+- 260033  # Convective precipitation rate
+- 260048  # Total precipitation rate
+- 260049  # Total snowfall rate water equivalent
+- 260050  # Large scale precipitation rate
+- 260051  # Convective snowfall rate water equivalent
+- 260052  # Large scale snowfall rate water equivalent
+- 260058  # Rain precipitation rate
+- 260059  # Snow precipitation rate
+- 260060  # Freezing rain precipitation rate
+- 260061  # Ice pellets precipitation rate
+- 260188  # Exchange coefficient
+- 260219  # Instantaneous rain rate
+- 260258  # Evaporation rate
+- 260365  # Percolation rate
+- 260621  # Upward mass flux at cloud base
+- 260622  # Upward mass flux
+- 300057  # Evaporation
+- 300059  # Precipitation rate
+- 300061  # Total precipitation
+- 300062  # Large scale precipitation
+- 300063  # Convective precipitation
+- 300064  # Snowfall
+- 300169  # Vert. integrated moisture flux conv.
+- 300178  # Runoff
+
+rate.mass-flux.accumulated:
+- 3062  # large scale precipitation
+- 3063  # Convective precipitation (water)
+- 3079  # Large scale snow
+- 3099  # Snow melt
+- 129044  # Snow evaporation gradient
+- 129045  # Snowmelt gradient
+- 129182  # Evaporation gradient
+- 160141  # Snow depth
+- 162108  # Total precipitation flux
+- 162130  # Liquid Precipitation flux from convection
+- 162131  # Ice Precipitation flux from convection
+- 162136  # Liquid Precip flux from cloud scheme (stratiform)
+- 162137  # Ice Precip flux from cloud scheme (stratiform)
+- 171044  # Snow evaporation anomaly
+- 171045  # Snowmelt anomaly
+- 171182  # Evaporation anomaly
+- 174008  # Surface runoff
+- 174009  # Sub-surface runoff
+- 190141  # Snow depth
+- 200044  # Snow evaporation difference
+- 200045  # Snowmelt difference
+- 200182  # Evaporation difference
+- 201102  # surface precipitation amount, rain, grid scale
+- 201113  # surface precipitation amount, rain, convective
+- 210016  # Aerosol type 1 source/gain accumulated
+- 210017  # Aerosol type 2 source/gain accumulated
+- 210018  # Aerosol type 3 source/gain accumulated
+- 210019  # Aerosol type 4 source/gain accumulated
+- 210020  # Aerosol type 5 source/gain accumulated
+- 210021  # Aerosol type 6 source/gain accumulated
+- 210022  # Aerosol type 7 source/gain accumulated
+- 210023  # Aerosol type 8 source/gain accumulated
+- 210024  # Aerosol type 9 source/gain accumulated
+- 210025  # Aerosol type 10 source/gain accumulated
+- 210026  # Aerosol type 11 source/gain accumulated
+- 210027  # Aerosol type 12 source/gain accumulated
+- 210031  # Aerosol type 1 sink/loss accumulated
+- 210032  # Aerosol type 2 sink/loss accumulated
+- 210033  # Aerosol type 3 sink/loss accumulated
+- 210034  # Aerosol type 4 sink/loss accumulated
+- 210035  # Aerosol type 5 sink/loss accumulated
+- 210036  # Aerosol type 6 sink/loss accumulated
+- 210037  # Aerosol type 7 sink/loss accumulated
+- 210038  # Aerosol type 8 sink/loss accumulated
+- 210039  # Aerosol type 9 sink/loss accumulated
+- 210040  # Aerosol type 10 sink/loss accumulated
+- 210041  # Aerosol type 11 sink/loss accumulated
+- 210042  # Aerosol type 12 sink/loss accumulated
+- 211016  # Aerosol type 1 source/gain accumulated
+- 211017  # Aerosol type 2 source/gain accumulated
+- 211018  # Aerosol type 3 source/gain accumulated
+- 211019  # Aerosol type 4 source/gain accumulated
+- 211020  # Aerosol type 5 source/gain accumulated
+- 211021  # Aerosol type 6 source/gain accumulated
+- 211022  # Aerosol type 7 source/gain accumulated
+- 211023  # Aerosol type 8 source/gain accumulated
+- 211024  # Aerosol type 9 source/gain accumulated
+- 211025  # Aerosol type 10 source/gain accumulated
+- 211026  # Aerosol type 11 source/gain accumulated
+- 211027  # Aerosol type 12 source/gain accumulated
+- 211031  # Aerosol type 1 sink/loss accumulated
+- 211032  # Aerosol type 2 sink/loss accumulated
+- 211033  # Aerosol type 3 sink/loss accumulated
+- 211034  # Aerosol type 4 sink/loss accumulated
+- 211035  # Aerosol type 5 sink/loss accumulated
+- 211036  # Aerosol type 6 sink/loss accumulated
+- 211037  # Aerosol type 7 sink/loss accumulated
+- 211038  # Aerosol type 8 sink/loss accumulated
+- 211039  # Aerosol type 9 sink/loss accumulated
+- 211040  # Aerosol type 10 sink/loss accumulated
+- 211041  # Aerosol type 11 sink/loss accumulated
+- 211042  # Aerosol type 12 sink/loss accumulated
+- 219001  # Ozone emissions
+- 219002  # Nitrogen oxides emissions
+- 219003  # Hydrogen peroxide emissions
+- 219004  # Methane emissions
+- 219005  # Carbon monoxide emissions
+- 219006  # Nitric acid emissions
+- 219007  # Methyl peroxide emissions
+- 219008  # Formaldehyde emissions
+- 219009  # Paraffins emissions
+- 219010  # Ethene emissions
+- 219011  # Olefins emissions
+- 219012  # Aldehydes emissions
+- 219013  # Peroxyacetyl nitrate emissions
+- 219014  # Peroxides emissions
+- 219015  # Organic nitrates emissions
+- 219016  # Isoprene emissions
+- 219017  # Sulfur dioxide emissions
+- 219018  # Dimethyl sulfide emissions
+- 219019  # Ammonia emissions
+- 219020  # Sulfate emissions
+- 219021  # Ammonium emissions
+- 219022  # Methane sulfonic acid emissions
+- 219023  # Methyl glyoxal emissions
+- 219024  # Stratospheric ozone emissions
+- 219025  # Radon emissions
+- 219026  # Lead emissions
+- 219027  # Nitrogen monoxide emissions
+- 219028  # Hydroperoxy radical emissions
+- 219029  # Methylperoxy radical emissions
+- 219030  # Hydroxyl radical emissions
+- 219031  # Nitrogen dioxide emissions
+- 219032  # Nitrate radical emissions
+- 219033  # Dinitrogen pentoxide emissions
+- 219034  # Pernitric acid emissions
+- 219035  # Peroxy acetyl radical emissions
+- 219036  # Organic ethers emissions
+- 219037  # PAR budget corrector emissions
+- 219038  # NO to NO2 operator emissions
+- 219039  # NO to alkyl nitrate operator emissions
+- 219040  # Amine emissions
+- 219041  # Polar stratospheric cloud emissions
+- 219042  # Methanol emissions
+- 219043  # Formic acid emissions
+- 219044  # Methacrylic acid emissions
+- 219045  # Ethane emissions
+- 219046  # Ethanol emissions
+- 219047  # Propane emissions
+- 219048  # Propene emissions
+- 219049  # Terpenes emissions
+- 219050  # Methacrolein MVK  emissions
+- 219051  # Nitrate emissions
+- 219052  # Acetone emissions
+- 219053  # Acetone product emissions
+- 219054  # IC3H7O2 emissions
+- 219055  # HYPROPO2 emissions
+- 219056  # Nitrogen oxides Transp emissions
+- 228100  # Evaporation from the top of canopy
+- 228101  # Evaporation from bare soil
+- 228102  # Evaporation from open water surfaces excluding oceans
+- 228103  # Evaporation from vegetation transpiration
+- 228141  # Snow depth water equivalent
+- 228143  # Convective precipitation
+- 228144  # Snow Fall water equivalent
+- 228205  # Water runoff and drainage
+- 228228  # Total Precipitation
+- 230044  # Snow evaporation (variable resolution)
+- 230045  # Snowmelt (variable resolution)
+- 230182  # Evaporation (variable resolution)
+- 240020  # Depth of water on soil surface
+- 240021  # Upstream accumulated precipitation
+- 240022  # Upstream accumulated snow melt
+- 240026  # Snow depth at elevation bands
+- 260009  # Large scale precipitation (non-convective)
+- 260011  # Convective snow
+- 260012  # Large scale snow
+- 260036  # Potential evaporation
+- 260043  # Large scale water precipitation (non-convective)
+- 260044  # Convective water precipitation
+- 260045  # Total water precipitation
+- 260046  # Total snow precipitation
+- 260056  # Water equivalent of accumulated snow depth
+- 260138  # Precipitation
+- 260170  # Flash flood runoff (Encoded as an accumulation over a floating subinterval of time)
+- 260174  # Baseflow-groundwater runoff
+- 260175  # Storm surface runoff
+- 260181  # Water runoff
+- 260218  # Estimated precipitation
+- 260259  # Evaporation
+- 260284  # Liquid precipitation (rainfall)
+- 260286  # Total precipitation (nearest grid point)
+- 260287  # Convective precipitation (nearest grid point)
+- 260430  # Percolation
+- 260461  # Water vapor added by precip assimilation
+- 260462  # Water condensate added by precip assimilation
+- 260479  # Land Surface Precipitation Accumulation
+- 300065  # Wat equiv acc snow depth
+
+rate.volume-flux:
+- 151158  # Precipitation - evaporation
+- 172044  # Snow evaporation
+- 172045  # Snowmelt
+- 172142  # Stratiform precipitation (Large-scale precipitation)
+- 172143  # Convective precipitation
+- 172182  # Evaporation
+- 172228  # Total precipitation
+- 172239  # Convective snowfall
+- 172240  # Large scale snowfall
+- 173044  # Snow evaporation anomaly
+- 173045  # Snowmelt anomaly
+- 173142  # Stratiform precipitation (Large-scale precipitation) anomaly
+- 173143  # Convective precipitation anomaly
+- 173144  # Snowfall (convective + stratiform) anomalous rate of accumulation
+- 173182  # Evaporation anomaly
+- 173228  # Total precipitation anomalous rate of accumulation
+- 173239  # Convective snowfall anomaly
+- 173240  # Large scale snowfall anomaly
+- 260053  # Total snowfall rate
+- 260054  # Convective snowfall rate
+- 260055  # Large scale snowfall rate
+- 260274  # Evaporation - Precipitation
+- 260600  # Evaporation
+- 260601  # Total precipitation
+- 260602  # Large scale precipitation
+- 260603  # Convective precipitation
+- 260604  # Snowfall rate water equivalent
+- 260605  # Water run-off
+
+rate.volume-flux.accumulated:
+- 8  # Surface runoff
+- 9  # Sub-surface runoff
+- 44  # Snow evaporation
+- 45  # Snowmelt
+- 142  # Large-scale precipitation
+- 143  # Convective precipitation
+- 144  # Snowfall
+- 182  # Evaporation
+- 205  # Runoff
+- 228  # Total precipitation
+- 239  # Convective snowfall
+- 240  # Large-scale snowfall
+- 129142  # Stratiform precipitation (Large-scale precipitation) gradient
+- 129143  # Convective precipitation gradient
+- 129144  # Snowfall (convective + stratiform) gradient
+- 129205  # Runoff gradient
+- 129228  # Total precipitation gradient
+- 129239  # Convective snowfall gradient
+- 129240  # Large scale snowfall gradient
+- 171142  # Stratiform precipitation (Large-scale precipitation) anomaly
+- 171143  # Convective precipitation anomaly
+- 171144  # Snowfall (convective + stratiform) anomaly
+- 171205  # Runoff anomaly
+- 171228  # Total precipitation anomaly
+- 171239  # Convective snowfall anomaly
+- 171240  # Large scale snowfall anomaly
+- 172144  # Snowfall (convective + stratiform)
+- 172205  # Runoff
+- 173205  # Runoff anomaly
+- 200142  # Stratiform precipitation (Large-scale precipitation) difference
+- 200143  # Convective precipitation difference
+- 200144  # Snowfall (convective + stratiform) difference
+- 200205  # Runoff difference
+- 200228  # Total precipitation difference
+- 200239  # Convective snowfall difference
+- 200240  # Large scale snowfall difference
+- 228216  # Accumulated freezing rain
+- 228251  # Potential evaporation
+- 230008  # Surface runoff (variable resolution)
+- 230009  # Sub-surface runoff (variable resolution)
+- 230142  # Stratiform precipitation (Large-scale precipitation) (variable resolution)
+- 230143  # Convective precipitation (variable resolution)
+- 230144  # Snowfall (convective + stratiform) (variable resolution)
+- 230205  # Runoff (variable resolution)
+- 230216  # Accumulated freezing rain (variable resolution)
+- 230228  # Total precipitation (variable resolution)
+- 230239  # Convective snowfall (variable resolution)
+- 230240  # Large-scale snowfall (variable resolution)
+- 230251  # Potential evaporation (variable resolution)
+- 260025  # Total snowfall
+- 300177  # Potential sfc evaporation
+
+ratio:
+- 124  # Surface emissivity
+- 157  # Relative humidity
+- 129157  # Relative humidity gradient
+- 130224  # Vertical diffusion of humidity
+- 130225  # Humidity tendency by cumulus convection
+- 130226  # Humidity tendency by large-scale condensation
+- 130229  # Adiabatic tendency of humidity
+- 150137  # Richardson number
+- 151139  # Richardson number
+- 160157  # Relative humidity
+- 162229  # Variance of relative humidity
+- 171157  # Relative humidity anomaly
+- 200157  # Relative humidity difference
+- 228030  # Relative humidity with respect to water
+- 228031  # Relative humidity with respect to ice
+- 228040  # Soil wetness index in layer 1
+- 228041  # Soil wetness index in layer 2
+- 228042  # Soil wetness index in layer 3
+- 228043  # Soil wetness index in layer 4
+- 235006  # Mean specific humidity tendency due to parametrisations
+- 260023  # Maximum relative humidity
+- 260034  # Horizontal moisture divergence
+- 260112  # Convective cloud efficiency
+- 260193  # Solar parameter in canopy conductance
+- 260194  # Temperature parameter in canopy conductance
+- 260195  # Soil moisture parameter in canopy conductance
+- 260196  # Humidity parameter in canopy conductance
+- 260205  # Liquid volumetric soil moisture (non-frozen)
+- 260207  # Transpiration stress-onset (soil moisture)
+- 260208  # Direct evaporation cease (soil moisture)
+- 260209  # Soil porosity
+- 260227  # Reflectance in 0.6 micron channel
+- 260228  # Reflectance in 0.8 micron channel
+- 260229  # Reflectance in 1.6 micron channel
+- 260230  # Reflectance in 3.9 micron channel
+- 260242  # 2 metre relative humidity
+- 260261  # Minimum Relative Humidity
+- 260369  # Richardson Number
+- 260379  # Ozone Concentration (PPB)
+- 260418  # Radiative emissivity
+- 300052  # Relative humidity
+- 300153  # Freezing level relative humidity
+- 300170  # Vertical moisture advection
+- 300171  # Neg. hum. corr. moisture source
+- 300226  # Surface relative humidity
+- 300233  # Time mean surface relative humidity
+- 300245  # Time mean relative humidity
+
+ratio.area:
+- 66  # Leaf area index, low vegetation
+- 67  # Leaf area index, high vegetation
+- 129066  # Leaf area index, low vegetation
+- 129067  # Leaf area index, high vegetation
+- 200066  # Leaf area index, low vegetation
+- 200067  # Leaf area index, high vegetation
+- 260373  # Leaf Area Index
+
+ratio.cover:
+- 26  # Lake cover
+- 31  # Sea-ice cover
+- 3091  # Ice cover (1=ice, 0=no ice)
+- 129026  # Lake cover gradient
+- 129031  # Sea-ice cover gradient
+- 171026  # Lake cover anomaly
+- 171031  # Sea-ice cover anomaly
+- 200026  # Lake cover difference
+- 200031  # Sea-ice cover difference
+- 260038  # Snow cover
+- 260179  # Land cover (1=land, 0=sea)
+- 260459  # Land-sea coverage (nearest neighbor) [land=1,sea=0]
+
+ratio.cover.cloud:
+- 164  # Total cloud cover
+- 185  # Convective cloud cover
+- 186  # Low cloud cover
+- 187  # Medium cloud cover
+- 188  # High cloud cover
+- 3072  # Convective cloud cover
+- 3073  # Low cloud cover
+- 3074  # Medium cloud cover
+- 3075  # High cloud cover
+- 129164  # Total cloud cover gradient
+- 129185  # Convective cloud cover gradient
+- 129186  # Low cloud cover gradient
+- 129187  # Medium cloud cover gradient
+- 129188  # High cloud cover gradient
+- 129248  # Cloud cover gradient
+- 160242  # Cloud cover
+- 171164  # Total cloud cover anomaly
+- 171185  # Convective cloud cover anomaly
+- 171186  # Low cloud cover anomaly
+- 171187  # Medium cloud cover anomaly
+- 171188  # High cloud cover anomaly
+- 171248  # Cloud cover anomaly
+- 174186  # Very low cloud amount
+- 174248  # Total cloud amount - random overlap
+- 174249  # Total cloud amount in lw radiation
+- 200164  # Total cloud cover difference
+- 200185  # Convective cloud cover difference
+- 200186  # Low cloud cover difference
+- 200187  # Medium cloud cover difference
+- 200188  # High cloud cover difference
+- 200248  # Cloud cover difference
+- 201030  # cloud cover, grid scale
+- 201050  # cloud covers CH_CM_CL (000...888)
+- 201051  # cloud cover CH (0..8)
+- 201052  # cloud cover CM (0..8)
+- 201053  # cloud cover CL (0..8)
+- 201054  # total cloud cover (0..8)
+- 201060  # cloud cover, convective cirrus
+- 228006  # Mean total cloud cover
+- 228164  # Total Cloud Cover
+- 260110  # Non-convective cloud cover
+- 260257  # Cloud cover
+- 300071  # Cloud cover
+- 300072  # Convective cloud cover
+- 300073  # Low cloud cover
+- 300074  # Medium cloud cover
+- 300075  # High cloud cover
+- 300149  # Mean cloud cover
+
+ratio.cover.vegetation:
+- 27  # Low vegetation cover
+- 28  # High vegetation cover
+- 70  # Biome cover, low vegetation
+- 71  # Biome cover, high vegetation
+- 129027  # Low vegetation cover gradient
+- 129028  # High vegetation cover gradient
+- 129070  # Biome cover, low vegetation
+- 129071  # Biome cover, high vegetation
+- 171027  # Low vegetation cover anomaly
+- 171028  # High vegetation cover anomaly
+- 200027  # Low vegetation cover difference
+- 200028  # High vegetation cover difference
+- 200070  # Biome cover, low vegetation
+- 200071  # Biome cover, high vegetation
+
+ratio.fraction:
+- 6  # Soil sand fraction
+- 7  # Soil clay fraction
+- 15  # UV visible albedo for direct radiation
+- 16  # UV visible albedo for diffuse radiation
+- 17  # Near IR albedo for direct radiation
+- 18  # Near IR albedo for diffuse radiation
+- 32  # Snow albedo
+- 172  # Land-sea mask
+- 174  # Albedo
+- 199  # Vegetation fraction
+- 241  # Accumulated cloud fraction tendency
+- 242  # Accumulated liquid water tendency
+- 243  # Forecast albedo
+- 248  # Fraction of cloud cover
+- 249  # Accumulated ice water tendency
+- 129032  # Snow albedo gradient
+- 129172  # Land-sea mask gradient
+- 129174  # Albedo gradient
+- 129199  # Vegetation fraction gradient
+- 129241  # Accumulated cloud fraction tendency gradient
+- 129242  # Accumulated liquid water tendency gradient
+- 129243  # Forecast albedo gradient
+- 129249  # Accumulated ice water tendency gradient
+- 130213  # Cloud fraction
+- 132044  # Convective available potential energy shear index
+- 132049  # 10 metre wind gust index
+- 132059  # Convective available potential energy index
+- 132144  # Snowfall index
+- 132165  # 10 metre speed index
+- 132167  # 2 metre temperature index
+- 132201  # Maximum temperature at 2 metres index
+- 132202  # Minimum temperature at 2 metres index
+- 132216  # Maximum of significant wave height index
+- 132228  # Total precipitation index
+- 160243  # Forecast albedo
+- 171032  # Snow albedo anomaly
+- 171174  # Albedo anomaly
+- 171199  # Vegetation fraction anomaly
+- 171241  # Accumulated cloud fraction tendency anomaly
+- 171242  # Accumulated liquid water tendency anomaly
+- 171243  # Forecast albedo anomaly
+- 171249  # Accumulated ice water tendency anomaly
+- 172050  # Large-scale precipitation fraction
+- 174031  # Fraction of sea-ice in sea
+- 174110  # Ocean ice concentration
+- 175031  # Fraction of sea-ice in sea
+- 175110  # Ocean ice concentration
+- 190170  # Field capacity
+- 200032  # Snow albedo difference
+- 200172  # Land-sea mask difference
+- 200174  # Albedo difference
+- 200199  # Vegetation fraction difference
+- 200241  # Accumulated cloud fraction tendency difference
+- 200242  # Accumulated liquid water tendency difference
+- 200243  # Forecast albedo difference
+- 200249  # Accumulated ice water tendency difference
+- 201029  # Fractional cloud cover
+- 201056  # Fog
+- 210054  # Soil clay content
+- 210093  # Wildfire fraction of C4 plants
+- 210095  # Wildfire Combustion Completeness
+- 210097  # Wildfire fraction of area observed
+- 210186  # UV visible albedo for direct radiation, isotropic component
+- 210187  # UV visible albedo for direct radiation, volumetric component
+- 210188  # UV visible albedo for direct radiation, geometric component
+- 210189  # Near IR albedo for direct radiation, isotropic component
+- 210190  # Near IR albedo for direct radiation, volumetric component
+- 210191  # Near IR albedo for direct radiation, geometric component
+- 210192  # UV visible albedo for diffuse radiation, isotropic component
+- 210193  # UV visible albedo for diffuse radiation, volumetric component
+- 210194  # UV visible albedo for diffuse radiation, geometric component
+- 210195  # Near IR albedo for diffuse radiation, isotropic component
+- 210196  # Near IR albedo for diffuse radiation, volumetric component
+- 210197  # Near IR albedo for diffuse radiation, geometric component
+- 211054  # Soil clay content
+- 211093  # Wildfire fraction of C4 plants
+- 211095  # Wildfire Combustion Completeness
+- 211097  # Wildfire fraction of area observed
+- 215090  # Effective (snow effect included) UV visible albedo for direct radiation
+- 215132  # Single scattering albedo at 340 nm
+- 215133  # Single scattering albedo at 355 nm
+- 215134  # Single scattering albedo at 380 nm
+- 215135  # Single scattering albedo at 400 nm
+- 215136  # Single scattering albedo at 440 nm
+- 215137  # Single scattering albedo at 469 nm
+- 215138  # Single scattering albedo at 500 nm
+- 215139  # Single scattering albedo at 532 nm
+- 215140  # Single scattering albedo at 550 nm
+- 215141  # Single scattering albedo at 645 nm
+- 215142  # Single scattering albedo at 670 nm
+- 215143  # Single scattering albedo at 800 nm
+- 215144  # Single scattering albedo at 858 nm
+- 215145  # Single scattering albedo at 865 nm
+- 215146  # Single scattering albedo at 1020 nm
+- 215147  # Single scattering albedo at 1064 nm
+- 215148  # Single scattering albedo at 1240 nm
+- 215149  # Single scattering albedo at 1640 nm
+- 215178  # Single scattering albedo at 2130 nm
+- 228032  # Snow albedo
+- 228033  # Fraction of stratiform precipitation cover
+- 228034  # Fraction of convective precipitation cover
+- 228091  # Canopy cover fraction
+- 228092  # Soil texture fraction
+- 228217  # Instantaneous large-scale surface precipitation fraction
+- 228244  # Surface albedo of direct radiation
+- 228245  # Surface albedo of diffuse radiation
+- 228248  # Surface short wave-effective total cloudiness
+- 228250  # Irrigation fraction
+- 228255  # Surface long wave-effective total cloudiness
+- 230174  # Albedo (variable resolution)
+- 235026  # Mean large-scale precipitation fraction
+- 235044  # Sunshine duration fraction
+- 240016  # Water fraction
+- 260039  # Rain fraction of total cloud water
+- 260103  # Cloud amount
+- 260117  # Ice fraction of total condensate
+- 260161  # Maximum snow albedo
+- 260162  # Snow free albedo
+- 260173  # Snow water equivalent percent of normal
+- 260187  # Moisture availability
+- 260406  # Confidence - Ceiling
+- 260407  # Confidence - Visibility
+- 260408  # Confidence - Flight Category
+- 260411  # Visible, Black Sky Albedo
+- 260412  # Visible, White Sky Albedo
+- 260413  # Near IR, Black Sky Albedo
+- 260414  # Near IR, White Sky Albedo
+- 260442  # Wilting Point
+- 260448  # Ice-free water surface
+- 260458  # Normalized Difference Vegetation Index
+- 260483  # Field Capacity
+- 260509  # Albedo
+- 300081  # Land sea mask
+- 300084  # Albedo
+- 300091  # Ice concentration
+- 300174  # Soil moisture availability
+- 300182  # Soil wetness of surface
+- 300183  # Soil wetness of root zone
+- 300184  # Soil wetness of drainage zone
+
+ratio.fraction.accumulated:
+- 50  # Large-scale precipitation fraction
+- 129050  # Large-scale precipitation fraction gradient
+- 171050  # Large-scale precipitation fraction anomaly
+- 173050  # Large-scale precipitation fraction anomaly
+- 200050  # Large-scale precipitation fraction difference
+- 230050  # Large-scale precipitation fraction (variable resolution)
+
+ratio.mass:
+- 75  # Specific rain water content
+- 76  # Specific snow water content
+- 133  # Specific humidity
+- 203  # Ozone mass mixing ratio
+- 224  # Vertical diffusion of humidity
+- 225  # Humidity tendency by cumulus convection
+- 226  # Humidity tendency by large-scale condensation
+- 227  # Tendency due to removal of negative humidity
+- 233  # Apparent surface humidity
+- 246  # Specific cloud liquid water content
+- 247  # Specific cloud ice water content
+- 252  # Adiabatic tendency of humidity
+- 3053  # Humidity mixing ratio
+- 3088  # Salinity
+- 129133  # Specific humidity gradient
+- 129203  # Ozone mass mixing ratio gradient
+- 129224  # Vertical diffusion of humidity gradient
+- 129225  # Humidity tendency by cumulus convection gradient
+- 129226  # Humidity tendency by large-scale condensation gradient
+- 129227  # Change from removal of negative humidity gradient
+- 129233  # Apparent surface humidity gradient
+- 129246  # Specific cloud liquid water content gradient
+- 129247  # Specific cloud ice water content gradient
+- 129252  # Adiabatic tendency of humidity gradient
+- 130212  # Cloud liquid water
+- 160211  # Standard deviation of specific humidity
+- 160241  # Cloud liquid water content
+- 162111  # Tendency of specific humidity due to physics
+- 162117  # q-tendency from dynamics
+- 162122  # q-tendency from turbulent diffusion
+- 162129  # q-tendency from convection (deep+shallow)
+- 162133  # q-tendency from cloud scheme
+- 162134  # ql-tendency from cloud scheme
+- 162135  # qi-tendency from cloud scheme
+- 162141  # q-tendency from shallow convection
+- 171133  # Specific humidity anomaly
+- 171203  # Ozone mass mixing ratio anomaly
+- 171224  # Vertical diffusion of humidity anomaly
+- 171225  # Humidity tendency by cumulus convection anomaly
+- 171226  # Humidity tendency by large-scale condensation anomaly
+- 171227  # Change from removal of negative humidity anomaly
+- 171233  # Apparent surface humidity anomaly
+- 171246  # Cloud liquid water content anomaly
+- 171247  # Cloud ice water content anomaly
+- 171252  # Adiabatic tendency of humidity anomaly
+- 174052  # Relative humidity at 1.5m
+- 174095  # 1.5m specific humidity
+- 174096  # 2 metre specific humidity
+- 200133  # Specific humidity difference
+- 200203  # Ozone mass mixing ratio difference
+- 200224  # Vertical diffusion of humidity difference
+- 200225  # Humidity tendency by cumulus convection difference
+- 200226  # Humidity tendency by large-scale condensation difference
+- 200227  # Change from removal of negative humidity difference
+- 200233  # Apparent surface humidity difference
+- 200246  # Specific cloud liquid water content difference
+- 200247  # Specific cloud ice water content difference
+- 200252  # Adiabatic tendency of humidity difference
+- 201031  # specific cloud water content
+- 201033  # specific cloud ice content, grid scale
+- 201035  # specific rainwater content, grid scale
+- 201036  # specific snow content, grid scale
+- 201061  # specific cloud water content, convective clouds
+- 201063  # specific cloud ice content, convective clouds
+- 201099  # spec. content of precip. particles
+- 210001  # Sea Salt Aerosol (0.03 - 0.5 um) Mixing Ratio
+- 210002  # Sea Salt Aerosol (0.5 - 5 um) Mixing Ratio
+- 210003  # Sea Salt Aerosol (5 - 20 um) Mixing Ratio
+- 210004  # Dust Aerosol (0.03 - 0.55 um) Mixing Ratio
+- 210005  # Dust Aerosol (0.55 - 0.9 um) Mixing Ratio
+- 210006  # Dust Aerosol (0.9 - 20 um) Mixing Ratio
+- 210007  # Hydrophobic Organic Matter Aerosol Mixing Ratio
+- 210008  # Hydrophilic Organic Matter Aerosol Mixing Ratio
+- 210009  # Hydrophobic Black Carbon Aerosol Mixing Ratio
+- 210010  # Hydrophilic Black Carbon Aerosol Mixing Ratio
+- 210011  # Sulphate Aerosol Mixing Ratio
+- 210012  # SO2 precursor mixing ratio
+- 210013  # Volcanic ash aerosol mixing ratio
+- 210014  # Volcanic sulphate aerosol mixing ratio
+- 210015  # Volcanic SO2 precursor mixing ratio
+- 210028  # SO4 aerosol precursor mass mixing ratio
+- 210029  # Water vapour mixing ratio for hydrophilic aerosols in mode 1
+- 210030  # Water vapour mixing ratio for hydrophilic aerosols in mode 2
+- 210044  # Water vapour mixing ratio for hydrophilic aerosols in mode 3
+- 210045  # Water vapour mixing ratio for hydrophilic aerosols in mode 4
+- 210046  # Aerosol precursor mixing ratio
+- 210047  # Aerosol small mode mixing ratio
+- 210048  # Aerosol large mode mixing ratio
+- 210057  # Mixing ration of organic carbon aerosol, nucleation mode
+- 210058  # Monoterpene precursor mixing ratio
+- 210059  # Secondary organic precursor mixing ratio
+- 210061  # Carbon Dioxide
+- 210062  # Methane
+- 210063  # Nitrous oxide
+- 210121  # Nitrogen dioxide
+- 210122  # Sulphur dioxide
+- 210123  # Carbon monoxide
+- 210124  # Formaldehyde
+- 210129  # Nitrogen Oxides
+- 210131  # Reactive tracer 1 mass mixing ratio
+- 210133  # Reactive tracer 2 mass mixing ratio
+- 210135  # Reactive tracer 3 mass mixing ratio
+- 210137  # Reactive tracer 4 mass mixing ratio
+- 210139  # Reactive tracer 5 mass mixing ratio
+- 210141  # Reactive tracer 6 mass mixing ratio
+- 210143  # Reactive tracer 7 mass mixing ratio
+- 210145  # Reactive tracer 8 mass mixing ratio
+- 210147  # Reactive tracer 9 mass mixing ratio
+- 210149  # Reactive tracer 10 mass mixing ratio
+- 210181  # Radon
+- 210182  # Sulphur Hexafluoride
+- 210203  # GEMS Ozone
+- 211001  # Sea Salt Aerosol (0.03 - 0.5 um) Mixing Ratio
+- 211002  # Sea Salt Aerosol (0.5 - 5 um) Mixing Ratio
+- 211003  # Sea Salt Aerosol (5 - 20 um) Mixing Ratio
+- 211004  # Dust Aerosol (0.03 - 0.55 um) Mixing Ratio
+- 211005  # Dust Aerosol (0.55 - 0.9 um) Mixing Ratio
+- 211006  # Dust Aerosol (0.9 - 20 um) Mixing Ratio
+- 211007  # Hydrophobic Organic Matter Aerosol Mixing Ratio
+- 211008  # Hydrophilic Organic Matter Aerosol Mixing Ratio
+- 211009  # Hydrophobic Black Carbon Aerosol Mixing Ratio
+- 211010  # Hydrophilic Black Carbon Aerosol Mixing Ratio
+- 211011  # Sulphate Aerosol Mixing Ratio
+- 211012  # Aerosol type 12 mixing ratio
+- 211013  # Aerosol type 13 mass mixing ratio
+- 211014  # Aerosol type 14 mass mixing ratio
+- 211015  # Aerosol type 15 mass mixing ratio
+- 211028  # SO4 aerosol precursor mass mixing ratio
+- 211029  # Water vapour mixing ratio for hydrophilic aerosols in mode 1
+- 211030  # Water vapour mixing ratio for hydrophilic aerosols in mode 2
+- 211044  # Water vapour mixing ratio for hydrophilic aerosols in mode 3
+- 211045  # Water vapour mixing ratio for hydrophilic aerosols in mode 4
+- 211046  # Aerosol precursor mixing ratio
+- 211047  # Aerosol small mode mixing ratio
+- 211048  # Aerosol large mode mixing ratio
+- 211061  # Carbon Dioxide
+- 211062  # Methane
+- 211063  # Nitrous oxide
+- 211121  # Nitrogen dioxide
+- 211122  # Sulphur dioxide
+- 211123  # Carbon monoxide
+- 211124  # Formaldehyde
+- 211129  # Nitrogen Oxides
+- 211131  # Reactive tracer 1 mass mixing ratio
+- 211133  # Reactive tracer 2 mass mixing ratio
+- 211135  # Reactive tracer 3 mass mixing ratio
+- 211137  # Reactive tracer 4 mass mixing ratio
+- 211139  # Reactive tracer 5 mass mixing ratio
+- 211141  # Reactive tracer 6 mass mixing ratio
+- 211143  # Reactive tracer 7 mass mixing ratio
+- 211145  # Reactive tracer 8 mass mixing ratio
+- 211147  # Reactive tracer 9 mass mixing ratio
+- 211149  # Reactive tracer 10 mass mixing ratio
+- 211181  # Radon
+- 211182  # Sulphur Hexafluoride
+- 211203  # GEMS Ozone
+- 217003  # Hydrogen peroxide
+- 217004  # Methane
+- 217006  # Nitric acid
+- 217007  # Methyl peroxide
+- 217009  # Paraffins
+- 217010  # Ethene
+- 217011  # Olefins
+- 217012  # Aldehydes
+- 217013  # Peroxyacetyl nitrate
+- 217014  # Peroxides
+- 217015  # Organic nitrates
+- 217016  # Isoprene
+- 217018  # Dimethyl sulfide
+- 217019  # Ammonia
+- 217020  # Sulfate
+- 217021  # Ammonium
+- 217022  # Methane sulfonic acid
+- 217023  # Methyl glyoxal
+- 217024  # Stratospheric ozone
+- 217026  # Lead
+- 217027  # Nitrogen monoxide
+- 217028  # Hydroperoxy radical
+- 217029  # Methylperoxy radical
+- 217030  # Hydroxyl radical
+- 217032  # Nitrate radical
+- 217033  # Dinitrogen pentoxide
+- 217034  # Pernitric acid
+- 217035  # Peroxy acetyl radical
+- 217036  # Organic ethers
+- 217037  # PAR budget corrector
+- 217038  # NO to NO2 operator
+- 217039  # NO to alkyl nitrate operator
+- 217040  # Amine
+- 217041  # Polar stratospheric cloud
+- 217042  # Methanol
+- 217043  # Formic acid
+- 217044  # Methacrylic acid
+- 217045  # Ethane
+- 217046  # Ethanol
+- 217047  # Propane
+- 217048  # Propene
+- 217049  # Terpenes
+- 217050  # Methacrolein MVK
+- 217051  # Nitrate
+- 217052  # Acetone
+- 217053  # Acetone product
+- 217054  # IC3H7O2
+- 217055  # HYPROPO2
+- 217056  # Nitrogen oxides Transp
+- 228054  # Unbalanced component of specific humidity
+- 228055  # Unbalanced component of specific cloud liquid water content
+- 228056  # Unbalanced component of specific cloud ice water content
+- 260017  # Condensate
+- 260018  # Cloud mixing ratio
+- 260019  # Ice water mixing ratio
+- 260020  # Rain mixing ratio
+- 260021  # Snow mixing ratio
+- 260028  # Graupel (snow pellets)
+- 260113  # Total condensate
+- 260118  # Cloud ice mixing ratio
+- 260131  # Ozone mixing ratio
+- 260281  # Specific humidity at top of viscous sublayer
+- 260282  # Maximum specific humidity at 2m
+- 260283  # Minimum specific humidity at 2m
+- 260624  # Ozone mixing ratio
+- 300051  # Specific humidity
+- 300053  # Humidity mixing ratio
+- 300181  # Surface spec humidity
+- 300248  # Time mean specific humidity
+
+ratio.probability:
+- 3060  # Thunderstorm probability
+- 131001  # 2m temperature anomaly of at least +2K
+- 131002  # 2m temperature anomaly of at least +1K
+- 131003  # 2m temperature anomaly of at least 0K
+- 131004  # 2m temperature anomaly of at most -1K
+- 131005  # 2m temperature anomaly of at most -2K
+- 131006  # Total precipitation anomaly of at least 20 mm
+- 131007  # Total precipitation anomaly of at least 10 mm
+- 131008  # Total precipitation anomaly of at least 0 mm
+- 131009  # Surface temperature anomaly of at least 0K
+- 131010  # Mean sea level pressure anomaly of at least 0 Pa
+- 131015  # Height of 0 degree isotherm probability
+- 131016  # Height of snowfall limit probability
+- 131017  # Showalter index probability
+- 131018  # Whiting index probability
+- 131020  # Temperature anomaly less than -2 K
+- 131021  # Temperature anomaly of at least +2 K
+- 131022  # Temperature anomaly less than -8 K
+- 131023  # Temperature anomaly less than -4 K
+- 131024  # Temperature anomaly greater than +4 K
+- 131025  # Temperature anomaly greater than +8 K
+- 131049  # 10 metre wind gust probability
+- 131059  # Convective available potential energy probability
+- 131060  # Total precipitation of at least 1 mm
+- 131061  # Total precipitation of at least 5 mm
+- 131062  # Total precipitation of at least 10 mm
+- 131063  # Total precipitation of at least 20 mm
+- 131064  # Total precipitation less than 0.1 mm
+- 131065  # Total precipitation rate less than 1 mm/day
+- 131066  # Total precipitation rate of at least 3 mm/day
+- 131067  # Total precipitation rate of at least 5 mm/day
+- 131068  # 10 metre Wind speed of at least 10 m/s
+- 131069  # 10 metre Wind speed of at least 15 m/s
+- 131070  # 10 metre Wind gust of at least 15 m/s
+- 131071  # 10 metre Wind gust of at least 20 m/s
+- 131072  # 10 metre Wind gust of at least 25 m/s
+- 131073  # 2 metre temperature less than 273.15 K
+- 131074  # Significant wave height of at least 2 m
+- 131075  # Significant wave height of at least 4 m
+- 131076  # Significant wave height of at least 6 m
+- 131077  # Significant wave height of at least 8 m
+- 131078  # Mean wave period of at least 8 s
+- 131079  # Mean wave period of at least 10 s
+- 131080  # Mean wave period of at least 12 s
+- 131081  # Mean wave period of at least 15 s
+- 131082  # Total precipitation of at least 40 mm
+- 131083  # Total precipitation of at least 60 mm
+- 131084  # Total precipitation of at least 80 mm
+- 131085  # Total precipitation of at least 100 mm
+- 131086  # Total precipitation of at least 150 mm
+- 131087  # Total precipitation of at least 200 mm
+- 131088  # Total precipitation of at least 300 mm
+- 131089  # Probability of a tropical storm
+- 131090  # Probability of a hurricane
+- 131091  # Probability of a tropical depression
+- 131092  # Climatological probability of a tropical storm
+- 131093  # Climatological probability of a hurricane
+- 131094  # Climatological probability of a tropical depression
+- 131095  # Probability anomaly of a tropical storm
+- 131096  # Probability anomaly of a hurricane
+- 131097  # Probability anomaly of a tropical depression
+- 131129  # Geopotential probability
+- 131130  # Temperature anomaly probability
+- 131139  # Soil temperature level 1 probability
+- 131144  # Snowfall (convective + stratiform) probability
+- 131151  # Mean sea level pressure probability
+- 131164  # Total cloud cover probability
+- 131165  # 10 metre speed probability
+- 131167  # 2 metre temperature probability
+- 131201  # Maximum 2 metre temperature probability
+- 131202  # Minimum 2 metre temperature probability
+- 131228  # Total precipitation probability
+- 131229  # Significant wave height probability
+- 131232  # Mean wave period probability
+- 133001  # 2m temperature probability less than -10 C
+- 133002  # 2m temperature probability less than -5 C
+- 133003  # 2m temperature probability less than 0 C
+- 133004  # 2m temperature probability less than 5 C
+- 133005  # 2m temperature probability less than 10 C
+- 133006  # 2m temperature probability greater than 25 C
+- 133007  # 2m temperature probability greater than 30 C
+- 133008  # 2m temperature probability greater than 35 C
+- 133009  # 2m temperature probability greater than 40 C
+- 133010  # 2m temperature probability greater than 45 C
+- 133011  # Minimum 2 metre temperature probability less than -10 C
+- 133012  # Minimum 2 metre temperature probability less than -5 C
+- 133013  # Minimum 2 metre temperature probability less than 0 C
+- 133014  # Minimum 2 metre temperature probability less than 5 C
+- 133015  # Minimum 2 metre temperature probability less than 10 C
+- 133016  # Maximum 2 metre temperature probability greater than 25 C
+- 133017  # Maximum 2 metre temperature probability greater than 30 C
+- 133018  # Maximum 2 metre temperature probability greater than 35 C
+- 133019  # Maximum 2 metre temperature probability greater than 40 C
+- 133020  # Maximum 2 metre temperature probability greater than 45 C
+- 133021  # 10 metre wind speed probability of at least 10 m/s
+- 133022  # 10 metre wind speed probability of at least 15 m/s
+- 133023  # 10 metre wind speed probability of at least 20 m/s
+- 133024  # 10 metre wind speed probability of at least 35 m/s
+- 133025  # 10 metre wind speed probability of at least 50 m/s
+- 133026  # 10 metre wind gust probability of at least 20 m/s
+- 133027  # 10 metre wind gust probability of at least 35 m/s
+- 133028  # 10 metre wind gust probability of at least 50 m/s
+- 133029  # 10 metre wind gust probability of at least 75 m/s
+- 133030  # 10 metre wind gust probability of at least 100 m/s
+- 133031  # Total precipitation probability of at least 1 mm
+- 133032  # Total precipitation probability of at least 5 mm
+- 133033  # Total precipitation probability of at least 10 mm
+- 133034  # Total precipitation probability of at least 20 mm
+- 133035  # Total precipitation probability of at least 40 mm
+- 133036  # Total precipitation probability of at least 60 mm
+- 133037  # Total precipitation probability of at least 80 mm
+- 133038  # Total precipitation probability of at least 100 mm
+- 133039  # Total precipitation probability of at least 150 mm
+- 133040  # Total precipitation probability of at least 200 mm
+- 133041  # Total precipitation probability of at least 300 mm
+- 133042  # Snowfall probability of at least 1 mm
+- 133043  # Snowfall probability of at least 5 mm
+- 133044  # Snowfall probability of at least 10 mm
+- 133045  # Snowfall probability of at least 20 mm
+- 133046  # Snowfall probability of at least 40 mm
+- 133047  # Snowfall probability of at least 60 mm
+- 133048  # Snowfall probability of at least 80 mm
+- 133049  # Snowfall probability of at least 100 mm
+- 133050  # Snowfall probability of at least 150 mm
+- 133051  # Snowfall probability of at least 200 mm
+- 133052  # Snowfall probability of at least 300 mm
+- 133053  # Total Cloud Cover probability greater than 10%
+- 133054  # Total Cloud Cover probability greater than 20%
+- 133055  # Total Cloud Cover probability greater than 30%
+- 133056  # Total Cloud Cover probability greater than 40%
+- 133057  # Total Cloud Cover probability greater than 50%
+- 133058  # Total Cloud Cover probability greater than 60%
+- 133059  # Total Cloud Cover probability greater than 70%
+- 133060  # Total Cloud Cover probability greater than 80%
+- 133061  # Total Cloud Cover probability greater than 90%
+- 133062  # Total Cloud Cover probability greater than 99%
+- 133063  # High Cloud Cover probability greater than 10%
+- 133064  # High Cloud Cover probability greater than 20%
+- 133065  # High Cloud Cover probability greater than 30%
+- 133066  # High Cloud Cover probability greater than 40%
+- 133067  # High Cloud Cover probability greater than 50%
+- 133068  # High Cloud Cover probability greater than 60%
+- 133069  # High Cloud Cover probability greater than 70%
+- 133070  # High Cloud Cover probability greater than 80%
+- 133071  # High Cloud Cover probability greater than 90%
+- 133072  # High Cloud Cover probability greater than 99%
+- 133073  # Medium Cloud Cover probability greater than 10%
+- 133074  # Medium Cloud Cover probability greater than 20%
+- 133075  # Medium Cloud Cover probability greater than 30%
+- 133076  # Medium Cloud Cover probability greater than 40%
+- 133077  # Medium Cloud Cover probability greater than 50%
+- 133078  # Medium Cloud Cover probability greater than 60%
+- 133079  # Medium Cloud Cover probability greater than 70%
+- 133080  # Medium Cloud Cover probability greater than 80%
+- 133081  # Medium Cloud Cover probability greater than 90%
+- 133082  # Medium Cloud Cover probability greater than 99%
+- 133083  # Low Cloud Cover probability greater than 10%
+- 133084  # Low Cloud Cover probability greater than 20%
+- 133085  # Low Cloud Cover probability greater than 30%
+- 133086  # Low Cloud Cover probability greater than 40%
+- 133087  # Low Cloud Cover probability greater than 50%
+- 133088  # Low Cloud Cover probability greater than 60%
+- 133089  # Low Cloud Cover probability greater than 70%
+- 133090  # Low Cloud Cover probability greater than 80%
+- 133091  # Low Cloud Cover probability greater than 90%
+- 133092  # Low Cloud Cover probability greater than 99%
+- 260166  # Supercooled large droplet probability (see Note 4)
+- 260178  # Probability of 0.01 inch of precipitation (POP)
+- 260397  # Tornado probability
+- 260398  # Hail probability
+- 260399  # Wind probability
+- 260400  # Significant Tornado probability
+- 260401  # Significant Hail probability
+- 260402  # Significant Wind probability
+- 260415  # Total Probability of Severe Thunderstorms (Days 2,3)
+- 260416  # Total Probability of Extreme Severe Thunderstorms (Days 2,3)
+- 260429  # Probability of Freezing Precipitation
+- 260431  # Probability of precipitation exceeding flash flood guidance values
+- 260432  # Probability of Wetting Rain, exceeding in 0.10 in a given time period
+- 300060  # Thunder probability
+
+ratio.volume:
+- 39  # Volumetric soil water layer 1
+- 40  # Volumetric soil water layer 2
+- 41  # Volumetric soil water layer 3
+- 42  # Volumetric soil water layer 4
+- 129039  # Volumetric soil water layer 1 gradient
+- 129040  # Volumetric soil water layer 2 gradient
+- 129041  # Volumetric soil water layer 3 gradient
+- 129042  # Volumetric soil water layer 4 gradient
+- 171039  # Volumetric soil water anomaly layer 1
+- 171040  # Volumetric soil water anomaly layer 2
+- 171041  # Volumetric soil water anomaly layer 3
+- 171042  # Volumetric soil water anomaly layer 4
+- 174039  # Volumetric soil water layer 1
+- 174040  # Volumetric soil water layer 2
+- 174041  # Volumetric soil water layer 3
+- 174042  # Volumetric soil water layer 4
+- 175039  # Volumetric soil water layer 1
+- 175040  # Volumetric soil water layer 2
+- 175041  # Volumetric soil water layer 3
+- 175042  # Volumetric soil water layer 4
+- 190229  # Total soil moisture
+- 200039  # Volumetric soil water layer 1 difference
+- 200040  # Volumetric soil water layer 2 difference
+- 200041  # Volumetric soil water layer 3 difference
+- 200042  # Volumetric soil water layer 4 difference
+- 228093  # Volumetric soil moisture
+- 228253  # ASCAT first soil moisture CDF matching parameter
+- 260185  # Volumetric soil moisture content
+- 260199  # Volumetric soil moisture
+- 260200  # Volumetric wilting point
+- 260210  # Liquid volumetric soil moisture (non-frozen)
+- 260211  # Volumetric transpiration stress-onset (soil moisture)
+- 260213  # Volumetric direct evaporation cease (soil moisture)
+- 260215  # Soil porosity
+- 260216  # Volumetric saturation of soil moisture
+
+spectrum:
+- 3021  # Radar spectra (1)
+- 3022  # Radar spectra (2)
+- 3023  # Radar spectra (3)
+- 3028  # Wave spectra (1)
+- 3029  # Wave spectra (2)
+- 3030  # Wave spectra (3)
+- 140250  # 2D wave spectra (multiple)
+- 140251  # 2D wave spectra (single)
+- 300021  # Radar spectra(1)
+- 300022  # Radar spectra(2)
+- 300023  # Radar spectra(3)
+- 300028  # Wave spectra(1)
+- 300029  # Wave spectra(2)
+- 300030  # Wave spectra(3)
+
+spectrum.associated-direction:
+- 140122  # Mean wave direction of first swell partition
+- 140125  # Mean wave direction of second swell partition
+- 140128  # Mean wave direction of third swell partition
+
+spectrum.associated-intensity:
+- 140121  # Significant wave height of first swell partition
+- 140123  # Mean wave period of first swell partition
+- 140124  # Significant wave height of second swell partition
+- 140126  # Mean wave period of second swell partition
+- 140127  # Significant wave height of third swell partition
+- 140129  # Mean wave period of third swell partition
+- 140208  # Free convective velocity over the oceans
+- 140209  # Air density over the oceans
+- 140210  # Mean square wave strain in sea ice
+- 140211  # Normalized energy flux into waves
+- 140212  # Normalized energy flux into ocean
+- 140213  # Turbulent Langmuir number
+- 140214  # Normalized stress into ocean
+- 140219  # Model bathymetry
+- 140231  # Peak period of 1D spectra
+- 140233  # Coefficient of drag with waves
+- 140245  # 10 metre wind speed
+- 140246  # Altimeter wave height
+- 140247  # Altimeter corrected wave height
+- 140248  # Altimeter range relative correction
+
+stress:
+- 229  # Instantaneous eastward turbulent surface stress
+- 230  # Instantaneous northward turbulent surface stress
+- 129229  # Instantaneous X surface stress gradient
+- 129230  # Instantaneous Y surface stress gradient
+- 150168  # U stress
+- 150169  # V stress
+- 151153  # U stress
+- 151154  # V stress
+- 171229  # Instantaneous X surface stress anomaly
+- 171230  # Instantaneous Y surface stress anomaly
+- 172048  # Magnitude of turbulent surface stress
+- 172180  # East-West surface stress
+- 172181  # North-South surface stress
+- 172195  # Longitudinal component of gravity wave stress
+- 172196  # Meridional component of gravity wave stress
+- 173048  # Magnitude of turbulent surface stress anomaly
+- 173180  # East-West surface stress anomaly
+- 173181  # North-South surface stress anomaly
+- 173195  # Longitudinal component of gravity wave stress anomaly
+- 173196  # Meridional component of gravity wave stress anomaly
+- 200229  # Instantaneous X surface stress difference
+- 200230  # Instantaneous Y surface stress difference
+- 235025  # Mean magnitude of turbulent surface stress
+- 235041  # Mean eastward turbulent surface stress
+- 235042  # Mean northward turbulent surface stress
+- 235045  # Mean eastward gravity wave surface stress
+- 235046  # Mean northward gravity wave surface stress
+- 300193  # Surface zonal wind stress
+- 300195  # Surface meridional wind stress
+
+stress.accumulated:
+- 48  # Magnitude of turbulent surface stress
+- 180  # Eastward turbulent surface stress
+- 181  # Northward turbulent surface stress
+- 195  # Eastward gravity wave surface stress
+- 196  # Northward gravity wave surface stress
+- 129048  # Magnitude of turbulent surface stress gradient
+- 129180  # East-West surface stress gradient
+- 129181  # North-South surface stress gradient
+- 129195  # Longitudinal component of gravity wave stress gradient
+- 129196  # Meridional component of gravity wave stress gradient
+- 171048  # Magnitude of turbulent surface stress anomaly
+- 171180  # East-West surface stress anomaly
+- 171181  # North-South surface stress anomaly
+- 171195  # Longitudinal component of gravity wave stress anomaly
+- 171196  # Meridional component of gravity wave stress anomaly
+- 200048  # Magnitude of turbulent surface stress difference
+- 200180  # East-West surface stress difference
+- 200181  # North-South surface stress difference
+- 200195  # Longitudinal component of gravity wave stress difference
+- 200196  # Meridional component of gravity wave stress difference
+- 230180  # East-West surface stress (variable resolution)
+- 230181  # North-South surface stress (variable resolution)
+- 230195  # Longitudinal component of gravity wave stress (variable resolution)
+- 230196  # Meridional component of gravity wave stress (variable resolution)
+
+unknown.experimental:
+- 80  # Experimental product
+- 81  # Experimental product
+- 82  # Experimental product
+- 83  # Experimental product
+- 84  # Experimental product
+- 85  # Experimental product
+- 86  # Experimental product
+- 87  # Experimental product
+- 88  # Experimental product
+- 89  # Experimental product
+- 90  # Experimental product
+- 91  # Experimental product
+- 92  # Experimental product
+- 93  # Experimental product
+- 94  # Experimental product
+- 95  # Experimental product
+- 96  # Experimental product
+- 97  # Experimental product
+- 98  # Experimental product
+- 99  # Experimental product
+- 100  # Experimental product
+- 101  # Experimental product
+- 102  # Experimental product
+- 103  # Experimental product
+- 104  # Experimental product
+- 105  # Experimental product
+- 106  # Experimental product
+- 107  # Experimental product
+- 108  # Experimental product
+- 109  # Experimental product
+- 110  # Experimental product
+- 111  # Experimental product
+- 112  # Experimental product
+- 113  # Experimental product
+- 114  # Experimental product
+- 115  # Experimental product
+- 116  # Experimental product
+- 117  # Experimental product
+- 118  # Experimental product
+- 119  # Experimental product
+- 120  # Experimental product
+- 129080  # Experimental product
+- 129081  # Experimental product
+- 129082  # Experimental product
+- 129083  # Experimental product
+- 129084  # Experimental product
+- 129085  # Experimental product
+- 129086  # Experimental product
+- 129087  # Experimental product
+- 129088  # Experimental product
+- 129089  # Experimental product
+- 129090  # Experimental product
+- 129091  # Experimental product
+- 129092  # Experimental product
+- 129093  # Experimental product
+- 129094  # Experimental product
+- 129095  # Experimental product
+- 129096  # Experimental product
+- 129097  # Experimental product
+- 129098  # Experimental product
+- 129099  # Experimental product
+- 129100  # Experimental product
+- 129101  # Experimental product
+- 129102  # Experimental product
+- 129103  # Experimental product
+- 129104  # Experimental product
+- 129105  # Experimental product
+- 129106  # Experimental product
+- 129107  # Experimental product
+- 129108  # Experimental product
+- 129109  # Experimental product
+- 129110  # Experimental product
+- 129111  # Experimental product
+- 129112  # Experimental product
+- 129113  # Experimental product
+- 129114  # Experimental product
+- 129115  # Experimental product
+- 129116  # Experimental product
+- 129117  # Experimental product
+- 129118  # Experimental product
+- 129119  # Experimental product
+- 129120  # Experimental product
+- 140080  # Wave experimental parameter 1
+- 140081  # Wave experimental parameter 2
+- 140082  # Wave experimental parameter 3
+- 140083  # Wave experimental parameter 4
+- 140084  # Wave experimental parameter 5
+- 200080  # Experimental product
+- 200081  # Experimental product
+- 200082  # Experimental product
+- 200083  # Experimental product
+- 200084  # Experimental product
+- 200085  # Experimental product
+- 200086  # Experimental product
+- 200087  # Experimental product
+- 200088  # Experimental product
+- 200089  # Experimental product
+- 200090  # Experimental product
+- 200091  # Experimental product
+- 200092  # Experimental product
+- 200093  # Experimental product
+- 200094  # Experimental product
+- 200095  # Experimental product
+- 200096  # Experimental product
+- 200097  # Experimental product
+- 200098  # Experimental product
+- 200099  # Experimental product
+- 200100  # Experimental product
+- 200101  # Experimental product
+- 200102  # Experimental product
+- 200103  # Experimental product
+- 200104  # Experimental product
+- 200105  # Experimental product
+- 200106  # Experimental product
+- 200107  # Experimental product
+- 200108  # Experimental product
+- 200109  # Experimental product
+- 200110  # Experimental product
+- 200111  # Experimental product
+- 200112  # Experimental product
+- 200113  # Experimental product
+- 200114  # Experimental product
+- 200115  # Experimental product
+- 200116  # Experimental product
+- 200117  # Experimental product
+- 200118  # Experimental product
+- 200119  # Experimental product
+- 200120  # Experimental product
+- 210055  # Experimental product
+- 210056  # Experimental product
+- 211055  # Experimental product
+- 211056  # Experimental product
+- 212001  # Experimental product
+- 212002  # Experimental product
+- 212003  # Experimental product
+- 212004  # Experimental product
+- 212005  # Experimental product
+- 212006  # Experimental product
+- 212007  # Experimental product
+- 212008  # Experimental product
+- 212009  # Experimental product
+- 212010  # Experimental product
+- 212011  # Experimental product
+- 212012  # Experimental product
+- 212013  # Experimental product
+- 212014  # Experimental product
+- 212015  # Experimental product
+- 212016  # Experimental product
+- 212017  # Experimental product
+- 212018  # Experimental product
+- 212019  # Experimental product
+- 212020  # Experimental product
+- 212021  # Experimental product
+- 212022  # Experimental product
+- 212023  # Experimental product
+- 212024  # Experimental product
+- 212025  # Experimental product
+- 212026  # Experimental product
+- 212027  # Experimental product
+- 212028  # Experimental product
+- 212029  # Experimental product
+- 212030  # Experimental product
+- 212031  # Experimental product
+- 212032  # Experimental product
+- 212033  # Experimental product
+- 212034  # Experimental product
+- 212035  # Experimental product
+- 212036  # Experimental product
+- 212037  # Experimental product
+- 212038  # Experimental product
+- 212039  # Experimental product
+- 212040  # Experimental product
+- 212041  # Experimental product
+- 212042  # Experimental product
+- 212043  # Experimental product
+- 212044  # Experimental product
+- 212045  # Experimental product
+- 212046  # Experimental product
+- 212047  # Experimental product
+- 212048  # Experimental product
+- 212049  # Experimental product
+- 212050  # Experimental product
+- 212051  # Experimental product
+- 212052  # Experimental product
+- 212053  # Experimental product
+- 212054  # Experimental product
+- 212055  # Experimental product
+- 212056  # Experimental product
+- 212057  # Experimental product
+- 212058  # Experimental product
+- 212059  # Experimental product
+- 212060  # Experimental product
+- 212061  # Experimental product
+- 212062  # Experimental product
+- 212063  # Experimental product
+- 212064  # Experimental product
+- 212065  # Experimental product
+- 212066  # Experimental product
+- 212067  # Experimental product
+- 212068  # Experimental product
+- 212069  # Experimental product
+- 212070  # Experimental product
+- 212071  # Experimental product
+- 212072  # Experimental product
+- 212073  # Experimental product
+- 212074  # Experimental product
+- 212075  # Experimental product
+- 212076  # Experimental product
+- 212077  # Experimental product
+- 212078  # Experimental product
+- 212079  # Experimental product
+- 212080  # Experimental product
+- 212081  # Experimental product
+- 212082  # Experimental product
+- 212083  # Experimental product
+- 212084  # Experimental product
+- 212085  # Experimental product
+- 212086  # Experimental product
+- 212087  # Experimental product
+- 212088  # Experimental product
+- 212089  # Experimental product
+- 212090  # Experimental product
+- 212091  # Experimental product
+- 212092  # Experimental product
+- 212093  # Experimental product
+- 212094  # Experimental product
+- 212095  # Experimental product
+- 212096  # Experimental product
+- 212097  # Experimental product
+- 212098  # Experimental product
+- 212099  # Experimental product
+- 212100  # Experimental product
+- 212101  # Experimental product
+- 212102  # Experimental product
+- 212103  # Experimental product
+- 212104  # Experimental product
+- 212105  # Experimental product
+- 212106  # Experimental product
+- 212107  # Experimental product
+- 212108  # Experimental product
+- 212109  # Experimental product
+- 212110  # Experimental product
+- 212111  # Experimental product
+- 212112  # Experimental product
+- 212113  # Experimental product
+- 212114  # Experimental product
+- 212115  # Experimental product
+- 212116  # Experimental product
+- 212117  # Experimental product
+- 212118  # Experimental product
+- 212119  # Experimental product
+- 212120  # Experimental product
+- 212121  # Experimental product
+- 212122  # Experimental product
+- 212123  # Experimental product
+- 212124  # Experimental product
+- 212125  # Experimental product
+- 212126  # Experimental product
+- 212127  # Experimental product
+- 212128  # Experimental product
+- 212129  # Experimental product
+- 212130  # Experimental product
+- 212131  # Experimental product
+- 212132  # Experimental product
+- 212133  # Experimental product
+- 212134  # Experimental product
+- 212135  # Experimental product
+- 212136  # Experimental product
+- 212137  # Experimental product
+- 212138  # Experimental product
+- 212139  # Experimental product
+- 212140  # Experimental product
+- 212141  # Experimental product
+- 212142  # Experimental product
+- 212143  # Experimental product
+- 212144  # Experimental product
+- 212145  # Experimental product
+- 212146  # Experimental product
+- 212147  # Experimental product
+- 212148  # Experimental product
+- 212149  # Experimental product
+- 212150  # Experimental product
+- 212151  # Experimental product
+- 212152  # Experimental product
+- 212153  # Experimental product
+- 212154  # Experimental product
+- 212155  # Experimental product
+- 212156  # Experimental product
+- 212157  # Experimental product
+- 212158  # Experimental product
+- 212159  # Experimental product
+- 212160  # Experimental product
+- 212161  # Experimental product
+- 212162  # Experimental product
+- 212163  # Experimental product
+- 212164  # Experimental product
+- 212165  # Experimental product
+- 212166  # Experimental product
+- 212167  # Experimental product
+- 212168  # Experimental product
+- 212169  # Experimental product
+- 212170  # Experimental product
+- 212171  # Experimental product
+- 212172  # Experimental product
+- 212173  # Experimental product
+- 212174  # Experimental product
+- 212175  # Experimental product
+- 212176  # Experimental product
+- 212177  # Experimental product
+- 212178  # Experimental product
+- 212179  # Experimental product
+- 212180  # Experimental product
+- 212181  # Experimental product
+- 212182  # Experimental product
+- 212183  # Experimental product
+- 212184  # Experimental product
+- 212185  # Experimental product
+- 212186  # Experimental product
+- 212187  # Experimental product
+- 212188  # Experimental product
+- 212189  # Experimental product
+- 212190  # Experimental product
+- 212191  # Experimental product
+- 212192  # Experimental product
+- 212193  # Experimental product
+- 212194  # Experimental product
+- 212195  # Experimental product
+- 212196  # Experimental product
+- 212197  # Experimental product
+- 212198  # Experimental product
+- 212199  # Experimental product
+- 212200  # Experimental product
+- 212201  # Experimental product
+- 212202  # Experimental product
+- 212203  # Experimental product
+- 212204  # Experimental product
+- 212205  # Experimental product
+- 212206  # Experimental product
+- 212207  # Experimental product
+- 212208  # Experimental product
+- 212209  # Experimental product
+- 212210  # Experimental product
+- 212211  # Experimental product
+- 212212  # Experimental product
+- 212213  # Experimental product
+- 212214  # Experimental product
+- 212215  # Experimental product
+- 212216  # Experimental product
+- 212217  # Experimental product
+- 212218  # Experimental product
+- 212219  # Experimental product
+- 212220  # Experimental product
+- 212221  # Experimental product
+- 212222  # Experimental product
+- 212223  # Experimental product
+- 212224  # Experimental product
+- 212225  # Experimental product
+- 212226  # Experimental product
+- 212227  # Experimental product
+- 212228  # Experimental product
+- 212229  # Experimental product
+- 212230  # Experimental product
+- 212231  # Experimental product
+- 212232  # Experimental product
+- 212233  # Experimental product
+- 212234  # Experimental product
+- 212235  # Experimental product
+- 212236  # Experimental product
+- 212237  # Experimental product
+- 212238  # Experimental product
+- 212239  # Experimental product
+- 212240  # Experimental product
+- 212241  # Experimental product
+- 212242  # Experimental product
+- 212243  # Experimental product
+- 212244  # Experimental product
+- 212245  # Experimental product
+- 212246  # Experimental product
+- 212247  # Experimental product
+- 212248  # Experimental product
+- 212249  # Experimental product
+- 212250  # Experimental product
+- 212251  # Experimental product
+- 212252  # Experimental product
+- 212253  # Experimental product
+- 212254  # Experimental product
+- 212255  # Experimental product
+- 216001  # Experimental product
+- 216002  # Experimental product
+- 216003  # Experimental product
+- 216004  # Experimental product
+- 216005  # Experimental product
+- 216006  # Experimental product
+- 216007  # Experimental product
+- 216008  # Experimental product
+- 216009  # Experimental product
+- 216010  # Experimental product
+- 216011  # Experimental product
+- 216012  # Experimental product
+- 216013  # Experimental product
+- 216014  # Experimental product
+- 216015  # Experimental product
+- 216016  # Experimental product
+- 216017  # Experimental product
+- 216018  # Experimental product
+- 216019  # Experimental product
+- 216020  # Experimental product
+- 216021  # Experimental product
+- 216022  # Experimental product
+- 216023  # Experimental product
+- 216024  # Experimental product
+- 216025  # Experimental product
+- 216026  # Experimental product
+- 216027  # Experimental product
+- 216028  # Experimental product
+- 216029  # Experimental product
+- 216030  # Experimental product
+- 216031  # Experimental product
+- 216032  # Experimental product
+- 216033  # Experimental product
+- 216034  # Experimental product
+- 216035  # Experimental product
+- 216036  # Experimental product
+- 216037  # Experimental product
+- 216038  # Experimental product
+- 216039  # Experimental product
+- 216040  # Experimental product
+- 216041  # Experimental product
+- 216042  # Experimental product
+- 216043  # Experimental product
+- 216044  # Experimental product
+- 216045  # Experimental product
+- 216046  # Experimental product
+- 216047  # Experimental product
+- 216048  # Experimental product
+- 216049  # Experimental product
+- 216050  # Experimental product
+- 216051  # Experimental product
+- 216052  # Experimental product
+- 216053  # Experimental product
+- 216054  # Experimental product
+- 216055  # Experimental product
+- 216056  # Experimental product
+- 216057  # Experimental product
+- 216058  # Experimental product
+- 216059  # Experimental product
+- 216060  # Experimental product
+- 216061  # Experimental product
+- 216062  # Experimental product
+- 216063  # Experimental product
+- 216064  # Experimental product
+- 216065  # Experimental product
+- 216066  # Experimental product
+- 216067  # Experimental product
+- 216068  # Experimental product
+- 216069  # Experimental product
+- 216070  # Experimental product
+- 216071  # Experimental product
+- 216072  # Experimental product
+- 216073  # Experimental product
+- 216074  # Experimental product
+- 216075  # Experimental product
+- 216076  # Experimental product
+- 216077  # Experimental product
+- 216078  # Experimental product
+- 216079  # Experimental product
+- 216080  # Experimental product
+- 216081  # Experimental product
+- 216082  # Experimental product
+- 216083  # Experimental product
+- 216084  # Experimental product
+- 216085  # Experimental product
+- 216086  # Experimental product
+- 216087  # Experimental product
+- 216088  # Experimental product
+- 216089  # Experimental product
+- 216090  # Experimental product
+- 216091  # Experimental product
+- 216092  # Experimental product
+- 216093  # Experimental product
+- 216094  # Experimental product
+- 216095  # Experimental product
+- 216096  # Experimental product
+- 216097  # Experimental product
+- 216098  # Experimental product
+- 216099  # Experimental product
+- 216100  # Experimental product
+- 216101  # Experimental product
+- 216102  # Experimental product
+- 216103  # Experimental product
+- 216104  # Experimental product
+- 216105  # Experimental product
+- 216106  # Experimental product
+- 216107  # Experimental product
+- 216108  # Experimental product
+- 216109  # Experimental product
+- 216110  # Experimental product
+- 216111  # Experimental product
+- 216112  # Experimental product
+- 216113  # Experimental product
+- 216114  # Experimental product
+- 216115  # Experimental product
+- 216116  # Experimental product
+- 216117  # Experimental product
+- 216118  # Experimental product
+- 216119  # Experimental product
+- 216120  # Experimental product
+- 216121  # Experimental product
+- 216122  # Experimental product
+- 216123  # Experimental product
+- 216124  # Experimental product
+- 216125  # Experimental product
+- 216126  # Experimental product
+- 216127  # Experimental product
+- 216128  # Experimental product
+- 216129  # Experimental product
+- 216130  # Experimental product
+- 216131  # Experimental product
+- 216132  # Experimental product
+- 216133  # Experimental product
+- 216134  # Experimental product
+- 216135  # Experimental product
+- 216136  # Experimental product
+- 216137  # Experimental product
+- 216138  # Experimental product
+- 216139  # Experimental product
+- 216140  # Experimental product
+- 216141  # Experimental product
+- 216142  # Experimental product
+- 216143  # Experimental product
+- 216144  # Experimental product
+- 216145  # Experimental product
+- 216146  # Experimental product
+- 216147  # Experimental product
+- 216148  # Experimental product
+- 216149  # Experimental product
+- 216150  # Experimental product
+- 216151  # Experimental product
+- 216152  # Experimental product
+- 216153  # Experimental product
+- 216154  # Experimental product
+- 216155  # Experimental product
+- 216156  # Experimental product
+- 216157  # Experimental product
+- 216158  # Experimental product
+- 216159  # Experimental product
+- 216160  # Experimental product
+- 216161  # Experimental product
+- 216162  # Experimental product
+- 216163  # Experimental product
+- 216164  # Experimental product
+- 216165  # Experimental product
+- 216166  # Experimental product
+- 216167  # Experimental product
+- 216168  # Experimental product
+- 216169  # Experimental product
+- 216170  # Experimental product
+- 216171  # Experimental product
+- 216172  # Experimental product
+- 216173  # Experimental product
+- 216174  # Experimental product
+- 216175  # Experimental product
+- 216176  # Experimental product
+- 216177  # Experimental product
+- 216178  # Experimental product
+- 216179  # Experimental product
+- 216180  # Experimental product
+- 216181  # Experimental product
+- 216182  # Experimental product
+- 216183  # Experimental product
+- 216184  # Experimental product
+- 216185  # Experimental product
+- 216186  # Experimental product
+- 216187  # Experimental product
+- 216188  # Experimental product
+- 216189  # Experimental product
+- 216190  # Experimental product
+- 216191  # Experimental product
+- 216192  # Experimental product
+- 216193  # Experimental product
+- 216194  # Experimental product
+- 216195  # Experimental product
+- 216196  # Experimental product
+- 216197  # Experimental product
+- 216198  # Experimental product
+- 216199  # Experimental product
+- 216200  # Experimental product
+- 216201  # Experimental product
+- 216202  # Experimental product
+- 216203  # Experimental product
+- 216204  # Experimental product
+- 216205  # Experimental product
+- 216206  # Experimental product
+- 216207  # Experimental product
+- 216208  # Experimental product
+- 216209  # Experimental product
+- 216210  # Experimental product
+- 216211  # Experimental product
+- 216212  # Experimental product
+- 216213  # Experimental product
+- 216214  # Experimental product
+- 216215  # Experimental product
+- 216216  # Experimental product
+- 216217  # Experimental product
+- 216218  # Experimental product
+- 216219  # Experimental product
+- 216220  # Experimental product
+- 216221  # Experimental product
+- 216222  # Experimental product
+- 216223  # Experimental product
+- 216224  # Experimental product
+- 216225  # Experimental product
+- 216226  # Experimental product
+- 216227  # Experimental product
+- 216228  # Experimental product
+- 216229  # Experimental product
+- 216230  # Experimental product
+- 216231  # Experimental product
+- 216232  # Experimental product
+- 216233  # Experimental product
+- 216234  # Experimental product
+- 216235  # Experimental product
+- 216236  # Experimental product
+- 216237  # Experimental product
+- 216238  # Experimental product
+- 216239  # Experimental product
+- 216240  # Experimental product
+- 216241  # Experimental product
+- 216242  # Experimental product
+- 216243  # Experimental product
+- 216244  # Experimental product
+- 216245  # Experimental product
+- 216246  # Experimental product
+- 216247  # Experimental product
+- 216248  # Experimental product
+- 216249  # Experimental product
+- 216250  # Experimental product
+- 216251  # Experimental product
+- 216252  # Experimental product
+- 216253  # Experimental product
+- 216254  # Experimental product
+- 216255  # Experimental product
+
+unknown.missing:
+- 255  # Indicates a missing value
+- 129255  # Indicates a missing value
+- 131255  # Indicates a missing value
+- 140255  # Indicates a missing value
+- 150255  # Indicates a missing value
+- 151255  # Indicates a missing value
+- 162255  # Indicates a missing value
+- 171255  # Indicates a missing value
+- 172255  # Indicates a missing value
+- 173255  # Indicates a missing value
+- 174255  # Indicates a missing value
+- 175255  # Indicates a missing value
+- 200255  # Indicates a missing value
+- 201255  # Indicates a missing value
+
+unknown.reserved:
+- 24  # Reserved for future unbalanced components
+- 25  # Reserved for future unbalanced components
+- 129024  # Reserved for future unbalanced components
+- 129025  # Reserved for future unbalanced components
+- 151193  # Reserved
+- 200024  # Reserved for future unbalanced components
+- 200025  # Reserved for future unbalanced components
+

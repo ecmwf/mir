@@ -109,15 +109,13 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, context::Co
         out << "#DATA" << std::endl;
 
 
-        eckit::ScopedPtr<repres::Iterator> it(field.representation()->rotatedIterator());
-        Latitude lat;
-        Longitude lon;
-
         std::vector<double>::const_iterator v = values.begin();
 
-        while (it->next(lat, lon)) {
+        eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
+        while (it->next()) {
+            const repres::Iterator::point_ll_t& p = it->pointUnrotated();
             ASSERT(v != values.end());
-            out << lat << ' ' << lon << ' ' << *v << std::endl;
+            out << p.lat.value() << ' ' << p.lon.value() << ' ' << *v << std::endl;
             ++v;
         }
 

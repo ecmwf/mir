@@ -17,7 +17,7 @@
 #ifndef mir_caching_FileLoader_H
 #define mir_caching_FileLoader_H
 
-#include "eckit/io/Buffer.h"
+#include "eckit/memory/MemoryBuffer.h"
 #include "mir/caching/interpolator/InterpolatorLoader.h"
 
 namespace mir {
@@ -26,8 +26,6 @@ namespace interpolator {
 
 
 //----------------------------------------------------------------------------------------------------------------------
-
-
 
 class FileLoader : public InterpolatorLoader {
 public:
@@ -39,7 +37,7 @@ protected:
     void print(std::ostream&) const;
 
 private:
-    eckit::Buffer buffer_;
+    eckit::MemoryBuffer buffer_;
 
     virtual const void* address() const;
     virtual size_t size() const;

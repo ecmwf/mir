@@ -13,10 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedLL_H
-#define RotatedLL_H
+#ifndef mir_repres_latlon_RotatedLL_h
+#define mir_repres_latlon_RotatedLL_h
 
-#include "mir/repres/latlon/RegularLL.h"
+#include "mir/repres/latlon/LatLon.h"
 #include "mir/util/Rotation.h"
 
 
@@ -25,7 +25,7 @@ namespace repres {
 namespace latlon {
 
 
-class RotatedLL : public RegularLL {
+class RotatedLL : public LatLon {
 public:
 
     // -- Exceptions
@@ -33,11 +33,8 @@ public:
 
     // -- Contructors
 
-    RotatedLL(const param::MIRParametrisation &);
-    RotatedLL(const util::BoundingBox &bbox,
-              const util::Increments &increments,
-              const util::Shift &shift,
-              const util::Rotation &rotation);
+    RotatedLL(const param::MIRParametrisation&);
+    RotatedLL(const util::BoundingBox&, const util::Increments&, const util::Rotation&);
 
     // -- Destructor
 
@@ -61,51 +58,29 @@ public:
     // -- Class methods
     // None
 
-protected:
+private:
 
     // -- Members
 
     util::Rotation rotation_;
 
     // -- Methods
-
-    void print(std::ostream &) const; // Change to virtual if base class
-
-    // -- Overridden methods
-    virtual atlas::Grid atlasGrid() const;
-    virtual Iterator* rotatedIterator() const;
-    virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-private:
-
-    // RotatedLL();
-
-    // No copy allowed
-
-    RotatedLL(const RotatedLL &);
-    RotatedLL &operator=(const RotatedLL &);
-
-    // -- Members
-    // None
-
-    // -- Methods
     // None
 
     // -- Overridden methods
+    Iterator* iterator() const;
+    void print(std::ostream&) const; // Change to virtual if base class
 
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
+    atlas::Grid atlasGrid() const;
 
+    void fill(grib_info&) const;
+    void fill(api::MIRJob&) const;
 
-    // From RegularLL
-    virtual const RotatedLL *cropped(const util::BoundingBox &bbox) const;
+    void makeName(std::ostream&) const;
+    bool sameAs(const Representation&) const;
+
+    // From Representation
+    const RotatedLL* cropped(const util::BoundingBox&) const;
 
     // -- Class members
     // None
@@ -114,7 +89,9 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    //friend ostream& operator<<(ostream& s,const RegularLL& p)
+    //  { p.print(s); return s; }
 
 };
 

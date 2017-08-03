@@ -66,7 +66,7 @@ public:
 
     bool operator<(const Field& other) const;
 
-    void bitmap(bool on);
+    void missingValuesPresent(bool on);
 
     std::map<std::string, std::string>::const_iterator begin() const;
 
@@ -139,7 +139,7 @@ private:
 
     std::string packing_;
 
-    bool bitmap_;
+    bool hasMissing_;
     long resol_;
     std::string gridname_;
     std::string gridtype_;

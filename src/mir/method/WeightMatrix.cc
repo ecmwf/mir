@@ -16,14 +16,13 @@
 
 #include <cmath>
 
-
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Plural.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/util/Compare.h"
 
 
 namespace mir {
@@ -33,6 +32,10 @@ namespace method {
 //----------------------------------------------------------------------------------------------------------------------
 
 
+WeightMatrix::WeightMatrix(SparseMatrix::Allocator* alloc) : SparseMatrix(alloc)
+{
+}
+
 WeightMatrix::WeightMatrix(const eckit::PathName& path) :
     SparseMatrix()
 {
@@ -41,11 +44,6 @@ WeightMatrix::WeightMatrix(const eckit::PathName& path) :
 
 WeightMatrix::WeightMatrix(WeightMatrix::Size rows, WeightMatrix::Size cols) :
     SparseMatrix(rows, cols)
-{
-}
-
-WeightMatrix::WeightMatrix(const eckit::Buffer& buffer) :
-    SparseMatrix(buffer)
 {
 }
 
@@ -73,15 +71,15 @@ void WeightMatrix::multiply(const WeightMatrix::Vector& values, WeightMatrix::Ve
 
 void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Matrix& result) const {
 
-    eckit::Log::debug<LibMir>() << "MethodWeighted::multiply: "
-                                   "A[" << rows()        << ',' << cols()        << "] * "
-                                   "B[" << values.rows() << ',' << values.cols() << "] = "
-                                   "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
+    // eckit::Log::debug<LibMir>() << "MethodWeighted::multiply: "
+    //                                "A[" << rows()        << ',' << cols()        << "] * "
+    //                                "B[" << values.rows() << ',' << values.cols() << "] = "
+    //                                "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
 
-    eckit::Log::info() << "Multiply: "
-                                   "A[" << rows()        << ',' << cols()        << "] * "
-                                   "B[" << values.rows() << ',' << values.cols() << "] = "
-                                   "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
+    // eckit::Log::info() << "Multiply: "
+    //                                "A[" << rows()        << ',' << cols()        << "] * "
+    //                                "B[" << values.rows() << ',' << values.cols() << "] = "
+    //                                "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
 
     ASSERT(values.rows() == cols());
     ASSERT(result.rows() == rows());
@@ -163,7 +161,7 @@ void WeightMatrix::validate(const char *when) const {
             sum += a;
         }
 
-        ok &= (util::compare::is_approx_zero(sum) || util::compare::is_approx_one(sum));
+        ok &= (eckit::types::is_approximately_equal(sum, 0.) || eckit::types::is_approximately_equal(sum, 1.));
 
         // log issues, per row
         if (!ok && logErrors) {

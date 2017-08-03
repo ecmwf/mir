@@ -26,7 +26,7 @@ namespace gauss {
 namespace reduced {
 
 class Octahedral : public Reduced {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -56,7 +56,7 @@ class Octahedral : public Reduced {
     // -- Class methods
     // None
 
-  protected:
+protected:
     Octahedral(long, const util::BoundingBox &);
 
     // -- Members
@@ -78,29 +78,17 @@ class Octahedral : public Reduced {
     // -- Class methods
     // None
 
-  private:
-
-
-
-    // No copy allowed
-
-    Octahedral(const Octahedral &);
-    Octahedral &operator=(const Octahedral &);
+private:
 
     // -- Members
-
-
+    // None
 
     // -- Methods
     // None
 
-
-    virtual const std::vector<long>& pls() const;
-
-
     // -- Overridden methods
 
-
+    virtual const std::vector<long>& pls() const;
 
     // -- Class members
     // None

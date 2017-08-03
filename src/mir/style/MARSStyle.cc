@@ -46,20 +46,23 @@ void MARSStyle::print(std::ostream &out) const {
 
 
 long MARSStyle::getTargetGaussianNumber() const {
+    long N = 0;
 
     // get N from number of points in half-meridian (uses only grid[1] South-North increment)
     std::vector<double> grid;
     if (parametrisation_.get("user.grid", grid)) {
         ASSERT(grid.size() == 2);
+        util::Increments increments(grid[0], grid[1]);
 
-        util::BoundingBox bbox(90, 0, 0, 360);
-        util::Increments inc(grid[0], grid[1]);
-        long N = long(inc.computeNj(bbox)) - 1;
+        // use (non-shifted) global bounding box
+        util::BoundingBox bbox;
+        increments.globaliseBoundingBox(bbox, false, false);
+
+        N = long(increments.computeNj(bbox) - 1) / 2;
         return N;
     }
 
     // get Gaussian N directly
-    long N = 0;
     if (parametrisation_.get("user.reduced", N) ||
         parametrisation_.get("user.regular", N) ||
         parametrisation_.get("user.octahedral", N)) {

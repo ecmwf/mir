@@ -35,7 +35,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/MIRGrid.h"
+
 
 
 namespace mir {
@@ -56,7 +56,6 @@ static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient",
 static void fillTrans(struct Trans_t& trans,
                       trans_options_t& options,
                       const repres::Representation& representation) {
-#ifdef ATLAS_HAVE_TRANS
 
     ASSERT(trans_new(&trans) == 0);
     trans.flt = int(options.flt);
@@ -65,10 +64,6 @@ static void fillTrans(struct Trans_t& trans,
 
     representation.initTrans(trans);
 
-#else
-    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
-#endif
 }
 
 
@@ -76,7 +71,6 @@ static void createCoefficients(const eckit::PathName& path,
                                trans_options_t& options,
                                const repres::Representation& representation,
                                context::Context& ctx) {
-#ifdef ATLAS_HAVE_TRANS
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
 
     struct Trans_t tmp_trans;
@@ -86,10 +80,7 @@ static void createCoefficients(const eckit::PathName& path,
     ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
 
     trans_delete(&tmp_trans);
-#else
-    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
-#endif
+
 }
 
 
@@ -102,7 +93,6 @@ void ShToGridded::transform(
         context::Context& ctx,
         const std::string& key,
         trans_options_t& options ) const {
-#ifdef ATLAS_HAVE_TRANS
     if (trans_handles.find(key) == trans_handles.end()) {
 
         eckit::PathName path;
@@ -117,7 +107,7 @@ void ShToGridded::transform(
                 const repres::Representation& representation_;
                 context::Context & ctx_;
 
-                virtual void create(const eckit::PathName& path, int& ignore) {
+                virtual void create(const eckit::PathName& path, int& ignore, bool& saved) {
                     createCoefficients(path, options_, representation_, ctx_);
                 }
             public:
@@ -152,7 +142,7 @@ void ShToGridded::transform(
             ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
 
             ASSERT(trans.ndgl > 0 && (trans.ndgl % 2) == 0);
-            ;
+
             ASSERT(trans_setup(&trans) == 0);
         }
 
@@ -174,10 +164,7 @@ void ShToGridded::transform(
 
 
     // trans_delete(&trans);
-#else
-    throw eckit::SeriousBug("Spherical harmonics transforms are not supported. "
-                            "Please recompile ATLAS with TRANS support enabled.");
-#endif
+
 }
 
 

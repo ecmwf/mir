@@ -14,16 +14,26 @@
 #include "mir/caching/interpolator/InterpolatorLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
+#include "eckit/os/AutoUmask.h"
 
+#include <unistd.h>
 
 namespace mir {
 namespace caching {
 
+using namespace mir::caching::interpolator;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 
 static std::string extract_loader(const param::MIRParametrisation& param) {
+
     std::string name;
-    param.get("interpolator-loader", name);
-    return name;
+    if (param.get("interpolator-loader", name)) {
+        return name;
+    }
+
+    return "file-io";
 }
 
 
@@ -50,28 +60,64 @@ const char *WeightCacheTraits::extension() {
 
 
 void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W, const eckit::PathName& path) {
-    eckit::Log::info() << "Inserting weights in cache : " << path << "" << std::endl;
-
+    eckit::Log::debug<LibMir>() << "Inserting weights in cache : " << path << "" << std::endl;
     eckit::TraceTimer<LibMir> timer("Saving weights to cache");
     W.save(path);
 }
 
-
-void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type& W, const eckit::PathName& path) {
+void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type& w, const eckit::PathName& path) {
 
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
 
-    using namespace mir::caching::interpolator;
-    InterpolatorLoader* loader_ = InterpolatorLoaderFactory::build(manager.loader(), path);
+    value_type tmp( InterpolatorLoaderFactory::build(manager.loader(), path) );
+    w.swap(tmp);
 
-    bool notown = true;
-    eckit::Buffer buffer(const_cast<void*>(loader_->address()), loader_->size(), notown);
-
-    value_type w(buffer);
-    std::swap(W, w);
-
-    W.validate("fromCache");
+    w.validate("fromCache");
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+// We only lock per host, not per cluster
+
+static eckit::PathName lockFile(const std::string& path) {
+    eckit::AutoUmask umask(0);
+
+    eckit::PathName lock(path + ".lock");
+    lock.touch();
+    return lock;
+}
+
+WeightCacheLock::WeightCacheLock(const std::string& path):
+    path_(lockFile(path)),
+    lock_(path_) {
+}
+
+void WeightCacheLock::lock() {
+    eckit::AutoUmask umask(0);
+
+    eckit::Log::info() << "Wait for lock " << path_ << std::endl;
+    lock_.lock();
+    eckit::Log::info() << "Got lock " << path_ << std::endl;
+
+
+    char hostname[1024];
+    SYSCALL(gethostname(hostname, sizeof(hostname) - 1));
+
+    std::ofstream os(path_.asString().c_str());
+    os << hostname << " " << ::getpid() << std::endl;
+
+}
+
+void WeightCacheLock::unlock() {
+    eckit::AutoUmask umask(0);
+
+    eckit::Log::info() << "Unlock " << path_ << std::endl;
+    std::ofstream os(path_.asString().c_str());
+    os << std::endl;
+    lock_.unlock();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 }  // namespace caching

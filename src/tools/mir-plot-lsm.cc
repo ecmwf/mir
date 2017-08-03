@@ -18,7 +18,7 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Tool.h"
-#include "atlas/grid.h"
+
 #include "mir/config/MIRConfiguration.h"
 #include "mir/lsm/Mask.h"
 #include "mir/param/ConfigurationWrapper.h"
@@ -86,7 +86,7 @@ void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
     eckit::StdFile out(args(0), "w");
 
     // Wrap the arguments, so that they behave as a MIRParameter
-    mir::param::ConfigurationWrapper wrap(const_cast<eckit::option::CmdArgs&>(args));
+    mir::param::ConfigurationWrapper wrap(args);
     eckit::ScopedPtr<const mir::param::MIRParametrisation> defaults(mir::config::MIRConfiguration::instance().defaults());
 
     mir::param::MIRCombinedParametrisation parametrisation(wrap, *defaults, *defaults);

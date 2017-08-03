@@ -58,6 +58,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
     // Make sure results are cropped to the input
     in->crop(parametrisation_, ctx);
+
 }
 
 

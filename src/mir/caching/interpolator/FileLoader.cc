@@ -41,7 +41,7 @@ FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
     InterpolatorLoader(name, path),
     buffer_(path.size()) {
 
-    /// FIXME buffer size is based on file.size() -- which is assumed to be bigger than the memory footprint
+    // Note: buffer size is based on file.size() -- which is assumed to be bigger than the memory footprint
 
     eckit::Log::debug<LibMir>() << "Loading interpolator coefficients from " << path << std::endl;
 

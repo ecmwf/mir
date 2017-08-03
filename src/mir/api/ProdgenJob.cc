@@ -17,10 +17,11 @@
 
 #include <iostream>
 #include <sstream>
+
 #include "eckit/log/Log.h"
 #include "eckit/exception/Exceptions.h"
-#include "atlas/grid.h"
 #include "mir/config/LibMir.h"
+#include "mir/repres/gauss/Gaussian.h"
 
 
 namespace mir {
@@ -211,6 +212,7 @@ void ProdgenJob::auto_pl() {
     ASSERT(grid);
 
     pl_ = grid.nx();
+
 }
 
 

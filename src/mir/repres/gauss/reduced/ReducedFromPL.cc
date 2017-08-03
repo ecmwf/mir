@@ -12,6 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
 
 #include <iostream>
@@ -25,32 +26,42 @@ namespace reduced {
 
 ReducedFromPL::ReducedFromPL(const param::MIRParametrisation &parametrisation):
     FromPL(parametrisation) {
-
 }
 
 
 ReducedFromPL::~ReducedFromPL() {
 }
 
+
 ReducedFromPL::ReducedFromPL(long N, const std::vector<long> &pl, const util::BoundingBox &bbox):
     FromPL(N, pl, bbox) {
 }
+
 
 ReducedFromPL::ReducedFromPL(const std::vector<long> &pl):
     FromPL(pl) {
 }
 
+
 void ReducedFromPL::print(std::ostream &out) const {
-    out << "ReducedGGFromPL[N" << N_ << "]";
+    out << "ReducedFromPL[N" << N_ << "]";
 }
+
+
+Iterator *ReducedFromPL::iterator() const {
+    return unrotatedIterator();
+}
+
 
 Reduced *ReducedFromPL::cropped(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
     return new ReducedFromPL(N_, pl, bbox);
 }
 
+
 void ReducedFromPL::makeName(std::ostream& out) const {
     FromPL::makeName(out);
 }
+
 
 bool ReducedFromPL::sameAs(const Representation& other) const {
     const ReducedFromPL* o = dynamic_cast<const ReducedFromPL*>(&other);
@@ -58,10 +69,10 @@ bool ReducedFromPL::sameAs(const Representation& other) const {
 }
 
 
-
 namespace {
 static RepresentationBuilder<ReducedFromPL> reducedGGFromPL("reduced_gg"); // Name is what is returned by grib_api
 }
+
 
 }  // namespace reduced
 }  // namespace gauss

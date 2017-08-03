@@ -26,20 +26,27 @@ namespace reduced {
 
 ReducedClassic::ReducedClassic(size_t N):
     Classic(N) {
-
 }
+
 
 ReducedClassic::~ReducedClassic() {
 }
 
+
 void ReducedClassic::print(std::ostream &out) const {
-    out << "ReducedGGClassic[N" << N_ << ",bbox=" << bbox_ << "]";
+    out << "ReducedClassic[N" << N_ << ",bbox=" << bbox_ << "]";
+}
+
+
+Iterator* ReducedClassic::iterator() const {
+    return unrotatedIterator();
 }
 
 
 void ReducedClassic::makeName(std::ostream& out) const {
     Classic::makeName(out);
 }
+
 
 bool ReducedClassic::sameAs(const Representation& other) const {
     const ReducedClassic* o = dynamic_cast<const ReducedClassic*>(&other);

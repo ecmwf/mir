@@ -14,18 +14,104 @@
 /// @date Apr 2015
 
 
-
 #include "mir/param/FieldParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
-#include "mir/config/MIRConfiguration.h"
-#include "mir/param/InheritParametrisation.h"
 #include "eckit/types/Fraction.h"
+#include "mir/param/SimpleParametrisation.h"
+#include "eckit/parser/YAMLParser.h"
 
 
 namespace mir {
 namespace param {
+
+
+namespace {
+
+
+inline double shift(const double& a, const double& b, double increment) {
+    const eckit::Fraction inc(increment);
+    eckit::Fraction shift = a - (a / inc).integralPart() * inc;
+
+    if (!((a - b) / inc).integer()) {
+        std::ostringstream oss;
+        oss << "Cannot compute shift with a=" << a << ", b=" << b << ", inc=" << double(inc)
+            << " shift=" << double(shift) << " (a-b)/inc=" << double((a - b) / inc);
+        throw eckit::SeriousBug(oss.str());
+    }
+
+    return shift;
+}
+}  // (anonymous namespace)
+
+
+
+
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static std::map<long, SimpleParametrisation*> parameters_;
+
+
+static void init() {
+
+
+    eckit::Value c = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
+
+    // c.dump(std::cout) << std::endl;MIRConfiguration
+
+    eckit::ValueMap classes = c;
+
+    std::map<std::string, SimpleParametrisation*> p;
+
+    for (auto i = classes.begin(); i != classes.end(); ++i) {
+        const std::string& klass = (*i).first;
+        eckit::ValueMap values = (*i).second;
+
+        SimpleParametrisation* s = new SimpleParametrisation();
+
+        for (auto j = values.begin(); j != values.end(); ++j) {
+
+            std::string name = (*j).first;
+            eckit::Value value = (*j).second;
+
+            s->set(name, std::string(value));
+        }
+
+        p[klass] = s;
+    }
+
+
+    eckit::ValueMap parameters = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameters.yaml");
+    for (auto i = parameters.begin(); i != parameters.end(); ++i) {
+        const std::string& klass = (*i).first;
+
+        auto j = p.find(klass);
+        if (j == p.end()) {
+            std::ostringstream oss;
+            oss << "Unknown class [" << klass << "]";
+            throw eckit::SeriousBug(oss.str());
+        }
+
+        eckit::ValueList l = (*i).second;
+        // std::cout << l << std::endl;
+
+        for (auto p = l.begin(); p != l.end(); ++p) {
+
+            long paramId = *p;
+
+            auto k = parameters_.find(paramId);
+            if (k != parameters_.end()) {
+                std::ostringstream oss;
+                oss << "More than one class defined for paramId=" << paramId;
+                throw eckit::SeriousBug(oss.str());
+            }
+
+            parameters_[paramId] = (*j).second;
+        }
+    }
+
+}
+
 
 
 FieldParametrisation::FieldParametrisation() {}
@@ -73,21 +159,6 @@ bool FieldParametrisation::get(const std::string& name, float& value) const {
 }
 
 
-inline double shift(const double& a, const double& b, double increment) {
-    const eckit::Fraction inc(increment);
-    eckit::Fraction shift = a - (a / inc).integralPart() * inc;
-
-    if (!((a - b) / inc).integer()) {
-        std::ostringstream oss;
-        oss << "Cannot compute shift with a=" << a << ", b=" << b << ", inc=" << double(inc)
-            << " shift=" << double(shift) << " (a-b)/inc=" << double((a - b) / inc);
-        throw eckit::SeriousBug(oss.str());
-    }
-
-    return shift;
-}
-
-
 bool FieldParametrisation::get(const std::string& name, double& value) const {
     double inc;
     double a;
@@ -128,32 +199,27 @@ bool FieldParametrisation::get(const std::string& name, std::vector<float>& valu
 
 bool FieldParametrisation::get(const std::string& name, std::vector<double>& value) const {
 
-    if (_get(name, value)) { // This will check if this in the style paramaretirsaion
+    // Check if this is in the MIRConfiguration
+    if (_get(name, value)) {
         return true;
     }
 
-    // Special case
+    // Special cases
 
     if (name == "grid") {
-        double west_east_increment, south_north_increment;
+        std::vector<double> grid(2, 0.);
 
-        if (get("west_east_increment", west_east_increment) && get("south_north_increment", south_north_increment)) {
-            value.resize(2);
-            value[0] = west_east_increment;
-            value[1] = south_north_increment;
+        if (get("west_east_increment", grid[0]) && get("south_north_increment", grid[1])) {
+            value.swap(grid);
             return true;
         }
     }
 
     if (name == "area") {
-        double north, west, south, east;
+        std::vector<double> area(4, 0.);
 
-        if (get("north", north) && get("west", west) && get("south", south) && get("east", east)) {
-            value.resize(4);
-            value[0] = north;
-            value[1] = west;
-            value[2] = south;
-            value[3] = east;
+        if (get("north", area[0]) && get("west", area[1]) && get("south", area[2]) && get("east", area[3])) {
+            value.swap(area);
             return true;
         }
     }
@@ -168,9 +234,7 @@ bool FieldParametrisation::get(const std::string& name, std::vector<double>& val
         return true;
     }
 
-
-
-    return _get(name, value);
+    return false;
 }
 
 
@@ -185,15 +249,25 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
     ASSERT(name != "paramId");
 
     // This assumes that other input (NetCDF, etc) also return a paramId
-    long paramId = 0;
-    if (get("paramId", paramId)) {
-        // return paramId specific parametrisation
-        const config::MIRConfiguration& configuration = config::MIRConfiguration::instance();
-        const param::MIRParametrisation& param = configuration.lookup(paramId, *this);
-        return param.get(name, value);
+
+    long paramId;
+    if (!get("paramId", paramId)) {
+        return false;
     }
 
-    return false;
+    // return paramId specific parametrisation
+
+    pthread_once(&once, init);
+
+    const auto j = parameters_.find(paramId);
+
+    if (j == parameters_.end()) {
+        eckit::Log::warning() << "No interpolation information for paramId=" << paramId << ", using defaults" << std::endl;
+        parameters_[paramId] = new SimpleParametrisation();
+        return false;
+    }
+
+    return (*j).second->get(name, value);
 }
 
 

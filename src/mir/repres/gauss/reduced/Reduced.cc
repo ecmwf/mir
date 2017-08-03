@@ -18,24 +18,23 @@
 #include <cmath>
 #include <limits>
 #include <sstream>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/types/FloatCompare.h"
+#include "eckit/types/Fraction.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
+#include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
-#include "eckit/types/Fraction.h"
-#include "mir/util/BoundingBox.h"
 
-#include "atlas/library/config.h"
+#include "mir/api/Atlas.h"
 
-#ifdef ATLAS_HAVE_TRANS
-#include "transi/trans.h"
-#endif
 
 namespace mir {
 namespace repres {
@@ -43,18 +42,18 @@ namespace gauss {
 namespace reduced {
 
 
+Reduced::Reduced(const param::MIRParametrisation& parametrisation):
+    Gaussian(parametrisation) {
+}
+
+
 Reduced::Reduced(size_t N):
     Gaussian(N) {
 }
 
 
-Reduced::Reduced(size_t N, const util::BoundingBox &bbox):
+Reduced::Reduced(size_t N, const util::BoundingBox& bbox):
     Gaussian(N, bbox) {
-}
-
-
-Reduced::Reduced(const param::MIRParametrisation &parametrisation):
-    Gaussian(parametrisation) {
 }
 
 
@@ -68,6 +67,31 @@ bool Reduced::sameAs(const Representation& other) const {
 }
 
 
+eckit::Fraction Reduced::getSmallestIncrement() const {
+    ASSERT(N_);
+    const std::vector<long>& pl = pls();
+    const long maxpl = *std::max_element(pl.begin(), pl.end());
+    ASSERT(maxpl);
+
+    return eckit::Fraction(360, maxpl);
+}
+
+
+void Reduced::adjustBoundingBoxEastWest(util::BoundingBox& bbox) {
+    const eckit::Fraction inc = getSmallestIncrement();
+
+    Longitude e = bbox.east();
+    Longitude w = bbox.west();
+
+    if ((e - w + inc).sameWithGrib1Accuracy(Longitude::GLOBE.value())
+            || (e - w + inc > Longitude::GLOBE )) {
+        e = w + Longitude::GLOBE - inc;
+    }
+
+    bbox = util::BoundingBox(bbox.north(), w, bbox.south(), e);
+}
+
+
 bool Reduced::isPeriodicWestEast() const {
     const std::vector<long>& pl = pls();
     ASSERT(pl.size());
@@ -76,11 +100,162 @@ bool Reduced::isPeriodicWestEast() const {
     const Longitude we = bbox_.east() - bbox_.west();
     const Longitude inc = eckit::Fraction(360, maxpl);
 
-    return (we + inc).sameWithGrib1Accuracy(Longitude::GLOBE.value());
+    return (we + inc).sameWithGrib1Accuracy(Longitude::GLOBE.value())
+           || (we + inc >= Longitude::GLOBE.value());
 }
 
 
-void Reduced::fill(grib_info &info) const  {
+class ReducedIterator {
+    const std::vector<double>& latitudes_;
+    const std::vector<long>& pl_;
+    const util::Domain domain_;
+    size_t ni_;
+    const size_t nj_;
+    eckit::Fraction lon_;
+    eckit::Fraction inc_;
+    size_t i_;
+    size_t j_;
+    size_t k_;
+    size_t p_;
+    size_t count_;
+protected:
+    ~ReducedIterator();
+    void print(std::ostream&) const;
+    bool next(Latitude&, Longitude&);
+public:
+    ReducedIterator(const std::vector<double>& latitudes, const std::vector<long>& pl, const util::Domain&);
+};
+
+
+
+ReducedIterator::ReducedIterator(const std::vector<double>& latitudes, const std::vector<long>& pl, const util::Domain& dom) :
+    latitudes_(latitudes),
+    pl_(pl),
+    domain_(dom),
+    nj_(pl_.size()),
+    i_(0),
+    j_(0),
+    k_(0),
+    p_(0),
+    count_(0) {
+
+    // latitudes_/pl_ cover the whole globe
+    ASSERT(pl_.size() <= latitudes_.size());
+    ASSERT(pl_.size() >= 2);
+
+    // position to first latitude and first/last longitude
+
+    while (k_ < latitudes_.size() && domain_.north() < latitudes_[k_]) {
+        k_++;
+    }
+    ASSERT(k_ < latitudes_.size());
+
+    ni_ = size_t(pl_[p_++]);
+    inc_ = eckit::Fraction(360, ni_);
+    lon_ = eckit::Fraction(0.0);
+
+}
+
+
+ReducedIterator::~ReducedIterator() {
+}
+
+
+void ReducedIterator::print(std::ostream& out) const {
+    out << "ReducedIterator["
+        <<  "domain=" << domain_
+        << ",ni="     << ni_
+        << ",nj="     << nj_
+        << ",i="      << i_
+        << ",j="      << j_
+        << ",k="      << k_
+        << ",p="      << p_
+        << ",count="  << count_
+        << "]";
+}
+
+
+bool ReducedIterator::next(Latitude& lat, Longitude& lon) {
+    while (j_ < nj_ && i_ < ni_) {
+
+        ASSERT(j_ + k_ < latitudes_.size());
+
+        lat = latitudes_[j_ + k_];
+        lon = lon_;
+
+        i_++;
+        lon_ += inc_;
+
+        if (i_ == ni_) {
+            j_++;
+            if (j_ < nj_) {
+                ASSERT(p_ < pl_.size());
+                ni_ = size_t(pl_[p_++]);
+                lon_ = eckit::Fraction(0.0);
+                inc_ = eckit::Fraction(360, ni_);
+                i_ = 0;
+
+
+            }
+        }
+
+        if (domain_.contains(lat, lon)) {
+            count_++;
+            return true;
+        }
+    }
+    return false;
+}
+
+
+Iterator* Reduced::unrotatedIterator() const {
+
+    class ReducedUnrotatedGGIterator : protected ReducedIterator, public Iterator {
+        void print(std::ostream& out) const {
+            out << "RegularGGIterator[";
+            Iterator::print(out);
+            out << ",";
+            ReducedIterator::print(out);
+            out << "]";
+        }
+        bool next(Latitude& lat, Longitude& lon) {
+            return ReducedIterator::next(lat, lon);
+        }
+    public:
+        ReducedUnrotatedGGIterator(const std::vector<double>& latitudes, const std::vector<long>& pl, const util::Domain& dom) :
+            ReducedIterator(latitudes, pl, dom) {
+        }
+    };
+
+    return new ReducedUnrotatedGGIterator(latitudes(), pls(), domain());
+}
+
+
+Iterator *Reduced::rotatedIterator(const util::Rotation& rotation) const {
+
+    class ReducedRotatedGGIterator : protected ReducedIterator, public Iterator {
+        void print(std::ostream& out) const {
+            out << "RegularGGIterator[";
+            Iterator::print(out);
+            out << ",";
+            ReducedIterator::print(out);
+            out << "]";
+        }
+        bool next(Latitude& lat, Longitude& lon) {
+            return ReducedIterator::next(lat, lon);
+        }
+    public:
+        ReducedRotatedGGIterator(const std::vector<double>& latitudes, const std::vector<long>& pl, const util::Domain& dom, const util::Rotation& rotation) :
+            ReducedIterator(latitudes, pl, dom),
+            Iterator(rotation) {
+        }
+    };
+
+    return new ReducedRotatedGGIterator(latitudes(), pls(), domain(), rotation);
+}
+
+
+void Reduced::fill(grib_info& info) const  {
 
     // See copy_spec_from_ksec.c in libemos for info
 
@@ -115,125 +290,17 @@ void Reduced::fill(grib_info &info) const  {
     long j = info.packing.extra_settings_count++;
     info.packing.extra_settings[j].type = GRIB_TYPE_LONG;
     info.packing.extra_settings[j].name = "global";
-    info.packing.extra_settings[j].long_value = domain().isGlobal() && westAtGreenwich ? 1 : 0;
+    info.packing.extra_settings[j].long_value = isGlobal() && westAtGreenwich ? 1 : 0;
 }
 
 
-void Reduced::fill(api::MIRJob &job) const  {
-    ASSERT(domain().isGlobal());
+void Reduced::fill(api::MIRJob& job) const  {
+    ASSERT(isGlobal());
     job.set("pl", pls());
 }
 
 
-class GaussianIterator : public Iterator {
-
-    const std::vector<double>& latitudes_;
-    const std::vector<long>& pl_;
-    const util::Domain domain_;
-
-    size_t ni_;
-    const size_t nj_;
-
-    eckit::Fraction lon_;
-    eckit::Fraction inc_;
-
-    size_t i_;
-    size_t j_;
-    size_t k_;
-    size_t p_;
-
-    size_t count_;
-
-    virtual void print(std::ostream &out) const {
-        out << "GaussianIterator["
-            <<  "domain=" << domain_
-            << ",ni="     << ni_
-            << ",nj="     << nj_
-            << ",i="      << i_
-            << ",j="      << j_
-            << ",k="      << k_
-            << ",p="      << p_
-            << ",count="  << count_
-            << "]";
-    }
-
-    virtual bool next(Latitude &lat, Longitude &lon) {
-        while (j_ < nj_ && i_ < ni_) {
-
-            ASSERT(j_ + k_ < latitudes_.size());
-
-            lat = latitudes_[j_ + k_];
-            lon = lon_;
-
-            i_++;
-            lon_ += inc_;
-
-            if (i_ == ni_) {
-                j_++;
-                if (j_ < nj_) {
-                    ASSERT(p_ < pl_.size());
-                    ni_ = size_t(pl_[p_++]);
-                    lon_ = eckit::Fraction(0.0);
-                    inc_ = eckit::Fraction(360, ni_);
-                    i_ = 0;
-
-
-                }
-            }
-
-            if (domain_.contains(lat, lon)) {
-                count_++;
-                return true;
-            }
-        }
-        return false;
-    }
-
-public:
-
-    GaussianIterator(const std::vector<double>& latitudes, const std::vector<long>& pl, const util::Domain& dom) :
-        latitudes_(latitudes),
-        pl_(pl),
-        domain_(dom),
-        nj_(pl_.size()),
-        i_(0),
-        j_(0),
-        k_(0),
-        p_(0),
-        count_(0) {
-
-        // latitudes_/pl_ cover the whole globe
-        ASSERT(pl_.size() <= latitudes_.size());
-        ASSERT(pl_.size() >= 2);
-
-        // position to first latitude and first/last longitude
-
-        while (k_ < latitudes_.size() && domain_.north() < latitudes_[k_]) {
-            k_++;
-        }
-        ASSERT(k_ < latitudes_.size());
-
-        ni_ = size_t(pl_[p_++]);
-        inc_ = eckit::Fraction(360, ni_);
-        lon_ = eckit::Fraction(0.0);
-
-    }
-
-
-};
-
-
-Iterator *Reduced::unrotatedIterator() const {
-    return new GaussianIterator(latitudes(), pls(), domain());
-}
-
-
-Iterator* Reduced::rotatedIterator() const {
-    return unrotatedIterator();
-}
-
-
-size_t Reduced::frame(std::vector<double> &values, size_t size, double missingValue) const {
+size_t Reduced::frame(std::vector<double>& values, size_t size, double missingValue) const {
 
     validate(values);
 
@@ -243,17 +310,10 @@ size_t Reduced::frame(std::vector<double> &values, size_t size, double missingVa
 
     std::map<size_t, size_t> shape;
 
-    // Iterator is 'unrotated'
-    eckit::ScopedPtr<Iterator> iter(unrotatedIterator());
-
     Latitude prev_lat = std::numeric_limits<double>::max();
     Longitude prev_lon = -std::numeric_limits<double>::max();
 
-    Latitude lat;
-    Longitude lon;
-
     size_t rows = 0;
-
     size_t dummy = 0; // Used to keep static analyser quiet
     size_t *col = &dummy;
 
@@ -262,19 +322,22 @@ size_t Reduced::frame(std::vector<double> &values, size_t size, double missingVa
     // but this code could also be used for all grids
     // and even be cached (md5 of iterators)
 
-    while (iter->next(lat, lon)) {
+    // Iterator is 'unrotated'
+    eckit::ScopedPtr<Iterator> it(iterator());
+    while (it->next()) {
+        const Iterator::point_ll_t& p = it->pointUnrotated();
 
-        if (lat != prev_lat ) {
-            ASSERT(lat < prev_lat); // Assumes scanning mode
-            prev_lat = lat;
+        if (p.lat != prev_lat ) {
+            ASSERT(p.lat < prev_lat); // Assumes scanning mode
+            prev_lat = p.lat;
             prev_lon = -std::numeric_limits<double>::max();
 
             col = &shape[rows++];
             (*col) = 0;
         }
 
-        ASSERT(lon > prev_lon); // Assumes scanning mode
-        prev_lon = lon;
+        ASSERT(p.lon > prev_lon); // Assumes scanning mode
+        prev_lon = p.lon;
         (*col) ++;
     }
 
@@ -296,24 +359,7 @@ size_t Reduced::frame(std::vector<double> &values, size_t size, double missingVa
 
 
 void Reduced::validate(const std::vector<double>& values) const {
-
-//    std::cout << "Reduced " << domain() << std::endl;
-
-    long long count = 0;
-    if (domain().isGlobal()) {
-        const std::vector<long>& pl = pls();
-        for (size_t i = 0; i < pl.size(); i++) {
-            count += pl[i];
-        }
-    } else {
-        eckit::ScopedPtr<Iterator> it(unrotatedIterator());
-        Latitude lat;
-        Longitude lon;
-        while (it->next(lat, lon)) {
-            ++count;
-        }
-    }
-
+    size_t count = numberOfPoints();
     eckit::Log::debug<LibMir>() << "Reduced::validate checked "
                                 << eckit::Plural(values.size(), "value")
                                 << ", within domain: "
@@ -325,12 +371,12 @@ void Reduced::validate(const std::vector<double>& values) const {
 }
 
 
-const Reduced *Reduced::cropped(const util::BoundingBox &bbox) const  {
-    const std::vector<long> &pl = pls();
+const Reduced *Reduced::cropped(const util::BoundingBox& bbox) const  {
+    const std::vector<long>& pl = pls();
     std::vector<long> newpl;
     newpl.reserve(pl.size());
 
-    const std::vector<double> &lats = latitudes();
+    const std::vector<double>& lats = latitudes();
     Latitude north = bbox.north();
     Latitude south = bbox.south();
 
@@ -355,7 +401,6 @@ const Reduced *Reduced::cropped(const util::BoundingBox&, const std::vector<long
 
 
 void Reduced::initTrans(Trans_t& trans) const {
-#ifdef ATLAS_HAVE_TRANS
 
 
     const std::vector<long>& pl = pls();
@@ -370,11 +415,26 @@ void Reduced::initTrans(Trans_t& trans) const {
 
     ASSERT(trans_set_resol(&trans, pli.size(), &pli[0]) == 0);
 
-#else
-    NOTIMP;
-#endif
 }
 
+size_t Reduced::numberOfPoints() const {
+    size_t total = 0;
+
+    if (isGlobal()) {
+
+        const std::vector<long>& pl = pls();
+        for (auto j = pl.begin(); j != pl.end(); ++j) {
+            total += *j;
+        }
+    }
+    else {
+        eckit::ScopedPtr<repres::Iterator> iter(iterator());
+        while (iter->next()) {
+            total++;
+        }
+    }
+    return total;
+}
 
 
 

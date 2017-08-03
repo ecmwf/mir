@@ -20,14 +20,14 @@ ecbuild_requires_macro_version( 2.4 )
 ecbuild_add_option( FEATURE ECCODES DESCRIPTION "" DEFAULT ON )
 
 if( HAVE_ECCODES)
-  ecbuild_use_package( PROJECT eccodes VERSION 0.14 REQUIRED )
+  ecbuild_use_package( PROJECT eccodes VERSION 2.4.1 REQUIRED )
   set( GRIB_API_INCLUDE_DIRS ${ECCODES_INCLUDE_DIRS} )
   set( GRIB_API_LIBRARIES    ${ECCODES_LIBRARIES} )
   set( GRIB_API_DEFINITIONS  ${ECCODES_DEFINITIONS} )
   set( grib_api_BASE_DIR     ${eccodes_BASE_DIR} )
   set( grib_handling_pkg eccodes )
 else()
-  ecbuild_use_package( PROJECT grib_api VERSION 1.14 REQUIRED )
+  ecbuild_use_package( PROJECT grib_api VERSION 1.24 REQUIRED )
   set( grib_handling_pkg grib_api )
 endif()
 
@@ -35,9 +35,14 @@ ecbuild_add_option( FEATURE TEST_ASSERTIONS DESCRIPTION "Enable assertion tests"
 
 
 ### eckit -- version >= 0.16.5 includes new library registration mechanism
-ecbuild_use_package( PROJECT eckit  VERSION  0.16.5  REQUIRED )
+ecbuild_use_package( PROJECT eckit  VERSION  0.18.0  REQUIRED )
 
-ecbuild_use_package( PROJECT atlas  VERSION  0.9  REQUIRED )
+ecbuild_use_package( PROJECT atlas  VERSION  0.11)
+if(ATLAS_FOUND)
+    set(HAVE_ATLAS 1)
+endif()
+
+#ecbuild_use_package( PROJECT metkit  VERSION  0.7.0 )
 
 ecbuild_declare_project()
 
@@ -65,9 +70,6 @@ if( ENABLE_MPI )
   endif()
 endif()
 
-if( HAVE_NETCDF )
-  list( APPEND MIR_FEATURE_LIBRARIES ${NETCDF_LIBRARIES} )
-endif()
 
 ###############################################################################
 # contents

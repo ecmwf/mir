@@ -19,7 +19,6 @@
 #include <iosfwd>
 #include <vector>
 #include "eckit/thread/Mutex.h"
-#include "mir/data/FieldInfo.h"
 
 
 namespace mir {

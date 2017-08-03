@@ -17,14 +17,15 @@
 
 #include <iostream>
 #include <fstream>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
-#include "atlas/grid.h"
+#include "eckit/utils/MD5.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
-#include "eckit/utils/MD5.h"
 
 
 namespace mir {
@@ -54,9 +55,10 @@ UnstructuredGrid::UnstructuredGrid(const eckit::PathName &path) {
 }
 
 
-UnstructuredGrid::UnstructuredGrid(std::vector<double>& latitudes, std::vector<double>& longitudes) {
-    std::swap(latitudes_, latitudes);
-    std::swap(longitudes_, longitudes);
+UnstructuredGrid::UnstructuredGrid(const std::vector<double>& latitudes,
+                                   const std::vector<double>& longitudes):
+    latitudes_(latitudes),
+    longitudes_(longitudes) {
     ASSERT(latitudes_.size() == longitudes_.size());
 }
 
@@ -73,11 +75,11 @@ void UnstructuredGrid::print(std::ostream &out) const {
 
 void UnstructuredGrid::makeName(std::ostream& out) const {
 
-    out << "unstructured-" <<latitudes_.size() << "-";
+    out << "unstructured-" << latitudes_.size() << "-";
 
     eckit::MD5 md5;
-    for (auto j: latitudes_)  { md5 << j; }
-    for (auto j: longitudes_) { md5 << j; }
+    for (auto j : latitudes_)  { md5 << j; }
+    for (auto j : longitudes_) { md5 << j; }
     out << std::string(md5);
 }
 
@@ -103,6 +105,7 @@ util::Domain UnstructuredGrid::domain() const {
     return util::Domain::makeGlobal();
 }
 
+
 atlas::Grid UnstructuredGrid::atlasGrid() const {
     ASSERT(latitudes_.size() == longitudes_.size());
 
@@ -112,13 +115,20 @@ atlas::Grid UnstructuredGrid::atlasGrid() const {
     for (size_t i = 0; i < latitudes_.size(); i++) {
         pts->push_back(atlas::PointXY(longitudes_[i], latitudes_[i]));
         if (i < 10) {
-            eckit::Log::debug<LibMir>() << "UnstructuredGrid::atlasGrid lon=" << longitudes_[i] << ", lat=" << latitudes_[i] << std::endl;
+            eckit::Log::debug<LibMir>() << "UnstructuredGrid::atlasGrid lon="
+                                        << longitudes_[i]
+                                        << ", lat="
+                                        << latitudes_[i]
+                                        << std::endl;
         }
     }
 
     return atlas::grid::UnstructuredGrid(pts);
+}
 
-    // so constructor takes a vector<Point> (where point is LLPoint2)
+
+std::string UnstructuredGrid::atlasMeshGenerator() const {
+    return "delaunay";
 }
 
 
@@ -127,6 +137,10 @@ void UnstructuredGrid::validate(const std::vector<double> &values) const {
     ASSERT(values.size() == longitudes_.size());
 }
 
+
+size_t UnstructuredGrid::numberOfPoints() const {
+    return latitudes_.size();
+}
 
 double UnstructuredGrid::increment() const {
     // double inc = 360.0;
@@ -148,9 +162,13 @@ class UnstructuredGridIterator: public Iterator {
     }
 
     virtual bool next(Latitude &lat, Longitude &lon) {
-        lat = latitudes_[i_];
-        lon = longitudes_[i_];
-        return i_++ < size_;
+        if (i_ < size_) {
+            lat = latitudes_[i_];
+            lon = longitudes_[i_];
+            i_++;
+            return true;
+        }
+        return false;
     }
 
 public:
@@ -172,13 +190,8 @@ public:
 };
 
 
-Iterator *UnstructuredGrid::unrotatedIterator() const {
+Iterator *UnstructuredGrid::iterator() const {
     return new UnstructuredGridIterator(latitudes_, longitudes_);
-}
-
-
-Iterator* UnstructuredGrid::rotatedIterator() const {
-    return unrotatedIterator();
 }
 
 

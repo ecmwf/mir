@@ -98,9 +98,6 @@ static double round_ne(double x, double scale) {
     return ceil(x * scale - 0.1) / scale;
 }
 
-#define FIX_SW(x) x=round_sw(x, scale)
-#define FIX_NE(x) x=round_ne(x, scale)
-
 bool GribOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
     bool ok = false;
 
@@ -201,12 +198,11 @@ size_t GribOutput::save(const param::MIRParametrisation &parametrisation, contex
 
         grib_info info = {{0},};
 
-        /* bitmap */
+        // missing values
         info.grid.bitmapPresent = field.hasMissing() ? 1 : 0;
         info.grid.missingValue = field.missingValue();
 
-        /* Packing options */
-
+        // Packing
         info.packing.packing = GRIB_UTIL_PACKING_SAME_AS_INPUT;
         info.packing.accuracy = GRIB_UTIL_ACCURACY_SAME_BITS_PER_VALUES_AS_INPUT;
 
@@ -224,22 +220,14 @@ size_t GribOutput::save(const param::MIRParametrisation &parametrisation, contex
         // Ask representation to update info
         field.representation()->fill(info);
 
-        // long paramId = field.paramId(i);
-        // if (paramId) {
-        //     long j = info.packing.extra_settings_count++;
-        //     info.packing.extra_settings[j].name = "paramId";
-        //     info.packing.extra_settings[j].type = GRIB_TYPE_LONG;
-        //     info.packing.extra_settings[j].long_value = paramId;
-        // }
-
-        // The paramId will now come from here
-        auto md = field.metadata(i);
-        for (auto k = md.begin(); k != md.end(); ++k) {
+        // Extra settings (paramId comes from here)
+        for (auto k : field.metadata(i)) {
             long j = info.packing.extra_settings_count++;
             ASSERT(j < long(sizeof(info.packing.extra_settings) / sizeof(info.packing.extra_settings[0])));
-            info.packing.extra_settings[j].name = (*k).first.c_str();
+
+            info.packing.extra_settings[j].name = k.first.c_str();
             info.packing.extra_settings[j].type = GRIB_TYPE_LONG;
-            info.packing.extra_settings[j].long_value = (*k).second;
+            info.packing.extra_settings[j].long_value = k.second;
         }
 
         std::string packing;
@@ -274,23 +262,23 @@ size_t GribOutput::save(const param::MIRParametrisation &parametrisation, contex
         // Give a chance to a sub-class to modify info
         fill(h, info);
 
-
-        edition = info.packing.editionNumber;
-        if (!edition) {
-            GRIB_CALL(grib_get_long(h, "editionNumber", &edition));
+        // Round bounding box to GRIB accuracy (should work with ANY edition)
+        long angularPrecision = 0;
+        if (info.packing.editionNumber == 0) {
+            GRIB_CALL(grib_get_long(h, "angularPrecision", &angularPrecision));
+            ASSERT(angularPrecision > 0);
+        } else if (info.packing.editionNumber == 1) {
+            angularPrecision = 1000;
+        } else {
+            angularPrecision = 1000000;
         }
+        double angularPrecisionDouble = double(angularPrecision);
 
-        double scale = edition == 1 ? 1000 : 1000000;
+        round_ne(info.grid.latitudeOfFirstGridPointInDegrees, angularPrecisionDouble);
+        round_sw(info.grid.longitudeOfFirstGridPointInDegrees, angularPrecisionDouble);
 
-        FIX_NE(info.grid.latitudeOfFirstGridPointInDegrees);
-        FIX_SW(info.grid.longitudeOfFirstGridPointInDegrees);
-
-        FIX_SW(info.grid.latitudeOfLastGridPointInDegrees);
-        FIX_NE(info.grid.longitudeOfLastGridPointInDegrees);
-
-
-// FIX(info.grid.iDirectionIncrementInDegrees);
-//             FIX(info.grid.jDirectionIncrementInDegrees);
+        round_sw(info.grid.latitudeOfLastGridPointInDegrees, angularPrecisionDouble);
+        round_ne(info.grid.longitudeOfLastGridPointInDegrees, angularPrecisionDouble);
 
         if (eckit::Log::debug<LibMir>()) {
             X(info.grid.grid_type);
