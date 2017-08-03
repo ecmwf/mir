@@ -30,7 +30,7 @@ namespace util {
 namespace {
 
 
-static void check(const Increments& inc) {
+static void check(const Increments& /*inc*/) {
     // ASSERT(inc.west_east_ > 0);
     // ASSERT(inc.south_north_ > 0);
 }
@@ -49,9 +49,9 @@ static size_t computeN(const T& first, const T& last, const eckit::Fraction& inc
 
     // std::cout << l << " " << f << " " << i << std::endl;
 
-    long long n = (l - f) / i;
+    eckit::Fraction::value_type n = (l - f) / i;
 
-    return n + 1;
+    return size_t(n + 1);
 }
 
 
@@ -141,8 +141,8 @@ bool Increments::multipleOf(const Increments& other) const {
 
 
 void Increments::ratio(const Increments& other, size_t& we, size_t& ns) const {
-    we = static_cast<long long>(west_east_ / other.west_east_);
-    ns = static_cast<long long>(south_north_ / other.south_north_);
+    we = size_t(static_cast<eckit::Fraction::value_type>(west_east_ / other.west_east_));
+    ns = size_t(static_cast<eckit::Fraction::value_type>(south_north_ / other.south_north_));
 }
 
 
