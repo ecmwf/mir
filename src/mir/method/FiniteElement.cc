@@ -341,6 +341,8 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
                     nbElementsSearched = std::max(k, nbElementsSearched);
 
                     // loop over closest elements (enlarging range if failing projection)
+                    // TODO: the k-d tree does not always return the same order of points,
+                    // enlarging range to include the last element (-1) might not be enough
                     element_tree_t::NodeList cs = eTree->kNearestNeighbours(p, k);
 
                     triplet_vector_t triplets = projectPointTo3DElements(
@@ -350,7 +352,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
                                                     p,
                                                     ip,
                                                     firstVirtualPoint,
-                                                    cs.begin() + element_tree_t::NodeList::difference_type(kPrevious),
+                                                    cs.begin() + element_tree_t::NodeList::difference_type(kPrevious? kPrevious - 1 : 0),
                                                     cs.end() );
 
                     if (triplets.size()) {
