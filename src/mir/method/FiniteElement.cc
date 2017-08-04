@@ -273,7 +273,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
 
     // some statistics
-    const size_t nbInputPoints = in.numberOfPoints();
+    const size_t nbInputPoints = inNodes.size();
     const size_t nbOutputPoints = out.numberOfPoints();
 
 
