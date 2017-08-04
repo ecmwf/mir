@@ -31,8 +31,8 @@
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/PointIndex3.h"
 #include "atlas/interpolation/method/Ray.h"
-#include "atlas/mesh/Elements.h"
 #include "atlas/mesh/ElementType.h"
+#include "atlas/mesh/Elements.h"
 #include "atlas/mesh/Nodes.h"
 #include "atlas/output/Gmsh.h"
 #include "mir/config/LibMir.h"
@@ -58,29 +58,6 @@ static const double parametricEpsilon = 1e-16;
 typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
 typedef atlas::interpolation::method::ElemIndex3 element_tree_t;
 typedef std::pair< size_t, repres::Iterator::point_ll_t > failed_projection_t;
-
-
-struct MeshStats {
-
-    size_t inp_ncells;
-    size_t inp_npts;
-    size_t out_npts;
-
-    MeshStats(): inp_ncells(0), inp_npts(0), out_npts(0) {}
-
-    void print(std::ostream &s) const {
-        s << "MeshStats["
-          "nb_cells=" << eckit::BigNum(inp_ncells)
-          << ",inp_npts=" << eckit::BigNum(inp_npts)
-          << ",out_npts=" << eckit::BigNum(out_npts)
-          << "]";
-    }
-
-    friend std::ostream &operator<<(std::ostream &s, const MeshStats &p) {
-        p.print(s);
-        return s;
-    }
-};
 
 
 static void normalise(triplet_vector_t& triplets)
@@ -296,27 +273,24 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
 
     // some statistics
-    MeshStats stats;
-    stats.inp_ncells = inMesh.cells().size();
-    stats.inp_npts   = inNodes.size();
-    stats.out_npts   = out.numberOfPoints();
-    eckit::Log::debug<LibMir>() << stats << std::endl;
+    const size_t nbInputPoints = in.numberOfPoints();
+    const size_t nbOutputPoints = out.numberOfPoints();
 
 
     // weights -- one per vertex of element, triangles (3) or quads (4)
     triplet_vector_t weights_triplets; // structure to fill-in sparse matrix
-    weights_triplets.reserve( stats.out_npts * 4 );        // preallocate space as if all elements where quads
+    weights_triplets.reserve( nbOutputPoints * 4 );        // preallocate space as if all elements where quads
 
 
     // search nearest k cell centres
-    const size_t nbElementsMaximum = std::max<size_t>(1, stats.inp_ncells * maxFractionElemsToTry);
+    const size_t nbElementsMaximum = std::max<size_t>(1, inMesh.cells().size() * maxFractionElemsToTry);
     size_t nbElementsSearched = 0;
     size_t nbProjections = 0;
     size_t nbFailures = 0;
     std::forward_list<failed_projection_t> failures;
 
     {
-        eckit::ProgressTimer progress("Projecting", stats.out_npts, "point", double(5), eckit::Log::debug<LibMir>());
+        eckit::ProgressTimer progress("Projecting", nbOutputPoints, "point", double(5), eckit::Log::debug<LibMir>());
 
         const atlas::mesh::HybridElements::Connectivity& connectivity = inMesh.cells().node_connectivity();
 
@@ -326,7 +300,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         size_t ip = 0;
 
         while (it->next()) {
-            ASSERT(ip < stats.out_npts);
+            ASSERT(ip < nbOutputPoints);
             ++progress;
 
             if (inDomain.contains(it->pointUnrotated())) {
@@ -346,7 +320,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
                     element_tree_t::NodeList cs = eTree->kNearestNeighbours(p, k);
 
                     triplet_vector_t triplets = projectPointTo3DElements(
-                                                    stats.inp_npts,
+                                                    nbInputPoints,
                                                     icoords,
                                                     connectivity,
                                                     p,
@@ -375,7 +349,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     eckit::Log::debug<LibMir>()
             << "Projected " << eckit::BigNum(nbProjections)
-            << " of " << eckit::Plural(stats.out_npts, "point")
+            << " of " << eckit::Plural(nbOutputPoints, "point")
             << " (" << eckit::Plural(nbFailures, "failure") << ")\n"
             << "Maximum neighbours searched was " << eckit::Plural(nbElementsSearched, "element")
             << std::endl;

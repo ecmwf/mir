@@ -19,7 +19,9 @@
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
+#include "atlas/mesh/Elements.h"
 #include "atlas/mesh/Mesh.h"
+#include "atlas/mesh/Nodes.h"
 #include "atlas/mesh/actions/BuildCellCentres.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/output/Gmsh.h"
@@ -48,7 +50,7 @@ MIRGrid::MeshGenParams::MeshGenParams() :
     meshParallelEdgesConnectivity_(true),
     meshXYZField_(true),
     meshCellCentres_(true),
-    dump_("") {
+    file_("") {
     set("three_dimensional", true);
     set("patch_pole",        true);
     set("include_pole",      false);
@@ -66,7 +68,7 @@ MIRGrid::MeshGenParams::MeshGenParams(const std::string& label, const param::MIR
 //    param.get(label + "-mesh-add-field-xyz", meshXYZField_);
 //    param.get(label + "-mesh-add-field-cell-centres", meshCellCentres_);
     param.get(label + "-mesh-generator", meshGenerator_);
-    param.get(label + "-mesh-dump", dump_);
+    param.get(label + "-mesh-file", file_);
 }
 
 
@@ -86,6 +88,21 @@ void MIRGrid::MeshGenParams::hash(eckit::MD5& md5) const {
         << meshParallelEdgesConnectivity_
         << meshXYZField_
         << meshCellCentres_;
+}
+
+
+void MIRGrid::MeshGenParams::print(std::ostream& s) const {
+    s << "MeshGenParams["
+      <<  "meshGenerator="                 << meshGenerator_
+      << ",meshParallelEdgesConnectivity=" << meshParallelEdgesConnectivity_
+      << ",meshXYZField="                  << meshXYZField_
+      << ",meshCellCentres="               << meshCellCentres_
+      << ",three_dimensional=" << getBool("three_dimensional")
+      << ",patch_pole="        << getBool("patch_pole")
+      << ",include_pole="      << getBool("include_pole")
+      << ",triangulate="       << getBool("triangulate")
+      << ",angle="             << getDouble("angle")
+      << "]";
 }
 
 
@@ -114,7 +131,7 @@ const atlas::Mesh& MIRGrid::mesh() const {
 
 
 atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const MeshGenParams& meshGenParams) const {
-    eckit::ResourceUsage usage("MESH for " + std::to_string(grid_));
+    eckit::ResourceUsage usage("Mesh for grid " + grid_.name() + " (" + grid_.uid() + ")");
     InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics.meshCache_);
 
     // generate signature including the mesh generation settings
@@ -164,11 +181,19 @@ atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const
             atlas::mesh::actions::BuildCellCentres()(mesh);
         }
 
-        // Dump
-        if (!meshGenParams.dump_.empty()) {
-            atlas::output::PathName path(meshGenParams.dump_);
+        // Some information
+        eckit::Log::debug<LibMir>() << "Mesh["
+                                        "cells=" << eckit::BigNum(mesh.cells().size())
+                                    << ",nodes=" << eckit::BigNum(mesh.nodes().size())
+                                    << "," << meshGenParams
+                                    << "]"
+                                    << std::endl;
 
-            eckit::Log::debug<LibMir>() << "Dumping mesh to '" << path << "'" << std::endl;
+        // Write file
+        if (!meshGenParams.file_.empty()) {
+            atlas::output::PathName path(meshGenParams.file_);
+
+            eckit::Log::debug<LibMir>() << "Mesh: writing to '" << path << "'" << std::endl;
             atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xyz")).write(mesh);
         }
 
