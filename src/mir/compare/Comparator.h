@@ -83,13 +83,15 @@ class Comparator : public eckit::NonCopyable {
 
     template< typename T >
     T getSameParameter(const std::string& parameter) {
-        T value1;
-        T value2;
+        T value1 = T();
+        T value2 = T();
 
-        ASSERT(parametrisation1_.get(parameter, value1));
-        ASSERT(parametrisation2_.get(parameter, value2));
+        bool got1 = parametrisation1_.get(parameter, value1);
+        bool got2 = parametrisation2_.get(parameter, value2);
+        if (got1 || got2) {
+            ASSERT(value1 == value2);
+        }
 
-        ASSERT(value1 == value2);
         return value1;
     }
 
