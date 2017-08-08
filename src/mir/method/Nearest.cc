@@ -98,52 +98,51 @@ void Nearest::assemble(util::MIRStatistics&,
                 nearest = push_back = 0;
             }
 
-            if (!inDomain.contains(it->pointUnrotated())) {
-                continue;
-            }
+            if (inDomain.contains(it->pointUnrotated())) {
 
-            // get the reference output point
-            eckit::geometry::Point3 p(it->point3D());
+                // get the reference output point
+                eckit::geometry::Point3 p(it->point3D());
 
-            // find the closest input points to this output
-            double t = timer.elapsed();
-            sptree.closestNPoints(p, nclosest, closest);
-            nearest += timer.elapsed() - t;
-
-            const size_t npts = closest.size();
-
-            // then calculate the nearest neighbour weights
-            weights.resize(npts, 0.);
-
-            // sum all calculated weights for normalisation
-            double sum = 0.;
-
-            for (size_t j = 0; j < npts; ++j) {
-                // one of the closest points
-                eckit::geometry::Point3 np = closest[j].point();
-
-                // calculate distance squared and weight
-                const double d2 = eckit::geometry::Point3::distance2(p, np);
-                weights[j] = 1. / (1. + d2);
-
-                // also work out the total
-                sum += weights[j];
-            }
-
-            ASSERT(sum > 0.0);
-
-            // now normalise all weights according to the total
-            for (size_t j = 0; j < npts; ++j) {
-                weights[j] /= sum;
-            }
-
-            // insert the interpolant weights into the global (sparse) interpolant matrix
-            for (size_t i = 0; i < npts; ++i) {
-                size_t index = closest[i].payload();
+                // 3D point to lookup
                 double t = timer.elapsed();
-                weights_triplets.push_back(WeightMatrix::Triplet(ip, index, weights[i]));
-                push_back += timer.elapsed() - t;
+                sptree.closestNPoints(p, nclosest, closest);
+                nearest += timer.elapsed() - t;
 
+                const size_t npts = closest.size();
+
+                // then calculate the nearest neighbour weights
+                weights.resize(npts, 0.);
+
+                // sum all calculated weights for normalisation
+                double sum = 0.;
+
+                for (size_t j = 0; j < npts; ++j) {
+                    // one of the closest points
+                    eckit::geometry::Point3 np = closest[j].point();
+
+                    // calculate distance squared and weight
+                    const double d2 = eckit::geometry::Point3::distance2(p, np);
+                    weights[j] = 1. / (1. + d2);
+
+                    // also work out the total
+                    sum += weights[j];
+                }
+
+                ASSERT(sum > 0.0);
+
+                // now normalise all weights according to the total
+                for (size_t j = 0; j < npts; ++j) {
+                    weights[j] /= sum;
+                }
+
+                // insert the interpolant weights into the global (sparse) interpolant matrix
+                for (size_t i = 0; i < npts; ++i) {
+                    size_t index = closest[i].payload();
+                    double t = timer.elapsed();
+                    weights_triplets.push_back(WeightMatrix::Triplet(ip, index, weights[i]));
+                    push_back += timer.elapsed() - t;
+
+                }
             }
 
             ++ip;

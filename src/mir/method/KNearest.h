@@ -33,7 +33,7 @@ public:
 
 protected:
 
-    virtual void hash( eckit::MD5& ) const;
+    virtual void hash( eckit::MD5&) const;
 
 private:
 

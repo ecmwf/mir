@@ -13,8 +13,8 @@
 /// @date May 2015
 
 
-#ifndef mir_method_NearestNeighbourg_H
-#define mir_method_NearestNeighbourg_H
+#ifndef mir_method_NearestNeighbour_H
+#define mir_method_NearestNeighbour_H
 
 #include "mir/method/Nearest.h"
 
@@ -34,7 +34,7 @@ public:
 
 protected:
 
-    virtual void hash( eckit::MD5& ) const;
+    virtual void hash(eckit::MD5&) const;
 
 private:
 
