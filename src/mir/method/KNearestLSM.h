@@ -51,6 +51,9 @@ private:
     virtual const char* name() const;
 
     virtual size_t nclosest() const;
+
+    virtual std::string distanceWeighting() const;
+
 };
 
 

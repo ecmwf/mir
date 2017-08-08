@@ -15,27 +15,24 @@
 
 #include "mir/method/Nearest.h"
 
+#include <algorithm>
 #include <limits>
-#include <string>
-#include <vector>
-#include "eckit/geometry/KPoint.h"
 #include "eckit/log/BigNum.h"
-#include "eckit/log/Plural.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/log/TraceTimer.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "mir/config/LibMir.h"
-#include "mir/param/MIRParametrisation.h"
+#include "mir/method/distance/DistanceWeighting.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
-#include "mir/util/PointSearch.h"
 
 
 namespace mir {
 namespace method {
 
 
-Nearest::Nearest(const param::MIRParametrisation &param) :
+Nearest::Nearest(const param::MIRParametrisation& param) :
     MethodWeighted(param) {
 }
 
@@ -44,15 +41,27 @@ Nearest::~Nearest() {
 }
 
 
-const char *Nearest::name() const {
-    return  "k-nearest";
+void Nearest::assemble(
+        util::MIRStatistics& stats,
+        WeightMatrix& W,
+        const repres::Representation& in,
+        const repres::Representation& out ) const {
+    using namespace distance;
+
+    // get distance weighting method
+    eckit::ScopedPtr<const DistanceWeighting> calculateWeights(DistanceWeightingFactory::build(distanceWeighting(), parametrisation_));
+
+    // assemble with specific distance weighting method
+    assemble(stats, W, in, out, *calculateWeights);
 }
 
 
-void Nearest::assemble(util::MIRStatistics&,
-                       WeightMatrix& W,
-                       const repres::Representation& in,
-                       const repres::Representation& out) const {
+void Nearest::assemble(
+        util::MIRStatistics&,
+        WeightMatrix& W,
+        const repres::Representation& in,
+        const repres::Representation& out,
+        const distance::DistanceWeighting& calculateWeights ) const {
 
     eckit::Log::debug<LibMir>() << "Nearest::assemble (input: " << in << ", output: " << out << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("Nearest::assemble");
@@ -72,14 +81,12 @@ void Nearest::assemble(util::MIRStatistics&,
     double push_back = 0;
 
     // init structure used to fill in sparse matrix
-    std::vector<WeightMatrix::Triplet > weights_triplets;
+    std::vector<WeightMatrix::Triplet> weights_triplets;
     weights_triplets.reserve(out_npts * nclosest);
     eckit::Log::debug<LibMir>() << "Reserve " << eckit::BigNum(out_npts * nclosest) << std::endl;
 
     std::vector<util::PointSearch::PointValueType> closest;
-
-    std::vector<double> weights;
-    weights.reserve(nclosest);
+    std::vector<WeightMatrix::Triplet> triplets;
 
     {
         eckit::ProgressTimer progress("Locating", out_npts, "point", double(5), eckit::Log::debug<LibMir>());
@@ -104,45 +111,24 @@ void Nearest::assemble(util::MIRStatistics&,
                 eckit::geometry::Point3 p(it->point3D());
 
                 // 3D point to lookup
-                double t = timer.elapsed();
-                sptree.closestNPoints(p, nclosest, closest);
-                nearest += timer.elapsed() - t;
-
-                const size_t npts = closest.size();
-
-                // then calculate the nearest neighbour weights
-                weights.resize(npts, 0.);
-
-                // sum all calculated weights for normalisation
-                double sum = 0.;
-
-                for (size_t j = 0; j < npts; ++j) {
-                    // one of the closest points
-                    eckit::geometry::Point3 np = closest[j].point();
-
-                    // calculate distance squared and weight
-                    const double d2 = eckit::geometry::Point3::distance2(p, np);
-                    weights[j] = 1. / (1. + d2);
-
-                    // also work out the total
-                    sum += weights[j];
+                {
+                    double t = timer.elapsed();
+                    sptree.closestNPoints(p, nclosest, closest);
+                    nearest += timer.elapsed() - t;
+                    ASSERT(closest.size() == nclosest);
                 }
 
-                ASSERT(sum > 0.0);
-
-                // now normalise all weights according to the total
-                for (size_t j = 0; j < npts; ++j) {
-                    weights[j] /= sum;
-                }
+                // calculate weights from distance
+                calculateWeights(ip, p, closest, triplets);
+                ASSERT(!triplets.empty());
 
                 // insert the interpolant weights into the global (sparse) interpolant matrix
-                for (size_t i = 0; i < npts; ++i) {
-                    size_t index = closest[i].payload();
+                {
                     double t = timer.elapsed();
-                    weights_triplets.push_back(WeightMatrix::Triplet(ip, index, weights[i]));
+                    std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
                     push_back += timer.elapsed() - t;
-
                 }
+
             }
 
             ++ip;
@@ -152,7 +138,6 @@ void Nearest::assemble(util::MIRStatistics&,
     // fill-in sparse matrix
     W.setFromTriplets(weights_triplets);
 }
-
 
 }  // namespace method
 }  // namespace mir

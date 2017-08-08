@@ -250,14 +250,6 @@ list(
     lsm/TenMinutesLSM.h
     lsm/UserFileLSM.cc
     lsm/UserFileLSM.h
-    method/decompose/Decompose.cc
-    method/decompose/Decompose.h
-    method/decompose/DecomposeToCartesian.cc
-    method/decompose/DecomposeToCartesian.h
-    method/decompose/None.cc
-    method/decompose/None.h
-    method/decompose/PolarAngleToCartesian.cc
-    method/decompose/PolarAngleToCartesian.h
     method/KNearest.cc
     method/KNearest.h
     method/KNearestLSM.cc
@@ -276,6 +268,26 @@ list(
     method/PseudoLaplace.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
+    method/decompose/Decompose.cc
+    method/decompose/Decompose.h
+    method/decompose/DecomposeToCartesian.cc
+    method/decompose/DecomposeToCartesian.h
+    method/decompose/None.cc
+    method/decompose/None.h
+    method/decompose/PolarAngleToCartesian.cc
+    method/decompose/PolarAngleToCartesian.h
+    method/distance/DistanceWeighting.cc
+    method/distance/DistanceWeighting.h
+    method/distance/InverseDistanceWeighting.cc
+    method/distance/InverseDistanceWeighting.h
+    method/distance/InverseDistanceWeightingSimple.cc
+    method/distance/InverseDistanceWeightingSimple.h
+    method/distance/NearestNeighbourLSM.cc
+    method/distance/NearestNeighbourLSM.h
+    method/distance/NearestNeighbourSimple.cc
+    method/distance/NearestNeighbourSimple.h
+    method/distance/NearestNeighbourWithLowestIndex.cc
+    method/distance/NearestNeighbourWithLowestIndex.h
     namedgrids/ClassicPattern.cc
     namedgrids/ClassicPattern.h
     namedgrids/NamedClassic.cc

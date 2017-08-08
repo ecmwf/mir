@@ -27,20 +27,11 @@ KNearest::KNearest(const param::MIRParametrisation& param) :
     Nearest(param),
     nclosest_(4) {
     param.get("nclosest", nclosest_);
+    param.get("distance-weighting", distanceWeighting_);
 }
 
 
 KNearest::~KNearest() {
-}
-
-
-const char *KNearest::name() const {
-    return  "k-nearest";
-}
-
-
-size_t KNearest::nclosest() const {
-    return nclosest_;
 }
 
 
@@ -55,8 +46,23 @@ void KNearest::print(std::ostream& out) const {
 }
 
 
+const char *KNearest::name() const {
+    return  "k-nearest";
+}
+
+
+size_t KNearest::nclosest() const {
+    return nclosest_;
+}
+
+
+std::string KNearest::distanceWeighting() const {
+    return distanceWeighting_;
+}
+
+
 namespace {
-static MethodBuilder< KNearest > __knearest("k-nearest");
+static MethodBuilder< KNearest > __method("k-nearest");
 }
 
 

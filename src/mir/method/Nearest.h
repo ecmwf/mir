@@ -16,7 +16,17 @@
 #ifndef mir_method_Nearest_H
 #define mir_method_Nearest_H
 
+#include <string>
 #include "mir/method/MethodWeighted.h"
+
+
+namespace mir {
+namespace method {
+namespace distance {
+class DistanceWeighting;
+}
+}
+}
 
 
 namespace mir {
@@ -33,14 +43,24 @@ public:
 
 protected:
 
-    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    void assemble(
+            util::MIRStatistics&,
+            WeightMatrix&,
+            const repres::Representation& in,
+            const repres::Representation& out,
+            const distance::DistanceWeighting& ) const;
+
+    virtual void assemble(
+            util::MIRStatistics&,
+            WeightMatrix&,
+            const repres::Representation& in,
+            const repres::Representation& out ) const;
 
 private:
 
     virtual size_t nclosest() const = 0;
 
-    // virtual void print(std::ostream&) const;
-    virtual const char* name() const;
+    virtual std::string distanceWeighting() const = 0;
 
 };
 

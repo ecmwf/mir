@@ -41,6 +41,7 @@ private:
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
     virtual size_t nclosest() const;
+    virtual std::string distanceWeighting() const;
 
 };
 
