@@ -284,6 +284,8 @@ list(
     method/distance/InverseDistanceWeightingSquared.h
     method/distance/NearestLSM.cc
     method/distance/NearestLSM.h
+    method/distance/NearestLSMWithLowestIndex.cc
+    method/distance/NearestLSMWithLowestIndex.h
     method/distance/NearestNeighbour.cc
     method/distance/NearestNeighbour.h
     method/distance/NearestNeighbourWithLowestIndex.cc

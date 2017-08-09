@@ -19,7 +19,8 @@
 #include "eckit/utils/MD5.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/param/RuntimeParametrisation.h"
-#include "mir/method/distance/NearestLSM.h"
+//#include "mir/method/distance/NearestLSM.h"
+#include "mir/method/distance/NearestLSMWithLowestIndex.h"
 
 
 namespace mir {
@@ -49,7 +50,7 @@ void NearestLSM::assemble(
         const repres::Representation& out) const {
 
     // get distance weighting method
-    const distance::NearestLSM calculateWeights(parametrisation_, getMasks(in, out));
+    const distance::NearestLSMWithLowestIndex calculateWeights(parametrisation_, getMasks(in, out));
 
     // assemble with specific distance weighting method
     KNearestNeighbours::assemble(stats, W, in, out, calculateWeights);
@@ -74,7 +75,8 @@ const char* NearestLSM::name() const {
 
 
 std::string NearestLSM::distanceWeighting() const {
-    return "nearest-lsm";
+//    return "nearest-lsm";
+    return "nearest-lsm-with-lowest-index";
 }
 
 
