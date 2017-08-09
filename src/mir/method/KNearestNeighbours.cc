@@ -13,7 +13,7 @@
 /// @date May 2015
 
 
-#include "mir/method/Nearest.h"
+#include "mir/method/KNearestNeighbours.h"
 
 #include <algorithm>
 #include <limits>
@@ -32,16 +32,16 @@ namespace mir {
 namespace method {
 
 
-Nearest::Nearest(const param::MIRParametrisation& param) :
+KNearestNeighbours::KNearestNeighbours(const param::MIRParametrisation& param) :
     MethodWeighted(param) {
 }
 
 
-Nearest::~Nearest() {
+KNearestNeighbours::~KNearestNeighbours() {
 }
 
 
-void Nearest::assemble(
+void KNearestNeighbours::assemble(
         util::MIRStatistics& stats,
         WeightMatrix& W,
         const repres::Representation& in,
@@ -56,7 +56,7 @@ void Nearest::assemble(
 }
 
 
-void Nearest::assemble(
+void KNearestNeighbours::assemble(
         util::MIRStatistics&,
         WeightMatrix& W,
         const repres::Representation& in,

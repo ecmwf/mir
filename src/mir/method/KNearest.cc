@@ -24,7 +24,7 @@ namespace method {
 
 
 KNearest::KNearest(const param::MIRParametrisation& param) :
-    Nearest(param),
+    KNearestNeighbours(param),
     nclosest_(4) {
     param.get("nclosest", nclosest_);
     param.get("distance-weighting", distanceWeighting_);
@@ -36,7 +36,7 @@ KNearest::~KNearest() {
 
 
 void KNearest::hash( eckit::MD5& md5) const {
-    Nearest::hash(md5);
+    KNearestNeighbours::hash(md5);
     md5 << nclosest_;
 }
 

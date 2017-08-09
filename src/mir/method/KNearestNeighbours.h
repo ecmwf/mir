@@ -13,8 +13,8 @@
 /// @date May 2015
 
 
-#ifndef mir_method_Nearest_H
-#define mir_method_Nearest_H
+#ifndef mir_method_KNearestNeighbours_h
+#define mir_method_KNearestNeighbours_h
 
 #include <string>
 #include "mir/method/MethodWeighted.h"
@@ -34,12 +34,12 @@ namespace method {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class Nearest : public MethodWeighted {
+class KNearestNeighbours : public MethodWeighted {
 public:
 
-    explicit Nearest(const param::MIRParametrisation&);
+    explicit KNearestNeighbours(const param::MIRParametrisation&);
 
-    virtual ~Nearest();
+    virtual ~KNearestNeighbours();
 
 protected:
 

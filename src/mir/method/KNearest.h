@@ -16,7 +16,7 @@
 #ifndef mir_method_KNearest_H
 #define mir_method_KNearest_H
 
-#include "mir/method/Nearest.h"
+#include "mir/method/KNearestNeighbours.h"
 
 
 namespace mir {
@@ -24,7 +24,7 @@ namespace method {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class KNearest: public Nearest {
+class KNearest: public KNearestNeighbours {
 public:
 
     KNearest(const param::MIRParametrisation&);

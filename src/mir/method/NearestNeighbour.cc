@@ -24,7 +24,7 @@ namespace method {
 
 
 NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& param) :
-    Nearest(param) {
+    KNearestNeighbours(param) {
 }
 
 
@@ -48,7 +48,7 @@ std::string NearestNeighbour::distanceWeighting() const {
 
 
 void NearestNeighbour::hash( eckit::MD5& md5) const {
-    Nearest::hash(md5);
+    KNearestNeighbours::hash(md5);
 }
 
 

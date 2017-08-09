@@ -254,14 +254,14 @@ list(
     method/KNearest.h
     method/KNearestLSM.cc
     method/KNearestLSM.h
+    method/KNearestNeighbours.cc
+    method/KNearestNeighbours.h
     method/MatrixCacheCreator.cc
     method/MatrixCacheCreator.h
     method/Method.cc
     method/Method.h
     method/MethodWeighted.cc
     method/MethodWeighted.h
-    method/Nearest.cc
-    method/Nearest.h
     method/NearestNeighbour.cc
     method/NearestNeighbour.h
     method/PseudoLaplace.cc

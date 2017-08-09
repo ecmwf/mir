@@ -27,7 +27,7 @@ namespace method {
 
 
 KNearestLSM::KNearestLSM(const param::MIRParametrisation &param) :
-    Nearest(param),
+    KNearestNeighbours(param),
     nclosest_(4) {
     param.get("nclosest", nclosest_);
 }
@@ -38,7 +38,7 @@ KNearestLSM::~KNearestLSM() {
 
 
 void KNearestLSM::hash(eckit::MD5& md5) const {
-    Nearest::hash(md5);
+    KNearestNeighbours::hash(md5);
     md5 << nclosest_;
 }
 
@@ -53,7 +53,7 @@ void KNearestLSM::assemble(
     const distance::NearestNeighbourLSM calculateWeights(parametrisation_, getMasks(in, out));
 
     // assemble with specific distance weighting method
-    Nearest::assemble(stats, W, in, out, calculateWeights);
+    KNearestNeighbours::assemble(stats, W, in, out, calculateWeights);
 }
 
 
