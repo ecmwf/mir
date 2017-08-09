@@ -14,8 +14,8 @@
 /// @date May 2015
 
 
-#ifndef mir_method_KNearestLSM_h
-#define mir_method_KNearestLSM_h
+#ifndef mir_method_NearestLSM_h
+#define mir_method_NearestLSM_h
 
 #include "mir/method/KNearestNeighbours.h"
 
@@ -24,12 +24,12 @@ namespace mir {
 namespace method {
 
 
-class KNearestLSM: public KNearestNeighbours {
+class NearestLSM: public KNearestNeighbours {
 public:
 
-    KNearestLSM(const param::MIRParametrisation&);
+    NearestLSM(const param::MIRParametrisation&);
 
-    virtual ~KNearestLSM();
+    virtual ~NearestLSM();
 
 protected:
 

@@ -252,8 +252,6 @@ list(
     lsm/UserFileLSM.h
     method/KNearest.cc
     method/KNearest.h
-    method/KNearestLSM.cc
-    method/KNearestLSM.h
     method/KNearestNeighbours.cc
     method/KNearestNeighbours.h
     method/MatrixCacheCreator.cc
@@ -262,6 +260,8 @@ list(
     method/Method.h
     method/MethodWeighted.cc
     method/MethodWeighted.h
+    method/NearestLSM.cc
+    method/NearestLSM.h
     method/NearestNeighbour.cc
     method/NearestNeighbour.h
     method/PseudoLaplace.cc
@@ -280,12 +280,12 @@ list(
     method/distance/DistanceWeighting.h
     method/distance/InverseDistanceWeighting.cc
     method/distance/InverseDistanceWeighting.h
-    method/distance/InverseDistanceWeightingSimple.cc
-    method/distance/InverseDistanceWeightingSimple.h
-    method/distance/NearestNeighbourLSM.cc
-    method/distance/NearestNeighbourLSM.h
-    method/distance/NearestNeighbourSimple.cc
-    method/distance/NearestNeighbourSimple.h
+    method/distance/InverseDistanceWeightingSquared.cc
+    method/distance/InverseDistanceWeightingSquared.h
+    method/distance/NearestLSM.cc
+    method/distance/NearestLSM.h
+    method/distance/NearestNeighbour.cc
+    method/distance/NearestNeighbour.h
     method/distance/NearestNeighbourWithLowestIndex.cc
     method/distance/NearestNeighbourWithLowestIndex.h
     namedgrids/ClassicPattern.cc

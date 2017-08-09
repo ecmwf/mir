@@ -14,89 +14,88 @@
 /// @date May 2015
 
 
-#include "mir/method/KNearestLSM.h"
+#include "mir/method/NearestLSM.h"
 
 #include "eckit/utils/MD5.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/param/RuntimeParametrisation.h"
-#include "mir/method/distance/NearestNeighbourLSM.h"
+#include "mir/method/distance/NearestLSM.h"
 
 
 namespace mir {
 namespace method {
 
 
-KNearestLSM::KNearestLSM(const param::MIRParametrisation &param) :
+NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
     KNearestNeighbours(param),
     nclosest_(4) {
     param.get("nclosest", nclosest_);
 }
 
 
-KNearestLSM::~KNearestLSM() {
+NearestLSM::~NearestLSM() {
 }
 
 
-void KNearestLSM::hash(eckit::MD5& md5) const {
+void NearestLSM::hash(eckit::MD5& md5) const {
     KNearestNeighbours::hash(md5);
     md5 << nclosest_;
 }
 
 
-void KNearestLSM::assemble(
+void NearestLSM::assemble(
         util::MIRStatistics& stats,
         WeightMatrix& W,
         const repres::Representation& in,
         const repres::Representation& out) const {
 
     // get distance weighting method
-    const distance::NearestNeighbourLSM calculateWeights(parametrisation_, getMasks(in, out));
+    const distance::NearestLSM calculateWeights(parametrisation_, getMasks(in, out));
 
     // assemble with specific distance weighting method
     KNearestNeighbours::assemble(stats, W, in, out, calculateWeights);
 }
 
 
-void KNearestLSM::applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const {
+void NearestLSM::applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const {
     // FIXME this function should not be overriding to do nothing
 }
 
 
-lsm::LandSeaMasks KNearestLSM::getMasks(const repres::Representation& in, const repres::Representation& out) const {
+lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const repres::Representation& out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
     return lsm::LandSeaMasks::lookup(runtime, in, out);
 }
 
 
-void KNearestLSM::print(std::ostream &out) const {
+void NearestLSM::print(std::ostream &out) const {
     out << "KNearestLSM[nclosest=" << nclosest_ << "]";
 }
 
 
-const char *KNearestLSM::name() const {
+const char *NearestLSM::name() const {
     return  "k-nearest-lsm";
 }
 
 
-size_t KNearestLSM::nclosest() const {
+size_t NearestLSM::nclosest() const {
     return nclosest_;
 }
 
 
-std::string KNearestLSM::distanceWeighting() const {
+std::string NearestLSM::distanceWeighting() const {
 
     // DistanceWeightingFactory cannot instantiate this method because it
     // requires knowledge of LandSeaMasks (from the interpolation method)
     NOTIMP;
 
-    return "nearest-neighbour-lsm";
+    return "nearest-lsm";
 }
 
 
 namespace {
-static MethodBuilder< KNearestLSM > __method1("k-nearest-lsm");
-static MethodBuilder< KNearestLSM > __method2("nearest-lsm");
+static MethodBuilder< NearestLSM > __method("nearest-lsm");
 }
 
 

@@ -9,7 +9,8 @@
  */
 
 
-#include "mir/method/distance/NearestNeighbourLSM.h"
+#include "mir/method/distance/NearestLSM.h"
+
 #include "mir/lsm/LandSeaMasks.h"
 
 
@@ -18,15 +19,15 @@ namespace method {
 namespace distance {
 
 
-NearestNeighbourLSM::NearestNeighbourLSM(const param::MIRParametrisation&, const lsm::LandSeaMasks& lsms) :
-    imask_(lsms.inputMask()),
-    omask_(lsms.outputMask()) {
+NearestLSM::NearestLSM(const param::MIRParametrisation&, const lsm::LandSeaMasks& landSeaMasks) :
+    imask_(landSeaMasks.inputMask()),
+    omask_(landSeaMasks.outputMask()) {
     ASSERT(!imask_.empty());
     ASSERT(!omask_.empty());
 }
 
 
-void NearestNeighbourLSM::operator()(
+void NearestLSM::operator()(
         size_t ip,
         const eckit::geometry::Point3&,
         const std::vector<util::PointSearch::PointValueType>& neighbours,

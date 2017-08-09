@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/method/distance/InverseDistanceWeightingSimple.h"
+#include "mir/method/distance/InverseDistanceWeightingSquared.h"
 
 #include "eckit/types/FloatCompare.h"
 
@@ -19,11 +19,11 @@ namespace method {
 namespace distance {
 
 
-InverseDistanceWeightingSimple::InverseDistanceWeightingSimple(const param::MIRParametrisation&) {
+InverseDistanceWeightingSquared::InverseDistanceWeightingSquared(const param::MIRParametrisation&) {
 }
 
 
-void InverseDistanceWeightingSimple::operator()(
+void InverseDistanceWeightingSquared::operator()(
         size_t ip,
         const eckit::geometry::Point3& point,
         const std::vector<util::PointSearch::PointValueType>& neighbours,
@@ -56,7 +56,7 @@ void InverseDistanceWeightingSimple::operator()(
 }
 
 
-static DistanceWeightingBuilder<InverseDistanceWeightingSimple> __distance("inverse-distance-weighting-simple");
+static DistanceWeightingBuilder<InverseDistanceWeightingSquared> __distance("inverse-distance-weighting-squared");
 
 
 }  // namespace distance

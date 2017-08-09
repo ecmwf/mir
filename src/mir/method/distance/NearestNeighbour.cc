@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/method/distance/NearestNeighbourSimple.h"
+#include "mir/method/distance/NearestNeighbour.h"
 
 
 namespace mir {
@@ -17,11 +17,11 @@ namespace method {
 namespace distance {
 
 
-NearestNeighbourSimple::NearestNeighbourSimple(const param::MIRParametrisation&) {
+NearestNeighbour::NearestNeighbour(const param::MIRParametrisation&) {
 }
 
 
-void NearestNeighbourSimple::operator()(
+void NearestNeighbour::operator()(
         size_t ip,
         const eckit::geometry::Point3&,
         const std::vector<util::PointSearch::PointValueType>& neighbours,
@@ -32,7 +32,7 @@ void NearestNeighbourSimple::operator()(
 }
 
 
-static DistanceWeightingBuilder<NearestNeighbourSimple> __distance("nearest-neighbour");
+static DistanceWeightingBuilder<NearestNeighbour> __distance("nearest-neighbour");
 
 
 }  // namespace distance

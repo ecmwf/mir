@@ -9,17 +9,10 @@
  */
 
 
-#ifndef mir_method_distance_NearestNeighbourLSM_h
-#define mir_method_distance_NearestNeighbourLSM_h
+#ifndef mir_method_distance_InverseDistanceWeightingSquared_h
+#define mir_method_distance_InverseDistanceWeightingSquared_h
 
 #include "mir/method/distance/DistanceWeighting.h"
-
-
-namespace mir {
-namespace lsm {
-class LandSeaMasks;
-}
-}
 
 
 namespace mir {
@@ -27,16 +20,14 @@ namespace method {
 namespace distance {
 
 
-struct NearestNeighbourLSM : DistanceWeighting {
-    NearestNeighbourLSM(const param::MIRParametrisation&, const lsm::LandSeaMasks&);
+struct InverseDistanceWeightingSquared : DistanceWeighting {
+    InverseDistanceWeightingSquared(const param::MIRParametrisation&);
     void operator()(
             size_t ip,
             const eckit::geometry::Point3& point,
             const std::vector<util::PointSearch::PointValueType>& neighbours,
             std::vector<WeightMatrix::Triplet>& triplets) const;
-private:
-    const std::vector< bool >& imask_;
-    const std::vector< bool >& omask_;
+
 };
 
 

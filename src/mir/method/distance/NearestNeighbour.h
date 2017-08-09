@@ -9,8 +9,8 @@
  */
 
 
-#ifndef mir_method_distance_InverseDistanceWeightingSimple_h
-#define mir_method_distance_InverseDistanceWeightingSimple_h
+#ifndef mir_method_distance_NearestNeighbour_h
+#define mir_method_distance_NearestNeighbour_h
 
 #include "mir/method/distance/DistanceWeighting.h"
 
@@ -20,8 +20,8 @@ namespace method {
 namespace distance {
 
 
-struct InverseDistanceWeightingSimple : DistanceWeighting {
-    InverseDistanceWeightingSimple(const param::MIRParametrisation&);
+struct NearestNeighbour : DistanceWeighting {
+    NearestNeighbour(const param::MIRParametrisation&);
     void operator()(
             size_t ip,
             const eckit::geometry::Point3& point,
