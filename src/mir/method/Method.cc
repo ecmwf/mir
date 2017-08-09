@@ -66,13 +66,11 @@ MethodFactory::MethodFactory(const std::string &name):
 MethodFactory::~MethodFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(name_);
-
 }
 
 
 void MethodFactory::list(std::ostream& out) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
@@ -83,24 +81,19 @@ void MethodFactory::list(std::ostream& out) {
 }
 
 
-Method *MethodFactory::build(const std::string &name, const param::MIRParametrisation &params) {
-
+Method *MethodFactory::build(const std::string& name, const param::MIRParametrisation& param) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, MethodFactory *>::const_iterator j = m->find(name);
 
     eckit::Log::debug<LibMir>() << "Looking for MethodFactory [" << name << "]" << std::endl;
 
+    std::map<std::string, MethodFactory *>::const_iterator j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No MethodFactory for [" << name << "]" << std::endl;
-        eckit::Log::error() << "MethodFactories are:" << std::endl;
-        for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
+        list(eckit::Log::error() << "No MethodFactory '" << name << "', choices are:\n");
         throw eckit::SeriousBug(std::string("No MethodFactory called ") + name);
     }
 
-    return (*j).second->make(params);
+    return (*j).second->make(param);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

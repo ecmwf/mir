@@ -92,11 +92,12 @@ void DecomposeChooser::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
+    const char* sep = "";
     std::map< std::string, DecomposeChooser* >::const_iterator j;
     for (j = m->begin(); j != m->end(); ++j) {
-        out << (*j).first << "\n";
+        out << sep << (*j).first;
+        sep = ", ";
     }
-    out << std::endl;
 }
 
 
