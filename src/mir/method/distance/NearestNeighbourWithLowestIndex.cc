@@ -37,7 +37,7 @@ void NearestNeighbourWithLowestIndex::operator()(
     const double d2 = eckit::geometry::Point3::distance2(point, neighbours.front().point());
 
     for (size_t j = 1; j < nbPoints; ++j) {
-        if (eckit::FloatCompare<double>::isStrictlyGreater(eckit::geometry::Point3::distance2(point, neighbours[j].point()), d2)) {
+        if (eckit::types::is_strictly_greater(eckit::geometry::Point3::distance2(point, neighbours[j].point()), d2)) {
             break;
         }
         if (jp > neighbours[j].payload()) {
@@ -49,7 +49,7 @@ void NearestNeighbourWithLowestIndex::operator()(
 }
 
 
-static DistanceWeightingBuilder<NearestNeighbourWithLowestIndex> __distance("nearest-neighbour-lowest-index");
+static DistanceWeightingBuilder<NearestNeighbourWithLowestIndex> __distance("nearest-neighbour-with-lowest-index");
 
 
 }  // namespace distance

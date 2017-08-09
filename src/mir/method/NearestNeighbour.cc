@@ -23,8 +23,7 @@ namespace mir {
 namespace method {
 
 
-NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& param) :
-    KNearestNeighbours(param) {
+NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& param) : KNearestNeighbours(param) {
 }
 
 
@@ -32,28 +31,13 @@ NearestNeighbour::~NearestNeighbour() {
 }
 
 
-const char *NearestNeighbour::name() const {
-    return  "nearest-neighbour";
-}
-
-
-size_t NearestNeighbour::nclosest() const {
-    return 1;
+const char* NearestNeighbour::name() const {
+    return "nearest-neighbour";
 }
 
 
 std::string NearestNeighbour::distanceWeighting() const {
-    return "nearest-neighbour-lowest-index";
-}
-
-
-void NearestNeighbour::hash( eckit::MD5& md5) const {
-    KNearestNeighbours::hash(md5);
-}
-
-
-void NearestNeighbour::print(std::ostream& out) const {
-    out << "NearestNeighbour[]";
+    return "nearest-neighbour-with-lowest-index";
 }
 
 

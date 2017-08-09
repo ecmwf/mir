@@ -16,11 +16,11 @@
 #include "mir/method/KNearestNeighbours.h"
 
 #include <algorithm>
-#include <limits>
 #include "eckit/log/BigNum.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/utils/MD5.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/distance/DistanceWeighting.h"
 #include "mir/repres/Iterator.h"
@@ -32,12 +32,16 @@ namespace mir {
 namespace method {
 
 
-KNearestNeighbours::KNearestNeighbours(const param::MIRParametrisation& param) :
-    MethodWeighted(param) {
+KNearestNeighbours::KNearestNeighbours(const param::MIRParametrisation& param) : MethodWeighted(param) {
 }
 
 
 KNearestNeighbours::~KNearestNeighbours() {
+}
+
+
+void KNearestNeighbours::hash(eckit::MD5& md5) const {
+    md5 << nClosest() << distanceWeighting();
 }
 
 
@@ -63,17 +67,13 @@ void KNearestNeighbours::assemble(
         const repres::Representation& out,
         const distance::DistanceWeighting& calculateWeights ) const {
 
-    eckit::Log::debug<LibMir>() << "Nearest::assemble (input: " << in << ", output: " << out << ")" << std::endl;
-    eckit::TraceTimer<LibMir> timer("Nearest::assemble");
+    eckit::Log::debug<LibMir>() << *this << "::assemble (input: " << in << ", output: " << out << ")" << std::endl;
+    eckit::TraceTimer<LibMir> timer("KNearestNeighbours::assemble");
 
-    using eckit::geometry::LON;
-    using eckit::geometry::LAT;
-
-    const size_t nclosest = this->nclosest();
-    const size_t out_npts = out.numberOfPoints();
+    const size_t nclosest = nClosest();
+    const size_t nbOutputPoints = out.numberOfPoints();
 
     const util::PointSearch sptree(parametrisation_, in);
-
     const util::Domain& inDomain = in.domain();
 
 
@@ -82,23 +82,22 @@ void KNearestNeighbours::assemble(
 
     // init structure used to fill in sparse matrix
     std::vector<WeightMatrix::Triplet> weights_triplets;
-    weights_triplets.reserve(out_npts * nclosest);
-    eckit::Log::debug<LibMir>() << "Reserve " << eckit::BigNum(out_npts * nclosest) << std::endl;
+    weights_triplets.reserve(nbOutputPoints * nclosest);
 
     std::vector<util::PointSearch::PointValueType> closest;
     std::vector<WeightMatrix::Triplet> triplets;
 
     {
-        eckit::ProgressTimer progress("Locating", out_npts, "point", double(5), eckit::Log::debug<LibMir>());
+        eckit::ProgressTimer progress("Locating", nbOutputPoints, "point", double(5), eckit::Log::debug<LibMir>());
 
         const eckit::ScopedPtr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
         while (it->next()) {
-            ASSERT(ip < out_npts);
+            ASSERT(ip < nbOutputPoints);
             ++progress;
 
             if (ip && (ip % 50000 == 0)) {
-                eckit::Log::debug<LibMir>() << "Nearest: " << nearest << ", Push back:" << push_back << std::endl;
+                eckit::Log::debug<LibMir>() << "KNearestNeighbours: k-d tree closest_n_points: " << nearest << "s, W push back:" << push_back << "s" << std::endl;
                 sptree.statsPrint(eckit::Log::debug<LibMir>(), false);
                 eckit::Log::debug<LibMir>() << std::endl;
                 sptree.statsReset();
@@ -135,9 +134,35 @@ void KNearestNeighbours::assemble(
         }
     }
 
+    eckit::Log::debug<LibMir>() << "Located " << eckit::BigNum(nbOutputPoints) << std::endl;
+
     // fill-in sparse matrix
     W.setFromTriplets(weights_triplets);
 }
+
+
+void KNearestNeighbours::print(std::ostream& out) const {
+    out << "KNearestNeighbours["
+        <<  "name=" << name()
+        << ",nClosest=" << nClosest()
+        << ",distanceWeighting=" << distanceWeighting()
+        << "]";
+}
+
+
+size_t KNearestNeighbours::nClosest() const {
+    size_t n = 4;
+    parametrisation_.get("nclosest", n);
+    return n;
+}
+
+
+std::string KNearestNeighbours::distanceWeighting() const {
+    std::string n = "inverse-distance-weighting-squared";
+    parametrisation_.get("distance-weighting", n);
+    return n;
+}
+
 
 }  // namespace method
 }  // namespace mir

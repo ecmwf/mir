@@ -31,13 +31,9 @@ public:
 
     virtual ~NearestLSM();
 
-protected:
-
-    virtual void hash(eckit::MD5&) const;
-
 private:
 
-    size_t nclosest_;
+    virtual void hash(eckit::MD5&) const;
 
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
@@ -46,11 +42,7 @@ private:
 
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
 
-    virtual void print(std::ostream&) const;
-
     virtual const char* name() const;
-
-    virtual size_t nclosest() const;
 
     virtual std::string distanceWeighting() const;
 

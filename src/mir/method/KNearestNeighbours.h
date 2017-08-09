@@ -41,6 +41,8 @@ public:
 
     virtual ~KNearestNeighbours();
 
+    virtual void hash(eckit::MD5&) const;
+
 protected:
 
     void assemble(
@@ -58,9 +60,13 @@ protected:
 
 private:
 
-    virtual size_t nclosest() const = 0;
+    virtual void print(std::ostream&) const;
 
-    virtual std::string distanceWeighting() const = 0;
+    virtual const char *name() const = 0;
+
+    virtual size_t nClosest() const;
+
+    virtual std::string distanceWeighting() const;
 
 };
 

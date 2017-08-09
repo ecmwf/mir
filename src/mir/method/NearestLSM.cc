@@ -26,10 +26,7 @@ namespace mir {
 namespace method {
 
 
-NearestLSM::NearestLSM(const param::MIRParametrisation &param) :
-    KNearestNeighbours(param),
-    nclosest_(4) {
-    param.get("nclosest", nclosest_);
+NearestLSM::NearestLSM(const param::MIRParametrisation& param) : KNearestNeighbours(param) {
 }
 
 
@@ -39,7 +36,9 @@ NearestLSM::~NearestLSM() {
 
 void NearestLSM::hash(eckit::MD5& md5) const {
     KNearestNeighbours::hash(md5);
-    md5 << nclosest_;
+
+    // FIXME use masks as well
+    //md5 << getMasks(in, out);
 }
 
 
@@ -69,27 +68,12 @@ lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const r
 }
 
 
-void NearestLSM::print(std::ostream &out) const {
-    out << "KNearestLSM[nclosest=" << nclosest_ << "]";
-}
-
-
-const char *NearestLSM::name() const {
-    return  "k-nearest-lsm";
-}
-
-
-size_t NearestLSM::nclosest() const {
-    return nclosest_;
+const char* NearestLSM::name() const {
+    return "nearest-lsm";
 }
 
 
 std::string NearestLSM::distanceWeighting() const {
-
-    // DistanceWeightingFactory cannot instantiate this method because it
-    // requires knowledge of LandSeaMasks (from the interpolation method)
-    NOTIMP;
-
     return "nearest-lsm";
 }
 

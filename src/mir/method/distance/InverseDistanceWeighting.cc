@@ -36,11 +36,11 @@ void InverseDistanceWeighting::operator()(
     triplets.reserve(nbPoints);
 
     // calculate neighbour points weights, and their total (for normalisation)
-    static std::vector<double> weights(nbPoints);  // (avoid multiple resizings)
+    std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
         const double d2 = eckit::geometry::Point3::distance2(point, neighbours[j].point());
-        if (eckit::FloatCompare<double>::isStrictlyGreater(d2, 0.)) {
+        if (eckit::types::is_strictly_greater(d2, 0.)) {
 
             weights[j] = 1. / d2;
             sum += weights[j];

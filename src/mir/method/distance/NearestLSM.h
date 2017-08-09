@@ -27,6 +27,8 @@ namespace method {
 namespace distance {
 
 
+// Note: DistanceWeightingFactory cannot instantiate this because it
+// requires the LandSeaMasks from the interpolation method
 struct NearestLSM : DistanceWeighting {
     NearestLSM(const param::MIRParametrisation&, const lsm::LandSeaMasks&);
     void operator()(

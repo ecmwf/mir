@@ -15,7 +15,6 @@
 
 #include "mir/method/KNearest.h"
 
-#include "eckit/utils/MD5.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -23,11 +22,7 @@ namespace mir {
 namespace method {
 
 
-KNearest::KNearest(const param::MIRParametrisation& param) :
-    KNearestNeighbours(param),
-    nclosest_(4) {
-    param.get("nclosest", nclosest_);
-    param.get("distance-weighting", distanceWeighting_);
+KNearest::KNearest(const param::MIRParametrisation& param) : KNearestNeighbours(param) {
 }
 
 
@@ -35,29 +30,8 @@ KNearest::~KNearest() {
 }
 
 
-void KNearest::hash( eckit::MD5& md5) const {
-    KNearestNeighbours::hash(md5);
-    md5 << nclosest_;
-}
-
-
-void KNearest::print(std::ostream& out) const {
-    out << "KNearest[nclosest=" << nclosest_ << "]";
-}
-
-
-const char *KNearest::name() const {
-    return  "k-nearest";
-}
-
-
-size_t KNearest::nclosest() const {
-    return nclosest_;
-}
-
-
-std::string KNearest::distanceWeighting() const {
-    return distanceWeighting_;
+const char* KNearest::name() const {
+    return "k-nearest";
 }
 
 
