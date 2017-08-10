@@ -11,7 +11,7 @@
 
 #include "mir/method/distance/NearestLSMWithLowestIndex.h"
 
-#include <set>
+#include <limits>
 #include "eckit/types/FloatCompare.h"
 #include "mir/lsm/LandSeaMasks.h"
 
@@ -21,24 +21,21 @@ namespace method {
 namespace distance {
 
 
-struct SortableNeighbour {
-    explicit SortableNeighbour(bool sameType, double distance, size_t index) :
+struct Choice {
+    explicit Choice(bool sameType, double distance, size_t index) :
+        sameType_(size_t(sameType)),
         distance_(distance),
-        index_(index),
-        sameType_(size_t(sameType)) {}
-    const double distance_;
-    const size_t index_;
-    const size_t sameType_;
-};
+        index_(index) {}
+    size_t sameType_;
+    double distance_;
+    size_t index_;
 
-
-struct SortBySameTypeThenDistanceThenIndex {
-    bool operator() (const SortableNeighbour& lhs, const SortableNeighbour& rhs) const {
-        return lhs.sameType_ >  rhs.sameType_ || (
-               lhs.sameType_ == rhs.sameType_ && (
-               eckit::types::is_strictly_greater    (rhs.distance_, lhs.distance_) || (
-               eckit::types::is_approximately_equal (rhs.distance_, lhs.distance_) &&
-               lhs.index_ < rhs.index_ )));
+    bool operator<(const Choice& other) {
+    return sameType_ >  other.sameType_ || (
+           sameType_ == other.sameType_ && (
+           eckit::types::is_strictly_greater    (other.distance_, distance_) || (
+           eckit::types::is_approximately_equal (other.distance_, distance_) &&
+           index_ < other.index_ )));
     }
 };
 
@@ -61,18 +58,17 @@ void NearestLSMWithLowestIndex::operator()(
     ASSERT(ip < omask_.size());
 
     // choose closest neighbour point with the same output mask value, smallest distance and lowest index
-    std::set< SortableNeighbour, SortBySameTypeThenDistanceThenIndex > neighboursSorted;
+    Choice choice(false, std::numeric_limits<double>::infinity(), std::numeric_limits<size_t>::max());
     for (auto n : neighbours) {
         ASSERT(n.payload() < imask_.size());
-        neighboursSorted.insert(SortableNeighbour(
-                     omask_[ip] == imask_[n.payload()],
-                     eckit::geometry::Point3::distance2(point, n.point()),
-                     n.payload()
-                     ));
+        Choice candidate(omask_[ip] == imask_[n.payload()], eckit::geometry::Point3::distance2(point, n.point()), n.payload());
+        if (candidate < choice) {
+            choice = candidate;
+        }
     }
 
-    ASSERT(!neighboursSorted.empty());
-    size_t jp = neighboursSorted.begin()->index_;
+    ASSERT(choice.index_ < imask_.size());
+    size_t jp = choice.index_;
 
     triplets.assign(1, WeightMatrix::Triplet(ip, jp, 1.));
 }
