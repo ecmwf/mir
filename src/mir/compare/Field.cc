@@ -45,7 +45,7 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<double>("compare-areas-threshold",
                       "Threshold when comparing areas with Jaccard distance"));
 
-    options.push_back(new SimpleOption<double>("value-count-comparaison-threshold",
+    options.push_back(new SimpleOption<double>("value-count-comparison-threshold",
                       "Threshold when comparing number of values"));
 
     options.push_back(new SimpleOption<bool>("ignore-accuracy",
@@ -208,7 +208,7 @@ bool Field::sameArea(const Field& other) const {
 
     return true;
 
-    // return compareAreas(other) > areaComparaisonThreshold_;
+    // return compareAreas(other) > areaComparisonThreshold_;
 }
 
 

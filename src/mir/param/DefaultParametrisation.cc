@@ -38,9 +38,7 @@ DefaultParametrisation::DefaultParametrisation() {
 
     set("spectral-mapping", "linear");
 
-    set("tolerance", 1e-10);
-
-
+    set("absolute-error", 1e-10);
 }
 
 DefaultParametrisation::~DefaultParametrisation() {

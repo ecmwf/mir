@@ -12,13 +12,16 @@
 #include "mir/compare/FieldComparator.h"
 
 #include <cmath>
+#include <map>
 
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Plural.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
+#include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/parser/StringTools.h"
 #include "eckit/parser/Tokenizer.h"
@@ -31,6 +34,9 @@
 #include "mir/compare/MultiFile.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/param/ConfigurationWrapper.h"
+#include "mir/param/DefaultParametrisation.h"
+#include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
@@ -75,12 +81,6 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<bool>("ignore-duplicates",
                       "Ignore duplicate fields"));
 
-    options.push_back(new SimpleOption<bool>("compare-statistics",
-                      "Compare field statistics"));
-
-    options.push_back(new SimpleOption<bool>("compare-values",
-                      "Compare field values"));
-
     options.push_back(new SimpleOption<std::string>("ignore",
                       "Slash separated list of request keys to ignore when comparing fields"));
 
@@ -88,6 +88,14 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
                       "Ignore fields with an area that wraps around the globe (e.g. 0-360)"));
 
     Field::addOptions(options);
+
+    //==============================================
+    options.push_back(new Separator("Field values"));
+
+    options.push_back(new SimpleOption<bool>("compare-values", "Compare field values"));
+    options.push_back(new SimpleOption<bool>("compare-statistics", "Compare field statistics"));
+
+    options.push_back(new SimpleOption<double>("absolute-error", "Value comparison using absolute error, only values whose difference is more than tolerance are considered different"));
 }
 
 
@@ -791,6 +799,7 @@ void FieldComparator::compareFieldValues(
     const FieldComparator::MultiFile& multi2,
     const Field& field1,
     const Field& field2) {
+    using namespace param;
 
     // TODO
 
@@ -805,8 +814,8 @@ void FieldComparator::compareFieldValues(
     input::MIRInput& input2 = grib2;
 
 
-    const param::MIRParametrisation &metadata1 = input1.parametrisation(0);
-    const param::MIRParametrisation &metadata2 = input2.parametrisation(0);
+    const MIRParametrisation &metadata1 = input1.parametrisation(0);
+    const MIRParametrisation &metadata2 = input2.parametrisation(0);
 
 
     std::string comparison1;
@@ -821,9 +830,16 @@ void FieldComparator::compareFieldValues(
 
     ASSERT(comparison1 == comparison2);
 
+
+    // get input and parameter-specific parametrisations
+    const ConfigurationWrapper args_wrap(args_);
+    static DefaultParametrisation defaults;
+    MIRCombinedParametrisation combined1(args_wrap, metadata1, defaults);
+    MIRCombinedParametrisation combined2(args_wrap, metadata2, defaults);
+
     std::vector<std::string> comparators = eckit::StringTools::split("/", comparison1);
     for (auto c = comparators.begin(); c != comparators.end(); ++c) {
-        eckit::ScopedPtr<Comparator> comp(ComparatorFactory::build(*c, metadata1, metadata2));
+        eckit::ScopedPtr<Comparator> comp(ComparatorFactory::build(*c, combined1, combined2));
         comp->execute(input1.field(), input2.field());
     }
 
