@@ -57,7 +57,7 @@ void NearestLSMWithLowestIndex::operator()(
     ASSERT(!neighbours.empty());
     ASSERT(ip < omask_.size());
 
-    // choose closest neighbour point with the same output mask value, smallest distance and lowest index
+    // choose closest neighbour point with the same output mask value, shortest distance and lowest index
     Choice choice(false, std::numeric_limits<double>::infinity(), std::numeric_limits<size_t>::max());
     for (auto n : neighbours) {
         ASSERT(n.payload() < imask_.size());

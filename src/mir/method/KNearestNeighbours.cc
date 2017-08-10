@@ -33,6 +33,9 @@ namespace method {
 
 
 KNearestNeighbours::KNearestNeighbours(const param::MIRParametrisation& param) : MethodWeighted(param) {
+    nClosest_ = 4;
+    parametrisation_.get("nclosest", nClosest_);
+    ASSERT(nClosest_);
 }
 
 
@@ -41,7 +44,7 @@ KNearestNeighbours::~KNearestNeighbours() {
 
 
 void KNearestNeighbours::hash(eckit::MD5& md5) const {
-    md5 << nClosest() << distanceWeighting();
+    md5 << nClosest_ << distanceWeighting();
 }
 
 
@@ -70,7 +73,6 @@ void KNearestNeighbours::assemble(
     eckit::Log::debug<LibMir>() << *this << "::assemble (input: " << in << ", output: " << out << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("KNearestNeighbours::assemble");
 
-    const size_t nclosest = nClosest();
     const size_t nbOutputPoints = out.numberOfPoints();
 
     const util::PointSearch sptree(parametrisation_, in);
@@ -82,7 +84,7 @@ void KNearestNeighbours::assemble(
 
     // init structure used to fill in sparse matrix
     std::vector<WeightMatrix::Triplet> weights_triplets;
-    weights_triplets.reserve(nbOutputPoints * nclosest);
+    weights_triplets.reserve(nbOutputPoints * nClosest_);
 
     std::vector<util::PointSearch::PointValueType> closest;
     std::vector<WeightMatrix::Triplet> triplets;
@@ -112,9 +114,9 @@ void KNearestNeighbours::assemble(
                 // 3D point to lookup
                 {
                     double t = timer.elapsed();
-                    sptree.closestNPoints(p, nclosest, closest);
+                    sptree.closestNPoints(p, nClosest_, closest);
                     nearest += timer.elapsed() - t;
-                    ASSERT(closest.size() == nclosest);
+                    ASSERT(closest.size() == nClosest_);
                 }
 
                 // calculate weights from distance
@@ -144,16 +146,9 @@ void KNearestNeighbours::assemble(
 void KNearestNeighbours::print(std::ostream& out) const {
     out << "KNearestNeighbours["
         <<  "name=" << name()
-        << ",nClosest=" << nClosest()
+        << ",nClosest=" << nClosest_
         << ",distanceWeighting=" << distanceWeighting()
         << "]";
-}
-
-
-size_t KNearestNeighbours::nClosest() const {
-    size_t n = 4;
-    parametrisation_.get("nclosest", n);
-    return n;
 }
 
 

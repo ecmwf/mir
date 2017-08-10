@@ -35,14 +35,6 @@ NearestLSM::~NearestLSM() {
 }
 
 
-void NearestLSM::hash(eckit::MD5& md5) const {
-    KNearestNeighbours::hash(md5);
-
-    // FIXME use masks as well
-    //md5 << getMasks(in, out);
-}
-
-
 void NearestLSM::assemble(
         util::MIRStatistics& stats,
         WeightMatrix& W,
@@ -75,7 +67,6 @@ const char* NearestLSM::name() const {
 
 
 std::string NearestLSM::distanceWeighting() const {
-//    return "nearest-lsm";
     return "nearest-lsm-with-lowest-index";
 }
 

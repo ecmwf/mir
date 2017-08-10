@@ -33,8 +33,6 @@ public:
 
 private:
 
-    virtual void hash(eckit::MD5&) const;
-
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
     /// Update interpolation weigths matrix to account for field masked values
