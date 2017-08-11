@@ -34,6 +34,7 @@ Iterator::Iterator() :
 Iterator::Iterator(const util::Rotation& rotation) :
     valid_(true),
     rotation_(rotation) {
+
     // Setup projection using South Pole rotated position, as seen from the non-rotated frame
     const eckit::geometry::LLPoint2 pole(
         rotation_.south_pole_longitude().value(),
@@ -81,8 +82,6 @@ Iterator& Iterator::next() {
             point_[0] = pointUnrotated_.lat.value();
             point_[1] = pointUnrotated_.lon.value();
         }
-        point_[0] = pointUnrotated_.lat.value();
-        point_[1] = pointUnrotated_.lon.value();
     }
 
     return *this;
