@@ -23,11 +23,18 @@ namespace mir {
 namespace repres {
 
 
+void mir::repres::Iterator::point_ll_t::print(std::ostream& s) const {
+    s << "point_ll_t["
+      << "lat=" << lat << ","
+      << "lon=" << lon
+      << "]";
+}
+
+
 Iterator::Iterator() :
     valid_(true),
     rotation_(),
-    projection_(atlas::Projection())
-{
+    projection_(atlas::Projection()) {
 }
 
 

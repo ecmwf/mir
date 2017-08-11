@@ -41,6 +41,11 @@ public:
         point_ll_t(const Latitude& latitude =0, const Longitude& longitude =0) : lat(latitude), lon(longitude) {}
         Latitude lat;
         Longitude lon;
+        void print(std::ostream&) const;
+        friend std::ostream& operator<<(std::ostream& s, const point_ll_t& p) {
+            p.print(s);
+            return s;
+        }
     };
 
     typedef eckit::geometry::Point2 point_2d_t;
