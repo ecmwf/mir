@@ -50,7 +50,7 @@ namespace {
 
 
 // epsilon used to scale edge tolerance when projecting ray to intesect element
-static const double parametricEpsilon = 1e-16;
+static const double parametricEpsilon = 1e-14;
 
 
 typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
@@ -80,8 +80,6 @@ static triplet_vector_t projectPointTo3DElements(
     const atlas::array::ArrayView<double, 2>& icoords,
     const atlas::mesh::HybridElements::Connectivity& connectivity,
     const repres::Iterator::point_3d_t& p,
-    const repres::Iterator::point_ll_t& pll,
-    const atlas::array::ArrayView<double, 2>& icoordsll,
     size_t ip,
     size_t firstVirtualPoint,
     const element_tree_t::NodeList& closest ) {
@@ -194,78 +192,6 @@ static triplet_vector_t projectPointTo3DElements(
         normalise(triplets);
     }
 
-    if (false && triplets.empty()) {
-        eckit::Log::info() << "\n\nFailed on point: " << pll << " using elements:\n";
-        for (auto close : closest) {
-
-            const size_t elem_id = close.value().payload();
-            ASSERT(elem_id < connectivity.rows());
-
-            /* assumes:
-             * - nb_cols == 3 implies triangle
-             * - nb_cols == 4 implies quadrilateral
-             * - no other element is supported at the time
-             */
-            const size_t nb_cols = connectivity.cols(elem_id);
-            ASSERT(nb_cols == 3 || nb_cols == 4);
-
-            for (size_t i = 0; i < nb_cols; ++i) {
-                idx[i] = size_t(connectivity(elem_id, i));
-                ASSERT(idx[i] < nbInputPoints);
-            }
-
-            if (nb_cols == 3) {
-
-                /* triangle */
-                atlas::interpolation::element::Triag3D triag(
-                    icoords[idx[0]].data(),
-                    icoords[idx[1]].data(),
-                    icoords[idx[2]].data());
-
-                // pick an epsilon based on a characteristic length (sqrt(area))
-                // (this scales linearly so it better compares with linear weights u,v,w)
-                const double edgeEpsilon = parametricEpsilon * std::sqrt(triag.area());
-
-                eckit::Log::info()
-                        << "\n"
-                        << "A=" << triag.area()
-                        << "  " << eckit::geometry::Point2(icoordsll[ idx[0] ].data())
-                        << "  " << eckit::geometry::Point2(icoordsll[ idx[1] ].data())
-                        << "  " << eckit::geometry::Point2(icoordsll[ idx[2] ].data());
-
-            } else {
-
-                /* quadrilateral */
-                atlas::interpolation::element::Quad3D quad(
-                    icoords[idx[0]].data(),
-                    icoords[idx[1]].data(),
-                    icoords[idx[2]].data(),
-                    icoords[idx[3]].data() );
-
-                if ( !quad.validate() ) { // somewhat expensive sanity check
-                    eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
-                    throw eckit::SeriousBug("Found invalid quadrilateral in mesh", Here());
-                }
-
-                // pick an epsilon based on a characteristic length (sqrt(area))
-                // (this scales linearly so it better compares with linear weights u,v,w)
-                const double edgeEpsilon = parametricEpsilon * std::sqrt(quad.area());
-
-                eckit::Log::info()
-                        << "\n"
-                        << "A=" << quad.area()
-                        << "  " << eckit::geometry::Point2(icoordsll[ idx[0] ].data())
-                        << "  " << eckit::geometry::Point2(icoordsll[ idx[1] ].data())
-                        << "  " << eckit::geometry::Point2(icoordsll[ idx[2] ].data());
-
-            }
-
-        } // loop over nearest elements
-
-        eckit::Log::info() << "\n\n" << std::endl;
-        eckit::Log::info() << std::endl;
-    }
-
     return triplets;
 }
 
@@ -327,7 +253,6 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     const atlas::mesh::Nodes& inNodes = inMesh.nodes();
     atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view< double, 2 >( inNodes.field( "xyz" ));
-    atlas::array::ArrayView<double, 2> icoordsll = atlas::array::make_view< double, 2 >( inNodes.lonlat());
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
     if (inNodes.metadata().has("NbRealPts")) {
@@ -389,8 +314,6 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
                             icoords,
                             connectivity,
                             p,
-                            it->pointUnrotated(),
-                            icoordsll,
                             ip,
                             firstVirtualPoint,
                             closest );
