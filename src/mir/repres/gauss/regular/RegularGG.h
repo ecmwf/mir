@@ -92,8 +92,6 @@ private:
     virtual bool sameAs(const Representation& other) const;
     virtual void initTrans(Trans_t& trans) const;
     virtual Iterator* iterator() const;
-    virtual size_t numberOfPoints() const;
-
 
     //virtual void validate(const std::vector<double>&) const;
 

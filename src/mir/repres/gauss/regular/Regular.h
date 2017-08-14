@@ -92,6 +92,8 @@ protected:
 
     bool isPeriodicWestEast() const;
 
+    size_t numberOfPoints() const;
+
     // -- Class members
 
     class RegularIterator {

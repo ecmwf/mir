@@ -39,7 +39,6 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/GreatCircle.h"
 
 
 namespace mir {
@@ -264,9 +263,12 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     eckit::ScopedPtr<element_tree_t> eTree;
     {
         eckit::ResourceUsage usage("FiniteElement::assemble create k-d tree");
-        eckit::TraceTimer<LibMir> timer("FiniteElement::assemble create k-d tree");
+        eckit::TraceTimer<LibMir> timer("k-d tree: create");
         eTree.reset( atlas::interpolation::method::create_element_centre_index(inMesh) );
     }
+
+    const double R = in.longestElementDiagonal();
+    eckit::Log::debug<LibMir>() << "k-d tree: search radius R=" << eckit::BigNum(static_cast<long long>(R)) << "m" << std::endl;
 
 
     // some statistics
@@ -281,10 +283,6 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     // weights -- one per vertex of element, triangles (3) or quads (4)
     triplet_vector_t weights_triplets; // structure to fill-in sparse matrix
     weights_triplets.reserve( nbOutputPoints * 4 );        // preallocate space as if all elements where quads
-
-    const double R = util::GreatCircle::distanceInMeters(
-                repres::Iterator::point_ll_t(),
-                repres::Iterator::point_ll_t(0.09, 0.09) );
 
     {
         eckit::ProgressTimer progress("Projecting", nbOutputPoints, "point", double(5), eckit::Log::debug<LibMir>());

@@ -24,7 +24,6 @@
 #include "mir/api/Atlas.h"
 
 
-
 namespace mir {
 namespace repres {
 namespace regular {
@@ -57,6 +56,7 @@ void RegularGG::print(std::ostream &out) const {
 void RegularGG::makeName(std::ostream& out) const {
     Regular::makeName(out);
 }
+
 
 bool RegularGG::sameAs(const Representation& other) const {
     const RegularGG* o = dynamic_cast<const RegularGG*>(&other);
@@ -98,19 +98,6 @@ const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
     return new RegularGG(N_, bbox);
 }
 
-size_t RegularGG::numberOfPoints() const {
-    if (isGlobal()) {
-        return Ni_ * Nj_;
-    }
-    else {
-        size_t total = 0;
-        eckit::ScopedPtr<repres::Iterator> iter(iterator());
-        while (iter->next()) {
-            total++;
-        }
-        return total;
-    }
-}
 
 namespace {
 static RepresentationBuilder<RegularGG> reducedGG("regular_gg"); // Name is what is returned by grib_api

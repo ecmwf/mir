@@ -97,7 +97,6 @@ class RotatedGG : public Regular {
     virtual const Gridded *cropped(const util::BoundingBox &bbox) const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
-    virtual size_t numberOfPoints() const;
 
     // -- Class members
     // None
