@@ -109,9 +109,8 @@ public:
     virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
     virtual const Representation* globalise(data::MIRField& field) const;
 
-    // Make a global
     virtual size_t numberOfPoints() const;
-
+    virtual double longestElementDiagonal() const;
 
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
@@ -120,7 +119,6 @@ public:
 
     virtual util::Domain domain() const;
     virtual bool isGlobal() const;
-
 
     virtual size_t truncation() const;
     virtual size_t pentagonalResolutionTs() const;
