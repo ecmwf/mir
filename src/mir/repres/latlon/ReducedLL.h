@@ -103,7 +103,9 @@ private:
 
     void makeName(std::ostream&) const;
     bool sameAs(const Representation& other) const;
+
     virtual size_t numberOfPoints() const;
+    virtual double longestElementDiagonal() const;
 
     // -- Class members
     // None
