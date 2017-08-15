@@ -269,7 +269,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     double R = 0.;
     if (!in.getLongestElementDiagonal(R)) {
-        // TODO get longest element diagonal from mesh
+        R = gin.getMeshLongestElementDiagonal();
     }
     ASSERT(R > 0.);
     eckit::Log::debug<LibMir>() << "k-d tree: search radius R=" << eckit::BigNum(static_cast<long long>(R)) << "m" << std::endl;

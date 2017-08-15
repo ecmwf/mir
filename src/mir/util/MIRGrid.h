@@ -75,6 +75,7 @@ public:
 
     const atlas::Mesh& mesh(util::MIRStatistics&, const MeshGenParams&) const;
     const atlas::Mesh& mesh() const;
+    double getMeshLongestElementDiagonal() const;
 
     void hash(eckit::MD5&) const;
 
