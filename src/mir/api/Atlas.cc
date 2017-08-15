@@ -128,6 +128,21 @@ void atlas::util::gaussian_latitudes_npole_spole(int, double*)
     NOTIMP;
 }
 
+double Earth::radiusInMeters()
+{
+    NOTIMP;
+}
+
+double Earth::radiusInKm()
+{
+    NOTIMP;
+}
+
+double Earth::distanceInMeters(const DummyPoint&, const DummyPoint&)
+{
+    NOTIMP;
+}
+
 atlas::Projection::operator bool() const
 {
     NOTIMP;

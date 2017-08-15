@@ -25,6 +25,7 @@
 
 #include "atlas/grid/Grid.h"
 #include "atlas/projection/Projection.h"
+#include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
 
 #else
@@ -46,18 +47,14 @@ public:
     RectangularDomain(const std::array<double, 2>&, const std::array<double, 2>&) {}
 };
 
-struct PointXY {
-    template<class T, class U>
-    PointXY(T, U) {}
-};
-
-struct PointLonLat {
-    PointLonLat() {}
-    template<class T, class U>
-    PointLonLat(T, U) {}
+struct DummyPoint {
+    DummyPoint(double =0, double =0, double =0) {}
     double lat() const;
     double lon() const;
 };
+typedef DummyPoint PointXY;
+typedef DummyPoint PointXYZ;
+typedef DummyPoint PointLonLat;
 
 
 struct Projection {
@@ -92,6 +89,12 @@ Grid(){}
 
 namespace util {
 void gaussian_latitudes_npole_spole(int, double*);
+struct Earth
+{
+    static double radiusInMeters();
+    static double radiusInKm();
+    static double distanceInMeters(const DummyPoint&, const DummyPoint&);
+};
 }
 
 namespace grid {
