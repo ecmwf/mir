@@ -16,6 +16,7 @@
 
 #include "mir/util/MIRGrid.h"
 
+#include <limits>
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
@@ -136,51 +137,49 @@ double MIRGrid::getMeshLongestElementDiagonal() const {
 
     const atlas::mesh::HybridElements::Connectivity& connectivity = mesh_.cells().node_connectivity();
     atlas::array::ArrayView<double, 2> coords = atlas::array::make_view< double, 2 >( mesh_.nodes().field( "xyz" ));
+//    atlas::array::ArrayView<double, 2> coords = atlas::array::make_view< double, 2 >( mesh_.nodes().lonlat() );
 
     // set maximum to Earth radius
     const double dMax = Earth::radiusInMeters();
+
+    size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
+    if (mesh_.nodes().metadata().has("NbRealPts")) {
+        firstVirtualPoint = mesh_.nodes().metadata().get<size_t>("NbRealPts");
+    }
 
     // assumes:
     // - nb_cols == 3 implies triangle
     // - nb_cols == 4 implies quadrilateral
     // - no other element is supported at this time
     double d = 0.;
+
+    atlas::PointXYZ P[4];
+//    atlas::PointLonLat P[4];
     for (size_t e = 0; e < connectivity.rows(); ++e) {
         const size_t nb_cols = connectivity.cols(e);
+        ASSERT(nb_cols == 3 || nb_cols == 4);
 
-        if (nb_cols == 3) {
-
-            // triangle
-            // FIXME: except the "outer" mesh edges, all other edge lengths are calculated twice
-            const atlas::PointXYZ
-                    P1(coords[ size_t(connectivity(e, 0)) ].data()),
-                    P2(coords[ size_t(connectivity(e, 1)) ].data()),
-                    P3(coords[ size_t(connectivity(e, 2)) ].data());
-            const double
-                    D1 = Earth::distanceInMeters(P1, P2),
-                    D2 = Earth::distanceInMeters(P2, P3),
-                    D3 = Earth::distanceInMeters(P3, P1);
-            d = std::max(d, std::max(D1, std::max(D2, D3)));
-
-        } else if (nb_cols == 4) {
-
-            // quadrilateral
-            // NOTE: assumes convexity
-            const atlas::PointXYZ
-                    P1(coords[ size_t(connectivity(e, 0)) ].data()),
-                    P2(coords[ size_t(connectivity(e, 1)) ].data()),
-                    P3(coords[ size_t(connectivity(e, 2)) ].data()),
-                    P4(coords[ size_t(connectivity(e, 3)) ].data());
-            d = std::max(d, std::max(Earth::distanceInMeters(P1, P3),
-                                     Earth::distanceInMeters(P2, P4) ));
-
-        } else {
-            throw eckit::SeriousBug("MIRGrid::getMeshLongestElementDiagonal: expecting connectivity number of columns 3 or 4, got  " + std::to_string(nb_cols));
+        // test edges and diagonals (quadrilaterals only)
+        // (combinations of ni in [0, nb_cols[ and nj in [ni+1, nb_cols[)
+        for (size_t ni = 0; ni < nb_cols; ++ni) {
+            const size_t i = size_t(connectivity(e, ni));
+            P[ni].assign(coords[i].data());
         }
 
-        if (d > dMax) {
-            eckit::Log::warning() << "MIRGrid::getMeshLongestElementDiagonal: limited to maximum " << dMax << "m";
-            return dMax;
+        for (size_t ni = 0; ni < nb_cols - 1; ++ni) {
+            const size_t i = size_t(connectivity(e, ni));
+            for (size_t nj = ni + 1; nj < nb_cols; ++nj) {
+                const size_t j = size_t(connectivity(e, nj));
+
+                if (i < firstVirtualPoint && j < firstVirtualPoint) {
+                    d = std::max(d, Earth::distanceInMeters(P[ni], P[nj]));
+                    if (d > dMax) {
+                        eckit::Log::warning() << "MIRGrid::getMeshLongestElementDiagonal: limited to maximum " << dMax << "m";
+                        return dMax;
+                    }
+                }
+
+            }
         }
     }
 
