@@ -95,7 +95,7 @@ private:
     // -- Overridden methods
 
     virtual size_t numberOfPoints() const;
-    virtual double longestElementDiagonal() const;
+    virtual bool getLongestElementDiagonal(double&) const;
 
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;

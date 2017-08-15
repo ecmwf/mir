@@ -267,7 +267,11 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         eTree.reset( atlas::interpolation::method::create_element_centre_index(inMesh) );
     }
 
-    const double R = in.longestElementDiagonal();
+    double R = 0.;
+    if (!in.getLongestElementDiagonal(R)) {
+        // TODO get longest element diagonal from mesh
+    }
+    ASSERT(R > 0.);
     eckit::Log::debug<LibMir>() << "k-d tree: search radius R=" << eckit::BigNum(static_cast<long long>(R)) << "m" << std::endl;
 
 

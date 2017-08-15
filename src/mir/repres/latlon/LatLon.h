@@ -89,7 +89,7 @@ protected:
     virtual bool includesSouthPole() const;
 
     virtual size_t numberOfPoints() const;
-    virtual double longestElementDiagonal() const;
+    virtual bool getLongestElementDiagonal(double&) const;
 
     virtual Representation* globalise(data::MIRField&) const;
     virtual std::string atlasMeshGenerator() const;

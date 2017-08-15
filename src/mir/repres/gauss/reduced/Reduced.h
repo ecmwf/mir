@@ -115,7 +115,7 @@ private:
     virtual void initTrans(Trans_t&) const;
 
     virtual size_t numberOfPoints() const;
-    virtual double longestElementDiagonal() const;
+    virtual bool getLongestElementDiagonal(double&) const;
 
     // -- Class members
     // None

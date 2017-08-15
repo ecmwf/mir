@@ -105,7 +105,7 @@ private:
     bool sameAs(const Representation& other) const;
 
     virtual size_t numberOfPoints() const;
-    virtual double longestElementDiagonal() const;
+    virtual bool getLongestElementDiagonal(double&) const;
 
     // -- Class members
     // None

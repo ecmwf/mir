@@ -74,6 +74,7 @@ protected:
     // -- Overridden methods
 
     util::Domain domain() const;
+    virtual bool getLongestElementDiagonal(double&) const;
 
     // -- Class members
     // None

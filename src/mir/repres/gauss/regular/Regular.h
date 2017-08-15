@@ -94,7 +94,7 @@ protected:
     bool isPeriodicWestEast() const;
 
     size_t numberOfPoints() const;
-    double longestElementDiagonal() const;
+    bool getLongestElementDiagonal(double &d) const;
 
     // -- Class members
 
