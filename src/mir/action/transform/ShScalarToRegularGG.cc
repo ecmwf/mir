@@ -48,7 +48,7 @@ void ShScalarToRegularGG::print(std::ostream& out) const {
 
 
 const repres::Representation* ShScalarToRegularGG::outputRepresentation() const {
-    return new repres::regular::RegularGG(N_);
+    return new repres::gauss::regular::RegularGG(N_);
 }
 
 

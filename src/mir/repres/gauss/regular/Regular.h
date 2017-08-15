@@ -22,6 +22,7 @@
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace regular {
 
 
@@ -149,6 +150,7 @@ private:
 
 
 }  // namespace regular
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 

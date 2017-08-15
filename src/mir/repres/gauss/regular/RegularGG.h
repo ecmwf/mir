@@ -13,14 +13,15 @@
 /// @date Apr 2015
 
 
-#ifndef mir_repres_regular_RegularGG_h
-#define mir_repres_regular_RegularGG_h
+#ifndef mir_repres_gauss_regular_RegularGG_h
+#define mir_repres_gauss_regular_RegularGG_h
 
 #include "mir/repres/gauss/regular/Regular.h"
 
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace regular {
 
 
@@ -111,7 +112,10 @@ private:
 
 
 }  // namespace regular
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

@@ -46,7 +46,7 @@ void Gridded2RegularGG::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2RegularGG::outputRepresentation() const {
-    return new repres::regular::RegularGG(N_);
+    return new repres::gauss::regular::RegularGG(N_);
 }
 
 

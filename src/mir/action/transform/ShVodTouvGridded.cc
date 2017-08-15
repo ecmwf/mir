@@ -14,10 +14,6 @@
 #include "mir/action/transform/ShVodTouvGridded.h"
 
 #include <vector>
-
-#include "mir/api/Atlas.h"
-
-
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
