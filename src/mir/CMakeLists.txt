@@ -520,8 +520,6 @@ list(
     util/FormulaString.h
     util/Function.cc
     util/Function.h
-    util/GreatCircle.cc
-    util/GreatCircle.h
     util/Grib.h
     util/Increments.cc
     util/Increments.h
