@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef VectorInput_H
-#define VectorInput_H
+#ifndef mir_input_VectorInput_h
+#define mir_input_VectorInput_h
 
 #include "mir/input/MIRInput.h"
 
@@ -31,7 +31,7 @@ namespace input {
 
 
 class VectorInput : public MIRInput {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -51,7 +51,7 @@ class VectorInput : public MIRInput {
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -62,14 +62,15 @@ class VectorInput : public MIRInput {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
+
     MIRInput& component1_;
     MIRInput& component2_;
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -80,27 +81,22 @@ class VectorInput : public MIRInput {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    VectorInput(const VectorInput &);
-    VectorInput &operator=(const VectorInput &);
+private:
 
     // -- Members
-
+    // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
 
+    // From MIRInput
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual bool next();
-
     virtual bool sameAs(const MIRInput &other) const ;
     virtual void print(std::ostream &out) const;
-
     virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual size_t dimensions() const;
 

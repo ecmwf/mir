@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef NetcdfFileInput_H
-#define NetcdfFileInput_H
+#ifndef mir_input_NetcdfFileInput_h
+#define mir_input_NetcdfFileInput_h
 
 #include "mir/api/mir_config.h"
 #ifdef HAVE_NETCDF
@@ -24,19 +24,20 @@
 #include "eckit/filesystem/PathName.h"
 
 #include "mir/input/MIRInput.h"
-#include "mir/param/FieldParametrisation.h"
-#include "mir/netcdf/NCFileCache.h"
 #include "mir/netcdf/InputDataset.h"
+#include "mir/netcdf/NCFileCache.h"
 #include "mir/param/CachedParametrisation.h"
+#include "mir/param/FieldParametrisation.h"
 
 
 namespace mir {
 namespace input {
 
 
-class NetcdfFileInput : public MIRInput,
-    public param::FieldParametrisation,
-    public mir::netcdf::NCFileCache {
+class NetcdfFileInput :
+        public MIRInput,
+        public param::FieldParametrisation,
+        public mir::netcdf::NCFileCache {
 public:
 
     // -- Exceptions
@@ -59,7 +60,6 @@ public:
     // -- Methods
     // None
 
-
     // -- Overridden methods
     // None
 
@@ -75,7 +75,7 @@ protected:
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -87,11 +87,6 @@ protected:
     // None
 
 private:
-
-    // No copy allowed
-
-    NetcdfFileInput(const NetcdfFileInput &);
-    NetcdfFileInput &operator=(const NetcdfFileInput &);
 
     // -- Members
 
@@ -106,15 +101,18 @@ private:
     // mutable std::vector<double> longitude_;
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
-    // From MIRInput
 
+    // From MIRInput
     virtual void print(std::ostream&) const; // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
     virtual const param::MIRParametrisation &parametrisation(size_t which) const;
     virtual data::MIRField field() const;
+    virtual bool next();
+    virtual size_t dimensions() const;
+    virtual grib_handle *gribHandle(size_t which) const;
 
     // From MIRParametrisation
     virtual bool has(const std::string& name) const;
@@ -123,11 +121,6 @@ private:
     virtual bool get(const std::string&, std::string&) const;
     virtual bool get(const std::string &name, double &value) const;
     virtual bool get(const std::string &name, std::vector<double> &value) const;
-
-    virtual bool next();
-    virtual size_t dimensions() const;
-
-    virtual grib_handle *gribHandle(size_t which) const;
 
     // -- Class members
     // None
@@ -145,6 +138,8 @@ private:
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif
 #endif
 

@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef GribStreamInput_H
-#define GribStreamInput_H
+#ifndef mir_input_GribStreamInput_h
+#define mir_input_GribStreamInput_h
 
 #include "eckit/io/Buffer.h"
 
@@ -31,7 +31,7 @@ namespace input {
 
 
 class GribStreamInput : public GribInput {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -55,13 +55,9 @@ class GribStreamInput : public GribInput {
     // -- Methods
     // None
 
-
-
     // -- Overridden methods
-    // None
 
     virtual bool next();
-
 
     // -- Class members
     // None
@@ -69,7 +65,7 @@ class GribStreamInput : public GribInput {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     size_t skip_;
@@ -77,7 +73,7 @@ class GribStreamInput : public GribInput {
     off_t  offset_;
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -88,12 +84,7 @@ class GribStreamInput : public GribInput {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    GribStreamInput(const GribStreamInput &);
-    GribStreamInput &operator=(const GribStreamInput &);
+private:
 
     // -- Members
 
@@ -106,7 +97,7 @@ class GribStreamInput : public GribInput {
     virtual eckit::DataHandle &dataHandle() = 0;
 
     // -- Overridden methods
-
+    // None
 
     // -- Class members
     // None
@@ -124,5 +115,7 @@ class GribStreamInput : public GribInput {
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif
 

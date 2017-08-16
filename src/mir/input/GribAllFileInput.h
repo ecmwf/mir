@@ -77,11 +77,6 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    GribAllFileInput(const GribAllFileInput &);
-    GribAllFileInput &operator=(const GribAllFileInput &);
-
     // -- Members
 
     std::string path_;
@@ -117,5 +112,7 @@ private:
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif
 

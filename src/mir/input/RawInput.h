@@ -48,7 +48,6 @@ public:
     // -- Methods
     // None
 
-
     // -- Overridden methods
     // None
 
@@ -64,7 +63,7 @@ protected:
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -77,11 +76,6 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    RawInput(const RawInput &);
-    RawInput &operator=(const RawInput &);
-
     // -- Members
 
     const RawMetadata& metadata_;
@@ -91,16 +85,13 @@ private:
     // -- Methods
 
     // -- Overridden methods
+
     // From MIRInput
-
     void print(std::ostream&) const; // Change to virtual if base class
-
     const param::MIRParametrisation &parametrisation(size_t which) const;
     data::MIRField field() const;
-
     bool next();
     size_t copy(double* values, size_t size) const;
-
     bool sameAs(const MIRInput& other) const;
 
     // From MIRParametrisation

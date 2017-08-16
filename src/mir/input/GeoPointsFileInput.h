@@ -13,9 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef GeoPointsInput_H
-#define GeoPointsInput_H
-
+#ifndef mir_input_GeoPointsFileInput_h
+#define mir_input_GeoPointsFileInput_h
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -45,11 +44,11 @@ public:
     // None
 
     // -- Methods
-    // None
 
     const std::vector<double>& latitudes() const;
     const std::vector<double>& longitudes() const;
     const std::vector<double>& values() const;
+
     // -- Overridden methods
     // None
 
@@ -65,7 +64,7 @@ protected:
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -78,11 +77,6 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    GeoPointsFileInput(const GeoPointsFileInput &);
-    GeoPointsFileInput &operator=(const GeoPointsFileInput &);
-
     // -- Members
 
     std::string path_;
@@ -94,10 +88,11 @@ private:
     mutable std::vector<double> values_;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
-    // From MIRInput
 
+    // From MIRInput
     virtual void print(std::ostream&) const; // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
 
@@ -106,8 +101,7 @@ private:
 
     virtual bool next();
 
-
-    // From FieldParametrisation
+    // From somewhere else
     virtual void latitudes(std::vector<double> &) const;
     virtual void longitudes(std::vector<double> &) const;
 
@@ -127,5 +121,7 @@ private:
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif
 
