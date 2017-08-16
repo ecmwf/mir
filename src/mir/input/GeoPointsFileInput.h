@@ -44,10 +44,7 @@ public:
     // None
 
     // -- Methods
-
-    const std::vector<double>& latitudes() const;
-    const std::vector<double>& longitudes() const;
-    const std::vector<double>& values() const;
+    // None
 
     // -- Overridden methods
     // None
@@ -82,6 +79,7 @@ private:
     std::string path_;
     param::SimpleParametrisation parametrisation_;
     int which_;
+    size_t dimensions_;
 
     mutable std::vector<double> latitudes_;
     mutable std::vector<double> longitudes_;
@@ -100,10 +98,7 @@ private:
     virtual data::MIRField field() const;
 
     virtual bool next();
-
-    // From somewhere else
-    virtual void latitudes(std::vector<double> &) const;
-    virtual void longitudes(std::vector<double> &) const;
+    virtual size_t dimensions() const;
 
     // -- Class members
     // None

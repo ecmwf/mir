@@ -13,24 +13,25 @@
 /// @date Apr 2015
 
 
+#include "mir/input/GeoPointsFileInput.h"
+
 #include <fstream>
 #include <iostream>
-
-#include "mir/data/MIRField.h"
-
-#include "mir/input/GeoPointsFileInput.h"
-#include "mir/repres/other/UnstructuredGrid.h"
-
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
+#include "eckit/log/Plural.h"
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/utils/Translator.h"
-#include "eckit/exception/Exceptions.h"
+#include "mir/data/MIRField.h"
+#include "mir/repres/other/UnstructuredGrid.h"
+
 
 namespace mir {
 namespace input {
 
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
-GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
+GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     path_(path),
     which_(which) {
 
@@ -115,6 +116,9 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
         oss << path_ << " contains " << count << " fields, requested index is " << which;
         throw eckit::SeriousBug(oss.str());
     }
+
+    dimensions_ = size_t(count);
+    ASSERT(dimensions_);
 }
 
 
@@ -126,8 +130,14 @@ bool GeoPointsFileInput::sameAs(const MIRInput& other) const {
     return o && (path_ == o->path_);
 }
 
+
 bool GeoPointsFileInput::next() {
     return values_.size() != 0;
+}
+
+
+size_t GeoPointsFileInput::dimensions() const {
+    return dimensions_;
 }
 
 
@@ -147,30 +157,12 @@ data::MIRField GeoPointsFileInput::field() const {
 
 
 void GeoPointsFileInput::print(std::ostream &out) const {
-    out << "GeoPointsFileInput[path=" << path_ << ",which=" << which_ << "]";
+    out << "GeoPointsFileInput["
+            "path=" << path_
+        << ",which=" << which_
+        << ",dimensions=" << dimensions_
+        << "]";
 }
-
-// From FieldParametrisation
-void GeoPointsFileInput::latitudes(std::vector<double> &latitudes) const {
-    latitudes = latitudes_;
-}
-
-void GeoPointsFileInput::longitudes(std::vector<double> &longitudes) const {
-    longitudes = longitudes_;
-}
-
-const std::vector<double>& GeoPointsFileInput::latitudes() const {
-    return latitudes_;
-}
-
-const std::vector<double>& GeoPointsFileInput::longitudes() const {
-    return longitudes_;
-}
-
-const std::vector<double>& GeoPointsFileInput::values() const {
-    return values_;
-}
-
 
 
 }  // namespace input
