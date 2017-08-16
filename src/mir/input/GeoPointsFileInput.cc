@@ -24,6 +24,7 @@
 #include "eckit/utils/Translator.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/util/GlobaliseUnstructured.h"
 
 
 namespace mir {
@@ -31,7 +32,8 @@ namespace input {
 
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
-GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
+GeoPointsFileInput::GeoPointsFileInput(const param::MIRParametrisation& parametrisation, const std::string& path, int which) :
+    parametrisation_(parametrisation),
     path_(path),
     which_(which) {
 
@@ -58,9 +60,9 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
                 break;
             }
 
-            parametrisation_.reset();
-            parametrisation_.set("gridType", "unstructured_grid");
-            parametrisation_.set("gridded", true);
+            fieldParametrisation_.reset();
+            fieldParametrisation_.set("gridType", "unstructured_grid");
+            fieldParametrisation_.set("gridded", true);
 
             data = false;
             latitudes_.clear();
@@ -74,7 +76,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
             // eckit::Log::info() << "PARSE " << line +2 << std::endl;
             parse2(line + 2, v);
             ASSERT(v.size() == 2);
-            parametrisation_.set(v[0], v[1]);
+            fieldParametrisation_.set(v[0], v[1]);
 
             // eckit::Log::info() << path_ << " ===> " << v[0] << "=" << v[1] << std::endl;
         }
@@ -88,6 +90,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
             }
             continue;
         }
+
         if (data) {
             std::vector<std::string> v;
             parse(line, v);
@@ -117,12 +120,69 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
         throw eckit::SeriousBug(oss.str());
     }
 
+    // set dimensions
     dimensions_ = size_t(count);
     ASSERT(dimensions_);
+
+    // reset missing values to something acceptable
+    hasMissing_ = resetMissingValue(missingValue_);
+
+    // globalise, appending missing values if necessary
+    util::GlobaliseUnstructured globalise(parametrisation_);
+    size_t nbExtraValues = globalise.appendGlobalPoints(latitudes_, longitudes_);
+    if (nbExtraValues) {
+        eckit::Log::info() << "GeoPointsFileInput: appending " << eckit::Plural(nbExtraValues, "missing value") << std::endl;
+
+        ASSERT(latitudes_.size() == values_.size() + nbExtraValues);
+        ASSERT(latitudes_.size() == longitudes_.size());
+        values_.insert(values_.end(), nbExtraValues, missingValue_);
+    }
 }
 
 
 GeoPointsFileInput::~GeoPointsFileInput() {}
+
+
+bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
+
+    // geopoints hard-coded value, all values have to be below
+    missingValue = 3e38;
+    bool hasMissing = (values_.end() != std::find(values_.begin(), values_.end(), missingValue));
+
+    // find the non-missing max value
+    bool allMissing = true;
+    double max = missingValue;
+    for (const double& v : values_) {
+        ASSERT(v <= missingValue);
+        if (v != missingValue) {
+            allMissing = false;
+            if (max == missingValue || max < v)
+                max = v;
+        }
+    }
+
+    // if all values are missing set an acceptable value, otherwise use max + 1
+    if (allMissing) {
+        missingValue = 999.;
+        values_.assign(values_.size(), missingValue);
+        return true;
+    }
+
+    const double tempMissingValue = max + 1.;
+    ASSERT(tempMissingValue == tempMissingValue);
+
+    if (hasMissing) {
+        for (double& v : values_) {
+            if (v == missingValue)
+                v = tempMissingValue;
+        }
+    }
+
+    missingValue = tempMissingValue;
+    ASSERT(missingValue_ < 3e38);
+
+    return hasMissing;
+}
 
 
 bool GeoPointsFileInput::sameAs(const MIRInput& other) const {
@@ -143,13 +203,13 @@ size_t GeoPointsFileInput::dimensions() const {
 
 const param::MIRParametrisation &GeoPointsFileInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
-    return parametrisation_;
+    return fieldParametrisation_;
 }
 
 
 data::MIRField GeoPointsFileInput::field() const {
 
-    data::MIRField field(new repres::other::UnstructuredGrid(latitudes_, longitudes_), false, 999.0);
+    data::MIRField field(new repres::other::UnstructuredGrid(latitudes_, longitudes_), hasMissing_, missingValue_);
     field.update(values_, 0);
 
     return field;

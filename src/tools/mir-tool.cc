@@ -107,6 +107,8 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Path to the bitmap to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
         options_.push_back(new SimpleOption<bool>("globalise", "Make the field global, adding missing values if needed"));
+        options_.push_back(new SimpleOption<std::string>("globalise-gridname", "Unstructured grid globalise using gridname (default O16)"));
+        options_.push_back(new SimpleOption<std::string>("globalise-missing-radius", "Unstructured grid globalise minimum distance to insert missing values if needed (default 555975. [m])"));
 
         //==============================================
         options_.push_back(new Separator("Compute"));
@@ -256,7 +258,7 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
     }
 
     if (args.has("geopoints")) {
-        mir::input::GeoPointsFileInput input(args(0));
+        mir::input::GeoPointsFileInput input(job, args(0));
         mir::output::GribFileOutput output(args(1));
         process(job, input, output, "field");
         return;

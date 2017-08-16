@@ -31,7 +31,7 @@ public:
     // None
 
     // -- Contructors
-    GeoPointsFileInput(const std::string& path, int which = -1);
+    GeoPointsFileInput(const param::MIRParametrisation&, const std::string& path, int which = -1);
 
     // -- Destructor
 
@@ -76,17 +76,21 @@ private:
 
     // -- Members
 
+    const param::MIRParametrisation& parametrisation_;
     std::string path_;
-    param::SimpleParametrisation parametrisation_;
+    param::SimpleParametrisation fieldParametrisation_;
     int which_;
     size_t dimensions_;
+    bool hasMissing_;
+    double missingValue_;
 
-    mutable std::vector<double> latitudes_;
-    mutable std::vector<double> longitudes_;
+    std::vector<double> latitudes_;
+    std::vector<double> longitudes_;
     mutable std::vector<double> values_;
 
     // -- Methods
-    // None
+
+    bool resetMissingValue(double& missingValue);
 
     // -- Overridden methods
 
