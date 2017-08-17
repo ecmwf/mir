@@ -49,7 +49,7 @@ namespace {
 
 
 // epsilon used to scale edge tolerance when projecting ray to intesect element
-static const double parametricEpsilon = 1e-14;
+static const double parametricEpsilon = 1e-16;
 
 
 typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
@@ -321,7 +321,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
                             closest );
 
                 if (triplets.empty()) {
-                    // If this fails, consider lowering atlas::grid::parametricEpsilon
+                    // If this fails, consider lowering parametricEpsilon
                     failures.push_front(failed_projection_t(ip, it->pointUnrotated()));
                     ++nbFailures;
                 } else {

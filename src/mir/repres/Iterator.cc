@@ -17,6 +17,7 @@
 
 #include <vector>
 #include "eckit/exception/Exceptions.h"
+#include "atlas/util/Earth.h"
 
 
 namespace mir {
@@ -43,13 +44,20 @@ Iterator::Iterator(const util::Rotation& rotation) :
     rotation_(rotation) {
 
     // Setup projection using South Pole rotated position, as seen from the non-rotated frame
-    const eckit::geometry::LLPoint2 pole(
-        rotation_.south_pole_longitude().value(),
-        rotation_.south_pole_latitude().value() );
+    double south_pole_latitude = rotation_.south_pole_latitude().value();
+    double south_pole_longitude = rotation_.south_pole_longitude().value();
+
+    ASSERT(-90. <= south_pole_latitude && south_pole_latitude <= 90.);
+    while (south_pole_longitude < -360.) {
+        south_pole_longitude += 360.;
+    }
+    while (south_pole_longitude >= 360. ) {
+        south_pole_longitude -= 360.;
+    }
 
     atlas::util::Config config;
     config.set("type", "rotated_lonlat");
-    config.set("south_pole", std::vector<double>({pole.lon(), pole.lat()}));
+    config.set("south_pole", std::vector<double>({south_pole_longitude, south_pole_latitude}));
     config.set("rotation_angle", rotation_.south_pole_rotation_angle());
     projection_ = atlas::Projection(config);
 }
@@ -99,9 +107,11 @@ const Iterator::point_3d_t Iterator::point3D() const {
     ASSERT(valid_);
 
     // notice the order
-    point_3d_t p;
-    eckit::geometry::lonlat_to_3d(point_[1], point_[0], p.data());
-    return p;
+    const atlas::PointLonLat pll(point_[1], point_[0]);
+    atlas::PointXYZ pxyz;
+    atlas::util::Earth::convertGeodeticToGeocentric(pll, pxyz);
+
+    return pxyz;
 }
 
 

@@ -17,10 +17,11 @@
 #include "eckit/log/Log.h"
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/Ray.h"
+#include "atlas/util/Earth.h"
+#include "atlas/util/Point.h"
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-
 
 
 namespace mir {
@@ -44,7 +45,6 @@ StructuredLinear::~StructuredLinear() {
 void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
     typedef repres::Iterator::point_ll_t point_ll_t;
     typedef repres::Iterator::point_3d_t point_3d_t;
-
 
     /*
      * get from input grid:
@@ -134,15 +134,15 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
             boundWestEast(p.lon, size_t(pl[j_south]), pl_sum[j_south], q[2], q[3]);
 
             // convert working longitude/latitude coordinates to 3D
-            point_3d_t ip;
-            point_3d_t qp[4];
-            eckit::geometry::lonlat_to_3d(p.lon.value(), p.lat.value(), ip.data());
+            atlas::PointXYZ ip;
+            atlas::PointXYZ qp[4];
+            atlas::util::Earth::convertGeodeticToGeocentric(atlas::PointLonLat(p.lon.value(), p.lat.value()), ip);
             for (size_t k = 0; k < 4; ++k) {
                 const point_ll_t& ll = icoords[q[k]];
 
                 // notice the order
-                eckit::geometry::Point2 p(ll.lon.value(), ll.lat.value());
-                eckit::geometry::lonlat_to_3d(p.data(), qp[k].data());
+                atlas::PointLonLat p(ll.lon.value(), ll.lat.value());
+                atlas::util::Earth::convertGeodeticToGeocentric(p, qp[k]);
             }
 
 
