@@ -75,13 +75,14 @@ static void normalise(triplet_vector_t& triplets) {
 
 /// Find in which element the point is contained by projecting the point with each nearest element
 static triplet_vector_t projectPointTo3DElements(
-    size_t nbInputPoints,
-    const atlas::array::ArrayView<double, 2>& icoords,
-    const atlas::mesh::HybridElements::Connectivity& connectivity,
-    const repres::Iterator::point_3d_t& p,
-    size_t ip,
-    size_t firstVirtualPoint,
-    const element_tree_t::NodeList& closest ) {
+        size_t nbInputPoints,
+        const atlas::array::ArrayView<double, 2>& icoords,
+        const atlas::mesh::HybridElements::Connectivity& connectivity,
+        const repres::Iterator::point_3d_t& p,
+        size_t ip,
+        size_t firstVirtualPoint,
+        size_t& nbProjectionAttempts,
+        const element_tree_t::NodeList& closest ) {
 
     ASSERT(!closest.empty());
 
@@ -92,7 +93,9 @@ static triplet_vector_t projectPointTo3DElements(
     double w[4];
     atlas::interpolation::method::Ray ray( p.data() );
 
+    nbProjectionAttempts = 0;
     for (auto close : closest) {
+        ++nbProjectionAttempts;
 
         const size_t elem_id = close.value().payload();
         ASSERT(elem_id < connectivity.rows());
@@ -278,7 +281,9 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     // some statistics
     const size_t nbInputPoints = inNodes.size();
     const size_t nbOutputPoints = out.numberOfPoints();
-    size_t nbElementsSearched = 0;
+    size_t nbMinElementsSearched = std::numeric_limits<size_t>::max();
+    size_t nbMaxElementsSearched = 0;
+    size_t nbMaxProjectionAttempts = 0;
     size_t nbProjections = 0;
     size_t nbFailures = 0;
     std::forward_list<failed_projection_t> failures;
@@ -309,8 +314,8 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
                 // 3D projection, trying elements closest to p first
                 element_tree_t::NodeList closest = eTree->findInSphere(p, R);
-                nbElementsSearched = std::max(nbElementsSearched, closest.size());
 
+                size_t nbProjectionAttempts;
                 triplet_vector_t triplets = projectPointTo3DElements(
                             nbInputPoints,
                             icoords,
@@ -318,7 +323,12 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
                             p,
                             ip,
                             firstVirtualPoint,
+                            nbProjectionAttempts,
                             closest );
+
+                nbMaxElementsSearched = std::max(nbMaxElementsSearched, closest.size());
+                nbMinElementsSearched = std::min(nbMinElementsSearched, closest.size());
+                nbMaxProjectionAttempts = std::max(nbMaxProjectionAttempts, nbProjectionAttempts);
 
                 if (triplets.empty()) {
                     // If this fails, consider lowering parametricEpsilon
@@ -338,7 +348,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
             << "Projected " << eckit::BigNum(nbProjections)
             << " of " << eckit::Plural(nbOutputPoints, "point")
             << " (" << eckit::Plural(nbFailures, "failure") << ")\n"
-            << "Maximum neighbours searched was " << eckit::Plural(nbElementsSearched, "element")
+            << "k-d tree: searched between " << eckit::BigNum(nbMinElementsSearched) << " and " << eckit::Plural(nbMaxElementsSearched, "element") << ", with up to " << eckit::Plural(nbMaxProjectionAttempts, "projection attempt") << " (per point)"
             << std::endl;
 
     if (nbFailures) {
@@ -348,7 +358,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         size_t count = 0;
         for (const failed_projection_t& f : failures) {
             eckit::Log::debug<LibMir>() << "\n\tpoint " << f.first << " (lon, lat) = (" << f.second.lon.value() << ", " << f.second.lat.value() << ")";
-            if (++count > 1000) {
+            if (++count > 10) {
                 eckit::Log::debug<LibMir>() << "\n\t...";
                 break;
             }
