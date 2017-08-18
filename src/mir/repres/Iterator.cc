@@ -18,6 +18,7 @@
 #include <vector>
 #include "eckit/exception/Exceptions.h"
 #include "atlas/util/Earth.h"
+#include "mir/util/Angles.h"
 
 
 namespace mir {
@@ -26,8 +27,8 @@ namespace repres {
 
 void mir::repres::Iterator::point_ll_t::print(std::ostream& s) const {
     s << "point_ll_t["
-      << "lat=" << lat << ","
-      << "lon=" << lon
+          "lat=" << lat
+      << ",lon=" << lon
       << "]";
 }
 
@@ -44,20 +45,13 @@ Iterator::Iterator(const util::Rotation& rotation) :
     rotation_(rotation) {
 
     // Setup projection using South Pole rotated position, as seen from the non-rotated frame
-    double south_pole_latitude = rotation_.south_pole_latitude().value();
-    double south_pole_longitude = rotation_.south_pole_longitude().value();
-
-    ASSERT(-90. <= south_pole_latitude && south_pole_latitude <= 90.);
-    while (south_pole_longitude < -360.) {
-        south_pole_longitude += 360.;
-    }
-    while (south_pole_longitude >= 360. ) {
-        south_pole_longitude -= 360.;
-    }
+    double south_pole_lat = rotation_.south_pole_latitude().value();
+    double south_pole_lon = util::angles::between_0_and_360(rotation_.south_pole_longitude().value());
+    ASSERT(-90. <= south_pole_lat && south_pole_lat <= 90.);
 
     atlas::util::Config config;
     config.set("type", "rotated_lonlat");
-    config.set("south_pole", std::vector<double>({south_pole_longitude, south_pole_latitude}));
+    config.set("south_pole", std::vector<double>({south_pole_lon, south_pole_lat}));
     config.set("rotation_angle", rotation_.south_pole_rotation_angle());
     projection_ = atlas::Projection(config);
 }
@@ -117,7 +111,7 @@ const Iterator::point_3d_t Iterator::point3D() const {
 
 void Iterator::print(std::ostream& out) const {
     out << "Iterator["
-        "valid?" << valid_
+            "valid?" << valid_
         << ",projection?" << bool(projection_)
         << ",rotation=" << rotation_
         << "]";
