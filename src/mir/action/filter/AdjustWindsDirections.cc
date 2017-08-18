@@ -109,7 +109,7 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
             lon = Longitude::DATE_LINE;
         }
 
-        double radian_lon = util::angles::degree_to_radian(p.lon.value());
+        double radian_lon = util::angles::degree_to_radian(lon.value());
         double sin_lon = sin(radian_lon);
         double cos_lon = cos(radian_lon);
         double z = normalize(sin_theta * sin_lat + cos_theta * cos_lat * cos_lon);
