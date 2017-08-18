@@ -86,7 +86,6 @@ private:
     // -- Members
 
     std::vector<long> pl_;
-    size_t Nj_;
 
     // -- Methods
     // None
