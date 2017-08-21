@@ -93,8 +93,8 @@ void CheckerBoard::execute(context::Context & ctx) const {
         size_t we = frequencies[0];
         size_t ns = frequencies[1];
 
-        double dwe = 360.0 / we;
-        double dns = 180.0 / ns;
+        double dwe = Longitude::GLOBE.value() / we;
+        double dns = Latitude::GLOBE.value() / ns;
 
         if (normalize) {
             maxvalue = 1;
@@ -127,15 +127,7 @@ void CheckerBoard::execute(context::Context & ctx) const {
             const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
 
             Latitude lat = Latitude::NORTH_POLE - p.lat;
-            Longitude lon = p.lon;
-
-            while (lon >= Longitude::GLOBE) {
-                lon -= Longitude::GLOBE;
-            }
-
-            while (lon < Longitude::GREENWICH) {
-                lon += Longitude::GLOBE;
-            }
+            Longitude lon = p.lon.normalise(Longitude::GREENWICH);
 
             size_t c = size_t(lat.value() / dns);
             size_t r = size_t(lon.value() / dwe);

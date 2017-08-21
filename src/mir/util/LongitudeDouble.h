@@ -38,14 +38,12 @@ public:
     // None
 
     // -- Contructors
+
     LongitudeDouble(double value = 0): value_(value) {}
     LongitudeDouble(const eckit::Fraction& value): value_(value) {}
 
-    double value() const { return value_; }
-    eckit::Fraction fraction() const { return eckit::Fraction(value_); }
+    // -- Operators
 
-    bool sameWithGrib1Accuracy(const LongitudeDouble& other) const;
-    //========================================
     bool operator==(double other) const;
     bool operator!=(double other) const;
 
@@ -54,8 +52,6 @@ public:
 
     bool operator>=(double other) const;
     bool operator<=(double other) const;
-
-    //======================================
 
     LongitudeDouble& operator+=(double value) {
         value_ += value;
@@ -147,8 +143,17 @@ public:
         return (*this) <= other.value_;
     }
 
+    // -- Methods
+
     void hash(eckit::MD5&) const;
-    // None
+
+    double value() const { return value_; }
+
+    eckit::Fraction fraction() const { return eckit::Fraction(value_); }
+
+    bool sameWithGrib1Accuracy(const LongitudeDouble& other) const;
+
+    LongitudeDouble normalise(const LongitudeDouble& minimum) const;
 
 protected:
 

@@ -126,7 +126,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
         if (bbox.contains(point.lat, point.lon)) {
 
             const Latitude lat = point.lat;
-            Longitude lon = bbox.normalise(point.lon);
+            const Longitude lon = point.lon.normalise(bbox.west());
 
             if (first) {
                 n = s = lat;

@@ -118,7 +118,7 @@ MappedMask::MappedMask(const std::string &name,
     while (iter->next()) {
         const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
         Latitude lat = p.lat;
-        Longitude lon = p.lon;
+        Longitude lon = p.lon.normalise(Longitude::GREENWICH);
 
         if (lat < Latitude::SOUTH_POLE) {
             std::ostringstream oss;
@@ -134,19 +134,10 @@ MappedMask::MappedMask(const std::string &name,
         }
         ASSERT(lat <= Latitude::NORTH_POLE);
 
-        while (lon >= Longitude::GLOBE) {
-            lon -= Longitude::GLOBE;
-        }
-        while (lon < Longitude::GREENWICH) {
-            lon += Longitude::GLOBE;
-        }
-
-        // std::cout << lat << " " << lon << std::endl;
-        int row = int((90.0 - lat.value()) * (ROWS - 1) / 180);
-                // std::cout << " row " << row << std::endl;
+        int row = int((90.0 - lat.value()) * (ROWS - 1) / Latitude::GLOBE.value());
         ASSERT(row >= 0 && row < int(ROWS));
 
-        int col = int(lon.value() * COLS / 360.0);
+        int col = int(lon.value() * COLS / Longitude::GLOBE.value());
         ASSERT(col >= 0 && col < int(COLS));
 
         size_t pos = COLS * row + col;

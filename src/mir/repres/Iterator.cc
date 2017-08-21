@@ -46,7 +46,7 @@ Iterator::Iterator(const util::Rotation& rotation) :
 
     // Setup projection using South Pole rotated position, as seen from the non-rotated frame
     double south_pole_lat = rotation_.south_pole_latitude().value();
-    double south_pole_lon = util::angles::between_0_and_360(rotation_.south_pole_longitude().value());
+    double south_pole_lon = rotation_.south_pole_longitude().normalise(Longitude::GREENWICH).value();
     ASSERT(-90. <= south_pole_lat && south_pole_lat <= 90.);
 
     atlas::util::Config config;

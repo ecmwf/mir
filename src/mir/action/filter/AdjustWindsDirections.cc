@@ -90,24 +90,14 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
     eckit::ScopedPtr<repres::Iterator> iter(representation->iterator());
     while (iter->next()) {
         const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
-        Longitude lon = p.lon;
 
         double radian_lat = util::angles::degree_to_radian(p.lat.value());
         double sin_lat = sin(radian_lat);
         double cos_lat = cos(radian_lat);
 
-        lon += pole_longitude;
-
-        // For some reason, the algorithms only work between in ]-180,180]
-        while (lon >= Longitude::DATE_LINE) {
-            lon -= Longitude::GLOBE;
-        }
-        while (lon < Longitude::MINUS_DATE_LINE) {
-            lon += Longitude::GLOBE;
-        }
-        if (lon == Longitude::MINUS_DATE_LINE) {
-            lon = Longitude::DATE_LINE;
-        }
+        // For some reason, the algorithms only work between in ]-180,180] or [-180,180[
+        Longitude lon = p.lon + pole_longitude;
+        lon = lon.normalise(Longitude::MINUS_DATE_LINE);
 
         double radian_lon = util::angles::degree_to_radian(lon.value());
         double sin_lon = sin(radian_lon);
@@ -116,8 +106,8 @@ void AdjustWindsDirections::windDirections(const repres::Representation* represe
 
         double ncos_lat = 0;
 
-        if ( !(eckit::types::is_approximately_equal(z, 1.0) ||
-                eckit::types::is_approximately_equal(z, -1.0))) {
+        if (!(eckit::types::is_approximately_equal(z,  1.0) ||
+              eckit::types::is_approximately_equal(z, -1.0))) {
             ncos_lat = cos(asin(z));
         }
 

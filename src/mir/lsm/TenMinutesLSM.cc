@@ -95,23 +95,15 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
     while (iter->next()) {
         const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
         Latitude lat = p.lat;
-        Longitude lon = p.lon;
+        Longitude lon = p.lon.normalise(Longitude::GREENWICH);
 
         ASSERT(lat >= Latitude::SOUTH_POLE);
         ASSERT(lat <= Latitude::NORTH_POLE);
 
-
-        while (lon >= Longitude::GLOBE) {
-            lon -= Longitude::GLOBE;
-        }
-        while (lon < Longitude::GREENWICH) {
-            lon += Longitude::GLOBE;
-        }
-
-        int row = int((Latitude::NORTH_POLE - p.lat).value() * (ROWS - 1) / 180);
+        int row = int((Latitude::NORTH_POLE - p.lat).value() * (ROWS - 1) / Latitude::GLOBE.value());
         ASSERT(row >= 0 && row < int(ROWS));
 
-        int col = int(lon.value() * COLS / 360.);
+        int col = int(lon.value() * COLS / Longitude::GLOBE.value());
         ASSERT(col >= 0 && col < int(COLS));
 
         mask_.push_back(ten_minutes_[row][col]);

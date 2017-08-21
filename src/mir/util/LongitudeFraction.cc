@@ -106,6 +106,17 @@ bool LongitudeFraction::sameWithGrib1Accuracy(const LongitudeFraction& other) co
     return cmp(value_, other.value_);
 }
 
+LongitudeFraction LongitudeFraction::normalise(const LongitudeFraction& minimum) const {
+    LongitudeFraction lon(*this);
+    while (lon < minimum) {
+        lon += GLOBE;
+    }
+    while (lon > minimum + GLOBE) {
+        lon -= GLOBE;
+    }
+    return lon;
+}
+
 
 }  // namespace mir
 

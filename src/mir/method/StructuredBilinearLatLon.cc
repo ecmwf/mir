@@ -217,8 +217,8 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
                 Longitude bl_lon  = icoords[bot_i_lft].lon;
                 Longitude br_lon  = icoords[bot_i_rgt].lon;
 
-                if ( tr_lon < tl_lon ) tr_lon += 360;
-                if ( br_lon < bl_lon ) br_lon += 360;
+                if ( tr_lon < tl_lon ) tr_lon += Longitude::GLOBE.value();
+                if ( br_lon < bl_lon ) br_lon += Longitude::GLOBE.value();
 
                 // calculate the weights
                 Longitude w1 =  p.lon - tl_lon;

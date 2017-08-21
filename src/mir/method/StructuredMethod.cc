@@ -44,12 +44,12 @@ void StructuredMethod::left_right_lon_indexes(
     right = start; // take the first if there's a wrap
     left  = start;
 
-    Longitude right_lon = 360.;
+    Longitude right_lon = Longitude::GLOBE;
 //    Longitude left_lon  =   0.;
     for (size_t i = start; i < end; ++i) {
 
         const Longitude& lon = coords[i].lon;
-        ASSERT((0. <= lon) && (lon <= 360.));
+        ASSERT(Longitude::GREENWICH <= lon && lon <= Longitude::GLOBE);
 
         if (lon <= in) {
 //            left_lon = val;
@@ -151,7 +151,7 @@ void StructuredMethod::boundWestEast(const Longitude& lon, const size_t& Ni, con
     ASSERT(Ni > 1);
 
     // locate longitude indices just West and East of given longitude (in-row)
-    iWest = size_t(Longitude((lon * Ni) / 360.).value());
+    iWest = size_t(Longitude((lon * Ni) / Longitude::GLOBE.value()).value());
     iEast = (iWest + 1) % Ni;
     ASSERT(iWest < Ni);
 

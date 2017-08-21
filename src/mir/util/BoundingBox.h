@@ -100,8 +100,6 @@ public:
         return east_;
     }
 
-    Longitude normalise(Longitude lon) const;
-
     bool contains(const Latitude& lat, const Longitude& lon) const;
 
     bool contains(const repres::Iterator::point_ll_t&) const;
