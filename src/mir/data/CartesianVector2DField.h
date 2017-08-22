@@ -13,25 +13,28 @@
 /// @date Apr 2015
 
 
-#ifndef mir_action_AdjustWindsDirections_h
-#define mir_action_AdjustWindsDirections_h
+#ifndef mir_data_CartesianVector2DField_h
+#define mir_data_CartesianVector2DField_h
 
-#include "mir/action/plan/Action.h"
-#include "mir/util/Rotation.h"
+#include <iosfwd>
+#include <vector>
 
 
 namespace mir {
 namespace repres {
 class Representation;
 }
+namespace util {
+class Rotation;
+}
 }
 
 
 namespace mir {
-namespace action {
+namespace data {
 
 
-class AdjustWindsDirections : public Action {
+class CartesianVector2DField {
 public:
 
     // -- Exceptions
@@ -39,11 +42,14 @@ public:
 
     // -- Contructors
 
-    AdjustWindsDirections(const param::MIRParametrisation&);
+    explicit CartesianVector2DField(
+        const repres::Representation*,
+        bool hasMissing = false,
+        double missingValue = 0 );
 
     // -- Destructor
 
-    virtual ~AdjustWindsDirections(); // Change to virtual if base class
+    ~CartesianVector2DField();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -52,7 +58,10 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    void rotate(const util::Rotation&);
+
+    void rotate(const util::Rotation&, std::vector<double>& valuesX, std::vector<double>& valuesY) const;
 
     // -- Overridden methods
     // None
@@ -85,15 +94,17 @@ private:
 
     // -- Members
 
-    util::Rotation rotation_;
+    std::vector<double> valuesX_;
+    std::vector<double> valuesY_;
+    bool hasMissing_;
+    double missingValue_;
+    const repres::Representation* representation_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-    virtual void execute(context::Context & ctx) const;
-    virtual bool sameAs(const Action& other) const;
+    // None
 
     // -- Class members
     // None
@@ -103,13 +114,15 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const AdjustWinds& p)
-    //	{ p.print(s); return s; }
+    friend std::ostream&operator<<(std::ostream& s, const CartesianVector2DField& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 
 
-}  // namespace action
+}  // namespace data
 }  // namespace mir
 
 

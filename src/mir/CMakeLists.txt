@@ -196,6 +196,8 @@ list(
     compare/Spectral.h
     config/LibMir.cc
     config/LibMir.h
+    data/CartesianVector2DField.cc
+    data/CartesianVector2DField.h
     data/Field.cc
     data/Field.h
     data/FieldInfo.cc
