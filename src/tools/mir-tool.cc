@@ -258,7 +258,7 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
     }
 
     if (args.has("geopoints")) {
-        mir::input::GeoPointsFileInput input(job, args(0));
+        mir::input::GeoPointsFileInput input(args(0));
         mir::output::GribFileOutput output(args(1));
         process(job, input, output, "field");
         return;
