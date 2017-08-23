@@ -56,8 +56,7 @@ public:
 
     // -- Contructors
 
-    Iterator();
-    Iterator(const util::Rotation&);
+    Iterator(const util::Rotation& = util::Rotation());
 
     // -- Destructor
 
@@ -97,9 +96,7 @@ protected:
     point_2d_t point_;
     point_ll_t pointUnrotated_;
 
-    util::Rotation rotation_;
-
-    atlas::Projection projection_;
+    atlas::util::Rotation rotation_;
 
     // -- Methods
 

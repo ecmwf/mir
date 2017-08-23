@@ -27,16 +27,46 @@
 #include "atlas/projection/Projection.h"
 #include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
+#include "atlas/util/Rotation.h"
 
 #else
+
+#include "eckit/geometry/Point2.h"
+#include "eckit/geometry/Point3.h"
 
 
 namespace atlas {
 
+
+typedef eckit::geometry::Point2 PointXY;
+typedef eckit::geometry::Point3 PointXYZ;
+
+struct PointLonLat : eckit::geometry::Point2 {
+    PointLonLat();
+    PointLonLat(double, double);
+    double lat() const;
+    double lon() const;
+};
+
+
 namespace util {
+void gaussian_latitudes_npole_spole(int, double*);
 struct Config {
     template<class T>
     void set(const char*, T) {}
+};
+struct Earth {
+    static double radiusInMeters();
+    static double radiusInKm();
+    static double distanceInMeters(const PointLonLat&, const PointLonLat&);
+    static double distanceInMeters(const PointXYZ&, const PointXYZ&);
+    static void convertGeodeticToGeocentric(const PointLonLat&, PointXYZ&, const double& height = 0, const double& radius = radiusInMeters());
+};
+struct Rotation {
+    Rotation(const PointLonLat&);
+    bool rotated() const;
+    void rotate(double[]) const;
+    friend std::ostream& operator<< (std::ostream&, const Rotation&) {}
 };
 }
 
@@ -46,16 +76,6 @@ class RectangularDomain {
 public:
     RectangularDomain(const std::array<double, 2>&, const std::array<double, 2>&) {}
 };
-
-struct DummyPoint {
-    DummyPoint(double =0, double =0, double =0) {}
-    double lat() const;
-    double lon() const;
-};
-typedef DummyPoint PointXY;
-typedef DummyPoint PointXYZ;
-typedef DummyPoint PointLonLat;
-
 
 struct Projection {
     Projection() {}
@@ -86,16 +106,6 @@ Grid(){}
     util::Config spec() const;
 };
 
-
-namespace util {
-void gaussian_latitudes_npole_spole(int, double*);
-struct Earth
-{
-    static double radiusInMeters();
-    static double radiusInKm();
-    static double distanceInMeters(const DummyPoint&, const DummyPoint&);
-};
-}
 
 namespace grid {
 
@@ -239,9 +249,9 @@ int trans_set_resol_lonlat(Trans_t*, int, int);
 int trans_vordiv_to_UV(VorDivToUV_t*);
 const char* trans_error_msg(int);
 
-void trans_use_mpi(bool);
-void trans_init();
-void trans_finalize();
+int trans_use_mpi(bool);
+int trans_init();
+int trans_finalize();
 
 
 #endif
