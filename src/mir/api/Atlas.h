@@ -66,6 +66,7 @@ struct Rotation {
     Rotation(const PointLonLat&);
     bool rotated() const;
     void rotate(double[]) const;
+    void unrotate(double[]) const;
     friend std::ostream& operator<< (std::ostream&, const Rotation&) {}
 };
 }

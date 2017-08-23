@@ -11,15 +11,10 @@
 
 #include "mir/data/CartesianVector2DField.h"
 
-//#include <complex>
 #include <cmath>
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/types/FloatCompare.h"
 #include "mir/api/Atlas.h"
-#include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
@@ -34,13 +29,6 @@ namespace {
 
 inline double normalize(double x) {
     return std::max(std::min(x, 1.0), -1.0);
-}
-
-inline double sign(double a, double b) {
-    if (b >= 0.0 ) {
-        return fabs(a);
-    }
-    return -fabs(a);
 }
 
 }  // (anonymous namespace)
@@ -65,105 +53,68 @@ CartesianVector2DField::~CartesianVector2DField() {
 }
 
 
-void CartesianVector2DField::rotate(const util::Rotation& r) {
+void CartesianVector2DField::rotate(const util::Rotation& rotation) {
     std::vector<double> dummyX, dummyY;
-    rotate(r, dummyX, dummyY);
+    rotate(rotation, dummyX, dummyY);
 }
 
 
-void CartesianVector2DField::rotate(const util::Rotation& r, std::vector<double>& valuesX, std::vector<double>& valuesY) const {
-
-//    // setup Atlas rotation
-//    const std::vector<double> southPole = {
-//        r.south_pole_longitude().value(),
-//        r.south_pole_latitude().value()
-//    };
-
-//    atlas::util::Config config;
-//    config.set("type", "rotated_lonlat");
-//    config.set("south_pole", southPole);
-//    config.set("rotation_angle", r.south_pole_rotation_angle());
-//    atlas::Projection projection = atlas::Projection(config);
-
+void CartesianVector2DField::rotate(const util::Rotation& rotation, std::vector<double>& valuesX, std::vector<double>& valuesY) const {
 
     // setup results vectors
     ASSERT(valuesX.size() == valuesY.size());
-    const size_t N(valuesX.size());
+    ASSERT(valuesX.size());
 
-    ASSERT(!hasMissing_); // For now
-
-
-    // Inspired from HPSHGPW
-
-    std::vector<double> directions(N);
-
-    double pole_longitude = -r.south_pole_longitude().value();
-    double theta = util::angles::degree_to_radian(r.south_pole_latitude().value());
-    double sin_theta = -std::sin(theta);
-    double cos_theta = -std::cos(theta);
-
-    eckit::ScopedPtr<repres::Iterator> it(representation_->iterator());
-    size_t ip = 0;
-
-    while (it->next()) {
-        ASSERT(ip < N);
-
-        const repres::Iterator::point_ll_t& p = it->pointUnrotated();
-
-        double radian_lat = util::angles::degree_to_radian(p.lat.value());
-        double sin_lat = std::sin(radian_lat);
-        double cos_lat = std::cos(radian_lat);
-
-        // For some reason, the algorithms only work between in ]-180,180] or [-180,180[
-        Longitude lon = p.lon + pole_longitude;
-        lon = lon.normalise(Longitude::MINUS_DATE_LINE);
-
-        double radian_lon = util::angles::degree_to_radian(lon.value());
-        double sin_lon = std::sin(radian_lon);
-        double cos_lon = std::cos(radian_lon);
-        double z = normalize(sin_theta * sin_lat + cos_theta * cos_lat * cos_lon);
-
-        double ncos_lat = 0;
-
-        if (!(eckit::types::is_approximately_equal(z,  1.0) ||
-              eckit::types::is_approximately_equal(z, -1.0))) {
-            ncos_lat = std::cos(std::asin(z));
-        }
-
-        if (eckit::types::is_approximately_equal(ncos_lat, 0.0)) {
-            ncos_lat = 1.0;
-        }
-
-        double cos_new = normalize(( (sin_theta * cos_lat * cos_lon - cos_theta * sin_lat) ) / ncos_lat);
-        double lon_new = sign(std::acos(cos_new), radian_lon);
-
-        double cos_delta = normalize(sin_theta * sin_lon * std::sin(lon_new) + cos_lon * cos_new);
-        double delta = sign(std::acos(cos_delta), -cos_theta * radian_lon);
-
-        directions[ip] = delta;
-        ++ip;
-    }
-
-
-    std::vector<double> c(N);
-    std::vector<double> s(N);
-
-    for (size_t i = 0; i < N; i++) {
-        double d =  directions[i];
-        c[i] = std::cos(d);
-        s[i] = std::sin(d);
-    }
-
-
-
-    // TODO: use matrix multiplication
-
+    const size_t N = valuesX.size();
     std::vector<double> resultX(N);
     std::vector<double> resultY(N);
 
-    for (size_t j = 0; j < N; j++) {
-        resultX[j] = valuesX[j] * c[j] - valuesY[j] * s[j];
-        resultY[j] = valuesX[j] * s[j] + valuesY[j] * c[j];
+    // setup rotation
+    ASSERT(rotation.south_pole_rotation_angle() == 0.);  // For now
+    const atlas::PointLonLat pole(rotation.south_pole_longitude().value(), rotation.south_pole_latitude().value());
+    atlas::util::Rotation r(pole);
+
+    // determine angle between meridians (c) using the (first) spherical law of cosines:
+    // https://en.wikipedia.org/wiki/Spherical_law_of_cosines
+    // NOTE: uses spherical (not geodetic) cordinates: C = θ = π / 2 - latitude
+    double C = util::angles::degree_to_radian(90. - rotation.south_pole_latitude().value());
+    double cos_C = std::cos(C);
+    double sin_C = std::sin(C);
+
+    eckit::ScopedPtr<repres::Iterator> it(representation_->iterator());
+    size_t i = 0;
+
+    while (it->next()) {
+        ASSERT(i < N);
+
+        if (valuesX[i] == missingValue_ || valuesY[i] == missingValue_) {
+            resultX[i] = resultY[i] = missingValue_;
+            ++i;
+            continue;
+        }
+
+        const repres::Iterator::point_ll_t& p = it->pointUnrotated();
+
+        atlas::PointLonLat pUnrotated(p.lon.value(), p.lat.value());
+        r.unrotate(pUnrotated.data());
+
+        // normalise to correct quadrant (q)
+        Longitude lonRotated = rotation.south_pole_longitude() - p.lon;
+        lonRotated = lonRotated.normalise(Longitude::MINUS_DATE_LINE);
+
+        const double
+                q = (sin_C * lonRotated.value() < 0.) ? 1. : -1.,
+
+                a = util::angles::degree_to_radian(lonRotated.value()),
+                b = util::angles::degree_to_radian(pUnrotated.lon()),
+
+                cos_c = normalize(std::cos(a) * std::cos(b) + std::sin(a) * std::sin(b) * cos_C),
+                sin_c = q * std::sqrt(1. - cos_c * cos_c);
+
+        // TODO: use matrix multiplication
+        resultX[i] = cos_c * valuesX[i] - sin_c * valuesY[i];
+        resultY[i] = sin_c * valuesX[i] + cos_c * valuesY[i];
+        ++i;
     }
 
     valuesX.swap(resultX);
