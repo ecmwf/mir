@@ -71,8 +71,8 @@ void AdjustWindsDirections::execute(context::Context & ctx) const {
 
         cf.rotate(rotation_, valuesX, valuesY);
 
-        field.update(valuesX, 0);
-        field.update(valuesY, 1);
+        field.update(valuesX, i);
+        field.update(valuesY, i + 1);
     }
 }
 
