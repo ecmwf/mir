@@ -522,28 +522,27 @@ void PointSearch::closestWithinRadius(const PointType & pt, double radius, std::
 }
 
 
-//===============================================================================
+//=========================================================================
 
 
-static eckit::Mutex *local_mutex = 0;
-static std::map<std::string, PointSearchTreeFactory*> *m = 0;
+namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-
-
+static eckit::Mutex *local_mutex = 0;
+static std::map< std::string, PointSearchTreeFactory* >* m = 0;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map<std::string, PointSearchTreeFactory*>();
+    m = new std::map<std::string, PointSearchTreeFactory* >();
 }
+}  // (anonymous namespace)
 
 
 PointSearchTreeFactory::PointSearchTreeFactory(const std::string &name):
     name_(name) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("PointSearchTreeFactory: duplication action: " + name);
+        throw eckit::SeriousBug("PointSearchTreeFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -553,36 +552,27 @@ PointSearchTreeFactory::PointSearchTreeFactory(const std::string &name):
 
 PointSearchTreeFactory::~PointSearchTreeFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    m->erase(name_);
 
+    m->erase(name_);
 }
 
 
-PointSearchTree *PointSearchTreeFactory::build(const repres::Representation& r,
+PointSearchTree *PointSearchTreeFactory::build(
+        const repres::Representation& r,
         const param::MIRParametrisation& params,
         size_t itemCount) {
-
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     std::string name = "mapped-cache-file";
-
     params.get("point-search-trees", name);
 
-
-    eckit::Log::info() << "PointSearchTreeFactory" << name << " " << r << std::endl;
-
-    eckit::Log::debug<LibMir>() << "Looking for PointSearchTreeFactory [" << name << "]" << std::endl;
+    eckit::Log::info() << "PointSearchTreeFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        if (j == m->end()) {
-            eckit::Log::error() << "No PointSearchTreeFactory for [" << name << "]" << std::endl;
-            eckit::Log::error() << "PointSearchTreeFactories are:" << std::endl;
-            for (j = m->begin() ; j != m->end() ; ++j)
-                eckit::Log::error() << "   " << (*j).first << std::endl;
-            throw eckit::SeriousBug(std::string("No PointSearchTreeFactory called ") + name);
-        }
+        list(eckit::Log::error() << "PointSearchTreeFactory: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("PointSearchTreeFactory: unknown '" + name + "'");
     }
 
     return (*j).second->make(r, params, itemCount);
@@ -594,12 +584,11 @@ void PointSearchTreeFactory::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (std::map<std::string, PointSearchTreeFactory *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
-        out << sep << (*j).first;
+    for (auto j : *m) {
+        out << sep << j.first;
         sep = ", ";
     }
 }
-
 
 
 // bool caching = true;
@@ -625,8 +614,6 @@ void PointSearchTreeFactory::list(std::ostream& out) {
 // else {
 //     tree_.reset(new PointSearchTreeMemory());
 // }
-
-
 
 
 }  // namespace util

@@ -24,21 +24,6 @@ namespace mir {
 namespace style {
 
 
-namespace {
-
-
-static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, MappingFactory* > *m = 0;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static void init() {
-    local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, MappingFactory* >();
-}
-
-
-}  // (anonymous namespace)
-
-
 long Mapping::getTruncationFromGaussianNumber(const long&) const {
     std::ostringstream os;
     os << "Mapping::getTruncationFromGaussianNumber() not implemented for " << *this;
@@ -53,13 +38,27 @@ long Mapping::getGaussianNumberFromTruncation(const long&) const {
 }
 
 
+//=========================================================================
+
+
+namespace {
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex = 0;
+static std::map< std::string, MappingFactory* >* m = 0;
+static void init() {
+    local_mutex = new eckit::Mutex();
+    m = new std::map< std::string, MappingFactory* >();
+}
+}  // (anonymous namespace)
+
+
 MappingFactory::MappingFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
 
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("MappingFactory: duplicate mapping: " + name);
+        throw eckit::SeriousBug("MappingFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -69,6 +68,7 @@ MappingFactory::MappingFactory(const std::string& name) : name_(name) {
 
 MappingFactory::~MappingFactory() {
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+
     m->erase(name_);
 }
 
@@ -77,17 +77,12 @@ Mapping* MappingFactory::build(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
-    eckit::Log::debug< LibMir >() << "Looking for MappingFactory [" << name << "]"
-                                  << std::endl;
+    eckit::Log::debug<LibMir>() << "MappingFactory: looking for '" << name << "'" << std::endl;
 
-    std::map< std::string, MappingFactory* >::const_iterator j = m->find(name);
+    auto j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No MappingFactory for [" << name << "]"
-                            << std::endl;
-        eckit::Log::error() << "MappingFactories are:" << std::endl;
-        for (j = m->begin(); j != m->end(); ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No MappingFactory called ") + name);
+        list(eckit::Log::error() << "MappingFactory: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("MappingFactory: unknown '" + name + "'");
     }
 
     return (*j).second->make();
@@ -99,9 +94,8 @@ void MappingFactory::list(std::ostream& out) {
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     const char* sep = "";
-    for (std::map< std::string, MappingFactory* >::const_iterator j = m->begin();
-         j != m->end(); ++j) {
-        out << sep << (*j).first;
+    for (auto j : *m) {
+        out << sep << j.first;
         sep = ", ";
     }
 }

@@ -13,31 +13,22 @@
 /// @date Apr 2015
 
 
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Once.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/exception/Exceptions.h"
-#include "mir/config/LibMir.h"
-#include "mir/util/Grib.h"
-#include "mir/input/GribFileInput.h"
-
 #include "mir/input/MIRInput.h"
+
+#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/thread/Once.h"
+
+#include "mir/config/LibMir.h"
+#include "mir/input/GribFileInput.h"
+#include "mir/util/Grib.h"
+
 
 namespace mir {
 namespace input {
-
-
-static eckit::Mutex *local_mutex = 0;
-static std::map<unsigned long, MIRInputFactory *> *m = 0;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
-
-static void init() {
-    local_mutex = new eckit::Mutex();
-    m = new std::map<unsigned long, MIRInputFactory *>();
-}
 
 
 MIRInput::MIRInput() {
@@ -80,30 +71,42 @@ size_t MIRInput::dimensions() const {
     throw eckit::SeriousBug(os.str());
 }
 
-//======================================
+
+//=========================================================================
+
+
+namespace {
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex = 0;
+static std::map< unsigned long, MIRInputFactory* >* m = 0;
+static void init() {
+    local_mutex = new eckit::Mutex();
+    m = new std::map<unsigned long, MIRInputFactory *>();
+}
+}  // (anonymous namespace)
+
 
 MIRInputFactory::MIRInputFactory(unsigned long magic):
     magic_(magic) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(magic) != m->end()) {
         std::ostringstream oss;
-        oss << "MIRInputFactory: duplication factory: " << std::hex << magic;
+        oss << "MIRInputFactory: duplicate '" << std::hex << magic << "'";
         throw eckit::SeriousBug(oss.str());
     }
 
-    // ASSERT(m->find(magic) == m->end());
     (*m)[magic] = this;
 }
 
 
 MIRInputFactory::~MIRInputFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    m->erase(magic_);
 
+    m->erase(magic_);
 }
+
 
 static void put(std::ostream& out, unsigned long magic) {
     out << "0x" << std::hex <<  std::setfill('0') << std::setw(8)  << magic << std::dec;
@@ -147,51 +150,34 @@ MIRInput *MIRInputFactory::build(const std::string& path) {
         }
     }
 
-
-    eckit::Log::debug<LibMir>() << "Looking for MIRInputFactory [0x"
-                                << std::hex
-                                << magic
-                                << std::dec
-                                << " ("
-                                << smagic
-                                << ")"
-                                << "]" << std::endl;
+    std::ostringstream oss;
+    oss << "0x" << std::hex << magic << std::dec << " (" << smagic << ")";
+    eckit::Log::debug<LibMir>() << "MIRInputFactory: looking for '" << oss.str() << "'" << std::endl;
 
     auto j = m->find(magic);
     if (j == m->end()) {
-        if (j == m->end()) {
-            eckit::Log::error() << "No MIRInputFactory for [0x" << std::hex
-                                << magic
-                                << std::dec
-                                << " ("
-                                << smagic
-                                << ")"
-                                << "]" << std::endl;
+        list(eckit::Log::warning() << "MIRInputFactory: unknown '" << oss.str() << "', choices are: ");
+        eckit::Log::warning() << std::endl;
 
-            eckit::Log::error() << "MIRInputFactory are:" << std::endl;
-            for (j = m->begin() ; j != m->end() ; ++j) {
-                put(eckit::Log::error(), (*j).first);
-                eckit::Log::error() << std::endl;
-            }
-            eckit::Log::error() << "MIRInputFactory assuming grib" << std::endl;
-            return new GribFileInput(path);
-        }
+        eckit::Log::warning() << "MIRInputFactory: assuming 'GRIB'" << std::endl;
+        return new GribFileInput(path);
     }
 
     return (*j).second->make(path);
 }
 
 
-// void MIRInputFactory::list(std::ostream& out) {
-//     pthread_once(&once, init);
-//     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+void MIRInputFactory::list(std::ostream& out) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-//     const char* sep = "";
-//     for (std::map<std::string, MIRInputFactory *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
-//         out << sep << (*j).first;
-//         sep = ", ";
-//     }
-// }
+    const char* sep = "";
+    for (auto j : *m) {
+        put(out, j.first);
+        sep = ", ";
+    }
+}
+
 
 }  // namespace input
 }  // namespace mir

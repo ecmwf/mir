@@ -225,7 +225,7 @@ public:
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable
     static const Representation* build(const param::MIRParametrisation&);
-
+    static void list(std::ostream&);
 };
 
 

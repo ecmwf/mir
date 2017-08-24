@@ -14,88 +14,92 @@
 ///
 /// @date Apr 2015
 
+
+#include "mir/caching/legendre/LegendreLoader.h"
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 
-#include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+
 
 namespace mir {
 namespace caching {
 namespace legendre {
-
-//----------------------------------------------------------------------------------------------------------------------
-
-static eckit::Mutex* local_mutex = 0;
-static std::map<std::string, LegendreLoaderFactory*>* m = 0;
-
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
-static void init() {
-    local_mutex = new eckit::Mutex();
-    m = new std::map<std::string, LegendreLoaderFactory*>();
-}
-
-//----------------------------------------------------------------------------------------------------------------------
 
 LegendreLoader::LegendreLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
     : parametrisation_(parametrisation), path_(path.realName()) {}
 
 LegendreLoader::~LegendreLoader() {}
 
-//----------------------------------------------------------------------------------------------------------------------
+
+//=========================================================================
+
+
+namespace {
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex = 0;
+static std::map< std::string, LegendreLoaderFactory* >* m = 0;
+static void init() {
+    local_mutex = new eckit::Mutex();
+    m = new std::map< std::string, LegendreLoaderFactory* >();
+}
+}  // (anonymous namespace)
+
 
 LegendreLoaderFactory::LegendreLoaderFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    if (m->find(name) != m->end()) {
+        throw eckit::SeriousBug("LegendreLoaderFactory: duplicate '" + name + "'");
+    }
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
 }
 
+
 LegendreLoaderFactory::~LegendreLoaderFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
     m->erase(name_);
 }
 
+
 LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& params, const eckit::PathName& path) {
     pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     std::string name = "mapped-memory";
     params.get("legendre-loader", name);
 
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, LegendreLoaderFactory*>::const_iterator j = m->find(name);
+    eckit::Log::debug<LibMir>() << "LegendreLoaderFactory: looking for '" << name << "'" << std::endl;
 
-    eckit::Log::debug<LibMir>() << "Looking for LegendreLoaderFactory [" << name << "]" << std::endl;
-
+    auto j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No LegendreLoaderFactory for [" << name << "]" << std::endl;
-        eckit::Log::error() << "LegendreLoaderFactories are:" << std::endl;
-        for (j = m->begin(); j != m->end(); ++j) eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No LegendreLoaderFactory called ") + name);
+        list(eckit::Log::error() << "LegendreLoaderFactory: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("LegendreLoaderFactory: unknown '" + name + "'");
     }
 
     return (*j).second->make(params, path);
 }
 
+
 void LegendreLoaderFactory::list(std::ostream& out) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (std::map<std::string, LegendreLoaderFactory*>::const_iterator j = m->begin(); j != m->end(); ++j) {
-        out << sep << (*j).first;
+    for (auto j : *m) {
+        out << sep << j.first;
         sep = ", ";
     }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace legendre
 }  // namespace caching

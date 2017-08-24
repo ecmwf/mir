@@ -13,33 +13,18 @@
 /// @date Apr 2015
 
 
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Once.h"
-#include "eckit/thread/Mutex.h"
+#include "mir/compare/Comparator.h"
+
 #include "eckit/exception/Exceptions.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/thread/Once.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/compare/Comparator.h"
 
 
 namespace mir {
 namespace compare {
-
-namespace {
-
-
-static eckit::Mutex *local_mutex = 0;
-static std::map<std::string, ComparatorFactory *> *m = 0;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
-
-static void init() {
-    local_mutex = new eckit::Mutex();
-    m = new std::map<std::string, ComparatorFactory *>();
-}
-
-
-}  // (anonymous namespace)
 
 
 Comparator::Comparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) :
@@ -52,14 +37,27 @@ Comparator::~Comparator() {
 }
 
 
-ComparatorFactory::ComparatorFactory(const std::string &name):
+//=========================================================================
+
+
+namespace {
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex = 0;
+static std::map< std::string, ComparatorFactory* >* m = 0;
+static void init() {
+    local_mutex = new eckit::Mutex();
+    m = new std::map< std::string, ComparatorFactory* >();
+}
+}  // (anonymous namespace)
+
+
+ComparatorFactory::ComparatorFactory(const std::string& name):
     name_(name) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    if(m->find(name) != m->end()) {
-        throw eckit::SeriousBug("ComparatorFactory: duplication action: " + name);
+    if (m->find(name) != m->end()) {
+        throw eckit::SeriousBug("ComparatorFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -69,8 +67,8 @@ ComparatorFactory::ComparatorFactory(const std::string &name):
 
 ComparatorFactory::~ComparatorFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    m->erase(name_);
 
+    m->erase(name_);
 }
 
 
@@ -78,15 +76,12 @@ Comparator *ComparatorFactory::build(const std::string& name, const param::MIRPa
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "Looking for ComparatorFactory [" << name << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "ComparatorFactory: looking for '" << name << "'" << std::endl;
 
-    std::map<std::string, ComparatorFactory *>::const_iterator j = m->find(name);
+    auto j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No ComparatorFactory for [" << name << "]" << std::endl;
-        eckit::Log::error() << "ComparatorFactories are:" << std::endl;
-        for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No ComparatorFactory called [") + name + "]");
+        list(eckit::Log::error() << "ComparatorFactory: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("ComparatorFactory: unknown '" + name + "'");
     }
 
     return (*j).second->make(param1, param2);
@@ -98,8 +93,8 @@ void ComparatorFactory::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (std::map<std::string, ComparatorFactory *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
-        out << sep << (*j).first;
+    for (auto j : *m) {
+        out << sep << j.first;
         sep = ", ";
     }
 }

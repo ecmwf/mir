@@ -18,26 +18,10 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 #include "mir/config/LibMir.h"
-#include "mir/style/Mapping.h"
 
 
 namespace mir {
 namespace style {
-
-
-namespace {
-
-
-static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, IntermediateGridFactory* > *m = 0;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static void init() {
-    local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, IntermediateGridFactory* >();
-}
-
-
-}  // (anonymous namespace)
 
 
 IntermediateGrid::IntermediateGrid(const param::MIRParametrisation& parametrisation) :
@@ -51,13 +35,26 @@ void IntermediateGrid::get(const std::string& name, std::string& value) const {
 }
 
 
+//=========================================================================
+
+
+namespace {
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex = 0;
+static std::map< std::string, IntermediateGridFactory* > *m = 0;
+static void init() {
+    local_mutex = new eckit::Mutex();
+    m = new std::map< std::string, IntermediateGridFactory* >();
+}
+}  // (anonymous namespace)
+
+
 IntermediateGridFactory::IntermediateGridFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
-
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("IntermediateGridFactory: duplicate intermediate grid: " + name);
+        throw eckit::SeriousBug("IntermediateGridFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -67,6 +64,7 @@ IntermediateGridFactory::IntermediateGridFactory(const std::string& name) : name
 
 IntermediateGridFactory::~IntermediateGridFactory() {
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+
     m->erase(name_);
 }
 
@@ -75,17 +73,12 @@ IntermediateGrid* IntermediateGridFactory::build(const std::string& name, const 
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
-    eckit::Log::debug< LibMir >() << "Looking for IntermediateGridFactory [" << name << "]"
-                                  << std::endl;
+    eckit::Log::debug<LibMir>() << "IntermediateGridFactory: looking for '" << name << "'" << std::endl;
 
-    std::map< std::string, IntermediateGridFactory* >::const_iterator j = m->find(name);
+    auto j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No IntermediateGridFactory for [" << name << "]"
-                            << std::endl;
-        eckit::Log::error() << "IntermediateGridFactories are:" << std::endl;
-        for (j = m->begin(); j != m->end(); ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::UserError(std::string("No IntermediateGridFactory called ") + name);
+        list(eckit::Log::error() << "IntermediateGridFactory: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("IntermediateGridFactory: unknown '" + name + "'");
     }
 
     return (*j).second->make(parametrisation);
@@ -97,9 +90,8 @@ void IntermediateGridFactory::list(std::ostream& out) {
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     const char* sep = "";
-    for (std::map< std::string, IntermediateGridFactory* >::const_iterator j = m->begin();
-         j != m->end(); ++j) {
-        out << sep << (*j).first;
+    for (auto j : *m) {
+        out << sep << j.first;
         sep = ", ";
     }
 }
