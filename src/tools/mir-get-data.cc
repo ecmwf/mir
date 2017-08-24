@@ -106,7 +106,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 atlas::Grid grid(rep->atlasGrid());
                 first = true;
                 for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
-                    point_t P(p.lon(), p.lat());
+                    Iterator::point_2d_t P(p.lat(), p.lon());
                     if (first) {
                         bbox_min_atlas = bbox_max_atlas = P;
                         first = false;
@@ -126,8 +126,8 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
                 eckit::Log::info()
                         <<   "\t" "MIR   #values       = " << field.values(0).size() << "\t" "validates? " << (validates? "yes":"no")
-                        << "\n\t" "MIR   #[(lon, lat)] = " << lonlat_size_mir   << "\t" "bbox(N, W, S, E) = (" << bbox_max_mir[1]   << ", " << bbox_min_mir[0]   << ", " << bbox_min_mir[1]   << ", " << bbox_max_mir[0]   << ")"
-                        << "\n\t" "Atlas #[(lon, lat)] = " << lonlat_size_atlas << "\t" "bbox(N, W, S, E) = (" << bbox_max_atlas[1] << ", " << bbox_min_atlas[0] << ", " << bbox_min_atlas[1] << ", " << bbox_max_atlas[0] << ")"
+                        << "\n\t" "MIR   #[(lon, lat)] = " << lonlat_size_mir   << "\t" "bbox(N, W, S, E) = (" << bbox_max_mir[0]   << ", " << bbox_min_mir[1]   << ", " << bbox_min_mir[0]   << ", " << bbox_max_mir[1]   << ")"
+                        << "\n\t" "Atlas #[(lon, lat)] = " << lonlat_size_atlas << "\t" "bbox(N, W, S, E) = (" << bbox_max_atlas[0] << ", " << bbox_min_atlas[1] << ", " << bbox_min_atlas[0] << ", " << bbox_max_atlas[1] << ")"
                         << std::endl;
 
             } else if (atlas) {
