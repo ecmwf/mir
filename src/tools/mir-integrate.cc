@@ -18,7 +18,6 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/types/FloatCompare.h"
 
 #include "atlas/array/IndexView.h"
 #include "atlas/functionspace/FunctionSpace.h"

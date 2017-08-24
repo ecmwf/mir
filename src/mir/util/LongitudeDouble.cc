@@ -75,9 +75,8 @@ void LongitudeDouble::decode(eckit::Stream& s) {
 }
 
 bool LongitudeDouble::sameWithGrib1Accuracy(const LongitudeDouble& other) const {
-    const double GRIB1EPSILON = 0.001;
-    eckit::types::CompareApproximatelyEqual<double> cmp(GRIB1EPSILON);
-    return cmp(value_, other.value_);
+    static const double GRIB1EPSILON = 0.001;
+    return eckit::types::is_approximately_equal(value_, other.value_, GRIB1EPSILON);
 }
 
 LongitudeDouble LongitudeDouble::normalise(const LongitudeDouble& minimum) const {
