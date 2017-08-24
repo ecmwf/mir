@@ -11,6 +11,8 @@
 
 #include "mir/method/decompose/PolarAngleToCartesian.h"
 
+#include "mir/util/Angles.h"
+
 
 namespace mir {
 namespace method {
@@ -18,10 +20,10 @@ namespace decompose {
 
 
 namespace {
-static DecomposeToCartesianChoice<PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC> > __polarAngleDegreesAsymmetricToCartesian( "PolarAngleDegreesAsymmetricToCartesian" );
-static DecomposeToCartesianChoice<PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC>  > __polarAngleDegreesSymmetricToCartesian(  "PolarAngleDegreesSymmetricToCartesian"  );
-static DecomposeToCartesianChoice<PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_ASYMMETRIC> > __polarAngleRadiansAsymmetricToCartesian( "PolarAngleRadiansAsymmetricToCartesian" );
-static DecomposeToCartesianChoice<PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC>  > __polarAngleRadiansSymmetricToCartesian(  "PolarAngleRadiansSymmetricToCartesian"  );
+static DecomposeToCartesianChoice<PolarAngleToCartesian<detail::CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC> > __polarAngleDegreesAsymmetricToCartesian( "PolarAngleDegreesAsymmetricToCartesian" );
+static DecomposeToCartesianChoice<PolarAngleToCartesian<detail::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC>  > __polarAngleDegreesSymmetricToCartesian(  "PolarAngleDegreesSymmetricToCartesian"  );
+static DecomposeToCartesianChoice<PolarAngleToCartesian<detail::CYLINDRICAL_ANGLE_RADIANS_ASYMMETRIC> > __polarAngleRadiansAsymmetricToCartesian( "PolarAngleRadiansAsymmetricToCartesian" );
+static DecomposeToCartesianChoice<PolarAngleToCartesian<detail::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC>  > __polarAngleRadiansSymmetricToCartesian(  "PolarAngleRadiansSymmetricToCartesian"  );
 }
 
 
@@ -71,7 +73,7 @@ void PolarAngleToCartesian<FIELDINFO_COMPONENT>::recompose(const WeightMatrix::M
 
 
 template<>
-PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC>::PolarAngleToCartesian(double missingValue) :
+PolarAngleToCartesian<detail::CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC>::PolarAngleToCartesian(double missingValue) :
     DecomposeToCartesian(missingValue),
     fp_angle_to_complex_(&util::angles::convert_degrees_to_complex<double>),
     fp_complex_to_angle_(&util::angles::convert_complex_to_degrees<double>),
@@ -80,7 +82,7 @@ PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC>::Po
 
 
 template<>
-PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC>::PolarAngleToCartesian(double missingValue) :
+PolarAngleToCartesian<detail::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC>::PolarAngleToCartesian(double missingValue) :
     DecomposeToCartesian(missingValue),
     fp_angle_to_complex_(&util::angles::convert_degrees_to_complex<double>),
     fp_complex_to_angle_(&util::angles::convert_complex_to_degrees<double>),
@@ -89,7 +91,7 @@ PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC>::Pol
 
 
 template<>
-PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_ASYMMETRIC>::PolarAngleToCartesian(double missingValue) :
+PolarAngleToCartesian<detail::CYLINDRICAL_ANGLE_RADIANS_ASYMMETRIC>::PolarAngleToCartesian(double missingValue) :
     DecomposeToCartesian(missingValue),
     fp_angle_to_complex_(&util::angles::convert_radians_to_complex<double>),
     fp_complex_to_angle_(&util::angles::convert_complex_to_radians<double>),
@@ -98,7 +100,7 @@ PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_ASYMMETRIC>::Po
 
 
 template<>
-PolarAngleToCartesian<data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC>::PolarAngleToCartesian(double missingValue) :
+PolarAngleToCartesian<detail::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC>::PolarAngleToCartesian(double missingValue) :
     DecomposeToCartesian(missingValue),
     fp_angle_to_complex_(&util::angles::convert_radians_to_complex<double>),
     fp_complex_to_angle_(&util::angles::convert_complex_to_radians<double>),

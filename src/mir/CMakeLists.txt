@@ -200,8 +200,6 @@ list(
     data/CartesianVector2DField.h
     data/Field.cc
     data/Field.h
-    data/FieldInfo.cc
-    data/FieldInfo.h
     data/MIRField.cc
     data/MIRField.h
     data/MIRFieldStats.cc

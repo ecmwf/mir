@@ -14,13 +14,22 @@
 
 #include "mir/method/decompose/DecomposeToCartesian.h"
 
-#include "mir/data/FieldInfo.h"
-#include "mir/util/Angles.h"
-
 
 namespace mir {
 namespace method {
 namespace decompose {
+
+
+namespace detail {
+enum Component {
+    // Cylindrical/polar representations
+    // @note angles in degrees [0,360[/[-180,180] or radians [0,2π[/[-π,π]
+    CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC = 4,
+    CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC  = 5,
+    CYLINDRICAL_ANGLE_RADIANS_ASYMMETRIC = 6,
+    CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC  = 7,
+};
+}
 
 
 template< int FIELDINFO_COMPONENT >
@@ -115,10 +124,10 @@ private:
 };
 
 
-template<> PolarAngleToCartesian< data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC >::PolarAngleToCartesian(double missingValue);
-template<> PolarAngleToCartesian< data::FieldInfo::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC  >::PolarAngleToCartesian(double missingValue);
-template<> PolarAngleToCartesian< data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_ASYMMETRIC >::PolarAngleToCartesian(double missingValue);
-template<> PolarAngleToCartesian< data::FieldInfo::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC  >::PolarAngleToCartesian(double missingValue);
+template<> PolarAngleToCartesian< detail::CYLINDRICAL_ANGLE_DEGREES_ASYMMETRIC >::PolarAngleToCartesian(double missingValue);
+template<> PolarAngleToCartesian< detail::CYLINDRICAL_ANGLE_DEGREES_SYMMETRIC  >::PolarAngleToCartesian(double missingValue);
+template<> PolarAngleToCartesian< detail::CYLINDRICAL_ANGLE_RADIANS_ASYMMETRIC >::PolarAngleToCartesian(double missingValue);
+template<> PolarAngleToCartesian< detail::CYLINDRICAL_ANGLE_RADIANS_SYMMETRIC  >::PolarAngleToCartesian(double missingValue);
 
 
 }  // namespace decompose
