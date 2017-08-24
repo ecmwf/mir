@@ -23,8 +23,8 @@ DefaultParametrisation::DefaultParametrisation() {
     set("executor", "simple");
 
     set("interpolation", "linear"); // The word 'method' is used in grib
-    set("decomposition", "none");
-    set("stats", "scalar");
+    set("dimension", "1d.linear");
+
     set("caching", true);
     set("kd-trees.caching", true);
 

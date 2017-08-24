@@ -59,6 +59,8 @@ public:
 
     // -- Methods
 
+    void copyValuesTo(SimpleParametrisation&) const;
+
     SimpleParametrisation& set(const std::string& name, const std::string &value);
     SimpleParametrisation& set(const std::string& name, const char *value);
     SimpleParametrisation& set(const std::string& name, float value);

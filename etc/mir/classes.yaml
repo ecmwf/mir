@@ -2,37 +2,13 @@
 # composition of a mixture (mass, amount, volume, ...) with respect to the volume of the mixture (typical units: [kg m**-3])
 concentration: {}
 
-# polar vector angle component (typical units: radians or degrees)
-direction:
-  FieldInfo: vector.1d.polar.angle
-  decomposition: PolarAngleDegreesAsymmetricToCartesian
-  degree: true
-  stats: angle
-  symmetric: false
+# angle with minimum zero (typical units: radians or degrees)
+angle.asymmetric:
+  angle-symmetric: false
 
-# polar vector angle component (typical units: radians or degrees)
-direction.degrees-asymmetric:
-  FieldInfo: vector.1d.polar.angle
-  decomposition: PolarAngleDegreesAsymmetricToCartesian
-  degree: true
-  stats: angle
-  symmetric: false
-
-# polar vector angle component (typical units: radians or degrees)
-direction.degrees-symmetric:
-  FieldInfo: vector.1d.polar.angle
-  decomposition: PolarAngleDegreesSymmetricToCartesian
-  degree: true
-  stats: angle
-  symmetric: true
-
-# polar vector angle component (typical units: radians or degrees)
-direction.radians-symmetric:
-  FieldInfo: vector.1d.polar.angle
-  decomposition: PolarAngleRadiansSymmetricToCartesian
-  degree: false
-  stats: angle
-  symmetric: true
+# angle symmetric around zero (typical units: radians or degrees)
+angle.symmetric:
+  angle-symmetric: true
 
 # associated to a table
 index:
@@ -43,41 +19,12 @@ index.associated:
   interpolation: nearest-neighbour
 
 # physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
-intensity:
-  FieldInfo: scalar
-  comparison: scalar
+intensity: {}
 
 # physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
 intensity-lsm:
-  FieldInfo: scalar
-  comparison: scalar
   comparison-absolute-error: 0.1
   lsm: true
-
-# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
-intensity.vector-2d-cartesian.x:
-  FieldInfo: vector.2d.cartesian.x
-  comparison: scalar
-
-# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
-intensity.vector-2d-cartesian.y:
-  FieldInfo: vector.2d.cartesian.y
-  comparison: scalar
-
-# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
-intensity.vector-3d-cartesian.x:
-  FieldInfo: vector.3d.cartesian.x
-  comparison: scalar
-
-# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
-intensity.vector-3d-cartesian.y:
-  FieldInfo: vector.3d.cartesian.y
-  comparison: scalar
-
-# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
-intensity.vector-3d-cartesian.z:
-  FieldInfo: vector.3d.cartesian.z
-  comparison: scalar
 
 # ratio between two related quantities (time, mass, length, etc.) (typical units: [... s**-1])
 rate: {}
@@ -136,11 +83,11 @@ spectrum:
   interpolation: nearest-neighbour
 
 # intensity as a function of discrete wavelengths
-spectrum.associated-direction:
+spectrum.associated-angle:
   interpolation: nearest-neighbour
 
 # intensity as a function of discrete wavelengths
-spectrum.associated-intensity:
+spectrum.associated-magnitude:
   interpolation: nearest-neighbour
 
 # quantity expressing the internal forces arising from deformation exerted from external forces (typical units: [Pa])
@@ -151,16 +98,10 @@ stress.accumulated: {}
 
 unknown.experimental:
   FIXME: issue warning?
-  FieldInfo: scalar
-  comparison: scalar
 
 unknown.missing:
   FIXME: issue warning?
-  FieldInfo: scalar
-  comparison: scalar
 
 unknown.reserved:
   FIXME: issue warning?
-  FieldInfo: scalar
-  comparison: scalar
 

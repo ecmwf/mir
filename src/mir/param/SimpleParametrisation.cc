@@ -354,6 +354,12 @@ SimpleParametrisation::~SimpleParametrisation() {
     reset();
 }
 
+void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other) const {
+    for (auto j : settings_) {
+        j.second->copyValueTo(j.first, other);
+    }
+}
+
 bool SimpleParametrisation::has(const std::string& name) const {
     return settings_.find(name) != settings_.end();
 }

@@ -24,7 +24,7 @@ concentration:
 - 260619  # Mass concentration of condensed water in soil
 - 300089  # Density
 
-direction:
+angle.asymmetric:
 - 3031  # Wind direction
 - 3047  # Direction of current
 - 3093  # Direction of ice drift
@@ -45,6 +45,11 @@ direction:
 - 260233  # Primary wave direction
 - 260236  # Current direction
 - 260260  # 10 metre wind direction
+- 260296  # Longitude of U Wind Component of Velocity
+- 260298  # Longitude of V Wind Component of Velocity
+- 260300  # Longitude of Presure Point
+- 260422  # East Longitude (0 - 360)
+- 260426  # East Longitude (nearest neighbor) (0 - 360)
 - 300031  # Wind direction
 - 300047  # Direction of current
 - 300093  # Direction of ice drift
@@ -53,25 +58,16 @@ direction:
 - 300107  # Primary wave direction
 - 300109  # Second wave direction
 
-direction.degrees-asymmetric:
-- 260296  # Longitude of U Wind Component of Velocity
-- 260298  # Longitude of V Wind Component of Velocity
-- 260300  # Longitude of Presure Point
-- 260422  # East Longitude (0 - 360)
-- 260426  # East Longitude (nearest neighbor) (0 - 360)
-
-direction.degrees-symmetric:
+angle.symmetric:
+- 162  # Angle of sub-gridscale orography
+- 129162  # Angle of sub-gridscale orography gradient
+- 171162  # Angle of sub-gridscale orography anomaly
+- 200162  # Angle of sub-gridscale orography difference
 - 260295  # Latitude of U Wind Component of Velocity
 - 260297  # Latitude of V Wind Component of Velocity
 - 260299  # Latitude of Presure Point
 - 260421  # Latitude (-90 to +90)
 - 260425  # Latitude (nearest neighbor) (-90 to +90)
-
-direction.radians-symmetric:
-- 162  # Angle of sub-gridscale orography
-- 129162  # Angle of sub-gridscale orography gradient
-- 171162  # Angle of sub-gridscale orography anomaly
-- 200162  # Angle of sub-gridscale orography difference
 
 index:
 - 29  # Type of low vegetation
@@ -126,6 +122,10 @@ intensity:
 - 4  # Equivalent potential temperature
 - 5  # Saturated equivalent potential temperature
 - 10  # Wind speed
+- 11  # U component of divergent wind
+- 12  # V component of divergent wind
+- 13  # U component of rotational wind
+- 14  # V component of rotational wind
 - 21  # Unbalanced component of temperature
 - 23  # Unbalanced component of divergence
 - 34  # Sea surface temperature
@@ -157,6 +157,8 @@ intensity:
 - 123  # 10 metre wind gust in the last 6 hours
 - 129  # Geopotential
 - 130  # Temperature
+- 131  # U component of wind
+- 132  # V component of wind
 - 134  # Surface pressure
 - 135  # Vertical velocity
 - 136  # Total column water
@@ -176,6 +178,8 @@ intensity:
 - 160  # Standard deviation of orography
 - 161  # Anisotropy of sub-gridscale orography
 - 163  # Slope of sub-gridscale orography
+- 165  # 10 metre U wind component
+- 166  # 10 metre V wind component
 - 168  # 2 metre dewpoint temperature
 - 170  # Soil temperature level 2
 - 171  # Soil wetness level 2
@@ -202,12 +206,16 @@ intensity:
 - 219  # Vertical diffusion of meridional wind
 - 220  # East-West gravity wave drag tendency
 - 221  # North-South gravity wave drag tendency
+- 222  # Convective tendency of zonal wind
+- 223  # Convective tendency of meridional wind
 - 235  # Skin temperature
 - 236  # Soil temperature level 4
 - 237  # Soil wetness level 4
 - 238  # Temperature of snow layer
 - 244  # Forecast surface roughness
 - 251  # Adiabatic tendency of temperature
+- 253  # Adiabatic tendency of zonal wind
+- 254  # Adiabatic tendency of meridional wind
 - 3003  # Pressure tendency
 - 3005  # ICAO Standard Atmosphere reference height
 - 3008  # Geometrical height
@@ -230,6 +238,8 @@ intensity:
 - 3045  # Vertical u-component shear
 - 3046  # Vertical v-component shear
 - 3048  # Speed of current
+- 3049  # U-component of current
+- 3050  # V-component of current
 - 3054  # Precipitable water
 - 3055  # Vapour pressure
 - 3056  # Saturation deficit
@@ -244,6 +254,8 @@ intensity:
 - 3086  # Soil moisture content
 - 3092  # Ice thickness
 - 3094  # Speed of ice drift
+- 3095  # U-component of ice drift
+- 3096  # V-component of ice drift
 - 3098  # Ice divergence
 - 3100  # Signific.height,combined wind waves+swell
 - 3102  # Significant height of wind waves
@@ -254,12 +266,18 @@ intensity:
 - 3110  # Secondary wave mean period
 - 3119  # Radiance (with respect to wave number)
 - 3120  # Radiance (with respect to wave length)
+- 3124  # Momentum flux, u-component
+- 3125  # Momentum flux, v-component
 - 3126  # Wind mixing energy
 - 129001  # Stream function gradient
 - 129002  # Velocity potential gradient
 - 129003  # Potential temperature gradient
 - 129004  # Equivalent potential temperature gradient
 - 129005  # Saturated equivalent potential temperature gradient
+- 129011  # U component of divergent wind gradient
+- 129012  # V component of divergent wind gradient
+- 129013  # U component of rotational wind gradient
+- 129014  # V component of rotational wind gradient
 - 129021  # Unbalanced component of temperature gradient
 - 129023  # Unbalanced component of divergence gradient
 - 129034  # Sea surface temperature gradient
@@ -289,6 +307,8 @@ intensity:
 - 129123  # 10 metre wind gust in the last 6 hours gradient
 - 129129  # Geopotential gradient
 - 129130  # Temperature gradient
+- 129131  # U component of wind gradient
+- 129132  # V component of wind gradient
 - 129134  # Surface pressure gradient
 - 129135  # vertical velocity (pressure) gradient
 - 129136  # Total column water gradient
@@ -308,6 +328,8 @@ intensity:
 - 129160  # Standard deviation of orography gradient
 - 129161  # Anisotropy of sub-gridscale orography gradient
 - 129163  # Slope of sub-gridscale orography gradient
+- 129165  # 10 metre U wind component gradient
+- 129166  # 10 metre V wind component gradient
 - 129168  # 2 metre dewpoint temperature gradient
 - 129170  # Soil temperature level 2 gradient
 - 129171  # Soil wetness level 2 gradient
@@ -334,12 +356,16 @@ intensity:
 - 129219  # Vertical diffusion of meridional wind gradient
 - 129220  # East-West gravity wave drag tendency gradient
 - 129221  # North-South gravity wave drag tendency gradient
+- 129222  # Convective tendency of zonal wind gradient
+- 129223  # Convective tendency of meridional wind gradient
 - 129235  # Skin temperature gradient
 - 129236  # Soil temperature level 4 gradient
 - 129237  # Soil wetness level 4 gradient
 - 129238  # Temperature of snow layer gradient
 - 129244  # Forecast surface roughness gradient
 - 129251  # Adiabatic tendency of temperature gradient
+- 129253  # Adiabatic tendency of zonal wind gradient
+- 129254  # Adiabatic tendency of meridional wind gradient
 - 130214  # Diabatic heating by radiation
 - 130215  # Diabatic heating by vertical diffusion
 - 130216  # Diabatic heating by cumulus convection
@@ -349,6 +375,8 @@ intensity:
 - 130220  # East-West gravity wave drag
 - 130221  # North-South gravity wave drag
 - 130228  # Adiabatic tendency of temperature
+- 130230  # Adiabatic tendency of zonal wind
+- 130231  # Adiabatic tendency of meridional wind
 - 130232  # Mean vertical velocity
 - 140112  # Wave energy flux magnitude
 - 140114  # Significant wave height of all waves with periods within the inclusive range from 10 to 12 seconds
@@ -360,6 +388,8 @@ intensity:
 - 140120  # Significant wave height of all waves with period larger than 10s
 - 140200  # Maximum of significant wave height
 - 140207  # Wave Spectral Skewness
+- 140215  # U-component stokes drift
+- 140216  # V-component stokes drift
 - 140217  # Period corresponding to maximum individual wave height
 - 140218  # Maximum individual wave height
 - 140220  # Mean wave period based on first moment
@@ -387,6 +417,9 @@ intensity:
 - 150129  # Ocean potential temperature
 - 150130  # Ocean salinity
 - 150131  # Ocean potential density
+- 150133  # Ocean U wind component
+- 150134  # Ocean V wind component
+- 150135  # Ocean W wind component
 - 150139  # U*V product
 - 150140  # U*T product
 - 150141  # V*T product
@@ -408,6 +441,9 @@ intensity:
 - 151128  # In situ Temperature
 - 151129  # Ocean potential temperature
 - 151130  # Salinity
+- 151131  # Ocean current zonal component
+- 151132  # Ocean current meridional component
+- 151133  # Ocean current vertical component
 - 151135  # Vertical viscosity
 - 151136  # Vertical diffusivity
 - 151137  # Bottom level Depth
@@ -551,6 +587,12 @@ intensity:
 - 171003  # Potential temperature anomaly
 - 171004  # Equivalent potential temperature anomaly
 - 171005  # Saturated equivalent potential temperature anomaly
+- 171006  # 100 metre U wind component anomaly
+- 171007  # 100 metre V wind component anomaly
+- 171011  # U component of divergent wind anomaly
+- 171012  # V component of divergent wind anomaly
+- 171013  # U component of rotational wind anomaly
+- 171014  # V component of rotational wind anomaly
 - 171021  # Unbalanced component of temperature anomaly
 - 171023  # Unbalanced component of divergence anomaly
 - 171034  # Sea surface temperature anomaly
@@ -577,6 +619,8 @@ intensity:
 - 171122  # Minimum temperature at 2 metres in the last 6 hours anomaly
 - 171129  # Geopotential anomaly
 - 171130  # Temperature anomaly
+- 171131  # U component of wind anomaly
+- 171132  # V component of wind anomaly
 - 171134  # Surface pressure anomaly
 - 171135  # Vertical velocity (pressure) anomaly
 - 171136  # Total column water anomaly
@@ -596,6 +640,8 @@ intensity:
 - 171160  # Standard deviation of orography anomaly
 - 171161  # Anisotropy of sub-gridscale orography anomaly
 - 171163  # Slope of sub-gridscale orography anomaly
+- 171165  # 10 metre U wind component anomaly
+- 171166  # 10 metre V wind component anomaly
 - 171168  # 2 metre dewpoint temperature anomaly
 - 171170  # Soil temperature anomaly level 2
 - 171171  # Soil wetness anomaly level 2
@@ -622,12 +668,16 @@ intensity:
 - 171219  # Vertical diffusion of meridional wind anomaly
 - 171220  # East-West gravity wave drag tendency anomaly
 - 171221  # North-South gravity wave drag tendency anomaly
+- 171222  # Convective tendency of zonal wind anomaly
+- 171223  # Convective tendency of meridional wind anomaly
 - 171235  # Skin temperature anomaly
 - 171236  # Soil temperature level 4 anomaly
 - 171237  # Soil wetness level 4 anomaly
 - 171238  # Temperature of snow layer anomaly
 - 171244  # Forecast surface roughness anomaly
 - 171251  # Adiabatic tendency of temperature anomaly
+- 171253  # Adiabatic tendency of zonal wind anomaly
+- 171254  # Adiabatic tendency of meridional wind anomaly
 - 174006  # Total soil moisture
 - 174025  # Visibility at 1.5m
 - 174034  # Open-sea surface temperature
@@ -635,6 +685,8 @@ intensity:
 - 174050  # Minimum temperature at 1.5m since previous post-processing
 - 174051  # Maximum temperature at 1.5m since previous post-processing
 - 174055  # 1.5m temperature - mean in the last 24 hours
+- 174085  # 10m U wind over land
+- 174086  # 10m V wind over land
 - 174087  # 1.5m temperature over land
 - 174088  # 1.5m dewpoint temperature over land
 - 174094  # Mean sea surface temperature
@@ -657,6 +709,8 @@ intensity:
 - 175034  # Open-sea surface temperature
 - 175049  # 10m wind gust in the last 24 hours
 - 175055  # 1.5m temperature - mean in the last 24 hours
+- 175085  # 10m U wind over land
+- 175086  # 10m V wind over land
 - 175087  # 1.5m temperature over land
 - 175088  # 1.5m dewpoint temperature over land
 - 175111  # Ocean mean ice depth
@@ -678,6 +732,10 @@ intensity:
 - 200003  # Potential temperature difference
 - 200004  # Equivalent potential temperature difference
 - 200005  # Saturated equivalent potential temperature difference
+- 200011  # U component of divergent wind difference
+- 200012  # V component of divergent wind difference
+- 200013  # U component of rotational wind difference
+- 200014  # V component of rotational wind difference
 - 200021  # Unbalanced component of temperature difference
 - 200023  # Unbalanced component of divergence difference
 - 200034  # Sea surface temperature difference
@@ -707,6 +765,8 @@ intensity:
 - 200123  # 10 metre wind gust in the last 6 hours difference
 - 200129  # Geopotential difference
 - 200130  # Temperature difference
+- 200131  # U component of wind difference
+- 200132  # V component of wind difference
 - 200134  # Surface pressure difference
 - 200135  # Vertical velocity (pressure) difference
 - 200136  # Total column water difference
@@ -726,6 +786,8 @@ intensity:
 - 200160  # Standard deviation of orography difference
 - 200161  # Anisotropy of sub-gridscale orography difference
 - 200163  # Slope of sub-gridscale orography difference
+- 200165  # 10 metre U wind component difference
+- 200166  # 10 metre V wind component difference
 - 200168  # 2 metre dewpoint temperature difference
 - 200170  # Soil temperature level 2 difference
 - 200171  # Soil wetness level 2 difference
@@ -752,12 +814,16 @@ intensity:
 - 200219  # Vertical diffusion of meridional wind difference
 - 200220  # East-West gravity wave drag tendency difference
 - 200221  # North-South gravity wave drag tendency difference
+- 200222  # Convective tendency of zonal wind difference
+- 200223  # Convective tendency of meridional wind difference
 - 200235  # Skin temperature difference
 - 200236  # Soil temperature level 4 difference
 - 200237  # Soil wetness level 4 difference
 - 200238  # Temperature of snow layer difference
 - 200244  # Forecast surface roughness difference
 - 200251  # Adiabatic tendency of temperature difference
+- 200253  # Adiabatic tendency of zonal wind difference
+- 200254  # Adiabatic tendency of meridional wind difference
 - 201041  # total column water
 - 201066  # Updraft velocity, convection
 - 201067  # entrainment parameter, convection
@@ -941,10 +1007,14 @@ intensity:
 - 228094  # Ice temperature
 - 228095  # Soil temperature top 20 cm
 - 228096  # Soil temperature top 100 cm
+- 228131  # Neutral wind at 10 m u-component
+- 228132  # Neutral wind at 10 m v-component
 - 228134  # V-tendency from non-orographic wave drag
 - 228136  # U-tendency from non-orographic wave drag
 - 228139  # Soil Temperature
 - 228229  # SMOS first Brightness Temperature Bias Correction parameter
+- 228246  # 100 metre U wind component
+- 228247  # 100 metre V wind component
 - 228249  # 100 metre wind speed
 - 228252  # Irrigation
 - 230046  # Solar duration (variable resolution)
@@ -977,9 +1047,15 @@ intensity:
 - 260042  # Total column integrated snow
 - 260047  # Total column water (Vertically integrated total water (vapour + cloud water/ice))
 - 260057  # Total column integrated water vapour
+- 260062  # Momentum flux, u component
+- 260063  # Momentum flux, v component
 - 260064  # Maximum wind speed
 - 260065  # Wind speed (gust)
+- 260066  # u-component of wind (gust)
+- 260067  # v-component of wind (gust)
 - 260068  # Vertical speed shear
+- 260070  # U-component storm motion
+- 260071  # V-component storm motion
 - 260073  # Frictional velocity
 - 260074  # Pressure reduced to MSL
 - 260075  # Geometric height
@@ -988,6 +1064,8 @@ intensity:
 - 260078  # Pressure altitude
 - 260079  # Density altitude
 - 260080  # 5-wave geopotential height
+- 260081  # Zonal flux of gravity wave stress
+- 260082  # Meridional flux of gravity wave stress
 - 260083  # Planetary boundary layer height
 - 260084  # 5-wave geopotential height anomaly
 - 260085  # Standard deviation of sub-grid scale orography
@@ -1038,6 +1116,8 @@ intensity:
 - 260201  # Upper layer soil temperature
 - 260204  # Bottom layer soil temperature
 - 260220  # Cloud top height
+- 260222  # Estimated u component of wind
+- 260223  # Estimated v component of wind
 - 260231  # Atmospheric divergence
 - 260234  # Primary wave mean period
 - 260235  # Secondary wave mean period
@@ -1063,8 +1143,16 @@ intensity:
 - 260302  # Covariance between Meridional and Zonal Components of the wind.
 - 260303  # Covariance between Temperature and Zonal Components of the wind.
 - 260304  # Covariance between Temperature and Meridional Components of the wind.
+- 260305  # Vertical Diffusion Zonal Acceleration
+- 260306  # Vertical Diffusion Meridional Acceleration
+- 260307  # Gravity wave drag zonal acceleration
+- 260308  # Gravity wave drag meridional acceleration
+- 260309  # Convective zonal momentum mixing acceleration
+- 260310  # Convective meridional momentum mixing acceleration
 - 260311  # Tendency of vertical velocity
 - 260312  # Omega (Dp/Dt) divide by density
+- 260313  # Convective Gravity wave drag zonal acceleration
+- 260314  # Convective Gravity wave drag meridional acceleration
 - 260315  # Velocity Point Model Surface
 - 260316  # Potential Vorticity (Mass-Weighted)
 - 260317  # MSLP (Eta model reduction)
@@ -1108,6 +1196,8 @@ intensity:
 - 260480  # Bare soil surface skin temperature
 - 260481  # Average surface skin temperature
 - 260482  # Effective radiative skin temperature
+- 260484  # Scatterometer Estimated U Wind Component
+- 260485  # Scatterometer Estimated V Wind Component
 - 260487  # Ocean Mixed Layer U Velocity
 - 260488  # Ocean Mixed Layer V Velocity
 - 260489  # Barotropic U velocity
@@ -1131,9 +1221,19 @@ intensity:
 - 260552  # Wind speed
 - 260556  # Angstrom coefficient
 - 260606  # Square of Brunt-Vaisala frequency
+- 260607  # Adiabatic zonal acceleration
+- 260609  # Adiabatic meridional acceleration
+- 260613  # Gravity wave zonal acceleration
+- 260614  # Gravity wave meridional acceleration
 - 260617  # Moisture storage on canopy
 - 260618  # Moisture storage on ground or cover
 - 260620  # Cloud liquid water
+- 260626  # Zonal momentum flux by long gravity wave
+- 260627  # Meridional momentum flux by long gravity wave
+- 260628  # Meridional momentum flux by short gravity wave
+- 260629  # Zonal momentum flux by short gravity wave
+- 260637  # Vertical diffusion zonal acceleration
+- 260638  # Vertical diffusion meridional acceleration
 - 300001  # Pressure
 - 300002  # Pressure reduced to msl
 - 300003  # Pressure tendency
@@ -1152,6 +1252,8 @@ intensity:
 - 300026  # Pressure anomaly
 - 300027  # Geopot height anomaly
 - 300032  # Wind speed
+- 300033  # Zonal wind (u)
+- 300034  # Meridional wind (v)
 - 300035  # Stream function
 - 300036  # Velocity potential
 - 300038  # Sigma coord vert vel
@@ -1164,6 +1266,8 @@ intensity:
 - 300045  # Vertical u-comp shear
 - 300046  # Vert v-comp shear
 - 300048  # Speed of current
+- 300049  # U-component of current
+- 300050  # V-component of current
 - 300054  # Inst. precipitable water
 - 300055  # Vapour pressure
 - 300056  # Saturation deficit
@@ -1189,6 +1293,8 @@ intensity:
 - 300110  # Second wave mean period
 - 300128  # 2 metre temperature
 - 300129  # 2 metre dewpoint temperature
+- 300130  # 10 metre u-wind component
+- 300131  # 10 metre v-wind component
 - 300132  # Topography
 - 300133  # Geometric mean surface pressure
 - 300135  # Surface pressure
@@ -1202,6 +1308,8 @@ intensity:
 - 300144  # Shallow conv. moisture source
 - 300145  # Shallow convective heating
 - 300146  # Maximum wind press. lvl
+- 300147  # Storm motion u-component
+- 300148  # Storm motion v-component
 - 300150  # Pressure at cloud base
 - 300151  # Pressure at cloud top
 - 300152  # Freezing level height
@@ -1210,8 +1318,12 @@ intensity:
 - 300156  # Flight levels v-wind
 - 300157  # Tropopause pressure
 - 300158  # Tropopause temperature
+- 300159  # Tropopause u-wind component
+- 300160  # Tropopause v-wind component
 - 300162  # Gravity wave drag du/dt
 - 300163  # Gravity wave drag dv/dt
+- 300164  # Gravity wave drag sfc zonal stress
+- 300165  # Gravity wave drag sfc meridional stress
 - 300167  # Divergence of specific humidity
 - 300172  # Large scale latent heating
 - 300173  # Large scale moisture source
@@ -1225,6 +1337,8 @@ intensity:
 - 300189  # Temperature of canopy air space
 - 300190  # Temperature at canopy
 - 300191  # Ground/surface cover temperature
+- 300192  # Surface zonal wind (u)
+- 300194  # Surface meridional wind (v)
 - 300205  # Long wave radiative heating
 - 300206  # Short wave radiative heating
 - 300218  # Horizontal heating diffusion
@@ -1235,12 +1349,15 @@ intensity:
 - 300223  # Vertical diffusion du/dt
 - 300224  # Vertical diffusion dv/dt
 - 300225  # Vertical diffusion heating
+- 300230  # Time mean surface zonal wind (u)
+- 300231  # Time mean surface meridional wind (v)
 - 300232  # Time mean surface absolute temperature
 - 300234  # Time mean absolute temperature
 - 300235  # Time mean deep soil temperature
 - 300236  # Time mean derived omega
 - 300237  # Time mean divergence
 - 300238  # Time mean geopotential height
+- 300241  # Time mean meridional wind (v)
 - 300242  # Time mean omega
 - 300243  # Time mean potential temperature
 - 300244  # Time mean precip. water
@@ -1252,138 +1369,7 @@ intensity:
 - 300252  # Time mean velocity potential
 - 300253  # Time mean virtual temperature
 - 300254  # Time mean vorticity
-
-intensity.vector-2d-cartesian.x:
-- 11  # U component of divergent wind
-- 13  # U component of rotational wind
-- 131  # U component of wind
-- 165  # 10 metre U wind component
-- 222  # Convective tendency of zonal wind
-- 253  # Adiabatic tendency of zonal wind
-- 3049  # U-component of current
-- 3095  # U-component of ice drift
-- 3124  # Momentum flux, u-component
-- 129011  # U component of divergent wind gradient
-- 129013  # U component of rotational wind gradient
-- 129131  # U component of wind gradient
-- 129165  # 10 metre U wind component gradient
-- 129222  # Convective tendency of zonal wind gradient
-- 129253  # Adiabatic tendency of zonal wind gradient
-- 130230  # Adiabatic tendency of zonal wind
-- 140215  # U-component stokes drift
-- 171006  # 100 metre U wind component anomaly
-- 171011  # U component of divergent wind anomaly
-- 171013  # U component of rotational wind anomaly
-- 171131  # U component of wind anomaly
-- 171165  # 10 metre U wind component anomaly
-- 171222  # Convective tendency of zonal wind anomaly
-- 171253  # Adiabatic tendency of zonal wind anomaly
-- 174085  # 10m U wind over land
-- 175085  # 10m U wind over land
-- 200011  # U component of divergent wind difference
-- 200013  # U component of rotational wind difference
-- 200131  # U component of wind difference
-- 200165  # 10 metre U wind component difference
-- 200222  # Convective tendency of zonal wind difference
-- 200253  # Adiabatic tendency of zonal wind difference
-- 228131  # Neutral wind at 10 m u-component
-- 228246  # 100 metre U wind component
-- 260062  # Momentum flux, u component
-- 260066  # u-component of wind (gust)
-- 260070  # U-component storm motion
-- 260081  # Zonal flux of gravity wave stress
-- 260222  # Estimated u component of wind
-- 260305  # Vertical Diffusion Zonal Acceleration
-- 260307  # Gravity wave drag zonal acceleration
-- 260309  # Convective zonal momentum mixing acceleration
-- 260313  # Convective Gravity wave drag zonal acceleration
-- 260484  # Scatterometer Estimated U Wind Component
-- 260607  # Adiabatic zonal acceleration
-- 260613  # Gravity wave zonal acceleration
-- 260626  # Zonal momentum flux by long gravity wave
-- 260629  # Zonal momentum flux by short gravity wave
-- 260637  # Vertical diffusion zonal acceleration
-- 300033  # Zonal wind (u)
-- 300049  # U-component of current
-- 300130  # 10 metre u-wind component
-- 300147  # Storm motion u-component
-- 300159  # Tropopause u-wind component
-- 300164  # Gravity wave drag sfc zonal stress
-- 300192  # Surface zonal wind (u)
-- 300230  # Time mean surface zonal wind (u)
 - 300255  # Time mean zonal wind (u)
-
-intensity.vector-2d-cartesian.y:
-- 12  # V component of divergent wind
-- 14  # V component of rotational wind
-- 132  # V component of wind
-- 166  # 10 metre V wind component
-- 223  # Convective tendency of meridional wind
-- 254  # Adiabatic tendency of meridional wind
-- 3050  # V-component of current
-- 3096  # V-component of ice drift
-- 3125  # Momentum flux, v-component
-- 129012  # V component of divergent wind gradient
-- 129014  # V component of rotational wind gradient
-- 129132  # V component of wind gradient
-- 129166  # 10 metre V wind component gradient
-- 129223  # Convective tendency of meridional wind gradient
-- 129254  # Adiabatic tendency of meridional wind gradient
-- 130231  # Adiabatic tendency of meridional wind
-- 140216  # V-component stokes drift
-- 171007  # 100 metre V wind component anomaly
-- 171012  # V component of divergent wind anomaly
-- 171014  # V component of rotational wind anomaly
-- 171132  # V component of wind anomaly
-- 171166  # 10 metre V wind component anomaly
-- 171223  # Convective tendency of meridional wind anomaly
-- 171254  # Adiabatic tendency of meridional wind anomaly
-- 174086  # 10m V wind over land
-- 175086  # 10m V wind over land
-- 200012  # V component of divergent wind difference
-- 200014  # V component of rotational wind difference
-- 200132  # V component of wind difference
-- 200166  # 10 metre V wind component difference
-- 200223  # Convective tendency of meridional wind difference
-- 200254  # Adiabatic tendency of meridional wind difference
-- 228132  # Neutral wind at 10 m v-component
-- 228247  # 100 metre V wind component
-- 260063  # Momentum flux, v component
-- 260067  # v-component of wind (gust)
-- 260071  # V-component storm motion
-- 260082  # Meridional flux of gravity wave stress
-- 260223  # Estimated v component of wind
-- 260306  # Vertical Diffusion Meridional Acceleration
-- 260308  # Gravity wave drag meridional acceleration
-- 260310  # Convective meridional momentum mixing acceleration
-- 260314  # Convective Gravity wave drag meridional acceleration
-- 260485  # Scatterometer Estimated V Wind Component
-- 260609  # Adiabatic meridional acceleration
-- 260614  # Gravity wave meridional acceleration
-- 260627  # Meridional momentum flux by long gravity wave
-- 260628  # Meridional momentum flux by short gravity wave
-- 260638  # Vertical diffusion meridional acceleration
-- 300034  # Meridional wind (v)
-- 300050  # V-component of current
-- 300131  # 10 metre v-wind component
-- 300148  # Storm motion v-component
-- 300160  # Tropopause v-wind component
-- 300165  # Gravity wave drag sfc meridional stress
-- 300194  # Surface meridional wind (v)
-- 300231  # Time mean surface meridional wind (v)
-- 300241  # Time mean meridional wind (v)
-
-intensity.vector-3d-cartesian.x:
-- 150133  # Ocean U wind component
-- 151131  # Ocean current zonal component
-
-intensity.vector-3d-cartesian.y:
-- 150134  # Ocean V wind component
-- 151132  # Ocean current meridional component
-
-intensity.vector-3d-cartesian.z:
-- 150135  # Ocean W wind component
-- 151133  # Ocean current vertical component
 
 intensity-lsm:
 - 167  # 2 metre temperature
@@ -3125,12 +3111,12 @@ spectrum:
 - 300029  # Wave spectra(2)
 - 300030  # Wave spectra(3)
 
-spectrum.associated-direction:
+spectrum.associated-angle:
 - 140122  # Mean wave direction of first swell partition
 - 140125  # Mean wave direction of second swell partition
 - 140128  # Mean wave direction of third swell partition
 
-spectrum.associated-intensity:
+spectrum.associated-magnitude:
 - 140121  # Significant wave height of first swell partition
 - 140123  # Mean wave period of first swell partition
 - 140124  # Significant wave height of second swell partition
