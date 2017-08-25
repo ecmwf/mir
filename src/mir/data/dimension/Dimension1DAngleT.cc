@@ -22,7 +22,7 @@ namespace data {
 namespace dimension {
 
 
-namespace detail {
+namespace {
 
 
 // Angles in degrees [0,360[/[-180,180] or radians [0,2π[/[-π,π]
@@ -39,7 +39,7 @@ struct NormaliseAngle {
         // ensure specialisation
         NOTIMP;
     }
-    double normalise(double a) {
+    double normalise(double a) const {
         while (a >= MIN + GLOBE) {
             a -= GLOBE;
         }
@@ -53,16 +53,10 @@ struct NormaliseAngle {
 };
 
 template< int SCALE >
-struct ConvertAngle {
-    static double toAngle(const complex_t&) {
-        // ensure specialisation
-        NOTIMP;
-    }
-    static complex_t toComplex(const double&) {
-        // ensure specialisation
-        NOTIMP;
-    }
-};
+double convert_to_angle(const complex_t&) { NOTIMP; /* ensure specialisation */ }
+
+template< int SCALE >
+complex_t convert_to_complex(const double&)  { NOTIMP; /* ensure specialisation */ }
 
 
 // Specialised types
@@ -72,7 +66,7 @@ template<> NormaliseAngle< DEGREE, SYMMETRIC  >::NormaliseAngle() : GLOBE(360.),
 template<> NormaliseAngle< RADIAN, ASYMMETRIC >::NormaliseAngle() : GLOBE(M_PI * 2), MIN(   0.) {}
 template<> NormaliseAngle< RADIAN, SYMMETRIC  >::NormaliseAngle() : GLOBE(M_PI * 2), MIN(-M_PI) {}
 
-template<> double ConvertAngle< RADIAN >::toAngle(const complex_t& c) {
+template<> double convert_to_angle< RADIAN >(const complex_t& c) {
     if ( eckit::types::is_approximately_equal(c.real(), 0.) &&
          eckit::types::is_approximately_equal(c.imag(), 0.) ) {
         return 0.;
@@ -80,26 +74,26 @@ template<> double ConvertAngle< RADIAN >::toAngle(const complex_t& c) {
     return std::arg(c);
 }
 
-template<> complex_t ConvertAngle< RADIAN >::toComplex(const double& a) {
+template<> complex_t convert_to_complex< RADIAN >(const double& a) {
     return std::polar(1., a);
 }
 
-template<> double ConvertAngle< DEGREE >::toAngle(const complex_t& c) {
-    return ConvertAngle<RADIAN>::toAngle(c) * (M_1_PI * 180.);
+template<> double convert_to_angle< DEGREE >(const complex_t& c) {
+    return convert_to_angle< RADIAN >(c) * (M_1_PI * 180.);
 }
 
-template<> complex_t ConvertAngle< DEGREE >::toComplex(const double& a) {
-    return ConvertAngle<RADIAN>::toComplex(a * (M_PI / 180.));
+template<> complex_t convert_to_complex< DEGREE >(const double& a) {
+    return convert_to_complex< RADIAN >(a * (M_PI / 180.));
 }
 
 
-}  // namespace detail
+}  // (anonymous namespace)
 
 
-static DimensionChoice< Dimension1DAngleT< detail::DEGREE, detail::ASYMMETRIC > > __dimension1("1d.angle.degree.asymmetric");
-static DimensionChoice< Dimension1DAngleT< detail::DEGREE, detail::SYMMETRIC  > > __dimension2("1d.angle.degree.symmetric");
-static DimensionChoice< Dimension1DAngleT< detail::RADIAN, detail::ASYMMETRIC > > __dimension3("1d.angle.radian.asymmetric");
-static DimensionChoice< Dimension1DAngleT< detail::RADIAN, detail::SYMMETRIC  > > __dimension4("1d.angle.radian.symmetric");
+static DimensionChoice< Dimension1DAngleT< DEGREE, ASYMMETRIC > > __dimension1("1d.angle.degree.asymmetric");
+static DimensionChoice< Dimension1DAngleT< DEGREE, SYMMETRIC  > > __dimension2("1d.angle.degree.symmetric");
+static DimensionChoice< Dimension1DAngleT< RADIAN, ASYMMETRIC > > __dimension3("1d.angle.radian.asymmetric");
+static DimensionChoice< Dimension1DAngleT< RADIAN, SYMMETRIC  > > __dimension4("1d.angle.radian.symmetric");
 
 
 template< int SCALE, int SYMMETRY >
@@ -112,14 +106,12 @@ void Dimension1DAngleT< SCALE, SYMMETRY >::linearise(const Dimension::Matrix& ma
     ASSERT(matrixIn.cols() == 1);
     matrixOut.resize(matrixIn.rows(), 2);  // allocates memory, not initialised
 
-    typedef detail::ConvertAngle< SCALE > conv;
-
-    detail::complex_t xy;
+    complex_t xy;
     for (Matrix::Size i = 0; i < matrixIn.size(); ++i) {
         if (matrixIn(i, 0) == missingValue) {
             matrixOut(i, 0) = matrixOut(i, 1) = missingValue;
         } else {
-            xy = conv::toComplex(matrixIn[i]);
+            xy = convert_to_complex< SCALE >(matrixIn[i]);
             matrixOut(i, 0) = xy.real();
             matrixOut(i, 1) = xy.imag();
         }
@@ -133,17 +125,16 @@ void Dimension1DAngleT< SCALE, SYMMETRY >::unlinearise(const Dimension::Matrix& 
     ASSERT(matrixIn.cols() == 2);
     ASSERT(matrixOut.cols() == 1);
 
-    typedef detail::ConvertAngle< SCALE > conv;
-    detail::NormaliseAngle<SCALE, SYMMETRY> norm;
+    NormaliseAngle<SCALE, SYMMETRY> norm;
 
-    detail::complex_t xy;
+    complex_t xy;
     double th;
     for (Matrix::Size i = 0; i < matrixIn.rows(); ++i) {
         if (matrixIn(i, 0) == missingValue || matrixIn(i, 1) == missingValue) {
             matrixOut[i] = missingValue;
         } else {
-            xy = detail::complex_t(matrixIn(i, 0), matrixIn(i, 1));
-            th = conv::toAngle(xy);
+            xy = complex_t(matrixIn(i, 0), matrixIn(i, 1));
+            th = convert_to_angle< SCALE >(xy);
             matrixOut[i] = norm.normalise(th);
         }
     }
