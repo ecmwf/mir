@@ -90,6 +90,8 @@ public:
 
     void hasMissing(bool on);
     bool hasMissing() const;
+
+    /// @note not in Field
     bool checkMissing();
 
     void validate() const;

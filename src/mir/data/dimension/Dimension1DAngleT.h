@@ -86,7 +86,6 @@ template<> complex_t ConvertAngle< RADIAN >::toComplex(const double& a) {
     return std::polar(1., a);
 }
 
-
 template<> double ConvertAngle< DEGREE >::toAngle(const complex_t& c) {
     return ConvertAngle<RADIAN>::toAngle(c) * (M_1_PI * 180.);
 }

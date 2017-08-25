@@ -280,14 +280,6 @@ list(
     method/PseudoLaplace.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
-    method/decompose/Decompose.cc
-    method/decompose/Decompose.h
-    method/decompose/DecomposeToCartesian.cc
-    method/decompose/DecomposeToCartesian.h
-    method/decompose/None.cc
-    method/decompose/None.h
-    method/decompose/PolarAngleToCartesian.cc
-    method/decompose/PolarAngleToCartesian.h
     method/distance/DistanceWeighting.cc
     method/distance/DistanceWeighting.h
     method/distance/InverseDistanceWeighting.cc
@@ -454,11 +446,8 @@ list(
     repres/unsupported/StretchedSH.h
     repres/unsupported/TransverseMercator.cc
     repres/unsupported/TransverseMercator.h
-    stats/Angle.cc
-    stats/Angle.h
     stats/CountOutsideRange.cc
     stats/CountOutsideRange.h
-    stats/detail/Angle.h
     stats/detail/CountMissingValuesFn.h
     stats/detail/CountOutsideRangeFn.h
     stats/detail/MinMaxStatistics.h

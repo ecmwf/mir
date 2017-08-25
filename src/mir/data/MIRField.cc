@@ -13,13 +13,14 @@
 /// @date Apr 2015
 
 
+#include "mir/data/MIRField.h"
+
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/Field.h"
-#include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/repres/Representation.h"
 
