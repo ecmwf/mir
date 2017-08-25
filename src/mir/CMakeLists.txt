@@ -198,6 +198,8 @@ list(
     config/LibMir.h
     data/CartesianVector2DField.cc
     data/CartesianVector2DField.h
+    data/Dimension.cc
+    data/Dimension.h
     data/Field.cc
     data/Field.h
     data/MIRField.cc
