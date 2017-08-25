@@ -1,26 +1,21 @@
 # List of dimensions:
 # - 1d.linear
 # - 1d.logarithmic
-# - 1d.angle.degree
-# - 1d.angle.radian
+# - 1d.angle.degree.asymmetric
+# - 1d.angle.degree.symmetric
+# - 1d.angle.radian.asymmetric
+# - 1d.angle.radian.symmetric
 #
 # - 2d.cartesian.x
 # - 2d.cartesian.y
 # - 2d.geodetic.longitude
 # - 2d.geodetic.latitude
-# - 2d.polar.angle.radians
-# - 2d.polar.angle.degrees
-# - 2d.polar.radius
 #
 # - 3d.cartesian.x
 # - 3d.cartesian.y
 # - 3d.cartesian.z
-# - 3d.cylindrical.angle.radians
-# - 3d.cylindrical.angle.degrees
-# - 3d.cylindrical.radius
-# - 3d.cylindrical.height
 ---
-1d.angle.degree:
+1d.angle.degree.asymmetric:
 - 3031
 - 3047
 - 3093
@@ -41,15 +36,10 @@
 - 260233
 - 260236
 - 260260
-- 260295
 - 260296
-- 260297
 - 260298
-- 260299
 - 260300
-- 260421
 - 260422
-- 260425
 - 260426
 - 300031
 - 300047
@@ -59,7 +49,14 @@
 - 300107
 - 300109
 
-1d.angle.radian:
+1d.angle.degree.symmetric:
+- 260295
+- 260297
+- 260299
+- 260421
+- 260425
+
+1d.angle.radian.symmetric:
 - 162
 - 129162
 - 171162

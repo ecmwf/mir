@@ -2,13 +2,8 @@
 # composition of a mixture (mass, amount, volume, ...) with respect to the volume of the mixture (typical units: [kg m**-3])
 concentration: {}
 
-# angle with minimum zero (typical units: radians or degrees)
-angle.asymmetric:
-  angle-symmetric: false
-
-# angle symmetric around zero (typical units: radians or degrees)
-angle.symmetric:
-  angle-symmetric: true
+# angle (typical units: radians or degrees)
+angle: {}
 
 # associated to a table
 index:
@@ -23,7 +18,6 @@ intensity: {}
 
 # physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
 intensity-lsm:
-  comparison-absolute-error: 0.1
   lsm: true
 
 # ratio between two related quantities (time, mass, length, etc.) (typical units: [... s**-1])

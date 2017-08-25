@@ -24,7 +24,8 @@ concentration:
 - 260619  # Mass concentration of condensed water in soil
 - 300089  # Density
 
-angle.asymmetric:
+angle:
+- 162  # Angle of sub-gridscale orography
 - 3031  # Wind direction
 - 3047  # Direction of current
 - 3093  # Direction of ice drift
@@ -32,12 +33,15 @@ angle.asymmetric:
 - 3104  # Direction of swell waves
 - 3107  # Primary wave direction
 - 3109  # Secondary wave direction
+- 129162  # Angle of sub-gridscale orography gradient
 - 140113  # Wave energy flux mean direction
 - 140230  # Mean wave direction
 - 140235  # Mean direction of wind waves
 - 140238  # Mean direction of total swell
 - 140242  # Mean wind direction
 - 140249  # 10 metre wind direction
+- 171162  # Angle of sub-gridscale orography anomaly
+- 200162  # Angle of sub-gridscale orography difference
 - 210079  # Wildfire viewing angle of observation
 - 260225  # Solar zenith angle
 - 260226  # Relative azimuth angle
@@ -45,10 +49,15 @@ angle.asymmetric:
 - 260233  # Primary wave direction
 - 260236  # Current direction
 - 260260  # 10 metre wind direction
+- 260295  # Latitude of U Wind Component of Velocity
 - 260296  # Longitude of U Wind Component of Velocity
+- 260297  # Latitude of V Wind Component of Velocity
 - 260298  # Longitude of V Wind Component of Velocity
+- 260299  # Latitude of Presure Point
 - 260300  # Longitude of Presure Point
+- 260421  # Latitude (-90 to +90)
 - 260422  # East Longitude (0 - 360)
+- 260425  # Latitude (nearest neighbor) (-90 to +90)
 - 260426  # East Longitude (nearest neighbor) (0 - 360)
 - 300031  # Wind direction
 - 300047  # Direction of current
@@ -57,17 +66,6 @@ angle.asymmetric:
 - 300104  # Direction of swell wave
 - 300107  # Primary wave direction
 - 300109  # Second wave direction
-
-angle.symmetric:
-- 162  # Angle of sub-gridscale orography
-- 129162  # Angle of sub-gridscale orography gradient
-- 171162  # Angle of sub-gridscale orography anomaly
-- 200162  # Angle of sub-gridscale orography difference
-- 260295  # Latitude of U Wind Component of Velocity
-- 260297  # Latitude of V Wind Component of Velocity
-- 260299  # Latitude of Presure Point
-- 260421  # Latitude (-90 to +90)
-- 260425  # Latitude (nearest neighbor) (-90 to +90)
 
 index:
 - 29  # Type of low vegetation
