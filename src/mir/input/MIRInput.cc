@@ -173,6 +173,7 @@ void MIRInputFactory::list(std::ostream& out) {
 
     const char* sep = "";
     for (auto j : *m) {
+        out << sep;
         put(out, j.first);
         sep = ", ";
     }
