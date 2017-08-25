@@ -206,6 +206,16 @@ list(
     data/MIRField.h
     data/MIRFieldStats.cc
     data/MIRFieldStats.h
+    data/dimension/Dimension1DAngleT.cc
+    data/dimension/Dimension1DAngleT.h
+    data/dimension/Dimension1DLinear.cc
+    data/dimension/Dimension1DLinear.h
+    data/dimension/Dimension2DCartesian.cc
+    data/dimension/Dimension2DCartesian.h
+    data/dimension/Dimension3DCartesian.cc
+    data/dimension/Dimension3DCartesian.h
+    data/dimension/DimensionLinear.cc
+    data/dimension/DimensionLinear.h
     input/DummyInput.cc
     input/DummyInput.h
     input/EmptyInput.cc
