@@ -90,6 +90,7 @@ public:
 
     void hasMissing(bool on);
     bool hasMissing() const;
+    bool checkMissing();
 
     void validate() const;
 

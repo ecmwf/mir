@@ -337,17 +337,8 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
     }
 
-    // TODO: move logic to MIRField
-    // update if missing values are present
-    if (field.hasMissing()) {
-        const util::compare::IsMissingFn isMissing(field.missingValue());
-        bool still_has_missing = false;
-        for (size_t i = 0; i < field.dimensions() && !still_has_missing; ++i) {
-            const std::vector< double >& values = field.values(i);
-            still_has_missing = (std::find_if(values.begin(), values.end(), isMissing) != values.end());
-        }
-        field.hasMissing(still_has_missing);
-    }
+    // interpolation could change if missing values are (still) present, re-check
+    field.checkMissing();
 }
 
 

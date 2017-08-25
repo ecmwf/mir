@@ -183,6 +183,23 @@ bool MIRField::hasMissing() const {
 }
 
 
+bool MIRField::checkMissing() {
+
+    const double miss = missingValue();
+    bool still_has_missing = false;
+    for (size_t i = 0; i < dimensions() && !still_has_missing; ++i) {
+        for (const double& v : values(i)) {
+            if ((still_has_missing = (v == miss))) {
+                break;
+            }
+        }
+    }
+
+    hasMissing(still_has_missing);
+    return still_has_missing;
+}
+
+
 double MIRField::missingValue() const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
