@@ -110,22 +110,28 @@ static void init() {
         eckit::ValueList list = i.second;
 
         for (long paramId : list) {
-            auto p = parameters_.find(paramId);
-            std::string d;
 
-            if (p == parameters_.end()) {
-                throw eckit::UserError("Parameter dimension cannot be set when class is unknown, for paramId=" + std::to_string(paramId));
-            }
-
-            if (p->second->get("dimension", d)) {
-                throw eckit::UserError("Parameter dimension is set more than once, for paramId=" + std::to_string(paramId));
-            }
-
-            // copy parametrisation with paramId-specific 'dimension' value
+            // paramId-specific 'dimension' value
             CountedParametrisation* s = new CountedParametrisation();
-            p->second->copyValuesTo(*s);
             s->set("dimension", dimension);
-            p->second.reset(s);
+
+            auto p = parameters_.find(paramId);
+            if (p != parameters_.end()) {
+
+                // known parameter: copy class settings to new entry
+                std::string d;
+                if (p->second->get("dimension", d)) {
+                    throw eckit::UserError("Parameter dimension is set more than once, for paramId=" + std::to_string(paramId));
+                }
+                p->second->copyValuesTo(*s);
+                p->second.reset(s);
+
+            } else {
+
+                // unknown parameter: set dimension only
+                parameters_[paramId].reset(s);
+
+            }
         }
     }
 }

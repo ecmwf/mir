@@ -216,6 +216,8 @@ list(
     data/dimension/Dimension3DCartesian.h
     data/dimension/DimensionLinear.cc
     data/dimension/DimensionLinear.h
+    data/dimension/DimensionLogarithmic.cc
+    data/dimension/DimensionLogarithmic.h
     input/DummyInput.cc
     input/DummyInput.h
     input/EmptyInput.cc
