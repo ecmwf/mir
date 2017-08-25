@@ -1,5 +1,5 @@
 # Mars request
-stream=wave,domain=m,param=swh
+stream=wave,param=swh,domain=m
 # Mir tool options
 --area=28/-77/3/-43 --globalise --grid=0.125/0.125
 # grib_get assertions

@@ -1,5 +1,5 @@
 # Mars request
-param=2t,levtype=sfc
+levtype=sfc,param=2t
 # Mir tool options
 --plan=grid2regular-ll(grid=[2,2]);grid2namedgrid(gridname=O80);grid2rotated-regular-ll(grid=[2,2],rotation=[-90,0])
 # grib_get assertions

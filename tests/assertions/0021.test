@@ -1,5 +1,5 @@
 # Mars request
-param=swh,stream=wave
+stream=wave,param=swh
 # Mir tool options
 --grid=2/2
 # grib_get assertions
