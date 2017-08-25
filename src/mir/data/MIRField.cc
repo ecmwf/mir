@@ -185,19 +185,16 @@ bool MIRField::hasMissing() const {
 
 
 bool MIRField::checkMissing() {
-
     const double miss = missingValue();
-    bool still_has_missing = false;
-    for (size_t i = 0; i < dimensions() && !still_has_missing; ++i) {
-        for (const double& v : values(i)) {
-            if ((still_has_missing = (v == miss))) {
-                break;
-            }
-        }
+    bool stillMissing = false;
+
+    for (size_t i = 0; i < dimensions() && !stillMissing; ++i) {
+        const std::vector<double>& v = values(i);
+        stillMissing = std::find(v.begin(), v.end(), miss) != v.end();
     }
 
-    hasMissing(still_has_missing);
-    return still_has_missing;
+    hasMissing(stillMissing);
+    return stillMissing;
 }
 
 
