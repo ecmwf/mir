@@ -1,0 +1,7 @@
+# Test to check interpolation of a logarithmic quantity (1d.logarithmic)
+# Mars request
+levtype=sfc,param=2t
+# Mir tool options
+--area=90/-60/25/60 --gridname=O1280
+# grib_get assertions (FIXME should either be approximate comparisons or inequalities!)
+#?
