@@ -110,7 +110,7 @@ LongitudeFraction LongitudeFraction::normalise(const LongitudeFraction& minimum)
     while (lon < minimum) {
         lon += GLOBE;
     }
-    while (lon > minimum + GLOBE) {
+    while (lon >= minimum + GLOBE) {
         lon -= GLOBE;
     }
     return lon;
