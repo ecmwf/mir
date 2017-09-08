@@ -16,10 +16,6 @@ index.associated:
 # physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
 intensity: {}
 
-# physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
-intensity-lsm:
-  lsm: true
-
 # ratio between two related quantities (time, mass, length, etc.) (typical units: [... s**-1])
 rate: {}
 
@@ -55,7 +51,7 @@ ratio.cover.cloud: {}
 
 # specific to vegetation
 ratio.cover.vegetation:
-  interpolation: nearest-lsm
+  interpolation: nearest-neighbour
 
 # (typical units: <non-dimensional>, [0, 1], [-1, 1]?, %)
 ratio.fraction: {}
