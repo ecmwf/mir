@@ -144,7 +144,7 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
 
                     // notice the order
                     atlas::PointLonLat p(ll.lon.value(), ll.lat.value());
-                    atlas::util::Earth::convertGeodeticToGeocentric(p, qp[k]);
+                    qp[k] = atlas::util::Earth::convertGeodeticToGeocentric(p);
                 }
 
 
