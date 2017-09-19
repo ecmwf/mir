@@ -135,35 +135,40 @@ void MARSStyle::sh2grid(action::ActionPlan& plan) const {
     parametrisation_.get("vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
 
-    // set an intermediate Gaussian grid with intended truncation
-    std::string intermediate_grid;
-    parametrisation_.get("spectral-intermediate-grid", intermediate_grid);
-
-    if (intermediate_grid.length()) {
-        param::RuntimeParametrisation runtime(parametrisation_);
-        if (truncation) {
-            runtime.set("truncation", truncation);
-        }
-        plan.add("transform." + transform + "namedgrid", "gridname", IntermediateGridFactory::build(intermediate_grid, runtime));
-        grid2grid(plan);
-        return;
-    }
-
     if (parametrisation_.has("user.grid")) {
-        plan.add("transform." + transform + "regular-ll");
 
-        if (parametrisation_.has("user.rotation")) {
-            plan.add("interpolate.grid2rotated-regular-ll");
+        std::string intermediate_grid;
+        parametrisation_.get("spectral-intermediate-grid", intermediate_grid);
 
-            bool wind = false;
-            parametrisation_.get("wind", wind);
+        // set an intermediate Gaussian grid with intended truncation
+        if (intermediate_grid.length()) {
 
-            if (wind || vod2uv) {
-                plan.add("filter.adjust-winds-directions");
-                selectWindComponents(plan);
+            param::RuntimeParametrisation runtime(parametrisation_);
+            if (truncation) {
+                runtime.set("truncation", truncation);
             }
-        }
+            plan.add("transform." + transform + "namedgrid", "gridname", IntermediateGridFactory::build(intermediate_grid, runtime));
+            grid2grid(plan);
+            return;
 
+        } else {
+            // no intermediate Gaussian grid
+
+            plan.add("transform." + transform + "regular-ll");
+
+            if (parametrisation_.has("user.rotation")) {
+                plan.add("interpolate.grid2rotated-regular-ll");
+
+                bool wind = false;
+                parametrisation_.get("wind", wind);
+
+                if (wind || vod2uv) {
+                    plan.add("filter.adjust-winds-directions");
+                    selectWindComponents(plan);
+                }
+            }
+
+        }
     }
 
     if (parametrisation_.has("user.reduced")) {

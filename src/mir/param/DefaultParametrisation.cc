@@ -37,6 +37,7 @@ DefaultParametrisation::DefaultParametrisation() {
     set("lsm-value-threshold", 0.5);
 
     set("spectral-mapping", "linear");
+    set("spectral-intermediate-grid", "regular");
 
     set("absolute-error", 1e-10);
 }
