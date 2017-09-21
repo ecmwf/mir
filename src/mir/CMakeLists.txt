@@ -483,6 +483,14 @@ list(
     style/SpectralGaussianGrid.h
     style/SpectralGrid.cc
     style/SpectralGrid.h
+    style/SpectralMode.cc
+    style/SpectralMode.h
+    style/SpectralModeNone.cc
+    style/SpectralModeNone.h
+    style/SpectralModeSource.cc
+    style/SpectralModeSource.h
+    style/SpectralModeTarget.cc
+    style/SpectralModeTarget.h
     style/SpectralNamedGrid.cc
     style/SpectralNamedGrid.h
     style/SpectralOrder.cc
