@@ -13,13 +13,14 @@
 /// @date Apr 2015
 
 
-#ifndef MIRStyle_H
-#define MIRStyle_H
+#ifndef mir_style_MIRStyle_h
+#define mir_style_MIRStyle_h
 
 #include <iosfwd>
 #include <memory>
 #include <string>
 #include <vector>
+#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
@@ -39,7 +40,7 @@ namespace mir {
 namespace style {
 
 
-class MIRStyle {
+class MIRStyle : private eckit::NonCopyable {
 public:
 
     // -- Exceptions
@@ -63,8 +64,7 @@ public:
 
     virtual void prepare(action::ActionPlan&) const = 0;
 
-    virtual bool forcedPrepare(const api::MIRJob& job,
-                               const param::MIRParametrisation& input) const = 0;
+    virtual bool forcedPrepare(const api::MIRJob&, const param::MIRParametrisation& input) const = 0;
 
     // -- Overridden methods
     // None
@@ -83,7 +83,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
     // None
@@ -95,11 +95,6 @@ protected:
     // None
 
 private:
-
-    // No copy allowed
-
-    MIRStyle(const MIRStyle&);
-    MIRStyle& operator=(const MIRStyle&);
 
     // -- Members
     // None

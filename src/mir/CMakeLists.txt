@@ -475,8 +475,6 @@ list(
     style/CustomParametrisation.h
     style/CustomStyle.cc
     style/CustomStyle.h
-    style/DisseminationStyle.cc
-    style/DisseminationStyle.h
     style/ECMWFStyle.cc
     style/ECMWFStyle.h
     style/IntermediateGaussianGrid.cc
@@ -487,14 +485,8 @@ list(
     style/IntermediateNamedGrid.h
     style/Mapping.cc
     style/Mapping.h
-    style/MARSStyle.cc
-    style/MARSStyle.h
     style/MIRStyle.cc
     style/MIRStyle.h
-    style/ProdgenGrid.cc
-    style/ProdgenGrid.h
-    style/ProdgenStyle.cc
-    style/ProdgenStyle.h
     style/TMapping.cc
     style/TMapping.h
     tools/MIRTool.cc
