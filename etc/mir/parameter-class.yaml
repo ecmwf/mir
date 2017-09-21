@@ -178,6 +178,7 @@ intensity:
 - 163  # Slope of sub-gridscale orography
 - 165  # 10 metre U wind component
 - 166  # 10 metre V wind component
+- 167  # 2 metre temperature
 - 168  # 2 metre dewpoint temperature
 - 170  # Soil temperature level 2
 - 171  # Soil wetness level 2
@@ -328,6 +329,7 @@ intensity:
 - 129163  # Slope of sub-gridscale orography gradient
 - 129165  # 10 metre U wind component gradient
 - 129166  # 10 metre V wind component gradient
+- 129167  # 2 metre temperature gradient
 - 129168  # 2 metre dewpoint temperature gradient
 - 129170  # Soil temperature level 2 gradient
 - 129171  # Soil wetness level 2 gradient
@@ -640,6 +642,7 @@ intensity:
 - 171163  # Slope of sub-gridscale orography anomaly
 - 171165  # 10 metre U wind component anomaly
 - 171166  # 10 metre V wind component anomaly
+- 171167  # 2 metre temperature anomaly
 - 171168  # 2 metre dewpoint temperature anomaly
 - 171170  # Soil temperature anomaly level 2
 - 171171  # Soil wetness anomaly level 2
@@ -786,6 +789,7 @@ intensity:
 - 200163  # Slope of sub-gridscale orography difference
 - 200165  # 10 metre U wind component difference
 - 200166  # 10 metre V wind component difference
+- 200167  # 2 metre temperature difference
 - 200168  # 2 metre dewpoint temperature difference
 - 200170  # Soil temperature level 2 difference
 - 200171  # Soil wetness level 2 difference
@@ -1368,12 +1372,6 @@ intensity:
 - 300253  # Time mean virtual temperature
 - 300254  # Time mean vorticity
 - 300255  # Time mean zonal wind (u)
-
-intensity-lsm:
-- 167  # 2 metre temperature
-- 129167  # 2 metre temperature gradient
-- 171167  # 2 metre temperature anomaly
-- 200167  # 2 metre temperature difference
 
 rate:
 - 3019  # Lapse rate

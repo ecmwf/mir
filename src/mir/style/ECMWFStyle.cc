@@ -18,20 +18,28 @@
 #include <iostream>
 #include <set>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/filesystem/PathName.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
-#include "mir/config/LibMir.h"
+#include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/param/RuntimeParametrisation.h"
+#include "mir/style/IntermediateGrid.h"
+#include "mir/style/Mapping.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/util/Increments.h"
 
 
 namespace mir {
 namespace style {
 
 
-ECMWFStyle::ECMWFStyle(const param::MIRParametrisation &parametrisation):
-    MIRStyle(parametrisation) {
+namespace {
+static MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
+}
 
+
+ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation):
+    MIRStyle(parametrisation) {
 }
 
 
@@ -39,10 +47,333 @@ ECMWFStyle::~ECMWFStyle() {
 }
 
 
-void ECMWFStyle::prepare(action::ActionPlan &plan) const {
+void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
-    // All the nasty style goes there
+    std::string prologue;
+    if (parametrisation_.get("prologue", prologue)) {
+        plan.add(prologue);
+    }
 
+    if (parametrisation_.has("checkerboard")) {
+        plan.add("misc.checkerboard");
+    }
+
+    if (parametrisation_.has("pattern")) {
+        plan.add("misc.pattern");
+    }
+
+    std::string formula;
+    if (parametrisation_.get("user.formula.prologue", formula)) {
+        std::string metadata;
+        // paramId for the results of formulas
+        parametrisation_.get("user.formula.prologue.metadata", metadata);
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+    }
+}
+
+
+void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
+
+    long truncation = getIntendedTruncation();
+    if (truncation) {
+        plan.add("transform.sh-truncate", "truncation", truncation);
+    }
+
+    bool vod2uv = false;
+    parametrisation_.get("vod2uv", vod2uv);
+    std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
+
+    if (parametrisation_.has("user.grid")) {
+
+        std::string intermediate_grid;
+        parametrisation_.get("spectral-intermediate-grid", intermediate_grid);
+
+        // use intermediate Gaussian grid with intended truncation
+        if (intermediate_grid.length()) {
+
+            param::RuntimeParametrisation runtime(parametrisation_);
+            if (truncation) {
+                runtime.set("truncation", truncation);
+            }
+            plan.add("transform." + transform + "namedgrid", "gridname", IntermediateGridFactory::build(intermediate_grid, runtime));
+            grid2grid(plan);
+            return;
+
+        }
+
+        // don't use intermediate Gaussian grid
+        plan.add("transform." + transform + "regular-ll");
+
+        if (parametrisation_.has("user.rotation")) {
+            plan.add("interpolate.grid2rotated-regular-ll");
+
+            bool wind = false;
+            parametrisation_.get("wind", wind);
+
+            if (wind || vod2uv) {
+                plan.add("filter.adjust-winds-directions");
+                selectWindComponents(plan);
+            }
+        }
+    }
+
+    if (parametrisation_.has("user.reduced")) {
+        plan.add("transform." + transform + "reduced-gg");
+    }
+
+    if (parametrisation_.has("user.regular")) {
+        plan.add("transform." + transform + "regular-gg");
+    }
+
+    if (parametrisation_.has("user.octahedral")) {
+        plan.add("transform." + transform + "octahedral-gg");
+    }
+
+    if (parametrisation_.has("user.pl")) {
+        plan.add("transform." + transform + "reduced-gg-pl-given");
+    }
+
+    if (parametrisation_.has("user.gridname")) {
+        std::string gridname;
+        ASSERT(parametrisation_.get("gridname", gridname));
+        plan.add("transform." + transform + "namedgrid");
+    }
+
+    if (parametrisation_.has("user.griddef")) {
+        std::string griddef;
+        ASSERT(parametrisation_.get("griddef", griddef));
+        // TODO: this is temporary
+        plan.add("transform." + transform + "octahedral-gg", "octahedral", 64L);
+        plan.add("interpolate.grid2griddef");
+    }
+
+    if (isWindComponent()) {
+        plan.add("filter.adjust-winds-scale-cos-latitude");
+    }
+
+    if (!parametrisation_.has("user.rotation")) {
+        selectWindComponents(plan);
+    }
+}
+
+
+void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
+
+    if (parametrisation_.has("user.truncation")) {
+        plan.add("transform.sh-truncate");
+    }
+
+    std::string formula;
+    if (parametrisation_.get("user.formula.spectral", formula)) {
+        std::string metadata;
+        // paramId for the results of formulas
+        parametrisation_.get("user.formula.spectral.metadata", metadata);
+
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+    }
+
+    bool vod2uv = false;
+    parametrisation_.get("vod2uv", vod2uv);
+
+    if (vod2uv) {
+        plan.add("transform.sh-vod-to-UV");
+    }
+
+    selectWindComponents(plan);
+}
+
+
+void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
+
+    bool vod2uv = false;
+    parametrisation_.get("vod2uv", vod2uv);
+
+    bool wind = false;
+    parametrisation_.get("wind", wind);
+
+    if (parametrisation_.has("user.pl") && parametrisation_.has("user.rotation")) {
+        throw eckit::UserError("'user.pl' is incompatible with option 'rotation'.");
+    }
+
+
+    const std::string userGrid =
+        parametrisation_.has("user.grid") ?         "regular-ll" :
+        parametrisation_.has("user.reduced") ?      "reduced-gg" :
+        parametrisation_.has("user.regular") ?      "regular-gg" :
+        parametrisation_.has("user.octahedral") ?   "octahedral-gg" :
+        parametrisation_.has("user.pl") ?           "reduced-gg-pl-given" :
+        parametrisation_.has("user.gridname") ?     "namedgrid" :
+        parametrisation_.has("user.griddef") ?      "griddef" :
+        parametrisation_.has("user.points") ?       "points" :
+        "";
+
+    if (userGrid.length()) {
+        if (parametrisation_.has("user.rotation")) {
+            plan.add("interpolate.grid2rotated-" + userGrid);
+            if (wind || vod2uv) {
+                plan.add("filter.adjust-winds-directions");
+                selectWindComponents(plan);
+            }
+        } else {
+            plan.add("interpolate.grid2" + userGrid);
+        }
+    }
+}
+
+
+void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
+
+    bool globalise = false;
+    parametrisation_.get("user.globalise", globalise);
+
+    if (globalise) {
+        plan.add("filter.globalise");
+    }
+
+    if (parametrisation_.has("user.area")) {
+        plan.add("crop.area");
+    }
+
+    if (parametrisation_.has("user.bitmap")) {
+        plan.add("filter.bitmap");
+    }
+
+    if (parametrisation_.has("user.frame")) {
+        plan.add("filter.frame");
+    }
+
+    std::string formula;
+    if (parametrisation_.get("user.formula.epilogue", formula)) {
+        std::string metadata;
+        // paramId for the results of formulas
+        parametrisation_.get("user.formula.epilogue.metadata", metadata);
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+    }
+
+    std::string metadata;
+    if (parametrisation_.get("user.metadata", metadata)) {
+        plan.add("set.metadata", "metadata", metadata);
+    }
+
+    std::string epilogue;
+    if (parametrisation_.get("epilogue", epilogue)) {
+        plan.add(epilogue);
+    }
+}
+
+
+void ECMWFStyle::print(std::ostream& out) const {
+    out << "ECMWFStyle[]";
+}
+
+
+bool ECMWFStyle::isWindComponent() const {
+    long id = 0;
+    parametrisation_.get("paramId", id);
+
+    const long id_u = 131;
+    const long id_v = 132;
+
+    return (id == id_u || id == id_v);
+}
+
+
+bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
+    bool u_only = false;
+    if (parametrisation_.get("u-only", u_only) && u_only) {
+        plan.add("select.field", "which", long(0));
+    }
+    bool v_only = false;
+    if (parametrisation_.get("v-only", v_only) && v_only) {
+        ASSERT(!u_only);
+        plan.add("select.field", "which", long(1));
+    }
+    return (u_only || v_only);
+}
+
+
+long ECMWFStyle::getTargetGaussianNumber() const {
+    long N = 0;
+
+    // get N from number of points in half-meridian (uses only grid[1] South-North increment)
+    std::vector<double> grid;
+    if (parametrisation_.get("user.grid", grid)) {
+        ASSERT(grid.size() == 2);
+        util::Increments increments(grid[0], grid[1]);
+
+        // use (non-shifted) global bounding box
+        util::BoundingBox bbox;
+        increments.globaliseBoundingBox(bbox, false, false);
+
+        N = long(increments.computeNj(bbox) - 1) / 2;
+        return N;
+    }
+
+    // get Gaussian N directly
+    if (parametrisation_.get("user.reduced", N) ||
+        parametrisation_.get("user.regular", N) ||
+        parametrisation_.get("user.octahedral", N)) {
+        return N;
+    }
+
+    // get Gaussian N given a gridname
+    std::string gridname;
+    if (parametrisation_.get("user.gridname", gridname)) {
+        N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
+        return N;
+    }
+
+    std::ostringstream os;
+    os << "ECMWFStyle: cannot calculate Gaussian number (N) from target grid";
+    throw eckit::SeriousBug(os.str());
+}
+
+
+long ECMWFStyle::getIntendedTruncation() const {
+
+    // TODO: this is temporary, no support yet for unstuctured grids
+    if (parametrisation_.has("griddef")) {
+        return 63L;
+    }
+
+    // Set truncation based on target grid's equivalent Gaussian N and spectral mapping
+    bool autoresol = true;
+    parametrisation_.get("autoresol", autoresol);
+
+    if (autoresol) {
+
+        long Tin = 0L;
+        ASSERT(parametrisation_.get("field.truncation", Tin));
+
+        std::string spectralMapping = "linear";
+        parametrisation_.get("spectral-mapping", spectralMapping);
+
+        // get truncation from points-per-latitude, limited to input
+        long N = getTargetGaussianNumber();
+        ASSERT(N > 0);
+
+        eckit::ScopedPtr<Mapping> map(MappingFactory::build(spectralMapping));
+        ASSERT(map);
+
+        long T = map->getTruncationFromGaussianNumber(N);
+        if (T > Tin) {
+            eckit::Log::warning() << "Automatic truncation " << T << " ('autoresol') limited by input truncation " << Tin << std::endl;
+            return Tin;
+        }
+        return T;
+    }
+
+    // Set truncation if manually specified
+    long T = 0;
+    parametrisation_.get("user.truncation", T);
+
+    return T;
+}
+
+
+void ECMWFStyle::prepare(action::ActionPlan& plan) const {
+
+    // All the nasty logic goes there
     prologue(plan);
 
     size_t user_wants_gridded = 0;
@@ -127,7 +458,6 @@ void ECMWFStyle::prepare(action::ActionPlan &plan) const {
     }
 
     epilogue(plan);
-
 }
 
 
@@ -160,162 +490,6 @@ bool ECMWFStyle::forcedPrepare(const api::MIRJob& job,
     }
 
     return !job.matches(input, ignore);
-}
-
-
-void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
-
-    bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
-
-    bool wind = false;
-    parametrisation_.get("wind", wind);
-
-    if (parametrisation_.has("user.pl") && parametrisation_.has("user.rotation")) {
-        throw eckit::UserError("'user.pl' is incompatible with option 'rotation'.");
-    }
-
-
-    const std::string userGrid =
-        parametrisation_.has("user.grid") ?         "regular-ll" :
-        parametrisation_.has("user.reduced") ?      "reduced-gg" :
-        parametrisation_.has("user.regular") ?      "regular-gg" :
-        parametrisation_.has("user.octahedral") ?   "octahedral-gg" :
-        parametrisation_.has("user.pl") ?           "reduced-gg-pl-given" :
-        parametrisation_.has("user.gridname") ?     "namedgrid" :
-        parametrisation_.has("user.griddef") ?      "griddef" :
-        parametrisation_.has("user.points") ?       "points" :
-        "";
-
-    if (userGrid.length()) {
-        if (parametrisation_.has("user.rotation")) {
-            plan.add("interpolate.grid2rotated-" + userGrid);
-            if (wind || vod2uv) {
-                plan.add("filter.adjust-winds-directions");
-                selectWindComponents(plan);
-            }
-        } else {
-            plan.add("interpolate.grid2" + userGrid);
-        }
-    }
-}
-
-
-void ECMWFStyle::prologue(action::ActionPlan& plan) const {
-
-    std::string prologue;
-    if (parametrisation_.get("prologue", prologue)) {
-        plan.add(prologue);
-    }
-
-    if (parametrisation_.has("checkerboard")) {
-        plan.add("misc.checkerboard");
-    }
-
-    if (parametrisation_.has("pattern")) {
-        plan.add("misc.pattern");
-    }
-
-    std::string formula;
-    if (parametrisation_.get("user.formula.prologue", formula)) {
-        std::string metadata;
-        // paramId for the results of formulas
-        parametrisation_.get("user.formula.prologue.metadata", metadata);
-        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-    }
-}
-
-
-void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
-
-    if (parametrisation_.has("user.truncation")) {
-        plan.add("transform.sh-truncate");
-    }
-
-    std::string formula;
-    if (parametrisation_.get("user.formula.spectral", formula)) {
-        std::string metadata;
-        // paramId for the results of formulas
-        parametrisation_.get("user.formula.spectral.metadata", metadata);
-
-        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-    }
-
-    bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
-
-    if (vod2uv) {
-        plan.add("transform.sh-vod-to-UV");
-    }
-
-    selectWindComponents(plan);
-}
-
-
-void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
-
-    bool globalise = false;
-    parametrisation_.get("user.globalise", globalise);
-
-    if (globalise) {
-        plan.add("filter.globalise");
-    }
-
-    if (parametrisation_.has("user.area")) {
-        plan.add("crop.area");
-    }
-
-    if (parametrisation_.has("user.bitmap")) {
-        plan.add("filter.bitmap");
-    }
-
-    if (parametrisation_.has("user.frame")) {
-        plan.add("filter.frame");
-    }
-
-    std::string formula;
-    if (parametrisation_.get("user.formula.epilogue", formula)) {
-        std::string metadata;
-        // paramId for the results of formulas
-        parametrisation_.get("user.formula.epilogue.metadata", metadata);
-        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-    }
-
-    std::string metadata;
-    if (parametrisation_.get("user.metadata", metadata)) {
-        plan.add("set.metadata", "metadata", metadata);
-    }
-
-    std::string epilogue;
-    if (parametrisation_.get("epilogue", epilogue)) {
-        plan.add(epilogue);
-    }
-
-}
-
-
-bool ECMWFStyle::isWindComponent() const {
-    long id = 0;
-    parametrisation_.get("paramId", id);
-
-    const long id_u = 131;
-    const long id_v = 132;
-
-    return (id == id_u || id == id_v);
-}
-
-
-bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
-    bool u_only = false;
-    if (parametrisation_.get("u-only", u_only) && u_only) {
-        plan.add("select.field", "which", long(0));
-    }
-    bool v_only = false;
-    if (parametrisation_.get("v-only", v_only) && v_only) {
-        ASSERT(!u_only);
-        plan.add("select.field", "which", long(1));
-    }
-    return (u_only || v_only);
 }
 
 

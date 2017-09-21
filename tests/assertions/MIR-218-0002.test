@@ -1,0 +1,4 @@
+# MIR-218: test projection failure on points on domain edges (interpolation fail)
+regular_ll.0.1-0.1.europe.grib1
+# Mir tool options
+--area=50/-12/34/7 --grid=0.1/0.1

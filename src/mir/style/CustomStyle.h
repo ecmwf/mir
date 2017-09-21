@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    ~CustomStyle(); // Change to virtual if base class
+    ~CustomStyle();
 
     // -- Convertors
     // None
@@ -61,10 +61,11 @@ protected:
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
-    virtual void print(std::ostream&) const;
 
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -74,11 +75,6 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    CustomStyle(const CustomStyle&);
-    CustomStyle& operator=(const CustomStyle&);
-
     // -- Members
     // None
 
@@ -87,10 +83,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void prepare(action::ActionPlan&) const;
+    void prepare(action::ActionPlan&) const;
 
-    virtual bool forcedPrepare(const api::MIRJob& job,
-                               const param::MIRParametrisation& input) const;
+    bool forcedPrepare(const api::MIRJob&, const param::MIRParametrisation& input) const;
 
     // -- Class members
     // None

@@ -19,7 +19,7 @@ namespace mir {
 namespace param {
 
 DefaultParametrisation::DefaultParametrisation() {
-    set("style", "mars");
+    set("style", "ecmwf");
     set("executor", "simple");
 
     set("interpolation", "linear"); // The word 'method' is used in grib
@@ -37,6 +37,7 @@ DefaultParametrisation::DefaultParametrisation() {
     set("lsm-value-threshold", 0.5);
 
     set("spectral-mapping", "linear");
+    set("spectral-intermediate-grid", "regular");
 
     set("absolute-error", 1e-10);
 }

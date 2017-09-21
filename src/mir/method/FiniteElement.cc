@@ -357,7 +357,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         eckit::Log::debug<LibMir>() << msg.str() << ":";
         size_t count = 0;
         for (const failed_projection_t& f : failures) {
-            eckit::Log::debug<LibMir>() << "\n\tpoint " << f.first << " (lon, lat) = (" << f.second.lon.value() << ", " << f.second.lat.value() << ")";
+            eckit::Log::debug<LibMir>() << "\n\tpoint " << f.first << " " << f.second;
             if (++count > 10) {
                 eckit::Log::debug<LibMir>() << "\n\t...";
                 break;
