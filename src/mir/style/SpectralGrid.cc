@@ -8,33 +8,31 @@
  * nor does it submit to any jurisdiction.
  */
 
-/// @date Mar 2017
+/// @date May 2017
 
 
-#include "mir/style/Mapping.h"
+#include "mir/style/SpectralGrid.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 #include "mir/config/LibMir.h"
+#include "mir/style/SpectralNamedGrid.h"
 
 
 namespace mir {
 namespace style {
 
 
-long Mapping::getTruncationFromGaussianNumber(const long&) const {
-    std::ostringstream os;
-    os << "Mapping::getTruncationFromGaussianNumber() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+SpectralGrid::SpectralGrid(const param::MIRParametrisation& parametrisation) :
+    parametrisation_(parametrisation) {
 }
 
 
-long Mapping::getGaussianNumberFromTruncation(const long&) const {
-    std::ostringstream os;
-    os << "Mapping::getGaussianNumberFromTruncation() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+void SpectralGrid::get(const std::string& name, std::string& value) const {
+    ASSERT(name == "gridname");
+    value = getGridname();
 }
 
 
@@ -44,21 +42,20 @@ long Mapping::getGaussianNumberFromTruncation(const long&) const {
 namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, MappingFactory* >* m = 0;
+static std::map< std::string, SpectralGridFactory* > *m = 0;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, MappingFactory* >();
+    m = new std::map< std::string, SpectralGridFactory* >();
 }
 }  // (anonymous namespace)
 
 
-MappingFactory::MappingFactory(const std::string& name) : name_(name) {
+SpectralGridFactory::SpectralGridFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
-
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("MappingFactory: duplicate '" + name + "'");
+        throw eckit::SeriousBug("SpectralGridFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -66,30 +63,30 @@ MappingFactory::MappingFactory(const std::string& name) : name_(name) {
 }
 
 
-MappingFactory::~MappingFactory() {
+SpectralGridFactory::~SpectralGridFactory() {
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     m->erase(name_);
 }
 
 
-Mapping* MappingFactory::build(const std::string& name) {
+SpectralGrid* SpectralGridFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "MappingFactory: looking for '" << name << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "SpectralGridFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
-    if (j == m->end()) {
-        list(eckit::Log::error() << "MappingFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("MappingFactory: unknown '" + name + "'");
+    if (j != m->end()) {
+        return j->second->make(parametrisation);
     }
 
-    return (*j).second->make();
+    eckit::Log::info() << "SpectralGridFactory: setting named grid '" << name << "'" << std::endl;
+    return new SpectralNamedGrid(parametrisation);
 }
 
 
-void MappingFactory::list(std::ostream& out) {
+void SpectralGridFactory::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
@@ -103,3 +100,4 @@ void MappingFactory::list(std::ostream& out) {
 
 }  // namespace style
 }  // namespace mir
+

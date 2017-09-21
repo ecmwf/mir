@@ -8,10 +8,10 @@
  * nor does it submit to any jurisdiction.
  */
 
-/// @date May 2017
+/// @date Mar 2017
 
 
-#include "mir/style/IntermediateGrid.h"
+#include "mir/style/SpectralOrder.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
@@ -24,14 +24,17 @@ namespace mir {
 namespace style {
 
 
-IntermediateGrid::IntermediateGrid(const param::MIRParametrisation& parametrisation) :
-    parametrisation_(parametrisation) {
+long SpectralOrder::getTruncationFromGaussianNumber(const long&) const {
+    std::ostringstream os;
+    os << "Mapping::getTruncationFromGaussianNumber() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 
-void IntermediateGrid::get(const std::string& name, std::string& value) const {
-    ASSERT(name == "gridname");
-    value = getGridname();
+long SpectralOrder::getGaussianNumberFromTruncation(const long&) const {
+    std::ostringstream os;
+    os << "Mapping::getGaussianNumberFromTruncation() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 
@@ -41,20 +44,21 @@ void IntermediateGrid::get(const std::string& name, std::string& value) const {
 namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, IntermediateGridFactory* > *m = 0;
+static std::map< std::string, SpectralOrderFactory* >* m = 0;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, IntermediateGridFactory* >();
+    m = new std::map< std::string, SpectralOrderFactory* >();
 }
 }  // (anonymous namespace)
 
 
-IntermediateGridFactory::IntermediateGridFactory(const std::string& name) : name_(name) {
+SpectralOrderFactory::SpectralOrderFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
+
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("IntermediateGridFactory: duplicate '" + name + "'");
+        throw eckit::SeriousBug("MappingFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -62,30 +66,30 @@ IntermediateGridFactory::IntermediateGridFactory(const std::string& name) : name
 }
 
 
-IntermediateGridFactory::~IntermediateGridFactory() {
+SpectralOrderFactory::~SpectralOrderFactory() {
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     m->erase(name_);
 }
 
 
-IntermediateGrid* IntermediateGridFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation) {
+SpectralOrder* SpectralOrderFactory::build(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "IntermediateGridFactory: looking for '" << name << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "MappingFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "IntermediateGridFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("IntermediateGridFactory: unknown '" + name + "'");
+        list(eckit::Log::error() << "MappingFactory: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("MappingFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(parametrisation);
+    return (*j).second->make();
 }
 
 
-void IntermediateGridFactory::list(std::ostream& out) {
+void SpectralOrderFactory::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
@@ -99,4 +103,3 @@ void IntermediateGridFactory::list(std::ostream& out) {
 
 }  // namespace style
 }  // namespace mir
-

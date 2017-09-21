@@ -23,8 +23,8 @@
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
-#include "mir/style/IntermediateGrid.h"
-#include "mir/style/Mapping.h"
+#include "mir/style/SpectralGrid.h"
+#include "mir/style/SpectralOrder.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 
@@ -85,17 +85,17 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (parametrisation_.has("user.grid")) {
 
-        std::string intermediate_grid;
-        parametrisation_.get("spectral-intermediate-grid", intermediate_grid);
+        std::string spectral_grid;
+        parametrisation_.get("spectral-grid", spectral_grid);
 
         // use intermediate Gaussian grid with intended truncation
-        if (intermediate_grid.length()) {
+        if (spectral_grid.length()) {
 
             param::RuntimeParametrisation runtime(parametrisation_);
             if (truncation) {
                 runtime.set("truncation", truncation);
             }
-            plan.add("transform." + transform + "namedgrid", "gridname", IntermediateGridFactory::build(intermediate_grid, runtime));
+            plan.add("transform." + transform + "namedgrid", "gridname", SpectralGridFactory::build(spectral_grid, runtime));
             grid2grid(plan);
             return;
 
@@ -345,17 +345,17 @@ long ECMWFStyle::getIntendedTruncation() const {
         long Tin = 0L;
         ASSERT(parametrisation_.get("field.truncation", Tin));
 
-        std::string spectralMapping = "linear";
-        parametrisation_.get("spectral-mapping", spectralMapping);
+        std::string spectralOrder = "linear";
+        parametrisation_.get("spectral-order", spectralOrder);
+
+        eckit::ScopedPtr<SpectralOrder> order(SpectralOrderFactory::build(spectralOrder));
+        ASSERT(order);
 
         // get truncation from points-per-latitude, limited to input
         long N = getTargetGaussianNumber();
         ASSERT(N > 0);
 
-        eckit::ScopedPtr<Mapping> map(MappingFactory::build(spectralMapping));
-        ASSERT(map);
-
-        long T = map->getTruncationFromGaussianNumber(N);
+        long T = order->getTruncationFromGaussianNumber(N);
         if (T > Tin) {
             eckit::Log::warning() << "Automatic truncation " << T << " ('autoresol') limited by input truncation " << Tin << std::endl;
             return Tin;

@@ -477,18 +477,18 @@ list(
     style/CustomStyle.h
     style/ECMWFStyle.cc
     style/ECMWFStyle.h
-    style/IntermediateGaussianGrid.cc
-    style/IntermediateGaussianGrid.h
-    style/IntermediateGrid.cc
-    style/IntermediateGrid.h
-    style/IntermediateNamedGrid.cc
-    style/IntermediateNamedGrid.h
-    style/Mapping.cc
-    style/Mapping.h
     style/MIRStyle.cc
     style/MIRStyle.h
-    style/TMapping.cc
-    style/TMapping.h
+    style/SpectralGaussianGrid.cc
+    style/SpectralGaussianGrid.h
+    style/SpectralGrid.cc
+    style/SpectralGrid.h
+    style/SpectralNamedGrid.cc
+    style/SpectralNamedGrid.h
+    style/SpectralOrder.cc
+    style/SpectralOrder.h
+    style/SpectralOrderT.cc
+    style/SpectralOrderT.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h

@@ -8,35 +8,32 @@
  * nor does it submit to any jurisdiction.
  */
 
-/// @date May 2017
+/// @date Mar 2017
 
 
-#ifndef mir_style_IntermediateGrid_h
-#define mir_style_IntermediateGrid_h
+#ifndef mir_style_SpectralOrder_h
+#define mir_style_SpectralOrder_h
 
 #include <iosfwd>
 #include <string>
 #include "eckit/memory/NonCopyable.h"
-#include "mir/param/DelayedParametrisation.h"
-#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace style {
 
 
-class IntermediateGrid: public eckit::NonCopyable, public param::DelayedParametrisation {
+class SpectralOrder : public eckit::NonCopyable {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-
-    IntermediateGrid(const param::MIRParametrisation&);
+    SpectralOrder() {}
 
     // -- Destructor
-    // None
+    virtual ~SpectralOrder() {}
 
     // -- Convertors
     // None
@@ -45,7 +42,9 @@ public:
     // None
 
     // -- Methods
-    // None
+    virtual long getTruncationFromGaussianNumber(const long&) const;
+    virtual long getGaussianNumberFromTruncation(const long&) const;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
     // None
@@ -59,16 +58,13 @@ public:
 protected:
 
     // -- Members
-
-    const param::MIRParametrisation& parametrisation_;
+    // None
 
     // -- Methods
-
-    virtual std::string getGridname() const = 0;
+    // None
 
     // -- Overridden methods
-
-    void get(const std::string&, std::string&) const;
+    // None
 
     // -- Class members
     // None
@@ -94,29 +90,32 @@ private:
     // None
 
     // -- Friends
-    // None
 
+    friend std::ostream& operator<<(std::ostream& s, const SpectralOrder& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 
-class IntermediateGridFactory {
+class SpectralOrderFactory {
     std::string name_;
-    virtual IntermediateGrid *make(const param::MIRParametrisation&) = 0;
+    virtual SpectralOrder *make() = 0;
 protected:
-    IntermediateGridFactory(const std::string&);
-    virtual ~IntermediateGridFactory();
+    SpectralOrderFactory(const std::string&);
+    virtual ~SpectralOrderFactory();
 public:
-    static IntermediateGrid *build(const std::string&, const param::MIRParametrisation&);
+    static SpectralOrder *build(const std::string&);
     static void list(std::ostream&);
 };
 
 
-template <class T> class IntermediateGridBuilder : public IntermediateGridFactory {
-    virtual IntermediateGrid *make(const param::MIRParametrisation& p) {
-        return new T(p);
+template <class T> class SpectralOrderBuilder : public SpectralOrderFactory {
+    virtual SpectralOrder *make() {
+        return new T();
     }
 public:
-    IntermediateGridBuilder(const std::string& name) : IntermediateGridFactory(name) {}
+    SpectralOrderBuilder(const std::string& name) : SpectralOrderFactory(name) {}
 };
 
 

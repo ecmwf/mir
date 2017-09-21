@@ -11,29 +11,25 @@
 /// @date May 2017
 
 
-#ifndef mir_style_TMapping_h
-#define mir_style_TMapping_h
+#ifndef mir_style_SpectralNamedGrid_h
+#define mir_style_SpectralNamedGrid_h
 
-#include <cmath>
-#include <string>
-#include "eckit/exception/Exceptions.h"
-#include "mir/style/Mapping.h"
+#include "mir/style/SpectralGrid.h"
 
 
 namespace mir {
 namespace style {
 
 
-template< int ORDER >
-class TMapping : public Mapping {
+class SpectralNamedGrid : public SpectralGrid {
 public:
+
     // -- Exceptions
     // None
 
     // -- Contructors
-    TMapping() {
-        ASSERT(ORDER);
-    }
+
+    SpectralNamedGrid(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -48,43 +44,10 @@ public:
     // None
 
     // -- Overridden methods
-    long getTruncationFromGaussianNumber(const long& N) const {
-        ASSERT(N);
-    
-        long T = long(ceil( 4. / double(ORDER + 1) * N) - 1);
-        ASSERT(T);
-    
-        return T;
-    }
 
-    long getGaussianNumberFromTruncation(const long& T) const {
-        ASSERT(T);
+    std::string getGridname() const;
 
-        long N = long(double(T + 1) * double(ORDER + 1) / 4.);
-        ASSERT(N);
-
-        return N;
-    }
-
-    void print(std::ostream& out) const {
-        out << "TMapping<ORDER=" << ORDER << ">[]";
-    }
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -95,7 +58,8 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    std::string gridname_;
 
     // -- Methods
     // None
@@ -111,6 +75,7 @@ private:
 
     // -- Friends
     // None
+
 };
 
 
@@ -119,4 +84,3 @@ private:
 
 
 #endif
-
