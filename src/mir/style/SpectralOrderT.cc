@@ -19,10 +19,10 @@ namespace style {
 
 
 namespace {
-static SpectralOrderBuilder< SpectralOrderT<1> > __mapping1("linear");
-static SpectralOrderBuilder< SpectralOrderT<2> > __mapping2("quadratic");
-static SpectralOrderBuilder< SpectralOrderT<3> > __mapping3("cubic");
-static SpectralOrderBuilder< SpectralOrderT<4> > __mapping4("quartic");
+static SpectralOrderBuilder< SpectralOrderT<1> > __order1("linear");
+static SpectralOrderBuilder< SpectralOrderT<2> > __order2("quadratic");
+static SpectralOrderBuilder< SpectralOrderT<3> > __order3("cubic");
+static SpectralOrderBuilder< SpectralOrderT<4> > __order4("quartic");
 }
 
 

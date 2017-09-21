@@ -26,14 +26,14 @@ namespace style {
 
 long SpectralOrder::getTruncationFromGaussianNumber(const long&) const {
     std::ostringstream os;
-    os << "Mapping::getTruncationFromGaussianNumber() not implemented for " << *this;
+    os << "SpectralOrder::getTruncationFromGaussianNumber() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 
 long SpectralOrder::getGaussianNumberFromTruncation(const long&) const {
     std::ostringstream os;
-    os << "Mapping::getGaussianNumberFromTruncation() not implemented for " << *this;
+    os << "SpectralOrder::getGaussianNumberFromTruncation() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
@@ -58,7 +58,7 @@ SpectralOrderFactory::SpectralOrderFactory(const std::string& name) : name_(name
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("MappingFactory: duplicate '" + name + "'");
+        throw eckit::SeriousBug("SpectralOrderFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -77,12 +77,12 @@ SpectralOrder* SpectralOrderFactory::build(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "MappingFactory: looking for '" << name << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "SpectralOrderFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "MappingFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("MappingFactory: unknown '" + name + "'");
+        list(eckit::Log::error() << "SpectralOrderFactory: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("SpectralOrderFactory: unknown '" + name + "'");
     }
 
     return (*j).second->make();

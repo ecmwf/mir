@@ -336,7 +336,7 @@ long ECMWFStyle::getIntendedTruncation() const {
         return 63L;
     }
 
-    // Set truncation based on target grid's equivalent Gaussian N and spectral mapping
+    // Set truncation based on target grid's equivalent Gaussian N and spectral order
     bool autoresol = true;
     parametrisation_.get("autoresol", autoresol);
 

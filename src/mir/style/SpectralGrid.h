@@ -36,7 +36,8 @@ public:
     SpectralGrid(const param::MIRParametrisation&);
 
     // -- Destructor
-    // None
+
+    virtual ~SpectralGrid();
 
     // -- Convertors
     // None

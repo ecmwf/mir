@@ -30,6 +30,10 @@ SpectralGrid::SpectralGrid(const param::MIRParametrisation& parametrisation) :
 }
 
 
+SpectralGrid::~SpectralGrid() {
+}
+
+
 void SpectralGrid::get(const std::string& name, std::string& value) const {
     ASSERT(name == "gridname");
     value = getGridname();
