@@ -20,6 +20,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
+#include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
@@ -288,8 +289,9 @@ bool ECMWFStyle::isWindComponent() const {
     long id = 0;
     parametrisation_.get("paramId", id);
 
-    const long id_u = 131;
-    const long id_v = 132;
+    const eckit::Configuration& config = LibMir::instance().configuration();
+    const long id_u = config.getLong("parameter-id-u", 131);
+    const long id_v = config.getLong("parameter-id-v", 132);
 
     return (id == id_u || id == id_v);
 }
