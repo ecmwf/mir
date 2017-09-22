@@ -18,14 +18,15 @@
 #include <iostream>
 #include <set>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/style/SpectralGrid.h"
-#include "mir/style/SpectralMode.h"
+#include "mir/style/SpectralOrder.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/util/Increments.h"
 
 
 namespace mir {
@@ -73,27 +74,10 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
-    std::string formula;
-    if (parametrisation_.get("user.formula.spectral", formula)) {
-        std::string metadata;
-        // paramId for the results of formulas
-        parametrisation_.get("user.formula.spectral.metadata", metadata);
-
-        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-    }
-
-
-    std::string spectralMode = "none";
-    parametrisation_.get("spectral-mode", spectralMode);
-
-    eckit::ScopedPtr<SpectralMode> mode(SpectralModeFactory::build(spectralMode, parametrisation_));
-    ASSERT(mode);
-
-    long truncation = mode->getTruncation();
+    long truncation = getIntendedTruncation();
     if (truncation) {
         plan.add("transform.sh-truncate", "truncation", truncation);
     }
-
 
     bool vod2uv = false;
     parametrisation_.get("vod2uv", vod2uv);
@@ -101,16 +85,17 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (parametrisation_.has("user.grid")) {
 
+        std::string spectral_grid;
+        parametrisation_.get("spectral-grid", spectral_grid);
+
         // use intermediate Gaussian grid with intended truncation
-        std::string gridname;
-        if (mode->getGridname(gridname)) {
+        if (spectral_grid.length()) {
 
             param::RuntimeParametrisation runtime(parametrisation_);
             if (truncation) {
                 runtime.set("truncation", truncation);
             }
-
-            plan.add("transform." + transform + "namedgrid", "gridname", SpectralGridFactory::build(gridname, runtime));
+            plan.add("transform." + transform + "namedgrid", "gridname", SpectralGridFactory::build(spectral_grid, runtime));
             grid2grid(plan);
             return;
 
@@ -168,13 +153,6 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);
-    }
-
-    if (parametrisation_.get("user.formula.gridded", formula)) {
-        std::string metadata;
-        // paramId for the results of formulas
-        parametrisation_.get("user.formula.gridded.metadata", metadata);
-        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 }
 
@@ -314,6 +292,85 @@ bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
 }
 
 
+long ECMWFStyle::getTargetGaussianNumber() const {
+    long N = 0;
+
+    // get N from number of points in half-meridian (uses only grid[1] South-North increment)
+    std::vector<double> grid;
+    if (parametrisation_.get("user.grid", grid)) {
+        ASSERT(grid.size() == 2);
+        util::Increments increments(grid[0], grid[1]);
+
+        // use (non-shifted) global bounding box
+        util::BoundingBox bbox;
+        increments.globaliseBoundingBox(bbox, false, false);
+
+        N = long(increments.computeNj(bbox) - 1) / 2;
+        return N;
+    }
+
+    // get Gaussian N directly
+    if (parametrisation_.get("user.reduced", N) ||
+        parametrisation_.get("user.regular", N) ||
+        parametrisation_.get("user.octahedral", N)) {
+        return N;
+    }
+
+    // get Gaussian N given a gridname
+    std::string gridname;
+    if (parametrisation_.get("user.gridname", gridname)) {
+        N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
+        return N;
+    }
+
+    std::ostringstream os;
+    os << "ECMWFStyle: cannot calculate Gaussian number (N) from target grid";
+    throw eckit::SeriousBug(os.str());
+}
+
+
+long ECMWFStyle::getIntendedTruncation() const {
+
+    // TODO: this is temporary, no support yet for unstuctured grids
+    if (parametrisation_.has("griddef")) {
+        return 63L;
+    }
+
+    // Set truncation based on target grid's equivalent Gaussian N and spectral order
+    bool autoresol = true;
+    parametrisation_.get("autoresol", autoresol);
+
+    if (autoresol) {
+
+        long Tin = 0L;
+        ASSERT(parametrisation_.get("field.truncation", Tin));
+
+        std::string spectralOrder = "linear";
+        parametrisation_.get("spectral-order", spectralOrder);
+
+        eckit::ScopedPtr<SpectralOrder> order(SpectralOrderFactory::build(spectralOrder));
+        ASSERT(order);
+
+        // get truncation from points-per-latitude, limited to input
+        long N = getTargetGaussianNumber();
+        ASSERT(N > 0);
+
+        long T = order->getTruncationFromGaussianNumber(N);
+        if (T > Tin) {
+            eckit::Log::warning() << "Automatic truncation " << T << " ('autoresol') limited by input truncation " << Tin << std::endl;
+            return Tin;
+        }
+        return T;
+    }
+
+    // Set truncation if manually specified
+    long T = 0;
+    parametrisation_.get("user.truncation", T);
+
+    return T;
+}
+
+
 void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 
     // All the nasty logic goes there
@@ -357,14 +414,33 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 
     bool field_gridded  = parametrisation_.has("field.gridded");
     bool field_spectral = parametrisation_.has("field.spectral");
+    std::string formula;
 
     ASSERT(field_gridded != field_spectral);
 
 
     if (field_spectral) {
         if (user_wants_gridded) {
+
+            if (parametrisation_.get("user.formula.spectral", formula)) {
+                std::string metadata;
+                // paramId for the results of formulas
+                parametrisation_.get("user.formula.spectral.metadata", metadata);
+
+                plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+            }
+
             sh2grid(plan);
-        } else {  // "user wants spectral"
+
+            if (parametrisation_.get("user.formula.gridded", formula)) {
+                std::string metadata;
+                // paramId for the results of formulas
+                parametrisation_.get("user.formula.gridded.metadata", metadata);
+                plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+            }
+
+        } else {
+            // "user wants spectral"
             sh2sh(plan);
         }
     }
@@ -372,7 +448,6 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 
     if (field_gridded) {
 
-        std::string formula;
         if (parametrisation_.get("user.formula.gridded", formula)) {
             std::string metadata;
             // paramId for the results of formulas
@@ -411,7 +486,7 @@ bool ECMWFStyle::forcedPrepare(const api::MIRJob& job,
 
     std::set<std::string> ignore;
     if (input.has("gridded")) {
-        ignore.insert("spectral-mode");
+        ignore.insert("autoresol");
     }
 
     return !job.matches(input, ignore);

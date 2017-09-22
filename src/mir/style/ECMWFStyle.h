@@ -87,6 +87,8 @@ private:
 
     bool isWindComponent() const;
     bool selectWindComponents(action::ActionPlan&) const;
+    long getTargetGaussianNumber() const;
+    long getIntendedTruncation() const;
 
     // -- Overridden methods
 
