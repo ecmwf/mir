@@ -18,13 +18,14 @@
 
 #include <iosfwd>
 #include "eckit/config/Parametrisation.h"
+#include "eckit/memory/NonCopyable.h"
 #include "mir/util/Types.h"
 
 namespace mir {
 namespace param {
 
 
-class MIRParametrisation : public eckit::Parametrisation {
+class MIRParametrisation : public eckit::Parametrisation, private eckit::NonCopyable {
 public:
 
     // -- Exceptions
@@ -97,11 +98,6 @@ protected:
     // None
 
 private:
-
-    // No copy allowed
-
-    MIRParametrisation(const MIRParametrisation&);
-    MIRParametrisation& operator=(const MIRParametrisation&);
 
     // -- Members
     // None

@@ -45,10 +45,6 @@ DefaultParametrisation::DefaultParametrisation() {
 DefaultParametrisation::~DefaultParametrisation() {
 }
 
-void DefaultParametrisation::print(std::ostream &out) const {
-    out << "DefaultParametrisation[]";
-}
-
 
 }  // namespace param
 }  // namespace mir

@@ -18,13 +18,14 @@
 
 #include <iosfwd>
 #include <vector>
+#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
 namespace param {
 
 
-class DelayedParametrisation  {
+class DelayedParametrisation : private eckit::NonCopyable {
 public:
 
     // -- Exceptions
@@ -90,10 +91,6 @@ protected:
     // None
 
 private:
-
-    // No copy allowed
-    DelayedParametrisation(const DelayedParametrisation&);
-    DelayedParametrisation& operator=(const DelayedParametrisation&);
 
     // -- Members
     // None

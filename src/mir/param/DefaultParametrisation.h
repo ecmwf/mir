@@ -13,11 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef DefaultParametrisation_H
-#define DefaultParametrisation_H
+#ifndef mir_param_DefaultParametrisation_h
+#define mir_param_DefaultParametrisation_h
 
 #include "mir/param/SimpleParametrisation.h"
-
 
 
 namespace mir {
@@ -45,8 +44,7 @@ public:
     // None
 
     // -- Methods
-
-
+    // None
 
     // -- Class members
     // None
@@ -57,14 +55,13 @@ public:
 protected:
 
     // -- Members
-
+    // None
 
     // -- Methods
-
-    virtual void print(std::ostream&) const;
-
+    // None
 
     // -- Overridden methods
+    // None
 
     // -- Class members
     // None
@@ -75,13 +72,10 @@ protected:
 private:
 
     // -- Types
-
-    // No copy allowed
-
-    DefaultParametrisation(const DefaultParametrisation&);
-    DefaultParametrisation& operator=(const DefaultParametrisation&);
+    // None
 
     // -- Members
+
     mutable SimpleParametrisation cache_;
 
     // -- Methods
@@ -90,7 +84,6 @@ private:
     // -- Overridden methods
     // None
 
-
     // -- Class members
     // None
 
@@ -98,7 +91,7 @@ private:
     // None
 
     // -- Friends
-
+    // None
 
 };
 
