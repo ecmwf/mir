@@ -69,7 +69,7 @@ MappedMask::MappedMask(const std::string &name,
                        const repres::Representation& representation,
                        const std::string &which):
     Mask(name),
-    path_("~mir/share/mir/masks/1km-lsm.mask") {
+    path_("~mir/share/mir/masks/lsm.1km.mask") {
 
     int fd = ::open(path_.localPath(), O_RDONLY);
     if (fd < 0) {
