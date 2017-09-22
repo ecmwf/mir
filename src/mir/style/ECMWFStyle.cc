@@ -74,6 +74,15 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
+    std::string formula;
+    if (parametrisation_.get("user.formula.spectral", formula)) {
+        std::string metadata;
+        // paramId for the results of formulas
+        parametrisation_.get("user.formula.spectral.metadata", metadata);
+
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+    }
+
     long truncation = getIntendedTruncation();
     if (truncation) {
         plan.add("transform.sh-truncate", "truncation", truncation);
@@ -85,20 +94,21 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (parametrisation_.has("user.grid")) {
 
+        param::RuntimeParametrisation runtime(parametrisation_);
+        if (truncation) {
+            runtime.set("truncation", truncation);
+        }
+
         std::string spectral_grid;
         parametrisation_.get("spectral-grid", spectral_grid);
 
-        // use intermediate Gaussian grid with intended truncation
-        if (spectral_grid.length()) {
+        eckit::ScopedPtr<SpectralGrid> grid(SpectralGridFactory::build(spectral_grid, runtime));
+        if (grid->active()) {
 
-            param::RuntimeParametrisation runtime(parametrisation_);
-            if (truncation) {
-                runtime.set("truncation", truncation);
-            }
-            plan.add("transform." + transform + "namedgrid", "gridname", SpectralGridFactory::build(spectral_grid, runtime));
+            // use intermediate Gaussian grid with intended truncation
+            plan.add("transform." + transform + "namedgrid", "gridname", grid.release());
             grid2grid(plan);
             return;
-
         }
 
         // don't use intermediate Gaussian grid
@@ -153,6 +163,13 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);
+    }
+
+    if (parametrisation_.get("user.formula.gridded", formula)) {
+        std::string metadata;
+        // paramId for the results of formulas
+        parametrisation_.get("user.formula.gridded.metadata", metadata);
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 }
 
@@ -414,31 +431,13 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 
     bool field_gridded  = parametrisation_.has("field.gridded");
     bool field_spectral = parametrisation_.has("field.spectral");
-    std::string formula;
 
     ASSERT(field_gridded != field_spectral);
 
 
     if (field_spectral) {
         if (user_wants_gridded) {
-
-            if (parametrisation_.get("user.formula.spectral", formula)) {
-                std::string metadata;
-                // paramId for the results of formulas
-                parametrisation_.get("user.formula.spectral.metadata", metadata);
-
-                plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-            }
-
             sh2grid(plan);
-
-            if (parametrisation_.get("user.formula.gridded", formula)) {
-                std::string metadata;
-                // paramId for the results of formulas
-                parametrisation_.get("user.formula.gridded.metadata", metadata);
-                plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-            }
-
         } else {
             // "user wants spectral"
             sh2sh(plan);
@@ -448,6 +447,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 
     if (field_gridded) {
 
+        std::string formula;
         if (parametrisation_.get("user.formula.gridded", formula)) {
             std::string metadata;
             // paramId for the results of formulas

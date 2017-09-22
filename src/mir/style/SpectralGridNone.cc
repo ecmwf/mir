@@ -11,10 +11,10 @@
 /// @date May 2017
 
 
-#include "mir/style/SpectralNamedGrid.h"
+#include "mir/style/SpectralGridNone.h"
 
+#include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -22,30 +22,29 @@ namespace style {
 
 
 namespace {
-static SpectralGridBuilder<SpectralNamedGrid> __spectral_gridname("gridname");
+static SpectralGridBuilder<SpectralGridNone> __spectral_grid_none("none");
 }
 
 
-SpectralNamedGrid::SpectralNamedGrid(const param::MIRParametrisation& parametrisation) :
+SpectralGridNone::SpectralGridNone(const param::MIRParametrisation& parametrisation) :
     SpectralGrid(parametrisation) {
-
-    parametrisation_.get("spectral-grid", gridname_);
-    ASSERT(gridname_.length());
 }
 
 
-void SpectralNamedGrid::print(std::ostream &out) const {
-    out << "SpectralNamedGrid[gridname=" << gridname_ << "]";
+void SpectralGridNone::print(std::ostream& out) const {
+    out << "SpectralGridNone[]";
 }
 
 
-bool SpectralNamedGrid::active() const {
-    return true;
+bool SpectralGridNone::active() const {
+    return false;
 }
 
 
-std::string SpectralNamedGrid::getGridname() const {
-    return gridname_;
+std::string SpectralGridNone::getGridname() const {
+    std::ostringstream os;
+    os << "SpectralGridNone::getGridname() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 

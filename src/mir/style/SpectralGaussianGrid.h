@@ -59,26 +59,9 @@ public:
     // None
 
     // -- Methods
-
-    std::string gaussianGridTypeLetter() const {
-        std::ostringstream os;
-        os << "SpectralGaussianGrid::gaussianGridTypeLetter() not implemented for " << *this;
-        throw eckit::SeriousBug(os.str());
-    }
+    // None
 
     // -- Overridden methods
-
-    std::string getGridname() const {
-        return gridname_;
-    }
-
-    void print(std::ostream& out) const {
-        out << "SpectralGaussianGrid["
-               "truncation=" << truncation_
-            << ",order=" << order_
-            << ",gridname=" << gridname_
-            << "]";
-    }
 
     // -- Class members
     // None
@@ -95,10 +78,30 @@ private:
     std::string gridname_;
 
     // -- Methods
-    // None
+
+    std::string gaussianGridTypeLetter() const {
+        std::ostringstream os;
+        os << "SpectralGaussianGrid::gaussianGridTypeLetter() not implemented for " << *this;
+        throw eckit::SeriousBug(os.str());
+    }
 
     // -- Overridden methods
-    // None
+
+    bool active() const {
+        return true;
+    }
+
+    std::string getGridname() const {
+        return gridname_;
+    }
+
+    void print(std::ostream& out) const {
+        out << "SpectralGaussianGrid["
+               "truncation=" << truncation_
+            << ",order=" << order_
+            << ",gridname=" << gridname_
+            << "]";
+    }
 
     // -- Class members
     // None

@@ -11,8 +11,8 @@
 /// @date May 2017
 
 
-#ifndef mir_style_SpectralNamedGrid_h
-#define mir_style_SpectralNamedGrid_h
+#ifndef mir_style_SpectralGridNone_h
+#define mir_style_SpectralGridNone_h
 
 #include "mir/style/SpectralGrid.h"
 
@@ -21,7 +21,7 @@ namespace mir {
 namespace style {
 
 
-class SpectralNamedGrid : public SpectralGrid {
+class SpectralGridNone : public SpectralGrid {
 public:
 
     // -- Exceptions
@@ -29,7 +29,7 @@ public:
 
     // -- Contructors
 
-    SpectralNamedGrid(const param::MIRParametrisation&);
+    SpectralGridNone(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -55,8 +55,7 @@ public:
 private:
 
     // -- Members
-
-    std::string gridname_;
+    // None
 
     // -- Methods
     // None

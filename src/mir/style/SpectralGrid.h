@@ -46,7 +46,8 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    virtual bool active() const = 0;
 
     // -- Overridden methods
     // None

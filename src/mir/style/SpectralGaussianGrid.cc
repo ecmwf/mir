@@ -23,7 +23,7 @@ struct f_grid_t {};
 struct n_grid_t {};
 struct o_grid_t {};
 static SpectralGridBuilder< SpectralGaussianGrid<f_grid_t> > __spectral_f_grid("regular-gaussian");
-static SpectralGridBuilder< SpectralGaussianGrid<n_grid_t> > __spectral_n_grid("reduced-gaussian");
+static SpectralGridBuilder< SpectralGaussianGrid<n_grid_t> > __spectral_n_grid("classic-gaussian");
 static SpectralGridBuilder< SpectralGaussianGrid<o_grid_t> > __spectral_o_grid("octahedral-gaussian");
 }
 

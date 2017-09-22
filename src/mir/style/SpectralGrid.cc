@@ -18,6 +18,7 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 #include "mir/config/LibMir.h"
+#include "mir/namedgrids/NamedGrid.h"
 #include "mir/style/SpectralNamedGrid.h"
 
 
@@ -85,7 +86,15 @@ SpectralGrid* SpectralGridFactory::build(const std::string& name, const param::M
         return j->second->make(parametrisation);
     }
 
-    eckit::Log::info() << "SpectralGridFactory: setting named grid '" << name << "'" << std::endl;
+    // look for a supported named grid
+    try {
+        namedgrids::NamedGrid::lookup(name);
+    } catch (const eckit::SeriousBug&) {
+        eckit::Log::error() << "SpectralGridFactory: unknown '" << name << "'" << std::endl;
+        throw;
+    }
+
+    eckit::Log::info() << "SpectralGridFactory: setting grid name '" << name << "'" << std::endl;
     return new SpectralNamedGrid(parametrisation);
 }
 
