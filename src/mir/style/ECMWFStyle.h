@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    ~ECMWFStyle(); // Change to virtual if base class
+    virtual ~ECMWFStyle();
 
     // -- Convertors
     // None
@@ -63,16 +63,14 @@ protected:
     // -- Methods
 
     virtual void prologue(action::ActionPlan&) const;
-    virtual void sh2grid(action::ActionPlan&) const = 0;
+    virtual void sh2grid(action::ActionPlan&) const;
     virtual void sh2sh(action::ActionPlan&) const;
     virtual void grid2grid(action::ActionPlan&) const;
     virtual void epilogue(action::ActionPlan&) const;
 
-    bool isWindComponent() const;
-    bool selectWindComponents(action::ActionPlan&) const;
-
     // -- Overridden methods
-    // None
+
+    virtual void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -82,23 +80,21 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    ECMWFStyle(const ECMWFStyle&);
-    ECMWFStyle& operator=(const ECMWFStyle&);
-
     // -- Members
     // None
 
     // -- Methods
-    // None
+
+    bool isWindComponent() const;
+    bool selectWindComponents(action::ActionPlan&) const;
+    long getTargetGaussianNumber() const;
+    long getIntendedTruncation() const;
 
     // -- Overridden methods
 
-    virtual void prepare(action::ActionPlan&) const;
+    void prepare(action::ActionPlan&) const;
 
-    virtual bool forcedPrepare(const api::MIRJob& job,
-                               const param::MIRParametrisation& input) const;
+    bool forcedPrepare(const api::MIRJob&, const param::MIRParametrisation& input) const;
 
     // -- Class members
     // None
