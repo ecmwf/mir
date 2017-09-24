@@ -1,0 +1,7 @@
+# Test to check interpolation of a logarithmic quantity (1d.logarithmic)
+# Mars request
+date=19930202
+# Mir tool options
+--grid=1/1
+# grib_get assertions (FIXME should either be approximate comparisons or inequalities!)
+#?
