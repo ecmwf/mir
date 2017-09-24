@@ -1,14 +1,7 @@
 # Test to check interpolation of a logarithmic quantity (1d.logarithmic)
 # Mars request
-<<<<<<< HEAD
-date=19930202
-# Mir tool options
---grid=1/1
-=======
-levtype=sfc,param=2t
 # Mir tool options
 # Found in Portugese requirements
 --grid=0.1/0.1 --area=60/180/-56/-180
->>>>>>> ba42738cdc6dcb9e0ee2f08d853dd2bc2d1a5cac
 # grib_get assertions (FIXME should either be approximate comparisons or inequalities!)
 #?
