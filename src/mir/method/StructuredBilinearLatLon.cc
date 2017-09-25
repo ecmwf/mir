@@ -29,7 +29,7 @@ namespace method {
 
 
 namespace {
-static MethodBuilder< StructuredBilinearLatLon > __method("bilinear");
+static MethodBuilder< StructuredBilinearLatLon > __method("structured-bilinear-latlon");
 }
 
 
@@ -285,7 +285,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
 
 
 const char* StructuredBilinearLatLon::name() const {
-    return  "bilinear";
+    return  "structured-bilinear-latlon";
 }
 
 

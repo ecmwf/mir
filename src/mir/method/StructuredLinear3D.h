@@ -11,8 +11,8 @@
 /// @date Sep 2016
 
 
-#ifndef mir_method_StructuredLinear_h
-#define mir_method_StructuredLinear_h
+#ifndef mir_method_StructuredLinear3D_h
+#define mir_method_StructuredLinear3D_h
 
 #include "mir/method/StructuredMethod.h"
 
@@ -21,11 +21,11 @@ namespace mir {
 namespace method {
 
 
-class StructuredLinear : public StructuredMethod {
+class StructuredLinear3D : public StructuredMethod {
 public:
 
-    StructuredLinear(const param::MIRParametrisation&);
-    ~StructuredLinear();
+    StructuredLinear3D(const param::MIRParametrisation&);
+    ~StructuredLinear3D();
 
 private:
 
