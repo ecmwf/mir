@@ -11,7 +11,7 @@
 /// @date Sep 2016
 
 
-#include "mir/method/StructuredLinear.h"
+#include "mir/method/StructuredLinear3D.h"
 
 #include <vector>
 #include "eckit/log/Log.h"
@@ -30,20 +30,20 @@ namespace method {
 
 
 namespace {
-static MethodBuilder< StructuredLinear > __method("structured-linear");
+static MethodBuilder< StructuredLinear3D > __method("structured-linear-3d");
 }
 
 
-StructuredLinear::StructuredLinear(const param::MIRParametrisation& param) :
+StructuredLinear3D::StructuredLinear3D(const param::MIRParametrisation& param) :
     StructuredMethod(param) {
 }
 
 
-StructuredLinear::~StructuredLinear() {
+StructuredLinear3D::~StructuredLinear3D() {
 }
 
 
-void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
+void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
     typedef repres::Iterator::point_ll_t point_ll_t;
     typedef repres::Iterator::point_3d_t point_3d_t;
 
@@ -211,18 +211,18 @@ void StructuredLinear::assembleStructuredInput(WeightMatrix& W, const repres::Re
 }
 
 
-const char* StructuredLinear::name() const {
-    return  "structured-linear";
+const char* StructuredLinear3D::name() const {
+    return  "structured-linear-3d";
 }
 
 
-void StructuredLinear::hash(eckit::MD5& md5) const {
+void StructuredLinear3D::hash(eckit::MD5& md5) const {
     StructuredMethod::hash(md5);
 }
 
 
-void StructuredLinear::print(std::ostream& out) const {
-    out << "StructuredLinear[]";
+void StructuredLinear3D::print(std::ostream& out) const {
+    out << "StructuredLinear3D[]";
 }
 
 

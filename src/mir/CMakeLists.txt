@@ -519,8 +519,8 @@ list(
     method/FiniteElement.h
     method/StructuredBilinearLatLon.cc
     method/StructuredBilinearLatLon.h
-    method/StructuredLinear.cc
-    method/StructuredLinear.h
+    method/StructuredLinear3D.cc
+    method/StructuredLinear3D.h
     method/StructuredMethod.cc
     method/StructuredMethod.h
     method/Tessellation.cc

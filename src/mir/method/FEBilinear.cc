@@ -38,7 +38,7 @@ FEBilinear::~FEBilinear() {
 
 
 const char *FEBilinear::name() const {
-    return  "fe-bilinear";
+    return  "bilinear";
 }
 
 
@@ -53,7 +53,7 @@ void FEBilinear::print(std::ostream &out) const {
 
 
 namespace {
-static MethodBuilder< FEBilinear > __bilinear("fe-bilinear");
+static MethodBuilder< FEBilinear > __bilinear("bilinear");
 }
 
 
