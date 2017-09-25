@@ -49,7 +49,7 @@ namespace {
 
 
 // epsilon used to scale edge tolerance when projecting ray to intesect element
-static const double parametricEpsilon = 1e-16;
+static const double parametricEpsilon = 1e-15;
 
 
 typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
