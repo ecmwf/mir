@@ -11,14 +11,14 @@
 /// @date May 2017
 
 
-#ifndef mir_style_IntermediateGaussianGrid_h
-#define mir_style_IntermediateGaussianGrid_h
+#ifndef mir_style_SpectralGaussianGrid_h
+#define mir_style_SpectralGaussianGrid_h
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/IntermediateGrid.h"
-#include "mir/style/Mapping.h"
+#include "mir/style/SpectralGrid.h"
+#include "mir/style/SpectralOrder.h"
 
 
 namespace mir {
@@ -26,7 +26,7 @@ namespace style {
 
 
 template< typename GRIDTYPE >
-class IntermediateGaussianGrid : public IntermediateGrid {
+class SpectralGaussianGrid : public SpectralGrid {
 public:
 
     // -- Exceptions
@@ -34,18 +34,16 @@ public:
 
     // -- Contructors
 
-    IntermediateGaussianGrid(const param::MIRParametrisation& parametrisation) :
-        IntermediateGrid(parametrisation),
-        truncation_(0),
-        mapping_("linear") {
+    SpectralGaussianGrid(const param::MIRParametrisation& parametrisation) : SpectralGrid(parametrisation) {
 
-        parametrisation_.get("truncation", truncation_);
-        parametrisation_.get("spectral-mapping", mapping_);
+        order_ = "linear";
+        parametrisation_.get("spectral-order", order_);
+        eckit::ScopedPtr<SpectralOrder> order(SpectralOrderFactory::build(order_));
+        ASSERT(order);
 
-        eckit::ScopedPtr<Mapping> map(MappingFactory::build(mapping_));
-        ASSERT(map);
-
-        long N = map->getGaussianNumberFromTruncation(long(truncation_));
+        truncation_ = 0;
+        ASSERT(parametrisation_.get("truncation", truncation_));
+        long N = order->getGaussianNumberFromTruncation(long(truncation_));
         ASSERT(N > 0);
 
         gridname_ = gaussianGridTypeLetter() + std::to_string(N);
@@ -61,26 +59,9 @@ public:
     // None
 
     // -- Methods
-
-    std::string gaussianGridTypeLetter() const {
-        std::ostringstream os;
-        os << "IntermediateGaussianGrid::gaussianGridTypeLetter() not implemented for " << *this;
-        throw eckit::SeriousBug(os.str());
-    }
+    // None
 
     // -- Overridden methods
-
-    std::string getGridname() const {
-        return gridname_;
-    }
-
-    void print(std::ostream& out) const {
-        out << "IntermediateGaussianGrid["
-               "truncation=" << truncation_
-            << ",mapping=" << mapping_
-            << ",gridname=" << gridname_
-            << "]";
-    }
 
     // -- Class members
     // None
@@ -93,14 +74,34 @@ private:
     // -- Members
 
     size_t truncation_;
-    std::string mapping_;
+    std::string order_;
     std::string gridname_;
 
     // -- Methods
-    // None
+
+    std::string gaussianGridTypeLetter() const {
+        std::ostringstream os;
+        os << "SpectralGaussianGrid::gaussianGridTypeLetter() not implemented for " << *this;
+        throw eckit::SeriousBug(os.str());
+    }
 
     // -- Overridden methods
-    // None
+
+    bool active() const {
+        return true;
+    }
+
+    std::string getGridname() const {
+        return gridname_;
+    }
+
+    void print(std::ostream& out) const {
+        out << "SpectralGaussianGrid["
+               "truncation=" << truncation_
+            << ",order=" << order_
+            << ",gridname=" << gridname_
+            << "]";
+    }
 
     // -- Class members
     // None

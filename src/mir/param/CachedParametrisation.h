@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef CachedParametrisation_H
-#define CachedParametrisation_H
+#ifndef mir_param_CachedParametrisation_h
+#define mir_param_CachedParametrisation_h
 
 #include <map>
 #include <set>
@@ -51,13 +51,12 @@ public:
     // -- Methods
 
     void reset();
-    //
+
     void set(const std::string& name, int value);
     void set(const std::string& name, long value);
     void set(const std::string& name, double value);
     void set(const std::string& name, const std::string& value);
     void set(const std::string& name, const char* value);
-
 
     // -- Class members
     // None
@@ -68,12 +67,11 @@ public:
 protected:
 
     // -- Members
-
+    // None
 
     // -- Methods
 
     virtual void print(std::ostream&) const;
-
 
     // -- Overridden methods
 
@@ -93,7 +91,6 @@ protected:
     virtual bool get(const std::string& name, std::vector<double>& value) const;
     virtual bool get(const std::string& name, std::vector<std::string>& value) const;
 
-
     // -- Class members
     // None
 
@@ -103,11 +100,7 @@ protected:
 private:
 
     // -- Types
-
-    // No copy allowed
-
-    CachedParametrisation(const CachedParametrisation&);
-    CachedParametrisation& operator=(const CachedParametrisation&);
+    // None
 
     // -- Members
 
@@ -115,16 +108,16 @@ private:
     mutable SimpleParametrisation cache_;
 
     // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
 
     template<class T>
     bool _get(const std::string& name, T& value) const;
 
     template<class T>
     void _set(const std::string& name, const T& value) const;
+
+    // -- Overridden methods
+    // None
+
     // -- Class members
     // None
 
@@ -132,7 +125,7 @@ private:
     // None
 
     // -- Friends
-
+    // None
 
 };
 

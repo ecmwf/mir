@@ -24,7 +24,7 @@ namespace mir {
 namespace param {
 
 
-class ConfigurationWrapper : public MIRParametrisation, private eckit::NonCopyable {
+class ConfigurationWrapper : public MIRParametrisation {
 
 public: // methods
 

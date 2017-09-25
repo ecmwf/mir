@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef SimpleParametrisation_H
-#define SimpleParametrisation_H
+#ifndef mir_param_SimpleParametrisation_h
+#define mir_param_SimpleParametrisation_h
 
 #include <map>
 #include <set>
@@ -137,11 +137,6 @@ private:
     // -- Types
 
     typedef std::map<std::string, Setting*> SettingsMap;
-
-    // No copy allowed
-
-    SimpleParametrisation(const SimpleParametrisation&);
-    SimpleParametrisation& operator=(const SimpleParametrisation&);
 
     // -- Members
 

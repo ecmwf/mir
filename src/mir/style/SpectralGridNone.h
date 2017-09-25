@@ -11,17 +11,17 @@
 /// @date May 2017
 
 
-#ifndef mir_style_IntermediateNamedGrid_h
-#define mir_style_IntermediateNamedGrid_h
+#ifndef mir_style_SpectralGridNone_h
+#define mir_style_SpectralGridNone_h
 
-#include "mir/style/IntermediateGrid.h"
+#include "mir/style/SpectralGrid.h"
 
 
 namespace mir {
 namespace style {
 
 
-class IntermediateNamedGrid : public IntermediateGrid {
+class SpectralGridNone : public SpectralGrid {
 public:
 
     // -- Exceptions
@@ -29,7 +29,7 @@ public:
 
     // -- Contructors
 
-    IntermediateNamedGrid(const param::MIRParametrisation&);
+    SpectralGridNone(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -44,10 +44,7 @@ public:
     // None
 
     // -- Overridden methods
-
-    std::string getGridname() const;
-
-    void print(std::ostream&) const;
+    // None
 
     // -- Class members
     // None
@@ -58,14 +55,16 @@ public:
 private:
 
     // -- Members
-
-    std::string gridname_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
-    // None
+
+    bool active() const;
+    std::string getGridname() const;
+    void print(std::ostream&) const;
 
     // -- Class members
     // None

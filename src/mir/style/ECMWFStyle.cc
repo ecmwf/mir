@@ -20,11 +20,12 @@
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
+#include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
-#include "mir/style/IntermediateGrid.h"
-#include "mir/style/Mapping.h"
+#include "mir/style/SpectralGrid.h"
+#include "mir/style/SpectralOrder.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 
@@ -74,6 +75,15 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
+    std::string formula;
+    if (parametrisation_.get("user.formula.spectral", formula)) {
+        std::string metadata;
+        // paramId for the results of formulas
+        parametrisation_.get("user.formula.spectral.metadata", metadata);
+
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+    }
+
     long truncation = getIntendedTruncation();
     if (truncation) {
         plan.add("transform.sh-truncate", "truncation", truncation);
@@ -85,20 +95,21 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (parametrisation_.has("user.grid")) {
 
-        std::string intermediate_grid;
-        parametrisation_.get("spectral-intermediate-grid", intermediate_grid);
+        param::RuntimeParametrisation runtime(parametrisation_);
+        if (truncation) {
+            runtime.set("truncation", truncation);
+        }
 
-        // use intermediate Gaussian grid with intended truncation
-        if (intermediate_grid.length()) {
+        std::string spectral_grid;
+        parametrisation_.get("spectral-grid", spectral_grid);
 
-            param::RuntimeParametrisation runtime(parametrisation_);
-            if (truncation) {
-                runtime.set("truncation", truncation);
-            }
-            plan.add("transform." + transform + "namedgrid", "gridname", IntermediateGridFactory::build(intermediate_grid, runtime));
+        eckit::ScopedPtr<SpectralGrid> grid(SpectralGridFactory::build(spectral_grid, runtime));
+        if (grid->active()) {
+
+            // use intermediate Gaussian grid with intended truncation
+            plan.add("transform." + transform + "namedgrid", "gridname", grid.release());
             grid2grid(plan);
             return;
-
         }
 
         // don't use intermediate Gaussian grid
@@ -153,6 +164,13 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (!parametrisation_.has("user.rotation")) {
         selectWindComponents(plan);
+    }
+
+    if (parametrisation_.get("user.formula.gridded", formula)) {
+        std::string metadata;
+        // paramId for the results of formulas
+        parametrisation_.get("user.formula.gridded.metadata", metadata);
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 }
 
@@ -271,8 +289,9 @@ bool ECMWFStyle::isWindComponent() const {
     long id = 0;
     parametrisation_.get("paramId", id);
 
-    const long id_u = 131;
-    const long id_v = 132;
+    const eckit::Configuration& config = LibMir::instance().configuration();
+    const long id_u = config.getLong("parameter-id-u", 131);
+    const long id_v = config.getLong("parameter-id-v", 132);
 
     return (id == id_u || id == id_v);
 }
@@ -336,7 +355,7 @@ long ECMWFStyle::getIntendedTruncation() const {
         return 63L;
     }
 
-    // Set truncation based on target grid's equivalent Gaussian N and spectral mapping
+    // Set truncation based on target grid's equivalent Gaussian N and spectral order
     bool autoresol = true;
     parametrisation_.get("autoresol", autoresol);
 
@@ -345,17 +364,17 @@ long ECMWFStyle::getIntendedTruncation() const {
         long Tin = 0L;
         ASSERT(parametrisation_.get("field.truncation", Tin));
 
-        std::string spectralMapping = "linear";
-        parametrisation_.get("spectral-mapping", spectralMapping);
+        std::string spectralOrder = "linear";
+        parametrisation_.get("spectral-order", spectralOrder);
+
+        eckit::ScopedPtr<SpectralOrder> order(SpectralOrderFactory::build(spectralOrder));
+        ASSERT(order);
 
         // get truncation from points-per-latitude, limited to input
         long N = getTargetGaussianNumber();
         ASSERT(N > 0);
 
-        eckit::ScopedPtr<Mapping> map(MappingFactory::build(spectralMapping));
-        ASSERT(map);
-
-        long T = map->getTruncationFromGaussianNumber(N);
+        long T = order->getTruncationFromGaussianNumber(N);
         if (T > Tin) {
             eckit::Log::warning() << "Automatic truncation " << T << " ('autoresol') limited by input truncation " << Tin << std::endl;
             return Tin;
@@ -414,31 +433,13 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 
     bool field_gridded  = parametrisation_.has("field.gridded");
     bool field_spectral = parametrisation_.has("field.spectral");
-    std::string formula;
 
     ASSERT(field_gridded != field_spectral);
 
 
     if (field_spectral) {
         if (user_wants_gridded) {
-
-            if (parametrisation_.get("user.formula.spectral", formula)) {
-                std::string metadata;
-                // paramId for the results of formulas
-                parametrisation_.get("user.formula.spectral.metadata", metadata);
-
-                plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-            }
-
             sh2grid(plan);
-
-            if (parametrisation_.get("user.formula.gridded", formula)) {
-                std::string metadata;
-                // paramId for the results of formulas
-                parametrisation_.get("user.formula.gridded.metadata", metadata);
-                plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-            }
-
         } else {
             // "user wants spectral"
             sh2sh(plan);
@@ -448,6 +449,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 
     if (field_gridded) {
 
+        std::string formula;
         if (parametrisation_.get("user.formula.gridded", formula)) {
             std::string metadata;
             // paramId for the results of formulas

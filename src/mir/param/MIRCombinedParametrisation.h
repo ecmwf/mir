@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef MIRCombinedParametrisation_H
-#define MIRCombinedParametrisation_H
+#ifndef mir_param_MIRCombinedParametrisation_h
+#define mir_param_MIRCombinedParametrisation_h
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -76,12 +76,8 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    MIRCombinedParametrisation(const MIRCombinedParametrisation&);
-    MIRCombinedParametrisation& operator=(const MIRCombinedParametrisation&);
-
     // -- Members
+
     const MIRParametrisation& user_;
     const MIRParametrisation& metadata_;
     const MIRParametrisation& defaults_;

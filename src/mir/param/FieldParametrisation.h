@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef FieldParametrisation_H
-#define FieldParametrisation_H
+#ifndef mir_param_FieldParametrisation_h
+#define mir_param_FieldParametrisation_h
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -89,10 +89,6 @@ class FieldParametrisation : public MIRParametrisation {
 
   private:
 
-    // No copy allowed
-    FieldParametrisation(const FieldParametrisation&);
-    FieldParametrisation& operator=(const FieldParametrisation&);
-
     // -- Members
     // None
 
@@ -105,6 +101,7 @@ class FieldParametrisation : public MIRParametrisation {
     virtual void longitudes(std::vector<double>&) const;
 
     // -- Overridden methods
+    // None
 
     // -- Class members
     // None

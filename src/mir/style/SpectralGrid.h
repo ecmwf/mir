@@ -8,32 +8,36 @@
  * nor does it submit to any jurisdiction.
  */
 
-/// @date Mar 2017
+/// @date May 2017
 
 
-#ifndef mir_style_Mapping_h
-#define mir_style_Mapping_h
+#ifndef mir_style_SpectralGrid_h
+#define mir_style_SpectralGrid_h
 
 #include <iosfwd>
 #include <string>
 #include "eckit/memory/NonCopyable.h"
+#include "mir/param/DelayedParametrisation.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace style {
 
 
-class Mapping : public eckit::NonCopyable {
+class SpectralGrid : public eckit::NonCopyable, public param::DelayedParametrisation {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    Mapping() {}
+
+    SpectralGrid(const param::MIRParametrisation&);
 
     // -- Destructor
-    virtual ~Mapping() {}
+
+    virtual ~SpectralGrid();
 
     // -- Convertors
     // None
@@ -42,9 +46,8 @@ public:
     // None
 
     // -- Methods
-    virtual long getTruncationFromGaussianNumber(const long&) const;
-    virtual long getGaussianNumberFromTruncation(const long&) const;
-    virtual void print(std::ostream&) const = 0;
+
+    virtual bool active() const = 0;
 
     // -- Overridden methods
     // None
@@ -58,13 +61,16 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    const param::MIRParametrisation& parametrisation_;
 
     // -- Methods
-    // None
+
+    virtual std::string getGridname() const = 0;
 
     // -- Overridden methods
-    // None
+
+    void get(const std::string&, std::string&) const;
 
     // -- Class members
     // None
@@ -90,32 +96,29 @@ private:
     // None
 
     // -- Friends
+    // None
 
-    friend std::ostream& operator<<(std::ostream& s, const Mapping& p) {
-        p.print(s);
-        return s;
-    }
 };
 
 
-class MappingFactory {
+class SpectralGridFactory {
     std::string name_;
-    virtual Mapping *make() = 0;
+    virtual SpectralGrid *make(const param::MIRParametrisation&) = 0;
 protected:
-    MappingFactory(const std::string&);
-    virtual ~MappingFactory();
+    SpectralGridFactory(const std::string&);
+    virtual ~SpectralGridFactory();
 public:
-    static Mapping *build(const std::string&);
+    static SpectralGrid *build(const std::string&, const param::MIRParametrisation&);
     static void list(std::ostream&);
 };
 
 
-template <class T> class MappingBuilder : public MappingFactory {
-    virtual Mapping *make() {
-        return new T();
+template <class T> class SpectralGridBuilder : public SpectralGridFactory {
+    virtual SpectralGrid *make(const param::MIRParametrisation& p) {
+        return new T(p);
     }
 public:
-    MappingBuilder(const std::string& name) : MappingFactory(name) {}
+    SpectralGridBuilder(const std::string& name) : SpectralGridFactory(name) {}
 };
 
 

@@ -11,13 +11,13 @@
 /// @date May 2017
 
 
-#ifndef mir_style_TMapping_h
-#define mir_style_TMapping_h
+#ifndef mir_style_SpectralOrderT_h
+#define mir_style_SpectralOrderT_h
 
 #include <cmath>
 #include <string>
 #include "eckit/exception/Exceptions.h"
-#include "mir/style/Mapping.h"
+#include "mir/style/SpectralOrder.h"
 
 
 namespace mir {
@@ -25,13 +25,13 @@ namespace style {
 
 
 template< int ORDER >
-class TMapping : public Mapping {
+class SpectralOrderT : public SpectralOrder {
 public:
     // -- Exceptions
     // None
 
     // -- Contructors
-    TMapping() {
+    SpectralOrderT() {
         ASSERT(ORDER);
     }
 
@@ -67,7 +67,7 @@ public:
     }
 
     void print(std::ostream& out) const {
-        out << "TMapping<ORDER=" << ORDER << ">[]";
+        out << "SpectralOrderT<ORDER=" << ORDER << ">[]";
     }
 
     // -- Class members
