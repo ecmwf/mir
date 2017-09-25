@@ -54,7 +54,8 @@ void Spectral::execute(const data::MIRField& field1, const data::MIRField& field
 
 
     // compare unpacked coefficients (up to TS, with i >= TS they are packed)
-    const size_t Ts = std::min(repres1->pentagonalResolutionTs(), repres2->pentagonalResolutionTs());
+    // FIXME: get unpacked coefficients in a compatible way to spectral_complex/spectral_simple packingType
+    const size_t Ts = 20; //std::min(repres1->pentagonalResolutionTs(), repres2->pentagonalResolutionTs());
     if (!Ts) {
         std::ostringstream oss;
         oss << "Spectral: cannot compare unpacked coefficients, as TS=0";

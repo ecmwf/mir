@@ -121,7 +121,6 @@ public:
     virtual bool isGlobal() const;
 
     virtual size_t truncation() const;
-    virtual size_t pentagonalResolutionTs() const;
 
     virtual void comparison(std::string&) const;
 
