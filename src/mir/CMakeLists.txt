@@ -138,8 +138,6 @@ list(
     action/transform/ShVodTouvRegularLL.h
     action/transform/TransCache.cc
     action/transform/TransCache.h
-    action/transform/TransInitor.cc
-    action/transform/TransInitor.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc
@@ -719,8 +717,15 @@ endif()
 list(APPEND mir_tmpls caching/InMemoryCache.cc)
 
 if(HAVE_ATLAS)
-    set(libatlas atlas transi)
+    set(libatlas atlas)
+    if(ATLAS_HAVE_TRANSI)
+        list( APPEND libatlas transi)
+        list( APPEND mir_srcs
+            action/transform/TransInitor.cc
+            action/transform/TransInitor.h )
+       endif()
 endif()
+
 
 ecbuild_add_library(
   TARGET             mir
