@@ -11,13 +11,13 @@
 /// @date May 2017
 
 
-#ifndef mir_style_SpectralGaussianGrid_h
-#define mir_style_SpectralGaussianGrid_h
+#ifndef mir_style_IntermediateGaussianGrid_h
+#define mir_style_IntermediateGaussianGrid_h
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/SpectralGrid.h"
+#include "mir/style/IntermediateGrid.h"
 #include "mir/style/SpectralOrder.h"
 
 
@@ -26,7 +26,7 @@ namespace style {
 
 
 template< typename GRIDTYPE >
-class SpectralGaussianGrid : public SpectralGrid {
+class IntermediateGaussianGrid : public IntermediateGrid {
 public:
 
     // -- Exceptions
@@ -34,7 +34,7 @@ public:
 
     // -- Contructors
 
-    SpectralGaussianGrid(const param::MIRParametrisation& parametrisation) : SpectralGrid(parametrisation) {
+    IntermediateGaussianGrid(const param::MIRParametrisation& parametrisation) : IntermediateGrid(parametrisation) {
 
         order_ = "linear";
         parametrisation_.get("spectral-order", order_);
@@ -81,7 +81,7 @@ private:
 
     std::string gaussianGridTypeLetter() const {
         std::ostringstream os;
-        os << "SpectralGaussianGrid::gaussianGridTypeLetter() not implemented for " << *this;
+        os << "IntermediateGaussianGrid::gaussianGridTypeLetter() not implemented for " << *this;
         throw eckit::SeriousBug(os.str());
     }
 
@@ -96,8 +96,8 @@ private:
     }
 
     void print(std::ostream& out) const {
-        out << "SpectralGaussianGrid["
-               "truncation=" << truncation_
+        out << "IntermediateGaussianGrid["
+                "truncation=" << truncation_
             << ",order=" << order_
             << ",gridname=" << gridname_
             << "]";

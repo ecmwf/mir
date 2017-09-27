@@ -11,7 +11,7 @@
 /// @date May 2017
 
 
-#include "mir/style/SpectralGrid.h"
+#include "mir/style/IntermediateGrid.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
@@ -19,23 +19,23 @@
 #include "eckit/thread/Once.h"
 #include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
-#include "mir/style/SpectralNamedGrid.h"
+#include "mir/style/IntermediateNamedGrid.h"
 
 
 namespace mir {
 namespace style {
 
 
-SpectralGrid::SpectralGrid(const param::MIRParametrisation& parametrisation) :
+IntermediateGrid::IntermediateGrid(const param::MIRParametrisation& parametrisation) :
     parametrisation_(parametrisation) {
 }
 
 
-SpectralGrid::~SpectralGrid() {
+IntermediateGrid::~IntermediateGrid() {
 }
 
 
-void SpectralGrid::get(const std::string& name, std::string& value) const {
+void IntermediateGrid::get(const std::string& name, std::string& value) const {
     ASSERT(name == "gridname");
     value = getGridname();
 }
@@ -47,20 +47,20 @@ void SpectralGrid::get(const std::string& name, std::string& value) const {
 namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, SpectralGridFactory* > *m = 0;
+static std::map< std::string, IntermediateGridFactory* > *m = 0;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, SpectralGridFactory* >();
+    m = new std::map< std::string, IntermediateGridFactory* >();
 }
 }  // (anonymous namespace)
 
 
-SpectralGridFactory::SpectralGridFactory(const std::string& name) : name_(name) {
+IntermediateGridFactory::IntermediateGridFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("SpectralGridFactory: duplicate '" + name + "'");
+        throw eckit::SeriousBug("IntermediateGridFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -68,18 +68,18 @@ SpectralGridFactory::SpectralGridFactory(const std::string& name) : name_(name) 
 }
 
 
-SpectralGridFactory::~SpectralGridFactory() {
+IntermediateGridFactory::~IntermediateGridFactory() {
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     m->erase(name_);
 }
 
 
-SpectralGrid* SpectralGridFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation) {
+IntermediateGrid* IntermediateGridFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "SpectralGridFactory: looking for '" << name << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "IntermediateGridFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j != m->end()) {
@@ -90,16 +90,16 @@ SpectralGrid* SpectralGridFactory::build(const std::string& name, const param::M
     try {
         namedgrids::NamedGrid::lookup(name);
     } catch (const eckit::SeriousBug&) {
-        eckit::Log::error() << "SpectralGridFactory: unknown '" << name << "'" << std::endl;
+        eckit::Log::error() << "IntermediateGridFactory: unknown '" << name << "'" << std::endl;
         throw;
     }
 
-    eckit::Log::info() << "SpectralGridFactory: setting grid name '" << name << "'" << std::endl;
-    return new SpectralNamedGrid(parametrisation);
+    eckit::Log::info() << "IntermediateGridFactory: setting grid name '" << name << "'" << std::endl;
+    return new IntermediateNamedGrid(parametrisation);
 }
 
 
-void SpectralGridFactory::list(std::ostream& out) {
+void IntermediateGridFactory::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 

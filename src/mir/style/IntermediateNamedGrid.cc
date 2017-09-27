@@ -11,7 +11,7 @@
 /// @date May 2017
 
 
-#include "mir/style/SpectralNamedGrid.h"
+#include "mir/style/IntermediateNamedGrid.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
@@ -22,29 +22,29 @@ namespace style {
 
 
 namespace {
-static SpectralGridBuilder<SpectralNamedGrid> __spectral_gridname("gridname");
+static IntermediateGridBuilder<IntermediateNamedGrid> __intermediate_grid_gridname("gridname");
 }
 
 
-SpectralNamedGrid::SpectralNamedGrid(const param::MIRParametrisation& parametrisation) :
-    SpectralGrid(parametrisation) {
+IntermediateNamedGrid::IntermediateNamedGrid(const param::MIRParametrisation& parametrisation) :
+    IntermediateGrid(parametrisation) {
 
-    parametrisation_.get("spectral-grid", gridname_);
+    parametrisation_.get("intermediate-grid", gridname_);
     ASSERT(gridname_.length());
 }
 
 
-void SpectralNamedGrid::print(std::ostream &out) const {
-    out << "SpectralNamedGrid[gridname=" << gridname_ << "]";
+void IntermediateNamedGrid::print(std::ostream &out) const {
+    out << "IntermediateNamedGrid[gridname=" << gridname_ << "]";
 }
 
 
-bool SpectralNamedGrid::active() const {
+bool IntermediateNamedGrid::active() const {
     return true;
 }
 
 
-std::string SpectralNamedGrid::getGridname() const {
+std::string IntermediateNamedGrid::getGridname() const {
     return gridname_;
 }
 

@@ -40,8 +40,8 @@
 #include "mir/output/GeoPointsFileOutput.h"
 #include "mir/output/GribFileOutput.h"
 #include "mir/packing/Packer.h"
+#include "mir/style/IntermediateGrid.h"
 #include "mir/style/MIRStyle.h"
-#include "mir/style/SpectralGrid.h"
 #include "mir/style/SpectralOrder.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/PointSearch.h"
@@ -69,7 +69,7 @@ public:
         options_.push_back(new Separator("Spectral transforms"));
         options_.push_back(new SimpleOption<bool>("autoresol", "Control automatic truncation"));
         options_.push_back(new FactoryOption<mir::style::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
-        options_.push_back(new FactoryOption<mir::style::SpectralGridFactory>("spectral-grid", "Spectral/gridded transform associated grid type or name"));
+        options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-grid", "Spectral/gridded transform associated grid type or name"));
         options_.push_back(new SimpleOption<size_t>("truncation", "Spectral truncation"));
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (u/v or U/V)"));
 

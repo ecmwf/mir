@@ -11,7 +11,7 @@
 /// @date May 2017
 
 
-#include "mir/style/SpectralGridNone.h"
+#include "mir/style/IntermediateGridNone.h"
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
@@ -22,28 +22,28 @@ namespace style {
 
 
 namespace {
-static SpectralGridBuilder<SpectralGridNone> __spectral_grid_none("none");
+static IntermediateGridBuilder<IntermediateGridNone> __intermediate_grid_none("none");
 }
 
 
-SpectralGridNone::SpectralGridNone(const param::MIRParametrisation& parametrisation) :
-    SpectralGrid(parametrisation) {
+IntermediateGridNone::IntermediateGridNone(const param::MIRParametrisation& parametrisation) :
+    IntermediateGrid(parametrisation) {
 }
 
 
-void SpectralGridNone::print(std::ostream& out) const {
-    out << "SpectralGridNone[]";
+void IntermediateGridNone::print(std::ostream& out) const {
+    out << "IntermediateGridNone[]";
 }
 
 
-bool SpectralGridNone::active() const {
+bool IntermediateGridNone::active() const {
     return false;
 }
 
 
-std::string SpectralGridNone::getGridname() const {
+std::string IntermediateGridNone::getGridname() const {
     std::ostringstream os;
-    os << "SpectralGridNone::getGridname() not implemented for " << *this;
+    os << "IntermediateGridNone::getGridname() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 

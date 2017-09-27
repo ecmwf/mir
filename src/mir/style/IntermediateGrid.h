@@ -11,8 +11,8 @@
 /// @date May 2017
 
 
-#ifndef mir_style_SpectralGrid_h
-#define mir_style_SpectralGrid_h
+#ifndef mir_style_IntermediateGrid_h
+#define mir_style_IntermediateGrid_h
 
 #include <iosfwd>
 #include <string>
@@ -25,7 +25,7 @@ namespace mir {
 namespace style {
 
 
-class SpectralGrid : public eckit::NonCopyable, public param::DelayedParametrisation {
+class IntermediateGrid : public eckit::NonCopyable, public param::DelayedParametrisation {
 public:
 
     // -- Exceptions
@@ -33,11 +33,11 @@ public:
 
     // -- Contructors
 
-    SpectralGrid(const param::MIRParametrisation&);
+    IntermediateGrid(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~SpectralGrid();
+    virtual ~IntermediateGrid();
 
     // -- Convertors
     // None
@@ -101,24 +101,24 @@ private:
 };
 
 
-class SpectralGridFactory {
+class IntermediateGridFactory {
     std::string name_;
-    virtual SpectralGrid *make(const param::MIRParametrisation&) = 0;
+    virtual IntermediateGrid *make(const param::MIRParametrisation&) = 0;
 protected:
-    SpectralGridFactory(const std::string&);
-    virtual ~SpectralGridFactory();
+    IntermediateGridFactory(const std::string&);
+    virtual ~IntermediateGridFactory();
 public:
-    static SpectralGrid *build(const std::string&, const param::MIRParametrisation&);
+    static IntermediateGrid *build(const std::string&, const param::MIRParametrisation&);
     static void list(std::ostream&);
 };
 
 
-template <class T> class SpectralGridBuilder : public SpectralGridFactory {
-    virtual SpectralGrid *make(const param::MIRParametrisation& p) {
+template <class T> class IntermediateGridBuilder : public IntermediateGridFactory {
+    virtual IntermediateGrid *make(const param::MIRParametrisation& p) {
         return new T(p);
     }
 public:
-    SpectralGridBuilder(const std::string& name) : SpectralGridFactory(name) {}
+    IntermediateGridBuilder(const std::string& name) : IntermediateGridFactory(name) {}
 };
 
 
