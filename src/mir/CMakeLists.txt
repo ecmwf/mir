@@ -250,14 +250,16 @@ list(
     lsm/AutoLSM.h
     lsm/GribFileLSM.cc
     lsm/GribFileLSM.h
-    lsm/LandSeaMasks.cc
-    lsm/LandSeaMasks.h
     lsm/LSMChooser.cc
     lsm/LSMChooser.h
+    lsm/LandSeaMasks.cc
+    lsm/LandSeaMasks.h
     lsm/MappedMask.cc
     lsm/MappedMask.h
     lsm/Mask.cc
     lsm/Mask.h
+    lsm/NamedLSM.cc
+    lsm/NamedLSM.h
     lsm/NoneLSM.cc
     lsm/NoneLSM.h
     lsm/TenMinutesLSM.cc
@@ -477,16 +479,16 @@ list(
     style/CustomStyle.h
     style/ECMWFStyle.cc
     style/ECMWFStyle.h
+    style/IntermediateGaussianGrid.cc
+    style/IntermediateGaussianGrid.h
+    style/IntermediateGrid.cc
+    style/IntermediateGrid.h
+    style/IntermediateGridNone.cc
+    style/IntermediateGridNone.h
+    style/IntermediateNamedGrid.cc
+    style/IntermediateNamedGrid.h
     style/MIRStyle.cc
     style/MIRStyle.h
-    style/SpectralGaussianGrid.cc
-    style/SpectralGaussianGrid.h
-    style/SpectralGrid.cc
-    style/SpectralGrid.h
-    style/SpectralGridNone.cc
-    style/SpectralGridNone.h
-    style/SpectralNamedGrid.cc
-    style/SpectralNamedGrid.h
     style/SpectralOrder.cc
     style/SpectralOrder.h
     style/SpectralOrderT.cc
