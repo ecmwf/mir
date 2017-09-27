@@ -684,7 +684,7 @@ list(APPEND mir_tmpls caching/InMemoryCache.cc)
 
 if(HAVE_ATLAS)
     set(libatlas atlas)
-    if(ATLAS_HAVE_TRANSI)
+    if(ATLAS_HAVE_TRANS)
         list( APPEND libatlas transi)
         list( APPEND mir_srcs
             action/transform/ShScalarToGridded.cc
