@@ -102,44 +102,6 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/transform/ShScalarToGridded.cc
-    action/transform/ShScalarToGridded.h
-    action/transform/ShScalarToNamedGrid.cc
-    action/transform/ShScalarToNamedGrid.h
-    action/transform/ShScalarToOctahedralGG.cc
-    action/transform/ShScalarToOctahedralGG.h
-    action/transform/ShScalarToReducedGG.cc
-    action/transform/ShScalarToReducedGG.h
-    action/transform/ShScalarToReducedGGPLGiven.cc
-    action/transform/ShScalarToReducedGGPLGiven.h
-    action/transform/ShScalarToRegularGG.cc
-    action/transform/ShScalarToRegularGG.h
-    action/transform/ShScalarToRegularLL.cc
-    action/transform/ShScalarToRegularLL.h
-    action/transform/ShToGridded.cc
-    action/transform/ShToGridded.h
-    action/transform/ShTruncate.cc
-    action/transform/ShTruncate.h
-    action/transform/ShVodToUV.cc
-    action/transform/ShVodToUV.h
-    action/transform/ShVodTouvGridded.cc
-    action/transform/ShVodTouvGridded.h
-    action/transform/ShVodTouvNamedGrid.cc
-    action/transform/ShVodTouvNamedGrid.h
-    action/transform/ShVodTouvOctahedralGG.cc
-    action/transform/ShVodTouvOctahedralGG.h
-    action/transform/ShVodTouvReducedGG.cc
-    action/transform/ShVodTouvReducedGG.h
-    action/transform/ShVodTouvReducedGGPLGiven.cc
-    action/transform/ShVodTouvReducedGGPLGiven.h
-    action/transform/ShVodTouvRegularGG.cc
-    action/transform/ShVodTouvRegularGG.h
-    action/transform/ShVodTouvRegularLL.cc
-    action/transform/ShVodTouvRegularLL.h
-    action/transform/TransCache.cc
-    action/transform/TransCache.h
-    action/transform/TransInitor.cc
-    action/transform/TransInitor.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc
@@ -721,8 +683,52 @@ endif()
 list(APPEND mir_tmpls caching/InMemoryCache.cc)
 
 if(HAVE_ATLAS)
-    set(libatlas atlas transi)
+    set(libatlas atlas)
+    if(ATLAS_HAVE_TRANSI)
+        list( APPEND libatlas transi)
+        list( APPEND mir_srcs
+            action/transform/ShScalarToGridded.cc
+            action/transform/ShScalarToGridded.h
+            action/transform/ShScalarToNamedGrid.cc
+            action/transform/ShScalarToNamedGrid.h
+            action/transform/ShScalarToOctahedralGG.cc
+            action/transform/ShScalarToOctahedralGG.h
+            action/transform/ShScalarToReducedGG.cc
+            action/transform/ShScalarToReducedGG.h
+            action/transform/ShScalarToReducedGGPLGiven.cc
+            action/transform/ShScalarToReducedGGPLGiven.h
+            action/transform/ShScalarToRegularGG.cc
+            action/transform/ShScalarToRegularGG.h
+            action/transform/ShScalarToRegularLL.cc
+            action/transform/ShScalarToRegularLL.h
+            action/transform/ShToGridded.cc
+            action/transform/ShToGridded.h
+            action/transform/ShTruncate.cc
+            action/transform/ShTruncate.h
+            action/transform/ShVodToUV.cc
+            action/transform/ShVodToUV.h
+            action/transform/ShVodTouvGridded.cc
+            action/transform/ShVodTouvGridded.h
+            action/transform/ShVodTouvNamedGrid.cc
+            action/transform/ShVodTouvNamedGrid.h
+            action/transform/ShVodTouvOctahedralGG.cc
+            action/transform/ShVodTouvOctahedralGG.h
+            action/transform/ShVodTouvReducedGG.cc
+            action/transform/ShVodTouvReducedGG.h
+            action/transform/ShVodTouvReducedGGPLGiven.cc
+            action/transform/ShVodTouvReducedGGPLGiven.h
+            action/transform/ShVodTouvRegularGG.cc
+            action/transform/ShVodTouvRegularGG.h
+            action/transform/ShVodTouvRegularLL.cc
+            action/transform/ShVodTouvRegularLL.h
+            action/transform/TransCache.cc
+            action/transform/TransCache.h
+            action/transform/TransInitor.cc
+            action/transform/TransInitor.h
+            )
+       endif()
 endif()
+
 
 ecbuild_add_library(
   TARGET             mir
