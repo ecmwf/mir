@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2017 ECMWF.
+ * (C) Copyright 1996-2015 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,50 +8,44 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date September 2017
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Apr 2015
 
 
-#include "mir/lsm/NamedLSM.h"
+
+#include "mir/lsm/AutoLSM.h"
+#include "mir/config/LibMir.h"
 
 #include <iostream>
+
 #include "eckit/utils/MD5.h"
-#include "mir/config/LibMir.h"
 #include "mir/lsm/GribFileLSM.h"
 #include "mir/lsm/MappedMask.h"
 #include "mir/lsm/TenMinutesLSM.h"
-
 
 namespace mir {
 namespace lsm {
 
 
-namespace {
-static NamedLSM input("named-input");
-static NamedLSM output("named-output");
-}
-
-
-NamedLSM::NamedLSM(const std::string &name):
+AutoLSM::AutoLSM(const std::string &name):
     LSMChooser(name) {
 }
 
 
-NamedLSM::~NamedLSM() {
+AutoLSM::~AutoLSM() {
 }
 
-
-void NamedLSM::print(std::ostream& out) const {
-    out << "NamedLSM[" << name_ << "]";
+void AutoLSM::print(std::ostream& out) const {
+    out << "AutoLSM[" << name_ << "]";
 }
 
-
-std::string NamedLSM::path(const param::MIRParametrisation &parametrisation) const {
+std::string AutoLSM::path(const param::MIRParametrisation &parametrisation) const {
     // TODO: Implement clever selection
     return  "~mir/share/mir/masks/lsm.N640.grib";
 }
 
-
-Mask *NamedLSM::create(const std::string &name,
+Mask *AutoLSM::create(const std::string &name,
                       const param::MIRParametrisation &param,
                       const repres::Representation& representation,
                       const std::string& which) const {
@@ -60,18 +54,24 @@ Mask *NamedLSM::create(const std::string &name,
     Mask* mask = new MappedMask(name, param, representation, which);
     // Mask* mask = new GribFileLSM(name, path(param), param, grid, which);
 
-    eckit::Log::debug<LibMir>() << "NamedLSM::create => " << *mask << std::endl;
+    eckit::Log::debug<LibMir>() << "AutoLSM::create => " << *mask << std::endl;
     return mask;
 }
 
-
-std::string NamedLSM::cacheKey(const std::string &name,
+std::string AutoLSM::cacheKey(const std::string &name,
                               const param::MIRParametrisation &param,
                               const repres::Representation& representation,
                               const std::string& which) const {
     eckit::MD5 md5;
     GribFileLSM::hashCacheKey(md5, path(param), param, representation, which); // We need to take the lsm interpolation method into account
     return "auto." + md5.digest();
+}
+
+
+namespace {
+static AutoLSM input("auto-input");
+static AutoLSM output("auto-output");
+
 }
 
 
