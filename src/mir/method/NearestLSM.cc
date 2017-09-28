@@ -56,6 +56,7 @@ void NearestLSM::applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const {
 lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const repres::Representation& out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
+    runtime.set("lsm-selection", "auto");
     return lsm::LandSeaMasks::lookup(runtime, in, out);
 }
 
